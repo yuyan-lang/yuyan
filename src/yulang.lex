@@ -1,6 +1,6 @@
 %name YuLangLexer;
 
-%let id = [^「」。\n\t ];
+%let id = [^「」\n\t ];
 (* %let id = CCHAR; *)
 
 %defs (
@@ -12,6 +12,5 @@
 {id} => ( T.ID yytext );
 "「" => (T.LEFT_PAREN);
 "」" => (T.RIGHT_PAREN) ;
-"。"=> (T.PERIOD) ;
 
 " " | \n | \t => ( skip() );

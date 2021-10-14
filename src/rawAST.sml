@@ -1,14 +1,12 @@
 
 structure RawAST
 = struct
-	datatype RawAST = RawID of string 
+	datatype RawAST = RawID of string  (* We always want RawID to be a single Unicode Character! *)
                 | RawList of RawAST list
-                | Period
 
     fun isRawASTEmpty (r : RawAST) : bool = case r of 
-        Period => True
-        | RawList [] => True
-        | _ => False
+         RawList [] => true
+        | _ => false
 end
 
 

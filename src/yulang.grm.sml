@@ -4,17 +4,15 @@ structure YuLangTokens =
       = ID of string
       | LEFT_PAREN
       | RIGHT_PAREN
-      | PERIOD
       | EOF
     val allToks = [
-            LEFT_PAREN, RIGHT_PAREN, PERIOD, EOF
+            LEFT_PAREN, RIGHT_PAREN, EOF
            ]
     fun toString tok =
 (case (tok)
  of (ID(_)) => "ID"
   | (LEFT_PAREN) => "\227\128\140"
   | (RIGHT_PAREN) => "\227\128\141"
-  | (PERIOD) => "\227\128\130"
   | (EOF) => "EOF"
 (* end case *))
     fun isKW tok =
@@ -22,7 +20,6 @@ structure YuLangTokens =
  of (ID(_)) => false
   | (LEFT_PAREN) => false
   | (RIGHT_PAREN) => false
-  | (PERIOD) => false
   | (EOF) => false
 (* end case *))
     fun isEOF EOF = true
@@ -41,9 +38,7 @@ fun file_PROD_1_ACT (component, env, component_SPAN : (Lex.pos * Lex.pos), FULL_
   (RawAST.RawList(component))
 fun component_PROD_1_ACT (component, env, RIGHT_PAREN, LEFT_PAREN, component_SPAN : (Lex.pos * Lex.pos), RIGHT_PAREN_SPAN : (Lex.pos * Lex.pos), LEFT_PAREN_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
   (RawAST.RawList(component))
-fun component_PROD_2_ACT (PERIOD, env, PERIOD_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
-  (RawAST.Period)
-fun component_PROD_3_ACT (ID, env, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
+fun component_PROD_2_ACT (ID, env, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
   (RawAST.RawID(ID))
 fun ARGS_3 (env) = 
   (env)
@@ -117,10 +112,6 @@ fun matchRIGHT_PAREN strm = (case (lex(strm))
  of (Tok.RIGHT_PAREN, span, strm') => ((), span, strm')
   | _ => fail()
 (* end case *))
-fun matchPERIOD strm = (case (lex(strm))
- of (Tok.PERIOD, span, strm') => ((), span, strm')
-  | _ => fail()
-(* end case *))
 fun matchEOF strm = (case (lex(strm))
  of (Tok.EOF, span, strm') => ((), span, strm')
   | _ => fail()
@@ -140,7 +131,6 @@ fun component_NT (env_RES) (strm) = let
             fun component_PROD_1_SUBRULE_1_PRED (strm) = (case (lex(strm))
                    of (Tok.ID(_), _, strm') => true
                     | (Tok.LEFT_PAREN, _, strm') => true
-                    | (Tok.PERIOD, _, strm') => true
                     | _ => false
                   (* end case *))
             val (component_RES, component_SPAN, strm') = EBNF.posclos(component_PROD_1_SUBRULE_1_PRED, component_PROD_1_SUBRULE_1_NT, strm')
@@ -151,24 +141,16 @@ fun component_NT (env_RES) (strm) = let
                 FULL_SPAN, strm')
             end
       fun component_PROD_2 (strm) = let
-            val (PERIOD_RES, PERIOD_SPAN, strm') = matchPERIOD(strm)
-            val FULL_SPAN = (#1(PERIOD_SPAN), #2(PERIOD_SPAN))
-            in
-              (UserCode.component_PROD_2_ACT (PERIOD_RES, env_RES, PERIOD_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)),
-                FULL_SPAN, strm')
-            end
-      fun component_PROD_3 (strm) = let
             val (ID_RES, ID_SPAN, strm') = matchID(strm)
             val FULL_SPAN = (#1(ID_SPAN), #2(ID_SPAN))
             in
-              (UserCode.component_PROD_3_ACT (ID_RES, env_RES, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)),
+              (UserCode.component_PROD_2_ACT (ID_RES, env_RES, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)),
                 FULL_SPAN, strm')
             end
       in
         (case (lex(strm))
-         of (Tok.ID(_), _, strm') => component_PROD_3(strm)
+         of (Tok.ID(_), _, strm') => component_PROD_2(strm)
           | (Tok.LEFT_PAREN, _, strm') => component_PROD_1(strm)
-          | (Tok.PERIOD, _, strm') => component_PROD_2(strm)
           | _ => fail()
         (* end case *))
       end
@@ -182,7 +164,6 @@ fun file_NT (env_RES) (strm) = let
       fun file_PROD_1_SUBRULE_1_PRED (strm) = (case (lex(strm))
              of (Tok.ID(_), _, strm') => true
               | (Tok.LEFT_PAREN, _, strm') => true
-              | (Tok.PERIOD, _, strm') => true
               | _ => false
             (* end case *))
       val (component_RES, component_SPAN, strm') = EBNF.posclos(file_PROD_1_SUBRULE_1_PRED, file_PROD_1_SUBRULE_1_NT, strm)

@@ -4,6 +4,7 @@ Library
   structure PrettyPrint
   structure ReplTest
   functor YuLangParseFn
+  functor Parser
   structure MixFixParser
 
 is
@@ -16,3 +17,5 @@ is
   yulang.lex : ml-ulex
   yulang.grm : ml-antlr
   mixfixParser.sml
+  precedenceParser.sml
+  
