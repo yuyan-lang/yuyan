@@ -1,0 +1,18 @@
+Library
+  structure YuLangLexer
+  structure RawAST
+  structure PrettyPrint
+  structure ReplTest
+  functor YuLangParseFn
+  structure MixFixParser
+
+is
+  $/basis.cm
+  $/smlnj-lib.cm
+  $/ml-lpt-lib.cm 
+  rawAST.sml
+  prettyPrint.sml
+  replTest.sml
+  yulang.lex : ml-ulex
+  yulang.grm : ml-antlr
+  mixfixParser.sml

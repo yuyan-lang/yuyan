@@ -1,0 +1,15 @@
+%name YuLang;
+
+%tokens
+  : ID of string
+  | LEFT_PAREN ("「")
+  | RIGHT_PAREN ("」")
+  | PERIOD ("。");
+
+file(env) : component@(env)+ => (RawAST.RawList(component));
+
+component(env) : LEFT_PAREN component@(env)+ RIGHT_PAREN => (RawAST.RawList(component))
+               | PERIOD => (RawAST.Period)
+               | ID => (RawAST.RawID(ID));
+(* inquote (env): ID => (RawAST.RawID(ID)) | LEFT_PAREN => (RawAST.RawID("「")) 
+             | RIGHT_PAREN => (RawAST.RawID("」")) | PERIOD =>  (RawAST.RawID("。")) ; *)
