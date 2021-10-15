@@ -4,7 +4,9 @@ Library
   structure PrettyPrint
   structure ReplTest
   functor YuLangParseFn
-  functor Parser
+  functor PrecedenceParser
+
+  structure ElaboratePrecedence 
   structure MixFixParser
 
 is
@@ -18,4 +20,5 @@ is
   yulang.grm : ml-antlr
   mixfixParser.sml
   precedenceParser.sml
+  elaboratePrecedence.sml
   

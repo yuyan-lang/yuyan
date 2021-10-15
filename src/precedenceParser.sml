@@ -1,34 +1,18 @@
 
-functor Parser (P : sig 
+functor PrecedenceParser (P : sig 
         val allOps :MixFixParser.allOperators 
         end) = struct 
 
         open MixFixParser
         open RawAST
 
+
         val allOps = P.allOps
         val allPrecedences : int list= ListMergeSort.sort (fn (s, t) => s > t) (map (fn (Operator(i,_,  _, _)) => i) allOps)
-        datatype ParseRule = OperatorNameComponent of string 
-                            | OperatorInternal of operator
-                            | PrefixNoneAssoc of operator
-                            | PrefixRightAssoc of operator
-                            | PostfixNoneAssoc of operator
-                            | PostfixLeftAssoc of operator
-                            | InfixNoneAssoc of operator
-                            | InfixLeftAssoc of operator
-                            | InfixLeftAssocLeftArrow of operator
-                            | InfixRightAssoc of operator
-                            | InfixRightAssocRightArrow of operator
-                            | Many1 
-        datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
-        exception ParseFailure of string
+       
 
-        fun elaborate (past : ParseOpAST) : OpAST = 
-            case past of 
-                ParseOpAST (r, l) => 
-                case (r, l) of 
-                    (OperatorNameComponent name, []) => raise Fail "undefined"
 
+        
         fun nextPred (pred : int) : int option = 
             case List.find (fn x => x = pred) allPrecedences of
                 SOME(idx) => if idx + 1 < List.length(allPrecedences) 
@@ -92,9 +76,9 @@ functor Parser (P : sig
                     | (Postfix, LeftAssoc ) => sequence (combineAST (PostfixLeftAssoc oper)) [upP oper, many1 opInt]
                     | (Infix, NoneAssoc ) => sequence (combineAST (InfixNoneAssoc oper)) [upP oper, opInt, upP oper]
                     | (Infix, LeftAssoc ) => sequence (combineAST (InfixLeftAssoc oper)) [upP oper, 
-                            sequence (combineAST (InfixLeftAssocLeftArrow oper)) [opInt, upP oper]]
+                            many1 (sequence (combineAST (InfixLeftAssocLeftArrow oper)) [opInt, upP oper])]
                     | (Infix, RightAssoc ) => sequence (combineAST (InfixRightAssoc oper)) [
-                            sequence (combineAST (InfixRightAssocRightArrow oper)) [upP oper , opInt], upP oper]
+                            many1 (sequence (combineAST (InfixRightAssocRightArrow oper)) [upP oper , opInt]), upP oper]
                     | _ => raise Fail "Malformed Operator 92"
             end
 
