@@ -9,22 +9,38 @@ functor PrecedenceParser (P : sig
 
 
         val allOps = P.allOps
-        val allPrecedences : int list= ListMergeSort.sort (fn (s, t) => s > t) (map (fn (Operator(i,_,  _, _)) => i) allOps)
+        fun removeDuplicateInSorted (l : int list) : int list = case l of
+            (x :: y :: xs) => if x = y then removeDuplicateInSorted (x :: xs) else x :: removeDuplicateInSorted (y :: xs)
+            | l => l
+        val allPrecedences : int list= removeDuplicateInSorted (ListMergeSort.sort 
+                    (fn (s, t) => s > t) (map (fn (Operator(i,_,  _, _)) => i) allOps))
        
+        val y = (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences)); 2)
 
 
-        
+ (*https://stackoverflow.com/questions/17826034/sml-get-index-of-item-in-list*)
+        fun index(item, xs) =
+        let
+            fun index'(m, nil) = NONE
+            | index'(m, x::xr) = if x = item then SOME m else index'(m + 1, xr)
+        in
+            index'(0, xs)
+        end
+
         fun nextPred (pred : int) : int option = 
-            case List.find (fn x => x = pred) allPrecedences of
-                SOME(idx) => if idx + 1 < List.length(allPrecedences) 
+            case index(pred,  allPrecedences)of
+                SOME(idx) => (
+                    print ("some next pred for " ^ Int.toString pred  ^ " idx is " ^ Int.toString idx ^ "\n");
+                                if idx + 1 < List.length(allPrecedences) 
                               then SOME(List.nth(allPrecedences, (idx + 1))) 
-                              else NONE
-                | NONE => raise Fail "not possible 27"
+                              else NONE)
+                | NONE => (print ("no next pred for " ^ Int.toString pred ^ "\n");
+                 raise Fail "not possible 27")
 
         fun up (pred : int) : operator list = 
             case nextPred pred of 
             SOME(np) => List.filter (fn (Operator(p', _, _, _)) => p' = np) allOps
-            | NONE => []
+            | NONE => (print ("no up for " ^ Int.toString (pred) ^ "\n"); [])
 
 
         type parser = RawAST list -> (ParseOpAST* (RawAST list)) list 
@@ -36,7 +52,8 @@ functor PrecedenceParser (P : sig
         fun listToParserResult (combine: ParseOpAST list -> ParseOpAST) (l: (ParseOpAST list* (RawAST list)) list  ): (ParseOpAST* (RawAST list)) list 
         = map (fn (x, r) => (combine x,r)) l
 
-        fun parseStr (s : string) (o' : ParseOpAST) : parser = fn exp =>
+        and parseStr s oper = debug "parseStr" (parseStr_ s oper)
+        and parseStr_ (s : string) (o' : ParseOpAST) : parser = fn exp =>
             if String.size s = 0 then [(o', exp)] else
             case exp of
                 (RawID id :: exps)  => if String.isPrefix id s 
@@ -45,7 +62,7 @@ functor PrecedenceParser (P : sig
                 | (RawList l :: exps) => raise ParseFailure ("Cannot match "^ s ^ " against a rawlist")
                 | _ => raise ParseFailure ("Running out of input")
 
-        fun parseOpInternal (oper : operator) : parser = fn exp => 
+        and parseOpInternal (oper : operator) : parser = fn exp => 
         case oper of
                 Operator (pred, fixity, assoc, lst)  
             => case lst of
@@ -64,7 +81,8 @@ functor PrecedenceParser (P : sig
                 let val ops = up i in alternatives (map hat ops) end
 
 
-        and hat (oper : operator) : parser = 
+        and hat oper = (debug "hat_" (hat_ oper))
+        and hat_ (oper : operator) : parser = 
             let val opInt =parseOpInternal oper 
             in
             case oper of
@@ -84,7 +102,17 @@ functor PrecedenceParser (P : sig
                     | _ => raise Fail "Malformed Operator 92"
             end
 
+        and show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
 
+        and debug (s : string) (p : parser) : parser = fn exp =>
+            (print ("PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n"); 
+            let val res = p exp
+            in (print (s ^" Has " ^ Int.toString(List.length(res)) ^ " parses");
+                print (String.concatWith "\n " (map (fn (past, r) => "AST " ^ show_parseopast past ^ " REST IS " ^ show_rawast_list r ) res ) ^ "\n");
+                res
+            )
+            end
+            )
 
 
 
@@ -99,7 +127,8 @@ functor PrecedenceParser (P : sig
             (fn (asts, exp) => map (fn (ast, rest) => (asts@[ast], rest)) (p exp)) pending)
 
 
-        and many1 (p : parser) : parser = fn exp => 
+        and many1 p = debug "many1" (many1_ p)
+        and many1_ (p : parser) : parser = fn exp => 
             let val base = parserResToList (p exp)
                 fun f b = 
                 let
@@ -112,7 +141,8 @@ functor PrecedenceParser (P : sig
             end
 
 
-        and sequence (combine : ParseOpAST list -> ParseOpAST) (parserSeq : parser list) : parser = fn exp =>
+        and sequence c p = debug "sequence" (sequence_ c p)
+        and sequence_ (combine : ParseOpAST list -> ParseOpAST) (parserSeq : parser list) : parser = fn exp =>
             case parserSeq of 
                 [] => raise Fail "Cannot have empty sequence"
                 | (p1 :: ps) => List.map (fn (asts, r) => (combine asts, r)) 
@@ -120,11 +150,11 @@ functor PrecedenceParser (P : sig
     (parserResToList (p1 exp)) ps) (*map parsers over exp usign seq *)
 
         and try (p : parser) : parser = fn exp =>
-            p exp
+            (debug "trying " p) exp
             handle ParseFailure s => []
             
 
-        and parseExp (): parser = alternatives (map hat allOps)
+        and parseExp (): parser = alternatives (map (debug "hat") (map hat allOps))
 
 
 end

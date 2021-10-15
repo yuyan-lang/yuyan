@@ -18,6 +18,22 @@ open Operators
         exception ParseFailure of string
 
 
+fun show_parseopast x = case x of
+    ParseOpAST (r, l) => show_parseRule r ^ "[" ^ (String.concatWith ", " (map show_parseopast l))  ^"]"
+
+and show_parseRule x = case x of
+    OperatorNameComponent f => "OperatorNameComponent" ^ f
+    | OperatorInternal oper => "OperatorInternal " ^ PrettyPrint.show_op oper
+    | PrefixNoneAssoc oper=> "PrefixNoneAssoc "^ PrettyPrint.show_op oper
+    | PrefixRightAssoc oper=> "PrefixRightAssoc "^ PrettyPrint.show_op oper
+    | PostfixNoneAssoc oper=> "PostfixNoneAssoc "^ PrettyPrint.show_op oper
+    | PostfixLeftAssoc oper=> "PostfixLeftAssoc "^ PrettyPrint.show_op oper
+    | InfixNoneAssoc oper=> "InfixNoneAssoc "^ PrettyPrint.show_op oper
+    | InfixLeftAssoc oper=> "InfixLeftAssoc "^ PrettyPrint.show_op oper
+    | InfixLeftAssocLeftArrow oper=> "InfixLeftAssocLeftArrow "^ PrettyPrint.show_op oper
+    | InfixRightAssoc oper=> "InfixRightAssoc "^ PrettyPrint.show_op oper
+    | InfixRightAssocRightArrow oper=> "InfixRightAssocRightArrow "^ PrettyPrint.show_op oper
+    | Many1  => "Many1"
 
     fun opastAppendArg  (original :  OpAST )(arg : OpAST)  : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, l@[arg])

@@ -1,19 +1,16 @@
-structure PrettyPrint : 
-sig
-  val show_rawast : RawAST.RawAST -> string
-  val show_opast : Operators.OpAST-> string
-end =
+structure PrettyPrint 
+ =
 struct
 
 
-  fun show_rawast x = let 
+  fun show_rawast (x : RawAST.RawAST) = let 
     open RawAST
     in case x of 
        RawList l => "("^ (String.concatWith ", " (map show_rawast l)) ^")"
       | RawID s => s
       end
 
-  fun show_op x = let 
+  fun show_op (x : Operators.operator) = let 
     open Operators
     in case x of
       Operator(p, fix, assoc, names) =>
@@ -26,7 +23,7 @@ struct
         end
     end
 
-  fun show_opast x = let 
+  fun show_opast (x : Operators.OpAST) = let 
     open Operators
     in case x of 
       OpAST (oper, l) => (show_op oper) ^ "[" ^ String.concatWith ", " (map show_opast l) ^ "]"
