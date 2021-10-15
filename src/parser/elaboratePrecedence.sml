@@ -7,7 +7,7 @@ struct
     exception ElaborationFail of ParseOpAST
 
         fun elaborate (past : ParseOpAST) : OpAST = 
-            (print ("ELABORATING " ^ show_parseopast past ^ "\n");
+            (print ("ELABORATING " ^ PrettyPrint.show_parseopast past ^ "\n");
             case past of 
                 ParseOpAST (r, l) => 
                 case (r, l) of 
@@ -42,7 +42,7 @@ struct
                             opastAppendArg (opastPrependArg (elaborate argL) (elaborate internal)) argR
                             | _ => raise Fail "42"
                         ) (elaborate argR) internalsArgL
-                    | (OperatorNameComponent f, _)  => raise Fail (show_parseopast past)
+                    | (OperatorNameComponent f, _)  => raise Fail (PrettyPrint.show_parseopast past)
                     | _ => raise ElaborationFail past
 
             )

@@ -5,6 +5,9 @@ struct
     datatype fixity  = Prefix | Infix | Postfix | Closed
     datatype operator = Operator of int * fixity * associativity * string list 
     (* int is the precedence,  string list are the named parts *)
+    (* Closed must have NoneAssoc fixity 
+    Prefix : either none or Right
+    Postfix : either none or left *)
 
   val underscoreChar = "〇"
   val underscoreCharUTF8 = hd (UTF8.explode("〇"))

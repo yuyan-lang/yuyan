@@ -37,15 +37,21 @@ functor PrecedenceParser (P : sig
                 | NONE => (print ("no next pred for " ^ Int.toString pred ^ "\n");
                  raise Fail "not possible 27")
 
-        fun up (pred : int) : operator list = 
+        (* fun up (pred : int) : operator list = 
             case nextPred pred of 
             SOME(np) => List.filter (fn (Operator(p', _, _, _)) => p' = np) allOps
-            | NONE => (print ("no up for " ^ Int.toString (pred) ^ "\n"); [])
+            | NONE => (print ("no up for " ^ Int.toString (pred) ^ "\n"); []) *)
 
 
         type parser = RawAST list -> (ParseOpAST* (RawAST list)) list 
 
-        fun combineAST (pr: ParseRule) : ParseOpAST list -> ParseOpAST = fn l => ParseOpAST (pr, l)
+        fun combineAST (pr: ParseRule) : ParseOpAST list -> ParseOpAST = fn l => ParseOpAST (pr , l)
+
+        fun combineASTByExtractingFromInternal 
+                (pr: operator -> ParseRule) (i : int) : ParseOpAST list -> ParseOpAST = fn l => 
+            case List.nth(l, i) of
+                ParseOpAST(OperatorInternal oper, _) => ParseOpAST (pr oper, l)
+                | _ => raise Fail "52"
 
         fun parserResToList (l: (ParseOpAST* (RawAST list)) list  ): (ParseOpAST list* (RawAST list)) list 
         = map (fn (x, r) => ([x],r)) l
@@ -62,44 +68,65 @@ functor PrecedenceParser (P : sig
                 | (RawList l :: exps) => raise ParseFailure ("Cannot match "^ s ^ " against a rawlist")
                 | _ => raise ParseFailure ("Running out of input")
 
-        and parseOpInternal (oper : operator) : parser = fn exp => 
+                (* TODO : Use a map for lookup, should be much quicker *)
+        and findOps (fixity : fixity) (pred : int) (assoc : associativity) : operator list = 
+            List.filter (fn (Operator(p, f, a, _)) => p = pred andalso f = fixity andalso a = assoc) allOps 
+
+        and parseOpFixityPred (fixity : fixity) (pred : int)(assoc : associativity) : parser = 
+            alternatives (map parseOpOperator (findOps fixity pred assoc))
+            
+        and parseOpOperator (oper : operator) : parser = fn exp => 
         case oper of
                 Operator (pred, fixity, assoc, lst)  
             => case lst of
                 (hd :: tl) => 
                 let 
                   val rawComponents = List.foldl (fn (name : string, acc) => seqL (seqL acc (parseExp())) 
-                (parseStr name (ParseOpAST(OperatorNameComponent name, []))) )
-                    (parserResToList (parseStr hd (ParseOpAST(OperatorNameComponent hd, [])) exp)) tl
+                (parseStr name (ParseOpAST(OperatorNameComponent(name, oper), []))) )
+                    (parserResToList (parseStr hd (ParseOpAST(OperatorNameComponent(hd,oper), [])) exp)) tl
                 in listToParserResult (fn l => ParseOpAST (OperatorInternal oper,l)) rawComponents
                 end
                 | _ => raise Fail "59"
 
 
-        and upP (oper : operator) : parser = 
-            case oper of Operator (i, _, _, _) => 
-                let val ops = up i in alternatives (map hat ops) end
+        and upP (pred : int) : parser = 
+            case nextPred pred of 
+            SOME(np) => hat np
+            | NONE => (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => [])
 
 
-        and hat oper = (debug "hat_" (hat_ oper))
-        and hat_ (oper : operator) : parser = 
-            let val opInt =parseOpInternal oper 
+        (* and hat oper = (debug "hat_" (hat_ oper)) *)
+        and hat (pred : int) : parser = let
             in
-            case oper of
-                Operator (pred, fixity, assoc,  lst)  
+            alternatives [
+                (* closed case *)
+                parseOpFixityPred Closed pred NoneAssoc, 
 
-                => case (fixity, assoc) of
-                    (Closed, _) => opInt
-                    | (Prefix, NoneAssoc ) => sequence (combineAST (PrefixNoneAssoc oper)) [opInt, upP oper]
-                    | (Postfix, NoneAssoc ) => sequence (combineAST (PostfixNoneAssoc oper)) [upP oper, opInt]
-                    | (Prefix, RightAssoc ) => sequence (combineAST (PrefixRightAssoc oper)) [many1 opInt, upP oper]
-                    | (Postfix, LeftAssoc ) => sequence (combineAST (PostfixLeftAssoc oper)) [upP oper, many1 opInt]
-                    | (Infix, NoneAssoc ) => sequence (combineAST (InfixNoneAssoc oper)) [upP oper, opInt, upP oper]
-                    | (Infix, LeftAssoc ) => sequence (combineAST (InfixLeftAssoc oper)) [upP oper, 
-                            many1 (sequence (combineAST (InfixLeftAssocLeftArrow oper)) [opInt, upP oper])]
-                    | (Infix, RightAssoc ) => sequence (combineAST (InfixRightAssoc oper)) [
-                            many1 (sequence (combineAST (InfixRightAssocRightArrow oper)) [upP oper , opInt]), upP oper]
-                    | _ => raise Fail "Malformed Operator 92"
+                (* non assoc prefix and postfix *)
+                sequence (combineASTByExtractingFromInternal PrefixNoneAssoc 0) 
+                    [parseOpFixityPred Prefix pred NoneAssoc, upP pred],
+                sequence (combineASTByExtractingFromInternal PostfixNoneAssoc 1) 
+                    [upP pred, parseOpFixityPred Postfix pred NoneAssoc],
+
+                (* assoc prefix and postfix *)
+                sequence (combineAST (PrefixRightAssoc pred)) 
+                    [many1 (parseOpFixityPred Prefix pred RightAssoc), upP pred],
+                sequence (combineAST (PostfixLeftAssoc pred)) 
+                    [upP pred, many1 (parseOpFixityPred Postfix pred LeftAssoc)],
+                
+                (* binary *)
+                sequence (combineASTByExtractingFromInternal InfixNoneAssoc 1) 
+                    [upP pred, parseOpFixityPred Infix pred NoneAssoc, upP pred],
+                sequence (combineAST (InfixLeftAssoc pred)) [upP pred, 
+                        many1 (sequence (combineASTByExtractingFromInternal InfixLeftAssocLeftArrow 0) 
+                            [parseOpFixityPred Infix pred LeftAssoc, upP pred])],
+                sequence (combineAST (InfixRightAssoc pred)) [
+                        many1 (sequence (combineASTByExtractingFromInternal InfixRightAssocRightArrow 1) 
+                        [upP pred , parseOpFixityPred Infix pred RightAssoc]), upP pred],
+                
+                (* I think the paper made a mistake here, we also directly need to push up the precedence *)
+                upP pred
+            ]
             end
 
         and show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
@@ -108,7 +135,7 @@ functor PrecedenceParser (P : sig
             (print ("PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n"); 
             let val res = p exp
             in (print (s ^" Has " ^ Int.toString(List.length(res)) ^ " parses");
-                print (String.concatWith "\n " (map (fn (past, r) => "AST " ^ show_parseopast past ^ " REST IS " ^ show_rawast_list r ) res ) ^ "\n");
+                print (String.concatWith "\n " (map (fn (past, r) => "AST " ^ PrettyPrint.show_parseopast past ^ " REST IS " ^ show_rawast_list r ) res ) ^ "\n");
                 res
             )
             end
@@ -154,7 +181,7 @@ functor PrecedenceParser (P : sig
             handle ParseFailure s => []
             
 
-        and parseExp (): parser = alternatives (map (debug "hat") (map hat allOps))
+        and parseExp (): parser = alternatives (map (debug "hat") (map hat allPrecedences))
 
 
 end
