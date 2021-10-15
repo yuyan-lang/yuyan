@@ -13,6 +13,7 @@ Library
 
   structure InteractiveRepl 
   structure BuiltinOperators 
+  structure NatOps
 is
   $/basis.cm
   $/smlnj-lib.cm
@@ -26,7 +27,10 @@ is
 
 
   ui/repl.sml
+  
   builtinOperators/builtin.sml
+  builtinOperators/natOps.sml
+
   prettyPrint.sml
   replTest.sml
   yulang.lex : ml-ulex

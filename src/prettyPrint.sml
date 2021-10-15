@@ -5,7 +5,6 @@ sig
 end =
 struct
 
-  val underscoreChar = "〇"
 
   fun show_rawast x = let 
     open RawAST
