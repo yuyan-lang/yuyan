@@ -6,7 +6,7 @@ structure ReplTest =
       val sm = AntlrStreamPos.mkSourcemap()
       val lex = YuLangLexer.lex sm;
       val strm = YuLangLexer.streamifyInstream (TextIO.openIn "src/test.yuyan")
-      val (r, strm', errs) = CP.parse lex AtomMap.empty strm
+      val (r, strm', errs) = CP.parse lex "" strm (*the third arg is the env, e.g. AtomMap.empty *)
       in 
       print (String.concatWith "\n"
       (List.map (AntlrRepair.repairToString (YuLangTokens.toString) sm)

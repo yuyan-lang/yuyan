@@ -16,8 +16,9 @@ Library
   structure NatOps
   structure GroupOps
 is
-  $/basis.cm
-  $/smlnj-lib.cm
+  ../cmlib/cmlib.cm
+  (* $/basis.cm *)
+  (* $/smlnj-lib.cm *)
   $/ml-lpt-lib.cm 
 
   parser/rawAST.sml

@@ -7,14 +7,43 @@ functor PrecedenceParser (P : sig
         open RawAST
         open ParseAST
 
+          (* DICT defined in cmlib/dict.sig *)
+        structure PredDict : DICT =
+            RedBlackDict
+            (structure Key = IntOrdered)
+
 
         val allOps = P.allOps
+
+
         fun removeDuplicateInSorted (l : int list) : int list = case l of
             (x :: y :: xs) => if x = y then removeDuplicateInSorted (x :: xs) else x :: removeDuplicateInSorted (y :: xs)
             | l => l
-        val allPrecedences : int list= removeDuplicateInSorted (ListMergeSort.sort 
-                    (fn (s, t) => s > t) (map (fn (Operator(i,_,  _, _)) => i) allOps))
-       
+        val allPrecedences : int list= removeDuplicateInSorted (Quicksort.sort 
+                    (Int.compare) (map (fn (Operator(i,_,  _, _)) => i) allOps))
+        val predDict  = 
+        let val emptyDict : operator list PredDict.dict 
+            = foldr (fn (p, d) => PredDict.insert d p []) PredDict.empty allPrecedences
+        in foldr (fn (oper, d) => PredDict.insert d (getPrecedence oper) 
+                (oper :: PredDict.lookup d (getPrecedence oper))) emptyDict allOps
+        end
+            
+        fun findOps (fixity : fixity) (pred : int) (assoc : associativity) : operator list = 
+            List.filter (fn (Operator(p, f, a, _)) => p = pred andalso f = fixity andalso a = assoc) allOps
+
+        val opersPresentAtPred = 
+        foldr (fn (p, d) => PredDict.insert d p [
+            findOps Closed p NoneAssoc = [],
+            findOps Prefix p NoneAssoc = [],
+            findOps Postfix p NoneAssoc = [],
+            findOps Prefix p RightAssoc = [],
+            findOps Postfix p LeftAssoc = [],
+            findOps Infix p NoneAssoc = [],
+            findOps Infix p LeftAssoc = [],
+            findOps Infix p RightAssoc = []
+        ]) PredDict.empty allPrecedences
+
+
         val y = (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences)); 2)
 
 
@@ -69,10 +98,10 @@ functor PrecedenceParser (P : sig
                 | _ => raise ParseFailure ("Running out of input")
 
                 (* TODO : Use a map for lookup, should be much quicker *)
-        and findOps (fixity : fixity) (pred : int) (assoc : associativity) : operator list = 
-            List.filter (fn (Operator(p, f, a, _)) => p = pred andalso f = fixity andalso a = assoc) allOps 
 
         and parseOpFixityPred (fixity : fixity) (pred : int)(assoc : associativity) : parser = 
+            debug ("ParseOpFixityPred " ^ Int.toString(pred)) (parseOpFixityPred_ fixity pred assoc)
+        and parseOpFixityPred_ (fixity : fixity) (pred : int)(assoc : associativity) : parser = 
             alternatives (map parseOpOperator (findOps fixity pred assoc))
             
         and parseOpOperator (oper : operator) : parser = fn exp => 
@@ -96,38 +125,47 @@ functor PrecedenceParser (P : sig
             (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
 
 
-        (* and hat oper = (debug "hat_" (hat_ oper)) *)
-        and hat (pred : int) : parser = let
+        and hat oper = (debug ("hat_"^ Int.toString(oper)) (hat_ oper))
+        and hat_ (pred : int) : parser = let
+            val masking = PredDict.lookup opersPresentAtPred pred
             in
-            alternatives [
+            alternatives (List.concat [
                 (* closed case *)
-                parseOpFixityPred Closed pred NoneAssoc, 
+                if List.nth(masking, 0) then [] else
+                    [parseOpFixityPred Closed pred NoneAssoc], 
 
                 (* non assoc prefix and postfix *)
-                sequence (combineASTByExtractingFromInternal PrefixNoneAssoc 0) 
-                    [parseOpFixityPred Prefix pred NoneAssoc, upP pred],
-                sequence (combineASTByExtractingFromInternal PostfixNoneAssoc 1) 
-                    [upP pred, parseOpFixityPred Postfix pred NoneAssoc],
+                if List.nth(masking, 1) then [] else
+                [sequence (combineASTByExtractingFromInternal PrefixNoneAssoc 0) 
+                    [parseOpFixityPred Prefix pred NoneAssoc, upP pred]],
+                if List.nth(masking, 2) then [] else
+                [sequence (combineASTByExtractingFromInternal PostfixNoneAssoc 1) 
+                    [upP pred, parseOpFixityPred Postfix pred NoneAssoc]],
 
                 (* assoc prefix and postfix *)
-                sequence (combineAST (PrefixRightAssoc pred)) 
-                    [many1 (parseOpFixityPred Prefix pred RightAssoc), upP pred],
-                sequence (combineAST (PostfixLeftAssoc pred)) 
-                    [upP pred, many1 (parseOpFixityPred Postfix pred LeftAssoc)],
+                if List.nth(masking, 3) then [] else
+                [sequence (combineAST (PrefixRightAssoc pred)) 
+                    [many1 (parseOpFixityPred Prefix pred RightAssoc), upP pred]],
+                if List.nth(masking, 4) then [] else
+                [sequence (combineAST (PostfixLeftAssoc pred)) 
+                    [upP pred, many1 (parseOpFixityPred Postfix pred LeftAssoc)]],
                 
                 (* binary *)
-                sequence (combineASTByExtractingFromInternal InfixNoneAssoc 1) 
-                    [upP pred, parseOpFixityPred Infix pred NoneAssoc, upP pred],
-                sequence (combineAST (InfixLeftAssoc pred)) [upP pred, 
+                if List.nth(masking, 5) then [] else
+                [sequence (combineASTByExtractingFromInternal InfixNoneAssoc 1) 
+                    [upP pred, parseOpFixityPred Infix pred NoneAssoc, upP pred]],
+                if List.nth(masking, 6) then [] else
+                [sequence (combineAST (InfixLeftAssoc pred)) [upP pred, 
                         many1 (sequence (combineASTByExtractingFromInternal InfixLeftAssocLeftArrow 0) 
-                            [parseOpFixityPred Infix pred LeftAssoc, upP pred])],
-                sequence (combineAST (InfixRightAssoc pred)) [
+                            [parseOpFixityPred Infix pred LeftAssoc, upP pred])]],
+                if List.nth(masking, 7) then [] else
+                [sequence (combineAST (InfixRightAssoc pred)) [
                         many1 (sequence (combineASTByExtractingFromInternal InfixRightAssocRightArrow 1) 
-                        [upP pred , parseOpFixityPred Infix pred RightAssoc]), upP pred],
+                        [upP pred , parseOpFixityPred Infix pred RightAssoc]), upP pred]],
                 
                 (* I think the paper made a mistake here, we also directly need to push up the precedence *)
-                upP pred
-            ]
+                [upP pred]
+            ])
             end
 
         and show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
@@ -171,18 +209,24 @@ functor PrecedenceParser (P : sig
 
         (* and sequence c p = debug "sequence" (sequence_ c p) *)
         and sequence (combine : ParseOpAST list -> ParseOpAST) (parserSeq : parser list) : parser = fn exp =>
-            case parserSeq of 
-                [] => raise Fail "Cannot have empty sequence"
-                | (p1 :: ps) => List.map (fn (asts, r) => (combine asts, r)) 
-                (List.foldl (fn (curParser, acc) => seqL acc curParser) 
-    (parserResToList (p1 exp)) ps) (*map parsers over exp usign seq *)
+            (* for early returning *)
+                case parserSeq of 
+                    [] => raise Fail "Cannot have empty sequence"
+                    | (p1 :: ps) => List.map (fn (asts, r) => (combine asts, r)) 
+                    (List.foldl (fn (curParser, acc) => 
+                    case acc of [] => []
+                    | _ => seqL acc curParser) 
+        (parserResToList (p1 exp)) ps) (*map parsers over exp usign seq *)
+
 
         and try (p : parser) : parser = fn exp =>
             p exp
             handle ParseFailure s => []
             
 
-        and parseExp (): parser = alternatives (map hat allPrecedences)
+        and parseExp (): parser = 
+        (*Becuase of inclusion of up P in hat P, this is enough *)
+         hat (hd allPrecedences)
 
 
 end

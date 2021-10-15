@@ -11,6 +11,8 @@ struct
 
   val underscoreChar = "〇"
   val underscoreCharUTF8 = hd (UTF8.explode("〇"))
+
+  fun getPrecedence (Operator(p, _, _, _)) = p
     
     type allOperators = operator list
 

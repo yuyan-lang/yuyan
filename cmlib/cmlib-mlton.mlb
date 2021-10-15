@@ -1,0 +1,6 @@
+$(SML_LIB)/basis/mlton.mlb
+cmlib.mlb
+
+(* Overwrite the generic (non-)implementations of Cont and Weak. *)
+cont-mlton.sml
+weak-mlton.sml

@@ -1,0 +1,478 @@
+$(SML_LIB)/basis/basis.mlb
+
+local	
+   ann "sequenceNonUnit ignore" in
+        from-string.sig
+        from-string.sml
+        bytestring.sig
+        bytestring.sml
+        bytesubstring.sig
+        bytesubstring.sml
+        path.sig
+        path.sml
+        random.sig
+        susp.sig
+        susp.sml
+        convert-intinf.sig
+        convert-intinf.sml
+        convert-word.sig
+        convert-word-mlton.sml
+        rand.sig
+        rand32.sig
+        rand-from-random.sml
+        rand-from-rand32.sml
+        hash-inc.sig
+        hash-inc.sml
+        hashable.sig
+        list-util.sig
+        list-util.sml
+        array-util.sig
+        array-util.sml
+        set.sig
+        table.sig
+        table-mini.sig
+        table-dataless.sig
+        table-dataless-mini.sig
+        hashable.sml
+        hashable-2.sml
+        hash-table.sig
+        hash-table.sml
+        hash-table-dataless.sig
+        hash-table-dataless.sml
+        branching-table-dataless.sig
+        branching-table-dataless.sml
+        monad.sig
+        monad.sml
+        monad-util.sig
+        monad-util.sml
+        symbol.sig
+        ordered.sig
+        symbol.sml
+        ordered.sml
+        ordered-2.sml
+        set-list.sml
+        dict.sig
+        output.sig
+        output.sml
+        dict-list.sml
+        red-black-tree.sml
+        set-red-black.sml
+        dict-red-black.sml
+        splay-tree.sml
+        set-splay.sml
+        dict-splay.sml
+        topological-sort.sig
+        topological-sort.sml
+        frame-dict.sig
+        frame-dict.sml
+        command-line.sig
+        command-line.sml
+        defaults.sml
+        ec-field.sig
+        ec.sig
+        stream.sig
+        stream.sml
+        cryptohash.sig
+        sha1.sml
+        sha256.sml
+        fortuna.sig
+        cipher.sig
+        stream-cipher-fun.sml
+        aes.sml
+        random-aes.sml
+        fortuna.sml
+        rand-mt.sml
+        arith.sig
+        arith.sml
+        ec-crypto.sig
+        ec-fp.sml
+        ec-f2m.sml
+        ec-crypto.sml
+        string-mini.sig
+        string-mini.sml
+        multi-table.sig
+        multi-table-dict.sml
+        prettyprint.sig
+        streamable.sig
+        streamable.sml
+        streamable-2.sml
+        iqueue.sig
+        iqueue.sml
+        ideque.sig
+        ideque.sml
+        streamable-mono.sig
+        parsing.sig
+        costring.sig
+        costring.sml
+        digital-signature.sig
+        ecdsa.sig
+        ecdsa.sml
+        ec-params.sig
+        ec-params.sml
+        shared-secret.sig
+        ecdh.sig
+        ecdh.sml
+        sum.sig
+        sum.sml
+        sequence.sig
+        sequence-tree.sml
+        streamable-mono.sml
+        streamable-mono-2.sml
+        asn1.sig
+        der.sml
+        ec-coding.sig
+        ec-der.sml
+        parsing.sml
+        arguments.sig
+        arguments.sml
+        finally.sig
+        finally.sml
+        lex-engine.sig
+        lex-engine.sml
+        ipqueue.sig
+        sort.sig
+        mergesort.sml
+        juliasort.sml
+        sequence-list.sml
+        pqueue.sig
+        pqueue-lazy-pairing.sml
+        psusp.sig
+        psusp.sml
+        pstream.sig
+        pstream.sml
+        prettyprint.sml
+        ripemd160.sml
+        table-checkpoint.sig
+        queue.sig
+        queue.sml
+        quicksort.sml
+        random-rehash.sml
+        union-find-imperative.sig
+        partition.sig
+	union-find-imperative.sml
+        sequence-array.sml
+        partition.sml
+        coroutine.sig
+        ipqueue-pairing.sml
+        parse-engine.sig
+        parse-engine.sml
+        cont.sig
+        cont.sml
+        coroutine.sml
+        pqueue-leftist.sml
+        table-checkpoint-hash.sml
+        pqueue-pairing.sml
+        table-checkpoint-dict.sml
+        weak.sig
+        weak.sml
+        io-mini.sig
+        seek-io.sig
+        seek-io.sml
+        io-util.sig
+        io-util.sml
+        multi-file-io.sig
+        multi-file-io.sml
+        array-inf.sig
+        array-inf.sml
+        pickle.sig
+        pickle.sml
+        pickleable.sig
+        pickleable.sml
+        regexp.sig
+        regexp.sml
+
+        deprecated/coord.sig
+        deprecated/coord.sml
+        deprecated/coord-stream.sig
+        deprecated/coord-stream.sml
+        deprecated/pos.sig
+        deprecated/pos.sml
+   end
+in
+        signature ARGUMENTS
+        signature ARITH
+        signature ARRAY_INF
+        signature ARRAY_UTIL
+        signature DATALESS_BRANCHING_TABLE
+        signature BYTESTRING
+        signature BYTESUBSTRING
+	signature CHECKPOINT_TABLE
+        signature CIPHER
+        signature COMMAND_LINE
+        signature CONT
+        signature CONVERT_INT_INF
+        signature CONVERT_WORD
+        signature COROUTINE
+        signature CRYPTO_HASH
+        signature DATALESS_HASH_TABLE
+        signature DATALESS_TABLE
+        signature DICT
+        signature EC_FIELD
+        signature ECDH
+        signature ECDSA
+        signature ELLIPTIC_CURVE
+        signature ELLIPTIC_CURVE_CODING
+        signature ELLIPTIC_CURVE_CRYPTO
+        signature ELLIPTIC_CURVE_PARAMS
+        signature FINALLY
+        signature FORTUNA
+        signature FRAME_DICT
+        signature FROM_STRING
+        signature HASH_INCREMENT
+        signature HASH_TABLE
+        signature HASHABLE
+        signature IDEQUE
+        signature IMPERATIVE_UNION_FIND
+        signature IO_UTIL
+        signature IPQUEUE
+        signature IQUEUE
+        signature LEX_ENGINE
+        signature LIST_UTIL
+        signature MINI_DATALESS_TABLE
+        signature MINI_TABLE
+        signature MINI_IO
+        signature MINI_STRING
+        signature MONAD
+        signature MONAD_UTIL
+        signature MONO_LEX_ENGINE
+        signature MONO_STREAMABLE
+        signature MULTI_FILE_IO
+	signature MULTI_TABLE
+        signature OUTPUT
+        signature ORDERED
+        signature PARSE_ENGINE
+        signature PARSING
+        signature PARTITION
+        signature PATH
+        signature PICKLE
+        signature PICKLEABLE_CON
+        signature PICKLEABLE_TYPE
+        signature PRETTY_PRINT
+        signature PQUEUE
+        signature PSTREAM
+        signature PSUSP
+        signature QUEUE
+        signature RAND
+        signature RAND32
+        signature RANDOM
+        signature REGEXP
+        signature SEEK_IO
+        signature SEQUENCE
+        signature SET
+        signature SHARED_SECRET
+        signature SORT
+        signature STREAM
+        signature STREAMABLE
+	signature SUM
+        signature SUSP
+        signature SYMBOL
+	signature TABLE
+        signature TOPOLOGICAL_SORT
+        signature WEAK
+
+        structure AES
+        structure AESCBC
+        structure AESCFB
+        structure AESCTR
+        structure AESOFB
+        structure AESFortuna
+        structure AESRandom
+        structure Arguments
+        structure Arith
+        structure ArraySequence
+        structure ArrayInf
+        structure ArrayUtil
+        structure BinIOUtil
+        structure BinSeekIO
+        structure Bytestring
+        structure BytestringHashable
+        structure BytestringMiniString
+        structure Bytesubstring
+        structure BytesubstringCostring
+        structure BytesubstringMiniString
+        structure BytesubstringMonoStreamable
+	structure CharListDict
+	structure CharListSet
+	structure CharHashable
+	structure CharHashTable
+	structure CharOrdered
+	structure CharRedBlackSet
+	structure CharRedBlackDict
+	structure CharSplaySet
+	structure CharSplayDict
+        structure CommandLine
+        structure Cont
+        structure ConvertIntInf
+        structure ConvertWord
+        structure Coroutine
+        structure ECDERp
+        structure ECDER2m
+        structure ECDHp
+        structure ECDH2m
+        structure ECDSAp
+        structure ECDSA2m
+        structure EllipticCurveCryptoFp
+        structure EllipticCurveCryptoF2m
+        structure EllipticCurveF2m
+        structure EllipticCurveFp
+        structure EllipticCurveParams
+        structure FieldF2m
+        structure FieldFp
+        structure Finally
+        structure FromString
+        structure IDeque
+	structure IntListDict
+	structure IntListSet
+	structure IntHashable
+	structure IntHashTable
+	structure IntOrdered
+        structure IntPickleable
+        structure IntInfPickleable
+	structure IntRedBlackSet
+	structure IntRedBlackDict
+	structure IntSplaySet
+	structure IntSplayDict
+	structure IntInfListDict
+	structure IntInfListSet
+	structure IntInfHashable
+	structure IntInfOrdered
+	structure IntInfRedBlackSet
+	structure IntInfRedBlackDict
+	structure IntInfSplaySet
+	structure IntInfSplayDict
+        structure IQueue
+        structure JenkinsHash
+        structure Juliasort
+        structure ListMonad
+        structure ListSequence
+        structure ListStreamable
+        structure ListUtil
+        structure Mergesort
+        structure MTRand
+        structure MTRand32
+        structure MJHash
+        structure OptionMonad
+        structure Output
+        structure Path
+        structure Pickle
+	structure PrettyPrint
+	structure PStream
+	structure PSusp
+	structure Queue
+	structure Quicksort
+        structure RehashRandom
+        structure RIPEMD160
+        structure SHA1
+        structure SHA256
+        structure Stream
+        structure StreamStreamable
+	structure StringHashable
+	structure StringHashTable
+	structure StringListDict
+	structure StringListSet
+        structure StringMiniString
+	structure StringOrdered
+        structure StringPickleable
+	structure StringRedBlackSet
+	structure StringRedBlackDict
+	structure StringSplaySet
+	structure StringSplayDict
+        structure SubstringCostring
+        structure SubstringMiniString
+	structure Sum
+	structure StringSymbol
+        structure SubstringMonoStreamable
+	structure Symbol
+	structure SymbolListDict
+	structure SymbolListSet
+	structure SymbolHashable
+	structure SymbolHashTable
+	structure SymbolOrdered
+	structure SymbolRedBlackSet
+	structure SymbolRedBlackDict
+	structure SymbolSplaySet
+	structure SymbolSplayDict
+        structure Susp
+        structure TextIOUtil
+        structure TimeOrdered
+        structure TreeSequence
+        structure IUnionFind
+	structure UnitListDict
+	structure UnitListSet
+	structure UnitHashable
+	structure UnitHashTable
+	structure UnitOrdered
+	structure UnitRedBlackSet
+	structure UnitRedBlackDict
+	structure UnitSplaySet
+	structure UnitSplayDict
+        structure Weak
+        structure Word8Hashable
+        structure WordHashable
+
+        functor ArithFun
+        functor CBCCipherFun
+        functor CFBCipherFun
+        functor CTRCipherFun
+        functor CoercedStreamable
+        functor CostringFun
+        functor DatalessBranchingTable
+        functor DatalessHashTable
+	functor DictCheckpointTable
+	functor DictMultiTable
+        functor DictPickleableFun
+        functor ECDHFun
+        functor ECDSAFun
+        functor EllipticCurveCryptoFun
+        functor EllipticCurveDERFun
+        functor EllipticCurveF2mFun
+        functor FrameDictFun
+        functor FortunaFun
+        functor HashTable
+	functor HashTableCheckpointTable
+        functor InvertOrdered
+        functor LazyPairingPQueue
+        functor LeftistPQueue
+        functor LexEngineFun
+        functor ListDict
+        functor ListHashable
+        functor ListOrdered
+        functor ListSet
+        functor MultiFileIOFun
+        functor MonadUtilFun
+        functor MonoLexEngineFun
+        functor MonomorphizeStreamable
+        functor OFBCipherFun
+        functor OutputMonad
+        functor PairOrdered
+        functor PairingIPQueue
+        functor PairingPQueue
+        functor ParseEngineFun
+        functor ParsingFun
+        functor PartitionFun
+        functor ProductHashable
+        functor RandFromRand32
+        functor RandFromRandom
+        functor RedBlackDict
+        functor RedBlackSet
+        functor RegexpFun
+        functor SeekIOFun
+        functor SetHashable
+        functor SetPickleableFun
+        functor SplayDict
+        functor SplaySet
+        functor SymbolFun
+        functor SymbolHashableFun
+        functor SymbolOrderedFun
+        functor SymbolPickleableFun
+        functor TopologicalSort
+
+        (* deprecated *)
+	signature COORD
+        signature COORDINATED_STREAM
+	signature POS
+	structure Coord
+        structure CoordinatedStream
+	structure Pos
+
+end

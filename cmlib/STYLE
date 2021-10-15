@@ -1,0 +1,79 @@
+
+Code naming conventions
+-----------------------
+
+* Signature names should be in all caps, with underscores separating
+  words.
+
+* Structure and functor names should be capitalized, with capitals
+  starting words (a.k.a. camel case).
+
+* Types and terms should begin with a lower-case letter, with capitals
+  starting following words (a.k.a. camel case).
+
+* Constructors should be capitalized, and may (optionally) be all
+  caps.
+
+* Type classes (signatures that indicate operations on existing types,
+  usually to serve as a functor argument) should name the principal
+  type field "t".
+
+* Multiple implementations of an interface should be named such as
+  AdjectiveFoo (or AdjectiveFooFun).  Thus RedBlackDict, not
+  DictRedBlack.
+
+
+File conventions
+----------------
+
+* File names should be in all lower case, with hyphens separating
+  words.
+
+* Files containing only signatures should be named with a ".sig"
+  suffix.  Other files should be named with a ".sml" suffix.
+
+* Multiple implementations of an interface should be given names such
+  as foo-adjective.sml.  Thus, dict-red-black.sml, not
+  red-black-dict.sml.  (Note that this file name convention differs
+  from the structure/functor name convention.  This is to allow
+  multiple implementions to sort together.)
+
+* Type classes should generally be placed in their own files, rather
+  than in the same file as a functor that depends on them.
+
+
+Other conventions
+-----------------
+
+* Curried functions are generally preferred to functions taking tupled
+  arguments.
+
+  There are exceptions in which tuples are reasonable, however.  For
+  example:
+
+  - One might take arguments in a tuple in order to match the usage in
+    a similar basis function, such as a comparison function.
+
+  - Since SML does not provide a convenient syntax for anonymous
+    curried functions, a function argument of a higher-order function
+    might take its arguments in a tuple.  (For example, the first
+    argument to a fold-like operation.)
+
+* Please avoid inexhaustive matches.
+
+* Functor arguments using specification-list notation are preferred to
+  signature notation.  That is, we prefer:
+
+    functor FooFun (structure Bar : BAR) = ...
+
+  to:
+
+    functor FooFun (Bar : BAR) = ...
+
+  Several exceptions are grandfathered in, though.
+
+* Adding an operation to a signature is usually not considered an
+  incompatible change for versioning purposes (even though, strictly
+  speaking, one could write SML code that depends on its absence).
+  However, adding an operation to a type class (e.g., ORDERED or
+  STREAMABLE) is an incompatible change.

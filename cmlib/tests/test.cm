@@ -1,0 +1,14 @@
+Group is
+    ../cmlib.cm
+    $SMACKAGE/qcheck/v1/qcheck.cm
+    testing.sig
+    testing.sml
+
+    mergesort-test.sml
+    mergesort-qcheck.sml
+    quicksort-test.sml
+    sets-dicts-test.sml
+    test-collection.sml
+    ipqueue-list.sml
+    ipqueue-check.sml
+    ipqueue-test.sml
