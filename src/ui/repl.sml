@@ -6,12 +6,21 @@ struct
 
     fun addUI (s : string) = "豫☯ " ^ s ^ "\n"
 
-    fun replHelper (input : RawAST ) : string =
+    fun process (input : RawAST list ) : string =
     let 
         val trees = MixFixP.parseMixfixExpression input
     in
         ( addUI(String.concatWith "\n" (map PrettyPrint.show_opast trees)))
     end
+    fun replHelper (input : RawAST list ) : string =
+        let 
+        val startTime = Time.now()
+        val res = process input
+        val endTime = Time.now()
+        val duration : Time.time = Time.-(endTime,startTime)
+        in 
+            (res ^ "\n" ^ "Took " ^ (LargeInt.toString(Time.toMilliseconds(duration))) ^ "ms to complete\n")
+        end
 
 
 end

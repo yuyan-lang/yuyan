@@ -5,9 +5,11 @@
   | LEFT_PAREN ("「")
   | RIGHT_PAREN ("」");
 
-file(env) : component@(env)+ => (RawAST.RawList(component));
+file(env) : component@(env)+ => (component);
 
-component(env) : LEFT_PAREN component@(env)+ RIGHT_PAREN => (RawAST.RawList(component))
-               | ID => (RawAST.RawID(ID));
+component(env) : 
+(* LEFT_PAREN component@(env)+ RIGHT_PAREN => (RawAST.RawList(component))
+               |  *)
+               ID => (RawAST.RawID(ID));
 (* inquote (env): ID => (RawAST.RawID(ID)) | LEFT_PAREN => (RawAST.RawID("「")) 
              | RIGHT_PAREN => (RawAST.RawID("」")) | PERIOD =>  (RawAST.RawID("。")) ; *)

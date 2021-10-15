@@ -14,6 +14,7 @@ Library
   structure InteractiveRepl 
   structure BuiltinOperators 
   structure NatOps
+  structure GroupOps
 is
   $/basis.cm
   $/smlnj-lib.cm
@@ -30,6 +31,7 @@ is
   
   builtinOperators/builtin.sml
   builtinOperators/natOps.sml
+  builtinOperators/groupOps.sml
 
   prettyPrint.sml
   replTest.sml

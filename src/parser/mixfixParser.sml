@@ -10,9 +10,9 @@ struct
     open Operators
 
     structure Parser = PrecedenceParser(P)
-    fun parseMixfixExpression (exp : RawAST.RawAST) : OpAST list = 
+    fun parseMixfixExpression (exp : RawAST.RawAST list) : OpAST list = 
         case exp of
-            RawList l =>  (case Parser.parseExp() l of
+            l =>  (case Parser.parseExp() l of
                                 [] => raise Fail "noParse 20"
                                 | l => map (fn (x, _) => ElaboratePrecedence.elaborate x)
                                      (List.filter (fn (x, s) => 
@@ -22,6 +22,6 @@ struct
                                      val y = false
                                      in List.length s = 0 
                                      end) l))
-            | RawID _ => raise Fail "Must be a list 22"
+            (* | RawID _ => raise Fail "Must be a list 22" *)
 
 end

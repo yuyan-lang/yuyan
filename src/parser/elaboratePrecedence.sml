@@ -7,7 +7,8 @@ struct
     exception ElaborationFail of ParseOpAST
 
         fun elaborate (past : ParseOpAST) : OpAST = 
-            (print ("ELABORATING " ^ PrettyPrint.show_parseopast past ^ "\n");
+            (
+                (* print ("ELABORATING " ^ PrettyPrint.show_parseopast past ^ "\n"); *)
             case past of 
                 ParseOpAST (r, l) => 
                 case (r, l) of 

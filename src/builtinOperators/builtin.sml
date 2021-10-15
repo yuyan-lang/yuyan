@@ -1,5 +1,7 @@
 
 structure BuiltinOperators =
 struct
-    val allOps = List.concat [NatOps.natOps]
+
+
+    val allOps = List.concat [NatOps.natOps, GroupOps.groupOps]
 end

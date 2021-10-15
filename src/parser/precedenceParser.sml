@@ -30,7 +30,7 @@ functor PrecedenceParser (P : sig
         fun nextPred (pred : int) : int option = 
             case index(pred,  allPrecedences)of
                 SOME(idx) => (
-                    print ("some next pred for " ^ Int.toString pred  ^ " idx is " ^ Int.toString idx ^ "\n");
+                    (* print ("some next pred for " ^ Int.toString pred  ^ " idx is " ^ Int.toString idx ^ "\n"); *)
                                 if idx + 1 < List.length(allPrecedences) 
                               then SOME(List.nth(allPrecedences, (idx + 1))) 
                               else NONE)
@@ -65,7 +65,7 @@ functor PrecedenceParser (P : sig
                 (RawID id :: exps)  => if String.isPrefix id s 
                                 then parseStr (String.extract(s, String.size(id), NONE)) o' exps
                                 else raise ParseFailure ("Cannot match " ^ s ^ " against " ^ id) (* strip off id from s*)
-                | (RawList l :: exps) => raise ParseFailure ("Cannot match "^ s ^ " against a rawlist")
+                (* | (RawList l :: exps) => raise ParseFailure ("Cannot match "^ s ^ " against a rawlist") *)
                 | _ => raise ParseFailure ("Running out of input")
 
                 (* TODO : Use a map for lookup, should be much quicker *)
@@ -92,7 +92,8 @@ functor PrecedenceParser (P : sig
         and upP (pred : int) : parser = 
             case nextPred pred of 
             SOME(np) => hat np
-            | NONE => (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => [])
+            | NONE =>  fn x => []
+            (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
 
 
         (* and hat oper = (debug "hat_" (hat_ oper)) *)
@@ -177,11 +178,11 @@ functor PrecedenceParser (P : sig
     (parserResToList (p1 exp)) ps) (*map parsers over exp usign seq *)
 
         and try (p : parser) : parser = fn exp =>
-            (debug "trying " p) exp
+            p exp
             handle ParseFailure s => []
             
 
-        and parseExp (): parser = alternatives (map (debug "hat") (map hat allPrecedences))
+        and parseExp (): parser = alternatives (map hat allPrecedences)
 
 
 end

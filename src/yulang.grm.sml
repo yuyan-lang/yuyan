@@ -35,14 +35,10 @@ YuLangTokens
       struct
 
 fun file_PROD_1_ACT (component, env, component_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
-  (RawAST.RawList(component))
-fun component_PROD_1_ACT (component, env, RIGHT_PAREN, LEFT_PAREN, component_SPAN : (Lex.pos * Lex.pos), RIGHT_PAREN_SPAN : (Lex.pos * Lex.pos), LEFT_PAREN_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
-  (RawAST.RawList(component))
-fun component_PROD_2_ACT (ID, env, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
+  (component)
+fun component_PROD_1_ACT (ID, env, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
   (RawAST.RawID(ID))
 fun ARGS_3 (env) = 
-  (env)
-fun ARGS_5 (env, LEFT_PAREN) = 
   (env)
       end (* UserCode *)
 
@@ -120,39 +116,11 @@ fun matchEOF strm = (case (lex(strm))
 val (file_NT) = 
 let
 fun component_NT (env_RES) (strm) = let
-      fun component_PROD_1 (strm) = let
-            val (LEFT_PAREN_RES, LEFT_PAREN_SPAN, strm') = matchLEFT_PAREN(strm)
-            fun component_PROD_1_SUBRULE_1_NT (strm) = let
-                  val (component_RES, component_SPAN, strm') = (component_NT (UserCode.ARGS_5 (env_RES, LEFT_PAREN_RES)))(strm)
-                  val FULL_SPAN = (#1(component_SPAN), #2(component_SPAN))
-                  in
-                    ((component_RES), FULL_SPAN, strm')
-                  end
-            fun component_PROD_1_SUBRULE_1_PRED (strm) = (case (lex(strm))
-                   of (Tok.ID(_), _, strm') => true
-                    | (Tok.LEFT_PAREN, _, strm') => true
-                    | _ => false
-                  (* end case *))
-            val (component_RES, component_SPAN, strm') = EBNF.posclos(component_PROD_1_SUBRULE_1_PRED, component_PROD_1_SUBRULE_1_NT, strm')
-            val (RIGHT_PAREN_RES, RIGHT_PAREN_SPAN, strm') = matchRIGHT_PAREN(strm')
-            val FULL_SPAN = (#1(LEFT_PAREN_SPAN), #2(RIGHT_PAREN_SPAN))
-            in
-              (UserCode.component_PROD_1_ACT (component_RES, env_RES, RIGHT_PAREN_RES, LEFT_PAREN_RES, component_SPAN : (Lex.pos * Lex.pos), RIGHT_PAREN_SPAN : (Lex.pos * Lex.pos), LEFT_PAREN_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)),
-                FULL_SPAN, strm')
-            end
-      fun component_PROD_2 (strm) = let
-            val (ID_RES, ID_SPAN, strm') = matchID(strm)
-            val FULL_SPAN = (#1(ID_SPAN), #2(ID_SPAN))
-            in
-              (UserCode.component_PROD_2_ACT (ID_RES, env_RES, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)),
-                FULL_SPAN, strm')
-            end
+      val (ID_RES, ID_SPAN, strm') = matchID(strm)
+      val FULL_SPAN = (#1(ID_SPAN), #2(ID_SPAN))
       in
-        (case (lex(strm))
-         of (Tok.ID(_), _, strm') => component_PROD_2(strm)
-          | (Tok.LEFT_PAREN, _, strm') => component_PROD_1(strm)
-          | _ => fail()
-        (* end case *))
+        (UserCode.component_PROD_1_ACT (ID_RES, env_RES, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)),
+          FULL_SPAN, strm')
       end
 fun file_NT (env_RES) (strm) = let
       fun file_PROD_1_SUBRULE_1_NT (strm) = let
@@ -163,7 +131,6 @@ fun file_NT (env_RES) (strm) = let
             end
       fun file_PROD_1_SUBRULE_1_PRED (strm) = (case (lex(strm))
              of (Tok.ID(_), _, strm') => true
-              | (Tok.LEFT_PAREN, _, strm') => true
               | _ => false
             (* end case *))
       val (component_RES, component_SPAN, strm') = EBNF.posclos(file_PROD_1_SUBRULE_1_PRED, file_PROD_1_SUBRULE_1_NT, strm)

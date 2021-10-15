@@ -6,9 +6,10 @@ struct
   fun show_rawast (x : RawAST.RawAST) = let 
     open RawAST
     in case x of 
-       RawList l => "("^ (String.concatWith ", " (map show_rawast l)) ^")"
-      | RawID s => s
+       (* RawList l => "("^ (String.concatWith ", " (map show_rawast l)) ^")" *)
+       RawID s => s
       end
+  fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")" 
 
   fun show_op (x : Operators.operator) = let 
     open Operators

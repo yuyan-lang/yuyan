@@ -11,7 +11,7 @@ struct
   val natOps = [ 
     oneOp
   ,plusOp
-  (* ,twoOp, threeOp *)
-  (* ,minusOp, timesOp, dividesOp *)
+  ,twoOp, threeOp 
+  ,minusOp, timesOp, dividesOp
   ]
 end

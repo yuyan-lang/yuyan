@@ -1,6 +1,6 @@
 %name YuLangLexer;
 
-%let id = [^「」\n\t ];
+%let id = [^\n\t ]; (* discard space tab new line *)
 (* %let id = CCHAR; *)
 
 %defs (
@@ -10,7 +10,7 @@
 );
 
 {id} => ( T.ID yytext );
-"「" => (T.LEFT_PAREN);
-"」" => (T.RIGHT_PAREN) ;
+(* "「" => (T.LEFT_PAREN); *)
+(* "」" => (T.RIGHT_PAREN) ; *)
 
 " " | \n | \t => ( skip() );

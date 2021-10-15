@@ -13,7 +13,7 @@ structure ReplTest =
       errs)^"\n");
       
       (case r of 
-      SOME(s) => (let val s = s in print(PrettyPrint.show_rawast(s) ^ "\n")
+      SOME(s) => (let val s = s in print(PrettyPrint.show_rawasts(s) ^ "\n")
       ;print (InteractiveRepl.replHelper s)
       ;print "done ...\n"
       ;print "type checking...\n"
