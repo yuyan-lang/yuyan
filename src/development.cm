@@ -10,17 +10,25 @@ Library
   functor MixFixParser
   structure Operators
   structure ParseAST
+
+  structure InteractiveRepl 
+  structure BuiltinOperators 
 is
   $/basis.cm
   $/smlnj-lib.cm
   $/ml-lpt-lib.cm 
-  rawAST.sml
+
+  parser/rawAST.sml
+  parser/elaboratePrecedence.sml
+  parser/parseAST.sml
+  parser/mixfixParser.sml
+  parser/precedenceParser.sml
+
+
+  ui/repl.sml
+  builtinOperators/builtin.sml
   prettyPrint.sml
   replTest.sml
   yulang.lex : ml-ulex
   yulang.grm : ml-antlr
-  mixfixParser.sml
-  precedenceParser.sml
-  elaboratePrecedence.sml
   operators.sml
-  parseAST.sml

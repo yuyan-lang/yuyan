@@ -10,7 +10,7 @@ struct
     open Operators
 
     structure Parser = PrecedenceParser(P)
-    fun parseMixfixExpression (ops : allOperators) (exp : RawAST.RawAST) : OpAST list = 
+    fun parseMixfixExpression (exp : RawAST.RawAST) : OpAST list = 
         case exp of
             RawList l =>  (case Parser.parseExp() l of
                                 [] => raise Fail "noParse 20"

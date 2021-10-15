@@ -17,7 +17,7 @@ open Operators
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
         exception ParseFailure of string
 
-            val underscoreChar = "〇"
+
 
     fun opastAppendArg  (original :  OpAST )(arg : OpAST)  : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, l@[arg])

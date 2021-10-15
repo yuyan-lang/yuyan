@@ -30,13 +30,16 @@ struct
                             case internalArgR of
                                 ParseOpAST(InfixLeftAssocLeftArrow oper, [internal, argR]) =>
                             opastAppendArg (opastPrependArg (elaborate internal) argL) (elaborate argR)
+                            | _ => raise Fail "33"
                         ) (elaborate argL) internalsArgR
                     | (InfixRightAssoc _, [ParseOpAST(Many1, internalsArgL), argR]) => 
                         foldr (fn (internalArgL, argR) => 
                             case internalArgL of
                                 ParseOpAST(InfixRightAssocRightArrow oper, [argL , internal]) =>
                             opastAppendArg (opastPrependArg (elaborate internal) (elaborate argL)) argR
+                            | _ => raise Fail "42"
                         ) (elaborate argR) internalsArgL
+                    | _ => raise Fail "Unrecognized 40"
 
 
 

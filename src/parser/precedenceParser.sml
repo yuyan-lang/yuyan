@@ -56,6 +56,7 @@ functor PrecedenceParser (P : sig
                     (parserResToList (parseStr hd (ParseOpAST(OperatorNameComponent hd, [])) exp)) tl
                 in listToParserResult (fn l => ParseOpAST (OperatorInternal oper,l)) rawComponents
                 end
+                | _ => raise Fail "59"
 
 
         and upP (oper : operator) : parser = 
