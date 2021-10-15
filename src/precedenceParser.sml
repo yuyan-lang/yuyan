@@ -1,10 +1,11 @@
 
 functor PrecedenceParser (P : sig 
-        val allOps :MixFixParser.allOperators 
+        val allOps :Operators.allOperators 
         end) = struct 
 
-        open MixFixParser
+        open Operators
         open RawAST
+        open ParseAST
 
 
         val allOps = P.allOps

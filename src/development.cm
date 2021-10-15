@@ -7,8 +7,9 @@ Library
   functor PrecedenceParser
 
   structure ElaboratePrecedence 
-  structure MixFixParser
-
+  functor MixFixParser
+  structure Operators
+  structure ParseAST
 is
   $/basis.cm
   $/smlnj-lib.cm
@@ -21,4 +22,5 @@ is
   mixfixParser.sml
   precedenceParser.sml
   elaboratePrecedence.sml
-  
+  operators.sml
+  parseAST.sml

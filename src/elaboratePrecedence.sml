@@ -1,7 +1,8 @@
 
 structure ElaboratePrecedence =
 struct
-    open MixFixParser
+    open Operators
+    open ParseAST
 
         fun elaborate (past : ParseOpAST) : OpAST = 
             case past of 
