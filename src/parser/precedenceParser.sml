@@ -58,8 +58,8 @@ functor PrecedenceParser (P : sig
         fun listToParserResult (combine: ParseOpAST list -> ParseOpAST) (l: (ParseOpAST list* (RawAST list)) list  ): (ParseOpAST* (RawAST list)) list 
         = map (fn (x, r) => (combine x,r)) l
 
-        and parseStr s oper = debug "parseStr" (parseStr_ s oper)
-        and parseStr_ (s : string) (o' : ParseOpAST) : parser = fn exp =>
+        (* and parseStr s oper = debug "parseStr" (parseStr_ s oper) *)
+        and parseStr (s : string) (o' : ParseOpAST) : parser = fn exp =>
             if String.size s = 0 then [(o', exp)] else
             case exp of
                 (RawID id :: exps)  => if String.isPrefix id s 
@@ -155,8 +155,8 @@ functor PrecedenceParser (P : sig
             (fn (asts, exp) => map (fn (ast, rest) => (asts@[ast], rest)) (p exp)) pending)
 
 
-        and many1 p = debug "many1" (many1_ p)
-        and many1_ (p : parser) : parser = fn exp => 
+        (* and many1 p = debug "many1" (many1_ p) *)
+        and many1 (p : parser) : parser = fn exp => 
             let val base = parserResToList (p exp)
                 fun f b = 
                 let
@@ -169,8 +169,8 @@ functor PrecedenceParser (P : sig
             end
 
 
-        and sequence c p = debug "sequence" (sequence_ c p)
-        and sequence_ (combine : ParseOpAST list -> ParseOpAST) (parserSeq : parser list) : parser = fn exp =>
+        (* and sequence c p = debug "sequence" (sequence_ c p) *)
+        and sequence (combine : ParseOpAST list -> ParseOpAST) (parserSeq : parser list) : parser = fn exp =>
             case parserSeq of 
                 [] => raise Fail "Cannot have empty sequence"
                 | (p1 :: ps) => List.map (fn (asts, r) => (combine asts, r)) 
