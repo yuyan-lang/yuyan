@@ -12,7 +12,7 @@ struct
     structure Parser = PrecedenceParser(P)
     fun parseMixfixExpression (exp : RawAST.RawAST list) : OpAST list = 
         case exp of
-            l =>  (case Parser.parseExp() l of
+            l =>  (case Parser.parseExpWithEOF() l of
                                 [] => raise Fail "noParse 20"
                                 | l => map (fn (x, _) => ElaboratePrecedence.elaborate x)
                                      (List.filter (fn (x, s) => 

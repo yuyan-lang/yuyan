@@ -17,9 +17,9 @@ struct
       Operator(p, fix, assoc, names) =>
       let val baseName = String.concatWith underscoreChar names
       in case fix of
-          Prefix => underscoreChar ^ baseName
+          Prefix =>  baseName ^ underscoreChar 
           | Infix => underscoreChar ^ baseName ^ underscoreChar 
-          | Postfix => baseName ^ underscoreChar 
+          | Postfix =>underscoreChar ^ baseName
           | Closed => baseName
         end
     end
@@ -43,7 +43,7 @@ open Operators
 open ParseAST
 in
 case x of
-    OperatorNameComponent (f,oper) => "OperatorNameComponent " ^ f ^  show_op oper
+    OperatorNameComponent (f,oper) => "OperatorNameComponent " ^ f ^  " in " ^ show_op oper
     | OperatorInternal oper => "OperatorInternal " ^ show_op oper
     | PrefixNoneAssoc oper=> "PrefixNoneAssoc "^ show_op oper
     | PrefixRightAssoc oper=> "PrefixRightAssoc "^ Int.toString(oper)
@@ -55,5 +55,7 @@ case x of
     | InfixRightAssoc oper=> "InfixRightAssoc "^ Int.toString(oper)
     | InfixRightAssocRightArrow oper=> "InfixRightAssocRightArrow "^ show_op oper
     | Many1  => "Many1"
+    | EOF  => "EOF"
+    | ExpWithEOF  => "ExpWithEOF"
 end
 end

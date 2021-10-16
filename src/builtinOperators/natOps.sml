@@ -8,8 +8,10 @@ struct
   val minusOp = Operators.parseOperator "〇减〇" true true 900
   val timesOp = Operators.parseOperator "〇乘〇" true true 950
   val dividesOp = Operators.parseOperator "〇除以〇" true true 950
+  val negateOp = Operators.parseOperator "负〇" false false 980
   val natOps = [ 
     oneOp
+    , negateOp
   ,plusOp
   ,twoOp, threeOp 
   ,minusOp, timesOp, dividesOp

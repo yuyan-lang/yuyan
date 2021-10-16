@@ -44,6 +44,7 @@ struct
                             opastAppendArg (opastPrependArg (elaborate argL) (elaborate internal)) argR
                             | _ => raise Fail "42"
                         ) (elaborate argR) internalsArgL
+                    | (ExpWithEOF, [opAST, ParseOpAST(EOF, [])])  => elaborate opAST
                     | (OperatorNameComponent f, _)  => raise Fail (PrettyPrint.show_parseopast past)
                     | _ => raise ElaborationFail past
 

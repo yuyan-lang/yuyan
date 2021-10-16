@@ -14,6 +14,8 @@ open Operators
                             | InfixRightAssoc of int
                             | InfixRightAssocRightArrow of operator
                             | Many1 
+                            | EOF
+                            | ExpWithEOF
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
         exception ParseFailure of string
 

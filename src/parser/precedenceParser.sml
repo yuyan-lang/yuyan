@@ -1,7 +1,8 @@
 
 functor PrecedenceParser (P : sig 
         val allOps :Operators.allOperators 
-        end) = struct 
+        end)
+        = struct 
 
         open Operators
         open RawAST
@@ -45,6 +46,8 @@ functor PrecedenceParser (P : sig
 
 
         val y = (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences)); 2)
+
+        val debugAlternativeEntryTimes  = ref 0
 
 
  (*https://stackoverflow.com/questions/17826034/sml-get-index-of-item-in-list*)
@@ -93,17 +96,21 @@ functor PrecedenceParser (P : sig
             case exp of
                 (RawID id :: exps)  => if String.isPrefix id s 
                                 then parseStr (String.extract(s, String.size(id), NONE)) o' exps
-                                else raise ParseFailure ("Cannot match " ^ s ^ " against " ^ id) (* strip off id from s*)
+                                else [] (* no parse failure should be raised as it will disable valid parse from being processed in the capture point *)
+                                (* raise ParseFailure ("Cannot match " ^ s ^ " against " ^ id) strip off id from s *)
                 (* | (RawList l :: exps) => raise ParseFailure ("Cannot match "^ s ^ " against a rawlist") *)
-                | _ => raise ParseFailure ("Running out of input")
+                | _ =>  [] (* no parse failure should be raised as it will disable valid parse from being processed in the capture point *)
+                    (* raise ParseFailure ("Running out of input") *)
 
                 (* TODO : Use a map for lookup, should be much quicker *)
 
         and parseOpFixityPred (fixity : fixity) (pred : int)(assoc : associativity) : parser = 
-            debug ("ParseOpFixityPred " ^ Int.toString(pred)) (parseOpFixityPred_ fixity pred assoc)
+            (* debug ("ParseOpFixityPred " ^ Int.toString(pred)) *)
+             (parseOpFixityPred_ fixity pred assoc)
         and parseOpFixityPred_ (fixity : fixity) (pred : int)(assoc : associativity) : parser = 
             alternatives (map parseOpOperator (findOps fixity pred assoc))
             
+            (* parse the internal *)
         and parseOpOperator (oper : operator) : parser = fn exp => 
         case oper of
                 Operator (pred, fixity, assoc, lst)  
@@ -125,8 +132,8 @@ functor PrecedenceParser (P : sig
             (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
 
 
-        and hat oper = (debug ("hat_"^ Int.toString(oper)) (hat_ oper))
-        and hat_ (pred : int) : parser = let
+        (* and hat oper = (debug ("hat_"^ Int.toString(oper)) (hat_ oper)) *)
+        and hat (pred : int) : parser = let
             val masking = PredDict.lookup opersPresentAtPred pred
             in
             alternatives (List.concat [
@@ -171,7 +178,9 @@ functor PrecedenceParser (P : sig
         and show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
 
         and debug (s : string) (p : parser) : parser = fn exp =>
-            (print ("PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n"); 
+            (print (
+            String.concat(List.tabulate(!debugAlternativeEntryTimes, (fn _ => "┃")))^
+                " PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n"); 
             let val res = p exp
             in (print (s ^" Has " ^ Int.toString(List.length(res)) ^ " parses");
                 print (String.concatWith "\n " (map (fn (past, r) => "AST " ^ PrettyPrint.show_parseopast past ^ " REST IS " ^ show_rawast_list r ) res ) ^ "\n");
@@ -181,10 +190,53 @@ functor PrecedenceParser (P : sig
             )
 
 
+        and alternatives alt = alternativesTryAll alt
 
-        and alternatives (alt : parser list) : parser = fn exp =>
-            List.concat (List.map (fn p => (try p) exp) alt)
+        and alternativesTryAll (alt : parser list) : parser = fn exp =>
+            let 
+            val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes + 1;
+            val res = List.concat (List.tabulate
+            (List.length alt, (fn i => 
+                let 
+                (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
+                    (* "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n"); *)
+                val res = (try (List.nth(alt, i))) exp
+                (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
+                    (* "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n"); *)
+                in 
+                (
+                    res
+                )
+                end
+            ) ))
+            val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes - 1
+            in 
+            res 
+            end
 
+        and alternativesTryOnce (alt : parser list) : parser = fn exp =>
+            let 
+            val shouldSkip = ref(false)
+            val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes + 1;
+            val res = List.concat (List.tabulate
+            (List.length alt, (fn i => 
+                if !shouldSkip then [] else 
+                let 
+                val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^
+                    "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n");
+                val res = (try (List.nth(alt, i))) exp
+                val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^
+                    "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n");
+                in 
+                (
+                    if List.length(res) > 0 then (shouldSkip:=true; res) else res
+                )
+                end
+            ) ))
+            val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes - 1
+            in 
+            res 
+            end
 
 
         and seqL (pending : (ParseOpAST list * (RawAST list)) list) (p : parser) 
@@ -223,10 +275,19 @@ functor PrecedenceParser (P : sig
             p exp
             handle ParseFailure s => []
             
+        and eof () : parser = fn exp => 
+            case exp of 
+                [] => [(ParseOpAST(EOF,[]), [])]
+                | _ => []
 
         and parseExp (): parser = 
         (*Becuase of inclusion of up P in hat P, this is enough *)
          hat (hd allPrecedences)
+        
+        and parseExpWithEOF () : parser = 
+        sequence (combineAST ExpWithEOF) [
+            parseExp(), eof()
+        ]
 
 
 end
