@@ -2,7 +2,7 @@
 structure ParseAST =
 struct
 open Operators
-   datatype ParseRule = OperatorNameComponent of string * operator
+   datatype ParseRule = OperatorNameComponent of UTF8String.t * operator
                             | OperatorInternal of operator
                             | PrefixNoneAssoc of operator
                             | PrefixRightAssoc of int

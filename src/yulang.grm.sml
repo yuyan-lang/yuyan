@@ -37,7 +37,7 @@ YuLangTokens
 fun file_PROD_1_ACT (component, env, component_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
   (component)
 fun component_PROD_1_ACT (ID, env, ID_SPAN : (Lex.pos * Lex.pos), FULL_SPAN : (Lex.pos * Lex.pos)) = 
-  (RawAST.RawID(ID))
+  (RawAST.RawID(UTF8Char.fromString(ID)))
 fun ARGS_3 (env) = 
   (env)
       end (* UserCode *)

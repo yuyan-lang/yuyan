@@ -3,22 +3,21 @@ structure PrettyPrint
 struct
 
 
-  fun show_rawast (x : RawAST.RawAST) = let 
+  fun show_rawast (x : RawAST.RawAST) : string = let 
     open RawAST
     in case x of 
-       (* RawList l => "("^ (String.concatWith ", " (map show_rawast l)) ^")" *)
-       RawID s => s
+       RawID s => UTF8Char.toString s
       end
   fun show_rawastsPlain (l : RawAST.RawAST list) =  (String.concat (map show_rawast l))
   fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")" 
 
-  fun show_opcomptype (x : Operators.opComponentType) = let 
+  fun show_opcomptype (x : Operators.opComponentType) :string = let 
     open Operators
     in
       case x of
-        OpCompExpr => underscoreChar
-        | OpCompBinding => bindingChar
-        | OpCompString s => s
+        OpCompExpr => UTF8Char.toString underscoreChar
+        | OpCompBinding => UTF8Char.toString bindingChar
+        | OpCompString s => UTF8String.toString s
     end
 
 
@@ -27,6 +26,7 @@ struct
     in case x of
       Operator(p, fix, assoc, comps) =>
       let val baseName = String.concat (map show_opcomptype comps)
+        val underscoreChar = UTF8Char.toString underscoreChar
       in case fix of
           Prefix =>  baseName ^ underscoreChar 
           | Infix => underscoreChar ^ baseName ^ underscoreChar 
@@ -39,8 +39,8 @@ struct
     open Operators
     in case x of 
       OpAST (oper, l) => (show_op oper) ^ "[" ^ String.concatWith ", " (map show_opast l) ^ "]"
-      | UnknownOpName s => "?[" ^ s ^ "]"
-      | NewOpName s => "![" ^ s ^ "]"
+      | UnknownOpName s => "?[" ^ UTF8String.toString s ^ "]"
+      | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
     end
 
 
@@ -56,7 +56,7 @@ open Operators
 open ParseAST
 in
 case x of
-    OperatorNameComponent (f,oper) => "OperatorNameComponent " ^ f ^  " in " ^ show_op oper
+    OperatorNameComponent (f,oper) => "OperatorNameComponent " ^ UTF8String.toString f ^  " in " ^ show_op oper
     | OperatorInternal oper => "OperatorInternal " ^ show_op oper
     | PrefixNoneAssoc oper=> "PrefixNoneAssoc "^ show_op oper
     | PrefixRightAssoc oper=> "PrefixRightAssoc "^ Int.toString(oper)

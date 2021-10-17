@@ -6,6 +6,11 @@ Library
   functor YuLangParseFn
   structure PrecedenceParser
 
+  structure UTF8Char
+  structure UTF8CharOrdered
+  structure UTF8String
+  structure UTF8StringOrdered
+
   structure ElaboratePrecedence 
   functor MixFixParser
   structure Operators
@@ -35,6 +40,10 @@ is
   builtinOperators/natOps.sml
   builtinOperators/groupOps.sml
   builtinOperators/functionOps.sml
+
+  util/utf8char.sml
+  util/utf8string.sml
+  util/ordered.sml
 
   prettyPrint.sml
   replTest.sml

@@ -9,7 +9,8 @@ structure PrecedenceParser
             structure PredDict : DICT =
                 RedBlackDict
                 (structure Key = IntOrdered)
-            structure StringSet : SET = RedBlackSet(structure Elem = StringOrdered)
+            structure UTF8StringSet : SET = RedBlackSet(structure Elem = UTF8StringOrdered)
+            structure UTF8CharSet : SET = RedBlackSet(structure Elem = UTF8CharOrdered)
         type parser = RawAST list -> (ParseOpAST* (RawAST list)) list 
 
         (*Remove duplicate https://stackoverflow.com/questions/21077272/remove-duplicates-from-a-list-in-sml *)
@@ -117,22 +118,22 @@ structure PrecedenceParser
         let 
             fun  scanExpForUnknownId(allOps : operator list) (exp : RawAST list) : RawAST list list
             = let
-                    fun go (seen : StringSet.set) (remaining : RawAST list) (pending : RawAST list) : RawAST list list
+                    fun go (seen : UTF8CharSet.set) (remaining : RawAST list) (pending : RawAST list) : RawAST list list
                     = case remaining of
                         [] => (case pending of [] => [] | _ => [pending])
-                        | ((RawID s) :: xs ) => if StringSet.member seen s
+                        | ((RawID s) :: xs ) => if UTF8CharSet.member seen s
                                             then (case pending of   
                                                         [] => go seen xs pending 
                                                         | _ => pending :: go seen xs [])(*TODO add pending to seen and remove isolate *)
                                             else go seen xs (pending@[(RawID s )]) 
-                    val allSeen = (foldr (fn (elem, acc) => ( StringSet.insert acc elem)) StringSet.empty 
+                    val allSeen = (foldr (fn (elem, acc) => ( UTF8CharSet.insert acc elem)) UTF8CharSet.empty 
                                         (List.concat (map getAllOccuringNameChars allOps)))
                 in isolate (go allSeen exp [])
                 end
             val allUnkownIds  : RawAST list list= scanExpForUnknownId allOps exp 
 
             val _ = print ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
-            (map (fn id => String.concat (map (fn (RawID s) => s) id)) allUnkownIds)) ^ "|<--END\n")
+            (map (fn id => UTF8String.toString (map (fn (RawID s) => s) id)) allUnkownIds)) ^ "|<--END\n")
 
 
             fun unknownIdComponentParser ((RawID s) : RawAST): parser = fn exp => 
@@ -215,11 +216,11 @@ structure PrecedenceParser
 
 
             (* and parseStr s oper = debug ("parseStr trying to match >|" ^s ^ "|<") (parseStr_ s oper) *)
-            and parseStr (s : string) (o' : ParseOpAST) : parser = fn exp =>
-                if String.size s = 0 then [(o', exp)] else
+            and parseStr (s : UTF8String.t) (o' : ParseOpAST) : parser = fn exp =>
+                if UTF8String.size s = 0 then [(o', exp)] else
                 case exp of
-                    (RawID id :: exps)  => if String.isPrefix id s 
-                                    then parseStr (String.extract(s, String.size(id), NONE)) o' exps
+                    (RawID id :: exps)  => if hd s = id 
+                                    then parseStr (tl s) o' exps
                                     else [] (* no parse failure should be raised as it will disable valid parse from being processed in the capture point *)
                                     (* raise ParseFailure ("Cannot match " ^ s ^ " against " ^ id) strip off id from s *)
                     (* | (RawList l :: exps) => raise ParseFailure ("Cannot match "^ s ^ " against a rawlist") *)
@@ -235,12 +236,12 @@ structure PrecedenceParser
                 alternatives (map parseOpOperator (findOps fixity pred assoc))
             
             (* and parseBinding (until : string) : parser = debug ("parseBinding until " ^ until) (parseBinding_ until) *)
-            and parseBinding (until : string) : parser = fn exp =>
+            and parseBinding (until : UTF8String.t) : parser = fn exp =>
                 let 
                     fun go (remaining : RawAST list) (pending : RawAST list) : (ParseOpAST* (RawAST list)) list= 
                     (case remaining of 
                         [] => [(ParseOpAST(Binding pending, []), [])] (* run out of input, return pending *)
-                        | ((RawID s) :: ls) => if String.isPrefix s until 
+                        | ((RawID s) :: ls) => if hd until = s
                                                 then [(ParseOpAST(Binding pending, []), (RawID s) ::ls)]
                                                 else go ls (pending@[RawID s]))
                 in go exp [] 
