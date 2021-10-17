@@ -25,6 +25,7 @@ Library
   structure GroupOps
   structure FunctionOps
   structure DeclarationOps
+  structure OperatorRegistry
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -46,6 +47,7 @@ is
   builtinOperators/functionOps.sml
   builtinOperators/specialChars.sml
   builtinOperators/declarationOps.sml
+  builtinOperators/operator-registry.sml
 
   util/utf8char.sml
   util/utf8string.sml

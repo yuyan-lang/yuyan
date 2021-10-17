@@ -22,8 +22,12 @@ structure PrecedenceParser
         fun isolate [] = []
             | isolate (x::xs) = x::isolate(List.filter (fn y => y <> x) xs)
    val debugAlternativeEntryTimes : string list ref  = ref []
-   fun pushDebugIndent (s : string) = debugAlternativeEntryTimes := (!debugAlternativeEntryTimes @ [s])
-   fun popDebugIndent () = debugAlternativeEntryTimes := ((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
+   fun pushDebugIndent (s : string) = if DEBUG 
+   then debugAlternativeEntryTimes := (!debugAlternativeEntryTimes @ [s])
+   else ()
+   fun popDebugIndent () = if DEBUG 
+   then debugAlternativeEntryTimes := ((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
+   else ()
    fun indentString ()  = String.concat((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
                 
         fun show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
@@ -182,7 +186,7 @@ structure PrecedenceParser
                 (x :: y :: xs) => if x = y then removeDuplicateInSorted (x :: xs) else x :: removeDuplicateInSorted (y :: xs)
                 | l => l
             val allPrecedences : int list= removeDuplicateInSorted (Quicksort.sort 
-                        (Int.compare) (map (fn (Operator(i,_,  _, _)) => i) allOps))
+                        (Int.compare) (map (fn (Operator(i,_,  _, _, _)) => i) allOps))
             val predDict  = 
             let val emptyDict : operator list PredDict.dict 
                 = foldr (fn (p, d) => PredDict.insert d p []) PredDict.empty allPrecedences
@@ -191,7 +195,7 @@ structure PrecedenceParser
             end
                 
             fun findOps (fixity : fixity) (pred : int) (assoc : associativity) : operator list = 
-                List.filter (fn (Operator(p, f, a, _)) => p = pred andalso f = fixity andalso a = assoc) allOps
+                List.filter (fn (Operator(p, f, a, _, _)) => p = pred andalso f = fixity andalso a = assoc) allOps
 
             val opersPresentAtPred = 
             foldr (fn (p, d) => PredDict.insert d p [
@@ -277,7 +281,7 @@ structure PrecedenceParser
             and parseOpOperator_ (oper : operator) : parser = debug ("parsing " ^ PrettyPrint.show_op oper) (parseOpOperator oper)
             and parseOpOperator (oper : operator) : parser = fn exp => 
             case oper of
-                    Operator (_, _, _, lst)  
+                    Operator (_, _, _, lst, _)  
                 => let 
                     fun goFoldL (remaining : opComponentType list) (sofar :(ParseOpAST list * (RawAST list)) list) = 
                         case remaining of 

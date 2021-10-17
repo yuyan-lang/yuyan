@@ -3,25 +3,43 @@ $(SML_LIB)/smlnj-lib/smlnj-lib.mlb
 $(SML_LIB)/smlnj-lib/Util/smlnj-lib.mlb
 $(SML_LIB)/mllpt-lib/mllpt-lib.mlb
 
-operators.sml
-
-parser/rawAST.sml
-yulang.grm.sml
-yulang.lex.sml
 
 
-parser/parseAST.sml
-prettyPrint.sml
-parser/precedenceParser.sml
-parser/elaboratePrecedence.sml
-parser/mixfixParser.sml
+local
+    ../cmlib/cmlib.mlb
+    util/uniqueId.sml
+    util/utf8char.sml
+    util/utf8string.sml
+    util/ordered.sml
+
+    builtinOperators/specialChars.sml
+
+    operators.sml
+
+    parser/rawAST.sml
+    yulang.grm.sml
+    yulang.lex.sml
+
+
+    parser/parseAST.sml
+    prettyPrint.sml
+    parser/precedenceParser.sml
+    parser/elaboratePrecedence.sml
+    parser/mixfixParser.sml
 
 
 
-builtinOperators/natOps.sml
-builtinOperators/groupOps.sml
-builtinOperators/builtin.sml
+    builtinOperators/declarationOps.sml
+    builtinOperators/functionOps.sml
+    builtinOperators/natOps.sml
+    builtinOperators/groupOps.sml
+    builtinOperators/builtin.sml
 
-ui/repl.sml
-replTest.sml
-mltonExec.sml
+    ui/repl.sml
+
+    replTest.sml
+    mltonExec.sml
+in
+
+
+end

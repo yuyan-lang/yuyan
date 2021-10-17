@@ -13,6 +13,7 @@ struct
         ( addUI("Has "^ Int.toString(List.length trees) ^ " trees: \n" ^
             String.concatWith "\n" (map PrettyPrint.show_opast trees)))
     end
+
     fun replHelper (input : RawAST list ) : string =
         let 
         val startTime = Time.now()

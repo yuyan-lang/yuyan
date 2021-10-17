@@ -7,7 +7,7 @@ struct
     (* datatype opComponents = OpData of opComponentType list   *)
     (* although not enforced types, a string shall be in between any expr comp *)
     (* AND the first and last component must be OpCompString *)
-    datatype operator = Operator of int * fixity * associativity * opComponentType list
+    datatype operator = Operator of int * fixity * associativity * opComponentType list * int  (* first int is pred, final int is uid *)
     (* int is the precedence,  string list are the named parts *)
     (* Closed must have NoneAssoc fixity 
     Prefix : either none or Right
@@ -16,10 +16,10 @@ struct
   val underscoreChar = UTF8Char.fromString "〇"
   val bindingChar = UTF8Char.fromString "囗"
 
-  fun getPrecedence (Operator(p, _, _, _)) = p
-    
+  fun getPrecedence (Operator(p, _, _, _, _)) = p
+    fun getUID(Operator (_, _, _, _, uid)) = uid
 
-    fun getAllOccuringNameChars (Operator(_, _, _, l)) : UTF8Char.t list = 
+    fun getAllOccuringNameChars (Operator(_, _, _, l, _)) : UTF8Char.t list = 
             List.concat (map (fn x => case x of OpCompString s => s | _ => []) l)
         
         
@@ -47,16 +47,19 @@ struct
 
     (* binding index is to count first string name as 0, the first hole as 1, and so on. Should always be odd *)
     fun parseOperator (name : UTF8String.t) (hasAssoc : bool) (isLeft : bool) (pred : int) (bindingIdxs : int list) : operator = 
+    let val nextUID = UID.next()
+    in
         if UTF8String.isSubstring ([underscoreChar, underscoreChar]) name then raise DoubleUnderscore else 
         case (hd name = underscoreChar , (List.last name) = underscoreChar) of
-            (false, false) => Operator(pred, Closed, NoneAssoc, toNameComponents name bindingIdxs)
+            (false, false) => Operator(pred, Closed, NoneAssoc, toNameComponents name bindingIdxs, nextUID)
             | (false, true) => Operator(pred, Prefix, 
-                    if hasAssoc then RightAssoc else NoneAssoc, toNameComponents (stripTail name) bindingIdxs) 
+                    if hasAssoc then RightAssoc else NoneAssoc, toNameComponents (stripTail name) bindingIdxs, nextUID) 
             | (true , false) => Operator(pred, Postfix, 
-                    if hasAssoc then LeftAssoc else NoneAssoc, toNameComponents (stripHead name) bindingIdxs)
+                    if hasAssoc then LeftAssoc else NoneAssoc, toNameComponents (stripHead name) bindingIdxs, nextUID)
             | (true , true) => Operator(pred, Infix, 
                     if hasAssoc then (if isLeft then LeftAssoc else RightAssoc) else NoneAssoc, 
-                    toNameComponents (stripHead (stripTail name)) bindingIdxs)
+                    toNameComponents (stripHead (stripTail name)) bindingIdxs, nextUID)
+        end
 
     fun parseOperatorStr name = parseOperator (UTF8String.fromString name)
 end

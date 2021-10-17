@@ -24,7 +24,7 @@ struct
   fun show_op (x : Operators.operator) = let 
     open Operators
     in case x of
-      Operator(p, fix, assoc, comps) =>
+      Operator(p, fix, assoc, comps, uid) =>
       let val baseName = String.concat (map show_opcomptype comps)
         val underscoreChar = UTF8Char.toString underscoreChar
       in case fix of
