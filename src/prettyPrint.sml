@@ -71,8 +71,8 @@ case x of
     | EOF  => "EOF"
     | ExpWithEOF  => "ExpWithEOF"
     | UnknownId  => "UnknownId"
-    | UnknownIdComp s => "UnknownIdComp "^ show_rawast s
-    | Binding id => "Binding "^ show_rawastsPlain id
+    | UnknownIdComp s => "UnknownIdComp "^ UTF8Char.toString s
+    | Binding id => "Binding "^ UTF8String.toString id
     | QuotedName s => "QuotedName "^UTF8String.toString s
 end
 end

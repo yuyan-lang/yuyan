@@ -45,8 +45,8 @@ struct
                             | _ => raise Fail "42"
                         ) (elaborate argR) internalsArgL
                     | (ExpWithEOF, [opAST, ParseOpAST(EOF, [])])  => elaborate opAST
-                    | (UnknownId, l)  => UnknownOpName ((map (fn ParseOpAST(UnknownIdComp (RawAST.RawID n), []) => n) l))
-                    | (Binding l, [])  => NewOpName ((map (fn (RawAST.RawID n) => n) l))
+                    | (UnknownId, l)  => UnknownOpName ((map (fn ParseOpAST(UnknownIdComp  n, []) => n) l))
+                    | (Binding l, [])  => NewOpName l
                     | (QuotedName l, [])  => UnknownOpName l
                     | (OperatorNameComponent f, _)  => raise Fail (PrettyPrint.show_parseopast past)
                     | f => raise ElaborationFail (ParseOpAST f)

@@ -1,26 +1,26 @@
 
 
-functor MixFixParser (P : sig 
-        val allOps :Operators.allOperators 
-        end)  =
+functor MixFixParser  ( structure Options :
+     sig
+        val enableBracketedExpression : bool
+    end
+)  =
 struct
  
 
     open RawAST
     open Operators
 
-    structure Parser = PrecedenceParser
-    fun parseMixfixExpression (exp : RawAST.RawAST list) : OpAST list = 
-            case Parser.parseExpWithEOF(P.allOps) exp of
-                                [] => raise Fail "noParse 20"
-                                | l => map (fn (x, _) => ElaboratePrecedence.elaborate x) l
-                                     (* (List.filter (fn (x, s) => 
-                                     let 
-                                     (* val w = print ("REST : " ^ String.concatWith ", " (map PrettyPrint.show_rawast s) ^ "\n");  *)
-                                     (* val x = print (PrettyPrint.show_opast (ElaboratePrecedence.elaborate x));  *)
-                                     val y = false
-                                     in List.length s = 0 
-                                     end) l)) *)
-            (* | RawID _ => raise Fail "Must be a list 22" *)
+
+    exception NoPossibleParse
+    exception AmbiguousParse
+
+    structure Parser = PrecedenceParser(structure Options = Options)
+
+    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : UTF8String.t) : OpAST = 
+            case Parser.parseExpWithOption allOps true exp of
+                                [] => raise NoPossibleParse
+                                | [(parseopast, _)] => ElaboratePrecedence.elaborate parseopast
+                                | _ => raise AmbiguousParse
 
 end

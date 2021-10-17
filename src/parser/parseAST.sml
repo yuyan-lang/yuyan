@@ -17,8 +17,8 @@ open Operators
                             | EOF
                             | ExpWithEOF
                             | UnknownId 
-                            | UnknownIdComp of RawAST.RawAST
-                            | Binding of RawAST.RawAST list
+                            | UnknownIdComp of UTF8Char.t
+                            | Binding of UTF8String.t
                             | QuotedName of UTF8String.t
                             | PlaceHolder (* should not appear anywhere in final result *)
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list

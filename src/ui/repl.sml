@@ -2,19 +2,19 @@
 structure InteractiveRepl =
 struct
     open RawAST
-    structure MixFixP = MixFixParser( struct val allOps = BuiltinOperators.allOps end)
 
-    fun addUI (s : string) = "豫☯ " ^ s ^ "\n"
+    fun addUIDynamic (s : string) = "豫☯ " ^ s ^ "\n"
+    fun addUIStatic (s : string) = "豫䷏ " ^ s ^ "\n"
 
-    fun process (input : RawAST list ) : string =
+    fun process (input : string ) : string =
     let 
-        val trees = MixFixP.parseMixfixExpression input
+        val res = TypeCheckAndEval.typeCheckAndEval input
     in
-        ( addUI("Has "^ Int.toString(List.length trees) ^ " trees: \n" ^
-            String.concatWith "\n" (map PrettyPrint.show_opast trees)))
+        print (addUIDynamic (""));
+        ""
     end
 
-    fun replHelper (input : RawAST list ) : string =
+    fun replHelper (input : string ) : string =
         let 
         val startTime = Time.now()
         val res = process input

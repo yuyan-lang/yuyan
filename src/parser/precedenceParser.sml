@@ -1,14 +1,13 @@
 
-structure PrecedenceParser 
-        = struct 
+signature ParserOptions =
+sig
+    val enableBracketedExpression : bool
+end
+functor PrecedenceParser ( structure Options :ParserOptions) = struct 
     (* val DEBUG = true *)
     val DEBUG = false
-    structure Options =
-    struct
-        val enableBracketedExpression = true (* has to be true as otherwise no parse *)
-    end
+    
             open Operators
-            open RawAST
             open ParseAST
             (* DICT defined in cmlib/dict.sig *)
             structure PredDict : DICT =
@@ -16,7 +15,7 @@ structure PrecedenceParser
                 (structure Key = IntOrdered)
             structure UTF8StringSet : SET = RedBlackSet(structure Elem = UTF8StringOrdered)
             structure UTF8CharSet : SET = RedBlackSet(structure Elem = UTF8CharOrdered)
-        type parser = RawAST list -> (ParseOpAST* (RawAST list)) list 
+        type parser = UTF8String.t -> (ParseOpAST* (UTF8String.t)) list 
 
         (*Remove duplicate https://stackoverflow.com/questions/21077272/remove-duplicates-from-a-list-in-sml *)
         fun isolate [] = []
@@ -30,13 +29,12 @@ structure PrecedenceParser
    else ()
    fun indentString ()  = String.concat((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
                 
-        fun show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
         fun debug (s : string) (p : parser) : parser = fn exp =>
         let
         val _ = pushDebugIndent("⋅")
         val _ = if DEBUG then 
                     (print (indentString() ^
-                "╔ PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n") )
+                "╔ PARSER DEBUG: " ^ s ^ " exp is " ^ UTF8String.toString exp ^ "\n") )
                         else ()
         val res = p exp
         val _ = if DEBUG then print (indentString() ^
@@ -54,13 +52,13 @@ structure PrecedenceParser
                 ParseOpAST(OperatorInternal oper, _) => ParseOpAST (pr oper, l)
                 | _ => raise Fail "52"
 
-        fun parserResToList (l: (ParseOpAST* (RawAST list)) list  ): (ParseOpAST list* (RawAST list)) list 
+        fun parserResToList (l: (ParseOpAST* (UTF8String.t)) list  ): (ParseOpAST list* (UTF8String.t)) list 
             = map (fn (x, r) => ([x],r)) l
-        fun listToParserResult (combine: ParseOpAST list -> ParseOpAST) (l: (ParseOpAST list* (RawAST list)) list  ): (ParseOpAST* (RawAST list)) list 
+        fun listToParserResult (combine: ParseOpAST list -> ParseOpAST) (l: (ParseOpAST list* (UTF8String.t)) list  ): (ParseOpAST* (UTF8String.t)) list 
             = map (fn (x, r) => (combine x,r)) l
 
-        fun seqL (pending : (ParseOpAST list * (RawAST list)) list) (p : parser) 
-        : (ParseOpAST list * (RawAST list)) list =
+        fun seqL (pending : (ParseOpAST list * (UTF8String.t)) list) (p : parser) 
+        : (ParseOpAST list * (UTF8String.t)) list =
             List.concat (List.map 
             (fn (asts, exp) => map (fn (ast, rest) => (asts@[ast], rest)) (p exp)) pending)
 
@@ -133,38 +131,44 @@ structure PrecedenceParser
 
             fun alternatives alt = alternativesTryAll alt
 
-        val defaultSeenCharset = foldr (fn (elem, acc) => 
-        UTF8CharSet.insert acc elem) UTF8CharSet.empty
-        [SpecialChars.leftSingleQuote, SpecialChars.rightSingleQuote]
+        val defaultSeenCharset =
+        if Options.enableBracketedExpression 
+        then foldr (fn (elem, acc) => 
+            UTF8CharSet.insert acc elem) UTF8CharSet.empty
+            [SpecialChars.leftSingleQuote, SpecialChars.rightSingleQuote]
+        else UTF8CharSet.empty (* do not put quote as escape when we do not parse quotes *)
 
-        fun parseExpWithEOF (allOps :Operators.allOperators) : parser =  fn exp =>
+        fun parseExpWithOption (allOps :Operators.allOperators) (withEOF : bool) : parser =  fn exp =>
         let 
-            fun  scanExpForUnknownId(allOps : operator list) (exp : RawAST list) : RawAST list list
+            fun  scanExpForUnknownId(allOps : operator list) (exp : UTF8String.t) : UTF8String.t list
             = let
-                    fun go (seen : UTF8CharSet.set) (remaining : RawAST list) (pending : RawAST list) : RawAST list list
+                    fun go (seen : UTF8CharSet.set) (remaining : UTF8String.t) (pending : UTF8String.t) : UTF8String.t list
                     = case remaining of
                         [] => (case pending of [] => [] | _ => [pending])
-                        | ((RawID s) :: xs ) => if UTF8CharSet.member seen s
+                        | (s:: xs ) => if UTF8CharSet.member seen s
                                             then (case pending of   
                                                         [] => go seen xs pending 
                                                         | _ => pending :: go seen xs [])(*TODO add pending to seen and remove isolate *)
-                                            else go seen xs (pending@[(RawID s )]) 
+                                            else go seen xs (pending@[ s]) 
                     val allSeen = (foldr (fn (elem, acc) => ( UTF8CharSet.insert acc elem)) 
                                 defaultSeenCharset
                                         (List.concat (map getAllOccuringNameChars allOps)))
                 in isolate (go allSeen exp [])
                 end
-            val allUnkownIds  : RawAST list list= scanExpForUnknownId allOps exp 
+            val allUnkownIds  : UTF8String.t list= scanExpForUnknownId allOps exp 
 
-            val _ = print ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
-            (map (fn id => UTF8String.toString (map (fn (RawID s) => s) id)) allUnkownIds)) ^ "|<--END\n")
+            val _ = if DEBUG
+            then print ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
+            (map (fn id => UTF8String.toString  id) allUnkownIds)) ^ "|<--END\n")
+            else ()
 
 
-            fun unknownIdComponentParser ((RawID s) : RawAST): parser = fn exp => 
+
+            fun unknownIdComponentParser (s : UTF8Char.t): parser = fn exp => 
                 case (exp) of
-                    ((RawID y) :: ys) => if y = s then [(ParseOpAST(UnknownIdComp (RawID y), []), ys)] else []
+                    (y :: ys) => if y = s then [(ParseOpAST(UnknownIdComp y, []), ys)] else []
                     | _ => []
-            fun unknownIdParser (id : RawAST list): parser = 
+            fun unknownIdParser (id : UTF8String.t): parser = 
             case id of
                 [] => raise Fail "pp144"
                 | _ => sequence (combineAST UnknownId) (map unknownIdComponentParser id)
@@ -210,8 +214,12 @@ structure PrecedenceParser
             ]) PredDict.empty allPrecedences
 
 
-            val y = (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n"); 2)
-            val y = (print ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n"); 2)
+            val y = if DEBUG 
+            then (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n"))
+            else ()
+            val y = if DEBUG 
+            then (print ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n"))
+            else ()
 
 
 
@@ -249,7 +257,7 @@ structure PrecedenceParser
             and parseStr_ (s : UTF8String.t) (o' : ParseOpAST) : parser = fn exp =>
                 if UTF8String.size s = 0 then [(o', exp)] else
                 case exp of
-                    (RawID id :: exps)  => if hd s = id 
+                    ( id :: exps)  => if hd s = id 
                                     then parseStr (tl s) o' exps
                                     else [] (* no parse failure should be raised as it will disable valid parse from being processed in the capture point *)
                                     (* raise ParseFailure ("Cannot match " ^ s ^ " against " ^ id) strip off id from s *)
@@ -268,12 +276,12 @@ structure PrecedenceParser
             (* and parseBinding (until : string) : parser = debug ("parseBinding until " ^ until) (parseBinding_ until) *)
             and parseBinding (until : UTF8String.t) : parser = fn exp =>
                 let 
-                    fun go (remaining : RawAST list) (pending : RawAST list) : (ParseOpAST* (RawAST list)) list= 
+                    fun go (remaining : UTF8String.t) (pending : UTF8String.t) : (ParseOpAST* (UTF8String.t)) list= 
                     (case remaining of 
                         [] => [(ParseOpAST(Binding pending, []), [])] (* run out of input, return pending *)
-                        | ((RawID s) :: ls) => if hd until = s
-                                                then [(ParseOpAST(Binding pending, []), (RawID s) ::ls)]
-                                                else go ls (pending@[RawID s]))
+                        | ( s :: ls) => if hd until = s
+                                                then [(ParseOpAST(Binding pending, []), s ::ls)]
+                                                else go ls (pending@[s]))
                 in go exp [] 
                 end
                 
@@ -283,7 +291,7 @@ structure PrecedenceParser
             case oper of
                     Operator (_, _, _, lst, _)  
                 => let 
-                    fun goFoldL (remaining : opComponentType list) (sofar :(ParseOpAST list * (RawAST list)) list) = 
+                    fun goFoldL (remaining : opComponentType list) (sofar :(ParseOpAST list * (UTF8String.t)) list) = 
                         case remaining of 
                             [] => listToParserResult (fn l => ParseOpAST (OperatorInternal oper,l)) sofar
                             | (OpCompString name::ys) => goFoldL ys (seqL sofar (parseStr name (ParseOpAST(OperatorNameComponent(name, oper), []))))
@@ -305,22 +313,22 @@ structure PrecedenceParser
             then debug ("bracketParser") (bracketParser_()) else bracketParser_()
             and bracketParser_ () : parser = fn exp =>
             if List.length exp = 0 then [] else
-            if not (hd exp = RawID(SpecialChars.leftSingleQuote))
+            if not (hd exp = SpecialChars.leftSingleQuote)
             then []
             else
             case parseBinding [SpecialChars.rightSingleQuote] (tl exp) of
                  [(ParseOpAST(Binding s, []), 
-                    ((RawID closeQuoteChar)::tail))] => 
-                    if UTF8String.containsSomeChar (map RawAST.unId s) [SpecialChars.leftSingleQuote, 
+                    (closeQuoteChar::tail))] => 
+                    if UTF8String.containsSomeChar  s [SpecialChars.leftSingleQuote, 
                     SpecialChars.leftDoubleQuote, SpecialChars.rightDoubleQuote, SpecialChars.period]
                     then (* parse internal as expression as usual*)
                         sequence (fn (hd ::_) => hd)
                         [parseExp(), (fn exp => 
-                                if hd exp = RawID(SpecialChars.rightSingleQuote)
+                                if hd exp = SpecialChars.rightSingleQuote
                                 then [(ParseOpAST(PlaceHolder, []), tl exp)]
                                 else [] )] (tl exp)
                     else (*no special char so it's a name *)
-                    [(ParseOpAST(QuotedName (map RawAST.unId s), []), tail)]
+                    [(ParseOpAST(QuotedName  s, []), tail)]
                 | _ => raise Fail "binding is not running correctly 163"
 
             and upP (pred : int) : parser = if DEBUG 
@@ -390,7 +398,7 @@ structure PrecedenceParser
 
             and many1 p = if DEBUG then debug "many1" (many1_ p) else many1_ p
             and many1_ (p : parser) : parser = fn exp => 
-                let val base : (ParseOpAST list* (RawAST list)) list  = parserResToList (p exp)
+                let val base : (ParseOpAST list* (UTF8String.t)) list  = parserResToList (p exp)
                     fun f trying memory  = 
                     let
                         val next = seqL trying (if DEBUG then debug "many1 lookahead" p else p)
@@ -421,7 +429,9 @@ structure PrecedenceParser
             ]
         in 
         debugAlternativeEntryTimes := [];
+        if withEOF then
         parseExpWithEOF'()(exp)
+        else parseExp()(exp)
         end
 
 

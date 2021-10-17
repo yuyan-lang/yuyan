@@ -14,7 +14,7 @@ structure ReplTest =
       
       (case r of 
       SOME(s) => (let val s = s in print(PrettyPrint.show_rawasts(s) ^ "\n")
-      ;print (InteractiveRepl.replHelper s)
+      ;print (InteractiveRepl.replHelper (UTF8String.toString (map RawAST.unId s )))
       ;print "done ...\n"
       ;print "type checking...\n"
       ;print "Not Implemented!"

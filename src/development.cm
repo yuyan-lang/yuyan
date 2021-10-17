@@ -4,7 +4,6 @@ Library
   structure PrettyPrint
   structure ReplTest
   functor YuLangParseFn
-  structure PrecedenceParser
 
   structure UTF8Char
   structure UTF8CharOrdered
@@ -16,16 +15,23 @@ Library
 
   structure ElaboratePrecedence 
   functor MixFixParser
+  functor PrecedenceParser
   structure Operators
   structure ParseAST
 
   structure InteractiveRepl 
+  structure TypeCheckAndEval
+
+
   structure BuiltinOperators 
   structure NatOps
   structure GroupOps
   structure FunctionOps
   structure DeclarationOps
   structure OperatorRegistry
+
+  structure StatementAST 
+  structure StatementDivisionPass
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -40,6 +46,7 @@ is
 
 
   ui/repl.sml
+  ui/type-check-and-eval.sml
   
   builtinOperators/builtin.sml
   builtinOperators/natOps.sml
@@ -53,6 +60,9 @@ is
   util/utf8string.sml
   util/ordered.sml
   util/uniqueId.sml
+
+  passes/statement-ast.sml
+  passes/statement-division-pass.sml
 
   prettyPrint.sml
   replTest.sml
