@@ -20,7 +20,15 @@ structure UTF8String = struct
                                     
     fun size(s : utf8string) : int = List.length s
 
-    
 
+    fun containsChar (s : utf8string) (char : UTF8Char.t) = List.exists (fn sc =>sc=char) s
+
+    fun containsAllChar (s : utf8string) (chars : UTF8Char.t list) =
+         foldr (fn (b1, b2) => b1 andalso b2) true 
+            (map (fn c => containsChar s c) chars)
+
+    fun containsSomeChar (s : utf8string) (chars : UTF8Char.t list) =
+         foldr (fn (b1, b2) => b1 orelse b2) false 
+            (map (fn c => containsChar s c) chars)
 end
 

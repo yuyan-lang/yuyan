@@ -11,6 +11,8 @@ Library
   structure UTF8String
   structure UTF8StringOrdered
 
+  structure SpecialChars
+
   structure ElaboratePrecedence 
   functor MixFixParser
   structure Operators
@@ -40,6 +42,7 @@ is
   builtinOperators/natOps.sml
   builtinOperators/groupOps.sml
   builtinOperators/functionOps.sml
+  builtinOperators/specialChars.sml
 
   util/utf8char.sml
   util/utf8string.sml

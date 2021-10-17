@@ -19,6 +19,8 @@ open Operators
                             | UnknownId 
                             | UnknownIdComp of RawAST.RawAST
                             | Binding of RawAST.RawAST list
+                            | QuotedName of UTF8String.t
+                            | PlaceHolder (* should not appear anywhere in final result *)
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
         exception ParseFailure of string
 

@@ -114,6 +114,10 @@ structure PrecedenceParser
 
             fun alternatives alt = alternativesTryAll alt
 
+        val defaultSeenCharset = foldr (fn (elem, acc) => 
+        UTF8CharSet.insert acc elem) UTF8CharSet.empty
+        [SpecialChars.leftSingleQuote, SpecialChars.rightSingleQuote]
+
         fun parseExpWithEOF (allOps :Operators.allOperators) : parser =  fn exp =>
         let 
             fun  scanExpForUnknownId(allOps : operator list) (exp : RawAST list) : RawAST list list
@@ -126,7 +130,8 @@ structure PrecedenceParser
                                                         [] => go seen xs pending 
                                                         | _ => pending :: go seen xs [])(*TODO add pending to seen and remove isolate *)
                                             else go seen xs (pending@[(RawID s )]) 
-                    val allSeen = (foldr (fn (elem, acc) => ( UTF8CharSet.insert acc elem)) UTF8CharSet.empty 
+                    val allSeen = (foldr (fn (elem, acc) => ( UTF8CharSet.insert acc elem)) 
+                                defaultSeenCharset
                                         (List.concat (map getAllOccuringNameChars allOps)))
                 in isolate (go allSeen exp [])
                 end
@@ -150,6 +155,8 @@ structure PrecedenceParser
                 
 
 
+
+          
 
 
 
@@ -267,11 +274,35 @@ structure PrecedenceParser
                             | _ => raise Fail "pp245"
                     end
 
+  (* Parses the bracket operation smartly 
+                in the sense that if a bracket doesn't cotain 
+                one of special characters, what's inside automatically 
+                becomes a name and no furhter processing is applied *)
+            and bracketParser () : parser = fn exp =>
+            if not (hd exp = RawID(SpecialChars.leftSingleQuote))
+            then []
+            else
+            case parseBinding [SpecialChars.rightSingleQuote] (tl exp) of
+                 [(ParseOpAST(Binding s, []), 
+                    ((RawID closeQuoteChar)::tail))] => 
+                    if UTF8String.containsSomeChar (map RawAST.unId s) [SpecialChars.leftSingleQuote, 
+                    SpecialChars.leftDoubleQuote, SpecialChars.rightDoubleQuote]
+                    then (* parse internal as expression as usual*)
+                        sequence (fn (hd ::_) => hd)
+                        [parseExp(), (fn exp => 
+                                if hd exp = RawID(SpecialChars.rightSingleQuote)
+                                then [(ParseOpAST(PlaceHolder, []), tl exp)]
+                                else [] )] (tl exp)
+                    else (*no special char so it's a name *)
+                    [(ParseOpAST(QuotedName (map RawAST.unId s), []), tail)]
+                | _ => raise Fail "binding is not running correctly 163"
 
             and upP (pred : int) : parser = 
                 case nextPred pred of 
                 SOME(np) => hat np
-                | NONE =>  allUnknownIdsParser() (*still parse all possible identifiers *)
+                | NONE =>  
+                alternatives [bracketParser(),
+                allUnknownIdsParser()] (*still parse all possible identifiers *)
                 (* Parse unkown doesn't work as we're not doing CPS*)
                 (* fn exp => alternativesTryAll (List.tabulate(List.length(exp), fn l => conservativeId l)) exp *)
                 (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
