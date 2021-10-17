@@ -71,11 +71,11 @@ structure PrecedenceParser
                 val res = List.concat (List.tabulate
                 (List.length alt, (fn i => 
                     let 
-                    val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^
-                        "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n");
+                    (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
+                        (* "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n"); *)
                     val res = (try (List.nth(alt, i))) exp
-                    val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^
-                        "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n");
+                    (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
+                        (* "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n"); *)
                     in 
                     (
                         res
@@ -214,8 +214,8 @@ structure PrecedenceParser
 
 
 
-            and parseStr s oper = debug ("parseStr trying to match >|" ^s ^ "|<") (parseStr_ s oper)
-            and parseStr_ (s : string) (o' : ParseOpAST) : parser = fn exp =>
+            (* and parseStr s oper = debug ("parseStr trying to match >|" ^s ^ "|<") (parseStr_ s oper) *)
+            and parseStr (s : string) (o' : ParseOpAST) : parser = fn exp =>
                 if String.size s = 0 then [(o', exp)] else
                 case exp of
                     (RawID id :: exps)  => if String.isPrefix id s 
@@ -234,8 +234,8 @@ structure PrecedenceParser
             and parseOpFixityPred_ (fixity : fixity) (pred : int)(assoc : associativity) : parser = 
                 alternatives (map parseOpOperator (findOps fixity pred assoc))
             
-            and parseBinding (until : string) : parser = debug ("parseBinding until " ^ until) (parseBinding_ until)
-            and parseBinding_ (until : string) : parser = fn exp =>
+            (* and parseBinding (until : string) : parser = debug ("parseBinding until " ^ until) (parseBinding_ until) *)
+            and parseBinding (until : string) : parser = fn exp =>
                 let 
                     fun go (remaining : RawAST list) (pending : RawAST list) : (ParseOpAST* (RawAST list)) list= 
                     (case remaining of 
@@ -276,8 +276,8 @@ structure PrecedenceParser
                 (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
 
 
-            and hat oper = (debug ("hat_"^ Int.toString(oper)) (hat_ oper))
-            and hat_ (pred : int) : parser = let
+            (* and hat oper = (debug ("hat_"^ Int.toString(oper)) (hat_ oper)) *)
+            and hat (pred : int) : parser = let
                 val masking = PredDict.lookup opersPresentAtPred pred
                 in
                 alternatives (List.concat [
