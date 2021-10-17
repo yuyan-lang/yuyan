@@ -9,19 +9,18 @@ struct
     open RawAST
     open Operators
 
-    structure Parser = PrecedenceParser(P)
+    structure Parser = PrecedenceParser
     fun parseMixfixExpression (exp : RawAST.RawAST list) : OpAST list = 
-        case exp of
-            l =>  (case Parser.parseExpWithEOF() l of
+            case Parser.parseExpWithEOF(P.allOps) exp of
                                 [] => raise Fail "noParse 20"
-                                | l => map (fn (x, _) => ElaboratePrecedence.elaborate x)
-                                     (List.filter (fn (x, s) => 
+                                | l => map (fn (x, _) => ElaboratePrecedence.elaborate x) l
+                                     (* (List.filter (fn (x, s) => 
                                      let 
                                      (* val w = print ("REST : " ^ String.concatWith ", " (map PrettyPrint.show_rawast s) ^ "\n");  *)
                                      (* val x = print (PrettyPrint.show_opast (ElaboratePrecedence.elaborate x));  *)
                                      val y = false
                                      in List.length s = 0 
-                                     end) l))
+                                     end) l)) *)
             (* | RawID _ => raise Fail "Must be a list 22" *)
 
 end

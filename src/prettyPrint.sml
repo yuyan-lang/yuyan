@@ -11,11 +11,21 @@ struct
       end
   fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")" 
 
+  fun show_opcomptype (x : Operators.opComponentType) = let 
+    open Operators
+    in
+      case x of
+        OpCompExpr => underscoreChar
+        | OpCompBinding => bindingChar
+        | OpCompString s => s
+    end
+
+
   fun show_op (x : Operators.operator) = let 
     open Operators
     in case x of
-      Operator(p, fix, assoc, names) =>
-      let val baseName = String.concatWith underscoreChar names
+      Operator(p, fix, assoc, comps) =>
+      let val baseName = String.concat (map show_opcomptype comps)
       in case fix of
           Prefix =>  baseName ^ underscoreChar 
           | Infix => underscoreChar ^ baseName ^ underscoreChar 

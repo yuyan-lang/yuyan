@@ -4,7 +4,7 @@ Library
   structure PrettyPrint
   structure ReplTest
   functor YuLangParseFn
-  functor PrecedenceParser
+  structure PrecedenceParser
 
   structure ElaboratePrecedence 
   functor MixFixParser

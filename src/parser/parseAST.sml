@@ -16,7 +16,9 @@ open Operators
                             | Many1 
                             | EOF
                             | ExpWithEOF
-                            | UnknownId of RawAST.RawAST list
+                            | UnknownId 
+                            | UnknownIdComp of RawAST.RawAST
+                            | Binding of RawAST.RawAST list
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
         exception ParseFailure of string
 
