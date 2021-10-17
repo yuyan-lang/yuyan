@@ -14,7 +14,7 @@ struct
     Postfix : either none or left *)
 
   val underscoreChar = "〇"
-  val bindingChar = "△"
+  val bindingChar = "囗"
   val underscoreCharUTF8 = hd (UTF8.explode("〇"))
 
   fun getPrecedence (Operator(p, _, _, _)) = p
@@ -30,6 +30,7 @@ struct
 
     datatype OpAST = OpAST of (operator * OpAST list )
                     | UnknownOpName of string
+                    | NewOpName of string
 
     fun stripHead (s : string) = 
         String.extract(s, String.size(underscoreChar), NONE)

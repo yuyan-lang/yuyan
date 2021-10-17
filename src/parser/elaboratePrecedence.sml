@@ -46,6 +46,7 @@ struct
                         ) (elaborate argR) internalsArgL
                     | (ExpWithEOF, [opAST, ParseOpAST(EOF, [])])  => elaborate opAST
                     | (UnknownId, l)  => UnknownOpName (String.concat (map (fn ParseOpAST(UnknownIdComp (RawAST.RawID n), []) => n) l))
+                    | (Binding l, [])  => NewOpName (String.concat (map (fn (RawAST.RawID n) => n) l))
                     | (OperatorNameComponent f, _)  => raise Fail (PrettyPrint.show_parseopast past)
                     | f => raise ElaborationFail (ParseOpAST f)
 

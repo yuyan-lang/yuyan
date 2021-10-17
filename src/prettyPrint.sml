@@ -9,6 +9,7 @@ struct
        (* RawList l => "("^ (String.concatWith ", " (map show_rawast l)) ^")" *)
        RawID s => s
       end
+  fun show_rawastsPlain (l : RawAST.RawAST list) =  (String.concat (map show_rawast l))
   fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")" 
 
   fun show_opcomptype (x : Operators.opComponentType) = let 
@@ -39,6 +40,7 @@ struct
     in case x of 
       OpAST (oper, l) => (show_op oper) ^ "[" ^ String.concatWith ", " (map show_opast l) ^ "]"
       | UnknownOpName s => "?[" ^ s ^ "]"
+      | NewOpName s => "![" ^ s ^ "]"
     end
 
 
@@ -68,5 +70,8 @@ case x of
     | Many1  => "Many1"
     | EOF  => "EOF"
     | ExpWithEOF  => "ExpWithEOF"
+    | UnknownId  => "UnknownId"
+    | UnknownIdComp s => "UnknownIdComp "^ show_rawast s
+    | Binding id => "Binding "^ show_rawastsPlain id
 end
 end
