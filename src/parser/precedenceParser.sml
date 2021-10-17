@@ -129,6 +129,8 @@ functor PrecedenceParser (P : sig
             case nextPred pred of 
             SOME(np) => hat np
             | NONE =>  fn x => []
+            (* Parse unkown doesn't work as we're not doing CPS*)
+            (* fn exp => alternativesTryAll (List.tabulate(List.length(exp), fn l => conservativeId l)) exp *)
             (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
 
 
@@ -220,13 +222,13 @@ functor PrecedenceParser (P : sig
             val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes + 1;
             val res = List.concat (List.tabulate
             (List.length alt, (fn i => 
-                if !shouldSkip then [] else 
+                if !shouldSkip then [] else  (*! means deref not negation *)
                 let 
-                val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^
-                    "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n");
+                (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
+                    (* "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n"); *)
                 val res = (try (List.nth(alt, i))) exp
-                val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^
-                    "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n");
+                (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
+                    (* "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n"); *)
                 in 
                 (
                     if List.length(res) > 0 then (shouldSkip:=true; res) else res
@@ -257,6 +259,11 @@ functor PrecedenceParser (P : sig
                 end
             in listToParserResult (fn l => ParseOpAST(Many1, l)) (f base)
             end
+
+            (* this one needs to look ahead using parser Continuations *)
+          and conservativeId (length : int) : parser = fn exp => 
+             [(ParseOpAST(UnknownId (List.take(exp, length)) ,[]), List.drop(exp, length))]
+
 
 
         (* and sequence c p = debug "sequence" (sequence_ c p) *)
