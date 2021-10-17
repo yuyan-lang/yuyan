@@ -308,7 +308,7 @@ structure PrecedenceParser
                  [(ParseOpAST(Binding s, []), 
                     ((RawID closeQuoteChar)::tail))] => 
                     if UTF8String.containsSomeChar (map RawAST.unId s) [SpecialChars.leftSingleQuote, 
-                    SpecialChars.leftDoubleQuote, SpecialChars.rightDoubleQuote]
+                    SpecialChars.leftDoubleQuote, SpecialChars.rightDoubleQuote, SpecialChars.period]
                     then (* parse internal as expression as usual*)
                         sequence (fn (hd ::_) => hd)
                         [parseExp(), (fn exp => 
