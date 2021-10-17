@@ -1,7 +1,12 @@
 
 structure PrecedenceParser 
         = struct 
-
+    (* val DEBUG = true *)
+    val DEBUG = false
+    structure Options =
+    struct
+        val enableBracketedExpression = true (* has to be true as otherwise no parse *)
+    end
             open Operators
             open RawAST
             open ParseAST
@@ -16,20 +21,27 @@ structure PrecedenceParser
         (*Remove duplicate https://stackoverflow.com/questions/21077272/remove-duplicates-from-a-list-in-sml *)
         fun isolate [] = []
             | isolate (x::xs) = x::isolate(List.filter (fn y => y <> x) xs)
-   val debugAlternativeEntryTimes  = ref 0
+   val debugAlternativeEntryTimes : string list ref  = ref []
+   fun pushDebugIndent (s : string) = debugAlternativeEntryTimes := (!debugAlternativeEntryTimes @ [s])
+   fun popDebugIndent () = debugAlternativeEntryTimes := ((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
+   fun indentString ()  = String.concat((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
                 
         fun show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
         fun debug (s : string) (p : parser) : parser = fn exp =>
-            (print (
-            String.concat(List.tabulate(!debugAlternativeEntryTimes, (fn _ => "┃")))^
-                " PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n"); 
-            let val res = p exp
-            in (print (s ^" Has " ^ Int.toString(List.length(res)) ^ " parses");
-                print (String.concatWith "\n " (map (fn (past, r) => "AST " ^ PrettyPrint.show_parseopast past ^ " REST IS " ^ show_rawast_list r ) res ) ^ "\n");
-                res
-            )
+        let
+        val _ = pushDebugIndent("⋅")
+        val _ = if DEBUG then 
+                    (print (indentString() ^
+                "╔ PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n") )
+                        else ()
+        val res = p exp
+        val _ = if DEBUG then print (indentString() ^
+                    ("╚ " ^ s ^" Has " ^ Int.toString(List.length(res)) ^ " parses\n"))
+            else ()
+        val _ = popDebugIndent()
+            in 
+            res
             end
-            )
         fun combineAST (pr: ParseRule) : ParseOpAST list -> ParseOpAST = fn l => ParseOpAST (pr , l)
 
         fun combineASTByExtractingFromInternal 
@@ -62,28 +74,31 @@ structure PrecedenceParser
 
     fun try (p : parser) : parser = fn exp =>
                 p exp
-                handle ParseFailure s => []
+                (* handle ParseFailure s => [] *)
 
          
 
             fun alternativesTryAll (alt : parser list) : parser = fn exp =>
                 let 
-                val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes + 1;
                 val res = List.concat (List.tabulate
                 (List.length alt, (fn i => 
                     let 
-                    (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
-                        (* "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n"); *)
+                    val _ = pushDebugIndent("┃")
+                    val _ = if DEBUG then 
+                    (print (indentString() ^
+                        "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n"))
+                        else ()
                     val res = (try (List.nth(alt, i))) exp
-                    (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
-                        (* "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n"); *)
+                    val _ = if DEBUG then print (indentString() ^
+                        "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n")
+                        else ()
+                    val _ = popDebugIndent()
                     in 
                     (
                         res
                     )
                     end
                 ) ))
-                val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes - 1
                 in 
                 res 
                 end
@@ -91,23 +106,23 @@ structure PrecedenceParser
             fun alternativesTryOnce (alt : parser list) : parser = fn exp =>
                 let 
                 val shouldSkip = ref(false)
-                val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes + 1;
+                val _ = pushDebugIndent("┃")
                 val res = List.concat (List.tabulate
                 (List.length alt, (fn i => 
                     if !shouldSkip then [] else  (*! means deref not negation *)
                     let 
-                    (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
-                        (* "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n"); *)
+                    val _ = print (String.concat(!debugAlternativeEntryTimes) ^
+                        "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n");
                     val res = (try (List.nth(alt, i))) exp
-                    (* val _ = print (String.concat(List.tabulate(!debugAlternativeEntryTimes-1, (fn _ => "┃"))) ^ *)
-                        (* "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n"); *)
+                    val _ = print (String.concat(!debugAlternativeEntryTimes) ^
+                        "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n");
                     in 
                     (
                         if List.length(res) > 0 then (shouldSkip:=true; res) else res
                     )
                     end
                 ) ))
-                val _ = debugAlternativeEntryTimes := !debugAlternativeEntryTimes - 1
+                val _ = popDebugIndent()
                 in 
                 res 
                 end
@@ -150,7 +165,9 @@ structure PrecedenceParser
                 [] => raise Fail "pp144"
                 | _ => sequence (combineAST UnknownId) (map unknownIdComponentParser id)
 
-            fun allUnknownIdsParser() : parser = 
+            fun allUnknownIdsParser() : parser =  if DEBUG
+            then debug "UnkownIds" (allUnknownIdsParser_()) else allUnknownIdsParser_()
+            and allUnknownIdsParser_() : parser = 
                 alternatives (map unknownIdParser allUnkownIds)
                 
 
@@ -222,8 +239,10 @@ structure PrecedenceParser
 
 
 
-            (* and parseStr s oper = debug ("parseStr trying to match >|" ^s ^ "|<") (parseStr_ s oper) *)
-            and parseStr (s : UTF8String.t) (o' : ParseOpAST) : parser = fn exp =>
+            and parseStr s oper = 
+            if DEBUG then debug ("parseStr trying to match >|" ^ UTF8String.toString s ^ "|<") (parseStr_ s oper)
+                else parseStr_ s oper
+            and parseStr_ (s : UTF8String.t) (o' : ParseOpAST) : parser = fn exp =>
                 if UTF8String.size s = 0 then [(o', exp)] else
                 case exp of
                     (RawID id :: exps)  => if hd s = id 
@@ -278,7 +297,10 @@ structure PrecedenceParser
                 in the sense that if a bracket doesn't cotain 
                 one of special characters, what's inside automatically 
                 becomes a name and no furhter processing is applied *)
-            and bracketParser () : parser = fn exp =>
+            and bracketParser () : parser = if DEBUG
+            then debug ("bracketParser") (bracketParser_()) else bracketParser_()
+            and bracketParser_ () : parser = fn exp =>
+            if List.length exp = 0 then [] else
             if not (hd exp = RawID(SpecialChars.leftSingleQuote))
             then []
             else
@@ -297,19 +319,24 @@ structure PrecedenceParser
                     [(ParseOpAST(QuotedName (map RawAST.unId s), []), tail)]
                 | _ => raise Fail "binding is not running correctly 163"
 
-            and upP (pred : int) : parser = 
+            and upP (pred : int) : parser = if DEBUG 
+            then debug ("upP "^ Int.toString(pred) ) (upP_ pred) else upP_ pred
+            and upP_ (pred : int) : parser = 
                 case nextPred pred of 
                 SOME(np) => hat np
                 | NONE =>  
-                alternatives [bracketParser(),
-                allUnknownIdsParser()] (*still parse all possible identifiers *)
+                alternatives (List.concat [
+                if Options.enableBracketedExpression then [ bracketParser()] else [],
+                [allUnknownIdsParser()] (*still parse all possible identifiers *)
+                ])
                 (* Parse unkown doesn't work as we're not doing CPS*)
                 (* fn exp => alternativesTryAll (List.tabulate(List.length(exp), fn l => conservativeId l)) exp *)
                 (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
 
 
-            (* and hat oper = (debug ("hat_"^ Int.toString(oper)) (hat_ oper)) *)
-            and hat (pred : int) : parser = let
+            and hat oper = if DEBUG then (debug ("hat_"^ Int.toString(oper)) (hat_ oper)) 
+            else hat_ oper
+            and hat_ (pred : int) : parser = let
                 val masking = PredDict.lookup opersPresentAtPred pred
                 in
                 alternatives (List.concat [
@@ -357,17 +384,17 @@ structure PrecedenceParser
 
 
 
-            (* and many1 p = debug "many1" (many1_ p) *)
-            and many1 (p : parser) : parser = fn exp => 
-                let val base = parserResToList (p exp)
-                    fun f b = 
+            and many1 p = if DEBUG then debug "many1" (many1_ p) else many1_ p
+            and many1_ (p : parser) : parser = fn exp => 
+                let val base : (ParseOpAST list* (RawAST list)) list  = parserResToList (p exp)
+                    fun f trying memory  = 
                     let
-                        val next = seqL b(try p)
+                        val next = seqL trying (if DEBUG then debug "many1 lookahead" p else p)
                     in if List.length(next) > 0
-                        then (*try succeeded *) f (next)
-                        else b
+                        then (*try succeeded *) f next (next @ memory) (*keep both variants as some might fail during later stages*)
+                        else memory
                     end
-                in listToParserResult (fn l => ParseOpAST(Many1, l)) (f base)
+                in listToParserResult (fn l => ParseOpAST(Many1, l))  (f base base)
                 end
 
 
@@ -378,7 +405,7 @@ structure PrecedenceParser
             and eof () : parser = fn exp => 
                 case exp of 
                     [] => [(ParseOpAST(EOF,[]), [])]
-                    | _ => []
+                    | _ => ([])
 
             and parseExp (): parser = 
             (*Becuase of inclusion of up P in hat P, this is enough *)
@@ -389,7 +416,7 @@ structure PrecedenceParser
                 parseExp(), eof()
             ]
         in 
-        debugAlternativeEntryTimes := 0;
+        debugAlternativeEntryTimes := [];
         parseExpWithEOF'()(exp)
         end
 

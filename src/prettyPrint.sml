@@ -73,5 +73,6 @@ case x of
     | UnknownId  => "UnknownId"
     | UnknownIdComp s => "UnknownIdComp "^ show_rawast s
     | Binding id => "Binding "^ show_rawastsPlain id
+    | QuotedName s => "QuotedName "^UTF8String.toString s
 end
 end

@@ -4,9 +4,9 @@ struct
 
 
     val allOps : Operators.operator list = List.concat [
-            NatOps.natOps
-            , GroupOps.groupOps
-            , 
-            FunctionOps.functionOps
+             GroupOps.groupOps
+            (* , NatOps.natOps
+            , FunctionOps.functionOps *)
+            ,DeclarationOps.declarationOps
             ]
 end

@@ -23,6 +23,7 @@ Library
   structure NatOps
   structure GroupOps
   structure FunctionOps
+  structure DeclarationOps
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -43,6 +44,7 @@ is
   builtinOperators/groupOps.sml
   builtinOperators/functionOps.sml
   builtinOperators/specialChars.sml
+  builtinOperators/declarationOps.sml
 
   util/utf8char.sml
   util/utf8string.sml
