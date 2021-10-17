@@ -15,7 +15,20 @@ structure PrecedenceParser
         (*Remove duplicate https://stackoverflow.com/questions/21077272/remove-duplicates-from-a-list-in-sml *)
         fun isolate [] = []
             | isolate (x::xs) = x::isolate(List.filter (fn y => y <> x) xs)
-
+   val debugAlternativeEntryTimes  = ref 0
+                
+        fun show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
+        fun debug (s : string) (p : parser) : parser = fn exp =>
+            (print (
+            String.concat(List.tabulate(!debugAlternativeEntryTimes, (fn _ => "┃")))^
+                " PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n"); 
+            let val res = p exp
+            in (print (s ^" Has " ^ Int.toString(List.length(res)) ^ " parses");
+                print (String.concatWith "\n " (map (fn (past, r) => "AST " ^ PrettyPrint.show_parseopast past ^ " REST IS " ^ show_rawast_list r ) res ) ^ "\n");
+                res
+            )
+            end
+            )
         fun combineAST (pr: ParseRule) : ParseOpAST list -> ParseOpAST = fn l => ParseOpAST (pr , l)
 
         fun combineASTByExtractingFromInternal 
@@ -40,18 +53,17 @@ structure PrecedenceParser
                 case parserSeq of 
                     [] => raise Fail "Cannot have empty sequence"
                     | (p1 :: ps) => List.map (fn (asts, r) => (combine asts, r)) 
-                    (List.foldl (fn (curParser, acc) => 
-                    case acc of [] => []
-                    | _ => seqL acc curParser) 
-        (parserResToList (p1 exp)) ps) (*map parsers over exp usign seq *)
+                            (List.foldl (fn (curParser, acc) => 
+                                                    case acc of [] => []
+                                                    | _ => seqL acc curParser) 
+                            (parserResToList (p1 exp)) ps) (*map parsers over exp usign seq *)
 
 
     fun try (p : parser) : parser = fn exp =>
                 p exp
                 handle ParseFailure s => []
 
-            val debugAlternativeEntryTimes  = ref 0
-                
+         
 
             fun alternativesTryAll (alt : parser list) : parser = fn exp =>
                 let 
@@ -107,24 +119,31 @@ structure PrecedenceParser
             = let
                     fun go (seen : StringSet.set) (remaining : RawAST list) (pending : RawAST list) : RawAST list list
                     = case remaining of
-                        [] => [pending]
+                        [] => (case pending of [] => [] | _ => [pending])
                         | ((RawID s) :: xs ) => if StringSet.member seen s
                                             then (case pending of   
                                                         [] => go seen xs pending 
                                                         | _ => pending :: go seen xs [])(*TODO add pending to seen and remove isolate *)
-                                            else go seen xs ((RawID s )::pending) 
-                    val allSeen = (foldr (fn (elem, acc) => StringSet.insert acc elem) StringSet.empty 
+                                            else go seen xs (pending@[(RawID s )]) 
+                    val allSeen = (foldr (fn (elem, acc) => ( StringSet.insert acc elem)) StringSet.empty 
                                         (List.concat (map getAllOccuringNameChars allOps)))
                 in isolate (go allSeen exp [])
                 end
-            val allUnkownIds = scanExpForUnknownId allOps exp 
+            val allUnkownIds  : RawAST list list= scanExpForUnknownId allOps exp 
+
+            val _ = print ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
+            (map (fn id => String.concat (map (fn (RawID s) => s) id)) allUnkownIds)) ^ "|<--END\n")
+
 
             fun unknownIdComponentParser ((RawID s) : RawAST): parser = fn exp => 
                 case (exp) of
-                    (y :: ys) => [(ParseOpAST(UnknownIdComp y, []), ys)]
+                    ((RawID y) :: ys) => if y = s then [(ParseOpAST(UnknownIdComp (RawID y), []), ys)] else []
                     | _ => []
             fun unknownIdParser (id : RawAST list): parser = 
-                sequence (combineAST UnknownId) (map unknownIdComponentParser id)
+            case id of
+                [] => raise Fail "pp144"
+                | _ => sequence (combineAST UnknownId) (map unknownIdComponentParser id)
+
             fun allUnknownIdsParser() : parser = 
                 alternatives (map unknownIdParser allUnkownIds)
                 
@@ -162,7 +181,7 @@ structure PrecedenceParser
             ]) PredDict.empty allPrecedences
 
 
-            val y = (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences)); 2)
+            val y = (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n"); 2)
 
 
 
@@ -297,19 +316,7 @@ structure PrecedenceParser
                 ])
                 end
 
-            and show_rawast_list exp = String.concatWith ", " (map PrettyPrint.show_rawast exp)
 
-            and debug (s : string) (p : parser) : parser = fn exp =>
-                (print (
-                String.concat(List.tabulate(!debugAlternativeEntryTimes, (fn _ => "┃")))^
-                    " PARSER DEBUG: " ^ s ^ " exp is " ^ show_rawast_list exp ^ "\n"); 
-                let val res = p exp
-                in (print (s ^" Has " ^ Int.toString(List.length(res)) ^ " parses");
-                    print (String.concatWith "\n " (map (fn (past, r) => "AST " ^ PrettyPrint.show_parseopast past ^ " REST IS " ^ show_rawast_list r ) res ) ^ "\n");
-                    res
-                )
-                end
-                )
 
 
 
@@ -347,6 +354,7 @@ structure PrecedenceParser
                 parseExp(), eof()
             ]
         in 
+        debugAlternativeEntryTimes := 0;
         parseExpWithEOF'()(exp)
         end
 

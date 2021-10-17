@@ -15,6 +15,7 @@ Library
   structure BuiltinOperators 
   structure NatOps
   structure GroupOps
+  structure FunctionOps
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -33,6 +34,7 @@ is
   builtinOperators/builtin.sml
   builtinOperators/natOps.sml
   builtinOperators/groupOps.sml
+  builtinOperators/functionOps.sml
 
   prettyPrint.sml
   replTest.sml

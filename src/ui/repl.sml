@@ -10,7 +10,8 @@ struct
     let 
         val trees = MixFixP.parseMixfixExpression input
     in
-        ( addUI(String.concatWith "\n" (map PrettyPrint.show_opast trees)))
+        ( addUI("Has "^ Int.toString(List.length trees) ^ " trees: \n" ^
+            String.concatWith "\n" (map PrettyPrint.show_opast trees)))
     end
     fun replHelper (input : RawAST list ) : string =
         let 

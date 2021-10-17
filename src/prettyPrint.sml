@@ -38,6 +38,7 @@ struct
     open Operators
     in case x of 
       OpAST (oper, l) => (show_op oper) ^ "[" ^ String.concatWith ", " (map show_opast l) ^ "]"
+      | UnknownOpName s => "?[" ^ s ^ "]"
     end
 
 

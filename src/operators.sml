@@ -21,13 +21,15 @@ struct
     
 
     fun getAllOccuringNameChars (Operator(_, _, _, l)) : string list = 
-        map UTF8.toString (
-            UTF8.explode (String.concat (map (fn x => case x of OpCompString s => s | _ => "") l)))
+        map (fn x => UTF8.implode [x]) (
+            (List.concat (map (fn x => case x of OpCompString s => (UTF8.explode s) | _ => []) l))
+            )
         
         
     type allOperators = operator list
 
     datatype OpAST = OpAST of (operator * OpAST list )
+                    | UnknownOpName of string
 
     fun stripHead (s : string) = 
         String.extract(s, String.size(underscoreChar), NONE)
