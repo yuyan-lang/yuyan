@@ -32,6 +32,10 @@ Library
 
   structure StatementAST 
   structure StatementDivisionPass
+
+  structure TypeCheckingPass
+  structure TypeCheckingAST
+  structure PreprocessingPass
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -47,6 +51,7 @@ is
 
   ui/repl.sml
   ui/type-check-and-eval.sml
+  ui/prettyPrint.sml
   
   builtinOperators/builtin.sml
   builtinOperators/natOps.sml
@@ -55,17 +60,19 @@ is
   builtinOperators/specialChars.sml
   builtinOperators/declarationOps.sml
   builtinOperators/operator-registry.sml
+  builtinOperators/operators.sml
 
   util/utf8char.sml
   util/utf8string.sml
   util/ordered.sml
   util/uniqueId.sml
 
-  passes/statement-ast.sml
-  passes/statement-division-pass.sml
+  passes/statement/statement-ast.sml
+  passes/statement/statement-division-pass.sml
+  passes/preprocess/preprocessing-pass.sml
+  passes/typechecking/type-checking-ast.sml
+  passes/typechecking/type-checking-pass.sml
 
-  prettyPrint.sml
   replTest.sml
-  yulang.lex : ml-ulex
-  yulang.grm : ml-antlr
-  operators.sml
+  lexer/yulang.lex : ml-ulex
+  lexer/yulang.grm : ml-antlr

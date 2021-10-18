@@ -1,0 +1,2 @@
+structure TypeCheckingPass = struct
+end
