@@ -14,6 +14,8 @@ Library
   structure SpecialChars
 
   structure ElaboratePrecedence 
+  structure DeclarationParser
+  signature PARSER_OPTIONS
   functor MixFixParser
   functor PrecedenceParser
   structure Operators
@@ -44,6 +46,8 @@ is
 
   parser/rawAST.sml
   parser/elaboratePrecedence.sml
+  parser/declaration-parser.sml
+  parser/parser-options.sig
   parser/parseAST.sml
   parser/mixfixParser.sml
   parser/precedenceParser.sml

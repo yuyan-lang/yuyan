@@ -1,10 +1,7 @@
 
 
-functor MixFixParser  ( structure Options :
-     sig
-        val enableBracketedExpression : bool
-    end
-)  =
+functor MixFixParser  ( structure Options :PARSER_OPTIONS)
+  =
 struct
  
 

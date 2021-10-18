@@ -1,9 +1,6 @@
 
-signature ParserOptions =
-sig
-    val enableBracketedExpression : bool
-end
-functor PrecedenceParser ( structure Options :ParserOptions) = struct 
+
+functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
     (* val DEBUG = true *)
     val DEBUG = false
     

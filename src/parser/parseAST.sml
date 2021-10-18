@@ -20,6 +20,7 @@ open Operators
                             | UnknownIdComp of UTF8Char.t
                             | Binding of UTF8String.t
                             | QuotedName of UTF8String.t
+                            | UnparsedDeclarationBlock of UTF8String.t (* a declaration block is a block with an immediate . inside of it, thus should not be parsed at this level *)
                             | PlaceHolder (* should not appear anywhere in final result *)
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
         exception ParseFailure of string

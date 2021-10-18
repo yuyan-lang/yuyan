@@ -2,10 +2,10 @@
 structure ReplTest =
   struct
     structure CP = YuLangParseFn(YuLangLexer)
-    fun test x = let
+
+    fun topLevelGeneric strm = let
       val sm = AntlrStreamPos.mkSourcemap()
       val lex = YuLangLexer.lex sm;
-      val strm = YuLangLexer.streamifyInstream (TextIO.openIn "testfiles/test.yuyan")
       val (r, strm', errs) = CP.parse lex "" strm (*the third arg is the env, e.g. AtomMap.empty *)
       in 
       print (String.concatWith "\n"
@@ -26,5 +26,18 @@ structure ReplTest =
       | NONE => print "Parsing failed")
       ; r 
       end
+
+    fun testFile x = let
+      val strm = YuLangLexer.streamifyInstream (TextIO.openIn "testfiles/test.yuyan")
+      in topLevelGeneric strm end
+    fun testString (s : string)  = let
+      val returned = ref (false) 
+      val strm = YuLangLexer.streamify (fn () => if !returned 
+                then "" else (returned := true;s))
+    in topLevelGeneric strm end
+
+    fun test x = let
+      val str =  TextIO.inputAll (TextIO.openIn "testfiles/test.yuyan")
+      in testString str end
 
 end
