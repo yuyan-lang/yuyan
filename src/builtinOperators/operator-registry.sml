@@ -7,7 +7,8 @@ struct
 
 
     fun find(s : registry) (key : int) = Store.lookup s key
-    fun build(s : operator list) : registry  = 
+    fun add(s : registry) (oper : operator) =  Store.insert s (getUID oper) oper
+    fun make(s : operator list) : registry  = 
         foldr( fn (oper, acc) => Store.insert acc (getUID oper) oper) Store.empty s
 
 

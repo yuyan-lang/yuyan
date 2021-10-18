@@ -28,8 +28,12 @@ structure TypeCheckingAST = struct
                     | Unfold of Expr
 
 
-    datatype Signature = EmptySig
-                       | TypeMacro of UTF8String.t * Type
-                       | TypeJudgment of UTF8String.t * Type
+    datatype Declaration = 
+                        TypeMacro of UTF8String.t * Type
+                       | TermTypeJudgment of UTF8String.t * Type
+                       | TermMacro of UTF8String.t * Expr
                        | TermDefinition of UTF8String.t * Expr
+                       | DirectExpr of Expr
+
+    type Signature = Declaration list
 end

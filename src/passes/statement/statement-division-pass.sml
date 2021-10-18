@@ -2,11 +2,11 @@ structure StatementDivisionPass =
 struct
 
     val statementOps = [GroupOps.sepOp, GroupOps.endOp]
-    val registry = OperatorRegistry.build statementOps
+    val registry = OperatorRegistry.make statementOps
 
     open StatementAST
     open Operators
-    fun toStatementAST (opast : OpAST) : StatementAST.t = 
+    (* fun toStatementAST (opast : OpAST) : StatementAST.t = 
         case opast of
             UnknownOpName s => StatementNode(opast,Leaf)
             | NewOpName s => StatementNode(opast,Leaf)
@@ -15,16 +15,21 @@ struct
             else if oper = GroupOps.sepOp
                  then case l of (h :: t :: []) => StatementNode(h,(toStatementAST t))
                         | _ => raise Fail "sdp16"
-                 else  raise Fail "sdp17"
+                 else  raise Fail "sdp17" *)
 
     structure Parser = MixFixParser(structure Options = struct
         val enableBracketedExpression = false
     end)
 
     fun parseStatementAST (source : UTF8String.t) : StatementAST.t = 
-        let val opast =  Parser.parseMixfixExpression statementOps source
-        in toStatementAST opast
-        end
+    case source of 
+        [] => Leaf
+        | [s] => if s = SpecialChars.period then Leaf else StatementNode([s], Leaf)
+        | (x :: xs) => if x = SpecialChars.period 
+                then parseStatementAST xs 
+                else let val (stmt, next) =  DeclarationParser.parseBinding [SpecialChars.period] source 
+                     in StatementNode (stmt, parseStatementAST next)
+                    end
 
 
 end

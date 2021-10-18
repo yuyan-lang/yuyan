@@ -19,6 +19,12 @@ struct
         | OpCompBinding => UTF8Char.toString bindingChar
         | OpCompString s => UTF8String.toString s
     end
+      fun show_opcomptypes (x : Operators.opComponentType list) :string = let 
+    open Operators
+    in
+    "[" ^ String.concatWith ", " (map show_opcomptype x) ^ "]"
+    end
+
 
 
   fun show_op (x : Operators.operator) = let 
@@ -75,4 +81,29 @@ case x of
     | Binding id => "Binding "^ UTF8String.toString id
     | QuotedName s => "QuotedName "^UTF8String.toString s
 end
+
+
+fun show_preprocessaastJ x = let
+open PreprocessingAST
+in 
+case x of 
+   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ ": " ^ UTF8String.toString tbody
+  | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ UTF8String.toString tbody
+  | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ UTF8String.toString ebody
+  | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ UTF8String.toString  ebody
+  | POpDeclaration(opName, assoc, pred) => "infix " ^ UTF8String.toString opName ^ Int.toString pred
+  | PDirectExpr(ebody) => "/* eval */ " ^ UTF8String.toString ebody ^ "/* end eval */ " 
+  end
+fun show_preprocessaast x = let
+open PreprocessingAST
+in 
+String.concatWith "\n" (map show_preprocessaastJ x) ^ "\n"
+  end
+
+fun show_statementast x = let 
+open StatementAST
+in case x of 
+    Leaf => ". /* END */\n"
+    | StatementNode (stmt, next) => UTF8String.toString stmt ^ "\n -> "^ show_statementast next
+    end
 end

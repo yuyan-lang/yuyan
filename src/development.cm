@@ -38,6 +38,8 @@ Library
   structure TypeCheckingPass
   structure TypeCheckingAST
   structure PreprocessingPass
+  structure PreprocessingAST
+  structure ExpressionConstructionPass 
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -74,6 +76,8 @@ is
   passes/statement/statement-ast.sml
   passes/statement/statement-division-pass.sml
   passes/preprocess/preprocessing-pass.sml
+  passes/preprocess/preprocessing-ast.sml
+  passes/preprocess/expression-construction-pass.sml
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
 

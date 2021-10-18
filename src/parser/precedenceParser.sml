@@ -1,8 +1,8 @@
 
 
 functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
-    (* val DEBUG = true *)
-    val DEBUG = false
+    val DEBUG = true
+    (* val DEBUG = false *)
     
             open Operators
             open ParseAST
@@ -271,14 +271,16 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 alternatives (map parseOpOperator (findOps fixity pred assoc))
             
             (* and parseBinding (until : string) : parser = debug ("parseBinding until " ^ until) (parseBinding_ until) *)
+            (* TODO: until only looks at single char, may want to check all chars of arg *)
             and parseBinding (until : UTF8String.t) : parser = fn exp =>
                 let 
                     fun go (remaining : UTF8String.t) (pending : UTF8String.t) : (ParseOpAST* (UTF8String.t)) list= 
-                    (case remaining of 
-                        [] => [(ParseOpAST(Binding pending, []), [])] (* run out of input, return pending *)
-                        | ( s :: ls) => if hd until = s
-                                                then [(ParseOpAST(Binding pending, []), s ::ls)]
-                                                else go ls (pending@[s]))
+                        if List.length remaining < List.length until 
+                        then (*add all pending and remaining and return *)
+                              [(ParseOpAST(Binding(pending @ remaining), []), [])]
+                        else if UTF8String.isPrefix until remaining
+                             then [(ParseOpAST(Binding pending, []), remaining)]
+                             else go (tl remaining) (pending @ [hd remaining])
                 in go exp [] 
                 end
                 
