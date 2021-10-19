@@ -72,7 +72,7 @@ structure PreprocessingPass = struct
 
     fun parseJudgment (s : UTF8String.t) : pJudgment = 
     (let
-       val _ = print ("Parsing judgment on" ^ UTF8String.toString s ^ "\n");
+       (* val _ = print ("Parsing judgment on" ^ UTF8String.toString s ^ "\n"); *)
        val res = 
         case DeclarationParser.parseDeclarationSingleOutput declOps s of
             (oper, [l1, l2]) => 
@@ -90,12 +90,13 @@ structure PreprocessingPass = struct
                 then POpDeclaration (l1, parseAssoc l2, parsePrecedence l3)
                 else raise Fail "pp85"
             | _ => raise Fail "pp26: malformed output : not two args or three args"
-        val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res)
+        (* val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res) *)
         in res end
     )
 
     fun preprocessAST (s : StatementAST.t) : PreprocessingAST.t = 
-    (print (PrettyPrint.show_statementast s);
+    (
+        (* print (PrettyPrint.show_statementast s); *)
     case s of 
         StatementAST.Leaf => []
         | StatementAST.StatementNode (s, rest) => 

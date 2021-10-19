@@ -2,6 +2,7 @@ structure ExpressionConstructionPass =
 struct
     open PreprocessingAST
     open TypeCheckingAST
+    open Operators
     
     (* Precedence hierachy: 
     
@@ -17,7 +18,7 @@ struct
     (* l : e *)
     val unitTypeOp  = Operators.parseOperatorStr "有" false false 42 []
     val nullTypeOp  = Operators.parseOperatorStr "无" false false 42 []
-    val labeledTypeCompOp  = Operators.parseOperatorStr "〇表〇" false false 40 []
+    val labeledTypeCompOp  = Operators.parseOperatorStr "夫〇表〇" false false 40 [1]
     val prodTypeOp  = Operators.parseOperatorStr "〇合〇" true false 38 []
     val sumTypeOp  = Operators.parseOperatorStr "〇亦〇" true false 36 []
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 35 []
@@ -42,6 +43,8 @@ struct
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 52 [3]
     val typeLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 50 [1]
 
+    val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
+
     val allTypeOps = [
         unitTypeOp, nullTypeOp, labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
         universalTypeOp, existentialTypeOp, recursiveTypeOp]
@@ -51,14 +54,138 @@ struct
         lambdaExprWithTypeOp, typeLambdaExprOp
     ]
 
+    exception ElaborateFailure of string
+    exception InternalErrorECP
+    fun flattenRight (ast : Operators.OpAST) (curOp : Operators.operator)  : OpAST list = 
+        case ast of
+        OpAST(oper, [l1,l2]) => if oper = curOp
+                then l1 :: flattenRight l2 curOp
+                else [ast]
+        | _ => [ast]
+    
+    fun elaborateUnknownName (ast : OpAST) : UTF8String.t = 
+        case ast of
+        UnknownOpName(l1) => l1
+        | _ => raise ElaborateFailure "Expect name here, (this is perhaps a bug in the design, but until we fix it, put a bracket around the name expecting expressions,  the parser may have incorrectly parsed that as an expression)"
 
-    fun elaborateOpASTtoType (ast : Operators.OpAST) : TypeCheckingAST.Type = 
-        (print (PrettyPrint.show_opast ast);
-        raise Fail "fail")
+    fun elaborateNewName (ast : OpAST) : UTF8String.t = 
+        case ast of
+        NewOpName(l1) => l1
+        | _ => raise ElaborateFailure "Expect new name (perhaps internal)"
+    
+    fun elaborateLabeledType (ast : Operators.OpAST) : Label * Type = 
+        case ast of
+        OpAST(oper, [NewOpName(l1), l2]) => if 
+            oper = labeledTypeCompOp 
+            then (l1, elaborateOpASTtoType l2)
+            else raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
+        | _ => raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
 
+    and elaborateOpASTtoType (ast : Operators.OpAST) : TypeCheckingAST.Type = 
+        (
+            (* print (PrettyPrint.show_opast ast); *)
+        case ast of
+             UnknownOpName (s) => TypeVar s
+            | OpAST(oper, []) => (
+                if oper = unitTypeOp then UnitType
+                else if oper = nullTypeOp then NullType
+                else raise InternalErrorECP
+                        )
+            | OpAST(oper, [a1,a2]) => (
+                if oper = prodTypeOp
+                then (let val args = flattenRight ast oper
+                    in Prod (map elaborateLabeledType args)
+                    end)
+                else 
+                if oper = sumTypeOp
+                then (let val args = flattenRight ast oper
+                    in Sum (map elaborateLabeledType args)
+                    end)
+                else
+                if oper = functionTypeOp
+                then Func ((elaborateOpASTtoType a1),(elaborateOpASTtoType a2))
+                else 
+                if oper = universalTypeOp
+                then Forall ((elaborateNewName a1),(elaborateOpASTtoType a2))
+                else 
+                if oper = existentialTypeOp
+                then Exists ((elaborateNewName a1),(elaborateOpASTtoType a2))
+                else 
+                if oper = recursiveTypeOp
+                then Rho ((elaborateNewName a1),(elaborateOpASTtoType a2))
+                else 
+                raise ElaborateFailure "Expected a type constructor"
+            )
+            | _ => raise ElaborateFailure "Expected a type constructor"
+        )
+    
     fun elaborateOpASTtoExpr (ast : Operators.OpAST) : TypeCheckingAST.Expr = 
-        (print (PrettyPrint.show_opast ast);
-        raise Fail "fail")
+    let fun snd (x : OpAST list) : OpAST = (hd (tl x))
+    in
+        case ast of
+             UnknownOpName (s) => ExprVar s
+            | OpAST(oper, l) => (
+                if getUID oper >= elabAppBound 
+                then (* elab app *)
+                    foldl (fn (arg, acc) => App (acc,arg)) (ExprVar (getOriginalName oper)) (map elaborateOpASTtoExpr l)
+                else
+                if oper = unitExprOp
+                then UnitExpr
+                else
+                if oper = projExprOp
+                then Proj(elaborateOpASTtoExpr (hd l), elaborateUnknownName (snd l))
+                else 
+                if oper = injExprOp
+                then Inj( elaborateUnknownName (hd l), elaborateOpASTtoExpr (snd l))
+                else 
+                if oper = foldExprOp
+                then Fold( elaborateOpASTtoExpr (hd l))
+                else
+                if oper = unfoldExprOp
+                then Unfold( elaborateOpASTtoExpr (hd l))
+                else
+                if oper = caseExprOp
+                then let
+                    val args = flattenRight (snd l) caseAlternativeOp
+                    in Case (elaborateOpASTtoExpr (hd l), (map (fn x => 
+                    case x of
+                        OpAST(oper, [lbl, evar, expr]) => 
+                        if oper = caseClauseOp
+                        then (elaborateUnknownName lbl, 
+                        elaborateNewName evar, elaborateOpASTtoExpr expr)
+                        else raise ElaborateFailure "Expected a case clause"
+                        | _ => raise ElaborateFailure "Expected a case clause"
+            ) args))
+            end
+                else 
+                if oper = typeAppExprOp
+                then TApp(elaborateOpASTtoExpr (hd l), elaborateOpASTtoType (snd l))
+                else
+                if oper = packExprOp
+                then Pack(elaborateOpASTtoType (hd l), elaborateOpASTtoExpr (snd l))
+                else
+                if oper = unpackExprOp
+                then Open(elaborateOpASTtoExpr (hd l), (elaborateNewName (snd l), elaborateNewName (hd (tl (tl l))), 
+                elaborateOpASTtoExpr (hd (tl (tl (tl (l)))))))
+                else
+                if oper = lambdaExprOp
+                then Lam(elaborateNewName (hd l), elaborateOpASTtoExpr (snd l))
+                else
+                if oper = lambdaExprWithTypeOp
+                then LamWithType(elaborateOpASTtoType (hd l), 
+                elaborateNewName (snd l), elaborateOpASTtoExpr (hd (tl (tl l))))
+                else
+                if oper = typeLambdaExprOp
+                then TAbs(elaborateNewName (hd l), 
+                elaborateOpASTtoExpr (snd l))
+                else
+                raise ElaborateFailure "Expected Expression constructs"
+            )
+                | _ => 
+                raise ElaborateFailure "Expected Expression constructs"
+    end
+
+            
 
     structure PrecParser = MixFixParser(structure Options = struct 
         val enableBracketedExpression = true

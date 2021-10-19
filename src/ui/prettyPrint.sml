@@ -87,7 +87,7 @@ fun show_preprocessaastJ x = let
 open PreprocessingAST
 in 
 case x of 
-   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ ": " ^ UTF8String.toString tbody
+   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ " = " ^ UTF8String.toString tbody
   | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ UTF8String.toString tbody
   | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ UTF8String.toString ebody
   | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ UTF8String.toString  ebody
@@ -106,4 +106,59 @@ in case x of
     Leaf => ". /* END */\n"
     | StatementNode (stmt, next) => UTF8String.toString stmt ^ "\n -> "^ show_statementast next
     end
+fun show_typecheckingType x = let
+open TypeCheckingAST
+val st = show_typecheckingType
+val se = show_typecheckingExpr
+val ss = UTF8String.toString
+in case x of
+ TypeVar t => ss t
+                    | UnitType => "1"
+                    | Prod l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | NullType => "0"
+                    | Sum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | Func (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    | Forall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | Exists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | Rho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+end
+
+
+and show_typecheckingExpr x = let
+open TypeCheckingAST
+val st = show_typecheckingType
+val se = show_typecheckingExpr
+val ss = UTF8String.toString
+in case x of
+ExprVar v => ss v
+                    | UnitExpr => "()"
+                    | Tuple (l) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
+                    | Proj (e, lbl) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
+                    | Inj  ( lbl,e) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
+                    | Case (e, l)=>"(case"^ se e ^ "of {"^ String.concatWith "+ " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
+                    | Lam (x, e) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | LamWithType (t, x, e) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
+                    | App (e1, e2)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
+                    | TAbs (x, e) => "(Λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | TApp (e1, e2)=> "("^ se e1 ^ " ["^ st e2 ^"])"
+                    | Pack (t, e)=> "pack("^ st t ^ ", "^ se e ^")"
+                    | Open (e, (t, x, e2))=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
+                    | Fold (e) => "fold(" ^ se e ^")"
+                    | Unfold (e) => "unfold("^  se e ^")"
+                end
+
+fun show_typecheckingDecl x = let
+open TypeCheckingAST
+in case x of 
+   TypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingType tbody
+  | TermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingType tbody
+  | TermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingExpr ebody
+  | TermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingExpr  ebody
+  | DirectExpr(ebody) => "/* eval */ " ^ show_typecheckingExpr ebody ^ "/* end eval */ " 
+  end
+
+fun show_typecheckingSig x = let
+in
+          String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
+end
 end

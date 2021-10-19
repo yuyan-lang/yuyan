@@ -18,6 +18,19 @@ struct
 
   fun getPrecedence (Operator(p, _, _, _, _)) = p
     fun getUID(Operator (_, _, _, _, uid)) = uid
+    fun getOriginalName(Operator(p, fix, assoc, comps, uid))=
+      let val baseName = List.concat (map (fn x => 
+       case x of
+        OpCompExpr =>  [underscoreChar]
+        | OpCompBinding =>  [underscoreChar] (* Original name has no bindingChar *)
+        | OpCompString s => s) comps)
+      in case fix of
+          Prefix =>  baseName @[underscoreChar] 
+          | Infix => underscoreChar :: baseName @[ underscoreChar ]
+          | Postfix =>underscoreChar :: baseName
+          | Closed => baseName
+        end
+
 
     fun getAllOccuringNameChars (Operator(_, _, _, l, _)) : UTF8Char.t list = 
             List.concat (map (fn x => case x of OpCompString s => s | _ => []) l)

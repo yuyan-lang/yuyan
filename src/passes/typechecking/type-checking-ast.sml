@@ -6,19 +6,23 @@ structure TypeCheckingAST = struct
     type Label = UTF8String.t
 
     datatype Type = TypeVar of TVar
-                    | EagerProd of (Label * Type) list
+                    | UnitType
+                    | Prod of (Label * Type) list
+                    | NullType
                     | Sum of (Label * Type) list
-                    | Func of TVar * Type
+                    | Func of Type * Type
                     | Forall of TVar * Type
                     | Exists of TVar * Type
                     | Rho of TVar * Type
 
     datatype Expr = ExprVar of EVar
-                    | EagerTuple of Expr list
-                    | Proj of Label * Expr
+                    | UnitExpr
+                    | Tuple of Expr list
+                    | Proj of Expr * Label
                     | Inj of Label * Expr
-                    | Case of (Label * EVar * Expr) list
+                    | Case of Expr * (Label * EVar * Expr) list
                     | Lam of EVar * Expr
+                    | LamWithType of Type * EVar * Expr
                     | App of Expr * Expr
                     | TAbs of TVar * Expr
                     | TApp of Expr * Type

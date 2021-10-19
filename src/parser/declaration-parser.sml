@@ -2,7 +2,7 @@
 structure DeclarationParser =
 struct
     open ParseAST
-    val DEBUG = true
+    val DEBUG = false
     (* type parser = UTF8String.t -> (operator * UTF8String.t list) list  operator and all arguments *)
     (* declarations are top level constructs that ignore internal expression structure, 
     but they contain arbitrary unknown names and structured parenthesis *)
@@ -46,8 +46,9 @@ struct
      and parseBinding (until : UTF8String.t) : UTF8String.t -> UTF8String.t * UTF8String.t = fn exp =>
                 let 
                     fun go (remaining : UTF8String.t) (pending : UTF8String.t) : (UTF8String.t * UTF8String.t) = 
-                        (print ("going on r = "^ UTF8String.toString remaining ^ " and pending = " ^ UTF8String.toString pending ^
-                        " until = " ^ UTF8String.toString until ^ "\n" );
+                        (
+                            (* print ("going on r = "^ UTF8String.toString remaining ^ " and pending = " ^ UTF8String.toString pending ^
+                        " until = " ^ UTF8String.toString until ^ "\n" ); *)
                         if List.length remaining < List.length until 
                         then (*add all pending and remaining and return *)
                               ((pending @ remaining, []))
@@ -72,7 +73,8 @@ struct
 
     fun parseDeclarationSingleOp(l :  opComponentType list) : UTF8String.t -> (UTF8String.t list) option
     = fn exp =>
-        (print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ UTF8String.toString exp ^ "\n");
+        (
+            (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ UTF8String.toString exp ^ "\n"); *)
         case l of
             [] => SOME([])
             | [OpCompExpr] => SOME([exp])

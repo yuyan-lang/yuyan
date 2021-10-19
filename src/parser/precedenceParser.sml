@@ -1,8 +1,8 @@
 
 
 functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
-    val DEBUG = true
-    (* val DEBUG = false *)
+    (* val DEBUG = true *)
+    val DEBUG = false
     
             open Operators
             open ParseAST
