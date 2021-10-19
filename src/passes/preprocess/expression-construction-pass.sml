@@ -26,7 +26,7 @@ struct
     val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 32 [1]
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 30 [1]
 
-    val unitExprOp = Operators.parseOperatorStr "生" true false 72 []
+    val unitExprOp = Operators.parseOperatorStr "元" true false 72 []
     val projExprOp = Operators.parseOperatorStr "〇之〇" true false 70 []
     val appExprOp = Operators.parseOperatorStr "〇于〇" true false 69 []
     val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 68 []
