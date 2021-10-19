@@ -28,9 +28,9 @@ struct
 
     val unitExprOp = Operators.parseOperatorStr "生" true false 72 []
     val projExprOp = Operators.parseOperatorStr "〇之〇" true false 70 []
-    val appExprOp = Operators.parseOperatorStr "〇于〇" true false 68 []
-    val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 66 []
-    val injExprOp = Operators.parseOperatorStr "〇临〇" false false 66 []
+    val appExprOp = Operators.parseOperatorStr "〇于〇" true false 69 []
+    val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 68 []
+    val injExprOp = Operators.parseOperatorStr "〇临〇" false false 67 []
     val foldExprOp = Operators.parseOperatorStr "卷〇" true false 66 []
     val unfoldExprOp = Operators.parseOperatorStr "舒〇" true false 65 []
     val caseClauseOp = Operators.parseOperatorStr "曰〇则有〇而〇" true false 64 [3]
@@ -194,7 +194,7 @@ struct
     fun parseType (tbody : UTF8String.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
         elaborateOpASTtoType (PrecParser.parseMixfixExpression allTypeOps tbody) 
     fun parseExpr (ebody : UTF8String.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
-    = elaborateOpASTtoExpr (PrecParser.parseMixfixExpression (allTypeOps@addedOps) ebody) 
+    = elaborateOpASTtoExpr (PrecParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
     
 
     fun constructOpAST (ast : PreprocessingAST.t) (addedOps : Operators.operator list) 

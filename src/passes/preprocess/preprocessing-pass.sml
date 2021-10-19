@@ -16,7 +16,7 @@ structure PreprocessingPass = struct
     (* #define e = E *)
     val termMacroOp = Operators.parseOperatorStr "设〇为〇" false false 0 []
     (* e = E *)
-    val termDefinitionOp = Operators.parseOperatorStr "临〇而为〇" false false 0 []
+    val termDefinitionOp = Operators.parseOperatorStr "施〇乃为〇" false false 0 []
     (* infixl op 232 *)
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
     
