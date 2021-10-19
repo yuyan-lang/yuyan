@@ -31,10 +31,11 @@ The key words (that cannot appear as a name and has a special meaning no matter 
  |〇临〇| l.e |
    |卷〇| fold e|
    |舒〇| unfold e| 
-   |鉴〇而「曰〇则有〇而〇[或〇曰〇则有〇而〇]+」| case e of {l.x => e1 \| l2.y => e2} |
+   |鉴〇而「曰〇则有〇而〇[或曰〇则有〇而〇]+」| case e of {l.x => e1 \| l2.y => e2} |
    |授〇以〇| e [T] |
    |入〇合〇| pack t in e |
    |开〇则有〇者〇而〇| open e as t, x in e2 |
 |会〇而〇| λ x. e |
 |遇〇者〇而〇| λ x: T. e|
+|循〇以〇| fix f. e| 
 |受〇而〇| Λ t. e|

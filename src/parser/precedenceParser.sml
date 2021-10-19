@@ -1,8 +1,10 @@
 
 
 functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
-    val DEBUG = true
-    (* val DEBUG = false *)
+    (* val DEBUG = true *)
+    val DEBUG = false
+    (* val DEBUGLIGHT = true *)
+    val DEBUGLIGHT = false
     
             open Operators
             open ParseAST
@@ -126,7 +128,13 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 res 
                 end
 
-            fun alternatives alt = alternativesTryAll alt
+            fun alternatives alt = 
+                (
+                    (* print ("alternatives on list of length " ^ Int.toString (List.length alt) ^ "\n");
+                    alternativesTryAll alt;
+                    print ("complete alternatives on list of length " ^ Int.toString (List.length alt) ^ "\n"); *)
+                    alternativesTryAll alt
+                )
 
         val defaultSeenCharset =
         if Options.enableBracketedExpression 
@@ -211,10 +219,10 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             ]) PredDict.empty allPrecedences
 
 
-            val y = if DEBUG 
+            val y = if DEBUG  orelse DEBUGLIGHT
             then (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n"))
             else ()
-            val y = if DEBUG 
+            val y = if DEBUG  orelse DEBUGLIGHT
             then (print ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n"))
             else ()
 
@@ -348,7 +356,9 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             and hat oper = if DEBUG then (debug ("hat_"^ Int.toString(oper)) (hat_ oper)) 
             else hat_ oper
             and hat_ (pred : int) : parser = let
+                (* val _ = print ("debug" ^ Int.toString pred ^ "\n"); *)
                 val masking = PredDict.lookup opersPresentAtPred pred
+                val upPpred = upP pred
                 in
                 alternatives (List.concat [
                     (* closed case *)
@@ -358,34 +368,34 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                     (* non assoc prefix and postfix *)
                     if List.nth(masking, 1) then [] else
                     [sequence (combineASTByExtractingFromInternal PrefixNoneAssoc 0) 
-                        [parseOpFixityPred Prefix pred NoneAssoc, upP pred]],
+                        [parseOpFixityPred Prefix pred NoneAssoc, upPpred]],
                     if List.nth(masking, 2) then [] else
                     [sequence (combineASTByExtractingFromInternal PostfixNoneAssoc 1) 
-                        [upP pred, parseOpFixityPred Postfix pred NoneAssoc]],
+                        [upPpred, parseOpFixityPred Postfix pred NoneAssoc]],
 
                     (* assoc prefix and postfix *)
                     if List.nth(masking, 3) then [] else
                     [sequence (combineAST (PrefixRightAssoc pred)) 
-                        [many1 (parseOpFixityPred Prefix pred RightAssoc), upP pred]],
+                        [many1 (parseOpFixityPred Prefix pred RightAssoc), upPpred]],
                     if List.nth(masking, 4) then [] else
                     [sequence (combineAST (PostfixLeftAssoc pred)) 
-                        [upP pred, many1 (parseOpFixityPred Postfix pred LeftAssoc)]],
+                        [upPpred, many1 (parseOpFixityPred Postfix pred LeftAssoc)]],
                     
                     (* binary *)
                     if List.nth(masking, 5) then [] else
                     [sequence (combineASTByExtractingFromInternal InfixNoneAssoc 1) 
-                        [upP pred, parseOpFixityPred Infix pred NoneAssoc, upP pred]],
+                        [upPpred, parseOpFixityPred Infix pred NoneAssoc, upPpred]],
                     if List.nth(masking, 6) then [] else
-                    [sequence (combineAST (InfixLeftAssoc pred)) [upP pred, 
+                    [sequence (combineAST (InfixLeftAssoc pred)) [upPpred, 
                             many1 (sequence (combineASTByExtractingFromInternal InfixLeftAssocLeftArrow 0) 
-                                [parseOpFixityPred Infix pred LeftAssoc, upP pred])]],
+                                [parseOpFixityPred Infix pred LeftAssoc, upPpred])]],
                     if List.nth(masking, 7) then [] else
                     [sequence (combineAST (InfixRightAssoc pred)) [
                             many1 (sequence (combineASTByExtractingFromInternal InfixRightAssocRightArrow 1) 
-                            [upP pred , parseOpFixityPred Infix pred RightAssoc]), upP pred]],
+                            [upPpred , parseOpFixityPred Infix pred RightAssoc]), upPpred]],
                     
                     (* I think the paper made a mistake here, we also directly need to push up the precedence *)
-                    [upP pred]
+                    [upPpred]
                 ])
                 end
 
@@ -420,7 +430,10 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
 
             and parseExp (): parser = 
             (*Becuase of inclusion of up P in hat P, this is enough *)
-            hat (hd allPrecedences)
+        (if DEBUG 
+        then (print ("parseExp \n"))
+        else ();
+            hat (hd allPrecedences))
             
             and parseExpWithEOF' () : parser = 
             sequence (combineAST ExpWithEOF) [
@@ -428,6 +441,9 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             ]
         in 
         debugAlternativeEntryTimes := [];
+        if DEBUG 
+        then (print ("STARTING \n"))
+        else ();
         if withEOF then
         parseExpWithEOF'()(exp)
         else parseExp()(exp)

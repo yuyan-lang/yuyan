@@ -10,7 +10,7 @@ struct
         On Expressons : 
         (from highest)
             () >  Proj > App > Pair = Inj = fold >  unfold  > Case > TApp 
-            >  pack > open > Lambda > Lambda/wtype > TLambda
+            >  pack > open > Lambda > Lambda/wtype > fix >  TLambda
     
     
     *)
@@ -28,7 +28,7 @@ struct
 
     val unitExprOp = Operators.parseOperatorStr "元" true false 72 []
     val projExprOp = Operators.parseOperatorStr "〇之〇" true false 70 []
-    val appExprOp = Operators.parseOperatorStr "〇于〇" true false 69 []
+    val appExprOp = Operators.parseOperatorStr "〇于〇" true true 69 []
     val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 68 []
     val injExprOp = Operators.parseOperatorStr "〇临〇" false false 67 []
     val foldExprOp = Operators.parseOperatorStr "卷〇" true false 66 []
@@ -41,6 +41,7 @@ struct
     val unpackExprOp = Operators.parseOperatorStr "开〇则有〇者〇而〇" true false 54 [3,5]
     val lambdaExprOp = Operators.parseOperatorStr "会〇而〇" true false 52 [1]
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 52 [3]
+    val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 51 [1]
     val typeLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 50 [1]
 
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
@@ -51,7 +52,7 @@ struct
     val allTypeAndExprOps = allTypeOps @ [ unitExprOp,
         projExprOp, appExprOp, pairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 
         caseAlternativeOp, caseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
-        lambdaExprWithTypeOp, typeLambdaExprOp
+        lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp
     ]
 
     exception ElaborateFailure of string
@@ -118,11 +119,13 @@ struct
             )
             | _ => raise ElaborateFailure "Expected a type constructor"
         )
+        handle ElaborateFailure s => 
+        raise ElaborateFailure (s ^ "\n when elaborating "^ PrettyPrint.show_opast ast )
     
     fun elaborateOpASTtoExpr (ast : Operators.OpAST) : TypeCheckingAST.Expr = 
     let fun snd (x : OpAST list) : OpAST = (hd (tl x))
     in
-        case ast of
+        (case ast of
              UnknownOpName (s) => ExprVar s
             | OpAST(oper, l) => (
                 if getUID oper >= elabAppBound 
@@ -134,6 +137,12 @@ struct
                 else
                 if oper = projExprOp
                 then Proj(elaborateOpASTtoExpr (hd l), elaborateUnknownName (snd l))
+                else 
+                if oper = appExprOp
+                then App(elaborateOpASTtoExpr (hd l), elaborateOpASTtoExpr (snd l))
+                else 
+                if oper = pairExprOp
+                then Tuple(map elaborateOpASTtoExpr (flattenRight ast pairExprOp))
                 else 
                 if oper = injExprOp
                 then Inj( elaborateUnknownName (hd l), elaborateOpASTtoExpr (snd l))
@@ -175,6 +184,10 @@ struct
                 then LamWithType(elaborateOpASTtoType (hd l), 
                 elaborateNewName (snd l), elaborateOpASTtoExpr (hd (tl (tl l))))
                 else
+                if oper = fixExprOp
+                then Fix(elaborateNewName (hd l), 
+                elaborateOpASTtoExpr (snd l))
+                else
                 if oper = typeLambdaExprOp
                 then TAbs(elaborateNewName (hd l), 
                 elaborateOpASTtoExpr (snd l))
@@ -183,6 +196,9 @@ struct
             )
                 | _ => 
                 raise ElaborateFailure "Expected Expression constructs"
+        )
+        handle ElaborateFailure s => 
+        raise ElaborateFailure (s ^ "\n when elaborating "^ PrettyPrint.show_opast ast )
     end
 
             

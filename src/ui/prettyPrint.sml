@@ -135,7 +135,7 @@ ExprVar v => ss v
                     | Tuple (l) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
                     | Proj (e, lbl) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
                     | Inj  ( lbl,e) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
-                    | Case (e, l)=>"(case"^ se e ^ "of {"^ String.concatWith "+ " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
+                    | Case (e, l)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
                     | Lam (x, e) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
                     | LamWithType (t, x, e) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
                     | App (e1, e2)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
@@ -145,6 +145,7 @@ ExprVar v => ss v
                     | Open (e, (t, x, e2))=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
                     | Fold (e) => "fold(" ^ se e ^")"
                     | Unfold (e) => "unfold("^  se e ^")"
+                    | Fix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
                 end
 
 fun show_typecheckingDecl x = let

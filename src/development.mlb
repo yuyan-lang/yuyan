@@ -14,18 +14,15 @@ local
 
     builtinOperators/specialChars.sml
 
-    operators.sml
+    builtinOperators/operators.sml
 
     parser/rawAST.sml
-    yulang.grm.sml
-    yulang.lex.sml
+    lexer/yulang.grm.sml
+    lexer/yulang.lex.sml
 
 
     parser/parseAST.sml
-    prettyPrint.sml
-    parser/precedenceParser.sml
-    parser/elaboratePrecedence.sml
-    parser/mixfixParser.sml
+    parser/declaration-parser.sml
 
 
 
@@ -34,7 +31,23 @@ local
     builtinOperators/natOps.sml
     builtinOperators/groupOps.sml
     builtinOperators/builtin.sml
+    builtinOperators/operator-registry.sml
 
+    passes/statement/statement-ast.sml
+    passes/typechecking/type-checking-ast.sml
+    passes/typechecking/type-checking-pass.sml
+    passes/preprocess/preprocessing-ast.sml
+    passes/preprocess/preprocessing-pass.sml
+
+    ui/prettyPrint.sml
+    parser/parser-options.sig
+    parser/precedenceParser.sml
+    parser/elaboratePrecedence.sml
+    parser/mixfixParser.sml
+
+    passes/statement/statement-division-pass.sml
+    passes/preprocess/expression-construction-pass.sml
+    ui/type-check-and-eval.sml
     ui/repl.sml
 
     replTest.sml

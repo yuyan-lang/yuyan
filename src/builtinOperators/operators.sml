@@ -44,16 +44,34 @@ struct
 
     fun stripHead (s : UTF8String.t) = tl s
     fun stripTail (s : UTF8String.t) = List.take (s, List.length(s) -1)
+  fun show_opcomptype (x : opComponentType) :string = let 
+    in
+      case x of
+        OpCompExpr => UTF8Char.toString underscoreChar
+        | OpCompBinding => UTF8Char.toString bindingChar
+        | OpCompString s => UTF8String.toString s
+    end
+      fun show_opcomptypes (x : opComponentType list) :string = let 
+    in
+    "[" ^ String.concatWith ", " (map show_opcomptype x) ^ "]"
+    end
+
 
     fun toNameComponents (s : UTF8String.t) (bindingIdxs : int list) : opComponentType list = 
-    let val (res, pending) = foldr (fn (schar,(res, pending)) => 
+    let 
+    (* val _ = print ("doing " ^ UTF8String.toString s ^ "\n") *)
+        val (res, pending) = foldl (fn (schar,(res, pending)) => 
             if schar = underscoreChar
-            then ((if List.exists (fn i => List.length(res) + 1 = i) bindingIdxs 
+            then (
+                    (* print ("res = " ^ show_opcomptypes res ^ " pending is" ^ UTF8String.toString pending ^ "\n")
+                    ; *)
+                    (res @[OpCompString(pending),
+                    (if List.exists (fn i => List.length(res) + 1 = i) bindingIdxs 
                    then OpCompBinding 
                    else OpCompExpr)
-            :: OpCompString(pending) :: res, [])
-            else (res, schar::pending)) ([], []) s 
-    in (OpCompString(pending) :: res) end
+            ] , []))
+            else (res, pending@[schar])) ([], []) s 
+    in ( res@[OpCompString(pending)] ) end
 
     exception DoubleUnderscore
 

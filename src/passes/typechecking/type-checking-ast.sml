@@ -30,6 +30,7 @@ structure TypeCheckingAST = struct
                     | Open of Expr * (TVar * EVar * Expr)
                     | Fold of Expr
                     | Unfold of Expr
+                    | Fix of EVar * Expr
 
 
     datatype Declaration = 

@@ -28,7 +28,7 @@ struct
                             opastPrependArg (elaborate internal) arg
                         ) (elaborate arg) internals
                     | (InfixNoneAssoc oper, [argL, internal, argR]) => 
-                        opastPrependArg (opastAppendArg (elaborate internal) (elaborate argR)) (elaborate argL)
+                        opastPrependArg (elaborate argL) (opastAppendArg (elaborate internal) (elaborate argR)) 
                     | (InfixLeftAssoc _, [argL, ParseOpAST(Many1, internalsArgR)]) => 
                         foldl (fn (internalArgR, argL) => (
                             (* print ("ARGL is " ^ PrettyPrint.show_opast argL ^ "\n"); *)

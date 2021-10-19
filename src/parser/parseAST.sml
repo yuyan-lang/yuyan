@@ -25,10 +25,12 @@ open Operators
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
         exception ParseFailure of string
 
+    exception InternalFailure of OpAST * OpAST
 
     fun opastAppendArg  (original :  OpAST )(arg : OpAST)  : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, l@[arg])
     fun opastPrependArg  (arg : OpAST) (original :  OpAST ) : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, arg :: l)
+                        | _ => raise InternalFailure (arg, original)
     
 end
