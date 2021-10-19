@@ -1,4 +1,7 @@
 .cm
 .DS_Store
 *.out
+a.png
+a.*
 testfiles/
+a.dot

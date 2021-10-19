@@ -9,6 +9,7 @@ structure PreprocessingAST = struct
                        | PTermDefinition of UTF8String.t * UTF8String.t
                        | POpDeclaration of UTF8String.t * Operators.associativity * int
                        | PDirectExpr of UTF8String.t
+                       | PComment of UTF8String.t
     type preprocessAST = pJudgment list
 
     type t = preprocessAST

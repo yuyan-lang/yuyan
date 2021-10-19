@@ -12,6 +12,33 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             structure PredDict : DICT =
                 RedBlackDict
                 (structure Key = IntOrdered)
+            structure IntDict : DICT =
+                RedBlackDict
+                (structure Key = IntOrdered)
+
+                structure FixityHashable
+   :> HASHABLE where type t = fixity
+   =
+   struct
+      type t = fixity
+
+      val eq : fixity * fixity -> bool = op =
+      val hash = fn f => Word.fromInt (case f of Infix => 0 | Postfix => 1 | Prefix => 2 | Closed => 3)
+   end
+                structure AssocHashable
+   :> HASHABLE where type t = associativity
+   =
+   struct
+      type t = associativity
+
+      val eq : associativity * associativity -> bool = op =
+      val hash = fn f => Word.fromInt (case f of NoneAssoc => 0 | LeftAssoc => 1 | RightAssoc => 2)
+   end
+            structure AllOpsTable : TABLE =
+                HashTable
+                (structure Key = ProductHashable(structure X = FixityHashable;
+                 structure Y = ProductHashable(structure X = IntHashable;
+                  structure Y = AssocHashable)))
             structure UTF8StringSet : SET = RedBlackSet(structure Elem = UTF8StringOrdered)
             structure UTF8CharSet : SET = RedBlackSet(structure Elem = UTF8CharOrdered)
         type parser = UTF8String.t -> (ParseOpAST* (UTF8String.t)) list 
@@ -196,15 +223,29 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 | l => l
             val allPrecedences : int list= removeDuplicateInSorted (Quicksort.sort 
                         (Int.compare) (map (fn (Operator(i,_,  _, _, _)) => i) allOps))
+            val nextPredDict : int IntDict.dict = let 
+                fun go remaining d= case remaining of
+                    (x1 :: x2 :: l) => go (x2 :: l) (IntDict.insert d x1 x2)
+                    | _ => d
+                in go allPrecedences IntDict.empty end
+
             val predDict  = 
             let val emptyDict : operator list PredDict.dict 
                 = foldr (fn (p, d) => PredDict.insert d p []) PredDict.empty allPrecedences
             in foldr (fn (oper, d) => PredDict.insert d (getPrecedence oper) 
                     (oper :: PredDict.lookup d (getPrecedence oper))) emptyDict allOps
             end
+
+            val allOpsTable : operator list AllOpsTable.table =(AllOpsTable.table (List.length allOps))
+            val _ = map (fn oper => case oper of
+                Operator(p, f, a, _, _) => case AllOpsTable.find allOpsTable (f, (p,a )) of 
+                    SOME l => AllOpsTable.insert allOpsTable (f, (p, a)) (oper::l)
+                    | NONE =>  AllOpsTable.insert allOpsTable (f, (p, a)) [oper])  allOps
                 
             fun findOps (fixity : fixity) (pred : int) (assoc : associativity) : operator list = 
-                List.filter (fn (Operator(p, f, a, _, _)) => p = pred andalso f = fixity andalso a = assoc) allOps
+               case AllOpsTable.find allOpsTable (fixity, (pred, assoc))
+               of SOME l => l | NONE => []
+
 
             val opersPresentAtPred = 
             foldr (fn (p, d) => PredDict.insert d p [
@@ -238,14 +279,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             end
 
             fun nextPred (pred : int) : int option = 
-                case index(pred,  allPrecedences)of
-                    SOME(idx) => (
-                        (* print ("some next pred for " ^ Int.toString pred  ^ " idx is " ^ Int.toString idx ^ "\n"); *)
-                                    if idx + 1 < List.length(allPrecedences) 
-                                then SOME(List.nth(allPrecedences, (idx + 1))) 
-                                else NONE)
-                    | NONE => (print ("no next pred for " ^ Int.toString pred ^ "\n");
-                    raise Fail "not possible 27")
+                IntDict.find nextPredDict pred 
 
             (* fun up (pred : int) : operator list = 
                 case nextPred pred of 

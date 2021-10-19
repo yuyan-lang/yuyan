@@ -25,7 +25,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
  |复〇为〇 | ρt. T |
 | ------------- |-------------| 
 |元| () |
-|〇之〇| e1.l |
+|〇中〇| e1.l |
  |〇于〇| (e1 e2) |
  |〇与〇| ⟨e1, e2, e3⟩ |
  |〇临〇| l.e |

@@ -93,6 +93,7 @@ case x of
   | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ UTF8String.toString  ebody
   | POpDeclaration(opName, assoc, pred) => "infix " ^ UTF8String.toString opName ^ Int.toString pred
   | PDirectExpr(ebody) => "/* eval */ " ^ UTF8String.toString ebody ^ "/* end eval */ " 
+  | PComment(ebody) => "/* comment : -- */ "
   end
 fun show_preprocessaast x = let
 open PreprocessingAST
@@ -131,7 +132,7 @@ val se = show_typecheckingExpr
 val ss = UTF8String.toString
 in case x of
 ExprVar v => ss v
-                    | UnitExpr => "()"
+                    | UnitExpr => "⟨⟩"
                     | Tuple (l) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
                     | Proj (e, lbl) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
                     | Inj  ( lbl,e) => "(" ^ ss lbl ^ "." ^ se e ^ ")"

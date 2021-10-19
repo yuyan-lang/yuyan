@@ -19,8 +19,10 @@ structure PreprocessingPass = struct
     val termDefinitionOp = Operators.parseOperatorStr "施〇乃为〇" false false 0 []
     (* infixl op 232 *)
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
+    (* // *)
+    val commentOp = Operators.parseOperatorStr "注〇" false false 0 []
     
-    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp]
+    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, commentOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t
     exception PreprocessMalformedPrecedence of UTF8String.t
@@ -89,6 +91,10 @@ structure PreprocessingPass = struct
                 if oper = opDeclarationOp
                 then POpDeclaration (l1, parseAssoc l2, parsePrecedence l3)
                 else raise Fail "pp85"
+            | (oper, [l1]) =>  
+                if oper = commentOp
+                then PComment (l1)
+                else raise Fail "pp95"
             | _ => raise Fail "pp26: malformed output : not two args or three args"
         (* val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res) *)
         in res end
