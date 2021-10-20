@@ -1,6 +1,6 @@
 
 
-functor MixFixParser  ( structure Options :PARSER_OPTIONS)
+structure MixFixParser  
   =
 struct
  
@@ -9,12 +9,14 @@ struct
     open Operators
 
 
-    exception NoPossibleParse of UTF8String.t
+    exception NoPossibleParse of MixedStr.t
     exception AmbiguousParse
 
-    structure Parser = PrecedenceParser(structure Options = Options)
+    structure Parser = PrecedenceParser(structure Options = struct 
+        val enableBracketedExpression = true
+        end)
 
-    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : UTF8String.t) : OpAST = 
+    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : MixedStr.t) : OpAST = 
             case Parser.parseExpWithOption allOps true exp of
                                 [] => raise NoPossibleParse exp
                                 | [(parseopast, _)] => ElaboratePrecedence.elaborate parseopast

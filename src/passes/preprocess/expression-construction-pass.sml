@@ -203,15 +203,13 @@ struct
 
             
 
-    structure PrecParser = MixFixParser(structure Options = struct 
-        val enableBracketedExpression = true
-        end)
-    exception ECPNoPossibleParse of UTF8String.t
+    structure PrecParser = MixFixParser
+    exception ECPNoPossibleParse of MixedStr.t
 
-    fun parseType (tbody : UTF8String.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
+    fun parseType (tbody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
         elaborateOpASTtoType (PrecParser.parseMixfixExpression allTypeOps tbody) 
         handle PrecParser.NoPossibleParse s => raise ECPNoPossibleParse s
-    fun parseExpr (ebody : UTF8String.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
+    fun parseExpr (ebody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
     = elaborateOpASTtoExpr (PrecParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
         handle PrecParser.NoPossibleParse s => raise ECPNoPossibleParse s
     

@@ -20,6 +20,15 @@ struct
             SChar c' => c' = ck
             | _ => false
 
+    fun isPlainChar (c : mixedchar) : bool=
+        case c of 
+            SChar _ => true
+            | _ => false
+    fun isPlainStr (c : mixedstr) : bool=
+        case c of 
+            (SChar _ :: xs) => isPlainStr xs
+            | _ => false
+
     fun isPrefix(s1 : UTF8String.t) (s2 : mixedstr) : bool = 
     case (s1, s2) of
         ([], _) => true
@@ -33,6 +42,8 @@ struct
             [] => false
             | (SChar s::xs) => if s = c  then true else containsCharTopLevel xs c
             | (_::xs) => containsCharTopLevel xs c
+    fun containsAllCharsTopLevel (s : mixedstr ) (test : UTF8String.t) : bool
+        = foldr (fn (x, acc) => acc andalso containsCharTopLevel s x) true test
 
     fun stripTail (s : mixedstr) = List.take (s, List.length(s) -1)
 
@@ -42,23 +53,26 @@ struct
             | (x :: xs) => if isChar x sep 
                             then sofar :: separateBy sep xs []
                             else separateBy sep xs (sofar@[x])
-        
+    
+    exception InternalFailure of mixedstr
     fun unSChar (s : mixedstr ) : UTF8String.t =
         case s of [] => []
         | (SChar x :: xs) => x :: unSChar xs
-        | _ => raise Fail "ms41"
+        | _ => (raise InternalFailure s)
 
-    fun processSingleQuoted( p : mixedstr) : mixedchar = 
-        if containsCharTopLevel p SpecialChars.period
-        then (* process as declaration *)
+    fun processDeclaration (p : mixedstr) : mixedchar = 
             UnparsedDeclaration (separateBy SpecialChars.period (
                 if isChar (List.last p) SpecialChars.period
                 then stripTail p else p
             ) [])
-        else if containsCharTopLevel p SpecialChars.leftSingleQuote
-            orelse containsCharTopLevel p SpecialChars.leftDoubleQuote
-            then (* expression *) UnparsedExpression p 
-            else (* name *) Name (unSChar p)
+
+    fun processSingleQuoted( p : mixedstr) : mixedchar = 
+        if containsCharTopLevel p SpecialChars.period
+        then (* process as declaration *)
+            processDeclaration p
+        else if isPlainStr p
+            then (* name *) Name (unSChar p)
+            else (* expression *) UnparsedExpression p 
             
 
     (* string escape two endDoubleQuote to escape double quote, else no escape *)
@@ -107,5 +121,38 @@ struct
                         SChar x :: scanTopLevel xs
 
     fun make(u : UTF8String.t) : mixedstr = scanTopLevel u
+
+    fun makeDecl(u : UTF8String.t) : mixedchar = processDeclaration (make u)
     
+    fun toUTF8StringChar(u : mixedchar) : UTF8String.t = 
+    let 
+        fun singleQuoteAround (u : UTF8String.t) = 
+            SpecialChars.leftSingleQuote :: u @ [SpecialChars.rightSingleQuote]
+        fun doubleQuoteAround (u : UTF8String.t) = 
+            SpecialChars.leftDoubleQuote :: u @ [SpecialChars.rightDoubleQuote]
+    in
+    case  u of 
+    UnparsedExpression s => singleQuoteAround (toUTF8String s)
+    | UnparsedDeclaration l => singleQuoteAround (List.concat ( (map (fn x => toUTF8String x @[SpecialChars.period]) l)))
+    | Name t => singleQuoteAround t
+    | Literal t => doubleQuoteAround t
+    | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"
+    | ParsedDeclaration d => UTF8String.fromString "PARSED SIG"
+    | SChar t => [t]
+    end
+    and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
+    fun toString(u : mixedstr) : string = UTF8String.toString (toUTF8String u)
+
+    exception StringNotPlain of mixedstr
+    fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
+        case u of 
+            SChar s => s
+            |_ => raise StringNotPlain [u]
+
+(* only name and plain schar's are plain *)
+    fun toPlainUTF8String (u : mixedstr) : UTF8String.t = 
+        case u of 
+            [] => []
+            | [Name s] => s
+            | _ => map toPlainUTF8Char u
 end

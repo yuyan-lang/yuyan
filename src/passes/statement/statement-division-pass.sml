@@ -1,7 +1,8 @@
 structure StatementDivisionPass =
 struct
 
-    val statementOps = [GroupOps.sepOp, GroupOps.endOp]
+(*obsolete because of mixedstr *)
+    (* val statementOps = [GroupOps.sepOp, GroupOps.endOp]
     val registry = OperatorRegistry.make statementOps
 
     open StatementAST
@@ -17,9 +18,7 @@ struct
                         | _ => raise Fail "sdp16"
                  else  raise Fail "sdp17" *)
 
-    structure Parser = MixFixParser(structure Options = struct
-        val enableBracketedExpression = false
-    end)
+    structure Parser = MixFixParser
 
     fun parseStatementAST (source : UTF8String.t) : StatementAST.t = 
     case source of 
@@ -29,7 +28,7 @@ struct
                 then parseStatementAST xs 
                 else let val (stmt, next) =  DeclarationParser.parseBinding [SpecialChars.period] source 
                      in StatementNode (stmt, parseStatementAST next)
-                    end
+                    end *)
 
 
 end

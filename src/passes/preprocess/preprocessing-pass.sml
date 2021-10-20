@@ -72,24 +72,26 @@ structure PreprocessingPass = struct
         else raise PreprocessMalformedPrecedence s
     ) 0 s
 
-    fun parseJudgment (s : UTF8String.t) : pJudgment = 
+
+    fun parseJudgment (s : MixedStr.t) : pJudgment = 
     (let
        (* val _ = print ("Parsing judgment on" ^ UTF8String.toString s ^ "\n"); *)
+       val tp  = MixedStr.toPlainUTF8String
        val res = 
         case DeclarationParser.parseDeclarationSingleOutput declOps s of
             (oper, [l1, l2]) => 
             if oper = typeMacroOp
-            then PTypeMacro (l1, l2)
+            then PTypeMacro (tp l1, l2)
             else if oper = termTypeJudgmentOp
-            then PTermTypeJudgment (l1, l2)
+            then PTermTypeJudgment (tp l1, l2)
             else if oper = termMacroOp
-            then PTermMacro (l1, l2)
+            then PTermMacro (tp l1, l2)
             else if oper = termDefinitionOp
-            then PTermDefinition (l1, l2)
+            then PTermDefinition (tp l1, l2)
             else  raise Fail "pp34"
             | (oper, [l1, l2, l3]) =>  
                 if oper = opDeclarationOp
-                then POpDeclaration (l1, parseAssoc l2, parsePrecedence l3)
+                then POpDeclaration (tp l1, parseAssoc (tp l2), parsePrecedence (tp l3))
                 else raise Fail "pp85"
             | (oper, [l1]) =>  
                 if oper = commentOp
@@ -98,16 +100,15 @@ structure PreprocessingPass = struct
             | _ => raise Fail "pp26: malformed output : not two args or three args"
         (* val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res) *)
         in res end
+        handle DeclarationParser.DeclNoParse (expr) => PDirectExpr expr 
     )
 
-    fun preprocessAST (s : StatementAST.t) : PreprocessingAST.t = 
+    fun preprocessAST (s : MixedStr.t) : PreprocessingAST.t = 
     (
         (* print (PrettyPrint.show_statementast s); *)
     case s of 
-        StatementAST.Leaf => []
-        | StatementAST.StatementNode (s, rest) => 
-        (parseJudgment s :: preprocessAST rest
-        handle DeclarationParser.DeclNoParse (expr) => PDirectExpr expr ::preprocessAST rest)
+         [MixedStr.UnparsedDeclaration l]  => map parseJudgment l
+        | _ => [PDirectExpr s]
     )
         
         

@@ -1,10 +1,12 @@
 
 
 functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
-    (* val DEBUG = true *)
-    val DEBUG = false
-    (* val DEBUGLIGHT = true *)
-    val DEBUGLIGHT = false
+    val DEBUG = true
+    (* val DEBUG = false *)
+    (* val DEBUGMEDIUM = true *)
+    (* val DEBUGMEDIUM = false *)
+    val DEBUGLIGHT = true
+    (* val DEBUGLIGHT = false *)
     
             open Operators
             open ParseAST
@@ -41,7 +43,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                   structure Y = AssocHashable)))
             structure UTF8StringSet : SET = RedBlackSet(structure Elem = UTF8StringOrdered)
             structure UTF8CharSet : SET = RedBlackSet(structure Elem = UTF8CharOrdered)
-        type parser = UTF8String.t -> (ParseOpAST* (UTF8String.t)) list 
+        type parser = MixedStr.t -> (ParseOpAST* (MixedStr.t)) list 
 
         (*Remove duplicate https://stackoverflow.com/questions/21077272/remove-duplicates-from-a-list-in-sml *)
         fun isolate [] = []
@@ -60,7 +62,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
         val _ = pushDebugIndent("⋅")
         val _ = if DEBUG then 
                     (print (indentString() ^
-                "╔ PARSER DEBUG: " ^ s ^ " exp is " ^ UTF8String.toString exp ^ "\n") )
+                "╔ PARSER DEBUG: " ^ s ^ " exp is " ^ MixedStr.toString exp ^ "\n") )
                         else ()
         val res = p exp
         val _ = if DEBUG then print (indentString() ^
@@ -78,13 +80,13 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 ParseOpAST(OperatorInternal oper, _) => ParseOpAST (pr oper, l)
                 | _ => raise Fail "52"
 
-        fun parserResToList (l: (ParseOpAST* (UTF8String.t)) list  ): (ParseOpAST list* (UTF8String.t)) list 
+        fun parserResToList (l: (ParseOpAST* (MixedStr.t)) list  ): (ParseOpAST list* (MixedStr.t)) list 
             = map (fn (x, r) => ([x],r)) l
-        fun listToParserResult (combine: ParseOpAST list -> ParseOpAST) (l: (ParseOpAST list* (UTF8String.t)) list  ): (ParseOpAST* (UTF8String.t)) list 
+        fun listToParserResult (combine: ParseOpAST list -> ParseOpAST) (l: (ParseOpAST list* (MixedStr.t)) list  ): (ParseOpAST* (MixedStr.t)) list 
             = map (fn (x, r) => (combine x,r)) l
 
-        fun seqL (pending : (ParseOpAST list * (UTF8String.t)) list) (p : parser) 
-        : (ParseOpAST list * (UTF8String.t)) list =
+        fun seqL (pending : (ParseOpAST list * (MixedStr.t)) list) (p : parser) 
+        : (ParseOpAST list * (MixedStr.t)) list =
             List.concat (List.map 
             (fn (asts, exp) => map (fn (ast, rest) => (asts@[ast], rest)) (p exp)) pending)
 
@@ -172,16 +174,20 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
 
         fun parseExpWithOption (allOps :Operators.allOperators) (withEOF : bool) : parser =  fn exp =>
         let 
-            fun  scanExpForUnknownId(allOps : operator list) (exp : UTF8String.t) : UTF8String.t list
+            val relevantOps = List.filter (fn oper => MixedStr.containsAllCharsTopLevel exp 
+            (Operators.getAllOccuringNameChars oper)) allOps
+
+            fun  scanExpForUnknownId(allOps : operator list) (exp : MixedStr.t) : UTF8String.t list
             = let
-                    fun go (seen : UTF8CharSet.set) (remaining : UTF8String.t) (pending : UTF8String.t) : UTF8String.t list
+                    fun go (seen : UTF8CharSet.set) (remaining : MixedStr.t) (pending : UTF8String.t) : UTF8String.t list
                     = case remaining of
                         [] => (case pending of [] => [] | _ => [pending])
-                        | (s:: xs ) => if UTF8CharSet.member seen s
+                        | (MixedStr.SChar s:: xs ) => if UTF8CharSet.member seen s
                                             then (case pending of   
                                                         [] => go seen xs pending 
                                                         | _ => pending :: go seen xs [])(*TODO add pending to seen and remove isolate *)
                                             else go seen xs (pending@[ s]) 
+                        | (_ :: xs) => go seen xs pending (* skip nontoplevel constructs *)
                     val allSeen = (foldr (fn (elem, acc) => ( UTF8CharSet.insert acc elem)) 
                                 defaultSeenCharset
                                         (List.concat (map getAllOccuringNameChars allOps)))
@@ -189,7 +195,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 end
             val allUnkownIds  : UTF8String.t list= scanExpForUnknownId allOps exp 
 
-            val _ = if DEBUG
+            val _ = if DEBUG orelse DEBUGLIGHT
             then print ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
             (map (fn id => UTF8String.toString  id) allUnkownIds)) ^ "|<--END\n")
             else ()
@@ -198,7 +204,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
 
             fun unknownIdComponentParser (s : UTF8Char.t): parser = fn exp => 
                 case (exp) of
-                    (y :: ys) => if y = s then [(ParseOpAST(UnknownIdComp y, []), ys)] else []
+                    (MixedStr.SChar y :: ys) => if  y = s then [(ParseOpAST(UnknownIdComp y, []), ys)] else []
                     | _ => []
             fun unknownIdParser (id : UTF8String.t): parser = 
             case id of
@@ -296,7 +302,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             and parseStr_ (s : UTF8String.t) (o' : ParseOpAST) : parser = fn exp =>
                 if UTF8String.size s = 0 then [(o', exp)] else
                 case exp of
-                    ( id :: exps)  => if hd s = id 
+                    ( id :: exps)  => if MixedStr.isChar (id) (hd s)
                                     then parseStr (tl s) o' exps
                                     else [] (* no parse failure should be raised as it will disable valid parse from being processed in the capture point *)
                                     (* raise ParseFailure ("Cannot match " ^ s ^ " against " ^ id) strip off id from s *)
@@ -313,17 +319,30 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 alternatives (map parseOpOperator (findOps fixity pred assoc))
             
             (* and parseBinding (until : string) : parser = debug ("parseBinding until " ^ until) (parseBinding_ until) *)
-            (* TODO: until only looks at single char, may want to check all chars of arg *)
+            (* TODO[DONE]: until only looks at single char, may want to check all chars of arg *)
+            (* UNTIL is not used if the head of the char is a named word *)
             and parseBinding (until : UTF8String.t) : parser = fn exp =>
+
                 let 
-                    fun go (remaining : UTF8String.t) (pending : UTF8String.t) : (ParseOpAST* (UTF8String.t)) list= 
+                    fun go (remaining : MixedStr.t) (pending : UTF8String.t) : (ParseOpAST* (MixedStr.t)) list= 
+                    (* parses only SChar's *)
                         if List.length remaining < List.length until 
-                        then (*add all pending and remaining and return *)
-                              [(ParseOpAST(Binding(pending @ remaining), []), [])]
-                        else if UTF8String.isPrefix until remaining
+                        then (* no parse if remaining isn't sufficient to guarantee until *)
+                              []
+                        else if MixedStr.isPrefix until remaining
                              then [(ParseOpAST(Binding pending, []), remaining)]
-                             else go (tl remaining) (pending @ [hd remaining])
-                in go exp [] 
+                             else case remaining of 
+                                    (x :: xs) => case x of 
+                                        MixedStr.SChar y =>  go xs (pending @ [y])
+                                        | _ => [] (* no parse if not plain characters in binding *)
+                in case exp of 
+                    [] => [] (* no parse if exp is empty *)
+                    | (x :: xs) => if MixedStr.isPlainChar x (* check if plain char *)
+                                    then go exp [] 
+                                    else case x of
+                                          MixedStr.Name x => [(ParseOpAST(Binding x, []), xs)]
+                                    (* otherwise return the first name whatever that is *)
+                                          | _ => [] (*fail if first term is not name, need name for binding *)
                 end
                 
                 (* parse the internal *)
@@ -332,7 +351,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             case oper of
                     Operator (_, _, _, lst, _)  
                 => let 
-                    fun goFoldL (remaining : opComponentType list) (sofar :(ParseOpAST list * (UTF8String.t)) list) = 
+                    fun goFoldL (remaining : opComponentType list) (sofar :(ParseOpAST list * (MixedStr.t)) list) = 
                         case remaining of 
                             [] => listToParserResult (fn l => ParseOpAST (OperatorInternal oper,l)) sofar
                             | (OpCompString name::ys) => goFoldL ys (seqL sofar (parseStr name (ParseOpAST(OperatorNameComponent(name, oper), []))))
@@ -346,11 +365,12 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                             | _ => raise Fail "pp245"
                     end
 
+(* Bracket parser becomes obsolete as we're preprocessing all brackets via mixed str *)
   (* Parses the bracket operation smartly 
                 in the sense that if a bracket doesn't cotain 
                 one of special characters, what's inside automatically 
                 becomes a name and no furhter processing is applied *)
-            and bracketParser () : parser = if DEBUG
+            (* and bracketParser () : parser = if DEBUG
             then debug ("bracketParser") (bracketParser_()) else bracketParser_()
             and bracketParser_ () : parser = fn exp =>
             if List.length exp = 0 then [] else
@@ -375,7 +395,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                                             parseExpWithEOF()(UTF8String.stripTail contentIncludingPossiblyQuote))
                     )
                 else (* parse failed, maybe we're at the end of the input *) []
-                    )
+                    ) *)
             (* case parseBinding [SpecialChars.rightSingleQuote] (tl exp) of
                  [(ParseOpAST(Binding s, []), 
                     (closeQuoteChar::tail))] => 
@@ -390,6 +410,23 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                     else (*no special char so it's a name *)
                     [(ParseOpAST(QuotedName  s, []), tail)]
                 | _ => raise Fail "binding is not running correctly 163" *)
+            
+            and structuralParser () : parser = fn exp => 
+                case exp of 
+                    [] => [] (* fail if exp doesn't have content *)
+                    | (MixedStr.UnparsedExpression s :: xs) => 
+                         map (fn (opast, [] (* should be empty *)) => (opast, xs))
+                         (parseExpWithEOF()(s))
+                    | (MixedStr.UnparsedDeclaration s :: xs) => 
+                            [(ParseOpAST(UnparsedDecl(s), []), xs)]
+                    | (MixedStr.Name s :: xs) => 
+                            [(ParseOpAST(QuotedName(s), []), xs)]
+                    | (MixedStr.Literal s :: xs) => 
+                            [(ParseOpAST(StringLiteral(s), []), xs)]
+                    | _ => [] (* fail for all other cases *)
+
+                
+
 
             and upP (pred : int) : parser = if DEBUG 
             then debug ("upP "^ Int.toString(pred) ) (upP_ pred) else upP_ pred
@@ -398,7 +435,8 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 SOME(np) => hat np
                 | NONE =>  
                 alternatives (List.concat [
-                if Options.enableBracketedExpression then [ bracketParser()] else [],
+                (* if Options.enableBracketedExpression then [ bracketParser()] else [], *)
+                [structuralParser()],
                 [allUnknownIdsParser()] (*still parse all possible identifiers *)
                 ])
                 (* Parse unkown doesn't work as we're not doing CPS*)
@@ -460,7 +498,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
 
             and many1 p = if DEBUG then debug "many1" (many1_ p) else many1_ p
             and many1_ (p : parser) : parser = fn exp => 
-                let val base : (ParseOpAST list* (UTF8String.t)) list  = parserResToList (p exp)
+                let val base : (ParseOpAST list* (MixedStr.t)) list  = parserResToList (p exp)
                     fun f trying memory  = 
                     let
                         val next = seqL trying (if DEBUG then debug "many1 lookahead" p else p)

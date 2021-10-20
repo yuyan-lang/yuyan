@@ -87,12 +87,12 @@ fun show_preprocessaastJ x = let
 open PreprocessingAST
 in 
 case x of 
-   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ " = " ^ UTF8String.toString tbody
-  | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ UTF8String.toString tbody
-  | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ UTF8String.toString ebody
-  | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ UTF8String.toString  ebody
+   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ " = " ^ MixedStr.toString tbody
+  | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ MixedStr.toString tbody
+  | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ MixedStr.toString ebody
+  | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ MixedStr.toString  ebody
   | POpDeclaration(opName, assoc, pred) => "infix " ^ UTF8String.toString opName ^ Int.toString pred
-  | PDirectExpr(ebody) => "/* eval */ " ^ UTF8String.toString ebody ^ "/* end eval */ " 
+  | PDirectExpr(ebody) => "/* eval */ " ^ MixedStr.toString ebody ^ "/* end eval */ " 
   | PComment(ebody) => "/* comment : -- */ "
   end
 fun show_preprocessaast x = let

@@ -8,37 +8,30 @@ struct
     but they contain arbitrary unknown names and structured parenthesis *)
 
     (* returns the rest *)
-    fun parseStr (s : UTF8String.t)  :UTF8String.t -> UTF8String.t option = fn exp =>
+    fun parseStr (s : UTF8String.t)  :MixedStr.t -> MixedStr.t option = fn exp =>
                 if UTF8String.size s = 0 then SOME(exp) else
                 case exp of
-                    ( id :: exps)  => if hd s = id 
+                    ( MixedStr.SChar id :: exps)  => if hd s = id 
                                     then parseStr (tl s) exps
                                     else NONE
                     | _ =>  NONE
 
     and projfirst2 ((a, b, c, d)) = (a, b)
 
-     and parseBinding (until : UTF8String.t) : UTF8String.t -> UTF8String.t * UTF8String.t = fn exp =>
+     and parseUntil (until : UTF8String.t) : MixedStr.t -> MixedStr.t * MixedStr.t = fn exp =>
                 let 
-                    fun go (remaining : UTF8String.t) (pending : UTF8String.t) : (UTF8String.t * UTF8String.t) = 
+                    fun go (remaining : MixedStr.t) (pending : MixedStr.t) : (MixedStr.t * MixedStr.t) = 
                         (
                             (* print ("going on r = "^ UTF8String.toString remaining ^ " and pending = " ^ UTF8String.toString pending ^
                         " until = " ^ UTF8String.toString until ^ "\n" ); *)
                         if List.length remaining < List.length until 
                         then (*add all pending and remaining and return *)
-                              ((pending @ remaining, []))
-                        else if UTF8String.isPrefix until remaining
+                              ((pending @ remaining, [])) (* TODO: should this be empty as well? *)
+                        else if MixedStr.isPrefix until remaining
                              then (pending, remaining)
                              else (case remaining of 
                                  (h::t) => (let 
-                                        val (deltaPending, nextRemaining) = (
-                                            if h = SpecialChars.leftSingleQuote  
-                                                    then projfirst2 (BracketScanner.scanUntilCorrespondingRightQuote 1 0 t)
-                                                    else if h = SpecialChars.leftDoubleQuote
-                                                    then projfirst2 (BracketScanner.scanUntilCorrespondingRightQuote 0 1 t)
-                                                    else ([], t)
-                                        )
-                                    in go nextRemaining (pending @ [h]@deltaPending)
+                                    in go t (pending @ [h])
                                     end))
                         )
                 in go exp [] 
@@ -46,7 +39,7 @@ struct
                 
 
 
-    fun parseDeclarationSingleOp(l :  opComponentType list) : UTF8String.t -> (UTF8String.t list) option
+    fun parseDeclarationSingleOp(l :  opComponentType list) : MixedStr.t -> (MixedStr.t list) option
     = fn exp =>
         (
             (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ UTF8String.toString exp ^ "\n"); *)
@@ -54,7 +47,7 @@ struct
             [] => SOME([])
             | [OpCompExpr] => SOME([exp])
             | (OpCompExpr :: (OpCompString s) :: t) => 
-                let val  (parsed, remaining) = parseBinding s exp
+                let val  (parsed, remaining) = parseUntil s exp
                 in (case  parseDeclarationSingleOp (OpCompString s :: t) remaining
                     of SOME(args) => SOME(parsed::args)
                     | NONE => NONE)
@@ -78,15 +71,15 @@ struct
             | _ => raise Fail "Can only handle nonassoc ops: dp20"
     (* will be parsing in binding left most fashion *)
     (* declarations should not be associative *)
-    fun parseDeclarations(ops : operator list) : UTF8String.t -> (operator * UTF8String.t list) list = fn exp =>
+    fun parseDeclarations(ops : operator list) : MixedStr.t -> (operator * MixedStr.t list) list = fn exp =>
         (List.mapPartial (fn (oper, l) => case parseDeclarationSingleOp l exp of
         SOME(args) => SOME((oper, args)) | NONE => NONE)
          (map   getParseComponents ops))
         
-    exception DeclNoParse of UTF8String.t
-    exception DeclAmbiguousParse of (operator * UTF8String.t list) list
-    fun parseDeclarationSingleOutput(ops : operator list) : UTF8String.t -> (operator * UTF8String.t list) = fn exp => 
-        (if DEBUG then print ("DeclParser : Parsing " ^ UTF8String.toString exp ^ "\n") else ();
+    exception DeclNoParse of MixedStr.t
+    exception DeclAmbiguousParse of (operator * MixedStr.t list) list
+    fun parseDeclarationSingleOutput(ops : operator list) : MixedStr.t -> (operator * MixedStr.t list) = fn exp => 
+        (if DEBUG then print ("DeclParser : Parsing " ^ MixedStr.toString exp ^ "\n") else ();
         case parseDeclarations ops exp of
             []  => raise DeclNoParse exp
             | [l] => l

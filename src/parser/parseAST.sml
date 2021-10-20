@@ -20,7 +20,10 @@ open Operators
                             | UnknownIdComp of UTF8Char.t
                             | Binding of UTF8String.t
                             | QuotedName of UTF8String.t
-                            | UnparsedDeclarationBlock of UTF8String.t (* a declaration block is a block with an immediate . inside of it, thus should not be parsed at this level *)
+                            | StringLiteral of UTF8String.t
+                            | UnparsedDecl of MixedStr.t list (* any quoted thing is treated as unparsed arg *)
+                            (* should just go ahead and parse the expression *)
+                            (* | UnparsedExpr of MixedStr.t any quoted thing is treated as unparsed arg *)
                             | PlaceHolder (* should not appear anywhere in final result *)
         datatype ParseOpAST = ParseOpAST of ParseRule * ParseOpAST list
         exception ParseFailure of string
