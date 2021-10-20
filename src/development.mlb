@@ -21,9 +21,6 @@ local
     lexer/yulang.lex.sml
 
 
-    parser/parseAST.sml
-    parser/bracket-scanner.sml
-    parser/declaration-parser.sml
 
 
 
@@ -36,8 +33,13 @@ local
 
     passes/statement/statement-ast.sml
     passes/typechecking/type-checking-ast.sml
-    passes/typechecking/type-checking-pass.sml
+    util/mixed-str.sml
     passes/preprocess/preprocessing-ast.sml
+
+    parser/parseAST.sml
+    parser/bracket-scanner.sml
+    parser/declaration-parser.sml
+    passes/typechecking/type-checking-pass.sml
     passes/preprocess/preprocessing-pass.sml
 
     ui/prettyPrint.sml

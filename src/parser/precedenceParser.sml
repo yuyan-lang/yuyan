@@ -1,8 +1,8 @@
 
 
 functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
-    val DEBUG = true
-    (* val DEBUG = false *)
+    (* val DEBUG = true *)
+    val DEBUG = false
     (* val DEBUGMEDIUM = true *)
     (* val DEBUGMEDIUM = false *)
     val DEBUGLIGHT = true
@@ -174,10 +174,11 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
 
         fun parseExpWithOption (allOps :Operators.allOperators) (withEOF : bool) : parser =  fn exp =>
         let 
+            val _ = if DEBUG orelse DEBUGLIGHT then print ("PARSING " ^ MixedStr.toString exp ^ "\n") else ()
             val relevantOps = List.filter (fn oper => MixedStr.containsAllCharsTopLevel exp 
             (Operators.getAllOccuringNameChars oper)) allOps
 
-            fun  scanExpForUnknownId(allOps : operator list) (exp : MixedStr.t) : UTF8String.t list
+            fun  scanExpForUnknownId(releavantOps : operator list) (exp : MixedStr.t) : UTF8String.t list
             = let
                     fun go (seen : UTF8CharSet.set) (remaining : MixedStr.t) (pending : UTF8String.t) : UTF8String.t list
                     = case remaining of
@@ -190,10 +191,10 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                         | (_ :: xs) => go seen xs pending (* skip nontoplevel constructs *)
                     val allSeen = (foldr (fn (elem, acc) => ( UTF8CharSet.insert acc elem)) 
                                 defaultSeenCharset
-                                        (List.concat (map getAllOccuringNameChars allOps)))
+                                        (List.concat (map getAllOccuringNameChars relevantOps)))
                 in isolate (go allSeen exp [])
                 end
-            val allUnkownIds  : UTF8String.t list= scanExpForUnknownId allOps exp 
+            val allUnkownIds  : UTF8String.t list= scanExpForUnknownId relevantOps exp 
 
             val _ = if DEBUG orelse DEBUGLIGHT
             then print ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
@@ -228,7 +229,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 (x :: y :: xs) => if x = y then removeDuplicateInSorted (x :: xs) else x :: removeDuplicateInSorted (y :: xs)
                 | l => l
             val allPrecedences : int list= removeDuplicateInSorted (Quicksort.sort 
-                        (Int.compare) (map (fn (Operator(i,_,  _, _, _)) => i) allOps))
+                        (Int.compare) (map (fn (Operator(i,_,  _, _, _)) => i) relevantOps))
             val nextPredDict : int IntDict.dict = let 
                 fun go remaining d= case remaining of
                     (x1 :: x2 :: l) => go (x2 :: l) (IntDict.insert d x1 x2)
@@ -239,14 +240,14 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             let val emptyDict : operator list PredDict.dict 
                 = foldr (fn (p, d) => PredDict.insert d p []) PredDict.empty allPrecedences
             in foldr (fn (oper, d) => PredDict.insert d (getPrecedence oper) 
-                    (oper :: PredDict.lookup d (getPrecedence oper))) emptyDict allOps
+                    (oper :: PredDict.lookup d (getPrecedence oper))) emptyDict relevantOps
             end
 
-            val allOpsTable : operator list AllOpsTable.table =(AllOpsTable.table (List.length allOps))
+            val allOpsTable : operator list AllOpsTable.table =(AllOpsTable.table (List.length relevantOps + 1))
             val _ = map (fn oper => case oper of
                 Operator(p, f, a, _, _) => case AllOpsTable.find allOpsTable (f, (p,a )) of 
                     SOME l => AllOpsTable.insert allOpsTable (f, (p, a)) (oper::l)
-                    | NONE =>  AllOpsTable.insert allOpsTable (f, (p, a)) [oper])  allOps
+                    | NONE =>  AllOpsTable.insert allOpsTable (f, (p, a)) [oper])  relevantOps
                 
             fun findOps (fixity : fixity) (pred : int) (assoc : associativity) : operator list = 
                case AllOpsTable.find allOpsTable (fixity, (pred, assoc))
@@ -270,7 +271,8 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             then (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n"))
             else ()
             val y = if DEBUG  orelse DEBUGLIGHT
-            then (print ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n"))
+            then (print ("ALL RELEVANT OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op relevantOps) ^ "\n")
+            ;print ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n"))
             else ()
 
 
@@ -415,8 +417,10 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 case exp of 
                     [] => [] (* fail if exp doesn't have content *)
                     | (MixedStr.UnparsedExpression s :: xs) => 
+                    (* TODO SHOULD NOT PARSE, let the coordinator handle parsing to support better
+                    error messages ! *)
                          map (fn (opast, [] (* should be empty *)) => (opast, xs))
-                         (parseExpWithEOF()(s))
+                         (parseExpWithOption(allOps)(true)(s)) (* backtracking by considering all Ops *)
                     | (MixedStr.UnparsedDeclaration s :: xs) => 
                             [(ParseOpAST(UnparsedDecl(s), []), xs)]
                     | (MixedStr.Name s :: xs) => 
@@ -427,13 +431,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
 
                 
 
-
-            and upP (pred : int) : parser = if DEBUG 
-            then debug ("upP "^ Int.toString(pred) ) (upP_ pred) else upP_ pred
-            and upP_ (pred : int) : parser = 
-                case nextPred pred of 
-                SOME(np) => hat np
-                | NONE =>  
+            and topMostParser() : parser = 
                 alternatives (List.concat [
                 (* if Options.enableBracketedExpression then [ bracketParser()] else [], *)
                 [structuralParser()],
@@ -441,7 +439,13 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 ])
                 (* Parse unkown doesn't work as we're not doing CPS*)
                 (* fn exp => alternativesTryAll (List.tabulate(List.length(exp), fn l => conservativeId l)) exp *)
-                (* (print ("no up for " ^ Int.toString (pred) ^ "\n"); fn x => []) *)
+
+            and upP (pred : int) : parser = if DEBUG 
+            then debug ("upP "^ Int.toString(pred) ) (upP_ pred) else upP_ pred
+            and upP_ (pred : int) : parser = 
+                case nextPred pred of 
+                SOME(np) => hat np
+                | NONE => topMostParser()
 
 
             and hat oper = if DEBUG then (debug ("hat_"^ Int.toString(oper)) (hat_ oper)) 
@@ -524,7 +528,11 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
         (if DEBUG 
         then (print ("parseExp \n"))
         else ();
-            hat (hd allPrecedences))
+         (* might have no ops because of extreme filtering *)
+            ( case allPrecedences of 
+                [] => topMostParser()
+                | (p::_) => hat p))
+
             
             and parseExpWithEOF () : parser = 
             sequence (combineAST ExpWithEOF) [

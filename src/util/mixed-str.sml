@@ -26,7 +26,8 @@ struct
             | _ => false
     fun isPlainStr (c : mixedstr) : bool=
         case c of 
-            (SChar _ :: xs) => isPlainStr xs
+            [] => true
+            | (SChar _ :: xs) => isPlainStr xs
             | _ => false
 
     fun isPrefix(s1 : UTF8String.t) (s2 : mixedstr) : bool = 

@@ -21,6 +21,7 @@ open Operators
                             | Binding of UTF8String.t
                             | QuotedName of UTF8String.t
                             | StringLiteral of UTF8String.t
+                            | UnparsedExpr of MixedStr.t 
                             | UnparsedDecl of MixedStr.t list (* any quoted thing is treated as unparsed arg *)
                             (* should just go ahead and parse the expression *)
                             (* | UnparsedExpr of MixedStr.t any quoted thing is treated as unparsed arg *)

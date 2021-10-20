@@ -163,4 +163,19 @@ fun show_typecheckingSig x = let
 in
           String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
 end
+
+   fun show_mixedstrchar(u : MixedStr.mixedchar) : string = 
+    let 
+    open MixedStr
+    in
+    case  u of 
+    UnparsedExpression s => "(UNPARSED(EXPR):" ^ show_mixedstr s ^ ")"
+    | UnparsedDeclaration l => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn x => show_mixedstr x) l) ^ "}"
+    | Name t => "(NAME:" ^ UTF8String.toString t ^ ")"
+    | Literal t => "(LITERAL:" ^ UTF8String.toString t ^ ")"
+    | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
+    | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")"
+    | SChar t => UTF8Char.toString t
+    end
+    and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)
 end
