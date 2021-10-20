@@ -26,7 +26,8 @@ structure UTF8String = struct
 
     fun fromString(s : string) : utf8string = UTF8.explode(s)
     fun toString(s : utf8string) : string = UTF8.implode(s)
-                                    
+
+    fun stripTail (s : utf8string) = List.take (s, List.length(s) -1)
     fun size(s : utf8string) : int = List.length s
 
 

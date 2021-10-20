@@ -111,7 +111,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 val res = List.concat (List.tabulate
                 (List.length alt, (fn i => 
                     let 
-                    val _ = pushDebugIndent("┃")
+                    val _ = if DEBUG then pushDebugIndent("┃") else ()
                     val _ = if DEBUG then 
                     (print (indentString() ^
                         "┏ Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives:  \n"))
@@ -120,7 +120,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                     val _ = if DEBUG then print (indentString() ^
                         "┗ Completed Trying " ^ Int.toString(i+1) ^ " of " ^ Int.toString(List.length alt) ^ " alternatives: Has " ^  Int.toString(List.length res) ^ " parses. \n")
                         else ()
-                    val _ = popDebugIndent()
+                    val _ = if DEBUG then popDebugIndent() else ()
                     in 
                     (
                         res
@@ -354,10 +354,29 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             then debug ("bracketParser") (bracketParser_()) else bracketParser_()
             and bracketParser_ () : parser = fn exp =>
             if List.length exp = 0 then [] else
-            if not (hd exp = SpecialChars.leftSingleQuote)
+            if not (hd exp = SpecialChars.leftSingleQuote) (* fail if exp didn't start with openleftbracket *)
             then []
             else
-            case parseBinding [SpecialChars.rightSingleQuote] (tl exp) of
+                    (
+                        (* print ("inner parsing (quote) on" ^ UTF8String.toString exp ^ "\n"); *)
+            case BracketScanner.scanUntilCorrespondingRightQuote 1 0 (tl exp) of
+                (contentIncludingPossiblyQuote, rest, includesInnerQuote, includesPeriod) => 
+                if List.last contentIncludingPossiblyQuote = SpecialChars.rightSingleQuote
+                then (* parse *)
+                    (if includesPeriod 
+                    then raise Fail "Not Implemented : Cannot handle block inside expression"
+                    else 
+                        case includesInnerQuote of
+                            false => (* no quote, it's just a name *) [(ParseOpAST(QuotedName  (UTF8String.stripTail 
+                                        contentIncludingPossiblyQuote), []), rest)]
+                            |  true => (* is an expression inside *)
+                                    map (fn (opast, [] (* should be empty *)) => (opast, rest))
+                                        (
+                                            parseExpWithEOF()(UTF8String.stripTail contentIncludingPossiblyQuote))
+                    )
+                else (* parse failed, maybe we're at the end of the input *) []
+                    )
+            (* case parseBinding [SpecialChars.rightSingleQuote] (tl exp) of
                  [(ParseOpAST(Binding s, []), 
                     (closeQuoteChar::tail))] => 
                     if UTF8String.containsSomeChar  s [SpecialChars.leftSingleQuote, 
@@ -370,7 +389,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                                 else [] )] (tl exp)
                     else (*no special char so it's a name *)
                     [(ParseOpAST(QuotedName  s, []), tail)]
-                | _ => raise Fail "binding is not running correctly 163"
+                | _ => raise Fail "binding is not running correctly 163" *)
 
             and upP (pred : int) : parser = if DEBUG 
             then debug ("upP "^ Int.toString(pred) ) (upP_ pred) else upP_ pred
@@ -469,7 +488,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
         else ();
             hat (hd allPrecedences))
             
-            and parseExpWithEOF' () : parser = 
+            and parseExpWithEOF () : parser = 
             sequence (combineAST ExpWithEOF) [
                 parseExp(), eof()
             ]
@@ -479,7 +498,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
         then (print ("STARTING \n"))
         else ();
         if withEOF then
-        parseExpWithEOF'()(exp)
+        parseExpWithEOF()(exp)
         else parseExp()(exp)
         end
 

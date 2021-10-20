@@ -16,32 +16,7 @@ struct
                                     else NONE
                     | _ =>  NONE
 
-    and scanUntilCorrespondingRightQuote (curSeenLeftSingleQuote : int)
-        (curSeenLeftDoubleQuote: int) : UTF8String.t -> (UTF8String.t * UTF8String.t) =
-        fn s => 
-            let fun go (remaining : UTF8String.t) (sofar : UTF8String.t) 
-            (curSeenLeftSingleQuote : int) (curSeenLeftDoubleQuote: int) = 
-            if curSeenLeftSingleQuote = 0 andalso curSeenLeftDoubleQuote = 0
-            then (sofar, remaining)
-            else (case remaining of
-                [] => (sofar, [])
-                | (h :: t) => 
-                              if h = SpecialChars.rightSingleQuote
-                              then go t (sofar @[h]) (curSeenLeftSingleQuote - 1) (curSeenLeftDoubleQuote)
-                              else
-                              if h = SpecialChars.rightDoubleQuote
-                              then go t (sofar @[h]) (curSeenLeftSingleQuote) (curSeenLeftDoubleQuote-1)
-                              else
-                              if h = SpecialChars.leftSingleQuote
-                              then go t (sofar @[h]) (curSeenLeftSingleQuote + 1) (curSeenLeftDoubleQuote)
-                              else
-                              if h = SpecialChars.leftDoubleQuote
-                              then go t (sofar @[h]) (curSeenLeftSingleQuote) (curSeenLeftDoubleQuote+1)
-                              else go t (sofar @[h]) (curSeenLeftSingleQuote) (curSeenLeftDoubleQuote)
-
-            ) 
-        in go s [] curSeenLeftSingleQuote curSeenLeftDoubleQuote
-        end
+    and projfirst2 ((a, b, c, d)) = (a, b)
 
      and parseBinding (until : UTF8String.t) : UTF8String.t -> UTF8String.t * UTF8String.t = fn exp =>
                 let 
@@ -58,9 +33,9 @@ struct
                                  (h::t) => (let 
                                         val (deltaPending, nextRemaining) = (
                                             if h = SpecialChars.leftSingleQuote  
-                                                    then scanUntilCorrespondingRightQuote 1 0 t
+                                                    then projfirst2 (BracketScanner.scanUntilCorrespondingRightQuote 1 0 t)
                                                     else if h = SpecialChars.leftDoubleQuote
-                                                    then scanUntilCorrespondingRightQuote 0 1 t
+                                                    then projfirst2 (BracketScanner.scanUntilCorrespondingRightQuote 0 1 t)
                                                     else ([], t)
                                         )
                                     in go nextRemaining (pending @ [h]@deltaPending)

@@ -20,6 +20,7 @@ Library
   functor PrecedenceParser
   structure Operators
   structure ParseAST
+  structure BracketScanner
 
   structure InteractiveRepl 
   structure TypeCheckAndEval
@@ -48,6 +49,7 @@ is
 
   parser/rawAST.sml
   parser/elaboratePrecedence.sml
+  parser/bracket-scanner.sml
   parser/declaration-parser.sml
   parser/parser-options.sig
   parser/parseAST.sml

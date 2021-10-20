@@ -43,7 +43,6 @@ struct
                     | NewOpName of UTF8String.t
 
     fun stripHead (s : UTF8String.t) = tl s
-    fun stripTail (s : UTF8String.t) = List.take (s, List.length(s) -1)
   fun show_opcomptype (x : opComponentType) :string = let 
     in
       case x of
@@ -84,12 +83,12 @@ struct
         case (hd name = underscoreChar , (List.last name) = underscoreChar) of
             (false, false) => Operator(pred, Closed, NoneAssoc, toNameComponents name bindingIdxs, nextUID)
             | (false, true) => Operator(pred, Prefix, 
-                    if hasAssoc then RightAssoc else NoneAssoc, toNameComponents (stripTail name) bindingIdxs, nextUID) 
+                    if hasAssoc then RightAssoc else NoneAssoc, toNameComponents (UTF8String.stripTail name) bindingIdxs, nextUID) 
             | (true , false) => Operator(pred, Postfix, 
                     if hasAssoc then LeftAssoc else NoneAssoc, toNameComponents (stripHead name) bindingIdxs, nextUID)
             | (true , true) => Operator(pred, Infix, 
                     if hasAssoc then (if isLeft then LeftAssoc else RightAssoc) else NoneAssoc, 
-                    toNameComponents (stripHead (stripTail name)) bindingIdxs, nextUID)
+                    toNameComponents (stripHead (UTF8String.stripTail name)) bindingIdxs, nextUID)
         end
 
     fun parseOperatorStr name = parseOperator (UTF8String.fromString name)

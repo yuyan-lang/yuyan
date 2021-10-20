@@ -206,15 +206,20 @@ struct
     structure PrecParser = MixFixParser(structure Options = struct 
         val enableBracketedExpression = true
         end)
+    exception ECPNoPossibleParse of UTF8String.t
 
     fun parseType (tbody : UTF8String.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
         elaborateOpASTtoType (PrecParser.parseMixfixExpression allTypeOps tbody) 
+        handle PrecParser.NoPossibleParse s => raise ECPNoPossibleParse s
     fun parseExpr (ebody : UTF8String.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
     = elaborateOpASTtoExpr (PrecParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
+        handle PrecParser.NoPossibleParse s => raise ECPNoPossibleParse s
     
 
     fun constructOpAST (ast : PreprocessingAST.t) (addedOps : Operators.operator list) 
         : TypeCheckingAST.Signature = 
+        (
+        print ("\rRemaining: "^ Int.toString(List.length ast) ^ " statements");
         case ast of 
             [] => []
             | (x :: xs) => 
@@ -233,9 +238,15 @@ struct
                     | PComment _ => trailingNoOps()
                 )
                 end
+        )
                 
 
     fun constructTypeCheckingAST ( ast : PreprocessingAST.t) : TypeCheckingAST.Signature = 
-        constructOpAST ast []
+    let 
+        val _ = print ("Total "^ Int.toString(List.length ast) ^ " statements\n");
+        val res =  constructOpAST ast []
+        val _ = print ("Done "^ Int.toString(List.length ast) ^ " statements\n");
+    in 
+        res end
         
 end

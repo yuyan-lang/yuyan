@@ -40,4 +40,10 @@ structure ReplTest =
       val str =  TextIO.inputAll (TextIO.openIn "testfiles/test.yuyan")
       in testString str end
 
+    fun testT x = 
+      (test(); raise Fail "completed")
+      handle ExpressionConstructionPass.ElaborateFailure s => print s 
+      handle ExpressionConstructionPass.ECPNoPossibleParse s=> print (UTF8String.toString s)
+
+
 end

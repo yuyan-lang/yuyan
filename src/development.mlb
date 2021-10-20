@@ -22,6 +22,7 @@ local
 
 
     parser/parseAST.sml
+    parser/bracket-scanner.sml
     parser/declaration-parser.sml
 
 
