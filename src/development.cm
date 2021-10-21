@@ -45,6 +45,12 @@ Library
   structure SignatureParsingOrchestrator
   structure ExpressionConstructionPass 
   structure TypeCheckingASTOps 
+
+
+  structure KMachine
+  structure PersistentKMachine
+  structure ErasurePass
+  
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -90,6 +96,10 @@ is
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
   passes/typechecking/type-checking-ast-ops.sml
+  passes/erase/erasure-pass.sml
+  
+  execution/k-machine.sml
+  execution/persistent-k-machine.sml
 
   replTest.sml
   lexer/yulang.lex : ml-ulex

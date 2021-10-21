@@ -43,13 +43,14 @@ open TypeCheckingAST
     fun substTypeInType (tS : Type) (x : TVar) (t : Type) = 
     let fun captureAvoid f tv t2 = 
             if List.exists (fn t' => t' = tv) (freeTVar tS)
-                orelse (tv = x)
              then let val tv' = uniqueName()
                                 in f (tv', substTypeInType tS x 
                                     (substTypeInType (TypeVar tv') tv t2)) 
                                     end
             else  (* No capture, regular *)
-             f (tv, substTypeInType tS x t2)
+            if tv = x (* do not substitute when the boudn variable is the same as substitution *)
+            then f (tv, t2)
+            else f (tv, substTypeInType tS x t2)
 
     in
         case t of
@@ -88,7 +89,8 @@ open TypeCheckingAST
                                     (substTypeInExpr (TypeVar tv') tv e2)) 
                                     end
             else  (* No capture, regular *)
-             TAbs (tv, substTypeInExpr tS tv e2)
+            if tv = x then TAbs (tv, e2)
+             else TAbs (tv, substTypeInExpr tS tv e2)
             ) 
             | TApp (e2, t) => TApp(substTypeInExpr tS x e2, substTypeInType tS x t )
             | Pack (t, e2) => Pack(substTypeInType tS x t, substTypeInExpr tS x e2)

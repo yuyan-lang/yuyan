@@ -13,6 +13,9 @@ struct
             val _ = print "----------------- Type Checking in Progress -------------------- \n"
             val _ = TypeCheckingPass.typeCheckSignature [] typeCheckingAST
             val _ = print "----------------- Type Checking OK! -------------------- \n"
+            val erasedAST = ErasurePass.eraseSig typeCheckingAST
+            val _ = print "----------------- Byte Code Generated ! -------------------- \n"
+            val _ = print (PrettyPrint.show_pkcomputation (PersistentKMachine.fromKComp erasedAST))
         in 
             ""
         end

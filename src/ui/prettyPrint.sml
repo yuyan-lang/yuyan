@@ -184,5 +184,31 @@ in
           String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
 end
 
+fun show_pkvalue x =let
+open PersistentKMachine
+in
+      case x of
+        PKUnit => "()"
+        | PKVar i => Int.toString i
+        | PKTuple l => "[" ^ String.concatWith ", " (map show_pkvalue l) ^ "]"
+        | PKInj (i, kv) => Int.toString i ^ "⋅" ^ show_pkvalue kv
+        | PKFold e => "fold (" ^ show_pkvalue e ^ ")"
+        | PKAbs (i, c) => "(λ" ^ Int.toString i ^ "." ^ show_pkcomputation c ^ ")"
+
+end
+and show_pkcomputation x = let
+open PersistentKMachine
+in
+    case x of
+      PKProj(k, i) => show_pkcomputation k ^ " . " ^ Int.toString i
+      | PKCases(e, l) => "(case "  ^ show_pkcomputation e ^ " of {" ^ 
+      String.concatWith "; " (map (fn (i, c) => Int.toString i ^ " => " ^ show_pkcomputation c) l)
+      ^ "}"
+      | PKUnfold(e) => "unfold (" ^ show_pkcomputation e ^ ")"
+      | PKApp(c1, c2) => "ap (" ^ show_pkcomputation c1 ^ ", " ^ show_pkcomputation c2 ^ ")"
+      | PKRet(v) => "ret (" ^ show_pkvalue v ^ ")"
+      end
+
+
   
 end
