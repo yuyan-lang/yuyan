@@ -38,10 +38,7 @@ struct
         
     type allOperators = operator list
 
-    datatype OpAST = OpAST of (operator * OpAST list )
-                    | UnknownOpName of UTF8String.t
-                    | NewOpName of UTF8String.t
-
+ 
     fun stripHead (s : UTF8String.t) = tl s
   fun show_opcomptype (x : opComponentType) :string = let 
     in

@@ -103,12 +103,13 @@ structure PreprocessingPass = struct
         handle DeclarationParser.DeclNoParse (expr) => PDirectExpr expr 
     )
 
-    fun preprocessAST (s : MixedStr.t) : PreprocessingAST.t = 
+    fun preprocessAST (s : MixedStr.t list) : PreprocessingAST.t = 
     (
         (* print (PrettyPrint.show_statementast s); *)
-    case s of 
-         [MixedStr.UnparsedDeclaration l]  => map parseJudgment l
-        | _ => [PDirectExpr s]
+    (* case s of  *)
+         (* [MixedStr.UnparsedDeclaration l]  =>  *)
+         map parseJudgment s
+        (* | _ => [PDirectExpr s] *)
     )
         
         

@@ -20,6 +20,7 @@ Library
   structure MixFixParser
   functor PrecedenceParser
   structure Operators
+  structure OpAST
   structure ParseAST
   structure BracketScanner
 
@@ -41,6 +42,7 @@ Library
   structure TypeCheckingAST
   structure PreprocessingPass
   structure PreprocessingAST
+  structure SignatureParsingOrchestrator
   structure ExpressionConstructionPass 
 is
   ../cmlib/cmlib.cm
@@ -70,6 +72,7 @@ is
   builtinOperators/declarationOps.sml
   builtinOperators/operator-registry.sml
   builtinOperators/operators.sml
+  builtinOperators/op-ast.sml
 
   util/utf8char.sml
   util/utf8string.sml
@@ -82,6 +85,7 @@ is
   passes/preprocess/preprocessing-pass.sml
   passes/preprocess/preprocessing-ast.sml
   passes/preprocess/expression-construction-pass.sml
+  passes/preprocess/signature-parsing-orchestrator.sml
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
 

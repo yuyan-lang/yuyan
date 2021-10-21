@@ -42,6 +42,7 @@ structure ReplTest =
 
     fun testT x = 
       (test(); raise Fail "completed")
+      handle ElaboratePrecedence.ElaborationFail s => print (PrettyPrint.show_parseopast s)
       handle ExpressionConstructionPass.ElaborateFailure s => print s 
       handle ExpressionConstructionPass.ECPNoPossibleParse s=> print (MixedStr.toString s)
       handle MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)

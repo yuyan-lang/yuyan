@@ -41,15 +41,21 @@ struct
         end
     end
 
-  fun show_opast (x : Operators.OpAST) = let 
-    open Operators
-    in case x of 
-      OpAST (oper, l) => (show_op oper) ^ "[" ^ String.concatWith ", " (map show_opast l) ^ "]"
-      | UnknownOpName s => "?[" ^ UTF8String.toString s ^ "]"
-      | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
+ fun show_mixedstrchar(u : MixedStr.mixedchar) : string = 
+    let 
+    open MixedStr
+    in
+    case  u of 
+    UnparsedExpression s => "(UNPARSED(EXPR):" ^ show_mixedstr s ^ ")"
+    | UnparsedDeclaration l => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn x => show_mixedstr x) l) ^ "}"
+    | Name t => "(NAME:" ^ UTF8String.toString t ^ ")"
+    | Literal t => "(LITERAL:" ^ UTF8String.toString t ^ ")"
+    (* | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
+    | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")" *)
+    | SChar t => UTF8Char.toString t
     end
-
-
+    and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)
+    and show_mixedstrs(u : MixedStr.t list ) : string = String.concatWith ";\n" (map show_mixedstr u)
 
 fun show_parseopast x = let 
 open ParseAST in 
@@ -80,7 +86,21 @@ case x of
     | UnknownIdComp s => "UnknownIdComp "^ UTF8Char.toString s
     | Binding id => "Binding "^ UTF8String.toString id
     | QuotedName s => "QuotedName "^UTF8String.toString s
+    | UnparsedDecl l => "UnparsedDecl "^ String.concatWith ", " (map show_mixedstr l)
+    | UnparsedExpr l => "UnparsedExpr "^ show_mixedstr l
+    | PlaceHolder => "PlaceHolder "
 end
+
+  fun show_opast (x : OpAST.OpAST) = let 
+    open Operators
+    open OpAST
+    in case x of 
+      OpAST (oper, l) => (show_op oper) ^ "[" ^ String.concatWith ", " (map show_opast l) ^ "]"
+      | UnknownOpName s => "?[" ^ UTF8String.toString s ^ "]"
+      | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
+      | OpUnparsedDecl s => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr s)) ^ "]"
+      | OpUnparsedExpr s => "[EXPR:" ^ show_mixedstr s ^ "]"
+    end
 
 
 fun show_preprocessaastJ x = let
@@ -164,18 +184,5 @@ in
           String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
 end
 
-   fun show_mixedstrchar(u : MixedStr.mixedchar) : string = 
-    let 
-    open MixedStr
-    in
-    case  u of 
-    UnparsedExpression s => "(UNPARSED(EXPR):" ^ show_mixedstr s ^ ")"
-    | UnparsedDeclaration l => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn x => show_mixedstr x) l) ^ "}"
-    | Name t => "(NAME:" ^ UTF8String.toString t ^ ")"
-    | Literal t => "(LITERAL:" ^ UTF8String.toString t ^ ")"
-    | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
-    | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")"
-    | SChar t => UTF8Char.toString t
-    end
-    and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)
+  
 end

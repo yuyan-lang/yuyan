@@ -417,6 +417,7 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 case exp of 
                     [] => [] (* fail if exp doesn't have content *)
                     | (MixedStr.UnparsedExpression s :: xs) => 
+                    (* [(ParseOpAST(UnparsedExpr s, []), xs)] *)
                     (* TODO SHOULD NOT PARSE, let the coordinator handle parsing to support better
                     error messages ! *)
                          map (fn (opast, [] (* should be empty *)) => (opast, xs))

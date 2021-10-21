@@ -3,6 +3,7 @@ struct
     open PreprocessingAST
     open TypeCheckingAST
     open Operators
+    open OpAST
     
     (* Precedence hierachy: 
     
@@ -54,10 +55,13 @@ struct
         caseAlternativeOp, caseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
         lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp
     ]
-
+  structure PrecParser = MixFixParser
+    exception ECPNoPossibleParse of MixedStr.t
     exception ElaborateFailure of string
     exception InternalErrorECP
-    fun flattenRight (ast : Operators.OpAST) (curOp : Operators.operator)  : OpAST list = 
+
+
+    fun flattenRight (ast : OpAST.OpAST) (curOp : Operators.operator)  : OpAST list = 
         case ast of
         OpAST(oper, [l1,l2]) => if oper = curOp
                 then l1 :: flattenRight l2 curOp
@@ -74,7 +78,7 @@ struct
         NewOpName(l1) => l1
         | _ => raise ElaborateFailure "Expect new name (perhaps internal)"
     
-    fun elaborateLabeledType (ast : Operators.OpAST) : Label * Type = 
+    fun elaborateLabeledType (ast : OpAST.t) : Label * Type = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 
             oper = labeledTypeCompOp 
@@ -82,7 +86,8 @@ struct
             else raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
         | _ => raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
 
-    and elaborateOpASTtoType (ast : Operators.OpAST) : TypeCheckingAST.Type = 
+    and elaborateOpASTtoType 
+         (ast : OpAST.OpAST) : TypeCheckingAST.Type = 
         (
             (* print (PrettyPrint.show_opast ast); *)
         case ast of
@@ -122,11 +127,11 @@ struct
         handle ElaborateFailure s => 
         raise ElaborateFailure (s ^ "\n when elaborating "^ PrettyPrint.show_opast ast )
     
-    fun elaborateOpASTtoExpr (ast : Operators.OpAST) : TypeCheckingAST.Expr = 
+    fun elaborateOpASTtoExpr  (ast : OpAST.t) : TypeCheckingAST.Expr = 
     let fun snd (x : OpAST list) : OpAST = (hd (tl x))
     in
         (case ast of
-             UnknownOpName (s) => ExprVar s
+              UnknownOpName (s) => ExprVar s
             | OpAST(oper, l) => (
                 if getUID oper >= elabAppBound 
                 then (* elab app *)
@@ -202,19 +207,23 @@ struct
     end
 
             
+    (* and recursivelyParseType declParse (opast : OpAST.t) : OpAST.t
+    = case opast of
+        UnknownOpName _ => opast
+        | OpAST(oper, l) => OpAST(oper, map (recursivelyParseType declParse) l)
+        | OpUnparsedDecl l => declParse
+    and recursivelyParseExpr declParse (opast : OpAST.t) : OpAST.t
+   *)
 
-    structure PrecParser = MixFixParser
-    exception ECPNoPossibleParse of MixedStr.t
-
-    fun parseType (tbody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
-        elaborateOpASTtoType (PrecParser.parseMixfixExpression allTypeOps tbody) 
-        handle PrecParser.NoPossibleParse s => raise ECPNoPossibleParse s
-    fun parseExpr (ebody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
-    = elaborateOpASTtoExpr (PrecParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
-        handle PrecParser.NoPossibleParse s => raise ECPNoPossibleParse s
+    and parseType (tbody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
+        elaborateOpASTtoType (MixFixParser.parseMixfixExpression allTypeOps tbody) 
+        handle MixFixParser.NoPossibleParse s => raise ECPNoPossibleParse s
+    and parseExpr (ebody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
+    = elaborateOpASTtoExpr (MixFixParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
+        handle MixFixParser.NoPossibleParse s => raise ECPNoPossibleParse s
     
 
-    fun constructOpAST (ast : PreprocessingAST.t) (addedOps : Operators.operator list) 
+    and constructOpAST  (ast : PreprocessingAST.t) (addedOps : Operators.operator list) 
         : TypeCheckingAST.Signature = 
         (
         print ("\rRemaining: "^ Int.toString(List.length ast) ^ " statements");
@@ -227,7 +236,7 @@ struct
                 in
                 (case x of 
                     PTypeMacro(tname, tbody) => TypeMacro(tname, parseType tbody addedOps) :: trailingNoOps()
-                    | PTermTypeJudgment(ename, tbody) => TermTypeJudgment(ename, parseType tbody addedOps) :: trailingNoOps()
+                    | PTermTypeJudgment(ename, tbody) => TermTypeJudgment(ename, parseType  tbody addedOps) :: trailingNoOps()
                     | PTermMacro(ename, ebody) => TermMacro(ename, parseExpr ebody addedOps) :: trailingNoOps()
                     | PTermDefinition(ename, ebody) => TermDefinition(ename, parseExpr ebody addedOps) :: trailingNoOps()
                     | POpDeclaration(opName, assoc, pred) => trailingWithOps(Operators.parseOperator 
@@ -239,11 +248,12 @@ struct
         )
                 
 
-    fun constructTypeCheckingAST ( ast : PreprocessingAST.t) : TypeCheckingAST.Signature = 
+    and constructTypeCheckingAST 
+     ( ast : PreprocessingAST.t) : TypeCheckingAST.Signature = 
     let 
-        val _ = print ("Total "^ Int.toString(List.length ast) ^ " statements\n");
+        (* val _ = print ("Total "^ Int.toString(List.length ast) ^ " statements\n"); *)
         val res =  constructOpAST ast []
-        val _ = print ("Done "^ Int.toString(List.length ast) ^ " statements\n");
+        (* val _ = print ("Done "^ Int.toString(List.length ast) ^ " statements\n"); *)
     in 
         res end
         

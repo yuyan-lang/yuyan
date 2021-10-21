@@ -6,8 +6,8 @@ struct
                   | UnparsedDeclaration of mixedchar list list (* an unparsed declaration has periods between quotes*)
                   | Name of UTF8String.t (* a name is the string between quotes that don't have periods or quotes *)
                   | Literal of UTF8String.t (* a literal is the string between double quotes *)
-                  | ParsedExpression of Operators.OpAST (* a parsed expression *)
-                  | ParsedDeclaration of TypeCheckingAST.Signature 
+                  (* | ParsedExpression of Operators.OpAST (* a parsed expression *)
+                  | ParsedDeclaration of TypeCheckingAST.Signature  *)
                   | SChar of UTF8Char.t (* top level characters , every thing else is quoted *)
     type mixedstr = mixedchar list
     type t = mixedstr
@@ -61,8 +61,8 @@ struct
         | (SChar x :: xs) => x :: unSChar xs
         | _ => (raise InternalFailure s)
 
-    fun processDeclaration (p : mixedstr) : mixedchar = 
-            UnparsedDeclaration (separateBy SpecialChars.period (
+    fun processDeclaration (p : mixedstr) : mixedstr list = 
+            (separateBy SpecialChars.period (
                 if isChar (List.last p) SpecialChars.period
                 then stripTail p else p
             ) [])
@@ -70,7 +70,7 @@ struct
     fun processSingleQuoted( p : mixedstr) : mixedchar = 
         if containsCharTopLevel p SpecialChars.period
         then (* process as declaration *)
-            processDeclaration p
+             UnparsedDeclaration (processDeclaration p)
         else if isPlainStr p
             then (* name *) Name (unSChar p)
             else (* expression *) UnparsedExpression p 
@@ -123,7 +123,7 @@ struct
 
     fun make(u : UTF8String.t) : mixedstr = scanTopLevel u
 
-    fun makeDecl(u : UTF8String.t) : mixedchar = processDeclaration (make u)
+    fun makeDecl(u : UTF8String.t) : mixedstr list = processDeclaration (make u)
     
     fun toUTF8StringChar(u : mixedchar) : UTF8String.t = 
     let 
@@ -137,8 +137,8 @@ struct
     | UnparsedDeclaration l => singleQuoteAround (List.concat ( (map (fn x => toUTF8String x @[SpecialChars.period]) l)))
     | Name t => singleQuoteAround t
     | Literal t => doubleQuoteAround t
-    | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"
-    | ParsedDeclaration d => UTF8String.fromString "PARSED SIG"
+    (* | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"
+    | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
     | SChar t => [t]
     end
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)

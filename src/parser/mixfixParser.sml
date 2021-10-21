@@ -16,7 +16,7 @@ struct
         val enableBracketedExpression = true
         end)
 
-    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : MixedStr.t) : OpAST = 
+    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : MixedStr.t) : OpAST.t = 
             case Parser.parseExpWithOption allOps true exp of
                                 [] => raise NoPossibleParse exp
                                 | [(parseopast, _)] => ElaboratePrecedence.elaborate parseopast
