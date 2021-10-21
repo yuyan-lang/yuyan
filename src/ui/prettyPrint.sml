@@ -194,6 +194,7 @@ in
         | PKInj (i, kv) => Int.toString i ^ "⋅" ^ show_pkvalue kv
         | PKFold e => "fold (" ^ show_pkvalue e ^ ")"
         | PKAbs (i, c) => "(λ" ^ Int.toString i ^ "." ^ show_pkcomputation c ^ ")"
+        | PKComp (c) => "comp(" ^  show_pkcomputation c ^ ")"
 
 end
 and show_pkcomputation x = let
@@ -207,6 +208,7 @@ in
       | PKUnfold(e) => "unfold (" ^ show_pkcomputation e ^ ")"
       | PKApp(c1, c2) => "ap (" ^ show_pkcomputation c1 ^ ", " ^ show_pkcomputation c2 ^ ")"
       | PKRet(v) => "ret (" ^ show_pkvalue v ^ ")"
+      | PKFix(id, c) => "(fix " ^ Int.toString id ^ "." ^ show_pkcomputation c ^ ")"
       end
 
 

@@ -42,7 +42,7 @@ struct
     fun parseDeclarationSingleOp(l :  opComponentType list) : MixedStr.t -> (MixedStr.t list) option
     = fn exp =>
         (
-            (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ UTF8String.toString exp ^ "\n"); *)
+            print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ MixedStr.toString exp ^ "\n");
         case l of
             [] => SOME([])
             | [OpCompExpr] => SOME([exp])
@@ -68,6 +68,7 @@ struct
             Operator(_, Prefix, NoneAssoc, l , _) => (oper,  l @ [OpCompExpr])
             | Operator(_, Postfix, NoneAssoc, l , _) => (oper, OpCompExpr :: l)
             | Operator(_, Infix, NoneAssoc, l , _) => (oper, OpCompExpr :: l @ [OpCompExpr])
+            | Operator(_, Closed, NoneAssoc, l , _) => (oper,  l )
             | _ => raise Fail "Can only handle nonassoc ops: dp20"
     (* will be parsing in binding left most fashion *)
     (* declarations should not be associative *)

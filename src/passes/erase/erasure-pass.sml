@@ -157,13 +157,15 @@ open TypeCheckingASTOps
                 Rho (tv, tb) => asserTypeEquiv tt (substTypeInType (Rho (tv, tb)) tv tb)
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 ) *)
-            | Fix (ev, e)=>  let
-            (* fix F = ((\y. f (y y)) (\y. f (y y)))*) 
+            | Fix (ev, e)=>  KFix(fn v => eraseCkExpr ((ev , v) :: kctx) ((ev, tt)::(ctx)) e tt)
+            (* let
+             fix F = ((\y. f (y y)) (\y. f (y y)))
+             (this one causes infinite look)
                     val compiledF = KAbs (fn v => eraseCkExpr ((ev, v)::kctx) ((ev, tt)::ctx) e tt)
                     fun appVV (v1 : kvalue) (v2:kvalue) : kcomputation = KApp(KRet(v1), KRet(v2))
                     val lamydotfyy = KAbs(fn y => KApp(KRet(compiledF),(appVV y y)))
                 in appVV lamydotfyy lamydotfyy
-            end
+            end *)
             (* `checkType ((ev , tt):: ctx) e tt *)
         )
 

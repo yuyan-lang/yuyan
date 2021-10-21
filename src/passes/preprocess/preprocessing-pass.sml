@@ -22,7 +22,7 @@ structure PreprocessingPass = struct
     (* // *)
     val commentOp = Operators.parseOperatorStr "注〇" false false 0 []
     
-    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, commentOp]
+    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, opDeclarationOp, commentOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t
     exception PreprocessMalformedPrecedence of UTF8String.t
@@ -40,34 +40,34 @@ structure PreprocessingPass = struct
 
     fun parsePrecedence (s : UTF8String.t) : int = 
     foldl (fn (c, acc) => 
-        if s = UTF8String.fromString "零"
+        if c = UTF8Char.fromString "零"
         then acc * 10 + 0
         else 
-        if s = UTF8String.fromString "一"
+        if c = UTF8Char.fromString "一"
         then acc * 10 + 1
         else 
-        if s = UTF8String.fromString "二"
+        if c = UTF8Char.fromString "二"
         then acc * 10 + 2
         else 
-        if s = UTF8String.fromString "三"
+        if c = UTF8Char.fromString "三"
         then acc * 10 + 3
         else 
-        if s = UTF8String.fromString "四"
+        if c = UTF8Char.fromString "四"
         then acc * 10 + 4
         else 
-        if s = UTF8String.fromString "五"
+        if c = UTF8Char.fromString "五"
         then acc * 10 + 5
         else 
-        if s = UTF8String.fromString "六"
+        if c = UTF8Char.fromString "六"
         then acc * 10 + 6
         else 
-        if s = UTF8String.fromString "七"
+        if c = UTF8Char.fromString "七"
         then acc * 10 + 7
         else 
-        if s = UTF8String.fromString "八"
+        if c = UTF8Char.fromString "八"
         then acc * 10 + 8
         else 
-        if s = UTF8String.fromString "九"
+        if c = UTF8Char.fromString "九"
         then acc * 10 + 9
         else raise PreprocessMalformedPrecedence s
     ) 0 s
