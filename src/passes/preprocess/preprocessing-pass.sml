@@ -7,7 +7,6 @@ structure PreprocessingPass = struct
                        | POpDeclaration *)
     open PreprocessingAST
     open Operators
-    open StatementAST
 
     (* type t = T *)
     val typeMacroOp = Operators.parseOperatorStr "〇者〇也" false false 0 []

@@ -121,12 +121,12 @@ in
 String.concatWith "\n" (map show_preprocessaastJ x) ^ "\n"
   end
 
-fun show_statementast x = let 
+(* fun show_statementast x = let 
 open StatementAST
 in case x of 
     Leaf => ". /* END */\n"
     | StatementNode (stmt, next) => UTF8String.toString stmt ^ "\n -> "^ show_statementast next
-    end
+    end *)
 fun show_typecheckingType x = let
 open TypeCheckingAST
 val st = show_typecheckingType

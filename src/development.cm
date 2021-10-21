@@ -35,8 +35,6 @@ Library
   structure DeclarationOps
   structure OperatorRegistry
 
-  structure StatementAST 
-  structure StatementDivisionPass
 
   structure TypeCheckingPass
   structure TypeCheckingAST
@@ -87,8 +85,6 @@ is
   util/uniqueId.sml
   util/mixed-str.sml
 
-  passes/statement/statement-ast.sml
-  passes/statement/statement-division-pass.sml
   passes/preprocess/preprocessing-pass.sml
   passes/preprocess/preprocessing-ast.sml
   passes/preprocess/expression-construction-pass.sml
