@@ -5,8 +5,8 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
     val DEBUG = false
     (* val DEBUGMEDIUM = true *)
     (* val DEBUGMEDIUM = false *)
-    val DEBUGLIGHT = true
-    (* val DEBUGLIGHT = false *)
+    (* val DEBUGLIGHT = true *)
+    val DEBUGLIGHT = false
     
             open Operators
             open ParseAST

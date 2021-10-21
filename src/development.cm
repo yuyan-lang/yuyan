@@ -44,6 +44,7 @@ Library
   structure PreprocessingAST
   structure SignatureParsingOrchestrator
   structure ExpressionConstructionPass 
+  structure TypeCheckingASTOps 
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -88,6 +89,7 @@ is
   passes/preprocess/signature-parsing-orchestrator.sml
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
+  passes/typechecking/type-checking-ast-ops.sml
 
   replTest.sml
   lexer/yulang.lex : ml-ulex

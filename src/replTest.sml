@@ -46,6 +46,7 @@ structure ReplTest =
       handle ExpressionConstructionPass.ElaborateFailure s => print s 
       handle ExpressionConstructionPass.ECPNoPossibleParse s=> print (MixedStr.toString s)
       handle MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
+      handle TypeCheckingPass.TypeCheckingFailure s=> print s
 
 
 end

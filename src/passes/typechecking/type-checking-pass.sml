@@ -1,5 +1,6 @@
 structure TypeCheckingPass = struct
 open TypeCheckingAST
+open TypeCheckingASTOps
 
     type mapping = UTF8String.t * Type
                     
@@ -29,6 +30,7 @@ open TypeCheckingAST
 
 
     fun synthesizeType (ctx : context)(e : Expr) : Type =
+    (
          case e of
             ExprVar v => lookup ctx v
             | UnitExpr => UnitType
@@ -65,12 +67,19 @@ open TypeCheckingAST
                 )
             (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
             | _ => raise TypeCheckingFailure "Expression does type support type synthesis, please specify type"
+            )
+        handle TypeCheckingFailure s => 
+            raise TypeCheckingFailure (s ^ "\n when synthesizing the type for " ^ PrettyPrint.show_typecheckingExpr e )
+
     and asserTypeEquiv (t1 : Type) (t2 : Type) : unit =
-        if typeEquiv [] t1 t2 then () else raise TypeCheckingFailure "type mismatch"
+        if typeEquiv [] t1 t2 then () else raise TypeCheckingFailure ("type mismatch \n 1 : " ^ PrettyPrint.show_typecheckingType t1 ^ " \n 2 : " ^ PrettyPrint.show_typecheckingType t2)
     and checkType (ctx : context) (e : Expr) (tt: Type) (* tt target type *) : unit =
-         case e of
+        (case e of
             ExprVar v => if typeEquiv [] (synthesizeType ctx e) tt = false 
-                        then raise TypeCheckingFailure "var type mismatch"
+                        then raise TypeCheckingFailure ("var type mismatch var is " ^ UTF8String.toString v 
+                        ^ " synthesized : " ^ PrettyPrint.show_typecheckingType (synthesizeType ctx e) ^ " against : " 
+                        ^ PrettyPrint.show_typecheckingType tt
+                        )
                         else ()
             | UnitExpr => if tt = UnitType then () else raise TypeCheckingFailure "unit expr will have unit type"
             | Tuple l => (case tt of 
@@ -80,7 +89,7 @@ open TypeCheckingAST
                             checkType ctx (List.nth(l, i)) (#2 (List.nth(ls, i))))); ())
                 | _ => raise TypeCheckingFailure "Expected Prod"
                 )
-            | Proj(e, l) => if typeEquiv [] (synthesizeType ctx (Proj(e, l))) tt then () else raise TypeCheckingFailure "type mismatch"
+            | Proj(e, l) => asserTypeEquiv (synthesizeType ctx (Proj(e, l))) tt 
             | Inj (l, e) => (case tt of
                 Sum ls => checkType ctx e (lookupLabel ls l)
                 | _ => raise TypeCheckingFailure "Inj encoutnered "
@@ -130,8 +139,17 @@ open TypeCheckingAST
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
             | Fix (ev, e)=> checkType ((ev , tt):: ctx) e tt
+        )
+            handle TypeCheckingFailure s =>
+            raise TypeCheckingFailure (s ^ "\n when checking the expr " ^ PrettyPrint.show_typecheckingExpr e ^ 
+                " against type " ^ PrettyPrint.show_typecheckingType tt
+             )
     fun typeCheckSignature(ctx : context) (s : Signature) :unit =
-        case s of
+
+        (
+            (* print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ) *)
+            (* ; *)
+            case s of
             [] => ()
          | TypeMacro (n, t)::ss => if freeTVar t <> [] then raise TypeCheckingFailure "Type decl contains free var" else 
             typeCheckSignature ctx (substituteTypeInSignature t n ss)
@@ -141,5 +159,8 @@ open TypeCheckingAST
             typeCheckSignature ((n, synthesizeType ctx e) :: ctx) ss
         | TermDefinition(n, e) :: ss => 
             (checkType ctx e (lookup ctx n); typeCheckSignature ctx ss)
-        | DirectExpr e :: ss=> (synthesizeType ctx e; typeCheckSignature ctx ss)
+        | DirectExpr e :: ss=> (synthesizeType ctx e; typeCheckSignature ctx ss))
+        (* handle TypeCheckingFailure st =>
+        raise TypeCheckingFailure (st ^ "\n when checking the signature " ^ PrettyPrint.show_typecheckingSig s 
+            ) *)
 end
