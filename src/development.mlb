@@ -30,19 +30,25 @@ local
     builtinOperators/groupOps.sml
     builtinOperators/builtin.sml
     builtinOperators/operator-registry.sml
+    util/mixed-str.sml
+    builtinOperators/op-ast.sml
 
     passes/statement/statement-ast.sml
     passes/typechecking/type-checking-ast.sml
-    util/mixed-str.sml
     passes/preprocess/preprocessing-ast.sml
+
+    execution/k-machine.sml
+    execution/persistent-k-machine.sml
 
     parser/parseAST.sml
     parser/bracket-scanner.sml
-    parser/declaration-parser.sml
-    passes/typechecking/type-checking-pass.sml
-    passes/preprocess/preprocessing-pass.sml
-
+    passes/typechecking/type-checking-ast-ops.sml
     ui/prettyPrint.sml
+    parser/declaration-parser.sml
+    passes/preprocess/preprocessing-pass.sml
+    passes/typechecking/type-checking-pass.sml
+    passes/erase/erasure-pass.sml
+
     parser/parser-options.sig
     parser/precedenceParser.sml
     parser/elaboratePrecedence.sml
