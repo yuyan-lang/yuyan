@@ -39,3 +39,28 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |遇〇者〇而〇| λ x: T. e|
 |循〇以〇| fix f. e| 
 |受〇而〇| Λ t. e|
+
+# Features
+
+This language is a simple functional programming languages with 
+- function types
+- sum types
+- product types
+- isorecursive types
+- universal types
+- existential types
+
+# Features to be implemented
+
+I find the following feature to be usually desirable 
+- Nested expression with declarations,
+(I tried to implement this, but the parser needs a lot of rework, so pending for now)
+
+- Custom Exceptions
+
+- Letcc
+
+-
+Mutable references
+
+
