@@ -34,7 +34,7 @@ struct
                     in (boundId, fromKComp (f (KVar boundId))) end) l))
         | KUnfold(e) => PKUnfold (fromKComp e)
         | KApp(c1, c2) => PKApp(fromKComp c1, fromKComp c2)
-        | KAppWithEvaledFun _ => raise Fail "pkm37"
+        | KAppWithEvaledFun (v, c2) => PKApp(PKRet(fromKValue (KAbs v)), fromKComp c2)
         | KRet(v) => PKRet(fromKValue v)
 
     structure Ctx = RedBlackDict(structure Key=IntOrdered)

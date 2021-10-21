@@ -210,5 +210,13 @@ in
       end
 
 
+   fun show_kmachine x = let
+   open KMachine
+in 
+  case x of 
+    Run (l, c) => "RUN : "^ Int.toString (length l) ^ " : " ^ show_pkcomputation (PersistentKMachine.fromKComp c)
+    | NormalRet (l, c) => "RET : "^ Int.toString (length l) ^ " : " ^ show_pkvalue (PersistentKMachine.fromKValue c)
+    end
+ 
   
 end

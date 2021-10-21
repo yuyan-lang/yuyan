@@ -15,7 +15,10 @@ struct
             val _ = print "----------------- Type Checking OK! -------------------- \n"
             val erasedAST = ErasurePass.eraseSig typeCheckingAST
             val _ = print "----------------- Byte Code Generated ! -------------------- \n"
-            val _ = print (PrettyPrint.show_pkcomputation (PersistentKMachine.fromKComp erasedAST))
+            val _ = print (PrettyPrint.show_pkcomputation (PersistentKMachine.fromKComp erasedAST) ^ "\n")
+            val _ = print "----------------- Executing ---------------------- \n"
+            val result = KMachine.runUntilCompletion (KMachine.Run([],erasedAST)) (fn km => print (PrettyPrint.show_kmachine km ^ "\n"))
+            val _ = print "----------------- Execution Completed ! -------------------- \n"
         in 
             ""
         end

@@ -41,9 +41,14 @@ struct
             | Run (s, KUnfold(p)) => Run ( ((fn (KFold(v)) => KRet(v)) ::s), p)
             | Run (s, KApp(f, arg)) => Run ( ((fn (KAbs f') => KAppWithEvaledFun(f', arg)) ::s), f)
             | Run (s, KAppWithEvaledFun(f', arg)) => Run ( ((fn argv => f' argv) ::s), arg)
-    
-    fun runUntilCompletion (m : kmachine) : kvalue = 
+
+
+    fun runUntilCompletion (m : kmachine) (prt : kmachine -> unit) : kvalue = 
+    (
+        prt m;
         case m of 
             NormalRet ([], v) => v
-            | _ => runUntilCompletion (runOneStep m)
+            | _ => runUntilCompletion (runOneStep m) prt
+    )
+
 end
