@@ -10,26 +10,21 @@ local
     ann
        "nonexhaustiveMatch ignore"
     in
-        util/uniqueId.sml
+        util/unique-id.sml
         util/utf8char.sml
         util/utf8string.sml
         util/ordered.sml
 
-        builtinOperators/specialChars.sml
-
-        builtinOperators/operators.sml
-
-
-
-
-        builtinOperators/declarationOps.sml
-        builtinOperators/functionOps.sml
-        builtinOperators/natOps.sml
-        builtinOperators/groupOps.sml
-        builtinOperators/builtin.sml
-        builtinOperators/operator-registry.sml
+        builtin-operators/special-chars.sml
+        builtin-operators/operators.sml
+        builtin-operators/declaration-ops.sml
+        builtin-operators/function-ops.sml
+        builtin-operators/nat-ops.sml
+        builtin-operators/group-ops.sml
+        builtin-operators/builtin.sml
+        builtin-operators/operator-registry.sml
         util/mixed-str.sml
-        builtinOperators/op-ast.sml
+        builtin-operators/op-ast.sml
 
         passes/typechecking/type-checking-ast.sml
         passes/preprocess/preprocessing-ast.sml
@@ -37,25 +32,25 @@ local
         execution/k-machine.sml
         execution/persistent-k-machine.sml
 
-        parser/parseAST.sml
+        parser/parse-ast.sml
         parser/bracket-scanner.sml
         passes/typechecking/type-checking-ast-ops.sml
-        ui/prettyPrint.sml
+        ui/pretty-print.sml
         parser/declaration-parser.sml
         passes/preprocess/preprocessing-pass.sml
         passes/typechecking/type-checking-pass.sml
         passes/erase/erasure-pass.sml
 
         parser/parser-options.sig
-        parser/precedenceParser.sml
-        parser/elaboratePrecedence.sml
-        parser/mixfixParser.sml
+        parser/precedence-parser.sml
+        parser/elaborate-precedence.sml
+        parser/mixfix-parser.sml
 
         passes/preprocess/expression-construction-pass.sml
         ui/type-check-and-eval.sml
         ui/repl.sml
 
-        mltonExec.sml
+        mlton-exec.sml
     end
 in
 

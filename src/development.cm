@@ -49,36 +49,35 @@ is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
   (* $/smlnj-lib.cm *)
-  $/ml-lpt-lib.cm 
+  $/ml-lpt-lib.cm  (* for UTF8 since the smlnj-lib clashes with cmlib *)
 
-  parser/rawAST.sml
-  parser/elaboratePrecedence.sml
+  parser/elaborate-precedence.sml
   parser/bracket-scanner.sml
   parser/declaration-parser.sml
   parser/parser-options.sig
-  parser/parseAST.sml
-  parser/mixfixParser.sml
-  parser/precedenceParser.sml
+  parser/parse-ast.sml
+  parser/mixfix-parser.sml
+  parser/precedence-parser.sml
 
 
   ui/repl.sml
   ui/type-check-and-eval.sml
-  ui/prettyPrint.sml
+  ui/pretty-print.sml
   
-  builtinOperators/builtin.sml
-  builtinOperators/natOps.sml
-  builtinOperators/groupOps.sml
-  builtinOperators/functionOps.sml
-  builtinOperators/specialChars.sml
-  builtinOperators/declarationOps.sml
-  builtinOperators/operator-registry.sml
-  builtinOperators/operators.sml
-  builtinOperators/op-ast.sml
+  builtin-operators/builtin.sml
+  builtin-operators/nat-ops.sml
+  builtin-operators/group-ops.sml
+  builtin-operators/function-ops.sml
+  builtin-operators/special-chars.sml
+  builtin-operators/declaration-ops.sml
+  builtin-operators/operator-registry.sml
+  builtin-operators/operators.sml
+  builtin-operators/op-ast.sml
 
   util/utf8char.sml
   util/utf8string.sml
   util/ordered.sml
-  util/uniqueId.sml
+  util/unique-id.sml
   util/mixed-str.sml
 
   passes/preprocess/preprocessing-pass.sml
