@@ -16,7 +16,7 @@ struct
     fun inputFile (filename : string) (options : ReplOptions.t): unit = 
          (process (TextIO.inputAll (TextIO.openIn filename)) options; ())
 
-    val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r filename.yuyan\n"
+    val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r[kvv] filename.yuyan\n"
 
     fun main() : unit = 
         (* arg.sml *)
