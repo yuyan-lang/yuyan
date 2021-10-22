@@ -2,6 +2,7 @@ structure TypeCheckAndEval =
 struct
     fun typeCheckAndEval (input : string)(verbose : int) =
         (let fun cprint x s = if x <= verbose then print s else () 
+            val startTime = Time.now()
             val whitespaceRemoved = UTF8String.removeAllWhitespace input
             val stmtAST = MixedStr.makeDecl (UTF8String.fromString whitespaceRemoved)
             val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n"
@@ -19,9 +20,16 @@ struct
             val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
             val _ = cprint 2 (PrettyPrint.show_pkcomputation (PersistentKMachine.fromKComp erasedAST) ^ "\n")
             val _ = cprint 1 "----------------- Executing ---------------------- \n"
+            val executeTime = Time.now()
             val result = KMachine.runUntilCompletion (KMachine.Run([],erasedAST)) (fn km => print (PrettyPrint.show_kmachine km ^ "\n"))
+            val endTime = Time.now()
+            val compileDuration : Time.time = Time.-(executeTime,startTime)
+            val runDuration : Time.time = Time.-(endTime,executeTime)
             val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
             val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
+            val _ = cprint 1 "------------------------------------------- \n"
+            val _ = cprint 1 ("compilation took " ^ (LargeInt.toString(Time.toMilliseconds(compileDuration))) ^ "ms; execution took "^
+            (LargeInt.toString(Time.toMilliseconds(runDuration))) ^ "ms\n")
         in 
             ()
         end)
