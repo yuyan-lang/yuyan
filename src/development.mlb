@@ -9,6 +9,7 @@ local
     ../cmlib/cmlib.mlb
     ann
        "nonexhaustiveMatch ignore"
+       "allowExtendedTextConsts true"
     in
         util/unique-id.sml
         util/utf8char.sml
