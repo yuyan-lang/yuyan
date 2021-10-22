@@ -83,7 +83,8 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |元| () | 720 | 
 |〇中〇| e1.l | 700 |
  |〇于〇| (e1 e2) | 690 |
- |〇与〇| ⟨e1, e2, e3⟩ | 680 |
+ |〇与〇| ⟨e1,e2⟩ | 680 |
+ |〇与〇与〇| ⟨e1,e2,e3⟩ | 680 |
  |〇临〇| l.e | 670 |
    |卷〇| fold e| 660 |
    |舒〇| unfold e|  650 |
@@ -103,3 +104,10 @@ Bugs are to be expected. If you encounter an exception on an otherwise ok progra
 
 ## Contribution
 Language features should be thoroughly discussed before they are merged as PRs. 
+
+
+## Tips for debugging
+
+Some annoying issue I've encountered:
+
++ UTF8 sometimes have control characters that mess with parsing, can use vim to chase them out. The issue is likely due to vim plugin for vscode intermixing with pinyin input method.

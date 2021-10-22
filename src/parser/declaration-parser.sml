@@ -3,18 +3,28 @@ structure DeclarationParser =
 struct
     open ParseAST
     val DEBUG = false
+    (* val DEBUG = true *)
     (* type parser = UTF8String.t -> (operator * UTF8String.t list) list  operator and all arguments *)
     (* declarations are top level constructs that ignore internal expression structure, 
     but they contain arbitrary unknown names and structured parenthesis *)
 
     (* returns the rest *)
     fun parseStr (s : UTF8String.t)  :MixedStr.t -> MixedStr.t option = fn exp =>
+        (
+            (* print ("parseStr "^ UTF8String.toString s ^ " on " ^ PrettyPrint.show_mixedstr exp ^"\n"   ); *)
                 if UTF8String.size s = 0 then SOME(exp) else
                 case exp of
                     ( MixedStr.SChar id :: exps)  => if hd s = id 
                                     then parseStr (tl s) exps
-                                    else NONE
-                    | _ =>  NONE
+                                    else (
+                                        (* print ("parseStr failed hd s is " ^ UTF8Char.toString (hd s) 
+                                    ^ " at " ^ UTF8.toString (hd s) ^ " and id (hd of exp ) is " 
+                                    ^ UTF8Char.toString (id) ^ " at " ^ UTF8.toString id ^" \n" ); *)
+                                    NONE)
+                    | _ =>  (
+                        (* print "parseStr failed\n"; *)
+                    NONE)
+        )
 
     and projfirst2 ((a, b, c, d)) = (a, b)
 

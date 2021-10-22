@@ -11,6 +11,8 @@ struct
   fun show_rawastsPlain (l : RawAST.RawAST list) =  (String.concat (map show_rawast l))
   fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")"  *)
 
+  fun show_strlist (x : UTF8String.t list) : string =
+  String.concatWith ", " (map UTF8String.toString x)
   fun show_opcomptype (x : Operators.opComponentType) :string = let 
     open Operators
     in

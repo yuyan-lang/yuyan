@@ -9,7 +9,7 @@ struct
     let 
         val res = TypeCheckAndEval.typeCheckAndEval input verbose
     in
-        res
+        ""
     end
 
     fun replHelper (input : string ) (verbose : int) : string =
@@ -23,7 +23,7 @@ struct
         end
 
     fun inputFile (filename : string) (verbose : int): unit = 
-         (replHelper (TextIO.inputAll (TextIO.openIn "testfiles/test.yuyan")) verbose; ())
+         (replHelper (TextIO.inputAll (TextIO.openIn filename)) verbose; ())
 
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r filename.yuyan\n"
 

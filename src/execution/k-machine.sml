@@ -33,7 +33,7 @@ struct
         KUnit => pack 72 (UTF8String.fromString "元")
         | KVar i => UTF8String.fromString "ERR[please report this as a bug on github]"
         | KTuple l => pack 68 ( UTF8String.concatWith (UTF8String.fromString "与") (map (kvalueToString 68) l))
-        | KInj (l, i, kv) => pack 67 (l @ kvalueToString 67 kv)
+        | KInj (l, i, kv) => pack 67 (l @ UTF8String.fromString "临"@ kvalueToString 67 kv)
         | KFold e => pack 66 (UTF8String.fromString "卷" @ kvalueToString 66 e)
         | KAbs f => pack 52 (UTF8String.fromString "会？而？？？")
         | KComp c => UTF8String.fromString "ERR[please report this as a bug on github]"

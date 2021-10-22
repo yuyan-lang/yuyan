@@ -151,9 +151,10 @@ open TypeCheckingASTOps
             (* ; *)
             case s of
             [] => ()
-         | TypeMacro (n, t)::ss => if freeTVar t <> [] then raise TypeCheckingFailure "Type decl contains free var" else 
+         | TypeMacro (n, t)::ss => if freeTVar t <> [] then raise TypeCheckingFailure ("Type decl contains free var " ^ PrettyPrint.show_strlist (freeTVar t) ^" in"  ^ PrettyPrint.show_typecheckingType t) else 
             typeCheckSignature ctx (substituteTypeInSignature t n ss)
-        | TermTypeJudgment(n, t):: ss => if freeTVar t <> [] then raise TypeCheckingFailure "TermType decl contains free var" else 
+        | TermTypeJudgment(n, t):: ss => if freeTVar t <> [] then raise TypeCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_strlist (freeTVar t) ^" in "^ PrettyPrint.show_typecheckingType t) 
+         else 
             typeCheckSignature ((n, t) :: ctx) ss
         | TermMacro(n, e) :: ss => 
             typeCheckSignature ((n, synthesizeType ctx e) :: ctx) ss
