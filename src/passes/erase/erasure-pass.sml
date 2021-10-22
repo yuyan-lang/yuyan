@@ -196,4 +196,7 @@ untyped cases *)
         
     fun eraseSig (s : Signature) : PersistentKMachine.pkcomputation = 
                  PersistentKMachine.fromKComp (eraseSigLazy [] [] s)
+    fun eraseSigK (s : Signature) : KMachine.kcomputation = 
+               PersistentKMachine.toKComp  (PersistentKMachine.emptyCtx())
+               (PersistentKMachine.fromKComp (eraseSigLazy [] [] s))
 end

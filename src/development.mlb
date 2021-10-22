@@ -48,6 +48,8 @@ local
         parser/mixfix-parser.sml
 
         passes/preprocess/expression-construction-pass.sml
+        
+        ui/repl-options.sml
         ui/type-check-and-eval.sml
         ui/repl.sml
 

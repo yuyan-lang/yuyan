@@ -21,6 +21,7 @@ Library
   structure BracketScanner
 
   structure IRepl 
+  structure ReplOptions
   structure TypeCheckAndEval
 
 
@@ -63,6 +64,7 @@ is
   ui/repl.sml
   ui/type-check-and-eval.sml
   ui/pretty-print.sml
+  ui/repl-options.sml
   
   builtin-operators/builtin.sml
   builtin-operators/nat-ops.sml

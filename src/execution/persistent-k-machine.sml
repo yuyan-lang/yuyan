@@ -66,7 +66,7 @@ struct
 
     (* we should not need to convert pkmachine to naive k machine as this 
     conversion will slow down the actual computation *)
-    (* structure Ctx = RedBlackDict(structure Key=IntOrdered)
+    structure Ctx = RedBlackDict(structure Key=IntOrdered)
     type context = kvalue Ctx.dict
 
       fun emptyCtx() = Ctx.empty
@@ -95,7 +95,7 @@ struct
         | PKRet(v) => KRet(toKValue ctx v)
         | PKFix(id, e) => KFix(fn v => toKComp (insert ctx (id, v)) e)
 
-                 *)
+                
 
     type pkcont = (pkvalue -> pkcomputation) list
 

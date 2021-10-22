@@ -120,3 +120,6 @@ Some annoying issue I've encountered:
 Although the theoretical performance should be good (since type checking is optimized away and RT is using "byte code"), the actual performance investigation is still pending because the comparsion is not perfomed using the onchip hardware for testing natural numbers.
 
 See `performance-investigation` for testing scripts.
+
+My somewhat naive implementation of k machine is not optimal in the sense that substitutions are better implemented as functions and not as values. Add "k" to the first argument runs the K machine (which appears to be 
+faster) than the pK machine.

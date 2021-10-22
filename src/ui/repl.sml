@@ -5,25 +5,16 @@ struct
     fun addUIDynamic (s : string) = "豫☯ " ^ s ^ "\n"
     fun addUIStatic (s : string) = "豫䷏ " ^ s ^ "\n"
 
-    fun process (input : string ) (verbose : int ): string =
+
+    fun process (input : string ) (options : ReplOptions.t ): string =
     let 
-        val res = TypeCheckAndEval.typeCheckAndEval input verbose
+        val res = TypeCheckAndEval.typeCheckAndEval input options
     in
         ""
     end
 
-    fun replHelper (input : string ) (verbose : int) : string =
-        let 
-        val startTime = Time.now()
-        val res = process input verbose
-        val endTime = Time.now()
-        val duration : Time.time = Time.-(endTime,startTime)
-        in 
-            (res ^ "\n" ^ "Took " ^ (LargeInt.toString(Time.toMilliseconds(duration))) ^ "ms to complete\n")
-        end
-
-    fun inputFile (filename : string) (verbose : int): unit = 
-         (replHelper (TextIO.inputAll (TextIO.openIn filename)) verbose; ())
+    fun inputFile (filename : string) (options : ReplOptions.t): unit = 
+         (process (TextIO.inputAll (TextIO.openIn filename)) options; ())
 
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r filename.yuyan\n"
 
@@ -32,17 +23,23 @@ struct
         let
         val args = CommandLine.arguments()
         in case args of
-             (cmd :: fname :: []) => (inputFile fname (
+             (cmd :: fname :: []) => (inputFile fname 
+             {
+                 verbose=(
                 if String.isSubstring "vv" cmd
                 then 2
                 else 
                 if String.isSubstring "v" cmd
                 then 1 else 0
-                ))
+                ),
+                usekmachine = String.isSubstring "k" cmd
+             })
             | _ => (print aboutText; OS.Process.exit OS.Process.failure : unit)
             end
 
      fun testMain()= 
-        inputFile "testfiles/test.yuyan" 2
+        inputFile "testfiles/test.yuyan" {
+            verbose=2, usekmachine=false
+        }
 
 end
