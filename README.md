@@ -118,3 +118,5 @@ Some annoying issue I've encountered:
 ## Performance 
 
 Although the theoretical performance should be good (since type checking is optimized away and RT is using "byte code"), the actual performance investigation is still pending because the comparsion is not perfomed using the onchip hardware for testing natural numbers.
+
+See `performance-investigation` for testing scripts.
