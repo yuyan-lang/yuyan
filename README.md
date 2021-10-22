@@ -112,7 +112,7 @@ Language features should be thoroughly discussed before they are merged as PRs.
 
 Some annoying issue I've encountered:
 
-+ UTF8 sometimes have control characters that mess with parsing, can use vim to chase them out. The issue is likely due to vim plugin for vscode intermixing with pinyin input method.
++ UTF8 sometimes have control characters that mess with parsing, can use vim to chase them out. The issue is likely due to vim plugin for vscode intermixing with  the pinyin input method.
 
 
 ## Performance 
