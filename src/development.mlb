@@ -19,11 +19,6 @@ local
 
         builtinOperators/operators.sml
 
-        parser/rawAST.sml
-        lexer/yulang.grm.sml
-        lexer/yulang.lex.sml
-
-
 
 
 
@@ -60,7 +55,6 @@ local
         ui/type-check-and-eval.sml
         ui/repl.sml
 
-        replTest.sml
         mltonExec.sml
     end
 in

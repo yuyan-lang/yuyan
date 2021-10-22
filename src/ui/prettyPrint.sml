@@ -3,13 +3,13 @@ structure PrettyPrint
 struct
 
 
-  fun show_rawast (x : RawAST.RawAST) : string = let 
+  (* fun show_rawast (x : RawAST.RawAST) : string = let 
     open RawAST
     in case x of 
        RawID s => UTF8Char.toString s
       end
   fun show_rawastsPlain (l : RawAST.RawAST list) =  (String.concat (map show_rawast l))
-  fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")" 
+  fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")"  *)
 
   fun show_opcomptype (x : Operators.opComponentType) :string = let 
     open Operators

@@ -1,7 +1,6 @@
 
 structure IRepl =
 struct
-    open RawAST
 
     fun addUIDynamic (s : string) = "豫☯ " ^ s ^ "\n"
     fun addUIStatic (s : string) = "豫䷏ " ^ s ^ "\n"

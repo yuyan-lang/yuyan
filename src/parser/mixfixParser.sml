@@ -5,7 +5,6 @@ structure MixFixParser
 struct
  
 
-    open RawAST
     open Operators
 
 
