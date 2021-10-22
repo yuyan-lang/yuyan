@@ -214,17 +214,18 @@ in
       ^ "}"
       | PKUnfold(e) => "unfold (" ^ show_pkcomputation e ^ ")"
       | PKApp(c1, c2) => "ap (" ^ show_pkcomputation c1 ^ ", " ^ show_pkcomputation c2 ^ ")"
+      | PKAppWithEvaledFun((x,f), c2) => "apfun (" ^ show_pkvalue (PKAbs(x,f))  ^ ", " ^ show_pkcomputation c2 ^ ")"
       | PKRet(v) => "ret (" ^ show_pkvalue v ^ ")"
       | PKFix(id, c) => "(fix " ^ Int.toString id ^ "." ^ show_pkcomputation c ^ ")"
       end
 
 
-   fun show_kmachine x = let
-   open KMachine
+   fun show_pkmachine x = let
+   open PersistentKMachine
 in 
   case x of 
-    Run (l, c) => "RUN : "^ Int.toString (length l) ^ " : " ^ show_pkcomputation (PersistentKMachine.fromKComp c)
-    | NormalRet (l, c) => "RET : "^ Int.toString (length l) ^ " : " ^ show_pkvalue (PersistentKMachine.fromKValue c)
+    Run (l, c) => "RUN : "^ Int.toString (length l) ^ " : " ^ show_pkcomputation c
+    | NormalRet (l, c) => "RET : "^ Int.toString (length l) ^ " : " ^ show_pkvalue c
     end
  
   

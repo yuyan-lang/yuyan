@@ -14,8 +14,29 @@ struct
                 | PKCases of pkcomputation * (int * pkcomputation) list
                 | PKUnfold of pkcomputation 
                 | PKApp of pkcomputation  * pkcomputation
+                | PKAppWithEvaledFun of (int * pkcomputation) * pkcomputation
                 | PKRet of pkvalue
                 | PKFix of (int * pkcomputation)
+        
+    fun substitutePKValueInValue (v2 : pkvalue) (x: int) (vc : pkvalue ) : pkvalue =
+    case vc of
+        PKUnit => PKUnit
+        | PKVar i => if i = x then v2 else vc
+        | PKTuple l => PKTuple (map (substitutePKValueInValue v2 x) l)
+        | PKInj (l, i, kv) => PKInj (l, i, if i = x then kv else substitutePKValueInValue v2 x kv)
+        | PKFold e => PKFold (substitutePKValueInValue v2 x  e)
+        | PKAbs (i, c) => if i = x then vc else PKAbs(i, substitutePKValueInComp v2 x c)
+        | PKComp c => PKComp(substitutePKValueInComp v2 x  c)
+        (* assume every x is unique so no capture *)
+    and substitutePKValueInComp (v : pkvalue) (x : int) (c : pkcomputation) : pkcomputation= 
+      case c of
+        PKProj(k, i) => PKProj(substitutePKValueInComp v x k, i)
+        | PKCases(e, l) => PKCases ((substitutePKValueInComp v x e),(map (fn (i,c) => 
+                    if i = x then (i, c) else (i,substitutePKValueInComp v x c)) l ))
+        | PKUnfold(e) => PKUnfold (substitutePKValueInComp v x e)
+        | PKApp(c1, c2) => PKApp(substitutePKValueInComp v x c1, substitutePKValueInComp v x c2)
+        | PKRet(vc) => PKRet(substitutePKValueInValue v x vc)
+        | PKFix(id, e) => if x = id then PKFix(id, e) else PKFix(id, substitutePKValueInComp v x e)
     
     fun fromKValue (kv : kvalue) : pkvalue = 
       case kv of
@@ -37,14 +58,15 @@ struct
                     in (boundId, fromKComp (f (KVar boundId))) end) l))
         | KUnfold(e) => PKUnfold (fromKComp e)
         | KApp(c1, c2) => PKApp(fromKComp c1, fromKComp c2)
-        | KAppWithEvaledFun (v, c2) => PKApp(PKRet(fromKValue (KAbs v)), fromKComp c2)
         | KRet(v) => PKRet(fromKValue v)
         | KFix(f) => let 
               val boundId = UID.next() 
               in PKFix(boundId, fromKComp(f(KVar boundId))) end
 
 
-    structure Ctx = RedBlackDict(structure Key=IntOrdered)
+    (* we should not need to convert pkmachine to naive k machine as this 
+    conversion will slow down the actual computation *)
+    (* structure Ctx = RedBlackDict(structure Key=IntOrdered)
     type context = kvalue Ctx.dict
 
       fun emptyCtx() = Ctx.empty
@@ -73,5 +95,55 @@ struct
         | PKRet(v) => KRet(toKValue ctx v)
         | PKFix(id, e) => KFix(fn v => toKComp (insert ctx (id, v)) e)
 
+                 *)
 
+    type pkcont = (pkvalue -> pkcomputation) list
+
+    datatype pkmachine = Run of pkcont * pkcomputation
+                      | NormalRet of pkcont * pkvalue
+                      (* | ExceptionRet of kcont * kvalue *)
+
+
+    exception RunAfterFinal
+    fun runOneStep (m : pkmachine): pkmachine = 
+        case m of
+            (* this is just hacking to compile fixed points *)
+            NormalRet (s , PKComp(c)) => Run(s, c)
+            | NormalRet ([], v) => raise RunAfterFinal
+            | NormalRet ((f :: s), v) => Run (s,(f v))
+            | Run (s, PKRet(v)) => NormalRet (s, v)
+            | Run (s, PKProj(p,i)) => Run ( ((fn (PKTuple l) => PKRet(List.nth(l, i))) ::s), p)
+            | Run (s, PKCases(p,l)) => Run ( ((fn (PKInj(_, i,v)) => ( case List.nth(l, i) of
+                                                          (x, c) => substitutePKValueInComp v x c
+                                                                        )) ::s), p)
+            | Run (s, PKUnfold(p)) => Run ( ((fn (PKFold(v)) => PKRet(v)) ::s), p)
+            | Run (s, PKApp(f, arg)) => Run ( ((fn (PKAbs f') => PKAppWithEvaledFun(f', arg)) ::s), f)
+            | Run (s, PKAppWithEvaledFun((x,f), arg)) => Run ( ((fn argv => substitutePKValueInComp argv x f) ::s), arg)
+            | Run (s, PKFix(x, f)) => Run ( s, substitutePKValueInComp (PKComp(PKFix(x, f))) x f)
+
+
+    fun runUntilCompletion (m : pkmachine) (prt : pkmachine -> unit) : pkvalue = 
+    (
+        (* prt m; *)
+        case m of 
+            NormalRet ([], v) => v
+            | _ => runUntilCompletion (runOneStep m) prt
+    )
+
+    fun pkvalueToString (prevPred : int ) (v : pkvalue) : UTF8String.t = 
+    let fun pack curPred s = 
+        if curPred < prevPred
+        then SpecialChars.leftSingleQuote :: s @ [SpecialChars.rightSingleQuote]
+        else s
+        in
+    case
+    v of
+        PKUnit => pack 72 (UTF8String.fromString "元")
+        | PKVar i => UTF8String.fromString "ERR[Var: please report this as a bug on github]"
+        | PKTuple l => pack 68 ( UTF8String.concatWith (UTF8String.fromString "与") (map (pkvalueToString 68) l))
+        | PKInj (l, i, kv) => pack 67 (l @ UTF8String.fromString "临"@ pkvalueToString 67 kv)
+        | PKFold e => pack 66 (UTF8String.fromString "卷" @ pkvalueToString 66 e)
+        | PKAbs f => pack 52 (UTF8String.fromString "会？而？？？")
+        | PKComp c => UTF8String.fromString "ERR[Comp: please report this as a bug on github]"
+end
 end

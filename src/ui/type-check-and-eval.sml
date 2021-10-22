@@ -18,15 +18,16 @@ struct
             val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n"
             val erasedAST = ErasurePass.eraseSig typeCheckingAST
             val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_pkcomputation (PersistentKMachine.fromKComp erasedAST) ^ "\n")
+            val _ = cprint 2 (PrettyPrint.show_pkcomputation  erasedAST ^ "\n")
             val _ = cprint 1 "----------------- Executing ---------------------- \n"
             val executeTime = Time.now()
-            val result = KMachine.runUntilCompletion (KMachine.Run([],erasedAST)) (fn km => print (PrettyPrint.show_kmachine km ^ "\n"))
+            val result = PersistentKMachine.runUntilCompletion (PersistentKMachine.Run([],erasedAST)) 
+                                    (fn km => print (PrettyPrint.show_pkmachine km ^ "\n"))
             val endTime = Time.now()
             val compileDuration : Time.time = Time.-(executeTime,startTime)
             val runDuration : Time.time = Time.-(endTime,executeTime)
             val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
-            val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
+            val _ = print (UTF8String.toString (PersistentKMachine.pkvalueToString 0 result) ^ "\n")
             val _ = cprint 1 "------------------------------------------- \n"
             val _ = cprint 1 ("compilation took " ^ (LargeInt.toString(Time.toMilliseconds(compileDuration))) ^ "ms; execution took "^
             (LargeInt.toString(Time.toMilliseconds(runDuration))) ^ "ms\n")

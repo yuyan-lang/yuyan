@@ -33,7 +33,7 @@ You can compile with either smlnj or mlton.
 
 With mlton, use the following command: 
 ```
-mlton  -output yy -default-ann 'allowExtendedTextConsts true' -verbose 1 src/development.mlb
+mlton -output yy src/development.mlb
 ```
 
 To run
