@@ -66,15 +66,15 @@ is
   ui/pretty-print.sml
   ui/repl-options.sml
   
-  builtin-operators/builtin.sml
-  builtin-operators/nat-ops.sml
-  builtin-operators/group-ops.sml
-  builtin-operators/function-ops.sml
-  builtin-operators/special-chars.sml
-  builtin-operators/declaration-ops.sml
-  builtin-operators/operator-registry.sml
-  builtin-operators/operators.sml
-  builtin-operators/op-ast.sml
+  operators/builtin/builtin.sml
+  operators/builtin/nat-ops.sml
+  operators/builtin/group-ops.sml
+  operators/builtin/function-ops.sml
+  operators/builtin/declaration-ops.sml
+  operators/structure/special-chars.sml
+  operators/structure/operator-registry.sml
+  operators/structure/operators.sml
+  operators/structure/op-ast.sml
 
   util/utf8char.sml
   util/utf8string.sml

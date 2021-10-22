@@ -16,16 +16,18 @@ local
         util/utf8string.sml
         util/ordered.sml
 
-        builtin-operators/special-chars.sml
-        builtin-operators/operators.sml
-        builtin-operators/declaration-ops.sml
-        builtin-operators/function-ops.sml
-        builtin-operators/nat-ops.sml
-        builtin-operators/group-ops.sml
-        builtin-operators/builtin.sml
-        builtin-operators/operator-registry.sml
+        operators/structure/special-chars.sml
         util/mixed-str.sml
-        builtin-operators/op-ast.sml
+
+        operators/structure/operators.sml
+        operators/structure/op-ast.sml
+        operators/structure/operator-registry.sml
+        operators/builtin/nat-ops.sml
+        operators/builtin/group-ops.sml
+        operators/builtin/function-ops.sml
+        operators/builtin/declaration-ops.sml
+        operators/builtin/builtin.sml
+        
 
         passes/typechecking/type-checking-ast.sml
         passes/preprocess/preprocessing-ast.sml
@@ -48,7 +50,7 @@ local
         parser/mixfix-parser.sml
 
         passes/preprocess/expression-construction-pass.sml
-        
+
         ui/repl-options.sml
         ui/type-check-and-eval.sml
         ui/repl.sml
