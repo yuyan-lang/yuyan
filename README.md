@@ -52,6 +52,8 @@ To run with more informative debug output
 
 See the `examples` directory.
 
+Examples include definition of booleans, unary integers, lists and quicksort algorithm.
+
 ## Syntax Sheet (Informal)
 The key words (that cannot appear as a name and has a special meaning no matter where it is) are
   `"「", "」", "『", "』", "。"`. The single quotes are used for 
@@ -111,3 +113,8 @@ Language features should be thoroughly discussed before they are merged as PRs.
 Some annoying issue I've encountered:
 
 + UTF8 sometimes have control characters that mess with parsing, can use vim to chase them out. The issue is likely due to vim plugin for vscode intermixing with pinyin input method.
+
+
+## Performance 
+
+Although the theoretical performance should be good (since type checking is optimized away and RT is using "byte code"), the actual performance investigation is still pending because the comparsion is not perfomed using the onchip hardware for testing natural numbers.
