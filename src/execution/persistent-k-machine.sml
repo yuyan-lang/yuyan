@@ -5,7 +5,7 @@ struct
     datatype pkvalue = PKUnit 
                   | PKVar of int
                   | PKTuple of pkvalue list
-                  | PKInj of  int * pkvalue
+                  | PKInj of Label*  int * pkvalue
                   | PKFold of pkvalue
                   | PKAbs of (int * pkcomputation)
                   | PKComp of pkcomputation
@@ -22,7 +22,7 @@ struct
         KUnit => PKUnit
         | KVar i => PKVar i
         | KTuple l => PKTuple (map fromKValue l)
-        | KInj (i, kv) => PKInj (i, fromKValue kv)
+        | KInj (l, i, kv) => PKInj (l, i, fromKValue kv)
         | KFold e => PKFold (fromKValue e)
         | KAbs f => 
         let val boundId = UID.next()
@@ -58,7 +58,7 @@ struct
         PKUnit => KUnit
         | PKVar i => lookup ctx i
         | PKTuple l => KTuple (map (toKValue ctx) l)
-        | PKInj (i, kv) => KInj (i, toKValue ctx kv)
+        | PKInj (l, i, kv) => KInj (l, i, toKValue ctx kv)
         | PKFold e => KFold (toKValue ctx e)
         | PKAbs (i, c) => KAbs(fn v => toKComp (insert ctx (i, v)) c)
         | PKComp c => KComp(toKComp ctx c)

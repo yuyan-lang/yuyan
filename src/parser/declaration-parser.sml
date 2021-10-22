@@ -42,7 +42,7 @@ struct
     fun parseDeclarationSingleOp(l :  opComponentType list) : MixedStr.t -> (MixedStr.t list) option
     = fn exp =>
         (
-            print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ MixedStr.toString exp ^ "\n");
+            (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ MixedStr.toString exp ^ "\n"); *)
         case l of
             [] => SOME([])
             | [OpCompExpr] => SOME([exp])

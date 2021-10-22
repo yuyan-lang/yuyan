@@ -196,7 +196,7 @@ in
         PKUnit => "()"
         | PKVar i => Int.toString i
         | PKTuple l => "[" ^ String.concatWith ", " (map show_pkvalue l) ^ "]"
-        | PKInj (i, kv) => Int.toString i ^ "⋅" ^ show_pkvalue kv
+        | PKInj (l, i, kv) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ show_pkvalue kv
         | PKFold e => "fold (" ^ show_pkvalue e ^ ")"
         | PKAbs (i, c) => "(λ" ^ Int.toString i ^ "." ^ show_pkcomputation c ^ ")"
         | PKComp (c) => "comp(" ^  show_pkcomputation c ^ ")"

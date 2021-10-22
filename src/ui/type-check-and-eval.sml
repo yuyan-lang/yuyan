@@ -19,6 +19,7 @@ struct
             val _ = print "----------------- Executing ---------------------- \n"
             val result = KMachine.runUntilCompletion (KMachine.Run([],erasedAST)) (fn km => print (PrettyPrint.show_kmachine km ^ "\n"))
             val _ = print "----------------- Execution Completed ! -------------------- \n"
+            val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result))
         in 
             ""
         end

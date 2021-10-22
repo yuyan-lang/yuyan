@@ -101,7 +101,7 @@ open TypeCheckingASTOps
                 )
             | Proj(e, l) => eraseSynExpr kctx ctx (Proj(e,l))
             | Inj (l, e) => (case tt of
-                Sum ls => kseq (eraseCkExpr kctx ctx e (lookupLabel ls l)) (fn v => KRet(KInj(klookupLabel ls l, v)))
+                Sum ls => kseq (eraseCkExpr kctx ctx e (lookupLabel ls l)) (fn v => KRet(KInj(l, klookupLabel ls l, v)))
             )
             | Case(e,cases) => (case (synthesizeType ctx e) of
                     Sum ls => 
@@ -180,7 +180,7 @@ untyped cases *)
             (* print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ) *)
             (* ; *)
             case s of
-            [] => (case kctx of [] => KRet(KUnit) | ((_,v) :: xs)  => KRet(v))
+            [] => (KRet(KUnit))
          | TypeMacro (n, t)::ss => eraseSigLazy kctx ctx (substituteTypeInSignature t n ss)
         | TermTypeJudgment(n, t):: ss => 
             eraseSigLazy kctx ((n, t) :: ctx)  ss
@@ -188,6 +188,8 @@ untyped cases *)
             kseq (eraseSynExpr kctx ctx e) (fn v => eraseSigLazy ((n, v) :: kctx) ((n, synthesizeType ctx e) :: ctx)  ss)
         | TermDefinition(n, e) :: ss => 
             kseq (eraseCkExpr kctx ctx e (lookup ctx n)) (fn v => eraseSigLazy ((n, v) :: kctx) ctx ss)  
+        | [DirectExpr e] =>  (* special treatment on ending direct exprs *)
+            (eraseSynExpr kctx ctx e) 
         | DirectExpr e :: ss=> 
             kseq (eraseSynExpr kctx ctx e) (fn _ => eraseSigLazy kctx ctx ss)
         )

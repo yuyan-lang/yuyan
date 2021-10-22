@@ -40,5 +40,12 @@ structure UTF8String = struct
     fun containsSomeChar (s : utf8string) (chars : UTF8Char.t list) =
          foldr (fn (b1, b2) => b1 orelse b2) false 
             (map (fn c => containsChar s c) chars)
+
+    fun concatWith (sep : utf8string) (elem : utf8string list) = 
+    case elem of 
+    [] => []
+    | [s] => s
+    | (x ::xs) => x @ sep @ concatWith sep xs
+
 end
 
