@@ -1,9 +1,5 @@
 Library
-  structure YuLangLexer
-  structure RawAST
   structure PrettyPrint
-  structure ReplTest
-  functor YuLangParseFn
 
   structure UTF8Char
   structure UTF8CharOrdered
@@ -97,7 +93,4 @@ is
   execution/k-machine.sml
   execution/persistent-k-machine.sml
 
-  replTest.sml
-  lexer/yulang.lex : ml-ulex
-  lexer/yulang.grm : ml-antlr
 
