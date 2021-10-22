@@ -14,7 +14,7 @@ Library
   structure DeclarationParser
   signature PARSER_OPTIONS
   structure MixFixParser
-  functor PrecedenceParser
+  structure PrecedenceParser
   structure Operators
   structure OpAST
   structure ParseAST

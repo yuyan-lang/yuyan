@@ -42,8 +42,8 @@ local
         passes/erase/erasure-pass.sml
 
         parser/parser-options.sig
-        parser/precedence-parser.sml
         parser/elaborate-precedence.sml
+        parser/precedence-parser.sml
         parser/mixfix-parser.sml
 
         passes/preprocess/expression-construction-pass.sml

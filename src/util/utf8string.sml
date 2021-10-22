@@ -48,10 +48,12 @@ structure UTF8String = struct
     | (x ::xs) => x @ sep @ concatWith sep xs
 
 
-    fun removeAllWhitespace (s : string ) : string =
+    (* fun removeAllWhitespace (s : string ) : string =
         toString (List.filter (fn c => not (List.exists (fn x => x = c) [
             SpecialChars.tab, SpecialChars.newline, SpecialChars.space
-        ])) (fromString s))
+        ])) (fromString s)) *)
+    fun removeAllWhitespace (s : string ) : string =
+        String.implode (List.filter (fn c => not (Char.isSpace c)) (String.explode s))
 
 end
 

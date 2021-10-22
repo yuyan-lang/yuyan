@@ -1,6 +1,6 @@
 
 
-functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
+structure PrecedenceParser  = struct 
     (* val DEBUG = true *)
     val DEBUG = false
     (* val DEBUGLIGHT = true *)
@@ -163,14 +163,18 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                     alternativesTryAll alt
                 )
 
+(* todo : this can be removed as we are using mixstr *)
         val defaultSeenCharset =
-        if Options.enableBracketedExpression 
+        if true
         then foldr (fn (elem, acc) => 
             UTF8CharSet.insert acc elem) UTF8CharSet.empty
             [SpecialChars.leftSingleQuote, SpecialChars.rightSingleQuote]
         else UTF8CharSet.empty (* do not put quote as escape when we do not parse quotes *)
 
-        fun parseExpWithOption (allOps :Operators.allOperators) (withEOF : bool) : parser =  fn exp =>
+    exception NoPossibleParse of string
+    exception AmbiguousParse
+
+        fun parseExpWithOption (allOps :Operators.allOperators) : MixedStr.t -> (ParseOpAST* (MixedStr.t))  =  fn exp =>
         let 
             val _ = if DEBUG orelse DEBUGLIGHT then print ("PARSING " ^ MixedStr.toString exp ^ "\n") else ()
             val relevantOps = List.filter (fn oper => MixedStr.containsAllCharsTopLevel exp 
@@ -194,9 +198,10 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 end
             val allUnkownIds  : UTF8String.t list= scanExpForUnknownId relevantOps exp 
 
-            val _ = if DEBUG orelse DEBUGLIGHT
-            then print ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
+            val debugAllUnknownId = ("All unknown ids (count "^ Int.toString(List.length(allUnkownIds))^") :" ^ (String.concatWith ","
             (map (fn id => UTF8String.toString  id) allUnkownIds)) ^ "|<--END\n")
+            val _ = if DEBUG orelse DEBUGLIGHT
+            then print debugAllUnknownId
             else ()
 
 
@@ -264,13 +269,18 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 findOps Infix p RightAssoc = []
             ]) PredDict.empty allPrecedences
 
+            val debugAllPrecedences = 
+("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n")
+
+            val debugAllRelevantOps = ("ALL RELEVANT OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op relevantOps) ^ "\n")
+            val debugAllOps = ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n")
 
             val y = if DEBUG  orelse DEBUGLIGHT
-            then (print ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n"))
+            then (print debugAllPrecedences)
             else ()
             val y = if DEBUG  orelse DEBUGLIGHT
-            then (print ("ALL RELEVANT OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op relevantOps) ^ "\n")
-            ;print ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n"))
+            then (print debugAllRelevantOps
+            ;print debugAllOps)
             else ()
 
 
@@ -418,8 +428,8 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                     (* [(ParseOpAST(UnparsedExpr s, []), xs)] *)
                     (* TODO SHOULD NOT PARSE, let the coordinator handle parsing to support better
                     error messages ! *)
-                         map (fn (opast, [] (* should be empty *)) => (opast, xs))
-                         (parseExpWithOption(allOps)(true)(s)) (* backtracking by considering all Ops *)
+                         [(fn (opast, [] (* should be empty *)) => (opast, xs))
+                         (parseExpWithOption(allOps)(s))] (* backtracking by considering all Ops *)
                     | (MixedStr.UnparsedDeclaration s :: xs) => 
                             [(ParseOpAST(UnparsedDecl(s), []), xs)]
                     | (MixedStr.Name s :: xs) => 
@@ -541,10 +551,17 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
         if DEBUG 
         then (print ("STARTING \n"))
         else ();
-        if withEOF then
-        parseExpWithEOF()(exp)
-        else parseExp()(exp)
+        (case parseExpWithEOF()(exp) of
+            [] => raise NoPossibleParse (MixedStr.toString exp )
+            | [l] => l
+            | _ => raise AmbiguousParse)
+            handle NoPossibleParse s => raise NoPossibleParse (s ^ "\n when parsing " ^ MixedStr.toString exp
+            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps)
         end
+
+    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : MixedStr.t) : OpAST.t = 
+            case parseExpWithOption allOps exp of
+                                 (parseopast, _) => ElaboratePrecedence.elaborate parseopast
 
 
 end

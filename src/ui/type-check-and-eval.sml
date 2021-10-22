@@ -28,7 +28,7 @@ struct
         handle TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s)
     | ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
       | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug))\n"; print s )
-      |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "parse failed\n"; print (MixedStr.toString s))
+      |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "parse failed\n"; print s)
       |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
 
     

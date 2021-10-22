@@ -56,7 +56,7 @@ struct
         lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp
     ]
   structure PrecParser = MixFixParser
-    exception ECPNoPossibleParse of MixedStr.t
+    exception ECPNoPossibleParse of string
     exception ElaborateFailure of string
     exception InternalErrorECP
 
@@ -217,13 +217,13 @@ struct
 
 
     and parseType (tbody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
-        elaborateOpASTtoType (MixFixParser.parseMixfixExpression allTypeOps tbody) 
-        handle MixFixParser.NoPossibleParse s => 
-            (print ("Parsing failed at " ^ PrettyPrint.show_mixedstr s ^ " No possible parse. Double check your grammar."); raise ECPNoPossibleParse s)
+        elaborateOpASTtoType (PrecedenceParser.parseMixfixExpression allTypeOps tbody) 
+        handle PrecedenceParser.NoPossibleParse s => 
+            raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
     and parseExpr (ebody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
-    = elaborateOpASTtoExpr (MixFixParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
-        handle MixFixParser.NoPossibleParse s => 
-            (print ("Parsing failed at " ^ PrettyPrint.show_mixedstr s ^ " No possible parse. Double check your grammar."); raise ECPNoPossibleParse s)
+    = elaborateOpASTtoExpr (PrecedenceParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
+        handle PrecedenceParser.NoPossibleParse s => 
+            raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
     
 
     and constructOpAST  (ast : PreprocessingAST.t) (addedOps : Operators.operator list) 
