@@ -36,6 +36,7 @@ With mlton, use the following command:
 mlton -output yy src/development.mlb
 ```
 
+## Usage
 To run
 ```
 ./yy r filename.yuyan
@@ -47,6 +48,13 @@ To run with more informative debug output
 ./yy rvv filename.yuyan
 ```
 (r stands for run and v stands for verbose)
+
+To run with a faster runtime (in practice `k` seems to be faster)
+```
+./yy rk filename.yuyan
+./yy rkv filename.yuyan
+./yy rkvv filename.yuyan
+```
 
 ## Examples
 
