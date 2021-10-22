@@ -48,6 +48,10 @@ To run with more informative debug output
 ```
 (r stands for run and v stands for verbose)
 
+## Examples
+
+See the `examples` directory.
+
 ## Syntax Sheet (Informal)
 The key words (that cannot appear as a name and has a special meaning no matter where it is) are
   `"「", "」", "『", "』", "。"`. The single quotes are used for 

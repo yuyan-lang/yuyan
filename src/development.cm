@@ -24,7 +24,7 @@ Library
   structure ParseAST
   structure BracketScanner
 
-  structure Repl 
+  structure IRepl 
   structure TypeCheckAndEval
 
 

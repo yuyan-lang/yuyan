@@ -1,5 +1,5 @@
 
-structure Repl =
+structure IRepl =
 struct
     open RawAST
 
@@ -43,7 +43,7 @@ struct
             | _ => (print aboutText; OS.Process.exit OS.Process.failure : unit)
             end
 
-     fun testMain x= 
-        inputFile "testfiles/test.yuyan"
+     fun testMain()= 
+        inputFile "testfiles/test.yuyan" 2
 
 end
