@@ -1,1 +1,1 @@
-ReplTest.test 1;
+Repl.main ();

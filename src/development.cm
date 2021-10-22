@@ -24,7 +24,7 @@ Library
   structure ParseAST
   structure BracketScanner
 
-  structure InteractiveRepl 
+  structure Repl 
   structure TypeCheckAndEval
 
 
@@ -100,3 +100,4 @@ is
   replTest.sml
   lexer/yulang.lex : ml-ulex
   lexer/yulang.grm : ml-antlr
+

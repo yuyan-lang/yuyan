@@ -47,5 +47,9 @@ structure UTF8String = struct
     | [s] => s
     | (x ::xs) => x @ sep @ concatWith sep xs
 
+
+    fun removeAllWhitespace (s : string ) : string =
+        String.implode (List.filter (fn c => not (Char.isSpace c)) (String.explode s))
+
 end
 

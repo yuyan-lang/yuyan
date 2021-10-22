@@ -7,60 +7,62 @@ $(SML_LIB)/mllpt-lib/mllpt-lib.mlb
 
 local
     ../cmlib/cmlib.mlb
-    util/uniqueId.sml
-    util/utf8char.sml
-    util/utf8string.sml
-    util/ordered.sml
+    ann
+       "nonexhaustiveMatch ignore"
+    in
+        util/uniqueId.sml
+        util/utf8char.sml
+        util/utf8string.sml
+        util/ordered.sml
 
-    builtinOperators/specialChars.sml
+        builtinOperators/specialChars.sml
 
-    builtinOperators/operators.sml
+        builtinOperators/operators.sml
 
-    parser/rawAST.sml
-    lexer/yulang.grm.sml
-    lexer/yulang.lex.sml
-
-
+        parser/rawAST.sml
+        lexer/yulang.grm.sml
+        lexer/yulang.lex.sml
 
 
 
-    builtinOperators/declarationOps.sml
-    builtinOperators/functionOps.sml
-    builtinOperators/natOps.sml
-    builtinOperators/groupOps.sml
-    builtinOperators/builtin.sml
-    builtinOperators/operator-registry.sml
-    util/mixed-str.sml
-    builtinOperators/op-ast.sml
 
-    passes/statement/statement-ast.sml
-    passes/typechecking/type-checking-ast.sml
-    passes/preprocess/preprocessing-ast.sml
 
-    execution/k-machine.sml
-    execution/persistent-k-machine.sml
+        builtinOperators/declarationOps.sml
+        builtinOperators/functionOps.sml
+        builtinOperators/natOps.sml
+        builtinOperators/groupOps.sml
+        builtinOperators/builtin.sml
+        builtinOperators/operator-registry.sml
+        util/mixed-str.sml
+        builtinOperators/op-ast.sml
 
-    parser/parseAST.sml
-    parser/bracket-scanner.sml
-    passes/typechecking/type-checking-ast-ops.sml
-    ui/prettyPrint.sml
-    parser/declaration-parser.sml
-    passes/preprocess/preprocessing-pass.sml
-    passes/typechecking/type-checking-pass.sml
-    passes/erase/erasure-pass.sml
+        passes/typechecking/type-checking-ast.sml
+        passes/preprocess/preprocessing-ast.sml
 
-    parser/parser-options.sig
-    parser/precedenceParser.sml
-    parser/elaboratePrecedence.sml
-    parser/mixfixParser.sml
+        execution/k-machine.sml
+        execution/persistent-k-machine.sml
 
-    passes/statement/statement-division-pass.sml
-    passes/preprocess/expression-construction-pass.sml
-    ui/type-check-and-eval.sml
-    ui/repl.sml
+        parser/parseAST.sml
+        parser/bracket-scanner.sml
+        passes/typechecking/type-checking-ast-ops.sml
+        ui/prettyPrint.sml
+        parser/declaration-parser.sml
+        passes/preprocess/preprocessing-pass.sml
+        passes/typechecking/type-checking-pass.sml
+        passes/erase/erasure-pass.sml
 
-    replTest.sml
-    mltonExec.sml
+        parser/parser-options.sig
+        parser/precedenceParser.sml
+        parser/elaboratePrecedence.sml
+        parser/mixfixParser.sml
+
+        passes/preprocess/expression-construction-pass.sml
+        ui/type-check-and-eval.sml
+        ui/repl.sml
+
+        replTest.sml
+        mltonExec.sml
+    end
 in
 
 

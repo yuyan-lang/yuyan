@@ -229,7 +229,7 @@ struct
     and constructOpAST  (ast : PreprocessingAST.t) (addedOps : Operators.operator list) 
         : TypeCheckingAST.Signature = 
         (
-        print ("\rRemaining: "^ Int.toString(List.length ast) ^ " statements");
+        (* print ("\rRemaining: "^ Int.toString(List.length ast) ^ " statements"); *)
         case ast of 
             [] => []
             | (x :: xs) => 

@@ -1,8 +1,60 @@
-# Syntax Sheet (Informal)
+# 豫言 
+一款中文编程语言
+
+## 版本
+非常早期的预览版（0.1.0alpha)
+
+## Features
+
+This language is a simple functional programming languages with 
+- function types
+- sum types
+- product types
+- isorecursive types
+- universal types
+- existential types
+
+## Features to be implemented
+
+I find the following feature to be usually desirable 
+- Nested expression with declarations,
+(I tried to implement this, but the parser needs a lot of rework, so pending for now)
+
+- Custom Exceptions
+
+- Letcc
+
+- Mutable references
+
+
+## Installation
+
+You can compile with either smlnj or mlton.
+
+With mlton, use the following command: 
+```
+mlton  -output yy -default-ann 'allowExtendedTextConsts true' -verbose 1 src/development.mlb
+```
+
+To run
+```
+./yy r filename.yuyan
+```
+
+To run with more informative debug output 
+```
+./yy rv filename.yuyan
+./yy rvv filename.yuyan
+```
+(r stands for run and v stands for verbose)
+
+## Syntax Sheet (Informal)
 The key words (that cannot appear as a name and has a special meaning no matter where it is) are
-  `"「", "」", "『", "』", "。"`. The single quotes are used for identifiers (if 
-  no keywords appear inside a pair of `"「", "」"`) and brackets (if there 
-  are keywords appearing inside the bracket).
+  `"「", "」", "『", "』", "。"`. The single quotes are used for 
+  + identifiers (if 
+  no keywords appear inside a pair of `"「", "」"`) 
+  + OR brackets (if there 
+  are keywords (`"「", "」", "『", "』", "。"`) appearing inside a pair of `"「", "」"`).
 
 | 豫言           | Standard Language | Precedence |
 | ------------- |-------------| ------|
@@ -40,27 +92,10 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |循〇以〇| fix f. e| 51 |
 |受〇而〇| Λ t. e| 50 |
 
-# Features
 
-This language is a simple functional programming languages with 
-- function types
-- sum types
-- product types
-- isorecursive types
-- universal types
-- existential types
+## Bugs
 
-# Features to be implemented
+Bugs are to be expected. If you encounter an exception on an otherwise ok program, it is probably a bug. 
 
-I find the following feature to be usually desirable 
-- Nested expression with declarations,
-(I tried to implement this, but the parser needs a lot of rework, so pending for now)
-
-- Custom Exceptions
-
-- Letcc
-
--
-Mutable references
-
-
+## Contribution
+Language features should be thoroughly discussed before they are merged as PRs. 

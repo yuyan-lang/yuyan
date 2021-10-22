@@ -118,7 +118,7 @@ struct
                         then let val (inQuote, rest) = scanLiteral xs [] 
                              in Literal inQuote :: scanTopLevel rest
                              end
-                        else
+                        else 
                         SChar x :: scanTopLevel xs
 
     fun make(u : UTF8String.t) : mixedstr = scanTopLevel u
@@ -156,4 +156,5 @@ struct
             [] => []
             | [Name s] => s
             | _ => map toPlainUTF8Char u
+      
 end

@@ -1,5 +1,5 @@
 
-structure CommandLine :> COMMAND_LINE =
+structure CommandLine2 :> COMMAND_LINE =
    struct
 
       type 'a parser = string list -> 'a * string list
