@@ -215,12 +215,15 @@ struct
     and recursivelyParseExpr declParse (opast : OpAST.t) : OpAST.t
    *)
 
+
     and parseType (tbody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Type = 
         elaborateOpASTtoType (MixFixParser.parseMixfixExpression allTypeOps tbody) 
-        handle MixFixParser.NoPossibleParse s => raise ECPNoPossibleParse s
+        handle MixFixParser.NoPossibleParse s => 
+            (print ("Parsing failed at " ^ PrettyPrint.show_mixedstr s ^ " No possible parse. Double check your grammar."); raise ECPNoPossibleParse s)
     and parseExpr (ebody : MixedStr.t)(addedOps : Operators.operator list) : TypeCheckingAST.Expr
     = elaborateOpASTtoExpr (MixFixParser.parseMixfixExpression (allTypeAndExprOps@addedOps) ebody) 
-        handle MixFixParser.NoPossibleParse s => raise ECPNoPossibleParse s
+        handle MixFixParser.NoPossibleParse s => 
+            (print ("Parsing failed at " ^ PrettyPrint.show_mixedstr s ^ " No possible parse. Double check your grammar."); raise ECPNoPossibleParse s)
     
 
     and constructOpAST  (ast : PreprocessingAST.t) (addedOps : Operators.operator list) 
@@ -239,8 +242,12 @@ struct
                     | PTermTypeJudgment(ename, tbody) => TermTypeJudgment(ename, parseType  tbody addedOps) :: trailingNoOps()
                     | PTermMacro(ename, ebody) => TermMacro(ename, parseExpr ebody addedOps) :: trailingNoOps()
                     | PTermDefinition(ename, ebody) => TermDefinition(ename, parseExpr ebody addedOps) :: trailingNoOps()
-                    | POpDeclaration(opName, assoc, pred) => trailingWithOps(Operators.parseOperator 
-                            opName (assoc = Operators.NoneAssoc) (assoc = Operators.LeftAssoc) pred [])
+                    | POpDeclaration(opName, assoc, pred) => trailingWithOps(let 
+                    val oper = Operators.parseOperator 
+                            opName (assoc <> Operators.NoneAssoc) (assoc = Operators.LeftAssoc) pred []
+                            in (
+                                (* print (" PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
+                                oper) end) 
                     | PDirectExpr(ebody) => DirectExpr(parseExpr ebody addedOps) :: trailingNoOps()
                     | PComment _ => trailingNoOps()
                 )

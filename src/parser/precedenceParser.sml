@@ -3,8 +3,6 @@
 functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct 
     (* val DEBUG = true *)
     val DEBUG = false
-    (* val DEBUGMEDIUM = true *)
-    (* val DEBUGMEDIUM = false *)
     (* val DEBUGLIGHT = true *)
     val DEBUGLIGHT = false
     
@@ -49,13 +47,15 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
         fun isolate [] = []
             | isolate (x::xs) = x::isolate(List.filter (fn y => y <> x) xs)
    val debugAlternativeEntryTimes : string list ref  = ref []
-   fun pushDebugIndent (s : string) = if DEBUG 
+   fun pushDebugIndent (s : string) = if DEBUG  
    then debugAlternativeEntryTimes := (!debugAlternativeEntryTimes @ [s])
    else ()
-   fun popDebugIndent () = if DEBUG 
+   fun popDebugIndent () = if DEBUG  andalso (List.length(!debugAlternativeEntryTimes)-1) > 0
    then debugAlternativeEntryTimes := ((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
    else ()
-   fun indentString ()  = String.concat((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1))))
+   fun indentString ()  = if DEBUG andalso (List.length(!debugAlternativeEntryTimes)-1) > 0 
+   then String.concat((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1)))) 
+   else ""
                 
         fun debug (s : string) (p : parser) : parser = fn exp =>
         let
@@ -136,7 +136,6 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
             fun alternativesTryOnce (alt : parser list) : parser = fn exp =>
                 let 
                 val shouldSkip = ref(false)
-                val _ = pushDebugIndent("┃")
                 val res = List.concat (List.tabulate
                 (List.length alt, (fn i => 
                     if !shouldSkip then [] else  (*! means deref not negation *)
@@ -152,7 +151,6 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                     )
                     end
                 ) ))
-                val _ = popDebugIndent()
                 in 
                 res 
                 end
@@ -540,7 +538,6 @@ functor PrecedenceParser ( structure Options :PARSER_OPTIONS) = struct
                 parseExp(), eof()
             ]
         in 
-        debugAlternativeEntryTimes := [];
         if DEBUG 
         then (print ("STARTING \n"))
         else ();

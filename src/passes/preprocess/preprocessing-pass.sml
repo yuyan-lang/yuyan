@@ -27,6 +27,8 @@ structure PreprocessingPass = struct
     exception PreprocessMalformedPrecedence of UTF8String.t
 
     fun parseAssoc (s : UTF8String.t) : associativity = 
+    (
+        (* print ("parseAssoc " ^ UTF8String.toString s ^" \n"); *)
         if s = UTF8String.fromString "左"
         then LeftAssoc
         else 
@@ -35,7 +37,7 @@ structure PreprocessingPass = struct
         else 
         if s = UTF8String.fromString "无"
         then NoneAssoc
-        else raise PreprocessMalformedAssoc s
+        else raise PreprocessMalformedAssoc s)
 
     fun parsePrecedence (s : UTF8String.t) : int = 
     foldl (fn (c, acc) => 

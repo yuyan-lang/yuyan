@@ -32,12 +32,16 @@ struct
     in case x of
       Operator(p, fix, assoc, comps, uid) =>
       let val baseName = String.concat (map show_opcomptype comps)
+      val pstr = Int.toString p
+      val assoc = case assoc of LeftAssoc => "l" | RightAssoc => "r" | NoneAssoc => "n"
         val underscoreChar = UTF8Char.toString underscoreChar
-      in case fix of
+        val fullname = case fix of
           Prefix =>  baseName ^ underscoreChar 
           | Infix => underscoreChar ^ baseName ^ underscoreChar 
           | Postfix =>underscoreChar ^ baseName
           | Closed => baseName
+      in 
+      fullname ^ assoc ^ pstr
         end
     end
 
@@ -111,7 +115,8 @@ case x of
   | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ MixedStr.toString tbody
   | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ MixedStr.toString ebody
   | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ MixedStr.toString  ebody
-  | POpDeclaration(opName, assoc, pred) => "infix " ^ UTF8String.toString opName ^ Int.toString pred
+  | POpDeclaration(opName, assoc, pred) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
+  ) ^ " " ^ UTF8String.toString opName ^ Int.toString pred
   | PDirectExpr(ebody) => "/* eval */ " ^ MixedStr.toString ebody ^ "/* end eval */ " 
   | PComment(ebody) => "/* comment : -- */ "
   end
