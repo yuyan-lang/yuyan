@@ -131,3 +131,5 @@ See `performance-investigation` for testing scripts.
 <!-- 
 My somewhat naive implementation of k machine is not optimal in the sense that substitutions are better implemented as functions and not as values. Add "k" to the first argument runs the K machine (which appears to be 
 faster) than the pK machine. -->
+
+The performance should improve once I figure out how to compile everything to assembly.

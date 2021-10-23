@@ -4,6 +4,7 @@ structure PreludeFunctions = struct
     open KMachine
     val label1 = UTF8String.fromString "__BUILTIN_1"
     val label2 = UTF8String.fromString "__BUILTIN_2"
+    val typeVarA = UTF8String.fromString "__BUILTIN_TYPE_VAR_A"
 
     val typeInt = BuiltinType(BIInt)
     val typeBool = BuiltinType(BIBool)
@@ -29,6 +30,22 @@ structure PreludeFunctions = struct
         Func(typeInt, typeStr),
         (fn (KBuiltinValue(KbvInt i1)) => 
             KRet(KBuiltinValue(KbvString (UTF8String.fromString (Int.toString i1))))))
+    val boolIfThenElse= PFunc("__BUILTIN_BOOL_IF_THEN_ELSE", 
+    (* type is /\A. bool -> (() -> A) -> (() -> A) -> A *)
+        Forall(typeVarA, Func(typeBool, Func(Func(UnitType, TypeVar(typeVarA)), 
+Func(Func(UnitType, TypeVar(typeVarA)), TypeVar(typeVarA))))),
+        (fn (KBuiltinValue(KbvBool i1)) => 
+            KRet(KAbs(fn (KAbs ft) => 
+                KRet(KAbs(fn (KAbs ff) => 
+                    if i1 then ft KUnit else ff KUnit
+                ))
+            ))))
+    val boolNot= PFunc("__BUILTIN_BOOL_NOT", 
+    (* type is /\A. bool -> (() -> A) -> (() -> A) -> A *)
+Func(typeBool, typeBool),
+        (fn (KBuiltinValue(KbvBool i1)) => 
+            KRet(KBuiltinValue(KbvBool (not i1))
+            )))
     val stringAppend= PFunc("__BUILTIN_STRING_APPEND",
         Func(typeStr, Func(typeStr, typeStr)),
         (fn (KBuiltinValue(KbvString s1)) => 
@@ -46,13 +63,15 @@ structure PreludeFunctions = struct
         intLessThan,
         intToString,
         stringAppend,
-        printF
+        printF,
+        boolIfThenElse,
+        boolNot
     ]
 
     val preludeTypes = [
         ("__BUILTIN_TYPE_INT", BuiltinType(BIInt)),
-        ("__BUILTIN_TYPE_BOOL", BuiltinType(BIInt)),
-        ("__BUILTIN_TYPE_REAL", BuiltinType(BIInt)),
+        ("__BUILTIN_TYPE_BOOL", BuiltinType(BIBool)),
+        ("__BUILTIN_TYPE_REAL", BuiltinType(BIReal)),
         ("__BUILTIN_TYPE_STRING", BuiltinType(BIString))
     ]
     val typeCheckingPrelude = map (fn (x, t) => TypeCheckingPass.TypeDef(UTF8String.fromString x, t)) preludeTypes @
