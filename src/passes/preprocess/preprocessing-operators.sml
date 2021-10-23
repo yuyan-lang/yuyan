@@ -118,6 +118,7 @@ struct
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
     val allTypeOps = [
+        structureRefOp,
         unitTypeOp, nullTypeOp, labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
         universalTypeOp, existentialTypeOp, recursiveTypeOp]
     val allTypeAndExprOps = allTypeOps @ [ unitExprOp,

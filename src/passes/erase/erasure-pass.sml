@@ -8,9 +8,9 @@ open TypeCheckingASTOps
     open TypeCheckingPass
 
 
-    type kcontext = (UTF8String.t * kvalue) list
+    type kcontext = (StructureName.t * kvalue) list
 
-    fun klookup (ctx : kcontext) (n : UTF8String.t) : kvalue= 
+    fun klookup (ctx : kcontext) (n : StructureName.t) : kvalue= 
         case ctx of 
              (n1, t1)::cs => if n1 = n then t1 else klookup cs n
 

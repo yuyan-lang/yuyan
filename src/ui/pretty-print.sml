@@ -13,6 +13,8 @@ struct
 
   fun show_strlist (x : UTF8String.t list) : string =
   String.concatWith ", " (map UTF8String.toString x)
+  fun show_sttrlist (x : StructureName.t list) : string =
+  String.concatWith ", " (map StructureName.toStringPlain x)
   fun show_opcomptype (x : Operators.opComponentType) :string = let 
     open Operators
     in
@@ -144,8 +146,9 @@ open TypeCheckingAST
 val st = show_typecheckingType
 val se = show_typecheckingExpr
 val ss = UTF8String.toString
+val sst =StructureName.toStringPlain
 in case x of
- TypeVar t => ss t
+ TypeVar t => sst t
                     | UnitType => "1"
                     | Prod l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | NullType => "0"
@@ -166,8 +169,9 @@ open TypeCheckingAST
 val st = show_typecheckingType
 val se = show_typecheckingExpr
 val ss = UTF8String.toString
+val sst =StructureName.toStringPlain
 in case x of
-ExprVar v => ss v
+ExprVar v => sst v
                     | UnitExpr => "⟨⟩"
                     | Tuple (l) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
                     | Proj (e, lbl) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
@@ -204,17 +208,21 @@ and show_typecheckingSig x = let
 in
           String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
 end
+fun show_utf8strings x = String.concatWith ", " (map UTF8String.toString x)
 fun show_typecheckingpassmappping x = let
 open TypeCheckingASTOps
 in
   case x of
-    TermTypeJ(e, t) => UTF8String.toString e ^ " : " ^ show_typecheckingType t
-    | TypeDef(s, t) => UTF8String.toString s ^ " = " ^ show_typecheckingType t
+    TermTypeJ(e, t) => show_utf8strings e ^ " : " ^ show_typecheckingType t
+    | TypeDef(s, t) => show_utf8strings s ^ " = " ^ show_typecheckingType t
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingASTOps
 in
-          String.concatWith ", " (map show_typecheckingpassmappping x) ^ "\n"
+case x of 
+  Context(curSName, curVis, m) => (if curVis then "public" else "private") ^
+  "structure " ^ StructureName.toStringPlain curSName ^ 
+          String.concatWith ", " (map show_typecheckingpassmappping m) ^ "\n"
 end
 
 fun show_pkvalue x =let

@@ -97,6 +97,9 @@ struct
                 if oper = recursiveTypeOp
                 then Rho ((elaborateNewName a1),(elaborateOpASTtoType a2 ctx))
                 else 
+                if oper = structureRefOp
+                then TVar (map elaborateUnknownName (flattenRight ast structureRefOp))
+                else
                 raise ElaborateFailure "Expected a type constructor"
             )
             | _ => raise ElaborateFailure "Expected a type constructor"
@@ -115,6 +118,9 @@ struct
                 if getUID oper >= elabAppBound 
                 then (* elab app *)
                     foldl (fn (arg, acc) => App (acc,arg)) (ExprVar (getOriginalName oper)) (map (fn x => elaborateOpASTtoExpr x ctx)  l)
+                else
+                if oper = structureRefOp
+                then ExprVar (map elaborateUnknownName (flattenRight ast structureRefOp))
                 else
                 if oper = unitExprOp
                 then UnitExpr

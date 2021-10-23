@@ -10,7 +10,7 @@ structure TypeCheckingAST = struct
                          | BIReal
                          | BIBool
 
-    datatype Type = TypeVar of TVar
+    datatype Type = TypeVar of StructureName.t
                     | UnitType
                     | Prod of (Label * Type) list
                     | NullType
@@ -24,7 +24,7 @@ structure TypeCheckingAST = struct
 
 
 
-    datatype Expr = ExprVar of EVar
+    datatype Expr = ExprVar of StructureName.t
                     | UnitExpr
                     | Tuple of Expr list
                     | Proj of Expr * Label
@@ -52,7 +52,7 @@ structure TypeCheckingAST = struct
                        | DirectExpr of Expr
                        | Structure of bool * UTF8String.t * Declaration list
                        (*  public visible * name * signature *)
-                       | OpenStructure of UTF8String.t list
+                       | OpenStructure of StructureName.t
 
     type Signature = Declaration list
 

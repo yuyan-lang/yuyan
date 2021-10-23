@@ -5,24 +5,27 @@ open TypeCheckingAST
     exception TypeCheckingFailure of string
     exception SignatureCheckingFailure of string
 
-        datatype mapping = TermTypeJ of UTF8String.t * Type 
-                 | TypeDef of UTF8String.t * Type
+(* these exist here for pretty printing *)
+ datatype mapping = TermTypeJ of StructureName.t * Type 
+                    | TypeDef of StructureName.t * Type
+datatype context = Context of StructureName.t * bool * 
+    (mapping) list
 
 
-    fun freeTVar (t : Type) : TVar list = 
+    fun freeTVar (t : Type) : StructureName.t list = 
         case t of
             TypeVar t => [t]
             | Prod l => List.concat (map (fn (l, t) => freeTVar t) l)
             | Sum l => List.concat (map (fn (l, t) => freeTVar t) l)
             | Func (t1,t2) => List.concat (map freeTVar [t1,t2])
-            | Forall (tv,t2) => List.filter (fn t => t <> tv) (freeTVar t2)
-            | Exists (tv,t2) => List.filter (fn t => t <> tv) (freeTVar t2)
-            | Rho (tv,t2) => List.filter (fn t => t <> tv) (freeTVar t2)
+            | Forall (tv,t2) => List.filter (fn t => t <> [tv]) (freeTVar t2)
+            | Exists (tv,t2) => List.filter (fn t => t <> [tv]) (freeTVar t2)
+            | Rho (tv,t2) => List.filter (fn t => t <> [tv]) (freeTVar t2)
             | UnitType => []
             | NullType => []
             | BuiltinType(b) => []
 
-    fun freeEVar (e : Expr) : EVar list = 
+    fun freeEVar (e : Expr) : StructureName.t list = 
         case e of
             ExprVar v => [v]
             | UnitExpr => []
@@ -30,33 +33,33 @@ open TypeCheckingAST
             | Inj (_, e) => freeEVar e
             | Case (e, l) => List.concat (
                 (map (fn (l, ev, e) => 
-                List.filter (fn ev' => ev' <> ev) (freeEVar e)) l)
+                List.filter (fn ev' => ev' <> [ev]) (freeEVar e)) l)
             )
-            | Lam (ev, e)=> List.filter (fn ev' => ev' <> ev) (freeEVar e)
-            | LamWithType (t, ev, e) => List.filter (fn ev' => ev' <> ev) (freeEVar e)
+            | Lam (ev, e)=> List.filter (fn ev' => ev' <> [ev]) (freeEVar e)
+            | LamWithType (t, ev, e) => List.filter (fn ev' => ev' <> [ev]) (freeEVar e)
             | App (e1, e2) => List.concat (map freeEVar [e1, e2])
             | TAbs (tv, e2) => freeEVar e2
             | TApp (e2, t) => freeEVar e2
             | Pack (t, e2) => freeEVar e2
             | Open (e1, (tv, ev, e2)) => 
-                ((freeEVar e1)  @( List.filter (fn ev' => ev' <> ev) (freeEVar e)))
+                ((freeEVar e1)  @( List.filter (fn ev' => ev' <> [ev]) (freeEVar e)))
             | Fold e2 => freeEVar e2
             | Unfold e2 => freeEVar e2
-            | Fix (ev, e)=> List.filter (fn ev' => ev' <> ev) (freeEVar e)
+            | Fix (ev, e)=> List.filter (fn ev' => ev' <> [ev]) (freeEVar e)
             | StringLiteral l => []
 
     fun uniqueName () = UTF8String.fromString (Int.toString (UID.next()))
 
 (* !!! always capture avoiding substitution *)
-    fun substTypeInType (tS : Type) (x : TVar) (t : Type) = 
-    let fun captureAvoid f tv t2 = 
-            if List.exists (fn t' => t' = tv) (freeTVar tS)
+    fun substTypeInType (tS : Type) (x : StructureName.t) (t : Type) = 
+    let fun captureAvoid f (tv : UTF8String.t) t2 = 
+            if List.exists (fn t' => t' = [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in f (tv', substTypeInType tS x 
-                                    (substTypeInType (TypeVar tv') tv t2)) 
+                                    (substTypeInType (TypeVar [tv']) [tv] t2)) 
                                     end
             else  (* No capture, regular *)
-            if tv = x (* do not substitute when the boudn variable is the same as substitution *)
+            if [tv] = x (* do not substitute when the boudn variable is the same as substitution *)
             then f (tv, t2)
             else f (tv, substTypeInType tS x t2)
 
@@ -75,7 +78,7 @@ open TypeCheckingAST
     end
 
 (* no capture as we're only interested in types *)
-    fun substTypeInExpr (tS : Type) (x : TVar) (e : Expr) = 
+    fun substTypeInExpr (tS : Type) (x : StructureName.t) (e : Expr) = 
     let 
     in
         case e of
@@ -92,26 +95,26 @@ open TypeCheckingAST
             | LamWithType (t, ev, e) => LamWithType (substTypeInType tS x t, ev, substTypeInExpr tS x e)
             | App (e1, e2) => App (substTypeInExpr tS x e1, substTypeInExpr tS x e2)
             | TAbs (tv, e2) => (
-                if List.exists (fn t' => t' = tv) (freeTVar tS)
+                if List.exists (fn t' => t' = [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in TAbs (tv', substTypeInExpr tS x 
-                                    (substTypeInExpr (TypeVar tv') tv e2)) 
+                                    (substTypeInExpr (TypeVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
-            if tv = x then TAbs (tv, e2)
-             else TAbs (tv, substTypeInExpr tS tv e2)
+            if [tv] = x then TAbs (tv, e2)
+             else TAbs (tv, substTypeInExpr tS [tv] e2)
             ) 
             | TApp (e2, t) => TApp(substTypeInExpr tS x e2, substTypeInType tS x t )
             | Pack (t, e2) => Pack(substTypeInType tS x t, substTypeInExpr tS x e2)
             | Open (e1, (tv, ev, e2)) => Open(
                 substTypeInExpr tS x e1, (
-                if List.exists (fn t' => t' = tv) (freeTVar tS)
+                if List.exists (fn t' => t' = [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in (tv', ev, substTypeInExpr tS x 
-                                    (substTypeInExpr (TypeVar tv') tv e2)) 
+                                    (substTypeInExpr (TypeVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
-             (tv, ev, substTypeInExpr tS tv e2))
+             (tv, ev, substTypeInExpr tS [tv] e2))
             )
             | Fold e2 => Fold (substTypeInExpr tS x e2)
             | Unfold e2 => Unfold (substTypeInExpr tS x e2)
@@ -119,16 +122,16 @@ open TypeCheckingAST
             | StringLiteral l => StringLiteral l
     end
 
-    fun substituteTypeInDeclaration (tS : Type) (x : TVar) (d : Declaration) = 
+    fun substituteTypeInDeclaration (tS : Type) (x : StructureName.t) (d : Declaration) = 
       case d of
-         TypeMacro (y, t) => if x = y then raise TypeCheckingFailure "Cannot have identical types" else 
+         TypeMacro (y, t) => if x = [y] then raise TypeCheckingFailure "Cannot have identical types" else 
             TypeMacro (y, substTypeInType tS x t)
         | TermTypeJudgment(ename, t) => TermTypeJudgment(ename, substTypeInType tS x t)
         | TermMacro (n, e) => TermMacro(n, substTypeInExpr tS x e)
         | TermDefinition(n, e) => TermDefinition (n, substTypeInExpr tS x e)
         | DirectExpr(e) => DirectExpr (substTypeInExpr tS x e)
     
-    fun substituteTypeInSignature (tS : Type) (x : TVar) (s : Signature) : Signature = 
+    fun substituteTypeInSignature (tS : Type) (x : StructureName.t) (s : Signature) : Signature = 
         case s of
             [] => []
             | (d :: ds) => substituteTypeInDeclaration tS x d :: 
@@ -145,8 +148,8 @@ open TypeCheckingAST
     fun unifyBinding tv t2 tv' t2' =
             if tv = tv' then (tv, t2, tv', t2')
             else let val nn = uniqueName() in
-            (nn, substTypeInType (TypeVar nn) tv t2,
-            nn, substTypeInType (TypeVar nn) tv' t2')end
+            (nn, substTypeInType (TypeVar [nn]) [tv] t2,
+            nn, substTypeInType (TypeVar [nn]) [tv'] t2')end
         in
         if List.exists (fn p => p =(t1, t2)) ctx then true
         else
@@ -159,8 +162,8 @@ open TypeCheckingAST
             | (Exists (tv,t2), Exists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
             | (Rho (tv,t2), Rho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
             in typeEquiv ((Rho(v, t1), Rho(v',t1'))::ctx) 
-                (substTypeInType (Rho (v,t1)) v t1)
-                (substTypeInType (Rho (v',t1')) v' t1')
+                (substTypeInType (Rho (v,t1)) [v] t1)
+                (substTypeInType (Rho (v',t1')) [v'] t1')
              end)
             | (UnitType, UnitType) => true
             | (NullType, NullType) => true
