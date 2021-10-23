@@ -48,6 +48,8 @@ Library
   structure ErasurePass
   structure ErasureEntry
 
+  structure PreprocessingOperators
+
   structure PreludeFunctions
   
 is
@@ -90,6 +92,7 @@ is
   passes/preprocess/preprocessing-ast.sml
   passes/preprocess/expression-construction-pass.sml
   passes/preprocess/signature-parsing-orchestrator.sml
+  passes/preprocess/preprocessing-operators.sml
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
   passes/typechecking/type-checking-ast-ops.sml

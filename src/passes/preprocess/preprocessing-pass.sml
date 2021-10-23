@@ -7,71 +7,8 @@ structure PreprocessingPass = struct
                        | POpDeclaration *)
     open PreprocessingAST
     open Operators
+    open PreprocessingOperators
 
-    (* type t = T *)
-    val typeMacroOp = Operators.parseOperatorStr "〇者〇也" false false 0 []
-    (* e : T *)
-    val termTypeJudgmentOp = Operators.parseOperatorStr "以〇为〇" false false 0 []
-    (* #define e = E *)
-    val termMacroOp = Operators.parseOperatorStr "设〇为〇" false false 0 []
-    (* e = E *)
-    val termDefinitionOp = Operators.parseOperatorStr "施〇乃为〇" false false 0 []
-    (* infixl op 232 *)
-    val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
-    (* // *)
-    val commentOp = Operators.parseOperatorStr "注〇" false false 0 []
-    
-    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, opDeclarationOp, commentOp]
-
-    exception PreprocessMalformedAssoc of UTF8String.t
-    exception PreprocessMalformedPrecedence of UTF8String.t
-
-    fun parseAssoc (s : UTF8String.t) : associativity = 
-    (
-        (* print ("parseAssoc " ^ UTF8String.toString s ^" \n"); *)
-        if s = UTF8String.fromString "左"
-        then LeftAssoc
-        else 
-        if s = UTF8String.fromString "右"
-        then RightAssoc
-        else 
-        if s = UTF8String.fromString "无"
-        then NoneAssoc
-        else raise PreprocessMalformedAssoc s)
-
-    fun parsePrecedence (s : UTF8String.t) : int = 
-    foldl (fn (c, acc) => 
-        if c = UTF8Char.fromString "零"
-        then acc * 10 + 0
-        else 
-        if c = UTF8Char.fromString "一"
-        then acc * 10 + 1
-        else 
-        if c = UTF8Char.fromString "二"
-        then acc * 10 + 2
-        else 
-        if c = UTF8Char.fromString "三"
-        then acc * 10 + 3
-        else 
-        if c = UTF8Char.fromString "四"
-        then acc * 10 + 4
-        else 
-        if c = UTF8Char.fromString "五"
-        then acc * 10 + 5
-        else 
-        if c = UTF8Char.fromString "六"
-        then acc * 10 + 6
-        else 
-        if c = UTF8Char.fromString "七"
-        then acc * 10 + 7
-        else 
-        if c = UTF8Char.fromString "八"
-        then acc * 10 + 8
-        else 
-        if c = UTF8Char.fromString "九"
-        then acc * 10 + 9
-        else raise PreprocessMalformedPrecedence s
-    ) 0 s
 
 
     fun parseJudgment (s : MixedStr.t) : pJudgment = 
