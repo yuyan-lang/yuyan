@@ -197,6 +197,18 @@ fun show_typecheckingSig x = let
 in
           String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
 end
+fun show_typecheckingpassmappping x = let
+open TypeCheckingASTOps
+in
+  case x of
+    TermTypeJ(e, t) => UTF8String.toString e ^ " : " ^ show_typecheckingType t
+    | TypeDef(s, t) => UTF8String.toString s ^ " = " ^ show_typecheckingType t
+end
+fun show_typecheckingpassctx x = let
+open TypeCheckingASTOps
+in
+          String.concatWith ", " (map show_typecheckingpassmappping x) ^ "\n"
+end
 
 fun show_pkvalue x =let
 open PersistentKMachine

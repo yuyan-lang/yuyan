@@ -48,8 +48,15 @@ structure PreludeFunctions = struct
         stringAppend,
         printF
     ]
-    val typeCheckingPrelude = 
-        map (fn PFunc(name, t, impl) => (UTF8String.fromString name, t)) allPreludeFuncs
+
+    val preludeTypes = [
+        ("__BUILTIN_TYPE_INT", BuiltinType(BIInt)),
+        ("__BUILTIN_TYPE_BOOL", BuiltinType(BIInt)),
+        ("__BUILTIN_TYPE_REAL", BuiltinType(BIInt)),
+        ("__BUILTIN_TYPE_STRING", BuiltinType(BIString))
+    ]
+    val typeCheckingPrelude = map (fn (x, t) => TypeCheckingPass.TypeDef(UTF8String.fromString x, t)) preludeTypes @
+        map (fn PFunc(name, t, impl) => TypeCheckingPass.TermTypeJ(UTF8String.fromString name, t)) allPreludeFuncs
     val kmachinePrelude = 
         map (fn PFunc(name, t, impl) => (UTF8String.fromString name,
          KBuiltinValue(KbvFunc(UTF8String.fromString name, impl)))) 

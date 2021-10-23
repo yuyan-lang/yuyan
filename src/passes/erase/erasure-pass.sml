@@ -8,14 +8,7 @@ open TypeCheckingASTOps
     open TypeCheckingPass
 
 
-    type mapping = UTF8String.t * Type
-                    
-    type context = mapping list
     type kcontext = (UTF8String.t * kvalue) list
-
-    fun lookup (ctx : context) (n : UTF8String.t) : Type= 
-        case ctx of 
-             (n1, t1)::cs => if n1 = n then t1 else lookup cs n
 
     fun klookup (ctx : kcontext) (n : UTF8String.t) : kvalue= 
         case ctx of 
@@ -63,9 +56,9 @@ open TypeCheckingASTOps
                                     val caseIndex = klookupLabel3 cases label
                                     val (_, ev, e) = List.nth(cases, caseIndex)
                                 in (fn v => eraseSynExpr ((ev, v) :: kctx)
-                                     ((ev, t):: ctx) e 
+                                     (TermTypeJ(ev, t):: ctx) e 
                                 ) end))))
-            | LamWithType (t, ev, e) => KRet(KAbs(fn v => eraseSynExpr ((ev, v) :: kctx) ((ev, t)::ctx) e))
+            | LamWithType (t, ev, e) => KRet(KAbs(fn v => eraseSynExpr ((ev, v) :: kctx) (TermTypeJ(ev, t)::ctx) e))
             | App (e1, e2) => (case synthesizeType ctx e1
                 of Func (t1, t2) => 
                 KApp(eraseSynExpr kctx ctx e1, eraseCkExpr kctx ctx e2 t1))
@@ -74,10 +67,11 @@ open TypeCheckingASTOps
             | Open (e1, (tv, ev, e2)) => (case synthesizeType ctx e1 of
                 Exists (tv', tb) => kseq (eraseSynExpr kctx ctx e1) 
                     (fn v => 
-                eraseSynExpr ((ev, v)::kctx) ((ev, substTypeInType (TypeVar tv) tv' tb)::ctx) e2 
+                eraseSynExpr ((ev, v)::kctx) (TermTypeJ(ev, substTypeInType (TypeVar tv) tv' tb)::ctx) e2 
                     ))
             (* | Fold e2 => Fold (substTypeInExpr tS x e2) *)
             | Unfold e2 => KUnfold(eraseSynExpr kctx ctx e2) 
+            | StringLiteral s => KRet(KBuiltinValue(KbvString s))
             (* (case synthesizeType ctx e2 of
                 Rho (tv, tb) => substTypeInType (Rho (tv, tb)) tv tb
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
@@ -110,19 +104,19 @@ open TypeCheckingASTOps
                                     val caseIndex = klookupLabel3 cases label
                                     val (_, ev, e) = List.nth(cases, caseIndex)
                                 in (fn v => eraseCkExpr ((ev, v) :: kctx)
-                                     ((ev, t):: ctx) e tt
+                                     (TermTypeJ(ev, t):: ctx) e tt
                                 ) end)))
             )
             | Lam(ev, eb) => (case tt of
                 Func(t1,t2) => 
                 KRet(KAbs(fn v => 
-                    eraseCkExpr ((ev, v) :: kctx) ((ev, t1):: ctx) eb t2
+                    eraseCkExpr ((ev, v) :: kctx) (TermTypeJ(ev, t1):: ctx) eb t2
                 ))
                 )
             | LamWithType (t, ev, eb) => (case tt of
                 Func(t1,t2) => (
                     KRet(KAbs(fn v => 
-                        eraseCkExpr ((ev, v) :: kctx) ((ev, t1):: ctx) eb t2
+                        eraseCkExpr ((ev, v) :: kctx) (TermTypeJ(ev, t1):: ctx) eb t2
                     ))
                 )
             )
@@ -145,7 +139,7 @@ open TypeCheckingASTOps
             | Open (e1, (tv, ev, e2)) => (case synthesizeType ctx e1 of
                 Exists (tv', tb) => kseq (eraseSynExpr kctx ctx e1) 
                     (fn v => 
-                eraseCkExpr ((ev, v)::kctx) ((ev, substTypeInType (TypeVar tv) tv' tb)::ctx) e2 tt
+                eraseCkExpr ((ev, v)::kctx) (TermTypeJ(ev, substTypeInType (TypeVar tv) tv' tb)::ctx) e2 tt
                     ))
             | Fold e2 => (case tt
                 of 
@@ -157,7 +151,7 @@ open TypeCheckingASTOps
                 Rho (tv, tb) => asserTypeEquiv tt (substTypeInType (Rho (tv, tb)) tv tb)
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 ) *)
-            | Fix (ev, e)=>  KFix(fn v => eraseCkExpr ((ev , v) :: kctx) ((ev, tt)::(ctx)) e tt)
+            | Fix (ev, e)=>  KFix(fn v => eraseCkExpr ((ev , v) :: kctx) (TermTypeJ(ev, tt)::(ctx)) e tt)
             (* let
              fix F = ((\y. f (y y)) (\y. f (y y)))
              (this one causes infinite look)
@@ -184,17 +178,19 @@ untyped cases *)
             (* ; *)
             case s of
             [] => (KRet(KUnit))
-         | TypeMacro (n, t)::ss => eraseSigLazy kctx ctx (substituteTypeInSignature t n ss)
+         | TypeMacro (n, t)::ss => eraseSigLazy kctx (TypeDef(n,t)::ctx) ss
         | TermTypeJudgment(n, t):: ss => 
-            eraseSigLazy kctx ((n, t) :: ctx)  ss
+            eraseSigLazy kctx (TermTypeJ(n, (applyContextToType ctx t)) :: ctx)  ss
         | TermMacro(n, e) :: ss => 
-            kseq (eraseSynExpr kctx ctx e) (fn v => eraseSigLazy ((n, v) :: kctx) ((n, synthesizeType ctx e) :: ctx)  ss)
+            kseq (eraseSynExpr kctx ctx (applyContextToExpr ctx e)) 
+            (fn v => eraseSigLazy ((n, v) :: kctx) (TermTypeJ(n, synthesizeType ctx (applyContextToExpr ctx e)) :: ctx)  ss)
         | TermDefinition(n, e) :: ss => 
-            kseq (eraseCkExpr kctx ctx e (lookup ctx n)) (fn v => eraseSigLazy ((n, v) :: kctx) ctx ss)  
+            kseq (eraseCkExpr kctx ctx (applyContextToExpr ctx e) (lookup ctx n)) 
+                (fn v => eraseSigLazy ((n, v) :: kctx) ctx ss)  
         | [DirectExpr e] =>  (* special treatment on ending direct exprs *)
-            (eraseSynExpr kctx ctx e) 
+            (eraseSynExpr kctx ctx (applyContextToExpr ctx e)) 
         | DirectExpr e :: ss=> 
-            kseq (eraseSynExpr kctx ctx e) (fn _ => eraseSigLazy kctx ctx ss)
+            kseq (eraseSynExpr kctx ctx (applyContextToExpr ctx e)) (fn _ => eraseSigLazy kctx ctx ss)
         )
         
 

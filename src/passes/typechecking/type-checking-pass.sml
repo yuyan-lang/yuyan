@@ -2,14 +2,48 @@ structure TypeCheckingPass = struct
 open TypeCheckingAST
 open TypeCheckingASTOps
 
-    type mapping = UTF8String.t * Type
+    (* val DEBUG = true *)
+    val DEBUG = false
+
+
+    (*  !!! we assume the context is well formed in the sense that 
+    all term type judgments have no free type variables !!! *) 
+    (* so before anything is added to context, must perform substitution first ! *)
+    (* the context is not a telescope !!! *)
+    (* This also applies to type definitions! They must be expanded as well! *)
+    (* ^^^ THis is not true !!! *)
+    (* this is called the closed-world assumption and in practice, this 
+    helps to reduce bugs during type checking *)
+    (* also assume no name clash  *)
                     
     type context = mapping list
 
     fun lookup (ctx : context) (n : UTF8String.t) : Type= 
         case ctx of 
             [] => raise TypeCheckingFailure ("name " ^ UTF8String.toString n ^ " not found in context")
-            | (n1, t1)::cs => if n1 = n then t1 else lookup cs n
+            | TermTypeJ(n1, t1)::cs => if n1 = n then t1 else lookup cs n
+            | TypeDef(_) :: cs => lookup cs n
+
+    fun applyContextTo (ctx : context) (subst : Type -> Label -> 'a -> 'a) (t : 'a) : 'a = 
+        case ctx of
+            [] => t
+            | TypeDef(n1, t1)::cs => applyContextTo cs subst (subst t1 n1 t)
+            | TermTypeJ(_) :: cs => applyContextTo cs subst t
+            (* to get the semantics correct, context need to be applied in reverse order *)
+            (* no reverse function is called because context is in reverse order *)
+    fun applyContextToType (ctx : context) (t : Type) : Type = 
+        applyContextTo ctx (fn t => fn  l => fn t1 => 
+        (let val _ = if DEBUG then  print (" apply context subsituting "^ PrettyPrint.show_typecheckingType t  
+        ^ " for " ^ UTF8String.toString l ^ " in " ^ PrettyPrint.show_typecheckingType t1 ^  "\n") else ()
+            val res = substTypeInType t l t1
+            val _ =if DEBUG then print (" res is " ^ PrettyPrint.show_typecheckingType res ^ "\n") else ()
+            in res end
+            )) t
+    fun applyContextToExpr (ctx : context) (e : Expr) : Expr = 
+        applyContextTo ctx (substTypeInExpr) e
+    fun applyContextToSignature (ctx : context) (s : Signature) : Signature = 
+        applyContextTo ctx (substituteTypeInSignature) s
+
 
     fun lookupLabel ( ctx : (Label * Type) list) (l : Label) : Type = 
         case ctx of 
@@ -31,6 +65,8 @@ open TypeCheckingASTOps
 
     fun synthesizeType (ctx : context)(e : Expr) : Type =
     (
+         let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingExpr e ^ "\n") else ()
+         in 
          case e of
             ExprVar v => lookup ctx v
             | UnitExpr => UnitType
@@ -40,9 +76,9 @@ open TypeCheckingASTOps
             )
             | Case(e,cases) => (case (synthesizeType ctx e) of
                     Sum ls => typeUnify (map (fn (l, ev, e) => 
-                    synthesizeType ((ev, (lookupLabel ls l)) :: ctx) e) cases)
+                    synthesizeType (TermTypeJ(ev, (lookupLabel ls l)) :: ctx) e) cases)
                     | _ => raise TypeCheckingFailure "Attempt to case on non sum types")
-            | LamWithType (t, ev, e) => Func (t, synthesizeType ((ev, t)::ctx) e)
+            | LamWithType (t, ev, e) => Func (t, synthesizeType (TermTypeJ(ev, t)::ctx) e)
             | App (e1, e2) => (case synthesizeType ctx e1
                 of Func (t1, t2) => (checkType ctx e2 t1; t2)
                 | _ => raise TypeCheckingFailure "Application on nonfunction")
@@ -54,7 +90,7 @@ open TypeCheckingASTOps
             (* | Pack (t, e2) => *)
             | Open (e1, (tv, ev, e2)) => (case synthesizeType ctx e1 of
                 Exists (tv', tb) => 
-                (let val synthesizedType = synthesizeType ((ev, 
+                (let val synthesizedType = synthesizeType (TermTypeJ(ev, 
                 substTypeInType (TypeVar tv) tv' tb)::ctx) e2
                 in if List.exists (fn t => t = tv) (freeTVar synthesizedType)
                     then raise TypeCheckingFailure "Open's type cannot exit scope"
@@ -65,16 +101,23 @@ open TypeCheckingASTOps
                 Rho (tv, tb) => substTypeInType (Rho (tv, tb)) tv tb
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
+            | StringLiteral l => BuiltinType(BIString)
             (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
             | _ => raise TypeCheckingFailure "Expression does type support type synthesis, please specify type"
-            )
+            end )
         handle TypeCheckingFailure s => 
-            raise TypeCheckingFailure (s ^ "\n when synthesizing the type for " ^ PrettyPrint.show_typecheckingExpr e )
+            raise TypeCheckingFailure (s ^ "\n when synthesizing the type for " ^ PrettyPrint.show_typecheckingExpr e 
+            ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx)
 
     and asserTypeEquiv (t1 : Type) (t2 : Type) : unit =
         if typeEquiv [] t1 t2 then () else raise TypeCheckingFailure ("type mismatch \n 1 : " ^ PrettyPrint.show_typecheckingType t1 ^ " \n 2 : " ^ PrettyPrint.show_typecheckingType t2)
     and checkType (ctx : context) (e : Expr) (tt: Type) (* tt target type *) : unit =
-        (case e of
+        (let 
+            val _ = if DEBUG then  print(  "checking the expr " ^ PrettyPrint.show_typecheckingExpr e ^ 
+                " against type " ^ PrettyPrint.show_typecheckingType tt ^ "\n") else ()
+        in
+            
+            case e of
             ExprVar v => if typeEquiv [] (synthesizeType ctx e) tt = false 
                         then raise TypeCheckingFailure ("var type mismatch var is " ^ UTF8String.toString v 
                         ^ " synthesized : " ^ PrettyPrint.show_typecheckingType (synthesizeType ctx e) ^ " against : " 
@@ -97,16 +140,16 @@ open TypeCheckingASTOps
             | Case(e,cases) => (case (synthesizeType ctx e) of
                     Sum ls => 
                     (map (fn (l, ev, e) => 
-                    checkType ((ev, (lookupLabel ls l)) :: ctx) e tt) cases; ())
+                    checkType (TermTypeJ(ev, (lookupLabel ls l)) :: ctx) e tt) cases; ())
                     | _ => raise TypeCheckingFailure "Attempt to case on non sum types")
             | Lam(ev, eb) => (case tt of
                 Func(t1,t2) => 
-                    checkType ((ev, t1):: ctx) eb t2
+                    checkType (TermTypeJ(ev, t1):: ctx) eb t2
                 | _ => raise TypeCheckingFailure "Lambda is not function"
                 )
             | LamWithType (t, ev, eb) => (case tt of
                 Func(t1,t2) => (asserTypeEquiv t t1;
-                    checkType ((ev, t1):: ctx) eb t2)
+                    checkType (TermTypeJ(ev, t1):: ctx) eb t2)
                 | _ => raise TypeCheckingFailure "Lambda is not function"
                 )
             | App (e1, e2) => (case synthesizeType ctx e1
@@ -127,7 +170,7 @@ open TypeCheckingASTOps
             )
             | Open (e1, (tv, ev, e2)) => (case synthesizeType ctx e1 of
                 Exists (tv', tb) => 
-                checkType ((ev, substTypeInType (TypeVar tv) tv' tb)::ctx) e2 tt
+                checkType (TermTypeJ(ev, substTypeInType (TypeVar tv) tv' tb)::ctx) e2 tt
                 | _ => raise TypeCheckingFailure "cannot open non existential types")
             | Fold e2 => (case tt
                 of 
@@ -138,31 +181,34 @@ open TypeCheckingASTOps
                 Rho (tv, tb) => asserTypeEquiv tt (substTypeInType (Rho (tv, tb)) tv tb)
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
-            | Fix (ev, e)=> checkType ((ev , tt):: ctx) e tt
+            | Fix (ev, e)=> checkType (TermTypeJ(ev , tt):: ctx) e tt
             | StringLiteral _ => asserTypeEquiv (BuiltinType(BIString)) tt
-        )
+        end )
             handle TypeCheckingFailure s =>
             raise TypeCheckingFailure (s ^ "\n when checking the expr " ^ PrettyPrint.show_typecheckingExpr e ^ 
                 " against type " ^ PrettyPrint.show_typecheckingType tt
+            ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx
              )
     fun typeCheckSignature(ctx : context) (s : Signature) :unit =
 
         (
-            (* print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ) *)
-            (* ; *)
+            if DEBUG then print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ^"\n") else (); 
+
             case s of
             [] => ()
-         | TypeMacro (n, t)::ss => if freeTVar t <> [] then raise TypeCheckingFailure ("Type decl contains free var " ^ PrettyPrint.show_strlist (freeTVar t) ^" in"  ^ PrettyPrint.show_typecheckingType t) else 
-            typeCheckSignature ctx (substituteTypeInSignature t n ss)
-        | TermTypeJudgment(n, t):: ss => if freeTVar t <> [] then raise TypeCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_strlist (freeTVar t) ^" in "^ PrettyPrint.show_typecheckingType t) 
-         else 
-            typeCheckSignature ((n, t) :: ctx) ss
+         | TypeMacro (n, t)::ss => if freeTVar (applyContextToType ctx t) <> [] then 
+            raise SignatureCheckingFailure ("Type decl contains free var " ^ PrettyPrint.show_strlist (freeTVar (applyContextToType ctx t)) ^" in"  ^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) else 
+            typeCheckSignature (TypeDef(n, t)::ctx) ss
+        | TermTypeJudgment(n, t):: ss => if freeTVar (applyContextToType ctx t) <> [] 
+            then raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_strlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) 
+            else typeCheckSignature (TermTypeJ(n, (applyContextToType ctx t)) :: ctx) ss
         | TermMacro(n, e) :: ss => 
-            typeCheckSignature ((n, synthesizeType ctx e) :: ctx) ss
+            typeCheckSignature (TermTypeJ(n, synthesizeType ctx (applyContextToExpr ctx e)) :: ctx) ss
         | TermDefinition(n, e) :: ss => 
-            (checkType ctx e (lookup ctx n); typeCheckSignature ctx ss)
-        | DirectExpr e :: ss=> (synthesizeType ctx e; typeCheckSignature ctx ss))
-        (* handle TypeCheckingFailure st =>
+            (checkType ctx (applyContextToExpr ctx e) (lookup ctx n); typeCheckSignature ctx ss)
+        | DirectExpr e :: ss=> (synthesizeType ctx (applyContextToExpr ctx e); typeCheckSignature ctx ss))
+        handle SignatureCheckingFailure st =>
         raise TypeCheckingFailure (st ^ "\n when checking the signature " ^ PrettyPrint.show_typecheckingSig s 
-            ) *)
+            ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx
+            )
 end

@@ -3,6 +3,12 @@ structure TypeCheckingASTOps = struct
 open TypeCheckingAST
 
     exception TypeCheckingFailure of string
+    exception SignatureCheckingFailure of string
+
+        datatype mapping = TermTypeJ of UTF8String.t * Type 
+                 | TypeDef of UTF8String.t * Type
+
+
     fun freeTVar (t : Type) : TVar list = 
         case t of
             TypeVar t => [t]
