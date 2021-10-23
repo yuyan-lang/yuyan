@@ -49,12 +49,12 @@ To run with more informative debug output
 ```
 (r stands for run and v stands for verbose)
 
-To run with a faster runtime (in practice `k` seems to be faster)
+<!-- To run with a faster runtime (in practice `k` seems to be faster)
 ```
 ./yy rk filename.yuyan
 ./yy rkv filename.yuyan
 ./yy rkvv filename.yuyan
-```
+``` -->
 
 ## Examples
 
@@ -128,6 +128,6 @@ Some annoying issue I've encountered:
 Although the theoretical performance should be good (since type checking is optimized away and RT is using "byte code"), the actual performance investigation is still pending because the comparsion is not perfomed using the onchip hardware for testing natural numbers.
 
 See `performance-investigation` for testing scripts.
-
+<!-- 
 My somewhat naive implementation of k machine is not optimal in the sense that substitutions are better implemented as functions and not as values. Add "k" to the first argument runs the K machine (which appears to be 
-faster) than the pK machine.
+faster) than the pK machine. -->

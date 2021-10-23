@@ -14,6 +14,7 @@ open TypeCheckingAST
             | Rho (tv,t2) => List.filter (fn t => t <> tv) (freeTVar t2)
             | UnitType => []
             | NullType => []
+            | BuiltinType(b) => []
 
     fun freeEVar (e : Expr) : EVar list = 
         case e of
@@ -36,6 +37,7 @@ open TypeCheckingAST
             | Fold e2 => freeEVar e2
             | Unfold e2 => freeEVar e2
             | Fix (ev, e)=> List.filter (fn ev' => ev' <> ev) (freeEVar e)
+            | StringLiteral l => []
 
     fun uniqueName () = UTF8String.fromString (Int.toString (UID.next()))
 
@@ -63,6 +65,7 @@ open TypeCheckingAST
             | Rho (tv,t2) => captureAvoid Rho tv t2
             | UnitType => UnitType
             | NullType => NullType
+            | BuiltinType(b) => BuiltinType(b)
     end
 
 (* no capture as we're only interested in types *)
@@ -107,6 +110,7 @@ open TypeCheckingAST
             | Fold e2 => Fold (substTypeInExpr tS x e2)
             | Unfold e2 => Unfold (substTypeInExpr tS x e2)
             | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e)
+            | StringLiteral l => StringLiteral l
     end
 
     fun substituteTypeInDeclaration (tS : Type) (x : TVar) (d : Declaration) = 
@@ -154,6 +158,7 @@ open TypeCheckingAST
              end)
             | (UnitType, UnitType) => true
             | (NullType, NullType) => true
+            | (BuiltinType(b1), BuiltinType(b2)) => b1 = b2
             | _ => false)
     end)
 end

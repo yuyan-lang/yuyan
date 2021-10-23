@@ -35,6 +35,7 @@ Library
 
   structure TypeCheckingPass
   structure TypeCheckingAST
+  structure TypeCheckingEntry
   structure PreprocessingPass
   structure PreprocessingAST
   structure SignatureParsingOrchestrator
@@ -45,6 +46,9 @@ Library
   structure KMachine
   structure PersistentKMachine
   structure ErasurePass
+  structure ErasureEntry
+
+  structure PreludeFunctions
   
 is
   ../cmlib/cmlib.cm
@@ -89,7 +93,11 @@ is
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
   passes/typechecking/type-checking-ast-ops.sml
+  passes/typechecking/type-checking-entry.sml
   passes/erase/erasure-pass.sml
+  passes/erase/erasure-entry.sml
+
+  prelude-libraries/prelude-functions.sml
   
   execution/k-machine.sml
   execution/persistent-k-machine.sml

@@ -7,5 +7,6 @@ open Operators
                     | NewOpName of UTF8String.t
                     | OpUnparsedExpr of MixedStr.t (* not used *)
                     | OpUnparsedDecl of MixedStr.t list (* not used *)
+                    | OpStrLiteral of UTF8String.t
     type t= OpAST
 end

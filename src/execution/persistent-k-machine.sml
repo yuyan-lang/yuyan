@@ -9,12 +9,15 @@ struct
                   | PKFold of pkvalue
                   | PKAbs of (int * pkcomputation)
                   | PKComp of pkcomputation
+                  | PKBuiltinValue of kbuiltinValue (* actually should only use label when it is 
+                  a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)
     and pkcomputation = 
                   PKProj of pkcomputation * int
                 | PKCases of pkcomputation * (int * pkcomputation) list
                 | PKUnfold of pkcomputation 
                 | PKApp of pkcomputation  * pkcomputation
                 | PKAppWithEvaledFun of (int * pkcomputation) * pkcomputation
+                | PKAppWithBuiltinFun of (kvalue -> kcomputation) * pkcomputation
                 | PKRet of pkvalue
                 | PKFix of (int * pkcomputation)
         
@@ -27,6 +30,7 @@ struct
         | PKFold e => PKFold (substitutePKValueInValue v2 x  e)
         | PKAbs (i, c) => if i = x then vc else PKAbs(i, substitutePKValueInComp v2 x c)
         | PKComp c => PKComp(substitutePKValueInComp v2 x  c)
+        | PKBuiltinValue c => vc
         (* assume every x is unique so no capture *)
     and substitutePKValueInComp (v : pkvalue) (x : int) (c : pkcomputation) : pkcomputation= 
       case c of
@@ -49,6 +53,7 @@ struct
         let val boundId = UID.next()
                     in PKAbs(boundId, fromKComp (f (KVar boundId))) end
         | KComp c => PKComp (fromKComp c)
+        | KBuiltinValue v => PKBuiltinValue v
 
     and fromKComp (kv : kcomputation) : pkcomputation = 
     case kv of
@@ -84,6 +89,7 @@ struct
         | PKFold e => KFold (toKValue ctx e)
         | PKAbs (i, c) => KAbs(fn v => toKComp (insert ctx (i, v)) c)
         | PKComp c => KComp(toKComp ctx c)
+        | PKBuiltinValue c => KBuiltinValue c
 
     and toKComp (ctx: context) (kv : pkcomputation) : kcomputation = 
      case kv of
@@ -97,7 +103,8 @@ struct
 
                 
 
-    type pkcont = (pkvalue -> pkcomputation) list
+(* dump this as pk machine doesn't work with foreign functions *)
+    (* type pkcont = (pkvalue -> pkcomputation) list
 
     datatype pkmachine = Run of pkcont * pkcomputation
                       | NormalRet of pkcont * pkvalue
@@ -117,8 +124,14 @@ struct
                                                           (x, c) => substitutePKValueInComp v x c
                                                                         )) ::s), p)
             | Run (s, PKUnfold(p)) => Run ( ((fn (PKFold(v)) => PKRet(v)) ::s), p)
-            | Run (s, PKApp(f, arg)) => Run ( ((fn (PKAbs f') => PKAppWithEvaledFun(f', arg)) ::s), f)
+            | Run (s, PKApp(f, arg)) => Run ( ((fn function => 
+                case function of 
+                    (PKAbs f') => PKAppWithEvaledFun(f', arg)
+                    | (PKBuiltinValue(KbvFunc(_, f'))) => PKAppWithBuiltinFun(f', arg)
+                    ) ::s), f)
             | Run (s, PKAppWithEvaledFun((x,f), arg)) => Run ( ((fn argv => substitutePKValueInComp argv x f) ::s), arg)
+            (* handling of foreign functions on pkmachines are not very efficient *)
+            | Run (s, PKAppWithBuiltinFun((f), arg)) => Run ( ((fn argv => fromKComp (f (toKValue Ctx.empty argv))) ::s), arg)
             | Run (s, PKFix(x, f)) => Run ( s, substitutePKValueInComp (PKComp(PKFix(x, f))) x f)
 
 
@@ -145,5 +158,5 @@ struct
         | PKFold e => pack 66 (UTF8String.fromString "卷" @ pkvalueToString 66 e)
         | PKAbs f => pack 52 (UTF8String.fromString "会？而？？？")
         | PKComp c => UTF8String.fromString "ERR[Comp: please report this as a bug on github]"
-end
+end *)
 end

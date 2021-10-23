@@ -78,7 +78,9 @@ struct
 
     (* string escape two endDoubleQuote to escape double quote, else no escape *)
     fun scanLiteral(remaining : UTF8String.t)(sofar : UTF8String.t) : UTF8String.t * UTF8String.t
-     = case remaining of
+     = case (
+         (* print (UTF8String.toString remaining^"\n"); *)
+      remaining) of
         [] => raise UnmatchedStringLiteral
         | [x] => if x = SpecialChars.rightDoubleQuote
                  then (sofar, [])
@@ -86,7 +88,7 @@ struct
         | (x::y::xs) => if x = SpecialChars.rightDoubleQuote andalso y = SpecialChars.rightDoubleQuote
                  then scanLiteral xs (sofar @[x]) (*escape*)
                  else if x = SpecialChars.rightDoubleQuote
-                      then (sofar@[x], y::xs)
+                      then (sofar, y::xs)
                       else scanLiteral (y::xs) (sofar @[x])
 
     fun scanSingleQuote( remaining : UTF8String.t) (sofar : mixedstr) 

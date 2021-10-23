@@ -39,7 +39,7 @@ struct
 
      fun testMain()= 
         inputFile "testfiles/test.yuyan" {
-            verbose=2, usekmachine=false
+            verbose=2, usekmachine=true
         }
 
 end

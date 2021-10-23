@@ -95,6 +95,7 @@ case x of
     | UnparsedDecl l => "UnparsedDecl "^ String.concatWith ", " (map show_mixedstr l)
     | UnparsedExpr l => "UnparsedExpr "^ show_mixedstr l
     | PlaceHolder => "PlaceHolder "
+    | StringLiteral s => "StringLiteral " ^ UTF8String.toString s
 end
 
   fun show_opast (x : OpAST.OpAST) = let 
@@ -106,6 +107,7 @@ end
       | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
       | OpUnparsedDecl s => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr s)) ^ "]"
       | OpUnparsedExpr s => "[EXPR:" ^ show_mixedstr s ^ "]"
+      | OpStrLiteral s => "[LITERAL:" ^ UTF8String.toString s ^ "]"
     end
 
 
@@ -149,6 +151,10 @@ in case x of
                     | Forall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | Exists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | Rho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | BuiltinType (BIString) => "(string)" 
+                    | BuiltinType (BIBool) => "(bool)" 
+                    | BuiltinType (BIInt) => "(int)" 
+                    | BuiltinType (BIReal) => "(real)" 
 end
 
 
@@ -174,6 +180,7 @@ ExprVar v => ss v
                     | Fold (e) => "fold(" ^ se e ^")"
                     | Unfold (e) => "unfold("^  se e ^")"
                     | Fix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
+                    | StringLiteral l => "\"" ^ ss l ^"\""
                 end
 
 fun show_typecheckingDecl x = let
@@ -202,6 +209,11 @@ in
         | PKFold e => "fold (" ^ show_pkvalue e ^ ")"
         | PKAbs (i, c) => "(λ" ^ Int.toString i ^ "." ^ show_pkcomputation c ^ ")"
         | PKComp (c) => "comp(" ^  show_pkcomputation c ^ ")"
+        | PKBuiltinValue (KbvBool t) => "builtin:bool(" ^  Bool.toString t  ^ ")"
+        | PKBuiltinValue (KbvReal t) => "builtin:real(" ^  Real.toString t  ^ ")"
+        | PKBuiltinValue (KbvInt t) => "builtin:int(" ^  Int.toString t  ^ ")"
+        | PKBuiltinValue (KbvString t) => "builtin:string(" ^  UTF8String.toString t  ^ ")"
+        | PKBuiltinValue (KbvFunc (l, f)) => "builtin:func(" ^  UTF8String.toString l  ^ ", ---)"
 
 end
 and show_pkcomputation x = let
@@ -220,7 +232,7 @@ in
       end
 
 
-   fun show_pkmachine x = let
+   (* fun show_pkmachine x = let
    open PersistentKMachine
 in 
   case x of 
@@ -228,5 +240,5 @@ in
     | NormalRet (l, c) => "RET : "^ Int.toString (length l) ^ " : " ^ show_pkvalue c
     end
  
-  
+   *)
 end

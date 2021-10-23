@@ -2,9 +2,17 @@ structure KMachine =
 struct
     open TypeCheckingAST
 
+    exception KBuiltinFuncExecException of string
+    datatype kbuiltinValue  = 
+        KbvInt of int
+        | KbvBool of bool
+        | KbvString of UTF8String.t
+        | KbvReal of real
+        | KbvFunc of (Label * (kvalue -> kcomputation))
+    
 (* this K machine has efficiency issues due to unevaluated functions as values, 
 please use persistent-k-machine for actual evaluation *)
-    datatype kvalue = KUnit 
+    and kvalue = KUnit 
                   (* only used durning persistence, should not be used anywhere else *)
                   | KVar of int (* FOR DEBUG PURPOSES ONLY, do not use for compiling practical programs !!! *)
                   (* We should only run closed programs so KVar shouldn't appear for any practical purposes *)
@@ -13,6 +21,7 @@ please use persistent-k-machine for actual evaluation *)
                   | KFold of kvalue
                   | KAbs of (kvalue -> kcomputation)
                   | KComp of kcomputation
+                  | KBuiltinValue of kbuiltinValue
     and kcomputation = 
                   KProj of kcomputation * int
                 | KCases of kcomputation * (kvalue -> kcomputation) list
@@ -39,6 +48,12 @@ please use persistent-k-machine for actual evaluation *)
         | KFold e => pack 66 (UTF8String.fromString "卷" @ kvalueToString 66 e)
         | KAbs f => pack 52 (UTF8String.fromString "会？而？？？")
         | KComp c => UTF8String.fromString "ERR[please report this as a bug on github]"
+        | KBuiltinValue (KbvBool t) => pack 100 (UTF8String.fromString (  Bool.toString t ))
+        | KBuiltinValue (KbvReal t) => pack 100 (UTF8String.fromString  (Real.toString t  ))
+        | KBuiltinValue (KbvInt t) =>   pack 100 (UTF8String.fromString (Int.toString t  ))
+        | KBuiltinValue (KbvString t) => pack 100 (SpecialChars.leftDoubleQuote:: t @ [SpecialChars.rightDoubleQuote])
+        | KBuiltinValue (KbvFunc (l, f)) => pack 100 (l)
+
 end
 
 
@@ -62,7 +77,11 @@ end
             | Run (s, KProj(p,i)) => Run ( ((fn (KTuple l) => KRet(List.nth(l, i))) ::s), p)
             | Run (s, KCases(p,l)) => Run ( ((fn (KInj(_, i,v)) => (List.nth(l, i)(v))) ::s), p)
             | Run (s, KUnfold(p)) => Run ( ((fn (KFold(v)) => KRet(v)) ::s), p)
-            | Run (s, KApp(f, arg)) => Run ( ((fn (KAbs f') => KAppWithEvaledFun(f', arg)) ::s), f)
+            | Run (s, KApp(f, arg)) => Run ( ((fn function => 
+                case function of 
+                    (KAbs f') => KAppWithEvaledFun(f', arg)
+                    | (KBuiltinValue(KbvFunc(_, f'))) => KAppWithEvaledFun(f', arg)
+                    ) ::s), f)
             | Run (s, KAppWithEvaledFun(f', arg)) => Run ( ((fn argv => f' argv) ::s), arg)
             | Run (s, KFix(f)) => Run ( s, f(KComp(KFix(f))))
 

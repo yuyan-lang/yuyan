@@ -166,6 +166,9 @@ open TypeCheckingASTOps
                     val lamydotfyy = KAbs(fn y => KApp(KRet(compiledF),(appVV y y)))
                 in appVV lamydotfyy lamydotfyy
             end *)
+            | StringLiteral l => (case tt of 
+                BuiltinType(BIString) => KRet(KBuiltinValue(KbvString l)))
+
             (* `checkType ((ev , tt):: ctx) e tt *)
         )
 
@@ -194,9 +197,5 @@ untyped cases *)
             kseq (eraseSynExpr kctx ctx e) (fn _ => eraseSigLazy kctx ctx ss)
         )
         
-    fun eraseSig (s : Signature) : PersistentKMachine.pkcomputation = 
-                 PersistentKMachine.fromKComp (eraseSigLazy [] [] s)
-    fun eraseSigK (s : Signature) : KMachine.kcomputation = 
-               PersistentKMachine.toKComp  (PersistentKMachine.emptyCtx())
-               (PersistentKMachine.fromKComp (eraseSigLazy [] [] s))
+
 end

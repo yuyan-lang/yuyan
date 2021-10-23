@@ -4,6 +4,8 @@ struct
         (let fun cprint x s = if x <= (#verbose options) then print s else () 
             val startTime = Time.now()
             val whitespaceRemoved = UTF8String.removeAllWhitespace input
+            val _ = cprint 1 "----------------- White Space Removal Complete -------------- \n"
+            val _ = cprint 2 (whitespaceRemoved^"\n")
             val stmtAST = MixedStr.makeDecl (UTF8String.fromString whitespaceRemoved)
             val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_mixedstrs stmtAST ^ "\n")
@@ -14,11 +16,11 @@ struct
             val _ = cprint 1 "----------------- Type Checking AST Constructed -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_typecheckingSig typeCheckingAST)
             val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"
-            val _ = TypeCheckingPass.typeCheckSignature [] typeCheckingAST
+            val _ = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
             val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n"
-            val executeTime = if (#usekmachine options) then
+            val executeTime =  (* removed the use of pk machines due to foreign functions *)
                 (let 
-                val erasedASTK = ErasurePass.eraseSigK typeCheckingAST
+                val erasedASTK = ErasureEntry.eraseSigK typeCheckingAST
                 val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
                 val _ = cprint 2 (PrettyPrint.show_pkcomputation (PersistentKMachine.fromKComp erasedASTK) ^ "\n")
                 val _ = cprint 1 "----------------- Executing ---------------------- \n"
@@ -28,19 +30,6 @@ struct
                                         (* (fn km => print (PrettyPrint.show_pkmachine (PersistentKMachine.fromKComp km) ^ "\n")) *)
                 val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
                 val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
-                in executeTime end)
-                else
-                (let 
-                val erasedAST = ErasurePass.eraseSig typeCheckingAST
-                val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
-                val _ = cprint 2 (PrettyPrint.show_pkcomputation  erasedAST ^ "\n")
-                val _ = cprint 1 "----------------- Executing ---------------------- \n"
-                val executeTime = Time.now()
-                val result = 
-                PersistentKMachine.runUntilCompletion (PersistentKMachine.Run([],erasedAST)) 
-                                        (fn km => print (PrettyPrint.show_pkmachine km ^ "\n"))
-                val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
-                val _ = print (UTF8String.toString (PersistentKMachine.pkvalueToString 0 result) ^ "\n")
                 in executeTime end)
             val endTime = Time.now()
             val compileDuration : Time.time = Time.-(executeTime,startTime)
@@ -53,7 +42,7 @@ struct
         end)
         handle TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s)
     | ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
-      | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug))\n"; print s )
+      | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
       |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "parse failed\n"; print s)
       |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
 

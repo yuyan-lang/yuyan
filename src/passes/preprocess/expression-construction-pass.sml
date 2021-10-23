@@ -132,6 +132,7 @@ struct
     in
         (case ast of
               UnknownOpName (s) => ExprVar s
+            | OpStrLiteral l => StringLiteral l
             | OpAST(oper, l) => (
                 if getUID oper >= elabAppBound 
                 then (* elab app *)

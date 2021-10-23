@@ -139,6 +139,7 @@ open TypeCheckingASTOps
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
             | Fix (ev, e)=> checkType ((ev , tt):: ctx) e tt
+            | StringLiteral _ => asserTypeEquiv (BuiltinType(BIString)) tt
         )
             handle TypeCheckingFailure s =>
             raise TypeCheckingFailure (s ^ "\n when checking the expr " ^ PrettyPrint.show_typecheckingExpr e ^ 

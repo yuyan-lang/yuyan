@@ -5,6 +5,11 @@ structure TypeCheckingAST = struct
 
     type Label = UTF8String.t
 
+    datatype BuiltinType = BIString
+                         | BIInt
+                         | BIReal
+                         | BIBool
+
     datatype Type = TypeVar of TVar
                     | UnitType
                     | Prod of (Label * Type) list
@@ -14,6 +19,7 @@ structure TypeCheckingAST = struct
                     | Forall of TVar * Type
                     | Exists of TVar * Type
                     | Rho of TVar * Type
+                    | BuiltinType of BuiltinType
 
 
 
@@ -34,6 +40,7 @@ structure TypeCheckingAST = struct
                     | Fold of Expr
                     | Unfold of Expr
                     | Fix of EVar * Expr
+                    | StringLiteral of UTF8String.t
 
 
     datatype Declaration = 
