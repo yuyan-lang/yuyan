@@ -42,7 +42,10 @@ local
         parser/declaration-parser.sml
         passes/preprocess/preprocessing-pass.sml
         passes/typechecking/type-checking-pass.sml
+        prelude-libraries/prelude-functions.sml
+        passes/typechecking/type-checking-entry.sml
         passes/erase/erasure-pass.sml
+        passes/erase/erasure-entry.sml
 
         parser/parser-options.sig
         parser/elaborate-precedence.sml
