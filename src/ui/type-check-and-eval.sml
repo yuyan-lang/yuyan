@@ -9,7 +9,7 @@ struct
             val stmtAST = MixedStr.makeDecl (UTF8String.fromString whitespaceRemoved)
             val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_mixedstrs stmtAST ^ "\n")
-            val preprocessAST = PreprocessingPass.preprocessAST(stmtAST)
+            val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST)
             val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST)
             val typeCheckingAST = ExpressionConstructionPass.constructTypeCheckingAST(preprocessAST)
