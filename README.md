@@ -4,6 +4,8 @@
 ## 版本
 非常早期的预览版（0.1.0alpha)
 
+Everything is subject to change
+
 ## Features
 
 This language is a simple functional programming languages with 

@@ -6,11 +6,27 @@ open TypeCheckingAST
     exception SignatureCheckingFailure of string
 
 (* these exist here for pretty printing *)
- datatype mapping = TermTypeJ of StructureName.t * Type 
-                    | TypeDef of StructureName.t * Type
-datatype context = Context of StructureName.t * bool * 
-    (mapping) list
+(* g for generic *)
+ datatype 'a gmapping = TermTypeJ of StructureName.t * Type  * 'a
+                    | TypeDef of StructureName.t * Type * unit
+datatype 'a gcontext = Context of StructureName.t * bool * 
+    ('a gmapping) list
+    type mapping = unit gmapping
+    type context = unit gcontext
 
+   fun appendRelativeMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
+        case ctx of
+            Context(curSName, vis, l) => Context(curSName, vis, 
+            (case m of 
+                TermTypeJ(e, t, u) => TermTypeJ(curSName@e, t, u)
+                | TypeDef(tname, t, u) => TypeDef(curSName@tname, t, u)
+                ):: l
+            )
+
+    fun appendRelativeMappingsToCurrentContext (m : 'a gmapping list) (ctx : 'a gcontext) : 'a gcontext = 
+        foldl (fn (map, acc) => appendRelativeMappingToCurrentContext map acc) ctx m
+
+  
 
     fun freeTVar (t : Type) : StructureName.t list = 
         case t of

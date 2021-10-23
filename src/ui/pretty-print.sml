@@ -213,8 +213,8 @@ fun show_typecheckingpassmappping x = let
 open TypeCheckingASTOps
 in
   case x of
-    TermTypeJ(e, t) => show_utf8strings e ^ " : " ^ show_typecheckingType t
-    | TypeDef(s, t) => show_utf8strings s ^ " = " ^ show_typecheckingType t
+    TermTypeJ(e, t,_) => show_utf8strings e ^ " : " ^ show_typecheckingType t
+    | TypeDef(s, t, _) => show_utf8strings s ^ " = " ^ show_typecheckingType t
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingASTOps

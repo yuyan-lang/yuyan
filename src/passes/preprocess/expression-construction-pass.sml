@@ -67,7 +67,7 @@ struct
         (
             (* print (PrettyPrint.show_opast ast); *)
         case ast of
-             UnknownOpName (s) => TypeVar s
+             UnknownOpName (s) => TypeVar [s]
             | OpUnparsedExpr x => (parseType x ctx) 
             | OpAST(oper, []) => (
                 if oper = unitTypeOp then UnitType
@@ -98,7 +98,7 @@ struct
                 then Rho ((elaborateNewName a1),(elaborateOpASTtoType a2 ctx))
                 else 
                 if oper = structureRefOp
-                then TVar (map elaborateUnknownName (flattenRight ast structureRefOp))
+                then TypeVar (map elaborateUnknownName (flattenRight ast structureRefOp))
                 else
                 raise ElaborateFailure "Expected a type constructor"
             )
@@ -111,13 +111,13 @@ struct
     let fun snd (x : OpAST list) : OpAST = (hd (tl x))
     in
         (case ast of
-              UnknownOpName (s) => ExprVar s
+              UnknownOpName (s) => ExprVar [s]
             | OpUnparsedExpr x => (parseExpr x ctx) 
             | OpStrLiteral l => StringLiteral l
             | OpAST(oper, l) => (
                 if getUID oper >= elabAppBound 
                 then (* elab app *)
-                    foldl (fn (arg, acc) => App (acc,arg)) (ExprVar (getOriginalName oper)) (map (fn x => elaborateOpASTtoExpr x ctx)  l)
+                    foldl (fn (arg, acc) => App (acc,arg)) (ExprVar [getOriginalName oper]) (map (fn x => elaborateOpASTtoExpr x ctx)  l)
                 else
                 if oper = structureRefOp
                 then ExprVar (map elaborateUnknownName (flattenRight ast structureRefOp))

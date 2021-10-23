@@ -32,8 +32,8 @@ structure PreludeFunctions = struct
             KRet(KBuiltinValue(KbvString (UTF8String.fromString (Int.toString i1))))))
     val boolIfThenElse= PFunc("__BUILTIN_BOOL_IF_THEN_ELSE", 
     (* type is /\A. bool -> (() -> A) -> (() -> A) -> A *)
-        Forall(typeVarA, Func(typeBool, Func(Func(UnitType, TypeVar(typeVarA)), 
-Func(Func(UnitType, TypeVar(typeVarA)), TypeVar(typeVarA))))),
+        Forall(typeVarA, Func(typeBool, Func(Func(UnitType, TypeVar([typeVarA])), 
+Func(Func(UnitType, TypeVar([typeVarA])), TypeVar([typeVarA]))))),
         (fn (KBuiltinValue(KbvBool i1)) => 
             KRet(KAbs(fn (KAbs ft) => 
                 KRet(KAbs(fn (KAbs ff) => 
@@ -74,11 +74,12 @@ Func(typeBool, typeBool),
         ("__BUILTIN_TYPE_REAL", BuiltinType(BIReal)),
         ("__BUILTIN_TYPE_STRING", BuiltinType(BIString))
     ]
-    val typeCheckingPrelude = map (fn (x, t) => TypeCheckingPass.TypeDef(UTF8String.fromString x, t)) preludeTypes @
-        map (fn PFunc(name, t, impl) => TypeCheckingPass.TermTypeJ(UTF8String.fromString name, t)) allPreludeFuncs
-    val kmachinePrelude = 
-        map (fn PFunc(name, t, impl) => (UTF8String.fromString name,
-         KBuiltinValue(KbvFunc(UTF8String.fromString name, impl)))) 
-        allPreludeFuncs
+    val erasurePrelude = 
+    TypeCheckingPass.Context (StructureName.topLevelName, true, 
+        map (fn (x, t) => TypeCheckingPass.TypeDef([UTF8String.fromString x], t, ())) preludeTypes @
+        map (fn PFunc(name, t, impl) => 
+        TypeCheckingPass.TermTypeJ([UTF8String.fromString name], t, KBuiltinValue(KbvFunc(UTF8String.fromString name, impl))
+        )) allPreludeFuncs)
+    val typeCheckingPrelude = ErasurePass.eraseCtx erasurePrelude
 
 end

@@ -18,22 +18,10 @@ open TypeCheckingASTOps
            
    
                     (* curStructure, curVisibility and mapping *)
-
-    fun appendRelativeMappingToCurrentContext (m : mapping) (ctx : context) : context = 
-        case ctx of
-            Context(curSName, vis, l) => Context(curSName, vis, 
-            (case m of 
-                TermTypeJ(e, t) => TermTypeJ(curSName@e, t)
-                | TypeDef(tname, t) => TypeDef(curSName@tname, t)
-                ):: l
-            )
-
-    fun appendRelativeMappingsToCurrentContext (m : mapping list) (ctx : context) : context = 
-        foldl (fn (map, acc) => appendRelativeMappingToCurrentContext map acc) ctx m
-
-    val addToCtxR = appendRelativeMappingToCurrentContext (* R for relative *)
+  val addToCtxR = appendRelativeMappingToCurrentContext (* R for relative *)
     val addToCtxRL = appendRelativeMappingsToCurrentContext (* L for list *)
     
+ 
     fun getMapping (c: context ):mapping list = 
         case c of  (Context(cSname, cVis, m)) => m
 
@@ -41,7 +29,7 @@ open TypeCheckingASTOps
     fun lookupMapping (ctx : mapping list) (n : StructureName.t) : Type= 
         case ctx of 
             [] => raise LookupNotFound ("name " ^ StructureName.toStringPlain n ^ " not found in context")
-            | TermTypeJ(n1, t1)::cs => if n1 = n then t1 else lookupMapping cs n
+            | TermTypeJ(n1, t1, u)::cs => if n1 = n then t1 else lookupMapping cs n
             | TypeDef(_) :: cs => lookupMapping cs n
 
     fun lookup (Context(curSName, _, ctx) : context) (n : StructureName.t) : Type= 
@@ -58,7 +46,7 @@ open TypeCheckingASTOps
         case ctx of Context(curName, curVis, mapl) =>
         (case mapl of
             [] => t
-            | TypeDef(n1, t1)::cs => applyContextTo (Context(curName, curVis, cs)) subst 
+            | TypeDef(n1, t1, u)::cs => applyContextTo (Context(curName, curVis, cs)) subst 
             ((if StructureName.isPrefix curName n1 then 
             (* the current subsituting name is a prefix! we need also to perform local subsitution *)
             (subst t1 (StructureName.stripPrefix curName n1)) else (fn x => x))
@@ -113,11 +101,11 @@ open TypeCheckingASTOps
             )
             | Case(e,cases) => (case (synthesizeType ctx e) of
                     Sum ls => typeUnify (map (fn (l, ev, e) => 
-                    synthesizeType (addToCtxR (TermTypeJ([ev], (lookupLabel ls l))) ctx)
+                    synthesizeType (addToCtxR (TermTypeJ([ev], (lookupLabel ls l), ())) ctx)
                      e) cases)
                     | _ => raise TypeCheckingFailure "Attempt to case on non sum types")
             | LamWithType (t, ev, e) => Func (t, synthesizeType 
-            (addToCtxR (TermTypeJ([ev], t)) ctx) e)
+            (addToCtxR (TermTypeJ([ev], t, ())) ctx) e)
             | App (e1, e2) => (case synthesizeType ctx e1
                 of Func (t1, t2) => (checkType ctx e2 t1; t2)
                 | _ => raise TypeCheckingFailure "Application on nonfunction")
@@ -131,7 +119,7 @@ open TypeCheckingASTOps
                 Exists (tv', tb) => 
                 (let val synthesizedType = synthesizeType 
                 (addToCtxR (TermTypeJ([ev], 
-                substTypeInType (TypeVar [tv]) [tv'] tb)) ctx) e2
+                substTypeInType (TypeVar [tv]) [tv'] tb,())) ctx) e2
                 in if List.exists (fn t => t = [tv]) (freeTVar synthesizedType)
                     then raise TypeCheckingFailure "Open's type cannot exit scope"
                     else synthesizedType end)
@@ -180,16 +168,16 @@ open TypeCheckingASTOps
             | Case(e,cases) => (case (synthesizeType ctx e) of
                     Sum ls => 
                     (map (fn (l, ev, e) => 
-                    checkType (addToCtxR (TermTypeJ([ev], (lookupLabel ls l))) ctx) e tt) cases; ())
+                    checkType (addToCtxR (TermTypeJ([ev], (lookupLabel ls l), ())) ctx) e tt) cases; ())
                     | _ => raise TypeCheckingFailure "Attempt to case on non sum types")
             | Lam(ev, eb) => (case tt of
                 Func(t1,t2) => 
-                    checkType (addToCtxR (TermTypeJ([ev], t1)) ctx) eb t2
+                    checkType (addToCtxR (TermTypeJ([ev], t1,())) ctx) eb t2
                 | _ => raise TypeCheckingFailure "Lambda is not function"
                 )
             | LamWithType (t, ev, eb) => (case tt of
                 Func(t1,t2) => (asserTypeEquiv t t1;
-                    checkType (addToCtxR (TermTypeJ([ev], t1)) ctx) eb t2)
+                    checkType (addToCtxR (TermTypeJ([ev], t1, ())) ctx) eb t2)
                 | _ => raise TypeCheckingFailure "Lambda is not function"
                 )
             | App (e1, e2) => (case synthesizeType ctx e1
@@ -210,7 +198,7 @@ open TypeCheckingASTOps
             )
             | Open (e1, (tv, ev, e2)) => (case synthesizeType ctx e1 of
                 Exists (tv', tb) => 
-                checkType (addToCtxR (TermTypeJ([ev], substTypeInType (TypeVar [tv]) [tv'] tb)) ctx) e2 tt
+                checkType (addToCtxR (TermTypeJ([ev], substTypeInType (TypeVar [tv]) [tv'] tb, ())) ctx) e2 tt
                 | _ => raise TypeCheckingFailure "cannot open non existential types")
             | Fold e2 => (case tt
                 of 
@@ -221,7 +209,7 @@ open TypeCheckingASTOps
                 Rho (tv, tb) => asserTypeEquiv tt (substTypeInType (Rho (tv, tb)) [tv] tb)
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
-            | Fix (ev, e)=> checkType (addToCtxR (TermTypeJ([ev] , tt)) ctx) e tt
+            | Fix (ev, e)=> checkType (addToCtxR (TermTypeJ([ev] , tt, ())) ctx) e tt
             | StringLiteral _ => asserTypeEquiv (BuiltinType(BIString)) tt
         end )
             handle TypeCheckingFailure s =>
@@ -238,12 +226,12 @@ open TypeCheckingASTOps
             [] => ()
          | TypeMacro (n, t)::ss => if freeTVar (applyContextToType ctx t) <> [] then 
             raise SignatureCheckingFailure ("Type decl contains free var " ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in"  ^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) else 
-            typeCheckSignature (addToCtxR (TypeDef([n], t)) ctx) ss
+            typeCheckSignature (addToCtxR (TypeDef([n], t, ())) ctx) ss
         | TermTypeJudgment(n, t):: ss => if freeTVar (applyContextToType ctx t) <> [] 
             then raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) 
-            else typeCheckSignature (addToCtxR (TermTypeJ([n], (applyContextToType ctx t))) ctx) ss
+            else typeCheckSignature (addToCtxR (TermTypeJ([n], (applyContextToType ctx t), ())) ctx) ss
         | TermMacro(n, e) :: ss => 
-            typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizeType ctx (applyContextToExpr ctx e))) ctx) ss
+            typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizeType ctx (applyContextToExpr ctx e), ())) ctx) ss
         | TermDefinition(n, e) :: ss => 
             (checkType ctx (applyContextToExpr ctx e) (lookup ctx [n]); typeCheckSignature ctx ss)
         | DirectExpr e :: ss=> (synthesizeType ctx (applyContextToExpr ctx e); typeCheckSignature ctx ss))
