@@ -2,6 +2,8 @@ structure PreprocessingOperators =
 struct
     open Operators
 
+    val structureRefOp = Operators.parseOperatorStr "〇之〇" true false 710 []
+
       (* type t = T *)
     val typeMacroOp = Operators.parseOperatorStr "〇者〇也" false false 0 []
     (* e : T *)
@@ -14,8 +16,13 @@ struct
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
     (* // *)
     val commentOp = Operators.parseOperatorStr "注〇" false false 0 []
+    (* structures *)
+    val publicStructureOp = Operators.parseOperatorStr "有书〇曰〇" false false 0 []
+    val privateStructureOp = Operators.parseOperatorStr "吾书〇曰〇" false false 0 []
+    val openStructureOp = Operators.parseOperatorStr "观〇之书" false false 0 []
     
-    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, opDeclarationOp, commentOp]
+    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, opDeclarationOp, commentOp,
+    publicStructureOp, privateStructureOp, openStructureOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t
     exception PreprocessMalformedPrecedence of UTF8String.t
@@ -106,6 +113,7 @@ struct
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
     val typeLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 500 [1]
+    val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" true false 490 [1]
 
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 

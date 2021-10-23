@@ -12,7 +12,7 @@ struct
             val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST)
             val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST)
-            val typeCheckingAST = ExpressionConstructionPass.constructTypeCheckingAST(preprocessAST)
+            val typeCheckingAST = ExpressionConstructionPass.constructTypeCheckingASTTopLevel(preprocessAST)
             val _ = cprint 1 "----------------- Type Checking AST Constructed -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_typecheckingSig typeCheckingAST)
             val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"
@@ -43,7 +43,7 @@ struct
         handle TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s)
     | ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
       | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
-      |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "parse failed\n"; print s)
+      |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "ecp parse failed\n"; print s)
       |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
 
     

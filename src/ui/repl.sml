@@ -13,8 +13,22 @@ struct
         ""
     end
 
-    fun inputFile (filename : string) (options : ReplOptions.t): unit = 
-         (process (TextIO.inputAll (TextIO.openIn filename)) options; ())
+    fun computeLocalFilename (fileNameOfLib : string) (fileNameInLib : string) : string = 
+        OS.Path.concat (OS.Path.getParent(fileNameOfLib), fileNameInLib)
+
+    fun readFile (filename : string) : string =
+        let 
+        val content = (TextIO.inputAll (TextIO.openIn filename))
+        in if String.isSuffix "。豫库" filename
+           then (* rec process filecontent *)
+                (let val names = String.tokens (fn c => Char.isSpace c) content
+                in String.concatWith "\n" (map (fn x =>readFile 
+                (computeLocalFilename filename x)) names)
+                end)
+            else content
+        end
+    fun inputFile  (filename : string) (options : ReplOptions.t): unit = 
+         (process  (readFile (filename)) options; ())
 
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r[kvv] filename.yuyan\n"
 
@@ -23,7 +37,7 @@ struct
         let
         val args = CommandLine.arguments()
         in case args of
-             (cmd :: fname :: []) => (inputFile fname 
+             (cmd :: fname :: []) => (inputFile  fname
              {
                  verbose=(
                 if String.isSubstring "vv" cmd
@@ -38,7 +52,7 @@ struct
             end
 
      fun testMain()= 
-        inputFile "testfiles/test.yuyan" {
+        inputFile "testfiles/test。豫库" {
             verbose=2, usekmachine=true
         }
 

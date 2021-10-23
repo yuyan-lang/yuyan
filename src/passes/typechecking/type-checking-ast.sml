@@ -41,14 +41,18 @@ structure TypeCheckingAST = struct
                     | Unfold of Expr
                     | Fix of EVar * Expr
                     | StringLiteral of UTF8String.t
+                    | LetIn of Declaration list * Expr
 
 
-    datatype Declaration = 
+    and Declaration = 
                         TypeMacro of UTF8String.t * Type
                        | TermTypeJudgment of UTF8String.t * Type
                        | TermMacro of UTF8String.t * Expr
                        | TermDefinition of UTF8String.t * Expr
                        | DirectExpr of Expr
+                       | Structure of bool * UTF8String.t * Declaration list
+                       (*  public visible * name * signature *)
+                       | OpenStructure of UTF8String.t list
 
     type Signature = Declaration list
 

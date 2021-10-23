@@ -77,6 +77,10 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 | 设〇为〇 |  #define e = E | - |
 | 施〇乃为〇 | e = E | - |
 | 术〇交[左右无]序[零一二三四五六七八九]+也 | infix[lr ] op [0123456789]+ |  - |
+| 注〇| // comment | - |
+|有书〇曰〇| public struct { } | - |
+|吾书〇曰〇| private struct { } | - |
+ |观〇之书|  open S | - |
 | ------------- |-------------|  ---------- |
 | 有 | 1 | 420 |
 | 无 | 0 |  420 |
@@ -106,7 +110,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |遇〇者〇而〇| λ x: T. e| 520 |
 |循〇以〇| fix f. e| 510 |
 |受〇而〇| Λ t. e| 500 |
-
+|虑〇以成〇之道| let ... in ... end | 490 |
 
 ## Bugs
 
@@ -125,9 +129,13 @@ Some annoying issue I've encountered:
 
 ## Performance 
 
-Although the theoretical performance should be good (since type checking is optimized away and RT is using "byte code"), the actual performance investigation is still pending because the comparsion is not perfomed using the onchip hardware for testing natural numbers.
+Sadly with only an interpreted enviroment, 
+the performance is somewhat not as good as i expected, despite the fact that  the theoretical performance is good (since type checking is optimized away and RT is using "byte code").
 
-See `performance-investigation` for testing scripts.
+
+
+See `performance-investigation` for testing scripts (you can run quicksort test to 
+compare the performance with other languages).
 <!-- 
 My somewhat naive implementation of k machine is not optimal in the sense that substitutions are better implemented as functions and not as values. Add "k" to the first argument runs the K machine (which appears to be 
 faster) than the pK machine. -->

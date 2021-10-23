@@ -15,6 +15,40 @@ struct
     exception UnmatchedParenthesis
     exception UnmatchedStringLiteral
 
+    fun toUTF8StringChar(u : mixedchar) : UTF8String.t = 
+    let 
+        fun singleQuoteAround (u : UTF8String.t) = 
+            SpecialChars.leftSingleQuote :: u @ [SpecialChars.rightSingleQuote]
+        fun doubleQuoteAround (u : UTF8String.t) = 
+            SpecialChars.leftDoubleQuote :: u @ [SpecialChars.rightDoubleQuote]
+    in
+    case  u of 
+    UnparsedExpression s => singleQuoteAround (toUTF8String s)
+    | UnparsedDeclaration l => singleQuoteAround (List.concat ( (map (fn x => toUTF8String x @[SpecialChars.period]) l)))
+    | Name t => singleQuoteAround t
+    | Literal t => doubleQuoteAround t
+    (* | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"
+    | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
+    | SChar t => [t]
+    end
+    and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
+    fun toString(u : mixedstr) : string = UTF8String.toString (toUTF8String u)
+
+    exception StringNotPlain of mixedstr
+    fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
+        case u of 
+            SChar s => s
+            |_ => raise StringNotPlain [u]
+
+(* only name and plain schar's are plain *)
+    fun toPlainUTF8String (u : mixedstr) : UTF8String.t = 
+        case u of 
+            [] => []
+            | [Name s] => s
+            | _ => map toPlainUTF8Char u
+
+
+            
     fun isChar (c : mixedchar) (ck : UTF8Char.t) : bool=
         case c of 
             SChar c' => c' = ck
@@ -62,10 +96,13 @@ struct
         | _ => (raise InternalFailure s)
 
     fun processDeclaration (p : mixedstr) : mixedstr list = 
-            (separateBy SpecialChars.period (
-                if isChar (List.last p) SpecialChars.period
-                then stripTail p else p
-            ) [])
+    let val _ = (print ("processDeclaration "^ toString p ^"\n"))
+        val res = (separateBy SpecialChars.period (
+            if isChar (List.last p) SpecialChars.period
+            then stripTail p else p
+        ) [])
+        val _ = print ("result is of length " ^ Int.toString(length res))
+        in res end
 
     fun processSingleQuoted( p : mixedstr) : mixedchar = 
         if containsCharTopLevel p SpecialChars.period
@@ -127,36 +164,5 @@ struct
 
     fun makeDecl(u : UTF8String.t) : mixedstr list = processDeclaration (make u)
     
-    fun toUTF8StringChar(u : mixedchar) : UTF8String.t = 
-    let 
-        fun singleQuoteAround (u : UTF8String.t) = 
-            SpecialChars.leftSingleQuote :: u @ [SpecialChars.rightSingleQuote]
-        fun doubleQuoteAround (u : UTF8String.t) = 
-            SpecialChars.leftDoubleQuote :: u @ [SpecialChars.rightDoubleQuote]
-    in
-    case  u of 
-    UnparsedExpression s => singleQuoteAround (toUTF8String s)
-    | UnparsedDeclaration l => singleQuoteAround (List.concat ( (map (fn x => toUTF8String x @[SpecialChars.period]) l)))
-    | Name t => singleQuoteAround t
-    | Literal t => doubleQuoteAround t
-    (* | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"
-    | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
-    | SChar t => [t]
-    end
-    and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
-    fun toString(u : mixedstr) : string = UTF8String.toString (toUTF8String u)
-
-    exception StringNotPlain of mixedstr
-    fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
-        case u of 
-            SChar s => s
-            |_ => raise StringNotPlain [u]
-
-(* only name and plain schar's are plain *)
-    fun toPlainUTF8String (u : mixedstr) : UTF8String.t = 
-        case u of 
-            [] => []
-            | [Name s] => s
-            | _ => map toPlainUTF8Char u
       
 end

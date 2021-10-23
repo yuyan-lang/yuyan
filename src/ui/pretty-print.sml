@@ -53,7 +53,7 @@ struct
     in
     case  u of 
     UnparsedExpression s => "(UNPARSED(EXPR):" ^ show_mixedstr s ^ ")"
-    | UnparsedDeclaration l => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn x => show_mixedstr x) l) ^ "}"
+    | UnparsedDeclaration l => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn x => show_mixedstr x) l) ^ "}\n"
     | Name t => "(NAME:" ^ UTF8String.toString t ^ ")"
     | Literal t => "(LITERAL:" ^ UTF8String.toString t ^ ")"
     (* | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
@@ -61,7 +61,7 @@ struct
     | SChar t => UTF8Char.toString t
     end
     and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)
-    and show_mixedstrs(u : MixedStr.t list ) : string = String.concatWith ";\n" (map show_mixedstr u)
+    and show_mixedstrs(u : MixedStr.t list ) : string = "[" ^ String.concatWith ";\n" (map show_mixedstr u) ^ "]"
 
 fun show_parseopast x = let 
 open ParseAST in 
@@ -122,6 +122,9 @@ case x of
   | POpDeclaration(opName, assoc, pred) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
   ) ^ " " ^ UTF8String.toString opName ^ Int.toString pred
   | PDirectExpr(ebody) => "/* eval */ " ^ MixedStr.toString ebody ^ "/* end eval */ " 
+  | PStructure(v, name, ebody) => (if v then "public" else "private") ^
+    " structure " ^ UTF8String.toString name ^ " = " ^ show_mixedstrs ebody
+  | POpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
   | PComment(ebody) => "/* comment : -- */ "
   end
 fun show_preprocessaast x = let
@@ -181,9 +184,10 @@ ExprVar v => ss v
                     | Unfold (e) => "unfold("^  se e ^")"
                     | Fix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
                     | StringLiteral l => "\"" ^ ss l ^"\""
+                    | LetIn (s, e) => "(let " ^ show_typecheckingSig s ^ " in "^  se e  ^" end"
                 end
 
-fun show_typecheckingDecl x = let
+and show_typecheckingDecl x = let
 open TypeCheckingAST
 in case x of 
    TypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingType tbody
@@ -191,9 +195,12 @@ in case x of
   | TermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingExpr ebody
   | TermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingExpr  ebody
   | DirectExpr(ebody) => "/* eval */ " ^ show_typecheckingExpr ebody ^ "/* end eval */ " 
+  | Structure(v, name, ebody) => (if v then "public" else "private") ^
+    " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingSig ebody ^ "}"
+  | OpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
   end
 
-fun show_typecheckingSig x = let
+and show_typecheckingSig x = let
 in
           String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
 end

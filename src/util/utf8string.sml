@@ -55,5 +55,6 @@ structure UTF8String = struct
     fun removeAllWhitespace (s : string ) : string =
         String.implode (List.filter (fn c => not (Char.isSpace c)) (String.explode s))
 
+
 end
 
