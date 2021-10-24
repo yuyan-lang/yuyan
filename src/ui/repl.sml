@@ -55,5 +55,9 @@ struct
         inputFile "testfiles/test。豫库" {
             verbose=2, usekmachine=true
         }
+    fun test f = 
+        inputFile f {
+            verbose=2, usekmachine=true
+        }
 
 end

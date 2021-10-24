@@ -243,6 +243,8 @@ struct
         : TypeCheckingAST.Signature =
         (
         (* print ("\rRemaining: "^ Int.toString(List.length ast) ^ " statements"); *)
+        (* print ("constructOpAST on "^ PrettyPrint.show_preprocessaast ast ^ " with curSName = " ^ 
+        StructureName.toStringPlain curSName ^ " with addedOps = " ^ PrettyPrint.show_ecpops addedOps ^"\n\n"); *)
         case ast of 
             [] => []
             | (x :: xs) => 
@@ -266,7 +268,7 @@ struct
                         constructOpAST xs (curSName, curV, ((curSName@[sname], publicVisible, newOps):: addedOps)) end
                     | POpenStructure(sname) =>  (* open will be as if there is a local declaration with 
                     the same name as the public members of the structure *)
-                        constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname)))
+                        OpenStructure(sname) :: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname)))
                 )
                 end
         )

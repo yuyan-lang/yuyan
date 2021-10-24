@@ -1,0 +1,8 @@
+有书笔曰「
+设写为__BUILTIN_STRING_PRINT。
+设新行为__BUILTIN_STRING_NEWLINE于元。
+设续为__BUILTIN_STRING_APPEND。
+设〇续以〇为续。
+术〇续以〇交左序一零零零也。
+」。
+注：原先想起名为书，但和有书之书冲突，parser似乎有bug。

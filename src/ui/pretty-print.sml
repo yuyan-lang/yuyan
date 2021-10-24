@@ -48,6 +48,8 @@ struct
       fullname ^ assoc ^ pstr
         end
     end
+  fun show_ecpops (x) = String.concatWith ", \n" (map (fn (sname, _, opers) => 
+  StructureName.toStringPlain sname  ^ ": "^ String.concatWith ", "  (map show_op opers)) x)
 
  fun show_mixedstrchar(u : MixedStr.mixedchar) : string = 
     let 
@@ -222,7 +224,7 @@ in
 case x of 
   Context(curSName, curVis, m) => (if curVis then "public " else "private ") ^
   "structure " ^ StructureName.toStringPlain curSName ^ " {"  ^
-          String.concatWith ", " (map show_typecheckingpassmappping m) ^ "}\n"
+          String.concatWith ",\n " (map show_typecheckingpassmappping m) ^ "}\n"
 end
 
 fun show_pkvalue x =let

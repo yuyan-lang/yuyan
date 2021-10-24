@@ -2,14 +2,16 @@ structure StructureName =
 struct
 type structureName = UTF8String.t list
 type t = structureName
-val separatorChar = UTF8Char.fromString "之"
+(* val separatorChar = UTF8Char.fromString "之" *)
+val separatorChar = UTF8String.fromString "->"
     fun toString x = case x of
         [x] => x
-        | (x :: xs) => x@[separatorChar]@toString xs
+        | (x :: xs) => x@separatorChar@toString xs
 
     fun toStringPlain x = UTF8String.toString (toString x)
-    val topLevelName = [UTF8String.fromString "__BUILTIN_STRUCTURE_NAME_TOP_LEVEL"]
-    fun localName () = [UTF8String.fromString ("__BUILTIN_STRUCTURE_NAME_LOCAL_" ^ Int.toString(UID.next()))]
+    (* val topLevelName = [UTF8String.fromString "__BUILTIN_STRUCTURE_NAME_TOP_LEVEL"] *)
+    val topLevelName = [UTF8String.fromString "__TOPLEVEL__"]
+    fun localName () = [UTF8String.fromString ("__LOCAL__" ^ Int.toString(UID.next()))]
 
 
     fun isPrefix(s1 : structureName) (s2 : structureName) = 

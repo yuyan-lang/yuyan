@@ -52,7 +52,10 @@ Func(typeBool, typeBool),
         (fn (KBuiltinValue(KbvString s1)) => 
             KRet(KAbs(fn KBuiltinValue(KbvString s2) => 
                 KRet(KBuiltinValue(KbvString( s1 @ s2 )))))))
-    val printF= PFunc("__BUILTIN_PRINT",
+    val stringNewline= PFunc("__BUILTIN_STRING_NEWLINE",
+    Func(UnitType, typeStr) ,
+                (fn _ => KRet(KBuiltinValue(KbvString(UTF8String.fromString "\n")))))
+    val stringPrint= PFunc("__BUILTIN_STRING_PRINT",
         Func(typeStr, UnitType),
         (fn (KBuiltinValue(KbvString s1)) => 
             (print (UTF8String.toString s1); KRet(KUnit))
@@ -64,7 +67,8 @@ Func(typeBool, typeBool),
         intLessThan,
         intToString,
         stringAppend,
-        printF,
+        stringNewline,
+        stringPrint,
         boolIfThenElse,
         boolNot
     ]

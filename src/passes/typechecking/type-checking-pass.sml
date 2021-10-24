@@ -47,12 +47,18 @@ open TypeCheckingASTOps
             (* extract all bindings from bindings in order and put them into the current context *)
                     List.mapPartial (fn x => 
                     case x of TermTypeJ(name, t, u) => 
-                    if StructureName.isPrefix openName name
-                    then SOME (TermTypeJ(curName@(StructureName.stripPrefix openName name), t, u))
-                    else NONE   
+                    if StructureName.isPrefix (curName@openName) name   (* relative path *)
+                    then SOME (TermTypeJ(curName@(StructureName.stripPrefix (curName@openName) name), t, u))
+                    else 
+                    if StructureName.isPrefix openName name   (* absolute path *)
+                    then SOME (TermTypeJ((StructureName.stripPrefix openName name), t, u))
+                    else  NONE
                     | TypeDef(name, t, u) =>
-                    if StructureName.isPrefix openName name
-                    then SOME (TypeDef(curName@(StructureName.stripPrefix openName name), t, u))
+                    if StructureName.isPrefix (curName@openName) name (* relative path *)
+                    then SOME (TypeDef(curName@(StructureName.stripPrefix (curName@openName) name), t, u))
+                    else 
+                    if StructureName.isPrefix (openName) name (* absolute path *)
+                    then SOME (TypeDef((StructureName.stripPrefix openName name), t, u))
                     else NONE   
                     ) bindings @ bindings
                 )
@@ -269,7 +275,8 @@ open TypeCheckingASTOps
     and typeCheckSignature(ctx : context) (s : Signature) : context =
 
         (
-            if DEBUG then print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ^"\n") else (); 
+            if DEBUG then print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ^
+             " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
 
             case s of
             [] => ctx
