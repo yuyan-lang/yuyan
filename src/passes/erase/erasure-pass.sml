@@ -53,11 +53,12 @@ open TypeCheckingASTOps
 
 
     fun kseqSig (k1 : pkcomputation) (k2 : int * pkcomputation):pkcomputation= 
-    let val _ = print ("kseqSig called on k1 = " ^ PrettyPrint.show_pkcomputation k1 ^ 
+    let 
+    (* val _ = print ("kseqSig called on k1 = " ^ PrettyPrint.show_pkcomputation k1 ^ 
     " k2 = " ^ Int.toString(#1 k2) ^ " , " ^ 
-    PrettyPrint.show_pkcomputation (#2 k2) ^"\n");
+    PrettyPrint.show_pkcomputation (#2 k2) ^"\n"); *)
             val res = PKApp(PKRet(PKAbs(k2)), k1)
-            val _ = print ("kseqSig result is " ^ PrettyPrint.show_pkcomputation res ^"\n")
+            (* val _ = print ("kseqSig result is " ^ PrettyPrint.show_pkcomputation res ^"\n") *)
         in res end
     fun kseq (k1 : pkcomputation) (k2 : pkvalue -> pkcomputation):pkcomputation= 
     let val boundId = UID.next() in 
@@ -76,13 +77,77 @@ open TypeCheckingASTOps
 
     fun kabs (body :pkvalue -> pkcomputation) : pkvalue = 
         let val boundId = UID.next()
-        val _ = print "kabs called \n"
+        (* val _ = print "kabs called \n" *)
         in PKAbs(boundId, body(PKVar boundId)) end
 
-    fun eraseSynExpr  (ctx : kcontext)(e : Expr) : pkcomputation =
+
+
+    and eraseSigLazy (kont : (kcontext -> PersistentKMachine.pkcomputation) option) (ctx : kcontext) (s : Signature) : PersistentKMachine.pkcomputation =
+
+        (
+            (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
+            ; *)
+            case s of
+            [] => (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit))
+         | TypeMacro (n, t)::ss => eraseSigLazy kont (kaddToCtxR (TypeDef([n],t, ())) ctx) ss
+        | TermTypeJudgment(n, t):: ss => ( (* todo check all type decls are realized, otherwise 
+        erasure is going to fail when type checking passes *)
+            let val ((n', e'), ss') = lookAheadForValue ss n
+                val boundId = UID.next()
+                val (followingComp ) =
+                    (eraseSigLazy kont
+            (kaddToCtxR (TermTypeJ([n], (applyContextToType (eraseCtx ctx) t), PKVar(boundId))) ctx)
+             ss')
+            in 
+            (kseqSig (eraseCkExpr ctx (applyContextToExpr (eraseCtx ctx) e') 
+            (applyContextToType (eraseCtx ctx) t)
+            ) (boundId, followingComp)
+            )
+            end
+        )
+        | TermMacro(n, e) :: ss => 
+            let val comp1 =(eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
+            val boundId = UID.next()
+                val (followingComp ) = 
+            (eraseSigLazy kont  (addToCtxR (TermTypeJ([n], synthesizeType (eraseCtx ctx) (applyContextToExpr 
+                    (eraseCtx ctx) e), PKVar(boundId))) ctx)  ss)
+            in 
+            (kseqSig comp1 (boundId, followingComp))
+                    end
+        | DirectExpr e :: ss=> let
+            val (comp1) = (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
+            val (followingComp ) = (eraseSigLazy kont ctx ss)
+            in  if ss = [] andalso not (Option.isSome (kont)) then comp1 else
+            (kseqSig comp1 (UID.next(), followingComp) )
+            end
+        | Structure (vis, sName, decls) :: ss => 
+        (case ctx of 
+        Context(curName, curVis, bindings) => 
+            let val comp2f: kcontext -> PersistentKMachine.pkcomputation = fn Context(_, _, newBindings) => eraseSigLazy kont (Context(curName, curVis, newBindings)) ss
+                val (comp1 ) = eraseSigLazy (SOME comp2f) (Context(curName@[sName], vis, bindings)) decls
+
+                (* assume the typeChecking is behaving properly, 
+                no conflicting things will be added to the signature *)
+                (* sub context will be determined by whether the signature is private or not ? *)
+            in  comp1
+            end
+        )
+        | OpenStructure openName :: ss =>
+        (case ctx of 
+        Context(curName, curVis, bindings) => 
+            let val nextContext =  nextContextOfOpenStructure curName curVis bindings openName
+                (* assume the typeChecking is behaving properly, 
+                no conflicting things will be added to the signature *)
+                (* sub context will be determined by whether the signature is private or not ? *)
+            in eraseSigLazy kont nextContext ss
+            end
+        )
+        )
+
+    and eraseSynExpr  (ctx : kcontext)(e : Expr) : pkcomputation =
     (
         let 
-        val _ = print ("eraseSynExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+        (* val _ = print ("eraseSynExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
          val res = case e of
             ExprVar v => PKRet(klookup ctx v)
             | UnitExpr => PKRet(PKUnit)
@@ -113,21 +178,32 @@ open TypeCheckingASTOps
             (* | Fold e2 => Fold (substTypeInExpr tS x e2) *)
             | Unfold e2 => PKUnfold(eraseSynExpr ctx e2) 
             | StringLiteral s => PKRet(PKBuiltinValue(KbvString s))
+             | LetIn(decls, e) => (case ctx of 
+            Context(curName, curVis, bindings) => 
+                let val eF :kcontext -> PersistentKMachine.pkcomputation = fn (Context(localName,_, newBindings)) => 
+                                eraseSynExpr (Context(localName, curVis, newBindings)) e 
+                    val comp1 :pkcomputation = eraseSigLazy (SOME(eF)) (Context(curName@StructureName.localName(), curVis, bindings)) decls
+                    (* assume the typeChecking is behaving properly, 
+                    no conflicting things will be added to the signature *)
+                    (* sub context will be determined by whether the signature is private or not ? *)
+                in comp1
+                end
+            )
             (* (case synthesizeType ctx e2 of
                 Rho (tv, tb) => substTypeInType (Rho (tv, tb)) tv tb
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 ) *)
             (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
             | _ => raise Fail "ep86"
-        val _ = print ("eraseSynExpr result is " ^PrettyPrint.show_pkcomputation res ^
-        " on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+        (* val _ = print ("eraseSynExpr result is " ^PrettyPrint.show_pkcomputation res ^
+        " on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
         in res end)
 
     and eraseCkExpr  (ctx : kcontext) (e : Expr) (tt: Type) (* tt target type *) : pkcomputation =
         (let
-        val _ = print ("eraseCkExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ 
+        (* val _ = print ("eraseCkExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ 
         " against type" ^ PrettyPrint.show_typecheckingType tt ^
-        " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+        " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
         val res = case e of
             ExprVar v => PKRet(klookup ctx v)
             | UnitExpr => PKRet(PKUnit)
@@ -212,12 +288,21 @@ open TypeCheckingASTOps
             end *)
             | StringLiteral l => (case tt of 
                 BuiltinType(BIString) => PKRet(PKBuiltinValue(KbvString l)))
-
+            | LetIn(decls, e) => (case ctx of 
+            Context(curName, curVis, bindings) => 
+                let val eF :kcontext -> PersistentKMachine.pkcomputation = fn (Context(localName,_, newBindings)) => eraseCkExpr (Context(localName, curVis, newBindings)) e tt
+                    val comp1 :pkcomputation = eraseSigLazy (SOME(eF)) (Context(curName@StructureName.localName(), curVis, bindings)) decls
+                    (* assume the typeChecking is behaving properly, 
+                    no conflicting things will be added to the signature *)
+                    (* sub context will be determined by whether the signature is private or not ? *)
+                in comp1
+                end
+            )
             (* `checkType ((ev , tt):: ctx) e tt *)
 
-        val _ = print ("eraseCkExpr result is " ^ PrettyPrint.show_pkcomputation res ^ "eraseCkExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ 
+        (* val _ = print ("eraseCkExpr result is " ^ PrettyPrint.show_pkcomputation res ^ "eraseCkExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ 
         " against type" ^ PrettyPrint.show_typecheckingType tt ^
-        " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+        " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
         in res end
         )
         handle TypeCheckingFailure s =>
@@ -227,7 +312,7 @@ open TypeCheckingASTOps
             ^ "\n [INTERNAL] THIS IS AN INTERNAL ERROR OF THE COMPILER, please file a bug report."
              )
 
-    fun lookAheadForValue (s : Signature) (ename : UTF8String.t) : (UTF8String.t * Expr) * Signature = 
+    and lookAheadForValue (s : Signature) (ename : UTF8String.t) : (UTF8String.t * Expr) * Signature = 
         case s of
          TermDefinition(n, e) :: ss => if n = ename then ((n, e), ss)
                                        else 
@@ -243,57 +328,7 @@ open TypeCheckingASTOps
 untyped cases *)
 (* the lazy comes from the fact that we used lambdas during kcomputation construction *)
 (* we can force evaluation by persisting it back and forth *)
-    fun eraseSigLazy (kont : (kcontext -> PersistentKMachine.pkcomputation) option) (ctx : kcontext) (s : Signature) : PersistentKMachine.pkcomputation =
-
-        (
-            print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
-            ;
-            case s of
-            [] => (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit))
-         | TypeMacro (n, t)::ss => eraseSigLazy kont (kaddToCtxR (TypeDef([n],t, ())) ctx) ss
-        | TermTypeJudgment(n, t):: ss => ( (* todo check all type decls are realized, otherwise 
-        erasure is going to fail when type checking passes *)
-            let val ((n', e'), ss') = lookAheadForValue ss n
-                val boundId = UID.next()
-                val (followingComp ) =
-                    (eraseSigLazy kont
-            (kaddToCtxR (TermTypeJ([n], (applyContextToType (eraseCtx ctx) t), PKVar(boundId))) ctx)
-             ss')
-            in 
-            (kseqSig (eraseCkExpr ctx (applyContextToExpr (eraseCtx ctx) e') 
-            (applyContextToType (eraseCtx ctx) t)
-            ) (boundId, followingComp)
-            )
-            end
-        )
-        | TermMacro(n, e) :: ss => 
-            let val comp1 =(eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
-            val boundId = UID.next()
-                val (followingComp ) = 
-            (eraseSigLazy kont  (addToCtxR (TermTypeJ([n], synthesizeType (eraseCtx ctx) (applyContextToExpr 
-                    (eraseCtx ctx) e), PKVar(boundId))) ctx)  ss)
-            in 
-            (kseqSig comp1 (boundId, followingComp))
-                    end
-        | DirectExpr e :: ss=> let
-            val (comp1) = (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
-            val (followingComp ) = (eraseSigLazy kont ctx ss)
-            in  if ss = [] andalso not (Option.isSome (kont)) then comp1 else
-            (kseqSig comp1 (UID.next(), followingComp) )
-            end
-        | Structure (vis, sName, decls) :: ss => 
-        (case ctx of 
-        Context(curName, curVis, bindings) => 
-            let val comp2f = fn Context(_, _, newBindings) => eraseSigLazy kont (Context(curName, curVis, newBindings)) ss
-                val (comp1 ) = eraseSigLazy (SOME comp2f) (Context(curName@[sName], vis, bindings)) decls
-
-                (* assume the typeChecking is behaving properly, 
-                no conflicting things will be added to the signature *)
-                (* sub context will be determined by whether the signature is private or not ? *)
-            in  comp1
-            end
-        )
-        )
+    
 
 
         

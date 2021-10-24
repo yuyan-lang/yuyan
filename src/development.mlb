@@ -28,6 +28,7 @@ local
         operators/builtin/declaration-ops.sml
         operators/builtin/builtin.sml
         
+        passes/preprocess/structure-name.sml
 
         passes/typechecking/type-checking-ast.sml
         passes/preprocess/preprocessing-ast.sml
@@ -40,11 +41,13 @@ local
         passes/typechecking/type-checking-ast-ops.sml
         ui/pretty-print.sml
         parser/declaration-parser.sml
+        passes/preprocess/preprocessing-operators.sml
         passes/preprocess/preprocessing-pass.sml
         passes/typechecking/type-checking-pass.sml
+        execution/k-machine-ops.sml
+        passes/erase/erasure-pass.sml
         prelude-libraries/prelude-functions.sml
         passes/typechecking/type-checking-entry.sml
-        passes/erase/erasure-pass.sml
         passes/erase/erasure-entry.sml
 
         parser/parser-options.sig

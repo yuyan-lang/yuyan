@@ -96,12 +96,13 @@ struct
         | _ => (raise InternalFailure s)
 
     fun processDeclaration (p : mixedstr) : mixedstr list = 
-    let val _ = (print ("processDeclaration "^ toString p ^"\n"))
+    let 
+    (* val _ = (print ("processDeclaration "^ toString p ^"\n")) *)
         val res = (separateBy SpecialChars.period (
             if isChar (List.last p) SpecialChars.period
             then stripTail p else p
         ) [])
-        val _ = print ("result is of length " ^ Int.toString(length res))
+        (* val _ = print ("result is of length " ^ Int.toString(length res)) *)
         in res end
 
     fun processSingleQuoted( p : mixedstr) : mixedchar = 

@@ -339,7 +339,7 @@ struct
 
     and preprocessAST (s : MixedStr.t list) : PreprocessingAST.t = 
     (
-        print ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n");
+        (* print ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n"); *)
     (* case s of  *)
          (* [MixedStr.UnparsedDeclaration l]  =>  *)
          map parseJudgment s

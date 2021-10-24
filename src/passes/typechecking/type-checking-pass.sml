@@ -2,8 +2,8 @@ structure TypeCheckingPass = struct
 open TypeCheckingAST
 open TypeCheckingASTOps
 
-    val DEBUG = true
-    (* val DEBUG = false *)
+    (* val DEBUG = true *)
+    val DEBUG = false
 
 
     (*  !!! we assume the context is well formed in the sense that 
@@ -40,6 +40,23 @@ open TypeCheckingASTOps
             raise TypeCheckingFailure (s1 ^ ", \n " ^s2)
             )
         
+    fun nextContextOfOpenStructure  (curName : StructureName.t) (curVis : bool) (bindings : 'a gmapping list) 
+    (openName : StructureName.t)=
+
+     Context(curName, curVis, 
+            (* extract all bindings from bindings in order and put them into the current context *)
+                    List.mapPartial (fn x => 
+                    case x of TermTypeJ(name, t, u) => 
+                    if StructureName.isPrefix openName name
+                    then SOME (TermTypeJ(curName@(StructureName.stripPrefix openName name), t, u))
+                    else NONE   
+                    | TypeDef(name, t, u) =>
+                    if StructureName.isPrefix openName name
+                    then SOME (TypeDef(curName@(StructureName.stripPrefix openName name), t, u))
+                    else NONE   
+                    ) bindings @ bindings
+                )
+
         
 
     fun applyContextTo (ctx : context) (subst : Type -> StructureName.t -> 'a -> 'a) (t : 'a) : 'a = 
@@ -274,6 +291,16 @@ open TypeCheckingASTOps
                 no conflicting things will be added to the signature *)
                 (* sub context will be determined by whether the signature is private or not ? *)
             in typeCheckSignature (Context(curName, curVis, newBindings)) ss
+            end
+        )
+        | OpenStructure openName :: ss =>
+        (case ctx of 
+        Context(curName, curVis, bindings) => 
+            let val nextContext = nextContextOfOpenStructure curName curVis bindings openName
+                (* assume the typeChecking is behaving properly, 
+                no conflicting things will be added to the signature *)
+                (* sub context will be determined by whether the signature is private or not ? *)
+            in typeCheckSignature nextContext ss
             end
         )
         | DirectExpr e :: ss=> (synthesizeType ctx (applyContextToExpr ctx e); typeCheckSignature ctx ss)

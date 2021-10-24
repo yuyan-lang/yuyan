@@ -22,6 +22,7 @@ val separatorChar = UTF8Char.fromString "之"
             | ([], _) => true
             | _ => false
 
+
     fun stripPrefix(s1 : structureName) (s2 : structureName) = 
 
         if List.length s1 > List.length s2 then 
