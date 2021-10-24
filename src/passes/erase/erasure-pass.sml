@@ -5,31 +5,32 @@ struct
     open TypeCheckingAST
 open TypeCheckingASTOps
     open KMachine
+    open PersistentKMachine
     open TypeCheckingPass
 
 
-    type kmapping = kvalue gmapping
-    type kcontext = kvalue gcontext
+    type kmapping = pkvalue gmapping
+    type kcontext = pkvalue gcontext
   fun kaddToCtxR (m : kmapping ) (c : kcontext)= appendRelativeMappingToCurrentContext m c(* R for relative *)
     val kaddToCtxRL = appendRelativeMappingsToCurrentContext (* L for list *)
     
-    fun eraseMapping (m : kvalue gmapping) : unit gmapping = 
+    fun eraseMapping (m : pkvalue gmapping) : unit gmapping = 
     case m  of
         TermTypeJ(e, t, v) => TermTypeJ (e, t, ())
-        | TypeDef(t, t2, v) => TermTypeJ (t, t2, ())
+        | TypeDef(t, t2, v) => TypeDef (t, t2, ())
 
     fun eraseCtx (ctx : kcontext) : unit gcontext = 
         case ctx of 
             Context(n, v, l) => Context(n, v,map eraseMapping l)
     val n = eraseCtx
 
-    fun klookupMapping (ctx : kmapping list) (n : StructureName.t) : kvalue= 
+    fun klookupMapping (ctx : kmapping list) (n : StructureName.t) : pkvalue= 
         case ctx of 
             [] => raise LookupNotFound ("name " ^ StructureName.toStringPlain n ^ " not found in context")
             | TermTypeJ(n1, t1, u)::cs => if n1 = n then u else klookupMapping cs n
             | TypeDef(_) :: cs => klookupMapping cs n
 
-    fun klookup (Context(curSName, _, ctx) : kcontext) (n : StructureName.t) : kvalue= 
+    fun klookup (Context(curSName, _, ctx) : kcontext) (n : StructureName.t) : pkvalue= 
         klookupMapping ctx n
         handle LookupNotFound s1 => 
             (klookupMapping ctx (curSName@n) (* try both absolute and relative path *)
@@ -51,7 +52,19 @@ open TypeCheckingASTOps
              (n1, _, t1)::cs => if n1 = l then 0 else klookupLabel3 cs l+1
 
 
-    fun kseq (k1 : kcomputation) (k2 : kvalue -> kcomputation):kcomputation= KApp(KRet(KAbs(k2)), k1)
+    fun kseqSig (k1 : pkcomputation) (k2 : int * pkcomputation):pkcomputation= 
+    let val _ = print ("kseqSig called on k1 = " ^ PrettyPrint.show_pkcomputation k1 ^ 
+    " k2 = " ^ Int.toString(#1 k2) ^ " , " ^ 
+    PrettyPrint.show_pkcomputation (#2 k2) ^"\n");
+            val res = PKApp(PKRet(PKAbs(k2)), k1)
+            val _ = print ("kseqSig result is " ^ PrettyPrint.show_pkcomputation res ^"\n")
+        in res end
+    fun kseq (k1 : pkcomputation) (k2 : pkvalue -> pkcomputation):pkcomputation= 
+    let val boundId = UID.next() in 
+        kseqSig k1 (boundId, k2(PKVar(boundId))) end
+        
+    (* fun kseqSig (k1 : kcomputation) (k2 : (kvalue * kcontext) -> (kcomputation * kcontext)):kcomputation = 
+    KApp(KRet(KAbs(fn (kv, kc) => (#1 (k2 v c)) )), k1) *)
 
     fun typeUnify (a : Type list) : Type =
         case a of
@@ -61,28 +74,35 @@ open TypeCheckingASTOps
             else raise TypeCheckingFailure ("Type unify failed")
 
 
-    fun eraseSynExpr  (ctx : kcontext)(e : Expr) : kcomputation =
+    fun kabs (body :pkvalue -> pkcomputation) : pkvalue = 
+        let val boundId = UID.next()
+        val _ = print "kabs called \n"
+        in PKAbs(boundId, body(PKVar boundId)) end
+
+    fun eraseSynExpr  (ctx : kcontext)(e : Expr) : pkcomputation =
     (
-         case e of
-            ExprVar v => KRet(klookup ctx v)
-            | UnitExpr => KRet(KUnit)
+        let 
+        val _ = print ("eraseSynExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+         val res = case e of
+            ExprVar v => PKRet(klookup ctx v)
+            | UnitExpr => PKRet(PKUnit)
             | Proj(e, l) => (case synthesizeType (n ctx) e of
-                    Prod ls => KProj(eraseSynExpr ctx e,
+                    Prod ls => PKProj(eraseSynExpr ctx e,
                         klookupLabel ls l)
             )
             | Case(e,cases) => (case (synthesizeType (n ctx) e) of
-                    Sum ls =>
-                     KCases ((eraseSynExpr ctx e),(List.tabulate(List.length ls, 
+                    Sum ls => let val boundId = UID.next() in 
+                     PKCases ((eraseSynExpr ctx e),(List.tabulate(List.length ls, 
                     fn index => let val  (label,t) = List.nth(ls, index)
                                     val caseIndex = klookupLabel3 cases label
                                     val (_, ev, e) = List.nth(cases, caseIndex)
-                                in (fn v => eraseSynExpr 
-                                     (kaddToCtxR (TermTypeJ([ev], t, v)) ctx) e 
-                                ) end))))
-            | LamWithType (t, ev, e) => KRet(KAbs(fn v => eraseSynExpr (kaddToCtxR (TermTypeJ([ev], t, v)) ctx) e))
+                                in (boundId, eraseSynExpr 
+                                     (kaddToCtxR (TermTypeJ([ev], t, PKVar boundId)) ctx) e 
+                                ) end))) end)
+            | LamWithType (t, ev, e) => PKRet(kabs(fn v => eraseSynExpr (kaddToCtxR (TermTypeJ([ev], t, v)) ctx) e))
             | App (e1, e2) => (case synthesizeType (n ctx) e1
                 of Func (t1, t2) => 
-                KApp(eraseSynExpr ctx e1, eraseCkExpr ctx e2 t1))
+                PKApp(eraseSynExpr ctx e1, eraseCkExpr ctx e2 t1))
             | TAbs (tv, e2) => eraseSynExpr ctx e2
             | TApp (e2, t) => eraseSynExpr ctx e2
             | Open (e1, (tv, ev, e2)) => (case synthesizeType (n ctx) e1 of
@@ -91,59 +111,66 @@ open TypeCheckingASTOps
                 eraseSynExpr (kaddToCtxR (TermTypeJ([ev], substTypeInType (TypeVar [tv]) [tv'] tb, v)) ctx) e2 
                     ))
             (* | Fold e2 => Fold (substTypeInExpr tS x e2) *)
-            | Unfold e2 => KUnfold(eraseSynExpr ctx e2) 
-            | StringLiteral s => KRet(KBuiltinValue(KbvString s))
+            | Unfold e2 => PKUnfold(eraseSynExpr ctx e2) 
+            | StringLiteral s => PKRet(PKBuiltinValue(KbvString s))
             (* (case synthesizeType ctx e2 of
                 Rho (tv, tb) => substTypeInType (Rho (tv, tb)) tv tb
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 ) *)
             (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
             | _ => raise Fail "ep86"
-            )
+        val _ = print ("eraseSynExpr result is " ^PrettyPrint.show_pkcomputation res ^
+        " on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+        in res end)
 
-    and eraseCkExpr  (ctx : kcontext) (e : Expr) (tt: Type) (* tt target type *) : kcomputation =
-        (case e of
-            ExprVar v => KRet(klookup ctx v)
-            | UnitExpr => KRet(KUnit)
+    and eraseCkExpr  (ctx : kcontext) (e : Expr) (tt: Type) (* tt target type *) : pkcomputation =
+        (let
+        val _ = print ("eraseCkExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ 
+        " against type" ^ PrettyPrint.show_typecheckingType tt ^
+        " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+        val res = case e of
+            ExprVar v => PKRet(klookup ctx v)
+            | UnitExpr => PKRet(PKUnit)
             | Tuple l => (case tt of 
                 Prod ls => 
                     let fun go i values = 
                         if i = List.length l
-                        then KRet(KTuple(values))
+                        then PKRet(PKTuple(values))
                         else kseq (eraseCkExpr ctx (List.nth(l, i)) (#2 (List.nth(ls, i)))) 
                                     (fn v => go (i+1) (values@[v]))
                     in go 0 [] end
                 )
             | Proj(e, l) => eraseSynExpr ctx (Proj(e,l))
             | Inj (l, e) => (case tt of
-                Sum ls => kseq (eraseCkExpr ctx e (lookupLabel ls l)) (fn v => KRet(KInj(l, klookupLabel ls l, v)))
+                Sum ls => kseq (eraseCkExpr ctx e (lookupLabel ls l)) (fn v => PKRet(PKInj(l, klookupLabel ls l, v)))
             )
             | Case(e,cases) => (case (synthesizeType (n ctx) e) of
                     Sum ls => 
-                    KCases ((eraseSynExpr ctx e),(List.tabulate(List.length ls, 
+                    PKCases ((eraseSynExpr ctx e),(List.tabulate(List.length ls, 
                     fn index => let val  (label,t) = List.nth(ls, index)
                                     val caseIndex = klookupLabel3 cases label
+                                    val boundId = UID.next()
                                     val (_, ev, e) = List.nth(cases, caseIndex)
-                                in (fn v => eraseCkExpr (
-                                     kaddToCtxR (TermTypeJ([ev], t, v)) ctx) e tt
+                                in (boundId, eraseCkExpr (
+                                     kaddToCtxR (TermTypeJ([ev], t, PKVar(boundId))) ctx) e tt
                                 ) end)))
             )
             | Lam(ev, eb) => (case tt of
                 Func(t1,t2) => 
-                KRet(KAbs(fn v => 
+                PKRet(kabs(fn v => 
                     eraseCkExpr (kaddToCtxR (TermTypeJ([ev], t1, v))ctx) eb t2
                 ))
                 )
             | LamWithType (t, ev, eb) => (case tt of
                 Func(t1,t2) => (
-                    KRet(KAbs(fn v => 
+                    PKRet(kabs(fn v => 
                         eraseCkExpr ( kaddToCtxR (TermTypeJ([ev], t1, v))ctx) eb t2
                     ))
                 )
             )
             | App (e1, e2) => (case synthesizeType (n ctx) e1
                 of Func (t1, t2) => 
-                KApp(eraseSynExpr ctx e1, eraseCkExpr ctx e2 t1)
+                PKApp(eraseSynExpr ctx e1, eraseCkExpr ctx e2 t1)
             )
             | TAbs (tv, e2) => (case tt of
                 Forall (tv', tb) => 
@@ -165,14 +192,16 @@ open TypeCheckingASTOps
             | Fold e2 => (case tt
                 of 
                 Rho (tv ,tb) => kseq (eraseCkExpr ctx e2 (substTypeInType (Rho(tv, tb)) [tv] tb)) 
-                        (fn v => KRet(KFold v))
+                        (fn v => PKRet(PKFold v))
                     )
-            | Unfold e2 => KUnfold (eraseSynExpr ctx e2)
+            | Unfold e2 => PKUnfold (eraseSynExpr ctx e2)
             (* (case synthesizeType ctx e2 of
                 Rho (tv, tb) => asserTypeEquiv tt (substTypeInType (Rho (tv, tb)) tv tb)
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 ) *)
-            | Fix (ev, e)=>  KFix(fn v => eraseCkExpr ( kaddToCtxR (TermTypeJ([ev], tt, v)) ctx) e tt)
+            | Fix (ev, e)=>  let val boundID = UID.next() in
+            PKFix(boundID, eraseCkExpr ( kaddToCtxR (TermTypeJ([ev], tt, PKVar boundID)) ctx) e tt)
+            end
             (* let
              fix F = ((\y. f (y y)) (\y. f (y y)))
              (this one causes infinite look)
@@ -182,10 +211,21 @@ open TypeCheckingASTOps
                 in appVV lamydotfyy lamydotfyy
             end *)
             | StringLiteral l => (case tt of 
-                BuiltinType(BIString) => KRet(KBuiltinValue(KbvString l)))
+                BuiltinType(BIString) => PKRet(PKBuiltinValue(KbvString l)))
 
             (* `checkType ((ev , tt):: ctx) e tt *)
+
+        val _ = print ("eraseCkExpr result is " ^ PrettyPrint.show_pkcomputation res ^ "eraseCkExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ 
+        " against type" ^ PrettyPrint.show_typecheckingType tt ^
+        " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n");
+        in res end
         )
+        handle TypeCheckingFailure s =>
+            raise TypeCheckingFailure (s ^ "\n when checking the expr " ^ PrettyPrint.show_typecheckingExpr e ^ 
+                " against type " ^ PrettyPrint.show_typecheckingType tt
+            ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx 
+            ^ "\n [INTERNAL] THIS IS AN INTERNAL ERROR OF THE COMPILER, please file a bug report."
+             )
 
     fun lookAheadForValue (s : Signature) (ename : UTF8String.t) : (UTF8String.t * Expr) * Signature = 
         case s of
@@ -203,32 +243,60 @@ open TypeCheckingASTOps
 untyped cases *)
 (* the lazy comes from the fact that we used lambdas during kcomputation construction *)
 (* we can force evaluation by persisting it back and forth *)
-    fun eraseSigLazy   (ctx : kcontext) (s : Signature) : KMachine.kcomputation =
+    fun eraseSigLazy  (ctx : kcontext) (s : Signature) : PersistentKMachine.pkcomputation * kcontext  =
 
         (
-            (* print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ) *)
-            (* ; *)
+            print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
+            ;
             case s of
-            [] => (KRet(KUnit))
+            [] => ((PKRet(PKUnit)), ctx)
          | TypeMacro (n, t)::ss => eraseSigLazy (kaddToCtxR (TypeDef([n],t, ())) ctx) ss
         | TermTypeJudgment(n, t):: ss => ( (* todo check all type decls are realized, otherwise 
         erasure is going to fail when type checking passes *)
             let val ((n', e'), ss') = lookAheadForValue ss n
+                val boundId = UID.next()
+                val (followingComp, finalCtx) =
+                    (eraseSigLazy 
+            (kaddToCtxR (TermTypeJ([n], (applyContextToType (eraseCtx ctx) t), PKVar(boundId))) ctx)
+             ss')
             in 
-            kseq (eraseCkExpr ctx (applyContextToExpr (eraseCtx ctx) e') t) 
-                (fn v => eraseSigLazy 
-            (kaddToCtxR (TermTypeJ([n], (applyContextToType (eraseCtx ctx) t), v)) ctx)  ss')
+            (kseqSig (eraseCkExpr ctx (applyContextToExpr (eraseCtx ctx) e') 
+            (applyContextToType (eraseCtx ctx) t)
+            ) (boundId, followingComp), 
+            finalCtx)
             end
         )
         | TermMacro(n, e) :: ss => 
-            kseq (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e)) 
-            (fn v => eraseSigLazy  (addToCtxR (TermTypeJ([n], synthesizeType (eraseCtx ctx) (applyContextToExpr 
-                    (eraseCtx ctx) e), v)) ctx)  ss)
+            let val boundId = UID.next()
+                val (followingComp, finalCtx) = 
+            (eraseSigLazy  (addToCtxR (TermTypeJ([n], synthesizeType (eraseCtx ctx) (applyContextToExpr 
+                    (eraseCtx ctx) e), PKVar(boundId))) ctx)  ss)
+            in 
+            (kseqSig (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e)) (boundId, followingComp), finalCtx)
+                    end
         | [DirectExpr e] =>  (* special treatment on ending direct exprs *)
-            (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e)) 
-        | DirectExpr e :: ss=> 
-            kseq (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e)) (fn _ => eraseSigLazy ctx ss)
+            (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e), 
+            ctx
+            ) 
+        | DirectExpr e :: ss=> let
+            val (comp1) = (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
+            val (followingComp, finalCtx) = (eraseSigLazy ctx ss)
+            in 
+            (kseqSig comp1 (UID.next(), followingComp), finalCtx)
+            end
+        | Structure (vis, sName, decls) :: ss => 
+        (case ctx of 
+        Context(curName, curVis, bindings) => 
+            let val (comp1, Context(_, _, newBindings)) = eraseSigLazy (Context(curName@[sName], vis, bindings)) decls
+                val (comp2, finalCtx) = eraseSigLazy (Context(curName, curVis, newBindings)) ss
+                (* assume the typeChecking is behaving properly, 
+                no conflicting things will be added to the signature *)
+                (* sub context will be determined by whether the signature is private or not ? *)
+            in  (kseqSig comp1 (UID.next(), comp2), finalCtx)
+            end
+        )
         )
         
+    
 
 end

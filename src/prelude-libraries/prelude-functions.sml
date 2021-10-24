@@ -2,6 +2,7 @@ structure PreludeFunctions = struct
 
     open TypeCheckingAST
     open KMachine
+    open PersistentKMachine
     val label1 = UTF8String.fromString "__BUILTIN_1"
     val label2 = UTF8String.fromString "__BUILTIN_2"
     val typeVarA = UTF8String.fromString "__BUILTIN_TYPE_VAR_A"
@@ -78,7 +79,7 @@ Func(typeBool, typeBool),
     TypeCheckingPass.Context (StructureName.topLevelName, true, 
         map (fn (x, t) => TypeCheckingPass.TypeDef([UTF8String.fromString x], t, ())) preludeTypes @
         map (fn PFunc(name, t, impl) => 
-        TypeCheckingPass.TermTypeJ([UTF8String.fromString name], t, KBuiltinValue(KbvFunc(UTF8String.fromString name, impl))
+        TypeCheckingPass.TermTypeJ([UTF8String.fromString name], t, PKBuiltinValue(KbvFunc(UTF8String.fromString name, impl))
         )) allPreludeFuncs)
     val typeCheckingPrelude = ErasurePass.eraseCtx erasurePrelude
 

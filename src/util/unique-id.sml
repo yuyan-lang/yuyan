@@ -6,7 +6,8 @@ struct
     let 
         val _ = counter := !counter + 1
     in 
-        !counter
+        (print("UID.next is " ^ Int.toString(!counter) ^ " \n");
+        !counter)
     end
 
 end

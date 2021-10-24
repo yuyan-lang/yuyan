@@ -8,7 +8,7 @@ Everything is subject to change
 
 ## Features
 
-This language is a simple functional programming languages with 
+This language is a simple functional programming language with 
 - function types
 - sum types
 - product types
@@ -18,7 +18,7 @@ This language is a simple functional programming languages with
 
 ## Features to be implemented
 
-I find the following feature to be usually desirable 
+I find the following features to be usually desirable 
 - Nested expression with declarations,
 (I tried to implement this, but the parser needs a lot of rework, so pending for now)
 

@@ -2,8 +2,8 @@ structure TypeCheckingPass = struct
 open TypeCheckingAST
 open TypeCheckingASTOps
 
-    (* val DEBUG = true *)
-    val DEBUG = false
+    val DEBUG = true
+    (* val DEBUG = false *)
 
 
     (*  !!! we assume the context is well formed in the sense that 
@@ -43,27 +43,35 @@ open TypeCheckingASTOps
         
 
     fun applyContextTo (ctx : context) (subst : Type -> StructureName.t -> 'a -> 'a) (t : 'a) : 'a = 
+    (
+        (* print ("apply ctx to gen called"  ^ Int.toString(case ctx of (Context(_, _, l)) => length l)^ "\n") ; *)
         case ctx of Context(curName, curVis, mapl) =>
         (case mapl of
             [] => t
-            | TypeDef(n1, t1, u)::cs => applyContextTo (Context(curName, curVis, cs)) subst 
+            | TypeDef(n1, t1, u)::cs => (
+                (* print "HHHH"; *)
+                applyContextTo (Context(curName, curVis, cs)) subst 
             ((if StructureName.isPrefix curName n1 then 
             (* the current subsituting name is a prefix! we need also to perform local subsitution *)
             (subst t1 (StructureName.stripPrefix curName n1)) else (fn x => x))
-                (subst t1 n1 t))
+                (subst t1 n1 t)))
             | TermTypeJ(_) :: cs => applyContextTo (Context(curName, curVis, cs)) subst t)
             (* to get the semantics correct, context need to be applied in reverse order *)
             (* no reverse function is called because context is in reverse order *)
+    )
     fun applyContextToType (ctx : context) (t : Type) : Type = 
+    (
+        (* print "apply ctx to type called\n"; *)
         applyContextTo ctx (fn t => fn  l => fn t1 => 
         (let 
-        (* val _ = 
+        val _ = 
         if DEBUG then  print (" apply context subsituting "^ PrettyPrint.show_typecheckingType t  
-        ^ " for " ^ StructureName.toString l ^ " in " ^ PrettyPrint.show_typecheckingType t1 ^  "\n") else () *)
+        ^ " for " ^ StructureName.toStringPlain l ^ " in " ^ PrettyPrint.show_typecheckingType t1 ^  "\n") else ()
             val res = substTypeInType t l t1
-            (* val _ =if DEBUG then print (" res is " ^ PrettyPrint.show_typecheckingType res ^ "\n") else () *)
+            val _ =if DEBUG then print (" res is " ^ PrettyPrint.show_typecheckingType res ^ "\n") else ()
             in res end
             )) t
+    )
     fun applyContextToExpr (ctx : context) (e : Expr) : Expr = 
         applyContextTo ctx (substTypeInExpr) e
     fun applyContextToSignature (ctx : context) (s : Signature) : Signature = 
@@ -91,8 +99,7 @@ open TypeCheckingASTOps
     fun synthesizeType (ctx : context)(e : Expr) : Type =
     (
          let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingExpr e ^ "\n") else ()
-         in 
-         case e of
+         val res = case e of
             ExprVar v => lookup ctx v
             | UnitExpr => UnitType
             | Proj(e, l) => (case synthesizeType ctx e of
@@ -130,8 +137,22 @@ open TypeCheckingASTOps
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
             | StringLiteral l => BuiltinType(BIString)
+
+            | LetIn(decls, e) => (case ctx of 
+        Context(curName, curVis, bindings) => 
+            let val Context(localName, _, newBindings) = typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls
+                (* assume the typeChecking is behaving properly, 
+                no conflicting things will be added to the signature *)
+                (* sub context will be determined by whether the signature is private or not ? *)
+            in synthesizeType (Context(localName,curVis, newBindings)) e 
+            end
+        )
             (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
             | _ => raise TypeCheckingFailure "Expression does type support type synthesis, please specify type"
+
+            val _ = if DEBUG then print ( "synthesize got result " ^ PrettyPrint.show_typecheckingType res^
+            " whensynthesizing the type for " ^ PrettyPrint.show_typecheckingExpr e ^ "\n") else ()
+            in res
             end )
         handle TypeCheckingFailure s => 
             raise TypeCheckingFailure (s ^ "\n when synthesizing the type for " ^ PrettyPrint.show_typecheckingExpr e 
@@ -143,8 +164,7 @@ open TypeCheckingASTOps
         (let 
             val _ = if DEBUG then  print(  "checking the expr " ^ PrettyPrint.show_typecheckingExpr e ^ 
                 " against type " ^ PrettyPrint.show_typecheckingType tt ^ "\n") else ()
-        in
-            
+            val res = 
             case e of
             ExprVar v => if typeEquiv [] (synthesizeType ctx e) tt = false 
                         then raise TypeCheckingFailure ("var type mismatch var is " ^ StructureName.toStringPlain v 
@@ -211,19 +231,31 @@ open TypeCheckingASTOps
                 )
             | Fix (ev, e)=> checkType (addToCtxR (TermTypeJ([ev] , tt, ())) ctx) e tt
             | StringLiteral _ => asserTypeEquiv (BuiltinType(BIString)) tt
-        end )
+            | LetIn(decls, e) => (case ctx of 
+        Context(curName, curVis, bindings) => 
+            let val Context(localName, _, newBindings) = typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls
+                (* assume the typeChecking is behaving properly, 
+                no conflicting things will be added to the signature *)
+                (* sub context will be determined by whether the signature is private or not ? *)
+            in checkType (Context(localName,curVis, newBindings)) e tt
+            end
+        )
+        in res
+        end 
+)
             handle TypeCheckingFailure s =>
             raise TypeCheckingFailure (s ^ "\n when checking the expr " ^ PrettyPrint.show_typecheckingExpr e ^ 
                 " against type " ^ PrettyPrint.show_typecheckingType tt
             ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx
              )
-    fun typeCheckSignature(ctx : context) (s : Signature) :unit =
+             (* type check signature will return all bindings *)
+    and typeCheckSignature(ctx : context) (s : Signature) : context =
 
         (
             if DEBUG then print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ^"\n") else (); 
 
             case s of
-            [] => ()
+            [] => ctx
          | TypeMacro (n, t)::ss => if freeTVar (applyContextToType ctx t) <> [] then 
             raise SignatureCheckingFailure ("Type decl contains free var " ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in"  ^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) else 
             typeCheckSignature (addToCtxR (TypeDef([n], t, ())) ctx) ss
@@ -234,7 +266,18 @@ open TypeCheckingASTOps
             typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizeType ctx (applyContextToExpr ctx e), ())) ctx) ss
         | TermDefinition(n, e) :: ss => 
             (checkType ctx (applyContextToExpr ctx e) (lookup ctx [n]); typeCheckSignature ctx ss)
-        | DirectExpr e :: ss=> (synthesizeType ctx (applyContextToExpr ctx e); typeCheckSignature ctx ss))
+        | Structure (vis, sName, decls) :: ss => 
+        (case ctx of 
+        Context(curName, curVis, bindings) => 
+            let val Context(_, _, newBindings) = typeCheckSignature (Context(curName@[sName], vis, bindings)) decls
+                (* assume the typeChecking is behaving properly, 
+                no conflicting things will be added to the signature *)
+                (* sub context will be determined by whether the signature is private or not ? *)
+            in typeCheckSignature (Context(curName, curVis, newBindings)) ss
+            end
+        )
+        | DirectExpr e :: ss=> (synthesizeType ctx (applyContextToExpr ctx e); typeCheckSignature ctx ss)
+        )
         handle SignatureCheckingFailure st =>
         raise TypeCheckingFailure (st ^ "\n when checking the signature " ^ PrettyPrint.show_typecheckingSig s 
             ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx

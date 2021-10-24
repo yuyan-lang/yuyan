@@ -21,8 +21,10 @@ struct
             val executeTime =  (* removed the use of pk machines due to foreign functions *)
                 (let 
                 val erasedASTK = ErasureEntry.eraseSigK typeCheckingAST
+                val _ = cprint 1 "----------------- Erasure Complete ! -------------------- \n"
+                val kastK = (PersistentKMachine.fromKComp erasedASTK)
                 val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
-                val _ = cprint 2 (PrettyPrint.show_pkcomputation (PersistentKMachine.fromKComp erasedASTK) ^ "\n")
+                val _ = cprint 2 (PrettyPrint.show_pkcomputation kastK ^ "\n")
                 val _ = cprint 1 "----------------- Executing ---------------------- \n"
                 val executeTime = Time.now()
                 val result = KMachine.runUntilCompletion (KMachine.Run([],erasedASTK)) 
@@ -45,6 +47,7 @@ struct
       | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
       |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "ecp parse failed\n"; print s)
       |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
+      |  KMachineOps.InternalFailure s=> print ( "internal failure  (bug) \n\n" ^ s)
 
     
 end

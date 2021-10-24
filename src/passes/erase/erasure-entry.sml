@@ -3,8 +3,7 @@ structure ErasureEntry =
 struct
 open ErasurePass
     fun eraseSig (s : Signature) : PersistentKMachine.pkcomputation = 
-                 PersistentKMachine.fromKComp 
-                 (eraseSigLazy (PreludeFunctions.erasurePrelude)  s)
+                 #1 (eraseSigLazy (PreludeFunctions.erasurePrelude)  s)
     fun eraseSigK (s : Signature) : KMachine.kcomputation = 
-               PersistentKMachine.toKComp  (PersistentKMachine.emptyCtx()) (eraseSig s)
+               KMachineOps.toKComp  (KMachineOps.emptyCtx()) (eraseSig s)
 end

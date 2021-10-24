@@ -14,7 +14,7 @@ struct
   fun show_strlist (x : UTF8String.t list) : string =
   String.concatWith ", " (map UTF8String.toString x)
   fun show_sttrlist (x : StructureName.t list) : string =
-  String.concatWith ", " (map StructureName.toStringPlain x)
+  String.concatWith "->" (map StructureName.toStringPlain x)
   fun show_opcomptype (x : Operators.opComponentType) :string = let 
     open Operators
     in
@@ -213,16 +213,16 @@ fun show_typecheckingpassmappping x = let
 open TypeCheckingASTOps
 in
   case x of
-    TermTypeJ(e, t,_) => show_utf8strings e ^ " : " ^ show_typecheckingType t
-    | TypeDef(s, t, _) => show_utf8strings s ^ " = " ^ show_typecheckingType t
+    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingType t
+    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingType t
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingASTOps
 in
 case x of 
-  Context(curSName, curVis, m) => (if curVis then "public" else "private") ^
-  "structure " ^ StructureName.toStringPlain curSName ^ 
-          String.concatWith ", " (map show_typecheckingpassmappping m) ^ "\n"
+  Context(curSName, curVis, m) => (if curVis then "public " else "private ") ^
+  "structure " ^ StructureName.toStringPlain curSName ^ " {"  ^
+          String.concatWith ", " (map show_typecheckingpassmappping m) ^ "}\n"
 end
 
 fun show_pkvalue x =let

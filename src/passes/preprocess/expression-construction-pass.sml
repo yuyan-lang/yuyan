@@ -289,7 +289,7 @@ struct
 
     and parseJudgment (s : MixedStr.t) : pJudgment = 
     (let
-       val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n");
+       (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
        val tp  = MixedStr.toPlainUTF8String
        fun getDeclContent (x : MixedStr.t) = case x of
         [MixedStr.UnparsedDeclaration y] => y

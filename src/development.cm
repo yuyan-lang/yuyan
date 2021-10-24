@@ -44,6 +44,7 @@ Library
 
 
   structure KMachine
+  structure KMachineOps
   structure PersistentKMachine
   structure ErasurePass
   structure ErasureEntry
@@ -106,6 +107,7 @@ is
   prelude-libraries/prelude-functions.sml
   
   execution/k-machine.sml
+  execution/k-machine-ops.sml
   execution/persistent-k-machine.sml
 
 
