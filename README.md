@@ -51,6 +51,11 @@ To run with more informative debug output
 ```
 (r stands for run and v stands for verbose)
 
+Projects are file lists with extension `。豫库`. They can be runned by the command, e.g. 
+```
+./yy r examples/helloworld/行。豫库
+```
+
 <!-- To run with a faster runtime (in practice `k` seems to be faster)
 ```
 ./yy rk filename.yuyan
