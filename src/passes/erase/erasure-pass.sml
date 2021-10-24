@@ -243,59 +243,59 @@ open TypeCheckingASTOps
 untyped cases *)
 (* the lazy comes from the fact that we used lambdas during kcomputation construction *)
 (* we can force evaluation by persisting it back and forth *)
-    fun eraseSigLazy  (ctx : kcontext) (s : Signature) : PersistentKMachine.pkcomputation * kcontext  =
+    fun eraseSigLazy (kont : (kcontext -> PersistentKMachine.pkcomputation) option) (ctx : kcontext) (s : Signature) : PersistentKMachine.pkcomputation =
 
         (
             print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
             ;
             case s of
-            [] => ((PKRet(PKUnit)), ctx)
-         | TypeMacro (n, t)::ss => eraseSigLazy (kaddToCtxR (TypeDef([n],t, ())) ctx) ss
+            [] => (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit))
+         | TypeMacro (n, t)::ss => eraseSigLazy kont (kaddToCtxR (TypeDef([n],t, ())) ctx) ss
         | TermTypeJudgment(n, t):: ss => ( (* todo check all type decls are realized, otherwise 
         erasure is going to fail when type checking passes *)
             let val ((n', e'), ss') = lookAheadForValue ss n
                 val boundId = UID.next()
-                val (followingComp, finalCtx) =
-                    (eraseSigLazy 
+                val (followingComp ) =
+                    (eraseSigLazy kont
             (kaddToCtxR (TermTypeJ([n], (applyContextToType (eraseCtx ctx) t), PKVar(boundId))) ctx)
              ss')
             in 
             (kseqSig (eraseCkExpr ctx (applyContextToExpr (eraseCtx ctx) e') 
             (applyContextToType (eraseCtx ctx) t)
-            ) (boundId, followingComp), 
-            finalCtx)
+            ) (boundId, followingComp)
+            )
             end
         )
         | TermMacro(n, e) :: ss => 
-            let val boundId = UID.next()
-                val (followingComp, finalCtx) = 
-            (eraseSigLazy  (addToCtxR (TermTypeJ([n], synthesizeType (eraseCtx ctx) (applyContextToExpr 
+            let val comp1 =(eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
+            val boundId = UID.next()
+                val (followingComp ) = 
+            (eraseSigLazy kont  (addToCtxR (TermTypeJ([n], synthesizeType (eraseCtx ctx) (applyContextToExpr 
                     (eraseCtx ctx) e), PKVar(boundId))) ctx)  ss)
             in 
-            (kseqSig (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e)) (boundId, followingComp), finalCtx)
+            (kseqSig comp1 (boundId, followingComp))
                     end
-        | [DirectExpr e] =>  (* special treatment on ending direct exprs *)
-            (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e), 
-            ctx
-            ) 
         | DirectExpr e :: ss=> let
             val (comp1) = (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
-            val (followingComp, finalCtx) = (eraseSigLazy ctx ss)
-            in 
-            (kseqSig comp1 (UID.next(), followingComp), finalCtx)
+            val (followingComp ) = (eraseSigLazy kont ctx ss)
+            in  if ss = [] andalso not (Option.isSome (kont)) then comp1 else
+            (kseqSig comp1 (UID.next(), followingComp) )
             end
         | Structure (vis, sName, decls) :: ss => 
         (case ctx of 
         Context(curName, curVis, bindings) => 
-            let val (comp1, Context(_, _, newBindings)) = eraseSigLazy (Context(curName@[sName], vis, bindings)) decls
-                val (comp2, finalCtx) = eraseSigLazy (Context(curName, curVis, newBindings)) ss
+            let val comp2f = fn Context(_, _, newBindings) => eraseSigLazy kont (Context(curName, curVis, newBindings)) ss
+                val (comp1 ) = eraseSigLazy (SOME comp2f) (Context(curName@[sName], vis, bindings)) decls
+
                 (* assume the typeChecking is behaving properly, 
                 no conflicting things will be added to the signature *)
                 (* sub context will be determined by whether the signature is private or not ? *)
-            in  (kseqSig comp1 (UID.next(), comp2), finalCtx)
+            in  comp1
             end
         )
         )
+
+
         
     
 
