@@ -62,7 +62,7 @@ To run with more informative debug output
 
 See the `examples` directory.
 
-Examples include definition of booleans, unary integers, lists and quicksort algorithm.
+Examples include definition of booleans, unary integers, lists and the quicksort algorithm.
 
 ## Syntax Sheet (Informal)
 The key words (that cannot appear as a name and has a special meaning no matter where it is) are
@@ -97,6 +97,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
  |复〇为〇 | ρt. T | 300 |
 | ------------- |-------------|  ------ |
 |元| () | 720 | 
+|〇之〇| (struct S).e/t | 710 | 
 |〇中〇| e1.l | 700 |
  |〇于〇| (e1 e2) | 690 |
  |〇与〇| ⟨e1,e2⟩ | 680 |
