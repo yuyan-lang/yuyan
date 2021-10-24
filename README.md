@@ -19,8 +19,6 @@ This language is a simple functional programming language with
 ## Features to be implemented
 
 I find the following features to be usually desirable 
-- Nested expression with declarations,
-(I tried to implement this, but the parser needs a lot of rework, so pending for now)
 
 - Custom Exceptions
 
