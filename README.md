@@ -63,7 +63,7 @@ Projects are file lists with extension `。豫库`. They can be runned by the co
 
 ## Examples
 
-See the `examples` directory.
+See the [`examples`](./examples) directory.
 
 Examples include definition of booleans, unary integers, lists and the quicksort algorithm.
 
