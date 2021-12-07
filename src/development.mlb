@@ -2,6 +2,7 @@ $(SML_LIB)/basis/basis.mlb
 $(SML_LIB)/smlnj-lib/smlnj-lib.mlb
 $(SML_LIB)/smlnj-lib/Util/smlnj-lib.mlb
 $(SML_LIB)/mllpt-lib/mllpt-lib.mlb
+$(SML_LIB)/smlnj-lib/JSON/json-lib.mlb
 
 
 
@@ -56,6 +57,8 @@ local
         parser/mixfix-parser.sml
 
         passes/preprocess/expression-construction-pass.sml
+        
+        lsp/language-server-mode.sml
 
         ui/repl-options.sml
         ui/type-check-and-eval.sml

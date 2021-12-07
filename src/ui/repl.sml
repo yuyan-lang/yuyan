@@ -37,6 +37,10 @@ struct
         let
         val args = CommandLine.arguments()
         in case args of
+             [cmd] => if cmd = "lsp" 
+             then LanguageServerMode.startLSP()
+             else (print aboutText; OS.Process.exit OS.Process.failure : unit)
+             |
              (cmd :: fname :: []) => (inputFile  fname
              {
                  verbose=(
