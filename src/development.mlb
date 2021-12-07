@@ -58,6 +58,7 @@ local
 
         passes/preprocess/expression-construction-pass.sml
         
+        lsp/language-server.sml
         lsp/language-server-mode.sml
 
         ui/repl-options.sml

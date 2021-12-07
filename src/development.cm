@@ -55,6 +55,7 @@ Library
 
   structure StructureName
   structure LanguageServerMode
+  structure LanguageServer
   
 is
   ../cmlib/cmlib.cm
@@ -113,5 +114,6 @@ is
   execution/persistent-k-machine.sml
 
   lsp/language-server-mode.sml
+  lsp/language-server.sml
 
 
