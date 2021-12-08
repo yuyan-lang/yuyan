@@ -56,6 +56,8 @@ Library
   structure StructureName
   structure LanguageServerMode
   structure LanguageServer
+
+  structure SyntaxHighlight
   
 is
   ../cmlib/cmlib.cm
@@ -115,5 +117,6 @@ is
 
   lsp/language-server-mode.sml
   lsp/language-server.sml
+  lsp/syntax-highlight.sml
 
 

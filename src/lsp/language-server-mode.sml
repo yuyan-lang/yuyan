@@ -42,28 +42,6 @@ struct
 
 
 
-    fun handleJSONRPC (x: JSON.value ): unit = 
-    let open JSON
-    val _ = print "PARSED SUCCESFULLY"
-    in 
-    sendJSON(
-        OBJECT[
-            ("jsonrpc", STRING "2.0"),
-            ("id", INT 0),
-            ("result", OBJECT[
-                ("capabilities", OBJECT[
-                    ("textDocumentSync", 
-                    OBJECT[
-                        ("openClose", BOOL true),
-                        ("change", INT 1)
-                    ]
-                    )
-                ])
-            ])
-        ]
-    )
-    end
-
     fun handleInitJSONRPC (params: JSON.value ): LanguageServer.t = 
     let open JSON
     val _ = print "JSON PARSED SUCCESSFULLY"
@@ -91,17 +69,13 @@ struct
                     ("semanticTokensProvider", OBJECT[
                         ("full", BOOL true),
                         ("legend", OBJECT[
-                            ("tokenTypes", ARRAY[
-                                STRING "keyword",
-                                STRING "comment",
-                                STRING "string",
-                                STRING "number",
-                                STRING "operator"
-                            ]),
-                            ("tokenModifiers", ARRAY[
-                                STRING "declaration",
-                                STRING "definition"
-                            ])
+                            ("tokenTypes", ARRAY
+                                (map (fn x => STRING (SyntaxHighlight.TokenType.getString x)) SyntaxHighlight.TokenType.allTokenTypes)
+                            ),
+                            ("tokenModifiers", ARRAY
+                                (map (fn x => STRING (SyntaxHighlight.TokenModifier.getString x)) 
+                                SyntaxHighlight.TokenModifier.allTokenModifiers)
+                            )
                         ])
                     ])
                 ])
@@ -116,8 +90,12 @@ struct
     fun handleJSONRequest (server: LanguageServer.t) (method: string) (params: JSON.value option)  : JSON.value = 
     let 
     open JSON
+    open JSONUtil
+     fun documentUri () = asString (get ((Option.valOf params),[SEL "textDocument", SEL "uri"]))
     in 
-    OBJECT[]
+    case method of
+     "textDocument/semanticTokens/full" => SyntaxHighlight.highlightFile (documentUri())
+     | _ => OBJECT[]
     end
         
     fun handleJSONNotification (server :LanguageServer.t) (method: string) (params : JSON.value option) : unit = 
