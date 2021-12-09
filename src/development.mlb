@@ -13,11 +13,12 @@ local
        "allowExtendedTextConsts true"
     in
         util/unique-id.sml
+        util/source-location.sml
         util/utf8char.sml
+        operators/structure/special-chars.sml
         util/utf8string.sml
         util/ordered.sml
 
-        operators/structure/special-chars.sml
         util/mixed-str.sml
 
         operators/structure/operators.sml

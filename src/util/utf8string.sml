@@ -1,15 +1,26 @@
 structure UTF8String = struct
 
-    type utf8string = UTF8.wchar list
+    type utf8string = UTF8Char.t list
     type t = utf8string
 
 
+
+    fun semanticEqual(s1 : utf8string) (s2 : utf8string) = 
+        case (s1, s2) of
+            (c1::s1tl, c2::s2tl) => if UTF8Char.semanticEqual c1 c2 andalso semanticEqual s1tl s2tl
+                                    then true
+                                    else false
+            | ([], []) => true
+            | _ => false
+
+    val ~= = UTF8Char.~=
+    infix 4 ~= 
 
     fun isPrefix(s1 : utf8string) (s2 : utf8string) = 
 
         if List.length s1 > List.length s2 then false else
         case (s1, s2) of
-            (c1::s1tl, c2::s2tl) => if c1 = c2 andalso isPrefix s1tl s2tl
+            (c1::s1tl, c2::s2tl) => if c1 ~= c2 andalso isPrefix s1tl s2tl
                                     then true
                                     else false
             | ([], _) => true
@@ -18,14 +29,33 @@ structure UTF8String = struct
     fun isSubstring(s1 : utf8string) (s2 : utf8string) = 
         if List.length s1 > List.length s2 then false else
         case (s1, s2) of
-            (c1::s1tl, c2::s2tl) => if c1 = c2 andalso isSubstring s1tl s2tl
+            (c1::s1tl, c2::s2tl) => if c1 ~= c2 andalso isSubstring s1tl s2tl
                                     then true
                                     else isSubstring s2 s2tl
             | ([], []) => true
             | _ => false
 
-    fun fromString(s : string) : utf8string = UTF8.explode(s)
-    fun toString(s : utf8string) : string = UTF8.implode(s)
+(* fromString does not annotate the string with file information *)
+    fun fromString(s : string) : utf8string = map (fn c => UTF8Char.fromUTF8Char c NONE) (UTF8.explode(s))
+
+    
+
+(* fromStringAndFile annotates the string with file information *)
+    fun fromStringAndFile(s : string) (fp: string) : utf8string = 
+    let open UTF8Char
+    in
+    #3 (foldl (fn (char, (line, col, str)) => 
+        let val char' = UTF8Char.fromUTF8Char char (SOME (fp, line, col))
+        in
+            if  semanticEqual char' (SpecialChars.newline)
+            then (line+1, 1, str)
+            else if semanticEqual char' SpecialChars.tab orelse semanticEqual char' SpecialChars.space
+            then (line, col+1, str)
+            else (line, col+1, str@[char'])
+        end
+        ) (1,1,[]) (UTF8.explode(s)))
+    end
+    fun toString(s : utf8string) : string = UTF8.implode((map UTF8Char.asUTF8WChar s))
 
     fun stripTail (s : utf8string) = List.take (s, List.length(s) -1)
     fun size(s : utf8string) : int = List.length s
@@ -47,13 +77,17 @@ structure UTF8String = struct
     | [s] => s
     | (x ::xs) => x @ sep @ concatWith sep xs
 
+    fun removeAllWhitespace (s : utf8string ) : utf8string =
+        (List.filter (fn c => not (List.exists (fn x => UTF8Char.semanticEqual x c) [
+            SpecialChars.tab, SpecialChars.newline, SpecialChars.space
+        ])) s)
 
-    (* fun removeAllWhitespace (s : string ) : string =
+    fun removeAllWhitespacePlain (s : string ) : string =
         toString (List.filter (fn c => not (List.exists (fn x => x = c) [
             SpecialChars.tab, SpecialChars.newline, SpecialChars.space
-        ])) (fromString s)) *)
-    fun removeAllWhitespace (s : string ) : string =
-        String.implode (List.filter (fn c => not (Char.isSpace c)) (String.explode s))
+        ])) (fromString s))
+    (* fun removeAllWhitespace (s : string ) : string =
+        String.implode (List.filter (fn c => not (Char.isSpace c)) (String.explode s)) *)
 
 
 end

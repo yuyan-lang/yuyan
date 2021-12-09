@@ -45,7 +45,7 @@ structure PrecedenceParser  = struct
 
         (*Remove duplicate https://stackoverflow.com/questions/21077272/remove-duplicates-from-a-list-in-sml *)
         fun isolate [] = []
-            | isolate (x::xs) = x::isolate(List.filter (fn y => y <> x) xs)
+            | isolate (x::xs) = x::isolate(List.filter (fn y => not (UTF8String.semanticEqual y x)) xs)
    val debugAlternativeEntryTimes : string list ref  = ref []
    fun pushDebugIndent (s : string) = if DEBUG  
    then debugAlternativeEntryTimes := (!debugAlternativeEntryTimes @ [s])
@@ -72,6 +72,10 @@ structure PrecedenceParser  = struct
             in 
             res
             end
+
+        val ~= = UTF8Char.~=
+        infix 4 ~= 
+
         fun combineAST (pr: ParseRule) : ParseOpAST list -> ParseOpAST = fn l => ParseOpAST (pr , l)
 
         fun combineASTByExtractingFromInternal 
@@ -172,7 +176,7 @@ structure PrecedenceParser  = struct
         else UTF8CharSet.empty (* do not put quote as escape when we do not parse quotes *)
 
     exception NoPossibleParse of string
-    exception AmbiguousParse
+    exception AmbiguousParse of string
 
         fun parseExpWithOption (allOps :Operators.allOperators) : MixedStr.t -> (ParseOpAST* (MixedStr.t))  =  fn exp =>
         let 
@@ -190,7 +194,9 @@ structure PrecedenceParser  = struct
                                                         [] => go seen xs pending 
                                                         | _ => pending :: go seen xs [])(*TODO add pending to seen and remove isolate *)
                                             else go seen xs (pending@[ s]) 
-                        | (_ :: xs) => go seen xs pending (* skip nontoplevel constructs *)
+                        | (_ :: xs) => (case pending of   
+                                                        [] => go seen xs pending 
+                                                        | _ => pending :: go seen xs []) (* skip nontoplevel constructs *)
                     val allSeen = (foldr (fn (elem, acc) => ( UTF8CharSet.insert acc elem)) 
                                 defaultSeenCharset
                                         (List.concat (map getAllOccuringNameChars relevantOps)))
@@ -208,7 +214,7 @@ structure PrecedenceParser  = struct
 
             fun unknownIdComponentParser (s : UTF8Char.t): parser = fn exp => 
                 case (exp) of
-                    (MixedStr.SChar y :: ys) => if  y = s then [(ParseOpAST(UnknownIdComp y, []), ys)] else []
+                    (MixedStr.SChar y :: ys) => if  y ~= s then [(ParseOpAST(UnknownIdComp y, []), ys)] else []
                     | _ => []
             fun unknownIdParser (id : UTF8String.t): parser = 
             case id of
@@ -552,12 +558,17 @@ structure PrecedenceParser  = struct
         if DEBUG 
         then (print ("STARTING \n"))
         else ();
-        (case parseExpWithEOF()(exp) of
+        ((case parseExpWithEOF()(exp) of
             [] => raise NoPossibleParse (MixedStr.toString exp )
             | [l] => l
-            | _ => raise AmbiguousParse)
+            | l => raise AmbiguousParse ("Ambiguous Parse, possibilities : (total "^ Int.toString (length l) ^ ") \n" ^
+            String.concatWith "\n" (map (fn (x,y) => PrettyPrint.show_parseopast x ) l)))
             handle NoPossibleParse s => raise NoPossibleParse (s ^ "\n when parsing " ^ MixedStr.toString exp
             ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps)
+            | AmbiguousParse s => raise AmbiguousParse (s ^ "\n when parsing " ^ MixedStr.toString exp
+            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps)
+            
+            )
         end
 
     fun parseMixfixExpression (allOps :Operators.allOperators) (exp : MixedStr.t) : OpAST.t = 

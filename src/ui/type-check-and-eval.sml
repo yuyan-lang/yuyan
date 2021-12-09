@@ -1,12 +1,12 @@
 structure TypeCheckAndEval =
 struct
-    fun typeCheckAndEval (input : string)(options : ReplOptions.t) =
+    fun typeCheckAndEval (input : string)(options : ReplOptions.t) (filename: string)  =
         (let fun cprint x s = if x <= (#verbose options) then print s else () 
             val startTime = Time.now()
-            val whitespaceRemoved = UTF8String.removeAllWhitespace input
+            val whitespaceRemoved = UTF8String.removeAllWhitespace (UTF8String.fromStringAndFile input filename)
             val _ = cprint 1 "----------------- White Space Removal Complete -------------- \n"
-            val _ = cprint 2 (whitespaceRemoved^"\n")
-            val stmtAST = MixedStr.makeDecl (UTF8String.fromString whitespaceRemoved)
+            val _ = cprint 2 (UTF8String.toString whitespaceRemoved^"\n")
+            val stmtAST = MixedStr.makeDecl  whitespaceRemoved
             val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_mixedstrs stmtAST ^ "\n")
             val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST)
@@ -46,6 +46,7 @@ struct
     | ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
       | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
       |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "ecp parse failed\n"; print s)
+      |  ExpressionConstructionPass.ECPAmbiguousParse s=> (print "ecp parse failed\n"; print s)
       |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
       |  KMachineOps.InternalFailure s=> print ( "internal failure  (bug) \n\n" ^ s)
 

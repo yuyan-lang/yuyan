@@ -59,6 +59,8 @@ Library
 
   structure SyntaxHighlight
   
+
+  structure SourceLocation
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -90,6 +92,7 @@ is
   operators/structure/operators.sml
   operators/structure/op-ast.sml
 
+  util/source-location.sml
   util/utf8char.sml
   util/utf8string.sml
   util/ordered.sml

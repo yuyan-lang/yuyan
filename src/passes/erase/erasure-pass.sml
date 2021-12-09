@@ -27,7 +27,7 @@ open TypeCheckingASTOps
     fun klookupMapping (ctx : kmapping list) (n : StructureName.t) : pkvalue= 
         case ctx of 
             [] => raise LookupNotFound ("name " ^ StructureName.toStringPlain n ^ " not found in context")
-            | TermTypeJ(n1, t1, u)::cs => if n1 = n then u else klookupMapping cs n
+            | TermTypeJ(n1, t1, u)::cs => if StructureName.semanticEqual n1 n then u else klookupMapping cs n
             | TypeDef(_) :: cs => klookupMapping cs n
 
     fun klookup (Context(curSName, _, ctx) : kcontext) (n : StructureName.t) : pkvalue= 
@@ -38,18 +38,18 @@ open TypeCheckingASTOps
 
     fun lookupLabel ( ctx : (Label * Type) list) (l : Label) : Type = 
         case ctx of 
-             (n1, t1)::cs => if n1 = l then t1 else lookupLabel cs l
+             (n1, t1)::cs => if UTF8String.semanticEqual n1 l then t1 else lookupLabel cs l
     fun klookupLabel ( ctx : (Label * Type) list) (l : Label) : int = 
         case ctx of 
-             (n1, t1)::cs => if n1 = l then 0 else klookupLabel cs l+1
+             (n1, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel cs l+1
 
       fun lookupLabel3 ( ctx : (Label * EVar *Type) list) (l : Label) : Type = 
         case ctx of 
-             (n1, _, t1)::cs => if n1 = l then t1 else lookupLabel3 cs l
+             (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then t1 else lookupLabel3 cs l
 
       fun klookupLabel3 ( ctx : (Label * EVar *'a ) list) (l : Label) : int = 
         case ctx of 
-             (n1, _, t1)::cs => if n1 = l then 0 else klookupLabel3 cs l+1
+             (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel3 cs l+1
 
 
     fun kseqSig (k1 : pkcomputation) (k2 : int * pkcomputation):pkcomputation= 
@@ -314,7 +314,7 @@ open TypeCheckingASTOps
 
     and lookAheadForValue (s : Signature) (ename : UTF8String.t) : (UTF8String.t * Expr) * Signature = 
         case s of
-         TermDefinition(n, e) :: ss => if n = ename then ((n, e), ss)
+         TermDefinition(n, e) :: ss => if UTF8String.semanticEqual n  ename then ((n, e), ss)
                                        else 
                                        let val ((n', e'), ss') = lookAheadForValue ss ename 
                                        in ((n', e'), TermDefinition(n, e)::ss') end

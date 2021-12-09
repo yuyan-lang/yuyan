@@ -8,13 +8,16 @@ struct
     (* declarations are top level constructs that ignore internal expression structure, 
     but they contain arbitrary unknown names and structured parenthesis *)
 
+    val ~= = UTF8Char.~=
+    infix 4 ~=
+
     (* returns the rest *)
     fun parseStr (s : UTF8String.t)  :MixedStr.t -> MixedStr.t option = fn exp =>
         (
             (* print ("parseStr "^ UTF8String.toString s ^ " on " ^ PrettyPrint.show_mixedstr exp ^"\n"   ); *)
                 if UTF8String.size s = 0 then SOME(exp) else
                 case exp of
-                    ( MixedStr.SChar id :: exps)  => if hd s = id 
+                    ( MixedStr.SChar id :: exps)  => if hd s ~= id 
                                     then parseStr (tl s) exps
                                     else (
                                         (* print ("parseStr failed hd s is " ^ UTF8Char.toString (hd s) 

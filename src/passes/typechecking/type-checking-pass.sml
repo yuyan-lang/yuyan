@@ -29,7 +29,7 @@ open TypeCheckingASTOps
     fun lookupMapping (ctx : mapping list) (n : StructureName.t) : Type= 
         case ctx of 
             [] => raise LookupNotFound ("name " ^ StructureName.toStringPlain n ^ " not found in context")
-            | TermTypeJ(n1, t1, u)::cs => if n1 = n then t1 else lookupMapping cs n
+            | TermTypeJ(n1, t1, u)::cs => if StructureName.semanticEqual n1 n then t1 else lookupMapping cs n
             | TypeDef(_) :: cs => lookupMapping cs n
 
     fun lookup (Context(curSName, _, ctx) : context) (n : StructureName.t) : Type= 
@@ -104,11 +104,11 @@ open TypeCheckingASTOps
     fun lookupLabel ( ctx : (Label * Type) list) (l : Label) : Type = 
         case ctx of 
             [] => raise TypeCheckingFailure ("label " ^ UTF8String.toString l ^ " not found in prod type")
-            | (n1, t1)::cs => if n1 = l then t1 else lookupLabel cs l
+            | (n1, t1)::cs => if UTF8String.semanticEqual n1 l then t1 else lookupLabel cs l
       fun lookupLabel3 ( ctx : (Label * EVar *Type) list) (l : Label) : Type = 
         case ctx of 
             [] => raise TypeCheckingFailure ("label " ^ UTF8String.toString l ^ " not found in sum type")
-            | (n1, _, t1)::cs => if n1 = l then t1 else lookupLabel3 cs l
+            | (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then t1 else lookupLabel3 cs l
 
 
     fun typeUnify (a : Type list) : Type =

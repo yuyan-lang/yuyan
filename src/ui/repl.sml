@@ -6,9 +6,9 @@ struct
     fun addUIStatic (s : string) = "豫䷏ " ^ s ^ "\n"
 
 
-    fun process (input : string ) (options : ReplOptions.t ): string =
+    fun process (input : string ) (options : ReplOptions.t ) (filename : string): string =
     let 
-        val res = TypeCheckAndEval.typeCheckAndEval input options
+        val res = TypeCheckAndEval.typeCheckAndEval input options filename
     in
         ""
     end
@@ -28,7 +28,7 @@ struct
             else content
         end
     fun inputFile  (filename : string) (options : ReplOptions.t): unit = 
-         (process  (readFile (filename)) options; ())
+         (process  (readFile (filename)) options filename; ())
 
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r[kvv] filename.yuyan\n"
 

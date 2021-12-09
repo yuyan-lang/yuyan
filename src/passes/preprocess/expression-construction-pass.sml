@@ -8,6 +8,7 @@ struct
     
   structure PrecParser = MixFixParser
     exception ECPNoPossibleParse of string
+    exception ECPAmbiguousParse of string
     exception ElaborateFailure of string
     exception InternalErrorECP
 
@@ -22,7 +23,7 @@ struct
     fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list =
         case ctx of
             [] => raise ElaborateFailure ("Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context")
-            | ((s, v, opl):: ss) => if s = sName then opl else lookupContextForOpers (curSName, curV,ss) sName
+            | ((s, v, opl):: ss) => if StructureName.semanticEqual s sName then opl else lookupContextForOpers (curSName, curV,ss) sName
     fun lookupCurrentContextForOpers(ctx as (curSName,curV, imports) : contextType)  : Operators.operator list
     = lookupContextForOpers ctx curSName
 
@@ -217,11 +218,15 @@ struct
         elaborateOpASTtoType (PrecedenceParser.parseMixfixExpression allTypeOps tbody)  ctx
         handle PrecedenceParser.NoPossibleParse s => 
             raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
+        | PrecedenceParser.AmbiguousParse s => 
+            raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.")
     and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.Expr
     = elaborateOpASTtoExpr (PrecedenceParser.parseMixfixExpression 
                 (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody) ctx 
         handle PrecedenceParser.NoPossibleParse s => 
             raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
+        | PrecedenceParser.AmbiguousParse s => 
+            raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.")
     
     and parsePOperator (POpDeclaration(opName, assoc, pred)) =let 
                     val oper = Operators.parseOperator 

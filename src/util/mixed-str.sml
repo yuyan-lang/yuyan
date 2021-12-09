@@ -12,6 +12,9 @@ struct
     type mixedstr = mixedchar list
     type t = mixedstr
 
+    val ~= = UTF8Char.~=
+    infix 4 ~=
+
     exception UnmatchedParenthesis
     exception UnmatchedStringLiteral
 
@@ -31,6 +34,7 @@ struct
     | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
     | SChar t => [t]
     end
+
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
     fun toString(u : mixedstr) : string = UTF8String.toString (toUTF8String u)
 
@@ -51,7 +55,7 @@ struct
             
     fun isChar (c : mixedchar) (ck : UTF8Char.t) : bool=
         case c of 
-            SChar c' => c' = ck
+            SChar c' =>  c' ~= ck
             | _ => false
 
     fun isPlainChar (c : mixedchar) : bool=
@@ -67,7 +71,7 @@ struct
     fun isPrefix(s1 : UTF8String.t) (s2 : mixedstr) : bool = 
     case (s1, s2) of
         ([], _) => true
-        | ((x :: xs), (SChar y :: ys)) => if x = y then isPrefix xs ys
+        | ((x :: xs), (SChar y :: ys)) => if  x ~= y then isPrefix xs ys
                                           else false
         | _ => false
 
@@ -75,10 +79,12 @@ struct
     fun containsCharTopLevel (ck : mixedstr) (c : UTF8Char.t) : bool =
         case ck of 
             [] => false
-            | (SChar s::xs) => if s = c  then true else containsCharTopLevel xs c
+            | (SChar s::xs) => if  s ~= c  then true else containsCharTopLevel xs c
             | (_::xs) => containsCharTopLevel xs c
     fun containsAllCharsTopLevel (s : mixedstr ) (test : UTF8String.t) : bool
-        = foldr (fn (x, acc) => acc andalso containsCharTopLevel s x) true test
+        = foldr (fn (x, acc) => (
+            (* print ("acc is " ^ Bool.toString acc ^ " x is " ^ UTF8Char.toString (x) ^ " text is " ^ UTF8String.toString test ^ "\n"); *)
+        acc andalso containsCharTopLevel s x)) true test
 
     fun stripTail (s : mixedstr) = List.take (s, List.length(s) -1)
 
@@ -120,26 +126,27 @@ struct
          (* print (UTF8String.toString remaining^"\n"); *)
       remaining) of
         [] => raise UnmatchedStringLiteral
-        | [x] => if x = SpecialChars.rightDoubleQuote
+        | [x] => if x ~= SpecialChars.rightDoubleQuote
                  then (sofar, [])
                  else raise UnmatchedStringLiteral
-        | (x::y::xs) => if x = SpecialChars.rightDoubleQuote andalso y = SpecialChars.rightDoubleQuote
+        | (x::y::xs) => if  x ~= SpecialChars.rightDoubleQuote 
+                        andalso  y ~= SpecialChars.rightDoubleQuote
                  then scanLiteral xs (sofar @[x]) (*escape*)
-                 else if x = SpecialChars.rightDoubleQuote
+                 else if  x ~= SpecialChars.rightDoubleQuote
                       then (sofar, y::xs)
                       else scanLiteral (y::xs) (sofar @[x])
 
     fun scanSingleQuote( remaining : UTF8String.t) (sofar : mixedstr) 
          : mixedstr * UTF8String.t = case remaining of
         [] => raise UnmatchedParenthesis
-        | (x :: xs) => if x = SpecialChars.rightSingleQuote
+        | (x :: xs) => if  x ~= SpecialChars.rightSingleQuote
                         then (sofar, xs)
                         else
-                        if x = SpecialChars.leftSingleQuote
+                        if  x ~= SpecialChars.leftSingleQuote
                         then let val (inQuote, rest) = scanSingleQuote xs [] 
                              in scanSingleQuote rest (sofar@[processSingleQuoted inQuote])  end
                         else
-                        if x = SpecialChars.leftDoubleQuote
+                        if  x ~= SpecialChars.leftDoubleQuote
                         then let val (inQuote, rest) = scanLiteral xs [] 
                              in scanSingleQuote rest (sofar@[Literal inQuote])  end
                         else
@@ -149,12 +156,12 @@ struct
     fun scanTopLevel( remaining : UTF8String.t)
          : mixedstr  = case remaining of
         [] => []
-        | (x :: xs) => if x = SpecialChars.leftSingleQuote
+        | (x :: xs) => if  x ~= SpecialChars.leftSingleQuote
                         then let val (inQuote, rest) = scanSingleQuote xs [] 
                              in processSingleQuoted inQuote :: scanTopLevel rest
                              end
                         else
-                        if x = SpecialChars.leftDoubleQuote
+                        if  x ~= SpecialChars.leftDoubleQuote
                         then let val (inQuote, rest) = scanLiteral xs [] 
                              in Literal inQuote :: scanTopLevel rest
                              end

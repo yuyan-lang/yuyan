@@ -27,52 +27,65 @@ struct
     exception PreprocessMalformedAssoc of UTF8String.t
     exception PreprocessMalformedPrecedence of UTF8String.t
 
+    val ~= = UTF8Char.~=
+    infix 4 ~=
+
+
     fun parseAssoc (s : UTF8String.t) : associativity = 
+        if length s <> 1 
+        then raise PreprocessMalformedAssoc s
+        else
+        let val c = hd s
+        in 
     (
         (* print ("parseAssoc " ^ UTF8String.toString s ^" \n"); *)
-        if s = UTF8String.fromString "左"
+        if c ~= UTF8Char.fromString "左" NONE
         then LeftAssoc
         else 
-        if s = UTF8String.fromString "右"
+        if c ~= UTF8Char.fromString "右" NONE
         then RightAssoc
         else 
-        if s = UTF8String.fromString "无"
+        if c ~= UTF8Char.fromString "无" NONE
         then NoneAssoc
         else raise PreprocessMalformedAssoc s)
+        end
 
     fun parsePrecedence (s : UTF8String.t) : int = 
+    let open UTF8Char
+    in
     foldl (fn (c, acc) => 
-        if c = UTF8Char.fromString "零"
+        if c ~= (UTF8Char.fromString "零" NONE)
         then acc * 10 + 0
         else 
-        if c = UTF8Char.fromString "一"
+        if c ~= (UTF8Char.fromString "一" NONE)
         then acc * 10 + 1
         else 
-        if c = UTF8Char.fromString "二"
+        if c ~= (UTF8Char.fromString "二" NONE)
         then acc * 10 + 2
         else 
-        if c = UTF8Char.fromString "三"
+        if c ~= (UTF8Char.fromString "三" NONE)
         then acc * 10 + 3
         else 
-        if c = UTF8Char.fromString "四"
+        if c ~= (UTF8Char.fromString "四" NONE)
         then acc * 10 + 4
         else 
-        if c = UTF8Char.fromString "五"
+        if c ~= (UTF8Char.fromString "五" NONE)
         then acc * 10 + 5
         else 
-        if c = UTF8Char.fromString "六"
+        if c ~= (UTF8Char.fromString "六" NONE)
         then acc * 10 + 6
         else 
-        if c = UTF8Char.fromString "七"
+        if c ~= (UTF8Char.fromString "七" NONE)
         then acc * 10 + 7
         else 
-        if c = UTF8Char.fromString "八"
+        if c ~= (UTF8Char.fromString "八" NONE)
         then acc * 10 + 8
         else 
-        if c = UTF8Char.fromString "九"
+        if c ~= (UTF8Char.fromString "九" NONE)
         then acc * 10 + 9
         else raise PreprocessMalformedPrecedence s
     ) 0 s
+    end
 
     (* Precedence hierachy: 
     

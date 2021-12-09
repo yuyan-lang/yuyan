@@ -14,11 +14,17 @@ val separatorChar = UTF8String.fromString "->"
     fun localName () = [UTF8String.fromString ("__LOCAL__" ^ Int.toString(UID.next()))]
 
 
+    fun semanticEqual (s1 : structureName) (s2 : structureName) = 
+    case (s1, s2) of
+         ([], []) => true
+        | (c1::s1tl, c2::s2tl) => if UTF8String.semanticEqual c1 c2 andalso semanticEqual s1tl s2tl then true else false
+        | _ => false
+
     fun isPrefix(s1 : structureName) (s2 : structureName) = 
 
         if List.length s1 > List.length s2 then false else
         case (s1, s2) of
-            (c1::s1tl, c2::s2tl) => if c1 = c2 andalso isPrefix s1tl s2tl
+            (c1::s1tl, c2::s2tl) => if UTF8String.semanticEqual c1 c2 andalso isPrefix s1tl s2tl
                                     then true
                                     else false
             | ([], _) => true
