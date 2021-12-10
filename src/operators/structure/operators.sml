@@ -13,6 +13,12 @@ struct
     Prefix : either none or Right
     Postfix : either none or left *)
 
+
+  fun eqOpUid ((Operator(_, _, _,_, id1)) : operator) (Operator(_, _, _,_, id2) : operator) = id1 = id2
+
+  fun ~=** (op1, op2) = eqOpUid op1 op2
+
+
   val underscoreChar = UTF8Char.fromString "〇" NONE
   val bindingChar = UTF8Char.fromString "囗" NONE
 

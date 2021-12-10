@@ -19,6 +19,9 @@ struct
     (* an open will forcibly bring in all previous type module to the current definition *)
     (* bool is visibility *)
     type contextType = structureName * bool * (structureName * bool * Operators.operator list) list
+    
+    val ~=** = Operators.~=**
+    infix 4 ~=**
 
     fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list =
         case ctx of
@@ -304,29 +307,29 @@ struct
        val res = 
         case DeclarationParser.parseDeclarationSingleOutput declOps s of
             (oper, [l1, l2]) => 
-            if oper = typeMacroOp
+            if oper ~=** typeMacroOp
             then PTypeMacro (tp l1, l2)
-            else if oper = termTypeJudgmentOp
+            else if oper ~=** termTypeJudgmentOp
             then PTermTypeJudgment (tp l1, l2)
-            else if oper = termMacroOp
+            else if oper ~=** termMacroOp
             then PTermMacro (tp l1, l2)
-            else if oper = termDefinitionOp
+            else if oper ~=** termDefinitionOp
             then PTermDefinition (tp l1, l2)
-            else if oper = privateStructureOp
+            else if oper ~=** privateStructureOp
             then PStructure (false, tp l1, (getDeclContent l2))
-            else if oper = publicStructureOp
+            else if oper ~=** publicStructureOp
             then PStructure (true, tp l1, (getDeclContent l2))
             else  
             raise Fail "pp34"
             | (oper, [l1, l2, l3]) =>  
-                if oper = opDeclarationOp
+                if oper ~=** opDeclarationOp
                 then POpDeclaration (tp l1, parseAssoc (tp l2), parsePrecedence (tp l3))
                 else raise Fail "pp85"
             | (oper, [l1]) =>  
-                if oper = commentOp
+                if oper ~=** commentOp
                 then PComment (l1)
                 else 
-                if oper = openStructureOp
+                if oper ~=** openStructureOp
                 then let 
                 val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp] (l1)
                 val names = flattenRight parsedStructureRef structureRefOp

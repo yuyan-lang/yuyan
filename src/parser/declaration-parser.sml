@@ -11,14 +11,14 @@ struct
     val ~= = UTF8Char.~=
     infix 4 ~=
 
-    (* returns the rest *)
-    fun parseStr (s : UTF8String.t)  :MixedStr.t -> MixedStr.t option = fn exp =>
+    (* returns (parsedString, rest) *)
+    fun parseStrRec (predicate : UTF8String.t) (sofar : UTF8String.t)  :MixedStr.t -> (UTF8String.t * MixedStr.t) option = fn exp =>
         (
             (* print ("parseStr "^ UTF8String.toString s ^ " on " ^ PrettyPrint.show_mixedstr exp ^"\n"   ); *)
-                if UTF8String.size s = 0 then SOME(exp) else
+                if UTF8String.size predicate = 0 then SOME((sofar, exp)) else
                 case exp of
-                    ( MixedStr.SChar id :: exps)  => if hd s ~= id 
-                                    then parseStr (tl s) exps
+                    ( MixedStr.SChar id :: exps)  => if hd predicate ~= id 
+                                    then parseStrRec (tl predicate) (sofar@[id]) exps
                                     else (
                                         (* print ("parseStr failed hd s is " ^ UTF8Char.toString (hd s) 
                                     ^ " at " ^ UTF8.toString (hd s) ^ " and id (hd of exp ) is " 
@@ -28,6 +28,8 @@ struct
                         (* print "parseStr failed\n"; *)
                     NONE)
         )
+    fun parseStr (predicate : UTF8String.t)   :MixedStr.t -> (UTF8String.t * MixedStr.t) option = 
+        parseStrRec predicate []
 
     and projfirst2 ((a, b, c, d)) = (a, b)
 
@@ -52,28 +54,39 @@ struct
                 
 
 
-    fun parseDeclarationSingleOp(l :  opComponentType list) : MixedStr.t -> (MixedStr.t list) option
+    fun parseDeclarationSingleOp(l :  opComponentType list) 
+        : MixedStr.t -> 
+            ({opComps: opComponentType list , args : MixedStr.t list}) option
     = fn exp =>
         (
             (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ MixedStr.toString exp ^ "\n"); *)
         case l of
-            [] => SOME([])
-            | [OpCompExpr] => SOME([exp])
+            [] => SOME({opComps=[], args=[]})
+            | [OpCompExpr] => SOME({opComps=[], args=[exp]})
             | (OpCompExpr :: (OpCompString s) :: t) => 
                 let val  (parsed, remaining) = parseUntil s exp
                 in (case  parseDeclarationSingleOp (OpCompString s :: t) remaining
-                    of SOME(args) => SOME(parsed::args)
+                    of SOME({opComps=opComps, args=args}) => SOME({opComps=opComps, args=parsed::args})
                     | NONE => NONE)
                 end
             | ((OpCompString s) :: t) => (case parseStr s exp of 
-                SOME (remainingExp) => parseDeclarationSingleOp t remainingExp
+                SOME ((parsed,remainingExp)) => (case  parseDeclarationSingleOp (t) remainingExp
+                    of SOME({opComps=opComps, args=args}) => SOME({opComps=(OpCompString parsed)::opComps, args=args})
+                    | NONE => NONE)
                 | NONE => NONE)
             | _ => raise Fail "dp84, unsupported component type"
         )
 
 
         
-
+        (* inverse of getParseComponents *)
+    fun updateOperator (oper : operator) (opComps : opComponentType list) : operator = 
+        case oper of 
+            Operator(pred, Prefix, NoneAssoc, l , uid) => Operator(pred, Prefix, NoneAssoc, List.take(opComps, length l -1) , uid) 
+            | Operator(pred, Postfix, NoneAssoc, l , uid) => Operator(pred, Postfix, NoneAssoc, tl opComps , uid) 
+            | Operator(pred, Infix, NoneAssoc, l , uid) => Operator(pred, Infix, NoneAssoc, List.take(tl opComps, length l -2) , uid)
+            | Operator(pred, Closed, NoneAssoc, l , uid) => Operator(pred, Closed, NoneAssoc, opComps , uid) 
+            | _ => raise Fail "Can only handle nonassoc ops: dp20"
 
 
     fun getParseComponents (oper : operator): operator * opComponentType list = 
@@ -87,7 +100,7 @@ struct
     (* declarations should not be associative *)
     fun parseDeclarations(ops : operator list) : MixedStr.t -> (operator * MixedStr.t list) list = fn exp =>
         (List.mapPartial (fn (oper, l) => case parseDeclarationSingleOp l exp of
-        SOME(args) => SOME((oper, args)) | NONE => NONE)
+        SOME({opComps=opComps,args=args}) => SOME((updateOperator oper opComps, args)) | NONE => NONE)
          (map   getParseComponents ops))
         
     exception DeclNoParse of MixedStr.t
