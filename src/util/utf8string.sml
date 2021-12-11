@@ -48,9 +48,9 @@ structure UTF8String = struct
         let val char' = UTF8Char.fromUTF8Char char (SOME (fp, line, col))
         in
             if  semanticEqual char' (SpecialChars.newline)
-            then (line+1, 1, str)
+            then (line+1, 1, str@[char']) (* we choose to keep everything here because mixed string might not want to remove spaces inside string *)
             else if semanticEqual char' SpecialChars.tab orelse semanticEqual char' SpecialChars.space
-            then (line, col+1, str)
+            then (line, col+1, str@[char'])
             else (line, col+1, str@[char'])
         end
         ) (1,1,[]) (UTF8.explode(s)))
@@ -87,7 +87,8 @@ structure UTF8String = struct
     | [s] => s
     | (x ::xs) => x @ sep @ concatWith sep xs
 
-    fun removeAllWhitespace (s : utf8string ) : utf8string =
+(* move this functionality to mixed string directly *)
+    (* fun removeAllWhitespace (s : utf8string ) : utf8string =
         (List.filter (fn c => not (List.exists (fn x => UTF8Char.semanticEqual x c) [
             SpecialChars.tab, SpecialChars.newline, SpecialChars.space
         ])) s)
@@ -95,7 +96,7 @@ structure UTF8String = struct
     fun removeAllWhitespacePlain (s : string ) : string =
         toString (List.filter (fn c => not (List.exists (fn x => x = c) [
             SpecialChars.tab, SpecialChars.newline, SpecialChars.space
-        ])) (fromString s))
+        ])) (fromString s)) *)
     (* fun removeAllWhitespace (s : string ) : string =
         String.implode (List.filter (fn c => not (Char.isSpace c)) (String.explode s)) *)
 

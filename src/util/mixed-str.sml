@@ -105,6 +105,10 @@ struct
         | (SChar x :: xs) => x :: unSChar xs
         | _ => (raise InternalFailure s)
 
+
+    fun shouldSkip (s : UTF8Char.t) = List.exists (fn c => c ~= s) 
+        [ SpecialChars.tab, SpecialChars.newline, SpecialChars.space]
+
     fun processDeclaration (p : mixedstr) : mixedstr list = 
     let 
     (* val _ = (print ("processDeclaration "^ toString p ^"\n")) *)
@@ -154,7 +158,8 @@ struct
                         then let val (inQuote, rest) = scanLiteral xs [] 
                              in scanSingleQuote rest (sofar@[Literal inQuote])  end
                         else
-                        scanSingleQuote xs (sofar@[SChar x]) 
+                        if shouldSkip x then scanSingleQuote xs (sofar)
+                        else scanSingleQuote xs (sofar@[SChar x]) 
         
 
     fun scanTopLevel( remaining : UTF8String.t)
@@ -170,7 +175,8 @@ struct
                              in Literal inQuote :: scanTopLevel rest
                              end
                         else 
-                        SChar x :: scanTopLevel xs
+                        if shouldSkip x then scanTopLevel xs
+                        else SChar x :: scanTopLevel xs
 
     fun make(u : UTF8String.t) : mixedstr = scanTopLevel u
 

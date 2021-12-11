@@ -59,7 +59,7 @@ struct
     UnparsedExpression s => "(UNPARSED(EXPR):" ^ show_mixedstr s ^ ")"
     | UnparsedDeclaration l => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn x => show_mixedstr x) l) ^ "}\n"
     | Name t => "(NAME:" ^ UTF8String.toString t ^ ")"
-    | Literal t => "(LITERAL:" ^ UTF8String.toString t ^ ")"
+    | Literal t => "[LITERAL(size="^ Int.toString (length t) ^"):" ^ UTF8String.toString t ^ ")"
     (* | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
     | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")" *)
     | SChar t => UTF8Char.toString t
@@ -111,7 +111,7 @@ end
       | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
       | OpUnparsedDecl s => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr s)) ^ "]"
       | OpUnparsedExpr s => "[EXPR:" ^ show_mixedstr s ^ "]"
-      | OpStrLiteral s => "[LITERAL:" ^ UTF8String.toString s ^ "]"
+      | OpStrLiteral s => "[LITERAL(size="^ Int.toString (length s) ^"):" ^ UTF8String.toString s ^ "]"
     end
 
 
