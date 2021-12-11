@@ -57,6 +57,10 @@ struct
         case c of 
             SChar c' =>  c' ~= ck
             | _ => false
+    fun getChar (c : mixedchar)  : UTF8Char.t=
+        case c of 
+            SChar c' =>  c'
+            | _ => raise Fail "ms63"
 
     fun isPlainChar (c : mixedchar) : bool=
         case c of 

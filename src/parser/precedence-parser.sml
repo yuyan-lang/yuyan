@@ -1,4 +1,7 @@
+(* Implements Nils Anders Danielsson, and Ulf Norell "Parsing Mixfix Operators"
 
+with some Modifications
+*)
 
 structure PrecedenceParser  = struct 
     (* val DEBUG = true *)
@@ -313,13 +316,13 @@ structure PrecedenceParser  = struct
 
 
             and parseStr s oper = 
-            if DEBUG then debug ("parseStr trying to match >|" ^ UTF8String.toString s ^ "|<") (parseStr_ s oper)
-                else parseStr_ s oper
-            and parseStr_ (s : UTF8String.t) (o' : ParseOpAST) : parser = fn exp =>
-                if UTF8String.size s = 0 then [(o', exp)] else
+            if DEBUG then debug ("parseStr trying to match >|" ^ UTF8String.toString s ^ "|<") (parseStr_ s [] oper)
+                else parseStr_ s [] oper
+            and parseStr_ (s : UTF8String.t) (sofar : UTF8String.t) (o' : UTF8String.t -> ParseOpAST) : parser = fn exp =>
+                if UTF8String.size s = 0 then [(o' sofar, exp)] else
                 case exp of
                     ( id :: exps)  => if MixedStr.isChar (id) (hd s)
-                                    then parseStr (tl s) o' exps
+                                    then parseStr_ (tl s) (sofar@[MixedStr.getChar id]) o' exps
                                     else [] (* no parse failure should be raised as it will disable valid parse from being processed in the capture point *)
                                     (* raise ParseFailure ("Cannot match " ^ s ^ " against " ^ id) strip off id from s *)
                     (* | (RawList l :: exps) => raise ParseFailure ("Cannot match "^ s ^ " against a rawlist") *)
@@ -370,14 +373,14 @@ structure PrecedenceParser  = struct
                     fun goFoldL (remaining : opComponentType list) (sofar :(ParseOpAST list * (MixedStr.t)) list) = 
                         case remaining of 
                             [] => listToParserResult (fn l => ParseOpAST (OperatorInternal oper,l)) sofar
-                            | (OpCompString name::ys) => goFoldL ys (seqL sofar (parseStr name (ParseOpAST(OperatorNameComponent(name, oper), []))))
+                            | (OpCompString name::ys) => goFoldL ys (seqL sofar (parseStr name (fn parsedName => ParseOpAST(OperatorNameComponent(parsedName, oper), []))))
                             | (OpCompExpr :: ys) => goFoldL ys (seqL sofar (parseExp()))
                             | (OpCompBinding :: OpCompString name::ys) => goFoldL (tl remaining) (seqL sofar (parseBinding name))
                             | _ => raise Fail "59"
                     in 
                         case lst of
                             (OpCompString name :: tail) =>
-                                goFoldL tail (parserResToList (parseStr name (ParseOpAST(OperatorNameComponent(name, oper), [])) exp))
+                                goFoldL tail (parserResToList (parseStr name (fn parsedName => ParseOpAST(OperatorNameComponent(parsedName, oper), [])) exp))
                             | _ => raise Fail "pp245"
                     end
 

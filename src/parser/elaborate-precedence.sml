@@ -6,13 +6,33 @@ struct
 
     exception ElaborationFail of ParseOpAST
 
+    fun updateOperatorNameComponents (oper : Operators.operator) (parseOps : ParseOpAST list) : Operators.operator = 
+    case oper of 
+        Operator(pred, fixity, assoc, comps, uid) => 
+        let 
+        (* assert length are equal *)
+        val _ = if length comps <> length parseOps then raise Fail "ep13" else ()
+        val newComps = List.tabulate(length comps, fn i => 
+        case List.nth(comps, i) of
+            OpCompString _ => (
+                case List.nth(parseOps, i) of 
+                    ParseOpAST(OperatorNameComponent (name, _), _) => OpCompString name
+                    | _ => raise Fail "ep20"
+            )
+            | comp => comp
+        )
+        in 
+            Operator(pred, fixity, assoc, newComps, uid)
+            end
+
         fun elaborate (past : ParseOpAST) : OpAST = 
             (
                 (* print ("ELABORATING " ^ PrettyPrint.show_parseopast past ^ "\n"); *)
             case past of 
                 ParseOpAST (r, l) => 
                 case (r, l) of 
-                    (OperatorInternal oper, l) => (OpAST (oper, map elaborate (List.filter 
+                    (OperatorInternal oper, l) => (OpAST (
+                        updateOperatorNameComponents oper l, map elaborate (List.filter 
                         (* remove name components from operator internal and we're left with INTERNAL arguments *)
                     (fn x => case x of ParseOpAST(OperatorNameComponent _, _) => false | _ => true) l)))
                     | (PrefixNoneAssoc oper, [internal, arg]) => 

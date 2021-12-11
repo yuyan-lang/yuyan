@@ -43,7 +43,7 @@ struct
 
     fun flattenRight (ast : OpAST.OpAST) (curOp : Operators.operator)  : OpAST list = 
         case ast of
-        OpAST(oper, [l1,l2]) => if oper = curOp
+        OpAST(oper, [l1,l2]) => if oper ~=** curOp
                 then l1 :: flattenRight l2 curOp
                 else [ast]
         | _ => [ast]
@@ -61,7 +61,7 @@ struct
     fun elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): Label * Type = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 
-            oper = labeledTypeCompOp 
+            oper ~=** labeledTypeCompOp 
             then (l1, elaborateOpASTtoType l2 ctx)
             else raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
         | _ => raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
@@ -74,34 +74,34 @@ struct
              UnknownOpName (s) => TypeVar [s]
             | OpUnparsedExpr x => (parseType x ctx) 
             | OpAST(oper, []) => (
-                if oper = unitTypeOp then UnitType
-                else if oper = nullTypeOp then NullType
+                if oper ~=** unitTypeOp then UnitType
+                else if oper ~=** nullTypeOp then NullType
                 else raise InternalErrorECP
                         )
             | OpAST(oper, [a1,a2]) => (
-                if oper = prodTypeOp
+                if oper ~=** prodTypeOp
                 then (let val args = flattenRight ast oper
                     in Prod (map (fn x => elaborateLabeledType x ctx) args )
                     end)
                 else 
-                if oper = sumTypeOp
+                if oper ~=** sumTypeOp
                 then (let val args = flattenRight ast oper
                     in Sum (map (fn x => elaborateLabeledType x ctx) args)
                     end)
                 else
-                if oper = functionTypeOp
+                if oper ~=** functionTypeOp
                 then Func ((elaborateOpASTtoType a1 ctx),(elaborateOpASTtoType a2 ctx))
                 else 
-                if oper = universalTypeOp
+                if oper ~=** universalTypeOp
                 then Forall ((elaborateNewName a1),(elaborateOpASTtoType a2 ctx))
                 else 
-                if oper = existentialTypeOp
+                if oper ~=** existentialTypeOp
                 then Exists ((elaborateNewName a1),(elaborateOpASTtoType a2 ctx))
                 else 
-                if oper = recursiveTypeOp
+                if oper ~=** recursiveTypeOp
                 then Rho ((elaborateNewName a1),(elaborateOpASTtoType a2 ctx))
                 else 
-                if oper = structureRefOp
+                if oper ~=** structureRefOp
                 then TypeVar (map elaborateUnknownName (flattenRight ast structureRefOp))
                 else
                 raise ElaborateFailure "Expected a type constructor"
@@ -123,70 +123,70 @@ struct
                 then (* elab app *)
                     foldl (fn (arg, acc) => App (acc,arg)) (ExprVar [getOriginalName oper]) (map (fn x => elaborateOpASTtoExpr x ctx)  l)
                 else
-                if oper = structureRefOp
+                if oper ~=** structureRefOp
                 then ExprVar (map elaborateUnknownName (flattenRight ast structureRefOp))
                 else
-                if oper = unitExprOp
+                if oper ~=** unitExprOp
                 then UnitExpr
                 else
-                if oper = projExprOp
+                if oper ~=** projExprOp
                 then Proj(elaborateOpASTtoExpr (hd l) ctx, elaborateUnknownName (snd l))
                 else 
-                if oper = appExprOp
+                if oper ~=** appExprOp
                 then App(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx)
                 else 
-                if oper = pairExprOp
+                if oper ~=** pairExprOp
                 then Tuple(map (fn x => elaborateOpASTtoExpr x ctx) (flattenRight ast pairExprOp))
                 else 
-                if oper = injExprOp
+                if oper ~=** injExprOp
                 then Inj( elaborateUnknownName (hd l), elaborateOpASTtoExpr (snd l) ctx)
                 else 
-                if oper = foldExprOp
+                if oper ~=** foldExprOp
                 then Fold( elaborateOpASTtoExpr (hd l) ctx)
                 else
-                if oper = unfoldExprOp
+                if oper ~=** unfoldExprOp
                 then Unfold( elaborateOpASTtoExpr (hd l) ctx)
                 else
-                if oper = caseExprOp
+                if oper ~=** caseExprOp
                 then let
                     val args = flattenRight (snd l) caseAlternativeOp
                     in Case (elaborateOpASTtoExpr (hd l) ctx, (map (fn x => 
                     case x of
                         OpAST(oper, [lbl, evar, expr]) => 
-                        if oper = caseClauseOp
+                        if oper ~=** caseClauseOp
                         then (elaborateUnknownName lbl, 
                         elaborateNewName evar, elaborateOpASTtoExpr expr ctx)
-                        else raise ElaborateFailure "Expected a case clause"
-                        | _ => raise ElaborateFailure "Expected a case clause"
+                        else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
+                        | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
             ) args))
             end
                 else 
-                if oper = typeAppExprOp
+                if oper ~=** typeAppExprOp
                 then TApp(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoType (snd l) ctx)
                 else
-                if oper = packExprOp
+                if oper ~=** packExprOp
                 then Pack(elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx)
                 else
-                if oper = unpackExprOp
+                if oper ~=** unpackExprOp
                 then Open(elaborateOpASTtoExpr (hd l) ctx, (elaborateNewName (snd l), elaborateNewName (hd (tl (tl l))), 
                 elaborateOpASTtoExpr (hd (tl (tl (tl (l))))) ctx))
                 else
-                if oper = lambdaExprOp
+                if oper ~=** lambdaExprOp
                 then Lam(elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx)
                 else
-                if oper = lambdaExprWithTypeOp
+                if oper ~=** lambdaExprWithTypeOp
                 then LamWithType(elaborateOpASTtoType (hd l) ctx, 
                 elaborateNewName (snd l), elaborateOpASTtoExpr (hd (tl (tl l))) ctx)
                 else
-                if oper = fixExprOp
+                if oper ~=** fixExprOp
                 then Fix(elaborateNewName (hd l), 
                 elaborateOpASTtoExpr (snd l) ctx)
                 else
-                if oper = typeLambdaExprOp
+                if oper ~=** typeLambdaExprOp
                 then TAbs(elaborateNewName (hd l), 
                 elaborateOpASTtoExpr (snd l) ctx) 
                 else
-                if oper = letinOp
+                if oper ~=** letinOp
                 then (
                     let val preprocessedTree = 
                         case (hd l) of
