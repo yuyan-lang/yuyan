@@ -50,42 +50,7 @@ struct
         else raise PreprocessMalformedAssoc s)
         end
 
-    fun parsePrecedence (s : UTF8String.t) : int = 
-    let open UTF8Char
-    in
-    foldl (fn (c, acc) => 
-        if c ~= (UTF8Char.fromString "零" NONE)
-        then acc * 10 + 0
-        else 
-        if c ~= (UTF8Char.fromString "一" NONE)
-        then acc * 10 + 1
-        else 
-        if c ~= (UTF8Char.fromString "二" NONE)
-        then acc * 10 + 2
-        else 
-        if c ~= (UTF8Char.fromString "三" NONE)
-        then acc * 10 + 3
-        else 
-        if c ~= (UTF8Char.fromString "四" NONE)
-        then acc * 10 + 4
-        else 
-        if c ~= (UTF8Char.fromString "五" NONE)
-        then acc * 10 + 5
-        else 
-        if c ~= (UTF8Char.fromString "六" NONE)
-        then acc * 10 + 6
-        else 
-        if c ~= (UTF8Char.fromString "七" NONE)
-        then acc * 10 + 7
-        else 
-        if c ~= (UTF8Char.fromString "八" NONE)
-        then acc * 10 + 8
-        else 
-        if c ~= (UTF8Char.fromString "九" NONE)
-        then acc * 10 + 9
-        else raise PreprocessMalformedPrecedence s
-    ) 0 s
-    end
+  
 
     (* Precedence hierachy: 
     

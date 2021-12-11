@@ -61,6 +61,16 @@ structure UTF8String = struct
     fun size(s : utf8string) : int = List.length s
 
 
+
+    fun fields ( f : UTF8Char.t -> bool) (s : utf8string) : utf8string list = 
+        #1 (foldl (fn (c, (res, pending)) => 
+            if f c  then ((res@[pending], []) 
+            ) else (res, pending@[c])
+        ) ([], []) s)
+
+    fun tokens ( f : UTF8Char.t -> bool) (s : utf8string) : utf8string list = 
+        List.filter (fn l => l <> []) (fields f s)
+
     fun containsChar (s : utf8string) (char : UTF8Char.t) = List.exists (fn sc =>sc=char) s
 
     fun containsAllChar (s : utf8string) (chars : UTF8Char.t list) =

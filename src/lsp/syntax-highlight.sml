@@ -40,9 +40,8 @@ struct
         fun getIndex (x : tokenmodifier) = case x of 
               TMDeclaration => 0
             | TMDefinition => 1
-        fun exp (base: int) (e : int) = if e = 0 then 1 else base * (exp base (e-1))
         
-        fun getCombinedBits (x : tokenmodifier list ) = foldr (fn (tm, acc) => exp 2 (getIndex tm) + acc) 0 x
+        fun getCombinedBits (x : tokenmodifier list ) = foldr (fn (tm, acc) => MathUtil.power 2 (getIndex tm) + acc) 0 x
     end
 
     fun uriToPath (uri : string) : string = 

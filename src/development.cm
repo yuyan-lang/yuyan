@@ -63,6 +63,9 @@ Library
   structure SourceLocation
   structure CompilationManager
   structure YYONUtil
+  structure NumberParser
+  structure MathUtil
+  structure YYON
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -101,6 +104,9 @@ is
   util/unique-id.sml
   util/mixed-str.sml
   util/yyon-util.sml
+  util/yyon.sml
+  util/math-util.sml
+  util/number-parser.sml
 
   passes/preprocess/preprocessing-pass.sml
   passes/preprocess/preprocessing-ast.sml

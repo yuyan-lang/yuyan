@@ -323,7 +323,7 @@ struct
             raise Fail "pp34"
             | (oper, [l1, l2, l3]) =>  
                 if oper ~=** opDeclarationOp
-                then POpDeclaration (tp l1, parseAssoc (tp l2), parsePrecedence (tp l3))
+                then POpDeclaration (tp l1, parseAssoc (tp l2), NumberParser.parseInteger (tp l3))
                 else raise Fail "pp85"
             | (oper, [l1]) =>  
                 if oper ~=** commentOp

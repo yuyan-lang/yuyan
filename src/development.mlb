@@ -18,6 +18,10 @@ local
         operators/structure/special-chars.sml
         util/utf8string.sml
         util/ordered.sml
+        util/math-util.sml
+        util/number-parser.sml
+        util/yyon.sml
+        util/yyon-util.sml
 
         util/mixed-str.sml
 
