@@ -63,6 +63,8 @@ local
         lsp/syntax-highlight.sml
         lsp/language-server-mode.sml
 
+        build-system/compilation-manager.sml
+        
         ui/repl-options.sml
         ui/type-check-and-eval.sml
         ui/repl.sml
