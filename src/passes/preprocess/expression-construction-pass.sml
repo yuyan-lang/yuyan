@@ -57,7 +57,13 @@ struct
         case ast of
         NewOpName(l1) => l1
         | _ => raise ElaborateFailure "Expect new name (perhaps internal)"
-    
+
+(* emit IntermediateParseOpAST through this function (optional) *)
+    fun configureAndConstructTypeCheckingASTTopLevel
+    (notifyParseOpAST : OpAST.t -> 'a) 
+    (notifyDeclarationParserResult : (operator * MixedStr.t list) -> 'b) 
+    : (MixedStr.t list) -> TypeCheckingAST.Signature =
+    let 
     fun elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): Label * Type = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 
@@ -218,14 +224,18 @@ struct
 
 
     and parseType (tbody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.Type = 
-        elaborateOpASTtoType (PrecedenceParser.parseMixfixExpression allTypeOps tbody)  ctx
+    let val parseTree = (PrecedenceParser.parseMixfixExpression allTypeOps tbody)
+        val _ = notifyParseOpAST parseTree
+        in elaborateOpASTtoType  parseTree ctx end
         handle PrecedenceParser.NoPossibleParse s => 
             raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
         | PrecedenceParser.AmbiguousParse s => 
             raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.")
     and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.Expr
-    = elaborateOpASTtoExpr (PrecedenceParser.parseMixfixExpression 
-                (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody) ctx 
+    =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
+                (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody)
+           val _ = notifyParseOpAST parseTree
+    in elaborateOpASTtoExpr parseTree ctx end
         handle PrecedenceParser.NoPossibleParse s => 
             raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
         | PrecedenceParser.AmbiguousParse s => 
@@ -304,8 +314,9 @@ struct
        fun getDeclContent (x : MixedStr.t) = case x of
         [MixedStr.UnparsedDeclaration y] => y
         | _ => raise ElaborateFailure "expecting a single unparsed declaration"
-       val res = 
-        case DeclarationParser.parseDeclarationSingleOutput declOps s of
+       val declParseTree = DeclarationParser.parseDeclarationSingleOutput declOps s
+       val _ = notifyDeclarationParserResult declParseTree
+       val res = case declParseTree of
             (oper, [l1, l2]) => 
             if oper ~=** typeMacroOp
             then PTypeMacro (tp l1, l2)
@@ -332,6 +343,7 @@ struct
                 if oper ~=** openStructureOp
                 then let 
                 val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp] (l1)
+                val _ = notifyParseOpAST parsedStructureRef
                 val names = flattenRight parsedStructureRef structureRefOp
                         in POpenStructure (map elaborateUnknownName names)
                 end 
@@ -355,5 +367,9 @@ struct
          map parseJudgment s
         (* | _ => [PDirectExpr s] *)
     )
+
+    in 
+    fn s => constructTypeCheckingASTTopLevel (preprocessAST s)
+    end
         
 end

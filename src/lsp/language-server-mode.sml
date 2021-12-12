@@ -58,14 +58,15 @@ struct
                             ("change", INT 1)
                         ]
                     ),
-                    ("hoverProvider", BOOL true),
+                    (* features should be developed incrementally *)
+                    (* ("hoverProvider", BOOL true),
                     ("declarationProvider", BOOL true),
                     ("definitionProvider", BOOL true),
                     ("typeDefinitionProvider", BOOL true),
                     ("implementationProvider", BOOL true),
                     ("referencesProvider", BOOL true),
                     ("documentHighlightProvider", BOOL true),
-                    ("documentSymbolProvider", BOOL true),
+                    ("documentSymbolProvider", BOOL true), *)
                     ("semanticTokensProvider", OBJECT[
                         ("full", BOOL true),
                         ("legend", OBJECT[
@@ -82,9 +83,10 @@ struct
             ])
         ]
     )
+    open JSONUtil
     in 
-    LanguageServer.Server ({
-    })
+    LanguageServer.Server 
+    ((*cm*) CompilationManager.initWithWorkingDirectory (asString (lookupField params "rootPath")))
     end
 
     fun handleJSONRequest (server: LanguageServer.t) (method: string) (params: JSON.value option)  : JSON.value = 
@@ -94,7 +96,7 @@ struct
      fun documentUri () = asString (get ((Option.valOf params),[SEL "textDocument", SEL "uri"]))
     in 
     case method of
-     "textDocument/semanticTokens/full" => SyntaxHighlight.highlightFile (documentUri())
+     "textDocument/semanticTokens/full" => SyntaxHighlight.highlightFile (documentUri()) (LanguageServer.getCM server)
      | _ => OBJECT[]
     end
         

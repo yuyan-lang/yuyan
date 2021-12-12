@@ -1,20 +1,33 @@
 structure TypeCheckAndEval =
 struct
+
+    fun printErr (s : string) = (TextIO.output(TextIO.stdErr,s) ; TextIO.flushOut TextIO.stdErr)
+
     fun typeCheckAndEval (input : string)(options : ReplOptions.t) (filename: string)  =
-        (let fun cprint x s = if x <= (#verbose options) then print s else () 
+        (let fun cprint x s = if x <= (#verbose options) then printErr s else () 
             val startTime = Time.now()
-            val content  = (UTF8String.fromStringAndFile input filename)
+            val cm = CompilationManager.initWithWorkingDirectory ""
+            (* val content  = (UTF8String.fromStringAndFile input filename) *)
+            (* val _ = cprint 1 (PrettyPrint.show_utf8string content) *)
             (* val whitespaceRemoved = UTF8String.removeAllWhitespace content
             val _ = cprint 1 "----------------- White Space Removal Complete -------------- \n"
             val _ = cprint 2 (UTF8String.toString whitespaceRemoved^"\n") *)
             (* val stmtAST = MixedStr.makeDecl  whitespaceRemoved *)
-            val stmtAST = MixedStr.makeDecl content
+            (* val stmtAST = MixedStr.makeDecl content *)
             val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_mixedstrs stmtAST ^ "\n")
-            val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST)
-            val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST)
-            val typeCheckingAST = ExpressionConstructionPass.constructTypeCheckingASTTopLevel(preprocessAST)
+            (* val _ = cprint 2 (PrettyPrint.show_mixedstrs stmtAST ^ "\n") *)
+            (* val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST) *)
+            (* val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n" *)
+            (* val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST) *)
+            val cm' = CompilationManager.compileFile (filename) cm
+            open CompilationManager
+            val YYCM(_, YYModule l, _) = cm'
+            val (typeCheckingAST, tokens) = ListSearchUtil.lookup l filename
+            val data = SyntaxHighlight.getDataFromTokens tokens
+            val _ = cprint 1 "----------------- TOKENS: -------------- \n"
+            val _ = cprint 2 (PrettyPrint.show_tokens tokens)
+            val _ = cprint 1 "----------------- TOKENS DATA (LSP): -------------- \n"
+            val _ = cprint 2 (PrettyPrint.show_intlist data)
             val _ = cprint 1 "----------------- Type Checking AST Constructed -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_typecheckingSig typeCheckingAST)
             val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"

@@ -11,6 +11,8 @@ struct
   fun show_rawastsPlain (l : RawAST.RawAST list) =  (String.concat (map show_rawast l))
   fun show_rawasts (l : RawAST.RawAST list) = "("^ (String.concatWith ", " (map show_rawast l)) ^")"  *)
 
+  fun show_intlist (x : int list) : string =
+  String.concatWith "," (map Int.toString x)
   fun show_strlist (x : UTF8String.t list) : string =
   String.concatWith ", " (map UTF8String.toString x)
   fun show_sttrlist (x : StructureName.t list) : string =
@@ -210,7 +212,14 @@ and show_typecheckingSig x = let
 in
           String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
 end
+fun show_source_location ((fname, line, col) : SourceLocation.t) = "[" ^ Int.toString line ^ ", "^ Int.toString col ^ "]"
+fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.t) = 
+  "[" ^ Int.toString ls ^ ", "^ Int.toString cs ^ "," ^ Int.toString le ^ ", "^Int.toString ce ^"]"
+fun show_utf8char (UTF8Char.UTF8Char(c, loc)) = UTF8.implode [c] ^ (case loc of SOME loc => show_source_location(loc) | NONE => "[NOLOC]")
+fun show_utf8string x = String.concatWith "+" (map show_utf8char x)
 fun show_utf8strings x = String.concatWith ", " (map UTF8String.toString x)
+fun show_token (CompilationTokens.Token(range, str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range range
+fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
 fun show_typecheckingpassmappping x = let
 open TypeCheckingASTOps
 in

@@ -87,6 +87,23 @@ structure UTF8String = struct
     | [s] => s
     | (x ::xs) => x @ sep @ concatWith sep xs
 
+    fun getSourceRange (s : utf8string ): SourceRange.t = 
+        case s of 
+            [] => raise Fail "attempt to get sourcerange for empty string"
+            | (UTF8Char.UTF8Char(c, loc) :: t) => (
+                case loc of 
+                    NONE => raise Fail "attempt to get sourcerange for NONE location"
+                    | SOME(fname, startLine, startCol) => 
+                        let val UTF8Char.UTF8Char(lc, lloc) = List.nth(s, length s -1)
+                        in case lloc of 
+                            NONE => raise Fail "99: internal : should not happen: either all chars have range info, or not!"
+                            | SOME(_, endLine, endCol) => 
+                                SourceRange.StartEnd (fname, startLine, startCol, endLine, endCol+1)
+                        end
+            )
+
+        
+
 (* move this functionality to mixed string directly *)
     (* fun removeAllWhitespace (s : utf8string ) : utf8string =
         (List.filter (fn c => not (List.exists (fn x => UTF8Char.semanticEqual x c) [

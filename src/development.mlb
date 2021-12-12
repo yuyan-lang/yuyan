@@ -14,6 +14,9 @@ local
     in
         util/unique-id.sml
         util/source-location.sml
+        util/uri-util.sml
+        util/list-search-util.sml
+        util/source-range.sml
         util/utf8char.sml
         operators/structure/special-chars.sml
         util/utf8string.sml
@@ -21,9 +24,9 @@ local
         util/math-util.sml
         util/number-parser.sml
         util/yyon.sml
-        util/yyon-util.sml
 
         util/mixed-str.sml
+        util/yyon-util.sml
 
         operators/structure/operators.sml
         operators/structure/op-ast.sml
@@ -42,6 +45,8 @@ local
         execution/k-machine.sml
         execution/persistent-k-machine.sml
 
+        build-system/compilation-tokens.sml
+        
         parser/parse-ast.sml
         parser/bracket-scanner.sml
         passes/typechecking/type-checking-ast-ops.sml
@@ -63,11 +68,12 @@ local
 
         passes/preprocess/expression-construction-pass.sml
         
+        build-system/compilation-manager.sml
+        
         lsp/language-server.sml
         lsp/syntax-highlight.sml
         lsp/language-server-mode.sml
 
-        build-system/compilation-manager.sml
         
         ui/repl-options.sml
         ui/type-check-and-eval.sml

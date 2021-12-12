@@ -74,6 +74,8 @@ struct
     val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 320 [1]
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 300 [1]
 
+    val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)
+
     val unitExprOp = Operators.parseOperatorStr "元" true false 720 []
     val projExprOp = Operators.parseOperatorStr "〇中〇" true false 700 []
     val appExprOp = Operators.parseOperatorStr "〇于〇" true true 690 []

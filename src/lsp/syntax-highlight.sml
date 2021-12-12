@@ -4,26 +4,48 @@ structure SyntaxHighlight =
 struct
     structure TokenType =
     struct
-        datatype tokentype = TTString  
+        (* datatype tokentype = TTString  
                            | TTComment
                            | TTKeyword
                            | TTNumber
-                           | TTOperator
+                           | TTOperator *)
+        open CompilationManager
+                           
         datatype t = tokentype
 
-        val allTokenTypes = [TTString, TTComment, TTKeyword, TTNumber, TTOperator]
-        fun getString (x : tokentype) = case x of 
-         TTString   => "string"
-        | TTComment => "comment"
-        | TTKeyword => "keyword"
-        | TTNumber => "number"
-        | TTOperator => "operator"
-        fun getIndex (x : tokentype) = case x of 
-         TTString   => 0
-        | TTComment => 1
-        | TTKeyword => 2
-        | TTNumber => 3
-        | TTOperator => 4
+        val allTokenTypes = [TkTpStructureKeyword
+                       , TkTpTypeKeyword
+                       , TkTpExprKeyword
+                       , TkTpIdentifierBinder
+                       , TkTpIdentifierReference
+                       , TkTpCustomOperatorName
+                       , TkTpStringLiteral
+                       , TkTpLabel
+                       ,TkTpComment
+                       ]
+
+
+        fun getString (x : tokenType) = case x of 
+                        TkTpStructureKeyword => "TkTpStructureKeyword"
+                       | TkTpTypeKeyword =>  "TkTpTypeKeyword"
+                       | TkTpExprKeyword => "TkTpExprKeyword"
+                       | TkTpIdentifierBinder => "TkTpIdentifierBinder"
+                       | TkTpIdentifierReference => "TkTpIdentifierReference"
+                       | TkTpCustomOperatorName => "TkTpCustomOperatorName"
+                       | TkTpStringLiteral => "TkTpStringLiteral"
+                       | TkTpLabel  => "TkTpLabel"
+                       | TkTpComment => "TkTpComment"
+
+        fun getIndex (x : tokenType) = case x of 
+          TkTpStructureKeyword => 0
+        | TkTpTypeKeyword =>  1
+        | TkTpExprKeyword => 2
+        | TkTpIdentifierBinder => 3
+        | TkTpIdentifierReference => 4
+        | TkTpCustomOperatorName => 5
+        | TkTpStringLiteral => 6
+        | TkTpLabel  => 7
+        | TkTpComment => 8
 
     end
 
@@ -44,18 +66,35 @@ struct
         fun getCombinedBits (x : tokenmodifier list ) = foldr (fn (tm, acc) => MathUtil.power 2 (getIndex tm) + acc) 0 x
     end
 
-    fun uriToPath (uri : string) : string = 
-        if String.isPrefix "file://" uri
-        then String.extract (uri, String.size "file://", NONE)
-        else uri
 
-    fun highlightFile (fileUri : string) : JSON.value = 
+open CompilationManager
+    fun getDataFromTokens (tokens : token list) : int list= 
+    let val sorted = tokens
+    val (_, result) = 
+        foldl (fn (Token(SourceRange.StartEnd(_, ls, cs, le, ce), _,TokenInfo tktp), 
+            ((pls, pcs), data))=> 
+            ((ls, cs),
+            data@[ls - pls, 
+                if ls = pls then cs - pcs else cs, 
+                if ls = le then ce - cs else ce, 
+                TokenType.getIndex tktp,
+                0
+                ])
+            ) ((0, 0), []) sorted
+        in  result end
+
+    fun highlightFile (fileUri : string) (cm : CompilationManager.compilationmanager): JSON.value = 
     let 
         open JSON
-        val fileContent = TextIO.inputAll (TextIO.openIn (uriToPath fileUri))
+        open CompilationManager
+        val filePath = (URIUtil.uriToPath fileUri)
+        val YYCM(_, YYModule l, _) = CompilationManager.compileFile filePath cm
+        val (_, tokens) = ListSearchUtil.lookup l filePath
+        val data = getDataFromTokens tokens
     in 
-    OBJECT [
-        ("f", STRING fileContent)
-    ]
+        OBJECT[
+            ("data", ARRAY (map INT (map (fn (x : int) => IntInf.fromInt x) data)))
+        ]
+
     end
 end
