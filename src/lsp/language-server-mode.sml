@@ -19,12 +19,19 @@ struct
 
     fun sendJSON (x : JSON.value) : unit = 
     (
-        (* print "will print"; *)
-        (* JSONPrinter.print(TextIO.stdErr, x); *)
-        TextIO.output (TextIO.stdOut, "Content-Length: -1\r\n\r\n");
+        let (* hack to get content length *)
+        val acc = ref (nil : TextPrimIO.vector_slice list) 
+        val writer = TextPrimIO.WR { name = "jsonhack", chunkSize = 1, writeVec = SOME (fn v => (  acc := !acc@[v]; 1)), writeArr = NONE, writeVecNB = NONE, writeArrNB = NONE, block = NONE, canOutput = NONE, getPos = NONE, setPos = NONE, endPos = NONE, verifyPos = NONE, close = fn () => (), ioDesc = NONE }
+        val stream = TextIO.mkOutstream (TextIO.StreamIO.mkOutstream (TextPrimIO.augmentWriter writer, IO.NO_BUF));
+        val _ = JSONPrinter.print (stream, x);
+        val contentLength = length(!acc)
+        in
+        TextIO.output (TextIO.stdOut, "Content-Length: "^Int.toString contentLength ^"\r\n\r\n");
+        print ("Content-Length: "^Int.toString contentLength ^"\r\n\r\n");
         JSONPrinter.print(TextIO.stdOut, x); 
-        TextIO.output (TextIO.stdOut, "\r\n"); 
-        TextIO.flushOut TextIO.stdOut)
+        (* TextIO.output (TextIO.stdOut, "\r\n");  *)
+        TextIO.flushOut TextIO.stdOut
+        end)
 
     exception InputLineException 
     exception InputNException of int

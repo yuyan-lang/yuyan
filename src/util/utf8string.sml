@@ -48,12 +48,12 @@ structure UTF8String = struct
         let val char' = UTF8Char.fromUTF8Char char (SOME (fp, line, col))
         in
             if  semanticEqual char' (SpecialChars.newline)
-            then (line+1, 1, str@[char']) (* we choose to keep everything here because mixed string might not want to remove spaces inside string *)
+            then (line+1, 0, str@[char']) (* we choose to keep everything here because mixed string might not want to remove spaces inside string *)
             else if semanticEqual char' SpecialChars.tab orelse semanticEqual char' SpecialChars.space
             then (line, col+1, str@[char'])
             else (line, col+1, str@[char'])
         end
-        ) (1,1,[]) (UTF8.explode(s)))
+        ) (0,0,[]) (UTF8.explode(s)))
     end
     fun toString(s : utf8string) : string = UTF8.implode((map UTF8Char.asUTF8WChar s))
 
