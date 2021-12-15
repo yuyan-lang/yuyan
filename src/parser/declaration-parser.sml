@@ -62,11 +62,11 @@ struct
             (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ MixedStr.toString exp ^ "\n"); *)
         case l of
             [] => SOME({opComps=[], args=[]})
-            | [OpCompExpr] => SOME({opComps=[], args=[exp]})
+            | [OpCompExpr] => SOME({opComps=[OpCompExpr], args=[exp]})
             | (OpCompExpr :: (OpCompString s) :: t) => 
                 let val  (parsed, remaining) = parseUntil s exp
                 in (case  parseDeclarationSingleOp (OpCompString s :: t) remaining
-                    of SOME({opComps=opComps, args=args}) => SOME({opComps=opComps, args=parsed::args})
+                    of SOME({opComps=opComps, args=args}) => SOME({opComps=(OpCompExpr :: opComps), args=parsed::args})
                     | NONE => NONE)
                 end
             | ((OpCompString s) :: t) => (case parseStr s exp of 
@@ -81,12 +81,15 @@ struct
         
         (* inverse of getParseComponents *)
     fun updateOperator (oper : operator) (opComps : opComponentType list) : operator = 
+    (
+        (* print ("updateOperator " ^ Int.toString (length opComps)^ " opComps : "^ PrettyPrint.show_opcomptypes opComps); *)
         case oper of 
-            Operator(pred, Prefix, NoneAssoc, l , uid) => Operator(pred, Prefix, NoneAssoc, List.take(opComps, length l -1) , uid) 
+            Operator(pred, Prefix, NoneAssoc, l , uid) => Operator(pred, Prefix, NoneAssoc, List.take(opComps, length opComps -1) , uid) 
             | Operator(pred, Postfix, NoneAssoc, l , uid) => Operator(pred, Postfix, NoneAssoc, tl opComps , uid) 
-            | Operator(pred, Infix, NoneAssoc, l , uid) => Operator(pred, Infix, NoneAssoc, List.take(tl opComps, length l -2) , uid)
+            | Operator(pred, Infix, NoneAssoc, l , uid) => Operator(pred, Infix, NoneAssoc, List.take(tl opComps, length opComps -2) , uid)
             | Operator(pred, Closed, NoneAssoc, l , uid) => Operator(pred, Closed, NoneAssoc, opComps , uid) 
             | _ => raise Fail "Can only handle nonassoc ops: dp20"
+    )
 
 
     fun getParseComponents (oper : operator): operator * opComponentType list = 

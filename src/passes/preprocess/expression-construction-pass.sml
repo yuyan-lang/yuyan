@@ -59,9 +59,14 @@ struct
         | _ => raise ElaborateFailure "Expect new name (perhaps internal)"
 
 (* emit IntermediateParseOpAST through this function (optional) *)
+(* the configure operation notifies the caller about infomrations useful 
+for storing token information (i.e., parse tree).
+If the caller is not interested in the information,
+please provide trivial functions *)
     fun configureAndConstructTypeCheckingASTTopLevel
     (notifyParseOpAST : OpAST.t -> 'a) 
     (notifyDeclarationParserResult : (operator * MixedStr.t list) -> 'b) 
+    (notifyDeclarationParsingResult : PreprocessingAST.t -> 'c) 
     : (MixedStr.t list) -> TypeCheckingAST.Signature =
     let 
     fun elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): Label * Type = 
