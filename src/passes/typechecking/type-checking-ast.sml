@@ -23,38 +23,69 @@ structure TypeCheckingAST = struct
 
 
 
+    (* CExpr for checked expr *)
+    datatype CExpr = CExprVar of StructureName.t
+                    | CUnitExpr
+                    | CTuple of (Label * Type * CExpr) list 
+                    | CProj of (Label * Type) list * CExpr * Label
+                    | CInj of Label * CExpr * (Label * Type) list
+                    | CCase of ((Label * Type) list * CExpr) * (Label * EVar * CExpr) list * Type
+                    | CLam of (Type * EVar) * (Type * CExpr)
+                    | CLamWithType of Type * EVar * (Type * CExpr)
+                    | CApp of (Type * CExpr) * (Type * CExpr) (* Capp (return type) (arg type) *)
+                    | CTAbs of TVar * (Type * CExpr)
+                    | CTApp of (Type * CExpr) * Type
+                    | CPack of Type * CExpr
+                    | COpen of CExpr * (TVar * EVar * CExpr)
+                    | CFold of CExpr
+                    | CUnfold of CExpr
+                    | CFix of EVar * CExpr
+                    | CStringLiteral of UTF8String.t
+                    | CLetIn of CDeclaration list * CExpr
 
-    datatype Expr = ExprVar of StructureName.t
-                    | UnitExpr
-                    | Tuple of Expr list
-                    | Proj of Expr * Label
-                    | Inj of Label * Expr
-                    | Case of Expr * (Label * EVar * Expr) list
-                    | Lam of EVar * Expr
-                    | LamWithType of Type * EVar * Expr
-                    | App of Expr * Expr
-                    | TAbs of TVar * Expr
-                    | TApp of Expr * Type
-                    | Pack of Type * Expr
-                    | Open of Expr * (TVar * EVar * Expr)
-                    | Fold of Expr
-                    | Unfold of Expr
-                    | Fix of EVar * Expr
-                    | StringLiteral of UTF8String.t
-                    | LetIn of Declaration list * Expr
-
-
-    and Declaration = 
-                        TypeMacro of UTF8String.t * Type
-                       | TermTypeJudgment of UTF8String.t * Type
-                       | TermMacro of UTF8String.t * Expr
-                       | TermDefinition of UTF8String.t * Expr
-                       | DirectExpr of Expr
-                       | Structure of bool * UTF8String.t * Declaration list
+    and CDeclaration = 
+                        CTypeMacro of UTF8String.t * Type
+                       | CTermTypeJudgment of UTF8String.t * Type
+                       | CTermMacro of UTF8String.t * CExpr
+                       | CTermDefinition of UTF8String.t * CExpr
+                       | CDirectExpr of CExpr
+                       | CStructure of bool * UTF8String.t * CDeclaration list
                        (*  public visible * name * signature *)
-                       | OpenStructure of StructureName.t
+                       | COpenStructure of StructureName.t
 
-    type Signature = Declaration list
+    (* RExpr for raw expr *)
+    datatype RExpr = RExprVar of StructureName.t
+                    | RUnitExpr
+                    | RTuple of RExpr list
+                    | RProj of RExpr * Label
+                    | RInj of Label * RExpr
+                    | RCase of RExpr * (Label * EVar * RExpr) list
+                    | RLam of EVar * RExpr
+                    | RLamWithType of Type * EVar * RExpr
+                    | RApp of RExpr * RExpr
+                    | RTAbs of TVar * RExpr
+                    | RTApp of RExpr * Type
+                    | RPack of Type * RExpr
+                    | ROpen of RExpr * (TVar * EVar * RExpr)
+                    | RFold of RExpr
+                    | RUnfold of RExpr
+                    | RFix of EVar * RExpr
+                    | RStringLiteral of UTF8String.t
+                    | RLetIn of RDeclaration list * RExpr
+
+
+    and RDeclaration = 
+                         RTypeMacro of UTF8String.t * Type
+                       | RTermTypeJudgment of UTF8String.t * Type
+                       | RTermMacro of UTF8String.t * RExpr
+                       | RTermDefinition of UTF8String.t * RExpr
+                       | RDirectExpr of RExpr
+                       | RStructure of bool * UTF8String.t * RDeclaration list
+                       (*  public visible * name * signature *)
+                       | ROpenStructure of StructureName.t
+
+    type CSignature = CDeclaration list
+    type RSignature = RDeclaration list
 
 
 end
