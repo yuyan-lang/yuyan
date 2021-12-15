@@ -48,7 +48,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | NullType => []
             | BuiltinType(b) => []
 
-    fun freeEVar (e : Expr) : StructureName.t list = 
+    (* fun freeEVar (e : Expr) : StructureName.t list = 
         case e of
             ExprVar v => [v]
             | UnitExpr => []
@@ -69,7 +69,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | Fold e2 => freeEVar e2
             | Unfold e2 => freeEVar e2
             | Fix (ev, e)=> List.filter (fn ev' => ev' <> [ev]) (freeEVar e)
-            | StringLiteral l => []
+            | StringLiteral l => [] *)
 
     fun uniqueName () = UTF8String.fromString (Int.toString (UID.next()))
 
@@ -101,64 +101,64 @@ datatype 'a gcontext = Context of StructureName.t * bool *
     end
 
 (* no capture as we're only interested in types *)
-    fun substTypeInExpr (tS : Type) (x : StructureName.t) (e : Expr) = 
+    fun substTypeInRExpr (tS : Type) (x : StructureName.t) (e : RExpr) = 
     let 
     in
         case e of
-            ExprVar v => ExprVar v
-            | UnitExpr => UnitExpr
-            | Tuple l => Tuple (map (substTypeInExpr tS x) l)
-            | Inj (l, e) => Inj (l, substTypeInExpr tS x e)
-            | Proj (e, l) => Proj (substTypeInExpr tS x e, l)
-            | Case (e, l) => Case (substTypeInExpr tS x e, (
+            RExprVar v => RExprVar v
+            | RUnitExpr => RUnitExpr
+            | RTuple l => RTuple (map (substTypeInRExpr tS x) l)
+            | RInj (l, e) => RInj (l, substTypeInRExpr tS x e)
+            | RProj (e, l) => RProj (substTypeInRExpr tS x e, l)
+            | RCase (e, l) => RCase (substTypeInRExpr tS x e, (
                 (map (fn (l, ev, e) => 
-                (l, ev, substTypeInExpr tS x e) ) l)
+                (l, ev, substTypeInRExpr tS x e) ) l)
             ))
-            | Lam (ev, e)=> Lam (ev, substTypeInExpr tS x e)
-            | LamWithType (t, ev, e) => LamWithType (substTypeInType tS x t, ev, substTypeInExpr tS x e)
-            | App (e1, e2) => App (substTypeInExpr tS x e1, substTypeInExpr tS x e2)
-            | TAbs (tv, e2) => (
+            | RLam (ev, e)=> RLam (ev, substTypeInRExpr tS x e)
+            | RLamWithType (t, ev, e) => RLamWithType (substTypeInType tS x t, ev, substTypeInRExpr tS x e)
+            | RApp (e1, e2) => RApp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2)
+            | RTAbs (tv, e2) => (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
-                                in TAbs (tv', substTypeInExpr tS x 
-                                    (substTypeInExpr (TypeVar [tv']) [tv] e2)) 
+                                in RTAbs (tv', substTypeInRExpr tS x 
+                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
-            if [tv] ~~~= x then TAbs (tv, e2)
-             else TAbs (tv, substTypeInExpr tS [tv] e2)
+            if [tv] ~~~= x then RTAbs (tv, e2)
+             else RTAbs (tv, substTypeInRExpr tS [tv] e2)
             ) 
-            | TApp (e2, t) => TApp(substTypeInExpr tS x e2, substTypeInType tS x t )
-            | Pack (t, e2) => Pack(substTypeInType tS x t, substTypeInExpr tS x e2)
-            | Open (e1, (tv, ev, e2)) => Open(
-                substTypeInExpr tS x e1, (
+            | RTApp (e2, t) => RTApp(substTypeInRExpr tS x e2, substTypeInType tS x t )
+            | RPack (t, e2) => RPack(substTypeInType tS x t, substTypeInRExpr tS x e2)
+            | ROpen (e1, (tv, ev, e2)) => ROpen(
+                substTypeInRExpr tS x e1, (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
-                                in (tv', ev, substTypeInExpr tS x 
-                                    (substTypeInExpr (TypeVar [tv']) [tv] e2)) 
+                                in (tv', ev, substTypeInRExpr tS x 
+                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
-             (tv, ev, substTypeInExpr tS [tv] e2))
+             (tv, ev, substTypeInRExpr tS [tv] e2))
             )
-            | Fold e2 => Fold (substTypeInExpr tS x e2)
-            | Unfold e2 => Unfold (substTypeInExpr tS x e2)
-            | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e)
-            | StringLiteral l => StringLiteral l
+            | RFold e2 => RFold (substTypeInRExpr tS x e2)
+            | RUnfold e2 => RUnfold (substTypeInRExpr tS x e2)
+            | RFix (ev, e)=> RFix (ev, substTypeInRExpr tS x e)
+            | RStringLiteral l => RStringLiteral l
     end
 
-    fun substituteTypeInDeclaration (tS : Type) (x : StructureName.t) (d : Declaration) = 
+    fun substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
       case d of
-         TypeMacro (y, t) => if x ~~~= [y] then raise TypeCheckingFailure "Cannot have identical types" else 
-            TypeMacro (y, substTypeInType tS x t)
-        | TermTypeJudgment(ename, t) => TermTypeJudgment(ename, substTypeInType tS x t)
-        | TermMacro (n, e) => TermMacro(n, substTypeInExpr tS x e)
-        | TermDefinition(n, e) => TermDefinition (n, substTypeInExpr tS x e)
-        | DirectExpr(e) => DirectExpr (substTypeInExpr tS x e)
+         RTypeMacro (y, t) => if x ~~~= [y] then raise TypeCheckingFailure "Cannot have identical types" else 
+            RTypeMacro (y, substTypeInType tS x t)
+        | RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInType tS x t)
+        | RTermMacro (n, e) => RTermMacro(n, substTypeInRExpr tS x e)
+        | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRExpr tS x e)
+        | RDirectExpr(e) => RDirectExpr (substTypeInRExpr tS x e)
     
-    fun substituteTypeInSignature (tS : Type) (x : StructureName.t) (s : Signature) : Signature = 
+    fun substituteTypeInRSignature (tS : Type) (x : StructureName.t) (s : RSignature) : RSignature = 
         case s of
             [] => []
-            | (d :: ds) => substituteTypeInDeclaration tS x d :: 
-            substituteTypeInSignature tS x ds
+            | (d :: ds) => substituteTypeInRDeclaration tS x d :: 
+            substituteTypeInRSignature tS x ds
 
 (* semantic type equivalence *)
     and typeEquiv (ctx : (Type * Type) list) (t1:Type) (t2:Type)  :bool = 

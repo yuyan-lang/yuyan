@@ -148,7 +148,7 @@ in case x of
 fun show_typecheckingType x = let
 open TypeCheckingAST
 val st = show_typecheckingType
-val se = show_typecheckingExpr
+val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
 in case x of
@@ -168,44 +168,44 @@ in case x of
 end
 
 
-and show_typecheckingExpr x = let
+and show_typecheckingRExpr x = let
 open TypeCheckingAST
 val st = show_typecheckingType
-val se = show_typecheckingExpr
+val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
 in case x of
-ExprVar v => sst v
-                    | UnitExpr => "⟨⟩"
-                    | Tuple (l) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
-                    | Proj (e, lbl) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
-                    | Inj  ( lbl,e) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
-                    | Case (e, l)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
-                    | Lam (x, e) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
-                    | LamWithType (t, x, e) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
-                    | App (e1, e2)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
-                    | TAbs (x, e) => "(Λ" ^ ss x ^ "." ^ se e ^ ")"
-                    | TApp (e1, e2)=> "("^ se e1 ^ " ["^ st e2 ^"])"
-                    | Pack (t, e)=> "pack("^ st t ^ ", "^ se e ^")"
-                    | Open (e, (t, x, e2))=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
-                    | Fold (e) => "fold(" ^ se e ^")"
-                    | Unfold (e) => "unfold("^  se e ^")"
-                    | Fix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
-                    | StringLiteral l => "\"" ^ ss l ^"\""
-                    | LetIn (s, e) => "(let " ^ show_typecheckingSig s ^ " in "^  se e  ^" end"
+RExprVar v => sst v
+                    | RUnitExpr => "⟨⟩"
+                    | RTuple (l) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
+                    | RProj (e, lbl) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
+                    | RInj  ( lbl,e) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
+                    | RCase (e, l)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
+                    | RLam (x, e) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | RLamWithType (t, x, e) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
+                    | RApp (e1, e2)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
+                    | RTAbs (x, e) => "(Λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | RTApp (e1, e2)=> "("^ se e1 ^ " ["^ st e2 ^"])"
+                    | RPack (t, e)=> "pack("^ st t ^ ", "^ se e ^")"
+                    | ROpen (e, (t, x, e2))=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
+                    | RFold (e) => "fold(" ^ se e ^")"
+                    | RUnfold (e) => "unfold("^  se e ^")"
+                    | RFix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
+                    | RStringLiteral l => "\"" ^ ss l ^"\""
+                    | RLetIn (s, e) => "(let " ^ show_typecheckingSig s ^ " in "^  se e  ^" end"
                 end
 
 and show_typecheckingDecl x = let
 open TypeCheckingAST
 in case x of 
-   TypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingType tbody
-  | TermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingType tbody
-  | TermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingExpr ebody
-  | TermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingExpr  ebody
-  | DirectExpr(ebody) => "/* eval */ " ^ show_typecheckingExpr ebody ^ "/* end eval */ " 
-  | Structure(v, name, ebody) => (if v then "public" else "private") ^
+    RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingType tbody
+  | RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingType tbody
+  | RTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingRExpr ebody
+  | RTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingRExpr  ebody
+  | RDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingRExpr ebody ^ "/* end eval */ " 
+  | RStructure(v, name, ebody) => (if v then "public" else "private") ^
     " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingSig ebody ^ "}"
-  | OpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
+  | ROpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
   end
 
 and show_typecheckingSig x = let

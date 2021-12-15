@@ -26,22 +26,21 @@ structure TypeCheckingAST = struct
     (* CExpr for checked expr *)
     datatype CExpr = CExprVar of StructureName.t
                     | CUnitExpr
-                    | CTuple of (Label * Type * CExpr) list 
-                    | CProj of (Label * Type) list * CExpr * Label
-                    | CInj of Label * CExpr * (Label * Type) list
-                    | CCase of ((Label * Type) list * CExpr) * (Label * EVar * CExpr) list * Type
-                    | CLam of (Type * EVar) * (Type * CExpr)
-                    | CLamWithType of Type * EVar * (Type * CExpr)
-                    | CApp of (Type * CExpr) * (Type * CExpr) (* Capp (return type) (arg type) *)
-                    | CTAbs of TVar * (Type * CExpr)
-                    | CTApp of (Type * CExpr) * Type
-                    | CPack of Type * CExpr
-                    | COpen of CExpr * (TVar * EVar * CExpr)
-                    | CFold of CExpr
-                    | CUnfold of CExpr
-                    | CFix of EVar * CExpr
-                    | CStringLiteral of UTF8String.t
-                    | CLetIn of CDeclaration list * CExpr
+                    | CTuple of CExpr list * Type (* type is Prod *)
+                    | CProj of CExpr * Label * Type (* type is Prod *)
+                    | CInj of Label * CExpr  * Type (* type is  Sum *)
+                    | CCase of (Type (*type is Sum *) * CExpr) * (Label * EVar * CExpr) list * Type (* type is result type *)
+                    | CLam of  EVar * CExpr * Type (* type is Func *)
+                    | CApp of  CExpr * CExpr (* type is Func *)
+                    | CTAbs of TVar * CExpr (* type is Forall *)
+                    | CTApp of CExpr * Type (* type is Forall *)
+                    | CPack of Type * CExpr (* type is Exists *)
+                    | COpen of (Type (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * Type(* type is return type *)
+                    | CFold of CExpr (* type is Rho *)
+                    | CUnfold of CExpr (* type is Rho *)
+                    | CFix of EVar * CExpr * Type (* type is the typ of the expression *)
+                    | CStringLiteral of UTF8String.t 
+                    | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
 
     and CDeclaration = 
                         CTypeMacro of UTF8String.t * Type
