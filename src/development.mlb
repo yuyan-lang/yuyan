@@ -12,6 +12,8 @@ local
        "nonexhaustiveMatch ignore"
        "allowExtendedTextConsts true"
     in
+        util/string-dict.sml
+        util/debug-print.sml
         util/unique-id.sml
         util/source-location.sml
         util/uri-util.sml
@@ -68,6 +70,7 @@ local
 
         passes/preprocess/expression-construction-pass.sml
         
+        build-system/compilation-module.sml
         build-system/compilation-manager.sml
         
         lsp/language-server.sml

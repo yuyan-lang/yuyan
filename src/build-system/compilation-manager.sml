@@ -10,14 +10,17 @@ structure CompilationManager = struct
                   structure Y = IntHashable)))
   
   open CompilationTokens
-    datatype yymodule = YYModule of 
-             (string * (TypeCheckingAST.Signature
-              (* * token AllTokensTable.table *)
-              * token list
-              ) ) list
-    datatype compilationmanager = 
-        YYCM of (UTF8String.t * yymodule) list  * yymodule * string
-        (* importedModules , currentModule, pwd *)
+  open CompilationModule
+    
+    (* the components of compilation manager contain ref types, 
+    and they can change across method calls *)
+    type compilationmanager = 
+         {
+            importedModules: (UTF8String.t * yymodule) list  (* imported modules *)
+            , currentModule : yymodule ref (* current module (pwd) *)
+            , pwd : string (* pwd *)
+            , fileBuffer: UTF8String.t StrDict.dict ref (* file content buffer, mainly for LSP *)
+        }
 
     type t = compilationmanager
 
@@ -71,11 +74,28 @@ structure CompilationManager = struct
         ((oper, _) : operator * MixedStr.t list) : unit = 
             updateUsefulTokensFromOperator tokensInfo oper (TokenInfo TkTpStructureKeyword)
 
+    fun updateContentForFilepath (filepath : string) (content : UTF8String.t) (cm : compilationmanager) : unit = 
+             (
+                 (#fileBuffer cm) := StrDict.insert (!(#fileBuffer cm)) filepath content
+                 ;
+                 DebugPrint.p ("The content for "^ filepath ^ " is now " ^ UTF8String.toString (getContentForFilepath filepath cm))
+             )
+
+    and getContentForFilepath (filepath : string ) (cm : compilationmanager) :  UTF8String.t = 
+        case StrDict.find (!(#fileBuffer cm)) filepath of
+            SOME(content) => content
+            | NONE =>  let 
+            val content = UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn filepath)) filepath
+            val _ = updateContentForFilepath filepath content cm
+            in content end
+
+
 
     
 
-    fun compileFile (filepath : string) (cm : compilationmanager ) : compilationmanager =
-    let val content = UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn filepath)) filepath
+    fun compileFile (filepath : string) (cm : compilationmanager ) : unit =
+    let val content = getContentForFilepath filepath cm
+        val _ = DebugPrint.p ("[compileFile] The content for "^ filepath ^ " is now " ^ UTF8String.toString (getContentForFilepath filepath cm))
         val stmtAST = MixedStr.makeDecl content
         val tokensInfo : token list ref = ref []
         val typeCheckingAST = ExpressionConstructionPass.configureAndConstructTypeCheckingASTTopLevel
@@ -88,12 +108,17 @@ structure CompilationManager = struct
                 (fn (Token(SourceRange.StartEnd(_, l1, c1, _, _),_,_), Token(SourceRange.StartEnd(_, l2, c2, _, _),_, _))
                 => if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false)
                 (!tokensInfo)
-    in case cm of
-        YYCM(importModules, YYModule curModule, pwd) => YYCM(importModules, YYModule (((filepath, (typeCheckingAST, sortedTokens)) :: curModule)), pwd)
+    in 
+        (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens) 
     end
 
     fun initWithWorkingDirectory (pwd : string) : compilationmanager =  
-        YYCM([], YYModule [], pwd)
+        {
+            importedModules = []
+            , currentModule = ref(StrDict.empty)
+            , pwd=pwd(* pwd *)
+            , fileBuffer=  ref StrDict.empty  (* file content buffer, mainly for LSP *)
+        }
         (* check if the current directory has a package.yyon file *)
         
         

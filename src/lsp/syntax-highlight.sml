@@ -83,13 +83,12 @@ open CompilationManager
             ) ((0, 0), []) sorted
         in  result end
 
-    fun highlightFile (fileUri : string) (cm : CompilationManager.compilationmanager): JSON.value = 
+    fun highlightFile (filePath : string) (cm : CompilationManager.compilationmanager): JSON.value = 
     let 
         open JSON
         open CompilationManager
-        val filePath = (URIUtil.uriToPath fileUri)
-        val YYCM(_, YYModule l, _) = CompilationManager.compileFile filePath cm
-        val (_, tokens) = ListSearchUtil.lookup l filePath
+        val _ = CompilationManager.compileFile filePath cm
+        val (_, tokens) = StrDict.lookup ((!(#currentModule cm))) filePath
         val data = getDataFromTokens tokens
     in 
         OBJECT[

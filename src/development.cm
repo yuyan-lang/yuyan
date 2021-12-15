@@ -70,6 +70,9 @@ Library
   structure ListSearchUtil
   structure URIUtil
   structure CompilationTokens
+  structure CompilationModule
+  structure DebugPrint
+  structure StrDict
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -101,6 +104,7 @@ is
   operators/structure/operators.sml
   operators/structure/op-ast.sml
 
+  util/debug-print.sml
   util/source-location.sml
   util/uri-util.sml
   util/list-search-util.sml
@@ -114,6 +118,7 @@ is
   util/yyon.sml
   util/math-util.sml
   util/number-parser.sml
+  util/string-dict.sml
 
   passes/preprocess/preprocessing-pass.sml
   passes/preprocess/preprocessing-ast.sml
@@ -140,5 +145,6 @@ is
 
   build-system/compilation-manager.sml
   build-system/compilation-tokens.sml
+  build-system/compilation-module.sml
 
 

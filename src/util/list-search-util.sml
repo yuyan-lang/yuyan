@@ -9,5 +9,4 @@ fun lookup (l : (string *'a ) list) (key : string) : 'a =
         [] => raise NotFound key
         | ((k, v) :: t) => if k = key then v else lookup t key
 
-
 end

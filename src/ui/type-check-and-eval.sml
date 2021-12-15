@@ -19,10 +19,9 @@ struct
             (* val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST) *)
             (* val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n" *)
             (* val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST) *)
-            val cm' = CompilationManager.compileFile (filename) cm
+            val _ = CompilationManager.compileFile (filename) cm
             open CompilationManager
-            val YYCM(_, YYModule l, _) = cm'
-            val (typeCheckingAST, tokens) = ListSearchUtil.lookup l filename
+            val (typeCheckingAST, tokens) = StrDict.lookup (! (#currentModule cm)) filename
             val data = SyntaxHighlight.getDataFromTokens tokens
             val _ = cprint 1 "----------------- TOKENS: -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_tokens tokens)

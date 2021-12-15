@@ -96,19 +96,45 @@ struct
     ((*cm*) CompilationManager.initWithWorkingDirectory (asString (lookupField params "rootPath")))
     end
 
+    fun getDocumentPath (params : JSON.value option) : string =
+    let 
+    open JSON
+    open JSONUtil
+        val fileUri = asString (get ((Option.valOf params),[SEL "textDocument", SEL "uri"]))
+        val filePath = (URIUtil.uriToPath fileUri)
+    in 
+    filePath
+    end
+
+
+
     fun handleJSONRequest (server: LanguageServer.t) (method: string) (params: JSON.value option)  : JSON.value = 
     let 
     open JSON
     open JSONUtil
-     fun documentUri () = asString (get ((Option.valOf params),[SEL "textDocument", SEL "uri"]))
     in 
     case method of
-     "textDocument/semanticTokens/full" => SyntaxHighlight.highlightFile (documentUri()) (LanguageServer.getCM server)
+     "textDocument/semanticTokens/full" => SyntaxHighlight.highlightFile (getDocumentPath params) (LanguageServer.getCM server)
      | _ => OBJECT[]
     end
         
     fun handleJSONNotification (server :LanguageServer.t) (method: string) (params : JSON.value option) : unit = 
-    ()
+    let 
+    open JSON
+    open JSONUtil
+
+    fun updateFileBufferContent(content : string) =
+        CompilationManager.updateContentForFilepath
+            (getDocumentPath params)
+            (UTF8String.fromStringAndFile content 
+                    (getDocumentPath params))
+            (LanguageServer.getCM server)
+    in 
+    case method of
+     "textDocument/didOpen" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "textDocument", SEL "text"]))))
+     | "textDocument/didChange" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "contentChanges", SUB 0, SEL "text"]))))
+     | _ => ()
+    end
 
 
     fun readJSONFromLSP() : JSON.value = 
