@@ -82,7 +82,7 @@ open TypeCheckingASTOps
 
 
 
-    and eraseSigLazy (kont : (kcontext -> PersistentKMachine.pkcomputation) option) (ctx : kcontext) (s : Signature) : PersistentKMachine.pkcomputation =
+    and eraseSigLazy (kont : (kcontext -> PersistentKMachine.pkcomputation) option) (ctx : kcontext) (s : CSignature) : PersistentKMachine.pkcomputation =
 
         (
             (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
@@ -144,7 +144,7 @@ open TypeCheckingASTOps
         )
         )
 
-    and eraseSynExpr  (ctx : kcontext)(e : Expr) : pkcomputation =
+    and eraseSynExpr  (ctx : kcontext)(e : CExpr) : pkcomputation =
     (
         let 
         (* val _ = print ("eraseSynExpr on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
@@ -312,7 +312,7 @@ open TypeCheckingASTOps
             ^ "\n [INTERNAL] THIS IS AN INTERNAL ERROR OF THE COMPILER, please file a bug report."
              )
 
-    and lookAheadForValue (s : Signature) (ename : UTF8String.t) : (UTF8String.t * Expr) * Signature = 
+    and lookAheadForValue (s : Signature) (ename : UTF8String.t) : (UTF8String.t * Expr) * CSignature = 
         case s of
          TermDefinition(n, e) :: ss => if UTF8String.semanticEqual n  ename then ((n, e), ss)
                                        else 
