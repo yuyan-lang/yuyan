@@ -67,7 +67,7 @@ please provide trivial functions *)
     (notifyParseOpAST : OpAST.t -> 'a) 
     (notifyDeclarationParserResult : (operator * MixedStr.t list) -> 'b) 
     (notifyDeclarationParsingResult : PreprocessingAST.t -> 'c) 
-    : (MixedStr.t list) -> TypeCheckingAST.Signature =
+    : (MixedStr.t list) -> TypeCheckingAST.RSignature =
     let 
     fun elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): Label * Type = 
         case ast of
@@ -122,46 +122,46 @@ please provide trivial functions *)
         handle ElaborateFailure s => 
         raise ElaborateFailure (s ^ "\n when elaborating type "^ PrettyPrint.show_opast ast )
     
-    and elaborateOpASTtoExpr  (ast : OpAST.t)(ctx : contextType) : TypeCheckingAST.Expr = 
+    and elaborateOpASTtoExpr  (ast : OpAST.t)(ctx : contextType) : TypeCheckingAST.RExpr = 
     let fun snd (x : OpAST list) : OpAST = (hd (tl x))
     in
         (case ast of
-              UnknownOpName (s) => ExprVar [s]
+              UnknownOpName (s) => RExprVar [s]
             | OpUnparsedExpr x => (parseExpr x ctx) 
-            | OpStrLiteral l => StringLiteral l
+            | OpStrLiteral l => RStringLiteral l
             | OpAST(oper, l) => (
                 if getUID oper >= elabAppBound 
                 then (* elab app *)
-                    foldl (fn (arg, acc) => App (acc,arg)) (ExprVar [getOriginalName oper]) (map (fn x => elaborateOpASTtoExpr x ctx)  l)
+                    foldl (fn (arg, acc) => RApp (acc,arg)) (RExprVar [getOriginalName oper]) (map (fn x => elaborateOpASTtoExpr x ctx)  l)
                 else
                 if oper ~=** structureRefOp
-                then ExprVar (map elaborateUnknownName (flattenRight ast structureRefOp))
+                then RExprVar (map elaborateUnknownName (flattenRight ast structureRefOp))
                 else
                 if oper ~=** unitExprOp
-                then UnitExpr
+                then RUnitExpr
                 else
                 if oper ~=** projExprOp
-                then Proj(elaborateOpASTtoExpr (hd l) ctx, elaborateUnknownName (snd l))
+                then RProj(elaborateOpASTtoExpr (hd l) ctx, elaborateUnknownName (snd l))
                 else 
                 if oper ~=** appExprOp
-                then App(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx)
+                then RApp(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx)
                 else 
                 if oper ~=** pairExprOp
-                then Tuple(map (fn x => elaborateOpASTtoExpr x ctx) (flattenRight ast pairExprOp))
+                then RTuple(map (fn x => elaborateOpASTtoExpr x ctx) (flattenRight ast pairExprOp))
                 else 
                 if oper ~=** injExprOp
-                then Inj( elaborateUnknownName (hd l), elaborateOpASTtoExpr (snd l) ctx)
+                then RInj( elaborateUnknownName (hd l), elaborateOpASTtoExpr (snd l) ctx)
                 else 
                 if oper ~=** foldExprOp
-                then Fold( elaborateOpASTtoExpr (hd l) ctx)
+                then RFold( elaborateOpASTtoExpr (hd l) ctx)
                 else
                 if oper ~=** unfoldExprOp
-                then Unfold( elaborateOpASTtoExpr (hd l) ctx)
+                then RUnfold( elaborateOpASTtoExpr (hd l) ctx)
                 else
                 if oper ~=** caseExprOp
                 then let
                     val args = flattenRight (snd l) caseAlternativeOp
-                    in Case (elaborateOpASTtoExpr (hd l) ctx, (map (fn x => 
+                    in RCase (elaborateOpASTtoExpr (hd l) ctx, (map (fn x => 
                     case x of
                         OpAST(oper, [lbl, evar, expr]) => 
                         if oper ~=** caseClauseOp
@@ -173,28 +173,28 @@ please provide trivial functions *)
             end
                 else 
                 if oper ~=** typeAppExprOp
-                then TApp(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoType (snd l) ctx)
+                then RTApp(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoType (snd l) ctx)
                 else
                 if oper ~=** packExprOp
-                then Pack(elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx)
+                then RPack(elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx)
                 else
                 if oper ~=** unpackExprOp
-                then Open(elaborateOpASTtoExpr (hd l) ctx, (elaborateNewName (snd l), elaborateNewName (hd (tl (tl l))), 
+                then ROpen(elaborateOpASTtoExpr (hd l) ctx, (elaborateNewName (snd l), elaborateNewName (hd (tl (tl l))), 
                 elaborateOpASTtoExpr (hd (tl (tl (tl (l))))) ctx))
                 else
                 if oper ~=** lambdaExprOp
-                then Lam(elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx)
+                then RLam(elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx)
                 else
                 if oper ~=** lambdaExprWithTypeOp
-                then LamWithType(elaborateOpASTtoType (hd l) ctx, 
+                then RLamWithType(elaborateOpASTtoType (hd l) ctx, 
                 elaborateNewName (snd l), elaborateOpASTtoExpr (hd (tl (tl l))) ctx)
                 else
                 if oper ~=** fixExprOp
-                then Fix(elaborateNewName (hd l), 
+                then RFix(elaborateNewName (hd l), 
                 elaborateOpASTtoExpr (snd l) ctx)
                 else
                 if oper ~=** typeLambdaExprOp
-                then TAbs(elaborateNewName (hd l), 
+                then RTAbs(elaborateNewName (hd l), 
                 elaborateOpASTtoExpr (snd l) ctx) 
                 else
                 if oper ~=** letinOp
@@ -206,7 +206,7 @@ please provide trivial functions *)
                         val newOps = extractAllOperators preprocessedTree
                         val declTree = constructOpAST preprocessedTree ctx
                         val bodyExpr = elaborateOpASTtoExpr (snd l) (insertIntoCurContextOps ctx newOps)
-                    in LetIn(declTree, bodyExpr) end
+                    in RLetIn(declTree, bodyExpr) end
                 )
                 else
                 raise ElaborateFailure "Expected Expression constructs"
@@ -236,7 +236,7 @@ please provide trivial functions *)
             raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
         | PrecedenceParser.AmbiguousParse s => 
             raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.")
-    and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.Expr
+    and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.RExpr
     =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
                 (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody)
            val _ = notifyParseOpAST parseTree
@@ -263,7 +263,7 @@ please provide trivial functions *)
 
     and constructOpAST  (ast : PreprocessingAST.t) (ctx as (curSName, curV, addedOps) : contextType) 
     (* after constructing the ast, we need to get its list of operators *)
-        : TypeCheckingAST.Signature =
+        : TypeCheckingAST.RSignature =
         (
         (* print ("\rRemaining: "^ Int.toString(List.length ast) ^ " statements"); *)
         (* print ("constructOpAST on "^ PrettyPrint.show_preprocessaast ast ^ " with curSName = " ^ 
@@ -272,26 +272,26 @@ please provide trivial functions *)
             [] => []
             | (x :: xs) => 
                 let fun trailingNoOps() = constructOpAST xs ctx
-                fun trailingWithOps(addedOp:Operators.operator): TypeCheckingAST.Signature 
+                fun trailingWithOps(addedOp:Operators.operator): TypeCheckingAST.RSignature 
                     = constructOpAST xs (insertIntoCurContextOp ctx addedOp)
                 in
                 (case x of 
-                    PTypeMacro(tname, tbody) => TypeMacro(tname, parseType tbody ctx) :: trailingNoOps()
-                    | PTermTypeJudgment(ename, tbody) => TermTypeJudgment(ename, parseType  tbody ctx) :: trailingNoOps()
-                    | PTermMacro(ename, ebody) => TermMacro(ename, parseExpr ebody ctx) :: trailingNoOps()
-                    | PTermDefinition(ename, ebody) => TermDefinition(ename, parseExpr ebody ctx) :: trailingNoOps()
+                    PTypeMacro(tname, tbody) => RTypeMacro(tname, parseType tbody ctx) :: trailingNoOps()
+                    | PTermTypeJudgment(ename, tbody) => RTermTypeJudgment(ename, parseType  tbody ctx) :: trailingNoOps()
+                    | PTermMacro(ename, ebody) => RTermMacro(ename, parseExpr ebody ctx) :: trailingNoOps()
+                    | PTermDefinition(ename, ebody) => RTermDefinition(ename, parseExpr ebody ctx) :: trailingNoOps()
                     | POpDeclaration(opName, assoc, pred) => trailingWithOps(parsePOperator(x)) 
-                    | PDirectExpr(ebody) => DirectExpr(parseExpr ebody ctx) :: trailingNoOps()
+                    | PDirectExpr(ebody) => RDirectExpr(parseExpr ebody ctx) :: trailingNoOps()
                     | PComment _ => trailingNoOps()
                     | PStructure(publicVisible, sname, decls) => 
                     let val preprocessedTree = preprocessAST decls
                         val newOps = extractAllOperators preprocessedTree
                         val declTree = constructOpAST preprocessedTree ctx
-                    in Structure(publicVisible,sname, declTree)::
+                    in RStructure(publicVisible,sname, declTree)::
                         constructOpAST xs (curSName, curV, ((curSName@[sname], publicVisible, newOps):: addedOps)) end
                     | POpenStructure(sname) =>  (* open will be as if there is a local declaration with 
                     the same name as the public members of the structure *)
-                        OpenStructure(sname) :: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname)))
+                        ROpenStructure(sname) :: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname)))
                 )
                 end
         )
@@ -300,7 +300,7 @@ please provide trivial functions *)
                 
 
     and constructTypeCheckingASTTopLevel
-     ( ast : PreprocessingAST.t) : TypeCheckingAST.Signature = 
+     ( ast : PreprocessingAST.t) : TypeCheckingAST.RSignature = 
     let 
         (* val _ = print ("Total "^ Int.toString(List.length ast) ^ " statements\n"); *)
         val res =  constructOpAST ast (StructureName.topLevelName, true, [

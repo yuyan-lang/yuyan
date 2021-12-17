@@ -21,10 +21,11 @@ structure TypeCheckingAST = struct
                     | Rho of TVar * Type
                     | BuiltinType of BuiltinType
 
+    datatype visibility = Public | Private
 
 
     (* CExpr for checked expr *)
-    datatype CExpr = CExprVar of StructureName.t
+    datatype CExpr = CExprVar of StructureName.t (* required to be fully qualified name, if not local *)
                     | CUnitExpr
                     | CTuple of CExpr list * Type (* type is Prod *)
                     | CProj of CExpr * Label * Type (* type is Prod *)
@@ -43,14 +44,17 @@ structure TypeCheckingAST = struct
                     | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
 
     and CDeclaration = 
-                        CTypeMacro of UTF8String.t * Type
-                       | CTermTypeJudgment of UTF8String.t * Type
-                       | CTermMacro of UTF8String.t * CExpr
-                       | CTermDefinition of UTF8String.t * CExpr
+                        (* Do not need type macro becuase all types for later stages have been expanded *)
+                        (* CTypeMacro of UTF8String.t * Type *) 
+                        (* Do not need type info as terms have been annotated *)
+                        (* CTermTypeJudgment of UTF8String.t * Type *)
+                        (* Fold into Term Definition *)
+                       (*  CTermMacro of UTF8String.t * CExpr *)
+                        CTermDefinition of StructureName.t * CExpr
                        | CDirectExpr of CExpr
-                       | CStructure of bool * UTF8String.t * CDeclaration list
-                       (*  public visible * name * signature *)
-                       | COpenStructure of StructureName.t
+                       (* | CStructure of bool * UTF8String.t * CDeclaration list *)
+                       (* Do not need open : Require all references to open use fully qualified name  *)
+                       (* | COpenStructure of StructureName.t *)
 
     (* RExpr for raw expr *)
     datatype RExpr = RExprVar of StructureName.t

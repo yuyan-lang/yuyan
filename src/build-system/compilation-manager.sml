@@ -108,6 +108,8 @@ structure CompilationManager = struct
                 (fn (Token(SourceRange.StartEnd(_, l1, c1, _, _),_,_), Token(SourceRange.StartEnd(_, l2, c2, _, _),_, _))
                 => if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false)
                 (!tokensInfo)
+        val typeCheckedAST = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
+        val cpsAST = CPSPass.cpsTransformSig [] typeCheckedAST (fn ctx => CPSAST.CPSDone)
     in 
         (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens) 
     end

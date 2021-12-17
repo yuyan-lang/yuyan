@@ -73,6 +73,9 @@ Library
   structure CompilationModule
   structure DebugPrint
   structure StrDict
+
+  structure CPSAST
+  structure CPSPass
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -132,6 +135,8 @@ is
   passes/typechecking/type-checking-entry.sml
   passes/erase/erasure-pass.sml
   passes/erase/erasure-entry.sml
+  passes/cps-transform/cps-ast.sml
+  passes/cps-transform/cps-pass.sml
 
   prelude-libraries/prelude-functions.sml
   

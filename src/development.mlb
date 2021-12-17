@@ -17,7 +17,6 @@ local
         util/unique-id.sml
         util/source-location.sml
         util/uri-util.sml
-        util/list-search-util.sml
         util/source-range.sml
         util/utf8char.sml
         operators/structure/special-chars.sml
@@ -40,6 +39,7 @@ local
         operators/builtin/builtin.sml
         
         passes/preprocess/structure-name.sml
+        util/list-search-util.sml
 
         passes/typechecking/type-checking-ast.sml
         passes/preprocess/preprocessing-ast.sml
@@ -67,6 +67,8 @@ local
         parser/elaborate-precedence.sml
         parser/precedence-parser.sml
         parser/mixfix-parser.sml
+        passes/cps-transform/cps-ast.sml
+        passes/cps-transform/cps-pass.sml
 
         passes/preprocess/expression-construction-pass.sml
         

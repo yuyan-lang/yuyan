@@ -32,10 +32,13 @@ open TypeCheckingASTOps
             | TermTypeJ(n1, t1, u)::cs => if StructureName.semanticEqual n1 n then t1 else lookupMapping cs n
             | TypeDef(_) :: cs => lookupMapping cs n
 
-    fun lookup (Context(curSName, _, ctx) : context) (n : StructureName.t) : Type= 
-        lookupMapping ctx n
+(* require lookup to add name qualification if references local structure *)
+    fun lookup (Context(curSName, _, ctx) : context) (n : StructureName.t) : (StructureName.t * Type)= 
+        let val tp = lookupMapping ctx n in (n, tp) end
         handle LookupNotFound s1 => 
-            (lookupMapping ctx (curSName@n) (* try both absolute and relative path *)
+            (let val tp = lookupMapping ctx (curSName@n)
+             (* try both absolute and relative path *)
+             in (curSName@n, tp) end
             handle LookupNotFound s2 => 
             raise TypeCheckingFailure (s1 ^ ", \n " ^s2)
             )
@@ -123,7 +126,8 @@ open TypeCheckingASTOps
     (
          let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
          val res = case e of
-              RExprVar v => (CExprVar v, lookup ctx v)
+              RExprVar v => let val (canonicalName, tp)  =  lookup ctx v
+                            in (CExprVar canonicalName, tp) end
             | RUnitExpr => (CUnitExpr, UnitType)
             | RProj(e, l) => (case synthesizeType ctx e of
                     (ce, Prod ls) => (CProj(ce, l, Prod ls), lookupLabel ls l)
@@ -320,18 +324,18 @@ open TypeCheckingASTOps
         | RTypeMacro (n, t)::ss => if freeTVar (applyContextToType ctx t) <> [] then 
             raise SignatureCheckingFailure ("Type decl contains free var " ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in"  ^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) 
             else 
-            typeCheckSignature (addToCtxR (TypeDef([n], t, ())) ctx) ss (acc@[CTypeMacro(n,t)])
+            typeCheckSignature (addToCtxR (TypeDef([n], t, ())) ctx) ss (acc)
         | RTermTypeJudgment(n, t):: ss => if freeTVar (applyContextToType ctx t) <> [] 
             then raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) 
-            else typeCheckSignature (addToCtxR (TermTypeJ([n], (applyContextToType ctx t), ())) ctx) ss (acc@[CTermTypeJudgment(n, t)])
+            else typeCheckSignature (addToCtxR (TermTypeJ([n], (applyContextToType ctx t), ())) ctx) ss (acc)
         | RTermMacro(n, e) :: ss => 
             let val (transformedExpr , synthesizedType) = synthesizeType ctx (applyContextToExpr ctx e)
             in
-                typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, ())) ctx) ss (acc@[CTermMacro(n, transformedExpr)])
+                typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, ())) ctx) ss (acc@[CTermDefinition([n], transformedExpr)])
             end
         | RTermDefinition(n, e) :: ss => 
-        let val transformedExpr = checkType ctx (applyContextToExpr ctx e) (lookup ctx [n])
-        in typeCheckSignature ctx ss (acc@[CTermDefinition(n, transformedExpr)])
+        let val transformedExpr = checkType ctx (applyContextToExpr ctx e) (#2 (lookup ctx [n]))
+        in typeCheckSignature ctx ss (acc@[CTermDefinition([n], transformedExpr)])
         end
         | RStructure (vis, sName, decls) :: ss => 
         (case ctx of 
@@ -340,7 +344,7 @@ open TypeCheckingASTOps
                 (* assume the typeChecking is behaving properly, 
                 no conflicting things will be added to the signature *)
                 (* sub context will be determined by whether the signature is private or not ? *)
-            in typeCheckSignature (Context(curName, curVis, newBindings)) ss (acc@[CStructure(vis, sName, checkedSig)])
+            in typeCheckSignature (Context(curName, curVis, newBindings)) ss (acc@checkedSig)
             end
         )
         | ROpenStructure openName :: ss =>
@@ -350,7 +354,7 @@ open TypeCheckingASTOps
                 (* assume the typeChecking is behaving properly, 
                 no conflicting things will be added to the signature *)
                 (* sub context will be determined by whether the signature is private or not ? *)
-            in typeCheckSignature nextContext ss (acc@[COpenStructure openName])
+            in typeCheckSignature nextContext ss (acc)
             end
         )
         | RDirectExpr e :: ss=> 

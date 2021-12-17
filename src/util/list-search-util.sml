@@ -1,12 +1,17 @@
 
 structure ListSearchUtil = struct
 
-exception NotFound of string
+    exception NotFound 
 
 
-fun lookup (l : (string *'a ) list) (key : string) : 'a = 
+fun lookupGeneric (l : ('k  * 'a ) list) (key : 'k) (keyeq : 'k -> 'k -> bool) : 'a = 
     case l of
-        [] => raise NotFound key
-        | ((k, v) :: t) => if k = key then v else lookup t key
+        [] => raise NotFound 
+        | ((k, v) :: t) => if keyeq k key then v else lookupGeneric t key keyeq
+fun lookupStr (l : (string *'a ) list) (key : string) : 'a = 
+    lookupGeneric l key (fn x => fn y => x = y)
+
+fun lookupSName (l : (StructureName.t *'a ) list) (key : StructureName.t) : 'a =    
+    lookupGeneric l key (StructureName.semanticEqual)
 
 end
