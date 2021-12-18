@@ -14,6 +14,17 @@ datatype 'a gcontext = Context of StructureName.t * bool *
     type mapping = unit gmapping
     type context = unit gcontext
 
+    fun getCurSName (Context(sName, _, _)) = sName
+
+    fun appendAbsoluteMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
+        case ctx of
+            Context(curSName, vis, l) => Context(curSName, vis, 
+            (case m of 
+                TermTypeJ(e, t, u) => TermTypeJ(e, t, u)
+                | TypeDef(tname, t, u) => TypeDef(tname, t, u)
+                ):: l
+            )
+
    fun appendRelativeMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
         case ctx of
             Context(curSName, vis, l) => Context(curSName, vis, 

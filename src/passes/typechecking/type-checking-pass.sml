@@ -18,6 +18,7 @@ open TypeCheckingASTOps
            
    
                     (* curStructure, curVisibility and mapping *)
+  val addToCtxA = appendAbsoluteMappingToCurrentContext (* A for relative *)
   val addToCtxR = appendRelativeMappingToCurrentContext (* R for relative *)
     val addToCtxRL = appendRelativeMappingsToCurrentContext (* L for list *)
     
@@ -136,7 +137,7 @@ open TypeCheckingASTOps
             | RCase(e,cases) => (case (synthesizeType ctx e) of
                     (ce, Sum ls) => let 
                     val checkedCases = (map (fn (l, ev, e) => 
-                    synthesizeType (addToCtxR (TermTypeJ([ev], (lookupLabel ls l), ())) ctx)
+                    synthesizeType (addToCtxA (TermTypeJ([ev], (lookupLabel ls l), ())) ctx)
                      e) cases)
                     val casesTypes = map (#2) checkedCases
                     val checkedExprs = map (#1) checkedCases
@@ -150,7 +151,7 @@ open TypeCheckingASTOps
                     end
                     | _ => raise TypeCheckingFailure "Attempt to case on non sum types")
             | RLamWithType (t, ev, e) => let
-                val (bodyExpr, returnType) = synthesizeType (addToCtxR (TermTypeJ([ev], t, ())) ctx) e
+                val (bodyExpr, returnType) = synthesizeType (addToCtxA (TermTypeJ([ev], t, ())) ctx) e
                 in (CLam(ev, bodyExpr, Func (t, returnType)), Func(t, returnType))
                 end
             | RApp (e1, e2) => (case synthesizeType ctx e1
@@ -167,7 +168,7 @@ open TypeCheckingASTOps
             | ROpen (e1, (tv, ev, e2)) => (case synthesizeType ctx e1 of
                 (ce1, Exists (tv', tb)) => 
                 (let val (ce2, synthesizedType) = synthesizeType 
-                (addToCtxR (TermTypeJ([ev], 
+                (addToCtxA (TermTypeJ([ev], 
                 substTypeInType (TypeVar [tv]) [tv'] tb,())) ctx) e2
                 in if List.exists (fn t => t = [tv]) (freeTVar synthesizedType)
                     then raise TypeCheckingFailure "Open's type cannot exit scope"
@@ -211,12 +212,15 @@ open TypeCheckingASTOps
                 " against type " ^ PrettyPrint.show_typecheckingType tt ^ "\n") else ()
             val res = 
             case e of
-            RExprVar v => if typeEquiv [] (#2 (synthesizeType ctx e)) tt = false 
+            RExprVar v => 
+            let val (synthExpr, synthType) = (synthesizeType ctx e)
+            in if typeEquiv [] (synthType) tt = false 
                         then raise TypeCheckingFailure ("var type mismatch var is " ^ StructureName.toStringPlain v 
                         ^ " synthesized : " ^ PrettyPrint.show_typecheckingType (#2 (synthesizeType ctx e)) ^ " against : " 
                         ^ PrettyPrint.show_typecheckingType tt
                         )
-                        else CExprVar v
+                        else synthExpr
+                        end
             | RUnitExpr => if tt = UnitType then CUnitExpr else raise TypeCheckingFailure "unit expr will have unit type"
             | RTuple l => (case tt of 
                 Prod ls => if List.length l <> List.length ls
@@ -240,17 +244,17 @@ open TypeCheckingASTOps
                     (ce, Sum ls) => 
                     CCase((Sum ls, ce), 
                     (map (fn (l, ev, e) => 
-                    (l, ev, checkType (addToCtxR (TermTypeJ([ev], (lookupLabel ls l), ())) ctx) e tt)
+                    (l, ev, checkType (addToCtxA (TermTypeJ([ev], (lookupLabel ls l), ())) ctx) e tt)
                     ) cases), tt)
                     | _ => raise TypeCheckingFailure "Attempt to case on non sum types")
             | RLam(ev, eb) => (case tt of
                 Func(t1,t2) => 
-                    CLam(ev, checkType (addToCtxR (TermTypeJ([ev], t1,())) ctx) eb t2, tt)
+                    CLam(ev, checkType (addToCtxA (TermTypeJ([ev], t1,())) ctx) eb t2, tt)
                 | _ => raise TypeCheckingFailure "Lambda is not function"
                 )
             | RLamWithType (t, ev, eb) => (case tt of
                 Func(t1,t2) => (asserTypeEquiv t t1;
-                    (CLam(ev, checkType (addToCtxR (TermTypeJ([ev], t1, ())) ctx) eb t2, tt)))
+                    (CLam(ev, checkType (addToCtxA (TermTypeJ([ev], t1, ())) ctx) eb t2, tt)))
                 | _ => raise TypeCheckingFailure "Lambda is not function"
                 )
             | RApp (e1, e2) => (case synthesizeType ctx e1
@@ -277,7 +281,7 @@ open TypeCheckingASTOps
             | ROpen (e1, (tv, ev, e2)) => (case synthesizeType ctx e1 of
                 (ce1, Exists (tv', tb)) => 
                 let 
-                    val ce2 =checkType (addToCtxR (TermTypeJ([ev], substTypeInType (TypeVar [tv]) [tv'] tb, ())) ctx) e2 tt
+                    val ce2 =checkType (addToCtxA (TermTypeJ([ev], substTypeInType (TypeVar [tv]) [tv'] tb, ())) ctx) e2 tt
                 in COpen((Exists (tv', tb), ce1), (tv, ev, ce2), tt) end
                 | _ => raise TypeCheckingFailure "cannot open non existential types")
             | RFold e2 => (case tt
@@ -293,7 +297,7 @@ open TypeCheckingASTOps
                     CUnfold(ce2, Rho(tv,tb)))
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
-            | RFix (ev, e)=> CFix(ev,checkType (addToCtxR (TermTypeJ([ev] , tt, ())) ctx) e tt, tt)
+            | RFix (ev, e)=> CFix(ev,checkType (addToCtxA (TermTypeJ([ev] , tt, ())) ctx) e tt, tt)
             | RStringLiteral s => (asserTypeEquiv (BuiltinType(BIString)) tt; CStringLiteral s)
             | RLetIn(decls, e) => (case ctx of 
         Context(curName, curVis, bindings) => 
@@ -316,7 +320,7 @@ open TypeCheckingASTOps
     and typeCheckSignature(ctx : context) (s : RSignature) (acc : CSignature) : (context * CSignature) =
 
         (
-            if DEBUG then print ("DEBUG " ^ PrettyPrint.show_typecheckingSig s ^
+            if DEBUG then print ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
              " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
 
             case s of
@@ -331,11 +335,11 @@ open TypeCheckingASTOps
         | RTermMacro(n, e) :: ss => 
             let val (transformedExpr , synthesizedType) = synthesizeType ctx (applyContextToExpr ctx e)
             in
-                typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, ())) ctx) ss (acc@[CTermDefinition([n], transformedExpr)])
+                typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, ())) ctx) ss (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr)])
             end
         | RTermDefinition(n, e) :: ss => 
         let val transformedExpr = checkType ctx (applyContextToExpr ctx e) (#2 (lookup ctx [n]))
-        in typeCheckSignature ctx ss (acc@[CTermDefinition([n], transformedExpr)])
+        in typeCheckSignature ctx ss (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr)])
         end
         | RStructure (vis, sName, decls) :: ss => 
         (case ctx of 
@@ -364,7 +368,7 @@ open TypeCheckingASTOps
             end
         )
         handle SignatureCheckingFailure st =>
-        raise TypeCheckingFailure (st ^ "\n when checking the signature " ^ PrettyPrint.show_typecheckingSig s 
+        raise TypeCheckingFailure (st ^ "\n when checking the signature " ^ PrettyPrint.show_typecheckingRSig s 
             ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx
             )
 end

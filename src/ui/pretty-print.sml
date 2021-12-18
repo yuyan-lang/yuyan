@@ -192,10 +192,10 @@ RExprVar v => sst v
                     | RUnfold (e) => "unfold("^  se e ^")"
                     | RFix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
                     | RStringLiteral l => "\"" ^ ss l ^"\""
-                    | RLetIn (s, e) => "(let " ^ show_typecheckingSig s ^ " in "^  se e  ^" end"
+                    | RLetIn (s, e) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                 end
 
-and show_typecheckingDecl x = let
+and show_typecheckingRDecl x = let
 open TypeCheckingAST
 in case x of 
     RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingType tbody
@@ -204,13 +204,52 @@ in case x of
   | RTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingRExpr  ebody
   | RDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingRExpr ebody ^ "/* end eval */ " 
   | RStructure(v, name, ebody) => (if v then "public" else "private") ^
-    " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingSig ebody ^ "}"
+    " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingRSig ebody ^ "}"
   | ROpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
   end
 
-and show_typecheckingSig x = let
+and show_typecheckingRSig x = let
 in
-          String.concatWith "。\n " (map show_typecheckingDecl x) ^ "\n"
+          String.concatWith "。\n " (map show_typecheckingRDecl x) ^ "\n"
+end
+fun show_typecheckingCExpr x =  
+let
+open TypeCheckingAST
+val st = show_typecheckingType
+val se = show_typecheckingCExpr
+val ss = UTF8String.toString
+val sst =StructureName.toStringPlain
+fun cst t = "⟦" ^ st t ^ "⟧"
+in case x of
+                      CExprVar v => sst v
+                    | CUnitExpr => "⟨⟩"
+                    | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
+                    | CProj (e, lbl, t) => "(" ^ se e ^ cst t ^ "." ^ ss lbl ^ ")"
+                    | CInj  ( lbl,e, t) => "(" ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
+                    | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})" ^ cst t
+                    | CLam (x, e, t) => "(λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t
+                    | CApp (e1, e2, t)=> "ap("^ se e1 ^ cst t^ ", "^ se e2 ^")"
+                    | CTAbs (x, e, t) => "(Λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t 
+                    | CTApp (e1, e2, ft)=> "("^ se e1 ^ cst ft^ " ["^ st e2 ^"])"
+                    | CPack (t, e, et)=> "pack("^ st t ^ ", "^ se e ^")" ^ cst et
+                    | COpen ((et, e), (t, x, e2), rt)=> "open(" ^se e ^ cst et ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])" ^ cst rt
+                    | CFold (e, t) => "fold(" ^ se e ^")" ^ cst t
+                    | CUnfold (e, rhot) => "unfold("^  se e ^ cst rhot ^")"
+                    | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
+                    | CStringLiteral l => "\"" ^ ss l ^"\""
+                    | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
+                end
+and show_typecheckingCDecl x = let
+open TypeCheckingAST
+in case x of 
+    CTermDefinition(ename, ebody) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
+  | CDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
+  end
+
+
+and show_typecheckingCSig x = let
+in
+          String.concatWith "。\n " (map show_typecheckingCDecl x) ^ "\n"
 end
 fun show_source_location ((fname, line, col) : SourceLocation.t) = "[" ^ Int.toString (line + 1) ^ ", "^ Int.toString (col + 1) ^ "]"
 fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.t) = 
@@ -279,4 +318,46 @@ in
     end
  
    *)
+
+
+fun show_cpsvalue  (CPSAST.CPSVar(i)) = Int.toString i
+fun show_cpsbuiltin (e : CPSAST.cpsBuiltinValue) = 
+let open CPSAST
+in
+case  e of
+        CPSBvInt i => Int.toString i
+        | CPSBvBool  b=> Bool.toString b
+        | CPSBvString l=> UTF8String.toString l
+        | CPSBvReal r => Real.toString r
+      end
+    
+fun show_cpscomputation  (c : CPSAST.cpscomputation) : string = 
+let 
+open CPSAST
+fun show_cpskont (v, cpscomp ) = " ===> \\k:"^ Int.toString v ^ "⟦" ^ show_cpscomputation cpscomp ^"⟧"
+val sv = show_cpsvalue
+val sk = show_cpskont
+val si = Int.toString
+val sc = show_cpscomputation
+in
+case c of
+              CPSUnit(k) => "()" ^ sk k
+            | CPSProj(v, i, k) => "(" ^ sv v ^ " . " ^ si i ^ ")" ^ sk k
+            | CPSCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
+    String.concatWith "; " (map (fn (i, c) => Int.toString i ^ " => " ^ sc c) l)
+    ^ "}"
+            | CPSUnfold(v, k) => "unfold (" ^ sv v ^ ")" ^ sk k
+            | CPSApp(a, (b, c)) => "ap("^ sv a ^ ",("^ sv b ^ ", " ^ sv c^"))"
+            | CPSAppSingle (a,b)=> "ap1("^ sv a ^ ","^ sv b ^")"
+            | CPSFix((f, a, c1), k) => "(fix " ^ si f ^ ", " ^ si a ^ " . " ^ sc c1 ^ ")" ^ sk k
+            | CPSTuple(l, k) => "[" ^ String.concatWith ", " (map sv l) ^ "]" ^ sk k
+            | CPSInj(l, i, kv, k) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ sv kv ^ sk k
+            | CPSFold(v, k) => "fold (" ^ sv v ^ ")" ^ sk k
+            | CPSAbsSingle((i, c), k) => "(λ1" ^ Int.toString i ^ "." ^ sc c ^ ")" ^ sk k
+            | CPSAbs((i,ak, c), k) => "(λ" ^ Int.toString i ^ ", "^ si ak ^ "." ^ sc c ^ ")" ^ sk k
+            | CPSDone (* signals return *) => "DONE"
+            | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
+
+
+end
 end

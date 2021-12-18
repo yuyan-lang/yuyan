@@ -76,6 +76,7 @@ Library
 
   structure CPSAST
   structure CPSPass
+  structure ClosureConvert
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -137,6 +138,7 @@ is
   passes/erase/erasure-entry.sml
   passes/cps-transform/cps-ast.sml
   passes/cps-transform/cps-pass.sml
+  passes/cps-transform/closure-convert.sml
 
   prelude-libraries/prelude-functions.sml
   

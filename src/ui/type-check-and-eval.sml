@@ -28,7 +28,7 @@ struct
             val _ = cprint 1 "----------------- TOKENS DATA (LSP): -------------- \n"
             val _ = cprint 2 (PrettyPrint.show_intlist data ^ "\n")
             val _ = cprint 1 "----------------- Type Checking AST Constructed -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_typecheckingSig typeCheckingAST)
+            val _ = cprint 2 (PrettyPrint.show_typecheckingRSig typeCheckingAST)
             val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"
             val _ = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
             val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n"

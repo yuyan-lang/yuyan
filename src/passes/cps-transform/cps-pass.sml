@@ -4,6 +4,8 @@ struct
 open TypeCheckingAST
 open CPSAST
 
+exception CPSInternalError
+
 
     type context = (StructureName.t * cpsvar) list
 
@@ -120,6 +122,14 @@ open CPSAST
         " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
         in res end
         )
+
+        handle ListSearchUtil.NotFoundSName sname => 
+            (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " not found \n");
+            raise CPSInternalError)
+        handle CPSInternalError =>
+            (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
+            raise CPSInternalError)
+
 
 (* this assumes the signature has been fully checked, so no more checking !*)
 (* THIS IS VERY IMPORTANT, as this file just copies from type checking but disregards all 

@@ -108,8 +108,16 @@ structure CompilationManager = struct
                 (fn (Token(SourceRange.StartEnd(_, l1, c1, _, _),_,_), Token(SourceRange.StartEnd(_, l2, c2, _, _),_, _))
                 => if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false)
                 (!tokensInfo)
+        val _ = DebugPrint.p "----------------- Type Checking AST Constructed -------------- \n"
+        val _ = DebugPrint.p (PrettyPrint.show_typecheckingRSig typeCheckingAST)
+        val _ = DebugPrint.p "----------------- Type Checking in Progress -------------------- \n"
         val typeCheckedAST = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
+        val _ = DebugPrint.p "----------------- Type Checking OK! -------------------- \n"
+        val _ = DebugPrint.p (PrettyPrint.show_typecheckingCSig typeCheckedAST)
+        val _ = DebugPrint.p "----------------- CPS in Progress -------------------- \n"
         val cpsAST = CPSPass.cpsTransformSig [] typeCheckedAST (fn ctx => CPSAST.CPSDone)
+        val _ = DebugPrint.p "----------------- CPS Done -------------------- \n"
+        val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST)
     in 
         (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens) 
     end
