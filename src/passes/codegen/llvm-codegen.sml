@@ -44,10 +44,13 @@ end
 
 fun derefArrayFrom (localVar : int )(arrptr : int)(index : int)  : string list= 
 let val tempVar = UID.next()
+val beforeTypeCast = UID.next()
 in 
 [
     toLocalVar tempVar ^ " = getelementptr i32, i32* "^ toLocalVar arrptr ^ ", i32 "^ Int.toString index,
-    toLocalVar localVar ^ " = load i32, i32* " ^ toLocalVar tempVar
+    toLocalVar beforeTypeCast ^ " = load i32, i32* " ^ toLocalVar tempVar,
+    toLocalVar localVar ^ " = bitcast i32 " ^ toLocalVar beforeTypeCast ^ " to i32*"
+    (* casting everything to be a pointer to avoid typing conflict (I don't know whether is is sensible *)
 ]
 end
 
@@ -111,7 +114,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             val ftype = "i32 (" ^ String.concatWith ", " (map (fn _ => "i32*") args) ^ ")"
         in
         [
-            toLocalVar castedFname ^ " = inttoptr i32 " ^ toLocalVar fname  ^ " to " ^ ftype ^ "*",
+            toLocalVar castedFname ^ " = bitcast i32* " ^ toLocalVar fname  ^ " to " ^ ftype ^ "*",
             toLocalVar discard ^ " = call i32 " ^ toLocalVar castedFname ^ 
                 "(" ^  String.concatWith ", " (map (fn arg => "i32* " ^ toLocalVar arg) args) ^ ")",
             (* assumed to terminate after call *)
