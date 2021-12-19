@@ -111,5 +111,33 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             
 
 
+fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
+    case d of LLVMFunction (fname, args, body) => 
+        ["define i32 "^ toFunctionName fname ^ "(" 
+            ^ String.concatWith ", " (map (fn arg => "i32* "^ toLocalVar arg ) args)
+            ^ ") {"
+            ]@(List.concat (map genLLVMStatement body))@
+            ["}"]
+    | LLVMStringConstant(sname, s) => 
+        let 
+        val rawChars = String.explode (UTF8String.toString s)
+        val ordinals = map (Char.ord) rawChars @[0]
+        in 
+        [toLocalVar sname ^ " = constant [ " ^ Int.toString (length  ordinals) ^ " x i8 ] <"
+            ^ String.concatWith ", " (map (fn i => "i8 "^ Int.toString i) ordinals) ^ ">"]
+        end
+fun genLLVMSignature (s : llvmsignature)  : string list= List.concat (map genLLVMDelcaration s)
+
+
+fun genLLVMSignatureWithMainFunction ((entryFunc,s) : int * llvmsignature)  : string list = 
+    let val genSig = genLLVMSignature s
+    val tempVar = UID.next()
+    in 
+        ["define i32 @main() {",
+        toLocalVar tempVar ^ " =  call i32 " ^ toFunctionName entryFunc ^ "()",
+        "ret i32 0",
+        "}"]@genSig
+end
+
 
 end

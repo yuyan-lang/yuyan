@@ -116,4 +116,12 @@ in
         | _ => raise Fail "not implemented yet"
 end
 
+fun genLLVMSignatureTopLevel (cpscomp : cpscomputation ) :(
+    int  (* the int is the entry function name *)
+    * llvmsignature) = 
+    let val entryFuncName =  UID.next()
+        val (decls, entryBody) = genLLVM (entryFuncName, []) cpscomp
+    in (entryFuncName, [LLVMFunction(entryFuncName, [], entryBody)]@decls)
+    end
+
 end

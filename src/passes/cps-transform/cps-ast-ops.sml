@@ -32,6 +32,7 @@ in
         CPSUnit(k) => fk k
         | CPSProj(v, i, k) => fv v  *** fk k
         | CPSCases(v, ks) => fv v *** (foldr (op***) (fromList []) (map fk ks))
+        | CPSUnfold(v, k) => fv v *** fk k
         | CPSApp(a, (b, c)) => fromList [fvi a, fvi b, fvi c]
         | CPSAppSingle(a, b) => fromList [fvi a, fvi b]
         | CPSFix((a, b, c), k) => remove (freeVars c) [a, b] *** fk k

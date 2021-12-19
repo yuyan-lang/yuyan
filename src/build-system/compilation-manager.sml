@@ -118,6 +118,12 @@ structure CompilationManager = struct
         val cpsAST = CPSPass.cpsTransformSig [] typeCheckedAST (fn ctx => CPSAst.CPSDone)
         val _ = DebugPrint.p "----------------- CPS Done -------------------- \n"
         val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST)
+        val (entryFuncName, llvmsig) = LLVMConvert.genLLVMSignatureTopLevel cpsAST
+        val _ = DebugPrint.p "----------------- LLVMConvert Done -------------------- \n"
+        val statements = LLVMCodegen.genLLVMSignatureWithMainFunction (entryFuncName, llvmsig)
+        val _ = DebugPrint.p "----------------- LLVM IR Codegen Done -------------------- \n"
+        val _ = DebugPrint.p (String.concatWith "\n" statements)
+        val _ = TextIO.output (TextIO.openOut "debug.ll",(String.concatWith "\n" statements))
     in 
         (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens) 
     end

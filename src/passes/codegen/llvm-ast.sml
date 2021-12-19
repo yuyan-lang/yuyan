@@ -11,6 +11,8 @@ datatype llvmstatement =
     | LLVMArrayAccess of llvmlocation (* result *) 
                     * int  (* POINTER to array *)
                     * int  (* index *)
+(* conditional jump and call should not be followed by any other statement 
+TODO: Maybe we want to make that syntactically explicit *)
     | LLVMConditionalJump of int (* VARIABLE NAME that stores the index *) 
             * llvmstatement list list (* one block for each index *)
     | LLVMCall of int (* function name *)
