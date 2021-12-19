@@ -3,10 +3,11 @@ structure LLVMCodegen = struct
 
 
 
-fun toLocalVar (i : int) = "%" ^ Int.toString i
-fun toBlockNameJump (i : int) = "%" ^ Int.toString i
-fun toFunctionName (i : int) = "@" ^ Int.toString i
-fun toBlockNameLabel (i : int) = "" ^ Int.toString i
+fun toLocalVar (i : int) = "%v" ^ Int.toString i
+fun toStringName (i : int) = "@s" ^ Int.toString i
+fun toBlockNameJump (i : int) = "%b" ^ Int.toString i
+fun toFunctionName (i : int) = "@f" ^ Int.toString i
+fun toBlockNameLabel (i : int) = "b" ^ Int.toString i
 
 fun storeIntToLocalVar (localVar : int)(intValue : int)  : string list= 
 let 
@@ -45,8 +46,8 @@ fun derefArrayFrom (localVar : int )(arrptr : int)(index : int)  : string list=
 let val tempVar = UID.next()
 in 
 [
-    toLocalVar tempVar ^ " = getelementptr i32, i32* "^ toLocalVar localVar ^ ", i32 "^ Int.toString index,
-    toLocalVar localVar ^ "= load i32 , i32* " ^ toLocalVar tempVar
+    toLocalVar tempVar ^ " = getelementptr i32, i32* "^ toLocalVar arrptr ^ ", i32 "^ Int.toString index,
+    toLocalVar localVar ^ " = load i32, i32* " ^ toLocalVar tempVar
 ]
 end
 
@@ -65,6 +66,8 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             in
             List.concat(
                 [
+                    (* since the first subsequent instruction is a label, we need a ternimation instruction *)
+                ["br label "^ (toBlockNameJump (hd comparisonNames))],
                 List.concat(
                     List.tabulate(num, fn i => let
                         val comparisonResultName = UID.next()
@@ -74,16 +77,19 @@ fun genLLVMStatement (s : llvmstatement) : string list =
                         in
                         [
                             toBlockNameLabel currentComparisonName ^ ":",
-                            toLocalVar comparisonResultName ^ " = icmp eq i32 " ^ Int.toString i ^ " " ^ toLocalVar v,
+                            toLocalVar comparisonResultName ^ " = icmp eq i32 " ^ Int.toString i ^ ", " ^ toLocalVar v,
                             "br i1 "^ toLocalVar comparisonResultName ^  
-                            " " ^ toBlockNameJump currentBlockName ^ " " ^ toBlockNameJump nextComparisonName
+                            ", label " ^ toBlockNameJump currentBlockName ^ ", label " ^ toBlockNameJump nextComparisonName
                         ]
                         end
                     ))
                 , 
                 [
                     toBlockNameLabel (List.nth(comparisonNames, num))  ^ ":",
-                    toLocalVar (UID.next()) ^ " = call i32 @internalError()"
+                    toLocalVar (UID.next()) ^ " = call i32 @internalError()",
+                    "br label " ^ toBlockNameJump (List.nth(comparisonNames, num))  
+                    (* jump to self (no other things we can do) ,
+                     assume internalError kills the process *)
                 ]
                 , 
                      List.concat(
@@ -100,11 +106,16 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             )
             end
         | LLVMCall(fname, args) => 
-        let val discard = UID.next()
+        let val castedFname = UID.next()
+            val discard = UID.next()
+            val ftype = "i32 (" ^ String.concatWith ", " (map (fn _ => "i32*") args) ^ ")"
         in
         [
-            toLocalVar discard ^ " = call i32 " ^ toLocalVar fname ^ 
-                "(" ^  String.concatWith ", " (map (fn arg => "i32 " ^ toLocalVar arg) args) ^ ")"
+            toLocalVar castedFname ^ " = inttoptr i32 " ^ toLocalVar fname  ^ " to " ^ ftype ^ "*",
+            toLocalVar discard ^ " = call i32 " ^ toLocalVar castedFname ^ 
+                "(" ^  String.concatWith ", " (map (fn arg => "i32* " ^ toLocalVar arg) args) ^ ")",
+            (* assumed to terminate after call *)
+            "ret i32 " ^ toLocalVar discard
         ]
         end
         | LLVMReturn => ["!DONE (I Don't know how this is actually implemented"]
@@ -123,8 +134,8 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
         val rawChars = String.explode (UTF8String.toString s)
         val ordinals = map (Char.ord) rawChars @[0]
         in 
-        [toLocalVar sname ^ " = constant [ " ^ Int.toString (length  ordinals) ^ " x i8 ] <"
-            ^ String.concatWith ", " (map (fn i => "i8 "^ Int.toString i) ordinals) ^ ">"]
+        [toStringName sname ^ " = constant [" ^ Int.toString (length  ordinals) ^ " x i8] ["
+            ^ String.concatWith ", " (map (fn i => "i8 "^ Int.toString i) ordinals) ^ "]"]
         end
 fun genLLVMSignature (s : llvmsignature)  : string list= List.concat (map genLLVMDelcaration s)
 

@@ -24,11 +24,11 @@ struct
             val (typeCheckingAST, tokens) = StrDict.lookup (! (#currentModule cm)) filename
             val data = SyntaxHighlight.getDataFromTokens tokens
             val _ = cprint 1 "----------------- TOKENS: -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_tokens tokens)
+            (* val _ = cprint 2 (PrettyPrint.show_tokens tokens) *)
             val _ = cprint 1 "----------------- TOKENS DATA (LSP): -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_intlist data ^ "\n")
+            (* val _ = cprint 2 (PrettyPrint.show_intlist data ^ "\n") *)
             val _ = cprint 1 "----------------- Type Checking AST Constructed -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_typecheckingRSig typeCheckingAST)
+            (* val _ = cprint 2 (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
             val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"
             val _ = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
             val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n"
@@ -38,7 +38,7 @@ struct
                 val _ = cprint 1 "----------------- Erasure Complete ! -------------------- \n"
                 val kastK = (PersistentKMachine.fromKComp erasedASTK)
                 val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
-                val _ = cprint 2 (PrettyPrint.show_pkcomputation kastK ^ "\n")
+                (* val _ = cprint 2 (PrettyPrint.show_pkcomputation kastK ^ "\n") *)
                 val _ = cprint 1 "----------------- Executing ---------------------- \n"
                 val executeTime = Time.now()
                 val result = KMachine.runUntilCompletion (KMachine.Run([],erasedASTK)) 

@@ -81,7 +81,7 @@ in
         | CPSProj(v, i, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess(t,v',i)])) ::: recur k
         | CPSInj(label, index, value, (v, k)) => 
             let val labelLoc = UID.next()
-            in ([LLVMStringConstant(labelLoc, label)], 
+            in ([LLVMStringConstant(labelLoc, label)],  (* TODO FIX BUG*)
             vaccess value (fn value' => [LLVMStoreArray(v,[index, labelLoc, value'])])) ::: recur k
             end
         | CPSCases(v, vkl) => 
