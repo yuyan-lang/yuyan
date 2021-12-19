@@ -1,5 +1,5 @@
 (* Adapted from Appel's Compiling with Continuations 1992 *)
-structure CPSAST = struct
+structure CPSAst = struct
 open TypeCheckingAST
 
 datatype cpsBuiltinValue = 

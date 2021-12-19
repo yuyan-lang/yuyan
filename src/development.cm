@@ -74,9 +74,14 @@ Library
   structure DebugPrint
   structure StrDict
 
-  structure CPSAST
+  structure CPSAst
+  structure CPSAstOps
   structure CPSPass
   structure ClosureConvert
+
+  structure LLVMAst
+  structure LLVMCodegen
+  structure LLVMConvert
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -137,8 +142,12 @@ is
   passes/erase/erasure-pass.sml
   passes/erase/erasure-entry.sml
   passes/cps-transform/cps-ast.sml
+  passes/cps-transform/cps-ast-ops.sml
   passes/cps-transform/cps-pass.sml
   passes/cps-transform/closure-convert.sml
+  passes/codegen/llvm-ast.sml
+  passes/codegen/llvm-codegen.sml
+  passes/codegen/llvm-convert.sml
 
   prelude-libraries/prelude-functions.sml
   

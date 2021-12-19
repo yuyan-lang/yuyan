@@ -320,9 +320,9 @@ in
    *)
 
 
-fun show_cpsvalue  (CPSAST.CPSVar(i)) = Int.toString i
-fun show_cpsbuiltin (e : CPSAST.cpsBuiltinValue) = 
-let open CPSAST
+fun show_cpsvalue  (CPSAst.CPSVar(i)) = Int.toString i
+fun show_cpsbuiltin (e : CPSAst.cpsBuiltinValue) = 
+let open CPSAst
 in
 case  e of
         CPSBvInt i => Int.toString i
@@ -331,9 +331,9 @@ case  e of
         | CPSBvReal r => Real.toString r
       end
     
-fun show_cpscomputation  (c : CPSAST.cpscomputation) : string = 
+fun show_cpscomputation  (c : CPSAst.cpscomputation) : string = 
 let 
-open CPSAST
+open CPSAst
 fun show_cpskont (v, cpscomp ) = " ===> \\k:"^ Int.toString v ^ "⟦" ^ show_cpscomputation cpscomp ^"⟧"
 val sv = show_cpsvalue
 val sk = show_cpskont

@@ -115,7 +115,7 @@ structure CompilationManager = struct
         val _ = DebugPrint.p "----------------- Type Checking OK! -------------------- \n"
         val _ = DebugPrint.p (PrettyPrint.show_typecheckingCSig typeCheckedAST)
         val _ = DebugPrint.p "----------------- CPS in Progress -------------------- \n"
-        val cpsAST = CPSPass.cpsTransformSig [] typeCheckedAST (fn ctx => CPSAST.CPSDone)
+        val cpsAST = CPSPass.cpsTransformSig [] typeCheckedAST (fn ctx => CPSAst.CPSDone)
         val _ = DebugPrint.p "----------------- CPS Done -------------------- \n"
         val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST)
     in 

@@ -19,4 +19,11 @@ fun lookupSName (l : (StructureName.t *'a ) list) (key : StructureName.t) : 'a =
     lookupGeneric l key (StructureName.semanticEqual)
     handle NotFound => raise NotFoundSName key
 
+fun indexOf (l : int list) (elem : int ) =
+    let 
+        fun g idx = if idx = length l then NONE else 
+                    if List.nth(l, idx) = elem then SOME idx else g (idx +1)
+    in g 0
+    end
+
 end

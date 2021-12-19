@@ -2,7 +2,7 @@ structure CPSPass =
 struct
 
 open TypeCheckingAST
-open CPSAST
+open CPSAst
 
 exception CPSInternalError
 
