@@ -32,7 +32,7 @@ type cpsvar = int
                 * cpscomputation) * (cpsvar * cpscomputation)
                 | CPSAbs of (cpsvar * cpsvar (* this is the continuation (return address) *)
                 * cpscomputation) * (cpsvar * cpscomputation)
-                | CPSDone (* signals return *)
+                | CPSDone of cpsvalue (* signals return of the value *)
                 | CPSBuiltinValue of cpsBuiltinValue * (cpsvar * cpscomputation) (* actually should only use label when it is 
                   a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)
     type cpscontinuation = int * cpscomputation

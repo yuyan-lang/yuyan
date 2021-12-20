@@ -41,8 +41,8 @@ in
         | CPSFold(v, k) => fv v *** fk k
         | CPSAbsSingle(f, k) => fk f *** fk k
         | CPSAbs((a, b, c), k) => remove (freeVars c) [a,b] *** fk k
-        | CPSDone  => fromList []
         | CPSBuiltinValue(_, k) => fk k
+        | CPSDone v => fv v
             
 end
 end

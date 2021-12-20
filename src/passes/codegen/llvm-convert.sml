@@ -109,9 +109,9 @@ in
             compileFunctionClosure t [f, ak] c1 k
         | CPSAbsSingle((i, c), (t,k)) => 
             compileFunctionClosure t [i] c k
-        | CPSDone (* signals return *) => ([], [LLVMReturn])
+        | CPSDone (CPSVar i) (* signals return *) => ([], [LLVMReturn i])
         | CPSBuiltinValue(CPSBvString s, (t,k)) => (
-            [LLVMStringConstant(t, s)], []
+            [LLVMStringConstant(t, s)], [](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)
         ) ::: recur k
         | _ => raise Fail "not implemented yet"
 end

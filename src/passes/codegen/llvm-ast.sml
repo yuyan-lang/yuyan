@@ -20,7 +20,7 @@ TODO: Maybe we want to make that syntactically explicit *)
             * llvmstatement list list (* one block for each index *)
     | LLVMCall of int (* function name *)
             * int list (* function arguments *)
-    | LLVMReturn
+    | LLVMReturn of int (* Variable name that stores the result *)
 
 datatype llvmdeclaration  = LLVMFunction of int (* name of the function *) 
                                           * int list (* list of arguments *)

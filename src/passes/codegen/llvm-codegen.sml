@@ -145,7 +145,13 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             "ret i64 " ^ toLocalVar discard
         ]
         end
-        | LLVMReturn => ["ret i64 0"]
+        | LLVMReturn i => let
+        val tempName = (UID.next())
+        in
+        [ toLocalVar tempName ^ " = call i64 @informResult(i64* " ^ toLocalVar i^")",
+          "ret i64 " ^ toLocalVar tempName
+        ]
+        end
             
 
 
@@ -178,7 +184,8 @@ fun genLLVMSignatureWithMainFunction ((entryFunc,s) : int * llvmsignature)  : st
         "}",
         (* declare runtime functions *)
         "declare i64* @allocateArray(i64)",
-        "declare i64 @internalError()"
+        "declare i64 @internalError()",
+        "declare i64 @informResult(i64*)"
         ]@genSig
 end
 

@@ -355,7 +355,7 @@ case c of
             | CPSFold(v, k) => "fold (" ^ sv v ^ ")" ^ sk k
             | CPSAbsSingle((i, c), k) => "(λ1" ^ Int.toString i ^ "." ^ sc c ^ ")" ^ sk k
             | CPSAbs((i,ak, c), k) => "(λ" ^ Int.toString i ^ ", "^ si ak ^ "." ^ sc c ^ ")" ^ sk k
-            | CPSDone (* signals return *) => "DONE"
+            | CPSDone (CPSVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ Int.toString i ^ "]"
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
 
 

@@ -24,13 +24,19 @@ exception CPSInternalError
         case ctx of 
              (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel3 cs l+1
 
-    fun cpsTransformSig  (ctx : context) (s : CSignature) (cc : context -> cpscomputation) : cpscomputation =
+    fun cpsTransformSig  (ctx : context) (s : CSignature) 
+    (cc : context * cpsvar option (* possible computation result *) -> cpscomputation) : cpscomputation =
 
             (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
             ; *)
             case s of
-            [] => cc ctx
+            [] => cc (ctx, NONE)
             (* (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit)) *)
+            (* optimize if tail of the block is an expression, it is the value of the expression *)
+        | [CDirectExpr e]  => 
+             cpsTransformExpr ctx e (fn resvar => 
+             cc (ctx, SOME resvar))
+
         | CTermDefinition(name, def):: ss =>  
              cpsTransformExpr ctx def (fn resvar => 
             cpsTransformSig ((name, resvar)::ctx) ss cc)
@@ -113,7 +119,7 @@ exception CPSInternalError
             | CStringLiteral l => 
                 CPSBuiltinValue(CPSBvString l, kcc cc)
             | CLetIn(csig, e,t) => 
-                cpsTransformSig ctx csig (fn newCtx => 
+                cpsTransformSig ctx csig (fn (newCtx, _) (* ignore the final value of the decls*) => 
                     cpsTransformExpr newCtx e cc)
             | _ => raise Fail "cpsp116"
 
@@ -129,6 +135,13 @@ exception CPSInternalError
         handle CPSInternalError =>
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
             raise CPSInternalError)
+
+
+ fun cpsTransformSigTopLevel  (s : CSignature) 
+     : cpscomputation =
+    cpsTransformSig [] s (fn (ctx, resvar) => 
+        case resvar of SOME resvar => CPSDone (CPSVar resvar)
+                     | NONE => raise Fail "TODO")
 
 
 (* this assumes the signature has been fully checked, so no more checking !*)
