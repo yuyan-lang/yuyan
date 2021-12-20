@@ -5,6 +5,6 @@
 
 
 int * allocateArray(int size) {
-    int * x = malloc(size * 4);
+    int * x = malloc(size * 8);
     return x;
 }

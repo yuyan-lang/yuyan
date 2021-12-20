@@ -2,12 +2,15 @@ structure LLVMAst = struct
 
 
 type llvmlocation = int (* this corresponds directly to cpsvar *)
+datatype llvmvalue = LLVMLocalVar of int
+                   | LLVMStringVar of int * UTF8String.t (* for calculating length *)
+                   | LLVMFunctionVar of int * int (* argument count *)
+                   | LLVMIntVar of int
 datatype llvmstatement = 
     LLVMStoreUnit of llvmlocation
-    | LLVMStoreArray of llvmlocation * int list
+    | LLVMStoreArray of llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)
-    | LLVMStoreFunctionClosure of llvmlocation * int list
     | LLVMArrayAccess of llvmlocation (* result *) 
                     * int  (* POINTER to array *)
                     * int  (* index *)

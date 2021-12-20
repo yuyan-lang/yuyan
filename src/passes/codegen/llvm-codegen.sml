@@ -2,12 +2,38 @@ structure LLVMCodegen = struct
 
 
 
+open LLVMAst
 
 fun toLocalVar (i : int) = "%v" ^ Int.toString i
 fun toStringName (i : int) = "@s" ^ Int.toString i
 fun toBlockNameJump (i : int) = "%b" ^ Int.toString i
 fun toFunctionName (i : int) = "@f" ^ Int.toString i
 fun toBlockNameLabel (i : int) = "b" ^ Int.toString i
+
+fun toLLVMValue (v : llvmvalue) = case v of
+    LLVMLocalVar i => toLocalVar i
+                | LLVMStringVar (i, _)=> toStringName i
+                | LLVMFunctionVar(i, _) => toFunctionName i
+                | LLVMIntVar i => Int.toString i
+fun toLLVMValueType (v : llvmvalue) = case v of
+    LLVMIntVar i => "i64"
+    | _ => "i64"
+
+(* f takes the name of the thing (may be int) *)
+fun convertValueToIntForStorage ( v : llvmvalue) (f : string -> string list) : string list = 
+let 
+    val tempVarName = UID.next()
+    in
+    case v of 
+          LLVMLocalVar i =>  (* the local var is guaranteed to be a pointer *)
+          [toLocalVar tempVarName ^ " = ptrtoint i64* " ^ toLocalVar i ^ " to i64 "] @ (f (toLocalVar tempVarName))
+        | LLVMStringVar (i, s)=> 
+          [toLocalVar tempVarName ^ " = ptrtoint [" ^ Int.toString (length (UTF8String.getBytes s) + 1) ^" x i8]* " ^ toStringName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
+        | LLVMFunctionVar(i, argLength) => 
+          [toLocalVar tempVarName ^ " = ptrtoint i64 ("^ String.concatWith ", " (List.tabulate (argLength, fn _ => "i64*")) ^ ")* " 
+          ^ toFunctionName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
+        | LLVMIntVar i => f (Int.toString i)
+    end
 
 fun storeIntToLocalVar (localVar : int)(intValue : int)  : string list= 
 let 
@@ -17,26 +43,24 @@ in
     ]
 end
 
-fun storeIntArrayToLocalVar (localVar : int)(intValues : int list) (isFuncClosure : bool)  : string list= 
+fun storeArrayToLocalVar (localVar : int)(values : llvmvalue list)  : string list= 
 let 
-    val num = length intValues
+    val num = length values
 in
     [  toLocalVar localVar ^ " = call i64* @allocateArray(i64 " ^ Int.toString num ^")"
     ]
     @(List.concat (List.tabulate (num, fn index => 
     let val tempVar = UID.next()
     in 
-    if index <> 0 orelse isFuncClosure <> true (* store regularly if we're not storing the function itself *)
-    then
     [
-        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString index,
-       "store i64 "^ Int.toString (List.nth(intValues, index)) ^", i64* " ^ toLocalVar tempVar
-    ]
-    else
-    [
-        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString index,
-       "store i64 "^ toFunctionName (List.nth(intValues, index)) ^", i64* " ^ toLocalVar tempVar
-    ]
+        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString index
+    ]@(
+        convertValueToIntForStorage(List.nth(values, index)) (fn name => 
+       ["store i64 "
+       ^ name ^", i64* " ^ toLocalVar tempVar]
+        )
+    )
+        
     end
     )))
 end
@@ -54,12 +78,10 @@ in
 ]
 end
 
-open LLVMAst
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
-        LLVMStoreUnit(v) => storeIntToLocalVar v 0
-        | LLVMStoreArray(v, arr) => storeIntArrayToLocalVar v arr false
-        | LLVMStoreFunctionClosure(v, arr) => storeIntArrayToLocalVar v arr true
+        LLVMStoreUnit(v) => storeArrayToLocalVar v [LLVMIntVar 0]
+        | LLVMStoreArray(v, arr) => storeArrayToLocalVar v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 
             let 
@@ -136,7 +158,7 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
             ["}"]
     | LLVMStringConstant(sname, s) => 
         let 
-        val rawChars = String.explode (UTF8String.toString s)
+        val rawChars = UTF8String.getBytes s
         val ordinals = map (Char.ord) rawChars @[0]
         in 
         [toStringName sname ^ " = constant [" ^ Int.toString (length  ordinals) ^ " x i8] ["

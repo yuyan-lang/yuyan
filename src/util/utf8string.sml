@@ -101,8 +101,8 @@ structure UTF8String = struct
                                 SourceRange.StartEnd (fname, startLine, startCol, endLine, endCol+1)
                         end
             )
-
-        
+    fun getBytes(s : utf8string) : char list =
+        String.explode (toString s)
 
 (* move this functionality to mixed string directly *)
     (* fun removeAllWhitespace (s : utf8string ) : utf8string =
