@@ -11,3 +11,8 @@ lsplog.txt
 
 debug.ll
 debug*
+
+*.o
+*.s
+*.bc
+*.i

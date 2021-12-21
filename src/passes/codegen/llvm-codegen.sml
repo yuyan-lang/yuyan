@@ -67,31 +67,36 @@ let
     use during runtime ,
     The header will be the first 64 bits of the allocated memory, 
     which consists of (Highest significant bits first):
+    - 2 bits of useless information (to prevent bugs due to the sign bit)
     - 5 bits of typing infomration (indicate which type this belongs to)
     - 10 bits of the length (L) of the allocation block (which doesn't include the 
     header block itself) [This means that we can't store array of size greater than 1024]
     - the remaining L bits are to indicate which of the remaining blocks are pointers 
     to another allocated structure 1, 1 indicates true and 0 indicates false.
-    if L > 64-15, then the next word are used to store this information until we run out of the blocks
+    if L > 64-17, then the next word are used to store this information until we run out of the blocks
     *)
-     val check = if length values > 64-15 then raise Fail "Not implemented: llvmcg 60" else ()
+     val check = if length values > 64-17 then raise Fail "Not implemented: llvmcg 60" else ()
      (* compute the header value *)
      val headerInfo = let
     val firstFiveBits : IntInf.int = IntInf.fromInt (getIntRepresentationOfLLVMArrayType arrType)
     val lengthOfList : IntInf.int = IntInf.fromInt num
     val remainingMapping : IntInf.int = foldl (fn (x, acc) => 
             case x of 
-             LLVMIntConst _ => acc * 2 + 1
-             | _ => acc * 2
+             LLVMIntConst _ => acc * 2 
+             | _ => acc * 2 + 1
         ) 0 values
-    val paddingBitLength : IntInf.int= IntInf.fromInt( 64 - num - 15 )
+    val paddingBitLength : IntInf.int= IntInf.fromInt( 64 - num - 17 )
     open IntInf
-    in 
+    val result = 
         toString ( 
-            firstFiveBits * pow(fromInt 2, toInt (64-5))
-        +  lengthOfList * pow( fromInt 2, toInt (64 -15))
+            firstFiveBits * pow(fromInt 2, toInt (64-7))
+        +  lengthOfList * pow( fromInt 2, toInt (64 -17))
         + remainingMapping * pow(fromInt 2 , toInt paddingBitLength)
         )
+    in 
+    DebugPrint.p ("first five bits " ^ toString firstFiveBits ^ " length " ^ toString lengthOfList ^ " remainingMapping " ^ toString
+    remainingMapping ^ " result " ^ result ^" \n");
+    result
     end
 in
     (* perform the header computation directly *)

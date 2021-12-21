@@ -124,7 +124,12 @@ structure CompilationManager = struct
         val _ = DebugPrint.p "----------------- LLVM IR Codegen Done -------------------- \n"
         val _ = DebugPrint.p (String.concatWith "\n" statements)
         val _ = TextIO.output (TextIO.openOut "debug.ll",(String.concatWith "\n" statements))
-        val _ = OS.Process.system ("clang  runtime/*.c debug.ll -g -o debug")
+        val cmd =  "clang "
+        ^ String.concatWith " " (map (fn i => OS.FileSys.getDir() ^"/runtime/" ^ i) 
+        ["allocation.c", "entry.c", "exception.c"]) ^
+        " debug.ll -save-temps=obj -g -o debug -I /usr/local/include"
+        val _ = DebugPrint.p (cmd ^ "\n")
+        val _ = OS.Process.system (cmd)
     in 
         (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens) 
     end

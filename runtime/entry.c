@@ -16,11 +16,11 @@ int main(int argc, char* argv[]) {
 }
 
 
-int informResult (int64_t result[]) {
+int informResult (uint64_t result[]) {
     // assume it is a tuple
-    int64_t header = result[0];
-    int type = (header >> (64 - 5)) &  0b11111;
-    int length = (header >> (64 - 15)) &  0b1111111111;
+    uint64_t header = result[0];
+    int type = (header >> (64 - 7)) &  0b11111;
+    int length = (header >> (64 - 17)) &  0b1111111111;
 
     switch (type)
     {
@@ -28,17 +28,24 @@ int informResult (int64_t result[]) {
         fprintf(stderr,"Received a function closure (length is %d). Did you define a function?\n", length);
         for (int i = 0; i < length ; i ++){
             fprintf(stderr,"%d : ", i);
-            informResult((int64_t *)result[i+1]);
+            informResult((uint64_t *)result[i+1]);
         }
         break;
     case 2:
         fprintf(stderr,"卷");
+        informResult((uint64_t *) result[1]);
         break;
+   
     case 3:
         fprintf(stderr,"PROD");
         break;
-    case 4:
-        fprintf(stderr,"SUM");
+     case 4:
+        fprintf(stderr,"%s临「", (char*)result[2]);
+        informResult((uint64_t *) result[3]);
+        fprintf(stderr,"」");
+        break;
+    case 5:
+        fprintf(stderr,"元");
         break;
     
     

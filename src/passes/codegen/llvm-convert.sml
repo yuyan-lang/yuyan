@@ -54,7 +54,8 @@ fun compileFunctionClosure(funLoc : int ) (args : int list) (body : cpscomputati
         (* represent the function as a closure *)
         (* then values for free variables *)
             vaccessL (map CPSVar freeVarsInBody) (fn freeVarValues' => 
-            [LLVMStoreArray(LLVMArrayTypeFunctionClosure, funLoc, [LLVMFunctionVar(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
+            [LLVMStoreArray(LLVMArrayTypeFunctionClosure, funLoc, 
+            [LLVMFunctionVar(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
             )
         ) ::: recur kont
         end 
