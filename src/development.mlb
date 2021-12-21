@@ -52,7 +52,15 @@ local
         parser/parse-ast.sml
         parser/bracket-scanner.sml
         passes/typechecking/type-checking-ast-ops.sml
+        passes/cps-transform/cps-ast.sml
+        passes/cps-transform/cps-ast-ops.sml
+        passes/cps-transform/closure-convert.sml
+        passes/codegen/llvm-ast.sml
+        passes/codegen/llvm-codegen.sml
+        passes/codegen/llvm-convert.sml
+
         ui/pretty-print.sml
+        passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml
         passes/preprocess/preprocessing-operators.sml
         passes/preprocess/preprocessing-pass.sml
@@ -67,9 +75,7 @@ local
         parser/elaborate-precedence.sml
         parser/precedence-parser.sml
         parser/mixfix-parser.sml
-        passes/cps-transform/cps-ast.sml
-        passes/cps-transform/cps-pass.sml
-
+   
         passes/preprocess/expression-construction-pass.sml
         
         build-system/compilation-module.sml
