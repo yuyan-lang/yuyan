@@ -54,7 +54,7 @@ fun compileFunctionClosure(funLoc : int ) (args : int list) (body : cpscomputati
         (* represent the function as a closure *)
         (* then values for free variables *)
             vaccessL (map CPSVar freeVarsInBody) (fn freeVarValues' => 
-            [LLVMStoreArray(funLoc, [LLVMFunctionVar(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
+            [LLVMStoreArray(LLVMArrayTypeFunctionClosure, funLoc, [LLVMFunctionVar(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
             )
         ) ::: recur kont
         end 
@@ -77,12 +77,12 @@ in
 
     case cpscomp of
         CPSUnit((k, comp)) => ([], [LLVMStoreUnit k]) ::: recur comp
-        | CPSTuple(l, (t, k)) => ([], vaccessL l (fn l' => [LLVMStoreArray(t, map LLVMLocalVar l')])) ::: recur k
+        | CPSTuple(l, (t, k)) => ([], vaccessL l (fn l' => [LLVMStoreArray(LLVMArrayTypeProd, t, map LLVMLocalVar l')])) ::: recur k
         | CPSProj(v, i, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess(t,v',i)])) ::: recur k
         | CPSInj(label, index, value, (v, k)) => 
             let val labelLoc = UID.next()
             in ([LLVMStringConstant(labelLoc, label)],  (* TODO FIX BUG*)
-            vaccess value (fn value' => [LLVMStoreArray(v,[LLVMIntVar index, LLVMStringVar (labelLoc, label), LLVMLocalVar value'])])) ::: recur k
+            vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,v,[LLVMIntConst index, LLVMStringVar (labelLoc, label), LLVMLocalVar value'])])) ::: recur k
             end
         | CPSCases(v, vkl) => 
             let val indexLoc = UID.next()
@@ -96,7 +96,7 @@ in
                 @ [LLVMConditionalJump(indexLoc,recurComps)]
                 )
             end
-        | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(t,[LLVMLocalVar v'])])) ::: recur k
+        | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(LLVMArrayTypeFold, t,[LLVMLocalVar v'])])) ::: recur k
         | CPSUnfold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess(t,v',0)])) ::: recur k
         | CPSAbs((i,ak, c), (t,k)) => 
             compileFunctionClosure t [i, ak] c k

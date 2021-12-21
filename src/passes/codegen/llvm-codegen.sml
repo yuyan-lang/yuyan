@@ -14,10 +14,17 @@ fun toLLVMValue (v : llvmvalue) = case v of
     LLVMLocalVar i => toLocalVar i
                 | LLVMStringVar (i, _)=> toStringName i
                 | LLVMFunctionVar(i, _) => toFunctionName i
-                | LLVMIntVar i => Int.toString i
+                | LLVMIntConst i => Int.toString i
 fun toLLVMValueType (v : llvmvalue) = case v of
-    LLVMIntVar i => "i64"
+    LLVMIntConst i => "i64"
     | _ => "i64"
+
+fun getIntRepresentationOfLLVMArrayType (t : llvmarraytype) = case t of
+        LLVMArrayTypeFunctionClosure => 1
+        | LLVMArrayTypeFold =>2
+        | LLVMArrayTypeProd => 3
+        | LLVMArrayTypeSum => 4
+        | LLVMArrayTypeUnit => 5
 
 (* f takes the name of the thing (may be int) *)
 fun convertValueToIntForStorage ( v : llvmvalue) (f : string -> string list) : string list = 
@@ -32,7 +39,7 @@ let
         | LLVMFunctionVar(i, argLength) => 
           [toLocalVar tempVarName ^ " = ptrtoint i64 ("^ String.concatWith ", " (List.tabulate (argLength, fn _ => "i64*")) ^ ")* " 
           ^ toFunctionName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
-        | LLVMIntVar i => f (Int.toString i)
+        | LLVMIntConst i => f (Int.toString i)
     end
 
 fun storeIntToLocalVar (localVar : int)(intValue : int)  : string list= 
@@ -43,17 +50,63 @@ in
     ]
 end
 
-fun storeArrayToLocalVar (localVar : int)(values : llvmvalue list)  : string list= 
+(* fun intToBitString (a : int) (length : int) : char list = 
+    if length = 0 
+    then []
+    else  (intToBitString (a div 2) (length -1))@[
+        if a mod 2 = 0 then #"0"  else #"1"
+    ] *)
+
+
+
+fun storeArrayToLocalVar (arrType : llvmarraytype) (localVar : int)(values : llvmvalue list)  : string list= 
 let 
     val num = length values
+    val headerPointerVar = UID.next() 
+    (* naive attempt of storing compile time information for 
+    use during runtime ,
+    The header will be the first 64 bits of the allocated memory, 
+    which consists of (Highest significant bits first):
+    - 5 bits of typing infomration (indicate which type this belongs to)
+    - 10 bits of the length (L) of the allocation block (which doesn't include the 
+    header block itself) [This means that we can't store array of size greater than 1024]
+    - the remaining L bits are to indicate which of the remaining blocks are pointers 
+    to another allocated structure 1, 1 indicates true and 0 indicates false.
+    if L > 64-15, then the next word are used to store this information until we run out of the blocks
+    *)
+     val check = if length values > 64-15 then raise Fail "Not implemented: llvmcg 60" else ()
+     (* compute the header value *)
+     val headerInfo = let
+    val firstFiveBits : IntInf.int = IntInf.fromInt (getIntRepresentationOfLLVMArrayType arrType)
+    val lengthOfList : IntInf.int = IntInf.fromInt num
+    val remainingMapping : IntInf.int = foldl (fn (x, acc) => 
+            case x of 
+             LLVMIntConst _ => acc * 2 + 1
+             | _ => acc * 2
+        ) 0 values
+    val paddingBitLength : IntInf.int= IntInf.fromInt( 64 - num - 15 )
+    open IntInf
+    in 
+        toString ( 
+            firstFiveBits * pow(fromInt 2, toInt (64-5))
+        +  lengthOfList * pow( fromInt 2, toInt (64 -15))
+        + remainingMapping * pow(fromInt 2 , toInt paddingBitLength)
+        )
+    end
 in
-    [  toLocalVar localVar ^ " = call i64* @allocateArray(i64 " ^ Int.toString num ^")"
+    (* perform the header computation directly *)
+    [
+        toLocalVar localVar ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num + 1) ^")"
+          (* get the first block address and store*)
+        , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 0"
+        , "store i64 " ^ headerInfo ^ ", i64* "^ toLocalVar headerPointerVar
+
     ]
     @(List.concat (List.tabulate (num, fn index => 
     let val tempVar = UID.next()
     in 
     [
-        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString index
+        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString (index+1)
     ]@(
         convertValueToIntForStorage(List.nth(values, index)) (fn name => 
        ["store i64 "
@@ -71,7 +124,7 @@ let val tempVar = UID.next()
 val beforeTypeCast = UID.next()
 in 
 [
-    toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString index,
+    toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString (index+1) (* skip header block*),
     toLocalVar beforeTypeCast ^ " = load i64, i64* " ^ toLocalVar tempVar,
     toLocalVar localVar ^ " = inttoptr i64 " ^ toLocalVar beforeTypeCast ^ " to i64*"
     (* casting everything to be a pointer to avoid typing conflict (I don't know whether is is sensible *)
@@ -80,8 +133,8 @@ end
 
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
-        LLVMStoreUnit(v) => storeArrayToLocalVar v [LLVMIntVar 0]
-        | LLVMStoreArray(v, arr) => storeArrayToLocalVar v arr
+        LLVMStoreUnit(v) => storeArrayToLocalVar LLVMArrayTypeUnit v []
+        | LLVMStoreArray(arrtype, v, arr) => storeArrayToLocalVar arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 
             let 
@@ -178,7 +231,7 @@ fun genLLVMSignatureWithMainFunction ((entryFunc,s) : int * llvmsignature)  : st
     val tempVar = UID.next()
     in 
         [ (* generate main function *)
-        "define i64 @main() {",
+        "define i64 @entryMain() {",
         toLocalVar tempVar ^ " =  call i64 " ^ toFunctionName entryFunc ^ "()",
         "ret i64 "^ toLocalVar tempVar,
         "}",

@@ -5,10 +5,19 @@ type llvmlocation = int (* this corresponds directly to cpsvar *)
 datatype llvmvalue = LLVMLocalVar of int
                    | LLVMStringVar of int * UTF8String.t (* for calculating length *)
                    | LLVMFunctionVar of int * int (* argument count *)
-                   | LLVMIntVar of int
+                   | LLVMIntConst of int
+datatype llvmarraytype = 
+        LLVMArrayTypeFunctionClosure (* for storing continuation cosures generated during compilation *)
+        | LLVMArrayTypeFold
+        | LLVMArrayTypeProd
+        | LLVMArrayTypeSum
+        | LLVMArrayTypeUnit
+
+        
+
 datatype llvmstatement = 
     LLVMStoreUnit of llvmlocation
-    | LLVMStoreArray of llvmlocation * llvmvalue list
+    | LLVMStoreArray of llvmarraytype * llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)
     | LLVMArrayAccess of llvmlocation (* result *) 
