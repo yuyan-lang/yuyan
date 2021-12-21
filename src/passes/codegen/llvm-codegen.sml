@@ -180,7 +180,7 @@ fun genLLVMSignatureWithMainFunction ((entryFunc,s) : int * llvmsignature)  : st
         [ (* generate main function *)
         "define i64 @main() {",
         toLocalVar tempVar ^ " =  call i64 " ^ toFunctionName entryFunc ^ "()",
-        "ret i64 0",
+        "ret i64 "^ toLocalVar tempVar,
         "}",
         (* declare runtime functions *)
         "declare i64* @allocateArray(i64)",
