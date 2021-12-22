@@ -63,6 +63,7 @@ fun storeArrayToLocalVar (arrType : llvmarraytype) (localVar : int)(values : llv
 let 
     val num = length values
     val headerPointerVar = UID.next() 
+    val headerPointerVarArr = UID.next() 
     (* naive attempt of storing compile time information for 
     use during runtime ,
     The header will be the first 64 bits of the allocated memory, 
@@ -73,40 +74,82 @@ let
     header block itself) [This means that we can't store array of size greater than 1024]
     - the remaining L bits are to indicate which of the remaining blocks are pointers 
     to another allocated structure 1, 1 indicates true and 0 indicates false.
-    if L > 64-17, then the next word are used to store this information until we run out of the blocks
+    if L > 64-17, then the words after entire block are used to store this information until we run out of the blocks 
+        (so that the length of the header block is always 1)
     *)
-     val check = if length values > 64-17 then raise Fail "Not implemented: llvmcg 60" else ()
      (* compute the header value *)
+    val headerLength = (15 + num) div 62 + (if (15 + num) mod 62 = 0 then 0 else 1) (* only use the last 62 bits per block *)
      val headerInfo = let
+    open IntInf
     val firstFiveBits : IntInf.int = IntInf.fromInt (getIntRepresentationOfLLVMArrayType arrType)
     val lengthOfList : IntInf.int = IntInf.fromInt num
-    val remainingMapping : IntInf.int = foldl (fn (x, acc) => 
+    val markingBits : IntInf.int list = map (fn (x ) => 
             case x of 
-             LLVMIntConst _ => acc * 2 
-             | _ => acc * 2 + 1
-        ) 0 values
-    val paddingBitLength : IntInf.int= IntInf.fromInt( 64 - num - 17 )
-    open IntInf
-    val result = 
-        toString ( 
+             LLVMIntConst _ => 0
+             | _ =>  1
+        )  values
+    fun markingBitsToInt (bits : IntInf.int list) : IntInf.int = foldl (fn (x, acc) => 
+            acc * 2 + x
+        ) 0 bits
+    val paddingBitLength : IntInf.int= fromInt headerLength * fromInt 62 - fromInt num - 15
+    fun getNumbers (remainingMarking : int list) (remainingHeaderLength : int) : string list = 
+        if remainingHeaderLength = 1
+        then (if fromInt (length remainingMarking) + paddingBitLength = 62 
+            then 
+        [toString ( 
+         (markingBitsToInt remainingMarking * pow(fromInt 2 , toInt paddingBitLength))
+        )]
+        else if fromInt 15 + fromInt (length remainingMarking) + paddingBitLength = 62
+        then
+        [toString ( 
             firstFiveBits * pow(fromInt 2, toInt (64-7))
         +  lengthOfList * pow( fromInt 2, toInt (64 -17))
-        + remainingMapping * pow(fromInt 2 , toInt paddingBitLength)
-        )
+        + markingBitsToInt remainingMarking * pow(fromInt 2 , toInt paddingBitLength)
+        )]
+        else raise Fail ("Not Possible llvmcg 109, got remainingMarking length " ^ Int.toString (length remainingMarking) ^ " padding bit length " ^ Int.toString (toInt paddingBitLength)))
+        else (if remainingHeaderLength = fromInt headerLength 
+              then (* we're in the first block, and remaining header length <> 1 *)
+                [toString ( 
+                    firstFiveBits * pow(fromInt 2, toInt (64-7))
+                +  lengthOfList * pow( fromInt 2, toInt (64 -17))
+                + markingBitsToInt (List.take(remainingMarking, toInt (62 - 15)))
+                )]@(getNumbers (List.drop(remainingMarking, toInt (62-15))) (remainingHeaderLength -1))
+            else(* we're not in the first block, and remaining header length <> 1 *)
+                [toString ( 
+                 markingBitsToInt (List.take(remainingMarking, 62))
+                )]@(getNumbers (List.drop(remainingMarking, 62)) (remainingHeaderLength -1))
+            )
+    val result = getNumbers markingBits (fromInt headerLength)
     in 
-    DebugPrint.p ("first five bits " ^ toString firstFiveBits ^ " length " ^ toString lengthOfList ^ " remainingMapping " ^ toString
-    remainingMapping ^ " result " ^ result ^" \n");
+    DebugPrint.p ("first five bits " ^ toString firstFiveBits ^ " length " ^ toString lengthOfList ^ " remainingMarking " ^ toString
+    (markingBitsToInt markingBits) ^ " result " ^ String.concatWith "," result ^" \n");
     result
     end
+    val headerArrType = "["  ^ Int.toString headerLength ^" x i64]"
 in
     (* perform the header computation directly *)
     [
+        (* toLocalVar localVar ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num + headerLength) ^")"
+          (* get the first block address and store*)
+        , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 0"
+        , toLocalVar headerPointerVarArr ^ " = bitcast i64* " ^ toLocalVar headerPointerVar ^ " to " ^ headerArrType ^ "*"
+        , "store " ^ headerArrType ^ " [" ^ String.concatWith ", " 
+            (map(fn i => "i64 "^ i) headerInfo) ^ "], " ^ headerArrType ^ "* "^ toLocalVar headerPointerVarArr *)
+
         toLocalVar localVar ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num + 1) ^")"
           (* get the first block address and store*)
         , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 0"
-        , "store i64 " ^ headerInfo ^ ", i64* "^ toLocalVar headerPointerVar
-
+        , "store i64 " ^ hd headerInfo ^ ", i64* "^ toLocalVar headerPointerVar
     ]
+    @(List.concat (List.tabulate (headerLength - 1 , fn index => 
+    let val tempVar = UID.next()
+    in 
+    [
+        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString (index+num+1)
+    ]@(
+       ["store i64 " ^ List.nth(headerInfo, index+1) ^", i64* " ^ toLocalVar tempVar])
+    end
+    )))
     @(List.concat (List.tabulate (num, fn index => 
     let val tempVar = UID.next()
     in 
@@ -127,8 +170,17 @@ end
 fun derefArrayFrom (localVar : int )(arrptr : int)(index : int)  : string list= 
 let val tempVar = UID.next()
 val beforeTypeCast = UID.next()
+(* val headerLengthPointer = UID.next()
+val headerLengthName = UID.next()
+val hIntermediate1 = UID.next()
+val hIntermediate2 = UID.next()
+val realIndexName = UID.next() *)
 in 
 [
+    (* toLocalVar headerLengthPointer ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString 0 (* first header block*),
+    toLocalVar headerLengthName ^ " = load i64, i64* " ^ toLocalVar headerLengthPointer,
+    toLocalVar hIntermediate1 ^ " = lshiftr i64 " ^ toLocalVar headerLengthName ^ ", " ^ Int.toString(62 - 15),
+    toLocalVar hIntermediate2 ^ " = and i64 " ^ toLocalVar hIntermediate1 ^ ", 1023", *)
     toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString (index+1) (* skip header block*),
     toLocalVar beforeTypeCast ^ " = load i64, i64* " ^ toLocalVar tempVar,
     toLocalVar localVar ^ " = inttoptr i64 " ^ toLocalVar beforeTypeCast ^ " to i64*"
@@ -197,7 +249,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         in
         [
             toLocalVar castedFname ^ " = bitcast i64* " ^ toLocalVar fname  ^ " to " ^ ftype ^ "*",
-            toLocalVar discard ^ " = call i64 " ^ toLocalVar castedFname ^ 
+            toLocalVar discard ^ " = musttail call i64 " ^ toLocalVar castedFname ^ 
                 "(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLocalVar arg) args) ^ ")",
             (* assumed to terminate after call *)
             "ret i64 " ^ toLocalVar discard

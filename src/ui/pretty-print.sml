@@ -340,7 +340,7 @@ val sk = show_cpskont
 val si = Int.toString
 val sc = show_cpscomputation
 fun sfvs (fvs: int list option) : string = case 
-  fvs of SOME fvs => "[FreeVars: " ^ String.concatWith ", " (map Int.toString fvs) ^ "]" | NONE => ""
+  fvs of SOME fvs => "[FreeVars(" ^ Int.toString (length fvs) ^ "): " ^ String.concatWith ", " (map Int.toString fvs) ^ "]" | NONE => ""
 in
 case c of
               CPSUnit(k) => "()" ^ sk k
