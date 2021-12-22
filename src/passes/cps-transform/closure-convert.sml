@@ -6,7 +6,7 @@ open CPSAstOps
 
 fun closureConvertCont ( (i, c) : cpscontinuation) : IntSet.set * cpscontinuation =
     let val (cfree, c') = closureConvert c
-    in (cfree, (i, c')) end
+    in (remove cfree [i], (i, c')) end
 and closureConvert (s : cpscomputation) : (IntSet.set * cpscomputation) =
 let val cck  = closureConvertCont
 fun fv (CPSVar v) = fromList [v]
