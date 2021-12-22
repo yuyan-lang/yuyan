@@ -16,33 +16,45 @@ int main(int argc, char* argv[]) {
 }
 
 
-int informResult (uint64_t result[]) {
+
+int informResultRec (uint64_t result[], int prevPred) {
     // assume it is a tuple
     uint64_t header = result[0];
     int type = (header >> (64 - 7)) &  0b11111;
     int length = (header >> (64 - 17)) &  0b1111111111;
 
+    int preds[] = {0, 0, 660, 680, 670, 720};
+    int shouldPrintQuote = 2 <= type && type <= 5 && preds[type] < prevPred;
+
+    if(shouldPrintQuote){
+        fprintf(stderr,"「");
+    }
+
+
     switch (type)
     {
     case 1:
         fprintf(stderr,"Received a function closure (length is %d). Did you define a function?\n", length);
-        for (int i = 0; i < length ; i ++){
-            fprintf(stderr,"%d : ", i);
-            informResult((uint64_t *)result[i+1]);
-        }
+        // for (int i = 0; i < length ; i ++){
+        //     fprintf(stderr,"%d : ", i);
+        //     informResult((uint64_t *)result[i+1]);
+        // }
         break;
     case 2:
         fprintf(stderr,"卷");
-        informResult((uint64_t *) result[1]);
+        informResultRec((uint64_t *) result[1], preds[type]);
         break;
    
     case 3:
-        fprintf(stderr,"PROD");
+        informResultRec((uint64_t *) result[1], preds[type]);
+        for (int i = 1; i < length ; i++) {
+            fprintf(stderr,"与");
+            informResultRec((uint64_t *) result[1+i], preds[type]);
+        }
         break;
      case 4:
-        fprintf(stderr,"%s临「", (char*)result[2]);
-        informResult((uint64_t *) result[3]);
-        fprintf(stderr,"」");
+        fprintf(stderr,"%s临", (char*)result[2]);
+        informResultRec((uint64_t *) result[3], preds[type]);
         break;
     case 5:
         fprintf(stderr,"元");
@@ -54,5 +66,13 @@ int informResult (uint64_t result[]) {
         break;
     }
 
+    if(shouldPrintQuote){
+        fprintf(stderr,"」");
+    }
+
+
     return 0;
+}
+int informResult (uint64_t result[]) {
+    return informResultRec(result, 0);
 }
