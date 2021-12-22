@@ -35,7 +35,7 @@ in
         | CPSUnfold(v, k) => fv v *** fk k
         | CPSApp(a, (b, c)) => fromList [fvi a, fvi b, fvi c]
         | CPSAppSingle(a, b) => fromList [fvi a, fvi b]
-        | CPSFix((a, b, c), k) => remove (freeVars c) [a, b] *** fk k
+        (* | CPSFix((a, b, c), k) => remove (freeVars c) [a, b] *** fk k *)
         | CPSTuple(l, k) => fromList (map fvi l) *** fk k
         | CPSInj(l, i, v, k) => fv v *** fk k
         | CPSFold(v, k) => fv v *** fk k

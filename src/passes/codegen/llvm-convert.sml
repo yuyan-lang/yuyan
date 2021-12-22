@@ -103,11 +103,11 @@ in
             compileFunctionClosure t [i, ak] c k
         | CPSApp(a, (b, c)) => compileFunctionCall a [b,c]
         | CPSAppSingle (a,b)=> compileFunctionCall a [b]
-        | CPSFix((f, ak, c1), (t,k)) => 
+        (* | CPSFix((f, ak, c1), (t,k)) =>  *)
         (* this is likely to be incorrect *)
         (* this is likely to be incorrect *)
         (* this is likely to be incorrect *)
-            compileFunctionClosure t [f, ak] c1 k
+            (* compileFunctionClosure t [f, ak] c1 k *)
         | CPSAbsSingle((i, c), (t,k)) => 
             compileFunctionClosure t [i] c k
         | CPSDone (CPSVar i) (* signals return *) => ([], [LLVMReturn i])

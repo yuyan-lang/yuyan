@@ -349,7 +349,7 @@ case c of
             | CPSUnfold(v, k) => "unfold (" ^ sv v ^ ")" ^ sk k
             | CPSApp(a, (b, c)) => "ap("^ sv a ^ ",("^ sv b ^ ", " ^ sv c^"))"
             | CPSAppSingle (a,b)=> "ap1("^ sv a ^ ","^ sv b ^")"
-            | CPSFix((f, a, c1), k) => "(fix " ^ si f ^ ", " ^ si a ^ " . " ^ sc c1 ^ ")" ^ sk k
+            (* | CPSFix((f, a, c1), k) => "(fix " ^ si f ^ ", " ^ si a ^ " . " ^ sc c1 ^ ")" ^ sk k *)
             | CPSTuple(l, k) => "[" ^ String.concatWith ", " (map sv l) ^ "]" ^ sk k
             | CPSInj(l, i, kv, k) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ sv kv ^ sk k
             | CPSFold(v, k) => "fold (" ^ sv v ^ ")" ^ sk k

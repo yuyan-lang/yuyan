@@ -19,12 +19,12 @@ type cpsvar = int
                 | CPSUnfold of cpsvalue * (cpsvar * cpscomputation) 
                 | CPSApp of cpsvalue  * (cpsvalue * cpsvalue) (* !!! *)
                 | CPSAppSingle of cpsvalue  * cpsvalue  (* !!! *)
-                | CPSFix of (
+                (* | CPSFix of (
                   cpsvar (* this represents the fix itself (for use inside function body *) 
                   * cpsvar (* this represents the continuation for use inside fix body*)
                   * cpscomputation) * 
                   (cpsvar  (* the result of fixed point will be stored here *)
-                  * cpscomputation)
+                  * cpscomputation) *)
                 | CPSTuple of cpsvalue list * (cpsvar * cpscomputation)
                 | CPSInj of Label * int * cpsvalue * (cpsvar * cpscomputation)
                 | CPSFold of cpsvalue * (cpsvar * cpscomputation)

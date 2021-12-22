@@ -6,8 +6,10 @@ open CPSAst
 
 exception CPSInternalError
 
+    datatype cpscontextvalue = PlainVar of int
+                             | SelfVar of int (* selfvar represents a pending computation that needs to be applied to itself *)
 
-    type context = (StructureName.t * cpsvar) list
+    type context = (StructureName.t * cpscontextvalue) list
 
     fun kcc (cc : cpsvar -> cpscomputation) : cpscontinuation = 
         let val v = UID.next()
@@ -39,7 +41,7 @@ exception CPSInternalError
 
         | CTermDefinition(name, def):: ss =>  
              cpsTransformExpr ctx def (fn resvar => 
-            cpsTransformSig ((name, resvar)::ctx) ss cc)
+            cpsTransformSig ((name, PlainVar resvar)::ctx) ss cc)
         | CDirectExpr e :: ss => 
              cpsTransformExpr ctx e (fn resvar => 
             cpsTransformSig (ctx) ss cc)
@@ -51,7 +53,13 @@ exception CPSInternalError
         let 
         (* val _ = print ("cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
          val res = case e of
-            CExprVar sn => cc (ListSearchUtil.lookupSName ctx sn)
+            CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
+                PlainVar v => cc v
+                | SelfVar v => CPSAbsSingle(kcc (fn arg => 
+                        cc arg
+                    ), kcc (fn kont => 
+                        CPSApp(CPSVar v, (CPSVar v, CPSVar kont)) (* apply the recursive value to itself *)
+                     )))
             | CUnitExpr => CPSUnit (kcc cc)
             | CTuple (cs, Prod ls) => (
                     let fun go i values = 
@@ -74,12 +82,12 @@ exception CPSInternalError
                                     val caseIndex = klookupLabel3 cases label
                                     val (_, ev, e) = List.nth(cases, caseIndex)
                                 in kcc (fn boundId => cpsTransformExpr (
-                                     ([ev], boundId)::ctx) e cc
+                                     ([ev], PlainVar boundId)::ctx) e cc
                                 ) end)))
             )
             | CLam(ev, eb, Func(t1, t2)) => 
                 CPSAbs (kcc2 (fn arg => fn ret =>
-                    cpsTransformExpr ((([ev], arg))::ctx) eb 
+                    cpsTransformExpr ((([ev], PlainVar arg))::ctx) eb 
                         (fn r => CPSAppSingle(CPSVar ret,CPSVar r))
                 ), kcc cc)
             | CApp (e1, e2, t) => 
@@ -97,16 +105,26 @@ exception CPSInternalError
             | COpen ((et, e1), (tv, ev, e2), rt) => 
                 (cpsTransformExpr ctx e1) 
                     (fn v => 
-                cpsTransformExpr (([ev],v)::ctx) e2 cc
+                cpsTransformExpr (([ev],PlainVar v)::ctx) e2 cc
                     )
             | CFold (e2, t) => 
                 cpsTransformExpr ctx e2 (fn v => CPSFold(CPSVar v, kcc cc))
             | CUnfold (e2, _) => cpsTransformExpr ctx e2 (fn v => CPSUnfold(CPSVar v , kcc cc))
-            | CFix (ev, e, t)=>  
-            CPSFix(kcc2 (fn self => fn ret => 
-                cpsTransformExpr (([ev], self)::ctx) e
-                                        (fn r => CPSAppSingle(CPSVar ret,CPSVar r))
-                 ), kcc cc)
+            | CFix (ev, e, _)=>  
+            let val fixedPointBoundId = UID.next()
+            in
+              CPSAbs (kcc2 (fn self => fn ret =>
+                    cpsTransformExpr (([ev], SelfVar self) :: ctx) e 
+                     (fn r => CPSAppSingle(CPSVar ret,CPSVar r))
+                ), (fixedPointBoundId , 
+                    CPSAbsSingle(kcc (fn arg => 
+                        cc arg
+                        ), kcc (fn kont => 
+                        CPSApp(CPSVar fixedPointBoundId, (CPSVar fixedPointBoundId, CPSVar kont))
+                        ))
+                    )
+                )
+                end
                 (* Is this really the case ??? *)
             (* let
              fix F = ((\y. f (y y)) (\y. f (y y)))
