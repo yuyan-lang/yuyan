@@ -39,8 +39,8 @@ in
         | CPSTuple(l, k) => fromList (map fvi l) *** fk k
         | CPSInj(l, i, v, k) => fv v *** fk k
         | CPSFold(v, k) => fv v *** fk k
-        | CPSAbsSingle(f, k) => fk f *** fk k
-        | CPSAbs((a, b, c), k) => remove (freeVars c) [a,b] *** fk k
+        | CPSAbsSingle(f,_, k) => fk f *** fk k
+        | CPSAbs((a, b, c),_, k) => remove (freeVars c) [a,b] *** fk k
         | CPSBuiltinValue(_, k) => fk k
         | CPSDone v => fv v
             

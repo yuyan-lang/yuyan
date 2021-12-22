@@ -38,12 +38,14 @@ fun vaccessL (cpsvallist : cpsvalue list)  (f : int list -> llvmstatement list) 
     in go [] cpsvallist
     end
 
-fun compileFunctionClosure(funLoc : int ) (args : int list) (body : cpscomputation)
+fun compileFunctionClosure(funLoc : int ) (args : int list) 
+        (fvs : int list) (body : cpscomputation)
     (kont : cpscomputation) :  llvmdeclaration list * llvmstatement list  =
         let 
             val compiledFunctionName = UID.next()
             val compiledFreeVarsAddr = UID.next()
-            val freeVarsInBody = IntSet.toList (remove (freeVars body) args)
+            (* val freeVarsInBody = IntSet.toList (remove (freeVars body) args) *)
+            val freeVarsInBody = fvs
             val (decls, compiledBody) = genLLVM (
             (* important : first argument is always function name (guaranteed to be fresh (we don't have fix fun) *)
             (compiledFreeVarsAddr, compiledFunctionName::freeVarsInBody)
@@ -99,17 +101,16 @@ in
             end
         | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(LLVMArrayTypeFold, t,[LLVMLocalVar v'])])) ::: recur k
         | CPSUnfold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess(t,v',0)])) ::: recur k
-        | CPSAbs((i,ak, c), (t,k)) => 
-            compileFunctionClosure t [i, ak] c k
+        | CPSAbs((i,ak, c), SOME fvs, (t,k)) => 
+            compileFunctionClosure t [i, ak] fvs c k
+        | CPSAbs((i,ak, c), NONE, (t,k)) => 
+            raise Fail "you forgot to perform closure conversion"
         | CPSApp(a, (b, c)) => compileFunctionCall a [b,c]
         | CPSAppSingle (a,b)=> compileFunctionCall a [b]
-        (* | CPSFix((f, ak, c1), (t,k)) =>  *)
-        (* this is likely to be incorrect *)
-        (* this is likely to be incorrect *)
-        (* this is likely to be incorrect *)
-            (* compileFunctionClosure t [f, ak] c1 k *)
-        | CPSAbsSingle((i, c), (t,k)) => 
-            compileFunctionClosure t [i] c k
+        | CPSAbsSingle((i, c), SOME fvs, (t,k)) => 
+            compileFunctionClosure t [i] fvs c k
+        | CPSAbsSingle((i, c), NONE, (t,k)) => 
+            raise Fail "you forgot to perform closure conversion"
         | CPSDone (CPSVar i) (* signals return *) => ([], [LLVMReturn i])
         | CPSBuiltinValue(CPSBvString s, (t,k)) => (
             [LLVMStringConstant(t, s)], [](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)

@@ -19,19 +19,15 @@ type cpsvar = int
                 | CPSUnfold of cpsvalue * (cpsvar * cpscomputation) 
                 | CPSApp of cpsvalue  * (cpsvalue * cpsvalue) (* !!! *)
                 | CPSAppSingle of cpsvalue  * cpsvalue  (* !!! *)
-                (* | CPSFix of (
-                  cpsvar (* this represents the fix itself (for use inside function body *) 
-                  * cpsvar (* this represents the continuation for use inside fix body*)
-                  * cpscomputation) * 
-                  (cpsvar  (* the result of fixed point will be stored here *)
-                  * cpscomputation) *)
                 | CPSTuple of cpsvalue list * (cpsvar * cpscomputation)
                 | CPSInj of Label * int * cpsvalue * (cpsvar * cpscomputation)
                 | CPSFold of cpsvalue * (cpsvar * cpscomputation)
                 | CPSAbsSingle of (cpsvar (* this is the continuation (return address) *)
-                * cpscomputation) * (cpsvar * cpscomputation)
+                * cpscomputation)  * cpsvar list option (* list of free variables in the function closure (first argument) (to be populated during closure conversion) *)
+                * (cpsvar * cpscomputation) (* continuation where cpsvar is bound to the abstraction*)
                 | CPSAbs of (cpsvar * cpsvar (* this is the continuation (return address) *)
-                * cpscomputation) * (cpsvar * cpscomputation)
+                * cpscomputation)  * cpsvar list option (* list of free variables in the function closure (first argument) (to be populated during closure conversion) *)
+                * (cpsvar * cpscomputation)(* continuation where cpsvar is bound to the abstraction*)
                 | CPSDone of cpsvalue (* signals return of the value *)
                 | CPSBuiltinValue of cpsBuiltinValue * (cpsvar * cpscomputation) (* actually should only use label when it is 
                   a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)

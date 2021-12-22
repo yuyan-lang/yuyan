@@ -339,6 +339,8 @@ val sv = show_cpsvalue
 val sk = show_cpskont
 val si = Int.toString
 val sc = show_cpscomputation
+fun sfvs (fvs: int list option) : string = case 
+  fvs of SOME fvs => "[FreeVars: " ^ String.concatWith ", " (map Int.toString fvs) ^ "]" | NONE => ""
 in
 case c of
               CPSUnit(k) => "()" ^ sk k
@@ -353,8 +355,10 @@ case c of
             | CPSTuple(l, k) => "[" ^ String.concatWith ", " (map sv l) ^ "]" ^ sk k
             | CPSInj(l, i, kv, k) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ sv kv ^ sk k
             | CPSFold(v, k) => "fold (" ^ sv v ^ ")" ^ sk k
-            | CPSAbsSingle((i, c), k) => "(λ1" ^ Int.toString i ^ "." ^ sc c ^ ")" ^ sk k
-            | CPSAbs((i,ak, c), k) => "(λ" ^ Int.toString i ^ ", "^ si ak ^ "." ^ sc c ^ ")" ^ sk k
+            | CPSAbsSingle((i, c), fvs, k) => "(λ1" ^ Int.toString i ^ "." ^ sc c ^ ")"  ^ 
+            sfvs fvs ^ sk k
+            | CPSAbs((i,ak, c),fvs,  k) => "(λ" ^ Int.toString i ^ ", "^ si ak ^ "." ^ sc c ^ ")" 
+            ^ sfvs fvs^ sk k
             | CPSDone (CPSVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ Int.toString i ^ "]"
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
 

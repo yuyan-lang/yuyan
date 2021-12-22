@@ -57,7 +57,7 @@ exception CPSInternalError
                 PlainVar v => cc v
                 | SelfVar v => CPSAbsSingle(kcc (fn arg => 
                         cc arg
-                    ), kcc (fn kont => 
+                    ), NONE, kcc (fn kont => 
                         CPSApp(CPSVar v, (CPSVar v, CPSVar kont)) (* apply the recursive value to itself *)
                      )))
             | CUnitExpr => CPSUnit (kcc cc)
@@ -89,13 +89,13 @@ exception CPSInternalError
                 CPSAbs (kcc2 (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar arg))::ctx) eb 
                         (fn r => CPSAppSingle(CPSVar ret,CPSVar r))
-                ), kcc cc)
+                ), NONE, kcc cc)
             | CApp (e1, e2, t) => 
                 cpsTransformExpr ctx e1 (fn v1 => 
                  cpsTransformExpr ctx e2 (fn v2 => 
                     CPSAbsSingle(kcc (fn arg => 
                         cc arg
-                    ), kcc (fn kont => 
+                    ), NONE, kcc (fn kont => 
                         CPSApp(CPSVar v1, (CPSVar v2, CPSVar kont))
                      ))
                  ))
@@ -116,10 +116,10 @@ exception CPSInternalError
               CPSAbs (kcc2 (fn self => fn ret =>
                     cpsTransformExpr (([ev], SelfVar self) :: ctx) e 
                      (fn r => CPSAppSingle(CPSVar ret,CPSVar r))
-                ), (fixedPointBoundId , 
+                ), NONE, (fixedPointBoundId , 
                     CPSAbsSingle(kcc (fn arg => 
                         cc arg
-                        ), kcc (fn kont => 
+                        ), NONE, kcc (fn kont => 
                         CPSApp(CPSVar fixedPointBoundId, (CPSVar fixedPointBoundId, CPSVar kont))
                         ))
                     )
