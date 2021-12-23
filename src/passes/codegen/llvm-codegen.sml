@@ -78,7 +78,7 @@ let
         (so that the length of the header block is always 1)
     *)
      (* compute the header value *)
-     val _ = if num > 1023 then raise Fail "not supported yet llvmcg 81"
+     val _ = if num > 1023 then raise Fail "not supported yet llvmcg 81" else ()
     val headerLength = (15 + num) div 62 + (if (15 + num) mod 62 = 0 then 0 else 1) (* only use the last 62 bits per block *)
      val headerInfo = let
     open IntInf
