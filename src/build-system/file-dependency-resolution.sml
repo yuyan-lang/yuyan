@@ -1,0 +1,4 @@
+structure FileDependencyResolution =
+struct
+
+end

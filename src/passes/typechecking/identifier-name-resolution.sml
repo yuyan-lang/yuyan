@@ -1,4 +1,4 @@
-structure FileDependencyResolution =
+structure IdentifierNameResolution =
 struct
     open TypeCheckingAST
     

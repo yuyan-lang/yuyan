@@ -62,7 +62,10 @@ struct
                     ("textDocumentSync", 
                         OBJECT[
                             ("openClose", BOOL true),
-                            ("change", INT 1)
+                            ("change", INT 1),
+                            ("save", OBJECT [
+                                ("includeText", BOOL true)
+                            ])
                         ]
                     ),
                     (* features should be developed incrementally *)

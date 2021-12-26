@@ -83,7 +83,9 @@ Library
   structure LLVMCodegen
   structure LLVMConvert
 
+  structure IdentifierNameResolution
   structure FileDependencyResolution
+  structure CompilationFileOps
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -141,7 +143,7 @@ is
   passes/typechecking/type-checking-pass.sml
   passes/typechecking/type-checking-ast-ops.sml
   passes/typechecking/type-checking-entry.sml
-  passes/typechecking/file-dependency-resolution.sml
+  passes/typechecking/identifier-name-resolution.sml
   passes/erase/erasure-pass.sml
   passes/erase/erasure-entry.sml
   passes/cps-transform/cps-ast.sml
@@ -165,5 +167,8 @@ is
   build-system/compilation-manager.sml
   build-system/compilation-tokens.sml
   build-system/compilation-module.sml
+  build-system/compilation-file-ops.sml
+  build-system/compilation-structure.sml
+  build-system/file-dependency-resolution.sml
 
 

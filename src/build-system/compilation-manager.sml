@@ -1,80 +1,30 @@
 structure CompilationManager = struct
 
-      structure FileTable : TABLE =
-                HashTable
-                (structure Key =  StringHashable)
-      structure AllTokensTable : TABLE =
-                HashTable
-                (structure Key = ProductHashable(structure X = StringHashable;
-                 structure Y = ProductHashable(structure X = IntHashable;
-                  structure Y = IntHashable)))
+
   
   open CompilationTokens
   open CompilationModule
+  open CompilationStructure
     
     (* the components of compilation manager contain ref types, 
     and they can change across method calls *)
-    type compilationmanager = 
-         {
-            importedModules: (UTF8String.t * yymodule) list  (* imported modules *)
-            , currentModule : yymodule ref (* current module (pwd) *)
-            , pwd : string (* pwd *)
-            , fileBuffer: UTF8String.t StrDict.dict ref (* file content buffer, mainly for LSP *)
-        }
 
-    type t = compilationmanager
 
     open Operators
     open OpAST
-    fun updateUsefulTokensFromOperator(tokensInfo : token list ref)
-        (ast : operator ) (info :tokenInfo) : unit = (
-            (* print "update called"; *)
-        case ast of 
-        Operator (_, _, _, comps, _) => (map (fn comp => 
-        case comp of 
-            OpCompString s => let val sourceRange = UTF8String.getSourceRange  s
-            in (tokensInfo := Token (sourceRange, s, info) :: (!tokensInfo) 
-            (* print ("Tokens Info Length = " ^ Int.toString (length (!tokensInfo))^ " added " ^ UTF8String.toString s 
-            ^ "comps length" ^ Int.toString (length comps)
-            ^"\n") *)
-            )
-            end
-            | _ => ()
-            ) comps; ())
-        )
 
+    fun findModuleForFilePath (filepath : string) (cm : compilationmanager) : compilationmodule option
+        = 
+        case List.filter (fn (_,m) => String.isPrefix (#rootPath m) filepath) (#importedModules cm) of 
+            [(s,m)] => SOME m
+            | _ => NONE
 
-    fun updateUsefulTokensFromOpAST(tokensInfo : token list ref)
-        (ast : OpAST.t) : unit  = 
-        case ast of 
-            OpAST (oper as Operator(_, _, _, _, uid), lst) => 
-                ( (* operator itself *)
-                    if uid >= PreprocessingOperators.elabAppBound
-                then (* user defined ops *) 
-                    updateUsefulTokensFromOperator tokensInfo oper (TokenInfo TkTpCustomOperatorName)
-                else if uid <= PreprocessingOperators.typeOpBound
-                then updateUsefulTokensFromOperator tokensInfo oper (TokenInfo TkTpTypeKeyword)
-                else updateUsefulTokensFromOperator tokensInfo oper (TokenInfo TkTpExprKeyword)
-                ; (* children *)
-                map (updateUsefulTokensFromOpAST tokensInfo)lst
-                ;
-                ())
-            | UnknownOpName s => 
-                ((tokensInfo := Token (UTF8String.getSourceRange s,s, (TokenInfo TkTpIdentifierReference)) :: (!tokensInfo)); ())
-            | NewOpName s => 
-                ((tokensInfo := Token (UTF8String.getSourceRange s,s, (TokenInfo TkTpIdentifierBinder)) :: (!tokensInfo)  ); ())
-            | OpStrLiteral  s =>
-                ((tokensInfo := Token (UTF8String.getSourceRange s,s, (TokenInfo TkTpStringLiteral)) :: (!tokensInfo)  ); ())
-            | _ => ()
-            (* | OpUnparsedExpr of MixedStr.t (* not used *)
-            | OpUnparsedDecl of MixedStr.t list not used *)
-        
-
-    fun updateUsefulTokensFromDeclarationParser(tokensInfo : token list ref)
-        ((oper, _) : operator * MixedStr.t list) : unit = 
-            updateUsefulTokensFromOperator tokensInfo oper (TokenInfo TkTpStructureKeyword)
-
-    fun updateContentForFilepath (filepath : string) (content : UTF8String.t) (cm : compilationmanager) : unit = 
+    fun lookupModuleForFilePath (filepath : string) (cm : compilationmanager) : compilationmodule 
+        = case findModuleForFilePath filepath cm
+        of SOME m => m
+        | NONE => raise Fail "cm25: not found"
+ 
+    (* fun updateContentForFilepath (filepath : string) (content : UTF8String.t) (cm : compilationmanager) : unit = 
              (
                  (#fileBuffer cm) := StrDict.insert (!(#fileBuffer cm)) filepath content
                  ;
@@ -87,13 +37,13 @@ structure CompilationManager = struct
             | NONE =>  let 
             val content = UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn filepath)) filepath
             val _ = updateContentForFilepath filepath content cm
-            in content end
+            in content end *)
 
 
 
     
 
-    fun compileFile (filepath : string) (cm : compilationmanager ) : unit =
+    (* fun compileFile (filepath : string) (cm : compilationmanager ) : unit =
     let val content = getContentForFilepath filepath cm
         val _ = DebugPrint.p ("[compileFile] The content for "^ filepath ^ " is now " ^ UTF8String.toString (getContentForFilepath filepath cm))
         val stmtAST = MixedStr.makeDecl content
@@ -134,15 +84,14 @@ structure CompilationManager = struct
         val _ = DebugPrint.p (cmd ^ "\n")
         val _ = OS.Process.system (cmd)
     in 
-        (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens) 
-    end
+        (* (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens)  *)
+        ()
+    end *)
 
     fun initWithWorkingDirectory (pwd : string) : compilationmanager =  
         {
             importedModules = []
-            , currentModule = ref(StrDict.empty)
             , pwd=pwd(* pwd *)
-            , fileBuffer=  ref StrDict.empty  (* file content buffer, mainly for LSP *)
         }
         (* check if the current directory has a package.yyon file *)
         
