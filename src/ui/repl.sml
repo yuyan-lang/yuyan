@@ -61,6 +61,10 @@ struct
         }
     fun test f = 
         inputFile f {
+            verbose=2, usekmachine=false
+        }
+    fun testk f = 
+        inputFile f {
             verbose=2, usekmachine=true
         }
 

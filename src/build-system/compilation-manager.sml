@@ -13,24 +13,67 @@ structure CompilationManager = struct
     open Operators
     open OpAST
 
-    fun findModuleForFilePath (filepath : string) (cm : compilationmanager) : compilationmodule option
+    type filepath = FileResourceURI.t
+
+    open FileResourceURI
+
+    fun findModuleForFilePath (filepath : filepath) (cm : compilationmanager) : compilationmodule option
         = 
-        case List.filter (fn (_,m) => String.isPrefix (#rootPath m) filepath) (#importedModules cm) of 
+        case List.filter (fn (_,m) => String.isPrefix (#rootPath m) (access filepath)) (#importedModules cm) of 
             [(s,m)] => SOME m
             | _ => NONE
 
-    fun lookupModuleForFilePath (filepath : string) (cm : compilationmanager) : compilationmodule 
+    fun lookupModuleForFilePath (filepath : filepath) (cm : compilationmanager) : compilationmodule 
         = case findModuleForFilePath filepath cm
         of SOME m => m
         | NONE => raise Fail "cm25: not found"
- 
-    (* fun updateContentForFilepath (filepath : string) (content : UTF8String.t) (cm : compilationmanager) : unit = 
-             (
-                 (#fileBuffer cm) := StrDict.insert (!(#fileBuffer cm)) filepath content
-                 ;
-                 DebugPrint.p ("The content for "^ filepath ^ " is now " ^ UTF8String.toString (getContentForFilepath filepath cm))
-             )
 
+    fun performFileUpdate (filepath : filepath) (updateFun : compilationfile -> compilationfile) (cm : compilationmanager) : unit = 
+        let val module = lookupModuleForFilePath filepath cm
+          val file =  StrDict.lookup (!(#files module)) (access filepath)
+          val newFile = updateFun file
+          val _ = (#files module) := StrDict.insert (!(#files module)) (access filepath) newFile
+        in () end
+
+    fun requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) = 
+        performFileUpdate filepath ( CompilationFileOps.processFileUpTo level (#pwd cm)) cm 
+
+    
+    fun lookupFileByPath(filepath : filepath) (cm : compilationmanager) : compilationfile
+        = let val module = lookupModuleForFilePath filepath cm
+          in StrDict.lookup (!(#files module)) (access filepath)
+          end
+ 
+    fun addModule (rootPath : filepath) (cm : compilationmanager) (name : StructureName.t) : compilationmanager =
+        {importedModules=(#importedModules cm)@[(name, {files=ref (StrDict.empty), rootPath=(access rootPath)})],
+        pwd=(#pwd cm)}
+(* add a new file to the compilation manager, if the file's module is not found, 
+a new module is added with root Path being the file's residing directory *)
+    fun addFile(filepath: filepath) (cm : compilationmanager) : compilationmanager =
+         case findModuleForFilePath filepath cm of 
+            NONE => (addFile filepath (addModule (make (#dir (OS.Path.splitDirFile (access filepath)))) cm (StructureName.localName())))
+            | SOME m => let 
+                val _ = (#files m) := StrDict.insert (!(#files m)) (access filepath) (CompilationFileOps.initWithFilePath filepath)
+                in cm end
+
+    fun updateContentForFilepath (filepath : filepath) (content : string) (cm : compilationmanager) : unit = 
+        performFileUpdate filepath (CompilationFileOps.updateFileContent content) cm
+
+    fun makeExecutable(entryFilePath : filepath) (cm : compilationmanager)  = 
+        let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
+        val cmd =  "clang "
+        ^ String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/" ^ i) 
+        ["allocation.c", "entry.c", "exception.c"]) ^
+        " " ^ (#llfilepath (Option.valOf (#llvmInfo cfile)))
+        ^ " -save-temps=obj -g -o "  ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
+        ^ " -I /usr/local/include"
+        val _ = DebugPrint.p (cmd ^ "\n")
+        val _ = OS.Process.system (cmd)
+        in 
+            ()
+        end
+
+    (*
     and getContentForFilepath (filepath : string ) (cm : compilationmanager) :  UTF8String.t = 
         case StrDict.find (!(#fileBuffer cm)) filepath of
             SOME(content) => content
@@ -88,11 +131,15 @@ structure CompilationManager = struct
         ()
     end *)
 
-    fun initWithWorkingDirectory (pwd : string) : compilationmanager =  
+    fun initWithWorkingDirectory (pwd : filepath) : compilationmanager =  
+    let val _ =  OS.FileSys.mkDir (OS.Path.concat (access pwd, ".yybuild"))
+        handle OS.SysErr s => () (* assume creation successful *)
+    in
         {
-            importedModules = []
-            , pwd=pwd(* pwd *)
+            importedModules = [(StructureName.topLevelName, {files =ref (StrDict.empty), rootPath=(access pwd)})]
+            , pwd=(access pwd)(* pwd *)
         }
+    end
         (* check if the current directory has a package.yyon file *)
         
         

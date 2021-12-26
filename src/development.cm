@@ -86,6 +86,9 @@ Library
   structure IdentifierNameResolution
   structure FileDependencyResolution
   structure CompilationFileOps
+
+  structure FileResourceURI 
+  structure PathUtil
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -132,6 +135,8 @@ is
   util/math-util.sml
   util/number-parser.sml
   util/string-dict.sml
+  util/file-resource-uri.sml
+  util/path-util.sml
 
   passes/preprocess/preprocessing-pass.sml
   passes/preprocess/preprocessing-ast.sml

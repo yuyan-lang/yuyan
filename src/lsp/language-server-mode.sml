@@ -96,7 +96,7 @@ struct
     open JSONUtil
     in 
     LanguageServer.Server 
-    ((*cm*) CompilationManager.initWithWorkingDirectory (asString (lookupField params "rootPath")))
+    ((*cm*) CompilationManager.initWithWorkingDirectory (FileResourceURI.make (asString (lookupField params "rootPath"))))
     end
 
     fun getDocumentPath (params : JSON.value option) : string =
@@ -117,7 +117,7 @@ struct
     open JSONUtil
     in 
     case method of
-     "textDocument/semanticTokens/full" => SyntaxHighlight.highlightFile (getDocumentPath params) (LanguageServer.getCM server)
+     "textDocument/semanticTokens/full" => SyntaxHighlight.highlightFile (FileResourceURI.make (getDocumentPath params)) (LanguageServer.getCM server)
      | _ => OBJECT[]
     end
         
@@ -128,9 +128,8 @@ struct
 
     fun updateFileBufferContent(content : string) =
         CompilationManager.updateContentForFilepath
-            (getDocumentPath params)
-            (UTF8String.fromStringAndFile content 
-                    (getDocumentPath params))
+            (FileResourceURI.make (getDocumentPath params))
+            content
             (LanguageServer.getCM server)
     in 
     case method of

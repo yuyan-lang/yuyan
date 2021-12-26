@@ -13,9 +13,11 @@ local
        "allowExtendedTextConsts true"
     in
         util/string-dict.sml
+        util/path-util.sml
         util/debug-print.sml
         util/unique-id.sml
         util/source-location.sml
+        util/file-resource-uri.sml
         util/uri-util.sml
         util/source-range.sml
         util/utf8char.sml

@@ -6,7 +6,7 @@ struct
     fun typeCheckAndEval (input : string)(options : ReplOptions.t) (filename: string)  =
         (let fun cprint x s = if x <= (#verbose options) then printErr s else () 
             val startTime = Time.now()
-            val cm = CompilationManager.initWithWorkingDirectory ""
+            val cm = CompilationManager.initWithWorkingDirectory (FileResourceURI.make (OS.FileSys.getDir()))
             (* val content  = (UTF8String.fromStringAndFile input filename) *)
             (* val _ = cprint 1 (PrettyPrint.show_utf8string content) *)
             (* val whitespaceRemoved = UTF8String.removeAllWhitespace content
@@ -19,9 +19,11 @@ struct
             (* val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST) *)
             (* val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n" *)
             (* val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST) *)
-            val _ = CompilationManager.compileFile (filename) cm
-            open CompilationManager
-            val (typeCheckingAST, tokens) = StrDict.lookup (! (#currentModule cm)) filename
+            val absFp = (FileResourceURI.make (PathUtil.makeAbsolute filename (#pwd cm)))
+            val _ = CompilationManager.addFile absFp cm
+            val _ = CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm
+            val CompilationStructure.CompilationFile cfile = CompilationManager.lookupFileByPath absFp cm
+            (* val (typeCheckingAST, tokens) = StrDict.lookup (! (#currentModule cm)) filename
             val data = SyntaxHighlight.getDataFromTokens tokens
             val _ = cprint 1 "----------------- TOKENS: -------------- \n"
             (* val _ = cprint 2 (PrettyPrint.show_tokens tokens) *)
@@ -31,10 +33,12 @@ struct
             (* val _ = cprint 2 (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
             val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"
             val _ = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
-            val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n"
+            val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n" *)
             val executeTime =  (* removed the use of pk machines due to foreign functions *)
+            if #usekmachine options
+            then
                 (let 
-                val erasedASTK = ErasureEntry.eraseSigK typeCheckingAST
+                val erasedASTK = ErasureEntry.eraseSigK (#1 (Option.valOf (#typeCheckingInfo cfile)))
                 val _ = cprint 1 "----------------- Erasure Complete ! -------------------- \n"
                 val kastK = (PersistentKMachine.fromKComp erasedASTK)
                 val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
@@ -47,6 +51,13 @@ struct
                 val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
                 val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
                 in executeTime end)
+            else 
+                let val _ = CompilationManager.makeExecutable absFp cm
+                val executeTime = Time.now()
+                val _ = OS.Process.system "./.yybuild/yyexe"
+                in 
+                executeTime
+                end
             val endTime = Time.now()
             val compileDuration : Time.time = Time.-(executeTime,startTime)
             val runDuration : Time.time = Time.-(endTime,executeTime)

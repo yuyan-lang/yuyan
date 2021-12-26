@@ -281,11 +281,10 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
         [toStringName sname ^ " = constant [" ^ Int.toString (length  ordinals) ^ " x i8] ["
             ^ String.concatWith ", " (map (fn i => "i8 "^ Int.toString i) ordinals) ^ "]"]
         end
-fun genLLVMSignature (s : llvmsignature)  : string list= List.concat (map genLLVMDelcaration s)
 
 
-fun genLLVMSignatureWithMainFunction ((entryFunc,s) : int * llvmsignature)  : string list = 
-    let val genSig = genLLVMSignature s
+fun genLLVMSignatureWithMainFunction ((entryFunc,s) : llvmsignature)  : string list = 
+    let val genSig = List.concat (map genLLVMDelcaration s)
     val tempVar = UID.next()
     in 
         [ (* generate main function *)

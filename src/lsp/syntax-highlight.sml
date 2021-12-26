@@ -83,13 +83,14 @@ open CompilationManager
             ) ((0, 0), []) sorted
         in  result end
 
-    fun highlightFile (filePath : string) (cm : CompilationManager.compilationmanager): JSON.value = 
+    fun highlightFile (filePath : FileResourceURI.t) (cm : CompilationStructure.compilationmanager): JSON.value = 
     let 
         open JSON
         open CompilationManager
-        val _ = CompilationManager.compileFile filePath cm
-        val (_, tokens) = StrDict.lookup ((!(#currentModule cm))) filePath
-        val data = getDataFromTokens tokens
+        (* assume file already added *)
+        val tokens = CompilationManager.requestFileProcessing filePath UpToLevelTypeCheckingInfo cm
+        val CompilationFile cfile = CompilationManager.lookupFileByPath filePath cm
+        val data = getDataFromTokens (#2 (Option.valOf (#typeCheckingInfo cfile)))
     in 
         OBJECT[
             ("data", ARRAY (map INT (map (fn (x : int) => IntInf.fromInt x) data)))

@@ -13,7 +13,7 @@ struct
     datatype compilationfile = 
         CompilationFile  of   
             {fp: string (* file path *)
-            , content: (UTF8String.t * Time.time) (* file content  and accessed time *)
+            , content: (UTF8String.t * Time.time) option (* file content  and accessed time *)
             , typeCheckingInfo: (TypeCheckingAST.RSignature 
               (* list of parse tokens, for LSP *)
               (* TODO: optimize, no need to generate tokens info when compiling on command line*)
@@ -36,7 +36,7 @@ subdirectory of rootDir *)
 
     type compilationmanager = 
         {
-        importedModules: (UTF8String.t * compilationmodule ) list  (* imported, and current modules *)
+        importedModules: (StructureName.t * compilationmodule ) list  (* imported, and current modules *)
         , pwd : string (* pwd *)
     }
 

@@ -16,3 +16,4 @@ debug*
 *.s
 *.bc
 *.i
+.yybuild

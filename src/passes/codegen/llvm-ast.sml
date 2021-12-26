@@ -42,6 +42,6 @@ datatype llvmdeclaration  = LLVMFunction of int (* name of the function *)
                                     *  int
                           | LLVMRealConstant of int (* global name *) 
                                     *  real
-type llvmsignature = llvmdeclaration list
+type llvmsignature = int * llvmdeclaration list (* entry func name plus a list of llvm declarations *)
 
 end
