@@ -86,6 +86,7 @@ Library
   structure IdentifierNameResolution
   structure FileDependencyResolution
   structure CompilationFileOps
+  structure CompilationFileProcessing
 
   structure FileResourceURI 
   structure PathUtil
@@ -173,6 +174,7 @@ is
   build-system/compilation-tokens.sml
   build-system/compilation-module.sml
   build-system/compilation-file-ops.sml
+  build-system/compilation-file-processing.sml
   build-system/compilation-structure.sml
   build-system/file-dependency-resolution.sml
 

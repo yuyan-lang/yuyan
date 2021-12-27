@@ -19,7 +19,7 @@ structure CompilationManager = struct
 
     fun findModuleForFilePath (filepath : filepath) (cm : compilationmanager) : compilationmodule option
         = 
-        case List.filter (fn (_,m) => String.isPrefix (#rootPath m) (access filepath)) (#importedModules cm) of 
+        case List.filter (fn (_,m) => String.isPrefix (#rootPath m) (access filepath)) (!(#importedModules cm)) of 
             [(s,m)] => SOME m
             | _ => NONE
 
@@ -35,26 +35,78 @@ structure CompilationManager = struct
           val _ = (#files module) := StrDict.insert (!(#files module)) (access filepath) newFile
         in () end
 
-    fun requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) = 
-        performFileUpdate filepath ( CompilationFileOps.processFileUpTo level (#pwd cm)) cm 
 
     
     fun lookupFileByPath(filepath : filepath) (cm : compilationmanager) : compilationfile
         = let val module = lookupModuleForFilePath filepath cm
           in StrDict.lookup (!(#files module)) (access filepath)
           end
+
+    exception ModuleSpecMalformed of string
+    fun getModuleInfo (rootPath : filepath) (name : StructureName.t) : moduleinfo = 
+        let val packageFp = PathUtil.concat [access rootPath, "package.yyon"]
+        in 
+        if OS.FileSys.access (packageFp, []) 
+        then
+            let
+                val yyon = YYONUtil.loadYYONFromFile packageFp 
+                open YYON
+                open YYONUtil
+                val yyonObject = asObject yyon
+                fun findInObj (s : string) =
+                    ListSearchUtil.findUTF8Str yyonObject (UTF8String.fromString s)
+                val _ = case findInObj "名称" of
+                    SOME (STRING s) => if [s] <> name then raise ModuleSpecMalformed "name not identical" else ()
+                    | NONE => ()
+                val sourceFolder = case findInObj "源文件夹" of 
+                    SOME (STRING s) => SOME(PathUtil.concat[access rootPath, UTF8String.toString s])
+                    | NONE => NONE
+                val dependencies = case findInObj "依赖" of 
+                    SOME (ARRAY arr) => SOME(map asString arr)
+                    | NONE => NONE
+                val autoOpens = case findInObj "自动导入" of 
+                    SOME (ARRAY arr) => SOME(map asString arr)
+                    | NONE => NONE
+                val submodules = case findInObj "分属包" of 
+                    SOME (ARRAY arr) => SOME(map asString arr)
+                    | NONE => NONE
+            in 
+                {
+            name=name,
+            sourceFolder= sourceFolder,
+            dependencies= dependencies,
+            autoOpens= autoOpens,
+            submodules= submodules
+                }
+            end
+        else {
+        name=name,
+        sourceFolder=NONE,
+        dependencies=NONE,
+        autoOpens=NONE,
+        submodules=NONE
+            }
+        end
  
-    fun addModule (rootPath : filepath) (cm : compilationmanager) (name : StructureName.t) : compilationmanager =
-        {importedModules=(#importedModules cm)@[(name, {files=ref (StrDict.empty), rootPath=(access rootPath)})],
-        pwd=(#pwd cm)}
+    fun addModule (rootPath : filepath) (cm : compilationmanager) (name : StructureName.t) : compilationmodule =
+        let val newModule =( {files=ref (StrDict.empty), rootPath=(access rootPath), moduleInfo=getModuleInfo rootPath name})
+            val _ = (#importedModules cm) := (!(#importedModules cm))@[(name, newModule)]
+        in newModule end
+        
+    fun findOrImportModule (moduleName: StructureName.t) (cm : compilationmanager) : compilationmodule =
+        case ListSearchUtil.findSName (!(#importedModules cm)) moduleName of
+            SOME(m) => m
+            | NONE => addModule (make(OS.Path.concat (OS.Path.concat (#pwd cm, "/yylib/"), StructureName.toStringPlain moduleName))) cm moduleName
+
 (* add a new file to the compilation manager, if the file's module is not found, 
 a new module is added with root Path being the file's residing directory *)
-    fun addFile(filepath: filepath) (cm : compilationmanager) : compilationmanager =
+    fun addFile(filepath: filepath) (cm : compilationmanager) : unit =
          case findModuleForFilePath filepath cm of 
-            NONE => (addFile filepath (addModule (make (#dir (OS.Path.splitDirFile (access filepath)))) cm (StructureName.localName())))
+            NONE => ((addModule (make (#dir (OS.Path.splitDirFile (access filepath)))) cm (StructureName.localName());
+                      addFile filepath cm))
             | SOME m => let 
                 val _ = (#files m) := StrDict.insert (!(#files m)) (access filepath) (CompilationFileOps.initWithFilePath filepath)
-                in cm end
+                in () end
 
     fun updateContentForFilepath (filepath : filepath) (content : string) (cm : compilationmanager) : unit = 
         performFileUpdate filepath (CompilationFileOps.updateFileContent content) cm
@@ -72,6 +124,83 @@ a new module is added with root Path being the file's residing directory *)
         in 
             ()
         end
+
+    fun listAllFilesInModule (m : compilationmodule) : filepath list =
+    if Option.isSome (#sourceFolder (#moduleInfo m))
+    then
+    map make (
+        PathUtil.globDir (Option.valOf (#sourceFolder (#moduleInfo m))) (fn f => 
+            UTF8String.isSuffix (UTF8String.fromString ".yuyan") (UTF8String.fromString f) 
+            orelse
+            UTF8String.isSuffix (UTF8String.fromString "。豫") (UTF8String.fromString f) 
+        ))
+    else []
+
+
+    fun listAllAutoOpenModules (m : compilationmodule) (cm : compilationmanager) : compilationmodule list =
+    if Option.isSome (#autoOpens (#moduleInfo m))
+    then let val moduleNames = Option.valOf (#autoOpens (#moduleInfo m))
+             val modules = map (fn x => findOrImportModule ([x]) cm) moduleNames
+         in modules end
+    else []
+
+    exception AmbiguousStructureReference of StructureName.t
+    exception UnresolvedReference of StructureName.t
+
+    fun resolveName (sname : StructureName.t) 
+    (inmodule : compilationmodule)
+    (resolutionStack : (filepath* StructureName.t) list) (* require information *)
+    (cm : compilationmanager) : string (* resolved file name *)
+    =
+        let val allFilePathsInModule = listAllFilesInModule inmodule 
+            fun findUniqueReferenceAmongFiles (filepaths : filepath list) : string option = 
+                let
+                    val _ = map (fn x => addFile x cm) filepaths
+                    val _ = map (fn x => requestFileProcessing x UpToLevelTypeCheckingInfo cm) allFilePathsInModule
+                    val allFiles = map (fn x => lookupFileByPath x cm) allFilePathsInModule
+                    val filesHavingReference = List.mapPartial (fn CompilationFile f => 
+                    let val foundNameOption = IdentifierNameResolution.findIdentifierInSignature 
+                        (#1 (Option.valOf (#typeCheckingInfo f))) sname
+                    in case foundNameOption of SOME _ => SOME (#fp f) | NONE => NONE
+                    end
+                    ) allFiles
+                in case filesHavingReference of
+                    [] => NONE
+                    | [x] => SOME(x)
+                    | _ => raise AmbiguousStructureReference sname
+                end
+        in case findUniqueReferenceAmongFiles allFilePathsInModule of
+            SOME s => s
+            | NONE => let val openModules = listAllAutoOpenModules inmodule cm
+                          val allOpenFiles = List.concat (map (fn m => listAllFilesInModule m) openModules)
+                      in case findUniqueReferenceAmongFiles allOpenFiles of 
+                            SOME s => s
+                           | NONE => 
+                                (case sname of  (* must be a structural reference at least two components *)
+                                    (x::y::xs) => let val importedModule = findOrImportModule ([x]) cm
+                                                  in resolveName (y::xs) (importedModule) (resolutionStack) cm
+                                                  end
+                                    | _ => raise UnresolvedReference sname)
+                      end
+        end
+                            
+
+
+    and findFileDependenciesTopLevel 
+    (fp : filepath)
+    (tcast: TypeCheckingAST.RSignature)
+    (cm : compilationmanager) : StructureName.t list StrDict.dict = 
+let val module = lookupModuleForFilePath fp cm 
+val unresolvedNames = IdentifierNameResolution.getUnresolvedIdentifiersSignatureTopLevel tcast (#name (#moduleInfo module))
+in 
+    foldl (fn (name, acc) => 
+        let val inFile = resolveName name module [(fp, name)] cm
+        in case StrDict.find acc inFile of 
+            SOME (s) => StrDict.insert acc inFile (s@[name])
+            | NONE => StrDict.insert acc inFile ([name])
+        end
+        ) StrDict.empty unresolvedNames
+end
 
     (*
     and getContentForFilepath (filepath : string ) (cm : compilationmanager) :  UTF8String.t = 
@@ -130,15 +259,21 @@ a new module is added with root Path being the file's residing directory *)
         (* (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens)  *)
         ()
     end *)
+    and requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) :unit = 
+        performFileUpdate filepath ( CompilationFileProcessing.processFileUpTo level (cm)
+            (fn rsig => findFileDependenciesTopLevel filepath rsig cm)
+        ) cm 
 
     fun initWithWorkingDirectory (pwd : filepath) : compilationmanager =  
     let val _ =  OS.FileSys.mkDir (OS.Path.concat (access pwd, ".yybuild"))
         handle OS.SysErr s => () (* assume creation successful *)
-    in
-        {
-            importedModules = [(StructureName.topLevelName, {files =ref (StrDict.empty), rootPath=(access pwd)})]
+        val cm = {
+            importedModules = ref []
             , pwd=(access pwd)(* pwd *)
         }
+        val _ = addModule pwd cm StructureName.topLevelName
+    in
+        cm
     end
         (* check if the current directory has a package.yyon file *)
         

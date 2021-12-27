@@ -14,10 +14,27 @@ fun lookupStr (l : (string *'a ) list) (key : string) : 'a =
     lookupGeneric l key (fn x => fn y => x = y)
     handle NotFound => raise NotFoundStr key
 
+fun findStr (l : (string *'a ) list) (key : string) : 'a option = 
+    SOME (lookupGeneric l key (fn x => fn y => x = y))
+    handle NotFound => NONE
 
 fun lookupSName (l : (StructureName.t *'a ) list) (key : StructureName.t) : 'a =    
     lookupGeneric l key (StructureName.semanticEqual)
     handle NotFound => raise NotFoundSName key
+
+fun findSName (l : (StructureName.t *'a ) list) (key : StructureName.t) : 'a option =    
+    SOME (lookupGeneric l key (StructureName.semanticEqual))
+    handle NotFound => NONE
+
+fun lookupUTF8Str (l : (UTF8String.t *'a ) list) (key : UTF8String.t) : 'a =    
+    lookupGeneric l key (UTF8String.semanticEqual)
+    (* handle NotFound => raise NotFoundUTF8 key *)
+
+fun findUTF8Str (l : (UTF8String.t *'a ) list) (key : UTF8String.t) : 'a option =    
+    SOME(lookupGeneric l key UTF8String.semanticEqual)
+    handle NotFound => NONE
+
+
 
 fun indexOf (l : int list) (elem : int ) =
     let 

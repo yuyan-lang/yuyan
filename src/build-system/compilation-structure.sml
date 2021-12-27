@@ -18,12 +18,21 @@ struct
               (* list of parse tokens, for LSP *)
               (* TODO: optimize, no need to generate tokens info when compiling on command line*)
               * token list ) option (* parsed *)
-            , dependencyInfo: string list option (* list of file paths that this file depends on, for dependency resolution *)
+            , dependencyInfo: StructureName.t list StrDict.dict option (* list of file paths that this file depends on, for dependency resolution *)
             , typeCheckedInfo: (TypeCheckingAST.CSignature ) option  (* type checked *)
             , cpsInfo: (CPSAst.cpscomputation * CPSAst.cpscomputation * 
                 LLVMAst.llvmsignature) option  (* cps transformed, closure converted, and codegened *)
             , llvmInfo: {llfilepath :string} option  (* the actual generated ll file *)
             }
+
+    type moduleinfo =  {
+        name : StructureName.t,
+        sourceFolder : string option,
+        dependencies : UTF8String.t list option,
+        autoOpens : UTF8String.t list option,
+        submodules : UTF8String.t list option
+    }
+
 
 (* we maintain the invariant that all files under a module must be a 
 subdirectory of rootDir *)
@@ -32,11 +41,12 @@ subdirectory of rootDir *)
             compilationfile
             ) StrDict.dict ref
             , rootPath: string
+            , moduleInfo : moduleinfo
              } (* a list of files, mappings from filepath *)
 
     type compilationmanager = 
         {
-        importedModules: (StructureName.t * compilationmodule ) list  (* imported, and current modules *)
+        importedModules: (StructureName.t * compilationmodule ) list ref  (* imported, and current modules *)
         , pwd : string (* pwd *)
     }
 

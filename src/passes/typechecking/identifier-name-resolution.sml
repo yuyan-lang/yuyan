@@ -144,4 +144,32 @@ struct
     fun getUnresolvedIdentifiersSignatureTopLevel (s : RSignature)  (currentSName : StructureName.t) : StructureName.t list = 
         (StructureNameSet.toList (#1(getUnresolvedIdentifiersSignature s [] [] currentSName)))
 
+
+(* attempts to find the identifer in the current strucuture *)
+    fun findIdentifierInSignature (rsig : RSignature) ( sname : StructureName.t) : StructureName.t option = 
+    let 
+        fun findIdInTopLevel (rsig : RSignature) ( name : UTF8String.t) : UTF8String.t option = 
+        case rsig of
+            [] => NONE
+            | RTypeMacro (n, t)::ss => if UTF8String.semanticEqual n name then SOME(n) else findIdInTopLevel ss name
+            | RTermTypeJudgment(n, t):: ss => if UTF8String.semanticEqual n name then SOME(n) else findIdInTopLevel ss name
+            | RTermMacro(n, e) :: ss => if UTF8String.semanticEqual n name then SOME(n) else findIdInTopLevel ss name
+            | RTermDefinition(n, e) :: ss => if UTF8String.semanticEqual n name then SOME(n) else findIdInTopLevel ss name
+            | _ => NONE
+        fun findStructureInTopLevel (rsig : RSignature) ( name : UTF8String.t) : (UTF8String.t * RSignature) option = 
+        case rsig of
+            [] => NONE
+            | RStructure (vis, sName, decls) :: ss => if UTF8String.semanticEqual sName name then SOME(sName, decls) else findStructureInTopLevel ss name
+            | _ => NONE
+    in
+    case sname of 
+        [] => raise Fail "inr151: sname is empty"
+        | [s] => Option.map (fn x => [x]) (findIdInTopLevel rsig s)
+        | (x :: xs) => case findStructureInTopLevel rsig x of 
+                    SOME(sname, decls) => Option.map (fn x  => sname::x) (findIdentifierInSignature decls xs)
+                    | NONE => NONE
+    end
+
+
+
 end

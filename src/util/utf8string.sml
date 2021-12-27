@@ -35,6 +35,9 @@ structure UTF8String = struct
             | ([], []) => true
             | _ => false
 
+    fun isSuffix (s1 : utf8string) (s2 : utf8string) = 
+        isPrefix (List.rev s1) (List.rev s2)
+
 (* fromString does not annotate the string with file information *)
     fun fromString(s : string) : utf8string = map (fn c => UTF8Char.fromUTF8Char c NONE) (UTF8.explode(s))
 

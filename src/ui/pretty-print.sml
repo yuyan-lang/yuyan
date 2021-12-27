@@ -13,6 +13,8 @@ struct
 
   fun show_intlist (x : int list) : string =
   String.concatWith "," (map Int.toString x)
+  fun show_plainstrlist (x : string list) : string =
+  String.concatWith ", " x
   fun show_strlist (x : UTF8String.t list) : string =
   String.concatWith ", " (map UTF8String.toString x)
   fun show_sttrlist (x : StructureName.t list) : string =

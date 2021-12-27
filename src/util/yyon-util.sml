@@ -1,6 +1,7 @@
 
 structure YYONUtil = struct
 
+
     exception ParseFailure of MixedStr.t * string
 
     (* returns rest of the string if mathces, NONE if not *)
@@ -110,6 +111,16 @@ structure YYONUtil = struct
     
     fun loadYYONFromFile(filepath : string) = 
         parseYYONWithEOF (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn filepath)) filepath) 
+
+
+    exception YYONAccessError 
+    fun asObject v = case v of 
+        YYON.OBJECT v => v
+        | _ => raise YYONAccessError
+
+    fun asString v = case v of 
+        YYON.STRING v => v
+        | _ => raise YYONAccessError
 
 
 
