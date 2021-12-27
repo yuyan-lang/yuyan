@@ -49,7 +49,6 @@ local
         execution/k-machine.sml
         execution/persistent-k-machine.sml
 
-        build-system/compilation-tokens.sml
         
         parser/parse-ast.sml
         parser/bracket-scanner.sml
@@ -60,11 +59,12 @@ local
         passes/codegen/llvm-ast.sml
         passes/codegen/llvm-codegen.sml
         passes/codegen/llvm-convert.sml
+        passes/preprocess/preprocessing-operators.sml
+        build-system/compilation-tokens.sml
 
         ui/pretty-print.sml
         passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml
-        passes/preprocess/preprocessing-operators.sml
         passes/preprocess/preprocessing-pass.sml
         passes/typechecking/type-checking-pass.sml
         execution/k-machine-ops.sml
@@ -79,7 +79,10 @@ local
         parser/mixfix-parser.sml
    
         passes/preprocess/expression-construction-pass.sml
-        
+        passes/typechecking/identifier-name-resolution.sml
+        build-system/compilation-structure.sml
+        build-system/compilation-file-ops.sml
+        build-system/compilation-file-processing.sml
         build-system/compilation-module.sml
         build-system/compilation-manager.sml
         
