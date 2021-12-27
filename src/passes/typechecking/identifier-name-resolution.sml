@@ -57,11 +57,12 @@ struct
                     | BuiltinType (BIBool) =>StructureNameSet.empty  
                     | BuiltinType (BIInt) => StructureNameSet.empty  
                     | BuiltinType (BIReal) => StructureNameSet.empty  
-    fun getUnresolvedIdentifiersExpr (e : RExpr) (typectx : typecontext) 
+    fun getUnresolvedIdentifiersExpr (expr : RExpr) (typectx : typecontext) 
         (termctx : termcontext) (currentSName : StructureName.t) : StructureNameSet.set = 
          (let 
+            (* val _ = DebugPrint.p "e" *)
             val res = 
-            case e of
+            case expr of
             RExprVar v => 
             if lookupCtx termctx v currentSName
             then StructureNameSet.empty else StructureNameSet.singleton v
@@ -72,10 +73,10 @@ struct
             | RCase(e,cases) => getUnresolvedIdentifiersExpr e typectx termctx currentSName ***
                     List.foldr (op ***) StructureNameSet.empty (map (fn (l, ev, e) => 
                 getUnresolvedIdentifiersExpr e typectx ([ev]::termctx) currentSName) cases)
-            | RLam(ev, eb) =>  getUnresolvedIdentifiersExpr e typectx ([ev]::termctx) currentSName 
+            | RLam(ev, eb) =>  getUnresolvedIdentifiersExpr eb typectx ([ev]::termctx) currentSName 
             | RLamWithType (t, ev, eb) => 
                 getUnresolvedIdentifiersType t typectx termctx currentSName  ***
-                getUnresolvedIdentifiersExpr e typectx ([ev]::termctx) currentSName 
+                getUnresolvedIdentifiersExpr eb typectx ([ev]::termctx) currentSName 
             | RApp (e1, e2) => 
                 getUnresolvedIdentifiersExpr e1 typectx termctx currentSName ***
                 getUnresolvedIdentifiersExpr e2 typectx termctx currentSName
@@ -108,7 +109,9 @@ struct
 )
     and getUnresolvedIdentifiersSignature (s : RSignature) (typectx : typecontext) 
         (termctx : termcontext) (currentSName : StructureName.t) : (StructureNameSet.set * typecontext * termcontext) = 
-        let fun ****(a, (b, c, d)) = (a***b, c,d)
+        let 
+        (* val _ = DebugPrint.p ("g" ^ Int.toString (length s)) *)
+        fun ****(a, (b, c, d)) = (a***b, c,d)
         infix 7 ****
         in
           (
@@ -116,16 +119,16 @@ struct
             [] => (StructureNameSet.empty, typectx, termctx)
         | RTypeMacro (n, t)::ss => 
         getUnresolvedIdentifiersType t typectx termctx currentSName ****
-            getUnresolvedIdentifiersSignature s (addToCtxR n typectx currentSName) termctx currentSName
+            getUnresolvedIdentifiersSignature ss (addToCtxR n typectx currentSName) termctx currentSName
         | RTermTypeJudgment(n, t):: ss => 
         getUnresolvedIdentifiersType t typectx termctx currentSName ****
-            getUnresolvedIdentifiersSignature s typectx (addToCtxR n termctx currentSName) currentSName
+            getUnresolvedIdentifiersSignature ss typectx (addToCtxR n termctx currentSName) currentSName
         | RTermMacro(n, e) :: ss => 
         getUnresolvedIdentifiersExpr e typectx termctx currentSName ****
-            getUnresolvedIdentifiersSignature s typectx (addToCtxR n termctx currentSName) currentSName
+            getUnresolvedIdentifiersSignature ss typectx (addToCtxR n termctx currentSName) currentSName
         | RTermDefinition(n, e) :: ss => 
         getUnresolvedIdentifiersExpr e typectx termctx currentSName ****
-            getUnresolvedIdentifiersSignature s typectx (addToCtxR n termctx currentSName) currentSName
+            getUnresolvedIdentifiersSignature ss typectx (addToCtxR n termctx currentSName) currentSName
         | RStructure (vis, sName, decls) :: ss => 
         (case getUnresolvedIdentifiersSignature decls typectx termctx (currentSName@[sName]) of
             (freeSNames, newtypecontext, newtermcontext) =>

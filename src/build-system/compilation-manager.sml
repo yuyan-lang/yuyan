@@ -114,11 +114,14 @@ a new module is added with root Path being the file's residing directory *)
     fun makeExecutable(entryFilePath : filepath) (cm : compilationmanager)  = 
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
         val cmd =  "clang "
-        ^ String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/" ^ i) 
+        ^ String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
         ["allocation.c", "entry.c", "exception.c"]) ^
         " " ^ (#llfilepath (Option.valOf (#llvmInfo cfile)))
         ^ " -save-temps=obj -g -o "  ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
         ^ " -I /usr/local/include"
+        ^ " -I /usr/local/Cellar/bdw-gc/8.0.6/include"
+        ^ " -L /usr/local/Cellar/bdw-gc/8.0.6/lib"
+        ^ " -l gc"
         val _ = DebugPrint.p (cmd ^ "\n")
         val _ = OS.Process.system (cmd)
         in 
@@ -190,8 +193,11 @@ a new module is added with root Path being the file's residing directory *)
     (fp : filepath)
     (tcast: TypeCheckingAST.RSignature)
     (cm : compilationmanager) : StructureName.t list StrDict.dict = 
-let val module = lookupModuleForFilePath fp cm 
+let 
+val module = lookupModuleForFilePath fp cm 
+(* val _ = DebugPrint.p "got module" *)
 val unresolvedNames = IdentifierNameResolution.getUnresolvedIdentifiersSignatureTopLevel tcast (#name (#moduleInfo module))
+(* val _ = DebugPrint.p "got unresolved names" *)
 in 
     foldl (fn (name, acc) => 
         let val inFile = resolveName name module [(fp, name)] cm
@@ -261,7 +267,13 @@ end
     end *)
     and requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) :unit = 
         performFileUpdate filepath ( CompilationFileProcessing.processFileUpTo level (cm)
-            (fn rsig => findFileDependenciesTopLevel filepath rsig cm)
+            (fn rsig => 
+            let 
+            (* val _ = DebugPrint.p "begin resolution" *)
+            val res =findFileDependenciesTopLevel filepath rsig cm
+            (* val _ = DebugPrint.p "Done resolution" *)
+            in res end
+            )
         ) cm 
 
     fun initWithWorkingDirectory (pwd : filepath) : compilationmanager =  

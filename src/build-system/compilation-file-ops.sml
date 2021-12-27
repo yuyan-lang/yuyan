@@ -67,11 +67,11 @@ open CompilationStructure
                 LLVMAst.llvmsignature =
         let
          val cpsAST = CPSPass.cpsTransformSigTopLevel typeCheckedAST 
-        val _ = DebugPrint.p "----------------- CPS Done -------------------- \n"
-        val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST)
+        (* val _ = DebugPrint.p "----------------- CPS Done -------------------- \n" *)
+        (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST) *)
         val closureAST = ClosureConvert.closureConvertTopLevel cpsAST
-        val _ = DebugPrint.p "----------------- ClosureConvert Done -------------------- \n"
-        val _ = DebugPrint.p (PrettyPrint.show_cpscomputation closureAST)
+        (* val _ = DebugPrint.p "----------------- ClosureConvert Done -------------------- \n" *)
+        (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation closureAST) *)
         val (llvmsig) = LLVMConvert.genLLVMSignatureTopLevel closureAST
         in 
             (cpsAST, closureAST, llvmsig)

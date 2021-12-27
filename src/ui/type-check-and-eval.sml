@@ -14,7 +14,7 @@ struct
             val _ = cprint 2 (UTF8String.toString whitespaceRemoved^"\n") *)
             (* val stmtAST = MixedStr.makeDecl  whitespaceRemoved *)
             (* val stmtAST = MixedStr.makeDecl content *)
-            val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n"
+            (* val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n" *)
             (* val _ = cprint 2 (PrettyPrint.show_mixedstrs stmtAST ^ "\n") *)
             (* val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST) *)
             (* val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n" *)
@@ -23,6 +23,7 @@ struct
             val _ = CompilationManager.addFile absFp cm
             val _ = CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm
             val CompilationStructure.CompilationFile cfile = CompilationManager.lookupFileByPath absFp cm
+            val preExecuteTime = Time.now()
             (* val (typeCheckingAST, tokens) = StrDict.lookup (! (#currentModule cm)) filename
             val data = SyntaxHighlight.getDataFromTokens tokens
             val _ = cprint 1 "----------------- TOKENS: -------------- \n"
@@ -59,10 +60,12 @@ struct
                 executeTime
                 end
             val endTime = Time.now()
-            val compileDuration : Time.time = Time.-(executeTime,startTime)
+            val codeGenDuration : Time.time = Time.-(preExecuteTime,startTime)
+            val compileDuration : Time.time = Time.-(executeTime,preExecuteTime)
             val runDuration : Time.time = Time.-(endTime,executeTime)
             val _ = cprint 1 "------------------------------------------- \n"
-            val _ = cprint 1 ("compilation took " ^ (LargeInt.toString(Time.toMilliseconds(compileDuration))) ^ "ms; execution took "^
+            val _ = cprint 1 ("codegen took " ^ LargeInt.toString (Time.toMilliseconds codeGenDuration) ^ 
+                "ms; (clang) [or kmachine] compilation took " ^ (LargeInt.toString(Time.toMilliseconds(compileDuration))) ^ "ms; execution took "^
             (LargeInt.toString(Time.toMilliseconds(runDuration))) ^ "ms\n")
         in 
             ()

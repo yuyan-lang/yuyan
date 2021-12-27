@@ -122,8 +122,8 @@ let
             )
     val result = getNumbers markingBits (fromInt headerLength)
     in 
-    DebugPrint.p ("first five bits " ^ toString firstFiveBits ^ " length " ^ toString lengthOfList ^ " remainingMarking " ^ toString
-    (markingBitsToInt markingBits) ^ " result " ^ String.concatWith "," result ^" \n");
+    (* DebugPrint.p ("first five bits " ^ toString firstFiveBits ^ " length " ^ toString lengthOfList ^ " remainingMarking " ^ toString
+    (markingBitsToInt markingBits) ^ " result " ^ String.concatWith "," result ^" \n"); *)
     result
     end
     val headerArrType = "["  ^ Int.toString headerLength ^" x i64]"

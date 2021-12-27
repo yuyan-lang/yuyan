@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include "gc.h" // https://hboehm.info/gc/ libgc 
 extern int entryMain(); // the entry to yy llvm ir
 
 
@@ -12,6 +13,7 @@ char** global_argv = NULL;
 int main(int argc, char* argv[]) {
     global_argc = argc;
     global_argv = argv;
+     GC_INIT();
     return entryMain();
 }
 

@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "gc.h"
 
 int * allocateArray(int size) {
-    int * x = malloc(size * 8);
+    int * x = GC_MALLOC(size * 8);
     return x;
 }
