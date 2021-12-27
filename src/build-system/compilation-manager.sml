@@ -100,13 +100,17 @@ structure CompilationManager = struct
 
 (* add a new file to the compilation manager, if the file's module is not found, 
 a new module is added with root Path being the file's residing directory *)
-    fun addFile(filepath: filepath) (cm : compilationmanager) : unit =
+    fun findOrAddFile(filepath: filepath) (content : string option) (cm : compilationmanager) : compilationfile =
          case findModuleForFilePath filepath cm of 
             NONE => ((addModule (make (#dir (OS.Path.splitDirFile (access filepath)))) cm (StructureName.localName());
-                      addFile filepath cm))
-            | SOME m => let 
-                val _ = (#files m) := StrDict.insert (!(#files m)) (access filepath) (CompilationFileOps.initWithFilePath filepath)
-                in () end
+                      findOrAddFile filepath content cm))
+            | SOME m => case StrDict.find (!(#files m)) (access filepath) of 
+                    SOME f => f
+                    | NONE => let
+                            val newFile= case content of SOME s => CompilationFileOps.initWithFilePathAndContent filepath s
+                                                        | NONE =>  CompilationFileOps.initWithFilePath filepath
+                            val _ = (#files m) := StrDict.insert (!(#files m)) (access filepath) newFile
+                            in newFile end
 
     fun updateContentForFilepath (filepath : filepath) (content : string) (cm : compilationmanager) : unit = 
         performFileUpdate filepath (CompilationFileOps.updateFileContent content) cm
@@ -158,7 +162,7 @@ a new module is added with root Path being the file's residing directory *)
         let val allFilePathsInModule = listAllFilesInModule inmodule 
             fun findUniqueReferenceAmongFiles (filepaths : filepath list) : string option = 
                 let
-                    val _ = map (fn x => addFile x cm) filepaths
+                    val _ = map (fn x => findOrAddFile x NONE cm) filepaths
                     val _ = map (fn x => requestFileProcessing x UpToLevelTypeCheckingInfo cm) allFilePathsInModule
                     val allFiles = map (fn x => lookupFileByPath x cm) allFilePathsInModule
                     val filesHavingReference = List.mapPartial (fn CompilationFile f => 

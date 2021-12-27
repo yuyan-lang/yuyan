@@ -20,7 +20,7 @@ struct
             (* val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n" *)
             (* val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST) *)
             val absFp = (FileResourceURI.make (PathUtil.makeAbsolute filename (#pwd cm)))
-            val _ = CompilationManager.addFile absFp cm
+            val _ = CompilationManager.findOrAddFile absFp NONE cm
             val _ = CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm
             val CompilationStructure.CompilationFile cfile = CompilationManager.lookupFileByPath absFp cm
             val preExecuteTime = Time.now()

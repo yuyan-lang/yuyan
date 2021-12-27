@@ -125,6 +125,12 @@ struct
     let 
     open JSON
     open JSONUtil
+    fun addFileBufferContent(content : string) =
+        (CompilationManager.findOrAddFile
+            (FileResourceURI.make (getDocumentPath params))
+            (SOME content)
+            (LanguageServer.getCM server);
+            ())
 
     fun updateFileBufferContent(content : string) =
         CompilationManager.updateContentForFilepath
@@ -133,7 +139,7 @@ struct
             (LanguageServer.getCM server)
     in 
     case method of
-     "textDocument/didOpen" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "textDocument", SEL "text"]))))
+     "textDocument/didOpen" => addFileBufferContent((asString (get ((Option.valOf params),[SEL "textDocument", SEL "text"]))))
      | "textDocument/didChange" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "contentChanges", SUB 0, SEL "text"]))))
      | _ => ()
     end
