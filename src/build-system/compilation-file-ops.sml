@@ -10,41 +10,41 @@ open CompilationStructure
     fun updateFileContent ( newContent : string) (CompilationFile file : compilationfile) : compilationfile = 
         CompilationFile {
                                             fp=(#fp file)
-                                        , content=SOME((UTF8String.fromStringAndFile newContent (#fp file), Time.now()))
-                                        , typeCheckingInfo=NONE
-                                        , dependencyInfo=NONE
-                                        , typeCheckedInfo=NONE
-                                        , cpsInfo=NONE
-                                        , llvmInfo=NONE
+                                        , content=Success((UTF8String.fromStringAndFile newContent (#fp file), Time.now()))
+                                        , typeCheckingInfo=NotAvailable
+                                        , dependencyInfo=NotAvailable
+                                        , typeCheckedInfo=NotAvailable
+                                        , cpsInfo=NotAvailable
+                                        , llvmInfo=NotAvailable
                                         }
 
     open FileResourceURI
     fun initWithFilePathAndContent(fp : FileResourceURI.t) ( content : string) = 
         updateFileContent content (CompilationFile {
                                             fp=access fp
-                                        , content=NONE
-                                        , typeCheckingInfo=NONE
-                                        , dependencyInfo=NONE
-                                        , typeCheckedInfo=NONE
-                                        , cpsInfo=NONE
-                                        , llvmInfo=NONE
+                                        , content=NotAvailable
+                                        , typeCheckingInfo=NotAvailable
+                                        , dependencyInfo=NotAvailable
+                                        , typeCheckedInfo=NotAvailable
+                                        , cpsInfo=NotAvailable
+                                        , llvmInfo=NotAvailable
                                         })
 
     fun initWithFilePath(fp : FileResourceURI.t) = 
         CompilationFile {
                                             fp=access fp
-                                        , content=NONE
-                                        , typeCheckingInfo=NONE
-                                        , dependencyInfo=NONE
-                                        , typeCheckedInfo=NONE
-                                        , cpsInfo=NONE
-                                        , llvmInfo=NONE
+                                        , content=NotAvailable
+                                        , typeCheckingInfo=NotAvailable
+                                        , dependencyInfo=NotAvailable
+                                        , typeCheckedInfo=NotAvailable
+                                        , cpsInfo=NotAvailable
+                                        , llvmInfo=NotAvailable
                                         }
 
 
     fun constructTypeCheckingAST 
-        (content : UTF8String.t) : TypeCheckingAST.RSignature 
-              * token list = 
+        (content : UTF8String.t) : (TypeCheckingAST.RSignature 
+              * token list) witherrsoption = 
         let 
         open CompilationTokens
         val stmtAST = MixedStr.makeDecl content
@@ -60,11 +60,11 @@ open CompilationStructure
                 => if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false)
                 (!tokensInfo) 
         in 
-            (typeCheckingAST, sortedTokens)
+            Success (typeCheckingAST, sortedTokens)
         end
 
-    fun constructCPSInfo (typeCheckedAST : TypeCheckingAST.CSignature) : CPSAst.cpscomputation * CPSAst.cpscomputation * 
-                LLVMAst.llvmsignature =
+    fun constructCPSInfo (typeCheckedAST : TypeCheckingAST.CSignature) : (CPSAst.cpscomputation * CPSAst.cpscomputation * 
+                LLVMAst.llvmsignature ) witherrsoption=
         let
          val cpsAST = CPSPass.cpsTransformSigTopLevel typeCheckedAST 
         (* val _ = DebugPrint.p "----------------- CPS Done -------------------- \n" *)
@@ -74,17 +74,17 @@ open CompilationStructure
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation closureAST) *)
         val (llvmsig) = LLVMConvert.genLLVMSignatureTopLevel closureAST
         in 
-            (cpsAST, closureAST, llvmsig)
+            Success (cpsAST, closureAST, llvmsig)
         end
     
-    fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) (pwd : string) : {llfilepath :string}
+    fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) (pwd : string) : {llfilepath :string} witherrsoption
                  =
         let  (* TODO use aboslute path for filenames *)
             val filename  = PathUtil.makeAbsolute (".yybuild/yy" ^ Int.toString (UID.next())^ ".ll") pwd
             val statements = LLVMCodegen.genLLVMSignatureWithMainFunction llvmsig 
             val _ = TextIO.output (TextIO.openOut filename,(String.concatWith "\n" statements))
         in 
-            {llfilepath = filename}
+            Success {llfilepath = filename}
         end
 
 

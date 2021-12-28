@@ -90,7 +90,7 @@ open CompilationManager
         (* assume file already added *)
         val tokens = CompilationManager.requestFileProcessing filePath UpToLevelTypeCheckingInfo cm
         val CompilationFile cfile = CompilationManager.lookupFileByPath filePath cm
-        val data = getDataFromTokens (#2 (Option.valOf (#typeCheckingInfo cfile)))
+        val data = getDataFromTokens (#2 (StaticErrorStructure.valOf (#typeCheckingInfo cfile)))
     in 
         OBJECT[
             ("data", ARRAY (map INT (map (fn (x : int) => IntInf.fromInt x) data)))

@@ -1,5 +1,6 @@
 structure CompilationStructure =
 struct
+    open StaticErrorStructure
     open CompilationTokens
 
     datatype uptolevel = 
@@ -13,16 +14,16 @@ struct
     datatype compilationfile = 
         CompilationFile  of   
             {fp: string (* file path *)
-            , content: (UTF8String.t * Time.time) option (* file content  and accessed time *)
+            , content: (UTF8String.t * Time.time) witherrsoption (* file content  and accessed time *)
             , typeCheckingInfo: (TypeCheckingAST.RSignature 
               (* list of parse tokens, for LSP *)
               (* TODO: optimize, no need to generate tokens info when compiling on command line*)
-              * token list ) option (* parsed *)
-            , dependencyInfo: StructureName.t list StrDict.dict option (* list of file paths that this file depends on, for dependency resolution *)
-            , typeCheckedInfo: (TypeCheckingAST.CSignature ) option  (* type checked *)
+              * token list ) witherrsoption (* parsed *)
+            , dependencyInfo: StructureName.t list StrDict.dict witherrsoption (* list of file paths that this file depends on, for dependency resolution *)
+            , typeCheckedInfo: (TypeCheckingAST.CSignature ) witherrsoption  (* type checked *)
             , cpsInfo: (CPSAst.cpscomputation * CPSAst.cpscomputation * 
-                LLVMAst.llvmsignature) option  (* cps transformed, closure converted, and codegened *)
-            , llvmInfo: {llfilepath :string} option  (* the actual generated ll file *)
+                LLVMAst.llvmsignature) witherrsoption  (* cps transformed, closure converted, and codegened *)
+            , llvmInfo: {llfilepath :string} witherrsoption  (* the actual generated ll file *)
             }
 
     type moduleinfo =  {

@@ -120,7 +120,7 @@ a new module is added with root Path being the file's residing directory *)
         val cmd =  "clang "
         ^ String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
         ["allocation.c", "entry.c", "exception.c"]) ^
-        " " ^ (#llfilepath (Option.valOf (#llvmInfo cfile)))
+        " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
         ^ " -save-temps=obj -g -o "  ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
         ^ " -I /usr/local/include"
         ^ " -I /usr/local/Cellar/bdw-gc/8.0.6/include"
@@ -162,12 +162,12 @@ a new module is added with root Path being the file's residing directory *)
         let val allFilePathsInModule = listAllFilesInModule inmodule 
             fun findUniqueReferenceAmongFiles (filepaths : filepath list) : string option = 
                 let
-                    val _ = map (fn x => findOrAddFile x NONE cm) filepaths
-                    val _ = map (fn x => requestFileProcessing x UpToLevelTypeCheckingInfo cm) allFilePathsInModule
-                    val allFiles = map (fn x => lookupFileByPath x cm) allFilePathsInModule
+                    val _ = List.map (fn x => findOrAddFile x NONE cm) filepaths
+                    val _ = List.map (fn x => requestFileProcessing x UpToLevelTypeCheckingInfo cm) allFilePathsInModule
+                    val allFiles = List.map (fn x => lookupFileByPath x cm) allFilePathsInModule
                     val filesHavingReference = List.mapPartial (fn CompilationFile f => 
                     let val foundNameOption = IdentifierNameResolution.findIdentifierInSignature 
-                        (#1 (Option.valOf (#typeCheckingInfo f))) sname
+                        (#1 (StaticErrorStructure.valOf (#typeCheckingInfo f))) sname
                     in case foundNameOption of SOME _ => SOME (#fp f) | NONE => NONE
                     end
                     ) allFiles
@@ -179,7 +179,7 @@ a new module is added with root Path being the file's residing directory *)
         in case findUniqueReferenceAmongFiles allFilePathsInModule of
             SOME s => s
             | NONE => let val openModules = listAllAutoOpenModules inmodule cm
-                          val allOpenFiles = List.concat (map (fn m => listAllFilesInModule m) openModules)
+                          val allOpenFiles = List.concat (List.map (fn m => listAllFilesInModule m) openModules)
                       in case findUniqueReferenceAmongFiles allOpenFiles of 
                             SOME s => s
                            | NONE => 
@@ -196,20 +196,20 @@ a new module is added with root Path being the file's residing directory *)
     and findFileDependenciesTopLevel 
     (fp : filepath)
     (tcast: TypeCheckingAST.RSignature)
-    (cm : compilationmanager) : StructureName.t list StrDict.dict = 
+    (cm : compilationmanager) : StructureName.t list StrDict.dict witherrsoption= 
 let 
 val module = lookupModuleForFilePath fp cm 
 (* val _ = DebugPrint.p "got module" *)
 val unresolvedNames = IdentifierNameResolution.getUnresolvedIdentifiersSignatureTopLevel tcast (#name (#moduleInfo module))
 (* val _ = DebugPrint.p "got unresolved names" *)
 in 
-    foldl (fn (name, acc) => 
+    Success (foldl (fn (name, acc) => 
         let val inFile = resolveName name module [(fp, name)] cm
         in case StrDict.find acc inFile of 
             SOME (s) => StrDict.insert acc inFile (s@[name])
             | NONE => StrDict.insert acc inFile ([name])
         end
-        ) StrDict.empty unresolvedNames
+        ) StrDict.empty unresolvedNames)
 end
 
     (*

@@ -39,7 +39,7 @@ struct
             if #usekmachine options
             then
                 (let 
-                val erasedASTK = ErasureEntry.eraseSigK (#1 (Option.valOf (#typeCheckingInfo cfile)))
+                val erasedASTK = ErasureEntry.eraseSigK (#1 (StaticErrorStructure.valOf (#typeCheckingInfo cfile)))
                 val _ = cprint 1 "----------------- Erasure Complete ! -------------------- \n"
                 val kastK = (PersistentKMachine.fromKComp erasedASTK)
                 val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"

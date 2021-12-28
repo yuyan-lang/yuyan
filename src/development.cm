@@ -90,6 +90,8 @@ Library
 
   structure FileResourceURI 
   structure PathUtil
+
+  structure StaticErrorStructure
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -177,5 +179,6 @@ is
   build-system/compilation-file-processing.sml
   build-system/compilation-structure.sml
   build-system/file-dependency-resolution.sml
+  build-system/diagnostics/static-error-structure.sml
 
 
