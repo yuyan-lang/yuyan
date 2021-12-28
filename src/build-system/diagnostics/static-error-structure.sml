@@ -32,4 +32,11 @@ struct
             Success y => y
             | DErrors l => raise NotSuccess
             | NotAvailable => raise NotSuccess
+        
+    fun next (x : 'a witherrsoption) (f : 'a -> 'b witherrsoption) : 'b witherrsoption = 
+        case x of
+            Success y => (f y)
+            | DErrors l => DErrors l
+            | NotAvailable  => NotAvailable
+    fun >>= (x, f) = next x f
 end

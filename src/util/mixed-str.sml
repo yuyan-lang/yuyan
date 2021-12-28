@@ -1,5 +1,7 @@
 structure MixedStr =
 struct
+
+    open StaticErrorStructure
  (* should provide an adequate representation of brackets. No periods or brackets may be considered after this step *)
     datatype mixedchar = 
                    UnparsedExpression of mixedchar list (* an unparsed expression has quotes on top level between quotes  *)
@@ -14,6 +16,9 @@ struct
 
     val ~= = UTF8Char.~=
     infix 4 ~=
+
+    val >>= = StaticErrorStructure.>>=
+    infix 5 >>=
 
     exception UnmatchedParenthesis
     exception UnmatchedStringLiteral
@@ -129,58 +134,65 @@ struct
             
 
     (* string escape two endDoubleQuote to escape double quote, else no escape *)
-    fun scanLiteral(remaining : UTF8String.t)(sofar : UTF8String.t) : UTF8String.t * UTF8String.t
+    fun scanLiteral(remaining : UTF8String.t)(sofar : UTF8String.t) : (UTF8String.t * UTF8String.t) witherrsoption
      = case (
          (* print (UTF8String.toString remaining^"\n"); *)
       remaining) of
         [] => raise UnmatchedStringLiteral
         | [x] => if x ~= SpecialChars.rightDoubleQuote
-                 then (sofar, [])
+                 then Success(sofar, [])
                  else raise UnmatchedStringLiteral
         | (x::y::xs) => if  x ~= SpecialChars.rightDoubleQuote 
                         andalso  y ~= SpecialChars.rightDoubleQuote
                  then scanLiteral xs (sofar @[x]) (*escape*)
                  else if  x ~= SpecialChars.rightDoubleQuote
-                      then (sofar, y::xs)
+                      then Success(sofar, y::xs)
                       else scanLiteral (y::xs) (sofar @[x])
 
     fun scanSingleQuote( remaining : UTF8String.t) (sofar : mixedstr) 
-         : mixedstr * UTF8String.t = case remaining of
+         : (mixedstr * UTF8String.t) witherrsoption = case remaining of
         [] => raise UnmatchedParenthesis
         | (x :: xs) => if  x ~= SpecialChars.rightSingleQuote
-                        then (sofar, xs)
+                        then Success(sofar, xs)
                         else
                         if  x ~= SpecialChars.leftSingleQuote
-                        then let val (inQuote, rest) = scanSingleQuote xs [] 
-                             in scanSingleQuote rest (sofar@[processSingleQuoted inQuote])  end
+                        then scanSingleQuote xs []  >>= (fn (inQuote, rest) =>
+                                scanSingleQuote rest (sofar@[processSingleQuoted inQuote])  
+                            )
                         else
                         if  x ~= SpecialChars.leftDoubleQuote
-                        then let val (inQuote, rest) = scanLiteral xs [] 
-                             in scanSingleQuote rest (sofar@[Literal inQuote])  end
+                        then scanLiteral xs []  >>= (fn (inQuote, rest) => 
+                                scanSingleQuote rest (sofar@[Literal inQuote])  
+                             )
                         else
                         if shouldSkip x then scanSingleQuote xs (sofar)
                         else scanSingleQuote xs (sofar@[SChar x]) 
         
 
     fun scanTopLevel( remaining : UTF8String.t)
-         : mixedstr  = case remaining of
-        [] => []
+         : mixedstr witherrsoption = case remaining of
+        [] => Success([])
         | (x :: xs) => if  x ~= SpecialChars.leftSingleQuote
-                        then let val (inQuote, rest) = scanSingleQuote xs [] 
-                             in processSingleQuoted inQuote :: scanTopLevel rest
-                             end
+                        then scanSingleQuote xs []  >>= (fn (inQuote, rest) => 
+                                scanTopLevel rest >>= (fn cs  => 
+                                    Success(processSingleQuoted inQuote :: cs)
+                                )
+                            )
                         else
                         if  x ~= SpecialChars.leftDoubleQuote
-                        then let val (inQuote, rest) = scanLiteral xs [] 
-                             in Literal inQuote :: scanTopLevel rest
-                             end
+                        then  scanLiteral xs []  >>= 
+                            (fn (inQuote, rest) => 
+                                scanTopLevel rest >>= (fn cs => 
+                                    Success (Literal inQuote :: cs)
+                                )
+                            )
                         else 
                         if shouldSkip x then scanTopLevel xs
-                        else SChar x :: scanTopLevel xs
+                        else scanTopLevel xs >>= (fn y => Success (SChar x :: y))
 
-    fun make(u : UTF8String.t) : mixedstr = scanTopLevel u
+    fun make(u : UTF8String.t) : mixedstr witherrsoption = scanTopLevel u
 
-    fun makeDecl(u : UTF8String.t) : mixedstr list = processDeclaration (make u)
+    fun makeDecl(u : UTF8String.t) : mixedstr list witherrsoption =  fmap processDeclaration (make u)
     
       
 end

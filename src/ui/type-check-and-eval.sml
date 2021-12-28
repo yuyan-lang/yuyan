@@ -53,7 +53,9 @@ struct
                 val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
                 in executeTime end)
             else 
-                let val _ = CompilationManager.makeExecutable absFp cm
+                let 
+                val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile))
+                val _ = CompilationManager.makeExecutable absFp cm
                 val executeTime = Time.now()
                 val _ = OS.Process.system "./.yybuild/yyexe"
                 in 

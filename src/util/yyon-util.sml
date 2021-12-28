@@ -103,7 +103,8 @@ structure YYONUtil = struct
         
 
     fun parseYYONWithEOF(content : UTF8String.t): YYON.value = 
-        let val (obj, rest) = parseYYON() (MixedStr.make content)
+        let val (obj, rest) = parseYYON() (StaticErrorStructure.valOf (MixedStr.make content))
+        (* TODO : fix valOf *)
         in case rest of 
             [] => obj
             | _ => raise ParseFailure(rest, "Expected EOF, extraneous content")

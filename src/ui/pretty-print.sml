@@ -325,13 +325,15 @@ in
 fun show_cpsvalue  (CPSAst.CPSVar(i)) = Int.toString i
 fun show_cpsbuiltin (e : CPSAst.cpsBuiltinValue) = 
 let open CPSAst
-in
-case  e of
-        CPSBvInt i => Int.toString i
-        | CPSBvBool  b=> Bool.toString b
-        | CPSBvString l=> UTF8String.toString l
-        | CPSBvReal r => Real.toString r
+val realStr = case  e of
+        CPSBvInt i => "(Int)"^Int.toString i
+        | CPSBvBool  b=> "(Bool)"^ Bool.toString b
+        | CPSBvString l=> "(String)"^UTF8String.toString l
+        | CPSBvReal r => "(Real)"^Real.toString r
+in 
+  "[CPSBuiltin: " ^ realStr ^ "]"
       end
+    
     
 fun show_cpscomputation  (c : CPSAst.cpscomputation) : string = 
 let 
@@ -364,6 +366,40 @@ case c of
             | CPSDone (CPSVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ Int.toString i ^ "]"
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
 
+        
+
+
+end
+
+
+fun show_static_error (err : 'a StaticErrorStructure.witherrsoption) (showa : 'a -> string) : string= 
+let 
+open StaticErrorStructure
+in
+  case err of
+    Success a => showa a
+    | NotAvailable => "<Not Available>"
+    | DErrors l => "<error occurred>"
+end
+
+
+
+fun show_compilationfile file = 
+let 
+open CompilationStructure
+in case file of
+    CompilationFile  f => 
+    "<CompilationFile: \n" 
+    ^ "\nfp : " ^ (#fp f)
+    ^ "\ncontent: " ^ show_static_error (#content f) (fn (utf8s, time) => show_utf8string utf8s) 
+    ^ "\ntypeCheckingInfo: " ^ show_static_error (#typeCheckingInfo f)( fn (rsig, tokens) => show_typecheckingRSig rsig)
+    ^ "\ndependencyInfo: " ^ show_static_error (#dependencyInfo f)(fn (sl) => "[Dependencies]")
+    ^ "\ntypeCheckedInfo: " ^ show_static_error (#typeCheckedInfo f)(fn (csig) => show_typecheckingCSig csig)
+    ^ "\ncpsInfo: " ^ show_static_error (#cpsInfo f)(fn (cps, cloconv, llvm) => 
+      show_cpscomputation cps ^ ";\n\t\t ClosureConvert = "
+      ^ show_cpscomputation cloconv ^ "\n\t\t LLVM = ?"
+      )
+    ^ "\nllvmInfo: " ^ show_static_error (#llvmInfo f)(fn ({llfilepath=s}) =>  s)  (* the actual generated ll file *)
 
 end
 end
