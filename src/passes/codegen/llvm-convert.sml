@@ -85,7 +85,7 @@ in
         | CPSInj(label, index, value, (v, k)) => 
             let val labelLoc = UID.next()
             in ([LLVMStringConstant(labelLoc, label)],  (* TODO FIX BUG*)
-            vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,v,[LLVMIntConst index, LLVMStringVar (labelLoc, label), LLVMLocalVar value'])])) ::: recur k
+            vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,v,[LLVMIntConst index, LLVMStringConst (labelLoc, label), LLVMLocalVar value'])])) ::: recur k
             end
         | CPSCases(v, vkl) => 
             let val indexLoc = UID.next()
@@ -112,9 +112,14 @@ in
         | CPSAbsSingle((i, c), NONE, (t,k)) => 
             raise Fail "you forgot to perform closure conversion"
         | CPSDone (CPSVar i) (* signals return *) => ([], [LLVMReturn i])
-        | CPSBuiltinValue(CPSBvString s, (t,k)) => (
-            [LLVMStringConstant(t, s)], [](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)
+        | CPSBuiltinValue(CPSBvString s, (t,k)) => 
+        let val stringName = UID.next()
+        in (
+            [LLVMStringConstant(stringName, s)], [
+                LLVMStoreArray(LLVMArrayTypeString, t, [LLVMStringConst (stringName, s)])
+            ](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)
         ) ::: recur k
+        end
         | _ => raise Fail "not implemented yet"
 end
 

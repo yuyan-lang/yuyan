@@ -126,6 +126,7 @@ a new module is added with root Path being the file's residing directory *)
         ^ " -I /usr/local/Cellar/bdw-gc/8.0.6/include"
         ^ " -L /usr/local/Cellar/bdw-gc/8.0.6/lib"
         ^ " -l gc"
+        ^ " -Wno-override-module"
         val _ = DebugPrint.p (cmd ^ "\n")
         val _ = OS.Process.system (cmd)
         in 

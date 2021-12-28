@@ -2,16 +2,17 @@ structure LLVMAst = struct
 
 
 type llvmlocation = int (* this corresponds directly to cpsvar *)
-datatype llvmvalue = LLVMLocalVar of int
-                   | LLVMStringVar of int * UTF8String.t (* for calculating length *)
-                   | LLVMFunctionVar of int * int (* argument count *)
-                   | LLVMIntConst of int
+datatype llvmvalue = LLVMLocalVar of int (* appear as  %v(i) *)
+                   | LLVMStringConst of int * UTF8String.t (* for calculating length *) (* appear as @s(i) *)
+                   | LLVMFunctionVar of int * int (* argument count *) (* appear as @f(i) *)
+                   | LLVMIntConst of int (* directly stored as int *)
 datatype llvmarraytype = 
         LLVMArrayTypeFunctionClosure (* for storing continuation cosures generated during compilation *)
         | LLVMArrayTypeFold
         | LLVMArrayTypeProd
         | LLVMArrayTypeSum
         | LLVMArrayTypeUnit
+        | LLVMArrayTypeString (* for storing a string *)
 
         
 

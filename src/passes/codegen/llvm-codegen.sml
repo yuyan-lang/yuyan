@@ -12,7 +12,7 @@ fun toBlockNameLabel (i : int) = "b" ^ Int.toString i
 
 fun toLLVMValue (v : llvmvalue) = case v of
     LLVMLocalVar i => toLocalVar i
-                | LLVMStringVar (i, _)=> toStringName i
+                | LLVMStringConst (i, _)=> toStringName i
                 | LLVMFunctionVar(i, _) => toFunctionName i
                 | LLVMIntConst i => Int.toString i
 fun toLLVMValueType (v : llvmvalue) = case v of
@@ -25,6 +25,7 @@ fun getIntRepresentationOfLLVMArrayType (t : llvmarraytype) = case t of
         | LLVMArrayTypeProd => 3
         | LLVMArrayTypeSum => 4
         | LLVMArrayTypeUnit => 5
+        | LLVMArrayTypeString => 6
 
 (* f takes the name of the thing (may be int) *)
 fun convertValueToIntForStorage ( v : llvmvalue) (f : string -> string list) : string list = 
@@ -34,7 +35,7 @@ let
     case v of 
           LLVMLocalVar i =>  (* the local var is guaranteed to be a pointer *)
           [toLocalVar tempVarName ^ " = ptrtoint i64* " ^ toLocalVar i ^ " to i64 "] @ (f (toLocalVar tempVarName))
-        | LLVMStringVar (i, s)=> 
+        | LLVMStringConst (i, s)=> 
           [toLocalVar tempVarName ^ " = ptrtoint [" ^ Int.toString (length (UTF8String.getBytes s) + 1) ^" x i8]* " ^ toStringName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
         | LLVMFunctionVar(i, argLength) => 
           [toLocalVar tempVarName ^ " = ptrtoint i64 ("^ String.concatWith ", " (List.tabulate (argLength, fn _ => "i64*")) ^ ")* " 

@@ -61,6 +61,11 @@ int informResultRec (uint64_t result[], int prevPred) {
     case 5:
         fprintf(stderr,"元");
         break;
+    case 6:
+        fprintf(stderr,"『");
+        fprintf(stderr,"%s", (char *)result[1]);
+        fprintf(stderr,"』");
+        break;
     
     
     default:
