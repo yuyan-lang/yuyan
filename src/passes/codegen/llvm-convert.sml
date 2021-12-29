@@ -57,7 +57,7 @@ fun compileFunctionClosure(funLoc : int ) (args : int list)
         (* then values for free variables *)
             vaccessL (map CPSVar freeVarsInBody) (fn freeVarValues' => 
             [LLVMStoreArray(LLVMArrayTypeFunctionClosure, funLoc, 
-            [LLVMFunctionVar(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
+            [LLVMFunctionName(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
             )
         ) ::: recur kont
         end 
@@ -85,7 +85,7 @@ in
         | CPSInj(label, index, value, (v, k)) => 
             let val labelLoc = UID.next()
             in ([LLVMStringConstant(labelLoc, label)],  (* TODO FIX BUG*)
-            vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,v,[LLVMIntConst index, LLVMStringConst (labelLoc, label), LLVMLocalVar value'])])) ::: recur k
+            vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,v,[LLVMIntConst index, LLVMStringName (labelLoc, label), LLVMLocalVar value'])])) ::: recur k
             end
         | CPSCases(v, vkl) => 
             let val indexLoc = UID.next()
@@ -112,11 +112,16 @@ in
         | CPSAbsSingle((i, c), NONE, (t,k)) => 
             raise Fail "you forgot to perform closure conversion"
         | CPSDone (CPSVar i) (* signals return *) => ([], [LLVMReturn i])
+        | CPSFfiCCall (fname, args, (t, k)) =>
+            ([
+                LLVMFfiFunction(fname, length args)
+            ],
+            vaccessL args (fn args' => [LLVMFfiCCall(t, fname, map LLVMLocalVar args')])) ::: recur k
         | CPSBuiltinValue(CPSBvString s, (t,k)) => 
         let val stringName = UID.next()
         in (
             [LLVMStringConstant(stringName, s)], [
-                LLVMStoreArray(LLVMArrayTypeString, t, [LLVMStringConst (stringName, s)])
+                LLVMStoreArray(LLVMArrayTypeString, t, [LLVMStringName (stringName, s)])
             ](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)
         ) ::: recur k
         end

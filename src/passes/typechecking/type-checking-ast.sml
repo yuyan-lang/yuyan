@@ -42,6 +42,7 @@ structure TypeCheckingAST = struct
                     | CFix of EVar * CExpr * Type (* type is the typ of the expression *)
                     | CStringLiteral of UTF8String.t 
                     | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
+                    | CFfiCCall of UTF8String.t * StructureName.t list
 
     and CDeclaration = 
                         (* Do not need type macro becuase all types for later stages have been expanded *)
@@ -75,6 +76,8 @@ structure TypeCheckingAST = struct
                     | RFix of EVar * RExpr
                     | RStringLiteral of UTF8String.t
                     | RLetIn of RDeclaration list * RExpr
+                    | RFfiCCall of RExpr * RExpr
+                    
 
 
     and RDeclaration = 

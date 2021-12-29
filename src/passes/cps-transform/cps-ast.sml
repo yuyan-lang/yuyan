@@ -2,16 +2,17 @@
 structure CPSAst = struct
 open TypeCheckingAST
 
-datatype cpsBuiltinValue = 
+
+type cpsvar = int
+
+  datatype cpsvalue = CPSVar of cpsvar
+  
+    datatype cpsBuiltinValue = 
         CPSBvInt of int
         | CPSBvBool of bool
         | CPSBvString of UTF8String.t
         | CPSBvReal of real
 
-type cpsvar = int
-
-  datatype cpsvalue = CPSVar of cpsvar
-    
     datatype cpscomputation = 
                   CPSUnit of (cpsvar * cpscomputation)
                 | CPSProj of cpsvalue * int * (cpsvar * cpscomputation)
@@ -31,6 +32,7 @@ type cpsvar = int
                 | CPSDone of cpsvalue (* signals return of the value *)
                 | CPSBuiltinValue of cpsBuiltinValue * (cpsvar * cpscomputation) (* actually should only use label when it is 
                   a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)
+                | CPSFfiCCall of UTF8String.t * cpsvalue list * (cpsvar * cpscomputation)
     type cpscontinuation = int * cpscomputation
 
 end

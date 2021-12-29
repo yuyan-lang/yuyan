@@ -83,3 +83,17 @@ int informResultRec (uint64_t result[], int prevPred) {
 int informResult (uint64_t result[]) {
     return informResultRec(result, 0);
 }
+
+extern uint64_t * allocateArray(int size);
+uint64_t* unit_return(){
+    uint64_t* returnStorage = allocateArray(1);
+    uint64_t header =  5 ;
+    header= header<< (62 - 5);
+    *returnStorage = header;
+    return returnStorage;
+}
+uint64_t* yuyan_print(uint64_t s[]) {
+    fprintf(stdout,"%s", (char *)s[1]);
+    fflush(stdout);
+    return unit_return();
+}

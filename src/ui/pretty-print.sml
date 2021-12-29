@@ -195,6 +195,7 @@ RExprVar v => sst v
                     | RFix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
                     | RStringLiteral l => "\"" ^ ss l ^"\""
                     | RLetIn (s, e) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
+                    | RFfiCCall (s, e) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                 end
 
 and show_typecheckingRDecl x = let
@@ -240,6 +241,8 @@ in case x of
                     | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
                     | CStringLiteral l => "\"" ^ ss l ^"\""
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
+                    | CFfiCCall(fname, args) => 
+                    "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
@@ -365,6 +368,8 @@ case c of
             ^ sfvs fvs^ sk k
             | CPSDone (CPSVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ Int.toString i ^ "]"
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
+            | CPSFfiCCall(fname, args, k) => "(ccall \"" ^ UTF8String.toString fname ^
+            "\" args [" ^ String.concatWith ", " (map sv args) ^ "])" ^ sk k
 
         
 

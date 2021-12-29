@@ -87,6 +87,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |吾书〇曰〇| private struct { } | - |
  |观〇之书|  open S | - |
 | ------------- |-------------|  ---------- |
+| 《《字符串》》 | string (builtin) | 420 |
 | 有 | 1 | 420 |
 | 无 | 0 |  420 |
   |夫〇表〇| l : t | 400 |
@@ -112,6 +113,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
    |授〇以〇| e [T] | 600 |
    |入〇合〇| pack t in e | 560 |
    |开〇则有〇者〇而〇| open e as t, x in e2 | 540 |
+|《《C调用》》名〇传〇 | ffi_c_call ... args ⟨e1,e2,e3⟩ | 530 |
 |会〇而〇| λ x. e | 520 |
 |遇〇者〇而〇| λ x: T. e| 520 |
 |循〇以〇| fix f. e| 510 |

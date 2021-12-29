@@ -181,18 +181,19 @@ open TypeCheckingASTOps
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
             | RStringLiteral l => (CStringLiteral l, BuiltinType(BIString))
+            
 
             | RLetIn(decls, e) => (case ctx of 
-        Context(curName, curVis, bindings) => 
-            let val (Context(localName, _, newBindings), csig) = typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls []
-                (* assume the typeChecking is behaving properly, 
-                no conflicting things will be added to the signature *)
-                (* sub context will be determined by whether the signature is private or not ? *)
-                val (ce, synthesizedType) = synthesizeType (Context(localName,curVis, newBindings)) e
-            in 
-                (CLetIn(csig, ce, synthesizedType), synthesizedType)
-            end
-        )
+                Context(curName, curVis, bindings) => 
+                    let val (Context(localName, _, newBindings), csig) = typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls []
+                        (* assume the typeChecking is behaving properly, 
+                        no conflicting things will be added to the signature *)
+                        (* sub context will be determined by whether the signature is private or not ? *)
+                        val (ce, synthesizedType) = synthesizeType (Context(localName,curVis, newBindings)) e
+                    in 
+                        (CLetIn(csig, ce, synthesizedType), synthesizedType)
+                    end
+                )
             (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
             | _ => raise TypeCheckingFailure "Expression does type support type synthesis, please specify type"
 
@@ -299,6 +300,23 @@ open TypeCheckingASTOps
                 )
             | RFix (ev, e)=> CFix(ev,checkType (addToCtxA (TermTypeJ([ev] , tt, ())) ctx) e tt, tt)
             | RStringLiteral s => (asserTypeEquiv (BuiltinType(BIString)) tt; CStringLiteral s)
+            | RFfiCCall (e1, e2) => (
+                case e1 of
+                    RStringLiteral cfuncName => 
+                        let fun elaborateArguments  (args) = 
+                            CFfiCCall(cfuncName, args)
+                        in
+                                    (case e2 of 
+                                        RExprVar v => elaborateArguments [v]
+                                        | RTuple l => elaborateArguments (map (fn arg => case arg of 
+                                            RExprVar v => v
+                                            | _ => raise TypeCheckingFailure "ccall arguments must be immediate values"
+                                            ) l)
+                                    )
+                        end
+                    | _ => raise TypeCheckingFailure "First argument of the ccall must be string literal"
+
+            )
             | RLetIn(decls, e) => (case ctx of 
         Context(curName, curVis, bindings) => 
             let val (Context(localName, _, newBindings), csig) = typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls []

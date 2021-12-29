@@ -98,6 +98,8 @@ struct
             | RFix (ev, e)=> 
                 getUnresolvedIdentifiersExpr e typectx ([ev]::termctx) currentSName 
             | RStringLiteral s => StructureNameSet.empty 
+            | RFfiCCall (str, e2) => 
+                getUnresolvedIdentifiersExpr e2 typectx termctx currentSName 
             | RLetIn(decls, e) => (case getUnresolvedIdentifiersSignature decls typectx termctx (currentSName@StructureName.localName()) of
             (* this is a trick, the newly added signature can almost never be referenced *)
             (freeSNames, newtypecontext, newtermcontext) =>

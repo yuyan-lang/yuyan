@@ -62,6 +62,10 @@ in
             in (kfree, CPSBuiltinValue(v,k'))
             end
         | CPSDone v => (fv v, CPSDone v)
+        | CPSFfiCCall (name, vs, k) => 
+         let val (kfree, k') = cck k
+            in (fromList (map fvi vs) *** kfree, CPSFfiCCall(name, vs, k'))
+             end
             
 end
 fun closureConvertTopLevel (s : cpscomputation) :  cpscomputation =

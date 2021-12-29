@@ -154,6 +154,9 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | RUnfold e2 => RUnfold (substTypeInRExpr tS x e2)
             | RFix (ev, e)=> RFix (ev, substTypeInRExpr tS x e)
             | RStringLiteral l => RStringLiteral l
+            | RFfiCCall(e, e2) => RFfiCCall(substTypeInRExpr tS x e, 
+                    substTypeInRExpr tS x e2
+                )
     end
 
     fun substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 

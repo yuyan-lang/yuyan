@@ -12,8 +12,8 @@ fun toBlockNameLabel (i : int) = "b" ^ Int.toString i
 
 fun toLLVMValue (v : llvmvalue) = case v of
     LLVMLocalVar i => toLocalVar i
-                | LLVMStringConst (i, _)=> toStringName i
-                | LLVMFunctionVar(i, _) => toFunctionName i
+                | LLVMStringName (i, _)=> toStringName i
+                | LLVMFunctionName(i, _) => toFunctionName i
                 | LLVMIntConst i => Int.toString i
 fun toLLVMValueType (v : llvmvalue) = case v of
     LLVMIntConst i => "i64"
@@ -35,9 +35,9 @@ let
     case v of 
           LLVMLocalVar i =>  (* the local var is guaranteed to be a pointer *)
           [toLocalVar tempVarName ^ " = ptrtoint i64* " ^ toLocalVar i ^ " to i64 "] @ (f (toLocalVar tempVarName))
-        | LLVMStringConst (i, s)=> 
+        | LLVMStringName (i, s)=> 
           [toLocalVar tempVarName ^ " = ptrtoint [" ^ Int.toString (length (UTF8String.getBytes s) + 1) ^" x i8]* " ^ toStringName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
-        | LLVMFunctionVar(i, argLength) => 
+        | LLVMFunctionName(i, argLength) => 
           [toLocalVar tempVarName ^ " = ptrtoint i64 ("^ String.concatWith ", " (List.tabulate (argLength, fn _ => "i64*")) ^ ")* " 
           ^ toFunctionName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
         | LLVMIntConst i => f (Int.toString i)
@@ -257,6 +257,16 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             "ret i64 " ^ toLocalVar discard
         ]
         end
+        | LLVMFfiCCall(resultLoc, fname, args) => 
+        let 
+        in
+        [
+            toLocalVar resultLoc ^ 
+            " = call i64* @" ^ UTF8String.toString fname ^ 
+                "(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLLVMValue arg) args) ^ ")"
+            (* do not terminate after call *)
+        ]
+        end
         | LLVMReturn i => let
         val tempName = (UID.next())
         in
@@ -281,6 +291,14 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
         in 
         [toStringName sname ^ " = constant [" ^ Int.toString (length  ordinals) ^ " x i8] ["
             ^ String.concatWith ", " (map (fn i => "i8 "^ Int.toString i) ordinals) ^ "]"]
+        end
+    | LLVMFfiFunction(fname, numberOfArgs) => 
+        let 
+        in 
+        ["declare i64* @" ^ UTF8String.toString fname 
+            ^ "("
+             ^ String.concatWith ", " (List.tabulate ((numberOfArgs),(fn i => "i64*")))
+            ^ ")"]
         end
 
 

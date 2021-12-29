@@ -87,6 +87,7 @@ please provide trivial functions *)
             | OpAST(oper, []) => (
                 if oper ~=** unitTypeOp then UnitType
                 else if oper ~=** nullTypeOp then NullType
+                else if oper ~=** builtinTypeStringOp then BuiltinType(BIString)
                 else raise InternalErrorECP
                         )
             | OpAST(oper, [a1,a2]) => (
@@ -160,17 +161,17 @@ please provide trivial functions *)
                 else
                 if oper ~=** caseExprOp
                 then let
-                    val args = flattenRight (snd l) caseAlternativeOp
-                    in RCase (elaborateOpASTtoExpr (hd l) ctx, (map (fn x => 
-                    case x of
-                        OpAST(oper, [lbl, evar, expr]) => 
-                        if oper ~=** caseClauseOp
-                        then (elaborateUnknownName lbl, 
-                        elaborateNewName evar, elaborateOpASTtoExpr expr ctx)
-                        else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
-                        | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
-            ) args))
-            end
+                            val args = flattenRight (snd l) caseAlternativeOp
+                            in RCase (elaborateOpASTtoExpr (hd l) ctx, (map (fn x => 
+                            case x of
+                                OpAST(oper, [lbl, evar, expr]) => 
+                                if oper ~=** caseClauseOp
+                                then (elaborateUnknownName lbl, 
+                                elaborateNewName evar, elaborateOpASTtoExpr expr ctx)
+                                else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
+                                | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
+                    ) args))
+                    end
                 else 
                 if oper ~=** typeAppExprOp
                 then RTApp(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoType (snd l) ctx)
@@ -181,6 +182,9 @@ please provide trivial functions *)
                 if oper ~=** unpackExprOp
                 then ROpen(elaborateOpASTtoExpr (hd l) ctx, (elaborateNewName (snd l), elaborateNewName (hd (tl (tl l))), 
                 elaborateOpASTtoExpr (hd (tl (tl (tl (l))))) ctx))
+                else
+                if oper ~=** ffiCCallOp
+                then RFfiCCall(elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx)
                 else
                 if oper ~=** lambdaExprOp
                 then RLam(elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx)

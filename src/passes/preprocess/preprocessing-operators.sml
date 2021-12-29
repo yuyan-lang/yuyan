@@ -73,6 +73,7 @@ struct
     val universalTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 340 [1]
     val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 320 [1]
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 300 [1]
+    val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 []
 
     val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
@@ -89,6 +90,7 @@ struct
     val typeAppExprOp = Operators.parseOperatorStr "授〇以〇" true false 600 []
     val packExprOp = Operators.parseOperatorStr "入〇合〇" true false 560 []
     val unpackExprOp = Operators.parseOperatorStr "开〇则有〇者〇而〇" true false 540 [3,5]
+    val ffiCCallOp = Operators.parseOperatorStr "《《C调用》》名〇传〇" true false 530 []
     val lambdaExprOp = Operators.parseOperatorStr "会〇而〇" true false 520 [1]
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
@@ -98,12 +100,14 @@ struct
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
     val allTypeOps = [
+        builtinTypeStringOp,
         structureRefOp,
         unitTypeOp, nullTypeOp, labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
         universalTypeOp, existentialTypeOp, recursiveTypeOp]
     val allTypeAndExprOps = allTypeOps @ [ unitExprOp,
         projExprOp, appExprOp, pairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 
         caseAlternativeOp, caseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
+        ffiCCallOp,
         lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp
     ]
 end

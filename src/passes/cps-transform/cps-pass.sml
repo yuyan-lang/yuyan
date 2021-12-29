@@ -136,6 +136,16 @@ exception CPSInternalError
             end *)
             | CStringLiteral l => 
                 CPSBuiltinValue(CPSBvString l, kcc cc)
+            | CFfiCCall (cFuncName, args) => 
+                foldr (fn (arg, acc) => 
+                    (fn (prevArgs : cpsvalue list) => 
+                    cpsTransformExpr ctx (CExprVar arg) (fn argv => 
+                            acc (prevArgs@[CPSVar argv])
+                        )
+                    )
+                ) (fn argvs => 
+                    CPSFfiCCall (cFuncName, argvs, kcc cc)
+                ) args []
             | CLetIn(csig, e,t) => 
                 cpsTransformSig ctx csig (fn (newCtx, _) (* ignore the final value of the decls*) => 
                     cpsTransformExpr newCtx e cc)
@@ -159,7 +169,11 @@ exception CPSInternalError
      : cpscomputation =
     cpsTransformSig [] s (fn (ctx, resvar) => 
         case resvar of SOME resvar => CPSDone (CPSVar resvar)
-                     | NONE => raise Fail "TODO")
+        (* return unit if last expression is not a expr *)
+                     | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSVar resvar)))
+    )
+
+
 
 
 (* this assumes the signature has been fully checked, so no more checking !*)
