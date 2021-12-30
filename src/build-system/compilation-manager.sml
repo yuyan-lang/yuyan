@@ -119,13 +119,17 @@ a new module is added with root Path being the file's residing directory *)
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
         val cmd =  "clang "
         ^ String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
-        ["allocation.c", "entry.c", "exception.c"]) ^
+        ["allocation.c", "entry.c", "exception.c", 
+        "io.c", "marshall.c", "filesystem.c"]) ^
         " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
         ^ " -save-temps=obj -g -o "  ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
         ^ " -I /usr/local/include"
         ^ " -I /usr/local/Cellar/bdw-gc/8.0.6/include"
         ^ " -L /usr/local/Cellar/bdw-gc/8.0.6/lib"
         ^ " -l gc"
+        ^ " -I /usr/local/Cellar/libuv/1.42.0/include"
+        ^ " -L /usr/local/Cellar/libuv/1.42.0/lib"
+        ^ " -l uv"
         ^ " -Wno-override-module"
         val _ = DebugPrint.p (cmd ^ "\n")
         val _ = OS.Process.system (cmd)

@@ -27,6 +27,7 @@ local
         util/math-util.sml
         util/number-parser.sml
         util/yyon.sml
+        build-system/diagnostics/static-error-structure.sml
 
         util/mixed-str.sml
         util/yyon-util.sml
@@ -61,6 +62,7 @@ local
         passes/codegen/llvm-convert.sml
         passes/preprocess/preprocessing-operators.sml
         build-system/compilation-tokens.sml
+        build-system/compilation-structure.sml
 
         ui/pretty-print.sml
         passes/cps-transform/cps-pass.sml
@@ -80,11 +82,12 @@ local
    
         passes/preprocess/expression-construction-pass.sml
         passes/typechecking/identifier-name-resolution.sml
-        build-system/compilation-structure.sml
         build-system/compilation-file-ops.sml
         build-system/compilation-file-processing.sml
         build-system/compilation-module.sml
         build-system/compilation-manager.sml
+        
+        build-system/file-dependency-resolution.sml
         
         lsp/language-server.sml
         lsp/syntax-highlight.sml

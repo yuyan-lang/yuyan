@@ -1,6 +1,8 @@
 {
     "editor.unicodeHighlight.ambiguousCharacters": false,
     "files.associations": {
-        "stdint.h": "c"
+        "stdint.h": "c",
+        "globalinclude.h": "c",
+        "gc.h": "c"
     }
 }

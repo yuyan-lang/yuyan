@@ -54,7 +54,7 @@ struct
                 in executeTime end)
             else 
                 let 
-                val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile))
+                val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n")
                 val _ = CompilationManager.makeExecutable absFp cm
                 val executeTime = Time.now()
                 val _ = OS.Process.system "./.yybuild/yyexe"

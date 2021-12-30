@@ -1,19 +1,31 @@
 
+#include "globalInclude.h"
 
+#include "gc.h"
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
-#include "gc.h" // https://hboehm.info/gc/ libgc 
 extern int entryMain(); // the entry to yy llvm ir
 
 
 int global_argc = 0;
 char** global_argv = NULL;
+
+uv_loop_t *uv_global_loop;
 int main(int argc, char* argv[]) {
+
+    // save global paramters
     global_argc = argc;
     global_argv = argv;
-     GC_INIT();
+
+    // initialize garbage collection
+    GC_INIT();
+
+    // uv_replace_allocator(&GC_MALLOC, GC_REALLOC, GC_MALLOC, GC_FREE);
+
+    // initialize uv
+    uv_global_loop = uv_default_loop();
+    
+
+
     return entryMain();
 }
 
@@ -84,16 +96,3 @@ int informResult (uint64_t result[]) {
     return informResultRec(result, 0);
 }
 
-extern uint64_t * allocateArray(int size);
-uint64_t* unit_return(){
-    uint64_t* returnStorage = allocateArray(1);
-    uint64_t header =  5 ;
-    header= header<< (62 - 5);
-    *returnStorage = header;
-    return returnStorage;
-}
-uint64_t* yuyan_print(uint64_t s[]) {
-    fprintf(stdout,"%s", (char *)s[1]);
-    fflush(stdout);
-    return unit_return();
-}
