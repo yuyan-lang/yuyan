@@ -1,4 +1,4 @@
-#include "globalInclude.h"
+#include "../globalInclude.h"
 
 
 uint64_t* yyReadFileSync(uint64_t* filenamearg) {

@@ -34,8 +34,8 @@ int main(int argc, char* argv[]) {
 int informResultRec (uint64_t result[], int prevPred) {
     // assume it is a tuple
     uint64_t header = result[0];
-    int type = (header >> (64 - 7)) &  0b11111;
-    int length = (header >> (64 - 17)) &  0b1111111111;
+    int type = (header >> (62 - 6)) &  0b11111;
+    int length = (header >> (62 - 22)) &  0b1111111111;
 
     int preds[] = {0, 0, 660, 680, 670, 720};
     int shouldPrintQuote = 2 <= type && type <= 5 && preds[type] < prevPred;

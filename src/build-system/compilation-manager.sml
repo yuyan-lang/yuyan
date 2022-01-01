@@ -120,7 +120,8 @@ a new module is added with root Path being the file's residing directory *)
         val cmd =  "clang "
         ^ String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
         ["allocation.c", "entry.c", "exception.c", 
-        "io.c", "marshall.c", "filesystem.c"]) ^
+        "io.c", "marshall.c", 
+        "libuv/filesystem.c", "libuv/processes.c"]) ^
         " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
         ^ " -save-temps=obj -g -o "  ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
         ^ " -I /usr/local/include"

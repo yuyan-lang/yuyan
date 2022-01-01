@@ -70,17 +70,17 @@ let
     The header will be the first 64 bits of the allocated memory, 
     which consists of (Highest significant bits first):
     - 2 bits of useless information (to prevent bugs due to the sign bit)
-    - 5 bits of typing infomration (indicate which type this belongs to)
-    - 10 bits of the length (L) of the allocation block (which doesn't include the 
+    - 6 bits of typing infomration (indicate which type this belongs to)
+    - 16 bits of the length (L) of the allocation block (which doesn't include the 
     header block itself) [This means that we can't store array of size greater than 1024]
     - the remaining L bits are to indicate which of the remaining blocks are pointers 
     to another allocated structure 1, 1 indicates true and 0 indicates false.
-    if L > 64-17, then the words after entire block are used to store this information until we run out of the blocks 
+    if L > 62-22, then the words after entire block are used to store this information until we run out of the blocks 
         (so that the length of the header block is always 1)
     *)
      (* compute the header value *)
-     val _ = if num > 1023 then raise Fail "not supported yet llvmcg 81" else ()
-    val headerLength = (15 + num) div 62 + (if (15 + num) mod 62 = 0 then 0 else 1) (* only use the last 62 bits per block *)
+     val _ = if num > 65535 then raise Fail "not supported yet llvmcg 81" else ()
+    val headerLength = (22 + num) div 62 + (if (22 + num) mod 62 = 0 then 0 else 1) (* only use the last 62 bits per block *)
      val headerInfo = let
     open IntInf
     val firstFiveBits : IntInf.int = IntInf.fromInt (getIntRepresentationOfLLVMArrayType arrType)
@@ -93,7 +93,7 @@ let
     fun markingBitsToInt (bits : IntInf.int list) : IntInf.int = foldl (fn (x, acc) => 
             acc * 2 + x
         ) 0 bits
-    val paddingBitLength : IntInf.int= fromInt headerLength * fromInt 62 - fromInt num - 15
+    val paddingBitLength : IntInf.int= fromInt headerLength * fromInt 62 - fromInt num - 22
     fun getNumbers (remainingMarking : int list) (remainingHeaderLength : int) : string list = 
         if remainingHeaderLength = 1
         then (if fromInt (length remainingMarking) + paddingBitLength = 62 
@@ -101,21 +101,21 @@ let
         [toString ( 
          (markingBitsToInt remainingMarking * pow(fromInt 2 , toInt paddingBitLength))
         )]
-        else if fromInt 15 + fromInt (length remainingMarking) + paddingBitLength = 62
+        else if fromInt 22 + fromInt (length remainingMarking) + paddingBitLength = 62
         then
         [toString ( 
-            firstFiveBits * pow(fromInt 2, toInt (64-7))
-        +  lengthOfList * pow( fromInt 2, toInt (64 -17))
+            firstFiveBits * pow(fromInt 2, toInt (62-6))
+        +  lengthOfList * pow( fromInt 2, toInt (62 -22))
         + markingBitsToInt remainingMarking * pow(fromInt 2 , toInt paddingBitLength)
         )]
         else raise Fail ("Not Possible llvmcg 109, got remainingMarking length " ^ Int.toString (length remainingMarking) ^ " padding bit length " ^ Int.toString (toInt paddingBitLength)))
         else (if remainingHeaderLength = fromInt headerLength 
               then (* we're in the first block, and remaining header length <> 1 *)
                 [toString ( 
-                    firstFiveBits * pow(fromInt 2, toInt (64-7))
-                +  lengthOfList * pow( fromInt 2, toInt (64 -17))
-                + markingBitsToInt (List.take(remainingMarking, toInt (62 - 15)))
-                )]@(getNumbers (List.drop(remainingMarking, toInt (62-15))) (remainingHeaderLength -1))
+                    firstFiveBits * pow(fromInt 2, toInt (62-6))
+                +  lengthOfList * pow( fromInt 2, toInt (62 -22))
+                + markingBitsToInt (List.take(remainingMarking, toInt (62 - 22)))
+                )]@(getNumbers (List.drop(remainingMarking, toInt (62-22))) (remainingHeaderLength -1))
             else(* we're not in the first block, and remaining header length <> 1 *)
                 [toString ( 
                  markingBitsToInt (List.take(remainingMarking, 62))
@@ -181,7 +181,7 @@ in
 [
     (* toLocalVar headerLengthPointer ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString 0 (* first header block*),
     toLocalVar headerLengthName ^ " = load i64, i64* " ^ toLocalVar headerLengthPointer,
-    toLocalVar hIntermediate1 ^ " = lshiftr i64 " ^ toLocalVar headerLengthName ^ ", " ^ Int.toString(62 - 15),
+    toLocalVar hIntermediate1 ^ " = lshiftr i64 " ^ toLocalVar headerLengthName ^ ", " ^ Int.toString(62 - 22),
     toLocalVar hIntermediate2 ^ " = and i64 " ^ toLocalVar hIntermediate1 ^ ", 1023", *)
     toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString (index+1) (* skip header block*),
     toLocalVar beforeTypeCast ^ " = load i64, i64* " ^ toLocalVar tempVar,
