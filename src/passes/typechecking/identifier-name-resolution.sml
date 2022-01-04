@@ -25,9 +25,17 @@ struct
                             else NONE) ctx)
         @ctx
     fun lookupCtx (ctx : StructureName.t list) (n : StructureName.t) (currentSName) : bool = 
-            List.exists (fn x => StructureName.semanticEqual x n) ctx
-            orelse
-            List.exists (fn x => StructureName.semanticEqual x (currentSName@n)) ctx
+    (
+        (* (
+        DebugPrint.p ("Looking up " ^ StructureName.toStringPlain currentSName ^ " -> " ^ 
+            StructureName.toStringPlain n ^ " in " ^ String.concatWith ",\n" (map StructureName.toStringPlain ctx) ^ " \n\n")
+
+    )
+    ; *)
+            List.exists (fn x => 
+            Option.isSome(TypeCheckingASTOps.checkRefersTo x n currentSName)
+            ) ctx
+    )
 
         
 

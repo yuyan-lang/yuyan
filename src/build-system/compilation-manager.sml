@@ -133,9 +133,11 @@ a new module is added with root Path being the file's residing directory *)
         ^ " -l uv"
         ^ " -Wno-override-module"
         val _ = DebugPrint.p (cmd ^ "\n")
-        val _ = OS.Process.system (cmd)
+        val ret = OS.Process.system (cmd)
         in 
-            ()
+        (if ret <> 0 then DebugPrint.p "ERROR in Making Executable\n" else 
+        DebugPrint.p "Made Executable!\n";
+            ())
         end
 
     fun listAllFilesInModule (m : compilationmodule) : filepath list =
@@ -193,7 +195,9 @@ a new module is added with root Path being the file's residing directory *)
                                     (x::y::xs) => let val importedModule = findOrImportModule ([x]) cm
                                                   in resolveName (y::xs) (importedModule) (resolutionStack) cm
                                                   end
-                                    | _ => raise UnresolvedReference sname)
+                                    | _ => 
+                                    (DebugPrint.p ("Unresolved Ref "  ^ PrettyPrint.show_utf8strings sname)
+                                    ;raise UnresolvedReference sname))
                       end
         end
                             

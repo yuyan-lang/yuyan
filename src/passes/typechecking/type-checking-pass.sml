@@ -27,22 +27,26 @@ open TypeCheckingASTOps
         case c of  (Context(cSname, cVis, m)) => m
 
     exception LookupNotFound of string
-    fun lookupMapping (ctx : mapping list) (n : StructureName.t) : Type= 
+    fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * Type)= 
         case ctx of 
             [] => raise LookupNotFound ("name " ^ StructureName.toStringPlain n ^ " not found in context")
-            | TermTypeJ(n1, t1, u)::cs => if StructureName.semanticEqual n1 n then t1 else lookupMapping cs n
-            | TypeDef(_) :: cs => lookupMapping cs n
+            | TermTypeJ(n1, t1, u)::cs => 
+                (case checkRefersTo n1 n curSName 
+                of SOME(cname) => (cname, t1)
+                | NONE => lookupMapping cs n curSName
+                )
+            | TypeDef(_) :: cs => lookupMapping cs n curSName
 
 (* require lookup to add name qualification if references local structure *)
     fun lookup (Context(curSName, _, ctx) : context) (n : StructureName.t) : (StructureName.t * Type)= 
-        let val tp = lookupMapping ctx n in (n, tp) end
+        let val ntp = lookupMapping ctx n curSName in ntp end
         handle LookupNotFound s1 => 
-            (let val tp = lookupMapping ctx (curSName@n)
+            (* (let val tp = lookupMapping ctx (curSName@n)
              (* try both absolute and relative path *)
-             in (curSName@n, tp) end
-            handle LookupNotFound s2 => 
-            raise TypeCheckingFailure (s1 ^ ", \n " ^s2)
-            )
+             in (curSName@n, tp) end *)
+            (* handle LookupNotFound s2 =>  *)
+            raise TypeCheckingFailure (s1 ^ ", \n " )
+            (* ) *)
         
     fun nextContextOfOpenStructure  (curName : StructureName.t) (curVis : bool) (bindings : 'a gmapping list) 
     (openName : StructureName.t)=
@@ -78,9 +82,11 @@ open TypeCheckingASTOps
             | TypeDef(n1, t1, u)::cs => (
                 (* print "HHHH"; *)
                 applyContextTo (Context(curName, curVis, cs)) subst 
-            ((if StructureName.isPrefix curName n1 then 
+            (* ((if StructureName.isPrefix curName n1 then  *)
             (* the current subsituting name is a prefix! we need also to perform local subsitution *)
-            (subst t1 (StructureName.stripPrefix curName n1)) else (fn x => x))
+            (* always eagerly perform prefix-stripped substitutions *)
+            (subst t1 (StructureName.stripPrefixOnAgreedParts curName n1)
+            (* ) else (fn x => x)) *)
                 (subst t1 n1 t)))
             | TermTypeJ(_) :: cs => applyContextTo (Context(curName, curVis, cs)) subst t)
             (* to get the semantics correct, context need to be applied in reverse order *)

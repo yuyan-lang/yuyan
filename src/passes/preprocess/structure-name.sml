@@ -37,4 +37,18 @@ val separatorChar = UTF8String.fromString "->"
         raise Fail "Cannot strip prefix" else
         List.drop(s2, length s1)
 
+    (* strips the prefix of s2 on agreed parts of s1 *)
+    fun stripPrefixOnAgreedParts(s1 : structureName) (s2 : structureName) = 
+        case (s1, s2) of
+            (c1::cs1, c2::cs2) => if UTF8String.semanticEqual c1 c2 then stripPrefixOnAgreedParts cs1 cs2
+                                  else s2
+            | _ => s2
+        
+    fun getAgreedPrefixParts(s1 : structureName) (s2 : structureName) = 
+        case (s1, s2) of
+            (c1::cs1, c2::cs2) => if UTF8String.semanticEqual c1 c2 then c2::(getAgreedPrefixParts cs1 cs2)
+                                  else []
+            | _ => []
+    
+
 end

@@ -14,5 +14,9 @@ extern uint64_t * allocateArray(uint64_t size);
 uint64_t* unit_to_addr();
 uint64_t* string_to_addr(const char * str);
 
-
+uint64_t c_runtime_internal_error();
 char * addr_to_string(uint64_t* arg);
+
+uint64_t iso_list_get_length(const uint64_t * list) ;
+uint64_t** iso_list_get_elements(const uint64_t * list);
+uint64_t* tuple_to_addr(uint64_t length, const uint64_t* elems[]);
