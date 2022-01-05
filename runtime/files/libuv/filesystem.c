@@ -6,23 +6,34 @@ uint64_t* yyReadFileSync(uint64_t* filenamearg) {
     uv_fs_t read_req;
     // open_req = GC_MALLOC(sizeof(uv_fs_t))
 
-    int result = uv_fs_open(uv_default_loop(), &open_req, 
+    int openResult = uv_fs_open(uv_default_loop(), &open_req, 
         addr_to_string(filenamearg), O_RDONLY, 
         0, NULL);
 
-    if (result < 0 ){
+    if (openResult < 0 ){
         // error happpened
     }
-    char* buffer = GC_MALLOC(1000000);
-    uv_buf_t uvBuf= uv_buf_init(buffer, 1000000 * 8);
+    char* result = GC_MALLOC(1);
+    int resultLength = 0;
+    result[0] = '\0';
+    char* tempBuffer = GC_MALLOC(65535);
+    uv_buf_t uvBuf= uv_buf_init(tempBuffer, 65534);
     
-    int ret = uv_fs_read(uv_default_loop(), &read_req, open_req.result, &uvBuf, 1, -1, NULL);
-    if (ret < 0 ){
-        // error happened
+    int nread = uv_fs_read(uv_default_loop(), &read_req, open_req.result, &uvBuf, 1, -1, NULL);
+    while (read_req.result > 0) {
+        resultLength += nread;
+        result = GC_REALLOC(result, resultLength +1);
+        tempBuffer[nread] = '\0';
+        strlcat(result, tempBuffer, resultLength+1);
+        nread = uv_fs_read(uv_default_loop(), &read_req, open_req.result, &uvBuf, 1, -1, NULL);
     }
-    else if (ret > 0) {
+    if (read_req.result == UV_EOF ){
+        // done
+    } else  {
         // error : file is too large
+        fprintf(stderr, "(error reading file), %s", uv_strerror(nread));
+        fflush(stderr);
     }
+    return string_to_addr(result);
 
-    return string_to_addr(buffer);
 }

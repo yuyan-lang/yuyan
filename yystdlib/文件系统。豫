@@ -25,8 +25,8 @@
 
 
 」。
-文件系统之读于『lsp.y』。
-子进程之获取输出于『./yy』于「多于『r』于「多于『examples/example.yuyan』于空」」。
+文件系统之读于『lsp.py』。
+注：子进程之获取输出于『./yy』于「多于『r』于「多于『examples/example.yuyan』于空」」。
 注：子进程之运行于『date』于空。
 注：子进程之获取输出于『date』于空。
 注：子进程之获取输出于『./debug_args』于「多于『r』于「多于『examples/example.yuyan』于空」」。
