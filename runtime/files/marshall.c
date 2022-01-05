@@ -45,7 +45,7 @@ uint64_t iso_list_length_rec(const uint64_t * list, uint64_t acc) {
     if (labelIndex == 0) {
         return acc;
     } else {
-        uint64_t * underSum = list[3];
+        uint64_t * underSum = unfolded[3];
         uint64_t * underProd = underSum[2];
         return iso_list_length_rec(underProd, acc+1);
     }

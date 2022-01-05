@@ -18,3 +18,4 @@ debug*
 *.i
 .yybuild
 .vscode/c*.json
+runtime/lib*.a

@@ -11,7 +11,7 @@
             "program": "${workspaceRoot}/.yybuild/yyexe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${fileDirname}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb"

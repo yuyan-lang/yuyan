@@ -141,7 +141,7 @@ a new module is added with root Path being the file's residing directory *)
         val _ = DebugPrint.p (cmd ^ "\n")
         val ret = OS.Process.system (cmd)
         in 
-        (if ret <> 0 then DebugPrint.p "ERROR in Making Executable\n" else 
+        (if not (OS.Process.isSuccess ret) then DebugPrint.p "ERROR in Making Executable\n" else 
         DebugPrint.p "Made Executable!\n";
             ())
         end

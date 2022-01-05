@@ -20,3 +20,6 @@ char * addr_to_string(uint64_t* arg);
 uint64_t iso_list_get_length(const uint64_t * list) ;
 uint64_t** iso_list_get_elements(const uint64_t * list);
 uint64_t* tuple_to_addr(uint64_t length, const uint64_t* elems[]);
+
+
+void readStreamUntilEofIntoDataAync(uv_stream_t *stream);

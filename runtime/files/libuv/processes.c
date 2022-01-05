@@ -2,27 +2,7 @@
 
 
 
-void alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf) {
-  buf->base = GC_MALLOC(suggested_size);
-  buf->len = suggested_size;
-}
 
-//https://github.com/libuv/help/issues/22
-void on_read(uv_stream_t *client, ssize_t nread, const uv_buf_t *buf) {
-     if (nread < 0) {
-         if (nread != UV_EOF)
-             fprintf(stderr, "Read error %s\n", uv_err_name(nread));
-         uv_close((uv_handle_t*) client, NULL);
-         return;
-     }
- 
-     char* data = (char*) GC_MALLOC(sizeof(char) * (nread+1));
-     data[nread] = '\0';
-     strncpy(data, buf->base, nread);
- 
-    client->data = data;
-     fprintf(stderr, "%s", data);
- }
 
 
 // https://stackoverflow.com/questions/14751504/capture-a-child-processs-stdout-with-libuv
@@ -35,7 +15,7 @@ uint64_t* yyRunProcessGetOutputSync(uint64_t* program, uint64_t* arguments)
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
-        args[i+1] = string_to_addr(argumentArray[i]);
+        args[i+1] = addr_to_string(argumentArray[i]);
     }
     args[argumentCount+1]= NULL;
 
@@ -74,22 +54,25 @@ uint64_t* yyRunProcessGetOutputSync(uint64_t* program, uint64_t* arguments)
         // return 0;
     }
 
+    // uv_read_start((uv_stream_t *)&stdOutPipe, alloc_buffer, on_read);
+    // uv_read_start((uv_stream_t *)&stdErrPipe, alloc_buffer, on_read);
+    readStreamUntilEofIntoDataAync((uv_stream_t *)&stdOutPipe);
+    readStreamUntilEofIntoDataAync((uv_stream_t *)&stdErrPipe);
+
 
     uv_run(uv_global_loop, UV_RUN_DEFAULT);
 
    
 
-    // uv_pipe_open(&stdOutPipe, 0);
-
-    uv_read_start((uv_stream_t *)&stdOutPipe, alloc_buffer, on_read);
-    uv_read_start((uv_stream_t *)&stdErrPipe, alloc_buffer, on_read);
-
     // wait for read to finish
-    uv_run(uv_global_loop, UV_RUN_DEFAULT);
+    // uv_run(uv_global_loop, UV_RUN_DEFAULT);
+
+    char* stdOutOutput = (char * )stdOutPipe.data;
+    char* stdErrOutput = (char * )stdErrPipe.data;
 
     uint64_t* texts[] = {
-        string_to_addr(stdOutPipe.data),
-        string_to_addr(stdErrPipe.data)
+        string_to_addr(stdOutOutput),
+        string_to_addr(stdErrOutput)
     };
 
     uint64_t* resultTexts = tuple_to_addr(2, texts);
