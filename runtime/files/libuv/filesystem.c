@@ -27,11 +27,11 @@ uint64_t* yyReadFileSync(uint64_t* filenamearg) {
         strlcat(result, tempBuffer, resultLength+1);
         nread = uv_fs_read(uv_default_loop(), &read_req, open_req.result, &uvBuf, 1, -1, NULL);
     }
-    if (read_req.result == UV_EOF ){
+    if (read_req.result == UV_EOF | read_req.result == 0){
         // done
-    } else  {
+    } else {
         // error : file is too large
-        fprintf(stderr, "(error reading file), %s", uv_strerror(nread));
+        fprintf(stderr, "(error reading file ), %s", uv_strerror(read_req.result));
         fflush(stderr);
     }
     return string_to_addr(result);

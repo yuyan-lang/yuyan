@@ -5,6 +5,7 @@
         "globalinclude.h": "c",
         "gc.h": "c",
         "array": "c",
-        "vector": "c"
+        "vector": "c",
+        "stdbool.h": "c"
     },
 }

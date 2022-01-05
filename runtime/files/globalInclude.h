@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
+#include <stdbool.h>
+
+typedef uint64_t* yyptr;
 
 extern int global_argc;
 extern char** global_argv;
@@ -20,6 +23,7 @@ char * addr_to_string(uint64_t* arg);
 uint64_t iso_list_get_length(const uint64_t * list) ;
 uint64_t** iso_list_get_elements(const uint64_t * list);
 uint64_t* tuple_to_addr(uint64_t length, const uint64_t* elems[]);
+uint64_t* bool_to_addr(bool b);
 
 
 void readStreamUntilEofIntoDataAync(uv_stream_t *stream);
