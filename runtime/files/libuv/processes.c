@@ -7,11 +7,11 @@
 
 // https://stackoverflow.com/questions/14751504/capture-a-child-processs-stdout-with-libuv
 // program is a string var, arguments is a list of string vars!
-uint64_t* yyRunProcessGetOutputSync(uint64_t* program, uint64_t* arguments)
+yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 {
     char* programName = addr_to_string(program);
     char argumentCount = iso_list_get_length(arguments);
-    uint64_t** argumentArray = iso_list_get_elements(arguments);
+    yy_ptr* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
@@ -70,12 +70,12 @@ uint64_t* yyRunProcessGetOutputSync(uint64_t* program, uint64_t* arguments)
     char* stdOutOutput = (char * )stdOutPipe.data;
     char* stdErrOutput = (char * )stdErrPipe.data;
 
-    uint64_t* texts[] = {
+    yy_ptr texts[] = {
         string_to_addr(stdOutOutput),
         string_to_addr(stdErrOutput)
     };
 
-    uint64_t* resultTexts = tuple_to_addr(2, texts);
+    yy_ptr resultTexts = tuple_to_addr(2, texts);
 
     return resultTexts;
 
@@ -88,11 +88,11 @@ uint64_t* yyRunProcessGetOutputSync(uint64_t* program, uint64_t* arguments)
 //     uv_close((uv_handle_t*) req, NULL);
 // }
 
-uint64_t* yyRunProcessSync(uint64_t* program, uint64_t* arguments)
+yy_ptr yyRunProcessSync(yy_ptr program, yy_ptr arguments)
 {
     char* programName = addr_to_string(program);
     char argumentCount = iso_list_get_length(arguments);
-    uint64_t** argumentArray = iso_list_get_elements(arguments);
+    yy_ptr* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){

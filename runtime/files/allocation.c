@@ -6,7 +6,7 @@
 // #include "gc.h"
 #include "globalInclude.h"
 
-uint64_t * allocateArray(uint64_t size) {
-    uint64_t * x = GC_MALLOC(size * 8);
+yy_ptr allocateArray(uint64_t size) {
+    yy_ptr x = GC_MALLOC(size * 8);
     return x;
 }

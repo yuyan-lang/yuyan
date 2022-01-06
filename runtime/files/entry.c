@@ -51,24 +51,24 @@ int informResultRec (uint64_t result[], int prevPred) {
         fprintf(stderr,"Received a function closure (length is %d). Did you define a function?\n", length);
         // for (int i = 0; i < length ; i ++){
         //     fprintf(stderr,"%d : ", i);
-        //     informResult((uint64_t *)result[i+1]);
+        //     informResult((yy_ptr)result[i+1]);
         // }
         break;
     case 2:
         fprintf(stderr,"卷");
-        informResultRec((uint64_t *) result[1], preds[type]);
+        informResultRec((yy_ptr) result[1], preds[type]);
         break;
    
     case 3:
-        informResultRec((uint64_t *) result[1], preds[type]);
+        informResultRec((yy_ptr) result[1], preds[type]);
         for (int i = 1; i < length ; i++) {
             fprintf(stderr,"与");
-            informResultRec((uint64_t *) result[1+i], preds[type]);
+            informResultRec((yy_ptr) result[1+i], preds[type]);
         }
         break;
      case 4:
         fprintf(stderr,"%s临", (char*)result[2]);
-        informResultRec((uint64_t *) result[3], preds[type]);
+        informResultRec((yy_ptr) result[3], preds[type]);
         break;
     case 5:
         fprintf(stderr,"元");

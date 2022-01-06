@@ -4,26 +4,26 @@
 #include <uv.h> 
 #include <stdbool.h>
 
-typedef uint64_t* yyptr;
+typedef uint64_t* yy_ptr;
 
 extern int global_argc;
 extern char** global_argv;
 
 extern uv_loop_t *uv_global_loop;
 
-extern uint64_t * allocateArray(uint64_t size);
+extern yy_ptr allocateArray(uint64_t size);
 
 
-uint64_t* unit_to_addr();
-uint64_t* string_to_addr(const char * str);
+yy_ptr unit_to_addr();
+yy_ptr string_to_addr(const char * str);
 
 uint64_t c_runtime_internal_error();
-char * addr_to_string(uint64_t* arg);
+char * addr_to_string(yy_ptr arg);
 
-uint64_t iso_list_get_length(const uint64_t * list) ;
-uint64_t** iso_list_get_elements(const uint64_t * list);
-uint64_t* tuple_to_addr(uint64_t length, const uint64_t* elems[]);
-uint64_t* bool_to_addr(bool b);
+uint64_t iso_list_get_length(const yy_ptr list) ;
+yy_ptr* iso_list_get_elements(const yy_ptr list);
+yy_ptr tuple_to_addr(uint64_t length, const yy_ptr elems[]);
+yy_ptr bool_to_addr(bool b);
 
 
 void readStreamUntilEofIntoDataAync(uv_stream_t *stream);

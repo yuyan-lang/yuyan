@@ -1,7 +1,7 @@
 #include "../globalInclude.h"
 
 
-uint64_t* yyReadFileSync(uint64_t* filenamearg) {
+yy_ptr yyReadFileSync(yy_ptr filenamearg) {
     uv_fs_t open_req;
     uv_fs_t read_req;
     // open_req = GC_MALLOC(sizeof(uv_fs_t))
@@ -30,7 +30,6 @@ uint64_t* yyReadFileSync(uint64_t* filenamearg) {
     if (read_req.result == UV_EOF | read_req.result == 0){
         // done
     } else {
-        // error : file is too large
         fprintf(stderr, "(error reading file ), %s", uv_strerror(read_req.result));
         fflush(stderr);
     }
