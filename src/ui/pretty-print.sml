@@ -194,6 +194,8 @@ RExprVar v => sst v
                     | RUnfold (e) => "unfold("^  se e ^")"
                     | RFix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
                     | RStringLiteral l => "\"" ^ ss l ^"\""
+                    | RIntConstant l => "(" ^ Int.toString l ^")"
+                    | RRealConstant l => "(" ^ Real.toString l ^")"
                     | RLetIn (s, e) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                 end
@@ -240,6 +242,8 @@ in case x of
                     | CUnfold (e, rhot) => "unfold("^  se e ^ cst rhot ^")"
                     | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
                     | CStringLiteral l => "\"" ^ ss l ^"\""
+                    | CIntConstant l => "(" ^ Int.toString l ^")"
+                    | CRealConstant l => "(" ^ Real.toString l ^")"
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"

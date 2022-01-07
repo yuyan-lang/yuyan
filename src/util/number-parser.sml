@@ -61,5 +61,9 @@ structure NumberParser = struct
                 in NPReal finalValue end
         end
     else NPInt (parseInteger s)
+
+
+    fun isNumber(s : UTF8String.t) : bool = 
+        List.all (fn c => UTF8String.containsChar (UTF8String.fromString("零一二三四五六七八九十点")) (c)) s
     
 end

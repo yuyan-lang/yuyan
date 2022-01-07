@@ -187,6 +187,8 @@ open TypeCheckingASTOps
                 | _ => raise TypeCheckingFailure "Cannot unfold non recursive type"
                 )
             | RStringLiteral l => (CStringLiteral l, BuiltinType(BIString))
+            | RIntConstant i => (CIntConstant i, BuiltinType(BIInt))
+            | RRealConstant r => (CRealConstant r, BuiltinType(BIReal))
             
 
             | RLetIn(decls, e) => (case ctx of 
@@ -306,6 +308,8 @@ open TypeCheckingASTOps
                 )
             | RFix (ev, e)=> CFix(ev,checkType (addToCtxA (TermTypeJ([ev] , tt, ())) ctx) e tt, tt)
             | RStringLiteral s => (asserTypeEquiv (BuiltinType(BIString)) tt; CStringLiteral s)
+            | RIntConstant i => (asserTypeEquiv (BuiltinType(BIInt)) tt; CIntConstant i)
+            | RRealConstant r => (asserTypeEquiv (BuiltinType(BIReal)) tt; CRealConstant r)
             | RFfiCCall (e1, e2) => (
                 case e1 of
                     RStringLiteral cfuncName => 

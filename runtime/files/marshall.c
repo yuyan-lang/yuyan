@@ -108,7 +108,7 @@ yy_ptr fold_to_addr(yy_ptr toFold) {
 }
 
 yy_ptr iso_list_nil_to_addr() {
-    return fold_to_addr(injection_to_addr(0, iso_list_nil_label, unit_to_addr));
+    return fold_to_addr(injection_to_addr(0, iso_list_nil_label, unit_to_addr()));
 }
 yy_ptr iso_list_cons_to_addr(yy_ptr elem, yy_ptr rest){
     yy_ptr tps[] = {elem, rest};

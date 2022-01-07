@@ -125,6 +125,22 @@ in
             ](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)
         ) ::: recur k
         end
+        | CPSBuiltinValue(CPSBvInt i, (t,k)) => 
+        let val name = UID.next()
+        in (
+            [LLVMIntConstant(name, i)], [
+                LLVMStoreArray(LLVMArrayTypeInt, t, [LLVMIntName name])
+            ]
+        ) ::: recur k
+        end
+        | CPSBuiltinValue(CPSBvReal r, (t,k)) => 
+        let val name = UID.next()
+        in (
+            [LLVMRealConstant(name, r)], [
+                LLVMStoreArray(LLVMArrayTypeReal, t, [LLVMRealName name])
+            ]
+        ) ::: recur k
+        end
         | _ => raise Fail "not implemented yet"
 end
 

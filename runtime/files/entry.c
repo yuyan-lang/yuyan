@@ -78,6 +78,13 @@ int informResultRec (uint64_t result[], int prevPred) {
         fprintf(stderr,"%s", (char *)result[1]);
         fprintf(stderr,"』");
         break;
+    case 7:
+        fprintf(stderr,"%d", (int64_t)result[1]);
+        break;
+    case 8:
+        fprintf(stderr,"%f", (double)result[1]);
+        break;
+
     
     
     default:

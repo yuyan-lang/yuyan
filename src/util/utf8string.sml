@@ -74,7 +74,7 @@ structure UTF8String = struct
     fun tokens ( f : UTF8Char.t -> bool) (s : utf8string) : utf8string list = 
         List.filter (fn l => l <> []) (fields f s)
 
-    fun containsChar (s : utf8string) (char : UTF8Char.t) = List.exists (fn sc =>sc=char) s
+    fun containsChar (s : utf8string) (char : UTF8Char.t) = List.exists (fn sc =>UTF8Char.semanticEqual sc char) s
 
     fun containsAllChar (s : utf8string) (chars : UTF8Char.t list) =
          foldr (fn (b1, b2) => b1 andalso b2) true 

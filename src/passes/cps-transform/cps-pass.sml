@@ -136,6 +136,10 @@ exception CPSInternalError
             end *)
             | CStringLiteral l => 
                 CPSBuiltinValue(CPSBvString l, kcc cc)
+            | CIntConstant i => 
+                CPSBuiltinValue(CPSBvInt i, kcc cc)
+            | CRealConstant r => 
+                CPSBuiltinValue(CPSBvReal r, kcc cc)
             | CFfiCCall (cFuncName, args) => 
                 foldr (fn (arg, acc) => 
                     (fn (prevArgs : cpsvalue list) => 

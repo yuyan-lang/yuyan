@@ -6,6 +6,8 @@ datatype llvmvalue = LLVMLocalVar of int (* appear as  %v(i) *)
                    | LLVMStringName of int * UTF8String.t (* for calculating length *) (* appear as @s(i) *)
                    | LLVMFunctionName of int * int (* argument count *) (* appear as @f(i) *)
                    | LLVMIntConst of int (* directly stored as int *)
+                   | LLVMIntName of int  (* global int const name *)
+                   | LLVMRealName of int  (* global real const name *)
 datatype llvmarraytype = 
         LLVMArrayTypeFunctionClosure (* for storing continuation cosures generated during compilation *)
         | LLVMArrayTypeFold
@@ -13,6 +15,8 @@ datatype llvmarraytype =
         | LLVMArrayTypeSum
         | LLVMArrayTypeUnit
         | LLVMArrayTypeString (* for storing a string *)
+        | LLVMArrayTypeInt
+        | LLVMArrayTypeReal
 
         
 

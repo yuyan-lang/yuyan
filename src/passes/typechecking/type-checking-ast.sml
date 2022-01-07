@@ -41,6 +41,8 @@ structure TypeCheckingAST = struct
                     | CUnfold of CExpr  * Type (* type is Rho *)
                     | CFix of EVar * CExpr * Type (* type is the typ of the expression *)
                     | CStringLiteral of UTF8String.t 
+                    | CIntConstant of int
+                    | CRealConstant of real
                     | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * StructureName.t list
 
@@ -75,6 +77,8 @@ structure TypeCheckingAST = struct
                     | RUnfold of RExpr
                     | RFix of EVar * RExpr
                     | RStringLiteral of UTF8String.t
+                    | RIntConstant of int
+                    | RRealConstant of real
                     | RLetIn of RDeclaration list * RExpr
                     | RFfiCCall of RExpr * RExpr
                     

@@ -39,37 +39,31 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
 
 
 yy_ptr yyListDirectorySync(yy_ptr dirname) {
-    uv_fs_t open_req;
-    uv_fs_t read_req;
+    uv_fs_t scan_req;
+    // uv_fs_t read_req;
     // open_req = GC_MALLOC(sizeof(uv_fs_t))
 
-    int openResult = uv_fs_opendir(uv_default_loop(), &open_req, 
-        addr_to_string(dirname), NULL);
+    int count = uv_fs_scandir(uv_default_loop(), &scan_req, 
+        addr_to_string(dirname), O_RDONLY, NULL);
 
-    if (openResult < 0 ){
+
+    if (count < 0 ){
         // error happpened
-        fprintf(stderr, "(error reading dir ), %s", uv_strerror(open_req.result));
-        fflush(stderr);
-    }
-    uv_dir_t *dirs = open_req.ptr;
-    int nread = uv_fs_readdir(uv_default_loop(), &read_req, dirs, NULL);
-    if (read_req.result < 0){
-        fprintf(stderr, "(error reading filedir ), %s", uv_strerror(read_req.result));
-        fflush(stderr);
-    }
-    if (nread < 0){
-        fprintf(stderr, "(error reading filedir ), %s", uv_strerror(nread));
+        fprintf(stderr, "(error reading dir ), %s", uv_strerror(scan_req.result));
         fflush(stderr);
     }
 
-    yy_ptr entries[nread];
+    uv_dirent_t dirs;
+    yy_ptr entries[count];
+    int nread=0;
 
-    for(int i = 0; i < nread; i++){
-        char * name = dirs->dirents[i].name;
-        entries[i] = string_to_addr(name);
+    while(uv_fs_scandir_next(&scan_req, &dirs) != UV_EOF){
+        char * name = dirs.name;
+        entries[nread] = string_to_addr(name);
+        nread++;
     }
+
 
 
     return array_to_iso_addr(nread, entries);
-
 }

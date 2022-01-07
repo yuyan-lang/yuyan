@@ -127,7 +127,12 @@ please provide trivial functions *)
     let fun snd (x : OpAST list) : OpAST = (hd (tl x))
     in
         (case ast of
-              UnknownOpName (s) => RExprVar [s]
+              UnknownOpName (s) => if NumberParser.isNumber s then 
+                 (case NumberParser.parseNumber s of 
+                    NumberParser.NPInt i => RIntConstant i
+                    | NumberParser.NPReal r => RRealConstant r
+                 )
+              else RExprVar [s]
             | OpUnparsedExpr x => (parseExpr x ctx) 
             | OpStrLiteral l => RStringLiteral l
             | OpAST(oper, l) => (
@@ -243,6 +248,7 @@ please provide trivial functions *)
     and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.RExpr
     =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
                 (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody)
+           val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n")
            val _ = notifyParseOpAST parseTree
     in elaborateOpASTtoExpr parseTree ctx end
         handle PrecedenceParser.NoPossibleParse s => 

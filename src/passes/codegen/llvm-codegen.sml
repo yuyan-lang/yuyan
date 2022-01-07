@@ -6,6 +6,8 @@ open LLVMAst
 
 fun toLocalVar (i : int) = "%v" ^ Int.toString i
 fun toStringName (i : int) = "@s" ^ Int.toString i
+fun toIntName (i : int) = "@i" ^ Int.toString i
+fun toRealName (i : int) = "@r" ^ Int.toString i
 fun toBlockNameJump (i : int) = "%b" ^ Int.toString i
 fun toFunctionName (i : int) = "@f" ^ Int.toString i
 fun toBlockNameLabel (i : int) = "b" ^ Int.toString i
@@ -15,6 +17,8 @@ fun toLLVMValue (v : llvmvalue) = case v of
                 | LLVMStringName (i, _)=> toStringName i
                 | LLVMFunctionName(i, _) => toFunctionName i
                 | LLVMIntConst i => Int.toString i
+                | LLVMIntName i => toIntName i
+                | LLVMRealName i => toRealName i
 fun toLLVMValueType (v : llvmvalue) = case v of
     LLVMIntConst i => "i64"
     | _ => "i64"
@@ -26,6 +30,8 @@ fun getIntRepresentationOfLLVMArrayType (t : llvmarraytype) = case t of
         | LLVMArrayTypeSum => 4
         | LLVMArrayTypeUnit => 5
         | LLVMArrayTypeString => 6
+        | LLVMArrayTypeInt => 7
+        | LLVMArrayTypeReal => 8
 
 (* f takes the name of the thing (may be int) *)
 fun convertValueToIntForStorage ( v : llvmvalue) (f : string -> string list) : string list = 
@@ -41,6 +47,12 @@ let
           [toLocalVar tempVarName ^ " = ptrtoint i64 ("^ String.concatWith ", " (List.tabulate (argLength, fn _ => "i64*")) ^ ")* " 
           ^ toFunctionName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
         | LLVMIntConst i => f (Int.toString i)
+        | LLVMIntName i => 
+          [toLocalVar tempVarName ^ " = ptrtoint i64* " ^ 
+          toIntName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
+        | LLVMRealName i => 
+          [toLocalVar tempVarName ^ " = ptrtoint double* " ^ 
+          toRealName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
     end
 
 fun storeIntToLocalVar (localVar : int)(intValue : int)  : string list= 
@@ -284,6 +296,16 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
             ^ ") {"
             ]@(List.concat (map genLLVMStatement body))@
             ["}"]
+    | LLVMIntConstant(name, i) => 
+        let 
+        in 
+        [toIntName name ^ " = constant i64 "  ^ Int.toString i]
+        end
+    | LLVMRealConstant(name, i) => 
+        let 
+        in 
+        [toRealName name ^ " = constant double "  ^ Real.toString i]
+        end
     | LLVMStringConstant(sname, s) => 
         let 
         val rawChars = UTF8String.getBytes s
