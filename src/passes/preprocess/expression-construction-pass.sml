@@ -104,6 +104,9 @@ please provide trivial functions *)
                 if oper ~=** functionTypeOp
                 then Func ((elaborateOpASTtoType a1 ctx),(elaborateOpASTtoType a2 ctx))
                 else 
+                if oper ~=** typeInstantiationOp
+                then TypeInst ((elaborateOpASTtoType a1 ctx),(elaborateOpASTtoType a2 ctx))
+                else 
                 if oper ~=** universalTypeOp
                 then Forall ((elaborateNewName a1),(elaborateOpASTtoType a2 ctx))
                 else 
@@ -218,10 +221,10 @@ please provide trivial functions *)
                     in RLetIn(declTree, bodyExpr) end
                 )
                 else
-                raise ElaborateFailure "Expected Expression constructs"
+                raise ElaborateFailure "Expected Expression constructs 224"
             )
                 | _ => 
-                raise ElaborateFailure "Expected Expression constructs"
+                raise ElaborateFailure "Expected Expression constructs 227"
         )
         handle ElaborateFailure s => 
         raise ElaborateFailure (s ^ "\n when elaborating expr "^ PrettyPrint.show_opast ast )

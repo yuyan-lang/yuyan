@@ -52,6 +52,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | Prod l => List.concat (map (fn (l, t) => freeTVar t) l)
             | Sum l => List.concat (map (fn (l, t) => freeTVar t) l)
             | Func (t1,t2) => List.concat (map freeTVar [t1,t2])
+            | TypeInst (t1,t2) => List.concat (map freeTVar [t1,t2])
             | Forall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
             | Exists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
             | Rho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
@@ -103,9 +104,29 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | Prod l => Prod  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
             | Sum l =>  Sum  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
             | Func (t1,t2) => Func (substTypeInType tS x t1, substTypeInType tS x t2 )
+            | TypeInst (t1,t2) => TypeInst (substTypeInType tS x t1, substTypeInType tS x t2 )
             | Forall (tv,t2) => captureAvoid Forall tv t2
             | Exists (tv,t2) => captureAvoid Exists tv t2
             | Rho (tv,t2) => captureAvoid Rho tv t2
+            | UnitType => UnitType
+            | NullType => NullType
+            | BuiltinType(b) => BuiltinType(b)
+    end
+    fun normalizeType (t : Type)   = 
+    let 
+    in
+        case t of
+            TypeVar t => TypeVar t
+            | Prod l => Prod  (map (fn (l, t) => (l, normalizeType t)) l)
+            | Sum l =>  Sum  (map (fn (l, t) => (l, normalizeType t)) l)
+            | Func (t1,t2) => Func (normalizeType t1, normalizeType t2 )
+            | TypeInst (t1,t2) => (case normalizeType t1 of
+                Forall(tv, t1') => substTypeInType t2 ([tv]) t1'
+                | _ => raise TypeCheckingFailure "Expected Forall"
+            )
+            | Forall (tv,t2) => Forall (tv, normalizeType t2) 
+            | Exists (tv,t2) => Exists (tv, normalizeType t2) 
+            | Rho (tv,t2) => Rho (tv, normalizeType t2) 
             | UnitType => UnitType
             | NullType => NullType
             | BuiltinType(b) => BuiltinType(b)
@@ -136,7 +157,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x then RTAbs (tv, e2)
-             else RTAbs (tv, substTypeInRExpr tS [tv] e2)
+             else RTAbs (tv, substTypeInRExpr tS x e2)
             ) 
             | RTApp (e2, t) => RTApp(substTypeInRExpr tS x e2, substTypeInType tS x t )
             | RPack (t, e2) => RPack(substTypeInType tS x t, substTypeInRExpr tS x e2)

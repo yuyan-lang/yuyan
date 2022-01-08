@@ -69,10 +69,11 @@ struct
     val labeledTypeCompOp  = Operators.parseOperatorStr "夫〇表〇" false false 400 [1]
     val prodTypeOp  = Operators.parseOperatorStr "〇合〇" true false 380 []
     val sumTypeOp  = Operators.parseOperatorStr "〇亦〇" true false 360 []
+    val typeInstantiationOp  = Operators.parseOperatorStr "启〇以〇" true false 355 []
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 350 []
+    val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
     val universalTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 340 [1]
     val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 320 [1]
-    val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 300 [1]
     val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 []
 
     val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)
@@ -103,6 +104,7 @@ struct
         builtinTypeStringOp,
         structureRefOp,
         unitTypeOp, nullTypeOp, labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
+        typeInstantiationOp,
         universalTypeOp, existentialTypeOp, recursiveTypeOp]
     val allTypeAndExprOps = allTypeOps @ [ unitExprOp,
         projExprOp, appExprOp, pairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 

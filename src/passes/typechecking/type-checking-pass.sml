@@ -80,14 +80,14 @@ open TypeCheckingASTOps
         (case mapl of
             [] => t
             | TypeDef(n1, t1, u)::cs => (
+                let val stepOne = (subst t1 n1 t)
+                    val stepTwo = (subst t1 (StructureName.stripPrefixOnAgreedParts curName n1) stepOne)
+                    val rest = applyContextTo (Context(curName, curVis, cs)) subst stepTwo
+                    in rest end
+                )
                 (* print "HHHH"; *)
-                applyContextTo (Context(curName, curVis, cs)) subst 
-            (* ((if StructureName.isPrefix curName n1 then  *)
             (* the current subsituting name is a prefix! we need also to perform local subsitution *)
             (* always eagerly perform prefix-stripped substitutions *)
-            (subst t1 (StructureName.stripPrefixOnAgreedParts curName n1)
-            (* ) else (fn x => x)) *)
-                (subst t1 n1 t)))
             | TermTypeJ(_) :: cs => applyContextTo (Context(curName, curVis, cs)) subst t)
             (* to get the semantics correct, context need to be applied in reverse order *)
             (* no reverse function is called because context is in reverse order *)
@@ -106,7 +106,15 @@ open TypeCheckingASTOps
             )) t
     )
     fun applyContextToExpr (ctx : context) (e : RExpr) : RExpr = 
-        applyContextTo ctx (substTypeInRExpr) e
+        applyContextTo ctx (fn t => fn  l => fn e1 => 
+        (let 
+        val _ = 
+        if DEBUG then  print (" apply context subsituting "^ PrettyPrint.show_typecheckingType t  
+        ^ " for " ^ StructureName.toStringPlain l ^ " in " ^ PrettyPrint.show_typecheckingRExpr e1 ^  "\n") else ()
+            val res = substTypeInRExpr t l e1
+            val _ =if DEBUG then print (" res is " ^ PrettyPrint.show_typecheckingRExpr res ^ "\n") else ()
+            in res end
+            )) e
     fun applyContextToSignature (ctx : context) (s : RSignature) : RSignature = 
         applyContextTo ctx (substituteTypeInRSignature) s
 
@@ -298,7 +306,7 @@ open TypeCheckingASTOps
                 Rho (tv ,tb) => 
                 let val ce2 =checkType ctx e2 (substTypeInType (Rho(tv, tb)) [tv] tb)
                 in CFold(ce2, tt) end
-                | _ => raise TypeCheckingFailure "Encountered Rho"
+                | _ => raise TypeCheckingFailure "Expected Rho"
                     )
             | RUnfold e2 => (case synthesizeType ctx e2 of
                 (ce2, Rho (tv, tb)) =>(
@@ -353,13 +361,14 @@ open TypeCheckingASTOps
 
             case s of
             [] => (ctx, acc)
+            (* normalize should not change the set of free variables *)
         | RTypeMacro (n, t)::ss => if freeTVar (applyContextToType ctx t) <> [] then 
             raise SignatureCheckingFailure ("Type decl contains free var " ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in"  ^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) 
             else 
-            typeCheckSignature (addToCtxR (TypeDef([n], t, ())) ctx) ss (acc)
+            typeCheckSignature (addToCtxR (TypeDef([n], normalizeType (applyContextToType ctx t), ())) ctx) ss (acc)
         | RTermTypeJudgment(n, t):: ss => if freeTVar (applyContextToType ctx t) <> [] 
             then raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t)) 
-            else typeCheckSignature (addToCtxR (TermTypeJ([n], (applyContextToType ctx t), ())) ctx) ss (acc)
+            else typeCheckSignature (addToCtxR (TermTypeJ([n], (normalizeType (applyContextToType ctx t)), ())) ctx) ss (acc)
         | RTermMacro(n, e) :: ss => 
             let val (transformedExpr , synthesizedType) = synthesizeType ctx (applyContextToExpr ctx e)
             in

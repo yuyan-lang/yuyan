@@ -16,6 +16,7 @@ structure TypeCheckingAST = struct
                     | NullType
                     | Sum of (Label * Type) list
                     | Func of Type * Type
+                    | TypeInst of Type * Type
                     | Forall of TVar * Type
                     | Exists of TVar * Type
                     | Rho of TVar * Type

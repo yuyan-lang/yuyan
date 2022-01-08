@@ -55,6 +55,10 @@ struct
                         getUnresolvedIdentifiersType t1 typectx termctx currentSName
                     ***
                         getUnresolvedIdentifiersType t2 typectx termctx currentSName
+                    | TypeInst (t1, t2) => 
+                        getUnresolvedIdentifiersType t1 typectx termctx currentSName
+                    ***
+                        getUnresolvedIdentifiersType t2 typectx termctx currentSName
                     | Forall(t1, t2) => 
                         getUnresolvedIdentifiersType t2 ([t1]::typectx) termctx currentSName
                     | Exists (t1, t2) => 

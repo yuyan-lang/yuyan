@@ -160,6 +160,7 @@ in case x of
                     | NullType => "0"
                     | Sum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | Func (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    | TypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
                     | Forall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | Exists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | Rho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
