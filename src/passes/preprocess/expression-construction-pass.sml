@@ -119,9 +119,11 @@ please provide trivial functions *)
                 if oper ~=** structureRefOp
                 then TypeVar (map elaborateUnknownName (flattenRight ast structureRefOp))
                 else
-                raise ElaborateFailure "Expected a type constructor"
+                raise ElaborateFailure (
+                    "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
+                    ^PrettyPrint.show_opast ast ^ "\n")
             )
-            | _ => raise ElaborateFailure "Expected a type constructor"
+            | _ => raise ElaborateFailure "Expected a type constructor 124"
         )
         handle ElaborateFailure s => 
         raise ElaborateFailure (s ^ "\n when elaborating type "^ PrettyPrint.show_opast ast )

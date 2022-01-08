@@ -121,7 +121,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | Sum l =>  Sum  (map (fn (l, t) => (l, normalizeType t)) l)
             | Func (t1,t2) => Func (normalizeType t1, normalizeType t2 )
             | TypeInst (t1,t2) => (case normalizeType t1 of
-                Forall(tv, t1') => substTypeInType t2 ([tv]) t1'
+                Forall(tv, t1') => substTypeInType (normalizeType t2) ([tv]) t1'
                 | _ => raise TypeCheckingFailure "Expected Forall"
             )
             | Forall (tv,t2) => Forall (tv, normalizeType t2) 

@@ -43,8 +43,9 @@ yy_ptr yyListDirectorySync(yy_ptr dirname) {
     // uv_fs_t read_req;
     // open_req = GC_MALLOC(sizeof(uv_fs_t))
 
-    int count = uv_fs_scandir(uv_default_loop(), &scan_req, 
-        addr_to_string(dirname), O_RDONLY, NULL);
+char * dname = addr_to_string(dirname);
+    int count = uv_fs_scandir(uv_default_loop(), &scan_req, dname
+        , O_RDONLY, NULL);
 
 
     if (count < 0 ){

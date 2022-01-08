@@ -95,7 +95,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
   |〇亦〇 | +  | 360 |
   |夫〇表〇合夫〇表〇| *{l : t, l2 : t2} | - |
   |夫〇表〇亦夫〇表〇| +{l : t, l2 : t2} | - |
-|启〇以〇 | 启∀t. T以T2 = [T2/t]T | 355 |
+|〇启以〇 | ∀t. T启以T2 = [T2/t]T | 355 |
   |化〇而〇 | t1 -> t2 |  350 | 
    |复〇为〇 | ρt. T | 345 |
 |承〇而〇 | ∀t. T | 340 |
@@ -112,7 +112,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
    |卷〇| fold e| 660 |
    |舒〇| unfold e|  650 |
    |鉴〇而「曰〇则有〇而〇[或曰〇则有〇而〇]+」| case e of {l.x => e1 \| l2.y => e2} | 640 |
-   |授〇以〇| e [T] | 600 |
+   |〇授以〇| e [T] | 600 |
    |入〇合〇| pack t in e | 560 |
    |开〇则有〇者〇而〇| open e as t, x in e2 | 540 |
 |《《C调用》》名〇传〇 | ffi_c_call ... args ⟨e1,e2,e3⟩ | 530 |

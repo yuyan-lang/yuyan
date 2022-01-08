@@ -52,3 +52,25 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
     return resultList;
 
 }
+
+
+// get a list of utf8 code points from utf8 array
+yy_ptr yyStringConcat(yy_ptr str_list_addr) {
+    const length = iso_list_get_length(str_list_addr);
+    yy_ptr* strs = iso_list_get_elements( str_list_addr);
+
+    int totalLength = 0;
+
+    for (int i = 0; i < length; i ++){
+        totalLength += strlen(addr_to_string(strs[i]));
+    }
+
+    char * resultString = GC_MALLOC(totalLength + 1);
+    resultString[0] = '\0';
+
+    for (int i = 0; i < length; i ++){
+        strlcat(resultString, addr_to_string(strs[i]), totalLength+1);
+    }
+
+    return string_to_addr(resultString);
+}
