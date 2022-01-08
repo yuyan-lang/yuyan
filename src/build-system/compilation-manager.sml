@@ -202,8 +202,11 @@ a new module is added with root Path being the file's residing directory *)
                                                   in resolveName (y::xs) (importedModule) (resolutionStack) cm
                                                   end
                                     | _ => 
-                                    (DebugPrint.p ("Unresolved Ref "  ^ PrettyPrint.show_utf8strings sname)
-                                    ;raise UnresolvedReference sname))
+                                    (DebugPrint.p ("Unresolved Ref "  ^ StructureName.toStringPlain sname)
+                                    
+                                    (* TODO FIX THIS *)
+                                    (* raise UnresolvedReference sname *)
+                                    ;"<<ERR: UNRESOLVED REFERENCE>>"))
                       end
         end
                             

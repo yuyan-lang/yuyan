@@ -4,6 +4,7 @@ structure UTF8String = struct
     type t = utf8string
 
 
+    fun toString(s : utf8string) : string = UTF8.implode((map UTF8Char.asUTF8WChar s))
 
     fun semanticEqual(s1 : utf8string) (s2 : utf8string) = 
         case (s1, s2) of
@@ -26,14 +27,23 @@ structure UTF8String = struct
             | ([], _) => true
             | _ => false
 
+    (* returns true if s1 is a substring of s2 *)
     fun isSubstring(s1 : utf8string) (s2 : utf8string) = 
+    let 
+        (* val _ = DebugPrint.p ("isSubstring called on "^ toString s1 ^ " and " ^ toString s2 ^ "\n") *)
+        val res = 
         if List.length s1 > List.length s2 then false else
         case (s1, s2) of
-            (c1::s1tl, c2::s2tl) => if c1 ~= c2 andalso isSubstring s1tl s2tl
+             ([], _) => true
+            | (s1,  c2::s2tl) => if semanticEqual s1 (List.take(s2, length s1)) 
                                     then true
-                                    else isSubstring s2 s2tl
-            | ([], []) => true
+                                    else isSubstring s1 s2tl
             | _ => false
+        (* val _ = DebugPrint.p ("[finished] isSubstring called on "^ toString s1 ^ " and " ^ toString s2 ^ " result is " ^ Bool.toString res ^ "\n" ) *)
+    in
+
+        res
+    end
 
     fun isSuffix (s1 : utf8string) (s2 : utf8string) = 
         isPrefix (List.rev s1) (List.rev s2)
@@ -58,7 +68,6 @@ structure UTF8String = struct
         end
         ) (0,0,[]) (UTF8.explode(s)))
     end
-    fun toString(s : utf8string) : string = UTF8.implode((map UTF8Char.asUTF8WChar s))
 
     fun stripTail (s : utf8string) = List.take (s, List.length(s) -1)
     fun size(s : utf8string) : int = List.length s
@@ -66,10 +75,14 @@ structure UTF8String = struct
 
 
     fun fields ( f : UTF8Char.t -> bool) (s : utf8string) : utf8string list = 
-        #1 (foldl (fn (c, (res, pending)) => 
+        let val (res, pending) = 
+        (foldl (fn (c, (res, pending)) => 
             if f c  then ((res@[pending], []) 
             ) else (res, pending@[c])
         ) ([], []) s)
+        in 
+        res@[pending]
+        end
 
     fun tokens ( f : UTF8Char.t -> bool) (s : utf8string) : utf8string list = 
         List.filter (fn l => l <> []) (fields f s)

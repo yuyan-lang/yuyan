@@ -37,6 +37,7 @@ fun getIntRepresentationOfLLVMArrayType (t : llvmarraytype) = case t of
 fun convertValueToIntForStorage ( v : llvmvalue) (f : string -> string list) : string list = 
 let 
     val tempVarName = UID.next()
+    val tempVarName2 = UID.next()
     in
     case v of 
           LLVMLocalVar i =>  (* the local var is guaranteed to be a pointer *)
@@ -48,11 +49,14 @@ let
           ^ toFunctionName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
         | LLVMIntConst i => f (Int.toString i)
         | LLVMIntName i => 
-          [toLocalVar tempVarName ^ " = ptrtoint i64* " ^ 
-          toIntName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
+          [toLocalVar tempVarName ^ " = load i64, i64* " ^ 
+          toIntName i] @ (f (toLocalVar tempVarName))
         | LLVMRealName i => 
-          [toLocalVar tempVarName ^ " = ptrtoint double* " ^ 
-          toRealName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
+          [toLocalVar tempVarName ^ " = load double, double* " ^ 
+          toRealName i 
+          , toLocalVar tempVarName2 ^ " = bitcast double " ^ toLocalVar tempVarName
+          ^ " to i64 "
+          ] @ (f (toLocalVar tempVarName2))
     end
 
 fun storeIntToLocalVar (localVar : int)(intValue : int)  : string list= 

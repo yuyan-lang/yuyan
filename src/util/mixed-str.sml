@@ -129,7 +129,10 @@ struct
         then (* process as declaration *)
              UnparsedDeclaration (processDeclaration p)
         else if isPlainStr p
-            then (* name *) Name (unSChar p)
+            then  (if containsCharTopLevel p SpecialChars.leftAngledBracket
+                    orelse containsCharTopLevel p SpecialChars.rightAngledBracket
+                    then UnparsedExpression p 
+                    else (* name *) Name (unSChar p))
             else (* expression *) UnparsedExpression p 
             
 

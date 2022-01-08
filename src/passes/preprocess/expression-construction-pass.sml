@@ -248,7 +248,7 @@ please provide trivial functions *)
     and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.RExpr
     =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
                 (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody)
-           val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n")
+           (* val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n") *)
            val _ = notifyParseOpAST parseTree
     in elaborateOpASTtoExpr parseTree ctx end
         handle PrecedenceParser.NoPossibleParse s => 

@@ -57,7 +57,12 @@ structure NumberParser = struct
         else let val integralPart = parseInteger (List.nth(parts,0))
                  val decimalPart = parseInteger (List.nth(parts,1))
                  val finalValue = Real.fromInt integralPart + Math.pow((0.1), 
-                            Real.fromInt ((length (List.nth(parts,1))) * decimalPart))
+                            Real.fromInt ((length (List.nth(parts,1))))) * Real.fromInt decimalPart
+                val _ = DebugPrint.p 
+               ( " Integral part is " ^ Int.toString integralPart ^
+                 " decimal part is " ^ Int.toString decimalPart  ^ 
+                 " finalValue is " ^ Real.toString finalValue ^ "\n")
+
                 in NPReal finalValue end
         end
     else NPInt (parseInteger s)
