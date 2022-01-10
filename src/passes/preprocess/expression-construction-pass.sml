@@ -82,12 +82,16 @@ please provide trivial functions *)
         (
             (* print (PrettyPrint.show_opast ast); *)
         case ast of
-             UnknownOpName (s) => TypeVar [s]
+             UnknownOpName (s) => 
+             if UTF8String.semanticEqual s (UTF8String.fromString "《《字符串》》") then BuiltinType(BIString) else
+             if UTF8String.semanticEqual s (UTF8String.fromString "《《整数》》") then BuiltinType(BIInt) else
+             if UTF8String.semanticEqual s (UTF8String.fromString "《《小数》》") then BuiltinType(BIReal) else
+             TypeVar [s]
             | OpUnparsedExpr x => (parseType x ctx) 
             | OpAST(oper, []) => (
                 if oper ~=** unitTypeOp then UnitType
                 else if oper ~=** nullTypeOp then NullType
-                else if oper ~=** builtinTypeStringOp then BuiltinType(BIString)
+                (* else if oper ~=** builtinTypeStringOp then BuiltinType(BIString) *)
                 else raise InternalErrorECP
                         )
             | OpAST(oper, [a1,a2]) => (

@@ -367,7 +367,7 @@ case c of
             | CPSTuple(l, k) => "[" ^ String.concatWith ", " (map sv l) ^ "]" ^ sk k
             | CPSInj(l, i, kv, k) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ sv kv ^ sk k
             | CPSFold(v, k) => "fold (" ^ sv v ^ ")" ^ sk k
-            | CPSAbsSingle((i, c), fvs, k) => "(λ1" ^ Int.toString i ^ "." ^ sc c ^ ")"  ^ 
+            | CPSAbsSingle((i, c), fvs, k) => "(λS" ^ Int.toString i ^ "." ^ sc c ^ ")"  ^ 
             sfvs fvs ^ sk k
             | CPSAbs((i,ak, c),fvs,  k) => "(λ" ^ Int.toString i ^ ", "^ si ak ^ "." ^ sc c ^ ")" 
             ^ sfvs fvs^ sk k

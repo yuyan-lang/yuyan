@@ -4,6 +4,14 @@ char * addr_to_string(yy_ptr arg) {
     return (char *)arg[1];
 }
 
+
+int64_t addr_to_int(yy_ptr arg) {
+    return *((int64_t *)&arg[1]);
+}
+double  addr_to_double(yy_ptr arg) {
+    return *((double *)&arg[1]);
+}
+
 uint64_t getHeader(uint64_t type, uint64_t length) {
     uint64_t header =  type ;
     header= header<< (62 - 6);
@@ -13,22 +21,36 @@ uint64_t getHeader(uint64_t type, uint64_t length) {
     return header;
 }
 
+yy_ptr allocateAndSetHeader(uint64_t type, uint64_t length) {
+    yy_ptr returnStorage = allocateArray(length+1);
+    *returnStorage = getHeader(type, length);
+    return returnStorage; 
+}
+
 yy_ptr unit_to_addr(){
-    yy_ptr returnStorage = allocateArray(1);
-    *returnStorage = getHeader(5, 0);
-    return returnStorage;
+    return allocateAndSetHeader(5, 0);
 }
 
 yy_ptr string_to_addr(const char * str){
-    yy_ptr returnStorage = allocateArray(2);
-    *returnStorage =getHeader(6, 1) ;
+    yy_ptr returnStorage = allocateAndSetHeader(6, 1);
     returnStorage[1] = (uint64_t ) str;
     return returnStorage;
 }
+yy_ptr int_to_addr(int64_t i){
+    yy_ptr returnStorage = allocateAndSetHeader(7, 1);
+    returnStorage[1] = *(uint64_t *)&i;
+    return returnStorage;
+}
+
+yy_ptr double_to_addr(double i){
+    yy_ptr returnStorage = allocateAndSetHeader(8, 1);
+    returnStorage[1] = *(uint64_t *)&i;
+    return returnStorage;
+}
+
 
 yy_ptr injection_to_addr(uint64_t index, const char* label, yy_ptr elem){
-    yy_ptr returnStorage = allocateArray(4);
-    *returnStorage =getHeader(4, 3) ;
+    yy_ptr returnStorage = allocateAndSetHeader(4, 3);
     returnStorage[1] = index;
     returnStorage[2] = label;
     returnStorage[3] = elem;
@@ -42,16 +64,15 @@ const char* bool_true_label = "阳";
 /* bool is defined as 阴 ： 1 + 阳 ： 1 */
 yy_ptr bool_to_addr(bool b){
     if(!b){
-        return injection_to_addr(0, bool_false_label, unit_to_addr);
+        return injection_to_addr(0, bool_false_label, unit_to_addr());
     } else {
-        return injection_to_addr(1, bool_true_label, unit_to_addr);
+        return injection_to_addr(1, bool_true_label, unit_to_addr());
     }
 }
 
 yy_ptr tuple_to_addr(uint64_t length, const yy_ptr elems[]){
 
-    yy_ptr returnStorage = allocateArray(length+1);
-    *returnStorage = getHeader(3, length);
+    yy_ptr returnStorage = allocateAndSetHeader(3, length);
     for (int i = 0; i < length; i ++){
         returnStorage[i+1] = (uint64_t) elems[i];
     }
@@ -101,8 +122,7 @@ const char* iso_list_nil_label = "一";
 const char* iso_list_cons_label = "二";
 
 yy_ptr fold_to_addr(yy_ptr toFold) {
-    yy_ptr result = allocateArray(2);
-    *result = getHeader(2, 1);
+    yy_ptr result = allocateAndSetHeader(2, 1);
     result[1] = toFold;
     return result;
 }

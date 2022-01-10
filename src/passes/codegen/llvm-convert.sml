@@ -144,11 +144,22 @@ in
         | _ => raise Fail "not implemented yet"
 end
 
+fun removeFfiDuplicate(s : llvmdeclaration list) : llvmdeclaration list = 
+    case s of 
+        [] => []
+        | ((x as LLVMFfiFunction(name, nargs)) :: xs) => x :: removeFfiDuplicate (List.filter (fn y => 
+                case y of 
+                    LLVMFfiFunction(name2, _) => if UTF8String.semanticEqual name name2 then false else true
+                    | _ => true
+            ) xs)
+        | (y :: xs) => y :: removeFfiDuplicate xs
+
 fun genLLVMSignatureTopLevel (cpscomp : cpscomputation ) :(
     llvmsignature) = 
     let val entryFuncName =  UID.next()
         val (decls, entryBody) = genLLVM (entryFuncName, []) cpscomp
-    in (entryFuncName, [LLVMFunction(entryFuncName, [], entryBody)]@decls)
+        val removedDuplicateFfiDeclarations = removeFfiDuplicate decls
+    in (entryFuncName, [LLVMFunction(entryFuncName, [], entryBody)]@removedDuplicateFfiDeclarations)
     end
 
 end

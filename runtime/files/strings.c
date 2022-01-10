@@ -1,5 +1,5 @@
 
-#include "../globalInclude.h"
+#include "globalInclude.h"
 
 
 // returns if s1 is a substring of s2
@@ -10,6 +10,16 @@ yy_ptr yyIsSubstring(yy_ptr s1, yy_ptr s2) {
         return bool_to_addr(false);
     }
 }
+
+// returns if s1 is a substring of s2
+yy_ptr yyStringEq(yy_ptr s1, yy_ptr s2) {
+    if (strcmp(addr_to_string(s2), addr_to_string(s1)) ==0) {
+        return bool_to_addr(true);
+    } else {
+        return bool_to_addr(false);
+    }
+}
+
 
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
 size_t count_utf8_code_points(const char *s) {
@@ -54,8 +64,7 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 }
 
 
-// get a list of utf8 code points from utf8 array
-yy_ptr yyStringConcat(yy_ptr str_list_addr) {
+yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
     const length = iso_list_get_length(str_list_addr);
     yy_ptr* strs = iso_list_get_elements( str_list_addr);
 

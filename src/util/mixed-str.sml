@@ -155,10 +155,12 @@ struct
     fun scanSingleQuote( remaining : UTF8String.t) (sofar : mixedstr) 
          : (mixedstr * UTF8String.t) witherrsoption = case remaining of
         [] => raise UnmatchedParenthesis
-        | (x :: xs) => if  x ~= SpecialChars.rightSingleQuote
+        | (x :: xs) => if  x ~= SpecialChars.rightSingleQuote orelse
+                            x ~= SpecialChars.rightParenthesis
                         then Success(sofar, xs)
                         else
-                        if  x ~= SpecialChars.leftSingleQuote
+                        if  x ~= SpecialChars.leftSingleQuote orelse
+                            x ~= SpecialChars.leftParenthesis
                         then scanSingleQuote xs []  >>= (fn (inQuote, rest) =>
                                 scanSingleQuote rest (sofar@[processSingleQuoted inQuote])  
                             )
@@ -175,7 +177,8 @@ struct
     fun scanTopLevel( remaining : UTF8String.t)
          : mixedstr witherrsoption = case remaining of
         [] => Success([])
-        | (x :: xs) => if  x ~= SpecialChars.leftSingleQuote
+        | (x :: xs) => if  x ~= SpecialChars.leftSingleQuote orelse 
+                            x ~= SpecialChars.leftParenthesis
                         then scanSingleQuote xs []  >>= (fn (inQuote, rest) => 
                                 scanTopLevel rest >>= (fn cs  => 
                                     Success(processSingleQuoted inQuote :: cs)

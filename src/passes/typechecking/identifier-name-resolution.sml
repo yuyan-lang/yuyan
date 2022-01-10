@@ -110,13 +110,19 @@ struct
             | RFix (ev, e)=> 
                 getUnresolvedIdentifiersExpr e typectx ([ev]::termctx) currentSName 
             | RStringLiteral s => StructureNameSet.empty 
+            | RIntConstant s => StructureNameSet.empty 
+            | RRealConstant s => StructureNameSet.empty 
             | RFfiCCall (str, e2) => 
                 getUnresolvedIdentifiersExpr e2 typectx termctx currentSName 
-            | RLetIn(decls, e) => (case getUnresolvedIdentifiersSignature decls typectx termctx (currentSName@StructureName.localName()) of
+
+            | RLetIn(decls, e) => (
+                let val localName = StructureName.localName()
+                in case getUnresolvedIdentifiersSignature decls typectx termctx (currentSName@localName) of
             (* this is a trick, the newly added signature can almost never be referenced *)
             (freeSNames, newtypecontext, newtermcontext) =>
         freeSNames ***
-            getUnresolvedIdentifiersExpr e newtypecontext newtermcontext currentSName
+            getUnresolvedIdentifiersExpr e newtypecontext newtermcontext (currentSName@localName)
+            end
          )
         in res
         end 

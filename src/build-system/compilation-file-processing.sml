@@ -56,6 +56,7 @@ open CompilationFileOps
                         if StaticErrorStructure.isSuccess typecheckingast andalso not updatedContent
                         then ( typecheckingast, false)
                         else (constructTypeCheckingAST (#1 (StaticErrorStructure.valOf newContent)), true)
+                    (* val _ = DebugPrint.p "Computed TypeChecking\n" *)
                 in
                     if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)
                     then (if updatedTCkingInfo
@@ -77,6 +78,7 @@ open CompilationFileOps
                             then ( dependencyInfo, false)
                             else (findFileDependenciesTopLevel (#1 
                             (StaticErrorStructure.valOf newTypeCheckingInfo)) , true)
+                        (* val _ = DebugPrint.p "Computed Dependency\n" *)
                     in
                         if levelInt <= (levelToInt UpToLevelDependencyInfo)
                         then (if updatedDependencyInfo
@@ -98,6 +100,7 @@ open CompilationFileOps
                                 then ( typecheckedast, false)
                                 else (TypeCheckingEntry.typeCheckSignatureTopLevel 
                                     (#1 (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
+                            (* val _ = DebugPrint.p "Computed TypeCheck\n" *)
                         in 
                             if levelInt <= (levelToInt UpToLevelTypeCheckedInfo)
                             then (if updatedTypeCheckedInfo

@@ -74,7 +74,7 @@ struct
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
     val universalTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 340 [1]
     val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 320 [1]
-    val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 []
+    (* val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 [] *)
 
     val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
@@ -96,12 +96,12 @@ struct
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
     val typeLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 500 [1]
-    val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" true false 490 [1]
+    val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" true false 490 []
 
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
     val allTypeOps = [
-        builtinTypeStringOp,
+        (* builtinTypeStringOp, *)
         structureRefOp,
         unitTypeOp, nullTypeOp, labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
         typeInstantiationOp,
@@ -110,6 +110,7 @@ struct
         projExprOp, appExprOp, pairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 
         caseAlternativeOp, caseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
         ffiCCallOp,
-        lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp
+        lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp,
+        letinOp
     ]
 end

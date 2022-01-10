@@ -180,9 +180,12 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | RFfiCCall(e, e2) => RFfiCCall(substTypeInRExpr tS x e, 
                     substTypeInRExpr tS x e2
                 )
+            | RLetIn(decls, e) => 
+                RLetIn(substituteTypeInRSignature tS x decls, 
+                    substTypeInRExpr tS x e)
     end
 
-    fun substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
+    and substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
       case d of
          RTypeMacro (y, t) => if x ~~~= [y] then raise TypeCheckingFailure "Cannot have identical types" else 
             RTypeMacro (y, substTypeInType tS x t)
@@ -191,7 +194,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
         | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRExpr tS x e)
         | RDirectExpr(e) => RDirectExpr (substTypeInRExpr tS x e)
     
-    fun substituteTypeInRSignature (tS : Type) (x : StructureName.t) (s : RSignature) : RSignature = 
+    and substituteTypeInRSignature (tS : Type) (x : StructureName.t) (s : RSignature) : RSignature = 
         case s of
             [] => []
             | (d :: ds) => substituteTypeInRDeclaration tS x d :: 

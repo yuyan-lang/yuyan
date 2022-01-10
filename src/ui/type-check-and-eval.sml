@@ -54,7 +54,7 @@ struct
                 in executeTime end)
             else 
                 let 
-                val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n")
+                (* val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n") *)
                 val _ = CompilationManager.makeExecutable absFp cm
                 val executeTime = Time.now()
                 val _ = OS.Process.system "./.yybuild/yyexe"
@@ -79,6 +79,9 @@ struct
       |  ExpressionConstructionPass.ECPAmbiguousParse s=> (print "ecp parse failed\n"; print s)
       |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
       |  KMachineOps.InternalFailure s=> print ( "internal failure  (bug) \n\n" ^ s)
+      | DeclarationParser.DeclAmbiguousParse ls => print ("decl ambiguous parse " ^ String.concatWith "\n possible parse : " 
+            (map (fn (oper, args) => PrettyPrint.show_op oper ^ " args: " ^ PrettyPrint.show_mixedstrs args) ls))
+      (* | OS.Path.Path => DebugPrint.p ("Path exception") *)
 
     
 end

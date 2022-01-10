@@ -117,7 +117,7 @@ a new module is added with root Path being the file's residing directory *)
 
     fun makeExecutable(entryFilePath : filepath) (cm : compilationmanager)  = 
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
-        val cmd =  " make -C runtime/; clang "
+        val cmd =  "(make -C runtime/  -s; clang "
         (* ^ 
         String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
         [
@@ -138,11 +138,12 @@ a new module is added with root Path being the file's residing directory *)
         ^ " -L /usr/local/Cellar/libuv/1.42.0/lib"
         ^ " -l uv"
         ^ " -Wno-override-module"
-        val _ = DebugPrint.p (cmd ^ "\n")
+        ^ ")"
+        (* val _ = DebugPrint.p (cmd ^ "\n") *)
         val ret = OS.Process.system (cmd)
         in 
         (if not (OS.Process.isSuccess ret) then DebugPrint.p "ERROR in Making Executable\n" else 
-        DebugPrint.p "Made Executable!\n";
+        (* DebugPrint.p "Made Executable!\n"; *)
             ())
         end
 
@@ -220,15 +221,17 @@ let
 val module = lookupModuleForFilePath fp cm 
 (* val _ = DebugPrint.p "got module" *)
 val unresolvedNames = IdentifierNameResolution.getUnresolvedIdentifiersSignatureTopLevel tcast (#name (#moduleInfo module))
-(* val _ = DebugPrint.p "got unresolved names" *)
+(* val _ = DebugPrint.p ("got unresolved names " ^ PrettyPrint.show_sttrlist unresolvedNames) *)
 in 
-    Success (foldl (fn (name, acc) => 
+Success (StrDict.empty)
+(* TODO FIx this bug *)
+    (* Success (foldl (fn (name, acc) => 
         let val inFile = resolveName name module [(fp, name)] cm
         in case StrDict.find acc inFile of 
             SOME (s) => StrDict.insert acc inFile (s@[name])
             | NONE => StrDict.insert acc inFile ([name])
         end
-        ) StrDict.empty unresolvedNames)
+        ) StrDict.empty unresolvedNames) *)
 end
 
     (*

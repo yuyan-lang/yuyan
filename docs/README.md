@@ -100,7 +100,6 @@ The key words (that cannot appear as a name and has a special meaning no matter 
    |复〇为〇 | ρt. T | 345 |
 |承〇而〇 | ∀t. T | 340 |
 |有〇则〇 | ∃t. T | 320 |
-
 | ------------- |-------------|  ------ |
 |元| () | 720 | 
 |〇之〇| (struct S).e/t | 710 | 

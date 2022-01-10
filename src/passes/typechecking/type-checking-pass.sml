@@ -171,7 +171,7 @@ open TypeCheckingASTOps
             | RApp (e1, e2) => (case synthesizeType ctx e1
                 of (ce1, Func (t1, t2)) => 
                 (CApp (ce1,(checkType ctx e2 t1), Func(t1,t2)), t2)
-                | _ => raise TypeCheckingFailure "Application on nonfunction")
+                | (_, t) => raise TypeCheckingFailure ("Application on nonfunction, got " ^ PrettyPrint.show_typecheckingType t))
             | RTAbs (tv, e2) => let val (ce2, bodyType) =  synthesizeType ctx  e2
             in (CTAbs(tv, ce2, Forall (tv, bodyType)), Forall (tv, bodyType)) end
             | RTApp (e2, t) => (case synthesizeType ctx e2 of
@@ -267,7 +267,7 @@ open TypeCheckingASTOps
             | RLam(ev, eb) => (case tt of
                 Func(t1,t2) => 
                     CLam(ev, checkType (addToCtxA (TermTypeJ([ev], t1,())) ctx) eb t2, tt)
-                | _ => raise TypeCheckingFailure "Lambda is not function"
+                | _ => raise TypeCheckingFailure ("Lambda is not function got " ^ PrettyPrint.show_typecheckingType tt)
                 )
             | RLamWithType (t, ev, eb) => (case tt of
                 Func(t1,t2) => (asserTypeEquiv t t1;
@@ -322,7 +322,8 @@ open TypeCheckingASTOps
                 case e1 of
                     RStringLiteral cfuncName => 
                         let fun elaborateArguments  (args) = 
-                            CFfiCCall(cfuncName, args)
+                            CFfiCCall(cfuncName, 
+                            map (fn a => #1(lookup ctx a)) args)
                         in
                                     (case e2 of 
                                         RExprVar v => elaborateArguments [v]

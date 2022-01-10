@@ -70,14 +70,20 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
     char* stdOutOutput = (char * )stdOutPipe.data;
     char* stdErrOutput = (char * )stdErrPipe.data;
 
-    yy_ptr texts[] = {
+    int64_t child_exit_status = child_req.status;
+
+    yy_ptr results[] = {
+        bool_to_addr(child_exit_status==0),
         string_to_addr(stdOutOutput),
         string_to_addr(stdErrOutput)
     };
 
-    yy_ptr resultTexts = tuple_to_addr(2, texts);
 
-    return resultTexts;
+
+
+    yy_ptr resultTuple = tuple_to_addr(3, results);
+
+    return resultTuple;
 
     // return unit_to_addr();
 }

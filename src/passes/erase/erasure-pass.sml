@@ -121,7 +121,7 @@ type Signature = RSignature
         | RDirectExpr e :: ss=> let
             val (comp1) = (eraseSynExpr ctx (applyContextToExpr (eraseCtx ctx) e))
             val (followingComp ) = (eraseSigLazy kont ctx ss)
-            in  if ss = [] andalso not (Option.isSome (kont)) then comp1 else
+            in  if length ss = 0 andalso not (Option.isSome (kont)) then comp1 else
             (kseqSig comp1 (UID.next(), followingComp) )
             end
         | RStructure (vis, sName, decls) :: ss => 
