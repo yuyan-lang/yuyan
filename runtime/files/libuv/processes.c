@@ -74,8 +74,8 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 
     yy_ptr results[] = {
         bool_to_addr(child_exit_status==0),
-        string_to_addr(stdOutOutput),
-        string_to_addr(stdErrOutput)
+        string_to_addr(stdOutOutput == NULL ? "" : stdOutOutput),
+        string_to_addr(stdErrOutput == NULL ? "" : stdErrOutput)
     };
 
 

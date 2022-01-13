@@ -69,6 +69,7 @@ please provide trivial functions *)
     (notifyDeclarationParsingResult : PreprocessingAST.t -> 'c) 
     : (MixedStr.t list) -> TypeCheckingAST.RSignature =
     let 
+    val _ = DebugPrint.p "Entering config"
     fun elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): Label * Type = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 

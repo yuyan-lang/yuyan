@@ -115,6 +115,7 @@ struct
         [ SpecialChars.tab, SpecialChars.newline, SpecialChars.space]
 
     fun processDeclaration (p : mixedstr) : mixedstr list = 
+    if length p = 0 then [] else
     let 
     (* val _ = (print ("processDeclaration "^ toString p ^"\n")) *)
         val res = (separateBy SpecialChars.period (

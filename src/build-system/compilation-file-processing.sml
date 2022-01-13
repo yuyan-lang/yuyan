@@ -2,6 +2,9 @@
 structure CompilationFileProcessing =
 struct
 
+
+val DEBUG = true
+
 open CompilationFileOps
     fun levelToInt (upToLevel : uptolevel) : int = 
     case upToLevel of
@@ -35,6 +38,7 @@ open CompilationFileOps
             let val (newContent, updatedContent) = (case content of 
                         Success c => (Success c, false)
                         | NotAvailable => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true))
+                val _ = if DEBUG then DebugPrint.p "Updated Content" else ()
             in 
                 if levelInt <= (levelToInt UpToLevelContent) 
                         orelse not (StaticErrorStructure.isSuccess newContent)
@@ -56,7 +60,7 @@ open CompilationFileOps
                         if StaticErrorStructure.isSuccess typecheckingast andalso not updatedContent
                         then ( typecheckingast, false)
                         else (constructTypeCheckingAST (#1 (StaticErrorStructure.valOf newContent)), true)
-                    (* val _ = DebugPrint.p "Computed TypeChecking\n" *)
+                    val _ = if DEBUG then DebugPrint.p "Computed TypeChecking\n" else ()
                 in
                     if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)
                     then (if updatedTCkingInfo
@@ -78,7 +82,7 @@ open CompilationFileOps
                             then ( dependencyInfo, false)
                             else (findFileDependenciesTopLevel (#1 
                             (StaticErrorStructure.valOf newTypeCheckingInfo)) , true)
-                        (* val _ = DebugPrint.p "Computed Dependency\n" *)
+                        val _ = if DEBUG then DebugPrint.p "Computed Dependency\n" else ()
                     in
                         if levelInt <= (levelToInt UpToLevelDependencyInfo)
                         then (if updatedDependencyInfo
@@ -100,7 +104,7 @@ open CompilationFileOps
                                 then ( typecheckedast, false)
                                 else (TypeCheckingEntry.typeCheckSignatureTopLevel 
                                     (#1 (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
-                            (* val _ = DebugPrint.p "Computed TypeCheck\n" *)
+                            val _ = if DEBUG then DebugPrint.p "Computed TypeCheck\n" else ()
                         in 
                             if levelInt <= (levelToInt UpToLevelTypeCheckedInfo)
                             then (if updatedTypeCheckedInfo
