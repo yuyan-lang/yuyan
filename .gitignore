@@ -19,3 +19,5 @@ debug*
 .yybuild
 .vscode/c*.json
 runtime/lib*.a
+
+*.icloud
