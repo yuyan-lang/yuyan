@@ -99,6 +99,14 @@ open StaticErrorStructure
         end
 
 
+    fun getFileDiagnostics(CompilationFile file : compilationfile) : errlist option = 
+        case #content file of DErrors l => SOME l
+        | _ => case #typeCheckingInfo file of DErrors l => SOME l
+        | _ => case #dependencyInfo file of DErrors l => SOME l
+        | _ => case #typeCheckedInfo file of DErrors l => SOME l
+        | _ => case #cpsInfo file of DErrors l => SOME l
+        | _ => case #llvmInfo file of DErrors l => SOME l
+        | _ => NONE
     
     
 end

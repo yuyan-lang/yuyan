@@ -38,10 +38,11 @@ open CompilationFileOps
             let val (newContent, updatedContent) = (case content of 
                         Success c => (Success c, false)
                         | NotAvailable => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true))
-                val _ = if DEBUG then DebugPrint.p "Updated Content" else ()
+                val _ = if DEBUG then DebugPrint.p 
+                ("cfp: Updated Content success: " ^ Bool.toString (StaticErrorStructure.isSuccess newContent)^ "\n") else ()
             in 
                 if levelInt <= (levelToInt UpToLevelContent) 
-                        orelse not (StaticErrorStructure.isSuccess newContent)
+                        orelse StaticErrorStructure.isNotSuccess newContent
                         (* if content has error, early return *)
                 then (if updatedContent
                       then CompilationFile {
@@ -60,11 +61,12 @@ open CompilationFileOps
                         if StaticErrorStructure.isSuccess typecheckingast andalso not updatedContent
                         then ( typecheckingast, false)
                         else (constructTypeCheckingAST (#1 (StaticErrorStructure.valOf newContent)), true)
-                    val _ = if DEBUG then DebugPrint.p "Computed TypeChecking\n" else ()
+                    val _ = if DEBUG then DebugPrint.p 
+                    ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ "\n") else ()
                 in
                     if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)
-                    then (if updatedTCkingInfo
                         orelse StaticErrorStructure.isNotSuccess newTypeCheckingInfo
+                    then (if updatedTCkingInfo
                           then CompilationFile {
                                     fp=fp
                                 , content=newContent
@@ -85,8 +87,8 @@ open CompilationFileOps
                         val _ = if DEBUG then DebugPrint.p "Computed Dependency\n" else ()
                     in
                         if levelInt <= (levelToInt UpToLevelDependencyInfo)
+                            orelse StaticErrorStructure.isNotSuccess newDependencyInfo
                         then (if updatedDependencyInfo
-                        orelse StaticErrorStructure.isNotSuccess newDependencyInfo
                             then CompilationFile {
                                         fp=fp
                                     , content=newContent
@@ -107,8 +109,8 @@ open CompilationFileOps
                             val _ = if DEBUG then DebugPrint.p "Computed TypeCheck\n" else ()
                         in 
                             if levelInt <= (levelToInt UpToLevelTypeCheckedInfo)
-                            then (if updatedTypeCheckedInfo
                                     orelse StaticErrorStructure.isNotSuccess newTypeCheckedInfo
+                            then (if updatedTypeCheckedInfo
                                 then CompilationFile {
                                             fp=fp
                                         , content=newContent

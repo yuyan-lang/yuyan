@@ -115,36 +115,42 @@ a new module is added with root Path being the file's residing directory *)
     fun updateContentForFilepath (filepath : filepath) (content : string) (cm : compilationmanager) : unit = 
         performFileUpdate filepath (CompilationFileOps.updateFileContent content) cm
 
-    fun makeExecutable(entryFilePath : filepath) (cm : compilationmanager)  = 
+
+    fun makeExecutable(entryFilePath : filepath) (cm : compilationmanager) : unit witherrsoption  = 
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
-        val cmd =  "(make -C runtime/  -s; clang "
-        (* ^ 
-        String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
-        [
-            "allocation.c", "entry.c", "exception.c", 
-        "io.c", "marshall.c", 
-        "libuv/filesystem.c", "libuv/processes.c"
-        ]) *)
-        
-         ^ (#pwd cm)^ "/runtime/libyyrt.a"
-         ^
-        " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
-        ^ " -save-temps=obj -g -o "  ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
-        ^ " -I /usr/local/include"
-        ^ " -I /usr/local/Cellar/bdw-gc/8.0.6/include"
-        ^ " -L /usr/local/Cellar/bdw-gc/8.0.6/lib"
-        ^ " -l gc"
-        ^ " -I /usr/local/Cellar/libuv/1.42.0/include"
-        ^ " -L /usr/local/Cellar/libuv/1.42.0/lib"
-        ^ " -l uv"
-        ^ " -Wno-override-module"
-        ^ ")"
-        val _ = DebugPrint.p (cmd ^ "\n")
-        val ret = OS.Process.system (cmd)
-        in 
-        (if not (OS.Process.isSuccess ret) then DebugPrint.p "ERROR in Making Executable\n" else 
-        DebugPrint.p "Made Executable!\n";
-            ())
+        in case CompilationFileOps.getFileDiagnostics (CompilationStructure.CompilationFile cfile) of 
+        SOME errs => DErrors errs
+        | NONE =>
+            let 
+            val cmd =  "(make -C runtime/  -s; clang "
+            (* ^ 
+            String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
+            [
+                "allocation.c", "entry.c", "exception.c", 
+            "io.c", "marshall.c", 
+            "libuv/filesystem.c", "libuv/processes.c"
+            ]) *)
+            
+            ^ (#pwd cm)^ "/runtime/libyyrt.a"
+            ^
+            " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
+            ^ " -save-temps=obj -g -o "  ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
+            ^ " -I /usr/local/include"
+            ^ " -I /usr/local/Cellar/bdw-gc/8.0.6/include"
+            ^ " -L /usr/local/Cellar/bdw-gc/8.0.6/lib"
+            ^ " -l gc"
+            ^ " -I /usr/local/Cellar/libuv/1.42.0/include"
+            ^ " -L /usr/local/Cellar/libuv/1.42.0/lib"
+            ^ " -l uv"
+            ^ " -Wno-override-module"
+            ^ ")"
+            val _ = DebugPrint.p (cmd ^ "\n")
+            val ret = OS.Process.system (cmd)
+            in 
+            (if not (OS.Process.isSuccess ret) then DebugPrint.p "ERROR in Making Executable\n" else 
+            DebugPrint.p "Made Executable!\n";
+                Success ())
+            end
         end
 
     fun listAllFilesInModule (m : compilationmodule) : filepath list =

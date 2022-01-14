@@ -53,7 +53,7 @@ int informResultRec (FILE *file, yy_ptr result, int prevPred) {
         fprintf(file,"』");
         break;
     case 7:
-        fprintf(file,"%d", addr_to_int(result));
+        fprintf(file,"%lld", addr_to_int(result));
         break;
     case 8:
         fprintf(file,"%f", addr_to_double(result));

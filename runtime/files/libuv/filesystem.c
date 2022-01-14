@@ -59,7 +59,7 @@ char * dname = addr_to_string(dirname);
     int nread=0;
 
     while(uv_fs_scandir_next(&scan_req, &dirs) != UV_EOF){
-        char * name = dirs.name;
+        const char * name = dirs.name;
         entries[nread] = string_to_addr(name);
         nread++;
     }

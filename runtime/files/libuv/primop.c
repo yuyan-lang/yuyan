@@ -18,9 +18,9 @@ yy_ptr yyIntSub(yy_ptr i1, yy_ptr i2){
 yy_ptr yyIntToString(yy_ptr i1){
 
     int64_t num = addr_to_int(i1);
-    int64_t bufSize = snprintf( NULL, 0, "%d", num ) + 1;
+    int64_t bufSize = snprintf( NULL, 0, "%lld", num ) + 1;
     char *strBuffer = GC_MALLOC(bufSize);
-    snprintf(strBuffer, bufSize, "%d", num);
+    snprintf(strBuffer, bufSize, "%lld", num);
     return string_to_addr(strBuffer);
 }
 

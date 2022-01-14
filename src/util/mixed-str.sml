@@ -19,9 +19,8 @@ struct
 
     val >>= = StaticErrorStructure.>>=
     infix 5 >>=
+    
 
-    exception UnmatchedParenthesis
-    exception UnmatchedStringLiteral
 
     fun toUTF8StringChar(u : mixedchar) : UTF8String.t = 
     let 
@@ -42,6 +41,11 @@ struct
 
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
     fun toString(u : mixedstr) : string = UTF8String.toString (toUTF8String u)
+
+    fun  unmatchedParenthesisError(startChar : UTF8Char.t ) (scannedSoFar : mixedstr ) : 'a witherrsoption = 
+        genSingletonError(startChar:: toUTF8String scannedSoFar) "未关闭的左括号"
+    fun  unmatchedStringLiteralError(startChar : UTF8Char.t ) (scannedSoFar : UTF8String.t ) : 'a witherrsoption = 
+        genSingletonError((startChar::scannedSoFar)) "未关闭的字符串引号"
 
     exception StringNotPlain of mixedstr
     fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
@@ -138,41 +142,41 @@ struct
             
 
     (* string escape two endDoubleQuote to escape double quote, else no escape *)
-    fun scanLiteral(remaining : UTF8String.t)(sofar : UTF8String.t) : (UTF8String.t * UTF8String.t) witherrsoption
+    fun scanLiteral(startChar : UTF8Char.t)(remaining : UTF8String.t)(sofar : UTF8String.t) : (UTF8String.t * UTF8String.t) witherrsoption
      = case (
          (* print (UTF8String.toString remaining^"\n"); *)
       remaining) of
-        [] => raise UnmatchedStringLiteral
+        [] => unmatchedStringLiteralError startChar sofar
         | [x] => if x ~= SpecialChars.rightDoubleQuote
                  then Success(sofar, [])
-                 else raise UnmatchedStringLiteral
+                 else unmatchedStringLiteralError startChar (sofar @[x])
         | (x::y::xs) => if  x ~= SpecialChars.rightDoubleQuote 
                         andalso  y ~= SpecialChars.rightDoubleQuote
-                 then scanLiteral xs (sofar @[x]) (*escape*)
+                 then scanLiteral startChar xs (sofar @[x]) (*escape*)
                  else if  x ~= SpecialChars.rightDoubleQuote
                       then Success(sofar, y::xs)
-                      else scanLiteral (y::xs) (sofar @[x])
+                      else scanLiteral startChar (y::xs) (sofar @[x])
 
-    fun scanSingleQuote( remaining : UTF8String.t) (sofar : mixedstr) 
+    fun scanSingleQuote(startChar : UTF8Char.t) ( remaining : UTF8String.t) (sofar : mixedstr) 
          : (mixedstr * UTF8String.t) witherrsoption = case remaining of
-        [] => raise UnmatchedParenthesis
+        [] => unmatchedParenthesisError startChar sofar
         | (x :: xs) => if  x ~= SpecialChars.rightSingleQuote orelse
                             x ~= SpecialChars.rightParenthesis
                         then Success(sofar, xs)
                         else
                         if  x ~= SpecialChars.leftSingleQuote orelse
                             x ~= SpecialChars.leftParenthesis
-                        then scanSingleQuote xs []  >>= (fn (inQuote, rest) =>
-                                scanSingleQuote rest (sofar@[processSingleQuoted inQuote])  
+                        then scanSingleQuote startChar xs []  >>= (fn (inQuote, rest) =>
+                                scanSingleQuote startChar rest (sofar@[processSingleQuoted inQuote])  
                             )
                         else
                         if  x ~= SpecialChars.leftDoubleQuote
-                        then scanLiteral xs []  >>= (fn (inQuote, rest) => 
-                                scanSingleQuote rest (sofar@[Literal inQuote])  
+                        then scanLiteral x xs []  >>= (fn (inQuote, rest) => 
+                                scanSingleQuote startChar rest (sofar@[Literal inQuote])  
                              )
                         else
-                        if shouldSkip x then scanSingleQuote xs (sofar)
-                        else scanSingleQuote xs (sofar@[SChar x]) 
+                        if shouldSkip x then scanSingleQuote startChar xs (sofar)
+                        else scanSingleQuote startChar xs (sofar@[SChar x]) 
         
 
     fun scanTopLevel( remaining : UTF8String.t)
@@ -180,14 +184,14 @@ struct
         [] => Success([])
         | (x :: xs) => if  x ~= SpecialChars.leftSingleQuote orelse 
                             x ~= SpecialChars.leftParenthesis
-                        then scanSingleQuote xs []  >>= (fn (inQuote, rest) => 
+                        then scanSingleQuote x xs []  >>= (fn (inQuote, rest) => 
                                 scanTopLevel rest >>= (fn cs  => 
                                     Success(processSingleQuoted inQuote :: cs)
                                 )
                             )
                         else
                         if  x ~= SpecialChars.leftDoubleQuote
-                        then  scanLiteral xs []  >>= 
+                        then  scanLiteral x xs []  >>= 
                             (fn (inQuote, rest) => 
                                 scanTopLevel rest >>= (fn cs => 
                                     Success (Literal inQuote :: cs)
@@ -202,4 +206,5 @@ struct
     fun makeDecl(u : UTF8String.t) : mixedstr list witherrsoption =  fmap processDeclaration (make u)
     
       
+
 end

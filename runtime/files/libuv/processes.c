@@ -102,7 +102,7 @@ yy_ptr yyRunProcessSync(yy_ptr program, yy_ptr arguments)
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
-        args[i+1] = string_to_addr(argumentArray[i]);
+        args[i+1] = addr_to_string((argumentArray[i]));
     }
     args[argumentCount+1]= NULL;
 

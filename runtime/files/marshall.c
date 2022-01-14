@@ -4,6 +4,13 @@ char * addr_to_string(yy_ptr arg) {
     return (char *)arg[1];
 }
 
+// type conversion function
+yy_ptr data_to_addr(uint64_t elem){
+    return (yy_ptr)elem;
+}
+uint64_t addr_to_data(yy_ptr ptr){
+    return (uint64_t)ptr;
+}
 
 int64_t addr_to_int(yy_ptr arg) {
     return *((int64_t *)&arg[1]);
@@ -52,8 +59,8 @@ yy_ptr double_to_addr(double i){
 yy_ptr injection_to_addr(uint64_t index, const char* label, yy_ptr elem){
     yy_ptr returnStorage = allocateAndSetHeader(4, 3);
     returnStorage[1] = index;
-    returnStorage[2] = label;
-    returnStorage[3] = elem;
+    returnStorage[2] = addr_to_data((yy_ptr)label);
+    returnStorage[3] = addr_to_data(elem);
     return returnStorage;
 }
 
@@ -88,8 +95,8 @@ uint64_t iso_list_length_rec(const yy_ptr list, uint64_t acc) {
     if (labelIndex == 0) {
         return acc;
     } else {
-        yy_ptr underSum = unfolded[3];
-        yy_ptr underProd = underSum[2];
+        yy_ptr underSum = data_to_addr(unfolded[3]);
+        yy_ptr underProd = data_to_addr(underSum[2]);
         return iso_list_length_rec(underProd, acc+1);
     }
 }
@@ -103,16 +110,16 @@ uint64_t iso_list_get_length(const yy_ptr list) {
 yy_ptr* iso_list_get_elements(const yy_ptr list) {
     uint64_t size = iso_list_get_length(list);
 
-    yy_ptr* result = allocateArray(size);
+    yy_ptr* result = (yy_ptr*)allocateArray(size);
 
     uint64_t curIndex = 0;
     yy_ptr curListUnfolded = (yy_ptr)list[1];
 
     while(curIndex < size) {
-        yy_ptr underSum = curListUnfolded[3];
-        result[curIndex] = underSum[1];
-        yy_ptr remainingListFolded = underSum[2];
-        curListUnfolded = remainingListFolded[1];
+        yy_ptr underSum = data_to_addr(curListUnfolded[3]);
+        result[curIndex] = data_to_addr(underSum[1]);
+        yy_ptr remainingListFolded = data_to_addr(underSum[2]);
+        curListUnfolded = data_to_addr(remainingListFolded[1]);
         curIndex += 1;
     }
     return result;
@@ -123,7 +130,7 @@ const char* iso_list_cons_label = "二";
 
 yy_ptr fold_to_addr(yy_ptr toFold) {
     yy_ptr result = allocateAndSetHeader(2, 1);
-    result[1] = toFold;
+    result[1] = addr_to_data(toFold);
     return result;
 }
 

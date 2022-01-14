@@ -34,12 +34,12 @@ size_t count_utf8_code_points(const char *s) {
 yy_ptr yyGetCodePoints(yy_ptr str_addr) {
     const char* start = addr_to_string(str_addr);
 
-    char * end = start;
+    const char * end = start;
     while(*end){
         end+=1;
     }
 
-    char* prevEnd = end;
+    const char* prevEnd = end;
 
 
     yy_ptr resultList = iso_list_nil_to_addr();
@@ -47,7 +47,7 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 
     while(end != start) {
         end --;
-        if (*end  & 0xC0 == 0x80) {
+        if ((*end  &  0xC0) == 0x80) {
             continue;
         }
         // extract current character
@@ -65,7 +65,7 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 
 
 yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
-    const length = iso_list_get_length(str_list_addr);
+    const int length = iso_list_get_length(str_list_addr);
     yy_ptr* strs = iso_list_get_elements( str_list_addr);
 
     int totalLength = 0;

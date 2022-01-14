@@ -39,4 +39,8 @@ struct
             | DErrors l => DErrors l
             | NotAvailable  => NotAvailable
     fun >>= (x, f) = next x f
+
+
+    fun genSingletonError(loc: UTF8String.t ) ( msg : string ) : 'a witherrsoption =
+        DErrors [ StaticError(loc, DiagnosticError, msg) ]
 end
