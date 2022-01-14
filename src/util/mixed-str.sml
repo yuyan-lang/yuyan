@@ -51,7 +51,7 @@ struct
     fun  unmatchedParenthesisError(startChar : UTF8Char.t ) (scannedSoFar : mixedstr ) : 'a witherrsoption = 
         genSingletonError(startChar:: toUTF8String scannedSoFar) "未关闭的左括号"
     fun  unmatchedStringLiteralError(startChar : UTF8Char.t ) (scannedSoFar : UTF8String.t ) : 'a witherrsoption = 
-        genSingletonError((startChar::scannedSoFar)) "未关闭的字符串引号"
+        genSingletonError((startChar::scannedSoFar)) "未关闭的左字符串引号"
 
     exception StringNotPlain of mixedstr
     fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
