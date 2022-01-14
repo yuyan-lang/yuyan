@@ -5,10 +5,11 @@ struct
     open Operators
     open PreprocessingOperators
     open OpAST
-    
+
+    open StaticErrorStructure
+    infix 5 >>=
+
   structure PrecParser = MixFixParser
-    exception ECPNoPossibleParse of string
-    exception ECPAmbiguousParse of string
     exception ElaborateFailure of string
     exception InternalErrorECP
 
@@ -67,10 +68,21 @@ please provide trivial functions *)
     (notifyParseOpAST : OpAST.t -> 'a) 
     (notifyDeclarationParserResult : (operator * MixedStr.t list) -> 'b) 
     (notifyDeclarationParsingResult : PreprocessingAST.t -> 'c) 
-    : (MixedStr.t list) -> TypeCheckingAST.RSignature =
+    : (MixedStr.t list) -> TypeCheckingAST.RSignature witherrsoption =
     let 
     val _ = DebugPrint.p "Entering config"
-    fun elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): Label * Type = 
+
+    val noPossibleParseErrInfo = "不能够理解（parse）输入"
+    fun ambiguousParse (x : ParseAST.ParseOpAST list) = "输入有多于一种理解方式：\n" ^
+     String.concatWith "\n" (map (fn x => "可以这样理解：" ^ PrettyPrint.show_parseopast x ) l)
+
+
+        (* handle PrecedenceParser.NoPossibleParse s =>  *)
+            (* raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.") *)
+        (* | PrecedenceParser.AmbiguousParse s =>  *)
+            (* raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.") *)
+    
+    and elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): Label * Type = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 
             oper ~=** labeledTypeCompOp 
@@ -79,15 +91,15 @@ please provide trivial functions *)
         | _ => raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
 
     and elaborateOpASTtoType 
-         (ast : OpAST.OpAST) (ctx : contextType) : TypeCheckingAST.Type = 
+         (ast : OpAST.OpAST) (ctx : contextType) : TypeCheckingAST.Type witherrsoption = 
         (
             (* print (PrettyPrint.show_opast ast); *)
         case ast of
              UnknownOpName (s) => 
-             if UTF8String.semanticEqual s (UTF8String.fromString "《《字符串》》") then BuiltinType(BIString) else
-             if UTF8String.semanticEqual s (UTF8String.fromString "《《整数》》") then BuiltinType(BIInt) else
-             if UTF8String.semanticEqual s (UTF8String.fromString "《《小数》》") then BuiltinType(BIReal) else
-             TypeVar [s]
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《字符串》》") then BuiltinType(BIString) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《整数》》") then BuiltinType(BIInt) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《小数》》") then BuiltinType(BIReal) else
+                TypeVar [s]
             | OpUnparsedExpr x => (parseType x ctx) 
             | OpAST(oper, []) => (
                 if oper ~=** unitTypeOp then UnitType
@@ -247,25 +259,7 @@ please provide trivial functions *)
    *)
 
 
-    and parseType (tbody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.Type = 
-    let val parseTree = (PrecedenceParser.parseMixfixExpression allTypeOps tbody)
-        val _ = notifyParseOpAST parseTree
-        in elaborateOpASTtoType  parseTree ctx end
-        handle PrecedenceParser.NoPossibleParse s => 
-            raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
-        | PrecedenceParser.AmbiguousParse s => 
-            raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.")
-    and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.RExpr
-    =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
-                (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody)
-           (* val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n") *)
-           val _ = notifyParseOpAST parseTree
-    in elaborateOpASTtoExpr parseTree ctx end
-        handle PrecedenceParser.NoPossibleParse s => 
-            raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.")
-        | PrecedenceParser.AmbiguousParse s => 
-            raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.")
-    
+  
     and parsePOperator (POpDeclaration(opName, assoc, pred)) =let 
                     val oper = Operators.parseOperator 
                             opName (assoc <> Operators.NoneAssoc) (assoc = Operators.LeftAssoc) pred []
@@ -384,6 +378,30 @@ please provide trivial functions *)
             "\n when parsing declaration " ^ MixedStr.toString s)
     )
 
+    and parseType (tbody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.Type witherrsoption = 
+    let val parseTree = (PrecedenceParser.parseMixfixExpression allTypeOps tbody)
+        val _ = notifyParseOpAST parseTree
+        in Success (elaborateOpASTtoType parseTree ctx) end
+        handle PrecedenceParser.NoPossibleParse s => 
+        StaticErrorStructure.genSingletonError (MixedStr.toUTF8String tbody)
+            (PrecedenceParser.showParseExceptionInfo s (noPossibleParseErrInfo)) 
+        | PrecedenceParser.AmbiguousParse (alts, s) => 
+            StaticErrorStructure.genSingletonError (MixedStr.toUTF8String tbody)
+                (PrecedenceParser.showParseExceptionInfo s (ambiguousParse alts))
+
+    and parseExpr (ebody : MixedStr.t)(ctx : contextType) : TypeCheckingAST.RExpr witherrsoption
+    =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
+                (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody)
+           (* val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n") *)
+           val _ = notifyParseOpAST parseTree
+    in Success(elaborateOpASTtoExpr parseTree ctx) end
+        handle PrecedenceParser.NoPossibleParse s => 
+        StaticErrorStructure.genSingletonError (MixedStr.toUTF8String ebody)
+            (PrecedenceParser.showParseExceptionInfo s (noPossibleParseErrInfo)) 
+        | PrecedenceParser.AmbiguousParse (alts, s) => 
+            StaticErrorStructure.genSingletonError (MixedStr.toUTF8String ebody)
+                (PrecedenceParser.showParseExceptionInfo s (ambiguousParse alts))
+
     and preprocessAST (s : MixedStr.t list) : PreprocessingAST.t = 
     (
         (* print ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n"); *)
@@ -394,7 +412,7 @@ please provide trivial functions *)
     )
 
     in 
-    fn s => constructTypeCheckingASTTopLevel (preprocessAST s)
+    fn s => Success(constructTypeCheckingASTTopLevel (preprocessAST s))
     end
         
 end

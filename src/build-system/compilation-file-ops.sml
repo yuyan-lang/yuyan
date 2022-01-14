@@ -68,7 +68,7 @@ open StaticErrorStructure
                     (!tokensInfo) 
             (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
             in 
-                Success (typeCheckingAST, sortedTokens)
+                typeCheckingAST >>= (fn t => Success (t, sortedTokens))
             end
         )
         end

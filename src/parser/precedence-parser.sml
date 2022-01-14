@@ -178,8 +178,24 @@ structure PrecedenceParser  = struct
             [SpecialChars.leftSingleQuote, SpecialChars.rightSingleQuote]
         else UTF8CharSet.empty (* do not put quote as escape when we do not parse quotes *)
 
-    exception NoPossibleParse of string
-    exception AmbiguousParse of string
+    type parseExceptionInfo = {
+            str : MixedStr.t,
+            allUnkownIds : UTF8String.t list,
+            allRelevantOps : Operators.operator list,
+            allOps : Operators.operator list
+        }
+
+    fun showParseExceptionInfo (x : parseExceptionInfo)(errStringInTheMiddle : string) : string = 
+        "在理解（parse）" ^  MixedStr.toString (#str x) ^ "时出现问题：\n"
+        ^ errStringInTheMiddle
+        ^ "调试信息：\n"
+        ^ "所有可能的名称(all unknown ids)：" ^ String.concatWith "，" (map UTF8String.toString (#allUnkownIds x))
+        ^ "所有相关的操作符(all relevant ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allRelevantOps x))
+        ^ "所有（包括不相关的）操作符(all ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allOps x))
+
+    exception NoPossibleParse of 
+        (* debug message *)  parseExceptionInfo
+    exception AmbiguousParse of ParseOpAST list * parseExceptionInfo
 
         fun parseExpWithOption (allOps :Operators.allOperators) : MixedStr.t -> (ParseOpAST* (MixedStr.t))  =  fn exp =>
         let 
@@ -557,19 +573,27 @@ structure PrecedenceParser  = struct
             sequence (combineAST ExpWithEOF) [
                 parseExp(), eof()
             ]
+
+            val parseExceptionInfo = {
+                str = exp,
+                allUnkownIds = allUnkownIds,
+                allRelevantOps= relevantOps,
+                allOps = allOps
+            }
         in 
         if DEBUG 
         then (print ("STARTING \n"))
         else ();
-        ((case parseExpWithEOF()(exp) of
-            [] => raise NoPossibleParse (MixedStr.toString exp )
+        (case parseExpWithEOF()(exp) of
+            [] => raise NoPossibleParse parseExceptionInfo
             | [l] => l
-            | l => raise AmbiguousParse ("Ambiguous Parse, possibilities : (total "^ Int.toString (length l) ^ ") \n" ^
+            | l => raise AmbiguousParse ((map (fn(x,r) => x) l), parseExceptionInfo)
+            (* ("Ambiguous Parse, possibilities : (total "^ Int.toString (length l) ^ ") \n" ^
             String.concatWith "\n" (map (fn (x,y) => PrettyPrint.show_parseopast x ) l)))
-            handle NoPossibleParse s => raise NoPossibleParse (s ^ "\n when parsing " ^ MixedStr.toString exp
-            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps)
+            handle NoPossibleParse s => raise NoPossibleParse ((s ^ "\n when parsing " ^ MixedStr.toString exp
+            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps),)
             | AmbiguousParse s => raise AmbiguousParse (s ^ "\n when parsing " ^ MixedStr.toString exp
-            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps)
+            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps) *)
             
             )
         end

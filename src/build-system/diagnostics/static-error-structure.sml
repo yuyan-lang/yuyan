@@ -40,6 +40,35 @@ struct
             | NotAvailable  => NotAvailable
     fun >>= (x, f) = next x f
 
+    fun collectAlternatives (x : 'a witherrsoption list)  : 'a list witherrsoption = 
+        let fun collectAlternativesRec (x : 'a witherrsoption list)  : 'a list = 
+            case x of
+                [] => []
+                | (Success y :: xs) => y :: collectAlternativesRec xs
+                | (DErrors l :: xs) => collectAlternativesRec xs
+                | (NotAvailable :: xs) => collectAlternativesRec xs
+        in 
+            Success (collectAlternativesRec x)
+        end
+
+    fun collectAll (x : 'a witherrsoption list)  : 'a list witherrsoption = 
+        let val res = 
+            case x of
+                [] => Success []
+                | (Success y :: xs) => (case collectAll xs of 
+                        Success ys => Success (y :: ys)
+                        | DErrors l => DErrors l
+                        | NotAvailable => NotAvailable
+                        )
+                | (DErrors l :: xs) => (case collectAll xs of 
+                        Success ys => DErrors l
+                        | DErrors l' => DErrors (l@l')
+                        | NotAvailable => NotAvailable
+                        )
+                | (NotAvailable :: xs) => NotAvailable
+        in 
+            res
+        end
 
     fun genSingletonError(loc: UTF8String.t ) ( msg : string ) : 'a witherrsoption =
         DErrors [ StaticError(loc, DiagnosticError, msg) ]
