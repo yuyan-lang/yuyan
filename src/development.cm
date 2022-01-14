@@ -92,6 +92,7 @@ Library
   structure PathUtil
 
   structure StaticErrorStructure
+  structure PrintDiagnostics
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -180,5 +181,7 @@ is
   build-system/compilation-structure.sml
   build-system/file-dependency-resolution.sml
   build-system/diagnostics/static-error-structure.sml
+  build-system/diagnostics/print-diagnostics.sml
+
 
 

@@ -31,4 +31,6 @@ fun concat (dir : string list) =
         | (x :: y :: xs) => OS.Path.concat(x, concat(y :: xs))
     
 
+fun makeRelative(path : string) (relativeTo : string)= 
+      OS.Path.mkRelative {path = path, relativeTo = relativeTo}
 end

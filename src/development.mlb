@@ -64,6 +64,8 @@ local
         build-system/compilation-tokens.sml
         build-system/compilation-structure.sml
 
+        build-system/diagnostics/print-diagnostics.sml
+        
         ui/pretty-print.sml
         passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml

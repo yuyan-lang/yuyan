@@ -359,7 +359,7 @@ structure PrecedenceParser  = struct
                     | (x :: xs) => if MixedStr.isPlainChar x (* check if plain char *)
                                     then go exp [] 
                                     else case x of
-                                          MixedStr.Name x => [(ParseOpAST(Binding x, []), xs)]
+                                          MixedStr.Name(x, qi) => [(ParseOpAST(Binding x, []), xs)]
                                     (* otherwise return the first name whatever that is *)
                                           | _ => [] (*fail if first term is not name, need name for binding *)
                 end
@@ -433,18 +433,18 @@ structure PrecedenceParser  = struct
             and structuralParser () : parser = fn exp => 
                 case exp of 
                     [] => [] (* fail if exp doesn't have content *)
-                    | (MixedStr.UnparsedExpression s :: xs) => 
+                    | (MixedStr.UnparsedExpression(s, qi) :: xs) => 
                     [(ParseOpAST(UnparsedExpr s, []), xs)]
                     (* TODO SHOULD NOT PARSE, let the coordinator handle parsing to support better
                     error messages ! *)
                          (* [(fn (opast, [] (* should be empty *)) => (opast, xs))
                             (* backtracking by considering all Ops *)
                          (parseExpWithOption(allOps)(s))]  *)
-                    | (MixedStr.UnparsedDeclaration s :: xs) => 
-                            [(ParseOpAST(UnparsedDecl(s), []), xs)]
-                    | (MixedStr.Name s :: xs) => 
+                    | (MixedStr.UnparsedDeclaration(s,qi) :: xs) => 
+                            [(ParseOpAST(UnparsedDecl(map (fn (x, ei) => x) s), []), xs)]
+                    | (MixedStr.Name(s, qi) :: xs) => 
                             [(ParseOpAST(QuotedName(s), []), xs)]
-                    | (MixedStr.Literal s :: xs) => 
+                    | (MixedStr.Literal (s, qi) :: xs) => 
                             [(ParseOpAST(StringLiteral(s), []), xs)]
                     | _ => [] (* fail for all other cases *)
 

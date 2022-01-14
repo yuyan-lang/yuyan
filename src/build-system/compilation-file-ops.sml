@@ -52,8 +52,9 @@ open StaticErrorStructure
         let 
         open CompilationTokens
         in MixedStr.makeDecl content >>=
-        (fn stmtAST =>
+        (fn stmtASTwithEi =>
         let
+            val stmtAST = map (fn (x, ei) => x) stmtASTwithEi
             val tokensInfo : token list ref = ref []
             val typeCheckingAST = ExpressionConstructionPass.configureAndConstructTypeCheckingASTTopLevel
             (updateUsefulTokensFromOpAST tokensInfo)

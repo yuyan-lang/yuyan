@@ -337,7 +337,7 @@ please provide trivial functions *)
        (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
        val tp  = MixedStr.toPlainUTF8String
        fun getDeclContent (x : MixedStr.t) = case x of
-        [MixedStr.UnparsedDeclaration y] => y
+        [MixedStr.UnparsedDeclaration(y, qi)] => map (fn (x, ei) => x) y
         | _ => raise ElaborateFailure "expecting a single unparsed declaration"
        val declParseTree = DeclarationParser.parseDeclarationSingleOutput declOps s
        val _ = notifyDeclarationParserResult declParseTree

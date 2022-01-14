@@ -21,6 +21,7 @@ struct
     else raise NotAbsolute path
     fun access (FRPath path : fileresourceuri) =  path
 
+
     (* structure FileResourceURIOrdered 
    :> ORDERED where type t = fileresourceuri
    =

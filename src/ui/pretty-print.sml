@@ -60,10 +60,10 @@ struct
     open MixedStr
     in
     case  u of 
-    UnparsedExpression s => "(UNPARSED(EXPR):" ^ show_mixedstr s ^ ")"
-    | UnparsedDeclaration l => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn x => show_mixedstr x) l) ^ "}\n"
-    | Name t => "(NAME:" ^ UTF8String.toString t ^ ")"
-    | Literal t => "[LITERAL(size="^ Int.toString (length t) ^"):" ^ UTF8String.toString t ^ ")"
+    UnparsedExpression(s,qi) => "(UNPARSED(EXPR):" ^ show_mixedstr s ^ ")"
+    | UnparsedDeclaration(l, qi) => "{UNPARSED(DECL):" ^ String.concatWith ";\n " (map (fn (x,e) => show_mixedstr x) l) ^ "}\n"
+    | Name(t, qi) => "(NAME:" ^ UTF8String.toString t ^ ")"
+    | Literal(t, qi) => "[LITERAL(size="^ Int.toString (length t) ^"):" ^ UTF8String.toString t ^ ")"
     (* | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
     | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")" *)
     | SChar t => UTF8Char.toString t

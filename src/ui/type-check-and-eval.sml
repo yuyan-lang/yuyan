@@ -1,5 +1,6 @@
 structure TypeCheckAndEval =
 struct
+open StaticErrorStructure
 
     fun printErr (s : string) = (TextIO.output(TextIO.stdErr,s) ; TextIO.flushOut TextIO.stdErr)
 
@@ -35,7 +36,7 @@ struct
             val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"
             val _ = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
             val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n" *)
-            val executeTime =  (* removed the use of pk machines due to foreign functions *)
+            val (executeTime, exitSt) =  (* removed the use of pk machines due to foreign functions *)
             if #usekmachine options
             then
                 (let 
@@ -51,16 +52,18 @@ struct
                                         (* (fn km => print (PrettyPrint.show_pkmachine (PersistentKMachine.fromKComp km) ^ "\n")) *)
                 val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
                 val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
-                in executeTime end)
+                in (executeTime, OS.Process.success) end)
             else 
                 let 
                 (* val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n") *)
-                val _ = CompilationManager.makeExecutable absFp cm
+                val exec = CompilationManager.makeExecutable absFp cm
                 val executeTime = Time.now()
-                val _ = OS.Process.system "./.yybuild/yyexe"
-                in 
-                executeTime
-                end
+                val exitSt = case exec of 
+                    Success _ => (OS.Process.system "./.yybuild/yyexe")
+                    | DErrors l => (DebugPrint.p (PrintDiagnostics.showErrs l cm);OS.Process.failure)
+                    in 
+                    (executeTime, exitSt)
+                    end
             val endTime = Time.now()
             val codeGenDuration : Time.time = Time.-(preExecuteTime,startTime)
             val compileDuration : Time.time = Time.-(executeTime,preExecuteTime)
@@ -70,7 +73,9 @@ struct
                 "ms; (clang) [or kmachine] compilation took " ^ (LargeInt.toString(Time.toMilliseconds(compileDuration))) ^ "ms; execution took "^
             (LargeInt.toString(Time.toMilliseconds(runDuration))) ^ "ms\n")
         in 
-            ()
+        if (#exitOnFailure options) 
+        then OS.Process.exit exitSt
+        else ()
         end)
         handle TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s)
     | ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))

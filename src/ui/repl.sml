@@ -50,22 +50,24 @@ struct
                 if String.isSubstring "v" cmd
                 then 1 else 0
                 ),
-                usekmachine = String.isSubstring "k" cmd
+                usekmachine = String.isSubstring "k" cmd, 
+                exitOnFailure = true
+
              })
             | _ => (print aboutText; OS.Process.exit OS.Process.failure : unit)
             end
 
      fun testMain()= 
         inputFile "testfiles/test。豫库" {
-            verbose=2, usekmachine=true
+            verbose=2, usekmachine=true, exitOnFailure= false
         }
     fun test f = 
         inputFile f {
-            verbose=2, usekmachine=false
+            verbose=2, usekmachine=false, exitOnFailure= false
         }
     fun testk f = 
         inputFile f {
-            verbose=2, usekmachine=true
+            verbose=2, usekmachine=true, exitOnFailure= false
         }
 
 end

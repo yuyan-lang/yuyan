@@ -51,7 +51,7 @@ structure YYONUtil = struct
 
      fun parseLiteral():  UTF8String.t parser = fn input =>
         case input of 
-                (MixedStr.Literal s :: rest) => (s, rest)
+                (MixedStr.Literal(s, qi) :: rest) => (s, rest)
                 | _ => raise ParseFailure (input, "Expected Literal following 之")
 
 
