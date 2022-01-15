@@ -24,4 +24,7 @@ structure UTF8Char = struct
     fun fromString(c : string) (sourceLoc : SourceLocation.t option) : utf8char = case UTF8.explode c of 
         [c] => UTF8Char (c, sourceLoc)
         | _ => raise UTF8fromStringTooLong (c ^ " has more than 1 utf8 characters")
+
+    fun getWidth(c : utf8char) : int = 
+        if UTF8.isAscii (asUTF8WChar c ) then 1 else 2
 end

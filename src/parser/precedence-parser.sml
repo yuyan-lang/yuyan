@@ -185,13 +185,13 @@ structure PrecedenceParser  = struct
             allOps : Operators.operator list
         }
 
-    fun showParseExceptionInfo (x : parseExceptionInfo)(errStringInTheMiddle : string) : string = 
-        "在理解（parse）" ^  MixedStr.toString (#str x) ^ "时出现问题：\n"
-        ^ errStringInTheMiddle
-        ^ "调试信息：\n"
+    fun showParseExceptionInfo (x : parseExceptionInfo)(errStringInTheMiddle : string) : (string * string option) = 
+        ("在理解(parse)`" ^  MixedStr.toString (#str x) ^ "`时出现问题："
+        ^ errStringInTheMiddle,  
+        SOME( "调试信息：\n"
         ^ "所有可能的名称(all unknown ids)：" ^ String.concatWith "，" (map UTF8String.toString (#allUnkownIds x))
-        ^ "所有相关的操作符(all relevant ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allRelevantOps x))
-        ^ "所有（包括不相关的）操作符(all ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allOps x))
+        ^ "\n所有相关的操作符(all relevant ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allRelevantOps x))
+        ^ "\n所有（包括不相关的）操作符(all ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allOps x))))
 
     exception NoPossibleParse of 
         (* debug message *)  parseExceptionInfo

@@ -14,4 +14,5 @@ struct
   val space = UTF8Char.fromString " "  NONE
   val newline = UTF8Char.fromString "\n"  NONE
   val tab = UTF8Char.fromString "\t"  NONE
+  val tilde = UTF8Char.fromString "~"  NONE
 end

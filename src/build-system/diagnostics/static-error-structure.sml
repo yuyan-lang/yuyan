@@ -6,7 +6,8 @@ struct
         StaticError of UTF8String.t  (* the location of the error *)
                     * diagnosticseverity
                     (* * (int * string) option code and code description uri *)
-                    * string (* message *)
+                    * string (* brief message *)
+                    * string option (* additional message *)
 
     type errlist = staticerror list
 
@@ -39,6 +40,7 @@ struct
             | DErrors l => DErrors l
             | NotAvailable  => NotAvailable
     fun >>= (x, f) = next x f
+    infix 5 >>=
 
     fun collectAlternatives (x : 'a witherrsoption list)  : 'a list witherrsoption = 
         let fun collectAlternativesRec (x : 'a witherrsoption list)  : 'a list = 
@@ -70,6 +72,16 @@ struct
             res
         end
 
-    fun genSingletonError(loc: UTF8String.t ) ( msg : string ) : 'a witherrsoption =
-        DErrors [ StaticError(loc, DiagnosticError, msg) ]
+    fun genSingletonError(loc: UTF8String.t ) ( msghd : string ) (msgdetail : string option) : 'a witherrsoption =
+        DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail) ]
+    fun genSingletonErrorTuple(loc: UTF8String.t ) ( (msghd , msgdetail) : string * string option) : 'a witherrsoption =
+        DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail) ]
+
+    (* approximates (,) *)
+    fun =/= ((t1, t2) : 'a witherrsoption * 'b witherrsoption) : ('a * 'b) witherrsoption 
+        = t1 >>= (fn t1' => t2 >>= (fn t2' => Success (t1', t2')))
+    (* approximates (,) *)
+    fun ==/= ((t1, t2, t3) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption) : ('a * 'b * 'c) witherrsoption 
+        = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' => 
+        Success (t1', t2', t3'))))
 end
