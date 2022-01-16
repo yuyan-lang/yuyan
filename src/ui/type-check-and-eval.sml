@@ -77,8 +77,9 @@ open StaticErrorStructure
         then OS.Process.exit exitSt
         else ()
         end)
-        handle TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s)
-    | ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
+        handle 
+        (* TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s) *)
+     ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
       | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
       (* |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "ecp parse failed\n"; print s)
       |  ExpressionConstructionPass.ECPAmbiguousParse s=> (print "ecp parse failed\n"; print s) *)

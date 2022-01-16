@@ -1,9 +1,10 @@
 
 structure TypeCheckingASTOps = struct
 open TypeCheckingAST
+open StaticErrorStructure
+infix 5 >>=
+infix 5 =/=
 
-    exception TypeCheckingFailure of string
-    exception SignatureCheckingFailure of string
 
 (* these exist here for pretty printing *)
 (* g for generic *)
@@ -112,24 +113,24 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | NullType => NullType
             | BuiltinType(b) => BuiltinType(b)
     end
-    fun normalizeType (t : Type)   = 
+    fun normalizeType (t : Type) : Type witherrsoption  = 
     let 
     in
         case t of
-            TypeVar t => TypeVar t
-            | Prod l => Prod  (map (fn (l, t) => (l, normalizeType t)) l)
-            | Sum l =>  Sum  (map (fn (l, t) => (l, normalizeType t)) l)
-            | Func (t1,t2) => Func (normalizeType t1, normalizeType t2 )
-            | TypeInst (t1,t2) => (case normalizeType t1 of
-                Forall(tv, t1') => substTypeInType (normalizeType t2) ([tv]) t1'
-                | _ => raise TypeCheckingFailure "Expected Forall"
+            TypeVar t => Success(TypeVar t)
+            | Prod l =>  fmap Prod (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
+            | Sum l =>  fmap Sum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
+            | Func (t1,t2) => fmap Func (normalizeType t1 =/= normalizeType t2 )
+            | TypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
+                Forall(tv, t1') => (normalizeType t2) >>= (fn nt2 => Success(substTypeInType nt2 ([tv]) t1'))
+                | _ => genSingletonError (raise Fail "not implemented") "期待通用类型(Expected Forall)" NONE
             )
-            | Forall (tv,t2) => Forall (tv, normalizeType t2) 
-            | Exists (tv,t2) => Exists (tv, normalizeType t2) 
-            | Rho (tv,t2) => Rho (tv, normalizeType t2) 
-            | UnitType => UnitType
-            | NullType => NullType
-            | BuiltinType(b) => BuiltinType(b)
+            | Forall (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(Forall (tv, nt2) ))
+            | Exists (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(Exists (tv, nt2) ))
+            | Rho (tv,t2) =>  normalizeType t2 >>=(fn nt2 =>  Success(Rho (tv, nt2) ))
+            | UnitType => Success(UnitType)
+            | NullType => Success(NullType)
+            | BuiltinType(b) => Success(BuiltinType(b))
     end
 
 (* no capture as we're only interested in types *)
@@ -187,7 +188,8 @@ datatype 'a gcontext = Context of StructureName.t * bool *
 
     and substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
       case d of
-         RTypeMacro (y, t) => if x ~~~= [y] then raise TypeCheckingFailure "Cannot have identical types" else 
+      (* to prevent this from happending by prior checking *)
+         RTypeMacro (y, t) => if x ~~~= [y] then raise Fail "Cannot have identical types" else 
             RTypeMacro (y, substTypeInType tS x t)
         | RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInType tS x t)
         | RTermMacro (n, e) => RTermMacro(n, substTypeInRExpr tS x e)

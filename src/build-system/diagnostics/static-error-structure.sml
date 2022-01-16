@@ -43,6 +43,8 @@ struct
     infix 5 >>=
     fun >> (x, y) = next x (fn _ => y)
     infix 5 >>
+    fun <$> (f, y) = fmap f y
+    infix 5 <$>
 
     fun collectAlternatives (x : 'a witherrsoption list)  : 'a list witherrsoption = 
         let fun collectAlternativesRec (x : 'a witherrsoption list)  : 'a list = 
