@@ -1,7 +1,7 @@
 (* DEPRECATED In FAVOR of Compiling to LLVM *)
 structure ErasurePass =
 struct
-
+(* 
 (* this is structurally very similar to type checking *)
     open TypeCheckingAST
 open TypeCheckingASTOps
@@ -337,6 +337,6 @@ untyped cases *)
 
 
         
-    
+     *)
 
 end

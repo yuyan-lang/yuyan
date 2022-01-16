@@ -2,8 +2,8 @@ structure StructureName =
 struct
 type structureName = UTF8String.t list
 type t = structureName
-(* val separatorChar = UTF8Char.fromString "之" *)
-val separatorChar = UTF8String.fromString "->"
+val separatorChar = [UTF8Char.fromString "之" NONE]
+(* val separatorChar = UTF8String.fromString "->" *)
     fun toString x = case x of
         [x] => x
         | (x :: xs) => x@separatorChar@toString xs

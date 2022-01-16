@@ -85,6 +85,6 @@ Func(typeBool, typeBool),
         map (fn PFunc(name, t, impl) => 
         TypeCheckingPass.TermTypeJ([UTF8String.fromString name], t, PKBuiltinValue(KbvFunc(UTF8String.fromString name, impl))
         )) allPreludeFuncs)
-    val typeCheckingPrelude = ErasurePass.eraseCtx erasurePrelude
+    (* val typeCheckingPrelude = ErasurePass.eraseCtx erasurePrelude *)
 
 end

@@ -37,23 +37,23 @@ open StaticErrorStructure
             val _ = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
             val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n" *)
             val (executeTime, exitSt) =  (* removed the use of pk machines due to foreign functions *)
-            if #usekmachine options
-            then
-                (let 
-                val erasedASTK = ErasureEntry.eraseSigK (#1 (StaticErrorStructure.valOf (#typeCheckingInfo cfile)))
-                val _ = cprint 1 "----------------- Erasure Complete ! -------------------- \n"
-                val kastK = (PersistentKMachine.fromKComp erasedASTK)
-                val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
+            (* if #usekmachine options *)
+            (* then *)
+                (* (let  *)
+                (* val erasedASTK = ErasureEntry.eraseSigK (#1 (StaticErrorStructure.valOf (#typeCheckingInfo cfile))) *)
+                (* val _ = cprint 1 "----------------- Erasure Complete ! -------------------- \n" *)
+                (* val kastK = (PersistentKMachine.fromKComp erasedASTK) *)
+                (* val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n" *)
                 (* val _ = cprint 2 (PrettyPrint.show_pkcomputation kastK ^ "\n") *)
-                val _ = cprint 1 "----------------- Executing ---------------------- \n"
-                val executeTime = Time.now()
-                val result = KMachine.runUntilCompletion (KMachine.Run([],erasedASTK)) 
-                                            (fn x => ())
+                (* val _ = cprint 1 "----------------- Executing ---------------------- \n" *)
+                (* val executeTime = Time.now() *)
+                (* val result = KMachine.runUntilCompletion (KMachine.Run([],erasedASTK))  *)
+                                            (* (fn x => ()) *)
                                         (* (fn km => print (PrettyPrint.show_pkmachine (PersistentKMachine.fromKComp km) ^ "\n")) *)
-                val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
-                val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
-                in (executeTime, OS.Process.success) end)
-            else 
+                (* val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n" *)
+                (* val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n") *)
+                (* in (executeTime, OS.Process.success) end) *)
+            (* else  *)
                 let 
                 (* val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n") *)
                 val exec = CompilationManager.makeExecutable absFp cm

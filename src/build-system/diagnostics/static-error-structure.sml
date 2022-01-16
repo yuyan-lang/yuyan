@@ -41,6 +41,8 @@ struct
             | NotAvailable  => NotAvailable
     fun >>= (x, f) = next x f
     infix 5 >>=
+    fun >> (x, y) = next x (fn _ => y)
+    infix 5 >>
 
     fun collectAlternatives (x : 'a witherrsoption list)  : 'a list witherrsoption = 
         let fun collectAlternativesRec (x : 'a witherrsoption list)  : 'a list = 
@@ -80,7 +82,7 @@ struct
     (* approximates (,) *)
     fun =/= ((t1, t2) : 'a witherrsoption * 'b witherrsoption) : ('a * 'b) witherrsoption 
         = t1 >>= (fn t1' => t2 >>= (fn t2' => Success (t1', t2')))
-    (* approximates (,) *)
+    (* approximates (,,) *)
     fun ==/= ((t1, t2, t3) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption) : ('a * 'b * 'c) witherrsoption 
         = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' => 
         Success (t1', t2', t3'))))

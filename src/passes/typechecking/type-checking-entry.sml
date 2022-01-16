@@ -3,8 +3,11 @@ struct
 open TypeCheckingPass
 open StaticErrorStructure
   fun typeCheckSignatureTopLevel (s : RSignature) :CSignature witherrsoption =
-  let val res = (#2 (typeCheckSignature PreludeFunctions.typeCheckingPrelude s []))
+  let val res =  (typeCheckSignature 
+  (TypeCheckingPass.Context (StructureName.topLevelName, true, 
+        []))
+  s [])
     (* val _ = DebugPrint.p "Type checked top level\n"
     val _ = DebugPrint.p (PrettyPrint.show_typecheckingCSig res) *)
-  in Success res end
+  in fmap (#2) res end
 end

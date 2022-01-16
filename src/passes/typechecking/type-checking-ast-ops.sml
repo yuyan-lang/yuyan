@@ -234,10 +234,12 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | _ => false)
     end)
 
-(* determine if curSName |-> n refers to n1 through the following basic rules:
+(* determine if curSName |-> toCheck refers to referred through the following basic rules:
 1. A refers to A (reflexive)
 2.  A->B->E->F |-> C->D refers to A->B->C->D
 3. A->B->E->F |-> D does not refer to A->B->C->D 
+
+returns the canonical name (adding curSName if ommitted)
 *)
     fun checkRefersTo(referred : StructureName.t) (toCheck : StructureName.t) (curSName : StructureName.t) : StructureName.t option = 
       if StructureName.semanticEqual referred toCheck then SOME(toCheck) else 
