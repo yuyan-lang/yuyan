@@ -53,6 +53,7 @@ local
         
         parser/parse-ast.sml
         parser/bracket-scanner.sml
+        passes/preprocess/preprocessing-operators.sml
         passes/typechecking/type-checking-ast-ops.sml
         passes/cps-transform/cps-ast.sml
         passes/cps-transform/cps-ast-ops.sml
@@ -60,7 +61,6 @@ local
         passes/codegen/llvm-ast.sml
         passes/codegen/llvm-codegen.sml
         passes/codegen/llvm-convert.sml
-        passes/preprocess/preprocessing-operators.sml
         build-system/compilation-tokens.sml
         build-system/compilation-structure.sml
 

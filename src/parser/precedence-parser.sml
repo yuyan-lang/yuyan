@@ -457,7 +457,7 @@ structure PrecedenceParser  = struct
                             (* backtracking by considering all Ops *)
                          (parseExpWithOption(allOps)(s))]  *)
                     | (MixedStr.UnparsedDeclaration(s,qi) :: xs) => 
-                            [(ParseOpAST(UnparsedDecl(map (fn (x, ei) => x) s), []), xs)]
+                            [(ParseOpAST(UnparsedDecl(map (fn (x, ei) => (x, ei)) s), []), xs)]
                     | (MixedStr.Name(s, qi) :: xs) => 
                             [(ParseOpAST(QuotedName(s), []), xs)]
                     | (MixedStr.Literal (s, qi) :: xs) => 

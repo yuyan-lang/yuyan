@@ -253,8 +253,9 @@ returns the canonical name (adding curSName if ommitted)
     (* reconstruct the original string from rexpr, used for generating error information *)
     fun reconstructFromRExpr (e : RExpr) : UTF8String.t = 
     let 
-    fun constructWithSep ((h::t) : UTF8String.t list) (sepl : operator list) = 
-        foldl (fn (next, (s, (oph::opt))) => (reconstructWithArgs oph [acc, reconstructFromRExpr next], opt)) (h, sepl) t
+    fun constructWithSep ((h::t) : UTF8String.t list) (sepl : operator list) : UTF8String.t = 
+        #1 (foldl (fn (next, (s, (oph::opt))) => (reconstructWithArgs oph [s, next], opt)) (h, sepl) t)
+    val tpPlaceHolder =UTF8String.fromString "..." 
     open Operators
     in
     case e of
@@ -264,37 +265,37 @@ returns the canonical name (adding curSName if ommitted)
         | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
         | RInj  ( lbl,e, soi) => reconstructWithArgs soi [lbl, reconstructFromRExpr e]
         | RCase (e, l, (soiTop, soiSep, soiClause))=>
-                reconstructWithArgs soiTop [reconstructWithArgs e, 
+                reconstructWithArgs soiTop [reconstructFromRExpr e, 
                     constructWithSep (
-                        List.pairmap (fn ((a,b,c), operClause) => reconstructWithArgs operClause [a,b, reconstructFromRExpr c]) (l, soiClause)
+                        ListPair.map (fn ((a,b,c), operClause) => reconstructWithArgs operClause [a,b, reconstructFromRExpr c]) (l, soiClause)
                     ) soiSep
                 ]
         | RLam (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
-        | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [t, x, reconstructFromRExpr e]
+        | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
         | RApp (e1, e2, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
             then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
             else let
-                fun flatten e = case e of 
+                fun flatten (e : RExpr)  : RExpr list= case e of 
                     RApp(e1', e2', soi') => if Operators.eqOpUid soi soi'
                                             then e1' :: flatten e2'
-                                            else e
-                    | _ => e
+                                            else [e]
+                    | _ => [e]
                 in 
-                    reconstructWithArgs soi (e1 :: flatten e2)
+                    reconstructWithArgs soi (map reconstructFromRExpr (e1 :: flatten e2))
                 end
                                         
         | RTAbs (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
         | RTApp (e1, e2, (soi,s))=> reconstructWithArgs soi [reconstructFromRExpr e1, s]
         | RPack (t, e, (s, soi))=> reconstructWithArgs soi [s, reconstructFromRExpr e]
-        | ROpen (e, (t, x, e2), soi)=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
-        | RFold (e, soi) => "fold(" ^ se e ^")"
-        | RUnfold (e, soi) => "unfold("^  se e ^")"
-        | RFix (x, e, soi) => "(fix " ^ ss x ^ "." ^   se e ^")"
-        | RStringLiteral (l, soi) => "\"" ^ ss l ^"\""
-        | RIntConstant (l, soi) => "(" ^ Int.toString l ^")"
-        | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
-        | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
-        | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
+        | ROpen (e, (t, x, e2), soi)=> reconstructWithArgs soi [reconstructFromRExpr e, t, x, reconstructFromRExpr e2]
+        | RFold (e, soi) => reconstructWithArgs soi [reconstructFromRExpr e]
+        | RUnfold (e, soi) => reconstructWithArgs soi [reconstructFromRExpr e]
+        | RFix (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
+        | RStringLiteral (l, (qil, qir)) => qil :: l @[ qir]
+        | RIntConstant (l, soi) => soi
+        | RRealConstant (l, soi) => soi
+        | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
+        | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
     end
     
 end

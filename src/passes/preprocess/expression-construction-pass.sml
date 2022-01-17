@@ -42,13 +42,15 @@ struct
 
 
 
+    fun ::/ ((x,y), (xs,ys)) =(x :: xs, y :: ys)
+    infix 5 ::/
 
-    fun flattenRight (ast : OpAST.OpAST) (curOp : Operators.operator)  : OpAST list = 
+    fun flattenRight (ast : OpAST.OpAST) (curOp : Operators.operator)  : OpAST list  * operator list= 
         case ast of
         OpAST(oper, [l1,l2]) => if oper ~=** curOp
-                then l1 :: flattenRight l2 curOp
-                else [ast]
-        | _ => [ast]
+                then (l1, oper) ::/ flattenRight l2 curOp
+                else ([ast], [])
+        | _ => ([ast], [])
     
     fun elaborateUnknownName (ast : OpAST) : UTF8String.t witherrsoption = 
         case ast of
@@ -110,12 +112,12 @@ please provide trivial functions *)
                         )
             | OpAST(oper, [a1,a2]) => (
                 if oper ~=** prodTypeOp
-                then (let val args = flattenRight ast oper
+                then (let val args = #1 (flattenRight ast oper)
                     in fmap Prod (collectAll (map (fn x => elaborateLabeledType x ctx) args ))
                     end)
                 else 
                 if oper ~=** sumTypeOp
-                then (let val args = flattenRight ast oper
+                then (let val args = #1 (flattenRight ast oper)
                     in fmap Sum (collectAll (map (fn x => elaborateLabeledType x ctx) args))
                     end)
                 else
@@ -135,7 +137,7 @@ please provide trivial functions *)
                 then fmap Rho ((elaborateNewName a1) =/= (elaborateOpASTtoType a2 ctx))
                 else 
                 if oper ~=** structureRefOp
-                then fmap TypeVar (collectAll (map elaborateUnknownName (flattenRight ast structureRefOp)))
+                then fmap TypeVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
                 else
                 raise ElaborateFailure (
                     "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
@@ -169,7 +171,7 @@ please provide trivial functions *)
                         (fn l => Success (foldl (fn (arg, acc) => RApp (acc , arg, oper)) (RExprVar [getOriginalName oper]) l))
                     else
                     if oper ~=** structureRefOp
-                    then fmap RExprVar (collectAll (map elaborateUnknownName (flattenRight ast structureRefOp)))
+                    then fmap RExprVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
                     else
                     if oper ~=** unitExprOp
                     then Success (RUnitExpr(oper))
@@ -181,7 +183,10 @@ please provide trivial functions *)
                     then fmap RApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
                     else 
                     if oper ~=** pairExprOp
-                    then fmap RTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) (flattenRight ast pairExprOp)) =/= operSuc)
+                    then 
+                        let val (es, ops) = (flattenRight ast pairExprOp) 
+                        in fmap RTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) es) =/= Success ops)
+                        end
                     else 
                     if oper ~=** injExprOp
                     then fmap RInj(==/=(elaborateUnknownName (hd l) , elaborateOpASTtoExpr (snd l) ctx, operSuc))
@@ -194,28 +199,35 @@ please provide trivial functions *)
                     else
                     if oper ~=** caseExprOp
                     then let
-                                val args = flattenRight (snd l) caseAlternativeOp
-                                in fmap RCase (==/= (elaborateOpASTtoExpr (hd l) ctx, collectAll (map (fn x => 
-                                case x of
-                                    OpAST(oper, [lbl, evar, expr]) => 
-                                    if oper ~=** caseClauseOp
-                                    then elaborateUnknownName lbl >>= (fn label => 
-                                        elaborateNewName evar >>= (fn binding => 
-                                    elaborateOpASTtoExpr expr ctx >>= (fn body => 
-                                        Success (label, binding, body)
-                                    )
-                                        )
-                                    ) 
-                                    else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
-                                    | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
-                        ) args), operSuc))
+                                val (args, sepOps) = flattenRight (snd l) caseAlternativeOp
+                                in 
+                            elaborateOpASTtoExpr (hd l) ctx >>= (fn hdexpr => 
+                            collectAll (map (fn x => case x of
+                                                                OpAST(oper, [lbl, evar, expr]) => 
+                                                                if oper ~=** caseClauseOp
+                                                                then elaborateUnknownName lbl >>= (fn label => 
+                                                                    elaborateNewName evar >>= (fn binding => 
+                                                                elaborateOpASTtoExpr expr ctx >>= (fn body => 
+                                                                    Success ((label, binding, body), oper)
+                                                                )
+                                                                    )
+                                                                ) 
+                                                                else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
+                                                                | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
+                                                    ) args) >>= (fn l => 
+                                        let val cases  = map (#1) l
+                                            val casesOps = map (#2) l
+                                        in Success (RCase (hdexpr, cases, (oper, sepOps, casesOps)))
+                                        end
+                                )
+                            )
                         end
                     else 
                     if oper ~=** typeAppExprOp
-                    then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, operSuc))
+                    then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, (operSuc =/= Success (OpAST.reconstructOriginalFromOpAST (snd l) ))))
                     else
                     if oper ~=** packExprOp
-                    then fmap RPack(==/= (elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    then fmap RPack(==/= (elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, (Success (OpAST.reconstructOriginalFromOpAST (hd l))=/= operSuc)))
                     else
                     if oper ~=** unpackExprOp
                     then fmap ROpen(==/= (elaborateOpASTtoExpr (hd l) ctx,
@@ -250,7 +262,7 @@ please provide trivial functions *)
                     then (
                         let val preprocessedTree = 
                             case (hd l) of
-                            OpUnparsedDecl d => preprocessAST d
+                            OpUnparsedDecl d => preprocessAST (map (#1) d)
                             | _ => raise ElaborateFailure "Expect declaration block as first argument to let in"
                         in 
                         preprocessedTree >>= (fn tree => 
@@ -397,7 +409,7 @@ please provide trivial functions *)
                 then let 
                 val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp] (l1)
                 val _ = notifyParseOpAST parsedStructureRef
-                val names = flattenRight parsedStructureRef structureRefOp
+                val names = #1 (flattenRight parsedStructureRef structureRefOp)
                         in fmap POpenStructure (collectAll (map elaborateUnknownName names))
                 end 
                 else
