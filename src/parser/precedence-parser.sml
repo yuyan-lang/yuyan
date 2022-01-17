@@ -364,7 +364,8 @@ structure PrecedenceParser  = struct
                         if List.length remaining < List.length until 
                         then (* no parse if remaining isn't sufficient to guarantee until *)
                               []
-                        else if MixedStr.isPrefix until remaining
+                        else if MixedStr.isPrefix until remaining 
+                                andalso length pending > 0 (* require something to be parsed, empty string cannot be parsed *)
                              then [(ParseOpAST(Binding pending, []), remaining)]
                              else case remaining of 
                                     (x :: xs) => case x of 

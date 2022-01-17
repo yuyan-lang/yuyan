@@ -21,6 +21,7 @@ struct
 
     val >>= = StaticErrorStructure.>>=
     infix 5 >>=
+    infix 5 >>/=
     
 
 
@@ -135,16 +136,20 @@ struct
         (* val _ = print ("result is of length " ^ Int.toString(length res)) *)
         in res end
 
-    fun processSingleQuoted( p : mixedstr)(q : quoteinfo) : mixedchar = 
-        if containsCharTopLevel p SpecialChars.period
-        then (* process as declaration *)
-             UnparsedDeclaration ((processDeclaration p), q)
-        else if isPlainStr p
-            then  (if containsCharTopLevel p SpecialChars.leftAngledBracket
-                    orelse containsCharTopLevel p SpecialChars.rightAngledBracket
-                    then UnparsedExpression(p , q)
-                    else (* name *) Name ((unSChar p), q))
-            else (* expression *) UnparsedExpression(p, q)
+    fun processSingleQuoted( p : mixedstr)(q as (ql, qr) : quoteinfo) : mixedchar witherrsoption = 
+        if length p = 0 then genSingletonError ([ql, qr]) "名称不可为空" NONE
+        else
+        Success(
+            if containsCharTopLevel p SpecialChars.period
+            then (* process as declaration *)
+                UnparsedDeclaration ((processDeclaration p), q)
+            else if isPlainStr p
+                then  (if containsCharTopLevel p SpecialChars.leftAngledBracket
+                        orelse containsCharTopLevel p SpecialChars.rightAngledBracket
+                        then UnparsedExpression(p , q)
+                        else (* name *) Name ((unSChar p), q))
+                else (* expression *) UnparsedExpression(p, q)
+        )
             
 
     (* string escape two endDoubleQuote to escape double quote, else no escape *)
@@ -175,7 +180,11 @@ struct
                         if  x ~= SpecialChars.leftSingleQuote orelse
                             x ~= SpecialChars.leftParenthesis
                         then scanSingleQuote startChar xs []  >>= (fn (rq, inQuote, rest) =>
-                                scanSingleQuote startChar rest (sofar@[processSingleQuoted inQuote (x, rq)])  
+                                processSingleQuoted inQuote (x, rq) >>= (fn inSingleQuoteChar => 
+                                    scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
+                                ) >>/= ( (* continue scanning in case of failure *)
+                                    scanSingleQuote startChar rest (sofar)  
+                                )
                             )
                         else
                         if  x ~= SpecialChars.leftDoubleQuote
@@ -194,7 +203,9 @@ struct
                             x ~= SpecialChars.leftParenthesis
                         then scanSingleQuote x xs []  >>= (fn (rq, inQuote, rest) => 
                                 scanTopLevel rest >>= (fn cs  => 
-                                    Success(processSingleQuoted inQuote (x, rq) :: cs)
+                                        processSingleQuoted inQuote (x, rq) >>= (fn inSingleQuoteChar => 
+                                            Success( inSingleQuoteChar :: cs)
+                                        )
                                 )
                             )
                         else

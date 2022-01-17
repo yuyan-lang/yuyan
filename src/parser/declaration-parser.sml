@@ -42,7 +42,8 @@ struct
                         if List.length remaining < List.length until 
                         then (*add all pending and remaining and return *)
                               ((pending @ remaining, [])) (* TODO: should this be empty as well? *)
-                        else if MixedStr.isPrefix until remaining
+                        else if MixedStr.isPrefix until remaining 
+                            andalso  length pending > 0 (* require parsed thing to be nonempty*)
                              then (pending, remaining)
                              else (case remaining of 
                                  (h::t) => (let 

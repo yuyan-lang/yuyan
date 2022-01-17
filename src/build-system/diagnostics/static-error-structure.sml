@@ -41,6 +41,18 @@ struct
             | NotAvailable  => NotAvailable
     fun >>= (x, f) = next x f
     infix 5 >>=
+    (* this is guaranteed to fail when x fails, it collects all errors that handler might generate *)
+    fun failLookahead (x : 'a witherrsoption) (handler :  'a witherrsoption) : 'a witherrsoption = 
+        case x of
+            Success y => Success(y)
+            | DErrors l => (case handler of 
+                    Success _ => DErrors l 
+                    | DErrors l2 => DErrors (l@l2)
+                    | NotAvailable => NotAvailable
+                )
+            | NotAvailable  => NotAvailable
+    fun >>/= (x, f) = failLookahead x f
+    infix 5 >>/=
     fun >> (x, y) = next x (fn _ => y)
     infix 5 >>
     fun <$> (f, y) = fmap f y
