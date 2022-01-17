@@ -88,4 +88,8 @@ struct
     fun ==/= ((t1, t2, t3) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption) : ('a * 'b * 'c) witherrsoption 
         = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' => 
         Success (t1', t2', t3'))))
+    (* approximates (,,,) *)
+    fun ===/= ((t1, t2, t3, t4) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption * 'd witherrsoption) : ('a * 'b * 'c * 'd) witherrsoption 
+        = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' =>  t4 >>= (fn t4' =>
+        Success (t1', t2', t3', t4')))) )
 end

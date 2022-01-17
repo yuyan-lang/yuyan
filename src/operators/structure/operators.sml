@@ -98,4 +98,30 @@ struct
         end
 
     fun parseOperatorStr name = parseOperator (UTF8String.fromString name)
+
+    fun getStringComponents (Operator(_, _, _, comps, _))  : UTF8String.t list = 
+      List.mapPartial (fn x => case x of OpCompString s => SOME s | _ => NONE) comps
+
+    fun reconstructWithArgs(oper as Operator(_, fix, _, comps, _) : operator) (args : UTF8String.t list) = 
+    let val allComps = case fix of
+          Prefix =>  comps @[OpCompExpr] 
+          | Infix => OpCompExpr :: comps @[ OpCompExpr ]
+          | Postfix =>OpCompExpr :: comps
+          | Closed => comps
+    val _ = if length allComps <> length (getStringComponents oper) + length args  then 
+          raise Fail "Operator has an incorrect number of arguments"
+          else ()
+        val res = foldr (fn (elem , (rargs, acc))=>
+          case elem of 
+            OpCompString s => (rargs, s::acc)
+            | _ => (case rargs of 
+                (h:: trargs) => (trargs, h::acc)
+                | _ => raise Fail "impossilbe by length counting"
+              )
+        ) (args, []) allComps
+      in
+      List.concat (#2 res)
+      end 
+
+
 end

@@ -152,115 +152,120 @@ please provide trivial functions *)
         (case ast of
               UnknownOpName (s) => if NumberParser.isNumber s then 
                  (case NumberParser.parseNumber s of 
-                    NumberParser.NPInt i => Success (RIntConstant i)
-                    | NumberParser.NPReal r => Success (RRealConstant r)
+                    NumberParser.NPInt i => Success (RIntConstant (i, s))
+                    | NumberParser.NPReal r => Success (RRealConstant (r, s))
                  )
               else Success (RExprVar [s])
             | OpUnparsedExpr x => (parseExpr x ctx) 
-            | OpStrLiteral l => Success (RStringLiteral l)
-            | OpAST(oper, l) => (
-                if getUID oper >= elabAppBound 
-                then (* elab app *)
-                    collectAll (map (fn x => elaborateOpASTtoExpr x ctx)  l) >>=
-                    (fn l => Success (foldl (fn (arg, acc) => RApp (acc , arg)) (RExprVar [getOriginalName oper]) l))
-                else
-                if oper ~=** structureRefOp
-                then fmap RExprVar (collectAll (map elaborateUnknownName (flattenRight ast structureRefOp)))
-                else
-                if oper ~=** unitExprOp
-                then Success (RUnitExpr)
-                else
-                if oper ~=** projExprOp
-                then fmap RProj ((elaborateOpASTtoExpr (hd l) ctx) =/= (elaborateUnknownName (snd l)))
-                else 
-                if oper ~=** appExprOp
-                then fmap RApp(elaborateOpASTtoExpr (hd l) ctx =/= elaborateOpASTtoExpr (snd l) ctx)
-                else 
-                if oper ~=** pairExprOp
-                then fmap RTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) (flattenRight ast pairExprOp)))
-                else 
-                if oper ~=** injExprOp
-                then fmap RInj( elaborateUnknownName (hd l) =/= elaborateOpASTtoExpr (snd l) ctx)
-                else 
-                if oper ~=** foldExprOp
-                then fmap RFold( elaborateOpASTtoExpr (hd l) ctx)
-                else
-                if oper ~=** unfoldExprOp
-                then fmap RUnfold( elaborateOpASTtoExpr (hd l) ctx)
-                else
-                if oper ~=** caseExprOp
-                then let
-                            val args = flattenRight (snd l) caseAlternativeOp
-                            in fmap RCase (elaborateOpASTtoExpr (hd l) ctx =/= collectAll (map (fn x => 
-                            case x of
-                                OpAST(oper, [lbl, evar, expr]) => 
-                                if oper ~=** caseClauseOp
-                                then elaborateUnknownName lbl >>= (fn label => 
-                                    elaborateNewName evar >>= (fn binding => 
-                                 elaborateOpASTtoExpr expr ctx >>= (fn body => 
-                                    Success (label, binding, body)
-                                 )
+            | OpStrLiteral (l, qi) => Success (RStringLiteral (l, qi))
+            | OpAST(oper, l) => 
+                let 
+                    val operSuc = Success oper
+                in
+                    (
+                    if getUID oper >= elabAppBound 
+                    then (* elab app *)
+                        collectAll (map (fn x => elaborateOpASTtoExpr x ctx)  l) >>=
+                        (fn l => Success (foldl (fn (arg, acc) => RApp (acc , arg, oper)) (RExprVar [getOriginalName oper]) l))
+                    else
+                    if oper ~=** structureRefOp
+                    then fmap RExprVar (collectAll (map elaborateUnknownName (flattenRight ast structureRefOp)))
+                    else
+                    if oper ~=** unitExprOp
+                    then Success (RUnitExpr(oper))
+                    else
+                    if oper ~=** projExprOp
+                    then fmap RProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
+                    else 
+                    if oper ~=** appExprOp
+                    then fmap RApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else 
+                    if oper ~=** pairExprOp
+                    then fmap RTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) (flattenRight ast pairExprOp)) =/= operSuc)
+                    else 
+                    if oper ~=** injExprOp
+                    then fmap RInj(==/=(elaborateUnknownName (hd l) , elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else 
+                    if oper ~=** foldExprOp
+                    then fmap RFold( elaborateOpASTtoExpr (hd l) ctx =/= operSuc)
+                    else
+                    if oper ~=** unfoldExprOp
+                    then fmap RUnfold( elaborateOpASTtoExpr (hd l) ctx =/= operSuc)
+                    else
+                    if oper ~=** caseExprOp
+                    then let
+                                val args = flattenRight (snd l) caseAlternativeOp
+                                in fmap RCase (==/= (elaborateOpASTtoExpr (hd l) ctx, collectAll (map (fn x => 
+                                case x of
+                                    OpAST(oper, [lbl, evar, expr]) => 
+                                    if oper ~=** caseClauseOp
+                                    then elaborateUnknownName lbl >>= (fn label => 
+                                        elaborateNewName evar >>= (fn binding => 
+                                    elaborateOpASTtoExpr expr ctx >>= (fn body => 
+                                        Success (label, binding, body)
                                     )
-                                ) 
-                                else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
-                                | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
-                    ) args))
-                    end
-                else 
-                if oper ~=** typeAppExprOp
-                then fmap RTApp(elaborateOpASTtoExpr (hd l) ctx =/= elaborateOpASTtoType (snd l) ctx)
-                else
-                if oper ~=** packExprOp
-                then fmap RPack(elaborateOpASTtoType (hd l) ctx =/= elaborateOpASTtoExpr (snd l) ctx)
-                else
-                if oper ~=** unpackExprOp
-                then fmap ROpen(elaborateOpASTtoExpr (hd l) ctx =/= 
-                (elaborateNewName (snd l) >>= (fn tvar => 
-                    elaborateNewName (hd (tl (tl l))) >>= (fn evar => 
-                        elaborateOpASTtoExpr (hd (tl (tl (tl (l))))) ctx  >>= (fn body => 
-                            Success (tvar,evar, body)
+                                        )
+                                    ) 
+                                    else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
+                                    | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
+                        ) args), operSuc))
+                        end
+                    else 
+                    if oper ~=** typeAppExprOp
+                    then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, operSuc))
+                    else
+                    if oper ~=** packExprOp
+                    then fmap RPack(==/= (elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else
+                    if oper ~=** unpackExprOp
+                    then fmap ROpen(==/= (elaborateOpASTtoExpr (hd l) ctx,
+                    (elaborateNewName (snd l) >>= (fn tvar => 
+                        elaborateNewName (hd (tl (tl l))) >>= (fn evar => 
+                            elaborateOpASTtoExpr (hd (tl (tl (tl (l))))) ctx  >>= (fn body => 
+                                Success (tvar,evar, body)
+                            )
                         )
-                    )
-                )))
+                    )), operSuc))
 
-                else
-                if oper ~=** ffiCCallOp
-                then fmap RFfiCCall(elaborateOpASTtoExpr (hd l) ctx =/= elaborateOpASTtoExpr (snd l) ctx)
-                else
-                if oper ~=** lambdaExprOp
-                then fmap RLam(elaborateNewName (hd l) =/= elaborateOpASTtoExpr (snd l) ctx)
-                else
-                if oper ~=** lambdaExprWithTypeOp
-                then fmap RLamWithType (==/= (elaborateOpASTtoType (hd l) ctx, 
-                elaborateNewName (snd l), elaborateOpASTtoExpr (hd (tl (tl l))) ctx))
-                else
-                if oper ~=** fixExprOp
-                then fmap RFix(elaborateNewName (hd l) =/=
-                elaborateOpASTtoExpr (snd l) ctx)
-                else
-                if oper ~=** typeLambdaExprOp
-                then fmap RTAbs(elaborateNewName (hd l) =/= 
-                elaborateOpASTtoExpr (snd l) ctx) 
-                else
-                if oper ~=** letinOp
-                then (
-                    let val preprocessedTree = 
-                        case (hd l) of
-                        OpUnparsedDecl d => preprocessAST d
-                        | _ => raise ElaborateFailure "Expect declaration block as first argument to let in"
-                    in 
-                    preprocessedTree >>= (fn tree => 
-                    let
-                        val newOps = extractAllOperators tree
-                        val declTree = constructOpAST tree ctx
-                        val bodyExpr = elaborateOpASTtoExpr (snd l) (insertIntoCurContextOps ctx newOps)
-                    in fmap RLetIn(declTree =/= bodyExpr) end
+                    else
+                    if oper ~=** ffiCCallOp
+                    then fmap RFfiCCall(==/= (elaborateOpASTtoExpr (hd l) ctx ,elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else
+                    if oper ~=** lambdaExprOp
+                    then fmap RLam(==/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else
+                    if oper ~=** lambdaExprWithTypeOp
+                    then fmap RLamWithType (===/= (elaborateOpASTtoType (hd l) ctx, 
+                    elaborateNewName (snd l), elaborateOpASTtoExpr (hd (tl (tl l))) ctx, operSuc))
+                    else
+                    if oper ~=** fixExprOp
+                    then fmap RFix(==/= (elaborateNewName (hd l) ,
+                    elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else
+                    if oper ~=** typeLambdaExprOp
+                    then fmap RTAbs(==/= (elaborateNewName (hd l), 
+                    elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else
+                    if oper ~=** letinOp
+                    then (
+                        let val preprocessedTree = 
+                            case (hd l) of
+                            OpUnparsedDecl d => preprocessAST d
+                            | _ => raise ElaborateFailure "Expect declaration block as first argument to let in"
+                        in 
+                        preprocessedTree >>= (fn tree => 
+                        let
+                            val newOps = extractAllOperators tree
+                            val declTree = constructOpAST tree ctx
+                            val bodyExpr = elaborateOpASTtoExpr (snd l) (insertIntoCurContextOps ctx newOps)
+                        in fmap RLetIn(==/=(declTree, bodyExpr,operSuc)) end
+                        )
+                        end
                     )
-                    end
+                    else
+                    raise ElaborateFailure "Expected Expression constructs 224"
                 )
-                else
-                raise ElaborateFailure "Expected Expression constructs 224"
-            )
+                end
                 | _ => 
                 raise ElaborateFailure "Expected Expression constructs 227"
         )

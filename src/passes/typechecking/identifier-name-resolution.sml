@@ -1,6 +1,6 @@
 structure IdentifierNameResolution =
 struct
-    open TypeCheckingAST
+    (* open TypeCheckingAST
     
     type typecontext = StructureName.t list
     type termcontext = StructureName.t list
@@ -47,10 +47,10 @@ struct
                                  then StructureNameSet.empty else StructureNameSet.singleton v 
                     | UnitType => StructureNameSet.empty  
                     | Prod l => 
-                    List.foldr (op ***) StructureNameSet.empty (map (fn (lbl, t) => getUnresolvedIdentifiersType t typectx termctx currentSName) l)
+                    List.foldr (op *** ) StructureNameSet.empty (map (fn (lbl, t) => getUnresolvedIdentifiersType t typectx termctx currentSName) l)
                     | NullType => StructureNameSet.empty  
                     | Sum l =>  
-                    List.foldr (op ***) StructureNameSet.empty (map (fn (lbl, t) => getUnresolvedIdentifiersType t typectx termctx currentSName) l)
+                    List.foldr (op *** ) StructureNameSet.empty (map (fn (lbl, t) => getUnresolvedIdentifiersType t typectx termctx currentSName) l)
                     | Func (t1, t2) => 
                         getUnresolvedIdentifiersType t1 typectx termctx currentSName
                     ***
@@ -79,11 +79,11 @@ struct
             if lookupCtx termctx v currentSName
             then StructureNameSet.empty else StructureNameSet.singleton v
             | RUnitExpr => StructureNameSet.empty 
-            | RTuple l => List.foldr (op ***) StructureNameSet.empty (map (fn e => getUnresolvedIdentifiersExpr e typectx termctx currentSName) l)
+            | RTuple l => List.foldr (op *** ) StructureNameSet.empty (map (fn e => getUnresolvedIdentifiersExpr e typectx termctx currentSName) l)
             | RProj(e, l) => getUnresolvedIdentifiersExpr e typectx termctx currentSName
             | RInj (l, e) => getUnresolvedIdentifiersExpr e typectx termctx currentSName
             | RCase(e,cases) => getUnresolvedIdentifiersExpr e typectx termctx currentSName ***
-                    List.foldr (op ***) StructureNameSet.empty (map (fn (l, ev, e) => 
+                    List.foldr (op *** ) StructureNameSet.empty (map (fn (l, ev, e) => 
                 getUnresolvedIdentifiersExpr e typectx ([ev]::termctx) currentSName) cases)
             | RLam(ev, eb) =>  getUnresolvedIdentifiersExpr eb typectx ([ev]::termctx) currentSName 
             | RLamWithType (t, ev, eb) => 
@@ -193,6 +193,6 @@ struct
                     | NONE => NONE
     end
 
-
+ *)
 
 end

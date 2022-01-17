@@ -103,7 +103,7 @@ case x of
     | UnparsedDecl l => "UnparsedDecl "^ String.concatWith ", " (map show_mixedstr l)
     | UnparsedExpr l => "UnparsedExpr "^ show_mixedstr l
     | PlaceHolder => "PlaceHolder "
-    | StringLiteral s => "StringLiteral " ^ UTF8String.toString s
+    | StringLiteral (s, qi) => "StringLiteral " ^ UTF8String.toString s
 end
 
   fun show_opast (x : OpAST.OpAST) = let 
@@ -115,7 +115,7 @@ end
       | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
       | OpUnparsedDecl s => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr s)) ^ "]"
       | OpUnparsedExpr s => "[EXPR:" ^ show_mixedstr s ^ "]"
-      | OpStrLiteral s => "[LITERAL(size="^ Int.toString (length s) ^"):" ^ UTF8String.toString s ^ "]"
+      | OpStrLiteral (s, qi) => "[LITERAL(size="^ Int.toString (length s) ^"):" ^ UTF8String.toString s ^ "]"
     end
 
 
@@ -179,26 +179,26 @@ val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
 in case x of
 RExprVar v => sst v
-                    | RUnitExpr => "⟨⟩"
-                    | RTuple (l) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
-                    | RProj (e, lbl) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
-                    | RInj  ( lbl,e) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
-                    | RCase (e, l)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
-                    | RLam (x, e) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
-                    | RLamWithType (t, x, e) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
-                    | RApp (e1, e2)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
-                    | RTAbs (x, e) => "(Λ" ^ ss x ^ "." ^ se e ^ ")"
-                    | RTApp (e1, e2)=> "("^ se e1 ^ " ["^ st e2 ^"])"
-                    | RPack (t, e)=> "pack("^ st t ^ ", "^ se e ^")"
-                    | ROpen (e, (t, x, e2))=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
-                    | RFold (e) => "fold(" ^ se e ^")"
-                    | RUnfold (e) => "unfold("^  se e ^")"
-                    | RFix (x, e) => "(fix " ^ ss x ^ "." ^   se e ^")"
-                    | RStringLiteral l => "\"" ^ ss l ^"\""
-                    | RIntConstant l => "(" ^ Int.toString l ^")"
-                    | RRealConstant l => "(" ^ Real.toString l ^")"
-                    | RLetIn (s, e) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
-                    | RFfiCCall (s, e) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
+                    | RUnitExpr(soi) => "⟨⟩"
+                    | RTuple (l, soi) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
+                    | RProj (e, lbl, soi) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
+                    | RInj  ( lbl,e, soi) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
+                    | RCase (e, l, soi)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
+                    | RLam (x, e, soi) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | RLamWithType (t, x, e, soi) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
+                    | RApp (e1, e2, soi)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
+                    | RTAbs (x, e, soi) => "(Λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | RTApp (e1, e2, soi)=> "("^ se e1 ^ " ["^ st e2 ^"])"
+                    | RPack (t, e, soi)=> "pack("^ st t ^ ", "^ se e ^")"
+                    | ROpen (e, (t, x, e2), soi)=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
+                    | RFold (e, soi) => "fold(" ^ se e ^")"
+                    | RUnfold (e, soi) => "unfold("^  se e ^")"
+                    | RFix (x, e, soi) => "(fix " ^ ss x ^ "." ^   se e ^")"
+                    | RStringLiteral (l, soi) => "\"" ^ ss l ^"\""
+                    | RIntConstant (l, soi) => "(" ^ Int.toString l ^")"
+                    | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
+                    | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
+                    | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                 end
 
 and show_typecheckingRDecl x = let

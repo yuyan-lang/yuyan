@@ -1,4 +1,5 @@
 structure TypeCheckingAST = struct
+    open Operators
 
     type EVar = UTF8String.t
     type TVar = UTF8String.t
@@ -60,28 +61,33 @@ structure TypeCheckingAST = struct
                        (* Do not need open : Require all references to open use fully qualified name  *)
                        (* | COpenStructure of StructureName.t *)
 
+    (* stores the source level information that directly correponds to opCompString, that can 
+    be used to resconstruct the expression *)
+    type sourceOpInfo = Operators.operator (* should be the operator except rapp *)
     (* RExpr for raw expr *)
     datatype RExpr = RExprVar of StructureName.t
-                    | RUnitExpr
-                    | RTuple of RExpr list
-                    | RProj of RExpr * Label
-                    | RInj of Label * RExpr
-                    | RCase of RExpr * (Label * EVar * RExpr) list
-                    | RLam of EVar * RExpr
-                    | RLamWithType of Type * EVar * RExpr
-                    | RApp of RExpr * RExpr
-                    | RTAbs of TVar * RExpr
-                    | RTApp of RExpr * Type
-                    | RPack of Type * RExpr
-                    | ROpen of RExpr * (TVar * EVar * RExpr)
-                    | RFold of RExpr
-                    | RUnfold of RExpr
-                    | RFix of EVar * RExpr
-                    | RStringLiteral of UTF8String.t
-                    | RIntConstant of int
-                    | RRealConstant of real
-                    | RLetIn of RDeclaration list * RExpr
-                    | RFfiCCall of RExpr * RExpr
+                    | RUnitExpr of sourceOpInfo
+                    | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
+                    | RProj of RExpr * Label * sourceOpInfo
+                    | RInj of Label * RExpr * sourceOpInfo
+                    | RCase of RExpr * (Label * EVar * RExpr) list * (sourceOpInfo  (* top case *)
+                            * sourceOpInfo list  (* case separator *)
+                            * sourceOpInfo list (* case clause *))
+                    | RLam of EVar * RExpr * sourceOpInfo
+                    | RLamWithType of Type * EVar * RExpr * sourceOpInfo
+                    | RApp of RExpr * RExpr * sourceOpInfo (* if op is not app, then custom operators *)
+                    | RTAbs of TVar * RExpr * sourceOpInfo
+                    | RTApp of RExpr * Type * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
+                    | RPack of Type * RExpr * (UTF8String.t * sourceOpInfo)
+                    | ROpen of RExpr * (TVar * EVar * RExpr) * sourceOpInfo
+                    | RFold of RExpr * sourceOpInfo
+                    | RUnfold of RExpr * sourceOpInfo
+                    | RFix of EVar * RExpr * sourceOpInfo
+                    | RStringLiteral of UTF8String.t  * MixedStr.quoteinfo
+                    | RIntConstant of int * UTF8String.t
+                    | RRealConstant of real * UTF8String.t
+                    | RLetIn of RDeclaration list * RExpr * sourceOpInfo
+                    | RFfiCCall of RExpr * RExpr * sourceOpInfo
                     
 
 

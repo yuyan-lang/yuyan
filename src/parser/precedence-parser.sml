@@ -461,7 +461,7 @@ structure PrecedenceParser  = struct
                     | (MixedStr.Name(s, qi) :: xs) => 
                             [(ParseOpAST(QuotedName(s), []), xs)]
                     | (MixedStr.Literal (s, qi) :: xs) => 
-                            [(ParseOpAST(StringLiteral(s), []), xs)]
+                            [(ParseOpAST(StringLiteral(s, qi), []), xs)]
                     | _ => [] (* fail for all other cases *)
 
                 

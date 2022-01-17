@@ -2,6 +2,7 @@
 structure ParseAST =
 struct
 open Operators
+
 open OpAST
    datatype ParseRule = OperatorNameComponent of UTF8String.t * operator
                             | OperatorInternal of operator
@@ -21,7 +22,7 @@ open OpAST
                             | UnknownIdComp of UTF8Char.t
                             | Binding of UTF8String.t
                             | QuotedName of UTF8String.t
-                            | StringLiteral of UTF8String.t
+                            | StringLiteral of UTF8String.t * MixedStr.quoteinfo
                             | UnparsedExpr of MixedStr.t 
                             | UnparsedDecl of MixedStr.t list (* any quoted thing is treated as unparsed arg *)
                             (* should just go ahead and parse the expression *)

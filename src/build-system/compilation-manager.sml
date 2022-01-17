@@ -179,8 +179,8 @@ a new module is added with root Path being the file's residing directory *)
     (inmodule : compilationmodule)
     (resolutionStack : (filepath* StructureName.t) list) (* require information *)
     (cm : compilationmanager) : string (* resolved file name *)
-    =
-        let val allFilePathsInModule = listAllFilesInModule inmodule 
+    = "Not Implemented"
+        (* let val allFilePathsInModule = listAllFilesInModule inmodule 
             fun findUniqueReferenceAmongFiles (filepaths : filepath list) : string option = 
                 let
                     val _ = List.map (fn x => findOrAddFile x NONE cm) filepaths
@@ -215,7 +215,7 @@ a new module is added with root Path being the file's residing directory *)
                                     (* raise UnresolvedReference sname *)
                                     ;"<<ERR: UNRESOLVED REFERENCE>>"))
                       end
-        end
+        end *)
                             
 
 
@@ -226,7 +226,7 @@ a new module is added with root Path being the file's residing directory *)
 let 
 val module = lookupModuleForFilePath fp cm 
 (* val _ = DebugPrint.p "got module" *)
-val unresolvedNames = IdentifierNameResolution.getUnresolvedIdentifiersSignatureTopLevel tcast (#name (#moduleInfo module))
+(* val unresolvedNames = IdentifierNameResolution.getUnresolvedIdentifiersSignatureTopLevel tcast (#name (#moduleInfo module)) *)
 (* val _ = DebugPrint.p ("got unresolved names " ^ PrettyPrint.show_sttrlist unresolvedNames) *)
 in 
 Success (StrDict.empty)

@@ -139,30 +139,30 @@ datatype 'a gcontext = Context of StructureName.t * bool *
     in
         case e of
             RExprVar v => RExprVar v
-            | RUnitExpr => RUnitExpr
-            | RTuple l => RTuple (map (substTypeInRExpr tS x) l)
-            | RInj (l, e) => RInj (l, substTypeInRExpr tS x e)
-            | RProj (e, l) => RProj (substTypeInRExpr tS x e, l)
-            | RCase (e, l) => RCase (substTypeInRExpr tS x e, (
+            | RUnitExpr(soi) => RUnitExpr (soi)
+            | RTuple (l, soi) => RTuple (map (substTypeInRExpr tS x) l, soi)
+            | RInj (l, e, soi) => RInj (l, substTypeInRExpr tS x e, soi)
+            | RProj (e, l, soi) => RProj (substTypeInRExpr tS x e, l, soi)
+            | RCase (e, l, soi) => RCase (substTypeInRExpr tS x e, (
                 (map (fn (l, ev, e) => 
                 (l, ev, substTypeInRExpr tS x e) ) l)
-            ))
-            | RLam (ev, e)=> RLam (ev, substTypeInRExpr tS x e)
-            | RLamWithType (t, ev, e) => RLamWithType (substTypeInType tS x t, ev, substTypeInRExpr tS x e)
-            | RApp (e1, e2) => RApp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2)
-            | RTAbs (tv, e2) => (
+            ), soi)
+            | RLam (ev, e, soi)=> RLam (ev, substTypeInRExpr tS x e, soi)
+            | RLamWithType (t, ev, e, soi) => RLamWithType (substTypeInType tS x t, ev, substTypeInRExpr tS x e, soi)
+            | RApp (e1, e2, soi) => RApp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2, soi)
+            | RTAbs (tv, e2, soi) => (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in RTAbs (tv', substTypeInRExpr tS x 
-                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2)) 
+                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2), soi) 
                                     end
             else  (* No capture, regular *)
-            if [tv] ~~~= x then RTAbs (tv, e2)
-             else RTAbs (tv, substTypeInRExpr tS x e2)
+            if [tv] ~~~= x then RTAbs (tv, e2, soi)
+             else RTAbs (tv, substTypeInRExpr tS x e2, soi)
             ) 
-            | RTApp (e2, t) => RTApp(substTypeInRExpr tS x e2, substTypeInType tS x t )
-            | RPack (t, e2) => RPack(substTypeInType tS x t, substTypeInRExpr tS x e2)
-            | ROpen (e1, (tv, ev, e2)) => ROpen(
+            | RTApp (e2, t, soi) => RTApp(substTypeInRExpr tS x e2, substTypeInType tS x t , soi)
+            | RPack (t, e2, soi) => RPack(substTypeInType tS x t, substTypeInRExpr tS x e2, soi)
+            | ROpen (e1, (tv, ev, e2), soi) => ROpen(
                 substTypeInRExpr tS x e1, (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
@@ -171,19 +171,19 @@ datatype 'a gcontext = Context of StructureName.t * bool *
                                     end
             else  (* No capture, regular *)
              (tv, ev, substTypeInRExpr tS [tv] e2))
-            )
-            | RFold e2 => RFold (substTypeInRExpr tS x e2)
-            | RUnfold e2 => RUnfold (substTypeInRExpr tS x e2)
-            | RFix (ev, e)=> RFix (ev, substTypeInRExpr tS x e)
+            , soi)
+            | RFold (e2, soi) => RFold (substTypeInRExpr tS x e2, soi)
+            | RUnfold (e2, soi) => RUnfold (substTypeInRExpr tS x e2, soi)
+            | RFix (ev, e, soi)=> RFix (ev, substTypeInRExpr tS x e, soi)
             | RStringLiteral l => RStringLiteral l
             | RIntConstant l => RIntConstant l
             | RRealConstant l => RRealConstant l
-            | RFfiCCall(e, e2) => RFfiCCall(substTypeInRExpr tS x e, 
-                    substTypeInRExpr tS x e2
+            | RFfiCCall(e, e2, soi) => RFfiCCall(substTypeInRExpr tS x e, 
+                    substTypeInRExpr tS x e2, soi
                 )
-            | RLetIn(decls, e) => 
+            | RLetIn(decls, e, soi) => 
                 RLetIn(substituteTypeInRSignature tS x decls, 
-                    substTypeInRExpr tS x e)
+                    substTypeInRExpr tS x e, soi)
     end
 
     and substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
@@ -250,5 +250,51 @@ returns the canonical name (adding curSName if ommitted)
             else NONE
 
 
+    (* reconstruct the original string from rexpr, used for generating error information *)
+    fun reconstructFromRExpr (e : RExpr) : UTF8String.t = 
+    let 
+    fun constructWithSep ((h::t) : UTF8String.t list) (sepl : operator list) = 
+        foldl (fn (next, (s, (oph::opt))) => (reconstructWithArgs oph [acc, reconstructFromRExpr next], opt)) (h, sepl) t
+    open Operators
+    in
+    case e of
+        RExprVar v => StructureName.toString v
+        | RUnitExpr(soi) => reconstructWithArgs soi []
+        | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
+        | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
+        | RInj  ( lbl,e, soi) => reconstructWithArgs soi [lbl, reconstructFromRExpr e]
+        | RCase (e, l, (soiTop, soiSep, soiClause))=>
+                reconstructWithArgs soiTop [reconstructWithArgs e, 
+                    constructWithSep (
+                        List.pairmap (fn ((a,b,c), operClause) => reconstructWithArgs operClause [a,b, reconstructFromRExpr c]) (l, soiClause)
+                    ) soiSep
+                ]
+        | RLam (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
+        | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [t, x, reconstructFromRExpr e]
+        | RApp (e1, e2, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
+            then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
+            else let
+                fun flatten e = case e of 
+                    RApp(e1', e2', soi') => if Operators.eqOpUid soi soi'
+                                            then e1' :: flatten e2'
+                                            else e
+                    | _ => e
+                in 
+                    reconstructWithArgs soi (e1 :: flatten e2)
+                end
+                                        
+        | RTAbs (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
+        | RTApp (e1, e2, (soi,s))=> reconstructWithArgs soi [reconstructFromRExpr e1, s]
+        | RPack (t, e, (s, soi))=> reconstructWithArgs soi [s, reconstructFromRExpr e]
+        | ROpen (e, (t, x, e2), soi)=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
+        | RFold (e, soi) => "fold(" ^ se e ^")"
+        | RUnfold (e, soi) => "unfold("^  se e ^")"
+        | RFix (x, e, soi) => "(fix " ^ ss x ^ "." ^   se e ^")"
+        | RStringLiteral (l, soi) => "\"" ^ ss l ^"\""
+        | RIntConstant (l, soi) => "(" ^ Int.toString l ^")"
+        | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
+        | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
+        | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
+    end
     
 end

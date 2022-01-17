@@ -55,7 +55,7 @@ structure CompilationTokens = struct
                 ((tokensInfo := Token (UTF8String.getSourceRange s,s, (TokenInfo TkTpIdentifierReference)) :: (!tokensInfo)); ())
             | NewOpName s => 
                 ((tokensInfo := Token (UTF8String.getSourceRange s,s, (TokenInfo TkTpIdentifierBinder)) :: (!tokensInfo)  ); ())
-            | OpStrLiteral  s =>
+            | OpStrLiteral  (s, qi) =>
                 ((tokensInfo := Token (UTF8String.getSourceRange s,s, (TokenInfo TkTpStringLiteral)) :: (!tokensInfo)  ); ())
             | _ => ()
             (* | OpUnparsedExpr of MixedStr.t (* not used *)
