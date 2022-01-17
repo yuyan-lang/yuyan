@@ -29,10 +29,10 @@ struct
     let 
         fun putQuoteAround (u : UTF8String.t)((ql, qr): quoteinfo) = 
             ql :: u @ [qr]
-        fun singleQuoteAround (u : UTF8String.t) = 
+        (* fun singleQuoteAround (u : UTF8String.t) = 
             SpecialChars.leftSingleQuote :: u @ [SpecialChars.rightSingleQuote]
         fun doubleQuoteAround (u : UTF8String.t) = 
-            SpecialChars.leftDoubleQuote :: u @ [SpecialChars.rightDoubleQuote]
+            SpecialChars.leftDoubleQuote :: u @ [SpecialChars.rightDoubleQuote] *)
     in
     case  u of 
     UnparsedExpression(s, q) => putQuoteAround (toUTF8String s) q

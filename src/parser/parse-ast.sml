@@ -24,7 +24,7 @@ open OpAST
                             | QuotedName of UTF8String.t
                             | StringLiteral of UTF8String.t * MixedStr.quoteinfo
                             | UnparsedExpr of MixedStr.t 
-                            | UnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list (* any quoted thing is treated as unparsed arg *)
+                            | UnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list  * MixedStr.quoteinfo (* any quoted thing is treated as unparsed arg *)
                             (* should just go ahead and parse the expression *)
                             (* | UnparsedExpr of MixedStr.t any quoted thing is treated as unparsed arg *)
                             | PlaceHolder (* should not appear anywhere in final result *)

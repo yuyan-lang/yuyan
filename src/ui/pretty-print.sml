@@ -100,7 +100,7 @@ case x of
     | UnknownIdComp s => "UnknownIdComp "^ UTF8Char.toString s
     | Binding id => "Binding "^ UTF8String.toString id
     | QuotedName s => "QuotedName "^UTF8String.toString s
-    | UnparsedDecl l => "UnparsedDecl "^ String.concatWith ", " (map show_mixedstr (map (#1)l))
+    | UnparsedDecl (l, qi) => "UnparsedDecl "^ String.concatWith ", " (map show_mixedstr (map (#1)l))
     | UnparsedExpr l => "UnparsedExpr "^ show_mixedstr l
     | PlaceHolder => "PlaceHolder "
     | StringLiteral (s, qi) => "StringLiteral " ^ UTF8String.toString s
@@ -113,7 +113,7 @@ end
       OpAST (oper, l) => (show_op oper) ^ "[" ^ String.concatWith ", " (map show_opast l) ^ "]"
       | UnknownOpName s => "?[" ^ UTF8String.toString s ^ "]"
       | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
-      | OpUnparsedDecl s => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr (map (#1) s))) ^ "]"
+      | OpUnparsedDecl(s, qi) => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr (map (#1) s))) ^ "]"
       | OpUnparsedExpr s => "[EXPR:" ^ show_mixedstr s ^ "]"
       | OpStrLiteral (s, qi) => "[LITERAL(size="^ Int.toString (length s) ^"):" ^ UTF8String.toString s ^ "]"
     end

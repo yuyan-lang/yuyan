@@ -69,7 +69,7 @@ struct
                     | (QuotedName s, l)  => UnknownOpName s
                     | (Binding l, [])  => NewOpName l
                     | (UnparsedExpr l, [])  => OpUnparsedExpr l
-                    | (UnparsedDecl l, [])  => OpUnparsedDecl l
+                    | (UnparsedDecl (l, qi), [])  => OpUnparsedDecl(l, qi)
                     | (StringLiteral (l, qi), [])  => OpStrLiteral (l, qi)
                     | (OperatorNameComponent f, _)  => raise Fail (PrettyPrint.show_parseopast past)
                     | f => raise ElaborationFail (ParseOpAST f)

@@ -73,7 +73,7 @@ please provide trivial functions *)
     (notifyDeclarationParsingResult : PreprocessingAST.t -> 'c) 
     : (MixedStr.t list) -> TypeCheckingAST.RSignature witherrsoption =
     let 
-    val _ = DebugPrint.p "Entering config"
+    (* val _ = DebugPrint.p "Entering config" *)
 
     val noPossibleParseErrInfo = "不能够理解(parse)输入"
     fun ambiguousParse (x : ParseAST.ParseOpAST list) = "输入有多于一种理解方式：\n" ^
@@ -262,7 +262,7 @@ please provide trivial functions *)
                     then (
                         let val preprocessedTree = 
                             case (hd l) of
-                            OpUnparsedDecl d => preprocessAST (map (#1) d)
+                            OpUnparsedDecl(d, qi) => preprocessAST (map (#1) d)
                             | _ => raise ElaborateFailure "Expect declaration block as first argument to let in"
                         in 
                         preprocessedTree >>= (fn tree => 
@@ -278,7 +278,8 @@ please provide trivial functions *)
                     raise ElaborateFailure "Expected Expression constructs 224"
                 )
                 end
-                | _ => 
+            | OpUnparsedDecl t =>  genSingletonError (OpAST.reconstructOriginalFromOpAST ast) "期待表达式，却遇到了声明块(expected expression, unexpected declaration block)" NONE
+            | _ =>
                 raise ElaborateFailure "Expected Expression constructs 227"
         )
         handle ElaborateFailure s => 
@@ -352,6 +353,7 @@ please provide trivial functions *)
                     | POpenStructure(sname) =>  (* open will be as if there is a local declaration with 
                     the same name as the public members of the structure *)
                         ROpenStructure(sname) ::: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname)))
+                    | PEmptyDecl => trailingNoOps()
                 )
                 end
         )
@@ -417,7 +419,10 @@ please provide trivial functions *)
             | _ => raise Fail "pp26: malformed output : not two args or three args"
         (* val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res) *)
         in res end
-        handle DeclarationParser.DeclNoParse (expr) => Success(PDirectExpr expr)
+        handle DeclarationParser.DeclNoParse (expr) => (
+            if length expr = 0 then Success (PEmptyDecl)
+            else Success(PDirectExpr expr)
+        )
         (* handle ECPNoPossibleParse x => raise ECPNoPossibleParse (x ^ 
             "\n when parsing declaration " ^ MixedStr.toString s)
         handle ElaborateFailure x => raise ElaborateFailure (x ^ 

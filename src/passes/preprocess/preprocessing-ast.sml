@@ -2,7 +2,7 @@ structure PreprocessingAST = struct
 
 
 
-    datatype pJudgment = PEmpty
+    datatype pJudgment = PEmptyDecl
                        | PTypeMacro of UTF8String.t * MixedStr.t
                        | PTermTypeJudgment of UTF8String.t * MixedStr.t
                        | PTermMacro of UTF8String.t * MixedStr.t

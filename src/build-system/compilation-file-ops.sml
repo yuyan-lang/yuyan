@@ -57,8 +57,7 @@ open StaticErrorStructure
         in MixedStr.makeDecl content >>=
         (fn stmtASTwithEi =>
         let
-                            (* filter out empty strings *)
-            val stmtAST = List.filter (fn (x) => length x <> 0) (map (fn (x, ei) => x) stmtASTwithEi)
+            val stmtAST =  (map (fn (x, ei) => x) stmtASTwithEi)
             val _ = if DEBUG then DebugPrint.p (PrettyPrint.show_mixedstrs stmtAST) else ()
             val tokensInfo : token list ref = ref []
             val typeCheckingAST = ExpressionConstructionPass.configureAndConstructTypeCheckingASTTopLevel

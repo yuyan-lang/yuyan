@@ -79,13 +79,13 @@ open StaticErrorStructure
         end)
         handle 
         (* TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s) *)
-     ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
-      | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
+     ElaboratePrecedence.ElaborationFail s => (DebugPrint.p "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
+      | ExpressionConstructionPass.ElaborateFailure s => (DebugPrint.p "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
       (* |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "ecp parse failed\n"; print s)
       |  ExpressionConstructionPass.ECPAmbiguousParse s=> (print "ecp parse failed\n"; print s) *)
-      |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
-      |  KMachineOps.InternalFailure s=> print ( "internal failure  (bug) \n\n" ^ s)
-      | DeclarationParser.DeclAmbiguousParse ls => print ("decl ambiguous parse " ^ String.concatWith "\n possible parse : " 
+      |  MixedStr.InternalFailure s=> DebugPrint.p ( "\n\n" ^ MixedStr.toString s)
+      |  KMachineOps.InternalFailure s=> DebugPrint.p ( "internal failure  (bug) \n\n" ^ s)
+      | DeclarationParser.DeclAmbiguousParse ls => DebugPrint.p ("decl ambiguous parse " ^ String.concatWith "\n possible parse : " 
             (map (fn (oper, args) => PrettyPrint.show_op oper ^ " args: " ^ PrettyPrint.show_mixedstrs args) ls))
       (* | OS.Path.Path => DebugPrint.p ("Path exception") *)
 

@@ -6,7 +6,7 @@ open Operators
                     | UnknownOpName of UTF8String.t
                     | NewOpName of UTF8String.t
                     | OpUnparsedExpr of MixedStr.t 
-                    | OpUnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list
+                    | OpUnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list * MixedStr.quoteinfo
                     | OpStrLiteral of (UTF8String.t * MixedStr.quoteinfo)
     type t= OpAST
 
@@ -17,6 +17,6 @@ open Operators
             | UnknownOpName s =>  s
             | NewOpName s =>  s
             | OpUnparsedExpr m => MixedStr.toUTF8String m
-            | OpUnparsedDecl ml => raise Fail "unimplemented, opast"
+            | OpUnparsedDecl ml => MixedStr.toUTF8StringChar (MixedStr.UnparsedDeclaration ml)
             | OpStrLiteral (s, (ql, qr)) => ql :: s @[qr]
 end
