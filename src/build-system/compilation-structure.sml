@@ -15,10 +15,11 @@ struct
         CompilationFile  of   
             {fp: string (* file path *)
             , content: (UTF8String.t * Time.time) witherrsoption (* file content  and accessed time *)
+            , tokensInfo : token list (* for lsp, no errors should happen here *)
             , typeCheckingInfo: (TypeCheckingAST.RSignature 
               (* list of parse tokens, for LSP *)
               (* TODO: optimize, no need to generate tokens info when compiling on command line*)
-              * token list ) witherrsoption (* parsed *)
+               ) witherrsoption (* parsed *)
             , dependencyInfo: StructureName.t list StrDict.dict witherrsoption (* list of file paths that this file depends on, for dependency resolution *)
             , typeCheckedInfo: (TypeCheckingAST.CSignature ) witherrsoption  (* type checked *)
             , cpsInfo: (CPSAst.cpscomputation * CPSAst.cpscomputation * 

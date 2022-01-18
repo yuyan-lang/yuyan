@@ -24,6 +24,7 @@ open CompilationFileOps
             val CompilationFile{
                                     fp=fp
                                 , content=content
+                                , tokensInfo = tokensInfo
                                 , typeCheckingInfo=typecheckingast
                                 , dependencyInfo=dependencyInfo
                                 , typeCheckedInfo=typecheckedast
@@ -48,6 +49,7 @@ open CompilationFileOps
                       then CompilationFile {
                                     fp=fp
                                 , content=newContent
+                                , tokensInfo = []
                                 , typeCheckingInfo=NotAvailable
                                 , dependencyInfo=NotAvailable
                                 , typeCheckedInfo=NotAvailable
@@ -57,9 +59,9 @@ open CompilationFileOps
                       else file (* return the original file if content are not updated *)
                     )
                 else 
-                let val (newTypeCheckingInfo, updatedTCkingInfo) = 
+                let val ((newTypeCheckingInfo, newTokensInfo), updatedTCkingInfo) = 
                         if StaticErrorStructure.isSuccess typecheckingast andalso not updatedContent
-                        then ( typecheckingast, false)
+                        then ( (typecheckingast, tokensInfo), false)
                         else (constructTypeCheckingAST (#1 (StaticErrorStructure.valOf newContent)), true)
                     val _ = if DEBUG then DebugPrint.p 
                     ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ "\n") else ()
@@ -70,6 +72,7 @@ open CompilationFileOps
                           then CompilationFile {
                                     fp=fp
                                 , content=newContent
+                                , tokensInfo=newTokensInfo
                                 , typeCheckingInfo=newTypeCheckingInfo
                                 , dependencyInfo=NotAvailable
                                 , typeCheckedInfo=NotAvailable
@@ -82,7 +85,7 @@ open CompilationFileOps
                     let val (newDependencyInfo, updatedDependencyInfo) = 
                             if StaticErrorStructure.isSuccess dependencyInfo andalso not updatedTCkingInfo
                             then ( dependencyInfo, false)
-                            else (findFileDependenciesTopLevel (#1 
+                            else (findFileDependenciesTopLevel ( 
                             (StaticErrorStructure.valOf newTypeCheckingInfo)) , true)
                         val _ = if DEBUG then DebugPrint.p "Computed Dependency\n" else ()
                     in
@@ -92,6 +95,7 @@ open CompilationFileOps
                             then CompilationFile {
                                         fp=fp
                                     , content=newContent
+                                    , tokensInfo=newTokensInfo
                                     , typeCheckingInfo=newTypeCheckingInfo
                                     , dependencyInfo=newDependencyInfo
                                     , typeCheckedInfo=NotAvailable
@@ -105,7 +109,7 @@ open CompilationFileOps
                                 if StaticErrorStructure.isSuccess typecheckedast andalso not updatedDependencyInfo
                                 then ( typecheckedast, false)
                                 else (TypeCheckingEntry.typeCheckSignatureTopLevel 
-                                    (#1 (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
+                                    ( (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
                             val _ = if DEBUG then DebugPrint.p "Computed TypeCheck\n" else ()
                         in 
                             if levelInt <= (levelToInt UpToLevelTypeCheckedInfo)
@@ -114,6 +118,7 @@ open CompilationFileOps
                                 then CompilationFile {
                                             fp=fp
                                         , content=newContent
+                                        , tokensInfo=newTokensInfo
                                         , typeCheckingInfo=newTypeCheckingInfo
                                         , dependencyInfo=newDependencyInfo
                                         , typeCheckedInfo=newTypeCheckedInfo
@@ -134,6 +139,7 @@ open CompilationFileOps
                                     then CompilationFile {
                                                 fp=fp
                                             , content=newContent
+                                            , tokensInfo=newTokensInfo
                                             , typeCheckingInfo=newTypeCheckingInfo
                                             , dependencyInfo=newDependencyInfo
                                             , typeCheckedInfo=newTypeCheckedInfo
@@ -154,6 +160,7 @@ open CompilationFileOps
                                         then CompilationFile {
                                                     fp=fp
                                                 , content=newContent
+                                                , tokensInfo=newTokensInfo
                                                 , typeCheckingInfo=newTypeCheckingInfo
                                                 , dependencyInfo=newDependencyInfo
                                                 , typeCheckedInfo=newTypeCheckedInfo

@@ -402,7 +402,7 @@ in case file of
     "<CompilationFile: \n" 
     ^ "\nfp : " ^ (#fp f)
     ^ "\ncontent: " ^ show_static_error (#content f) (fn (utf8s, time) => show_utf8string utf8s) 
-    ^ "\ntypeCheckingInfo: " ^ show_static_error (#typeCheckingInfo f)( fn (rsig, tokens) => show_typecheckingRSig rsig)
+    ^ "\ntypeCheckingInfo: " ^ show_static_error (#typeCheckingInfo f)( fn (rsig) => show_typecheckingRSig rsig)
     ^ "\ndependencyInfo: " ^ show_static_error (#dependencyInfo f)(fn (sl) => "[Dependencies]")
     ^ "\ntypeCheckedInfo: " ^ show_static_error (#typeCheckedInfo f)(fn (csig) => show_typecheckingCSig csig)
     ^ "\ncpsInfo: " ^ show_static_error (#cpsInfo f)(fn (cps, cloconv, llvm) => 

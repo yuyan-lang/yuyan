@@ -18,6 +18,7 @@ open StaticErrorStructure
         CompilationFile {
                                             fp=(#fp file)
                                         , content=Success((UTF8String.fromStringAndFile newContent (#fp file), Time.now()))
+                                        , tokensInfo = []
                                         , typeCheckingInfo=NotAvailable
                                         , dependencyInfo=NotAvailable
                                         , typeCheckedInfo=NotAvailable
@@ -30,6 +31,7 @@ open StaticErrorStructure
         updateFileContent content (CompilationFile {
                                             fp=access fp
                                         , content=NotAvailable
+                                        , tokensInfo = []
                                         , typeCheckingInfo=NotAvailable
                                         , dependencyInfo=NotAvailable
                                         , typeCheckedInfo=NotAvailable
@@ -41,6 +43,7 @@ open StaticErrorStructure
         CompilationFile {
                                             fp=access fp
                                         , content=NotAvailable
+                                        , tokensInfo = []
                                         , typeCheckingInfo=NotAvailable
                                         , dependencyInfo=NotAvailable
                                         , typeCheckedInfo=NotAvailable
@@ -51,30 +54,31 @@ open StaticErrorStructure
 
     fun constructTypeCheckingAST 
         (content : UTF8String.t) : (TypeCheckingAST.RSignature 
-              * token list) witherrsoption = 
+              ) witherrsoption  * token list= 
         let 
-        open CompilationTokens
-        in MixedStr.makeDecl content >>=
-        (fn stmtASTwithEi =>
-        let
-            val stmtAST =  (map (fn (x, ei) => x) stmtASTwithEi)
-            val _ = if DEBUG then DebugPrint.p (PrettyPrint.show_mixedstrs stmtAST) else ()
             val tokensInfo : token list ref = ref []
-            val typeCheckingAST = ExpressionConstructionPass.configureAndConstructTypeCheckingASTTopLevel
-            (updateUsefulTokensFromOpAST tokensInfo)
-            (updateUsefulTokensFromDeclarationParser tokensInfo)
-            (fn x => ())
-            (stmtAST)
+            val tcast = MixedStr.makeDecl content >>=
+            (fn stmtASTwithEi =>
+            let
+                val stmtAST =  (map (fn (x, ei) => x) stmtASTwithEi)
+                val _ = if DEBUG then DebugPrint.p (PrettyPrint.show_mixedstrs stmtAST) else ()
+                val typeCheckingAST = ExpressionConstructionPass.configureAndConstructTypeCheckingASTTopLevel
+                (updateUsefulTokensFromOpAST tokensInfo)
+                (updateUsefulTokensFromDeclarationParser tokensInfo)
+                (fn x => ())
+                (stmtAST)
+                (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
+                in 
+                    (typeCheckingAST >>= (fn t => Success (t)))
+                end
+            )
             val sortedTokens = ListMergeSort.sort 
                     (* true if gt *)
                     (fn (Token(SourceRange.StartEnd(_, l1, c1, _, _),_,_), Token(SourceRange.StartEnd(_, l2, c2, _, _),_, _))
                     => if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false)
                     (!tokensInfo) 
-            (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
-            in 
-                typeCheckingAST >>= (fn t => Success (t, sortedTokens))
-            end
-        )
+        open CompilationTokens
+        in (tcast, sortedTokens)
         end
 
     fun constructCPSInfo (typeCheckedAST : TypeCheckingAST.CSignature) : (CPSAst.cpscomputation * CPSAst.cpscomputation * 
