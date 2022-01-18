@@ -125,18 +125,27 @@ struct
     let 
     open JSON
     open JSONUtil
+
+    fun requestTypeCheck() = 
+        CompilationManager.requestFileProcessing
+            (FileResourceURI.make (getDocumentPath params))
+            CompilationStructure.UpToLevelTypeCheckedInfo
+            (LanguageServer.getCM server)
+
     fun addFileBufferContent(content : string) =
-        (CompilationManager.findOrAddFile
+        ((CompilationManager.findOrAddFile
             (FileResourceURI.make (getDocumentPath params))
             (SOME content)
             (LanguageServer.getCM server);
-            ())
+            ());
+            requestTypeCheck())
 
     fun updateFileBufferContent(content : string) =
-        CompilationManager.updateContentForFilepath
+        (CompilationManager.updateContentForFilepath
             (FileResourceURI.make (getDocumentPath params))
             content
-            (LanguageServer.getCM server)
+            (LanguageServer.getCM server);
+            requestTypeCheck())
     in 
     case method of
      "textDocument/didOpen" => addFileBufferContent((asString (get ((Option.valOf params),[SEL "textDocument", SEL "text"]))))
@@ -167,6 +176,8 @@ struct
     let 
     open JSON
     open JSONUtil
+    val diagnosticJsonsToSend = LspDiagnostics.collectAndSendAllDiagnosticsJSONs (LanguageServer.getCM server)
+    val _ = map sendJSON diagnosticJsonsToSend
     val jsonValue = readJSONFromLSP()
     val method = asString (lookupField jsonValue "method") 
     val params = (findField jsonValue "params") 

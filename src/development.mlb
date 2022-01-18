@@ -93,6 +93,7 @@ local
         
         lsp/language-server.sml
         lsp/syntax-highlight.sml
+        lsp/lsp-diagnostics.sml
         lsp/language-server-mode.sml
 
         

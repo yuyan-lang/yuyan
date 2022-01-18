@@ -41,6 +41,8 @@ structure CompilationManager = struct
         = let val module = lookupModuleForFilePath filepath cm
           in StrDict.lookup (!(#files module)) (access filepath)
           end
+        
+    
 
     exception ModuleSpecMalformed of string
     fun getModuleInfo (rootPath : filepath) (name : StructureName.t) : moduleinfo = 
@@ -320,6 +322,18 @@ end
         cm
     end
         (* check if the current directory has a package.yyon file *)
+    
+    (* returns errors one element per file *)
+    fun collectAllDiagnostics(cm : compilationmanager) : (string * StaticErrorStructure.errlist) list = 
+    let
+    val allFiles = List.concat (map (fn (s,m) => (StrDict.toList (!(#files m)))) ((!(#importedModules cm))))
+    val diagnostics = (List.map(fn (s, f) =>  case  (CompilationFileOps.getFileDiagnostics f) of 
+        SOME l => (s, l) | NONE => (s, [])) allFiles)
+    in
+    diagnostics
+    end
+
+
         
         
 end

@@ -93,6 +93,8 @@ Library
 
   structure StaticErrorStructure
   structure PrintDiagnostics
+
+  structure LspDiagnostics
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -172,6 +174,7 @@ is
   lsp/language-server-mode.sml
   lsp/language-server.sml
   lsp/syntax-highlight.sml
+  lsp/lsp-diagnostics.sml
 
   build-system/compilation-manager.sml
   build-system/compilation-tokens.sml

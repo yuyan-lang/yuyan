@@ -63,7 +63,10 @@ struct
             (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ MixedStr.toString exp ^ "\n"); *)
         case l of
             [] => SOME({opComps=[], args=[]})
-            | [OpCompExpr] => SOME({opComps=[OpCompExpr], args=[exp]})
+            | [OpCompExpr] => 
+            (* forbid empty exp at the end tc-2.yuyan test*)
+                if length exp = 0 then NONE else
+                    SOME({opComps=[OpCompExpr], args=[exp]})
             | (OpCompExpr :: (OpCompString s) :: t) => 
                 let val  (parsed, remaining) = parseUntil s exp
                 in (case  parseDeclarationSingleOp (OpCompString s :: t) remaining

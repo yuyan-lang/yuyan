@@ -36,4 +36,7 @@ structure URIUtil = struct
         decodePercentStr (cutOffProtocol uri)
 
 
+    fun pathToUri (path : string) : string = 
+        "file://" ^ path
+
 end
