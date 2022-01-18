@@ -20,9 +20,10 @@ struct
     val publicStructureOp = Operators.parseOperatorStr "有书〇曰〇" false false 0 []
     val privateStructureOp = Operators.parseOperatorStr "吾书〇曰〇" false false 0 []
     val openStructureOp = Operators.parseOperatorStr "观〇之书" false false 0 []
+    val importStructureOp = Operators.parseOperatorStr "览〇之书" false false 0 []
     
     val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, opDeclarationOp, commentOp,
-    publicStructureOp, privateStructureOp, openStructureOp]
+    publicStructureOp, privateStructureOp, openStructureOp, importStructureOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t
     exception PreprocessMalformedPrecedence of UTF8String.t

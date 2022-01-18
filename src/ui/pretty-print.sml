@@ -133,6 +133,7 @@ case x of
   | PStructure(v, name, ebody) => (if v then "public" else "private") ^
     " structure " ^ UTF8String.toString name ^ " = " ^ show_mixedstrs ebody
   | POpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
+  | PImportStructure(name) => "import " ^ StructureName.toStringPlain name ^ "" 
   | PComment(ebody) => "/* comment : -- */ "
   end
 fun show_preprocessaast x = let

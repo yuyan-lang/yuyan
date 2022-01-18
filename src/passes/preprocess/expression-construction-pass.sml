@@ -45,6 +45,7 @@ struct
     fun ::/ ((x,y), (xs,ys)) =(x :: xs, y :: ys)
     infix 5 ::/
 
+    (* returns list of N arguments with a list of N-1 intermediate operators *)
     fun flattenRight (ast : OpAST.OpAST) (curOp : Operators.operator)  : OpAST list  * operator list= 
         case ast of
         OpAST(oper, [l1,l2]) => if oper ~=** curOp
@@ -406,18 +407,26 @@ please provide trivial functions *)
                 then Success(POpDeclaration (tp l1, parseAssoc (tp l2), NumberParser.parseInteger (tp l3)))
                 else raise Fail "pp85"
             | (oper, [l1]) =>  
-                if oper ~=** commentOp
-                then Success(PComment (l1))
-                else 
-                if oper ~=** openStructureOp
-                then let 
-                val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp] (l1)
-                val _ = notifyParseOpAST parsedStructureRef
-                val names = #1 (flattenRight parsedStructureRef structureRefOp)
-                        in fmap POpenStructure (collectAll (map elaborateUnknownName names))
-                end 
-                else
-                raise Fail "pp95"
+                let fun getStructureName (s : MixedStr.t ) : StructureName.t witherrsoption = 
+                    let 
+                        val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp] (l1)
+                        val _ = notifyParseOpAST parsedStructureRef
+                        val names = #1 (flattenRight parsedStructureRef structureRefOp)
+                    in 
+                        (collectAll (map elaborateUnknownName names))
+                    end
+                in
+                    if oper ~=** commentOp
+                    then Success(PComment (l1))
+                    else 
+                    if oper ~=** openStructureOp
+                    then fmap POpenStructure (getStructureName l1)
+                    else
+                    if oper ~=** importStructureOp
+                    then fmap PImportStructure (getStructureName l1)
+                    else
+                    raise Fail "pp95"
+                end
             | _ => raise Fail "pp26: malformed output : not two args or three args"
         (* val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res) *)
         in res end
