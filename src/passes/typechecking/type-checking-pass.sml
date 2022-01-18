@@ -466,11 +466,13 @@ infix 6 =/=
             case s of
             [] => Success(ctx, acc)
             (* normalize should not change the set of free variables *)
-        | RTypeMacro (n, t)::ss => if freeTVar (applyContextToType ctx t) <> [] then 
-            Errors.typeDeclContainsFreeVariables n
+        | RTypeMacro (n, t)::ss => 
+        let val freeTVars = freeTVar (applyContextToType ctx t) in if freeTVars <> [] then 
+            Errors.typeDeclContainsFreeVariables (StructureName.toString (hd freeTVars))
             else 
             normalizeType (applyContextToType ctx t) >>= (fn normalizedType => 
             typeCheckSignature (addToCtxR (TypeDef([n], normalizedType, ())) ctx) ss (acc))
+            end
         | RTermTypeJudgment(n, t):: ss => if freeTVar (applyContextToType ctx t) <> [] 
             then Errors.termTypeDeclContainsFreeVariables n
             (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)

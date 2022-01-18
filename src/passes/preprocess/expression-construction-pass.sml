@@ -90,8 +90,8 @@ please provide trivial functions *)
         OpAST(oper, [NewOpName(l1), l2]) => if 
             oper ~=** labeledTypeCompOp 
             then elaborateOpASTtoType l2 ctx >>= (fn l2' => Success (l1, l2'))
-            else raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
-        | _ => raise ElaborateFailure "Expect labeledTypeComp as a child of prod/sum"
+            else genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
+        | _ => genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
 
     and elaborateOpASTtoType 
          (ast : OpAST.OpAST) (ctx : contextType) : TypeCheckingAST.Type witherrsoption = 
@@ -143,6 +143,7 @@ please provide trivial functions *)
                     "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
                     ^PrettyPrint.show_opast ast ^ "\n")
             )
+            | OpUnparsedDecl t =>  genSingletonError (OpAST.reconstructOriginalFromOpAST ast) "期待类型表达式，却遇到了声明块(expected type expression, unexpected declaration block)" NONE
             | _ => raise ElaborateFailure "Expected a type constructor 124"
         )
         handle ElaborateFailure s => 
@@ -275,7 +276,8 @@ please provide trivial functions *)
                         end
                     )
                     else
-                    raise ElaborateFailure "Expected Expression constructs 224"
+                    genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式结构(expected expression construct)" (SOME "你是否使用了类型表达式？请使用普通表达式。")
+                    (* raise ElaborateFailure "Expected Expression constructs 224" *)
                 )
                 end
             | OpUnparsedDecl t =>  genSingletonError (OpAST.reconstructOriginalFromOpAST ast) "期待表达式，却遇到了声明块(expected expression, unexpected declaration block)" NONE
