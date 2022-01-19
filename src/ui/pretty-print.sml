@@ -120,26 +120,27 @@ end
 
 
 fun show_preprocessaastJ x = let
+open OpAST
 open PreprocessingAST
 in 
 case x of 
-   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ " = " ^ MixedStr.toString tbody
-  | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ MixedStr.toString tbody
-  | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ MixedStr.toString ebody
-  | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ MixedStr.toString  ebody
+   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody
+  | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_opast tbody
+  | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody
+  | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_opast  ebody
   | POpDeclaration(opName, assoc, pred) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
   ) ^ " " ^ UTF8String.toString opName ^ Int.toString pred
-  | PDirectExpr(ebody) => "/* eval */ " ^ MixedStr.toString ebody ^ "/* end eval */ " 
+  | PDirectExpr(ebody) => "/* eval */ " ^ show_opast ebody ^ "/* end eval */ " 
   | PStructure(v, name, ebody) => (if v then "public" else "private") ^
-    " structure " ^ UTF8String.toString name ^ " = " ^ show_mixedstrs ebody
-  | POpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
-  | PImportStructure(name) => "import " ^ StructureName.toStringPlain name ^ "" 
+    " structure " ^ UTF8String.toString name ^ " = " ^ show_preprocessaast ebody
+  | POpenStructure(name) => "open " ^ show_opast name ^ "" 
+  | PImportStructure(name) => "import " ^ show_opast name ^ "" 
   | PComment(ebody) => "/* comment : -- */ "
   end
-fun show_preprocessaast x = let
+and show_preprocessaast x = let
 open PreprocessingAST
 in 
-String.concatWith "\n" (map show_preprocessaastJ x) ^ "\n"
+"{" ^ String.concatWith "\n" (map show_preprocessaastJ x) ^ "\n" ^ "}"
   end
 
 (* fun show_statementast x = let 

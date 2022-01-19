@@ -68,7 +68,6 @@ local
         ui/pretty-print.sml
         passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml
-        passes/preprocess/preprocessing-pass.sml
         passes/typechecking/type-checking-pass.sml
         execution/k-machine-ops.sml
         passes/erase/erasure-pass.sml
@@ -82,6 +81,7 @@ local
         parser/mixfix-parser.sml
    
         passes/preprocess/expression-construction-pass.sml
+        passes/preprocess/preprocessing-pass.sml
         passes/typechecking/identifier-name-resolution.sml
         build-system/compilation-file-ops.sml
         build-system/compilation-file-processing.sml

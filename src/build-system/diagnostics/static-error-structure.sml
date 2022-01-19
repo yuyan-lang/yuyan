@@ -87,6 +87,8 @@ struct
         in 
             res
         end
+    fun mapM (f : 'a -> 'b witherrsoption ) (l : 'a list) = 
+        collectAll (map f l )
 
     fun genSingletonError(loc: UTF8String.t ) ( msghd : string ) (msgdetail : string option) : 'a witherrsoption =
         DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail) ]

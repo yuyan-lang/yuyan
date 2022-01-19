@@ -38,7 +38,7 @@ infix 6 =/=
             [] => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") NONE
              (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
             | TermTypeJ(n1, t1, u)::cs => 
-                (case checkRefersTo n1 n curSName 
+                (case StructureName.checkRefersTo n1 n curSName 
                 of SOME(cname) => Success (cname, t1)
                 | NONE => lookupMapping cs n curSName
                 )

@@ -62,14 +62,15 @@ open StaticErrorStructure
             let
                 val stmtAST =  (map (fn (x, ei) => x) stmtASTwithEi)
                 val _ = if DEBUG then DebugPrint.p (PrettyPrint.show_mixedstrs stmtAST) else ()
-                val typeCheckingAST = ExpressionConstructionPass.configureAndConstructTypeCheckingASTTopLevel
-                (updateUsefulTokensFromOpAST tokensInfo)
+                (* (updateUsefulTokensFromOpAST tokensInfo)
                 (updateUsefulTokensFromDeclarationParser tokensInfo)
-                (fn x => ())
-                (stmtAST)
+                (fn x => ()) *)
+                (* (stmtAST) *)
                 (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
                 in 
-                    (typeCheckingAST >>= (fn t => Success (t)))
+                    (* (typeCheckingAST >>= (fn t => Success (t))) *)
+                    (PreprocessingPass.preprocessASTTopLevel stmtASTwithEi) >>=
+                    ExpressionConstructionPass.constructTypeCheckingASTTopLevel 
                 end
             )
             val sortedTokens = ListMergeSort.sort 

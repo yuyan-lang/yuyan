@@ -49,6 +49,19 @@ val separatorChar = [UTF8Char.fromString "之" NONE]
             (c1::cs1, c2::cs2) => if UTF8String.semanticEqual c1 c2 then c2::(getAgreedPrefixParts cs1 cs2)
                                   else []
             | _ => []
-    
+
+(* determine if curSName |-> toCheck refers to referred through the following basic rules:
+1. A refers to A (reflexive) return A
+2.  A->B->E->F |-> C->D refers to A->B->C->D returns A->B->C->D
+3. A->B->E->F |-> D does not refer to A->B->C->D 
+
+returns the canonical name (adding curSName if ommitted)
+*)
+ 
+    fun checkRefersTo(referred : structureName) (toCheck : structureName) (curSName : structureName) : structureName option = 
+      if semanticEqual referred toCheck then SOME(toCheck) else 
+            if semanticEqual (stripPrefixOnAgreedParts curSName referred) toCheck
+            then SOME((getAgreedPrefixParts curSName referred)@toCheck)
+            else NONE
 
 end
