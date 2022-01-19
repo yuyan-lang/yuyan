@@ -80,7 +80,7 @@ open StaticErrorStructure
         handle 
         (* TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s) *)
      ElaboratePrecedence.ElaborationFail s => (DebugPrint.p "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
-      | ExpressionConstructionPass.ElaborateFailure s => (DebugPrint.p "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
+      (* | ExpressionConstructionPass.ElaborateFailure s => (DebugPrint.p "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s ) *)
       (* |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "ecp parse failed\n"; print s)
       |  ExpressionConstructionPass.ECPAmbiguousParse s=> (print "ecp parse failed\n"; print s) *)
       |  MixedStr.InternalFailure s=> DebugPrint.p ( "\n\n" ^ MixedStr.toString s)

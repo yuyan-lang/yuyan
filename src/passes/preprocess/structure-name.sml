@@ -59,9 +59,24 @@ returns the canonical name (adding curSName if ommitted)
 *)
  
     fun checkRefersTo(referred : structureName) (toCheck : structureName) (curSName : structureName) : structureName option = 
+    (
+        let 
+        (* val _ = DebugPrint.p ("checking refers to referred=" ^ toStringPlain referred ^
+            " toCheck=" ^  toStringPlain toCheck ^
+            " curSName=" ^ toStringPlain curSName) *)
+            val res = 
       if semanticEqual referred toCheck then SOME(toCheck) else 
             if semanticEqual (stripPrefixOnAgreedParts curSName referred) toCheck
             then SOME((getAgreedPrefixParts curSName referred)@toCheck)
             else NONE
+            (* val _ = DebugPrint.p ("result is " ^ (case res of 
+                SOME _ => "true" 
+                | NONE => "false")) *)
+
+
+        in 
+        res
+        end
+    )
 
 end

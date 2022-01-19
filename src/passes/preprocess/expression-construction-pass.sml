@@ -11,8 +11,8 @@ struct
     infix 6 =/=
 
   structure PrecParser = MixFixParser
-    exception ElaborateFailure of string
-    exception InternalErrorECP
+    (* exception ElaborateFailureInternal of string *)
+    (* exception InternalErrorECP *)
 
 (* structureName will use the global naming convention *)
     type structureName = StructureName.t
@@ -40,7 +40,8 @@ struct
     fun elaborateUnknownName (ast : OpAST) : UTF8String.t witherrsoption = 
         case ast of
         UnknownOpName(l1) => Success l1
-        | _ => raise ElaborateFailure "Expect name here, (this is perhaps a bug in the design, but until we fix it, put a bracket around the name expecting expressions,  the parser may have incorrectly parsed that as an expression)"
+        | _ => genSingletonError (reconstructOriginalFromOpAST ast) ("内部错误：期待绑定名称(expected unknown name)。这可能是一个设计的局限性，直到我们更改设计之前，请在把名称用引号括起来。") NONE
+        (* raise Fail "Expect name here, (this is perhaps a bug in the design, but until we fix it, put a bracket around the name expecting expressions,  the parser may have incorrectly parsed that as an expression)" *)
 
     fun getStructureName (s : OpAST ) : StructureName.t witherrsoption = 
                             let 
@@ -52,7 +53,7 @@ struct
     fun elaborateNewName (ast : OpAST) : UTF8String.t witherrsoption = 
         case ast of
         NewOpName(l1) => Success (l1)
-        | _ => raise ElaborateFailure "Expect new name (perhaps internal)"
+        | _ => raise Fail "Expect new name (perhaps internal)"
 
 
         (* handle PrecedenceParser.NoPossibleParse s =>  *)
@@ -83,7 +84,9 @@ struct
                 if oper ~=** unitTypeOp then Success(UnitType)
                 else if oper ~=** nullTypeOp then Success(NullType)
                 (* else if oper ~=** builtinTypeStringOp then BuiltinType(BIString) *)
-                else raise InternalErrorECP
+                else 
+                (* raise InternalErrorECP *)
+                genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
                         )
             | OpAST(oper, [a1,a2]) => (
                 if oper ~=** prodTypeOp
@@ -113,16 +116,19 @@ struct
                 else 
                 if oper ~=** structureRefOp
                 then fmap TypeVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
-                else
-                raise ElaborateFailure (
+                else 
+                genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
+                (* raise ElaborateFailure (
                     "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
-                    ^PrettyPrint.show_opast ast ^ "\n")
+                    ^PrettyPrint.show_opast ast ^ "\n") *)
             )
             | OpUnparsedDecl t =>  genSingletonError (OpAST.reconstructOriginalFromOpAST ast) "期待类型表达式，却遇到了声明块(expected type expression, unexpected declaration block)" NONE
-            | _ => raise ElaborateFailure "Expected a type constructor 124"
+            | _ => 
+                genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
+            (* raise ElaborateFailure "Expected a type constructor 124" *)
         )
-        handle ElaborateFailure s => 
-        raise ElaborateFailure (s ^ "\n when elaborating type "^ PrettyPrint.show_opast ast )
+        (* handle ElaborateFailure s => 
+        raise ElaborateFailure (s ^ "\n when elaborating type "^ PrettyPrint.show_opast ast ) *)
     
     and elaborateOpASTtoExpr  (ast : OpAST.t)(ctx : contextType) : TypeCheckingAST.RExpr witherrsoption = 
     let fun snd (x : OpAST list) : OpAST = (hd (tl x))
@@ -188,8 +194,12 @@ struct
                                                                 )
                                                                     )
                                                                 ) 
-                                                                else raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x)
-                                                                | _ => raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x)
+                                                                else 
+                                                                    genSingletonError (reconstructOriginalFromOpAST x) "期待一个分析分句(expected a case clause)" NONE
+                                                                (* raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x) *)
+                                                                | _ =>
+                                                                    genSingletonError (reconstructOriginalFromOpAST x) "期待一个分析分句(expected a case clause)" NONE
+                                                                 (* raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x) *)
                                                     ) args) >>= (fn l => 
                                         let val cases  = map (#1) l
                                             val casesOps = map (#2) l
@@ -239,7 +249,9 @@ struct
                         let val preprocessedTree = 
                             case (hd l) of
                             OpParsedDecl(d) => Success(d)
-                            | _ => raise ElaborateFailure "Expect declaration block as first argument to let in"
+                            | _ => 
+                            genSingletonError (reconstructOriginalFromOpAST ast) "期待虑块的第一个参数是结构(Expect declaration block as first argument to let in)" NONE
+                           (* raise ElaborateFailure "Expect declaration block as first argument to let in" *)
                         in 
                         preprocessedTree >>= (fn tree => 
                         let
@@ -258,10 +270,11 @@ struct
                 end
             | OpUnparsedDecl t =>  genSingletonError (OpAST.reconstructOriginalFromOpAST ast) "期待表达式，却遇到了声明块(expected expression, unexpected declaration block)" NONE
             | _ =>
-                raise ElaborateFailure "Expected Expression constructs 227"
+                    genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式结构(expected expression construct)" NONE
+                (* raise ElaborateFailure "Expected Expression constructs 227" *)
         )
-        handle ElaborateFailure s => 
-        raise ElaborateFailure (s ^ "\n when elaborating expr "^ PrettyPrint.show_opast ast )
+        (* handle ElaborateFailure s => 
+        raise ElaborateFailure (s ^ "\n when elaborating expr "^ PrettyPrint.show_opast ast ) *)
     end
 
             
@@ -321,8 +334,8 @@ struct
                 )
                 end
         )
-        handle ElaborateFailure x => raise ElaborateFailure (x ^ 
-            "\n when elaborating declaration " ^ PrettyPrint.show_preprocessaast ast)
+        (* handle ElaborateFailure x => raise ElaborateFailure (x ^ 
+            "\n when elaborating declaration " ^ PrettyPrint.show_preprocessaast ast) *)
                 
 
     and constructTypeCheckingASTTopLevel

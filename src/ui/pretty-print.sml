@@ -53,7 +53,7 @@ struct
         end
     end
   fun show_ecpops (x) = String.concatWith ", \n" (map (fn (sname, _, opers) => 
-  StructureName.toStringPlain sname  ^ ": "^ String.concatWith ", "  (map show_op opers)) x)
+  StructureName.toStringPlain sname  ^ ": ["^ String.concatWith ", "  (map show_op opers) ^ "]" ) x)
 
  fun show_mixedstrchar(u : MixedStr.mixedchar) : string = 
     let 

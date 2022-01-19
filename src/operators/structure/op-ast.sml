@@ -16,7 +16,7 @@ struct
                        | PDirectExpr of OpAST
                        | PComment of MixedStr.t
                        | PStructure of bool * UTF8String.t  * pJudgment list(* bool is true if public *)
-                       | POpenStructure of OpAST (* bool is true if public *)
+                       | POpenStructure of OpAST 
                        | PImportStructure of OpAST
 
     and OpAST = OpAST of (operator * OpAST list )
@@ -37,5 +37,6 @@ struct
             | NewOpName s =>  s
             | OpUnparsedExpr m => MixedStr.toUTF8String m
             | OpUnparsedDecl ml => MixedStr.toUTF8StringChar (MixedStr.UnparsedDeclaration ml)
+            | OpParsedDecl l => raise Fail "reconstruct unimplemented opast"
             | OpStrLiteral (s, (ql, qr)) => ql :: s @[qr]
 end

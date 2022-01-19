@@ -20,8 +20,8 @@ structure PreprocessingPass = struct
     infix 6 =/=
 
   structure PrecParser = MixFixParser
-    exception ElaborateFailure of string
-    exception InternalErrorECP
+    (* exception ElaborateFailure of string *)
+    (* exception InternalErrorECP *)
 
 (* structureName will use the global naming convention *)
     type structureName = StructureName.t
@@ -34,29 +34,48 @@ structure PreprocessingPass = struct
     val ~=** = Operators.~=**
     infix 4 ~=**
 
-    fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list =
+    fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list witherrsoption=
         case ctx of
-            [] => raise ElaborateFailure ("Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context")
+            [] => ( genSingletonError (StructureName.toString sName) 
+                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") NONE)
             | ((s, v, opl):: ss) => 
             (* if StructureName.semanticEqual s sName then opl else lookupContextForOpers (curSName, curV,ss) sName *)
-            case StructureName.checkRefersTo s sName curSName of 
-                SOME cname => opl
-                | NONE => lookupContextForOpers (curSName, curV,ss) sName
-    fun lookupCurrentContextForOpers(ctx as (curSName,curV, imports) : contextType)  : Operators.operator list
-    = lookupContextForOpers ctx curSName
+            (case StructureName.checkRefersTo s sName curSName
+             of 
+                SOME cname => (
+                    (* DebugPrint.p "lookup returning true ";  *)
+                    Success(opl))
+                | NONE => (
+                    (* DebugPrint.p "lookup returning false ";  *)
+                    lookupContextForOpers (curSName, curV,ss) sName)
+                )
+    fun lookupCurrentContextForOpers(ctx as (curSName,curV, imports) : contextType)  : Operators.operator list 
+    = valOfSafe (lookupContextForOpers ctx curSName)
+        (fn e => raise Fail ("current structure name must be present \n looking up " ^  StructureName.toStringPlain curSName
+         ^ " imports are " ^ (PrettyPrint.show_ecpops imports)
+        )
+        )
+
+    fun lookupAllActiveOpers (ctx as (curSName, curV, imports) : contextType) : Operators.operator list = 
+     List.concat (List.mapPartial (fn (s, v, opl) => 
+        if StructureName.isPrefix s curSName then SOME (opl) else NONE
+    ) imports)
+
 
     fun insertIntoCurContextOp((curSName,curV, ctx) : contextType) (oper : Operators.operator) : contextType =
-        (curSName, curV, ((curSName,curV, oper::lookupContextForOpers (curSName, curV, ctx) curSName)
+        (curSName, curV, ((curSName,curV, oper:: lookupCurrentContextForOpers (curSName, curV, ctx) )
         :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
 
     fun insertIntoCurContextOps((curSName,curV, ctx) : contextType) (opers : Operators.operator list) : contextType =
-        (curSName, curV, ((curSName, curV, opers@lookupContextForOpers (curSName, curV, ctx) curSName)
+        (curSName, curV, ((curSName,curV, opers@ lookupCurrentContextForOpers (curSName, curV, ctx))
         :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
 
-    fun newContextAfterOpeningStructure(openName : StructureName.t ) (ctx : contextType) : contextType =
+    fun newContextAfterOpeningStructure(openName : StructureName.t ) (ctx : contextType) : contextType witherrsoption =
         let 
         in 
-        (insertIntoCurContextOps ctx (lookupContextForOpers ctx (openName)))
+            lookupContextForOpers ctx (openName) >>= (fn opl => 
+                    Success(insertIntoCurContextOps ctx opl)
+            )
         end
 
 
@@ -109,9 +128,9 @@ structure PreprocessingPass = struct
     (let
        (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
        val tp  = MixedStr.toPlainUTF8String
-       fun getDeclContent (x : MixedStr.t) : (MixedStr.t * MixedStr.endinginfo) list = case x of
-        [MixedStr.UnparsedDeclaration(y, qi)] =>  y
-        | _ => raise ElaborateFailure "expecting a single unparsed declaration"
+       fun getDeclContent (x : MixedStr.t) : (MixedStr.t * MixedStr.endinginfo) list witherrsoption = case x of
+        [MixedStr.UnparsedDeclaration(y, qi)] =>  Success(y)
+        | _ => genSingletonError (MixedStr.toUTF8String x) "期待单一的声明快(expecting a single unparsed declaration)" NONE
        val declParseTree = DeclarationParser.parseDeclarationSingleOutput declOps s
        (* val _ = notifyDeclarationParserResult declParseTree *)
        val res = case declParseTree of
@@ -125,9 +144,9 @@ structure PreprocessingPass = struct
             else if oper ~=** termDefinitionOp
             then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermDefinition (tp l1, l2), ctx))
             else if oper ~=** privateStructureOp
-            then  preprocessAST (getDeclContent l2) ctx   >>= (fn (content, newContext) =>  Success(PStructure (false, tp l1, content), newContext))
+            then  (getDeclContent l2) >>= (fn declblock =>  preprocessAST declblock ctx   >>= (fn (content, newContext) =>  Success(PStructure (false, tp l1, content), newContext)))
             else if oper ~=** publicStructureOp
-            then  preprocessAST  (getDeclContent l2) ctx   >>= (fn (content, newContext) => Success(PStructure (true, tp l1, content), newContext))
+            then  (getDeclContent l2) >>= (fn declblock =>  preprocessAST declblock ctx   >>= (fn (content, newContext) => Success(PStructure (true, tp l1, content), newContext)))
             else  
             raise Fail "pp34"
             | (oper, [l1, l2, l3]) =>  
@@ -152,7 +171,9 @@ structure PreprocessingPass = struct
                     else 
                     if oper ~=** openStructureOp
                     then ExpressionConstructionPass.getStructureName (getStructureOpAST l1) >>= (fn structureName => 
-                        Success(POpenStructure (getStructureOpAST l1), newContextAfterOpeningStructure structureName ctx)
+                        newContextAfterOpeningStructure structureName ctx >>= (fn newContext => 
+                            Success(POpenStructure (getStructureOpAST l1), newContext)
+                        )
                     )
                     else
                     if oper ~=** importStructureOp
@@ -186,7 +207,7 @@ structure PreprocessingPass = struct
 
     and parseTypeOrExpr (ebody : MixedStr.t)(ctx : contextType) : OpAST witherrsoption
     =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
-                (allTypeAndExprOps@ lookupCurrentContextForOpers ctx) ebody)
+                (allTypeAndExprOps@ lookupAllActiveOpers ctx) ebody)
            (* val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n") *)
            (* val _ = notifyParseOpAST parseTree *)
     in recursivelyTraverseAndParseOpAST parseTree ctx >>= (

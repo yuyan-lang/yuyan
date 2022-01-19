@@ -33,6 +33,11 @@ struct
             Success y => y
             | DErrors l => raise NotSuccess
             | NotAvailable => raise NotSuccess
+    fun valOfSafe  (x : 'a witherrsoption) (default : errlist option ->  'a): 'a =
+        case x of
+            Success y => y
+            | DErrors l => default (SOME l)
+            | NotAvailable => default NONE
         
     fun next (x : 'a witherrsoption) (f : 'a -> 'b witherrsoption) : 'b witherrsoption = 
         case x of
