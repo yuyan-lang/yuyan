@@ -6,17 +6,17 @@ struct
     fun addUIStatic (s : string) = "豫䷏ " ^ s ^ "\n"
 
 
-    fun process (input : string ) (options : ReplOptions.t ) (filename : string): string =
+    (* fun process (input : string ) (options : ReplOptions.t ) (filename : string): string =
     let 
         val res = TypeCheckAndEval.typeCheckAndEval input options filename
     in
         ""
-    end
+    end *)
 
     fun computeLocalFilename (fileNameOfLib : string) (fileNameInLib : string) : string = 
         OS.Path.concat (OS.Path.getParent(fileNameOfLib), fileNameInLib)
 
-    fun readFile (filename : string) : string =
+    (* fun readFile (filename : string) : string =
         let 
         val content = (TextIO.inputAll (TextIO.openIn filename))
         in if String.isSuffix "。豫库" filename
@@ -26,9 +26,9 @@ struct
                 (computeLocalFilename filename x)) names)
                 end)
             else content
-        end
+        end *)
     fun inputFile  (filename : string) (options : ReplOptions.t): unit = 
-         (process  (readFile (filename)) options filename; ())
+         (TypeCheckAndEval.typeCheckAndEval options filename NONE; ())
 
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r[kvv] filename.yuyan\n"
 
@@ -40,20 +40,22 @@ struct
              [cmd] => if cmd = "lsp" 
              then LanguageServerMode.startLSP()
              else (print aboutText; OS.Process.exit OS.Process.failure : unit)
-             |
-             (cmd :: fname :: []) => (inputFile  fname
-             {
-                 verbose=(
-                if String.isSubstring "vv" cmd
-                then 2
-                else 
-                if String.isSubstring "v" cmd
-                then 1 else 0
-                ),
-                usekmachine = String.isSubstring "k" cmd, 
-                exitOnFailure = true
-
-             })
+             | (cmd :: fname :: []) => (TypeCheckAndEval.typeCheckAndEval 
+                {
+                    verbose=(
+                    if String.isSubstring "vv" cmd
+                    then 2
+                    else 
+                    if String.isSubstring "v" cmd
+                    then 1 else 0
+                    ),
+                    usekmachine = String.isSubstring "k" cmd, 
+                    exitOnFailure = true
+                } fname (
+                    if String.isSubstring "profileLSPTokens"  cmd
+                    then SOME (ReplDebug.profileLSPTokens)
+                    else NONE
+                ))
             | _ => (print aboutText; OS.Process.exit OS.Process.failure : unit)
             end
 

@@ -20,11 +20,11 @@ struct
     fun sendJSON (x : JSON.value) : unit = 
     (
         let (* hack to get content length *)
-        val acc = ref (nil : TextPrimIO.vector_slice list) 
-        val writer = TextPrimIO.WR { name = "jsonhack", chunkSize = 1, writeVec = SOME (fn v => (  acc := !acc@[v]; 1)), writeArr = NONE, writeVecNB = NONE, writeArrNB = NONE, block = NONE, canOutput = NONE, getPos = NONE, setPos = NONE, endPos = NONE, verifyPos = NONE, close = fn () => (), ioDesc = NONE }
+        val lenRef = ref (0 : int)
+        val writer = TextPrimIO.WR { name = "jsonhack", chunkSize = 1, writeVec = SOME (fn v => (  lenRef := !lenRef+1; 1)), writeArr = NONE, writeVecNB = NONE, writeArrNB = NONE, block = NONE, canOutput = NONE, getPos = NONE, setPos = NONE, endPos = NONE, verifyPos = NONE, close = fn () => (), ioDesc = NONE }
         val stream = TextIO.mkOutstream (TextIO.StreamIO.mkOutstream (TextPrimIO.augmentWriter writer, IO.NO_BUF));
         val _ = JSONPrinter.print (stream, x);
-        val contentLength = length(!acc)
+        val contentLength = !lenRef
         in
         TextIO.output (TextIO.stdOut, "Content-Length: "^Int.toString contentLength ^"\r\n\r\n");
         print ("Content-Length: "^Int.toString contentLength ^"\r\n\r\n");

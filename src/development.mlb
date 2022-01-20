@@ -100,6 +100,7 @@ local
         
         ui/repl-options.sml
         ui/type-check-and-eval.sml
+        ui/repl-debug.sml
         ui/repl.sml
 
         mlton-exec.sml

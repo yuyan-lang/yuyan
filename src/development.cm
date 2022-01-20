@@ -96,6 +96,7 @@ Library
   structure PrintDiagnostics
 
   structure LspDiagnostics
+  structure ReplDebug
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -116,6 +117,7 @@ is
   ui/type-check-and-eval.sml
   ui/pretty-print.sml
   ui/repl-options.sml
+  ui/repl-debug.sml
   
   operators/builtin/builtin.sml
   operators/builtin/nat-ops.sml

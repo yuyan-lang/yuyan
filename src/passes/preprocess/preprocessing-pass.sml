@@ -209,17 +209,7 @@ structure PreprocessingPass = struct
                     "\n when parsing declaration " ^ MixedStr.toString s) *)
             )
 
-            (* and parseType (tbody : MixedStr.t)(ctx : contextType) : OpAST witherrsoption = 
-            let val parseTree = (PrecedenceParser.parseMixfixExpression allTypeOps tbody)
-                (* val _ = notifyParseOpAST parseTree *)
-                in (recursivelyTraverseAndParseOpAST parseTree ctx) end
-                handle PrecedenceParser.NoPossibleParse s => 
-                StaticErrorStructure.genSingletonErrorTuple (MixedStr.toUTF8String tbody)
-                    (PrecedenceParser.showParseExceptionInfo s (noPossibleParseErrInfo)) 
-                | PrecedenceParser.AmbiguousParse (alts, s) => 
-                    StaticErrorStructure.genSingletonErrorTuple (MixedStr.toUTF8String tbody)
-                        (PrecedenceParser.showParseExceptionInfo s (ambiguousParse alts)) *)
-
+           
             (* the result will not contain unparsed anything *)
             and parseTypeOrExpr (ebody : MixedStr.t)(ctx : contextType) : OpAST witherrsoption
             =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
