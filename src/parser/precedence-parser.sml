@@ -376,7 +376,7 @@ structure PrecedenceParser  = struct
                     | (x :: xs) => if MixedStr.isPlainChar x (* check if plain char *)
                                     then go exp [] 
                                     else case x of
-                                          MixedStr.Name(x, qi) => [(ParseOpAST(Binding x, []), xs)]
+                                          MixedStr.Name(x, qi) => [(ParseOpAST(QuotedBinding(x, qi), []), xs)]
                                     (* otherwise return the first name whatever that is *)
                                           | _ => [] (*fail if first term is not name, need name for binding *)
                 end
@@ -460,7 +460,7 @@ structure PrecedenceParser  = struct
                     | (MixedStr.UnparsedDeclaration(s,qi) :: xs) => 
                             [(ParseOpAST(UnparsedDecl(s, qi), []), xs)]
                     | (MixedStr.Name(s, qi) :: xs) => 
-                            [(ParseOpAST(QuotedName(s), []), xs)]
+                            [(ParseOpAST(QuotedName(s, qi), []), xs)]
                     | (MixedStr.Literal (s, qi) :: xs) => 
                             [(ParseOpAST(StringLiteral(s, qi), []), xs)]
                     | _ => [] (* fail for all other cases *)

@@ -116,7 +116,7 @@ structure CompilationTokens = struct
             (add opName TkTpIdentifierBinder; 
             add assocText TkTpLabel;
             add predText TkTpLabel)
-        | PDirectExpr(ebody) => (upOpAST ebody)
+        | PDirectExpr(ebody) => ((upOpAST ebody))
         | PStructure(v, name, ebody, soi) => (add name TkTpIdentifierBinder; upOpAST ebody; upOper soi TkTpStructureKeyword)
         | POpenStructure(name, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder;  upOper soi TkTpStructureKeyword)
         | PImportStructure(name, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder;  upOper soi TkTpStructureKeyword)

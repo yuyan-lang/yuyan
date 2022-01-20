@@ -66,8 +66,9 @@ struct
                         ) (elaborate argR) internalsArgL
                     | (ExpWithEOF, [opAST, ParseOpAST(EOF, [])])  => elaborate opAST
                     | (UnknownId, l)  => UnknownOpName ((map (fn ParseOpAST(UnknownIdComp  n, []) => n) l))
-                    | (QuotedName s, l)  => UnknownOpName s
+                    | (QuotedName (s, qi), l)  => OpParsedQuotedExpr(UnknownOpName s, qi)
                     | (Binding l, [])  => NewOpName l
+                    | (QuotedBinding (l, qi), [])  => OpParsedQuotedExpr(NewOpName l, qi)
                     | (UnparsedExpr (l, qi), [])  => OpUnparsedExpr (l, qi)
                     | (UnparsedDecl (l, qi), [])  => OpUnparsedDecl(l, qi)
                     | (StringLiteral (l, qi), [])  => OpStrLiteral (l, qi)

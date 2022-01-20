@@ -21,7 +21,8 @@ open OpAST
                             | UnknownId 
                             | UnknownIdComp of UTF8Char.t
                             | Binding of UTF8String.t
-                            | QuotedName of UTF8String.t
+                            | QuotedBinding of (UTF8String.t * MixedStr.quoteinfo)
+                            | QuotedName of (UTF8String.t * MixedStr.quoteinfo)
                             | StringLiteral of UTF8String.t * MixedStr.quoteinfo
                             | UnparsedExpr of (MixedStr.t  * MixedStr.quoteinfo)
                             | UnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list  * MixedStr.quoteinfo (* any quoted thing is treated as unparsed arg *)

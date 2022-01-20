@@ -41,6 +41,7 @@ struct
     fun elaborateUnknownName (ast : OpAST) : UTF8String.t witherrsoption = 
         case ast of
         UnknownOpName(l1) => Success l1
+        | OpParsedQuotedExpr(e, qi) => elaborateUnknownName e
         | _ => genSingletonError (reconstructOriginalFromOpAST ast) ("内部错误：期待绑定名称(expected unknown name)。这可能是一个设计的局限性，直到我们更改设计之前，请在把名称用引号括起来。") NONE
         (* raise Fail "Expect name here, (this is perhaps a bug in the design, but until we fix it, put a bracket around the name expecting expressions,  the parser may have incorrectly parsed that as an expression)" *)
 
@@ -54,6 +55,7 @@ struct
     fun elaborateNewName (ast : OpAST) : UTF8String.t witherrsoption = 
         case ast of
         NewOpName(l1) => Success (l1)
+        | OpParsedQuotedExpr(e, qi) => elaborateNewName e
         | _ => raise Fail "Expect new name (perhaps internal)"
 
     fun elaborateSingleStructure(ast : OpAST)  = 

@@ -99,7 +99,8 @@ case x of
     | UnknownId  => "UnknownId"
     | UnknownIdComp s => "UnknownIdComp "^ UTF8Char.toString s
     | Binding id => "Binding "^ UTF8String.toString id
-    | QuotedName s => "QuotedName "^UTF8String.toString s
+    | QuotedBinding (id, qi) => "Binding "^ UTF8String.toString id
+    | QuotedName (s, qi) => "QuotedName "^UTF8String.toString s
     | UnparsedDecl (l, qi) => "UnparsedDecl "^ String.concatWith ", " (map show_mixedstr (map (#1)l))
     | UnparsedExpr (l, qi) => "UnparsedExpr "^ show_mixedstr l
     | PlaceHolder => "PlaceHolder "
