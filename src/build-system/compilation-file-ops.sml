@@ -73,8 +73,14 @@ open StaticErrorStructure
                 content
             val sortedTokens = ListMergeSort.sort 
                     (* true if gt *)
-                    (fn (Token(SourceRange.StartEnd(_, l1, c1, _, _),_,_), Token(SourceRange.StartEnd(_, l2, c2, _, _),_, _))
-                    => if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false)
+                    (fn (Token(s1,_), Token(s2, _))
+                    => 
+                    let val SourceRange.StartEnd(_, l1, c1, _, _) = UTF8String.getSourceRange s1
+                        val SourceRange.StartEnd(_, l2, c2, _, _) = UTF8String.getSourceRange s2
+                    in
+                        if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false
+                    end
+                    )
                     (!tokensInfo) 
         in (result, sortedTokens)
         end

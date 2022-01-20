@@ -270,7 +270,7 @@ fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.
 fun show_utf8char (UTF8Char.UTF8Char(c, loc)) = UTF8.implode [c] ^ (case loc of SOME loc => show_source_location(loc) | NONE => "[NOLOC]")
 fun show_utf8string x = String.concatWith "+" (map show_utf8char x)
 fun show_utf8strings x = String.concatWith ", " (map show_utf8string x)
-fun show_token (CompilationTokens.Token(range, str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range range
+fun show_token (CompilationTokens.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str)
 fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
 fun show_typecheckingpassmappping x = let
 open TypeCheckingASTOps

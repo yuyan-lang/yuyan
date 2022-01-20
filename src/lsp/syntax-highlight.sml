@@ -71,8 +71,10 @@ open CompilationManager
     fun getDataFromTokens (tokens : token list) : int list= 
     let val sorted = tokens
     val (_, result) = 
-        foldl (fn (Token(SourceRange.StartEnd(_, ls, cs, le, ce), _,TokenInfo tktp), 
+        foldl (fn (Token(s,TokenInfo tktp), 
             ((pls, pcs), data))=> 
+            let val SourceRange.StartEnd(_, ls, cs, le, ce) = UTF8String.getSourceRange s
+            in
             ((ls, cs),
             data@[ls - pls, 
                 if ls = pls then cs - pcs else cs, 
@@ -80,6 +82,7 @@ open CompilationManager
                 TokenType.getIndex tktp,
                 0
                 ])
+            end
             ) ((0, 0), []) sorted
         in  result end
     
