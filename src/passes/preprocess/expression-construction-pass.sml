@@ -5,6 +5,7 @@ struct
     open Operators
     open PreprocessingOperators
     open OpAST
+    open OpASTOps
 
     open StaticErrorStructure
     infix 5 >>=
@@ -55,6 +56,12 @@ struct
         NewOpName(l1) => Success (l1)
         | _ => raise Fail "Expect new name (perhaps internal)"
 
+    fun elaborateSingleStructure(ast : OpAST)  = 
+                        case ast of
+                            OpParsedDecl(d) => Success(d)
+                            | _ => 
+                            genSingletonError (reconstructOriginalFromOpAST ast) "期待虑块的第一个参数是结构(Expect declaration block as first argument to let in)" NONE
+                           (* raise ElaborateFailure "Expect declaration block as first argument to let in" *)
 
         (* handle PrecedenceParser.NoPossibleParse s =>  *)
             (* raise ECPNoPossibleParse ("Parsing failed at " ^  s ^ " No possible parse. Double check your grammar.") *)
@@ -80,6 +87,7 @@ struct
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《小数》》") then Success(BuiltinType(BIReal)) else
                 Success(TypeVar [s])
             | OpUnparsedExpr x => raise Fail "ecp74"
+            | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoType e ctx
             | OpAST(oper, []) => (
                 if oper ~=** unitTypeOp then Success(UnitType)
                 else if oper ~=** nullTypeOp then Success(NullType)
@@ -122,7 +130,7 @@ struct
                     "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
                     ^PrettyPrint.show_opast ast ^ "\n") *)
             )
-            | OpUnparsedDecl t =>  genSingletonError (OpAST.reconstructOriginalFromOpAST ast) "期待类型表达式，却遇到了声明块(expected type expression, unexpected declaration block)" NONE
+            | OpUnparsedDecl t =>  genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式，却遇到了声明块(expected type expression, unexpected declaration block)" NONE
             | _ => 
                 genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
             (* raise ElaborateFailure "Expected a type constructor 124" *)
@@ -141,6 +149,7 @@ struct
                  )
               else Success (RExprVar [s])
             | OpUnparsedExpr x => raise Fail "ecp130"
+            | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoExpr e ctx
             | OpStrLiteral (l, qi) => Success (RStringLiteral (l, qi))
             | OpAST(oper, l) => 
                 let 
@@ -210,10 +219,10 @@ struct
                         end
                     else 
                     if oper ~=** typeAppExprOp
-                    then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, (operSuc =/= Success (OpAST.reconstructOriginalFromOpAST (snd l) ))))
+                    then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, (operSuc =/= Success (reconstructOriginalFromOpAST (snd l) ))))
                     else
                     if oper ~=** packExprOp
-                    then fmap RPack(==/= (elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, (Success (OpAST.reconstructOriginalFromOpAST (hd l))=/= operSuc)))
+                    then fmap RPack(==/= (elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, (Success (reconstructOriginalFromOpAST (hd l))=/= operSuc)))
                     else
                     if oper ~=** unpackExprOp
                     then fmap ROpen(==/= (elaborateOpASTtoExpr (hd l) ctx,
@@ -246,14 +255,10 @@ struct
                     else
                     if oper ~=** letinOp
                     then (
-                        let val preprocessedTree = 
-                            case (hd l) of
-                            OpParsedDecl(d) => Success(d)
-                            | _ => 
-                            genSingletonError (reconstructOriginalFromOpAST ast) "期待虑块的第一个参数是结构(Expect declaration block as first argument to let in)" NONE
-                           (* raise ElaborateFailure "Expect declaration block as first argument to let in" *)
+                        let 
+                            val preprocessedTree = elaborateSingleStructure (hd l)
                         in 
-                        preprocessedTree >>= (fn tree => 
+                        preprocessedTree >>= (fn (tree, qi) => 
                         let
                             (* val newOps = extractAllOperators tree *)
                             val declTree = constructOpAST tree ctx
@@ -268,7 +273,7 @@ struct
                     (* raise ElaborateFailure "Expected Expression constructs 224" *)
                 )
                 end
-            | OpUnparsedDecl t =>  genSingletonError (OpAST.reconstructOriginalFromOpAST ast) "期待表达式，却遇到了声明块(expected expression, unexpected declaration block)" NONE
+            | OpUnparsedDecl t =>  genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式，却遇到了声明块(expected expression, unexpected declaration block)" NONE
             | _ =>
                     genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式结构(expected expression construct)" NONE
                 (* raise ElaborateFailure "Expected Expression constructs 227" *)
@@ -289,7 +294,7 @@ struct
         StructureName.toStringPlain curSName ^ " with addedOps = " ^ PrettyPrint.show_ecpops addedOps ^"\n\n"); *)
         case ast of 
             [] => Success ([])
-            | (x :: xs) => 
+            | ((x, ei) :: xs) => 
                 let fun trailingNoOps() : 
                 TypeCheckingAST.RSignature witherrsoption = constructOpAST xs ctx 
                 fun ::: (x , y) = y >>= (fn y' => Success(x :: y'))
@@ -299,37 +304,38 @@ struct
                     (* = constructOpAST xs (insertIntoCurContextOp ctx addedOp) *)
                 in
                 (case x of 
-                    PTypeMacro(tname, tbody) => elaborateOpASTtoType tbody ctx  >>= 
+                    PTypeMacro(tname, tbody, soi) => elaborateOpASTtoType tbody ctx  >>= 
                             (fn t  => RTypeMacro(tname, t) ::: trailingNoOps())
-                    | PTermTypeJudgment(ename, tbody) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
+                    | PTermTypeJudgment(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
                             RTermTypeJudgment(ename, t) ::: trailingNoOps())
-                    | PTermMacro(ename, ebody) => elaborateOpASTtoExpr ebody ctx >>= (fn e => 
+                    | PTermMacro(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn e => 
                             RTermMacro(ename, e) ::: trailingNoOps())
-                    | PTermDefinition(ename, ebody) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 
+                    | PTermDefinition(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 
                         RTermDefinition(ename, eb) ::: trailingNoOps())
-                    | POpDeclaration(opName, assoc, pred) => trailingWithOps() 
+                    | POpDeclaration(opName, assoc, pred, soi) => trailingWithOps() 
                     | PDirectExpr(ebody) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 
                     RDirectExpr(eb) ::: trailingNoOps())
                     | PComment _ => trailingNoOps()
-                    | PStructure(publicVisible, sname, decls) => 
+                    | PStructure(publicVisible, sname, decls, soi) => 
                         (* preprocessAST decls >>= (fn preprocessedTree => 
                                             let val newOps = extractAllOperators preprocessedTree
                                                 val declTree = constructOpAST preprocessedTree ctx *)
                                             (* in declTree >>= (fn ds =>  *)
+                                            elaborateSingleStructure (decls) >>= (fn (decls, qi)  =>
                                             constructOpAST decls ctx >>= (fn ds => 
                                             RStructure(publicVisible,sname,  ds):::
                                                 (* constructOpAST xs (curSName, curV, ((curSName@[sname], publicVisible, newOps):: addedOps)) ) *)
-                                                constructOpAST xs ctx)
+                                                constructOpAST xs ctx) )
                                             (* end *)
                         
-                    | POpenStructure(sname) =>  (* open will be as if there is a local declaration with 
+                    | POpenStructure(sname, soi) =>  (* open will be as if there is a local declaration with 
                     the same name as the public members of the structure *)
                         (* ROpenStructure(sname) ::: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname))) *)
                         let 
                         in
                                 getStructureName(sname) >>= (fn sname => ROpenStructure(sname) ::: constructOpAST xs (ctx))
                         end
-                    | PImportStructure(name) => raise Fail "unimplemented"
+                    | PImportStructure(name, soi) => raise Fail "unimplemented"
                     | PEmptyDecl => trailingNoOps()
                 )
                 end

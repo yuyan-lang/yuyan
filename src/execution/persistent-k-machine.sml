@@ -41,6 +41,7 @@ struct
         | PKApp(c1, c2) => PKApp(substitutePKValueInComp v x c1, substitutePKValueInComp v x c2)
         | PKRet(vc) => PKRet(substitutePKValueInValue v x vc)
         | PKFix(id, e) => if x = id then PKFix(id, e) else PKFix(id, substitutePKValueInComp v x e)
+        | _ => raise Fail "pk44"
     
     fun fromKValue (kv : kvalue) : pkvalue = 
       case kv of
@@ -67,6 +68,7 @@ struct
         | KFix(f) => let 
               val boundId = UID.next() 
               in PKFix(boundId, fromKComp(f(KVar boundId))) end
+        | _ => raise Fail "pk71"
 
           
 

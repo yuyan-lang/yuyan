@@ -7,6 +7,7 @@ val separatorChar = [UTF8Char.fromString "之" NONE]
     fun toString x = case x of
         [x] => x
         | (x :: xs) => x@separatorChar@toString xs
+        | _ => raise Fail "sn10"
 
     fun toStringPlain x = UTF8String.toString (toString x)
     (* val topLevelName = [UTF8String.fromString "__BUILTIN_STRUCTURE_NAME_TOP_LEVEL"] *)

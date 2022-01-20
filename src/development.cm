@@ -17,6 +17,7 @@ Library
   structure PrecedenceParser
   structure Operators
   structure OpAST
+  structure OpASTOps
   structure ParseAST
   structure BracketScanner
 
@@ -125,6 +126,7 @@ is
   operators/structure/operator-registry.sml
   operators/structure/operators.sml
   operators/structure/op-ast.sml
+  operators/structure/op-ast-ops.sml
 
   util/debug-print.sml
   util/source-location.sml

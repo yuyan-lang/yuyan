@@ -90,7 +90,7 @@ structure PreprocessingPass = struct
      String.concatWith "\n" (map (fn x => "可以这样理解：" ^ PrettyPrint.show_parseopast x ) x)
 
 
-    and parsePOperator (POpDeclaration(opName, assoc, pred)) =let 
+    and parsePOperator (POpDeclaration(opName, assoc, pred, soi)) =let 
                     val oper = Operators.parseOperator 
                             opName (assoc <> Operators.NoneAssoc) (assoc = Operators.LeftAssoc) pred []
                             in (
@@ -99,18 +99,18 @@ structure PreprocessingPass = struct
     and extractAllOperators (ast : PreprocessingAST.t) : Operators.operator list = 
         case ast of 
             [] => []
-            | (x :: xs) => 
+            | ((x, ei) :: xs) => 
                 (case x of 
-                     POpDeclaration(opName, assoc, pred) => parsePOperator(x) :: extractAllOperators xs
+                     POpDeclaration(opName, assoc, pred, soi) => parsePOperator(x) :: extractAllOperators xs
                     | _ => extractAllOperators xs
                 )
     and recursivelyTraverseAndParseOpAST(s : OpAST) (ctx as (curSname, vis, info): contextType) : (OpAST * contextType) witherrsoption = 
         case s of 
             OpUnparsedDecl (l, qi) => preprocessAST l ctx >>= (fn (past, newContext) =>  
             (* TODO: Important: chain context through *)
-                Success (OpParsedDecl past, newContext)
+                Success (OpParsedDecl(past, qi), newContext)
             )
-            | OpUnparsedExpr e => parseTypeOrExpr e ctx >>= (fn (parsed) => Success(parsed, ctx))
+            | OpUnparsedExpr (e,qi) => parseTypeOrExpr e ctx >>= (fn (parsed) => Success(OpParsedQuotedExpr(parsed, qi), ctx))
             | OpAST (oper, l) => (
                 if Operators.eqOpUid oper PreprocessingOperators.letinOp 
                 then (case l of 
@@ -128,31 +128,37 @@ structure PreprocessingPass = struct
     (let
        (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
        val tp  = MixedStr.toPlainUTF8String
-       fun getDeclContent (x : MixedStr.t) : (MixedStr.t * MixedStr.endinginfo) list witherrsoption = case x of
-        [MixedStr.UnparsedDeclaration(y, qi)] =>  Success(y)
+       fun getDeclContent (x : MixedStr.t) : (OpAST * contextType) witherrsoption = case x of
+        [MixedStr.UnparsedDeclaration(y, qi)] => (
+                preprocessAST y ctx >>=  (fn (preprocessedAST, newContext) => 
+                    Success(OpParsedDecl(preprocessedAST, qi), newContext)
+                )
+            )
         | _ => genSingletonError (MixedStr.toUTF8String x) "期待单一的声明快(expecting a single unparsed declaration)" NONE
        val declParseTree = DeclarationParser.parseDeclarationSingleOutput declOps s
        (* val _ = notifyDeclarationParserResult declParseTree *)
        val res = case declParseTree of
             (oper, [l1, l2]) => 
             if oper ~=** typeMacroOp
-            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2), ctx))
+            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx))
             else if oper ~=** termTypeJudgmentOp
-            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermTypeJudgment (tp l1, l2), ctx))
+            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermTypeJudgment (tp l1, l2, oper), ctx))
             else if oper ~=** termMacroOp
-            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2), ctx))
+            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx))
             else if oper ~=** termDefinitionOp
-            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermDefinition (tp l1, l2), ctx))
+            then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermDefinition (tp l1, l2, oper), ctx))
             else if oper ~=** privateStructureOp
-            then  (getDeclContent l2) >>= (fn declblock =>  preprocessAST declblock ctx   >>= (fn (content, newContext) =>  Success(PStructure (false, tp l1, content), newContext)))
+            then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
+            Success(PStructure (false, tp l1, declOpAST, oper), newContext))
             else if oper ~=** publicStructureOp
-            then  (getDeclContent l2) >>= (fn declblock =>  preprocessAST declblock ctx   >>= (fn (content, newContext) => Success(PStructure (true, tp l1, content), newContext)))
+            then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
+            Success(PStructure (true, tp l1, declOpAST, oper), newContext))
             else  
             raise Fail "pp34"
             | (oper, [l1, l2, l3]) =>  
                 if oper ~=** opDeclarationOp
                 then 
-                let val newOp = POpDeclaration (tp l1, parseAssoc (tp l2), NumberParser.parseInteger (tp l3))
+                let val newOp = POpDeclaration (tp l1, parseAssoc (tp l2), NumberParser.parseInteger (tp l3), (tp l2, tp l3, oper))
                     val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
                 in
                     Success(newOp, newContext)
@@ -167,17 +173,17 @@ structure PreprocessingPass = struct
                     end
                 in
                     if oper ~=** commentOp
-                    then Success(PComment (l1), ctx)
+                    then Success(PComment (l1, oper), ctx)
                     else 
                     if oper ~=** openStructureOp
                     then ExpressionConstructionPass.getStructureName (getStructureOpAST l1) >>= (fn structureName => 
                         newContextAfterOpeningStructure structureName ctx >>= (fn newContext => 
-                            Success(POpenStructure (getStructureOpAST l1), newContext)
+                            Success(POpenStructure (getStructureOpAST l1, oper), newContext)
                         )
                     )
                     else
                     if oper ~=** importStructureOp
-                    then Success(PImportStructure (getStructureOpAST l1), ctx)
+                    then Success(PImportStructure (getStructureOpAST l1, oper), ctx)
                     else
                     raise Fail "pp95"
                 end
@@ -225,14 +231,15 @@ structure PreprocessingPass = struct
     (
 
         let 
-                fun ::: ((x , y) : OpAST.pJudgment * (PreprocessingAST.t * contextType) witherrsoption) = y >>= (fn y' => Success(x :: (#1 y'), #2 y'))
+                fun ::: ((x , y) : (OpAST.pJudgment * MixedStr.endinginfo) * (PreprocessingAST.t * contextType) witherrsoption) = 
+                y >>= (fn y' => Success(x :: (#1 y'), #2 y'))
                 infix 5 :::
         in
         (* print ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n"); *)
          case s of 
          [] => Success([], ctx)
          | ((x,ei) :: xs) => parseJudgment x ctx >>= (fn (parsed, newContext) =>
-                parsed ::: preprocessAST xs newContext
+                (parsed, ei) ::: preprocessAST xs newContext
             )
         end
     )

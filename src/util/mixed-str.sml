@@ -24,11 +24,15 @@ struct
     infix 5 >>/=
     
 
+    fun putQuoteAround (u : UTF8String.t)((ql, qr): quoteinfo) = 
+            ql :: u @ [qr]
+    fun showWithEndingsInfoList (l  : ('a * endinginfo) list )  (s : 'a -> UTF8String.t) : UTF8String.t = 
+        List.concat ( (map (fn (x, ed) => 
+                            case ed of SOME ed => s x @[ed]
+                            | NONE => s x) l))
 
     fun toUTF8StringChar(u : mixedchar) : UTF8String.t = 
     let 
-        fun putQuoteAround (u : UTF8String.t)((ql, qr): quoteinfo) = 
-            ql :: u @ [qr]
         (* fun singleQuoteAround (u : UTF8String.t) = 
             SpecialChars.leftSingleQuote :: u @ [SpecialChars.rightSingleQuote]
         fun doubleQuoteAround (u : UTF8String.t) = 
@@ -36,9 +40,7 @@ struct
     in
     case  u of 
     UnparsedExpression(s, q) => putQuoteAround (toUTF8String s) q
-    | UnparsedDeclaration(l,q) => putQuoteAround (List.concat ( (map (fn (x, ed) => 
-                            case ed of SOME ed => toUTF8String x @[ed]
-                            | NONE => toUTF8String x) l))) q
+    | UnparsedDeclaration(l,q) => putQuoteAround (showWithEndingsInfoList l toUTF8String) q
     | Name (t, q) => putQuoteAround t q
     | Literal (t, q) => putQuoteAround t q
     (* | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"

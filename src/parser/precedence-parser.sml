@@ -451,7 +451,7 @@ structure PrecedenceParser  = struct
                 case exp of 
                     [] => [] (* fail if exp doesn't have content *)
                     | (MixedStr.UnparsedExpression(s, qi) :: xs) => 
-                    [(ParseOpAST(UnparsedExpr s, []), xs)]
+                    [(ParseOpAST(UnparsedExpr(s, qi), []), xs)]
                     (* TODO SHOULD NOT PARSE, let the coordinator handle parsing to support better
                     error messages ! *)
                          (* [(fn (opast, [] (* should be empty *)) => (opast, xs))

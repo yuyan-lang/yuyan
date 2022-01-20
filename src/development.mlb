@@ -9,7 +9,7 @@ $(SML_LIB)/smlnj-lib/JSON/json-lib.mlb
 local
     ../cmlib/cmlib.mlb
     ann
-       "nonexhaustiveMatch ignore"
+       (*"nonexhaustiveMatch ignore"*)
        "allowExtendedTextConsts true"
     in
         util/string-dict.sml
@@ -50,6 +50,7 @@ local
         execution/k-machine.sml
         execution/persistent-k-machine.sml
 
+        operators/structure/op-ast-ops.sml
         
         parser/parse-ast.sml
         parser/bracket-scanner.sml

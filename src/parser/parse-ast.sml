@@ -23,7 +23,7 @@ open OpAST
                             | Binding of UTF8String.t
                             | QuotedName of UTF8String.t
                             | StringLiteral of UTF8String.t * MixedStr.quoteinfo
-                            | UnparsedExpr of MixedStr.t 
+                            | UnparsedExpr of (MixedStr.t  * MixedStr.quoteinfo)
                             | UnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list  * MixedStr.quoteinfo (* any quoted thing is treated as unparsed arg *)
                             (* should just go ahead and parse the expression *)
                             (* | UnparsedExpr of MixedStr.t any quoted thing is treated as unparsed arg *)

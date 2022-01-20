@@ -68,7 +68,7 @@ struct
                     | (UnknownId, l)  => UnknownOpName ((map (fn ParseOpAST(UnknownIdComp  n, []) => n) l))
                     | (QuotedName s, l)  => UnknownOpName s
                     | (Binding l, [])  => NewOpName l
-                    | (UnparsedExpr l, [])  => OpUnparsedExpr l
+                    | (UnparsedExpr (l, qi), [])  => OpUnparsedExpr (l, qi)
                     | (UnparsedDecl (l, qi), [])  => OpUnparsedDecl(l, qi)
                     | (StringLiteral (l, qi), [])  => OpStrLiteral (l, qi)
                     | (OperatorNameComponent f, _)  => raise Fail (PrettyPrint.show_parseopast past)

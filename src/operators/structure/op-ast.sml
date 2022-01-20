@@ -7,36 +7,34 @@ struct
     we've been seen in the files, therefore, 
     I decide to incorporate pJudgement list as 
     part of the definition of OpAST *)
-   datatype pJudgment = PEmptyDecl
-                       | PTypeMacro of UTF8String.t * OpAST
-                       | PTermTypeJudgment of UTF8String.t * OpAST
-                       | PTermMacro of UTF8String.t * OpAST
-                       | PTermDefinition of UTF8String.t * OpAST
-                       | POpDeclaration of UTF8String.t * Operators.associativity * int
-                       | PDirectExpr of OpAST
-                       | PComment of MixedStr.t
-                       | PStructure of bool * UTF8String.t  * pJudgment list(* bool is true if public *)
-                       | POpenStructure of OpAST 
-                       | PImportStructure of OpAST
+
+    type sourceOpInfo = Operators.operator (* should be the operator except rapp *)
+   datatype pJudgment = PEmptyDecl 
+                       | PTypeMacro of UTF8String.t * OpAST * sourceOpInfo
+                       | PTermTypeJudgment of UTF8String.t * OpAST * sourceOpInfo
+                       | PTermMacro of UTF8String.t * OpAST * sourceOpInfo
+                       | PTermDefinition of UTF8String.t * OpAST * sourceOpInfo
+                       | POpDeclaration of UTF8String.t * Operators.associativity * int * 
+                        (UTF8String.t (* assoc original text *)
+                        * UTF8String.t (*pred original text *)
+                        * sourceOpInfo)
+                       | PDirectExpr of OpAST 
+                       | PComment of MixedStr.t * sourceOpInfo
+                       | PStructure of bool * UTF8String.t  * OpAST(* bool is true if public *) 
+                            * sourceOpInfo
+                       | POpenStructure of OpAST   * sourceOpInfo
+                       | PImportStructure of OpAST * sourceOpInfo
 
     and OpAST = OpAST of (operator * OpAST list )
                     | UnknownOpName of UTF8String.t
                     | NewOpName of UTF8String.t
-                    | OpUnparsedExpr of MixedStr.t 
+                    | OpUnparsedExpr of MixedStr.t * MixedStr.quoteinfo
                     | OpUnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list * MixedStr.quoteinfo
-                    | OpParsedDecl of pJudgment list
+                    | OpParsedQuotedExpr of OpAST * MixedStr.quoteinfo
+                    | OpParsedDecl of (pJudgment * MixedStr.endinginfo) list * MixedStr.quoteinfo
                     | OpStrLiteral of (UTF8String.t * MixedStr.quoteinfo)
-    type preprocessAST = pJudgment list
+    type preprocessAST = (pJudgment * MixedStr.endinginfo) list
     type t= OpAST
 
 
-    fun reconstructOriginalFromOpAST(opast : OpAST) : UTF8String.t = 
-        case opast of
-            OpAST(oper, args) => reconstructWithArgs oper (map reconstructOriginalFromOpAST args)
-            | UnknownOpName s =>  s
-            | NewOpName s =>  s
-            | OpUnparsedExpr m => MixedStr.toUTF8String m
-            | OpUnparsedDecl ml => MixedStr.toUTF8StringChar (MixedStr.UnparsedDeclaration ml)
-            | OpParsedDecl l => raise Fail "reconstruct unimplemented opast"
-            | OpStrLiteral (s, (ql, qr)) => ql :: s @[qr]
 end

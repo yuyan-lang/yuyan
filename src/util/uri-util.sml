@@ -22,6 +22,7 @@ structure URIUtil = struct
         | #"D" => 13
         | #"E" => 14
         | #"F" => 15
+        | _ => raise Fail "uu25"
 
     fun decodePercent (uri : char list) :char list = 
         case uri of 

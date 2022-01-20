@@ -101,7 +101,7 @@ case x of
     | Binding id => "Binding "^ UTF8String.toString id
     | QuotedName s => "QuotedName "^UTF8String.toString s
     | UnparsedDecl (l, qi) => "UnparsedDecl "^ String.concatWith ", " (map show_mixedstr (map (#1)l))
-    | UnparsedExpr l => "UnparsedExpr "^ show_mixedstr l
+    | UnparsedExpr (l, qi) => "UnparsedExpr "^ show_mixedstr l
     | PlaceHolder => "PlaceHolder "
     | StringLiteral (s, qi) => "StringLiteral " ^ UTF8String.toString s
 end
@@ -114,8 +114,9 @@ end
       | UnknownOpName s => "?[" ^ UTF8String.toString s ^ "]"
       | NewOpName s => "![" ^ UTF8String.toString s ^ "]"
       | OpUnparsedDecl(s, qi) => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr (map (#1) s))) ^ "]"
-      | OpUnparsedExpr s => "[EXPR:" ^ show_mixedstr s ^ "]"
+      | OpUnparsedExpr (s, qi) => "[EXPR:" ^ show_mixedstr s ^ "]"
       | OpStrLiteral (s, qi) => "[LITERAL(size="^ Int.toString (length s) ^"):" ^ UTF8String.toString s ^ "]"
+      | _ => raise Fail "unimp pp119"
     end
 
 
@@ -124,18 +125,18 @@ open OpAST
 open PreprocessingAST
 in 
 case x of 
-   PTypeMacro(tname, tbody) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody
-  | PTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_opast tbody
-  | PTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody
-  | PTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_opast  ebody
-  | POpDeclaration(opName, assoc, pred) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
+   PTypeMacro(tname, tbody, soi) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody
+  | PTermTypeJudgment(ename, tbody, soi) => UTF8String.toString ename ^ " : " ^ show_opast tbody
+  | PTermMacro(ename, ebody, soi) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody
+  | PTermDefinition(ename, ebody, soi) => UTF8String.toString  ename ^ " = " ^ show_opast  ebody
+  | POpDeclaration(opName, assoc, pred, soi) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
   ) ^ " " ^ UTF8String.toString opName ^ Int.toString pred
   | PDirectExpr(ebody) => "/* eval */ " ^ show_opast ebody ^ "/* end eval */ " 
-  | PStructure(v, name, ebody) => (if v then "public" else "private") ^
-    " structure " ^ UTF8String.toString name ^ " = " ^ show_preprocessaast ebody
-  | POpenStructure(name) => "open " ^ show_opast name ^ "" 
-  | PImportStructure(name) => "import " ^ show_opast name ^ "" 
-  | PComment(ebody) => "/* comment : -- */ "
+  | PStructure(v, name, ebody, soi) => (if v then "public" else "private") ^
+    " structure " ^ UTF8String.toString name ^ " = " ^ show_opast ebody
+  | POpenStructure(name, soi) => "open " ^ show_opast name ^ "" 
+  | PImportStructure(name, soi) => "import " ^ show_opast name ^ "" 
+  | PComment(ebody, soi) => "/* comment : -- */ "
   end
 and show_preprocessaast x = let
 open PreprocessingAST
