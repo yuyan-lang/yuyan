@@ -19,6 +19,7 @@ open StaticErrorStructure
                                             fp=(#fp file)
                                         , content=Success((UTF8String.fromStringAndFile newContent (#fp file), Time.now()))
                                         , tokensInfo = []
+                                        , preprocessingInfo = NotAvailable
                                         , typeCheckingInfo=NotAvailable
                                         , dependencyInfo=NotAvailable
                                         , typeCheckedInfo=NotAvailable
@@ -32,6 +33,7 @@ open StaticErrorStructure
                                             fp=access fp
                                         , content=NotAvailable
                                         , tokensInfo = []
+                                        , preprocessingInfo = NotAvailable
                                         , typeCheckingInfo=NotAvailable
                                         , dependencyInfo=NotAvailable
                                         , typeCheckedInfo=NotAvailable
@@ -44,6 +46,7 @@ open StaticErrorStructure
                                             fp=access fp
                                         , content=NotAvailable
                                         , tokensInfo = []
+                                        , preprocessingInfo = NotAvailable
                                         , typeCheckingInfo=NotAvailable
                                         , dependencyInfo=NotAvailable
                                         , typeCheckedInfo=NotAvailable
@@ -52,34 +55,28 @@ open StaticErrorStructure
                                         }
 
 
-    fun constructTypeCheckingAST 
-        (content : UTF8String.t) : (TypeCheckingAST.RSignature 
+    fun constructPreprocessingAST
+        (content : UTF8String.t) : (PreprocessingAST.t
               ) witherrsoption  * token list= 
         let 
             val tokensInfo : token list ref = ref []
-            val tcast = MixedStr.makeDecl content >>=
-            (fn stmtASTwithEi =>
-            let
-                val stmtAST =  (map (fn (x, ei) => x) stmtASTwithEi)
-                val _ = if DEBUG then DebugPrint.p (PrettyPrint.show_mixedstrs stmtAST) else ()
+                (* val _ = if DEBUG then DebugPrint.p (PrettyPrint.show_mixedstrs stmtAST) else () *)
                 (* (updateUsefulTokensFromOpAST tokensInfo)
                 (updateUsefulTokensFromDeclarationParser tokensInfo)
                 (fn x => ()) *)
                 (* (stmtAST) *)
                 (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
-                in 
                     (* (typeCheckingAST >>= (fn t => Success (t))) *)
-                    (PreprocessingPass.preprocessASTTopLevel stmtASTwithEi) >>=
-                    ExpressionConstructionPass.constructTypeCheckingASTTopLevel 
-                end
-            )
+            val result = PreprocessingPass.configureAndConstructPreprocessingASTTopLevel 
+                (updateUsefulTokensFromOpAST tokensInfo)
+                (updateUsefulTokensFromPreprocessingAST tokensInfo)
+                content
             val sortedTokens = ListMergeSort.sort 
                     (* true if gt *)
                     (fn (Token(SourceRange.StartEnd(_, l1, c1, _, _),_,_), Token(SourceRange.StartEnd(_, l2, c2, _, _),_, _))
                     => if l1 > l2 then true else if l1 < l2 then false else if c1 > c2 then true else false)
                     (!tokensInfo) 
-        open CompilationTokens
-        in (tcast, sortedTokens)
+        in (result, sortedTokens)
         end
 
     fun constructCPSInfo (typeCheckedAST : TypeCheckingAST.CSignature) : (CPSAst.cpscomputation * CPSAst.cpscomputation * 
@@ -111,6 +108,7 @@ open StaticErrorStructure
 
     fun getFileDiagnostics(CompilationFile file : compilationfile) : errlist option = 
         case #content file of DErrors l => SOME l
+        | _ => case #preprocessingInfo file of DErrors l => SOME l
         | _ => case #typeCheckingInfo file of DErrors l => SOME l
         | _ => case #dependencyInfo file of DErrors l => SOME l
         | _ => case #typeCheckedInfo file of DErrors l => SOME l

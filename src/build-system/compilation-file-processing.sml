@@ -9,11 +9,12 @@ open CompilationFileOps
     fun levelToInt (upToLevel : uptolevel) : int = 
     case upToLevel of
         UpToLevelContent  => 1
-        | UpToLevelTypeCheckingInfo => 2
-        | UpToLevelDependencyInfo => 3
-        | UpToLevelTypeCheckedInfo => 4
-        | UpToLevelCPSInfo => 5
-        | UpToLevelLLVMInfo => 6
+        | UpToLevelPreprocessingInfo  => 2
+        | UpToLevelTypeCheckingInfo => 3
+        | UpToLevelDependencyInfo => 4
+        | UpToLevelTypeCheckedInfo => 5
+        | UpToLevelCPSInfo => 6
+        | UpToLevelLLVMInfo => 7
 
 
     fun processFileUpTo  (upToLevel: uptolevel)(cm : compilationmanager)
@@ -25,6 +26,7 @@ open CompilationFileOps
                                     fp=fp
                                 , content=content
                                 , tokensInfo = tokensInfo
+                                , preprocessingInfo=preprocessingInfo
                                 , typeCheckingInfo=typecheckingast
                                 , dependencyInfo=dependencyInfo
                                 , typeCheckedInfo=typecheckedast
@@ -50,6 +52,7 @@ open CompilationFileOps
                                     fp=fp
                                 , content=newContent
                                 , tokensInfo = []
+                                , preprocessingInfo=NotAvailable
                                 , typeCheckingInfo=NotAvailable
                                 , dependencyInfo=NotAvailable
                                 , typeCheckedInfo=NotAvailable
@@ -59,45 +62,45 @@ open CompilationFileOps
                       else file (* return the original file if content are not updated *)
                     )
                 else 
-                let val ((newTypeCheckingInfo, newTokensInfo), updatedTCkingInfo) = 
-                        if StaticErrorStructure.isSuccess typecheckingast andalso not updatedContent
-                        then ( (typecheckingast, tokensInfo), false)
-                        else (constructTypeCheckingAST (#1 (StaticErrorStructure.valOf newContent)), true)
-                    val _ = if DEBUG then DebugPrint.p 
-                    ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ "\n") else ()
+                let val ((newPreprocessingInfo, newTokensInfo), updatedPreprocessingInfo) = 
+                    if StaticErrorStructure.isSuccess preprocessingInfo andalso not updatedContent
+                    then ((preprocessingInfo, tokensInfo), false)
+                    else (constructPreprocessingAST (#1 (StaticErrorStructure.valOf newContent)), true)
                 in
-                    if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)
-                        orelse StaticErrorStructure.isNotSuccess newTypeCheckingInfo
-                    then (if updatedTCkingInfo
+                    if levelInt <= (levelToInt UpToLevelPreprocessingInfo)
+                        orelse StaticErrorStructure.isNotSuccess newPreprocessingInfo
+                    then (if updatedPreprocessingInfo
                           then CompilationFile {
-                                    fp=fp
-                                , content=newContent
-                                , tokensInfo=newTokensInfo
-                                , typeCheckingInfo=newTypeCheckingInfo
-                                , dependencyInfo=NotAvailable
-                                , typeCheckedInfo=NotAvailable
-                                , cpsInfo=NotAvailable
-                                , llvmInfo=NotAvailable
-                                }
-                        else file  
+                                        fp=fp
+                                    , content=newContent
+                                    , tokensInfo=newTokensInfo
+                                    , preprocessingInfo =newPreprocessingInfo
+                                    , typeCheckingInfo=NotAvailable
+                                    , dependencyInfo=NotAvailable
+                                    , typeCheckedInfo=NotAvailable
+                                    , cpsInfo=NotAvailable
+                                    , llvmInfo=NotAvailable
+                                    }
+                        else file   
                     )
                     else
-                    let val (newDependencyInfo, updatedDependencyInfo) = 
-                            if StaticErrorStructure.isSuccess dependencyInfo andalso not updatedTCkingInfo
-                            then ( dependencyInfo, false)
-                            else (findFileDependenciesTopLevel ( 
-                            (StaticErrorStructure.valOf newTypeCheckingInfo)) , true)
-                        val _ = if DEBUG then DebugPrint.p "Computed Dependency\n" else ()
+                    let val (newTypeCheckingInfo , updatedTCkingInfo) = 
+                            if StaticErrorStructure.isSuccess typecheckingast andalso not updatedPreprocessingInfo
+                            then ( typecheckingast, false)
+                            else (ExpressionConstructionPass.constructTypeCheckingASTTopLevel (StaticErrorStructure.valOf newPreprocessingInfo), true)
+                        val _ = if DEBUG then DebugPrint.p 
+                        ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ "\n") else ()
                     in
-                        if levelInt <= (levelToInt UpToLevelDependencyInfo)
-                            orelse StaticErrorStructure.isNotSuccess newDependencyInfo
-                        then (if updatedDependencyInfo
+                        if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)
+                            orelse StaticErrorStructure.isNotSuccess newTypeCheckingInfo
+                        then (if updatedTCkingInfo
                             then CompilationFile {
                                         fp=fp
                                     , content=newContent
                                     , tokensInfo=newTokensInfo
+                                    , preprocessingInfo =newPreprocessingInfo
                                     , typeCheckingInfo=newTypeCheckingInfo
-                                    , dependencyInfo=newDependencyInfo
+                                    , dependencyInfo=NotAvailable
                                     , typeCheckedInfo=NotAvailable
                                     , cpsInfo=NotAvailable
                                     , llvmInfo=NotAvailable
@@ -105,72 +108,100 @@ open CompilationFileOps
                             else file  
                         )
                         else
-                        let val (newTypeCheckedInfo, updatedTypeCheckedInfo) = 
-                                if StaticErrorStructure.isSuccess typecheckedast andalso not updatedDependencyInfo
-                                then ( typecheckedast, false)
-                                else (TypeCheckingEntry.typeCheckSignatureTopLevel 
-                                    ( (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
-                            val _ = if DEBUG then DebugPrint.p "Computed TypeCheck\n" else ()
-                        in 
-                            if levelInt <= (levelToInt UpToLevelTypeCheckedInfo)
-                                    orelse StaticErrorStructure.isNotSuccess newTypeCheckedInfo
-                            then (if updatedTypeCheckedInfo
+                        let val (newDependencyInfo, updatedDependencyInfo) = 
+                                if StaticErrorStructure.isSuccess dependencyInfo andalso not updatedTCkingInfo
+                                then ( dependencyInfo, false)
+                                else (findFileDependenciesTopLevel ( 
+                                (StaticErrorStructure.valOf newTypeCheckingInfo)) , true)
+                            val _ = if DEBUG then DebugPrint.p "Computed Dependency\n" else ()
+                        in
+                            if levelInt <= (levelToInt UpToLevelDependencyInfo)
+                                orelse StaticErrorStructure.isNotSuccess newDependencyInfo
+                            then (if updatedDependencyInfo
                                 then CompilationFile {
                                             fp=fp
                                         , content=newContent
                                         , tokensInfo=newTokensInfo
+                                        , preprocessingInfo =newPreprocessingInfo
                                         , typeCheckingInfo=newTypeCheckingInfo
                                         , dependencyInfo=newDependencyInfo
-                                        , typeCheckedInfo=newTypeCheckedInfo
+                                        , typeCheckedInfo=NotAvailable
                                         , cpsInfo=NotAvailable
                                         , llvmInfo=NotAvailable
                                         }
                                 else file  
                             )
                             else
-                            let val (newCPSInfo, updatedCPSInfo) = 
-                                if StaticErrorStructure.isSuccess cpsInfo andalso not updatedTypeCheckedInfo
-                                then ( cpsInfo, false)
-                                else (constructCPSInfo (StaticErrorStructure.valOf newTypeCheckedInfo), true)
+                            let val (newTypeCheckedInfo, updatedTypeCheckedInfo) = 
+                                    if StaticErrorStructure.isSuccess typecheckedast andalso not updatedDependencyInfo
+                                    then ( typecheckedast, false)
+                                    else (TypeCheckingEntry.typeCheckSignatureTopLevel 
+                                        ( (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
+                                val _ = if DEBUG then DebugPrint.p "Computed TypeCheck\n" else ()
                             in 
-                                if levelInt <= (levelToInt UpToLevelCPSInfo)
-                                    orelse StaticErrorStructure.isNotSuccess newCPSInfo
-                                then (if updatedCPSInfo
+                                if levelInt <= (levelToInt UpToLevelTypeCheckedInfo)
+                                        orelse StaticErrorStructure.isNotSuccess newTypeCheckedInfo
+                                then (if updatedTypeCheckedInfo
                                     then CompilationFile {
                                                 fp=fp
                                             , content=newContent
                                             , tokensInfo=newTokensInfo
+                                            , preprocessingInfo =newPreprocessingInfo
                                             , typeCheckingInfo=newTypeCheckingInfo
                                             , dependencyInfo=newDependencyInfo
                                             , typeCheckedInfo=newTypeCheckedInfo
-                                            , cpsInfo=newCPSInfo
+                                            , cpsInfo=NotAvailable
                                             , llvmInfo=NotAvailable
                                             }
                                     else file  
                                 )
                                 else
-                                let val (newLLVMInfo, updatedLLVMInfo) = 
-                                    if StaticErrorStructure.isSuccess llvmInfo andalso not updatedCPSInfo
-                                    then ( llvmInfo, false)
-                                    else (constructLLVMInfo (#3 (StaticErrorStructure.valOf newCPSInfo)) (#pwd cm), true)
+                                let val (newCPSInfo, updatedCPSInfo) = 
+                                    if StaticErrorStructure.isSuccess cpsInfo andalso not updatedTypeCheckedInfo
+                                    then ( cpsInfo, false)
+                                    else (constructCPSInfo (StaticErrorStructure.valOf newTypeCheckedInfo), true)
                                 in 
-                                    if levelInt <= (levelToInt UpToLevelLLVMInfo)
-                                        orelse StaticErrorStructure.isNotSuccess newLLVMInfo
+                                    if levelInt <= (levelToInt UpToLevelCPSInfo)
+                                        orelse StaticErrorStructure.isNotSuccess newCPSInfo
                                     then (if updatedCPSInfo
                                         then CompilationFile {
                                                     fp=fp
                                                 , content=newContent
                                                 , tokensInfo=newTokensInfo
+                                                , preprocessingInfo =newPreprocessingInfo
                                                 , typeCheckingInfo=newTypeCheckingInfo
                                                 , dependencyInfo=newDependencyInfo
                                                 , typeCheckedInfo=newTypeCheckedInfo
                                                 , cpsInfo=newCPSInfo
-                                                , llvmInfo=newLLVMInfo
+                                                , llvmInfo=NotAvailable
                                                 }
                                         else file  
                                     )
                                     else
-                                    raise Fail "cfops217"
+                                    let val (newLLVMInfo, updatedLLVMInfo) = 
+                                        if StaticErrorStructure.isSuccess llvmInfo andalso not updatedCPSInfo
+                                        then ( llvmInfo, false)
+                                        else (constructLLVMInfo (#3 (StaticErrorStructure.valOf newCPSInfo)) (#pwd cm), true)
+                                    in 
+                                        if levelInt <= (levelToInt UpToLevelLLVMInfo)
+                                            orelse StaticErrorStructure.isNotSuccess newLLVMInfo
+                                        then (if updatedCPSInfo
+                                            then CompilationFile {
+                                                        fp=fp
+                                                    , content=newContent
+                                                    , tokensInfo=newTokensInfo
+                                                    , preprocessingInfo =newPreprocessingInfo
+                                                    , typeCheckingInfo=newTypeCheckingInfo
+                                                    , dependencyInfo=newDependencyInfo
+                                                    , typeCheckedInfo=newTypeCheckedInfo
+                                                    , cpsInfo=newCPSInfo
+                                                    , llvmInfo=newLLVMInfo
+                                                    }
+                                            else file  
+                                        )
+                                        else
+                                        raise Fail "cfops217"
+                                    end
                                 end
                             end
                         end

@@ -62,8 +62,15 @@ structure CompilationTokens = struct
             | OpUnparsedDecl of MixedStr.t list not used *)
         
 
-    fun updateUsefulTokensFromDeclarationParser(tokensInfo : token list ref)
+    (* fun updateUsefulTokensFromDeclarationParser(tokensInfo : token list ref)
         ((oper, _) : operator * MixedStr.t list) : unit = 
-            updateUsefulTokensFromOperator tokensInfo oper (TokenInfo TkTpStructureKeyword)
+            updateUsefulTokensFromOperator tokensInfo oper (TokenInfo TkTpStructureKeyword) *)
+
+
+    fun updateUsefulTokensFromPJudgment(tokensInfo : token list ref)(x : OpAST.pJudgment * MixedStr.endinginfo) : unit =
+        raise Fail "to do"
+    fun updateUsefulTokensFromPreprocessingAST(tokensInfo : token list ref)(x : PreprocessingAST.t) : unit =
+        (map (updateUsefulTokensFromPJudgment tokensInfo) x; ())
+
 
 end

@@ -82,7 +82,7 @@ open CompilationManager
                 ])
             ) ((0, 0), []) sorted
         in  result end
-
+    
     fun highlightFile (filePath : FileResourceURI.t) (cm : CompilationStructure.compilationmanager): JSON.value = 
     let 
         open JSON
