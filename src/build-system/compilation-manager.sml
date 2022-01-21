@@ -361,35 +361,32 @@ end *)
 
 (* by the function invoked, dependency info for current filepath cannot be queried from cm because it has not been updated *)
     fun getDependencyOrder(fromFilepath: filepath)(fromFileDependencies : filepath list) (cm : compilationmanager) : filepath list witherrsoption = 
-        let val reverseDependencyGraph : filepath list StrDict.dict ref = ref (StrDict.singleton (access fromFilepath) [])
-            fun addDependencies (endNode : filepath)(dfpl : filepath list)  = 
-                    map (fn dfp => 
-                     reverseDependencyGraph := 
-                        (StrDict.insertMerge (! reverseDependencyGraph)  (access dfp) 
-                            ([endNode]) (fn x => if List.exists (fn y => (access y) = (access endNode)) x then x else endNode:: x))
-                    ) dfpl
-            val _ = addDependencies fromFilepath fromFileDependencies
+        let val reverseDependencyGraph : filepath list StrDict.dict ref = ref (StrDict.singleton (access fromFilepath) fromFileDependencies)
             fun computeReachableGraph(endNode : filepath) : unit witherrsoption = 
-                CompilationFileOps.getDependencyInfo (lookupFileByPath fromFilepath cm) >>= (fn dfpl => 
-                    (addDependencies endNode dfpl; 
-                        mapM (fn dfp => 
+                CompilationFileOps.getDependencyInfo (lookupFileByPath endNode cm) >>= (fn dfpl => 
+                let val (newDict, present) = 
+                        (StrDict.insert' (! reverseDependencyGraph)  (access endNode) (dfpl)) 
+                    val _ = reverseDependencyGraph := newDict
+                in if present
+                    then Success()
+                    else mapM (fn dfp => 
                             computeReachableGraph dfp
-                            ) dfpl >>= (fn x => Success())
-                    )
+                            ) dfpl  >>= (fn _ => Success ())
+                end
                 )
-            val r = mapM computeReachableGraph fromFileDependencies
+            val r = map computeReachableGraph fromFileDependencies
             val resultList : filepath list ref = ref []
             fun computeUntilEmpty () = 
                 if StrDict.isEmpty (! reverseDependencyGraph) then 
                     ()
                 else (* find an empty key first *)
                     let val emptyNames =  List.filter (fn (_, y) => length y = 0) (StrDict.toList (! reverseDependencyGraph))
-                    val currentGraphStr =  String.concatWith "; " (map (fn (x,y) => 
+                    val currentGraphStr =  "Current Graph: " ^ String.concatWith "; " (map (fn (x,y) => 
                     x ^ " -> " ^ String.concatWith ", "
                     (map (fn y => (FileResourceURI.access y)) y)) (StrDict.toList (! reverseDependencyGraph)))
                     (* val _ = DebugPrint.p ("\n\n" ^ currentGraphStr) *)
                     in if length emptyNames = 0 then raise Fail ("cyclic dependency : " ^ currentGraphStr)
-                    else (resultList :=  (map (fn x => make (#1 x)) emptyNames) @ (!resultList); (* todo: we could reverse all arrows and reverse the concat here *)
+                    else (resultList :=  (!resultList)@ (map (fn x => make (#1 x)) emptyNames); (* todo: we could reverse all arrows and reverse the concat here *)
                           reverseDependencyGraph := foldr (fn ((name, _), d) => 
                             StrDict.remove d name
                           ) (! reverseDependencyGraph) emptyNames;
