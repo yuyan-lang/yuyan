@@ -113,7 +113,8 @@ structure CompilationTokens = struct
         | PTermMacro(ename, ebody, soi) =>  (add ename TkTpIdentifierBinder; upOpAST ebody; upOper soi TkTpStructureKeyword)
         | PTermDefinition(ename, ebody, soi) =>  (add ename TkTpIdentifierBinder; upOpAST ebody; upOper soi TkTpStructureKeyword)
         | POpDeclaration(opName, assoc, pred, (assocText, predText, soi)) => 
-            (add opName TkTpIdentifierBinder; 
+            (upOper soi TkTpStructureKeyword;
+            add opName TkTpIdentifierBinder; 
             add assocText TkTpLabel;
             add predText TkTpLabel)
         | PDirectExpr(ebody) => ((upOpAST ebody))

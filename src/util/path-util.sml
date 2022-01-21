@@ -33,4 +33,9 @@ fun concat (dir : string list) =
 
 fun makeRelative(path : string) (relativeTo : string)= 
       OS.Path.mkRelative {path = path, relativeTo = relativeTo}
+
+fun getBaseDir (path : string)  = #dir (OS.Path.splitDirFile path)
+
+fun exists (path : string) = OS.FileSys.access (path, [])
+
 end

@@ -18,7 +18,7 @@ open CompilationFileOps
 
 
     fun processFileUpTo  (upToLevel: uptolevel)(cm : compilationmanager)
-    (findFileDependenciesTopLevel: TypeCheckingAST.RSignature -> StructureName.t list StrDict.dict witherrsoption)
+        (helperFuncs : cmhelperfuncs)
         (file : compilationfile)  : compilationfile = 
         let 
             open CompilationTokens
@@ -65,7 +65,11 @@ open CompilationFileOps
                 let val ((newPreprocessingInfo, newTokensInfo), updatedPreprocessingInfo) = 
                     if StaticErrorStructure.isSuccess preprocessingInfo andalso not updatedContent
                     then ((preprocessingInfo, tokensInfo), false)
-                    else (constructPreprocessingAST (#1 (StaticErrorStructure.valOf newContent)), true)
+                    else (
+                        constructPreprocessingAST 
+                            (#1 (StaticErrorStructure.valOf newContent))
+                            (#getPreprocessingAST helperFuncs)
+                        , true)
                 in
                     if levelInt <= (levelToInt UpToLevelPreprocessingInfo)
                         orelse StaticErrorStructure.isNotSuccess newPreprocessingInfo
@@ -111,7 +115,7 @@ open CompilationFileOps
                         let val (newDependencyInfo, updatedDependencyInfo) = 
                                 if StaticErrorStructure.isSuccess dependencyInfo andalso not updatedTCkingInfo
                                 then ( dependencyInfo, false)
-                                else (findFileDependenciesTopLevel ( 
+                                else ((#findFileDependenciesTopLevel helperFuncs) ( 
                                 (StaticErrorStructure.valOf newTypeCheckingInfo)) , true)
                             val _ = if DEBUG then DebugPrint.p "Computed Dependency\n" else ()
                         in

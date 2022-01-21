@@ -16,6 +16,8 @@ structure CompilationManager = struct
     type filepath = FileResourceURI.t
 
     open FileResourceURI
+    open StaticErrorStructure 
+    infix 5 >>=
 
     fun findModuleForFilePath (filepath : filepath) (cm : compilationmanager) : compilationmodule option
         = 
@@ -177,11 +179,11 @@ a new module is added with root Path being the file's residing directory *)
     exception AmbiguousStructureReference of StructureName.t
     exception UnresolvedReference of StructureName.t
 
-    fun resolveName (sname : StructureName.t) 
+    (* fun resolveName (sname : StructureName.t) 
     (inmodule : compilationmodule)
     (resolutionStack : (filepath* StructureName.t) list) (* require information *)
     (cm : compilationmanager) : string (* resolved file name *)
-    = "Not Implemented"
+    = "Not Implemented" *)
         (* let val allFilePathsInModule = listAllFilesInModule inmodule 
             fun findUniqueReferenceAmongFiles (filepaths : filepath list) : string option = 
                 let
@@ -221,7 +223,7 @@ a new module is added with root Path being the file's residing directory *)
                             
 
 
-    and findFileDependenciesTopLevel 
+    (* and findFileDependenciesTopLevel 
     (fp : filepath)
     (tcast: TypeCheckingAST.RSignature)
     (cm : compilationmanager) : StructureName.t list StrDict.dict witherrsoption= 
@@ -240,7 +242,7 @@ Success (StrDict.empty)
             | NONE => StrDict.insert acc inFile ([name])
         end
         ) StrDict.empty unresolvedNames) *)
-end
+end *)
 
     (*
     and getContentForFilepath (filepath : string ) (cm : compilationmanager) :  UTF8String.t = 
@@ -299,16 +301,72 @@ end
         (* (#currentModule cm) := StrDict.insert (! (#currentModule cm)) filepath (typeCheckingAST, sortedTokens)  *)
         ()
     end *)
-    and requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) :unit = 
-        performFileUpdate filepath ( CompilationFileProcessing.processFileUpTo level (cm)
-            (fn rsig => 
-            let 
-            (* val _ = DebugPrint.p "begin resolution" *)
-            val res =findFileDependenciesTopLevel filepath rsig cm
-            (* val _ = DebugPrint.p "Done resolution" *)
-            in res end
-            )
-        ) cm 
+    fun resolveStructureReference(fromFile: filepath) (sname : StructureName.t) (cm : compilationmanager) : filepath witherrsoption = 
+        let 
+        val moduleSearchPath : string list = [PathUtil.concat([#pwd cm, "yylib"])]
+        fun resolveRec(currentDir : string)(remainingName : StructureName.t) : filepath witherrsoption = 
+            raise Fail ""
+        in
+        if length sname = 0
+            then raise Fail "unexpected empty structure name"
+            else case sname of 
+                [onlyName] => let 
+                            val otherCandiates = List.concat (map 
+                            (fn x => [PathUtil.concat [x, StructureName.toStringPlain sname  ^ ".yuyan"],
+                                    PathUtil.concat [x, StructureName.toStringPlain sname ^"。豫"]]
+                            ) (PathUtil.getBaseDir (access fromFile) :: moduleSearchPath))
+                            val res = (case (foldl (fn (candidate, acc) => 
+                            case acc of 
+                                SOME(x) => SOME(x)
+                                | NONE => if PathUtil.exists candidate
+                                        then SOME(Success(make candidate))
+                                        else NONE
+                            ) NONE otherCandiates) of 
+                                SOME (x) => x
+                                | NONE =>  genSingletonError (onlyName) "导入的模块未找到(cannot find module)" NONE)
+                        in res
+                        end
+                | (firstName :: rest) => let 
+                            val otherCandiates = (map 
+                                (fn x => PathUtil.concat ([x, UTF8String.toString firstName]))
+                                ) (PathUtil.getBaseDir (access fromFile) :: moduleSearchPath)
+                            val res = case (foldl (fn (candidate, acc) => 
+                            case acc of 
+                                SOME(x) => SOME(x)
+                                | NONE => if PathUtil.exists candidate
+                                        then SOME(candidate)
+                                        else NONE
+                            ) NONE otherCandiates) of 
+                                SOME (x) => resolveRec x rest
+                                | NONE =>  genSingletonError (firstName) "导入的模块未找到(cannot find module)" NONE
+                        in res
+                        end
+        end
+
+    fun requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) :unit = 
+        performFileUpdate filepath ( 
+            CompilationFileProcessing.processFileUpTo level (cm)
+                {findFileDependenciesTopLevel=
+                    (fn rsig => 
+                        Success (StrDict.empty)
+                        (* let 
+                        (* val _ = DebugPrint.p "begin resolution" *)
+                        val res =findFileDependenciesTopLevel filepath rsig cm
+                        (* val _ = DebugPrint.p "Done resolution" *)
+                        in res end *)
+                    ),
+                getPreprocessingAST=(fn structureName => 
+                        (* assumes that structureName is issued from the file *)
+                        (resolveStructureReference filepath structureName cm >>= (fn fp => 
+                            (findOrAddFile (fp) NONE cm;
+                            requestFileProcessing (fp) UpToLevelPreprocessingInfo cm;
+                            CompilationFileOps.getPreprocessingAST (lookupFileByPath (fp) cm)
+                            )
+                        )
+                    )
+                )
+                }
+            ) cm 
 
     fun initWithWorkingDirectory (pwd : filepath) : compilationmanager =  
     let val _ =  OS.FileSys.mkDir (OS.Path.concat (access pwd, ".yybuild"))

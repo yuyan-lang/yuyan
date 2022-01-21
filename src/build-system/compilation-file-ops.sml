@@ -56,8 +56,9 @@ open StaticErrorStructure
 
 
     fun constructPreprocessingAST
-        (content : UTF8String.t) : (PreprocessingAST.t
-              ) witherrsoption  * token list= 
+        (content : UTF8String.t)
+        (getPreprocessingAST : StructureName.t -> PreprocessingAST.t witherrsoption) 
+        : (PreprocessingAST.t) witherrsoption  * token list= 
         let 
             val tokensInfo : token list ref = ref []
                 (* val _ = if DEBUG then DebugPrint.p (PrettyPrint.show_mixedstrs stmtAST) else () *)
@@ -68,6 +69,7 @@ open StaticErrorStructure
                 (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingRSig typeCheckingAST) *)
                     (* (typeCheckingAST >>= (fn t => Success (t))) *)
             val result = PreprocessingPass.configureAndConstructPreprocessingASTTopLevel 
+                getPreprocessingAST
                 (updateUsefulTokensFromOpAST tokensInfo)
                 (updateUsefulTokensFromPreprocessingAST tokensInfo)
                 content
@@ -122,5 +124,8 @@ open StaticErrorStructure
         | _ => case #llvmInfo file of DErrors l => SOME l
         | _ => NONE
     
+    fun getPreprocessingAST(CompilationFile file : compilationfile) : PreprocessingAST.t witherrsoption = 
+        case #content file of DErrors l => DErrors l
+        | _ =>  #preprocessingInfo file 
     
 end

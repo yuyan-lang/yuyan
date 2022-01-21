@@ -33,6 +33,11 @@ struct
         autoOpens : UTF8String.t list option,
         submodules : UTF8String.t list option
     }
+    
+    type cmhelperfuncs = {
+        findFileDependenciesTopLevel: TypeCheckingAST.RSignature -> StructureName.t list StrDict.dict witherrsoption,
+        getPreprocessingAST: StructureName.t -> PreprocessingAST.t witherrsoption
+    }
 
 
 (* we maintain the invariant that all files under a module must be a 

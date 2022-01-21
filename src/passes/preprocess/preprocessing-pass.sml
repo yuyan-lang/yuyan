@@ -77,6 +77,7 @@ structure PreprocessingPass = struct
                     Success(insertIntoCurContextOps ctx opl)
             )
         end
+    
 
 
 
@@ -96,21 +97,38 @@ structure PreprocessingPass = struct
                             in (
                                 (* print (" PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
                                 oper) end
-    fun extractAllOperators (ast : PreprocessingAST.t) : Operators.operator list = 
-        case ast of 
-            [] => []
-            | ((x, ei) :: xs) => 
+    fun extractAllOperators (curSName : StructureName.t) (vis : bool) (ast : PreprocessingAST.t) : (structureName * bool * Operators.operator list) list = 
+        (* current scoped *)
+        (curSName, vis, List.mapPartial  (fn (x, ei) => 
                 (case x of 
-                     POpDeclaration(opName, assoc, pred, soi) => parsePOperator(x) :: extractAllOperators xs
-                    | _ => extractAllOperators xs
+                     POpDeclaration(opName, assoc, pred, soi) => SOME(parsePOperator(x))
+                    | _ => NONE
                 )
+        ) ast)::
+        (* sub structures *)
+        (List.concat(List.mapPartial (fn (x, ei) => case x of 
+            PStructure(vis, structureName, OpParsedDecl(l, qi), soi) => 
+                SOME (extractAllOperators (curSName@[structureName]) vis l)
+            | _ => NONE
+        ) ast))
 
 
     fun configureAndConstructPreprocessingASTTopLevel
+    (lookupImportPreprocessingAST : StructureName.t -> PreprocessingAST.t witherrsoption)
     (notifyOpAST : OpAST.t -> 'a) 
     (notifyPreprocessingAST : PreprocessingAST.t -> 'b) 
     : UTF8String.t -> PreprocessingAST.t witherrsoption  = 
     let
+            fun newContextAfterImportingStructure(importName : StructureName.t ) (ctx : contextType) : contextType witherrsoption =
+            let 
+            in 
+                lookupImportPreprocessingAST importName >>= (fn tree => 
+                case ctx of 
+                    (curSName, vis, imports) => 
+                   Success (curSName, vis, imports@extractAllOperators importName true tree)
+                    (* TODO: prevent repetitive imports *)
+                )
+            end
             (* removes all unparsed, correctness relies inductively on preprocessAST's 
             guarantee that return is free of unparsed *)
             fun recursivelyTraverseAndParseOpAST(s : OpAST) (ctx as (curSname, vis, info): contextType) : (OpAST * contextType) witherrsoption = 
@@ -192,7 +210,11 @@ structure PreprocessingPass = struct
                             )
                             else
                             if oper ~=** importStructureOp
-                            then Success(PImportStructure (getStructureOpAST l1, oper), ctx)
+                            then ExpressionConstructionPass.getStructureName (getStructureOpAST l1) >>= (fn structureName =>  
+                            newContextAfterImportingStructure structureName ctx >>= (fn newContext =>
+                                Success(PImportStructure (getStructureOpAST l1, oper), newContext)
+                                )
+                            )
                             else
                             raise Fail "pp95"
                         end
