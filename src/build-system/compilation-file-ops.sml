@@ -87,14 +87,14 @@ open StaticErrorStructure
         in (result, sortedTokens)
         end
 
-    fun constructFileDependencyInfo (tc : TypeCheckingAST.CSignature) : FileResourceURI.t list = 
+    fun constructFileDependencyInfo (tc : TypeCheckingAST.CSignature) : dependency list = 
         List.mapPartial (fn x => case x of 
-            TypeCheckingAST.CImport x => SOME (x)
+            TypeCheckingAST.CImport(x, y) => SOME (y,x)
             | _ => NONE
         ) tc
 
 
-    fun constructCPSInfo (tckedAST : TypeCheckingAST.CSignature) (curFp : FileResourceURI.t) (curFDependencies : FileResourceURI.t list)
+    fun constructCPSInfo (tckedAST : TypeCheckingAST.CSignature) (curFp : FileResourceURI.t) (curFDependencies : dependency list)
     (helperFuncs : cmhelperfuncs) :
      (CPSAst.cpscomputation * CPSAst.cpscomputation * LLVMAst.llvmsignature )
       witherrsoption=
@@ -103,7 +103,7 @@ open StaticErrorStructure
     ((#getDependencyInfo helperFuncs) curFp curFDependencies ) >>= (fn orderedDeps => 
         (
             (* DebugPrint.p ("got ordered Dep"); *)
-      mapM (#getTypeCheckedAST helperFuncs) orderedDeps  >>= (fn csigs =>
+      mapM (fn d => #getTypeCheckedAST helperFuncs d) orderedDeps  >>= (fn csigs =>
         let
         val grandTypeCheckedAST = List.concat(csigs@[tckedAST])
          val cpsAST = CPSPass.cpsTransformSigTopLevel grandTypeCheckedAST
@@ -153,7 +153,7 @@ open StaticErrorStructure
         | _ => case #typeCheckingInfo file of DErrors l => DErrors l
         | _ => #typeCheckedInfo file 
 
-    fun getDependencyInfo(CompilationFile file : compilationfile) : FileResourceURI.t list witherrsoption = 
+    fun getDependencyInfo(CompilationFile file : compilationfile) : dependency list witherrsoption = 
         case #content file of DErrors l => DErrors l
         | _ => case #preprocessingInfo file of DErrors l => DErrors l
         | _ => case #typeCheckingInfo file of DErrors l => DErrors l

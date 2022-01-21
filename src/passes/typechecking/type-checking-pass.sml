@@ -5,6 +5,7 @@ open StaticErrorStructure
 infix 5 >>= 
 infix 5 >> 
 infix 6 =/=
+infix 5 <?>
 
     (* val DEBUG = true *)
     val DEBUG = false
@@ -176,7 +177,7 @@ infix 6 =/=
 
 
     fun configureAndTypeCheckSignature(
-        getTypeCheckedAST:  FileResourceURI.t -> TypeCheckingAST.CSignature witherrsoption
+        getTypeCheckedAST:  (FileResourceURI.t * StructureName.t) -> TypeCheckingAST.CSignature witherrsoption
     )
     :  RSignature -> CSignature witherrsoption =
     let
@@ -530,14 +531,17 @@ infix 6 =/=
                     end
                 )
                 | RImportStructure(sname, path) :: ss => 
-                    getTypeCheckedAST path >>= (fn csig => 
+                    (getTypeCheckedAST (path, sname)
+                    <?> (genSingletonError (StructureName.toString sname) "导入模块时出错" NONE)
+                    )
+                     >>= (fn csig => 
                         typeCheckSignature 
                         (addToCtxAL (List.mapPartial (fn x => case x of 
                             CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ()))
                             | CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,()))
                             | CDirectExpr _ => NONE
                             ) csig) ctx)
-                        ss (acc@[CImport path])
+                        ss (acc@[CImport(sname, path)])
                     )
                 | RDirectExpr e :: ss=> 
                     let 

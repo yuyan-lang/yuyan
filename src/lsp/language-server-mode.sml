@@ -131,6 +131,7 @@ struct
             (FileResourceURI.make (getDocumentPath params))
             CompilationStructure.UpToLevelTypeCheckedInfo
             (LanguageServer.getCM server)
+            []
 
     fun addFileBufferContent(content : string) =
         ((CompilationManager.findOrAddFile

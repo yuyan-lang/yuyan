@@ -18,6 +18,7 @@ structure PreprocessingPass = struct
     open StaticErrorStructure
     infix 5 >>=
     infix 6 =/=
+    infix 5 <?>
 
   structure PrecParser = MixFixParser
     (* exception ElaborateFailure of string *)
@@ -211,7 +212,9 @@ structure PreprocessingPass = struct
                             else
                             if oper ~=** importStructureOp
                             then ExpressionConstructionPass.getStructureName (getStructureOpAST l1) >>= (fn structureName =>  
-                            newContextAfterImportingStructure structureName ctx >>= (fn (newContext, path) =>
+                            (newContextAfterImportingStructure structureName ctx 
+                                <?> (genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
+                            ) >>= (fn (newContext, path) =>
                                 Success(PImportStructure (getStructureOpAST l1, path, oper), newContext)
                                 )
                             )

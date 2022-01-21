@@ -360,22 +360,29 @@ end *)
         end
 
 (* by the function invoked, dependency info for current filepath cannot be queried from cm because it has not been updated *)
-    fun getDependencyOrder(fromFilepath: filepath)(fromFileDependencies : filepath list) (cm : compilationmanager) : filepath list witherrsoption = 
-        let val reverseDependencyGraph : filepath list StrDict.dict ref = ref (StrDict.singleton (access fromFilepath) fromFileDependencies)
-            fun computeReachableGraph(endNode : filepath) : unit witherrsoption = 
+    fun getDependencyOrder(fromFilepath: filepath)(fromFileDependencies : dependency list) (cm : compilationmanager) : dependency list witherrsoption = 
+        let 
+            val reverseDependencyGraph : dependency list StrDict.dict ref = ref (StrDict.empty)
+            val nameDepMapping : dependency list ref = ref fromFileDependencies
+            (* do not include self in the dependency *)
+            (* val reverseDependencyGraph : dependency list StrDict.dict ref = ref (StrDict.singleton (access fromFilepath) fromFileDependencies) *)
+            fun computeReachableGraph((endNode, dep) : dependency) : unit witherrsoption = 
+                if (access endNode) = (access fromFilepath) then raise Fail "cyclic dependencies"
+                else
                 CompilationFileOps.getDependencyInfo (lookupFileByPath endNode cm) >>= (fn dfpl => 
                 let val (newDict, present) = 
                         (StrDict.insert' (! reverseDependencyGraph)  (access endNode) (dfpl)) 
                     val _ = reverseDependencyGraph := newDict
-                in if present
+                    val _ = nameDepMapping := (endNode, dep) :: (! nameDepMapping)
+                in if present 
                     then Success()
                     else mapM (fn dfp => 
                             computeReachableGraph dfp
                             ) dfpl  >>= (fn _ => Success ())
                 end
                 )
-            val r = map computeReachableGraph fromFileDependencies
-            val resultList : filepath list ref = ref []
+            val r = map computeReachableGraph fromFileDependencies (* do not include self *)
+            val resultList : dependency list ref = ref []
             fun computeUntilEmpty () = 
                 if StrDict.isEmpty (! reverseDependencyGraph) then 
                     ()
@@ -383,24 +390,25 @@ end *)
                     let val emptyNames =  List.filter (fn (_, y) => length y = 0) (StrDict.toList (! reverseDependencyGraph))
                     val currentGraphStr =  "Current Graph: " ^ String.concatWith "; " (map (fn (x,y) => 
                     x ^ " -> " ^ String.concatWith ", "
-                    (map (fn y => (FileResourceURI.access y)) y)) (StrDict.toList (! reverseDependencyGraph)))
+                    (map (fn y => (FileResourceURI.access (#1 y))) y)) (StrDict.toList (! reverseDependencyGraph)))
                     (* val _ = DebugPrint.p ("\n\n" ^ currentGraphStr) *)
                     in if length emptyNames = 0 then raise Fail ("cyclic dependency : " ^ currentGraphStr)
-                    else (resultList :=  (!resultList)@ (map (fn x => make (#1 x)) emptyNames); (* todo: we could reverse all arrows and reverse the concat here *)
+                    else (resultList :=  (!resultList)@ (map (fn x => (make (#1 x), ListSearchUtil.lookupGeneric (! nameDepMapping) (make (#1 x)) (fn x => fn y => access x= access y)))
+                     emptyNames); (* todo: we could reverse all arrows and reverse the concat here *)
                           reverseDependencyGraph := foldr (fn ((name, _), d) => 
                             StrDict.remove d name
                           ) (! reverseDependencyGraph) emptyNames;
                           reverseDependencyGraph := StrDict.map (fn (l) => 
-                            List.filter (fn x => not (List.exists (fn y => y = (FileResourceURI.access x)) (map (#1) emptyNames))) l
+                            List.filter (fn (x, _) => not (List.exists (fn y =>  y = (FileResourceURI.access x)) (map (#1) emptyNames))) l
                           ) (! reverseDependencyGraph) ;
                           computeUntilEmpty()
                           )
                     end
             val _ = computeUntilEmpty()
             (* remove itself from the dependencies *)
-            val _ = if length (!resultList) = 0 then raise Fail "internal error cm390" else ()
+            (* val _ = if length (!resultList) = 0 then raise Fail "internal error cm390" else () *)
             (* val _ = DebugPrint.p ("Result list is " ^ String.concatWith ", " (map FileResourceURI.access (! resultList))) *)
-            val _ = resultList := List.take((!resultList), length (!resultList) -1)
+            (* val _ = resultList := List.take((!resultList), length (!resultList) -1) *)
         in 
         (* r >>= (fn x =>  *)
         Success(!resultList)
@@ -409,31 +417,40 @@ end *)
 
 
 
-    fun requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) :unit = 
+    exception CircularReference of dependency list
+    fun requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) (requestingStack : dependency list) :unit = 
         performFileUpdate filepath ( 
             CompilationFileProcessing.processFileUpTo level (cm)
                 {findFileDependenciesTopLevel=
                     (fn csig => 
                         let val deps = CompilationFileOps.constructFileDependencyInfo csig
-                        val _ = map (fn d => requestFileProcessing d UpToLevelDependencyInfo cm) deps
+                        (* no need to consider stack here as the funciton does not query other files *)
+                        val _ = map (fn (d, _) => requestFileProcessing d UpToLevelDependencyInfo cm (requestingStack)) deps (* ignore this part *)
                         in Success(deps) end
                     ),
                 getPreprocessingAST=(fn structureName => 
                         (* assumes that structureName is issued from the file *)
                         (resolveStructureReference filepath structureName cm >>= (fn fp => 
                             (findOrAddFile (fp) NONE cm;
-                            requestFileProcessing (fp) UpToLevelPreprocessingInfo cm;
-                                CompilationFileOps.getPreprocessingAST (lookupFileByPath (fp) cm) >>= (fn tree => 
+                            (* if requested file in requesting stack *)
+                            if List.exists(fn (x, _) => (access x) = (access fp)) requestingStack
+                            then raise CircularReference (( fp, structureName) :: requestingStack)
+                            else (requestFileProcessing (fp) UpToLevelPreprocessingInfo cm ((fp, structureName) :: requestingStack)
+                            ; CompilationFileOps.getPreprocessingAST (lookupFileByPath (fp) cm) >>= (fn tree => 
                                     Success (tree, fp)
                                 )
-                            )
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString structureName) "循环引用" NONE
                         )
                     )
-                ),
-                getTypeCheckedAST = (fn fp => 
+                )),
+                getTypeCheckedAST = (fn (fp, errName) => 
                     (findOrAddFile (fp) NONE cm;
-                    requestFileProcessing (fp) UpToLevelTypeCheckedInfo cm;
+                        if List.exists(fn (x,_) => (access x) = (access fp)) requestingStack
+                            then raise CircularReference ((fp, errName) :: requestingStack)
+                            else (
+                    requestFileProcessing (fp) UpToLevelTypeCheckedInfo cm ((fp, errName) :: requestingStack);
                     CompilationFileOps.getTypeCheckedAST (lookupFileByPath fp cm)
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用" NONE
                     ))
                 , getDependencyInfo = (fn fp =>  fn dfpl =>
                     getDependencyOrder fp dfpl cm

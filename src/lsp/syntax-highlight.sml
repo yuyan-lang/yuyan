@@ -91,7 +91,7 @@ open CompilationManager
         open JSON
         open CompilationManager
         (* assume file already added *)
-        val tokens = CompilationManager.requestFileProcessing filePath UpToLevelTypeCheckingInfo cm
+        val tokens = CompilationManager.requestFileProcessing filePath UpToLevelTypeCheckingInfo cm []
         val CompilationFile cfile = CompilationManager.lookupFileByPath filePath cm
         val data = getDataFromTokens ( ((#tokensInfo cfile)))
     in 

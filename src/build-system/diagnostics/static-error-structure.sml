@@ -48,6 +48,7 @@ struct
     fun >>= (x, f) = next x f
     infix 5 >>=
     (* this is guaranteed to fail when x fails, it collects all errors that handler might generate *)
+    (* the handler is untouched if first thing succeeds *)
     fun failLookahead (x : 'a witherrsoption) (handler :  'a witherrsoption) : 'a witherrsoption = 
         case x of
             Success y => Success(y)
@@ -64,6 +65,9 @@ struct
     fun <$> (f, y) = fmap f y
     infix 5 <$>
 
+    fun <?> (f, y) = failLookahead f y
+    infix 5 <?>
+    
     fun collectAlternatives (x : 'a witherrsoption list)  : 'a list witherrsoption = 
         let fun collectAlternativesRec (x : 'a witherrsoption list)  : 'a list = 
             case x of

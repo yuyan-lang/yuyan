@@ -12,7 +12,7 @@ open StaticErrorStructure
             val cm = CompilationManager.initWithWorkingDirectory (FileResourceURI.make (OS.FileSys.getDir()))
             val absFp = (FileResourceURI.make (PathUtil.makeAbsolute filename (#pwd cm)))
             val _ = CompilationManager.findOrAddFile absFp NONE cm
-            val _ = CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm
+            val _ = CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm []
             val CompilationStructure.CompilationFile cfile = CompilationManager.lookupFileByPath absFp cm
             val preExecuteTime = Time.now()
             val (executeTime, exitSt) =  
