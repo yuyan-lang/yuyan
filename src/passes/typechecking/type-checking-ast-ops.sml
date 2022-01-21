@@ -35,6 +35,9 @@ datatype 'a gcontext = Context of StructureName.t * bool *
                 ):: l
             )
 
+    fun appendAbsoluteMappingsToCurrentContext (m : 'a gmapping list) (ctx : 'a gcontext) : 'a gcontext = 
+        foldl (fn (map, acc) => appendAbsoluteMappingToCurrentContext map acc) ctx m
+
     fun appendRelativeMappingsToCurrentContext (m : 'a gmapping list) (ctx : 'a gcontext) : 'a gcontext = 
         foldl (fn (map, acc) => appendRelativeMappingToCurrentContext map acc) ctx m
 

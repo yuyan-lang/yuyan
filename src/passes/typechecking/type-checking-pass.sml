@@ -24,6 +24,7 @@ infix 6 =/=
                     (* curStructure, curVisibility and mapping *)
   val addToCtxA = appendAbsoluteMappingToCurrentContext (* A for relative *)
   val addToCtxR = appendRelativeMappingToCurrentContext (* R for relative *)
+    val addToCtxAL = appendAbsoluteMappingsToCurrentContext (* L for list *)
     val addToCtxRL = appendRelativeMappingsToCurrentContext (* L for list *)
     
 
@@ -476,7 +477,8 @@ infix 6 =/=
                     Errors.typeDeclContainsFreeVariables (StructureName.toString (hd freeTVars))
                     else 
                     normalizeType (applyContextToType ctx t) >>= (fn normalizedType => 
-                    typeCheckSignature (addToCtxR (TypeDef([n], normalizedType, ())) ctx) ss (acc))
+                    typeCheckSignature (addToCtxR (TypeDef([n], normalizedType, ())) ctx) ss 
+                        (acc@[CTypeMacro((getCurSName ctx)@[n], normalizedType)]))
                     end
                 | RTermTypeJudgment(n, t):: ss => if freeTVar (applyContextToType ctx t) <> [] 
                     then Errors.termTypeDeclContainsFreeVariables n
@@ -487,7 +489,8 @@ infix 6 =/=
                 | RTermMacro(n, e) :: ss => 
                     synthesizeType ctx (applyContextToExpr ctx e) >>= 
                     (fn (transformedExpr , synthesizedType)  =>
-                        typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, ())) ctx) ss (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
+                        typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, ())) ctx) ss 
+                            (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
                     )
                 | RTermDefinition(n, e) :: ss => 
         (lookup ctx [n]) >>= (fn (_, lookedUpType) => 
@@ -525,9 +528,16 @@ infix 6 =/=
                     in typeCheckSignature nextContext ss (acc)
                     end
                 )
-                | RImportStructure(sname, path) :: s => 
-                    raise Fail "unimplemented"
-
+                | RImportStructure(sname, path) :: ss => 
+                    getTypeCheckedAST path >>= (fn csig => 
+                        typeCheckSignature 
+                        (addToCtxAL (List.mapPartial (fn x => case x of 
+                            CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ()))
+                            | CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,()))
+                            | CDirectExpr _ => NONE
+                            ) csig) ctx)
+                        ss acc
+                    )
                 | RDirectExpr e :: ss=> 
                     let 
                     val synthedExprOrFailure = (synthesizeType ctx (applyContextToExpr ctx e))
