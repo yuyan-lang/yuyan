@@ -6,7 +6,8 @@ struct
 
 open CompilationFileOps
 
-val DEBUG = true
+(* val DEBUG = true *)
+val DEBUG = false
 
     fun levelToInt (upToLevel : uptolevel) : int = 
     case upToLevel of
