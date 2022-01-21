@@ -57,7 +57,7 @@ open StaticErrorStructure
 
     fun constructPreprocessingAST
         (content : UTF8String.t)
-        (getPreprocessingAST : StructureName.t -> PreprocessingAST.t witherrsoption) 
+        (getPreprocessingAST : StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption) 
         : (PreprocessingAST.t) witherrsoption  * token list= 
         let 
             val tokensInfo : token list ref = ref []

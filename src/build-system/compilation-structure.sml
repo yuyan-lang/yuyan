@@ -36,7 +36,7 @@ struct
     
     type cmhelperfuncs = {
         findFileDependenciesTopLevel: TypeCheckingAST.RSignature -> StructureName.t list StrDict.dict witherrsoption,
-        getPreprocessingAST: StructureName.t -> PreprocessingAST.t witherrsoption
+        getPreprocessingAST: StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption
     }
 
 

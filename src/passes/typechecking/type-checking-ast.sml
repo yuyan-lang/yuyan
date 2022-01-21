@@ -100,6 +100,9 @@ structure TypeCheckingAST = struct
                        | RStructure of bool * UTF8String.t * RDeclaration list
                        (*  public visible * name * signature *)
                        | ROpenStructure of StructureName.t
+                       | RImportStructure of (StructureName.t (* name *) * 
+                                              FileResourceURI.t  (* file location *)
+                                              )
 
     type CSignature = CDeclaration list
     type RSignature = RDeclaration list

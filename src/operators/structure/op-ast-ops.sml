@@ -23,7 +23,7 @@ struct
   | PDirectExpr(ebody) => reconstructOriginalFromOpAST ebody
   | PStructure(v, name, ebody, soi) => reconstructWithArgs soi [name, reconstructOriginalFromOpAST ebody]
   | POpenStructure(name, soi) => reconstructWithArgs soi [reconstructOriginalFromOpAST name]
-  | PImportStructure(name, soi) => reconstructWithArgs soi [reconstructOriginalFromOpAST name]
+  | PImportStructure(name, path, soi) => reconstructWithArgs soi [reconstructOriginalFromOpAST name]
   | PComment(ebody, soi) => reconstructWithArgs soi [MixedStr.toUTF8String ebody]
 
 end

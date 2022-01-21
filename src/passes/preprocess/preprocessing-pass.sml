@@ -114,18 +114,18 @@ structure PreprocessingPass = struct
 
 
     fun configureAndConstructPreprocessingASTTopLevel
-    (lookupImportPreprocessingAST : StructureName.t -> PreprocessingAST.t witherrsoption)
+    (lookupImportPreprocessingAST : StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption)
     (notifyOpAST : OpAST.t -> 'a) 
     (notifyPreprocessingAST : PreprocessingAST.t -> 'b) 
     : UTF8String.t -> PreprocessingAST.t witherrsoption  = 
     let
-            fun newContextAfterImportingStructure(importName : StructureName.t ) (ctx : contextType) : contextType witherrsoption =
+            fun newContextAfterImportingStructure(importName : StructureName.t ) (ctx : contextType) : (contextType * FileResourceURI.t) witherrsoption =
             let 
             in 
-                lookupImportPreprocessingAST importName >>= (fn tree => 
+                lookupImportPreprocessingAST importName >>= (fn (tree, path) => 
                 case ctx of 
                     (curSName, vis, imports) => 
-                   Success (curSName, vis, imports@extractAllOperators importName true tree)
+                   Success ((curSName, vis, imports@extractAllOperators importName true tree), path)
                     (* TODO: prevent repetitive imports *)
                 )
             end
@@ -211,10 +211,11 @@ structure PreprocessingPass = struct
                             else
                             if oper ~=** importStructureOp
                             then ExpressionConstructionPass.getStructureName (getStructureOpAST l1) >>= (fn structureName =>  
-                            newContextAfterImportingStructure structureName ctx >>= (fn newContext =>
-                                Success(PImportStructure (getStructureOpAST l1, oper), newContext)
+                            newContextAfterImportingStructure structureName ctx >>= (fn (newContext, path) =>
+                                Success(PImportStructure (getStructureOpAST l1, path, oper), newContext)
                                 )
                             )
+                            
                             else
                             raise Fail "pp95"
                         end

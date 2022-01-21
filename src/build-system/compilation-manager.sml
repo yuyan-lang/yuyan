@@ -304,8 +304,32 @@ end *)
     fun resolveStructureReference(fromFile: filepath) (sname : StructureName.t) (cm : compilationmanager) : filepath witherrsoption = 
         let 
         val moduleSearchPath : string list = [PathUtil.concat([#pwd cm, "yylib"])]
+        fun findFileAmongCandidates(otherCandidates : string list) (errInfo : UTF8String.t) : filepath witherrsoption = 
+                        let
+                            val res = (case (foldl (fn (candidate, acc) => 
+                            case acc of 
+                                SOME(x) => SOME(x)
+                                | NONE => if PathUtil.exists candidate
+                                        then SOME(Success(make candidate))
+                                        else NONE
+                            ) NONE otherCandidates) of 
+                                SOME (x) => x
+                                | NONE =>  genSingletonError (errInfo) "导入的模块未找到(cannot find module)" NONE)
+                        in res
+                        end
         fun resolveRec(currentDir : string)(remainingName : StructureName.t) : filepath witherrsoption = 
-            raise Fail ""
+            case remainingName of 
+                [onlyName] => let val otherCandiates = 
+                            (fn x => [PathUtil.concat [x, StructureName.toStringPlain remainingName  ^ ".yuyan"],
+                                    PathUtil.concat [x, StructureName.toStringPlain remainingName ^"。豫"]]
+                            ) (currentDir)
+                            in findFileAmongCandidates otherCandiates onlyName end
+                | (firstName ::  rest) => 
+                    let val nextFolder = PathUtil.concat [currentDir, UTF8String.toString firstName]
+                    in if PathUtil.exists nextFolder
+                    then resolveRec nextFolder rest
+                    else  genSingletonError (firstName) "导入的模块未找到(cannot find module)" NONE
+                    end
         in
         if length sname = 0
             then raise Fail "unexpected empty structure name"
@@ -315,15 +339,7 @@ end *)
                             (fn x => [PathUtil.concat [x, StructureName.toStringPlain sname  ^ ".yuyan"],
                                     PathUtil.concat [x, StructureName.toStringPlain sname ^"。豫"]]
                             ) (PathUtil.getBaseDir (access fromFile) :: moduleSearchPath))
-                            val res = (case (foldl (fn (candidate, acc) => 
-                            case acc of 
-                                SOME(x) => SOME(x)
-                                | NONE => if PathUtil.exists candidate
-                                        then SOME(Success(make candidate))
-                                        else NONE
-                            ) NONE otherCandiates) of 
-                                SOME (x) => x
-                                | NONE =>  genSingletonError (onlyName) "导入的模块未找到(cannot find module)" NONE)
+                            val res = findFileAmongCandidates otherCandiates onlyName
                         in res
                         end
                 | (firstName :: rest) => let 
@@ -360,7 +376,9 @@ end *)
                         (resolveStructureReference filepath structureName cm >>= (fn fp => 
                             (findOrAddFile (fp) NONE cm;
                             requestFileProcessing (fp) UpToLevelPreprocessingInfo cm;
-                            CompilationFileOps.getPreprocessingAST (lookupFileByPath (fp) cm)
+                                CompilationFileOps.getPreprocessingAST (lookupFileByPath (fp) cm) >>= (fn tree => 
+                                    Success (tree, fp)
+                                )
                             )
                         )
                     )

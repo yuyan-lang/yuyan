@@ -23,7 +23,7 @@ struct
                        | PStructure of bool * UTF8String.t  * OpAST(* bool is true if public *) 
                             * sourceOpInfo
                        | POpenStructure of OpAST   * sourceOpInfo
-                       | PImportStructure of OpAST * sourceOpInfo
+                       | PImportStructure of OpAST * FileResourceURI.t * sourceOpInfo
 
     and OpAST = OpAST of (operator * OpAST list )
                     | UnknownOpName of UTF8String.t

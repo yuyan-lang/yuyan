@@ -337,7 +337,11 @@ struct
                         in
                                 getStructureName(sname) >>= (fn sname => ROpenStructure(sname) ::: constructOpAST xs (ctx))
                         end
-                    | PImportStructure(name, soi) => raise Fail "unimplemented"
+                    | PImportStructure(name,path,  soi) => 
+                        let 
+                        in
+                                getStructureName(name) >>= (fn sname => RImportStructure(sname, path) ::: constructOpAST xs (ctx))
+                        end
                     | PEmptyDecl => trailingNoOps()
                 )
                 end

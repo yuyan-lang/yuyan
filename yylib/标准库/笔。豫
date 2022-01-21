@@ -1,6 +1,13 @@
 有书笔曰「
 以写为化《《字符串》》而有。
-施写乃为会串而《《C调用》》名『yuyan_print』传串。
+施写乃为会串而《《C调用》》名『yyPrintln』传串。
+
+以打印行为化字符串而有。
+施打印行乃为会串而《《C调用》》名『yyPrintln』传串。
+
+以调试打印为承乙而化乙而有。
+施调试打印乃为受乙而会物而《《C调用》》名『yyPrintGeneric』传物。
+
 注：设写为__BUILTIN_STRING_PRINT。
 注：设新行为__BUILTIN_STRING_NEWLINE于元。
 注：设续为__BUILTIN_STRING_APPEND。

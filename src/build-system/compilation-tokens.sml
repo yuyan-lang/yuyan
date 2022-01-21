@@ -120,7 +120,7 @@ structure CompilationTokens = struct
         | PDirectExpr(ebody) => ((upOpAST ebody))
         | PStructure(v, name, ebody, soi) => (add name TkTpIdentifierBinder; upOpAST ebody; upOper soi TkTpStructureKeyword)
         | POpenStructure(name, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder;  upOper soi TkTpStructureKeyword)
-        | PImportStructure(name, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder;  upOper soi TkTpStructureKeyword)
+        | PImportStructure(name, path, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder;  upOper soi TkTpStructureKeyword)
         | PComment(ebody, soi) => (add (MixedStr.toUTF8String ebody) TkTpComment;  upOper soi TkTpComment)
         in ()
         end
