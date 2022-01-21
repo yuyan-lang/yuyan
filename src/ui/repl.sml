@@ -32,14 +32,11 @@ struct
 
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r[kvv] filename.yuyan\n"
 
-    fun main() : unit = 
-        (* arg.sml *)
-        let
-        val args = CommandLine.arguments()
-        in case args of
+    fun smlnj_main ((name , args) : string * string list) =
+        case args of
              [cmd] => if cmd = "lsp" 
-             then LanguageServerMode.startLSP()
-             else (print aboutText; OS.Process.exit OS.Process.failure : unit)
+             then (LanguageServerMode.startLSP(); OS.Process.success)
+             else (print aboutText;  OS.Process.failure )
              | (cmd :: fname :: []) => (TypeCheckAndEval.typeCheckAndEval 
                 {
                     verbose=(
@@ -55,8 +52,16 @@ struct
                     if String.isSubstring "profileLSPTokens"  cmd
                     then SOME (ReplDebug.profileLSPTokens)
                     else NONE
-                ))
-            | _ => (print aboutText; OS.Process.exit OS.Process.failure : unit)
+                ); OS.Process.success)
+            | _ => (DebugPrint.p aboutText;  OS.Process.failure )
+
+    fun main() : unit = 
+        (* arg.sml *)
+        let
+        val name = CommandLine.name()
+        val args = CommandLine.arguments()
+        in 
+OS.Process.exit (smlnj_main(name, args))
             end
 
      fun testMain()= 
