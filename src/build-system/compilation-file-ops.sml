@@ -87,10 +87,26 @@ open StaticErrorStructure
         in (result, sortedTokens)
         end
 
-    fun constructCPSInfo (typeCheckedAST : TypeCheckingAST.CSignature) : (CPSAst.cpscomputation * CPSAst.cpscomputation * 
-                LLVMAst.llvmsignature ) witherrsoption=
+    fun constructFileDependencyInfo (tc : TypeCheckingAST.CSignature) : FileResourceURI.t list = 
+        List.mapPartial (fn x => case x of 
+            TypeCheckingAST.CImport x => SOME (x)
+            | _ => NONE
+        ) tc
+
+
+    fun constructCPSInfo (tckedAST : TypeCheckingAST.CSignature) (curFp : FileResourceURI.t) (curFDependencies : FileResourceURI.t list)
+    (helperFuncs : cmhelperfuncs) :
+     (CPSAst.cpscomputation * CPSAst.cpscomputation * LLVMAst.llvmsignature )
+      witherrsoption=
+        (
+            (* DebugPrint.p ("entering construct cps"); *)
+    ((#getDependencyInfo helperFuncs) curFp curFDependencies ) >>= (fn orderedDeps => 
+        (
+            (* DebugPrint.p ("got ordered Dep"); *)
+      mapM (#getTypeCheckedAST helperFuncs) orderedDeps  >>= (fn csigs =>
         let
-         val cpsAST = CPSPass.cpsTransformSigTopLevel typeCheckedAST 
+        val grandTypeCheckedAST = List.concat(csigs@[tckedAST])
+         val cpsAST = CPSPass.cpsTransformSigTopLevel grandTypeCheckedAST
         (* val _ = DebugPrint.p "----------------- CPS Done -------------------- \n" *)
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST) *)
         val closureAST = ClosureConvert.closureConvertTopLevel cpsAST
@@ -100,7 +116,10 @@ open StaticErrorStructure
         in 
             Success (cpsAST, closureAST, llvmsig)
         end
-    
+      )
+    ))
+        )
+
     fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) (pwd : string) : {llfilepath :string} witherrsoption
                  =
         let  (* TODO use aboslute path for filenames *)
@@ -118,8 +137,8 @@ open StaticErrorStructure
         case #content file of DErrors l => SOME l
         | _ => case #preprocessingInfo file of DErrors l => SOME l
         | _ => case #typeCheckingInfo file of DErrors l => SOME l
-        | _ => case #dependencyInfo file of DErrors l => SOME l
         | _ => case #typeCheckedInfo file of DErrors l => SOME l
+        | _ => case #dependencyInfo file of DErrors l => SOME l
         | _ => case #cpsInfo file of DErrors l => SOME l
         | _ => case #llvmInfo file of DErrors l => SOME l
         | _ => NONE
@@ -132,7 +151,13 @@ open StaticErrorStructure
         case #content file of DErrors l => DErrors l
         | _ => case #preprocessingInfo file of DErrors l => DErrors l
         | _ => case #typeCheckingInfo file of DErrors l => DErrors l
-        | _ => case #dependencyInfo file of DErrors l => DErrors l
         | _ => #typeCheckedInfo file 
+
+    fun getDependencyInfo(CompilationFile file : compilationfile) : FileResourceURI.t list witherrsoption = 
+        case #content file of DErrors l => DErrors l
+        | _ => case #preprocessingInfo file of DErrors l => DErrors l
+        | _ => case #typeCheckingInfo file of DErrors l => DErrors l
+        | _ => case #typeCheckedInfo file of DErrors l => DErrors l
+        | _ => #dependencyInfo file
     
 end

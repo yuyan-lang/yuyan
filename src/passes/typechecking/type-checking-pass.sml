@@ -497,7 +497,8 @@ infix 6 =/=
                 let val transformedExprOrFailure = checkType ctx (applyContextToExpr ctx e) lookedUpType
                 in 
                 case transformedExprOrFailure of
-                Success(transformedExpr) => typeCheckSignature ctx ss (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, lookedUpType)])
+                Success(transformedExpr) => typeCheckSignature ctx ss 
+                                                (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, lookedUpType)])
                 | DErrors(l) => (case typeCheckSignature ctx ss (acc) of 
                             Success _ => DErrors(l)
                             | DErrors l2 => DErrors(l @l2)
@@ -536,7 +537,7 @@ infix 6 =/=
                             | CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,()))
                             | CDirectExpr _ => NONE
                             ) csig) ctx)
-                        ss acc
+                        ss (acc@[CImport path])
                     )
                 | RDirectExpr e :: ss=> 
                     let 

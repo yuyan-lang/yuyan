@@ -19,7 +19,8 @@ struct
             | DErrors l => DErrors l
             | NotAvailable  => NotAvailable
 
-    exception NotSuccess
+    exception NotSuccessErrors
+    exception NotSuccessNotAvailble
     fun isSuccess  (x : 'a witherrsoption) : bool =
         case x of
             Success y => true
@@ -31,8 +32,8 @@ struct
     fun valOf  (x : 'a witherrsoption) : 'a =
         case x of
             Success y => y
-            | DErrors l => raise NotSuccess
-            | NotAvailable => raise NotSuccess
+            | DErrors l => raise NotSuccessErrors
+            | NotAvailable => raise NotSuccessNotAvailble
     fun valOfSafe  (x : 'a witherrsoption) (default : errlist option ->  'a): 'a =
         case x of
             Success y => y

@@ -19,7 +19,8 @@ struct
             , tokensInfo : token list 
             , preprocessingInfo : PreprocessingAST.t witherrsoption
             , typeCheckingInfo: TypeCheckingAST.RSignature witherrsoption (* parsed *)
-            , dependencyInfo: StructureName.t list StrDict.dict witherrsoption (* list of file paths that this file depends on, for dependency resolution *)
+            (* , dependencyInfo: StructureName.t list StrDict.dict witherrsoption list of file paths that this file depends on, for dependency resolution *)
+            , dependencyInfo: FileResourceURI.t list witherrsoption 
             , typeCheckedInfo: (TypeCheckingAST.CSignature ) witherrsoption  (* type checked *)
             , cpsInfo: (CPSAst.cpscomputation * CPSAst.cpscomputation * 
                 LLVMAst.llvmsignature) witherrsoption  (* cps transformed, closure converted, and codegened *)
@@ -35,9 +36,16 @@ struct
     }
     
     type cmhelperfuncs = {
-        findFileDependenciesTopLevel: TypeCheckingAST.RSignature -> StructureName.t list StrDict.dict witherrsoption,
         getPreprocessingAST: StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption,
-        getTypeCheckedAST:  FileResourceURI.t -> TypeCheckingAST.CSignature witherrsoption
+        getTypeCheckedAST:  FileResourceURI.t -> TypeCheckingAST.CSignature witherrsoption, 
+        (* we also request recursive computation of all file dependencies info when this function is invoked *)
+        findFileDependenciesTopLevel: TypeCheckingAST.CSignature -> FileResourceURI.t list witherrsoption,
+        (* returns the topological ordering in the reachable dependency subgraph from the input argument, 
+        assumes all dependencies have been computed (function does not request computation) 
+        the second argument is the current file's dependency as it cannot be queried from cm because the file might have just 
+        computed its dependencies and updates are not in cm yet
+        *)
+        getDependencyInfo:  FileResourceURI.t  -> FileResourceURI.t list -> FileResourceURI.t list witherrsoption
     }
 
 

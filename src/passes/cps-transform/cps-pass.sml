@@ -46,6 +46,8 @@ exception CPSInternalError
         | CDirectExpr (e, tp) :: ss => 
              cpsTransformExpr ctx e (fn resvar => 
             cpsTransformSig (ctx) ss cc)
+        | CImport _ :: ss => 
+            cpsTransformSig (ctx) ss cc
 
     and cpsTransformExpr   
         (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
