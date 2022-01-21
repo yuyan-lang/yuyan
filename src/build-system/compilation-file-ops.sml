@@ -127,5 +127,12 @@ open StaticErrorStructure
     fun getPreprocessingAST(CompilationFile file : compilationfile) : PreprocessingAST.t witherrsoption = 
         case #content file of DErrors l => DErrors l
         | _ =>  #preprocessingInfo file 
+
+    fun getTypeCheckedAST(CompilationFile file : compilationfile) : TypeCheckingAST.CSignature witherrsoption = 
+        case #content file of DErrors l => DErrors l
+        | _ => case #preprocessingInfo file of DErrors l => DErrors l
+        | _ => case #typeCheckingInfo file of DErrors l => DErrors l
+        | _ => case #dependencyInfo file of DErrors l => DErrors l
+        | _ => #typeCheckedInfo file 
     
 end

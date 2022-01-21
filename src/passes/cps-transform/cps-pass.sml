@@ -35,14 +35,15 @@ exception CPSInternalError
             [] => cc (ctx, NONE)
             (* (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit)) *)
             (* optimize if tail of the block is an expression, it is the value of the expression *)
-        | [CDirectExpr e]  => 
+        | [CDirectExpr (e, tp)]  => 
              cpsTransformExpr ctx e (fn resvar => 
              cc (ctx, SOME resvar))
-
-        | CTermDefinition(name, def):: ss =>  
+        | CTypeMacro _ :: ss => (* ignore type macro during cps *)
+            cpsTransformSig ctx ss cc
+        | CTermDefinition(name, def, tp):: ss =>  
              cpsTransformExpr ctx def (fn resvar => 
             cpsTransformSig ((name, PlainVar resvar)::ctx) ss cc)
-        | CDirectExpr e :: ss => 
+        | CDirectExpr (e, tp) :: ss => 
              cpsTransformExpr ctx e (fn resvar => 
             cpsTransformSig (ctx) ss cc)
 

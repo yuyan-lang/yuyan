@@ -139,7 +139,8 @@ open CompilationFileOps
                             let val (newTypeCheckedInfo, updatedTypeCheckedInfo) = 
                                     if StaticErrorStructure.isSuccess typecheckedast andalso not updatedDependencyInfo
                                     then ( typecheckedast, false)
-                                    else (TypeCheckingEntry.typeCheckSignatureTopLevel 
+                                    else (TypeCheckingPass.configureAndTypeCheckSignature
+                                    (#getTypeCheckedAST helperFuncs)
                                         ( (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
                                 val _ = if DEBUG then DebugPrint.p "Computed TypeCheck\n" else ()
                             in 

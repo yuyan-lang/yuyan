@@ -256,8 +256,9 @@ in case x of
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
 in case x of 
-    CTermDefinition(ename, ebody) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
-  | CDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
+    CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingType  tbody
+  | CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
+  | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   end
 
 

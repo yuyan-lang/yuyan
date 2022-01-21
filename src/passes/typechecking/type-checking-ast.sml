@@ -48,15 +48,17 @@ structure TypeCheckingAST = struct
                     | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * StructureName.t list
 
+(* all types are fully normalized *)
     and CDeclaration = 
-                        (* Do not need type macro becuase all types for later stages have been expanded *)
-                        (* CTypeMacro of UTF8String.t * Type *) 
+                        (* Do not need type macro becuase all types for later stages have been expanded 
+                        CHANGE: for imports/lsp, still need type macro*)
+                        CTypeMacro of StructureName.t * Type 
                         (* Do not need type info as terms have been annotated *)
                         (* CTermTypeJudgment of UTF8String.t * Type *)
                         (* Fold into Term Definition *)
                        (*  CTermMacro of UTF8String.t * CExpr *)
-                        CTermDefinition of StructureName.t * CExpr
-                       | CDirectExpr of CExpr
+                       | CTermDefinition of StructureName.t * CExpr * Type  
+                       | CDirectExpr of CExpr * Type
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
                        (* | COpenStructure of StructureName.t *)

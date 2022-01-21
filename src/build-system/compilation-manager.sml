@@ -382,7 +382,12 @@ end *)
                             )
                         )
                     )
-                )
+                ),
+                getTypeCheckedAST = (fn fp => 
+                    (findOrAddFile (fp) NONE cm;
+                    requestFileProcessing (fp) UpToLevelTypeCheckedInfo cm;
+                    CompilationFileOps.getTypeCheckedAST (lookupFileByPath fp cm)
+                    ))
                 }
             ) cm 
 
