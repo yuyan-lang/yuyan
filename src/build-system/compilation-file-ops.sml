@@ -55,7 +55,7 @@ open StaticErrorStructure
 
 
     fun constructPreprocessingAST
-        (content : UTF8String.t)
+        (content : UTF8String.t) (topLevelStructureName : StructureName.t)
         (getPreprocessingAST : StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption) 
         : (PreprocessingAST.t) witherrsoption  * token list= 
         let 
@@ -71,7 +71,8 @@ open StaticErrorStructure
                 getPreprocessingAST
                 (updateUsefulTokensFromOpAST tokensInfo)
                 (updateUsefulTokensFromPreprocessingAST tokensInfo)
-                content
+                topLevelStructureName 
+                content 
             val sortedTokens = ListMergeSort.sort 
                     (* true if gt *)
                     (fn (Token(s1,_), Token(s2, _))

@@ -15,4 +15,6 @@ struct
   val newline = UTF8Char.fromString "\n"  NONE
   val tab = UTF8Char.fromString "\t"  NONE
   val tilde = UTF8Char.fromString "~"  NONE
+  val slash = UTF8Char.fromString "/"  NONE
+  val pathSeparator = slash
 end

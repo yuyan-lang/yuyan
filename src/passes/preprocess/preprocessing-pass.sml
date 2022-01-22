@@ -123,7 +123,9 @@ structure PreprocessingPass = struct
     (lookupImportPreprocessingAST : StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption)
     (notifyOpAST : OpAST.t -> 'a) 
     (notifyPreprocessingAST : PreprocessingAST.t -> 'b) 
-    : UTF8String.t -> PreprocessingAST.t witherrsoption  = 
+    (topLevelStructureName : StructureName.t)
+    : UTF8String.t -> 
+    PreprocessingAST.t witherrsoption  = 
     let
             fun newContextAfterImportingStructure(importName : StructureName.t ) (ctx : contextType) : (contextType * FileResourceURI.t) witherrsoption =
             let 
@@ -281,8 +283,8 @@ structure PreprocessingPass = struct
 
             fun preprocessASTTopLevel(content : UTF8String.t) : PreprocessingAST.t witherrsoption = 
                 MixedStr.makeDecl content >>= (fn s => 
-                    preprocessAST s (((StructureName.topLevelName, true, [
-                        (StructureName.topLevelName, true, [])
+                    preprocessAST s (((topLevelStructureName, true, [
+                        (topLevelStructureName, true, [])
                     ]))) >>= (fn (r, newCtx) => Success(r))
                 )
                 

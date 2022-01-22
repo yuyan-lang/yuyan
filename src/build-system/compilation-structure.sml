@@ -13,6 +13,7 @@ struct
         | UpToLevelLLVMInfo
 
     type dependency = FileResourceURI.t * StructureName.t
+    type filepath = FileResourceURI.t
 
     datatype compilationfile = 
         CompilationFile  of   
@@ -38,17 +39,19 @@ struct
     } *)
     
     type cmhelperfuncs = {
-        getPreprocessingAST: StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption,
+        getPreprocessingAST: StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption
                                                 (* use to signal errors *)
-        getTypeCheckedAST:  (dependency) -> TypeCheckingAST.CSignature witherrsoption, 
+        ,getTypeCheckedAST:  (dependency) -> TypeCheckingAST.CSignature witherrsoption
         (* we also request recursive computation of all file dependencies info when this function is invoked *)
-        findFileDependenciesTopLevel: TypeCheckingAST.CSignature -> dependency list witherrsoption,
+        ,findFileDependenciesTopLevel: TypeCheckingAST.CSignature -> dependency list witherrsoption
         (* returns the topological ordering in the reachable dependency subgraph from the input argument, 
         assumes all dependencies have been computed (function does not request computation) 
         the second argument is the current file's dependency as it cannot be queried from cm because the file might have just 
         computed its dependencies and updates are not in cm yet
         *)
-        getDependencyInfo:  FileResourceURI.t  -> dependency list -> dependency list witherrsoption
+        ,getDependencyInfo:  FileResourceURI.t  -> dependency list -> dependency list witherrsoption
+        ,getTopLevelStructureName:  filepath -> StructureName.t
+
     }
 
 

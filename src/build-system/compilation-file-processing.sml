@@ -74,6 +74,7 @@ val DEBUG = false
                     else (
                         constructPreprocessingAST 
                             (#1 (StaticErrorStructure.valOf newContent))
+                            (#getTopLevelStructureName helperFuncs (FileResourceURI.make fp))
                             (#getPreprocessingAST helperFuncs)
                         , true)
                 in
@@ -97,7 +98,8 @@ val DEBUG = false
                     let val (newTypeCheckingInfo , updatedTCkingInfo) = 
                             if StaticErrorStructure.isSuccess typecheckingast andalso not updatedPreprocessingInfo
                             then ( typecheckingast, false)
-                            else (ExpressionConstructionPass.constructTypeCheckingASTTopLevel (StaticErrorStructure.valOf newPreprocessingInfo), true)
+                            else (ExpressionConstructionPass.constructTypeCheckingASTTopLevel 
+                            (StaticErrorStructure.valOf newPreprocessingInfo), true)
                         val _ = if DEBUG then debugPrint 
                         ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ "\n") else ()
                     in
@@ -122,8 +124,9 @@ val DEBUG = false
                                 if StaticErrorStructure.isSuccess typecheckedast andalso not updatedTCkingInfo
                                 then ( typecheckedast, false)
                                 else (TypeCheckingPass.configureAndTypeCheckSignature
-                                (#getTypeCheckedAST helperFuncs)
-                                    ( (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
+                                        (#getTopLevelStructureName helperFuncs (FileResourceURI.make fp))
+                                        (#getTypeCheckedAST helperFuncs)
+                                        ( (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
                             val _ = if DEBUG then debugPrint ("Computed TypeChecked success : " ^ 
                                     Bool.toString (StaticErrorStructure.isSuccess newTypeCheckedInfo) ^ "\n") else ()
                         in 

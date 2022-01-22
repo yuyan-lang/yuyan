@@ -51,7 +51,13 @@ structure UTF8String = struct
 (* fromString does not annotate the string with file information *)
     fun fromString(s : string) : utf8string = map (fn c => UTF8Char.fromUTF8Char c NONE) (UTF8.explode(s))
 
-    
+
+    (* s1 is the suffix *)
+    fun stripSuffix (s1 : utf8string) (s2 : utf8string) = 
+        if List.length s1 > List.length s2 then 
+        raise Fail "Cannot strip prefix" else
+        List.rev(List.drop(List.rev s2, length s1))
+
 
 (* fromStringAndFile annotates the string with file information *)
     fun fromStringAndFile(s : string) (fp: string) : utf8string = 

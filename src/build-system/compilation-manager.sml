@@ -24,7 +24,8 @@ structure CompilationManager = struct
         let val candidates = List.filter (fn (m) => String.isPrefix (#rootPath m) (access filepath)) (!(#importedModules cm)) 
         in if length candidates = 0
             then NONE
-            else SOME(hd (ListMergeSort.sort (fn (x,y) => String.size (#rootPath x) > String.size (#rootPath y)) candidates))
+            else SOME(hd (ListMergeSort.sort (* descending, using the reverse of the usual gt order *)
+                (fn (x,y) => String.size (#rootPath x) < String.size (#rootPath y)) candidates))
         end
 
     fun lookupModuleForFilePath (filepath : filepath) (cm : compilationmanager) : compilationmodule 
@@ -422,6 +423,19 @@ end *)
         (* ) *)
         end
 
+    fun getTopLevelStructureName(filepath : filepath) (cm : compilationmanager) : StructureName.t = 
+        let val  module = lookupModuleForFilePath filepath cm
+            val moduleRootPath = #rootPath module
+            val relativepath = UTF8String.fromString (PathUtil.makeRelative  (access filepath) (moduleRootPath))
+            val removedExtension = if UTF8String.isSuffix (UTF8String.fromString ".yuyan") (relativepath)
+                                   then UTF8String.stripSuffix (UTF8String.fromString ".yuyan") relativepath
+                                   else if UTF8String.isSuffix (UTF8String.fromString "。豫") (relativepath)
+                                   then UTF8String.stripSuffix (UTF8String.fromString "。豫") relativepath
+                                   else relativepath
+            val sNameStr = UTF8String.fields (fn x => UTF8Char.semanticEqual x (SpecialChars.pathSeparator)) removedExtension
+            val res = sNameStr
+        in  res 
+        end
 
 
     exception CircularReference of dependency list
@@ -462,6 +476,9 @@ end *)
                 , getDependencyInfo = (fn fp =>  fn dfpl =>
                     getDependencyOrder fp dfpl cm
                 )
+                , getTopLevelStructureName = (fn fp => 
+                    getTopLevelStructureName fp cm
+                )
                 }
             ) cm 
 
@@ -482,11 +499,11 @@ end *)
     (* returns errors one element per file *)
     fun collectAllDiagnostics(cm : compilationmanager) : (string * StaticErrorStructure.errlist) list = 
     let
-    val allFiles = List.concat (map (fn (m) => (StrDict.toList (!(#files m)))) ((!(#importedModules cm))))
-    val diagnostics = (List.map(fn (s, f) =>  case  (CompilationFileOps.getFileDiagnostics f) of 
-        SOME l => (s, l) | NONE => (s, [])) allFiles)
+        val allFiles = List.concat (map (fn (m) => (StrDict.toList (!(#files m)))) ((!(#importedModules cm))))
+        val diagnostics = (List.map(fn (s, f) =>  case  (CompilationFileOps.getFileDiagnostics f) of 
+            SOME l => (s, l) | NONE => (s, [])) allFiles)
     in
-    diagnostics
+        diagnostics
     end
 
 
