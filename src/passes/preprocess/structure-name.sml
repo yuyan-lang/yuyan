@@ -7,13 +7,14 @@ val separatorChar = [UTF8Char.fromString "之" NONE]
     fun toString x = case x of
         [x] => x
         | (x :: xs) => x@separatorChar@toString xs
-        | _ => raise Fail "sn10"
+        | [] => UTF8String.fromString "【错误：空结构名】"
 
     fun toStringPlain x = UTF8String.toString (toString x)
     val topLevelName = [
         UTF8String.fromString "《《顶层结构》》"
         ]
     fun localName () = [UTF8String.fromString ("《《临时结构" ^ Int.toString(UID.next()) ^ "》》")]
+    fun searchPathName() = [UTF8String.fromString ("《《搜索路径" ^ Int.toString(UID.next()) ^ "》》")]
 
 
     fun semanticEqual (s1 : structureName) (s2 : structureName) = 

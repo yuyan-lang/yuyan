@@ -29,13 +29,13 @@ struct
             , llvmInfo: {llfilepath :string} witherrsoption  (* the actual generated ll file *)
             }
 
-    type moduleinfo =  {
+    (* type moduleinfo =  {
         name : StructureName.t,
         sourceFolder : string option,
         dependencies : UTF8String.t list option,
         autoOpens : UTF8String.t list option,
         submodules : UTF8String.t list option
-    }
+    } *)
     
     type cmhelperfuncs = {
         getPreprocessingAST: StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption,
@@ -59,12 +59,12 @@ subdirectory of rootDir *)
             compilationfile
             ) StrDict.dict ref
             , rootPath: string
-            , moduleInfo : moduleinfo
+            (* , name : StructureName.t *)
              } (* a list of files, mappings from filepath *)
 
     type compilationmanager = 
         {
-        importedModules: (StructureName.t * compilationmodule ) list ref  (* imported, and current modules *)
+        importedModules: compilationmodule list ref  (* imported, a module is basically a search path *)
         , pwd : string (* pwd *)
     }
 

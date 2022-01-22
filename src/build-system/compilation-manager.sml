@@ -21,9 +21,11 @@ structure CompilationManager = struct
 
     fun findModuleForFilePath (filepath : filepath) (cm : compilationmanager) : compilationmodule option
         = 
-        case List.filter (fn (_,m) => String.isPrefix (#rootPath m) (access filepath)) (!(#importedModules cm)) of 
-            [(s,m)] => SOME m
-            | _ => NONE
+        let val candidates = List.filter (fn (m) => String.isPrefix (#rootPath m) (access filepath)) (!(#importedModules cm)) 
+        in if length candidates = 0
+            then NONE
+            else SOME(hd (ListMergeSort.sort (fn (x,y) => String.size (#rootPath x) > String.size (#rootPath y)) candidates))
+        end
 
     fun lookupModuleForFilePath (filepath : filepath) (cm : compilationmanager) : compilationmodule 
         = case findModuleForFilePath filepath cm
@@ -46,7 +48,7 @@ structure CompilationManager = struct
         
     
 
-    exception ModuleSpecMalformed of string
+    (* exception ModuleSpecMalformed of string
     fun getModuleInfo (rootPath : filepath) (name : StructureName.t) : moduleinfo = 
         let val packageFp = PathUtil.concat [access rootPath, "package.yyon"]
         in 
@@ -90,25 +92,26 @@ structure CompilationManager = struct
         autoOpens=NONE,
         submodules=NONE
             }
-        end
+        end *)
  
-    fun addModule (rootPath : filepath) (cm : compilationmanager) (name : StructureName.t) : compilationmodule =
+    fun addModule (rootPath : filepath) (cm : compilationmanager)   : compilationmodule =
         let val newModule =( {files=ref (StrDict.empty), rootPath=(access rootPath)
-        , moduleInfo=getModuleInfo rootPath name
+        (* , moduleInfo=getModuleInfo rootPath name *)
+        (* name =(if isTopLevel then StructureName.topLevelName else StructureName.searchPathName()) *)
         })
-            val _ = (#importedModules cm) := (!(#importedModules cm))@[(name, newModule)]
+            val _ = (#importedModules cm) := (!(#importedModules cm))@[( newModule)]
         in newModule end
         
-    fun findOrImportModule (moduleName: StructureName.t) (cm : compilationmanager) : compilationmodule =
+    (* fun findOrImportModule (moduleName: StructureName.t) (cm : compilationmanager) : compilationmodule =
         case ListSearchUtil.findSName (!(#importedModules cm)) moduleName of
             SOME(m) => m
-            | NONE => addModule (make(OS.Path.concat (OS.Path.concat (#pwd cm, "/yylib/"), StructureName.toStringPlain moduleName))) cm moduleName
+            | NONE => addModule (make(OS.Path.concat (OS.Path.concat (#pwd cm, "/yylib/"), StructureName.toStringPlain moduleName))) cm moduleName *)
 
 (* add a new file to the compilation manager, if the file's module is not found, 
 a new module is added with root Path being the file's residing directory *)
     fun findOrAddFile(filepath: filepath) (content : string option) (cm : compilationmanager) : compilationfile =
          case findModuleForFilePath filepath cm of 
-            NONE => ((addModule (make (#dir (OS.Path.splitDirFile (access filepath)))) cm (StructureName.localName());
+            NONE => ((addModule (make (#dir (OS.Path.splitDirFile (access filepath)))) cm;
                       findOrAddFile filepath content cm))
             | SOME m => case StrDict.find (!(#files m)) (access filepath) of 
                     SOME f => f
@@ -158,7 +161,7 @@ a new module is added with root Path being the file's residing directory *)
                 Success ())
             end
         end
-
+(* 
     fun listAllFilesInModule (m : compilationmodule) : filepath list =
     if Option.isSome (#sourceFolder (#moduleInfo m))
     then
@@ -176,7 +179,7 @@ a new module is added with root Path being the file's residing directory *)
     then let val moduleNames = Option.valOf (#autoOpens (#moduleInfo m))
              val modules = map (fn x => findOrImportModule ([x]) cm) moduleNames
          in modules end
-    else []
+    else [] *)
 
     exception AmbiguousStructureReference of StructureName.t
     exception UnresolvedReference of StructureName.t
@@ -469,7 +472,8 @@ end *)
             importedModules = ref []
             , pwd=(access pwd)(* pwd *)
         }
-        val _ = addModule pwd cm StructureName.topLevelName
+        val _ = addModule pwd cm 
+        val _ = addModule (make (PathUtil.concat [access pwd, "yylib"])) cm 
     in
         cm
     end
@@ -478,7 +482,7 @@ end *)
     (* returns errors one element per file *)
     fun collectAllDiagnostics(cm : compilationmanager) : (string * StaticErrorStructure.errlist) list = 
     let
-    val allFiles = List.concat (map (fn (s,m) => (StrDict.toList (!(#files m)))) ((!(#importedModules cm))))
+    val allFiles = List.concat (map (fn (m) => (StrDict.toList (!(#files m)))) ((!(#importedModules cm))))
     val diagnostics = (List.map(fn (s, f) =>  case  (CompilationFileOps.getFileDiagnostics f) of 
         SOME l => (s, l) | NONE => (s, [])) allFiles)
     in
