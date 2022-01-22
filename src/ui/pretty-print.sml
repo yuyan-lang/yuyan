@@ -138,6 +138,7 @@ case x of
   | POpenStructure(name, soi) => "open " ^ show_opast name ^ "" 
   | PImportStructure(name, path, soi) => "import " ^ show_opast name ^ "" 
   | PComment(ebody, soi) => "/* comment : -- */ "
+  | PEmptyDecl => "/* empty */"
   end
 and show_preprocessaast x = let
 open PreprocessingAST
@@ -216,6 +217,7 @@ in case x of
   | RStructure(v, name, ebody) => (if v then "public" else "private") ^
     " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingRSig ebody ^ "}"
   | ROpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
+  | RImportStructure(name, fp) => "import " ^ StructureName.toStringPlain name ^ "" 
   end
 
 and show_typecheckingRSig x = let
@@ -259,6 +261,7 @@ in case x of
     CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingType  tbody
   | CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
+  | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
   end
 
 
@@ -321,6 +324,7 @@ in
       | PKAppWithEvaledFun((x,f), c2) => "apfun (" ^ show_pkvalue (PKAbs(x,f))  ^ ", " ^ show_pkcomputation c2 ^ ")"
       | PKRet(v) => "ret (" ^ show_pkvalue v ^ ")"
       | PKFix(id, c) => "(fix " ^ Int.toString id ^ "." ^ show_pkcomputation c ^ ")"
+      | _ => raise Fail "prettyprint327"
       end
 
 

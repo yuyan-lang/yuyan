@@ -33,22 +33,36 @@ infix 5 <?>
     fun getMapping (c: context ):mapping list = 
         case c of  (Context(cSname, cVis, m)) => m
 
-    fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * Type) witherrsoption= 
-        case ctx of 
-        (* WARNING: toUTF8String discards the separator information, but I guess it is fine because 
-            as long as all components are of the same name, we're fine*)
-            [] => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") NONE
-             (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
-            | TermTypeJ(n1, t1, u)::cs => 
-                (case StructureName.checkRefersTo n1 n curSName 
-                of SOME(cname) => Success (cname, t1)
-                | NONE => lookupMapping cs n curSName
-                )
-            | TypeDef(_) :: cs => lookupMapping cs n curSName
+    fun showctx x = SOME(case x of 
+    Context(curSName, curVis, m) =>  
+    "当前结构名：" ^ StructureName.toStringPlain curSName ^
+    "\n当前已定义的值及其类型：\n"  ^
+            String.concatWith "；\n" (map (fn x => case x of
+    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " ，其类型为 " ^ PrettyPrint.show_typecheckingType t
+    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " ，其为 " ^ PrettyPrint.show_typecheckingType t) m) ^ "\n"
+          )
 
 (* require lookup to add name qualification if references local structure *)
-    fun lookup (Context(curSName, _, ctx) : context) (n : StructureName.t) : (StructureName.t * Type) witherrsoption= 
-        let val ntp = lookupMapping ctx n curSName in ntp end
+    fun lookup (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * Type) witherrsoption= 
+        let exception LookupNotFound
+            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * Type) witherrsoption= 
+                case ctx of 
+                (* WARNING: toUTF8String discards the separator information, but I guess it is fine because 
+                    as long as all components are of the same name, we're fine*)
+                    [] => raise LookupNotFound
+                    (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
+                    | TermTypeJ(n1, t1, u)::cs => 
+                        (case StructureName.checkRefersTo n1 n curSName 
+                        of SOME(cname) => Success (cname, t1)
+                        | NONE => lookupMapping cs n curSName
+                        )
+                    | TypeDef(_) :: cs => lookupMapping cs n curSName
+            val ntp = lookupMapping ctx n curSName 
+                handle LookupNotFound =>
+                genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctx (Context(curSName, v, ctx)))
+        in 
+            ntp 
+        end
         (* handle LookupNotFound s1 => 
             (* (let val tp = lookupMapping ctx (curSName@n)
              (* try both absolute and relative path *)
@@ -436,6 +450,7 @@ infix 5 <?>
                                                     | _ => Errors.ccallArgumentsMustBeImmediate arg
                                                     (* raise TypeCheckingFailure "ccall arguments must be immediate values" *)
                                                     ) l)) >>= elaborateArguments
+                                                | _ => raise Fail "tcp439"
                                             )
                                 end
                             | _ => Errors.firstArgumentOfCCallMustBeStringLiteral e1
@@ -530,18 +545,19 @@ infix 5 <?>
                     in typeCheckSignature nextContext ss (acc)
                     end
                 )
-                | RImportStructure(sname, path) :: ss => 
-                    (getTypeCheckedAST (path, sname)
-                    <?> (genSingletonError (StructureName.toString sname) "导入模块时出错" NONE)
+                | RImportStructure(importName, path) :: ss => 
+                    (getTypeCheckedAST (path, importName)
+                    <?> (genSingletonError (StructureName.toString importName) "导入模块时出错" NONE)
                     )
                      >>= (fn csig => 
                         typeCheckSignature 
                         (addToCtxAL (List.mapPartial (fn x => case x of 
-                            CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ()))
-                            | CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,()))
+                            CTypeMacro(sname, t) => SOME(TypeDef(importName@sname, t, ()))
+                            | CTermDefinition(sname, e, t) => SOME(TermTypeJ(importName@sname, t,()))
                             | CDirectExpr _ => NONE
+                            | CImport _ => NONE
                             ) csig) ctx)
-                        ss (acc@[CImport(sname, path)])
+                        ss (acc@[CImport(importName, path)])
                     )
                 | RDirectExpr e :: ss=> 
                     let 

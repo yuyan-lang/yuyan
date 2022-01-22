@@ -27,6 +27,7 @@ open StaticErrorStructure
                                 val exitSt = case exec of 
                                     Success _ => (OS.Process.system "./.yybuild/yyexe")
                                     | DErrors l => (DebugPrint.p (PrintDiagnostics.showErrs l cm);OS.Process.failure)
+                                    | NotAvailable => raise Fail "tcev30"
                             in 
                                 (executeTime, exitSt)
                             end

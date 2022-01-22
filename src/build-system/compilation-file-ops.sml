@@ -11,7 +11,6 @@ open StaticErrorStructure
     (* val DEBUG = true *)
     val DEBUG = false
 
-    fun fromSome (SOME v) = v
 
 
     fun updateFileContent ( newContent : string) (CompilationFile file : compilationfile) : compilationfile = 

@@ -36,6 +36,7 @@ open OpAST
 
     fun opastAppendArg  (original :  OpAST )(arg : OpAST)  : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, l@[arg])
+                        | _ => raise Fail "past39"
     fun opastPrependArg  (arg : OpAST) (original :  OpAST ) : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, arg :: l)
                         | _ => raise InternalFailure (arg, original)

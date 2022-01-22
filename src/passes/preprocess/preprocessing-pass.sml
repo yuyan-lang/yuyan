@@ -92,12 +92,17 @@ structure PreprocessingPass = struct
      String.concatWith "\n" (map (fn x => "可以这样理解：" ^ PrettyPrint.show_parseopast x ) x)
 
 
-    fun parsePOperator (POpDeclaration(opName, assoc, pred, soi)) =let 
+    fun parsePOperator (opd) =
+    case opd of 
+            POpDeclaration(opName, assoc, pred, soi) => 
+        let 
                     val oper = Operators.parseOperator 
                             opName (assoc <> Operators.NoneAssoc) (assoc = Operators.LeftAssoc) pred []
                             in (
                                 (* print (" PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
                                 oper) end
+        | _ => raise Fail "pp104"
+        
     fun extractAllOperators (curSName : StructureName.t) (vis : bool) (ast : PreprocessingAST.t) : (structureName * bool * Operators.operator list) list = 
         (* current scoped *)
         (curSName, vis, List.mapPartial  (fn (x, ei) => 

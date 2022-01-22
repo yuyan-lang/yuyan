@@ -66,6 +66,8 @@ in
          let val (kfree, k') = cck k
             in (fromList (map fvi vs) *** kfree, CPSFfiCCall(name, vs, k'))
              end
+        | CPSAbsSingle(_, SOME _, _) => raise Fail "cvt69"
+        | CPSAbs(_, SOME _, _) => raise Fail "cvt70"
             
 end
 fun closureConvertTopLevel (s : cpscomputation) :  cpscomputation =

@@ -61,19 +61,19 @@ structure CompilationManager = struct
                     ListSearchUtil.findUTF8Str yyonObject (UTF8String.fromString s)
                 val _ = case findInObj "名称" of
                     SOME (STRING s) => if [s] <> name then raise ModuleSpecMalformed "name not identical" else ()
-                    | NONE => ()
+                    | _ => ()
                 val sourceFolder = case findInObj "源文件夹" of 
                     SOME (STRING s) => SOME(PathUtil.concat[access rootPath, UTF8String.toString s])
-                    | NONE => NONE
+                    | _ => NONE
                 val dependencies = case findInObj "依赖" of 
                     SOME (ARRAY arr) => SOME(map asString arr)
-                    | NONE => NONE
+                    | _ => NONE
                 val autoOpens = case findInObj "自动导入" of 
                     SOME (ARRAY arr) => SOME(map asString arr)
-                    | NONE => NONE
+                    | _ => NONE
                 val submodules = case findInObj "分属包" of 
                     SOME (ARRAY arr) => SOME(map asString arr)
-                    | NONE => NONE
+                    | _ => NONE
             in 
                 {
             name=name,
@@ -93,7 +93,9 @@ structure CompilationManager = struct
         end
  
     fun addModule (rootPath : filepath) (cm : compilationmanager) (name : StructureName.t) : compilationmodule =
-        let val newModule =( {files=ref (StrDict.empty), rootPath=(access rootPath), moduleInfo=getModuleInfo rootPath name})
+        let val newModule =( {files=ref (StrDict.empty), rootPath=(access rootPath)
+        , moduleInfo=getModuleInfo rootPath name
+        })
             val _ = (#importedModules cm) := (!(#importedModules cm))@[(name, newModule)]
         in newModule end
         
@@ -319,7 +321,8 @@ end *)
                         end
         fun resolveRec(currentDir : string)(remainingName : StructureName.t) : filepath witherrsoption = 
             case remainingName of 
-                [onlyName] => let val otherCandiates = 
+                [] => raise Fail "cm324"
+                | [onlyName] => let val otherCandiates = 
                             (fn x => [PathUtil.concat [x, StructureName.toStringPlain remainingName  ^ ".yuyan"],
                                     PathUtil.concat [x, StructureName.toStringPlain remainingName ^"。豫"]]
                             ) (currentDir)
@@ -334,7 +337,8 @@ end *)
         if length sname = 0
             then raise Fail "unexpected empty structure name"
             else case sname of 
-                [onlyName] => let 
+                 [] => raise Fail "cm339"
+                | [onlyName] => let 
                             val otherCandiates = List.concat (map 
                             (fn x => [PathUtil.concat [x, StructureName.toStringPlain sname  ^ ".yuyan"],
                                     PathUtil.concat [x, StructureName.toStringPlain sname ^"。豫"]]

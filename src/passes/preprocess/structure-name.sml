@@ -10,9 +10,10 @@ val separatorChar = [UTF8Char.fromString "之" NONE]
         | _ => raise Fail "sn10"
 
     fun toStringPlain x = UTF8String.toString (toString x)
-    (* val topLevelName = [UTF8String.fromString "__BUILTIN_STRUCTURE_NAME_TOP_LEVEL"] *)
-    val topLevelName = [UTF8String.fromString "__TOPLEVEL__"]
-    fun localName () = [UTF8String.fromString ("__LOCAL__" ^ Int.toString(UID.next()))]
+    val topLevelName = [
+        UTF8String.fromString "《《顶层结构》》"
+        ]
+    fun localName () = [UTF8String.fromString ("《《临时结构" ^ Int.toString(UID.next()) ^ "》》")]
 
 
     fun semanticEqual (s1 : structureName) (s2 : structureName) = 

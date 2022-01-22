@@ -44,8 +44,8 @@ datatype llvmdeclaration  = LLVMFunction of int (* name of the function *)
                                           * llvmstatement list
                           | LLVMStringConstant of int (* global name *) 
                                     *  UTF8String.t
-                          | LLVMBoolConstant of int (* global name *) 
-                                    *  bool
+                          (* | LLVMBoolConstant of int (* global name *) 
+                                    *  bool *)
                           | LLVMIntConstant of int (* global name *) 
                                     *  int
                           | LLVMRealConstant of int (* global name *) 

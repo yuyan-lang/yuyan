@@ -22,9 +22,11 @@ exception CPSInternalError
     fun klookupLabel ( ctx : (Label * Type) list) (l : Label) : int = 
         case ctx of 
              (n1, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel cs l+1
+             | _ => raise Fail "cpspass25"
       fun klookupLabel3 ( ctx : (Label * EVar *'a ) list) (l : Label) : int = 
         case ctx of 
              (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel3 cs l+1
+             | _ => raise Fail "cpspass29"
 
     fun cpsTransformSig  (ctx : context) (s : CSignature) 
     (cc : context * cpsvar option (* possible computation result *) -> cpscomputation) : cpscomputation =

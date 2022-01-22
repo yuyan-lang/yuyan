@@ -160,7 +160,9 @@ struct
         val line = inputLine()
         in if String.isPrefix "Content-Length: " line
             then let 
-                    val SOME contentLength = Int.fromString (String.extract (line, String.size "Content-Length: ", NONE))
+                    val contentLength = case Int.fromString (String.extract (line, String.size "Content-Length: ", NONE)) of 
+                        SOME(x) => x
+                        | NONE => raise Fail "Lsp malformed input, did not get Content-Length:"
                     val emptyLine = inputLine()
                     val jsonContent = TextIO.inputN (TextIO.stdIn, contentLength)
                     val _ = print jsonContent

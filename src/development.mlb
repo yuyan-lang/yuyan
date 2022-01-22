@@ -10,6 +10,7 @@ local
     ../cmlib/cmlib.mlb
     ann
        (*"nonexhaustiveMatch ignore"*)
+       "nonexhaustiveMatch error"
        "allowExtendedTextConsts true"
     in
         util/string-dict.sml

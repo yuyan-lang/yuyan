@@ -48,7 +48,8 @@ struct
                              else (case remaining of 
                                  (h::t) => (let 
                                     in go t (pending @ [h])
-                                    end))
+                                    end)
+                                | _ => raise Fail "dp52")
                         )
                 in go exp [] 
                 end

@@ -368,9 +368,10 @@ structure PrecedenceParser  = struct
                                 andalso length pending > 0 (* require something to be parsed, empty string cannot be parsed *)
                              then [(ParseOpAST(Binding pending, []), remaining)]
                              else case remaining of 
-                                    (x :: xs) => case x of 
+                                    (x :: xs) => (case x of 
                                         MixedStr.SChar y =>  go xs (pending @ [y])
-                                        | _ => [] (* no parse if not plain characters in binding *)
+                                        | _ => [] (* no parse if not plain characters in binding *))
+                                    | _ => raise Fail "pp374"
                 in case exp of 
                     [] => [] (* no parse if exp is empty *)
                     | (x :: xs) => if MixedStr.isPlainChar x (* check if plain char *)

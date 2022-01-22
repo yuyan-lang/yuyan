@@ -44,7 +44,9 @@ val DEBUG = false
             else 
             let val (newContent, updatedContent) = (case content of 
                         Success c => (Success c, false)
-                        | NotAvailable => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true))
+                        | NotAvailable => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true)
+                        | DErrors l => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true)
+            )
                 val _ = if DEBUG then debugPrint 
                 ("cfp: Updated Content success: " ^ Bool.toString (StaticErrorStructure.isSuccess newContent)^ "\n") else ()
             in 

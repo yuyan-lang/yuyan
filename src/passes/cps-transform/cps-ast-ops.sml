@@ -43,6 +43,7 @@ in
         | CPSAbs((a, b, c),_, k) => remove (freeVars c) [a,b] *** fk k
         | CPSBuiltinValue(_, k) => fk k
         | CPSDone v => fv v
+        | CPSFfiCCall (n, l, k) => fromList (map fvi l) *** fk k
             
 end
 end

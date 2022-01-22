@@ -198,6 +198,9 @@ datatype 'a gcontext = Context of StructureName.t * bool *
         | RTermMacro (n, e) => RTermMacro(n, substTypeInRExpr tS x e)
         | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRExpr tS x e)
         | RDirectExpr(e) => RDirectExpr (substTypeInRExpr tS x e)
+        | RStructure(v, n, s) => RStructure(v, n, substituteTypeInRSignature tS x s)
+        | ROpenStructure(n) => ROpenStructure(n)
+        | RImportStructure(n,fp) => RImportStructure(n, fp)
     
     and substituteTypeInRSignature (tS : Type) (x : StructureName.t) (s : RSignature) : RSignature = 
         case s of
@@ -244,8 +247,12 @@ datatype 'a gcontext = Context of StructureName.t * bool *
     (* reconstruct the original string from rexpr, used for generating error information *)
     fun reconstructFromRExpr (e : RExpr) : UTF8String.t = 
     let 
-    fun constructWithSep ((h::t) : UTF8String.t list) (sepl : operator list) : UTF8String.t = 
-        #1 (foldl (fn (next, (s, (oph::opt))) => (reconstructWithArgs oph [s, next], opt)) (h, sepl) t)
+    fun constructWithSep ( args: UTF8String.t list) (sepl : operator list) : UTF8String.t = 
+    case args of (h::t) =>
+        #1 (foldl (fn (next, (s, y)) => case y of (oph::opt) =>  (reconstructWithArgs oph [s, next], opt)
+                                                | _ => raise Fail "tcastops 252"
+        ) (h, sepl) t)
+        | _ => raise Fail "tcastops 255"
     val tpPlaceHolder =UTF8String.fromString "..." 
     open Operators
     in

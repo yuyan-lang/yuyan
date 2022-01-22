@@ -355,9 +355,6 @@ struct
     let 
         (* val _ = print ("Total "^ Int.toString(List.length ast) ^ " statements\n"); *)
         val res =  constructOpAST ast  ()
-        (* (StructureName.topLevelName, true, [
-            (StructureName.topLevelName, true, [])
-        ]) *)
         (* val _ = print ("Done "^ Int.toString(List.length ast) ^ " statements\n"); *)
     in 
         res end

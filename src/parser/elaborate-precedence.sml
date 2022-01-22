@@ -65,7 +65,8 @@ struct
                             | _ => raise Fail "42"
                         ) (elaborate argR) internalsArgL
                     | (ExpWithEOF, [opAST, ParseOpAST(EOF, [])])  => elaborate opAST
-                    | (UnknownId, l)  => UnknownOpName ((map (fn ParseOpAST(UnknownIdComp  n, []) => n) l))
+                    | (UnknownId, l)  => UnknownOpName ((map (fn x => case x of ParseOpAST(UnknownIdComp  n, []) => n
+                                                                                | _ => raise Fail "ep69") l))
                     | (QuotedName (s, qi), l)  => OpParsedQuotedExpr(UnknownOpName s, qi)
                     | (Binding l, [])  => NewOpName l
                     | (QuotedBinding (l, qi), [])  => OpParsedQuotedExpr(NewOpName l, qi)
