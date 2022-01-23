@@ -71,26 +71,20 @@ infix 5 <?>
             raise TypeCheckingFailure (s1 ^ ", \n " ) *)
             (* ) *)
         
-    fun nextContextOfOpenStructure  (curName : StructureName.t) (curVis : bool) (bindings : 'a gmapping list) 
+    fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : 'a gmapping list) 
     (openName : StructureName.t)=
 
-     Context(curName, curVis, 
+     Context(curSName, curVis, 
             (* extract all bindings from bindings in order and put them into the current context *)
                     List.mapPartial (fn x => 
                     case x of TermTypeJ(name, t, u) => 
-                    if StructureName.isPrefix (curName@openName) name   (* relative path *)
-                    then SOME (TermTypeJ(curName@(StructureName.stripPrefix (curName@openName) name), t, u))
-                    else 
-                    if StructureName.isPrefix openName name   (* absolute path *)
-                    then SOME (TermTypeJ((StructureName.stripPrefix openName name), t, u))
-                    else  NONE
+                    (case StructureName.checkRefersToScope name openName curSName of
+                        SOME(nameStripped) => SOME(TermTypeJ(curSName@nameStripped, t, u))
+                        | NONE => NONE)
                     | TypeDef(name, t, u) =>
-                    if StructureName.isPrefix (curName@openName) name (* relative path *)
-                    then SOME (TypeDef(curName@(StructureName.stripPrefix (curName@openName) name), t, u))
-                    else 
-                    if StructureName.isPrefix (openName) name (* absolute path *)
-                    then SOME (TypeDef((StructureName.stripPrefix openName name), t, u))
-                    else NONE   
+                    (case StructureName.checkRefersToScope name openName curSName of
+                        SOME(nameStripped) => SOME(TypeDef(curSName@nameStripped, t, u))
+                        | NONE => NONE)
                     ) bindings @ bindings
                 )
 

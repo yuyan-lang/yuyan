@@ -82,4 +82,35 @@ returns the canonical name (adding curSName if ommitted)
         end
     )
 
+(* determine if the scope reference curSName |-> toCheck includes referred through the following basic rules:
+1. A |-> B  refers to B->C return  C
+1. A |-> B  refers to A->B->C return  C
+1. A |-> B does not refer to A->B  returns NONE
+2.  A->B->E->F |-> C->D refers to A->B->C->D->E returns E
+3. A->B->E->F |-> D does not refer to A->B->C->D 
+returns the name removed of all scopes
+*)
+ 
+    fun checkRefersToScope(referred : structureName) (openScopeName : structureName) (curSName : structureName) : structureName option = 
+    (
+        let 
+        (* val _ = DebugPrint.p ("checking refers (scope) to referred=" ^ toStringPlain referred ^
+            " toCheck=" ^  toStringPlain toCheck ^
+            " curSName=" ^ toStringPlain curSName) *)
+            val curSNameReferred = stripPrefixOnAgreedParts curSName referred
+            val res = 
+            if isPrefix openScopeName curSNameReferred 
+            then let val remainingName = stripPrefix (openScopeName) curSNameReferred
+                 in  if length remainingName = 0 then NONE else SOME(remainingName)
+                 end
+            else NONE
+            (* val _ = DebugPrint.p ("result is " ^ (case res of 
+                SOME _ => "true" 
+                | NONE => "false")) *)
+
+
+        in 
+        res
+        end
+    )
 end
