@@ -258,6 +258,11 @@ structure PreprocessingPass = struct
                     if length expr = 0 then Success (PEmptyDecl, ctx)
                     else (parseTypeOrExpr expr ctx) >>= (fn parsedExpr => Success(PDirectExpr parsedExpr, ctx))
                 )
+                | DeclarationParser.DeclAmbiguousParse (expr, parses) => (
+                    genSingletonError (MixedStr.toUTF8String expr)
+                     ("声明有多余一种理解方式(decl ambiguous parse) " ^ String.concatWith "\n 可以这样理解：(possible parse :)" 
+            (map (fn (oper, args) => PrettyPrint.show_op oper ^ " args: " ^ PrettyPrint.show_mixedstrs args) parses)) NONE
+                )
                 (* handle ECPNoPossibleParse x => raise ECPNoPossibleParse (x ^ 
                     "\n when parsing declaration " ^ MixedStr.toString s)
                 handle ElaborateFailure x => raise ElaborateFailure (x ^ 

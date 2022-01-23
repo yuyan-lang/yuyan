@@ -49,8 +49,8 @@ open StaticErrorStructure
      ElaboratePrecedence.ElaborationFail s => (DebugPrint.p "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
       |  MixedStr.InternalFailure s=> DebugPrint.p ( "\n\n" ^ MixedStr.toString s)
       |  KMachineOps.InternalFailure s=> DebugPrint.p ( "internal failure  (bug) \n\n" ^ s)
-      | DeclarationParser.DeclAmbiguousParse ls => DebugPrint.p ("decl ambiguous parse " ^ String.concatWith "\n possible parse : " 
-            (map (fn (oper, args) => PrettyPrint.show_op oper ^ " args: " ^ PrettyPrint.show_mixedstrs args) ls))
+      (* | DeclarationParser.DeclAmbiguousParse ls => DebugPrint.p ("decl ambiguous parse " ^ String.concatWith "\n possible parse : " 
+            (map (fn (oper, args) => PrettyPrint.show_op oper ^ " args: " ^ PrettyPrint.show_mixedstrs args) ls)) *)
 
     
 end

@@ -2,6 +2,7 @@
 structure DeclarationParser =
 struct
     open ParseAST
+    open StaticErrorStructure
     val DEBUG = false
     (* val DEBUG = true *)
     (* type parser = UTF8String.t -> (operator * UTF8String.t list) list  operator and all arguments *)
@@ -112,13 +113,13 @@ struct
          (map   getParseComponents ops))
         
     exception DeclNoParse of MixedStr.t
-    exception DeclAmbiguousParse of (operator * MixedStr.t list) list
+    exception DeclAmbiguousParse of MixedStr.t * (operator * MixedStr.t list) list
     fun parseDeclarationSingleOutput(ops : operator list) : MixedStr.t -> (operator * MixedStr.t list) = fn exp => 
         (if DEBUG then print ("DeclParser : Parsing " ^ MixedStr.toString exp ^ "\n") else ();
         case parseDeclarations ops exp of
             []  => raise DeclNoParse exp
             | [l] => l
-            | ls => raise DeclAmbiguousParse ls
+            | ls => raise DeclAmbiguousParse(exp, ls)
         )
         
 end
