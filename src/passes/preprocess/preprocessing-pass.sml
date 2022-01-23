@@ -35,10 +35,21 @@ structure PreprocessingPass = struct
     val ~=** = Operators.~=**
     infix 4 ~=**
 
+     fun showctx x = SOME(case x of 
+    (curSName, curVis, snamevisopl) =>  
+    "当前结构名：" ^ StructureName.toStringPlain curSName ^
+    "\n当前已定义的值及其类型：\n"  ^
+            String.concatWith "；\n" (map (fn x => case x of
+                (sname, vis, opl) => StructureName.toStringPlain sname  ^ "，其中有：【" ^ String.concatWith "，" (map PrettyPrint.show_op opl) ^ "】"
+    ) snamevisopl) ^ "；\n"
+          )
+
+    fun structureNameNotFoundError sName ctx = ( genSingletonError (StructureName.toString sName) 
+                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") (showctx ctx))
+
     fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list witherrsoption=
         case ctx of
-            [] => ( genSingletonError (StructureName.toString sName) 
-                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") NONE)
+            [] => structureNameNotFoundError sName (curSName, curV, ctx)
             | ((s, v, opl):: ss) => 
             (* if StructureName.semanticEqual s sName then opl else lookupContextForOpers (curSName, curV,ss) sName *)
             (case StructureName.checkRefersTo s sName curSName
@@ -71,12 +82,22 @@ structure PreprocessingPass = struct
         (curSName, curV, ((curSName,curV, opers@ lookupCurrentContextForOpers (curSName, curV, ctx))
         :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
 
-    fun newContextAfterOpeningStructure(openName : StructureName.t ) (ctx : contextType) : contextType witherrsoption =
+    fun newContextAfterOpeningStructure(openName : StructureName.t ) (ctx as (curSName, v, snamevopl) : contextType) : contextType witherrsoption =
         let 
+            val allDirectOpens = (List.mapPartial (fn (s, v, opl) => case StructureName.checkRefersTo s openName curSName
+                of SOME cname => SOME(opl)
+                    | NONE => NONE ) snamevopl)
+            val allDirectOperators = List.concat allDirectOpens
+            val allIndirectStructures = List.mapPartial (fn (s, v, opl) => case StructureName.checkRefersToScope s openName curSName
+                of SOME newStrippedName => SOME(curSName @ newStrippedName, v, opl)
+                | NONE => NONE) snamevopl
+            val (curSName, curV, newSNameOpL) = insertIntoCurContextOps ctx allDirectOperators
         in 
-            lookupContextForOpers ctx (openName) >>= (fn opl => 
-                    Success(insertIntoCurContextOps ctx opl)
-            )
+        if length allDirectOpens = 0 (* maybe it hits somecontext with no operators *)
+        andalso length allDirectOperators = 0 
+        andalso length allIndirectStructures = 0
+        then structureNameNotFoundError openName ctx
+        else Success(curSName, curV, allIndirectStructures@newSNameOpL)
         end
     
 
