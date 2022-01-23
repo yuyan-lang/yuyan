@@ -260,9 +260,8 @@ structure PreprocessingPass = struct
                 )
                 | DeclarationParser.DeclAmbiguousParse (expr, parses) => (
                     genSingletonError (MixedStr.toUTF8String expr)
-                     ("声明有多余一种理解方式(decl ambiguous parse) " ^ String.concatWith "\n 可以这样理解：(possible parse :)" 
-            (map (fn (oper, args) => PrettyPrint.show_op oper ^ " args: " ^ PrettyPrint.show_mixedstrs args) parses)) NONE
-                )
+                     ("声明有多余一种理解方式(decl ambiguous parse)：") (SOME(String.concatWith "\n" (map (fn x => "可以这样理解：(possible parse :)" ^x)
+            (map (fn (oper, args) => PrettyPrint.show_op oper ^ "参数(args): " ^ (String.concatWith "，" (map MixedStr.toString args))) parses)))))
                 (* handle ECPNoPossibleParse x => raise ECPNoPossibleParse (x ^ 
                     "\n when parsing declaration " ^ MixedStr.toString s)
                 handle ElaborateFailure x => raise ElaborateFailure (x ^ 
