@@ -196,9 +196,6 @@ structure PrecedenceParser  = struct
         ^ "\n所有相关的操作符(all relevant ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allRelevantOps x))
         ^ "\n所有（包括不相关的）操作符(all ops)：" ^ String.concatWith "，" (map PrettyPrint.show_op (#allOps x))))
 
-    exception NoPossibleParse of 
-        (* debug message *)  parseExceptionInfo
-    exception AmbiguousParse of ParseOpAST list * parseExceptionInfo
 
         fun parseExpWithOption (allOps :Operators.allOperators) : MixedStr.t -> (ParseOpAST* (MixedStr.t)) witherrsoption  =  fn exp =>
         let 
