@@ -64,7 +64,9 @@ struct
         (
             (* print ("Parsing " ^ PrettyPrint.show_opcomptypes l ^ " on " ^ MixedStr.toString exp ^ "\n"); *)
         case l of
-            [] => SOME({opComps=[], args=[]})
+            [] => (case exp of 
+                [] => SOME({opComps=[], args=[]})
+                | _ => NONE ) (* require input to be fully parsed *)
             | [OpCompExpr] => 
             (* forbid empty exp at the end tc-2.yuyan test*)
                 if length exp = 0 then NONE else
