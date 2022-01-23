@@ -44,6 +44,8 @@ structure PrecedenceParser  = struct
                   structure Y = AssocHashable)))
             structure UTF8StringSet : SET = RedBlackSet(structure Elem = UTF8StringOrdered)
             structure UTF8CharSet : SET = RedBlackSet(structure Elem = UTF8CharOrdered)
+        open StaticErrorStructure
+        infix 5 >>=
         type parser = MixedStr.t -> (ParseOpAST* (MixedStr.t)) list 
 
         (*Remove duplicate https://stackoverflow.com/questions/21077272/remove-duplicates-from-a-list-in-sml *)
@@ -59,6 +61,7 @@ structure PrecedenceParser  = struct
    fun indentString ()  = if DEBUG andalso (List.length(!debugAlternativeEntryTimes)-1) > 0 
    then String.concat((List.take (!debugAlternativeEntryTimes, (List.length(!debugAlternativeEntryTimes)-1)))) 
    else ""
+
                 
         fun debug (s : string) (p : parser) : parser = fn exp =>
         let
@@ -197,7 +200,7 @@ structure PrecedenceParser  = struct
         (* debug message *)  parseExceptionInfo
     exception AmbiguousParse of ParseOpAST list * parseExceptionInfo
 
-        fun parseExpWithOption (allOps :Operators.allOperators) : MixedStr.t -> (ParseOpAST* (MixedStr.t))  =  fn exp =>
+        fun parseExpWithOption (allOps :Operators.allOperators) : MixedStr.t -> (ParseOpAST* (MixedStr.t)) witherrsoption  =  fn exp =>
         let 
             val _ = if DEBUG orelse DEBUGLIGHT then print ("PARSING " ^ MixedStr.toString exp ^ "\n") else ()
             val relevantOps = List.filter (fn oper => MixedStr.containsAllCharsTopLevel exp 
@@ -294,8 +297,7 @@ structure PrecedenceParser  = struct
                 findOps Infix p RightAssoc = []
             ]) PredDict.empty allPrecedences
 
-            val debugAllPrecedences = 
-("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n")
+            val debugAllPrecedences = ("ALL PRECEDENCES "^ String.concatWith "," (map Int.toString allPrecedences) ^ "\n")
 
             val debugAllRelevantOps = ("ALL RELEVANT OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op relevantOps) ^ "\n")
             val debugAllOps = ("ALL OPERATORS "^ String.concatWith "," (map PrettyPrint.show_op allOps) ^ "\n")
@@ -310,7 +312,7 @@ structure PrecedenceParser  = struct
 
 
 
-    (*https://stackoverflow.com/questions/17826034/sml-get-index-of-item-in-list*)
+            (*https://stackoverflow.com/questions/17826034/sml-get-index-of-item-in-list*)
             fun index(item, xs) =
             let
                 fun index'(m, nil) = NONE
@@ -402,8 +404,8 @@ structure PrecedenceParser  = struct
                             | _ => raise Fail "pp245"
                     end
 
-(* Bracket parser becomes obsolete as we're preprocessing all brackets via mixed str *)
-  (* Parses the bracket operation smartly 
+            (* Bracket parser becomes obsolete as we're preprocessing all brackets via mixed str *)
+            (* Parses the bracket operation smartly 
                 in the sense that if a bracket doesn't cotain 
                 one of special characters, what's inside automatically 
                 becomes a name and no furhter processing is applied *)
@@ -562,10 +564,10 @@ structure PrecedenceParser  = struct
 
             and parseExp (): parser = 
             (*Becuase of inclusion of up P in hat P, this is enough *)
-        (if DEBUG 
-        then (print ("parseExp \n"))
-        else ();
-         (* might have no ops because of extreme filtering *)
+            (if DEBUG 
+            then (print ("parseExp \n"))
+            else ();
+            (* might have no ops because of extreme filtering *)
             ( case allPrecedences of 
                 [] => topMostParser()
                 | (p::_) => hat p))
@@ -582,27 +584,38 @@ structure PrecedenceParser  = struct
                 allRelevantOps= relevantOps,
                 allOps = allOps
             }
+            val noPossibleParseErrInfo = "不能够理解(parse)输入"
+            fun ambiguousParse (x : ParseAST.ParseOpAST list) = "输入有多于一种理解方式：\n" ^
+                String.concatWith "\n" (map (fn x => "可以这样理解：" ^ PrettyPrint.show_parseopast x ) x)
         in 
-        if DEBUG 
-        then (print ("STARTING \n"))
-        else ();
-        (case parseExpWithEOF()(exp) of
-            [] => raise NoPossibleParse parseExceptionInfo
-            | [l] => l
-            | l => raise AmbiguousParse ((map (fn(x,r) => x) l), parseExceptionInfo)
-            (* ("Ambiguous Parse, possibilities : (total "^ Int.toString (length l) ^ ") \n" ^
-            String.concatWith "\n" (map (fn (x,y) => PrettyPrint.show_parseopast x ) l)))
-            handle NoPossibleParse s => raise NoPossibleParse ((s ^ "\n when parsing " ^ MixedStr.toString exp
-            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps),)
-            | AmbiguousParse s => raise AmbiguousParse (s ^ "\n when parsing " ^ MixedStr.toString exp
-            ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps) *)
-            
-            )
+            if DEBUG 
+            then (print ("STARTING \n"))
+            else ();
+            (case parseExpWithEOF()(exp) of
+                [] => StaticErrorStructure.genSingletonErrorTuple (MixedStr.toUTF8String exp)
+                        (showParseExceptionInfo parseExceptionInfo (noPossibleParseErrInfo)) 
+                | [l] => Success(l)
+                | l => 
+                let 
+                val alts = (map (fn(x,r) => x) l)
+                val s = parseExceptionInfo
+                in 
+                    StaticErrorStructure.genSingletonErrorTuple (MixedStr.toUTF8String exp)
+                                (showParseExceptionInfo s (ambiguousParse alts))
+                end
+                (* ("Ambiguous Parse, possibilities : (total "^ Int.toString (length l) ^ ") \n" ^
+                String.concatWith "\n" (map (fn (x,y) => PrettyPrint.show_parseopast x ) l)))
+                handle NoPossibleParse s => raise NoPossibleParse ((s ^ "\n when parsing " ^ MixedStr.toString exp
+                ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps),)
+                | AmbiguousParse s => raise AmbiguousParse (s ^ "\n when parsing " ^ MixedStr.toString exp
+                ^ "\n" ^ debugAllUnknownId ^ debugAllPrecedences ^ debugAllRelevantOps ^ debugAllOps) *)
+                
+                )
         end
 
-    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : MixedStr.t) : OpAST.t = 
-            case parseExpWithOption allOps exp of
-                                 (parseopast, _) => ElaboratePrecedence.elaborate parseopast
+    fun parseMixfixExpression (allOps :Operators.allOperators) (exp : MixedStr.t) : OpAST.t witherrsoption = 
+                parseExpWithOption allOps exp >>= (fn (parseopast, _) => Success (ElaboratePrecedence.elaborate parseopast))
+
 
 
 end

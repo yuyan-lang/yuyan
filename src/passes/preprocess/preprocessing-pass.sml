@@ -108,11 +108,7 @@ structure PreprocessingPass = struct
 
 
 
-    val noPossibleParseErrInfo = "不能够理解(parse)输入"
-    fun ambiguousParse (x : ParseAST.ParseOpAST list) = "输入有多于一种理解方式：\n" ^
-     String.concatWith "\n" (map (fn x => "可以这样理解：" ^ PrettyPrint.show_parseopast x ) x)
-
-
+ 
     fun parsePOperator (opd) =
     case opd of 
             POpDeclaration(opName, assoc, pred, soi) => 
@@ -221,30 +217,35 @@ structure PreprocessingPass = struct
                         end
                         else raise Fail "pp85"
                     | (oper, [l1]) =>  
-                        let fun getStructureOpAST (s : MixedStr.t ) : OpAST = 
+                        let fun getStructureOpAST (s : MixedStr.t ) : OpAST witherrsoption = 
                             let 
                                 val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp] (l1)
                             in 
-                                parsedStructureRef
+                                parsedStructureRef 
                             end
                         in
                             if oper ~=** commentOp
                             then Success(PComment (l1, oper), ctx)
                             else 
                             if oper ~=** openStructureOp
-                            then ExpressionConstructionPass.getStructureName (getStructureOpAST l1) >>= (fn structureName => 
+                            then 
+                                getStructureOpAST l1 >>= (fn structureOpAST => 
+                            ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName => 
                                 newContextAfterOpeningStructure structureName ctx >>= (fn newContext => 
-                                    Success(POpenStructure (getStructureOpAST l1, oper), newContext)
+                                        Success(POpenStructure (structureOpAST, oper), newContext)
+                                    )
                                 )
                             )
                             else
                             if oper ~=** importStructureOp
-                            then ExpressionConstructionPass.getStructureName (getStructureOpAST l1) >>= (fn structureName =>  
+                            then getStructureOpAST l1 >>= (fn structureOpAST => 
+                            ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  
                             (newContextAfterImportingStructure structureName ctx 
                                 <?> (genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
                             ) >>= (fn (newContext, path) =>
-                                Success(PImportStructure (getStructureOpAST l1, path, oper), newContext)
+                                Success(PImportStructure (structureOpAST, path, oper), newContext)
                                 )
+                            )
                             )
                             
                             else
@@ -266,20 +267,16 @@ structure PreprocessingPass = struct
            
             (* the result will not contain unparsed anything *)
             and parseTypeOrExpr (ebody : MixedStr.t)(ctx : contextType) : OpAST witherrsoption
-            =  let val parseTree = (PrecedenceParser.parseMixfixExpression 
-                        (allTypeAndExprOps@ lookupAllActiveOpers ctx) ebody)
+            =  (PrecedenceParser.parseMixfixExpression 
+                        (allTypeAndExprOps@ lookupAllActiveOpers ctx) ebody) >>= (fn parseTree => 
+                        let
                 (* val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n") *)
                 val _ = notifyOpAST parseTree
             in recursivelyTraverseAndParseOpAST parseTree ctx >>= (
                 fn (parsedOpAST, newContext) => Success(parsedOpAST) (* no need to add new context as constructs inside let is not accessible in any case *)
             ) end
-                handle PrecedenceParser.NoPossibleParse s => 
-                StaticErrorStructure.genSingletonErrorTuple (MixedStr.toUTF8String ebody)
-                    (PrecedenceParser.showParseExceptionInfo s (noPossibleParseErrInfo)) 
-                | PrecedenceParser.AmbiguousParse (alts, s) => 
-                    StaticErrorStructure.genSingletonErrorTuple (MixedStr.toUTF8String ebody)
-                        (PrecedenceParser.showParseExceptionInfo s (ambiguousParse alts))
-
+                        )
+              
         (* the resulting preprocessing ast will not contain unparsed anything *)
             and preprocessAST (s : (MixedStr.t * MixedStr.endinginfo) list)(ctx : contextType) : (PreprocessingAST.t * contextType) witherrsoption = 
             (
