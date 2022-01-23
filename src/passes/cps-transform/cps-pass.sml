@@ -176,11 +176,15 @@ exception CPSInternalError
 
  fun cpsTransformSigTopLevel  (s : CSignature) 
      : cpscomputation =
+     (
+         (* DebugPrint.p (PrettyPrint.show_typecheckingCSig s); *)
+
     cpsTransformSig [] s (fn (ctx, resvar) => 
         case resvar of SOME resvar => CPSDone (CPSVar resvar)
         (* return unit if last expression is not a expr *)
                      | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSVar resvar)))
     )
+     )
 
 
 

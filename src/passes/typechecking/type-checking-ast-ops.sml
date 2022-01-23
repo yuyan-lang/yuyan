@@ -12,8 +12,8 @@ infix 5 =/=
                     | TypeDef of StructureName.t * Type * unit
 datatype 'a gcontext = Context of StructureName.t * bool * 
     ('a gmapping) list
-    type mapping = unit gmapping
-    type context = unit gcontext
+    type mapping = (StructureName.t option) gmapping (* original name (for use with open) *)
+    type context = (StructureName.t option) gcontext (* original name (for use with open) *)
 
     fun getCurSName (Context(sName, _, _)) = sName
 

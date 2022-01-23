@@ -53,7 +53,7 @@ infix 5 <?>
                     (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
                     | TermTypeJ(n1, t1, u)::cs => 
                         (case StructureName.checkRefersTo n1 n curSName 
-                        of SOME(cname) => Success (cname, t1)
+                        of SOME(cname) => Success (case u of NONE => cname | SOME(x) => x, t1)
                         | NONE => lookupMapping cs n curSName
                         )
                     | TypeDef(_) :: cs => lookupMapping cs n curSName
@@ -71,7 +71,7 @@ infix 5 <?>
             raise TypeCheckingFailure (s1 ^ ", \n " ) *)
             (* ) *)
         
-    fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : 'a gmapping list) 
+    fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : (StructureName.t option) gmapping list) 
     (openName : StructureName.t)=
 
      Context(curSName, curVis, 
@@ -79,7 +79,7 @@ infix 5 <?>
                     List.mapPartial (fn x => 
                     case x of TermTypeJ(name, t, u) => 
                     (case StructureName.checkRefersToScope name openName curSName of
-                        SOME(nameStripped) => SOME(TermTypeJ(curSName@nameStripped, t, u))
+                        SOME(nameStripped) => SOME(TermTypeJ(curSName@nameStripped, t, (case u of SOME x => SOME x | NONE => SOME (name))))
                         | NONE => NONE)
                     | TypeDef(name, t, u) =>
                     (case StructureName.checkRefersToScope name openName curSName of
@@ -210,7 +210,7 @@ infix 5 <?>
                             (ce, Sum ls) => let 
                             val checkedCases = collectAll (map (fn (l, ev, e) => 
                                 (lookupLabel ls l) >>= (fn lookedUpType => 
-                                        synthesizeType (addToCtxA (TermTypeJ([ev], lookedUpType, ())) ctx) e
+                                        synthesizeType (addToCtxA (TermTypeJ([ev], lookedUpType, NONE)) ctx) e
                                     )
                                 ) 
                             cases)
@@ -237,7 +237,7 @@ infix 5 <?>
                             | _ => Errors.attemptToCaseNonSum e ctx
                             )
                     | RLamWithType (t, ev, e, soi) => 
-                        synthesizeType (addToCtxA (TermTypeJ([ev], t, ())) ctx) e >>= (fn (bodyExpr, returnType) =>
+                        synthesizeType (addToCtxA (TermTypeJ([ev], t, NONE)) ctx) e >>= (fn (bodyExpr, returnType) =>
                         Success(CLam(ev, bodyExpr, Func (t, returnType)), Func(t, returnType))
                         )
                     | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn t => case t
@@ -259,7 +259,7 @@ infix 5 <?>
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt  of
                                 (ce1, Exists (tv', tb)) => 
                         synthesizeType (addToCtxA (TermTypeJ([ev], 
-                        substTypeInType (TypeVar [tv]) [tv'] tb,())) ctx) e2 >>= (fn (ce2, synthesizedType) =>
+                        substTypeInType (TypeVar [tv]) [tv'] tb, NONE)) ctx) e2 >>= (fn (ce2, synthesizedType) =>
                         if List.exists (fn t => t = [tv]) (freeTVar synthesizedType)
                             then Errors.openTypeCannotExitScope e ctx
                             (* raise TypeCheckingFailure "Open's type cannot exit scope" *)
@@ -353,20 +353,20 @@ infix 5 <?>
                             (collectAll (map (fn (l, ev, e) => 
                                 fmap (fn ce => (l, ev, ce)) 
                                     ((lookupLabel ls l) >>= (fn lookedUpType => 
-                                        checkType (addToCtxA (TermTypeJ([ev], lookedUpType , ())) ctx) e tt))
+                                        checkType (addToCtxA (TermTypeJ([ev], lookedUpType , NONE)) ctx) e tt))
                                 ) cases)) >>= (fn checkedCases  
                                     => Success(CCase((Sum ls, ce), checkedCases , tt)))
                             | _ => Errors.attemptToCaseNonSum originalExpr ctx)
                     | RLam(ev, eb, soi) => (case tt of
                         Func(t1,t2) => 
-                            checkType (addToCtxA (TermTypeJ([ev], t1,())) ctx) eb t2
+                            checkType (addToCtxA (TermTypeJ([ev], t1,NONE)) ctx) eb t2
                             >>= (fn checkedExpr => Success(CLam(ev, checkedExpr, tt)))
                         | _ => Errors.expectedFunctionType e ctx
                         (* raise TypeCheckingFailure ("Lambda is not function got " ^ PrettyPrint.show_typecheckingType tt) *)
                         )
                     | RLamWithType (t, ev, eb, soi) => (case tt of
                         Func(t1,t2) => (assertTypeEquiv e t t1 >>
-                            (checkType (addToCtxA (TermTypeJ([ev], t1, ())) ctx) eb t2 >>= (fn checkedBody => 
+                            (checkType (addToCtxA (TermTypeJ([ev], t1, NONE)) ctx) eb t2 >>= (fn checkedBody => 
                                 Success(CLam(ev, checkedBody , tt)))
                                 )
                             )
@@ -406,7 +406,7 @@ infix 5 <?>
                     )
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt of
                         (ce1, Exists (tv', tb)) => 
-                        checkType (addToCtxA (TermTypeJ([ev], substTypeInType (TypeVar [tv]) [tv'] tb, ())) ctx) e2 tt
+                        checkType (addToCtxA (TermTypeJ([ev], substTypeInType (TypeVar [tv]) [tv'] tb, NONE)) ctx) e2 tt
                         >>= (fn ce2 => 
                         Success(COpen((Exists (tv', tb), ce1), (tv, ev, ce2), tt))
                         )
@@ -428,7 +428,7 @@ infix 5 <?>
                         | _ => Errors.attemptToUnfoldNonRecursiveTypes e ctx
                         (* raise TypeCheckingFailure "Cannot unfold non recursive type" *)
                         )
-                    | RFix (ev, e, soi)=> checkType (addToCtxA (TermTypeJ([ev] , tt, ())) ctx) e tt
+                    | RFix (ev, e, soi)=> checkType (addToCtxA (TermTypeJ([ev] , tt, NONE)) ctx) e tt
                                         >>= (fn ce => Success(CFix(ev,ce, tt)))
                     | RStringLiteral (s, soi) => (assertTypeEquiv e (BuiltinType(BIString)) tt >> (Success (CStringLiteral s)))
                     | RIntConstant (i, soi) => (assertTypeEquiv e (BuiltinType(BIInt)) tt >> (Success ( CIntConstant i)))
@@ -499,12 +499,12 @@ infix 5 <?>
                     (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)
                     else 
                     normalizeType (applyContextToType ctx t) >>= (fn normalizedType => 
-                    typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, ())) ctx) ss (acc))
+                    typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, NONE)) ctx) ss (acc))
                 end
                 | RTermMacro(n, e) :: ss => 
                     synthesizeType ctx (applyContextToExpr ctx e) >>= 
                     (fn (transformedExpr , synthesizedType)  =>
-                        typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, ())) ctx) ss 
+                        typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, NONE)) ctx) ss 
                             (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
                     )
                 | RTermDefinition(n, e) :: ss => 
@@ -552,7 +552,7 @@ infix 5 <?>
                         typeCheckSignature 
                         (addToCtxAL (List.mapPartial (fn x => case x of 
                             CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ()))
-                            | CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,()))
+                            | CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,NONE))
                             | CDirectExpr _ => NONE
                             | CImport _ => NONE
                             ) csig) ctx)
