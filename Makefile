@@ -13,3 +13,7 @@ test: build
 
 clean:
 	rm yy
+
+superclean:
+	rm -f yy
+	rm -rf ./.yybuild/*
