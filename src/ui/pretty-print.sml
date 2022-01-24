@@ -339,7 +339,7 @@ in
    *)
 
 
-fun show_cpsvalue  (CPSAst.CPSVar(i)) = Int.toString i
+fun show_cpsvalue  (CPSAst.CPSValueVar(i)) = Int.toString i
 fun show_cpsbuiltin (e : CPSAst.cpsBuiltinValue) = 
 let open CPSAst
 val realStr = case  e of
@@ -380,7 +380,7 @@ case c of
             sfvs fvs ^ sk k
             | CPSAbs((i,ak, c),fvs,  k) => "(λ" ^ Int.toString i ^ ", "^ si ak ^ "." ^ sc c ^ ")" 
             ^ sfvs fvs^ sk k
-            | CPSDone (CPSVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ Int.toString i ^ "]"
+            | CPSDone (CPSValueVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ Int.toString i ^ "]"
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
             | CPSFfiCCall(fname, args, k) => "(ccall \"" ^ UTF8String.toString fname ^
             "\" args [" ^ String.concatWith ", " (map sv args) ^ "])" ^ sk k

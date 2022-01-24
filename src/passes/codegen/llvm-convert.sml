@@ -21,7 +21,7 @@ let val recur = genLLVM ctx
 
 (* transform access will transform the access to 
 the record value if the record value is itself bound *)
-fun transformAccess (CPSVar v) (f : int -> llvmstatement list) : llvmstatement list = 
+fun transformAccess (CPSValueVar v) (f : int -> llvmstatement list) : llvmstatement list = 
 case ListSearchUtil.indexOf freeVL v of
     SOME idx =>
     let val newName = UID.next()
@@ -55,7 +55,7 @@ fun compileFunctionClosure(funLoc : int ) (args : int list)
             [LLVMFunction(compiledFunctionName, compiledFreeVarsAddr::args, compiledBody)]@decls, 
         (* represent the function as a closure *)
         (* then values for free variables *)
-            vaccessL (map CPSVar freeVarsInBody) (fn freeVarValues' => 
+            vaccessL (map CPSValueVar freeVarsInBody) (fn freeVarValues' => 
             [LLVMStoreArray(LLVMArrayTypeFunctionClosure, funLoc, 
             [LLVMFunctionName(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
             )
@@ -111,7 +111,7 @@ in
             compileFunctionClosure t [i] fvs c k
         | CPSAbsSingle((i, c), NONE, (t,k)) => 
             raise Fail "you forgot to perform closure conversion"
-        | CPSDone (CPSVar i) (* signals return *) => ([], [LLVMReturn i])
+        | CPSDone (CPSValueVar i) (* signals return *) => ([], [LLVMReturn i])
         | CPSFfiCCall (fname, args, (t, k)) =>
             ([
                 LLVMFfiFunction(fname, length args)

@@ -23,8 +23,8 @@ fun freeVarsCont ( (i, c) : cpscontinuation) : freevars=
 and freeVars (s : cpscomputation) : freevars =
 
 let val fk  = freeVarsCont
-fun fv (CPSVar v) = fromList [v]
-fun fvi (CPSVar v) = v
+fun fv (CPSValueVar v) = fromList [v]
+fun fvi (CPSValueVar v) = v
 fun ***(a,b) = IntSet.union a b
 infix 4 ***
 in

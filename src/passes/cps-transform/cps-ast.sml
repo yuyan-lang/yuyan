@@ -5,7 +5,7 @@ open TypeCheckingAST
 
 type cpsvar = int
 
-  datatype cpsvalue = CPSVar of cpsvar
+  datatype cpsvalue = CPSValueVar of cpsvar
   
     datatype cpsBuiltinValue = 
         CPSBvInt of int

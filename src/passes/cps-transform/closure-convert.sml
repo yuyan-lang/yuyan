@@ -9,8 +9,8 @@ fun closureConvertCont ( (i, c) : cpscontinuation) : IntSet.set * cpscontinuatio
     in (remove cfree [i], (i, c')) end
 and closureConvert (s : cpscomputation) : (IntSet.set * cpscomputation) =
 let val cck  = closureConvertCont
-fun fv (CPSVar v) = fromList [v]
-fun fvi (CPSVar v) = v
+fun fv (CPSValueVar v) = fromList [v]
+fun fvi (CPSValueVar v) = v
 fun ***(a,b) = IntSet.union a b
 infix 4 ***
 in

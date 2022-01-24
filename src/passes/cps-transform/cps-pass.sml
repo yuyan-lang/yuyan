@@ -65,7 +65,7 @@ exception CPSInternalError
                 | SelfVar v => CPSAbsSingle(kcc (fn arg => 
                         cc arg
                     ), NONE, kcc (fn kont => 
-                        CPSApp(CPSVar v, (CPSVar v, CPSVar kont)) (* apply the recursive value to itself *)
+                        CPSApp(CPSValueVar v, (CPSValueVar v, CPSValueVar kont)) (* apply the recursive value to itself *)
                      )))
             | CUnitExpr => CPSUnit (kcc cc)
             | CTuple (cs, Prod ls) => (
@@ -73,18 +73,18 @@ exception CPSInternalError
                         if i = List.length cs
                         then CPSTuple(values, kcc cc)
                         else cpsTransformExpr ctx (List.nth(cs, i)) 
-                                    (fn v => go (i+1) (values@[CPSVar v]))
+                                    (fn v => go (i+1) (values@[CPSValueVar v]))
                     in go 0 [] end
                 )
             | CProj(e, l, Prod ls) => cpsTransformExpr ctx e (fn v 
-                        => CPSProj(CPSVar v, (klookupLabel ls l),(kcc cc)))
+                        => CPSProj(CPSValueVar v, (klookupLabel ls l),(kcc cc)))
             | CInj (l, e, Sum ls ) => 
                 cpsTransformExpr ctx e 
-                    (fn v => CPSInj(l, klookupLabel ls l, CPSVar v, kcc cc)
+                    (fn v => CPSInj(l, klookupLabel ls l, CPSValueVar v, kcc cc)
             )
             | CCase((Sum ls, e),cases, resType) => 
             (cpsTransformExpr ctx e) (fn v => 
-                    CPSCases (CPSVar v, (List.tabulate(List.length ls, 
+                    CPSCases (CPSValueVar v, (List.tabulate(List.length ls, 
                     fn index => let val  (label,t) = List.nth(ls, index)
                                     val caseIndex = klookupLabel3 cases label
                                     val (_, ev, e) = List.nth(cases, caseIndex)
@@ -95,7 +95,7 @@ exception CPSInternalError
             | CLam(ev, eb, Func(t1, t2)) => 
                 CPSAbs (kcc2 (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar arg))::ctx) eb 
-                        (fn r => CPSAppSingle(CPSVar ret,CPSVar r))
+                        (fn r => CPSAppSingle(CPSValueVar ret,CPSValueVar r))
                 ), NONE, kcc cc)
             | CApp (e1, e2, t) => 
                 cpsTransformExpr ctx e1 (fn v1 => 
@@ -103,7 +103,7 @@ exception CPSInternalError
                     CPSAbsSingle(kcc (fn arg => 
                         cc arg
                     ), NONE, kcc (fn kont => 
-                        CPSApp(CPSVar v1, (CPSVar v2, CPSVar kont))
+                        CPSApp(CPSValueVar v1, (CPSValueVar v2, CPSValueVar kont))
                      ))
                  ))
             | CTAbs (tv, e2, _) => cpsTransformExpr ctx e2 cc
@@ -115,19 +115,19 @@ exception CPSInternalError
                 cpsTransformExpr (([ev],PlainVar v)::ctx) e2 cc
                     )
             | CFold (e2, t) => 
-                cpsTransformExpr ctx e2 (fn v => CPSFold(CPSVar v, kcc cc))
-            | CUnfold (e2, _) => cpsTransformExpr ctx e2 (fn v => CPSUnfold(CPSVar v , kcc cc))
+                cpsTransformExpr ctx e2 (fn v => CPSFold(CPSValueVar v, kcc cc))
+            | CUnfold (e2, _) => cpsTransformExpr ctx e2 (fn v => CPSUnfold(CPSValueVar v , kcc cc))
             | CFix (ev, e, _)=>  
             let val fixedPointBoundId = UID.next()
             in
               CPSAbs (kcc2 (fn self => fn ret =>
                     cpsTransformExpr (([ev], SelfVar self) :: ctx) e 
-                     (fn r => CPSAppSingle(CPSVar ret,CPSVar r))
+                     (fn r => CPSAppSingle(CPSValueVar ret,CPSValueVar r))
                 ), NONE, (fixedPointBoundId , 
                     CPSAbsSingle(kcc (fn arg => 
                         cc arg
                         ), NONE, kcc (fn kont => 
-                        CPSApp(CPSVar fixedPointBoundId, (CPSVar fixedPointBoundId, CPSVar kont))
+                        CPSApp(CPSValueVar fixedPointBoundId, (CPSValueVar fixedPointBoundId, CPSValueVar kont))
                         ))
                     )
                 )
@@ -151,7 +151,7 @@ exception CPSInternalError
                 foldr (fn (arg, acc) => 
                     (fn (prevArgs : cpsvalue list) => 
                     cpsTransformExpr ctx (CExprVar arg) (fn argv => 
-                            acc (prevArgs@[CPSVar argv])
+                            acc (prevArgs@[CPSValueVar argv])
                         )
                     )
                 ) (fn argvs => 
@@ -182,9 +182,9 @@ exception CPSInternalError
          (* DebugPrint.p (PrettyPrint.show_typecheckingCSig s); *)
 
     cpsTransformSig [] s (fn (ctx, resvar) => 
-        case resvar of SOME resvar => CPSDone (CPSVar resvar)
+        case resvar of SOME resvar => CPSDone (CPSValueVar resvar)
         (* return unit if last expression is not a expr *)
-                     | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSVar resvar)))
+                     | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSValueVar resvar)))
     )
      )
 
