@@ -8,7 +8,7 @@ struct
     open CompilationFileOps
     open TypeCheckingAST
 
-    val closingStructureSegment = [RichTextSegment(Red, Regular,([SpecialChars.rightSingleQuote]))]
+    val closingStructureSegment = [RichTextSegment(Red, Regular,([SpecialChars.rightSingleQuote, SpecialChars.period]))]
     fun openStructureSegment sname =
     let val opStrings = Operators.getStringComponents PreprocessingOperators.publicStructureOp
     in 
@@ -75,7 +75,7 @@ struct
                 val indentProceed = length candidateName - length agreedParts - 1
                 val openingMarks = List.concat( List.tabulate(indentProceed, (fn n => 
                             indentN (indentAfterBackoff + n) @  
-                                (openStructureSegment ([List.nth (candidateName, length agreedParts + n)])) @[Newline]
+                                (openStructureSegment ([List.nth (candidateName, length agreedParts + n)]))
                         )
                     ))
                 val newIndent = indentAfterBackoff + indentProceed
@@ -108,17 +108,36 @@ struct
     end
 
 
-    fun generateDocForCompilationFile (relativeStructureName : StructureName.t) (cfile : compilationfile) : RichTextDocument.t = 
+    fun footerToTOC(descentLevel : int) : RichTextDocument.t =
+        [Newline,
+            RichTextSegment(Black, Regular, UTF8String.fromString "返回"),
+            HyperLink(UTF8String.fromString "目录", PathUtil.concat(List.tabulate(descentLevel, (fn _ => ".."))@["toc.html"]))
+            ]
+
+    fun generateDocForCompilationFile 
+    (relativeStructureName : StructureName.t) (cfile : compilationfile) : RichTextDocument.t = 
         let val cSig = valOfSafe (getTypeCheckedAST cfile) (fn _ => raise Fail "tcast not requested")
-        val initialHeader = openStructureSegment relativeStructureName 
-        val (middleContent, finalIndent, finalSName) = generateDocForCSigRecursive (relativeStructureName) 1 cSig
+        val initialHeader =[ RichTextSegment(Black,Header,(StructureName.toString relativeStructureName)),
+                            Newline ]
+        val (middleContent, finalIndent, finalSName) = generateDocForCSigRecursive ([]) 0 cSig
          val closingMarks = List.concat (List.tabulate(finalIndent, (fn n => 
                             indentN (finalIndent - n-1) @ closingStructureSegment @[Newline]
                         )
                     ) )
+        val backToTOC = footerToTOC(length relativeStructureName -1)
         in 
-        initialHeader @ middleContent @ closingMarks
+        initialHeader @ middleContent @ closingMarks @ backToTOC
         end
+
+
+    fun generateToc (files : ( StructureName.t) list) : RichTextDocument.t= 
+    [RichTextSegment(Black, Header, UTF8String.fromString "文档目录")
+    ]
+    @(List.concat (map (fn s => 
+        [HyperLink(StructureName.toString s,(PathUtil.concat (map UTF8String.toString s) ^ ".html")),
+        Newline]
+    ) files))
+
 
 
     fun generateDocs (moduleRootPath : filepath) (outputRoot : filepath) (cm : compilationmanager) = 
@@ -131,15 +150,16 @@ struct
         val generatedDocs = map (fn (fp, cfile) => 
             (fp, generateDocForCompilationFile (getRelativeStructureName moduleRootPath (make fp)) cfile)
             ) (StrDict.toList (! (#files module)))
-        val docToStr = outputToHTML
+        val tocDoc = generateToc (map (fn (fp, cfile) => (getRelativeStructureName moduleRootPath (make fp))) (StrDict.toList (! (#files module))))
         val _ = map (fn (fp, doc) => 
                 let val actualFileName = 
                     PathUtil.concat 
                     ((access outputRoot)::(map UTF8String.toString (getRelativeStructureName moduleRootPath (make fp)))) ^ ".html"
-                    val fOutput = docToStr doc
+                    val fOutput = outputToHTML doc
                     val _ = IOUtil.writeFile (actualFileName) fOutput
                 in () end
             ) generatedDocs
+        val _ = IOUtil.writeFile (PathUtil.concat [access outputRoot, "toc.html"]) (outputToHTML tocDoc)
     in 
         ()
     end

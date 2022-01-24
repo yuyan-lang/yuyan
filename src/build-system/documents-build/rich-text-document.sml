@@ -5,6 +5,7 @@ struct
     datatype richTextSegment = RichTextSegment of textColor * textFormatting * UTF8String.t
                              | Indent
                              | Newline
+                             | HyperLink of UTF8String.t (* content of the link *)  * string (* target of the link *)
 
     type richTextDocument = richTextSegment list
 
@@ -25,12 +26,17 @@ struct
         | Blue => "DarkBlue"
         | Green => "DarkGreen"
 
+    fun getHTMLElement (f : textFormatting) = case f of
+        Regular => "span"
+        | Header => "h1"
+
     fun outputToHTML (doc : richTextDocument) : string = 
         let fun outputSegmentToHTML (x : richTextSegment) = 
-            case x of RichTextSegment (c, f, s)  => "<span style=\"color: " ^ 
-            getColorHTML c ^"\">" ^ UTF8String.toString s ^ "</span>"
+            case x of RichTextSegment (c, f, s)  => "<" ^ getHTMLElement f^" style=\"color: " ^ 
+            getColorHTML c ^"\">" ^ UTF8String.toString s ^ "</" ^ getHTMLElement f ^">"
                 | Indent => "<span style=\"display: inline-block; width: 2ch;\"></span>"
                 | Newline => "<br>"
+                | HyperLink(content, target) => "<a href=\""^ target ^"\">" ^ UTF8String.toString content ^ "</a>"
             val htmlBody = String.concatWith "" (map outputSegmentToHTML doc)
         in htmlHeader() ^ htmlBody ^ htmlFooter()
         end
