@@ -8,6 +8,7 @@ exception CPSInternalError
 
     datatype cpscontextvalue = PlainVar of int
                              | SelfVar of int (* selfvar represents a pending computation that needs to be applied to itself *)
+                             | GlobalVar of int
 
     type context = (StructureName.t * cpscontextvalue) list
 
@@ -44,7 +45,7 @@ exception CPSInternalError
             cpsTransformSig ctx ss cc
         | CTermDefinition(name, def, tp):: ss =>  
              cpsTransformExpr ctx def (fn resvar => 
-            cpsTransformSig ((name, PlainVar resvar)::ctx) ss cc)
+            cpsTransformSig ((name, GlobalVar resvar)::ctx) ss cc)
         | CDirectExpr (e, tp) :: ss => 
              cpsTransformExpr ctx e (fn resvar => 
             cpsTransformSig (ctx) ss cc)
@@ -60,6 +61,7 @@ exception CPSInternalError
          val res = case e of
             CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
+                | GlobalVar v => cc v
                 | SelfVar v => CPSAbsSingle(kcc (fn arg => 
                         cc arg
                     ), NONE, kcc (fn kont => 
