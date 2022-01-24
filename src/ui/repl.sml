@@ -32,7 +32,7 @@ struct
 
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r[kvv] filename.yuyan\n"
 
-    fun smlnj_main ((name , args) : string * string list) =
+    fun smlnjMain ((name , args) : string * string list) =
         case args of
              [cmd] => if cmd = "lsp" 
              then (LanguageServerMode.startLSP(); OS.Process.success)
@@ -47,10 +47,16 @@ struct
                     then 1 else 0
                     ),
                     usekmachine = String.isSubstring "k" cmd, 
-                    exitOnFailure = true
+                    exitOnFailure = not (String.isSubstring "noExitOnFail" cmd)
                 } fname (
                     if String.isSubstring "profileLSPTokens"  cmd
                     then SOME (ReplDebug.profileLSPTokens)
+                    else if String.isSubstring "genDocs" cmd
+                    then SOME(fn _ => fn cm => DocsGeneration.generateDocs 
+                    (FileResourceURI.make (PathUtil.concat [(#pwd cm), "yylib"]))
+                    (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild", "docs"]))
+                    cm
+                    )
                     else NONE
                 ); OS.Process.success)
             | _ => (DebugPrint.p aboutText;  OS.Process.failure )
@@ -61,17 +67,24 @@ struct
         val name = CommandLine.name()
         val args = CommandLine.arguments()
         in 
-OS.Process.exit (smlnj_main(name, args))
+OS.Process.exit (smlnjMain(name, args))
             end
 
      fun testMain()= 
         inputFile "testfiles/test。豫库" {
             verbose=2, usekmachine=true, exitOnFailure= false
         }
-    fun test f = 
+    (* fun test f = 
         inputFile f {
             verbose=2, usekmachine=false, exitOnFailure= false
-        }
+        } *)
+    fun test f = 
+        smlnjMain("<name>",["rv", f])
+
+    fun testcmd cmd f = 
+        smlnjMain("<name>",[cmd, f])
+        
+        
     fun testk f = 
         inputFile f {
             verbose=2, usekmachine=true, exitOnFailure= false

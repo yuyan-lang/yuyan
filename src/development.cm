@@ -97,6 +97,12 @@ Library
 
   structure LspDiagnostics
   structure ReplDebug
+
+  structure DocsGeneration
+
+  structure RichTextDocument
+  structure RichTextDocumentOps
+  structure IOUtil
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -130,6 +136,7 @@ is
   operators/structure/op-ast.sml
   operators/structure/op-ast-ops.sml
 
+  util/io-util.sml
   util/debug-print.sml
   util/source-location.sml
   util/uri-util.sml
@@ -189,6 +196,9 @@ is
   build-system/file-dependency-resolution.sml
   build-system/diagnostics/static-error-structure.sml
   build-system/diagnostics/print-diagnostics.sml
+  build-system/docs-generation.sml
+  build-system/documents-build/rich-text-document.sml
+  build-system/documents-build/rich-text-document-ops.sml
 
 
 

@@ -423,10 +423,9 @@ end *)
         (* ) *)
         end
 
-    fun getTopLevelStructureName(filepath : filepath) (cm : compilationmanager) : StructureName.t = 
-        let val  module = lookupModuleForFilePath filepath cm
-            val moduleRootPath = #rootPath module
-            val relativepath = UTF8String.fromString (PathUtil.makeRelative  (access filepath) (moduleRootPath))
+    fun getRelativeStructureName(moduleRootPath : filepath) (actualFilePath : filepath) : UTF8String.t list = 
+        let
+            val relativepath = UTF8String.fromString (PathUtil.makeRelative  (access actualFilePath) (access moduleRootPath))
             val removedExtension = if UTF8String.isSuffix (UTF8String.fromString ".yuyan") (relativepath)
                                    then UTF8String.stripSuffix (UTF8String.fromString ".yuyan") relativepath
                                    else if UTF8String.isSuffix (UTF8String.fromString "。豫") (relativepath)
@@ -434,7 +433,14 @@ end *)
                                    else relativepath
             val sNameStr = UTF8String.fields (fn x => UTF8Char.semanticEqual x (SpecialChars.pathSeparator)) removedExtension
             val res = sNameStr
-        in  res 
+        in res
+        end
+
+
+    fun getTopLevelStructureName(filepath : filepath) (cm : compilationmanager) : StructureName.t = 
+        let val  module = lookupModuleForFilePath filepath cm
+            val moduleRootPath = #rootPath module
+        in getRelativeStructureName (make moduleRootPath) filepath
         end
 
 

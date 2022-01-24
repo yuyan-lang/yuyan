@@ -19,6 +19,7 @@ local
         util/unique-id.sml
         util/source-location.sml
         util/file-resource-uri.sml
+        util/io-util.sml
         util/uri-util.sml
         util/source-range.sml
         util/utf8char.sml
@@ -92,6 +93,9 @@ local
         build-system/diagnostics/print-diagnostics.sml
         
         build-system/file-dependency-resolution.sml
+        build-system/documents-build/rich-text-document.sml
+        build-system/documents-build/rich-text-document-ops.sml
+        build-system/docs-generation.sml
         
         lsp/language-server.sml
         lsp/syntax-highlight.sml
