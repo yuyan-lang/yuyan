@@ -19,12 +19,12 @@ local
         util/unique-id.sml
         util/source-location.sml
         util/file-resource-uri.sml
-        util/io-util.sml
         util/uri-util.sml
         util/source-range.sml
         util/utf8char.sml
         operators/structure/special-chars.sml
         util/utf8string.sml
+        util/io-util.sml
         util/ordered.sml
         util/math-util.sml
         util/number-parser.sml
