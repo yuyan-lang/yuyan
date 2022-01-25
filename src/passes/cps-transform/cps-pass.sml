@@ -181,11 +181,16 @@ exception CPSInternalError
      (
          (* DebugPrint.p (PrettyPrint.show_typecheckingCSig s); *)
 
+let val res = 
     cpsTransformSig [] s (fn (ctx, resvar) => 
         case resvar of SOME resvar => CPSDone (CPSVar resvar)
         (* return unit if last expression is not a expr *)
                      | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSVar resvar)))
     )
+    val _ = DebugPrint.p ("cpsTransformSigTopLevel result is " ^ PrettyPrint.show_cpscomputation res ^ "\n");
+in 
+    res 
+end
      )
 
 
