@@ -47,7 +47,8 @@ struct
                     then 1 else 0
                     ),
                     usekmachine = String.isSubstring "k" cmd, 
-                    exitOnFailure = not (String.isSubstring "noExitOnFail" cmd)
+                    exitOnFailure = not (String.isSubstring "noExitOnFail" cmd),
+                    compileOnly = String.isSubstring "compileOnly" cmd
                 } fname (
                     if String.isSubstring "profileLSPTokens"  cmd
                     then SOME (ReplDebug.profileLSPTokens)
@@ -70,10 +71,10 @@ struct
 OS.Process.exit (smlnjMain(name, args))
             end
 
-     fun testMain()= 
+     (* fun testMain()= 
         inputFile "testfiles/test。豫库" {
             verbose=2, usekmachine=true, exitOnFailure= false
-        }
+        } *)
     (* fun test f = 
         inputFile f {
             verbose=2, usekmachine=false, exitOnFailure= false
@@ -85,9 +86,9 @@ OS.Process.exit (smlnjMain(name, args))
         smlnjMain("<name>",[cmd, f])
         
         
-    fun testk f = 
+    (* fun testk f = 
         inputFile f {
             verbose=2, usekmachine=true, exitOnFailure= false
-        }
+        } *)
 
 end

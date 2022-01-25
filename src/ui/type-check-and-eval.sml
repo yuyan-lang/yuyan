@@ -25,7 +25,11 @@ open StaticErrorStructure
                                 val exec = CompilationManager.makeExecutable absFp cm
                                 val executeTime = Time.now()
                                 val exitSt = case exec of 
-                                    Success _ => (OS.Process.system "./.yybuild/yyexe")
+                                    Success _ => (
+                                        if (#compileOnly) options 
+                                        then OS.Process.success
+                                        else OS.Process.system "./.yybuild/yyexe"
+                                        )
                                     | DErrors l => (DebugPrint.p (PrintDiagnostics.showErrs l cm);OS.Process.failure)
                                     | NotAvailable => raise Fail "tcev30"
                             in 
