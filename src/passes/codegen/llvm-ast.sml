@@ -1,7 +1,8 @@
 structure LLVMAst = struct
 
 
-type llvmlocation = int (* this corresponds directly to cpsvar *)
+datatype llvmlocation = LLVMLocationLocal of int (* this corresponds directly to cpsvar *)
+                      | LLVMLocationGlobal of  int
 datatype llvmvalue = LLVMLocalVar of int (* appear as  %v(i) *)
                    | LLVMStringName of int * UTF8String.t (* for calculating length *) (* appear as @s(i) *)
                    | LLVMFunctionName of int * int (* argument count *) (* appear as @f(i) *)
@@ -37,7 +38,7 @@ TODO: Maybe we want to make that syntactically explicit *)
     | LLVMFfiCCall of  llvmlocation (* result of the function call *)
                 * UTF8String.t (* function name *)
             * llvmvalue list (* function arguments *)
-    | LLVMReturn of int (* Variable name that stores the result *)
+    | LLVMReturn of llvmlocation (* Variable name that stores the result *)
 
 datatype llvmdeclaration  = LLVMFunction of int (* name of the function *) 
                                           * int list (* list of arguments *)

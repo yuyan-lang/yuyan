@@ -3,7 +3,8 @@ structure CPSAst = struct
 open TypeCheckingAST
 
 
-type cpsvar = int
+datatype cpsvar =  CPSVarLocal of int
+                | CPSVarGlobal of int
 
   datatype cpsvalue = CPSValueVar of cpsvar
   
@@ -23,16 +24,16 @@ type cpsvar = int
                 | CPSTuple of cpsvalue list * (cpsvar * cpscomputation)
                 | CPSInj of Label * int * cpsvalue * (cpsvar * cpscomputation)
                 | CPSFold of cpsvalue * (cpsvar * cpscomputation)
-                | CPSAbsSingle of (cpsvar (* this is the continuation (return address) *)
-                * cpscomputation)  * cpsvar list option (* list of free variables in the function closure (first argument) (to be populated during closure conversion) *)
+                | CPSAbsSingle of (int (* this is the continuation (return address) *)
+                * cpscomputation)  * int list option (* list of free variables (localvar) in the function closure (first argument) (to be populated during closure conversion) *)
                 * (cpsvar * cpscomputation) (* continuation where cpsvar is bound to the abstraction*)
-                | CPSAbs of (cpsvar * cpsvar (* this is the continuation (return address) *)
-                * cpscomputation)  * cpsvar list option (* list of free variables in the function closure (first argument) (to be populated during closure conversion) *)
+                | CPSAbs of (int * int (* this is the continuation (return address) *)
+                * cpscomputation)  * int list option (* list of free variables (localvar) in the function closure (first argument) (to be populated during closure conversion) *)
                 * (cpsvar * cpscomputation)(* continuation where cpsvar is bound to the abstraction*)
                 | CPSDone of cpsvalue (* signals return of the value *)
                 | CPSBuiltinValue of cpsBuiltinValue * (cpsvar * cpscomputation) (* actually should only use label when it is 
                   a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)
                 | CPSFfiCCall of UTF8String.t * cpsvalue list * (cpsvar * cpscomputation)
-    type cpscontinuation = int * cpscomputation
+    type cpscontinuation = cpsvar * cpscomputation
 
 end

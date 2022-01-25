@@ -5,6 +5,10 @@ structure LLVMCodegen = struct
 open LLVMAst
 
 fun toLocalVar (i : int) = "%v" ^ Int.toString i
+fun toGlobalVar (i : int) = "@v" ^ Int.toString i
+fun toLLVMLoc (i : llvmlocation) = case i of 
+    LLVMLocationLocal i => toLocalVar i
+    | LLVMLocationGlobal i => toGlobalVar i
 fun toStringName (i : int) = "@s" ^ Int.toString i
 fun toIntName (i : int) = "@i" ^ Int.toString i
 fun toRealName (i : int) = "@r" ^ Int.toString i
@@ -76,7 +80,7 @@ end
 
 
 
-fun storeArrayToLocalVar (arrType : llvmarraytype) (localVar : int)(values : llvmvalue list)  : string list= 
+fun storeArrayToLLVMLoc (arrType : llvmarraytype) (llvmLoc : llvmlocation)(values : llvmvalue list)  : string list= 
 let 
     val num = length values
     val headerPointerVar = UID.next() 
@@ -154,16 +158,16 @@ in
         , "store " ^ headerArrType ^ " [" ^ String.concatWith ", " 
             (map(fn i => "i64 "^ i) headerInfo) ^ "], " ^ headerArrType ^ "* "^ toLocalVar headerPointerVarArr *)
 
-        toLocalVar localVar ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num + 1) ^")"
+        toLLVMLoc llvmLoc ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num + 1) ^")"
           (* get the first block address and store*)
-        , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 0"
+        , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 0"
         , "store i64 " ^ hd headerInfo ^ ", i64* "^ toLocalVar headerPointerVar
     ]
     @(List.concat (List.tabulate (headerLength - 1 , fn index => 
     let val tempVar = UID.next()
     in 
     [
-        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString (index+num+1)
+        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 "^ Int.toString (index+num+1)
     ]@(
        ["store i64 " ^ List.nth(headerInfo, index+1) ^", i64* " ^ toLocalVar tempVar])
     end
@@ -172,7 +176,7 @@ in
     let val tempVar = UID.next()
     in 
     [
-        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 "^ Int.toString (index+1)
+        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 "^ Int.toString (index+1)
     ]@(
         convertValueToIntForStorage(List.nth(values, index)) (fn name => 
        ["store i64 "
@@ -185,7 +189,7 @@ in
 end
 
 
-fun derefArrayFrom (localVar : int )(arrptr : int)(index : int)  : string list= 
+fun derefArrayFrom (resultLoc : llvmlocation )(arrptr : int)(index : int)  : string list= 
 let val tempVar = UID.next()
 val beforeTypeCast = UID.next()
 (* val headerLengthPointer = UID.next()
@@ -201,15 +205,15 @@ in
     toLocalVar hIntermediate2 ^ " = and i64 " ^ toLocalVar hIntermediate1 ^ ", 1023", *)
     toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString (index+1) (* skip header block*),
     toLocalVar beforeTypeCast ^ " = load i64, i64* " ^ toLocalVar tempVar,
-    toLocalVar localVar ^ " = inttoptr i64 " ^ toLocalVar beforeTypeCast ^ " to i64*"
+    toLLVMLoc resultLoc ^ " = inttoptr i64 " ^ toLocalVar beforeTypeCast ^ " to i64*"
     (* casting everything to be a pointer to avoid typing conflict (I don't know whether is is sensible *)
 ]
 end
 
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
-        LLVMStoreUnit(v) => storeArrayToLocalVar LLVMArrayTypeUnit v []
-        | LLVMStoreArray(arrtype, v, arr) => storeArrayToLocalVar arrtype v arr
+        LLVMStoreUnit(v) => storeArrayToLLVMLoc LLVMArrayTypeUnit v []
+        | LLVMStoreArray(arrtype, v, arr) => storeArrayToLLVMLoc arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 
             let 
@@ -277,7 +281,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         let 
         in
         [
-            toLocalVar resultLoc ^ 
+            toLLVMLoc resultLoc ^ 
             " = call i64* @" ^ UTF8String.toString fname ^ 
                 "(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLLVMValue arg) args) ^ ")"
             (* do not terminate after call *)
@@ -286,7 +290,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         | LLVMReturn i => let
         val tempName = (UID.next())
         in
-        [ toLocalVar tempName ^ " = call i64 @informResult(i64* " ^ toLocalVar i^")",
+        [ toLocalVar tempName ^ " = call i64 @informResult(i64* " ^ toLLVMLoc i^")",
           "ret i64 " ^ toLocalVar tempName
         ]
         end

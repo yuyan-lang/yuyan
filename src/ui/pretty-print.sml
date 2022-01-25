@@ -339,7 +339,13 @@ in
    *)
 
 
-fun show_cpsvalue  (CPSAst.CPSValueVar(i)) = Int.toString i
+fun show_cpsvar  v = 
+    let open CPSAst 
+    in case v of 
+      CPSVarLocal i =>  "l" ^ Int.toString i
+      | CPSVarGlobal i =>  "g" ^ Int.toString i
+    end
+fun show_cpsvalue  (CPSAst.CPSValueVar(v)) = show_cpsvar v
 fun show_cpsbuiltin (e : CPSAst.cpsBuiltinValue) = 
 let open CPSAst
 val realStr = case  e of
@@ -355,7 +361,7 @@ in
 fun show_cpscomputation  (c : CPSAst.cpscomputation) : string = 
 let 
 open CPSAst
-fun show_cpskont (v, cpscomp ) = " ===> \\k:"^ Int.toString v ^ "⟦" ^ show_cpscomputation cpscomp ^"⟧"
+fun show_cpskont (v, cpscomp ) = " ===> \\k:"^ show_cpsvar v ^ "⟦" ^ show_cpscomputation cpscomp ^"⟧"
 val sv = show_cpsvalue
 val sk = show_cpskont
 val si = Int.toString
@@ -367,7 +373,7 @@ case c of
               CPSUnit(k) => "()" ^ sk k
             | CPSProj(v, i, k) => "(" ^ sv v ^ " . " ^ si i ^ ")" ^ sk k
             | CPSCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
-    String.concatWith "; " (map (fn (i, c) => Int.toString i ^ " => " ^ sc c) l)
+    String.concatWith "; " (map (fn (i, c) => show_cpsvar i ^ " => " ^ sc c) l)
     ^ "}"
             | CPSUnfold(v, k) => "unfold (" ^ sv v ^ ")" ^ sk k
             | CPSApp(a, (b, c)) => "ap("^ sv a ^ ",("^ sv b ^ ", " ^ sv c^"))"
@@ -376,11 +382,11 @@ case c of
             | CPSTuple(l, k) => "[" ^ String.concatWith ", " (map sv l) ^ "]" ^ sk k
             | CPSInj(l, i, kv, k) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ sv kv ^ sk k
             | CPSFold(v, k) => "fold (" ^ sv v ^ ")" ^ sk k
-            | CPSAbsSingle((i, c), fvs, k) => "(λS" ^ Int.toString i ^ "." ^ sc c ^ ")"  ^ 
+            | CPSAbsSingle((i, c), fvs, k) => "(λS" ^ si i ^ "." ^ sc c ^ ")"  ^ 
             sfvs fvs ^ sk k
-            | CPSAbs((i,ak, c),fvs,  k) => "(λ" ^ Int.toString i ^ ", "^ si ak ^ "." ^ sc c ^ ")" 
+            | CPSAbs((i,ak, c),fvs,  k) => "(λ" ^ si i ^ ", "^ si ak ^ "." ^ sc c ^ ")" 
             ^ sfvs fvs^ sk k
-            | CPSDone (CPSValueVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ Int.toString i ^ "]"
+            | CPSDone (CPSValueVar i)(* signals return *) => "DONE[RESULT IS STORED IN "^ show_cpsvar i ^ "]"
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
             | CPSFfiCCall(fname, args, k) => "(ccall \"" ^ UTF8String.toString fname ^
             "\" args [" ^ String.concatWith ", " (map sv args) ^ "])" ^ sk k
