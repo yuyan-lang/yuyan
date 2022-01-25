@@ -347,6 +347,11 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
              ^ String.concatWith ", " (List.tabulate ((numberOfArgs),(fn i => "i64*")))
             ^ ")"]
         end
+    | LLVMGlobalVariableDecl(i) => 
+        let 
+        in 
+        [toGlobalVar i ^ " = global i64 0"]
+        end
 
 
 fun genLLVMSignatureWithMainFunction ((entryFunc,s) : llvmsignature)  : string list = 

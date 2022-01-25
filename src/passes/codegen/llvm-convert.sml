@@ -154,10 +154,21 @@ in
                 ]
             ) ::: recur k
             end
-            | CPSStore(dst, src) => ([], vaccess src (fn i => [LLVMStore(cpsVarToLLVMLoc dst, llvmLocToValue i)]))
+            | CPSStore(CPSVarGlobal g, src, cc) => ([LLVMGlobalVariableDecl g], vaccess src (fn i => [LLVMStore(LLVMLocationGlobal g, llvmLocToValue i)])) ::: recur cc
+            | CPSStore(_) => raise Fail "CPSStore must be storing to a global location"
             | CPSSequence(l) => ([], [LLVMComment "sequence start"]) ::: (foldr (op:::) ([], [LLVMComment "sequence end"]) (map recur l))
             | _ => raise Fail "not impl llvmconv 155"
 end
+
+fun removeGlobalVarDuplicates (s : llvmdeclaration list) : llvmdeclaration list = 
+    case s of 
+        [] => []
+        | ((x as LLVMGlobalVariableDecl(i1)) :: xs) => x :: removeGlobalVarDuplicates (List.filter (fn y => 
+                case y of 
+                    LLVMGlobalVariableDecl(i2) => if i1 = i2 then false else true
+                    | _ => true
+            ) xs)
+        | (y :: xs) => y :: removeGlobalVarDuplicates xs
 
 fun removeFfiDuplicate(s : llvmdeclaration list) : llvmdeclaration list = 
     case s of 
@@ -174,7 +185,8 @@ fun genLLVMSignatureTopLevel (cpscomp : cpscomputation ) :(
     let val entryFuncName =  UID.next()
         val (decls, entryBody) = genLLVM (entryFuncName, []) cpscomp
         val removedDuplicateFfiDeclarations = removeFfiDuplicate decls
-    in (entryFuncName, [LLVMFunction(entryFuncName, [], entryBody)]@removedDuplicateFfiDeclarations)
+        val removedDuplicateGlobalVar = removeGlobalVarDuplicates removedDuplicateFfiDeclarations
+    in (entryFuncName, [LLVMFunction(entryFuncName, [], entryBody)]@ removedDuplicateGlobalVar)
     end
 
 end

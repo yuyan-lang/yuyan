@@ -56,6 +56,7 @@ datatype llvmdeclaration  = LLVMFunction of int (* name of the function *)
                                     *  real
                           | LLVMFfiFunction of UTF8String.t (* global name *) 
                                     *  int (* number of arguments *)
+                          | LLVMGlobalVariableDecl of int (* global name*)
 type llvmsignature = int * llvmdeclaration list (* entry func name plus a list of llvm declarations *)
 
 end

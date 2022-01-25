@@ -391,12 +391,21 @@ case c of
             | CPSFfiCCall(fname, args, k) => "(ccall \"" ^ UTF8String.toString fname ^
             "\" args [" ^ String.concatWith ", " (map sv args) ^ "])" ^ sk k
             | CPSSequence l => "[" ^ String.concatWith ", " (map show_cpscomputation l) ^ "]"
-            | CPSStore (dst, src) => "store " ^ show_cpsvar dst ^  " = " ^ sv src ^ "]"
-
-        
-
+            | CPSStore (dst, src, cc) => "store " ^ show_cpsvar dst ^  " = " ^ sv src ^ "] ==>" ^ show_cpscomputation cc
 
 end
+
+fun show_cpscontextvalue (cv : CPSAst.cpscontextvalue) = 
+let open CPSAst
+in
+case cv of 
+  PlainVar v => "PlainVar "^ show_cpsvar v
+  | SelfVar v => "SelfVar "^ show_cpsvar v
+  | GlobalVar v => "GlobalVar "^ show_cpsvar v
+end
+
+fun show_cpscontext (ctx : CPSAst.context) = 
+String.concatWith ", \n" (map (fn (s, cv) => StructureName.toStringPlain s ^ " ==> " ^ show_cpscontextvalue cv) ctx)
 
 
 fun show_static_error (err : 'a StaticErrorStructure.witherrsoption) (showa : 'a -> string) : string= 

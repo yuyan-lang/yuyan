@@ -30,7 +30,7 @@ datatype cpsvar =  CPSVarLocal of int
                 | CPSAbs of (int * int (* this is the continuation (return address) *)
                 * cpscomputation)  * int list option (* list of free variables (localvar) in the function closure (first argument) (to be populated during closure conversion) *)
                 * (cpsvar * cpscomputation)(* continuation where cpsvar is bound to the abstraction*)
-                | CPSStore of cpsvar (* destination (must be global) *) * cpsvalue (*source *)
+                | CPSStore of cpsvar (* destination (must be global) *) * cpsvalue (*source *)* cpscomputation
                 | CPSDone of cpsvalue (* signals return of the value *)
                 | CPSBuiltinValue of cpsBuiltinValue * (cpsvar * cpscomputation) (* actually should only use label when it is 
                   a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)

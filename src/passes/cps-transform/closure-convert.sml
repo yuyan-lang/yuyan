@@ -76,8 +76,11 @@ in
             in (((foldr (op***) (fromList []) (map (fn x => #1 x) fs)),
                 CPSSequence(map (fn x => #2 x) fs)))
             end
-        | CPSStore (dst, src) =>
-            (fromList (cpsvarToL dst) *** fv src, CPSStore(dst,src))
+        | CPSStore (dst, src, cc) =>
+        let val (fcc, cc') = closureConvert cc
+        in
+            (fromList (cpsvarToL dst) *** fv src *** fcc, CPSStore(dst,src, cc'))
+        end
         | CPSAbsSingle(_, SOME _, _) => raise Fail "cvt69"
         | CPSAbs(_, SOME _, _) => raise Fail "cvt70"
             
