@@ -297,13 +297,24 @@ fun genLLVMStatement (s : llvmstatement) : string list =
           "ret i64 " ^ toLocalVar tempName
         ]
         end
-        | LLVMStore(dst, src) => let
+        | LLVMLoadGlobal(dst, src) => let
+            val tempName = (UID.next())
+        in
+        [
+            (* toLocalVar tempName " = ptrtoint" bitcast"store i64 " ^ toLLVMValue src ^ ", i64* " ^ toLLVMLoc dst *)
+            (* , *)
+            toLocalVar tempName ^ " = load i64, i64* " ^ toGlobalVar src,
+            toLocalVar dst ^ " = inttoptr i64 " ^ toLocalVar tempName ^ " to i64*"
+            (* "ret i64 0" *)
+        ]
+        end
+        | LLVMStoreGlobal(dst, src) => let
         in
         convertValueToIntForStorage src (fn name => 
         [
             (* toLocalVar tempName " = ptrtoint" bitcast"store i64 " ^ toLLVMValue src ^ ", i64* " ^ toLLVMLoc dst *)
             (* , *)
-            "store i64 " ^ name ^ ", i64* " ^ toLLVMLoc dst
+            "store i64 " ^ name ^ ", i64* " ^ toGlobalVar dst
             (* "ret i64 0" *)
         ]
         )

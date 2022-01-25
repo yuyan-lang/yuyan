@@ -24,7 +24,8 @@ datatype llvmarraytype =
 
 datatype llvmstatement = 
     LLVMStoreUnit of llvmlocation
-    | LLVMStore of llvmlocation * llvmvalue 
+    | LLVMStoreGlobal of int * llvmvalue  (* load global into local, (dst, src) *)
+    | LLVMLoadGlobal of int *  int
     | LLVMStoreArray of llvmarraytype * llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)

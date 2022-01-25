@@ -27,7 +27,11 @@ let val recur = genLLVM ctx
     the record value if the record value is itself bound *)
     fun transformAccess (CPSValueVar v) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
     case v of 
-        CPSVarGlobal v => f (LLVMLocationGlobal v)
+        CPSVarGlobal v =>
+                        let val newName = UID.next()
+                    in 
+                        [LLVMLoadGlobal(newName, v)]@(f (LLVMLocationLocal newName))
+                    end
         | CPSVarLocal v => 
             (case ListSearchUtil.indexOf freeVL v of
                 SOME idx =>
@@ -154,7 +158,7 @@ in
                 ]
             ) ::: recur k
             end
-            | CPSStore(CPSVarGlobal g, src, cc) => ([LLVMGlobalVariableDecl g], vaccess src (fn i => [LLVMStore(LLVMLocationGlobal g, llvmLocToValue i)])) ::: recur cc
+            | CPSStore(CPSVarGlobal g, src, cc) => ([LLVMGlobalVariableDecl g], vaccess src (fn i => [LLVMStoreGlobal(g, llvmLocToValue i)])) ::: recur cc
             | CPSStore(_) => raise Fail "CPSStore must be storing to a global location"
             | CPSSequence(l) => ([], [LLVMComment "sequence start"]) ::: (foldr (op:::) ([], [LLVMComment "sequence end"]) (map recur l))
             | _ => raise Fail "not impl llvmconv 155"
