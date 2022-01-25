@@ -4,6 +4,7 @@ structure LLVMAst = struct
 datatype llvmlocation = LLVMLocationLocal of int (* this corresponds directly to cpsvar *)
                       | LLVMLocationGlobal of  int
 datatype llvmvalue = LLVMLocalVar of int (* appear as  %v(i) *)
+                   | LLVMGlobalVar of int (* appear as @v(i) *)
                    | LLVMStringName of int * UTF8String.t (* for calculating length *) (* appear as @s(i) *)
                    | LLVMFunctionName of int * int (* argument count *) (* appear as @f(i) *)
                    | LLVMIntConst of int (* directly stored as int *)
@@ -28,14 +29,14 @@ datatype llvmstatement =
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)
     | LLVMArrayAccess of llvmlocation (* result *) 
-                    * int  (* POINTER to array *)
+                    * llvmlocation  (* POINTER to array *)
                     * int  (* index *)
 (* conditional jump and call should not be followed by any other statement 
 TODO: Maybe we want to make that syntactically explicit *)
     | LLVMConditionalJump of int (* VARIABLE NAME that stores the index *) 
             * llvmstatement list list (* one block for each index *)
-    | LLVMCall of int (* function name *)
-            * int list (* function arguments *)
+    | LLVMCall of llvmlocation (* function name *)
+            * llvmlocation list (* function arguments *)
     | LLVMFfiCCall of  llvmlocation (* result of the function call *)
                 * UTF8String.t (* function name *)
             * llvmvalue list (* function arguments *)

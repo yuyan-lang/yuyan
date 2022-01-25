@@ -18,6 +18,7 @@ fun toBlockNameLabel (i : int) = "b" ^ Int.toString i
 
 fun toLLVMValue (v : llvmvalue) = case v of
     LLVMLocalVar i => toLocalVar i
+                | LLVMGlobalVar i => toGlobalVar i
                 | LLVMStringName (i, _)=> toStringName i
                 | LLVMFunctionName(i, _) => toFunctionName i
                 | LLVMIntConst i => Int.toString i
@@ -46,6 +47,8 @@ let
     case v of 
           LLVMLocalVar i =>  (* the local var is guaranteed to be a pointer *)
           [toLocalVar tempVarName ^ " = ptrtoint i64* " ^ toLocalVar i ^ " to i64 "] @ (f (toLocalVar tempVarName))
+        | LLVMGlobalVar i =>  (* the local var is guaranteed to be a pointer *)
+          [toLocalVar tempVarName ^ " = ptrtoint i64* " ^ toGlobalVar i ^ " to i64 "] @ (f (toLocalVar tempVarName))
         | LLVMStringName (i, s)=> 
           [toLocalVar tempVarName ^ " = ptrtoint [" ^ Int.toString (length (UTF8String.getBytes s) + 1) ^" x i8]* " ^ toStringName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
         | LLVMFunctionName(i, argLength) => 
@@ -189,7 +192,7 @@ in
 end
 
 
-fun derefArrayFrom (resultLoc : llvmlocation )(arrptr : int)(index : int)  : string list= 
+fun derefArrayFrom (resultLoc : llvmlocation )(arrptr : llvmlocation)(index : int)  : string list= 
 let val tempVar = UID.next()
 val beforeTypeCast = UID.next()
 (* val headerLengthPointer = UID.next()
@@ -203,7 +206,7 @@ in
     toLocalVar headerLengthName ^ " = load i64, i64* " ^ toLocalVar headerLengthPointer,
     toLocalVar hIntermediate1 ^ " = lshiftr i64 " ^ toLocalVar headerLengthName ^ ", " ^ Int.toString(62 - 22),
     toLocalVar hIntermediate2 ^ " = and i64 " ^ toLocalVar hIntermediate1 ^ ", 1023", *)
-    toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLocalVar arrptr ^ ", i64 "^ Int.toString (index+1) (* skip header block*),
+    toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLLVMLoc arrptr ^ ", i64 "^ Int.toString (index+1) (* skip header block*),
     toLocalVar beforeTypeCast ^ " = load i64, i64* " ^ toLocalVar tempVar,
     toLLVMLoc resultLoc ^ " = inttoptr i64 " ^ toLocalVar beforeTypeCast ^ " to i64*"
     (* casting everything to be a pointer to avoid typing conflict (I don't know whether is is sensible *)
@@ -270,9 +273,9 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             val ftype = "i64 (" ^ String.concatWith ", " (map (fn _ => "i64*") args) ^ ")"
         in
         [
-            toLocalVar castedFname ^ " = bitcast i64* " ^ toLocalVar fname  ^ " to " ^ ftype ^ "*",
+            toLocalVar castedFname ^ " = bitcast i64* " ^ toLLVMLoc fname  ^ " to " ^ ftype ^ "*",
             toLocalVar discard ^ " = musttail call i64 " ^ toLocalVar castedFname ^ 
-                "(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLocalVar arg) args) ^ ")",
+                "(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLLVMLoc arg) args) ^ ")",
             (* assumed to terminate after call *)
             "ret i64 " ^ toLocalVar discard
         ]

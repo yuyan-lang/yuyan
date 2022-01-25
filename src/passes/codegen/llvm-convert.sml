@@ -11,6 +11,10 @@ fun ::: (x, y) = zipCons x y
 
 infix 4 :::
 
+fun llvmLocToValue (x : llvmlocation) : llvmvalue = case x of 
+    LLVMLocationLocal i => LLVMLocalVar i
+    | LLVMLocationGlobal i => LLVMGlobalVar i
+
 fun genLLVM 
     (ctx as (freeVAddr, freeVL) : int  (* the address of the tuple of free vars*)
         * int list (* the list of free vars that is contained in the address *) 
@@ -21,21 +25,21 @@ let val recur = genLLVM ctx
 
     (* transform access will transform the access to 
     the record value if the record value is itself bound *)
-    fun transformAccess (CPSValueVar v) (f : int -> llvmstatement list) : llvmstatement list = 
+    fun transformAccess (CPSValueVar v) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
     case v of 
-        CPSVarGlobal v => f v
+        CPSVarGlobal v => f (LLVMLocationGlobal v)
         | CPSVarLocal v => 
             (case ListSearchUtil.indexOf freeVL v of
                 SOME idx =>
                 let val newName = UID.next()
                     in 
-                        [LLVMArrayAccess(LLVMLocationLocal newName, freeVAddr, idx)]@(f newName)
+                        [LLVMArrayAccess(LLVMLocationLocal newName, (LLVMLocationLocal freeVAddr), idx)]@(f (LLVMLocationLocal newName))
                     end
-                | NONE => f v (* bound locally, just use the name *)
+                | NONE => f (LLVMLocationLocal v) (* bound locally, just use the name *)
             )
     val vaccess = transformAccess
 
-    fun vaccessL (cpsvallist : cpsvalue list)  (f : int list -> llvmstatement list) : llvmstatement list = 
+    fun vaccessL (cpsvallist : cpsvalue list)  (f : llvmlocation list -> llvmstatement list) : llvmstatement list = 
         let 
             fun go acc remaining = case remaining of [] => f acc
                         | (v :: vs) => vaccess v (fn v' => go (acc@[v']) vs)
@@ -66,7 +70,7 @@ let val recur = genLLVM ctx
             (* then values for free variables *)
                 vaccessL (map (fn x => CPSValueVar(CPSVarLocal x)) freeVarsInBody) (fn freeVarValues' => 
                 [LLVMStoreArray(LLVMArrayTypeFunctionClosure, funLoc, 
-                [LLVMFunctionName(compiledFunctionName, length args + 1)]@(map LLVMLocalVar freeVarValues'))]
+                [LLVMFunctionName(compiledFunctionName, length args + 1)]@(map llvmLocToValue freeVarValues'))]
                 )
             ) ::: recur kont
             end 
@@ -80,7 +84,7 @@ let val recur = genLLVM ctx
         vaccess fClosureAddr (fn realClosureAddr => 
             vaccessL argumentNames (fn realArgumentNames => 
                 [LLVMArrayAccess(LLVMLocationLocal functionReg, realClosureAddr, 0),
-                LLVMCall(functionReg, realClosureAddr::realArgumentNames)]
+                LLVMCall(LLVMLocationLocal functionReg, realClosureAddr::realArgumentNames)]
             )
         ) 
         )
@@ -89,12 +93,12 @@ in
 
         case cpscomp of
             CPSUnit((k, comp)) => ([], [LLVMStoreUnit (cpsVarToLLVMLoc k)]) ::: recur comp
-            | CPSTuple(l, (t, k)) => ([], vaccessL l (fn l' => [LLVMStoreArray(LLVMArrayTypeProd, (cpsVarToLLVMLoc t), map LLVMLocalVar l')])) ::: recur k
+            | CPSTuple(l, (t, k)) => ([], vaccessL l (fn l' => [LLVMStoreArray(LLVMArrayTypeProd, (cpsVarToLLVMLoc t), map llvmLocToValue l')])) ::: recur k
             | CPSProj(v, i, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess((cpsVarToLLVMLoc t),v',i)])) ::: recur k
             | CPSInj(label, index, value, (v, k)) => 
                 let val labelLoc = UID.next()
                 in ([LLVMStringConstant(labelLoc, label)],  (* TODO FIX BUG*)
-                vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,(cpsVarToLLVMLoc v),[LLVMIntConst index, LLVMStringName (labelLoc, label), LLVMLocalVar value'])])) ::: recur k
+                vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,(cpsVarToLLVMLoc v),[LLVMIntConst index, LLVMStringName (labelLoc, label), llvmLocToValue value'])])) ::: recur k
                 end
             | CPSCases(v, vkl) => 
                 let val indexLoc = UID.next()
@@ -108,7 +112,7 @@ in
                     @ [LLVMConditionalJump(indexLoc,recurComps)]
                     )
                 end
-            | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(LLVMArrayTypeFold, (cpsVarToLLVMLoc t),[LLVMLocalVar v'])])) ::: recur k
+            | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(LLVMArrayTypeFold, (cpsVarToLLVMLoc t),[llvmLocToValue v'])])) ::: recur k
             | CPSUnfold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess((cpsVarToLLVMLoc t),v',0)])) ::: recur k
             | CPSAbs((i,ak, c), SOME fvs, (t,k)) => 
                 compileFunctionClosure (cpsVarToLLVMLoc t) ([i, ak]) fvs c k
@@ -125,7 +129,7 @@ in
                 ([
                     LLVMFfiFunction(fname, length args)
                 ],
-                vaccessL args (fn args' => [LLVMFfiCCall((cpsVarToLLVMLoc t), fname, map LLVMLocalVar args')])) ::: recur k
+                vaccessL args (fn args' => [LLVMFfiCCall((cpsVarToLLVMLoc t), fname, map llvmLocToValue args')])) ::: recur k
             | CPSBuiltinValue(CPSBvString s, (t,k)) => 
             let val stringName = UID.next()
             in (
@@ -150,7 +154,7 @@ in
                 ]
             ) ::: recur k
             end
-            | CPSStore(dst, src) => ([], vaccess src (fn i => [LLVMStore(cpsVarToLLVMLoc dst, LLVMLocalVar i)]))
+            | CPSStore(dst, src) => ([], vaccess src (fn i => [LLVMStore(cpsVarToLLVMLoc dst, llvmLocToValue i)]))
             | CPSSequence(l) => foldr (op:::) ([], []) (map recur l)
             | _ => raise Fail "not impl llvmconv 155"
 end
