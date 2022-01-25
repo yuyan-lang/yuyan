@@ -37,7 +37,7 @@ exception CPSInternalError
         : cpscomputation =
     (
         let 
-        val _ = print ("cpsTransformSig on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n");
+        (* val _ = print ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
          val res = case e of
             CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
@@ -138,9 +138,9 @@ exception CPSInternalError
                     CPSFfiCCall (cFuncName, argvs, kcc cc)
                 ) args []
             | CLetIn(csig, e,t) => 
-             (#3 (cpsTransformSig ctx csig  (fn (newCtx, _) => 
+             ( (cpsTransformSig ctx csig  (fn (newCtx, _) => 
              let
-                val _ = DebugPrint.p ("CPS Let Partial Context:" ^ (PrettyPrint.show_cpscontext  newCtx) ^ "\n")
+                (* val _ = DebugPrint.p ("CPS Let Partial Context:" ^ (PrettyPrint.show_cpscontext  newCtx) ^ "\n") *)
             in
                 cpsTransformExpr newCtx e cc
             end
@@ -161,40 +161,36 @@ exception CPSInternalError
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
             raise CPSInternalError)
 
-    and cpsTransformDeclarationExpr (ctx : context)(e : CExpr)  (result : cpsvar) 
-    (cc :  cpscomputation): cpscomputation = 
-        cpsTransformExpr ctx e (fn resvar => 
-        CPSStore(result, CPSValueVar resvar, cc)
-        )
-
     and cpsTransformSig  (ctx : context) (s : CSignature) 
     (cc : context * cpsvar option  -> cpscomputation)
-     : context * cpsvar option *  cpscomputation  =
+     :  cpscomputation  =
 
-    let val globalVar = CPSVarGlobal (UID.next())
+    let 
     in
             (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
             ; *)
             case s of
-            [] => (ctx, NONE, cc (ctx, NONE))
+            [] => (cc (ctx, NONE))
             (* (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit)) *)
             (* optimize if tail of the block is an expression, it is the value of the expression *)
         | [CDirectExpr (e, tp)]  => 
-            (ctx, SOME globalVar, cpsTransformDeclarationExpr ctx e globalVar 
-                (cc (ctx, SOME globalVar)))
+            (cpsTransformExpr ctx e 
+                (fn resvar => cc (ctx, SOME resvar)))
              (* cpsTransformExpr ctx e (fn resvar => 
              cc (ctx, SOME resvar)) *)
         | CTypeMacro _ :: ss => (* ignore type macro during cps *)
             cpsTransformSig ctx ss cc
         | CTermDefinition(name, def, tp):: ss =>  
-        let 
-            val (finalCtx, finalRes, restOfTheComputation) = cpsTransformSig ((name, GlobalVar globalVar)::ctx) ss  cc
-            val thisComputation = cpsTransformDeclarationExpr ctx def globalVar restOfTheComputation
-            in (finalCtx, finalRes, thisComputation ) end
+            cpsTransformExpr ctx def 
+            (fn resvar =>
+            let val globalVar = CPSVarGlobal (UID.next())
+            in 
+            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig ((name, GlobalVar globalVar)::ctx) ss  cc)) 
+            end)
+
         | CDirectExpr (e, tp) :: ss => 
-            let val (finalCtx,finalRes,  restOfTheComputation) = cpsTransformSig ctx ss  cc
-            val thisComputation = cpsTransformDeclarationExpr ctx e globalVar restOfTheComputation
-            in (finalCtx,finalRes,  thisComputation ) end
+            cpsTransformExpr ctx e 
+            (fn resvar =>  (cpsTransformSig (ctx) ss  cc))
         | CImport _ :: ss => 
             cpsTransformSig (ctx) ss cc
     end
@@ -205,13 +201,21 @@ exception CPSInternalError
      (
          (* DebugPrint.p (PrettyPrint.show_typecheckingCSig s); *)
 
-    let val (context, finalResult, comps) = cpsTransformSig [] s (fn (ctx, resvar) => 
+    let val finalContext = ref []
+    val finalResult = ref NONE (* TODO: this is actually problematic, by case-3, the final return may have two values!, need 
+    other mechanisms! *)
+     val comp = cpsTransformSig [] s (fn (ctx, resvar) => 
+     let val _ = finalContext := ctx
+     val _ = finalResult := resvar
+     in
         case resvar of SOME resvar => CPSDone (CPSValueVar resvar)
         (* return unit if last expression is not a expr *)
                      | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSValueVar resvar)))
+    end
     )
-        val _ = DebugPrint.p ("CPS Final Context:" ^ (PrettyPrint.show_cpscontext  context) ^ "\n")
-    in (context, finalResult,  comps)
+         (* val _ = DebugPrint.p ("CPS Final Context:" ^ (PrettyPrint.show_cpscontext  context) ^ "\n") *)
+        val _ = DebugPrint.p ("CPS Final Computation:" ^ (PrettyPrint.show_cpscomputation comp) ^ "\n")
+    in (!finalContext, !finalResult,  comp)
     end
     (*  *)
      )
