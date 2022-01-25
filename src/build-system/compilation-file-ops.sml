@@ -96,7 +96,8 @@ open StaticErrorStructure
 
     fun constructCPSInfo (tckedAST : TypeCheckingAST.CSignature) (curFp : FileResourceURI.t) (curFDependencies : dependency list)
     (helperFuncs : cmhelperfuncs) :
-     (CPSAst.cpscomputation * CPSAst.cpscomputation * LLVMAst.llvmsignature )
+     ((CPSAst.context * CPSAst.cpsvar option * CPSAst.cpscomputation)
+                * CPSAst.cpscomputation * LLVMAst.llvmsignature )
       witherrsoption=
         (
             (* DebugPrint.p ("entering construct cps"); *)
@@ -106,10 +107,10 @@ open StaticErrorStructure
       mapM (fn d => #getTypeCheckedAST helperFuncs d) orderedDeps  >>= (fn csigs =>
         let
         val grandTypeCheckedAST = List.concat(csigs@[tckedAST])
-         val cpsAST = CPSPass.cpsTransformSigTopLevel grandTypeCheckedAST
+         val cpsAST  = CPSPass.cpsTransformSigTopLevel grandTypeCheckedAST
         (* val _ = DebugPrint.p "----------------- CPS Done -------------------- \n" *)
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST) *)
-        val closureAST = ClosureConvert.closureConvertTopLevel cpsAST
+        val closureAST = ClosureConvert.closureConvertTopLevel (#3 cpsAST)
         (* val _ = DebugPrint.p "----------------- ClosureConvert Done -------------------- \n" *)
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation closureAST) *)
         val (llvmsig) = LLVMConvert.genLLVMSignatureTopLevel closureAST

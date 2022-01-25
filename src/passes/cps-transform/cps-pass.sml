@@ -6,10 +6,6 @@ open CPSAst
 
 exception CPSInternalError
 
-    datatype cpscontextvalue = PlainVar of cpsvar
-                             | SelfVar of cpsvar (* selfvar represents a pending computation that needs to be applied to itself *)
-
-    type context = (StructureName.t * cpscontextvalue) list
 
     fun kcc (cc : cpsvar -> cpscomputation) : cpscontinuation = 
         let val v = CPSVarLocal (UID.next())
@@ -30,33 +26,11 @@ exception CPSInternalError
         case ctx of 
              (n1, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel cs l+1
              | _ => raise Fail "cpspass25"
-      fun klookupLabel3 ( ctx : (Label * EVar *'a ) list) (l : Label) : int = 
+      fun klookupLabel3 ( ctx : (Label * EVar * CExpr ) list) (l : Label) : int = 
         case ctx of 
              (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel3 cs l+1
              | _ => raise Fail "cpspass29"
 
-    fun cpsTransformSig  (ctx : context) (s : CSignature) 
-    (cc : context * cpsvar option (* possible computation result *) -> cpscomputation) : cpscomputation =
-
-            (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
-            ; *)
-            case s of
-            [] => cc (ctx, NONE)
-            (* (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit)) *)
-            (* optimize if tail of the block is an expression, it is the value of the expression *)
-        | [CDirectExpr (e, tp)]  => 
-             cpsTransformExpr ctx e (fn resvar => 
-             cc (ctx, SOME resvar))
-        | CTypeMacro _ :: ss => (* ignore type macro during cps *)
-            cpsTransformSig ctx ss cc
-        | CTermDefinition(name, def, tp):: ss =>  
-             cpsTransformExpr ctx def (fn resvar => 
-            cpsTransformSig ((name, PlainVar resvar)::ctx) ss cc)
-        | CDirectExpr (e, tp) :: ss => 
-             cpsTransformExpr ctx e (fn resvar => 
-            cpsTransformSig (ctx) ss cc)
-        | CImport _ :: ss => 
-            cpsTransformSig (ctx) ss cc
 
     and cpsTransformExpr   
         (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
@@ -67,7 +41,7 @@ exception CPSInternalError
          val res = case e of
             CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
-                (* | GlobalVar v => cc v *)
+                | GlobalVar v => cc v
                 | SelfVar v => CPSAbsSingle(kcc' (fn arg => 
                         cc (CPSVarLocal arg)
                     ), NONE, kcc (fn kont => 
@@ -164,8 +138,8 @@ exception CPSInternalError
                     CPSFfiCCall (cFuncName, argvs, kcc cc)
                 ) args []
             | CLetIn(csig, e,t) => 
-                cpsTransformSig ctx csig (fn (newCtx, _) (* ignore the final value of the decls*) => 
-                    cpsTransformExpr newCtx e cc)
+            let val (newCtx, _, cl) = cpsTransformSig ctx csig 
+            in CPSSequence (cl@[cpsTransformExpr newCtx e cc]) end
             | _ => raise Fail "cpsp116"
 
         (* val _ = print ("cpsTransformSig result is " ^ PrettyPrint.show_pkcomputation res ^ "cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ 
@@ -181,28 +155,58 @@ exception CPSInternalError
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
             raise CPSInternalError)
 
+    and cpsTransformDeclarationExpr (ctx : context)(e : CExpr)  (result : cpsvar) : cpscomputation = 
+        cpsTransformExpr ctx e (fn resvar => CPSStore(result, CPSValueVar resvar))
+
+    and cpsTransformSig  (ctx : context) (s : CSignature) 
+    (* (cc : context * cpsvar option possible computation result -> cpscomputation) *)
+     : context * cpsvar option *  cpscomputation list =
+
+    let val globalVar = CPSVarGlobal (UID.next())
+    in
+            (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
+            ; *)
+            case s of
+            [] => (ctx, NONE, [])
+            (* (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit)) *)
+            (* optimize if tail of the block is an expression, it is the value of the expression *)
+        | [CDirectExpr (e, tp)]  => 
+            (ctx, SOME globalVar, [cpsTransformDeclarationExpr ctx e globalVar])
+             (* cpsTransformExpr ctx e (fn resvar => 
+             cc (ctx, SOME resvar)) *)
+        | CTypeMacro _ :: ss => (* ignore type macro during cps *)
+            cpsTransformSig ctx ss 
+        | CTermDefinition(name, def, tp):: ss =>  
+        let val thisComputation = cpsTransformDeclarationExpr ctx def globalVar
+            val (finalCtx, finalRes, restOfTheComputation) = cpsTransformSig ((name, GlobalVar globalVar)::ctx) ss 
+            in (finalCtx, finalRes, thisComputation :: restOfTheComputation) end
+        | CDirectExpr (e, tp) :: ss => 
+            let val thisComputation = cpsTransformDeclarationExpr ctx e globalVar
+            val (finalCtx,finalRes,  restOfTheComputation) = cpsTransformSig ctx ss 
+            in (finalCtx,finalRes,  thisComputation :: restOfTheComputation) end
+        | CImport _ :: ss => 
+            cpsTransformSig (ctx) ss 
+    end
+
 
  fun cpsTransformSigTopLevel  (s : CSignature) 
-     : cpscomputation =
+     : context * cpsvar option * cpscomputation =
      (
          (* DebugPrint.p (PrettyPrint.show_typecheckingCSig s); *)
 
-    cpsTransformSig [] s (fn (ctx, resvar) => 
+    let val (context, finalResult, comps) = cpsTransformSig [] s
+    in (context, finalResult, CPSSequence comps)
+    end
+    (* (fn (ctx, resvar) => 
         case resvar of SOME resvar => CPSDone (CPSValueVar resvar)
         (* return unit if last expression is not a expr *)
                      | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSValueVar resvar)))
-    )
+    ) *)
      )
 
 
 
 
-(* this assumes the signature has been fully checked, so no more checking !*)
-(* THIS IS VERY IMPORTANT, as this file just copies from type checking but disregards all 
-untyped cases *)
-(* the lazy comes from the fact that we used lambdas during kcomputation construction *)
-(* we can force evaluation by persisting it back and forth *)
-    
 
 
 end

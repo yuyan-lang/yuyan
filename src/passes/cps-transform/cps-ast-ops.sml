@@ -52,6 +52,8 @@ in
         | CPSBuiltinValue(_, k) => fk k
         | CPSDone v => fv v
         | CPSFfiCCall (n, l, k) => fromList (List.concat (map fvi l)) *** fk k
+        | CPSStore(dst, src )=> fromList (fvarl dst) *** fv src
+        | CPSSequence l =>  foldr (op***) (fromList []) (map freeVars l)
             
 end
 end

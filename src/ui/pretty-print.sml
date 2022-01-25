@@ -390,6 +390,8 @@ case c of
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
             | CPSFfiCCall(fname, args, k) => "(ccall \"" ^ UTF8String.toString fname ^
             "\" args [" ^ String.concatWith ", " (map sv args) ^ "])" ^ sk k
+            | CPSSequence l => "[" ^ String.concatWith ", " (map show_cpscomputation l) ^ "]"
+            | CPSStore (dst, src) => "store " ^ show_cpsvar dst ^  " = " ^ sv src ^ "]"
 
         
 
@@ -421,7 +423,7 @@ in case file of
     ^ "\ndependencyInfo: " ^ show_static_error (#dependencyInfo f)(fn (sl) => "[Dependencies]")
     ^ "\ntypeCheckedInfo: " ^ show_static_error (#typeCheckedInfo f)(fn (csig) => show_typecheckingCSig csig)
     ^ "\ncpsInfo: " ^ show_static_error (#cpsInfo f)(fn (cps, cloconv, llvm) => 
-      show_cpscomputation cps ^ ";\n\t\t ClosureConvert = "
+      show_cpscomputation (#3 cps) ^ ";\n\t\t ClosureConvert = "
       ^ show_cpscomputation cloconv ^ "\n\t\t LLVM = ?"
       )
     ^ "\nllvmInfo: " ^ show_static_error (#llvmInfo f)(fn ({llfilepath=s}) =>  s)  (* the actual generated ll file *)

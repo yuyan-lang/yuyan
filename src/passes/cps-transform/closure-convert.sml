@@ -71,6 +71,13 @@ in
          let val (kfree, k') = cck k
             in (fromList (List.concat (map fvi vs)) *** kfree, CPSFfiCCall(name, vs, k'))
              end
+        | CPSSequence l => 
+         let val fs = map closureConvert l
+            in (((foldr (op***) (fromList []) (map (fn x => #1 x) fs)),
+                CPSSequence(map (fn x => #2 x) fs)))
+            end
+        | CPSStore (dst, src) =>
+            (fromList (cpsvarToL dst) *** fv src, CPSStore(dst,src))
         | CPSAbsSingle(_, SOME _, _) => raise Fail "cvt69"
         | CPSAbs(_, SOME _, _) => raise Fail "cvt70"
             

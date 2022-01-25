@@ -150,7 +150,9 @@ in
                 ]
             ) ::: recur k
             end
-            | _ => raise Fail "not implemented yet"
+            | CPSStore(dst, src) => ([], vaccess src (fn i => [LLVMStore(cpsVarToLLVMLoc dst, LLVMLocalVar i)]))
+            | CPSSequence(l) => foldr (op:::) ([], []) (map recur l)
+            | _ => raise Fail "not impl llvmconv 155"
 end
 
 fun removeFfiDuplicate(s : llvmdeclaration list) : llvmdeclaration list = 

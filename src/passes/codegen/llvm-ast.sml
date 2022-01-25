@@ -23,6 +23,7 @@ datatype llvmarraytype =
 
 datatype llvmstatement = 
     LLVMStoreUnit of llvmlocation
+    | LLVMStore of llvmlocation * llvmvalue 
     | LLVMStoreArray of llvmarraytype * llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)

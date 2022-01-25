@@ -294,7 +294,16 @@ fun genLLVMStatement (s : llvmstatement) : string list =
           "ret i64 " ^ toLocalVar tempName
         ]
         end
-            
+        | LLVMStore(dst, src) => let
+        in
+        convertValueToIntForStorage src (fn name => 
+        [
+            (* toLocalVar tempName " = ptrtoint" bitcast"store i64 " ^ toLLVMValue src ^ ", i64* " ^ toLLVMLoc dst *)
+            (* , *)
+            "store i64 " ^ name ^ ", i64* " ^ toLLVMLoc dst
+        ]
+        )
+        end
 
 
 fun genLLVMDelcaration (d : llvmdeclaration ) : string list =

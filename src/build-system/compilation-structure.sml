@@ -25,7 +25,8 @@ struct
             (* , dependencyInfo: StructureName.t list StrDict.dict witherrsoption list of file paths that this file depends on, for dependency resolution *)
             , dependencyInfo: dependency list witherrsoption 
             , typeCheckedInfo: (TypeCheckingAST.CSignature ) witherrsoption  (* type checked *)
-            , cpsInfo: (CPSAst.cpscomputation * CPSAst.cpscomputation * 
+            , cpsInfo: ((CPSAst.context * CPSAst.cpsvar option
+                    * CPSAst.cpscomputation) * CPSAst.cpscomputation * 
                 LLVMAst.llvmsignature) witherrsoption  (* cps transformed, closure converted, and codegened *)
             , llvmInfo: {llfilepath :string} witherrsoption  (* the actual generated ll file *)
             }
