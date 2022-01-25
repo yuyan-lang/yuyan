@@ -37,7 +37,7 @@ exception CPSInternalError
         : cpscomputation =
     (
         let 
-        (* val _ = print ("cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ " in context " ^ PrettyPrint.show_typecheckingpassctx (eraseCtx ctx) ^ "\n"); *)
+        val _ = print ("cpsTransformSig on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n");
          val res = case e of
             CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
