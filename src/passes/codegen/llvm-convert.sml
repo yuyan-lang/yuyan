@@ -155,7 +155,7 @@ in
             ) ::: recur k
             end
             | CPSStore(dst, src) => ([], vaccess src (fn i => [LLVMStore(cpsVarToLLVMLoc dst, llvmLocToValue i)]))
-            | CPSSequence(l) => foldr (op:::) ([], []) (map recur l)
+            | CPSSequence(l) => ([], [LLVMComment "sequence start"]) ::: (foldr (op:::) ([], [LLVMComment "sequence end"]) (map recur l))
             | _ => raise Fail "not impl llvmconv 155"
 end
 

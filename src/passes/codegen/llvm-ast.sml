@@ -41,6 +41,7 @@ TODO: Maybe we want to make that syntactically explicit *)
                 * UTF8String.t (* function name *)
             * llvmvalue list (* function arguments *)
     | LLVMReturn of llvmlocation (* Variable name that stores the result *)
+    | LLVMComment of string
 
 datatype llvmdeclaration  = LLVMFunction of int (* name of the function *) 
                                           * int list (* list of arguments *)

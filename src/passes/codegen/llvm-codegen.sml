@@ -304,9 +304,14 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             (* toLocalVar tempName " = ptrtoint" bitcast"store i64 " ^ toLLVMValue src ^ ", i64* " ^ toLLVMLoc dst *)
             (* , *)
             "store i64 " ^ name ^ ", i64* " ^ toLLVMLoc dst
+            (* "ret i64 0" *)
         ]
         )
         end
+        | LLVMComment s => 
+        [
+            ";" ^ s
+        ]
 
 
 fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
