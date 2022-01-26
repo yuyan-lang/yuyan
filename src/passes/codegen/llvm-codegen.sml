@@ -340,7 +340,7 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
     | LLVMRealConstant(name, i) => 
         let 
         in 
-        [toRealName name ^ " = constant double "  ^ Real.toString i]
+        [toRealName name ^ " = constant double "  ^ Real.fmt (StringCvt.FIX (SOME 60)) i]
         end
     | LLVMStringConstant(sname, s) => 
         let 

@@ -15,3 +15,17 @@ uint64_t c_runtime_internal_error(){
     to be written incorrectly. Type Checking perhaps is not sound.\n");
     return -1;
 }
+
+uint64_t throwException(char* errMsg){
+    
+    fprintf(stderr, "%s", errMsg);
+    exit(-1);
+    return -1;
+}
+
+uint64_t yyThrowException(char* errMsg){
+    
+    fprintf(stderr, "%s", errMsg);
+    exit(-1);
+    return -1;
+}

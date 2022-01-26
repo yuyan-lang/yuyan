@@ -48,7 +48,8 @@ struct
                     ),
                     usekmachine = String.isSubstring "k" cmd, 
                     exitOnFailure = not (String.isSubstring "noExitOnFail" cmd),
-                    compileOnly = String.isSubstring "compileOnly" cmd
+                    compileOnly = String.isSubstring "compileOnly" cmd,
+                    optimize = String.isSubstring "optimizeO3" cmd
                 } fname (
                     if String.isSubstring "profileLSPTokens"  cmd
                     then SOME (ReplDebug.profileLSPTokens)

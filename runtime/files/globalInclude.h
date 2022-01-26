@@ -18,7 +18,8 @@ yy_ptr unit_to_addr();
 yy_ptr string_to_addr(const char * str);
 
 uint64_t c_runtime_internal_error();
-char * addr_to_string(yy_ptr arg);
+uint64_t throwException(char *errMsg);
+char *addr_to_string(yy_ptr arg);
 
 uint64_t iso_list_get_length(const yy_ptr list) ;
 yy_ptr* iso_list_get_elements(const yy_ptr list);

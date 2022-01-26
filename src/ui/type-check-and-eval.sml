@@ -22,7 +22,7 @@ open StaticErrorStructure
                             SOME f =>  (Time.now(), (f (CompilationStructure.CompilationFile cfile) cm; OS.Process.success))
                             | NONE => 
                             let
-                                val exec = CompilationManager.makeExecutable absFp cm
+                                val exec = CompilationManager.makeExecutable absFp cm (#optimize options)
                                 val executeTime = Time.now()
                                 val exitSt = case exec of 
                                     Success _ => (

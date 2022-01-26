@@ -15,7 +15,7 @@ struct
     fun indentN(n : int) = List.tabulate(n, (fn _ => Indent))
 
     fun htmlHeader () : string = 
-    "<html><head><meta charset=\"utf8\"></head><body>"
+    "<html><head><meta charset=\"utf8\"></head><body style=\"background-color:OldLace;\">"
 
     fun htmlFooter () : string = 
     "</body></html>"
@@ -24,7 +24,7 @@ struct
         Black => "Black"
         | Red => "FireBrick"
         | Blue => "DarkBlue"
-        | Green => "DarkGreen"
+        | Green => "Teal"
 
     fun getHTMLElement (f : textFormatting) = case f of
         Regular => "span"

@@ -46,11 +46,11 @@ struct
     in 
     case opStrings of 
         [op1, op2] => [ 
-        RichTextSegment(Red  ,Regular,op1), 
+        RichTextSegment(Green  ,Regular,op1), 
         RichTextSegment(Black,Regular,(StructureName.toString (getLastName sname))), 
-        RichTextSegment(Red,Regular,op2), 
+        RichTextSegment(Green ,Regular,op2), 
         RichTextSegment(Black,Regular,((showType t))), 
-        RichTextSegment(Red  ,Regular,([SpecialChars.period])),
+        RichTextSegment(Green  ,Regular,([SpecialChars.period])),
         Newline
         ]
         | _ => raise Fail "dg33"

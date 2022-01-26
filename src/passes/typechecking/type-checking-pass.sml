@@ -162,26 +162,29 @@ infix 5 <?>
             (* raise TypeCheckingFailure ("Type unify failed") *)
     
     structure Errors = struct 
-        fun attemptToProjectNonProd e ctx = genSingletonError (reconstructFromRExpr e) ("试图从非乘积类型中投射(attempt to project out of product type)") (showctx ctx)
-        fun attemptToCaseNonSum e ctx = genSingletonError (reconstructFromRExpr e) ("试图对非总和类型进行分析(attempt to case on non-sum types)") (showctx ctx)
-        fun attemptToApplyNonFunction e ctx = genSingletonError (reconstructFromRExpr e) ("试图使用非函数(attempt to apply on nonfunction types)") (showctx ctx)
-        fun attemptToApplyNonUniversal e ctx = genSingletonError (reconstructFromRExpr e) ("试图使用非通用类型(attempt to apply on nonuniversal types)") (showctx ctx)
-        fun openTypeCannotExitScope e ctx = genSingletonError (reconstructFromRExpr e) ("‘打开’的类型不能退出作用域(open's type cannot exit scope)") (showctx ctx)
-        fun attemptToOpenNonExistentialTypes e ctx =  genSingletonError (reconstructFromRExpr e) "试图打开非存在类型(attempt to open non existential types)" (showctx ctx)
-        fun attemptToUnfoldNonRecursiveTypes e ctx =  genSingletonError (reconstructFromRExpr e) "试图展开非递归类型(attempt to unfold non recursive type)" (showctx ctx)
-        fun expressionDoesNotSupportTypeSynthesis e ctx =  genSingletonError (reconstructFromRExpr e) "表达式不支持类型合成，请指定类型" (showctx ctx)
-        fun prodTupleLengthMismatch e ctx =  genSingletonError (reconstructFromRExpr e) "数组长度与类型不匹配(prod tuple length mismatch)" (showctx ctx)
-        fun expectedProdType e ctx =  genSingletonError (reconstructFromRExpr e) "期待的类型是乘积类型(expected prod)" (showctx ctx)
-        fun expectedSumType e ctx =  genSingletonError (reconstructFromRExpr e) "期待总和类型(expected sum types)" (showctx ctx)
-        fun expectedFunctionType e ctx =  genSingletonError (reconstructFromRExpr e) "期待函数类型(expected sum types)" (showctx ctx)
-        fun expectedExistentialType e ctx =  genSingletonError (reconstructFromRExpr e) "期待通用类型(expected function types)" (showctx ctx)
-        fun expectedUniversalType e ctx =  genSingletonError (reconstructFromRExpr e) "期待存在类型(expected universal types)" (showctx ctx)
-        fun expectedRecursiveType e ctx =  genSingletonError (reconstructFromRExpr e) "期待递归类型(expected existential types)" (showctx ctx)
-        fun firstArgumentOfCCallMustBeStringLiteral e ctx =  genSingletonError (reconstructFromRExpr e) "C调用的第一个参数必须是字符串(first argument of ccall must be a string literal)" (showctx ctx)
-        fun ccallArgumentsMustBeImmediate e ctx =  genSingletonError (reconstructFromRExpr e) "C调用的参数必须是直接值(arguments of ccall must be immediate)" (showctx ctx)
-        fun typeDeclContainsFreeVariables s ctx =  genSingletonError s "类型声明不可以包含未定义的类型(type decl cannot contain free variables)" (showctx ctx)
-        fun termTypeDeclContainsFreeVariables s ctx =  genSingletonError s "值类型声明不可以包含未定义的类型(type decl cannot contain free variables)" (showctx ctx)
-        fun importError s ctx = genSingletonError s "导入模块时出错" (showctx ctx)
+        fun typeMismatch e synthesized checked= genSingletonError (reconstructFromRExpr e)
+                ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "类型不匹配(type mismatch) \n 推断的类型(synthesized type) : " ^ PrettyPrint.show_typecheckingType synthesized
+                ^ " \n 检查的类型(checked type) : " ^ PrettyPrint.show_typecheckingType checked) NONE
+        fun attemptToProjectNonProd e ctx = genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "试图从非乘积类型中投射(attempt to project out of product type)") (showctx ctx)
+        fun attemptToCaseNonSum e ctx = genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "试图对非总和类型进行分析(attempt to case on non-sum types)") (showctx ctx)
+        fun attemptToApplyNonFunction e ctx = genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "试图使用非函数(attempt to apply on nonfunction types)") (showctx ctx)
+        fun attemptToApplyNonUniversal e ctx = genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "试图使用非通用类型(attempt to apply on nonuniversal types)") (showctx ctx)
+        fun openTypeCannotExitScope e ctx = genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "‘打开’的类型不能退出作用域(open's type cannot exit scope)") (showctx ctx)
+        fun attemptToOpenNonExistentialTypes e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "试图打开非存在类型(attempt to open non existential types)") (showctx ctx)
+        fun attemptToUnfoldNonRecursiveTypes e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "试图展开非递归类型(attempt to unfold non recursive type)") (showctx ctx)
+        fun expressionDoesNotSupportTypeSynthesis e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "表达式不支持类型合成，请指定类型") (showctx ctx)
+        fun prodTupleLengthMismatch e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "数组长度与类型不匹配(prod tuple length mismatch)") (showctx ctx)
+        fun expectedProdType e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "期待的类型是乘积类型(expected prod)") (showctx ctx)
+        fun expectedSumType e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "期待总和类型(expected sum types)") (showctx ctx)
+        fun expectedFunctionType e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "期待函数类型(expected sum types)") (showctx ctx)
+        fun expectedExistentialType e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "期待通用类型(expected function types)") (showctx ctx)
+        fun expectedUniversalType e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "期待存在类型(expected universal types)") (showctx ctx)
+        fun expectedRecursiveType e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "期待递归类型(expected existential types)") (showctx ctx)
+        fun firstArgumentOfCCallMustBeStringLiteral e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "C调用的第一个参数必须是字符串(first argument of ccall must be a string literal)") (showctx ctx)
+        fun ccallArgumentsMustBeImmediate e ctx =  genSingletonError (reconstructFromRExpr e) ("`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" ^ "C调用的参数必须是直接值(arguments of ccall must be immediate)") (showctx ctx)
+        fun typeDeclContainsFreeVariables s ctx =  genSingletonError s ("类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctx ctx)
+        fun termTypeDeclContainsFreeVariables s ctx =  genSingletonError s ("值类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctx ctx)
+        fun importError s ctx = genSingletonError s ("导入模块时出错") (showctx ctx)
     end
 
 
@@ -303,9 +306,7 @@ infix 5 <?>
             and assertTypeEquiv (expr: RExpr) (synthesized : Type) (checked : Type) : unit witherrsoption =
                 if typeEquiv [] synthesized checked 
                 then Success() 
-                else genSingletonError (reconstructFromRExpr expr)
-                ("类型不匹配(type mismatch) \n 推断的类型(synthesized type) : " ^ PrettyPrint.show_typecheckingType synthesized
-                ^ " \n 检查的类型(checked type) : " ^ PrettyPrint.show_typecheckingType checked) NONE
+                else Errors.typeMismatch expr synthesized checked
             and checkType (ctx : context) (e : RExpr) (tt: Type) (* tt target type *) : CExpr witherrsoption =
                 (let 
                     val _ = if DEBUG then  print(  "checking the expr " ^ PrettyPrint.show_typecheckingRExpr e ^ 
@@ -447,7 +448,8 @@ infix 5 <?>
                                                     | _ => Errors.ccallArgumentsMustBeImmediate arg ctx
                                                     (* raise TypeCheckingFailure "ccall arguments must be immediate values" *)
                                                     ) l)) >>= elaborateArguments
-                                                | _ => raise Fail "tcp439"
+                                                | RUnitExpr(soi) => elaborateArguments []
+                                                | e => raise Fail ("tcp439 : " ^ PrettyPrint.show_typecheckingRExpr e)
                                             )
                                 end
                             | _ => Errors.firstArgumentOfCCallMustBeStringLiteral e1 ctx
