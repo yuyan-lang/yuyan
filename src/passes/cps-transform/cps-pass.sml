@@ -218,7 +218,7 @@ exception CPSInternalError
     end
     )
          (* val _ = DebugPrint.p ("CPS Final Context:" ^ (PrettyPrint.show_cpscontext  context) ^ "\n") *)
-        val _ = DebugPrint.p ("CPS Final Computation:" ^ (PrettyPrint.show_cpscomputation comp) ^ "\n")
+        (* val _ = DebugPrint.p ("CPS Final Computation:" ^ (PrettyPrint.show_cpscomputation comp) ^ "\n") *)
     in (!finalContext, !finalResult,  comp)
     end
     (*  *)

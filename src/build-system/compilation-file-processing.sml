@@ -6,8 +6,8 @@ struct
 
 open CompilationFileOps
 
-(* val DEBUG = true *)
-val DEBUG = false
+val DEBUG = true
+(* val DEBUG = false *)
 
     fun levelToInt (upToLevel : uptolevel) : int = 
     case upToLevel of
@@ -47,8 +47,10 @@ val DEBUG = false
                         | NotAvailable => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true)
                         | DErrors l => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true)
             )
-                val _ = if DEBUG then debugPrint 
-                ("cfp: Updated Content success: " ^ Bool.toString (StaticErrorStructure.isSuccess newContent)^ "\n") else ()
+                val _ = if DEBUG andalso updatedContent then debugPrint 
+                ("cfp: Updated Content success: " ^ Bool.toString (StaticErrorStructure.isSuccess newContent)
+                ^ " updated: " ^ Bool.toString updatedContent
+                ^ "\n") else ()
             in 
                 if levelInt <= (levelToInt UpToLevelContent) 
                         orelse StaticErrorStructure.isNotSuccess newContent
@@ -77,6 +79,9 @@ val DEBUG = false
                             (#getTopLevelStructureName helperFuncs (FileResourceURI.make fp))
                             (#getPreprocessingAST helperFuncs)
                         , true)
+                    val _ = if DEBUG andalso updatedPreprocessingInfo then debugPrint 
+                    ("cfp: Updated Preprocessing success: " ^ Bool.toString (StaticErrorStructure.isSuccess newPreprocessingInfo)
+                    ^ " updated: " ^ Bool.toString updatedPreprocessingInfo ^ "\n") else ()
                 in
                     if levelInt <= (levelToInt UpToLevelPreprocessingInfo)
                         orelse StaticErrorStructure.isNotSuccess newPreprocessingInfo
@@ -100,8 +105,10 @@ val DEBUG = false
                             then ( typecheckingast, false)
                             else (ExpressionConstructionPass.constructTypeCheckingASTTopLevel 
                             (StaticErrorStructure.valOf newPreprocessingInfo), true)
-                        val _ = if DEBUG then debugPrint 
-                        ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ "\n") else ()
+                        val _ = if DEBUG andalso updatedTCkingInfo then debugPrint 
+                        ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ 
+                        " updated: " ^ Bool.toString updatedTCkingInfo ^
+                        "\n") else ()
                     in
                         if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)
                             orelse StaticErrorStructure.isNotSuccess newTypeCheckingInfo
@@ -127,8 +134,10 @@ val DEBUG = false
                                         (#getTopLevelStructureName helperFuncs (FileResourceURI.make fp))
                                         (#getTypeCheckedAST helperFuncs)
                                         ( (StaticErrorStructure.valOf newTypeCheckingInfo)), true)
-                            val _ = if DEBUG then debugPrint ("Computed TypeChecked success : " ^ 
-                                    Bool.toString (StaticErrorStructure.isSuccess newTypeCheckedInfo) ^ "\n") else ()
+                            val _ = if DEBUG andalso updatedTypeCheckedInfo then debugPrint ("Computed TypeChecked success : " ^ 
+                                    Bool.toString (StaticErrorStructure.isSuccess newTypeCheckedInfo) 
+                                    ^ " updated: " ^ Bool.toString updatedTypeCheckedInfo 
+                                    ^ "\n") else ()
                         in 
                             if levelInt <= (levelToInt UpToLevelTypeCheckedInfo)
                                     orelse StaticErrorStructure.isNotSuccess newTypeCheckedInfo
@@ -152,8 +161,10 @@ val DEBUG = false
                                     then ( dependencyInfo, false)
                                     else ((#findFileDependenciesTopLevel helperFuncs) ( 
                                     (StaticErrorStructure.valOf newTypeCheckedInfo)) , true)
-                                val _ = if DEBUG then debugPrint ("Computed Dependency success : " ^ 
-                                    Bool.toString (StaticErrorStructure.isSuccess newDependencyInfo) ^ "\n")else ()
+                                val _ = if DEBUG andalso updatedDependencyInfo then debugPrint ("Computed Dependency success : " ^ 
+                                    Bool.toString (StaticErrorStructure.isSuccess newDependencyInfo) ^
+                                    " updated: " ^ Bool.toString updatedDependencyInfo ^
+                                     "\n")else ()
                             in
                                 if levelInt <= (levelToInt UpToLevelDependencyInfo)
                                     orelse StaticErrorStructure.isNotSuccess newDependencyInfo
@@ -179,8 +190,10 @@ val DEBUG = false
                                     (FileResourceURI.make fp)
                                     (StaticErrorStructure.valOf newDependencyInfo)  
                                      helperFuncs, true)
-                                    val _ = if DEBUG then debugPrint ("Computed CPSInfo success : " ^ 
-                                    Bool.toString (StaticErrorStructure.isSuccess newCPSInfo) ^ "\n") else ()
+                                    val _ = if DEBUG andalso updatedCPSInfo then debugPrint ("Computed CPSInfo success : " ^ 
+                                    Bool.toString (StaticErrorStructure.isSuccess newCPSInfo) 
+                                    ^ " updated: " ^ Bool.toString updatedCPSInfo 
+                                    ^ "\n") else ()
                                 in 
                                     if levelInt <= (levelToInt UpToLevelCPSInfo)
                                         orelse StaticErrorStructure.isNotSuccess newCPSInfo
@@ -203,8 +216,10 @@ val DEBUG = false
                                         if StaticErrorStructure.isSuccess llvmInfo andalso not updatedCPSInfo
                                         then ( llvmInfo, false)
                                         else (constructLLVMInfo (#3 (StaticErrorStructure.valOf newCPSInfo)) (#pwd cm), true)
-                                        val _ = if DEBUG then debugPrint ("Computed LLVMInfo succes : " ^
-                                    Bool.toString (StaticErrorStructure.isSuccess newLLVMInfo) ^ "\n") else ()
+                                        val _ = if DEBUG andalso updatedLLVMInfo then debugPrint ("Computed LLVMInfo succes : " ^
+                                    Bool.toString (StaticErrorStructure.isSuccess newLLVMInfo) 
+                                    ^ " updated: " ^ Bool.toString updatedLLVMInfo
+                                    ^ "\n") else ()
                                     in 
                                         if levelInt <= (levelToInt UpToLevelLLVMInfo)
                                             orelse StaticErrorStructure.isNotSuccess newLLVMInfo
