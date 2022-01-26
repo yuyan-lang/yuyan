@@ -1,0 +1,35 @@
+
+~/D/C/c/C/r/h/yuyan (develop|✚8…) [SIGINT]$ time python3 performance-investigation/matrix-multiply/matrix-multiply.py
+Elapsed time in seconds 2880.976847
+
+________________________________________________________
+Executed in   48.05 mins    fish           external
+   usr time   44.08 mins  151.00 micros   44.08 mins
+   sys time    0.30 mins  739.00 micros    0.30 mins
+
+
+~/D/C/c/C/r/h/y/p/matrix-multiply (develop|✚15…) $ time java MatrixMultiplication
+Elapsed time in seconds: 113.462226907
+
+________________________________________________________
+Executed in  113.87 secs    fish           external
+   usr time  105.00 secs  148.00 micros  105.00 secs
+   sys time    0.85 secs  628.00 micros    0.85 secs
+
+~/D/C/c/C/r/h/y/p/matrix-multiply (develop|✚15…) $ time ./matrix_c_opt_O3 
+Elapsed time in seconds: 56.372766 
+
+________________________________________________________
+Executed in   56.63 secs    fish           external
+   usr time   53.19 secs    0.15 millis   53.19 secs
+   sys time    0.23 secs    1.40 millis    0.23 secs
+
+
+~/D/C/c/C/r/h/y/p/matrix-multiply (develop|✚15…) $ time ./matrix_c_no_opt 
+Elapsed time in seconds: 99.877954 
+
+________________________________________________________
+Executed in  100.08 secs    fish           external
+   usr time   91.19 secs  170.00 micros   91.19 secs
+   sys time    0.94 secs  722.00 micros    0.94 secs
+
