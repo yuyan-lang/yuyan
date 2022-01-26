@@ -138,7 +138,7 @@ exception CPSInternalError
                     CPSFfiCCall (cFuncName, argvs, kcc cc)
                 ) args []
             | CLetIn(csig, e,t) => 
-             ( (cpsTransformSig ctx csig  (fn (newCtx, _) => 
+             ( (cpsTransformSig ctx csig false  (fn (newCtx, _) => 
              let
                 (* val _ = DebugPrint.p ("CPS Let Partial Context:" ^ (PrettyPrint.show_cpscontext  newCtx) ^ "\n") *)
             in
@@ -161,7 +161,7 @@ exception CPSInternalError
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
             raise CPSInternalError)
 
-    and cpsTransformSig  (ctx : context) (s : CSignature) 
+    and cpsTransformSig  (ctx : context) (s : CSignature) (useGlobalVar:bool)
     (cc : context * cpsvar option  -> cpscomputation)
      :  cpscomputation  =
 
@@ -179,20 +179,24 @@ exception CPSInternalError
              (* cpsTransformExpr ctx e (fn resvar => 
              cc (ctx, SOME resvar)) *)
         | CTypeMacro _ :: ss => (* ignore type macro during cps *)
-            cpsTransformSig ctx ss cc
+            cpsTransformSig ctx ss useGlobalVar cc
         | CTermDefinition(name, def, tp):: ss =>  
             cpsTransformExpr ctx def 
             (fn resvar =>
-            let val globalVar = CPSVarGlobal (UID.next())
+            if useGlobalVar
+            then
+            (let val globalVar = CPSVarGlobal (UID.next())
             in 
-            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig ((name, GlobalVar globalVar)::ctx) ss  cc)) 
+            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig ((name, GlobalVar globalVar)::ctx) ss useGlobalVar cc))
             end)
+            else (cpsTransformSig ((name, PlainVar resvar)::ctx) ss useGlobalVar cc)
+            )
 
         | CDirectExpr (e, tp) :: ss => 
             cpsTransformExpr ctx e 
-            (fn resvar =>  (cpsTransformSig (ctx) ss  cc))
+            (fn resvar =>  (cpsTransformSig (ctx) ss useGlobalVar cc))
         | CImport _ :: ss => 
-            cpsTransformSig (ctx) ss cc
+            cpsTransformSig (ctx) ss useGlobalVar cc
     end
 
 
@@ -204,7 +208,7 @@ exception CPSInternalError
     let val finalContext = ref []
     val finalResult = ref NONE (* TODO: this is actually problematic, by case-3, the final return may have two values!, need 
     other mechanisms! *)
-     val comp = cpsTransformSig [] s (fn (ctx, resvar) => 
+     val comp = cpsTransformSig [] s true (fn (ctx, resvar) => 
      let val _ = finalContext := ctx
      val _ = finalResult := resvar
      in
