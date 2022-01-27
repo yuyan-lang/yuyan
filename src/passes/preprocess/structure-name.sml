@@ -3,12 +3,18 @@ struct
 type structureName = UTF8String.t list
 type t = structureName
 val separatorChar = [UTF8Char.fromString "之" NONE]
-(* val separatorChar = UTF8String.fromString "->" *)
+val separatorCharDebug = UTF8String.fromString "->"
     fun toString x = case x of
         [x] => x
         | (x :: xs) => x@separatorChar@toString xs
         | [] => UTF8String.fromString "【错误：空结构名】"
 
+    fun toStringDebug x = case x of
+        [x] => x
+        | (x :: xs) => x@separatorCharDebug@toStringDebug xs
+        | [] => UTF8String.fromString "【错误：空结构名】"
+
+    fun toStringPlainDebug x = UTF8String.toString (toStringDebug x)
     fun toStringPlain x = UTF8String.toString (toString x)
     val topLevelName = [
         UTF8String.fromString "《《顶层结构》》"
@@ -64,9 +70,9 @@ returns the canonical name (adding curSName if ommitted)
     fun checkRefersTo(referred : structureName) (toCheck : structureName) (curSName : structureName) : structureName option = 
     (
         let 
-        (* val _ = DebugPrint.p ("checking refers to referred=" ^ toStringPlain referred ^
-            " toCheck=" ^  toStringPlain toCheck ^
-            " curSName=" ^ toStringPlain curSName) *)
+        (* val _ = DebugPrint.p ("checking refers to referred=" ^ toStringPlainDebug referred ^
+            " toCheck=" ^  toStringPlainDebug toCheck ^
+            " curSName=" ^ toStringPlainDebug curSName) *)
             val res = 
       if semanticEqual referred toCheck then SOME(toCheck) else 
             if semanticEqual (stripPrefixOnAgreedParts curSName referred) toCheck
@@ -94,9 +100,9 @@ returns the name removed of all scopes
     fun checkRefersToScope(referred : structureName) (openScopeName : structureName) (curSName : structureName) : structureName option = 
     (
         let 
-        (* val _ = DebugPrint.p ("checking refers (scope) to referred=" ^ toStringPlain referred ^
-            " toCheck=" ^  toStringPlain toCheck ^
-            " curSName=" ^ toStringPlain curSName) *)
+        (* val _ = DebugPrint.p ("checking refers (scope) to referred=" ^ Int.toString (length referred) ^ toStringPlainDebug referred  ^
+            " toCheck=" ^ Int.toString(length openScopeName) ^  toStringPlainDebug openScopeName ^
+            " curSName=" ^ Int.toString (length curSName) ^ toStringPlainDebug curSName) *)
             val curSNameReferred = stripPrefixOnAgreedParts curSName referred
             val res = 
             if isPrefix openScopeName curSNameReferred 
@@ -105,8 +111,8 @@ returns the name removed of all scopes
                  end
             else NONE
             (* val _ = DebugPrint.p ("result is " ^ (case res of 
-                SOME _ => "true" 
-                | NONE => "false")) *)
+                SOME _ => "true\n" 
+                | NONE => "false\n")) *)
 
 
         in 

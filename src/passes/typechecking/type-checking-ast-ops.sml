@@ -200,6 +200,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
         | RDirectExpr(e) => RDirectExpr (substTypeInRExpr tS x e)
         | RStructure(v, n, s) => RStructure(v, n, substituteTypeInRSignature tS x s)
         | ROpenStructure(n) => ROpenStructure(n)
+        | RReExportStructure(n) => RReExportStructure(n)
         | RImportStructure(n,fp) => RImportStructure(n, fp)
     
     and substituteTypeInRSignature (tS : Type) (x : StructureName.t) (s : RSignature) : RSignature = 

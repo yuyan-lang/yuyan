@@ -247,7 +247,16 @@ structure PreprocessingPass = struct
                                 )
                             )
                             )
-                            
+                            else
+                            if oper ~=** reexportStructureOp
+                            then 
+                                getStructureOpAST l1 >>= (fn structureOpAST => 
+                            (* ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  *)
+                                (* newContextAfterOpeningStructure structureName ctx >>= (fn newContext =>  *)
+                                        Success(PReExportStructure (structureOpAST, oper), ctx)
+                                    (* ) *)
+                                (* ) *)
+                            )
                             else
                             raise Fail "pp95"
                         end

@@ -137,6 +137,7 @@ case x of
     " structure " ^ UTF8String.toString name ^ " = " ^ show_opast ebody
   | POpenStructure(name, soi) => "open " ^ show_opast name ^ "" 
   | PImportStructure(name, path, soi) => "import " ^ show_opast name ^ "" 
+  | PReExportStructure(name, soi) => "reexport " ^ show_opast name ^ "" 
   | PComment(ebody, soi) => "/* comment : -- */ "
   | PEmptyDecl => "/* empty */"
   end
@@ -217,6 +218,7 @@ in case x of
   | RStructure(v, name, ebody) => (if v then "public" else "private") ^
     " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingRSig ebody ^ "}"
   | ROpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
+  | RReExportStructure(name) => "reexport " ^ StructureName.toStringPlain name ^ "" 
   | RImportStructure(name, fp) => "import " ^ StructureName.toStringPlain name ^ "" 
   end
 
@@ -267,7 +269,7 @@ in case x of
 
 and show_typecheckingCSig x = let
 in
-          String.concatWith "。\n " (map show_typecheckingCDecl x) ^ "\n"
+          "[" ^ String.concatWith "。\n " (map show_typecheckingCDecl x) ^ "]\n" 
 end
 fun show_source_location ((fname, line, col) : SourceLocation.t) = "[" ^ Int.toString (line + 1) ^ ", "^ Int.toString (col + 1) ^ "]"
 fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.t) = 

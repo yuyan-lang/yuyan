@@ -7,7 +7,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
   + OR brackets (if there 
   are keywords (`"「", "」", "『", "』", "。"`) appearing inside a pair of `"「", "」"`).
 
-| 豫言           | Standard Language | Precedence |
+| 豫言           | Standard Language | Precedence | 
 | ------------- |-------------| ------|
 | 〇者〇也 |  type t = T | - |
 | 以〇为〇 |  e : T |  - |
@@ -19,6 +19,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |吾书〇曰〇| private struct { } | - |
  |观〇之书|  open S | - |
  |览〇之书|  import S | - |
+ |诵〇之书|  reexport S | - |
 | ------------- |-------------|  ---------- |
 | 《《字符串》》 | string (builtin) | 420 |
 | 有 | 1 | 420 |

@@ -88,6 +88,26 @@ infix 5 <?>
                     ) bindings @ bindings
                 )
 
+    fun reExportDecls  (ctx as Context(curSName ,curVis, bindings): context)
+    (reexportName : StructureName.t) : CSignature witherrsoption =
+
+            (* extract all bindings from bindings in order and put them into the current context *)
+        let val decls = 
+        List.mapPartial (fn x => 
+            case x of TermTypeJ(name, t, u) => 
+            (case StructureName.checkRefersToScope name reexportName curSName of
+                SOME(nameStripped) => SOME(CTermDefinition(curSName@nameStripped, (case u of SOME x => CExprVar(x) | NONE => CExprVar (name)), t))
+                | NONE => NONE)
+            | TypeDef(name, t, u) =>
+            (case StructureName.checkRefersToScope name reexportName curSName of
+                SOME(nameStripped) => SOME(CTypeMacro(curSName@nameStripped, t))
+                | NONE => NONE)
+            ) bindings 
+        in if length decls > 0
+        then Success(decls)
+        else genSingletonError (StructureName.toString reexportName) "结构未包含任何可导出的值" (showctx ctx)
+        end
+
         
 
     fun applyContextTo (ctx : context) (subst : Type -> StructureName.t -> 'a -> 'a) (t : 'a) : 'a = 
@@ -546,6 +566,12 @@ infix 5 <?>
                     in typeCheckSignature nextContext ss (acc)
                     end
                 )
+                | RReExportStructure reExportName :: ss =>
+                        ((reExportDecls ctx reExportName) >>= (fn newBindings => 
+                                            typeCheckSignature ctx ss (acc@newBindings)
+                        ))<?> (
+                            typeCheckSignature ctx ss (acc)
+                        )
                 | RImportStructure(importName, path) :: ss => 
                     (getTypeCheckedAST (path, importName)
                     <?> (Errors.importError (StructureName.toString importName)  ctx)
