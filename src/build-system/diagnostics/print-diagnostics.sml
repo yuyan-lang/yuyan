@@ -2,6 +2,9 @@
 structure PrintDiagnostics = struct 
 open StaticErrorStructure
 
+    val DEBUG = false
+    (* val DEBUG = true *)
+
     fun getSourceTextInfo ((sl, sc, el, ec) : int * int * int * int)(fileContent : UTF8String.t) : string = 
     let val lines = UTF8String.fields (fn c => UTF8Char.semanticEqual c SpecialChars.newline) fileContent
         val targetLine = List.nth(lines, sl)
@@ -45,7 +48,9 @@ open StaticErrorStructure
     relativePath ^ ":" ^  Int.toString (sl+1) ^ "." ^ Int.toString (sc +1)
     ^ "-" ^ Int.toString (el+1) ^ "." ^ Int.toString (ec+1)
     ^ ":" ^ serverityMsg ^ msghd ^ "\n" 
-    ^ sourceTextInfo ^  detailMessage
+    ^ sourceTextInfo ^  
+    (if DEBUG then "\n```" ^ UTF8String.toString pos ^ "```" else "") ^
+    detailMessage
     end
     fun showErrs (errl : errlist)(cm : CompilationStructure.compilationmanager) : string = 
     String.concatWith "\n" (map (fn e => showErr e cm) errl) ^ "\n"

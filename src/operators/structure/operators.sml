@@ -111,11 +111,11 @@ struct
     val _ = if length allComps <> length (getStringComponents oper) + length args  then 
           raise Fail "Operator has an incorrect number of arguments"
           else ()
-        val res = foldr (fn (elem , (rargs, acc))=>
+        val res = foldl (fn (elem , (rargs, acc))=>
           case elem of 
-            OpCompString s => (rargs, s::acc)
+            OpCompString s => (rargs, acc@[s])
             | _ => (case rargs of 
-                (h:: trargs) => (trargs, h::acc)
+                (h:: trargs) => (trargs, acc@[h])
                 | _ => raise Fail "impossilbe by length counting"
               )
         ) (args, []) allComps
