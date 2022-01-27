@@ -133,7 +133,8 @@ a new module is added with root Path being the file's residing directory *)
         SOME errs => DErrors errs
         | NONE =>
             let 
-            val cmd =  "(make -C runtime/  -s; clang "
+            val cmd =  "(make -C runtime/ -s " ^ (if optimize then "opt" else "debug") ^
+            "; clang "
             (* ^ 
             String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
             [
@@ -142,7 +143,7 @@ a new module is added with root Path being the file's residing directory *)
             "libuv/filesystem.c", "libuv/processes.c"
             ]) *)
             
-            ^ (#pwd cm)^ "/runtime/libyyrt.a"
+            ^ (#pwd cm)^ "/runtime/libyyrt" ^ (if optimize then "opt" else "debug") ^ ".a"
             ^
             " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
             ^ " -save-temps=obj "

@@ -15,6 +15,18 @@
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb"
+        },
+        {
+            "name": "(lldb2)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/.yybuild/yyexe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
         }
     ]
 }

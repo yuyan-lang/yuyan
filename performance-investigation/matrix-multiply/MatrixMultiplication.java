@@ -2,12 +2,17 @@
 import java.util.Random;
 
 public class MatrixMultiplication {
-    static int n = 2048;
-    static double[][] A = new double[n][n];
-    static double[][] B = new double[n][n];
-    static double[][] C = new double[n][n];
 
     public static void main(String[] args) {
+
+        int n = 2048;
+        if (args.length > 0) {
+            n = Integer.parseInt(args[0]);
+        }
+
+        double[][] A = new double[n][n];
+        double[][] B = new double[n][n];
+        double[][] C = new double[n][n];
         //populate the matrices with random values between 0.0 and 1.0
         Random r = new Random();
         for (int i = 0; i < n; i++) {
@@ -30,6 +35,6 @@ public class MatrixMultiplication {
 
         long stop = System.nanoTime();
         double timeDiff = (stop - start) * 1e-9;
-        System.out.println("Elapsed time in seconds: " + timeDiff);
+        System.out.printf("%f",timeDiff);
     }
 }

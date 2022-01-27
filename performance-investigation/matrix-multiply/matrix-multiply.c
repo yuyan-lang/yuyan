@@ -3,20 +3,31 @@
 #include <stdio.h>
 #include <time.h>
 
-#define n 2048
+void * mallocArray(int N) {
+    double ** arr = malloc(N*sizeof(double *));
+    for(int i=0; i< N; i++) arr[i] = malloc(N*sizeof(double));
+    return arr;
+}
 
-double A[n][n];
-double B[n][n];
-double C[n][n];
+void dowork(int n){
 
-int main() {
+    // double A[n][n];
+    // double B[n][n];
+    // double C[n][n];
+    double **A = mallocArray(n);
+    double **B = mallocArray(n);
+    double **C = mallocArray(n);
 
     //populate the matrices with random values between 0.0 and 1.0
     for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
+            int64_t randomValue1 = rand();
+            int64_t randomValue2 = rand();
 
-            A[i][j] = (double) rand() / (double) RAND_MAX;
-            B[i][j] = (double) rand() / (double) RAND_MAX;
+            double v1 = (double) randomValue1 / (double)RAND_MAX;
+            double v2 = (double)  randomValue2 / (double) RAND_MAX;
+            A[i][j] = v1;
+            B[i][j] = v2;
             C[i][j] = 0;
         }
     }
@@ -35,6 +46,19 @@ int main() {
     }
     clock_gettime(CLOCK_REALTIME, &end);
     time_spent = (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0;
-    printf("Elapsed time in seconds: %f \n", time_spent);
+    printf("%f", time_spent);
+
+}
+
+
+int main(int argc, char * argv[]) {
+    int64_t n;
+    if (argc <= 1)
+    {
+        n = 2048;
+    } else {
+        n = strtol(argv[1], NULL, 10);
+    }
+    dowork(n);
     return 0;
 }

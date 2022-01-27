@@ -2,8 +2,9 @@
 
 import random
 import time
+import sys
 
-n = 2048
+n = 2048 if len(sys.argv) < 2 else int(sys.argv[1])
 
 #populate the matrices with random values between 0.0 and 1.0
 A = [[random.random() for row in range(n)] for col in range(n)]
@@ -18,4 +19,4 @@ for i in range(n):
             C[i][j] += A[i][k] * B[k][j]
 
 end = time.time()
-print("Elapsed time in seconds %0.6f" % (end-start))
+print("%0.6f" % (end-start))

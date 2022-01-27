@@ -1,8 +1,7 @@
 
 
+#include "globalInclude.h"
 
-#include <stdlib.h>
-#include <stdio.h>
 
 int internalError(){
     printf("An Internal Error has occurred. The program is likely \
@@ -23,9 +22,9 @@ uint64_t throwException(char* errMsg){
     return -1;
 }
 
-uint64_t yyThrowException(char* errMsg){
+uint64_t yyThrowException(yy_ptr err){
     
-    fprintf(stderr, "%s", errMsg);
+    fprintf(stderr, "%s", addr_to_string(err));
     exit(-1);
     return -1;
 }

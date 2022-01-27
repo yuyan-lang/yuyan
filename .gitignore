@@ -23,3 +23,5 @@ runtime/lib*.a
 *.icloud
 yy\ *
 yy_*
+
+*.dSYM

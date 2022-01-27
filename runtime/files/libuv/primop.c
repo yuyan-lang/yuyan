@@ -60,3 +60,9 @@ yy_ptr yyStringToInt(yy_ptr i1){
     int64_t num = strtol(s, NULL, 10);
     return int_to_addr(num);
 }
+
+yy_ptr yyStringToDouble(yy_ptr i1){
+    char *s = addr_to_string(i1);
+    double num = strtod(s, NULL);
+    return double_to_addr(num);
+}

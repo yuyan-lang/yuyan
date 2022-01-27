@@ -5,6 +5,11 @@ yy_ptr yyPrintln(yy_ptr s) {
     fflush(stdout);
     return unit_to_addr();
 }
+yy_ptr yyPrintStr(yy_ptr s) {
+    fprintf(stdout,"%s", addr_to_string(s));
+    fflush(stdout);
+    return unit_to_addr();
+}
 int informResultRec (FILE *file, yy_ptr result, int prevPred) {
     // assume it is a tuple
     uint64_t header = result[0];

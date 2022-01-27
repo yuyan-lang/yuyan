@@ -9,6 +9,8 @@ yy:  $(SMLSOURCES)
 test: build
 	./yy rv yylib/runtest.yuyan
 	
+genDocs : build
+	./yy genDocs yylib/标准库。豫 
 
 
 clean:

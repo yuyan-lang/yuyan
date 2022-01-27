@@ -77,7 +77,7 @@ structure CompilationTokens = struct
                 add s TkTpIdentifierBinder
                 (* ((tokensInfo := Token (s, (TokenInfo TkTpIdentifierBinder)) :: (!tokensInfo)  ); ()) *)
             | OpStrLiteral  (s, qi) =>
-                (add s TkTpStringLiteral;
+                (if length s > 0 then add s TkTpStringLiteral else ();
                     updateUsefulTokensFromQuoteInfo tokensInfo qi TkTpStringLiteral)
 
                 (* ((tokensInfo := Token (s, (TokenInfo TkTpStringLiteral)) :: (!tokensInfo)  ); ()) *)
