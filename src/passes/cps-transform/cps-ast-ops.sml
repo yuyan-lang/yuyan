@@ -53,7 +53,7 @@ in
         | CPSDone v => fv v
         | CPSFfiCCall (n, l, k) => fromList (List.concat (map fvi l)) *** fk k
         | CPSStore(dst, src, cc )=> fromList (fvarl dst) *** fv src ***freeVars  cc
-        | CPSSequence l =>  foldr (op***) (fromList []) (map freeVars l)
+        (* | CPSSequence l =>  foldr (op*** ) (fromList []) (map freeVars l) *)
             
 end
 end

@@ -160,7 +160,7 @@ in
             end
             | CPSStore(CPSVarGlobal g, src, cc) => ([LLVMGlobalVariableDecl g], vaccess src (fn i => [LLVMStoreGlobal(g, llvmLocToValue i)])) ::: recur cc
             | CPSStore(_) => raise Fail "CPSStore must be storing to a global location"
-            | CPSSequence(l) => ([], [LLVMComment "sequence start"]) ::: (foldr (op:::) ([], [LLVMComment "sequence end"]) (map recur l))
+            (* | CPSSequence(l) => ([], [LLVMComment "sequence start"]) ::: (foldr (op:::) ([], [LLVMComment "sequence end"]) (map recur l)) *)
             | _ => raise Fail "not impl llvmconv 155"
 end
 

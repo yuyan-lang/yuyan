@@ -205,6 +205,7 @@ RExprVar v => sst v
                     | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
+                    | RBuiltinFunc(CallCC, s) => "bf_callcc"
                 end
 
 and show_typecheckingRDecl x = let
@@ -256,6 +257,7 @@ in case x of
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
+                    | CBuiltinFunc(CallCC) => "bf_callcc"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
@@ -392,7 +394,7 @@ case c of
             | CPSBuiltinValue(bv, k) => show_cpsbuiltin bv ^ sk k
             | CPSFfiCCall(fname, args, k) => "(ccall \"" ^ UTF8String.toString fname ^
             "\" args [" ^ String.concatWith ", " (map sv args) ^ "])" ^ sk k
-            | CPSSequence l => "[" ^ String.concatWith ", " (map show_cpscomputation l) ^ "]"
+            (* | CPSSequence l => "[" ^ String.concatWith ", " (map show_cpscomputation l) ^ "]" *)
             | CPSStore (dst, src, cc) => "store " ^ show_cpsvar dst ^  " = " ^ sv src ^ "] ==>" ^ show_cpscomputation cc
 
 end

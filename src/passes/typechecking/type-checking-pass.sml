@@ -197,8 +197,8 @@ infix 5 <?>
         fun expectedProdType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待的类型是乘积类型(expected prod)") (showctx ctx)
         fun expectedSumType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待总和类型(expected sum types)") (showctx ctx)
         fun expectedFunctionType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待函数类型(expected sum types)") (showctx ctx)
-        fun expectedExistentialType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待通用类型(expected function types)") (showctx ctx)
-        fun expectedUniversalType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待存在类型(expected universal types)") (showctx ctx)
+        fun expectedExistentialType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待存在类型(expected existential types)") (showctx ctx)
+        fun expectedUniversalType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待通用类型(expected universal types)") (showctx ctx)
         fun expectedRecursiveType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待递归类型(expected existential types)") (showctx ctx)
         fun firstArgumentOfCCallMustBeStringLiteral e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "C调用的第一个参数必须是字符串(first argument of ccall must be a string literal)") (showctx ctx)
         fun ccallArgumentsMustBeImmediate e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUG then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "C调用的参数必须是直接值(arguments of ccall must be immediate)") (showctx ctx)
@@ -309,6 +309,7 @@ infix 5 <?>
                         )
                         )
                     )
+                    | RBuiltinFunc(f, s) => Success(CBuiltinFunc(f), BuiltinFunctions.typeOf f)
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
                     | _ => Errors.expressionDoesNotSupportTypeSynthesis e ctx
                     
@@ -486,9 +487,10 @@ infix 5 <?>
                             checkType (Context(localName,curVis, newBindings)) e tt >>= (fn ce => 
                                         Success(CLetIn(csig, ce, tt))
                             )
-                    )
+                        )
                     
-                )
+                        )
+                    | RBuiltinFunc(f, soi) => (assertTypeEquiv e (BuiltinFunctions.typeOf f) tt >> Success(CBuiltinFunc(f)))
                 in res
                 end 
         )

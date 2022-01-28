@@ -35,7 +35,7 @@ datatype cpsvar =  CPSVarLocal of int
                 | CPSBuiltinValue of cpsBuiltinValue * (cpsvar * cpscomputation) (* actually should only use label when it is 
                   a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)
                 | CPSFfiCCall of UTF8String.t * cpsvalue list * (cpsvar * cpscomputation)
-                | CPSSequence of cpscomputation list
+                (* | CPSSequence of cpscomputation list *)
     type cpscontinuation = cpsvar * cpscomputation
 
     datatype cpscontextvalue = PlainVar of cpsvar

@@ -187,6 +187,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | RLetIn(decls, e, soi) => 
                 RLetIn(substituteTypeInRSignature tS x decls, 
                     substTypeInRExpr tS x e, soi)
+            | RBuiltinFunc(f, s) => RBuiltinFunc(f, s)
     end
 
     and substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
@@ -295,6 +296,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
         | RRealConstant (l, soi) => soi
         | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
         | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
+        | RBuiltinFunc(f, s) => s
     end
     
 end

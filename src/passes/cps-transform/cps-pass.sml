@@ -145,6 +145,25 @@ exception CPSInternalError
                 cpsTransformExpr newCtx e cc
             end
             )))
+            | CBuiltinFunc(CallCC) => 
+                CPSAbs (kcc2' (fn arg  (* arg is a function ((b -> c) -> b) that are waiting for a current continuation (b -> c) *)
+                => fn ret (* return is the continuation (the real cc) that expects a value of b 
+                                (* obtained either from the return of the arg or from throw of the arg *)
+                ! *)=>
+                        (* we first construct the throw function *)
+                        CPSAbs(kcc2' (fn throwArg =>  
+                            fn throwRet (* the continuation of the throw is ignored! *)
+                            =>
+                                (* throwing to continuation argument always apply single, 
+                                    see the codes for app and abs *)
+                                CPSAppSingle(CPSValueVar (CPSVarLocal ret), CPSValueVar (CPSVarLocal throwArg))
+                            ), NONE, kcc (fn throwFunc => 
+                                CPSApp(CPSValueVar (CPSVarLocal arg), 
+                                        (CPSValueVar throwFunc, CPSValueVar (CPSVarLocal ret))
+                                    )
+                            )
+                        )
+                ), NONE, kcc cc) (* cc is the continuation that expects the value of callcc *)
             (* in CPSSequence (cl@[]) end *)
             | _ => raise Fail "cpsp116"
 

@@ -99,7 +99,7 @@ Library
   structure ReplDebug
 
   structure DocsGeneration
-
+  structure BuiltinFunctions
   structure RichTextDocument
   structure RichTextDocumentOps
   structure IOUtil
@@ -166,6 +166,7 @@ is
   passes/typechecking/type-checking-ast-ops.sml
   passes/typechecking/type-checking-entry.sml
   passes/typechecking/identifier-name-resolution.sml
+  passes/typechecking/builtin-functions.sml
   passes/erase/erasure-pass.sml
   passes/erase/erasure-entry.sml
   passes/cps-transform/cps-ast.sml

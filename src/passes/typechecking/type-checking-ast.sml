@@ -10,6 +10,7 @@ structure TypeCheckingAST = struct
                          | BIInt
                          | BIReal
                          | BIBool
+    datatype BuiltinFunc = CallCC
 
     datatype Type = TypeVar of StructureName.t
                     | UnitType
@@ -47,6 +48,7 @@ structure TypeCheckingAST = struct
                     | CRealConstant of real
                     | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * StructureName.t list
+                    | CBuiltinFunc of BuiltinFunc
 
 (* all types are fully normalized *)
     and CDeclaration = 
@@ -91,6 +93,7 @@ structure TypeCheckingAST = struct
                     | RRealConstant of real * UTF8String.t
                     | RLetIn of RDeclaration list * RExpr * sourceOpInfo
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
+                    | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)
                     
 
 

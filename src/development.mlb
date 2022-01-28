@@ -58,6 +58,7 @@ local
         parser/bracket-scanner.sml
         passes/preprocess/preprocessing-operators.sml
         passes/typechecking/type-checking-ast-ops.sml
+        passes/typechecking/builtin-functions.sml
         passes/cps-transform/cps-ast.sml
         passes/cps-transform/cps-ast-ops.sml
         passes/cps-transform/closure-convert.sml
