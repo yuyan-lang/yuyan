@@ -17,7 +17,7 @@ open StaticErrorStructure
             val preExecuteTime = Time.now()
             val (executeTime, exitSt) =  
                     let 
-                    val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n")
+                    (* val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n") *)
                     val (res) = case debugFunc of 
                             SOME f =>  (Time.now(), (f (CompilationStructure.CompilationFile cfile) cm; OS.Process.success))
                             | NONE => 
