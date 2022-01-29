@@ -87,6 +87,7 @@ struct
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《字符串》》") then Success(BuiltinType(BIString)) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《整数》》") then Success(BuiltinType(BIInt)) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《小数》》") then Success(BuiltinType(BIReal)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《动态分类值》》") then Success(BuiltinType(BIDynClsfd)) else
                 Success(TypeVar [s])
             | OpUnparsedExpr x => raise Fail "ecp74"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoType e ctx
@@ -150,6 +151,7 @@ struct
                     | NumberParser.NPReal r => Success (RRealConstant (r, s))
                  )
               else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建：以当前续延调用》》") then Success(RBuiltinFunc(BFCallCC, s))
+              else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建：新建动态分类》》") then Success(RBuiltinFunc(BFNewDynClsfdValueWithString, s))
               else Success (RExprVar [s])
             | OpUnparsedExpr x => raise Fail "ecp130"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoExpr e ctx

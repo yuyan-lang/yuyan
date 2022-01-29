@@ -174,6 +174,7 @@ in case x of
                     | BuiltinType (BIBool) => "(bool)" 
                     | BuiltinType (BIInt) => "(int)" 
                     | BuiltinType (BIReal) => "(real)" 
+                    | BuiltinType (BIDynClsfd) => "(clsfd)" 
 end
 
 
@@ -206,6 +207,7 @@ RExprVar v => sst v
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(BFCallCC, s) => "bf_callcc"
+                    | RBuiltinFunc(BFNewDynClsfdValueWithString, s) => "bf_newclsfd"
                 end
 
 and show_typecheckingRDecl x = let
@@ -258,6 +260,7 @@ in case x of
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
                     | CBuiltinFunc(BFCallCC) => "bf_callcc"
+                    | CBuiltinFunc(BFNewDynClsfdValueWithString) => "bf_newclsfd"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST

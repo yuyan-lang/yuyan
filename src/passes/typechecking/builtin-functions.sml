@@ -13,7 +13,26 @@ val callccType : Type = Forall (typeBinderB,
     )) , TypeVar [typeBinderB]), TypeVar [typeBinderB])
     )
    
+val newDynClsfdType : Type = 
+    Forall(typeBinderB,
+        Func(BuiltinType(BIString),
+            Prod([
+                ((UTF8String.fromString "创造值"), 
+                    Func(TypeVar [typeBinderB], BuiltinType(BIDynClsfd))),
+                ((UTF8String.fromString "分析值"), 
+                    Forall(typeBinderC,
+                        Func(Prod([
+                            (UTF8String.fromString "值", BuiltinType(BIDynClsfd)),
+                            (UTF8String.fromString "符合", Func(TypeVar [typeBinderB], TypeVar [typeBinderC])),
+                            (UTF8String.fromString "不符合", Func(UnitType, TypeVar [typeBinderC]))
+                        ])
+                        , TypeVar ([typeBinderC])
+                    )))
+            ])
+        )
+    )
 
    fun typeOf (x : BuiltinFunc) : Type = case x of
     BFCallCC => callccType
+    | BFNewDynClsfdValueWithString => newDynClsfdType
 end
