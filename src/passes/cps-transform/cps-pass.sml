@@ -145,7 +145,7 @@ exception CPSInternalError
                 cpsTransformExpr newCtx e cc
             end
             )))
-            | CBuiltinFunc(CallCC) => 
+            | CBuiltinFunc(BFCallCC) => 
                 CPSAbs (kcc2' (fn arg  (* arg is a function ((b -> c) -> b) that are waiting for a current continuation (b -> c) *)
                 => fn ret (* return is the continuation (the real cc) that expects a value of b 
                                 (* obtained either from the return of the arg or from throw of the arg *)

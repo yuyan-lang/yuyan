@@ -205,7 +205,7 @@ RExprVar v => sst v
                     | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
-                    | RBuiltinFunc(CallCC, s) => "bf_callcc"
+                    | RBuiltinFunc(BFCallCC, s) => "bf_callcc"
                 end
 
 and show_typecheckingRDecl x = let
@@ -257,7 +257,7 @@ in case x of
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
-                    | CBuiltinFunc(CallCC) => "bf_callcc"
+                    | CBuiltinFunc(BFCallCC) => "bf_callcc"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST

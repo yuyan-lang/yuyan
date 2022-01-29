@@ -10,7 +10,8 @@ structure TypeCheckingAST = struct
                          | BIInt
                          | BIReal
                          | BIBool
-    datatype BuiltinFunc = CallCC
+                         | BIDynClsfd (* dynamically classified value *)
+    datatype BuiltinFunc = BFCallCC
 
     datatype Type = TypeVar of StructureName.t
                     | UnitType

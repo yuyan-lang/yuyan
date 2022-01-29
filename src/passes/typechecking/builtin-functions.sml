@@ -15,5 +15,5 @@ val callccType : Type = Forall (typeBinderB,
    
 
    fun typeOf (x : BuiltinFunc) : Type = case x of
-    CallCC => callccType
+    BFCallCC => callccType
 end
