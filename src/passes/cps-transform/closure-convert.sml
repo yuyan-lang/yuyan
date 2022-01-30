@@ -36,7 +36,6 @@ in
             end
         | CPSApp(a, (b, c)) => (fromList (List.concat [fvi a, fvi b, fvi c]), CPSApp(a, (b,c)))
         | CPSAppSingle(a, b) => (fromList (List.concat [fvi a, fvi b]), CPSAppSingle(a,b))
-        (* | CPSFix((a, b, c), k) => remove (freeVars c) [a, b] *** fk k *)
         | CPSTuple(l, k) =>
             let val (kfree, k') = cck k
             in (fromList (List.concat (map fvi l)) *** kfree, CPSTuple(l, k'))
@@ -77,10 +76,25 @@ in
                 CPSSequence(map (fn x => #2 x) fs)))
             end  *)
         | CPSStore (dst, src, cc) =>
-        let val (fcc, cc') = closureConvert cc
-        in
-            (fromList (cpsvarToL dst) *** fv src *** fcc, CPSStore(dst,src, cc'))
-        end
+            let val (fcc, cc') = closureConvert cc
+            in
+                (fromList (cpsvarToL dst) *** fv src *** fcc, CPSStore(dst,src, cc'))
+            end
+        | CPSDynClsfdIn(v, i, v2, k) => 
+            let 
+                val (kfree, k') = cck k
+            in (kfree *** (fv v) *** (fv v2), CPSDynClsfdIn(v, i, v2, k')) 
+            end
+        | CPSDynClsfdMatch(v, (i, (a, c1)), c2) =>
+            let 
+                val (c1free, c1') = closureConvert c1
+                val (c2free, c2') = closureConvert c2
+                val c1free' = remove c1free (cpsvarToL a)
+            in (fv v *** c1free' *** c2free, 
+                CPSDynClsfdMatch(v, (i, (a, c1')), c2')
+            )
+            end
+
         | CPSAbsSingle(_, SOME _, _) => raise Fail "cvt69"
         | CPSAbs(_, SOME _, _) => raise Fail "cvt70"
             

@@ -35,6 +35,13 @@ datatype cpsvar =  CPSVarLocal of int
                 | CPSBuiltinValue of cpsBuiltinValue * (cpsvar * cpscomputation) (* actually should only use label when it is 
                   a builtin in fuction for pk, but since we're not doing serialization yet, this is fine *)
                 | CPSFfiCCall of UTF8String.t * cpsvalue list * (cpsvar * cpscomputation)
+                | CPSDynClsfdIn of cpsvalue (* the name *) 
+                                * int (* the UNIQUE ID associated with this classification *)
+                                * cpsvalue (* the value *)
+                                * (cpsvar * cpscomputation) (* the continuation *)
+                | CPSDynClsfdMatch of cpsvalue (* the thing to be analized *)
+                                * (int * (cpsvar * cpscomputation)) (* the success branch *)
+                                * cpscomputation (* the otherwise branch *)
                 (* | CPSSequence of cpscomputation list *)
     type cpscontinuation = cpsvar * cpscomputation
 

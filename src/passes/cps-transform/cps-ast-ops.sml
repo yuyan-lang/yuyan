@@ -1,6 +1,5 @@
 structure CPSAstOps =
 struct
-
 open CPSAst
 
 structure IntSet = ListSet(structure Elem =IntOrdered)
@@ -16,7 +15,7 @@ fun fromList (elems : int list) : freevars  =
 
 fun insertAndRemove( fv : freevars) (inserts : int list) (removes: int list) : freevars = 
     remove (insert fv inserts) (removes)
-
+(* 
 fun freeVarsCont ( (v, c) : cpscontinuation) : freevars=
     remove  (freeVars c) (case v of 
         CPSVarLocal i => [i]
@@ -39,7 +38,7 @@ in
     case s of   
         CPSUnit(k) => fk k
         | CPSProj(v, i, k) => fv v  *** fk k
-        | CPSCases(v, ks) => fv v *** (foldr (op***) (fromList []) (map fk ks))
+        | CPSCases(v, ks) => fv v *** (foldr (op*** ) (fromList []) (map fk ks))
         | CPSUnfold(v, k) => fv v *** fk k
         | CPSApp(a, (b, c)) => fromList (List.concat [fvi a, fvi b, fvi c])
         | CPSAppSingle(a, b) => fromList (List.concat [fvi a, fvi b])
@@ -55,5 +54,5 @@ in
         | CPSStore(dst, src, cc )=> fromList (fvarl dst) *** fv src ***freeVars  cc
         (* | CPSSequence l =>  foldr (op*** ) (fromList []) (map freeVars l) *)
             
-end
+end  *)
 end

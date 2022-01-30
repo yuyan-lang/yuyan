@@ -399,7 +399,10 @@ case c of
             "\" args [" ^ String.concatWith ", " (map sv args) ^ "])" ^ sk k
             (* | CPSSequence l => "[" ^ String.concatWith ", " (map show_cpscomputation l) ^ "]" *)
             | CPSStore (dst, src, cc) => "store " ^ show_cpsvar dst ^  " = " ^ sv src ^ "] ==>" ^ show_cpscomputation cc
-
+            | CPSDynClsfdIn(n, uid, v, k) => "(clsfdin (name=" 
+              ^ sv n ^ ") id=" ^ Int.toString uid ^ " v=" ^ sv v ^ ")" ^ sk k
+            | CPSDynClsfdMatch(v, (uid, (a, c1)), c2) => "(caseclsfd (id=" ^ Int.toString uid ^ ")"  
+            ^ sv v ^ " of {" ^ show_cpsvar a ^ " => " ^ sc c1 ^ " | otherwise => " ^ sc c2 ^ "}"
 end
 
 fun show_cpscontextvalue (cv : CPSAst.cpscontextvalue) = 

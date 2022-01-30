@@ -37,6 +37,7 @@ fun getIntRepresentationOfLLVMArrayType (t : llvmarraytype) = case t of
         | LLVMArrayTypeString => 6
         | LLVMArrayTypeInt => 7
         | LLVMArrayTypeReal => 8
+        | LLVMArrayTypeDynClsfd => 9
 
 (* f takes the name of the thing (may be int) *)
 fun convertValueToIntForStorage ( v : llvmvalue) (f : string -> string list) : string list = 
@@ -213,13 +214,21 @@ in
 ]
 end
 
+
+fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
+    case p of
+        LLVMPOpCmpEqInt(r, i1, i2) => 
+        [toLLVMLoc r ^ " = icmp eq i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpValueToInt(r, i1) => 
+        [toLLVMLoc r ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i64"]
+
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
         LLVMStoreUnit(v) => storeArrayToLLVMLoc LLVMArrayTypeUnit v []
         | LLVMStoreArray(arrtype, v, arr) => storeArrayToLLVMLoc arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 
-            let 
+            let (* TODO : CONSIDER USING SWITCH *)
             val num = length blocks
             val blockNames = List.tabulate (num, fn _ => UID.next()) 
             val comparisonNames = List.tabulate ((num+1), fn _ => UID.next())   (* the extra is to signal the end *)
@@ -267,6 +276,21 @@ fun genLLVMStatement (s : llvmstatement) : string list =
                 ]
             )
             end
+        | LLVMConditionalJumpBinary(b, tb, fb) => 
+        let val tLabelName = UID.next()
+        val fLabelName = UID.next()
+        in
+            ["br i1 " ^ toLLVMLoc b ^ 
+            ", label " ^ toBlockNameJump tLabelName  ^
+            ", label " ^ toBlockNameJump fLabelName ]
+            @[
+            toBlockNameLabel tLabelName ^ ":"
+            ]@ (List.concat (map genLLVMStatement tb))
+            @[
+            toBlockNameLabel fLabelName ^ ":"
+            ]@ (List.concat (map genLLVMStatement fb))
+        end
+
         | LLVMCall(fname, args) => 
         let val castedFname = UID.next()
             val discard = UID.next()
@@ -323,6 +347,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         [
             ";" ^ s
         ]
+        | LLVMPrimitiveOp(pop) => genLLVMPrimitiveOp pop
 
 
 fun genLLVMDelcaration (d : llvmdeclaration ) : string list =

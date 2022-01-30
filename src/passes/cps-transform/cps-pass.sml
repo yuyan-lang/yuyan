@@ -164,6 +164,59 @@ exception CPSInternalError
                             )
                         )
                 ), NONE, kcc cc) (* cc is the continuation that expects the value of callcc *)
+            | CBuiltinFunc(BFNewDynClsfdValueWithString) => 
+                CPSAbs (kcc2' (fn argName  (* arg the name of classified  *)
+                => fn retTup (* should pass the result of the computation to return *)
+                =>
+                    let val thisDynId = UID.next()
+                    in
+                            CPSAbs (kcc2' (fn argValue (* the value to store *)
+                        => fn retClsfd (* the stored value *)
+                        => CPSDynClsfdIn (
+                            CPSValueVar (CPSVarLocal argName), 
+                            thisDynId,
+                            CPSValueVar (CPSVarLocal argValue), 
+                            kcc (fn storedVar => 
+                                    CPSAppSingle(CPSValueVar (CPSVarLocal retClsfd), CPSValueVar storedVar)
+                                )
+                            )
+                        ), NONE, kcc (fn makeFun =>
+                                    CPSAbs (kcc2' (fn valueMatchUnmatch => 
+                                        fn matchReturn => 
+                                        let 
+                                            val vmumVal = CPSValueVar (CPSVarLocal valueMatchUnmatch)
+                                        in
+                                            CPSProj(vmumVal, 0, kcc (fn valueToMatch => 
+                                                CPSProj(vmumVal, 1, kcc (fn matchFunc => 
+                                                    CPSProj(vmumVal, 2, kcc (fn unmatchFunc => 
+                                                        CPSDynClsfdMatch(CPSValueVar valueToMatch, 
+                                                        (thisDynId, kcc (fn unwrappedValue => 
+                                                                CPSApp(CPSValueVar (matchFunc), 
+                                                                        (CPSValueVar (unwrappedValue), 
+                                                                            CPSValueVar (CPSVarLocal matchReturn) (* the continuation is match return *)
+                                                                        )
+                                                                    )
+                                                            )),
+                                                        CPSUnit(kcc (fn unitValue => 
+                                                            CPSApp(CPSValueVar (unmatchFunc), 
+                                                                (CPSValueVar unitValue, CPSValueVar (CPSVarLocal matchReturn)) 
+                                                                )
+                                                        ))
+                                                        )
+                                                    ))
+                                                ))
+                                            ))
+                                        end
+                                    ), NONE, kcc (fn analyzeFunc => 
+                                            CPSTuple ( [CPSValueVar makeFun, CPSValueVar analyzeFunc], kcc (fn tup => 
+                                                CPSAppSingle(CPSValueVar (CPSVarLocal retTup), CPSValueVar tup))
+                                            )
+                                    )
+                                )
+                            )
+                        )
+                    end
+                ), NONE, kcc cc) (* cc is the continuation that expects the value of this builtin function *)
             (* in CPSSequence (cl@[]) end *)
             | _ => raise Fail "cpsp116"
 

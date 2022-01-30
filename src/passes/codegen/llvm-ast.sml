@@ -19,8 +19,15 @@ datatype llvmarraytype =
         | LLVMArrayTypeString (* for storing a string *)
         | LLVMArrayTypeInt
         | LLVMArrayTypeReal
+        | LLVMArrayTypeDynClsfd
 
         
+datatype llvmprimitiveop = 
+        LLVMPOpCmpEqInt of llvmlocation (* result *)
+                                * llvmvalue  (* op1 *)
+                                * llvmvalue  (* op2 *)
+        | LLVMPOpValueToInt of llvmlocation (* result *)
+                                * llvmvalue (* op1 *)
 
 datatype llvmstatement = 
     LLVMStoreUnit of llvmlocation
@@ -36,6 +43,9 @@ datatype llvmstatement =
 TODO: Maybe we want to make that syntactically explicit *)
     | LLVMConditionalJump of int (* VARIABLE NAME that stores the index *) 
             * llvmstatement list list (* one block for each index *)
+    | LLVMConditionalJumpBinary of llvmlocation (* Variable name that stores the boolean *)
+           * llvmstatement list (* true branch *)
+           * llvmstatement list (* false branch branch *)
     | LLVMCall of llvmlocation (* function name *)
             * llvmlocation list (* function arguments *)
     | LLVMFfiCCall of  llvmlocation (* result of the function call *)
@@ -43,6 +53,7 @@ TODO: Maybe we want to make that syntactically explicit *)
             * llvmvalue list (* function arguments *)
     | LLVMReturn of llvmlocation (* Variable name that stores the result *)
     | LLVMComment of string
+    | LLVMPrimitiveOp of llvmprimitiveop
 
 datatype llvmdeclaration  = LLVMFunction of int (* name of the function *) 
                                           * int list (* list of arguments *)

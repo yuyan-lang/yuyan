@@ -50,6 +50,14 @@ let val recur = genLLVM ctx
         in go [] cpsvallist
         end
 
+(* TODO : Review use of this function ! 
+why is there both vaccess and cpsVarToLLVMLoc?
+The reason is that this is guaranteed to be a local varialble that 
+is bound by the continuation
+And this is usually used for WRITING , while vaccess is used for reading
+Another difference is that transformAccess transforms access of cpsvalue, while
+this transforms access of cpsvar
+*)
     fun cpsVarToLLVMLoc (x : cpsvar) : llvmlocation = 
         case x of
             CPSVarLocal i => LLVMLocationLocal i 
@@ -61,7 +69,6 @@ let val recur = genLLVM ctx
             let 
                 val compiledFunctionName = UID.next()
                 val compiledFreeVarsAddr = UID.next()
-                (* val freeVarsInBody = IntSet.toList (remove (freeVars body) args) *)
                 val freeVarsInBody = fvs
                 val (decls, compiledBody) = genLLVM (
                 (* important : first argument is always function name (guaranteed to be fresh (we don't have fix fun) *)
@@ -160,6 +167,46 @@ in
             end
             | CPSStore(CPSVarGlobal g, src, cc) => ([LLVMGlobalVariableDecl g], vaccess src (fn i => [LLVMStoreGlobal(g, llvmLocToValue i)])) ::: recur cc
             | CPSStore(_) => raise Fail "CPSStore must be storing to a global location"
+            | CPSDynClsfdIn(s,id, v, (t, k)) => (
+                [], 
+                vaccess s (fn accessedStrName => 
+                    vaccess v (fn accesssedValue => 
+                        [LLVMStoreArray(LLVMArrayTypeDynClsfd, 
+                            cpsVarToLLVMLoc t,
+                                [ LLVMIntConst id,
+                                    llvmLocToValue accessedStrName, 
+                                    llvmLocToValue accesssedValue
+                                ]
+                            )
+                        ]
+                    )
+                )
+            ) ::: recur k
+            | CPSDynClsfdMatch(v, (id, (a, c1)), c2) => 
+                let 
+                    val idStorageLoc = (UID.next())
+                    val idDirectIntLoc = (UID.next())
+                    val idEqStorageLoc = LLVMLocationLocal (UID.next())
+                    val (c1decls, c1comp) = ([], vaccess v (fn llvmLocOfArr => 
+                    [LLVMArrayAccess (cpsVarToLLVMLoc a, llvmLocOfArr, 2)]
+                    )) ::: recur c1
+                    val (c2decls, c2comp) = recur c2
+                in 
+                ((c1decls @ c2decls ), 
+                vaccess v (fn llvmLocOfArr => 
+                [LLVMArrayAccess(LLVMLocationLocal idStorageLoc, llvmLocOfArr, 0),
+                (* This is a temporary hack: since all values are represented as int*, to get 
+                a direct int for comparison, just convert *)
+                LLVMPrimitiveOp(LLVMPOpValueToInt(LLVMLocationLocal idDirectIntLoc,  LLVMLocalVar idStorageLoc)),
+                LLVMPrimitiveOp(LLVMPOpCmpEqInt(idEqStorageLoc, LLVMIntConst id, LLVMLocalVar idDirectIntLoc)),
+                LLVMConditionalJumpBinary(idEqStorageLoc, 
+                    c1comp, c2comp
+                )
+                ]
+                )
+                )
+                end
+
             (* | CPSSequence(l) => ([], [LLVMComment "sequence start"]) ::: (foldr (op:::) ([], [LLVMComment "sequence end"]) (map recur l)) *)
             | _ => raise Fail "not impl llvmconv 155"
 end
