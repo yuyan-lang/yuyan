@@ -133,8 +133,8 @@ a new module is added with root Path being the file's residing directory *)
         SOME errs => DErrors errs
         | NONE =>
             let 
-            val cmd =  "(make -C runtime/ -s " ^ (if optimize then "opt" else "debug") ^
-            "; clang "
+            val cmd =  "(make -C runtime/ " ^ (if optimize then "opt" else "debug") ^
+            "; make -C runtime/ RT_LIB_PATH="
             (* ^ 
             String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
             [
@@ -145,17 +145,13 @@ a new module is added with root Path being the file's residing directory *)
             
             ^ (#pwd cm)^ "/runtime/libyyrt" ^ (if optimize then "opt" else "debug") ^ ".a"
             ^
-            " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
-            ^ " -save-temps=obj "
-            ^ (if optimize then " -O3 " else " -g ")
-            ^" -o "  
+            " LL_FILES=" ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
+            ^ " CC_FLAGS="
+            ^ (if optimize then "-O3 " else "-g ")
+            ^" OUTPUT_PATH="  
             ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
             (* ^ " -I /usr/local/include" *)
-            ^ " -L /usr/local/lib"
-            ^ " -l gc"
-            ^ " -l uv"
-            ^ " -Wno-override-module"
-            ^ ")"
+            ^ " executable)"
             val _ = DebugPrint.p (cmd ^ "\n")
             val ret = OS.Process.system (cmd)
             in 
