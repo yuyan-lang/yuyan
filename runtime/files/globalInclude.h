@@ -4,7 +4,9 @@
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 #include <stdbool.h>
-
+#ifdef __linux__
+    #include <bsd/string.h>
+#endif
 typedef uint64_t* yy_ptr;
 
 extern int global_argc;
