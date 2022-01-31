@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 #include <stdbool.h>
