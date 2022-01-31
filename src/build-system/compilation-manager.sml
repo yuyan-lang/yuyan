@@ -150,12 +150,9 @@ a new module is added with root Path being the file's residing directory *)
             ^ (if optimize then " -O3 " else " -g ")
             ^" -o "  
             ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
-            ^ " -I /usr/local/include"
-            ^ " -I /usr/local/Cellar/bdw-gc/8.0.6/include"
-            ^ " -L /usr/local/Cellar/bdw-gc/8.0.6/lib"
+            (* ^ " -I /usr/local/include" *)
+            ^ " -L /usr/local/lib"
             ^ " -l gc"
-            ^ " -I /usr/local/Cellar/libuv/1.42.0/include"
-            ^ " -L /usr/local/Cellar/libuv/1.42.0/lib"
             ^ " -l uv"
             ^ " -Wno-override-module"
             ^ ")"
