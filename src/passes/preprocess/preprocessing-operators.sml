@@ -90,7 +90,7 @@ struct
     val caseClauseOp = Operators.parseOperatorStr "曰〇则有〇而〇" true false 640 [3]
     val caseAlternativeOp = Operators.parseOperatorStr "〇或〇" true false 630 []
     val caseExprOp = Operators.parseOperatorStr "鉴〇而〇" true false 620 []
-    val typeAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 600 []
+    val typeAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 695 []
     val packExprOp = Operators.parseOperatorStr "入〇合〇" true false 560 []
     val unpackExprOp = Operators.parseOperatorStr "开〇则有〇者〇而〇" true false 540 [3,5]
     val ffiCCallOp = Operators.parseOperatorStr "《《C调用》》名〇传〇" true false 530 []
@@ -98,7 +98,7 @@ struct
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
     val typeLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 500 [1]
-    val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" true false 490 []
+    val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" true false 525 []
 
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 

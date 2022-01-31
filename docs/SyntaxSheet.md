@@ -38,6 +38,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |元| () | 720 | 
 |〇之〇| (struct S).e/t | 710 | 
 |〇中〇| e1.l | 700 |
+   |〇授以〇| e [T] | 695 |
  |〇于〇| (e1 e2) | 690 |
  |〇与〇| ⟨e1,e2⟩ | 680 |
  |〇与〇与〇| ⟨e1,e2,e3⟩ | 680 |
@@ -45,12 +46,11 @@ The key words (that cannot appear as a name and has a special meaning no matter 
    |卷〇| fold e| 660 |
    |舒〇| unfold e|  650 |
    |鉴〇而「曰〇则有〇而〇[或曰〇则有〇而〇]+」| case e of {l.x => e1 \| l2.y => e2} | 640 |
-   |〇授以〇| e [T] | 600 |
    |入〇合〇| pack t in e | 560 |
    |开〇则有〇者〇而〇| open e as t, x in e2 | 540 |
 |《《C调用》》名〇传〇 | ffi_c_call ... args ⟨e1,e2,e3⟩ | 530 |
+|虑〇以成〇之道| let ... in ... end | 525 |
 |会〇而〇| λ x. e | 520 |
 |遇〇者〇而〇| λ x: T. e| 520 |
 |循〇以〇| fix f. e| 510 |
 |受〇而〇| Λ t. e| 500 |
-|虑〇以成〇之道| let ... in ... end | 490 |
