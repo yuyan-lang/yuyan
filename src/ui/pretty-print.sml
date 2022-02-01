@@ -117,7 +117,7 @@ end
       | OpUnparsedDecl(s, qi) => "[DECL:" ^ (String.concatWith "。" (map show_mixedstr (map (#1) s))) ^ "]"
       | OpUnparsedExpr (s, qi) => "[EXPR:" ^ show_mixedstr s ^ "]"
       | OpStrLiteral (s, qi) => "[LITERAL(size="^ Int.toString (length s) ^"):" ^ UTF8String.toString s ^ "]"
-      | _ => raise Fail "unimp pp119"
+      | _ => "<other opast>"
     end
 
 
@@ -291,7 +291,7 @@ fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.
 fun show_utf8char (UTF8Char.UTF8Char(c, loc)) = UTF8.implode [c] ^ (case loc of SOME loc => show_source_location(loc) | NONE => "[NOLOC]")
 fun show_utf8string x = String.concatWith "+" (map show_utf8char x)
 fun show_utf8strings x = String.concatWith ", " (map show_utf8string x)
-fun show_token (CompilationTokens.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str)
+fun show_token (CompilationStructure.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str)
 fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
 fun show_typecheckingpassmappping x = let
 open TypeCheckingASTOps

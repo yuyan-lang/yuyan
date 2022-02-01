@@ -164,6 +164,10 @@ structure PreprocessingPass = struct
                     )
                     | OpUnparsedExpr (e,qi) => parseTypeOrExpr e ctx >>= (fn (parsed) => Success(OpParsedQuotedExpr(parsed, qi), ctx))
                     | OpAST (oper, l) => (
+                        if Operators.eqOpUid oper PreprocessingOperators.inlineCommentOp  (* do not parse the rhs of comment *)
+                        then
+                        recursivelyTraverseAndParseOpAST (hd l) ctx >>= (fn (hdl, _) => Success(OpAST(oper, [hdl, (hd (tl l))]), ctx)) (* context info can be safely ignored in all other cases*)
+                        else
                         if Operators.eqOpUid oper PreprocessingOperators.letinOp 
                         then (case l of 
                                 [decls, expr] => recursivelyTraverseAndParseOpAST decls (curSname@(StructureName.localName()), vis, info)
@@ -283,7 +287,7 @@ structure PreprocessingPass = struct
             =  (PrecedenceParser.parseMixfixExpression 
                         (allTypeAndExprOps@ lookupAllActiveOpers ctx) ebody) >>= (fn parseTree => 
                         let
-                (* val _ = DebugPrint.p (PrettyPrint.show_opast parseTree ^ "\n\n") *)
+                (* val _ = DebugPrint.p ("notifying " ^ PrettyPrint.show_opast parseTree ^ "\n\n") *)
                 val _ = notifyOpAST parseTree
             in recursivelyTraverseAndParseOpAST parseTree ctx >>= (
                 fn (parsedOpAST, newContext) => Success(parsedOpAST) (* no need to add new context as constructs inside let is not accessible in any case *)

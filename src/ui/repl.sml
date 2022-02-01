@@ -51,6 +51,9 @@ struct
                     compileOnly = String.isSubstring "compileOnly" cmd,
                     optimize = String.isSubstring "optimizeO3" cmd
                 } fname (
+                    if String.isSubstring "showTokens"  cmd
+                    then SOME (ReplDebug.showTokens)
+                    else
                     if String.isSubstring "profileLSPTokens"  cmd
                     then SOME (ReplDebug.profileLSPTokens)
                     else if String.isSubstring "genDocs" cmd

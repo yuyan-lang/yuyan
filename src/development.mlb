@@ -65,11 +65,11 @@ local
         passes/codegen/llvm-ast.sml
         passes/codegen/llvm-codegen.sml
         passes/codegen/llvm-convert.sml
-        build-system/compilation-tokens.sml
         build-system/compilation-structure.sml
 
         
         ui/pretty-print.sml
+        build-system/compilation-tokens.sml
         passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml
         passes/typechecking/type-checking-pass.sml

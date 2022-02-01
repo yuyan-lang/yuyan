@@ -3,6 +3,7 @@ structure CompilationFileOps =
 struct
 
 open CompilationStructure
+open CompilationTokens
 
 open StaticErrorStructure
     (* val >>= = StaticErrorStructure.>>= *)

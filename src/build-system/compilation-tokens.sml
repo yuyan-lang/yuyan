@@ -1,25 +1,14 @@
 structure CompilationTokens = struct 
-     datatype tokenType = TkTpStructureKeyword
-                       | TkTpTypeKeyword
-                       | TkTpExprKeyword
-                       | TkTpIdentifierBinder
-                       | TkTpIdentifierReference
-                       | TkTpCustomOperatorName
-                       | TkTpStringLiteral
-                       | TkTpLabel (* not implemented Yet *)
-                       | TkTpComment(* not implemented Yet *)
-    datatype tokenInfo = TokenInfo of tokenType
-    datatype token = Token of 
-        UTF8String.t * (* the original text from which source range can be computed*)
-         tokenInfo (* for syntax highlighting *) 
 
-
+    open CompilationStructure
     open Operators
     open OpAST
     open OpASTOps
 
     fun addTokenStr(tokensInfo : token list ref) (s: UTF8String.t) (tktype : tokenType) : unit = 
+    (* (DebugPrint.p ("add tokens info called on " ^ PrettyPrint.show_utf8string s ^ "\n"); *)
         tokensInfo := (Token(s, TokenInfo tktype)) :: (!tokensInfo)
+    (* ) *)
     fun updateUsefulTokensFromOperator(tokensInfo : token list ref)
         (ast : operator ) (tp :tokenType) : unit = (
             (* print "update called"; *)
@@ -55,6 +44,7 @@ structure CompilationTokens = struct
     fun updateUsefulTokensFromOpAST(tokensInfo : token list ref)
         (ast : OpAST.t) : unit  = 
         let 
+        (* val _ = DebugPrint.p ("updating from opast" ^ PrettyPrint.show_opast ast ^"\n\n") *)
         val add = addTokenStr tokensInfo
         in 
         case ast of 
@@ -76,7 +66,8 @@ structure CompilationTokens = struct
                     else updateUsefulTokensFromOperator tokensInfo oper (TkTpExprKeyword)
                     ; (* children *)
                     map (updateUsefulTokensFromOpAST tokensInfo)lst
-                    ; ())
+                    ; ()
+                    )
                 )
             | UnknownOpName s => 
                 add s TkTpIdentifierReference
@@ -112,8 +103,9 @@ structure CompilationTokens = struct
             PComment _ => updateUsefulTokensFromEndingInfo tokensInfo ei TkTpComment
             | _ => updateUsefulTokensFromEndingInfo tokensInfo ei TkTpStructureKeyword
         val add = addTokenStr tokensInfo
-        val upOpAST = updateUsefulTokensFromOpAST tokensInfo
+        val upOpAST = if true then fn _ => () else updateUsefulTokensFromOpAST tokensInfo (* no need to double update *)
         val upOper = updateUsefulTokensFromOperator tokensInfo
+        (* val _ = DebugPrint.p "updating from pjudgment\n" *)
         val _ = case p of 
         PEmptyDecl => ()
         | PTypeMacro(tname, tbody, soi) => (add tname TkTpIdentifierBinder; upOpAST tbody; upOper soi TkTpStructureKeyword)
