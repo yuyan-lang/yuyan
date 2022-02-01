@@ -6,6 +6,8 @@ open CPSAst
 
 exception CPSInternalError
 
+    val getCurExnHandlerName = "yyGetCurrentExceptionHandler"
+    val setCurExnHandlerName = "yySetCurrentExceptionHandler"
 
     fun kcc (cc : cpsvar -> cpscomputation) : cpscontinuation = 
         let val v = CPSVarLocal (UID.next())
@@ -31,13 +33,134 @@ exception CPSInternalError
              (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel3 cs l+1
              | _ => raise Fail "cpspass29"
 
+    fun cpsTransformBuiltinFunc( x : BuiltinFunc) (cc : cpsvar -> cpscomputation) : cpscomputation = 
+        case x of 
+             BFCallCC => 
+                CPSAbs (kcc2' (fn arg  (* arg is a function ((b -> c) -> b) that are waiting for a current continuation (b -> c) *)
+                => fn ret (* return is the continuation (the real cc) that expects a value of b 
+                                (* obtained either from the return of the arg or from throw of the arg *)
+                ! *)=>
+                        (* we first construct the throw function *)
+                        CPSAbs(kcc2' (fn throwArg =>  
+                            fn throwRet (* the continuation of the throw is ignored! *)
+                            =>
+                                (* throwing to continuation argument always apply single, 
+                                    see the codes for app and abs *)
+                                CPSAppSingle(CPSValueVar (CPSVarLocal ret), CPSValueVar (CPSVarLocal throwArg))
+                            ), NONE, kcc (fn throwFunc => 
+                                CPSApp(CPSValueVar (CPSVarLocal arg), 
+                                        (CPSValueVar throwFunc, CPSValueVar (CPSVarLocal ret))
+                                    )
+                            )
+                        )
+                ), NONE, kcc cc) (* cc is the continuation that expects the value of callcc *)
+            | BFNewDynClsfdValueWithString => 
+                CPSAbs (kcc2' (fn argName  (* arg the name of classified  *)
+                => fn retTup (* should pass the result of the computation to return *)
+                =>
+                    let val thisDynId = UID.next()
+                    in
+                            CPSAbs (kcc2' (fn argValue (* the value to store *)
+                        => fn retClsfd (* the stored value *)
+                        => CPSDynClsfdIn (
+                            CPSValueVar (CPSVarLocal argName), 
+                            thisDynId,
+                            CPSValueVar (CPSVarLocal argValue), 
+                            kcc (fn storedVar => 
+                                    CPSAppSingle(CPSValueVar (CPSVarLocal retClsfd), CPSValueVar storedVar)
+                                )
+                            )
+                        ), NONE, kcc (fn makeFun =>
+                                    CPSAbs (kcc2' (fn valueMatchUnmatch => 
+                                        fn matchReturn => 
+                                        let 
+                                            val vmumVal = CPSValueVar (CPSVarLocal valueMatchUnmatch)
+                                        in
+                                            CPSProj(vmumVal, 0, kcc (fn valueToMatch => 
+                                                CPSProj(vmumVal, 1, kcc (fn matchFunc => 
+                                                    CPSProj(vmumVal, 2, kcc (fn unmatchFunc => 
+                                                        CPSDynClsfdMatch(CPSValueVar valueToMatch, 
+                                                        (thisDynId, kcc (fn unwrappedValue => 
+                                                                CPSApp(CPSValueVar (matchFunc), 
+                                                                        (CPSValueVar (unwrappedValue), 
+                                                                            CPSValueVar (CPSVarLocal matchReturn) (* the continuation is match return *)
+                                                                        )
+                                                                    )
+                                                            )),
+                                                        CPSUnit(kcc (fn unitValue => 
+                                                            CPSApp(CPSValueVar (unmatchFunc), 
+                                                                (CPSValueVar unitValue, CPSValueVar (CPSVarLocal matchReturn)) 
+                                                                )
+                                                        ))
+                                                        )
+                                                    ))
+                                                ))
+                                            ))
+                                        end
+                                    ), NONE, kcc (fn analyzeFunc => 
+                                            CPSTuple ( [CPSValueVar makeFun, CPSValueVar analyzeFunc], kcc (fn tup => 
+                                                CPSAppSingle(CPSValueVar (CPSVarLocal retTup), CPSValueVar tup))
+                                            )
+                                    )
+                                )
+                            )
+                        )
+                    end
+                ), NONE, kcc cc) (* cc is the continuation that expects the value of this builtin function *)
+            | BFRaise => 
+                CPSAbs(kcc2' (fn exnVal => fn ret => 
+                    CPSFfiCCall (UTF8String.fromString getCurExnHandlerName, [],
+                    kcc (fn curHandler => 
+                        CPSAppSingle(CPSValueVar curHandler, CPSValueVar (CPSVarLocal exnVal))
+                    )) 
+                ), NONE, kcc cc)
+                (* Handler should always be AbsSingle *)
+            | BFHandle => 
+                
+                CPSAbs(kcc2' (fn tup => 
+                fn retVal (* the return value of the entire computation *)=> 
+                    (* retrieves the current exception handler *)
+                    CPSFfiCCall( UTF8String.fromString getCurExnHandlerName, [], kcc (fn originalHandler => 
+                        (* construct the function that resets the handler to original and return *)
+                        CPSAbsSingle(kcc' (fn retValue => 
+                                CPSFfiCCall( UTF8String.fromString setCurExnHandlerName, [CPSValueVar originalHandler], kcc (fn _ => 
+                                    CPSAppSingle(CPSValueVar (CPSVarLocal retVal), CPSValueVar (CPSVarLocal retValue))
+                                ))
+                            ), NONE, kcc (fn resetHandlerAndReturn => 
+                                (* retrieves the new handler from argument tuple *)
+                                CPSProj(CPSValueVar (CPSVarLocal tup), 1, kcc (fn newHandler => 
+                                    (* constructs the real handler that is to be executed in the original handler *)
+                                    CPSAbsSingle(kcc' (fn exceptionVal => 
+                                        (* it first resets the current exception handler *)
+                                        CPSFfiCCall( UTF8String.fromString setCurExnHandlerName, [CPSValueVar originalHandler], kcc (fn _ => 
+                                            (* it applies the new handler to the exception value and the global return point *)
+                                            CPSApp(CPSValueVar newHandler, (CPSValueVar (CPSVarLocal exceptionVal), CPSValueVar (CPSVarLocal retVal)))
+                                        ))
+                                    ), NONE, kcc (fn realNewHanlder =>
+                                        (* sets the current exception handler to the real new handler *)
+                                        CPSFfiCCall( UTF8String.fromString setCurExnHandlerName, [CPSValueVar realNewHanlder], kcc (fn _ => 
+                                            (* gets the real expression *)
+                                            CPSProj(CPSValueVar (CPSVarLocal tup), 0, kcc (fn tryFunc => 
+                                                CPSUnit (kcc (fn unitVal => 
+                                                    (* apply the function , with the current continuation to reset the handler*)
+                                                    CPSApp(CPSValueVar tryFunc, (CPSValueVar unitVal, CPSValueVar (resetHandlerAndReturn)))
+                                                ))
+                                            ))
+                                        ))
+                                    ))
+                                ))
+
+                        ))
+                    ))
+                ), NONE, kcc cc)
+
 
     and cpsTransformExpr   
         (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
         : cpscomputation =
     (
         let 
-        (* val _ = print ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
+        (* val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
          val res = case e of
             CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
@@ -145,79 +268,7 @@ exception CPSInternalError
                 cpsTransformExpr newCtx e cc
             end
             )))
-            | CBuiltinFunc(BFCallCC) => 
-                CPSAbs (kcc2' (fn arg  (* arg is a function ((b -> c) -> b) that are waiting for a current continuation (b -> c) *)
-                => fn ret (* return is the continuation (the real cc) that expects a value of b 
-                                (* obtained either from the return of the arg or from throw of the arg *)
-                ! *)=>
-                        (* we first construct the throw function *)
-                        CPSAbs(kcc2' (fn throwArg =>  
-                            fn throwRet (* the continuation of the throw is ignored! *)
-                            =>
-                                (* throwing to continuation argument always apply single, 
-                                    see the codes for app and abs *)
-                                CPSAppSingle(CPSValueVar (CPSVarLocal ret), CPSValueVar (CPSVarLocal throwArg))
-                            ), NONE, kcc (fn throwFunc => 
-                                CPSApp(CPSValueVar (CPSVarLocal arg), 
-                                        (CPSValueVar throwFunc, CPSValueVar (CPSVarLocal ret))
-                                    )
-                            )
-                        )
-                ), NONE, kcc cc) (* cc is the continuation that expects the value of callcc *)
-            | CBuiltinFunc(BFNewDynClsfdValueWithString) => 
-                CPSAbs (kcc2' (fn argName  (* arg the name of classified  *)
-                => fn retTup (* should pass the result of the computation to return *)
-                =>
-                    let val thisDynId = UID.next()
-                    in
-                            CPSAbs (kcc2' (fn argValue (* the value to store *)
-                        => fn retClsfd (* the stored value *)
-                        => CPSDynClsfdIn (
-                            CPSValueVar (CPSVarLocal argName), 
-                            thisDynId,
-                            CPSValueVar (CPSVarLocal argValue), 
-                            kcc (fn storedVar => 
-                                    CPSAppSingle(CPSValueVar (CPSVarLocal retClsfd), CPSValueVar storedVar)
-                                )
-                            )
-                        ), NONE, kcc (fn makeFun =>
-                                    CPSAbs (kcc2' (fn valueMatchUnmatch => 
-                                        fn matchReturn => 
-                                        let 
-                                            val vmumVal = CPSValueVar (CPSVarLocal valueMatchUnmatch)
-                                        in
-                                            CPSProj(vmumVal, 0, kcc (fn valueToMatch => 
-                                                CPSProj(vmumVal, 1, kcc (fn matchFunc => 
-                                                    CPSProj(vmumVal, 2, kcc (fn unmatchFunc => 
-                                                        CPSDynClsfdMatch(CPSValueVar valueToMatch, 
-                                                        (thisDynId, kcc (fn unwrappedValue => 
-                                                                CPSApp(CPSValueVar (matchFunc), 
-                                                                        (CPSValueVar (unwrappedValue), 
-                                                                            CPSValueVar (CPSVarLocal matchReturn) (* the continuation is match return *)
-                                                                        )
-                                                                    )
-                                                            )),
-                                                        CPSUnit(kcc (fn unitValue => 
-                                                            CPSApp(CPSValueVar (unmatchFunc), 
-                                                                (CPSValueVar unitValue, CPSValueVar (CPSVarLocal matchReturn)) 
-                                                                )
-                                                        ))
-                                                        )
-                                                    ))
-                                                ))
-                                            ))
-                                        end
-                                    ), NONE, kcc (fn analyzeFunc => 
-                                            CPSTuple ( [CPSValueVar makeFun, CPSValueVar analyzeFunc], kcc (fn tup => 
-                                                CPSAppSingle(CPSValueVar (CPSVarLocal retTup), CPSValueVar tup))
-                                            )
-                                    )
-                                )
-                            )
-                        )
-                    end
-                ), NONE, kcc cc) (* cc is the continuation that expects the value of this builtin function *)
-            (* in CPSSequence (cl@[]) end *)
+            | CBuiltinFunc(f) =>  cpsTransformBuiltinFunc f cc
             | _ => raise Fail "cpsp116"
 
         (* val _ = print ("cpsTransformSig result is " ^ PrettyPrint.show_pkcomputation res ^ "cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ 

@@ -241,7 +241,7 @@ structure PreprocessingPass = struct
                             then getStructureOpAST l1 >>= (fn structureOpAST => 
                             ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  
                             (newContextAfterImportingStructure structureName ctx 
-                                <?> (genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
+                                <?> (fn _ => genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
                             ) >>= (fn (newContext, path) =>
                                 Success(PImportStructure (structureOpAST, path, oper), newContext)
                                 )

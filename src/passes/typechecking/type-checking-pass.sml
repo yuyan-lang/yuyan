@@ -503,8 +503,13 @@ infix 5 <?>
             and typeCheckSignature(ctx : context) (s : RSignature) (acc : CSignature) : (context * CSignature) witherrsoption =
 
                 (
-                    if DEBUG then print ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
+
+
+                    if DEBUG then DebugPrint.p ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
                     " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
+                    (* DebugPrint.p ("TCSig r="  ^ Int.toString (length s) ^   " acc=" ^ Int.toString (length acc) ^
+                    "\nDEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
+                    "\n"); *)
 
                     case s of
                     [] => Success(ctx, acc)
@@ -571,12 +576,12 @@ infix 5 <?>
                 | RReExportStructure reExportName :: ss =>
                         ((reExportDecls ctx reExportName) >>= (fn newBindings => 
                                             typeCheckSignature ctx ss (acc@newBindings)
-                        ))<?> (
+                        ))<?> ( fn _ =>
                             typeCheckSignature ctx ss (acc)
                         )
                 | RImportStructure(importName, path) :: ss => 
                     (getTypeCheckedAST (path, importName)
-                    <?> (Errors.importError (StructureName.toString importName)  ctx)
+                    <?> (fn _ => Errors.importError (StructureName.toString importName)  ctx)
                     )
                      >>= (fn csig => 
                         typeCheckSignature 

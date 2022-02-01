@@ -12,13 +12,13 @@ ADDITIONAL_FLAGS=
 endif
 
 libyyrtdebug.a: $(SOURCES)
-	$(CC) -c -g $^ -I /usr/local/include 
+	$(CC) -c -g $^ -I /usr/local/include -Werror
 	llvm-ar rcs libyyrtdebug.a *.o 
 
 debug: libyyrtdebug.a
 
 libyyrtopt.a: $(SOURCES)
-	$(CC) -c -g $^ -I /usr/local/include
+	$(CC) -c -g $^ -I /usr/local/include -Werror
 	llvm-ar rcs libyyrtopt.a *.o 
 
 opt : libyyrtopt.a

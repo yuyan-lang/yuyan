@@ -185,7 +185,7 @@ struct
                                 processSingleQuoted inQuote (x, rq) >>= (fn inSingleQuoteChar => 
                                     scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
                                 ) >>/= ( (* continue scanning in case of failure *)
-                                    scanSingleQuote startChar rest (sofar)  
+                                    fn _ => scanSingleQuote startChar rest (sofar)  
                                 )
                             )
                         else

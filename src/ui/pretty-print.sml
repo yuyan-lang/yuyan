@@ -147,6 +147,17 @@ in
 "{" ^ String.concatWith "\n" (map show_preprocessaastJ x) ^ "\n" ^ "}"
   end
 
+fun show_typecheckingbuiltinfunc x = 
+let 
+open TypeCheckingAST
+in
+case x of 
+      BFCallCC  => "bf_callcc"
+      | BFNewDynClsfdValueWithString => "bf_newclsfd"
+      | BFRaise => "bf_raise"
+      | BFHandle => "bf_handle"
+end
+
 (* fun show_statementast x = let 
 open StatementAST
 in case x of 
@@ -206,8 +217,7 @@ RExprVar v => sst v
                     | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
-                    | RBuiltinFunc(BFCallCC, s) => "bf_callcc"
-                    | RBuiltinFunc(BFNewDynClsfdValueWithString, s) => "bf_newclsfd"
+                    | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
                 end
 
 and show_typecheckingRDecl x = let
@@ -259,8 +269,7 @@ in case x of
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
-                    | CBuiltinFunc(BFCallCC) => "bf_callcc"
-                    | CBuiltinFunc(BFNewDynClsfdValueWithString) => "bf_newclsfd"
+                    | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST

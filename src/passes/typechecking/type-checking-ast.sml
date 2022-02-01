@@ -13,6 +13,8 @@ structure TypeCheckingAST = struct
                          | BIDynClsfd (* dynamically classified value *)
     datatype BuiltinFunc = BFCallCC
                          | BFNewDynClsfdValueWithString
+                         | BFRaise
+                         | BFHandle
 
     datatype Type = TypeVar of StructureName.t
                     | UnitType

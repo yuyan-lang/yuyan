@@ -28,3 +28,23 @@ uint64_t yyThrowException(yy_ptr err){
     exit(-1);
     return -1;
 }
+
+// I believe abssingle has two arguments , the first is just the closure itself
+uint64_t yyUncaughtException(yy_ptr closure, yy_ptr dynclsfdVal){
+    fprintf(stderr, "Uncaught Exception");
+    exit(-1);
+    return -1;
+}
+
+yy_ptr currentExceptionHandler = (uint64_t *) yyUncaughtException;
+
+
+
+yy_ptr yyGetCurrentExceptionHandler() {
+    return currentExceptionHandler;
+}
+
+yy_ptr yySetCurrentExceptionHandler(yy_ptr toSet) {
+    currentExceptionHandler = toSet;
+    return unit_to_addr();
+}

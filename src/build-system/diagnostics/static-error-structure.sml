@@ -49,10 +49,10 @@ struct
     infix 5 >>=
     (* this is guaranteed to fail when x fails, it collects all errors that handler might generate *)
     (* the handler is untouched if first thing succeeds *)
-    fun failLookahead (x : 'a witherrsoption) (handler :  'a witherrsoption) : 'a witherrsoption = 
+    fun failLookahead (x : 'a witherrsoption) (handler :  unit -> 'a witherrsoption) : 'a witherrsoption = 
         case x of
             Success y => Success(y)
-            | DErrors l => (case handler of 
+            | DErrors l => (case handler() of 
                     Success _ => DErrors l 
                     | DErrors l2 => DErrors (l@l2)
                     | NotAvailable => NotAvailable

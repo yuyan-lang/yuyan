@@ -150,9 +150,11 @@ struct
                     NumberParser.NPInt i => Success (RIntConstant (i, s))
                     | NumberParser.NPReal r => Success (RRealConstant (r, s))
                  )
-              else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建：以当前续延调用》》") then Success(RBuiltinFunc(BFCallCC, s))
-              else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建：新建动态分类》》") then Success(RBuiltinFunc(BFNewDynClsfdValueWithString, s))
-              else Success (RExprVar [s])
+              else
+              (case BuiltinFunctions.parseStr (UTF8String.toString s) of 
+                SOME f => Success(RBuiltinFunc(f, s))
+                | NONE => Success (RExprVar [s])
+                )
             | OpUnparsedExpr x => raise Fail "ecp130"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoExpr e ctx
             | OpStrLiteral (l, qi) => Success (RStringLiteral (l, qi))
