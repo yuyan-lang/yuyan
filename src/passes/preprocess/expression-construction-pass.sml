@@ -128,6 +128,9 @@ struct
                 if oper ~=** structureRefOp
                 then fmap TypeVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
                 else 
+                if oper ~=** inlineCommentOp
+                then elaborateOpASTtoType a1 ctx
+                else 
                 genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
                 (* raise ElaborateFailure (
                     "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
@@ -170,6 +173,9 @@ struct
                     else
                     if oper ~=** structureRefOp
                     then fmap RExprVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
+                    else
+                    if oper ~=** inlineCommentOp
+                    then elaborateOpASTtoExpr (hd l) ctx
                     else
                     if oper ~=** unitExprOp
                     then Success (RUnitExpr(oper))

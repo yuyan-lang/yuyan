@@ -60,16 +60,24 @@ structure CompilationTokens = struct
         case ast of 
             OpAST (oper as Operator(_, _, _, _, uid), lst) => 
                 ( (* operator itself *)
-                    if uid >= PreprocessingOperators.elabAppBound
-                then (* user defined ops *) 
-                    updateUsefulTokensFromOperator tokensInfo oper (TkTpCustomOperatorName)
-                else if uid <= PreprocessingOperators.typeOpBound
-                then updateUsefulTokensFromOperator tokensInfo oper (TkTpTypeKeyword)
-                else updateUsefulTokensFromOperator tokensInfo oper (TkTpExprKeyword)
-                ; (* children *)
-                map (updateUsefulTokensFromOpAST tokensInfo)lst
-                ;
-                ())
+                if uid = getUID (PreprocessingOperators.inlineCommentOp)
+                then (
+                    updateUsefulTokensFromOperator tokensInfo oper (TkTpComment);
+                    add (reconstructOriginalFromOpAST (hd (tl lst))) TkTpComment;
+                    updateUsefulTokensFromOpAST tokensInfo (hd lst)
+                    )
+                else
+                    (if uid >= PreprocessingOperators.elabAppBound
+                    then (* user defined ops *) 
+                        updateUsefulTokensFromOperator tokensInfo oper (TkTpCustomOperatorName)
+                    else 
+                    if uid <= PreprocessingOperators.typeOpBound
+                    then updateUsefulTokensFromOperator tokensInfo oper (TkTpTypeKeyword)
+                    else updateUsefulTokensFromOperator tokensInfo oper (TkTpExprKeyword)
+                    ; (* children *)
+                    map (updateUsefulTokensFromOpAST tokensInfo)lst
+                    ; ())
+                )
             | UnknownOpName s => 
                 add s TkTpIdentifierReference
                 (* ((tokensInfo := Token (s, (TokenInfo TkTpIdentifierReference)) :: (!tokensInfo)); ()) *)

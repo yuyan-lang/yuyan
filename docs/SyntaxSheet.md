@@ -54,3 +54,4 @@ The key words (that cannot appear as a name and has a special meaning no matter 
 |遇〇者〇而〇| λ x: T. e| 520 |
 |循〇以〇| fix f. e| 510 |
 |受〇而〇| Λ t. e| 500 |
+|〇注〇|e1 /* e */| 480 |
