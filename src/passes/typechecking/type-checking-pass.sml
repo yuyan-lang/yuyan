@@ -516,9 +516,9 @@ infix 5 <?>
 
                     if DEBUG then DebugPrint.p ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
                     " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
-                    (* DebugPrint.p ("TCSig r="  ^ Int.toString (length s) ^   " acc=" ^ Int.toString (length acc) ^
+                    DebugPrint.p ("TCSig r="  ^ Int.toString (length s) ^   " acc=" ^ Int.toString (length acc) ^
                     "\nDEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
-                    "\n"); *)
+                    "\n");
 
                     case s of
                     [] => Success(ctx, acc)
@@ -583,11 +583,13 @@ infix 5 <?>
                     end
                 )
                 | RReExportStructure reExportName :: ss =>
-                        ((reExportDecls ctx reExportName) >>= (fn newBindings => 
+                        ((reExportDecls ctx reExportName) <?> ( fn _ =>
+                            typeCheckSignature ctx ss (acc) (* we collect remaining possible failures *)
+                        )) >>= (fn newBindings => 
                                             typeCheckSignature ctx ss (acc@newBindings)
-                        ))<?> ( fn _ =>
-                            typeCheckSignature ctx ss (acc)
-                        )
+                        )                
+                        (* note that the order of <?> and >>= is important as >>= won't ignore previous error 
+                        reverse would have exponential wasted computation *)
                 | RImportStructure(importName, path) :: ss => 
                     (getTypeCheckedAST (path, importName)
                     <?> (fn _ => Errors.importError (StructureName.toString importName)  ctx)
