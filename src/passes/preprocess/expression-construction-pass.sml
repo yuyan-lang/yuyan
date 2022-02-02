@@ -90,6 +90,7 @@ struct
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：动态分类值》》") then Success(BuiltinType(BIDynClsfd)) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：有》》") then Success(UnitType) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(NullType) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：新的外部类型》》") then Success(BuiltinType(BIForeignType(UID.next()))) else
                 Success(TypeVar [s])
             | OpUnparsedExpr x => raise Fail "ecp74"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoType e ctx

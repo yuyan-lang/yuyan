@@ -9,7 +9,7 @@ yy_ptr yyGetRandomNumber(yy_ptr upperBoundPtr) {
         char buffer[8];
         int result = uv_random(uv_global_loop, &req, &buffer, 8, 0,NULL );
         if (result != 0){
-            throwException("Error: Could not get random number in libuv.\n");
+            errorAndAbort("Error: Could not get random number in libuv.\n");
         }
         else {
             result = *(uint64_t*)buffer;

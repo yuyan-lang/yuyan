@@ -6,19 +6,21 @@
 int internalError(){
     printf("An Internal Error has occurred. The program is likely \
     to be compiled incorrectly. Type Checking perhaps is not sound.\n");
+    exit(1);
     return -1;
 }
 
 uint64_t c_runtime_internal_error(){
     fprintf(stderr, "An Internal Error has occurred. The runtime library is likely \
     to be written incorrectly. Type Checking perhaps is not sound.\n");
+    exit(1);
     return -1;
 }
 
-uint64_t throwException(char* errMsg){
+uint64_t errorAndAbort(char* errMsg){
     
     fprintf(stderr, "%s", errMsg);
-    exit(-1);
+    exit(1);
     return -1;
 }
 

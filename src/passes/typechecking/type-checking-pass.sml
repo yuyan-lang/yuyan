@@ -186,23 +186,32 @@ infix 5 <?>
         fun typeMismatch e synthesized checked= genSingletonError (reconstructFromRExpr e)
                 ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "类型不匹配(type mismatch) \n 推断的类型(synthesized type) : " ^ PrettyPrint.show_typecheckingType synthesized
                 ^ " \n 检查的类型(checked type) : " ^ PrettyPrint.show_typecheckingType checked) NONE
-        fun attemptToProjectNonProd e ctx = genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "试图从非乘积类型中投射(attempt to project out of product type)") (showctx ctx)
-        fun attemptToCaseNonSum e ctx = genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "试图对非总和类型进行分析(attempt to case on non-sum types)") (showctx ctx)
-        fun attemptToApplyNonFunction e ctx = genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "试图使用非函数(attempt to apply on nonfunction types)") (showctx ctx)
-        fun attemptToApplyNonUniversal e ctx = genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "试图使用非通用类型(attempt to apply on nonuniversal types)") (showctx ctx)
-        fun openTypeCannotExitScope e ctx = genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "‘打开’的类型不能退出作用域(open's type cannot exit scope)") (showctx ctx)
-        fun attemptToOpenNonExistentialTypes e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "试图打开非存在类型(attempt to open non existential types)") (showctx ctx)
-        fun attemptToUnfoldNonRecursiveTypes e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "试图展开非递归类型(attempt to unfold non recursive type)") (showctx ctx)
-        fun expressionDoesNotSupportTypeSynthesis e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "表达式不支持类型合成，请指定类型") (showctx ctx)
-        fun prodTupleLengthMismatch e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "数组长度与类型不匹配(prod tuple length mismatch)") (showctx ctx)
-        fun expectedProdType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待的类型是乘积类型(expected prod)") (showctx ctx)
-        fun expectedSumType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待总和类型(expected sum types)") (showctx ctx)
-        fun expectedFunctionType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待函数类型(expected sum types)") (showctx ctx)
-        fun expectedExistentialType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待存在类型(expected existential types)") (showctx ctx)
-        fun expectedUniversalType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待通用类型(expected universal types)") (showctx ctx)
-        fun expectedRecursiveType e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "期待递归类型(expected existential types)") (showctx ctx)
-        fun firstArgumentOfCCallMustBeStringLiteral e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "C调用的第一个参数必须是字符串(first argument of ccall must be a string literal)") (showctx ctx)
-        fun ccallArgumentsMustBeImmediate e ctx =  genSingletonError (reconstructFromRExpr e) ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "C调用的参数必须是直接值(arguments of ccall must be immediate)") (showctx ctx)
+        fun exprTypeError e tt ctx msg= genSingletonError (reconstructFromRExpr e) 
+        ((if DEBUGSHOWEXPR then 
+        "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`:" ^
+        "`" ^ PrettyPrint.show_typecheckingType tt ^ "`" 
+        else "") ^ msg) (showctx ctx)
+        fun exprError e ctx msg= genSingletonError (reconstructFromRExpr e) 
+        ((if DEBUGSHOWEXPR then 
+        "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`"
+        else "") ^ msg) (showctx ctx)
+        fun attemptToProjectNonProd e tt ctx = exprTypeError e tt ctx "试图从非乘积类型中投射(attempt to project out of product type)"
+        fun attemptToCaseNonSum e tt ctx = exprTypeError e tt ctx "试图对非总和类型进行分析(attempt to case on non-sum types)"
+        fun attemptToApplyNonFunction e tt ctx = exprTypeError e tt ctx "试图使用非函数(attempt to apply on nonfunction types)"
+        fun attemptToApplyNonUniversal e tt ctx = exprTypeError e tt ctx "试图使用非通用类型(attempt to apply on nonuniversal types)"
+        fun openTypeCannotExitScope e tt ctx = exprTypeError e tt ctx "‘打开’的类型不能退出作用域(open's type cannot exit scope)"
+        fun attemptToOpenNonExistentialTypes e tt ctx =  exprTypeError e tt ctx "试图打开非存在类型(attempt to open non existential types)"
+        fun attemptToUnfoldNonRecursiveTypes e tt ctx =  exprTypeError e tt ctx "试图展开非递归类型(attempt to unfold non recursive type)"
+        fun expressionDoesNotSupportTypeSynthesis e ctx =  exprError e ctx "表达式不支持类型合成，请指定类型"
+        fun prodTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配(prod tuple length mismatch)"
+        fun expectedProdType e tt ctx =  exprTypeError e tt ctx "期待的类型是乘积类型(expected prod)"
+        fun expectedSumType e tt ctx =  exprTypeError e tt ctx "期待总和类型(expected sum types)"
+        fun expectedFunctionType e tt ctx =  exprTypeError e tt ctx "期待函数类型(expected sum types)"
+        fun expectedExistentialType e tt ctx =  exprTypeError e tt ctx "期待存在类型(expected existential types)"
+        fun expectedUniversalType e tt ctx =  exprTypeError e tt ctx "期待通用类型(expected universal types)"
+        fun expectedRecursiveType e tt ctx =  exprTypeError e tt ctx "期待递归类型(expected existential types)"
+        fun firstArgumentOfCCallMustBeStringLiteral e ctx =  exprError e ctx "C调用的第一个参数必须是字符串(first argument of ccall must be a string literal)"
+        fun ccallArgumentsMustBeImmediate e ctx =  exprError e ctx "C调用的参数必须是直接值(arguments of ccall must be immediate)"
         fun typeDeclContainsFreeVariables s ctx =  genSingletonError s ("类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctx ctx)
         fun termTypeDeclContainsFreeVariables s ctx =  genSingletonError s ("值类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctx ctx)
         fun importError s ctx = genSingletonError s ("导入模块时出错") (showctx ctx)
@@ -227,7 +236,7 @@ infix 5 <?>
                     | RUnitExpr(soi) => Success (CUnitExpr, UnitType)
                     | RProj(e, l, soi) => synthesizeType ctx e >>= (fn t =>  case t of 
                             (ce, Prod ls) => fmap (fn x => (CProj(ce, l, Prod ls),x)) (lookupLabel ls l)
-                            | _ => Errors.attemptToProjectNonProd e ctx
+                            | _ => Errors.attemptToProjectNonProd e (#2 t) ctx
                             (* raise TypeCheckingFailure "Attempt to project out of non product type" *)
                     )
                     | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn t => case t of
@@ -258,7 +267,7 @@ infix 5 <?>
                                 )
                             end
                             (* | _ => raise TypeCheckingFailure "Attempt to case on non sum types") *)
-                            | _ => Errors.attemptToCaseNonSum e ctx
+                            | _ => Errors.attemptToCaseNonSum e (#2 t) ctx
                             )
                     | RLamWithType (t, ev, e, soi) => 
                         synthesizeType (addToCtxA (TermTypeJ([ev], t, NONE)) ctx) e >>= (fn (bodyExpr, returnType) =>
@@ -269,14 +278,14 @@ infix 5 <?>
                         (checkType ctx e2 t1) >>= (fn ce2 => 
                         Success(CApp (ce1,ce2, Func(t1,t2)), t2)
                         )
-                        | (_, t) => Errors.attemptToApplyNonFunction e ctx
+                        | (_, t) => Errors.attemptToApplyNonFunction e (t) ctx
                     )
                         (* raise TypeCheckingFailure ("Application on nonfunction, got " ^ PrettyPrint.show_typecheckingType t)) *)
                     | RTAbs (tv, e2, soi) =>   synthesizeType ctx  e2 >>= (fn (ce2, bodyType) => 
                     Success (CTAbs(tv, ce2, Forall (tv, bodyType)), Forall (tv, bodyType)) )
                     | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn st => case st of
                         (ce2, Forall (tv, tb)) => Success(CTApp(ce2,t, Forall(tv, tb)), substTypeInType t [tv] tb)
-                        | _ => Errors.attemptToApplyNonUniversal e ctx
+                        | _ => Errors.attemptToApplyNonUniversal e (#2 st) ctx
                         (* raise TypeCheckingFailure "TApp on non universal types" *)
                         )
                     (* | Pack (t, e2) => *)
@@ -285,15 +294,15 @@ infix 5 <?>
                         synthesizeType (addToCtxA (TermTypeJ([ev], 
                         substTypeInType (TypeVar [tv]) [tv'] tb, NONE)) ctx) e2 >>= (fn (ce2, synthesizedType) =>
                         if List.exists (fn t => t = [tv]) (freeTVar synthesizedType)
-                            then Errors.openTypeCannotExitScope e ctx
+                            then Errors.openTypeCannotExitScope e synthesizedType ctx
                             (* raise TypeCheckingFailure "Open's type cannot exit scope" *)
                             else Success(COpen((Exists(tv', tb), ce1), (tv, ev, ce2), synthesizedType), synthesizedType)
                         )
-                            | _ => Errors.attemptToOpenNonExistentialTypes e ctx)
+                            | _ => Errors.attemptToOpenNonExistentialTypes e (#2 synt) ctx)
                     (* | Fold e2 => Fold (substTypeInExpr tS x e2) *)
                     | RUnfold (e2, soi) => synthesizeType ctx e2 >>= (fn synt => case synt of
                         (ce2, Rho (tv, tb)) => Success (CUnfold(ce2, Rho(tv, tb)), substTypeInType (Rho (tv, tb)) [tv] tb)
-                        | _ => Errors.attemptToUnfoldNonRecursiveTypes e ctx
+                        | _ => Errors.attemptToUnfoldNonRecursiveTypes e (#2 synt) ctx
                         )
                     | RStringLiteral(l, soi) => Success(CStringLiteral l, BuiltinType(BIString))
                     | RIntConstant(i, soi) => Success(CIntConstant i, BuiltinType(BIInt))
@@ -354,12 +363,12 @@ infix 5 <?>
                         (* raise TypeCheckingFailure "unit expr will have unit type" *)
                     | RTuple (l, soi) => (case tt of 
                         Prod ls => if List.length l <> List.length ls
-                                    then Errors.prodTupleLengthMismatch e ctx
+                                    then Errors.prodTupleLengthMismatch e tt ctx
                                     (* raise TypeCheckingFailure "Prod tuple length mismatch" *)
                                     else collectAll (List.tabulate(List.length l, (fn i => 
                                     checkType ctx (List.nth(l, i)) (#2 (List.nth(ls, i)))))) >>= (fn checkedElems => 
                                     Success(CTuple ( checkedElems, (Prod ls))))
-                        | _ => Errors.expectedProdType e ctx
+                        | _ => Errors.expectedProdType e tt ctx
                         (* raise TypeCheckingFailure "Expected Prod" *)
                         )
                     | RProj(e, l, soi) =>
@@ -373,7 +382,7 @@ infix 5 <?>
                                 checkType ctx e lookedupType >>= (fn checkedExpr => 
                                     Success(CInj(l, checkedExpr, Sum ls))
                                 ))
-                        | _ => Errors.expectedSumType originalExpr ctx
+                        | _ => Errors.expectedSumType originalExpr tt ctx
                     )
                     | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn synt => case synt of
                             (ce, Sum ls) => 
@@ -383,12 +392,12 @@ infix 5 <?>
                                         checkType (addToCtxA (TermTypeJ([ev], lookedUpType , NONE)) ctx) e tt))
                                 ) cases)) >>= (fn checkedCases  
                                     => Success(CCase((Sum ls, ce), checkedCases , tt)))
-                            | _ => Errors.attemptToCaseNonSum originalExpr ctx)
+                            | _ => Errors.attemptToCaseNonSum originalExpr (#2 synt) ctx)
                     | RLam(ev, eb, soi) => (case tt of
                         Func(t1,t2) => 
                             checkType (addToCtxA (TermTypeJ([ev], t1,NONE)) ctx) eb t2
                             >>= (fn checkedExpr => Success(CLam(ev, checkedExpr, tt)))
-                        | _ => Errors.expectedFunctionType e ctx
+                        | _ => Errors.expectedFunctionType e tt ctx
                         (* raise TypeCheckingFailure ("Lambda is not function got " ^ PrettyPrint.show_typecheckingType tt) *)
                         )
                     | RLamWithType (t, ev, eb, soi) => (case tt of
@@ -397,7 +406,7 @@ infix 5 <?>
                                 Success(CLam(ev, checkedBody , tt)))
                                 )
                             )
-                        | _ => Errors.expectedFunctionType e ctx
+                        | _ => Errors.expectedFunctionType e  tt ctx
                         (* raise TypeCheckingFailure "Lambda is not function" *)
                         )
                     | RSeqComp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn (ce1, t1) => 
@@ -412,27 +421,27 @@ infix 5 <?>
                                 )
                             )
                         )
-                        | _ => Errors.attemptToApplyNonFunction e ctx)
+                        | _ => Errors.attemptToApplyNonFunction e (#2 synt) ctx)
                         (* raise TypeCheckingFailure "Application on nonfunction") *)
                     | RTAbs (tv, e2, soi) => (case tt of
                         Forall (tv', tb) => 
                                 checkType ctx e2 (substTypeInType (TypeVar [tv]) [tv'] tb) >>= (fn ce2 => 
                                             Success(CTAbs (tv, ce2, tt))
                                 )
-                        | _ => Errors.expectedUniversalType e  ctx
+                        | _ => Errors.expectedUniversalType e tt ctx
                         (* raise TypeCheckingFailure "Encountered TAbs" *)
                     )
                     | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn synt => case synt of
                         (ce2, Forall (tv, tb)) => (assertTypeEquiv e tt (substTypeInType t [tv] tb) >>
                         Success(CTApp(ce2, t, Forall(tv, tb))))
-                        | _ => Errors.attemptToApplyNonUniversal e ctx
+                        | _ => Errors.attemptToApplyNonUniversal e (#2 synt) ctx
                         (* raise TypeCheckingFailure "TApp on non universal types" *)
                         )
                     | RPack (t, e2, soi) => (case tt of
                         Exists (tv, tb) => 
                                 checkType ctx e2 (substTypeInType t [tv]  tb) >>= (fn ce2 => 
                                                 Success(CPack(t, ce2, tt)))
-                        | _ => Errors.expectedExistentialType e ctx
+                        | _ => Errors.expectedExistentialType e (tt) ctx
                         (* raise TypeCheckingFailure "Pack <-> Exists" *)
                     )
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt of
@@ -441,7 +450,7 @@ infix 5 <?>
                         >>= (fn ce2 => 
                         Success(COpen((Exists (tv', tb), ce1), (tv, ev, ce2), tt))
                         )
-                        | _ => Errors.attemptToOpenNonExistentialTypes e ctx
+                        | _ => Errors.attemptToOpenNonExistentialTypes e (#2 synt) ctx
                     )
                         (* raise TypeCheckingFailure "cannot open non existential types") *)
                     | RFold (e2, soi) => (case tt
@@ -449,14 +458,14 @@ infix 5 <?>
                         Rho (tv ,tb) => 
                         checkType ctx e2 (substTypeInType (Rho(tv, tb)) [tv] tb)
                         >>= (fn ce2 => Success (CFold(ce2, tt)))
-                        | _ => Errors.expectedRecursiveType e ctx
+                        | _ => Errors.expectedRecursiveType e tt ctx
                         (* raise TypeCheckingFailure "Expected Rho" *)
                             )
                     | RUnfold (e2,soi) => synthesizeType ctx e2  >>= (fn synt => case synt of
                         (ce2, Rho (tv, tb)) =>(
                             assertTypeEquiv e (substTypeInType (Rho (tv, tb)) [tv] tb) tt >>
                             Success(CUnfold(ce2, Rho(tv,tb))))
-                        | _ => Errors.attemptToUnfoldNonRecursiveTypes e ctx
+                        | _ => Errors.attemptToUnfoldNonRecursiveTypes e (#2 synt) ctx
                         (* raise TypeCheckingFailure "Cannot unfold non recursive type" *)
                         )
                     | RFix (ev, e, soi)=> checkType (addToCtxA (TermTypeJ([ev] , tt, NONE)) ctx) e tt

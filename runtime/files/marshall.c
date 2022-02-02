@@ -15,13 +15,15 @@ uint64_t addr_to_data(yy_ptr ptr){
 int64_t addr_to_int(yy_ptr arg) {
     return *((int64_t *)&arg[1]);
 }
-double  addr_to_double(yy_ptr arg) {
-    return *((double *)&arg[1]);
-}
+
 
 uint64_t getHeader(uint64_t type, uint64_t length) {
     uint64_t header =  type ;
     header= header<< (62 - 6);
+    if(length > 65535){
+        /* errorAndAbort*/
+        errorAndAbort("Attempt to allocate datatype of size > 65535 ");
+    }
     uint64_t lengthMask = length << (62 - 22);
     header = header | lengthMask;
     // TODO: (Maybe? add gc bits (but we're doing gc through libgc, not sure if it is still necessary))
@@ -54,6 +56,11 @@ yy_ptr double_to_addr(double i){
     returnStorage[1] = *(uint64_t *)&i;
     return returnStorage;
 }
+
+double  addr_to_double(yy_ptr arg) {
+    return *((double *)&arg[1]);
+}
+
 
 
 yy_ptr injection_to_addr(uint64_t index, const char* label, yy_ptr elem){
@@ -159,4 +166,6 @@ yy_ptr array_to_iso_addr(uint64_t length, const yy_ptr elems[]){
 
     return res;
 }
+
+
 

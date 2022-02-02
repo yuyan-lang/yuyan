@@ -158,6 +158,19 @@ case x of
       | BFHandle => "bf_handle"
 end
 
+fun show_builtintype x = let 
+open TypeCheckingAST
+in
+case x of
+                     (BIString) => "(string)" 
+                    | (BIBool) => "(bool)" 
+                    | (BIInt) => "(int)" 
+                    | (BIReal) => "(real)" 
+                    | (BIDynClsfd) => "(clsfd)" 
+                    | BIForeignType i => "(foreign_type:" ^ Int.toString i ^ ")"
+                    end
+
+
 (* fun show_statementast x = let 
 open StatementAST
 in case x of 
@@ -181,11 +194,8 @@ in case x of
                     | Forall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | Exists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | Rho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | BuiltinType (BIString) => "(string)" 
-                    | BuiltinType (BIBool) => "(bool)" 
-                    | BuiltinType (BIInt) => "(int)" 
-                    | BuiltinType (BIReal) => "(real)" 
-                    | BuiltinType (BIDynClsfd) => "(clsfd)" 
+                    | BuiltinType (bi) => show_builtintype bi
+  
 end
 
 

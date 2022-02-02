@@ -11,6 +11,8 @@ structure TypeCheckingAST = struct
                          | BIReal
                          | BIBool
                          | BIDynClsfd (* dynamically classified value *)
+                         | BIForeignType of int (* an abstract type denoting some c structure *)
+                         
     datatype BuiltinFunc = BFCallCC
                          | BFNewDynClsfdValueWithString
                          | BFRaise
