@@ -6,8 +6,6 @@ open CPSAst
 
 exception CPSInternalError
 
-    val getCurExnHandlerName = "yyGetCurrentExceptionHandler"
-    val setCurExnHandlerName = "yySetCurrentExceptionHandler"
 
     fun kcc (cc : cpsvar -> cpscomputation) : cpscontinuation = 
         let val v = CPSVarLocal (UID.next())
@@ -24,6 +22,12 @@ exception CPSInternalError
         val v2 = (UID.next())
         in (v1, v2, cc v1 v2) end
 
+    val getCurExnHandlerName = "yyGetCurrentExceptionHandler"
+    val setCurExnHandlerName = "yySetCurrentExceptionHandler"
+    fun cpsGetCurrentExnHanlder(cc : cpsvar -> cpscomputation) = 
+            CPSFfiCCall (UTF8String.fromString getCurExnHandlerName, [], kcc cc) 
+    fun cpsSetCurrentExnHandler (h : cpsvalue) (cc : unit -> cpscomputation) =
+            CPSFfiCCall( UTF8String.fromString setCurExnHandlerName, [h], kcc (fn _ => cc ()))
     fun klookupLabel ( ctx : (Label * Type) list) (l : Label) : int = 
         case ctx of 
              (n1, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel cs l+1
@@ -40,19 +44,25 @@ exception CPSInternalError
                 => fn ret (* return is the continuation (the real cc) that expects a value of b 
                                 (* obtained either from the return of the arg or from throw of the arg *)
                 ! *)=>
+                (* grab the current exception handler for restoring *)
+                    cpsGetCurrentExnHanlder (fn handlerAtEntry => 
                         (* we first construct the throw function *)
-                        CPSAbs(kcc2' (fn throwArg =>  
+                        CPSAbs(kcc2' (fn throwArg =>  (* this is the shortcut answer we're looking for *)
                             fn throwRet (* the continuation of the throw is ignored! *)
                             =>
-                                (* throwing to continuation argument always apply single, 
-                                    see the codes for app and abs *)
-                                CPSAppSingle(CPSValueVar (CPSVarLocal ret), CPSValueVar (CPSVarLocal throwArg))
+                                (* reset the current handler when the inner computation throws *)
+                                cpsSetCurrentExnHandler (CPSValueVar handlerAtEntry) (fn _ => 
+                                    (* throwing to continuation argument always apply single, 
+                                        see the codes for app and abs *)
+                                    CPSAppSingle(CPSValueVar (CPSVarLocal ret), CPSValueVar (CPSVarLocal throwArg))
+                                )
                             ), NONE, kcc (fn throwFunc => 
                                 CPSApp(CPSValueVar (CPSVarLocal arg), 
                                         (CPSValueVar throwFunc, CPSValueVar (CPSVarLocal ret))
                                     )
                             )
                         )
+                    )
                 ), NONE, kcc cc) (* cc is the continuation that expects the value of callcc *)
             | BFNewDynClsfdValueWithString => 
                 CPSAbs (kcc2' (fn argName  (* arg the name of classified  *)
@@ -109,10 +119,9 @@ exception CPSInternalError
                 ), NONE, kcc cc) (* cc is the continuation that expects the value of this builtin function *)
             | BFRaise => 
                 CPSAbs(kcc2' (fn exnVal => fn ret => 
-                    CPSFfiCCall (UTF8String.fromString getCurExnHandlerName, [],
-                    kcc (fn curHandler => 
+                    cpsGetCurrentExnHanlder(fn curHandler => 
                         CPSAppSingle(CPSValueVar curHandler, CPSValueVar (CPSVarLocal exnVal))
-                    )) 
+                    )
                 ), NONE, kcc cc)
                 (* Handler should always be AbsSingle *)
             | BFHandle => 
@@ -120,25 +129,25 @@ exception CPSInternalError
                 CPSAbs(kcc2' (fn tup => 
                 fn retVal (* the return value of the entire computation *)=> 
                     (* retrieves the current exception handler *)
-                    CPSFfiCCall( UTF8String.fromString getCurExnHandlerName, [], kcc (fn originalHandler => 
+                    cpsGetCurrentExnHanlder (fn originalHandler => 
                         (* construct the function that resets the handler to original and return *)
                         CPSAbsSingle(kcc' (fn retValue => 
-                                CPSFfiCCall( UTF8String.fromString setCurExnHandlerName, [CPSValueVar originalHandler], kcc (fn _ => 
+                                cpsSetCurrentExnHandler (CPSValueVar originalHandler) (fn _ => 
                                     CPSAppSingle(CPSValueVar (CPSVarLocal retVal), CPSValueVar (CPSVarLocal retValue))
-                                ))
+                                )
                             ), NONE, kcc (fn resetHandlerAndReturn => 
                                 (* retrieves the new handler from argument tuple *)
                                 CPSProj(CPSValueVar (CPSVarLocal tup), 1, kcc (fn newHandler => 
                                     (* constructs the real handler that is to be executed in the original handler *)
                                     CPSAbsSingle(kcc' (fn exceptionVal => 
                                         (* it first resets the current exception handler *)
-                                        CPSFfiCCall( UTF8String.fromString setCurExnHandlerName, [CPSValueVar originalHandler], kcc (fn _ => 
+                                        cpsSetCurrentExnHandler (CPSValueVar originalHandler) (fn _ => 
                                             (* it applies the new handler to the exception value and the global return point *)
                                             CPSApp(CPSValueVar newHandler, (CPSValueVar (CPSVarLocal exceptionVal), CPSValueVar (CPSVarLocal retVal)))
-                                        ))
+                                        )
                                     ), NONE, kcc (fn realNewHanlder =>
                                         (* sets the current exception handler to the real new handler *)
-                                        CPSFfiCCall( UTF8String.fromString setCurExnHandlerName, [CPSValueVar realNewHanlder], kcc (fn _ => 
+                                        cpsSetCurrentExnHandler (CPSValueVar realNewHanlder) (fn _ => 
                                             (* gets the real expression *)
                                             CPSProj(CPSValueVar (CPSVarLocal tup), 0, kcc (fn tryFunc => 
                                                 CPSUnit (kcc (fn unitVal => 
@@ -146,12 +155,12 @@ exception CPSInternalError
                                                     CPSApp(CPSValueVar tryFunc, (CPSValueVar unitVal, CPSValueVar (resetHandlerAndReturn)))
                                                 ))
                                             ))
-                                        ))
+                                        )
                                     ))
                                 ))
 
                         ))
-                    ))
+                    )
                 ), NONE, kcc cc)
 
 
