@@ -311,6 +311,10 @@ infix 5 <?>
                         )
                     )
                     | RBuiltinFunc(f, s) => Success(CBuiltinFunc(f), BuiltinFunctions.typeOf f)
+                    | RSeqComp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn (ce1, t1) => 
+                        synthesizeType ctx e2 >>= (fn (ce2, t2) => 
+                            Success(CSeqComp(ce1, ce2, t1, t2), t2)
+                        ))
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
                     | _ => Errors.expressionDoesNotSupportTypeSynthesis e ctx
                     
@@ -396,6 +400,10 @@ infix 5 <?>
                         | _ => Errors.expectedFunctionType e ctx
                         (* raise TypeCheckingFailure "Lambda is not function" *)
                         )
+                    | RSeqComp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn (ce1, t1) => 
+                        checkType ctx e2 tt >>= (fn ce2 => 
+                            Success(CSeqComp(ce1, ce2, t1, tt))
+                        ))
                     | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn synt => case synt 
                         of (ce1, Func (t1, t2)) => (
                         assertTypeEquiv e t2 tt >> (

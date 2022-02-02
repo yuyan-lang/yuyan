@@ -53,6 +53,7 @@ structure TypeCheckingAST = struct
                     | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * StructureName.t list
                     | CBuiltinFunc of BuiltinFunc
+                    | CSeqComp of CExpr * CExpr * Type * Type (* type is the type of the second expression *)
 
 (* all types are fully normalized *)
     and CDeclaration = 
@@ -98,6 +99,7 @@ structure TypeCheckingAST = struct
                     | RLetIn of RDeclaration list * RExpr * sourceOpInfo
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
                     | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)
+                    | RSeqComp of RExpr * RExpr * sourceOpInfo
                     
 
 

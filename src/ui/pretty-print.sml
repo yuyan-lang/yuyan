@@ -218,6 +218,7 @@ RExprVar v => sst v
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
+                    | RSeqComp(e1, e2, soi) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
                 end
 
 and show_typecheckingRDecl x = let
@@ -270,6 +271,7 @@ in case x of
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
                     | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f
+                    | CSeqComp(e1, e2, t1, t2) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST

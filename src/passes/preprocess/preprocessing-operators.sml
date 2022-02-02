@@ -93,6 +93,7 @@ struct
     val typeAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 695 []
     val packExprOp = Operators.parseOperatorStr "入〇合〇" true false 560 []
     val unpackExprOp = Operators.parseOperatorStr "开〇则有〇者〇而〇" true false 540 [3,5]
+    val sequentialCompositionOp = Operators.parseOperatorStr "〇；〇" true false 535 []
     val ffiCCallOp = Operators.parseOperatorStr "《《C调用》》名〇传〇" true false 530 []
     val lambdaExprOp = Operators.parseOperatorStr "会〇而〇" true false 520 [1]
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
@@ -117,6 +118,6 @@ struct
         caseAlternativeOp, caseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
         ffiCCallOp,
         lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp,
-        letinOp
+        letinOp, sequentialCompositionOp
     ]
 end

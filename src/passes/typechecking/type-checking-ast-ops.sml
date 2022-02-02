@@ -153,6 +153,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | RLam (ev, e, soi)=> RLam (ev, substTypeInRExpr tS x e, soi)
             | RLamWithType (t, ev, e, soi) => RLamWithType (substTypeInType tS x t, ev, substTypeInRExpr tS x e, soi)
             | RApp (e1, e2, soi) => RApp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2, soi)
+            | RSeqComp (e1, e2, soi) => RSeqComp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2, soi)
             | RTAbs (tv, e2, soi) => (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
@@ -297,6 +298,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
         | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
         | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
         | RBuiltinFunc(f, s) => s
+        | RSeqComp(e1, e2, soi) => reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
     end
     
 end

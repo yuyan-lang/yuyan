@@ -266,6 +266,9 @@ struct
                     then fmap RTAbs(==/= (elaborateNewName (hd l), 
                     elaborateOpASTtoExpr (snd l) ctx, operSuc))
                     else
+                    if oper ~=** sequentialCompositionOp
+                    then fmap RSeqComp (==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else
                     if oper ~=** letinOp
                     then (
                         let 

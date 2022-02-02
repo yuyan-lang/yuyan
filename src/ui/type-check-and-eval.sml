@@ -28,8 +28,9 @@ open StaticErrorStructure
                                     Success _ => (
                                         if (#compileOnly) options 
                                         then OS.Process.success
-                                        else OS.Process.system "./.yybuild/yyexe"
-                                        )
+                                        else (if OS.Process.isSuccess (OS.Process.system "./.yybuild/yyexe")
+                                            then OS.Process.success else OS.Process.failure  (* mlton will fail for nonconfomant exit status*)
+                                        ))
                                     | DErrors l => (DebugPrint.p (PrintDiagnostics.showErrs l cm);OS.Process.failure)
                                     | NotAvailable => raise Fail "tcev30"
                             in 

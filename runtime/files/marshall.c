@@ -133,6 +133,11 @@ yy_ptr fold_to_addr(yy_ptr toFold) {
     result[1] = addr_to_data(toFold);
     return result;
 }
+yy_ptr function_to_addr(void* func) {
+    yy_ptr result = allocateAndSetHeader(1, 1);
+    result[1] = addr_to_data(func);
+    return result;
+}
 
 yy_ptr iso_list_nil_to_addr() {
     return fold_to_addr(injection_to_addr(0, iso_list_nil_label, unit_to_addr()));
@@ -154,3 +159,4 @@ yy_ptr array_to_iso_addr(uint64_t length, const yy_ptr elems[]){
 
     return res;
 }
+

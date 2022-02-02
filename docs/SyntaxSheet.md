@@ -48,6 +48,7 @@ The key words (that cannot appear as a name and has a special meaning no matter 
    |鉴〇而「曰〇则有〇而〇[或曰〇则有〇而〇]+」| case e of {l.x => e1 \| l2.y => e2} | 640 |
    |入〇合〇| pack t in e | 560 |
    |开〇则有〇者〇而〇| open e as t, x in e2 | 540 |
+|〇；〇|e1 ; e2 | 535 |
 |《《C调用》》名〇传〇 | ffi_c_call ... args ⟨e1,e2,e3⟩ | 530 |
 |虑〇以成〇之道| let ... in ... end | 525 |
 |会〇而〇| λ x. e | 520 |

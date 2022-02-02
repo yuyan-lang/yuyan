@@ -209,6 +209,9 @@ exception CPSInternalError
                         CPSApp(CPSValueVar v1, (CPSValueVar v2, CPSValueVar kont))
                      ))
                  ))
+            | CSeqComp(e1, e2, _, _) =>
+                cpsTransformExpr ctx e1 (fn v1 => 
+                 cpsTransformExpr ctx e2 cc)
             | CTAbs (tv, e2, _) => cpsTransformExpr ctx e2 cc
             | CTApp (e2, t, _) => cpsTransformExpr ctx e2 cc
             | CPack (t, e2, et) => cpsTransformExpr ctx e2 cc

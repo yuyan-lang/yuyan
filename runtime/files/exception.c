@@ -25,19 +25,22 @@ uint64_t throwException(char* errMsg){
 uint64_t yyThrowException(yy_ptr err){
     
     fprintf(stderr, "%s", addr_to_string(err));
-    exit(-1);
+    exit(1);
     return -1;
 }
 
 // I believe abssingle has two arguments , the first is just the closure itself
 uint64_t yyUncaughtException(yy_ptr closure, yy_ptr dynclsfdVal){
-    fprintf(stderr, "Uncaught Exception");
-    exit(-1);
+    fprintf(stderr, "豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：%s\n", addr_to_string(data_to_addr(dynclsfdVal[2])));
+    exit(1);
     return -1;
 }
 
-yy_ptr currentExceptionHandler = (uint64_t *) yyUncaughtException;
+yy_ptr currentExceptionHandler;
 
+void initialize_global_exception_handler(){
+    currentExceptionHandler =  function_to_addr(&yyUncaughtException);
+}
 
 
 yy_ptr yyGetCurrentExceptionHandler() {

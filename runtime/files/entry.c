@@ -19,9 +19,11 @@ int main(int argc, char* argv[]) {
     // initialize garbage collection
     GC_INIT();
 
-    // uv_replace_allocator(&GC_MALLOC, GC_REALLOC, GC_MALLOC, GC_FREE);
 
-    // initialize uv
+    // initialize global exception handler
+    initialize_global_exception_handler();
+
+    // initialize uv default loop (can replace)
     uv_global_loop = uv_default_loop();
     
 
