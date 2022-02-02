@@ -84,21 +84,23 @@ struct
             (* print (PrettyPrint.show_opast ast); *)
         case ast of
              UnknownOpName (s) => 
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《字符串》》") then Success(BuiltinType(BIString)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《整数》》") then Success(BuiltinType(BIInt)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《小数》》") then Success(BuiltinType(BIReal)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《动态分类值》》") then Success(BuiltinType(BIDynClsfd)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：字符串》》") then Success(BuiltinType(BIString)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：整数》》") then Success(BuiltinType(BIInt)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：小数》》") then Success(BuiltinType(BIReal)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：动态分类值》》") then Success(BuiltinType(BIDynClsfd)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：有》》") then Success(UnitType) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(NullType) else
                 Success(TypeVar [s])
             | OpUnparsedExpr x => raise Fail "ecp74"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoType e ctx
-            | OpAST(oper, []) => (
-                if oper ~=** unitTypeOp then Success(UnitType)
-                else if oper ~=** nullTypeOp then Success(NullType)
+            (* | OpAST(oper, []) => ( *)
+                (* if oper ~=** unitTypeOp then Success(UnitType)
+                else if oper ~=** nullTypeOp then Success(NullType) *)
                 (* else if oper ~=** builtinTypeStringOp then BuiltinType(BIString) *)
-                else 
+                (* else  *)
                 (* raise InternalErrorECP *)
-                genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
-                        )
+                (* genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
+                        ) *)
             | OpAST(oper, [a1,a2]) => (
                 if oper ~=** prodTypeOp
                 then (let val args = #1 (flattenRight ast oper)

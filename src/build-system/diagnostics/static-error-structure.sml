@@ -50,11 +50,14 @@ struct
     (* this is guaranteed to fail when x fails, it collects all errors that handler might generate *)
     (* the handler is untouched if first thing succeeds *)
     fun failLookahead (x : 'a witherrsoption) (handler :  unit -> 'b witherrsoption) : 'a witherrsoption = 
-    let val lookAheadId = UID.next()
+    let 
+    (* val lookAheadId = UID.next() *)
     in
         case x of
             Success y => Success(y)
-            | DErrors l => (case (DebugPrint.p ("Backtracking" ^ Int.toString lookAheadId); handler()) of 
+            | DErrors l => (case (
+                (* DebugPrint.p ("Backtracking" ^ Int.toString lookAheadId);  *)
+                handler()) of 
                     Success _ => DErrors l 
                     | DErrors l2 => DErrors (l@l2)
                     | NotAvailable => NotAvailable

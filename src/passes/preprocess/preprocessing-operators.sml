@@ -66,8 +66,8 @@ struct
     *)
 
     (* l : e *)
-    val unitTypeOp  = Operators.parseOperatorStr "有" false false 420 []
-    val nullTypeOp  = Operators.parseOperatorStr "无" false false 420 []
+    (* val unitTypeOp  = Operators.parseOperatorStr "有" false false 420 []
+    val nullTypeOp  = Operators.parseOperatorStr "无" false false 420 [] *)
     val labeledTypeCompOp  = Operators.parseOperatorStr "夫〇表〇" false false 400 [1]
     val prodTypeOp  = Operators.parseOperatorStr "〇合〇" true false 380 []
     val sumTypeOp  = Operators.parseOperatorStr "〇亦〇" true false 360 []
@@ -107,7 +107,8 @@ struct
     val allTypeOps = [
         (* builtinTypeStringOp, *)
         structureRefOp,
-        unitTypeOp, nullTypeOp, labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
+        (* unitTypeOp, nullTypeOp,  *)
+        labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
         typeInstantiationOp,
         universalTypeOp, existentialTypeOp, recursiveTypeOp
         , inlineCommentOp (* allow comment in types, but not important anyways, as both 

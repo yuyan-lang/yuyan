@@ -21,9 +21,6 @@ The key words (that cannot appear as a name and has a special meaning no matter 
  |览〇之书|  import S | - |
  |诵〇之书|  reexport S | - |
 | ------------- |-------------|  ---------- |
-| 《《字符串》》 | string (builtin) | 420 |
-| 有 | 1 | 420 |
-| 无 | 0 |  420 |
   |夫〇表〇| l : t | 400 |
   |〇合〇 | *  |  380 |
   |〇亦〇 | +  | 360 |
