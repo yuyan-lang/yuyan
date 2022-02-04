@@ -1,6 +1,6 @@
 #include "../globalInclude.h"
 
-yy_ptr yyGetRandomNumber(yy_ptr upperBoundPtr) {
+yy_ptr yyGetRandomInt(yy_ptr upperBoundPtr) {
     uint64_t result = 0;
     uint64_t upperBoundInt = addr_to_int(upperBoundPtr);
     uv_random_t req;
@@ -21,4 +21,9 @@ yy_ptr yyGetRandomNumber(yy_ptr upperBoundPtr) {
         resultInt = -resultInt;
     }
     return int_to_addr(resultInt);
+}
+
+yy_ptr yyGetRandomDouble() {
+    double r = (double)rand() / RAND_MAX;
+    return double_to_addr(r);
 }

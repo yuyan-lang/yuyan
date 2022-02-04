@@ -4,6 +4,8 @@
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 #include <stdbool.h>
+#include <time.h>
+
 #ifdef __linux__
     #include <bsd/string.h>
 #endif

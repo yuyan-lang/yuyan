@@ -25,6 +25,10 @@ int main(int argc, char* argv[]) {
 
     // initialize uv default loop (can replace)
     uv_global_loop = uv_default_loop();
+
+    // initialize random seed
+    srand ( time ( NULL));
+
     
 
 

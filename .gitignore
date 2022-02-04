@@ -25,3 +25,5 @@ yy\ *
 yy_*
 
 *.dSYM
+
+*.gch
