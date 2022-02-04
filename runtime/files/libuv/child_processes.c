@@ -79,7 +79,14 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
         string_to_addr(stdErrOutput == NULL ? "" : stdErrOutput)
     };
 
-    fprintf(stderr, "%s : %s : %s", programName,args[1],  stdOutOutput);
+    // print debug
+    {
+        fprintf(stderr, "%s : ", programName);
+        for(int i = 0; i < argumentCount; i ++){
+            fprintf(stderr, "%s , ", args[i+1]);
+        }
+        fprintf(stderr, " : %s", stdOutOutput);
+    }
 
     yy_ptr resultTuple = tuple_to_addr(3, results);
 
