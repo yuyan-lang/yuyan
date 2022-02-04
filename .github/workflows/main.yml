@@ -61,7 +61,7 @@ jobs:
           wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz
           tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
           cd mlton-20210117-1.amd64-linux-glibc2.31/
-          make
+          sudo make
           sudo make install
 
 
