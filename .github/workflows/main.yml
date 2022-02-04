@@ -64,6 +64,16 @@ jobs:
           sudo make
           sudo make install
 
+      - name: Install MatPlot++
+        run: |
+          git clone https://github.com/alandefreitas/matplotplusplus.git
+          cd matplotplusplus
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O2" -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF 
+          sudo cmake --build . --parallel 2 --config Release
+          sudo cmake --install .
+
 
 
 
@@ -75,5 +85,8 @@ jobs:
           make 
           make install
           yy rv yylib/runtest.yuyan
+      
+      - name: make test
+        run: make test
 
 
