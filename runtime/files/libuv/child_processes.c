@@ -80,13 +80,13 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
     };
 
     // print debug
-    {
-        fprintf(stderr, "%s : ", programName);
-        for(int i = 0; i < argumentCount; i ++){
-            fprintf(stderr, "%s , ", args[i+1]);
-        }
-        fprintf(stderr, " : %s", stdOutOutput);
-    }
+    // {
+    //     fprintf(stderr, "%s : ", programName);
+    //     for(int i = 0; i < argumentCount; i ++){
+    //         fprintf(stderr, "%s , ", args[i+1]);
+    //     }
+    //     fprintf(stderr, " : %s", stdOutOutput);
+    // }
 
     yy_ptr resultTuple = tuple_to_addr(3, results);
 

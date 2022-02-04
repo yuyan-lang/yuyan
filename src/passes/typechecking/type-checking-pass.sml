@@ -525,10 +525,10 @@ infix 5 <?>
                     else 
                     normalizeType (applyContextToType ctx t) >>= (fn normalizedType => 
                     (
-                        DebugPrint.p (
+                        (* DebugPrint.p (
                             StructureName.toStringPlain (getCurSName ctx)
                             ^" normlizedType is " ^ PrettyPrint.show_typecheckingType normalizedType ^ "\n")
-                        ;
+                        ; *)
                     typeCheckSignature (addToCtxR (TypeDef([n], normalizedType, ())) ctx) ss 
                         (acc@[CTypeMacro((getCurSName ctx)@[n], normalizedType)])
                     )
