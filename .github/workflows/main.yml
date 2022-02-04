@@ -62,7 +62,7 @@ jobs:
           tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
           cd mlton-20210117-1.amd64-linux-glibc2.31/
           make
-          make install
+          sudo make install
 
 
 
