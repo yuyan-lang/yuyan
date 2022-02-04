@@ -35,6 +35,6 @@ public class MatrixMultiplication {
 
         long stop = System.nanoTime();
         double timeDiff = (stop - start) * 1e-9;
-        System.out.printf("%f",timeDiff);
+        System.out.printf("%f\n",timeDiff);
     }
 }

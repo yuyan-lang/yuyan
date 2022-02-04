@@ -16,6 +16,10 @@ yy_ptr yyIntSub(yy_ptr i1, yy_ptr i2){
 yy_ptr yyIntMult(yy_ptr i1, yy_ptr i2){
     return int_to_addr(addr_to_int(i1) * addr_to_int(i2));
 }
+yy_ptr yyIntDiv(yy_ptr i1, yy_ptr i2){
+    return int_to_addr(addr_to_int(i1) / addr_to_int(i2));
+}
+
 
 // https://stackoverflow.com/questions/8257714/how-to-convert-an-int-to-string-in-c/8257754#8257754
 yy_ptr yyIntToString(yy_ptr i1){
@@ -36,6 +40,9 @@ yy_ptr yyDoubleSub(yy_ptr i1, yy_ptr i2){
 yy_ptr yyDoubleMult(yy_ptr i1, yy_ptr i2){
     return double_to_addr(addr_to_double(i1) * addr_to_double(i2));
 }
+yy_ptr yyDoubleDiv(yy_ptr i1, yy_ptr i2){
+    return double_to_addr(addr_to_double(i1) / addr_to_double(i2));
+}
 
 // https://stackoverflow.com/questions/8257714/how-to-convert-an-int-to-string-in-c/8257754#8257754
 yy_ptr yyDoubleToString(yy_ptr i1){
@@ -52,7 +59,8 @@ yy_ptr yyDoubleToInt(yy_ptr d) {
 }
 
 yy_ptr yyIntToDouble(yy_ptr i) {
-    return double_to_addr((double)addr_to_int(i));
+    double value = (double)addr_to_int(i);
+    return double_to_addr(value);
 }
 
 yy_ptr yyStringToInt(yy_ptr i1){

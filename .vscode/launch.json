@@ -20,10 +20,10 @@
             "name": "(lldb2)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/.yybuild/yyexe",
+            "program": "${workspaceRoot}/performance-investigation/matrix-multiply/time_plot",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceRoot}/performance-investigation/matrix-multiply/",
             "environment": [],
             "externalConsole": false,
             "MIMode": "lldb"

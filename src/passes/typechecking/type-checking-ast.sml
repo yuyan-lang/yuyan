@@ -123,4 +123,13 @@ structure TypeCheckingAST = struct
     type RSignature = RDeclaration list
 
 
+(* these exist here for pretty printing *)
+(* g for generic *)
+ datatype 'a gmapping = TermTypeJ of StructureName.t * Type  * 'a
+                    | TypeDef of StructureName.t * Type * unit
+datatype 'a gcontext = Context of StructureName.t * bool * 
+    ('a gmapping) list
+    type mapping = (StructureName.t option) gmapping (* original name (for use with open) *)
+    type context = (StructureName.t option) gcontext (* original name (for use with open) *)
+
 end

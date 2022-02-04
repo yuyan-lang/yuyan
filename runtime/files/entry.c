@@ -35,9 +35,9 @@ int main(int argc, char* argv[]) {
 
 
 int informResult (uint64_t result[]) {
-    fprintf(stderr, "代码已经运行成功，结果是：");
-    informResultRec(stderr, result, 0);
-    fprintf(stderr, "\n");
+    // fprintf(stderr, "代码已经运行成功，结果是：");
+    // informResultRec(stderr, result, 0);
+    // fprintf(stderr, "\n");
     // do not inform result as we're moving to a mature language
     return 0;
 }

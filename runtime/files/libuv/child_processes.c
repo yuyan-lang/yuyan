@@ -50,7 +50,8 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 
     int r;
     if ((r = uv_spawn(uv_global_loop, &child_req, &options))) {
-        fprintf(stderr, "uv_spawn error: (custom) %s\n", uv_strerror(r));
+        fprintf(stderr, "uv_spawn error: (custom) %s:  %s\n", programName,  uv_strerror(r));
+        errorAndAbort("spawn error");
         // return 0;
     }
 
@@ -78,8 +79,7 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
         string_to_addr(stdErrOutput == NULL ? "" : stdErrOutput)
     };
 
-
-
+    fprintf(stderr, "%s : %s : %s", programName,args[1],  stdOutOutput);
 
     yy_ptr resultTuple = tuple_to_addr(3, results);
 

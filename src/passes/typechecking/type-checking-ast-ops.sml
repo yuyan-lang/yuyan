@@ -6,15 +6,6 @@ infix 5 >>=
 infix 5 =/=
 
 
-(* these exist here for pretty printing *)
-(* g for generic *)
- datatype 'a gmapping = TermTypeJ of StructureName.t * Type  * 'a
-                    | TypeDef of StructureName.t * Type * unit
-datatype 'a gcontext = Context of StructureName.t * bool * 
-    ('a gmapping) list
-    type mapping = (StructureName.t option) gmapping (* original name (for use with open) *)
-    type context = (StructureName.t option) gcontext (* original name (for use with open) *)
-
     fun getCurSName (Context(sName, _, _)) = sName
 
     fun appendAbsoluteMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
@@ -118,7 +109,7 @@ datatype 'a gcontext = Context of StructureName.t * bool *
     end
     fun normalizeType (t : Type) : Type witherrsoption  = 
     let 
-    in
+    val res = 
         case t of
             TypeVar t => Success(TypeVar t)
             | Prod l =>  fmap Prod (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
@@ -134,6 +125,9 @@ datatype 'a gcontext = Context of StructureName.t * bool *
             | UnitType => Success(UnitType)
             | NullType => Success(NullType)
             | BuiltinType(b) => Success(BuiltinType(b))
+    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingType ^"\n") *)
+    in
+        res
     end
 
 (* no capture as we're only interested in types *)

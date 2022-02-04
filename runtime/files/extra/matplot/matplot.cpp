@@ -13,22 +13,34 @@ void yy_matlib_createLinePlot_cpp(
 ){
 
     using namespace matplot;
-    for (std::vector<std::vector<double>>::iterator p=ysValuesList.begin(); 
-        p!=ysValuesList.end(); ++p){
-        plot(xValuesList, *p);
+    // for (std::vector<std::vector<double>>::iterator p=ysValuesList.begin(); 
+    //     p!=ysValuesList.end(); ++p){
+    //     plot(xValuesList, *p);
+    // }
+    auto p = plot(xValuesList, xValuesList);
+    for (int i = 0; i < ysValuesList.size(); i++)
+    {
+        auto p2 = plot(xValuesList, ysValuesList[i]);
+        p2->display_name(legendList[i]);
+        if(i == 0){
+            hold(on);
+        }
     }
+    hold(off);
 
     title(titleStr);
-    matplot::legend(legendList);
     xlabel(xAsixName);
     ylabel(yAsixName);
-    if (legendList.size() > 1) {
-        legend(legendList);
-    }
+    // if (legendList.size() > 1) {
+    //     matplot::legend(legendList);
+    // }
+    matplot::legend();
 
-    show();
+    // show();
     save(filename);
 }
+
+extern "C" {
 
 void yy_matlib_createLinePlot(
     char* filename,
@@ -58,4 +70,6 @@ void yy_matlib_createLinePlot(
         ysValuesListVec,
         legendListVec
     );
+}
+
 }

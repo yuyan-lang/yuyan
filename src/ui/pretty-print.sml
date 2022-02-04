@@ -306,14 +306,14 @@ fun show_utf8strings x = String.concatWith ", " (map show_utf8string x)
 fun show_token (CompilationStructure.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str)
 fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
 fun show_typecheckingpassmappping x = let
-open TypeCheckingASTOps
+open TypeCheckingAST
 in
   case x of
     TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingType t
     | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingType t
 end
 fun show_typecheckingpassctx x = let
-open TypeCheckingASTOps
+open TypeCheckingAST
 in
 case x of 
   Context(curSName, curVis, m) => (if curVis then "public " else "private ") ^

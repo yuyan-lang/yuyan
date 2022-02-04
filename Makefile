@@ -10,11 +10,11 @@ test: build
 	./yy rv yylib/runtest.yuyan
 	
 genDocs : build
-	./yy genDocs yylib/标准库。豫 
+	./yy genDocs yylib/总库。豫 
 
 install:  build
 	cp yy /usr/local/bin/yuyanlang
-	ln -s /usr/local/bin/yuyanlang /usr/local/bin/yy
+	ln -sf /usr/local/bin/yuyanlang /usr/local/bin/yy
 
 clean:
 	rm yy

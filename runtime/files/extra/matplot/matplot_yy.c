@@ -17,17 +17,17 @@ yy_ptr yyMatPlotCreateLinePlot(
 
     yy_ptr* xValuesPtrs = iso_list_get_elements(xValuesListAddr);
     yy_ptr* ysValuesPtrs = iso_list_get_elements(ysValuesListAddr);
-    yy_ptr* legendPtrs = iso_list_get_elements(legendList);
+    yy_ptr* legendPtrs = iso_list_get_elements(legendListAddr);
 
     for (int i = 0; i < xNum; i++){
-        xValuesList[i] = addr_to_int(xValuesPtrs);
+        xValuesList[i] = addr_to_double(xValuesPtrs[i]);
     }
     for (int j = 0; j < yNum; j ++){
         ysValuesList[j] = GC_MALLOC(xNum * sizeof(double));
-        yy_ptr *yValuesPtrs = iso_list_get_elements(ysValuesListAddr);
+        yy_ptr *yValuesPtrs = iso_list_get_elements(ysValuesPtrs[j]);
         for (int i = 0; i < xNum; i++)
         {
-            ysValuesList[j][i] = addr_to_int(yValuesPtrs[i]);
+            ysValuesList[j][i] = addr_to_double(yValuesPtrs[i]);
         }
     }
 
@@ -45,4 +45,5 @@ yy_ptr yyMatPlotCreateLinePlot(
         legendList,
         xNum,
         yNum );
+    return unit_to_addr();
 }
