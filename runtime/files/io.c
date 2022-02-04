@@ -58,7 +58,7 @@ int informResultRec (FILE *file, yy_ptr result, int prevPred) {
         fprintf(file,"』");
         break;
     case 7:
-        fprintf(file,"%lld", addr_to_int(result));
+        fprintf(file,"%lld", (long long) addr_to_int(result));
         break;
     case 8:
         fprintf(file,"%f", addr_to_double(result));
