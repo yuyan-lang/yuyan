@@ -28,13 +28,16 @@ jobs:
       - name: Info
         run : |
           pwd
+
+      - name: Install Dependencies
+        run : |
+          echo Installing Dependencies
+          brew install bdw-gc libuv mlton matplotplusplus llvm
         
 
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          echo Installing Dependencies
-          brew install bdw-gc libuv mlton matplotplusplus llvm
           make 
           make install
           yy rv yylib/runtest.yuyan
@@ -53,10 +56,22 @@ jobs:
       - name: Run a one-line script
         run: pwd
 
+      - name: Install MLton
+        run: |
+          wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz
+          tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
+          cd mlton-20210117-1.amd64-linux-glibc2.31/
+          make
+          make install
+
+
+
+
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
           sudo apt install libgc-dev libuv1-dev mlton llvm 
+
           make 
           make install
           yy rv yylib/runtest.yuyan

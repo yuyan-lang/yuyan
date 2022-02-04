@@ -20,14 +20,14 @@ endif
 libyyrtdebug.a: $(SOURCES)
 	$(CC) -c -g $(SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
 	$(CC) -c -g $(SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
-	llvm-ar rcs libyyrtdebug.a *.o 
+	ar rcs libyyrtdebug.a *.o 
 
 debug: libyyrtdebug.a
 
 libyyrtopt.a: $(SOURCES)
 	$(CC) -c -O3 $(SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
 	$(CC) -c -O3 $(SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
-	llvm-ar rcs libyyrtopt.a *.o 
+	ar rcs libyyrtopt.a *.o 
 
 opt : libyyrtopt.a
 
