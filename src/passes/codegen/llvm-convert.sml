@@ -157,18 +157,24 @@ in
             ) ::: recur k
             end
             | CPSBuiltinValue(CPSBvInt i, (t,k)) => 
-            let val name = UID.next()
+            let 
+            (* val name = UID.next() *)
             in (
-                [LLVMIntConstant(name, i)], [
-                    LLVMStoreArray(LLVMArrayTypeInt, (cpsVarToLLVMLoc t), [LLVMIntName name])
+                [
+                    (* LLVMIntConstant(name, i) *)
+                ], [
+                    LLVMStoreInt((cpsVarToLLVMLoc t), i)
                 ]
             ) ::: recur k
             end
             | CPSBuiltinValue(CPSBvReal r, (t,k)) => 
-            let val name = UID.next()
+            let
+             (* val name = UID.next() *)
             in (
-                [LLVMRealConstant(name, r)], [
-                    LLVMStoreArray(LLVMArrayTypeReal, (cpsVarToLLVMLoc t), [LLVMRealName name])
+                [
+                    (* LLVMRealConstant(name, r) *)
+                ], [
+                    LLVMStoreReal((cpsVarToLLVMLoc t), r)
                 ]
             ) ::: recur k
             end

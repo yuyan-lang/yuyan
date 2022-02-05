@@ -22,8 +22,8 @@ fun toLLVMValue (v : llvmvalue) = case v of
                 | LLVMStringName (i, _)=> toStringName i
                 | LLVMFunctionName(i, _) => toFunctionName i
                 | LLVMIntConst i => Int.toString i
-                | LLVMIntName i => toIntName i
-                | LLVMRealName i => toRealName i
+                (* | LLVMIntName i => toIntName i
+                | LLVMRealName i => toRealName i *)
 fun toLLVMValueType (v : llvmvalue) = case v of
     LLVMIntConst i => "i64"
     | _ => "i64"
@@ -56,7 +56,7 @@ let
           [toLocalVar tempVarName ^ " = ptrtoint i64 ("^ String.concatWith ", " (List.tabulate (argLength, fn _ => "i64*")) ^ ")* " 
           ^ toFunctionName i ^ " to i64 " ] @ (f (toLocalVar tempVarName))
         | LLVMIntConst i => f (Int.toString i)
-        | LLVMIntName i => 
+        (* | LLVMIntName i => 
           [toLocalVar tempVarName ^ " = load i64, i64* " ^ 
           toIntName i] @ (f (toLocalVar tempVarName))
         | LLVMRealName i => 
@@ -64,7 +64,7 @@ let
           toRealName i 
           , toLocalVar tempVarName2 ^ " = bitcast double " ^ toLocalVar tempVarName
           ^ " to i64 "
-          ] @ (f (toLocalVar tempVarName2))
+          ] @ (f (toLocalVar tempVarName2)) *)
     end
 
 fun storeIntToLocalVar (localVar : int)(intValue : int)  : string list= 
@@ -82,6 +82,15 @@ end
         if a mod 2 = 0 then #"0"  else #"1"
     ] *)
 
+
+fun storeIntToLLVMLoc  (llvmLoc : llvmlocation)(i : int )  : string list= 
+    [toLLVMLoc llvmLoc ^ " = inttoptr i64 " ^ Int.toString i ^ " to i64*"]
+fun storeRealToLLVMLoc  (llvmLoc : llvmlocation)(r : real)  : string list= 
+let val name = UID.next()
+in
+    [toLocalVar name ^ " = bitcast double " ^ Real.fmt (StringCvt.FIX (SOME 60)) r ^ " to i64",
+    toLLVMLoc llvmLoc ^ " = inttoptr i64 " ^ toLocalVar name ^ " to i64*"]
+end
 
 
 fun storeArrayToLLVMLoc (arrType : llvmarraytype) (llvmLoc : llvmlocation)(values : llvmvalue list)  : string list= 
@@ -225,6 +234,8 @@ fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
         LLVMStoreUnit(v) => storeArrayToLLVMLoc LLVMArrayTypeUnit v []
+        | LLVMStoreInt(v, i) => storeIntToLLVMLoc v i
+        | LLVMStoreReal(v, r) => storeRealToLLVMLoc v r
         | LLVMStoreArray(arrtype, v, arr) => storeArrayToLLVMLoc arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 
@@ -351,13 +362,14 @@ fun genLLVMStatement (s : llvmstatement) : string list =
 
 
 fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
-    case d of LLVMFunction (fname, args, body) => 
+    case d of 
+    LLVMFunction (fname, args, body) => 
         ["define i64 "^ toFunctionName fname ^ "(" 
             ^ String.concatWith ", " (map (fn arg => "i64* "^ toLocalVar arg ) args)
             ^ ") {"
             ]@(List.concat (map genLLVMStatement body))@
             ["}"]
-    | LLVMIntConstant(name, i) => 
+    (* | LLVMIntConstant(name, i) => 
         let 
         in 
         [toIntName name ^ " = constant i64 "  ^ Int.toString i]
@@ -366,7 +378,7 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
         let 
         in 
         [toRealName name ^ " = constant double "  ^ Real.fmt (StringCvt.FIX (SOME 60)) i]
-        end
+        end *)
     | LLVMStringConstant(sname, s) => 
         let 
         val rawChars = UTF8String.getBytes s

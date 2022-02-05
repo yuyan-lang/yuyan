@@ -13,7 +13,7 @@ uint64_t addr_to_data(yy_ptr ptr){
 }
 
 int64_t addr_to_int(yy_ptr arg) {
-    return *((int64_t *)&arg[1]);
+    return *((int64_t *)&arg);
 }
 
 
@@ -46,19 +46,23 @@ yy_ptr string_to_addr(const char * str){
     return returnStorage;
 }
 yy_ptr int_to_addr(int64_t i){
-    yy_ptr returnStorage = allocateAndSetHeader(7, 1);
-    returnStorage[1] = *(uint64_t *)&i;
-    return returnStorage;
+    // yy_ptr returnStorage = allocateAndSetHeader(7, 1);
+    // returnStorage[1] = *(uint64_t *)&i;
+    // return returnStorage;
+
+    return *(uint64_t **)&i;
 }
 
 yy_ptr double_to_addr(double i){
-    yy_ptr returnStorage = allocateAndSetHeader(8, 1);
-    returnStorage[1] = *(uint64_t *)&i;
-    return returnStorage;
+    // yy_ptr returnStorage = allocateAndSetHeader(8, 1);
+    // returnStorage[1] = *(uint64_t *)&i;
+    // return returnStorage;
+    return *(uint64_t **)&i;
 }
 
 double  addr_to_double(yy_ptr arg) {
-    return *((double *)&arg[1]);
+    // return *((double *)&arg[1]);
+    return *((double *)&arg);
 }
 
 

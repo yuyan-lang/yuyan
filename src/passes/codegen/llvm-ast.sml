@@ -7,9 +7,9 @@ datatype llvmvalue = LLVMLocalVar of int (* appear as  %v(i) *)
                    | LLVMGlobalVar of int (* appear as @v(i) *)
                    | LLVMStringName of int * UTF8String.t (* for calculating length *) (* appear as @s(i) *)
                    | LLVMFunctionName of int * int (* argument count *) (* appear as @f(i) *)
-                   | LLVMIntConst of int (* directly stored as int *)
-                   | LLVMIntName of int  (* global int const name *)
-                   | LLVMRealName of int  (* global real const name *)
+                   | LLVMIntConst of int (* directly stored as int *) (* argument is the name of the thing *)
+                   (* | LLVMIntName of int  global int const name *)
+                   (* | LLVMRealName of int  global real const name *)
 datatype llvmarraytype = 
         LLVMArrayTypeFunctionClosure (* for storing continuation cosures generated during compilation *)
         | LLVMArrayTypeFold
@@ -33,6 +33,8 @@ datatype llvmstatement =
     LLVMStoreUnit of llvmlocation
     | LLVMStoreGlobal of int * llvmvalue  (* load global into local, (dst, src) *)
     | LLVMLoadGlobal of int *  int
+    | LLVMStoreInt of llvmlocation * int
+    | LLVMStoreReal of llvmlocation * real
     | LLVMStoreArray of llvmarraytype * llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)
@@ -62,10 +64,10 @@ datatype llvmdeclaration  = LLVMFunction of int (* name of the function *)
                                     *  UTF8String.t
                           (* | LLVMBoolConstant of int (* global name *) 
                                     *  bool *)
-                          | LLVMIntConstant of int (* global name *) 
+                          (* | LLVMIntConstant of int (* global name *) 
                                     *  int
                           | LLVMRealConstant of int (* global name *) 
-                                    *  real
+                                    *  real *)
                           | LLVMFfiFunction of UTF8String.t (* global name *) 
                                     *  int (* number of arguments *)
                           | LLVMGlobalVariableDecl of int (* global name*)
