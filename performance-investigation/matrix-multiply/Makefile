@@ -5,6 +5,11 @@ matrix_yuyan_o3.out: matrix-multiply.yuyan
 
 yuyan: matrix_yuyan_o3.out
 
+matrix_yuyan.out: matrix-multiply.yuyan
+	yy compileOnly $^
+	cp ./.yybuild/yyexe matrix_yuyan.out
+
+yuyandebug: matrix_yuyan.out
 
 
 time_plot.out: time_plot.yuyan

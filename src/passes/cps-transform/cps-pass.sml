@@ -163,6 +163,8 @@ exception CPSInternalError
                     )
                 ), NONE, kcc cc)
 
+    fun registerFunctionNameMapping (i : cpsvar) (e : CExpr) (msg : string) : unit = 
+        DebugPrint.p ( "CPSNameMapping fid=f" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n")
 
     and cpsTransformExpr   
         (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
@@ -170,6 +172,7 @@ exception CPSInternalError
     (
         let 
         (* val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
+         val originalExpr = e
          val res = case e of
             CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
@@ -177,7 +180,9 @@ exception CPSInternalError
                 | SelfVar v => CPSAbsSingle(kcc' (fn arg => 
                         cc (CPSVarLocal arg)
                     ), NONE, kcc (fn kont => 
+                    ( registerFunctionNameMapping kont e "selfApp";
                         CPSApp(CPSValueVar v, (CPSValueVar v, CPSValueVar kont)) (* apply the recursive value to itself *)
+                    )
                      )))
             | CUnitExpr => CPSUnit (kcc cc)
             | CTuple (cs, Prod ls) => (
@@ -208,14 +213,20 @@ exception CPSInternalError
                 CPSAbs (kcc2' (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar (CPSVarLocal arg)))::ctx) eb 
                         (fn r => CPSAppSingle(CPSValueVar (CPSVarLocal ret),CPSValueVar r))
-                ), NONE, kcc cc)
+                ), NONE, kcc (fn f => 
+                    ( registerFunctionNameMapping f originalExpr "Body of";
+                        cc f
+                    )
+                ))
             | CApp (e1, e2, t) => 
                 cpsTransformExpr ctx e1 (fn v1 => 
                  cpsTransformExpr ctx e2 (fn v2 => 
                     CPSAbsSingle(kcc' (fn arg => 
                         cc (CPSVarLocal arg)
                     ), NONE, kcc (fn kont => 
-                        CPSApp(CPSValueVar v1, (CPSValueVar v2, CPSValueVar kont))
+                        ( registerFunctionNameMapping kont originalExpr "Cont of ";
+                            CPSApp(CPSValueVar v1, (CPSValueVar v2, CPSValueVar kont))
+                        )
                      ))
                  ))
             | CSeqComp(e1, e2, _, _) =>
@@ -234,6 +245,7 @@ exception CPSInternalError
             | CUnfold (e2, _) => cpsTransformExpr ctx e2 (fn v => CPSUnfold(CPSValueVar v , kcc cc))
             | CFix (ev, e, _)=>  
             let val fixedPointBoundId = CPSVarLocal (UID.next())
+                val _ = registerFunctionNameMapping fixedPointBoundId originalExpr "fixed point computation func"
             in
               CPSAbs (kcc2' (fn self => fn ret =>
                     cpsTransformExpr (([ev], SelfVar (CPSVarLocal self)) :: ctx) e 
@@ -242,7 +254,9 @@ exception CPSInternalError
                     CPSAbsSingle(kcc' (fn arg => 
                         cc (CPSVarLocal arg)
                         ), NONE, kcc (fn kont => 
-                        CPSApp(CPSValueVar fixedPointBoundId, (CPSValueVar fixedPointBoundId, CPSValueVar kont))
+                            ( registerFunctionNameMapping kont originalExpr "Cont of fixedpoint";
+                                CPSApp(CPSValueVar fixedPointBoundId, (CPSValueVar fixedPointBoundId, CPSValueVar kont))
+                            )
                         ))
                     )
                 )
