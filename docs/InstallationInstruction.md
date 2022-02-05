@@ -6,7 +6,7 @@
 1. 克隆本仓库
 2. 安装依赖库
 ```
-brew install bdw-gc libuv mlton
+brew install bdw-gc libuv mlton matplotplusplus llvm
 ```
 3. 安装
 ```
@@ -20,12 +20,16 @@ make install
 1. 克隆本仓库
 2. 安装依赖库
 ```
-sudo apt install libgc-dev libuv1-dev 
+sudo apt install libgc-dev libuv1-dev libbsd-dev llvm
 ```
 3. 安装MLton
 http://mlton.org
 
-4. 安装
+4. 安装其他依赖（现阶段安装无法运行，之后会改）
++ MatPlot++ 
+https://alandefreitas.github.io/matplotplusplus/
+
+5. 安装
 ```
 make
 make install
