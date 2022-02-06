@@ -32,8 +32,5 @@ libyyrtopt.a: $(SOURCES)
 opt : libyyrtopt.a
 
 
-executable: $(LL_FILES) $(RT_LIB_PATH) 
-	$(CC) $^ -save-temps=obj $(CC_FLAGS) -o $(OUTPUT_PATH) -L /usr/local/lib -l gc -l uv -l matplot -lstdc++ $(ADDITIONAL_FLAGS) -Wno-override-module 
-
 clean:
 	rm *.o libyyrt*.a

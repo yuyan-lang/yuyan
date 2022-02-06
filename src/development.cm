@@ -105,6 +105,7 @@ Library
   structure IOUtil
   structure ArgumentParser
   structure ReplHelpText
+  structure CommandLineArgumentsText
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -128,6 +129,7 @@ is
   ui/repl-options.sml
   ui/argument-parser.sml
   ui/repl-debug.sml
+  ui/command-line-arguments-text.sml
   
   operators/builtin/builtin.sml
   operators/builtin/nat-ops.sml

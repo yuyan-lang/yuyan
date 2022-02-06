@@ -125,10 +125,15 @@ a new module is added with root Path being the file's residing directory *)
     fun updateContentForFilepath (filepath : filepath) (content : string) (cm : compilationmanager) : unit = 
         performFileUpdate filepath (CompilationFileOps.updateFileContent content) cm
 
+    fun getOSSpecificClangOption() : string = 
+        if SMLofNJ.SysInfo.getOSName() = "Linux"
+        then "-l bsd"
+        else ""
 
     fun makeExecutable(entryFilePath : filepath) (cm : compilationmanager)
     (optimize : bool) 
     (profile : bool) 
+    (uselocallib : bool) 
     (outputFilePath : filepath)
     : unit witherrsoption  = 
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
@@ -136,27 +141,21 @@ a new module is added with root Path being the file's residing directory *)
         SOME errs => DErrors errs
         | NONE =>
             let 
-            val cmd =  "(make -C runtime/ " ^ (if optimize then "opt" else "debug") ^
-            "; make -C runtime/ RT_LIB_PATH="
-            (* ^ 
-            String.concatWith " " (map (fn i => (#pwd cm) ^"/runtime/files/" ^ i) 
-            [
-                "allocation.c", "entry.c", "exception.c", 
-            "io.c", "marshall.c", 
-            "libuv/filesystem.c", "libuv/processes.c"
-            ]) *)
-            
-            ^ (#pwd cm)^ "/runtime/libyyrt" ^ (if optimize then "opt" else "debug") ^ ".a"
+            val cmd =  "(" ^
+            (if uselocallib then "make -C runtime/ " ^ (if optimize then "opt" else "debug") ^ ";" else "") ^
+            "clang " 
             ^
-            " LL_FILES=" ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
-            ^ " CC_FLAGS=\""
+            (if uselocallib then (#pwd cm)^ "/runtime/libyyrt" ^ (if optimize then "opt" else "debug") ^ ".a" else 
+            "-l yuyanlangruntime" ^ (if optimize then "" else "debug"))
+            ^
+            " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
+            ^ " "
             ^ (if optimize then "-O3 " else "-g ") 
             ^ (if profile then "-pg " else "") 
-            ^ "\""
-            ^" OUTPUT_PATH="  
-            ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
-            (* ^ " -I /usr/local/include" *)
-            ^ " executable)"
+            ^ ""
+            ^" -o "  
+            ^ (access outputFilePath)
+            ^ " -save-temps=obj -L /usr/local/lib -l gc -l uv -l matplot -l stdc++ -Wno-override-module)"
             val _ = DebugPrint.p (cmd ^ "\n")
             val ret = OS.Process.system (cmd)
             in 

@@ -1,4 +1,5 @@
 $(SML_LIB)/basis/basis.mlb
+$(SML_LIB)/basis/sml-nj.mlb
 $(SML_LIB)/smlnj-lib/smlnj-lib.mlb
 $(SML_LIB)/smlnj-lib/Util/smlnj-lib.mlb
 $(SML_LIB)/mllpt-lib/mllpt-lib.mlb
@@ -67,7 +68,6 @@ local
         passes/codegen/llvm-convert.sml
         build-system/compilation-structure.sml
 
-        ui/repl-help-text.sml
 
         
         ui/pretty-print.sml
@@ -107,6 +107,8 @@ local
 
         
         ui/repl-options.sml
+        ui/command-line-arguments-text.sml
+        ui/repl-help-text.sml
         ui/argument-parser.sml
 
         ui/type-check-and-eval.sml

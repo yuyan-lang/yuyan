@@ -33,6 +33,7 @@ struct
     val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy filename.yuyan\n"
 
     fun outputPrint s = print (s)
+    fun errPrint s = DebugPrint.p s
 
     open ReplOptions
     fun smlnjMain ((name , args) : string * string list) =
@@ -41,16 +42,16 @@ struct
              else 
                 let val options = ArgumentParser.parseArgumentsTopLevel args
                 val exitSt = 
-                if length (getInputFiles options) < 1 
-                then (DebugPrint.p ("错误，请至少指定一个文件\n" ^ ReplHelpText.helpText);
-                        OS.Process.failure)
-                else
                 if getShowHelp options 
                 then (outputPrint ReplHelpText.helpText; OS.Process.success)
                 else if getShowVersion options
                 then (outputPrint ReplHelpText.versionText; OS.Process.success)
                 else if getShowAbout options
                 then (outputPrint ReplHelpText.aboutText; OS.Process.success)
+                else
+                if length (getInputFiles options) < 1 
+                then (errPrint ("错误，请至少指定一个文件\n" ^ ReplHelpText.helpText);
+                        OS.Process.failure)
                 else 
                     TypeCheckAndEval.typeCheckAndEval 
                         options
@@ -71,6 +72,10 @@ struct
                 in 
                     exitSt
                 end
+                handle ArgumentParser.ArgumentParseFailure f => (
+                    errPrint (f ^ "\n" ^ ReplHelpText.helpText );
+                        OS.Process.failure
+                )
 
     fun main() : unit = 
         (* arg.sml *)
