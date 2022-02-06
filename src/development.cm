@@ -21,7 +21,7 @@ Library
   structure ParseAST
   structure BracketScanner
 
-  structure IRepl 
+  structure Repl 
   structure ReplOptions
   structure TypeCheckAndEval
 
@@ -103,6 +103,8 @@ Library
   structure RichTextDocument
   structure RichTextDocumentOps
   structure IOUtil
+  structure ArgumentParser
+  structure ReplHelpText
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -120,9 +122,11 @@ is
 
 
   ui/repl.sml
+  ui/repl-help-text.sml
   ui/type-check-and-eval.sml
   ui/pretty-print.sml
   ui/repl-options.sml
+  ui/argument-parser.sml
   ui/repl-debug.sml
   
   operators/builtin/builtin.sml

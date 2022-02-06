@@ -1,5 +1,5 @@
 
-structure IRepl =
+structure Repl =
 struct
 
     fun addUIDynamic (s : string) = "豫☯ " ^ s ^ "\n"
@@ -27,44 +27,50 @@ struct
                 end)
             else content
         end *)
-    fun inputFile  (filename : string) (options : ReplOptions.t): unit = 
-         (TypeCheckAndEval.typeCheckAndEval options filename NONE; ())
+    (* fun inputFile  (filename : string) (options : ReplOptions.t): unit = 
+         (TypeCheckAndEval.typeCheckAndEval options filename NONE; ()) *)
 
-    val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy r[kvv] filename.yuyan\n"
+    val aboutText = "豫言 ☯  (v0.1.0alpha) 以：yy filename.yuyan\n"
 
+    fun outputPrint s = print (s)
+
+    open ReplOptions
     fun smlnjMain ((name , args) : string * string list) =
-        case args of
-             [cmd] => if cmd = "lsp" 
+             if args = ["lsp"]
              then (LanguageServerMode.startLSP(); OS.Process.success)
-             else (print aboutText;  OS.Process.failure )
-             | (cmd :: fname :: []) => (TypeCheckAndEval.typeCheckAndEval 
-                {
-                    verbose=(
-                    if String.isSubstring "vv" cmd
-                    then 2
-                    else 
-                    if String.isSubstring "v" cmd
-                    then 1 else 0
-                    ),
-                    usekmachine = String.isSubstring "k" cmd, 
-                    exitOnFailure = not (String.isSubstring "noExitOnFail" cmd),
-                    compileOnly = String.isSubstring "compileOnly" cmd,
-                    optimize = String.isSubstring "optimizeO3" cmd
-                } fname (
-                    if String.isSubstring "showTokens"  cmd
-                    then SOME (ReplDebug.showTokens)
-                    else
-                    if String.isSubstring "profileLSPTokens"  cmd
-                    then SOME (ReplDebug.profileLSPTokens)
-                    else if String.isSubstring "genDocs" cmd
-                    then SOME(fn _ => fn cm => DocsGeneration.generateDocs 
-                    (FileResourceURI.make (PathUtil.concat [(#pwd cm), "yylib"]))
-                    (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild", "docs"]))
-                    cm
-                    )
-                    else NONE
-                ); OS.Process.success)
-            | _ => (DebugPrint.p aboutText;  OS.Process.failure )
+             else 
+                let val options = ArgumentParser.parseArgumentsTopLevel args
+                val exitSt = 
+                if length (getInputFiles options) < 1 
+                then (DebugPrint.p ("错误，请至少指定一个文件\n" ^ ReplHelpText.helpText);
+                        OS.Process.failure)
+                else
+                if getShowHelp options 
+                then (outputPrint ReplHelpText.helpText; OS.Process.success)
+                else if getShowVersion options
+                then (outputPrint ReplHelpText.versionText; OS.Process.success)
+                else if getShowAbout options
+                then (outputPrint ReplHelpText.aboutText; OS.Process.success)
+                else 
+                    TypeCheckAndEval.typeCheckAndEval 
+                        options
+                        (* (
+                            if String.isSubstring "showTokens"  cmd
+                            then SOME (ReplDebug.showTokens)
+                            else
+                            if String.isSubstring "profileLSPTokens"  cmd
+                            then SOME (ReplDebug.profileLSPTokens)
+                            else if String.isSubstring "genDocs" cmd
+                            then SOME(fn _ => fn cm => DocsGeneration.generateDocs 
+                            (FileResourceURI.make (PathUtil.concat [(#pwd cm), "yylib"]))
+                            (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild", "docs"]))
+                            cm
+                            )
+                            else NONE
+                        ) *)
+                in 
+                    exitSt
+                end
 
     fun main() : unit = 
         (* arg.sml *)
@@ -83,11 +89,11 @@ OS.Process.exit (smlnjMain(name, args))
         inputFile f {
             verbose=2, usekmachine=false, exitOnFailure= false
         } *)
-    fun test f = 
-        smlnjMain("<name>",["rv", f])
+    (* fun test f = 
+        smlnjMain("<name>",["rv", f]) *)
 
-    fun testcmd cmd f = 
-        smlnjMain("<name>",[cmd, f])
+    fun testcmd l  = 
+        smlnjMain("<name>",l)
         
         
     (* fun testk f = 

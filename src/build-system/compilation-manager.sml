@@ -127,7 +127,10 @@ a new module is added with root Path being the file's residing directory *)
 
 
     fun makeExecutable(entryFilePath : filepath) (cm : compilationmanager)
-    (optimize : bool) : unit witherrsoption  = 
+    (optimize : bool) 
+    (profile : bool) 
+    (outputFilePath : filepath)
+    : unit witherrsoption  = 
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
         in case CompilationFileOps.getFileDiagnostics (CompilationStructure.CompilationFile cfile) of 
         SOME errs => DErrors errs
@@ -146,8 +149,10 @@ a new module is added with root Path being the file's residing directory *)
             ^ (#pwd cm)^ "/runtime/libyyrt" ^ (if optimize then "opt" else "debug") ^ ".a"
             ^
             " LL_FILES=" ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
-            ^ " CC_FLAGS="
-            ^ (if optimize then "-O3 " else "-g ")
+            ^ " CC_FLAGS=\""
+            ^ (if optimize then "-O3 " else "-g ") 
+            ^ (if profile then "-pg " else "") 
+            ^ "\""
             ^" OUTPUT_PATH="  
             ^ OS.Path.concat(((#pwd cm), ".yybuild/yyexe"))
             (* ^ " -I /usr/local/include" *)

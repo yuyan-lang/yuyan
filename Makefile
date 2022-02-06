@@ -7,7 +7,7 @@ yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 1 src/development.mlb
 
 test: build
-	./yy rv yylib/runtest.yuyan
+	./yy yylib/runtest.yuyan
 	
 genDocs : build
 	./yy genDocs yylib/总库。豫 

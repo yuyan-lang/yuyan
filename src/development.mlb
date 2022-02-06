@@ -67,6 +67,8 @@ local
         passes/codegen/llvm-convert.sml
         build-system/compilation-structure.sml
 
+        ui/repl-help-text.sml
+
         
         ui/pretty-print.sml
         build-system/compilation-tokens.sml
@@ -105,6 +107,8 @@ local
 
         
         ui/repl-options.sml
+        ui/argument-parser.sml
+
         ui/type-check-and-eval.sml
         ui/repl-debug.sml
         ui/repl.sml
