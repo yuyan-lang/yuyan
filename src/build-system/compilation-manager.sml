@@ -153,6 +153,7 @@ a new module is added with root Path being the file's residing directory *)
             ^ (if optimize then "-O3 " else "-g ") 
             ^ (if profile then "-pg " else "") 
             ^ ""
+            ^ (getOSSpecificClangOption())
             ^" -o "  
             ^ (access outputFilePath)
             ^ " -save-temps=obj -L /usr/local/lib -l gc -l uv -l matplot -l stdc++ -Wno-override-module)"
