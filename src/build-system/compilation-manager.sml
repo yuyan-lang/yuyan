@@ -143,12 +143,11 @@ a new module is added with root Path being the file's residing directory *)
             let 
             val cmd =  "(" ^
             (if uselocallib then "make -C runtime/ " ^ (if optimize then "opt" else "debug") ^ ";" else "") ^
-            "clang " 
+            "clang " ^
+            " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
             ^
             (if uselocallib then (#pwd cm)^ "/runtime/libyyrt" ^ (if optimize then "opt" else "debug") ^ ".a" else 
             "-l yuyanlangruntime" ^ (if optimize then "" else "debug"))
-            ^
-            " " ^ (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
             ^ " "
             ^ (if optimize then "-O3 " else "-g ") 
             ^ (if profile then "-pg " else "") 
