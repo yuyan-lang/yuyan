@@ -118,6 +118,13 @@ in
                 in ([LLVMStringConstant(labelLoc, label)],  (* TODO FIX BUG*)
                 vaccess value (fn value' => [LLVMStoreArray(LLVMArrayTypeSum,(cpsVarToLLVMLoc v),[LLVMIntConst index, LLVMStringName (labelLoc, label), llvmLocToValue value'])])) ::: recur k
                 end
+
+            | CPSIfThenElse(v, tcase, fcase) => 
+            let val (declt, tcomps) = recur tcase
+                val (declf, fcomps) = recur tcase
+            in
+                (declt @ declf, vaccess v (fn v' => [LLVMConditionalJumpBinary(v', tcomps, fcomps)]))
+            end
             | CPSCases(v, vkl) => 
                 let val indexLoc = UID.next()
                 val recurResult = map (fn (v', k) => 

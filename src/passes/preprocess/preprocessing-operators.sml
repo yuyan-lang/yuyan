@@ -70,6 +70,7 @@ struct
     val nullTypeOp  = Operators.parseOperatorStr "无" false false 420 [] *)
     val labeledTypeCompOp  = Operators.parseOperatorStr "夫〇表〇" false false 400 [1]
     val prodTypeOp  = Operators.parseOperatorStr "〇合〇" true false 380 []
+    val lazyProdTypeOp  = Operators.parseOperatorStr "〇且合〇" true false 370 []
     val sumTypeOp  = Operators.parseOperatorStr "〇亦〇" true false 360 []
     val typeInstantiationOp  = Operators.parseOperatorStr "〇启以〇" true true 355 []
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 350 []
@@ -81,12 +82,15 @@ struct
     val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
     val unitExprOp = Operators.parseOperatorStr "元" true false 720 []
+    val lazyProjExprOp = Operators.parseOperatorStr "〇且中〇" true false 705 []
     val projExprOp = Operators.parseOperatorStr "〇中〇" true false 700 []
     val appExprOp = Operators.parseOperatorStr "〇于〇" true true 690 []
     val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 680 []
+    val lazyPairExprOp = Operators.parseOperatorStr "〇且与〇" true false 675 []
     val injExprOp = Operators.parseOperatorStr "〇临〇" false false 670 []
     val foldExprOp = Operators.parseOperatorStr "卷〇" true false 660 []
     val unfoldExprOp = Operators.parseOperatorStr "舒〇" true false 650 []
+    val ifThenElseExprOp = Operators.parseOperatorStr "若〇则〇否则〇" true false 645 []
     val caseClauseOp = Operators.parseOperatorStr "曰〇则有〇而〇" true false 640 [3]
     val caseAlternativeOp = Operators.parseOperatorStr "〇或〇" true false 630 []
     val caseExprOp = Operators.parseOperatorStr "鉴〇而〇" true false 620 []
@@ -113,10 +117,13 @@ struct
         universalTypeOp, existentialTypeOp, recursiveTypeOp
         , inlineCommentOp (* allow comment in types, but not important anyways, as both 
         will soon be merged together *)
+        , lazyProdTypeOp
         ]
     val allTypeAndExprOps = allTypeOps @ [ unitExprOp,
-        projExprOp, appExprOp, pairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 
-        caseAlternativeOp, caseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
+        lazyProjExprOp,
+        projExprOp, appExprOp, pairExprOp,
+        lazyPairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 
+        caseAlternativeOp, caseExprOp, ifThenElseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
         ffiCCallOp,
         lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp,
         letinOp, sequentialCompositionOp

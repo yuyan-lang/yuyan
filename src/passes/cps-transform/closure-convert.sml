@@ -30,6 +30,11 @@ in
             in ((fv v *** (foldr (op***) (fromList []) (map (fn x => #1 x) fks')),
                 CPSCases(v, map (fn x => #2 x) fks')))
             end
+        | CPSIfThenElse(v, kt,kf) => 
+            let val (ktfree, kt') = closureConvert kt
+                val (kffree, kf') = closureConvert kf
+            in (fv v *** ktfree *** kffree, CPSIfThenElse(v, kt', kf'))
+            end
         | CPSUnfold(v, k) => 
             let val (kfree, k') = cck k
             in (fv v *** kfree, CPSUnfold(v, k'))

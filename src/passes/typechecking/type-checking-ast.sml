@@ -17,10 +17,13 @@ structure TypeCheckingAST = struct
                          | BFNewDynClsfdValueWithString
                          | BFRaise
                          | BFHandle
+                         | BFIntSub
+                         | BFIntEq
 
     datatype Type = TypeVar of StructureName.t
                     | UnitType
                     | Prod of (Label * Type) list
+                    | LazyProd of (Label * Type) list
                     | NullType
                     | Sum of (Label * Type) list
                     | Func of Type * Type
@@ -37,8 +40,11 @@ structure TypeCheckingAST = struct
     datatype CExpr = CExprVar of StructureName.t (* required to be fully qualified name, if not local *)
                     | CUnitExpr
                     | CTuple of CExpr list * Type (* type is Prod *)
+                    | CLazyTuple of CExpr list * Type (* type is Prod *)
                     | CProj of CExpr * Label * Type (* type is Prod *)
+                    | CLazyProj of CExpr * Label * Type (* type is Prod *)
                     | CInj of Label * CExpr  * Type (* type is  Sum *)
+                    | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
                     | CCase of (Type (*type is Sum *) * CExpr) * (Label * EVar * CExpr) list * Type (* type is result type *)
                     | CLam of  EVar * CExpr * Type (* type is Func *)
                     | CApp of  CExpr * CExpr * Type (* type is Func *)
@@ -80,8 +86,11 @@ structure TypeCheckingAST = struct
     datatype RExpr = RExprVar of StructureName.t
                     | RUnitExpr of sourceOpInfo
                     | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
+                    | RLazyTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RProj of RExpr * Label * sourceOpInfo
+                    | RLazyProj of RExpr * Label * sourceOpInfo
                     | RInj of Label * RExpr * sourceOpInfo
+                    | RIfThenElse of RExpr * RExpr * RExpr * sourceOpInfo
                     | RCase of RExpr * (Label * EVar * RExpr) list * (sourceOpInfo  (* top case *)
                             * sourceOpInfo list  (* case separator *)
                             * sourceOpInfo list (* case clause *))

@@ -106,6 +106,8 @@ Library
   structure ArgumentParser
   structure ReplHelpText
   structure CommandLineArgumentsText
+  structure CPSBuiltin
+  structure CPSHelper 
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -178,6 +180,8 @@ is
   passes/cps-transform/cps-ast.sml
   passes/cps-transform/cps-ast-ops.sml
   passes/cps-transform/cps-pass.sml
+  passes/cps-transform/cps-builtin.sml
+  passes/cps-transform/cps-helper.sml
   passes/cps-transform/closure-convert.sml
   passes/codegen/llvm-ast.sml
   passes/codegen/llvm-codegen.sml

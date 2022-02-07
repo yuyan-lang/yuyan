@@ -187,6 +187,7 @@ in case x of
  TypeVar t => sst t
                     | UnitType => "1"
                     | Prod l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | LazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | NullType => "0"
                     | Sum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | Func (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
@@ -209,7 +210,10 @@ in case x of
 RExprVar v => sst v
                     | RUnitExpr(soi) => "⟨⟩"
                     | RTuple (l, soi) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
+                    | RLazyTuple (l, soi) => "⟨(lazy>)"^ String.concatWith ", " (map se l) ^ "(<lazy)⟩"
                     | RProj (e, lbl, soi) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
+                    | RLazyProj (e, lbl, soi) => "(" ^ se e ^ ".(lazy) " ^ ss lbl ^ ")"
+                    | RIfThenElse (e, tcase, fcase, soi) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
                     | RInj  ( lbl,e, soi) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
                     | RCase (e, l, soi)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
                     | RLam (x, e, soi) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
@@ -262,7 +266,10 @@ in case x of
                       CExprVar v => sst v
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
+                    | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
                     | CProj (e, lbl, t) => "(" ^ se e ^ cst t ^ "." ^ ss lbl ^ ")"
+                    | CLazyProj (e, lbl, t) => "(" ^ se e ^ cst t ^ ".(lazy) " ^ ss lbl ^ ")"
+                    | CIfThenElse (e, tcase, fcase ) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
                     | CInj  ( lbl,e, t) => "(" ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
                     | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})" ^ cst t
                     | CLam (x, e, t) => "(λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t
@@ -409,6 +416,7 @@ case c of
             (* | CPSFix((f, a, c1), k) => "(fix " ^ si f ^ ", " ^ si a ^ " . " ^ sc c1 ^ ")" ^ sk k *)
             | CPSTuple(l, k) => "[" ^ String.concatWith ", " (map sv l) ^ "]" ^ sk k
             | CPSInj(l, i, kv, k) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ sv kv ^ sk k
+            | CPSIfThenElse(v, ct, cf) => "(if " ^ sv v ^ " then " ^ sc ct ^  " else " ^ sc cf ^ ")"
             | CPSFold(v, k) => "fold (" ^ sv v ^ ")" ^ sk k
             | CPSAbsSingle((i, c), fvs, k) => "(λS" ^ si i ^ "." ^ sc c ^ ")"  ^ 
             sfvs fvs ^ sk k

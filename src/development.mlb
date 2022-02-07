@@ -61,6 +61,8 @@ local
         passes/typechecking/type-checking-ast-ops.sml
         passes/typechecking/builtin-functions.sml
         passes/cps-transform/cps-ast.sml
+        passes/cps-transform/cps-helper.sml
+        passes/cps-transform/cps-builtin.sml
         passes/cps-transform/cps-ast-ops.sml
         passes/cps-transform/closure-convert.sml
         passes/codegen/llvm-ast.sml

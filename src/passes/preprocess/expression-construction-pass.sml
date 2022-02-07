@@ -186,6 +186,9 @@ struct
                     if oper ~=** projExprOp
                     then fmap RProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
                     else 
+                    if oper ~=** lazyProjExprOp
+                    then fmap RLazyProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
+                    else 
                     if oper ~=** appExprOp
                     then fmap RApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
                     else 
@@ -193,6 +196,12 @@ struct
                     then 
                         let val (es, ops) = (flattenRight ast pairExprOp) 
                         in fmap RTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) es) =/= Success ops)
+                        end
+                    else 
+                    if oper ~=** lazyPairExprOp
+                    then 
+                        let val (es, ops) = (flattenRight ast lazyPairExprOp) 
+                        in fmap RLazyTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) es) =/= Success ops)
                         end
                     else 
                     if oper ~=** injExprOp
@@ -236,6 +245,9 @@ struct
                     else 
                     if oper ~=** typeAppExprOp
                     then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, (operSuc =/= Success (reconstructOriginalFromOpAST (snd l) ))))
+                    else
+                    if oper ~=** ifThenElseExprOp
+                    then fmap RIfThenElse(===/= (elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, elaborateOpASTtoExpr (hd (tl (tl l))) ctx, (operSuc)))
                     else
                     if oper ~=** packExprOp
                     then fmap RPack(==/= (elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, (Success (reconstructOriginalFromOpAST (hd l))=/= operSuc)))

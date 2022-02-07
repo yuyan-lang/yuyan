@@ -4,6 +4,7 @@ open TypeCheckingASTOps
 open StaticErrorStructure
 infix 5 >>= 
 infix 5 >> 
+infix 5 <|>
 infix 6 =/=
 infix 5 <?>
 
@@ -196,6 +197,7 @@ infix 5 <?>
         "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`"
         else "") ^ msg) (showctx ctx)
         fun attemptToProjectNonProd e tt ctx = exprTypeError e tt ctx "试图从非乘积类型中投射(attempt to project out of product type)"
+        fun attemptToProjectNonLazyProd e tt ctx = exprTypeError e tt ctx "试图从非乘积类型中投射(attempt to project out of lazy product type)"
         fun attemptToCaseNonSum e tt ctx = exprTypeError e tt ctx "试图对非总和类型进行分析(attempt to case on non-sum types)"
         fun attemptToApplyNonFunction e tt ctx = exprTypeError e tt ctx "试图使用非函数(attempt to apply on nonfunction types)"
         fun attemptToApplyNonUniversal e tt ctx = exprTypeError e tt ctx "试图使用非通用类型(attempt to apply on nonuniversal types)"
@@ -203,8 +205,10 @@ infix 5 <?>
         fun attemptToOpenNonExistentialTypes e tt ctx =  exprTypeError e tt ctx "试图打开非存在类型(attempt to open non existential types)"
         fun attemptToUnfoldNonRecursiveTypes e tt ctx =  exprTypeError e tt ctx "试图展开非递归类型(attempt to unfold non recursive type)"
         fun expressionDoesNotSupportTypeSynthesis e ctx =  exprError e ctx "表达式不支持类型合成，请指定类型"
-        fun prodTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配(prod tuple length mismatch)"
+        fun prodTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配( prod tuple length mismatch)"
+        fun lazyProdTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配(lazy prod tuple length mismatch)"
         fun expectedProdType e tt ctx =  exprTypeError e tt ctx "期待的类型是乘积类型(expected prod)"
+        fun expectedLazyProdType e tt ctx =  exprTypeError e tt ctx "期待的类型是惰性乘积类型(expected lazy prod)"
         fun expectedSumType e tt ctx =  exprTypeError e tt ctx "期待总和类型(expected sum types)"
         fun expectedFunctionType e tt ctx =  exprTypeError e tt ctx "期待函数类型(expected sum types)"
         fun expectedExistentialType e tt ctx =  exprTypeError e tt ctx "期待存在类型(expected existential types)"
@@ -234,9 +238,28 @@ infix 5 <?>
                     RExprVar v => lookup ctx v >>= (fn (canonicalName, tp) =>
                                         Success (CExprVar canonicalName, tp))
                     | RUnitExpr(soi) => Success (CUnitExpr, UnitType)
-                    | RProj(e, l, soi) => synthesizeType ctx e >>= (fn t =>  case t of 
+                    | RProj(e, l, soi) => synthesizeType ctx e >>= (fn tt =>  case tt of 
                             (ce, Prod ls) => fmap (fn x => (CProj(ce, l, Prod ls),x)) (lookupLabel ls l)
-                            | _ => Errors.attemptToProjectNonProd e (#2 t) ctx
+                            | _ => Errors.attemptToProjectNonProd e (#2 tt) ctx
+                    )
+                    | RLazyProj(e, l, soi) => synthesizeType ctx e >>= (fn t =>  case t of 
+                            (ce, LazyProd ls) => fmap (fn x => (CLazyProj(ce, l, LazyProd ls),x)) (lookupLabel ls l)
+                            | _ => Errors.attemptToProjectNonLazyProd e (#2 t) ctx
+                    )
+                    | RIfThenElse(e, tcase, fcase, soi)=> checkType ctx e (BuiltinType BIBool) >>= (fn ce => 
+                        (synthesizeType ctx tcase >>= (fn (ctcase, rttp) => 
+                                checkType ctx fcase rttp >>= (fn cfcase => 
+                                    Success(CIfThenElse(ce, ctcase, cfcase), rttp)
+                                )
+                            ) 
+                        ) <|> (fn () => (* alternative: either branch may synthesize *)
+                                    (synthesizeType ctx fcase >>= (fn (cfcase, rttp) => 
+                                                checkType ctx tcase rttp >>= (fn ctcase => 
+                                                    Success(CIfThenElse(ce, ctcase, cfcase), rttp)
+                                                )
+                                            ) 
+                                        )
+                        )
                     )
                     | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn t => case t of
                             (ce, Sum ls) => let 
@@ -364,10 +387,23 @@ infix 5 <?>
                                     Success(CTuple ( checkedElems, (Prod ls))))
                         | _ => Errors.expectedProdType e tt ctx
                         )
+                    | RLazyTuple (l, soi) => (case tt of 
+                        LazyProd ls => if List.length l <> List.length ls
+                                    then Errors.lazyProdTupleLengthMismatch e tt ctx
+                                    else collectAll (List.tabulate(List.length l, (fn i => 
+                                    checkType ctx (List.nth(l, i)) (#2 (List.nth(ls, i)))))) >>= (fn checkedElems => 
+                                    Success(CLazyTuple ( checkedElems, (LazyProd ls))))
+                        | _ => Errors.expectedLazyProdType e tt ctx
+                        )
                     | RProj(e, l, soi) =>
                     synthesizeType ctx (RProj(e, l, soi)) >>= (fn synt => case synt of
                         (CProj(ce, l, prodType), synthType) => assertTypeEquiv originalExpr synthType tt >> 
                         Success(CProj(ce, l, prodType))
+                        | _ => raise Fail "tcp229")
+                    | RLazyProj(e, l, soi) =>
+                    synthesizeType ctx (RLazyProj(e, l, soi)) >>= (fn synt => case synt of
+                        (CLazyProj(ce, l, lazyProdType), synthType) => assertTypeEquiv originalExpr synthType tt >> 
+                        Success(CLazyProj(ce, l, lazyProdType))
                         | _ => raise Fail "tcp229")
 
                     | RInj (l, e, soi) => (case tt of
@@ -377,6 +413,13 @@ infix 5 <?>
                                 ))
                         | _ => Errors.expectedSumType originalExpr tt ctx
                     )
+                    | RIfThenElse(e, tcase, fcase, soi) => (checkType ctx e (BuiltinType(BIBool))  >>= (fn ce => 
+                        checkType ctx tcase tt >>= (fn ctcase => 
+                            checkType ctx fcase tt >>= (fn cfcase => 
+                                Success(CIfThenElse(ce, ctcase, cfcase))
+                            )
+                        )
+                    ))
                     | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn synt => case synt of
                             (ce, Sum ls) => 
                             (collectAll (map (fn (l, ev, e) => 

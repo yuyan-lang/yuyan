@@ -73,6 +73,23 @@ struct
 
     fun <?> (f, y) = failLookahead f y
     infix 5 <?>
+
+    fun alternative (x : 'a witherrsoption) (alternative :  unit -> 'a witherrsoption) : 'a witherrsoption = 
+    let 
+    in
+        case x of
+            Success y => Success(y)
+            | DErrors l => (case (
+                (* DebugPrint.p ("Backtracking" ^ Int.toString lookAheadId);  *)
+                alternative()) of 
+                    Success y => Success(y)
+                    | DErrors l2 => DErrors (l@l2)
+                    | NotAvailable => NotAvailable
+                )
+            | NotAvailable  => NotAvailable
+    end
+    fun <|> (x,y) = alternative x  y
+    infix 5 <|> 
     
     fun collectAlternatives (x : 'a witherrsoption list)  : 'a list witherrsoption = 
         let fun collectAlternativesRec (x : 'a witherrsoption list)  : 'a list = 

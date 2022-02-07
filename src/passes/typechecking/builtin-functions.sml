@@ -53,11 +53,17 @@ val newDynClsfdType : Type =
                 )
             ]), typeVarB)
         )
+
+    val intSubType : Type = Func(BuiltinType(BIInt), Func(BuiltinType(BIInt), BuiltinType(BIInt)))
+    val intEqType : Type = Func(BuiltinType(BIInt), Func(BuiltinType(BIInt), BuiltinType(BIBool)))
+
    fun typeOf (x : BuiltinFunc) : Type = case x of
     BFCallCC => callccType
     | BFNewDynClsfdValueWithString => newDynClsfdType
     | BFRaise => raiseType
     | BFHandle => handleType
+    | BFIntSub => intSubType
+    | BFIntEq => intEqType
 
 
     fun parseStr(x : string) : BuiltinFunc option = case x of
@@ -65,6 +71,8 @@ val newDynClsfdType : Type =
         | "《《内建：新建动态分类》》" => SOME(BFNewDynClsfdValueWithString)
         | "《《内建：抛出异常》》" =>  SOME(BFRaise)
         | "《《内建：尝试运行》》" =>  SOME(BFHandle)
+        | "《《内建：整数：减》》" =>  SOME(BFIntSub)
+        | "《《内建：整数：相等》》" =>  SOME(BFIntEq)
         | _ => NONE
 
 

@@ -14,7 +14,7 @@ test: build
 	./yy yylib/runtest.yuyan --use-local-lib
 	
 genDocs : build
-	./yy genDocs yylib/总库。豫 
+	./ genDocs yylib/总库。豫 
 
 install:  build
 	cp runtime/libyyrtdebug.a /usr/local/lib/libyuyanlangruntimedebug.a

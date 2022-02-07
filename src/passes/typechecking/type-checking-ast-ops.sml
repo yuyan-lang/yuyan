@@ -45,6 +45,7 @@ infix 5 =/=
         case t of
             TypeVar t => [t]
             | Prod l => List.concat (map (fn (l, t) => freeTVar t) l)
+            | LazyProd l => List.concat (map (fn (l, t) => freeTVar t) l)
             | Sum l => List.concat (map (fn (l, t) => freeTVar t) l)
             | Func (t1,t2) => List.concat (map freeTVar [t1,t2])
             | TypeInst (t1,t2) => List.concat (map freeTVar [t1,t2])
@@ -97,6 +98,7 @@ infix 5 =/=
         case t of
             TypeVar t => if t ~~~=x then tS else TypeVar t
             | Prod l => Prod  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
+            | LazyProd l => LazyProd  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
             | Sum l =>  Sum  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
             | Func (t1,t2) => Func (substTypeInType tS x t1, substTypeInType tS x t2 )
             | TypeInst (t1,t2) => TypeInst (substTypeInType tS x t1, substTypeInType tS x t2 )
@@ -113,6 +115,7 @@ infix 5 =/=
         case t of
             TypeVar t => Success(TypeVar t)
             | Prod l =>  fmap Prod (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
+            | LazyProd l =>  fmap LazyProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
             | Sum l =>  fmap Sum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
             | Func (t1,t2) => fmap Func (normalizeType t1 =/= normalizeType t2 )
             | TypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
@@ -138,8 +141,12 @@ infix 5 =/=
             RExprVar v => RExprVar v
             | RUnitExpr(soi) => RUnitExpr (soi)
             | RTuple (l, soi) => RTuple (map (substTypeInRExpr tS x) l, soi)
+            | RLazyTuple (l, soi) => RLazyTuple (map (substTypeInRExpr tS x) l, soi)
             | RInj (l, e, soi) => RInj (l, substTypeInRExpr tS x e, soi)
             | RProj (e, l, soi) => RProj (substTypeInRExpr tS x e, l, soi)
+            | RLazyProj (e, l, soi) => RLazyProj (substTypeInRExpr tS x e, l, soi)
+            | RIfThenElse (e, tcase, fcase, soi) => RIfThenElse(substTypeInRExpr tS x e, 
+                substTypeInRExpr tS x tcase, substTypeInRExpr tS x fcase,  soi)
             | RCase (e, l, soi) => RCase (substTypeInRExpr tS x e, (
                 (map (fn (l, ev, e) => 
                 (l, ev, substTypeInRExpr tS x e) ) l)
@@ -224,6 +231,7 @@ infix 5 =/=
     (case (t1, t2) of
               (TypeVar t1, TypeVar t2) => t1 ~~~= t2
             | (Prod l1, Prod l2) =>  typeEquivLst l1 l2
+            | (LazyProd l1, LazyProd l2) =>  typeEquivLst l1 l2
             | (Sum l1, Sum l2) =>   typeEquivLst l1 l2
             | (Func (t1,t2), Func (t1', t2')) => typeEquiv ctx t1 t1' andalso typeEquiv ctx t2 t2'
             | (Forall (tv,t2), Forall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
@@ -257,7 +265,10 @@ infix 5 =/=
         RExprVar v => StructureName.toString v
         | RUnitExpr(soi) => reconstructWithArgs soi []
         | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
+        | RLazyTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
         | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
+        | RLazyProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
+        | RIfThenElse (e, tcase, fcase, soi) => reconstructWithArgs soi [reconstructFromRExpr e, reconstructFromRExpr tcase, reconstructFromRExpr fcase]
         | RInj  ( lbl,e, soi) => reconstructWithArgs soi [lbl, reconstructFromRExpr e]
         | RCase (e, l, (soiTop, soiSep, soiClause))=>
                 reconstructWithArgs soiTop [reconstructFromRExpr e, 
