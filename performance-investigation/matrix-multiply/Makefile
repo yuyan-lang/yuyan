@@ -1,21 +1,18 @@
 
 
 yuyan: 
-	yy compileOnlyoptimizeO3 matrix-multiply.yuyan
-	cp ./.yybuild/yyexe matrix_yuyan_o3.out
+	yy -c -O3 matrix-multiply.yuyan -o matrix_yuyan_o3.out
 
 
 yuyandebug: 
-	yy compileOnly matrix-multiply.yuyan
-	cp ./.yybuild/yyexe matrix_yuyan.out
+	yy -c matrix-multiply.yuyan -o matrix_yuyan.out
 
 
 time_plot.out: time_plot.yuyan
-	yy compileOnly $^
-	cp ./.yybuild/yyexe time_plot
+	yy -c -o time_plot.out $^
 
 time : time_plot.out
-	./time_plot
+	./time_plot.out
 
 sml : matrix-multiply.sml matrix-multiply.mlb
 	mlton -output matrix_sml.out matrix-multiply.mlb
