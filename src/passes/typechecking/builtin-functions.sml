@@ -67,12 +67,12 @@ val newDynClsfdType : Type =
 
 
     fun parseStr(x : string) : BuiltinFunc option = case x of
-          "《《内建：以当前续延调用》》" => SOME(BFCallCC)
-        | "《《内建：新建动态分类》》" => SOME(BFNewDynClsfdValueWithString)
-        | "《《内建：抛出异常》》" =>  SOME(BFRaise)
-        | "《《内建：尝试运行》》" =>  SOME(BFHandle)
-        | "《《内建：整数：减》》" =>  SOME(BFIntSub)
-        | "《《内建：整数：相等》》" =>  SOME(BFIntEq)
+          "《《内建函数：以当前续延调用》》" => SOME(BFCallCC)
+        | "《《内建函数：新建动态分类》》" => SOME(BFNewDynClsfdValueWithString)
+        | "《《内建函数：抛出异常》》" =>  SOME(BFRaise)
+        | "《《内建函数：尝试运行》》" =>  SOME(BFHandle)
+        | "《《内建函数：整数：减》》" =>  SOME(BFIntSub)
+        | "《《内建函数：整数：相等》》" =>  SOME(BFIntEq)
         | _ => NONE
 
 

@@ -127,11 +127,36 @@ struct
     open JSONUtil
 
     fun requestTypeCheck() = 
-        CompilationManager.requestFileProcessing
-            (FileResourceURI.make (getDocumentPath params))
+    let
+        val updatedFilePath = (FileResourceURI.make (getDocumentPath params))
+        val cm = (LanguageServer.getCM server)
+        val _ = CompilationManager.requestFileProcessing
+            updatedFilePath
             CompilationStructure.UpToLevelTypeCheckedInfo
-            (LanguageServer.getCM server)
+            cm
             []
+            (* also update all file dependencies *)
+        val dependencies = 
+        (* TODO: find more efficient update ways *)
+        (* List.mapPartial (fn (s, CompilationStructure.CompilationFile f) =>
+            case #dependencyInfo f of
+            StaticErrorStructure.Success(l) => if List.exists (fn (furi, sname) => 
+                FileResourceURI.access furi = FileResourceURI.access updatedFilePath
+            ) l then SOME(s) else NONE
+            | _ => NONE
+        )  *)
+        (CompilationManager.findAllFiles cm)
+        in
+        (map (fn (fp, s) => 
+        CompilationManager.requestFileProcessing
+            (FileResourceURI.make fp)
+            CompilationStructure.UpToLevelTypeCheckedInfo
+            cm
+            []
+        ) dependencies
+        ; ())
+
+        end
 
     fun addFileBufferContent(content : string) =
         ((CompilationManager.findOrAddFile

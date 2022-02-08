@@ -77,8 +77,16 @@ exception CPSInternalError
                             )))
                         ))))
             | CIfThenElse(e, tcase, fcase) => cpsTransformExpr ctx e (fn v => 
-                CPSIfThenElse(CPSValueVar v, cpsTransformExpr ctx tcase cc, 
-                    cpsTransformExpr ctx fcase cc) (* is this acutally efficient? I would imagine 
+                CPSAbsSingle (kcc' (fn ret => 
+                    cc (CPSVarLocal ret)
+                ), NONE, kcc (fn ccAbs => 
+                let val cc' = (fn v => CPSAppSingle(CPSValueVar ccAbs, CPSValueVar v))
+                in
+                    CPSIfThenElse(CPSValueVar v, cpsTransformExpr ctx tcase cc', 
+                    cpsTransformExpr ctx fcase cc') 
+                end
+                ))
+                    (* is this acutally efficient? I would imagine 
                     it leads to lots of wasted codes (by having two copies of cc, 
                     also in cases)  TOOO: investigate *)
             )
@@ -93,7 +101,7 @@ exception CPSInternalError
                                     val caseIndex = klookupLabel3 cases label
                                     val (_, ev, e) = List.nth(cases, caseIndex)
                                 in kcc (fn boundId => cpsTransformExpr (
-                                     ([ev], PlainVar boundId)::ctx) e cc
+                                     ([ev], PlainVar boundId)::ctx) e cc (* I don't understand why this works, it seems that should wrap cc in a separate computation!!!! TODO: investigate *)
                                 ) end)))
             )
             | CLam(ev, eb, Func(t1, t2)) => 

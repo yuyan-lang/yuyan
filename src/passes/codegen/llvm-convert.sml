@@ -151,6 +151,7 @@ in
             in
                 (declt @ declf, vaccess v (fn v' => [
                     LLVMPrimitiveOp(LLVMPOpValueToBool(i1loc, llvmLocToValue v')),
+                    LLVMComment "CPS Converting If Then Else",
                     LLVMConditionalJumpBinary(i1loc, tcomps, fcomps)]))
             end
             | CPSCases(v, vkl) => 

@@ -10,17 +10,21 @@ yyrt:
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 1 src/development.mlb
 
+buildtest:
+	./yy -c yylib/runtest.yuyan -o yy_test
+
 test: build
 	./yy yylib/runtest.yuyan --use-local-lib
 	
 genDocs : build
 	./ genDocs yylib/总库。豫 
 
-install:  build
+install:  build buildtest
 	cp runtime/libyyrtdebug.a /usr/local/lib/libyuyanlangruntimedebug.a
 	cp runtime/libyyrtopt.a /usr/local/lib/libyuyanlangruntime.a
 	cp yy /usr/local/bin/yuyanlang
 	ln -sf /usr/local/bin/yuyanlang /usr/local/bin/yy
+	cp yy_test /usr/local/bin/yy_test
 
 clean:
 	rm yy

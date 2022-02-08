@@ -504,11 +504,17 @@ end *)
         cm
     end
         (* check if the current directory has a package.yyon file *)
+
+    fun findAllFiles( cm :compilationmanager) : (string * compilationfile) list = 
+    let
+        val allFiles = List.concat (map (fn (m) => (StrDict.toList (!(#files m)))) ((!(#importedModules cm))))
+        in allFiles end
+
     
     (* returns errors one element per file *)
     fun collectAllDiagnostics(cm : compilationmanager) : (string * StaticErrorStructure.errlist) list = 
     let
-        val allFiles = List.concat (map (fn (m) => (StrDict.toList (!(#files m)))) ((!(#importedModules cm))))
+        val allFiles = findAllFiles cm
         val diagnostics = (List.map(fn (s, f) =>  case  (CompilationFileOps.getFileDiagnostics f) of 
             SOME l => (s, l) | NONE => (s, [])) allFiles)
     in
