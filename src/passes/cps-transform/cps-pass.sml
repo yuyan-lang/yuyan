@@ -80,7 +80,8 @@ exception CPSInternalError
                 CPSAbsSingle (kcc' (fn ret => 
                     cc (CPSVarLocal ret)
                 ), NONE, kcc (fn ccAbs => 
-                let val cc' = (fn v => CPSAppSingle(CPSValueVar ccAbs, CPSValueVar v))
+                let val _ = registerFunctionNameMapping ccAbs originalExpr "Cont of"
+                val cc' = (fn v => CPSAppSingle(CPSValueVar ccAbs, CPSValueVar v))
                 in
                     CPSIfThenElse(CPSValueVar v, cpsTransformExpr ctx tcase cc', 
                     cpsTransformExpr ctx fcase cc') 

@@ -66,6 +66,15 @@ double  addr_to_double(yy_ptr arg) {
 }
 
 
+yy_ptr bool_to_addr(bool b){
+    return *(uint64_t **)&b;
+}
+bool addr_to_bool(yy_ptr arg){
+    return *(bool *)&arg;
+}
+
+
+
 
 yy_ptr injection_to_addr(uint64_t index, const char* label, yy_ptr elem){
     yy_ptr returnStorage = allocateAndSetHeader(4, 3);
@@ -76,17 +85,8 @@ yy_ptr injection_to_addr(uint64_t index, const char* label, yy_ptr elem){
 }
 
 
-const char* bool_false_label = "阴";
-const char* bool_true_label = "阳";
-
-/* bool is defined as 阴 ： 1 + 阳 ： 1 */
-yy_ptr bool_to_addr(bool b){
-    if(!b){
-        return injection_to_addr(0, bool_false_label, unit_to_addr());
-    } else {
-        return injection_to_addr(1, bool_true_label, unit_to_addr());
-    }
-}
+// const char* bool_false_label = "阴";
+// const char* bool_true_label = "阳";
 
 yy_ptr tuple_to_addr(uint64_t length, const yy_ptr elems[]){
 

@@ -146,7 +146,7 @@ in
 
             | CPSIfThenElse(v, tcase, fcase) => 
             let val (declt, tcomps) = recur tcase
-                val (declf, fcomps) = recur tcase
+                val (declf, fcomps) = recur fcase
                 val i1loc = LLVMLocationLocal (UID.next())
             in
                 (declt @ declf, vaccess v (fn v' => [
