@@ -13,9 +13,14 @@ yy_ptr yyIsSubstring(yy_ptr s1, yy_ptr s2) {
 
 // returns if s1 is a substring of s2
 yy_ptr yyStringEq(yy_ptr s1, yy_ptr s2) {
-    if (strcmp(addr_to_string(s2), addr_to_string(s1)) ==0) {
+    char *str2 = addr_to_string(s2);
+    char *str1 = addr_to_string(s1);
+    if (strcmp(str2, str1) == 0)
+    {
         return bool_to_addr(true);
-    } else {
+    }
+    else
+    {
         return bool_to_addr(false);
     }
 }

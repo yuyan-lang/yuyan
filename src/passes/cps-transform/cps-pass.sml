@@ -83,8 +83,8 @@ exception CPSInternalError
                 let val _ = registerFunctionNameMapping ccAbs originalExpr "Cont of"
                 val cc' = (fn v => CPSAppSingle(CPSValueVar ccAbs, CPSValueVar v))
                 in
-                    CPSIfThenElse(CPSValueVar v, cpsTransformExpr ctx tcase cc', 
-                    cpsTransformExpr ctx fcase cc') 
+                    CPSIfThenElse(CPSValueVar v, cpsTransformExpr ctx tcase cc, 
+                    cpsTransformExpr ctx fcase cc) 
                 end
                 ))
                     (* is this acutally efficient? I would imagine 

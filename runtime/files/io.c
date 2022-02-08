@@ -11,6 +11,11 @@ yy_ptr yyPrintStr(yy_ptr s) {
     return unit_to_addr();
 }
 int informResultRec (FILE *file, yy_ptr result, int prevPred) {
+    // if it is small, probably not an address
+    if ((int64_t)result < 1000) {
+        fprintf(file, "%lld",(long long)(int64_t) result);
+        return 0;
+    }
     // assume it is a tuple
     uint64_t header = result[0];
     int type = (header >> (62 - 6)) &  0b11111;
