@@ -31,11 +31,11 @@ library
         signature FRAME_DICT
         signature FROM_STRING
         signature HASH_INCREMENT
-        signature HASH_TABLE
+        (* signature HASH_TABLE *)
         signature HASHABLE
         signature IDEQUE
         signature IMPERATIVE_UNION_FIND
-        signature IO_UTIL
+        (* signature IO_UTIL *)
         signature IPQUEUE
         signature IQUEUE
         signature LEX_ENGINE
@@ -62,10 +62,10 @@ library
         signature PRETTY_PRINT
         signature PSTREAM
         signature PSUSP
-        signature QUEUE
-        signature RAND
+        (* signature QUEUE *)
+        (* signature RAND *)
         signature RAND32
-        signature RANDOM
+        (* signature RANDOM *)
         signature REGEXP
         signature SEEK_IO
         signature SEQUENCE
@@ -133,13 +133,13 @@ library
         structure FromString
         structure IDeque
 	structure IntListDict
-	structure IntListSet
+	(* structure IntListSet *)
 	structure IntHashable
-	structure IntHashTable
+	(* structure IntHashTable *)
 	structure IntOrdered
         structure IntPickleable
         structure IntInfPickleable
-	structure IntRedBlackSet
+	(* structure IntRedBlackSet *)
 	structure IntRedBlackDict
 	structure IntSplaySet
 	structure IntSplayDict
@@ -169,7 +169,7 @@ library
 	structure PrettyPrint
 	structure PStream
 	structure PSusp
-	structure Queue
+	(* structure Queue *)
 	structure Quicksort
         structure RedBlackTree
         structure RehashRandom

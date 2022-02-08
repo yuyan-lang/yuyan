@@ -74,13 +74,14 @@ end
             | NormalRet ([], v) => raise RunAfterFinal
             | NormalRet ((f :: s), v) => Run (s,(f v))
             | Run (s, KRet(v)) => NormalRet (s, v)
-            | Run (s, KProj(p,i)) => Run ( ((fn (KTuple l) => KRet(List.nth(l, i))) ::s), p)
-            | Run (s, KCases(p,l)) => Run ( ((fn (KInj(_, i,v)) => (List.nth(l, i)(v))) ::s), p)
-            | Run (s, KUnfold(p)) => Run ( ((fn (KFold(v)) => KRet(v)) ::s), p)
+            | Run (s, KProj(p,i)) => Run ( ((fn x => case x of (KTuple l) => KRet(List.nth(l, i)) | _ => raise Fail "km77") ::s), p)
+            | Run (s, KCases(p,l)) => Run ( ((fn x => case x of (KInj(_, i,v)) => (List.nth(l, i)(v)) | _ => raise Fail "km78") ::s), p)
+            | Run (s, KUnfold(p)) => Run ( ((fn (x) => case x of KFold(v) => KRet(v) | _ => raise Fail "km79") ::s), p)
             | Run (s, KApp(f, arg)) => Run ( ((fn function => 
                 case function of 
                     (KAbs f') => KAppWithEvaledFun(f', arg)
                     | (KBuiltinValue(KbvFunc(_, f'))) => KAppWithEvaledFun(f', arg)
+                    | _ => raise Fail "k84"
                     ) ::s), f)
             | Run (s, KAppWithEvaledFun(f', arg)) => Run ( ((fn argv => f' argv) ::s), arg)
             | Run (s, KFix(f)) => Run ( s, f(KComp(KFix(f))))

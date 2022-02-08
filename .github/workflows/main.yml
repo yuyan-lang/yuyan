@@ -1,0 +1,95 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-macos:
+    # The type of runner that the job will run on
+    runs-on: macos-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Info
+        run : |
+          pwd
+
+      - name: Install Dependencies
+        run : |
+          echo Installing Dependencies
+          brew install bdw-gc libuv mlton matplotplusplus llvm
+        
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          make 
+          sudo make install
+          yy yylib/runtest.yuyan
+
+      - name: make test
+        run: make test
+
+  # This workflow contains a single job called "build"
+  build-ubuntu:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      # Runs a single command using the runners shell
+      - name: Run a one-line script
+        run: pwd
+
+      - name: Install MLton
+        run: |
+          wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz
+          tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
+          cd mlton-20210117-1.amd64-linux-glibc2.31/
+          sudo make
+          sudo make install
+
+      - name: Install MatPlot++
+        run: |
+          git clone https://github.com/alandefreitas/matplotplusplus.git
+          cd matplotplusplus
+          mkdir build
+          cd build
+          cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O2" -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF 
+          sudo cmake --build . --parallel 2 --config Release
+          sudo cmake --install .
+
+
+
+
+      # Runs a set of commands using the runners shell
+      - name: Run a multi-line script
+        run: |
+          sudo apt install libgc-dev libuv1-dev mlton llvm libbsd-dev
+
+          make 
+          sudo make install
+          yy yylib/runtest.yuyan
+      
+      - name: make test
+        run: make test
+
+

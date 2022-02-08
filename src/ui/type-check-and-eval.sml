@@ -1,53 +1,68 @@
 structure TypeCheckAndEval =
 struct
-    fun typeCheckAndEval (input : string)(options : ReplOptions.t) =
-        (let fun cprint x s = if x <= (#verbose options) then print s else () 
+open StaticErrorStructure
+open ReplOptions
+
+    fun printErr (s : string) = (TextIO.output(TextIO.stdErr,s) ; TextIO.flushOut TextIO.stdErr)
+
+    fun typeCheckAndEval (options : ReplOptions.t) : OS.Process.status =
+        (let fun cprint x s = if x <= (#verbose options) then printErr s else () 
+            val _ = DebugPrint.p ("Input files:" ^ Int.toString (length (getInputFiles options)))
             val startTime = Time.now()
-            val whitespaceRemoved = UTF8String.removeAllWhitespace input
-            val _ = cprint 1 "----------------- White Space Removal Complete -------------- \n"
-            val _ = cprint 2 (whitespaceRemoved^"\n")
-            val stmtAST = MixedStr.makeDecl (UTF8String.fromString whitespaceRemoved)
-            val _ = cprint 1 "----------------- Lexical Analysis Complete -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_mixedstrs stmtAST ^ "\n")
-            val preprocessAST = ExpressionConstructionPass.preprocessAST(stmtAST)
-            val _ = cprint 1 "----------------- Preprocess AST Constructed -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_preprocessaast preprocessAST)
-            val typeCheckingAST = ExpressionConstructionPass.constructTypeCheckingASTTopLevel(preprocessAST)
-            val _ = cprint 1 "----------------- Type Checking AST Constructed -------------- \n"
-            val _ = cprint 2 (PrettyPrint.show_typecheckingSig typeCheckingAST)
-            val _ = cprint 1 "----------------- Type Checking in Progress -------------------- \n"
-            val _ = TypeCheckingEntry.typeCheckSignatureTopLevel typeCheckingAST
-            val _ = cprint 1 "----------------- Type Checking OK! -------------------- \n"
-            val executeTime =  (* removed the use of pk machines due to foreign functions *)
-                (let 
-                val erasedASTK = ErasureEntry.eraseSigK typeCheckingAST
-                val _ = cprint 1 "----------------- Erasure Complete ! -------------------- \n"
-                val kastK = (PersistentKMachine.fromKComp erasedASTK)
-                val _ = cprint 1 "----------------- Byte Code Generated ! -------------------- \n"
-                val _ = cprint 2 (PrettyPrint.show_pkcomputation kastK ^ "\n")
-                val _ = cprint 1 "----------------- Executing ---------------------- \n"
-                val executeTime = Time.now()
-                val result = KMachine.runUntilCompletion (KMachine.Run([],erasedASTK)) 
-                                            (fn x => ())
-                                        (* (fn km => print (PrettyPrint.show_pkmachine (PersistentKMachine.fromKComp km) ^ "\n")) *)
-                val _ = cprint 1 "----------------- Execution Completed ! -------------------- \n"
-                val _ = print (UTF8String.toString (KMachine.kvalueToString 0 result) ^ "\n")
-                in executeTime end)
+            val cm = CompilationManager.initWithWorkingDirectory (FileResourceURI.make (OS.FileSys.getDir()))
+            val absFps = map (fn filename => (FileResourceURI.make (PathUtil.makeAbsolute filename (#pwd cm)))) (getInputFiles options)
+            val _ = map (fn absFp => CompilationManager.findOrAddFile absFp NONE cm) absFps
+            val _ = map (fn absFp => CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm []) absFps
+            val entryFileAbsFp = if length absFps > 0 then List.last absFps else raise Fail "tcae13: Should have at least one input file"
+            val CompilationStructure.CompilationFile cfile = CompilationManager.lookupFileByPath entryFileAbsFp cm
+            val outputFilePath = case getOutputFilePath options of SOME f => (FileResourceURI.make (PathUtil.makeAbsolute f (#pwd cm))) 
+                                                                | NONE => (FileResourceURI.make (PathUtil.makeAbsolute ".yybuild/yyexe" (#pwd cm)))
+            val preExecuteTime = Time.now()
+            val (executeTime, exitSt) =  
+                    let 
+                    (* val _ = DebugPrint.p (PrettyPrint.show_compilationfile (CompilationStructure.CompilationFile cfile) ^ "\n") *)
+                    val (res) = 
+                    if getGenDocs options 
+                    then (Time.now(), (DocsGeneration.generateDocs 
+                            (FileResourceURI.make (PathUtil.concat [(#pwd cm), "yylib"]))
+                            (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild", "docs"]))
+                            cm ; OS.Process.success))
+                    else
+                            let
+                                val exec = CompilationManager.makeExecutable entryFileAbsFp cm (#optimize options) (getEnableProfiling options) 
+                                    (getUselocallib options)
+                                outputFilePath
+                                val executeTime = Time.now()
+                                val exitSt = case exec of 
+                                    Success _ => (
+                                        if (#compileOnly) options 
+                                        then OS.Process.success
+                                        else (if OS.Process.isSuccess (OS.Process.system (FileResourceURI.access outputFilePath))
+                                            then OS.Process.success else OS.Process.failure  (* mlton will fail for nonconfomant exit status*)
+                                        ))
+                                    | DErrors l => (DebugPrint.p (PrintDiagnostics.showErrs l cm);OS.Process.failure)
+                                    | NotAvailable => raise Fail "tcev30"
+                            in 
+                                (executeTime, exitSt)
+                            end
+                    in res end
             val endTime = Time.now()
-            val compileDuration : Time.time = Time.-(executeTime,startTime)
+            val codeGenDuration : Time.time = Time.-(preExecuteTime,startTime)
+            val compileDuration : Time.time = Time.-(executeTime,preExecuteTime)
             val runDuration : Time.time = Time.-(endTime,executeTime)
             val _ = cprint 1 "------------------------------------------- \n"
-            val _ = cprint 1 ("compilation took " ^ (LargeInt.toString(Time.toMilliseconds(compileDuration))) ^ "ms; execution took "^
+            val _ = cprint 1 ("codegen took " ^ LargeInt.toString (Time.toMilliseconds codeGenDuration) ^ 
+                "ms; (clang) [or kmachine] compilation took " ^ (LargeInt.toString(Time.toMilliseconds(compileDuration))) ^ "ms; execution took "^
             (LargeInt.toString(Time.toMilliseconds(runDuration))) ^ "ms\n")
         in 
-            ()
+        exitSt
         end)
-        handle TypeCheckingASTOps.TypeCheckingFailure s => (print "Type checking failed\n"; print s)
-    | ElaboratePrecedence.ElaborationFail s => (print "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
-      | ExpressionConstructionPass.ElaborateFailure s => (print "elaboration econs failed (perhaps internal error(bug), correction: perhaps not. Check whether you have type inside expression?)\n"; print s )
-      |  ExpressionConstructionPass.ECPNoPossibleParse s=> (print "ecp parse failed\n"; print s)
-      |  MixedStr.InternalFailure s=> print ( "\n\n" ^ MixedStr.toString s)
-      |  KMachineOps.InternalFailure s=> print ( "internal failure  (bug) \n\n" ^ s)
+        (* handle 
+     ElaboratePrecedence.ElaborationFail s => (DebugPrint.p "elaboration prec failed (perhaps internal error (bug))\n"; print (PrettyPrint.show_parseopast s))
+      |  MixedStr.InternalFailure s=> DebugPrint.p ( "\n\n" ^ MixedStr.toString s)
+      |  KMachineOps.InternalFailure s=> DebugPrint.p ( "internal failure  (bug) \n\n" ^ s) *)
+      (* | DeclarationParser.DeclAmbiguousParse ls => DebugPrint.p ("decl ambiguous parse " ^ String.concatWith "\n possible parse : " 
+            (map (fn (oper, args) => PrettyPrint.show_op oper ^ " args: " ^ PrettyPrint.show_mixedstrs args) ls)) *)
 
     
 end

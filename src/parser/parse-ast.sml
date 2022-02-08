@@ -2,6 +2,7 @@
 structure ParseAST =
 struct
 open Operators
+
 open OpAST
    datatype ParseRule = OperatorNameComponent of UTF8String.t * operator
                             | OperatorInternal of operator
@@ -20,10 +21,11 @@ open OpAST
                             | UnknownId 
                             | UnknownIdComp of UTF8Char.t
                             | Binding of UTF8String.t
-                            | QuotedName of UTF8String.t
-                            | StringLiteral of UTF8String.t
-                            | UnparsedExpr of MixedStr.t 
-                            | UnparsedDecl of MixedStr.t list (* any quoted thing is treated as unparsed arg *)
+                            | QuotedBinding of (UTF8String.t * MixedStr.quoteinfo)
+                            | QuotedName of (UTF8String.t * MixedStr.quoteinfo)
+                            | StringLiteral of UTF8String.t * MixedStr.quoteinfo
+                            | UnparsedExpr of (MixedStr.t  * MixedStr.quoteinfo)
+                            | UnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list  * MixedStr.quoteinfo (* any quoted thing is treated as unparsed arg *)
                             (* should just go ahead and parse the expression *)
                             (* | UnparsedExpr of MixedStr.t any quoted thing is treated as unparsed arg *)
                             | PlaceHolder (* should not appear anywhere in final result *)
@@ -34,6 +36,7 @@ open OpAST
 
     fun opastAppendArg  (original :  OpAST )(arg : OpAST)  : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, l@[arg])
+                        | _ => raise Fail "past39"
     fun opastPrependArg  (arg : OpAST) (original :  OpAST ) : OpAST = 
         case original of (OpAST (oper, l)) => OpAST(oper, arg :: l)
                         | _ => raise InternalFailure (arg, original)

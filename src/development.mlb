@@ -1,23 +1,39 @@
 $(SML_LIB)/basis/basis.mlb
+$(SML_LIB)/basis/sml-nj.mlb
 $(SML_LIB)/smlnj-lib/smlnj-lib.mlb
 $(SML_LIB)/smlnj-lib/Util/smlnj-lib.mlb
 $(SML_LIB)/mllpt-lib/mllpt-lib.mlb
+$(SML_LIB)/smlnj-lib/JSON/json-lib.mlb
 
 
 
 local
     ../cmlib/cmlib.mlb
     ann
-       "nonexhaustiveMatch ignore"
+       (*"nonexhaustiveMatch ignore"*)
+       "nonexhaustiveMatch error"
        "allowExtendedTextConsts true"
     in
+        util/string-dict.sml
+        util/path-util.sml
+        util/debug-print.sml
         util/unique-id.sml
+        util/source-location.sml
+        util/file-resource-uri.sml
+        util/uri-util.sml
+        util/source-range.sml
         util/utf8char.sml
-        util/utf8string.sml
-        util/ordered.sml
-
         operators/structure/special-chars.sml
+        util/utf8string.sml
+        util/io-util.sml
+        util/ordered.sml
+        util/math-util.sml
+        util/number-parser.sml
+        util/yyon.sml
+        build-system/diagnostics/static-error-structure.sml
+
         util/mixed-str.sml
+        util/yyon-util.sml
 
         operators/structure/operators.sml
         operators/structure/op-ast.sml
@@ -29,6 +45,7 @@ local
         operators/builtin/builtin.sml
         
         passes/preprocess/structure-name.sml
+        util/list-search-util.sml
 
         passes/typechecking/type-checking-ast.sml
         passes/preprocess/preprocessing-ast.sml
@@ -36,13 +53,29 @@ local
         execution/k-machine.sml
         execution/persistent-k-machine.sml
 
+        operators/structure/op-ast-ops.sml
+        
         parser/parse-ast.sml
         parser/bracket-scanner.sml
-        passes/typechecking/type-checking-ast-ops.sml
-        ui/pretty-print.sml
-        parser/declaration-parser.sml
         passes/preprocess/preprocessing-operators.sml
-        passes/preprocess/preprocessing-pass.sml
+        passes/typechecking/type-checking-ast-ops.sml
+        passes/typechecking/builtin-functions.sml
+        passes/cps-transform/cps-ast.sml
+        passes/cps-transform/cps-helper.sml
+        passes/cps-transform/cps-builtin.sml
+        passes/cps-transform/cps-ast-ops.sml
+        passes/cps-transform/closure-convert.sml
+        passes/codegen/llvm-ast.sml
+        passes/codegen/llvm-codegen.sml
+        passes/codegen/llvm-convert.sml
+        build-system/compilation-structure.sml
+
+
+        
+        ui/pretty-print.sml
+        build-system/compilation-tokens.sml
+        passes/cps-transform/cps-pass.sml
+        parser/declaration-parser.sml
         passes/typechecking/type-checking-pass.sml
         execution/k-machine-ops.sml
         passes/erase/erasure-pass.sml
@@ -54,11 +87,34 @@ local
         parser/elaborate-precedence.sml
         parser/precedence-parser.sml
         parser/mixfix-parser.sml
-
+   
         passes/preprocess/expression-construction-pass.sml
+        passes/preprocess/preprocessing-pass.sml
+        passes/typechecking/identifier-name-resolution.sml
+        build-system/compilation-file-ops.sml
+        build-system/compilation-file-processing.sml
+        build-system/compilation-module.sml
+        build-system/compilation-manager.sml
+        build-system/diagnostics/print-diagnostics.sml
+        
+        build-system/file-dependency-resolution.sml
+        build-system/documents-build/rich-text-document.sml
+        build-system/documents-build/rich-text-document-ops.sml
+        build-system/docs-generation.sml
+        
+        lsp/language-server.sml
+        lsp/syntax-highlight.sml
+        lsp/lsp-diagnostics.sml
+        lsp/language-server-mode.sml
 
+        
         ui/repl-options.sml
+        ui/command-line-arguments-text.sml
+        ui/repl-help-text.sml
+        ui/argument-parser.sml
+
         ui/type-check-and-eval.sml
+        ui/repl-debug.sml
         ui/repl.sml
 
         mlton-exec.sml

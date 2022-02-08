@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(lldb)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/.yybuild/yyexe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
+            "name": "(lldb2)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/performance-investigation/matrix-multiply/time_plot",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}/performance-investigation/matrix-multiply/",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        }
+    ]
+}

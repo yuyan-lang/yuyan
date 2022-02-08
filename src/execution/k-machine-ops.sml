@@ -42,7 +42,9 @@ open PersistentKMachine
         | PKUnfold(e) => KUnfold (toKComp ctx e)
         | PKApp(c1, c2) => KApp(toKComp ctx c1, toKComp ctx c2)
         | PKRet(v) => KRet(toKValue ctx v)
-        | PKFix(id, e) => KFix(fn v => toKComp (insert ctx (id, v)) e))
+        | PKFix(id, e) => KFix(fn v => toKComp (insert ctx (id, v)) e)
+        | _ => raise Fail "kmops46"
+        )
         handle InternalFailure s =>
           raise InternalFailure (s ^ "\n when converting pkcomp " ^ PrettyPrint.show_pkcomputation kv ^ " to value")
 

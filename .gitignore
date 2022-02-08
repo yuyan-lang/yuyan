@@ -6,3 +6,24 @@ a.*
 testfiles/
 a.dot
 yy
+
+lsplog.txt
+
+debug.ll
+debug*
+
+*.o
+*.s
+*.bc
+*.i
+.yybuild
+.vscode/c*.json
+runtime/lib*.a
+
+*.icloud
+yy\ *
+yy_*
+
+*.dSYM
+
+*.gch

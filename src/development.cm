@@ -17,10 +17,11 @@ Library
   structure PrecedenceParser
   structure Operators
   structure OpAST
+  structure OpASTOps
   structure ParseAST
   structure BracketScanner
 
-  structure IRepl 
+  structure Repl 
   structure ReplOptions
   structure TypeCheckAndEval
 
@@ -54,12 +55,65 @@ Library
   structure PreludeFunctions
 
   structure StructureName
+  structure LanguageServerMode
+  structure LanguageServer
+
+  structure SyntaxHighlight
   
+
+  structure SourceLocation
+  structure SourceRange
+  structure CompilationManager
+  structure YYONUtil
+  structure NumberParser
+  structure MathUtil
+  structure YYON
+  structure ListSearchUtil
+  structure URIUtil
+  structure CompilationTokens
+  structure CompilationModule
+  structure DebugPrint
+  structure StrDict
+
+  structure CPSAst
+  structure CPSAstOps
+  structure CPSPass
+  structure ClosureConvert
+
+  structure LLVMAst
+  structure LLVMCodegen
+  structure LLVMConvert
+
+  structure IdentifierNameResolution
+  structure FileDependencyResolution
+  structure CompilationFileOps
+  structure CompilationFileProcessing
+
+  structure FileResourceURI 
+  structure PathUtil
+
+  structure StaticErrorStructure
+  structure PrintDiagnostics
+
+  structure LspDiagnostics
+  structure ReplDebug
+
+  structure DocsGeneration
+  structure BuiltinFunctions
+  structure RichTextDocument
+  structure RichTextDocumentOps
+  structure IOUtil
+  structure ArgumentParser
+  structure ReplHelpText
+  structure CommandLineArgumentsText
+  structure CPSBuiltin
+  structure CPSHelper 
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
-  (* $/smlnj-lib.cm *)
+  $/smlnj-lib.cm
   $/ml-lpt-lib.cm  (* for UTF8 since the smlnj-lib clashes with cmlib *)
+  $/json-lib.cm
 
   parser/elaborate-precedence.sml
   parser/bracket-scanner.sml
@@ -71,9 +125,13 @@ is
 
 
   ui/repl.sml
+  ui/repl-help-text.sml
   ui/type-check-and-eval.sml
   ui/pretty-print.sml
   ui/repl-options.sml
+  ui/argument-parser.sml
+  ui/repl-debug.sml
+  ui/command-line-arguments-text.sml
   
   operators/builtin/builtin.sml
   operators/builtin/nat-ops.sml
@@ -84,12 +142,26 @@ is
   operators/structure/operator-registry.sml
   operators/structure/operators.sml
   operators/structure/op-ast.sml
+  operators/structure/op-ast-ops.sml
 
+  util/io-util.sml
+  util/debug-print.sml
+  util/source-location.sml
+  util/uri-util.sml
+  util/list-search-util.sml
+  util/source-range.sml
   util/utf8char.sml
   util/utf8string.sml
   util/ordered.sml
   util/unique-id.sml
   util/mixed-str.sml
+  util/yyon-util.sml
+  util/yyon.sml
+  util/math-util.sml
+  util/number-parser.sml
+  util/string-dict.sml
+  util/file-resource-uri.sml
+  util/path-util.sml
 
   passes/preprocess/preprocessing-pass.sml
   passes/preprocess/preprocessing-ast.sml
@@ -101,13 +173,43 @@ is
   passes/typechecking/type-checking-pass.sml
   passes/typechecking/type-checking-ast-ops.sml
   passes/typechecking/type-checking-entry.sml
+  passes/typechecking/identifier-name-resolution.sml
+  passes/typechecking/builtin-functions.sml
   passes/erase/erasure-pass.sml
   passes/erase/erasure-entry.sml
+  passes/cps-transform/cps-ast.sml
+  passes/cps-transform/cps-ast-ops.sml
+  passes/cps-transform/cps-pass.sml
+  passes/cps-transform/cps-builtin.sml
+  passes/cps-transform/cps-helper.sml
+  passes/cps-transform/closure-convert.sml
+  passes/codegen/llvm-ast.sml
+  passes/codegen/llvm-codegen.sml
+  passes/codegen/llvm-convert.sml
 
   prelude-libraries/prelude-functions.sml
   
   execution/k-machine.sml
   execution/k-machine-ops.sml
   execution/persistent-k-machine.sml
+
+  lsp/language-server-mode.sml
+  lsp/language-server.sml
+  lsp/syntax-highlight.sml
+  lsp/lsp-diagnostics.sml
+
+  build-system/compilation-manager.sml
+  build-system/compilation-tokens.sml
+  build-system/compilation-module.sml
+  build-system/compilation-file-ops.sml
+  build-system/compilation-file-processing.sml
+  build-system/compilation-structure.sml
+  build-system/file-dependency-resolution.sml
+  build-system/diagnostics/static-error-structure.sml
+  build-system/diagnostics/print-diagnostics.sml
+  build-system/docs-generation.sml
+  build-system/documents-build/rich-text-document.sml
+  build-system/documents-build/rich-text-document-ops.sml
+
 
 
