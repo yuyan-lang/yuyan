@@ -1,11 +1,5 @@
 
-## Syntax Sheet (Informal)
-The key words (that cannot appear as a name and has a special meaning no matter where it is) are
-  `「」『』。`. The single quotes are used for 
-  + identifiers (if 
-  no keywords appear inside a pair of `"「", "」"`) 
-  + OR brackets (if there 
-  are keywords (`"「", "」", "『", "』", "。"`) appearing inside a pair of `"「", "」"`).
+## 语法表
 
 | 豫言           | Standard Language | Precedence | 
 | ------------- |-------------| ------|

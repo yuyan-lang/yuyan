@@ -1,98 +1,80 @@
 # 豫言 
 一款函数式中文编程语言
 
+一款中文函数式编程语言
+
+[English Version](README_eng.md)（可能有些信息已过期）
 ## 版本
 非常早期的预览版（0.1.0alpha)
 
-Everything is subject to change
+本语言仍在早期的开发阶段，所有的语言功能都可能在后期改变。
 
-## Features
+## 语言特征
 
-This language is a simple functional programming language with 
-- function types
-- sum types
-- product types
-- isorecursive types
-- universal types
-- existential types
-
-## Features to be implemented
-
-I find the following features to be usually desirable 
-
-- Custom Exceptions
-
-- Letcc
-
-- Mutable references
+本语言是简单类型的函数式编程豫言。支持的类型包括以下：
+- 函数类型(function types)
+- 总和类型(sum types)
+- 乘积类型(product types)
+- 递归类型(isorecursive types)
+- 通用类型(universal types)
+- 存在类型(existential types)
 
 
-## Installation
+## 安装
 
-You can compile with either smlnj or mlton.
+详见[`安装指南`](InstallationInstruction.md)
 
-With mlton, use the following command: 
+## 运行
+
+运行一个程序：
 ```
-mlton -output yy src/development.mlb
+yy filename.yuyan
 ```
 
-## Usage
-To run
+编译一个程序
 ```
-./yy r filename.yuyan
-```
-
-To run with more informative debug output 
-```
-./yy rv filename.yuyan
-./yy rvv filename.yuyan
-```
-(r stands for run and v stands for verbose)
-
-Projects are file lists with extension `。豫库`. They can be runned by the command, e.g. 
-```
-./yy r examples/helloworld/行。豫库
+yy filename.yuyan -c -o output.out
 ```
 
-<!-- To run with a faster runtime (in practice `k` seems to be faster)
+显示帮助
 ```
-./yy rk filename.yuyan
-./yy rkv filename.yuyan
-./yy rkvv filename.yuyan
-``` -->
+yy -h
+```
 
-## Examples
+## 帮助文档
+### 语言规范
 
-See the [`examples`](https://github.com/yuyan-lang/yuyan/tree/master/examples) directory.
+详见[语言规范](LanguageSpecification.md)
 
-Examples include definition of booleans, unary integers, lists and the quicksort algorithm.
+### 标准库及工具库文档 (API Docs)
 
-## Bugs
+详见[API文档](autogen/docs/目录.html)
 
-Bugs are to be expected. If you encounter an exception on an otherwise ok program, it is probably a bug. 
+## 语言插件
 
-## Contribution
-Language features should be thoroughly discussed before they are merged as PRs. 
+[VSCode插件](https://marketplace.visualstudio.com/items?itemName=yuyan-lang.yuyan-vscode)
 
+## 样例
 
-## Tips for debugging
-
-Some annoying issue I've encountered:
-
-+ UTF8 sometimes have control characters that mess with parsing, can use vim to chase them out. The issue is likely due to vim plugin for vscode intermixing with  the pinyin input method.
+可以查看[`标准库`](https://github.com/yuyan-lang/yuyan/tree/master/yylib)，以及[`performance-investigation`](https://github.com/yuyan-lang/yuyan/tree/master/performance-investigation)下的实现文件。
 
 
-## Performance 
+## 漏洞(Bugs)
 
-Sadly with only an interpreted enviroment, 
-the performance is somewhat not as good as i expected, despite the fact that  the theoretical performance is good (since type checking is optimized away and RT is using "byte code").
+由于处于开发的早期阶段，目前有很多bug，我们正在逐步修复，以及采用新的设计来避免这些bug的发生。
+
+如果你遇到了bug，请在`Issues`界面汇报。
+
+## 贡献
+
+出于语言设计的早期阶段，我们会认真听取语言功能方面的建议。
+
+## 关于调试技巧 
+
+vscode的vim插件有时候会和输入法冲突导致输入一些看不见的字符导致编译失败，可以使用vim，debug。
 
 
 
-See `performance-investigation` for testing scripts (you can run quicksort test to 
-compare the performance with other languages).
-<!-- 
-My somewhat naive implementation of k machine is not optimal in the sense that substitutions are better implemented as functions and not as values. Add "k" to the first argument runs the K machine (which appears to be 
-faster) than the pK machine. -->
+## 语言性能
 
-The performance should improve once I figure out how to compile everything to assembly.
+详见[语言性能](LanguagePerformance.md)

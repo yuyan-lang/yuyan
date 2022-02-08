@@ -111,7 +111,7 @@ struct
     fun footerToTOC(descentLevel : int) : RichTextDocument.t =
         [Newline,
             RichTextSegment(Black, Regular, UTF8String.fromString "返回"),
-            HyperLink(UTF8String.fromString "目录", PathUtil.concat(List.tabulate(descentLevel, (fn _ => ".."))@["toc.html"]))
+            HyperLink(UTF8String.fromString "目录", PathUtil.concat(List.tabulate(descentLevel, (fn _ => ".."))@["目录.html"]))
             ]
 
     fun generateDocForCompilationFile 
@@ -159,7 +159,7 @@ struct
                     val _ = IOUtil.writeFile (actualFileName) fOutput
                 in () end
             ) generatedDocs
-        val _ = IOUtil.writeFile (PathUtil.concat [access outputRoot, "toc.html"]) (outputToHTML tocDoc)
+        val _ = IOUtil.writeFile (PathUtil.concat [access outputRoot, "目录.html"]) (outputToHTML tocDoc)
     in 
         ()
     end
