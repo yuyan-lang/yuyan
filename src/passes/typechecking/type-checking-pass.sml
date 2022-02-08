@@ -327,6 +327,7 @@ infix 5 <?>
                     | RStringLiteral(l, soi) => Success(CStringLiteral l, BuiltinType(BIString))
                     | RIntConstant(i, soi) => Success(CIntConstant i, BuiltinType(BIInt))
                     | RRealConstant (r, soi) => Success(CRealConstant r, BuiltinType(BIReal))
+                    | RBoolConstant (b, soi) => Success(CBoolConstant b, BuiltinType(BIBool))
                     
 
                     | RLetIn(decls, e, soi) => (case ctx of 
@@ -503,6 +504,7 @@ infix 5 <?>
                     | RStringLiteral (s, soi) => (assertTypeEquiv e (BuiltinType(BIString)) tt >> (Success (CStringLiteral s)))
                     | RIntConstant (i, soi) => (assertTypeEquiv e (BuiltinType(BIInt)) tt >> (Success ( CIntConstant i)))
                     | RRealConstant (r, soi) => (assertTypeEquiv e (BuiltinType(BIReal)) tt >> (Success (CRealConstant r)))
+                    | RBoolConstant (r, soi) => (assertTypeEquiv e (BuiltinType(BIBool)) tt >> (Success (CBoolConstant r)))
                     | RFfiCCall (e1, e2, soi) => (
                         case e1 of
                             RStringLiteral (cfuncName, soi) => 

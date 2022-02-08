@@ -183,6 +183,7 @@ infix 5 =/=
             | RStringLiteral l => RStringLiteral l
             | RIntConstant l => RIntConstant l
             | RRealConstant l => RRealConstant l
+            | RBoolConstant l => RBoolConstant l
             | RFfiCCall(e, e2, soi) => RFfiCCall(substTypeInRExpr tS x e, 
                     substTypeInRExpr tS x e2, soi
                 )
@@ -300,6 +301,7 @@ infix 5 =/=
         | RStringLiteral (l, (qil, qir)) => qil :: l @[ qir]
         | RIntConstant (l, soi) => soi
         | RRealConstant (l, soi) => soi
+        | RBoolConstant (l, soi) => soi
         | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
         | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
         | RBuiltinFunc(f, s) => s

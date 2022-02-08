@@ -91,6 +91,7 @@ struct
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：有》》") then Success(UnitType) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(NullType) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：新的外部类型》》") then Success(BuiltinType(BIForeignType(UID.next()))) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：爻》》") then Success(BuiltinType(BIBool)) else
                 Success(TypeVar [s])
             | OpUnparsedExpr x => raise Fail "ecp74"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoType e ctx
@@ -156,7 +157,9 @@ struct
                     NumberParser.NPInt i => Success (RIntConstant (i, s))
                     | NumberParser.NPReal r => Success (RRealConstant (r, s))
                  )
-              else
+                else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阳》》") then Success(RBoolConstant(true, s)) 
+                else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阴》》") then Success(RBoolConstant(false, s)) 
+                else
               (case BuiltinFunctions.parseStr (UTF8String.toString s) of 
                 SOME f => Success(RBuiltinFunc(f, s))
                 | NONE => Success (RExprVar [s])

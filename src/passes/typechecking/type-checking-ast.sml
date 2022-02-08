@@ -58,6 +58,7 @@ structure TypeCheckingAST = struct
                     | CStringLiteral of UTF8String.t 
                     | CIntConstant of int
                     | CRealConstant of real
+                    | CBoolConstant of bool
                     | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * StructureName.t list
                     | CBuiltinFunc of BuiltinFunc
@@ -107,6 +108,7 @@ structure TypeCheckingAST = struct
                     | RStringLiteral of UTF8String.t  * MixedStr.quoteinfo
                     | RIntConstant of int * UTF8String.t
                     | RRealConstant of real * UTF8String.t
+                    | RBoolConstant of bool * UTF8String.t
                     | RLetIn of RDeclaration list * RExpr * sourceOpInfo
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
                     | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)

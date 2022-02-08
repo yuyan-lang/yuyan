@@ -91,6 +91,8 @@ in
     [toLocalVar name ^ " = bitcast double " ^ Real.fmt (StringCvt.FIX (SOME 60)) r ^ " to i64",
     toLLVMLoc llvmLoc ^ " = inttoptr i64 " ^ toLocalVar name ^ " to i64*"]
 end
+fun storeBoolToLLVMLoc  (llvmLoc : llvmlocation)(b : bool)  : string list= 
+    [toLLVMLoc llvmLoc ^ " = inttoptr i1 " ^ (if b then "1" else "0") ^ " to i64*"]
 
 
 fun storeArrayToLLVMLoc (arrType : llvmarraytype) (llvmLoc : llvmlocation)(values : llvmvalue list)  : string list= 
@@ -227,15 +229,24 @@ end
 fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
     case p of
         LLVMPOpCmpEqInt(r, i1, i2) => 
-        [toLLVMLoc r ^ " = icmp eq i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+            [toLLVMLoc r ^ " = icmp eq i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpIntSub(r, i1, i2) => 
+            [toLLVMLoc r ^ " = sub i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpValueToBool(r, i1) => 
+            [toLLVMLoc r ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i1"]
+        | LLVMPOpBoolToValue(r, i1) => 
+            [toLLVMLoc r ^ " = inttoptr i1 " ^ toLLVMValue i1 ^ " to i64*"]
         | LLVMPOpValueToInt(r, i1) => 
-        [toLLVMLoc r ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i64"]
+            [toLLVMLoc r ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i64"]
+        | LLVMPOpIntToValue(r, i1) => 
+            [toLLVMLoc r ^ " = inttoptr i64 " ^ toLLVMValue i1 ^ " to i64*"]
 
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
         LLVMStoreUnit(v) => storeArrayToLLVMLoc LLVMArrayTypeUnit v []
         | LLVMStoreInt(v, i) => storeIntToLLVMLoc v i
         | LLVMStoreReal(v, r) => storeRealToLLVMLoc v r
+        | LLVMStoreBool(v, b) => storeBoolToLLVMLoc v b
         | LLVMStoreArray(arrtype, v, arr) => storeArrayToLLVMLoc arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 

@@ -79,7 +79,8 @@ exception CPSInternalError
             | CIfThenElse(e, tcase, fcase) => cpsTransformExpr ctx e (fn v => 
                 CPSIfThenElse(CPSValueVar v, cpsTransformExpr ctx tcase cc, 
                     cpsTransformExpr ctx fcase cc) (* is this acutally efficient? I would imagine 
-                    it leads to lots of wasted codes  TOOO: investigate *)
+                    it leads to lots of wasted codes (by having two copies of cc, 
+                    also in cases)  TOOO: investigate *)
             )
             | CInj (l, e, Sum ls ) => 
                 cpsTransformExpr ctx e 
@@ -162,6 +163,8 @@ exception CPSInternalError
                 CPSBuiltinValue(CPSBvInt i, kcc cc)
             | CRealConstant r => 
                 CPSBuiltinValue(CPSBvReal r, kcc cc)
+            | CBoolConstant r => 
+                CPSBuiltinValue(CPSBvBool r, kcc cc)
             | CFfiCCall (cFuncName, args) => 
                 foldr (fn (arg, acc) => 
                     (fn (prevArgs : cpsvalue list) => 

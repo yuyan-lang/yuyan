@@ -156,6 +156,8 @@ case x of
       | BFNewDynClsfdValueWithString => "bf_newclsfd"
       | BFRaise => "bf_raise"
       | BFHandle => "bf_handle"
+      | BFIntEq => "bf_int_eq"
+      | BFIntSub => "bf_int_sub"
 end
 
 fun show_builtintype x = let 
@@ -229,6 +231,7 @@ RExprVar v => sst v
                     | RStringLiteral (l, soi) => "\"" ^ ss l ^"\""
                     | RIntConstant (l, soi) => "(" ^ Int.toString l ^")"
                     | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
+                    | RBoolConstant (b, soi) => "(" ^ Bool.toString b ^")"
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
@@ -284,6 +287,7 @@ in case x of
                     | CStringLiteral l => "\"" ^ ss l ^"\""
                     | CIntConstant l => "(" ^ Int.toString l ^")"
                     | CRealConstant l => "(" ^ Real.toString l ^")"
+                    | CBoolConstant b => "(" ^ Bool.toString b ^")"
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
@@ -432,6 +436,7 @@ case c of
               ^ sv n ^ ") id=" ^ Int.toString uid ^ " v=" ^ sv v ^ ")" ^ sk k
             | CPSDynClsfdMatch(v, (uid, (a, c1)), c2) => "(caseclsfd (id=" ^ Int.toString uid ^ ")"  
             ^ sv v ^ " of {" ^ show_cpsvar a ^ " => " ^ sc c1 ^ " | otherwise => " ^ sc c2 ^ "}"
+            | CPSPrimitiveOp (x) => "TODO: unimplemented cpsprimitiveop"
 end
 
 fun show_cpscontextvalue (cv : CPSAst.cpscontextvalue) = 

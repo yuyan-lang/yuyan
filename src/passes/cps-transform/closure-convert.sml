@@ -13,10 +13,23 @@ fun closureConvertCont ( (i, c) : cpscontinuation) : IntSet.set * cpscontinuatio
     in (remove cfree (cpsvarToL i) , (i, c')) end
 and closureConvert (s : cpscomputation) : (IntSet.set * cpscomputation) =
 let val cck  = closureConvertCont
-fun fv (CPSValueVar v) = fromList (cpsvarToL v)
-fun fvi (CPSValueVar v) : int list = cpsvarToL v
-fun ***(a,b) = IntSet.union a b
-infix 4 ***
+    fun fv (CPSValueVar v) = fromList (cpsvarToL v)
+    fun fvi (CPSValueVar v) : int list = cpsvarToL v
+    fun ***(a,b) = IntSet.union a b
+    infix 4 ***
+
+    fun closureConvertCPSPop(x : cpsprimitiveop) : (IntSet.set * cpscomputation) = 
+        let fun closureConvertBinaryPop((v1, v2, k) : cpsvalue * cpsvalue * cpscontinuation) 
+            (f : cpsvalue * cpsvalue * cpscontinuation -> cpsprimitiveop) : (IntSet.set * cpscomputation)
+        = let
+            val (kfree, k') = cck k
+            in (fv v1 *** fv v2 *** kfree, CPSPrimitiveOp(f (v1, v2, k')))
+        end
+    in case x of 
+        CPSPOpIntEq(i) => closureConvertBinaryPop i CPSPOpIntEq
+        | CPSPOpIntSub(i) => closureConvertBinaryPop i CPSPOpIntSub
+    end
+
 in
     case s of   
         CPSUnit(k) => let val (kfree, k') = cck k 
@@ -99,6 +112,8 @@ in
                 CPSDynClsfdMatch(v, (i, (a, c1')), c2')
             )
             end
+        | CPSPrimitiveOp(cpspop) => 
+            closureConvertCPSPop cpspop
 
         | CPSAbsSingle(_, SOME _, _) => raise Fail "cvt69"
         | CPSAbs(_, SOME _, _) => raise Fail "cvt70"

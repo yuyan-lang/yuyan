@@ -22,12 +22,23 @@ datatype llvmarraytype =
         | LLVMArrayTypeDynClsfd
 
         
+        (* the llvm primitive op treats arguments of correct type, it 
+        does not perform conversion *)
 datatype llvmprimitiveop = 
-        LLVMPOpCmpEqInt of llvmlocation (* result *)
+        LLVMPOpIntSub of llvmlocation (* result *)
                                 * llvmvalue  (* op1 *)
                                 * llvmvalue  (* op2 *)
-        | LLVMPOpValueToInt of llvmlocation (* result *)
-                                * llvmvalue (* op1 *)
+        | LLVMPOpCmpEqInt of llvmlocation (* result *)
+                                * llvmvalue  (* op1 *)
+                                * llvmvalue  (* op2 *)
+        | LLVMPOpValueToInt of llvmlocation (* result *) 
+                                * llvmvalue (* op1 *) 
+        | LLVMPOpIntToValue of llvmlocation (* result *) 
+                                * llvmvalue (* op1 *) 
+        | LLVMPOpValueToBool of llvmlocation (* result *) 
+                                * llvmvalue (* op1 *) 
+        | LLVMPOpBoolToValue of llvmlocation (* result *) 
+                                * llvmvalue (* op1 *) 
 
 datatype llvmstatement = 
     LLVMStoreUnit of llvmlocation
@@ -35,6 +46,7 @@ datatype llvmstatement =
     | LLVMLoadGlobal of int *  int
     | LLVMStoreInt of llvmlocation * int
     | LLVMStoreReal of llvmlocation * real
+    | LLVMStoreBool of llvmlocation * bool
     | LLVMStoreArray of llvmarraytype * llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)

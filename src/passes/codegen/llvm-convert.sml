@@ -25,14 +25,14 @@ let val recur = genLLVM ctx
 
     (* transform access will transform the access to 
     the record value if the record value is itself bound *)
-    fun transformAccess (CPSValueVar v) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
+    fun transformAccess (v : cpsvalue) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
     case v of 
-        CPSVarGlobal v =>
+        CPSValueVar(CPSVarGlobal v) =>
                         let val newName = UID.next()
                     in 
                         [LLVMLoadGlobal(newName, v)]@(f (LLVMLocationLocal newName))
                     end
-        | CPSVarLocal v => 
+        | CPSValueVar(CPSVarLocal v) => 
             (case ListSearchUtil.indexOf freeVL v of
                 SOME idx =>
                 let val newName = UID.next()
@@ -107,6 +107,31 @@ this transforms access of cpsvar
         ) 
         )
         end
+
+    fun compilePrimitiveOp(cpspop : cpsprimitiveop) : llvmdeclaration list * llvmstatement list = 
+        let fun vaccessInt(v : cpsvalue) (accessed : llvmlocation -> llvmstatement list)  : llvmstatement list = 
+            let val newLoc = LLVMLocationLocal (UID.next())
+            in vaccess v (fn l => LLVMPrimitiveOp(LLVMPOpValueToInt(newLoc, llvmLocToValue l)) :: accessed newLoc)
+            end
+            val tempLoc1 = LLVMLocationLocal (UID.next())
+            val tempLoc2 = LLVMLocationLocal (UID.next())
+            val tempLoc3 = LLVMLocationLocal (UID.next())
+            val tempLoc4 = LLVMLocationLocal (UID.next())
+        in
+        case cpspop of
+            CPSPOpIntEq (i1, i2, (i, k)) => ([], vaccessInt i1 (fn ai1 => 
+                vaccessInt i2 (fn ai2 => 
+                    [LLVMPrimitiveOp(LLVMPOpCmpEqInt(tempLoc1, llvmLocToValue ai1, llvmLocToValue ai2)),
+                    LLVMPrimitiveOp(LLVMPOpBoolToValue(cpsVarToLLVMLoc i, llvmLocToValue tempLoc1))]
+                )
+            )) ::: recur k
+            | CPSPOpIntSub (i1, i2, (i, k)) => ([], vaccessInt i1 (fn ai1 => 
+                vaccessInt i2 (fn ai2 => 
+                    [LLVMPrimitiveOp(LLVMPOpIntSub(tempLoc1, llvmLocToValue ai1, llvmLocToValue ai2)),
+                    LLVMPrimitiveOp(LLVMPOpIntToValue(cpsVarToLLVMLoc i, llvmLocToValue tempLoc1))]
+                )
+            )) ::: recur k
+        end
 in
 
         case cpscomp of
@@ -122,8 +147,11 @@ in
             | CPSIfThenElse(v, tcase, fcase) => 
             let val (declt, tcomps) = recur tcase
                 val (declf, fcomps) = recur tcase
+                val i1loc = LLVMLocationLocal (UID.next())
             in
-                (declt @ declf, vaccess v (fn v' => [LLVMConditionalJumpBinary(v', tcomps, fcomps)]))
+                (declt @ declf, vaccess v (fn v' => [
+                    LLVMPrimitiveOp(LLVMPOpValueToBool(i1loc, llvmLocToValue v')),
+                    LLVMConditionalJumpBinary(i1loc, tcomps, fcomps)]))
             end
             | CPSCases(v, vkl) => 
                 let val indexLoc = UID.next()
@@ -176,13 +204,12 @@ in
             end
             | CPSBuiltinValue(CPSBvReal r, (t,k)) => 
             let
-             (* val name = UID.next() *)
-            in (
-                [
-                    (* LLVMRealConstant(name, r) *)
-                ], [
-                    LLVMStoreReal((cpsVarToLLVMLoc t), r)
-                ]
+            in ( [ ], [ LLVMStoreReal((cpsVarToLLVMLoc t), r) ]
+            ) ::: recur k
+            end
+            | CPSBuiltinValue(CPSBvBool b, (t,k)) => 
+            let
+            in ( [ ], [ LLVMStoreBool((cpsVarToLLVMLoc t), b) ]
             ) ::: recur k
             end
             | CPSStore(CPSVarGlobal g, src, cc) => ([LLVMGlobalVariableDecl g], vaccess src (fn i => [LLVMStoreGlobal(g, llvmLocToValue i)])) ::: recur cc
@@ -226,9 +253,10 @@ in
                 )
                 )
                 end
+            | CPSPrimitiveOp(cpspop) => compilePrimitiveOp cpspop
 
             (* | CPSSequence(l) => ([], [LLVMComment "sequence start"]) ::: (foldr (op:::) ([], [LLVMComment "sequence end"]) (map recur l)) *)
-            | _ => raise Fail "not impl llvmconv 155"
+            (* | _ => raise Fail "not impl llvmconv 155" *)
 end
 
 fun removeGlobalVarDuplicates (s : llvmdeclaration list) : llvmdeclaration list = 

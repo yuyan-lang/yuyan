@@ -136,10 +136,12 @@ open CPSHelper
                 ), NONE, kcc cc)
 
 
-    fun transformIntSub(cc : cpsvar -> cpscomputation) : cpscomputation = 
+    fun transformPrimitiveBinaryOp
+    (primitiveBinaryOp : cpsvalue * cpsvalue * cpscontinuation -> cpsprimitiveop)
+    (cc : cpsvar -> cpscomputation) : cpscomputation = 
         CPSAbs(kcc2' (fn arg1 => fn retFunc => 
             CPSAbs(kcc2' (fn arg2 => fn retRes => 
-                    CPSPrimitiveOp(CPSPOpIntSub(
+                    CPSPrimitiveOp(primitiveBinaryOp(
                         CPSValueVar (CPSVarLocal arg1), CPSValueVar (CPSVarLocal arg2)
                     , kcc (fn res => 
                         CPSAppSingle(CPSValueVar (CPSVarLocal retRes), CPSValueVar res)
@@ -156,6 +158,7 @@ open CPSHelper
             | BFNewDynClsfdValueWithString => transformNewDynClsfdValueWithString cc
             | BFRaise => transformRaise cc
             | BFHandle =>  transformHandle cc
-            | BFIntSub => transformIntSub cc
+            | BFIntSub => transformPrimitiveBinaryOp CPSPOpIntSub cc
+            | BFIntEq => transformPrimitiveBinaryOp CPSPOpIntEq cc
             
 end
