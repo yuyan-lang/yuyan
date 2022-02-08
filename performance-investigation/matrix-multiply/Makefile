@@ -6,6 +6,8 @@ yuyan:
 
 yuyandebug: 
 	yy -c matrix-multiply.yuyan -o matrix_yuyan.out
+yuyanprofile: 
+	yy -c matrix-multiply.yuyan -o matrix_yuyan.out --profile
 
 
 time_plot.out: time_plot.yuyan
