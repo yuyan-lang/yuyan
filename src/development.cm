@@ -26,11 +26,6 @@ Library
   structure TypeCheckAndEval
 
 
-  structure BuiltinOperators 
-  structure NatOps
-  structure GroupOps
-  structure FunctionOps
-  structure DeclarationOps
   structure OperatorRegistry
 
 
@@ -44,15 +39,9 @@ Library
   structure TypeCheckingASTOps 
 
 
-  structure KMachine
-  structure KMachineOps
-  structure PersistentKMachine
-  structure ErasurePass
-  structure ErasureEntry
 
   structure PreprocessingOperators
 
-  structure PreludeFunctions
 
   structure StructureName
   structure LanguageServerMode
@@ -133,11 +122,6 @@ is
   ui/repl-debug.sml
   ui/command-line-arguments-text.sml
   
-  operators/builtin/builtin.sml
-  operators/builtin/nat-ops.sml
-  operators/builtin/group-ops.sml
-  operators/builtin/function-ops.sml
-  operators/builtin/declaration-ops.sml
   operators/structure/special-chars.sml
   operators/structure/operator-registry.sml
   operators/structure/operators.sml
@@ -175,8 +159,6 @@ is
   passes/typechecking/type-checking-entry.sml
   passes/typechecking/identifier-name-resolution.sml
   passes/typechecking/builtin-functions.sml
-  passes/erase/erasure-pass.sml
-  passes/erase/erasure-entry.sml
   passes/cps-transform/cps-ast.sml
   passes/cps-transform/cps-ast-ops.sml
   passes/cps-transform/cps-pass.sml
@@ -187,11 +169,7 @@ is
   passes/codegen/llvm-codegen.sml
   passes/codegen/llvm-convert.sml
 
-  prelude-libraries/prelude-functions.sml
   
-  execution/k-machine.sml
-  execution/k-machine-ops.sml
-  execution/persistent-k-machine.sml
 
   lsp/language-server-mode.sml
   lsp/language-server.sml

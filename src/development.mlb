@@ -38,11 +38,6 @@ local
         operators/structure/operators.sml
         operators/structure/op-ast.sml
         operators/structure/operator-registry.sml
-        operators/builtin/nat-ops.sml
-        operators/builtin/group-ops.sml
-        operators/builtin/function-ops.sml
-        operators/builtin/declaration-ops.sml
-        operators/builtin/builtin.sml
         
         passes/preprocess/structure-name.sml
         util/list-search-util.sml
@@ -50,8 +45,6 @@ local
         passes/typechecking/type-checking-ast.sml
         passes/preprocess/preprocessing-ast.sml
 
-        execution/k-machine.sml
-        execution/persistent-k-machine.sml
 
         operators/structure/op-ast-ops.sml
         
@@ -77,11 +70,7 @@ local
         passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml
         passes/typechecking/type-checking-pass.sml
-        execution/k-machine-ops.sml
-        passes/erase/erasure-pass.sml
-        prelude-libraries/prelude-functions.sml
         passes/typechecking/type-checking-entry.sml
-        passes/erase/erasure-entry.sml
 
         parser/parser-options.sig
         parser/elaborate-precedence.sml

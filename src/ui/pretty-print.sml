@@ -332,50 +332,6 @@ case x of
           String.concatWith ",\n " (map show_typecheckingpassmappping m) ^ "}\n"
 end
 
-fun show_pkvalue x =let
-open PersistentKMachine
-in
-      case x of
-        PKUnit => "()"
-        | PKVar i => Int.toString i
-        | PKTuple l => "[" ^ String.concatWith ", " (map show_pkvalue l) ^ "]"
-        | PKInj (l, i, kv) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ show_pkvalue kv
-        | PKFold e => "fold (" ^ show_pkvalue e ^ ")"
-        | PKAbs (i, c) => "(λ" ^ Int.toString i ^ "." ^ show_pkcomputation c ^ ")"
-        | PKComp (c) => "comp(" ^  show_pkcomputation c ^ ")"
-        | PKBuiltinValue (KbvBool t) => "builtin:bool(" ^  Bool.toString t  ^ ")"
-        | PKBuiltinValue (KbvReal t) => "builtin:real(" ^  Real.toString t  ^ ")"
-        | PKBuiltinValue (KbvInt t) => "builtin:int(" ^  Int.toString t  ^ ")"
-        | PKBuiltinValue (KbvString t) => "builtin:string(" ^  UTF8String.toString t  ^ ")"
-        | PKBuiltinValue (KbvFunc (l, f)) => "builtin:func(" ^  UTF8String.toString l  ^ ", ---)"
-
-end
-and show_pkcomputation x = let
-open PersistentKMachine
-in
-    case x of
-      PKProj(k, i) => show_pkcomputation k ^ " . " ^ Int.toString i
-      | PKCases(e, l) => "(case "  ^ show_pkcomputation e ^ " of {" ^ 
-      String.concatWith "; " (map (fn (i, c) => Int.toString i ^ " => " ^ show_pkcomputation c) l)
-      ^ "}"
-      | PKUnfold(e) => "unfold (" ^ show_pkcomputation e ^ ")"
-      | PKApp(c1, c2) => "ap (" ^ show_pkcomputation c1 ^ ", " ^ show_pkcomputation c2 ^ ")"
-      | PKAppWithEvaledFun((x,f), c2) => "apfun (" ^ show_pkvalue (PKAbs(x,f))  ^ ", " ^ show_pkcomputation c2 ^ ")"
-      | PKRet(v) => "ret (" ^ show_pkvalue v ^ ")"
-      | PKFix(id, c) => "(fix " ^ Int.toString id ^ "." ^ show_pkcomputation c ^ ")"
-      | _ => raise Fail "prettyprint327"
-      end
-
-
-   (* fun show_pkmachine x = let
-   open PersistentKMachine
-in 
-  case x of 
-    Run (l, c) => "RUN : "^ Int.toString (length l) ^ " : " ^ show_pkcomputation c
-    | NormalRet (l, c) => "RET : "^ Int.toString (length l) ^ " : " ^ show_pkvalue c
-    end
- 
-   *)
 
 
 fun show_cpsvar  v = 
