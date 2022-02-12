@@ -11,7 +11,7 @@ exception CPSInternalError
 
 
 
-    fun klookupLabel ( ctx : (Label * Type) list) (l : Label) : int = 
+    fun klookupLabel ( ctx : (Label * CType) list) (l : Label) : int = 
         case ctx of 
              (n1, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel cs l+1
              | _ => raise Fail "cpspass25"
@@ -44,7 +44,7 @@ exception CPSInternalError
                     )
                      )))
             | CUnitExpr => CPSUnit (kcc cc)
-            | CTuple (cs, Prod ls) => (
+            | CTuple (cs, CProd ls) => (
                     let fun go i values = 
                         if i = List.length cs
                         then CPSTuple(values, kcc cc)
@@ -53,7 +53,7 @@ exception CPSInternalError
                     in go 0 [] end
                 )
                 (* compile lazy tuple as if every term has a implicit abstraction  of zero arugment (continuation only) *)
-            | CLazyTuple (cs, LazyProd ls) => (
+            | CLazyTuple (cs, CLazyProd ls) => (
                     let fun go i values = 
                         if i = List.length cs
                         then CPSTuple(values, kcc cc)
@@ -65,9 +65,9 @@ exception CPSInternalError
                             )
                     in go 0 [] end
                 )
-            | CProj(e, l, Prod ls) => cpsTransformExpr ctx e (fn v 
+            | CProj(e, l, CProd ls) => cpsTransformExpr ctx e (fn v 
                         => CPSProj(CPSValueVar v, (klookupLabel ls l),(kcc cc)))
-            | CLazyProj(e, l, LazyProd ls) => cpsTransformExpr ctx e (fn v 
+            | CLazyProj(e, l, CLazyProd ls) => cpsTransformExpr ctx e (fn v 
                         => CPSProj(CPSValueVar v, (klookupLabel ls l),
                         (kcc (fn projected => 
                             (CPSAbsSingle (kcc' (fn ret => 
@@ -91,11 +91,11 @@ exception CPSInternalError
                     it leads to lots of wasted codes (by having two copies of cc, 
                     also in cases)  TOOO: investigate *)
             )
-            | CInj (l, e, Sum ls ) => 
+            | CInj (l, e, CSum ls ) => 
                 cpsTransformExpr ctx e 
                     (fn v => CPSInj(l, klookupLabel ls l, CPSValueVar v, kcc cc)
             )
-            | CCase((Sum ls, e),cases, resType) => 
+            | CCase((CSum ls, e),cases, resType) => 
             (cpsTransformExpr ctx e) (fn v => 
                     CPSCases (CPSValueVar v, (List.tabulate(List.length ls, 
                     fn index => let val  (label,t) = List.nth(ls, index)
@@ -105,7 +105,7 @@ exception CPSInternalError
                                      ([ev], PlainVar boundId)::ctx) e cc (* I don't understand why this works, it seems that should wrap cc in a separate computation!!!! TODO: investigate *)
                                 ) end)))
             )
-            | CLam(ev, eb, Func(t1, t2)) => 
+            | CLam(ev, eb, CFunc(t1, t2)) => 
                 CPSAbs (kcc2' (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar (CPSVarLocal arg)))::ctx) eb 
                         (fn r => CPSAppSingle(CPSValueVar (CPSVarLocal ret),CPSValueVar r))

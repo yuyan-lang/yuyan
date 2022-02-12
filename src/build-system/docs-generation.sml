@@ -23,7 +23,7 @@ struct
         | _ => raise Fail "dg16"
     end
 
-    fun showType(t) = UTF8String.fromString (PrettyPrint.show_typecheckingType t)
+    fun showType(t) = UTF8String.fromString (PrettyPrint.show_typecheckingCType t)
     fun getLastName(sname) =  List.drop(sname, List.length sname -1)
 
     fun typeMacroSegment sname t =

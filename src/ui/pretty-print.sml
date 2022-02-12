@@ -179,32 +179,32 @@ in case x of
     Leaf => ". /* END */\n"
     | StatementNode (stmt, next) => UTF8String.toString stmt ^ "\n -> "^ show_statementast next
     end *)
-fun show_typecheckingType x = let
+fun show_typecheckingRType x = let
 open TypeCheckingAST
-val st = show_typecheckingType
+val st = show_typecheckingRType
 val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
 in case x of
- TypeVar t => sst t
-                    | UnitType => "1"
-                    | Prod l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | LazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | NullType => "0"
-                    | Sum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | Func (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
-                    | TypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
-                    | Forall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | Exists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | Rho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | BuiltinType (bi) => show_builtintype bi
+                      RTypeVar t => sst t
+                    | RUnitType => "1"
+                    | RProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RNullType => "0"
+                    | RSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    | RTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    | RForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RBuiltinType (bi) => show_builtintype bi
   
 end
 
 
 and show_typecheckingRExpr x = let
 open TypeCheckingAST
-val st = show_typecheckingType
+val st = show_typecheckingRType
 val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
@@ -241,8 +241,8 @@ RExprVar v => sst v
 and show_typecheckingRDecl x = let
 open TypeCheckingAST
 in case x of 
-    RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingType tbody
-  | RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingType tbody
+    RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingRType tbody
+  | RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingRType tbody
   | RTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingRExpr ebody
   | RTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingRExpr  ebody
   | RDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingRExpr ebody ^ "/* end eval */ " 
@@ -257,10 +257,32 @@ and show_typecheckingRSig x = let
 in
           String.concatWith "。\n " (map show_typecheckingRDecl x) ^ "\n"
 end
-fun show_typecheckingCExpr x =  
+fun show_typecheckingCType x = let
+open TypeCheckingAST
+val st = show_typecheckingCType
+val se = show_typecheckingRExpr
+val ss = UTF8String.toString
+val sst =StructureName.toStringPlain
+in case x of
+                      CTypeVar t => sst t
+                    | CUnitType => "1"
+                    | CProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CNullType => "0"
+                    | CSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    | CForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CBuiltinType (bi) => show_builtintype bi
+  
+end
+
+and show_typecheckingCExpr x =  
 let
 open TypeCheckingAST
-val st = show_typecheckingType
+val st = show_typecheckingCType
 val se = show_typecheckingCExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
@@ -297,7 +319,7 @@ in case x of
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
 in case x of 
-    CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingType  tbody
+    CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody
   | CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
@@ -320,8 +342,8 @@ fun show_typecheckingpassmappping x = let
 open TypeCheckingAST
 in
   case x of
-    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingType t
-    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingType t
+    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingRType t
+    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingRType t
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingAST

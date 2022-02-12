@@ -41,20 +41,20 @@ infix 5 =/=
     fun ~~~= (a, b) = (StructureName.semanticEqual a b)
     infix 4 ~~~=
 
-    fun freeTVar (t : Type) : StructureName.t list = 
+    fun freeTVar (t : RType) : StructureName.t list = 
         case t of
-            TypeVar t => [t]
-            | Prod l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | LazyProd l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | Sum l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | Func (t1,t2) => List.concat (map freeTVar [t1,t2])
-            | TypeInst (t1,t2) => List.concat (map freeTVar [t1,t2])
-            | Forall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | Exists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | Rho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | UnitType => []
-            | NullType => []
-            | BuiltinType(b) => []
+              RTypeVar t => [t]
+            | RProd l => List.concat (map (fn (l, t) => freeTVar t) l)
+            | RLazyProd l => List.concat (map (fn (l, t) => freeTVar t) l)
+            | RSum l => List.concat (map (fn (l, t) => freeTVar t) l)
+            | RFunc (t1,t2) => List.concat (map freeTVar [t1,t2])
+            | RTypeInst (t1,t2) => List.concat (map freeTVar [t1,t2])
+            | RForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RUnitType => []
+            | RNullType => []
+            | RBuiltinType(b) => []
 
     (* fun freeEVar (e : Expr) : StructureName.t list = 
         case e of
@@ -82,12 +82,12 @@ infix 5 =/=
     fun uniqueName () = UTF8String.fromString (Int.toString (UID.next()))
 
 (* !!! always capture avoiding substitution *)
-    fun substTypeInType (tS : Type) (x : StructureName.t) (t : Type) = 
+    fun substTypeInType (tS : RType) (x : StructureName.t) (t : RType) = 
     let fun captureAvoid f (tv : UTF8String.t) t2 = 
             if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in f (tv', substTypeInType tS x 
-                                    (substTypeInType (TypeVar [tv']) [tv] t2)) 
+                                    (substTypeInType (RTypeVar [tv']) [tv] t2)) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
@@ -96,45 +96,45 @@ infix 5 =/=
 
     in
         case t of
-            TypeVar t => if t ~~~=x then tS else TypeVar t
-            | Prod l => Prod  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
-            | LazyProd l => LazyProd  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
-            | Sum l =>  Sum  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
-            | Func (t1,t2) => Func (substTypeInType tS x t1, substTypeInType tS x t2 )
-            | TypeInst (t1,t2) => TypeInst (substTypeInType tS x t1, substTypeInType tS x t2 )
-            | Forall (tv,t2) => captureAvoid Forall tv t2
-            | Exists (tv,t2) => captureAvoid Exists tv t2
-            | Rho (tv,t2) => captureAvoid Rho tv t2
-            | UnitType => UnitType
-            | NullType => NullType
-            | BuiltinType(b) => BuiltinType(b)
+              RTypeVar t => if t ~~~=x then tS else RTypeVar t
+            | RProd l => RProd  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
+            | RLazyProd l => RLazyProd  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
+            | RSum l =>  RSum  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
+            | RFunc (t1,t2) => RFunc (substTypeInType tS x t1, substTypeInType tS x t2 )
+            | RTypeInst (t1,t2) => RTypeInst (substTypeInType tS x t1, substTypeInType tS x t2 )
+            | RForall (tv,t2) => captureAvoid RForall tv t2
+            | RExists (tv,t2) => captureAvoid RExists tv t2
+            | RRho (tv,t2) => captureAvoid RRho tv t2
+            | RUnitType => RUnitType
+            | RNullType => RNullType
+            | RBuiltinType(b) => RBuiltinType(b)
     end
-    fun normalizeType (t : Type) : Type witherrsoption  = 
+    fun normalizeType (t : RType) : RType witherrsoption  = 
     let 
     val res = 
         case t of
-            TypeVar t => Success(TypeVar t)
-            | Prod l =>  fmap Prod (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
-            | LazyProd l =>  fmap LazyProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
-            | Sum l =>  fmap Sum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
-            | Func (t1,t2) => fmap Func (normalizeType t1 =/= normalizeType t2 )
-            | TypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
-                Forall(tv, t1') => (normalizeType t2) >>= (fn nt2 => Success(substTypeInType nt2 ([tv]) t1'))
+            RTypeVar t => Success(RTypeVar t)
+            | RProd l =>  fmap RProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
+            | RLazyProd l =>  fmap RLazyProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
+            | RSum l =>  fmap RSum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
+            | RFunc (t1,t2) => fmap RFunc (normalizeType t1 =/= normalizeType t2 )
+            | RTypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
+                RForall(tv, t1') => (normalizeType t2) >>= (fn nt2 => Success(substTypeInType nt2 ([tv]) t1'))
                 | _ => genSingletonError (raise Fail "not implemented") "期待通用类型(Expected Forall)" NONE
             )
-            | Forall (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(Forall (tv, nt2) ))
-            | Exists (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(Exists (tv, nt2) ))
-            | Rho (tv,t2) =>  normalizeType t2 >>=(fn nt2 =>  Success(Rho (tv, nt2) ))
-            | UnitType => Success(UnitType)
-            | NullType => Success(NullType)
-            | BuiltinType(b) => Success(BuiltinType(b))
+            | RForall (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(RForall (tv, nt2) ))
+            | RExists (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(RExists (tv, nt2) ))
+            | RRho (tv,t2) =>  normalizeType t2 >>=(fn nt2 =>  Success(RRho (tv, nt2) ))
+            | RUnitType => Success(RUnitType)
+            | RNullType => Success(RNullType)
+            | RBuiltinType(b) => Success(RBuiltinType(b))
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingType ^"\n") *)
     in
         res
     end
 
 (* no capture as we're only interested in types *)
-    fun substTypeInRExpr (tS : Type) (x : StructureName.t) (e : RExpr) = 
+    fun substTypeInRExpr (tS : RType) (x : StructureName.t) (e : RExpr) = 
     let 
     in
         case e of
@@ -159,7 +159,7 @@ infix 5 =/=
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in RTAbs (tv', substTypeInRExpr tS x 
-                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2), soi) 
+                                    (substTypeInRExpr (RTypeVar [tv']) [tv] e2), soi) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x then RTAbs (tv, e2, soi)
@@ -172,7 +172,7 @@ infix 5 =/=
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in (tv', ev, substTypeInRExpr tS x 
-                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2)) 
+                                    (substTypeInRExpr (RTypeVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
              (tv, ev, substTypeInRExpr tS [tv] e2))
@@ -193,7 +193,7 @@ infix 5 =/=
             | RBuiltinFunc(f, s) => RBuiltinFunc(f, s)
     end
 
-    and substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
+    and substituteTypeInRDeclaration (tS : RType) (x : StructureName.t) (d : RDeclaration) = 
       case d of
       (* to prevent this from happending by prior checking *)
          RTypeMacro (y, t) => if x ~~~= [y] then raise Fail "Cannot have identical types" else 
@@ -207,16 +207,16 @@ infix 5 =/=
         | RReExportStructure(n) => RReExportStructure(n)
         | RImportStructure(n,fp) => RImportStructure(n, fp)
     
-    and substituteTypeInRSignature (tS : Type) (x : StructureName.t) (s : RSignature) : RSignature = 
+    and substituteTypeInRSignature (tS : RType) (x : StructureName.t) (s : RSignature) : RSignature = 
         case s of
             [] => []
             | (d :: ds) => substituteTypeInRDeclaration tS x d :: 
             substituteTypeInRSignature tS x ds
 
 (* semantic type equivalence *)
-    and typeEquiv (ctx : (Type * Type) list) (t1:Type) (t2:Type)  :bool = 
+    and typeEquiv (ctx : (RType * RType) list) (t1:RType) (t2:RType)  :bool = 
     (let 
-    fun typeEquivLst (l1 : (Label * Type)list) (l2 : (Label * Type) list)= 
+    fun typeEquivLst (l1 : (Label * RType)list) (l2 : (Label * RType) list)= 
             if length l1 <> length l2 then false else
             List.foldr (fn (b1, b2) => b1 andalso b2) true (List.tabulate((List.length l1), (fn i => 
             (#1 (List.nth(l1, i))) ~~= (#1 (List.nth(l2, i)))
@@ -224,27 +224,27 @@ infix 5 =/=
     fun unifyBinding tv t2 tv' t2' =
             if tv ~~= tv' then (tv, t2, tv', t2')
             else let val nn = uniqueName() in
-            (nn, substTypeInType (TypeVar [nn]) [tv] t2,
-            nn, substTypeInType (TypeVar [nn]) [tv'] t2')end
+            (nn, substTypeInType (RTypeVar [nn]) [tv] t2,
+            nn, substTypeInType (RTypeVar [nn]) [tv'] t2')end
         in
         if List.exists (fn p => p =(t1, t2)) ctx then true
         else
     (case (t1, t2) of
-              (TypeVar t1, TypeVar t2) => t1 ~~~= t2
-            | (Prod l1, Prod l2) =>  typeEquivLst l1 l2
-            | (LazyProd l1, LazyProd l2) =>  typeEquivLst l1 l2
-            | (Sum l1, Sum l2) =>   typeEquivLst l1 l2
-            | (Func (t1,t2), Func (t1', t2')) => typeEquiv ctx t1 t1' andalso typeEquiv ctx t2 t2'
-            | (Forall (tv,t2), Forall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
-            | (Exists (tv,t2), Exists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
-            | (Rho (tv,t2), Rho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
-            in typeEquiv ((Rho(v, t1), Rho(v',t1'))::ctx) 
-                (substTypeInType (Rho (v,t1)) [v] t1)
-                (substTypeInType (Rho (v',t1')) [v'] t1')
+              (RTypeVar t1, RTypeVar t2) => t1 ~~~= t2
+            | (RProd l1, RProd l2) =>  typeEquivLst l1 l2
+            | (RLazyProd l1, RLazyProd l2) =>  typeEquivLst l1 l2
+            | (RSum l1, RSum l2) =>   typeEquivLst l1 l2
+            | (RFunc (t1,t2), RFunc (t1', t2')) => typeEquiv ctx t1 t1' andalso typeEquiv ctx t2 t2'
+            | (RForall (tv,t2), RForall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
+            | (RExists (tv,t2), RExists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
+            | (RRho (tv,t2), RRho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
+            in typeEquiv ((RRho(v, t1), RRho(v',t1'))::ctx) 
+                (substTypeInType (RRho (v,t1)) [v] t1)
+                (substTypeInType (RRho (v',t1')) [v'] t1')
              end)
-            | (UnitType, UnitType) => true
-            | (NullType, NullType) => true
-            | (BuiltinType(b1), BuiltinType(b2)) => b1 = b2
+            | (RUnitType, RUnitType) => true
+            | (RNullType, RNullType) => true
+            | (RBuiltinType(b1), RBuiltinType(b2)) => b1 = b2
             | _ => false)
     end)
 
@@ -308,4 +308,40 @@ infix 5 =/=
         | RSeqComp(e1, e2, soi) => reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
     end
     
+
+    fun rTypeToCType (t : RType)  : CType = 
+    let 
+    in
+        case t of
+              RTypeVar t => CTypeVar t
+            | RProd l => CProd  (map (fn (l, t) => (l, rTypeToCType t)) l)
+            | RLazyProd l => CLazyProd  (map (fn (l, t) => (l, rTypeToCType t)) l)
+            | RSum l =>  CSum  (map (fn (l, t) => (l, rTypeToCType t)) l)
+            | RFunc (t1,t2) => CFunc (rTypeToCType t1, rTypeToCType t2)
+            | RTypeInst (t1,t2) => CTypeInst (rTypeToCType t1, rTypeToCType t2)
+            | RForall (tv,t2) => CForall(tv, rTypeToCType t2)
+            | RExists (tv,t2) => CExists(tv, rTypeToCType t2)
+            | RRho (tv,t2) => CRho(tv, rTypeToCType t2)
+            | RUnitType => CUnitType
+            | RNullType => CNullType
+            | RBuiltinType(b) => CBuiltinType(b)
+    end
+
+    fun cTypeToRType (t : CType)  : RType = 
+    let 
+    in
+        case t of
+              CTypeVar t => RTypeVar t
+            | CProd l => RProd  (map (fn (l, t) => (l, cTypeToRType t)) l)
+            | CLazyProd l => RLazyProd  (map (fn (l, t) => (l, cTypeToRType t)) l)
+            | CSum l =>  RSum  (map (fn (l, t) => (l, cTypeToRType t)) l)
+            | CFunc (t1,t2) => RFunc (cTypeToRType t1, cTypeToRType t2)
+            | CTypeInst (t1,t2) => RTypeInst (cTypeToRType t1, cTypeToRType t2)
+            | CForall (tv,t2) => RForall(tv, cTypeToRType t2)
+            | CExists (tv,t2) => RExists(tv, cTypeToRType t2)
+            | CRho (tv,t2) => RRho(tv, cTypeToRType t2)
+            | CUnitType => RUnitType
+            | CNullType => RNullType
+            | CBuiltinType(t) => RBuiltinType(t)
+    end
 end
