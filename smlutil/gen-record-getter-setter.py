@@ -1,5 +1,6 @@
 
 from time import strptime
+# read type `S = {l1: t1, l2: t2}` from stdin, write to stdout
 
 def cap(s:str):
     return s[:1].upper() + s[1:]

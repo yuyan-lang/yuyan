@@ -77,6 +77,8 @@ struct
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
     val universalTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 340 [1]
     val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 320 [1]
+    val piTypeOp  = Operators.parseOperatorStr "化〇者〇而〇" true false 350 [3] (* Π x : T. T *)
+    val sigmaTypeOp  = Operators.parseOperatorStr "有〇者〇还〇" true false 350 [3] (* Σ x : T. T *)
     (* val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 [] *)
 
     val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)

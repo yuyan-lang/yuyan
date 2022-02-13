@@ -94,7 +94,7 @@ structure YYONUtil = struct
                 (UTF8Char.fromString "数" NONE, 
                     fmapP (fn x => case x of 
                     NumberParser.NPInt i => YYON.INT i 
-                    | NumberParser.NPReal r => YYON.FLOAT r) (parseNumber ())),
+                    | NumberParser.NPReal i => YYON.FLOAT (NumberParser.toRealValue i)) (parseNumber ())),
                 (UTF8Char.fromString "列" NONE, 
                     fmapP YYON.ARRAY (parseList ())),
                 (UTF8Char.fromString "言" NONE, 

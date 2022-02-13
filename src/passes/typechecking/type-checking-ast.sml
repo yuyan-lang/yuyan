@@ -33,18 +33,6 @@ structure TypeCheckingAST = struct
                     | CRho of TVar * CType
                     | CBuiltinType of BuiltinType
 
-    datatype RType =  RTypeVar of StructureName.t
-                    | RUnitType
-                    | RProd of (Label * RType) list
-                    | RLazyProd of (Label * RType) list
-                    | RNullType
-                    | RSum of (Label * RType) list
-                    | RFunc of RType * RType
-                    | RTypeInst of RType * RType
-                    | RForall of TVar * RType
-                    | RExists of TVar * RType
-                    | RRho of TVar * RType
-                    | RBuiltinType of BuiltinType
 
     datatype visibility = Public | Private
 
@@ -109,30 +97,44 @@ structure TypeCheckingAST = struct
                             * sourceOpInfo list  (* case separator *)
                             * sourceOpInfo list (* case clause *))
                     | RLam of EVar * RExpr * sourceOpInfo
-                    | RLamWithType of RType * EVar * RExpr * sourceOpInfo
+                    | RLamWithType of RExpr * EVar * RExpr * sourceOpInfo
                     | RApp of RExpr * RExpr * sourceOpInfo (* if op is not app, then custom operators *)
                     | RTAbs of TVar * RExpr * sourceOpInfo
-                    | RTApp of RExpr * RType * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
-                    | RPack of RType * RExpr * (UTF8String.t * sourceOpInfo)
+                    | RTApp of RExpr * RExpr * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
+                    | RPack of RExpr * RExpr * (UTF8String.t * sourceOpInfo)
                     | ROpen of RExpr * (TVar * EVar * RExpr) * sourceOpInfo
                     | RFold of RExpr * sourceOpInfo
                     | RUnfold of RExpr * sourceOpInfo
                     | RFix of EVar * RExpr * sourceOpInfo
                     | RStringLiteral of UTF8String.t  * MixedStr.quoteinfo
                     | RIntConstant of int * UTF8String.t
-                    | RRealConstant of real * UTF8String.t
+                    | RRealConstant of (int * int * int ) * UTF8String.t
                     | RBoolConstant of bool * UTF8String.t
                     | RLetIn of RDeclaration list * RExpr * sourceOpInfo
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
                     | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)
                     | RSeqComp of RExpr * RExpr * sourceOpInfo
-                    (* | RUniverse of UTF8String.t a universe is the type of types, stratified by level *)
+                    | RUniverse of UTF8String.t (* a universe is the type of types, (TODO) stratified by level *)
+                    | RPiType of RExpr * EVar option * RExpr * sourceOpInfo
+                    | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
+                    | RTypeVar of StructureName.t
+                    | RUnitType
+                    | RProd of (Label * RExpr) list
+                    | RLazyProd of (Label * RExpr) list
+                    | RNullType
+                    | RSum of (Label * RExpr) list
+                    | RFunc of RExpr * RExpr
+                    | RTypeInst of RExpr * RExpr
+                    | RForall of TVar * RExpr
+                    | RExists of TVar * RExpr
+                    | RRho of TVar * RExpr
+                    | RBuiltinType of BuiltinType
                     
 
 
     and RDeclaration = 
-                         RTypeMacro of UTF8String.t * RType
-                       | RTermTypeJudgment of UTF8String.t * RType
+                         RTypeMacro of UTF8String.t * RExpr
+                       | RTermTypeJudgment of UTF8String.t * RExpr
                        | RTermMacro of UTF8String.t * RExpr
                        | RTermDefinition of UTF8String.t * RExpr
                        | RDirectExpr of RExpr
@@ -143,6 +145,7 @@ structure TypeCheckingAST = struct
                        | RImportStructure of (StructureName.t (* name *) * 
                                               FileResourceURI.t  (* file location *)
                                               )
+    type RType = RExpr
 
     type CSignature = CDeclaration list
     type RSignature = RDeclaration list

@@ -326,7 +326,7 @@ infix 5 <?>
                         )
                     | RStringLiteral(l, soi) => Success(CStringLiteral l, CBuiltinType(BIString))
                     | RIntConstant(i, soi) => Success(CIntConstant i, CBuiltinType(BIInt))
-                    | RRealConstant (r, soi) => Success(CRealConstant r, CBuiltinType(BIReal))
+                    | RRealConstant (r, soi) => Success(CRealConstant (NumberParser.toRealValue r), CBuiltinType(BIReal))
                     | RBoolConstant (b, soi) => Success(CBoolConstant b, CBuiltinType(BIBool))
                     
 
@@ -503,7 +503,7 @@ infix 5 <?>
                                         >>= (fn ce => Success(CFix(ev,ce, rTypeToCType tt)))
                     | RStringLiteral (s, soi) => (assertTypeEquiv e (CBuiltinType(BIString)) (tt) >> (Success (CStringLiteral s)))
                     | RIntConstant (i, soi) => (assertTypeEquiv e (CBuiltinType(BIInt)) tt >> (Success ( CIntConstant i)))
-                    | RRealConstant (r, soi) => (assertTypeEquiv e (CBuiltinType(BIReal)) tt >> (Success (CRealConstant r)))
+                    | RRealConstant (r, soi) => (assertTypeEquiv e (CBuiltinType(BIReal)) tt >> (Success (CRealConstant (NumberParser.toRealValue r))))
                     | RBoolConstant (r, soi) => (assertTypeEquiv e (CBuiltinType(BIBool)) tt >> (Success (CBoolConstant r)))
                     | RFfiCCall (e1, e2, soi) => (
                         case e1 of

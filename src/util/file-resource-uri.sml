@@ -8,7 +8,7 @@ exception NotAbsolute of string
 (* structure FileResourceURIOrdered : ORDERED  *)
 
 end
-structure FileResourceURI :> FILE_RESOURCE_URI=
+structure FileResourceURI : FILE_RESOURCE_URI=
 struct
     datatype fileresourceuri = FRPath of string
     type t = fileresourceuri

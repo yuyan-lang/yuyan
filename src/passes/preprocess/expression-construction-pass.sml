@@ -92,6 +92,7 @@ struct
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(RNullType) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：新的外部类型》》") then Success(RBuiltinType(BIForeignType(UID.next()))) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：爻》》") then Success(RBuiltinType(BIBool)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：元类》》") then Success(RUniverse(s)) else
                 Success(RTypeVar [s])
             | OpUnparsedExpr x => raise Fail "ecp74"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoType e ctx
@@ -140,6 +141,14 @@ struct
                     "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
                     ^PrettyPrint.show_opast ast ^ "\n") *)
             )
+            | OpAST(oper, [a1,a2,a3]) => 
+                if oper ~=** piTypeOp
+                then fmap RPiType (===/=(elaborateOpASTtoType a1 ctx, elaborateNewName a2 >>= (fn x => Success(SOME(x))), elaborateOpASTtoType a3 ctx, Success oper))
+                else 
+                if oper ~=** sigmaTypeOp
+                then fmap RSigmaType (===/=(elaborateOpASTtoType a1 ctx, elaborateNewName a2 >>= (fn x => Success(SOME(x))), elaborateOpASTtoType a3 ctx, Success oper))
+                else 
+                genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
             | OpUnparsedDecl t =>  genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式，却遇到了声明块(expected type expression, unexpected declaration block)" NONE
             | _ => 
                 genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
@@ -155,7 +164,7 @@ struct
               UnknownOpName (s) => if NumberParser.isNumber s then 
                  (case NumberParser.parseNumber s of 
                     NumberParser.NPInt i => Success (RIntConstant (i, s))
-                    | NumberParser.NPReal r => Success (RRealConstant (r, s))
+                    | NumberParser.NPReal (i1, i2, l) => Success (RRealConstant ((i1, i2,l),  s))
                  )
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阳》》") then Success(RBoolConstant(true, s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阴》》") then Success(RBoolConstant(false, s)) 

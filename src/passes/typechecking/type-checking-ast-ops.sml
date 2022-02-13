@@ -214,9 +214,9 @@ infix 5 =/=
             substituteTypeInRSignature tS x ds
 
 (* semantic type equivalence *)
-    and typeEquiv (ctx : (RType * RType) list) (t1:RType) (t2:RType)  :bool = 
+    and typeEquiv (ctx : (RExpr * RExpr) list) (t1:RExpr) (t2:RExpr)  :bool = 
     (let 
-    fun typeEquivLst (l1 : (Label * RType)list) (l2 : (Label * RType) list)= 
+    fun typeEquivLst (l1 : (Label * RExpr)list) (l2 : (Label * RExpr) list)= 
             if length l1 <> length l2 then false else
             List.foldr (fn (b1, b2) => b1 andalso b2) true (List.tabulate((List.length l1), (fn i => 
             (#1 (List.nth(l1, i))) ~~= (#1 (List.nth(l2, i)))
@@ -227,7 +227,7 @@ infix 5 =/=
             (nn, substTypeInType (RTypeVar [nn]) [tv] t2,
             nn, substTypeInType (RTypeVar [nn]) [tv'] t2')end
         in
-        if List.exists (fn p => p =(t1, t2)) ctx then true
+        if List.exists (fn ((p1, p2):(RExpr * RExpr)) => p1 = t1 andalso p2 = t2) ctx then true
         else
     (case (t1, t2) of
               (RTypeVar t1, RTypeVar t2) => t1 ~~~= t2
