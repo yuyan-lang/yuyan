@@ -85,7 +85,7 @@ structure TypeCheckingAST = struct
     be used to resconstruct the expression *)
     type sourceOpInfo = Operators.operator (* should be the operator except rapp *)
     (* RExpr for raw expr *)
-    datatype RExpr = RExprVar of StructureName.t
+    datatype RExpr = RVar of StructureName.t
                     | RUnitExpr of sourceOpInfo
                     | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RLazyTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
@@ -117,7 +117,6 @@ structure TypeCheckingAST = struct
                     | RUniverse of UTF8String.t (* a universe is the type of types, (TODO) stratified by level *)
                     | RPiType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
-                    | RTypeVar of StructureName.t
                     | RUnitType
                     | RProd of (Label * RExpr) list
                     | RLazyProd of (Label * RExpr) list

@@ -3,17 +3,17 @@ structure BuiltinFunctions = struct
 open TypeCheckingAST
 
 val typeBinderA = UTF8String.fromString "甲"
-val typeVarA = RTypeVar [typeBinderA]
+val typeVarA = RVar [typeBinderA]
 val typeBinderB = UTF8String.fromString "乙"
-val typeVarB = RTypeVar [typeBinderB]
+val typeVarB = RVar [typeBinderB]
 val typeBinderC = UTF8String.fromString "丙"
-val typeVarC = RTypeVar [typeBinderC]
+val typeVarC = RVar [typeBinderC]
 
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
 val callccType : RType = RForall (typeBinderB, 
     RFunc( RFunc( RForall(typeBinderC, RFunc(
-        RTypeVar [typeBinderB], RTypeVar [typeBinderC]
-    )) , RTypeVar [typeBinderB]), RTypeVar [typeBinderB])
+        RVar [typeBinderB], RVar [typeBinderC]
+    )) , RVar [typeBinderB]), RVar [typeBinderB])
     )
    
 val newDynClsfdType : RType = 
@@ -21,15 +21,15 @@ val newDynClsfdType : RType =
         RFunc(RBuiltinType(BIString),
             RProd([
                 ((UTF8String.fromString "创造值"), 
-                    RFunc(RTypeVar [typeBinderB], RBuiltinType(BIDynClsfd))),
+                    RFunc(RVar [typeBinderB], RBuiltinType(BIDynClsfd))),
                 ((UTF8String.fromString "分析值"), 
                     RForall(typeBinderC,
                         RFunc(RProd([
                             (UTF8String.fromString "值", RBuiltinType(BIDynClsfd)),
-                            (UTF8String.fromString "符合", RFunc(RTypeVar [typeBinderB], RTypeVar [typeBinderC])),
-                            (UTF8String.fromString "不符合", RFunc(RUnitType, RTypeVar [typeBinderC]))
+                            (UTF8String.fromString "符合", RFunc(RVar [typeBinderB], RVar [typeBinderC])),
+                            (UTF8String.fromString "不符合", RFunc(RUnitType, RVar [typeBinderC]))
                         ])
-                        , RTypeVar ([typeBinderC])
+                        , RVar ([typeBinderC])
                     )))
             ])
         )

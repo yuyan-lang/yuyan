@@ -235,7 +235,7 @@ infix 5 <?>
                 let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
                 val originalExpr = e
                 val res = case e of
-                    RExprVar v => lookup ctx v >>= (fn (canonicalName, tp) =>
+                    RVar v => lookup ctx v >>= (fn (canonicalName, tp) =>
                                         Success (CExprVar canonicalName, rTypeToCType tp))
                     | RUnitExpr(soi) => Success (CUnitExpr, CUnitType)
                     | RProj(e, l, soi) => synthesizeType ctx e >>= (fn tt =>  case tt of 
@@ -314,7 +314,7 @@ infix 5 <?>
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt  of
                                 (ce1, CExists (tv', tb)) => 
                         synthesizeType (addToCtxA (TermTypeJ([ev], 
-                        substTypeInType (RTypeVar [tv]) [tv'] (cTypeToRType tb), NONE)) ctx) e2 >>= (fn (ce2, synthesizedType) =>
+                        substTypeInType (RVar [tv]) [tv'] (cTypeToRType tb), NONE)) ctx) e2 >>= (fn (ce2, synthesizedType) =>
                         if List.exists (fn t => t = [tv]) (freeTVar (cTypeToRType synthesizedType))
                             then Errors.openTypeCannotExitScope e synthesizedType ctx
                             else Success(COpen((CExists(tv', tb), ce1), (tv, ev, ce2), synthesizedType), synthesizedType)
@@ -369,7 +369,7 @@ infix 5 <?>
                     val originalExpr = e
                     val res = 
                     case e of
-                    RExprVar v => 
+                    RVar v => 
                     (synthesizeType ctx e) >>= (fn (synthExpr, synthType) =>
                     assertTypeEquiv e (synthType) tt  >> (Success (synthExpr))
                     (* = false 
@@ -459,7 +459,7 @@ infix 5 <?>
                         | _ => Errors.attemptToApplyNonFunction e (#2 synt) ctx)
                     | RTAbs (tv, e2, soi) => (case tt of
                         RForall (tv', tb) => 
-                                checkType ctx e2 (substTypeInType (RTypeVar [tv]) [tv'] tb) >>= (fn ce2 => 
+                                checkType ctx e2 (substTypeInType (RVar [tv]) [tv'] tb) >>= (fn ce2 => 
                                             Success(CTAbs (tv, ce2, rTypeToCType tt))
                                 )
                         | _ => Errors.expectedUniversalType e (rTypeToCType tt) ctx
@@ -480,7 +480,7 @@ infix 5 <?>
                     )
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt of
                         (ce1, CExists (tv', tb)) => 
-                        checkType (addToCtxA (TermTypeJ([ev], substTypeInType (RTypeVar [tv]) [tv'] (cTypeToRType tb), NONE)) ctx) e2 tt
+                        checkType (addToCtxA (TermTypeJ([ev], substTypeInType (RVar [tv]) [tv'] (cTypeToRType tb), NONE)) ctx) e2 tt
                         >>= (fn ce2 => 
                         Success(COpen((CExists (tv', tb), ce1), (tv, ev, ce2), rTypeToCType tt))
                         )
@@ -513,9 +513,9 @@ infix 5 <?>
                                     collectAll (map (fn a => fmap (#1) (lookup ctx a)) args))
                                 in
                                             (case e2 of 
-                                                RExprVar v => (Success ([v])) >>= elaborateArguments
+                                                RVar v => (Success ([v])) >>= elaborateArguments
                                                 | RTuple (l, soi) => (collectAll (map (fn arg => case arg of 
-                                                    RExprVar v => Success (v)
+                                                    RVar v => Success (v)
                                                     | _ => Errors.ccallArgumentsMustBeImmediate arg ctx
                                                     (* raise TypeCheckingFailure "ccall arguments must be immediate values" *)
                                                     ) l)) >>= elaborateArguments

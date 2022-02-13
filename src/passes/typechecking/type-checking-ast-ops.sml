@@ -43,7 +43,7 @@ infix 5 =/=
 
     fun freeTVar (t : RType) : StructureName.t list = 
         case t of
-              RTypeVar t => [t]
+              RVar t => [t]
             | RProd l => List.concat (map (fn (l, t) => freeTVar t) l)
             | RLazyProd l => List.concat (map (fn (l, t) => freeTVar t) l)
             | RSum l => List.concat (map (fn (l, t) => freeTVar t) l)
@@ -87,7 +87,7 @@ infix 5 =/=
             if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in f (tv', substTypeInType tS x 
-                                    (substTypeInType (RTypeVar [tv']) [tv] t2)) 
+                                    (substTypeInType (RVar [tv']) [tv] t2)) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
@@ -96,7 +96,7 @@ infix 5 =/=
 
     in
         case t of
-              RTypeVar t => if t ~~~=x then tS else RTypeVar t
+              RVar t => if t ~~~=x then tS else RVar t
             | RProd l => RProd  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
             | RLazyProd l => RLazyProd  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
             | RSum l =>  RSum  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
@@ -108,12 +108,13 @@ infix 5 =/=
             | RUnitType => RUnitType
             | RNullType => RNullType
             | RBuiltinType(b) => RBuiltinType(b)
+            | r => raise Fail ("substTypeInType Fail on type" ^ PrettyPrint.show_typecheckingRType r)
     end
     fun normalizeType (t : RType) : RType witherrsoption  = 
     let 
     val res = 
         case t of
-            RTypeVar t => Success(RTypeVar t)
+            RVar t => Success(RVar t)
             | RProd l =>  fmap RProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
             | RLazyProd l =>  fmap RLazyProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
             | RSum l =>  fmap RSum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
@@ -138,7 +139,7 @@ infix 5 =/=
     let 
     in
         case e of
-            RExprVar v => RExprVar v
+            RVar v => RVar v
             | RUnitExpr(soi) => RUnitExpr (soi)
             | RTuple (l, soi) => RTuple (map (substTypeInRExpr tS x) l, soi)
             | RLazyTuple (l, soi) => RLazyTuple (map (substTypeInRExpr tS x) l, soi)
@@ -159,7 +160,7 @@ infix 5 =/=
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in RTAbs (tv', substTypeInRExpr tS x 
-                                    (substTypeInRExpr (RTypeVar [tv']) [tv] e2), soi) 
+                                    (substTypeInRExpr (RVar [tv']) [tv] e2), soi) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x then RTAbs (tv, e2, soi)
@@ -172,7 +173,7 @@ infix 5 =/=
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
                                 in (tv', ev, substTypeInRExpr tS x 
-                                    (substTypeInRExpr (RTypeVar [tv']) [tv] e2)) 
+                                    (substTypeInRExpr (RVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
              (tv, ev, substTypeInRExpr tS [tv] e2))
@@ -224,13 +225,13 @@ infix 5 =/=
     fun unifyBinding tv t2 tv' t2' =
             if tv ~~= tv' then (tv, t2, tv', t2')
             else let val nn = uniqueName() in
-            (nn, substTypeInType (RTypeVar [nn]) [tv] t2,
-            nn, substTypeInType (RTypeVar [nn]) [tv'] t2')end
+            (nn, substTypeInType (RVar [nn]) [tv] t2,
+            nn, substTypeInType (RVar [nn]) [tv'] t2')end
         in
         if List.exists (fn ((p1, p2):(RExpr * RExpr)) => p1 = t1 andalso p2 = t2) ctx then true
         else
     (case (t1, t2) of
-              (RTypeVar t1, RTypeVar t2) => t1 ~~~= t2
+              (RVar t1, RVar t2) => t1 ~~~= t2
             | (RProd l1, RProd l2) =>  typeEquivLst l1 l2
             | (RLazyProd l1, RLazyProd l2) =>  typeEquivLst l1 l2
             | (RSum l1, RSum l2) =>   typeEquivLst l1 l2
@@ -263,7 +264,7 @@ infix 5 =/=
     open Operators
     in
     case e of
-        RExprVar v => StructureName.toString v
+        RVar v => StructureName.toString v
         | RUnitExpr(soi) => reconstructWithArgs soi []
         | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
         | RLazyTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
@@ -313,7 +314,7 @@ infix 5 =/=
     let 
     in
         case t of
-              RTypeVar t => CTypeVar t
+              RVar t => CTypeVar t
             | RProd l => CProd  (map (fn (l, t) => (l, rTypeToCType t)) l)
             | RLazyProd l => CLazyProd  (map (fn (l, t) => (l, rTypeToCType t)) l)
             | RSum l =>  CSum  (map (fn (l, t) => (l, rTypeToCType t)) l)
@@ -331,7 +332,7 @@ infix 5 =/=
     let 
     in
         case t of
-              CTypeVar t => RTypeVar t
+              CTypeVar t => RVar t
             | CProd l => RProd  (map (fn (l, t) => (l, cTypeToRType t)) l)
             | CLazyProd l => RLazyProd  (map (fn (l, t) => (l, cTypeToRType t)) l)
             | CSum l =>  RSum  (map (fn (l, t) => (l, cTypeToRType t)) l)

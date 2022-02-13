@@ -179,28 +179,7 @@ in case x of
     Leaf => ". /* END */\n"
     | StatementNode (stmt, next) => UTF8String.toString stmt ^ "\n -> "^ show_statementast next
     end *)
-fun show_typecheckingRType x = let
-open TypeCheckingAST
-val st = show_typecheckingRType
-val se = show_typecheckingRExpr
-val ss = UTF8String.toString
-val sst =StructureName.toStringPlain
-in case x of
-                      RTypeVar t => sst t
-                    | RUnitType => "1"
-                    | RProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | RLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | RNullType => "0"
-                    | RSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | RFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
-                    | RTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
-                    | RForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | RExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | RRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | RBuiltinType (bi) => show_builtintype bi
-  
-end
-
+fun show_typecheckingRType x = show_typecheckingRExpr x
 
 and show_typecheckingRExpr x = let
 open TypeCheckingAST
@@ -209,7 +188,7 @@ val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
 in case x of
-RExprVar v => sst v
+RVar v => sst v
                     | RUnitExpr(soi) => "⟨⟩"
                     | RTuple (l, soi) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
                     | RLazyTuple (l, soi) => "⟨(lazy>)"^ String.concatWith ", " (map se l) ^ "(<lazy)⟩"
@@ -236,6 +215,17 @@ RExprVar v => sst v
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
                     | RSeqComp(e1, e2, soi) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
+                    | RUnitType => "1"
+                    | RProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RNullType => "0"
+                    | RSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    | RTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    | RForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RBuiltinType (bi) => show_builtintype bi
                 end
 
 and show_typecheckingRDecl x = let
