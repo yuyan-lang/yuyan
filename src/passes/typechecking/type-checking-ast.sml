@@ -20,67 +20,71 @@ structure TypeCheckingAST = struct
                          | BFIntSub
                          | BFIntEq
 
-    datatype CType =  CTypeVar of StructureName.t
-                    | CUnitType
-                    | CProd of (Label * CType) list
-                    | CLazyProd of (Label * CType) list
-                    | CNullType
-                    | CSum of (Label * CType) list
-                    | CFunc of CType * CType
-                    | CTypeInst of CType * CType
-                    | CForall of TVar * CType
-                    | CExists of TVar * CType
-                    | CRho of TVar * CType
-                    | CBuiltinType of BuiltinType
 
 
     datatype visibility = Public | Private
 
 
     (* CExpr for checked expr *)
-    datatype CExpr = CExprVar of StructureName.t (* required to be fully qualified name, if not local *)
+    datatype CExpr = CVar of StructureName.t (* required to be fully qualified name, if not local *)
                     | CUnitExpr
-                    | CTuple of CExpr list * CType (* type is Prod *)
-                    | CLazyTuple of CExpr list * CType (* type is Prod *)
-                    | CProj of CExpr * Label * CType (* type is Prod *)
-                    | CLazyProj of CExpr * Label * CType (* type is Prod *)
-                    | CInj of Label * CExpr  * CType (* type is  Sum *)
+                    | CTuple of CExpr list * CTypeAnn (* type is Prod *)
+                    | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
+                    | CProj of CExpr * Label * CTypeAnn (* type is Prod *)
+                    | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
+                    | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
-                    | CCase of (CType (*type is Sum *) * CExpr) * (Label * EVar * CExpr) list * CType (* type is result type *)
-                    | CLam of  EVar * CExpr * CType (* type is Func *)
-                    | CApp of  CExpr * CExpr * CType (* type is Func *)
-                    | CTAbs of TVar * CExpr  * CType(* type is Forall *)
-                    | CTApp of CExpr * CType (* instantiation type *) * CType(* type is Forall *)
-                    | CPack of CType (* pack type *) * CExpr * CType(* type is Exists *)
-                    | COpen of (CType (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * CType(* type is return type *)
-                    | CFold of CExpr  * CType(* type is Rho *)
-                    | CUnfold of CExpr  * CType (* type is Rho *)
-                    | CFix of EVar * CExpr * CType (* type is the typ of the expression *)
+                    | CCase of (CTypeAnn (*type is Sum *) * CExpr) * (Label * EVar * CExpr) list * CTypeAnn (* type is result type *)
+                    | CLam of  EVar * CExpr * CTypeAnn (* type is Func *)
+                    | CApp of  CExpr * CExpr * CTypeAnn (* type is Func *)
+                    | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)
+                    | CTApp of CExpr * CExpr (* instantiation type *) * CTypeAnn(* type is Forall *)
+                    | CPack of CExpr (* pack type *) * CExpr * CTypeAnn(* type is Exists *)
+                    | COpen of (CTypeAnn (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * CTypeAnn(* type is return type *)
+                    | CFold of CExpr  * CTypeAnn(* type is Rho *)
+                    | CUnfold of CExpr  * CTypeAnn (* type is Rho *)
+                    | CFix of EVar * CExpr * CTypeAnn (* type is the typ of the expression *)
                     | CStringLiteral of UTF8String.t 
                     | CIntConstant of int
                     | CRealConstant of real
                     | CBoolConstant of bool
-                    | CLetIn of CDeclaration list * CExpr * CType (* Type is the result of the declaring expression *)
+                    | CLetIn of CDeclaration list * CExpr * CTypeAnn (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * StructureName.t list
                     | CBuiltinFunc of BuiltinFunc
-                    | CSeqComp of CExpr * CExpr * CType * CType (* type is the type of the second expression *)
+                    | CSeqComp of CExpr * CExpr * CTypeAnn * CTypeAnn (* type is the type of the second expression *)
+                    | CUnitType
+                    | CProd of (Label * CExpr) list
+                    | CLazyProd of (Label * CExpr) list
+                    | CNullType
+                    | CSum of (Label * CExpr) list
+                    | CFunc of CExpr * CExpr
+                    | CTypeInst of CExpr * CExpr
+                    | CForall of TVar * CExpr
+                    | CExists of TVar * CExpr
+                    | CRho of TVar * CExpr
+                    | CBuiltinType of BuiltinType
+                    | CUniverse of UTF8String.t
+    
 
 (* all types are fully normalized *)
     and CDeclaration = 
                         (* Do not need type macro becuase all types for later stages have been expanded 
                         CHANGE: for imports/lsp, still need type macro*)
-                        CTypeMacro of StructureName.t * CType 
+                        CTypeMacro of StructureName.t * CExpr 
                         (* Do not need type info as terms have been annotated *)
                         (* CTermTypeJudgment of UTF8String.t * CType *)
                         (* Fold into Term Definition *)
                        (*  CTermMacro of UTF8String.t * CExpr *)
-                       | CTermDefinition of StructureName.t * CExpr * CType  
-                       | CDirectExpr of CExpr * CType
+                       | CTermDefinition of StructureName.t * CExpr * CExpr  
+                       | CDirectExpr of CExpr * CExpr
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
                        (* | COpenStructure of StructureName.t *)
+    and CTypeAnn = CTypeAnn of CExpr
 
+
+    type CType = CExpr
     (* stores the source level information that directly correponds to opCompString, that can 
     be used to resconstruct the expression *)
     type sourceOpInfo = Operators.operator (* should be the operator except rapp *)
@@ -118,22 +122,23 @@ structure TypeCheckingAST = struct
                     | RPiType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RUnitType
-                    | RProd of (Label * RExpr) list
-                    | RLazyProd of (Label * RExpr) list
-                    | RNullType
-                    | RSum of (Label * RExpr) list
-                    | RFunc of RExpr * RExpr
-                    | RTypeInst of RExpr * RExpr
-                    | RForall of TVar * RExpr
-                    | RExists of TVar * RExpr
-                    | RRho of TVar * RExpr
-                    | RBuiltinType of BuiltinType
+                    | RProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RLazyProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RSum of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RNullType of UTF8String.t (* shource info *)
+                    | RFunc of RExpr * RExpr * sourceOpInfo
+                    | RTypeInst of RExpr * RExpr * sourceOpInfo
+                    | RForall of TVar * RExpr * sourceOpInfo
+                    | RExists of TVar * RExpr * sourceOpInfo 
+                    | RRho of TVar * RExpr * sourceOpInfo 
+                    | RBuiltinType of BuiltinType * UTF8String.t
                     
 
 
     and RDeclaration = 
                          RTypeMacro of UTF8String.t * RExpr
                        | RTermTypeJudgment of UTF8String.t * RExpr
+                       | RConstructorDecl of UTF8String.t * RExpr
                        | RTermMacro of UTF8String.t * RExpr
                        | RTermDefinition of UTF8String.t * RExpr
                        | RDirectExpr of RExpr

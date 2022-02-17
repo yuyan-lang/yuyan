@@ -146,8 +146,8 @@ struct
             then (* process as declaration *)
                 UnparsedDeclaration ((processDeclaration p), q)
             else if isPlainStr p
-                then  (if containsCharTopLevel p SpecialChars.leftAngledBracket
-                        orelse containsCharTopLevel p SpecialChars.rightAngledBracket
+                then  (if containsCharTopLevel p SpecialChars.leftDoubleQuote
+                        orelse containsCharTopLevel p SpecialChars.rightDoubleQuote
                         then UnparsedExpression(p , q)
                         else (* name *) Name ((unSChar p), q))
                 else (* expression *) UnparsedExpression(p, q)

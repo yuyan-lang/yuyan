@@ -128,6 +128,7 @@ in
 case x of 
    PTypeMacro(tname, tbody, soi) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody
   | PTermTypeJudgment(ename, tbody, soi) => UTF8String.toString ename ^ " : " ^ show_opast tbody
+  | PConstructorDecl(ename, tbody, soi) => "cons "^ UTF8String.toString ename ^ " : " ^ show_opast tbody
   | PTermMacro(ename, ebody, soi) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody
   | PTermDefinition(ename, ebody, soi) => UTF8String.toString  ename ^ " = " ^ show_opast  ebody
   | POpDeclaration(opName, assoc, pred, soi) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
@@ -226,6 +227,11 @@ RVar v => sst v
                     | RExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | RRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | RBuiltinType (bi) => show_builtintype bi
+                    | RPiType(t, xop, t2, soi) => "(( " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ ") -> " ^ st t2 ^ ")"
+                    | RSigmaType(t, xop, t2, soi) => "(( " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ ") x " ^ st t2 ^ ")"
+                    | RUniverse(soi) => "(Set)"
                 end
 
 and show_typecheckingRDecl x = let
@@ -253,19 +259,8 @@ val st = show_typecheckingCType
 val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
-in case x of
-                      CTypeVar t => sst t
-                    | CUnitType => "1"
-                    | CProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | CLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | CNullType => "0"
-                    | CSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
-                    | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
-                    | CForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | CBuiltinType (bi) => show_builtintype bi
+in 
+  show_typecheckingCExpr x
   
 end
 
@@ -273,12 +268,13 @@ and show_typecheckingCExpr x =
 let
 open TypeCheckingAST
 val st = show_typecheckingCType
+fun sta (CTypeAnn t) = show_typecheckingCType t
 val se = show_typecheckingCExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
-fun cst t = "⟦" ^ st t ^ "⟧"
+fun cst t = "⟦" ^ sta t ^ "⟧"
 in case x of
-                      CExprVar v => sst v
+                      CVar v => sst v
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
@@ -305,6 +301,17 @@ in case x of
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
                     | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f
                     | CSeqComp(e1, e2, t1, t2) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
+                    | CUnitType => "1"
+                    | CProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CNullType => "0"
+                    | CSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    | CForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CBuiltinType (bi) => show_builtintype bi
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST

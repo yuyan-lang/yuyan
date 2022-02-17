@@ -320,6 +320,8 @@ struct
                             (fn t  => RTypeMacro(tname, t) ::: trailingNoOps())
                     | PTermTypeJudgment(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
                             RTermTypeJudgment(ename, t) ::: trailingNoOps())
+                    | PConstructorDecl(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
+                            RConstructorDecl(ename, t) ::: trailingNoOps())
                     | PTermMacro(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn e => 
                             RTermMacro(ename, e) ::: trailingNoOps())
                     | PTermDefinition(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 

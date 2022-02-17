@@ -51,7 +51,6 @@ local
         parser/parse-ast.sml
         parser/bracket-scanner.sml
         passes/preprocess/preprocessing-operators.sml
-        passes/typechecking/type-checking-ast-ops.sml
         passes/typechecking/builtin-functions.sml
         passes/cps-transform/cps-ast.sml
         passes/cps-transform/cps-helper.sml
@@ -66,6 +65,7 @@ local
 
         
         ui/pretty-print.sml
+        passes/typechecking/type-checking-ast-ops.sml
         build-system/compilation-tokens.sml
         passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml

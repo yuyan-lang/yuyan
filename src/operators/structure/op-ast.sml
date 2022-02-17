@@ -12,6 +12,7 @@ struct
    datatype pJudgment = PEmptyDecl 
                        | PTypeMacro of UTF8String.t * OpAST * sourceOpInfo
                        | PTermTypeJudgment of UTF8String.t * OpAST * sourceOpInfo
+                       | PConstructorDecl of UTF8String.t * OpAST * sourceOpInfo
                        | PTermMacro of UTF8String.t * OpAST * sourceOpInfo
                        | PTermDefinition of UTF8String.t * OpAST * sourceOpInfo
                        | POpDeclaration of UTF8String.t * Operators.associativity * int * 

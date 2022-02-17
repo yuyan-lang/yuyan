@@ -4,6 +4,7 @@
 | 豫言           | Standard Language | Precedence | 
 | ------------- |-------------| ------|
 | 〇者〇也 |  type t = T | - |
+| 建〇为〇 |  cons e : T |  - |
 | 以〇为〇 |  e : T |  - |
 | 设〇为〇 |  #define e = E | - |
 | 施〇乃为〇 | e = E | - |
