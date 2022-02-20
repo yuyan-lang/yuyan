@@ -121,11 +121,11 @@ structure TypeCheckingAST = struct
                     | RUniverse of UTF8String.t (* a universe is the type of types, (TODO) stratified by level *)
                     | RPiType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
-                    | RUnitType
+                    | RUnitType of UTF8String.t (* source info *)
                     | RProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RLazyProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RSum of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
-                    | RNullType of UTF8String.t (* shource info *)
+                    | RNullType of UTF8String.t (* source info *)
                     | RFunc of RExpr * RExpr * sourceOpInfo
                     | RTypeInst of RExpr * RExpr * sourceOpInfo
                     | RForall of TVar * RExpr * sourceOpInfo

@@ -44,16 +44,16 @@ infix 5 =/=
     fun freeTVar (t : RType) : StructureName.t list = 
         case t of
               RVar t => [t]
-            | RProd l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | RLazyProd l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | RSum l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | RFunc (t1,t2) => List.concat (map freeTVar [t1,t2])
-            | RTypeInst (t1,t2) => List.concat (map freeTVar [t1,t2])
-            | RForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | RExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | RRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | RUnitType => []
-            | RNullType => []
+            | RProd (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
+            | RLazyProd (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
+            | RSum (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
+            | RFunc (t1,t2, soi) => List.concat (map freeTVar [t1,t2])
+            | RTypeInst (t1,t2, soi) => List.concat (map freeTVar [t1,t2])
+            | RForall (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RExists (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RRho (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RUnitType(s) => []
+            | RNullType(s) => []
             | RBuiltinType(b) => []
             | RUniverse(s) => []
             | RLamWithType (t, ev, e, soi) => List.concat [freeTVar t, 
@@ -86,34 +86,36 @@ infix 5 =/=
     fun uniqueName () = UTF8String.fromString (Int.toString (UID.next()))
 
 
-    fun normalizeType (t : RType) : RType witherrsoption  = 
+    fun normalizeType (t : CType) : CType witherrsoption  = 
     let 
     val res = 
         case t of
-            RVar t => Success(RVar t)
-            | RProd l =>  fmap RProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
-            | RLazyProd l =>  fmap RLazyProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
-            | RSum l =>  fmap RSum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
-            | RFunc (t1,t2) => fmap RFunc (normalizeType t1 =/= normalizeType t2 )
-            | RTypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
-                RForall(tv, t1') => (normalizeType t2) >>= (fn nt2 => Success(substTypeInRExpr nt2 ([tv]) t1'))
+            CVar t => Success(CVar t)
+            | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
+            | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
+            | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
+            | CFunc (t1,t2) => fmap CFunc (normalizeType t1 =/= normalizeType t2 )
+            | CTypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
+                CForall(tv, t1') => (normalizeType t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
                 | _ => genSingletonError (raise Fail "not implemented") "期待通用类型(Expected Forall)" NONE
             )
-            | RForall (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(RForall (tv, nt2) ))
-            | RExists (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(RExists (tv, nt2) ))
-            | RRho (tv,t2) =>  normalizeType t2 >>=(fn nt2 =>  Success(RRho (tv, nt2) ))
-            | RUnitType => Success(RUnitType)
-            | RNullType => Success(RNullType)
-            | RBuiltinType(b) => Success(RBuiltinType(b))
-            | RUniverse(s) => Success(RUniverse(s))
-            | RLamWithType (t, ev, e, soi) => 
-            fmap RLamWithType (===/=(normalizeType t, Success ev, normalizeType e, Success soi))
-            | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingRType t)
+            | CForall (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
+            | CExists (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
+            | CRho (tv,t2) =>  normalizeType t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            | CUnitType => Success(CUnitType)
+            | CNullType => Success(CNullType)
+            | CBuiltinType(b) => Success(CBuiltinType(b))
+            | CUniverse(s) => Success(CUniverse(s))
+            | CLam(ev, e, CTypeAnn t) => 
+            fmap CLam(==/=(Success ev, normalizeType e, fmap CTypeAnn (normalizeType t)))
+            | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingType ^"\n") *)
     in
         res
     end
 
+    and substTypeInCExpr (tS : CType) (x : StructureName.t) (t : CType) = 
+        raise Fail "undefined tcastops118"
     (* !!! always capture avoiding substitution *)
     and substTypeInRExpr (tS : RType) (x : StructureName.t) (t : RType) = 
     let fun captureAvoid f (tv : UTF8String.t) t2 = 
@@ -129,17 +131,17 @@ infix 5 =/=
 
     in
         case t of
-              RVar t => if t ~~~=x then tS else RVar t
-            | RProd l => RProd  (map (fn (l, t) => (l, substTypeInRExpr tS x t)) l)
-            | RLazyProd l => RLazyProd  (map (fn (l, t) => (l, substTypeInRExpr tS x t)) l)
-            | RSum l =>  RSum  (map (fn (l, t) => (l, substTypeInRExpr tS x t)) l)
-            | RFunc (t1,t2) => RFunc (substTypeInRExpr tS x t1, substTypeInRExpr tS x t2 )
-            | RTypeInst (t1,t2) => RTypeInst (substTypeInRExpr tS x t1, substTypeInRExpr tS x t2 )
-            | RForall (tv,t2) => captureAvoid RForall tv t2
-            | RExists (tv,t2) => captureAvoid RExists tv t2
-            | RRho (tv,t2) => captureAvoid RRho tv t2
-            | RUnitType => RUnitType
-            | RNullType => RNullType
+              RVar (t) => if t ~~~=x then tS else RVar t
+            | RProd (l, soi) => RProd  (map (fn (l, t, soi) => (l, substTypeInRExpr tS x t, soi)) l, soi)
+            | RLazyProd (l, soi) => RLazyProd  (map (fn (l, t, soi) => (l, substTypeInRExpr tS x t, soi)) l, soi)
+            | RSum (l, soi) =>  RSum  (map (fn (l, t, soi) => (l, substTypeInRExpr tS x t, soi)) l, soi)
+            | RFunc (t1,t2, soi) => RFunc (substTypeInRExpr tS x t1, substTypeInRExpr tS x t2 , soi)
+            | RTypeInst (t1,t2, soi) => RTypeInst (substTypeInRExpr tS x t1, substTypeInRExpr tS x t2 , soi)
+            | RForall (tv,t2, soi) => captureAvoid (fn (tv', t2') => RForall (tv', t2', soi)) tv t2
+            | RExists (tv,t2, soi) => captureAvoid (fn (tv', t2') => RExists (tv', t2', soi)) tv t2
+            | RRho (tv,t2, soi) => captureAvoid (fn (tv', t2') => RRho (tv', t2', soi)) tv t2
+            | RUnitType(s) => RUnitType(s)
+            | RNullType(s) => RNullType(s)
             | RBuiltinType(b) => RBuiltinType(b)
             | RUniverse(soi) => RUniverse(soi)
             | RUnitExpr(soi) => RUnitExpr (soi)
@@ -319,20 +321,20 @@ infix 5 =/=
     in
         case t of
               RVar t => CVar t
-            | RProd l => CProd  (map (fn (l, t) => (l, rTypeToCType t)) l)
-            | RLazyProd l => CLazyProd  (map (fn (l, t) => (l, rTypeToCType t)) l)
-            | RSum l =>  CSum  (map (fn (l, t) => (l, rTypeToCType t)) l)
-            | RFunc (t1,t2) => CFunc (rTypeToCType t1, rTypeToCType t2)
-            | RTypeInst (t1,t2) => CTypeInst (rTypeToCType t1, rTypeToCType t2)
-            | RForall (tv,t2) => CForall(tv, rTypeToCType t2)
-            | RExists (tv,t2) => CExists(tv, rTypeToCType t2)
-            | RRho (tv,t2) => CRho(tv, rTypeToCType t2)
-            | RUnitType => CUnitType
-            | RNullType => CNullType
-            | RBuiltinType(b) => CBuiltinType(b)
+            | RProd (l, soi) => CProd  (map (fn (l, t, soi) => (l, rTypeToCType t)) l )
+            | RLazyProd (l, soi) => CLazyProd  (map (fn (l, t, soi) => (l, rTypeToCType t)) l )
+            | RSum (l,soi) =>  CSum  (map (fn (l, t, soi) => (l, rTypeToCType t)) l)
+            | RFunc (t1,t2, soi) => CFunc (rTypeToCType t1, rTypeToCType t2)
+            | RTypeInst (t1,t2, soi) => CTypeInst (rTypeToCType t1, rTypeToCType t2)
+            | RForall (tv,t2, soi) => CForall(tv, rTypeToCType t2)
+            | RExists (tv,t2, soi) => CExists(tv, rTypeToCType t2)
+            | RRho (tv,t2, soi) => CRho(tv, rTypeToCType t2)
+            | RUnitType(soi) => CUnitType
+            | RNullType(soi)=> CNullType
+            | RBuiltinType(b, soi) => CBuiltinType(b)
             | RUniverse(s) => CUniverse(s)
     end
-
+(* 
     fun cTypeToRType (t : CType)  : RType = 
     let 
     in
@@ -350,5 +352,5 @@ infix 5 =/=
             | CNullType => RNullType
             | CBuiltinType(t) => RBuiltinType(t)
             | CUniverse(s) => RUniverse(s)
-    end
+    end *)
 end

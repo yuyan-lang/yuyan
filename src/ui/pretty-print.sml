@@ -216,17 +216,17 @@ RVar v => sst v
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
                     | RSeqComp(e1, e2, soi) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
-                    | RUnitType => "1"
-                    | RProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | RLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | RNullType => "0"
-                    | RSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | RFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
-                    | RTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
-                    | RForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | RExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | RRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | RBuiltinType (bi) => show_builtintype bi
+                    | RUnitType(soi) => "1"
+                    | RProd (l,soi) => "(" ^ String.concatWith "* " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RLazyProd (l,soi) => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RNullType(soi) => "0"
+                    | RSum (l,soi) =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RFunc (t1, t2,soi) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    | RTypeInst (t1, t2,soi) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    | RForall(t1, t2,soi) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RExists (t1, t2,soi) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RRho (t1, t2,soi) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RBuiltinType (bi, s) => show_builtintype bi
                     | RPiType(t, xop, t2, soi) => "(( " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
                       st t ^ ") -> " ^ st t2 ^ ")"
                     | RSigmaType(t, xop, t2, soi) => "(( " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 

@@ -70,11 +70,11 @@ struct
         (* | PrecedenceParser.AmbiguousParse s =>  *)
             (* raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.") *)
     
-    and elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): (Label * RType) witherrsoption = 
+    and elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): (Label * RType * sourceOpInfo) witherrsoption = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 
             oper ~=** labeledTypeCompOp 
-            then elaborateOpASTtoExpr l2 ctx >>= (fn l2' => Success (l1, l2'))
+            then elaborateOpASTtoExpr l2 ctx >>= (fn l2' => Success (l1, l2', oper))
             else genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
         | _ => genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
 
@@ -90,14 +90,14 @@ struct
                     | NumberParser.NPReal (i1, i2, l) => Success (RRealConstant ((i1, i2,l),  s))
                  )
                  else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：字符串》》") then Success(RBuiltinType(BIString)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：整数》》") then Success(RBuiltinType(BIInt)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：小数》》") then Success(RBuiltinType(BIReal)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：动态分类值》》") then Success(RBuiltinType(BIDynClsfd)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：有》》") then Success(RUnitType) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(RNullType) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：新的外部类型》》") then Success(RBuiltinType(BIForeignType(UID.next()))) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：爻》》") then Success(RBuiltinType(BIBool)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：字符串》》") then Success(RBuiltinType(BIString, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：整数》》") then Success(RBuiltinType(BIInt, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：小数》》") then Success(RBuiltinType(BIReal, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：动态分类值》》") then Success(RBuiltinType(BIDynClsfd, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：有》》") then Success(RUnitType(s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(RNullType(s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：新的外部类型》》") then Success(RBuiltinType(BIForeignType(UID.next()), s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：爻》》") then Success(RBuiltinType(BIBool, s)) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：元类型》》") then Success(RUniverse(s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阳》》") then Success(RBoolConstant(true, s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阴》》") then Success(RBoolConstant(false, s)) 
@@ -246,29 +246,29 @@ struct
                     )
                     else
                     if oper ~=** prodTypeOp
-                    then (let val args = #1 (flattenRight ast oper)
-                        in fmap RProd (collectAll (map (fn x => elaborateLabeledType x ctx) args ))
+                    then (let val (args, sepOps) = (flattenRight ast oper)
+                        in fmap RProd (collectAll (map (fn x => elaborateLabeledType x ctx) args ) =/= (Success (sepOps)))
                         end)
                     else 
                     if oper ~=** sumTypeOp
-                    then (let val args = #1 (flattenRight ast oper)
-                        in fmap RSum (collectAll (map (fn x => elaborateLabeledType x ctx) args))
+                    then (let val (args, sepOps) = (flattenRight ast oper)
+                        in fmap RSum (collectAll (map (fn x => elaborateLabeledType x ctx) args) =/= (Success sepOps))
                         end)
                     else
                     if oper ~=** functionTypeOp
-                    then fmap RFunc ((elaborateOpASTtoType (hd l) ctx) =/= (elaborateOpASTtoType (snd l) ctx))
+                    then fmap RFunc (==/=((elaborateOpASTtoType (hd l) ctx) ,(elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
                     if oper ~=** typeInstantiationOp
-                    then fmap RTypeInst ((elaborateOpASTtoType (hd l) ctx) =/= (elaborateOpASTtoType (snd l) ctx))
+                    then fmap RTypeInst (==/=((elaborateOpASTtoType (hd l) ctx) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
                     if oper ~=** universalTypeOp
-                    then fmap RForall ((elaborateNewName (hd l)) =/= (elaborateOpASTtoType (snd l) ctx))
+                    then fmap RForall (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
                     if oper ~=** existentialTypeOp
-                    then fmap RExists ((elaborateNewName (hd l)) =/= (elaborateOpASTtoType (snd l) ctx))
+                    then fmap RExists (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
                     if oper ~=** recursiveTypeOp
-                    then fmap RRho ((elaborateNewName (hd l)) =/= (elaborateOpASTtoType (snd l) ctx))
+                    then fmap RRho (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
                     if oper ~=** structureRefOp
                     then fmap RVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
