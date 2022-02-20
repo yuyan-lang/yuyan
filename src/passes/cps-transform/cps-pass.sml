@@ -171,7 +171,7 @@ exception CPSInternalError
             | CIntConstant i => 
                 CPSBuiltinValue(CPSBvInt i, kcc cc)
             | CRealConstant r => 
-                CPSBuiltinValue(CPSBvReal r, kcc cc)
+                CPSBuiltinValue(CPSBvReal (NumberParser.toRealValue r), kcc cc)
             | CBoolConstant r => 
                 CPSBuiltinValue(CPSBvBool r, kcc cc)
             | CFfiCCall (cFuncName, args) => 

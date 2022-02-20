@@ -46,7 +46,7 @@ structure TypeCheckingAST = struct
                     | CFix of EVar * CExpr * CTypeAnn (* type is the typ of the expression *)
                     | CStringLiteral of UTF8String.t 
                     | CIntConstant of int
-                    | CRealConstant of real
+                    | CRealConstant of (int * int * int )
                     | CBoolConstant of bool
                     | CLetIn of CDeclaration list * CExpr * CTypeAnn (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * StructureName.t list
@@ -63,7 +63,7 @@ structure TypeCheckingAST = struct
                     | CExists of TVar * CExpr
                     | CRho of TVar * CExpr
                     | CBuiltinType of BuiltinType
-                    | CUniverse of UTF8String.t
+                    | CUniverse 
     
 
 (* all types are fully normalized *)
@@ -157,8 +157,8 @@ structure TypeCheckingAST = struct
 
 (* these exist here for pretty printing *)
 (* g for generic *)
- datatype 'a gmapping = TermTypeJ of StructureName.t * RType  * 'a
-                    | TypeDef of StructureName.t * RType * unit
+ datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * 'a
+                    | TypeDef of StructureName.t * CType * unit
 datatype 'a gcontext = Context of StructureName.t * bool * 
     ('a gmapping) list
     type mapping = (StructureName.t option) gmapping (* original name (for use with open) *)

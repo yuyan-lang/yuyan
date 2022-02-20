@@ -294,7 +294,7 @@ in case x of
                     | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
                     | CStringLiteral l => "\"" ^ ss l ^"\""
                     | CIntConstant l => "(" ^ Int.toString l ^")"
-                    | CRealConstant l => "(" ^ Real.toString l ^")"
+                    | CRealConstant ((i1,i2,l)) => "(real " ^ Int.toString i1 ^ "." ^Int.toString i2 ^ "("^Int.toString l ^")" ^")"
                     | CBoolConstant b => "(" ^ Bool.toString b ^")"
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
@@ -312,6 +312,7 @@ in case x of
                     | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CBuiltinType (bi) => show_builtintype bi
+                    | CUniverse => "(Set)"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
@@ -339,8 +340,8 @@ fun show_typecheckingpassmappping x = let
 open TypeCheckingAST
 in
   case x of
-    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingRType t
-    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingRType t
+    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t
+    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingAST

@@ -60,6 +60,24 @@ infix 5 =/=
             List.filter (fn t => t ~<> [ev]) (freeTVar e)]
             | _ => raise Fail ("freeTVar " ^ PrettyPrint.show_typecheckingRType t)
 
+
+    fun freeTCVar (t : CType) : StructureName.t list = 
+        case t of
+            CVar t => [t]
+            | CProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
+            | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
+            | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
+            | CFunc (t1,t2) => List.concat (map freeTCVar [t1,t2])
+            | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
+            | CForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+            | CExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+            | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+            | CUnitType => []
+            | CNullType => []
+            | CBuiltinType(b) => []
+            | CUniverse => []
+            | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
+
     (* fun freeEVar (e : Expr) : StructureName.t list = 
         case e of
             ExprVar v => [v]
@@ -105,7 +123,7 @@ infix 5 =/=
             | CUnitType => Success(CUnitType)
             | CNullType => Success(CNullType)
             | CBuiltinType(b) => Success(CBuiltinType(b))
-            | CUniverse(s) => Success(CUniverse(s))
+            | CUniverse => Success(CUniverse)
             | CLam(ev, e, CTypeAnn t) => 
             fmap CLam(==/=(Success ev, normalizeType e, fmap CTypeAnn (normalizeType t)))
             | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
@@ -114,8 +132,37 @@ infix 5 =/=
         res
     end
 
-    and substTypeInCExpr (tS : CType) (x : StructureName.t) (t : CType) = 
-        raise Fail "undefined tcastops118"
+    and substTypeInCExpr (tS : CType) (x : StructureName.t) (e : CType) = 
+    let fun captureAvoid f (tv : UTF8String.t) t2 = 
+            if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
+             then let val tv' = uniqueName()
+                                in f (tv', substTypeInCExpr tS x 
+                                    (substTypeInCExpr (CVar [tv']) [tv] t2)) 
+                                    end
+            else  (* No capture, regular *)
+            if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
+            then f (tv, t2)
+            else f (tv, substTypeInCExpr tS x t2)
+
+    in
+        case e of
+              CVar t => if t ~~~=x then tS else CVar t 
+            | CProd l => CProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
+            | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
+            | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
+            | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+            | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+            | CForall (tv,t2) => captureAvoid CForall tv t2
+            | CExists (tv,t2) => captureAvoid CExists tv t2
+            | CRho (tv,t2) => captureAvoid CRho tv t2
+            | CUnitType => CUnitType
+            | CNullType => CNullType
+            | CBuiltinType(b) => CBuiltinType(b)
+            | CUniverse => CUniverse
+    | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e)
+    end
+    and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
+    raise Fail "not implemented136"
     (* !!! always capture avoiding substitution *)
     and substTypeInRExpr (tS : RType) (x : StructureName.t) (t : RType) = 
     let fun captureAvoid f (tv : UTF8String.t) t2 = 
@@ -196,7 +243,7 @@ infix 5 =/=
                 RLetIn(substituteTypeInRSignature tS x decls, 
                     substTypeInRExpr tS x e, soi)
             | RBuiltinFunc(f, s) => RBuiltinFunc(f, s)
-            | r => raise Fail ("substTypeInType(RExpr) Fail on type(RExpr) " ^ PrettyPrint.show_typecheckingRType r)
+            | r => raise Fail ("substTypeInRExpr Fail on type(RExpr) " ^ PrettyPrint.show_typecheckingRType r)
     end
 
     and substituteTypeInRDeclaration (tS : RType) (x : StructureName.t) (d : RDeclaration) = 
@@ -220,9 +267,9 @@ infix 5 =/=
             substituteTypeInRSignature tS x ds
 
 (* semantic type equivalence *)
-    and typeEquiv (ctx : (RExpr * RExpr) list) (t1:RExpr) (t2:RExpr)  :bool = 
+    and typeEquiv (ctx : (CExpr * CExpr) list) (t1:CExpr) (t2:CExpr)  :bool = 
     (let 
-    fun typeEquivLst (l1 : (Label * RExpr)list) (l2 : (Label * RExpr) list)= 
+    fun typeEquivLst (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list)= 
             if length l1 <> length l2 then false else
             List.foldr (fn (b1, b2) => b1 andalso b2) true (List.tabulate((List.length l1), (fn i => 
             (#1 (List.nth(l1, i))) ~~= (#1 (List.nth(l2, i)))
@@ -230,27 +277,27 @@ infix 5 =/=
     fun unifyBinding tv t2 tv' t2' =
             if tv ~~= tv' then (tv, t2, tv', t2')
             else let val nn = uniqueName() in
-            (nn, substTypeInRExpr (RVar [nn]) [tv] t2,
-            nn, substTypeInRExpr (RVar [nn]) [tv'] t2')end
+            (nn, substTypeInCExpr (CVar [nn]) [tv] t2,
+            nn, substTypeInCExpr (CVar [nn]) [tv'] t2')end
         in
-        if List.exists (fn ((p1, p2):(RExpr * RExpr)) => p1 = t1 andalso p2 = t2) ctx then true
+        if List.exists (fn ((p1, p2):(CExpr * CExpr)) => p1 = t1 andalso p2 = t2) ctx then true
         else
     (case (t1, t2) of
-              (RVar t1, RVar t2) => t1 ~~~= t2
-            | (RProd l1, RProd l2) =>  typeEquivLst l1 l2
-            | (RLazyProd l1, RLazyProd l2) =>  typeEquivLst l1 l2
-            | (RSum l1, RSum l2) =>   typeEquivLst l1 l2
-            | (RFunc (t1,t2), RFunc (t1', t2')) => typeEquiv ctx t1 t1' andalso typeEquiv ctx t2 t2'
-            | (RForall (tv,t2), RForall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
-            | (RExists (tv,t2), RExists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
-            | (RRho (tv,t2), RRho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
-            in typeEquiv ((RRho(v, t1), RRho(v',t1'))::ctx) 
-                (substTypeInRExpr (RRho (v,t1)) [v] t1)
-                (substTypeInRExpr (RRho (v',t1')) [v'] t1')
+              (CVar t1, CVar t2) => t1 ~~~= t2
+            | (CProd l1, CProd l2) =>  typeEquivLst l1 l2
+            | (CLazyProd l1, CLazyProd l2) =>  typeEquivLst l1 l2
+            | (CSum l1, CSum l2) =>   typeEquivLst l1 l2
+            | (CFunc (t1,t2), CFunc (t1', t2')) => typeEquiv ctx t1 t1' andalso typeEquiv ctx t2 t2'
+            | (CForall (tv,t2), CForall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
+            | (CExists (tv,t2), CExists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
+            | (CRho (tv,t2), CRho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
+            in typeEquiv ((CRho(v, t1), CRho(v',t1'))::ctx) 
+                (substTypeInCExpr (CRho (v,t1)) [v] t1)
+                (substTypeInCExpr (CRho (v',t1')) [v'] t1')
              end)
-            | (RUnitType, RUnitType) => true
-            | (RNullType, RNullType) => true
-            | (RBuiltinType(b1), RBuiltinType(b2)) => b1 = b2
+            | (CUnitType, CUnitType) => true
+            | (CNullType, CNullType) => true
+            | (CBuiltinType(b1), CBuiltinType(b2)) => b1 = b2
             | _ => false)
     end)
 
@@ -332,7 +379,8 @@ infix 5 =/=
             | RUnitType(soi) => CUnitType
             | RNullType(soi)=> CNullType
             | RBuiltinType(b, soi) => CBuiltinType(b)
-            | RUniverse(s) => CUniverse(s)
+            | RUniverse(s) => CUniverse
+            | _ => raise Fail ("rTypeToCType not implemented for " ^ PrettyPrint.show_typecheckingRType t)
     end
 (* 
     fun cTypeToRType (t : CType)  : RType = 
