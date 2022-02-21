@@ -4,16 +4,12 @@ struct
 
     val structureRefOp = Operators.parseOperatorStr "〇之〇" true false 710 []
 
-      (* type t = T *)
-    val typeMacroOp = Operators.parseOperatorStr "〇者〇也" false false 0 []
+      (* t = T *)
+    val termDefinitionOp = Operators.parseOperatorStr "〇者〇也" false false 0 []
     (* e : T *)
     val termTypeJudgmentOp = Operators.parseOperatorStr "以〇为〇" false false 0 []
     (* cons e : T *)
     val constructorDeclarationOp = Operators.parseOperatorStr "建〇以〇" false false 0 []
-    (* #define e = E *)
-    val termMacroOp = Operators.parseOperatorStr "设〇为〇" false false 0 []
-    (* e = E *)
-    val termDefinitionOp = Operators.parseOperatorStr "施〇乃为〇" false false 0 []
     (* infixl op 232 *)
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
     (* // *)
@@ -25,8 +21,8 @@ struct
     val importStructureOp = Operators.parseOperatorStr "览〇之书" false false 0 []
     val reexportStructureOp = Operators.parseOperatorStr "诵〇之书" false false 0 []
     
-    val declOps = [typeMacroOp, termTypeJudgmentOp, constructorDeclarationOp, 
-     termMacroOp, termDefinitionOp, opDeclarationOp, commentOp,
+    val declOps = [termTypeJudgmentOp, constructorDeclarationOp, 
+     termDefinitionOp, opDeclarationOp, commentOp,
     publicStructureOp, privateStructureOp, openStructureOp, importStructureOp, reexportStructureOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t

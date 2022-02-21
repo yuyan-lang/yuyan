@@ -249,10 +249,10 @@ infix 5 =/=
     and substituteTypeInRDeclaration (tS : RType) (x : StructureName.t) (d : RDeclaration) = 
       case d of
       (* to prevent this from happending by prior checking *)
-         RTypeMacro (y, t) => if x ~~~= [y] then raise Fail "Cannot have identical types" else 
-            RTypeMacro (y, substTypeInRExpr tS x t)
-        | RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInRExpr tS x t)
-        | RTermMacro (n, e) => RTermMacro(n, substTypeInRExpr tS x e)
+         (* RTypeMacro (y, t) => if x ~~~= [y] then raise Fail "Cannot have identical types" else 
+            RTypeMacro (y, substTypeInRExpr tS x t) *)
+         RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInRExpr tS x t)
+        (* | RTermMacro (n, e) => RTermMacro(n, substTypeInRExpr tS x e) *)
         | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRExpr tS x e)
         | RDirectExpr(e) => RDirectExpr (substTypeInRExpr tS x e)
         | RStructure(v, n, s) => RStructure(v, n, substituteTypeInRSignature tS x s)
@@ -269,16 +269,16 @@ infix 5 =/=
 (* semantic type equivalence *)
     and typeEquiv (ctx : (CExpr * CExpr) list) (t1:CExpr) (t2:CExpr)  :bool = 
     (let 
-    fun typeEquivLst (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list)= 
-            if length l1 <> length l2 then false else
-            List.foldr (fn (b1, b2) => b1 andalso b2) true (List.tabulate((List.length l1), (fn i => 
-            (#1 (List.nth(l1, i))) ~~= (#1 (List.nth(l2, i)))
-            andalso typeEquiv ctx (#2 (List.nth(l1, i))) (#2 (List.nth (l2, i))) )))
-    fun unifyBinding tv t2 tv' t2' =
-            if tv ~~= tv' then (tv, t2, tv', t2')
-            else let val nn = uniqueName() in
-            (nn, substTypeInCExpr (CVar [nn]) [tv] t2,
-            nn, substTypeInCExpr (CVar [nn]) [tv'] t2')end
+        fun typeEquivLst (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list)= 
+                if length l1 <> length l2 then false else
+                List.foldr (fn (b1, b2) => b1 andalso b2) true (List.tabulate((List.length l1), (fn i => 
+                (#1 (List.nth(l1, i))) ~~= (#1 (List.nth(l2, i)))
+                andalso typeEquiv ctx (#2 (List.nth(l1, i))) (#2 (List.nth (l2, i))) )))
+        fun unifyBinding tv t2 tv' t2' =
+                if tv ~~= tv' then (tv, t2, tv', t2')
+                else let val nn = uniqueName() in
+                (nn, substTypeInCExpr (CVar [nn]) [tv] t2,
+                nn, substTypeInCExpr (CVar [nn]) [tv'] t2')end
         in
         if List.exists (fn ((p1, p2):(CExpr * CExpr)) => p1 = t1 andalso p2 = t2) ctx then true
         else
@@ -298,6 +298,7 @@ infix 5 =/=
             | (CUnitType, CUnitType) => true
             | (CNullType, CNullType) => true
             | (CBuiltinType(b1), CBuiltinType(b2)) => b1 = b2
+            | (CUniverse, CUniverse) => true
             | _ => false)
     end)
 
@@ -359,7 +360,36 @@ infix 5 =/=
         | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
         | RBuiltinFunc(f, s) => s
         | RSeqComp(e1, e2, soi) => reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
-        | _ => raise Fail ("reconstruct failed for rexpr" ^ PrettyPrint.show_typecheckingRExpr e)
+        | RBuiltinType(b, s) => s
+        | RUnitType(s) => s
+        | RUniverse(s) => s
+        | RPiType(t1, evoption, t2, soi) => 
+        (case evoption of 
+            SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
+            | NONE => raise Fail "ui368")
+        | RSigmaType(t1, evoption, t2, soi) =>
+        (case evoption of 
+            SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
+            | NONE => raise Fail "ui368")
+        | RProd(ltsl, sepl) => 
+            constructWithSep (List.map (fn (l, t, soi) => 
+                reconstructWithArgs soi [l, reconstructFromRExpr t]
+            ) ltsl) sepl
+        | RLazyProd  (ltsl, sepl) => 
+            constructWithSep (List.map (fn (l, t, soi) => 
+                reconstructWithArgs soi [l, reconstructFromRExpr t]
+            ) ltsl) sepl
+        | RSum(ltsl, sepl) => 
+            constructWithSep (List.map (fn (l, t, soi) => 
+                reconstructWithArgs soi [l, reconstructFromRExpr t]
+            ) ltsl) sepl
+        | RNullType (s) => s
+        | RFunc(t1, t2, soi) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2]
+        | RTypeInst(t1, t2, soi) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2]
+        | RForall(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
+        | RExists(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
+        | RRho(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
+        (* | _ => raise Fail ("reconstruct failed for rexpr " ^ PrettyPrint.show_typecheckingRExpr e) *)
     end
     
 

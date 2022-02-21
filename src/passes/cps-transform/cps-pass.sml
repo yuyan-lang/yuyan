@@ -225,8 +225,8 @@ exception CPSInternalError
                 (fn resvar => cc (ctx, SOME resvar)))
              (* cpsTransformExpr ctx e (fn resvar => 
              cc (ctx, SOME resvar)) *)
-        | CTypeMacro _ :: ss => (* ignore type macro during cps *)
-            cpsTransformSig ctx ss useGlobalVar cc
+        (* | CTypeMacro _ :: ss => (* ignore type macro during cps *)
+            cpsTransformSig ctx ss useGlobalVar cc *)
         | CTermDefinition(name, def, tp):: ss =>  
             cpsTransformExpr ctx def 
             (fn resvar =>

@@ -126,10 +126,10 @@ open OpAST
 open PreprocessingAST
 in 
 case x of 
-   PTypeMacro(tname, tbody, soi) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody
-  | PTermTypeJudgment(ename, tbody, soi) => UTF8String.toString ename ^ " : " ^ show_opast tbody
+   (* PTypeMacro(tname, tbody, soi) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody *)
+   PTermTypeJudgment(ename, tbody, soi) => UTF8String.toString ename ^ " : " ^ show_opast tbody
   | PConstructorDecl(ename, tbody, soi) => "cons "^ UTF8String.toString ename ^ " : " ^ show_opast tbody
-  | PTermMacro(ename, ebody, soi) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody
+  (* | PTermMacro(ename, ebody, soi) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody *)
   | PTermDefinition(ename, ebody, soi) => UTF8String.toString  ename ^ " = " ^ show_opast  ebody
   | POpDeclaration(opName, assoc, pred, soi) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
   ) ^ " " ^ UTF8String.toString opName ^ Int.toString pred
@@ -237,9 +237,9 @@ RVar v => sst v
 and show_typecheckingRDecl x = let
 open TypeCheckingAST
 in case x of 
-    RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingRType tbody
-  | RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingRType tbody
-  | RTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingRExpr ebody
+    (* RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingRType tbody *)
+   RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingRType tbody
+  (* | RTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingRExpr ebody *)
   | RTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingRExpr  ebody
   | RDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingRExpr ebody ^ "/* end eval */ " 
   | RStructure(v, name, ebody) => (if v then "public" else "private") ^
@@ -317,8 +317,8 @@ in case x of
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
 in case x of 
-    CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody
-  | CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
+    (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
+   CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
   end

@@ -15,10 +15,10 @@ struct
     and reconstructOriginalFrompJudgment (p : pJudgment) : UTF8String.t = 
     case p of 
     PEmptyDecl => []
-  | PTypeMacro(tname, tbody, soi) => reconstructWithArgs soi [tname, reconstructOriginalFromOpAST tbody]
+  (* | PTypeMacro(tname, tbody, soi) => reconstructWithArgs soi [tname, reconstructOriginalFromOpAST tbody] *)
   | PTermTypeJudgment(ename, tbody, soi) => reconstructWithArgs soi [ename, reconstructOriginalFromOpAST tbody]
   | PConstructorDecl(ename, tbody, soi) => reconstructWithArgs soi [ename, reconstructOriginalFromOpAST tbody]
-  | PTermMacro(ename, ebody, soi) => reconstructWithArgs soi [ename, reconstructOriginalFromOpAST ebody]
+  (* | PTermMacro(ename, ebody, soi) => reconstructWithArgs soi [ename, reconstructOriginalFromOpAST ebody] *)
   | PTermDefinition(ename, ebody, soi) => reconstructWithArgs soi [ename, reconstructOriginalFromOpAST ebody]
   | POpDeclaration(opName, assoc, pred, (assocText, predText, soi)) => reconstructWithArgs soi [opName, assocText, predText]
   | PDirectExpr(ebody) => reconstructOriginalFromOpAST ebody

@@ -316,14 +316,14 @@ struct
                     (* = constructOpAST xs (insertIntoCurContextOp ctx addedOp) *)
                 in
                 (case x of 
-                    PTypeMacro(tname, tbody, soi) => elaborateOpASTtoType tbody ctx  >>= 
-                            (fn t  => RTypeMacro(tname, t) ::: trailingNoOps())
-                    | PTermTypeJudgment(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
+                    (* PTypeMacro(tname, tbody, soi) => elaborateOpASTtoType tbody ctx  >>= 
+                            (fn t  => RTypeMacro(tname, t) ::: trailingNoOps()) *)
+                     PTermTypeJudgment(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
                             RTermTypeJudgment(ename, t) ::: trailingNoOps())
                     | PConstructorDecl(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
                             RConstructorDecl(ename, t) ::: trailingNoOps())
-                    | PTermMacro(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn e => 
-                            RTermMacro(ename, e) ::: trailingNoOps())
+                    (* | PTermMacro(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn e => 
+                            RTermMacro(ename, e) ::: trailingNoOps()) *)
                     | PTermDefinition(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 
                         RTermDefinition(ename, eb) ::: trailingNoOps())
                     | POpDeclaration(opName, assoc, pred, soi) => trailingWithOps() 

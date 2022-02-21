@@ -52,6 +52,7 @@ structure TypeCheckingAST = struct
                     | CFfiCCall of UTF8String.t * StructureName.t list
                     | CBuiltinFunc of BuiltinFunc
                     | CSeqComp of CExpr * CExpr * CTypeAnn * CTypeAnn (* type is the type of the second expression *)
+                    (* types *)
                     | CUnitType
                     | CProd of (Label * CExpr) list
                     | CLazyProd of (Label * CExpr) list
@@ -64,18 +65,20 @@ structure TypeCheckingAST = struct
                     | CRho of TVar * CExpr
                     | CBuiltinType of BuiltinType
                     | CUniverse 
+                    | CPiType of CExpr * EVar option * CExpr 
+                    | CSigmaType of CExpr * EVar option * CExpr 
     
 
 (* all types are fully normalized *)
     and CDeclaration = 
                         (* Do not need type macro becuase all types for later stages have been expanded 
                         CHANGE: for imports/lsp, still need type macro*)
-                        CTypeMacro of StructureName.t * CExpr 
+                        (* CTypeMacro of StructureName.t * CExpr  *)
                         (* Do not need type info as terms have been annotated *)
                         (* CTermTypeJudgment of UTF8String.t * CType *)
                         (* Fold into Term Definition *)
                        (*  CTermMacro of UTF8String.t * CExpr *)
-                       | CTermDefinition of StructureName.t * CExpr * CExpr  
+                        CTermDefinition of StructureName.t * CExpr * CExpr  
                        | CDirectExpr of CExpr * CExpr
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
@@ -118,6 +121,7 @@ structure TypeCheckingAST = struct
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
                     | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)
                     | RSeqComp of RExpr * RExpr * sourceOpInfo
+                    (* types *)
                     | RUniverse of UTF8String.t (* a universe is the type of types, (TODO) stratified by level *)
                     | RPiType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
@@ -136,10 +140,11 @@ structure TypeCheckingAST = struct
 
 
     and RDeclaration = 
-                         RTypeMacro of UTF8String.t * RExpr
-                       | RTermTypeJudgment of UTF8String.t * RExpr
+                         (* RTypeMacro of UTF8String.t * RExpr *)
+                       (* | *)
+                        RTermTypeJudgment of UTF8String.t * RExpr
                        | RConstructorDecl of UTF8String.t * RExpr
-                       | RTermMacro of UTF8String.t * RExpr
+                       (* | RTermMacro of UTF8String.t * RExpr *)
                        | RTermDefinition of UTF8String.t * RExpr
                        | RDirectExpr of RExpr
                        | RStructure of bool * UTF8String.t * RDeclaration list

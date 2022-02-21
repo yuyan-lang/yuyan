@@ -26,7 +26,7 @@ struct
     fun showType(t) = UTF8String.fromString (PrettyPrint.show_typecheckingCType t)
     fun getLastName(sname) =  List.drop(sname, List.length sname -1)
 
-    fun typeMacroSegment sname t =
+    (* fun typeMacroSegment sname t =
     let val opStrings = Operators.getStringComponents PreprocessingOperators.typeMacroOp
     in 
     case opStrings of 
@@ -39,7 +39,7 @@ struct
         Newline
         ]
         | _ => raise Fail "dg33"
-    end
+    end *)
 
     fun termTypeDecl sname t =
     let val opStrings = Operators.getStringComponents PreprocessingOperators.termTypeJudgmentOp
@@ -89,10 +89,10 @@ struct
 
         fun showCDecl (x : TypeCheckingAST.CDeclaration) : (RichTextDocument.t  * int* StructureName.t) = 
         case x of 
-             CTypeMacro(name, t)  =>  withScopeUpdate name (fn i => 
+             (* CTypeMacro(name, t)  =>  withScopeUpdate name (fn i => 
                                             (indentN i @ typeMacroSegment name t)
-                                        )
-            | CImport _ => ([], currentIndentLevel, currentStructureName)
+                                        ) *)
+             CImport _ => ([], currentIndentLevel, currentStructureName)
             | CTermDefinition(name, _, t) => withScopeUpdate name (fn i => 
                                             (indentN i @ termTypeDecl name t)
                                         )

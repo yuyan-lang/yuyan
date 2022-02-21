@@ -108,10 +108,10 @@ structure CompilationTokens = struct
         (* val _ = DebugPrint.p "updating from pjudgment\n" *)
         val _ = case p of 
         PEmptyDecl => ()
-        | PTypeMacro(tname, tbody, soi) => (add tname TkTpIdentifierBinder; upOpAST tbody; upOper soi TkTpStructureKeyword)
+        (* | PTypeMacro(tname, tbody, soi) => (add tname TkTpIdentifierBinder; upOpAST tbody; upOper soi TkTpStructureKeyword) *)
         | PTermTypeJudgment(ename, tbody, soi) => (add ename TkTpIdentifierBinder; upOpAST tbody; upOper soi TkTpStructureKeyword)
         | PConstructorDecl(ename, tbody, soi) => (add ename TkTpIdentifierBinder; upOpAST tbody; upOper soi TkTpStructureKeyword)
-        | PTermMacro(ename, ebody, soi) =>  (add ename TkTpIdentifierBinder; upOpAST ebody; upOper soi TkTpStructureKeyword)
+        (* | PTermMacro(ename, ebody, soi) =>  (add ename TkTpIdentifierBinder; upOpAST ebody; upOper soi TkTpStructureKeyword) *)
         | PTermDefinition(ename, ebody, soi) =>  (add ename TkTpIdentifierBinder; upOpAST ebody; upOper soi TkTpStructureKeyword)
         | POpDeclaration(opName, assoc, pred, (assocText, predText, soi)) => 
             (upOper soi TkTpStructureKeyword;

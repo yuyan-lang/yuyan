@@ -195,14 +195,15 @@ structure PreprocessingPass = struct
             (* val _ = notifyDeclarationParserResult declParseTree *)
             val res = case declParseTree of
                     (oper, [l1, l2]) => 
-                    if oper ~=** typeMacroOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx))
-                    else if oper ~=** termTypeJudgmentOp
+                    (* if oper ~=** typeMacroOp
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx)) *)
+                    (* else  *)
+                    if oper ~=** termTypeJudgmentOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermTypeJudgment (tp l1, l2, oper), ctx))
                     else if oper ~=** constructorDeclarationOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PConstructorDecl (tp l1, l2, oper), ctx))
-                    else if oper ~=** termMacroOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx))
+                    (* else if oper ~=** termMacroOp
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
                     else if oper ~=** termDefinitionOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermDefinition (tp l1, l2, oper), ctx))
                     else if oper ~=** privateStructureOp

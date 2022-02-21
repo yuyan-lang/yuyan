@@ -44,10 +44,9 @@ infix 5 <?>
     | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) ^ "\n"
           )
 
-(* require lookup to add name qualification if references local structure *)
-    fun lookup (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
+    fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         let exception LookupNotFound
-            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType) witherrsoption= 
+            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType) = 
                 case ctx of 
                 (* WARNING: toUTF8String discards the separator information, but I guess it is fine because 
                     as long as all components are of the same name, we're fine*)
@@ -55,24 +54,22 @@ infix 5 <?>
                     (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
                     | TermTypeJ(n1, t1, u)::cs => 
                         (case StructureName.checkRefersTo n1 n curSName 
-                        of SOME(cname) => Success (case u of NONE => cname | SOME(x) => x, t1)
+                        of SOME(cname) => (case u of NONE => cname | SOME(x) => x, t1)
                         | NONE => lookupMapping cs n curSName
                         )
                     | TypeDef(_) :: cs => lookupMapping cs n curSName
-            val ntp = lookupMapping ctx n curSName 
-                handle LookupNotFound =>
-                genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctx (Context(curSName, v, ctx)))
+            val ntp = SOME(lookupMapping ctx n curSName)
+                handle LookupNotFound => NONE
         in 
             ntp 
         end
-        (* handle LookupNotFound s1 => 
-            (* (let val tp = lookupMapping ctx (curSName@n)
-             (* try both absolute and relative path *)
-             in (curSName@n, tp) end *)
-            (* handle LookupNotFound s2 =>  *)
-            raise TypeCheckingFailure (s1 ^ ", \n " ) *)
-            (* ) *)
         
+(* require lookup to add name qualification if references local structure *)
+    fun lookupCtx (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
+    case findCtx ctxg n of
+        SOME(st) => Success(st)
+        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctx (Context(curSName, v, ctx)))
+
     fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : (StructureName.t option) gmapping list) 
     (openName : StructureName.t)=
 
@@ -100,10 +97,10 @@ infix 5 <?>
             (case StructureName.checkRefersToScope name reexportName curSName of
                 SOME(nameStripped) => SOME(CTermDefinition(curSName@nameStripped, (case u of SOME x => CVar(x) | NONE => CVar (name)), t))
                 | NONE => NONE)
-            | TypeDef(name, t, u) =>
+            (* | TypeDef(name, t, u) =>
             (case StructureName.checkRefersToScope name reexportName curSName of
                 SOME(nameStripped) => SOME(CTypeMacro(curSName@nameStripped, t))
-                | NONE => NONE)
+                | NONE => NONE) *)
             ) bindings 
         in if length decls > 0
         then Success(List.rev decls) (* context order are reverse of reexport order *)
@@ -236,7 +233,7 @@ infix 5 <?>
                 let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
                 val originalExpr = e
                 val res = case e of
-                    RVar v => lookup ctx v >>= (fn (canonicalName, tp) =>
+                    RVar v => lookupCtx ctx v >>= (fn (canonicalName, tp) =>
                                         Success (CVar canonicalName, tp))
                     | RUnitExpr(soi) => Success (CUnitExpr, CUnitType)
                     | RProj(e, l, soi) => synthesizeType ctx e >>= (fn tt =>  case tt of 
@@ -346,6 +343,65 @@ infix 5 <?>
                         synthesizeType ctx e2 >>= (fn (ce2, t2) => 
                             Success(CSeqComp(ce1, ce2, CTypeAnn(t1), CTypeAnn(t2)), t2)
                         ))
+                    (* types *)
+                    | RUnitType(s) => Success(CUnitType, CUniverse)
+                    | RNullType(s) => Success(CNullType, CUniverse)
+                    | RBuiltinType(f, s) => Success(CBuiltinType(f), CUniverse)
+                    | RUniverse(s) => Success(CUniverse, CUniverse) (* TODO: maybe universe levels? *)
+                    | RPiType(t1, evoption, t2, soi) => 
+                        checkType ctx t1 CUniverse >>= (fn ct1 => 
+                            synthesizeType (
+                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, NONE)) ctx)
+                                ) t2 >>= (fn synT => 
+                                 case synT of 
+                                    (ct2, CUniverse) => Success(CPiType(ct1, evoption, ct2), CUniverse)
+                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse
+                            )
+                        )
+                    | RSigmaType(t1, evoption, t2, soi) =>
+                        checkType ctx t1 CUniverse >>= (fn ct1 => 
+                            synthesizeType (
+                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, NONE)) ctx)
+                                ) t2 >>= (fn synT => 
+                                 case synT of 
+                                    (ct2, CUniverse) => Success(CSigmaType(ct1, evoption, ct2), CUniverse)
+                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse
+                                )
+                            )
+                    | RProd(ltsl, sepl) => 
+                         (collectAll (List.map (fn (l, t, soi) => 
+                            Success l =/= checkType ctx t CUniverse 
+                        ) ltsl)) >>= (fn l => Success(CProd l, CUniverse))
+                    | RLazyProd  (ltsl, sepl) => 
+                         (collectAll (List.map (fn (l, t, soi) => 
+                            Success l =/= checkType ctx t CUniverse 
+                        ) ltsl)) >>= (fn l => Success(CLazyProd l, CUniverse))
+                    | RSum(ltsl, sepl) => 
+                         (collectAll (List.map (fn (l, t, soi) => 
+                            Success l =/= checkType ctx t CUniverse 
+                        ) ltsl)) >>= (fn l => Success(CSum l, CUniverse))
+                    | RFunc(t1, t2, soi) => checkType ctx t1 CUniverse >>= (fn ct1 => 
+                        checkType ctx t2 CUniverse >>= (fn ct2 => 
+                            Success(CFunc(ct1, ct2), CUniverse)
+                        )
+                    )
+                    | RTypeInst(t1, t2, soi) => checkType ctx t1 CUniverse >>= (fn ct1 => 
+                        checkType ctx t2 CUniverse >>= (fn ct2 => 
+                            Success(CTypeInst(ct1, ct2), CUniverse)
+                        )
+                    )
+                    | RForall(tv, t2, soi) => 
+                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, NONE)) ctx) t2 CUniverse >>= (fn ct2 => 
+                                Success(CForall(tv, ct2), CUniverse)
+                            )
+                    | RExists(tv, t2, soi) => 
+                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, NONE)) ctx) t2 CUniverse >>= (fn ct2 => 
+                                Success(CExists(tv, ct2), CUniverse)
+                            )
+                    | RRho(tv, t2, soi) => 
+                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, NONE)) ctx) t2 CUniverse >>= (fn ct2 => 
+                                Success(CRho(tv, ct2), CUniverse)
+                            )
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
                     | _ => Errors.expressionDoesNotSupportTypeSynthesis e ctx
                     
@@ -511,7 +567,7 @@ infix 5 <?>
                             RStringLiteral (cfuncName, soi) => 
                                 let fun elaborateArguments  (args : StructureName.t list ) : CExpr witherrsoption = 
                                     fmap CFfiCCall(Success cfuncName =/= 
-                                    collectAll (map (fn a => fmap (#1) (lookup ctx a)) args))
+                                    collectAll (map (fn a => fmap (#1) (lookupCtx ctx a)) args))
                                 in
                                             (case e2 of 
                                                 RVar v => (Success ([v])) >>= elaborateArguments
@@ -542,8 +598,79 @@ infix 5 <?>
                     
                         )
                     | RBuiltinFunc(f, soi) => (assertTypeEquiv e ((BuiltinFunctions.typeOf f)) tt >> Success(CBuiltinFunc(f)))
-                    | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
-                     ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE
+                     (* types *)
+                    | RUnitType(s) => assertTypeEquiv e CUniverse tt >> Success(CUnitType)
+                    | RNullType(s) => assertTypeEquiv e CUniverse tt >> Success(CNullType )
+                    | RBuiltinType(f, s) => assertTypeEquiv e CUniverse tt >> Success(CBuiltinType(f) )
+                    | RUniverse(s) => assertTypeEquiv e CUniverse tt >> Success(CUniverse ) (* TODO: maybe universe levels? *)
+                    | RPiType(t1, evoption, t2, soi) => 
+                        assertTypeEquiv e CUniverse tt >> (
+                        checkType ctx t1 CUniverse >>= (fn ct1 => 
+                            synthesizeType (
+                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, NONE)) ctx)
+                                ) t2 >>= (fn synT => 
+                                 case synT of 
+                                    (ct2, CUniverse) => Success(CPiType(ct1, evoption, ct2) )
+                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse
+                            )
+                        ))
+                    | RSigmaType(t1, evoption, t2, soi) =>
+                        assertTypeEquiv e CUniverse tt >> (
+                        checkType ctx t1 CUniverse >>= (fn ct1 => 
+                            synthesizeType (
+                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, NONE)) ctx)
+                                ) t2 >>= (fn synT => 
+                                 case synT of 
+                                    (ct2, CUniverse) => Success(CSigmaType(ct1, evoption, ct2) )
+                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse
+                                )
+                            ))
+                    | RProd(ltsl, sepl) => 
+                        assertTypeEquiv e CUniverse tt >> 
+                         (collectAll (List.map (fn (l, t, soi) => 
+                            Success l =/= checkType ctx t CUniverse 
+                        ) ltsl)) >>= (fn l => Success(CProd l ))
+                    | RLazyProd  (ltsl, sepl) => 
+                        assertTypeEquiv e CUniverse tt >> 
+                         (collectAll (List.map (fn (l, t, soi) => 
+                            Success l =/= checkType ctx t CUniverse 
+                        ) ltsl)) >>= (fn l => Success(CLazyProd l ))
+                    | RSum(ltsl, sepl) => 
+                        assertTypeEquiv e CUniverse tt >> 
+                         (collectAll (List.map (fn (l, t, soi) => 
+                            Success l =/= checkType ctx t CUniverse 
+                        ) ltsl)) >>= (fn l => Success(CSum l ))
+                    | RFunc(t1, t2, soi) => 
+                        assertTypeEquiv e CUniverse tt >> (
+                    checkType ctx t1 CUniverse >>= (fn ct1 => 
+                        checkType ctx t2 CUniverse >>= (fn ct2 => 
+                            Success(CFunc(ct1, ct2) )
+                        )
+                    ))
+                    | RTypeInst(t1, t2, soi) => 
+                        assertTypeEquiv e CUniverse tt >> (
+                            checkType ctx t1 CUniverse >>= (fn ct1 => 
+                                checkType ctx t2 CUniverse >>= (fn ct2 => 
+                                    Success(CTypeInst(ct1, ct2) )
+                                )
+                            ))
+                    | RForall(tv, t2, soi) => 
+                        assertTypeEquiv e CUniverse tt >> (
+                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, NONE)) ctx) t2 CUniverse >>= (fn ct2 => 
+                                Success(CForall(tv, ct2) )
+                            ))
+                    | RExists(tv, t2, soi) => 
+                        assertTypeEquiv e CUniverse tt >> (
+                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, NONE)) ctx) t2 CUniverse >>= (fn ct2 => 
+                                Success(CExists(tv, ct2) )
+                            ))
+                    | RRho(tv, t2, soi) => 
+                        assertTypeEquiv e CUniverse tt >> (
+                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, NONE)) ctx) t2 CUniverse >>= (fn ct2 => 
+                                Success(CRho(tv, ct2) )
+                            ))
+                    (* | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
+                     ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE *)
                 in res
                 end 
         )
@@ -567,7 +694,7 @@ infix 5 <?>
                     case s of
                     [] => Success(ctx, acc)
                     (* normalize should not change the set of free variables *)
-                | RTypeMacro (n, t)::ss => 
+                (* | RTypeMacro (n, t)::ss => 
                 let val freeTVars = freeTCVar (applyContextToType ctx (rTypeToCType t)) in if freeTVars <> [] then 
                     Errors.typeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
                     else 
@@ -581,7 +708,7 @@ infix 5 <?>
                         (acc@[CTypeMacro((getCurSName ctx)@[n],  normalizedType)])
                     )
                         )
-                    end
+                    end *)
                 | RTermTypeJudgment(n, t):: ss => 
                 let val freeTVars = freeTCVar (applyContextToType ctx (rTypeToCType t)) in if freeTVars <> [] 
                     then Errors.termTypeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
@@ -590,27 +717,33 @@ infix 5 <?>
                     normalizeType (applyContextToType ctx (rTypeToCType t)) >>= (fn normalizedType => 
                     typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, NONE)) ctx) ss (acc))
                 end
-                | RTermMacro(n, e) :: ss => 
+                (* | RTermMacro(n, e) :: ss => 
                     synthesizeType ctx (e) >>= 
                     (fn (transformedExpr , synthesizedType)  =>
                         typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, NONE)) ctx) ss 
                             (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
-                    )
+                    ) *)
                 | RTermDefinition(n, e) :: ss => 
-        (lookup ctx [n]) >>= (fn (_, lookedUpType) => 
-                let val transformedExprOrFailure = checkType ctx (e) lookedUpType
-                in 
-                case transformedExprOrFailure of
-                Success(transformedExpr) => typeCheckSignature ctx ss 
-                                                (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, lookedUpType)])
-                | DErrors(l) => (case typeCheckSignature ctx ss (acc) of 
-                            Success _ => DErrors(l)
-                            | DErrors l2 => DErrors(l @l2)
-                            | _ => raise Fail "tcp458"
-                    )
-                | _ => raise Fail "tcp457"
-                end
-        )
+                (case findCtx ctx [n] of 
+              NONE  => synthesizeType ctx (e) >>= 
+                    (fn (transformedExpr , synthesizedType)  =>
+                        typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, NONE)) ctx) ss 
+                            (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
+                    ) 
+            | SOME(_, lookedUpType) => 
+                    let val transformedExprOrFailure = checkType ctx (e) lookedUpType
+                    in 
+                    case transformedExprOrFailure of
+                    Success(transformedExpr) => typeCheckSignature ctx ss 
+                                                    (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, lookedUpType)])
+                    | DErrors(l) => (case typeCheckSignature ctx ss (acc) of 
+                                Success _ => DErrors(l)
+                                | DErrors l2 => DErrors(l @l2)
+                                | _ => raise Fail "tcp458"
+                        )
+                    | _ => raise Fail "tcp457"
+                    end
+            )
                 | RStructure (vis, sName, decls) :: ss => 
                 (case ctx of 
                 Context(curName, curVis, bindings) => 
@@ -648,8 +781,8 @@ infix 5 <?>
                      >>= (fn csig => 
                         typeCheckSignature 
                         (addToCtxAL (List.mapPartial (fn x => case x of 
-                            CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ()))
-                            | CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,NONE))
+                            (* CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ())) *)
+                             CTermDefinition(sname, e, t) => SOME(TermTypeJ(sname, t,NONE))
                             | CDirectExpr _ => NONE
                             | CImport _ => NONE
                             ) csig) ctx)
