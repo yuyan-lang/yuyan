@@ -193,6 +193,21 @@ exception CPSInternalError
             end
             )))
             | CBuiltinFunc(f) =>  CPSBuiltin.cpsTransformBuiltinFunc f cc
+            (* types *)
+            (* TODO: erase them*)
+            (* temporarily transform all types as unit *)
+            | CProd l => CPSUnit (kcc cc)
+            | CLazyProd l =>  CPSUnit (kcc cc)
+            | CSum l =>  CPSUnit (kcc cc)
+            | CFunc (t1,t2) => CPSUnit (kcc cc)
+            | CTypeInst (t1,t2) => CPSUnit (kcc cc)
+            | CForall (tv,t2) => CPSUnit (kcc cc)
+            | CExists (tv,t2) => CPSUnit (kcc cc)
+            | CRho (tv,t2) =>  CPSUnit (kcc cc)
+            | CUnitType => CPSUnit (kcc cc)
+            | CNullType => CPSUnit (kcc cc)
+            | CBuiltinType(b) => CPSUnit (kcc cc)
+            | CUniverse => CPSUnit (kcc cc)
             | _ => raise Fail ("cpsp116: " ^ PrettyPrint.show_typecheckingCExpr originalExpr)
 
         (* val _ = print ("cpsTransformSig result is " ^ PrettyPrint.show_pkcomputation res ^ "cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ 
