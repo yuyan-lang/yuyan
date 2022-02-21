@@ -5,23 +5,23 @@
 观爻之书。
 
 以加为化小数而化小数而小数。
-施加乃为会甲而会乙而《《C调用》》名『yyDoubleAdd』传甲与乙。
+加者会甲而会乙而《《C调用》》名『yyDoubleAdd』传甲与乙也。
 
 
 以乘为化小数而化小数而小数。
-施乘乃为会甲而会乙而《《C调用》》名『yyDoubleMult』传甲与乙。
+乘者会甲而会乙而《《C调用》》名『yyDoubleMult』传甲与乙也。
 
 以除以为化小数而化小数而小数。
-施除以乃为会甲而会乙而《《C调用》》名『yyDoubleDiv』传甲与乙。
+除以者会甲而会乙而《《C调用》》名『yyDoubleDiv』传甲与乙也。
 
 
 以减为化小数而化小数而小数。
-施减乃为会甲而会乙而《《C调用》》名『yyDoubleSub』传甲与乙。
+减者会甲而会乙而《《C调用》》名『yyDoubleSub』传甲与乙也。
 
 以表示为化小数而字符串。
-施表示乃为会甲而《《C调用》》名『yyDoubleToString』传甲。
+表示者会甲而《《C调用》》名『yyDoubleToString』传甲也。
 
 
 
 以理解为化字符串而小数。
-施理解乃为会甲而《《C调用》》名『yyStringToDouble』传甲。
+理解者会甲而《《C调用》》名『yyStringToDouble』传甲也。

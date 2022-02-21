@@ -7,7 +7,7 @@
 观字符串之书。
 
 以获取程序名为化有而字符串。
-施获取程序名乃为会甲而《《C调用》》名『yyGetCommandLineProgramName』传元。
+获取程序名者会甲而《《C调用》》名『yyGetCommandLineProgramName』传元也。
 
 以获取参数为化有而字符串列。
-施获取参数乃为会甲而《《C调用》》名『yyGetCommandLineArgs』传元。
+获取参数者会甲而《《C调用》》名『yyGetCommandLineArgs』传元也。
