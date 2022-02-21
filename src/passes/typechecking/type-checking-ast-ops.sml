@@ -13,7 +13,7 @@ infix 5 =/=
             Context(curSName, vis, l) => Context(curSName, vis, 
             (case m of 
                 TermTypeJ(e, t, u) => TermTypeJ(e, t, u)
-                | TypeDef(tname, t, u) => TypeDef(tname, t, u)
+                | TermDefJ(tname, t, u) => TermDefJ(tname, t, u)
                 ):: l
             )
 
@@ -22,7 +22,7 @@ infix 5 =/=
             Context(curSName, vis, l) => Context(curSName, vis, 
             (case m of 
                 TermTypeJ(e, t, u) => TermTypeJ(curSName@e, t, u)
-                | TypeDef(tname, t, u) => TypeDef(curSName@tname, t, u)
+                | TermDefJ(tname, t, u) => TermDefJ(curSName@tname, t, u)
                 ):: l
             )
 
@@ -267,31 +267,58 @@ infix 5 =/=
             substituteTypeInRSignature tS x ds
 
 (* semantic type equivalence *)
-    and typeEquiv (ctx : (CExpr * CExpr) list) (t1:CExpr) (t2:CExpr)  :bool = 
+    and typeEquiv (tcctx : context) (eqctx : (CExpr * CExpr) list) (t1:CExpr) (t2:CExpr)  :bool = 
     (let 
+        (* TODO: remove the copying, have a dedicated context manager *)
+        fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
+        let exception LookupNotFound
+            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType) = 
+                case ctx of 
+                    [] => raise LookupNotFound
+                    | TermDefJ(n1, t1, u)::cs => 
+                        (case StructureName.checkRefersTo n1 n curSName 
+                        of SOME(cname) => (cname, t1)
+                        | NONE => lookupMapping cs n curSName
+                        )
+                    | TermTypeJ(_) :: cs => lookupMapping cs n curSName
+            val ntp = SOME(lookupMapping ctx n curSName)
+                handle LookupNotFound => NONE
+        in 
+            ntp 
+        end
+
         fun typeEquivLst (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list)= 
                 if length l1 <> length l2 then false else
                 List.foldr (fn (b1, b2) => b1 andalso b2) true (List.tabulate((List.length l1), (fn i => 
                 (#1 (List.nth(l1, i))) ~~= (#1 (List.nth(l2, i)))
-                andalso typeEquiv ctx (#2 (List.nth(l1, i))) (#2 (List.nth (l2, i))) )))
+                andalso typeEquiv tcctx eqctx (#2 (List.nth(l1, i))) (#2 (List.nth (l2, i))) )))
         fun unifyBinding tv t2 tv' t2' =
                 if tv ~~= tv' then (tv, t2, tv', t2')
                 else let val nn = uniqueName() in
                 (nn, substTypeInCExpr (CVar [nn]) [tv] t2,
                 nn, substTypeInCExpr (CVar [nn]) [tv'] t2')end
+
+        (* dereference t1 and t2 if referenced *)
+        fun dereferenceIfPossible (t : CType) : CType=
+            case t of 
+                CVar (name) =>
+                    (case findCtx tcctx name of
+                        SOME(_, t') => dereferenceIfPossible t'
+                        | NONE => t)
+                | _ => t
         in
-        if List.exists (fn ((p1, p2):(CExpr * CExpr)) => p1 = t1 andalso p2 = t2) ctx then true
+        if List.exists (fn ((p1, p2):(CExpr * CExpr)) => p1 = t1 andalso p2 = t2) eqctx then true
         else
-    (case (t1, t2) of
-              (CVar t1, CVar t2) => t1 ~~~= t2
+    (case (dereferenceIfPossible t1, dereferenceIfPossible t2) of
+              (CVar t1, CVar t2) => t1 ~~~= t2 
             | (CProd l1, CProd l2) =>  typeEquivLst l1 l2
             | (CLazyProd l1, CLazyProd l2) =>  typeEquivLst l1 l2
             | (CSum l1, CSum l2) =>   typeEquivLst l1 l2
-            | (CFunc (t1,t2), CFunc (t1', t2')) => typeEquiv ctx t1 t1' andalso typeEquiv ctx t2 t2'
-            | (CForall (tv,t2), CForall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
-            | (CExists (tv,t2), CExists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
+            | (CFunc (t1,t2), CFunc (t1', t2')) => typeEquiv tcctx eqctx t1 t1' andalso typeEquiv tcctx eqctx t2 t2'
+            | (CForall (tv,t2), CForall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv tcctx eqctx t1 t1' end
+            | (CExists (tv,t2), CExists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv tcctx eqctx t1 t1' end
             | (CRho (tv,t2), CRho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
-            in typeEquiv ((CRho(v, t1), CRho(v',t1'))::ctx) 
+            in typeEquiv tcctx ((CRho(v, t1), CRho(v',t1'))::eqctx) 
                 (substTypeInCExpr (CRho (v,t1)) [v] t1)
                 (substTypeInCExpr (CRho (v',t1')) [v'] t1')
              end)

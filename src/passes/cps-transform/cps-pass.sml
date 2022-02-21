@@ -193,7 +193,7 @@ exception CPSInternalError
             end
             )))
             | CBuiltinFunc(f) =>  CPSBuiltin.cpsTransformBuiltinFunc f cc
-            | _ => raise Fail "cpsp116"
+            | _ => raise Fail ("cpsp116: " ^ PrettyPrint.show_typecheckingCExpr originalExpr)
 
         (* val _ = print ("cpsTransformSig result is " ^ PrettyPrint.show_pkcomputation res ^ "cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ 
         " against type" ^ PrettyPrint.show_typecheckingType tt ^

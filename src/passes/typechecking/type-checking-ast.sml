@@ -163,7 +163,7 @@ structure TypeCheckingAST = struct
 (* these exist here for pretty printing *)
 (* g for generic *)
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * 'a
-                    | TypeDef of StructureName.t * CType * unit
+                    | TermDefJ of StructureName.t * CType * unit
 datatype 'a gcontext = Context of StructureName.t * bool * 
     ('a gmapping) list
     type mapping = (StructureName.t option) gmapping (* original name (for use with open) *)

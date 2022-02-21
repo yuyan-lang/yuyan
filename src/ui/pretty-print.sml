@@ -341,7 +341,7 @@ open TypeCheckingAST
 in
   case x of
     TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t
-    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t
+    | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingAST
