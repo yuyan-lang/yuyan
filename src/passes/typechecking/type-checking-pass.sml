@@ -710,12 +710,14 @@ infix 5 <?>
                         )
                     end *)
                 | RTermTypeJudgment(n, t):: ss => 
-                let val freeTVars = freeTCVar  (rTypeToCType t)
+                let 
+                (* val freeTVars = freeTCVar  (rTypeToCType t) *)
                 (* (applyContextToType ctx (rTypeToCType t))  *)
-                in if freeTVars <> [] 
+                in  (* do not check for free variables, as it will be catched in a later stage? *)
+                (* if freeTVars <> [] 
                     then Errors.termTypeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
                     (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)
-                    else 
+                    else  *)
                     normalizeType  (rTypeToCType t)
                     (* (applyContextToType ctx (rTypeToCType t))  *)
                     >>= (fn normalizedType => 

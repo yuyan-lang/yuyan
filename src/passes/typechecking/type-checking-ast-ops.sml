@@ -115,7 +115,7 @@ infix 5 =/=
             | CFunc (t1,t2) => fmap CFunc (normalizeType t1 =/= normalizeType t2 )
             | CTypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
                 CForall(tv, t1') => (normalizeType t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
-                | _ => genSingletonError (raise Fail "not implemented") "期待通用类型(Expected Forall)" NONE
+                | _ => genSingletonError (raise Fail ("ni118: normalizeType " ^  PrettyPrint.show_typecheckingCExpr t)) "期待通用类型(Expected Forall)" NONE
             )
             | CForall (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
             | CExists (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
