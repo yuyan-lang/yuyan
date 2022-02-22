@@ -35,7 +35,7 @@ structure PreprocessingPass = struct
     val ~=** = Operators.~=**
     infix 4 ~=**
 
-     fun showctx x = SOME(case x of 
+     fun showctxPre x = SOME(case x of 
     (curSName, curVis, snamevisopl) =>  
     "当前结构名：" ^ StructureName.toStringPlain curSName ^
     "\n当前已定义的值及其类型：\n"  ^
@@ -45,7 +45,7 @@ structure PreprocessingPass = struct
           )
 
     fun structureNameNotFoundError sName ctx = ( genSingletonError (StructureName.toString sName) 
-                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") (showctx ctx))
+                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") (showctxPre ctx))
 
     fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list witherrsoption=
         case ctx of

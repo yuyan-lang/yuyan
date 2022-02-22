@@ -97,6 +97,7 @@ Library
   structure CommandLineArgumentsText
   structure CPSBuiltin
   structure CPSHelper 
+  structure TypeCheckingContext
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -155,6 +156,7 @@ is
   passes/preprocess/structure-name.sml
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
+  passes/typechecking/type-checking-context.sml
   passes/typechecking/type-checking-ast-ops.sml
   passes/typechecking/type-checking-entry.sml
   passes/typechecking/identifier-name-resolution.sml

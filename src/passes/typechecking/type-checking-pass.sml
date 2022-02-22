@@ -1,6 +1,7 @@
 structure TypeCheckingPass = struct
 open TypeCheckingAST
 open TypeCheckingASTOps
+open TypeCheckingContext
 open StaticErrorStructure
 infix 5 >>= 
 infix 5 >> 
@@ -35,40 +36,7 @@ infix 5 <?>
     fun getMapping (c: context ):mapping list = 
         case c of  (Context(cSname, cVis, m)) => m
 
-    fun showctx x = SOME(case x of 
-    Context(curSName, curVis, m) =>  
-    "当前结构名：" ^ StructureName.toStringPlain curSName ^
-    "\n当前已定义的值及其类型：\n"  ^
-            String.concatWith "；\n" (map (fn x => case x of
-    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t
-    | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) ^ "\n"
-          )
 
-    fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
-        let exception LookupNotFound
-            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType) = 
-                case ctx of 
-                (* WARNING: toUTF8String discards the separator information, but I guess it is fine because 
-                    as long as all components are of the same name, we're fine*)
-                    [] => raise LookupNotFound
-                    (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
-                    | TermTypeJ(n1, t1, u)::cs => 
-                        (case StructureName.checkRefersTo n1 n curSName 
-                        of SOME(cname) => (case u of NONE => cname | SOME(x) => x, t1)
-                        | NONE => lookupMapping cs n curSName
-                        )
-                    | TermDefJ(_) :: cs => lookupMapping cs n curSName
-            val ntp = SOME(lookupMapping ctx n curSName)
-                handle LookupNotFound => NONE
-        in 
-            ntp 
-        end
-        
-(* require lookup to add name qualification if references local structure *)
-    fun lookupCtx (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
-    case findCtx ctxg n of
-        SOME(st) => Success(st)
-        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctx (Context(curSName, v, ctx)))
 
     fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : (StructureName.t option) gmapping list) 
     (openName : StructureName.t)=
@@ -104,7 +72,7 @@ infix 5 <?>
             ) bindings 
         in if length decls > 0
         then Success(List.rev decls) (* context order are reverse of reexport order *)
-        else genSingletonError (StructureName.toString reexportName) "结构未包含任何可导出的值" (showctx ctx)
+        else genSingletonError (StructureName.toString reexportName) "结构未包含任何可导出的值" (showctxSome ctx)
         end
 
         
@@ -174,26 +142,26 @@ infix 5 <?>
         case a of
             [] => raise Fail ("INternal error: empty sum")
             | [t] => Success t
-            | (x::y :: xs) => if typeEquiv ctx []  x y then typeUnify ctx e (x :: xs)
+            | (x::y :: xs) =>typeEquiv e ctx []  x y  >>= (fn tpequiv => if  tpequiv then typeUnify ctx e (x :: xs)
             else genSingletonError (reconstructFromRExpr e) "类型不相等"  (SOME 
                 ("第一类型：" ^  (PrettyPrint.show_typecheckingCType x) 
                 ^ "\n第二类型：" ^  (PrettyPrint.show_typecheckingCType x)
-            ))
+            )))
             (* raise TypeCheckingFailure ("Type unify failed") *)
     
     structure Errors = struct 
         fun typeMismatch e synthesized checked ctx= genSingletonError (reconstructFromRExpr e)
                 ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "类型不匹配(type mismatch) \n 推断的类型(synthesized type) : " ^ PrettyPrint.show_typecheckingCType synthesized
-                ^ " \n 检查的类型(checked type) : " ^ PrettyPrint.show_typecheckingCType checked) (showctx ctx)
+                ^ " \n 检查的类型(checked type) : " ^ PrettyPrint.show_typecheckingCType checked) (showctxSome ctx)
         fun exprTypeError e tt ctx msg= genSingletonError (reconstructFromRExpr e) 
         ((if DEBUGSHOWEXPR then 
         "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`:" ^
         "`" ^ PrettyPrint.show_typecheckingCType tt ^ "`" 
-        else "") ^ msg) (showctx ctx)
+        else "") ^ msg) (showctxSome ctx)
         fun exprError e ctx msg= genSingletonError (reconstructFromRExpr e) 
         ((if DEBUGSHOWEXPR then 
         "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`"
-        else "") ^ msg) (showctx ctx)
+        else "") ^ msg) (showctxSome ctx)
         fun attemptToProjectNonProd e tt ctx = exprTypeError e tt ctx "试图从非乘积类型中投射(attempt to project out of product type)"
         fun attemptToProjectNonLazyProd e tt ctx = exprTypeError e tt ctx "试图从非乘积类型中投射(attempt to project out of lazy product type)"
         fun attemptToCaseNonSum e tt ctx = exprTypeError e tt ctx "试图对非总和类型进行分析(attempt to case on non-sum types)"
@@ -214,9 +182,9 @@ infix 5 <?>
         fun expectedRecursiveType e tt ctx =  exprTypeError e tt ctx "期待递归类型(expected existential types)"
         fun firstArgumentOfCCallMustBeStringLiteral e ctx =  exprError e ctx "C调用的第一个参数必须是字符串(first argument of ccall must be a string literal)"
         fun ccallArgumentsMustBeImmediate e ctx =  exprError e ctx "C调用的参数必须是直接值(arguments of ccall must be immediate)"
-        fun typeDeclContainsFreeVariables s ctx =  genSingletonError s ("类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctx ctx)
-        fun termTypeDeclContainsFreeVariables s ctx =  genSingletonError s ("值类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctx ctx)
-        fun importError s ctx = genSingletonError s ("导入模块时出错") (showctx ctx)
+        fun typeDeclContainsFreeVariables s ctx =  genSingletonError s ("类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctxSome ctx)
+        fun termTypeDeclContainsFreeVariables s ctx =  genSingletonError s ("值类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctxSome ctx)
+        fun importError s ctx = genSingletonError s ("导入模块时出错") (showctxSome ctx)
     end
 
 
@@ -233,7 +201,7 @@ infix 5 <?>
                 let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
                 val originalExpr = e
                 val res = case e of
-                    RVar v => lookupCtx ctx v >>= (fn (canonicalName, tp) =>
+                    RVar v => lookupCtxForType ctx v >>= (fn (canonicalName, tp) =>
                                         Success (CVar canonicalName, tp))
                     | RUnitExpr(soi) => Success (CUnitExpr, CUnitType)
                     | RProj(e, l, soi) => synthesizeType ctx e >>= (fn tt =>  case tt of 
@@ -304,7 +272,7 @@ infix 5 <?>
                     | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn st => case st of
                         (ce2, CForall (tv, tb)) => 
                             (* important need to normalized before subst *)
-                            (normalizeType (rTypeToCType t) >>= (fn nt => 
+                            (normalizeType t ctx (rTypeToCType t) >>= (fn nt => 
                                 Success(CTApp(ce2, rTypeToCType t, CTypeAnn(CForall(tv, tb))), (substTypeInCExpr nt [tv] (tb)))
                             ))
                         | _ => Errors.attemptToApplyNonUniversal e (#2 st) ctx
@@ -416,11 +384,14 @@ infix 5 <?>
                     ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx) *)
 
             and assertTypeEquiv (ctx : context) (expr: RExpr) (synthesized : CType) (checked : CType) : unit witherrsoption =
-                if typeEquiv ctx [] (synthesized) checked 
-                then Success() 
-                else Errors.typeMismatch expr (synthesized) checked ctx
-            and checkType (ctx : context) (e : RExpr) (tt: CType) (* tt target type *) : CExpr witherrsoption =
+                typeEquiv expr ctx [] (synthesized) checked  >>= (fn tpequiv => if tpequiv
+                    then Success() 
+                    else Errors.typeMismatch expr (synthesized) checked ctx
+                )
+            and checkType (ctx : context) (e : RExpr) (ttUnnorm: CType) (* tt target type *) : CExpr witherrsoption =
+                     normalizeType e ctx ttUnnorm >>= (fn ttNorm =>
                 (let 
+                    val tt = ttNorm
                     val _ = if DEBUG then  print(  "checking the expr " ^ PrettyPrint.show_typecheckingRExpr e ^ 
                         " against type " ^ PrettyPrint.show_typecheckingCType tt ^ "\n") else ()
                     val originalExpr = e
@@ -524,7 +495,7 @@ infix 5 <?>
                     | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn synt => case synt of
                         (ce2, CForall (tv, tb)) => (
                             (* need to normalize type! important! *)
-                            (normalizeType (rTypeToCType t) >>= (fn nt => 
+                            (normalizeType t ctx (rTypeToCType t) >>= (fn nt => 
                                 assertTypeEquiv ctx e (tt) (substTypeInCExpr (rTypeToCType t) [tv] ( tb))
                             )) >> Success(CTApp(ce2, rTypeToCType t, CTypeAnn(CForall(tv, tb)))))
                         | _ => Errors.attemptToApplyNonUniversal e (#2 synt) ctx
@@ -567,7 +538,7 @@ infix 5 <?>
                             RStringLiteral (cfuncName, soi) => 
                                 let fun elaborateArguments  (args : StructureName.t list ) : CExpr witherrsoption = 
                                     fmap CFfiCCall(Success cfuncName =/= 
-                                    collectAll (map (fn a => fmap (#1) (lookupCtx ctx a)) args))
+                                    collectAll (map (fn a => fmap (#1) (lookupCtxForType ctx a)) args))
                                 in
                                             (case e2 of 
                                                 RVar v => (Success ([v])) >>= elaborateArguments
@@ -673,7 +644,7 @@ infix 5 <?>
                      ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE *)
                 in res
                 end 
-        )
+        ))
                     (* handle TypeCheckingFailure s =>
                     raise TypeCheckingFailure (s ^ "\n when checking the expr " ^ PrettyPrint.show_typecheckingRExpr e ^ 
                         " against type " ^ PrettyPrint.show_typecheckingType tt
@@ -718,7 +689,7 @@ infix 5 <?>
                     then Errors.termTypeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
                     (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)
                     else  *)
-                    normalizeType  (rTypeToCType t)
+                    normalizeType t ctx (rTypeToCType t)
                     (* (applyContextToType ctx (rTypeToCType t))  *)
                     >>= (fn normalizedType => 
                     typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, NONE)) ctx) ss (acc))
@@ -730,7 +701,7 @@ infix 5 <?>
                             (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
                     ) *)
                 | RTermDefinition(n, e) :: ss => 
-                (case findCtx ctx [n] of 
+                (case findCtxForType ctx [n] of 
               NONE  => synthesizeType ctx (e) >>= 
                     (fn (transformedExpr , synthesizedType)  =>
                         typeCheckSignature (addToCtxR (TermDefJ([n], transformedExpr, ()))

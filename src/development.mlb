@@ -69,6 +69,7 @@ local
         build-system/compilation-tokens.sml
         passes/cps-transform/cps-pass.sml
         parser/declaration-parser.sml
+        passes/typechecking/type-checking-context.sml
         passes/typechecking/type-checking-pass.sml
         passes/typechecking/type-checking-entry.sml
 
