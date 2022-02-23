@@ -241,7 +241,7 @@ infix 5 =/=
     and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
     raise Fail "not implemented136"
     (* !!! always capture avoiding substitution *)
-    and substTypeInRExpr (tS : RType) (x : StructureName.t) (t : RType) = 
+    (* and substTypeInRExpr (tS : RType) (x : StructureName.t) (t : RType) = 
     let fun captureAvoid f (tv : UTF8String.t) t2 = 
             if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
@@ -341,7 +341,7 @@ infix 5 =/=
         case s of
             [] => []
             | (d :: ds) => substituteTypeInRDeclaration tS x d :: 
-            substituteTypeInRSignature tS x ds
+            substituteTypeInRSignature tS x ds *)
 
 (* semantic type equivalence *)
     (* type equiv returns true or false and if an internal error occurs, such as the expression 

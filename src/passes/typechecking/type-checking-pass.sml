@@ -48,6 +48,7 @@ infix 5 <?>
                     (case StructureName.checkRefersToScope name openName curSName of
                         SOME(nameStripped) => SOME(TermTypeJ(curSName@nameStripped, t, SOME def, (case u of SOME x => SOME x | NONE => SOME (name, def))))
                         | NONE => NONE)
+                    | TermTypeJ(name, t, NONE,  u) => raise Fail "tcp51: all things should be defined"
                     (* | TermDefJ(name, t, u) =>
                     (case StructureName.checkRefersToScope name openName curSName of
                         SOME(nameStripped) => SOME(TermDefJ(curSName@nameStripped, t, u))
@@ -185,7 +186,8 @@ infix 5 <?>
         fun typeDeclContainsFreeVariables s ctx =  genSingletonError s ("类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctxSome ctx)
         fun termTypeDeclContainsFreeVariables s ctx =  genSingletonError s ("值类型声明不可以包含未定义的类型(type decl cannot contain free variables)") (showctxSome ctx)
         fun importError s ctx = genSingletonError s ("导入模块时出错") (showctxSome ctx)
-        fun redefinitionError s ctx = genSingletonError s ("重复的定义") (showctxSome ctx)
+        fun redefinitionError s msg ctx prevDef = genSingletonErrorWithRelatedInfo s ("重复的定义：`" ^  msg ^ "`") (showctxSome ctx) 
+            [ (prevDef, "之前的定义")]
     end
 
 
@@ -702,7 +704,7 @@ infix 5 <?>
                             (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
                     ) *)
                 | RTermDefinition(n, e) :: ss => 
-                (case findCtx ctx [n] of 
+                (case findCtx ctx ((getCurSName ctx)@[n]) of  (* must find fully qualified name as we allow same name for substructures *)
                     NONE  => synthesizeType ctx (e) >>= 
                             (fn (transformedExpr , synthesizedType)  =>
                                 typeCheckSignature 
@@ -711,7 +713,7 @@ infix 5 <?>
                             ) 
                     | SOME(cname, lookedUpType, lookedUpDef) => 
                         (case lookedUpDef of 
-                        SOME _ => Errors.redefinitionError n ctx
+                        SOME pdef => Errors.redefinitionError n (StructureName.toStringPlain cname) ctx (List.last cname) 
                         | _ =>  
                             let val transformedExprOrFailure = checkType ctx (e) lookedUpType
                             in 
@@ -726,6 +728,7 @@ infix 5 <?>
                             | _ => raise Fail "tcp457"
                             end)
                 )
+                | RConstructorDecl(name, rtp) :: ss => (raise Fail "ni731: tc of constructors")
                 | RStructure (vis, sName, decls) :: ss => 
                 (case ctx of 
                 Context(curName, curVis, bindings) => 

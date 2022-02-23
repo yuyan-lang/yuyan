@@ -76,7 +76,7 @@ returns the canonical name (adding curSName if ommitted)
             val res = 
       if semanticEqual referred toCheck then SOME(toCheck) else 
             if semanticEqual (stripPrefixOnAgreedParts curSName referred) toCheck
-            then SOME((getAgreedPrefixParts curSName referred)@toCheck)
+            then SOME((getAgreedPrefixParts curSName referred)@(stripPrefixOnAgreedParts curSName referred))
             else NONE
             (* val _ = DebugPrint.p ("result is " ^ (case res of 
                 SOME _ => "true" 

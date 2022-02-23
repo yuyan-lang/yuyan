@@ -8,8 +8,10 @@ open StaticErrorStructure
     "当前结构名：" ^ StructureName.toStringPlain curSName ^
     "\n当前已定义的值及其类型：\n"  ^(
         let val allDecls = (map (fn x => case x of
-    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t ^ 
-        (case defop of SOME(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def | NONE => "")) m)
+    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
+    ^ (if full 
+    then (case defop of SOME(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def | NONE => "")
+    else "")) m)
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) *)
         
         val condensedDecls = 

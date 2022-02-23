@@ -30,7 +30,7 @@ open StaticErrorStructure
     end
 
     fun showErr (err : staticerror)(cm : CompilationStructure.compilationmanager) : string = 
-    let  val StaticError (pos, severity, msghd, msgdetail) = err
+    let  val StaticError (pos, severity, msghd, msgdetail, related) = err
         val SourceRange.StartEnd(fp, sl, sc, el, ec) = UTF8String.getSourceRange pos
         val CompilationStructure.CompilationFile file = CompilationManager.lookupFileByPath (FileResourceURI.make fp) cm
         val fileContent = case (#content file) of Success (c, _) => c | _ => raise Fail "pd13"
@@ -51,6 +51,9 @@ open StaticErrorStructure
     ^ sourceTextInfo ^  
     (if DEBUG then "\n```" ^ UTF8String.toString pos ^ "```" else "") ^
     detailMessage
+    ^ String.concatWith "\n" (map (fn (loc, s) => 
+        "\n" ^ showErr (StaticError(loc, DiagnosticHint, s, NONE, [])) cm
+    ) related)
     end
     fun showErrs (errl : errlist)(cm : CompilationStructure.compilationmanager) : string = 
     String.concatWith "\n" (map (fn e => showErr e cm) errl) ^ "\n"

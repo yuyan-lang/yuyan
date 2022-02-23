@@ -227,10 +227,10 @@ RVar v => sst v
                     | RExists (t1, t2,soi) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | RRho (t1, t2,soi) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | RBuiltinType (bi, s) => show_builtintype bi
-                    | RPiType(t, xop, t2, soi) => "(( " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
-                      st t ^ ") -> " ^ st t2 ^ ")"
-                    | RSigmaType(t, xop, t2, soi) => "(( " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
-                      st t ^ ") x " ^ st t2 ^ ")"
+                    | RPiType(t, xop, t2, soi) => "(Π " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ " . " ^ st t2 ^ ")"
+                    | RSigmaType(t, xop, t2, soi) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ " . " ^ st t2 ^ ")"
                     | RUniverse(soi) => "(Set)"
                 end
 
@@ -241,6 +241,7 @@ in case x of
    RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingRType tbody
   (* | RTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingRExpr ebody *)
   | RTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingRExpr  ebody
+  | RConstructorDecl(ename, etype) => "cons " ^ UTF8String.toString  ename ^ " : " ^ show_typecheckingRExpr  etype
   | RDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingRExpr ebody ^ "/* end eval */ " 
   | RStructure(v, name, ebody) => (if v then "public" else "private") ^
     " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingRSig ebody ^ "}"
@@ -312,6 +313,10 @@ in case x of
                     | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CBuiltinType (bi) => show_builtintype bi
+                    | CPiType(t, xop, t2 ) => "(Π " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ " . " ^ st t2 ^ ")"
+                    | CSigmaType(t, xop, t2 ) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ " . " ^ st t2 ^ ")"
                     | CUniverse => "(Set)"
                 end
 and show_typecheckingCDecl x = let
