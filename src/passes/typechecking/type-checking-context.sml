@@ -8,8 +8,9 @@ open StaticErrorStructure
     "当前结构名：" ^ StructureName.toStringPlain curSName ^
     "\n当前已定义的值及其类型：\n"  ^(
         let val allDecls = (map (fn x => case x of
-    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t
-    | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m)
+    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t ^ 
+        (case defop of SOME(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def | NONE => "")) m)
+    (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) *)
         
         val condensedDecls = 
         if full then allDecls else (if length allDecls > 10 then List.take(allDecls, 10)@["以及之后的" ^ Int.toString (length allDecls - 10)^"个值或类型"]
@@ -20,27 +21,48 @@ open StaticErrorStructure
     )
           )
 
-    fun showctxSome x = SOME(showctx x true)
+    fun showctxSome x = SOME(showctx x false)
 
-    fun findCtxForType (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
+
+
+    fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * CExpr option) option = 
         let exception LookupNotFound
-            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType) = 
+            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType * CExpr option) = 
                 case ctx of 
                 (* WARNING: toUTF8String discards the separator information, but I guess it is fine because 
                     as long as all components are of the same name, we're fine*)
                     [] => raise LookupNotFound
                     (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
-                    | TermTypeJ(n1, t1, u)::cs => 
+                    | TermTypeJ(n1, t1, defop1,  u)::cs => 
                         (case StructureName.checkRefersTo n1 n curSName 
-                        of SOME(cname) => (case u of NONE => cname | SOME(x) => x, t1)
+                        of SOME(cname) => (case u of NONE => cname | SOME(x, _) => x, t1, defop1)
                         | NONE => lookupMapping cs n curSName
                         )
-                    | TermDefJ(_) :: cs => lookupMapping cs n curSName
             val ntp = SOME(lookupMapping ctx n curSName)
                 handle LookupNotFound => NONE
         in 
             ntp 
         end
+
+    fun findCtxForType (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
+        Option.map(fn (x,t,eop) => (x, t)) (findCtx (Context(curSName, v, ctx)) n)
+
+    (* the name must be absolute name *)
+    fun modifyCtxAddDef(Context(curSName, v, ctx) : context) (cname : StructureName.t) (newDef : CExpr) : context = 
+        case ctx of 
+            [] => raise Fail "tcc52: key not found"
+            | (currentj as TermTypeJ(n1, t1, defop1,  u))::cs => 
+                if StructureName.semanticEqual n1 cname
+                then (case defop1 of 
+                        NONE => Context(curSName, v, TermTypeJ(n1, t1, SOME newDef, u) :: cs)
+                        | SOME _ => raise Fail ("tcc58: already has definition: " ^ (StructureName.toStringPlain cname))
+                    )
+                else 
+                     case modifyCtxAddDef (Context(curSName, v, cs)) cname newDef of 
+                        Context(cname', v', cs') => Context(cname', v', currentj::cs')
+
+
+
 (* require lookup to add name qualification if references local structure *)
     fun lookupCtxForType (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
     case findCtxForType ctxg n of
@@ -48,21 +70,9 @@ open StaticErrorStructure
         | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
 
      fun findCtxForDef (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
-        let exception LookupNotFound
-            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType) = 
-                case ctx of 
-                    [] => raise LookupNotFound
-                    | TermDefJ(n1, t1, u)::cs => 
-                        (case StructureName.checkRefersTo n1 n curSName 
-                        of SOME(cname) => (cname, t1)
-                        | NONE => lookupMapping cs n curSName
-                        )
-                    | TermTypeJ(_) :: cs => lookupMapping cs n curSName
-            val ntp = SOME(lookupMapping ctx n curSName)
-                handle LookupNotFound => NONE
-        in 
-            ntp 
-        end
+        case (findCtx (Context(curSName, v, ctx)) n) of 
+            SOME(x,t,eop) => (case eop of SOME(e) => SOME(x, e) | NONE => NONE)
+            | NONE => NONE
 
 (* require lookup to add name qualification if references local structure *)
     fun lookupCtxForDef (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
@@ -70,12 +80,12 @@ open StaticErrorStructure
         SOME(st) => Success(st)
         | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
 
-        fun appendAbsoluteMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
+    fun appendAbsoluteMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
         case ctx of
             Context(curSName, vis, l) => Context(curSName, vis, 
             (case m of 
-                TermTypeJ(e, t, u) => TermTypeJ(e, t, u)
-                | TermDefJ(tname, t, u) => TermDefJ(tname, t, u)
+                TermTypeJ(e, t, defop, u) => TermTypeJ(e, t, defop, u)
+                (* | TermDefJ(tname, t, u) => TermDefJ(tname, t, u) *)
                 ):: l
             )
 
@@ -83,8 +93,8 @@ open StaticErrorStructure
         case ctx of
             Context(curSName, vis, l) => Context(curSName, vis, 
             (case m of 
-                TermTypeJ(e, t, u) => TermTypeJ(curSName@e, t, u)
-                | TermDefJ(tname, t, u) => TermDefJ(curSName@tname, t, u)
+                TermTypeJ(e, t, defop, u) => TermTypeJ(curSName@e, t, defop, u)
+                (* | TermDefJ(tname, t, u) => TermDefJ(curSName@tname, t, u) *)
                 ):: l
             )
 

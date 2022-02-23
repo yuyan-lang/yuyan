@@ -340,8 +340,9 @@ fun show_typecheckingpassmappping x = let
 open TypeCheckingAST
 in
   case x of
-    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t
-    | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t
+    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t 
+    ^ (case defop of SOME(def) => "\n" ^ StructureName.toStringPlain e ^ " = " ^ show_typecheckingCExpr def | NONE => "")
+    (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t *)
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingAST
