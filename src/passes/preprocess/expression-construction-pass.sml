@@ -101,6 +101,7 @@ struct
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：元类型》》") then Success(RUniverse(s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阳》》") then Success(RBoolConstant(true, s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阴》》") then Success(RBoolConstant(false, s)) 
+                else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建有：元》》") then Success(RUnitExpr(s)) 
                 else
               (case BuiltinFunctions.parseStr (UTF8String.toString s) of 
                 SOME f => Success(RBuiltinFunc(f, s))
@@ -125,9 +126,9 @@ struct
                     if oper ~=** inlineCommentOp
                     then elaborateOpASTtoExpr (hd l) ctx
                     else
-                    if oper ~=** unitExprOp
+                    (* if oper ~=** unitExprOp
                     then Success (RUnitExpr(oper))
-                    else
+                    else *)
                     if oper ~=** projExprOp
                     then fmap RProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
                     else 

@@ -82,7 +82,7 @@ struct
 
     val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
-    val unitExprOp = Operators.parseOperatorStr "元" true false 720 []
+    (* val unitExprOp = Operators.parseOperatorStr "元" true false 720 [] *)
     val lazyProjExprOp = Operators.parseOperatorStr "〇且中〇" true false 705 []
     val projExprOp = Operators.parseOperatorStr "〇中〇" true false 700 []
     val appExprOp = Operators.parseOperatorStr "〇于〇" true true 690 []
@@ -120,7 +120,8 @@ struct
         will soon be merged together *)
         , lazyProdTypeOp
         ]
-    val allTypeAndExprOps = allTypeOps @ [ unitExprOp,
+    val allTypeAndExprOps = allTypeOps @ [ 
+        (* unitExprOp, *)
         lazyProjExprOp,
         projExprOp, appExprOp, pairExprOp,
         lazyPairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 

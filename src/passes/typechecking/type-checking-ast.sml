@@ -93,7 +93,7 @@ structure TypeCheckingAST = struct
     type sourceOpInfo = Operators.operator (* should be the operator except rapp *)
     (* RExpr for raw expr *)
     datatype RExpr = RVar of StructureName.t
-                    | RUnitExpr of sourceOpInfo
+                    | RUnitExpr of UTF8String.t
                     | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RLazyTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RProj of RExpr * Label * sourceOpInfo

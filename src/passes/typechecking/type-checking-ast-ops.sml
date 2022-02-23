@@ -68,7 +68,7 @@ infix 5 =/=
     in
     case e of
         RVar v => StructureName.toString v
-        | RUnitExpr(soi) => reconstructWithArgs soi []
+        | RUnitExpr(soi) => soi
         | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
         | RLazyTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
         | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
