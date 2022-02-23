@@ -26,7 +26,7 @@ structure TypeCheckingAST = struct
 
 
     (* CExpr for checked expr *)
-    datatype CExpr = CVar of StructureName.t (* required to be fully qualified name, if not local *)
+    datatype CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* CExpr option (* the referenced expression, if not local *)) 
                     | CUnitExpr
                     | CTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)

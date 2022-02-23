@@ -274,7 +274,7 @@ val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
 fun cst t = "⟦" ^ sta t ^ "⟧"
 in case x of
-                      CVar v => sst v
+                      CVar (v, referred) => sst v
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t

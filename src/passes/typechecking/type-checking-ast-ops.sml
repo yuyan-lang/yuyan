@@ -38,7 +38,7 @@ infix 5 =/=
 
     fun freeTCVar (t : CType) : StructureName.t list = 
         case t of
-            CVar t => [t]
+            CVar (t, r) => [t]
             | CProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
@@ -173,10 +173,8 @@ infix 5 =/=
     let 
       fun dereferenceIfPossible (ctx : context)(t : CType) : CType option=
         case t of 
-            CVar (name) =>
-                (case findCtxForDef ctx name of
-                    SOME(_, t') => SOME(t')
-                    | NONE => NONE)
+            CVar (name, NONE) => NONE
+            | CVar(name, SOME(t')) => SOME(t')
             | _ => raise Fail "tcastops90"
 
     val recur = normalizeType e ctx
@@ -216,7 +214,7 @@ infix 5 =/=
             if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
              then let val tv' = uniqueName()
                                 in f (tv', substTypeInCExpr tS x 
-                                    (substTypeInCExpr (CVar [tv']) [tv] t2)) 
+                                    (substTypeInCExpr (CVar([tv'], NONE)) [tv] t2)) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
@@ -225,7 +223,7 @@ infix 5 =/=
 
     in
         case e of
-              CVar t => if t ~~~=x then tS else CVar t 
+              CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
             | CProd l => CProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
             | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
             | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
@@ -368,8 +366,8 @@ infix 5 =/=
         fun unifyBinding tv t2 tv' t2' =
                 if tv ~~= tv' then (tv, t2, tv', t2')
                 else let val nn = uniqueName() in
-                (nn, substTypeInCExpr (CVar [nn]) [tv] t2,
-                nn, substTypeInCExpr (CVar [nn]) [tv'] t2')end
+                (nn, substTypeInCExpr (CVar([nn], NONE)) [tv] t2,
+                nn, substTypeInCExpr (CVar([nn], NONE)) [tv'] t2')end
 
         
         in
@@ -377,7 +375,7 @@ infix 5 =/=
         else
 (normalizeType e tcctx t1 =/= normalizeType e tcctx t2) >>=  (fn (t1, t2) => 
     (case (t1, t2) of
-              (CVar t1, CVar t2) => Success (t1 ~~~= t2)
+              (CVar (t1, _), CVar (t2, _)) => Success (t1 ~~~= t2)
             | (CProd l1, CProd l2) =>  typeEquivLst l1 l2
             | (CLazyProd l1, CLazyProd l2) =>  typeEquivLst l1 l2
             | (CSum l1, CSum l2) =>   typeEquivLst l1 l2
@@ -400,19 +398,20 @@ infix 5 =/=
 
 
 
-    fun rTypeToCType (t : RType)  : CType = 
+    fun rTypeToCType (ctx: context)(t : RType)  : CType = 
     let 
+    val recur = rTypeToCType ctx
     in
         case t of
-              RVar t => CVar t
-            | RProd (l, soi) => CProd  (map (fn (l, t, soi) => (l, rTypeToCType t)) l )
-            | RLazyProd (l, soi) => CLazyProd  (map (fn (l, t, soi) => (l, rTypeToCType t)) l )
-            | RSum (l,soi) =>  CSum  (map (fn (l, t, soi) => (l, rTypeToCType t)) l)
-            | RFunc (t1,t2, soi) => CFunc (rTypeToCType t1, rTypeToCType t2)
-            | RTypeInst (t1,t2, soi) => CTypeInst (rTypeToCType t1, rTypeToCType t2)
-            | RForall (tv,t2, soi) => CForall(tv, rTypeToCType t2)
-            | RExists (tv,t2, soi) => CExists(tv, rTypeToCType t2)
-            | RRho (tv,t2, soi) => CRho(tv, rTypeToCType t2)
+              RVar t => (case findCtxForDef ctx t of SOME(t', def) => CVar(t', SOME def) | NONE => CVar(t, NONE))
+            | RProd (l, soi) => CProd  (map (fn (l, t, soi) => (l, recur t)) l )
+            | RLazyProd (l, soi) => CLazyProd  (map (fn (l, t, soi) => (l, recur t)) l )
+            | RSum (l,soi) =>  CSum  (map (fn (l, t, soi) => (l, recur t)) l)
+            | RFunc (t1,t2, soi) => CFunc (recur t1, recur t2)
+            | RTypeInst (t1,t2, soi) => CTypeInst (recur t1, recur t2)
+            | RForall (tv,t2, soi) => CForall(tv, recur t2)
+            | RExists (tv,t2, soi) => CExists(tv, recur t2)
+            | RRho (tv,t2, soi) => CRho(tv, recur t2)
             | RUnitType(soi) => CUnitType
             | RNullType(soi)=> CNullType
             | RBuiltinType(b, soi) => CBuiltinType(b)

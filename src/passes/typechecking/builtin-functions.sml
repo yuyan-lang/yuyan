@@ -3,17 +3,17 @@ structure BuiltinFunctions = struct
 open TypeCheckingAST
 
 val typeBinderA = UTF8String.fromString "甲"
-val typeVarA = CVar [typeBinderA]
+val typeVarA = CVar ([typeBinderA],NONE)
 val typeBinderB = UTF8String.fromString "乙"
-val typeVarB = CVar [typeBinderB]
+val typeVarB = CVar ([typeBinderB],NONE)
 val typeBinderC = UTF8String.fromString "丙"
-val typeVarC = CVar [typeBinderC]
+val typeVarC = CVar ([typeBinderC],NONE)
 
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
 val callccType : CType = CForall (typeBinderB, 
     CFunc( CFunc( CForall(typeBinderC, CFunc(
-        CVar [typeBinderB], CVar [typeBinderC]
-    )) , CVar [typeBinderB]), CVar [typeBinderB])
+        typeVarB, typeVarC
+    )) , typeVarB), typeVarB)
     )
    
 val newDynClsfdType : CType = 
@@ -21,15 +21,15 @@ val newDynClsfdType : CType =
         CFunc(CBuiltinType(BIString),
             CProd([
                 ((UTF8String.fromString "创造值"), 
-                    CFunc(CVar [typeBinderB], CBuiltinType(BIDynClsfd))),
+                    CFunc(typeVarB, CBuiltinType(BIDynClsfd))),
                 ((UTF8String.fromString "分析值"), 
                     CForall(typeBinderC,
                         CFunc(CProd([
                             (UTF8String.fromString "值", CBuiltinType(BIDynClsfd)),
-                            (UTF8String.fromString "符合", CFunc(CVar [typeBinderB], CVar [typeBinderC])),
-                            (UTF8String.fromString "不符合", CFunc(CUnitType, CVar [typeBinderC]))
+                            (UTF8String.fromString "符合", CFunc(typeVarB, typeVarC)),
+                            (UTF8String.fromString "不符合", CFunc(CUnitType, typeVarC))
                         ])
-                        , CVar ([typeBinderC])
+                        , typeVarC
                     )))
             ])
         )

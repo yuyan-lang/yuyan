@@ -202,7 +202,12 @@ infix 5 <?>
                 val originalExpr = e
                 val res = case e of
                     RVar v => lookupCtxForType ctx v >>= (fn (canonicalName, tp) =>
-                                        Success (CVar canonicalName, tp))
+                                    (case findCtxForDef ctx v of 
+                                    SOME (cname2, def) => (if StructureName.semanticEqual cname2 canonicalName
+                                    then Success (CVar(canonicalName, SOME(def)), tp)
+                                    else Success(CVar(canonicalName, NONE), tp))
+                                    | NONE => Success(CVar(canonicalName, NONE), tp))
+                                    )
                     | RUnitExpr(soi) => Success (CUnitExpr, CUnitType)
                     | RProj(e, l, soi) => synthesizeType ctx e >>= (fn tt =>  case tt of 
                             (ce, CProd ls) => fmap (fn x => (CProj(ce, l, CTypeAnn(CProd ls)),x)) (lookupLabel ls l)
@@ -257,8 +262,8 @@ infix 5 <?>
                             | _ => Errors.attemptToCaseNonSum e (#2 t) ctx
                             )
                     | RLamWithType (t, ev, e, soi) => 
-                        synthesizeType (addToCtxA (TermTypeJ([ev], rTypeToCType t, NONE)) ctx) e >>= (fn (bodyExpr, returnType) =>
-                        Success(CLam(ev, bodyExpr, CTypeAnn(CFunc (rTypeToCType t, returnType))), CFunc(rTypeToCType t, returnType))
+                        synthesizeType (addToCtxA (TermTypeJ([ev], rTypeToCType ctx t, NONE)) ctx) e >>= (fn (bodyExpr, returnType) =>
+                        Success(CLam(ev, bodyExpr, CTypeAnn(CFunc (rTypeToCType ctx t, returnType))), CFunc(rTypeToCType ctx t, returnType))
                         )
                     | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn t => case t
                         of (ce1, CFunc (t1, t2)) => 
@@ -272,15 +277,15 @@ infix 5 <?>
                     | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn st => case st of
                         (ce2, CForall (tv, tb)) => 
                             (* important need to normalized before subst *)
-                            (normalizeType t ctx (rTypeToCType t) >>= (fn nt => 
-                                Success(CTApp(ce2, rTypeToCType t, CTypeAnn(CForall(tv, tb))), (substTypeInCExpr nt [tv] (tb)))
+                            (normalizeType t ctx (rTypeToCType ctx t) >>= (fn nt => 
+                                Success(CTApp(ce2, rTypeToCType ctx t, CTypeAnn(CForall(tv, tb))), (substTypeInCExpr nt [tv] (tb)))
                             ))
                         | _ => Errors.attemptToApplyNonUniversal e (#2 st) ctx
                         )
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt  of
                                 (ce1, CExists (tv', tb)) => 
                         synthesizeType (addToCtxA (TermTypeJ([ev], 
-                        substTypeInCExpr (CVar [tv]) [tv'] (tb), NONE)) ctx) e2 >>= (fn (ce2, synthesizedType) =>
+                        substTypeInCExpr (CVar([tv], NONE)) [tv'] (tb), NONE)) ctx) e2 >>= (fn (ce2, synthesizedType) =>
                         if List.exists (fn t => t = [tv]) (freeTCVar (synthesizedType))
                             then Errors.openTypeCannotExitScope e synthesizedType ctx
                             else Success(COpen((CTypeAnn(CExists(tv', tb)), ce1), (tv, ev, ce2), CTypeAnn(synthesizedType)), synthesizedType)
@@ -400,13 +405,8 @@ infix 5 <?>
                     RVar v => 
                     (synthesizeType ctx e) >>= (fn (synthExpr, synthType) =>
                     assertTypeEquiv ctx e (synthType) tt  >> (Success (synthExpr))
-                    (* = false 
-                                then raise TypeCheckingFailure ("var type mismatch var is " ^ StructureName.toStringPlain v 
-                                ^ " synthesized : " ^ PrettyPrint.show_typecheckingType (#2 (synthesizeType ctx e)) ^ " against : " 
-                                ^ PrettyPrint.show_typecheckingType tt
-                                ) *)
-                                (* else synthExpr *)
                     )
+                   
                     | RUnitExpr(soi) => assertTypeEquiv ctx e CUnitType  tt >> (Success(CUnitExpr))
                     | RTuple (l, soi) => (case tt of 
                         CProd ls => if List.length l <> List.length ls
@@ -465,7 +465,7 @@ infix 5 <?>
                         | _ => Errors.expectedFunctionType e (tt) ctx
                         )
                     | RLamWithType (t, ev, eb, soi) => (case tt of
-                        CFunc(t1,t2) => (assertTypeEquiv ctx e (rTypeToCType t) t1 >>
+                        CFunc(t1,t2) => (assertTypeEquiv ctx e (rTypeToCType ctx t) t1 >>
                             (checkType (addToCtxA (TermTypeJ([ev], t1, NONE)) ctx) eb t2 >>= (fn checkedBody => 
                                 Success(CLam(ev, checkedBody , CTypeAnn(tt))))
                                 )
@@ -487,7 +487,7 @@ infix 5 <?>
                         | _ => Errors.attemptToApplyNonFunction e (#2 synt) ctx)
                     | RTAbs (tv, e2, soi) => (case tt of
                         CForall (tv', tb) => 
-                                checkType ctx e2 (substTypeInCExpr (CVar [tv]) [tv'] tb) >>= (fn ce2 => 
+                                checkType ctx e2 (substTypeInCExpr (CVar([tv], NONE)) [tv'] tb) >>= (fn ce2 => 
                                             Success(CTAbs (tv, ce2, CTypeAnn(tt)))
                                 )
                         | _ => Errors.expectedUniversalType e (tt) ctx
@@ -495,20 +495,20 @@ infix 5 <?>
                     | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn synt => case synt of
                         (ce2, CForall (tv, tb)) => (
                             (* need to normalize type! important! *)
-                            (normalizeType t ctx (rTypeToCType t) >>= (fn nt => 
-                                assertTypeEquiv ctx e (tt) (substTypeInCExpr (rTypeToCType t) [tv] ( tb))
-                            )) >> Success(CTApp(ce2, rTypeToCType t, CTypeAnn(CForall(tv, tb)))))
+                            (normalizeType t ctx (rTypeToCType ctx t) >>= (fn nt => 
+                                assertTypeEquiv ctx e (tt) (substTypeInCExpr (rTypeToCType ctx t) [tv] ( tb))
+                            )) >> Success(CTApp(ce2, rTypeToCType ctx t, CTypeAnn(CForall(tv, tb)))))
                         | _ => Errors.attemptToApplyNonUniversal e (#2 synt) ctx
                         )
                     | RPack (t, e2, soi) => (case tt of
                         CExists (tv, tb) => 
-                                checkType ctx e2 (substTypeInCExpr (rTypeToCType t) [tv]  tb) >>= (fn ce2 => 
-                                                Success(CPack(rTypeToCType t, ce2, CTypeAnn(tt))))
+                                checkType ctx e2 (substTypeInCExpr (rTypeToCType ctx t) [tv]  tb) >>= (fn ce2 => 
+                                                Success(CPack(rTypeToCType ctx t, ce2, CTypeAnn(tt))))
                         | _ => Errors.expectedExistentialType e (tt) ctx
                     )
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt of
                         (ce1, CExists (tv', tb)) => 
-                        checkType (addToCtxA (TermTypeJ([ev], substTypeInCExpr (CVar [tv]) [tv'] ( tb), NONE)) ctx) e2 tt
+                        checkType (addToCtxA (TermTypeJ([ev], substTypeInCExpr (CVar([tv], NONE)) [tv'] ( tb), NONE)) ctx) e2 tt
                         >>= (fn ce2 => 
                         Success(COpen((CTypeAnn(CExists (tv', tb)), ce1), (tv, ev, ce2), CTypeAnn(tt)))
                         )
@@ -682,15 +682,15 @@ infix 5 <?>
                     end *)
                 | RTermTypeJudgment(n, t):: ss => 
                 let 
-                (* val freeTVars = freeTCVar  (rTypeToCType t) *)
-                (* (applyContextToType ctx (rTypeToCType t))  *)
+                (* val freeTVars = freeTCVar  (rTypeToCType ctx t) *)
+                (* (applyContextToType ctx (rTypeToCType ctx t))  *)
                 in  (* do not check for free variables, as it will be catched in a later stage? *)
                 (* if freeTVars <> [] 
                     then Errors.termTypeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
                     (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)
                     else  *)
-                    normalizeType t ctx (rTypeToCType t)
-                    (* (applyContextToType ctx (rTypeToCType t))  *)
+                    normalizeType t ctx (rTypeToCType ctx t)
+                    (* (applyContextToType ctx (rTypeToCType ctx t))  *)
                     >>= (fn normalizedType => 
                     typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, NONE)) ctx) ss (acc))
                 end

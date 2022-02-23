@@ -33,7 +33,7 @@ exception CPSInternalError
         (* val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
          val originalExpr = e
          val res = case e of
-            CVar sn => (case ListSearchUtil.lookupSName ctx sn of 
+            CVar (sn, referred) => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
                 | GlobalVar v => cc v
                 | SelfVar v => CPSAbsSingle(kcc' (fn arg => 
@@ -177,7 +177,7 @@ exception CPSInternalError
             | CFfiCCall (cFuncName, args) => 
                 foldr (fn (arg, acc) => 
                     (fn (prevArgs : cpsvalue list) => 
-                    cpsTransformExpr ctx (CVar arg) (fn argv => 
+                    cpsTransformExpr ctx (CVar (arg, NONE)) (fn argv => 
                             acc (prevArgs@[CPSValueVar argv])
                         )
                     )
