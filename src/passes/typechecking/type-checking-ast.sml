@@ -164,11 +164,12 @@ structure TypeCheckingAST = struct
 (* these exist here for pretty printing *)
 (* g for generic *)
  (* the term type J may optionally contain the definition *)
- datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * CExpr option * 'a
+ datatype judgmentType = JTypeConstructor | JTypeLocalBinder | JTypeDefinition of CExpr | JTypePending
+ datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a
                     (* | TermDefJ of StructureName.t * CType * unit *)
 datatype 'a gcontext = Context of StructureName.t * bool * 
     ('a gmapping) list
-    type mapping = ((StructureName.t * CExpr) option ) gmapping (* original name and reference (for use with open) *)
-    type context = ((StructureName.t * CExpr) option  ) gcontext (* original name and reference(for use with open) *)
+    type mapping = ((StructureName.t * judgmentType) option ) gmapping (* original name and reference (for use with open) *)
+    type context = ((StructureName.t * judgmentType) option ) gcontext (* original name and reference(for use with open) *)
 
 end

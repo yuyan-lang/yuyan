@@ -347,7 +347,8 @@ open TypeCheckingAST
 in
   case x of
     TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t 
-    ^ (case defop of SOME(def) => "\n" ^ StructureName.toStringPlain e ^ " = " ^ show_typecheckingCExpr def | NONE => "")
+    ^ (case defop of JTypeDefinition(def) => "\n" ^ StructureName.toStringPlain e ^ " = " ^ show_typecheckingCExpr def 
+                    | _ => "")
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t *)
 end
 fun show_typecheckingpassctx x = let

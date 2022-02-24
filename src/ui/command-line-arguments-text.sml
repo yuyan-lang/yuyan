@@ -13,6 +13,7 @@ struct
         | ArgShowHelp
         | ArgShowVersion
         | ArgShowAbout
+        | ArgTypeCheckOnly
 
     val allArguments : cmdlineargument list = [ArgVerbose,
         ArgSuperVerbose,
@@ -24,7 +25,8 @@ struct
         ArgGenDocs,
         ArgShowHelp,
         ArgShowVersion,
-        ArgShowAbout]
+        ArgShowAbout,
+        ArgTypeCheckOnly]
 
     fun acceptParameter(x : cmdlineargument) : string option = 
     case x of 
@@ -45,6 +47,7 @@ struct
         | ArgShowHelp => SOME("h")
         | ArgShowVersion => NONE
         | ArgShowAbout => NONE
+        | ArgTypeCheckOnly => NONE
 
     (* long argument is preceded by -- *)
     fun getLongOptionStyle (x : cmdlineargument): string option = 
@@ -60,6 +63,7 @@ struct
         | ArgShowHelp => SOME("help")
         | ArgShowVersion => SOME("version")
         | ArgShowAbout => SOME("about")
+        | ArgTypeCheckOnly => SOME("type-check-only")
     
 
     fun getDescription(x : cmdlineargument) : string =
@@ -75,6 +79,7 @@ struct
         | ArgShowHelp => "显示本帮助信息(show this help)"
         | ArgShowVersion => "显示版本(show version)"
         | ArgShowAbout => "显示关于信息(show about)"
+        | ArgTypeCheckOnly => "仅执行类型检查(type check only)"
 
     fun getOptionDescription() : string = 
         let val shortOptions = List.map getShortOptionStyle allArguments

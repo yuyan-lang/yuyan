@@ -25,13 +25,7 @@ installDocs : genDocs
 	cp -r ./.yybuild/docs ./docs/autogen/
 
 install:  build
-	cp runtime/libyyrtdebug.a /usr/local/lib/libyuyanlangruntimedebug.a
-	cp runtime/libyyrtopt.a /usr/local/lib/libyuyanlangruntime.a
-	cp yy /usr/local/bin/yuyanlang
-	ln -sf /usr/local/bin/yuyanlang /usr/local/bin/yy
-
-installtest:  buildtest
-	cp yy_test /usr/local/bin/yy_test
+	sh install.sh
 
 clean:
 	rm yy

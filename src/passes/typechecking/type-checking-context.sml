@@ -10,7 +10,7 @@ open StaticErrorStructure
         let val allDecls = (map (fn x => case x of
     TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
     ^ (if full 
-    then (case defop of SOME(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def | NONE => "")
+    then (case defop of JTypeDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def | _ => "")
     else "")) m)
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) *)
         
@@ -27,9 +27,9 @@ open StaticErrorStructure
 
 
 
-    fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * CExpr option) option = 
+    fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) option = 
         let exception LookupNotFound
-            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType * CExpr option) = 
+            fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType * judgmentType) = 
                 case ctx of 
                 (* WARNING: toUTF8String discards the separator information, but I guess it is fine because 
                     as long as all components are of the same name, we're fine*)
@@ -56,8 +56,8 @@ open StaticErrorStructure
             | (currentj as TermTypeJ(n1, t1, defop1,  u))::cs => 
                 if StructureName.semanticEqual n1 cname
                 then (case defop1 of 
-                        NONE => Context(curSName, v, TermTypeJ(n1, t1, SOME newDef, u) :: cs)
-                        | SOME _ => raise Fail ("tcc58: already has definition: " ^ (StructureName.toStringPlain cname))
+                        JTypePending => Context(curSName, v, TermTypeJ(n1, t1, JTypeDefinition newDef, u) :: cs)
+                        | _ => raise Fail ("tcc58: already has definition: " ^ (StructureName.toStringPlain cname))
                     )
                 else 
                      case modifyCtxAddDef (Context(curSName, v, cs)) cname newDef of 
@@ -73,7 +73,7 @@ open StaticErrorStructure
 
      fun findCtxForDef (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         case (findCtx (Context(curSName, v, ctx)) n) of 
-            SOME(x,t,eop) => (case eop of SOME(e) => SOME(x, e) | NONE => NONE)
+            SOME(x,t,eop) => (case eop of JTypeDefinition(e) => SOME(x, e) | _ => NONE)
             | NONE => NONE
 
 (* require lookup to add name qualification if references local structure *)
