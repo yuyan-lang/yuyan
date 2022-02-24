@@ -198,6 +198,8 @@ infix 5 <?>
     )
     :  RSignature -> CSignature witherrsoption =
     let
+            fun checkConstructorType( ctx : context) (t : RType) : CType witherrsoption = 
+            raise Fail "ni202"
 
             fun synthesizeType (ctx : context)(e : RExpr) : (CExpr * CType) witherrsoption =
             (
@@ -728,7 +730,12 @@ infix 5 <?>
                             | _ => raise Fail "tcp457"
                             end)
                 )
-                | RConstructorDecl(name, rtp) :: ss => (raise Fail "ni731: tc of constructors")
+                | RConstructorDecl(name, rtp) :: ss => 
+                    checkConstructorType ctx rtp >>= (fn checkedType => 
+                    
+                        typeCheckSignature (addToCtxR(TermTypeJ([name], checkedType, NONE, NONE)) ctx) ss
+                        (acc@[CConstructorDecl((getCurSName ctx)@[name], checkedType)])
+                    )
                 | RStructure (vis, sName, decls) :: ss => 
                 (case ctx of 
                 Context(curName, curVis, bindings) => 

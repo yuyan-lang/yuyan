@@ -9,7 +9,7 @@ struct
     (* e : T *)
     val termTypeJudgmentOp = Operators.parseOperatorStr "以〇为〇" false false 0 []
     (* cons e : T *)
-    val constructorDeclarationOp = Operators.parseOperatorStr "建〇以〇" false false 0 []
+    val constructorDeclarationOp = Operators.parseOperatorStr "建〇为〇" false false 0 []
     (* infixl op 232 *)
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
     (* // *)

@@ -80,6 +80,7 @@ structure TypeCheckingAST = struct
                        (*  CTermMacro of UTF8String.t * CExpr *)
                         CTermDefinition of StructureName.t * CExpr * CExpr  
                        | CDirectExpr of CExpr * CExpr
+                       | CConstructorDecl of StructureName.t * CExpr
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
