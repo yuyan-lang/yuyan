@@ -25,7 +25,7 @@ installDocs : genDocs
 	cp -r ./.yybuild/docs ./docs/autogen/
 
 install:  build
-	sh install.sh
+	sh -x install.sh
 
 clean:
 	rm yy

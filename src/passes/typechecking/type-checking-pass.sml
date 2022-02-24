@@ -790,6 +790,8 @@ infix 5 <?>
                                 ])
                             | CDirectExpr _ => NONE
                             | CImport _ => NONE
+                            | CConstructorDecl(sname, t) => SOME([TermTypeJ(sname, t, JTypeConstructor, NONE)
+                                ])
                             ) csig)) ctx)
                         ss (acc@[CImport(importName, path)])
                     )

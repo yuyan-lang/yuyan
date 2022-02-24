@@ -259,6 +259,8 @@ exception CPSInternalError
             (fn resvar =>  (cpsTransformSig (ctx) ss useGlobalVar cc))
         | CImport _ :: ss => 
             cpsTransformSig (ctx) ss useGlobalVar cc
+        | CConstructorDecl _ :: ss => 
+            raise Fail "ni263: cps constructor"
     end
 
 
