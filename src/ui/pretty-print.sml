@@ -276,8 +276,9 @@ val sst =StructureName.toStringPlain
 fun cst t = "⟦" ^ sta t ^ "⟧"
 in case x of
                       CVar (v, referred) => "" ^ sst v  ^ 
-                      (case referred of SOME e => "( ==> " ^ se e ^  ")"
-                      | NONE => "") 
+                      (case referred of CVarTypeDefinition e => "( ==> " ^ se e ^  ")"
+                      | CVarTypeBinder => ""
+                      | CVarTypeConstructor i => "") 
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
@@ -326,7 +327,7 @@ open TypeCheckingAST
 in case x of 
     (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
    CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
-  | CConstructorDecl(ename, etype) => "cons " ^ StructureName.toStringPlain  ename ^ " : " ^ show_typecheckingCExpr  etype
+  | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ StructureName.toStringPlain  ename ^ " : " ^ show_typecheckingCExpr  etype
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
   end

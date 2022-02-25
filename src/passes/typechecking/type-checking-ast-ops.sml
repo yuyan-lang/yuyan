@@ -173,8 +173,9 @@ infix 5 =/=
     let 
       fun dereferenceIfPossible (ctx : context)(t : CType) : CType option=
         case t of 
-            CVar (name, NONE) => NONE
-            | CVar(name, SOME(t')) => SOME(t')
+            CVar (name, CVarTypeBinder) => NONE
+            | CVar(name, CVarTypeDefinition(t')) => SOME(t')
+            | CVar(name, CVarTypeConstructor cinfo) => NONE
             | _ => raise Fail "tcastops90"
 
     val recur = normalizeType e ctx
@@ -214,7 +215,7 @@ infix 5 =/=
             if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
              then let val tv' = uniqueName()
                                 in f (tv', substTypeInCExpr tS x 
-                                    (substTypeInCExpr (CVar([tv'], NONE)) [tv] t2)) 
+                                    (substTypeInCExpr (CVar([tv'], CVarTypeBinder)) [tv] t2)) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
@@ -366,8 +367,8 @@ infix 5 =/=
         fun unifyBinding tv t2 tv' t2' =
                 if tv ~~= tv' then (tv, t2, tv', t2')
                 else let val nn = uniqueName() in
-                (nn, substTypeInCExpr (CVar([nn], NONE)) [tv] t2,
-                nn, substTypeInCExpr (CVar([nn], NONE)) [tv'] t2')end
+                (nn, substTypeInCExpr (CVar([nn], CVarTypeBinder)) [tv] t2,
+                nn, substTypeInCExpr (CVar([nn], CVarTypeBinder)) [tv'] t2')end
 
         
         val result = 
@@ -375,7 +376,7 @@ infix 5 =/=
         else
 (normalizeType e tcctx t1 =/= normalizeType e tcctx t2) >>=  (fn (t1, t2) => 
     (case (t1, t2) of
-              (CVar (t1, NONE), CVar (t2, NONE)) => Success (t1 ~~~= t2)
+              (CVar (t1, CVarTypeBinder), CVar (t2, CVarTypeBinder)) => Success (t1 ~~~= t2)
             | (CVar (t1, _), CVar (t2, _)) => raise Fail "normalize should have replaced variables by their definitions"
             | (CProd l1, CProd l2) =>  typeEquivLst l1 l2
             | (CLazyProd l1, CLazyProd l2) =>  typeEquivLst l1 l2
@@ -408,7 +409,7 @@ infix 5 =/=
     val recur = rTypeToCType ctx
     in
         case t of
-              RVar t => (case findCtxForDef ctx t of SOME(t', def) => CVar(t', SOME def) | NONE => CVar(t, NONE))
+              RVar t => (case findCtxForDef ctx t of SOME(t', def) => CVar(t', CVarTypeDefinition def) | NONE => CVar(t, CVarTypeBinder))
             | RProd (l, soi) => CProd  (map (fn (l, t, soi) => (l, recur t)) l )
             | RLazyProd (l, soi) => CLazyProd  (map (fn (l, t, soi) => (l, recur t)) l )
             | RSum (l,soi) =>  CSum  (map (fn (l, t, soi) => (l, recur t)) l)

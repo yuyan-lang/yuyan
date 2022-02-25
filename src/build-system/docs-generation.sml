@@ -97,7 +97,7 @@ struct
                                             (indentN i @ termTypeDecl name t)
                                         )
             | CDirectExpr(_) => ([], currentIndentLevel, currentStructureName)
-            | CConstructorDecl(name, t) => withScopeUpdate name (fn i => 
+            | CConstructorDecl(name, t, _) => withScopeUpdate name (fn i => 
                                             (indentN i @ termTypeDecl name t)
                                         )
 

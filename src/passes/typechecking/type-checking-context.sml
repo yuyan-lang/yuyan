@@ -9,9 +9,15 @@ open StaticErrorStructure
     "\n当前已定义的值及其类型：\n"  ^(
         let val allDecls = (map (fn x => case x of
     TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
-    ^ (if full 
-    then (case defop of JTypeDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def | _ => "")
-    else "")) m)
+    ^ ((case defop of JTypeDefinition(def) =>  " (定义) "
+        | JTypeConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
+        | JTypeConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
+        | JTypeLocalBinder => "局部绑定"
+    ) ^ 
+        (if full 
+    then (case defop of JTypeDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def 
+         | _ => "")
+    else ""))) m)
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) *)
         
         val condensedDecls = 
@@ -63,6 +69,11 @@ open StaticErrorStructure
                      case modifyCtxAddDef (Context(curSName, v, cs)) cname newDef of 
                         Context(cname', v', cs') => Context(cname', v', currentj::cs')
 
+
+    fun lookupCtx (ctxg as Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) witherrsoption = 
+    case findCtx ctxg n of 
+        SOME(v) => Success(v)
+        | NONE =>  genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
 
 
 (* require lookup to add name qualification if references local structure *)

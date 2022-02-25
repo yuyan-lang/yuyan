@@ -24,9 +24,11 @@ structure TypeCheckingAST = struct
 
     datatype visibility = Public | Private
 
+    datatype cvartype = CVarTypeBinder | CVarTypeDefinition of CExpr | CVarTypeConstructor of cconstructorinfo
 
     (* CExpr for checked expr *)
-    datatype CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* CExpr option (* the referenced expression, if not local *)) 
+    and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
+                                cvartype (* the referenced expression, if not local *)) 
                     | CUnitExpr
                     | CTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
@@ -69,6 +71,9 @@ structure TypeCheckingAST = struct
                     | CSigmaType of CExpr * EVar option * CExpr 
     
 
+    and cconstructorinfo = CConsInfoTypeConstructor 
+                        | CConsInfoElementConstructor of StructureName.t (* absolute structure name of the type constructor *)
+
 (* all types are fully normalized *)
     and CDeclaration = 
                         (* Do not need type macro becuase all types for later stages have been expanded 
@@ -80,7 +85,7 @@ structure TypeCheckingAST = struct
                        (*  CTermMacro of UTF8String.t * CExpr *)
                         CTermDefinition of StructureName.t * CExpr * CExpr  
                        | CDirectExpr of CExpr * CExpr
-                       | CConstructorDecl of StructureName.t * CExpr
+                       | CConstructorDecl of StructureName.t * CExpr * cconstructorinfo
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
@@ -164,7 +169,7 @@ structure TypeCheckingAST = struct
 (* these exist here for pretty printing *)
 (* g for generic *)
  (* the term type J may optionally contain the definition *)
- datatype judgmentType = JTypeConstructor | JTypeLocalBinder | JTypeDefinition of CExpr | JTypePending
+ datatype judgmentType = JTypeConstructor of cconstructorinfo | JTypeLocalBinder  | JTypeDefinition of CExpr | JTypePending
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a
                     (* | TermDefJ of StructureName.t * CType * unit *)
 datatype 'a gcontext = Context of StructureName.t * bool * 
