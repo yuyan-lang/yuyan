@@ -26,6 +26,8 @@ structure TypeCheckingAST = struct
 
     datatype cvartype = CVTBinder | CVTDefinition of CExpr | CVTConstructor of StructureName.t * cconstructorinfo (* canonical name and cinfo *)
 
+    and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
+                 | CPatVar of UTF8String.t 
     (* CExpr for checked expr *)
     and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
                                 cvartype (* the referenced expression, if not local *)) 
@@ -37,7 +39,7 @@ structure TypeCheckingAST = struct
                     | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
                     | CCase of (CTypeAnn (*type is Sum *) * CExpr) * 
-                        (CExpr (* pattern *) * CExpr) list * CTypeAnn (* type is result type *)
+                        (CPattern (* pattern *) * CExpr) list * CTypeAnn (* type is result type *)
                     | CLam of  EVar * CExpr * CTypeAnn (* type is Func *)
                     | CApp of  CExpr * CExpr * CTypeAnn (* type is Func *)
                     | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)

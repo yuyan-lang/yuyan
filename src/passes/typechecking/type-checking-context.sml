@@ -118,6 +118,12 @@ open StaticErrorStructure
     fun appendRelativeMappingsToCurrentContext (m : 'a gmapping list) (ctx : 'a gcontext) : 'a gcontext = 
         foldl (fn (map, acc) => appendRelativeMappingToCurrentContext map acc) ctx m
 
+   val addToCtxA = appendAbsoluteMappingToCurrentContext (* A for relative *)
+  val addToCtxR = appendRelativeMappingToCurrentContext (* R for relative *)
+    val addToCtxAL = appendAbsoluteMappingsToCurrentContext (* L for list *)
+    val addToCtxRL = appendRelativeMappingsToCurrentContext (* L for list *)
+    
+
   
 
         

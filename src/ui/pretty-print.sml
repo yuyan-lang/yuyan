@@ -268,12 +268,22 @@ end
 and show_typecheckingCExpr x =  
 let
 open TypeCheckingAST
-val st = show_typecheckingCType
-fun sta (CTypeAnn t) = show_typecheckingCType t
-val se = show_typecheckingCExpr
-val ss = UTF8String.toString
-val sst =StructureName.toStringPlain
-fun cst t = "⟦" ^ sta t ^ "⟧"
+  fun show_ccconsinfo (cinfo : cconstructorinfo) = 
+    case cinfo of 
+      CConsInfoElementConstructor _ => "(el constructor)"
+      | CConsInfoTypeConstructor => "(type constructor)"
+
+  val st = show_typecheckingCType
+  fun sta (CTypeAnn t) = show_typecheckingCType t
+  val se = show_typecheckingCExpr
+  val ss = UTF8String.toString
+  val sst =StructureName.toStringPlain
+  fun cst t = "⟦" ^ sta t ^ "⟧"
+  fun show_cpattern (p : CPattern) =
+    case p of 
+      CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ String.concatWith " " (map show_cpattern sp) ^ ")"
+      | CPatVar(s) => ss s
+  val sp = show_cpattern
 in case x of
                       CVar (v, referred) => "" ^ sst v  ^ 
                       (case referred of CVTDefinition e => "( ==> " ^ se e ^  ")"
@@ -286,7 +296,7 @@ in case x of
                     | CLazyProj (e, lbl, t) => "(" ^ se e ^ cst t ^ ".(lazy) " ^ ss lbl ^ ")"
                     | CIfThenElse (e, tcase, fcase ) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
                     | CInj  ( lbl,e, t) => "(" ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
-                    | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (pat, e) => se pat ^ " => " ^ se e) l) ^ "})" ^ cst t
+                    | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (pat, e) => sp pat ^ " => " ^ se e) l) ^ "})" ^ cst t
                     | CLam (x, e, t) => "(λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t
                     | CApp (e1, e2, t)=> "ap("^ se e1 ^ cst t^ ", "^ se e2 ^")"
                     | CTAbs (x, e, t) => "(Λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t 

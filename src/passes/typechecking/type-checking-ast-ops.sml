@@ -242,26 +242,41 @@ infix 5 =/=
     and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
     raise Fail "not implemented136"
     (* !!! always capture avoiding substitution *)
-    (* and substTypeInRExpr (tS : RType) (x : StructureName.t) (t : RType) = 
-    let fun captureAvoid f (tv : UTF8String.t) t2 = 
+    (* only used when checking pi types *)
+    (* TODO: maybe hereditary substitution *)
+    and substTypeInRType (tS : RType) (x : StructureName.t) (t : RType) = 
+    let 
+        fun captureAvoid f (tv : UTF8String.t) t2 = 
+    (* capture avoid (ts. t2) performs substitution [tS/tv] t2 
+        and necessary renaming of tv in case tv is bound in tS
+        it calls f with the subsituted (ts'. t2')
+        *)
             if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
-                                in f (tv', substTypeInRExpr tS x 
-                                    (substTypeInRExpr (RVar [tv']) [tv] t2)) 
+                                in f (tv', substTypeInRType tS x 
+                                    (substTypeInRType (RVar [tv']) [tv] t2)) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
             then f (tv, t2)
-            else f (tv, substTypeInRExpr tS x t2)
+            else f (tv, substTypeInRType tS x t2)
 
     in
         case t of
               RVar (t) => if t ~~~=x then tS else RVar t
-            | RProd (l, soi) => RProd  (map (fn (l, t, soi) => (l, substTypeInRExpr tS x t, soi)) l, soi)
-            | RLazyProd (l, soi) => RLazyProd  (map (fn (l, t, soi) => (l, substTypeInRExpr tS x t, soi)) l, soi)
-            | RSum (l, soi) =>  RSum  (map (fn (l, t, soi) => (l, substTypeInRExpr tS x t, soi)) l, soi)
-            | RFunc (t1,t2, soi) => RFunc (substTypeInRExpr tS x t1, substTypeInRExpr tS x t2 , soi)
-            | RTypeInst (t1,t2, soi) => RTypeInst (substTypeInRExpr tS x t1, substTypeInRExpr tS x t2 , soi)
+            | RFunc (t1,t2, soi) => RFunc (substTypeInRType tS x t1, substTypeInRType tS x t2 , soi)
+            | RPiType (t1,NONE, t2, soi) => RPiType (substTypeInRType tS x t1, NONE, substTypeInRType tS x t2 , soi)
+            | RPiType (t1,SOME tv, t2, soi) => captureAvoid (fn (tv', t2') => 
+                RPiType (substTypeInRType tS x t1, SOME tv', t2', soi)
+            ) tv t2
+            | _ => raise Fail "ni272: unsupported expr in type"
+    end
+              (* 
+            | RProd (l, soi) => RProd  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)
+            | RLazyProd (l, soi) => RLazyProd  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)
+            | RSum (l, soi) =>  RSum  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)
+            | RFunc (t1,t2, soi) => RFunc (substTypeInRType tS x t1, substTypeInRType tS x t2 , soi)
+            | RTypeInst (t1,t2, soi) => RTypeInst (substTypeInRType tS x t1, substTypeInRType tS x t2 , soi)
             | RForall (tv,t2, soi) => captureAvoid (fn (tv', t2') => RForall (tv', t2', soi)) tv t2
             | RExists (tv,t2, soi) => captureAvoid (fn (tv', t2') => RExists (tv', t2', soi)) tv t2
             | RRho (tv,t2, soi) => captureAvoid (fn (tv', t2') => RRho (tv', t2', soi)) tv t2
@@ -270,69 +285,69 @@ infix 5 =/=
             | RBuiltinType(b) => RBuiltinType(b)
             | RUniverse(soi) => RUniverse(soi)
             | RUnitExpr(soi) => RUnitExpr (soi)
-            | RTuple (l, soi) => RTuple (map (substTypeInRExpr tS x) l, soi)
-            | RLazyTuple (l, soi) => RLazyTuple (map (substTypeInRExpr tS x) l, soi)
-            | RInj (l, e, soi) => RInj (l, substTypeInRExpr tS x e, soi)
-            | RProj (e, l, soi) => RProj (substTypeInRExpr tS x e, l, soi)
-            | RLazyProj (e, l, soi) => RLazyProj (substTypeInRExpr tS x e, l, soi)
-            | RIfThenElse (e, tcase, fcase, soi) => RIfThenElse(substTypeInRExpr tS x e, 
-                substTypeInRExpr tS x tcase, substTypeInRExpr tS x fcase,  soi)
-            | RCase (e, l, soi) => RCase (substTypeInRExpr tS x e, (
+            | RTuple (l, soi) => RTuple (map (substTypeInRType tS x) l, soi)
+            | RLazyTuple (l, soi) => RLazyTuple (map (substTypeInRType tS x) l, soi)
+            | RInj (l, e, soi) => RInj (l, substTypeInRType tS x e, soi)
+            | RProj (e, l, soi) => RProj (substTypeInRType tS x e, l, soi)
+            | RLazyProj (e, l, soi) => RLazyProj (substTypeInRType tS x e, l, soi)
+            | RIfThenElse (e, tcase, fcase, soi) => RIfThenElse(substTypeInRType tS x e, 
+                substTypeInRType tS x tcase, substTypeInRType tS x fcase,  soi)
+            | RCase (e, l, soi) => RCase (substTypeInRType tS x e, (
                 (map (fn (l, ev, e) => 
-                (l, ev, substTypeInRExpr tS x e) ) l)
+                (l, ev, substTypeInRType tS x e) ) l)
             ), soi)
-            | RLam (ev, e, soi)=> RLam (ev, substTypeInRExpr tS x e, soi)
-            | RLamWithType (t, ev, e, soi) => RLamWithType (substTypeInRExpr tS x t, ev, substTypeInRExpr tS x e, soi)
-            | RApp (e1, e2, soi) => RApp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2, soi)
-            | RSeqComp (e1, e2, soi) => RSeqComp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2, soi)
+            | RLam (ev, e, soi)=> RLam (ev, substTypeInRType tS x e, soi)
+            | RLamWithType (t, ev, e, soi) => RLamWithType (substTypeInRType tS x t, ev, substTypeInRType tS x e, soi)
+            | RApp (e1, e2, soi) => RApp (substTypeInRType tS x e1, substTypeInRType tS x e2, soi)
+            | RSeqComp (e1, e2, soi) => RSeqComp (substTypeInRType tS x e1, substTypeInRType tS x e2, soi)
             | RTAbs (tv, e2, soi) => (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
-                                in RTAbs (tv', substTypeInRExpr tS x 
-                                    (substTypeInRExpr (RVar [tv']) [tv] e2), soi) 
+                                in RTAbs (tv', substTypeInRType tS x 
+                                    (substTypeInRType (RVar [tv']) [tv] e2), soi) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x then RTAbs (tv, e2, soi)
-             else RTAbs (tv, substTypeInRExpr tS x e2, soi)
+             else RTAbs (tv, substTypeInRType tS x e2, soi)
             ) 
-            | RTApp (e2, t, soi) => RTApp(substTypeInRExpr tS x e2, substTypeInRExpr tS x t , soi)
-            | RPack (t, e2, soi) => RPack(substTypeInRExpr tS x t, substTypeInRExpr tS x e2, soi)
+            | RTApp (e2, t, soi) => RTApp(substTypeInRType tS x e2, substTypeInRType tS x t , soi)
+            | RPack (t, e2, soi) => RPack(substTypeInRType tS x t, substTypeInRType tS x e2, soi)
             | ROpen (e1, (tv, ev, e2), soi) => ROpen(
-                substTypeInRExpr tS x e1, (
+                substTypeInRType tS x e1, (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
-                                in (tv', ev, substTypeInRExpr tS x 
-                                    (substTypeInRExpr (RVar [tv']) [tv] e2)) 
+                                in (tv', ev, substTypeInRType tS x 
+                                    (substTypeInRType (RVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
-             (tv, ev, substTypeInRExpr tS [tv] e2))
+             (tv, ev, substTypeInRType tS [tv] e2))
             , soi)
-            | RFold (e2, soi) => RFold (substTypeInRExpr tS x e2, soi)
-            | RUnfold (e2, soi) => RUnfold (substTypeInRExpr tS x e2, soi)
-            | RFix (ev, e, soi)=> RFix (ev, substTypeInRExpr tS x e, soi)
+            | RFold (e2, soi) => RFold (substTypeInRType tS x e2, soi)
+            | RUnfold (e2, soi) => RUnfold (substTypeInRType tS x e2, soi)
+            | RFix (ev, e, soi)=> RFix (ev, substTypeInRType tS x e, soi)
             | RStringLiteral l => RStringLiteral l
             | RIntConstant l => RIntConstant l
             | RRealConstant l => RRealConstant l
             | RBoolConstant l => RBoolConstant l
-            | RFfiCCall(e, e2, soi) => RFfiCCall(substTypeInRExpr tS x e, 
-                    substTypeInRExpr tS x e2, soi
+            | RFfiCCall(e, e2, soi) => RFfiCCall(substTypeInRType tS x e, 
+                    substTypeInRType tS x e2, soi
                 )
             | RLetIn(decls, e, soi) => 
                 RLetIn(substituteTypeInRSignature tS x decls, 
-                    substTypeInRExpr tS x e, soi)
+                    substTypeInRType tS x e, soi)
             | RBuiltinFunc(f, s) => RBuiltinFunc(f, s)
-            | r => raise Fail ("substTypeInRExpr Fail on type(RExpr) " ^ PrettyPrint.show_typecheckingRType r)
+            | r => raise Fail ("substTypeInRType Fail on type(RExpr) " ^ PrettyPrint.show_typecheckingRType r)
     end
 
     and substituteTypeInRDeclaration (tS : RType) (x : StructureName.t) (d : RDeclaration) = 
       case d of
       (* to prevent this from happending by prior checking *)
          (* RTypeMacro (y, t) => if x ~~~= [y] then raise Fail "Cannot have identical types" else 
-            RTypeMacro (y, substTypeInRExpr tS x t) *)
-         RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInRExpr tS x t)
-        (* | RTermMacro (n, e) => RTermMacro(n, substTypeInRExpr tS x e) *)
-        | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRExpr tS x e)
-        | RDirectExpr(e) => RDirectExpr (substTypeInRExpr tS x e)
+            RTypeMacro (y, substTypeInRType tS x t) *)
+         RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInRType tS x t)
+        (* | RTermMacro (n, e) => RTermMacro(n, substTypeInRType tS x e) *)
+        | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRType tS x e)
+        | RDirectExpr(e) => RDirectExpr (substTypeInRType tS x e)
         | RStructure(v, n, s) => RStructure(v, n, substituteTypeInRSignature tS x s)
         | ROpenStructure(n) => ROpenStructure(n)
         | RReExportStructure(n) => RReExportStructure(n)
@@ -429,6 +444,7 @@ infix 5 =/=
             | RUniverse(s) => CUniverse
             | _ => raise Fail ("rTypeToCType not implemented for " ^ PrettyPrint.show_typecheckingRType t)
     end
+
 (* 
     fun cTypeToRType (t : CType)  : RType = 
     let 
