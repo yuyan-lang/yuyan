@@ -341,20 +341,18 @@ infix 5 <?>
                         checkType ctx t1 CUniverse >>= (fn ct1 => 
                             synthesizeType (
                                     case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, JTypeLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn synT => 
-                                 case synT of 
-                                    (ct2, CUniverse) => Success(CPiType(ct1, evoption, ct2), CUniverse)
-                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse ctx
+                                ) t2 >>= (fn (ct2, synT) => 
+                                    assertTypeEquiv ctx t2 synT CUniverse >> 
+                                        (Success(CPiType(ct1, evoption, ct2), CUniverse))
                             )
                         )
                     | RSigmaType(t1, evoption, t2, soi) =>
                         checkType ctx t1 CUniverse >>= (fn ct1 => 
                             synthesizeType (
                                     case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, JTypeLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn synT => 
-                                 case synT of 
-                                    (ct2, CUniverse) => Success(CSigmaType(ct1, evoption, ct2), CUniverse)
-                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse ctx
+                                ) t2 >>= (fn (ct2, synT) => 
+                                    assertTypeEquiv ctx t2 synT CUniverse >> 
+                                        (Success(CSigmaType(ct1, evoption, ct2), CUniverse))
                                 )
                             )
                     | RProd(ltsl, sepl) => 
@@ -405,7 +403,7 @@ infix 5 <?>
                     ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx) *)
 
             and assertTypeEquiv (ctx : context) (expr: RExpr) (synthesized : CType) (checked : CType) : unit witherrsoption =
-                typeEquiv expr ctx [] (synthesized) checked  >>= (fn tpequiv => if tpequiv
+                typeEquiv expr ctx []  synthesized checked  >>= (fn tpequiv => if tpequiv
                     then Success() 
                     else Errors.typeMismatch expr (synthesized) checked ctx
                 )
@@ -595,10 +593,9 @@ infix 5 <?>
                         checkType ctx t1 CUniverse >>= (fn ct1 => 
                             synthesizeType (
                                     case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, JTypeLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn synT => 
-                                 case synT of 
-                                    (ct2, CUniverse) => Success(CPiType(ct1, evoption, ct2) )
-                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse ctx
+                                ) t2 >>= (fn (ct2, synT) => 
+                                    assertTypeEquiv ctx t2 synT CUniverse >> 
+                                        (Success(CPiType(ct1, evoption, ct2)))
                             )
                         ))
                     | RSigmaType(t1, evoption, t2, soi) =>
@@ -606,10 +603,9 @@ infix 5 <?>
                         checkType ctx t1 CUniverse >>= (fn ct1 => 
                             synthesizeType (
                                     case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse,JTypeLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn synT => 
-                                 case synT of 
-                                    (ct2, CUniverse) => Success(CSigmaType(ct1, evoption, ct2) )
-                                    | (_, errt) => Errors.typeMismatch t2 errt CUniverse ctx
+                                ) t2 >>= (fn (ct2, synT) => 
+                                    assertTypeEquiv ctx t2 synT CUniverse >> 
+                                        (Success(CPiType(ct1, evoption, ct2) ))
                                 )
                             ))
                     | RProd(ltsl, sepl) => 

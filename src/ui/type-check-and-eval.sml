@@ -31,7 +31,11 @@ open ReplOptions
                             (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild", "docs"]))
                             cm ; OS.Process.success))
                     else if getTypeCheckOnly options
-                    then (Time.now(), OS.Process.success)
+                    then ( let val allErrors = (List.concat (List.map (fn (x, l) => l) (CompilationManager.collectAllDiagnostics cm)))
+                    val _ = if length allErrors > 0 then DebugPrint.p (PrintDiagnostics.showErrs allErrors cm) else ()
+                    in
+                        (Time.now(), if length allErrors = 0 then OS.Process.success else OS.Process.failure)
+                    end)
                     else
                             let
                                 val exec = CompilationManager.makeExecutable entryFileAbsFp cm (#optimize options) (getEnableProfiling options) 

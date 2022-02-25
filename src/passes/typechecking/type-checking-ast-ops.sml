@@ -204,7 +204,7 @@ infix 5 =/=
             | CLam(ev, e, CTypeAnn t) => 
             fmap CLam(==/=(Success ev, recur e, fmap CTypeAnn (recur t)))
             | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
-    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingType ^"\n") *)
+    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
         res
     end
@@ -370,12 +370,13 @@ infix 5 =/=
                 nn, substTypeInCExpr (CVar([nn], NONE)) [tv'] t2')end
 
         
-        in
+        val result = 
         if List.exists (fn ((p1, p2):(CExpr * CExpr)) => p1 = t1 andalso p2 = t2) eqctx then Success(true)
         else
 (normalizeType e tcctx t1 =/= normalizeType e tcctx t2) >>=  (fn (t1, t2) => 
     (case (t1, t2) of
-              (CVar (t1, _), CVar (t2, _)) => Success (t1 ~~~= t2)
+              (CVar (t1, NONE), CVar (t2, NONE)) => Success (t1 ~~~= t2)
+            | (CVar (t1, _), CVar (t2, _)) => raise Fail "normalize should have replaced variables by their definitions"
             | (CProd l1, CProd l2) =>  typeEquivLst l1 l2
             | (CLazyProd l1, CLazyProd l2) =>  typeEquivLst l1 l2
             | (CSum l1, CSum l2) =>   typeEquivLst l1 l2
@@ -393,6 +394,10 @@ infix 5 =/=
             | (CUniverse, CUniverse) => Success(true)
             | _ => Success(false))
             )
+        (* val _  = DebugPrint.p ("Type equiv result of " ^ PrettyPrint.show_typecheckingCType t1 ^ " and " ^ PrettyPrint.show_typecheckingCType t2
+         ^ " is " ^ PrettyPrint.show_static_error result Bool.toString) *)
+        in 
+        result
     end)
 
 

@@ -119,6 +119,8 @@ struct
         , inlineCommentOp (* allow comment in types, but not important anyways, as both 
         will soon be merged together *)
         , lazyProdTypeOp
+        , piTypeOp, 
+        sigmaTypeOp
         ]
     val allTypeAndExprOps = allTypeOps @ [ 
         (* unitExprOp, *)

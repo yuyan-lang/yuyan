@@ -58,4 +58,5 @@ open StaticErrorStructure
     fun showErrs (errl : errlist)(cm : CompilationStructure.compilationmanager) : string = 
     String.concatWith "\n" (map (fn e => showErr e cm) errl) ^ "\n"
 
+
 end
