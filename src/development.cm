@@ -98,6 +98,8 @@ Library
   structure CPSBuiltin
   structure CPSHelper 
   structure TypeCheckingContext
+  structure TypeCheckingErrors
+  structure TypeCheckingPatterns
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -154,9 +156,11 @@ is
   passes/preprocess/signature-parsing-orchestrator.sml
   passes/preprocess/preprocessing-operators.sml
   passes/preprocess/structure-name.sml
+  passes/typechecking/type-checking-errors.sml
   passes/typechecking/type-checking-ast.sml
   passes/typechecking/type-checking-pass.sml
   passes/typechecking/type-checking-context.sml
+  passes/typechecking/type-checking-patterns.sml
   passes/typechecking/type-checking-ast-ops.sml
   passes/typechecking/type-checking-entry.sml
   passes/typechecking/identifier-name-resolution.sml

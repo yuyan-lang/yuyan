@@ -78,7 +78,7 @@ infix 5 =/=
         | RCase (e, l, (soiTop, soiSep, soiClause))=>
                 reconstructWithArgs soiTop [reconstructFromRExpr e, 
                     constructWithSep (
-                        ListPair.map (fn ((a,b,c), operClause) => reconstructWithArgs operClause [a,b, reconstructFromRExpr c]) (l, soiClause)
+                        ListPair.map (fn ((b,c), operClause) => reconstructWithArgs operClause [reconstructFromRExpr b, reconstructFromRExpr c]) (l, soiClause)
                     ) soiSep
                 ]
         | RLam (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]

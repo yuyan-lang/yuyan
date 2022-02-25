@@ -165,15 +165,14 @@ struct
                                 in 
                             elaborateOpASTtoExpr (hd l) ctx >>= (fn hdexpr => 
                             collectAll (map (fn x => case x of
-                                                                OpAST(oper, [lbl, evar, expr]) => 
+                                                                OpAST(oper, [pattern, expr]) => 
                                                                 if oper ~=** caseClauseOp
-                                                                then elaborateUnknownName lbl >>= (fn label => 
-                                                                    elaborateNewName evar >>= (fn binding => 
-                                                                elaborateOpASTtoExpr expr ctx >>= (fn body => 
-                                                                    Success ((label, binding, body), oper)
-                                                                )
-                                                                    )
-                                                                ) 
+                                                                then 
+                                                                    elaborateOpASTtoExpr pattern ctx >>= (fn pattern => 
+                                                                        elaborateOpASTtoExpr expr ctx >>= (fn body => 
+                                                                            Success ((pattern, body), oper)
+                                                                        )
+                                                                    ) 
                                                                 else 
                                                                     genSingletonError (reconstructOriginalFromOpAST x) "期待一个分析分句(expected a case clause)" NONE
                                                                 (* raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x) *)

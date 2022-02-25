@@ -1,0 +1,4 @@
+structure TypeCheckingErrors =
+struct
+    
+end

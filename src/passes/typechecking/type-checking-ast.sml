@@ -36,7 +36,8 @@ structure TypeCheckingAST = struct
                     | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
                     | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
-                    | CCase of (CTypeAnn (*type is Sum *) * CExpr) * (Label * EVar * CExpr) list * CTypeAnn (* type is result type *)
+                    | CCase of (CTypeAnn (*type is Sum *) * CExpr) * 
+                        (CExpr (* pattern *) * CExpr) list * CTypeAnn (* type is result type *)
                     | CLam of  EVar * CExpr * CTypeAnn (* type is Func *)
                     | CApp of  CExpr * CExpr * CTypeAnn (* type is Func *)
                     | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)
@@ -106,7 +107,7 @@ structure TypeCheckingAST = struct
                     | RLazyProj of RExpr * Label * sourceOpInfo
                     | RInj of Label * RExpr * sourceOpInfo
                     | RIfThenElse of RExpr * RExpr * RExpr * sourceOpInfo
-                    | RCase of RExpr * (Label * EVar * RExpr) list * (sourceOpInfo  (* top case *)
+                    | RCase of RExpr * ( RExpr (* pattern *) * RExpr (* body *)) list * (sourceOpInfo  (* top case *)
                             * sourceOpInfo list  (* case separator *)
                             * sourceOpInfo list (* case clause *))
                     | RLam of EVar * RExpr * sourceOpInfo

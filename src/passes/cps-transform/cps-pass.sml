@@ -96,15 +96,16 @@ exception CPSInternalError
                     (fn v => CPSInj(l, klookupLabel ls l, CPSValueVar v, kcc cc)
             )
             | CCase((CTypeAnn(CSum ls), e),cases, resType) => 
-            (cpsTransformExpr ctx e) (fn v => 
+            raise Fail "ni99"
+            (* (cpsTransformExpr ctx e) (fn v => 
                     CPSCases (CPSValueVar v, (List.tabulate(List.length ls, 
                     fn index => let val  (label,t) = List.nth(ls, index)
                                     val caseIndex = klookupLabel3 cases label
                                     val (_, ev, e) = List.nth(cases, caseIndex)
                                 in kcc (fn boundId => cpsTransformExpr (
                                      ([ev], PlainVar boundId)::ctx) e cc (* I don't understand why this works, it seems that should wrap cc in a separate computation!!!! TODO: investigate *)
-                                ) end)))
-            )
+                                ) end))) *)
+            (* ) *)
             | CLam(ev, eb, t) => 
                 CPSAbs (kcc2' (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar (CPSVarLocal arg)))::ctx) eb 

@@ -12,7 +12,8 @@ open StaticErrorStructure
     ^ ((case defop of JTDefinition(def) =>  " (定义) "
         | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
         | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
-        | JTLocalBinder => "局部绑定"
+        | JTLocalBinder => "（局部绑定）"
+        | JTPending => "（pending）"
     ) ^ 
         (if full 
     then (case defop of JTDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def 

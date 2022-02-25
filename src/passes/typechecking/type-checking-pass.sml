@@ -225,7 +225,7 @@ infix 5 <?>
                     | CVar(v, vinfo) => (case vinfo of 
                         CVTConstructor (name, CConsInfoTypeConstructor) =>  Success(CConsInfoElementConstructor name)
                         | CVTDefinition (v') => traceVarOnly errReporting v'
-                        | CVTBinder => Errors.notATypeConstructor errReporting ctx
+                        | _ => Errors.notATypeConstructor errReporting ctx
                     )
                     | _ => Errors.notATypeConstructor errReporting ctx
 
@@ -746,7 +746,7 @@ infix 5 <?>
                     normalizeType t ctx (rTypeToCType ctx t)
                     (* (applyContextToType ctx (rTypeToCType ctx t))  *)
                     >>= (fn normalizedType => 
-                    typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, JTLocalBinder, NONE)) ctx) ss (acc))
+                    typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, JTPending, NONE)) ctx) ss (acc))
                 end
                 (* | RTermMacro(n, e) :: ss => 
                     synthesizeType ctx (e) >>= 

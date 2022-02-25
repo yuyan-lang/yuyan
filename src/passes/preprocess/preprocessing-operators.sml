@@ -75,7 +75,7 @@ struct
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 350 []
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
     val universalTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 340 [1]
-    val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 320 [1]
+    val existentialTypeOp  = Operators.parseOperatorStr "存在〇而〇" true false 320 [1]
     val piTypeOp  = Operators.parseOperatorStr "化〇者〇而〇" true false 350 [3] (* Π x : T. T *)
     val sigmaTypeOp  = Operators.parseOperatorStr "有〇者〇还〇" true false 350 [3] (* Σ x : T. T *)
     (* val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 [] *)
@@ -92,7 +92,7 @@ struct
     val foldExprOp = Operators.parseOperatorStr "卷〇" true false 660 []
     val unfoldExprOp = Operators.parseOperatorStr "舒〇" true false 650 []
     val ifThenElseExprOp = Operators.parseOperatorStr "若〇则〇否则〇" true false 645 []
-    val caseClauseOp = Operators.parseOperatorStr "曰〇则有〇而〇" true false 640 [3]
+    val caseClauseOp = Operators.parseOperatorStr "有〇则〇" false false 640 []
     val caseAlternativeOp = Operators.parseOperatorStr "〇或〇" true false 630 []
     val caseExprOp = Operators.parseOperatorStr "鉴〇而〇" true false 620 []
     val typeAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 695 []
