@@ -177,7 +177,7 @@ exception CPSInternalError
             | CFfiCCall (cFuncName, args) => 
                 foldr (fn (arg, acc) => 
                     (fn (prevArgs : cpsvalue list) => 
-                    cpsTransformExpr ctx (CVar (arg, CVarTypeBinder)) (fn argv => 
+                    cpsTransformExpr ctx (CVar (arg, CVTBinder)) (fn argv => 
                             acc (prevArgs@[CPSValueVar argv])
                         )
                     )

@@ -276,9 +276,9 @@ val sst =StructureName.toStringPlain
 fun cst t = "⟦" ^ sta t ^ "⟧"
 in case x of
                       CVar (v, referred) => "" ^ sst v  ^ 
-                      (case referred of CVarTypeDefinition e => "( ==> " ^ se e ^  ")"
-                      | CVarTypeBinder => ""
-                      | CVarTypeConstructor i => "") 
+                      (case referred of CVTDefinition e => "( ==> " ^ se e ^  ")"
+                      | CVTBinder => ""
+                      | CVTConstructor i => "") 
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
@@ -350,7 +350,7 @@ open TypeCheckingAST
 in
   case x of
     TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t 
-    ^ (case defop of JTypeDefinition(def) => "\n" ^ StructureName.toStringPlain e ^ " = " ^ show_typecheckingCExpr def 
+    ^ (case defop of JTDefinition(def) => "\n" ^ StructureName.toStringPlain e ^ " = " ^ show_typecheckingCExpr def 
                     | _ => "")
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t *)
 end

@@ -24,7 +24,7 @@ structure TypeCheckingAST = struct
 
     datatype visibility = Public | Private
 
-    datatype cvartype = CVarTypeBinder | CVarTypeDefinition of CExpr | CVarTypeConstructor of cconstructorinfo
+    datatype cvartype = CVTBinder | CVTDefinition of CExpr | CVTConstructor of StructureName.t * cconstructorinfo (* canonical name and cinfo *)
 
     (* CExpr for checked expr *)
     and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
@@ -169,7 +169,7 @@ structure TypeCheckingAST = struct
 (* these exist here for pretty printing *)
 (* g for generic *)
  (* the term type J may optionally contain the definition *)
- datatype judgmentType = JTypeConstructor of cconstructorinfo | JTypeLocalBinder  | JTypeDefinition of CExpr | JTypePending
+ datatype judgmentType = JTConstructor of cconstructorinfo | JTLocalBinder  | JTDefinition of CExpr | JTPending
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a
                     (* | TermDefJ of StructureName.t * CType * unit *)
 datatype 'a gcontext = Context of StructureName.t * bool * 

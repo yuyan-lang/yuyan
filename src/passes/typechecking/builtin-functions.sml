@@ -3,11 +3,11 @@ structure BuiltinFunctions = struct
 open TypeCheckingAST
 
 val typeBinderA = UTF8String.fromString "甲"
-val typeVarA = CVar ([typeBinderA], CVarTypeBinder)
+val typeVarA = CVar ([typeBinderA], CVTBinder)
 val typeBinderB = UTF8String.fromString "乙"
-val typeVarB = CVar ([typeBinderB], CVarTypeBinder)
+val typeVarB = CVar ([typeBinderB], CVTBinder)
 val typeBinderC = UTF8String.fromString "丙"
-val typeVarC = CVar ([typeBinderC], CVarTypeBinder)
+val typeVarC = CVar ([typeBinderC], CVTBinder)
 
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
 val callccType : CType = CForall (typeBinderB, 

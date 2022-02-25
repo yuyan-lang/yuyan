@@ -9,13 +9,13 @@ open StaticErrorStructure
     "\n当前已定义的值及其类型：\n"  ^(
         let val allDecls = (map (fn x => case x of
     TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
-    ^ ((case defop of JTypeDefinition(def) =>  " (定义) "
-        | JTypeConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
-        | JTypeConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
-        | JTypeLocalBinder => "局部绑定"
+    ^ ((case defop of JTDefinition(def) =>  " (定义) "
+        | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
+        | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
+        | JTLocalBinder => "局部绑定"
     ) ^ 
         (if full 
-    then (case defop of JTypeDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def 
+    then (case defop of JTDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def 
          | _ => "")
     else ""))) m)
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) *)
@@ -62,7 +62,7 @@ open StaticErrorStructure
             | (currentj as TermTypeJ(n1, t1, defop1,  u))::cs => 
                 if StructureName.semanticEqual n1 cname
                 then (case defop1 of 
-                        JTypePending => Context(curSName, v, TermTypeJ(n1, t1, JTypeDefinition newDef, u) :: cs)
+                        JTPending => Context(curSName, v, TermTypeJ(n1, t1, JTDefinition newDef, u) :: cs)
                         | _ => raise Fail ("tcc58: already has definition: " ^ (StructureName.toStringPlain cname))
                     )
                 else 
@@ -84,7 +84,7 @@ open StaticErrorStructure
 
      fun findCtxForDef (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         case (findCtx (Context(curSName, v, ctx)) n) of 
-            SOME(x,t,eop) => (case eop of JTypeDefinition(e) => SOME(x, e) | _ => NONE)
+            SOME(x,t,eop) => (case eop of JTDefinition(e) => SOME(x, e) | _ => NONE)
             | NONE => NONE
 
 (* require lookup to add name qualification if references local structure *)
