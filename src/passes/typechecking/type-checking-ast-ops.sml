@@ -244,7 +244,7 @@ infix 5 =/=
     (* !!! always capture avoiding substitution *)
     (* only used when checking pi types *)
     (* TODO: maybe hereditary substitution *)
-    and substTypeInRType (tS : RType) (x : StructureName.t) (t : RType) = 
+    (* and substTypeInRType (tS : RType) (x : StructureName.t) (t : RType) = 
     let 
         fun captureAvoid f (tv : UTF8String.t) t2 = 
     (* capture avoid (ts. t2) performs substitution [tS/tv] t2 
@@ -270,7 +270,7 @@ infix 5 =/=
                 RPiType (substTypeInRType tS x t1, SOME tv', t2', soi)
             ) tv t2
             | _ => raise Fail "ni272: unsupported expr in type"
-    end
+    end *)
               (* 
             | RProd (l, soi) => RProd  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)
             | RLazyProd (l, soi) => RLazyProd  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)

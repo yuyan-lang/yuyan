@@ -244,35 +244,26 @@ infix 5 <?>
                                         )
                         )
                     )
-                    | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn t => case t of
-                            (ce, CSum ls) => let 
-                            val checkedCases = collectAll (map (fn (pat, e) => 
-                                (lookupLabel ls l) >>= (fn lookedUpType => 
-                                        synthesizeType (addToCtxA (TermTypeJ([ev], lookedUpType, JTLocalBinder, NONE)) ctx) e
-                                    )
-                                ) 
-                            cases)
-                            val casesTypes : CType list witherrsoption =  fmap (map (#2)) checkedCases 
-                            val checkedExprs : CExpr list witherrsoption =  fmap (map (#1)) checkedCases
-                            val returnType : CType witherrsoption = (casesTypes >>= (fn  ctps => typeUnify ctx originalExpr (ctps)))
-                            in 
-                                (* I don't know how to make these look nice, this is just to unroll the witherrsoption *)
-                                checkedCases >>= (fn checkedCases =>
-                                casesTypes >>= (fn casesTypes  =>
-                                checkedExprs >>= (fn checkedExprs => 
-                                returnType >>= (fn returnType =>
-                                Success (CCase ((CTypeAnn(CSum ls), ce), (List.tabulate(length cases, fn i => 
-                                    let val (label, evar, _) = List.nth(cases, i)
-                                    in (label, evar, #1 (List.nth(checkedCases, i)))
-                                    end
-                                    )), CTypeAnn(returnType)), returnType)
+                    | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn (ce, t) => 
+                        normalizeType e ctx t >>= (fn caseObjectTypeNormalized => 
+                            let 
+                                val checkedPatternsAndCases = collectAll (map (fn (pat, e) => 
+                                    checkPattern ctx pat caseObjectTypeNormalized >>= (fn (cpat, newCtx) => 
+                                        synthesizeType newCtx e >>= (fn (synE, synT) => 
+                                            Success(cpat, (synE, synT))
+                                        )
+                                    ))
+                                cases)
+                            in checkedPatternsAndCases >>= (fn l => 
+                                typeUnify ctx originalExpr (map (fn (pat, (synE, synT)) => synT) l) >>= (fn returnType => 
+                                    Success (CCase ((CTypeAnn(caseObjectTypeNormalized), ce), 
+                                        (map (fn (pat, (synE, synT)) => (pat, synE)) l)
+                                    , CTypeAnn(returnType)), returnType)
                                 )
-                                )
-                                )
-                                )
-                            end
-                            | _ => Errors.attemptToCaseNonSum e (#2 t) ctx
                             )
+                            end
+                            )
+                        )
                     | RLamWithType (t, ev, e, soi) => 
                         synthesizeType (addToCtxA (TermTypeJ([ev], rTypeToCType ctx t, JTLocalBinder, NONE)) ctx) e >>= (fn (bodyExpr, returnType) =>
                         Success(CLam(ev, bodyExpr, CTypeAnn(CFunc (rTypeToCType ctx t, returnType))), CFunc(rTypeToCType ctx t, returnType))
@@ -454,15 +445,19 @@ infix 5 <?>
                             )
                         )
                     ))
-                    | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn synt => case synt of
-                            (ce, CSum ls) => 
-                            (collectAll (map (fn (l, ev, e) => 
-                                fmap (fn ce => (l, ev, ce)) 
-                                    ((lookupLabel ls l) >>= (fn lookedUpType => 
-                                        checkType (addToCtxA (TermTypeJ([ev], (lookedUpType) , JTLocalBinder, NONE)) ctx) e tt))
-                                ) cases)) >>= (fn checkedCases  
-                                    => Success(CCase((CTypeAnn(CSum ls), ce), checkedCases , CTypeAnn((tt)))))
-                            | _ => Errors.attemptToCaseNonSum originalExpr (#2 synt) ctx)
+                    | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn (ce, synt) => 
+                         normalizeType e ctx synt >>= (fn caseTpNormalized => 
+                            (collectAll (map (fn (pat, e) => 
+                                checkPattern ctx pat caseTpNormalized >>= (fn (cpat, newCtx) => 
+                                        checkType newCtx e tt >>= (fn checkedCase => 
+                                            Success(cpat, checkedCase)
+                                        )
+                                    )
+                                ) cases)
+                                ) >>= (fn checkedCases  
+                                    => Success(CCase((CTypeAnn(caseTpNormalized), ce), checkedCases , CTypeAnn((tt)))))
+                         ))
+                            (* | _ => Errors.attemptToCaseNonSum originalExpr (#2 synt) ctx) *)
                     | RLam(ev, eb, soi) => (case tt of
                         CFunc(t1,t2) => 
                             checkType (addToCtxA (TermTypeJ([ev], t1, JTLocalBinder, NONE)) ctx) eb t2
