@@ -48,6 +48,6 @@ structure TypeCheckingErrors =
         fun unsupportedPatternType e ctx = exprError e ctx "不支持的模式匹配类型(unsupported pattern type)"
         fun patternArgumentCountMismatch e ctx expected actual = exprError e ctx 
             ("模式匹配参数数量错误，期待" ^ Int.toString expected ^ "个参数，" ^
-            "实际" ^ Int.toString expected ^ "个参数")
+            "实际" ^ Int.toString actual ^ "个参数")
     end
 

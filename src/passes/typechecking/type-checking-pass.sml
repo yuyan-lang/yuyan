@@ -211,6 +211,9 @@ infix 5 <?>
             in 
             (typeInfo =/= consInfo)
             end
+            
+            and checkExprIsType (ctx : context) (e : RType) : CType witherrsoption = 
+                checkType ctx e CUniverse
 
             and synthesizeType (ctx : context)(e : RExpr) : (CExpr * CType) witherrsoption =
             (
@@ -265,9 +268,11 @@ infix 5 <?>
                             )
                         )
                     | RLamWithType (t, ev, e, soi) => 
-                        synthesizeType (addToCtxA (TermTypeJ([ev], rTypeToCType ctx t, JTLocalBinder, NONE)) ctx) e >>= (fn (bodyExpr, returnType) =>
-                        Success(CLam(ev, bodyExpr, CTypeAnn(CFunc (rTypeToCType ctx t, returnType))), CFunc(rTypeToCType ctx t, returnType))
+                    checkExprIsType ctx t >>= (fn absTp => 
+                        synthesizeType (addToCtxA (TermTypeJ([ev], absTp, JTLocalBinder, NONE)) ctx) e >>= (fn (bodyExpr, returnType) =>
+                        Success(CLam(ev, bodyExpr, CTypeAnn(CFunc (absTp, returnType))), CFunc(absTp, returnType))
                         )
+                    )
                     | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn t => case t
                         of (ce1, CFunc (t1, t2)) => 
                         (checkType ctx e2 (t1)) >>= (fn ce2 => 
@@ -275,15 +280,22 @@ infix 5 <?>
                         )
                         | (_, t) => Errors.attemptToApplyNonFunction e (t) ctx
                     )
-                    | RTAbs (tv, e2, soi) =>   synthesizeType ctx  e2 >>= (fn (ce2, bodyType) => 
+                    | RTAbs (tv, e2, soi) =>   synthesizeType 
+                                (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
+                        e2 >>= (fn (ce2, bodyType) => 
                     Success (CTAbs(tv, ce2, CTypeAnn(CForall (tv, bodyType))), CForall (tv, bodyType)) )
-                    | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn st => case st of
-                        (ce2, CForall (tv, tb)) => 
-                            (* important need to normalized before subst *)
-                            (normalizeType t ctx (rTypeToCType ctx t) >>= (fn nt => 
-                                Success(CTApp(ce2, rTypeToCType ctx t, CTypeAnn(CForall(tv, tb))), (substTypeInCExpr nt [tv] (tb)))
-                            ))
-                        | _ => Errors.attemptToApplyNonUniversal e (#2 st) ctx
+                    | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn (ce2, st) => 
+                                normalizeType e2 ctx st >>= (fn nst =>
+                        case nst of
+                            CForall (tv, tb) => 
+                                checkExprIsType ctx t >>= (fn nt => 
+                                    (* important need to normalized before subst *)
+                                    (normalizeType t ctx nt >>= (fn nt => 
+                                        Success(CTApp(ce2, nt, CTypeAnn(CForall(tv, tb))), (substTypeInCExpr nt [tv] (tb)))
+                                ))
+                            )
+                            | _ => Errors.attemptToApplyNonUniversal e (st) ctx
+                             )
                         )
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt  of
                                 (ce1, CExists (tv', tb)) => 
@@ -465,9 +477,12 @@ infix 5 <?>
                         | _ => Errors.expectedFunctionType e (tt) ctx
                         )
                     | RLamWithType (t, ev, eb, soi) => (case tt of
-                        CFunc(t1,t2) => (assertTypeEquiv ctx e (rTypeToCType ctx t) t1 >>
-                            (checkType (addToCtxA (TermTypeJ([ev], t1, JTLocalBinder, NONE)) ctx) eb t2 >>= (fn checkedBody => 
-                                Success(CLam(ev, checkedBody , CTypeAnn(tt))))
+                        CFunc(t1,t2) => (
+                            checkExprIsType ctx t >>= (fn t' => 
+                                assertTypeEquiv ctx e t' t1 >>
+                                (checkType (addToCtxA (TermTypeJ([ev], t1, JTLocalBinder, NONE)) ctx) eb t2 >>= (fn checkedBody => 
+                                    Success(CLam(ev, checkedBody , CTypeAnn(tt))))
+                                    )
                                 )
                             )
                         | _ => Errors.expectedFunctionType e  (tt) ctx
@@ -477,7 +492,7 @@ infix 5 <?>
                             Success(CSeqComp(ce1, ce2, CTypeAnn(t1), CTypeAnn(tt)))
                         ))
                     | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn synt => case synt 
-                        of (ce1, CFunc (t1, t2)) => (
+                        of (ce1, CFunc (t1, t2)) => ( (* TODO: fix normalize synt *)
                         assertTypeEquiv ctx e t2 tt >> (
                                 checkType ctx e2 ( t1) >>= (fn checkedArg => 
                                     Success (CApp(ce1, checkedArg, CTypeAnn(CFunc(t1, t2))))
@@ -487,23 +502,32 @@ infix 5 <?>
                         | _ => Errors.attemptToApplyNonFunction e (#2 synt) ctx)
                     | RTAbs (tv, e2, soi) => (case tt of
                         CForall (tv', tb) => 
-                                checkType ctx e2 (substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] tb) >>= (fn ce2 => 
+                                checkType 
+                                (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
+                                e2 (substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] tb) >>= (fn ce2 => 
                                             Success(CTAbs (tv, ce2, CTypeAnn(tt)))
                                 )
                         | _ => Errors.expectedUniversalType e (tt) ctx
                     )
-                    | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn synt => case synt of
-                        (ce2, CForall (tv, tb)) => (
-                            (* need to normalize type! important! *)
-                            (normalizeType t ctx (rTypeToCType ctx t) >>= (fn nt => 
-                                assertTypeEquiv ctx e (tt) (substTypeInCExpr (rTypeToCType ctx t) [tv] ( tb))
-                            )) >> Success(CTApp(ce2, rTypeToCType ctx t, CTypeAnn(CForall(tv, tb)))))
-                        | _ => Errors.attemptToApplyNonUniversal e (#2 synt) ctx
+                    | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn (ce2, synt) => 
+                    normalizeType e2 ctx synt >>= (fn synt => 
+                        case synt of
+                            (CForall (tv, tb)) => (
+                                checkExprIsType ctx t >>= (fn ctapp => 
+                                    (* need to normalize type! important! *)
+                                    (normalizeType t ctx ctapp >>= (fn nt => 
+                                        assertTypeEquiv ctx e (tt) (substTypeInCExpr ctapp [tv] ( tb))
+                                    )) >> Success(CTApp(ce2, ctapp, CTypeAnn(CForall(tv, tb)))))
+                                )
+                            | _ => Errors.attemptToApplyNonUniversal e (synt) ctx
+                            )
                         )
                     | RPack (t, e2, soi) => (case tt of
                         CExists (tv, tb) => 
-                                checkType ctx e2 (substTypeInCExpr (rTypeToCType ctx t) [tv]  tb) >>= (fn ce2 => 
-                                                Success(CPack(rTypeToCType ctx t, ce2, CTypeAnn(tt))))
+                            checkExprIsType ctx t >>= (fn ctpack =>
+                                checkType ctx e2 (substTypeInCExpr ctpack [tv]  tb) >>= (fn ce2 => 
+                                                Success(CPack(ctpack, ce2, CTypeAnn(tt))))
+                                )
                         | _ => Errors.expectedExistentialType e (tt) ctx
                     )
                     | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn synt => case synt of
@@ -687,10 +711,12 @@ infix 5 <?>
                     then Errors.termTypeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
                     (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)
                     else  *)
-                    normalizeType t ctx (rTypeToCType ctx t)
-                    (* (applyContextToType ctx (rTypeToCType ctx t))  *)
-                    >>= (fn normalizedType => 
-                    typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, JTPending, NONE)) ctx) ss (acc))
+                    checkExprIsType ctx t >>= (fn ct =>
+                        normalizeType t ctx ct
+                        (* (applyContextToType ctx (rTypeToCType ctx t))  *)
+                        >>= (fn normalizedType => 
+                        typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, JTPending, NONE)) ctx) ss (acc))
+                    )
                 end
                 (* | RTermMacro(n, e) :: ss => 
                     synthesizeType ctx (e) >>= 

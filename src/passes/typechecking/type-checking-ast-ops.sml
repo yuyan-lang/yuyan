@@ -169,6 +169,7 @@ infix 5 =/=
 
 
     (* e is the current checking expression, for error reporting *)
+    (* todo : change to weak head normalization only *)
     fun normalizeType (e : RExpr) (ctx : context) (t : CType) : CType witherrsoption  = 
     let 
       fun dereferenceIfPossible (ctx : context)(t : CType) : CType option=
@@ -188,6 +189,7 @@ infix 5 =/=
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
             | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 )
+            | CPiType (t1, hd, t2) => Success(CPiType(t1, hd, t2))
             | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
                 CForall(tv, t1') => (recur t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
                 | _ => genSingletonError (reconstructFromRExpr e) ("期待通用类型(Expected Forall)，却得到了(got)：" ^
@@ -204,6 +206,12 @@ infix 5 =/=
             | CUniverse => Success(CUniverse)
             | CLam(ev, e, CTypeAnn t) => 
             fmap CLam(==/=(Success ev, recur e, fmap CTypeAnn (recur t)))
+            | CApp(e1, e2, _) =>   
+                recur e1 >>= (fn ce1 => 
+                    case ce1 of
+                        CLam(cev, ce1body, _) => recur e2 >>= (fn ce2 => Success(substTypeInCExpr ce2 ([cev]) ce1body))
+                        | _ => (* maybe ce1 is a type constructor *) (Success t)
+                )
             | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -221,7 +229,7 @@ infix 5 =/=
             if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
             then f (tv, t2)
             else f (tv, substTypeInCExpr tS x t2)
-
+        val recur = substTypeInCExpr tS x
     in
         case e of
               CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
@@ -237,6 +245,7 @@ infix 5 =/=
             | CNullType => CNullType
             | CBuiltinType(b) => CBuiltinType(b)
             | CUniverse => CUniverse
+            | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
     | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e)
     end
     and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
@@ -392,6 +401,7 @@ infix 5 =/=
 (normalizeType e tcctx t1 =/= normalizeType e tcctx t2) >>=  (fn (t1, t2) => 
     (case (t1, t2) of
               (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => Success (t1 ~~~= t2)
+            | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => Success (t1 ~~~= t2) (* should we care about the arguments ? *)
             | (CVar (t1, _), CVar (t2, _)) => raise Fail "normalize should have replaced variables by their definitions"
             | (CProd l1, CProd l2) =>  typeEquivLst l1 l2
             | (CLazyProd l1, CLazyProd l2) =>  typeEquivLst l1 l2
@@ -408,6 +418,7 @@ infix 5 =/=
             | (CNullType, CNullType) => Success(true)
             | (CBuiltinType(b1), CBuiltinType(b2)) => Success(b1 = b2)
             | (CUniverse, CUniverse) => Success(true)
+            | (CApp(e1, e2, _), CApp(e1', e2', _) ) => andAlso (recur eqctx e1 e1') (recur eqctx e2 e2')
             | _ => Success(false))
             )
         (* val _  = DebugPrint.p ("Type equiv result of " ^ PrettyPrint.show_typecheckingCType t1 ^ " and " ^ PrettyPrint.show_typecheckingCType t2
@@ -424,7 +435,7 @@ infix 5 =/=
             | JTDefinition e =>  CVTDefinition e
             | JTPending => raise Fail "tcp271: should not be pending, check circular definitions"
 
-    fun rTypeToCType (ctx: context)(t : RType)  : CType = 
+    (* fun rTypeToCType (ctx: context)(t : RType)  : CType = 
     let 
     val recur = rTypeToCType ctx
     in
@@ -443,7 +454,7 @@ infix 5 =/=
             | RBuiltinType(b, soi) => CBuiltinType(b)
             | RUniverse(s) => CUniverse
             | _ => raise Fail ("rTypeToCType not implemented for " ^ PrettyPrint.show_typecheckingRType t)
-    end
+    end *)
 
 (* 
     fun cTypeToRType (t : CType)  : RType = 
