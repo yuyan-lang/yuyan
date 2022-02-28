@@ -161,7 +161,7 @@ infix 5 <?>
     )
     :  RSignature -> CSignature witherrsoption =
     let
-            fun checkConstructorType( ctx : context) (t : RType) : (CType * cconstructorinfo) witherrsoption = 
+            fun checkConstructorType(nameOfCons : UTF8String.t) ( ctx : context) (t : RType) : (CType * cconstructorinfo) witherrsoption = 
             let val typeInfo : CType witherrsoption = 
                 case t of 
                     RPiType(t1, evop, t2, soi) => checkType ctx t1 (CUniverse) >>= (fn ct1 => 
@@ -176,28 +176,49 @@ infix 5 <?>
                     )
                     | _ => checkType ctx t (CUniverse)
 
+                fun countOccurrencesOfElementConstructor(foundTypeConstructorName: StructureName.t) = 
+                List.length (List.filter (fn (TermTypeJ(name, tp, jt, originalName)) => 
+                    case jt of 
+                        JTConstructor(CConsInfoElementConstructor(tcname, _)) => StructureName.semanticEqual tcname foundTypeConstructorName
+                        | _ => false (* TODO: Fix the case of open *)
+                )    (getMapping ctx))
+                 
+
+                fun checkScopeAndIndexAgainstFoundTypeConstructor
+                (errReporting : RExpr)
+                (foundTypeConstructorName : StructureName.t) : cconstructorinfo witherrsoption =
+                    if StructureName.semanticEqual (getCurSName ctx)  (StructureName.getDeclaringScope foundTypeConstructorName)
+                    then Success(CConsInfoElementConstructor(foundTypeConstructorName, 
+                            countOccurrencesOfElementConstructor(foundTypeConstructorName)))
+                    else Errors.elementConstructorScopeError  errReporting ctx
+
 
 
                 (* only trace one level deep*)
                 fun traceVarOnly(errReporting : RExpr) (cexpr : CExpr) =  case cexpr of
                     CUniverse => Success(CConsInfoTypeConstructor)
                     | CVar(v, vinfo) => (case vinfo of 
-                        CVTConstructor (name, CConsInfoTypeConstructor) =>  Success(CConsInfoElementConstructor name)
+                        CVTConstructor (name, CConsInfoTypeConstructor) =>  
+                            (checkScopeAndIndexAgainstFoundTypeConstructor errReporting name)
                         | CVTDefinition (v') => traceVarOnly errReporting v'
                         | _ => Errors.notATypeConstructor errReporting ctx
                     )
                     | _ => Errors.notATypeConstructor errReporting ctx
 
                 fun analyzeVariable(v : StructureName.t) = 
+                let val errReporting = RVar(v)
+                in
                         lookupCtx ctx v  >>= (fn lookedUpJ => 
                                         case  lookedUpJ of
                                             (cname, tp, jinfo) => (case jinfo
                                             of JTConstructor (CConsInfoTypeConstructor) => 
-                                                Success (CConsInfoElementConstructor cname)
+                            (checkScopeAndIndexAgainstFoundTypeConstructor errReporting cname)
                                                 | JTDefinition (v') => (traceVarOnly (RVar(v)) v')
                                                 | _ => Errors.notATypeConstructor (RVar(v)) ctx
                                             )
                         )
+                end
+
                 fun getConsInfo (isCanonical : bool) (t : RType) = 
                 if isCanonical
                 then
@@ -796,7 +817,7 @@ infix 5 <?>
                             )
                 )
                 | RConstructorDecl(name, rtp) :: ss => 
-                    checkConstructorType ctx rtp >>= (fn (checkedType, cconsinfo) => 
+                    checkConstructorType name ctx rtp >>= (fn (checkedType, cconsinfo) => 
                     
                         typeCheckSignature (addToCtxR(TermTypeJ([name], checkedType, JTConstructor cconsinfo, NONE)) ctx) ss
                         (acc@[CConstructorDecl((getCurSName ctx)@[name], checkedType, cconsinfo)])

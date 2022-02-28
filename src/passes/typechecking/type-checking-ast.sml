@@ -75,7 +75,9 @@ structure TypeCheckingAST = struct
     
 
     and cconstructorinfo = CConsInfoTypeConstructor 
-                        | CConsInfoElementConstructor of StructureName.t (* absolute structure name of the type constructor *)
+                        | CConsInfoElementConstructor of (StructureName.t (* absolute structure name of the type constructor *)
+                                                        * int  (* unique identifier of the current constructor, starting with 1 *)
+                                                        )
 
 (* all types are fully normalized *)
     and CDeclaration = 

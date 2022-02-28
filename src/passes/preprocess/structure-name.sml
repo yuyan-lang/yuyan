@@ -23,6 +23,11 @@ val separatorCharDebug = UTF8String.fromString "->"
     fun searchPathName() = [UTF8String.fromString ("《《搜索路径" ^ Int.toString(UID.next()) ^ "》》")]
 
 
+    fun getDeclaringScope (s : structureName) = 
+        case s of 
+        [] => raise Fail "sn28: cannot get declaring scope name of empty structure"
+        | _ => List.take(s, length s - 1)
+
     fun semanticEqual (s1 : structureName) (s2 : structureName) = 
     case (s1, s2) of
          ([], []) => true

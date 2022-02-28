@@ -49,5 +49,6 @@ structure TypeCheckingErrors =
         fun patternArgumentCountMismatch e ctx expected actual = exprError e ctx 
             ("模式匹配参数数量错误，期待" ^ Int.toString expected ^ "个参数，" ^
             "实际" ^ Int.toString actual ^ "个参数")
+        fun elementConstructorScopeError e ctx = exprError e ctx "元素构造器必须与其对应的类型构造器处于同一结构中(element constructor must live in the same scope as the corresponding type constructor)"
     end
 
