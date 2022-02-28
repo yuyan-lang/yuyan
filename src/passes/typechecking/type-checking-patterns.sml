@@ -19,12 +19,7 @@ structure TypeCheckingPatterns = struct
     (* returns a new context with the bindings added from well defined pattern  *)
     fun checkPattern(ctx : context) ( pat : RExpr ) (analysisType : CType) : (CPattern * context) witherrsoption = 
     let val (head,spine) = toHeadSpineForm ctx pat
-        fun countSpineTypeArgs (tp : CType) = 
-            case tp of 
-                (* CFunc(t1, t2) => 1 + countSpineTypeArgs t2 *)
-                 CPiType(t1, _, t2) => 1 + countSpineTypeArgs t2
-                | _ => 0
-            
+
         fun checkSpineAgainstType (accCVar : CPattern list) (ctx :  context) (tp : CType) (restSpine : RExpr list) : (CPattern list * context) witherrsoption = 
             case (tp, restSpine) of 
                 (* (CFunc(t1, t2 ), (RVar([hd]):: tls)) => 

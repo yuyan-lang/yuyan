@@ -455,7 +455,12 @@ infix 5 =/=
             | JTLocalBinder =>  CVTBinder
             | JTDefinition e =>  CVTDefinition e
             | JTPending => raise Fail "tcp271: should not be pending, check circular definitions"
-
+    fun countSpineTypeArgs (tp : CType) = 
+            case tp of 
+                (* CFunc(t1, t2) => 1 + countSpineTypeArgs t2 *)
+                 CPiType(t1, _, t2) => 1 + countSpineTypeArgs t2
+                | _ => 0
+            
     (* fun rTypeToCType (ctx: context)(t : RType)  : CType = 
     let 
     val recur = rTypeToCType ctx
