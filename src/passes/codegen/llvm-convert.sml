@@ -156,10 +156,13 @@ in
             end
             | CPSCases(v, vkl) => 
                 let val indexLoc = UID.next()
-                val recurResult = map (fn (v', k) => 
-                ([], vaccess v (fn accessedv => [LLVMArrayAccess((cpsVarToLLVMLoc v'),accessedv,2)])):::
-                recur k) vkl
-                val recurComps = map (fn x => #2 x) recurResult
+                val recurResult = map (fn (index, arglist, k) => 
+                ([], vaccess v (fn accessedv => 
+                List.tabulate(length arglist, fn i => 
+                    LLVMArrayAccess((cpsVarToLLVMLoc (List.nth(arglist, i))),accessedv,i+1) (* first location stores in the index of the constructor
+                    and the rest stores the arguments *)
+                )))::: recur k) vkl
+                val recurComps = ListPair.mapEq (fn ((idx, arglist, k), x) => (idx, #2 x)) (vkl, recurResult)
                 val recurDecls = List.concat (map (fn x => #1 x) recurResult)
                 in (recurDecls, 
                     vaccess v (fn v' => [LLVMArrayAccess(LLVMLocationLocal indexLoc,v',0)])

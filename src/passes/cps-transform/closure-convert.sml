@@ -39,7 +39,11 @@ in
                 in (fv v *** kfree, CPSProj(v, i, k'))
                 end
         | CPSCases(v, ks) => 
-            let val fks' = map cck ks
+            let val fks' = map (fn (index, args, body) => 
+                let val (cfree, c') = closureConvert body
+                in (remove cfree (List.concat (List.map cpsvarToL args)), (index, args, c'))
+                end
+            ) ks
             in ((fv v *** (foldr (op***) (fromList []) (map (fn x => #1 x) fks')),
                 CPSCases(v, map (fn x => #2 x) fks')))
             end

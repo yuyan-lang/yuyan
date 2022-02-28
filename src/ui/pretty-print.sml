@@ -413,7 +413,9 @@ case c of
               CPSUnit(k) => "()" ^ sk k
             | CPSProj(v, i, k) => "(" ^ sv v ^ " . " ^ si i ^ ")" ^ sk k
             | CPSCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
-    String.concatWith "; " (map (fn (i, c) => show_cpsvar i ^ " => " ^ sc c) l)
+    String.concatWith "; " (map (fn (index, arglist, c) => Int.toString index  ^ " ⋅ " ^
+    String.concatWith ","  (map show_cpsvar arglist)
+    ^ " => " ^ sc c) l)
     ^ "}"
             | CPSUnfold(v, k) => "unfold (" ^ sv v ^ ")" ^ sk k
             | CPSApp(a, (b, c)) => "ap("^ sv a ^ ",("^ sv b ^ ", " ^ sv c^"))"
