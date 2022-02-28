@@ -97,16 +97,31 @@ exception CPSInternalError
                     (fn v => CPSInj(l, klookupLabel ls l, CPSValueVar v, kcc cc)
             )
             | CCase((_, e),cases, resType) => 
-            raise Fail "ni99"
-            (* (cpsTransformExpr ctx e) (fn v => 
-                    CPSCases (CPSValueVar v, (List.tabulate(List.length ls, 
-                    fn index => let val  (label,t) = List.nth(ls, index)
-                                    val caseIndex = klookupLabel3 cases label
-                                    val (_, ev, e) = List.nth(cases, caseIndex)
-                                in kcc (fn boundId => cpsTransformExpr (
-                                     ([ev], PlainVar boundId)::ctx) e cc (* I don't understand why this works, it seems that should wrap cc in a separate computation!!!! TODO: investigate *)
-                                ) end))) *)
-            (* ) *)
+            (cpsTransformExpr ctx e) (fn v => 
+                    CPSCases (CPSValueVar v, (map (fn (pat, body) =>
+                        case pat of 
+                            CPatVar x => raise Fail "ni103: cps unsupported (yet) patterns"
+                            | CPatHeadSpine((hdname, cinfo), spinepats) => 
+                                (case cinfo of 
+                                    CConsInfoElementConstructor(_, index) => 
+                                    let 
+                                        val names = map (fn spinepat => 
+                                            case spinepat of 
+                                                CPatVar x => (x, CPSVarLocal (UID.next()))
+                                                | _ => raise Fail "ni111: cps unsupported patterns"
+                                        ) spinepats
+                                        in 
+                                        (index, 
+                                        map (fn x => (#2 x)) names,
+                                        cpsTransformExpr (
+                                            (map (fn (name, var) => ([name], PlainVar var)) names)@ctx
+                                        ) body cc
+                                        )
+                                        end
+                                    | _ => raise Fail "ni107: unsupported patterns"
+                                    )
+                                ) cases)) 
+            )
             | CLam(ev, eb, t) => 
                 CPSAbs (kcc2' (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar (CPSVarLocal arg)))::ctx) eb 
@@ -130,7 +145,12 @@ exception CPSInternalError
             | CSeqComp(e1, e2, _, _) =>
                 cpsTransformExpr ctx e1 (fn v1 => 
                  cpsTransformExpr ctx e2 cc)
-            | CTAbs (tv, e2, _) => cpsTransformExpr ctx e2 cc
+            | CTAbs (tv, e2, _) => 
+            let  (* TODO: erase type args *)
+            in CPSUnit(kcc (fn v => 
+                cpsTransformExpr (([tv], PlainVar v)::ctx) e2 cc
+            ))
+            end
             | CTApp (e2, t, _) => cpsTransformExpr ctx e2 cc
             | CPack (t, e2, et) => cpsTransformExpr ctx e2 cc
             | COpen ((et, e1), (tv, ev, e2), rt) => 
@@ -219,7 +239,8 @@ exception CPSInternalError
         )
 
         handle ListSearchUtil.NotFoundSName sname => 
-            (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " not found \n");
+            (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " ( " ^ 
+            PrettyPrint.show_utf8strings sname ^ " ) not found \n");
             raise CPSInternalError)
         handle CPSInternalError =>
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");

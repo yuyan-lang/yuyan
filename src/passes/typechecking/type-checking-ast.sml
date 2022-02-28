@@ -38,7 +38,7 @@ structure TypeCheckingAST = struct
                     | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
                     | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
-                    | CCase of (CTypeAnn (*type is Sum *) * CExpr) * 
+                    | CCase of (CTypeAnn (*type is to be pattern matched *) * CExpr) * 
                         (CPattern (* pattern *) * CExpr) list * CTypeAnn (* type is result type *)
                     | CLam of  EVar * CExpr * CTypeAnn (* type is Func *)
                     | CApp of  CExpr * CExpr * CTypeAnn (* type is Func *)

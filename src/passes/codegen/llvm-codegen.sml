@@ -262,7 +262,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
                     (* since the first subsequent instruction is a label, we need a ternimation instruction *)
                 ["switch i64 "
                 ^ toLocalVar realV 
-                ^ " label " ^ toBlockNameJump defaultBlockName
+                ^ ", label " ^ toBlockNameJump defaultBlockName
                 ^ " [ "
                 ^ String.concatWith  " " (
                     List.tabulate(numblocks, fn i => let
