@@ -256,7 +256,7 @@ struct
                         end)
                     else
                     if oper ~=** functionTypeOp
-                    then fmap RFunc (==/=((elaborateOpASTtoType (hd l) ctx) ,(elaborateOpASTtoType (snd l) ctx), operSuc))
+                    then fmap RPiType (===/=((elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
                     if oper ~=** typeInstantiationOp
                     then fmap RTypeInst (==/=((elaborateOpASTtoType (hd l) ctx) , (elaborateOpASTtoType (snd l) ctx), operSuc))

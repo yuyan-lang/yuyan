@@ -63,7 +63,7 @@ structure TypeCheckingAST = struct
                     | CLazyProd of (Label * CExpr) list
                     | CNullType
                     | CSum of (Label * CExpr) list
-                    | CFunc of CExpr * CExpr
+                    (* | CFunc of CExpr * CExpr *)
                     | CTypeInst of CExpr * CExpr
                     | CForall of TVar * CExpr
                     | CExists of TVar * CExpr
@@ -139,7 +139,7 @@ structure TypeCheckingAST = struct
                     | RLazyProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RSum of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RNullType of UTF8String.t (* source info *)
-                    | RFunc of RExpr * RExpr * sourceOpInfo
+                    (* | RFunc of RExpr * RExpr * sourceOpInfo *)
                     | RTypeInst of RExpr * RExpr * sourceOpInfo
                     | RForall of TVar * RExpr * sourceOpInfo
                     | RExists of TVar * RExpr * sourceOpInfo 

@@ -21,18 +21,18 @@ structure TypeCheckingPatterns = struct
     let val (head,spine) = toHeadSpineForm ctx pat
         fun countSpineTypeArgs (tp : CType) = 
             case tp of 
-                CFunc(t1, t2) => 1 + countSpineTypeArgs t2
-                | CPiType(t1, _, t2) => 1 + countSpineTypeArgs t2
+                (* CFunc(t1, t2) => 1 + countSpineTypeArgs t2 *)
+                 CPiType(t1, _, t2) => 1 + countSpineTypeArgs t2
                 | _ => 0
             
         fun checkSpineAgainstType (accCVar : CPattern list) (ctx :  context) (tp : CType) (restSpine : RExpr list) : (CPattern list * context) witherrsoption = 
             case (tp, restSpine) of 
-                (CFunc(t1, t2 ), (RVar([hd]):: tls)) => 
+                (* (CFunc(t1, t2 ), (RVar([hd]):: tls)) => 
                 checkSpineAgainstType (accCVar@[CPatVar(hd)]) 
                     (addToCtxA (TermTypeJ ([hd], t1, JTLocalBinder, NONE)) ctx)
                     t2 tls
-                | (CFunc(t1, t2 ), (uns::tls)) => Errors.unsupportedPatternType uns ctx
-                | (CPiType(t1, evop, t2 ), (RVar([hd]):: tls)) => 
+                | (CFunc(t1, t2 ), (uns::tls)) => Errors.unsupportedPatternType uns ctx *)
+                 (CPiType(t1, evop, t2 ), (RVar([hd]):: tls)) => 
                 checkSpineAgainstType (accCVar@[CPatVar(hd)])
                                       (addToCtxA (TermTypeJ ([hd], t1, JTLocalBinder, NONE)) ctx)
                                       (case evop of SOME(x) => substTypeInCExpr (CVar([hd], CVTBinder)) ([x]) t2 | NONE => t2 )

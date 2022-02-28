@@ -221,7 +221,7 @@ RVar v => sst v
                     | RLazyProd (l,soi) => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | RNullType(soi) => "0"
                     | RSum (l,soi) =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | RFunc (t1, t2,soi) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    (* | RFunc (t1, t2,soi) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" *)
                     | RTypeInst (t1, t2,soi) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
                     | RForall(t1, t2,soi) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | RExists (t1, t2,soi) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
@@ -278,7 +278,8 @@ open TypeCheckingAST
   val se = show_typecheckingCExpr
   val ss = UTF8String.toString
   val sst =StructureName.toStringPlain
-  fun cst t = "⟦" ^ sta t ^ "⟧"
+  (* fun cst t = "⟦" ^ sta t ^ "⟧" *)
+  fun cst t = "⟦...⟧"
   fun show_cpattern (p : CPattern) =
     case p of 
       CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ String.concatWith " " (map show_cpattern sp) ^ ")"
@@ -286,7 +287,7 @@ open TypeCheckingAST
   val sp = show_cpattern
 in case x of
                       CVar (v, referred) => "" ^ sst v  ^ 
-                      (case referred of CVTDefinition e => "( ==> " ^ se e ^  ")"
+                      (case referred of CVTDefinition e => "( >>>> " ^ se e ^  ")"
                       | CVTBinder => ""
                       | CVTConstructor i => "") 
                     | CUnitExpr => "⟨⟩"
@@ -320,14 +321,17 @@ in case x of
                     | CLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | CNullType => "0"
                     | CSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
+                    (* | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" *)
                     | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
                     | CForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CBuiltinType (bi) => show_builtintype bi
-                    | CPiType(t, xop, t2 ) => "(Π " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
-                      st t ^ " . " ^ st t2 ^ ")"
+                    | CPiType(t1, xop, t2 ) => 
+                        (case xop of SOME x => "(Π " ^ ss x ^ " : " ^ 
+                                              st t1 ^ " . " ^ st t2 ^ ")"
+                        | NONE =>  "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" 
+                        )
                     | CSigmaType(t, xop, t2 ) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
                       st t ^ " . " ^ st t2 ^ ")"
                     | CUniverse => "(Set)"

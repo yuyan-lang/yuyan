@@ -200,7 +200,7 @@ exception CPSInternalError
             | CProd l => CPSUnit (kcc cc)
             | CLazyProd l =>  CPSUnit (kcc cc)
             | CSum l =>  CPSUnit (kcc cc)
-            | CFunc (t1,t2) => CPSUnit (kcc cc)
+            (* | CFunc (t1,t2) => CPSUnit (kcc cc) *)
             | CTypeInst (t1,t2) => CPSUnit (kcc cc)
             | CForall (tv,t2) => CPSUnit (kcc cc)
             | CExists (tv,t2) => CPSUnit (kcc cc)

@@ -9,25 +9,27 @@ val typeVarB = CVar ([typeBinderB], CVTBinder)
 val typeBinderC = UTF8String.fromString "丙"
 val typeVarC = CVar ([typeBinderC], CVTBinder)
 
+fun cFunc (t1, t2) = CPiType(t1, NONE, t2)
+
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
 val callccType : CType = CForall (typeBinderB, 
-    CFunc( CFunc( CForall(typeBinderC, CFunc(
+    cFunc( cFunc( CForall(typeBinderC, cFunc(
         typeVarB, typeVarC
     )) , typeVarB), typeVarB)
     )
    
 val newDynClsfdType : CType = 
     CForall(typeBinderB,
-        CFunc(CBuiltinType(BIString),
+        cFunc(CBuiltinType(BIString),
             CProd([
                 ((UTF8String.fromString "创造值"), 
-                    CFunc(typeVarB, CBuiltinType(BIDynClsfd))),
+                    cFunc(typeVarB, CBuiltinType(BIDynClsfd))),
                 ((UTF8String.fromString "分析值"), 
                     CForall(typeBinderC,
-                        CFunc(CProd([
+                        cFunc(CProd([
                             (UTF8String.fromString "值", CBuiltinType(BIDynClsfd)),
-                            (UTF8String.fromString "符合", CFunc(typeVarB, typeVarC)),
-                            (UTF8String.fromString "不符合", CFunc(CUnitType, typeVarC))
+                            (UTF8String.fromString "符合", cFunc(typeVarB, typeVarC)),
+                            (UTF8String.fromString "不符合", cFunc(CUnitType, typeVarC))
                         ])
                         , typeVarC
                     )))
@@ -38,24 +40,24 @@ val newDynClsfdType : CType =
 
     val raiseType : CType = 
         CForall(typeBinderB, 
-            CFunc(CBuiltinType(BIDynClsfd),
+            cFunc(CBuiltinType(BIDynClsfd),
             typeVarB)
         )
     val handleType : CType = 
         CForall(typeBinderB, 
-            CFunc(CProd([
+            cFunc(CProd([
                 ((UTF8String.fromString "尝试"), 
-                    CFunc(CUnitType, typeVarB)),
+                    cFunc(CUnitType, typeVarB)),
                 ((UTF8String.fromString "遇异"),
-                    CFunc(CBuiltinType(BIDynClsfd), 
+                    cFunc(CBuiltinType(BIDynClsfd), 
                     typeVarB
                     )
                 )
             ]), typeVarB)
         )
 
-    val intSubType : CType = CFunc(CBuiltinType(BIInt), CFunc(CBuiltinType(BIInt), CBuiltinType(BIInt)))
-    val intEqType : CType = CFunc(CBuiltinType(BIInt), CFunc(CBuiltinType(BIInt), CBuiltinType(BIBool)))
+    val intSubType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIInt)))
+    val intEqType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIBool)))
 
    fun typeOf (x : BuiltinFunc) : CType = case x of
     BFCallCC => callccType

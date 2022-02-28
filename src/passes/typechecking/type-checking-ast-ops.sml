@@ -16,13 +16,14 @@ infix 5 =/=
     fun ~~~= (a, b) = (StructureName.semanticEqual a b)
     infix 4 ~~~=
 
-    fun freeTVar (t : RType) : StructureName.t list = 
+    (* fun freeTVar (t : RType) : StructureName.t list = 
         case t of
               RVar t => [t]
             | RProd (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
             | RLazyProd (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
             | RSum (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
-            | RFunc (t1,t2, soi) => List.concat (map freeTVar [t1,t2])
+            (* | RFunc (t1,t2, soi) => List.concat (map freeTVar [t1,t2]) *)
+            (* | RFunc (t1,t2, soi) => List.concat (map freeTVar [t1,t2]) *)
             | RTypeInst (t1,t2, soi) => List.concat (map freeTVar [t1,t2])
             | RForall (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
             | RExists (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
@@ -33,7 +34,7 @@ infix 5 =/=
             | RUniverse(s) => []
             | RLamWithType (t, ev, e, soi) => List.concat [freeTVar t, 
             List.filter (fn t => t ~<> [ev]) (freeTVar e)]
-            | _ => raise Fail ("freeTVar " ^ PrettyPrint.show_typecheckingRType t)
+            | _ => raise Fail ("freeTVar " ^ PrettyPrint.show_typecheckingRType t) *)
 
 
     fun freeTCVar (t : CType) : StructureName.t list = 
@@ -42,7 +43,12 @@ infix 5 =/=
             | CProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
-            | CFunc (t1,t2) => List.concat (map freeTCVar [t1,t2])
+            | CPiType (t1,evop, t2) => 
+            freeTCVar t1 @ 
+                (case evop of 
+                    NONE => freeTCVar t2
+                    | SOME(ev) => List.filter (fn t => t ~<> [ev]) (freeTCVar t2)
+                )
             | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
             | CForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
             | CExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
@@ -134,7 +140,7 @@ infix 5 =/=
                 reconstructWithArgs soi [l, reconstructFromRExpr t]
             ) ltsl) sepl
         | RNullType (s) => s
-        | RFunc(t1, t2, soi) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2]
+        (* | RFunc(t1, t2, soi) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2] *)
         | RTypeInst(t1, t2, soi) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2]
         | RForall(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
         | RExists(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
@@ -188,7 +194,7 @@ infix 5 =/=
             | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
-            | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 )
+            (* | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 ) *)
             | CPiType (t1, hd, t2) => Success(CPiType(t1, hd, t2))
             | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
                 CForall(tv, t1') => (recur t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
@@ -236,8 +242,14 @@ infix 5 =/=
             | CProd l => CProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
             | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
             | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
-            | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+            (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
             | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+            | CPiType(t1, evop, t2) => (case evop of 
+                    NONE => CPiType(recur t1, NONE, recur t2)
+                    | SOME(ev) => let val t1' = recur t1
+                                  in captureAvoid (fn (ev', t2') => CPiType(t1', SOME ev', t2')) ev t2
+                                  end
+                )
             | CForall (tv,t2) => captureAvoid CForall tv t2
             | CExists (tv,t2) => captureAvoid CExists tv t2
             | CRho (tv,t2) => captureAvoid CRho tv t2
@@ -406,7 +418,16 @@ infix 5 =/=
             | (CProd l1, CProd l2) =>  typeEquivLst l1 l2
             | (CLazyProd l1, CLazyProd l2) =>  typeEquivLst l1 l2
             | (CSum l1, CSum l2) =>   typeEquivLst l1 l2
-            | (CFunc (t1,t2), CFunc (t1', t2')) => andAlso (recur eqctx t1 t1')  (recur eqctx t2 t2')
+            | (CPiType (t1, ev1op, t2), CPiType (t1', ev2op, t2')) => 
+                (case (ev1op, ev2op) of 
+                    (NONE, NONE) => andAlso (recur eqctx t1 t1') (recur eqctx t2 t2')
+                    | (SOME ev1, SOME ev2) => andAlso (recur eqctx t1 t1') 
+                        (let val (_, ut2, _, ut2') = unifyBinding ev1 t2 ev2 t2'
+                        in recur eqctx ut2 ut2'
+                        end
+                        )
+                    | _ => Success(false)
+                )
             | (CForall (tv,t2), CForall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in recur eqctx t1 t1' end
             | (CExists (tv,t2), CExists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in recur eqctx t1 t1' end
             | (CRho (tv,t2), CRho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
