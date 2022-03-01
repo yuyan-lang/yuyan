@@ -33,6 +33,7 @@ struct
                     | OpUnparsedExpr of MixedStr.t * MixedStr.quoteinfo
                     | OpUnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list * MixedStr.quoteinfo
                     | OpParsedQuotedExpr of OpAST * MixedStr.quoteinfo
+                    | OpParsedPairOfQuotes of MixedStr.quoteinfo
                     | OpParsedDecl of (pJudgment * MixedStr.endinginfo) list * MixedStr.quoteinfo
                     | OpStrLiteral of (UTF8String.t * MixedStr.quoteinfo)
     type preprocessAST = (pJudgment * MixedStr.endinginfo) list

@@ -13,6 +13,7 @@ struct
                   (* | ParsedExpression of Operators.OpAST (* a parsed expression *)
                   | ParsedDeclaration of TypeCheckingAST.Signature  *)
                   | SChar of UTF8Char.t (* top level characters , every thing else is quoted *)
+                  | PairOfQuotes of quoteinfo
     type mixedstr = mixedchar list
     type t = mixedstr
 
@@ -46,6 +47,7 @@ struct
     (* | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"
     | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
     | SChar t => [t]
+    | PairOfQuotes q => putQuoteAround [] q
     end
 
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
@@ -139,7 +141,8 @@ struct
         in res end
 
     fun processSingleQuoted( p : mixedstr)(q as (ql, qr) : quoteinfo) : mixedchar witherrsoption = 
-        if length p = 0 then genSingletonError ([ql, qr]) "名称不可为空" NONE
+        if length p = 0 then  Success(PairOfQuotes(q))
+        (* genSingletonError ([ql, qr]) "名称不可为空" NONE *)
         else
         Success(
             if containsCharTopLevel p SpecialChars.period

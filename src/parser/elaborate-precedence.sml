@@ -71,6 +71,7 @@ struct
                     | (QuotedName (s, qi), l)  => OpParsedQuotedExpr(UnknownOpName s, qi)
                     | (Binding l, [])  => NewOpName l
                     | (QuotedBinding (l, qi), [])  => OpParsedQuotedExpr(NewOpName l, qi)
+                    | (ParsedPairOfQuotes (qi), [])  => OpParsedPairOfQuotes(qi)
                     | (UnparsedExpr (l, qi), [])  => OpUnparsedExpr (l, qi)
                     | (UnparsedDecl (l, qi), [])  => OpUnparsedDecl(l, qi)
                     | (StringLiteral (l, qi), [])  => OpStrLiteral (l, qi)

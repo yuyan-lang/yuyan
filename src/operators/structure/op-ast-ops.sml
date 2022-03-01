@@ -12,6 +12,7 @@ struct
             | OpParsedQuotedExpr (e, q) =>  MixedStr.putQuoteAround  (reconstructOriginalFromOpAST e) q
             | OpParsedDecl (l, q) =>  MixedStr.putQuoteAround (MixedStr.showWithEndingsInfoList l reconstructOriginalFrompJudgment) q
             | OpStrLiteral (s, q) => MixedStr.putQuoteAround  (s) q
+            | OpParsedPairOfQuotes (q) => MixedStr.putQuoteAround [] q
     and reconstructOriginalFrompJudgment (p : pJudgment) : UTF8String.t = 
     case p of 
     PEmptyDecl => []

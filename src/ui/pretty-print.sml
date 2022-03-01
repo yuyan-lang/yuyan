@@ -67,6 +67,7 @@ struct
     (* | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
     | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")" *)
     | SChar t => UTF8Char.toString t
+    | PairOfQuotes t => "(HOLE:)"
     end
     and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)
     and show_mixedstrs(u : (MixedStr.t * MixedStr.endinginfo) list ) : string = "[" ^ String.concatWith ";\n" (map (fn (m, ei) => show_mixedstr m) u) ^ "]"

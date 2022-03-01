@@ -145,6 +145,7 @@ infix 5 =/=
         | RForall(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
         | RExists(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
         | RRho(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
+        | RPairOfQuotes((ql, qr)) => [ql, qr]
         (* | _ => raise Fail ("reconstruct failed for rexpr " ^ PrettyPrint.show_typecheckingRExpr e) *)
     end
     

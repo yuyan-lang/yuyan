@@ -728,6 +728,7 @@ infix 5 <?>
                         checkType (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn ct2 => 
                                 Success(CRho(tv, ct2) )
                             ))
+                    | RPairOfQuotes(soi) => genSingletonError (reconstructFromRExpr originalExpr) "Not supported yet" NONE
                     (* | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
                      ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE *)
                 in res

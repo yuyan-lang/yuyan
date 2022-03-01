@@ -107,9 +107,10 @@ struct
                 SOME f => Success(RBuiltinFunc(f, s))
                 | NONE => Success (RVar [s])
                 )
-            | OpUnparsedExpr x => raise Fail "ecp130"
+            | OpUnparsedExpr x => raise Fail "ecp130: preprocessing parser should have parsed this"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoExpr e ctx
             | OpStrLiteral (l, qi) => Success (RStringLiteral (l, qi))
+            | OpParsedPairOfQuotes(qi) => Success (RPairOfQuotes(qi))
             | OpAST(oper, l) => 
                 let 
                     val operSuc = Success oper
