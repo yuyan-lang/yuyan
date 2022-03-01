@@ -101,6 +101,7 @@ Library
   structure TypeCheckingErrors
   structure TypeCheckingPatterns
   structure TypeCheckingUtil
+  structure ParseASTOps
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -113,6 +114,7 @@ is
   parser/declaration-parser.sml
   parser/parser-options.sig
   parser/parse-ast.sml
+  parser/parse-ast-ops.sml
   parser/mixfix-parser.sml
   parser/precedence-parser.sml
 

@@ -69,7 +69,7 @@ struct
     | SChar t => UTF8Char.toString t
     end
     and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)
-    and show_mixedstrs(u : MixedStr.t list ) : string = "[" ^ String.concatWith ";\n" (map show_mixedstr u) ^ "]"
+    and show_mixedstrs(u : (MixedStr.t * MixedStr.endinginfo) list ) : string = "[" ^ String.concatWith ";\n" (map (fn (m, ei) => show_mixedstr m) u) ^ "]"
 
 fun show_parseopast x = let 
 open ParseAST in 

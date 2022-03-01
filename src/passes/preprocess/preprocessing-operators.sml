@@ -1,6 +1,7 @@
 structure PreprocessingOperators =
 struct
     open Operators
+    open StaticErrorStructure
 
     val structureRefOp = Operators.parseOperatorStr "〇之〇" true false 710 []
 
@@ -32,23 +33,24 @@ struct
     infix 4 ~=
 
 
-    fun parseAssoc (s : UTF8String.t) : associativity = 
+    fun assocErr s = genSingletonError s "关联性(associativity)必须是【左，右，无】中的一种" NONE
+    fun parseAssoc (s : UTF8String.t) : associativity witherrsoption = 
         if length s <> 1 
-        then raise PreprocessMalformedAssoc s
+        then assocErr s
         else
         let val c = hd s
         in 
     (
         (* print ("parseAssoc " ^ UTF8String.toString s ^" \n"); *)
         if c ~= UTF8Char.fromString "左" NONE
-        then LeftAssoc
+        then Success(LeftAssoc)
         else 
         if c ~= UTF8Char.fromString "右" NONE
-        then RightAssoc
+        then Success(RightAssoc)
         else 
         if c ~= UTF8Char.fromString "无" NONE
-        then NoneAssoc
-        else raise PreprocessMalformedAssoc s)
+        then Success(NoneAssoc)
+        else assocErr s)
         end
 
   

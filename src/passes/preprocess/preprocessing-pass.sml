@@ -116,7 +116,8 @@ structure PreprocessingPass = struct
                     val oper = Operators.parseOperator 
                             opName (assoc <> Operators.NoneAssoc) (assoc = Operators.LeftAssoc) pred []
                             in (
-                                (* print (" PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
+                                (* DebugPrint.p ( "opName is " ^ UTF8String.toString opName ^
+                                    " PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
                                 oper) end
         | _ => raise Fail "pp104"
         
@@ -217,11 +218,16 @@ structure PreprocessingPass = struct
                     | (oper, [l1, l2, l3]) =>  
                         if oper ~=** opDeclarationOp
                         then 
-                        let val newOp = POpDeclaration (tp l1, parseAssoc (tp l2), NumberParser.parseInteger (tp l3), (tp l2, tp l3, oper))
-                            val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
-                        in
-                            Success(newOp, newContext)
-                        end
+                        parseAssoc (tp l2) >>= (fn parsedAssoc => 
+                        if NumberParser.isInteger (tp l3)
+                        then
+                            let val newOp = POpDeclaration (tp l1, parsedAssoc, NumberParser.parseInteger (tp l3), (tp l2, tp l3, oper))
+                                val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
+                            in
+                                Success(newOp, newContext)
+                            end
+                        else genSingletonError (tp l3) "优先级必须是一个整数" NONE
+                        )
                         else raise Fail "pp85"
                     | (oper, [l1]) =>  
                         let fun getStructureOpAST (s : MixedStr.t ) : OpAST witherrsoption = 
@@ -306,7 +312,7 @@ structure PreprocessingPass = struct
                         y >>= (fn y' => Success(x :: (#1 y'), #2 y'))
                         infix 5 :::
                 in
-                (* print ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n"); *)
+                (* DebugPrint.p ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n"); *)
                 case s of 
                 [] => Success([], ctx)
                 | ((x,ei) :: xs) => parseJudgment x ctx >>= (fn (parsed, newContext) =>

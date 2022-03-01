@@ -75,5 +75,8 @@ structure NumberParser = struct
 
     fun isNumber(s : UTF8String.t) : bool = 
         List.all (fn c => UTF8String.containsChar (UTF8String.fromString("零一二三四五六七八九点")) (c)) s
+        
+    fun isInteger(s : UTF8String.t) : bool = 
+        List.all (fn c => UTF8String.containsChar (UTF8String.fromString("零一二三四五六七八九")) (c)) s
     
 end

@@ -65,6 +65,7 @@ local
 
         
         ui/pretty-print.sml
+        parser/parse-ast-ops.sml
         passes/typechecking/type-checking-context.sml
         passes/typechecking/type-checking-ast-ops.sml
         build-system/compilation-tokens.sml
