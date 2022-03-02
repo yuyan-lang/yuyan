@@ -5,6 +5,7 @@ structure TypeCheckingPatterns = struct
     open TypeCheckingASTOps
     open TypeCheckingContext
     open TypeCheckingUtil
+    open TypeCheckingUnify
     open StaticErrorStructure
     infix 5 >>
     infix 5 >>=
@@ -33,7 +34,7 @@ structure TypeCheckingPatterns = struct
                                       (case evop of SOME(x) => substTypeInCExpr (CVar([hd], CVTBinder)) ([x]) t2 | NONE => t2 )
                                       tls
                 | (CPiType(t1, evop, t2 ),(uns:: tls)) => Errors.unsupportedPatternType uns ctx
-                | _ => assertTypeEquiv ctx pat tp analysisType >> (Success(accCVar, ctx))
+                | _ => tryTypeUnify ctx pat tp analysisType >>= (fn (ctx) => ((Success(accCVar, ctx)); raise Fail "TODO: unify pattern matching"))
     in
         (* look up the type of the header *)
         case head of 

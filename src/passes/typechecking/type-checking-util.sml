@@ -6,9 +6,7 @@ structure TypeCheckingUtil = struct
     infix 5 >>=
 
     fun assertTypeEquiv (ctx : context) (expr: RExpr) (synthesized : CType) (checked : CType) : unit witherrsoption =
-        typeEquiv expr ctx []  synthesized checked  >>= (fn tpequiv => if tpequiv
-            then Success() 
-            else TypeCheckingErrors.typeMismatch expr (synthesized) checked ctx
-        )
+    TypeCheckingErrors.genericError expr ctx ("Assert Type Equiv called on " ^ PrettyPrint.show_typecheckingCExpr synthesized ^ " and "  ^
+        PrettyPrint.show_typecheckingCExpr checked  ^ ", replace with type unify" )
 
 end

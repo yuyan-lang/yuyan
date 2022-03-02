@@ -143,15 +143,15 @@ infix 5 <?>
 
 
 
-    fun typeUnify (ctx : context) (e : RExpr) (a : CType list) : CType witherrsoption =
+    fun typeEquivList (ctx : context) (e : RExpr) (a : CType list) : CType witherrsoption =
         case a of
             [] => raise Fail ("INternal error: empty sum")
             | [t] => Success t
-            | (x::y :: xs) =>typeEquiv e ctx []  x y  >>= (fn tpequiv => if  tpequiv then typeUnify ctx e (x :: xs)
-            else genSingletonError (reconstructFromRExpr e) "类型不相等"  (SOME 
+            | (x::y :: xs) => assertTypeEquiv ctx e x y  >>= (fn () =>  typeEquivList ctx e (x :: xs)
+            (* else genSingletonError (reconstructFromRExpr e) "类型不相等"  (SOME 
                 ("第一类型：" ^  (PrettyPrint.show_typecheckingCType x) 
-                ^ "\n第二类型：" ^  (PrettyPrint.show_typecheckingCType x)
-            )))
+                ^ "\n第二类型：" ^  (PrettyPrint.show_typecheckingCType x) *)
+            )
             (* raise TypeCheckingFailure ("Type unify failed") *)
     
     structure Errors = TypeCheckingErrors
@@ -296,7 +296,7 @@ infix 5 <?>
                                     ))
                                 cases)
                             in checkedPatternsAndCases >>= (fn (l, ctx) => 
-                                typeUnify ctx originalExpr (map (fn (pat, (synE, synT)) => synT) l) >>= (fn returnType => 
+                                typeEquivList ctx originalExpr (map (fn (pat, (synE, synT)) => synT) l) >>= (fn returnType => 
                                     Success ((CCase ((CTypeAnn(caseObjectTypeNormalized), ce), 
                                         (map (fn (pat, (synE, synT)) => (pat, synE)) l)
                                     , CTypeAnn(returnType)), returnType), ctx)

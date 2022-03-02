@@ -102,6 +102,7 @@ Library
   structure TypeCheckingPatterns
   structure TypeCheckingUtil
   structure ParseASTOps
+  structure TypeCheckingUnify
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -167,6 +168,7 @@ is
   passes/typechecking/type-checking-patterns.sml
   passes/typechecking/type-checking-ast-ops.sml
   passes/typechecking/type-checking-entry.sml
+  passes/typechecking/type-checking-unify.sml
   passes/typechecking/identifier-name-resolution.sml
   passes/typechecking/builtin-functions.sml
   passes/cps-transform/cps-ast.sml

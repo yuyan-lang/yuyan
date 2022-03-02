@@ -73,6 +73,7 @@ local
         parser/declaration-parser.sml
         passes/typechecking/type-checking-errors.sml
         passes/typechecking/type-checking-util.sml
+        passes/typechecking/type-checking-unify.sml
         passes/typechecking/type-checking-patterns.sml
         passes/typechecking/type-checking-pass.sml
         passes/typechecking/type-checking-entry.sml

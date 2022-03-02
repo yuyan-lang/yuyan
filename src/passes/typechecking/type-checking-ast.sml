@@ -187,4 +187,6 @@ datatype 'a gcontext = Context of StructureName.t * bool *
     type mapping = ((StructureName.t * judgmentType) option ) gmapping (* original name and reference (for use with open) *)
     type context = ((StructureName.t * judgmentType) option ) gcontext (* original name and reference(for use with open) *)
 
+
+    type constraints = (CExpr * CExpr) list
 end
