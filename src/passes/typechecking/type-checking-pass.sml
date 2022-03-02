@@ -1,3 +1,7 @@
+(* Implemented from various sources including 
+- Robert Harper, Practical Foundations for Programming Languages, 2016
+- Ulf Norell, Towards a Practical Programming Language based on Dependent Type Theory, 2007
+*)
 structure TypeCheckingPass = struct
 open TypeCheckingAST
 open TypeCheckingASTOps
@@ -756,7 +760,28 @@ infix 5 <?>
                         checkType (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success(CRho(tv, ct2) , ctx)
                             ))
-                    | RPairOfQuotes(soi) => genSingletonError (reconstructFromRExpr originalExpr) "Not supported yet" NONE
+                    | RPairOfQuotes(soi) => 
+                        let 
+                            val  allBindings = getMapping ctx
+                            val metavarname = StructureName.metaVarName()
+                            val resultingTerm = foldl (fn (TermTypeJ(name, tp, jtp, _), acc) => 
+                            (case jtp of 
+                                JTPending => acc (* include pending judgments (declarations whose definition has not been supplied *)
+                                | _ => CApp(acc, CVar(name, judgmentTypeToCVarType name (* TODO : why do we need canonical names? *) 
+                                                jtp), CTypeAnnNotAvailable) (* Do we really need it ? *)
+                            )
+                                ) (CMetaVar metavarname) allBindings
+                            val metaType = foldr (fn (TermTypeJ(name, tp, _, _), acc) => 
+                                let val tempName = UTF8String.fromString ("《《临时名称" ^ Int.toString (UID.next()) ^ "》》")
+                                in 
+                                    CPiType(tp, SOME(tempName), substTypeInCExpr (CVar([tempName], CVTBinder)) name acc)
+                                end
+                            ) (tt) allBindings
+                            val newCtx = addToCtxA (TermTypeJ(metavarname, metaType, JTMetaVarPendingResolve, NONE)) ctx
+                            in
+                                Success(resultingTerm, newCtx)
+                            end
+                        
                     (* | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
                      ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE *)
                 in res

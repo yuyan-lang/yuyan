@@ -30,7 +30,9 @@ structure TypeCheckingAST = struct
                  | CPatVar of UTF8String.t 
     (* CExpr for checked expr *)
     and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
-                                cvartype (* the referenced expression, if not local *)) 
+                                cvartype (* the referenced expression, if not local *)
+                            ) 
+                    | CMetaVar of StructureName.t
                     | CUnitExpr
                     | CTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
@@ -96,6 +98,7 @@ structure TypeCheckingAST = struct
                        (* Do not need open : Require all references to open use fully qualified name  *)
                        (* | COpenStructure of StructureName.t *)
     and CTypeAnn = CTypeAnn of CExpr
+                 | CTypeAnnNotAvailable
 
 
     type CType = CExpr
@@ -175,7 +178,8 @@ structure TypeCheckingAST = struct
 (* these exist here for pretty printing *)
 (* g for generic *)
  (* the term type J may optionally contain the definition *)
- datatype judgmentType = JTConstructor of cconstructorinfo | JTLocalBinder  | JTDefinition of CExpr | JTPending
+ datatype judgmentType = JTConstructor of cconstructorinfo | JTLocalBinder  | JTDefinition of CExpr | JTPending  (* declaration pending definition *)
+                        | JTMetaVarPendingResolve | JTMetaVarResolved of CExpr
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a
                     (* | TermDefJ of StructureName.t * CType * unit *)
 datatype 'a gcontext = Context of StructureName.t * bool * 

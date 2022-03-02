@@ -219,6 +219,7 @@ infix 5 =/=
                         CLam(cev, ce1body, _) => recur e2 >>= (fn ce2 => Success(substTypeInCExpr ce2 ([cev]) ce1body))
                         | _ => (* maybe ce1 is a type constructor *) (Success t)
                 )
+            | CMetaVar v => Success(CMetaVar v)
             | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in

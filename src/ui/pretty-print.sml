@@ -277,7 +277,9 @@ open TypeCheckingAST
       | CConsInfoTypeConstructor => "(type constructor)"
 
   val st = show_typecheckingCType
-  fun sta (CTypeAnn t) = show_typecheckingCType t
+  fun sta ann = case ann of 
+    (CTypeAnn t) => show_typecheckingCType t
+    | CTypeAnnNotAvailable => "ann not available"
   val se = show_typecheckingCExpr
   val ss = UTF8String.toString
   val sst =StructureName.toStringPlain
@@ -293,6 +295,7 @@ in case x of
                       (case referred of CVTDefinition e => "( >>>> " ^ se e ^  ")"
                       | CVTBinder => ""
                       | CVTConstructor i => "") 
+                    | CMetaVar v => "?" ^ sst v
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
