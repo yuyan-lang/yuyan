@@ -106,6 +106,7 @@ case x of
     | UnparsedExpr (l, qi) => "UnparsedExpr "^ show_mixedstr l
     | PlaceHolder => "PlaceHolder "
     | StringLiteral (s, qi) => "StringLiteral " ^ UTF8String.toString s
+    | ParsedPairOfQuotes (qi) => "PairOfQuotes"
 end
 
   fun show_opast (x : OpAST.OpAST) = let 
@@ -233,6 +234,7 @@ RVar v => sst v
                     | RSigmaType(t, xop, t2, soi) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
                       st t ^ " . " ^ st t2 ^ ")"
                     | RUniverse(soi) => "(Set)"
+                    | RPairOfQuotes(soi) => "(_)"
                 end
 
 and show_typecheckingRDecl x = let
