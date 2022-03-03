@@ -11,21 +11,22 @@ val typeVarC = CVar ([typeBinderC], CVTBinder)
 
 fun cFunc (t1, t2) = CPiType(t1, NONE, t2)
 
+fun cForall (tv, t) = CPiType(CUniverse, SOME tv, t)
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
-val callccType : CType = CForall (typeBinderB, 
-    cFunc( cFunc( CForall(typeBinderC, cFunc(
+val callccType : CType = cForall (typeBinderB, 
+    cFunc( cFunc( cForall(typeBinderC, cFunc(
         typeVarB, typeVarC
     )) , typeVarB), typeVarB)
     )
    
 val newDynClsfdType : CType = 
-    CForall(typeBinderB,
+    cForall(typeBinderB,
         cFunc(CBuiltinType(BIString),
             CProd([
                 ((UTF8String.fromString "创造值"), 
                     cFunc(typeVarB, CBuiltinType(BIDynClsfd))),
                 ((UTF8String.fromString "分析值"), 
-                    CForall(typeBinderC,
+                    cForall(typeBinderC,
                         cFunc(CProd([
                             (UTF8String.fromString "值", CBuiltinType(BIDynClsfd)),
                             (UTF8String.fromString "符合", cFunc(typeVarB, typeVarC)),
@@ -39,12 +40,12 @@ val newDynClsfdType : CType =
 
 
     val raiseType : CType = 
-        CForall(typeBinderB, 
+        cForall(typeBinderB, 
             cFunc(CBuiltinType(BIDynClsfd),
             typeVarB)
         )
     val handleType : CType = 
-        CForall(typeBinderB, 
+        cForall(typeBinderB, 
             cFunc(CProd([
                 ((UTF8String.fromString "尝试"), 
                     cFunc(CUnitType, typeVarB)),

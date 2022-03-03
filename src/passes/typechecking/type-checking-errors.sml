@@ -4,9 +4,11 @@ structure TypeCheckingErrors =
     open TypeCheckingASTOps
     open TypeCheckingContext
     val DEBUGSHOWEXPR = true
-        fun typeMismatch e synthesized checked ctx= genSingletonError (reconstructFromRExpr e)
+        fun typeMismatch e synthesized checked detailLeft detailRight
+        ctx= genSingletonError (reconstructFromRExpr e)
                 ((if DEBUGSHOWEXPR then "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`" else "") ^ "类型不匹配(type mismatch) \n 推断的类型(synthesized type) : " ^ PrettyPrint.show_typecheckingCType synthesized
-                ^ " \n 检查的类型(checked type) : " ^ PrettyPrint.show_typecheckingCType checked) (showctxSome ctx)
+                ^ " \n 检查的类型(checked type) : " ^ PrettyPrint.show_typecheckingCType checked
+                ^ " \n 原因：" ^ PrettyPrint.show_typecheckingCType detailLeft ^ " 不等于 " ^ PrettyPrint.show_typecheckingCType detailRight ) (showctxSome ctx)
         fun exprTypeError e tt ctx msg= genSingletonError (reconstructFromRExpr e) 
         ((if DEBUGSHOWEXPR then 
         "`" ^ PrettyPrint.show_typecheckingRExpr e ^ "`:" ^

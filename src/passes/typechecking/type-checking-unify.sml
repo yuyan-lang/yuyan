@@ -12,8 +12,57 @@ infix 4 ~<>
 infix 4 ~~=
 infix 4 ~~~=
 
-    fun typeUnify (e : RExpr) (tcctx : context) (eqctx : (CExpr * CExpr) list) (t1:CExpr) (t2:CExpr)  : (constraints * context) witherrsoption = 
-    raise Fail "ni16 : type unify"
+    fun typeUnify (e : RExpr) (failCallback : CExpr * CExpr -> (constraints * context) witherrsoption)
+     (ctx : context) (t1:CExpr) (t2:CExpr)  : (constraints * context) witherrsoption = 
+    let val recur = typeUnify e failCallback
+        fun fail() = failCallback (t1, t2)
+        fun unifyBinding tv t2 tv' t2' =
+                if tv ~~= tv' then (tv, t2, tv', t2')
+                else let val nn = uniqueName() in
+                (nn, substTypeInCExpr (CVar([nn], CVTBinder)) [tv] t2,
+                nn, substTypeInCExpr (CVar([nn], CVTBinder)) [tv'] t2')end
+        fun unifyBindingOption tv t2 tv' t2' =
+            case (tv, tv') of 
+                (SOME tv, SOME tv') => unifyBinding tv t2 tv' t2'
+                | (NONE, SOME tv') => unifyBinding (uniqueName()) t2 tv' t2
+                | (SOME tv, NONE ) => unifyBinding tv t2 (uniqueName()) t2
+                | (NONE, NONE) => unifyBinding (uniqueName()) t2 (uniqueName()) t2
+
+        fun typeEquivList (ctx : context) (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list) : (constraints * context) witherrsoption= 
+        case (l1, l2) of
+            ([], []) => Success([], ctx)
+            | (((lb1, e1)::l1t), ((lb2, e2)::l2t)) => 
+                    if lb1 ~~= lb2 
+                    then recur ctx e1 e2 >>= (fn (constraints, ctx) => 
+                        case constraints of 
+                        [] => typeEquivList ctx l1t l2t
+                        | _ => raise Fail "ni39: lst unify constraints"
+                        )
+                    else fail()
+            | _ => fail()
+    in
+
+(normalizeType e ctx t1 =/= normalizeType e ctx t2) >>=  (fn (t1, t2) => 
+    case (t1, t2) of
+        (CUniverse, CUniverse) => Success([], ctx)
+        | (CBuiltinType(b1), CBuiltinType(b2)) => if b1 = b2 then Success([], ctx) else fail()
+        | (CPiType (t1, ev1op, t2), CPiType (t1', ev2op, t2')) => 
+            let val (ev1, ut2, ev2',ut2') = unifyBindingOption ev1op t2 ev2op t2'
+            in
+                recur ctx t1 t1' >>= (fn (constraints, ctx) => 
+                    case constraints of 
+                        [] => recur (addToCtxA (TermTypeJ([ev1], t1, JTLocalBinder, NONE)) ctx) ut2 ut2'
+                        | _ => raise Fail "ni42: pi constaints"
+                )
+            end
+        | (CProd l1, CProd l2) =>  typeEquivList ctx l1 l2
+        | (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
+        | (CUnitType, CUnitType) => Success([], ctx)
+        | _  => fail()
+         (* raise Fail ("ni19: Type unify of " ^ PrettyPrint.show_typecheckingCType t1 ^ " and " ^ PrettyPrint.show_typecheckingCType t2) *)
+)
+    end
+
     (* (let 
         (* TODO: remove the copying, have a dedicated context manager *)
        
@@ -79,7 +128,10 @@ infix 4 ~~~=
     end) *)
 
     fun tryTypeUnify (ctx : context) (expr: RExpr) (synthesized : CType) (checked : CType) : (context) witherrsoption =
-        typeUnify expr ctx []  synthesized checked  >>= (fn (constraints, context) => 
+        typeUnify expr (fn (failedT1, failedT2) => 
+             TypeCheckingErrors.typeMismatch expr (synthesized) checked failedT1 failedT2 ctx
+        )
+        ctx synthesized checked  >>= (fn (constraints, context) => 
         if length constraints = 0
         then Success( context)
         else raise Fail "ni85: type unify produces constraints"

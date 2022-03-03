@@ -172,7 +172,7 @@ infix 5 =/=
             | Fix (ev, e)=> List.filter (fn ev' => ev' <> [ev]) (freeEVar e)
             | StringLiteral l => [] *)
 
-    fun uniqueName () = UTF8String.fromString (Int.toString (UID.next()))
+    fun uniqueName () =  UTF8String.fromString ("绑定" ^Int.toString (UID.next()))
 
 
     (* e is the current checking expression, for error reporting *)
@@ -393,7 +393,7 @@ infix 5 =/=
             JTConstructor cinfo =>  CVTConstructor(canonicalNameIfConstructor, cinfo)
             | JTLocalBinder =>  CVTBinder
             | JTDefinition e =>  CVTDefinition e
-            | JTPending => raise Fail "tcp271: should not be pending, check circular definitions"
+            | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor)
     fun countSpineTypeArgs (tp : CType) = 
             case tp of 
                 (* CFunc(t1, t2) => 1 + countSpineTypeArgs t2 *)
