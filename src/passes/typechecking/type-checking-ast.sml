@@ -121,7 +121,7 @@ structure TypeCheckingAST = struct
                     | RLam of EVar * RExpr * sourceOpInfo
                     | RLamWithType of RExpr * EVar * RExpr * sourceOpInfo
                     | RApp of RExpr * RExpr * sourceOpInfo (* if op is not app, then custom operators *)
-                    | RTAbs of TVar * RExpr * sourceOpInfo
+                    (* | RTAbs of TVar * RExpr * sourceOpInfo *)
                     | RTApp of RExpr * RExpr * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
                     | RPack of RExpr * RExpr * (UTF8String.t * sourceOpInfo)
                     | ROpen of RExpr * (TVar * EVar * RExpr) * sourceOpInfo
@@ -188,5 +188,5 @@ datatype 'a gcontext = Context of StructureName.t * bool *
     type context = ((StructureName.t * judgmentType) option ) gcontext (* original name and reference(for use with open) *)
 
 
-    type constraints = (CExpr * CExpr) list
+    type constraints = (CExpr * CExpr * CType) list
 end

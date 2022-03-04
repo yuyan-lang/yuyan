@@ -12,6 +12,7 @@ infix 4 ~<>
 infix 4 ~~=
 infix 4 ~~~=
 
+
     fun typeUnify (e : RExpr) (failCallback : CExpr * CExpr -> (constraints * context) witherrsoption)
      (ctx : context) (t1:CExpr) (t2:CExpr)  : (constraints * context) witherrsoption = 
     let val recur = typeUnify e failCallback
@@ -28,21 +29,91 @@ infix 4 ~~~=
                 | (SOME tv, NONE ) => unifyBinding tv t2 (uniqueName()) t2
                 | (NONE, NONE) => unifyBinding (uniqueName()) t2 (uniqueName()) t2
 
-        fun typeEquivList (ctx : context) (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list) : (constraints * context) witherrsoption= 
+        fun typeEquivListWithLabel (ctx : context) (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list) : (constraints * context) witherrsoption= 
         case (l1, l2) of
             ([], []) => Success([], ctx)
             | (((lb1, e1)::l1t), ((lb2, e2)::l2t)) => 
                     if lb1 ~~= lb2 
                     then recur ctx e1 e2 >>= (fn (constraints, ctx) => 
                         case constraints of 
-                        [] => typeEquivList ctx l1t l2t
+                        [] => typeEquivListWithLabel ctx l1t l2t
                         | _ => raise Fail "ni39: lst unify constraints"
                         )
                     else fail()
             | _ => fail()
+
+        fun typeEquivList (ctx : context) (l1 :  CExpr list) (l2 : CExpr list) : (constraints * context) witherrsoption= 
+        case (l1, l2) of
+            ([], []) => Success([], ctx)
+            | ((( e1)::l1t), (( e2)::l2t)) => 
+                    recur ctx e1 e2 >>= (fn (constraints, ctx) => 
+                        case constraints of 
+                        [] => typeEquivList ctx l1t l2t
+                        | _ => raise Fail "ni39: lst unify constraints"
+                        )
+            | _ => fail()
+
+        fun toHeadSpineForm  (expr : CExpr) : CExpr * CExpr list = 
+        case expr of 
+            CApp(e1, e2, tp) => (case toHeadSpineForm  e1 of 
+                (hd, tl') => (hd, tl'@[e2]))
+            | _ => (expr, [])
+        fun unifyMetaVar (metavar : StructureName.t) (xbar : CExpr list) (ns : CExpr) : (constraints * context) witherrsoption = 
+            (* check each condition *)
+
+        let fun toVarNames(xbar : CExpr) : StructureName.t  = 
+                case xbar of
+                    CVar(x, _) => x
+                    | _ => raise Fail "tcunify66: meta var's args should all be plain"
+            fun unique( l : StructureName.t list) =  
+                case l of
+                    [] => true
+                    | (x :: xs) => if List.exists (fn y => StructureName.semanticEqual x y) xs then
+                    (DebugPrint.p ("NOT UNIQUE : " ^StructureName.toStringPlain x); false) else unique xs
+            
+            fun subset(l1 : StructureName.t list) (l2 : StructureName.t list) = 
+                case l1 of
+                    [] => true
+                    | (x :: xs) => if List.exists (fn y => StructureName.semanticEqual x y) l2 
+                                   then subset xs l2
+                                   else false
+            
+            fun ctxInScope (ctx : context) (metavar : StructureName.t) (term : CExpr) = 
+                true (* TODO: implement scope checking *)
+            val sxbar = (map toVarNames xbar)
+
+            fun prependLambdas (xbar : StructureName.t list) (term : CExpr) : CExpr = 
+                (foldr (fn (x, acc) => 
+                let val name = uniqueName()
+                in CLam(name, substTypeInCExpr (CVar ([name], CVTBinder)) x acc, CTypeAnnNotAvailable)
+                end) 
+                ns sxbar
+            )
+        in 
+        lookupCtx ctx metavar >>= (fn (cname, tp, jtp)=> 
+            case jtp of JTMetaVarPendingResolve =>
+                if 
+                (* unique sxbar 
+                andalso *)
+                subset (freeTCVar ns) sxbar
+                andalso ctxInScope ctx metavar ns
+                then Success([], modifyCtxResolveMetaVar ctx metavar (prependLambdas sxbar ns))
+                else TypeCheckingErrors.genericError e ctx 
+                ("cannot unify metavar : " 
+                ^ "unique = " ^ Bool.toString (unique sxbar )
+                ^ "subset = " ^ Bool.toString(subset (freeTCVar ns) sxbar)
+                ^ "inscope = " ^ Bool.toString(ctxInScope ctx metavar ns )
+                ^ "names = " ^ String.concatWith "\n" (map StructureName.toStringPlain sxbar))
+            | JTMetaVarResolved t => recur ctx t ns
+        )
+        end
+
+        
+                    
+
     in
 
-(normalizeType e ctx t1 =/= normalizeType e ctx t2) >>=  (fn (t1, t2) => 
+(normalizeType e ctx t1 =/= normalizeType e ctx t2) >>=  (fn ((t1, t2) : CType * CType) => 
     case (t1, t2) of
         (CUniverse, CUniverse) => Success([], ctx)
         | (CBuiltinType(b1), CBuiltinType(b2)) => if b1 = b2 then Success([], ctx) else fail()
@@ -55,10 +126,26 @@ infix 4 ~~~=
                         | _ => raise Fail "ni42: pi constaints"
                 )
             end
-        | (CProd l1, CProd l2) =>  typeEquivList ctx l1 l2
+        | (CProd l1, CProd l2) =>  typeEquivListWithLabel ctx l1 l2
         | (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
+        | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
+        (* TODO: ^^^ should we care about the arguments ? *)
         | (CUnitType, CUnitType) => Success([], ctx)
-        | _  => fail()
+        | _ => (
+            case (toHeadSpineForm t1, toHeadSpineForm t2) of
+             ((CMetaVar(mv), xbar), _) => unifyMetaVar mv xbar t2 
+             | (_, (CMetaVar(mv), xbar)) => unifyMetaVar mv xbar t1 
+             | ((t1, t1l), (t2, t2l)) => 
+                if length t1l = length t2l andalso length t1l = 0
+                then fail()
+                else recur ctx t1 t2 >>= (fn (constraints, ctx) => 
+                    case constraints of 
+                        [] => typeEquivList ctx t1l t2l
+                        | _ => raise Fail "ni42: terms? constaints"
+                )
+            (* | _  => fail() *)
+        )
+
          (* raise Fail ("ni19: Type unify of " ^ PrettyPrint.show_typecheckingCType t1 ^ " and " ^ PrettyPrint.show_typecheckingCType t2) *)
 )
     end

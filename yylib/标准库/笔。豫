@@ -12,8 +12,8 @@
 以打印行为化字符串而有。
 打印行者会串而《《C调用》》名『yyPrintln』传串也。
 
-以调试打印为承乙而化乙而有。
-调试打印者受乙而会物而《《C调用》》名『yyPrintGeneric』传物也。
+以调试打印为化元类型者乙而化乙而有。
+调试打印者会乙而会物而《《C调用》》名『yyPrintGeneric』传物也。
 
 注：设写为__BUILTIN_STRING_PRINT。
 注：设新行为__BUILTIN_STRING_NEWLINE于元。

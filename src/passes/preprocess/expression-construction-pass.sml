@@ -222,10 +222,10 @@ struct
                     if oper ~=** fixExprOp
                     then fmap RFix(==/= (elaborateNewName (hd l) ,
                     elaborateOpASTtoExpr (snd l) ctx, operSuc))
-                    else
+                    (* else
                     if oper ~=** typeLambdaExprOp
                     then fmap RTAbs(==/= (elaborateNewName (hd l), 
-                    elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    elaborateOpASTtoExpr (snd l) ctx, operSuc)) *)
                     else
                     if oper ~=** sequentialCompositionOp
                     then fmap RSeqComp (==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
@@ -262,9 +262,9 @@ struct
                     if oper ~=** typeInstantiationOp
                     then fmap RTypeInst (==/=((elaborateOpASTtoType (hd l) ctx) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
-                    if oper ~=** universalTypeOp
+                    (* if oper ~=** universalTypeOp
                     then fmap RForall (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
-                    else 
+                    else  *)
                     if oper ~=** existentialTypeOp
                     then fmap RExists (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 

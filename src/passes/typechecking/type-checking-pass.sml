@@ -330,10 +330,10 @@ infix 5 <?>
                             | _ => Errors.attemptToApplyNonFunction e (synt) ctx
                         )
                     )
-                    | RTAbs (tv, e2, soi) =>   synthesizeType 
+                    (* | RTAbs (tv, e2, soi) =>   synthesizeType 
                                 (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
                         e2 >>= (fn ((ce2, bodyType), ctx) => 
-                    Success ((CTAbs(tv, ce2, CTypeAnn(CForall (tv, bodyType))), CForall (tv, bodyType)), ctx) )
+                    Success ((CTAbs(tv, ce2, CTypeAnn(CForall (tv, bodyType))), CForall (tv, bodyType)), ctx) ) *)
                     | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn ((ce2, st), ctx) => 
                                 normalizeType e2 ctx st >>= (fn nst =>
                         case nst of
@@ -586,7 +586,7 @@ infix 5 <?>
                             | _ => Errors.attemptToApplyNonFunction e (synt) ctx
                         )
                     )
-                    | RTAbs (tv, e2, soi) => (case tt of
+                    (* | RTAbs (tv, e2, soi) => (case tt of
                         CForall (tv', tb) => 
                                 checkType 
                                 (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
@@ -594,7 +594,7 @@ infix 5 <?>
                                             Success(CTAbs (tv, ce2, CTypeAnn(tt)), ctx)
                                 )
                         | _ => Errors.expectedUniversalType e (tt) ctx
-                    )
+                    ) *)
                     | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
                     normalizeType e2 ctx synt >>= (fn synt => 
                         case synt of

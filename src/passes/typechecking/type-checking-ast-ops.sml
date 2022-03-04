@@ -57,7 +57,17 @@ infix 5 =/=
             | CNullType => []
             | CBuiltinType(b) => []
             | CUniverse => []
+            | CLam(ev, eb, _) => List.filter (fn t => t ~<> [ev]) (freeTCVar eb)
+            | CLetIn _ => [] (* TODO: *)
+            | CFfiCCall _ => [] (* TODO !!! *)
+            | CBuiltinFunc (f) => []
+            | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
+            | CIntConstant _ => []
+            | CUnitExpr => []
+            | CBoolConstant _ => []
+            | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
             | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
+
 
 
     (* reconstruct the original string from rexpr, used for generating error information *)
@@ -101,7 +111,7 @@ infix 5 =/=
                     reconstructWithArgs soi (map reconstructFromRExpr (e1 :: flatten e2))
                 end
                                         
-        | RTAbs (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
+        (* | RTAbs (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e] *)
         | RTApp (e1, e2, (soi,s))=> reconstructWithArgs soi [reconstructFromRExpr e1, s]
         | RPack (t, e, (s, soi))=> reconstructWithArgs soi [s, reconstructFromRExpr e]
         | ROpen (e, (t, x, e2), soi)=> reconstructWithArgs soi [reconstructFromRExpr e, t, x, reconstructFromRExpr e2]
@@ -192,6 +202,12 @@ infix 5 =/=
             CVar v => (case dereferenceIfPossible ctx t of 
                 NONE => Success(CVar v)
                 | SOME(t') => recur t')
+            | CMetaVar(name) => ( lookupCtx ctx name >>= (fn (cname, tp, jtp) => 
+                case jtp of 
+                    JTMetaVarResolved t => recur (t)
+                    | _ => Success(CMetaVar(name))
+                )
+            )
             | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
@@ -211,15 +227,21 @@ infix 5 =/=
             | CNullType => Success(CNullType)
             | CBuiltinType(b) => Success(CBuiltinType(b))
             | CUniverse => Success(CUniverse)
-            | CLam(ev, e, CTypeAnn t) => 
-            fmap CLam(==/=(Success ev, recur e, fmap CTypeAnn (recur t)))
+            | CLam(ev, e, u) => 
+            fmap CLam(==/=(Success ev, recur e, Success u))
             | CApp(e1, e2, _) =>   
                 recur e1 >>= (fn ce1 => 
                     case ce1 of
                         CLam(cev, ce1body, _) => recur e2 >>= (fn ce2 => Success(substTypeInCExpr ce2 ([cev]) ce1body))
                         | _ => (* maybe ce1 is a type constructor *) (Success t)
                 )
-            | CMetaVar v => Success(CMetaVar v)
+            | CLetIn _ => Success(t)
+            | CStringLiteral _ => Success(t)
+            | CFfiCCall _ => Success(t)
+            | CBuiltinFunc _ => Success(t)
+            | CUnitExpr => Success(t)
+            | CBoolConstant b => Success(t)
+            | CIfThenElse _ => Success(t) (* TODO: *)
             | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -238,6 +260,9 @@ infix 5 =/=
             then f (tv, t2)
             else f (tv, substTypeInCExpr tS x t2)
         val recur = substTypeInCExpr tS x
+        fun substTAnn ann = case ann of
+            CTypeAnn t => CTypeAnn (substTypeInCExpr tS x t)
+            | _ => ann
     in
         case e of
               CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
@@ -260,7 +285,12 @@ infix 5 =/=
             | CBuiltinType(b) => CBuiltinType(b)
             | CUniverse => CUniverse
             | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
-    | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e)
+            | CLam(ev, e2, u) => captureAvoid 
+                (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
+            | CLetIn _ => e (* TODO : do it *)
+    | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
+    ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
+    ^ " for " ^ StructureName.toStringPlain x)
     end
     and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
     raise Fail "not implemented136"

@@ -34,7 +34,7 @@ structure TypeCheckingPatterns = struct
                                       (case evop of SOME(x) => substTypeInCExpr (CVar([hd], CVTBinder)) ([x]) t2 | NONE => t2 )
                                       tls
                 | (CPiType(t1, evop, t2 ),(uns:: tls)) => Errors.unsupportedPatternType uns ctx
-                | _ => tryTypeUnify ctx pat tp analysisType >>= (fn (ctx) => ((Success(accCVar, ctx)); raise Fail "TODO: unify pattern matching"))
+                | _ => tryTypeUnify ctx pat tp analysisType >>= (fn (ctx) => ((Success(accCVar, ctx))))
     in
         (* look up the type of the header *)
         case head of 

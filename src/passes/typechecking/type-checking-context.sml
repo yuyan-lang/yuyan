@@ -3,20 +3,22 @@ structure TypeCheckingContext = struct
 
 open TypeCheckingAST
 open StaticErrorStructure
-    fun showctx (x : context) (full : bool) = (case x of 
-    Context(curSName, curVis, m) =>  
-    "当前结构名：" ^ StructureName.toStringPlain curSName ^
-    "\n当前已定义的值及其类型：\n"  ^(
-        let val allDecls = (map (fn x => case x of
-    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
-    ^ ((case defop of JTDefinition(def) =>  " (定义) "
+fun show_jt defop = 
+(case defop of JTDefinition(def) =>  " (定义) "
         | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
         | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
         | JTLocalBinder => "（局部绑定）"
         | JTPending => "（pending）"
         | JTMetaVarPendingResolve => "(metavar pending resolve)"
         | JTMetaVarResolved e => "(resolved metavar)"
-    ) ^ 
+    )
+    fun showctx (x : context) (full : bool) = (case x of 
+    Context(curSName, curVis, m) =>  
+    "当前结构名：" ^ StructureName.toStringPlain curSName ^
+    "\n当前已定义的值及其类型：\n"  ^(
+        let val allDecls = (map (fn x => case x of
+    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
+    ^ (show_jt defop ^ 
         (if full 
     then (case defop of JTDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def 
          | _ => "")
@@ -58,20 +60,31 @@ open StaticErrorStructure
     fun findCtxForType (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         Option.map(fn (x,t,eop) => (x, t)) (findCtx (Context(curSName, v, ctx)) n)
 
-    (* the name must be absolute name *)
-    fun modifyCtxAddDef(Context(curSName, v, ctx) : context) (cname : StructureName.t) (newDef : CExpr) : context = 
+    fun modifyCtx (Context(curSName, v, ctx) : context) (cname : StructureName.t)
+        (jopf : judgmentType -> judgmentType) : context = 
         case ctx of 
             [] => raise Fail "tcc52: key not found"
-            | (currentj as TermTypeJ(n1, t1, defop1,  u))::cs => 
+            | (currentj as TermTypeJ(n1, t1, jtp,  u))::cs => 
                 if StructureName.semanticEqual n1 cname
-                then (case defop1 of 
-                        JTPending => Context(curSName, v, TermTypeJ(n1, t1, JTDefinition newDef, u) :: cs)
-                        | _ => raise Fail ("tcc58: already has definition: " ^ (StructureName.toStringPlain cname))
+                then ( Context(curSName, v, TermTypeJ(n1, t1, jopf jtp, u) :: cs)
                     )
                 else 
-                     case modifyCtxAddDef (Context(curSName, v, cs)) cname newDef of 
+                     case modifyCtx (Context(curSName, v, cs)) cname jopf of 
                         Context(cname', v', cs') => Context(cname', v', currentj::cs')
 
+    (* the name must be absolute name *)
+    fun modifyCtxAddDef(ctx : context) (cname : StructureName.t) (newDef : CExpr) : context = 
+        modifyCtx ctx cname (fn jtp => case jtp of 
+                JTPending => JTDefinition newDef
+                | _ => raise Fail ("tcc58: jtp is not pending " ^ (StructureName.toStringPlain cname))
+            )
+
+    fun modifyCtxResolveMetaVar (ctx : context) (cname : StructureName.t) (resolvedExpr : CExpr) : context = 
+        modifyCtx ctx cname (fn jtp => case jtp of 
+                JTMetaVarPendingResolve => JTMetaVarResolved resolvedExpr
+                | _ => raise Fail ("tcc58: jtp is not metavar pending resolve but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
+            )
+        
 
     fun lookupCtx (ctxg as Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) witherrsoption = 
     case findCtx ctxg n of 
