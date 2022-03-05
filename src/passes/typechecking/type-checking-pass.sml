@@ -759,14 +759,16 @@ infix 5 <?>
                             ))
                     | RPairOfQuotes(soi) => 
                         let 
-                            val  allBindings = getMapping ctx
+                            val  allBindings = 
+                            List.filter (fn (TermTypeJ(name, tp, jtp, _)) => 
+                            (case jtp of 
+                                JTPending => false
+                                | _ => true
+                            )) (getMapping ctx)
                             val metavarname = StructureName.metaVarName()
                             val resultingTerm = foldl (fn (TermTypeJ(name, tp, jtp, _), acc) => 
-                            (case jtp of 
-                                JTPending => acc (* include pending judgments (declarations whose definition has not been supplied *)
-                                | _ => CApp(acc, CVar(name, judgmentTypeToCVarType name (* TODO : why do we need canonical names? *) 
+                                 CApp(acc, CVar(name, judgmentTypeToCVarType name (* TODO : why do we need canonical names? *) 
                                                 jtp), CTypeAnnNotAvailable) (* Do we really need it ? *)
-                            )
                                 ) (CMetaVar metavarname) allBindings
                             val metaType = foldr (fn (TermTypeJ(name, tp, _, _), acc) => 
                                 let val tempName = UTF8String.fromString ("《《临时名称" ^ Int.toString (UID.next()) ^ "》》")

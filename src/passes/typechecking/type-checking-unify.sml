@@ -114,30 +114,30 @@ infix 4 ~~~=
     in
 
 (normalizeType e ctx t1 =/= normalizeType e ctx t2) >>=  (fn ((t1, t2) : CType * CType) => 
-    case (t1, t2) of
-        (CUniverse, CUniverse) => Success([], ctx)
-        | (CBuiltinType(b1), CBuiltinType(b2)) => if b1 = b2 then Success([], ctx) else fail()
-        | (CPiType (t1, ev1op, t2), CPiType (t1', ev2op, t2')) => 
-            let val (ev1, ut2, ev2',ut2') = unifyBindingOption ev1op t2 ev2op t2'
-            in
-                recur ctx t1 t1' >>= (fn (constraints, ctx) => 
-                    case constraints of 
-                        [] => recur (addToCtxA (TermTypeJ([ev1], t1, JTLocalBinder, NONE)) ctx) ut2 ut2'
-                        | _ => raise Fail "ni42: pi constaints"
-                )
-            end
-        | (CProd l1, CProd l2) =>  typeEquivListWithLabel ctx l1 l2
-        | (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
-        | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
-        (* TODO: ^^^ should we care about the arguments ? *)
-        | (CUnitType, CUnitType) => Success([], ctx)
-        | _ => (
             case (toHeadSpineForm t1, toHeadSpineForm t2) of
              ((CMetaVar(mv), xbar), _) => unifyMetaVar mv xbar t2 
              | (_, (CMetaVar(mv), xbar)) => unifyMetaVar mv xbar t1 
              | ((t1, t1l), (t2, t2l)) => 
                 if length t1l = length t2l andalso length t1l = 0
-                then fail()
+                then 
+                    (case (t1, t2) of
+                        (CUniverse, CUniverse) => Success([], ctx)
+                        | (CBuiltinType(b1), CBuiltinType(b2)) => if b1 = b2 then Success([], ctx) else fail()
+                        | (CPiType (t1, ev1op, t2), CPiType (t1', ev2op, t2')) => 
+                            let val (ev1, ut2, ev2',ut2') = unifyBindingOption ev1op t2 ev2op t2'
+                            in
+                                recur ctx t1 t1' >>= (fn (constraints, ctx) => 
+                                    case constraints of 
+                                        [] => recur (addToCtxA (TermTypeJ([ev1], t1, JTLocalBinder, NONE)) ctx) ut2 ut2'
+                                        | _ => raise Fail "ni42: pi constaints"
+                                )
+                            end
+                        | (CProd l1, CProd l2) =>  typeEquivListWithLabel ctx l1 l2
+                        | (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
+                        | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
+                        (* TODO: ^^^ should we care about the arguments ? *)
+                        | (CUnitType, CUnitType) => Success([], ctx)
+                        | _ => fail())
                 else recur ctx t1 t2 >>= (fn (constraints, ctx) => 
                     case constraints of 
                         [] => typeEquivList ctx t1l t2l
@@ -147,7 +147,6 @@ infix 4 ~~~=
         )
 
          (* raise Fail ("ni19: Type unify of " ^ PrettyPrint.show_typecheckingCType t1 ^ " and " ^ PrettyPrint.show_typecheckingCType t2) *)
-)
     end
 
     (* (let 
