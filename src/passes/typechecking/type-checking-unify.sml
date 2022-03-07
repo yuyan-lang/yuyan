@@ -105,6 +105,7 @@ infix 4 ~~~=
                 ^ "inscope = " ^ Bool.toString(ctxInScope ctx metavar ns )
                 ^ "names = " ^ String.concatWith "\n" (map StructureName.toStringPlain sxbar))
             | JTMetaVarResolved t => recur ctx t ns
+            | _ => raise Fail "ni108"
         )
         end
 

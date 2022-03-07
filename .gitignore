@@ -27,3 +27,5 @@ yy_*
 *.dSYM
 
 *.gch
+
+wasmbuild

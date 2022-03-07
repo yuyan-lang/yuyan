@@ -424,6 +424,7 @@ infix 5 =/=
             | JTLocalBinder =>  CVTBinder
             | JTDefinition e =>  CVTDefinition e
             | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor)
+            | _ => raise Fail "ni427"
     fun countSpineTypeArgs (tp : CType) = 
             case tp of 
                 (* CFunc(t1, t2) => 1 + countSpineTypeArgs t2 *)
