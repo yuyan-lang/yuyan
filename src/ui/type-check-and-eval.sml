@@ -32,7 +32,18 @@ open ReplOptions
                             cm ; OS.Process.success))
                     else if getTypeCheckOnly options
                     then ( let val allErrors = (List.concat (List.map (fn (x, l) => l) (CompilationManager.collectAllDiagnostics cm)))
-                    val _ = if length allErrors > 0 then DebugPrint.p (PrintDiagnostics.showErrs allErrors cm) else ()
+                    val _ = if length allErrors > 0 then DebugPrint.p (PrintDiagnostics.showErrs allErrors cm) else 
+                        if getVerbose options > 0 then 
+                            (map (fn absFp => 
+                            let val CompilationStructure.CompilationFile f =  CompilationManager.lookupFileByPath absFp cm
+                            in DebugPrint.p (
+                                (FileResourceURI.access absFp) ^ " : \n" ^
+                                PrettyPrint.show_typecheckingCSig (valOf (#typeCheckedInfo f))
+                                ^ " \n\n\n"
+                                )
+                            end
+                            ) absFps; ())
+                        else ()
                     in
                         (Time.now(), if length allErrors = 0 then OS.Process.success else OS.Process.failure)
                     end)
