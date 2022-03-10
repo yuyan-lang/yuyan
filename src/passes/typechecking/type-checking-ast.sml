@@ -179,7 +179,8 @@ structure TypeCheckingAST = struct
 (* g for generic *)
  (* the term type J may optionally contain the definition *)
  datatype judgmentType = JTConstructor of cconstructorinfo | JTLocalBinder  | JTDefinition of CExpr | JTPending  (* declaration pending definition *)
-                        | JTMetaVarPendingResolve | JTMetaVarResolved of CExpr
+                        | JTMetaVarPendingResolve of UTF8String.t (* the error reporting string when it cannot be resolved *)
+                        | JTMetaVarResolved of CExpr
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a
                     (* | TermDefJ of StructureName.t * CType * unit *)
 datatype 'a gcontext = Context of StructureName.t * bool * 

@@ -109,12 +109,12 @@ structure UTF8String = struct
     | [s] => s
     | (x ::xs) => x @ sep @ concatWith sep xs
 
-    fun getSourceRange (s : utf8string ): SourceRange.t = 
+    fun getSourceRange (s : utf8string ) (callerDebugId : string): SourceRange.t = 
         case s of 
             [] => raise Fail "attempt to get sourcerange for empty string"
             | (UTF8Char.UTF8Char(c, loc) :: t) => (
                 case loc of 
-                    NONE => raise Fail "attempt to get sourcerange for NONE location"
+                    NONE => raise Fail ("attempt to get sourcerange for NONE location: " ^ toString s ^ callerDebugId)
                     | SOME(fname, startLine, startCol) => 
                         let val UTF8Char.UTF8Char(lc, lloc) = List.nth(s, length s -1)
                         in case lloc of 

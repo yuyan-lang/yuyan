@@ -91,13 +91,16 @@ infix 4 ~~~=
             )
         in 
         lookupCtx ctx metavar >>= (fn (cname, tp, jtp)=> 
-            case jtp of JTMetaVarPendingResolve =>
+            case jtp of JTMetaVarPendingResolve _ =>
                 if 
                 (* unique sxbar 
                 andalso *)
-                subset (freeTCVar ns) sxbar
-                andalso ctxInScope ctx metavar ns
-                then Success([], modifyCtxResolveMetaVar ctx metavar (prependLambdas sxbar ns))
+                (* subset (freeTCVar ns) sxbar *)
+                (* andalso ctxInScope ctx metavar ns *)
+                (* TODO add checking *)
+                true
+                (* then Success([], modifyCtxResolveMetaVar ctx metavar (prependLambdas sxbar ns)) *)
+                then Success([], modifyCtxResolveMetaVar ctx metavar (ns))
                 else TypeCheckingErrors.genericError e ctx 
                 ("cannot unify metavar : " 
                 ^ "unique = " ^ Bool.toString (unique sxbar )
@@ -114,7 +117,7 @@ infix 4 ~~~=
 
     in
 
-(normalizeType e ctx t1 =/= normalizeType e ctx t2) >>=  (fn ((t1, t2) : CType * CType) => 
+(weakHeadNormalizeType e ctx t1 =/= weakHeadNormalizeType e ctx t2) >>=  (fn ((t1, t2) : CType * CType) => 
             case (toHeadSpineForm t1, toHeadSpineForm t2) of
              ((CMetaVar(mv), xbar), _) => unifyMetaVar mv xbar t2 
              | (_, (CMetaVar(mv), xbar)) => unifyMetaVar mv xbar t1 
@@ -176,7 +179,7 @@ infix 4 ~~~=
         val result = 
         if List.exists (fn ((p1, p2):(CExpr * CExpr)) => p1 = t1 andalso p2 = t2) eqctx then Success(true)
         else
-(normalizeType e tcctx t1 =/= normalizeType e tcctx t2) >>=  (fn (t1, t2) => 
+(weakHeadNormalizeType e tcctx t1 =/= weakHeadNormalizeType e tcctx t2) >>=  (fn (t1, t2) => 
     (case (t1, t2) of
               (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => Success (t1 ~~~= t2)
             | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => Success (t1 ~~~= t2) (* should we care about the arguments ? *)

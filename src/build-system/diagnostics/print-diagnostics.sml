@@ -31,7 +31,8 @@ open StaticErrorStructure
 
     fun showErr (err : staticerror)(cm : CompilationStructure.compilationmanager) : string = 
     let  val StaticError (pos, severity, msghd, msgdetail, related) = err
-        val SourceRange.StartEnd(fp, sl, sc, el, ec) = UTF8String.getSourceRange pos
+        val detailMessage = case msgdetail of SOME t => "\n" ^ t | NONE => ""
+        val SourceRange.StartEnd(fp, sl, sc, el, ec) = UTF8String.getSourceRange pos ("`pd34` : " ^ msghd ^ detailMessage )
         val CompilationStructure.CompilationFile file = CompilationManager.lookupFileByPath (FileResourceURI.make fp) cm
         val fileContent = case (#content file) of Success (c, _) => c | _ => raise Fail "pd13"
         val sourceTextInfo = getSourceTextInfo (sl, sc, el, ec) fileContent
@@ -43,7 +44,6 @@ open StaticErrorStructure
                 | DiagnosticWarning  => "警告(warning)： "
                 | DiagnosticInformation  => "信息(information)："
                 | DiagnosticHint => "提示(hint)："
-        val detailMessage = case msgdetail of SOME t => "\n" ^ t | NONE => ""
     in 
     relativePath ^ ":" ^  Int.toString (sl+1) ^ "." ^ Int.toString (sc +1)
     ^ "-" ^ Int.toString (el+1) ^ "." ^ Int.toString (ec+1)

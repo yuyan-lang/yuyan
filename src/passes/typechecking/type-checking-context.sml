@@ -9,7 +9,7 @@ fun show_jt defop =
         | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
         | JTLocalBinder => "（局部绑定）"
         | JTPending => "（pending）"
-        | JTMetaVarPendingResolve => "(metavar pending resolve)"
+        | JTMetaVarPendingResolve _ => "(metavar pending resolve)"
         | JTMetaVarResolved e => "(resolved metavar)"
     )
     fun showctx (x : context) (full : bool) = (case x of 
@@ -34,7 +34,8 @@ fun show_jt defop =
     )
           )
 
-    fun showctxSome x = SOME(showctx x false)
+    (* fun showctxSome x = SOME(showctx x false) *)
+    fun showctxSome x = SOME(showctx x true)
 
 
 
@@ -81,7 +82,7 @@ fun show_jt defop =
 
     fun modifyCtxResolveMetaVar (ctx : context) (cname : StructureName.t) (resolvedExpr : CExpr) : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
-                JTMetaVarPendingResolve => JTMetaVarResolved resolvedExpr
+                JTMetaVarPendingResolve _ => JTMetaVarResolved resolvedExpr
                 | _ => raise Fail ("tcc58: jtp is not metavar pending resolve but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
             )
         

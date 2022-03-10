@@ -27,7 +27,7 @@ structure LspDiagnostics = struct
             fun toDiagnosticJSON  (path : string) (err : StaticErrorStructure.staticerror) : JSON.value option  =
                 case err of 
                     StaticError(locStr, severity, msgHd, msgBody, related) =>
-                        case UTF8String.getSourceRange locStr of
+                        case UTF8String.getSourceRange locStr "lsp30" of
                             SourceRange.StartEnd(fname, ls, cs, le, ce) =>
                             if fname = path then SOME(
                                 OBJECT[
@@ -37,7 +37,7 @@ structure LspDiagnostics = struct
                                     ("message", STRING (case msgBody of SOME s => (msgHd ^ "\n" ^s) | NONE => msgHd)),
                                     ("relatedInformation", ARRAY (
                                         map (fn (loc, msg) => 
-                                            case UTF8String.getSourceRange loc of 
+                                            case UTF8String.getSourceRange loc "lsp40" of 
                                                 SourceRange.StartEnd(fpath, ls, cs, le, ce) => 
                                                 OBJECT [
                                                     ("location", OBJECT [

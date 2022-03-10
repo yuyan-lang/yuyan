@@ -28,6 +28,10 @@ val separatorCharDebug = UTF8String.fromString "->"
         case s of 
         [] => raise Fail "sn28: cannot get declaring scope name of empty structure"
         | _ => List.take(s, length s - 1)
+    fun last (s : structureName) = 
+        case s of 
+        [] => raise Fail "sn28: cannot get last name of empty structure"
+        | _ => List.last(s)
 
     fun semanticEqual (s1 : structureName) (s2 : structureName) = 
     case (s1, s2) of

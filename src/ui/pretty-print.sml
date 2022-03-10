@@ -287,7 +287,7 @@ open TypeCheckingAST
   fun cst t = "⟦...⟧"
   fun show_cpattern (p : CPattern) =
     case p of 
-      CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ String.concatWith " " (map show_cpattern sp) ^ ")"
+      CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ " ⋅ " ^ String.concatWith " " (map show_cpattern sp) ^ ")"
       | CPatVar(s) => ss s
   val sp = show_cpattern
 in case x of
@@ -363,7 +363,7 @@ fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.
 fun show_utf8char (UTF8Char.UTF8Char(c, loc)) = UTF8.implode [c] ^ (case loc of SOME loc => show_source_location(loc) | NONE => "[NOLOC]")
 fun show_utf8string x = String.concatWith "+" (map show_utf8char x)
 fun show_utf8strings x = String.concatWith ", " (map show_utf8string x)
-fun show_token (CompilationStructure.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str)
+fun show_token (CompilationStructure.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str "pp366")
 fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
 fun show_typecheckingpassmappping x = let
 open TypeCheckingAST
@@ -379,7 +379,7 @@ open TypeCheckingAST
 in
 case x of 
   Context(curSName, curVis, m) => (if curVis then "public " else "private ") ^
-  "structure " ^ StructureName.toStringPlain curSName ^ " {"  ^
+  "structure " ^ StructureName.toStringPlain curSName ^ " {\n"  ^
           String.concatWith ",\n " (map show_typecheckingpassmappping m) ^ "}\n"
 end
 

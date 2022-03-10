@@ -3,6 +3,7 @@ structure TypeCheckingASTOps = struct
 open TypeCheckingAST
 open TypeCheckingContext
 open StaticErrorStructure
+open TypeCheckingErrors
 infix 5 >>=
 infix 5 =/=
 
@@ -70,95 +71,6 @@ infix 5 =/=
 
 
 
-    (* reconstruct the original string from rexpr, used for generating error information *)
-    fun reconstructFromRExpr (e : RExpr) : UTF8String.t = 
-    let 
-    fun constructWithSep ( args: UTF8String.t list) (sepl : operator list) : UTF8String.t = 
-    case args of (h::t) =>
-        #1 (foldl (fn (next, (s, y)) => case y of (oph::opt) =>  (reconstructWithArgs oph [s, next], opt)
-                                                | _ => raise Fail "tcastops 252"
-        ) (h, sepl) t)
-        | _ => raise Fail "tcastops 255"
-    val tpPlaceHolder =UTF8String.fromString "..." 
-    open Operators
-    in
-    case e of
-        RVar v => StructureName.toString v
-        | RUnitExpr(soi) => soi
-        | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
-        | RLazyTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
-        | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
-        | RLazyProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
-        | RIfThenElse (e, tcase, fcase, soi) => reconstructWithArgs soi [reconstructFromRExpr e, reconstructFromRExpr tcase, reconstructFromRExpr fcase]
-        | RInj  ( lbl,e, soi) => reconstructWithArgs soi [lbl, reconstructFromRExpr e]
-        | RCase (e, l, (soiTop, soiSep, soiClause))=>
-                reconstructWithArgs soiTop [reconstructFromRExpr e, 
-                    constructWithSep (
-                        ListPair.map (fn ((b,c), operClause) => reconstructWithArgs operClause [reconstructFromRExpr b, reconstructFromRExpr c]) (l, soiClause)
-                    ) soiSep
-                ]
-        | RLam (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
-        | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
-        | RApp (e1, e2, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
-            then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
-            else let
-                fun flatten (e : RExpr)  : RExpr list= case e of 
-                    RApp(e1', e2', soi') => if Operators.eqOpUid soi soi'
-                                            then e1' :: flatten e2'
-                                            else [e]
-                    | _ => [e]
-                in 
-                    reconstructWithArgs soi (map reconstructFromRExpr (e1 :: flatten e2))
-                end
-                                        
-        (* | RTAbs (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e] *)
-        | RTApp (e1, e2, (soi,s))=> reconstructWithArgs soi [reconstructFromRExpr e1, s]
-        | RPack (t, e, (s, soi))=> reconstructWithArgs soi [s, reconstructFromRExpr e]
-        | ROpen (e, (t, x, e2), soi)=> reconstructWithArgs soi [reconstructFromRExpr e, t, x, reconstructFromRExpr e2]
-        | RFold (e, soi) => reconstructWithArgs soi [reconstructFromRExpr e]
-        | RUnfold (e, soi) => reconstructWithArgs soi [reconstructFromRExpr e]
-        | RFix (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
-        | RStringLiteral (l, (qil, qir)) => qil :: l @[ qir]
-        | RIntConstant (l, soi) => soi
-        | RRealConstant (l, soi) => soi
-        | RBoolConstant (l, soi) => soi
-        | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
-        | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
-        | RBuiltinFunc(f, s) => s
-        | RSeqComp(e1, e2, soi) => reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
-        | RBuiltinType(b, s) => s
-        | RUnitType(s) => s
-        | RUniverse(s) => s
-        | RPiType(t1, evoption, t2, soi) => 
-        (case evoption of 
-            SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
-            | NONE => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2] )
-        | RSigmaType(t1, evoption, t2, soi) =>
-        (case evoption of 
-            SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
-            | NONE => raise Fail "ui368")
-        | RProd(ltsl, sepl) => 
-            constructWithSep (List.map (fn (l, t, soi) => 
-                reconstructWithArgs soi [l, reconstructFromRExpr t]
-            ) ltsl) sepl
-        | RLazyProd  (ltsl, sepl) => 
-            constructWithSep (List.map (fn (l, t, soi) => 
-                reconstructWithArgs soi [l, reconstructFromRExpr t]
-            ) ltsl) sepl
-        | RSum(ltsl, sepl) => 
-            constructWithSep (List.map (fn (l, t, soi) => 
-                reconstructWithArgs soi [l, reconstructFromRExpr t]
-            ) ltsl) sepl
-        | RNullType (s) => s
-        (* | RFunc(t1, t2, soi) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2] *)
-        | RTypeInst(t1, t2, soi) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2]
-        | RForall(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
-        | RExists(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
-        | RRho(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
-        | RPairOfQuotes((ql, qr)) => [ql, qr]
-        (* | _ => raise Fail ("reconstruct failed for rexpr " ^ PrettyPrint.show_typecheckingRExpr e) *)
-    end
-    
     (* fun freeEVar (e : Expr) : StructureName.t list = 
         case e of
             ExprVar v => [v]
@@ -187,7 +99,7 @@ infix 5 =/=
 
     (* e is the current checking expression, for error reporting *)
     (* todo : change to weak head normalization only *)
-    fun normalizeType (e : RExpr) (ctx : context) (t : CType) : CType witherrsoption  = 
+    fun weakHeadNormalizeType (e : RExpr) (ctx : context) (t : CType) : CType witherrsoption  = 
     let 
       fun dereferenceIfPossible (ctx : context)(t : CType) : CType option=
         case t of 
@@ -196,7 +108,7 @@ infix 5 =/=
             | CVar(name, CVTConstructor cinfo) => NONE
             | _ => raise Fail "tcastops90"
 
-    val recur = normalizeType e ctx
+    val recur = weakHeadNormalizeType e ctx
     val res = 
         case t of
             CVar v => (case dereferenceIfPossible ctx t of 
@@ -242,11 +154,115 @@ infix 5 =/=
             | CUnitExpr => Success(t)
             | CBoolConstant b => Success(t)
             | CIfThenElse _ => Success(t) (* TODO: *)
-            | _ => raise Fail ("normalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
+            | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
         res
     end
+
+(* reports an error if not all metavars are resolved *)
+    and resolveAllMetaVarsInCExpr  (ctx : context) ( t : CType) : CType witherrsoption = 
+        let 
+
+    val recur = resolveAllMetaVarsInCExpr ctx
+    val res = 
+        case t of
+            CVar v => Success(t)
+            | CMetaVar(name) => ( lookupCtx ctx name >>= (fn (cname, tp, jtp) => 
+                case jtp of 
+                    JTMetaVarResolved t => recur (t)
+                    | JTMetaVarPendingResolve s => TypeCheckingErrors.genericErrorStr s ctx "存在尚未赋值的元变量(Unresolved Metavariables)"
+                    | _ => raise Fail "tcast175: should be a metavar"
+                )
+            )
+            | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
+            | CPiType (t1, hd, t2) => Success(CPiType(t1, hd, t2))
+            | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
+                    (recur t2) >>= (fn nt2 =>
+                 Success(CTypeInst(nt1,nt2))))
+            | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
+            | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
+            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            | CUnitType => Success(CUnitType)
+            | CNullType => Success(CNullType)
+            | CBuiltinType(b) => Success(CBuiltinType(b))
+            | CUniverse => Success(CUniverse)
+            | CLam(ev, e, u) => 
+            fmap CLam(==/=(Success ev, recur e, Success u))
+            | CApp(e1, e2, u) =>   
+                recur e1 >>= (fn ce1 => 
+                         recur e2 >>= (fn ce2 => 
+                            Success(CApp(ce1, ce2, u))
+                         )
+                )
+            | CLetIn(dl, e, u) => 
+                resolveAllMetaVarsInCSig ctx dl >>= (fn cdl => 
+                    recur e >>= (fn ce => 
+                        Success(CLetIn(cdl, ce, u))
+                    )
+                )
+            | CStringLiteral _ => Success(t)
+            | CFfiCCall _ => Success(t)
+            | CBuiltinFunc _ => Success(t)
+            | CUnitExpr => Success(t)
+            | CBoolConstant b => Success(t)
+            | CIfThenElse(e1, e2, e3) => 
+
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        recur e3 >>= (fn ce3 => 
+                            Success(CIfThenElse(ce1, ce2, ce3))
+                        )
+                    )
+                )
+            | CIntConstant _ => Success(t)
+            | CTuple (l, u) => collectAll (map recur l) >>= (fn cl => 
+                Success(CTuple(cl, u))
+            )
+            | CProj(e, l, u) => 
+                recur e >>= (fn ce => 
+                    Success(CProj(ce, l, u))
+                )
+            | CFix(ev, eb, u) => 
+                recur eb >>= (fn ceb => 
+                    Success(CFix(ev, ceb, u))
+                )
+            | CCase((u, e), pel, u2) => 
+                recur e >>= (fn ce => 
+                    collectAll (map (fn (pat, eb) => 
+                        recur eb >>= (fn ceb => Success((pat, ceb)))
+                    ) pel) >>= (fn cl => 
+                        Success(CCase((u, ce), cl, u2))
+                    )
+                )
+
+
+            | _ => raise Fail ("resolveAllMetaVarsInCExpr not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
+    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
+    in
+        res
+    end
+
+
+    and resolveAllMetaVarsInCSig (ctx : context) ( s : CSignature) : CSignature witherrsoption = 
+        let fun rme e = resolveAllMetaVarsInCExpr ctx e
+        in
+        collectAll (map (fn d => 
+        case d of 
+            CTermDefinition(name, expr, tp) => rme expr >>= 
+                (fn cexpr => rme tp >>= 
+                    (fn ctp => Success(CTermDefinition(name, cexpr, ctp))))
+            | CDirectExpr( expr, tp) => rme expr >>= 
+                (fn cexpr => rme tp >>= 
+                    (fn ctp => Success(CDirectExpr(cexpr, ctp))))
+            | CConstructorDecl( name, tp, cinfo) => 
+                rme tp >>= 
+                    (fn ctp => Success(CConstructorDecl(name, ctp, cinfo)))
+             | CImport _ => Success(d)
+        ) s)
+        end
 
     and substTypeInCExpr (tS : CType) (x : StructureName.t) (e : CType) = 
     let fun captureAvoid f (tv : UTF8String.t) t2 = 
