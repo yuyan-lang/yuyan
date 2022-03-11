@@ -3,15 +3,7 @@ structure TypeCheckingContext = struct
 
 open TypeCheckingAST
 open StaticErrorStructure
-fun show_jt defop = 
-(case defop of JTDefinition(def) =>  " (定义) "
-        | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
-        | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
-        | JTLocalBinder => "（局部绑定）"
-        | JTPending => "（pending）"
-        | JTMetaVarPendingResolve _ => "(metavar pending resolve)"
-        | JTMetaVarResolved e => "(resolved metavar)"
-    )
+    val show_jt = PrettyPrint.show_typecheckingjt
     fun showctx (x : context) (full : bool) = (case x of 
     Context(curSName, curVis, m) =>  
     "当前结构名：" ^ StructureName.toStringPlain curSName ^
@@ -62,12 +54,17 @@ fun show_jt defop =
         Option.map(fn (x,t,eop) => (x, t)) (findCtx (Context(curSName, v, ctx)) n)
 
     fun modifyCtx (Context(curSName, v, ctx) : context) (cname : StructureName.t)
-        (jopf : judgmentType -> judgmentType) : context = 
+        (* return NONE to delete *)
+        (jopf : judgmentType -> judgmentType option) : context = 
         case ctx of 
             [] => raise Fail "tcc52: key not found"
             | (currentj as TermTypeJ(n1, t1, jtp,  u))::cs => 
                 if StructureName.semanticEqual n1 cname
-                then ( Context(curSName, v, TermTypeJ(n1, t1, jopf jtp, u) :: cs)
+
+                then 
+                    (case jopf jtp of 
+                        SOME (newjtp) =>  ( Context(curSName, v, TermTypeJ(n1, t1, newjtp, u) :: cs))
+                        | NONE => Context(curSName, v, cs)
                     )
                 else 
                      case modifyCtx (Context(curSName, v, cs)) cname jopf of 
@@ -76,16 +73,22 @@ fun show_jt defop =
     (* the name must be absolute name *)
     fun modifyCtxAddDef(ctx : context) (cname : StructureName.t) (newDef : CExpr) : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
-                JTPending => JTDefinition newDef
+                JTPending => SOME(JTDefinition newDef)
                 | _ => raise Fail ("tcc58: jtp is not pending " ^ (StructureName.toStringPlain cname))
             )
 
     fun modifyCtxResolveMetaVar (ctx : context) (cname : StructureName.t) (resolvedExpr : CExpr) : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
-                JTMetaVarPendingResolve _ => JTMetaVarResolved resolvedExpr
+                JTMetaVarPendingResolve _ => SOME(JTMetaVarResolved resolvedExpr)
                 | _ => raise Fail ("tcc58: jtp is not metavar pending resolve but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
             )
         
+    fun modifyCtxDeleteBinding (ctx : context) (cname : StructureName.t)  : context = 
+        modifyCtx ctx cname (fn jtp => case jtp of 
+                JTLocalBinder => NONE
+                | _ => raise Fail ("tcc58: jtp is not jtlocalbinder pending resolve but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
+            )
+    
 
     fun lookupCtx (ctxg as Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) witherrsoption = 
     case findCtx ctxg n of 

@@ -157,6 +157,12 @@ infix 5 <?>
     
     structure Errors = TypeCheckingErrors
     
+    fun withLocalBinder (ctx : context) (name : UTF8String.t) (tp : CType)
+        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
+         kont (addToCtxA (TermTypeJ([name], tp, JTLocalBinder, NONE)) ctx) >>= (fn (res, ctx) => 
+            Success(res, modifyCtxDeleteBinding ctx [name])
+        )
+        
 
 
     fun configureAndTypeCheckSignature
@@ -170,11 +176,15 @@ infix 5 <?>
             let val typeInfo : CType witherrsoption = 
                 case t of 
                     RPiType(t1, evop, t2, soi) => checkType ctx t1 (CUniverse) >>= (fn (ct1, ctx) => 
-                        checkType 
-                            (case evop of NONE => ctx 
-                                | SOME(ev) => addToCtxA (TermTypeJ([ev], CUniverse, JTLocalBinder, NONE)) ctx)
-                            t2 
-                            (CUniverse) 
+                            (let val k = (fn ctx => 
+                                    checkType ctx
+                                        t2 
+                                        (CUniverse) 
+                                )
+                            in 
+                            (case evop of NONE => Success(ctx) >>= k
+                                | SOME(ev) => withLocalBinder ctx ev CUniverse k)
+                            end)
                         >>= (fn (ct2, ctx) => 
                             Success(CPiType(ct1, evop, ct2))
                         )
@@ -304,13 +314,15 @@ infix 5 <?>
                         )
                     | RLamWithType (t, ev, e, soi) => 
                     checkExprIsType ctx t >>= (fn absTp => 
-                        synthesizeType (addToCtxA (TermTypeJ([ev], absTp, JTLocalBinder, NONE)) ctx) e >>= (fn ((bodyExpr, returnType), ctx) =>
-                        let val funType = if List.exists (fn x => StructureName.semanticEqual [ev] x) (freeTCVar returnType)
-                        then CPiType(absTp, SOME ev, returnType)
-                        else CPiType(absTp, NONE, returnType)
-                        in 
-                        Success((CLam(ev, bodyExpr, CTypeAnn(funType)), funType), ctx)
-                        end
+                        withLocalBinder ctx ev absTp (fn ctx => 
+                            synthesizeType ctx e >>= (fn ((bodyExpr, returnType), ctx) =>
+                                let val funType = if List.exists (fn x => StructureName.semanticEqual [ev] x) (freeTCVar returnType)
+                                    then CPiType(absTp, SOME ev, returnType)
+                                    else CPiType(absTp, NONE, returnType)
+                                in 
+                                Success((CLam(ev, bodyExpr, CTypeAnn(funType)), funType), ctx)
+                                end
+                            )
                         )
                     )
                     | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
@@ -347,7 +359,7 @@ infix 5 <?>
                             | _ => Errors.attemptToApplyNonUniversal e (st) ctx
                              )
                         )
-                    | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
+                    (* | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
                     weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => case nsynt  of
                                 ( CExists (tv', tb)) => 
                         synthesizeType (addToCtxA (TermTypeJ([ev], 
@@ -357,7 +369,7 @@ infix 5 <?>
                             else Success((COpen((CTypeAnn(CExists(tv', tb)), ce1), (tv, ev, ce2), CTypeAnn(synthesizedType)), synthesizedType), ctx)
                         )
                             | _ => Errors.attemptToOpenNonExistentialTypes e ( synt) ctx)
-                    )
+                    ) *)
                     | RUnfold (e2, soi) => synthesizeType ctx e2 >>= (fn ((ce2, synt), ctx) => 
                     weakHeadNormalizeType e2 ctx synt >>= (fn nsynt => case nsynt  of
                         ( CRho (tv, tb)) => Success ((CUnfold(ce2, CTypeAnn(CRho(tv, tb))),  (substTypeInCExpr (CRho (tv, tb)) [tv] (tb))), ctx)
@@ -390,20 +402,24 @@ infix 5 <?>
                     | RUniverse(s) => Success((CUniverse, CUniverse), ctx) (* TODO: maybe universe levels? *)
                     | RPiType(t1, evoption, t2, soi) => 
                         checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                            synthesizeType (
-                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, JTLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn ((ct2, synT), ctx) => 
+                            let val kf = fn ctx => 
+                            synthesizeType (ctx) t2 >>= (fn ((ct2, synT), ctx) => 
                                     tryTypeUnify ctx t2 synT CUniverse >>= 
                                         (fn ctx => Success((CPiType(ct1, evoption, ct2), CUniverse), ctx))
                             )
+                            in 
+                                case evoption of  NONE => Success(ctx) >>= kf 
+                                | SOME(n) => withLocalBinder ctx n CUniverse kf
+                            end
                         )
                     | RSigmaType(t1, evoption, t2, soi) =>
                         checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                            synthesizeType (
-                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, JTLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn ((ct2, synT), ctx) => 
-                                    tryTypeUnify ctx t2 synT CUniverse >>= 
-                                        (fn ctx => Success((CSigmaType(ct1, evoption, ct2), CUniverse), ctx))
+                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n CUniverse)
+                            (fn ctx => 
+                                synthesizeType (ctx) t2 >>= (fn ((ct2, synT), ctx) => 
+                                        tryTypeUnify ctx t2 synT CUniverse >>= 
+                                            (fn ctx => Success((CSigmaType(ct1, evoption, ct2), CUniverse), ctx))
+                                    )
                                 )
                             )
                     | RProd(ltsl, sepl) => 
@@ -435,17 +451,23 @@ infix 5 <?>
                         )
                     )
                     | RForall(tv, t2, soi) => 
-                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn (ct2, ctx) => 
+                        withLocalBinder ctx tv CUniverse (fn ctx => 
+                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success((CForall(tv, ct2), CUniverse), ctx)
                             )
+                        )
                     | RExists(tv, t2, soi) => 
-                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn (ct2, ctx) => 
+                        withLocalBinder ctx tv CUniverse (fn ctx => 
+                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success((CExists(tv, ct2), CUniverse), ctx)
                             )
+                        )
                     | RRho(tv, t2, soi) => 
-                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn (ct2, ctx) => 
+                        withLocalBinder ctx tv CUniverse (fn ctx => 
+                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success((CRho(tv, ct2), CUniverse), ctx)
                             )
+                        )
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
                     | _ => Errors.expressionDoesNotSupportTypeSynthesis e ctx
                     
@@ -536,13 +558,15 @@ infix 5 <?>
                     weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
                         (case tt of
                             CPiType(t1, tevop, t2) => 
-                                checkType 
-                                    (addToCtxA (TermTypeJ([ev], t1, JTLocalBinder, NONE)) ctx) 
-                                    eb 
-                                    (case tevop of NONE => t2 | SOME tev => if UTF8String.semanticEqual tev ev then t2 else 
-                                        substTypeInCExpr (CVar([ev], CVTBinder)) ([tev]) t2
-                                    )
-                                >>= (fn (checkedExpr, ctx) => Success(CLam(ev, checkedExpr, CTypeAnn(tt)), ctx))
+                                withLocalBinder ctx ev t1 (fn ctx => 
+                                    checkType 
+                                        ctx
+                                        eb 
+                                        (case tevop of NONE => t2 | SOME tev => if UTF8String.semanticEqual tev ev then t2 else 
+                                            substTypeInCExpr (CVar([ev], CVTBinder)) ([tev]) t2
+                                        )
+                                    >>= (fn (checkedExpr, ctx) => Success(CLam(ev, checkedExpr, CTypeAnn(tt)), ctx))
+                                )
                             | _ => Errors.expectedFunctionType e (tt) ctx
                             )
                     )
@@ -552,14 +576,17 @@ infix 5 <?>
                         CPiType(t1, tevop, t2) => (
                             checkExprIsType ctx t >>= (fn t' => 
                                 tryTypeUnify ctx e t' t1 >>=
-                                (fn ctx => checkType 
-                                    (addToCtxA (TermTypeJ([ev], t1, JTLocalBinder, NONE)) ctx) 
-                                    eb 
-                                    (case tevop of NONE => t2 | SOME tev => if UTF8String.semanticEqual tev ev then t2 else 
-                                        substTypeInCExpr (CVar([ev], CVTBinder)) ([tev]) t2
+                                (fn ctx => 
+                                    withLocalBinder ctx ev t1 (fn ctx => 
+                                        checkType 
+                                            ctx
+                                            eb 
+                                            (case tevop of NONE => t2 | SOME tev => if UTF8String.semanticEqual tev ev then t2 else 
+                                                substTypeInCExpr (CVar([ev], CVTBinder)) ([tev]) t2
+                                            )
+                                        >>= (fn (checkedBody, ctx) => 
+                                            Success(CLam(ev, checkedBody , CTypeAnn(tt)), ctx))
                                     )
-                                >>= (fn (checkedBody, ctx) => 
-                                    Success(CLam(ev, checkedBody , CTypeAnn(tt)), ctx))
                                 )
                             )
                             )
@@ -617,7 +644,7 @@ infix 5 <?>
                                 )
                         | _ => Errors.expectedExistentialType e (tt) ctx
                     )
-                    | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
+                    (* | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
                     weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => case nsynt of
                         (CExists (tv', tb)) => 
                         checkType (addToCtxA (TermTypeJ([ev], substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] ( tb), JTLocalBinder, NONE)) ctx) e2 tt
@@ -626,7 +653,7 @@ infix 5 <?>
                         )
                         | _ => Errors.attemptToOpenNonExistentialTypes e (synt) ctx
                     )
-                   )
+                   ) *)
                     | RFold (e2, soi) => (case tt
                         of 
                         CRho (tv ,tb) => 
@@ -641,8 +668,11 @@ infix 5 <?>
                             Success(CUnfold(ce2, CTypeAnn(CRho(tv,tb))), ctx)))
                         | _ => Errors.attemptToUnfoldNonRecursiveTypes e (synt) ctx
                         ))
-                    | RFix (ev, e, soi)=> checkType (addToCtxA (TermTypeJ([ev] , tt, JTLocalBinder, NONE)) ctx) e tt
-                                        >>= (fn (ce, ctx) => Success(CFix(ev,ce, CTypeAnn(tt)), ctx))
+                    | RFix (ev, e, soi)=> 
+                        withLocalBinder ctx ev tt (fn ctx => 
+                            checkType ctx e tt
+                                                >>= (fn (ce, ctx) => Success(CFix(ev,ce, CTypeAnn(tt)), ctx))
+                        )
                     | RStringLiteral (s, soi) => (tryTypeUnify ctx e (CBuiltinType(BIString)) (tt) >>= (fn (ctx) => Success (CStringLiteral s, ctx)))
                     | RIntConstant (i, soi) => (tryTypeUnify ctx e (CBuiltinType(BIInt)) tt >>= (fn ctx => Success ( CIntConstant i, ctx)))
                     | RRealConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIReal)) tt >>= (fn ctx => Success (CRealConstant r, ctx)))
@@ -691,22 +721,22 @@ infix 5 <?>
                     | RPiType(t1, evoption, t2, soi) => 
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                         checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                            synthesizeType (
-                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse, JTLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn ((ct2, synT), ctx) => 
+                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n CUniverse)
+                            (fn ctx =>
+                            synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
                                     tryTypeUnify ctx t2 synT CUniverse >>= (fn ctx => 
                                         (Success(CPiType(ct1, evoption, ct2), ctx)))
-                            )
+                            ))
                         ))
                     | RSigmaType(t1, evoption, t2, soi) =>
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                         checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                            synthesizeType (
-                                    case evoption of  NONE => ctx | SOME(n) => (addToCtxA (TermTypeJ([n], CUniverse,JTLocalBinder, NONE)) ctx)
-                                ) t2 >>= (fn ((ct2, synT), ctx) => 
+                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n CUniverse)
+                            (fn ctx => 
+                            synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
                                     tryTypeUnify ctx t2 synT CUniverse >>= 
                                         (fn ctx => Success(CPiType(ct1, evoption, ct2) , ctx))
-                                )
+                                ))
                             ))
                     | RProd(ltsl, sepl) => 
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
@@ -745,19 +775,22 @@ infix 5 <?>
                             ))
                     | RForall(tv, t2, soi) => 
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        checkType (addToCtxA (TermTypeJ([tv], CUniverse,JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn (ct2, ctx) => 
+                        withLocalBinder ctx tv CUniverse (fn ctx => 
+                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success(CForall(tv, ct2) , ctx)
-                            ))
+                            )))
                     | RExists(tv, t2, soi) => 
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        checkType (addToCtxA (TermTypeJ([tv], CUniverse,JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn (ct2, ctx) => 
+                        withLocalBinder ctx tv CUniverse (fn ctx => 
+                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success(CExists(tv, ct2) , ctx)
-                            ))
+                            )))
                     | RRho(tv, t2, soi) => 
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        checkType (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx) t2 CUniverse >>= (fn (ct2, ctx) => 
+                        withLocalBinder ctx tv CUniverse (fn ctx => 
+                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success(CRho(tv, ct2) , ctx)
-                            ))
+                            )))
                     | RPairOfQuotes((ql, qr)) => 
                         let 
                             (* val  allBindings = 
@@ -798,7 +831,7 @@ infix 5 <?>
                 (
 
 
-                    if DEBUG then DebugPrint.p ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
+                    if true then DebugPrint.p ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
                     " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
                     (* DebugPrint.p ("TCSig r="  ^ Int.toString (length s) ^   " acc=" ^ Int.toString (length acc) ^
                     "\nDEBUG " ^ PrettyPrint.show_typecheckingRSig s ^

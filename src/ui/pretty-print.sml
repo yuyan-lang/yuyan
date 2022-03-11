@@ -365,11 +365,23 @@ fun show_utf8string x = String.concatWith "+" (map show_utf8char x)
 fun show_utf8strings x = String.concatWith ", " (map show_utf8string x)
 fun show_token (CompilationStructure.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str "pp366")
 fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
+fun show_typecheckingjt defop = 
+let open TypeCheckingAST
+in
+(case defop of JTDefinition(def) =>  " (定义) "
+        | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
+        | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
+        | JTLocalBinder => "（局部绑定）"
+        | JTPending => "（pending）"
+        | JTMetaVarPendingResolve _ => "(metavar pending resolve)"
+        | JTMetaVarResolved e => "(resolved metavar)"
+    )
+  end
 fun show_typecheckingpassmappping x = let
 open TypeCheckingAST
 in
   case x of
-    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t 
+    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t  ^ show_typecheckingjt defop 
     ^ (case defop of JTDefinition(def) => "\n" ^ StructureName.toStringPlain e ^ " = " ^ show_typecheckingCExpr def 
                     | _ => "")
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t *)
