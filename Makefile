@@ -8,7 +8,7 @@ yyrt:
 	make -C runtime/ debug
 
 yy:  $(SMLSOURCES)
-	mlton -output yy -verbose 1 src/development.mlb
+	mlton -output yy -verbose 2 src/development.mlb
 
 buildtest:
 	./yy -c yylib/runtest.yuyan -o yy_test

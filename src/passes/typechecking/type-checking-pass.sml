@@ -291,7 +291,7 @@ infix 5 <?>
                         CPiType(t1, evop, t2, Implicit)=>
                             addNewMetaVar ctx t1 (reconstructFromRExpr e) >>= (fn (metaVarE, ctx) => 
                                 Success((CApp(syne, metaVarE, CTypeAnn nsynt), 
-                                    (case evop of NONE => t2 | SOME tv => substTypeInCExpr syne [tv] t2)), ctx)
+                                    (case evop of NONE => t2 | SOME tv => substTypeInCExpr metaVarE [tv] t2)), ctx)
                             )
                         | _ => Success(res)
                 )
@@ -852,8 +852,8 @@ infix 5 <?>
                             )))
                     | RPairOfQuotes((ql, qr)) => 
                        addNewMetaVar ctx tt [ql, qr]
-                    (* | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
-                     ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE *)
+                    | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
+                     ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE
                 in res
                 end 
         ))
