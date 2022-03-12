@@ -32,13 +32,15 @@ structure TypeCheckingErrors =
                         ListPair.map (fn ((b,c), operClause) => reconstructWithArgs operClause [reconstructFromRExpr b, reconstructFromRExpr c]) (l, soiClause)
                     ) soiSep
                 ]
-        | RLam (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
+        | RLam (x, e, p, soi) => 
+            reconstructWithArgs soi [x, reconstructFromRExpr e]
+
         | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
-        | RApp (e1, e2, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
+        | RApp (e1, e2, p, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
             then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
             else let
                 fun flatten (e : RExpr)  : RExpr list= case e of 
-                    RApp(e1', e2', soi') => if Operators.eqOpUid soi soi'
+                    RApp(e1', e2', p, soi') => if Operators.eqOpUid soi soi'
                                             then e1' :: flatten e2'
                                             else [e]
                     | _ => [e]
@@ -64,7 +66,7 @@ structure TypeCheckingErrors =
         | RBuiltinType(b, s) => s
         | RUnitType(s) => s
         | RUniverse(s) => s
-        | RPiType(t1, evoption, t2, soi) => 
+        | RPiType(t1, evoption, t2, p, soi) => 
         (case evoption of 
             SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
             | NONE => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2] )

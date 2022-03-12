@@ -119,7 +119,7 @@ struct
                     if getUID oper >= elabAppBound 
                     then (* elab app *)
                         collectAll (map (fn x => elaborateOpASTtoExpr x ctx)  l) >>=
-                        (fn l => Success (foldl (fn (arg, acc) => RApp (acc , arg, oper)) (RVar [getOriginalName oper]) l))
+                        (fn l => Success (foldl (fn (arg, acc) => RApp (acc , arg, Explicit, oper)) (RVar [getOriginalName oper]) l))
                     else
                     if oper ~=** structureRefOp
                     then fmap RVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
@@ -137,7 +137,10 @@ struct
                     then fmap RLazyProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
                     else 
                     if oper ~=** appExprOp
-                    then fmap RApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Explicit, operSuc))
+                    else 
+                    if oper ~=** implicitAppExprOp
+                    then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Implicit, operSuc))
                     else 
                     if oper ~=** pairExprOp
                     then 
@@ -189,8 +192,8 @@ struct
                             )
                         end
                     else 
-                    if oper ~=** typeAppExprOp
-                    then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, (operSuc =/= Success (reconstructOriginalFromOpAST (snd l) ))))
+                    if oper ~=** implicitAppExprOp
+                    then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Implicit, (operSuc)))
                     else
                     if oper ~=** ifThenElseExprOp
                     then fmap RIfThenElse(===/= (elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, elaborateOpASTtoExpr (hd (tl (tl l))) ctx, (operSuc)))
@@ -213,7 +216,10 @@ struct
                     then fmap RFfiCCall(==/= (elaborateOpASTtoExpr (hd l) ctx ,elaborateOpASTtoExpr (snd l) ctx, operSuc))
                     else
                     if oper ~=** lambdaExprOp
-                    then fmap RLam(==/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    then fmap RLam(===/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx, Success Explicit, operSuc))
+                    else
+                    if oper ~=** implicitLambdaExprOp
+                    then fmap RLam(===/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx, Success Implicit, operSuc))
                     else
                     if oper ~=** lambdaExprWithTypeOp
                     then fmap RLamWithType (===/= (elaborateOpASTtoType (hd l) ctx, 
@@ -257,7 +263,7 @@ struct
                         end)
                     else
                     if oper ~=** functionTypeOp
-                    then fmap RPiType (===/=((elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), operSuc))
+                    then fmap RPiType (====/=((elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), Success Explicit, operSuc))
                     else 
                     if oper ~=** typeInstantiationOp
                     then fmap RTypeInst (==/=((elaborateOpASTtoType (hd l) ctx) , (elaborateOpASTtoType (snd l) ctx), operSuc))
@@ -278,7 +284,10 @@ struct
                     then elaborateOpASTtoType (hd l) ctx
                     else 
                     if oper ~=** piTypeOp
-                    then fmap RPiType (===/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success oper))
+                    then fmap RPiType (====/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Explicit, Success oper))
+                    else 
+                    if oper ~=** implicitPiTypeOp
+                    then fmap RPiType (====/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Implicit, Success oper))
                     else 
                     if oper ~=** sigmaTypeOp
                     then fmap RSigmaType (===/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success oper))

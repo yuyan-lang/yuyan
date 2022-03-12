@@ -9,9 +9,9 @@ val typeVarB = CVar ([typeBinderB], CVTBinder)
 val typeBinderC = UTF8String.fromString "丙"
 val typeVarC = CVar ([typeBinderC], CVTBinder)
 
-fun cFunc (t1, t2) = CPiType(t1, NONE, t2)
+fun cFunc (t1, t2) = CPiType(t1, NONE, t2, Explicit)
 
-fun cForall (tv, t) = CPiType(CUniverse, SOME tv, t)
+fun cForall (tv, t) = CPiType(CUniverse, SOME tv, t, Explicit)
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
 val callccType : CType = cForall (typeBinderB, 
     cFunc( cFunc( cForall(typeBinderC, cFunc(

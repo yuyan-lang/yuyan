@@ -127,7 +127,10 @@ infix 4 ~~~=
                     (case (t1, t2) of
                         (CUniverse, CUniverse) => Success([], ctx)
                         | (CBuiltinType(b1), CBuiltinType(b2)) => if b1 = b2 then Success([], ctx) else fail()
-                        | (CPiType (t1, ev1op, t2), CPiType (t1', ev2op, t2')) => 
+                        | (CPiType (t1, ev1op,  t2, p), CPiType (t1', ev2op,  t2', p')) => 
+                        if p <> p'
+                        then fail()
+                        else
                             let val (ev1, ut2, ev2',ut2') = unifyBindingOption ev1op t2 ev2op t2'
                             in
                                 recur ctx t1 t1' >>= (fn (constraints, ctx) => 

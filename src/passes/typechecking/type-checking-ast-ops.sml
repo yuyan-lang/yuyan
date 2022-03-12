@@ -44,7 +44,7 @@ infix 5 =/=
             | CProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
-            | CPiType (t1,evop, t2) => 
+            | CPiType (t1,evop, t2, p) => 
             freeTCVar t1 @ 
                 (case evop of 
                     NONE => freeTCVar t2
@@ -124,7 +124,7 @@ infix 5 =/=
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
             (* | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 ) *)
-            | CPiType (t1, hd, t2) => Success(CPiType(t1, hd, t2))
+            | CPiType (t1, hd, p, t2) => Success(CPiType(t1, hd, p, t2))
             | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
                 CForall(tv, t1') => (recur t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
                 | _ => genSingletonError (reconstructFromRExpr e) ("期待通用类型(Expected Forall)，却得到了(got)：" ^
@@ -178,7 +178,7 @@ infix 5 =/=
             | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
-            | CPiType (t1, hd, t2) => Success(CPiType(t1, hd, t2))
+            | CPiType (t1, hd,p, t2) => Success(CPiType(t1, hd,p, t2))
             | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
                     (recur t2) >>= (fn nt2 =>
                  Success(CTypeInst(nt1,nt2))))
@@ -287,10 +287,10 @@ infix 5 =/=
             | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
             (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
             | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
-            | CPiType(t1, evop, t2) => (case evop of 
-                    NONE => CPiType(recur t1, NONE, recur t2)
+            | CPiType(t1, evop,t2, p) => (case evop of 
+                    NONE => CPiType(recur t1, NONE, recur t2, p)
                     | SOME(ev) => let val t1' = recur t1
-                                  in captureAvoid (fn (ev', t2') => CPiType(t1', SOME ev', t2')) ev t2
+                                  in captureAvoid (fn (ev', t2') => CPiType(t1', SOME ev', t2', p)) ev t2
                                   end
                 )
             | CForall (tv,t2) => captureAvoid CForall tv t2
@@ -444,7 +444,7 @@ infix 5 =/=
     fun countSpineTypeArgs (tp : CType) = 
             case tp of 
                 (* CFunc(t1, t2) => 1 + countSpineTypeArgs t2 *)
-                 CPiType(t1, _, t2) => 1 + countSpineTypeArgs t2
+                 CPiType(t1, _, t2, p) => 1 + countSpineTypeArgs t2 (* todo consider plicity *)
                 | _ => 0
             
     (* fun rTypeToCType (ctx: context)(t : RType)  : CType = 

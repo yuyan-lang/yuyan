@@ -144,4 +144,7 @@ struct
     fun ===/= ((t1, t2, t3, t4) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption * 'd witherrsoption) : ('a * 'b * 'c * 'd) witherrsoption 
         = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' =>  t4 >>= (fn t4' =>
         Success (t1', t2', t3', t4')))) )
+    fun ====/= ((t1, t2, t3, t4, t5) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption * 'd witherrsoption * 'e witherrsoption) : ('a * 'b * 'c * 'd * 'e) witherrsoption 
+        = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' =>  t4 >>= (fn t4' => t5 >>= (fn t5' =>
+        Success (t1', t2', t3', t4', t5')))) ))
 end

@@ -183,6 +183,10 @@ in case x of
     | StatementNode (stmt, next) => UTF8String.toString stmt ^ "\n -> "^ show_statementast next
     end *)
 fun show_typecheckingRType x = show_typecheckingRExpr x
+and show_plicity p s =
+let open TypeCheckingAST
+in case p of Explicit => s | Implicit => "{" ^ s ^ "}"
+end
 
 and show_typecheckingRExpr x = let
 open TypeCheckingAST
@@ -200,10 +204,12 @@ RVar v => sst v
                     | RIfThenElse (e, tcase, fcase, soi) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
                     | RInj  ( lbl,e, soi) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
                     | RCase (e, l, soi)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn ( x, e) =>   se x ^ " => " ^ se e) l) ^ "})"
-                    | RLam (x, e, soi) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | RLam (x, e, plicity, soi) => "(λ" ^ (show_plicity plicity (ss x)) ^ "." ^ se e ^ ")"
                     | RLamWithType (t, x, e, soi) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
-                    | RApp (e1, e2, soi)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
-                    (* | RTAbs (x, e, soi) => "(Λ" ^ ss x ^ "." ^ se e ^ ")" *)
+                    | RApp (e1, e2, p, soi)=> 
+                        "ap("^ se e1 ^ ", "^ 
+                          show_plicity p (se e2)
+                          ^ ")"
                     | RTApp (e1, e2, soi)=> "("^ se e1 ^ " ["^ st e2 ^"])"
                     | RPack (t, e, soi)=> "pack("^ st t ^ ", "^ se e ^")"
                     | ROpen (e, (t, x, e2), soi)=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
@@ -229,8 +235,9 @@ RVar v => sst v
                     | RExists (t1, t2,soi) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | RRho (t1, t2,soi) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | RBuiltinType (bi, s) => show_builtintype bi
-                    | RPiType(t, xop, t2, soi) => "(Π " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
-                      st t ^ " . " ^ st t2 ^ ")"
+                    | RPiType(t, xop, t2, p, soi) => "(Π " 
+                    ^ show_plicity p ((case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t) ^ " . " ^ st t2 ^ ")"
                     | RSigmaType(t, xop, t2, soi) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
                       st t ^ " . " ^ st t2 ^ ")"
                     | RUniverse(soi) => "(Set)"
@@ -333,9 +340,10 @@ in case x of
                     | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CBuiltinType (bi) => show_builtintype bi
-                    | CPiType(t1, xop, t2 ) => 
-                        (case xop of SOME x => "(Π " ^ ss x ^ " : " ^ 
-                                              st t1 ^ " . " ^ st t2 ^ ")"
+                    | CPiType(t1, xop, t2, p ) => 
+                        (case xop of SOME x => "(Π " ^ 
+                        show_plicity p (ss x ^ " : " ^ st t1)
+                        ^ " . " ^ st t2 ^ ")"
                         | NONE =>  "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" 
                         )
                     | CSigmaType(t, xop, t2 ) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 

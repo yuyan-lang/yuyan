@@ -11,29 +11,32 @@ structure TypeCheckingPatterns = struct
     infix 5 >>=
 
     structure Errors = TypeCheckingErrors
-    fun toHeadSpineForm (ctx : context) (pat : RExpr) : RExpr * RExpr list = 
+    fun toHeadSpineForm (ctx : context) (pat : RExpr) : RExpr * (plicity * RExpr) list = 
         case pat of 
-            RApp(e1, e2, soi) => (case toHeadSpineForm ctx e1 of 
-                (hd, tl') => (hd, tl'@[e2]))
+            RApp(e1, e2, p, soi) => (case toHeadSpineForm ctx e1 of 
+                (hd, tl') => (hd, tl'@[(p, e2)]))
             | _ => (pat, [])
 
     (* returns a new context with the bindings added from well defined pattern  *)
     fun checkPattern(ctx : context) ( pat : RExpr ) (analysisType : CType) : (CPattern * context) witherrsoption = 
     let val (head,spine) = toHeadSpineForm ctx pat
 
-        fun checkSpineAgainstType (accCVar : CPattern list) (ctx :  context) (tp : CType) (restSpine : RExpr list) : (CPattern list * context) witherrsoption = 
+        fun checkSpineAgainstType (accCVar : CPattern list) (ctx :  context) (tp : CType) (restSpine : (plicity * RExpr) list) : (CPattern list * context) witherrsoption = 
             case (tp, restSpine) of 
                 (* (CFunc(t1, t2 ), (RVar([hd]):: tls)) => 
                 checkSpineAgainstType (accCVar@[CPatVar(hd)]) 
                     (addToCtxA (TermTypeJ ([hd], t1, JTLocalBinder, NONE)) ctx)
                     t2 tls
                 | (CFunc(t1, t2 ), (uns::tls)) => Errors.unsupportedPatternType uns ctx *)
-                 (CPiType(t1, evop, t2 ), (RVar([hd]):: tls)) => 
-                checkSpineAgainstType (accCVar@[CPatVar(hd)])
-                                      (addToCtxA (TermTypeJ ([hd], t1, JTLocalBinder, NONE)) ctx)
-                                      (case evop of SOME(x) => substTypeInCExpr (CVar([hd], CVTBinder)) ([x]) t2 | NONE => t2 )
-                                      tls
-                | (CPiType(t1, evop, t2 ),(uns:: tls)) => Errors.unsupportedPatternType uns ctx
+                 (CPiType(t1, evop, t2, pt ), ((p, RVar([hd])):: tls)) => 
+                 if pt <> p 
+                 then Errors.genericError (RVar[hd]) ctx  "must use correct form of implicit/explicit pattern, TODO: implement omittence of implicit pattern"
+                 else
+                    checkSpineAgainstType (accCVar@[CPatVar(hd)])
+                                        (addToCtxA (TermTypeJ ([hd], t1, JTLocalBinder, NONE)) ctx)
+                                        (case evop of SOME(x) => substTypeInCExpr (CVar([hd], CVTBinder)) ([x]) t2 | NONE => t2 )
+                                        tls
+                | (CPiType(t1, evop, t2, pt ),((p, uns):: tls)) => Errors.unsupportedPatternType uns ctx
                 | _ => tryTypeUnify ctx pat tp analysisType >>= (fn (ctx) => ((Success(accCVar, ctx))))
     in
         (* look up the type of the header *)

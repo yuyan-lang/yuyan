@@ -44,7 +44,8 @@ yy -h
 ## 帮助文档
 ### 语言规范
 
-详见[语言规范](LanguageSpecification.md)
+[语言规范](LanguageSpecification.md)
+[语法表](SyntaxSheet.md)
 
 ### 标准库及工具库文档 (API Docs)
 

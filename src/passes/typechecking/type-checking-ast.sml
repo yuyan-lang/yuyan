@@ -24,6 +24,7 @@ structure TypeCheckingAST = struct
 
     datatype visibility = Public | Private
 
+    datatype plicity = Explicit | Implicit
     datatype cvartype = CVTBinder | CVTDefinition of CExpr | CVTConstructor of StructureName.t * cconstructorinfo (* canonical name and cinfo *)
 
     and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
@@ -72,7 +73,7 @@ structure TypeCheckingAST = struct
                     | CRho of TVar * CExpr
                     | CBuiltinType of BuiltinType
                     | CUniverse 
-                    | CPiType of CExpr * EVar option * CExpr 
+                    | CPiType of CExpr * EVar option * CExpr  * plicity
                     | CSigmaType of CExpr * EVar option * CExpr 
     
 
@@ -118,9 +119,9 @@ structure TypeCheckingAST = struct
                     | RCase of RExpr * ( RExpr (* pattern *) * RExpr (* body *)) list * (sourceOpInfo  (* top case *)
                             * sourceOpInfo list  (* case separator *)
                             * sourceOpInfo list (* case clause *))
-                    | RLam of EVar * RExpr * sourceOpInfo
+                    | RLam of EVar * RExpr * plicity * sourceOpInfo
                     | RLamWithType of RExpr * EVar * RExpr * sourceOpInfo
-                    | RApp of RExpr * RExpr * sourceOpInfo (* if op is not app, then custom operators *)
+                    | RApp of RExpr * RExpr * plicity * sourceOpInfo (* if op is not app, then custom operators *)
                     (* | RTAbs of TVar * RExpr * sourceOpInfo *)
                     | RTApp of RExpr * RExpr * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
                     | RPack of RExpr * RExpr * (UTF8String.t * sourceOpInfo)
@@ -138,7 +139,7 @@ structure TypeCheckingAST = struct
                     | RSeqComp of RExpr * RExpr * sourceOpInfo
                     (* types *)
                     | RUniverse of UTF8String.t (* a universe is the type of types, (TODO) stratified by level *)
-                    | RPiType of RExpr * EVar option * RExpr * sourceOpInfo
+                    | RPiType of RExpr * EVar option * RExpr * plicity * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RUnitType of UTF8String.t (* source info *)
                     | RProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)

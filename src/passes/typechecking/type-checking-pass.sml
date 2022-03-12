@@ -172,24 +172,21 @@ infix 5 <?>
     )
     :  RSignature -> CSignature witherrsoption =
     let
-            fun checkConstructorType(nameOfCons : UTF8String.t) ( ctx : context) (t : RType) : (CType * cconstructorinfo) witherrsoption = 
-            let val typeInfo : CType witherrsoption = 
+            fun checkConstructorType(nameOfCons : UTF8String.t) ( ctx : context) (t : RType) : ((CType * cconstructorinfo) * context) witherrsoption = 
+            let val typeInfoWeo : (CType * context) witherrsoption = 
                 case t of 
-                    RPiType(t1, evop, t2, soi) => checkType ctx t1 (CUniverse) >>= (fn (ct1, ctx) => 
-                            (let val k = (fn ctx => 
+                    RPiType(t1, evop, t2, p, soi) => checkType ctx t1 (CUniverse) >>= (fn (ct1, ctx) => 
+                        (case evop of NONE => (fn k => k ctx)
+                            | SOME(ev) => withLocalBinder ctx ev CUniverse 
+                        ) (fn ctx => 
                                     checkType ctx
                                         t2 
                                         (CUniverse) 
-                                )
-                            in 
-                            (case evop of NONE => Success(ctx) >>= k
-                                | SOME(ev) => withLocalBinder ctx ev CUniverse k)
-                            end)
                         >>= (fn (ct2, ctx) => 
-                            Success(CPiType(ct1, evop, ct2))
-                        )
+                            Success(CPiType(ct1, evop, ct2, p), ctx)
+                        ))
                     )
-                    | _ => checkType ctx t (CUniverse) >>= (fn (t, ctx) => Success(t))
+                    | _ => checkType ctx t (CUniverse) >>= (fn (t, ctx) => Success(t, ctx))
 
                 fun countOccurrencesOfElementConstructor(foundTypeConstructorName: StructureName.t) = 
                 List.length (List.filter (fn (TermTypeJ(name, tp, jt, originalName)) => 
@@ -239,18 +236,22 @@ infix 5 <?>
                 then
                 (case t of 
                     (* RFunc(t1, t2, soi) => getConsInfo true t2 *)
-                     RPiType(t1, b, t2, soi) => getConsInfo true t2
+                     RPiType(t1, b, t2,p, soi) => getConsInfo true t2
                     | _ => getConsInfo false t)
                 else
                 (case t of 
-                    RApp(t1, t2, soi) => getConsInfo false t1
+                    RApp(t1, t2,p, soi) => getConsInfo false t1
                     | RVar(s) => analyzeVariable(s)
                     | RUniverse(s) => Success(CConsInfoTypeConstructor)
                     | _ => Errors.notATypeConstructor t ctx
                     )
                 val consInfo = getConsInfo true t
             in 
-            (typeInfo =/= consInfo)
+            typeInfoWeo  >>= (fn (tpInfo, ctx) => 
+                consInfo >>= (fn consInfo => 
+                    Success((tpInfo, consInfo), ctx)
+                )
+            )
             end
             
             and checkExprIsType (ctx : context) (e : RType) : CType witherrsoption = 
@@ -317,18 +318,18 @@ infix 5 <?>
                         withLocalBinder ctx ev absTp (fn ctx => 
                             synthesizeType ctx e >>= (fn ((bodyExpr, returnType), ctx) =>
                                 let val funType = if List.exists (fn x => StructureName.semanticEqual [ev] x) (freeTCVar returnType)
-                                    then CPiType(absTp, SOME ev, returnType)
-                                    else CPiType(absTp, NONE, returnType)
+                                    then CPiType(absTp, SOME ev, returnType, Explicit)
+                                    else CPiType(absTp, NONE, returnType, Explicit)
                                 in 
                                 Success((CLam(ev, bodyExpr, CTypeAnn(funType)), funType), ctx)
                                 end
                             )
                         )
                     )
-                    | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
+                    | RApp (e1, e2, p, soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
                     weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => 
                         case synt 
-                            of (CPiType (t1, evop, t2)) => ( 
+                            of (CPiType (t1, evop, t2, p)) => ( 
                                     checkType ctx e2 (t1) >>= (fn (checkedArg, ctx) => 
                             (
                                         Success ((CApp(ce1, checkedArg, CTypeAnn(synt)), (
@@ -400,12 +401,12 @@ infix 5 <?>
                     | RNullType(s) => Success((CNullType, CUniverse), ctx)
                     | RBuiltinType(f, s) => Success((CBuiltinType(f), CUniverse), ctx)
                     | RUniverse(s) => Success((CUniverse, CUniverse), ctx) (* TODO: maybe universe levels? *)
-                    | RPiType(t1, evoption, t2, soi) => 
+                    | RPiType(t1, evoption, t2,p,  soi) => 
                         checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
                             let val kf = fn ctx => 
                             synthesizeType (ctx) t2 >>= (fn ((ct2, synT), ctx) => 
                                     tryTypeUnify ctx t2 synT CUniverse >>= 
-                                        (fn ctx => Success((CPiType(ct1, evoption, ct2), CUniverse), ctx))
+                                        (fn ctx => Success((CPiType(ct1, evoption, ct2, p), CUniverse), ctx))
                             )
                             in 
                                 case evoption of  NONE => Success(ctx) >>= kf 
@@ -554,10 +555,10 @@ infix 5 <?>
                                     => Success(CCase((CTypeAnn(caseTpNormalized), ce), checkedCases , CTypeAnn((tt))), ctx))
                          ))
                             (* | _ => Errors.attemptToCaseNonSum originalExpr (#2 synt) ctx) *)
-                    | RLam(ev, eb, soi) => 
+                    | RLam(ev, eb,p, soi) => 
                     weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
                         (case tt of
-                            CPiType(t1, tevop, t2) => 
+                            CPiType(t1, tevop, t2, Explicit) => 
                                 withLocalBinder ctx ev t1 (fn ctx => 
                                     checkType 
                                         ctx
@@ -573,7 +574,7 @@ infix 5 <?>
                     | RLamWithType (t, ev, eb, soi) => 
                     weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
                     (case ntt of
-                        CPiType(t1, tevop, t2) => (
+                        CPiType(t1, tevop, t2, Explicit) => (
                             checkExprIsType ctx t >>= (fn t' => 
                                 tryTypeUnify ctx e t' t1 >>=
                                 (fn ctx => 
@@ -597,10 +598,10 @@ infix 5 <?>
                         checkType ctx e2 tt >>= (fn (ce2, ctx) => 
                             Success(CSeqComp(ce1, ce2, CTypeAnn(t1), CTypeAnn(tt)), ctx)
                         ))
-                    | RApp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
+                    | RApp (e1, e2, pe, soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
                     weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => 
                         case synt 
-                            of (CPiType (t1, evop, t2)) => ( 
+                            of (CPiType (t1, evop, t2, pt)) => ( 
                                     checkType ctx e2 (t1) >>= (fn (checkedArg, ctx) => 
                             tryTypeUnify ctx e (
                                 case evop of 

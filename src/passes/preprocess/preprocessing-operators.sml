@@ -76,7 +76,7 @@ struct
     val typeInstantiationOp  = Operators.parseOperatorStr "〇启以〇" true true 355 []
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 350 []
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
-    (* val universalTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 340 [1] *)
+    val implicitPiTypeOp  = Operators.parseOperatorStr "承〇者〇而〇" true false 350 [3]
     val existentialTypeOp  = Operators.parseOperatorStr "存在〇而〇" true false 320 [1]
     val piTypeOp  = Operators.parseOperatorStr "化〇者〇而〇" true false 350 [3] (* Π x : T. T *)
     val sigmaTypeOp  = Operators.parseOperatorStr "有〇者〇还〇" true false 350 [3] (* Σ x : T. T *)
@@ -97,7 +97,7 @@ struct
     val caseClauseOp = Operators.parseOperatorStr "有〇则〇" false false 640 []
     val caseAlternativeOp = Operators.parseOperatorStr "〇或〇" true false 630 []
     val caseExprOp = Operators.parseOperatorStr "鉴〇而〇" true false 620 []
-    val typeAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 695 []
+    val implicitAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 690 []
     val packExprOp = Operators.parseOperatorStr "入〇合〇" true false 560 []
     val unpackExprOp = Operators.parseOperatorStr "开〇则有〇者〇而〇" true false 540 [3,5]
     val sequentialCompositionOp = Operators.parseOperatorStr "〇；〇" true false 535 []
@@ -105,7 +105,7 @@ struct
     val lambdaExprOp = Operators.parseOperatorStr "会〇而〇" true false 520 [1]
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
-    (* val typeLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 500 [1] *)
+    val implicitLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 520 [1]
     val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" false false 525 []
     val inlineCommentOp = Operators.parseOperatorStr "〇注〇" false false 480 []
 
@@ -123,17 +123,17 @@ struct
         will soon be merged together *)
         , lazyProdTypeOp
         , piTypeOp, 
+        implicitPiTypeOp,
         sigmaTypeOp
         ]
     val allTypeAndExprOps = allTypeOps @ [ 
-        (* unitExprOp, *)
         lazyProjExprOp,
         projExprOp, appExprOp, pairExprOp,
         lazyPairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 
-        caseAlternativeOp, caseExprOp, ifThenElseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
+        caseAlternativeOp, caseExprOp, ifThenElseExprOp, implicitAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
+        implicitLambdaExprOp,
         ffiCCallOp,
         lambdaExprWithTypeOp, fixExprOp, 
-        (* typeLambdaExprOp, *)
         letinOp, sequentialCompositionOp
     ]
 end
