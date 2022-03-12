@@ -94,7 +94,6 @@ infix 5 =/=
             | Fix (ev, e)=> List.filter (fn ev' => ev' <> [ev]) (freeEVar e)
             | StringLiteral l => [] *)
 
-    fun uniqueName () =  UTF8String.fromString ("绑定" ^Int.toString (UID.next()))
 
 
     (* e is the current checking expression, for error reporting *)
@@ -267,7 +266,7 @@ infix 5 =/=
     and substTypeInCExpr (tS : CType) (x : StructureName.t) (e : CType) = 
     let fun captureAvoid f (tv : UTF8String.t) t2 = 
             if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
-             then let val tv' = uniqueName()
+             then let val tv' = StructureName.binderName()
                                 in f (tv', substTypeInCExpr tS x 
                                     (substTypeInCExpr (CVar([tv'], CVTBinder)) [tv] t2)) 
                                     end
@@ -282,6 +281,7 @@ infix 5 =/=
     in
         case e of
               CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
+            | CMetaVar(name) => if name ~~~=x then tS else e
             | CProd l => CProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
             | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
             | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)

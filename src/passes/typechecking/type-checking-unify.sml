@@ -12,6 +12,7 @@ infix 4 ~<>
 infix 4 ~~=
 infix 4 ~~~=
 
+    val uniqueName = StructureName.binderName
 
     fun typeUnify (e : RExpr) (failCallback : CExpr * CExpr -> (constraints * context) witherrsoption)
      (ctx : context) (t1:CExpr) (t2:CExpr)  : (constraints * context) witherrsoption = 

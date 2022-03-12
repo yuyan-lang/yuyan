@@ -535,6 +535,30 @@ infix 5 <?>
 
             and checkType (ctx : context) (e : RExpr) (ttUnnorm: CType) (* tt target type *) : (CExpr * context) witherrsoption =
                      weakHeadNormalizeType e ctx ttUnnorm >>= (fn ttNorm =>
+                case ttNorm of 
+                    CPiType(t1, tvop, t2, Implicit) => (
+                                case e of RLam(ev, eb, Implicit, soi) => checkTypeNoInsertLam ctx e ttNorm
+                                | _ => ( (* insert lambda here *)
+                                let 
+                                in
+                                    (case tvop of 
+                                            NONE => 
+                                                checkType ctx e t2 >>= (fn (ce, ctx) => 
+                                                Success(CLam(StructureName.binderName(), ce, CTypeAnn ttNorm), ctx))
+                                            | SOME tv => withLocalBinder ctx tv t1
+                                            (fn ctx => 
+                                                checkType ctx e t2 >>= (fn (ce, ctx) => 
+                                                Success(CLam(tv, ce, CTypeAnn ttNorm), ctx))
+                                            )
+                                    )
+                                end
+                            )
+                     )
+                    | _ => checkTypeNoInsertLam ctx e ttNorm
+                )
+
+            and checkTypeNoInsertLam (ctx : context) (e : RExpr) (ttUnnorm: CType) (* tt target type *) : (CExpr * context) witherrsoption =
+                     weakHeadNormalizeType e ctx ttUnnorm >>= (fn ttNorm =>
                 (let 
                     val tt = ttNorm
                     val _ = if DEBUG then  print(  "DEBUG: checking the expr " ^ PrettyPrint.show_typecheckingRExpr e ^ 
@@ -919,7 +943,12 @@ infix 5 <?>
                     ) *)
                 | RTermDefinition(n, e) :: ss => 
                 (case findCtx ctx ((getCurSName ctx)@[n]) of  (* must find fully qualified name as we allow same name for substructures *)
-                    NONE  => synthesizeType ctx (e) >>= (fn ((transformedExpr , synthesizedType), ctx)  =>
+                    NONE  => 
+                    (* optimize: if e is just an expr, do not instantiate implicit args *)
+                    (case e of 
+                    RVar _ => synthesizeTypeNoInstMeta ctx e
+                    | _ => synthesizeType ctx (e))
+                     >>= (fn ((transformedExpr , synthesizedType), ctx)  =>
                                 typeCheckSignature 
                                     (addToCtxR (TermTypeJ([n], synthesizedType, JTDefinition transformedExpr, NONE)) ctx) ss 
                                     (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])

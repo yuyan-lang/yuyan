@@ -22,7 +22,7 @@ val separatorCharDebug = UTF8String.fromString "->"
     fun localName () = [UTF8String.fromString ("《《临时结构" ^ Int.toString(UID.next()) ^ "》》")]
     fun searchPathName() = [UTF8String.fromString ("《《搜索路径" ^ Int.toString(UID.next()) ^ "》》")]
     fun metaVarName() = [UTF8String.fromString ("《《元变量" ^ Int.toString(UID.next()) ^ "》》")]
-
+    fun binderName () =  UTF8String.fromString ("绑定" ^Int.toString (UID.next()))
 
     fun getDeclaringScope (s : structureName) = 
         case s of 

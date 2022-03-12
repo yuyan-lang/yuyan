@@ -49,13 +49,25 @@ structure TypeCheckingPatterns = struct
                         else Errors.unboundTermConstructor head ctx
                     | SOME(cname, tp, jtp) =>
                         (case jtp of 
-                            JTConstructor cinfo => 
+                            JTConstructor cinfo => Success(cinfo)
+                            | JTDefinition cexpr => (
+                                let fun traceVarDef(cexpr : CExpr) = 
+                                    case cexpr of 
+                                        CVar(x, CVTDefinition cexpr) => traceVarDef cexpr
+                                        | CVar(x, CVTConstructor(_, cinfo)) => Success(cinfo)
+                                        | _ => Errors.expectedTermConstructor head ctx
+                                in 
+                                    traceVarDef cexpr
+                                end
+                            )
+                            | _ => Errors.expectedTermConstructor head ctx
+                        ) >>= (fn cinfo =>
                             if length spine <> countSpineTypeArgs tp
                             then Errors.patternArgumentCountMismatch pat ctx (countSpineTypeArgs tp) (length spine)
                             else checkSpineAgainstType [] ctx tp spine >>= 
                                     (fn (checkedSpine, newCtx) => Success(CPatHeadSpine((cname,cinfo) , checkedSpine), newCtx))
-                            | _ => Errors.expectedTermConstructor head ctx
-                        ))
+                            )
+                        )
             | _ => Errors.unsupportedPatternType head ctx
     end
 
