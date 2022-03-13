@@ -58,18 +58,23 @@ struct
     fun  unmatchedStringLiteralError(startChar : UTF8Char.t ) (scannedSoFar : UTF8String.t ) : 'a witherrsoption = 
         genSingletonError((startChar::scannedSoFar)) "未关闭的左字符串引号" NONE
 
-    exception StringNotPlain of mixedstr
-    fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
-        case u of 
-            SChar s => s
-            |_ => raise StringNotPlain [u]
 
 (* only name and plain schar's are plain *)
-    fun toPlainUTF8String (u : mixedstr) : UTF8String.t = 
+    fun toPlainUTF8String (u : mixedstr) : UTF8String.t witherrsoption= 
+    let 
+        exception StringNotPlain of mixedstr
+        fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
+            case u of 
+                SChar s => s
+                |_ => (DebugPrint.p (toString [u]); raise StringNotPlain [u])
+    in
         case u of 
-            [] => []
-            | [Name (s, t)] => s
-            | _ => map toPlainUTF8Char u
+            [] => Success([])
+            | [Name (s, t)] => Success(s)
+            | _ => (Success(map toPlainUTF8Char u)
+            handle StringNotPlain err => genSingletonError (toUTF8String u) ("名称不可以包含结构性字符(expected plain names)`" ^ 
+                toString err ^ "`") NONE)
+    end
 
 
             

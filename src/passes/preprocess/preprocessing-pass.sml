@@ -184,7 +184,7 @@ structure PreprocessingPass = struct
             and parseJudgment (s : MixedStr.t)(ctx : contextType) : (pJudgment * contextType) witherrsoption= 
             (let
             (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
-            val tp  = MixedStr.toPlainUTF8String
+            fun tp s = MixedStr.toPlainUTF8String s 
             fun getDeclContent (x : MixedStr.t) : (OpAST * contextType) witherrsoption = case x of
                 [MixedStr.UnparsedDeclaration(y, qi)] => (
                         preprocessAST y ctx >>=  (fn (preprocessedAST, newContext) => 
@@ -200,33 +200,41 @@ structure PreprocessingPass = struct
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx)) *)
                     (* else  *)
                     if oper ~=** termTypeJudgmentOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermTypeJudgment (tp l1, l2, oper), ctx))
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 => tp l1 >>= (fn l1 =>  Success(PTermTypeJudgment (l1, l2, oper), ctx)))
                     else if oper ~=** constructorDeclarationOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PConstructorDecl (tp l1, l2, oper), ctx))
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success(PConstructorDecl (l1, l2, oper), ctx)))
                     (* else if oper ~=** termMacroOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
                     else if oper ~=** termDefinitionOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermDefinition (tp l1, l2, oper), ctx))
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success(PTermDefinition (l1, l2, oper), ctx)))
                     else if oper ~=** privateStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
-                    Success(PStructure (false, tp l1, declOpAST, oper), newContext))
+                    tp l1 >>= (fn l1 => 
+                    Success(PStructure (false, l1, declOpAST, oper), newContext)))
                     else if oper ~=** publicStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
-                    Success(PStructure (true, tp l1, declOpAST, oper), newContext))
+                    tp l1 >>= (fn l1 => 
+                    Success(PStructure (true, l1, declOpAST, oper), newContext)))
                     else  
                     raise Fail "pp34"
                     | (oper, [l1, l2, l3]) =>  
                         if oper ~=** opDeclarationOp
                         then 
-                        parseAssoc (tp l2) >>= (fn parsedAssoc => 
-                        if NumberParser.isInteger (tp l3)
-                        then
-                            let val newOp = POpDeclaration (tp l1, parsedAssoc, NumberParser.parseInteger (tp l3), (tp l2, tp l3, oper))
-                                val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
-                            in
-                                Success(newOp, newContext)
-                            end
-                        else genSingletonError (tp l3) "优先级必须是一个整数" NONE
+                        tp l1 >>= (fn pl1 => 
+                        tp l2 >>= (fn pl2 => 
+                        tp l3 >>= (fn pl3 => 
+                            parseAssoc (pl2) >>= (fn parsedAssoc => 
+                            if NumberParser.isInteger (pl3)
+                            then
+                                let val newOp = POpDeclaration (pl1, parsedAssoc, NumberParser.parseInteger (pl3), (pl2, pl3, oper))
+                                    val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
+                                in
+                                    Success(newOp, newContext)
+                                end
+                            else genSingletonError (pl3) "优先级必须是一个整数" NONE
+                            )
+                        )
+                        )
                         )
                         else raise Fail "pp85"
                     | (oper, [l1]) =>  
