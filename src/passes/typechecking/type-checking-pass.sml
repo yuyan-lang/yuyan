@@ -630,10 +630,13 @@ infix 5 <?>
                                     => Success(CCase((CTypeAnn(caseTpNormalized), ce), checkedCases , CTypeAnn((tt))), ctx))
                          ))
                             (* | _ => Errors.attemptToCaseNonSum originalExpr (#2 synt) ctx) *)
-                    | RLam(ev, eb,p, soi) => 
+                    | RLam(ev, eb,pe, soi) => 
                     weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
                         (case tt of
-                            CPiType(t1, tevop, t2, Explicit) => 
+                            CPiType(t1, tevop, t2, pt) => 
+                                if pt <> pe 
+                                then raise Fail "tcp638: should have inserted implict lams"
+                                else
                                 withLocalBinder ctx ev t1 (fn ctx => 
                                     checkType 
                                         ctx
