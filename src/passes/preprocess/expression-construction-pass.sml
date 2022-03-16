@@ -267,9 +267,9 @@ struct
                     if oper ~=** functionTypeOp
                     then fmap RPiType (====/=(fmap SOME (elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), Success Explicit, operSuc))
                     else 
-                    if oper ~=** typeInstantiationOp
+                    (* if oper ~=** typeInstantiationOp
                     then fmap RTypeInst (==/=((elaborateOpASTtoType (hd l) ctx) , (elaborateOpASTtoType (snd l) ctx), operSuc))
-                    else 
+                    else  *)
                     (* if oper ~=** universalTypeOp
                     then fmap RForall (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else  *)

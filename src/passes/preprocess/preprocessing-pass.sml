@@ -224,14 +224,16 @@ structure PreprocessingPass = struct
                         tp l2 >>= (fn pl2 => 
                         tp l3 >>= (fn pl3 => 
                             parseAssoc (pl2) >>= (fn parsedAssoc => 
-                            if NumberParser.isInteger (pl3)
-                            then
+                            if not (NumberParser.isInteger (pl3))
+                            then genSingletonError (pl3) "优先级必须是一个整数" NONE
+                            else if UTF8String.isSubstring ([underscoreChar, underscoreChar]) pl1
+                            then genSingletonError (pl1) "不可以出现连续的参数(〇〇)" NONE
+                            else
                                 let val newOp = POpDeclaration (pl1, parsedAssoc, NumberParser.parseInteger (pl3), (pl2, pl3, oper))
                                     val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
                                 in
                                     Success(newOp, newContext)
                                 end
-                            else genSingletonError (pl3) "优先级必须是一个整数" NONE
                             )
                         )
                         )

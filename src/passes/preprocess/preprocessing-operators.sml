@@ -73,7 +73,7 @@ struct
     val prodTypeOp  = Operators.parseOperatorStr "〇合〇" true false 380 []
     val lazyProdTypeOp  = Operators.parseOperatorStr "〇且合〇" true false 370 []
     val sumTypeOp  = Operators.parseOperatorStr "〇亦〇" true false 360 []
-    val typeInstantiationOp  = Operators.parseOperatorStr "〇启以〇" true true 355 []
+    (* val typeInstantiationOp  = Operators.parseOperatorStr "〇启以〇" true true 355 [] *)
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 350 []
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
     val implicitPiTypeOp  = Operators.parseOperatorStr "承〇者〇而〇" true false 350 [3]
@@ -117,7 +117,7 @@ struct
         structureRefOp,
         (* unitTypeOp, nullTypeOp,  *)
         labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
-        typeInstantiationOp,
+        (* typeInstantiationOp, *)
         (* universalTypeOp,  *)
         existentialTypeOp, recursiveTypeOp
         , inlineCommentOp (* allow comment in types, but not important anyways, as both 

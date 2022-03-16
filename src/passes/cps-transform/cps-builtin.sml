@@ -36,6 +36,8 @@ open CPSHelper
                 ), NONE, kcc cc) (* cc is the continuation that expects the value of callcc *)
 
     fun transformNewDynClsfdValueWithString (cc : cpsvar -> cpscomputation ) : cpscomputation = 
+        CPSAbs (kcc2' (fn typeNameIgnore  (* the value of the type  *) =>
+            fn typeNameRet =>
                 CPSAbs (kcc2' (fn argName  (* arg the name of classified  *)
                 => fn retTup (* should pass the result of the computation to return *)
                 =>
@@ -52,33 +54,38 @@ open CPSHelper
                                 )
                             )
                         ), NONE, kcc (fn makeFun =>
-                                    CPSAbs (kcc2' (fn valueMatchUnmatch => 
-                                        fn matchReturn => 
-                                        let 
-                                            val vmumVal = CPSValueVar (CPSVarLocal valueMatchUnmatch)
-                                        in
-                                            CPSProj(vmumVal, 0, kcc (fn valueToMatch => 
-                                                CPSProj(vmumVal, 1, kcc (fn matchFunc => 
-                                                    CPSProj(vmumVal, 2, kcc (fn unmatchFunc => 
-                                                        CPSDynClsfdMatch(CPSValueVar valueToMatch, 
-                                                        (thisDynId, kcc (fn unwrappedValue => 
-                                                                CPSApp(CPSValueVar (matchFunc), 
-                                                                        (CPSValueVar (unwrappedValue), 
-                                                                            CPSValueVar (CPSVarLocal matchReturn) (* the continuation is match return *)
+                                    CPSAbs (kcc2' 
+                                    (fn typeVar => 
+                                    fn typeVarRet => 
+                                        CPSAbs(kcc2' (fn valueMatchUnmatch => 
+                                            fn matchReturn => 
+                                            let 
+                                                val vmumVal = CPSValueVar (CPSVarLocal valueMatchUnmatch)
+                                            in
+                                                CPSProj(vmumVal, 0, kcc (fn valueToMatch => 
+                                                    CPSProj(vmumVal, 1, kcc (fn matchFunc => 
+                                                        CPSProj(vmumVal, 2, kcc (fn unmatchFunc => 
+                                                            CPSDynClsfdMatch(CPSValueVar valueToMatch, 
+                                                            (thisDynId, kcc (fn unwrappedValue => 
+                                                                    CPSApp(CPSValueVar (matchFunc), 
+                                                                            (CPSValueVar (unwrappedValue), 
+                                                                                CPSValueVar (CPSVarLocal matchReturn) (* the continuation is match return *)
+                                                                            )
                                                                         )
+                                                                )),
+                                                            CPSUnit(kcc (fn unitValue => 
+                                                                CPSApp(CPSValueVar (unmatchFunc), 
+                                                                    (CPSValueVar unitValue, CPSValueVar (CPSVarLocal matchReturn)) 
                                                                     )
-                                                            )),
-                                                        CPSUnit(kcc (fn unitValue => 
-                                                            CPSApp(CPSValueVar (unmatchFunc), 
-                                                                (CPSValueVar unitValue, CPSValueVar (CPSVarLocal matchReturn)) 
-                                                                )
+                                                            ))
+                                                            )
                                                         ))
-                                                        )
                                                     ))
                                                 ))
-                                            ))
-                                        end
-                                    ), NONE, kcc (fn analyzeFunc => 
+                                            end
+                                        ), NONE, kcc(fn analyzeFuncBody => 
+                                            CPSAppSingle(CPSValueVar (CPSVarLocal typeVarRet), CPSValueVar analyzeFuncBody)
+                                    ))), NONE, kcc (fn analyzeFunc => 
                                             CPSTuple ( [CPSValueVar makeFun, CPSValueVar analyzeFunc], kcc (fn tup => 
                                                 CPSAppSingle(CPSValueVar (CPSVarLocal retTup), CPSValueVar tup))
                                             )
@@ -87,7 +94,8 @@ open CPSHelper
                             )
                         )
                     end
-                ), NONE, kcc cc) (* cc is the continuation that expects the value of this builtin function *)
+                ), NONE, kcc (fn body => CPSAppSingle(CPSValueVar (CPSVarLocal typeNameRet), CPSValueVar body))))
+            , NONE, kcc cc) (* cc is the continuation that expects the value of this builtin function *)
 
 
     fun transformRaise(cc : cpsvar -> cpscomputation) : cpscomputation = 

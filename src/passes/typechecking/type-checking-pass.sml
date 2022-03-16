@@ -202,12 +202,9 @@ infix 5 <?>
             let val typeInfoWeo : (CType * context) witherrsoption = 
                 case t of 
                     RPiType(t1, evop, t2, p, soi) => 
-                    (case t1 of 
-                        SOME t1 => checkType ctx t1 (CUniverse) 
-                        | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr t) 
-                    ) >>= (fn (ct1, ctx) => 
+                    checkExprOptionIsType ctx t1 ((case evop of SOME x => RVar([x]) | NONE => t)) >>= (fn (ct1, ctx) => 
                             (case evop of NONE => (fn k => k ctx)
-                                | SOME(ev) => withLocalBinder ctx ev CUniverse 
+                                | SOME(ev) => withLocalBinder ctx ev ct1
                             ) (fn ctx => 
                                         checkType ctx
                                             t2 
@@ -285,9 +282,15 @@ infix 5 <?>
             )
             end
             
-            and checkExprIsType (ctx : context) (e : RType) : CType witherrsoption = 
-                checkType ctx e CUniverse >>= (fn (x, ctx) => Success(x))
-
+            and checkExprIsType (ctx : context) (e : RType) : (CType * context) witherrsoption = 
+                checkType ctx e CUniverse 
+            and checkExprOptionIsType (ctx : context) (e : RType option) (errReporting : RType) : (CType * context) witherrsoption = 
+                (case e of 
+                        SOME t1 => checkType ctx t1 (CUniverse) 
+                        | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr errReporting) >>= (fn (metavar, ctx) => 
+                                Success((metavar, ctx))
+                            )
+                        )
             
 
             (* synthesizeType and instantiating implicit arguments *)
@@ -367,7 +370,7 @@ infix 5 <?>
                             )
                         )
                     | RLamWithType (t, ev, e, soi) => 
-                    checkExprIsType ctx t >>= (fn absTp => 
+                    checkExprIsType ctx t >>= (fn (absTp, ctx) => 
                         withLocalBinder ctx ev absTp (fn ctx => 
                             synthesizeType ctx e >>= (fn ((bodyExpr, returnType), ctx) =>
                                 let val funType = if List.exists (fn x => StructureName.semanticEqual [ev] x) (freeTCVar returnType)
@@ -399,10 +402,12 @@ infix 5 <?>
                                             )
                                         )
                                     )
-                                    else 
-                                    raise Fail ("tcp359: plicity of (possible) pi type should match requested plicity"
+                                    else Errors.genericError e ctx ("隐式/显示参数类型不匹配"
                                         ^ " \n synthesized (e1) = " ^ PrettyPrint.show_typecheckingCExpr synt
-                                        ^ " \n original (e1 e2) = " ^ PrettyPrint.show_typecheckingRType originalExpr)
+                                        ^ " \n original (e1 e2) = " ^ PrettyPrint.show_typecheckingRType originalExpr) 
+                                    (* raise Fail ("tcp359: plicity of (possible) pi type should match requested plicity"
+                                        ^ " \n synthesized (e1) = " ^ PrettyPrint.show_typecheckingCExpr synt
+                                        ^ " \n original (e1 e2) = " ^ PrettyPrint.show_typecheckingRType originalExpr) *)
 
                                 | _ => Errors.attemptToApplyNonFunction e (synt) ctx
                             )
@@ -415,7 +420,7 @@ infix 5 <?>
                                 weakHeadNormalizeType e2 ctx st >>= (fn nst =>
                         case nst of
                             CForall (tv, tb) => 
-                                checkExprIsType ctx t >>= (fn nt => 
+                                checkExprIsType ctx t >>= (fn (nt, ctx) => 
                                     (* important need to normalized before subst *)
                                     (weakHeadNormalizeType t ctx nt >>= (fn nt => 
                                         Success((CTApp(ce2, nt, CTypeAnn(CForall(tv, tb))), (substTypeInCExpr nt [tv] (tb))), ctx)
@@ -466,9 +471,7 @@ infix 5 <?>
                     | RBuiltinType(f, s) => Success((CBuiltinType(f), CUniverse), ctx)
                     | RUniverse(s) => Success((CUniverse, CUniverse), ctx) (* TODO: maybe universe levels? *)
                     | RPiType(t1, evoption, t2,p,  soi) => 
-                    (case t1 of 
-                        SOME t1 => checkType ctx t1 (CUniverse) 
-                        | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr e)
+                    checkExprOptionIsType ctx t1 (case evoption of SOME x => RVar([x]) | NONE => e
                     ) >>= (fn (ct1, ctx) => 
                             let val kf = fn ctx => 
                             synthesizeType (ctx) t2 >>= (fn ((ct2, synT), ctx) => 
@@ -477,7 +480,7 @@ infix 5 <?>
                             )
                             in 
                                 case evoption of  NONE => Success(ctx) >>= kf 
-                                | SOME(n) => withLocalBinder ctx n CUniverse kf
+                                | SOME(n) => withLocalBinder ctx n ct1 kf
                             end
                         )
                     | RSigmaType(t1, evoption, t2, soi) =>
@@ -669,7 +672,7 @@ infix 5 <?>
                     weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
                     (case ntt of
                         CPiType(t1, tevop, t2, Explicit) => (
-                            checkExprIsType ctx t >>= (fn t' => 
+                            checkExprIsType ctx t >>= (fn (t', ctx) => 
                                 tryTypeUnify ctx e t' t1 >>=
                                 (fn ctx => 
                                     withLocalBinder ctx ev t1 (fn ctx => 
@@ -729,7 +732,7 @@ infix 5 <?>
                     weakHeadNormalizeType e2 ctx synt >>= (fn synt => 
                         case synt of
                             (CForall (tv, tb)) => (
-                                checkExprIsType ctx t >>= (fn ctapp => 
+                                checkExprIsType ctx t >>= (fn (ctapp, ctx) => 
                                     (* need to normalize type! important! *)
                                     (weakHeadNormalizeType t ctx ctapp >>= (fn nt => 
                                         tryTypeUnify ctx e (tt) (substTypeInCExpr ctapp [tv] ( tb))
@@ -740,7 +743,7 @@ infix 5 <?>
                         )
                     | RPack (t, e2, soi) => (case tt of
                         CExists (tv, tb) => 
-                            checkExprIsType ctx t >>= (fn ctpack =>
+                            checkExprIsType ctx t >>= (fn (ctpack, ctx) =>
                                 checkType ctx e2 (substTypeInCExpr ctpack [tv]  tb) >>= (fn (ce2, ctx) => 
                                                 Success(CPack(ctpack, ce2, CTypeAnn(tt)), ctx))
                                 )
@@ -822,11 +825,8 @@ infix 5 <?>
                     | RUniverse(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CUniverse , ctx) (* TODO: maybe universe levels? *))
                     | RPiType(t1, evoption, t2,p, soi) => 
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                         (case t1 of 
-                        SOME t1 => checkType ctx t1 (CUniverse) 
-                        | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr e) 
-                        ) >>= (fn (ct1, ctx) => 
-                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n CUniverse)
+                         checkExprOptionIsType ctx t1 ((case evoption of SOME x => RVar([x]) | NONE => e)) >>= (fn (ct1, ctx) => 
+                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
                             (fn ctx =>
                             synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
                                     tryTypeUnify ctx t2 synT CUniverse >>= (fn ctx => 
@@ -950,7 +950,7 @@ infix 5 <?>
                     then Errors.termTypeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
                     (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)
                     else  *)
-                    checkExprIsType ctx t >>= (fn ct =>
+                    checkExprIsType ctx t >>= (fn (ct, ctx) =>
                         weakHeadNormalizeType t ctx ct
                         (* (applyContextToType ctx (rTypeToCType ctx t))  *)
                         >>= (fn normalizedType => 
@@ -1070,7 +1070,9 @@ infix 5 <?>
                     []))
             s []) >>= (fn (csig, ctx) => 
                 (* resolveAllMetaVarsInCSig ctx csig >>= (fn csig =>  *)
-                    Success(csig)
+                (
+                    DebugPrint.p ("DEBUG1070: " ^ PrettyPrint.show_typecheckingCSig csig) ; 
+                    Success(csig))
                 (* ) *)
             )
                 (* val _ = DebugPrint.p "Type checked top level\n"

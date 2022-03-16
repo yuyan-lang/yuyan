@@ -179,7 +179,11 @@ infix 5 =/=
             | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
-            | CPiType (t1, hd,p, t2) => Success(CPiType(t1, hd,p, t2))
+            | CPiType (t1, hd, t2, p) => recur t1 >>= (fn nt1 =>
+                                            recur t2 >>= (fn nt2 => 
+                                                Success(CPiType(nt1, hd, nt2, p))
+                                            )
+                                        ) 
             | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
                     (recur t2) >>= (fn nt2 =>
                  Success(CTypeInst(nt1,nt2))))
@@ -209,6 +213,7 @@ infix 5 =/=
             | CBuiltinFunc _ => Success(t)
             | CUnitExpr => Success(t)
             | CBoolConstant b => Success(t)
+            | CRealConstant _ => Success(t)
             | CIfThenElse(e1, e2, e3) => 
 
                 recur e1 >>= (fn ce1 => 
@@ -238,8 +243,12 @@ infix 5 =/=
                         Success(CCase((u, ce), cl, u2))
                     )
                 )
-
-
+            | CSeqComp(e1, e2, u1, u2) => 
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        Success(CSeqComp(ce1, ce2, u1, u2))
+                    )
+                )
             | _ => raise Fail ("resolveAllMetaVarsInCExpr not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in

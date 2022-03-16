@@ -12,8 +12,9 @@ val typeVarC = CVar ([typeBinderC], CVTBinder)
 fun cFunc (t1, t2) = CPiType(t1, NONE, t2, Explicit)
 
 fun cForall (tv, t) = CPiType(CUniverse, SOME tv, t, Explicit)
+fun cForallImplicit (tv, t) = CPiType(CUniverse, SOME tv, t, Implicit)
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
-val callccType : CType = cForall (typeBinderB, 
+val callccType : CType = cForallImplicit (typeBinderB, 
     cFunc( cFunc( cForall(typeBinderC, cFunc(
         typeVarB, typeVarC
     )) , typeVarB), typeVarB)

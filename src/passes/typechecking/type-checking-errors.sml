@@ -37,8 +37,11 @@ structure TypeCheckingErrors =
             reconstructWithArgs soi [x, reconstructFromRExpr e]
 
         | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
-        | RApp (e1, e2, p, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
+        | RApp (e1, e2, p, soi)=> 
+            if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
             then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
+            else if Operators.eqOpUid soi PreprocessingOperators.implicitAppExprOp
+            then  reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
             else 
              let
                 (* e.g. ap(ap(〇，〇, 头), 尾) *)
@@ -55,7 +58,7 @@ structure TypeCheckingErrors =
                             (* if argsCount = 1 then [e] else  *)
                             raise Fail ("tcerr52: not enough args, argcount is " ^ 
                             Int.toString argsCount ^ " remaining R is " ^ PrettyPrint.show_typecheckingRExpr e)
-                val _ = DebugPrint.p (PrettyPrint.show_op soi ^ " Flattening " ^ Int.toString argcount  ^ " " ^ PrettyPrint.show_typecheckingRExpr e)
+                (* val _ = DebugPrint.p (PrettyPrint.show_op soi ^ " Flattening " ^ Int.toString argcount  ^ " " ^ PrettyPrint.show_typecheckingRExpr e ^ " \n") *)
                 (* when RApp is encountered, argcount is at least 1, otherwise
                 RApp would not have been created, the head is assumed to be the thing itself *)
                 val priorArgs = flatten e1 (argcount -1)
