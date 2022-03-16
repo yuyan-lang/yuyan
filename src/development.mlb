@@ -46,7 +46,6 @@ local
         passes/preprocess/preprocessing-ast.sml
 
 
-        operators/structure/op-ast-ops.sml
         
         parser/parse-ast.sml
         parser/bracket-scanner.sml
@@ -65,6 +64,10 @@ local
 
         
         ui/pretty-print.sml
+
+
+        operators/structure/operators-ops.sml
+        operators/structure/op-ast-ops.sml
         parser/parse-ast-ops.sml
         passes/typechecking/type-checking-context.sml
         passes/typechecking/type-checking-errors.sml

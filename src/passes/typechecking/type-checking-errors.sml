@@ -2,6 +2,7 @@ structure TypeCheckingErrors =
  struct 
     open StaticErrorStructure
     open TypeCheckingContext
+    open OperatorsOps
 
 
 
@@ -38,15 +39,29 @@ structure TypeCheckingErrors =
         | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
         | RApp (e1, e2, p, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
             then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
-            else let
-                fun flatten (e : RExpr)  : RExpr list= case e of 
-                    RApp(e1', e2', p, soi') => if Operators.eqOpUid soi soi'
-                                            then e1' :: flatten e2'
-                                            else [e]
-                    | _ => [e]
+            else 
+             let
+                (* e.g. ap(ap(〇，〇, 头), 尾) *)
+                (* .       ^^ e1          ^^ e2 *)
+                val argcount = getNumArguments soi
+                fun flatten (e : RExpr) (argsCount : int)  : RExpr list= 
+                    if argsCount = 0
+                    then []
+                    else case e of 
+                            RApp(e1', e2', p, soi') => if Operators.eqOpUid soi soi'
+                                                    then flatten e1' (argsCount - 1) @[e2']
+                                                    else raise Fail "tcerr51: not enough args"
+                            | _ =>  
+                            (* if argsCount = 1 then [e] else  *)
+                            raise Fail ("tcerr52: not enough args, argcount is " ^ 
+                            Int.toString argsCount ^ " remaining R is " ^ PrettyPrint.show_typecheckingRExpr e)
+                val _ = DebugPrint.p (PrettyPrint.show_op soi ^ " Flattening " ^ Int.toString argcount  ^ " " ^ PrettyPrint.show_typecheckingRExpr e)
+                (* when RApp is encountered, argcount is at least 1, otherwise
+                RApp would not have been created, the head is assumed to be the thing itself *)
+                val priorArgs = flatten e1 (argcount -1)
                 in 
-                    reconstructWithArgs soi (map reconstructFromRExpr (e1 :: flatten e2))
-                end
+                    reconstructWithArgs soi (map reconstructFromRExpr (priorArgs @ [e2]))
+                end 
                                         
         (* | RTAbs (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e] *)
         | RTApp (e1, e2, (soi,s))=> reconstructWithArgs soi [reconstructFromRExpr e1, s]

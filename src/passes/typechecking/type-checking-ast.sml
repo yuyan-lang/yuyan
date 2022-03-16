@@ -26,6 +26,7 @@ structure TypeCheckingAST = struct
 
     datatype plicity = Explicit | Implicit
     datatype cvartype = CVTBinder | CVTDefinition of CExpr | CVTConstructor of StructureName.t * cconstructorinfo (* canonical name and cinfo *)
+                      | CVTBinderDefinition of StructureName.t (* a definition for binder , will map to metavar name, used in pattern matching *)
 
     and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
                  | CPatVar of UTF8String.t 
@@ -179,7 +180,11 @@ structure TypeCheckingAST = struct
 (* these exist here for pretty printing *)
 (* g for generic *)
  (* the term type J may optionally contain the definition *)
- datatype judgmentType = JTConstructor of cconstructorinfo | JTLocalBinder  | JTDefinition of CExpr | JTPending  (* declaration pending definition *)
+ datatype judgmentType = JTConstructor of cconstructorinfo 
+                        | JTLocalBinder 
+                        | JTLocalBinderWithDef of StructureName.t (* a pattern match binder with a resolved defintion, which is guaranteed to be a metavariable name by the definition *)
+                        | JTDefinition of CExpr 
+                        | JTPending  (* declaration pending definition *)
                         | JTMetaVarPendingResolve of UTF8String.t (* the error reporting string when it cannot be resolved *)
                         | JTMetaVarResolved of CExpr
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a

@@ -283,19 +283,25 @@ infix 5 <?>
             and checkExprIsType (ctx : context) (e : RType) : CType witherrsoption = 
                 checkType ctx e CUniverse >>= (fn (x, ctx) => Success(x))
 
+            
+
             (* synthesizeType and instantiating implicit arguments *)
             and synthesizeType (ctx : context)(e : RExpr) : ((CExpr * CType) * context) witherrsoption =
-            synthesizeTypeNoInstMeta ctx e >>= (fn (res as ((syne, synt), ctx)) => 
-            weakHeadNormalizeType e ctx synt >>= (fn nsynt => 
+            let fun insertMetaVarRec (res as ((syne, synt), ctx) : ((CExpr * CType) * context)) = 
+                    weakHeadNormalizeType e ctx synt >>= (fn nsynt => 
                     case nsynt of 
                         CPiType(t1, evop, t2, Implicit)=>
                             addNewMetaVar ctx t1 (reconstructFromRExpr e) >>= (fn (metaVarE, ctx) => 
-                                Success((CApp(syne, metaVarE, CTypeAnn nsynt), 
+                                insertMetaVarRec((CApp(syne, metaVarE, CTypeAnn nsynt), 
                                     (case evop of NONE => t2 | SOME tv => substTypeInCExpr metaVarE [tv] t2)), ctx)
                             )
                         | _ => Success(res)
-                )
+                    )
+            in
+            synthesizeTypeNoInstMeta ctx e >>= (fn (res as ((syne, synt), ctx)) => 
+                insertMetaVarRec ((syne, synt), ctx)
             )
+            end
 
 
             (* synthesizeType without instantiating implicit arguments *)
@@ -369,9 +375,8 @@ infix 5 <?>
                         )
                     )
                     | RApp (e1, e2, pe, soi) => 
-                        (case pe of Explicit => 
-                        synthesizeType ctx e1 
-                        | Implicit => synthesizeTypeNoInstMeta ctx e1)
+                        (case pe of Explicit => synthesizeType ctx e1 
+                                    | Implicit => synthesizeTypeNoInstMeta ctx e1)
                         >>= (fn ((ce1, synt), ctx) => 
                         weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => 
                             case synt 
@@ -390,7 +395,10 @@ infix 5 <?>
                                         )
                                     )
                                     else 
-                                    raise Fail "tcp359: plicity of (possible) pi type should match requested plicity"
+                                    raise Fail ("tcp359: plicity of (possible) pi type should match requested plicity"
+                                        ^ " \n synthesized (e1) = " ^ PrettyPrint.show_typecheckingCExpr synt
+                                        ^ " \n original (e1 e2) = " ^ PrettyPrint.show_typecheckingRType originalExpr)
+
                                 | _ => Errors.attemptToApplyNonFunction e (synt) ctx
                             )
                         )
@@ -895,7 +903,7 @@ infix 5 <?>
                 (
 
 
-                    if true then DebugPrint.p ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
+                    if DEBUG then DebugPrint.p ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
                     " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
                     (* DebugPrint.p ("TCSig r="  ^ Int.toString (length s) ^   " acc=" ^ Int.toString (length acc) ^
                     "\nDEBUG " ^ PrettyPrint.show_typecheckingRSig s ^

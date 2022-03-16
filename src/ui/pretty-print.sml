@@ -147,7 +147,7 @@ case x of
 and show_preprocessaast x = let
 open PreprocessingAST
 in 
-"{" ^ String.concatWith "\n" (map show_preprocessaastJ x) ^ "\n" ^ "}"
+"{" ^ String.concatWith "\n" (map (fn (x, ei) => show_preprocessaastJ x) x) ^ "\n" ^ "}"
   end
 
 fun show_typecheckingbuiltinfunc x = 
@@ -301,7 +301,8 @@ in case x of
                       CVar (v, referred) => "" ^ sst v  ^ 
                       (case referred of CVTDefinition e => "( >>>> " ^ se e ^  ")"
                       | CVTBinder => ""
-                      | CVTConstructor i => "") 
+                      | CVTConstructor i => ""
+                      | CVTBinderDefinition e => "( >>>> " ^ sst e ^  ")") 
                     | CMetaVar v => "?" ^ sst v
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
@@ -382,7 +383,8 @@ in
         | JTLocalBinder => "（局部绑定）"
         | JTPending => "（pending）"
         | JTMetaVarPendingResolve _ => "(metavar pending resolve)"
-        | JTMetaVarResolved e => "(resolved metavar)"
+        | JTMetaVarResolved e => "(resolved metavar >>> " ^ show_typecheckingCExpr e ^ ")"
+        | JTLocalBinderWithDef e => "(局部绑定【带定义】 >>> " ^ StructureName.toStringPlain e ^ "）"
     )
   end
 fun show_typecheckingpassmappping x = let

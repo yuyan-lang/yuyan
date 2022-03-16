@@ -2,6 +2,7 @@ structure OpASTOps =
 struct
     open OpAST
     open Operators
+    open OperatorsOps
     fun reconstructOriginalFromOpAST(opast : OpAST) : UTF8String.t = 
         case opast of
             OpAST(oper, args) => reconstructWithArgs oper (map reconstructOriginalFromOpAST args)

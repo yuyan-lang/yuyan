@@ -67,6 +67,7 @@ infix 5 =/=
             | CUnitExpr => []
             | CBoolConstant _ => []
             | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
+            | CMetaVar(v) => [v]
             | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
 
 
@@ -105,6 +106,7 @@ infix 5 =/=
             CVar (name, CVTBinder) => NONE
             | CVar(name, CVTDefinition(t')) => SOME(t')
             | CVar(name, CVTConstructor cinfo) => NONE
+            | CVar(name, CVTBinderDefinition t') => SOME(CMetaVar(t'))
             | _ => raise Fail "tcastops90"
 
     val recur = weakHeadNormalizeType e ctx
@@ -440,6 +442,7 @@ infix 5 =/=
             | JTLocalBinder =>  CVTBinder
             | JTDefinition e =>  CVTDefinition e
             | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor)
+            | JTLocalBinderWithDef metavarname => CVTBinderDefinition metavarname
             | _ => raise Fail "ni427"
     fun countSpineTypeArgs (tp : CType) = 
             case tp of 

@@ -383,7 +383,12 @@ struct
      ( ast : PreprocessingAST.t) : TypeCheckingAST.RSignature witherrsoption = 
     let 
         (* val _ = print ("Total "^ Int.toString(List.length ast) ^ " statements\n"); *)
-        val res =  constructOpAST ast  ()
+        val res =  constructOpAST ast  () >>= (fn tcast => 
+            let
+                (* val _ = DebugPrint.p ("DEBUG388: " ^  PrettyPrint.show_typecheckingRSig tcast) *)
+            in Success(tcast) 
+            end
+        )
         (* val _ = print ("Done "^ Int.toString(List.length ast) ^ " statements\n"); *)
     in 
         res end

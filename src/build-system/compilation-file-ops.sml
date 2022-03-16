@@ -73,7 +73,14 @@ open StaticErrorStructure
                 (updateUsefulTokensFromOpAST tokensInfo)
                 (updateUsefulTokensFromPreprocessingAST tokensInfo)
                 topLevelStructureName 
-                content 
+                content  >>= (fn (t : PreprocessingAST.t) => 
+                let
+                    (* val _ = DebugPrint.p ("DEBUG78: "  ^ PrettyPrint.show_preprocessaast t) *)
+                in 
+                    Success(t) 
+                end
+                )
+
             val sortedTokens = ListMergeSort.sort 
                     (* true if gt *)
                     (fn (Token(s1,_), Token(s2, _))

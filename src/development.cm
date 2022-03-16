@@ -103,6 +103,7 @@ Library
   structure TypeCheckingUtil
   structure ParseASTOps
   structure TypeCheckingUnify
+  structure OperatorsOps
 is
   ../cmlib/cmlib.cm
   (* $/basis.cm *)
@@ -134,6 +135,7 @@ is
   operators/structure/operators.sml
   operators/structure/op-ast.sml
   operators/structure/op-ast-ops.sml
+  operators/structure/operators-ops.sml
 
   util/io-util.sml
   util/debug-print.sml
