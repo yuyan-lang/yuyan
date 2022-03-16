@@ -140,7 +140,7 @@ structure TypeCheckingAST = struct
                     | RSeqComp of RExpr * RExpr * sourceOpInfo
                     (* types *)
                     | RUniverse of UTF8String.t (* a universe is the type of types, (TODO) stratified by level *)
-                    | RPiType of RExpr * EVar option * RExpr * plicity * sourceOpInfo
+                    | RPiType of RExpr option * EVar option * RExpr * plicity * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RUnitType of UTF8String.t (* source info *)
                     | RProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)

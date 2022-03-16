@@ -77,6 +77,7 @@ struct
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 350 []
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
     val implicitPiTypeOp  = Operators.parseOperatorStr "承〇者〇而〇" true false 350 [3]
+    val implicitPiNameOnlyTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 350 []
     val existentialTypeOp  = Operators.parseOperatorStr "存在〇而〇" true false 320 [1]
     val piTypeOp  = Operators.parseOperatorStr "化〇者〇而〇" true false 350 [3] (* Π x : T. T *)
     val sigmaTypeOp  = Operators.parseOperatorStr "有〇者〇还〇" true false 350 [3] (* Σ x : T. T *)
@@ -124,6 +125,7 @@ struct
         , lazyProdTypeOp
         , piTypeOp, 
         implicitPiTypeOp,
+        implicitPiNameOnlyTypeOp,
         sigmaTypeOp
         ]
     val allTypeAndExprOps = allTypeOps @ [ 

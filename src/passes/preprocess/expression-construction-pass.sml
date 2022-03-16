@@ -56,7 +56,9 @@ struct
         case ast of
         NewOpName(l1) => Success (l1)
         | OpParsedQuotedExpr(e, qi) => elaborateNewName e
-        | _ => raise Fail "Expect new name (perhaps internal)"
+        | _ => Success(reconstructOriginalFromOpAST ast) (* truncate the underlying structure and make it a new name, 
+        such that the bindings can be dropped and the ambiguities can be reduced *)
+        (* | _ => raise Fail ("Expect new name (perhaps internal), got " ^ PrettyPrint.show_opast ast) *)
 
     fun elaborateSingleStructure(ast : OpAST)  = 
                         case ast of
@@ -263,7 +265,7 @@ struct
                         end)
                     else
                     if oper ~=** functionTypeOp
-                    then fmap RPiType (====/=((elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), Success Explicit, operSuc))
+                    then fmap RPiType (====/=(fmap SOME (elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), Success Explicit, operSuc))
                     else 
                     if oper ~=** typeInstantiationOp
                     then fmap RTypeInst (==/=((elaborateOpASTtoType (hd l) ctx) , (elaborateOpASTtoType (snd l) ctx), operSuc))
@@ -284,10 +286,15 @@ struct
                     then elaborateOpASTtoType (hd l) ctx
                     else 
                     if oper ~=** piTypeOp
-                    then fmap RPiType (====/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Explicit, Success oper))
+                    then fmap RPiType (====/=(fmap SOME (elaborateOpASTtoType (hd l) ctx), elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Explicit, Success oper))
                     else 
                     if oper ~=** implicitPiTypeOp
-                    then fmap RPiType (====/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Implicit, Success oper))
+                    then fmap RPiType (====/=(elaborateOpASTtoType (hd l) ctx >>= (fn t1 => Success(SOME(t1))), elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Implicit, Success oper))
+                    else 
+                    if oper ~=** implicitPiNameOnlyTypeOp
+                    then fmap RPiType (====/=(Success NONE, 
+                                            elaborateNewName (hd l) >>= (fn x => Success(SOME(x))), 
+                                            elaborateOpASTtoType (snd l) ctx, Success Implicit, Success oper))
                     else 
                     if oper ~=** sigmaTypeOp
                     then fmap RSigmaType (===/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success oper))

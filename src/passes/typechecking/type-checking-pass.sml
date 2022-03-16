@@ -201,17 +201,22 @@ infix 5 <?>
             fun checkConstructorType(nameOfCons : UTF8String.t) ( ctx : context) (t : RType) : ((CType * cconstructorinfo) * context) witherrsoption = 
             let val typeInfoWeo : (CType * context) witherrsoption = 
                 case t of 
-                    RPiType(t1, evop, t2, p, soi) => checkType ctx t1 (CUniverse) >>= (fn (ct1, ctx) => 
-                        (case evop of NONE => (fn k => k ctx)
-                            | SOME(ev) => withLocalBinder ctx ev CUniverse 
-                        ) (fn ctx => 
-                                    checkType ctx
-                                        t2 
-                                        (CUniverse) 
-                        >>= (fn (ct2, ctx) => 
-                            Success(CPiType(ct1, evop, ct2, p), ctx)
-                        ))
-                    )
+                    RPiType(t1, evop, t2, p, soi) => 
+                    (case t1 of 
+                        SOME t1 => checkType ctx t1 (CUniverse) 
+                        | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr t) 
+                    ) >>= (fn (ct1, ctx) => 
+                            (case evop of NONE => (fn k => k ctx)
+                                | SOME(ev) => withLocalBinder ctx ev CUniverse 
+                            ) (fn ctx => 
+                                        checkType ctx
+                                            t2 
+                                            (CUniverse) 
+                            >>= (fn (ct2, ctx) => 
+                                Success(CPiType(ct1, evop, ct2, p), ctx)
+                            ))
+                        )
+                   
                     | _ => checkType ctx t (CUniverse) >>= (fn (t, ctx) => Success(t, ctx))
 
                 fun countOccurrencesOfElementConstructor(foundTypeConstructorName: StructureName.t) = 
@@ -461,7 +466,10 @@ infix 5 <?>
                     | RBuiltinType(f, s) => Success((CBuiltinType(f), CUniverse), ctx)
                     | RUniverse(s) => Success((CUniverse, CUniverse), ctx) (* TODO: maybe universe levels? *)
                     | RPiType(t1, evoption, t2,p,  soi) => 
-                        checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
+                    (case t1 of 
+                        SOME t1 => checkType ctx t1 (CUniverse) 
+                        | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr e)
+                    ) >>= (fn (ct1, ctx) => 
                             let val kf = fn ctx => 
                             synthesizeType (ctx) t2 >>= (fn ((ct2, synT), ctx) => 
                                     tryTypeUnify ctx t2 synT CUniverse >>= 
@@ -814,7 +822,10 @@ infix 5 <?>
                     | RUniverse(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CUniverse , ctx) (* TODO: maybe universe levels? *))
                     | RPiType(t1, evoption, t2,p, soi) => 
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
+                         (case t1 of 
+                        SOME t1 => checkType ctx t1 (CUniverse) 
+                        | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr e) 
+                        ) >>= (fn (ct1, ctx) => 
                             (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n CUniverse)
                             (fn ctx =>
                             synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 

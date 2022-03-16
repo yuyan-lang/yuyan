@@ -237,7 +237,7 @@ RVar v => sst v
                     | RBuiltinType (bi, s) => show_builtintype bi
                     | RPiType(t, xop, t2, p, soi) => "(Π " 
                     ^ show_plicity p ((case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
-                      st t) ^ " . " ^ st t2 ^ ")"
+                      (case t of SOME t => st t | NONE => "_")) ^ " . " ^ st t2 ^ ")"
                     | RSigmaType(t, xop, t2, soi) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
                       st t ^ " . " ^ st t2 ^ ")"
                     | RUniverse(soi) => "(Set)"

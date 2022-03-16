@@ -82,9 +82,12 @@ structure TypeCheckingErrors =
         | RUnitType(s) => s
         | RUniverse(s) => s
         | RPiType(t1, evoption, t2, p, soi) => 
-        (case evoption of 
-            SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
-            | NONE => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2] )
+        (case (evoption, t1) of 
+            (SOME v, SOME t1) => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
+            | (NONE, SOME t1) => reconstructWithArgs soi [reconstructFromRExpr t1, reconstructFromRExpr t2] 
+            | (SOME v, NONE) => reconstructWithArgs soi [v, reconstructFromRExpr t2] 
+            | (NONE, NONE) => raise Fail "at least one must be defined"
+            )
         | RSigmaType(t1, evoption, t2, soi) =>
         (case evoption of 
             SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
