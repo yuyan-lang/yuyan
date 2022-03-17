@@ -27,8 +27,8 @@ open StaticErrorStructure
     )
           )
 
-    (* fun showctxSome x = SOME(showctx x false) *)
-    fun showctxSome x = SOME(showctx x true)
+    fun showctxSome x = SOME(showctx x false)
+    (* fun showctxSome x = SOME(showctx x true) *)
 
 
 

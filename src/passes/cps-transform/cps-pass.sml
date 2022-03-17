@@ -24,7 +24,8 @@ exception CPSInternalError
   
 
     fun registerFunctionNameMapping (i : cpsvar) (e : CExpr) (msg : string) : unit = 
-        DebugPrint.p ( "CPSNameMapping fid=" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n")
+        (* DebugPrint.p ( "CPSNameMapping fid=" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n") *)
+        ()
 
     and cpsTransformExpr   
         (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)

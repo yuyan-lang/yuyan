@@ -126,6 +126,7 @@ infix 5 =/=
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
             (* | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 ) *)
             | CPiType (t1, hd, p, t2) => Success(CPiType(t1, hd, p, t2))
+            | CSigmaType (t1, hd, t2) => Success(t)
             | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
                 CForall(tv, t1') => (recur t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
                 | _ => genSingletonError (reconstructFromRExpr e) ("期待通用类型(Expected Forall)，却得到了(got)：" ^
@@ -182,6 +183,11 @@ infix 5 =/=
             | CPiType (t1, hd, t2, p) => recur t1 >>= (fn nt1 =>
                                             recur t2 >>= (fn nt2 => 
                                                 Success(CPiType(nt1, hd, nt2, p))
+                                            )
+                                        ) 
+            | CSigmaType (t1, hd, t2) => recur t1 >>= (fn nt1 =>
+                                            recur t2 >>= (fn nt2 => 
+                                                Success(CSigmaType(nt1, hd, nt2))
                                             )
                                         ) 
             | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
@@ -247,6 +253,12 @@ infix 5 =/=
                 recur e1 >>= (fn ce1 => 
                     recur e2 >>= (fn ce2 => 
                         Success(CSeqComp(ce1, ce2, u1, u2))
+                    )
+                )
+            | CPack(e1, e2, u) => 
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        Success(CPack(ce1, ce2, u))
                     )
                 )
             | _ => raise Fail ("resolveAllMetaVarsInCExpr not implemented for "  ^ PrettyPrint.show_typecheckingCType t)

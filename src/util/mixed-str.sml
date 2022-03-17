@@ -52,6 +52,12 @@ struct
 
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
     fun toString(u : mixedstr) : string = UTF8String.toString (toUTF8String u)
+    fun toStringTopLevelOnly(u : mixedstr) : string = UTF8String.toString  (List.concat (map (
+            fn c => case c of 
+                UnparsedDeclaration (_, q) => putQuoteAround (UTF8String.fromString "。。。") q
+                | UnparsedExpression (_, q) =>  putQuoteAround (UTF8String.fromString "。。。") q
+                | _ => toUTF8StringChar c
+    ) u))
 
     fun  unmatchedParenthesisError(startChar : UTF8Char.t ) (scannedSoFar : mixedstr ) : 'a witherrsoption = 
         genSingletonError(startChar:: toUTF8String scannedSoFar) "未关闭的左括号" NONE
@@ -190,10 +196,10 @@ struct
                         if  x ~= SpecialChars.leftSingleQuote orelse
                             x ~= SpecialChars.leftParenthesis
                         then scanSingleQuote startChar xs []  >>= (fn (rq, inQuote, rest) =>
-                                processSingleQuoted inQuote (x, rq) >>= (fn inSingleQuoteChar => 
-                                    scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
-                                ) >>/= ( (* continue scanning in case of failure *)
+                                (processSingleQuoted inQuote (x, rq) >>/= ( (* continue scanning in case of failure *)
                                     fn _ => scanSingleQuote startChar rest (sofar)  
+                                )) >>= (fn inSingleQuoteChar => 
+                                    scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
                                 )
                             )
                         else

@@ -64,10 +64,11 @@ this transforms access of cpsvar
             | CPSVarGlobal i => LLVMLocationGlobal i
     
     fun notifyFunctionNameToAddrMapping (fname : int) (addr : llvmlocation) = 
-        DebugPrint.p ("LLVM Loc Closure Mapping f" ^ Int.toString fname ^ " = " ^ (case addr of 
+        (* DebugPrint.p ("LLVM Loc Closure Mapping f" ^ Int.toString fname ^ " = " ^ (case addr of 
             LLVMLocationLocal i => ("l" ^ Int.toString i)
             | LLVMLocationGlobal i => ("g" ^ Int.toString i)
-        ) ^ "\n")
+        ) ^ "\n") *)
+        ()
 
     fun compileFunctionClosure(funLoc : llvmlocation ) (args : int list) 
             (fvs : int list) (body : cpscomputation)

@@ -189,7 +189,7 @@ structure PrecedenceParser  = struct
         }
 
     fun showParseExceptionInfo (x : parseExceptionInfo)(errStringInTheMiddle : string) : (string * string option) = 
-        ("在理解(parse)`" ^  MixedStr.toString (#str x) ^ "`时出现问题："
+        ("在理解(parse)`" ^  MixedStr.toStringTopLevelOnly (#str x) ^ "`时出现问题："
         ^ errStringInTheMiddle,  
         SOME( "调试信息：\n"
         ^ "所有可能的名称(all unknown ids)：" ^ String.concatWith "，" (map UTF8String.toString (#allUnkownIds x))

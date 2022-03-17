@@ -485,7 +485,7 @@ infix 5 <?>
                         )
                     | RSigmaType(t1, evoption, t2, soi) =>
                         checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n CUniverse)
+                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
                             (fn ctx => 
                                 synthesizeType (ctx) t2 >>= (fn ((ct2, synT), ctx) => 
                                         tryTypeUnify ctx t2 synT CUniverse >>= 
@@ -741,11 +741,14 @@ infix 5 <?>
                             | _ => Errors.attemptToApplyNonUniversal e (synt) ctx
                             )
                         )
-                    | RPack (t, e2, soi) => (case tt of
-                        CExists (tv, tb) => 
-                            checkExprIsType ctx t >>= (fn (ctpack, ctx) =>
-                                checkType ctx e2 (substTypeInCExpr ctpack [tv]  tb) >>= (fn (ce2, ctx) => 
-                                                Success(CPack(ctpack, ce2, CTypeAnn(tt)), ctx))
+                    | RPack (e1, e2, soi) => (case tt of
+                        CSigmaType (t1, tvop, t2) => 
+                            checkType ctx e1 t1 >>= (fn (ce1, ctx) =>
+                                checkType ctx e2 
+                                (case tvop of NONE => t2 | SOME tv => 
+                                                substTypeInCExpr ce1 ([tv]) t2
+                                            )
+                                 >>= (fn (ce2, ctx) => Success(CPack(ce1, ce2, CTypeAnn(tt)), ctx))
                                 )
                         | _ => Errors.expectedExistentialType e (tt) ctx
                     )
@@ -836,7 +839,7 @@ infix 5 <?>
                     | RSigmaType(t1, evoption, t2, soi) =>
                         tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                         checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n CUniverse)
+                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
                             (fn ctx => 
                             synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
                                     tryTypeUnify ctx t2 synT CUniverse >>= 
@@ -1071,7 +1074,7 @@ infix 5 <?>
             s []) >>= (fn (csig, ctx) => 
                 (* resolveAllMetaVarsInCSig ctx csig >>= (fn csig =>  *)
                 (
-                    DebugPrint.p ("DEBUG1070: " ^ PrettyPrint.show_typecheckingCSig csig) ; 
+                    (* DebugPrint.p ("DEBUG1070: " ^ PrettyPrint.show_typecheckingCSig csig) ;  *)
                     Success(csig))
                 (* ) *)
             )
