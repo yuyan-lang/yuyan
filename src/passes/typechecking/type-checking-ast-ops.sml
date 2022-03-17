@@ -316,6 +316,12 @@ infix 5 =/=
                                   in captureAvoid (fn (ev', t2') => CPiType(t1', SOME ev', t2', p)) ev t2
                                   end
                 )
+            | CSigmaType(t1, evop,t2) => (case evop of 
+                    NONE => CSigmaType(recur t1, NONE, recur t2)
+                    | SOME(ev) => let val t1' = recur t1
+                                  in captureAvoid (fn (ev', t2') => CSigmaType(t1', SOME ev', t2')) ev t2
+                                  end
+                )
             | CForall (tv,t2) => captureAvoid CForall tv t2
             | CExists (tv,t2) => captureAvoid CExists tv t2
             | CRho (tv,t2) => captureAvoid CRho tv t2

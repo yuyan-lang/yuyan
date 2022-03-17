@@ -10,30 +10,32 @@ open CPSHelper
 
 
     fun transformCallCC(cc : cpsvar -> cpscomputation) : cpscomputation = 
-                CPSAbs (kcc2' (fn arg  (* arg is a function ((b -> c) -> b) that are waiting for a current continuation (b -> c) *)
-                => fn ret (* return is the continuation (the real cc) that expects a value of b 
-                                (* obtained either from the return of the arg or from throw of the arg *)
-                ! *)=>
-                (* grab the current exception handler for restoring *)
-                    cpsGetCurrentExnHanlder (fn handlerAtEntry => 
-                        (* we first construct the throw function *)
-                        CPSAbs(kcc2' (fn throwArg =>  (* this is the shortcut answer we're looking for *)
-                            fn throwRet (* the continuation of the throw is ignored! *)
-                            =>
-                                (* reset the current handler when the inner computation throws *)
-                                cpsSetCurrentExnHandler (CPSValueVar handlerAtEntry) (fn _ => 
-                                    (* throwing to continuation argument always apply single, 
-                                        see the codes for app and abs *)
-                                    CPSAppSingle(CPSValueVar (CPSVarLocal ret), CPSValueVar (CPSVarLocal throwArg))
+                clams1 
+                (fn (tpignore, outerRet) => 
+                    CPSAbs (kcc2' (fn arg  (* arg is a function ((b -> c) -> b) that are waiting for a current continuation (b -> c) *)
+                    => fn ret (* return is the continuation (the real cc) that expects a value of b 
+                                    (* obtained either from the return of the arg or from throw of the arg *)
+                    ! *)=>
+                    (* grab the current exception handler for restoring *)
+                        cpsGetCurrentExnHanlder (fn handlerAtEntry => 
+                            (* we first construct the throw function *)
+                            clams2 
+                            (fn (tpIgnore, throwArg, (* this is the shortcut answer we're looking for *)
+                                    throwRet) =>  (* the continuation of the throw is ignored! *)
+                                            (* reset the current handler when the inner computation throws *)
+                                            cpsSetCurrentExnHandler (CPSValueVar handlerAtEntry) (fn _ => 
+                                                (* throwing to continuation argument always apply single, 
+                                                    see the codes for app and abs *)
+                                                CPSAppSingle(CPSValueVar (CPSVarLocal ret), CPSValueVar (throwArg))
+                                            )
+                                )  (fn throwFunc => 
+                                    CPSApp(CPSValueVar (CPSVarLocal arg), 
+                                            (CPSValueVar throwFunc, CPSValueVar (CPSVarLocal ret))
+                                        )
                                 )
-                            ), NONE, kcc (fn throwFunc => 
-                                CPSApp(CPSValueVar (CPSVarLocal arg), 
-                                        (CPSValueVar throwFunc, CPSValueVar (CPSVarLocal ret))
-                                    )
                             )
-                        )
-                    )
-                ), NONE, kcc cc) (* cc is the continuation that expects the value of callcc *)
+                    ), NONE, kcc outerRet) (* cc is the continuation that expects the value of callcc *)
+                ) cc
 
     fun transformNewDynClsfdValueWithString (cc : cpsvar -> cpscomputation ) : cpscomputation = 
         CPSAbs (kcc2' (fn typeNameIgnore  (* the value of the type  *) =>

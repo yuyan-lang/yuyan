@@ -253,24 +253,7 @@ exception CPSInternalError
      :  cpscomputation  =
 
     let 
-        fun clams(name : StructureName.t) (argCount : int)
-        (* compiles function with n consecutive lambda abstractions, 
-        the function result is passed into cc *)
-        (acc : cpsvar list)
-            (body : cpsvar list  * (cpsvar -> cpscomputation) -> cpscomputation)
-         (cc : cpsvar -> cpscomputation) : cpscomputation = 
-        if argCount = 0
-        then body (acc, cc)
-        else
-                CPSAbs (kcc2' (fn arg => fn ret =>
-                    clams name (argCount - 1) (acc@[CPSVarLocal arg]) body
-                        (fn r => CPSAppSingle(CPSValueVar (CPSVarLocal ret),CPSValueVar r))
-                ), NONE, kcc (fn f => 
-                    ( 
-                        (* registerFunctionNameMapping f originalExpr "Body of"; *)
-                        cc f
-                    )
-                ))
+       
     in
             (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
             ; *)
@@ -305,7 +288,7 @@ exception CPSInternalError
         | CConstructorDecl (name, ctp, CConsInfoTypeConstructor) :: ss => 
             let val nargs = countSpineTypeArgs ctp
             in
-                clams name nargs [] (fn (arglist, ret) => 
+                clams  nargs [] (fn (arglist, ret) => 
                     CPSUnit (kcc ret)
                 ) 
                 (fn (cloc) => 
@@ -315,9 +298,9 @@ exception CPSInternalError
 
         | CConstructorDecl(name, tp, CConsInfoElementConstructor(_, index)) :: ss => 
         let val nargs = countSpineTypeArgs tp
-        val _ = DebugPrint.p ("constructor index is " ^ Int.toString index ^ "\n")
+        (* val _ = DebugPrint.p ("constructor index is " ^ Int.toString index ^ "\n") *)
         in
-            clams name nargs [] (fn (arglist, ret) => 
+            clams nargs [] (fn (arglist, ret) => 
             CPSBuiltinValue(CPSBvInt index, kcc (fn indexVal =>
                 CPSTuple(CPSValueVar indexVal :: (map CPSValueVar arglist), kcc ret)
                 ))

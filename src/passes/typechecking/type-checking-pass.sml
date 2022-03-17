@@ -967,9 +967,7 @@ infix 5 <?>
                             (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
                     ) *)
                 | RTermDefinition(n, e) :: ss => 
-                (case findCtx ctx ((getCurSName ctx)@[n]) of  (* must find fully qualified name as we allow same name for substructures *)
-                    NONE  => 
-                    (* optimize: if e is just an expr, do not instantiate implicit args *)
+                let fun newDef() = 
                     (case e of 
                     RVar _ => synthesizeTypeNoInstMeta ctx e
                     | _ => synthesizeType ctx (e))
@@ -978,6 +976,10 @@ infix 5 <?>
                                     (addToCtxR (TermTypeJ([n], synthesizedType, JTDefinition transformedExpr, NONE)) ctx) ss 
                                     (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
                             ) 
+                in
+                (case findCtx ctx ((getCurSName ctx)@[n]) of  (* must find fully qualified name as we allow same name for substructures *)
+                    NONE  =>  newDef()
+                    (* optimize: if e is just an expr, do not instantiate implicit args *)
                     | SOME(cname, lookedUpType, lookedUpDef) => 
                         (case lookedUpDef of 
                          JTPending =>  
@@ -993,9 +995,11 @@ infix 5 <?>
                                 )
                             | _ => raise Fail "tcp457"
                             end
-                        | _ => Errors.redefinitionError n (StructureName.toStringPlain cname) ctx (List.last cname) 
+                        | _ => newDef() (* allow repeated definitions *)
+                        (* Errors.redefinitionError n (StructureName.toStringPlain cname) ctx (List.last cname)  *)
                             )
                 )
+                end
                 | RConstructorDecl(name, rtp) :: ss => 
                     checkConstructorType name ctx rtp >>= (fn ((checkedType, cconsinfo),ctx) => 
                     

@@ -15,7 +15,7 @@ fun cForall (tv, t) = CPiType(CUniverse, SOME tv, t, Explicit)
 fun cForallImplicit (tv, t) = CPiType(CUniverse, SOME tv, t, Implicit)
 (* 'b. (('c. 'b -> 'c) -> 'b) -> 'b) *)
 val callccType : CType = cForallImplicit (typeBinderB, 
-    cFunc( cFunc( cForall(typeBinderC, cFunc(
+    cFunc( cFunc( cForallImplicit(typeBinderC, cFunc(
         typeVarB, typeVarC
     )) , typeVarB), typeVarB)
     )
