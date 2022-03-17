@@ -63,19 +63,20 @@ this transforms access of cpsvar
             CPSVarLocal i => LLVMLocationLocal i 
             | CPSVarGlobal i => LLVMLocationGlobal i
     
-    fun notifyFunctionNameToAddrMapping (fname : int) (addr : llvmlocation) = 
+    fun registerFunctionNameToAddrMapping (fname : int) (addr : llvmlocation) = 
+    (
         (* DebugPrint.p ("LLVM Loc Closure Mapping f" ^ Int.toString fname ^ " = " ^ (case addr of 
             LLVMLocationLocal i => ("l" ^ Int.toString i)
             | LLVMLocationGlobal i => ("g" ^ Int.toString i)
-        ) ^ "\n") *)
-        ()
+        ) ^ "\n"); *)
+        ())
 
     fun compileFunctionClosure(funLoc : llvmlocation ) (args : int list) 
             (fvs : int list) (body : cpscomputation)
         (kont : cpscomputation) :  llvmdeclaration list * llvmstatement list  =
             let 
                 val compiledFunctionName = UID.next()
-                val _ = notifyFunctionNameToAddrMapping compiledFunctionName funLoc
+                val _ = registerFunctionNameToAddrMapping compiledFunctionName funLoc
                 val compiledFreeVarsAddr = UID.next()
                 val freeVarsInBody = fvs
                 val (decls, compiledBody) = genLLVM (

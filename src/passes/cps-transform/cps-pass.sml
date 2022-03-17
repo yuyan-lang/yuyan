@@ -24,8 +24,9 @@ exception CPSInternalError
   
 
     fun registerFunctionNameMapping (i : cpsvar) (e : CExpr) (msg : string) : unit = 
-        (* DebugPrint.p ( "CPSNameMapping fid=" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n") *)
-        ()
+        (
+            (* DebugPrint.p ( "CPSNameMapping fid=" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n"); *)
+        ())
 
     and cpsTransformExpr   
         (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
@@ -302,12 +303,19 @@ exception CPSInternalError
         | CImport _ :: ss => 
             cpsTransformSig (ctx) ss useGlobalVar cc
         | CConstructorDecl (name, ctp, CConsInfoTypeConstructor) :: ss => 
-            CPSUnit(kcc (fn resvar => 
-                cpsTransformSig ((name, PlainVar resvar) :: ctx) ss useGlobalVar cc
-            ))
+            let val nargs = countSpineTypeArgs ctp
+            in
+                clams name nargs [] (fn (arglist, ret) => 
+                    CPSUnit (kcc ret)
+                ) 
+                (fn (cloc) => 
+                    cpsTransformSig ((name, PlainVar cloc) :: ctx) ss useGlobalVar cc
+                )
+            end
 
         | CConstructorDecl(name, tp, CConsInfoElementConstructor(_, index)) :: ss => 
         let val nargs = countSpineTypeArgs tp
+        val _ = DebugPrint.p ("constructor index is " ^ Int.toString index ^ "\n")
         in
             clams name nargs [] (fn (arglist, ret) => 
             CPSBuiltinValue(CPSBvInt index, kcc (fn indexVal =>

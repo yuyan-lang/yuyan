@@ -229,7 +229,7 @@ infix 5 <?>
                 (foundTypeConstructorName : StructureName.t) : cconstructorinfo witherrsoption =
                     if StructureName.semanticEqual (getCurSName ctx)  (StructureName.getDeclaringScope foundTypeConstructorName)
                     then Success(CConsInfoElementConstructor(foundTypeConstructorName, 
-                            countOccurrencesOfElementConstructor(foundTypeConstructorName)))
+                            countOccurrencesOfElementConstructor(foundTypeConstructorName) + 1))
                     else Errors.elementConstructorScopeError  errReporting ctx
 
 

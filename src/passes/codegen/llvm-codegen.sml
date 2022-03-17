@@ -279,7 +279,9 @@ fun genLLVMStatement (s : llvmstatement) : string list =
                 ],
                 [
                     toBlockNameLabel defaultBlockName  ^ ":",
-                    toLocalVar (UID.next()) ^ " = call i64 @internalError()",
+                    toLocalVar (UID.next()) ^ " = call i64 @matchException("
+                    ^ "i64 " ^ toLocalVar realV 
+                    ^ ")",
                     "br label " ^ toBlockNameJump defaultBlockName  
                     (* jump to self (no other things we can do) ,
                      assume internalError kills the process, 
@@ -426,6 +428,7 @@ fun genLLVMSignatureWithMainFunction ((entryFunc,s) : llvmsignature)  : string l
         (* declare runtime functions *)
         "declare i64* @allocateArray(i64)",
         "declare i64 @internalError()",
+        "declare i64 @matchException(i64)",
         "declare i64 @informResult(i64*)"
         ]@genSig
 end
