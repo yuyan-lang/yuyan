@@ -136,7 +136,7 @@ infix 5 <?>
         case ctx of 
             [] =>  genSingletonError l ("标签`" ^ UTF8String.toString l ^ "`未找到") NONE
             (* raise TypeCheckingFailure ("label " ^ UTF8String.toString l ^ " not found in prod type") *)
-            | (n1, t1)::cs => if UTF8String.semanticEqual n1 l then Success (i, t1) else go (i+1) ctx
+            | (n1, t1)::cs => if UTF8String.semanticEqual n1 l then Success (i, t1) else go (i+1) cs
         in go 0 ctx
         end
 
@@ -321,7 +321,7 @@ infix 5 <?>
             (
                 let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
                 val originalExpr = e
-                val res = case e of
+                val res = (case e of
                     RVar v => lookupCtx ctx v >>= (fn (canonicalName, tp, jtp) =>
                     case jtp of 
                         JTPending => Errors.genericError e ctx "变量尚未定义"
@@ -329,9 +329,10 @@ infix 5 <?>
                     )
                     | RUnitExpr(soi) => Success ((CUnitExpr, CUnitType), ctx)
                     | RProj(e, l, soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
-                    weakHeadNormalizeType e ctx tt >>= (fn ntt => case ntt of 
+                                    ( weakHeadNormalizeType e ctx tt) >>= (fn ntt => case 
+                                    ( ntt) of 
                             (CProd ls) => 
-                                lookupLabel ls l >>= (fn (idx, _) => 
+                                (lookupLabel ls l) >>= (fn (idx, _) => 
                                     let fun go curIdx acc = 
                                             (case acc of 
                                                 [] => raise Fail "tcp338 lookup should not return an invalid index"
@@ -475,11 +476,11 @@ infix 5 <?>
 
                     | RLetIn(decls, e, soi) => (case ctx of 
                         Context(curName, curVis, bindings) => 
-                typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls [] >>= 
-                (fn (csig, Context(localName, _, newBindings) ) =>
-                        synthesizeType (Context(localName,curVis, newBindings)) e >>= (fn ((ce, synthesizedType), Context(localName, curVis, bindings)) =>
-                                Success ((CLetIn(csig, ce, CTypeAnn(synthesizedType)), synthesizedType), Context(curName,curVis, bindings)) (* restore name when exiting *)
-                        )
+                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls [] >>= 
+                        (fn (csig, Context(localName, _, newBindings) ) =>
+                                synthesizeType (Context(localName,curVis, newBindings)) e >>= (fn ((ce, synthesizedType), Context(localName, curVis, bindings)) =>
+                                        Success ((CLetIn(csig, ce, CTypeAnn(synthesizedType)), synthesizedType), Context(curName,curVis, bindings)) (* restore name when exiting *)
+                                )
                         )
                     )
                     | RBuiltinFunc(f, s) => Success((CBuiltinFunc(f), (BuiltinFunctions.typeOf f)), ctx)
@@ -563,13 +564,14 @@ infix 5 <?>
                         )
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
                     | _ => Errors.expressionDoesNotSupportTypeSynthesis e ctx
-                    
+                )
 
-                    val _ = if DEBUG then print ( "synthesize got result " ^
-                    PrettyPrint.show_static_error res (fn res => PrettyPrint.show_typecheckingCType (#2 (#1 res)))^
-                    " whensynthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
-                    in res
-                    end )
+                val _ = if DEBUG then print ( "synthesize got result " ^
+                PrettyPrint.show_static_error res (fn res => PrettyPrint.show_typecheckingCType (#2 (#1 res)))^
+                " whensynthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
+                val res' = Errors.enrichErrWhenSynthesizing e res
+                in res'
+                end )
                 (* handle TypeCheckingFailure s => 
                     raise TypeCheckingFailure (s ^ "\n when synthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e 
                     ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx) *)
@@ -604,106 +606,98 @@ infix 5 <?>
                     val tt = ttNorm
                     val _ = if DEBUG then  print(  "DEBUG: checking the expr " ^ PrettyPrint.show_typecheckingRExpr e ^ 
                         " against type " ^ PrettyPrint.show_typecheckingCType tt ^
-                        " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else ()
+                        (* " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^ *)
+                        "\n") else ()
                     val originalExpr = e
-                    val res = 
-                    case e of
-                    RVar v => 
-                    (synthesizeType ctx e) >>= (fn ((synthExpr, synthType), ctx) =>
-                    tryTypeUnify ctx e (synthType) tt  >>= (fn ctx => Success (synthExpr, ctx))
-                    )
-                   
-                    | RUnitExpr(soi) => tryTypeUnify ctx e CUnitType  tt >>= (fn ctx => Success(CUnitExpr, ctx))
-                    | RTuple (l, soi) => (case tt of 
-                        CProd ls => if List.length l <> List.length ls
-                                    then Errors.prodTupleLengthMismatch e (tt) ctx
-                                    else 
-                                    let fun go (l,ls) ctx = case (l, ls) of 
-                                            ([],[]) => Success([], ctx)
-                                            | ((elem::es), ((label,tp) :: tpl)) => 
-                                                checkType ctx e tp >>= (fn (ce, ctx) => 
-                                                    go (es, substTypeInSpine ce [label] tpl) ctx >>= (fn (ces, ctx) => 
-                                                        Success((ce::ces), ctx)
+                    val res = (
+                        case e of
+                        RVar v => 
+                            (synthesizeType ctx e) >>= (fn ((synthExpr, synthType), ctx) =>
+                            tryTypeUnify ctx e (synthType) tt  >>= (fn ctx => Success (synthExpr, ctx))
+                            )
+                    
+                        | RUnitExpr(soi) => tryTypeUnify ctx e CUnitType  tt >>= (fn ctx => Success(CUnitExpr, ctx))
+                        | RTuple (l, soi) => (case tt of 
+                            CProd ls => if List.length l <> List.length ls
+                                        then Errors.prodTupleLengthMismatch e (tt) ctx
+                                        else 
+                                        let fun go (l,ls) ctx = case (l, ls) of 
+                                                ([],[]) => (
+                                                        (* DebugPrint.p "GO : DONE"; *)
+                                                    Success([], ctx)
+                                                )
+                                                | ((elem::es), ((label,tp) :: tpl)) => 
+                                                (
+                                                    (* DebugPrint.p ("GOING..." ^ Int.toString (length l) ^ " ; " ^ Int.toString (length ls)); *)
+
+                                                    checkType ctx elem tp >>= (fn (ce, ctx) => 
+                                                        (
+                                                            (* DebugPrint.p ("checked..." ); *)
+                                                            go (es, substTypeInSpine ce [label] tpl) ctx >>= (fn (ces, ctx) => 
+                                                                Success((ce::ces), ctx)
+                                                            )
+                                                        )
                                                     )
                                                 )
-                                            | _ => raise Fail "tcp629: should be the same length"
-                                    in go (l, ls) ctx >>= (fn (ce, ctx) => Success(CTuple(ce, CTypeAnnNotAvailable), ctx))
-                                    end
-                        | _ => Errors.expectedProdType e (tt) ctx
-                        )
-                    | RLazyTuple (l, soi) => (case tt of 
-                        CLazyProd ls => if List.length l <> List.length ls
-                                    then Errors.lazyProdTupleLengthMismatch e (tt) ctx
-                                    else foldMapCtx ctx (fn ((elem, (label,tp)), ctx) => 
-                                        checkType ctx elem tp
-                                    ) (ListPair.zipEq (l, ls)) >>= (fn (checkedElems, ctx) => 
-                                    Success(CLazyTuple ( checkedElems, CTypeAnn((CLazyProd ls))), ctx))
-                        | _ => Errors.expectedLazyProdType e (tt) ctx
-                        )
-                    | RProj(e, l, soi) =>
-                    synthesizeType ctx (RProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
-                        (CProj(ce, l, idx, prodType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
-                        Success(CProj(ce, l, idx, prodType), ctx))
-                        | _ => raise Fail "tcp229")
-                    | RLazyProj(e, l, soi) =>
-                    synthesizeType ctx (RLazyProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
-                        (CLazyProj(ce, l, lazyProdType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
-                        Success(CLazyProj(ce, l, lazyProdType), ctx))
-                        | _ => raise Fail "tcp229")
+                                                | _ => raise Fail "tcp629: should be the same length"
+                                        in go (l, ls) ctx >>= (fn (ce, ctx) => Success(CTuple(ce, CTypeAnnNotAvailable), ctx))
+                                        end
+                            | _ => Errors.expectedProdType e (tt) ctx
+                            )
+                        | RLazyTuple (l, soi) => (case tt of 
+                            CLazyProd ls => if List.length l <> List.length ls
+                                        then Errors.lazyProdTupleLengthMismatch e (tt) ctx
+                                        else foldMapCtx ctx (fn ((elem, (label,tp)), ctx) => 
+                                            checkType ctx elem tp
+                                        ) (ListPair.zipEq (l, ls)) >>= (fn (checkedElems, ctx) => 
+                                        Success(CLazyTuple ( checkedElems, CTypeAnn((CLazyProd ls))), ctx))
+                            | _ => Errors.expectedLazyProdType e (tt) ctx
+                            )
+                        | RProj(e, l, soi) =>
+                        synthesizeType ctx (RProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
+                            (CProj(ce, l, idx, prodType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
+                            Success(CProj(ce, l, idx, prodType), ctx))
+                            | _ => raise Fail "tcp229")
+                        | RLazyProj(e, l, soi) =>
+                        synthesizeType ctx (RLazyProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
+                            (CLazyProj(ce, l, lazyProdType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
+                            Success(CLazyProj(ce, l, lazyProdType), ctx))
+                            | _ => raise Fail "tcp229")
 
-                    | RInj (l, e, soi) => (case tt of
-                        CSum ls => (lookupLabel ls l) >>= (fn (idx,lookedupType) => 
-                                checkType ctx e lookedupType >>= (fn (checkedExpr, ctx) => 
-                                    Success(CInj(l, checkedExpr, CTypeAnn((CSum ls))), ctx)
-                                ))
-                        | _ => Errors.expectedSumType originalExpr (tt) ctx
-                    )
-                    | RIfThenElse(e, tcase, fcase, soi) => (checkType ctx e (CBuiltinType(BIBool))  >>= (fn (ce, ctx) => 
-                        checkType ctx tcase tt >>= (fn (ctcase, ctx) => 
-                            checkType ctx fcase tt >>= (fn (cfcase, ctx) => 
-                                Success(CIfThenElse(ce, ctcase, cfcase), ctx)
-                            )
+                        | RInj (l, e, soi) => (case tt of
+                            CSum ls => (lookupLabel ls l) >>= (fn (idx,lookedupType) => 
+                                    checkType ctx e lookedupType >>= (fn (checkedExpr, ctx) => 
+                                        Success(CInj(l, checkedExpr, CTypeAnn((CSum ls))), ctx)
+                                    ))
+                            | _ => Errors.expectedSumType originalExpr (tt) ctx
                         )
-                    ))
-                    | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn ((ce, synt), ctx) => 
-                         weakHeadNormalizeType e ctx synt >>= (fn caseTpNormalized => 
-                            (foldMapCtx ctx (fn ((pat, e), ctx) => 
-                                checkPattern ctx pat caseTpNormalized >>= (fn (cpat, newCtx) => 
-                                        checkType newCtx e tt >>= (fn (checkedCase, ctx) => 
-                                            Success((cpat, checkedCase), ctx)
-                                        )
-                                    )
-                                ) cases
-                                ) >>= (fn (checkedCases, ctx)
-                                    => Success(CCase((CTypeAnn(caseTpNormalized), ce), checkedCases , CTypeAnn((tt))), ctx))
-                         ))
-                            (* | _ => Errors.attemptToCaseNonSum originalExpr (#2 synt) ctx) *)
-                    | RLam(ev, eb,pe, soi) => 
-                    weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
-                        (case tt of
-                            CPiType(t1, tevop, t2, pt) => 
-                                if pt <> pe 
-                                then raise Fail "tcp638: should have inserted implict lams"
-                                else
-                                withLocalBinder ctx ev t1 (fn ctx => 
-                                    checkType 
-                                        ctx
-                                        eb 
-                                        (case tevop of NONE => t2 | SOME tev => if UTF8String.semanticEqual tev ev then t2 else 
-                                            substTypeInCExpr (CVar([ev], CVTBinder)) ([tev]) t2
-                                        )
-                                    >>= (fn (checkedExpr, ctx) => Success(CLam(ev, checkedExpr, CTypeAnn(tt)), ctx))
+                        | RIfThenElse(e, tcase, fcase, soi) => (checkType ctx e (CBuiltinType(BIBool))  >>= (fn (ce, ctx) => 
+                            checkType ctx tcase tt >>= (fn (ctcase, ctx) => 
+                                checkType ctx fcase tt >>= (fn (cfcase, ctx) => 
+                                    Success(CIfThenElse(ce, ctcase, cfcase), ctx)
                                 )
-                            | _ => Errors.expectedFunctionType e (tt) ctx
                             )
-                    )
-                    | RLamWithType (t, ev, eb, soi) => 
-                    weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
-                    (case ntt of
-                        CPiType(t1, tevop, t2, Explicit) => (
-                            checkExprIsType ctx t >>= (fn (t', ctx) => 
-                                tryTypeUnify ctx e t' t1 >>=
-                                (fn ctx => 
+                        ))
+                        | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn ((ce, synt), ctx) => 
+                            weakHeadNormalizeType e ctx synt >>= (fn caseTpNormalized => 
+                                (foldMapCtx ctx (fn ((pat, e), ctx) => 
+                                    checkPattern ctx pat caseTpNormalized >>= (fn (cpat, newCtx) => 
+                                            checkType newCtx e tt >>= (fn (checkedCase, ctx) => 
+                                                Success((cpat, checkedCase), ctx)
+                                            )
+                                        )
+                                    ) cases
+                                    ) >>= (fn (checkedCases, ctx)
+                                        => Success(CCase((CTypeAnn(caseTpNormalized), ce), checkedCases , CTypeAnn((tt))), ctx))
+                            ))
+                                (* | _ => Errors.attemptToCaseNonSum originalExpr (#2 synt) ctx) *)
+                        | RLam(ev, eb,pe, soi) => 
+                        weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
+                            (case tt of
+                                CPiType(t1, tevop, t2, pt) => 
+                                    if pt <> pe 
+                                    then raise Fail "tcp638: should have inserted implict lams"
+                                    else
                                     withLocalBinder ctx ev t1 (fn ctx => 
                                         checkType 
                                             ctx
@@ -711,228 +705,249 @@ infix 5 <?>
                                             (case tevop of NONE => t2 | SOME tev => if UTF8String.semanticEqual tev ev then t2 else 
                                                 substTypeInCExpr (CVar([ev], CVTBinder)) ([tev]) t2
                                             )
-                                        >>= (fn (checkedBody, ctx) => 
-                                            Success(CLam(ev, checkedBody , CTypeAnn(tt)), ctx))
+                                        >>= (fn (checkedExpr, ctx) => Success(CLam(ev, checkedExpr, CTypeAnn(tt)), ctx))
+                                    )
+                                | _ => Errors.expectedFunctionType e (tt) ctx
+                                )
+                        )
+                        | RLamWithType (t, ev, eb, soi) => 
+                        weakHeadNormalizeType originalExpr ctx tt >>= (fn ntt => 
+                        (case ntt of
+                            CPiType(t1, tevop, t2, Explicit) => (
+                                checkExprIsType ctx t >>= (fn (t', ctx) => 
+                                    tryTypeUnify ctx e t' t1 >>=
+                                    (fn ctx => 
+                                        withLocalBinder ctx ev t1 (fn ctx => 
+                                            checkType 
+                                                ctx
+                                                eb 
+                                                (case tevop of NONE => t2 | SOME tev => if UTF8String.semanticEqual tev ev then t2 else 
+                                                    substTypeInCExpr (CVar([ev], CVTBinder)) ([tev]) t2
+                                                )
+                                            >>= (fn (checkedBody, ctx) => 
+                                                Success(CLam(ev, checkedBody , CTypeAnn(tt)), ctx))
+                                        )
                                     )
                                 )
-                            )
-                            )
-                        | _ => Errors.expectedFunctionType e  (tt) ctx
-                        )
-                    )
-                    | RSeqComp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn ((ce1, t1), ctx) => 
-                        checkType ctx e2 tt >>= (fn (ce2, ctx) => 
-                            Success(CSeqComp(ce1, ce2, CTypeAnn(t1), CTypeAnn(tt)), ctx)
-                        ))
-                    | RApp (e1, e2, pe, soi) => 
-                        (case pe of Explicit => 
-                        synthesizeType ctx e1 
-                        | Implicit => synthesizeTypeNoInstMeta ctx e1)
-                        >>= (fn ((ce1, synt), ctx) => 
-                        weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => 
-                            case synt 
-                                of (CPiType (t1, evop, t2, pt)) => 
-                                    if pt = pe then
-                                    ( 
-                                            checkType ctx e2 (t1) >>= (fn (checkedArg, ctx) => 
-                                    tryTypeUnify ctx e (
-                                        case evop of 
-                                        NONE => t2
-                                        | SOME ev => substTypeInCExpr checkedArg ([ev]) t2
-                                        ) tt >>= (fn ctx => 
-                                                Success (CApp(ce1, checkedArg, CTypeAnn(synt)), ctx)
-                                            )
-                                        )
-                                    ) else 
-                                    raise Fail "tcp638: plicity of (possible) pi type should match requested plicity"
-                                | _ => Errors.attemptToApplyNonFunction e (synt) ctx
-                            )
-                        )
-                    (* | RTAbs (tv, e2, soi) => (case tt of
-                        CForall (tv', tb) => 
-                                checkType 
-                                (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
-                                e2 (substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] tb) >>= (fn (ce2, ctx) => 
-                                            Success(CTAbs (tv, ce2, CTypeAnn(tt)), ctx)
                                 )
-                        | _ => Errors.expectedUniversalType e (tt) ctx
-                    ) *)
-                    | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
-                    weakHeadNormalizeType e2 ctx synt >>= (fn synt => 
-                        case synt of
-                            (CForall (tv, tb)) => (
-                                checkExprIsType ctx t >>= (fn (ctapp, ctx) => 
-                                    (* need to normalize type! important! *)
-                                    (weakHeadNormalizeType t ctx ctapp >>= (fn nt => 
-                                        tryTypeUnify ctx e (tt) (substTypeInCExpr ctapp [tv] ( tb))
-                                    )) >>= (fn ctx => Success(CTApp(ce2, ctapp, CTypeAnn(CForall(tv, tb))), ctx)))
-                                )
-                            | _ => Errors.attemptToApplyNonUniversal e (synt) ctx
+                            | _ => Errors.expectedFunctionType e  (tt) ctx
                             )
                         )
-                    | RPack (e1, e2, soi) => (case tt of
-                        CSigmaType (t1, tvop, t2) => 
-                            checkType ctx e1 t1 >>= (fn (ce1, ctx) =>
-                                checkType ctx e2 
-                                (case tvop of NONE => t2 | SOME tv => 
-                                                substTypeInCExpr ce1 ([tv]) t2
-                                            )
-                                 >>= (fn (ce2, ctx) => Success(CPack(ce1, ce2, CTypeAnn(tt)), ctx))
-                                )
-                        | _ => Errors.expectedExistentialType e (tt) ctx
-                    )
-                    (* | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
-                    weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => case nsynt of
-                        (CExists (tv', tb)) => 
-                        checkType (addToCtxA (TermTypeJ([ev], substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] ( tb), JTLocalBinder, NONE)) ctx) e2 tt
-                        >>= (fn (ce2, ctx) => 
-                        Success(COpen((CTypeAnn(CExists (tv', tb)), ce1), (tv, ev, ce2), CTypeAnn(tt)), ctx)
-                        )
-                        | _ => Errors.attemptToOpenNonExistentialTypes e (synt) ctx
-                    )
-                   ) *)
-                    | RFold (e2, soi) => (case tt
-                        of 
-                        CRho (tv ,tb) => 
-                        checkType ctx e2 (substTypeInCExpr (CRho(tv, tb)) [tv] tb)
-                        >>= (fn (ce2, ctx) => Success (CFold(ce2, CTypeAnn(tt)), ctx))
-                        | _ => Errors.expectedRecursiveType e (tt) ctx
-                            )
-                    | RUnfold (e2,soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
-                    weakHeadNormalizeType e2 ctx synt >>= (fn nsynt => case nsynt of
-                        ( CRho (tv, tb)) =>(
-                            tryTypeUnify ctx e ((substTypeInCExpr (CRho (tv,  tb)) [tv] ( tb))) tt >>= (fn ctx =>
-                            Success(CUnfold(ce2, CTypeAnn(CRho(tv,tb))), ctx)))
-                        | _ => Errors.attemptToUnfoldNonRecursiveTypes e (synt) ctx
-                        ))
-                    | RFix (ev, e, soi)=> 
-                        withLocalBinder ctx ev tt (fn ctx => 
-                            checkType ctx e tt
-                                                >>= (fn (ce, ctx) => Success(CFix(ev,ce, CTypeAnn(tt)), ctx))
-                        )
-                    | RStringLiteral (s, soi) => (tryTypeUnify ctx e (CBuiltinType(BIString)) (tt) >>= (fn (ctx) => Success (CStringLiteral s, ctx)))
-                    | RIntConstant (i, soi) => (tryTypeUnify ctx e (CBuiltinType(BIInt)) tt >>= (fn ctx => Success ( CIntConstant i, ctx)))
-                    | RRealConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIReal)) tt >>= (fn ctx => Success (CRealConstant r, ctx)))
-                    | RBoolConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIBool)) tt >>= (fn ctx => Success (CBoolConstant r, ctx)))
-                    | RFfiCCall (e1, e2, soi) => (
-                        case e1 of
-                            RStringLiteral (cfuncName, soi) => 
-                                let fun elaborateArguments  (args : StructureName.t list ) : (CExpr * context) witherrsoption = 
-                                    fmap CFfiCCall(Success cfuncName =/= 
-                                    collectAll (map (fn a => fmap (#1) (lookupCtxForType ctx a)) args)) =/= Success ctx
-                                in
-                                            (case e2 of 
-                                                RVar v => (Success ([v])) >>= elaborateArguments
-                                                | RTuple (l, soi) => (collectAll (map (fn arg => case arg of 
-                                                    RVar v => Success (v)
-                                                    | _ => Errors.ccallArgumentsMustBeImmediate arg ctx
-                                                    (* raise TypeCheckingFailure "ccall arguments must be immediate values" *)
-                                                    ) l)) >>= elaborateArguments
-                                                | RUnitExpr(soi) => elaborateArguments []
-                                                | e => raise Fail ("tcp439 : " ^ PrettyPrint.show_typecheckingRExpr e)
-                                            )
-                                end
-                            | _ => Errors.firstArgumentOfCCallMustBeStringLiteral e1 ctx
-                            (* raise TypeCheckingFailure "First argument of the ccall must be string literal" *)
-
-                    )
-                    | RLetIn(decls, e, soi) => (case ctx of 
-                Context(curName, curVis, bindings) => 
-                    typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls []
-                    >>= (fn(csig, Context(localName, _, newBindings)) =>
-                        (* assume the typeChecking is behaving properly, 
-                        no conflicting things will be added to the signature *)
-                        (* sub context will be determined by whether the signature is private or not ? *)
-                            checkType (Context(localName,curVis, newBindings)) e tt >>= (fn (ce, Context(localName, curVis, bindings)) => 
-                                        Success(CLetIn(csig, ce, CTypeAnn(tt)), Context(curName, curVis, bindings))
-                            )
-                        )
-                    
-                        )
-                    | RBuiltinFunc(f, soi) => (tryTypeUnify ctx e ((BuiltinFunctions.typeOf f)) tt >>= (fn ctx => Success(CBuiltinFunc(f), ctx)))
-                     (* types *)
-                    | RUnitType(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CUnitType, ctx))
-                    | RNullType(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CNullType , ctx))
-                    | RBuiltinType(f, s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CBuiltinType(f) , ctx))
-                    | RUniverse(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CUniverse , ctx) (* TODO: maybe universe levels? *))
-                    | RPiType(t1, evoption, t2,p, soi) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                         checkExprOptionIsType ctx t1 ((case evoption of SOME x => RVar([x]) | NONE => e)) >>= (fn (ct1, ctx) => 
-                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
-                            (fn ctx =>
-                            synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
-                                    tryTypeUnify ctx t2 synT CUniverse >>= (fn ctx => 
-                                        (Success(CPiType(ct1, evoption, ct2,p), ctx)))
+                        | RSeqComp (e1, e2, soi) => synthesizeType ctx e1 >>= (fn ((ce1, t1), ctx) => 
+                            checkType ctx e2 tt >>= (fn (ce2, ctx) => 
+                                Success(CSeqComp(ce1, ce2, CTypeAnn(t1), CTypeAnn(tt)), ctx)
                             ))
-                        ))
-                    | RSigmaType(t1, evoption, t2, soi) =>
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                            (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
-                            (fn ctx => 
-                            synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
-                                    tryTypeUnify ctx t2 synT CUniverse >>= 
-                                        (fn ctx => Success(CSigmaType(ct1, evoption, ct2) , ctx))
+                        | RApp (e1, e2, pe, soi) => 
+                            (case pe of Explicit => 
+                            synthesizeType ctx e1 
+                            | Implicit => synthesizeTypeNoInstMeta ctx e1)
+                            >>= (fn ((ce1, synt), ctx) => 
+                            weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => 
+                                case synt 
+                                    of (CPiType (t1, evop, t2, pt)) => 
+                                        if pt = pe then
+                                        ( 
+                                                checkType ctx e2 (t1) >>= (fn (checkedArg, ctx) => 
+                                        tryTypeUnify ctx e (
+                                            case evop of 
+                                            NONE => t2
+                                            | SOME ev => substTypeInCExpr checkedArg ([ev]) t2
+                                            ) tt >>= (fn ctx => 
+                                                    Success (CApp(ce1, checkedArg, CTypeAnn(synt)), ctx)
+                                                )
+                                            )
+                                        ) else 
+                                        raise Fail "tcp638: plicity of (possible) pi type should match requested plicity"
+                                    | _ => Errors.attemptToApplyNonFunction e (synt) ctx
+                                )
+                            )
+                        (* | RTAbs (tv, e2, soi) => (case tt of
+                            CForall (tv', tb) => 
+                                    checkType 
+                                    (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
+                                    e2 (substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] tb) >>= (fn (ce2, ctx) => 
+                                                Success(CTAbs (tv, ce2, CTypeAnn(tt)), ctx)
+                                    )
+                            | _ => Errors.expectedUniversalType e (tt) ctx
+                        ) *)
+                        | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
+                        weakHeadNormalizeType e2 ctx synt >>= (fn synt => 
+                            case synt of
+                                (CForall (tv, tb)) => (
+                                    checkExprIsType ctx t >>= (fn (ctapp, ctx) => 
+                                        (* need to normalize type! important! *)
+                                        (weakHeadNormalizeType t ctx ctapp >>= (fn nt => 
+                                            tryTypeUnify ctx e (tt) (substTypeInCExpr ctapp [tv] ( tb))
+                                        )) >>= (fn ctx => Success(CTApp(ce2, ctapp, CTypeAnn(CForall(tv, tb))), ctx)))
+                                    )
+                                | _ => Errors.attemptToApplyNonUniversal e (synt) ctx
+                                )
+                            )
+                        | RPack (e1, e2, soi) => (case tt of
+                            CSigmaType (t1, tvop, t2) => 
+                                checkType ctx e1 t1 >>= (fn (ce1, ctx) =>
+                                    checkType ctx e2 
+                                    (case tvop of NONE => t2 | SOME tv => 
+                                                    substTypeInCExpr ce1 ([tv]) t2
+                                                )
+                                    >>= (fn (ce2, ctx) => Success(CPack(ce1, ce2, CTypeAnn(tt)), ctx))
+                                    )
+                            | _ => Errors.expectedExistentialType e (tt) ctx
+                        )
+                        (* | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
+                        weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => case nsynt of
+                            (CExists (tv', tb)) => 
+                            checkType (addToCtxA (TermTypeJ([ev], substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] ( tb), JTLocalBinder, NONE)) ctx) e2 tt
+                            >>= (fn (ce2, ctx) => 
+                            Success(COpen((CTypeAnn(CExists (tv', tb)), ce1), (tv, ev, ce2), CTypeAnn(tt)), ctx)
+                            )
+                            | _ => Errors.attemptToOpenNonExistentialTypes e (synt) ctx
+                        )
+                        ) *)
+                        | RFold (e2, soi) => (case tt
+                            of 
+                            CRho (tv ,tb) => 
+                            checkType ctx e2 (substTypeInCExpr (CRho(tv, tb)) [tv] tb)
+                            >>= (fn (ce2, ctx) => Success (CFold(ce2, CTypeAnn(tt)), ctx))
+                            | _ => Errors.expectedRecursiveType e (tt) ctx
+                                )
+                        | RUnfold (e2,soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
+                        weakHeadNormalizeType e2 ctx synt >>= (fn nsynt => case nsynt of
+                            ( CRho (tv, tb)) =>(
+                                tryTypeUnify ctx e ((substTypeInCExpr (CRho (tv,  tb)) [tv] ( tb))) tt >>= (fn ctx =>
+                                Success(CUnfold(ce2, CTypeAnn(CRho(tv,tb))), ctx)))
+                            | _ => Errors.attemptToUnfoldNonRecursiveTypes e (synt) ctx
+                            ))
+                        | RFix (ev, e, soi)=> 
+                            withLocalBinder ctx ev tt (fn ctx => 
+                                checkType ctx e tt
+                                                    >>= (fn (ce, ctx) => Success(CFix(ev,ce, CTypeAnn(tt)), ctx))
+                            )
+                        | RStringLiteral (s, soi) => (tryTypeUnify ctx e (CBuiltinType(BIString)) (tt) >>= (fn (ctx) => Success (CStringLiteral s, ctx)))
+                        | RIntConstant (i, soi) => (tryTypeUnify ctx e (CBuiltinType(BIInt)) tt >>= (fn ctx => Success ( CIntConstant i, ctx)))
+                        | RRealConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIReal)) tt >>= (fn ctx => Success (CRealConstant r, ctx)))
+                        | RBoolConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIBool)) tt >>= (fn ctx => Success (CBoolConstant r, ctx)))
+                        | RFfiCCall (e1, e2, soi) => (
+                            case e1 of
+                                RStringLiteral (cfuncName, soi) => 
+                                    let fun elaborateArguments  (args : StructureName.t list ) : (CExpr * context) witherrsoption = 
+                                        fmap CFfiCCall(Success cfuncName =/= 
+                                        collectAll (map (fn a => fmap (#1) (lookupCtxForType ctx a)) args)) =/= Success ctx
+                                    in
+                                                (case e2 of 
+                                                    RVar v => (Success ([v])) >>= elaborateArguments
+                                                    | RTuple (l, soi) => (collectAll (map (fn arg => case arg of 
+                                                        RVar v => Success (v)
+                                                        | _ => Errors.ccallArgumentsMustBeImmediate arg ctx
+                                                        (* raise TypeCheckingFailure "ccall arguments must be immediate values" *)
+                                                        ) l)) >>= elaborateArguments
+                                                    | RUnitExpr(soi) => elaborateArguments []
+                                                    | e => raise Fail ("tcp439 : " ^ PrettyPrint.show_typecheckingRExpr e)
+                                                )
+                                    end
+                                | _ => Errors.firstArgumentOfCCallMustBeStringLiteral e1 ctx
+                                (* raise TypeCheckingFailure "First argument of the ccall must be string literal" *)
+
+                        )
+                        | RLetIn(decls, e, soi) => (case ctx of 
+                            Context(curName, curVis, bindings) => 
+                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls []
+                        >>= (fn(csig, Context(localName, _, newBindings)) =>
+                            (* assume the typeChecking is behaving properly, 
+                            no conflicting things will be added to the signature *)
+                            (* sub context will be determined by whether the signature is private or not ? *)
+                                checkType (Context(localName,curVis, newBindings)) e tt >>= (fn (ce, Context(localName, curVis, bindings)) => 
+                                            Success(CLetIn(csig, ce, CTypeAnn(tt)), Context(curName, curVis, bindings))
+                                )
+                            )
+                        
+                            )
+                        | RBuiltinFunc(f, soi) => (tryTypeUnify ctx e ((BuiltinFunctions.typeOf f)) tt >>= (fn ctx => Success(CBuiltinFunc(f), ctx)))
+                        (* types *)
+                        | RUnitType(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CUnitType, ctx))
+                        | RNullType(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CNullType , ctx))
+                        | RBuiltinType(f, s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CBuiltinType(f) , ctx))
+                        | RUniverse(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CUniverse , ctx) (* TODO: maybe universe levels? *))
+                        | RPiType(t1, evoption, t2,p, soi) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            checkExprOptionIsType ctx t1 ((case evoption of SOME x => RVar([x]) | NONE => e)) >>= (fn (ct1, ctx) => 
+                                (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
+                                (fn ctx =>
+                                synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
+                                        tryTypeUnify ctx t2 synT CUniverse >>= (fn ctx => 
+                                            (Success(CPiType(ct1, evoption, ct2,p), ctx)))
                                 ))
                             ))
-                    | RProd(ltsl, sepl) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                         (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
-                            checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
-                            Success ((l, ct), ctx)
-                            )
-                        ) ltsl) >>= (fn (l, ctx) => Success(CProd l, ctx)))
-                    | RLazyProd  (ltsl, sepl) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                         (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
-                            checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
-                            Success ((l, ct), ctx)
-                            )
-                        ) ltsl) >>= (fn (l, ctx) => Success(CLazyProd l, ctx)))
-                    | RSum(ltsl, sepl) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                         (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
-                            checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
-                            Success ((l, ct), ctx)
-                            )
-                        ) ltsl) >>= (fn (l, ctx) => Success(CSum l, ctx)))
-                    (* | RFunc(t1, t2, soi) => 
-                        tryTypeUnify ctx e CUniverse tt >> (
-                    checkType ctx t1 CUniverse >>= (fn ct1 => 
-                        checkType ctx t2 CUniverse >>= (fn ct2 => 
-                            Success(CFunc(ct1, ct2) )
-                        )
-                    )) *)
-                    | RTypeInst(t1, t2, soi) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                        | RSigmaType(t1, evoption, t2, soi) =>
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                             checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
-                                checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
-                                    Success(CTypeInst(ct1, ct2) , ctx)
+                                (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
+                                (fn ctx => 
+                                synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
+                                        tryTypeUnify ctx t2 synT CUniverse >>= 
+                                            (fn ctx => Success(CSigmaType(ct1, evoption, ct2) , ctx))
+                                    ))
+                                ))
+                        | RProd(ltsl, sepl) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
+                                checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
+                                Success ((l, ct), ctx)
                                 )
-                            ))
-                    | RForall(tv, t2, soi) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        withLocalBinder ctx tv CUniverse (fn ctx => 
-                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
-                                Success(CForall(tv, ct2) , ctx)
-                            )))
-                    | RExists(tv, t2, soi) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        withLocalBinder ctx tv CUniverse (fn ctx => 
-                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
-                                Success(CExists(tv, ct2) , ctx)
-                            )))
-                    | RRho(tv, t2, soi) => 
-                        tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                        withLocalBinder ctx tv CUniverse (fn ctx => 
-                        checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
-                                Success(CRho(tv, ct2) , ctx)
-                            )))
-                    | RPairOfQuotes((ql, qr)) => 
-                       addNewMetaVar ctx tt [ql, qr]
-                    | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
-                     ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE
-                in res
+                            ) ltsl) >>= (fn (l, ctx) => Success(CProd l, ctx)))
+                        | RLazyProd  (ltsl, sepl) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
+                                checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
+                                Success ((l, ct), ctx)
+                                )
+                            ) ltsl) >>= (fn (l, ctx) => Success(CLazyProd l, ctx)))
+                        | RSum(ltsl, sepl) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
+                                checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
+                                Success ((l, ct), ctx)
+                                )
+                            ) ltsl) >>= (fn (l, ctx) => Success(CSum l, ctx)))
+                        (* | RFunc(t1, t2, soi) => 
+                            tryTypeUnify ctx e CUniverse tt >> (
+                        checkType ctx t1 CUniverse >>= (fn ct1 => 
+                            checkType ctx t2 CUniverse >>= (fn ct2 => 
+                                Success(CFunc(ct1, ct2) )
+                            )
+                        )) *)
+                        | RTypeInst(t1, t2, soi) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                                checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
+                                    checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
+                                        Success(CTypeInst(ct1, ct2) , ctx)
+                                    )
+                                ))
+                        | RForall(tv, t2, soi) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            withLocalBinder ctx tv CUniverse (fn ctx => 
+                            checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
+                                    Success(CForall(tv, ct2) , ctx)
+                                )))
+                        | RExists(tv, t2, soi) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            withLocalBinder ctx tv CUniverse (fn ctx => 
+                            checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
+                                    Success(CExists(tv, ct2) , ctx)
+                                )))
+                        | RRho(tv, t2, soi) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            withLocalBinder ctx tv CUniverse (fn ctx => 
+                            checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
+                                    Success(CRho(tv, ct2) , ctx)
+                                )))
+                        | RPairOfQuotes((ql, qr)) => 
+                        addNewMetaVar ctx tt [ql, qr]
+                        | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
+                        ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE
+                    )
+                    val res' = Errors.enrichErrWhenChecking e ttUnnorm res
+                in res'
                 end 
         ))
                     (* handle TypeCheckingFailure s =>
@@ -946,16 +961,20 @@ infix 5 <?>
                 (
 
 
-                    if DEBUG then DebugPrint.p ("DEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
+                    if DEBUG then DebugPrint.p ("DEBUG952 " ^ PrettyPrint.show_typecheckingRSig s ^
                     " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
                     (* DebugPrint.p ("TCSig r="  ^ Int.toString (length s) ^   " acc=" ^ Int.toString (length acc) ^
                     "\nDEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
                     "\n"); *)
+                    (* DebugPrint.p "TCSig..."; *)
 
                     case s of
                     [] => 
                 resolveAllMetaVarsInCSig ctx acc >>= (fn acc => 
+                (
+                    (* DebugPrint.p "OK"; *)
                     Success(acc, ctx)
+                    )
                 )
                     (* normalize should not change the set of free variables *)
                 (* | RTypeMacro (n, t)::ss => 

@@ -8,7 +8,7 @@ struct
                     (* * (int * string) option code and code description uri *)
                     * string (* brief message *)
                     * string option (* additional message *)
-                    * (UTF8String.t * string) list (* related information *)
+                    * (UTF8String.t (* loc *) * string (* message *)) list (* related information *)
 
     type errlist = staticerror list
 

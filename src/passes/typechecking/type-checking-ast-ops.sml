@@ -41,42 +41,47 @@ infix 5 =/=
     fun freeTCVar (t : CType) : StructureName.t list = 
     let
         fun remove v l = List.filter (fn t => t~<> [v]) l
-    in
-        case t of
-            CVar (t, r) => [t]
-            | CProd l => (
-                let fun col l = case l of 
-                                [] => []
-                                | (l1,t1)::tl => freeTCVar t1 @ remove l1 (col tl)
-                in col l end
-            )
-            | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
-            | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
-            | CPiType (t1,evop, t2, p) => 
-            freeTCVar t1 @ 
-                (case evop of 
-                    NONE => freeTCVar t2
-                    | SOME(ev) => List.filter (fn t => t ~<> [ev]) (freeTCVar t2)
+        (* val _ = DebugPrint.p "computing freetcvar" *)
+        val res = 
+            case t of
+                CVar (t, r) => [t]
+                | CProd l => (
+                    let fun col l = case l of 
+                                    [] => []
+                                    | (l1,t1)::tl => freeTCVar t1 @ remove l1 (col tl)
+                    in col l end
                 )
-            | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
-            | CForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
-            | CExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
-            | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
-            | CUnitType => []
-            | CNullType => []
-            | CBuiltinType(b) => []
-            | CUniverse => []
-            | CLam(ev, eb, _) => List.filter (fn t => t ~<> [ev]) (freeTCVar eb)
-            | CLetIn _ => [] (* TODO: *)
-            | CFfiCCall _ => [] (* TODO !!! *)
-            | CBuiltinFunc (f) => []
-            | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
-            | CIntConstant _ => []
-            | CUnitExpr => []
-            | CBoolConstant _ => []
-            | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
-            | CMetaVar(v) => [v]
-            | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
+                | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
+                | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
+                | CPiType (t1,evop, t2, p) => 
+                freeTCVar t1 @ 
+                    (case evop of 
+                        NONE => freeTCVar t2
+                        | SOME(ev) => List.filter (fn t => t ~<> [ev]) (freeTCVar t2)
+                    )
+                | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
+                | CForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CUnitType => []
+                | CNullType => []
+                | CBuiltinType(b) => []
+                | CUniverse => []
+                | CLam(ev, eb, _) => List.filter (fn t => t ~<> [ev]) (freeTCVar eb)
+                | CLetIn _ => [] (* TODO: *)
+                | CFfiCCall _ => [] (* TODO !!! *)
+                | CBuiltinFunc (f) => []
+                | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
+                | CIntConstant _ => []
+                | CUnitExpr => []
+                | CBoolConstant _ => []
+                | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
+                | CMetaVar(v) => [v]
+                | CProj(e1, lbl, idx, u) => freeTCVar e1
+                | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
+        (* val _ = DebugPrint.p "computed freetcvar" *)
+    in
+        res
     end
 
 
@@ -306,6 +311,7 @@ infix 5 =/=
                     if [tv] ~~~= x (* do not substitute when the bound variable is the same as substitution *)
                     then f (tv, spine')
                     else f (tv, substTypeInSpine tS x spine')
+            (* val _ = DebugPrint.p "SUBST..." *)
         in 
             case spine of 
                 [] => []
