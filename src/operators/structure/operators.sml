@@ -16,6 +16,10 @@ struct
 
   fun eqOpUid ((Operator(_, _, _,_, id1)) : operator) (Operator(_, _, _,_, id2) : operator) = id1 = id2
 
+  fun eqOpName ((Operator(pred1, fixity1, assoc1, compTypes1, id1)) : operator) 
+  (Operator(pred2,fixity2, assoc2, compTypes2, id2) : operator) = 
+    pred1 = pred2 andalso fixity1 = fixity2 andalso assoc1 = assoc2 andalso compTypes1 = compTypes2
+
   fun ~=** (op1, op2) = eqOpUid op1 op2
 
 

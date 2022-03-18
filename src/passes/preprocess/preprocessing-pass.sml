@@ -75,12 +75,22 @@ structure PreprocessingPass = struct
 
 
     fun insertIntoCurContextOp((curSName,curV, ctx) : contextType) (oper : Operators.operator) : contextType =
-        (curSName, curV, ((curSName,curV, oper:: lookupCurrentContextForOpers (curSName, curV, ctx) )
+        (curSName, curV, ((curSName,curV, 
+        (* do not insert repetitive operators into the context  (currently by name)
+        TODO: do this in a principled manner 
+        *)
+        let 
+        val curOps =  lookupCurrentContextForOpers (curSName, curV, ctx)
+        in 
+            oper :: List.filter (fn x =>  not (Operators.eqOpName x oper)) curOps (* TODO: THIS is a name hack, NEED FIXING! *)
+        end
+            )
         :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
 
-    fun insertIntoCurContextOps((curSName,curV, ctx) : contextType) (opers : Operators.operator list) : contextType =
-        (curSName, curV, ((curSName,curV, opers@ lookupCurrentContextForOpers (curSName, curV, ctx))
-        :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
+    fun insertIntoCurContextOps(ctx  : contextType) (opers : Operators.operator list) : contextType =
+    foldr (fn (oper, acc) => insertIntoCurContextOp acc oper ) ctx opers
+        (* (curSName, curV, ((curSName,curV, opers@ lookupCurrentContextForOpers (curSName, curV, ctx))
+        :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx))) *)
 
     (* TODO: currently reexport only reexport the top level operators*)
     fun getReExportDecls(reExportName : StructureName.t ) (ctx as (curSName, v, snamevopl) : contextType) :  
