@@ -130,11 +130,15 @@ infix 5 <?>
         applyContextTo ctx (substituteTypeInCSignature) s *)
 
 
-    fun lookupLabel ( ctx : (Label * 'a) list) (l : Label) : 'a witherrsoption = 
+    (* index begins with zero *)
+    fun lookupLabel ( ctx : (Label * 'a) list) (l : Label) : (int * 'a) witherrsoption = 
+        let fun go i ctx = 
         case ctx of 
             [] =>  genSingletonError l ("标签`" ^ UTF8String.toString l ^ "`未找到") NONE
             (* raise TypeCheckingFailure ("label " ^ UTF8String.toString l ^ " not found in prod type") *)
-            | (n1, t1)::cs => if UTF8String.semanticEqual n1 l then Success t1 else lookupLabel cs l
+            | (n1, t1)::cs => if UTF8String.semanticEqual n1 l then Success (i, t1) else go (i+1) ctx
+        in go 0 ctx
+        end
 
       fun lookupLabel3 ( ctx : (Label * EVar *RType) list) (l : Label) : RType witherrsoption = 
         case ctx of 
@@ -326,12 +330,30 @@ infix 5 <?>
                     | RUnitExpr(soi) => Success ((CUnitExpr, CUnitType), ctx)
                     | RProj(e, l, soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
                     weakHeadNormalizeType e ctx tt >>= (fn ntt => case ntt of 
-                            (CProd ls) => fmap (fn x => ((CProj(ce, l, CTypeAnn(CProd ls)),x), ctx)) (lookupLabel ls l)
+                            (CProd ls) => 
+                                lookupLabel ls l >>= (fn (idx, _) => 
+                                    let fun go curIdx acc = 
+                                            (case acc of 
+                                                [] => raise Fail "tcp338 lookup should not return an invalid index"
+                                                | ((l1, t1)::tl) => 
+                                                    if idx = curIdx
+                                                    then t1
+                                                    else 
+                                                        (case substTypeInCExpr (CProj(ce, l1, curIdx, CTypeAnnNotAvailable)) [l1] (CProd tl)
+                                                            of CProd tl' => go (curIdx+1) (tl')
+                                                            | _ => raise Fail "tcp344: subst should also return prod")
+                                            )
+                                        val targetType = go 0 ls
+                                    in 
+                                        Success((CProj(ce, l, idx, CTypeAnnNotAvailable), targetType), ctx)
+                                    end
+                                )
+
                             | _ => Errors.attemptToProjectNonProd e (tt) ctx
                     ))
                     | RLazyProj(e, l, soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
                     weakHeadNormalizeType e ctx tt >>= (fn ntt => case ntt of 
-                            ( CLazyProd ls) => fmap (fn x => ((CLazyProj(ce, l, CTypeAnn(CLazyProd ls)),x), ctx)) (lookupLabel ls l)
+                            ( CLazyProd ls) => fmap (fn (idx,x) => ((CLazyProj(ce, l, CTypeAnn(CLazyProd ls)),x), ctx)) (lookupLabel ls l)
                             | _ => Errors.attemptToProjectNonLazyProd e (tt) ctx
                     ))
                     | RIfThenElse(e, tcase, fcase, soi)=> checkType ctx e (CBuiltinType BIBool) >>= (fn (ce, ctx) => 
@@ -596,10 +618,17 @@ infix 5 <?>
                         CProd ls => if List.length l <> List.length ls
                                     then Errors.prodTupleLengthMismatch e (tt) ctx
                                     else 
-                                    foldMapCtx ctx (fn ((elem, (label,tp)), ctx) => 
-                                        checkType ctx elem tp
-                                    ) (ListPair.zipEq (l, ls)) >>= (fn (checkedElems, ctx) => 
-                                    Success(CTuple ( checkedElems, CTypeAnn((CProd ls))), ctx))
+                                    let fun go (l,ls) ctx = case (l, ls) of 
+                                            ([],[]) => Success([], ctx)
+                                            | ((elem::es), ((label,tp) :: tpl)) => 
+                                                checkType ctx e tp >>= (fn (ce, ctx) => 
+                                                    go (es, substTypeInSpine ce [label] tpl) ctx >>= (fn (ces, ctx) => 
+                                                        Success((ce::ces), ctx)
+                                                    )
+                                                )
+                                            | _ => raise Fail "tcp629: should be the same length"
+                                    in go (l, ls) ctx >>= (fn (ce, ctx) => Success(CTuple(ce, CTypeAnnNotAvailable), ctx))
+                                    end
                         | _ => Errors.expectedProdType e (tt) ctx
                         )
                     | RLazyTuple (l, soi) => (case tt of 
@@ -613,8 +642,8 @@ infix 5 <?>
                         )
                     | RProj(e, l, soi) =>
                     synthesizeType ctx (RProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
-                        (CProj(ce, l, prodType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
-                        Success(CProj(ce, l, prodType), ctx))
+                        (CProj(ce, l, idx, prodType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
+                        Success(CProj(ce, l, idx, prodType), ctx))
                         | _ => raise Fail "tcp229")
                     | RLazyProj(e, l, soi) =>
                     synthesizeType ctx (RLazyProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
@@ -623,7 +652,7 @@ infix 5 <?>
                         | _ => raise Fail "tcp229")
 
                     | RInj (l, e, soi) => (case tt of
-                        CSum ls => (lookupLabel ls l) >>= (fn lookedupType => 
+                        CSum ls => (lookupLabel ls l) >>= (fn (idx,lookedupType) => 
                                 checkType ctx e lookedupType >>= (fn (checkedExpr, ctx) => 
                                     Success(CInj(l, checkedExpr, CTypeAnn((CSum ls))), ctx)
                                 ))

@@ -38,7 +38,7 @@ structure TypeCheckingAST = struct
                     | CUnitExpr
                     | CTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
-                    | CProj of CExpr * Label * CTypeAnn (* type is Prod *)
+                    | CProj of CExpr * Label * int (* index of the label *) * CTypeAnn (* type is Prod *)
                     | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
                     | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)

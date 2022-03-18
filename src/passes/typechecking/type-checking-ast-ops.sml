@@ -39,9 +39,17 @@ infix 5 =/=
 
 
     fun freeTCVar (t : CType) : StructureName.t list = 
+    let
+        fun remove v l = List.filter (fn t => t~<> [v]) l
+    in
         case t of
             CVar (t, r) => [t]
-            | CProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
+            | CProd l => (
+                let fun col l = case l of 
+                                [] => []
+                                | (l1,t1)::tl => freeTCVar t1 @ remove l1 (col tl)
+                in col l end
+            )
             | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
             | CPiType (t1,evop, t2, p) => 
@@ -69,6 +77,7 @@ infix 5 =/=
             | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
             | CMetaVar(v) => [v]
             | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
+    end
 
 
 
@@ -121,7 +130,7 @@ infix 5 =/=
                     | _ => Success(CMetaVar(name))
                 )
             )
-            | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CProd l =>  Success(t)
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
             (* | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 ) *)
@@ -233,9 +242,9 @@ infix 5 =/=
             | CTuple (l, u) => collectAll (map recur l) >>= (fn cl => 
                 Success(CTuple(cl, u))
             )
-            | CProj(e, l, u) => 
+            | CProj(e, l, idx, u) => 
                 recur e >>= (fn ce => 
-                    Success(CProj(ce, l, u))
+                    Success(CProj(ce, l, idx, u))
                 )
             | CFix(ev, eb, u) => 
                 recur eb >>= (fn ceb => 
@@ -285,58 +294,76 @@ infix 5 =/=
              | CImport _ => Success(d)
         ) s)
         end
-
+    and substTypeInSpine (tS : CType) (x : StructureName.t) (spine : (UTF8String.t * CType) list) = 
+        let 
+            fun captureAvoid f (tv : UTF8String.t) spine' = 
+                    if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
+                    then let val tv' = StructureName.binderName()
+                                        in f (tv', substTypeInSpine tS x 
+                                            (substTypeInSpine (CVar([tv'], CVTBinder)) [tv] spine')) 
+                                            end
+                    else  (* No capture, regular *)
+                    if [tv] ~~~= x (* do not substitute when the bound variable is the same as substitution *)
+                    then f (tv, spine')
+                    else f (tv, substTypeInSpine tS x spine')
+        in 
+            case spine of 
+                [] => []
+                | (l1, t1)::tl => captureAvoid (fn (l1', tl') => ((l1', substTypeInCExpr tS x t1):: tl')) l1 (tl)
+        end
     and substTypeInCExpr (tS : CType) (x : StructureName.t) (e : CType) = 
-    let fun captureAvoid f (tv : UTF8String.t) t2 = 
-            if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
-             then let val tv' = StructureName.binderName()
-                                in f (tv', substTypeInCExpr tS x 
-                                    (substTypeInCExpr (CVar([tv'], CVTBinder)) [tv] t2)) 
+        let 
+            fun captureAvoid f (tv : UTF8String.t) t2 = 
+                    if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
+                    then let val tv' = StructureName.binderName()
+                                        in f (tv', substTypeInCExpr tS x 
+                                            (substTypeInCExpr (CVar([tv'], CVTBinder)) [tv] t2)) 
+                                            end
+                    else  (* No capture, regular *)
+                    if [tv] ~~~= x (* do not substitute when the bound variable is the same as substitution *)
+                    then f (tv, t2)
+                    else f (tv, substTypeInCExpr tS x t2)
+
+            val recur = substTypeInCExpr tS x
+            fun substTAnn ann = case ann of
+                CTypeAnn t => CTypeAnn (substTypeInCExpr tS x t)
+                | _ => ann
+        in
+            case e of
+                CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
+                | CMetaVar(name) => if name ~~~=x then tS else e
+                | CProd l => CProd (substTypeInSpine tS x l)
+                | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
+                | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
+                (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
+                | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+                | CPiType(t1, evop,t2, p) => (case evop of 
+                        NONE => CPiType(recur t1, NONE, recur t2, p)
+                        | SOME(ev) => let val t1' = recur t1
+                                    in captureAvoid (fn (ev', t2') => CPiType(t1', SOME ev', t2', p)) ev t2
                                     end
-            else  (* No capture, regular *)
-            if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
-            then f (tv, t2)
-            else f (tv, substTypeInCExpr tS x t2)
-        val recur = substTypeInCExpr tS x
-        fun substTAnn ann = case ann of
-            CTypeAnn t => CTypeAnn (substTypeInCExpr tS x t)
-            | _ => ann
-    in
-        case e of
-              CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
-            | CMetaVar(name) => if name ~~~=x then tS else e
-            | CProd l => CProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
-            | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
-            | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
-            (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
-            | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
-            | CPiType(t1, evop,t2, p) => (case evop of 
-                    NONE => CPiType(recur t1, NONE, recur t2, p)
-                    | SOME(ev) => let val t1' = recur t1
-                                  in captureAvoid (fn (ev', t2') => CPiType(t1', SOME ev', t2', p)) ev t2
-                                  end
-                )
-            | CSigmaType(t1, evop,t2) => (case evop of 
-                    NONE => CSigmaType(recur t1, NONE, recur t2)
-                    | SOME(ev) => let val t1' = recur t1
-                                  in captureAvoid (fn (ev', t2') => CSigmaType(t1', SOME ev', t2')) ev t2
-                                  end
-                )
-            | CForall (tv,t2) => captureAvoid CForall tv t2
-            | CExists (tv,t2) => captureAvoid CExists tv t2
-            | CRho (tv,t2) => captureAvoid CRho tv t2
-            | CUnitType => CUnitType
-            | CNullType => CNullType
-            | CBuiltinType(b) => CBuiltinType(b)
-            | CUniverse => CUniverse
-            | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
-            | CLam(ev, e2, u) => captureAvoid 
-                (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
-            | CLetIn _ => e (* TODO : do it *)
-    | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
-    ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
-    ^ " for " ^ StructureName.toStringPlain x)
-    end
+                    )
+                | CSigmaType(t1, evop,t2) => (case evop of 
+                        NONE => CSigmaType(recur t1, NONE, recur t2)
+                        | SOME(ev) => let val t1' = recur t1
+                                    in captureAvoid (fn (ev', t2') => CSigmaType(t1', SOME ev', t2')) ev t2
+                                    end
+                    )
+                | CForall (tv,t2) => captureAvoid CForall tv t2
+                | CExists (tv,t2) => captureAvoid CExists tv t2
+                | CRho (tv,t2) => captureAvoid CRho tv t2
+                | CUnitType => CUnitType
+                | CNullType => CNullType
+                | CBuiltinType(b) => CBuiltinType(b)
+                | CUniverse => CUniverse
+                | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
+                | CLam(ev, e2, u) => captureAvoid 
+                    (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
+                | CLetIn _ => e (* TODO : do it *)
+        | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
+        ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
+        ^ " for " ^ StructureName.toStringPlain x)
+        end
     and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
     raise Fail "not implemented136"
     (* !!! always capture avoiding substitution *)
@@ -477,44 +504,4 @@ infix 5 =/=
                  CPiType(t1, _, t2, p) => 1 + countSpineTypeArgs t2 (* todo consider plicity *)
                 | _ => 0
             
-    (* fun rTypeToCType (ctx: context)(t : RType)  : CType = 
-    let 
-    val recur = rTypeToCType ctx
-    in
-        case t of
-              RVar t => (case findCtx ctx t of SOME(t', def, jt) => CVar(t', judgmentTypeToCVarType t' jt) | NONE => CVar(t, CVTBinder))
-            | RProd (l, soi) => CProd  (map (fn (l, t, soi) => (l, recur t)) l )
-            | RLazyProd (l, soi) => CLazyProd  (map (fn (l, t, soi) => (l, recur t)) l )
-            | RSum (l,soi) =>  CSum  (map (fn (l, t, soi) => (l, recur t)) l)
-            | RFunc (t1,t2, soi) => CFunc (recur t1, recur t2)
-            | RTypeInst (t1,t2, soi) => CTypeInst (recur t1, recur t2)
-            | RForall (tv,t2, soi) => CForall(tv, recur t2)
-            | RExists (tv,t2, soi) => CExists(tv, recur t2)
-            | RRho (tv,t2, soi) => CRho(tv, recur t2)
-            | RUnitType(soi) => CUnitType
-            | RNullType(soi)=> CNullType
-            | RBuiltinType(b, soi) => CBuiltinType(b)
-            | RUniverse(s) => CUniverse
-            | _ => raise Fail ("rTypeToCType not implemented for " ^ PrettyPrint.show_typecheckingRType t)
-    end *)
-
-(* 
-    fun cTypeToRType (t : CType)  : RType = 
-    let 
-    in
-        case t of
-              CVar t => RVar t
-            | CProd l => RProd  (map (fn (l, t) => (l, cTypeToRType t)) l)
-            | CLazyProd l => RLazyProd  (map (fn (l, t) => (l, cTypeToRType t)) l)
-            | CSum l =>  RSum  (map (fn (l, t) => (l, cTypeToRType t)) l)
-            | CFunc (t1,t2) => RFunc (cTypeToRType t1, cTypeToRType t2)
-            | CTypeInst (t1,t2) => RTypeInst (cTypeToRType t1, cTypeToRType t2)
-            | CForall (tv,t2) => RForall(tv, cTypeToRType t2)
-            | CExists (tv,t2) => RExists(tv, cTypeToRType t2)
-            | CRho (tv,t2) => RRho(tv, cTypeToRType t2)
-            | CUnitType => RUnitType
-            | CNullType => RNullType
-            | CBuiltinType(t) => RBuiltinType(t)
-            | CUniverse(s) => RUniverse(s)
-    end *)
 end

@@ -68,8 +68,8 @@ exception CPSInternalError
                             )
                     in go 0 [] end
                 )
-            | CProj(e, l, CTypeAnn(CProd ls)) => cpsTransformExpr ctx e (fn v 
-                        => CPSProj(CPSValueVar v, (klookupLabel ls l),(kcc cc)))
+            | CProj(e, l, idx, u ) => cpsTransformExpr ctx e (fn v 
+                        => CPSProj(CPSValueVar v, idx,(kcc cc)))
             | CLazyProj(e, l, CTypeAnn(CLazyProd ls)) => cpsTransformExpr ctx e (fn v 
                         => CPSProj(CPSValueVar v, (klookupLabel ls l),
                         (kcc (fn projected => 
