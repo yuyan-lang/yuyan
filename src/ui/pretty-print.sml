@@ -140,7 +140,7 @@ case x of
     " structure " ^ UTF8String.toString name ^ " = " ^ show_opast ebody
   | POpenStructure(name, soi) => "open " ^ show_opast name ^ "" 
   | PImportStructure(name, path, soi) => "import " ^ show_opast name ^ "" 
-  | PReExportStructure(name, soi) => "reexport " ^ show_opast name ^ "" 
+  | PReExportStructure(name, decls, soi) => "reexport " ^ show_opast name ^ "" 
   | PComment(ebody, soi) => "/* comment : -- */ "
   | PEmptyDecl => "/* empty */"
   end

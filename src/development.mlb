@@ -36,10 +36,10 @@ local
         util/yyon-util.sml
 
         operators/structure/operators.sml
+        passes/preprocess/structure-name.sml
         operators/structure/op-ast.sml
         operators/structure/operator-registry.sml
         
-        passes/preprocess/structure-name.sml
         util/list-search-util.sml
 
         passes/typechecking/type-checking-ast.sml

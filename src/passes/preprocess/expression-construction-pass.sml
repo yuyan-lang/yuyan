@@ -366,7 +366,7 @@ struct
                         in
                                 getStructureName(sname) >>= (fn sname => ROpenStructure(sname) ::: constructOpAST xs (ctx))
                         end
-                    | PReExportStructure(sname, soi) =>  (* open will be as if there is a local declaration with 
+                    | PReExportStructure(sname, decls, soi) =>  (* open will be as if there is a local declaration with 
                     the same name as the public members of the structure *)
                         (* ROpenStructure(sname) ::: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname))) *)
                         let 

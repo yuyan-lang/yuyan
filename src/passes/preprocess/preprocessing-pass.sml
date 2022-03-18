@@ -82,6 +82,21 @@ structure PreprocessingPass = struct
         (curSName, curV, ((curSName,curV, opers@ lookupCurrentContextForOpers (curSName, curV, ctx))
         :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
 
+    (* TODO: currently reexport only reexport the top level operators*)
+    fun getReExportDecls(reExportName : StructureName.t ) (ctx as (curSName, v, snamevopl) : contextType) :  
+            (Operators.operator list * (StructureName.t * Operators.operator list) list) =
+       let 
+            val allDirectReExports = (List.mapPartial (fn (s, v, opl) => case StructureName.checkRefersTo s reExportName curSName
+                of SOME cname => SOME(opl)
+                    | NONE => NONE ) snamevopl)
+            val allDirectOperators = List.concat allDirectReExports
+            val allIndirectStructures = List.mapPartial (fn (s, v, opl) => case StructureName.checkRefersToScope s reExportName curSName
+                of SOME newStrippedName => SOME(curSName @ newStrippedName, opl)
+                | NONE => NONE) snamevopl
+        in 
+         (allDirectOperators, allIndirectStructures)
+        end
+
     fun newContextAfterOpeningStructure(openName : StructureName.t ) (ctx as (curSName, v, snamevopl) : contextType) : contextType witherrsoption =
         let 
             val allDirectOpens = (List.mapPartial (fn (s, v, opl) => case StructureName.checkRefersTo s openName curSName
@@ -99,15 +114,6 @@ structure PreprocessingPass = struct
         then structureNameNotFoundError openName ctx
         else Success(curSName, curV, allIndirectStructures@newSNameOpL)
         end
-    
-
-
-
-    fun ::/ ((x,y), (xs,ys)) =(x :: xs, y :: ys)
-    infix 5 ::/
-
-
-
  
     fun parsePOperator (opd) =
     case opd of 
@@ -120,23 +126,34 @@ structure PreprocessingPass = struct
                                     " PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
                                 oper) end
         | _ => raise Fail "pp104"
-        
+    
     fun extractAllOperators (curSName : StructureName.t) (vis : bool) (ast : PreprocessingAST.t) : (structureName * bool * Operators.operator list) list = 
         (* current scoped *)
-        (curSName, vis, List.mapPartial  (fn (x, ei) => 
+        (curSName, vis, List.concat (List.mapPartial  (fn (x, ei) => 
                 (case x of 
-                     POpDeclaration(opName, assoc, pred, soi) => SOME(parsePOperator(x))
+                     POpDeclaration(opName, assoc, pred, soi) => SOME([parsePOperator(x)])
+                     | PReExportStructure (name, (opl, substructure), soi) => SOME(opl)
                     | _ => NONE
                 )
-        ) ast)::
+        ) ast))::
         (* sub structures *)
         (List.concat(List.mapPartial (fn (x, ei) => case x of 
             PStructure(vis, structureName, OpParsedDecl(l, qi), soi) => 
                 SOME (extractAllOperators (curSName@[structureName]) vis l)
+            | PReExportStructure (name, (opl, substructure), soi) => SOME(map (fn (name, opl) => (name, true, opl)) substructure)
             | _ => NONE
         ) ast))
 
 
+
+
+
+    fun ::/ ((x,y), (xs,ys)) =(x :: xs, y :: ys)
+    infix 5 ::/
+
+
+
+        
     fun configureAndConstructPreprocessingASTTopLevel
     (lookupImportPreprocessingAST : StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption)
     (notifyOpAST : OpAST.t -> 'a) 
@@ -274,11 +291,11 @@ structure PreprocessingPass = struct
                             if oper ~=** reexportStructureOp
                             then 
                                 getStructureOpAST l1 >>= (fn structureOpAST => 
-                            (* ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  *)
+                            ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName => 
                                 (* newContextAfterOpeningStructure structureName ctx >>= (fn newContext =>  *)
-                                        Success(PReExportStructure (structureOpAST, oper), ctx)
+                                        Success(PReExportStructure (structureOpAST, getReExportDecls structureName ctx, oper), ctx)
                                     (* ) *)
-                                (* ) *)
+                                )
                             )
                             else
                             raise Fail "pp95"

@@ -24,7 +24,9 @@ struct
                        | PStructure of bool * UTF8String.t  * OpAST(* bool is true if public *) 
                             * sourceOpInfo
                        | POpenStructure of OpAST   * sourceOpInfo
-                       | PReExportStructure of OpAST   * sourceOpInfo
+                       | PReExportStructure of OpAST  * (Operators.operator list * 
+                            (StructureName.t * Operators.operator list) list) * sourceOpInfo
+                            (* ^^ a list of relevant declarations (i.e. structure and op ) that are exported by this reexport *)
                        | PImportStructure of OpAST * FileResourceURI.t * sourceOpInfo
 
     and OpAST = OpAST of (operator * OpAST list )
