@@ -140,6 +140,7 @@ structure PreprocessingPass = struct
         (List.concat(List.mapPartial (fn (x, ei) => case x of 
             PStructure(vis, structureName, OpParsedDecl(l, qi), soi) => 
                 SOME (extractAllOperators (curSName@[structureName]) vis l)
+                (* ^^^ THIS IS VERY STRANGE, TODO: FIX*)
             | PReExportStructure (name, (opl, substructure), soi) => SOME(map (fn (name, opl) => (name, true, opl)) substructure)
             | _ => NONE
         ) ast))
