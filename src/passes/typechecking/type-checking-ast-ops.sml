@@ -374,6 +374,8 @@ infix 5 =/=
                     (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
                 | CLetIn _ => e (* TODO : do it *)
                 | CProj (e1, lbl,idx, u) => CProj (recur e1, lbl, idx, u)
+                | CTuple(e, u) => CTuple (map recur e, u)
+                | CFfiCCall(name, args) => CFfiCCall(name, map recur args)
         | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
         ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
         ^ " for " ^ StructureName.toStringPlain x)

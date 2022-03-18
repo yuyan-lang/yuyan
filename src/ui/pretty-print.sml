@@ -327,7 +327,7 @@ in case x of
                     | CBoolConstant b => "(" ^ Bool.toString b ^")"
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
-                    "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
+                    "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map se args) ^"⟩)"
                     | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f
                     | CSeqComp(e1, e2, t1, t2) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
                     | CUnitType => "1"

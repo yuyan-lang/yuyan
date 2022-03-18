@@ -839,14 +839,16 @@ infix 5 <?>
                         | RFfiCCall (e1, e2, soi) => (
                             case e1 of
                                 RStringLiteral (cfuncName, soi) => 
-                                    let fun elaborateArguments  (args : StructureName.t list ) : (CExpr * context) witherrsoption = 
-                                        fmap CFfiCCall(Success cfuncName =/= 
-                                        collectAll (map (fn a => fmap (#1) (lookupCtxForType ctx a)) args)) =/= Success ctx
+                                    let fun elaborateArguments  (args : RExpr list ) : (CExpr * context) witherrsoption = 
+                                        foldMapCtx ctx (fn (a, ctx) =>  (synthesizeType ctx a)) args >>= 
+                                        (fn (al, ctx) => 
+                                            Success(CFfiCCall(cfuncName, map (#1) al), ctx)
+                                        )
                                     in
                                                 (case e2 of 
-                                                    RVar v => (Success ([v])) >>= elaborateArguments
+                                                    RVar v => (Success ([RVar v])) >>= elaborateArguments
                                                     | RTuple (l, soi) => (collectAll (map (fn arg => case arg of 
-                                                        RVar v => Success (v)
+                                                        RVar v => Success (RVar v)
                                                         | _ => Errors.ccallArgumentsMustBeImmediate arg ctx
                                                         (* raise TypeCheckingFailure "ccall arguments must be immediate values" *)
                                                         ) l)) >>= elaborateArguments

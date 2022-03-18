@@ -47,7 +47,7 @@ exception CPSInternalError
                     )
                      )))
             | CUnitExpr => CPSUnit (kcc cc)
-            | CTuple (cs, CTypeAnn(CProd ls)) => (
+            | CTuple (cs, u) => (
                     let fun go i values = 
                         if i = List.length cs
                         then CPSTuple(values, kcc cc)
@@ -201,7 +201,7 @@ exception CPSInternalError
             | CFfiCCall (cFuncName, args) => 
                 foldr (fn (arg, acc) => 
                     (fn (prevArgs : cpsvalue list) => 
-                    cpsTransformExpr ctx (CVar (arg, CVTBinder)) (fn argv => 
+                    cpsTransformExpr ctx (arg) (fn argv => 
                             acc (prevArgs@[CPSValueVar argv])
                         )
                     )

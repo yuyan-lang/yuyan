@@ -58,7 +58,7 @@ structure TypeCheckingAST = struct
                     | CRealConstant of (int * int * int )
                     | CBoolConstant of bool
                     | CLetIn of CDeclaration list * CExpr * CTypeAnn (* Type is the result of the declaring expression *)
-                    | CFfiCCall of UTF8String.t * StructureName.t list
+                    | CFfiCCall of UTF8String.t * CExpr list
                     | CBuiltinFunc of BuiltinFunc
                     | CSeqComp of CExpr * CExpr * CTypeAnn * CTypeAnn (* type is the type of the second expression *)
                     (* types *)

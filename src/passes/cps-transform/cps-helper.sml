@@ -45,22 +45,22 @@ open CPSAst
          cc
 
      fun clams2 
-            (body : cpsvar * cpsvar * (cpsvar -> cpscomputation) -> cpscomputation)
+            (body : (cpsvar * cpsvar) * (cpsvar -> cpscomputation) -> cpscomputation)
          (cc : cpsvar -> cpscomputation) : cpscomputation = 
          clams 2 []
          (fn args => 
             case args of 
-                ([a1,a2], k) => body (a1,a2,k)
+                ([a1,a2], k) => body ((a1,a2),k)
                 | _ => raise Fail "ch44: args count mismatch"
          )
          cc
      fun clams3
-            (body : cpsvar * cpsvar * cpsvar * (cpsvar -> cpscomputation) -> cpscomputation)
+            (body : (cpsvar * cpsvar * cpsvar) * (cpsvar -> cpscomputation) -> cpscomputation)
          (cc : cpsvar -> cpscomputation) : cpscomputation = 
          clams 3 []
          (fn args => 
             case args of 
-                ([a1,a2, a3], k) => body (a1,a2, a3,k)
+                ([a1,a2, a3], k) => body ((a1,a2, a3),k)
                 | _ => raise Fail "ch44: args count mismatch"
          )
          cc
