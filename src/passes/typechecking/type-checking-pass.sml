@@ -288,6 +288,18 @@ infix 5 <?>
             
             and checkExprIsType (ctx : context) (e : RType) : (CType * context) witherrsoption = 
                 checkType ctx e CUniverse 
+            and checkSpineIsType (ctx : context) (e : (UTF8String.t * RType) list ) : ((UTF8String.t  * CType) list * context) witherrsoption = 
+                case e of 
+                    [] => Success([], ctx)
+                    | ((l,t) :: es) => 
+                        checkExprIsType ctx t >>= (fn (ce, ctx) => 
+                            withLocalBinder ctx l ce (fn ctx => 
+                                checkSpineIsType ctx es >>= (fn (cel, ctx) => 
+                                    Success((l,ce)::cel, ctx)
+                                )
+                            )
+                        )
+
             and checkExprOptionIsType (ctx : context) (e : RType option) (errReporting : RType) : (CType * context) witherrsoption = 
                 (case e of 
                         SOME t1 => checkType ctx t1 (CUniverse) 
@@ -517,11 +529,8 @@ infix 5 <?>
                                 )
                             )
                     | RProd(ltsl, sepl) => 
-                         (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
-                            checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
-                            Success ((l, ct), ctx)
-                            )
-                        ) ltsl) >>= (fn (l, ctx) => Success((CProd l, CUniverse), ctx))
+                        checkSpineIsType ctx (map (fn (l, t, soi) => (l, t)) ltsl)
+                         >>= (fn (l, ctx) => Success((CProd l, CUniverse), ctx))
                     | RLazyProd  (ltsl, sepl) => 
                          (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
                             checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
@@ -890,11 +899,8 @@ infix 5 <?>
                                 ))
                         | RProd(ltsl, sepl) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                            (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
-                                checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
-                                Success ((l, ct), ctx)
-                                )
-                            ) ltsl) >>= (fn (l, ctx) => Success(CProd l, ctx)))
+                            checkSpineIsType ctx (map (fn (l, t, soi) => (l, t)) ltsl)
+                             >>= (fn (l, ctx) => Success(CProd l, ctx)))
                         | RLazyProd  (ltsl, sepl) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                             (foldMapCtx ctx (fn ((l, t, soi), ctx) => 

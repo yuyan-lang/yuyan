@@ -307,10 +307,10 @@ in case x of
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
-                    | CProj (e, lbl, lblidx, t) => "(" ^ se e ^ cst t ^ "." ^ ss lbl ^ ")"
+                    | CProj (e, lbl, lblidx, t) => "(PROJ " ^ se e ^ cst t ^ "." ^ ss lbl ^ ")"
                     | CLazyProj (e, lbl, t) => "(" ^ se e ^ cst t ^ ".(lazy) " ^ ss lbl ^ ")"
                     | CIfThenElse (e, tcase, fcase ) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
-                    | CInj  ( lbl,e, t) => "(" ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
+                    | CInj  ( lbl,e, t) => "(INJ " ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
                     | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (pat, e) => sp pat ^ " => " ^ se e) l) ^ "})" ^ cst t
                     | CLam (x, e, t) => "(λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t
                     | CApp (e1, e2, t)=> "ap("^ se e1 ^ cst t^ ", "^ se e2 ^")"
@@ -331,10 +331,10 @@ in case x of
                     | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f
                     | CSeqComp(e1, e2, t1, t2) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
                     | CUnitType => "1"
-                    | CProd l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | CLazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CProd l => "(PROD " ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CLazyProd l => "(LAZY " ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | CNullType => "0"
-                    | CSum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CSum l =>  "(SUM " ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     (* | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" *)
                     | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
                     | CForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 

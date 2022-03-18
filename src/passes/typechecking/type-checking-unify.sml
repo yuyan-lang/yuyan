@@ -30,6 +30,7 @@ infix 4 ~~~=
                 | (SOME tv, NONE ) => unifyBinding tv t2 (uniqueName()) t2
                 | (NONE, NONE) => unifyBinding (uniqueName()) t2 (uniqueName()) t2
 
+        (* sigma type equality: bindings must also be equal *)
         fun typeEquivListWithLabel (ctx : context) (l1 : (Label * CExpr)list) (l2 : (Label * CExpr) list) : (constraints * context) witherrsoption= 
         case (l1, l2) of
             ([], []) => Success([], ctx)
@@ -145,6 +146,13 @@ infix 4 ~~~=
                         | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
                         (* TODO: ^^^ should we care about the arguments ? *)
                         | (CUnitType, CUnitType) => Success([], ctx)
+                        | (CProj(t1, lbl1, idx1, u1), CProj(t2, lbl2, idx2, u2)) => 
+                            recur ctx t1 t2 >>= (fn 
+                                ([], ctx) => if idx1 = idx2 andalso lbl1 = lbl2 
+                                             then Success([], ctx)
+                                             else fail()
+                                | _ => raise Fail "ni151"
+                            )
                         | _ => fail())
                 else recur ctx t1 t2 >>= (fn (constraints, ctx) => 
                     case constraints of 

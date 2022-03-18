@@ -170,6 +170,13 @@ infix 5 =/=
             | CUnitExpr => Success(t)
             | CBoolConstant b => Success(t)
             | CIfThenElse _ => Success(t) (* TODO: *)
+            | CTuple  _ => Success(t)
+            | CProj (e, lbl, idx, u) => recur e >>= (fn 
+                CTuple (elems, u) => if idx >= length elems
+                                     then raise Fail "tcastops176: normalization error"
+                                     else recur (List.nth(elems, idx))
+                | ne => Success(CProj(ne, lbl, idx, u))
+            )
             | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -366,6 +373,7 @@ infix 5 =/=
                 | CLam(ev, e2, u) => captureAvoid 
                     (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
                 | CLetIn _ => e (* TODO : do it *)
+                | CProj (e1, lbl,idx, u) => CProj (recur e1, lbl, idx, u)
         | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
         ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
         ^ " for " ^ StructureName.toStringPlain x)
