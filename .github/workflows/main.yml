@@ -45,6 +45,15 @@ jobs:
       - name: make test
         run: make test
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: macos-release-package
+          path: |
+            ./yy
+            ./install.sh
+            ./runtime/libyyrtdebug.a
+            ./runtime/libyyrtopt.a
+
   # This workflow contains a single job called "build"
   build-ubuntu:
     # The type of runner that the job will run on
@@ -91,5 +100,14 @@ jobs:
       
       - name: make test
         run: make test
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-linux-release-package
+          path: |
+            ./yy
+            ./install.sh
+            ./runtime/libyyrtdebug.a
+            ./runtime/libyyrtopt.a
 
 
