@@ -73,6 +73,7 @@ infix 5 =/=
                 | CBuiltinFunc (f) => []
                 | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
                 | CIntConstant _ => []
+                | CStringLiteral _ => []
                 | CUnitExpr => []
                 | CBoolConstant _ => []
                 | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3

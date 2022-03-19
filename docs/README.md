@@ -14,14 +14,7 @@
 
 ## 语言特征
 
-本语言是简单类型的函数式编程豫言。支持的类型包括以下：
-- 函数类型(function types)
-- 总和类型(sum types)
-- 乘积类型(product types)
-- 递归类型(isorecursive types)
-- 通用类型(universal types)
-- 存在类型(existential types)
-
+本语言是一款实验性的函数式编程豫言。支持的依赖类型。
 
 ## 安装
 
@@ -48,6 +41,7 @@ yy -h
 ### 语言规范
 
 [语言规范](LanguageSpecification.md)
+
 [语法表](SyntaxSheet.md)
 
 ### 标准库及工具库文档 (API Docs)
