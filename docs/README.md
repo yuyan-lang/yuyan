@@ -4,6 +4,9 @@
 一款中文函数式编程语言
 
 [English Version](README_eng.md)（可能有些信息已过期）
+
+[网站](https://yuyan-lang.github.io/yuyan)
+
 ## 版本
 非常早期的预览版（0.1.0alpha)
 
