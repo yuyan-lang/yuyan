@@ -67,9 +67,10 @@ struct
     (* | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
     | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")" *)
     | SChar t => UTF8Char.toString t
+    | PairOfQuotes t => "(HOLE:)"
     end
     and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)
-    and show_mixedstrs(u : MixedStr.t list ) : string = "[" ^ String.concatWith ";\n" (map show_mixedstr u) ^ "]"
+    and show_mixedstrs(u : (MixedStr.t * MixedStr.endinginfo) list ) : string = "[" ^ String.concatWith ";\n" (map (fn (m, ei) => show_mixedstr m) u) ^ "]"
 
 fun show_parseopast x = let 
 open ParseAST in 
@@ -105,6 +106,7 @@ case x of
     | UnparsedExpr (l, qi) => "UnparsedExpr "^ show_mixedstr l
     | PlaceHolder => "PlaceHolder "
     | StringLiteral (s, qi) => "StringLiteral " ^ UTF8String.toString s
+    | ParsedPairOfQuotes (qi) => "PairOfQuotes"
 end
 
   fun show_opast (x : OpAST.OpAST) = let 
@@ -126,9 +128,10 @@ open OpAST
 open PreprocessingAST
 in 
 case x of 
-   PTypeMacro(tname, tbody, soi) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody
-  | PTermTypeJudgment(ename, tbody, soi) => UTF8String.toString ename ^ " : " ^ show_opast tbody
-  | PTermMacro(ename, ebody, soi) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody
+   (* PTypeMacro(tname, tbody, soi) => "type "^ UTF8String.toString tname ^ " = " ^ show_opast tbody *)
+   PTermTypeJudgment(ename, tbody, soi) => UTF8String.toString ename ^ " : " ^ show_opast tbody
+  | PConstructorDecl(ename, tbody, soi) => "cons "^ UTF8String.toString ename ^ " : " ^ show_opast tbody
+  (* | PTermMacro(ename, ebody, soi) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_opast ebody *)
   | PTermDefinition(ename, ebody, soi) => UTF8String.toString  ename ^ " = " ^ show_opast  ebody
   | POpDeclaration(opName, assoc, pred, soi) => "infix" ^ (case assoc of Operators.NoneAssoc => "n" | Operators.RightAssoc => "r" | Operators.LeftAssoc => "l"
   ) ^ " " ^ UTF8String.toString opName ^ Int.toString pred
@@ -137,14 +140,14 @@ case x of
     " structure " ^ UTF8String.toString name ^ " = " ^ show_opast ebody
   | POpenStructure(name, soi) => "open " ^ show_opast name ^ "" 
   | PImportStructure(name, path, soi) => "import " ^ show_opast name ^ "" 
-  | PReExportStructure(name, soi) => "reexport " ^ show_opast name ^ "" 
+  | PReExportStructure(name, decls, soi) => "reexport " ^ show_opast name ^ "" 
   | PComment(ebody, soi) => "/* comment : -- */ "
   | PEmptyDecl => "/* empty */"
   end
 and show_preprocessaast x = let
 open PreprocessingAST
 in 
-"{" ^ String.concatWith "\n" (map show_preprocessaastJ x) ^ "\n" ^ "}"
+"{" ^ String.concatWith "\n" (map (fn (x, ei) => show_preprocessaastJ x) x) ^ "\n" ^ "}"
   end
 
 fun show_typecheckingbuiltinfunc x = 
@@ -179,37 +182,20 @@ in case x of
     Leaf => ". /* END */\n"
     | StatementNode (stmt, next) => UTF8String.toString stmt ^ "\n -> "^ show_statementast next
     end *)
-fun show_typecheckingType x = let
-open TypeCheckingAST
-val st = show_typecheckingType
-val se = show_typecheckingRExpr
-val ss = UTF8String.toString
-val sst =StructureName.toStringPlain
-in case x of
- TypeVar t => sst t
-                    | UnitType => "1"
-                    | Prod l => "(" ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | LazyProd l => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | NullType => "0"
-                    | Sum l =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
-                    | Func (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")"
-                    | TypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
-                    | Forall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | Exists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | Rho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | BuiltinType (bi) => show_builtintype bi
-  
+fun show_typecheckingRType x = show_typecheckingRExpr x
+and show_plicity p s =
+let open TypeCheckingAST
+in case p of Explicit => s | Implicit => "{" ^ s ^ "}"
 end
-
 
 and show_typecheckingRExpr x = let
 open TypeCheckingAST
-val st = show_typecheckingType
+val st = show_typecheckingRType
 val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
 in case x of
-RExprVar v => sst v
+RVar v => sst v
                     | RUnitExpr(soi) => "⟨⟩"
                     | RTuple (l, soi) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
                     | RLazyTuple (l, soi) => "⟨(lazy>)"^ String.concatWith ", " (map se l) ^ "(<lazy)⟩"
@@ -217,11 +203,13 @@ RExprVar v => sst v
                     | RLazyProj (e, lbl, soi) => "(" ^ se e ^ ".(lazy) " ^ ss lbl ^ ")"
                     | RIfThenElse (e, tcase, fcase, soi) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
                     | RInj  ( lbl,e, soi) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
-                    | RCase (e, l, soi)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})"
-                    | RLam (x, e, soi) => "(λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | RCase (e, l, soi)=>"(case "^ se e ^ " of {"^ String.concatWith "; " (map (fn ( x, e) =>   se x ^ " => " ^ se e) l) ^ "})"
+                    | RLam (x, e, plicity, soi) => "(λ" ^ (show_plicity plicity (ss x)) ^ "." ^ se e ^ ")"
                     | RLamWithType (t, x, e, soi) => "(λ" ^ ss x ^ ":" ^ st t ^ "." ^ se e ^ ")"
-                    | RApp (e1, e2, soi)=> "ap("^ se e1 ^ ", "^ se e2 ^")"
-                    | RTAbs (x, e, soi) => "(Λ" ^ ss x ^ "." ^ se e ^ ")"
+                    | RApp (e1, e2, p, soi)=> 
+                        "ap("^ se e1 ^ ", "^ 
+                          show_plicity p (se e2)
+                          ^ ")"
                     | RTApp (e1, e2, soi)=> "("^ se e1 ^ " ["^ st e2 ^"])"
                     | RPack (t, e, soi)=> "pack("^ st t ^ ", "^ se e ^")"
                     | ROpen (e, (t, x, e2), soi)=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"
@@ -230,21 +218,40 @@ RExprVar v => sst v
                     | RFix (x, e, soi) => "(fix " ^ ss x ^ "." ^   se e ^")"
                     | RStringLiteral (l, soi) => "\"" ^ ss l ^"\""
                     | RIntConstant (l, soi) => "(" ^ Int.toString l ^")"
-                    | RRealConstant (l, soi) => "(" ^ Real.toString l ^")"
+                    | RRealConstant ((i1,i2,l), soi) => "(real " ^ Int.toString i1 ^ "." ^Int.toString i2 ^ "("^Int.toString l ^")" ^")"
                     | RBoolConstant (b, soi) => "(" ^ Bool.toString b ^")"
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
                     | RSeqComp(e1, e2, soi) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
+                    | RUnitType(soi) => "1"
+                    | RProd (l,soi) => "(" ^ String.concatWith "* " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RLazyProd (l,soi) => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RNullType(soi) => "0"
+                    | RSum (l,soi) =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    (* | RFunc (t1, t2,soi) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" *)
+                    | RTypeInst (t1, t2,soi) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    | RForall(t1, t2,soi) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RExists (t1, t2,soi) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RRho (t1, t2,soi) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | RBuiltinType (bi, s) => show_builtintype bi
+                    | RPiType(t, xop, t2, p, soi) => "(Π " 
+                    ^ show_plicity p ((case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      (case t of SOME t => st t | NONE => "_")) ^ " . " ^ st t2 ^ ")"
+                    | RSigmaType(t, xop, t2, soi) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ " . " ^ st t2 ^ ")"
+                    | RUniverse(soi) => "(Set)"
+                    | RPairOfQuotes(soi) => "(_)"
                 end
 
 and show_typecheckingRDecl x = let
 open TypeCheckingAST
 in case x of 
-    RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingType tbody
-  | RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingType tbody
-  | RTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingRExpr ebody
+    (* RTypeMacro(tname, tbody) => "type "^UTF8String.toString tname ^ " = " ^show_typecheckingRType tbody *)
+   RTermTypeJudgment(ename, tbody) => UTF8String.toString ename ^ " : " ^ show_typecheckingRType tbody
+  (* | RTermMacro(ename, ebody) => "#define " ^ UTF8String.toString ename ^ " = " ^ show_typecheckingRExpr ebody *)
   | RTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingRExpr  ebody
+  | RConstructorDecl(ename, etype) => "cons " ^ UTF8String.toString  ename ^ " : " ^ show_typecheckingRExpr  etype
   | RDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingRExpr ebody ^ "/* end eval */ " 
   | RStructure(v, name, ebody) => (if v then "public" else "private") ^
     " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingRSig ebody ^ "}"
@@ -257,24 +264,54 @@ and show_typecheckingRSig x = let
 in
           String.concatWith "。\n " (map show_typecheckingRDecl x) ^ "\n"
 end
-fun show_typecheckingCExpr x =  
-let
+fun show_typecheckingCType x = let
 open TypeCheckingAST
-val st = show_typecheckingType
-val se = show_typecheckingCExpr
+val st = show_typecheckingCType
+val se = show_typecheckingRExpr
 val ss = UTF8String.toString
 val sst =StructureName.toStringPlain
-fun cst t = "⟦" ^ st t ^ "⟧"
+in 
+  show_typecheckingCExpr x
+  
+end
+
+and show_typecheckingCExpr x =  
+let
+open TypeCheckingAST
+  fun show_ccconsinfo (cinfo : cconstructorinfo) = 
+    case cinfo of 
+      CConsInfoElementConstructor _ => "(el constructor)"
+      | CConsInfoTypeConstructor => "(type constructor)"
+
+  val st = show_typecheckingCType
+  fun sta ann = case ann of 
+    (CTypeAnn t) => show_typecheckingCType t
+    | CTypeAnnNotAvailable => "ann not available"
+  val se = show_typecheckingCExpr
+  val ss = UTF8String.toString
+  val sst =StructureName.toStringPlain
+  (* fun cst t = "⟦" ^ sta t ^ "⟧" *)
+  fun cst t = "⟦...⟧"
+  fun show_cpattern (p : CPattern) =
+    case p of 
+      CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ " ⋅ " ^ String.concatWith " " (map show_cpattern sp) ^ ")"
+      | CPatVar(s) => ss s
+  val sp = show_cpattern
 in case x of
-                      CExprVar v => sst v
+                      CVar (v, referred) => "" ^ sst v  ^ 
+                      (case referred of CVTDefinition e => "( >>>> " ^ se e ^  ")"
+                      | CVTBinder => ""
+                      | CVTConstructor i => ""
+                      | CVTBinderDefinition e => "( >>>> " ^ sst e ^  ")") 
+                    | CMetaVar v => "?" ^ sst v
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
-                    | CProj (e, lbl, t) => "(" ^ se e ^ cst t ^ "." ^ ss lbl ^ ")"
+                    | CProj (e, lbl, lblidx, t) => "(PROJ " ^ se e ^ cst t ^ "." ^ ss lbl ^ ")"
                     | CLazyProj (e, lbl, t) => "(" ^ se e ^ cst t ^ ".(lazy) " ^ ss lbl ^ ")"
                     | CIfThenElse (e, tcase, fcase ) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
-                    | CInj  ( lbl,e, t) => "(" ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
-                    | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (lbl, x, e) => ss lbl ^ ". " ^ ss x ^ " => " ^ se e) l) ^ "})" ^ cst t
+                    | CInj  ( lbl,e, t) => "(INJ " ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
+                    | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (pat, e) => sp pat ^ " => " ^ se e) l) ^ "})" ^ cst t
                     | CLam (x, e, t) => "(λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t
                     | CApp (e1, e2, t)=> "ap("^ se e1 ^ cst t^ ", "^ se e2 ^")"
                     | CTAbs (x, e, t) => "(Λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t 
@@ -286,19 +323,40 @@ in case x of
                     | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
                     | CStringLiteral l => "\"" ^ ss l ^"\""
                     | CIntConstant l => "(" ^ Int.toString l ^")"
-                    | CRealConstant l => "(" ^ Real.toString l ^")"
+                    | CRealConstant ((i1,i2,l)) => "(real " ^ Int.toString i1 ^ "." ^Int.toString i2 ^ "("^Int.toString l ^")" ^")"
                     | CBoolConstant b => "(" ^ Bool.toString b ^")"
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
-                    "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map sst args) ^"⟩)"
+                    "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map se args) ^"⟩)"
                     | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f
                     | CSeqComp(e1, e2, t1, t2) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
+                    | CUnitType => "1"
+                    | CProd l => "(PROD " ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CLazyProd l => "(LAZY " ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CNullType => "0"
+                    | CSum l =>  "(SUM " ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    (* | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" *)
+                    | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    | CForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CBuiltinType (bi) => show_builtintype bi
+                    | CPiType(t1, xop, t2, p ) => 
+                        (case xop of SOME x => "(Π " ^ 
+                        show_plicity p (ss x ^ " : " ^ st t1)
+                        ^ " . " ^ st t2 ^ ")"
+                        | NONE =>  "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" 
+                        )
+                    | CSigmaType(t, xop, t2 ) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
+                      st t ^ " . " ^ st t2 ^ ")"
+                    | CUniverse => "(Set)"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
 in case x of 
-    CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingType  tbody
-  | CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
+    (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
+   CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
+  | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ StructureName.toStringPlain  ename ^ " : " ^ show_typecheckingCExpr  etype
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
   end
@@ -314,68 +372,39 @@ fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.
 fun show_utf8char (UTF8Char.UTF8Char(c, loc)) = UTF8.implode [c] ^ (case loc of SOME loc => show_source_location(loc) | NONE => "[NOLOC]")
 fun show_utf8string x = String.concatWith "+" (map show_utf8char x)
 fun show_utf8strings x = String.concatWith ", " (map show_utf8string x)
-fun show_token (CompilationStructure.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str)
+fun show_token (CompilationStructure.Token(str,  _)) = UTF8String.toString str ^ " : " ^ show_source_range (UTF8String.getSourceRange str "pp366")
 fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
+fun show_typecheckingjt defop = 
+let open TypeCheckingAST
+in
+(case defop of JTDefinition(def) =>  " (定义) "
+        | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
+        | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
+        | JTLocalBinder => "（局部绑定）"
+        | JTPending => "（pending）"
+        | JTMetaVarPendingResolve _ => "(metavar pending resolve)"
+        | JTMetaVarResolved e => "(resolved metavar >>> " ^ show_typecheckingCExpr e ^ ")"
+        | JTLocalBinderWithDef e => "(局部绑定【带定义】 >>> " ^ StructureName.toStringPlain e ^ "）"
+    )
+  end
 fun show_typecheckingpassmappping x = let
 open TypeCheckingAST
 in
   case x of
-    TermTypeJ(e, t,_) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingType t
-    | TypeDef(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingType t
+    TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ " : " ^ show_typecheckingCType t  ^ show_typecheckingjt defop 
+    ^ (case defop of JTDefinition(def) => "\n" ^ StructureName.toStringPlain e ^ " = " ^ show_typecheckingCExpr def 
+                    | _ => "")
+    (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ show_typecheckingCType t *)
 end
 fun show_typecheckingpassctx x = let
 open TypeCheckingAST
 in
 case x of 
   Context(curSName, curVis, m) => (if curVis then "public " else "private ") ^
-  "structure " ^ StructureName.toStringPlain curSName ^ " {"  ^
+  "structure " ^ StructureName.toStringPlain curSName ^ " {\n"  ^
           String.concatWith ",\n " (map show_typecheckingpassmappping m) ^ "}\n"
 end
 
-fun show_pkvalue x =let
-open PersistentKMachine
-in
-      case x of
-        PKUnit => "()"
-        | PKVar i => Int.toString i
-        | PKTuple l => "[" ^ String.concatWith ", " (map show_pkvalue l) ^ "]"
-        | PKInj (l, i, kv) => "(" ^ UTF8String.toString l ^ ")" ^ Int.toString i ^ "⋅" ^ show_pkvalue kv
-        | PKFold e => "fold (" ^ show_pkvalue e ^ ")"
-        | PKAbs (i, c) => "(λ" ^ Int.toString i ^ "." ^ show_pkcomputation c ^ ")"
-        | PKComp (c) => "comp(" ^  show_pkcomputation c ^ ")"
-        | PKBuiltinValue (KbvBool t) => "builtin:bool(" ^  Bool.toString t  ^ ")"
-        | PKBuiltinValue (KbvReal t) => "builtin:real(" ^  Real.toString t  ^ ")"
-        | PKBuiltinValue (KbvInt t) => "builtin:int(" ^  Int.toString t  ^ ")"
-        | PKBuiltinValue (KbvString t) => "builtin:string(" ^  UTF8String.toString t  ^ ")"
-        | PKBuiltinValue (KbvFunc (l, f)) => "builtin:func(" ^  UTF8String.toString l  ^ ", ---)"
-
-end
-and show_pkcomputation x = let
-open PersistentKMachine
-in
-    case x of
-      PKProj(k, i) => show_pkcomputation k ^ " . " ^ Int.toString i
-      | PKCases(e, l) => "(case "  ^ show_pkcomputation e ^ " of {" ^ 
-      String.concatWith "; " (map (fn (i, c) => Int.toString i ^ " => " ^ show_pkcomputation c) l)
-      ^ "}"
-      | PKUnfold(e) => "unfold (" ^ show_pkcomputation e ^ ")"
-      | PKApp(c1, c2) => "ap (" ^ show_pkcomputation c1 ^ ", " ^ show_pkcomputation c2 ^ ")"
-      | PKAppWithEvaledFun((x,f), c2) => "apfun (" ^ show_pkvalue (PKAbs(x,f))  ^ ", " ^ show_pkcomputation c2 ^ ")"
-      | PKRet(v) => "ret (" ^ show_pkvalue v ^ ")"
-      | PKFix(id, c) => "(fix " ^ Int.toString id ^ "." ^ show_pkcomputation c ^ ")"
-      | _ => raise Fail "prettyprint327"
-      end
-
-
-   (* fun show_pkmachine x = let
-   open PersistentKMachine
-in 
-  case x of 
-    Run (l, c) => "RUN : "^ Int.toString (length l) ^ " : " ^ show_pkcomputation c
-    | NormalRet (l, c) => "RET : "^ Int.toString (length l) ^ " : " ^ show_pkvalue c
-    end
- 
-   *)
 
 
 fun show_cpsvar  v = 
@@ -412,7 +441,9 @@ case c of
               CPSUnit(k) => "()" ^ sk k
             | CPSProj(v, i, k) => "(" ^ sv v ^ " . " ^ si i ^ ")" ^ sk k
             | CPSCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
-    String.concatWith "; " (map (fn (i, c) => show_cpsvar i ^ " => " ^ sc c) l)
+    String.concatWith "; " (map (fn (index, arglist, c) => Int.toString index  ^ " ⋅ " ^
+    String.concatWith ","  (map show_cpsvar arglist)
+    ^ " => " ^ sc c) l)
     ^ "}"
             | CPSUnfold(v, k) => "unfold (" ^ sv v ^ ")" ^ sk k
             | CPSApp(a, (b, c)) => "ap("^ sv a ^ ",("^ sv b ^ ", " ^ sv c^"))"

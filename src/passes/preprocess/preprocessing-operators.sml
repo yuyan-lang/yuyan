@@ -1,17 +1,16 @@
 structure PreprocessingOperators =
 struct
     open Operators
+    open StaticErrorStructure
 
     val structureRefOp = Operators.parseOperatorStr "〇之〇" true false 710 []
 
-      (* type t = T *)
-    val typeMacroOp = Operators.parseOperatorStr "〇者〇也" false false 0 []
+      (* t = T *)
+    val termDefinitionOp = Operators.parseOperatorStr "〇者〇也" false false 0 []
     (* e : T *)
     val termTypeJudgmentOp = Operators.parseOperatorStr "以〇为〇" false false 0 []
-    (* #define e = E *)
-    val termMacroOp = Operators.parseOperatorStr "设〇为〇" false false 0 []
-    (* e = E *)
-    val termDefinitionOp = Operators.parseOperatorStr "施〇乃为〇" false false 0 []
+    (* cons e : T *)
+    val constructorDeclarationOp = Operators.parseOperatorStr "建〇为〇" false false 0 []
     (* infixl op 232 *)
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
     (* // *)
@@ -23,7 +22,8 @@ struct
     val importStructureOp = Operators.parseOperatorStr "览〇之书" false false 0 []
     val reexportStructureOp = Operators.parseOperatorStr "诵〇之书" false false 0 []
     
-    val declOps = [typeMacroOp, termTypeJudgmentOp, termMacroOp, termDefinitionOp, opDeclarationOp, commentOp,
+    val declOps = [termTypeJudgmentOp, constructorDeclarationOp, 
+     termDefinitionOp, opDeclarationOp, commentOp,
     publicStructureOp, privateStructureOp, openStructureOp, importStructureOp, reexportStructureOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t
@@ -33,23 +33,24 @@ struct
     infix 4 ~=
 
 
-    fun parseAssoc (s : UTF8String.t) : associativity = 
+    fun assocErr s = genSingletonError s "关联性(associativity)必须是【左，右，无】中的一种" NONE
+    fun parseAssoc (s : UTF8String.t) : associativity witherrsoption = 
         if length s <> 1 
-        then raise PreprocessMalformedAssoc s
+        then assocErr s
         else
         let val c = hd s
         in 
     (
         (* print ("parseAssoc " ^ UTF8String.toString s ^" \n"); *)
         if c ~= UTF8Char.fromString "左" NONE
-        then LeftAssoc
+        then Success(LeftAssoc)
         else 
         if c ~= UTF8Char.fromString "右" NONE
-        then RightAssoc
+        then Success(RightAssoc)
         else 
         if c ~= UTF8Char.fromString "无" NONE
-        then NoneAssoc
-        else raise PreprocessMalformedAssoc s)
+        then Success(NoneAssoc)
+        else assocErr s)
         end
 
   
@@ -72,16 +73,19 @@ struct
     val prodTypeOp  = Operators.parseOperatorStr "〇合〇" true false 380 []
     val lazyProdTypeOp  = Operators.parseOperatorStr "〇且合〇" true false 370 []
     val sumTypeOp  = Operators.parseOperatorStr "〇亦〇" true false 360 []
-    val typeInstantiationOp  = Operators.parseOperatorStr "〇启以〇" true true 355 []
+    (* val typeInstantiationOp  = Operators.parseOperatorStr "〇启以〇" true true 355 [] *)
     val functionTypeOp  = Operators.parseOperatorStr "化〇而〇" true false 350 []
     val recursiveTypeOp  = Operators.parseOperatorStr "复〇为〇" true false 345 [1]
-    val universalTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 340 [1]
-    val existentialTypeOp  = Operators.parseOperatorStr "有〇则〇" true false 320 [1]
+    val implicitPiTypeOp  = Operators.parseOperatorStr "承〇者〇而〇" true false 350 [3]
+    val implicitPiNameOnlyTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 350 []
+    val existentialTypeOp  = Operators.parseOperatorStr "存在〇而〇" true false 320 [1]
+    val piTypeOp  = Operators.parseOperatorStr "化〇者〇而〇" true false 350 [3] (* Π x : T. T *)
+    val sigmaTypeOp  = Operators.parseOperatorStr "有〇者〇还〇" true false 350 [3] (* Σ x : T. T *)
     (* val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 [] *)
 
     val typeOpBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
-    val unitExprOp = Operators.parseOperatorStr "元" true false 720 []
+    (* val unitExprOp = Operators.parseOperatorStr "元" true false 720 [] *)
     val lazyProjExprOp = Operators.parseOperatorStr "〇且中〇" true false 705 []
     val projExprOp = Operators.parseOperatorStr "〇中〇" true false 700 []
     val appExprOp = Operators.parseOperatorStr "〇于〇" true true 690 []
@@ -91,10 +95,10 @@ struct
     val foldExprOp = Operators.parseOperatorStr "卷〇" true false 660 []
     val unfoldExprOp = Operators.parseOperatorStr "舒〇" true false 650 []
     val ifThenElseExprOp = Operators.parseOperatorStr "若〇则〇否则〇" true false 645 []
-    val caseClauseOp = Operators.parseOperatorStr "曰〇则有〇而〇" true false 640 [3]
+    val caseClauseOp = Operators.parseOperatorStr "有〇则〇" false false 640 []
     val caseAlternativeOp = Operators.parseOperatorStr "〇或〇" true false 630 []
     val caseExprOp = Operators.parseOperatorStr "鉴〇而〇" true false 620 []
-    val typeAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 695 []
+    val implicitAppExprOp = Operators.parseOperatorStr "〇授以〇" true true 690 []
     val packExprOp = Operators.parseOperatorStr "入〇合〇" true false 560 []
     val unpackExprOp = Operators.parseOperatorStr "开〇则有〇者〇而〇" true false 540 [3,5]
     val sequentialCompositionOp = Operators.parseOperatorStr "〇；〇" true false 535 []
@@ -102,7 +106,7 @@ struct
     val lambdaExprOp = Operators.parseOperatorStr "会〇而〇" true false 520 [1]
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
-    val typeLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 500 [1]
+    val implicitLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 520 [1]
     val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" false false 525 []
     val inlineCommentOp = Operators.parseOperatorStr "〇注〇" false false 480 []
 
@@ -113,19 +117,25 @@ struct
         structureRefOp,
         (* unitTypeOp, nullTypeOp,  *)
         labeledTypeCompOp, prodTypeOp, sumTypeOp, functionTypeOp,
-        typeInstantiationOp,
-        universalTypeOp, existentialTypeOp, recursiveTypeOp
+        (* typeInstantiationOp, *)
+        (* universalTypeOp,  *)
+        existentialTypeOp, recursiveTypeOp
         , inlineCommentOp (* allow comment in types, but not important anyways, as both 
         will soon be merged together *)
         , lazyProdTypeOp
+        , piTypeOp, 
+        implicitPiTypeOp,
+        implicitPiNameOnlyTypeOp,
+        sigmaTypeOp
         ]
-    val allTypeAndExprOps = allTypeOps @ [ unitExprOp,
+    val allTypeAndExprOps = allTypeOps @ [ 
         lazyProjExprOp,
         projExprOp, appExprOp, pairExprOp,
         lazyPairExprOp, injExprOp, foldExprOp, unfoldExprOp, caseClauseOp, 
-        caseAlternativeOp, caseExprOp, ifThenElseExprOp, typeAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
+        caseAlternativeOp, caseExprOp, ifThenElseExprOp, implicitAppExprOp, packExprOp, unpackExprOp, lambdaExprOp,
+        implicitLambdaExprOp,
         ffiCCallOp,
-        lambdaExprWithTypeOp, fixExprOp, typeLambdaExprOp,
+        lambdaExprWithTypeOp, fixExprOp, 
         letinOp, sequentialCompositionOp
     ]
 end

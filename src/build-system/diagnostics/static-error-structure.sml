@@ -8,6 +8,7 @@ struct
                     (* * (int * string) option code and code description uri *)
                     * string (* brief message *)
                     * string option (* additional message *)
+                    * (UTF8String.t (* loc *) * string (* message *)) list (* related information *)
 
     type errlist = staticerror list
 
@@ -124,9 +125,13 @@ struct
         collectAll (map f l )
 
     fun genSingletonError(loc: UTF8String.t ) ( msghd : string ) (msgdetail : string option) : 'a witherrsoption =
-        DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail) ]
+        DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail, []) ]
     fun genSingletonErrorTuple(loc: UTF8String.t ) ( (msghd , msgdetail) : string * string option) : 'a witherrsoption =
-        DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail) ]
+        DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail, []) ]
+
+    fun genSingletonErrorWithRelatedInfo(loc: UTF8String.t ) ( msghd : string ) (msgdetail : string option)
+    (relatedInfo: (UTF8String.t * string) list) : 'a witherrsoption =
+        DErrors [ StaticError(loc, DiagnosticError, msghd, msgdetail, relatedInfo) ]
 
     (* approximates (,) *)
     fun =/= ((t1, t2) : 'a witherrsoption * 'b witherrsoption) : ('a * 'b) witherrsoption 
@@ -139,4 +144,7 @@ struct
     fun ===/= ((t1, t2, t3, t4) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption * 'd witherrsoption) : ('a * 'b * 'c * 'd) witherrsoption 
         = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' =>  t4 >>= (fn t4' =>
         Success (t1', t2', t3', t4')))) )
+    fun ====/= ((t1, t2, t3, t4, t5) : 'a witherrsoption * 'b witherrsoption* 'c witherrsoption * 'd witherrsoption * 'e witherrsoption) : ('a * 'b * 'c * 'd * 'e) witherrsoption 
+        = t1 >>= (fn t1' => t2 >>= (fn t2' => t3  >>= (fn t3' =>  t4 >>= (fn t4' => t5 >>= (fn t5' =>
+        Success (t1', t2', t3', t4', t5')))) ))
 end

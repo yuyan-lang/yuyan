@@ -16,6 +16,10 @@ struct
 
   fun eqOpUid ((Operator(_, _, _,_, id1)) : operator) (Operator(_, _, _,_, id2) : operator) = id1 = id2
 
+  fun eqOpName ((Operator(pred1, fixity1, assoc1, compTypes1, id1)) : operator) 
+  (Operator(pred2,fixity2, assoc2, compTypes2, id2) : operator) = 
+    pred1 = pred2 andalso fixity1 = fixity2 andalso assoc1 = assoc2 andalso compTypes1 = compTypes2
+
   fun ~=** (op1, op2) = eqOpUid op1 op2
 
 
@@ -102,26 +106,16 @@ struct
     fun getStringComponents (Operator(_, _, _, comps, _))  : UTF8String.t list = 
       List.mapPartial (fn x => case x of OpCompString s => SOME s | _ => NONE) comps
 
-    fun reconstructWithArgs(oper as Operator(_, fix, _, comps, _) : operator) (args : UTF8String.t list) = 
-    let val allComps = case fix of
-          Prefix =>  comps @[OpCompExpr] 
-          | Infix => OpCompExpr :: comps @[ OpCompExpr ]
-          | Postfix =>OpCompExpr :: comps
-          | Closed => comps
-    val _ = if length allComps <> length (getStringComponents oper) + length args  then 
-          raise Fail "Operator has an incorrect number of arguments"
-          else ()
-        val res = foldl (fn (elem , (rargs, acc))=>
-          case elem of 
-            OpCompString s => (rargs, acc@[s])
-            | _ => (case rargs of 
-                (h:: trargs) => (trargs, acc@[h])
-                | _ => raise Fail "impossilbe by length counting"
-              )
-        ) (args, []) allComps
-      in
-      List.concat (#2 res)
-      end 
-
-
+   fun getNumArguments (Operator(p, fix, assoc, comps, uid))=
+      let val middle = List.foldr (op+) 0 (map (fn x => 
+       case x of
+        OpCompExpr =>  1
+        | OpCompBinding =>  1
+        | OpCompString s => 0) comps) 
+      in case fix of
+          Prefix =>  middle + 1
+          | Infix => middle + 2
+          | Postfix => middle + 1
+          | Closed => middle
+        end
 end

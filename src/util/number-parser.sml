@@ -2,7 +2,7 @@
 structure NumberParser = struct
 
 
-    datatype parseResult = NPInt of int | NPReal of real
+    datatype parseResult = NPInt of int | NPReal of int * int * int (* integer part, decimal part and decimal part length *)
 
     exception NumberParserMalformed of UTF8String.t * string
 
@@ -63,12 +63,20 @@ structure NumberParser = struct
                  " decimal part is " ^ Int.toString decimalPart  ^ 
                  " finalValue is " ^ Real.toString finalValue ^ "\n") *)
 
-                in NPReal finalValue end
+                in NPReal (integralPart, decimalPart, length (List.nth(parts,1)) ) end
         end
     else NPInt (parseInteger s)
 
+    fun toRealValue((integralPart ,decimalPart ,decimalPartLength ): int * int * int): real = 
+    let
+                 val finalValue = Real.fromInt integralPart + Math.pow((0.1), 
+                            Real.fromInt ((decimalPartLength))) * Real.fromInt decimalPart
+    in finalValue end
 
     fun isNumber(s : UTF8String.t) : bool = 
         List.all (fn c => UTF8String.containsChar (UTF8String.fromString("零一二三四五六七八九点")) (c)) s
+        
+    fun isInteger(s : UTF8String.t) : bool = 
+        List.all (fn c => UTF8String.containsChar (UTF8String.fromString("零一二三四五六七八九")) (c)) s
     
 end

@@ -13,6 +13,7 @@ struct
                   (* | ParsedExpression of Operators.OpAST (* a parsed expression *)
                   | ParsedDeclaration of TypeCheckingAST.Signature  *)
                   | SChar of UTF8Char.t (* top level characters , every thing else is quoted *)
+                  | PairOfQuotes of quoteinfo
     type mixedstr = mixedchar list
     type t = mixedstr
 
@@ -46,28 +47,40 @@ struct
     (* | ParsedExpression e  => UTF8String.fromString "PARSED EXPR"
     | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
     | SChar t => [t]
+    | PairOfQuotes q => putQuoteAround [] q
     end
 
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
     fun toString(u : mixedstr) : string = UTF8String.toString (toUTF8String u)
+    fun toStringTopLevelOnly(u : mixedstr) : string = UTF8String.toString  (List.concat (map (
+            fn c => case c of 
+                UnparsedDeclaration (_, q) => putQuoteAround (UTF8String.fromString "。。。") q
+                | UnparsedExpression (_, q) =>  putQuoteAround (UTF8String.fromString "。。。") q
+                | _ => toUTF8StringChar c
+    ) u))
 
     fun  unmatchedParenthesisError(startChar : UTF8Char.t ) (scannedSoFar : mixedstr ) : 'a witherrsoption = 
         genSingletonError(startChar:: toUTF8String scannedSoFar) "未关闭的左括号" NONE
     fun  unmatchedStringLiteralError(startChar : UTF8Char.t ) (scannedSoFar : UTF8String.t ) : 'a witherrsoption = 
         genSingletonError((startChar::scannedSoFar)) "未关闭的左字符串引号" NONE
 
-    exception StringNotPlain of mixedstr
-    fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
-        case u of 
-            SChar s => s
-            |_ => raise StringNotPlain [u]
 
 (* only name and plain schar's are plain *)
-    fun toPlainUTF8String (u : mixedstr) : UTF8String.t = 
+    fun toPlainUTF8String (u : mixedstr) : UTF8String.t witherrsoption= 
+    let 
+        exception StringNotPlain of mixedstr
+        fun toPlainUTF8Char (u : mixedchar) : UTF8Char.t = 
+            case u of 
+                SChar s => s
+                |_ => (DebugPrint.p (toString [u]); raise StringNotPlain [u])
+    in
         case u of 
-            [] => []
-            | [Name (s, t)] => s
-            | _ => map toPlainUTF8Char u
+            [] => Success([])
+            | [Name (s, t)] => Success(s)
+            | _ => (Success(map toPlainUTF8Char u)
+            handle StringNotPlain err => genSingletonError (toUTF8String u) ("名称不可以包含结构性字符(expected plain names)`" ^ 
+                toString err ^ "`") NONE)
+    end
 
 
             
@@ -139,15 +152,16 @@ struct
         in res end
 
     fun processSingleQuoted( p : mixedstr)(q as (ql, qr) : quoteinfo) : mixedchar witherrsoption = 
-        if length p = 0 then genSingletonError ([ql, qr]) "名称不可为空" NONE
+        if length p = 0 then  Success(PairOfQuotes(q))
+        (* genSingletonError ([ql, qr]) "名称不可为空" NONE *)
         else
         Success(
             if containsCharTopLevel p SpecialChars.period
             then (* process as declaration *)
                 UnparsedDeclaration ((processDeclaration p), q)
             else if isPlainStr p
-                then  (if containsCharTopLevel p SpecialChars.leftAngledBracket
-                        orelse containsCharTopLevel p SpecialChars.rightAngledBracket
+                then  (if containsCharTopLevel p SpecialChars.leftDoubleQuote
+                        orelse containsCharTopLevel p SpecialChars.rightDoubleQuote
                         then UnparsedExpression(p , q)
                         else (* name *) Name ((unSChar p), q))
                 else (* expression *) UnparsedExpression(p, q)
@@ -182,10 +196,10 @@ struct
                         if  x ~= SpecialChars.leftSingleQuote orelse
                             x ~= SpecialChars.leftParenthesis
                         then scanSingleQuote startChar xs []  >>= (fn (rq, inQuote, rest) =>
-                                processSingleQuoted inQuote (x, rq) >>= (fn inSingleQuoteChar => 
-                                    scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
-                                ) >>/= ( (* continue scanning in case of failure *)
+                                (processSingleQuoted inQuote (x, rq) >>/= ( (* continue scanning in case of failure *)
                                     fn _ => scanSingleQuote startChar rest (sofar)  
+                                )) >>= (fn inSingleQuoteChar => 
+                                    scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
                                 )
                             )
                         else

@@ -1,39 +1,15 @@
 
 structure TypeCheckingASTOps = struct
 open TypeCheckingAST
+open TypeCheckingContext
 open StaticErrorStructure
+open TypeCheckingErrors
 infix 5 >>=
 infix 5 =/=
 
 
     fun getCurSName (Context(sName, _, _)) = sName
-
-    fun appendAbsoluteMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
-        case ctx of
-            Context(curSName, vis, l) => Context(curSName, vis, 
-            (case m of 
-                TermTypeJ(e, t, u) => TermTypeJ(e, t, u)
-                | TypeDef(tname, t, u) => TypeDef(tname, t, u)
-                ):: l
-            )
-
-   fun appendRelativeMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
-        case ctx of
-            Context(curSName, vis, l) => Context(curSName, vis, 
-            (case m of 
-                TermTypeJ(e, t, u) => TermTypeJ(curSName@e, t, u)
-                | TypeDef(tname, t, u) => TypeDef(curSName@tname, t, u)
-                ):: l
-            )
-
-    fun appendAbsoluteMappingsToCurrentContext (m : 'a gmapping list) (ctx : 'a gcontext) : 'a gcontext = 
-        foldl (fn (map, acc) => appendAbsoluteMappingToCurrentContext map acc) ctx m
-
-    fun appendRelativeMappingsToCurrentContext (m : 'a gmapping list) (ctx : 'a gcontext) : 'a gcontext = 
-        foldl (fn (map, acc) => appendRelativeMappingToCurrentContext map acc) ctx m
-
   
-
     fun ~<> (a, b) = not (StructureName.semanticEqual a b)
     infix 4 ~<>
     fun ~~= (a, b) = (UTF8String.semanticEqual a b)
@@ -41,20 +17,75 @@ infix 5 =/=
     fun ~~~= (a, b) = (StructureName.semanticEqual a b)
     infix 4 ~~~=
 
-    fun freeTVar (t : Type) : StructureName.t list = 
+    (* fun freeTVar (t : RType) : StructureName.t list = 
         case t of
-            TypeVar t => [t]
-            | Prod l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | LazyProd l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | Sum l => List.concat (map (fn (l, t) => freeTVar t) l)
-            | Func (t1,t2) => List.concat (map freeTVar [t1,t2])
-            | TypeInst (t1,t2) => List.concat (map freeTVar [t1,t2])
-            | Forall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | Exists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | Rho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
-            | UnitType => []
-            | NullType => []
-            | BuiltinType(b) => []
+              RVar t => [t]
+            | RProd (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
+            | RLazyProd (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
+            | RSum (l, soi) => List.concat (map (fn (l, t, soi) => freeTVar t) l)
+            (* | RFunc (t1,t2, soi) => List.concat (map freeTVar [t1,t2]) *)
+            (* | RFunc (t1,t2, soi) => List.concat (map freeTVar [t1,t2]) *)
+            | RTypeInst (t1,t2, soi) => List.concat (map freeTVar [t1,t2])
+            | RForall (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RExists (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RRho (tv,t2, soi) => List.filter (fn t => t ~<> [tv]) (freeTVar t2)
+            | RUnitType(s) => []
+            | RNullType(s) => []
+            | RBuiltinType(b) => []
+            | RUniverse(s) => []
+            | RLamWithType (t, ev, e, soi) => List.concat [freeTVar t, 
+            List.filter (fn t => t ~<> [ev]) (freeTVar e)]
+            | _ => raise Fail ("freeTVar " ^ PrettyPrint.show_typecheckingRType t) *)
+
+
+    fun freeTCVar (t : CType) : StructureName.t list = 
+    let
+        fun remove v l = List.filter (fn t => t~<> [v]) l
+        (* val _ = DebugPrint.p "computing freetcvar" *)
+        val res = 
+            case t of
+                CVar (t, r) => [t]
+                | CProd l => (
+                    let fun col l = case l of 
+                                    [] => []
+                                    | (l1,t1)::tl => freeTCVar t1 @ remove l1 (col tl)
+                    in col l end
+                )
+                | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
+                | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
+                | CPiType (t1,evop, t2, p) => 
+                freeTCVar t1 @ 
+                    (case evop of 
+                        NONE => freeTCVar t2
+                        | SOME(ev) => List.filter (fn t => t ~<> [ev]) (freeTCVar t2)
+                    )
+                | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
+                | CForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CUnitType => []
+                | CNullType => []
+                | CBuiltinType(b) => []
+                | CUniverse => []
+                | CLam(ev, eb, _) => List.filter (fn t => t ~<> [ev]) (freeTCVar eb)
+                | CLetIn _ => [] (* TODO: *)
+                | CFfiCCall _ => [] (* TODO !!! *)
+                | CBuiltinFunc (f) => []
+                | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
+                | CIntConstant _ => []
+                | CStringLiteral _ => []
+                | CUnitExpr => []
+                | CBoolConstant _ => []
+                | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
+                | CMetaVar(v) => [v]
+                | CProj(e1, lbl, idx, u) => freeTCVar e1
+                | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
+        (* val _ = DebugPrint.p "computed freetcvar" *)
+    in
+        res
+    end
+
+
 
     (* fun freeEVar (e : Expr) : StructureName.t list = 
         case e of
@@ -79,233 +110,415 @@ infix 5 =/=
             | Fix (ev, e)=> List.filter (fn ev' => ev' <> [ev]) (freeEVar e)
             | StringLiteral l => [] *)
 
-    fun uniqueName () = UTF8String.fromString (Int.toString (UID.next()))
 
-(* !!! always capture avoiding substitution *)
-    fun substTypeInType (tS : Type) (x : StructureName.t) (t : Type) = 
-    let fun captureAvoid f (tv : UTF8String.t) t2 = 
-            if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
-             then let val tv' = uniqueName()
-                                in f (tv', substTypeInType tS x 
-                                    (substTypeInType (TypeVar [tv']) [tv] t2)) 
-                                    end
-            else  (* No capture, regular *)
-            if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
-            then f (tv, t2)
-            else f (tv, substTypeInType tS x t2)
 
-    in
-        case t of
-            TypeVar t => if t ~~~=x then tS else TypeVar t
-            | Prod l => Prod  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
-            | LazyProd l => LazyProd  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
-            | Sum l =>  Sum  (map (fn (l, t) => (l, substTypeInType tS x t)) l)
-            | Func (t1,t2) => Func (substTypeInType tS x t1, substTypeInType tS x t2 )
-            | TypeInst (t1,t2) => TypeInst (substTypeInType tS x t1, substTypeInType tS x t2 )
-            | Forall (tv,t2) => captureAvoid Forall tv t2
-            | Exists (tv,t2) => captureAvoid Exists tv t2
-            | Rho (tv,t2) => captureAvoid Rho tv t2
-            | UnitType => UnitType
-            | NullType => NullType
-            | BuiltinType(b) => BuiltinType(b)
-    end
-    fun normalizeType (t : Type) : Type witherrsoption  = 
+    (* e is the current checking expression, for error reporting *)
+    (* todo : change to weak head normalization only *)
+    fun weakHeadNormalizeType (e : RExpr) (ctx : context) (t : CType) : CType witherrsoption  = 
     let 
+      fun dereferenceIfPossible (ctx : context)(t : CType) : CType option=
+        case t of 
+            CVar (name, CVTBinder) => NONE
+            | CVar(name, CVTDefinition(t')) => SOME(t')
+            | CVar(name, CVTConstructor cinfo) => NONE
+            | CVar(name, CVTBinderDefinition t') => SOME(CMetaVar(t'))
+            | _ => raise Fail "tcastops90"
+
+    val recur = weakHeadNormalizeType e ctx
     val res = 
         case t of
-            TypeVar t => Success(TypeVar t)
-            | Prod l =>  fmap Prod (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
-            | LazyProd l =>  fmap LazyProd (collectAll ((map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l)))
-            | Sum l =>  fmap Sum (collectAll (map (fn (l, t) => normalizeType t >>= (fn nt => Success(l, nt))) l))
-            | Func (t1,t2) => fmap Func (normalizeType t1 =/= normalizeType t2 )
-            | TypeInst (t1,t2) => normalizeType t1 >>= (fn nt1 => case nt1 of
-                Forall(tv, t1') => (normalizeType t2) >>= (fn nt2 => Success(substTypeInType nt2 ([tv]) t1'))
-                | _ => genSingletonError (raise Fail "not implemented") "期待通用类型(Expected Forall)" NONE
+            CVar v => (case dereferenceIfPossible ctx t of 
+                NONE => Success(CVar v)
+                | SOME(t') => recur t')
+            | CMetaVar(name) => ( lookupCtx ctx name >>= (fn (cname, tp, jtp) => 
+                case jtp of 
+                    JTMetaVarResolved t => recur (t)
+                    | _ => Success(CMetaVar(name))
+                )
             )
-            | Forall (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(Forall (tv, nt2) ))
-            | Exists (tv,t2) => normalizeType t2 >>=(fn nt2 =>  Success(Exists (tv, nt2) ))
-            | Rho (tv,t2) =>  normalizeType t2 >>=(fn nt2 =>  Success(Rho (tv, nt2) ))
-            | UnitType => Success(UnitType)
-            | NullType => Success(NullType)
-            | BuiltinType(b) => Success(BuiltinType(b))
-    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingType ^"\n") *)
+            | CProd l =>  Success(t)
+            | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
+            (* | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 ) *)
+            | CPiType (t1, hd, p, t2) => Success(CPiType(t1, hd, p, t2))
+            | CSigmaType (t1, hd, t2) => Success(t)
+            | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
+                CForall(tv, t1') => (recur t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
+                | _ => genSingletonError (reconstructFromRExpr e) ("期待通用类型(Expected Forall)，却得到了(got)：" ^
+                PrettyPrint.show_typecheckingCType nt1^ "（在检查类型"^ 
+                PrettyPrint.show_typecheckingCType t ^ "时）")
+                 (showctxSome ctx)
+            )
+            | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
+            | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
+            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            | CUnitType => Success(CUnitType)
+            | CNullType => Success(CNullType)
+            | CBuiltinType(b) => Success(CBuiltinType(b))
+            | CUniverse => Success(CUniverse)
+            | CLam(ev, e, u) => 
+            fmap CLam(==/=(Success ev, recur e, Success u))
+            | CApp(e1, e2, _) =>   
+                recur e1 >>= (fn ce1 => 
+                    case ce1 of
+                        CLam(cev, ce1body, _) => recur e2 >>= (fn ce2 => Success(substTypeInCExpr ce2 ([cev]) ce1body))
+                        | _ => (* maybe ce1 is a type constructor *) (Success t)
+                )
+            | CLetIn _ => Success(t)
+            | CStringLiteral _ => Success(t)
+            | CFfiCCall _ => Success(t)
+            | CBuiltinFunc _ => Success(t)
+            | CUnitExpr => Success(t)
+            | CBoolConstant b => Success(t)
+            | CIfThenElse _ => Success(t) (* TODO: *)
+            | CTuple  _ => Success(t)
+            | CProj (e, lbl, idx, u) => recur e >>= (fn 
+                CTuple (elems, u) => if idx >= length elems
+                                     then raise Fail "tcastops176: normalization error"
+                                     else recur (List.nth(elems, idx))
+                | ne => Success(CProj(ne, lbl, idx, u))
+            )
+            | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
+    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
         res
     end
 
-(* no capture as we're only interested in types *)
-    fun substTypeInRExpr (tS : Type) (x : StructureName.t) (e : RExpr) = 
-    let 
+(* reports an error if not all metavars are resolved *)
+    and resolveAllMetaVarsInCExpr  (ctx : context) ( t : CType) : CType witherrsoption = 
+        let 
+
+    val recur = resolveAllMetaVarsInCExpr ctx
+    val res = 
+        case t of
+            CVar v => Success(t)
+            | CMetaVar(name) => ( lookupCtx ctx name >>= (fn (cname, tp, jtp) => 
+                case jtp of 
+                    JTMetaVarResolved t => recur (t)
+                    | JTMetaVarPendingResolve s => TypeCheckingErrors.genericErrorStr s ctx "存在尚未赋值的元变量(Unresolved Metavariables)"
+                    | _ => raise Fail "tcast175: should be a metavar"
+                )
+            )
+            | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
+            | CPiType (t1, hd, t2, p) => recur t1 >>= (fn nt1 =>
+                                            recur t2 >>= (fn nt2 => 
+                                                Success(CPiType(nt1, hd, nt2, p))
+                                            )
+                                        ) 
+            | CSigmaType (t1, hd, t2) => recur t1 >>= (fn nt1 =>
+                                            recur t2 >>= (fn nt2 => 
+                                                Success(CSigmaType(nt1, hd, nt2))
+                                            )
+                                        ) 
+            | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
+                    (recur t2) >>= (fn nt2 =>
+                 Success(CTypeInst(nt1,nt2))))
+            | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
+            | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
+            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            | CUnitType => Success(CUnitType)
+            | CNullType => Success(CNullType)
+            | CBuiltinType(b) => Success(CBuiltinType(b))
+            | CUniverse => Success(CUniverse)
+            | CLam(ev, e, u) => 
+            fmap CLam(==/=(Success ev, recur e, Success u))
+            | CApp(e1, e2, u) =>   
+                recur e1 >>= (fn ce1 => 
+                         recur e2 >>= (fn ce2 => 
+                            Success(CApp(ce1, ce2, u))
+                         )
+                )
+            | CLetIn(dl, e, u) => 
+                resolveAllMetaVarsInCSig ctx dl >>= (fn cdl => 
+                    recur e >>= (fn ce => 
+                        Success(CLetIn(cdl, ce, u))
+                    )
+                )
+            | CStringLiteral _ => Success(t)
+            | CFfiCCall _ => Success(t)
+            | CBuiltinFunc _ => Success(t)
+            | CUnitExpr => Success(t)
+            | CBoolConstant b => Success(t)
+            | CRealConstant _ => Success(t)
+            | CIfThenElse(e1, e2, e3) => 
+
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        recur e3 >>= (fn ce3 => 
+                            Success(CIfThenElse(ce1, ce2, ce3))
+                        )
+                    )
+                )
+            | CIntConstant _ => Success(t)
+            | CTuple (l, u) => collectAll (map recur l) >>= (fn cl => 
+                Success(CTuple(cl, u))
+            )
+            | CProj(e, l, idx, u) => 
+                recur e >>= (fn ce => 
+                    Success(CProj(ce, l, idx, u))
+                )
+            | CFix(ev, eb, u) => 
+                recur eb >>= (fn ceb => 
+                    Success(CFix(ev, ceb, u))
+                )
+            | CCase((u, e), pel, u2) => 
+                recur e >>= (fn ce => 
+                    collectAll (map (fn (pat, eb) => 
+                        recur eb >>= (fn ceb => Success((pat, ceb)))
+                    ) pel) >>= (fn cl => 
+                        Success(CCase((u, ce), cl, u2))
+                    )
+                )
+            | CSeqComp(e1, e2, u1, u2) => 
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        Success(CSeqComp(ce1, ce2, u1, u2))
+                    )
+                )
+            | CPack(e1, e2, u) => 
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        Success(CPack(ce1, ce2, u))
+                    )
+                )
+            | _ => raise Fail ("resolveAllMetaVarsInCExpr not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
+    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
-        case e of
-            RExprVar v => RExprVar v
+        res
+    end
+
+
+    and resolveAllMetaVarsInCSig (ctx : context) ( s : CSignature) : CSignature witherrsoption = 
+        let fun rme e = resolveAllMetaVarsInCExpr ctx e
+        in
+        collectAll (map (fn d => 
+        case d of 
+            CTermDefinition(name, expr, tp) => rme expr >>= 
+                (fn cexpr => rme tp >>= 
+                    (fn ctp => Success(CTermDefinition(name, cexpr, ctp))))
+            | CDirectExpr( expr, tp) => rme expr >>= 
+                (fn cexpr => rme tp >>= 
+                    (fn ctp => Success(CDirectExpr(cexpr, ctp))))
+            | CConstructorDecl( name, tp, cinfo) => 
+                rme tp >>= 
+                    (fn ctp => Success(CConstructorDecl(name, ctp, cinfo)))
+             | CImport _ => Success(d)
+        ) s)
+        end
+    and substTypeInSpine (tS : CType) (x : StructureName.t) (spine : (UTF8String.t * CType) list) = 
+        let 
+            fun captureAvoid f (tv : UTF8String.t) spine' = 
+                    if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
+                    then let val tv' = StructureName.binderName()
+                                        in f (tv', substTypeInSpine tS x 
+                                            (substTypeInSpine (CVar([tv'], CVTBinder)) [tv] spine')) 
+                                            end
+                    else  (* No capture, regular *)
+                    if [tv] ~~~= x (* do not substitute when the bound variable is the same as substitution *)
+                    then f (tv, spine')
+                    else f (tv, substTypeInSpine tS x spine')
+            (* val _ = DebugPrint.p "SUBST..." *)
+        in 
+            case spine of 
+                [] => []
+                | (l1, t1)::tl => captureAvoid (fn (l1', tl') => ((l1', substTypeInCExpr tS x t1):: tl')) l1 (tl)
+        end
+    and substTypeInCExpr (tS : CType) (x : StructureName.t) (e : CType) = 
+        let 
+            fun captureAvoid f (tv : UTF8String.t) t2 = 
+                    if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
+                    then let val tv' = StructureName.binderName()
+                                        in f (tv', substTypeInCExpr tS x 
+                                            (substTypeInCExpr (CVar([tv'], CVTBinder)) [tv] t2)) 
+                                            end
+                    else  (* No capture, regular *)
+                    if [tv] ~~~= x (* do not substitute when the bound variable is the same as substitution *)
+                    then f (tv, t2)
+                    else f (tv, substTypeInCExpr tS x t2)
+
+            val recur = substTypeInCExpr tS x
+            fun substTAnn ann = case ann of
+                CTypeAnn t => CTypeAnn (substTypeInCExpr tS x t)
+                | _ => ann
+        in
+            case e of
+                CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
+                | CMetaVar(name) => if name ~~~=x then tS else e
+                | CProd l => CProd (substTypeInSpine tS x l)
+                | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
+                | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
+                (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
+                | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+                | CPiType(t1, evop,t2, p) => (case evop of 
+                        NONE => CPiType(recur t1, NONE, recur t2, p)
+                        | SOME(ev) => let val t1' = recur t1
+                                    in captureAvoid (fn (ev', t2') => CPiType(t1', SOME ev', t2', p)) ev t2
+                                    end
+                    )
+                | CSigmaType(t1, evop,t2) => (case evop of 
+                        NONE => CSigmaType(recur t1, NONE, recur t2)
+                        | SOME(ev) => let val t1' = recur t1
+                                    in captureAvoid (fn (ev', t2') => CSigmaType(t1', SOME ev', t2')) ev t2
+                                    end
+                    )
+                | CForall (tv,t2) => captureAvoid CForall tv t2
+                | CExists (tv,t2) => captureAvoid CExists tv t2
+                | CRho (tv,t2) => captureAvoid CRho tv t2
+                | CUnitType => CUnitType
+                | CNullType => CNullType
+                | CBuiltinType(b) => CBuiltinType(b)
+                | CUniverse => CUniverse
+                | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
+                | CLam(ev, e2, u) => captureAvoid 
+                    (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
+                | CLetIn _ => e (* TODO : do it *)
+                | CProj (e1, lbl,idx, u) => CProj (recur e1, lbl, idx, u)
+                | CTuple(e, u) => CTuple (map recur e, u)
+                | CFfiCCall(name, args) => CFfiCCall(name, map recur args)
+        | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
+        ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
+        ^ " for " ^ StructureName.toStringPlain x)
+        end
+    and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
+    raise Fail "not implemented136"
+    (* !!! always capture avoiding substitution *)
+    (* only used when checking pi types *)
+    (* TODO: maybe hereditary substitution *)
+    (* and substTypeInRType (tS : RType) (x : StructureName.t) (t : RType) = 
+    let 
+        fun captureAvoid f (tv : UTF8String.t) t2 = 
+    (* capture avoid (ts. t2) performs substitution [tS/tv] t2 
+        and necessary renaming of tv in case tv is bound in tS
+        it calls f with the subsituted (ts'. t2')
+        *)
+            if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
+             then let val tv' = uniqueName()
+                                in f (tv', substTypeInRType tS x 
+                                    (substTypeInRType (RVar [tv']) [tv] t2)) 
+                                    end
+            else  (* No capture, regular *)
+            if [tv] ~~~= x (* do not substitute when the boudn variable is the same as substitution *)
+            then f (tv, t2)
+            else f (tv, substTypeInRType tS x t2)
+
+    in
+        case t of
+              RVar (t) => if t ~~~=x then tS else RVar t
+            | RFunc (t1,t2, soi) => RFunc (substTypeInRType tS x t1, substTypeInRType tS x t2 , soi)
+            | RPiType (t1,NONE, t2, soi) => RPiType (substTypeInRType tS x t1, NONE, substTypeInRType tS x t2 , soi)
+            | RPiType (t1,SOME tv, t2, soi) => captureAvoid (fn (tv', t2') => 
+                RPiType (substTypeInRType tS x t1, SOME tv', t2', soi)
+            ) tv t2
+            | _ => raise Fail "ni272: unsupported expr in type"
+    end *)
+              (* 
+            | RProd (l, soi) => RProd  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)
+            | RLazyProd (l, soi) => RLazyProd  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)
+            | RSum (l, soi) =>  RSum  (map (fn (l, t, soi) => (l, substTypeInRType tS x t, soi)) l, soi)
+            | RFunc (t1,t2, soi) => RFunc (substTypeInRType tS x t1, substTypeInRType tS x t2 , soi)
+            | RTypeInst (t1,t2, soi) => RTypeInst (substTypeInRType tS x t1, substTypeInRType tS x t2 , soi)
+            | RForall (tv,t2, soi) => captureAvoid (fn (tv', t2') => RForall (tv', t2', soi)) tv t2
+            | RExists (tv,t2, soi) => captureAvoid (fn (tv', t2') => RExists (tv', t2', soi)) tv t2
+            | RRho (tv,t2, soi) => captureAvoid (fn (tv', t2') => RRho (tv', t2', soi)) tv t2
+            | RUnitType(s) => RUnitType(s)
+            | RNullType(s) => RNullType(s)
+            | RBuiltinType(b) => RBuiltinType(b)
+            | RUniverse(soi) => RUniverse(soi)
             | RUnitExpr(soi) => RUnitExpr (soi)
-            | RTuple (l, soi) => RTuple (map (substTypeInRExpr tS x) l, soi)
-            | RLazyTuple (l, soi) => RLazyTuple (map (substTypeInRExpr tS x) l, soi)
-            | RInj (l, e, soi) => RInj (l, substTypeInRExpr tS x e, soi)
-            | RProj (e, l, soi) => RProj (substTypeInRExpr tS x e, l, soi)
-            | RLazyProj (e, l, soi) => RLazyProj (substTypeInRExpr tS x e, l, soi)
-            | RIfThenElse (e, tcase, fcase, soi) => RIfThenElse(substTypeInRExpr tS x e, 
-                substTypeInRExpr tS x tcase, substTypeInRExpr tS x fcase,  soi)
-            | RCase (e, l, soi) => RCase (substTypeInRExpr tS x e, (
+            | RTuple (l, soi) => RTuple (map (substTypeInRType tS x) l, soi)
+            | RLazyTuple (l, soi) => RLazyTuple (map (substTypeInRType tS x) l, soi)
+            | RInj (l, e, soi) => RInj (l, substTypeInRType tS x e, soi)
+            | RProj (e, l, soi) => RProj (substTypeInRType tS x e, l, soi)
+            | RLazyProj (e, l, soi) => RLazyProj (substTypeInRType tS x e, l, soi)
+            | RIfThenElse (e, tcase, fcase, soi) => RIfThenElse(substTypeInRType tS x e, 
+                substTypeInRType tS x tcase, substTypeInRType tS x fcase,  soi)
+            | RCase (e, l, soi) => RCase (substTypeInRType tS x e, (
                 (map (fn (l, ev, e) => 
-                (l, ev, substTypeInRExpr tS x e) ) l)
+                (l, ev, substTypeInRType tS x e) ) l)
             ), soi)
-            | RLam (ev, e, soi)=> RLam (ev, substTypeInRExpr tS x e, soi)
-            | RLamWithType (t, ev, e, soi) => RLamWithType (substTypeInType tS x t, ev, substTypeInRExpr tS x e, soi)
-            | RApp (e1, e2, soi) => RApp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2, soi)
-            | RSeqComp (e1, e2, soi) => RSeqComp (substTypeInRExpr tS x e1, substTypeInRExpr tS x e2, soi)
+            | RLam (ev, e, soi)=> RLam (ev, substTypeInRType tS x e, soi)
+            | RLamWithType (t, ev, e, soi) => RLamWithType (substTypeInRType tS x t, ev, substTypeInRType tS x e, soi)
+            | RApp (e1, e2, soi) => RApp (substTypeInRType tS x e1, substTypeInRType tS x e2, soi)
+            | RSeqComp (e1, e2, soi) => RSeqComp (substTypeInRType tS x e1, substTypeInRType tS x e2, soi)
             | RTAbs (tv, e2, soi) => (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
-                                in RTAbs (tv', substTypeInRExpr tS x 
-                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2), soi) 
+                                in RTAbs (tv', substTypeInRType tS x 
+                                    (substTypeInRType (RVar [tv']) [tv] e2), soi) 
                                     end
             else  (* No capture, regular *)
             if [tv] ~~~= x then RTAbs (tv, e2, soi)
-             else RTAbs (tv, substTypeInRExpr tS x e2, soi)
+             else RTAbs (tv, substTypeInRType tS x e2, soi)
             ) 
-            | RTApp (e2, t, soi) => RTApp(substTypeInRExpr tS x e2, substTypeInType tS x t , soi)
-            | RPack (t, e2, soi) => RPack(substTypeInType tS x t, substTypeInRExpr tS x e2, soi)
+            | RTApp (e2, t, soi) => RTApp(substTypeInRType tS x e2, substTypeInRType tS x t , soi)
+            | RPack (t, e2, soi) => RPack(substTypeInRType tS x t, substTypeInRType tS x e2, soi)
             | ROpen (e1, (tv, ev, e2), soi) => ROpen(
-                substTypeInRExpr tS x e1, (
+                substTypeInRType tS x e1, (
                 if List.exists (fn t' => t' ~~~= [tv]) (freeTVar tS)
              then let val tv' = uniqueName()
-                                in (tv', ev, substTypeInRExpr tS x 
-                                    (substTypeInRExpr (TypeVar [tv']) [tv] e2)) 
+                                in (tv', ev, substTypeInRType tS x 
+                                    (substTypeInRType (RVar [tv']) [tv] e2)) 
                                     end
             else  (* No capture, regular *)
-             (tv, ev, substTypeInRExpr tS [tv] e2))
+             (tv, ev, substTypeInRType tS [tv] e2))
             , soi)
-            | RFold (e2, soi) => RFold (substTypeInRExpr tS x e2, soi)
-            | RUnfold (e2, soi) => RUnfold (substTypeInRExpr tS x e2, soi)
-            | RFix (ev, e, soi)=> RFix (ev, substTypeInRExpr tS x e, soi)
+            | RFold (e2, soi) => RFold (substTypeInRType tS x e2, soi)
+            | RUnfold (e2, soi) => RUnfold (substTypeInRType tS x e2, soi)
+            | RFix (ev, e, soi)=> RFix (ev, substTypeInRType tS x e, soi)
             | RStringLiteral l => RStringLiteral l
             | RIntConstant l => RIntConstant l
             | RRealConstant l => RRealConstant l
             | RBoolConstant l => RBoolConstant l
-            | RFfiCCall(e, e2, soi) => RFfiCCall(substTypeInRExpr tS x e, 
-                    substTypeInRExpr tS x e2, soi
+            | RFfiCCall(e, e2, soi) => RFfiCCall(substTypeInRType tS x e, 
+                    substTypeInRType tS x e2, soi
                 )
             | RLetIn(decls, e, soi) => 
                 RLetIn(substituteTypeInRSignature tS x decls, 
-                    substTypeInRExpr tS x e, soi)
+                    substTypeInRType tS x e, soi)
             | RBuiltinFunc(f, s) => RBuiltinFunc(f, s)
+            | r => raise Fail ("substTypeInRType Fail on type(RExpr) " ^ PrettyPrint.show_typecheckingRType r)
     end
 
-    and substituteTypeInRDeclaration (tS : Type) (x : StructureName.t) (d : RDeclaration) = 
+    and substituteTypeInRDeclaration (tS : RType) (x : StructureName.t) (d : RDeclaration) = 
       case d of
       (* to prevent this from happending by prior checking *)
-         RTypeMacro (y, t) => if x ~~~= [y] then raise Fail "Cannot have identical types" else 
-            RTypeMacro (y, substTypeInType tS x t)
-        | RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInType tS x t)
-        | RTermMacro (n, e) => RTermMacro(n, substTypeInRExpr tS x e)
-        | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRExpr tS x e)
-        | RDirectExpr(e) => RDirectExpr (substTypeInRExpr tS x e)
+         (* RTypeMacro (y, t) => if x ~~~= [y] then raise Fail "Cannot have identical types" else 
+            RTypeMacro (y, substTypeInRType tS x t) *)
+         RTermTypeJudgment(ename, t) => RTermTypeJudgment(ename, substTypeInRType tS x t)
+        (* | RTermMacro (n, e) => RTermMacro(n, substTypeInRType tS x e) *)
+        | RTermDefinition(n, e) => RTermDefinition (n, substTypeInRType tS x e)
+        | RDirectExpr(e) => RDirectExpr (substTypeInRType tS x e)
         | RStructure(v, n, s) => RStructure(v, n, substituteTypeInRSignature tS x s)
         | ROpenStructure(n) => ROpenStructure(n)
         | RReExportStructure(n) => RReExportStructure(n)
         | RImportStructure(n,fp) => RImportStructure(n, fp)
     
-    and substituteTypeInRSignature (tS : Type) (x : StructureName.t) (s : RSignature) : RSignature = 
+    and substituteTypeInRSignature (tS : RType) (x : StructureName.t) (s : RSignature) : RSignature = 
         case s of
             [] => []
             | (d :: ds) => substituteTypeInRDeclaration tS x d :: 
-            substituteTypeInRSignature tS x ds
+            substituteTypeInRSignature tS x ds *)
 
 (* semantic type equivalence *)
-    and typeEquiv (ctx : (Type * Type) list) (t1:Type) (t2:Type)  :bool = 
-    (let 
-    fun typeEquivLst (l1 : (Label * Type)list) (l2 : (Label * Type) list)= 
-            if length l1 <> length l2 then false else
-            List.foldr (fn (b1, b2) => b1 andalso b2) true (List.tabulate((List.length l1), (fn i => 
-            (#1 (List.nth(l1, i))) ~~= (#1 (List.nth(l2, i)))
-            andalso typeEquiv ctx (#2 (List.nth(l1, i))) (#2 (List.nth (l2, i))) )))
-    fun unifyBinding tv t2 tv' t2' =
-            if tv ~~= tv' then (tv, t2, tv', t2')
-            else let val nn = uniqueName() in
-            (nn, substTypeInType (TypeVar [nn]) [tv] t2,
-            nn, substTypeInType (TypeVar [nn]) [tv'] t2')end
-        in
-        if List.exists (fn p => p =(t1, t2)) ctx then true
-        else
-    (case (t1, t2) of
-              (TypeVar t1, TypeVar t2) => t1 ~~~= t2
-            | (Prod l1, Prod l2) =>  typeEquivLst l1 l2
-            | (LazyProd l1, LazyProd l2) =>  typeEquivLst l1 l2
-            | (Sum l1, Sum l2) =>   typeEquivLst l1 l2
-            | (Func (t1,t2), Func (t1', t2')) => typeEquiv ctx t1 t1' andalso typeEquiv ctx t2 t2'
-            | (Forall (tv,t2), Forall (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
-            | (Exists (tv,t2), Exists (tv', t2')) => let val (_, t1, _, t1') = unifyBinding tv t2 tv' t2' in typeEquiv ctx t1 t1' end
-            | (Rho (tv,t2), Rho (tv', t2')) => (let val (v, t1, v', t1') = unifyBinding tv t2 tv' t2' 
-            in typeEquiv ((Rho(v, t1), Rho(v',t1'))::ctx) 
-                (substTypeInType (Rho (v,t1)) [v] t1)
-                (substTypeInType (Rho (v',t1')) [v'] t1')
-             end)
-            | (UnitType, UnitType) => true
-            | (NullType, NullType) => true
-            | (BuiltinType(b1), BuiltinType(b2)) => b1 = b2
-            | _ => false)
-    end)
+    (* type equiv returns true or false and if an internal error occurs, such as the expression 
+    is not well formed, a human readable error is returned *)
 
 
 
-    (* reconstruct the original string from rexpr, used for generating error information *)
-    fun reconstructFromRExpr (e : RExpr) : UTF8String.t = 
-    let 
-    fun constructWithSep ( args: UTF8String.t list) (sepl : operator list) : UTF8String.t = 
-    case args of (h::t) =>
-        #1 (foldl (fn (next, (s, y)) => case y of (oph::opt) =>  (reconstructWithArgs oph [s, next], opt)
-                                                | _ => raise Fail "tcastops 252"
-        ) (h, sepl) t)
-        | _ => raise Fail "tcastops 255"
-    val tpPlaceHolder =UTF8String.fromString "..." 
-    open Operators
-    in
-    case e of
-        RExprVar v => StructureName.toString v
-        | RUnitExpr(soi) => reconstructWithArgs soi []
-        | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
-        | RLazyTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
-        | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
-        | RLazyProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
-        | RIfThenElse (e, tcase, fcase, soi) => reconstructWithArgs soi [reconstructFromRExpr e, reconstructFromRExpr tcase, reconstructFromRExpr fcase]
-        | RInj  ( lbl,e, soi) => reconstructWithArgs soi [lbl, reconstructFromRExpr e]
-        | RCase (e, l, (soiTop, soiSep, soiClause))=>
-                reconstructWithArgs soiTop [reconstructFromRExpr e, 
-                    constructWithSep (
-                        ListPair.map (fn ((a,b,c), operClause) => reconstructWithArgs operClause [a,b, reconstructFromRExpr c]) (l, soiClause)
-                    ) soiSep
-                ]
-        | RLam (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
-        | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
-        | RApp (e1, e2, soi)=> if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
-            then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
-            else let
-                fun flatten (e : RExpr)  : RExpr list= case e of 
-                    RApp(e1', e2', soi') => if Operators.eqOpUid soi soi'
-                                            then e1' :: flatten e2'
-                                            else [e]
-                    | _ => [e]
-                in 
-                    reconstructWithArgs soi (map reconstructFromRExpr (e1 :: flatten e2))
-                end
-                                        
-        | RTAbs (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
-        | RTApp (e1, e2, (soi,s))=> reconstructWithArgs soi [reconstructFromRExpr e1, s]
-        | RPack (t, e, (s, soi))=> reconstructWithArgs soi [s, reconstructFromRExpr e]
-        | ROpen (e, (t, x, e2), soi)=> reconstructWithArgs soi [reconstructFromRExpr e, t, x, reconstructFromRExpr e2]
-        | RFold (e, soi) => reconstructWithArgs soi [reconstructFromRExpr e]
-        | RUnfold (e, soi) => reconstructWithArgs soi [reconstructFromRExpr e]
-        | RFix (x, e, soi) => reconstructWithArgs soi [x, reconstructFromRExpr e]
-        | RStringLiteral (l, (qil, qir)) => qil :: l @[ qir]
-        | RIntConstant (l, soi) => soi
-        | RRealConstant (l, soi) => soi
-        | RBoolConstant (l, soi) => soi
-        | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
-        | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
-        | RBuiltinFunc(f, s) => s
-        | RSeqComp(e1, e2, soi) => reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
-    end
-    
+    fun judgmentTypeToCVarType (canonicalNameIfConstructor : StructureName.t ) (jt : judgmentType) : cvartype = 
+        case jt of 
+            JTConstructor cinfo =>  CVTConstructor(canonicalNameIfConstructor, cinfo)
+            | JTLocalBinder =>  CVTBinder
+            | JTDefinition e =>  CVTDefinition e
+            | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor)
+            | JTLocalBinderWithDef metavarname => CVTBinderDefinition metavarname
+            | _ => raise Fail "ni427"
+    fun countSpineTypeArgs (tp : CType) = 
+            case tp of 
+                (* CFunc(t1, t2) => 1 + countSpineTypeArgs t2 *)
+                 CPiType(t1, _, t2, p) => 1 + countSpineTypeArgs t2 (* todo consider plicity *)
+                | _ => 0
+            
 end

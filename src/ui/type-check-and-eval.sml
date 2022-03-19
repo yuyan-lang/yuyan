@@ -7,12 +7,15 @@ open ReplOptions
 
     fun typeCheckAndEval (options : ReplOptions.t) : OS.Process.status =
         (let fun cprint x s = if x <= (#verbose options) then printErr s else () 
-            val _ = DebugPrint.p ("Input files:" ^ Int.toString (length (getInputFiles options)))
+            (* val _ = DebugPrint.p ("Input files:" ^ Int.toString (length (getInputFiles options))) *)
             val startTime = Time.now()
             val cm = CompilationManager.initWithWorkingDirectory (FileResourceURI.make (OS.FileSys.getDir()))
             val absFps = map (fn filename => (FileResourceURI.make (PathUtil.makeAbsolute filename (#pwd cm)))) (getInputFiles options)
             val _ = map (fn absFp => CompilationManager.findOrAddFile absFp NONE cm) absFps
-            val _ = map (fn absFp => CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm []) absFps
+            val _ = map (fn absFp =>  
+            (if (getTypeCheckOnly options) 
+            then CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelTypeCheckedInfo cm []
+            else CompilationManager.requestFileProcessing absFp CompilationStructure.UpToLevelLLVMInfo cm [])) absFps
             val entryFileAbsFp = if length absFps > 0 then List.last absFps else raise Fail "tcae13: Should have at least one input file"
             val CompilationStructure.CompilationFile cfile = CompilationManager.lookupFileByPath entryFileAbsFp cm
             val outputFilePath = case getOutputFilePath options of SOME f => (FileResourceURI.make (PathUtil.makeAbsolute f (#pwd cm))) 
@@ -27,6 +30,23 @@ open ReplOptions
                             (FileResourceURI.make (PathUtil.concat [(#pwd cm), "yylib"]))
                             (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild", "docs"]))
                             cm ; OS.Process.success))
+                    else if getTypeCheckOnly options
+                    then ( let val allErrors = (List.concat (List.map (fn (x, l) => l) (CompilationManager.collectAllDiagnostics cm)))
+                    val _ = if length allErrors > 0 then DebugPrint.p (PrintDiagnostics.showErrs allErrors cm) else 
+                        if getVerbose options > 0 then 
+                            (map (fn absFp => 
+                            let val CompilationStructure.CompilationFile f =  CompilationManager.lookupFileByPath absFp cm
+                            in DebugPrint.p (
+                                (FileResourceURI.access absFp) ^ " : \n" ^
+                                PrettyPrint.show_typecheckingCSig (valOf (#typeCheckedInfo f))
+                                ^ " \n\n\n"
+                                )
+                            end
+                            ) absFps; ())
+                        else ()
+                    in
+                        (Time.now(), if length allErrors = 0 then OS.Process.success else OS.Process.failure)
+                    end)
                     else
                             let
                                 val exec = CompilationManager.makeExecutable entryFileAbsFp cm (#optimize options) (getEnableProfiling options) 

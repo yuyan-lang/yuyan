@@ -100,15 +100,18 @@ yy_ptr tuple_to_addr(uint64_t length, const yy_ptr elems[]){
 // gets the length of a list of type rho t. (0 : 1) + (1 : a x t)
 uint64_t iso_list_length_rec(const yy_ptr list, uint64_t acc) {
     // the type is a fold on the outer left
-    yy_ptr unfolded = (yy_ptr)list[1];
-    // then it is a sum, the label's position is stored in index 1
-    uint64_t labelIndex = unfolded[1];
-    if (labelIndex == 0) {
+    // yy_ptr unfolded = (yy_ptr)list[1];
+    // then it is a tuple, the label's position is stored in index 1
+    uint64_t labelIndex = list[1];
+    if (labelIndex == 1) {
         return acc;
+    } else if (labelIndex == 2){
+        // 0: header 1: index 2: unit (type) 3: current element 4: next element
+        yy_ptr next = data_to_addr(list[4]);
+        return iso_list_length_rec(next, acc+1);
     } else {
-        yy_ptr underSum = data_to_addr(unfolded[3]);
-        yy_ptr underProd = data_to_addr(underSum[2]);
-        return iso_list_length_rec(underProd, acc+1);
+        errorAndAbort("iso_list_get_length error");
+        return -1;
     }
 }
 
@@ -124,26 +127,24 @@ yy_ptr* iso_list_get_elements(const yy_ptr list) {
     yy_ptr* result = (yy_ptr*)allocateArray(size);
 
     uint64_t curIndex = 0;
-    yy_ptr curListUnfolded = (yy_ptr)list[1];
+    yy_ptr curList = list;
 
     while(curIndex < size) {
-        yy_ptr underSum = data_to_addr(curListUnfolded[3]);
-        result[curIndex] = data_to_addr(underSum[1]);
-        yy_ptr remainingListFolded = data_to_addr(underSum[2]);
-        curListUnfolded = data_to_addr(remainingListFolded[1]);
+        result[curIndex] = data_to_addr(curList[3]);
+        curList = data_to_addr(curList[4]);
         curIndex += 1;
     }
     return result;
 }
 
-const char* iso_list_nil_label = "一";
-const char* iso_list_cons_label = "二";
+// const char* iso_list_nil_label = "一";
+// const char* iso_list_cons_label = "二";
 
-yy_ptr fold_to_addr(yy_ptr toFold) {
-    yy_ptr result = allocateAndSetHeader(2, 1);
-    result[1] = addr_to_data(toFold);
-    return result;
-}
+// yy_ptr fold_to_addr(yy_ptr toFold) {
+//     yy_ptr result = allocateAndSetHeader(2, 1);
+//     result[1] = addr_to_data(toFold);
+//     return result;
+// }
 yy_ptr function_to_addr(void* func) {
     yy_ptr result = allocateAndSetHeader(1, 1);
     result[1] = addr_to_data(func);
@@ -151,13 +152,12 @@ yy_ptr function_to_addr(void* func) {
 }
 
 yy_ptr iso_list_nil_to_addr() {
-    return fold_to_addr(injection_to_addr(0, iso_list_nil_label, unit_to_addr()));
+    yy_ptr tps[] = {int_to_addr(1), unit_to_addr()};
+    return tuple_to_addr(2, tps);
 }
 yy_ptr iso_list_cons_to_addr(yy_ptr elem, yy_ptr rest){
-    yy_ptr tps[] = {elem, rest};
-    return fold_to_addr(injection_to_addr(1, iso_list_cons_label, 
-        tuple_to_addr(2, tps)
-    ));
+    yy_ptr tps[] = {int_to_addr(2), unit_to_addr(), elem, rest};
+    return tuple_to_addr(4, tps);
 }
 
 yy_ptr array_to_iso_addr(uint64_t length, const yy_ptr elems[]){

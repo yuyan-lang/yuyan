@@ -250,45 +250,48 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         | LLVMStoreArray(arrtype, v, arr) => storeArrayToLLVMLoc arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 
-            let (* TODO : CONSIDER USING SWITCH *)
-            val num = length blocks
-            val blockNames = List.tabulate (num, fn _ => UID.next()) 
-            val comparisonNames = List.tabulate ((num+1), fn _ => UID.next())   (* the extra is to signal the end *)
+            let 
+            val numblocks = length blocks
+            val blockNames = List.tabulate (numblocks, fn _ => UID.next()) 
+            val defaultBlockName = UID.next()
             val realV = UID.next()
             in
             List.concat(
                 [
                 [toLocalVar realV ^ " = ptrtoint i64* " ^ toLocalVar v ^ " to i64"],
                     (* since the first subsequent instruction is a label, we need a ternimation instruction *)
-                ["br label "^ (toBlockNameJump (hd comparisonNames))],
-                List.concat(
-                    List.tabulate(num, fn i => let
-                        val comparisonResultName = UID.next()
+                ["switch i64 "
+                ^ toLocalVar realV 
+                ^ ", label " ^ toBlockNameJump defaultBlockName
+                ^ " [ "
+                ^ String.concatWith  " " (
+                    List.tabulate(numblocks, fn i => let
                         val currentBlockName = List.nth(blockNames, i)
-                        val currentComparisonName = List.nth(comparisonNames, i)
-                        val nextComparisonName = List.nth(comparisonNames, i+1)
+                        val (currentIndex, currentBlock) = List.nth(blocks, i)
                         in
-                        [
-                            toBlockNameLabel currentComparisonName ^ ":",
-                            toLocalVar comparisonResultName ^ " = icmp eq i64 " ^ Int.toString i ^ ", " ^ toLocalVar realV,
-                            "br i1 "^ toLocalVar comparisonResultName ^  
-                            ", label " ^ toBlockNameJump currentBlockName ^ ", label " ^ toBlockNameJump nextComparisonName
-                        ]
+                            (" i64 " ^ Int.toString currentIndex  ^
+                            " ,  label " ^ toBlockNameJump currentBlockName
+                            )
                         end
-                    ))
-                , 
+                    )
+                )
+                ^ " ] "
+                ],
                 [
-                    toBlockNameLabel (List.nth(comparisonNames, num))  ^ ":",
-                    toLocalVar (UID.next()) ^ " = call i64 @internalError()",
-                    "br label " ^ toBlockNameJump (List.nth(comparisonNames, num))  
+                    toBlockNameLabel defaultBlockName  ^ ":",
+                    toLocalVar (UID.next()) ^ " = call i64 @matchException("
+                    ^ "i64 " ^ toLocalVar realV 
+                    ^ ")",
+                    "br label " ^ toBlockNameJump defaultBlockName  
                     (* jump to self (no other things we can do) ,
-                     assume internalError kills the process *)
+                     assume internalError kills the process, 
+                     TODO: raise Match exception *)
                 ]
                 , 
                      List.concat(
-                    List.tabulate(num, fn i => let
+                    List.tabulate(numblocks, fn i => let
                         val currentBlockName = List.nth(blockNames, i)
-                        val currentBlock= List.nth(blocks, i)
+                        val (currentIndex, currentBlock) = List.nth(blocks, i)
                         in
                         [
                             toBlockNameLabel currentBlockName ^ ":"
@@ -425,6 +428,7 @@ fun genLLVMSignatureWithMainFunction ((entryFunc,s) : llvmsignature)  : string l
         (* declare runtime functions *)
         "declare i64* @allocateArray(i64)",
         "declare i64 @internalError()",
+        "declare i64 @matchException(i64)",
         "declare i64 @informResult(i64*)"
         ]@genSig
 end

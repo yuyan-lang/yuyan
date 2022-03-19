@@ -56,7 +56,7 @@ datatype llvmstatement =
 (* conditional jump and call should not be followed by any other statement 
 TODO: Maybe we want to make that syntactically explicit *)
     | LLVMConditionalJump of int (* VARIABLE NAME that stores the index *) 
-            * llvmstatement list list (* one block for each index *)
+            * (int * llvmstatement list) list (* one block for each index *)
     | LLVMConditionalJumpBinary of llvmlocation (* Variable name that stores the boolean *)
            * llvmstatement list (* true branch *)
            * llvmstatement list (* false branch branch *)

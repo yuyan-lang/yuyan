@@ -3,6 +3,7 @@ structure ElaboratePrecedence =
 struct
     open Operators
     open ParseAST
+    open ParseASTOps
 
     exception ElaborationFail of ParseOpAST
 
@@ -40,12 +41,12 @@ struct
                     | (PostfixNoneAssoc oper, [arg, internal]) => 
                             opastPrependArg  (elaborate arg)(elaborate internal)
                     | (PrefixRightAssoc oper, [ParseOpAST(Many1, internals), arg]) => 
-                        foldr (fn (internal, arg) => 
-                            opastAppendArg (elaborate internal) arg
+                        foldr (fn (internal, argAcc) => 
+                            opastAppendArg (elaborate internal) argAcc
                         ) (elaborate arg) internals
                     | (PostfixLeftAssoc oper, [arg, ParseOpAST(Many1, internals)]) => 
-                        foldl (fn (internal, arg) => 
-                            opastPrependArg (elaborate internal) arg
+                        foldl (fn (internal, argAcc) => 
+                            opastPrependArg argAcc (elaborate internal)
                         ) (elaborate arg) internals
                     | (InfixNoneAssoc oper, [argL, internal, argR]) => 
                         opastPrependArg (elaborate argL) (opastAppendArg (elaborate internal) (elaborate argR)) 
@@ -70,6 +71,7 @@ struct
                     | (QuotedName (s, qi), l)  => OpParsedQuotedExpr(UnknownOpName s, qi)
                     | (Binding l, [])  => NewOpName l
                     | (QuotedBinding (l, qi), [])  => OpParsedQuotedExpr(NewOpName l, qi)
+                    | (ParsedPairOfQuotes (qi), [])  => OpParsedPairOfQuotes(qi)
                     | (UnparsedExpr (l, qi), [])  => OpUnparsedExpr (l, qi)
                     | (UnparsedDecl (l, qi), [])  => OpUnparsedDecl(l, qi)
                     | (StringLiteral (l, qi), [])  => OpStrLiteral (l, qi)

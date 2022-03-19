@@ -35,7 +35,7 @@ structure PreprocessingPass = struct
     val ~=** = Operators.~=**
     infix 4 ~=**
 
-     fun showctx x = SOME(case x of 
+     fun showctxPre x = SOME(case x of 
     (curSName, curVis, snamevisopl) =>  
     "当前结构名：" ^ StructureName.toStringPlain curSName ^
     "\n当前已定义的值及其类型：\n"  ^
@@ -45,7 +45,7 @@ structure PreprocessingPass = struct
           )
 
     fun structureNameNotFoundError sName ctx = ( genSingletonError (StructureName.toString sName) 
-                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") (showctx ctx))
+                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") (showctxPre ctx))
 
     fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list witherrsoption=
         case ctx of
@@ -75,12 +75,37 @@ structure PreprocessingPass = struct
 
 
     fun insertIntoCurContextOp((curSName,curV, ctx) : contextType) (oper : Operators.operator) : contextType =
-        (curSName, curV, ((curSName,curV, oper:: lookupCurrentContextForOpers (curSName, curV, ctx) )
+        (curSName, curV, ((curSName,curV, 
+        (* do not insert repetitive operators into the context  (currently by name)
+        TODO: do this in a principled manner 
+        *)
+        let 
+        val curOps =  lookupCurrentContextForOpers (curSName, curV, ctx)
+        in 
+            oper :: List.filter (fn x =>  not (Operators.eqOpName x oper)) curOps (* TODO: THIS is a name hack, NEED FIXING! *)
+        end
+            )
         :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
 
-    fun insertIntoCurContextOps((curSName,curV, ctx) : contextType) (opers : Operators.operator list) : contextType =
-        (curSName, curV, ((curSName,curV, opers@ lookupCurrentContextForOpers (curSName, curV, ctx))
-        :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx)))
+    fun insertIntoCurContextOps(ctx  : contextType) (opers : Operators.operator list) : contextType =
+    foldr (fn (oper, acc) => insertIntoCurContextOp acc oper ) ctx opers
+        (* (curSName, curV, ((curSName,curV, opers@ lookupCurrentContextForOpers (curSName, curV, ctx))
+        :: (List.filter (fn (cname, _, _) => cname <> curSName) ctx))) *)
+
+    (* TODO: currently reexport only reexport the top level operators*)
+    fun getReExportDecls(reExportName : StructureName.t ) (ctx as (curSName, v, snamevopl) : contextType) :  
+            (Operators.operator list * (StructureName.t * Operators.operator list) list) =
+       let 
+            val allDirectReExports = (List.mapPartial (fn (s, v, opl) => case StructureName.checkRefersTo s reExportName curSName
+                of SOME cname => SOME(opl)
+                    | NONE => NONE ) snamevopl)
+            val allDirectOperators = List.concat allDirectReExports
+            val allIndirectStructures = List.mapPartial (fn (s, v, opl) => case StructureName.checkRefersToScope s reExportName curSName
+                of SOME newStrippedName => SOME(curSName @ newStrippedName, opl)
+                | NONE => NONE) snamevopl
+        in 
+         (allDirectOperators, allIndirectStructures)
+        end
 
     fun newContextAfterOpeningStructure(openName : StructureName.t ) (ctx as (curSName, v, snamevopl) : contextType) : contextType witherrsoption =
         let 
@@ -99,15 +124,6 @@ structure PreprocessingPass = struct
         then structureNameNotFoundError openName ctx
         else Success(curSName, curV, allIndirectStructures@newSNameOpL)
         end
-    
-
-
-
-    fun ::/ ((x,y), (xs,ys)) =(x :: xs, y :: ys)
-    infix 5 ::/
-
-
-
  
     fun parsePOperator (opd) =
     case opd of 
@@ -116,26 +132,39 @@ structure PreprocessingPass = struct
                     val oper = Operators.parseOperator 
                             opName (assoc <> Operators.NoneAssoc) (assoc = Operators.LeftAssoc) pred []
                             in (
-                                (* print (" PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
+                                (* DebugPrint.p ( "opName is " ^ UTF8String.toString opName ^
+                                    " PARSED OPER AS " ^ PrettyPrint.show_op oper);  *)
                                 oper) end
         | _ => raise Fail "pp104"
-        
+    
     fun extractAllOperators (curSName : StructureName.t) (vis : bool) (ast : PreprocessingAST.t) : (structureName * bool * Operators.operator list) list = 
         (* current scoped *)
-        (curSName, vis, List.mapPartial  (fn (x, ei) => 
+        (curSName, vis, List.concat (List.mapPartial  (fn (x, ei) => 
                 (case x of 
-                     POpDeclaration(opName, assoc, pred, soi) => SOME(parsePOperator(x))
+                     POpDeclaration(opName, assoc, pred, soi) => SOME([parsePOperator(x)])
+                     | PReExportStructure (name, (opl, substructure), soi) => SOME(opl)
                     | _ => NONE
                 )
-        ) ast)::
+        ) ast))::
         (* sub structures *)
         (List.concat(List.mapPartial (fn (x, ei) => case x of 
             PStructure(vis, structureName, OpParsedDecl(l, qi), soi) => 
                 SOME (extractAllOperators (curSName@[structureName]) vis l)
+                (* ^^^ THIS IS VERY STRANGE, TODO: FIX*)
+            | PReExportStructure (name, (opl, substructure), soi) => SOME(map (fn (name, opl) => (name, true, opl)) substructure)
             | _ => NONE
         ) ast))
 
 
+
+
+
+    fun ::/ ((x,y), (xs,ys)) =(x :: xs, y :: ys)
+    infix 5 ::/
+
+
+
+        
     fun configureAndConstructPreprocessingASTTopLevel
     (lookupImportPreprocessingAST : StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption)
     (notifyOpAST : OpAST.t -> 'a) 
@@ -183,7 +212,7 @@ structure PreprocessingPass = struct
             and parseJudgment (s : MixedStr.t)(ctx : contextType) : (pJudgment * contextType) witherrsoption= 
             (let
             (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
-            val tp  = MixedStr.toPlainUTF8String
+            fun tp s = MixedStr.toPlainUTF8String s 
             fun getDeclContent (x : MixedStr.t) : (OpAST * contextType) witherrsoption = case x of
                 [MixedStr.UnparsedDeclaration(y, qi)] => (
                         preprocessAST y ctx >>=  (fn (preprocessedAST, newContext) => 
@@ -195,30 +224,48 @@ structure PreprocessingPass = struct
             (* val _ = notifyDeclarationParserResult declParseTree *)
             val res = case declParseTree of
                     (oper, [l1, l2]) => 
-                    if oper ~=** typeMacroOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx))
-                    else if oper ~=** termTypeJudgmentOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermTypeJudgment (tp l1, l2, oper), ctx))
-                    else if oper ~=** termMacroOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx))
+                    (* if oper ~=** typeMacroOp
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx)) *)
+                    (* else  *)
+                    if oper ~=** termTypeJudgmentOp
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 => tp l1 >>= (fn l1 =>  Success(PTermTypeJudgment (l1, l2, oper), ctx)))
+                    else if oper ~=** constructorDeclarationOp
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success(PConstructorDecl (l1, l2, oper), ctx)))
+                    (* else if oper ~=** termMacroOp
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
                     else if oper ~=** termDefinitionOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermDefinition (tp l1, l2, oper), ctx))
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success(PTermDefinition (l1, l2, oper), ctx)))
                     else if oper ~=** privateStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
-                    Success(PStructure (false, tp l1, declOpAST, oper), newContext))
+                    tp l1 >>= (fn l1 => 
+                    Success(PStructure (false, l1, declOpAST, oper), newContext)))
                     else if oper ~=** publicStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
-                    Success(PStructure (true, tp l1, declOpAST, oper), newContext))
+                    tp l1 >>= (fn l1 => 
+                    Success(PStructure (true, l1, declOpAST, oper), newContext)))
                     else  
                     raise Fail "pp34"
                     | (oper, [l1, l2, l3]) =>  
                         if oper ~=** opDeclarationOp
                         then 
-                        let val newOp = POpDeclaration (tp l1, parseAssoc (tp l2), NumberParser.parseInteger (tp l3), (tp l2, tp l3, oper))
-                            val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
-                        in
-                            Success(newOp, newContext)
-                        end
+                        tp l1 >>= (fn pl1 => 
+                        tp l2 >>= (fn pl2 => 
+                        tp l3 >>= (fn pl3 => 
+                            parseAssoc (pl2) >>= (fn parsedAssoc => 
+                            if not (NumberParser.isInteger (pl3))
+                            then genSingletonError (pl3) "优先级必须是一个整数" NONE
+                            else if UTF8String.isSubstring ([underscoreChar, underscoreChar]) pl1
+                            then genSingletonError (pl1) "不可以出现连续的参数(〇〇)" NONE
+                            else
+                                let val newOp = POpDeclaration (pl1, parsedAssoc, NumberParser.parseInteger (pl3), (pl2, pl3, oper))
+                                    val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
+                                in
+                                    Success(newOp, newContext)
+                                end
+                            )
+                        )
+                        )
+                        )
                         else raise Fail "pp85"
                     | (oper, [l1]) =>  
                         let fun getStructureOpAST (s : MixedStr.t ) : OpAST witherrsoption = 
@@ -255,11 +302,11 @@ structure PreprocessingPass = struct
                             if oper ~=** reexportStructureOp
                             then 
                                 getStructureOpAST l1 >>= (fn structureOpAST => 
-                            (* ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  *)
+                            ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName => 
                                 (* newContextAfterOpeningStructure structureName ctx >>= (fn newContext =>  *)
-                                        Success(PReExportStructure (structureOpAST, oper), ctx)
+                                        Success(PReExportStructure (structureOpAST, getReExportDecls structureName ctx, oper), ctx)
                                     (* ) *)
-                                (* ) *)
+                                )
                             )
                             else
                             raise Fail "pp95"
@@ -303,7 +350,7 @@ structure PreprocessingPass = struct
                         y >>= (fn y' => Success(x :: (#1 y'), #2 y'))
                         infix 5 :::
                 in
-                (* print ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n"); *)
+                (* DebugPrint.p ("preprocessAST : " ^ Int.toString (length s) ^ " count : " ^PrettyPrint.show_mixedstrs s ^"\n"); *)
                 case s of 
                 [] => Success([], ctx)
                 | ((x,ei) :: xs) => parseJudgment x ctx >>= (fn (parsed, newContext) =>

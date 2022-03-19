@@ -75,7 +75,7 @@ struct
             (* val _ = DebugPrint.p "e" *)
             val res = 
             case expr of
-            RExprVar v => 
+            RVar v => 
             if lookupCtx termctx v currentSName
             then StructureNameSet.empty else StructureNameSet.singleton v
             | RUnitExpr => StructureNameSet.empty 

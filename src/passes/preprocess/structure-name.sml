@@ -21,7 +21,17 @@ val separatorCharDebug = UTF8String.fromString "->"
         ]
     fun localName () = [UTF8String.fromString ("《《临时结构" ^ Int.toString(UID.next()) ^ "》》")]
     fun searchPathName() = [UTF8String.fromString ("《《搜索路径" ^ Int.toString(UID.next()) ^ "》》")]
+    fun metaVarName() = [UTF8String.fromString ("《《元变量" ^ Int.toString(UID.next()) ^ "》》")]
+    fun binderName () =  UTF8String.fromString ("绑定" ^Int.toString (UID.next()))
 
+    fun getDeclaringScope (s : structureName) = 
+        case s of 
+        [] => raise Fail "sn28: cannot get declaring scope name of empty structure"
+        | _ => List.take(s, length s - 1)
+    fun last (s : structureName) = 
+        case s of 
+        [] => raise Fail "sn28: cannot get last name of empty structure"
+        | _ => List.last(s)
 
     fun semanticEqual (s1 : structureName) (s2 : structureName) = 
     case (s1, s2) of
@@ -76,7 +86,7 @@ returns the canonical name (adding curSName if ommitted)
             val res = 
       if semanticEqual referred toCheck then SOME(toCheck) else 
             if semanticEqual (stripPrefixOnAgreedParts curSName referred) toCheck
-            then SOME((getAgreedPrefixParts curSName referred)@toCheck)
+            then SOME((getAgreedPrefixParts curSName referred)@(stripPrefixOnAgreedParts curSName referred))
             else NONE
             (* val _ = DebugPrint.p ("result is " ^ (case res of 
                 SOME _ => "true" 

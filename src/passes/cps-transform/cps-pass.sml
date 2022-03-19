@@ -2,6 +2,7 @@ structure CPSPass =
 struct
 
 open TypeCheckingAST
+open TypeCheckingASTOps
 open CPSAst
 open CPSHelper
 
@@ -11,7 +12,7 @@ exception CPSInternalError
 
 
 
-    fun klookupLabel ( ctx : (Label * Type) list) (l : Label) : int = 
+    fun klookupLabel ( ctx : (Label * CType) list) (l : Label) : int = 
         case ctx of 
              (n1, t1)::cs => if UTF8String.semanticEqual n1 l then 0 else klookupLabel cs l+1
              | _ => raise Fail "cpspass25"
@@ -23,7 +24,9 @@ exception CPSInternalError
   
 
     fun registerFunctionNameMapping (i : cpsvar) (e : CExpr) (msg : string) : unit = 
-        DebugPrint.p ( "CPSNameMapping fid=" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n")
+        (
+            (* DebugPrint.p ( "CPSNameMapping fid=" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n"); *)
+        ())
 
     and cpsTransformExpr   
         (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
@@ -33,7 +36,7 @@ exception CPSInternalError
         (* val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
          val originalExpr = e
          val res = case e of
-            CExprVar sn => (case ListSearchUtil.lookupSName ctx sn of 
+            CVar (sn, referred) => (case ListSearchUtil.lookupSName ctx sn of 
                 PlainVar v => cc v
                 | GlobalVar v => cc v
                 | SelfVar v => CPSAbsSingle(kcc' (fn arg => 
@@ -44,7 +47,7 @@ exception CPSInternalError
                     )
                      )))
             | CUnitExpr => CPSUnit (kcc cc)
-            | CTuple (cs, Prod ls) => (
+            | CTuple (cs, u) => (
                     let fun go i values = 
                         if i = List.length cs
                         then CPSTuple(values, kcc cc)
@@ -53,7 +56,7 @@ exception CPSInternalError
                     in go 0 [] end
                 )
                 (* compile lazy tuple as if every term has a implicit abstraction  of zero arugment (continuation only) *)
-            | CLazyTuple (cs, LazyProd ls) => (
+            | CLazyTuple (cs, CTypeAnn(CLazyProd ls)) => (
                     let fun go i values = 
                         if i = List.length cs
                         then CPSTuple(values, kcc cc)
@@ -65,9 +68,9 @@ exception CPSInternalError
                             )
                     in go 0 [] end
                 )
-            | CProj(e, l, Prod ls) => cpsTransformExpr ctx e (fn v 
-                        => CPSProj(CPSValueVar v, (klookupLabel ls l),(kcc cc)))
-            | CLazyProj(e, l, LazyProd ls) => cpsTransformExpr ctx e (fn v 
+            | CProj(e, l, idx, u ) => cpsTransformExpr ctx e (fn v 
+                        => CPSProj(CPSValueVar v, idx,(kcc cc)))
+            | CLazyProj(e, l, CTypeAnn(CLazyProd ls)) => cpsTransformExpr ctx e (fn v 
                         => CPSProj(CPSValueVar v, (klookupLabel ls l),
                         (kcc (fn projected => 
                             (CPSAbsSingle (kcc' (fn ret => 
@@ -91,21 +94,37 @@ exception CPSInternalError
                     it leads to lots of wasted codes (by having two copies of cc, 
                     also in cases)  TOOO: investigate *)
             )
-            | CInj (l, e, Sum ls ) => 
+            | CInj (l, e, CTypeAnn(CSum ls )) => 
                 cpsTransformExpr ctx e 
                     (fn v => CPSInj(l, klookupLabel ls l, CPSValueVar v, kcc cc)
             )
-            | CCase((Sum ls, e),cases, resType) => 
+            | CCase((_, e),cases, resType) => 
             (cpsTransformExpr ctx e) (fn v => 
-                    CPSCases (CPSValueVar v, (List.tabulate(List.length ls, 
-                    fn index => let val  (label,t) = List.nth(ls, index)
-                                    val caseIndex = klookupLabel3 cases label
-                                    val (_, ev, e) = List.nth(cases, caseIndex)
-                                in kcc (fn boundId => cpsTransformExpr (
-                                     ([ev], PlainVar boundId)::ctx) e cc (* I don't understand why this works, it seems that should wrap cc in a separate computation!!!! TODO: investigate *)
-                                ) end)))
+                    CPSCases (CPSValueVar v, (map (fn (pat, body) =>
+                        case pat of 
+                            CPatVar x => raise Fail "ni103: cps unsupported (yet) patterns"
+                            | CPatHeadSpine((hdname, cinfo), spinepats) => 
+                                (case cinfo of 
+                                    CConsInfoElementConstructor(_, index) => 
+                                    let 
+                                        val names = map (fn spinepat => 
+                                            case spinepat of 
+                                                CPatVar x => (x, CPSVarLocal (UID.next()))
+                                                | _ => raise Fail "ni111: cps unsupported patterns"
+                                        ) spinepats
+                                        in 
+                                        (index, 
+                                        map (fn x => (#2 x)) names,
+                                        cpsTransformExpr (
+                                            (map (fn (name, var) => ([name], PlainVar var)) names)@ctx
+                                        ) body cc
+                                        )
+                                        end
+                                    | _ => raise Fail "ni107: unsupported patterns"
+                                    )
+                                ) cases)) 
             )
-            | CLam(ev, eb, Func(t1, t2)) => 
+            | CLam(ev, eb, t) => 
                 CPSAbs (kcc2' (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar (CPSVarLocal arg)))::ctx) eb 
                         (fn r => CPSAppSingle(CPSValueVar (CPSVarLocal ret),CPSValueVar r))
@@ -128,7 +147,12 @@ exception CPSInternalError
             | CSeqComp(e1, e2, _, _) =>
                 cpsTransformExpr ctx e1 (fn v1 => 
                  cpsTransformExpr ctx e2 cc)
-            | CTAbs (tv, e2, _) => cpsTransformExpr ctx e2 cc
+            | CTAbs (tv, e2, _) => 
+            let  (* TODO: erase type args *)
+            in CPSUnit(kcc (fn v => 
+                cpsTransformExpr (([tv], PlainVar v)::ctx) e2 cc
+            ))
+            end
             | CTApp (e2, t, _) => cpsTransformExpr ctx e2 cc
             | CPack (t, e2, et) => cpsTransformExpr ctx e2 cc
             | COpen ((et, e1), (tv, ev, e2), rt) => 
@@ -171,13 +195,13 @@ exception CPSInternalError
             | CIntConstant i => 
                 CPSBuiltinValue(CPSBvInt i, kcc cc)
             | CRealConstant r => 
-                CPSBuiltinValue(CPSBvReal r, kcc cc)
+                CPSBuiltinValue(CPSBvReal (NumberParser.toRealValue r), kcc cc)
             | CBoolConstant r => 
                 CPSBuiltinValue(CPSBvBool r, kcc cc)
             | CFfiCCall (cFuncName, args) => 
                 foldr (fn (arg, acc) => 
                     (fn (prevArgs : cpsvalue list) => 
-                    cpsTransformExpr ctx (CExprVar arg) (fn argv => 
+                    cpsTransformExpr ctx (arg) (fn argv => 
                             acc (prevArgs@[CPSValueVar argv])
                         )
                     )
@@ -193,7 +217,22 @@ exception CPSInternalError
             end
             )))
             | CBuiltinFunc(f) =>  CPSBuiltin.cpsTransformBuiltinFunc f cc
-            | _ => raise Fail "cpsp116"
+            (* types *)
+            (* TODO: erase them*)
+            (* temporarily transform all types as unit *)
+            | CProd l => CPSUnit (kcc cc)
+            | CLazyProd l =>  CPSUnit (kcc cc)
+            | CSum l =>  CPSUnit (kcc cc)
+            (* | CFunc (t1,t2) => CPSUnit (kcc cc) *)
+            | CTypeInst (t1,t2) => CPSUnit (kcc cc)
+            | CForall (tv,t2) => CPSUnit (kcc cc)
+            | CExists (tv,t2) => CPSUnit (kcc cc)
+            | CRho (tv,t2) =>  CPSUnit (kcc cc)
+            | CUnitType => CPSUnit (kcc cc)
+            | CNullType => CPSUnit (kcc cc)
+            | CBuiltinType(b) => CPSUnit (kcc cc)
+            | CUniverse => CPSUnit (kcc cc)
+            | _ => raise Fail ("cpsp116: " ^ PrettyPrint.show_typecheckingCExpr originalExpr)
 
         (* val _ = print ("cpsTransformSig result is " ^ PrettyPrint.show_pkcomputation res ^ "cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ 
         " against type" ^ PrettyPrint.show_typecheckingType tt ^
@@ -202,7 +241,8 @@ exception CPSInternalError
         )
 
         handle ListSearchUtil.NotFoundSName sname => 
-            (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " not found \n");
+            (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " ( " ^ 
+            PrettyPrint.show_utf8strings sname ^ " ) not found \n");
             raise CPSInternalError)
         handle CPSInternalError =>
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
@@ -213,6 +253,7 @@ exception CPSInternalError
      :  cpscomputation  =
 
     let 
+       
     in
             (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
             ; *)
@@ -225,8 +266,8 @@ exception CPSInternalError
                 (fn resvar => cc (ctx, SOME resvar)))
              (* cpsTransformExpr ctx e (fn resvar => 
              cc (ctx, SOME resvar)) *)
-        | CTypeMacro _ :: ss => (* ignore type macro during cps *)
-            cpsTransformSig ctx ss useGlobalVar cc
+        (* | CTypeMacro _ :: ss => (* ignore type macro during cps *)
+            cpsTransformSig ctx ss useGlobalVar cc *)
         | CTermDefinition(name, def, tp):: ss =>  
             cpsTransformExpr ctx def 
             (fn resvar =>
@@ -244,6 +285,30 @@ exception CPSInternalError
             (fn resvar =>  (cpsTransformSig (ctx) ss useGlobalVar cc))
         | CImport _ :: ss => 
             cpsTransformSig (ctx) ss useGlobalVar cc
+        | CConstructorDecl (name, ctp, CConsInfoTypeConstructor) :: ss => 
+            let val nargs = countSpineTypeArgs ctp
+            in
+                clams  nargs [] (fn (arglist, ret) => 
+                    CPSUnit (kcc ret)
+                ) 
+                (fn (cloc) => 
+                    cpsTransformSig ((name, PlainVar cloc) :: ctx) ss useGlobalVar cc
+                )
+            end
+
+        | CConstructorDecl(name, tp, CConsInfoElementConstructor(_, index)) :: ss => 
+        let val nargs = countSpineTypeArgs tp
+        (* val _ = DebugPrint.p ("constructor index is " ^ Int.toString index ^ "\n") *)
+        in
+            clams nargs [] (fn (arglist, ret) => 
+            CPSBuiltinValue(CPSBvInt index, kcc (fn indexVal =>
+                CPSTuple(CPSValueVar indexVal :: (map CPSValueVar arglist), kcc ret)
+                ))
+            ) 
+            (fn (cloc) => 
+                cpsTransformSig ((name, PlainVar cloc) :: ctx) ss useGlobalVar cc
+            )
+        end
     end
 
 

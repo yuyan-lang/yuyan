@@ -48,7 +48,7 @@ val DEBUG = true
                         | DErrors l => (Success (UTF8String.fromStringAndFile (TextIO.inputAll (TextIO.openIn fp)) fp, Time.now()), true)
             )
                 val _ = if DEBUG andalso updatedContent then debugPrint 
-                ("cfp: Updated Content success: " ^ Bool.toString (StaticErrorStructure.isSuccess newContent)
+                ("Updated Content success: " ^ Bool.toString (StaticErrorStructure.isSuccess newContent)
                 ^ " updated: " ^ Bool.toString updatedContent
                 ^ "\n") else ()
             in 
@@ -80,7 +80,7 @@ val DEBUG = true
                             (#getPreprocessingAST helperFuncs)
                         , true)
                     val _ = if DEBUG andalso updatedPreprocessingInfo then debugPrint 
-                    ("cfp: Updated Preprocessing success: " ^ Bool.toString (StaticErrorStructure.isSuccess newPreprocessingInfo)
+                    ("Updated Preprocessing success: " ^ Bool.toString (StaticErrorStructure.isSuccess newPreprocessingInfo)
                     ^ " updated: " ^ Bool.toString updatedPreprocessingInfo ^ "\n") else ()
                 in
                     if levelInt <= (levelToInt UpToLevelPreprocessingInfo)
@@ -106,7 +106,7 @@ val DEBUG = true
                             else (ExpressionConstructionPass.constructTypeCheckingASTTopLevel 
                             (StaticErrorStructure.valOf newPreprocessingInfo), true)
                         val _ = if DEBUG andalso updatedTCkingInfo then debugPrint 
-                        ("cfp: Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ 
+                        ("Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ 
                         " updated: " ^ Bool.toString updatedTCkingInfo ^
                         "\n") else ()
                     in

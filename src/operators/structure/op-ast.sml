@@ -10,9 +10,10 @@ struct
 
     type sourceOpInfo = Operators.operator (* should be the operator except rapp *)
    datatype pJudgment = PEmptyDecl 
-                       | PTypeMacro of UTF8String.t * OpAST * sourceOpInfo
+                       (* | PTypeMacro of UTF8String.t * OpAST * sourceOpInfo *)
                        | PTermTypeJudgment of UTF8String.t * OpAST * sourceOpInfo
-                       | PTermMacro of UTF8String.t * OpAST * sourceOpInfo
+                       | PConstructorDecl of UTF8String.t * OpAST * sourceOpInfo
+                       (* | PTermMacro of UTF8String.t * OpAST * sourceOpInfo *)
                        | PTermDefinition of UTF8String.t * OpAST * sourceOpInfo
                        | POpDeclaration of UTF8String.t * Operators.associativity * int * 
                         (UTF8String.t (* assoc original text *)
@@ -23,7 +24,9 @@ struct
                        | PStructure of bool * UTF8String.t  * OpAST(* bool is true if public *) 
                             * sourceOpInfo
                        | POpenStructure of OpAST   * sourceOpInfo
-                       | PReExportStructure of OpAST   * sourceOpInfo
+                       | PReExportStructure of OpAST  * (Operators.operator list * 
+                            (StructureName.t * Operators.operator list) list) * sourceOpInfo
+                            (* ^^ a list of relevant declarations (i.e. structure and op ) that are exported by this reexport *)
                        | PImportStructure of OpAST * FileResourceURI.t * sourceOpInfo
 
     and OpAST = OpAST of (operator * OpAST list )
@@ -32,6 +35,7 @@ struct
                     | OpUnparsedExpr of MixedStr.t * MixedStr.quoteinfo
                     | OpUnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list * MixedStr.quoteinfo
                     | OpParsedQuotedExpr of OpAST * MixedStr.quoteinfo
+                    | OpParsedPairOfQuotes of MixedStr.quoteinfo
                     | OpParsedDecl of (pJudgment * MixedStr.endinginfo) list * MixedStr.quoteinfo
                     | OpStrLiteral of (UTF8String.t * MixedStr.quoteinfo)
     type preprocessAST = (pJudgment * MixedStr.endinginfo) list

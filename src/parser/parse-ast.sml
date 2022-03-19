@@ -24,6 +24,7 @@ open OpAST
                             | QuotedBinding of (UTF8String.t * MixedStr.quoteinfo)
                             | QuotedName of (UTF8String.t * MixedStr.quoteinfo)
                             | StringLiteral of UTF8String.t * MixedStr.quoteinfo
+                            | ParsedPairOfQuotes of (MixedStr.quoteinfo)
                             | UnparsedExpr of (MixedStr.t  * MixedStr.quoteinfo)
                             | UnparsedDecl of (MixedStr.t * MixedStr.endinginfo) list  * MixedStr.quoteinfo (* any quoted thing is treated as unparsed arg *)
                             (* should just go ahead and parse the expression *)
@@ -33,12 +34,5 @@ open OpAST
         exception ParseFailure of string
 
     exception InternalFailure of OpAST * OpAST
-
-    fun opastAppendArg  (original :  OpAST )(arg : OpAST)  : OpAST = 
-        case original of (OpAST (oper, l)) => OpAST(oper, l@[arg])
-                        | _ => raise Fail "past39"
-    fun opastPrependArg  (arg : OpAST) (original :  OpAST ) : OpAST = 
-        case original of (OpAST (oper, l)) => OpAST(oper, arg :: l)
-                        | _ => raise InternalFailure (arg, original)
-    
+   
 end

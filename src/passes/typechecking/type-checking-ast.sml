@@ -20,106 +20,148 @@ structure TypeCheckingAST = struct
                          | BFIntSub
                          | BFIntEq
 
-    datatype Type = TypeVar of StructureName.t
-                    | UnitType
-                    | Prod of (Label * Type) list
-                    | LazyProd of (Label * Type) list
-                    | NullType
-                    | Sum of (Label * Type) list
-                    | Func of Type * Type
-                    | TypeInst of Type * Type
-                    | Forall of TVar * Type
-                    | Exists of TVar * Type
-                    | Rho of TVar * Type
-                    | BuiltinType of BuiltinType
+
 
     datatype visibility = Public | Private
 
+    datatype plicity = Explicit | Implicit
+    datatype cvartype = CVTBinder | CVTDefinition of CExpr | CVTConstructor of StructureName.t * cconstructorinfo (* canonical name and cinfo *)
+                      | CVTBinderDefinition of StructureName.t (* a definition for binder , will map to metavar name, used in pattern matching *)
 
+    and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
+                 | CPatVar of UTF8String.t 
     (* CExpr for checked expr *)
-    datatype CExpr = CExprVar of StructureName.t (* required to be fully qualified name, if not local *)
+    and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
+                                cvartype (* the referenced expression, if not local *)
+                            ) 
+                    | CMetaVar of StructureName.t
                     | CUnitExpr
-                    | CTuple of CExpr list * Type (* type is Prod *)
-                    | CLazyTuple of CExpr list * Type (* type is Prod *)
-                    | CProj of CExpr * Label * Type (* type is Prod *)
-                    | CLazyProj of CExpr * Label * Type (* type is Prod *)
-                    | CInj of Label * CExpr  * Type (* type is  Sum *)
+                    | CTuple of CExpr list * CTypeAnn (* type is Prod *)
+                    | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
+                    | CProj of CExpr * Label * int (* index of the label *) * CTypeAnn (* type is Prod *)
+                    | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
+                    | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
-                    | CCase of (Type (*type is Sum *) * CExpr) * (Label * EVar * CExpr) list * Type (* type is result type *)
-                    | CLam of  EVar * CExpr * Type (* type is Func *)
-                    | CApp of  CExpr * CExpr * Type (* type is Func *)
-                    | CTAbs of TVar * CExpr  * Type(* type is Forall *)
-                    | CTApp of CExpr * Type (* instantiation type *) * Type(* type is Forall *)
-                    | CPack of Type (* pack type *) * CExpr * Type(* type is Exists *)
-                    | COpen of (Type (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * Type(* type is return type *)
-                    | CFold of CExpr  * Type(* type is Rho *)
-                    | CUnfold of CExpr  * Type (* type is Rho *)
-                    | CFix of EVar * CExpr * Type (* type is the typ of the expression *)
+                    | CCase of (CTypeAnn (*type is to be pattern matched *) * CExpr) * 
+                        (CPattern (* pattern *) * CExpr) list * CTypeAnn (* type is result type *)
+                    | CLam of  EVar * CExpr * CTypeAnn (* type is Func *)
+                    | CApp of  CExpr * CExpr * CTypeAnn (* type is Func *)
+                    | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)
+                    | CTApp of CExpr * CExpr (* instantiation type *) * CTypeAnn(* type is Forall *)
+                    | CPack of CExpr (* pack type *) * CExpr * CTypeAnn(* type is Exists *)
+                    | COpen of (CTypeAnn (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * CTypeAnn(* type is return type *)
+                    | CFold of CExpr  * CTypeAnn(* type is Rho *)
+                    | CUnfold of CExpr  * CTypeAnn (* type is Rho *)
+                    | CFix of EVar * CExpr * CTypeAnn (* type is the typ of the expression *)
                     | CStringLiteral of UTF8String.t 
                     | CIntConstant of int
-                    | CRealConstant of real
+                    | CRealConstant of (int * int * int )
                     | CBoolConstant of bool
-                    | CLetIn of CDeclaration list * CExpr * Type (* Type is the result of the declaring expression *)
-                    | CFfiCCall of UTF8String.t * StructureName.t list
+                    | CLetIn of CDeclaration list * CExpr * CTypeAnn (* Type is the result of the declaring expression *)
+                    | CFfiCCall of UTF8String.t * CExpr list
                     | CBuiltinFunc of BuiltinFunc
-                    | CSeqComp of CExpr * CExpr * Type * Type (* type is the type of the second expression *)
+                    | CSeqComp of CExpr * CExpr * CTypeAnn * CTypeAnn (* type is the type of the second expression *)
+                    (* types *)
+                    | CUnitType
+                    | CProd of (Label * CExpr) list
+                    | CLazyProd of (Label * CExpr) list
+                    | CNullType
+                    | CSum of (Label * CExpr) list
+                    (* | CFunc of CExpr * CExpr *)
+                    | CTypeInst of CExpr * CExpr
+                    | CForall of TVar * CExpr
+                    | CExists of TVar * CExpr
+                    | CRho of TVar * CExpr
+                    | CBuiltinType of BuiltinType
+                    | CUniverse 
+                    | CPiType of CExpr * EVar option * CExpr  * plicity
+                    | CSigmaType of CExpr * EVar option * CExpr 
+    
+
+    and cconstructorinfo = CConsInfoTypeConstructor 
+                        | CConsInfoElementConstructor of (StructureName.t (* absolute structure name of the type constructor *)
+                                                        * int  (* unique identifier of the current constructor, starting with 1 *)
+                                                        )
 
 (* all types are fully normalized *)
     and CDeclaration = 
                         (* Do not need type macro becuase all types for later stages have been expanded 
                         CHANGE: for imports/lsp, still need type macro*)
-                        CTypeMacro of StructureName.t * Type 
+                        (* CTypeMacro of StructureName.t * CExpr  *)
                         (* Do not need type info as terms have been annotated *)
-                        (* CTermTypeJudgment of UTF8String.t * Type *)
+                        (* CTermTypeJudgment of UTF8String.t * CType *)
                         (* Fold into Term Definition *)
                        (*  CTermMacro of UTF8String.t * CExpr *)
-                       | CTermDefinition of StructureName.t * CExpr * Type  
-                       | CDirectExpr of CExpr * Type
+                        CTermDefinition of StructureName.t * CExpr * CExpr  
+                       | CDirectExpr of CExpr * CExpr
+                       | CConstructorDecl of StructureName.t * CExpr * cconstructorinfo
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
                        (* | COpenStructure of StructureName.t *)
+    and CTypeAnn = CTypeAnn of CExpr
+                 | CTypeAnnNotAvailable
 
+
+    type CType = CExpr
     (* stores the source level information that directly correponds to opCompString, that can 
     be used to resconstruct the expression *)
     type sourceOpInfo = Operators.operator (* should be the operator except rapp *)
     (* RExpr for raw expr *)
-    datatype RExpr = RExprVar of StructureName.t
-                    | RUnitExpr of sourceOpInfo
+    datatype RExpr = RVar of StructureName.t
+                    | RPairOfQuotes of MixedStr.quoteinfo
+                    | RUnitExpr of UTF8String.t
                     | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RLazyTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RProj of RExpr * Label * sourceOpInfo
                     | RLazyProj of RExpr * Label * sourceOpInfo
                     | RInj of Label * RExpr * sourceOpInfo
                     | RIfThenElse of RExpr * RExpr * RExpr * sourceOpInfo
-                    | RCase of RExpr * (Label * EVar * RExpr) list * (sourceOpInfo  (* top case *)
+                    | RCase of RExpr * ( RExpr (* pattern *) * RExpr (* body *)) list * (sourceOpInfo  (* top case *)
                             * sourceOpInfo list  (* case separator *)
                             * sourceOpInfo list (* case clause *))
-                    | RLam of EVar * RExpr * sourceOpInfo
-                    | RLamWithType of Type * EVar * RExpr * sourceOpInfo
-                    | RApp of RExpr * RExpr * sourceOpInfo (* if op is not app, then custom operators *)
-                    | RTAbs of TVar * RExpr * sourceOpInfo
-                    | RTApp of RExpr * Type * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
-                    | RPack of Type * RExpr * (UTF8String.t * sourceOpInfo)
+                    | RLam of EVar * RExpr * plicity * sourceOpInfo
+                    | RLamWithType of RExpr * EVar * RExpr * sourceOpInfo
+                    | RApp of RExpr * RExpr * plicity * sourceOpInfo (* if op is not app, then custom operators *)
+                    (* | RTAbs of TVar * RExpr * sourceOpInfo *)
+                    | RTApp of RExpr * RExpr * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
+                    | RPack of RExpr * RExpr * (UTF8String.t * sourceOpInfo)
                     | ROpen of RExpr * (TVar * EVar * RExpr) * sourceOpInfo
                     | RFold of RExpr * sourceOpInfo
                     | RUnfold of RExpr * sourceOpInfo
                     | RFix of EVar * RExpr * sourceOpInfo
                     | RStringLiteral of UTF8String.t  * MixedStr.quoteinfo
                     | RIntConstant of int * UTF8String.t
-                    | RRealConstant of real * UTF8String.t
+                    | RRealConstant of (int * int * int ) * UTF8String.t
                     | RBoolConstant of bool * UTF8String.t
                     | RLetIn of RDeclaration list * RExpr * sourceOpInfo
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
                     | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)
                     | RSeqComp of RExpr * RExpr * sourceOpInfo
+                    (* types *)
+                    | RUniverse of UTF8String.t (* a universe is the type of types, (TODO) stratified by level *)
+                    | RPiType of RExpr option * EVar option * RExpr * plicity * sourceOpInfo
+                    | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
+                    | RUnitType of UTF8String.t (* source info *)
+                    | RProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RLazyProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RSum of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RNullType of UTF8String.t (* source info *)
+                    (* | RFunc of RExpr * RExpr * sourceOpInfo *)
+                    | RTypeInst of RExpr * RExpr * sourceOpInfo
+                    | RForall of TVar * RExpr * sourceOpInfo
+                    | RExists of TVar * RExpr * sourceOpInfo 
+                    | RRho of TVar * RExpr * sourceOpInfo 
+                    | RBuiltinType of BuiltinType * UTF8String.t
                     
 
 
     and RDeclaration = 
-                         RTypeMacro of UTF8String.t * Type
-                       | RTermTypeJudgment of UTF8String.t * Type
-                       | RTermMacro of UTF8String.t * RExpr
+                         (* RTypeMacro of UTF8String.t * RExpr *)
+                       (* | *)
+                        RTermTypeJudgment of UTF8String.t * RExpr
+                       | RConstructorDecl of UTF8String.t * RExpr
+                       (* | RTermMacro of UTF8String.t * RExpr *)
                        | RTermDefinition of UTF8String.t * RExpr
                        | RDirectExpr of RExpr
                        | RStructure of bool * UTF8String.t * RDeclaration list
@@ -129,6 +171,7 @@ structure TypeCheckingAST = struct
                        | RImportStructure of (StructureName.t (* name *) * 
                                               FileResourceURI.t  (* file location *)
                                               )
+    type RType = RExpr
 
     type CSignature = CDeclaration list
     type RSignature = RDeclaration list
@@ -136,11 +179,21 @@ structure TypeCheckingAST = struct
 
 (* these exist here for pretty printing *)
 (* g for generic *)
- datatype 'a gmapping = TermTypeJ of StructureName.t * Type  * 'a
-                    | TypeDef of StructureName.t * Type * unit
+ (* the term type J may optionally contain the definition *)
+ datatype judgmentType = JTConstructor of cconstructorinfo 
+                        | JTLocalBinder 
+                        | JTLocalBinderWithDef of StructureName.t (* a pattern match binder with a resolved defintion, which is guaranteed to be a metavariable name by the definition *)
+                        | JTDefinition of CExpr 
+                        | JTPending  (* declaration pending definition *)
+                        | JTMetaVarPendingResolve of UTF8String.t (* the error reporting string when it cannot be resolved *)
+                        | JTMetaVarResolved of CExpr
+ datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a
+                    (* | TermDefJ of StructureName.t * CType * unit *)
 datatype 'a gcontext = Context of StructureName.t * bool * 
     ('a gmapping) list
-    type mapping = (StructureName.t option) gmapping (* original name (for use with open) *)
-    type context = (StructureName.t option) gcontext (* original name (for use with open) *)
+    type mapping = ((StructureName.t * judgmentType) option ) gmapping (* original name and reference (for use with open) *)
+    type context = ((StructureName.t * judgmentType) option ) gcontext (* original name and reference(for use with open) *)
 
+
+    type constraints = (CExpr * CExpr * CType) list
 end

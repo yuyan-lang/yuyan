@@ -8,7 +8,7 @@ yyrt:
 	make -C runtime/ debug
 
 yy:  $(SMLSOURCES)
-	mlton -output yy -verbose 1 src/development.mlb
+	mlton -output yy -verbose 2 src/development.mlb
 
 buildtest:
 	./yy -c yylib/runtest.yuyan -o yy_test
@@ -25,13 +25,7 @@ installDocs : genDocs
 	cp -r ./.yybuild/docs ./docs/autogen/
 
 install:  build
-	cp runtime/libyyrtdebug.a /usr/local/lib/libyuyanlangruntimedebug.a
-	cp runtime/libyyrtopt.a /usr/local/lib/libyuyanlangruntime.a
-	cp yy /usr/local/bin/yuyanlang
-	ln -sf /usr/local/bin/yuyanlang /usr/local/bin/yy
-
-installtest:  buildtest
-	cp yy_test /usr/local/bin/yy_test
+	sh -x install.sh
 
 clean:
 	rm yy
@@ -39,3 +33,9 @@ clean:
 superclean:
 	rm -f yy
 	rm -rf ./.yybuild/*
+
+wasm: 
+	rm -rf wasmbuild
+	mkdir -p wasmbuild
+	mlton -output ./wasmbuild/yywasmll -stop g -codegen llvm  -keep g -verbose 2 src/development.mlb
+	emcc wasmbuild/*.ll wasmbuild/*.c -L/usr/local/lib/mlton/targets/self -lmlton -lgdtoa -lm -lgmp -L/usr/local/opt/gmp/lib  -I/usr/local/lib/mlton/targets/self/include -I/usr/local/lib/mlton/include -I/usr/local/opt/gmp/include  -std=gnu11

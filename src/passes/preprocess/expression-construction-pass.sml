@@ -56,7 +56,9 @@ struct
         case ast of
         NewOpName(l1) => Success (l1)
         | OpParsedQuotedExpr(e, qi) => elaborateNewName e
-        | _ => raise Fail "Expect new name (perhaps internal)"
+        | _ => Success(reconstructOriginalFromOpAST ast) (* truncate the underlying structure and make it a new name, 
+        such that the bindings can be dropped and the ambiguities can be reduced *)
+        (* | _ => raise Fail ("Expect new name (perhaps internal), got " ^ PrettyPrint.show_opast ast) *)
 
     fun elaborateSingleStructure(ast : OpAST)  = 
                         case ast of
@@ -70,83 +72,15 @@ struct
         (* | PrecedenceParser.AmbiguousParse s =>  *)
             (* raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.") *)
     
-    and elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): (Label * Type) witherrsoption = 
+    and elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): (Label * RType * sourceOpInfo) witherrsoption = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 
             oper ~=** labeledTypeCompOp 
-            then elaborateOpASTtoType l2 ctx >>= (fn l2' => Success (l1, l2'))
+            then elaborateOpASTtoExpr l2 ctx >>= (fn l2' => Success (l1, l2', oper))
             else genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
         | _ => genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
 
-    and elaborateOpASTtoType 
-         (ast : OpAST.OpAST) (ctx : contextType) : TypeCheckingAST.Type witherrsoption = 
-        (
-            (* print (PrettyPrint.show_opast ast); *)
-        case ast of
-             UnknownOpName (s) => 
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：字符串》》") then Success(BuiltinType(BIString)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：整数》》") then Success(BuiltinType(BIInt)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：小数》》") then Success(BuiltinType(BIReal)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：动态分类值》》") then Success(BuiltinType(BIDynClsfd)) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：有》》") then Success(UnitType) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(NullType) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：新的外部类型》》") then Success(BuiltinType(BIForeignType(UID.next()))) else
-                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：爻》》") then Success(BuiltinType(BIBool)) else
-                Success(TypeVar [s])
-            | OpUnparsedExpr x => raise Fail "ecp74"
-            | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoType e ctx
-            (* | OpAST(oper, []) => ( *)
-                (* if oper ~=** unitTypeOp then Success(UnitType)
-                else if oper ~=** nullTypeOp then Success(NullType) *)
-                (* else if oper ~=** builtinTypeStringOp then BuiltinType(BIString) *)
-                (* else  *)
-                (* raise InternalErrorECP *)
-                (* genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
-                        ) *)
-            | OpAST(oper, [a1,a2]) => (
-                if oper ~=** prodTypeOp
-                then (let val args = #1 (flattenRight ast oper)
-                    in fmap Prod (collectAll (map (fn x => elaborateLabeledType x ctx) args ))
-                    end)
-                else 
-                if oper ~=** sumTypeOp
-                then (let val args = #1 (flattenRight ast oper)
-                    in fmap Sum (collectAll (map (fn x => elaborateLabeledType x ctx) args))
-                    end)
-                else
-                if oper ~=** functionTypeOp
-                then fmap Func ((elaborateOpASTtoType a1 ctx) =/= (elaborateOpASTtoType a2 ctx))
-                else 
-                if oper ~=** typeInstantiationOp
-                then fmap TypeInst ((elaborateOpASTtoType a1 ctx) =/= (elaborateOpASTtoType a2 ctx))
-                else 
-                if oper ~=** universalTypeOp
-                then fmap Forall ((elaborateNewName a1) =/= (elaborateOpASTtoType a2 ctx))
-                else 
-                if oper ~=** existentialTypeOp
-                then fmap Exists ((elaborateNewName a1) =/= (elaborateOpASTtoType a2 ctx))
-                else 
-                if oper ~=** recursiveTypeOp
-                then fmap Rho ((elaborateNewName a1) =/= (elaborateOpASTtoType a2 ctx))
-                else 
-                if oper ~=** structureRefOp
-                then fmap TypeVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
-                else 
-                if oper ~=** inlineCommentOp
-                then elaborateOpASTtoType a1 ctx
-                else 
-                genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
-                (* raise ElaborateFailure (
-                    "Expected a type constructor 122, got " ^ PrettyPrint.show_op oper ^ " in " 
-                    ^PrettyPrint.show_opast ast ^ "\n") *)
-            )
-            | OpUnparsedDecl t =>  genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式，却遇到了声明块(expected type expression, unexpected declaration block)" NONE
-            | _ => 
-                genSingletonError (reconstructOriginalFromOpAST ast) "期待类型表达式(expecting type expression)" NONE
-            (* raise ElaborateFailure "Expected a type constructor 124" *)
-        )
-        (* handle ElaborateFailure s => 
-        raise ElaborateFailure (s ^ "\n when elaborating type "^ PrettyPrint.show_opast ast ) *)
+    and elaborateOpASTtoType  (ast )( ctx) = elaborateOpASTtoExpr ast ctx
     
     and elaborateOpASTtoExpr  (ast : OpAST.t)(ctx : contextType) : TypeCheckingAST.RExpr witherrsoption = 
     let fun snd (x : OpAST list) : OpAST = (hd (tl x))
@@ -155,18 +89,30 @@ struct
               UnknownOpName (s) => if NumberParser.isNumber s then 
                  (case NumberParser.parseNumber s of 
                     NumberParser.NPInt i => Success (RIntConstant (i, s))
-                    | NumberParser.NPReal r => Success (RRealConstant (r, s))
+                    | NumberParser.NPReal (i1, i2, l) => Success (RRealConstant ((i1, i2,l),  s))
                  )
+                 else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：字符串》》") then Success(RBuiltinType(BIString, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：整数》》") then Success(RBuiltinType(BIInt, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：小数》》") then Success(RBuiltinType(BIReal, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：动态分类值》》") then Success(RBuiltinType(BIDynClsfd, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：有》》") then Success(RUnitType(s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：无》》") then Success(RNullType(s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：新的外部类型》》") then Success(RBuiltinType(BIForeignType(UID.next()), s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：爻》》") then Success(RBuiltinType(BIBool, s)) else
+                if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：元类型》》") then Success(RUniverse(s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阳》》") then Success(RBoolConstant(true, s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阴》》") then Success(RBoolConstant(false, s)) 
+                else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建有：元》》") then Success(RUnitExpr(s)) 
                 else
               (case BuiltinFunctions.parseStr (UTF8String.toString s) of 
                 SOME f => Success(RBuiltinFunc(f, s))
-                | NONE => Success (RExprVar [s])
+                | NONE => Success (RVar [s])
                 )
-            | OpUnparsedExpr x => raise Fail "ecp130"
+            | OpUnparsedExpr x => raise Fail "ecp130: preprocessing parser should have parsed this"
             | OpParsedQuotedExpr (e, qi) => elaborateOpASTtoExpr e ctx
             | OpStrLiteral (l, qi) => Success (RStringLiteral (l, qi))
+            | OpParsedPairOfQuotes(qi) => Success (RPairOfQuotes(qi))
             | OpAST(oper, l) => 
                 let 
                     val operSuc = Success oper
@@ -175,17 +121,17 @@ struct
                     if getUID oper >= elabAppBound 
                     then (* elab app *)
                         collectAll (map (fn x => elaborateOpASTtoExpr x ctx)  l) >>=
-                        (fn l => Success (foldl (fn (arg, acc) => RApp (acc , arg, oper)) (RExprVar [getOriginalName oper]) l))
+                        (fn l => Success (foldl (fn (arg, acc) => RApp (acc , arg, Explicit, oper)) (RVar [getOriginalName oper]) l))
                     else
                     if oper ~=** structureRefOp
-                    then fmap RExprVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
+                    then fmap RVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
                     else
                     if oper ~=** inlineCommentOp
                     then elaborateOpASTtoExpr (hd l) ctx
                     else
-                    if oper ~=** unitExprOp
+                    (* if oper ~=** unitExprOp
                     then Success (RUnitExpr(oper))
-                    else
+                    else *)
                     if oper ~=** projExprOp
                     then fmap RProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
                     else 
@@ -193,7 +139,10 @@ struct
                     then fmap RLazyProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
                     else 
                     if oper ~=** appExprOp
-                    then fmap RApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Explicit, operSuc))
+                    else 
+                    if oper ~=** implicitAppExprOp
+                    then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Implicit, operSuc))
                     else 
                     if oper ~=** pairExprOp
                     then 
@@ -222,15 +171,14 @@ struct
                                 in 
                             elaborateOpASTtoExpr (hd l) ctx >>= (fn hdexpr => 
                             collectAll (map (fn x => case x of
-                                                                OpAST(oper, [lbl, evar, expr]) => 
+                                                                OpAST(oper, [pattern, expr]) => 
                                                                 if oper ~=** caseClauseOp
-                                                                then elaborateUnknownName lbl >>= (fn label => 
-                                                                    elaborateNewName evar >>= (fn binding => 
-                                                                elaborateOpASTtoExpr expr ctx >>= (fn body => 
-                                                                    Success ((label, binding, body), oper)
-                                                                )
-                                                                    )
-                                                                ) 
+                                                                then 
+                                                                    elaborateOpASTtoExpr pattern ctx >>= (fn pattern => 
+                                                                        elaborateOpASTtoExpr expr ctx >>= (fn body => 
+                                                                            Success ((pattern, body), oper)
+                                                                        )
+                                                                    ) 
                                                                 else 
                                                                     genSingletonError (reconstructOriginalFromOpAST x) "期待一个分析分句(expected a case clause)" NONE
                                                                 (* raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x) *)
@@ -246,8 +194,8 @@ struct
                             )
                         end
                     else 
-                    if oper ~=** typeAppExprOp
-                    then fmap RTApp(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoType (snd l) ctx, (operSuc =/= Success (reconstructOriginalFromOpAST (snd l) ))))
+                    if oper ~=** implicitAppExprOp
+                    then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Implicit, (operSuc)))
                     else
                     if oper ~=** ifThenElseExprOp
                     then fmap RIfThenElse(===/= (elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, elaborateOpASTtoExpr (hd (tl (tl l))) ctx, (operSuc)))
@@ -270,7 +218,10 @@ struct
                     then fmap RFfiCCall(==/= (elaborateOpASTtoExpr (hd l) ctx ,elaborateOpASTtoExpr (snd l) ctx, operSuc))
                     else
                     if oper ~=** lambdaExprOp
-                    then fmap RLam(==/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    then fmap RLam(===/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx, Success Explicit, operSuc))
+                    else
+                    if oper ~=** implicitLambdaExprOp
+                    then fmap RLam(===/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx, Success Implicit, operSuc))
                     else
                     if oper ~=** lambdaExprWithTypeOp
                     then fmap RLamWithType (===/= (elaborateOpASTtoType (hd l) ctx, 
@@ -279,10 +230,10 @@ struct
                     if oper ~=** fixExprOp
                     then fmap RFix(==/= (elaborateNewName (hd l) ,
                     elaborateOpASTtoExpr (snd l) ctx, operSuc))
-                    else
+                    (* else
                     if oper ~=** typeLambdaExprOp
                     then fmap RTAbs(==/= (elaborateNewName (hd l), 
-                    elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    elaborateOpASTtoExpr (snd l) ctx, operSuc)) *)
                     else
                     if oper ~=** sequentialCompositionOp
                     then fmap RSeqComp (==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
@@ -303,8 +254,52 @@ struct
                         end
                     )
                     else
+                    if oper ~=** prodTypeOp
+                    then (let val (args, sepOps) = (flattenRight ast oper)
+                        in fmap RProd (collectAll (map (fn x => elaborateLabeledType x ctx) args ) =/= (Success (sepOps)))
+                        end)
+                    else 
+                    if oper ~=** sumTypeOp
+                    then (let val (args, sepOps) = (flattenRight ast oper)
+                        in fmap RSum (collectAll (map (fn x => elaborateLabeledType x ctx) args) =/= (Success sepOps))
+                        end)
+                    else
+                    if oper ~=** functionTypeOp
+                    then fmap RPiType (====/=(fmap SOME (elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), Success Explicit, operSuc))
+                    else 
+                    (* if oper ~=** typeInstantiationOp
+                    then fmap RTypeInst (==/=((elaborateOpASTtoType (hd l) ctx) , (elaborateOpASTtoType (snd l) ctx), operSuc))
+                    else  *)
+                    (* if oper ~=** universalTypeOp
+                    then fmap RForall (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
+                    else  *)
+                    if oper ~=** existentialTypeOp
+                    then fmap RExists (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
+                    else 
+                    if oper ~=** recursiveTypeOp
+                    then fmap RRho (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
+                    else 
+                    if oper ~=** structureRefOp
+                    then fmap RVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
+                    else 
+                    if oper ~=** inlineCommentOp
+                    then elaborateOpASTtoType (hd l) ctx
+                    else 
+                    if oper ~=** piTypeOp
+                    then fmap RPiType (====/=(fmap SOME (elaborateOpASTtoType (hd l) ctx), elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Explicit, Success oper))
+                    else 
+                    if oper ~=** implicitPiTypeOp
+                    then fmap RPiType (====/=(elaborateOpASTtoType (hd l) ctx >>= (fn t1 => Success(SOME(t1))), elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Implicit, Success oper))
+                    else 
+                    if oper ~=** implicitPiNameOnlyTypeOp
+                    then fmap RPiType (====/=(Success NONE, 
+                                            elaborateNewName (hd l) >>= (fn x => Success(SOME(x))), 
+                                            elaborateOpASTtoType (snd l) ctx, Success Implicit, Success oper))
+                    else 
+                    if oper ~=** sigmaTypeOp
+                    then fmap RSigmaType (===/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success oper))
+                    else 
                     genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式结构(expected expression construct)" (SOME "你是否使用了类型表达式？请使用普通表达式。")
-                    (* raise ElaborateFailure "Expected Expression constructs 224" *)
                 )
                 end
             | OpUnparsedDecl t =>  genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式，却遇到了声明块(expected expression, unexpected declaration block)" NONE
@@ -338,12 +333,14 @@ struct
                     (* = constructOpAST xs (insertIntoCurContextOp ctx addedOp) *)
                 in
                 (case x of 
-                    PTypeMacro(tname, tbody, soi) => elaborateOpASTtoType tbody ctx  >>= 
-                            (fn t  => RTypeMacro(tname, t) ::: trailingNoOps())
-                    | PTermTypeJudgment(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
+                    (* PTypeMacro(tname, tbody, soi) => elaborateOpASTtoType tbody ctx  >>= 
+                            (fn t  => RTypeMacro(tname, t) ::: trailingNoOps()) *)
+                     PTermTypeJudgment(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
                             RTermTypeJudgment(ename, t) ::: trailingNoOps())
-                    | PTermMacro(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn e => 
-                            RTermMacro(ename, e) ::: trailingNoOps())
+                    | PConstructorDecl(ename, tbody, soi) => elaborateOpASTtoType  tbody ctx >>= (fn t => 
+                            RConstructorDecl(ename, t) ::: trailingNoOps())
+                    (* | PTermMacro(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn e => 
+                            RTermMacro(ename, e) ::: trailingNoOps()) *)
                     | PTermDefinition(ename, ebody, soi) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 
                         RTermDefinition(ename, eb) ::: trailingNoOps())
                     | POpDeclaration(opName, assoc, pred, soi) => trailingWithOps() 
@@ -369,7 +366,7 @@ struct
                         in
                                 getStructureName(sname) >>= (fn sname => ROpenStructure(sname) ::: constructOpAST xs (ctx))
                         end
-                    | PReExportStructure(sname, soi) =>  (* open will be as if there is a local declaration with 
+                    | PReExportStructure(sname, decls, soi) =>  (* open will be as if there is a local declaration with 
                     the same name as the public members of the structure *)
                         (* ROpenStructure(sname) ::: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname))) *)
                         let 
@@ -393,7 +390,12 @@ struct
      ( ast : PreprocessingAST.t) : TypeCheckingAST.RSignature witherrsoption = 
     let 
         (* val _ = print ("Total "^ Int.toString(List.length ast) ^ " statements\n"); *)
-        val res =  constructOpAST ast  ()
+        val res =  constructOpAST ast  () >>= (fn tcast => 
+            let
+                (* val _ = DebugPrint.p ("DEBUG388: " ^  PrettyPrint.show_typecheckingRSig tcast) *)
+            in Success(tcast) 
+            end
+        )
         (* val _ = print ("Done "^ Int.toString(List.length ast) ^ " statements\n"); *)
     in 
         res end

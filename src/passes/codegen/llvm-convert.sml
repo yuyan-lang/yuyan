@@ -63,18 +63,20 @@ this transforms access of cpsvar
             CPSVarLocal i => LLVMLocationLocal i 
             | CPSVarGlobal i => LLVMLocationGlobal i
     
-    fun notifyFunctionNameToAddrMapping (fname : int) (addr : llvmlocation) = 
-        DebugPrint.p ("LLVM Loc Closure Mapping f" ^ Int.toString fname ^ " = " ^ (case addr of 
+    fun registerFunctionNameToAddrMapping (fname : int) (addr : llvmlocation) = 
+    (
+        (* DebugPrint.p ("LLVM Loc Closure Mapping f" ^ Int.toString fname ^ " = " ^ (case addr of 
             LLVMLocationLocal i => ("l" ^ Int.toString i)
             | LLVMLocationGlobal i => ("g" ^ Int.toString i)
-        ) ^ "\n")
+        ) ^ "\n"); *)
+        ())
 
     fun compileFunctionClosure(funLoc : llvmlocation ) (args : int list) 
             (fvs : int list) (body : cpscomputation)
         (kont : cpscomputation) :  llvmdeclaration list * llvmstatement list  =
             let 
                 val compiledFunctionName = UID.next()
-                val _ = notifyFunctionNameToAddrMapping compiledFunctionName funLoc
+                val _ = registerFunctionNameToAddrMapping compiledFunctionName funLoc
                 val compiledFreeVarsAddr = UID.next()
                 val freeVarsInBody = fvs
                 val (decls, compiledBody) = genLLVM (
@@ -156,10 +158,13 @@ in
             end
             | CPSCases(v, vkl) => 
                 let val indexLoc = UID.next()
-                val recurResult = map (fn (v', k) => 
-                ([], vaccess v (fn accessedv => [LLVMArrayAccess((cpsVarToLLVMLoc v'),accessedv,2)])):::
-                recur k) vkl
-                val recurComps = map (fn x => #2 x) recurResult
+                val recurResult = map (fn (index, arglist, k) => 
+                ([], vaccess v (fn accessedv => 
+                List.tabulate(length arglist, fn i => 
+                    LLVMArrayAccess((cpsVarToLLVMLoc (List.nth(arglist, i))),accessedv,i+1) (* first location stores in the index of the constructor
+                    and the rest stores the arguments *)
+                )))::: recur k) vkl
+                val recurComps = ListPair.mapEq (fn ((idx, arglist, k), x) => (idx, #2 x)) (vkl, recurResult)
                 val recurDecls = List.concat (map (fn x => #1 x) recurResult)
                 in (recurDecls, 
                     vaccess v (fn v' => [LLVMArrayAccess(LLVMLocationLocal indexLoc,v',0)])

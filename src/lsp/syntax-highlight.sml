@@ -73,7 +73,7 @@ open CompilationManager
     val (_, result) = 
         foldl (fn (Token(s,TokenInfo tktp), 
             ((pls, pcs), data))=> 
-            let val SourceRange.StartEnd(_, ls, cs, le, ce) = UTF8String.getSourceRange s
+            let val SourceRange.StartEnd(_, ls, cs, le, ce) = UTF8String.getSourceRange s "sh76"
             in
             ((ls, cs),
             data@[ls - pls, 
