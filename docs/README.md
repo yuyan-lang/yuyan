@@ -18,7 +18,11 @@
 
 ## 安装
 
-详见[`安装指南`](InstallationInstruction.md)
+最新的预编译好的包可以从[Build Artifacts](https://github.com/yuyan-lang/yuyan/actions/workflows/main.yml)中下载。下载后请运行`sh install.sh`进行安装。
+
+若要从源代码文件编译，请参见[`安装指南`](InstallationInstruction.md)
+
+
 
 ## 运行
 
