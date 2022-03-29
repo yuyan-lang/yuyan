@@ -380,7 +380,7 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
     LLVMFunction (fname, args, body) => 
         ["define i64 "^ toFunctionName fname ^ "(" 
             ^ String.concatWith ", " (map (fn arg => "i64* "^ toLocalVar arg ) args)
-            ^ ") {"
+            ^ ") alwaysinline {"
             ]@(List.concat (map genLLVMStatement body))@
             ["}"]
     (* | LLVMIntConstant(name, i) => 

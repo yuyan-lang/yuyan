@@ -10,6 +10,9 @@ yyrt:
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
 
+yyllvm:  $(SMLSOURCES)
+	mlton -codegen llvm -output yy -verbose 2 src/development.mlb
+
 buildtest:
 	./yy -c yylib/runtest.yuyan -o yy_test
 
