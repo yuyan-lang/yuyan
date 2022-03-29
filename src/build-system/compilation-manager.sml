@@ -135,6 +135,7 @@ a new module is added with root Path being the file's residing directory *)
     (profile : bool) 
     (uselocallib : bool) 
     (outputFilePath : filepath)
+    (additionalClangOptions : string)
     : unit witherrsoption  = 
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
         in case CompilationFileOps.getFileDiagnostics (CompilationStructure.CompilationFile cfile) of 
@@ -156,6 +157,7 @@ a new module is added with root Path being the file's residing directory *)
             ^ (getOSSpecificClangOption())
             ^" -o "  
             ^ (access outputFilePath)
+            ^ " " ^ additionalClangOptions
             ^ " -save-temps=obj -L /usr/local/lib -l gc -l uv -l matplot -l stdc++ -Wno-override-module)"
             val _ = DebugPrint.p (cmd ^ "\n")
             val ret = OS.Process.system (cmd)

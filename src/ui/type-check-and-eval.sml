@@ -50,8 +50,9 @@ open ReplOptions
                     else
                             let
                                 val exec = CompilationManager.makeExecutable entryFileAbsFp cm (#optimize options) (getEnableProfiling options) 
-                                    (getUselocallib options)
+                                    (getUselocallib options) 
                                 outputFilePath
+                                (case getClangOptions options of NONE => "" | SOME opt => opt)
                                 val executeTime = Time.now()
                                 val exitSt = case exec of 
                                     Success _ => (

@@ -23,6 +23,7 @@ structure ArgumentParser = struct
             | (ArgShowVersion, NONE) => (setShowVersion current true)
             | (ArgShowAbout, NONE) => (setShowAbout current true)
             | (ArgTypeCheckOnly, NONE) => (setTypeCheckOnly current true)
+            | (ArgClangOptions, SOME opt) => (setClangOptions current (SOME opt))
             | _ => raise Fail "ap24"
     
             
