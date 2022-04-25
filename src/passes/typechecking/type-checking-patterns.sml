@@ -19,7 +19,9 @@ structure TypeCheckingPatterns = struct
 
     (* returns a new context with the bindings added from well defined pattern  *)
     (* all implicit arguments will be inserted into the pattern with a dummy name *)
-    fun checkPattern(ctx : context) ( pat : RExpr ) (analysisType : CType) : (CPattern * context) witherrsoption = 
+    fun checkPattern(ctx : context) ( pat : RExpr ) (analysisType : CType)
+    (defConstraint : StructureName.t option)(* if sepcified, the name will be considered equal to the specified value *)
+     : (CPattern * context) witherrsoption = 
     let val (head,spine) = toHeadSpineForm ctx pat
 
         (* insert metavars for all pi constructs, and unify the 
@@ -114,9 +116,19 @@ structure TypeCheckingPatterns = struct
             RVar(name) => 
                 (case findCtx ctx name of
                     NONE => (* head not found in the context, check if spine empty *)
-                        if length spine = 0  andalso length name = 0 (* variable must be simple name *)
-                        then Success(CPatVar(hd name), addToCtxA (TermTypeJ(name, analysisType, JTLocalBinder, NONE)) ctx)
-                        else Errors.unboundTermConstructor head ctx
+                        if length spine = 0  andalso length name = 1 (* variable must be simple name *)
+                        then Success(CPatVar(hd name), addToCtxA (TermTypeJ(name, analysisType, 
+                        (case defConstraint of 
+                            NONE => JTLocalBinder
+                            | SOME y => JTLocalBinderWithDef y
+                        )
+                            , NONE)) ctx)
+                        else (
+                            (* DebugPrint.p  *)
+                            (* ("length spine = " ^ Int.toString (length spine)
+                            "n" *)
+                            Errors.unboundTermConstructor head ctx
+                        )
                     | SOME(cname, tp, jtp) =>
                         (* retrieve the constructor info *)
                         retrieveCInfo jtp >>= (fn cinfo =>
