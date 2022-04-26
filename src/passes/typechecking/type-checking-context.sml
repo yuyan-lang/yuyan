@@ -3,6 +3,7 @@ structure TypeCheckingContext = struct
 
 open TypeCheckingAST
 open StaticErrorStructure
+infix 5 >>=
     val show_jt = PrettyPrint.show_typecheckingjt
     fun showctx (x : context) (full : bool) = (case x of 
     Context(curSName, curVis, m) =>  
@@ -47,6 +48,15 @@ open StaticErrorStructure
                         )
             val ntp = SOME(lookupMapping ctx n curSName)
                 handle LookupNotFound => NONE
+            (* val _ = DebugPrint.p ("finding " ^ StructureName.toStringPlain n ^ " in ctx "
+             ^ PrettyPrint.show_typecheckingpassctx (Context(curSName, v, ctx))
+            ^ "result is "  ^ (
+                case ntp of 
+                    SOME(name, t, jt) => StructureName.toStringPlain name ^ " : " ^ PrettyPrint.show_typecheckingCType t ^ " " ^ PrettyPrint.show_typecheckingjt jt
+                    | NONE => "NONE"
+                )
+            ^ "\n"
+            ) *)
         in 
             ntp 
         end
@@ -87,7 +97,8 @@ open StaticErrorStructure
     fun modifyCtxDeleteBinding (ctx : context) (cname : StructureName.t)  : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
                 JTLocalBinder => NONE
-                | _ => raise Fail ("tcc58: jtp is not jtlocalbinder pending resolve but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
+                | JTLocalBinderWithDef _ => NONE
+                | _ => raise Fail ("tcc58: jtp is not jtlocalbinder or jtlocalbinderwithdef but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
             )
     
 
@@ -143,7 +154,18 @@ open StaticErrorStructure
     val addToCtxAL = appendAbsoluteMappingsToCurrentContext (* L for list *)
     val addToCtxRL = appendRelativeMappingsToCurrentContext (* L for list *)
     
-
+    fun withLocalBinder (ctx : context) (name : UTF8String.t) (tp : CType)
+        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
+         kont (addToCtxA (TermTypeJ([name], tp, JTLocalBinder, NONE)) ctx) >>= (fn (res, ctx) => 
+            Success(res, modifyCtxDeleteBinding ctx [name])
+        )
+        
+    fun withLocalBinderWithDefinition (ctx : context) (name : UTF8String.t) (tp : CType) (def : StructureName.t)
+        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
+         kont (addToCtxA (TermTypeJ([name], tp, JTLocalBinderWithDef def , NONE)) ctx) >>= (fn (res, ctx) => 
+            Success(res, modifyCtxDeleteBinding ctx [name])
+        )
+        
   
 
         

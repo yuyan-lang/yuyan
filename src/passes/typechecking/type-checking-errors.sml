@@ -189,7 +189,7 @@ structure TypeCheckingErrors =
     fun notATypeConstructor e ctx = exprError e ctx "不是一个类型构造器"
 
     fun unboundTermConstructor e ctx = exprError e ctx "元素构造器未找到(unbound term constructor)"
-    fun expectedTermConstructor e ctx = exprError e ctx "期待元素构造器(expected element constructor)"
+    fun expectedTermConstructor e ctx msg = exprError e ctx ("期待元素构造器(expected element constructor)"^ msg)
     fun unsupportedPatternType e ctx = exprError e ctx "不支持的模式匹配类型(unsupported pattern type)"
     fun patternArgumentCountMismatch e ctx expected actual = exprError e ctx 
         ("模式匹配参数数量错误，期待" ^ Int.toString expected ^ "个参数，" ^

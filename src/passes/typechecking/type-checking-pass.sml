@@ -161,12 +161,7 @@ infix 5 <?>
     
     structure Errors = TypeCheckingErrors
     
-    fun withLocalBinder (ctx : context) (name : UTF8String.t) (tp : CType)
-        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
-         kont (addToCtxA (TermTypeJ([name], tp, JTLocalBinder, NONE)) ctx) >>= (fn (res, ctx) => 
-            Success(res, modifyCtxDeleteBinding ctx [name])
-        )
-        
+
     
      fun addNewMetaVar (ctx : context)  (tp : CType)
      (errReporting : UTF8String.t) : (CExpr * context) witherrsoption =
@@ -388,7 +383,7 @@ infix 5 <?>
                         weakHeadNormalizeType e ctx t >>= (fn caseObjectTypeNormalized => 
                             let 
                                 val checkedPatternsAndCases = (foldMapCtx ctx (fn ((pat, e), ctx) => 
-                                    checkPattern ctx pat caseObjectTypeNormalized NONE >>= (fn (cpat, newCtx) => 
+                                    checkPattern ctx pat caseObjectTypeNormalized NONE (fn (cpat, newCtx) => 
                                         synthesizeType newCtx e >>= (fn ((synE, synT), ctx) => 
                                             Success((cpat, (synE, synT)), ctx)
                                         )
@@ -690,7 +685,7 @@ infix 5 <?>
                         | RCase(e,cases, soi) => (synthesizeType ctx e) >>= (fn ((ce, synt), ctx) => 
                             weakHeadNormalizeType e ctx synt >>= (fn caseTpNormalized => 
                                 (foldMapCtx ctx (fn ((pat, e), ctx) => 
-                                    checkPattern ctx pat caseTpNormalized NONE >>= (fn (cpat, newCtx) => 
+                                    checkPattern ctx pat caseTpNormalized NONE (fn (cpat, newCtx) => 
                                             checkType newCtx e tt >>= (fn (checkedCase, ctx) => 
                                                 Success((cpat, checkedCase), ctx)
                                             )
