@@ -240,6 +240,19 @@ fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
             [toLLVMLoc r ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i64"]
         | LLVMPOpIntToValue(r, i1) => 
             [toLLVMLoc r ^ " = inttoptr i64 " ^ toLLVMValue i1 ^ " to i64*"]
+        | LLVMPopBoolAnd(r, i1, i2) => 
+            [toLLVMLoc r ^ " = and i1 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPopBoolAndWithConversion(r, i1, i2) => 
+        let val i1loc = UID.next()
+            val i2loc = UID.next()
+            val rloc = UID.next()
+        in
+            [ toLocalVar i1loc ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i1", 
+             toLocalVar i2loc ^ " = ptrtoint i64* " ^ toLLVMValue i2 ^ " to i1", 
+            toLocalVar rloc ^ " = and i1 " ^ toLocalVar i1loc ^ ", " ^ toLocalVar i2loc, 
+            toLLVMLoc r ^ " = inttoptr i1 " ^ toLocalVar rloc ^ " to i64* "
+            ]
+        end
 
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
@@ -315,6 +328,21 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             toBlockNameLabel fLabelName ^ ":"
             ]@ (List.concat (map genLLVMStatement fb))
         end
+        | LLVMRaiseException(LLVMExceptionMatch v) => 
+            let val defaultBlockName = UID.next()
+            in
+                [
+                        toBlockNameLabel defaultBlockName  ^ ":",
+                        toLocalVar (UID.next()) ^ " = call i64 @matchException("
+                        ^ "i64 " 
+                        ^ toLLVMLoc v 
+                        ^ ")",
+                        "br label " ^ toBlockNameJump defaultBlockName  
+                        (* jump to self (no other things we can do) ,
+                        assume internalError kills the process, 
+                        TODO: raise Match exception *)
+                    ]
+            end
 
         | LLVMCall(fname, args) => 
         let val castedFname = UID.next()
@@ -368,6 +396,14 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         ]
         )
         end
+        | LLVMStoreLocal(dst, src) => let 
+                val temp = UID.next()
+            in 
+            [
+                toLocalVar temp ^ " = ptrtoint i64* " ^ toLLVMLoc src ^ " to i64",
+                toLLVMLoc dst ^ " = inttoptr i64 " ^ toLocalVar temp ^ " to i64*"
+            ]
+            end
         | LLVMComment s => 
         [
             ";" ^ s

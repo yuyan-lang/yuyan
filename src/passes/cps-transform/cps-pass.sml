@@ -99,9 +99,34 @@ exception CPSInternalError
                     (fn v => CPSInj(l, klookupLabel ls l, CPSValueVar v, kcc cc)
             )
             | CCase((_, e),cases, resType) => 
-            (cpsTransformExpr ctx e) (fn v => 
-                    CPSCases (CPSValueVar v, (map (fn (pat, body) =>
-                        case pat of 
+
+                (cpsTransformExpr ctx e) (fn v => 
+                        CPSCases (CPSValueVar v, (map (fn (pat, body) =>
+                    let 
+                        fun toCPSPattern (ctx : context)(pat : CPattern) : cpspattern * context  = 
+                            case pat of 
+                                CPatVar x => let 
+                                    val localvar = CPSVarLocal (UID.next())
+                                    in ((CPSPatVar (localvar)), ([x], PlainVar localvar)::ctx)
+                                    end
+                                | CPatHeadSpine((hdname, cinfo), spinepats) =>  
+                                    (case cinfo of 
+                                            CConsInfoElementConstructor(_, index) =>  
+                                                (let val (bodyPats, ctx) = foldl (fn (pat, (accl, ctx)) =>  
+                                                            let val (cpspat, ctx) = toCPSPattern ctx pat 
+                                                            in (accl@[cpspat], ctx)
+                                                        end) ([], ctx) spinepats
+                                                in (CPSPatHeadSpine(index, bodyPats), ctx)
+                                                end)
+                                            | _ => raise Fail "ni107: unsupported patterns"                                  
+                                    )
+                        val (cpspattern, ctx)  = toCPSPattern ctx pat
+                    in 
+                        (cpspattern, cpsTransformExpr ctx body cc)
+                    end
+                    ) cases )))
+
+                        (* case pat of 
                             CPatVar x => raise Fail "ni103: cps unsupported (yet) patterns"
                             | CPatHeadSpine((hdname, cinfo), spinepats) => 
                                 (case cinfo of 
@@ -123,7 +148,7 @@ exception CPSInternalError
                                     | _ => raise Fail "ni107: unsupported patterns"
                                     )
                                 ) cases)) 
-            )
+            ) *)
             | CLam(ev, eb, t) => 
                 CPSAbs (kcc2' (fn arg => fn ret =>
                     cpsTransformExpr ((([ev], PlainVar (CPSVarLocal arg)))::ctx) eb 

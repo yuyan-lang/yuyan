@@ -29,7 +29,8 @@ datatype cpsvar =  CPSVarLocal of int
                 (* | CPSCases of cpsvalue * (int * (* constructor id *) 
                 cpsvar list (* bound args *) 
                 * cpscomputation) list  *)
-                | CPSCases of cpsvalue * (int * (* constructor id *) cpsvar list (* bound args *) * cpscomputation) list 
+                | CPSSimpleCases of cpsvalue * (int * (* constructor id *) cpsvar list (* bound args *) * cpscomputation) list 
+                | CPSCases of cpsvalue * (cpspattern * cpscomputation) list 
                 | CPSIfThenElse of cpsvalue * cpscomputation * cpscomputation (* there is a bug in designing this case and the cases clause, the cc is being translated twice!!, maybe we need to fix it. !!! TODO!!!*)
                 | CPSUnfold of cpsvalue * (cpsvar * cpscomputation) 
                 | CPSApp of cpsvalue  * (cpsvalue * cpsvalue) (* !!! *)

@@ -425,6 +425,18 @@ in
   "[CPSBuiltin: " ^ realStr ^ "]"
       end
     
+fun show_cpspat (c : CPSAst.cpspattern) = 
+let
+open CPSAst
+in
+(case c of
+CPSPatVar v => show_cpsvar v
+| CPSPatHeadSpine (cid, args) =>  "(cid "^ Int.toString cid ^ " ⋅ " 
+^ String.concatWith ", " (map show_cpspat args)
+^")"
+)
+end
+
     
 fun show_cpscomputation  (c : CPSAst.cpscomputation) : string = 
 let 
@@ -440,9 +452,14 @@ in
 case c of
               CPSUnit(k) => "()" ^ sk k
             | CPSProj(v, i, k) => "(" ^ sv v ^ " . " ^ si i ^ ")" ^ sk k
-            | CPSCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
+            | CPSSimpleCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
     String.concatWith "; " (map (fn (index, arglist, c) => Int.toString index  ^ " ⋅ " ^
     String.concatWith ","  (map show_cpsvar arglist)
+    ^ " => " ^ sc c) l)
+    ^ "}"
+            | CPSCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
+    String.concatWith "; " (map (fn (pat, c) => 
+    show_cpspat pat
     ^ " => " ^ sc c) l)
     ^ "}"
             | CPSUnfold(v, k) => "unfold (" ^ sv v ^ ")" ^ sk k

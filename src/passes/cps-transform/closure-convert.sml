@@ -8,6 +8,7 @@ fun cpsvarToL i = (
         case i of CPSVarLocal i => [i]
         | CPSVarGlobal _ => [])
 
+
 fun closureConvertCont ( (i, c) : cpscontinuation) : IntSet.set * cpscontinuation =
     let val (cfree, c') = closureConvert c
     in (remove cfree (cpsvarToL i) , (i, c')) end
@@ -17,6 +18,10 @@ let val cck  = closureConvertCont
     fun fvi (CPSValueVar v) : int list = cpsvarToL v
     fun ***(a,b) = IntSet.union a b
     infix 4 ***
+    fun getFreeVarsInPat (pat : cpspattern) : int list = 
+        case pat of 
+            CPSPatVar v => (cpsvarToL v)
+            | CPSPatHeadSpine (_, args) => List.concat (map getFreeVarsInPat args)
 
     fun closureConvertCPSPop(x : cpsprimitiveop) : (IntSet.set * cpscomputation) = 
         let fun closureConvertBinaryPop((v1, v2, k) : cpsvalue * cpsvalue * cpscontinuation) 
@@ -38,10 +43,19 @@ in
                 let val (kfree, k') = cck k
                 in (fv v *** kfree, CPSProj(v, i, k'))
                 end
-        | CPSCases(v, ks) => 
+        | CPSSimpleCases(v, ks) => 
             let val fks' = map (fn (index, args, body) => 
                 let val (cfree, c') = closureConvert body
                 in (remove cfree (List.concat (List.map cpsvarToL args)), (index, args, c'))
+                end
+            ) ks
+            in ((fv v *** (foldr (op***) (fromList []) (map (fn x => #1 x) fks')),
+                CPSSimpleCases(v, map (fn x => #2 x) fks')))
+            end
+        |  CPSCases(v, ks) => 
+            let val fks' = map (fn (pat, body) => 
+                let val (cfree, c') = closureConvert body
+                in (remove cfree (getFreeVarsInPat pat), (pat, c'))
                 end
             ) ks
             in ((fv v *** (foldr (op***) (fromList []) (map (fn x => #1 x) fks')),
