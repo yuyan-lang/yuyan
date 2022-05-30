@@ -332,9 +332,10 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             let val defaultBlockName = UID.next()
             in
                 [
+                        "br label " ^ toBlockNameJump defaultBlockName, 
                         toBlockNameLabel defaultBlockName  ^ ":",
                         toLocalVar (UID.next()) ^ " = call i64 @matchException("
-                        ^ "i64 " 
+                        ^ "i64* " 
                         ^ toLLVMLoc v 
                         ^ ")",
                         "br label " ^ toBlockNameJump defaultBlockName  
@@ -464,7 +465,7 @@ fun genLLVMSignatureWithMainFunction ((entryFunc,s) : llvmsignature)  : string l
         (* declare runtime functions *)
         "declare i64* @allocateArray(i64)",
         "declare i64 @internalError()",
-        "declare i64 @matchException(i64)",
+        "declare i64 @matchException(i64*)",
         "declare i64 @informResult(i64*)"
         ]@genSig
 end

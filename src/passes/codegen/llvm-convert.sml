@@ -9,6 +9,8 @@ fun zipCons (e1, e2) (a, b) = (e1@a, e2 @ b)
 
 fun ::: (x, y) = zipCons x y
 
+fun withNewLoc (f : int -> 'a) : 'a = f (UID.next())
+
 infix 4 :::
 
 fun llvmLocToValue (x : llvmlocation) : llvmvalue = case x of 
@@ -112,58 +114,71 @@ this transforms access of cpsvar
 
 
         fun testAndCompileCPSPattern (subject : llvmlocation) 
-            (resultBoolLocation : llvmlocation) (cpspattern : cpspattern) : llvmstatement list = 
+             (cpspattern : cpspattern) 
+             (* location that stores whether we should proceed *)
+             (cc : llvmlocation -> llvmstatement list) : llvmstatement list
+              = 
             case cpspattern of 
                 CPSPatVar cpsvar => 
-                [LLVMStoreLocal (cpsVarToLLVMLoc cpsvar, subject), 
-                                    LLVMStoreBool(resultBoolLocation, true)
-                ]
-                | CPSPatHeadSpine(cid, arglist) => 
-                let val indexLoc = UID.next()
-                    val indexValLoc = UID.next()
-                    val cmpBoolLoc = UID.next()
-                    val argResultBool = List.tabulate(length arglist, fn _ => (UID.next()))
-                    val reductionBoolLocs = List.tabulate(length arglist+1, fn _ => (UID.next()))
-                    (* first in reduction always true, result in last *)
+                let val resultBoolLocation = LLVMLocationLocal (UID.next())
                 in
-                        [LLVMArrayAccess(LLVMLocationLocal indexLoc, subject, 0) (* store the index *), 
-                        LLVMPrimitiveOp(LLVMPOpValueToInt(LLVMLocationLocal indexValLoc, LLVMLocalVar indexLoc)),
-                        LLVMPrimitiveOp(LLVMPOpCmpEqInt(LLVMLocationLocal cmpBoolLoc, LLVMLocalVar indexValLoc, LLVMIntConst cid)), 
-                        LLVMComment "(pattern matching) jumping based on the whether constructor id matches the pattern",
-                        LLVMConditionalJumpBinary(LLVMLocationLocal cmpBoolLoc, 
-                            (* get each argument and collect the result *)
-                            (
-                                List.concat(List.tabulate(length arglist, fn i => 
-                                    let val r = LLVMLocationLocal (List.nth(argResultBool, i))
-                                        val s = UID.next()
-                                        val pat = List.nth(arglist, i)
-                                    in
-                                        [
-                                            LLVMArrayAccess(LLVMLocationLocal s, subject, i+1)
-                                        ]@(testAndCompileCPSPattern (LLVMLocationLocal s) r pat)
-                                    end
-                                ))@[
-                                    LLVMStoreBool(LLVMLocationLocal (List.nth(reductionBoolLocs, 0)), true)
-                                ]@(
-                                    List.tabulate(length argResultBool, 
-                                        fn i => 
-                                        LLVMPrimitiveOp(LLVMPopBoolAndWithConversion(LLVMLocationLocal (List.nth(reductionBoolLocs, i+1)), 
-                                            LLVMLocalVar (List.nth (reductionBoolLocs, i)), 
-                                            LLVMLocalVar (List.nth (argResultBool, i))
-                                        ))
-                                    )
-                                )@[
-                                    LLVMPrimitiveOp(LLVMPopBoolAndWithConversion(resultBoolLocation, 
-                                        LLVMLocalVar (List.last(reductionBoolLocs)), 
-                                        LLVMLocalVar (List.hd(reductionBoolLocs)) (* and true for storage *)
-                                    ))
-                                ]
-                            )
-                            ,
-                            [LLVMStoreBool(resultBoolLocation, false)] (* exit, not equal *)
-                        )
-                        ]
+                    [LLVMStoreLocal (cpsVarToLLVMLoc cpsvar, subject), 
+                    LLVMStoreBool(resultBoolLocation, true)
+                    ]@(cc (resultBoolLocation))
                 end
+                | CPSPatHeadSpine(cid, arglist) => 
+                (
+                    let 
+                        val indexLoc = UID.next()
+                        val indexValLoc = UID.next()
+                        val cmpBoolLoc = UID.next()
+                        (* val argResultBool = List.tabulate(length arglist, fn _ => (UID.next()))
+                        val reductionBoolLocs = List.tabulate(length arglist+1, fn _ => (UID.next())) *)
+                        (* first in reduction always true, result in last *)
+                    in
+                            [LLVMArrayAccess(LLVMLocationLocal indexLoc, subject, 0) (* store the index *), 
+                            LLVMPrimitiveOp(LLVMPOpValueToInt(LLVMLocationLocal indexValLoc, LLVMLocalVar indexLoc)),
+                            LLVMPrimitiveOp(LLVMPOpCmpEqInt(LLVMLocationLocal cmpBoolLoc, LLVMLocalVar indexValLoc, LLVMIntConst cid)), 
+                            LLVMComment "(pattern matching) jumping based on the whether constructor id matches the pattern",
+                            LLVMConditionalJumpBinary(LLVMLocationLocal cmpBoolLoc, 
+                                (* get each argument and collect the result *)
+                                (
+                                    let fun handleArgList l curIdx (* curIdx is the current index of next pattern *)= 
+                                            let
+                                                val resultBoolLocation = LLVMLocationLocal (UID.next())
+                                            in
+                                            case l of 
+                                            [] => [LLVMStoreBool(resultBoolLocation, true)]@(cc resultBoolLocation) (* exit, not equal *)
+                                            | (pat) :: rest => 
+                                                let val subsubjectLoc = UID.next()
+                                                    val i1BoolLoc = UID.next()
+                                                in 
+                                                [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+1)]@
+                                                testAndCompileCPSPattern (LLVMLocationLocal subsubjectLoc) pat 
+                                                    (fn (LLVMLocationLocal subComparisonBoolLoc) =>  (* TODO : fix conditional jump to use i64* boolean *)
+                                                        [  LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1BoolLoc, LLVMLocalVar subComparisonBoolLoc)),
+                                                            LLVMConditionalJumpBinary(LLVMLocationLocal i1BoolLoc, 
+                                                            handleArgList rest (curIdx + 1),
+                                                            [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation)
+                                                        )]
+                                                        | _ => raise Fail "llvm160"
+                                                    )
+                                                end
+                                        end
+                                    in
+                                        handleArgList arglist 0
+                                    end
+                                )
+                                ,
+                                (let
+                                    val resultBoolLocation = LLVMLocationLocal (UID.next())
+                                in 
+                                    [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation) (* exit, not equal *)
+                                end)
+                            )
+                            ]
+                    end
+                )
 
     fun compilePrimitiveOp(cpspop : cpsprimitiveop) : llvmdeclaration list * llvmstatement list = 
         let fun vaccessInt(v : cpsvalue) (accessed : llvmlocation -> llvmstatement list)  : llvmstatement list = 
@@ -228,25 +243,36 @@ in
                 end
             | CPSCases(v, cases) => 
                     let
-                        fun compileCases cases v : llvmdeclaration list * llvmstatement list = case cases of 
-                            [] => ([] , vaccess v (fn v' => [
+                        val decls = ref []
+                        fun compileCases cases v : llvmstatement list = case cases of 
+                            [] => (vaccess v (fn v' => [
                                 LLVMComment "run out of patterns, throw exception",
                                 LLVMRaiseException(LLVMExceptionMatch v')]))
                             | (pat, body)::rest => 
-                                let val rbool = UID.next()
-                                    val (bodyDecls, bodyComps) = recur body
-                                    val (nextDecls, nextComps) = compileCases rest v
+                                let
                                 in
-                                    (bodyDecls@nextDecls, vaccess v (fn v' => testAndCompileCPSPattern v' (LLVMLocationLocal rbool) pat
-                                    @[
-                                        LLVMComment "finished testing pattern, branching on whether test succeeded",
-                                        LLVMConditionalJumpBinary(LLVMLocationLocal rbool, 
-                                            bodyComps, nextComps
-                                        )
-                                    ]))
+                                    ( vaccess v (fn v' => testAndCompileCPSPattern v' pat (
+                                        fn (LLVMLocationLocal rboolLoc) => 
+                                        withNewLoc (fn i1rboolLoc => 
+                                            let 
+                                                val (bodyDecls, bodyComps) = recur body
+                                                val _ = decls := (!decls) @(bodyDecls)  (* TODO: fix the hack *)
+                                                val (nextComps) = compileCases rest v
+                                            in
+                                                [
+                                                    LLVMComment "finished testing pattern, branching on whether test succeeded",
+                                                    LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1rboolLoc, LLVMLocalVar rboolLoc)), 
+                                                    LLVMConditionalJumpBinary(LLVMLocationLocal i1rboolLoc, 
+                                                        bodyComps, nextComps
+                                                    )
+                                                ]
+                                            end)
+                                        | _ => raise Fail "llvm256" (*TODO: conditional jump should take i64* *)
+                                        ))
+                                    )
                                 end
                     in
-                    compileCases cases v
+                    (!decls, compileCases cases v)
                     end
             | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(LLVMArrayTypeFold, (cpsVarToLLVMLoc t),[llvmLocToValue v'])])) ::: recur k
             | CPSUnfold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess((cpsVarToLLVMLoc t),v',0)])) ::: recur k
