@@ -118,6 +118,9 @@ this transforms access of cpsvar
              (* location that stores whether we should proceed *)
              (cc : llvmlocation -> llvmstatement list) : llvmstatement list
               = 
+              (* the reason for failure is that cc is invoked multiple times, 
+              and thus multiple identical code pieces have been generated. 
+              The solution is to fix this problem by generating only once *)
             case cpspattern of 
                 CPSPatVar cpsvar => 
                 let val resultBoolLocation = LLVMLocationLocal (UID.next())
