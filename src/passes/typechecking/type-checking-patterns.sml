@@ -121,7 +121,10 @@ structure TypeCheckingPatterns = struct
                     )
                  end
                    
-                | (_, []) => tryTypeUnify ctx pat ctype analysisType >>= (fn (ctx) => (( kont (accCVar, ctx))))
+                | (_, []) => 
+                if length restSpine > 0 
+                then TypeCheckingErrors.genericError (#2 (hd restSpine)) ctx "多余的参数"
+                else tryTypeUnify ctx pat ctype analysisType >>= (fn (ctx) => (( kont (accCVar, ctx))))
                 | (_, (h::t)) =>  raise Fail "the indices count does not match up"
         
         fun retrieveCInfo (jtp : judgmentType) : cconstructorinfo witherrsoption= 
