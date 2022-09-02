@@ -115,8 +115,10 @@ this transforms access of cpsvar
 
         fun testAndCompileCPSPattern (subject : llvmlocation) 
              (cpspattern : cpspattern) 
+             (trueBlockName : int)
+             (falseBlockName : int)
              (* location that stores whether we should proceed *)
-             (cc : llvmlocation -> llvmstatement list) : llvmstatement list
+              : llvmstatement list
               = 
               (* the reason for failure is that cc is invoked multiple times, 
               and thus multiple identical code pieces have been generated. 
@@ -126,8 +128,9 @@ this transforms access of cpsvar
                 let val resultBoolLocation = LLVMLocationLocal (UID.next())
                 in
                     [LLVMStoreLocal (cpsVarToLLVMLoc cpsvar, subject), 
-                    LLVMStoreBool(resultBoolLocation, true)
-                    ]@(cc (resultBoolLocation))
+                    LLVMUnconditionalJump(trueBlockName)
+                    (* LLVMStoreBool(resultBoolLocation, true) *)
+                    ]
                 end
                 | CPSPatHeadSpine(cid, arglist) => 
                 (
@@ -151,21 +154,21 @@ this transforms access of cpsvar
                                                 val resultBoolLocation = LLVMLocationLocal (UID.next())
                                             in
                                             case l of 
-                                            [] => [LLVMStoreBool(resultBoolLocation, true)]@(cc resultBoolLocation) (* exit, not equal *)
+                                            [] => [LLVMUnconditionalJump(trueBlockName)]
                                             | (pat) :: rest => 
-                                                let val subsubjectLoc = UID.next()
-                                                    val i1BoolLoc = UID.next()
+                                                let val nextBlockName = UID.next()
+                                                    val subsubjectLoc = UID.next()
                                                 in 
-                                                [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+1)]@
-                                                testAndCompileCPSPattern (LLVMLocationLocal subsubjectLoc) pat 
-                                                    (fn (LLVMLocationLocal subComparisonBoolLoc) =>  (* TODO : fix conditional jump to use i64* boolean *)
-                                                        [  LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1BoolLoc, LLVMLocalVar subComparisonBoolLoc)),
+                                                [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+1)]
+                                                @(testAndCompileCPSPattern (LLVMLocationLocal subsubjectLoc) pat nextBlockName falseBlockName)
+                                                @[LLVMComment ("handleArgList at " ^ Int.toString curIdx)]
+                                                @[LLVMBlock(nextBlockName, handleArgList rest (curIdx + 1))]
+                                                    (* (fn (LLVMLocationLocal subComparisonBoolLoc) =>  TODO : fix conditional jump to use i64* boolean *)
+                                                        (* [  LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1BoolLoc, LLVMLocalVar subComparisonBoolLoc)),
                                                             LLVMConditionalJumpBinary(LLVMLocationLocal i1BoolLoc, 
-                                                            handleArgList rest (curIdx + 1),
                                                             [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation)
-                                                        )]
-                                                        | _ => raise Fail "llvm160"
-                                                    )
+                                                        )] *)
+                                                        (* | _ => raise Fail "llvm160" *)
                                                 end
                                         end
                                     in
@@ -174,9 +177,10 @@ this transforms access of cpsvar
                                 )
                                 ,
                                 (let
-                                    val resultBoolLocation = LLVMLocationLocal (UID.next())
+                                    (* val resultBoolLocation = LLVMLocationLocal (UID.next()) *)
                                 in 
-                                    [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation) (* exit, not equal *)
+                                    (* [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation) exit, not equal *)
+                                    [LLVMUnconditionalJump(falseBlockName)]
                                 end)
                             )
                             ]
@@ -246,36 +250,47 @@ in
                 end
             | CPSCases(v, cases) => 
                     let
-                        val decls = ref []
-                        fun compileCases cases v : llvmstatement list = case cases of 
-                            [] => (vaccess v (fn v' => [
-                                LLVMComment "run out of patterns, throw exception",
-                                LLVMRaiseException(LLVMExceptionMatch v')]))
-                            | (pat, body)::rest => 
-                                let
+                        (* val decls = ref [] *)
+                        (* ds the next case entry for all cases *)
+                        (* contains all cases entries for all cases except the first, including the last spurious one *)
+                        val nextBlockNames = List.tabulate (length cases, fn _ => UID.next()) 
+                        fun compileCases i : (llvmdeclaration list * llvmstatement list) = 
+                        if i = length cases 
+                        then([],
+                            [LLVMComment "CPSCases258: run out of cases"
+                            ]@
+                                (vaccess v (fn v' => [
+                                    LLVMComment "run out of patterns, throw exception",
+                                    LLVMRaiseException(LLVMExceptionMatch v')])
+                                )
+                            )
+                            
+                        else (let val (pat, body) = List.nth(cases, i)
+                                (* val currentBlockName = List.nth(blockNames, i) *)
+                                val nextBlockName = List.nth(nextBlockNames, i)
+                                val blockBodyName = UID.next()
                                 in
-                                    ( vaccess v (fn v' => testAndCompileCPSPattern v' pat (
-                                        fn (LLVMLocationLocal rboolLoc) => 
-                                        withNewLoc (fn i1rboolLoc => 
+                                    ([], [LLVMComment ("CPSCases269, in case at index " ^ Int.toString i)]@
+                                        ( vaccess v (fn v' => testAndCompileCPSPattern v' pat 
+                                        blockBodyName nextBlockName)))
+                                        :::
+                                    (
                                             let 
                                                 val (bodyDecls, bodyComps) = recur body
-                                                val _ = decls := (!decls) @(bodyDecls)  (* TODO: fix the hack *)
-                                                val (nextComps) = compileCases rest v
+                                                (* val _ = decls := (!decls) @(bodyDecls)  TODO: fix the hack *)
+                                                val (nextDecls, nextComps) = compileCases (i+1)
                                             in
-                                                [
-                                                    LLVMComment "finished testing pattern, branching on whether test succeeded",
+                                                    (* LLVMComment "finished testing pattern, branching on whether test succeeded",
                                                     LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1rboolLoc, LLVMLocalVar rboolLoc)), 
-                                                    LLVMConditionalJumpBinary(LLVMLocationLocal i1rboolLoc, 
-                                                        bodyComps, nextComps
-                                                    )
-                                                ]
+                                                    LLVMConditionalJumpBinary(LLVMLocationLocal i1rboolLoc,  *)
+                                                (bodyDecls@nextDecls, [ LLVMBlock(blockBodyName, bodyComps)]@
+                                                 [LLVMBlock(nextBlockName, nextComps)]) (* next comps will have a block name *)
                                             end)
-                                        | _ => raise Fail "llvm256" (*TODO: conditional jump should take i64* *)
-                                        ))
-                                    )
-                                end
+                                        end
+                                        (* | _ => raise Fail "llvm256" TODO: conditional jump should take i64* *)
+                                        )
                     in
-                    (!decls, compileCases cases v)
+                    (compileCases 0)
                     end
             | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(LLVMArrayTypeFold, (cpsVarToLLVMLoc t),[llvmLocToValue v'])])) ::: recur k
             | CPSUnfold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess((cpsVarToLLVMLoc t),v',0)])) ::: recur k

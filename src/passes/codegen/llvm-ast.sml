@@ -69,7 +69,10 @@ TODO: Maybe we want to make that syntactically explicit *)
             * (int * llvmstatement list) list (* one block for each index *)
     | LLVMConditionalJumpBinary of llvmlocation (* Variable name that stores the boolean *)
            * llvmstatement list (* true branch *)
-           * llvmstatement list (* false branch branch *)
+           * llvmstatement list (* false branch branch *)    
+    | LLVMUnconditionalJump of int  (* jump to the corresponding block *)
+    (* must be preceded by one terminal expression *)
+    | LLVMBlock of int * llvmstatement list
     | LLVMRaiseException of llvmexception
     | LLVMCall of llvmlocation (* function name *)
             * llvmlocation list (* function arguments *)

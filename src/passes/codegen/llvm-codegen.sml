@@ -328,6 +328,16 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             toBlockNameLabel fLabelName ^ ":"
             ]@ (List.concat (map genLLVMStatement fb))
         end
+        | LLVMBlock(name, stmts) => 
+            (
+                [toBlockNameLabel name ^ ":"
+                ]@
+                (List.concat (map genLLVMStatement stmts))
+            )
+        | LLVMUnconditionalJump(name) => 
+            (
+                ["br label " ^ toBlockNameJump name]
+            )
         | LLVMRaiseException(LLVMExceptionMatch v) => 
             let val defaultBlockName = UID.next()
             in
