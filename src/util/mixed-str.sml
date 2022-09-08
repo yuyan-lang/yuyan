@@ -162,6 +162,8 @@ struct
             else if isPlainStr p
                 then  (if containsCharTopLevel p SpecialChars.leftDoubleQuote
                         orelse containsCharTopLevel p SpecialChars.rightDoubleQuote
+                        orelse (* if either left or right is parenthesis, parse as name *)
+                        ql = SpecialChars.leftParenthesis orelse qr = SpecialChars.rightParenthesis
                         then UnparsedExpression(p , q)
                         else (* name *) Name ((unSChar p), q))
                 else (* expression *) UnparsedExpression(p, q)

@@ -180,10 +180,10 @@ struct
                                                                         )
                                                                     ) 
                                                                 else 
-                                                                    genSingletonError (reconstructOriginalFromOpAST x) "期待一个分析分句(expected a case clause)" NONE
+                                                                    genSingletonError (reconstructOriginalFromOpAST x) "期待一个分析分句(expected a case clause)(1)" NONE
                                                                 (* raise ElaborateFailure ("Expected a case clause 1" ^ " got " ^ PrettyPrint.show_opast x) *)
                                                                 | _ =>
-                                                                    genSingletonError (reconstructOriginalFromOpAST x) "期待一个分析分句(expected a case clause)" NONE
+                                                                    genSingletonError (reconstructOriginalFromOpAST x) ("期待一个分析分句(expected a case clause)(2)，" ^ "但是得到了" ^ PrettyPrint.show_opast x) NONE
                                                                  (* raise ElaborateFailure ("Expected a case clause 2" ^ " got " ^ PrettyPrint.show_opast x) *)
                                                     ) args) >>= (fn l => 
                                         let val cases  = map (#1) l
