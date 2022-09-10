@@ -335,6 +335,7 @@ exception CPSInternalError
                 cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss useGlobalVar cc
             )
         end
+        | CPureDeclaration _ :: ss => raise Fail "cannot compile pure declaration"
     end
 
 

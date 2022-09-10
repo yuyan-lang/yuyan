@@ -307,10 +307,13 @@ infix 5 =/=
             | CDirectExpr( expr, tp) => rme expr >>= 
                 (fn cexpr => rme tp >>= 
                     (fn ctp => Success(CDirectExpr(cexpr, ctp))))
+            | CPureDeclaration( name, tp) => 
+                 rme tp >>= (fn ctp => Success(CPureDeclaration(name, ctp)))
             | CConstructorDecl( name, tp, cinfo) => 
                 rme tp >>= 
                     (fn ctp => Success(CConstructorDecl(name, ctp, cinfo)))
              | CImport _ => Success(d)
+
         ) s)
         end
     and substTypeInSpine (tS : CType) (x : StructureName.t) (spine : (UTF8String.t * CType) list) = 

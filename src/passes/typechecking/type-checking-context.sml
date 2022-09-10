@@ -105,14 +105,14 @@ infix 5 >>=
     fun lookupCtx (ctxg as Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) witherrsoption = 
     case findCtx ctxg n of 
         SOME(v) => Success(v)
-        | NONE =>  genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
+        | NONE =>  genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlainDebug n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
 
 
 (* require lookup to add name qualification if references local structure *)
     fun lookupCtxForType (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
     case findCtxForType ctxg n of
         SOME(st) => Success(st)
-        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
+        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlainDebug n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
 
      fun findCtxForDef (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         case (findCtx (Context(curSName, v, ctx)) n) of 
@@ -123,7 +123,7 @@ infix 5 >>=
     fun lookupCtxForDef (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
     case findCtxForDef ctxg n of
         SOME(st) => Success(st)
-        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
+        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlainDebug n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
 
     fun appendAbsoluteMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
         case ctx of

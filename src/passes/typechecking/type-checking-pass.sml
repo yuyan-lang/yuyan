@@ -147,13 +147,13 @@ infix 5 <?>
             (* raise TypeCheckingFailure ("label " ^ UTF8String.toString l ^ " not found in sum type") *)
             | (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then Success t1 else lookupLabel3 cs l
 
-    fun lookupSigList (name : UTF8String.t)(decl : CDeclaration list)  : CDeclaration option = 
+    fun findSigList (name : UTF8String.t)(decl : CDeclaration list)  : CDeclaration option = 
         case decl of 
             [] => NONE
-            | ((d as CPureDeclaration(n, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else lookupSigList name dl
-            | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else lookupSigList name dl
-            | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else lookupSigList name dl
-            | (_ :: dl) => lookupSigList name dl
+            | ((d as CPureDeclaration(n, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
+            | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
+            | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
+            | (_ :: dl) => findSigList name dl
 
 
     fun typeEquivList (ctx : context) (e : RExpr) (a : CType list) : CType witherrsoption =
@@ -1121,7 +1121,10 @@ infix 5 <?>
                         weakHeadNormalizeType t ctx ct
                         (* (applyContextToType ctx (rTypeToCType ctx t))  *)
                         >>= (fn normalizedType => 
-                        typeCheckSignature (addToCtxR (TermTypeJ([n], normalizedType, JTPending, NONE)) ctx) ss (acc))
+                        typeCheckSignature (
+                            (* addToCtxR  *)
+                        (* (TermTypeJ([n], normalizedType, JTPending, NONE)) *)
+                         ctx) ss (acc@[CPureDeclaration(n, normalizedType)]))
                     )
                 end
                 (* | RTermMacro(n, e) :: ss => 
@@ -1139,18 +1142,19 @@ infix 5 <?>
                                 typeCheckSignature 
                                     (addToCtxR (TermTypeJ([n], synthesizedType, JTDefinition transformedExpr, NONE)) ctx) ss 
                                     (acc@[CTermDefinition(n, transformedExpr, synthesizedType)])
-                            ) 
+                        ) 
                 in
-                (case findCtx ctx ((getCurSName ctx)@[n]) of  (* must find fully qualified name as we allow same name for substructures *)
+                (case findSigList n acc of  (* must find fully qualified name as we allow same name for substructures *)
                     NONE  =>  newDef()
                     (* optimize: if e is just an expr, do not instantiate implicit args *)
-                    | SOME(cname, lookedUpType, lookedUpDef) => 
-                        (case lookedUpDef of 
-                         JTPending =>  
+                    | SOME(CPureDeclaration(_, lookedUpType)) => 
+                        (
+                         (* case lookedUpDef of 
+                         JTPending =>   *)
                             let val transformedExprOrFailure = checkType ctx (e) lookedUpType
                             in 
                             case transformedExprOrFailure of
-                            Success(transformedExpr, ctx) => typeCheckSignature (modifyCtxAddDef ctx cname transformedExpr) ss 
+                            Success(transformedExpr, ctx) => typeCheckSignature (addToCtxR (TermTypeJ([n], lookedUpType, JTDefinition transformedExpr, NONE)) ctx) ss 
                                                             (acc@[CTermDefinition(n, transformedExpr, lookedUpType)])
                             | DErrors(l) => (case typeCheckSignature ctx ss (acc) of 
                                         Success _ => DErrors(l)
@@ -1159,9 +1163,12 @@ infix 5 <?>
                                 )
                             | _ => raise Fail "tcp457"
                             end
-                        | _ => newDef() (* allow repeated definitions *)
+                        (* | _ => newDef() allow repeated definitions *)
                         (* Errors.redefinitionError n (StructureName.toStringPlain cname) ctx (List.last cname)  *)
                             )
+                    | SOME(_) => 
+                        (Errors.redefinitionError n (UTF8String.toString n) ctx n)
+
                 )
                 end
                 | RConstructorDecl(name, rtp) :: ss => 
@@ -1213,6 +1220,8 @@ infix 5 <?>
                             | CDirectExpr _ => NONE
                             | CImport _ => NONE
                             | CConstructorDecl(sname, t, consinfo) => SOME([TermTypeJ(importName@[sname], t, JTConstructor consinfo, NONE)
+                                ])
+                            | CPureDeclaration (name, tp) => SOME([TermTypeJ(importName@[name], tp, JTPending (* TODO: do import *), NONE)
                                 ])
                             ) csig)) ctx)
                         ss (acc@[CImport(importName, path)])

@@ -358,10 +358,11 @@ and show_typecheckingCDecl x = let
 open TypeCheckingAST
 in case x of 
     (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
-   CTermDefinition(ename, ebody, tp) => UTF8String.toString ename ^ " = " ^ show_typecheckingCExpr  ebody
+   CTermDefinition(ename, ebody, tp) => UTF8String.toString ename ^ " = " ^ show_typecheckingCExpr  ebody ^ " : " ^ show_typecheckingCType tp
   | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ UTF8String.toString ename ^ " : " ^ show_typecheckingCExpr  etype
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
+  | CPureDeclaration(name, tp) => UTF8String.toString name  ^ " : " ^ show_typecheckingCType tp
   end
 
 

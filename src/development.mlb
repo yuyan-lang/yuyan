@@ -13,6 +13,7 @@ local
        (*"nonexhaustiveMatch ignore"*)
        "nonexhaustiveMatch error"
        "allowExtendedTextConsts true"
+       "allowOrPats true"
     in
         util/string-dict.sml
         util/path-util.sml

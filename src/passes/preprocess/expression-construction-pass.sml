@@ -353,6 +353,7 @@ struct
                     | PDirectExpr(ebody) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 
                     RDirectExpr(eb) ::: trailingNoOps())
                     | PComment _ => trailingNoOps()
+                    | PStructure(publicVisible, sname, decls, soi) => raise Fail "deleted"
                     (* | PStructure(publicVisible, sname, decls, soi) => 
                                             elaborateSingleStructure (decls) >>= (fn (decls, qi)  =>
                                             constructOpAST decls ctx >>= (fn ds => 

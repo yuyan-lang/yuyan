@@ -14,6 +14,7 @@ infix 4 ~~~=
 
     val uniqueName = StructureName.binderName
 
+
     fun typeUnify (e : RExpr) (failCallback : CExpr * CExpr -> (constraints * context) witherrsoption)
      (ctx : context) (t1:CExpr) (t2:CExpr)  : (constraints * context) witherrsoption = 
     let val recur = typeUnify e failCallback
@@ -155,6 +156,26 @@ infix 4 ~~~=
                                              else fail()
                                 | _ => raise Fail "ni151"
                             )
+                        | (CBlock decl1, CBlock decl2) => 
+                        (
+                            case (decl1, decl2) of 
+                                ([], []) => Success([], ctx) 
+                                | ((CPureDeclaration(name1, tp1) :: tl1, CPureDeclaration(name2, tp2) :: tl2) 
+                                | (CTermDefinition(name1, _, tp1) :: tl1, CTermDefinition(name2, _, tp2) :: tl2)
+                                | (CConstructorDecl(name1, tp1,_) :: tl1, CConstructorDecl(name2, tp2, _) :: tl2)
+                                ) => 
+                                if UTF8String.semanticEqual name1  name2 
+                                then (recur ctx tp1 tp2) >>= (fn (_, ctx) => 
+                                (* TODO: remove constraints, use pattern unification *)
+                                    recur ctx (CBlock tl1) (CBlock tl2)
+                                ) else fail()
+                                | (CImport(name1, _) :: tl1, CImport(name2, _) :: tl2) => 
+                                    if StructureName.semanticEqual name1 name2 
+                                    then (
+                                        recur ctx (CBlock tl1) (CBlock tl2)
+                                    ) else fail()
+                                | _ => fail()
+                        )
                         | _ => fail())
                 else recur ctx t1 t2 >>= (fn (constraints, ctx) => 
                     case constraints of 

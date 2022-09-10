@@ -103,6 +103,9 @@ struct
             | CConstructorDecl(name, t, _) => withScopeUpdate name (fn i => 
                                             (indentN i @ termTypeDecl name t)
                                         )
+            | CPureDeclaration(name, t) => withScopeUpdate name (fn i => 
+                                            (indentN i @ termTypeDecl name t)
+                                        )
 
     in
         case cSig of 
