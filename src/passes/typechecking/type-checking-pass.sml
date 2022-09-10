@@ -20,22 +20,8 @@ infix 5 <?>
     val DEBUG = false
 
 
-    (*  !!! we assume the context is well formed in the sense that 
-    all term type judgments have no free type variables !!! *) 
-    (* so before anything is added to context, must perform substitution first ! *)
-    (* the context is not a telescope !!! *)
-    (* This also applies to type definitions! They must be expanded as well! *)
-    (* ^^^ THis is not true !!! *)
-    (* this is called the closed-world assumption and in practice, this 
-    helps to reduce bugs during type checking *)
-    (* also assume no name clash  *)
-           
-   
-                    (* curStructure, curVisibility and mapping *)
-
     fun getMapping (c: context ):mapping list = 
         case c of  (Context(cSname, cVis, m)) => m
-
 
     fun nextContextOfOpenStructure  (errReporting : UTF8String.t) (ctx : context) (resolvedSig : CSignature) (done : context -> ('a * context ) witherrsoption) 
     : ('a * context) witherrsoption =
@@ -55,18 +41,6 @@ infix 5 <?>
                                 )
                 end
 
-            (* 
-                    List.mapPartial (fn x => 
-                    case x of TermTypeJ(name, t, jtp,  u) => 
-                    (case StructureName.checkRefersToScope name openName curSName of
-                        SOME(nameStripped) => SOME(TermTypeJ(curSName@nameStripped, t, jtp, 
-                            (case u of SOME x => SOME x | NONE => SOME (name, jtp))))
-                        | NONE => NONE)
-                    (* | TermDefJ(name, t, u) =>
-                    (case StructureName.checkRefersToScope name openName curSName of
-                        SOME(nameStripped) => SOME(TermDefJ(curSName@nameStripped, t, u))
-                        | NONE => NONE) *)
-                    ) bindings @ bindings *)
 
     (* fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : mapping list) 
     (openName : StructureName.t)=
@@ -114,51 +88,6 @@ infix 5 <?>
 
         
 
-    (* fun applyContextTo (ctx : context) (subst : CType -> StructureName.t -> 'a -> 'a) (t : 'a) : 'a = 
-    (
-        (* print ("apply ctx to gen called"  ^ Int.toString(case ctx of (Context(_, _, l)) => length l)^ "\n") ; *)
-        case ctx of Context(curName, curVis, mapl) =>
-        (case mapl of
-            [] => t
-            | TermDefJ(n1, t1, u)::cs => (
-                let val stepOne = (subst t1 n1 t)
-                    val stepTwo = (subst t1 (StructureName.stripPrefixOnAgreedParts curName n1) stepOne)
-                    val rest = applyContextTo (Context(curName, curVis, cs)) subst stepTwo
-                    in rest end
-                )
-                (* print "HHHH"; *)
-            (* the current subsituting name is a prefix! we need also to perform local subsitution *)
-            (* always eagerly perform prefix-stripped substitutions *)
-            | TermTypeJ(_) :: cs => applyContextTo (Context(curName, curVis, cs)) subst t)
-            (* to get the semantics correct, context need to be applied in reverse order *)
-            (* no reverse function is called because context is in reverse order *)
-    )
-    fun applyContextToType (ctx : context) (t : CType) : CType = 
-    (
-        (* print "apply ctx to type called\n"; *)
-        applyContextTo ctx (fn t => fn  l => fn t1 => 
-        (let 
-        val _ = 
-        if DEBUG then  print (" apply context subsituting "^ PrettyPrint.show_typecheckingCType t  
-        ^ " for " ^ StructureName.toStringPlain l ^ " in " ^ PrettyPrint.show_typecheckingCType t1 ^  "\n") else ()
-            val res = substTypeInCExpr t l t1
-            val _ =if DEBUG then print (" res is " ^ PrettyPrint.show_typecheckingCType res ^ "\n") else ()
-            in res end
-            )) t
-    ) *)
-    (* fun applyContextToExpr (ctx : context) (e : RExpr) : RExpr = 
-        applyContextTo ctx (fn t => fn  l => fn e1 => 
-        (let 
-        val _ = 
-        if DEBUG then  print (" apply context subsituting "^ PrettyPrint.show_typecheckingCType t  
-        ^ " for " ^ StructureName.toStringPlain l ^ " in " ^ PrettyPrint.show_typecheckingRExpr e1 ^  "\n") else ()
-            (* val res = substTypeInCExpr t l e1 *)
-            val res = raise Fail "undefined154"
-            val _ =if DEBUG then print (" res is " ^ PrettyPrint.show_typecheckingRExpr res ^ "\n") else ()
-            in res end
-            )) e
-    fun applyContextToSignature (ctx : context) (s : CSignature) : CSignature = 
-        applyContextTo ctx (substituteTypeInCSignature) s *)
 
 
     (* index begins with zero *)
@@ -605,13 +534,15 @@ infix 5 <?>
                     | RBoolConstant (b, soi) => Success((CBoolConstant b, CBuiltinType(BIBool)), ctx)
                     
 
-                    | RLetIn(decls, e, soi) => (case ctx of 
-                        Context(curName, curVis, bindings) => 
-                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls true [] >>= 
-                        (fn (csig, Context(localName, _, newBindings) ) =>
-                                synthesizeType (Context(localName,curVis, newBindings)) e >>= (fn ((ce, synthesizedType), Context(localName, curVis, bindings)) =>
-                                        Success ((CLetIn(csig, ce, CTypeAnn(synthesizedType)), synthesizedType), Context(curName,curVis, bindings)) (* restore name when exiting *)
-                                )
+                    | RLetIn(decls, e, soi) => (
+                    typeCheckSignature ctx decls true []
+                        >>= (fn(csig, ctx) =>
+                        (* the context returned will be devoid of csig, so we add them via a fake local open *)
+                            nextContextOfOpenStructure (reconstructFromRExpr e) ctx csig (fn ctx => 
+                                    synthesizeType ctx e >>= (fn ((ce, syntt), ctx) => 
+                                        Success((CLetIn(csig, ce, CTypeAnn(syntt)), syntt), ctx)
+                                    )
+                            )
                         )
                     )
                     | RBuiltinFunc(f, s) => Success((CBuiltinFunc(f), (BuiltinFunctions.typeOf f)), ctx)
@@ -1020,19 +951,17 @@ infix 5 <?>
                                 (* raise TypeCheckingFailure "First argument of the ccall must be string literal" *)
 
                         )
-                        | RLetIn(decls, e, soi) => (case ctx of 
-                            Context(curName, curVis, bindings) => 
-                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls true []
-                        >>= (fn(csig, Context(localName, _, newBindings)) =>
-                            (* assume the typeChecking is behaving properly, 
-                            no conflicting things will be added to the signature *)
-                            (* sub context will be determined by whether the signature is private or not ? *)
-                                checkType (Context(localName,curVis, newBindings)) e tt >>= (fn (ce, Context(localName, curVis, bindings)) => 
-                                            Success(CLetIn(csig, ce, CTypeAnn(tt)), Context(curName, curVis, bindings))
+                        | RLetIn(decls, e, soi) => (
+                        typeCheckSignature ctx decls true []
+                            >>= (fn(csig, ctx) =>
+                            (* the context returned will be devoid of csig, so we add them via a fake local open *)
+                                nextContextOfOpenStructure (reconstructFromRExpr e) ctx csig (fn ctx => 
+                                        checkType ctx e tt >>= (fn (ce, ctx) => 
+                                            Success(CLetIn(csig, ce, CTypeAnn(tt)), ctx)
+                                        )
                                 )
                             )
-                        
-                            )
+                        )
                         | RBuiltinFunc(f, soi) => (tryTypeUnify ctx e ((BuiltinFunctions.typeOf f)) tt >>= (fn ctx => Success(CBuiltinFunc(f), ctx)))
                         (* types *)
                         | RUnitType(s) => tryTypeUnify ctx e CUniverse tt >>= (fn ctx => Success(CUnitType, ctx))
