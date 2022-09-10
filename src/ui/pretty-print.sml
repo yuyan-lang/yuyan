@@ -242,6 +242,7 @@ RVar v => sst v
                       st t ^ " . " ^ st t2 ^ ")"
                     | RUniverse(soi) => "(Set)"
                     | RPairOfQuotes(soi) => "(_)"
+                    | RBlock(s, qi) =>  "{" ^ show_typecheckingRSig s ^ "}"
                 end
 
 and show_typecheckingRDecl x = let
@@ -253,8 +254,8 @@ in case x of
   | RTermDefinition(ename, ebody) => UTF8String.toString  ename ^ " = " ^ show_typecheckingRExpr  ebody
   | RConstructorDecl(ename, etype) => "cons " ^ UTF8String.toString  ename ^ " : " ^ show_typecheckingRExpr  etype
   | RDirectExpr(ebody) => "/* eval */ " ^ show_typecheckingRExpr ebody ^ "/* end eval */ " 
-  | RStructure(v, name, ebody) => (if v then "public" else "private") ^
-    " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingRSig ebody ^ "}"
+  (* | RStructure(v, name, ebody) => (if v then "public" else "private") ^
+    " structure " ^ UTF8String.toString name ^ " = {" ^ show_typecheckingRSig ebody ^ "}" *)
   | ROpenStructure(name) => "open " ^ StructureName.toStringPlain name ^ "" 
   | RReExportStructure(name) => "reexport " ^ StructureName.toStringPlain name ^ "" 
   | RImportStructure(name, fp) => "import " ^ StructureName.toStringPlain name ^ "" 
@@ -333,6 +334,7 @@ in case x of
                     | CUnitType => "1"
                     | CProd l => "(PROD " ^ String.concatWith "* " (map (fn (t) => ": " ^ st t) l) ^ ")"
                     | CLazyProd l => "(LAZY " ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CLabeledProd l => "(LABELED " ^ String.concatWith "*(labeled) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | CNullType => "0"
                     | CSum l =>  "(SUM " ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     (* | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" *)
@@ -350,13 +352,14 @@ in case x of
                     | CSigmaType(t, xop, t2 ) => "(Σ " ^ (case xop of SOME x => ss x | NONE => "_" ) ^ " : " ^ 
                       st t ^ " . " ^ st t2 ^ ")"
                     | CUniverse => "(Set)"
+                    | CBlock(decl) => "{" ^ show_typecheckingCSig decl ^ "}"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
 in case x of 
     (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
-   CTermDefinition(ename, ebody, tp) => StructureName.toStringPlain ename ^ " = " ^ show_typecheckingCExpr  ebody
-  | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ StructureName.toStringPlain  ename ^ " : " ^ show_typecheckingCExpr  etype
+   CTermDefinition(ename, ebody, tp) => UTF8String.toString ename ^ " = " ^ show_typecheckingCExpr  ebody
+  | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ UTF8String.toString ename ^ " : " ^ show_typecheckingCExpr  etype
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
   end
@@ -364,7 +367,7 @@ in case x of
 
 and show_typecheckingCSig x = let
 in
-          "[" ^ String.concatWith "。\n " (map show_typecheckingCDecl x) ^ "]\n" 
+          "[csig:" ^ String.concatWith "。\n " (map show_typecheckingCDecl x) ^ "]\n" 
 end
 fun show_source_location ((fname, line, col) : SourceLocation.t) = "[" ^ Int.toString (line + 1) ^ ", "^ Int.toString (col + 1) ^ "]"
 fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.t) = 

@@ -58,9 +58,10 @@ infix 5 <?>
 
     fun reExportDecls  (ctx as Context(curSName ,curVis, bindings): context)
     (reexportName : StructureName.t) : CSignature witherrsoption =
+    raise Fail "ni reexport"
 
             (* extract all bindings from bindings in order and put them into the current context *)
-        let val decls = 
+        (* let val decls = 
         List.mapPartial (fn x => 
             case x of TermTypeJ(name, t, jtype,  u) => 
             (case StructureName.checkRefersToScope name reexportName curSName of
@@ -79,7 +80,7 @@ infix 5 <?>
         in if length decls > 0
         then Success(List.rev decls) (* context order are reverse of reexport order *)
         else genSingletonError (StructureName.toString reexportName) "结构未包含任何可导出的值" (showctxSome ctx)
-        end
+        end *)
 
         
 
@@ -146,6 +147,13 @@ infix 5 <?>
             (* raise TypeCheckingFailure ("label " ^ UTF8String.toString l ^ " not found in sum type") *)
             | (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then Success t1 else lookupLabel3 cs l
 
+    fun lookupSigList (name : UTF8String.t)(decl : CDeclaration list)  : CDeclaration option = 
+        case decl of 
+            [] => NONE
+            | ((d as CPureDeclaration(n, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else lookupSigList name dl
+            | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else lookupSigList name dl
+            | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else lookupSigList name dl
+            | (_ :: dl) => lookupSigList name dl
 
 
     fun typeEquivList (ctx : context) (e : RExpr) (a : CType list) : CType witherrsoption =
@@ -188,6 +196,17 @@ infix 5 <?>
                                 Success(CMetaVar(metavarname), newCtx)
                             end
 
+    fun checkBlockIsSignature (errReporting : RExpr) (ctx : context) (block : CDeclaration list) : unit witherrsoption = 
+        if List.exists (fn dec => 
+            case dec of 
+            CTermDefinition _ => true
+            | _ => false
+            ) block
+        then Errors.genericError errReporting ctx "结构体用作签名时不可以包含定义的表达式"
+        else Success()
+
+    fun checkSignatureAscription (errReporting : RExpr) (ctx : context) (block : CDeclaration list) (blocktype : CDeclaration list): unit witherrsoption = 
+        raise Fail "sig ascription not implemented"
 
 
     fun configureAndTypeCheckSignature
@@ -297,7 +316,11 @@ infix 5 <?>
 
             and checkExprOptionIsType (ctx : context) (e : RType option) (errReporting : RType) : (CType * context) witherrsoption = 
                 (case e of 
-                        SOME t1 => checkType ctx t1 (CUniverse) 
+                        SOME t1 => 
+                        (* let val res =  *)
+                        checkType ctx t1 (CUniverse) 
+                        (* in Errors.enrichErrWhenChecking t1 CUniverse res *)
+                        (* end *)
                         | NONE => addNewMetaVar ctx CUniverse (reconstructFromRExpr errReporting) >>= (fn (metavar, ctx) => 
                                 Success((metavar, ctx))
                             )
@@ -527,9 +550,10 @@ infix 5 <?>
                     checkExprOptionIsType ctx t1 (case evoption of SOME x => RVar([x]) | NONE => e
                     ) >>= (fn (ct1, ctx) => 
                             let val kf = fn ctx => 
-                            synthesizeType (ctx) t2 >>= (fn ((ct2, synT), ctx) => 
-                                    tryTypeUnify ctx t2 synT CUniverse >>= 
-                                        (fn ctx => Success((CPiType(ct1, evoption, ct2, p), CUniverse), ctx))
+                            checkType (ctx) t2 CUniverse >>= (fn ((ct2 ), ctx) => 
+                                    (* tryTypeUnify ctx t2 synT CUniverse >>=  *)
+                                        (* (fn ctx =>  *)
+                                        Success((CPiType(ct1, evoption, ct2, p), CUniverse), ctx)
                             )
                             in 
                                 case evoption of  NONE => Success(ctx) >>= kf 
@@ -592,6 +616,20 @@ infix 5 <?>
                         withLocalBinder ctx tv CUniverse (fn ctx => 
                         checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success((CRho(tv, ct2), CUniverse), ctx)
+                            )
+                        )
+                    | RBlock (decls, qi) => 
+                        (
+                            (* case ctx of 
+                                Context(curName, curVis, bindings) =>  *)
+                            (* typeCheckSignature (Context(curName@[sName], vis, bindings)) decls [] >>= *)
+                            typeCheckSignature ctx decls [] >>=
+                            (fn(checkedSig, ctx) =>
+                                (* assume the typeChecking is behaving properly, 
+                                no conflicting things will be added to the signature *)
+                                (* sub context will be determined by whether the signature is private or not ? *)
+                            Success((CBlock(checkedSig), CBlock(checkedSig)), ctx)(* the type of a block is just a block *)
+                            (* typeCheckSignature (Context(curName, curVis, newBindings)) ss (acc@checkedSig) *)
                             )
                         )
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
@@ -931,9 +969,10 @@ infix 5 <?>
                             checkExprOptionIsType ctx t1 ((case evoption of SOME x => RVar([x]) | NONE => e)) >>= (fn (ct1, ctx) => 
                                 (case evoption of  NONE => (fn f => f ctx) | SOME(n) => withLocalBinder ctx n ct1)
                                 (fn ctx =>
-                                synthesizeType ctx t2 >>= (fn ((ct2, synT), ctx) => 
-                                        tryTypeUnify ctx t2 synT CUniverse >>= (fn ctx => 
-                                            (Success(CPiType(ct1, evoption, ct2,p), ctx)))
+                                checkType ctx t2 CUniverse >>= (fn ((ct2), ctx) => 
+                                        (* tryTypeUnify ctx t2 synT CUniverse >>= (fn ctx =>  *)
+                                            (Success(CPiType(ct1, evoption, ct2,p), ctx))
+                                            (* ) *)
                                 ))
                             ))
                         | RSigmaType(t1, evoption, t2, soi) =>
@@ -1005,6 +1044,21 @@ infix 5 <?>
                                 )))
                         | RPairOfQuotes((ql, qr)) => 
                         addNewMetaVar ctx tt [ql, qr]
+                        | RBlock(_) => 
+                        (
+                            synthesizeType ctx e >>= (fn ((ce, ct), ctx) => 
+                            (* we're guaranteed that ct = ce, which is the most general type *)
+                                case ce of 
+                                CBlock(decl) => (case tt of 
+                                        CUniverse => 
+                                            (checkBlockIsSignature e ctx decl >> Success(ce, ctx))
+                                        | CBlock(tt) => 
+                                            (checkSignatureAscription e ctx decl tt >> Success(ce, ctx))
+                                        | _ => genSingletonError (reconstructFromRExpr e) "模块（结构）仅能拥有模块类型或者元类型" NONE
+                                    )
+                                | _ => raise Fail "tcp1027: synth block should always return a block"
+                            )
+                        )
                         | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 
                         ^ " <= " ^ PrettyPrint.show_typecheckingCType tt) NONE
                     )
@@ -1084,7 +1138,7 @@ infix 5 <?>
                      >>= (fn ((transformedExpr , synthesizedType), ctx)  =>
                                 typeCheckSignature 
                                     (addToCtxR (TermTypeJ([n], synthesizedType, JTDefinition transformedExpr, NONE)) ctx) ss 
-                                    (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
+                                    (acc@[CTermDefinition(n, transformedExpr, synthesizedType)])
                             ) 
                 in
                 (case findCtx ctx ((getCurSName ctx)@[n]) of  (* must find fully qualified name as we allow same name for substructures *)
@@ -1097,7 +1151,7 @@ infix 5 <?>
                             in 
                             case transformedExprOrFailure of
                             Success(transformedExpr, ctx) => typeCheckSignature (modifyCtxAddDef ctx cname transformedExpr) ss 
-                                                            (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, lookedUpType)])
+                                                            (acc@[CTermDefinition(n, transformedExpr, lookedUpType)])
                             | DErrors(l) => (case typeCheckSignature ctx ss (acc) of 
                                         Success _ => DErrors(l)
                                         | DErrors l2 => DErrors(l @l2)
@@ -1114,9 +1168,9 @@ infix 5 <?>
                     checkConstructorType name ctx rtp >>= (fn ((checkedType, cconsinfo),ctx) => 
                     
                         typeCheckSignature (addToCtxR(TermTypeJ([name], checkedType, JTConstructor cconsinfo, NONE)) ctx) ss
-                        (acc@[CConstructorDecl((getCurSName ctx)@[name], checkedType, cconsinfo)])
+                        (acc@[CConstructorDecl(name, checkedType, cconsinfo)])
                     )
-                | RStructure (vis, sName, decls) :: ss => 
+                (* | RStructure (vis, sName, decls) :: ss => 
                 (case ctx of 
                 Context(curName, curVis, bindings) => 
                     typeCheckSignature (Context(curName@[sName], vis, bindings)) decls [] >>=
@@ -1127,7 +1181,7 @@ infix 5 <?>
                     typeCheckSignature (Context(curName, curVis, newBindings)) ss (acc@checkedSig)
                     )
                     
-                )
+                ) *)
                 | ROpenStructure openName :: ss =>
                 (case ctx of 
                 Context(curName, curVis, bindings) => 
@@ -1154,11 +1208,11 @@ infix 5 <?>
                         typeCheckSignature 
                         (addToCtxAL (List.concat (List.mapPartial (fn x => case x of 
                             (* CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ())) *)
-                             CTermDefinition(sname, e, t) => SOME([TermTypeJ(sname, t, JTDefinition(e), NONE)
+                             CTermDefinition(sname, e, t) => SOME([TermTypeJ(importName@[sname], t, JTDefinition(e), NONE)
                                 ])
                             | CDirectExpr _ => NONE
                             | CImport _ => NONE
-                            | CConstructorDecl(sname, t, consinfo) => SOME([TermTypeJ(sname, t, JTConstructor consinfo, NONE)
+                            | CConstructorDecl(sname, t, consinfo) => SOME([TermTypeJ(importName@[sname], t, JTConstructor consinfo, NONE)
                                 ])
                             ) csig)) ctx)
                         ss (acc@[CImport(importName, path)])

@@ -300,9 +300,10 @@ exception CPSInternalError
             then
             (let val globalVar = CPSVarGlobal (UID.next())
             in 
-            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig ((name, GlobalVar globalVar)::ctx) ss useGlobalVar cc))
+            (* TODO : Figure out the case for plain name *)
+            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig (((name; raise Fail "ni"), GlobalVar globalVar)::ctx) ss useGlobalVar cc))
             end)
-            else (cpsTransformSig ((name, PlainVar resvar)::ctx) ss useGlobalVar cc)
+            else (cpsTransformSig (((name; raise Fail "ni"), PlainVar resvar)::ctx) ss useGlobalVar cc)
             )
 
         | CDirectExpr (e, tp) :: ss => 
@@ -317,7 +318,7 @@ exception CPSInternalError
                     CPSUnit (kcc ret)
                 ) 
                 (fn (cloc) => 
-                    cpsTransformSig ((name, PlainVar cloc) :: ctx) ss useGlobalVar cc
+                    cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss useGlobalVar cc
                 )
             end
 
@@ -331,7 +332,7 @@ exception CPSInternalError
                 ))
             ) 
             (fn (cloc) => 
-                cpsTransformSig ((name, PlainVar cloc) :: ctx) ss useGlobalVar cc
+                cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss useGlobalVar cc
             )
         end
     end

@@ -139,6 +139,7 @@ structure TypeCheckingErrors =
             | RExists(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
             | RRho(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
             | RPairOfQuotes((ql, qr)) => [ql, qr]
+            | RBlock(_, (ql, qr)) => [ql]@(UTF8String.fromString "。。。")@[qr]
             (* | _ => raise Fail ("reconstruct failed for rexpr " ^ PrettyPrint.show_typecheckingRExpr e) *)
     end
     

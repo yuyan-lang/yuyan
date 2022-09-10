@@ -308,8 +308,9 @@ struct
                 )
                 end
             | OpUnparsedDecl t =>  genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式，却遇到了声明块(expected expression, unexpected declaration block)" NONE
+            | OpParsedDecl(l, qi) => constructOpAST l ctx >>= (fn block => Success(RBlock(block, qi)))
             | _ =>
-                    genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式结构(expected expression construct)" NONE
+                    genSingletonError (reconstructOriginalFromOpAST ast) ("期待表达式结构(expected expression construct) 却遇到了 " ^ PrettyPrint.show_opast ast) NONE
                 (* raise ElaborateFailure "Expected Expression constructs 227" *)
         )
         (* handle ElaborateFailure s => 
@@ -352,18 +353,11 @@ struct
                     | PDirectExpr(ebody) => elaborateOpASTtoExpr ebody ctx >>= (fn eb => 
                     RDirectExpr(eb) ::: trailingNoOps())
                     | PComment _ => trailingNoOps()
-                    | PStructure(publicVisible, sname, decls, soi) => 
-                        (* preprocessAST decls >>= (fn preprocessedTree => 
-                                            let val newOps = extractAllOperators preprocessedTree
-                                                val declTree = constructOpAST preprocessedTree ctx *)
-                                            (* in declTree >>= (fn ds =>  *)
+                    (* | PStructure(publicVisible, sname, decls, soi) => 
                                             elaborateSingleStructure (decls) >>= (fn (decls, qi)  =>
                                             constructOpAST decls ctx >>= (fn ds => 
                                             RStructure(publicVisible,sname,  ds):::
-                                                (* constructOpAST xs (curSName, curV, ((curSName@[sname], publicVisible, newOps):: addedOps)) ) *)
-                                                constructOpAST xs ctx) )
-                                            (* end *)
-                        
+                                                constructOpAST xs ctx) ) *)
                     | POpenStructure(sname, soi) =>  (* open will be as if there is a local declaration with 
                     the same name as the public members of the structure *)
                         (* ROpenStructure(sname) ::: constructOpAST xs (insertIntoCurContextOps ctx (lookupContextForOpers ctx (curSName@sname))) *)

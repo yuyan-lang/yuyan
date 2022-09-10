@@ -45,8 +45,8 @@ open StaticErrorStructure
                 | DiagnosticInformation  => "信息(information)："
                 | DiagnosticHint => "提示(hint)："
     in 
-    relativePath ^ ":" ^  Int.toString (sl+1) ^ "." ^ Int.toString (sc +1)
-    ^ "-" ^ Int.toString (el+1) ^ "." ^ Int.toString (ec+1)
+    relativePath ^ ":" ^  Int.toString (sl+1) ^ ":" ^ Int.toString (sc +1)
+    ^ "-" ^ Int.toString (el+1) ^ ":" ^ Int.toString (ec+1)
     ^ ":" ^ serverityMsg ^ msghd ^ "\n" 
     ^ sourceTextInfo ^  
     (if DEBUG then "\n```" ^ UTF8String.toString pos ^ "```" else "") ^

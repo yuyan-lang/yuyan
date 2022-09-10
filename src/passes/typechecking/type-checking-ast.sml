@@ -77,6 +77,7 @@ structure TypeCheckingAST = struct
                     | CUniverse 
                     | CPiType of CExpr * EVar option * CExpr  * plicity
                     | CSigmaType of CExpr * EVar option * CExpr 
+                    | CBlock of CDeclaration list
     
 
     and cconstructorinfo = CConsInfoTypeConstructor 
@@ -93,9 +94,11 @@ structure TypeCheckingAST = struct
                         (* CTermTypeJudgment of UTF8String.t * CType *)
                         (* Fold into Term Definition *)
                        (*  CTermMacro of UTF8String.t * CExpr *)
-                        CTermDefinition of StructureName.t * CExpr * CExpr  
+                        CTermDefinition of UTF8String.t * CExpr * CExpr  
                        | CDirectExpr of CExpr * CExpr
-                       | CConstructorDecl of StructureName.t * CExpr * cconstructorinfo
+                       | CConstructorDecl of UTF8String.t * CExpr * cconstructorinfo
+                       (* Pure Declaration will be things that have not yet defined *)
+                       | CPureDeclaration of UTF8String.t * CExpr  (* type only, definition to be provided later *)
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
@@ -154,7 +157,7 @@ structure TypeCheckingAST = struct
                     | RExists of TVar * RExpr * sourceOpInfo 
                     | RRho of TVar * RExpr * sourceOpInfo 
                     | RBuiltinType of BuiltinType * UTF8String.t
-                    
+                    | RBlock of RDeclaration list * MixedStr.quoteinfo
 
 
     and RDeclaration = 
@@ -165,7 +168,7 @@ structure TypeCheckingAST = struct
                        (* | RTermMacro of UTF8String.t * RExpr *)
                        | RTermDefinition of UTF8String.t * RExpr
                        | RDirectExpr of RExpr
-                       | RStructure of bool * UTF8String.t * RDeclaration list
+                       (* | RStructure of bool * UTF8String.t * RDeclaration list *)
                        (*  public visible * name * signature *)
                        | ROpenStructure of StructureName.t
                        | RReExportStructure of StructureName.t

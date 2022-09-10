@@ -179,6 +179,8 @@ infix 5 =/=
                                      else recur (List.nth(elems, idx))
                 | ne => Success(CProj(ne,  idx, u))
             )
+            | CBlock _ => Success (t)
+            | CLabeledProd _ => Success (t)
             | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -285,6 +287,8 @@ infix 5 =/=
                         Success(CPack(ce1, ce2, u))
                     )
                 )
+            | CBlock(decls) => 
+                fmap CBlock (resolveAllMetaVarsInCSig ctx decls)
             | _ => raise Fail ("resolveAllMetaVarsInCExpr not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -380,12 +384,42 @@ infix 5 =/=
                 | CProj (e1, idx, u) => CProj (recur e1, idx, u)
                 | CTuple(e, u) => CTuple (map recur e, u)
                 | CFfiCCall(name, args) => CFfiCCall(name, map recur args)
+                | CBlock(decls) => CBlock (substituteTypeInCSignature tS x decls)
         | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
         ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
         ^ " for " ^ StructureName.toStringPlain x)
         end
-    and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
-    raise Fail "not implemented136"
+    and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (decls : CSignature ) : CSignature = 
+        let 
+            (* performs full substitution on decls, with tv possibly shadowing s, pass the result back to f *)
+            fun captureAvoid f (tv : UTF8String.t) decls' = 
+                    let val decls = () in
+                    if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
+                    then let val tv' = StructureName.binderName()
+                                        in f (tv', substituteTypeInCSignature tS x 
+                                            (substituteTypeInCSignature (CVar([tv'], CVTBinder)) [tv] decls')) 
+                                            end
+                    else  (* No capture, regular *)
+                    if [tv] ~~~= x (* do not substitute when the bound variable is the same as substitution *)
+                    then f (tv, decls')
+                    else f (tv, substituteTypeInCSignature tS x decls')
+                    end
+            (* val _ = DebugPrint.p "SUBST..." *)
+        in 
+            case decls of 
+                [] => []
+                | ((CTermDefinition(n, e, t)))::tl => 
+                captureAvoid (fn (name', tl') => (CTermDefinition(name', substTypeInCExpr tS x e, substTypeInCExpr tS x t):: tl')) n (tl)
+                | ((CPureDeclaration(n, t)))::tl => 
+                captureAvoid (fn (name', tl') => (CPureDeclaration(name', substTypeInCExpr tS x t):: tl')) n (tl)
+                | ((CConstructorDecl(n, t, cinfo)))::tl => 
+                captureAvoid (fn (name', tl') => (CConstructorDecl(name', substTypeInCExpr tS x t, cinfo):: tl')) n (tl)
+                | ((CDirectExpr(e, t )))::tl => 
+                (CDirectExpr( substTypeInCExpr tS x e, substTypeInCExpr tS x t):: (substituteTypeInCSignature tS x tl))
+                | ((h as CImport(_)))::tl => 
+                (h:: (substituteTypeInCSignature tS x tl))
+        end
+    (* raise Fail "not implemented136" *)
     (* !!! always capture avoiding substitution *)
     (* only used when checking pi types *)
     (* TODO: maybe hereditary substitution *)

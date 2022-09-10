@@ -42,13 +42,13 @@ struct
         | _ => raise Fail "dg33"
     end *)
 
-    fun termTypeDecl sname t =
+    fun termTypeDecl name t =
     let val opStrings = Operators.getStringComponents PreprocessingOperators.termTypeJudgmentOp
     in 
     case opStrings of 
         [op1, op2] => [ 
         RichTextSegment(Green  ,Regular,op1), 
-        RichTextSegment(Black,Regular,(StructureName.toString (getLastName sname))), 
+        RichTextSegment(Black,Regular,( (name))), 
         RichTextSegment(Green ,Regular,op2), 
         RichTextSegment(Black,Regular,((showType t))), 
         RichTextSegment(Green  ,Regular,([SpecialChars.period])),
@@ -64,7 +64,7 @@ struct
         length candidateName = length currentStructureName + 1 
         andalso StructureName.isPrefix currentStructureName candidateName
 
-        fun scopeUpdate(candidateName : StructureName.t) : (RichTextDocument.t * int) = 
+        (* fun scopeUpdate(candidateName : StructureName.t) : (RichTextDocument.t * int) = 
         if isInCurrentScope candidateName then ([], currentIndentLevel) else
         let val agreedParts = StructureName.getAgreedPrefixParts candidateName currentStructureName
                  val indentBackoff = length currentStructureName - length agreedParts
@@ -82,11 +82,13 @@ struct
                 val newIndent = indentAfterBackoff + indentProceed
             in 
                 (closingMarks @ openingMarks, newIndent)
-            end
+            end *)
         
-        fun withScopeUpdate(candidateName : StructureName.t) (after : int -> RichTextDocument.t) : RichTextDocument.t * int  * StructureName.t = 
-            case scopeUpdate candidateName  of 
-                (c, i) => (c @(after i), i, List.take(candidateName, length candidateName - 1))
+        (* Legacy code before switching to first class modules, to remove *)
+        fun withScopeUpdate(candidateName : UTF8String.t) (after : int -> RichTextDocument.t) : RichTextDocument.t * int  * StructureName.t = 
+            (* case scopeUpdate candidateName  of  *)
+                (* (c, i) =>  *)
+                ((after currentIndentLevel), currentIndentLevel, [candidateName])
 
         fun showCDecl (x : TypeCheckingAST.CDeclaration) : (RichTextDocument.t  * int* StructureName.t) = 
         case x of 
@@ -95,7 +97,7 @@ struct
                                         ) *)
              CImport _ => ([], currentIndentLevel, currentStructureName)
             | CTermDefinition(name, _, t) => withScopeUpdate name (fn i => 
-                                            (indentN i @ termTypeDecl name t)
+                                            (indentN currentIndentLevel @ termTypeDecl name t)
                                         )
             | CDirectExpr(_) => ([], currentIndentLevel, currentStructureName)
             | CConstructorDecl(name, t, _) => withScopeUpdate name (fn i => 
