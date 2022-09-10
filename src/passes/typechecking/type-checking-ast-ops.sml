@@ -45,12 +45,13 @@ infix 5 =/=
         val res = 
             case t of
                 CVar (t, r) => [t]
-                | CProd l => (
+                | CLabeledProd l => (
                     let fun col l = case l of 
                                     [] => []
                                     | (l1,t1)::tl => freeTCVar t1 @ remove l1 (col tl)
                     in col l end
                 )
+                | CProd l => List.concat (map (fn ( t) => freeTCVar t) l)
                 | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
                 | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
                 | CPiType (t1,evop, t2, p) => 
@@ -78,7 +79,7 @@ infix 5 =/=
                 | CBoolConstant _ => []
                 | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
                 | CMetaVar(v) => [v]
-                | CProj(e1, lbl, idx, u) => freeTCVar e1
+                | CProj(e1, idx, u) => freeTCVar e1
                 | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
         (* val _ = DebugPrint.p "computed freetcvar" *)
     in
@@ -172,11 +173,11 @@ infix 5 =/=
             | CBoolConstant b => Success(t)
             | CIfThenElse _ => Success(t) (* TODO: *)
             | CTuple  _ => Success(t)
-            | CProj (e, lbl, idx, u) => recur e >>= (fn 
+            | CProj (e, idx, u) => recur e >>= (fn 
                 CTuple (elems, u) => if idx >= length elems
                                      then raise Fail "tcastops176: normalization error"
                                      else recur (List.nth(elems, idx))
-                | ne => Success(CProj(ne, lbl, idx, u))
+                | ne => Success(CProj(ne,  idx, u))
             )
             | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
@@ -199,7 +200,8 @@ infix 5 =/=
                     | _ => raise Fail "tcast175: should be a metavar"
                 )
             )
-            | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CProd l =>  fmap CProd (collectAll ((map (fn (t) => recur t >>= (fn nt => Success(nt))) l)))
+            | CLabeledProd l =>  fmap CLabeledProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
             | CPiType (t1, hd, t2, p) => recur t1 >>= (fn nt1 =>
@@ -255,9 +257,9 @@ infix 5 =/=
             | CTuple (l, u) => collectAll (map recur l) >>= (fn cl => 
                 Success(CTuple(cl, u))
             )
-            | CProj(e, l, idx, u) => 
+            | CProj(e,  idx, u) => 
                 recur e >>= (fn ce => 
-                    Success(CProj(ce, l, idx, u))
+                    Success(CProj(ce,  idx, u))
                 )
             | CFix(ev, eb, u) => 
                 recur eb >>= (fn ceb => 
@@ -346,7 +348,8 @@ infix 5 =/=
             case e of
                 CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
                 | CMetaVar(name) => if name ~~~=x then tS else e
-                | CProd l => CProd (substTypeInSpine tS x l)
+                | CLabeledProd l => CLabeledProd (substTypeInSpine tS x l)
+                | CProd l => CProd  (map (fn ( t) => ( substTypeInCExpr tS x t)) l)
                 | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
                 | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
                 (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
@@ -374,7 +377,7 @@ infix 5 =/=
                 | CLam(ev, e2, u) => captureAvoid 
                     (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
                 | CLetIn _ => e (* TODO : do it *)
-                | CProj (e1, lbl,idx, u) => CProj (recur e1, lbl, idx, u)
+                | CProj (e1, idx, u) => CProj (recur e1, idx, u)
                 | CTuple(e, u) => CTuple (map recur e, u)
                 | CFfiCCall(name, args) => CFfiCCall(name, map recur args)
         | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e

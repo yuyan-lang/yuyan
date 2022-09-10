@@ -38,7 +38,7 @@ structure TypeCheckingAST = struct
                     | CUnitExpr
                     | CTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
-                    | CProj of CExpr * Label * int (* index of the label *) * CTypeAnn (* type is Prod *)
+                    | CProj of CExpr * int (* index of the label *) * CTypeAnn (* type is Prod *)
                     | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
                     | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
@@ -63,7 +63,8 @@ structure TypeCheckingAST = struct
                     | CSeqComp of CExpr * CExpr * CTypeAnn * CTypeAnn (* type is the type of the second expression *)
                     (* types *)
                     | CUnitType
-                    | CProd of (Label * CExpr) list
+                    | CProd of (CExpr) list
+                    | CLabeledProd of (Label * CExpr) list
                     | CLazyProd of (Label * CExpr) list
                     | CNullType
                     | CSum of (Label * CExpr) list
@@ -113,7 +114,7 @@ structure TypeCheckingAST = struct
                     | RUnitExpr of UTF8String.t
                     | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RLazyTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
-                    | RProj of RExpr * Label * sourceOpInfo
+                    | RProj of RExpr * (int * UTF8String.t ) * sourceOpInfo
                     | RLazyProj of RExpr * Label * sourceOpInfo
                     | RInj of Label * RExpr * sourceOpInfo
                     | RIfThenElse of RExpr * RExpr * RExpr * sourceOpInfo
@@ -143,7 +144,7 @@ structure TypeCheckingAST = struct
                     | RPiType of RExpr option * EVar option * RExpr * plicity * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RUnitType of UTF8String.t (* source info *)
-                    | RProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RProd of (RExpr) list * sourceOpInfo list (* n-1 source op info *)
                     | RLazyProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RSum of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RNullType of UTF8String.t (* source info *)

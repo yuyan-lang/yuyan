@@ -23,12 +23,12 @@ val callccType : CType = cForallImplicit (typeBinderB,
 val newDynClsfdType : CType = 
     cForall(typeBinderB,
         cFunc(CBuiltinType(BIString),
-            CProd([
+            CLabeledProd([
                 ((UTF8String.fromString "创造值"), 
                     cFunc(typeVarB, CBuiltinType(BIDynClsfd))),
                 ((UTF8String.fromString "分析值"), 
                     cForall(typeBinderC,
-                        cFunc(CProd([
+                        cFunc(CLabeledProd([
                             (UTF8String.fromString "值", CBuiltinType(BIDynClsfd)),
                             (UTF8String.fromString "符合", cFunc(typeVarB, typeVarC)),
                             (UTF8String.fromString "不符合", cFunc(CUnitType, typeVarC))
@@ -47,7 +47,7 @@ val newDynClsfdType : CType =
         )
     val handleType : CType = 
         cForall(typeBinderB, 
-            cFunc(CProd([
+            cFunc(CLabeledProd([
                 ((UTF8String.fromString "尝试"), 
                     cFunc(CUnitType, typeVarB)),
                 ((UTF8String.fromString "遇异"),

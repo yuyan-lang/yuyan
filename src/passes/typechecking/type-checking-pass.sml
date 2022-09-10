@@ -335,7 +335,30 @@ infix 5 <?>
                         | _ => Success((CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp), ctx)
                     )
                     | RUnitExpr(soi) => Success ((CUnitExpr, CUnitType), ctx)
-                    | RProj(e, l, soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
+                    | RProj(e, (idx, idxsoi), soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
+                                    ( weakHeadNormalizeType e ctx tt) >>= (fn ntt => case 
+                                    ( ntt) of 
+                            (CProd ls) => 
+                                (
+                                    let fun go curIdx acc = 
+                                            (case acc of 
+                                                [] => raise Fail "tcp338 lookup should not return an invalid index"
+                                                | (( t1)::tl) => 
+                                                    if idx = curIdx
+                                                    then t1
+                                                    else 
+                                                            go (curIdx+1) (tl)
+                                            )
+                                        val targetType = go 0 ls
+                                    in 
+                                        Success((CProj(ce, idx, CTypeAnnNotAvailable), targetType), ctx)
+                                    end
+                                )
+
+                            | _ => Errors.attemptToProjectNonProd e (tt) ctx
+                    ))
+                    (* LABELED VERSION *)
+                    (* | RProj(e, l, soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
                                     ( weakHeadNormalizeType e ctx tt) >>= (fn ntt => case 
                                     ( ntt) of 
                             (CProd ls) => 
@@ -358,7 +381,7 @@ infix 5 <?>
                                 )
 
                             | _ => Errors.attemptToProjectNonProd e (tt) ctx
-                    ))
+                    )) *)
                     | RLazyProj(e, l, soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
                     weakHeadNormalizeType e ctx tt >>= (fn ntt => case ntt of 
                             ( CLazyProd ls) => fmap (fn (idx,x) => ((CLazyProj(ce, l, CTypeAnn(CLazyProd ls)),x), ctx)) (lookupLabel ls l)
@@ -524,8 +547,13 @@ infix 5 <?>
                                 )
                             )
                     | RProd(ltsl, sepl) => 
-                        checkSpineIsType ctx (map (fn (l, t, soi) => (l, t)) ltsl)
-                         >>= (fn (l, ctx) => Success((CProd l, CUniverse), ctx))
+                        (foldMapCtx ctx (fn ((t), ctx) => 
+                             checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
+                             Success ((ct), ctx)
+                             )
+                         ) ltsl) >>= (fn (l, ctx) => Success((CProd l, CUniverse), ctx))
+                        (* checkSpineIsType ctx (map (fn (l, t, soi) => (l, t)) ltsl)
+                         >>= (fn (l, ctx) => Success((CProd l, CUniverse), ctx)) *)
                     | RLazyProd  (ltsl, sepl) => 
                          (foldMapCtx ctx (fn ((l, t, soi), ctx) => 
                             checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
@@ -630,6 +658,30 @@ infix 5 <?>
                                                         (* DebugPrint.p "GO : DONE"; *)
                                                     Success([], ctx)
                                                 )
+                                                | ((elem::es), ((tp) :: tpl)) => 
+                                                (
+                                                    (* DebugPrint.p ("GOING..." ^ Int.toString (length l) ^ " ; " ^ Int.toString (length ls)); *)
+
+                                                    checkType ctx elem tp >>= (fn (ce, ctx) => 
+                                                        (
+                                                            (* DebugPrint.p ("checked..." ); *)
+                                                            go (es, tpl) ctx >>= (fn (ces, ctx) => 
+                                                                Success((ce::ces), ctx)
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                                | _ => raise Fail "tcp629: should be the same length"
+                                        in go (l, ls) ctx >>= (fn (ce, ctx) => Success(CTuple(ce, CTypeAnnNotAvailable), ctx))
+                                        end
+                            | CLabeledProd ls => if List.length l <> List.length ls
+                                        then Errors.prodTupleLengthMismatch e (tt) ctx
+                                        else 
+                                        let fun go (l,ls) ctx = case (l, ls) of 
+                                                ([],[]) => (
+                                                        (* DebugPrint.p "GO : DONE"; *)
+                                                    Success([], ctx)
+                                                )
                                                 | ((elem::es), ((label,tp) :: tpl)) => 
                                                 (
                                                     (* DebugPrint.p ("GOING..." ^ Int.toString (length l) ^ " ; " ^ Int.toString (length ls)); *)
@@ -657,10 +709,10 @@ infix 5 <?>
                                         Success(CLazyTuple ( checkedElems, CTypeAnn((CLazyProd ls))), ctx))
                             | _ => Errors.expectedLazyProdType e (tt) ctx
                             )
-                        | RProj(e, l, soi) =>
-                        synthesizeType ctx (RProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
-                            (CProj(ce, l, idx, prodType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
-                            Success(CProj(ce, l, idx, prodType), ctx))
+                        | RProj(e, (idx, idxsoi), soi) =>
+                        synthesizeType ctx (RProj(e, (idx, idxsoi), soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
+                            (CProj(ce, idx, prodType), synthType) => tryTypeUnify ctx originalExpr synthType tt >>= (fn ctx => 
+                            Success(CProj(ce, idx, prodType), ctx))
                             | _ => raise Fail "tcp229")
                         | RLazyProj(e, l, soi) =>
                         synthesizeType ctx (RLazyProj(e, l, soi)) >>= (fn ((cproj, synt), ctx) => case (cproj, synt) of
@@ -896,8 +948,15 @@ infix 5 <?>
                                 ))
                         | RProd(ltsl, sepl) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
-                            checkSpineIsType ctx (map (fn (l, t, soi) => (l, t)) ltsl)
+                            (foldMapCtx ctx (fn ((t), ctx) => 
+                                checkType ctx t CUniverse  >>= (fn (ct, ctx) => 
+                                Success ((ct), ctx)
+                                )) ltsl)
                              >>= (fn (l, ctx) => Success(CProd l, ctx)))
+                        (* | RProd(ltsl, sepl) => 
+                            tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
+                            checkSpineIsType ctx (map (fn (l, t, soi) => (l, t)) ltsl)
+                             >>= (fn (l, ctx) => Success(CProd l, ctx))) *)
                         | RLazyProd  (ltsl, sepl) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                             (foldMapCtx ctx (fn ((l, t, soi), ctx) => 

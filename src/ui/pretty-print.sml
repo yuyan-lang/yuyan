@@ -199,7 +199,7 @@ RVar v => sst v
                     | RUnitExpr(soi) => "⟨⟩"
                     | RTuple (l, soi) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩"
                     | RLazyTuple (l, soi) => "⟨(lazy>)"^ String.concatWith ", " (map se l) ^ "(<lazy)⟩"
-                    | RProj (e, lbl, soi) => "(" ^ se e ^ "." ^ ss lbl ^ ")"
+                    | RProj (e, (idx, _), soi) => "(" ^ se e ^ "." ^ Int.toString idx ^ ")"
                     | RLazyProj (e, lbl, soi) => "(" ^ se e ^ ".(lazy) " ^ ss lbl ^ ")"
                     | RIfThenElse (e, tcase, fcase, soi) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
                     | RInj  ( lbl,e, soi) => "(" ^ ss lbl ^ "." ^ se e ^ ")"
@@ -225,7 +225,7 @@ RVar v => sst v
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
                     | RSeqComp(e1, e2, soi) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
                     | RUnitType(soi) => "1"
-                    | RProd (l,soi) => "(" ^ String.concatWith "* " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | RProd (l,soi) => "(" ^ String.concatWith "* " (map (fn (t) =>  st t) l) ^ ")"
                     | RLazyProd (l,soi) => "(" ^ String.concatWith "*(lazy) " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | RNullType(soi) => "0"
                     | RSum (l,soi) =>  "(" ^ String.concatWith "+ " (map (fn (lbl, t, soi) => ss lbl ^ ": " ^ st t) l) ^ ")"
@@ -307,7 +307,7 @@ in case x of
                     | CUnitExpr => "⟨⟩"
                     | CTuple (l,t) => "⟨"^ String.concatWith ", " (map se l) ^ "⟩" ^ cst t
                     | CLazyTuple (l,t) => "⟨"^ String.concatWith ",(lazy) " (map se l) ^ "⟩" ^ cst t
-                    | CProj (e, lbl, lblidx, t) => "(PROJ " ^ se e ^ cst t ^ "." ^ ss lbl ^ ")"
+                    | CProj (e, lblidx, t) => "(PROJ " ^ se e ^ cst t ^ "." ^ Int.toString lblidx ^ ")"
                     | CLazyProj (e, lbl, t) => "(" ^ se e ^ cst t ^ ".(lazy) " ^ ss lbl ^ ")"
                     | CIfThenElse (e, tcase, fcase ) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
                     | CInj  ( lbl,e, t) => "(INJ " ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
@@ -331,7 +331,7 @@ in case x of
                     | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f
                     | CSeqComp(e1, e2, t1, t2) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
                     | CUnitType => "1"
-                    | CProd l => "(PROD " ^ String.concatWith "* " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
+                    | CProd l => "(PROD " ^ String.concatWith "* " (map (fn (t) => ": " ^ st t) l) ^ ")"
                     | CLazyProd l => "(LAZY " ^ String.concatWith "*(lazy) " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     | CNullType => "0"
                     | CSum l =>  "(SUM " ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"

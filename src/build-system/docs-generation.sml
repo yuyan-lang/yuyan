@@ -10,9 +10,10 @@ struct
 
     val closingStructureSegment = [RichTextSegment(Red, Regular,([SpecialChars.rightSingleQuote, SpecialChars.period]))]
     fun openStructureSegment sname =
-    let val opStrings = Operators.getStringComponents PreprocessingOperators.publicStructureOp
+    let 
+    (* val opStrings = Operators.getStringComponents PreprocessingOperators.publicStructureOp *)
     in 
-    case opStrings of 
+    case [UTF8String.fromString "??dg1", UTF8String.fromString "??dg2"] of 
         [op1, op2] => [ 
         RichTextSegment(Red,Regular,op1), 
         RichTextSegment(Black,Regular,(StructureName.toString sname)), 

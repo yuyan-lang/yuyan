@@ -48,7 +48,7 @@ structure TypeCheckingErrors =
             | RUnitExpr(soi) => soi
             | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
             | RLazyTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
-            | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
+            | RProj (e, (idx, idxsoi), soi) => reconstructWithArgs soi [reconstructFromRExpr e, idxsoi]
             | RLazyProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
             | RIfThenElse (e, tcase, fcase, soi) => reconstructWithArgs soi [reconstructFromRExpr e, reconstructFromRExpr tcase, reconstructFromRExpr fcase]
             | RInj  ( lbl,e, soi) => reconstructWithArgs soi [lbl, reconstructFromRExpr e]
@@ -121,8 +121,8 @@ structure TypeCheckingErrors =
                 SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
                 | NONE => raise Fail "ui368")
             | RProd(ltsl, sepl) => 
-                constructWithSep (List.map (fn (l, t, soi) => 
-                    reconstructWithArgs soi [l, reconstructFromRExpr t]
+                constructWithSep (List.map (fn (t) => 
+                    reconstructFromRExpr t
                 ) ltsl) sepl
             | RLazyProd  (ltsl, sepl) => 
                 constructWithSep (List.map (fn (l, t, soi) => 

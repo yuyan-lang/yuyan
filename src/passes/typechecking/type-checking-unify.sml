@@ -141,14 +141,16 @@ infix 4 ~~~=
                                         | _ => raise Fail "ni42: pi constaints"
                                 )
                             end
-                        | (CProd l1, CProd l2) =>  typeEquivListWithLabel ctx l1 l2
+                        | (CProd l1, CProd l2) => typeEquivList ctx l1 l2
+                        | (CLabeledProd l1, CLabeledProd l2) =>  typeEquivListWithLabel ctx l1 l2
                         | (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
                         | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
                         (* TODO: ^^^ should we care about the arguments ? *)
                         | (CUnitType, CUnitType) => Success([], ctx)
-                        | (CProj(t1, lbl1, idx1, u1), CProj(t2, lbl2, idx2, u2)) => 
+                        | (CProj(t1,  idx1, u1), CProj(t2,  idx2, u2)) => 
                             recur ctx t1 t2 >>= (fn 
-                                ([], ctx) => if idx1 = idx2 andalso lbl1 = lbl2 
+                                ([], ctx) => if idx1 = idx2 
+                                (* andalso lbl1 = lbl2  *)
                                              then Success([], ctx)
                                              else fail()
                                 | _ => raise Fail "ni151"

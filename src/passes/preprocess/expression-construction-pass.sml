@@ -72,13 +72,13 @@ struct
         (* | PrecedenceParser.AmbiguousParse s =>  *)
             (* raise ECPAmbiguousParse ("Parsing failed at " ^  s ^ " Ambiguous parse. Double check your grammar.") *)
     
-    and elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): (Label * RType * sourceOpInfo) witherrsoption = 
+    (* and elaborateLabeledType (ast : OpAST.t)  (ctx : contextType): (Label * RType * sourceOpInfo) witherrsoption = 
         case ast of
         OpAST(oper, [NewOpName(l1), l2]) => if 
             oper ~=** labeledTypeCompOp 
             then elaborateOpASTtoExpr l2 ctx >>= (fn l2' => Success (l1, l2', oper))
             else genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
-        | _ => genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE 
+        | _ => genSingletonError (reconstructOriginalFromOpAST ast) "期待`夫 表 `作为总和类型或者乘积类型的组成(expect labeledTypeComp as a child of prod/sum)" NONE  *)
 
     and elaborateOpASTtoType  (ast )( ctx) = elaborateOpASTtoExpr ast ctx
     
@@ -133,11 +133,16 @@ struct
                     then Success (RUnitExpr(oper))
                     else *)
                     if oper ~=** projExprOp
-                    then fmap RProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
+                    then 
+                    (elaborateUnknownName (snd l)) >>= (fn idxstr => 
+                    if NumberParser.isInteger idxstr then
+                        fmap RProj (==/= ((elaborateOpASTtoExpr (hd l) ctx), Success(NumberParser.parseInteger idxstr, idxstr)  , operSuc))
+                    else  genSingletonError idxstr "投影必须投影整数" NONE
+                    )
                     else 
-                    if oper ~=** lazyProjExprOp
+                    (* if oper ~=** lazyProjExprOp
                     then fmap RLazyProj (==/= ((elaborateOpASTtoExpr (hd l) ctx),  (elaborateUnknownName (snd l)), operSuc))
-                    else 
+                    else  *)
                     if oper ~=** appExprOp
                     then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Explicit, operSuc))
                     else 
@@ -150,7 +155,7 @@ struct
                         in fmap RTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) es) =/= Success ops)
                         end
                     else 
-                    if oper ~=** lazyPairExprOp
+                    (* if oper ~=** lazyPairExprOp
                     then 
                         let val (es, ops) = (flattenRight ast lazyPairExprOp) 
                         in fmap RLazyTuple(collectAll (map (fn x => elaborateOpASTtoExpr x ctx) es) =/= Success ops)
@@ -164,7 +169,7 @@ struct
                     else
                     if oper ~=** unfoldExprOp
                     then fmap RUnfold( elaborateOpASTtoExpr (hd l) ctx =/= operSuc)
-                    else
+                    else *)
                     if oper ~=** caseExprOp
                     then let
                                 val (args, sepOps) = flattenRight (snd l) caseAlternativeOp
@@ -200,7 +205,7 @@ struct
                     if oper ~=** ifThenElseExprOp
                     then fmap RIfThenElse(===/= (elaborateOpASTtoExpr (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, elaborateOpASTtoExpr (hd (tl (tl l))) ctx, (operSuc)))
                     else
-                    if oper ~=** packExprOp
+                    (* (* if oper ~=** packExprOp
                     then fmap RPack(==/= (elaborateOpASTtoType (hd l) ctx, elaborateOpASTtoExpr (snd l) ctx, (Success (reconstructOriginalFromOpAST (hd l))=/= operSuc)))
                     else
                     if oper ~=** unpackExprOp
@@ -211,9 +216,9 @@ struct
                                 Success (tvar,evar, body)
                             )
                         )
-                    )), operSuc))
+                    )), operSuc)) *)
 
-                    else
+                    else *)
                     if oper ~=** ffiCCallOp
                     then fmap RFfiCCall(==/= (elaborateOpASTtoExpr (hd l) ctx ,elaborateOpASTtoExpr (snd l) ctx, operSuc))
                     else
@@ -254,16 +259,16 @@ struct
                         end
                     )
                     else
-                    if oper ~=** prodTypeOp
+                    if oper ~=** unnamedProdTypeOp
                     then (let val (args, sepOps) = (flattenRight ast oper)
-                        in fmap RProd (collectAll (map (fn x => elaborateLabeledType x ctx) args ) =/= (Success (sepOps)))
+                        in fmap RProd (collectAll (map (fn x => elaborateOpASTtoType x ctx) args ) =/= (Success (sepOps)))
                         end)
                     else 
-                    if oper ~=** sumTypeOp
+                    (* if oper ~=** sumTypeOp
                     then (let val (args, sepOps) = (flattenRight ast oper)
                         in fmap RSum (collectAll (map (fn x => elaborateLabeledType x ctx) args) =/= (Success sepOps))
                         end)
-                    else
+                    else *)
                     if oper ~=** functionTypeOp
                     then fmap RPiType (====/=(fmap SOME (elaborateOpASTtoType (hd l) ctx) ,Success NONE, (elaborateOpASTtoType (snd l) ctx), Success Explicit, operSuc))
                     else 
@@ -273,12 +278,12 @@ struct
                     (* if oper ~=** universalTypeOp
                     then fmap RForall (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else  *)
-                    if oper ~=** existentialTypeOp
+                    (* if oper ~=** existentialTypeOp
                     then fmap RExists (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
                     else 
                     if oper ~=** recursiveTypeOp
                     then fmap RRho (==/=((elaborateNewName (hd l)) , (elaborateOpASTtoType (snd l) ctx), operSuc))
-                    else 
+                    else  *)
                     if oper ~=** structureRefOp
                     then fmap RVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
                     else 
@@ -296,9 +301,9 @@ struct
                                             elaborateNewName (hd l) >>= (fn x => Success(SOME(x))), 
                                             elaborateOpASTtoType (snd l) ctx, Success Implicit, Success oper))
                     else 
-                    if oper ~=** sigmaTypeOp
+                    (* if oper ~=** sigmaTypeOp
                     then fmap RSigmaType (===/=(elaborateOpASTtoType (hd l) ctx, elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success oper))
-                    else 
+                    else  *)
                     genSingletonError (reconstructOriginalFromOpAST ast) "期待表达式结构(expected expression construct)" (SOME "你是否使用了类型表达式？请使用普通表达式。")
                 )
                 end

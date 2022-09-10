@@ -235,14 +235,14 @@ structure PreprocessingPass = struct
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
                     else if oper ~=** termDefinitionOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success(PTermDefinition (l1, l2, oper), ctx)))
-                    else if oper ~=** privateStructureOp
+                    (* else if oper ~=** privateStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
                     tp l1 >>= (fn l1 => 
                     Success(PStructure (false, l1, declOpAST, oper), newContext)))
                     else if oper ~=** publicStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
                     tp l1 >>= (fn l1 => 
-                    Success(PStructure (true, l1, declOpAST, oper), newContext)))
+                    Success(PStructure (true, l1, declOpAST, oper), newContext))) *)
                     else  
                     raise Fail "pp34"
                     | (oper, [l1, l2, l3]) =>  
