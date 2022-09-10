@@ -18,6 +18,7 @@ debug*
 *.i
 .yybuild
 .vscode/c*.json
+.vscode/ltex*.json
 runtime/lib*.a
 
 *.icloud

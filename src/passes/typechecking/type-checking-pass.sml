@@ -1179,8 +1179,6 @@ infix 5 <?>
                         weakHeadNormalizeType t ctx ct
                         >>= (fn normalizedType => 
                         typeCheckSignature (
-                            (* addToCtxR  *)
-                        (* (TermTypeJ([n], normalizedType, JTPending, NONE)) *)
                          ctx) ss isModule (acc@[CPureDeclaration(n, normalizedType)]))
                     )
                 end
@@ -1190,9 +1188,11 @@ infix 5 <?>
                     RVar _ => synthesizeTypeNoInstMeta ctx e
                     | _ => synthesizeType ctx (e))
                      >>= (fn ((transformedExpr , synthesizedType), ctx)  =>
+                            withLocalGeneric ctx [n] synthesizedType (JTDefinition transformedExpr) (fn ctx => 
                                 typeCheckSignature 
-                                    (addToCtxR (TermTypeJ([n], synthesizedType, JTDefinition transformedExpr, NONE)) ctx) ss  isModule
+                                    ctx ss  isModule
                                     (acc@[CTermDefinition(n, transformedExpr, synthesizedType)])
+                            )
                         ) 
                 in
                 (case findSigList n acc of   
@@ -1204,8 +1204,13 @@ infix 5 <?>
                             let val transformedExprOrFailure = checkType ctx (e) lookedUpType
                             in 
                             case transformedExprOrFailure of
-                            Success(transformedExpr, ctx) => typeCheckSignature (addToCtxR (TermTypeJ([n], lookedUpType, JTDefinition transformedExpr, NONE)) ctx) ss  isModule
-                                                            (modifySigList n (fn _ => CTermDefinition(n, transformedExpr, lookedUpType)) acc)
+                            Success(transformedExpr, ctx) => 
+                                withLocalGeneric ctx [n] lookedUpType (JTDefinition transformedExpr) (fn ctx => 
+                                    let val acc = (modifySigList n (fn _ => CTermDefinition(n, transformedExpr, lookedUpType)) acc)
+                                    in
+                                        typeCheckSignature ctx ss  isModule acc
+                                    end
+                                )
                             | DErrors(l) => (case typeCheckSignature ctx ss isModule (acc) of 
                                         Success _ => DErrors(l)
                                         | DErrors l2 => DErrors(l @l2)
@@ -1222,9 +1227,9 @@ infix 5 <?>
                 end
                 | RConstructorDecl(name, rtp) :: ss => 
                     checkConstructorType name ctx rtp >>= (fn ((checkedType, cconsinfo),ctx) => 
-                    
-                        typeCheckSignature (addToCtxR(TermTypeJ([name], checkedType, JTConstructor cconsinfo, NONE)) ctx) ss isModule
-                        (acc@[CConstructorDecl(name, checkedType, cconsinfo)])
+                        withLocalGeneric ctx [name] checkedType (JTConstructor cconsinfo) (fn ctx => 
+                            typeCheckSignature ctx ss isModule (acc@[CConstructorDecl(name, checkedType, cconsinfo)])
+                        )
                     )
                 (* | RStructure (vis, sName, decls) :: ss => 
                 (case ctx of 
