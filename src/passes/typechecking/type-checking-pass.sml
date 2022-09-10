@@ -37,8 +37,38 @@ infix 5 <?>
         case c of  (Context(cSname, cVis, m)) => m
 
 
+    fun nextContextOfOpenStructure  (errReporting : UTF8String.t) (ctx : context) (resolvedSig : CSignature) (done : context -> ('a * context ) witherrsoption) 
+    : ('a * context) witherrsoption =
+            (* extract all bindings from bindings in order and put them into the current context *)
+            case resolvedSig of 
+            [] => done ctx
+            | (dec :: tsig) => 
+            let fun continue ctx = nextContextOfOpenStructure errReporting ctx tsig done in 
+            (case dec of 
+             CTermDefinition(name, e, t) => 
+             withLocalGeneric ctx [name] t (JTDefinition(e)) continue
+            | CConstructorDecl(name, t, consinfo) => 
+                withLocalGeneric ctx [name] t (JTConstructor consinfo) continue
+            | CDirectExpr _ => continue ctx
+            | CImport _ => continue ctx
+            | CPureDeclaration (name, tp) => (Errors.genericErrorStr errReporting ctx "opened structure cannot contain pure declaration")
+                                )
+                end
 
-    fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : mapping list) 
+            (* 
+                    List.mapPartial (fn x => 
+                    case x of TermTypeJ(name, t, jtp,  u) => 
+                    (case StructureName.checkRefersToScope name openName curSName of
+                        SOME(nameStripped) => SOME(TermTypeJ(curSName@nameStripped, t, jtp, 
+                            (case u of SOME x => SOME x | NONE => SOME (name, jtp))))
+                        | NONE => NONE)
+                    (* | TermDefJ(name, t, u) =>
+                    (case StructureName.checkRefersToScope name openName curSName of
+                        SOME(nameStripped) => SOME(TermDefJ(curSName@nameStripped, t, u))
+                        | NONE => NONE) *)
+                    ) bindings @ bindings *)
+
+    (* fun nextContextOfOpenStructure  (curSName : StructureName.t) (curVis : bool) (bindings : mapping list) 
     (openName : StructureName.t)=
 
      Context(curSName, curVis, 
@@ -54,7 +84,7 @@ infix 5 <?>
                         SOME(nameStripped) => SOME(TermDefJ(curSName@nameStripped, t, u))
                         | NONE => NONE) *)
                     ) bindings @ bindings
-                )
+                ) *)
 
     fun reExportDecls  (ctx as Context(curSName ,curVis, bindings): context)
     (reexportName : StructureName.t) : CSignature witherrsoption =
@@ -155,6 +185,31 @@ infix 5 <?>
             | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
             | (_ :: dl) => findSigList name dl
 
+    (* modify signature according to modification funcation
+    function arg: SOME indicates found with the object NONE indicates not FOUND
+    function return : SOME indicates replacement(if found)/insertion (if not found) 
+                        NONE indicates delection(if found)/do nothing (if not found)
+     *)
+    fun modifySigList (name : UTF8String.t) (modification : CDeclaration -> CDeclaration )
+    (decl : CDeclaration list)  : CDeclaration list = 
+    (* let fun go l acc =  *)
+    let in
+        case decl of 
+            [] => raise Fail "modifySigList not found!"
+            | ((d as 
+            (CPureDeclaration(n, _) | 
+            CTermDefinition(n, _, _) |
+            CConstructorDecl(n, _, _)
+            ) ):: dl) => if UTF8String.semanticEqual n name 
+                then modification d :: dl
+                else modifySigList name modification dl
+            (* | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
+            | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl *)
+            | (h :: dl) => h :: modifySigList name modification dl
+    end
+    (* in
+    end *)
+
 
     fun typeEquivList (ctx : context) (e : RExpr) (a : CType list) : CType witherrsoption =
         case a of
@@ -205,6 +260,29 @@ infix 5 <?>
         then Errors.genericError errReporting ctx "结构体用作签名时不可以包含定义的表达式"
         else Success()
 
+    fun checkBlockIsModule (ctx : context) (block : CDeclaration list) : unit witherrsoption = 
+        let val notImplementedNames =  List.mapPartial (fn dec => 
+            case dec of 
+            CPureDeclaration(name, _) => SOME(name)
+            | _ => NONE
+            ) block
+
+        in
+        if length notImplementedNames <> 0
+        then
+            (let fun go acc l= 
+                    case l of 
+                    [] => acc
+                    | (x :: xs) => go (acc <?> (fn _ => Errors.genericErrorStr x ctx "结构体用作签名时不可以包含定义的表达式")) xs
+            in
+                    go (Errors.genericErrorStr (hd notImplementedNames) ctx "结构体用作签名时不可以包含定义的表达式") 
+                    (tl notImplementedNames)
+            end
+            )
+        else Success()
+        end
+
+    (* DO NOT Implement this, I prefer to generate coersions instead of implicit subtyping*)
     fun checkSignatureAscription (errReporting : RExpr) (ctx : context) (block : CDeclaration list) (blocktype : CDeclaration list): unit witherrsoption = 
         raise Fail "sig ascription not implemented"
 
@@ -529,7 +607,7 @@ infix 5 <?>
 
                     | RLetIn(decls, e, soi) => (case ctx of 
                         Context(curName, curVis, bindings) => 
-                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls [] >>= 
+                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls true [] >>= 
                         (fn (csig, Context(localName, _, newBindings) ) =>
                                 synthesizeType (Context(localName,curVis, newBindings)) e >>= (fn ((ce, synthesizedType), Context(localName, curVis, bindings)) =>
                                         Success ((CLetIn(csig, ce, CTypeAnn(synthesizedType)), synthesizedType), Context(curName,curVis, bindings)) (* restore name when exiting *)
@@ -620,16 +698,13 @@ infix 5 <?>
                         )
                     | RBlock (decls, qi) => 
                         (
-                            (* case ctx of 
-                                Context(curName, curVis, bindings) =>  *)
-                            (* typeCheckSignature (Context(curName@[sName], vis, bindings)) decls [] >>= *)
-                            typeCheckSignature ctx decls [] >>=
+                            (* blocks are not necessarily modules *)
+                            typeCheckSignature ctx decls false [] >>=
                             (fn(checkedSig, ctx) =>
                                 (* assume the typeChecking is behaving properly, 
                                 no conflicting things will be added to the signature *)
                                 (* sub context will be determined by whether the signature is private or not ? *)
                             Success((CBlock(checkedSig), CBlock(checkedSig)), ctx)(* the type of a block is just a block *)
-                            (* typeCheckSignature (Context(curName, curVis, newBindings)) ss (acc@checkedSig) *)
                             )
                         )
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
@@ -947,7 +1022,7 @@ infix 5 <?>
                         )
                         | RLetIn(decls, e, soi) => (case ctx of 
                             Context(curName, curVis, bindings) => 
-                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls []
+                        typeCheckSignature (Context(curName@StructureName.localName(), curVis, bindings)) decls true []
                         >>= (fn(csig, Context(localName, _, newBindings)) =>
                             (* assume the typeChecking is behaving properly, 
                             no conflicting things will be added to the signature *)
@@ -1072,7 +1147,9 @@ infix 5 <?>
                     ^ " in context " ^ PrettyPrint.show_typecheckingpassctx ctx
                     ) *)
                     (* type check signature will return all bindings *)
-            and typeCheckSignature(ctx : context) (s : RSignature) (acc : CSignature) : (CSignature * context) witherrsoption =
+                    (* setting isModule to true will check that all declarations are defined.
+                    should only be set for a compilation unit *)
+            and typeCheckSignature(ctx : context) (s : RSignature) (isModule : bool) (acc : CSignature) : (CSignature * context) witherrsoption =
 
                 (
 
@@ -1087,52 +1164,26 @@ infix 5 <?>
                     case s of
                     [] => 
                 resolveAllMetaVarsInCSig ctx acc >>= (fn acc => 
-                (
-                    (* DebugPrint.p "OK"; *)
-                    Success(acc, ctx)
+                    (
+                        if isModule 
+                        then checkBlockIsModule ctx acc >> Success(acc, ctx)
+                        else Success(acc, ctx)
                     )
                 )
-                    (* normalize should not change the set of free variables *)
-                (* | RTypeMacro (n, t)::ss => 
-                let val freeTVars = freeTCVar (applyContextToType ctx (rTypeToCType t)) in if freeTVars <> [] then 
-                    Errors.typeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
-                    else 
-                    weakHeadNormalizeType (applyContextToType ctx (rTypeToCType t)) >>= (fn normalizedType => 
-                    (
-                        (* DebugPrint.p (
-                            StructureName.toStringPlain (getCurSName ctx)
-                            ^" normlizedType is " ^ PrettyPrint.show_typecheckingType normalizedType ^ "\n")
-                        ; *)
-                    typeCheckSignature (addToCtxR (TypeDef([n], normalizedType, ())) ctx) ss 
-                        (acc@[CTypeMacro((getCurSName ctx)@[n],  normalizedType)])
-                    )
-                        )
-                    end *)
                 | RTermTypeJudgment(n, t):: ss => 
                 let 
                 (* val freeTVars = freeTCVar  (rTypeToCType ctx t) *)
                 (* (applyContextToType ctx (rTypeToCType ctx t))  *)
                 in  (* do not check for free variables, as it will be catched in a later stage? *)
-                (* if freeTVars <> [] 
-                    then Errors.termTypeDeclContainsFreeVariables (StructureName.toString (hd freeTVars)) ctx
-                    (* raise SignatureCheckingFailure ("TermType decl contains free var" ^ PrettyPrint.show_sttrlist (freeTVar (applyContextToType ctx t)) ^" in "^ PrettyPrint.show_typecheckingType (applyContextToType ctx t))  *)
-                    else  *)
                     checkExprIsType ctx t >>= (fn (ct, ctx) =>
                         weakHeadNormalizeType t ctx ct
-                        (* (applyContextToType ctx (rTypeToCType ctx t))  *)
                         >>= (fn normalizedType => 
                         typeCheckSignature (
                             (* addToCtxR  *)
                         (* (TermTypeJ([n], normalizedType, JTPending, NONE)) *)
-                         ctx) ss (acc@[CPureDeclaration(n, normalizedType)]))
+                         ctx) ss isModule (acc@[CPureDeclaration(n, normalizedType)]))
                     )
                 end
-                (* | RTermMacro(n, e) :: ss => 
-                    synthesizeType ctx (e) >>= 
-                    (fn (transformedExpr , synthesizedType)  =>
-                        typeCheckSignature (addToCtxR (TermTypeJ([n], synthesizedType, NONE)) ctx) ss 
-                            (acc@[CTermDefinition((getCurSName ctx)@[n], transformedExpr, synthesizedType)])
-                    ) *)
                 | RTermDefinition(n, e) :: ss => 
                 let fun newDef() = 
                     (case e of 
@@ -1140,13 +1191,12 @@ infix 5 <?>
                     | _ => synthesizeType ctx (e))
                      >>= (fn ((transformedExpr , synthesizedType), ctx)  =>
                                 typeCheckSignature 
-                                    (addToCtxR (TermTypeJ([n], synthesizedType, JTDefinition transformedExpr, NONE)) ctx) ss 
+                                    (addToCtxR (TermTypeJ([n], synthesizedType, JTDefinition transformedExpr, NONE)) ctx) ss  isModule
                                     (acc@[CTermDefinition(n, transformedExpr, synthesizedType)])
                         ) 
                 in
-                (case findSigList n acc of  (* must find fully qualified name as we allow same name for substructures *)
+                (case findSigList n acc of   
                     NONE  =>  newDef()
-                    (* optimize: if e is just an expr, do not instantiate implicit args *)
                     | SOME(CPureDeclaration(_, lookedUpType)) => 
                         (
                          (* case lookedUpDef of 
@@ -1154,9 +1204,9 @@ infix 5 <?>
                             let val transformedExprOrFailure = checkType ctx (e) lookedUpType
                             in 
                             case transformedExprOrFailure of
-                            Success(transformedExpr, ctx) => typeCheckSignature (addToCtxR (TermTypeJ([n], lookedUpType, JTDefinition transformedExpr, NONE)) ctx) ss 
-                                                            (acc@[CTermDefinition(n, transformedExpr, lookedUpType)])
-                            | DErrors(l) => (case typeCheckSignature ctx ss (acc) of 
+                            Success(transformedExpr, ctx) => typeCheckSignature (addToCtxR (TermTypeJ([n], lookedUpType, JTDefinition transformedExpr, NONE)) ctx) ss  isModule
+                                                            (modifySigList n (fn _ => CTermDefinition(n, transformedExpr, lookedUpType)) acc)
+                            | DErrors(l) => (case typeCheckSignature ctx ss isModule (acc) of 
                                         Success _ => DErrors(l)
                                         | DErrors l2 => DErrors(l @l2)
                                         | _ => raise Fail "tcp458"
@@ -1166,15 +1216,14 @@ infix 5 <?>
                         (* | _ => newDef() allow repeated definitions *)
                         (* Errors.redefinitionError n (StructureName.toStringPlain cname) ctx (List.last cname)  *)
                             )
-                    | SOME(_) => 
-                        (Errors.redefinitionError n (UTF8String.toString n) ctx n)
-
+                    | SOME(_) => (Errors.redefinitionError n (UTF8String.toString n) ctx n)
                 )
+
                 end
                 | RConstructorDecl(name, rtp) :: ss => 
                     checkConstructorType name ctx rtp >>= (fn ((checkedType, cconsinfo),ctx) => 
                     
-                        typeCheckSignature (addToCtxR(TermTypeJ([name], checkedType, JTConstructor cconsinfo, NONE)) ctx) ss
+                        typeCheckSignature (addToCtxR(TermTypeJ([name], checkedType, JTConstructor cconsinfo, NONE)) ctx) ss isModule
                         (acc@[CConstructorDecl(name, checkedType, cconsinfo)])
                     )
                 (* | RStructure (vis, sName, decls) :: ss => 
@@ -1190,7 +1239,15 @@ infix 5 <?>
                     
                 ) *)
                 | ROpenStructure openName :: ss =>
-                (case ctx of 
+                lookupCtx ctx openName  >>= (fn (_, _, jt) => 
+                case jt of 
+                    JTDefinition(CBlock(csig)) => 
+                        nextContextOfOpenStructure (StructureName.toString openName) ctx csig (fn nextContext => 
+                            typeCheckSignature nextContext ss isModule (acc)
+                        )
+                    | _ => Errors.genericErrorStr (StructureName.toString openName) ctx "名称不是模块"
+                )
+                (* (case ctx of 
                 Context(curName, curVis, bindings) => 
                     let val nextContext = nextContextOfOpenStructure curName curVis bindings openName
                         (* assume the typeChecking is behaving properly, 
@@ -1198,12 +1255,12 @@ infix 5 <?>
                         (* sub context will be determined by whether the signature is private or not ? *)
                     in typeCheckSignature nextContext ss (acc)
                     end
-                )
+                ) *)
                 | RReExportStructure reExportName :: ss =>
                         ((reExportDecls ctx reExportName) <?> ( fn _ =>
-                            typeCheckSignature ctx ss (acc) (* we collect remaining possible failures *)
+                            typeCheckSignature ctx ss isModule (acc) (* we collect remaining possible failures *)
                         )) >>= (fn newBindings => 
-                                            typeCheckSignature ctx ss (acc@newBindings)
+                                            typeCheckSignature ctx ss isModule (acc@newBindings)
                         )                
                         (* note that the order of <?> and >>= is important as >>= won't ignore previous error 
                         reverse would have exponential wasted computation *)
@@ -1212,8 +1269,11 @@ infix 5 <?>
                     <?> (fn _ => Errors.importError (StructureName.toString importName)  ctx)
                     )
                      >>= (fn csig => 
-                        typeCheckSignature 
-                        (addToCtxAL (List.concat (List.mapPartial (fn x => case x of 
+                        (withLocalGeneric ctx importName CUniverse (JTDefinition (CBlock csig)) (
+                            fn ctx => 
+                        typeCheckSignature ctx ss isModule (acc@[CImport(importName, path)])
+                        ))
+                        (* (addToCtxAL (List.concat (List.mapPartial (fn x => case x of 
                             (* CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ())) *)
                              CTermDefinition(sname, e, t) => SOME([TermTypeJ(importName@[sname], t, JTDefinition(e), NONE)
                                 ])
@@ -1223,15 +1283,14 @@ infix 5 <?>
                                 ])
                             | CPureDeclaration (name, tp) => SOME([TermTypeJ(importName@[name], tp, JTPending (* TODO: do import *), NONE)
                                 ])
-                            ) csig)) ctx)
-                        ss (acc@[CImport(importName, path)])
+                            ) csig)) ctx) *)
                     )
                 | RDirectExpr e :: ss=> 
                     let 
                     val synthedExprOrFailure = (synthesizeType ctx (e))
                     in case synthedExprOrFailure of 
-                        Success((checkedExpr, synthesizedType), ctx) => typeCheckSignature ctx ss (acc@[CDirectExpr(checkedExpr, synthesizedType)])
-                        | DErrors l => (case typeCheckSignature ctx ss (acc) of
+                        Success((checkedExpr, synthesizedType), ctx) => typeCheckSignature ctx ss isModule (acc@[CDirectExpr(checkedExpr, synthesizedType)])
+                        | DErrors l => (case typeCheckSignature ctx ss isModule (acc) of
                                         Success _ => DErrors l
                                         | DErrors l2 => DErrors (l @ l2)
                                         | _ => raise Fail "tcp 492"
@@ -1248,7 +1307,7 @@ infix 5 <?>
             (typeCheckSignature 
             (Context (topLevelStructureName, true, 
                     []))
-            s []) >>= (fn (csig, ctx) => 
+            s true []) >>= (fn (csig, ctx) => 
                 (* resolveAllMetaVarsInCSig ctx csig >>= (fn csig =>  *)
                 (
                     (* DebugPrint.p ("DEBUG1070: " ^ PrettyPrint.show_typecheckingCSig csig) ;  *)

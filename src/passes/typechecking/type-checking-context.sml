@@ -12,10 +12,6 @@ infix 5 >>=
         let val allDecls = (map (fn x => case x of
     TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
     ^ (show_jt defop 
-            (* ^ (if full 
-    then (case defop of JTDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def 
-         | _ => "")
-    else "") *)
     )) m)
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) *)
         
@@ -98,6 +94,7 @@ infix 5 >>=
         modifyCtx ctx cname (fn jtp => case jtp of 
                 JTLocalBinder => NONE
                 | JTLocalBinderWithDef _ => NONE
+                | JTDefinition _ => NONE (* TODO: check the differnce between def and local binder with def *)
                 | _ => raise Fail ("tcc58: jtp is not jtlocalbinder or jtlocalbinderwithdef but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
             )
     
@@ -166,6 +163,12 @@ infix 5 >>=
             Success(res, modifyCtxDeleteBinding ctx [name])
         )
         
+    
+    fun withLocalGeneric (ctx : context) (name : StructureName.t) (tp : CType) (jt : judgmentType)
+        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
+         kont (addToCtxA (TermTypeJ(name, tp, jt, NONE)) ctx) >>= (fn (res, ctx) => 
+            Success(res, modifyCtxDeleteBinding ctx name)
+        )
   
 
         
