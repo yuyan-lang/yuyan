@@ -433,6 +433,7 @@ infix 5 <?>
                                     (CTermDefinition (name, _, _) 
                                     | CConstructorDecl(name, _, _))
                                       => SOME(RTermDefinition (name, RVar(reexportName@[name])))
+                                    | CImport(name, fp) => SOME(RImportStructure(name, fp))
                                     | _ => NONE
                                     (* | _ => raise Fail ("does not support reexport of " ^ PrettyPrint.show_typecheckingCDecl dec) *)
                                 ) csig) false [] >>= (fn (checkedsig, ctx') => 

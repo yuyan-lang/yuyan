@@ -489,7 +489,16 @@ end *)
                 )
                 , getTopLevelStructureName = (fn fp => 
                     getTopLevelStructureName fp cm
-                )
+                ),
+                 getCPSInfo = (fn (fp, errName) => 
+                    (findOrAddFile (fp) NONE cm;
+                        if List.exists(fn (x,_) => (access x) = (access fp)) requestingStack
+                            then raise CircularReference ((fp, errName) :: requestingStack)
+                            else (
+                    requestFileProcessing (fp) UpToLevelCPSInfo cm ((fp, errName) :: requestingStack);
+                    CompilationFileOps.getCPSInfo (lookupFileByPath fp cm)
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用" NONE
+                    ))
                 }
             ) cm 
 

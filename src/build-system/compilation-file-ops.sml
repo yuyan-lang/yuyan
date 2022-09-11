@@ -96,11 +96,7 @@ open StaticErrorStructure
         end
 
     fun constructFileDependencyInfo (tc : TypeCheckingAST.CSignature) : dependency list = 
-        List.mapPartial (fn x => case x of 
-            TypeCheckingAST.CImport(x, y) => SOME (y,x)
-            | _ => NONE
-        ) tc
-
+        FileDependencyResolution.constructFileDependencyInfo tc
 
     fun constructCPSInfo (tckedAST : TypeCheckingAST.CSignature) (curFp : FileResourceURI.t) (curFDependencies : dependency list)
     (helperFuncs : cmhelperfuncs) :
@@ -112,11 +108,19 @@ open StaticErrorStructure
     ((#getDependencyInfo helperFuncs) curFp curFDependencies ) >>= (fn orderedDeps => 
         (
             (* DebugPrint.p ("got ordered Dep"); *)
-      mapM (fn d => #getTypeCheckedAST helperFuncs d) orderedDeps  >>= (fn csigs =>
+      mapM (fn d as(fp,sname) => fmap (fn info=> (info,sname)) (#getCPSInfo helperFuncs d)) orderedDeps  >>= (fn orderedDeps =>
         let
-        val grandTypeCheckedAST = List.concat(csigs@[tckedAST])
+        (* val grandTypeCheckedAST = List.concat(csigs@[tckedAST]) *)
+        (* val _ = DebugPrint.p ("The dependency of " ^ FileResourceURI.access curFp ^ " is " ^ 
+        String.concatWith ", " (map (fn (_, sname) =>StructureName.toStringPlain sname ) orderedDeps))  *)
+        val initialCtx =map (fn (((varname, _), _,_), sname)  => (sname, CPSAst.GlobalVar varname)) orderedDeps
         val gResultLoc = CPSAst.CPSVarGlobal (UID.next())
-         val cpsAST  = CPSPass.cpsTransformSigTopLevel [] grandTypeCheckedAST gResultLoc 
+         val cpsAST  = (CPSPass.cpsTransformSigTopLevel initialCtx tckedAST gResultLoc
+         handle CPSPass.CPSInternalError => 
+         (DebugPrint.p (" when contructing cps info for" ^ FileResourceURI.access curFp);
+         raise CPSPass.CPSInternalError
+         )
+         )
         (* val _ = DebugPrint.p "----------------- CPS Done -------------------- \n" *)
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST) *)
         val closureAST = ClosureConvert.closureConvertTopLevel (cpsAST)
@@ -129,6 +133,7 @@ open StaticErrorStructure
       )
     ))
         )
+        
 
     fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) (pwd : string) : {llfilepath :string} witherrsoption
                  =
@@ -169,5 +174,13 @@ open StaticErrorStructure
         | _ => case #typeCheckingInfo file of DErrors l => DErrors l
         | _ => case #typeCheckedInfo file of DErrors l => DErrors l
         | _ => #dependencyInfo file
+
+    fun getCPSInfo(CompilationFile file : compilationfile) : cpsinfo witherrsoption = 
+        case #content file of DErrors l => DErrors l
+        | _ => case #preprocessingInfo file of DErrors l => DErrors l
+        | _ => case #typeCheckingInfo file of DErrors l => DErrors l
+        | _ => case #typeCheckedInfo file of DErrors l => DErrors l
+        | _ => case #dependencyInfo file of DErrors l => DErrors l
+        | _ => #cpsInfo file
     
 end

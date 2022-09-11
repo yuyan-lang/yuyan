@@ -29,7 +29,8 @@ struct
 
     type dependency = FileResourceURI.t * StructureName.t
     type filepath = FileResourceURI.t
-
+    type cpsinfo = (( CPSAst.cpsvar * CPSAst.cpscomputation) * CPSAst.cpscomputation * 
+                LLVMAst.llvmsignature)
     datatype compilationfile = 
         CompilationFile  of   
             {fp: string (* file path *)
@@ -40,8 +41,7 @@ struct
             (* , dependencyInfo: StructureName.t list StrDict.dict witherrsoption list of file paths that this file depends on, for dependency resolution *)
             , dependencyInfo: dependency list witherrsoption 
             , typeCheckedInfo: (TypeCheckingAST.CSignature ) witherrsoption  (* type checked *)
-            , cpsInfo: (( CPSAst.cpsvar * CPSAst.cpscomputation) * CPSAst.cpscomputation * 
-                LLVMAst.llvmsignature) witherrsoption  (* cps transformed, closure converted, and codegened *)
+            , cpsInfo: cpsinfo witherrsoption  (* cps transformed, closure converted, and codegened *)
             , llvmInfo: {llfilepath :string} witherrsoption  (* the actual generated ll file *)
             }
 
@@ -57,6 +57,7 @@ struct
         getPreprocessingAST: StructureName.t -> (PreprocessingAST.t * FileResourceURI.t) witherrsoption
                                                 (* use to signal errors *)
         ,getTypeCheckedAST:  (dependency) -> TypeCheckingAST.CSignature witherrsoption
+        ,getCPSInfo:  (dependency) -> cpsinfo witherrsoption
         (* we also request recursive computation of all file dependencies info when this function is invoked *)
         ,findFileDependenciesTopLevel: TypeCheckingAST.CSignature -> dependency list witherrsoption
         (* returns the topological ordering in the reachable dependency subgraph from the input argument, 
@@ -66,7 +67,6 @@ struct
         *)
         ,getDependencyInfo:  FileResourceURI.t  -> dependency list -> dependency list witherrsoption
         ,getTopLevelStructureName:  filepath -> StructureName.t
-
     }
 
 

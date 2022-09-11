@@ -66,7 +66,7 @@ exception CPSInternalError
         : cpscomputation =
     (
         let 
-        val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n");
+        (* val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
          val originalExpr = e
          val res = case e of
             CVar (sn, _) => resolveSNameInCtx ctx sn cc
@@ -283,6 +283,9 @@ exception CPSInternalError
             | CNullType => CPSUnit (kcc cc)
             | CBuiltinType(b) => CPSUnit (kcc cc)
             | CUniverse => CPSUnit (kcc cc)
+            | CBlock(decls) => cpsTransformSig ctx decls [] cc
+            | CBlockProj(e, lbl, idx) => cpsTransformExpr ctx e (fn v 
+                        => CPSProj(CPSValueVar v, idx,(kcc cc)))
             | _ => raise Fail ("cpsp116: " ^ PrettyPrint.show_typecheckingCExpr originalExpr)
 
         (* val _ = print ("cpsTransformSig result is " ^ PrettyPrint.show_pkcomputation res ^ "cpsTransformSig on " ^ PrettyPrint.show_typecheckingExpr e ^ 
@@ -293,7 +296,8 @@ exception CPSInternalError
 
         handle ListSearchUtil.NotFoundSName sname => 
             (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " ( " ^ 
-            PrettyPrint.show_utf8strings sname ^ " ) not found \n");
+            PrettyPrint.show_utf8strings sname ^ " ) not found \n" 
+            ^ " in context " ^ PrettyPrint.show_cpscontext ctx);
             raise CPSInternalError)
         handle CPSInternalError =>
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
@@ -303,7 +307,6 @@ exception CPSInternalError
     (cc :  cpsvar -> cpscomputation)
      :  cpscomputation  =
     let 
-       
     in
             (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
             ; *)
@@ -361,7 +364,7 @@ exception CPSInternalError
                     CPSUnit (kcc ret)
                 ) 
                 (fn (cloc) => 
-                    cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss (acc@[d]) cc
+                    cpsTransformSig (([name], PlainVar cloc) :: ctx) ss (acc@[d]) cc
                 )
             end
 
@@ -375,11 +378,20 @@ exception CPSInternalError
                 ))
             ) 
             (fn (cloc) => 
-                cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss (acc@[d]) cc
+                cpsTransformSig (([name], PlainVar cloc) :: ctx) ss (acc@[d]) cc
             )
         end
         | (d as CPureDeclaration _) :: ss => raise Fail "cannot compile pure declaration"
     end
+        (* handle CPSInternalError =>
+            ((DebugPrint.p ("When transforming signature " ^  (if 
+            length s > 0 then 
+            (PrettyPrint.show_typecheckingCDecl (hd s) ^ " ... " ^ 
+            PrettyPrint.show_typecheckingCDecl (List.last s) ^ "  " )
+            else ""
+            )
+            ^ " \n"));
+            raise CPSInternalError) *)
 
 
  fun cpsTransformSigTopLevel (initialCtx : context) (s : CSignature) (storeLoc : cpsvar)
