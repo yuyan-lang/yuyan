@@ -168,7 +168,7 @@ infix 5 <?>
                             (* val  allBindings = 
                             List.filter (fn (TermTypeJ(name, tp, jtp, _)) => 
                             (case jtp of 
-                                (* JTPending => false *)
+                                JTPending => false
                                  _ => true
                             )) (getMapping ctx) *)
                             val metavarname = StructureName.metaVarName()
@@ -444,6 +444,7 @@ infix 5 <?>
                     (* lookupCtx ctx v >>= (fn (canonicalName, tp, jtp) =>
                     case jtp of 
                     (* removed pending but instead have pure declaration, so obselete *)
+                    (* ADDED BACK*)
                         (* JTPending => Errors.genericError e ctx "变量尚未定义" *)
                          _ => Success((CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp), ctx)
                     ) *)
@@ -1197,8 +1198,9 @@ infix 5 <?>
                     checkExprIsType ctx t >>= (fn (ct, ctx) =>
                         weakHeadNormalizeType t ctx ct
                         >>= (fn normalizedType => 
-                        typeCheckSignature (
-                         ctx) ss isModule (acc@[CPureDeclaration(n, normalizedType)]))
+                        withLocalGeneric ctx [n] normalizedType (JTPending) (fn ctx => 
+                            typeCheckSignature ( ctx) ss isModule (acc@[CPureDeclaration(n, normalizedType)]))
+                        )
                     )
                 end
                 | RTermDefinition(n, e) :: ss => 

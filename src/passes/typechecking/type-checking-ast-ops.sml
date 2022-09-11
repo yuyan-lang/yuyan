@@ -557,7 +557,8 @@ infix 5 =/=
             JTConstructor cinfo =>  CVTConstructor(canonicalNameIfConstructor, cinfo)
             | JTLocalBinder =>  CVTBinder
             | JTDefinition e =>  CVTDefinition e
-            (* | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor) *)
+            | JTPending => CVTBinder (* to accomodate signature declaration where we only have declarations *)
+            (* raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor) *)
             | JTLocalBinderWithDef metavarname => CVTBinderDefinition metavarname
             | _ => raise Fail "ni427"
     fun countSpineTypeArgs (tp : CType) = 

@@ -81,11 +81,11 @@ infix 5 >>=
                         Context(cname', v', cs') => Context(cname', v', currentj::cs')
 
     (* the name must be absolute name *)
-    (* fun modifyCtxAddDef(ctx : context) (cname : StructureName.t) (newDef : CExpr) : context = 
+    fun modifyCtxAddDef(ctx : context) (cname : StructureName.t) (newDef : CExpr) : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
-                (* JTPending => SOME(JTDefinition newDef) *)
+                JTPending => SOME(JTDefinition newDef)
                 | _ => raise Fail ("tcc58: jtp is not pending " ^ (StructureName.toStringPlain cname))
-            ) *)
+            )
 
     fun modifyCtxResolveMetaVar (ctx : context) (cname : StructureName.t) (resolvedExpr : CExpr) : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
@@ -99,6 +99,7 @@ infix 5 >>=
                 | JTLocalBinderWithDef _ => NONE
                 | JTDefinition _ => NONE (* TODO: check the differnce between def and local binder with def *)
                 | JTConstructor _ => NONE
+                | JTPending => NONE
                 | _ => raise Fail ("tcc58: jtp is not jtlocalbinder or jtlocalbinderwithdef but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname) 
                 ^ " in context " ^ showctx ctx true)
             )

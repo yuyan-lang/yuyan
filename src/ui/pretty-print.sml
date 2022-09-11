@@ -397,7 +397,7 @@ in
         | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
         | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
         | JTLocalBinder => "（局部绑定）"
-        (* | JTPending => "（pending）" *)
+        | JTPending => "（pending）"
         | JTMetaVarPendingResolve _ => "(metavar pending resolve)"
         | JTMetaVarResolved e => "(resolved metavar >>> " ^ show_typecheckingCExpr e ^ ")"
         | JTLocalBinderWithDef e => "(局部绑定【带定义】 >>> " ^ StructureName.toStringPlain e ^ "）"
