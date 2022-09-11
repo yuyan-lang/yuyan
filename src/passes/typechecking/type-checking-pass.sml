@@ -61,9 +61,6 @@ infix 5 <?>
                     ) bindings @ bindings
                 ) *)
 
-    fun reExportDecls  (ctx as Context(curSName ,curVis, bindings): context)
-    (reexportName : StructureName.t) : CSignature witherrsoption =
-    raise Fail "ni reexport"
 
             (* extract all bindings from bindings in order and put them into the current context *)
         (* let val decls = 
@@ -219,11 +216,12 @@ infix 5 <?>
         else Success()
         end
 
+
     fun getSingatureForModule   (block : CDeclaration list) : CDeclaration list = 
     List.mapPartial (fn dec => 
         case dec of 
         CTermDefinition(n, tm, tp) => SOME(CPureDeclaration (n, tp))
-        | CPureDeclaration _ => raise Fail "attempt to get signature for non-module"
+        | CPureDeclaration _ => raise Fail ("attempt to get signature for non-module " ^ PrettyPrint.show_typecheckingCSig block)
         | CConstructorDecl(n, tm, tp) => SOME(dec)
         | CImport _ => NONE (* TODO: REVIEW CHOICES *)
         | CDirectExpr _ => NONE
@@ -232,11 +230,48 @@ infix 5 <?>
     (* DO NOT Implement this, I prefer to generate coersions instead of implicit subtyping*)
     (* SO THIS IS ESSENTIALLY EQUALITY CHECKING ! (EXCEPT IMPORTS) *)
     fun checkSignatureAscription (errReporting : RExpr) (ctx : context) (block : CDeclaration list) (blocktype : CDeclaration list): context witherrsoption = 
-    let val blocksig = getSingatureForModule block 
-    (* val _ = DebugPrint.p (
-        "block is" ^ PrettyPrint.show_typecheckingCSig block ^
-        "\nblocksig is" ^ PrettyPrint.show_typecheckingCSig blocksig) *)
-    in tryTypeUnify ctx errReporting (CBlock blocksig) (CBlock blocktype) end
+    let fun sub' tS x s = 
+            case (substituteTypeInCSignature tS x (s)) of
+            s' => s'
+            (* | _ => raise Fail "tcp238" *)
+    in
+    checkBlockIsModule ctx block >> checkBlockIsSignature errReporting ctx blocktype >> (
+        case (block, blocktype) of
+            ([], []) => Success(ctx)
+            | (_, []) => Errors.genericError errReporting ctx "结构与类型不匹配"
+            | ((CImport _ | CDirectExpr _ | COpenStructure _) :: blkTail, _) => 
+                checkSignatureAscription errReporting ctx blkTail blocktype
+            | ([], _) => Errors.genericError errReporting ctx "结构与类型不匹配"
+            | (CTermDefinition(n, tm, tp) :: blkTail, 
+            CPureDeclaration (n', tp') :: sigTail) => 
+            if UTF8String.semanticEqual n n' 
+            then tryTypeUnify ctx errReporting tp tp'  >>= (
+                fn ctx => 
+                checkSignatureAscription errReporting ctx blkTail (sub' tm [n'] sigTail)
+            )
+            else Errors.genericError errReporting ctx "结构与类型不匹配"
+            | (CConstructorDecl(n,  tp, cconsinfo) :: blkTail, 
+            CPureDeclaration (n', tp') :: sigTail) => 
+            if UTF8String.semanticEqual n n' 
+            then tryTypeUnify ctx errReporting  tp tp'  >>= (
+                fn ctx => 
+                (* TODO: Check this case *)
+                checkSignatureAscription errReporting ctx blkTail (sub' (CVar([n], CVTConstructor([n], cconsinfo))) [n'] sigTail)
+            )
+            else Errors.genericError errReporting ctx "结构与类型不匹配"
+            | (CConstructorDecl(n,  tp, cconsinfo) :: blkTail, 
+            CConstructorDecl (n', tp', cconsinfo') :: sigTail) => 
+            if UTF8String.semanticEqual n n' 
+            then tryTypeUnify ctx errReporting tp tp'  >>= (
+                fn ctx => 
+                checkSignatureAscription errReporting ctx blkTail sigTail
+            )
+            else Errors.genericError errReporting ctx "结构与类型不匹配"
+            | (CPureDeclaration _ :: _ , _) => raise Fail "pure decl in checked module"
+            | (CTermDefinition _ :: _ , CConstructorDecl _ :: _) => Errors.genericError errReporting ctx "结构与类型不匹配"
+            | ( _ , (CImport _ | CDirectExpr _ | COpenStructure _ | CTermDefinition _) :: _) => raise Fail "signature malformed"
+    )
+    end
 
         
 
@@ -386,6 +421,26 @@ infix 5 <?>
                 )
             )
             end
+            and reExportDecls  (ctx : context)
+            (reexportName : StructureName.t) : CSignature witherrsoption =
+                lookupCtx ctx reexportName  >>= (fn (_, _, jt) => 
+                case jt of 
+                    JTDefinition(CBlock(csig)) => 
+                        checkBlockIsModule ctx csig >>(
+                            typeCheckSignature ctx
+                            (List.mapPartial (fn dec =>
+                                case dec of 
+                                    (CTermDefinition (name, _, _) 
+                                    | CConstructorDecl(name, _, _))
+                                      => SOME(RTermDefinition (name, RVar(reexportName@[name])))
+                                    | _ => NONE
+                                    (* | _ => raise Fail ("does not support reexport of " ^ PrettyPrint.show_typecheckingCDecl dec) *)
+                                ) csig) false [] >>= (fn (checkedsig, ctx') => 
+                            Success(checkedsig)
+                            )
+                        )
+                    | _ => Errors.genericErrorStr (StructureName.toString reexportName) ctx "名称不是模块"
+                )
             
             and checkExprIsType (ctx : context) (e : RType) : (CType * context) witherrsoption = 
                 checkType ctx e CUniverse 
@@ -724,7 +779,7 @@ infix 5 <?>
                             ^ " ysnthesized as " ^ PrettyPrint.show_typecheckingCSig checkedSig) *)
                             in
 
-                            Success((CBlock(checkedSig), CBlock(checkedSig)), ctx)(* the type of a block is just a block *)
+                            Success((CBlock(checkedSig), CUniverse), ctx)(* the type of a block is just a block *)
                             end
                             )
                         )

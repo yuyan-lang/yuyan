@@ -80,6 +80,7 @@ infix 5 =/=
                 | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
                 | CMetaVar(v) => [v]
                 | CProj(e1, idx, u) => freeTCVar e1
+                | CBlockProj(e, lbl, idx) => freeTCVar e
                 | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
         (* val _ = DebugPrint.p "computed freetcvar" *)
     in
