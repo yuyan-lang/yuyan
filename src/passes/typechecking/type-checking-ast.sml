@@ -103,7 +103,8 @@ structure TypeCheckingAST = struct
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
-                       (* | COpenStructure of StructureName.t *)
+                       (* NEED OPEN IN MODULES *)
+                       | COpenStructure of (StructureName.t * CDeclaration list) (* a list of declarations to be imported *)
     and CTypeAnn = CTypeAnn of CExpr
                  | CTypeAnnNotAvailable
 

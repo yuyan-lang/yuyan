@@ -315,6 +315,7 @@ infix 5 =/=
                 rme tp >>= 
                     (fn ctp => Success(CConstructorDecl(name, ctp, cinfo)))
              | CImport _ => Success(d)
+             | COpenStructure _ => Success(d)
 
         ) s)
         end
@@ -422,6 +423,8 @@ infix 5 =/=
                 | ((CDirectExpr(e, t )))::tl => 
                 (CDirectExpr( substTypeInCExpr tS x e, substTypeInCExpr tS x t):: (substituteTypeInCSignature tS x tl))
                 | ((h as CImport(_)))::tl => 
+                (h:: (substituteTypeInCSignature tS x tl))
+                | ((h as COpenStructure(_)))::tl => 
                 (h:: (substituteTypeInCSignature tS x tl))
         end
     (* raise Fail "not implemented136" *)

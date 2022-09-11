@@ -96,6 +96,7 @@ struct
                                             (indentN i @ typeMacroSegment name t)
                                         ) *)
              CImport _ => ([], currentIndentLevel, currentStructureName)
+            | COpenStructure _ => ([], currentIndentLevel, currentStructureName)
             | CTermDefinition(name, _, t) => withScopeUpdate name (fn i => 
                                             (indentN currentIndentLevel @ termTypeDecl name t)
                                         )

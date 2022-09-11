@@ -37,6 +37,7 @@ infix 5 <?>
                 withLocalGeneric ctx [name] t (JTConstructor consinfo) continue
             | CDirectExpr _ => continue ctx
             | CImport _ => continue ctx
+            | COpenStructure _ => continue ctx (* ofcourse open structure doesn't chain together *)
             | CPureDeclaration (name, tp) => (Errors.genericErrorStr errReporting ctx "opened structure cannot contain pure declaration")
                                 )
                 end
@@ -107,6 +108,8 @@ infix 5 <?>
             | (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then Success t1 else lookupLabel3 cs l
 
     (* find a declaration and an index *)
+    (* the index currently includes directexpr, import, and open structure, so that 
+    need to be consistent with cps *)
     fun findSigList (name : UTF8String.t)(decl : CDeclaration list)  : (CDeclaration * int) option = 
     let fun go decl i = 
         case decl of 
@@ -116,6 +119,7 @@ infix 5 <?>
             | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d, i) else go dl (i+1)
             | (CDirectExpr _ :: dl) => go dl (i+1)
             | (CImport _ :: dl) => go dl (i+1)
+            | (COpenStructure _ :: dl) => go dl (i+1)
     in go decl 0 end
         
 
@@ -137,8 +141,6 @@ infix 5 <?>
             ) ):: dl) => if UTF8String.semanticEqual n name 
                 then modification d :: dl
                 else d :: modifySigList name modification dl
-            (* | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
-            | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl *)
             | (h :: dl) => h :: modifySigList name modification dl
     end
     (* in
@@ -223,8 +225,9 @@ infix 5 <?>
         CTermDefinition(n, tm, tp) => SOME(CPureDeclaration (n, tp))
         | CPureDeclaration _ => raise Fail "attempt to get signature for non-module"
         | CConstructorDecl(n, tm, tp) => SOME(dec)
-        | CImport _ => NONE
+        | CImport _ => NONE (* TODO: REVIEW CHOICES *)
         | CDirectExpr _ => NONE
+        | COpenStructure _ => NONE (* TODO: REVIEW CHOICES, SHOULD INCLUDE? *)
     ) block
     (* DO NOT Implement this, I prefer to generate coersions instead of implicit subtyping*)
     (* SO THIS IS ESSENTIALLY EQUALITY CHECKING ! (EXCEPT IMPORTS) *)
@@ -1264,7 +1267,7 @@ infix 5 <?>
                 case jt of 
                     JTDefinition(CBlock(csig)) => 
                         nextContextOfOpenStructure (StructureName.toString openName) ctx csig (fn nextContext => 
-                            typeCheckSignature nextContext ss isModule (acc)
+                            typeCheckSignature nextContext ss isModule (acc @ [COpenStructure(openName, csig)])
                         )
                     | _ => Errors.genericErrorStr (StructureName.toString openName) ctx "名称不是模块"
                 )

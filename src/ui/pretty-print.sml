@@ -363,6 +363,7 @@ in case x of
   | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ UTF8String.toString ename ^ " : " ^ show_typecheckingCExpr  etype
   | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
+  | COpenStructure(name, csig) => "open " ^ StructureName.toStringPlain name  ^ ""
   | CPureDeclaration(name, tp) => UTF8String.toString name  ^ " : " ^ show_typecheckingCType tp
   end
 
@@ -539,7 +540,7 @@ in case file of
     ^ "\ndependencyInfo: " ^ show_static_error (#dependencyInfo f)(fn (sl) => "[Dependencies]")
     ^ "\ntypeCheckedInfo: " ^ show_static_error (#typeCheckedInfo f)(fn (csig) => show_typecheckingCSig csig)
     ^ "\ncpsInfo: " ^ show_static_error (#cpsInfo f)(fn (cps, cloconv, llvm) => 
-      show_cpscomputation (#3 cps) ^ ";\n\t\t ClosureConvert = "
+      show_cpscomputation (#2 cps) ^ ";\n\t\t ClosureConvert = "
       ^ show_cpscomputation cloconv ^ "\n\t\t LLVM = ?"
       )
     ^ "\nllvmInfo: " ^ show_static_error (#llvmInfo f)(fn ({llfilepath=s}) =>  s)  (* the actual generated ll file *)

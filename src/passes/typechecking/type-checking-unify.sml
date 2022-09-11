@@ -174,6 +174,11 @@ infix 4 ~~~=
                                     then (
                                         recur ctx (CBlock tl1) (CBlock tl2)
                                     ) else fail()
+                                | (COpenStructure(name1, _) :: tl1, COpenStructure(name2, _) :: tl2) => 
+                                    if StructureName.semanticEqual name1 name2 
+                                    then (
+                                        recur ctx (CBlock tl1) (CBlock tl2)
+                                    ) else fail()
                                 | _ => fail()
                         )
                         | _ => fail())

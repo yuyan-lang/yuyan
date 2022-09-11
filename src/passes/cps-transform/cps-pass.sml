@@ -28,24 +28,48 @@ exception CPSInternalError
             (* DebugPrint.p ( "CPSNameMapping fid=" ^  PrettyPrint.show_cpsvar i ^ " msg=" ^ msg ^ " ==> " ^ PrettyPrint.show_typecheckingCExpr (e) ^ "\n"); *)
         ())
 
-    and cpsTransformExpr   
-        (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
-        : cpscomputation =
-    (
-        let 
-        (* val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n"); *)
-         val originalExpr = e
-         val res = case e of
-            CVar (sn, referred) => (case ListSearchUtil.lookupSName ctx sn of 
+    fun resolveSNameInCtx (ctx : context) (sname : StructureName.t) (cc : cpsvar -> cpscomputation) = 
+        (case ListSearchUtil.lookupSName ctx sname of 
                 PlainVar v => cc v
                 | GlobalVar v => cc v
                 | SelfVar v => CPSAbsSingle(kcc' (fn arg => 
                         cc (CPSVarLocal arg)
                     ), NONE, kcc (fn kont => 
-                    ( registerFunctionNameMapping kont e "selfApp";
+                    ( 
+                        (* registerFunctionNameMapping kont e "selfApp"; *)
                         CPSApp(CPSValueVar v, (CPSValueVar v, CPSValueVar kont)) (* apply the recursive value to itself *)
                     )
-                     )))
+            )))
+    
+    fun ctxWithNewOpenStructure (ctx' : context) (structureValue : cpsvalue) (csig : CDeclaration list) (cc : context -> cpscomputation ) = 
+            let 
+                fun go i ctx = 
+                    if i = length csig 
+                    then cc ctx
+                    else 
+                        let val curDec = List.nth(csig, i)
+                        in (case curDec of 
+                            (CPureDeclaration(dname, _) 
+                            | CTermDefinition(dname, _, _)
+                            | CConstructorDecl(dname, _, _)
+                            ) => CPSProj(structureValue, i, kcc (fn projected => go (i+1) (([dname], PlainVar projected)::ctx)))
+                            | (CDirectExpr(_ ) 
+                            | CImport _ | COpenStructure _) => go (i+1) ctx
+                        )
+                        end
+            in
+            go 0 ctx'
+            end
+
+    and cpsTransformExpr   
+        (ctx : context) (e : CExpr) (cc : cpsvar -> cpscomputation) (* cc is current continutaion *)
+        : cpscomputation =
+    (
+        let 
+        val _ = DebugPrint.p ("cpsTransformExpr on " ^ PrettyPrint.show_typecheckingCExpr e ^ " in context " ^ PrettyPrint.show_cpscontext ( ctx) ^ "\n");
+         val originalExpr = e
+         val res = case e of
+            CVar (sn, _) => resolveSNameInCtx ctx sn cc
             | CUnitExpr => CPSUnit (kcc cc)
             | CTuple (cs, u) => (
                     let fun go i values = 
@@ -234,11 +258,13 @@ exception CPSInternalError
                     CPSFfiCCall (cFuncName, argvs, kcc cc)
                 ) args []
             | CLetIn(csig, e,t) => 
-             ( (cpsTransformSig ctx csig false  (fn (newCtx, _) => 
+             ( (cpsTransformSig ctx csig [] (fn (v) => 
              let
                 (* val _ = DebugPrint.p ("CPS Let Partial Context:" ^ (PrettyPrint.show_cpscontext  newCtx) ^ "\n") *)
             in
-                cpsTransformExpr newCtx e cc
+                ctxWithNewOpenStructure ctx (CPSValueVar v) csig (fn newCtx => 
+                    cpsTransformExpr newCtx e cc
+                )
             end
             )))
             | CBuiltinFunc(f) =>  CPSBuiltin.cpsTransformBuiltinFunc f cc
@@ -273,56 +299,73 @@ exception CPSInternalError
             (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
             raise CPSInternalError)
 
-    and cpsTransformSig  (ctx : context) (s : CSignature) (useGlobalVar:bool)
-    (cc : context * cpsvar option  -> cpscomputation)
+    and cpsTransformSig  (ctx : context) (s : CSignature)  (acc : CSignature)
+    (cc :  cpsvar -> cpscomputation)
      :  cpscomputation  =
-
     let 
        
     in
             (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
             ; *)
             case s of
-            [] => (cc (ctx, NONE))
+            [] => (
+                let fun go i values = 
+                        if i = List.length acc
+                        then CPSTuple(values, kcc cc)
+                        else (
+                            let
+                                val curDec = List.nth(acc, i)
+                            in (case curDec of 
+                                (CPureDeclaration(dname, _) 
+                                | CTermDefinition(dname, _, _)
+                                | CConstructorDecl(dname, _, _)
+                                ) => resolveSNameInCtx ctx [dname] (fn v => go (i+1) (values@[CPSValueVar v]))
+                                | (CDirectExpr _ |
+                                CImport _ | COpenStructure _) => CPSUnit(kcc (fn v => go (i+1)(values@[CPSValueVar v])))
+                            )
+                            end
+                        )
+                in go 0 [] end
+                )
             (* (case kont of SOME f => f(ctx) | NONE => PKRet(PKUnit)) *)
             (* optimize if tail of the block is an expression, it is the value of the expression *)
-        | [CDirectExpr (e, tp)]  => 
+        (* | [CDirectExpr (e, tp)]  => 
             (cpsTransformExpr ctx e 
-                (fn resvar => cc (ctx, SOME resvar)))
+                (fn resvar => cc (ctx, SOME resvar))) *)
              (* cpsTransformExpr ctx e (fn resvar => 
              cc (ctx, SOME resvar)) *)
-        (* | CTypeMacro _ :: ss => (* ignore type macro during cps *)
-            cpsTransformSig ctx ss useGlobalVar cc *)
-        | CTermDefinition(name, def, tp):: ss =>  
+        | (d as CTermDefinition(name, def, tp)):: ss =>  
             cpsTransformExpr ctx def 
             (fn resvar =>
-            if useGlobalVar
-            then
-            (let val globalVar = CPSVarGlobal (UID.next())
-            in 
-            (* TODO : Figure out the case for plain name *)
-            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig (([name], GlobalVar globalVar)::ctx) ss useGlobalVar cc))
-            end)
-            else (cpsTransformSig (([name], PlainVar resvar)::ctx) ss useGlobalVar cc)
+                (cpsTransformSig (([name], PlainVar resvar)::ctx) ss (acc@[d]) cc)
             )
 
-        | CDirectExpr (e, tp) :: ss => 
+        | (d as CDirectExpr (e, tp)) :: ss => 
             cpsTransformExpr ctx e 
-            (fn resvar =>  (cpsTransformSig (ctx) ss useGlobalVar cc))
-        | CImport _ :: ss => 
-            cpsTransformSig (ctx) ss useGlobalVar cc
-        | CConstructorDecl (name, ctp, CConsInfoTypeConstructor) :: ss => 
+            (fn resvar =>  (cpsTransformSig (ctx) ss (acc@[d]) cc))
+        | (d as CImport _) :: ss => 
+            cpsTransformSig (ctx) ss (acc@[d]) cc
+        | (d as COpenStructure(sname, csig)) :: ss => 
+            (* structure are compiled as tuple, and open compiled as complete projection *)
+            (* csig is the INTERFACE of the structure, not implementation *)
+            (* TODO support signature accumulation via OPEN *)
+            resolveSNameInCtx ctx sname (fn openModuleV => 
+                ctxWithNewOpenStructure ctx (CPSValueVar openModuleV) csig (fn ctx => 
+                    cpsTransformSig (ctx) ss (acc@[d]) cc (* next *)
+                )
+            )
+        | (d as CConstructorDecl (name, ctp, CConsInfoTypeConstructor) ):: ss => 
             let val nargs = countSpineTypeArgs ctp
             in
                 clams  nargs [] (fn (arglist, ret) => 
                     CPSUnit (kcc ret)
                 ) 
                 (fn (cloc) => 
-                    cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss useGlobalVar cc
+                    cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss (acc@[d]) cc
                 )
             end
 
-        | CConstructorDecl(name, tp, CConsInfoElementConstructor(_, index)) :: ss => 
+        | (d as CConstructorDecl(name, tp, CConsInfoElementConstructor(_, index))) :: ss => 
         let val nargs = countSpineTypeArgs tp
         (* val _ = DebugPrint.p ("constructor index is " ^ Int.toString index ^ "\n") *)
         in
@@ -332,33 +375,41 @@ exception CPSInternalError
                 ))
             ) 
             (fn (cloc) => 
-                cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss useGlobalVar cc
+                cpsTransformSig (((name; raise Fail "ni"), PlainVar cloc) :: ctx) ss (acc@[d]) cc
             )
         end
-        | CPureDeclaration _ :: ss => raise Fail "cannot compile pure declaration"
+        | (d as CPureDeclaration _) :: ss => raise Fail "cannot compile pure declaration"
     end
 
 
- fun cpsTransformSigTopLevel  (s : CSignature) 
-     : context * cpsvar option * cpscomputation =
+ fun cpsTransformSigTopLevel (initialCtx : context) (s : CSignature) (storeLoc : cpsvar)
+     :  cpscomputation =
      (
          (* DebugPrint.p (PrettyPrint.show_typecheckingCSig s); *)
 
-    let val finalContext = ref []
-    val finalResult = ref NONE (* TODO: this is actually problematic, by case-3, the final return may have two values!, need 
+    let 
+    (* val finalContext = ref []
+    val finalResult = ref NONE  *)
+    (* TODO: this is actually problematic, by case-3, the final return may have two values!, need 
     other mechanisms! *)
-     val comp = cpsTransformSig [] s true (fn (ctx, resvar) => 
-     let val _ = finalContext := ctx
-     val _ = finalResult := resvar
+     val comp = cpsTransformSig initialCtx s [] (fn ( resvar) => 
+     (* val _ = finalResult := resvar *)
+     (* let val _ = finalContext := ctx
      in
-        case resvar of SOME resvar => CPSDone (CPSValueVar resvar)
+        case resvar of  *)
+        (* SOME resvar =>  *)
+        (* TODO STORE IN PASSED IN GLOBAL LOCATION *)
+        CPSStore(storeLoc, CPSValueVar resvar,  
+        CPSDone (CPSValueVar resvar) (* CPSDonw should not necessarily return but is a silent does nothing *)
+        )
         (* return unit if last expression is not a expr *)
-                     | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSValueVar resvar)))
-    end
+                     (* | NONE => CPSUnit (kcc (fn resvar =>  CPSDone (CPSValueVar resvar))) *)
+    (* end *)
     )
          (* val _ = DebugPrint.p ("CPS Final Context:" ^ (PrettyPrint.show_cpscontext  context) ^ "\n") *)
         (* val _ = DebugPrint.p ("CPS Final Computation:" ^ (PrettyPrint.show_cpscomputation comp) ^ "\n") *)
-    in (!finalContext, !finalResult,  comp)
+        (* TODO: STORE? *)
+    in (comp)
     end
     (*  *)
      )
