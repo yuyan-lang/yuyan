@@ -29,6 +29,7 @@ infix 5 >>=
 
 
 
+    (* NEW VERSION: NAME MUST BE ABSOLUTE *)
     fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) option = 
         let exception LookupNotFound
             fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType * judgmentType) = 
@@ -38,9 +39,11 @@ infix 5 >>=
                     [] => raise LookupNotFound
                     (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
                     | TermTypeJ(n1, t1, defop1,  u)::cs => 
-                        (case StructureName.checkRefersTo n1 n curSName 
-                        of SOME(cname) => (case u of NONE => cname | SOME(x, _) => x, t1, defop1)
-                        | NONE => lookupMapping cs n curSName
+                        (
+                        (* StructureName.checkRefersTo n1 n curSName  *)
+                        if StructureName.semanticEqual n1 n 
+                        then (case u of NONE => n | SOME(x, _) => x, t1, defop1)
+                        else lookupMapping cs n curSName
                         )
             val ntp = SOME(lookupMapping ctx n curSName)
                 handle LookupNotFound => NONE
@@ -78,11 +81,11 @@ infix 5 >>=
                         Context(cname', v', cs') => Context(cname', v', currentj::cs')
 
     (* the name must be absolute name *)
-    fun modifyCtxAddDef(ctx : context) (cname : StructureName.t) (newDef : CExpr) : context = 
+    (* fun modifyCtxAddDef(ctx : context) (cname : StructureName.t) (newDef : CExpr) : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
-                JTPending => SOME(JTDefinition newDef)
+                (* JTPending => SOME(JTDefinition newDef) *)
                 | _ => raise Fail ("tcc58: jtp is not pending " ^ (StructureName.toStringPlain cname))
-            )
+            ) *)
 
     fun modifyCtxResolveMetaVar (ctx : context) (cname : StructureName.t) (resolvedExpr : CExpr) : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 

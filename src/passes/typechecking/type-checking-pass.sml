@@ -106,13 +106,18 @@ infix 5 <?>
             (* raise TypeCheckingFailure ("label " ^ UTF8String.toString l ^ " not found in sum type") *)
             | (n1, _, t1)::cs => if UTF8String.semanticEqual n1 l then Success t1 else lookupLabel3 cs l
 
-    fun findSigList (name : UTF8String.t)(decl : CDeclaration list)  : CDeclaration option = 
+    (* find a declaration and an index *)
+    fun findSigList (name : UTF8String.t)(decl : CDeclaration list)  : (CDeclaration * int) option = 
+    let fun go decl i = 
         case decl of 
             [] => NONE
-            | ((d as CPureDeclaration(n, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
-            | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
-            | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
-            | (_ :: dl) => findSigList name dl
+            | ((d as CPureDeclaration(n, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d, i) else go dl (i+1)
+            | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d, i) else go dl (i+1)
+            | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d, i) else go dl (i+1)
+            | (CDirectExpr _ :: dl) => go dl (i+1)
+            | (CImport _ :: dl) => go dl (i+1)
+    in go decl 0 end
+        
 
     (* modify signature according to modification funcation
     function arg: SOME indicates found with the object NONE indicates not FOUND
@@ -131,7 +136,7 @@ infix 5 <?>
             CConstructorDecl(n, _, _)
             ) ):: dl) => if UTF8String.semanticEqual n name 
                 then modification d :: dl
-                else modifySigList name modification dl
+                else d :: modifySigList name modification dl
             (* | ((d as CTermDefinition(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl
             | ((d as CConstructorDecl(n, _, _)) :: dl) => if UTF8String.semanticEqual n name then SOME(d) else findSigList name dl *)
             | (h :: dl) => h :: modifySigList name modification dl
@@ -161,8 +166,8 @@ infix 5 <?>
                             (* val  allBindings = 
                             List.filter (fn (TermTypeJ(name, tp, jtp, _)) => 
                             (case jtp of 
-                                JTPending => false
-                                | _ => true
+                                (* JTPending => false *)
+                                 _ => true
                             )) (getMapping ctx) *)
                             val metavarname = StructureName.metaVarName()
                             (* val resultingTerm = foldl (fn (TermTypeJ(name, tp, jtp, _), acc) => 
@@ -184,9 +189,10 @@ infix 5 <?>
         if List.exists (fn dec => 
             case dec of 
             CTermDefinition _ => true
+            | CImport _ => true 
             | _ => false
             ) block
-        then Errors.genericError errReporting ctx "结构体用作签名时不可以包含定义的表达式"
+        then Errors.genericError errReporting ctx "结构体用作签名时不可以包含定义的表达式(3)/或者导入语句"
         else Success()
 
     fun checkBlockIsModule (ctx : context) (block : CDeclaration list) : unit witherrsoption = 
@@ -202,19 +208,86 @@ infix 5 <?>
             (let fun go acc l= 
                     case l of 
                     [] => acc
-                    | (x :: xs) => go (acc <?> (fn _ => Errors.genericErrorStr x ctx "结构体用作签名时不可以包含定义的表达式")) xs
+                    | (x :: xs) => go (acc <?> (fn _ => Errors.genericErrorStr x ctx "结构体用作签名时不可以包含定义的表达式(2)")) xs
             in
-                    go (Errors.genericErrorStr (hd notImplementedNames) ctx "结构体用作签名时不可以包含定义的表达式") 
+                    go (Errors.genericErrorStr (hd notImplementedNames) ctx "结构体用作签名时不可以包含定义的表达式(1)") 
                     (tl notImplementedNames)
             end
             )
         else Success()
         end
 
+    fun getSingatureForModule   (block : CDeclaration list) : CDeclaration list = 
+    List.mapPartial (fn dec => 
+        case dec of 
+        CTermDefinition(n, tm, tp) => SOME(CPureDeclaration (n, tp))
+        | CPureDeclaration _ => raise Fail "attempt to get signature for non-module"
+        | CConstructorDecl(n, tm, tp) => SOME(dec)
+        | CImport _ => NONE
+        | CDirectExpr _ => NONE
+    ) block
     (* DO NOT Implement this, I prefer to generate coersions instead of implicit subtyping*)
-    fun checkSignatureAscription (errReporting : RExpr) (ctx : context) (block : CDeclaration list) (blocktype : CDeclaration list): unit witherrsoption = 
-        raise Fail "sig ascription not implemented"
+    (* SO THIS IS ESSENTIALLY EQUALITY CHECKING ! (EXCEPT IMPORTS) *)
+    fun checkSignatureAscription (errReporting : RExpr) (ctx : context) (block : CDeclaration list) (blocktype : CDeclaration list): context witherrsoption = 
+    let val blocksig = getSingatureForModule block 
+    (* val _ = DebugPrint.p (
+        "block is" ^ PrettyPrint.show_typecheckingCSig block ^
+        "\nblocksig is" ^ PrettyPrint.show_typecheckingCSig blocksig) *)
+    in tryTypeUnify ctx errReporting (CBlock blocksig) (CBlock blocktype) end
 
+        
+
+    (* returned CExpr is CVar or CStructureProj *)
+    fun resolveRVar (ctx : context) (rvarName : StructureName.t) : (CExpr * CType) witherrsoption = 
+    let fun findCorrectType i (acctm, acctp) = 
+            if i > length rvarName then raise Fail "not possible tcp225"
+            else
+            if i = length rvarName
+            then 
+            Success(acctm, acctp)
+            else
+            let val curNameComp = List.nth(rvarName,i)
+            in
+                (case acctp of 
+                    CBlock(csig) => 
+                        (* TODO: dependent types should plug in concrete values for all previous 
+                        indecies, check implementation of RProj (previous version) *)
+                        (case findSigList curNameComp csig of
+                            SOME(
+                                ( CPureDeclaration(_, tp)
+                                | CConstructorDecl(_, tp, _)
+                                )
+                                , idx) =>
+                                let 
+                                    val nextAccTm = CBlockProj(acctm, curNameComp, idx)
+                                    (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingCExpr tp) *)
+                                    val nextAccTp = tp (*TODO: dependent case *)
+                                    val nextI = i +1
+                                in findCorrectType nextI (nextAccTm, nextAccTp)
+                                end
+                            | SOME _ => Errors.genericErrorStr curNameComp ctx "仅可投射签名？检查编译器中签名的合成"
+                            | NONE => Errors.genericErrorStr curNameComp ctx "结构中未找到该名称"
+                        )
+                    | _ => Errors.genericErrorStr curNameComp ctx "试图从非结构进行投影"
+                        (* (StructureName.toString (List.take(rvarName, i-1))) *) (* this will not have source range *)
+                )
+            end
+
+        (* i is the NUMBER of anme components (prefix) to search for a module *)
+        fun lookupModuleName i = if i = length rvarName
+        then
+            lookupCtx ctx rvarName >>= (fn (canonicalName, tp, jtp) =>
+            if not (StructureName.semanticEqual canonicalName rvarName) then raise Fail "canonical name different from rvar name(1)"
+            else Success((CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp)))
+        else (case findCtx ctx (List.take(rvarName, i)) of 
+            NONE => lookupModuleName (i+1)
+            | SOME(canonicalName, tp, jtp) => 
+            if not (StructureName.semanticEqual canonicalName (List.take(rvarName, i)))
+            then raise Fail "canonical name different from rvar name(2)"
+            else findCorrectType (i) (CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp))
+    in lookupModuleName 1
+    end
+    
 
     fun configureAndTypeCheckSignature
     (topLevelStructureName : StructureName.t)
@@ -359,11 +432,14 @@ infix 5 <?>
                 let val _ = if DEBUG then print ("synthesizing the type for " ^ PrettyPrint.show_typecheckingRExpr e ^ "\n") else ()
                 val originalExpr = e
                 val res = (case e of
-                    RVar v => lookupCtx ctx v >>= (fn (canonicalName, tp, jtp) =>
+                    RVar v => 
+                    resolveRVar ctx v >>= (fn tmtp => Success (tmtp, ctx))
+                    (* lookupCtx ctx v >>= (fn (canonicalName, tp, jtp) =>
                     case jtp of 
-                        JTPending => Errors.genericError e ctx "变量尚未定义"
-                        | _ => Success((CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp), ctx)
-                    )
+                    (* removed pending but instead have pure declaration, so obselete *)
+                        (* JTPending => Errors.genericError e ctx "变量尚未定义" *)
+                         _ => Success((CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp), ctx)
+                    ) *)
                     | RUnitExpr(soi) => Success ((CUnitExpr, CUnitType), ctx)
                     | RProj(e, (idx, idxsoi), soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
                                     ( weakHeadNormalizeType e ctx tt) >>= (fn ntt => case 
@@ -635,7 +711,13 @@ infix 5 <?>
                                 (* assume the typeChecking is behaving properly, 
                                 no conflicting things will be added to the signature *)
                                 (* sub context will be determined by whether the signature is private or not ? *)
+                            let 
+                            (* val _ = DebugPrint.p ("[tc713] block " ^ PrettyPrint.show_typecheckingRExpr e 
+                            ^ " ysnthesized as " ^ PrettyPrint.show_typecheckingCSig checkedSig) *)
+                            in
+
                             Success((CBlock(checkedSig), CBlock(checkedSig)), ctx)(* the type of a block is just a block *)
+                            end
                             )
                         )
                     (* | Fix (ev, e)=> Fix (ev, substTypeInExpr tS x e) *)
@@ -1050,14 +1132,13 @@ infix 5 <?>
                         addNewMetaVar ctx tt [ql, qr]
                         | RBlock(_) => 
                         (
-                            synthesizeType ctx e >>= (fn ((ce, ct), ctx) => 
-                            (* we're guaranteed that ct = ce, which is the most general type *)
+                            synthesizeType ctx e >>= (fn ((ce, _), ctx) => 
                                 case ce of 
                                 CBlock(decl) => (case tt of 
                                         CUniverse => 
                                             (checkBlockIsSignature e ctx decl >> Success(ce, ctx))
                                         | CBlock(tt) => 
-                                            (checkSignatureAscription e ctx decl tt >> Success(ce, ctx))
+                                            (checkSignatureAscription e ctx decl tt >>= (fn ctx =>  Success(ce, ctx)))
                                         | _ => genSingletonError (reconstructFromRExpr e) "模块（结构）仅能拥有模块类型或者元类型" NONE
                                     )
                                 | _ => raise Fail "tcp1027: synth block should always return a block"
@@ -1085,6 +1166,8 @@ infix 5 <?>
 
                     if DEBUG then DebugPrint.p ("DEBUG952 " ^ PrettyPrint.show_typecheckingRSig s ^
                     " in context " ^ PrettyPrint.show_typecheckingpassctx ctx ^"\n") else (); 
+                    (* if true then DebugPrint.p ("DEBUG1166 " ^ PrettyPrint.show_typecheckingCSig acc 
+                    ) else ();  *)
                     (* DebugPrint.p ("TCSig r="  ^ Int.toString (length s) ^   " acc=" ^ Int.toString (length acc) ^
                     "\nDEBUG " ^ PrettyPrint.show_typecheckingRSig s ^
                     "\n"); *)
@@ -1126,7 +1209,7 @@ infix 5 <?>
                 in
                 (case findSigList n acc of   
                     NONE  =>  newDef()
-                    | SOME(CPureDeclaration(_, lookedUpType)) => 
+                    | SOME(CPureDeclaration(_, lookedUpType), _) => 
                         (
                          (* case lookedUpDef of 
                          JTPending =>   *)

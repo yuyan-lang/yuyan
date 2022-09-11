@@ -353,6 +353,7 @@ in case x of
                       st t ^ " . " ^ st t2 ^ ")"
                     | CUniverse => "(Set)"
                     | CBlock(decl) => "{" ^ show_typecheckingCSig decl ^ "}"
+                    | CBlockProj(e, lbl, idx) => "([BLOCKPROJ] " ^ st e ^ " -> " ^ ss lbl ^ "(" ^ Int.toString idx ^ "))"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
@@ -368,7 +369,17 @@ in case x of
 
 and show_typecheckingCSig x = let
 in
-          "[csig:" ^ String.concatWith "。\n " (map show_typecheckingCDecl x) ^ "]\n" 
+          "[csig:" ^  
+          (String.implode(
+            List.concat (List.map (fn x => 
+            case x of 
+            #"\n" => String.explode "\t\t\n"
+            | _ => [x]
+            )
+            (String.explode (
+            String.concatWith "。\n " (map show_typecheckingCDecl x)))
+          )))
+          ^ "]\n" 
 end
 fun show_source_location ((fname, line, col) : SourceLocation.t) = "[" ^ Int.toString (line + 1) ^ ", "^ Int.toString (col + 1) ^ "]"
 fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.t) = 
@@ -385,7 +396,7 @@ in
         | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
         | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
         | JTLocalBinder => "（局部绑定）"
-        | JTPending => "（pending）"
+        (* | JTPending => "（pending）" *)
         | JTMetaVarPendingResolve _ => "(metavar pending resolve)"
         | JTMetaVarResolved e => "(resolved metavar >>> " ^ show_typecheckingCExpr e ^ ")"
         | JTLocalBinderWithDef e => "(局部绑定【带定义】 >>> " ^ StructureName.toStringPlain e ^ "）"

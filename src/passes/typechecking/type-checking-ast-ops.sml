@@ -289,6 +289,8 @@ infix 5 =/=
                 )
             | CBlock(decls) => 
                 fmap CBlock (resolveAllMetaVarsInCSig ctx decls)
+            | CBlockProj(e, lbl, idx) => 
+                fmap (fn e' => CBlockProj(e', lbl, idx)) (recur e)
             | _ => raise Fail ("resolveAllMetaVarsInCExpr not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -552,7 +554,7 @@ infix 5 =/=
             JTConstructor cinfo =>  CVTConstructor(canonicalNameIfConstructor, cinfo)
             | JTLocalBinder =>  CVTBinder
             | JTDefinition e =>  CVTDefinition e
-            | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor)
+            (* | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor) *)
             | JTLocalBinderWithDef metavarname => CVTBinderDefinition metavarname
             | _ => raise Fail "ni427"
     fun countSpineTypeArgs (tp : CType) = 

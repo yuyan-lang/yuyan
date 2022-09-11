@@ -39,6 +39,7 @@ structure TypeCheckingAST = struct
                     | CTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CProj of CExpr * int (* index of the label *) * CTypeAnn (* type is Prod *)
+                    | CBlockProj of CExpr * Label * int (* index of the label, counting from zero, including cons, :, directexpr, def, excluding import *)
                     | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
                     | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
@@ -117,7 +118,7 @@ structure TypeCheckingAST = struct
                     | RUnitExpr of UTF8String.t
                     | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RLazyTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
-                    | RProj of RExpr * (int * UTF8String.t ) * sourceOpInfo
+                    | RProj of RExpr * (int * UTF8String.t ) * sourceOpInfo (* the index for rproj should start with 1, for cproj is current zero *)
                     | RLazyProj of RExpr * Label * sourceOpInfo
                     | RInj of Label * RExpr * sourceOpInfo
                     | RIfThenElse of RExpr * RExpr * RExpr * sourceOpInfo
@@ -188,7 +189,7 @@ structure TypeCheckingAST = struct
                         | JTLocalBinder 
                         | JTLocalBinderWithDef of StructureName.t (* a pattern match binder with a resolved defintion, which is guaranteed to be a metavariable name by the definition *)
                         | JTDefinition of CExpr 
-                        | JTPending  (* declaration pending definition *)
+                        (* | JTPending  declaration pending definition *)
                         | JTMetaVarPendingResolve of UTF8String.t (* the error reporting string when it cannot be resolved *)
                         | JTMetaVarResolved of CExpr
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a
