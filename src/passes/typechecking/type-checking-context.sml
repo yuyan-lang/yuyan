@@ -98,7 +98,9 @@ infix 5 >>=
                 JTLocalBinder => NONE
                 | JTLocalBinderWithDef _ => NONE
                 | JTDefinition _ => NONE (* TODO: check the differnce between def and local binder with def *)
-                | _ => raise Fail ("tcc58: jtp is not jtlocalbinder or jtlocalbinderwithdef but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
+                | JTConstructor _ => NONE
+                | _ => raise Fail ("tcc58: jtp is not jtlocalbinder or jtlocalbinderwithdef but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname) 
+                ^ " in context " ^ showctx ctx true)
             )
     
 

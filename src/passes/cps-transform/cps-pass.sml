@@ -301,9 +301,9 @@ exception CPSInternalError
             (let val globalVar = CPSVarGlobal (UID.next())
             in 
             (* TODO : Figure out the case for plain name *)
-            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig (((name; raise Fail "ni"), GlobalVar globalVar)::ctx) ss useGlobalVar cc))
+            CPSStore(globalVar, CPSValueVar resvar,  (cpsTransformSig (([name], GlobalVar globalVar)::ctx) ss useGlobalVar cc))
             end)
-            else (cpsTransformSig (((name; raise Fail "ni"), PlainVar resvar)::ctx) ss useGlobalVar cc)
+            else (cpsTransformSig (([name], PlainVar resvar)::ctx) ss useGlobalVar cc)
             )
 
         | CDirectExpr (e, tp) :: ss => 

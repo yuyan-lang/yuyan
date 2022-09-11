@@ -325,10 +325,14 @@ infix 5 <?>
                 fun checkScopeAndIndexAgainstFoundTypeConstructor
                 (errReporting : RExpr)
                 (foundTypeConstructorName : StructureName.t) : cconstructorinfo witherrsoption =
-                    if StructureName.semanticEqual (getCurSName ctx)  (StructureName.getDeclaringScope foundTypeConstructorName)
+                    (* if StructureName.semanticEqual (getCurSName ctx)  (StructureName.getDeclaringScope foundTypeConstructorName) *)
+                    if length foundTypeConstructorName = 1 (* if in current scope, name should be singular *)
                     then Success(CConsInfoElementConstructor(foundTypeConstructorName, 
                             countOccurrencesOfElementConstructor(foundTypeConstructorName) + 1))
-                    else Errors.elementConstructorScopeError  errReporting ctx
+                    else Errors.elementConstructorScopeError  errReporting ctx  
+                    ("\n当前结构名：" ^ (StructureName.toStringPlain (getCurSName ctx))
+                    ^ "类型构造器名：" ^ (StructureName.toStringPlain ( foundTypeConstructorName))
+                    )
 
 
 
@@ -1286,7 +1290,12 @@ infix 5 <?>
                     <?> (fn _ => Errors.importError (StructureName.toString importName)  ctx)
                     )
                      >>= (fn csig => 
-                        (withLocalGeneric ctx importName CUniverse (JTDefinition (CBlock csig)) (
+                     (* assume what we get is a type checked module, not its signature 
+                     TODO: it makes sense for module to store both its signature and implementation 
+                     as result of type checking *)
+                        (withLocalGeneric ctx importName 
+                        (CBlock (getSingatureForModule csig)) 
+                        (JTDefinition (CBlock csig)) (
                             fn ctx => 
                         typeCheckSignature ctx ss isModule (acc@[CImport(importName, path)])
                         ))
