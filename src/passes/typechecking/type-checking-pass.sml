@@ -277,7 +277,7 @@ infix 5 <?>
 
     (* returned CExpr is CVar or CStructureProj *)
     fun resolveRVar (ctx : context) (rvarName : StructureName.t) : (CExpr * CType) witherrsoption = 
-    let fun findCorrectType i (acctm, acctp) = 
+    let fun findCorrectType i (acctm, acctp) (* acc for accumulation *) = 
             if i > length rvarName then raise Fail "not possible tcp225"
             else
             if i = length rvarName
@@ -286,28 +286,30 @@ infix 5 <?>
             else
             let val curNameComp = List.nth(rvarName,i)
             in
-                (case acctp of 
-                    CBlock(csig) => 
-                        (* TODO: dependent types should plug in concrete values for all previous 
-                        indecies, check implementation of RProj (previous version) *)
-                        (case findSigList curNameComp csig of
-                            SOME(
-                                ( CPureDeclaration(_, tp)
-                                | CConstructorDecl(_, tp, _)
-                                )
-                                , idx) =>
-                                let 
-                                    val nextAccTm = CBlockProj(acctm, curNameComp, idx)
-                                    (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingCExpr tp) *)
-                                    val nextAccTp = tp (*TODO: dependent case *)
-                                    val nextI = i +1
-                                in findCorrectType nextI (nextAccTm, nextAccTp)
-                                end
-                            | SOME _ => Errors.genericErrorStr curNameComp ctx "仅可投射签名？检查编译器中签名的合成"
-                            | NONE => Errors.genericErrorStr curNameComp ctx "结构中未找到该名称"
-                        )
-                    | _ => Errors.genericErrorStr curNameComp ctx "试图从非结构进行投影"
-                        (* (StructureName.toString (List.take(rvarName, i-1))) *) (* this will not have source range *)
+                weakHeadNormalizeType (RVar(rvarName)) ctx acctp >>= (fn acctp => 
+                    (case acctp of 
+                        CBlock(csig) => 
+                            (* TODO: dependent types should plug in concrete values for all previous 
+                            indecies, check implementation of RProj (previous version) *)
+                            (case findSigList curNameComp csig of
+                                SOME(
+                                    ( CPureDeclaration(_, tp)
+                                    | CConstructorDecl(_, tp, _)
+                                    )
+                                    , idx) =>
+                                    let 
+                                        val nextAccTm = CBlockProj(acctm, curNameComp, idx)
+                                        (* val _ = DebugPrint.p (PrettyPrint.show_typecheckingCExpr tp) *)
+                                        val nextAccTp = tp (*TODO: dependent case *)
+                                        val nextI = i +1
+                                    in findCorrectType nextI (nextAccTm, nextAccTp)
+                                    end
+                                | SOME _ => Errors.genericErrorStr curNameComp ctx "仅可投射签名？检查编译器中签名的合成"
+                                | NONE => Errors.genericErrorStr curNameComp ctx "结构中未找到该名称"
+                            )
+                        | _ => Errors.genericErrorStr curNameComp ctx "试图从非结构进行投影"
+                            (* (StructureName.toString (List.take(rvarName, i-1))) *) (* this will not have source range *)
+                    )
                 )
             end
 

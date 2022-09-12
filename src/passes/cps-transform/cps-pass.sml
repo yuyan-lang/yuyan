@@ -387,7 +387,19 @@ exception CPSInternalError
                     cpsTransformSig (([name], PlainVar cloc) :: ctx) ss (acc@[d]) cc
                 )
             end
-            | (d as CPureDeclaration _) :: ss => raise Fail "cannot compile pure declaration"
+            | (d as CPureDeclaration (name, tp)) :: ss => 
+                (CPSUnit(kcc 
+                        (fn resvar =>
+                            (cpsTransformSig (([name], PlainVar resvar)::ctx) ss (acc@[d]) cc)
+                        )
+                    )
+                )
+                (* (fn resvar =>  (cpsTransformSig (ctx) ss (acc@[d]) cc)) *)
+                (* cpsTransformSig (([name], PlainVar cloc) :: ctx) ss (acc@[d]) cc *)
+                (* CPSUnit  *)
+                (* ((DebugPrint.p ("pure declaration encountered when compiling " ^ PrettyPrint.show_typecheckingCDecl d))
+            ; raise CPSInternalError) *)
+            (* raise Fail "cannot compile pure declaration" *)
         end
             (* handle CPSInternalError =>
                 ((DebugPrint.p ("When transforming signature " ^  (if 

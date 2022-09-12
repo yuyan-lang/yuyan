@@ -181,6 +181,23 @@ infix 5 =/=
                 | ne => Success(CProj(ne,  idx, u))
             )
             | CBlock _ => Success (t)
+            | CBlockProj(e, lbl, idx) => 
+                    recur e >>= (fn 
+                        CBlock (csig) => 
+                        if idx >= length csig
+                        then raise Fail "tcastops176: normalization error"
+                        else 
+                            (case List.nth(csig, idx) of
+                                (* Should we project term or type? *)
+                                (* ofcourse we should project tm, because weakhead normalize is 
+                                a runtime procedure *)
+                                 CTermDefinition(_, tm, _) => recur tm
+                                | CConstructorDecl(n, tp, cconsinfo) => Success(CVar([n], CVTConstructor([n], cconsinfo)))
+                                | CPureDeclaration(_, tp) => raise Fail "cannot normalize pure decl"
+                                | _ => raise Fail "cannot project"
+                            )
+                        | ne => Success(CBlockProj(ne,  lbl, idx))
+                )
             | CLabeledProd _ => Success (t)
             | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)

@@ -159,7 +159,13 @@ open StaticErrorStructure
         (* val grandTypeCheckedAST = List.concat(csigs@[tckedAST]) *)
         (* val _ = DebugPrint.p ("The dependency of " ^ FileResourceURI.access curFp ^ " is " ^ 
         String.concatWith ", " (map (fn (_, sname) =>StructureName.toStringPlain sname ) orderedDeps))  *)
-        val prevLLVMStmts =map (fn (((_, _), _,llvmsig), sname)  => llvmsig) orderedDeps
+        val prevLLVMStmts =map (fn (((_, _), _,llvmsig), sname)  => 
+        (
+            let val _ = DebugPrint.p ("DEBUG : " ^ StructureName.toStringPlain sname ^ " mapped to " ^ 
+            Int.toString (#1 llvmsig))
+            in
+        llvmsig
+        end)) orderedDeps
 
         val allLLVMSig = prevLLVMStmts @ [llvmsig]
 
