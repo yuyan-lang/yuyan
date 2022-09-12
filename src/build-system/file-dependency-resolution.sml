@@ -20,6 +20,15 @@ open CompilationStructure
             | CApp(e1, e2, _) => recurExpr e1 @ recurExpr e2
             | CLam(ev, e, _) => recurExpr e
             | CFfiCCall(_) => []
+            | CNullType => []
+            | CFix(ev, e, _) => recurExpr e
+            | CCase((_, e), cases, _) => 
+                recurExpr e @ List.concat (map (fn (pat, e) => recurExpr e) cases)
+            | CLetIn(csig, e, _) => recurSig csig @ recurExpr e
+            | CRealConstant _ => []
+            | CIntConstant _ => []
+            | CIfThenElse(e1,e2,e3) => recurExpr e1 @ recurExpr e2 @ recurExpr e3
+            | CBuiltinFunc _ => []
             | _ => raise Fail ("fdr11 : dependency for cexpr ni for " ^ PrettyPrint.show_typecheckingCExpr e)
         and recurSig (x : TypeCheckingAST.CDeclaration list) : dependency list = 
         List.concat (List.map (fn x => case x of 

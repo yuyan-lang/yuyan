@@ -215,7 +215,11 @@ val DEBUG = true
                                     let val (newLLVMInfo, updatedLLVMInfo) = 
                                         if StaticErrorStructure.isSuccess llvmInfo andalso not updatedCPSInfo
                                         then ( llvmInfo, false)
-                                        else (constructLLVMInfo (#3 (StaticErrorStructure.valOf newCPSInfo)) (#pwd cm), true)
+                                        else (constructLLVMInfo (#3 (StaticErrorStructure.valOf newCPSInfo)) 
+                                        (FileResourceURI.make fp)
+                                        (StaticErrorStructure.valOf newDependencyInfo) 
+                                        helperFuncs
+                                        (#pwd cm), true)
                                         val _ = if DEBUG andalso updatedLLVMInfo then debugPrint ("Computed LLVMInfo succes : " ^
                                     Bool.toString (StaticErrorStructure.isSuccess newLLVMInfo) 
                                     ^ " updated: " ^ Bool.toString updatedLLVMInfo

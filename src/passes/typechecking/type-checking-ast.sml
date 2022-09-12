@@ -41,18 +41,18 @@ structure TypeCheckingAST = struct
                     | CProj of CExpr * int (* index of the label *) * CTypeAnn (* type is Prod *)
                     | CBlockProj of CExpr * Label * int (* index of the label, counting from zero, including cons, :, directexpr, def, excluding import *)
                     | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
-                    | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
+                    (* | CInj of Label * CExpr  * CTypeAnn type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
                     | CCase of (CTypeAnn (*type is to be pattern matched *) * CExpr) * 
                         (CPattern (* pattern *) * CExpr) list * CTypeAnn (* type is result type *)
                     | CLam of  EVar * CExpr * CTypeAnn (* type is Func *)
                     | CApp of  CExpr * CExpr * CTypeAnn (* type is Func *)
-                    | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)
-                    | CTApp of CExpr * CExpr (* instantiation type *) * CTypeAnn(* type is Forall *)
-                    | CPack of CExpr (* pack type *) * CExpr * CTypeAnn(* type is Exists *)
-                    | COpen of (CTypeAnn (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * CTypeAnn(* type is return type *)
-                    | CFold of CExpr  * CTypeAnn(* type is Rho *)
-                    | CUnfold of CExpr  * CTypeAnn (* type is Rho *)
+                    (* | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)
+                    | CTApp of CExpr * CExpr (* instantiation type *) * CTypeAnntype is Forall *)
+                    (* | CPack of CExpr (* pack type *) * CExpr * CTypeAnn(* type is Exists *)
+                    | COpen of (CTypeAnn (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * CTypeAnntype is return type *)
+                    (* | CFold of CExpr  * CTypeAnn(* type is Rho *)
+                    | CUnfold of CExpr  * CTypeAnn type is Rho *)
                     | CFix of EVar * CExpr * CTypeAnn (* type is the typ of the expression *)
                     | CStringLiteral of UTF8String.t 
                     | CIntConstant of int
@@ -70,10 +70,10 @@ structure TypeCheckingAST = struct
                     | CNullType
                     | CSum of (Label * CExpr) list
                     (* | CFunc of CExpr * CExpr *)
-                    | CTypeInst of CExpr * CExpr
-                    | CForall of TVar * CExpr
-                    | CExists of TVar * CExpr
-                    | CRho of TVar * CExpr
+                    (* | CTypeInst of CExpr * CExpr *)
+                    (* | CForall of TVar * CExpr *)
+                    (* | CExists of TVar * CExpr *)
+                    (* | CRho of TVar * CExpr *)
                     | CBuiltinType of BuiltinType
                     | CUniverse 
                     | CPiType of CExpr * EVar option * CExpr  * plicity

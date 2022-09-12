@@ -311,16 +311,16 @@ in case x of
                     | CProj (e, lblidx, t) => "(PROJ " ^ se e ^ cst t ^ "." ^ Int.toString lblidx ^ ")"
                     | CLazyProj (e, lbl, t) => "(" ^ se e ^ cst t ^ ".(lazy) " ^ ss lbl ^ ")"
                     | CIfThenElse (e, tcase, fcase ) => "(if " ^ se e ^ " then " ^ se tcase ^ " else " ^ se fcase ^ ")"
-                    | CInj  ( lbl,e, t) => "(INJ " ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t
+                    (* | CInj  ( lbl,e, t) => "(INJ " ^ ss lbl ^ "." ^ se e ^ ")" ^ cst t *)
                     | CCase ((ts, e), l, t)=>"(case "^ se e ^ cst ts ^ " of {"^ String.concatWith "; " (map (fn (pat, e) => sp pat ^ " => " ^ se e) l) ^ "})" ^ cst t
                     | CLam (x, e, t) => "(λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t
                     | CApp (e1, e2, t)=> "ap("^ se e1 ^ cst t^ ", "^ se e2 ^")"
-                    | CTAbs (x, e, t) => "(Λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t 
-                    | CTApp (e1, e2, ft)=> "("^ se e1 ^ cst ft^ " ["^ st e2 ^"])"
-                    | CPack (t, e, et)=> "pack("^ st t ^ ", "^ se e ^")" ^ cst et
-                    | COpen ((et, e), (t, x, e2), rt)=> "open(" ^se e ^ cst et ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])" ^ cst rt
-                    | CFold (e, t) => "fold(" ^ se e ^")" ^ cst t
-                    | CUnfold (e, rhot) => "unfold("^  se e ^ cst rhot ^")"
+                    (* | CTAbs (x, e, t) => "(Λ" ^ ss x ^ "." ^ se e ^ ")" ^ cst t  *)
+                    (* | CTApp (e1, e2, ft)=> "("^ se e1 ^ cst ft^ " ["^ st e2 ^"])" *)
+                    (* | CPack (t, e, et)=> "pack("^ st t ^ ", "^ se e ^")" ^ cst et *)
+                    (* | COpen ((et, e), (t, x, e2), rt)=> "open(" ^se e ^ cst et ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])" ^ cst rt *)
+                    (* | CFold (e, t) => "fold(" ^ se e ^")" ^ cst t *)
+                    (* | CUnfold (e, rhot) => "unfold("^  se e ^ cst rhot ^")" *)
                     | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
                     | CStringLiteral l => "\"" ^ ss l ^"\""
                     | CIntConstant l => "(" ^ Int.toString l ^")"
@@ -338,10 +338,10 @@ in case x of
                     | CNullType => "0"
                     | CSum l =>  "(SUM " ^ String.concatWith "+ " (map (fn (lbl, t) => ss lbl ^ ": " ^ st t) l) ^ ")"
                     (* | CFunc (t1, t2) => "(" ^ st t1 ^ " -> " ^ st t2 ^ ")" *)
-                    | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
+                    (* | CTypeInst (t1, t2) => "(INST[" ^ st t1 ^ ", " ^ st t2 ^ "])"
                     | CForall(t1, t2) => "(∀" ^ ss t1 ^ " . " ^ st t2 ^")" 
                     | CExists (t1, t2) => "(∃" ^ ss t1 ^ " . " ^ st t2 ^")" 
-                    | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")" 
+                    | CRho (t1, t2) => "(ρ" ^ ss t1 ^ " . " ^ st t2 ^")"  *)
                     | CBuiltinType (bi) => show_builtintype bi
                     | CPiType(t1, xop, t2, p ) => 
                         (case xop of SOME x => "(Π " ^ 

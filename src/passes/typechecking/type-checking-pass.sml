@@ -639,7 +639,7 @@ infix 5 <?>
                                 (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
                         e2 >>= (fn ((ce2, bodyType), ctx) => 
                     Success ((CTAbs(tv, ce2, CTypeAnn(CForall (tv, bodyType))), CForall (tv, bodyType)), ctx) ) *)
-                    | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn ((ce2, st), ctx) => 
+                    (* | RTApp (e2, t, soi) => synthesizeType ctx e2 >>= (fn ((ce2, st), ctx) => 
                                 weakHeadNormalizeType e2 ctx st >>= (fn nst =>
                         case nst of
                             CForall (tv, tb) => 
@@ -651,7 +651,7 @@ infix 5 <?>
                             )
                             | _ => Errors.attemptToApplyNonUniversal e (st) ctx
                              )
-                        )
+                        ) *)
                     (* | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
                     weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => case nsynt  of
                                 ( CExists (tv', tb)) => 
@@ -663,11 +663,11 @@ infix 5 <?>
                         )
                             | _ => Errors.attemptToOpenNonExistentialTypes e ( synt) ctx)
                     ) *)
-                    | RUnfold (e2, soi) => synthesizeType ctx e2 >>= (fn ((ce2, synt), ctx) => 
+                    (* | RUnfold (e2, soi) => synthesizeType ctx e2 >>= (fn ((ce2, synt), ctx) => 
                     weakHeadNormalizeType e2 ctx synt >>= (fn nsynt => case nsynt  of
                         ( CRho (tv, tb)) => Success ((CUnfold(ce2, CTypeAnn(CRho(tv, tb))),  (substTypeInCExpr (CRho (tv, tb)) [tv] (tb))), ctx)
                         | _ => Errors.attemptToUnfoldNonRecursiveTypes e ( synt) ctx
-                        ))
+                        )) *)
                     | RStringLiteral(l, soi) => Success((CStringLiteral l, CBuiltinType(BIString)), ctx)
                     | RIntConstant(i, soi) => Success((CIntConstant i, CBuiltinType(BIInt)), ctx)
                     | RRealConstant (r, soi) => Success((CRealConstant  r, CBuiltinType(BIReal)), ctx)
@@ -744,12 +744,12 @@ infix 5 <?>
                             Success(CFunc(ct1, ct2), CUniverse)
                         )
                     ) *)
-                    | RTypeInst(t1, t2, soi) => checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
+                    (* | RTypeInst(t1, t2, soi) => checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
                         checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                             Success((CTypeInst(ct1, ct2), CUniverse), ctx)
                         )
-                    )
-                    | RForall(tv, t2, soi) => 
+                    ) *)
+                    (* | RForall(tv, t2, soi) => 
                         withLocalBinder ctx tv CUniverse (fn ctx => 
                         checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success((CForall(tv, ct2), CUniverse), ctx)
@@ -760,13 +760,13 @@ infix 5 <?>
                         checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success((CExists(tv, ct2), CUniverse), ctx)
                             )
-                        )
-                    | RRho(tv, t2, soi) => 
+                        ) *)
+                    (* | RRho(tv, t2, soi) => 
                         withLocalBinder ctx tv CUniverse (fn ctx => 
                         checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                 Success((CRho(tv, ct2), CUniverse), ctx)
                             )
-                        )
+                        ) *)
                     | RBlock (decls, qi) => 
                         (
                             (* blocks are not necessarily modules *)
@@ -910,13 +910,13 @@ infix 5 <?>
                             Success(CLazyProj(ce, l, lazyProdType), ctx))
                             | _ => raise Fail "tcp229")
 
-                        | RInj (l, e, soi) => (case tt of
+                        (* | RInj (l, e, soi) => (case tt of
                             CSum ls => (lookupLabel ls l) >>= (fn (idx,lookedupType) => 
                                     checkType ctx e lookedupType >>= (fn (checkedExpr, ctx) => 
                                         Success(CInj(l, checkedExpr, CTypeAnn((CSum ls))), ctx)
                                     ))
                             | _ => Errors.expectedSumType originalExpr (tt) ctx
-                        )
+                        ) *)
                         | RIfThenElse(e, tcase, fcase, soi) => (checkType ctx e (CBuiltinType(BIBool))  >>= (fn (ce, ctx) => 
                             checkType ctx tcase tt >>= (fn (ctcase, ctx) => 
                                 checkType ctx fcase tt >>= (fn (cfcase, ctx) => 
@@ -1016,7 +1016,7 @@ infix 5 <?>
                                     )
                             | _ => Errors.expectedUniversalType e (tt) ctx
                         ) *)
-                        | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
+                        (* | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
                         weakHeadNormalizeType e2 ctx synt >>= (fn synt => 
                             case synt of
                                 (CForall (tv, tb)) => (
@@ -1028,8 +1028,8 @@ infix 5 <?>
                                     )
                                 | _ => Errors.attemptToApplyNonUniversal e (synt) ctx
                                 )
-                            )
-                        | RPack (e1, e2, soi) => (case tt of
+                            ) *)
+                        (* | RPack (e1, e2, soi) => (case tt of
                             CSigmaType (t1, tvop, t2) => 
                                 checkType ctx e1 t1 >>= (fn (ce1, ctx) =>
                                     checkType ctx e2 
@@ -1039,7 +1039,7 @@ infix 5 <?>
                                     >>= (fn (ce2, ctx) => Success(CPack(ce1, ce2, CTypeAnn(tt)), ctx))
                                     )
                             | _ => Errors.expectedExistentialType e (tt) ctx
-                        )
+                        ) *)
                         (* | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
                         weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => case nsynt of
                             (CExists (tv', tb)) => 
@@ -1050,20 +1050,20 @@ infix 5 <?>
                             | _ => Errors.attemptToOpenNonExistentialTypes e (synt) ctx
                         )
                         ) *)
-                        | RFold (e2, soi) => (case tt
+                        (* | RFold (e2, soi) => (case tt
                             of 
                             CRho (tv ,tb) => 
                             checkType ctx e2 (substTypeInCExpr (CRho(tv, tb)) [tv] tb)
                             >>= (fn (ce2, ctx) => Success (CFold(ce2, CTypeAnn(tt)), ctx))
                             | _ => Errors.expectedRecursiveType e (tt) ctx
-                                )
-                        | RUnfold (e2,soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
+                                ) *)
+                        (* | RUnfold (e2,soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
                         weakHeadNormalizeType e2 ctx synt >>= (fn nsynt => case nsynt of
                             ( CRho (tv, tb)) =>(
                                 tryTypeUnify ctx e ((substTypeInCExpr (CRho (tv,  tb)) [tv] ( tb))) tt >>= (fn ctx =>
                                 Success(CUnfold(ce2, CTypeAnn(CRho(tv,tb))), ctx)))
                             | _ => Errors.attemptToUnfoldNonRecursiveTypes e (synt) ctx
-                            ))
+                            )) *)
                         | RFix (ev, e, soi)=> 
                             withLocalBinder ctx ev tt (fn ctx => 
                                 checkType ctx e tt
@@ -1167,31 +1167,31 @@ infix 5 <?>
                                 Success(CFunc(ct1, ct2) )
                             )
                         )) *)
-                        | RTypeInst(t1, t2, soi) => 
+                        (* | RTypeInst(t1, t2, soi) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                                 checkType ctx t1 CUniverse >>= (fn (ct1, ctx) => 
                                     checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                         Success(CTypeInst(ct1, ct2) , ctx)
                                     )
-                                ))
-                        | RForall(tv, t2, soi) => 
+                                )) *)
+                        (* | RForall(tv, t2, soi) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                             withLocalBinder ctx tv CUniverse (fn ctx => 
                             checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                     Success(CForall(tv, ct2) , ctx)
-                                )))
-                        | RExists(tv, t2, soi) => 
+                                ))) *)
+                        (* | RExists(tv, t2, soi) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                             withLocalBinder ctx tv CUniverse (fn ctx => 
                             checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                     Success(CExists(tv, ct2) , ctx)
-                                )))
-                        | RRho(tv, t2, soi) => 
+                                ))) *)
+                        (* | RRho(tv, t2, soi) => 
                             tryTypeUnify ctx e CUniverse tt >>= (fn ctx => 
                             withLocalBinder ctx tv CUniverse (fn ctx => 
                             checkType ctx t2 CUniverse >>= (fn (ct2, ctx) => 
                                     Success(CRho(tv, ct2) , ctx)
-                                )))
+                                ))) *)
                         | RPairOfQuotes((ql, qr)) => 
                         addNewMetaVar ctx tt [ql, qr]
                         | RBlock(_) => 

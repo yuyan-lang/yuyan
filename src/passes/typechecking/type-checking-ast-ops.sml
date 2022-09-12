@@ -60,10 +60,10 @@ infix 5 =/=
                         NONE => freeTCVar t2
                         | SOME(ev) => List.filter (fn t => t ~<> [ev]) (freeTCVar t2)
                     )
-                | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
+                (* | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
                 | CForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
                 | CExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
-                | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2) *)
                 | CUnitType => []
                 | CNullType => []
                 | CBuiltinType(b) => []
@@ -144,16 +144,16 @@ infix 5 =/=
             (* | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 ) *)
             | CPiType (t1, hd, p, t2) => Success(CPiType(t1, hd, p, t2))
             | CSigmaType (t1, hd, t2) => Success(t)
-            | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
+            (* | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
                 CForall(tv, t1') => (recur t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
                 | _ => genSingletonError (reconstructFromRExpr e) ("期待通用类型(Expected Forall)，却得到了(got)：" ^
                 PrettyPrint.show_typecheckingCType nt1^ "（在检查类型"^ 
                 PrettyPrint.show_typecheckingCType t ^ "时）")
                  (showctxSome ctx)
-            )
-            | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
-            | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
-            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            ) *)
+            (* | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) )) *)
+            (* | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) )) *)
+            (* | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) )) *)
             | CUnitType => Success(CUnitType)
             | CNullType => Success(CNullType)
             | CBuiltinType(b) => Success(CBuiltinType(b))
@@ -217,12 +217,12 @@ infix 5 =/=
                                                 Success(CSigmaType(nt1, hd, nt2))
                                             )
                                         ) 
-            | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
+            (* | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
                     (recur t2) >>= (fn nt2 =>
                  Success(CTypeInst(nt1,nt2))))
             | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
             | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
-            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) )) *)
             | CUnitType => Success(CUnitType)
             | CNullType => Success(CNullType)
             | CBuiltinType(b) => Success(CBuiltinType(b))
@@ -282,12 +282,12 @@ infix 5 =/=
                         Success(CSeqComp(ce1, ce2, u1, u2))
                     )
                 )
-            | CPack(e1, e2, u) => 
+            (* | CPack(e1, e2, u) => 
                 recur e1 >>= (fn ce1 => 
                     recur e2 >>= (fn ce2 => 
                         Success(CPack(ce1, ce2, u))
                     )
-                )
+                ) *)
             | CBlock(decls) => 
                 fmap CBlock (resolveAllMetaVarsInCSig ctx decls)
             | CBlockProj(e, lbl, idx) => 
@@ -364,7 +364,7 @@ infix 5 =/=
                 | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
                 | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
                 (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
-                | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+                (* | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
                 | CPiType(t1, evop,t2, p) => (case evop of 
                         NONE => CPiType(recur t1, NONE, recur t2, p)
                         | SOME(ev) => let val t1' = recur t1
@@ -377,9 +377,9 @@ infix 5 =/=
                                     in captureAvoid (fn (ev', t2') => CSigmaType(t1', SOME ev', t2')) ev t2
                                     end
                     )
-                | CForall (tv,t2) => captureAvoid CForall tv t2
+                (* | CForall (tv,t2) => captureAvoid CForall tv t2
                 | CExists (tv,t2) => captureAvoid CExists tv t2
-                | CRho (tv,t2) => captureAvoid CRho tv t2
+                | CRho (tv,t2) => captureAvoid CRho tv t2 *)
                 | CUnitType => CUnitType
                 | CNullType => CNullType
                 | CBuiltinType(b) => CBuiltinType(b)

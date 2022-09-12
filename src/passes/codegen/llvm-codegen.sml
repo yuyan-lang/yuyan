@@ -463,14 +463,28 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
         end
 
 
-fun genLLVMSignatureWithMainFunction ((entryFunc,s) : llvmsignature)  : string list = 
-    let val genSig = List.concat (map genLLVMDelcaration s)
-    val tempVar = UID.next()
+fun genLLVMSignatureWithMainFunction (sigs : llvmsignature list)  : string list = 
+(* each list element is (entryFunc,s) *)
+if length sigs = 0
+then raise Fail "cannot gen for empty sig"
+else
+    let 
+    val alldecls = List.concat (map (fn (_, s) => s) sigs )
+    val alldecls = LLVMConvert.removeFfiDuplicate (LLVMConvert.removeGlobalVarDuplicates alldecls)
+    val genSig = List.concat (map (fn (s) => genLLVMDelcaration s) alldecls)
+    val initializations = List.map (fn (entryFunc, _) => 
+        let
+            val tempVar = UID.next()
+        in
+            toLocalVar tempVar ^ " =  call i64 " ^ toFunctionName entryFunc ^ "()"
+        end
+    ) sigs
     in 
         [ (* generate main function *)
-        "define i64 @entryMain() {",
-        toLocalVar tempVar ^ " =  call i64 " ^ toFunctionName entryFunc ^ "()",
-        "ret i64 "^ toLocalVar tempVar,
+        "define i64 @entryMain() {"]
+        @ initializations @ 
+        [
+        "ret i64 0 ",
         "}",
         (* declare runtime functions *)
         "declare i64* @allocateArray(i64)",

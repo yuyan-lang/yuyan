@@ -115,11 +115,18 @@ open StaticErrorStructure
         String.concatWith ", " (map (fn (_, sname) =>StructureName.toStringPlain sname ) orderedDeps))  *)
         val initialCtx =map (fn (((varname, _), _,_), sname)  => (sname, CPSAst.GlobalVar varname)) orderedDeps
         val gResultLoc = CPSAst.CPSVarGlobal (UID.next())
-         val cpsAST  = (CPSPass.cpsTransformSigTopLevel initialCtx tckedAST gResultLoc
-         handle CPSPass.CPSInternalError => 
-         (DebugPrint.p (" when contructing cps info for" ^ FileResourceURI.access curFp);
-         raise CPSPass.CPSInternalError
-         )
+         val cpsAST  = (CPSPass.configureAndCpsTransformSigTopLevel
+            (fn fp => 
+            case (#getCPSInfo helperFuncs (fp, [UTF8String.fromString ("cfops120: when retrieving cpsinfo from" ^ FileResourceURI.access curFp)]))
+            of Success ((v, _), _,_) => v
+            | _ => raise Fail "CPSinfo retrieval failure"
+            )
+            initialCtx tckedAST gResultLoc
+
+            handle CPSPass.CPSInternalError => 
+                (DebugPrint.p (" when contructing cps info for " ^ FileResourceURI.access curFp);
+                    raise CPSPass.CPSInternalError
+                )
          )
         (* val _ = DebugPrint.p "----------------- CPS Done -------------------- \n" *)
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST) *)
@@ -135,11 +142,30 @@ open StaticErrorStructure
         )
         
 
-    fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) (pwd : string) : {llfilepath :string} witherrsoption
+    fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) 
+    (curFp : FileResourceURI.t)
+    (curFDependencies : dependency list)
+    (helperFuncs : cmhelperfuncs)  (* TODO: dont need to be this complicated , since we now don't need to calculate 
+    dependencies, just follow structure *)
+    (pwd : string) : {llfilepath :string} witherrsoption
                  =
-        let  (* TODO use aboslute path for filenames *)
+        (
+            (* DebugPrint.p ("entering construct cps"); *)
+    ((#getDependencyInfo helperFuncs) curFp curFDependencies ) >>= (fn orderedDeps => 
+        (
+            (* DebugPrint.p ("got ordered Dep"); *)
+      mapM (fn d as(fp,sname) => fmap (fn info=> (info,sname)) (#getCPSInfo helperFuncs d)) orderedDeps  >>= (fn orderedDeps =>
+        let
+        (* val grandTypeCheckedAST = List.concat(csigs@[tckedAST]) *)
+        (* val _ = DebugPrint.p ("The dependency of " ^ FileResourceURI.access curFp ^ " is " ^ 
+        String.concatWith ", " (map (fn (_, sname) =>StructureName.toStringPlain sname ) orderedDeps))  *)
+        val prevLLVMStmts =map (fn (((_, _), _,llvmsig), sname)  => llvmsig) orderedDeps
+
+        val allLLVMSig = prevLLVMStmts @ [llvmsig]
+
+        (* TODO use aboslute path for filenames *)
             val filename  = PathUtil.makeAbsolute (".yybuild/yy" ^ Int.toString (UID.next())^ ".ll") pwd
-            val statements = LLVMCodegen.genLLVMSignatureWithMainFunction llvmsig 
+            val statements = LLVMCodegen.genLLVMSignatureWithMainFunction allLLVMSig 
             val filehandle = TextIO.openOut filename
             val _ = TextIO.output (filehandle,(String.concatWith "\n" statements))
             val _ = TextIO.flushOut (filehandle)
@@ -147,6 +173,7 @@ open StaticErrorStructure
             Success {llfilepath = filename}
         end
 
+      ))))
 
     fun getFileDiagnostics(CompilationFile file : compilationfile) : errlist option = 
         case #content file of DErrors l => SOME l
