@@ -318,7 +318,15 @@ exception CPSInternalError
                 [] => (
                     let fun go i values = 
                             if i = List.length acc
-                            then CPSTuple(values, kcc cc)
+                            then (
+                                let 
+                                (* val _ = DebugPrint.p ("[CPS DEBUG] length of " ^ PrettyPrint.show_typecheckingCSig acc ^ " is " ^ Int.toString i ^ "\n\n\n") *)
+                                in
+                                    if length values = i
+                                    then CPSTuple(values, kcc cc)
+                                    else raise Fail "tuple length mismatch"
+                                end
+                                )
                             else (
                                 let
                                     val curDec = List.nth(acc, i)

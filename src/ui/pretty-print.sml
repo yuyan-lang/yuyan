@@ -353,7 +353,7 @@ in case x of
                       st t ^ " . " ^ st t2 ^ ")"
                     | CUniverse => "(Set)"
                     | CBlock(decl) => "{" ^ show_typecheckingCSig decl ^ "}"
-                    | CBlockProj(e, lbl, idx) => "([BLOCKPROJ] " ^ st e ^ " -> " ^ ss lbl ^ "(" ^ Int.toString idx ^ "))"
+                    | CBlockProj(e, lbl, idx) => "([BLOCKPROJ] " ^ st e ^ " -> " ^ ss lbl ^ "(idx:" ^ Int.toString idx ^ "))"
                 end
 and show_typecheckingCDecl x = let
 open TypeCheckingAST
@@ -393,7 +393,9 @@ fun show_tokens x = String.concatWith ", " (map show_token x) ^ "\n"
 fun show_typecheckingjt defop = 
 let open TypeCheckingAST
 in
-(case defop of JTDefinition(def) =>  " (定义) "
+(case defop of JTDefinition(def) =>  (" (定义) >>> (" ^
+(* ^ show_typecheckingCExpr def ^ *)
+ "...)")
         | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
         | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
         | JTLocalBinder => "（局部绑定）"

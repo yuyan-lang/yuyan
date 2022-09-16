@@ -107,7 +107,7 @@ infix 5 <?>
     (* find a declaration and an index *)
     (* the index currently includes directexpr, import, and open structure, so that 
     need to be consistent with cps *)
-    fun findSigList (name : UTF8String.t)(decl : CDeclaration list)  : (CDeclaration * int) option = 
+    fun findSigList (name : UTF8String.t)(decl : CDeclaration list) (debugMsg : string)  : (CDeclaration * int) option = 
     let fun go decl i = 
         case decl of 
             [] => NONE
@@ -117,7 +117,15 @@ infix 5 <?>
             | (CDirectExpr _ :: dl) => go dl (i+1)
             | (CImport _ :: dl) => go dl (i+1)
             | (COpenStructure _ :: dl) => go dl (i+1)
-    in go decl 0 end
+        val res = go decl 0 
+        (* val _ = DebugPrint.p ("finding name " ^ UTF8String.toString name ^ " in " ^ 
+        " signatrue " ^ PrettyPrint.show_typecheckingCSig decl
+        ^ " returns " ^ 
+        (case res of 
+            SOME(_, idx) => Int.toString idx
+            | NONE => "NONE")
+            ^ " DEBUG: " ^ debugMsg ^ "\n\n") *)
+    in res end
         
 
     (* modify signature according to modification funcation
@@ -223,9 +231,9 @@ infix 5 <?>
         CTermDefinition(n, tm, tp) => SOME(CPureDeclaration (n, tp))
         | CPureDeclaration _ => raise Fail ("attempt to get signature for non-module " ^ PrettyPrint.show_typecheckingCSig block)
         | CConstructorDecl(n, tm, tp) => SOME(dec)
-        | CImport _ => NONE (* TODO: REVIEW CHOICES *)
-        | CDirectExpr _ => NONE
-        | COpenStructure _ => NONE (* TODO: REVIEW CHOICES, SHOULD INCLUDE? *)
+        | CImport _ => SOME(dec) (* TODO: REVIEW CHOICES *)
+        | CDirectExpr _ => SOME(dec)
+        | COpenStructure _ => SOME(dec) (* TODO: REVIEW CHOICES, SHOULD INCLUDE? *)
     ) block
     (* DO NOT Implement this, I prefer to generate coersions instead of implicit subtyping*)
     (* SO THIS IS ESSENTIALLY EQUALITY CHECKING ! (EXCEPT IMPORTS) *)
@@ -285,13 +293,15 @@ infix 5 <?>
             Success(acctm, acctp)
             else
             let val curNameComp = List.nth(rvarName,i)
+            (* val _ = DebugPrint.p ("IN CONTEXT " ^ 
+                PrettyPrint.show_typecheckingpassctx ctx) *)
             in
                 weakHeadNormalizeType (RVar(rvarName)) ctx acctp >>= (fn acctp => 
                     (case acctp of 
                         CBlock(csig) => 
                             (* TODO: dependent types should plug in concrete values for all previous 
                             indecies, check implementation of RProj (previous version) *)
-                            (case findSigList curNameComp csig of
+                            (case findSigList curNameComp csig "302" of
                                 SOME(
                                     ( CPureDeclaration(_, tp)
                                     | CConstructorDecl(_, tp, _)
@@ -305,7 +315,8 @@ infix 5 <?>
                                     in findCorrectType nextI (nextAccTm, nextAccTp)
                                     end
                                 | SOME _ => Errors.genericErrorStr curNameComp ctx "仅可投射签名？检查编译器中签名的合成"
-                                | NONE => Errors.genericErrorStr curNameComp ctx "结构中未找到该名称"
+                                | NONE => Errors.genericErrorStr curNameComp ctx ("结构中未找到该名称" ^ 
+                                "\n所有名称：" ^ PrettyPrint.show_typecheckingCSig csig)
                             )
                         | _ => Errors.genericErrorStr curNameComp ctx "试图从非结构进行投影"
                             (* (StructureName.toString (List.take(rvarName, i-1))) *) (* this will not have source range *)
@@ -425,24 +436,31 @@ infix 5 <?>
             end
             and reExportDecls  (ctx : context)
             (reexportName : StructureName.t) : CSignature witherrsoption =
-                lookupCtx ctx reexportName  >>= (fn (_, _, jt) => 
+                lookupCtx ctx reexportName  >>= (fn (_, tp, jt) => 
                 case jt of 
-                    JTDefinition(CBlock(csig)) => 
-                        checkBlockIsModule ctx csig >>(
-                            typeCheckSignature ctx
-                            (List.mapPartial (fn dec =>
-                                case dec of 
-                                    (CTermDefinition (name, _, _) 
-                                    | CConstructorDecl(name, _, _))
-                                      => SOME(RTermDefinition (name, RVar(reexportName@[name])))
-                                    | CImport(name, fp) => SOME(RImportStructure(name, fp))
-                                    | _ => NONE
-                                    (* | _ => raise Fail ("does not support reexport of " ^ PrettyPrint.show_typecheckingCDecl dec) *)
-                                ) csig) false [] >>= (fn (checkedsig, ctx') => 
-                            Success(checkedsig)
-                            )
-                        )
-                    | _ => Errors.genericErrorStr (StructureName.toString reexportName) ctx "名称不是模块"
+                    JTDefinition(block) => 
+                        (weakHeadNormalizeType (RVar reexportName) ctx block >>= (fn x => 
+                            case x of
+                                CBlock(csig) =>
+                                    checkBlockIsModule ctx csig >> (
+                                        typeCheckSignature ctx
+                                        (List.mapPartial (fn dec =>
+                                            case dec of 
+                                                (CTermDefinition (name, _, _) 
+                                                | CConstructorDecl(name, _, _))
+                                                => SOME(RTermDefinition (name, RVar(reexportName@[name])))
+                                                | CImport(name, fp) => SOME(RImportStructure(name, fp))
+                                                | _ => NONE
+                                                (* | _ => raise Fail ("does not support reexport of " ^ PrettyPrint.show_typecheckingCDecl dec) *)
+                                            ) csig) false [] >>= (fn (checkedsig, ctx') => 
+                                        Success(checkedsig)
+                                        )
+                                    )
+                                | _ => Errors.genericErrorStr (StructureName.toString reexportName) ctx ("名称不是模块，而是" ^ PrettyPrint.show_typecheckingCExpr tp 
+                                ^ " 声明类型为 " ^  PrettyPrint.show_typecheckingjt jt 
+                            )))
+                    | _ => Errors.genericErrorStr (StructureName.toString reexportName) ctx ("名称不是模块，而是" ^ PrettyPrint.show_typecheckingCExpr tp 
+                    ^ " 声明类型为 " ^  PrettyPrint.show_typecheckingjt jt )
                 )
             
             and checkExprIsType (ctx : context) (e : RType) : (CType * context) witherrsoption = 
@@ -1274,7 +1292,7 @@ infix 5 <?>
                             )
                         ) 
                 in
-                (case findSigList n acc of   
+                (case findSigList n acc "1285" of   
                     NONE  =>  newDef()
                     | SOME(CPureDeclaration(_, lookedUpType), _) => 
                         (
@@ -1323,13 +1341,20 @@ infix 5 <?>
                     
                 ) *)
                 | ROpenStructure openName :: ss =>
-                lookupCtx ctx openName  >>= (fn (_, _, jt) => 
+                lookupCtx ctx openName  >>= (fn (_, tp, jt) => 
                 case jt of 
-                    JTDefinition(CBlock(csig)) => 
-                        nextContextOfOpenStructure (StructureName.toString openName) ctx csig (fn nextContext => 
-                            typeCheckSignature nextContext ss isModule (acc @ [COpenStructure(openName, csig)])
-                        )
-                    | _ => Errors.genericErrorStr (StructureName.toString openName) ctx "名称不是模块"
+                    JTDefinition(block) => 
+                        (weakHeadNormalizeType (RVar openName) ctx block >>= (fn x => 
+                            case x of
+                                CBlock(csig) =>
+                                    nextContextOfOpenStructure (StructureName.toString openName) ctx csig (fn nextContext => 
+                                        typeCheckSignature nextContext ss isModule (acc @ [COpenStructure(openName, csig)])
+                                    )
+                                | _ => Errors.genericErrorStr (StructureName.toString openName) ctx ("名称不是模块，而是" ^ PrettyPrint.show_typecheckingCExpr tp 
+                                ^ " 声明类型为 " ^  PrettyPrint.show_typecheckingjt jt )
+                        ))
+                    | _ => Errors.genericErrorStr (StructureName.toString openName) ctx ("名称不是模块，而是" ^ PrettyPrint.show_typecheckingCExpr tp 
+                    ^ " 声明类型为 " ^  PrettyPrint.show_typecheckingjt jt )
                 )
                 (* (case ctx of 
                 Context(curName, curVis, bindings) => 
