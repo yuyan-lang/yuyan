@@ -388,17 +388,20 @@ infix 5 <?>
 
 
                 (* only trace one level deep*)
-                fun traceVarOnly(errReporting : RExpr) (cexpr : CExpr) =  case cexpr of
+                fun traceVarOnly(errReporting : RExpr) (cexpr : CExpr) =  
+                weakHeadNormalizeType errReporting ctx cexpr >>= (fn cexpr => 
+                    case cexpr of
                     CUniverse => Success(CConsInfoTypeConstructor)
                     | CVar(v, vinfo) => (case vinfo of 
                         CVTConstructor (name, CConsInfoTypeConstructor) =>  
                             (checkScopeAndIndexAgainstFoundTypeConstructor errReporting name)
                         | CVTDefinition (v') => traceVarOnly errReporting v'
-                        | _ => Errors.notATypeConstructor errReporting ctx
+                        | _ => Errors.notATypeConstructor errReporting ctx "(1)"
                     )
-                    | _ => Errors.notATypeConstructor errReporting ctx
+                    | _ => Errors.notATypeConstructor errReporting ctx ("(2)，是" ^ PrettyPrint.show_typecheckingCExpr cexpr)
+                )
 
-                fun analyzeVariable(v : StructureName.t) = 
+                fun analyzeVariable(v : StructureName.t) : cconstructorinfo witherrsoption = 
                 let val errReporting = RVar(v)
                 in
                         lookupCtx ctx v  >>= (fn lookedUpJ => 
@@ -407,7 +410,7 @@ infix 5 <?>
                                             of JTConstructor (CConsInfoTypeConstructor) => 
                             (checkScopeAndIndexAgainstFoundTypeConstructor errReporting cname)
                                                 | JTDefinition (v') => (traceVarOnly (RVar(v)) v')
-                                                | _ => Errors.notATypeConstructor (RVar(v)) ctx
+                                                | _ => Errors.notATypeConstructor (RVar(v)) ctx "(3)"
                                             )
                         )
                 end
@@ -424,7 +427,7 @@ infix 5 <?>
                     RApp(t1, t2,p, soi) => getConsInfo false t1
                     | RVar(s) => analyzeVariable(s)
                     | RUniverse(s) => Success(CConsInfoTypeConstructor)
-                    | _ => Errors.notATypeConstructor t ctx
+                    | _ => Errors.notATypeConstructor t ctx "(4)"
                     )
                 val consInfo = getConsInfo true t
             in 

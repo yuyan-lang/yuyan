@@ -187,7 +187,7 @@ structure TypeCheckingErrors =
     fun importError s ctx = genSingletonError s ("导入模块时出错") (showctxSome ctx)
     fun redefinitionError s msg ctx prevDef = genSingletonErrorWithRelatedInfo s ("重复的定义：`" ^  msg ^ "`") (showctxSome ctx) 
         [ (prevDef, "之前的定义")]
-    fun notATypeConstructor e ctx = exprError e ctx "不是一个类型构造器"
+    fun notATypeConstructor e ctx msg = exprError e ctx ("不是一个类型构造器"^msg)
 
     fun unboundTermConstructor e ctx = exprError e ctx "元素构造器未找到(unbound term constructor)"
     fun expectedTermConstructor e ctx msg = exprError e ctx ("期待元素构造器(expected element constructor)"^ msg)
