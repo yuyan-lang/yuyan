@@ -533,6 +533,9 @@ infix 5 <?>
                                     ( ntt) of 
                             (CProd ls) => 
                                 (
+                                    if idx >= length ls 
+                                    then Errors.genericErrorStr idxsoi ctx "投影数必须于零与元组长度减一之间"
+                                    else
                                     let fun go curIdx acc = 
                                             (case acc of 
                                                 [] => raise Fail "tcp338 lookup should not return an invalid index"

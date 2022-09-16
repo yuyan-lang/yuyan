@@ -30,6 +30,8 @@ open CompilationStructure
             | CIfThenElse(e1,e2,e3) => recurExpr e1 @ recurExpr e2 @ recurExpr e3
             | CBuiltinFunc _ => []
             | CSeqComp (e1, e2, _, _) => recurExpr e1 @ recurExpr e2
+            | CTuple(el, _) => List.concat (map recurExpr el)
+            | CProd(el) => List.concat (map recurExpr el)
             | _ => raise Fail ("fdr11 : dependency for cexpr ni for " ^ PrettyPrint.show_typecheckingCExpr e)
         and recurSig (x : TypeCheckingAST.CDeclaration list) : dependency list = 
         List.concat (List.map (fn x => case x of 
