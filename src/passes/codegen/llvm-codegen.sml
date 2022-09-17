@@ -93,6 +93,14 @@ in
 end
 fun storeBoolToLLVMLoc  (llvmLoc : llvmlocation)(b : bool)  : string list= 
     [toLLVMLoc llvmLoc ^ " = inttoptr i1 " ^ (if b then "1" else "0") ^ " to i64*"]
+fun storeStringToLLVMLoc  (llvmLoc : llvmlocation)((i,s) : int * UTF8String.t)  : string list= 
+let 
+        val rawChars = UTF8String.getBytes s
+        val ordinals = map (Char.ord) rawChars @[0]
+in
+    [toLLVMLoc llvmLoc ^ " = bitcast [" ^ Int.toString (length ordinals) ^" x i8]* " 
+        ^ toStringName i ^ " to i64*"]
+end
 
 
 fun storeArrayToLLVMLoc (arrType : llvmarraytype) (llvmLoc : llvmlocation)(values : llvmvalue list)  : string list= 
@@ -262,6 +270,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         | LLVMStoreInt(v, i) => storeIntToLLVMLoc v i
         | LLVMStoreReal(v, r) => storeRealToLLVMLoc v r
         | LLVMStoreBool(v, b) => storeBoolToLLVMLoc v b
+        | LLVMStoreString(v, (i,s)) => storeStringToLLVMLoc v (i,s)
         | LLVMStoreArray(arrtype, v, arr) => storeArrayToLLVMLoc arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 

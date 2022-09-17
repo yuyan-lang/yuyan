@@ -319,7 +319,8 @@ in
             let val stringName = UID.next()
             in (
                 [LLVMStringConstant(stringName, s)], [
-                    LLVMStoreArray(LLVMArrayTypeString, (cpsVarToLLVMLoc t), [LLVMStringName (stringName, s)])
+                    (* LLVMStoreArray(LLVMArrayTypeString, (cpsVarToLLVMLoc t), [LLVMStringName (stringName, s)]), *)
+                    LLVMStoreString((cpsVarToLLVMLoc t), ((stringName, s)))
                 ](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)
             ) ::: recur k
             end

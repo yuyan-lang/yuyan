@@ -1,7 +1,8 @@
 #include "globalInclude.h"
 
 char * addr_to_string(yy_ptr arg) {
-    return (char *)arg[1];
+    // return (char *)arg[1];
+    return *((char **)&arg);
 }
 
 // type conversion function
@@ -41,9 +42,9 @@ yy_ptr unit_to_addr(){
 }
 
 yy_ptr string_to_addr(const char * str){
-    yy_ptr returnStorage = allocateAndSetHeader(6, 1);
-    returnStorage[1] = (uint64_t ) str;
-    return returnStorage;
+    // yy_ptr returnStorage = allocateAndSetHeader(6, 1);
+    // returnStorage[1] = (uint64_t ) str;
+    return *(uint64_t **)&str;
 }
 yy_ptr int_to_addr(int64_t i){
     // yy_ptr returnStorage = allocateAndSetHeader(7, 1);

@@ -60,6 +60,7 @@ datatype llvmstatement =
     | LLVMStoreInt of llvmlocation * int
     | LLVMStoreReal of llvmlocation * real
     | LLVMStoreBool of llvmlocation * bool
+    | LLVMStoreString of llvmlocation * (int (* name *)* UTF8String.t(* length *))
     | LLVMStoreArray of llvmarraytype * llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)
