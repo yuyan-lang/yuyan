@@ -142,42 +142,45 @@ structure TypeCheckingPatterns = struct
                             )
                             | _ => Errors.expectedTermConstructor head ctx ("(2) got "^ PrettyPrint.show_typecheckingjt jtp)
                         )
-        in
-        (* look up the type of the header *)
-        case head of 
-            RVar(name) => 
-                (case findCtx ctx name of
-                    NONE => (* head not found in the context, check if spine empty *)
-                        if length spine = 0  andalso length name = 1 (* variable must be simple name *)
-                        then 
-                        (case name of 
-                            [name] => 
-                                (case defConstraint of 
-                                    NONE => withLocalBinder ctx name analysisType (fn ctx => kont (CPatVar name, ctx))
-                                    | SOME y => withLocalBinderWithDefinition ctx name analysisType y (fn ctx => kont (CPatVar name, ctx))
-                                )
-                            | _ => raise Fail "tcpat147")
-                        
-                        else (
-                            (* DebugPrint.p  *)
-                            (* ("length spine = " ^ Int.toString (length spine)
-                            "n" *)
-                            Errors.unboundTermConstructor head ctx
-                        )
-                    | SOME(cname, tp, jtp) =>
-                        (* retrieve the constructor info *)
-                        retrieveCInfo jtp >>= (fn cinfo =>
-                            (* if length spine <> countSpineTypeArgs tp
-                            then Errors.patternArgumentCountMismatch pat ctx (countSpineTypeArgs tp) (length spine) *)
-                            getConstructorIndicesConstraints  ctx tp >>= (fn (indices, ctx) => 
-                                checkSpineAgainstType [] ctx tp indices spine 
-                                        (fn (checkedSpine, newCtx) => 
-                                            kont (CPatHeadSpine((cname,cinfo) , checkedSpine), newCtx)
-                                        )
-                                )
+    in
+    (* look up the type of the header *)
+    case head of 
+        RVar(name) => 
+            (case findCtx ctx name of
+                NONE => (* head not found in the context, check if spine empty *)
+                    if length spine = 0  andalso length name = 1 (* variable must be simple name *)
+                    then 
+                    (case name of 
+                        [name] => 
+                            (case defConstraint of 
+                                NONE => withLocalBinder ctx name analysisType (fn ctx => kont (CPatVar name, ctx))
+                                | SOME y => withLocalBinderWithDefinition ctx name analysisType y (fn ctx => kont (CPatVar name, ctx))
+                            )
+                        | _ => raise Fail "tcpat147")
+                    
+                    else (
+                        (* DebugPrint.p  *)
+                        (* ("length spine = " ^ Int.toString (length spine)
+                        "n" *)
+                        Errors.unboundTermConstructor head ctx
+                    )
+                | SOME(cname, tp, jtp) =>
+                    (* retrieve the constructor info *)
+                    retrieveCInfo jtp >>= (fn cinfo =>
+                        (* if length spine <> countSpineTypeArgs tp
+                        then Errors.patternArgumentCountMismatch pat ctx (countSpineTypeArgs tp) (length spine) *)
+                        getConstructorIndicesConstraints  ctx tp >>= (fn (indices, ctx) => 
+                            checkSpineAgainstType [] ctx tp indices spine 
+                                    (fn (checkedSpine, newCtx) => 
+                                        kont (CPatHeadSpine((cname,cinfo) , checkedSpine), newCtx)
+                                    )
                             )
                         )
-            | _ => Errors.unsupportedPatternType head ctx
+                    )
+        | RStringLiteral(s, qi) => kont(CPatBuiltinConstant (CStringLiteral s), ctx)
+        | RIntConstant(i, opinfo) => kont(CPatBuiltinConstant (CIntConstant i), ctx)
+        | RBoolConstant(b, opinfo) => kont(CPatBuiltinConstant (CBoolConstant b), ctx)
+        | _ => Errors.unsupportedPatternType head ctx
     end
 
 end

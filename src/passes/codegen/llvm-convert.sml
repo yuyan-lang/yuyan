@@ -132,6 +132,11 @@ this transforms access of cpsvar
                     (* LLVMStoreBool(resultBoolLocation, true) *)
                     ]
                 end
+                | CPSPatBuiltin(v) => 
+                    let val constantStoreLoc = LLVMLocationLocal (UID.next())
+                    in 
+                    raise Fail "llvmc138: ni"
+                    end
                 | CPSPatHeadSpine(cid, arglist) => 
                 (
                     let 

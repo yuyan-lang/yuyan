@@ -293,10 +293,16 @@ open TypeCheckingAST
   val sst =StructureName.toStringPlain
   (* fun cst t = "⟦" ^ sta t ^ "⟧" *)
   fun cst t = "⟦...⟧"
+  fun show_bv b = case b of 
+                     (CStringLiteral l) => "\"" ^ ss l ^"\""
+                    | (CIntConstant l) => "(" ^ Int.toString l ^")"
+                    | (CRealConstant ((i1,i2,l))) => "(real " ^ Int.toString i1 ^ "." ^Int.toString i2 ^ "("^Int.toString l ^")" ^")"
+                    | (CBoolConstant b) => "(" ^ Bool.toString b ^")"
   fun show_cpattern (p : CPattern) =
     case p of 
       CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ " ⋅ " ^ String.concatWith " " (map show_cpattern sp) ^ ")"
       | CPatVar(s) => ss s
+      | CPatBuiltinConstant(bv) => show_bv bv
   val sp = show_cpattern
 in case x of
                       CVar (v, referred) => "" ^ sst v  ^ 
@@ -322,10 +328,8 @@ in case x of
                     (* | CFold (e, t) => "fold(" ^ se e ^")" ^ cst t *)
                     (* | CUnfold (e, rhot) => "unfold("^  se e ^ cst rhot ^")" *)
                     | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
-                    | CStringLiteral l => "\"" ^ ss l ^"\""
-                    | CIntConstant l => "(" ^ Int.toString l ^")"
-                    | CRealConstant ((i1,i2,l)) => "(real " ^ Int.toString i1 ^ "." ^Int.toString i2 ^ "("^Int.toString l ^")" ^")"
-                    | CBoolConstant b => "(" ^ Bool.toString b ^")"
+                    | CBuiltinConstant(bv) => show_bv bv
+                    
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map se args) ^"⟩)"
@@ -452,6 +456,7 @@ CPSPatVar v => show_cpsvar v
 | CPSPatHeadSpine (cid, args) =>  "(cid "^ Int.toString cid ^ " ⋅ " 
 ^ String.concatWith ", " (map show_cpspat args)
 ^")"
+| CPSPatBuiltin (bv) => show_cpsbuiltin bv
 )
 end
 

@@ -694,10 +694,10 @@ infix 5 <?>
                         ( CRho (tv, tb)) => Success ((CUnfold(ce2, CTypeAnn(CRho(tv, tb))),  (substTypeInCExpr (CRho (tv, tb)) [tv] (tb))), ctx)
                         | _ => Errors.attemptToUnfoldNonRecursiveTypes e ( synt) ctx
                         )) *)
-                    | RStringLiteral(l, soi) => Success((CStringLiteral l, CBuiltinType(BIString)), ctx)
-                    | RIntConstant(i, soi) => Success((CIntConstant i, CBuiltinType(BIInt)), ctx)
-                    | RRealConstant (r, soi) => Success((CRealConstant  r, CBuiltinType(BIReal)), ctx)
-                    | RBoolConstant (b, soi) => Success((CBoolConstant b, CBuiltinType(BIBool)), ctx)
+                    | RStringLiteral(l, soi) => Success((CBuiltinConstant (CStringLiteral l), CBuiltinType(BIString)), ctx)
+                    | RIntConstant(i, soi) => Success((CBuiltinConstant (CIntConstant i), CBuiltinType(BIInt)), ctx)
+                    | RRealConstant (r, soi) => Success((CBuiltinConstant (CRealConstant  r), CBuiltinType(BIReal)), ctx)
+                    | RBoolConstant (b, soi) => Success((CBuiltinConstant (CBoolConstant b), CBuiltinType(BIBool)), ctx)
                     
 
                     | RLetIn(decls, e, soi) => (
@@ -1095,10 +1095,10 @@ infix 5 <?>
                                 checkType ctx e tt
                                                     >>= (fn (ce, ctx) => Success(CFix(ev,ce, CTypeAnn(tt)), ctx))
                             )
-                        | RStringLiteral (s, soi) => (tryTypeUnify ctx e (CBuiltinType(BIString)) (tt) >>= (fn (ctx) => Success (CStringLiteral s, ctx)))
-                        | RIntConstant (i, soi) => (tryTypeUnify ctx e (CBuiltinType(BIInt)) tt >>= (fn ctx => Success ( CIntConstant i, ctx)))
-                        | RRealConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIReal)) tt >>= (fn ctx => Success (CRealConstant r, ctx)))
-                        | RBoolConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIBool)) tt >>= (fn ctx => Success (CBoolConstant r, ctx)))
+                        | RStringLiteral (s, soi) => (tryTypeUnify ctx e (CBuiltinType(BIString)) (tt) >>= (fn (ctx) => Success (CBuiltinConstant(CStringLiteral s), ctx)))
+                        | RIntConstant (i, soi) => (tryTypeUnify ctx e (CBuiltinType(BIInt)) tt >>= (fn ctx => Success ( CBuiltinConstant(CIntConstant i), ctx)))
+                        | RRealConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIReal)) tt >>= (fn ctx => Success (CBuiltinConstant(CRealConstant r), ctx)))
+                        | RBoolConstant (r, soi) => (tryTypeUnify ctx e (CBuiltinType(BIBool)) tt >>= (fn ctx => Success (CBuiltinConstant(CBoolConstant r), ctx)))
                         | RFfiCCall (e1, e2, soi) => (
                             case e1 of
                                 RStringLiteral (cfuncName, soi) => 

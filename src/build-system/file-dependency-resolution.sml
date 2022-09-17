@@ -10,10 +10,8 @@ open CompilationStructure
             CBlock(decls) => recurSig decls
             | CBlockProj(e, lbl, idx) => recurExpr e
             | CVar(_) => []
-            | CStringLiteral _ => []
             | CPiType(t2, x, t1, _) => recurExpr t2 @ recurExpr t1
             | CUniverse => [] 
-            | CBoolConstant _ => [] 
             | CBuiltinType _ => []
             | CUnitExpr => []
             | CUnitType => []
@@ -25,8 +23,7 @@ open CompilationStructure
             | CCase((_, e), cases, _) => 
                 recurExpr e @ List.concat (map (fn (pat, e) => recurExpr e) cases)
             | CLetIn(csig, e, _) => recurSig csig @ recurExpr e
-            | CRealConstant _ => []
-            | CIntConstant _ => []
+            | CBuiltinConstant _ => []
             | CIfThenElse(e1,e2,e3) => recurExpr e1 @ recurExpr e2 @ recurExpr e3
             | CBuiltinFunc _ => []
             | CSeqComp (e1, e2, _, _) => recurExpr e1 @ recurExpr e2

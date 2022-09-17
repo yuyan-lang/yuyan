@@ -152,6 +152,7 @@ yy_ptr function_to_addr(void* func) {
 }
 
 yy_ptr iso_list_nil_to_addr() {
+    // the unit here is the implicit type argument
     yy_ptr tps[] = {int_to_addr(1), unit_to_addr()};
     return tuple_to_addr(2, tps);
 }

@@ -22,6 +22,7 @@ let val cck  = closureConvertCont
         case pat of 
             CPSPatVar v => (cpsvarToL v)
             | CPSPatHeadSpine (_, args) => List.concat (map getFreeVarsInPat args)
+            | CPSPatBuiltin _ => []
 
     fun closureConvertCPSPop(x : cpsprimitiveop) : (IntSet.set * cpscomputation) = 
         let fun closureConvertBinaryPop((v1, v2, k) : cpsvalue * cpsvalue * cpscontinuation) 

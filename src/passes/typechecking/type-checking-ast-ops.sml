@@ -73,10 +73,8 @@ infix 5 =/=
                 | CFfiCCall _ => [] (* TODO !!! *)
                 | CBuiltinFunc (f) => []
                 | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
-                | CIntConstant _ => []
-                | CStringLiteral _ => []
+                | CBuiltinConstant _ => []
                 | CUnitExpr => []
-                | CBoolConstant _ => []
                 | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
                 | CMetaVar(v) => [v]
                 | CProj(e1, idx, u) => freeTCVar e1
@@ -167,11 +165,9 @@ infix 5 =/=
                         | _ => (* maybe ce1 is a type constructor *) (Success t)
                 )
             | CLetIn _ => Success(t)
-            | CStringLiteral _ => Success(t)
             | CFfiCCall _ => Success(t)
             | CBuiltinFunc _ => Success(t)
             | CUnitExpr => Success(t)
-            | CBoolConstant b => Success(t)
             | CIfThenElse _ => Success(t) (* TODO: *)
             | CTuple  _ => Success(t)
             | CProj (e, idx, u) => recur e >>= (fn 
@@ -258,12 +254,9 @@ infix 5 =/=
                         Success(CLetIn(cdl, ce, u))
                     )
                 )
-            | CStringLiteral _ => Success(t)
             | CFfiCCall _ => Success(t)
             | CBuiltinFunc _ => Success(t)
             | CUnitExpr => Success(t)
-            | CBoolConstant b => Success(t)
-            | CRealConstant _ => Success(t)
             | CIfThenElse(e1, e2, e3) => 
 
                 recur e1 >>= (fn ce1 => 
@@ -273,7 +266,7 @@ infix 5 =/=
                         )
                     )
                 )
-            | CIntConstant _ => Success(t)
+            | CBuiltinConstant _ => Success(t)
             | CTuple (l, u) => collectAll (map recur l) >>= (fn cl => 
                 Success(CTuple(cl, u))
             )

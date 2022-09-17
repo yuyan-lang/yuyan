@@ -16,6 +16,7 @@ datatype cpsvar =  CPSVarLocal of int
 
     datatype cpspattern = CPSPatHeadSpine of ( int (* constructor id *) * cpspattern list (* args *))
                  | CPSPatVar of cpsvar
+                 | CPSPatBuiltin of cpsBuiltinValue
 
     datatype cpsprimitiveop = 
       CPSPOpIntSub of cpsvalue * cpsvalue * (cpsvar * cpscomputation)

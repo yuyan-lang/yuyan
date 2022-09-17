@@ -20,7 +20,11 @@ structure TypeCheckingAST = struct
                          | BFIntSub
                          | BFIntEq
 
-
+    datatype CBuiltinConstant = 
+                     CStringLiteral of UTF8String.t 
+                    | CIntConstant of int
+                    | CRealConstant of (int * int * int )
+                    | CBoolConstant of bool
 
     datatype visibility = Public | Private
 
@@ -30,6 +34,7 @@ structure TypeCheckingAST = struct
 
     and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
                  | CPatVar of UTF8String.t 
+                 | CPatBuiltinConstant of CBuiltinConstant
     (* CExpr for checked expr *)
     and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
                                 cvartype (* the referenced expression, if not local *)
@@ -54,10 +59,7 @@ structure TypeCheckingAST = struct
                     (* | CFold of CExpr  * CTypeAnn(* type is Rho *)
                     | CUnfold of CExpr  * CTypeAnn type is Rho *)
                     | CFix of EVar * CExpr * CTypeAnn (* type is the typ of the expression *)
-                    | CStringLiteral of UTF8String.t 
-                    | CIntConstant of int
-                    | CRealConstant of (int * int * int )
-                    | CBoolConstant of bool
+                    | CBuiltinConstant of CBuiltinConstant
                     | CLetIn of CDeclaration list * CExpr * CTypeAnn (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * CExpr list
                     | CBuiltinFunc of BuiltinFunc

@@ -147,6 +147,13 @@ exception CPSInternalError
                                                     end)
                                                 | _ => raise Fail "ni107: unsupported patterns"                                  
                                         )
+                                    | CPatBuiltinConstant(c) => (CPSPatBuiltin(
+                                        case c of
+                                        CStringLiteral s => CPSBvString s
+                                        | CIntConstant i => CPSBvInt i
+                                        | CBoolConstant b => CPSBvBool b
+                                        | _ => raise Fail "unrecognized builtin pattern"
+                                    ), ctx)
                             val (cpspattern, ctx)  = toCPSPattern ctx pat
                         in 
                             (cpspattern, cpsTransformExpr ctx body cc)
@@ -242,14 +249,15 @@ exception CPSInternalError
                         val lamydotfyy = KAbs(fn y => KApp(KRet(compiledF),(appVV y y)))
                     in appVV lamydotfyy lamydotfyy
                 end *)
-                | CStringLiteral l => 
-                    CPSBuiltinValue(CPSBvString l, kcc cc)
-                | CIntConstant i => 
-                    CPSBuiltinValue(CPSBvInt i, kcc cc)
-                | CRealConstant r => 
-                    CPSBuiltinValue(CPSBvReal (NumberParser.toRealValue r), kcc cc)
-                | CBoolConstant r => 
-                    CPSBuiltinValue(CPSBvBool r, kcc cc)
+                | CBuiltinConstant(c) => (case c of 
+                        CStringLiteral l => 
+                            CPSBuiltinValue(CPSBvString l, kcc cc)
+                        | CIntConstant i => 
+                            CPSBuiltinValue(CPSBvInt i, kcc cc)
+                        | CRealConstant r => 
+                            CPSBuiltinValue(CPSBvReal (NumberParser.toRealValue r), kcc cc)
+                        | CBoolConstant r => 
+                            CPSBuiltinValue(CPSBvBool r, kcc cc))
                 | CFfiCCall (cFuncName, args) => 
                     foldr (fn (arg, acc) => 
                         (fn (prevArgs : cpsvalue list) => 
