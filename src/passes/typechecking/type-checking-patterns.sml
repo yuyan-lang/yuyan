@@ -132,10 +132,12 @@ structure TypeCheckingPatterns = struct
                             JTConstructor cinfo => Success(cinfo)
                             | JTDefinition cexpr => (
                                 let fun traceVarDef(cexpr : CExpr) = 
-                                    case cexpr of 
-                                        CVar(x, CVTDefinition cexpr) => traceVarDef cexpr
-                                        | CVar(x, CVTConstructor(_, cinfo)) => Success(cinfo)
-                                        | _ => Errors.expectedTermConstructor head ctx ("(1) got " ^ PrettyPrint.show_typecheckingCExpr cexpr)
+                                    weakHeadNormalizeType pat ctx cexpr >>= (fn cexpr => 
+                                        case cexpr of 
+                                            CVar(x, CVTDefinition cexpr) => traceVarDef cexpr
+                                            | CVar(x, CVTConstructor(_, cinfo)) => Success(cinfo)
+                                            | _ => Errors.expectedTermConstructor head ctx ("(1) got " ^ PrettyPrint.show_typecheckingCExpr cexpr)
+                                    )
                                 in 
                                     traceVarDef cexpr
                                 end

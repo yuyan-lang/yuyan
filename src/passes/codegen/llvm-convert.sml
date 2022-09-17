@@ -27,23 +27,28 @@ let val recur = genLLVM ctx
 
     (* transform access will transform the access to 
     the record value if the record value is itself bound *)
-    fun transformAccess (v : cpsvalue) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
+    fun transformAccess (v : cpsvalue) : llvmstatement list * llvmlocation = 
     case v of 
         CPSValueVar(CPSVarGlobal v) =>
                         let val newName = UID.next()
                     in 
-                        [LLVMLoadGlobal(newName, v)]@(f (LLVMLocationLocal newName))
+                        ([LLVMLoadGlobal(newName, v)],(LLVMLocationLocal newName))
                     end
         | CPSValueVar(CPSVarLocal v) => 
             (case ListSearchUtil.indexOf freeVL v of
                 SOME idx =>
                 let val newName = UID.next()
                     in 
-                        [LLVMArrayAccess(LLVMLocationLocal newName, (LLVMLocationLocal freeVAddr), idx)]@(f (LLVMLocationLocal newName))
+                        ([LLVMArrayAccess(LLVMLocationLocal newName, (LLVMLocationLocal freeVAddr), idx)], (LLVMLocationLocal newName))
                     end
-                | NONE => f (LLVMLocationLocal v) (* bound locally, just use the name *)
+                | NONE => ([], (LLVMLocationLocal v)) (* bound locally, just use the name *)
             )
-    val vaccess = transformAccess
+    fun vaccess (v : cpsvalue) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
+        let val (decls, v') = transformAccess v
+        in decls @(f v') end
+    fun vaccess' (v : cpsvalue) (f : llvmlocation -> llvmdeclaration list * llvmstatement list) : llvmdeclaration list * llvmstatement list = 
+        let val (decls, v') = transformAccess v
+        in ([], decls) ::: (f v') end
 
     fun vaccessL (cpsvallist : cpsvalue list)  (f : llvmlocation list -> llvmstatement list) : llvmstatement list = 
         let 
@@ -118,7 +123,7 @@ this transforms access of cpsvar
              (trueBlockName : int)
              (falseBlockName : int)
              (* location that stores whether we should proceed *)
-              : llvmstatement list
+              : llvmdeclaration list * llvmstatement list
               = 
               (* the reason for failure is that cc is invoked multiple times, 
               and thus multiple identical code pieces have been generated. 
@@ -127,15 +132,39 @@ this transforms access of cpsvar
                 CPSPatVar cpsvar => 
                 let val resultBoolLocation = LLVMLocationLocal (UID.next())
                 in
-                    [LLVMStoreLocal (cpsVarToLLVMLoc cpsvar, subject), 
+                    ([], [LLVMStoreLocal (cpsVarToLLVMLoc cpsvar, subject), 
                     LLVMUnconditionalJump(trueBlockName)
                     (* LLVMStoreBool(resultBoolLocation, true) *)
-                    ]
+                    ])
                 end
                 | CPSPatBuiltin(v) => 
                     let val constantStoreLoc = LLVMLocationLocal (UID.next())
+                    val cmpDest = LLVMLocationLocal (UID.next())
                     in 
-                    raise Fail "llvmc138: ni"
+                    (case v of 
+                    CPSBvInt i => ([], [ LLVMStoreInt(constantStoreLoc, i) ,
+                            LLVMPrimitiveOp(LLVMPOpCmpEqInt(cmpDest, llvmLocToValue subject, llvmLocToValue (constantStoreLoc) ))
+                    ])
+                    | CPSBvBool b => ([], [ LLVMStoreBool(constantStoreLoc, b), 
+                            LLVMPrimitiveOp(LLVMPOpCmpEqBool(cmpDest, llvmLocToValue subject, llvmLocToValue (constantStoreLoc) ))
+                    ])
+                    | CPSBvString s => 
+                    let val strLoc = UID.next() 
+                    in
+                        ([LLVMStringConstant(strLoc, s)
+                        ], [ LLVMStoreString(constantStoreLoc, (strLoc, s)), 
+                            LLVMPrimitiveOp(LLVMPOpCmpEqString(cmpDest, llvmLocToValue subject, llvmLocToValue (constantStoreLoc) ))
+                        ])
+                    end
+                    | _ => raise Fail "llvmconv159"
+                    ):::([], 
+                        [
+                            LLVMConditionalJumpBinary(cmpDest,
+                                [LLVMUnconditionalJump(trueBlockName) ],
+                                [LLVMUnconditionalJump(falseBlockName) ]
+                            )
+                        ]
+                    )
                     end
                 | CPSPatHeadSpine(cid, arglist) => 
                 (
@@ -146,39 +175,40 @@ this transforms access of cpsvar
                         (* val argResultBool = List.tabulate(length arglist, fn _ => (UID.next()))
                         val reductionBoolLocs = List.tabulate(length arglist+1, fn _ => (UID.next())) *)
                         (* first in reduction always true, result in last *)
+                        fun handleArgList l curIdx (* curIdx is the current index of next pattern *)
+                            : llvmdeclaration list * llvmstatement list= 
+                                let
+                                    val resultBoolLocation = LLVMLocationLocal (UID.next())
+                                in
+                                case l of 
+                                [] => ([], [LLVMUnconditionalJump(trueBlockName)])
+                                | (pat) :: rest => 
+                                    let val nextBlockName = UID.next()
+                                        val subsubjectLoc = UID.next()
+                                        val (thisDecls, thisComps) = testAndCompileCPSPattern (LLVMLocationLocal subsubjectLoc) pat nextBlockName falseBlockName
+                                        val (nextDecls, nextComps) = handleArgList rest (curIdx + 1)
+                                    in 
+                                        (nextDecls @ nextDecls, [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+1)] @(thisComps)
+                                        @[LLVMComment ("handleArgList at " ^ Int.toString curIdx)]
+                                        @[LLVMBlock(nextBlockName, nextComps)])
+                                            (* (fn (LLVMLocationLocal subComparisonBoolLoc) =>  TODO : fix conditional jump to use i64* boolean *)
+                                                (* [  LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1BoolLoc, LLVMLocalVar subComparisonBoolLoc)),
+                                                    LLVMConditionalJumpBinary(LLVMLocationLocal i1BoolLoc, 
+                                                    [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation)
+                                                )] *)
+                                                (* | _ => raise Fail "llvm160" *)
+                                    end
+                                end
+                        val (trueDecls, trueComps) = handleArgList arglist 0
                     in
-                            [LLVMArrayAccess(LLVMLocationLocal indexLoc, subject, 0) (* store the index *), 
+                            (trueDecls, [LLVMArrayAccess(LLVMLocationLocal indexLoc, subject, 0) (* store the index *), 
                             LLVMPrimitiveOp(LLVMPOpValueToInt(LLVMLocationLocal indexValLoc, LLVMLocalVar indexLoc)),
                             LLVMPrimitiveOp(LLVMPOpCmpEqInt(LLVMLocationLocal cmpBoolLoc, LLVMLocalVar indexValLoc, LLVMIntConst cid)), 
                             LLVMComment "(pattern matching) jumping based on the whether constructor id matches the pattern",
                             LLVMConditionalJumpBinary(LLVMLocationLocal cmpBoolLoc, 
                                 (* get each argument and collect the result *)
                                 (
-                                    let fun handleArgList l curIdx (* curIdx is the current index of next pattern *)= 
-                                            let
-                                                val resultBoolLocation = LLVMLocationLocal (UID.next())
-                                            in
-                                            case l of 
-                                            [] => [LLVMUnconditionalJump(trueBlockName)]
-                                            | (pat) :: rest => 
-                                                let val nextBlockName = UID.next()
-                                                    val subsubjectLoc = UID.next()
-                                                in 
-                                                [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+1)]
-                                                @(testAndCompileCPSPattern (LLVMLocationLocal subsubjectLoc) pat nextBlockName falseBlockName)
-                                                @[LLVMComment ("handleArgList at " ^ Int.toString curIdx)]
-                                                @[LLVMBlock(nextBlockName, handleArgList rest (curIdx + 1))]
-                                                    (* (fn (LLVMLocationLocal subComparisonBoolLoc) =>  TODO : fix conditional jump to use i64* boolean *)
-                                                        (* [  LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1BoolLoc, LLVMLocalVar subComparisonBoolLoc)),
-                                                            LLVMConditionalJumpBinary(LLVMLocationLocal i1BoolLoc, 
-                                                            [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation)
-                                                        )] *)
-                                                        (* | _ => raise Fail "llvm160" *)
-                                                end
-                                        end
-                                    in
-                                        handleArgList arglist 0
-                                    end
+                                    trueComps
                                 )
                                 ,
                                 (let
@@ -188,7 +218,7 @@ this transforms access of cpsvar
                                     [LLVMUnconditionalJump(falseBlockName)]
                                 end)
                             )
-                            ]
+                            ])
                     end
                 )
 
@@ -275,9 +305,9 @@ in
                                 val nextBlockName = List.nth(nextBlockNames, i)
                                 val blockBodyName = UID.next()
                                 in
-                                    ([], [LLVMComment ("CPSCases269, in case at index " ^ Int.toString i)]@
-                                        ( vaccess v (fn v' => testAndCompileCPSPattern v' pat 
-                                        blockBodyName nextBlockName)))
+                                    ([], [LLVMComment ("CPSCases269, in case at index " ^ Int.toString i)]):::
+                                        ( vaccess' v (fn v' => testAndCompileCPSPattern v' pat 
+                                        blockBodyName nextBlockName))
                                         :::
                                     (
                                             let 

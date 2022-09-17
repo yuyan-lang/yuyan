@@ -240,6 +240,12 @@ fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
             [toLLVMLoc r ^ " = icmp eq i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
         | LLVMPOpCmpEqBool(r, i1, i2) => 
             [toLLVMLoc r ^ " = icmp eq i1 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpCmpEqString(r, s1, s2) => 
+        let val temp = UID.next()
+        in
+            [toLocalVar temp ^ " = call i64* @yyStringEq(i64* " ^ toLLVMValue s1 ^ ", i64* " ^ toLLVMValue s2 ^ ")"
+            ,toLLVMLoc r ^ " = ptrtoint i64* " ^ toLocalVar temp ^ " to i1 "]
+        end
         | LLVMPOpIntSub(r, i1, i2) => 
             [toLLVMLoc r ^ " = sub i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
         | LLVMPOpValueToBool(r, i1) => 
