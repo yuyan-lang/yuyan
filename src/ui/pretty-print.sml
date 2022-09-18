@@ -303,10 +303,14 @@ open TypeCheckingAST
       CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ " ⋅ " ^ String.concatWith " " (map show_cpattern sp) ^ ")"
       | CPatVar(s) => ss s
       | CPatBuiltinConstant(bv) => show_bv bv
+      | CPatTuple(l) => "(" ^ String.concatWith ", " (map show_cpattern l) ^ ")"
   val sp = show_cpattern
 in case x of
                       CVar (v, referred) => "" ^ sst v  ^ 
-                      (case referred of CVTDefinition e => "( >>>> " ^ se e ^  ")"
+                      (case referred of CVTDefinition e => "( >>>> " 
+                      ^ 
+                      (* se e ^   *)
+                      ")"
                       | CVTBinder => ""
                       | CVTConstructor i => ""
                       | CVTBinderDefinition e => "( >>>> " ^ sst e ^  ")") 
@@ -457,6 +461,7 @@ CPSPatVar v => show_cpsvar v
 ^ String.concatWith ", " (map show_cpspat args)
 ^")"
 | CPSPatBuiltin (bv) => show_cpsbuiltin bv
+| CPSPatTuple (args) => "(" ^ String.concatWith ", " (map show_cpspat args) ^")"
 )
 end
 

@@ -39,7 +39,8 @@ uint64_t yyThrowException(yy_ptr err){
 
 // I believe abssingle has two arguments , the first is just the closure itself
 uint64_t yyUncaughtException(yy_ptr closure, yy_ptr dynclsfdVal){
-    fprintf(stderr, "豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：%s\n", addr_to_string(data_to_addr(dynclsfdVal[2])));
+    yy_ptr t = data_to_addr(dynclsfdVal[2]); 
+    fprintf(stderr, "豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：%s\n", addr_to_string(t));
     exit(1);
     return -1;
 }

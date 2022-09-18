@@ -142,7 +142,7 @@ exception CPSInternalError
                                                     (let val (bodyPats, ctx) = foldl (fn (pat, (accl, ctx)) =>  
                                                                 let val (cpspat, ctx) = toCPSPattern ctx pat 
                                                                 in (accl@[cpspat], ctx)
-                                                            end) ([], ctx) spinepats
+                                                                end) ([], ctx) spinepats
                                                     in (CPSPatHeadSpine(index, bodyPats), ctx)
                                                     end)
                                                 | _ => raise Fail "ni107: unsupported patterns"                                  
@@ -154,6 +154,13 @@ exception CPSInternalError
                                         | CBoolConstant b => CPSBvBool b
                                         | _ => raise Fail "unrecognized builtin pattern"
                                     ), ctx)
+                                    | CPatTuple(tl) => 
+                                    (let val (pats, ctx) = foldl (fn (pat, (accl, ctx)) =>  
+                                                                let val (cpspat, ctx) = toCPSPattern ctx pat 
+                                                                in (accl@[cpspat], ctx)
+                                                                end) ([], ctx) tl
+                                                    in (CPSPatTuple(pats), ctx)
+                                                    end)
                             val (cpspattern, ctx)  = toCPSPattern ctx pat
                         in 
                             (cpspattern, cpsTransformExpr ctx body cc)

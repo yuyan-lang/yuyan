@@ -7,10 +7,10 @@ char * addr_to_string(yy_ptr arg) {
 
 // type conversion function
 yy_ptr data_to_addr(uint64_t elem){
-    return (yy_ptr)elem;
+    return *((yy_ptr *)&elem);
 }
 uint64_t addr_to_data(yy_ptr ptr){
-    return (uint64_t)ptr;
+    return *((uint64_t *)&ptr);
 }
 
 int64_t addr_to_int(yy_ptr arg) {

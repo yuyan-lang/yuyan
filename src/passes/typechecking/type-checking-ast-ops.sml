@@ -195,6 +195,7 @@ infix 5 =/=
                         | ne => Success(CBlockProj(ne,  lbl, idx))
                 )
             | CLabeledProd _ => Success (t)
+            | CBuiltinConstant _ => Success (t)
             | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in

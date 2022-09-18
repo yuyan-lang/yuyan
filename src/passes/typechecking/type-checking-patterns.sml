@@ -182,6 +182,24 @@ structure TypeCheckingPatterns = struct
         | RStringLiteral(s, qi) => kont(CPatBuiltinConstant (CStringLiteral s), ctx)
         | RIntConstant(i, opinfo) => kont(CPatBuiltinConstant (CIntConstant i), ctx)
         | RBoolConstant(b, opinfo) => kont(CPatBuiltinConstant (CBoolConstant b), ctx)
+        | RTuple(tups, _) => 
+        (case analysisType of 
+            CProd(ts) => if length tups <> length ts
+                        then Errors.genericError head ctx "乘积类型长度不相等"
+                        else
+                            let fun go i acc ctx = 
+                                if i = length tups
+                                then kont (CPatTuple(acc), ctx)
+                                else let val pat = List.nth(tups, i)
+                                         val tp = List.nth(ts, i)
+                                     in checkPattern ctx pat tp NONE (fn (ckpat, ctx) => 
+                                        go (i+1) (acc@[ckpat]) ctx
+                                     )
+                                     end
+                            in go 0 [] ctx
+                            end
+                | _ => Errors.genericError head ctx "期待乘积类型"
+            )
         | _ => Errors.unsupportedPatternType head ctx
     end
 

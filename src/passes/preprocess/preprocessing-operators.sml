@@ -89,7 +89,7 @@ struct
 
     (* val unitExprOp = Operators.parseOperatorStr "元" true false 720 [] *)
     (* val lazyProjExprOp = Operators.parseOperatorStr "〇且中〇" true false 705 [] *)
-    val projExprOp = Operators.parseOperatorStr "〇中〇" true false 700 [] (* only numerical projetion *)
+    val projExprOp = Operators.parseOperatorStr "〇中〇" true true 700 [] (* only numerical projetion *)
     val appExprOp = Operators.parseOperatorStr "〇于〇" true true 690 []
     val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 680 []
     (* val lazyPairExprOp = Operators.parseOperatorStr "〇且与〇" true false 675 [] *)

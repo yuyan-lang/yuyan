@@ -192,13 +192,24 @@ infix 5 <?>
                                 Success(CMetaVar(metavarname), newCtx)
                             end
 
-    fun checkBlockIsSignature (errReporting : RExpr) (ctx : context) (block : CDeclaration list) : unit witherrsoption = 
-        if List.exists (fn dec => 
+
+    fun blockIsDefinitelyModule (block : CDeclaration list) : bool = 
+        List.exists (fn dec => 
             case dec of 
             CTermDefinition _ => true
             | CImport _ => true 
             | _ => false
             ) block
+    fun blockIsDefinitelySignature (block : CDeclaration list) : bool = 
+        List.exists (fn dec => 
+            case dec of 
+            CPureDeclaration(name, _) => true
+            | _ => false
+            ) block
+
+
+    fun checkBlockIsSignature (errReporting : RExpr) (ctx : context) (block : CDeclaration list) : unit witherrsoption = 
+        if blockIsDefinitelyModule block
         then Errors.genericError errReporting ctx "结构体用作签名时不可以包含定义的表达式(3)/或者导入语句"
         else Success()
 
@@ -215,9 +226,9 @@ infix 5 <?>
             (let fun go acc l= 
                     case l of 
                     [] => acc
-                    | (x :: xs) => go (acc <?> (fn _ => Errors.genericErrorStr x ctx "结构体用作签名时不可以包含定义的表达式(2)")) xs
+                    | (x :: xs) => go (acc <?> (fn _ => Errors.genericErrorStr x ctx "结构体不可以包含未定义的表达式(2)")) xs
             in
-                    go (Errors.genericErrorStr (hd notImplementedNames) ctx "结构体用作签名时不可以包含定义的表达式(1)") 
+                    go (Errors.genericErrorStr (hd notImplementedNames) ctx "结构体不可以包含未定义的表达式(1)") 
                     (tl notImplementedNames)
             end
             )
@@ -528,6 +539,12 @@ infix 5 <?>
                          _ => Success((CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp), ctx)
                     ) *)
                     | RUnitExpr(soi) => Success ((CUnitExpr, CUnitType), ctx)
+                    | RTuple(ltsl, sepl) => 
+                        (foldMapCtx ctx (fn ((t), ctx) => 
+                             synthesizeType ctx t >>= (fn ((ce, ct), ctx) => 
+                             Success ((ce, ct), ctx)
+                             )
+                         ) ltsl) >>= (fn (l, ctx) => Success((CTuple (map (#1) l, CTypeAnnNotAvailable), CProd(map (#2) l)), ctx))
                     | RProj(e, (idx, idxsoi), soi) => synthesizeType ctx e >>= (fn ((ce, tt), ctx) =>  
                                     ( weakHeadNormalizeType e ctx tt) >>= (fn ntt => case 
                                     ( ntt) of 
@@ -805,8 +822,12 @@ infix 5 <?>
                             (* val _ = DebugPrint.p ("[tc713] block " ^ PrettyPrint.show_typecheckingRExpr e 
                             ^ " ysnthesized as " ^ PrettyPrint.show_typecheckingCSig checkedSig) *)
                             in
-
-                            Success((CBlock(checkedSig), CUniverse), ctx)(* the type of a block is just a block *)
+                            if blockIsDefinitelyModule checkedSig
+                            then Success((CBlock(checkedSig), CBlock(getSingatureForModule checkedSig)), ctx)(* the type of a block is just a block *)
+                            else if blockIsDefinitelySignature checkedSig
+                            then Success((CBlock(checkedSig), CUniverse), ctx)(* the type of a block is just a block *)
+                            else (* treat as module by default , it is easy to force specify a signature *)
+                            Success((CBlock(checkedSig), CBlock(getSingatureForModule checkedSig)), ctx)(* the type of a block is just a block *)
                             end
                             )
                         )

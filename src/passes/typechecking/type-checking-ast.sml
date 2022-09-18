@@ -35,6 +35,7 @@ structure TypeCheckingAST = struct
     and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
                  | CPatVar of UTF8String.t 
                  | CPatBuiltinConstant of CBuiltinConstant
+                 | CPatTuple of CPattern list
     (* CExpr for checked expr *)
     and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
                                 cvartype (* the referenced expression, if not local *)
