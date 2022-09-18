@@ -81,7 +81,7 @@ struct
     val implicitPiTypeOp  = Operators.parseOperatorStr "承〇者〇而〇" true false 350 [3]
     val implicitPiNameOnlyTypeOp  = Operators.parseOperatorStr "承〇而〇" true false 350 []
     (* val existentialTypeOp  = Operators.parseOperatorStr "存在〇而〇" true false 320 [1] *)
-    val piTypeOp  = Operators.parseOperatorStr "化〇者〇而〇" true false 350 [3] (* Π x : T. T *)
+    val piTypeOp  = Operators.parseOperatorStr "化〇者〇而〇" true false 350 [3]
     (* val sigmaTypeOp  = Operators.parseOperatorStr "有〇者〇还〇" true false 350 [3] Σ x : T. T *)
     (* val builtinTypeStringOp  = Operators.parseOperatorStr "《《字符串》》" true false 420 [] *)
 
@@ -92,6 +92,7 @@ struct
     val projExprOp = Operators.parseOperatorStr "〇中〇" true true 700 [] (* only numerical projetion *)
     val appExprOp = Operators.parseOperatorStr "〇于〇" true true 690 []
     val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 680 []
+    val typeAnnotateExprOp = Operators.parseOperatorStr "〇也〇" true false 250 []
     (* val lazyPairExprOp = Operators.parseOperatorStr "〇且与〇" true false 675 [] *)
     (* val injExprOp = Operators.parseOperatorStr "〇临〇" false false 670 [] *)
     (* val foldExprOp = Operators.parseOperatorStr "卷〇" true false 660 [] *)
@@ -125,10 +126,11 @@ struct
         (* typeInstantiationOp, *)
         (* universalTypeOp,  *)
         (* existentialTypeOp, recursiveTypeOp, *)
-         inlineCommentOp (* allow comment in types, but not important anyways, as both 
+         inlineCommentOp,
+          (* allow comment in types, but not important anyways, as both 
         will soon be merged together *)
         (* , lazyProdTypeOp *)
-        , piTypeOp, 
+         piTypeOp, 
         implicitPiTypeOp,
         implicitPiNameOnlyTypeOp
         (* , sigmaTypeOp *)
@@ -144,6 +146,7 @@ struct
         implicitLambdaExprOp,
         ffiCCallOp,
         lambdaExprWithTypeOp, fixExprOp, 
-        letinOp, sequentialCompositionOp
+        letinOp, sequentialCompositionOp, 
+        typeAnnotateExprOp
     ]
 end

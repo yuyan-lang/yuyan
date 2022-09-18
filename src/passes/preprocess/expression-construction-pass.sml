@@ -148,6 +148,9 @@ struct
                     if oper ~=** appExprOp
                     then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Explicit, operSuc))
                     else 
+                    if oper ~=** typeAnnotateExprOp
+                    then fmap RTypeAnnotate(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
+                    else
                     if oper ~=** implicitAppExprOp
                     then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Implicit, operSuc))
                     else 

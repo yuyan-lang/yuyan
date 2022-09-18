@@ -183,6 +183,7 @@ structure TypeCheckingPatterns = struct
         | RIntConstant(i, opinfo) => kont(CPatBuiltinConstant (CIntConstant i), ctx)
         | RBoolConstant(b, opinfo) => kont(CPatBuiltinConstant (CBoolConstant b), ctx)
         | RTuple(tups, _) => 
+        weakHeadNormalizeType head ctx analysisType >>= (fn analysisType => 
         (case analysisType of 
             CProd(ts) => if length tups <> length ts
                         then Errors.genericError head ctx "乘积类型长度不相等"
@@ -198,8 +199,9 @@ structure TypeCheckingPatterns = struct
                                      end
                             in go 0 [] ctx
                             end
-                | _ => Errors.genericError head ctx "期待乘积类型"
+                | _ => Errors.genericError head ctx ("期待乘积类型，但却得到了" ^ PrettyPrint.show_typecheckingCExpr analysisType)
             )
+        )
         | _ => Errors.unsupportedPatternType head ctx
     end
 

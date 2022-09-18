@@ -29,6 +29,7 @@ open CompilationStructure
             | CSeqComp (e1, e2, _, _) => recurExpr e1 @ recurExpr e2
             | CTuple(el, _) => List.concat (map recurExpr el)
             | CProd(el) => List.concat (map recurExpr el)
+            | CProj(e, lbl,idx) => recurExpr e
             | _ => raise Fail ("fdr11 : dependency for cexpr ni for " ^ PrettyPrint.show_typecheckingCExpr e)
         and recurSig (x : TypeCheckingAST.CDeclaration list) : dependency list = 
         List.concat (List.map (fn x => case x of 

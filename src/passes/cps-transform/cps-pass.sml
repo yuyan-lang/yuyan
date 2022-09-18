@@ -312,10 +312,11 @@ exception CPSInternalError
             in res end
             )
 
-            handle ListSearchUtil.NotFoundSName sname => 
+            handle ListSearchUtil.NotFoundSName(sname, searched) => 
                 (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " ( " ^ 
                 PrettyPrint.show_utf8strings sname ^ " ) not found \n" 
-                ^ " in context " ^ PrettyPrint.show_cpscontext ctx);
+                ^ " in list [" ^ String.concatWith ", " (map StructureName.toStringPlain searched)
+                ^ "] in context " ^ PrettyPrint.show_cpscontext ctx);
                 raise CPSInternalError)
             handle CPSInternalError =>
                 (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");

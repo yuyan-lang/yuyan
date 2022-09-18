@@ -62,6 +62,7 @@ structure TypeCheckingErrors =
                 reconstructWithArgs soi [x, reconstructFromRExpr e]
 
             | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
+            | RTypeAnnotate (t, e, soi)=> reconstructWithArgs soi [reconstructFromRExpr t,  reconstructFromRExpr e]
             | RApp (e1, e2, p, soi)=> 
                 if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
                 then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
@@ -173,7 +174,7 @@ structure TypeCheckingErrors =
     fun expressionDoesNotSupportTypeSynthesis e ctx =  exprError e ctx "表达式不支持类型合成，请指定类型"
     fun prodTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配( prod tuple length mismatch)"
     fun lazyProdTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配(lazy prod tuple length mismatch)"
-    fun expectedProdType e tt ctx =  exprTypeError e tt ctx "期待的类型是乘积类型(expected prod)"
+    fun expectedProdType e tt ctx msg =  exprTypeError e tt ctx ("期待的类型是乘积类型(expected prod)" ^ msg)
     fun expectedLazyProdType e tt ctx =  exprTypeError e tt ctx "期待的类型是惰性乘积类型(expected lazy prod)"
     fun expectedSumType e tt ctx =  exprTypeError e tt ctx "期待总和类型(expected sum types)"
     fun expectedFunctionType e tt ctx =  exprTypeError e tt ctx "期待函数类型(expected function types)"

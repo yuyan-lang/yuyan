@@ -210,6 +210,10 @@ RVar v => sst v
                         "ap("^ se e1 ^ ", "^ 
                           show_plicity p (se e2)
                           ^ ")"
+                    | RTypeAnnotate (tp, e2, soi)=> 
+                        "typeann("^ se tp ^ ", "^ 
+                           (se e2)
+                          ^ ")"
                     | RTApp (e1, e2, soi)=> "("^ se e1 ^ " ["^ st e2 ^"])"
                     | RPack (t, e, soi)=> "pack("^ st t ^ ", "^ se e ^")"
                     | ROpen (e, (t, x, e2), soi)=> "open(" ^se e ^ "; "^ ss t ^ ". "^ ss x ^ ". " ^ se e2 ^"])"

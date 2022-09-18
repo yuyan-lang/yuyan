@@ -539,6 +539,14 @@ infix 5 <?>
                          _ => Success((CVar(canonicalName, judgmentTypeToCVarType canonicalName jtp), tp), ctx)
                     ) *)
                     | RUnitExpr(soi) => Success ((CUnitExpr, CUnitType), ctx)
+                    | RTypeAnnotate (tp, e, soi) => 
+                    (
+                        checkType ctx tp CUniverse  >>= (fn (ct, ctx) => 
+                            checkType ctx e ct >>= (fn (ce, ctx) => 
+                                Success((ce, ct), ctx)
+                            )
+                        )
+                    )
                     | RTuple(ltsl, sepl) => 
                         (foldMapCtx ctx (fn ((t), ctx) => 
                              synthesizeType ctx t >>= (fn ((ce, ct), ctx) => 
@@ -935,7 +943,7 @@ infix 5 <?>
                                                 | _ => raise Fail "tcp629: should be the same length"
                                         in go (l, ls) ctx >>= (fn (ce, ctx) => Success(CTuple(ce, CTypeAnnNotAvailable), ctx))
                                         end
-                            | _ => Errors.expectedProdType e (tt) ctx
+                            | _ => Errors.expectedProdType e (tt) ctx ("但却得到了" ^ PrettyPrint.show_typecheckingCExpr tt)
                             )
                         | RLazyTuple (l, soi) => (case tt of 
                             CLazyProd ls => if List.length l <> List.length ls
@@ -1253,6 +1261,16 @@ infix 5 <?>
                                         | _ => genSingletonError (reconstructFromRExpr e) "模块（结构）仅能拥有模块类型或者元类型" NONE
                                     )
                                 | _ => raise Fail "tcp1027: synth block should always return a block"
+                            )
+                        )
+                        | RTypeAnnotate (tp, e, soi) => 
+                        (
+                            checkType ctx tp CUniverse  >>= (fn (ct, ctx) => 
+                                tryTypeUnify ctx tp ct tt >>= (fn ( ctx) => 
+                                    checkType ctx e ct >>= (fn (ce, ctx) => 
+                                        Success(ce, ctx)
+                                    )
+                                )
                             )
                         )
                         | _ => genSingletonError (reconstructFromRExpr e) ("check type failed on " ^ PrettyPrint.show_typecheckingRType e 

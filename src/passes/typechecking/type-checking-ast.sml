@@ -132,6 +132,7 @@ structure TypeCheckingAST = struct
                     | RLam of EVar * RExpr * plicity * sourceOpInfo
                     | RLamWithType of RExpr * EVar * RExpr * sourceOpInfo
                     | RApp of RExpr * RExpr * plicity * sourceOpInfo (* if op is not app, then custom operators *)
+                    | RTypeAnnotate of RExpr (*type*) * RExpr * sourceOpInfo (* if op is not app, then custom operators *)
                     (* | RTAbs of TVar * RExpr * sourceOpInfo *)
                     | RTApp of RExpr * RExpr * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
                     | RPack of RExpr * RExpr * (UTF8String.t * sourceOpInfo)
