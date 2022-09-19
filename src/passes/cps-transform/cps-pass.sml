@@ -136,7 +136,7 @@ exception CPSInternalError
                                         val localvar = CPSVarLocal (UID.next())
                                         in ((CPSPatVar (localvar)), ([x], PlainVar localvar)::ctx)
                                         end
-                                    | CPatHeadSpine((hdname, cinfo), spinepats) =>  
+                                    | CPatHeadSpine((exp, cinfo), spinepats) =>  
                                         (case cinfo of 
                                                 CConsInfoElementConstructor(_, index) =>  
                                                     (let val (bodyPats, ctx) = foldl (fn (pat, (accl, ctx)) =>  
@@ -145,7 +145,7 @@ exception CPSInternalError
                                                                 end) ([], ctx) spinepats
                                                     in (CPSPatHeadSpine(index, bodyPats), ctx)
                                                     end)
-                                                | _ => raise Fail "ni107: unsupported patterns"                                  
+                                                | _ => raise Fail ("ni107: unsupported patterns : " ^ PrettyPrint.show_ccconsinfo cinfo ^ " at " ^ PrettyPrint.show_typecheckingCExpr exp)
                                         )
                                     | CPatBuiltinConstant(c) => (CPSPatBuiltin(
                                         case c of

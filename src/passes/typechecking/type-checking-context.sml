@@ -60,6 +60,9 @@ infix 5 >>=
             ntp 
         end
 
+    
+
+
     fun findCtxForType (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         Option.map(fn (x,t,eop) => (x, t)) (findCtx (Context(curSName, v, ctx)) n)
 

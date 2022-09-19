@@ -234,7 +234,38 @@ structure PreprocessingPass = struct
                     (* else if oper ~=** termMacroOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
                     else if oper ~=** termDefinitionOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success(PTermDefinition (l1, l2, oper), ctx)))
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  
+                        tp l1 >>= (fn l1 => 
+                        case l2  of
+                        OpParsedDecl(ast, qi) => 
+                                (
+                                    case ctx of 
+                                        (curSName, vis, imports) => 
+                                                let 
+                                                    val newOps = ([l1], vis, List.concat (List.mapPartial  (fn (x, ei) => 
+                                                                        (case x of 
+                                                                            POpDeclaration(opName, assoc, pred, soi) => SOME([parsePOperator(x)])
+                                                                            | PReExportStructure (name, (opl, substructure), soi) => SOME(opl)
+                                                                            | _ => NONE
+                                                                        )
+                                                                ) ast)) :: []
+                                                                (* TODO: NESTED STRUCTURE *)
+                                                                (* ::
+                                                                (* sub structures *)
+                                                                (List.concat(List.mapPartial (fn (x, ei) => case x of 
+                                                                    PStructure(vis, structureName, OpParsedDecl(l, qi), soi) => 
+                                                                        SOME (extractAllOperators (curSName@[structureName]) vis l)
+                                                                        (* ^^^ THIS IS VERY STRANGE, TODO: FIX*)
+                                                                    | PReExportStructure (name, (opl, substructure), soi) => SOME(map (fn (name, opl) => (name, true, opl)) substructure)
+                                                                    | _ => NONE
+                                                                ) ast)) *)
+                                                val newctx = (curSName, vis, imports@newOps)
+                                            in 
+                                                Success(PTermDefinition (l1, l2, oper), newctx)
+                                            end
+                                )
+                        | _ => Success(PTermDefinition (l1, l2, oper), ctx))
+                        )
                     (* else if oper ~=** privateStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
                     tp l1 >>= (fn l1 => 

@@ -1,3 +1,5 @@
+.PHONY: srcyy
+
 SMLSOURCEDIR=src
 SMLSOURCES := $(shell find $(SMLSOURCEDIR) -name '*.sml' ! -path "*/.cm/*")
 
@@ -9,6 +11,12 @@ yyrt:
 
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
+
+yybs : yy
+	./yy -c --use-local-lib srcyy/入口。豫  -o yybs
+
+bsr : yybs
+	./yybs srcyy/入口。豫
 
 yyllvm:  $(SMLSOURCES)
 	mlton -codegen llvm -output yy -verbose 2 src/development.mlb

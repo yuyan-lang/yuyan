@@ -32,7 +32,7 @@ structure TypeCheckingAST = struct
     datatype cvartype = CVTBinder | CVTDefinition of CExpr | CVTConstructor of StructureName.t * cconstructorinfo (* canonical name and cinfo *)
                       | CVTBinderDefinition of StructureName.t (* a definition for binder , will map to metavar name, used in pattern matching *)
 
-    and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
+    and CPattern = CPatHeadSpine of (CExpr  * cconstructorinfo)  * CPattern list
                  | CPatVar of UTF8String.t 
                  | CPatBuiltinConstant of CBuiltinConstant
                  | CPatTuple of CPattern list

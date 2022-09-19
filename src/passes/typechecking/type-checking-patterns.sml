@@ -148,8 +148,9 @@ structure TypeCheckingPatterns = struct
     (* look up the type of the header *)
     case head of 
         RVar(name) => 
-            (case findCtx ctx name of
-                NONE => (* head not found in the context, check if spine empty *)
+            (case resolveRVar ctx name of
+                    NotAvailable => raise Fail "tcp152"
+                | DErrors l => (* head not found in the context, check if spine empty *)
                     if length spine = 0  andalso length name = 1 (* variable must be simple name *)
                     then 
                     (case name of 
@@ -164,9 +165,10 @@ structure TypeCheckingPatterns = struct
                         (* DebugPrint.p  *)
                         (* ("length spine = " ^ Int.toString (length spine)
                         "n" *)
-                        Errors.unboundTermConstructor head ctx
+                        DErrors l
+                        (* Errors.unboundTermConstructor head ctx *)
                     )
-                | SOME(cname, tp, jtp) =>
+                | Success(cname, tp, jtp) =>
                     (* retrieve the constructor info *)
                     retrieveCInfo jtp >>= (fn cinfo =>
                         (* if length spine <> countSpineTypeArgs tp

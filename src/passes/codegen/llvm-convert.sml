@@ -140,7 +140,7 @@ this transforms access of cpsvar
                                         val (thisDecls, thisComps) = testAndCompileCPSPattern (LLVMLocationLocal subsubjectLoc) pat nextBlockName falseBlockName
                                         val (nextDecls, nextComps) = handleArgList rest (curIdx + 1) shouldShiftIndexWhenAccessingSubject
                                     in 
-                                        (nextDecls @ nextDecls, [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+
+                                        (thisDecls @ nextDecls, [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+
                                             (if shouldShiftIndexWhenAccessingSubject then 1 else 0)
                                         )] @(thisComps)
                                         @[LLVMComment ("handleArgList at " ^ Int.toString curIdx)]
@@ -178,7 +178,10 @@ this transforms access of cpsvar
                     let val strLoc = UID.next() 
                     in
                         ([LLVMStringConstant(strLoc, s)
-                        ], [ LLVMStoreString(constantStoreLoc, (strLoc, s)), 
+                        ], [ 
+                            LLVMComment("Storing String " ^ UTF8String.toString s 
+                            ^ PrettyPrint.show_source_range (UTF8String.getSourceRange s "llvmc183")),
+                            LLVMStoreString(constantStoreLoc, (strLoc, s)), 
                             LLVMPrimitiveOp(LLVMPOpCmpEqString(cmpDest, llvmLocToValue subject, llvmLocToValue (constantStoreLoc) ))
                         ])
                     end

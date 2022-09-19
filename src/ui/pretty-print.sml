@@ -280,13 +280,17 @@ in
   
 end
 
+and show_ccconsinfo (cinfo : TypeCheckingAST.cconstructorinfo) = 
+let
+open TypeCheckingAST
+in
+  case cinfo of 
+    CConsInfoElementConstructor _ => "(el constructor)"
+    | CConsInfoTypeConstructor => "(type constructor)"
+end
 and show_typecheckingCExpr x =  
 let
 open TypeCheckingAST
-  fun show_ccconsinfo (cinfo : cconstructorinfo) = 
-    case cinfo of 
-      CConsInfoElementConstructor _ => "(el constructor)"
-      | CConsInfoTypeConstructor => "(type constructor)"
 
   val st = show_typecheckingCType
   fun sta ann = case ann of 
@@ -304,7 +308,7 @@ open TypeCheckingAST
                     | (CBoolConstant b) => "(" ^ Bool.toString b ^")"
   fun show_cpattern (p : CPattern) =
     case p of 
-      CPatHeadSpine((hd, cinfo), sp) => "(" ^ StructureName.toStringPlain hd ^ " ⋅ " ^ String.concatWith " " (map show_cpattern sp) ^ ")"
+      CPatHeadSpine((hd, cinfo), sp) => "(" ^ show_typecheckingCExpr hd ^ " ⋅ " ^ String.concatWith " " (map show_cpattern sp) ^ ")"
       | CPatVar(s) => ss s
       | CPatBuiltinConstant(bv) => show_bv bv
       | CPatTuple(l) => "(" ^ String.concatWith ", " (map show_cpattern l) ^ ")"
@@ -396,7 +400,7 @@ in
 end
 fun show_source_location ((fname, line, col) : SourceLocation.t) = "[" ^ Int.toString (line + 1) ^ ", "^ Int.toString (col + 1) ^ "]"
 fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.t) = 
-  "[" ^ Int.toString (ls+1) ^ ", "^ Int.toString (cs+1) ^ "," ^ Int.toString (le+1) ^ ", "^Int.toString (ce+1) ^"]"
+  fname ^ "[" ^ Int.toString (ls+1) ^ ", "^ Int.toString (cs+1) ^ "," ^ Int.toString (le+1) ^ ", "^Int.toString (ce+1) ^"]"
 fun show_utf8char (UTF8Char.UTF8Char(c, loc)) = UTF8.implode [c] ^ (case loc of SOME loc => show_source_location(loc) | NONE => "[NOLOC]")
 fun show_utf8string x = String.concatWith "+" (map show_utf8char x)
 fun show_utf8strings x = String.concatWith ", " (map show_utf8string x)

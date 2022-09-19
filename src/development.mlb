@@ -58,13 +58,13 @@ local
         passes/cps-transform/cps-ast-ops.sml
         passes/cps-transform/closure-convert.sml
         passes/codegen/llvm-ast.sml
-        passes/codegen/llvm-convert.sml
-        passes/codegen/llvm-codegen.sml
-        build-system/compilation-structure.sml
 
 
         
+        build-system/compilation-structure.sml
         ui/pretty-print.sml
+        passes/codegen/llvm-convert.sml
+        passes/codegen/llvm-codegen.sml
 
 
         operators/structure/operators-ops.sml
