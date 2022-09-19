@@ -148,7 +148,7 @@ structure PreprocessingPass = struct
         ) ast))::
         (* sub structures *)
         (List.concat(List.mapPartial (fn (x, ei) => case x of 
-            PStructure(vis, structureName, OpParsedDecl(l, qi), soi) => 
+            PTermDefinition(structureName, OpParsedDecl(l, qi), soi) => 
                 SOME (extractAllOperators (curSName@[structureName]) vis l)
                 (* ^^^ THIS IS VERY STRANGE, TODO: FIX*)
             | PReExportStructure (name, (opl, substructure), soi) => SOME(map (fn (name, opl) => (name, true, opl)) substructure)
@@ -242,23 +242,25 @@ structure PreprocessingPass = struct
                                     case ctx of 
                                         (curSName, vis, imports) => 
                                                 let 
-                                                    val newOps = ([l1], vis, List.concat (List.mapPartial  (fn (x, ei) => 
+                                                    fun goOps exploreSName ast
+                                                     = (exploreSName, vis, List.concat (List.mapPartial  (fn (x, ei) => 
                                                                         (case x of 
                                                                             POpDeclaration(opName, assoc, pred, soi) => SOME([parsePOperator(x)])
                                                                             | PReExportStructure (name, (opl, substructure), soi) => SOME(opl)
                                                                             | _ => NONE
                                                                         )
-                                                                ) ast)) :: []
+                                                                ) ast)) 
                                                                 (* TODO: NESTED STRUCTURE *)
-                                                                (* ::
+                                                                ::
                                                                 (* sub structures *)
                                                                 (List.concat(List.mapPartial (fn (x, ei) => case x of 
                                                                     PStructure(vis, structureName, OpParsedDecl(l, qi), soi) => 
-                                                                        SOME (extractAllOperators (curSName@[structureName]) vis l)
+                                                                        SOME (goOps (exploreSName@[structureName]) l)
                                                                         (* ^^^ THIS IS VERY STRANGE, TODO: FIX*)
                                                                     | PReExportStructure (name, (opl, substructure), soi) => SOME(map (fn (name, opl) => (name, true, opl)) substructure)
                                                                     | _ => NONE
-                                                                ) ast)) *)
+                                                                ) ast))
+                                                val newOps = goOps [l1] ast
                                                 val newctx = (curSName, vis, imports@newOps)
                                             in 
                                                 Success(PTermDefinition (l1, l2, oper), newctx)
