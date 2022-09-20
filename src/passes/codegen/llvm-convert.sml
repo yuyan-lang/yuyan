@@ -179,8 +179,8 @@ this transforms access of cpsvar
                     in
                         ([LLVMStringConstant(strLoc, s)
                         ], [ 
-                            LLVMComment("Storing String " ^ UTF8String.toString s 
-                            ^ PrettyPrint.show_source_range (UTF8String.getSourceRange s "llvmc183")),
+                            (* LLVMComment("Storing String " ^ UTF8String.toString s 
+                            ^ PrettyPrint.show_source_range (UTF8String.getSourceRange s "llvmc183")), *)
                             LLVMStoreString(constantStoreLoc, (strLoc, s)), 
                             LLVMPrimitiveOp(LLVMPOpCmpEqString(cmpDest, llvmLocToValue subject, llvmLocToValue (constantStoreLoc) ))
                         ])

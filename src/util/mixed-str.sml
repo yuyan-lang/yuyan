@@ -184,19 +184,60 @@ struct
     (* string escape two endDoubleQuote to escape double quote, else no escape *)
     fun scanLiteral(startChar : UTF8Char.t)(remaining : UTF8String.t)(sofar : UTF8String.t) : 
         (UTF8Char.t * UTF8String.t * UTF8String.t) witherrsoption
-     = case (
+     = 
+     let fun defaultCase() = 
+     case (
          (* print (UTF8String.toString remaining^"\n"); *)
       remaining) of
         [] => unmatchedStringLiteralError startChar sofar
         | [x] => if x ~= SpecialChars.rightDoubleQuote
                  then Success(x, sofar, [])
                  else unmatchedStringLiteralError startChar (sofar @[x])
-        | (x::y::xs) => if  x ~= SpecialChars.rightDoubleQuote 
+        | (x::y::xs) => 
+                    (* if  x ~= SpecialChars.rightDoubleQuote 
                         andalso  y ~= SpecialChars.rightDoubleQuote
                  then scanLiteral startChar xs (sofar @[x]) (*escape*)
-                 else if  x ~= SpecialChars.rightDoubleQuote
+                 else  *)
+                 if  x ~= SpecialChars.rightDoubleQuote
                       then Success(x, sofar, y::xs)
                       else scanLiteral startChar (y::xs) (sofar @[x])
+    in 
+    case remaining of 
+        (* 「：』：」 *)
+         (x::y :: z :: w :: v :: u ::xs) => 
+                if  x ~= SpecialChars.leftSingleQuote 
+                andalso y ~= SpecialChars.colon
+                andalso w ~= SpecialChars.colon
+                andalso v ~= SpecialChars.rightSingleQuote
+                then (if z ~= SpecialChars.rightDoubleQuote
+                        then scanLiteral startChar (u::xs) (sofar @[z])
+                        else genSingletonError [z] "无法识别的转义序列" NONE
+                )
+                else
+                if  x ~= SpecialChars.leftSingleQuote 
+                andalso y ~= SpecialChars.colon
+                andalso v ~= SpecialChars.colon
+                andalso u ~= SpecialChars.rightSingleQuote
+                then (
+                        if z ~= SpecialChars.leftSingleQuote
+                        andalso w ~= SpecialChars.colon
+                        then scanLiteral startChar xs (sofar @[z, w])
+                        else 
+                        if UTF8String.semanticEqual [z, w] (UTF8String.fromString "换行")
+                        then scanLiteral startChar xs (sofar @[UTF8Char.fromString "\n" (
+                            UTF8Char.getSourceLocation z
+                        )])
+                        else
+                        if UTF8String.semanticEqual [z, w] (UTF8String.fromString "制表")
+                        then scanLiteral startChar xs (sofar @[UTF8Char.fromString "\t" (
+                            UTF8Char.getSourceLocation z
+                        )])
+                        else genSingletonError [z, w] "无法识别的转义序列" NONE
+                )
+                else defaultCase()
+        | _ => defaultCase()
+    end
+
 
     fun scanSingleQuote(startChar : UTF8Char.t) ( remaining : UTF8String.t) (sofar : mixedstr) 
             (* right quote char, inside, rest *) (* <<-- callback is *)
