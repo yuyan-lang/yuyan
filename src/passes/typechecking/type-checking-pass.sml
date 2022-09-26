@@ -967,7 +967,7 @@ infix 5 <?>
                             | Implicit => synthesizeTypeNoInstMeta ctx e1)
                             >>= (fn ((ce1, synt), ctx) => 
                             weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => 
-                                case synt 
+                                case nsynt 
                                     of (CPiType (t1, evop, t2, pt)) => 
                                         if pt = pe then
                                         ( 

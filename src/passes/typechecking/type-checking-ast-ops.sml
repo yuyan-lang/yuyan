@@ -79,6 +79,7 @@ infix 5 =/=
                 | CMetaVar(v) => [v]
                 | CProj(e1, idx, u) => freeTCVar e1
                 | CBlockProj(e, lbl, idx) => freeTCVar e
+                | CBlock(_) => [] (* free block *)
                 | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
         (* val _ = DebugPrint.p "computed freetcvar" *)
     in
