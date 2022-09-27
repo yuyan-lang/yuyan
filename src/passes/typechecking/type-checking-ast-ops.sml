@@ -133,7 +133,12 @@ infix 5 =/=
                 | SOME(t') => recur t')
             | CMetaVar(name) => ( lookupCtx ctx name >>= (fn (cname, tp, jtp) => 
                 case jtp of 
-                    JTMetaVarResolved t => recur (t)
+                    JTMetaVarResolved t => 
+                    ((case t of 
+                    CMetaVar(name') => if StructureName.semanticEqual name name' 
+                    then genericError e  ctx ("元变量解析成了自己，解析错误！ "^  StructureName.toStringPlain name)
+                    else recur t
+                    | _ => recur (t)))
                     | _ => Success(CMetaVar(name))
                 )
             )

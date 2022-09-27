@@ -301,6 +301,7 @@ exception CPSInternalError
                 | CNullType => CPSUnit (kcc cc)
                 | CBuiltinType(b) => CPSUnit (kcc cc)
                 | CUniverse => CPSUnit (kcc cc)
+                | CPiType _ => CPSUnit (kcc cc)
                 | CBlock(decls) => cpsTransformSig ctx decls [] cc
                 | CBlockProj(e, lbl, idx) => cpsTransformExpr ctx e (fn v 
                             => CPSProj(CPSValueVar v, idx,(kcc cc)))

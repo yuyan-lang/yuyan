@@ -371,9 +371,23 @@ in case x of
                     | CBlock(decl) => "{" ^ show_typecheckingCSig decl ^ "}"
                     | CBlockProj(e, lbl, idx) => "([BLOCKPROJ] " ^ st e ^ " -> " ^ ss lbl ^ "(idx:" ^ Int.toString idx ^ "))"
                 end
-and show_typecheckingCDecl x = let
+and show_typecheckingCDecl x issimple = let
 open TypeCheckingAST
-in case x of 
+in 
+if issimple
+then
+(case x of 
+    (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
+   CTermDefinition(ename, ebody, tp) => UTF8String.toString ename 
+  | CConstructorDecl(ename, etype, cconsinfo) =>  UTF8String.toString ename 
+  | CDirectExpr(ebody, tp) => "<expr>"
+  | CImport(name, fp) => "<import>"
+  | COpenStructure(name, csig) => "<open>" 
+  | CPureDeclaration(name, tp) => UTF8String.toString name  
+)
+else
+(
+case x of 
     (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
    CTermDefinition(ename, ebody, tp) => UTF8String.toString ename ^ " = " ^ show_typecheckingCExpr  ebody ^ " : " ^ show_typecheckingCType tp
   | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ UTF8String.toString ename ^ " : " ^ show_typecheckingCExpr  etype
@@ -381,10 +395,12 @@ in case x of
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
   | COpenStructure(name, csig) => "open " ^ StructureName.toStringPlain name  ^ ""
   | CPureDeclaration(name, tp) => UTF8String.toString name  ^ " : " ^ show_typecheckingCType tp
-  end
+)
+end
 
 
 and show_typecheckingCSig x = let
+val show_simple = true
 in
           "[csig:" ^  
           (String.implode(
@@ -394,9 +410,11 @@ in
             | _ => [x]
             )
             (String.explode (
-            String.concatWith "。\n " (map show_typecheckingCDecl x)))
-          )))
-          ^ "]\n" 
+              if show_simple
+              then String.concatWith "，" (map (fn x => show_typecheckingCDecl x show_simple) x)
+            else String.concatWith "。\n " (map (fn x => show_typecheckingCDecl x show_simple) x ))
+          ))))
+          ^ "]" ^ (if show_simple then "" else "\n" )
 end
 fun show_source_location ((fname, line, col) : SourceLocation.t) = "[" ^ Int.toString (line + 1) ^ ", "^ Int.toString (col + 1) ^ "]"
 fun show_source_range (SourceRange.StartEnd(fname, ls, cs,le,ce ) : SourceRange.t) = 

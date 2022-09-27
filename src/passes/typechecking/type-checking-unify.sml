@@ -95,21 +95,27 @@ infix 4 ~~~=
         in 
         lookupCtx ctx metavar >>= (fn (cname, tp, jtp)=> 
             case jtp of JTMetaVarPendingResolve _ =>
-                if 
-                (* unique sxbar 
-                andalso *)
-                (* subset (freeTCVar ns) sxbar *)
-                (* andalso ctxInScope ctx metavar ns *)
-                (* TODO add checking *)
-                true
-                (* then Success([], modifyCtxResolveMetaVar ctx metavar (prependLambdas sxbar ns)) *)
-                then Success([], modifyCtxResolveMetaVar ctx metavar (ns))
-                else TypeCheckingErrors.genericError e ctx 
-                ("cannot unify metavar : " 
-                ^ "unique = " ^ Bool.toString (unique sxbar )
-                ^ "subset = " ^ Bool.toString(subset (freeTCVar ns) sxbar)
-                ^ "inscope = " ^ Bool.toString(ctxInScope ctx metavar ns )
-                ^ "names = " ^ String.concatWith "\n" (map StructureName.toStringPlain sxbar))
+                (case ns of 
+                CMetaVar(name) => if StructureName.semanticEqual name cname 
+                then Success([], ctx)
+                else Success([], modifyCtxResolveMetaVar ctx metavar (ns))
+                | _  => 
+                    if 
+                    (* unique sxbar 
+                    andalso *)
+                    (* subset (freeTCVar ns) sxbar *)
+                    (* andalso ctxInScope ctx metavar ns *)
+                    (* TODO add checking *)
+                    true
+                    (* then Success([], modifyCtxResolveMetaVar ctx metavar (prependLambdas sxbar ns)) *)
+                    then Success([], modifyCtxResolveMetaVar ctx metavar (ns))
+                    else TypeCheckingErrors.genericError e ctx 
+                    ("cannot unify metavar : " 
+                    ^ "unique = " ^ Bool.toString (unique sxbar )
+                    ^ "subset = " ^ Bool.toString(subset (freeTCVar ns) sxbar)
+                    ^ "inscope = " ^ Bool.toString(ctxInScope ctx metavar ns )
+                    ^ "names = " ^ String.concatWith "\n" (map StructureName.toStringPlain sxbar))
+                )
             | JTMetaVarResolved t => recur ctx t ns
             | _ => raise Fail "ni108"
         )
