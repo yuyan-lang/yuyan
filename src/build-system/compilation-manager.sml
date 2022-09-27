@@ -314,7 +314,7 @@ end *)
     end *)
     fun resolveStructureReference(fromFile: filepath) (sname : StructureName.t) (cm : compilationmanager) : filepath witherrsoption = 
         let 
-            val moduleSearchPath : string list = [PathUtil.concat([#pwd cm, "yylib"])]
+            val moduleSearchPath : string list = [PathUtil.concat([#pwd cm]), PathUtil.concat([#pwd cm, "yylib"])]
             fun findFileAmongCandidates(otherCandidates : string list) (errInfo : UTF8String.t) : filepath witherrsoption = 
                             let
                                 val res = (case (foldl (fn (candidate, acc) => 

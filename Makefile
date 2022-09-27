@@ -1,4 +1,3 @@
-.PHONY: srcyy
 
 SMLSOURCEDIR=src
 YYBSSOURCEDIR=srcyy
@@ -15,11 +14,11 @@ yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
 
 yy_bs : yy $(YYBSSOURCES) build
-	./yy -c --use-local-lib srcyy/入口。豫  -o yy_bs
+	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
 bsr : yy_bs 
-	# ./yy_bs srcyy/入口。豫
-	./yy_bs srcyy/编译步骤/语法分析/移位规约解析。豫
+	# ./yy_bs 豫言编译器/入口。豫
+	./yy_bs 豫言编译器/编译步骤/语法分析/词法解析。豫
 
 yyllvm:  $(SMLSOURCES)
 	mlton -codegen llvm -output yy -verbose 2 src/development.mlb

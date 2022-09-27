@@ -12,6 +12,10 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
 
     if (openResult < 0 ){
         // error happpened
+        fprintf(stderr, "(error opening file ), %s\n", uv_strerror(open_req.result));
+        fprintf(stderr, "when reading %s\n", addr_to_string(filenamearg));
+        fflush(stderr);
+        errorAndAbort("error printed");
     }
     char* result = GC_MALLOC(1);
     int resultLength = 0;
@@ -31,7 +35,9 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
         // done
     } else {
         fprintf(stderr, "(error reading file ), %s", uv_strerror(read_req.result));
+        fprintf(stderr, "\n when reading %s", addr_to_string(filenamearg));
         fflush(stderr);
+        errorAndAbort("error printed");
     }
     return string_to_addr(result);
 

@@ -25,7 +25,7 @@ uint64_t c_runtime_internal_error(){
 
 uint64_t errorAndAbort(char* errMsg){
     
-    fprintf(stderr, "%s", errMsg);
+    fprintf(stderr, "%s\n", errMsg);
     exit(1);
     return -1;
 }
