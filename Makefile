@@ -1,6 +1,6 @@
 
 SMLSOURCEDIR=src
-YYBSSOURCEDIR=srcyy
+YYBSSOURCEDIR=豫言编译器
 SMLSOURCES := $(shell find $(SMLSOURCEDIR) -name '*.sml' ! -path "*/.cm/*")
 YYBSSOURCES := $(shell find $(YYBSSOURCEDIR) -name '*。豫' ! -path "*/.cm/*")
 

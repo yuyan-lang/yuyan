@@ -409,6 +409,7 @@ infix 5 =/=
                 | CTuple(e, u) => CTuple (map recur e, u)
                 | CFfiCCall(name, args) => CFfiCCall(name, map recur args)
                 | CBlock(decls) => CBlock (substituteTypeInCSignature tS x decls)
+                | CBlockProj(name, lbl, idx) => CBlockProj(substTypeInCExpr tS x name, lbl, idx)
         | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
         ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
         ^ " for " ^ StructureName.toStringPlain x)

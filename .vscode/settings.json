@@ -94,4 +94,21 @@
         "stdlib.h": "c"
     },
     "editor.formatOnType": true,
+    "vim.argumentObjectClosingDelimiters": [
+        ")",
+        "]",
+        "】",
+        "」",
+        "』",
+        "）"
+    ],
+    "vim.argumentObjectOpeningDelimiters": [
+        "(",
+        "[",
+        "【",
+        "「",
+        "『",
+        "（"
+    ],
+    "vim.matchpairs": "(:),{:},[:],（:）,【:】,「:」,『:』",
 }
