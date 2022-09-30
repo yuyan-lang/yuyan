@@ -138,7 +138,7 @@ exception CPSInternalError
                                         end
                                     | CPatHeadSpine((exp, cinfo), spinepats) =>  
                                         (case cinfo of 
-                                                CConsInfoElementConstructor(_, index) =>  
+                                                CConsInfoElementConstructor( index) =>  
                                                     (let val (bodyPats, ctx) = foldl (fn (pat, (accl, ctx)) =>  
                                                                 let val (cpspat, ctx) = toCPSPattern ctx pat 
                                                                 in (accl@[cpspat], ctx)
@@ -317,7 +317,7 @@ exception CPSInternalError
                 (DebugPrint.p ("Internal error: " ^ StructureName.toStringPlain sname  ^ " ( " ^ 
                 PrettyPrint.show_utf8strings sname ^ " ) not found \n" 
                 ^ " in list [" ^ String.concatWith ", " (map StructureName.toStringPlain searched)
-                ^ "] in context " ^ PrettyPrint.show_cpscontext ctx);
+                ^ "] in context " ^ PrettyPrint.show_cpscontext ctx ^ "\n");
                 raise CPSInternalError)
             handle CPSInternalError =>
                 (DebugPrint.p ("When transforming expression " ^ PrettyPrint.show_typecheckingCExpr e ^ " \n");
@@ -388,7 +388,7 @@ exception CPSInternalError
                         cpsTransformSig (ctx) ss (acc@[d]) cc (* next *)
                     )
                 )
-            | (d as CConstructorDecl (name, ctp, CConsInfoTypeConstructor) ):: ss => 
+            | (d as CConstructorDecl (name, ctp, CConsInfoTypeConstructor _) ):: ss => 
                 let val nargs = countSpineTypeArgs ctp
                 in
                     clams  nargs [] (fn (arglist, ret) => 
@@ -399,7 +399,7 @@ exception CPSInternalError
                     )
                 end
 
-            | (d as CConstructorDecl(name, tp, CConsInfoElementConstructor(_, index))) :: ss => 
+            | (d as CConstructorDecl(name, tp, CConsInfoElementConstructor( index))) :: ss => 
             let val nargs = countSpineTypeArgs tp
             (* val _ = DebugPrint.p ("constructor index is " ^ Int.toString index ^ "\n") *)
             in

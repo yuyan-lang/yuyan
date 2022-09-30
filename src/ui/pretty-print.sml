@@ -286,7 +286,7 @@ open TypeCheckingAST
 in
   case cinfo of 
     CConsInfoElementConstructor _ => "(el constructor)"
-    | CConsInfoTypeConstructor => "(type constructor)"
+    | CConsInfoTypeConstructor _ => "(type constructor)"
 end
 and show_typecheckingCExpr x =  
 let
@@ -430,7 +430,7 @@ in
 (case defop of JTDefinition(def) =>  (" (定义) >>> (" ^
 (* ^ show_typecheckingCExpr def ^ *)
  "...)")
-        | JTConstructor (CConsInfoTypeConstructor) => " （类型构造器）"
+        | JTConstructor (CConsInfoTypeConstructor _) => " （类型构造器）"
         | JTConstructor (CConsInfoElementConstructor _) => " （元素构造器）"
         | JTLocalBinder => "（局部绑定）"
         | JTPending => "（pending）"

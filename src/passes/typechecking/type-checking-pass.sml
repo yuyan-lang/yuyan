@@ -299,21 +299,23 @@ infix 5 <?>
                    
                     | _ => checkType ctx t (CUniverse) >>= (fn (t, ctx) => Success(t, ctx))
 
-                fun countOccurrencesOfElementConstructor(foundTypeConstructorName: StructureName.t) = 
+                (* fun countOccurrencesOfElementConstructor(foundTypeConstructorName: StructureName.t) = 
                 List.length (List.filter (fn (TermTypeJ(name, tp, jt, originalName)) => 
                     case jt of 
                         JTConstructor(CConsInfoElementConstructor(tcname, _)) => StructureName.semanticEqual tcname foundTypeConstructorName
                         | _ => false (* TODO: Fix the case of open *)
-                )    (getMapping ctx))
+                )    (getMapping ctx)) *)
                  
 
                 fun checkScopeAndIndexAgainstFoundTypeConstructor
                 (errReporting : RExpr)
-                (foundTypeConstructorName : StructureName.t) : cconstructorinfo witherrsoption =
+                (foundTypeConstructorName : StructureName.t)
+                (currentNumberOfConstructors : int)
+                 : cconstructorinfo witherrsoption =
                     (* if StructureName.semanticEqual (getCurSName ctx)  (StructureName.getDeclaringScope foundTypeConstructorName) *)
                     if length foundTypeConstructorName = 1 (* if in current scope, name should be singular *)
-                    then Success(CConsInfoElementConstructor(foundTypeConstructorName, 
-                            countOccurrencesOfElementConstructor(foundTypeConstructorName) + 1))
+                    then Success(CConsInfoElementConstructor( 
+                            currentNumberOfConstructors + 1))
                     else Errors.elementConstructorScopeError  errReporting ctx  
                     ("\n当前结构名：" ^ (StructureName.toStringPlain (getCurSName ctx))
                     ^ "类型构造器名：" ^ (StructureName.toStringPlain ( foundTypeConstructorName))
@@ -325,10 +327,12 @@ infix 5 <?>
                 fun traceVarOnly(errReporting : RExpr) (cexpr : CExpr) =  
                 weakHeadNormalizeType errReporting ctx cexpr >>= (fn cexpr => 
                     case cexpr of
-                    CUniverse => Success(CConsInfoTypeConstructor)
+                    CUniverse => Success(CConsInfoTypeConstructor (ref 0))
                     | CVar(v, vinfo) => (case vinfo of 
-                        CVTConstructor (name, CConsInfoTypeConstructor) =>  
-                            (checkScopeAndIndexAgainstFoundTypeConstructor errReporting name)
+                        CVTConstructor (name, CConsInfoTypeConstructor countRef) =>  
+                            ( let val res = checkScopeAndIndexAgainstFoundTypeConstructor errReporting name (!countRef)
+                            val _ = countRef := !countRef + 1
+                            in res end)
                         | CVTDefinition (v') => traceVarOnly errReporting v'
                         | _ => Errors.notATypeConstructor errReporting ctx "(1)"
                     )
@@ -341,8 +345,10 @@ infix 5 <?>
                         lookupCtx ctx v  >>= (fn lookedUpJ => 
                                         case  lookedUpJ of
                                             (cname, tp, jinfo) => (case jinfo
-                                            of JTConstructor (CConsInfoTypeConstructor) => 
-                            (checkScopeAndIndexAgainstFoundTypeConstructor errReporting cname)
+                                            of JTConstructor (CConsInfoTypeConstructor countRef) => 
+                            (let val res = checkScopeAndIndexAgainstFoundTypeConstructor errReporting cname (!countRef) 
+                                val _ = countRef := !countRef + 1
+                                in res end)
                                                 | JTDefinition (v') => (traceVarOnly (RVar(v)) v')
                                                 | _ => Errors.notATypeConstructor (RVar(v)) ctx "(3)"
                                             )
@@ -360,7 +366,7 @@ infix 5 <?>
                 (case t of 
                     RApp(t1, t2,p, soi) => getConsInfo false t1
                     | RVar(s) => analyzeVariable(s)
-                    | RUniverse(s) => Success(CConsInfoTypeConstructor)
+                    | RUniverse(s) => Success(CConsInfoTypeConstructor (ref 0))
                     | _ => Errors.notATypeConstructor t ctx "(4)"
                     )
                 val consInfo = getConsInfo true t
@@ -753,10 +759,10 @@ infix 5 <?>
                             (* val _ = DebugPrint.p ("[tc713] block " ^ PrettyPrint.show_typecheckingRExpr e 
                             ^ " ysnthesized as " ^ PrettyPrint.show_typecheckingCSig checkedSig) *)
                             in
-                            if blockIsDefinitelyModule checkedSig
-                            then Success((CBlock(checkedSig), CBlock(getSingatureForModule checkedSig)), ctx)(* the type of a block is just a block *)
-                            else if blockIsDefinitelySignature checkedSig
+                            if blockIsDefinitelySignature checkedSig
                             then Success((CBlock(checkedSig), CUniverse), ctx)(* the type of a block is just a block *)
+                            else if blockIsDefinitelyModule checkedSig
+                            then Success((CBlock(checkedSig), CBlock(getSingatureForModule checkedSig)), ctx)(* the type of a block is just a block *)
                             else (* treat as module by default , it is easy to force specify a signature *)
                             Success((CBlock(checkedSig), CBlock(getSingatureForModule checkedSig)), ctx)(* the type of a block is just a block *)
                             end
@@ -1349,6 +1355,9 @@ infix 5 <?>
                      (* assume what we get is a type checked module, not its signature 
                      TODO: it makes sense for module to store both its signature and implementation 
                      as result of type checking *)
+                     if blockIsDefinitelySignature csig
+                     then Errors.genericErrorStr (StructureName.toString importName) ctx "模块是签名，不支持导入"
+                     else
                         (withLocalGeneric ctx importName 
                         (CBlock (getSingatureForModule csig)) 
                         (JTDefinition (CBlock csig)) (
