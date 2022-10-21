@@ -872,6 +872,10 @@ infix 5 <?>
                                                 | _ => raise Fail "tcp629: should be the same length"
                                         in go (l, ls) ctx >>= (fn (ce, ctx) => Success(CTuple(ce, CTypeAnnNotAvailable), ctx))
                                         end
+                            | CMetaVar _ => 
+                                (synthesizeType ctx e) >>= (fn ((synthExpr, synthType), ctx) =>
+                                    tryTypeUnify ctx e (synthType) tt  >>= (fn ctx => Success (synthExpr, ctx))
+                                )
                             | _ => Errors.expectedProdType e (tt) ctx ("但却得到了" ^ PrettyPrint.show_typecheckingCExpr tt)
                             )
                         | RLazyTuple (l, soi) => (case tt of 
