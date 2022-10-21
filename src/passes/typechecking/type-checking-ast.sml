@@ -19,6 +19,7 @@ structure TypeCheckingAST = struct
                          | BFHandle
                          | BFIntSub
                          | BFIntEq
+                         | BFIntGt
 
     datatype CBuiltinConstant = 
                      CStringLiteral of UTF8String.t 

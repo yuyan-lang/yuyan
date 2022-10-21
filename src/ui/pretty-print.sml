@@ -160,6 +160,7 @@ case x of
       | BFRaise => "bf_raise"
       | BFHandle => "bf_handle"
       | BFIntEq => "bf_int_eq"
+      | BFIntGt => "bf_int_gt"
       | BFIntSub => "bf_int_sub"
 end
 

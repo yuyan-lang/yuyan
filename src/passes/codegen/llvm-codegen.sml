@@ -238,6 +238,8 @@ fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
     case p of
         LLVMPOpCmpEqInt(r, i1, i2) => 
             [toLLVMLoc r ^ " = icmp eq i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpCmpGtInt(r, i1, i2) => 
+            [toLLVMLoc r ^ " = icmp sgt i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
         | LLVMPOpCmpEqBool(r, i1, i2) => 
             [toLLVMLoc r ^ " = icmp eq i1 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
         | LLVMPOpCmpEqString(r, s1, s2) => 

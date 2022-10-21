@@ -34,6 +34,7 @@ let val cck  = closureConvertCont
         end
     in case x of 
         CPSPOpIntEq(i) => closureConvertBinaryPop i CPSPOpIntEq
+        | CPSPOpIntGt(i) => closureConvertBinaryPop i CPSPOpIntGt
         | CPSPOpIntSub(i) => closureConvertBinaryPop i CPSPOpIntSub
     end
 

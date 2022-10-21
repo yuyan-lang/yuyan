@@ -22,6 +22,7 @@ datatype cpsvar =  CPSVarLocal of int
     datatype cpsprimitiveop = 
       CPSPOpIntSub of cpsvalue * cpsvalue * (cpsvar * cpscomputation)
       | CPSPOpIntEq of cpsvalue * cpsvalue * (cpsvar * cpscomputation)
+      | CPSPOpIntGt of cpsvalue * cpsvalue * (cpsvar * cpscomputation)
 
 
     and cpscomputation = 

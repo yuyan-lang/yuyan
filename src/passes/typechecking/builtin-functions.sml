@@ -60,6 +60,7 @@ val newDynClsfdType : CType =
 
     val intSubType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIInt)))
     val intEqType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIBool)))
+    val intGtType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIBool)))
 
    fun typeOf (x : BuiltinFunc) : CType = case x of
     BFCallCC => callccType
@@ -68,6 +69,7 @@ val newDynClsfdType : CType =
     | BFHandle => handleType
     | BFIntSub => intSubType
     | BFIntEq => intEqType
+    | BFIntGt => intGtType
 
 
     fun parseStr(x : string) : BuiltinFunc option = case x of
@@ -77,6 +79,7 @@ val newDynClsfdType : CType =
         | "《《内建函数：尝试运行》》" =>  SOME(BFHandle)
         | "《《内建函数：整数：减》》" =>  SOME(BFIntSub)
         | "《《内建函数：整数：相等》》" =>  SOME(BFIntEq)
+        | "《《内建函数：整数：大于》》" =>  SOME(BFIntGt)
         | _ => NONE
 
 

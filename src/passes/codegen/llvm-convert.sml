@@ -251,6 +251,12 @@ this transforms access of cpsvar
                     LLVMPrimitiveOp(LLVMPOpBoolToValue(cpsVarToLLVMLoc i, llvmLocToValue tempLoc1))]
                 )
             )) ::: recur k
+            | CPSPOpIntGt (i1, i2, (i, k)) => ([], vaccessInt i1 (fn ai1 => 
+                vaccessInt i2 (fn ai2 => 
+                    [LLVMPrimitiveOp(LLVMPOpCmpGtInt(tempLoc1, llvmLocToValue ai1, llvmLocToValue ai2)),
+                    LLVMPrimitiveOp(LLVMPOpBoolToValue(cpsVarToLLVMLoc i, llvmLocToValue tempLoc1))]
+                )
+            )) ::: recur k
             | CPSPOpIntSub (i1, i2, (i, k)) => ([], vaccessInt i1 (fn ai1 => 
                 vaccessInt i2 (fn ai2 => 
                     [LLVMPrimitiveOp(LLVMPOpIntSub(tempLoc1, llvmLocToValue ai1, llvmLocToValue ai2)),
