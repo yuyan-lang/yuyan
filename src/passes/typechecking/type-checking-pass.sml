@@ -982,13 +982,16 @@ infix 5 <?>
                                         if pt = pe then
                                         ( 
                                                 checkType ctx e2 (t1) >>= (fn (checkedArg, ctx) => 
-                                        tryTypeUnify ctx e (
-                                            case evop of 
-                                            NONE => t2
-                                            | SOME ev => substTypeInCExpr checkedArg ([ev]) t2
-                                            ) tt >>= (fn ctx => 
-                                                    Success (CApp(ce1, checkedArg, CTypeAnn(synt)), ctx)
-                                                )
+                                                (* tt might be instantiated *)
+                                            weakHeadNormalizeType e1 ctx tt >>= (fn tt => 
+                                                tryTypeUnify ctx e (
+                                                    case evop of 
+                                                    NONE => t2
+                                                    | SOME ev => substTypeInCExpr checkedArg ([ev]) t2
+                                                    ) tt >>= (fn ctx => 
+                                                            Success (CApp(ce1, checkedArg, CTypeAnn(synt)), ctx)
+                                                        )
+                                                    )
                                             )
                                         ) else 
                                         raise Fail "tcp638: plicity of (possible) pi type should match requested plicity"

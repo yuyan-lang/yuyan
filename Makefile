@@ -17,8 +17,8 @@ yy_bs : yy $(YYBSSOURCES) build
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
 bsr : yy_bs 
-	# ./yy_bs 豫言编译器/入口。豫
-	./yy_bs 豫言编译器/编译步骤/语法分析/词法解析。豫
+	./yy_bs 豫言编译器/入口。豫
+	# ./yy_bs 豫言编译器/编译步骤/语法分析/词法解析。豫
 
 yyllvm:  $(SMLSOURCES)
 	mlton -codegen llvm -output yy -verbose 2 src/development.mlb
