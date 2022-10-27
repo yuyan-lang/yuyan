@@ -13,7 +13,7 @@ yyrt:
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
 
-yy_bs : yy $(YYBSSOURCES) build
+yy_bs : yy $(YYBSSOURCES) yyrt
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
 bsr : yy_bs 
