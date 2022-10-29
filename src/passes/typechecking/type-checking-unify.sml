@@ -264,14 +264,18 @@ infix 4 ~~~=
     end) *)
 
     fun tryTypeUnify (ctx : context) (expr: RExpr) (synthesized : CType) (checked : CType) : (context) witherrsoption =
-        typeUnify expr (fn (failedT1, failedT2) => 
-             TypeCheckingErrors.typeMismatch expr (synthesized) checked failedT1 failedT2 ctx
-        )
-        ctx synthesized checked  >>= (fn (constraints, context) => 
-        if length constraints = 0
-        then Success( context)
-        else raise Fail "ni85: type unify produces constraints"
-            (* else TypeCheckingErrors.typeMismatch expr (synthesized) checked ctx *)
+        weakHeadNormalizeType expr ctx synthesized >>= (fn synthesized =>
+            weakHeadNormalizeType expr ctx checked >>= (fn checked =>
+                typeUnify expr (fn (failedT1, failedT2) => 
+                    TypeCheckingErrors.typeMismatch expr (synthesized) checked failedT1 failedT2 ctx
+                )
+                ctx synthesized checked  >>= (fn (constraints, context) => 
+                if length constraints = 0
+                then Success( context)
+                else raise Fail "ni85: type unify produces constraints"
+                    (* else TypeCheckingErrors.typeMismatch expr (synthesized) checked ctx *)
+                )
+            ) 
         )
 
 end
