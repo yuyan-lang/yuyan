@@ -1296,8 +1296,6 @@ infix 5 <?>
                                 )
                             | _ => raise Fail "tcp457"
                             end
-                        (* | _ => newDef() allow repeated definitions *)
-                        (* Errors.redefinitionError n (StructureName.toStringPlain cname) ctx (List.last cname)  *)
                             )
                     | SOME(_) => (Errors.redefinitionError n (UTF8String.toString n) ctx n)
                 )
