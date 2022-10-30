@@ -18,8 +18,8 @@ yy_bs : yy $(YYBSSOURCES)
 
 bsr : yy_bs 
 	make yyrt
-	./yy_bs 豫言编译器/入口。豫
-	# ./yy_bs 豫言编译器/编译步骤/语法分析/词法解析。豫
+	# ./yy_bs 豫言编译器/入口。豫
+	./yy_bs 豫言编译器/编译步骤/语法分析/词法解析。豫
 	# ./yy_bs tests/example/example-3.yuyan
 	# ./yy_bs tests/comments/nested-1.yuyan
 
