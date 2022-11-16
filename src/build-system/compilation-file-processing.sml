@@ -102,12 +102,15 @@ val DEBUG = true
                     else
                     let val (newTypeCheckingInfo , updatedTCkingInfo) = 
                             if StaticErrorStructure.isSuccess typecheckingast andalso not updatedPreprocessingInfo
-                            then ( typecheckingast, false)
+                            then ( ( typecheckingast), false)
                             else (ExpressionConstructionPass.constructTypeCheckingASTTopLevel 
                             (StaticErrorStructure.valOf newPreprocessingInfo), true)
                         val _ = if DEBUG andalso updatedTCkingInfo then debugPrint 
                         ("Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ 
                         " updated: " ^ Bool.toString updatedTCkingInfo ^
+                        (* (if (StaticErrorStructure.isSuccess newTypeCheckingInfo) then 
+                            " DEBUG105: " ^ PrettyPrint.show_typecheckingRSig (StaticErrorStructure.valOf newTypeCheckingInfo)
+                             else "") ^ *)
                         "\n") else ()
                     in
                         if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)

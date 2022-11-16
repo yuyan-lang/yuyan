@@ -1297,7 +1297,8 @@ infix 5 <?>
                             | _ => raise Fail "tcp457"
                             end
                             )
-                    | SOME(_) => (Errors.redefinitionError n (UTF8String.toString n) ctx n)
+                    | SOME(CTermDefinition(prevName, _, _), _) => (Errors.redefinitionError n (UTF8String.toString n) ctx (prevName))
+                    | SOME(_) => (Errors.redefinitionError n (UTF8String.toString n ^ "(2)") ctx (n))
                 )
 
                 end
