@@ -108,3 +108,17 @@ yy_ptr yyIsPathRegularFile(yy_ptr path){
 
   return bool_to_addr(isfile);
 }
+
+yy_ptr yyPathExists(yy_ptr path){
+    uv_fs_t req;
+
+    char * pathC = addr_to_string(path);
+
+    int r = uv_fs_stat(NULL, &req, pathC, NULL);
+
+    if (r != 0){
+        return bool_to_addr(false);
+    }
+
+    return bool_to_addr(true);
+}
