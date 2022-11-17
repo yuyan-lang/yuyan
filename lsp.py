@@ -22,3 +22,5 @@ for i in range(4081):
 print(""""{jsonrpc":"2.0","id":0,"result":{"capabilities":{"textDocumentSync":{"openClose":true, "change":1}}}}""")
 
 time.sleep(10)
+
+os.path.dirname()

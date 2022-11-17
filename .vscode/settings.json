@@ -91,7 +91,9 @@
         "memory_resource": "cpp",
         "stop_token": "cpp",
         "cinttypes": "cpp",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "time.h": "c",
+        "limits.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

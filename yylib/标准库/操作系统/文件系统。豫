@@ -22,4 +22,12 @@
 
 其文件夹乎乃化字符串而爻也。
 其文件夹乎者会串而《《C调用》》名『yyIsPathDirectory』传串也。
+路径是文件夹乃化字符串而爻也。
+路径是文件夹者会串而《《C调用》》名『yyIsPathDirectory』传串也。
 
+路径是普通文件乃化字符串而爻也。
+路径是普通文件者会串而《《C调用》》名『yyIsPathRegularFile』传串也。
+
+「：get pwd：」
+获取当前路径乃化有而字符串也。
+获取当前路径者会甲而《《C调用》》名『yyGetCurrentWorkingDirectory』传元也。

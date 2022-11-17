@@ -83,11 +83,28 @@ yy_ptr yyIsPathDirectory(yy_ptr path){
 
   int r = uv_fs_stat(NULL, &req, pathC, NULL);
   if (r != 0){
-      fprintf(stderr, " cannot stat directory");
+      fprintf(stderr, " cannot stat directory - %s - \n", pathC);
+      errorAndAbort("cannot stat directory!!!!");
   }
   bool isdir = (((uv_stat_t*)req.ptr)->st_mode & S_IFDIR);
 
   return bool_to_addr(isdir);
 
 
+}
+
+yy_ptr yyIsPathRegularFile(yy_ptr path){
+
+    uv_fs_t req;
+
+    char * pathC = addr_to_string(path);
+
+  int r = uv_fs_stat(NULL, &req, pathC, NULL);
+  if (r != 0){
+      fprintf(stderr, " cannot stat file");
+      errorAndAbort("cannot stat file!!!");
+  }
+  bool isfile = (((uv_stat_t*)req.ptr)->st_mode & S_IFREG);
+
+  return bool_to_addr(isfile);
 }
