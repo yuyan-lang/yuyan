@@ -71,7 +71,7 @@ yy -h
 
 出于语言设计的早期阶段，我们会认真听取语言功能方面的建议。
 
-可以加入Slack讨论！
+欢迎加入Slack讨论！
 https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30n7-FQNwZ0tefBePMxPSFrcbGg
 
 ## 关于调试技巧 
