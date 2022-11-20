@@ -55,14 +55,14 @@ in
             in ((fv v *** (foldr (op***) (fromList []) (map (fn x => #1 x) fks')),
                 CPSSimpleCases(v, map (fn x => #2 x) fks')))
             end
-        |  CPSCases(v, ks) => 
+        |  CPSCases(v, ks, s) => 
             let val fks' = map (fn (pat, body) => 
                 let val (cfree, c') = closureConvert body
                 in (remove cfree (getFreeVarsInPat pat), (pat, c'))
                 end
             ) ks
             in ((fv v *** (foldr (op***) (fromList []) (map (fn x => #1 x) fks')),
-                CPSCases(v, map (fn x => #2 x) fks')))
+                CPSCases(v, map (fn x => #2 x) fks', s)))
             end
         | CPSIfThenElse(v, kt,kf) => 
             let val (ktfree, kt') = closureConvert kt

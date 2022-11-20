@@ -2,9 +2,9 @@
 
 #include "globalInclude.h"
 
-int matchException(int index){
+int matchException(char* index){
     printf("ERROR: A match exception has occurred. \n");
-    printf("index is %d (0x%016X)\n", index, index);
+    printf("index is %s\n", index);
     exit(1);
     return -1;
 }

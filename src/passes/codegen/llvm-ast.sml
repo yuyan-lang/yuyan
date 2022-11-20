@@ -21,7 +21,7 @@ datatype llvmarraytype =
         | LLVMArrayTypeReal
         | LLVMArrayTypeDynClsfd
 
-datatype llvmexception = LLVMExceptionMatch of llvmlocation
+datatype llvmexception = LLVMExceptionMatch of int (* name of global string constant *)
         
         (* the llvm primitive op treats arguments of correct type, it 
         does not perform conversion *)

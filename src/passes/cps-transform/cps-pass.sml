@@ -165,7 +165,7 @@ exception CPSInternalError
                         in 
                             (cpspattern, cpsTransformExpr ctx body cc)
                         end
-                        ) cases )))
+                        ) cases ), PrettyPrint.show_typecheckingCExpr originalExpr))
 
                             (* case pat of 
                                 CPatVar x => raise Fail "ni103: cps unsupported (yet) patterns"

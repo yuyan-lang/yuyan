@@ -512,7 +512,7 @@ case c of
     String.concatWith ","  (map show_cpsvar arglist)
     ^ " => " ^ sc c) l)
     ^ "}"
-            | CPSCases(v, l) => "(case "  ^ sv v ^ " of {" ^ 
+            | CPSCases(v, l, s) => "(case "  ^ sv v ^ " of {" ^ 
     String.concatWith "; " (map (fn (pat, c) => 
     show_cpspat pat
     ^ " => " ^ sc c) l)

@@ -301,20 +301,23 @@ in
                     @ [LLVMConditionalJump(indexLoc,recurComps)]
                     )
                 end
-            | CPSCases(v, cases) => 
+            | CPSCases(v, cases, s) => 
                     let
                         (* val decls = ref [] *)
                         (* ds the next case entry for all cases *)
                         (* contains all cases entries for all cases except the first, including the last spurious one *)
                         val nextBlockNames = List.tabulate (length cases, fn _ => UID.next()) 
+                        val stringName = UID.next()
+                        val stringLoc = UID.next()
                         fun compileCases i : (llvmdeclaration list * llvmstatement list) = 
                         if i = length cases 
-                        then([],
-                            [LLVMComment "CPSCases258: run out of cases"
+                        then([LLVMStringConstant(stringName, UTF8String.fromString s)],
+                            [LLVMComment "CPSCases258: run out of cases",
+                            LLVMStoreString(LLVMLocationLocal (stringLoc), (stringName, UTF8String.fromString s))
                             ]@
                                 (vaccess v (fn v' => [
                                     LLVMComment "run out of patterns, throw exception",
-                                    LLVMRaiseException(LLVMExceptionMatch v')])
+                                    LLVMRaiseException(LLVMExceptionMatch (stringLoc))])
                                 )
                             )
                             

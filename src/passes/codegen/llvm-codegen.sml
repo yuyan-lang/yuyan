@@ -365,7 +365,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
                         toBlockNameLabel defaultBlockName  ^ ":",
                         toLocalVar (UID.next()) ^ " = call i64 @matchException("
                         ^ "i64* " 
-                        ^ toLLVMLoc v 
+                        ^ toLocalVar v 
                         ^ ")",
                         "br label " ^ toBlockNameJump defaultBlockName  
                         (* jump to self (no other things we can do) ,
