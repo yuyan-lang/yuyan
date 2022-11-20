@@ -37,7 +37,7 @@ struct
 
     open ReplOptions
     fun smlnjMain ((name , args) : string * string list) =
-             if args = ["lsp"]
+             if args = ["lsp", "--stdio"]
              then (LanguageServerMode.startLSP(); OS.Process.success)
              else 
                 let val options = ArgumentParser.parseArgumentsTopLevel args
