@@ -226,6 +226,7 @@ RVar v => sst v
                     | RRealConstant ((i1,i2,l), soi) => "(real " ^ Int.toString i1 ^ "." ^Int.toString i2 ^ "("^Int.toString l ^")" ^")"
                     | RBoolConstant (b, soi) => "(" ^ Bool.toString b ^")"
                     | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
+                    | RLetInSingle (n, e1, e2, soi) => "(lets " ^ ss n ^ " = " ^ se e1  ^ " in "^  se e2  ^" )"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
                     | RSeqComp(e1, e2, soi) => "(" ^ se e1 ^ "; " ^ se e2 ^ ")"
@@ -344,6 +345,7 @@ in case x of
                     | CBuiltinConstant(bv) => show_bv bv
                     
                     | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
+                    | CLetInSingle (n, e1, e2) => "(lets " ^ ss n ^ " = " ^ se e1 ^ " in " ^  se e2 ^ ")"
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map se args) ^"⟩)"
                     | CBuiltinFunc(f) => show_typecheckingbuiltinfunc f

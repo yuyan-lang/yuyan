@@ -23,6 +23,7 @@ open CompilationStructure
             | CCase((_, e), cases, _) => 
                 recurExpr e @ List.concat (map (fn (pat, e) => recurExpr e) cases)
             | CLetIn(csig, e, _) => recurSig csig @ recurExpr e
+            | CLetInSingle(n, e1, e2) => recurExpr e1 @ recurExpr e2
             | CBuiltinConstant _ => []
             | CIfThenElse(e1,e2,e3) => recurExpr e1 @ recurExpr e2 @ recurExpr e3
             | CBuiltinFunc _ => []

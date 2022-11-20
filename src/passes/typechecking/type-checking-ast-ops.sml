@@ -70,6 +70,7 @@ infix 5 =/=
                 | CUniverse => []
                 | CLam(ev, eb, _) => List.filter (fn t => t ~<> [ev]) (freeTCVar eb)
                 | CLetIn _ => [] (* TODO: *)
+                (* | CLetInSingle _ => [] TODO: *)
                 | CFfiCCall _ => [] (* TODO !!! *)
                 | CBuiltinFunc (f) => []
                 | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
@@ -171,6 +172,7 @@ infix 5 =/=
                         | _ => (* maybe ce1 is a type constructor *) (Success t)
                 )
             | CLetIn _ => Success(t)
+            | CLetInSingle _ => Success(t)
             | CFfiCCall _ => Success(t)
             | CBuiltinFunc _ => Success(t)
             | CUnitExpr => Success(t)
@@ -300,6 +302,12 @@ infix 5 =/=
                         Success(CSeqComp(ce1, ce2, u1, u2))
                     )
                 )
+            | CLetInSingle(n, e1, e2) => 
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        Success(CLetInSingle(n, ce1, ce2))
+                    )
+                )
             (* | CPack(e1, e2, u) => 
                 recur e1 >>= (fn ce1 => 
                     recur e2 >>= (fn ce2 => 
@@ -406,6 +414,7 @@ infix 5 =/=
                 | CLam(ev, e2, u) => captureAvoid 
                     (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
                 | CLetIn _ => e (* TODO : do it *)
+                | CLetInSingle(n, e1, e2) => captureAvoid (fn (n', e2') => CLetInSingle(n', recur e1, e2')) n e2
                 | CProj (e1, idx, u) => CProj (recur e1, idx, u)
                 | CTuple(e, u) => CTuple (map recur e, u)
                 | CFfiCCall(name, args) => CFfiCCall(name, map recur args)

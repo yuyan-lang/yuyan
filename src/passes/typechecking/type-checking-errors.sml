@@ -104,6 +104,7 @@ structure TypeCheckingErrors =
             | RRealConstant (l, soi) => soi
             | RBoolConstant (l, soi) => soi
             | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
+            | RLetInSingle (name, e1, e2, soi) => reconstructWithArgs soi [name, reconstructFromRExpr e1, reconstructFromRExpr e2]
             | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
             | RBuiltinFunc(f, s) => s
             | RSeqComp(e1, e2, soi) => reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]

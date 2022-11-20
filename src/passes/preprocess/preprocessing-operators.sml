@@ -91,6 +91,7 @@ struct
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
     val implicitLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 520 [1]
     val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" false false 525 []
+    val letinSingleOp = Operators.parseOperatorStr "虑〇者〇而〇" true false 526 []
     val inlineCommentOp = Operators.parseOperatorStr "〇注〇" false false 480 []
 
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)

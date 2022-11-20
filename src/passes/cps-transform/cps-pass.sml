@@ -213,6 +213,9 @@ exception CPSInternalError
                 | CSeqComp(e1, e2, _, _) =>
                     cpsTransformExpr ctx e1 (fn v1 => 
                     cpsTransformExpr ctx e2 cc)
+                | CLetInSingle(n, e1, e2) =>
+                    cpsTransformExpr ctx e1 (fn v1 => 
+                        cpsTransformExpr (([n], PlainVar v1)::ctx) e2 cc)
                 (* | CTAbs (tv, e2, _) => 
                 let  (* TODO: erase type args *)
                 in CPSUnit(kcc (fn v => 

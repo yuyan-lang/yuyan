@@ -670,6 +670,15 @@ infix 5 <?>
                         synthesizeType ctx e2 >>= (fn ((ce2, t2), ctx) => 
                             Success((CSeqComp(ce1, ce2, CTypeAnn(t1), CTypeAnn(t2)), t2), ctx)
                         ))
+                    | RLetInSingle(name, e1, e2, soi) => (
+                            synthesizeType ctx e1 >>= (fn ((ce1, ct1), ctx) => 
+                                withLocalBinder ctx name ct1 (fn ctx => 
+                                    synthesizeType ctx e2 >>= (fn ((ce2, t2), ctx) => 
+                                        Success((CLetInSingle(name, ce1, ce2), t2), ctx)
+                                    )
+                                )
+                            )
+                        )
                     (* types *)
                     | RUnitType(s) => Success((CUnitType, CUniverse), ctx)
                     | RNullType(s) => Success((CNullType, CUniverse), ctx)
@@ -971,6 +980,15 @@ infix 5 <?>
                             checkType ctx e2 tt >>= (fn (ce2, ctx) => 
                                 Success(CSeqComp(ce1, ce2, CTypeAnn(t1), CTypeAnn(tt)), ctx)
                             ))
+                        | RLetInSingle(name, e1, e2, soi) => (
+                            synthesizeType ctx e1 >>= (fn ((ce1, ct1), ctx) => 
+                                withLocalBinder ctx name ct1 (fn ctx => 
+                                    checkType ctx e2 tt >>= (fn (ce2, ctx) => 
+                                        Success(CLetInSingle(name, ce1, ce2), ctx)
+                                    )
+                                )
+                            )
+                        )
                         | RApp (e1, e2, pe, soi) => 
                             (case pe of Explicit => 
                             synthesizeType ctx e1 
@@ -998,63 +1016,6 @@ infix 5 <?>
                                     | _ => Errors.attemptToApplyNonFunction e (synt) ctx
                                 )
                             )
-                        (* | RTAbs (tv, e2, soi) => (case tt of
-                            CForall (tv', tb) => 
-                                    checkType 
-                                    (addToCtxA (TermTypeJ([tv], CUniverse, JTLocalBinder, NONE)) ctx )
-                                    e2 (substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] tb) >>= (fn (ce2, ctx) => 
-                                                Success(CTAbs (tv, ce2, CTypeAnn(tt)), ctx)
-                                    )
-                            | _ => Errors.expectedUniversalType e (tt) ctx
-                        ) *)
-                        (* | RTApp (e2, t, soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
-                        weakHeadNormalizeType e2 ctx synt >>= (fn synt => 
-                            case synt of
-                                (CForall (tv, tb)) => (
-                                    checkExprIsType ctx t >>= (fn (ctapp, ctx) => 
-                                        (* need to normalize type! important! *)
-                                        (weakHeadNormalizeType t ctx ctapp >>= (fn nt => 
-                                            tryTypeUnify ctx e (tt) (substTypeInCExpr ctapp [tv] ( tb))
-                                        )) >>= (fn ctx => Success(CTApp(ce2, ctapp, CTypeAnn(CForall(tv, tb))), ctx)))
-                                    )
-                                | _ => Errors.attemptToApplyNonUniversal e (synt) ctx
-                                )
-                            ) *)
-                        (* | RPack (e1, e2, soi) => (case tt of
-                            CSigmaType (t1, tvop, t2) => 
-                                checkType ctx e1 t1 >>= (fn (ce1, ctx) =>
-                                    checkType ctx e2 
-                                    (case tvop of NONE => t2 | SOME tv => 
-                                                    substTypeInCExpr ce1 ([tv]) t2
-                                                )
-                                    >>= (fn (ce2, ctx) => Success(CPack(ce1, ce2, CTypeAnn(tt)), ctx))
-                                    )
-                            | _ => Errors.expectedExistentialType e (tt) ctx
-                        ) *)
-                        (* | ROpen (e1, (tv, ev, e2), soi) => synthesizeType ctx e1 >>= (fn ((ce1, synt), ctx) => 
-                        weakHeadNormalizeType e1 ctx synt >>= (fn nsynt => case nsynt of
-                            (CExists (tv', tb)) => 
-                            checkType (addToCtxA (TermTypeJ([ev], substTypeInCExpr (CVar([tv], CVTBinder)) [tv'] ( tb), JTLocalBinder, NONE)) ctx) e2 tt
-                            >>= (fn (ce2, ctx) => 
-                            Success(COpen((CTypeAnn(CExists (tv', tb)), ce1), (tv, ev, ce2), CTypeAnn(tt)), ctx)
-                            )
-                            | _ => Errors.attemptToOpenNonExistentialTypes e (synt) ctx
-                        )
-                        ) *)
-                        (* | RFold (e2, soi) => (case tt
-                            of 
-                            CRho (tv ,tb) => 
-                            checkType ctx e2 (substTypeInCExpr (CRho(tv, tb)) [tv] tb)
-                            >>= (fn (ce2, ctx) => Success (CFold(ce2, CTypeAnn(tt)), ctx))
-                            | _ => Errors.expectedRecursiveType e (tt) ctx
-                                ) *)
-                        (* | RUnfold (e2,soi) => synthesizeType ctx e2  >>= (fn ((ce2, synt), ctx) => 
-                        weakHeadNormalizeType e2 ctx synt >>= (fn nsynt => case nsynt of
-                            ( CRho (tv, tb)) =>(
-                                tryTypeUnify ctx e ((substTypeInCExpr (CRho (tv,  tb)) [tv] ( tb))) tt >>= (fn ctx =>
-                                Success(CUnfold(ce2, CTypeAnn(CRho(tv,tb))), ctx)))
-                            | _ => Errors.attemptToUnfoldNonRecursiveTypes e (synt) ctx
-                            )) *)
                         | RFix (ev, e, soi)=> 
                             withLocalBinder ctx ev tt (fn ctx => 
                                 checkType ctx e tt
