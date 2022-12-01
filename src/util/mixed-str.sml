@@ -10,7 +10,7 @@ struct
                   | UnparsedDeclaration of (mixedchar list * endinginfo) list  * quoteinfo(* an unparsed declaration has periods between quotes*)
                   | Name of UTF8String.t  * quoteinfo(* a name is the string between quotes that don't have periods or quotes *)
                   | Literal of UTF8String.t  * quoteinfo(* a literal is the string between double quotes *)
-                  (* | Comment of mixedchar list  * quoteinfo *)
+                  | Comment of mixedchar list  * quoteinfo
                   (* | ParsedExpression of Operators.OpAST (* a parsed expression *)
                   | ParsedDeclaration of TypeCheckingAST.Signature  *)
                   | SChar of UTF8Char.t (* top level characters , every thing else is quoted *)
@@ -49,7 +49,7 @@ struct
     | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
     | SChar t => [t]
     | PairOfQuotes q => putQuoteAround [] q
-    (* | Comment(p, q) => putQuoteAround (toUTF8String p) q *)
+    | Comment(p, q) => putQuoteAround (toUTF8String p) q
     end
 
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
@@ -165,7 +165,9 @@ struct
                 andalso getChar (List.hd p) ~= SpecialChars.colon 
                 andalso isPlainChar (List.last p)
                 andalso getChar (List.last p) ~= SpecialChars.colon
-            then NONE 
+                andalso ql ~= SpecialChars.leftSingleQuote
+                andalso qr ~= SpecialChars.rightSingleQuote
+            then SOME(Comment(p, q))
             else
                 if containsCharTopLevel p SpecialChars.period
                 then (* process as declaration *)

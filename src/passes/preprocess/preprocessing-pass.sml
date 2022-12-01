@@ -183,6 +183,11 @@ structure PreprocessingPass = struct
                     (* TODO: prevent repetitive imports *)
                 )
             end
+            fun removeCommentInMixedStr (s : MixedStr.t) : MixedStr.t = 
+                List.mapPartial (fn c => (case c of 
+                    MixedStr.Comment(content, soi) => (notifyPreprocessingAST [(PComment(content,soi), NONE)]; NONE)
+                    | _ => SOME c
+                )) s
             (* removes all unparsed, correctness relies inductively on preprocessAST's 
             guarantee that return is free of unparsed *)
             fun recursivelyTraverseAndParseOpAST(s : OpAST) (ctx as (curSname, vis, info): contextType) : (OpAST * contextType) witherrsoption = 
@@ -212,6 +217,8 @@ structure PreprocessingPass = struct
             and parseJudgment (s : MixedStr.t)(ctx : contextType) : (pJudgment * contextType) witherrsoption= 
             (let
             (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
+            (* filter out top level comments using hacks *)
+            val s = removeCommentInMixedStr s
             fun tp s = MixedStr.toPlainUTF8String s 
             fun getDeclContent (x : MixedStr.t) : (OpAST * contextType) witherrsoption = case x of
                 [MixedStr.UnparsedDeclaration(y, qi)] => (
@@ -308,9 +315,9 @@ structure PreprocessingPass = struct
                                 parsedStructureRef 
                             end
                         in
-                            if oper ~=** commentOp
-                            then Success(PComment (l1, oper), ctx)
-                            else 
+                            (* (* if oper ~=** commentOp
+                            then Success(PComment (l1, oper), ctx) *)
+                            else  *)
                             if oper ~=** openStructureOp
                             then 
                                 getStructureOpAST l1 >>= (fn structureOpAST => 
@@ -364,15 +371,20 @@ structure PreprocessingPass = struct
            
             (* the result will not contain unparsed anything *)
             and parseTypeOrExpr (ebody : MixedStr.t)(ctx : contextType) : OpAST witherrsoption
-            =  (PrecedenceParser.parseMixfixExpression 
-                        (allTypeAndExprOps@ lookupAllActiveOpers ctx) ebody) >>= (fn parseTree => 
-                        let
-                (* val _ = DebugPrint.p ("notifying " ^ PrettyPrint.show_opast parseTree ^ "\n\n") *)
-                val _ = notifyOpAST parseTree
-            in recursivelyTraverseAndParseOpAST parseTree ctx >>= (
-                fn (parsedOpAST, newContext) => Success(parsedOpAST) (* no need to add new context as constructs inside let is not accessible in any case *)
-            ) end
-                        )
+            =  
+            let
+                val ebody = removeCommentInMixedStr ebody
+            in
+                (PrecedenceParser.parseMixfixExpression 
+                            (allTypeAndExprOps@ lookupAllActiveOpers ctx) ebody) >>= (fn parseTree => 
+                            let
+                    (* val _ = DebugPrint.p ("notifying " ^ PrettyPrint.show_opast parseTree ^ "\n\n") *)
+                    val _ = notifyOpAST parseTree
+                in recursivelyTraverseAndParseOpAST parseTree ctx >>= (
+                    fn (parsedOpAST, newContext) => Success(parsedOpAST) (* no need to add new context as constructs inside let is not accessible in any case *)
+                ) end
+                            )
+            end
               
         (* the resulting preprocessing ast will not contain unparsed anything *)
             and preprocessAST (s : (MixedStr.t * MixedStr.endinginfo) list)(ctx : contextType) : (PreprocessingAST.t * contextType) witherrsoption = 

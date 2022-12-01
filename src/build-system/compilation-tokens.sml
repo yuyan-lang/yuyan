@@ -5,10 +5,13 @@ structure CompilationTokens = struct
     open OpAST
     open OpASTOps
 
+    fun addTokenChar(tokensInfo : token list ref) (c: UTF8Char.t) (tktype : tokenType) : unit = 
+        tokensInfo := (Token([c], TokenInfo tktype)) :: (!tokensInfo)
+    (* add character by character to support multiline string and comments in vscode *)
     fun addTokenStr(tokensInfo : token list ref) (s: UTF8String.t) (tktype : tokenType) : unit = 
-    (* (DebugPrint.p ("add tokens info called on " ^ PrettyPrint.show_utf8string s ^ "\n"); *)
-        tokensInfo := (Token(s, TokenInfo tktype)) :: (!tokensInfo)
-    (* ) *)
+        (map (fn c => addTokenChar tokensInfo c tktype) s ; ())
+
+        (* tokensInfo := (Token(s, TokenInfo tktype)) :: (!tokensInfo) *)
     fun updateUsefulTokensFromOperator(tokensInfo : token list ref)
         (ast : operator ) (tp :tokenType) : unit = (
             (* print "update called"; *)
@@ -123,7 +126,8 @@ structure CompilationTokens = struct
         | POpenStructure(name, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder;  upOper soi TkTpStructureKeyword)
         | PImportStructure(name, path, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder;  upOper soi TkTpStructureKeyword)
         | PReExportStructure(name, decls, soi) => (add (reconstructOriginalFromOpAST name) TkTpIdentifierBinder; upOper soi TkTpStructureKeyword)
-        | PComment(ebody, soi) => (add (MixedStr.toUTF8String ebody) TkTpComment;  upOper soi TkTpComment)
+        | PComment(ebody, qi) => (add (MixedStr.toUTF8String ebody) TkTpComment;  
+            updateUsefulTokensFromQuoteInfo tokensInfo qi TkTpComment)
         in ()
         end
 

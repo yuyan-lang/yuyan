@@ -67,6 +67,7 @@ struct
     (* | ParsedExpression e  => "(PARSED(EXPR):" ^ show_opast e ^ ")"
     | ParsedDeclaration d => "(PARSED(DECL):" ^ show_typecheckingSig d ^ ")" *)
     | SChar t => UTF8Char.toString t
+    | Comment (t, qi) => "<comment: " ^ show_mixedstr t ^ ">"
     | PairOfQuotes t => "(HOLE:)"
     end
     and show_mixedstr(u : MixedStr.t ) : string = String.concat (map show_mixedstrchar u)

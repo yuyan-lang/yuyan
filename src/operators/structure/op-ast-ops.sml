@@ -28,6 +28,6 @@ struct
   | POpenStructure(name, soi) => reconstructWithArgs soi [reconstructOriginalFromOpAST name]
   | PImportStructure(name, path, soi) => reconstructWithArgs soi [reconstructOriginalFromOpAST name]
   | PReExportStructure(name, decls, soi) => reconstructWithArgs soi [reconstructOriginalFromOpAST name]
-  | PComment(ebody, soi) => reconstructWithArgs soi [MixedStr.toUTF8String ebody]
+  | PComment(ebody, q) => MixedStr.putQuoteAround (MixedStr.toUTF8String ebody) q
 
 end
