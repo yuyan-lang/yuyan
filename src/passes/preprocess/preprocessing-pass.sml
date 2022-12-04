@@ -227,7 +227,7 @@ structure PreprocessingPass = struct
                         )
                     )
                 | _ => genSingletonError (MixedStr.toUTF8String x) "期待单一的声明快(expecting a single unparsed declaration)" NONE
-            val declParseTree = DeclarationParser.parseDeclarationSingleOutput declOps s
+            val declParseTree = DeclarationParser.parseDeclarationSingleOutput s
             (* val _ = notifyDeclarationParserResult declParseTree *)
             val res = case declParseTree of
                     (oper, [l1, l2]) => 

@@ -22,11 +22,12 @@ struct
     val importOpenStructureOp = Operators.parseOperatorStr "寻观〇之书" false false 0 []
     val reexportStructureOp = Operators.parseOperatorStr "诵〇之书" false false 0 []
     
-    val declOps = [termTypeJudgmentOp, constructorDeclarationOp, 
+    val declOpsNoImportOpen = [termTypeJudgmentOp, constructorDeclarationOp, 
      termDefinitionOp, opDeclarationOp, 
-     (* commentOp, *)
-    (* publicStructureOp, privateStructureOp,  *)
     openStructureOp, importStructureOp, importOpenStructureOp, reexportStructureOp]
+    val declOpsWithImportOpen = [termTypeJudgmentOp, constructorDeclarationOp, 
+     termDefinitionOp, opDeclarationOp, 
+     importOpenStructureOp, reexportStructureOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t
     exception PreprocessMalformedPrecedence of UTF8String.t
