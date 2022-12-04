@@ -44,12 +44,12 @@ structure PreprocessingPass = struct
     ) snamevisopl) ^ "；\n"
           )
 
-    fun structureNameNotFoundError sName ctx = ( genSingletonError (StructureName.toString sName) 
-                 ("结构名未找到(Structure Name " ^ StructureName.toStringPlain sName ^ " not found in context)") (showctxPre ctx))
+    fun structureNameNotFoundError sName ctx addmsg = ( genSingletonError (StructureName.toString sName) 
+                 ("结构名未找到(Structure Name " ^ addmsg ^ StructureName.toStringPlain sName ^ " not found in context)") (showctxPre ctx))
 
     fun lookupContextForOpers((curSName,curV,  ctx) : contextType) (sName : structureName) : Operators.operator list witherrsoption=
         case ctx of
-            [] => structureNameNotFoundError sName (curSName, curV, ctx)
+            [] => structureNameNotFoundError sName (curSName, curV, ctx) "(2)"
             | ((s, v, opl):: ss) => 
             (* if StructureName.semanticEqual s sName then opl else lookupContextForOpers (curSName, curV,ss) sName *)
             (case StructureName.checkRefersTo s sName curSName
@@ -121,7 +121,7 @@ structure PreprocessingPass = struct
         if length allDirectOpens = 0 (* maybe it hits somecontext with no operators *)
         andalso length allDirectOperators = 0 
         andalso length allIndirectStructures = 0
-        then structureNameNotFoundError openName ctx
+        then structureNameNotFoundError openName ctx "(1)"
         else Success(curSName, curV, allIndirectStructures@newSNameOpL)
         end
  
@@ -179,7 +179,7 @@ structure PreprocessingPass = struct
                 lookupImportPreprocessingAST importName >>= (fn (tree, path) => 
                 case ctx of 
                     (curSName, vis, imports) => 
-                   Success ((curSName, vis, imports@extractAllOperators importName true tree), path)
+                   Success ((curSName, vis, imports@extractAllOperators [List.last importName] true tree), path)
                     (* TODO: prevent repetitive imports *)
                 )
             end
@@ -345,8 +345,8 @@ structure PreprocessingPass = struct
                             (newContextAfterImportingStructure structureName ctx 
                                 <?> (fn _ => genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
                             ) >>= (fn (ctx, path) =>
-                                newContextAfterOpeningStructure structureName ctx >>= (fn ctx => 
-                                Success([PImportStructure (structureOpAST, path, oper), POpenStructure (structureOpAST, oper)], ctx)
+                                newContextAfterOpeningStructure [List.last structureName] ctx >>= (fn ctx => 
+                                Success([PImportStructure (structureOpAST, path, oper), POpenStructure (UnknownOpName(List.last(structureName)), oper)], ctx)
                                 )
                             )
                             ))

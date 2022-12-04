@@ -380,7 +380,9 @@ exception CPSInternalError
                 (fn resvar =>  (cpsTransformSig (ctx) ss (acc@[d]) cc))
             | (d as CImport (name, fp)) :: ss => 
             let val varName = getCPSInfo fp
-            in cpsTransformSig (([List.last name], GlobalVar varName) :: (name, GlobalVar varName) ::ctx) ss (acc@[d]) cc
+            in cpsTransformSig (([List.last name], GlobalVar varName) 
+            (* :: (name, GlobalVar varName)  *)
+                ::ctx) ss (acc@[d]) cc
             end
             | (d as COpenStructure(sname, csig)) :: ss => 
                 (* structure are compiled as tuple, and open compiled as complete projection *)

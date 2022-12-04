@@ -1325,17 +1325,18 @@ infix 5 <?>
                      if blockIsDefinitelySignature csig
                      then Errors.genericErrorStr (StructureName.toString importName) ctx "模块是签名，不支持导入"
                      else
-                        (withLocalGeneric ctx importName 
+                        (* (withLocalGeneric ctx importName 
                         (CBlock (getSingatureForModule csig)) 
                         (JTDefinition (CBlock csig)) (
-                            fn ctx => 
+                            fn ctx =>  *)
                         (* semantic change (as of 12/4/2022) to Haskell's import semantics *)
                             (withLocalGeneric ctx [List.last(importName)]
                             (CBlock (getSingatureForModule (csig)))
                             (JTDefinition (CBlock(csig))) (fn ctx => 
                                 typeCheckSignature ctx (ss) isModule (acc@[CImport(importName, path)])
                             )
-                        )))
+                        )
+                        (* )) *)
                         (* (addToCtxAL (List.concat (List.mapPartial (fn x => case x of 
                             (* CTypeMacro(sname, t) => SOME(TypeDef(sname, t, ())) *)
                              CTermDefinition(sname, e, t) => SOME([TermTypeJ(importName@[sname], t, JTDefinition(e), NONE)

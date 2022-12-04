@@ -86,7 +86,7 @@ structure TypeCheckingUtil = struct
                                 | NONE => Errors.genericErrorStr curNameComp ctx ("结构中未找到该名称" ^ 
                                 "\n所有名称：" ^ PrettyPrint.show_typecheckingCSig csig)
                             )
-                        | _ => Errors.genericErrorStr curNameComp ctx "试图从非结构进行投影"
+                        | _ => Errors.genericError (RVar(rvarName)) ctx ("试图从非结构进行投影:" ^ PrettyPrint.show_typecheckingCExpr acctp)
                             (* (StructureName.toString (List.take(rvarName, i-1))) *) (* this will not have source range *)
                     )
                 )
