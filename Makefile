@@ -3,6 +3,7 @@ SMLSOURCEDIR=src
 YYBSSOURCEDIR=豫言编译器
 SMLSOURCES := $(shell find $(SMLSOURCEDIR) -name '*.sml' ! -path "*/.cm/*")
 YYBSSOURCES := $(shell find $(YYBSSOURCEDIR) -name '*。豫' ! -path "*/.cm/*")
+YYTESTSOURCES := $(shell find . -name '*。测试。豫' ! -path "*/.cm/*")
 
 build: yy yyrt
 
@@ -24,6 +25,12 @@ bsr : yy_bs
 	# ./yy_bs tests/comments/nested-1.yuyan
 	./yy_bs yylib/标准库。豫
 	# ./yy_bs tests/syntax/import/hello-world-2.yuyan
+
+bst : yy_bs $(YYTESTSOURCES)
+	./yy_bs $(YYTESTSOURCES)
+
+yyt : yy $(YYTESTSOURCES)
+	./yy $(YYTESTSOURCES)
 
 yyllvm:  $(SMLSOURCES)
 	mlton -codegen llvm -output yy -verbose 2 src/development.mlb
@@ -47,6 +54,10 @@ install:  build
 
 clean:
 	rm yy
+
+cleanbs:
+	rm yy_bs
+
 
 superclean:
 	rm -f yy
