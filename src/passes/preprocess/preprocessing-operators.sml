@@ -19,13 +19,14 @@ struct
     (* val privateStructureOp = Operators.parseOperatorStr "吾书〇曰〇" false false 0 [] *)
     val openStructureOp = Operators.parseOperatorStr "观〇之书" false false 0 []
     val importStructureOp = Operators.parseOperatorStr "寻〇之书" false false 0 []
+    val importOpenStructureOp = Operators.parseOperatorStr "寻观〇之书" false false 0 []
     val reexportStructureOp = Operators.parseOperatorStr "诵〇之书" false false 0 []
     
     val declOps = [termTypeJudgmentOp, constructorDeclarationOp, 
      termDefinitionOp, opDeclarationOp, 
      (* commentOp, *)
     (* publicStructureOp, privateStructureOp,  *)
-    openStructureOp, importStructureOp, reexportStructureOp]
+    openStructureOp, importStructureOp, importOpenStructureOp, reexportStructureOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t
     exception PreprocessMalformedPrecedence of UTF8String.t

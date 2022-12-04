@@ -214,7 +214,7 @@ structure PreprocessingPass = struct
                     | _ => Success(s, ctx)
 
 
-            and parseJudgment (s : MixedStr.t)(ctx : contextType) : (pJudgment * contextType) witherrsoption= 
+            and parseJudgment (s : MixedStr.t)(ctx : contextType) : (pJudgment list * contextType) witherrsoption= 
             (let
             (* val _ = print ("Parsing judgment on" ^ PrettyPrint.show_mixedstr s ^ "\n"); *)
             (* filter out top level comments using hacks *)
@@ -235,9 +235,9 @@ structure PreprocessingPass = struct
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx)) *)
                     (* else  *)
                     if oper ~=** termTypeJudgmentOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 => tp l1 >>= (fn l1 =>  Success(PTermTypeJudgment (l1, l2, oper), ctx)))
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 => tp l1 >>= (fn l1 =>  Success([PTermTypeJudgment (l1, l2, oper)], ctx)))
                     else if oper ~=** constructorDeclarationOp
-                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success(PConstructorDecl (l1, l2, oper), ctx)))
+                    then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success([PConstructorDecl (l1, l2, oper)], ctx)))
                     (* else if oper ~=** termMacroOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
                     else if oper ~=** termDefinitionOp
@@ -270,10 +270,10 @@ structure PreprocessingPass = struct
                                                 val newOps = goOps [l1] ast
                                                 val newctx = (curSName, vis, imports@newOps)
                                             in 
-                                                Success(PTermDefinition (l1, l2, oper), newctx)
+                                                Success([PTermDefinition (l1, l2, oper)], newctx)
                                             end
                                 )
-                        | _ => Success(PTermDefinition (l1, l2, oper), ctx))
+                        | _ => Success([PTermDefinition (l1, l2, oper)], ctx))
                         )
                     (* else if oper ~=** privateStructureOp
                     then  (getDeclContent l2) >>= (fn (declOpAST, newContext) =>   
@@ -300,7 +300,7 @@ structure PreprocessingPass = struct
                                 let val newOp = POpDeclaration (pl1, parsedAssoc, NumberParser.parseInteger (pl3), (pl2, pl3, oper))
                                     val newContext = (insertIntoCurContextOp ctx (parsePOperator newOp))
                                 in
-                                    Success(newOp, newContext)
+                                    Success([newOp], newContext)
                                 end
                             )
                         )
@@ -323,7 +323,7 @@ structure PreprocessingPass = struct
                                 getStructureOpAST l1 >>= (fn structureOpAST => 
                             ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName => 
                                 newContextAfterOpeningStructure structureName ctx >>= (fn newContext => 
-                                        Success(POpenStructure (structureOpAST, oper), newContext)
+                                        Success([POpenStructure (structureOpAST, oper)], newContext)
                                     )
                                 )
                             )
@@ -334,17 +334,29 @@ structure PreprocessingPass = struct
                             (newContextAfterImportingStructure structureName ctx 
                                 <?> (fn _ => genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
                             ) >>= (fn (newContext, path) =>
-                                Success(PImportStructure (structureOpAST, path, oper), newContext)
+                                Success([PImportStructure (structureOpAST, path, oper)], newContext)
                                 )
                             )
                             )
+                            else
+                            if oper ~=** importOpenStructureOp
+                            then getStructureOpAST l1 >>= (fn structureOpAST => 
+                            ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  
+                            (newContextAfterImportingStructure structureName ctx 
+                                <?> (fn _ => genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
+                            ) >>= (fn (ctx, path) =>
+                                newContextAfterOpeningStructure structureName ctx >>= (fn ctx => 
+                                Success([PImportStructure (structureOpAST, path, oper), POpenStructure (structureOpAST, oper)], ctx)
+                                )
+                            )
+                            ))
                             else
                             if oper ~=** reexportStructureOp
                             then 
                                 getStructureOpAST l1 >>= (fn structureOpAST => 
                             ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName => 
                                 (* newContextAfterOpeningStructure structureName ctx >>= (fn newContext =>  *)
-                                        Success(PReExportStructure (structureOpAST, getReExportDecls structureName ctx, oper), ctx)
+                                        Success([PReExportStructure (structureOpAST, getReExportDecls structureName ctx, oper)], ctx)
                                     (* ) *)
                                 )
                             )
@@ -355,8 +367,8 @@ structure PreprocessingPass = struct
                 (* val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res) *)
                 in res end
                 handle DeclarationParser.DeclNoParse (expr) => (
-                    if length expr = 0 then Success (PEmptyDecl, ctx)
-                    else (parseTypeOrExpr expr ctx) >>= (fn parsedExpr => Success(PDirectExpr parsedExpr, ctx))
+                    if length expr = 0 then Success ([PEmptyDecl], ctx)
+                    else (parseTypeOrExpr expr ctx) >>= (fn parsedExpr => Success([PDirectExpr parsedExpr], ctx))
                 )
                 | DeclarationParser.DeclAmbiguousParse (expr, parses) => (
                     genSingletonError (MixedStr.toUTF8String expr)
@@ -399,9 +411,10 @@ structure PreprocessingPass = struct
                 case s of 
                 [] => Success([], ctx)
                 | ((x,ei) :: xs) => parseJudgment x ctx >>= (fn (parsed, newContext) =>
-                    let val _  = notifyPreprocessingAST [(parsed, ei)]
+                    let val parsedWithEi = (map (fn parsed => (parsed, ei)) parsed)
+                        val _  = notifyPreprocessingAST parsedWithEi
                     in 
-                        (parsed, ei) ::: preprocessAST xs newContext
+                        foldr (fn ((parsed, ei), acc) => (parsed, ei) ::: acc) (preprocessAST xs newContext) parsedWithEi
                     end
                     )
                 end
