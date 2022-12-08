@@ -29,6 +29,9 @@ bsr : yy_bs
 bst : yy_bs $(YYTESTSOURCES)
 	./yy_bs $(YYTESTSOURCES)
 
+bsrt : yy_bs $(YYTESTSOURCES)
+	./yy_bs yylib/runtest.yuyan
+
 yyt : yy $(YYTESTSOURCES)
 	./yy $(YYTESTSOURCES)
 
