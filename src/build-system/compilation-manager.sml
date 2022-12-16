@@ -452,6 +452,12 @@ end *)
 
 
     exception CircularReference of dependency list
+    fun showCircularReferenceDependencyList (ds : dependency list) : string = 
+        String.concatWith "\n; " (map (fn (fruri, sname) => 
+            FileResourceURI.access fruri ^ " with SName " ^ (StructureName.toStringPlain sname)
+            ) ds)
+
+
     fun requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) (requestingStack : dependency list) :unit = 
         performFileUpdate filepath ( 
             CompilationFileProcessing.processFileUpTo level (cm)
@@ -473,7 +479,8 @@ end *)
                             ; CompilationFileOps.getPreprocessingAST (lookupFileByPath (fp) cm) >>= (fn tree => 
                                     Success (tree, fp)
                                 )
-                            ) handle CircularReference fpl => genSingletonError (StructureName.toString structureName) "循环引用" NONE
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString structureName) 
+                                ("循环引用 (1) " ^ showCircularReferenceDependencyList fpl) NONE
                         )
                     )
                 )),
@@ -484,7 +491,7 @@ end *)
                             else (
                     requestFileProcessing (fp) UpToLevelTypeCheckedInfo cm ((fp, errName) :: requestingStack);
                     CompilationFileOps.getTypeCheckedAST (lookupFileByPath fp cm)
-                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用" NONE
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用 (2)" NONE
                     ))
                 , getDependencyInfo = (fn fp =>  fn dfpl =>
                     getDependencyOrder fp dfpl cm
@@ -499,7 +506,7 @@ end *)
                             else (
                     requestFileProcessing (fp) UpToLevelCPSInfo cm ((fp, errName) :: requestingStack);
                     CompilationFileOps.getCPSInfo (lookupFileByPath fp cm)
-                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用" NONE
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用 (3)" NONE
                     ))
                 }
             ) cm 
