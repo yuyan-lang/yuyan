@@ -34,7 +34,6 @@ Library
   structure TypeCheckingEntry
   structure PreprocessingPass
   structure PreprocessingAST
-  structure SignatureParsingOrchestrator
   structure ExpressionConstructionPass 
   structure TypeCheckingASTOps 
 
@@ -110,6 +109,7 @@ is
   $/smlnj-lib.cm
   $/ml-lpt-lib.cm  (* for UTF8 since the smlnj-lib clashes with cmlib *)
   $/json-lib.cm
+  $cml/cml.cm
 
   parser/elaborate-precedence.sml
   parser/bracket-scanner.sml
@@ -159,7 +159,6 @@ is
   passes/preprocess/preprocessing-pass.sml
   passes/preprocess/preprocessing-ast.sml
   passes/preprocess/expression-construction-pass.sml
-  passes/preprocess/signature-parsing-orchestrator.sml
   passes/preprocess/preprocessing-operators.sml
   passes/preprocess/structure-name.sml
   passes/typechecking/type-checking-errors.sml

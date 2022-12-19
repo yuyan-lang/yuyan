@@ -199,6 +199,7 @@ struct
         end
 
 
+    (* val currentRunningPID :  (CML.thread_id option) ref = ref NONE *)
         
     fun continueLSP (server : LanguageServer.t) : unit = 
     let 
@@ -221,7 +222,12 @@ struct
                 in
                     continueLSP(server)
                 end)
-    | NONE => (handleJSONNotification server method params; continueLSP(server))
+    | NONE => (
+        (* let val tid = CML.spawn(fn () => handleJSONNotification server method params)
+        in (continueLSP(server))
+        end *)
+        (handleJSONNotification server method params; continueLSP(server))
+        )
     end
     handle JSONUtil.FieldNotFound (jv, s) => (print "Field Not Found Exeption"; print s; raise JSONUtil.FieldNotFound (jv, s))
 
