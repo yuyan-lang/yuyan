@@ -62,7 +62,7 @@ struct
                     ("textDocumentSync", 
                         OBJECT[
                             ("openClose", BOOL true),
-                            ("change", INT 1),
+                            ("change", INT 1), (* do not handle change checking file with over 400 lines on every key stroke is very slow *)
                             ("save", OBJECT [
                                 ("includeText", BOOL true)
                             ])
@@ -166,6 +166,12 @@ struct
             ());
             requestTypeCheck())
 
+    fun updateFileBufferContentNoTypeCheck(content : string) =
+        (CompilationManager.updateContentForFilepath
+            (FileResourceURI.make (getDocumentPath params))
+            content
+            (LanguageServer.getCM server))
+
     fun updateFileBufferContent(content : string) =
         (CompilationManager.updateContentForFilepath
             (FileResourceURI.make (getDocumentPath params))
@@ -175,7 +181,8 @@ struct
     in 
     case method of
      "textDocument/didOpen" => addFileBufferContent((asString (get ((Option.valOf params),[SEL "textDocument", SEL "text"]))))
-     | "textDocument/didChange" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "contentChanges", SUB 0, SEL "text"]))))
+     | "textDocument/didChange" => updateFileBufferContentNoTypeCheck((asString (get ((Option.valOf params),[SEL "contentChanges", SUB 0, SEL "text"]))))
+     | "textDocument/didSave" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "text"]))))
      | _ => ()
     end
 
