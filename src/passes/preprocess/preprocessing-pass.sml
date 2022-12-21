@@ -201,14 +201,14 @@ structure PreprocessingPass = struct
                         if Operators.eqOpUid oper PreprocessingOperators.inlineCommentOp  (* do not parse the rhs of comment *)
                         then
                         recursivelyTraverseAndParseOpAST (hd l) ctx >>= (fn (hdl, _) => Success(OpAST(oper, [hdl, (hd (tl l))]), ctx)) (* context info can be safely ignored in all other cases*)
-                        else
-                        if Operators.eqOpUid oper PreprocessingOperators.letinOp 
+                        (* else *)
+                        (* if Operators.eqOpUid oper PreprocessingOperators.letinOp 
                         then (case l of 
                                 [decls, expr] => recursivelyTraverseAndParseOpAST decls (curSname@(StructureName.localName()), vis, info)
                                     >>= (fn (decls, newContext as (_, _, newInfo)) => recursivelyTraverseAndParseOpAST expr (curSname, vis, newInfo)  
                                     >>= (fn (expr, newContext) => Success(OpAST(oper, [decls, expr]), newContext)))
                                 | _ => raise Fail "pp101"
-                            )
+                            ) *)
                         else mapM (fn x =>recursivelyTraverseAndParseOpAST x ctx) l >>= (fn l => Success(OpAST(oper, map (#1) l), ctx)) (* context info can be safely ignored in all other cases*)
                         )
                     | _ => Success(s, ctx)

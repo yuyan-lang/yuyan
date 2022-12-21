@@ -9,7 +9,7 @@ open CPSHelper
 exception CPSInternalError
 
 
-
+    fun  toDirectExprName i = UTF8String.fromString ("cdirectexpr" ^ Int.toString i)
 
 
     fun klookupLabel ( ctx : (Label * CType) list) (l : Label) : int = 
@@ -56,8 +56,7 @@ exception CPSInternalError
                                 | CTermDefinition(dname, _, _)
                                 | CConstructorDecl(dname, _, _)
                                 ) => CPSProj(structureValue, i, kcc (fn projected => go (i+1) (([dname], PlainVar projected)::ctx)))
-                                | (CDirectExpr(_ ) 
-                                | CImport _ | COpenStructure _) => go (i+1) ctx
+                                | (CDirectExpr _ |  CImport _ | COpenStructure _) => go (i+1) ctx
                             )
                             end
                 in
@@ -278,7 +277,7 @@ exception CPSInternalError
                     ) (fn argvs => 
                         CPSFfiCCall (cFuncName, argvs, kcc cc)
                     ) args []
-                | CLetIn(csig, e,t) => 
+                (* | CLetIn(csig, e,t) => 
                 ( (cpsTransformSig ctx csig [] (fn (v) => 
                 let
                     (* val _ = DebugPrint.p ("CPS Let Partial Context:" ^ (PrettyPrint.show_cpscontext  newCtx) ^ "\n") *)
@@ -287,7 +286,7 @@ exception CPSInternalError
                         cpsTransformExpr newCtx e cc
                     )
                 end
-                )))
+                ))) *)
                 | CBuiltinFunc(f) =>  CPSBuiltin.cpsTransformBuiltinFunc f cc
                 (* types *)
                 (* TODO: erase them*)
@@ -355,8 +354,8 @@ exception CPSInternalError
                                     | CTermDefinition(dname, _, _)
                                     | CConstructorDecl(dname, _, _)
                                     ) => resolveSNameInCtx ctx [dname] (fn v => go (i+1) (values@[CPSValueVar v]))
-                                    | (CDirectExpr _ |
-                                    CImport _ | COpenStructure _) => CPSUnit(kcc (fn v => go (i+1)(values@[CPSValueVar v])))
+                                    | CDirectExpr (n, _, _)  => resolveSNameInCtx ctx [toDirectExprName n] (fn v => go (i+1) (values@[CPSValueVar v]))
+                                    | (CImport _ | COpenStructure _) => CPSUnit(kcc (fn v => go (i+1)(values@[CPSValueVar v])))
                                 )
                                 end
                             )
@@ -375,9 +374,9 @@ exception CPSInternalError
                     (cpsTransformSig (([name], PlainVar resvar)::ctx) ss (acc@[d]) cc)
                 )
 
-            | (d as CDirectExpr (e, tp)) :: ss => 
+            | (d as CDirectExpr (n, e, tp)) :: ss => 
                 cpsTransformExpr ctx e 
-                (fn resvar =>  (cpsTransformSig (ctx) ss (acc@[d]) cc))
+                (fn resvar =>  (cpsTransformSig (([toDirectExprName n], PlainVar resvar)::ctx) ss (acc@[d]) cc))
             | (d as CImport (name, fp)) :: ss => 
             let val varName = getCPSInfo fp
             in cpsTransformSig (([List.last name], GlobalVar varName) 
@@ -446,7 +445,7 @@ exception CPSInternalError
         fun cpsTransformSigTopLevel (initialCtx : context) (s : CSignature) (storeLoc : cpsvar)
             :  cpscomputation =
             (
-                (* DebugPrint.p (PrettyPrint.show_typecheckingCSig s); *)
+                (* DebugPrint.p ("csig is " ^ PrettyPrint.show_typecheckingCSig s); *)
 
             let 
             (* val finalContext = ref []

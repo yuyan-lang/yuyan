@@ -226,7 +226,7 @@ RVar v => sst v
                     | RIntConstant (l, soi) => "(" ^ Int.toString l ^")"
                     | RRealConstant ((i1,i2,l), soi) => "(real " ^ Int.toString i1 ^ "." ^Int.toString i2 ^ "("^Int.toString l ^")" ^")"
                     | RBoolConstant (b, soi) => "(" ^ Bool.toString b ^")"
-                    | RLetIn (s, e, soi) => "(let " ^ show_typecheckingRSig s ^ " in "^  se e  ^" end"
+                    | RLetIn (s, soi) => "(let " ^ show_typecheckingRSig s ^ " end)"
                     | RLetInSingle (n, e1, e2, soi) => "(lets " ^ ss n ^ " = " ^ se e1  ^ " in "^  se e2  ^" )"
                     | RFfiCCall (s, e, soi) => "(ccall \"" ^ se e ^ "\" args "^  se e  ^")"
                     | RBuiltinFunc(f, s) => show_typecheckingbuiltinfunc f
@@ -345,7 +345,7 @@ in case x of
                     | CFix (x, e, t) => "(fix " ^ ss x ^ "." ^   se e ^")" ^ cst t
                     | CBuiltinConstant(bv) => show_bv bv
                     
-                    | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end" 
+                    (* | CLetIn (s, e, t) => "(let " ^ show_typecheckingCSig s ^ " in "^  se e  ^ cst t ^" end"  *)
                     | CLetInSingle (n, e1, e2) => "(lets " ^ ss n ^ " = " ^ se e1 ^ " in " ^  se e2 ^ ")"
                     | CFfiCCall(fname, args) => 
                     "(ccall \"" ^ ss fname ^ "\" args ⟨"^  String.concatWith ", " (map se args) ^"⟩)"
@@ -384,7 +384,7 @@ then
     (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
    CTermDefinition(ename, ebody, tp) => UTF8String.toString ename 
   | CConstructorDecl(ename, etype, cconsinfo) =>  UTF8String.toString ename 
-  | CDirectExpr(ebody, tp) => "<expr>"
+  | CDirectExpr(n, ebody, tp) => show_typecheckingCExpr ebody
   | CImport(name, fp) => "<import>"
   | COpenStructure(name, csig) => "<open>" 
   | CPureDeclaration(name, tp) => UTF8String.toString name  
@@ -395,7 +395,7 @@ case x of
     (* CTypeMacro(tname, tbody) => "type " ^ StructureName.toStringPlain tname ^ " = " ^ show_typecheckingCType  tbody *)
    CTermDefinition(ename, ebody, tp) => UTF8String.toString ename ^ " = " ^ show_typecheckingCExpr  ebody ^ " : " ^ show_typecheckingCType tp
   | CConstructorDecl(ename, etype, cconsinfo) => "cons " ^ UTF8String.toString ename ^ " : " ^ show_typecheckingCExpr  etype
-  | CDirectExpr(ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
+  | CDirectExpr(n, ebody, tp) => "/* eval */ " ^ show_typecheckingCExpr ebody ^ "/* end eval */ " 
   | CImport(name, fp) => "import " ^ StructureName.toStringPlain name  ^ ""
   | COpenStructure(name, csig) => "open " ^ StructureName.toStringPlain name  ^ ""
   | CPureDeclaration(name, tp) => UTF8String.toString name  ^ " : " ^ show_typecheckingCType tp

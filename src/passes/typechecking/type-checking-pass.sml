@@ -654,15 +654,23 @@ infix 5 <?>
                     | RBoolConstant (b, soi) => Success((CBuiltinConstant (CBoolConstant b), CBuiltinType(BIBool)), ctx)
                     
 
-                    | RLetIn(decls, e, soi) => (
+                    | RLetIn(decls,  soi) => (
                     typeCheckSignature ctx decls true []
                         >>= (fn(csig, ctx) =>
-                        (* the context returned will be devoid of csig, so we add them via a fake local open *)
-                            nextContextOfOpenStructure (reconstructFromRExpr e) ctx csig (fn ctx => 
-                                    synthesizeType ctx e >>= (fn ((ce, syntt), ctx) => 
-                                        Success((CLetIn(csig, ce, CTypeAnn(syntt)), syntt), ctx)
+                                if length csig = 0 
+                                then genSingletonError (reconstructFromRExpr e) "虑结构必须有至少一个声明" NONE
+                                else
+                                    (case List.last csig of 
+                                    CDirectExpr(n, le, lt) =>
+                                        nextContextOfOpenStructure (reconstructFromRExpr e) ctx csig (fn ctx => 
+                                                    (let val structureName = UTF8String.fromString ("s" ^ Int.toString (UID.next()))
+                                                    in Success((CLetInSingle(structureName, CBlock(csig), 
+                                                        CBlockProj(CVar([structureName], CVTBinder), UTF8String.fromString "__PSEUDO_LBL", length csig -1)), lt), ctx)
+                                                    end
+                                                )
+                                        )
+                                    | _ => genSingletonError (reconstructFromRExpr e) "虑结构最后声明必须是直接表达式" NONE
                                     )
-                            )
                         )
                     )
                     | RBuiltinFunc(f, s) => Success((CBuiltinFunc(f), (BuiltinFunctions.typeOf f)), ctx)
@@ -939,7 +947,7 @@ infix 5 <?>
                             (case tt of
                                 CPiType(t1, tevop, t2, pt) => 
                                     if pt <> pe 
-                                    then raise Fail "tcp638: should have inserted implict lams"
+                                    then genSingletonError (reconstructFromRExpr e) "tcp638: should have inserted implict lams" NONE
                                     else
                                     withLocalBinder ctx ev t1 (fn ctx => 
                                         checkType 
@@ -1049,15 +1057,25 @@ infix 5 <?>
                                 (* raise TypeCheckingFailure "First argument of the ccall must be string literal" *)
 
                         )
-                        | RLetIn(decls, e, soi) => (
+                        | RLetIn(decls,  soi) => (
                         typeCheckSignature ctx decls true []
                             >>= (fn(csig, ctx) =>
-                            (* the context returned will be devoid of csig, so we add them via a fake local open *)
-                                nextContextOfOpenStructure (reconstructFromRExpr e) ctx csig (fn ctx => 
-                                        checkType ctx e tt >>= (fn (ce, ctx) => 
-                                            Success(CLetIn(csig, ce, CTypeAnn(tt)), ctx)
+                                if length csig = 0 
+                                then genSingletonError (reconstructFromRExpr e) "虑结构必须有至少一个声明" NONE
+                                else
+                                    (case List.last csig of 
+                                    CDirectExpr(n, le, lt) =>
+                                        nextContextOfOpenStructure (reconstructFromRExpr e) ctx csig (fn ctx => 
+                                                tryTypeUnify ctx (e) tt lt >>= (fn (ctx) => 
+                                                    (let val structureName = UTF8String.fromString ("s" ^ Int.toString (UID.next()))
+                                                    in Success(CLetInSingle(structureName, CBlock(csig), 
+                                                        CBlockProj(CVar([structureName], CVTBinder), UTF8String.fromString "__PSEUDO_LBL", length csig -1)), ctx)
+                                                    end
+                                                    )
+                                                )
                                         )
-                                )
+                                    | _ => genSingletonError (reconstructFromRExpr e) "虑结构最后声明必须是直接表达式" NONE
+                                    )
                             )
                         )
                         | RBuiltinFunc(f, soi) => (tryTypeUnify ctx e ((BuiltinFunctions.typeOf f)) tt >>= (fn ctx => Success(CBuiltinFunc(f), ctx)))
@@ -1353,7 +1371,7 @@ infix 5 <?>
                     let 
                     val synthedExprOrFailure = (synthesizeType ctx (e))
                     in case synthedExprOrFailure of 
-                        Success((checkedExpr, synthesizedType), ctx) => typeCheckSignature ctx ss isModule (acc@[CDirectExpr(checkedExpr, synthesizedType)])
+                        Success((checkedExpr, synthesizedType), ctx) => typeCheckSignature ctx ss isModule (acc@[CDirectExpr(UID.next(), checkedExpr, synthesizedType)])
                         | DErrors l => (case typeCheckSignature ctx ss isModule (acc) of
                                         Success _ => DErrors l
                                         | DErrors l2 => DErrors (l @ l2)

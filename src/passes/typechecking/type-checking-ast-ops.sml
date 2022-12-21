@@ -69,7 +69,7 @@ infix 5 =/=
                 | CBuiltinType(b) => []
                 | CUniverse => []
                 | CLam(ev, eb, _) => List.filter (fn t => t ~<> [ev]) (freeTCVar eb)
-                | CLetIn _ => [] (* TODO: *)
+                (* | CLetIn _ => [] TODO: *)
                 (* | CLetInSingle _ => [] TODO: *)
                 | CFfiCCall _ => [] (* TODO !!! *)
                 | CBuiltinFunc (f) => []
@@ -171,7 +171,7 @@ infix 5 =/=
                         CLam(cev, ce1body, _) => recur e2 >>= (fn ce2 => Success(substTypeInCExpr ce2 ([cev]) ce1body))
                         | _ => (* maybe ce1 is a type constructor *) (Success t)
                 )
-            | CLetIn _ => Success(t)
+            (* | CLetIn _ => Success(t) *)
             | CLetInSingle _ => Success(t)
             | CFfiCCall _ => Success(t)
             | CBuiltinFunc _ => Success(t)
@@ -258,12 +258,12 @@ infix 5 =/=
                             Success(CApp(ce1, ce2, u))
                          )
                 )
-            | CLetIn(dl, e, u) => 
+            (* | CLetIn(dl, e, u) => 
                 resolveAllMetaVarsInCSig ctx dl >>= (fn cdl => 
                     recur e >>= (fn ce => 
                         Success(CLetIn(cdl, ce, u))
                     )
-                )
+                ) *)
             | CFfiCCall _ => Success(t)
             | CBuiltinFunc _ => Success(t)
             | CUnitExpr => Success(t)
@@ -333,9 +333,9 @@ infix 5 =/=
             CTermDefinition(name, expr, tp) => rme expr >>= 
                 (fn cexpr => rme tp >>= 
                     (fn ctp => Success(CTermDefinition(name, cexpr, ctp))))
-            | CDirectExpr( expr, tp) => rme expr >>= 
+            | CDirectExpr(n, expr, tp) => rme expr >>= 
                 (fn cexpr => rme tp >>= 
-                    (fn ctp => Success(CDirectExpr(cexpr, ctp))))
+                    (fn ctp => Success(CDirectExpr(n, cexpr, ctp))))
             | CPureDeclaration( name, tp) => 
                  rme tp >>= (fn ctp => Success(CPureDeclaration(name, ctp)))
             | CConstructorDecl( name, tp, cinfo) => 
@@ -413,7 +413,7 @@ infix 5 =/=
                 | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
                 | CLam(ev, e2, u) => captureAvoid 
                     (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
-                | CLetIn _ => e (* TODO : do it *)
+                (* | CLetIn _ => e TODO : do it *)
                 | CLetInSingle(n, e1, e2) => captureAvoid (fn (n', e2') => CLetInSingle(n', recur e1, e2')) n e2
                 | CProj (e1, idx, u) => CProj (recur e1, idx, u)
                 | CTuple(e, u) => CTuple (map recur e, u)
@@ -449,8 +449,8 @@ infix 5 =/=
                 captureAvoid (fn (name', tl') => (CPureDeclaration(name', substTypeInCExpr tS x t):: tl')) n (tl)
                 | ((CConstructorDecl(n, t, cinfo)))::tl => 
                 captureAvoid (fn (name', tl') => (CConstructorDecl(name', substTypeInCExpr tS x t, cinfo):: tl')) n (tl)
-                | ((CDirectExpr(e, t )))::tl => 
-                (CDirectExpr( substTypeInCExpr tS x e, substTypeInCExpr tS x t):: (substituteTypeInCSignature tS x tl))
+                | ((CDirectExpr(n, e, t )))::tl => 
+                (CDirectExpr( n, substTypeInCExpr tS x e, substTypeInCExpr tS x t):: (substituteTypeInCSignature tS x tl))
                 | ((h as CImport(_)))::tl => 
                 (h:: (substituteTypeInCSignature tS x tl))
                 | ((h as COpenStructure(_)))::tl => 

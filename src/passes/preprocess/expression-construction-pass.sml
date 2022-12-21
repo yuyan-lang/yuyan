@@ -260,9 +260,8 @@ struct
                         let
                             (* val newOps = extractAllOperators tree *)
                             val declTree = constructOpAST tree ctx
-                            (* val bodyExpr = elaborateOpASTtoExpr (snd l) (insertIntoCurContextOps ctx newOps) *)
-                            val bodyExpr = elaborateOpASTtoExpr (snd l) ctx
-                        in fmap RLetIn(==/=(declTree, bodyExpr,operSuc)) end
+                            (* val bodyExpr = elaborateOpASTtoExpr (snd l) ctx *)
+                        in fmap (fn dt => RLetIn(dt, (oper, qi))) declTree end
                         )
                         end
                     )

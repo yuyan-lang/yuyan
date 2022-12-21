@@ -93,7 +93,7 @@ struct
     val lambdaExprWithTypeOp = Operators.parseOperatorStr "遇〇者〇而〇" true false 520 [3]
     val fixExprOp = Operators.parseOperatorStr "循〇以〇" true false 510 [1]
     val implicitLambdaExprOp = Operators.parseOperatorStr "受〇而〇" true false 520 [1]
-    val letinOp = Operators.parseOperatorStr "虑〇以成〇之道" false false 525 []
+    val letinOp = Operators.parseOperatorStr "虑〇" false false 525 []
     val letinSingleOp = Operators.parseOperatorStr "虑〇者〇而〇" true false 526 [1]
     val inlineCommentOp = Operators.parseOperatorStr "〇注〇" false false 480 []
 

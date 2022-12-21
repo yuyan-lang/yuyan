@@ -62,7 +62,7 @@ structure TypeCheckingAST = struct
                     | CUnfold of CExpr  * CTypeAnn type is Rho *)
                     | CFix of EVar * CExpr * CTypeAnn (* type is the typ of the expression *)
                     | CBuiltinConstant of CBuiltinConstant
-                    | CLetIn of CDeclaration list * CExpr * CTypeAnn (* Type is the result of the declaring expression *)
+                    (* | CLetIn of CDeclaration list * CExpr * CTypeAnn Type is the result of the declaring expression *)
                     | CLetInSingle of UTF8String.t * CExpr * CExpr (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * CExpr list
                     | CBuiltinFunc of BuiltinFunc
@@ -102,7 +102,7 @@ structure TypeCheckingAST = struct
                         (* Fold into Term Definition *)
                        (*  CTermMacro of UTF8String.t * CExpr *)
                         CTermDefinition of UTF8String.t * CExpr * CExpr  
-                       | CDirectExpr of CExpr * CExpr
+                       | CDirectExpr of int * CExpr * CExpr
                        | CConstructorDecl of UTF8String.t * CExpr * cconstructorinfo
                        (* Pure Declaration will be things that have not yet defined *)
                        | CPureDeclaration of UTF8String.t * CExpr  (* type only, definition to be provided later *)
@@ -147,7 +147,7 @@ structure TypeCheckingAST = struct
                     | RIntConstant of int * UTF8String.t
                     | RRealConstant of (int * int * int ) * UTF8String.t
                     | RBoolConstant of bool * UTF8String.t
-                    | RLetIn of RDeclaration list * RExpr * sourceOpInfo
+                    | RLetIn of RDeclaration list * (sourceOpInfo * MixedStr.quoteinfo)
                     | RLetInSingle of UTF8String.t * RExpr * RExpr * sourceOpInfo
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
                     | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)
