@@ -158,7 +158,8 @@ a new module is added with root Path being the file's residing directory *)
             ^" -o "  
             ^ (access outputFilePath)
             ^ " " ^ additionalClangOptions
-            ^ " -save-temps=obj -L /usr/local/lib -l gc -l uv -l matplot -l stdc++ -Wno-override-module)"
+            (* ^ " -save-temps=obj " *)
+            ^ " -L /usr/local/lib -l gc -l uv -l matplot -l stdc++ -Wno-override-module)"
             val _ = DebugPrint.p (cmd ^ "\n")
             val ret = OS.Process.system (cmd)
             in 
@@ -512,7 +513,7 @@ end *)
             ) cm 
 
     fun initWithWorkingDirectory (pwd : filepath) : compilationmanager =  
-    let val _ =  OS.FileSys.mkDir (OS.Path.concat (access pwd, ".yybuild"))
+    let val _ =  OS.FileSys.mkDir (OS.Path.concat (access pwd, ".yybuild.nosync"))
         handle OS.SysErr s => () (* assume creation successful *)
         val cm = {
             importedModules = ref []

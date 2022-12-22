@@ -45,12 +45,12 @@ test: build
 	./yy yylib/runtest.yuyan --use-local-lib
 	
 genDocs : build
-	rm -rf ./.yybuild/docs
+	rm -rf ./.yybuild.nosync/docs
 	./yy --gen-docs yylib/总库。豫 
 
 installDocs : genDocs
 	rm -rf ./docs/autogen/docs
-	cp -r ./.yybuild/docs ./docs/autogen/
+	cp -r ./.yybuild.nosync/docs ./docs/autogen/
 
 install:  build
 	sh -x install.sh
@@ -64,7 +64,7 @@ cleanbs:
 
 superclean:
 	rm -f yy
-	rm -rf ./.yybuild/*
+	rm -rf ./.yybuild.nosync/*
 
 wasm: 
 	rm -rf wasmbuild

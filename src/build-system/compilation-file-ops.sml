@@ -171,7 +171,7 @@ open StaticErrorStructure
         val allLLVMSig = prevLLVMStmts @ [llvmsig]
 
         (* TODO use aboslute path for filenames *)
-            val filename  = PathUtil.makeAbsolute (".yybuild/yy" ^ Int.toString (UID.next())^ ".ll") pwd
+            val filename  = PathUtil.makeAbsolute (".yybuild.nosync/yy" ^ Int.toString (UID.next())^ ".ll") pwd
             val statements = LLVMCodegen.genLLVMSignatureWithMainFunction allLLVMSig 
             val filehandle = TextIO.openOut filename
             val _ = TextIO.output (filehandle,(String.concatWith "\n" statements))

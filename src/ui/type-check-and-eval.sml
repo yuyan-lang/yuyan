@@ -19,7 +19,7 @@ open ReplOptions
             val entryFileAbsFp = if length absFps > 0 then List.last absFps else raise Fail "tcae13: Should have at least one input file"
             val CompilationStructure.CompilationFile cfile = CompilationManager.lookupFileByPath entryFileAbsFp cm
             val outputFilePath = case getOutputFilePath options of SOME f => (FileResourceURI.make (PathUtil.makeAbsolute f (#pwd cm))) 
-                                                                | NONE => (FileResourceURI.make (PathUtil.makeAbsolute ".yybuild/yyexe" (#pwd cm)))
+                                                                | NONE => (FileResourceURI.make (PathUtil.makeAbsolute ".yybuild.nosync/yyexe" (#pwd cm)))
             val preExecuteTime = Time.now()
             val (executeTime, exitSt) =  
                     let 
@@ -28,7 +28,7 @@ open ReplOptions
                     if getGenDocs options 
                     then (Time.now(), (DocsGeneration.generateDocs 
                             (FileResourceURI.make (PathUtil.concat [(#pwd cm), "yylib"]))
-                            (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild", "docs"]))
+                            (FileResourceURI.make (PathUtil.concat [(#pwd cm), ".yybuild.nosync", "docs"]))
                             cm ; OS.Process.success))
                     else if getTypeCheckOnly options
                     then ( let val allErrors = (List.concat (List.map (fn (x, l) => l) (CompilationManager.collectAllDiagnostics cm)))
