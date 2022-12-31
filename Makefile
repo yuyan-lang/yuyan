@@ -42,7 +42,8 @@ buildtest:
 	./yy -c yylib/runtest.yuyan -o yy_test
 
 test: build
-	./yy yylib/runtest.yuyan --use-local-lib
+	./yy yylib/runtest.yuyan --use-local-lib -c -o ./yy_test_temp
+	./yy_test_temp yy
 	
 genDocs : build
 	rm -rf ./.yybuild.nosync/docs
