@@ -32,6 +32,9 @@ bst : yy_bs $(YYTESTSOURCES)
 bsrt : yy_bs $(YYTESTSOURCES)
 	./yy_bs yylib/runtest.yuyan -v
 
+bsrtvv : yy_bs $(YYTESTSOURCES)
+	./yy_bs yylib/runtest.yuyan -vv
+
 yyt : yy $(YYTESTSOURCES)
 	./yy $(YYTESTSOURCES)
 
