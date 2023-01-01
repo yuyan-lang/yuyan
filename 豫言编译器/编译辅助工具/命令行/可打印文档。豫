@@ -1,0 +1,45 @@
+寻观标准库之书。
+
+当前豫言版本者『v0.1.0alpha』也。
+
+AGPL版权声明者
+『豫言编程语言 一款中文函数式编程语言
+Copyright 版权所有 (C) 2021-2023 UltimatePea
+
+本软件仅限个人用户非商业使用，非个人用户或商业使用请向我们购买使用许可。
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
+
+帮助文本者
+『豫言编程语言 (』附当前豫言版本附『) 运行：yy [options] [files] [ -- [args]]
+其中 [options] 可以是
+    -v                      显示粗略的调试信息
+    -vv                     显示详细的调试信息
+    -h, --help              显示本帮助信息
+    --about                 显示版权信息
+    --version               显示软件当前版本』也。
+
+    「： 
+    --super-verbose        显示更多调试信息(super verbose for debugging (unused))
+    -c, --compile-only     制作可执行文件但不执行(make the executable, but do not execute)
+    -O3, --optimize        进行优化(optimize the executable)
+    --profile              进行速度监测(profile (beta))
+    --use-local-lib        使用当前文件夹下的运行库(use local libriries)
+    -o, --output PATH      设置输出路径(write the compiled executable to argument PATH)
+    --gen-docs             生成文档(generate the documentation)
+    --version              显示版本(show version)
+    --about                显示关于信息(show about)
+    --type-check-only      仅执行类型检查(type check only)
+    --clang-options OPT    传给Clang编译器的参数(options to pass to clang compiler) 
+    ：」
