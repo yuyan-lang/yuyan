@@ -37,7 +37,7 @@ val DEBUG = true
                                 , llvmInfo=llvmInfo
                                 } = file
             val levelInt = levelToInt upToLevel
-            fun debugPrint s = DebugPrint.p ("cfp : ["  ^ PathUtil.makeRelative fp (#pwd cm) ^ "] " ^ s)
+            fun debugPrint s = DebugPrint.p (Date.fmt "[%Y-%m-%d %H:%M:%S]" (Date.fromTimeLocal (Time.now()) ) ^ " cfp : ["  ^ PathUtil.makeRelative fp (#pwd cm) ^ "] " ^ s)
         in
             if levelInt < (levelToInt UpToLevelContent)
             then file
