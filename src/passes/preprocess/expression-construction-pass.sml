@@ -131,6 +131,9 @@ struct
                     if oper ~=** inlineCommentOp
                     then elaborateOpASTtoExpr (hd l) ctx
                     else
+                    if oper ~=** tpImplOperator
+                    then elaborateOpASTtoExpr (hd l) ctx
+                    else
                     (* if oper ~=** unitExprOp
                     then Success (RUnitExpr(oper))
                     else *)

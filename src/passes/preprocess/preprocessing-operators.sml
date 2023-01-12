@@ -96,6 +96,7 @@ struct
     val letinOp = Operators.parseOperatorStr "虑〇" false false 525 []
     val letinSingleOp = Operators.parseOperatorStr "虑〇者〇而〇" true false 526 [1]
     val inlineCommentOp = Operators.parseOperatorStr "〇注〇" false false 480 []
+    val tpImplOperator = Operators.parseOperatorStr "〇其实〇" false false 480 [] (* made to be compatible with the bs version, which has a much more restricted notion of sealing *)
 
     val elabAppBound = UID.next() (* This is a hack since uid is monotonically increasing *)
 
@@ -116,7 +117,8 @@ struct
         (* , lazyProdTypeOp *)
          piTypeOp, 
         implicitPiTypeOp,
-        implicitPiNameOnlyTypeOp
+        implicitPiNameOnlyTypeOp,
+        tpImplOperator
         (* , sigmaTypeOp *)
         ]
     val allTypeAndExprOps = allTypeOps @ [ 
