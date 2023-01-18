@@ -26,6 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
 其中 [options] 可以是
     -v                      显示粗略的调试信息
     -vv                     显示详细的调试信息
+    -vvv                    显示更详细的调试信息
     -h, --help              显示本帮助信息
     --about                 显示版权信息
     --version               显示软件当前版本』也。
