@@ -45,8 +45,8 @@ jobs:
       - name: make test
         run: make test
 
-      - name: make bsrt
-        run: make bsrt
+      - name: make bsrtvvv
+        run: make bsrtvvv
 
       - name: make bsr
         run: make bsr
@@ -107,8 +107,8 @@ jobs:
       - name: make test
         run: make test
 
-      - name: make bsrtvv
-        run: make bsrtvv
+      - name: make bsrt
+        run: make bsrt
 
       - name: make bsr
         run: make bsr
