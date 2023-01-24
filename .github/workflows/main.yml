@@ -107,7 +107,11 @@ jobs:
       - name: make test
         run: make test
 
+      - name: make bsrtvv
+        run: make bsrtvv
+
       - name: make bsrt
+        if: always()
         run: make bsrt
 
       - name: make bsr
