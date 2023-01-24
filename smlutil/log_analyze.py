@@ -25,13 +25,15 @@ df = pd.DataFrame({"timestamp":times, "message" : msgs})
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 
 # Add a new column for the first 10 characters of the message
-df['message_10'] = df['message'].str[23:35]
+df['message_10'] = df['message'].str[21:45]
 
 # Sort the dataframe by timestamp
 df.sort_values(by='timestamp', inplace=True)
 
 # Add a new column for the time spent on the previous message
-df['time_spent'] = df['timestamp'] - df['timestamp'].shift(1)
+df['time_spent'] = df['timestamp'].diff().shift(-1)
+
+# print(df)
 
 # Group the dataframe by the first 10 characters of the message
 grouped = df.groupby('message_10')
