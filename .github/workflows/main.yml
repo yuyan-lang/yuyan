@@ -8,7 +8,7 @@ on:
   push:
     branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ master , develop]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -107,12 +107,13 @@ jobs:
       - name: make test
         run: make test
 
-      - name: make bsrtvv
-        run: make bsrtvv
-
       - name: make bsrt
         if: always()
         run: make bsrt
+
+      - name: make bsrtvv
+        if: always()
+        run: make bsrtvv
 
       - name: make bsr
         run: make bsr
