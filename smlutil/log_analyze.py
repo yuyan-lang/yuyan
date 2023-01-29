@@ -25,7 +25,7 @@ df = pd.DataFrame({"timestamp":times, "message" : msgs})
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 
 # Add a new column for the first 10 characters of the message
-df['message_10'] = df['message'].str[21:26]
+df['message_10'] = df['message'].str[21:29]
 
 # Sort the dataframe by timestamp
 df.sort_values(by='timestamp', inplace=True)
