@@ -3,7 +3,7 @@ structure ListSearchUtil = struct
 
     exception NotFound 
     exception NotFoundStr of string
-    exception NotFoundSName  of StructureName.t
+    exception NotFoundSName  of StructureName.t * StructureName.t list
 
 
 fun lookupGeneric (l : ('k  * 'a ) list) (key : 'k) (keyeq : 'k -> 'k -> bool) : 'a = 
@@ -20,7 +20,7 @@ fun findStr (l : (string *'a ) list) (key : string) : 'a option =
 
 fun lookupSName (l : (StructureName.t *'a ) list) (key : StructureName.t) : 'a =    
     lookupGeneric l key (StructureName.semanticEqual)
-    handle NotFound => raise NotFoundSName key
+    handle NotFound => raise NotFoundSName (key, (map (#1) l))
 
 fun findSName (l : (StructureName.t *'a ) list) (key : StructureName.t) : 'a option =    
     SOME (lookupGeneric l key (StructureName.semanticEqual))

@@ -14,14 +14,26 @@ datatype cpsvar =  CPSVarLocal of int
         | CPSBvString of UTF8String.t
         | CPSBvReal of real
 
+    datatype cpspattern = CPSPatHeadSpine of ( int (* constructor id *) * cpspattern list (* args *))
+                 | CPSPatVar of cpsvar
+                 | CPSPatBuiltin of cpsBuiltinValue
+                 | CPSPatTuple of cpspattern list
+
     datatype cpsprimitiveop = 
       CPSPOpIntSub of cpsvalue * cpsvalue * (cpsvar * cpscomputation)
       | CPSPOpIntEq of cpsvalue * cpsvalue * (cpsvar * cpscomputation)
+      | CPSPOpIntGt of cpsvalue * cpsvalue * (cpsvar * cpscomputation)
+
 
     and cpscomputation = 
                   CPSUnit of (cpsvar * cpscomputation)
                 | CPSProj of cpsvalue * int * (cpsvar * cpscomputation)
-                | CPSCases of cpsvalue * (int * (* constructor id *) cpsvar list (* bound args *) * cpscomputation) list 
+                (* simple version, use when we have optimized pattern matching *)
+                (* | CPSCases of cpsvalue * (int * (* constructor id *) 
+                cpsvar list (* bound args *) 
+                * cpscomputation) list  *)
+                | CPSSimpleCases of cpsvalue * (int * (* constructor id *) cpsvar list (* bound args *) * cpscomputation) list 
+                | CPSCases of cpsvalue * (cpspattern * cpscomputation) list  * string (* string is the exception text in case of failure *)
                 | CPSIfThenElse of cpsvalue * cpscomputation * cpscomputation (* there is a bug in designing this case and the cases clause, the cc is being translated twice!!, maybe we need to fix it. !!! TODO!!!*)
                 | CPSUnfold of cpsvalue * (cpsvar * cpscomputation) 
                 | CPSApp of cpsvalue  * (cpsvalue * cpsvalue) (* !!! *)

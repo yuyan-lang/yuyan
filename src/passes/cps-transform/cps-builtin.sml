@@ -173,5 +173,6 @@ open CPSHelper
             | BFHandle =>  transformHandle cc
             | BFIntSub => transformPrimitiveBinaryOp CPSPOpIntSub cc
             | BFIntEq => transformPrimitiveBinaryOp CPSPOpIntEq cc
+            | BFIntGt => transformPrimitiveBinaryOp CPSPOpIntGt cc
             
 end

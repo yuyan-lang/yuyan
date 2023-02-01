@@ -19,8 +19,13 @@ structure TypeCheckingAST = struct
                          | BFHandle
                          | BFIntSub
                          | BFIntEq
+                         | BFIntGt
 
-
+    datatype CBuiltinConstant = 
+                     CStringLiteral of UTF8String.t 
+                    | CIntConstant of int
+                    | CRealConstant of (int * int * int )
+                    | CBoolConstant of bool
 
     datatype visibility = Public | Private
 
@@ -28,8 +33,10 @@ structure TypeCheckingAST = struct
     datatype cvartype = CVTBinder | CVTDefinition of CExpr | CVTConstructor of StructureName.t * cconstructorinfo (* canonical name and cinfo *)
                       | CVTBinderDefinition of StructureName.t (* a definition for binder , will map to metavar name, used in pattern matching *)
 
-    and CPattern = CPatHeadSpine of (StructureName.t  * cconstructorinfo)  * CPattern list
+    and CPattern = CPatHeadSpine of (CExpr  * cconstructorinfo)  * CPattern list
                  | CPatVar of UTF8String.t 
+                 | CPatBuiltinConstant of CBuiltinConstant
+                 | CPatTuple of CPattern list
     (* CExpr for checked expr *)
     and CExpr = CVar of (StructureName.t (* required to be fully qualified name, if not local *)* 
                                 cvartype (* the referenced expression, if not local *)
@@ -38,49 +45,51 @@ structure TypeCheckingAST = struct
                     | CUnitExpr
                     | CTuple of CExpr list * CTypeAnn (* type is Prod *)
                     | CLazyTuple of CExpr list * CTypeAnn (* type is Prod *)
-                    | CProj of CExpr * Label * int (* index of the label *) * CTypeAnn (* type is Prod *)
+                    | CProj of CExpr * int (* index of the label *) * CTypeAnn (* type is Prod *)
+                    | CBlockProj of CExpr * Label * int (* index of the label, counting from zero, including cons, :, directexpr, def, excluding import *)
                     | CLazyProj of CExpr * Label * CTypeAnn (* type is Prod *)
-                    | CInj of Label * CExpr  * CTypeAnn (* type is  Sum *)
+                    (* | CInj of Label * CExpr  * CTypeAnn type is  Sum *)
                     | CIfThenElse of CExpr * CExpr * CExpr  (* remove after type inference *)
                     | CCase of (CTypeAnn (*type is to be pattern matched *) * CExpr) * 
                         (CPattern (* pattern *) * CExpr) list * CTypeAnn (* type is result type *)
                     | CLam of  EVar * CExpr * CTypeAnn (* type is Func *)
                     | CApp of  CExpr * CExpr * CTypeAnn (* type is Func *)
-                    | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)
-                    | CTApp of CExpr * CExpr (* instantiation type *) * CTypeAnn(* type is Forall *)
-                    | CPack of CExpr (* pack type *) * CExpr * CTypeAnn(* type is Exists *)
-                    | COpen of (CTypeAnn (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * CTypeAnn(* type is return type *)
-                    | CFold of CExpr  * CTypeAnn(* type is Rho *)
-                    | CUnfold of CExpr  * CTypeAnn (* type is Rho *)
+                    (* | CTAbs of TVar * CExpr  * CTypeAnn(* type is Forall *)
+                    | CTApp of CExpr * CExpr (* instantiation type *) * CTypeAnntype is Forall *)
+                    (* | CPack of CExpr (* pack type *) * CExpr * CTypeAnn(* type is Exists *)
+                    | COpen of (CTypeAnn (* type is Exists *) * CExpr) * (TVar * EVar * CExpr) * CTypeAnntype is return type *)
+                    (* | CFold of CExpr  * CTypeAnn(* type is Rho *)
+                    | CUnfold of CExpr  * CTypeAnn type is Rho *)
                     | CFix of EVar * CExpr * CTypeAnn (* type is the typ of the expression *)
-                    | CStringLiteral of UTF8String.t 
-                    | CIntConstant of int
-                    | CRealConstant of (int * int * int )
-                    | CBoolConstant of bool
-                    | CLetIn of CDeclaration list * CExpr * CTypeAnn (* Type is the result of the declaring expression *)
+                    | CBuiltinConstant of CBuiltinConstant
+                    (* | CLetIn of CDeclaration list * CExpr * CTypeAnn Type is the result of the declaring expression *)
+                    | CLetInSingle of UTF8String.t * CExpr * CExpr (* Type is the result of the declaring expression *)
                     | CFfiCCall of UTF8String.t * CExpr list
                     | CBuiltinFunc of BuiltinFunc
                     | CSeqComp of CExpr * CExpr * CTypeAnn * CTypeAnn (* type is the type of the second expression *)
                     (* types *)
                     | CUnitType
-                    | CProd of (Label * CExpr) list
+                    | CProd of (CExpr) list
+                    | CLabeledProd of (Label * CExpr) list
                     | CLazyProd of (Label * CExpr) list
                     | CNullType
                     | CSum of (Label * CExpr) list
                     (* | CFunc of CExpr * CExpr *)
-                    | CTypeInst of CExpr * CExpr
-                    | CForall of TVar * CExpr
-                    | CExists of TVar * CExpr
-                    | CRho of TVar * CExpr
+                    (* | CTypeInst of CExpr * CExpr *)
+                    (* | CForall of TVar * CExpr *)
+                    (* | CExists of TVar * CExpr *)
+                    (* | CRho of TVar * CExpr *)
                     | CBuiltinType of BuiltinType
                     | CUniverse 
                     | CPiType of CExpr * EVar option * CExpr  * plicity
                     | CSigmaType of CExpr * EVar option * CExpr 
+                    | CBlock of CDeclaration list
     
 
-    and cconstructorinfo = CConsInfoTypeConstructor 
-                        | CConsInfoElementConstructor of (StructureName.t (* absolute structure name of the type constructor *)
-                                                        * int  (* unique identifier of the current constructor, starting with 1 *)
+    and cconstructorinfo = CConsInfoTypeConstructor   of int ref (* number of constructors of this type *)
+                        | CConsInfoElementConstructor of (
+                            (* StructureName.t absolute structure name of the type constructor *)
+                                                        int  (* unique identifier of the current constructor, starting with 1 *)
                                                         )
 
 (* all types are fully normalized *)
@@ -92,13 +101,16 @@ structure TypeCheckingAST = struct
                         (* CTermTypeJudgment of UTF8String.t * CType *)
                         (* Fold into Term Definition *)
                        (*  CTermMacro of UTF8String.t * CExpr *)
-                        CTermDefinition of StructureName.t * CExpr * CExpr  
-                       | CDirectExpr of CExpr * CExpr
-                       | CConstructorDecl of StructureName.t * CExpr * cconstructorinfo
+                        CTermDefinition of UTF8String.t * CExpr * CExpr  
+                       | CDirectExpr of int * CExpr * CExpr
+                       | CConstructorDecl of UTF8String.t * CExpr * cconstructorinfo
+                       (* Pure Declaration will be things that have not yet defined *)
+                       | CPureDeclaration of UTF8String.t * CExpr  (* type only, definition to be provided later *)
                        | CImport of (StructureName.t  * FileResourceURI.t)
                        (* | CStructure of bool * UTF8String.t * CDeclaration list *)
                        (* Do not need open : Require all references to open use fully qualified name  *)
-                       (* | COpenStructure of StructureName.t *)
+                       (* NEED OPEN IN MODULES *)
+                       | COpenStructure of (StructureName.t * CDeclaration list) (* a list of declarations to be imported *)
     and CTypeAnn = CTypeAnn of CExpr
                  | CTypeAnnNotAvailable
 
@@ -113,7 +125,7 @@ structure TypeCheckingAST = struct
                     | RUnitExpr of UTF8String.t
                     | RTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
                     | RLazyTuple of RExpr list * (sourceOpInfo list) (* n-1 op for n tuple *)
-                    | RProj of RExpr * Label * sourceOpInfo
+                    | RProj of RExpr * (int * UTF8String.t ) * sourceOpInfo (* the index for rproj should start with 1, for cproj is current zero *)
                     | RLazyProj of RExpr * Label * sourceOpInfo
                     | RInj of Label * RExpr * sourceOpInfo
                     | RIfThenElse of RExpr * RExpr * RExpr * sourceOpInfo
@@ -123,6 +135,7 @@ structure TypeCheckingAST = struct
                     | RLam of EVar * RExpr * plicity * sourceOpInfo
                     | RLamWithType of RExpr * EVar * RExpr * sourceOpInfo
                     | RApp of RExpr * RExpr * plicity * sourceOpInfo (* if op is not app, then custom operators *)
+                    | RTypeAnnotate of RExpr (*type*) * RExpr * sourceOpInfo (* if op is not app, then custom operators *)
                     (* | RTAbs of TVar * RExpr * sourceOpInfo *)
                     | RTApp of RExpr * RExpr * (sourceOpInfo* UTF8String.t) (* string represents the type information itself *)
                     | RPack of RExpr * RExpr * (UTF8String.t * sourceOpInfo)
@@ -134,7 +147,8 @@ structure TypeCheckingAST = struct
                     | RIntConstant of int * UTF8String.t
                     | RRealConstant of (int * int * int ) * UTF8String.t
                     | RBoolConstant of bool * UTF8String.t
-                    | RLetIn of RDeclaration list * RExpr * sourceOpInfo
+                    | RLetIn of RDeclaration list * (sourceOpInfo * MixedStr.quoteinfo)
+                    | RLetInSingle of UTF8String.t * RExpr * RExpr * sourceOpInfo
                     | RFfiCCall of RExpr * RExpr * sourceOpInfo 
                     | RBuiltinFunc of BuiltinFunc * UTF8String.t (* source info *)
                     | RSeqComp of RExpr * RExpr * sourceOpInfo
@@ -143,7 +157,7 @@ structure TypeCheckingAST = struct
                     | RPiType of RExpr option * EVar option * RExpr * plicity * sourceOpInfo
                     | RSigmaType of RExpr * EVar option * RExpr * sourceOpInfo
                     | RUnitType of UTF8String.t (* source info *)
-                    | RProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
+                    | RProd of (RExpr) list * sourceOpInfo list (* n-1 source op info *)
                     | RLazyProd of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RSum of (Label * RExpr * sourceOpInfo) list * sourceOpInfo list (* n-1 source op info *)
                     | RNullType of UTF8String.t (* source info *)
@@ -153,7 +167,7 @@ structure TypeCheckingAST = struct
                     | RExists of TVar * RExpr * sourceOpInfo 
                     | RRho of TVar * RExpr * sourceOpInfo 
                     | RBuiltinType of BuiltinType * UTF8String.t
-                    
+                    | RBlock of RDeclaration list * MixedStr.quoteinfo
 
 
     and RDeclaration = 
@@ -164,7 +178,7 @@ structure TypeCheckingAST = struct
                        (* | RTermMacro of UTF8String.t * RExpr *)
                        | RTermDefinition of UTF8String.t * RExpr
                        | RDirectExpr of RExpr
-                       | RStructure of bool * UTF8String.t * RDeclaration list
+                       (* | RStructure of bool * UTF8String.t * RDeclaration list *)
                        (*  public visible * name * signature *)
                        | ROpenStructure of StructureName.t
                        | RReExportStructure of StructureName.t
@@ -184,7 +198,7 @@ structure TypeCheckingAST = struct
                         | JTLocalBinder 
                         | JTLocalBinderWithDef of StructureName.t (* a pattern match binder with a resolved defintion, which is guaranteed to be a metavariable name by the definition *)
                         | JTDefinition of CExpr 
-                        | JTPending  (* declaration pending definition *)
+                        | JTPending (* declaration pending definition *)
                         | JTMetaVarPendingResolve of UTF8String.t (* the error reporting string when it cannot be resolved *)
                         | JTMetaVarResolved of CExpr
  datatype 'a gmapping = TermTypeJ of StructureName.t * CType  * judgmentType * 'a

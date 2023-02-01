@@ -27,4 +27,7 @@ structure UTF8Char = struct
 
     fun getWidth(c : utf8char) : int = 
         if UTF8.isAscii (asUTF8WChar c ) then 1 else 2
+
+    fun getSourceLocation(c : utf8char) : SourceLocation.t option = 
+        case c of (UTF8Char (_, r)) => r
 end

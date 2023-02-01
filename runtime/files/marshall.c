@@ -1,15 +1,16 @@
 #include "globalInclude.h"
 
 char * addr_to_string(yy_ptr arg) {
-    return (char *)arg[1];
+    // return (char *)arg[1];
+    return *((char **)&arg);
 }
 
 // type conversion function
 yy_ptr data_to_addr(uint64_t elem){
-    return (yy_ptr)elem;
+    return *((yy_ptr *)&elem);
 }
 uint64_t addr_to_data(yy_ptr ptr){
-    return (uint64_t)ptr;
+    return *((uint64_t *)&ptr);
 }
 
 int64_t addr_to_int(yy_ptr arg) {
@@ -41,9 +42,9 @@ yy_ptr unit_to_addr(){
 }
 
 yy_ptr string_to_addr(const char * str){
-    yy_ptr returnStorage = allocateAndSetHeader(6, 1);
-    returnStorage[1] = (uint64_t ) str;
-    return returnStorage;
+    // yy_ptr returnStorage = allocateAndSetHeader(6, 1);
+    // returnStorage[1] = (uint64_t ) str;
+    return *(uint64_t **)&str;
 }
 yy_ptr int_to_addr(int64_t i){
     // yy_ptr returnStorage = allocateAndSetHeader(7, 1);
@@ -152,6 +153,7 @@ yy_ptr function_to_addr(void* func) {
 }
 
 yy_ptr iso_list_nil_to_addr() {
+    // the unit here is the implicit type argument
     yy_ptr tps[] = {int_to_addr(1), unit_to_addr()};
     return tuple_to_addr(2, tps);
 }

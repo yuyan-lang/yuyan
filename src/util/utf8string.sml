@@ -111,7 +111,7 @@ structure UTF8String = struct
 
     fun getSourceRange (s : utf8string ) (callerDebugId : string): SourceRange.t = 
         case s of 
-            [] => raise Fail "attempt to get sourcerange for empty string"
+            [] => raise Fail ("attempt to get sourcerange for empty string" ^ toString s ^ callerDebugId)
             | (UTF8Char.UTF8Char(c, loc) :: t) => (
                 case loc of 
                     NONE => raise Fail ("attempt to get sourcerange for NONE location: " ^ toString s ^ callerDebugId)

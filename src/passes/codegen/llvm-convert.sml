@@ -9,6 +9,8 @@ fun zipCons (e1, e2) (a, b) = (e1@a, e2 @ b)
 
 fun ::: (x, y) = zipCons x y
 
+fun withNewLoc (f : int -> 'a) : 'a = f (UID.next())
+
 infix 4 :::
 
 fun llvmLocToValue (x : llvmlocation) : llvmvalue = case x of 
@@ -25,23 +27,28 @@ let val recur = genLLVM ctx
 
     (* transform access will transform the access to 
     the record value if the record value is itself bound *)
-    fun transformAccess (v : cpsvalue) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
+    fun transformAccess (v : cpsvalue) : llvmstatement list * llvmlocation = 
     case v of 
         CPSValueVar(CPSVarGlobal v) =>
                         let val newName = UID.next()
                     in 
-                        [LLVMLoadGlobal(newName, v)]@(f (LLVMLocationLocal newName))
+                        ([LLVMLoadGlobal(newName, v)],(LLVMLocationLocal newName))
                     end
         | CPSValueVar(CPSVarLocal v) => 
             (case ListSearchUtil.indexOf freeVL v of
                 SOME idx =>
                 let val newName = UID.next()
                     in 
-                        [LLVMArrayAccess(LLVMLocationLocal newName, (LLVMLocationLocal freeVAddr), idx)]@(f (LLVMLocationLocal newName))
+                        ([LLVMArrayAccess(LLVMLocationLocal newName, (LLVMLocationLocal freeVAddr), idx)], (LLVMLocationLocal newName))
                     end
-                | NONE => f (LLVMLocationLocal v) (* bound locally, just use the name *)
+                | NONE => ([], (LLVMLocationLocal v)) (* bound locally, just use the name *)
             )
-    val vaccess = transformAccess
+    fun vaccess (v : cpsvalue) (f : llvmlocation -> llvmstatement list) : llvmstatement list = 
+        let val (decls, v') = transformAccess v
+        in decls @(f v') end
+    fun vaccess' (v : cpsvalue) (f : llvmlocation -> llvmdeclaration list * llvmstatement list) : llvmdeclaration list * llvmstatement list = 
+        let val (decls, v') = transformAccess v
+        in ([], decls) ::: (f v') end
 
     fun vaccessL (cpsvallist : cpsvalue list)  (f : llvmlocation list -> llvmstatement list) : llvmstatement list = 
         let 
@@ -52,7 +59,7 @@ let val recur = genLLVM ctx
 
 (* TODO : Review use of this function ! 
 why is there both vaccess and cpsVarToLLVMLoc?
-The reason is that this is guaranteed to be a local varialble that 
+The reason is that this is guaranteed to be a local variable that 
 is bound by the continuation
 And this is usually used for WRITING , while vaccess is used for reading
 Another difference is that transformAccess transforms access of cpsvalue, while
@@ -110,6 +117,123 @@ this transforms access of cpsvar
         )
         end
 
+
+        fun testAndCompileCPSPattern (subject : llvmlocation) 
+             (cpspattern : cpspattern) 
+             (trueBlockName : int)
+             (falseBlockName : int)
+             (* location that stores whether we should proceed *)
+              : llvmdeclaration list * llvmstatement list
+              = 
+        let
+                        fun handleArgList (l : cpspattern list) (curIdx : int) 
+                        (shouldShiftIndexWhenAccessingSubject : bool) (* curIdx is the current index of next pattern *)
+                            : llvmdeclaration list * llvmstatement list= 
+                                let
+                                    val resultBoolLocation = LLVMLocationLocal (UID.next())
+                                in
+                                case l of 
+                                [] => ([], [LLVMUnconditionalJump(trueBlockName)])
+                                | (pat) :: rest => 
+                                    let val nextBlockName = UID.next()
+                                        val subsubjectLoc = UID.next()
+                                        val (thisDecls, thisComps) = testAndCompileCPSPattern (LLVMLocationLocal subsubjectLoc) pat nextBlockName falseBlockName
+                                        val (nextDecls, nextComps) = handleArgList rest (curIdx + 1) shouldShiftIndexWhenAccessingSubject
+                                    in 
+                                        (thisDecls @ nextDecls, [LLVMArrayAccess(LLVMLocationLocal subsubjectLoc, subject, curIdx+
+                                            (if shouldShiftIndexWhenAccessingSubject then 1 else 0)
+                                        )] @(thisComps)
+                                        @[LLVMComment ("handleArgList at " ^ Int.toString curIdx)]
+                                        @[LLVMBlock(nextBlockName, nextComps)])
+                                    end
+                                end
+        in
+              (* the reason for failure is that cc is invoked multiple times, 
+              and thus multiple identical code pieces have been generated. 
+              The solution is to fix this problem by generating only once *)
+            case cpspattern of 
+                CPSPatVar cpsvar => 
+                let val resultBoolLocation = LLVMLocationLocal (UID.next())
+                in
+                    ([], [LLVMStoreLocal (cpsVarToLLVMLoc cpsvar, subject), 
+                    LLVMUnconditionalJump(trueBlockName)
+                    (* LLVMStoreBool(resultBoolLocation, true) *)
+                    ])
+                end
+                | CPSPatBuiltin(v) => 
+                    let val constantStoreLoc = LLVMLocationLocal (UID.next())
+                    val cmpDest = LLVMLocationLocal (UID.next())
+                    val subjectConvLoc = LLVMLocationLocal (UID.next())
+                    in 
+                    (case v of 
+                    CPSBvInt i => ([], [ 
+                            LLVMPrimitiveOp(LLVMPOpValueToInt(subjectConvLoc, llvmLocToValue subject)),
+                            LLVMPrimitiveOp(LLVMPOpCmpEqInt(cmpDest, llvmLocToValue subjectConvLoc, LLVMIntConst i ))
+                    ])
+                    | CPSBvBool b => ([], [ 
+                            LLVMPrimitiveOp(LLVMPOpValueToBool(subjectConvLoc, llvmLocToValue subject)),
+                            LLVMPrimitiveOp(LLVMPOpCmpEqBool(cmpDest, llvmLocToValue subjectConvLoc, LLVMIntConst (if b then 1 else 0) ))
+                    ])
+                    | CPSBvString s => 
+                    let val strLoc = UID.next() 
+                    in
+                        ([LLVMStringConstant(strLoc, s)
+                        ], [ 
+                            (* LLVMComment("Storing String " ^ UTF8String.toString s 
+                            ^ PrettyPrint.show_source_range (UTF8String.getSourceRange s "llvmc183")), *)
+                            LLVMStoreString(constantStoreLoc, (strLoc, s)), 
+                            LLVMPrimitiveOp(LLVMPOpCmpEqString(cmpDest, llvmLocToValue subject, llvmLocToValue (constantStoreLoc) ))
+                        ])
+                    end
+                    | _ => raise Fail "llvmconv159"
+                    ):::([], 
+                        [
+                            LLVMConditionalJumpBinary(cmpDest,
+                                [LLVMUnconditionalJump(trueBlockName) ],
+                                [LLVMUnconditionalJump(falseBlockName) ]
+                            )
+                        ]
+                    )
+                    end
+                | CPSPatTuple(arglist) => 
+                let 
+                in
+                    handleArgList arglist 0 false
+                end
+                | CPSPatHeadSpine(cid, arglist) => 
+                (
+                    let 
+                        val indexLoc = UID.next()
+                        val indexValLoc = UID.next()
+                        val cmpBoolLoc = UID.next()
+                        (* val argResultBool = List.tabulate(length arglist, fn _ => (UID.next()))
+                        val reductionBoolLocs = List.tabulate(length arglist+1, fn _ => (UID.next())) *)
+                        (* first in reduction always true, result in last *)
+                        val (trueDecls, trueComps) = handleArgList arglist 0 true
+                    in
+                            (trueDecls, [
+                            LLVMArrayAccess(LLVMLocationLocal indexLoc, subject, 0) (* store the index *), 
+                            LLVMPrimitiveOp(LLVMPOpValueToInt(LLVMLocationLocal indexValLoc, LLVMLocalVar indexLoc)),
+                            LLVMPrimitiveOp(LLVMPOpCmpEqInt(LLVMLocationLocal cmpBoolLoc, LLVMLocalVar indexValLoc, LLVMIntConst cid)), 
+                            LLVMComment "(pattern matching) jumping based on the whether constructor id matches the pattern",
+                            LLVMConditionalJumpBinary(LLVMLocationLocal cmpBoolLoc, 
+                                (* get each argument and collect the result *)
+                                (
+                                    trueComps
+                                )
+                                ,
+                                (let
+                                    (* val resultBoolLocation = LLVMLocationLocal (UID.next()) *)
+                                in 
+                                    (* [LLVMStoreBool(resultBoolLocation, false)]@(cc resultBoolLocation) exit, not equal *)
+                                    [LLVMUnconditionalJump(falseBlockName)]
+                                end)
+                            )
+                            ])
+                    end
+                )
+        end
+
     fun compilePrimitiveOp(cpspop : cpsprimitiveop) : llvmdeclaration list * llvmstatement list = 
         let fun vaccessInt(v : cpsvalue) (accessed : llvmlocation -> llvmstatement list)  : llvmstatement list = 
             let val newLoc = LLVMLocationLocal (UID.next())
@@ -124,6 +248,12 @@ this transforms access of cpsvar
             CPSPOpIntEq (i1, i2, (i, k)) => ([], vaccessInt i1 (fn ai1 => 
                 vaccessInt i2 (fn ai2 => 
                     [LLVMPrimitiveOp(LLVMPOpCmpEqInt(tempLoc1, llvmLocToValue ai1, llvmLocToValue ai2)),
+                    LLVMPrimitiveOp(LLVMPOpBoolToValue(cpsVarToLLVMLoc i, llvmLocToValue tempLoc1))]
+                )
+            )) ::: recur k
+            | CPSPOpIntGt (i1, i2, (i, k)) => ([], vaccessInt i1 (fn ai1 => 
+                vaccessInt i2 (fn ai2 => 
+                    [LLVMPrimitiveOp(LLVMPOpCmpGtInt(tempLoc1, llvmLocToValue ai1, llvmLocToValue ai2)),
                     LLVMPrimitiveOp(LLVMPOpBoolToValue(cpsVarToLLVMLoc i, llvmLocToValue tempLoc1))]
                 )
             )) ::: recur k
@@ -156,7 +286,7 @@ in
                     LLVMComment "CPS Converting If Then Else",
                     LLVMConditionalJumpBinary(i1loc, tcomps, fcomps)]))
             end
-            | CPSCases(v, vkl) => 
+            | CPSSimpleCases(v, vkl) => 
                 let val indexLoc = UID.next()
                 val recurResult = map (fn (index, arglist, k) => 
                 ([], vaccess v (fn accessedv => 
@@ -171,6 +301,53 @@ in
                     @ [LLVMConditionalJump(indexLoc,recurComps)]
                     )
                 end
+            | CPSCases(v, cases, s) => 
+                    let
+                        (* val decls = ref [] *)
+                        (* ds the next case entry for all cases *)
+                        (* contains all cases entries for all cases except the first, including the last spurious one *)
+                        val nextBlockNames = List.tabulate (length cases, fn _ => UID.next()) 
+                        val stringName = UID.next()
+                        val stringLoc = UID.next()
+                        fun compileCases i : (llvmdeclaration list * llvmstatement list) = 
+                        if i = length cases 
+                        then([LLVMStringConstant(stringName, UTF8String.fromString s)],
+                            [LLVMComment "CPSCases258: run out of cases",
+                            LLVMStoreString(LLVMLocationLocal (stringLoc), (stringName, UTF8String.fromString s))
+                            ]@
+                                (vaccess v (fn v' => [
+                                    LLVMComment "run out of patterns, throw exception",
+                                    LLVMRaiseException(LLVMExceptionMatch (stringLoc))])
+                                )
+                            )
+                            
+                        else (let val (pat, body) = List.nth(cases, i)
+                                (* val currentBlockName = List.nth(blockNames, i) *)
+                                val nextBlockName = List.nth(nextBlockNames, i)
+                                val blockBodyName = UID.next()
+                                in
+                                    ([], [LLVMComment ("CPSCases269, in case at index " ^ Int.toString i)]):::
+                                        ( vaccess' v (fn v' => testAndCompileCPSPattern v' pat 
+                                        blockBodyName nextBlockName))
+                                        :::
+                                    (
+                                            let 
+                                                val (bodyDecls, bodyComps) = recur body
+                                                (* val _ = decls := (!decls) @(bodyDecls)  TODO: fix the hack *)
+                                                val (nextDecls, nextComps) = compileCases (i+1)
+                                            in
+                                                    (* LLVMComment "finished testing pattern, branching on whether test succeeded",
+                                                    LLVMPrimitiveOp(LLVMPOpValueToBool(LLVMLocationLocal i1rboolLoc, LLVMLocalVar rboolLoc)), 
+                                                    LLVMConditionalJumpBinary(LLVMLocationLocal i1rboolLoc,  *)
+                                                (bodyDecls@nextDecls, [ LLVMBlock(blockBodyName, bodyComps)]@
+                                                 [LLVMBlock(nextBlockName, nextComps)]) (* next comps will have a block name *)
+                                            end)
+                                        end
+                                        (* | _ => raise Fail "llvm256" TODO: conditional jump should take i64* *)
+                                        )
+                    in
+                    (compileCases 0)
+                    end
             | CPSFold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMStoreArray(LLVMArrayTypeFold, (cpsVarToLLVMLoc t),[llvmLocToValue v'])])) ::: recur k
             | CPSUnfold(v, (t, k)) => ([], vaccess v (fn v' => [LLVMArrayAccess((cpsVarToLLVMLoc t),v',0)])) ::: recur k
             | CPSAbs((i,ak, c), SOME fvs, (t,k)) => 
@@ -193,7 +370,8 @@ in
             let val stringName = UID.next()
             in (
                 [LLVMStringConstant(stringName, s)], [
-                    LLVMStoreArray(LLVMArrayTypeString, (cpsVarToLLVMLoc t), [LLVMStringName (stringName, s)])
+                    (* LLVMStoreArray(LLVMArrayTypeString, (cpsVarToLLVMLoc t), [LLVMStringName (stringName, s)]), *)
+                    LLVMStoreString((cpsVarToLLVMLoc t), ((stringName, s)))
                 ](* TODO: I think this is erroneous as k will assume t to be a local variable, but it is actually a string constant! *)
             ) ::: recur k
             end

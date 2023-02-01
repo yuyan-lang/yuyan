@@ -96,15 +96,11 @@ open StaticErrorStructure
         end
 
     fun constructFileDependencyInfo (tc : TypeCheckingAST.CSignature) : dependency list = 
-        List.mapPartial (fn x => case x of 
-            TypeCheckingAST.CImport(x, y) => SOME (y,x)
-            | _ => NONE
-        ) tc
-
+        FileDependencyResolution.constructFileDependencyInfo tc
 
     fun constructCPSInfo (tckedAST : TypeCheckingAST.CSignature) (curFp : FileResourceURI.t) (curFDependencies : dependency list)
     (helperFuncs : cmhelperfuncs) :
-     ((CPSAst.context * CPSAst.cpsvar option * CPSAst.cpscomputation)
+     (( CPSAst.cpsvar (* the global cps location that stores the compiled module *) * CPSAst.cpscomputation)
                 * CPSAst.cpscomputation * LLVMAst.llvmsignature )
       witherrsoption=
         (
@@ -112,28 +108,71 @@ open StaticErrorStructure
     ((#getDependencyInfo helperFuncs) curFp curFDependencies ) >>= (fn orderedDeps => 
         (
             (* DebugPrint.p ("got ordered Dep"); *)
-      mapM (fn d => #getTypeCheckedAST helperFuncs d) orderedDeps  >>= (fn csigs =>
+      mapM (fn d as(fp,sname) => fmap (fn info=> (info,sname)) (#getCPSInfo helperFuncs d)) orderedDeps  >>= (fn orderedDeps =>
         let
-        val grandTypeCheckedAST = List.concat(csigs@[tckedAST])
-         val cpsAST  = CPSPass.cpsTransformSigTopLevel grandTypeCheckedAST
+        (* val grandTypeCheckedAST = List.concat(csigs@[tckedAST]) *)
+        (* val _ = DebugPrint.p ("The dependency of " ^ FileResourceURI.access curFp ^ " is " ^ 
+        String.concatWith ", " (map (fn (_, sname) =>StructureName.toStringPlain sname ) orderedDeps))  *)
+        val initialCtx =map (fn (((varname, _), _,_), sname)  => (sname, CPSAst.GlobalVar varname)) orderedDeps
+        val gResultLoc = CPSAst.CPSVarGlobal (UID.next())
+         val cpsAST  = (CPSPass.configureAndCpsTransformSigTopLevel
+            (fn fp => 
+            case (#getCPSInfo helperFuncs (fp, [UTF8String.fromString ("cfops120: when retrieving cpsinfo from" ^ FileResourceURI.access curFp)]))
+            of Success ((v, _), _,_) => v
+            | _ => raise Fail "CPSinfo retrieval failure"
+            )
+            initialCtx tckedAST gResultLoc
+
+            handle CPSPass.CPSInternalError => 
+                (DebugPrint.p (" when contructing cps info for " ^ FileResourceURI.access curFp);
+                    raise CPSPass.CPSInternalError
+                )
+         )
         (* val _ = DebugPrint.p "----------------- CPS Done -------------------- \n" *)
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation cpsAST) *)
-        val closureAST = ClosureConvert.closureConvertTopLevel (#3 cpsAST)
+        val closureAST = ClosureConvert.closureConvertTopLevel (cpsAST)
         (* val _ = DebugPrint.p "----------------- ClosureConvert Done -------------------- \n" *)
         (* val _ = DebugPrint.p (PrettyPrint.show_cpscomputation closureAST) *)
         val (llvmsig) = LLVMConvert.genLLVMSignatureTopLevel closureAST
         in 
-            Success (cpsAST, closureAST, llvmsig)
+            Success ((gResultLoc, cpsAST), closureAST, llvmsig)
         end
       )
     ))
         )
+        
 
-    fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) (pwd : string) : {llfilepath :string} witherrsoption
+    fun constructLLVMInfo (llvmsig : LLVMAst.llvmsignature) 
+    (curFp : FileResourceURI.t)
+    (curFDependencies : dependency list)
+    (helperFuncs : cmhelperfuncs)  (* TODO: dont need to be this complicated , since we now don't need to calculate 
+    dependencies, just follow structure *)
+    (pwd : string) : {llfilepath :string} witherrsoption
                  =
-        let  (* TODO use aboslute path for filenames *)
-            val filename  = PathUtil.makeAbsolute (".yybuild/yy" ^ Int.toString (UID.next())^ ".ll") pwd
-            val statements = LLVMCodegen.genLLVMSignatureWithMainFunction llvmsig 
+        (
+            (* DebugPrint.p ("entering construct cps"); *)
+    ((#getDependencyInfo helperFuncs) curFp curFDependencies ) >>= (fn orderedDeps => 
+        (
+            (* DebugPrint.p ("got ordered Dep"); *)
+      mapM (fn d as(fp,sname) => fmap (fn info=> (info,sname)) (#getCPSInfo helperFuncs d)) orderedDeps  >>= (fn orderedDeps =>
+        let
+        (* val grandTypeCheckedAST = List.concat(csigs@[tckedAST]) *)
+        (* val _ = DebugPrint.p ("The dependency of " ^ FileResourceURI.access curFp ^ " is " ^ 
+        String.concatWith ", " (map (fn (_, sname) =>StructureName.toStringPlain sname ) orderedDeps))  *)
+        val prevLLVMStmts =map (fn (((_, _), _,llvmsig), sname)  => 
+        (
+            let 
+            (* val _ = DebugPrint.p ("DEBUG : " ^ StructureName.toStringPlain sname ^ " mapped to " ^ 
+            Int.toString (#1 llvmsig)) *)
+            in
+        llvmsig
+        end)) orderedDeps
+
+        val allLLVMSig = prevLLVMStmts @ [llvmsig]
+
+        (* TODO use aboslute path for filenames *)
+            val filename  = PathUtil.makeAbsolute (".yybuild.nosync/yy" ^ Int.toString (UID.next())^ ".ll") pwd
+            val statements = LLVMCodegen.genLLVMSignatureWithMainFunction allLLVMSig 
             val filehandle = TextIO.openOut filename
             val _ = TextIO.output (filehandle,(String.concatWith "\n" statements))
             val _ = TextIO.flushOut (filehandle)
@@ -141,6 +180,7 @@ open StaticErrorStructure
             Success {llfilepath = filename}
         end
 
+      ))))
 
     fun getFileDiagnostics(CompilationFile file : compilationfile) : errlist option = 
         case #content file of DErrors l => SOME l
@@ -168,5 +208,13 @@ open StaticErrorStructure
         | _ => case #typeCheckingInfo file of DErrors l => DErrors l
         | _ => case #typeCheckedInfo file of DErrors l => DErrors l
         | _ => #dependencyInfo file
+
+    fun getCPSInfo(CompilationFile file : compilationfile) : cpsinfo witherrsoption = 
+        case #content file of DErrors l => DErrors l
+        | _ => case #preprocessingInfo file of DErrors l => DErrors l
+        | _ => case #typeCheckingInfo file of DErrors l => DErrors l
+        | _ => case #typeCheckedInfo file of DErrors l => DErrors l
+        | _ => case #dependencyInfo file of DErrors l => DErrors l
+        | _ => #cpsInfo file
     
 end

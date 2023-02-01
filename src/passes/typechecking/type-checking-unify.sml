@@ -14,6 +14,7 @@ infix 4 ~~~=
 
     val uniqueName = StructureName.binderName
 
+
     fun typeUnify (e : RExpr) (failCallback : CExpr * CExpr -> (constraints * context) witherrsoption)
      (ctx : context) (t1:CExpr) (t2:CExpr)  : (constraints * context) witherrsoption = 
     let val recur = typeUnify e failCallback
@@ -94,21 +95,27 @@ infix 4 ~~~=
         in 
         lookupCtx ctx metavar >>= (fn (cname, tp, jtp)=> 
             case jtp of JTMetaVarPendingResolve _ =>
-                if 
-                (* unique sxbar 
-                andalso *)
-                (* subset (freeTCVar ns) sxbar *)
-                (* andalso ctxInScope ctx metavar ns *)
-                (* TODO add checking *)
-                true
-                (* then Success([], modifyCtxResolveMetaVar ctx metavar (prependLambdas sxbar ns)) *)
-                then Success([], modifyCtxResolveMetaVar ctx metavar (ns))
-                else TypeCheckingErrors.genericError e ctx 
-                ("cannot unify metavar : " 
-                ^ "unique = " ^ Bool.toString (unique sxbar )
-                ^ "subset = " ^ Bool.toString(subset (freeTCVar ns) sxbar)
-                ^ "inscope = " ^ Bool.toString(ctxInScope ctx metavar ns )
-                ^ "names = " ^ String.concatWith "\n" (map StructureName.toStringPlain sxbar))
+                (case ns of 
+                CMetaVar(name) => if StructureName.semanticEqual name cname 
+                then Success([], ctx)
+                else Success([], modifyCtxResolveMetaVar ctx metavar (ns))
+                | _  => 
+                    if 
+                    (* unique sxbar 
+                    andalso *)
+                    (* subset (freeTCVar ns) sxbar *)
+                    (* andalso ctxInScope ctx metavar ns *)
+                    (* TODO add checking *)
+                    true
+                    (* then Success([], modifyCtxResolveMetaVar ctx metavar (prependLambdas sxbar ns)) *)
+                    then Success([], modifyCtxResolveMetaVar ctx metavar (ns))
+                    else TypeCheckingErrors.genericError e ctx 
+                    ("cannot unify metavar : " 
+                    ^ "unique = " ^ Bool.toString (unique sxbar )
+                    ^ "subset = " ^ Bool.toString(subset (freeTCVar ns) sxbar)
+                    ^ "inscope = " ^ Bool.toString(ctxInScope ctx metavar ns )
+                    ^ "names = " ^ String.concatWith "\n" (map StructureName.toStringPlain sxbar))
+                )
             | JTMetaVarResolved t => recur ctx t ns
             | _ => raise Fail "ni108"
         )
@@ -141,18 +148,45 @@ infix 4 ~~~=
                                         | _ => raise Fail "ni42: pi constaints"
                                 )
                             end
-                        | (CProd l1, CProd l2) =>  typeEquivListWithLabel ctx l1 l2
+                        | (CProd l1, CProd l2) => typeEquivList ctx l1 l2
+                        | (CLabeledProd l1, CLabeledProd l2) =>  typeEquivListWithLabel ctx l1 l2
                         | (CVar (t1, CVTBinder), CVar (t2, CVTBinder)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
                         | (CVar (t1, CVTConstructor _), CVar (t2, CVTConstructor _)) => if (t1 ~~~= t2) then Success([], ctx) else fail()
                         (* TODO: ^^^ should we care about the arguments ? *)
                         | (CUnitType, CUnitType) => Success([], ctx)
-                        | (CProj(t1, lbl1, idx1, u1), CProj(t2, lbl2, idx2, u2)) => 
+                        | (CProj(t1,  idx1, u1), CProj(t2,  idx2, u2)) => 
                             recur ctx t1 t2 >>= (fn 
-                                ([], ctx) => if idx1 = idx2 andalso lbl1 = lbl2 
+                                ([], ctx) => if idx1 = idx2 
+                                (* andalso lbl1 = lbl2  *)
                                              then Success([], ctx)
                                              else fail()
                                 | _ => raise Fail "ni151"
                             )
+                        | (CBlock decl1, CBlock decl2) => 
+                        (
+                            case (decl1, decl2) of 
+                                ([], []) => Success([], ctx) 
+                                | ((CPureDeclaration(name1, tp1) :: tl1, CPureDeclaration(name2, tp2) :: tl2) 
+                                | (CTermDefinition(name1, _, tp1) :: tl1, CTermDefinition(name2, _, tp2) :: tl2)
+                                | (CConstructorDecl(name1, tp1,_) :: tl1, CConstructorDecl(name2, tp2, _) :: tl2)
+                                ) => 
+                                if UTF8String.semanticEqual name1  name2 
+                                then (recur ctx tp1 tp2) >>= (fn (_, ctx) => 
+                                (* TODO: remove constraints, use pattern unification *)
+                                    recur ctx (CBlock tl1) (CBlock tl2)
+                                ) else fail()
+                                | (CImport(name1, _) :: tl1, CImport(name2, _) :: tl2) => 
+                                    if StructureName.semanticEqual name1 name2 
+                                    then (
+                                        recur ctx (CBlock tl1) (CBlock tl2)
+                                    ) else fail()
+                                | (COpenStructure(name1, _) :: tl1, COpenStructure(name2, _) :: tl2) => 
+                                    if StructureName.semanticEqual name1 name2 
+                                    then (
+                                        recur ctx (CBlock tl1) (CBlock tl2)
+                                    ) else fail()
+                                | _ => fail()
+                        )
                         | _ => fail())
                 else recur ctx t1 t2 >>= (fn (constraints, ctx) => 
                     case constraints of 
@@ -230,14 +264,18 @@ infix 4 ~~~=
     end) *)
 
     fun tryTypeUnify (ctx : context) (expr: RExpr) (synthesized : CType) (checked : CType) : (context) witherrsoption =
-        typeUnify expr (fn (failedT1, failedT2) => 
-             TypeCheckingErrors.typeMismatch expr (synthesized) checked failedT1 failedT2 ctx
-        )
-        ctx synthesized checked  >>= (fn (constraints, context) => 
-        if length constraints = 0
-        then Success( context)
-        else raise Fail "ni85: type unify produces constraints"
-            (* else TypeCheckingErrors.typeMismatch expr (synthesized) checked ctx *)
+        weakHeadNormalizeType expr ctx synthesized >>= (fn synthesized =>
+            weakHeadNormalizeType expr ctx checked >>= (fn checked =>
+                typeUnify expr (fn (failedT1, failedT2) => 
+                    TypeCheckingErrors.typeMismatch expr (synthesized) checked failedT1 failedT2 ctx
+                )
+                ctx synthesized checked  >>= (fn (constraints, context) => 
+                if length constraints = 0
+                then Success( context)
+                else raise Fail "ni85: type unify produces constraints"
+                    (* else TypeCheckingErrors.typeMismatch expr (synthesized) checked ctx *)
+                )
+            ) 
         )
 
 end

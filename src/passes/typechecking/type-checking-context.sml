@@ -3,6 +3,7 @@ structure TypeCheckingContext = struct
 
 open TypeCheckingAST
 open StaticErrorStructure
+infix 5 >>=
     val show_jt = PrettyPrint.show_typecheckingjt
     fun showctx (x : context) (full : bool) = (case x of 
     Context(curSName, curVis, m) =>  
@@ -11,10 +12,6 @@ open StaticErrorStructure
         let val allDecls = (map (fn x => case x of
     TermTypeJ(e, t, defop, _) => StructureName.toStringPlain e ^ "：" ^ PrettyPrint.show_typecheckingCType t 
     ^ (show_jt defop 
-            (* ^ (if full 
-    then (case defop of JTDefinition(def) =>  "\n" ^ StructureName.toStringPlain e ^" = " ^PrettyPrint.show_typecheckingCExpr def 
-         | _ => "")
-    else "") *)
     )) m)
     (* | TermDefJ(s, t, _) => StructureName.toStringPlain s ^ " = " ^ PrettyPrint.show_typecheckingCType t) m) *)
         
@@ -32,6 +29,7 @@ open StaticErrorStructure
 
 
 
+    (* NEW VERSION: NAME MUST BE ABSOLUTE *)
     fun findCtx (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) option = 
         let exception LookupNotFound
             fun lookupMapping (ctx : mapping list) (n : StructureName.t) (curSName : StructureName.t ): (StructureName.t * CType * judgmentType) = 
@@ -41,15 +39,29 @@ open StaticErrorStructure
                     [] => raise LookupNotFound
                     (* ("name " ^ StructureName.toStringPlain n ^ " not found in context") *)
                     | TermTypeJ(n1, t1, defop1,  u)::cs => 
-                        (case StructureName.checkRefersTo n1 n curSName 
-                        of SOME(cname) => (case u of NONE => cname | SOME(x, _) => x, t1, defop1)
-                        | NONE => lookupMapping cs n curSName
+                        (
+                        (* StructureName.checkRefersTo n1 n curSName  *)
+                        if StructureName.semanticEqual n1 n 
+                        then (case u of NONE => n | SOME(x, _) => x, t1, defop1)
+                        else lookupMapping cs n curSName
                         )
             val ntp = SOME(lookupMapping ctx n curSName)
                 handle LookupNotFound => NONE
+            (* val _ = DebugPrint.p ("finding " ^ StructureName.toStringPlain n ^ " in ctx "
+             ^ PrettyPrint.show_typecheckingpassctx (Context(curSName, v, ctx))
+            ^ "result is "  ^ (
+                case ntp of 
+                    SOME(name, t, jt) => StructureName.toStringPlain name ^ " : " ^ PrettyPrint.show_typecheckingCType t ^ " " ^ PrettyPrint.show_typecheckingjt jt
+                    | NONE => "NONE"
+                )
+            ^ "\n"
+            ) *)
         in 
             ntp 
         end
+
+    
+
 
     fun findCtxForType (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         Option.map(fn (x,t,eop) => (x, t)) (findCtx (Context(curSName, v, ctx)) n)
@@ -87,21 +99,26 @@ open StaticErrorStructure
     fun modifyCtxDeleteBinding (ctx : context) (cname : StructureName.t)  : context = 
         modifyCtx ctx cname (fn jtp => case jtp of 
                 JTLocalBinder => NONE
-                | _ => raise Fail ("tcc58: jtp is not jtlocalbinder pending resolve but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname))
+                | JTLocalBinderWithDef _ => NONE
+                | JTDefinition _ => NONE (* TODO: check the differnce between def and local binder with def *)
+                | JTConstructor _ => NONE
+                | JTPending => NONE
+                | _ => raise Fail ("tcc58: jtp is not jtlocalbinder or jtlocalbinderwithdef but is " ^ show_jt jtp ^ " at " ^ (StructureName.toStringPlain cname) 
+                ^ " in context " ^ showctx ctx true)
             )
     
 
     fun lookupCtx (ctxg as Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType * judgmentType) witherrsoption = 
     case findCtx ctxg n of 
         SOME(v) => Success(v)
-        | NONE =>  genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
+        | NONE =>  genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlainDebug n ^ "`未找到(1)") (showctxSome (Context(curSName, v, ctx)))
 
 
 (* require lookup to add name qualification if references local structure *)
     fun lookupCtxForType (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
     case findCtxForType ctxg n of
         SOME(st) => Success(st)
-        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
+        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlainDebug n ^ "`未找到(2)") (showctxSome (Context(curSName, v, ctx)))
 
      fun findCtxForDef (Context(curSName, v, ctx) : context) (n : StructureName.t) : (StructureName.t * CType) option = 
         case (findCtx (Context(curSName, v, ctx)) n) of 
@@ -112,7 +129,7 @@ open StaticErrorStructure
     fun lookupCtxForDef (ctxg as Context(curSName, v, ctx): context) (n : StructureName.t) : (StructureName.t * CType) witherrsoption= 
     case findCtxForDef ctxg n of
         SOME(st) => Success(st)
-        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlain n ^ "`未找到") (showctxSome (Context(curSName, v, ctx)))
+        | NONE => genSingletonError (StructureName.toString n) ("名称`" ^ StructureName.toStringPlainDebug n ^ "`未找到(3)") (showctxSome (Context(curSName, v, ctx)))
 
     fun appendAbsoluteMappingToCurrentContext (m : 'a gmapping) (ctx : 'a gcontext) : 'a gcontext = 
         case ctx of
@@ -143,7 +160,24 @@ open StaticErrorStructure
     val addToCtxAL = appendAbsoluteMappingsToCurrentContext (* L for list *)
     val addToCtxRL = appendRelativeMappingsToCurrentContext (* L for list *)
     
-
+    fun withLocalBinder (ctx : context) (name : UTF8String.t) (tp : CType)
+        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
+         kont (addToCtxA (TermTypeJ([name], tp, JTLocalBinder, NONE)) ctx) >>= (fn (res, ctx) => 
+            Success(res, modifyCtxDeleteBinding ctx [name])
+        )
+        
+    fun withLocalBinderWithDefinition (ctx : context) (name : UTF8String.t) (tp : CType) (def : StructureName.t)
+        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
+         kont (addToCtxA (TermTypeJ([name], tp, JTLocalBinderWithDef def , NONE)) ctx) >>= (fn (res, ctx) => 
+            Success(res, modifyCtxDeleteBinding ctx [name])
+        )
+        
+    
+    fun withLocalGeneric (ctx : context) (name : StructureName.t) (tp : CType) (jt : judgmentType)
+        (kont : context -> ('a * context) witherrsoption) : ('a * context) witherrsoption = 
+         kont (addToCtxA (TermTypeJ(name, tp, jt, NONE)) ctx) >>= (fn (res, ctx) => 
+            Success(res, modifyCtxDeleteBinding ctx name)
+        )
   
 
         

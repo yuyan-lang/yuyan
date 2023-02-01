@@ -135,6 +135,7 @@ a new module is added with root Path being the file's residing directory *)
     (profile : bool) 
     (uselocallib : bool) 
     (outputFilePath : filepath)
+    (additionalClangOptions : string)
     : unit witherrsoption  = 
         let val CompilationStructure.CompilationFile cfile = lookupFileByPath entryFilePath cm
         in case CompilationFileOps.getFileDiagnostics (CompilationStructure.CompilationFile cfile) of 
@@ -156,7 +157,9 @@ a new module is added with root Path being the file's residing directory *)
             ^ (getOSSpecificClangOption())
             ^" -o "  
             ^ (access outputFilePath)
-            ^ " -save-temps=obj -L /usr/local/lib -l gc -l uv -l matplot -l stdc++ -Wno-override-module)"
+            ^ " " ^ additionalClangOptions
+            (* ^ " -save-temps=obj -l matplot " *)
+            ^ " -L /usr/local/lib -l gc -l uv -l stdc++ -Wno-override-module)"
             val _ = DebugPrint.p (cmd ^ "\n")
             val ret = OS.Process.system (cmd)
             in 
@@ -312,34 +315,36 @@ end *)
     end *)
     fun resolveStructureReference(fromFile: filepath) (sname : StructureName.t) (cm : compilationmanager) : filepath witherrsoption = 
         let 
-        val moduleSearchPath : string list = [PathUtil.concat([#pwd cm, "yylib"])]
-        fun findFileAmongCandidates(otherCandidates : string list) (errInfo : UTF8String.t) : filepath witherrsoption = 
-                        let
-                            val res = (case (foldl (fn (candidate, acc) => 
-                            case acc of 
-                                SOME(x) => SOME(x)
-                                | NONE => if PathUtil.exists candidate
-                                        then SOME(Success(make candidate))
-                                        else NONE
-                            ) NONE otherCandidates) of 
-                                SOME (x) => x
-                                | NONE =>  genSingletonError (errInfo) "导入的模块未找到(cannot find module)" NONE)
-                        in res
+            val moduleSearchPath : string list = [PathUtil.concat([#pwd cm]), PathUtil.concat([#pwd cm, "yylib"])]
+            fun findFileAmongCandidates(otherCandidates : string list) (errInfo : UTF8String.t) : filepath witherrsoption = 
+                            let
+                                val res = (case (foldl (fn (candidate, acc) => 
+                                case acc of 
+                                    SOME(x) => SOME(x)
+                                    | NONE => if PathUtil.exists candidate
+                                            then SOME(Success(make candidate))
+                                            else NONE
+                                ) NONE otherCandidates) of 
+                                    SOME (x) => x
+                                    | NONE =>  genSingletonError (errInfo) ("导入的模块未找到(cannot find module)(3) "
+                                    ^ " candidates : " 
+                                    ^ String.concatWith ", " otherCandidates) NONE)
+                            in res
+                            end
+            fun resolveRec(currentDir : string)(remainingName : StructureName.t) : filepath witherrsoption = 
+                case remainingName of 
+                    [] => raise Fail "cm324"
+                    | [onlyName] => let val otherCandiates = 
+                                (fn x => [PathUtil.concat [x, StructureName.toStringPlain remainingName  ^ ".yuyan"],
+                                        PathUtil.concat [x, StructureName.toStringPlain remainingName ^"。豫"]]
+                                ) (currentDir)
+                                in findFileAmongCandidates otherCandiates onlyName end
+                    | (firstName ::  rest) => 
+                        let val nextFolder = PathUtil.concat [currentDir, UTF8String.toString firstName]
+                        in if PathUtil.exists nextFolder
+                        then resolveRec nextFolder rest
+                        else  genSingletonError (firstName) "导入的模块未找到(cannot find module)(1)" NONE
                         end
-        fun resolveRec(currentDir : string)(remainingName : StructureName.t) : filepath witherrsoption = 
-            case remainingName of 
-                [] => raise Fail "cm324"
-                | [onlyName] => let val otherCandiates = 
-                            (fn x => [PathUtil.concat [x, StructureName.toStringPlain remainingName  ^ ".yuyan"],
-                                    PathUtil.concat [x, StructureName.toStringPlain remainingName ^"。豫"]]
-                            ) (currentDir)
-                            in findFileAmongCandidates otherCandiates onlyName end
-                | (firstName ::  rest) => 
-                    let val nextFolder = PathUtil.concat [currentDir, UTF8String.toString firstName]
-                    in if PathUtil.exists nextFolder
-                    then resolveRec nextFolder rest
-                    else  genSingletonError (firstName) "导入的模块未找到(cannot find module)" NONE
-                    end
         in
         if length sname = 0
             then raise Fail "unexpected empty structure name"
@@ -365,7 +370,7 @@ end *)
                                         else NONE
                             ) NONE otherCandiates) of 
                                 SOME (x) => resolveRec x rest
-                                | NONE =>  genSingletonError (firstName) "导入的模块未找到(cannot find module)" NONE
+                                | NONE =>  genSingletonError (firstName) "导入的模块未找到(cannot find module)(2)" NONE
                         in res
                         end
         end
@@ -448,6 +453,12 @@ end *)
 
 
     exception CircularReference of dependency list
+    fun showCircularReferenceDependencyList (ds : dependency list) : string = 
+        String.concatWith "\n; " (map (fn (fruri, sname) => 
+            FileResourceURI.access fruri ^ " with SName " ^ (StructureName.toStringPlain sname)
+            ) ds)
+
+
     fun requestFileProcessing(filepath : filepath) (level : uptolevel) (cm : compilationmanager) (requestingStack : dependency list) :unit = 
         performFileUpdate filepath ( 
             CompilationFileProcessing.processFileUpTo level (cm)
@@ -469,7 +480,8 @@ end *)
                             ; CompilationFileOps.getPreprocessingAST (lookupFileByPath (fp) cm) >>= (fn tree => 
                                     Success (tree, fp)
                                 )
-                            ) handle CircularReference fpl => genSingletonError (StructureName.toString structureName) "循环引用" NONE
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString structureName) 
+                                ("循环引用 (1) " ^ showCircularReferenceDependencyList fpl) NONE
                         )
                     )
                 )),
@@ -480,19 +492,28 @@ end *)
                             else (
                     requestFileProcessing (fp) UpToLevelTypeCheckedInfo cm ((fp, errName) :: requestingStack);
                     CompilationFileOps.getTypeCheckedAST (lookupFileByPath fp cm)
-                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用" NONE
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用 (2)" NONE
                     ))
                 , getDependencyInfo = (fn fp =>  fn dfpl =>
                     getDependencyOrder fp dfpl cm
                 )
                 , getTopLevelStructureName = (fn fp => 
                     getTopLevelStructureName fp cm
-                )
+                ),
+                 getCPSInfo = (fn (fp, errName) => 
+                    (findOrAddFile (fp) NONE cm;
+                        if List.exists(fn (x,_) => (access x) = (access fp)) requestingStack
+                            then raise CircularReference ((fp, errName) :: requestingStack)
+                            else (
+                    requestFileProcessing (fp) UpToLevelCPSInfo cm ((fp, errName) :: requestingStack);
+                    CompilationFileOps.getCPSInfo (lookupFileByPath fp cm)
+                            ) handle CircularReference fpl => genSingletonError (StructureName.toString errName) "循环引用 (3)" NONE
+                    ))
                 }
             ) cm 
 
     fun initWithWorkingDirectory (pwd : filepath) : compilationmanager =  
-    let val _ =  OS.FileSys.mkDir (OS.Path.concat (access pwd, ".yybuild"))
+    let val _ =  OS.FileSys.mkDir (OS.Path.concat (access pwd, ".yybuild.nosync"))
         handle OS.SysErr s => () (* assume creation successful *)
         val cm = {
             importedModules = ref []

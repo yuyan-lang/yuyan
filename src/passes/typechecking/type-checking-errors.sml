@@ -48,7 +48,7 @@ structure TypeCheckingErrors =
             | RUnitExpr(soi) => soi
             | RTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
             | RLazyTuple (l, (soil)) => constructWithSep (map reconstructFromRExpr l) (soil)
-            | RProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
+            | RProj (e, (idx, idxsoi), soi) => reconstructWithArgs soi [reconstructFromRExpr e, idxsoi]
             | RLazyProj (e, lbl, soi) => reconstructWithArgs soi [reconstructFromRExpr e, lbl]
             | RIfThenElse (e, tcase, fcase, soi) => reconstructWithArgs soi [reconstructFromRExpr e, reconstructFromRExpr tcase, reconstructFromRExpr fcase]
             | RInj  ( lbl,e, soi) => reconstructWithArgs soi [lbl, reconstructFromRExpr e]
@@ -62,6 +62,7 @@ structure TypeCheckingErrors =
                 reconstructWithArgs soi [x, reconstructFromRExpr e]
 
             | RLamWithType (t, x, e, soi) => reconstructWithArgs soi [tpPlaceHolder, x, reconstructFromRExpr e]
+            | RTypeAnnotate (t, e, soi)=> reconstructWithArgs soi [reconstructFromRExpr t,  reconstructFromRExpr e]
             | RApp (e1, e2, p, soi)=> 
                 if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
                 then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
@@ -102,7 +103,8 @@ structure TypeCheckingErrors =
             | RIntConstant (l, soi) => soi
             | RRealConstant (l, soi) => soi
             | RBoolConstant (l, soi) => soi
-            | RLetIn (s, e, soi) => reconstructWithArgs soi [tpPlaceHolder, reconstructFromRExpr e]
+            | RLetIn (s,  (soi, (ql, qr))) => reconstructWithArgs soi [[ql]@(UTF8String.fromString "。。。")@[qr]]
+            | RLetInSingle (name, e1, e2, soi) => reconstructWithArgs soi [name, reconstructFromRExpr e1, reconstructFromRExpr e2]
             | RFfiCCall (s, e, soi) => reconstructWithArgs soi [ reconstructFromRExpr s,  reconstructFromRExpr e ]
             | RBuiltinFunc(f, s) => s
             | RSeqComp(e1, e2, soi) => reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
@@ -121,8 +123,8 @@ structure TypeCheckingErrors =
                 SOME v => reconstructWithArgs soi [reconstructFromRExpr t1, v, reconstructFromRExpr t2]
                 | NONE => raise Fail "ui368")
             | RProd(ltsl, sepl) => 
-                constructWithSep (List.map (fn (l, t, soi) => 
-                    reconstructWithArgs soi [l, reconstructFromRExpr t]
+                constructWithSep (List.map (fn (t) => 
+                    reconstructFromRExpr t
                 ) ltsl) sepl
             | RLazyProd  (ltsl, sepl) => 
                 constructWithSep (List.map (fn (l, t, soi) => 
@@ -139,6 +141,7 @@ structure TypeCheckingErrors =
             | RExists(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
             | RRho(tv, t2, soi) => reconstructWithArgs soi [tv, reconstructFromRExpr t2]
             | RPairOfQuotes((ql, qr)) => [ql, qr]
+            | RBlock(_, (ql, qr)) => [ql]@(UTF8String.fromString "。。。")@[qr]
             (* | _ => raise Fail ("reconstruct failed for rexpr " ^ PrettyPrint.show_typecheckingRExpr e) *)
     end
     
@@ -172,7 +175,7 @@ structure TypeCheckingErrors =
     fun expressionDoesNotSupportTypeSynthesis e ctx =  exprError e ctx "表达式不支持类型合成，请指定类型"
     fun prodTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配( prod tuple length mismatch)"
     fun lazyProdTupleLengthMismatch e tt ctx =  exprTypeError e tt ctx "数组长度与类型不匹配(lazy prod tuple length mismatch)"
-    fun expectedProdType e tt ctx =  exprTypeError e tt ctx "期待的类型是乘积类型(expected prod)"
+    fun expectedProdType e tt ctx msg =  exprTypeError e tt ctx ("期待的类型是乘积类型(expected prod)" ^ msg)
     fun expectedLazyProdType e tt ctx =  exprTypeError e tt ctx "期待的类型是惰性乘积类型(expected lazy prod)"
     fun expectedSumType e tt ctx =  exprTypeError e tt ctx "期待总和类型(expected sum types)"
     fun expectedFunctionType e tt ctx =  exprTypeError e tt ctx "期待函数类型(expected function types)"
@@ -186,15 +189,15 @@ structure TypeCheckingErrors =
     fun importError s ctx = genSingletonError s ("导入模块时出错") (showctxSome ctx)
     fun redefinitionError s msg ctx prevDef = genSingletonErrorWithRelatedInfo s ("重复的定义：`" ^  msg ^ "`") (showctxSome ctx) 
         [ (prevDef, "之前的定义")]
-    fun notATypeConstructor e ctx = exprError e ctx "不是一个类型构造器"
+    fun notATypeConstructor e ctx msg = exprError e ctx ("不是一个类型构造器"^msg)
 
     fun unboundTermConstructor e ctx = exprError e ctx "元素构造器未找到(unbound term constructor)"
-    fun expectedTermConstructor e ctx = exprError e ctx "期待元素构造器(expected element constructor)"
+    fun expectedTermConstructor e ctx msg = exprError e ctx ("期待元素构造器(expected element constructor)"^ msg)
     fun unsupportedPatternType e ctx = exprError e ctx "不支持的模式匹配类型(unsupported pattern type)"
     fun patternArgumentCountMismatch e ctx expected actual = exprError e ctx 
         ("模式匹配参数数量错误，期待" ^ Int.toString expected ^ "个参数，" ^
         "实际" ^ Int.toString actual ^ "个参数")
-    fun elementConstructorScopeError e ctx = exprError e ctx "元素构造器必须与其对应的类型构造器处于同一结构中(element constructor must live in the same scope as the corresponding type constructor)"
+    fun elementConstructorScopeError e ctx msg = exprError e ctx ("元素构造器必须与其对应的类型构造器处于同一结构中(element constructor must live in the same scope as the corresponding type constructor)" ^ msg)
     fun genericError e ctx msg = exprError e ctx msg
     fun genericErrorStr s ctx msg = strError s ctx msg
 end

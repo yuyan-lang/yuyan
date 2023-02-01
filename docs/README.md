@@ -71,6 +71,9 @@ yy -h
 
 出于语言设计的早期阶段，我们会认真听取语言功能方面的建议。
 
+欢迎加入Slack讨论！
+https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30n7-FQNwZ0tefBePMxPSFrcbGg
+
 ## 关于调试技巧 
 
 vscode的vim插件有时候会和输入法冲突导致输入一些看不见的字符导致编译失败，可以使用vim，debug。
@@ -80,3 +83,4 @@ vscode的vim插件有时候会和输入法冲突导致输入一些看不见的�
 ## 语言性能
 
 详见[语言性能](LanguagePerformance.md)
+

@@ -93,6 +93,14 @@ in
 end
 fun storeBoolToLLVMLoc  (llvmLoc : llvmlocation)(b : bool)  : string list= 
     [toLLVMLoc llvmLoc ^ " = inttoptr i1 " ^ (if b then "1" else "0") ^ " to i64*"]
+fun storeStringToLLVMLoc  (llvmLoc : llvmlocation)((i,s) : int * UTF8String.t)  : string list= 
+let 
+        val rawChars = UTF8String.getBytes s
+        val ordinals = map (Char.ord) rawChars @[0]
+in
+    [toLLVMLoc llvmLoc ^ " = bitcast [" ^ Int.toString (length ordinals) ^" x i8]* " 
+        ^ toStringName i ^ " to i64*"]
+end
 
 
 fun storeArrayToLLVMLoc (arrType : llvmarraytype) (llvmLoc : llvmlocation)(values : llvmvalue list)  : string list= 
@@ -230,6 +238,16 @@ fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
     case p of
         LLVMPOpCmpEqInt(r, i1, i2) => 
             [toLLVMLoc r ^ " = icmp eq i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpCmpGtInt(r, i1, i2) => 
+            [toLLVMLoc r ^ " = icmp sgt i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpCmpEqBool(r, i1, i2) => 
+            [toLLVMLoc r ^ " = icmp eq i1 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPOpCmpEqString(r, s1, s2) => 
+        let val temp = UID.next()
+        in
+            [toLocalVar temp ^ " = call i64* @yyStringEq(i64* " ^ toLLVMValue s1 ^ ", i64* " ^ toLLVMValue s2 ^ ")"
+            ,toLLVMLoc r ^ " = ptrtoint i64* " ^ toLocalVar temp ^ " to i1 "]
+        end
         | LLVMPOpIntSub(r, i1, i2) => 
             [toLLVMLoc r ^ " = sub i64 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
         | LLVMPOpValueToBool(r, i1) => 
@@ -240,6 +258,19 @@ fun genLLVMPrimitiveOp (p : llvmprimitiveop) : string list =
             [toLLVMLoc r ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i64"]
         | LLVMPOpIntToValue(r, i1) => 
             [toLLVMLoc r ^ " = inttoptr i64 " ^ toLLVMValue i1 ^ " to i64*"]
+        | LLVMPopBoolAnd(r, i1, i2) => 
+            [toLLVMLoc r ^ " = and i1 " ^ toLLVMValue i1 ^ ", " ^ toLLVMValue i2]
+        | LLVMPopBoolAndWithConversion(r, i1, i2) => 
+        let val i1loc = UID.next()
+            val i2loc = UID.next()
+            val rloc = UID.next()
+        in
+            [ toLocalVar i1loc ^ " = ptrtoint i64* " ^ toLLVMValue i1 ^ " to i1", 
+             toLocalVar i2loc ^ " = ptrtoint i64* " ^ toLLVMValue i2 ^ " to i1", 
+            toLocalVar rloc ^ " = and i1 " ^ toLocalVar i1loc ^ ", " ^ toLocalVar i2loc, 
+            toLLVMLoc r ^ " = inttoptr i1 " ^ toLocalVar rloc ^ " to i64* "
+            ]
+        end
 
 fun genLLVMStatement (s : llvmstatement) : string list = 
     case s of   
@@ -247,6 +278,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         | LLVMStoreInt(v, i) => storeIntToLLVMLoc v i
         | LLVMStoreReal(v, r) => storeRealToLLVMLoc v r
         | LLVMStoreBool(v, b) => storeBoolToLLVMLoc v b
+        | LLVMStoreString(v, (i,s)) => storeStringToLLVMLoc v (i,s)
         | LLVMStoreArray(arrtype, v, arr) => storeArrayToLLVMLoc arrtype v arr
         | LLVMArrayAccess(v, arrptr, idx) => derefArrayFrom v arrptr idx
         | LLVMConditionalJump(v, blocks) => 
@@ -315,6 +347,32 @@ fun genLLVMStatement (s : llvmstatement) : string list =
             toBlockNameLabel fLabelName ^ ":"
             ]@ (List.concat (map genLLVMStatement fb))
         end
+        | LLVMBlock(name, stmts) => 
+            (
+                [toBlockNameLabel name ^ ":"
+                ]@
+                (List.concat (map genLLVMStatement stmts))
+            )
+        | LLVMUnconditionalJump(name) => 
+            (
+                ["br label " ^ toBlockNameJump name]
+            )
+        | LLVMRaiseException(LLVMExceptionMatch v) => 
+            let val defaultBlockName = UID.next()
+            in
+                [
+                        "br label " ^ toBlockNameJump defaultBlockName, 
+                        toBlockNameLabel defaultBlockName  ^ ":",
+                        toLocalVar (UID.next()) ^ " = call i64 @matchException("
+                        ^ "i64* " 
+                        ^ toLocalVar v 
+                        ^ ")",
+                        "br label " ^ toBlockNameJump defaultBlockName  
+                        (* jump to self (no other things we can do) ,
+                        assume internalError kills the process, 
+                        TODO: raise Match exception *)
+                    ]
+            end
 
         | LLVMCall(fname, args) => 
         let val castedFname = UID.next()
@@ -368,6 +426,14 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         ]
         )
         end
+        | LLVMStoreLocal(dst, src) => let 
+                val temp = UID.next()
+            in 
+            [
+                toLocalVar temp ^ " = ptrtoint i64* " ^ toLLVMLoc src ^ " to i64",
+                toLLVMLoc dst ^ " = inttoptr i64 " ^ toLocalVar temp ^ " to i64*"
+            ]
+            end
         | LLVMComment s => 
         [
             ";" ^ s
@@ -380,6 +446,7 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
     LLVMFunction (fname, args, body) => 
         ["define i64 "^ toFunctionName fname ^ "(" 
             ^ String.concatWith ", " (map (fn arg => "i64* "^ toLocalVar arg ) args)
+            (* ^ ") alwaysinline {" *)
             ^ ") {"
             ]@(List.concat (map genLLVMStatement body))@
             ["}"]
@@ -416,19 +483,33 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
         end
 
 
-fun genLLVMSignatureWithMainFunction ((entryFunc,s) : llvmsignature)  : string list = 
-    let val genSig = List.concat (map genLLVMDelcaration s)
-    val tempVar = UID.next()
+fun genLLVMSignatureWithMainFunction (sigs : llvmsignature list)  : string list = 
+(* each list element is (entryFunc,s) *)
+if length sigs = 0
+then raise Fail "cannot gen for empty sig"
+else
+    let 
+    val alldecls = List.concat (map (fn (_, s) => s) sigs )
+    val alldecls = LLVMConvert.removeFfiDuplicate (LLVMConvert.removeGlobalVarDuplicates alldecls)
+    val genSig = List.concat (map (fn (s) => genLLVMDelcaration s) alldecls)
+    val initializations = List.map (fn (entryFunc, _) => 
+        let
+            val tempVar = UID.next()
+        in
+            toLocalVar tempVar ^ " =  call i64 " ^ toFunctionName entryFunc ^ "()"
+        end
+    ) sigs
     in 
         [ (* generate main function *)
-        "define i64 @entryMain() {",
-        toLocalVar tempVar ^ " =  call i64 " ^ toFunctionName entryFunc ^ "()",
-        "ret i64 "^ toLocalVar tempVar,
+        "define i64 @entryMain() {"]
+        @ initializations @ 
+        [
+        "ret i64 0 ",
         "}",
         (* declare runtime functions *)
         "declare i64* @allocateArray(i64)",
         "declare i64 @internalError()",
-        "declare i64 @matchException(i64)",
+        "declare i64 @matchException(i64*)",
         "declare i64 @informResult(i64*)"
         ]@genSig
 end

@@ -7,7 +7,7 @@ datatype llvmvalue = LLVMLocalVar of int (* appear as  %v(i) *)
                    | LLVMGlobalVar of int (* appear as @v(i) *)
                    | LLVMStringName of int * UTF8String.t (* for calculating length *) (* appear as @s(i) *)
                    | LLVMFunctionName of int * int (* argument count *) (* appear as @f(i) *)
-                   | LLVMIntConst of int (* directly stored as int *) (* argument is the name of the thing *)
+                   | LLVMIntConst of int (* directly stored as int *) (* appears as itself *)
                    (* | LLVMIntName of int  global int const name *)
                    (* | LLVMRealName of int  global real const name *)
 datatype llvmarraytype = 
@@ -21,6 +21,7 @@ datatype llvmarraytype =
         | LLVMArrayTypeReal
         | LLVMArrayTypeDynClsfd
 
+datatype llvmexception = LLVMExceptionMatch of int (* name of global string constant *)
         
         (* the llvm primitive op treats arguments of correct type, it 
         does not perform conversion *)
@@ -31,6 +32,15 @@ datatype llvmprimitiveop =
         | LLVMPOpCmpEqInt of llvmlocation (* result *)
                                 * llvmvalue  (* op1 *)
                                 * llvmvalue  (* op2 *)
+        | LLVMPOpCmpGtInt of llvmlocation (* result *)
+                                * llvmvalue  (* op1 *)
+                                * llvmvalue  (* op2 *)
+        | LLVMPOpCmpEqBool of llvmlocation (* result *)
+                                * llvmvalue  (* op1 *)
+                                * llvmvalue  (* op2 *)
+        | LLVMPOpCmpEqString of llvmlocation (* result *)
+                                * llvmvalue  (* op1 *)
+                                * llvmvalue  (* op2 *)
         | LLVMPOpValueToInt of llvmlocation (* result *) 
                                 * llvmvalue (* op1 *) 
         | LLVMPOpIntToValue of llvmlocation (* result *) 
@@ -39,14 +49,24 @@ datatype llvmprimitiveop =
                                 * llvmvalue (* op1 *) 
         | LLVMPOpBoolToValue of llvmlocation (* result *) 
                                 * llvmvalue (* op1 *) 
+        | LLVMPopBoolAnd of llvmlocation  (* result *)
+                                * llvmvalue (* op1 *)
+                                * llvmvalue (* op2 *)
+        | LLVMPopBoolAndWithConversion of llvmlocation  (* result *)
+                                * llvmvalue (* op1 *)
+                                * llvmvalue (* op2 *)
+
+
 
 datatype llvmstatement = 
     LLVMStoreUnit of llvmlocation
     | LLVMStoreGlobal of int * llvmvalue  (* load global into local, (dst, src) *)
     | LLVMLoadGlobal of int *  int
+    | LLVMStoreLocal of llvmlocation *  llvmlocation (* dst, src *)
     | LLVMStoreInt of llvmlocation * int
     | LLVMStoreReal of llvmlocation * real
     | LLVMStoreBool of llvmlocation * bool
+    | LLVMStoreString of llvmlocation * (int (* name *)* UTF8String.t(* length *))
     | LLVMStoreArray of llvmarraytype * llvmlocation * llvmvalue list
     (* this is the same as store function array except the first argument 
     is interpreted as the name of the function *)
@@ -59,7 +79,11 @@ TODO: Maybe we want to make that syntactically explicit *)
             * (int * llvmstatement list) list (* one block for each index *)
     | LLVMConditionalJumpBinary of llvmlocation (* Variable name that stores the boolean *)
            * llvmstatement list (* true branch *)
-           * llvmstatement list (* false branch branch *)
+           * llvmstatement list (* false branch branch *)    
+    | LLVMUnconditionalJump of int  (* jump to the corresponding block *)
+    (* must be preceded by one terminal expression *)
+    | LLVMBlock of int * llvmstatement list
+    | LLVMRaiseException of llvmexception
     | LLVMCall of llvmlocation (* function name *)
             * llvmlocation list (* function arguments *)
     | LLVMFfiCCall of  llvmlocation (* result of the function call *)

@@ -17,7 +17,9 @@ debug*
 *.bc
 *.i
 .yybuild
+.yybuild.nosync
 .vscode/c*.json
+.vscode/ltex*.json
 runtime/lib*.a
 
 *.icloud

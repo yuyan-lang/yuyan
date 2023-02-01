@@ -5,6 +5,13 @@ yy_ptr yyPrintln(yy_ptr s) {
     fflush(stdout);
     return unit_to_addr();
 }
+
+yy_ptr yyPrintlnStdErr(yy_ptr s) {
+    fprintf(stderr,"%s\n", addr_to_string(s));
+    fflush(stderr);
+    return unit_to_addr();
+}
+
 yy_ptr yyPrintStr(yy_ptr s) {
     fprintf(stdout,"%s", addr_to_string(s));
     fflush(stdout);

@@ -45,12 +45,13 @@ infix 5 =/=
         val res = 
             case t of
                 CVar (t, r) => [t]
-                | CProd l => (
+                | CLabeledProd l => (
                     let fun col l = case l of 
                                     [] => []
                                     | (l1,t1)::tl => freeTCVar t1 @ remove l1 (col tl)
                     in col l end
                 )
+                | CProd l => List.concat (map (fn ( t) => freeTCVar t) l)
                 | CLazyProd l => List.concat (map (fn (l, t) => freeTCVar t) l)
                 | CSum l => List.concat (map (fn (l, t) => freeTCVar t) l)
                 | CPiType (t1,evop, t2, p) => 
@@ -59,26 +60,27 @@ infix 5 =/=
                         NONE => freeTCVar t2
                         | SOME(ev) => List.filter (fn t => t ~<> [ev]) (freeTCVar t2)
                     )
-                | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
+                (* | CTypeInst (t1,t2) => List.concat (map freeTCVar [t1,t2])
                 | CForall (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
                 | CExists (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
-                | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2)
+                | CRho (tv,t2) => List.filter (fn t => t ~<> [tv]) (freeTCVar t2) *)
                 | CUnitType => []
                 | CNullType => []
                 | CBuiltinType(b) => []
                 | CUniverse => []
                 | CLam(ev, eb, _) => List.filter (fn t => t ~<> [ev]) (freeTCVar eb)
-                | CLetIn _ => [] (* TODO: *)
+                (* | CLetIn _ => [] TODO: *)
+                (* | CLetInSingle _ => [] TODO: *)
                 | CFfiCCall _ => [] (* TODO !!! *)
                 | CBuiltinFunc (f) => []
                 | CApp(e1, e2, u) => freeTCVar e1 @ freeTCVar e2
-                | CIntConstant _ => []
-                | CStringLiteral _ => []
+                | CBuiltinConstant _ => []
                 | CUnitExpr => []
-                | CBoolConstant _ => []
                 | CIfThenElse (e1, e2, e3) => freeTCVar e1 @ freeTCVar e2 @ freeTCVar e3
                 | CMetaVar(v) => [v]
-                | CProj(e1, lbl, idx, u) => freeTCVar e1
+                | CProj(e1, idx, u) => freeTCVar e1
+                | CBlockProj(e, lbl, idx) => freeTCVar e
+                | CBlock(_) => [] (* free block *)
                 | _ => raise Fail ("freeTCVar not implemented for " ^ PrettyPrint.show_typecheckingCType t)
         (* val _ = DebugPrint.p "computed freetcvar" *)
     in
@@ -132,7 +134,12 @@ infix 5 =/=
                 | SOME(t') => recur t')
             | CMetaVar(name) => ( lookupCtx ctx name >>= (fn (cname, tp, jtp) => 
                 case jtp of 
-                    JTMetaVarResolved t => recur (t)
+                    JTMetaVarResolved t => 
+                    ((case t of 
+                    CMetaVar(name') => if StructureName.semanticEqual name name' 
+                    then genericError e  ctx ("元变量解析成了自己，解析错误！ "^  StructureName.toStringPlain name)
+                    else recur t
+                    | _ => recur (t)))
                     | _ => Success(CMetaVar(name))
                 )
             )
@@ -142,16 +149,16 @@ infix 5 =/=
             (* | CFunc (t1,t2) => fmap CFunc (recur t1 =/= recur t2 ) *)
             | CPiType (t1, hd, p, t2) => Success(CPiType(t1, hd, p, t2))
             | CSigmaType (t1, hd, t2) => Success(t)
-            | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
+            (* | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => case nt1 of
                 CForall(tv, t1') => (recur t2) >>= (fn nt2 => Success(substTypeInCExpr nt2 ([tv]) t1'))
                 | _ => genSingletonError (reconstructFromRExpr e) ("期待通用类型(Expected Forall)，却得到了(got)：" ^
                 PrettyPrint.show_typecheckingCType nt1^ "（在检查类型"^ 
                 PrettyPrint.show_typecheckingCType t ^ "时）")
                  (showctxSome ctx)
-            )
-            | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
-            | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
-            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            ) *)
+            (* | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) )) *)
+            (* | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) )) *)
+            (* | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) )) *)
             | CUnitType => Success(CUnitType)
             | CNullType => Success(CNullType)
             | CBuiltinType(b) => Success(CBuiltinType(b))
@@ -164,20 +171,40 @@ infix 5 =/=
                         CLam(cev, ce1body, _) => recur e2 >>= (fn ce2 => Success(substTypeInCExpr ce2 ([cev]) ce1body))
                         | _ => (* maybe ce1 is a type constructor *) (Success t)
                 )
-            | CLetIn _ => Success(t)
-            | CStringLiteral _ => Success(t)
+            (* | CLetIn _ => Success(t) *)
+            | CLetInSingle _ => Success(t)
             | CFfiCCall _ => Success(t)
             | CBuiltinFunc _ => Success(t)
             | CUnitExpr => Success(t)
-            | CBoolConstant b => Success(t)
             | CIfThenElse _ => Success(t) (* TODO: *)
             | CTuple  _ => Success(t)
-            | CProj (e, lbl, idx, u) => recur e >>= (fn 
+            | CProj (e, idx, u) => recur e >>= (fn 
                 CTuple (elems, u) => if idx >= length elems
                                      then raise Fail "tcastops176: normalization error"
                                      else recur (List.nth(elems, idx))
-                | ne => Success(CProj(ne, lbl, idx, u))
+                | ne => Success(CProj(ne,  idx, u))
             )
+            | CBlock _ => Success (t)
+            | CBlockProj(e, lbl, idx) => 
+                    recur e >>= (fn 
+                        CBlock (csig) => 
+                        if idx >= length csig
+                        then raise Fail "tcastops176: normalization error"
+                        else 
+                            (case List.nth(csig, idx) of
+                                (* Should we project term or type? *)
+                                (* ofcourse we should project tm, because weakhead normalize is 
+                                a runtime procedure *)
+                                 CTermDefinition(_, tm, _) => recur tm
+                                | CConstructorDecl(n, tp, cconsinfo) => Success(CVar([n], CVTConstructor([n], cconsinfo)))
+                                | CPureDeclaration(_, tp) => raise Fail "cannot normalize pure decl"
+                                | _ => raise Fail "cannot project"
+                            )
+                        | ne => Success(CBlockProj(ne,  lbl, idx))
+                )
+            | CLabeledProd _ => Success (t)
+            | CBuiltinConstant _ => Success (t)
+            | CFix _ => genericError e ctx "Fixpoint expressions 递归表达式不可以用于类型中"
             | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -199,7 +226,8 @@ infix 5 =/=
                     | _ => raise Fail "tcast175: should be a metavar"
                 )
             )
-            | CProd l =>  fmap CProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
+            | CProd l =>  fmap CProd (collectAll ((map (fn (t) => recur t >>= (fn nt => Success(nt))) l)))
+            | CLabeledProd l =>  fmap CLabeledProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CLazyProd l =>  fmap CLazyProd (collectAll ((map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l)))
             | CSum l =>  fmap CSum (collectAll (map (fn (l, t) => recur t >>= (fn nt => Success(l, nt))) l))
             | CPiType (t1, hd, t2, p) => recur t1 >>= (fn nt1 =>
@@ -212,12 +240,12 @@ infix 5 =/=
                                                 Success(CSigmaType(nt1, hd, nt2))
                                             )
                                         ) 
-            | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
+            (* | CTypeInst (t1,t2) => recur t1 >>= (fn nt1 => 
                     (recur t2) >>= (fn nt2 =>
                  Success(CTypeInst(nt1,nt2))))
             | CForall (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CForall (tv, nt2) ))
             | CExists (tv,t2) => recur t2 >>=(fn nt2 =>  Success(CExists (tv, nt2) ))
-            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) ))
+            | CRho (tv,t2) =>  recur t2 >>=(fn nt2 =>  Success(CRho (tv, nt2) )) *)
             | CUnitType => Success(CUnitType)
             | CNullType => Success(CNullType)
             | CBuiltinType(b) => Success(CBuiltinType(b))
@@ -230,18 +258,15 @@ infix 5 =/=
                             Success(CApp(ce1, ce2, u))
                          )
                 )
-            | CLetIn(dl, e, u) => 
+            (* | CLetIn(dl, e, u) => 
                 resolveAllMetaVarsInCSig ctx dl >>= (fn cdl => 
                     recur e >>= (fn ce => 
                         Success(CLetIn(cdl, ce, u))
                     )
-                )
-            | CStringLiteral _ => Success(t)
+                ) *)
             | CFfiCCall _ => Success(t)
             | CBuiltinFunc _ => Success(t)
             | CUnitExpr => Success(t)
-            | CBoolConstant b => Success(t)
-            | CRealConstant _ => Success(t)
             | CIfThenElse(e1, e2, e3) => 
 
                 recur e1 >>= (fn ce1 => 
@@ -251,13 +276,13 @@ infix 5 =/=
                         )
                     )
                 )
-            | CIntConstant _ => Success(t)
+            | CBuiltinConstant _ => Success(t)
             | CTuple (l, u) => collectAll (map recur l) >>= (fn cl => 
                 Success(CTuple(cl, u))
             )
-            | CProj(e, l, idx, u) => 
+            | CProj(e,  idx, u) => 
                 recur e >>= (fn ce => 
-                    Success(CProj(ce, l, idx, u))
+                    Success(CProj(ce,  idx, u))
                 )
             | CFix(ev, eb, u) => 
                 recur eb >>= (fn ceb => 
@@ -277,12 +302,22 @@ infix 5 =/=
                         Success(CSeqComp(ce1, ce2, u1, u2))
                     )
                 )
-            | CPack(e1, e2, u) => 
+            | CLetInSingle(n, e1, e2) => 
+                recur e1 >>= (fn ce1 => 
+                    recur e2 >>= (fn ce2 => 
+                        Success(CLetInSingle(n, ce1, ce2))
+                    )
+                )
+            (* | CPack(e1, e2, u) => 
                 recur e1 >>= (fn ce1 => 
                     recur e2 >>= (fn ce2 => 
                         Success(CPack(ce1, ce2, u))
                     )
-                )
+                ) *)
+            | CBlock(decls) => 
+                fmap CBlock (resolveAllMetaVarsInCSig ctx decls)
+            | CBlockProj(e, lbl, idx) => 
+                fmap (fn e' => CBlockProj(e', lbl, idx)) (recur e)
             | _ => raise Fail ("resolveAllMetaVarsInCExpr not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
     (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
     in
@@ -298,13 +333,17 @@ infix 5 =/=
             CTermDefinition(name, expr, tp) => rme expr >>= 
                 (fn cexpr => rme tp >>= 
                     (fn ctp => Success(CTermDefinition(name, cexpr, ctp))))
-            | CDirectExpr( expr, tp) => rme expr >>= 
+            | CDirectExpr(n, expr, tp) => rme expr >>= 
                 (fn cexpr => rme tp >>= 
-                    (fn ctp => Success(CDirectExpr(cexpr, ctp))))
+                    (fn ctp => Success(CDirectExpr(n, cexpr, ctp))))
+            | CPureDeclaration( name, tp) => 
+                 rme tp >>= (fn ctp => Success(CPureDeclaration(name, ctp)))
             | CConstructorDecl( name, tp, cinfo) => 
                 rme tp >>= 
                     (fn ctp => Success(CConstructorDecl(name, ctp, cinfo)))
              | CImport _ => Success(d)
+             | COpenStructure _ => Success(d)
+
         ) s)
         end
     and substTypeInSpine (tS : CType) (x : StructureName.t) (spine : (UTF8String.t * CType) list) = 
@@ -346,11 +385,12 @@ infix 5 =/=
             case e of
                 CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
                 | CMetaVar(name) => if name ~~~=x then tS else e
-                | CProd l => CProd (substTypeInSpine tS x l)
+                | CLabeledProd l => CLabeledProd (substTypeInSpine tS x l)
+                | CProd l => CProd  (map (fn ( t) => ( substTypeInCExpr tS x t)) l)
                 | CLazyProd l => CLazyProd  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
                 | CSum l =>  CSum  (map (fn (l, t) => (l, substTypeInCExpr tS x t)) l)
                 (* | CFunc (t1,t2) => CFunc (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
-                | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 )
+                (* | CTypeInst (t1,t2) => CTypeInst (substTypeInCExpr tS x t1, substTypeInCExpr tS x t2 ) *)
                 | CPiType(t1, evop,t2, p) => (case evop of 
                         NONE => CPiType(recur t1, NONE, recur t2, p)
                         | SOME(ev) => let val t1' = recur t1
@@ -363,9 +403,9 @@ infix 5 =/=
                                     in captureAvoid (fn (ev', t2') => CSigmaType(t1', SOME ev', t2')) ev t2
                                     end
                     )
-                | CForall (tv,t2) => captureAvoid CForall tv t2
+                (* | CForall (tv,t2) => captureAvoid CForall tv t2
                 | CExists (tv,t2) => captureAvoid CExists tv t2
-                | CRho (tv,t2) => captureAvoid CRho tv t2
+                | CRho (tv,t2) => captureAvoid CRho tv t2 *)
                 | CUnitType => CUnitType
                 | CNullType => CNullType
                 | CBuiltinType(b) => CBuiltinType(b)
@@ -373,16 +413,50 @@ infix 5 =/=
                 | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
                 | CLam(ev, e2, u) => captureAvoid 
                     (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
-                | CLetIn _ => e (* TODO : do it *)
-                | CProj (e1, lbl,idx, u) => CProj (recur e1, lbl, idx, u)
+                (* | CLetIn _ => e TODO : do it *)
+                | CLetInSingle(n, e1, e2) => captureAvoid (fn (n', e2') => CLetInSingle(n', recur e1, e2')) n e2
+                | CProj (e1, idx, u) => CProj (recur e1, idx, u)
                 | CTuple(e, u) => CTuple (map recur e, u)
                 | CFfiCCall(name, args) => CFfiCCall(name, map recur args)
+                | CBlock(decls) => CBlock (substituteTypeInCSignature tS x decls)
+                | CBlockProj(name, lbl, idx) => CBlockProj(substTypeInCExpr tS x name, lbl, idx)
         | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
         ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
         ^ " for " ^ StructureName.toStringPlain x)
         end
-    and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (s : CSignature ) : CSignature = 
-    raise Fail "not implemented136"
+    and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (decls : CSignature ) : CSignature = 
+        let 
+            (* performs full substitution on decls, with tv possibly shadowing s, pass the result back to f *)
+            fun captureAvoid f (tv : UTF8String.t) decls' = 
+                    let val decls = () in
+                    if List.exists (fn t' => t' ~~~= [tv]) (freeTCVar tS)
+                    then let val tv' = StructureName.binderName()
+                                        in f (tv', substituteTypeInCSignature tS x 
+                                            (substituteTypeInCSignature (CVar([tv'], CVTBinder)) [tv] decls')) 
+                                            end
+                    else  (* No capture, regular *)
+                    if [tv] ~~~= x (* do not substitute when the bound variable is the same as substitution *)
+                    then f (tv, decls')
+                    else f (tv, substituteTypeInCSignature tS x decls')
+                    end
+            (* val _ = DebugPrint.p "SUBST..." *)
+        in 
+            case decls of 
+                [] => []
+                | ((CTermDefinition(n, e, t)))::tl => 
+                captureAvoid (fn (name', tl') => (CTermDefinition(name', substTypeInCExpr tS x e, substTypeInCExpr tS x t):: tl')) n (tl)
+                | ((CPureDeclaration(n, t)))::tl => 
+                captureAvoid (fn (name', tl') => (CPureDeclaration(name', substTypeInCExpr tS x t):: tl')) n (tl)
+                | ((CConstructorDecl(n, t, cinfo)))::tl => 
+                captureAvoid (fn (name', tl') => (CConstructorDecl(name', substTypeInCExpr tS x t, cinfo):: tl')) n (tl)
+                | ((CDirectExpr(n, e, t )))::tl => 
+                (CDirectExpr( n, substTypeInCExpr tS x e, substTypeInCExpr tS x t):: (substituteTypeInCSignature tS x tl))
+                | ((h as CImport(_)))::tl => 
+                (h:: (substituteTypeInCSignature tS x tl))
+                | ((h as COpenStructure(_)))::tl => 
+                (h:: (substituteTypeInCSignature tS x tl))
+        end
+    (* raise Fail "not implemented136" *)
     (* !!! always capture avoiding substitution *)
     (* only used when checking pi types *)
     (* TODO: maybe hereditary substitution *)
@@ -512,7 +586,8 @@ infix 5 =/=
             JTConstructor cinfo =>  CVTConstructor(canonicalNameIfConstructor, cinfo)
             | JTLocalBinder =>  CVTBinder
             | JTDefinition e =>  CVTDefinition e
-            | JTPending => raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor)
+            | JTPending => CVTBinder (* to accomodate signature declaration where we only have declarations *)
+            (* raise Fail ("tcp271: should not be pending, check circular definitions : " ^ StructureName.toStringPlain canonicalNameIfConstructor) *)
             | JTLocalBinderWithDef metavarname => CVTBinderDefinition metavarname
             | _ => raise Fail "ni427"
     fun countSpineTypeArgs (tp : CType) = 

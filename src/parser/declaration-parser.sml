@@ -116,10 +116,20 @@ struct
         
     exception DeclNoParse of MixedStr.t
     exception DeclAmbiguousParse of MixedStr.t * (operator * MixedStr.t list) list
-    fun parseDeclarationSingleOutput(ops : operator list) : MixedStr.t -> (operator * MixedStr.t list) = fn exp => 
+    open PreprocessingOperators
+    fun parseDeclarationSingleOutput (exp :  MixedStr.t) : (operator * MixedStr.t list) = 
         (if DEBUG then print ("DeclParser : Parsing " ^ MixedStr.toString exp ^ "\n") else ();
-        case parseDeclarations ops exp of
-            []  => raise DeclNoParse exp
+        case parseDeclarations declOpsWithImportOpen exp of
+            []  => 
+            (
+                case parseDeclarations declOpsNoImportOpen exp of
+                    []  => 
+                    (
+                        raise DeclNoParse exp
+                    )
+                    | [l] => l
+                    | ls => raise DeclAmbiguousParse(exp, ls)
+            )
             | [l] => l
             | ls => raise DeclAmbiguousParse(exp, ls)
         )

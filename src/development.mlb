@@ -4,6 +4,7 @@ $(SML_LIB)/smlnj-lib/smlnj-lib.mlb
 $(SML_LIB)/smlnj-lib/Util/smlnj-lib.mlb
 $(SML_LIB)/mllpt-lib/mllpt-lib.mlb
 $(SML_LIB)/smlnj-lib/JSON/json-lib.mlb
+$(SML_LIB)/cml/cml.mlb
 
 
 
@@ -13,6 +14,7 @@ local
        (*"nonexhaustiveMatch ignore"*)
        "nonexhaustiveMatch error"
        "allowExtendedTextConsts true"
+       "allowOrPats true"
     in
         util/string-dict.sml
         util/path-util.sml
@@ -57,13 +59,13 @@ local
         passes/cps-transform/cps-ast-ops.sml
         passes/cps-transform/closure-convert.sml
         passes/codegen/llvm-ast.sml
-        passes/codegen/llvm-codegen.sml
-        passes/codegen/llvm-convert.sml
-        build-system/compilation-structure.sml
 
 
         
+        build-system/compilation-structure.sml
         ui/pretty-print.sml
+        passes/codegen/llvm-convert.sml
+        passes/codegen/llvm-codegen.sml
 
 
         operators/structure/operators-ops.sml
@@ -89,13 +91,13 @@ local
         passes/preprocess/expression-construction-pass.sml
         passes/preprocess/preprocessing-pass.sml
         passes/typechecking/identifier-name-resolution.sml
+        build-system/file-dependency-resolution.sml
         build-system/compilation-file-ops.sml
         build-system/compilation-file-processing.sml
         build-system/compilation-module.sml
         build-system/compilation-manager.sml
         build-system/diagnostics/print-diagnostics.sml
         
-        build-system/file-dependency-resolution.sml
         build-system/documents-build/rich-text-document.sml
         build-system/documents-build/rich-text-document-ops.sml
         build-system/docs-generation.sml

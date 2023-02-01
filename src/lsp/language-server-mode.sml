@@ -62,7 +62,7 @@ struct
                     ("textDocumentSync", 
                         OBJECT[
                             ("openClose", BOOL true),
-                            ("change", INT 1),
+                            ("change", INT 1), (* do not handle change checking file with over 400 lines on every key stroke is very slow *)
                             ("save", OBJECT [
                                 ("includeText", BOOL true)
                             ])
@@ -166,6 +166,12 @@ struct
             ());
             requestTypeCheck())
 
+    fun updateFileBufferContentNoTypeCheck(content : string) =
+        (CompilationManager.updateContentForFilepath
+            (FileResourceURI.make (getDocumentPath params))
+            content
+            (LanguageServer.getCM server))
+
     fun updateFileBufferContent(content : string) =
         (CompilationManager.updateContentForFilepath
             (FileResourceURI.make (getDocumentPath params))
@@ -175,7 +181,8 @@ struct
     in 
     case method of
      "textDocument/didOpen" => addFileBufferContent((asString (get ((Option.valOf params),[SEL "textDocument", SEL "text"]))))
-     | "textDocument/didChange" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "contentChanges", SUB 0, SEL "text"]))))
+     | "textDocument/didChange" => updateFileBufferContentNoTypeCheck((asString (get ((Option.valOf params),[SEL "contentChanges", SUB 0, SEL "text"]))))
+     | "textDocument/didSave" => updateFileBufferContent((asString (get ((Option.valOf params),[SEL "text"]))))
      | _ => ()
     end
 
@@ -199,6 +206,7 @@ struct
         end
 
 
+    (* val currentRunningPID :  (CML.thread_id option) ref = ref NONE *)
         
     fun continueLSP (server : LanguageServer.t) : unit = 
     let 
@@ -221,7 +229,12 @@ struct
                 in
                     continueLSP(server)
                 end)
-    | NONE => (handleJSONNotification server method params; continueLSP(server))
+    | NONE => (
+        (* let val tid = CML.spawn(fn () => handleJSONNotification server method params)
+        in (continueLSP(server))
+        end *)
+        (handleJSONNotification server method params; continueLSP(server))
+        )
     end
     handle JSONUtil.FieldNotFound (jv, s) => (print "Field Not Found Exeption"; print s; raise JSONUtil.FieldNotFound (jv, s))
 

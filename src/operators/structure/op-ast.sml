@@ -20,7 +20,7 @@ struct
                         * UTF8String.t (*pred original text *)
                         * sourceOpInfo)
                        | PDirectExpr of OpAST 
-                       | PComment of MixedStr.t * sourceOpInfo
+                       | PComment of MixedStr.t * MixedStr.quoteinfo
                        | PStructure of bool * UTF8String.t  * OpAST(* bool is true if public *) 
                             * sourceOpInfo
                        | POpenStructure of OpAST   * sourceOpInfo

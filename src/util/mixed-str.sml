@@ -10,6 +10,7 @@ struct
                   | UnparsedDeclaration of (mixedchar list * endinginfo) list  * quoteinfo(* an unparsed declaration has periods between quotes*)
                   | Name of UTF8String.t  * quoteinfo(* a name is the string between quotes that don't have periods or quotes *)
                   | Literal of UTF8String.t  * quoteinfo(* a literal is the string between double quotes *)
+                  | Comment of mixedchar list  * quoteinfo
                   (* | ParsedExpression of Operators.OpAST (* a parsed expression *)
                   | ParsedDeclaration of TypeCheckingAST.Signature  *)
                   | SChar of UTF8Char.t (* top level characters , every thing else is quoted *)
@@ -48,6 +49,7 @@ struct
     | ParsedDeclaration d => UTF8String.fromString "PARSED SIG" *)
     | SChar t => [t]
     | PairOfQuotes q => putQuoteAround [] q
+    | Comment(p, q) => putQuoteAround (toUTF8String p) q
     end
 
     and toUTF8String(u : mixedstr ) : UTF8String.t = List.concat (map toUTF8StringChar u)
@@ -151,39 +153,93 @@ struct
         (* val _ = print ("result is of length " ^ Int.toString(length res)) *)
         in res end
 
-    fun processSingleQuoted( p : mixedstr)(q as (ql, qr) : quoteinfo) : mixedchar witherrsoption = 
-        if length p = 0 then  Success(PairOfQuotes(q))
+(* NONE if is comment *)
+    fun processSingleQuoted( p : mixedstr)(q as (ql, qr) : quoteinfo) : mixedchar option witherrsoption = 
+        if length p = 0 then  Success(SOME(PairOfQuotes(q)))
         (* genSingletonError ([ql, qr]) "名称不可为空" NONE *)
         else
         Success(
-            if containsCharTopLevel p SpecialChars.period
-            then (* process as declaration *)
-                UnparsedDeclaration ((processDeclaration p), q)
-            else if isPlainStr p
-                then  (if containsCharTopLevel p SpecialChars.leftDoubleQuote
-                        orelse containsCharTopLevel p SpecialChars.rightDoubleQuote
-                        then UnparsedExpression(p , q)
-                        else (* name *) Name ((unSChar p), q))
-                else (* expression *) UnparsedExpression(p, q)
+            (* detect inline comment of 「： *** ：」 *)
+            if length p > 0 
+                andalso isPlainChar (hd p)
+                andalso getChar (List.hd p) ~= SpecialChars.colon 
+                andalso isPlainChar (List.last p)
+                andalso getChar (List.last p) ~= SpecialChars.colon
+                andalso ql ~= SpecialChars.leftSingleQuote
+                andalso qr ~= SpecialChars.rightSingleQuote
+            then SOME(Comment(p, q))
+            else
+                if containsCharTopLevel p SpecialChars.period
+                then (* process as declaration *)
+                    SOME(UnparsedDeclaration ((processDeclaration p), q))
+                else if isPlainStr p
+                    then  (if containsCharTopLevel p SpecialChars.leftDoubleQuote
+                            orelse containsCharTopLevel p SpecialChars.rightDoubleQuote
+                            orelse (* if either left or right is parenthesis, parse as name *)
+                            ql ~= SpecialChars.leftParenthesis orelse qr ~= SpecialChars.rightParenthesis
+                            then SOME(UnparsedExpression(p , q))
+                            else (* name *) SOME(Name ((unSChar p), q)))
+                    else (* expression *) SOME(UnparsedExpression(p, q))
         )
             
 
     (* string escape two endDoubleQuote to escape double quote, else no escape *)
     fun scanLiteral(startChar : UTF8Char.t)(remaining : UTF8String.t)(sofar : UTF8String.t) : 
         (UTF8Char.t * UTF8String.t * UTF8String.t) witherrsoption
-     = case (
+     = 
+     let fun defaultCase() = 
+     case (
          (* print (UTF8String.toString remaining^"\n"); *)
       remaining) of
         [] => unmatchedStringLiteralError startChar sofar
         | [x] => if x ~= SpecialChars.rightDoubleQuote
                  then Success(x, sofar, [])
                  else unmatchedStringLiteralError startChar (sofar @[x])
-        | (x::y::xs) => if  x ~= SpecialChars.rightDoubleQuote 
+        | (x::y::xs) => 
+                    (* if  x ~= SpecialChars.rightDoubleQuote 
                         andalso  y ~= SpecialChars.rightDoubleQuote
                  then scanLiteral startChar xs (sofar @[x]) (*escape*)
-                 else if  x ~= SpecialChars.rightDoubleQuote
+                 else  *)
+                 if  x ~= SpecialChars.rightDoubleQuote
                       then Success(x, sofar, y::xs)
                       else scanLiteral startChar (y::xs) (sofar @[x])
+    in 
+    case remaining of 
+        (* 「：』：」 *)
+         (x::y :: z :: w :: v :: u ::xs) => 
+                if  x ~= SpecialChars.leftSingleQuote 
+                andalso y ~= SpecialChars.colon
+                andalso w ~= SpecialChars.colon
+                andalso v ~= SpecialChars.rightSingleQuote
+                then (if z ~= SpecialChars.rightDoubleQuote
+                        then scanLiteral startChar (u::xs) (sofar @[z])
+                        else genSingletonError [z] "无法识别的转义序列" NONE
+                )
+                else
+                if  x ~= SpecialChars.leftSingleQuote 
+                andalso y ~= SpecialChars.colon
+                andalso v ~= SpecialChars.colon
+                andalso u ~= SpecialChars.rightSingleQuote
+                then (
+                        if z ~= SpecialChars.leftSingleQuote
+                        andalso w ~= SpecialChars.colon
+                        then scanLiteral startChar xs (sofar @[z, w])
+                        else 
+                        if UTF8String.semanticEqual [z, w] (UTF8String.fromString "换行")
+                        then scanLiteral startChar xs (sofar @[UTF8Char.fromString "\n" (
+                            UTF8Char.getSourceLocation z
+                        )])
+                        else
+                        if UTF8String.semanticEqual [z, w] (UTF8String.fromString "制表")
+                        then scanLiteral startChar xs (sofar @[UTF8Char.fromString "\t" (
+                            UTF8Char.getSourceLocation z
+                        )])
+                        else genSingletonError [z, w] "无法识别的转义序列" NONE
+                )
+                else defaultCase()
+        | _ => defaultCase()
+    end
+
 
     fun scanSingleQuote(startChar : UTF8Char.t) ( remaining : UTF8String.t) (sofar : mixedstr) 
             (* right quote char, inside, rest *) (* <<-- callback is *)
@@ -199,7 +255,9 @@ struct
                                 (processSingleQuoted inQuote (x, rq) >>/= ( (* continue scanning in case of failure *)
                                     fn _ => scanSingleQuote startChar rest (sofar)  
                                 )) >>= (fn inSingleQuoteChar => 
-                                    scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
+                                case inSingleQuoteChar of 
+                                    SOME (inSingleQuoteChar) => scanSingleQuote startChar rest (sofar@[inSingleQuoteChar])  
+                                    | NONE  => scanSingleQuote startChar rest (sofar)  
                                 )
                             )
                         else
@@ -220,7 +278,9 @@ struct
                         then scanSingleQuote x xs []  >>= (fn (rq, inQuote, rest) => 
                                 scanTopLevel rest >>= (fn cs  => 
                                         processSingleQuoted inQuote (x, rq) >>= (fn inSingleQuoteChar => 
-                                            Success( inSingleQuoteChar :: cs)
+                                        case inSingleQuoteChar of 
+                                        SOME inSingleQuoteChar => Success( inSingleQuoteChar :: cs)
+                                        | NONE => Success(cs)
                                         )
                                 )
                             )

@@ -19,7 +19,10 @@ structure TypeCheckingPatterns = struct
 
     (* returns a new context with the bindings added from well defined pattern  *)
     (* all implicit arguments will be inserted into the pattern with a dummy name *)
-    fun checkPattern(ctx : context) ( pat : RExpr ) (analysisType : CType) : (CPattern * context) witherrsoption = 
+    fun checkPattern(ctx : context) ( pat : RExpr ) (analysisType : CType)
+    (defConstraint : StructureName.t option)(* if sepcified, the name will be considered equal to the specified value *)
+    (kont : (CPattern * context) -> ('a * context) witherrsoption ) (* for garbage collection of buond variables in pattern *)
+    : ('a * context) witherrsoption = 
     let val (head,spine) = toHeadSpineForm ctx pat
 
         (* insert metavars for all pi constructs, and unify the 
@@ -46,7 +49,8 @@ structure TypeCheckingPatterns = struct
 
         fun checkSpineAgainstType (accCVar : CPattern list) (ctx :  context) (ctype : CType)
          (indices : StructureName.t option list) (restSpine : (plicity * RExpr) list)
-          : (CPattern list * context) witherrsoption = 
+        (kont : (CPattern list * context) -> ('a * context) witherrsoption ) (* for garbage collection of buond variables in pattern *)
+            : ('a * context) witherrsoption = 
             case (ctype,indices) of 
                 (* (CFunc(t1, t2 ), (RVar([hd]):: tls)) => 
                 checkSpineAgainstType (accCVar@[CPatVar(hd)]) 
@@ -55,22 +59,49 @@ structure TypeCheckingPatterns = struct
                 | (CFunc(t1, t2 ), (uns::tls)) => Errors.unsupportedPatternType uns ctx *)
                  (CPiType(t1, evop, t2, pt ), (idxh::idxt)) => 
                  let 
-                    fun continueWithName hd tls = checkSpineAgainstType (accCVar@[CPatVar(hd)])
+                    fun continueWithCheckedPattern newPatFrag newCtx tls = 
+                        checkSpineAgainstType (accCVar @[newPatFrag]) newCtx 
+                            (case (evop, idxh) of 
+                                (SOME(x), SOME(name)) => substTypeInCExpr (
+                                    (* checkedExpr *)
+                                    CVar(name, CVTBinderDefinition name) (* this works, but very mysterious, there must be something wrong *)
+                                    (* the reason is that due to binding, definitions are only followed directly in the definition of CVar 
+                                    need to do this trick to equate them
+                                    *)
+                                    (* CVar([hd], CVTBinderDefinition name) *) (* I cannot figure out how this name works in terms of complex patterns! *)
+                                ) ([x]) t2 
+                                | (NONE, NONE) => t2 
+                                | _ => raise Fail "tcpat64: evop and idx should agree")
+                            idxt
+                            tls
+                            kont
+
+                    fun continueWithNewName tls = 
+                    let val hd = StructureName.binderName()
+                    in 
+                        case idxh of 
+                            NONE => withLocalBinder ctx hd t1 (fn ctx => 
+                                continueWithCheckedPattern (CPatVar(hd)) ctx  tls
+                            )
+                            | SOME(y) => withLocalBinderWithDefinition ctx hd t1 y (fn ctx => 
+                                continueWithCheckedPattern (CPatVar(hd)) ctx  tls
+                            )
+                        (* continueWithCheckedPattern 
+                                            (CPatVar(hd))
                                             (addToCtxA (TermTypeJ ([hd], t1, (
                                                 case idxh of 
                                                     SOME(y) => JTLocalBinderWithDef (y)
                                                     |  NONE => JTLocalBinder
                                             ), NONE)) ctx)
-                                            (case (evop, idxh) of 
-                                                (SOME(x), SOME(name)) => substTypeInCExpr (CVar([hd], CVTBinderDefinition name)) ([x]) t2 
-                                                | (NONE, NONE) => t2 
-                                                | _ => raise Fail "tcpat64: evop and idx should agree")
-                                            idxt
-                                            tls
+                                            tls *)
+                    end
                     fun continueWithRExpr hdexpr tls =  
-                    case hdexpr of 
+                        checkPattern ctx hdexpr t1 (idxh) (fn (pat, ctx) => 
+                            continueWithCheckedPattern pat ctx tls 
+                        )
+                    (* case hdexpr of 
                     RVar ([hd]) => continueWithName hd tls
-                    | _ => Errors.unsupportedPatternType hdexpr ctx
+                    | _ => Errors.unsupportedPatternType hdexpr ctx *)
                     
                  (* insert implicit arguments if possible *)
                  in
@@ -79,7 +110,7 @@ structure TypeCheckingPatterns = struct
                         (case restSpine of 
                             ((Implicit, hd):: tls) => continueWithRExpr hd tls  (* continue *)
                             | _ => (* insert implicit *)
-                            continueWithName (StructureName.binderName()) restSpine
+                            continueWithNewName  restSpine
                         )
                     | Explicit => 
                         (case restSpine of 
@@ -90,7 +121,10 @@ structure TypeCheckingPatterns = struct
                     )
                  end
                    
-                | (_, []) => tryTypeUnify ctx pat ctype analysisType >>= (fn (ctx) => ((Success(accCVar, ctx))))
+                | (_, []) => 
+                if length restSpine > 0 
+                then TypeCheckingErrors.genericError (#2 (hd restSpine)) ctx "多余的参数"
+                else tryTypeUnify ctx pat ctype analysisType >>= (fn (ctx) => (( kont (accCVar, ctx))))
                 | (_, (h::t)) =>  raise Fail "the indices count does not match up"
         
         fun retrieveCInfo (jtp : judgmentType) : cconstructorinfo witherrsoption= 
@@ -98,37 +132,79 @@ structure TypeCheckingPatterns = struct
                             JTConstructor cinfo => Success(cinfo)
                             | JTDefinition cexpr => (
                                 let fun traceVarDef(cexpr : CExpr) = 
-                                    case cexpr of 
-                                        CVar(x, CVTDefinition cexpr) => traceVarDef cexpr
-                                        | CVar(x, CVTConstructor(_, cinfo)) => Success(cinfo)
-                                        | _ => Errors.expectedTermConstructor head ctx
+                                    weakHeadNormalizeType pat ctx cexpr >>= (fn cexpr => 
+                                        case cexpr of 
+                                            CVar(x, CVTDefinition cexpr) => traceVarDef cexpr
+                                            | CVar(x, CVTConstructor(_, cinfo)) => Success(cinfo)
+                                            | _ => Errors.expectedTermConstructor head ctx ("(1) got " ^ PrettyPrint.show_typecheckingCExpr cexpr)
+                                    )
                                 in 
                                     traceVarDef cexpr
                                 end
                             )
-                            | _ => Errors.expectedTermConstructor head ctx
+                            | _ => Errors.expectedTermConstructor head ctx ("(2) got "^ PrettyPrint.show_typecheckingjt jtp)
                         )
-        in
-        (* look up the type of the header *)
-        case head of 
-            RVar(name) => 
-                (case findCtx ctx name of
-                    NONE => (* head not found in the context, check if spine empty *)
-                        if length spine = 0  andalso length name = 0 (* variable must be simple name *)
-                        then Success(CPatVar(hd name), addToCtxA (TermTypeJ(name, analysisType, JTLocalBinder, NONE)) ctx)
-                        else Errors.unboundTermConstructor head ctx
-                    | SOME(cname, tp, jtp) =>
-                        (* retrieve the constructor info *)
-                        retrieveCInfo jtp >>= (fn cinfo =>
-                            (* if length spine <> countSpineTypeArgs tp
-                            then Errors.patternArgumentCountMismatch pat ctx (countSpineTypeArgs tp) (length spine) *)
-                            getConstructorIndicesConstraints  ctx tp >>= (fn (indices, ctx) => 
-                                checkSpineAgainstType [] ctx tp indices spine >>= 
-                                        (fn (checkedSpine, newCtx) => Success(CPatHeadSpine((cname,cinfo) , checkedSpine), newCtx))
-                                )
+    in
+    (* look up the type of the header *)
+    case head of 
+        RVar(name) => 
+            (case resolveRVar ctx name of
+                    NotAvailable => raise Fail "tcp152"
+                | DErrors l => (* head not found in the context, check if spine empty *)
+                    if length spine = 0  andalso length name = 1 (* variable must be simple name *)
+                    then 
+                    (case name of 
+                        [name] => 
+                            (case defConstraint of 
+                                NONE => withLocalBinder ctx name analysisType (fn ctx => kont (CPatVar name, ctx))
+                                | SOME y => withLocalBinderWithDefinition ctx name analysisType y (fn ctx => kont (CPatVar name, ctx))
+                            )
+                        | _ => raise Fail "tcpat147")
+                    
+                    else (
+                        (* DebugPrint.p  *)
+                        (* ("length spine = " ^ Int.toString (length spine)
+                        "n" *)
+                        DErrors l
+                        (* Errors.unboundTermConstructor head ctx *)
+                    )
+                | Success(cname, tp, jtp) =>
+                    (* retrieve the constructor info *)
+                    retrieveCInfo jtp >>= (fn cinfo =>
+                        (* if length spine <> countSpineTypeArgs tp
+                        then Errors.patternArgumentCountMismatch pat ctx (countSpineTypeArgs tp) (length spine) *)
+                        getConstructorIndicesConstraints  ctx tp >>= (fn (indices, ctx) => 
+                            checkSpineAgainstType [] ctx tp indices spine 
+                                    (fn (checkedSpine, newCtx) => 
+                                        kont (CPatHeadSpine((cname,cinfo) , checkedSpine), newCtx)
+                                    )
                             )
                         )
-            | _ => Errors.unsupportedPatternType head ctx
+                    )
+        | RStringLiteral(s, qi) => kont(CPatBuiltinConstant (CStringLiteral s), ctx)
+        | RIntConstant(i, opinfo) => kont(CPatBuiltinConstant (CIntConstant i), ctx)
+        | RBoolConstant(b, opinfo) => kont(CPatBuiltinConstant (CBoolConstant b), ctx)
+        | RTuple(tups, _) => 
+        weakHeadNormalizeType head ctx analysisType >>= (fn analysisType => 
+        (case analysisType of 
+            CProd(ts) => if length tups <> length ts
+                        then Errors.genericError head ctx "乘积类型长度不相等"
+                        else
+                            let fun go i acc ctx = 
+                                if i = length tups
+                                then kont (CPatTuple(acc), ctx)
+                                else let val pat = List.nth(tups, i)
+                                         val tp = List.nth(ts, i)
+                                     in checkPattern ctx pat tp NONE (fn (ckpat, ctx) => 
+                                        go (i+1) (acc@[ckpat]) ctx
+                                     )
+                                     end
+                            in go 0 [] ctx
+                            end
+                | _ => Errors.genericError head ctx ("期待乘积类型，但却得到了" ^ PrettyPrint.show_typecheckingCExpr analysisType)
+            )
+        )
+        | _ => Errors.unsupportedPatternType head ctx
     end
 
 end

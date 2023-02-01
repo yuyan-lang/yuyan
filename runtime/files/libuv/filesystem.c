@@ -12,6 +12,10 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
 
     if (openResult < 0 ){
         // error happpened
+        fprintf(stderr, "(error opening file ), %s\n", uv_strerror(open_req.result));
+        fprintf(stderr, "when reading %s\n", addr_to_string(filenamearg));
+        fflush(stderr);
+        errorAndAbort("error printed");
     }
     char* result = GC_MALLOC(1);
     int resultLength = 0;
@@ -31,7 +35,9 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
         // done
     } else {
         fprintf(stderr, "(error reading file ), %s", uv_strerror(read_req.result));
+        fprintf(stderr, "\n when reading %s", addr_to_string(filenamearg));
         fflush(stderr);
+        errorAndAbort("error printed");
     }
     return string_to_addr(result);
 
@@ -60,7 +66,7 @@ char * dname = addr_to_string(dirname);
 
     while(uv_fs_scandir_next(&scan_req, &dirs) != UV_EOF){
         const char * name = dirs.name;
-        entries[nread] = string_to_addr(name);
+        entries[nread] = string_to_addr(strdup(name));
         nread++;
     }
 
@@ -77,11 +83,42 @@ yy_ptr yyIsPathDirectory(yy_ptr path){
 
   int r = uv_fs_stat(NULL, &req, pathC, NULL);
   if (r != 0){
-      fprintf(stderr, " cannot stat directory");
+      fprintf(stderr, " cannot stat directory - %s - \n", pathC);
+      errorAndAbort("cannot stat directory!!!!");
   }
   bool isdir = (((uv_stat_t*)req.ptr)->st_mode & S_IFDIR);
 
   return bool_to_addr(isdir);
 
 
+}
+
+yy_ptr yyIsPathRegularFile(yy_ptr path){
+
+    uv_fs_t req;
+
+    char * pathC = addr_to_string(path);
+
+  int r = uv_fs_stat(NULL, &req, pathC, NULL);
+  if (r != 0){
+      fprintf(stderr, " cannot stat file");
+      errorAndAbort("cannot stat file!!!");
+  }
+  bool isfile = (((uv_stat_t*)req.ptr)->st_mode & S_IFREG);
+
+  return bool_to_addr(isfile);
+}
+
+yy_ptr yyPathExists(yy_ptr path){
+    uv_fs_t req;
+
+    char * pathC = addr_to_string(path);
+
+    int r = uv_fs_stat(NULL, &req, pathC, NULL);
+
+    if (r != 0){
+        return bool_to_addr(false);
+    }
+
+    return bool_to_addr(true);
 }

@@ -37,7 +37,7 @@ val DEBUG = true
                                 , llvmInfo=llvmInfo
                                 } = file
             val levelInt = levelToInt upToLevel
-            fun debugPrint s = DebugPrint.p ("cfp : ["  ^ PathUtil.makeRelative fp (#pwd cm) ^ "] " ^ s)
+            fun debugPrint s = DebugPrint.p (Date.fmt "[%Y-%m-%d %H:%M:%S]" (Date.fromTimeLocal (Time.now()) ) ^ " cfp : ["  ^ PathUtil.makeRelative fp (#pwd cm) ^ "] " ^ s)
         in
             if levelInt < (levelToInt UpToLevelContent)
             then file
@@ -102,12 +102,15 @@ val DEBUG = true
                     else
                     let val (newTypeCheckingInfo , updatedTCkingInfo) = 
                             if StaticErrorStructure.isSuccess typecheckingast andalso not updatedPreprocessingInfo
-                            then ( typecheckingast, false)
+                            then ( ( typecheckingast), false)
                             else (ExpressionConstructionPass.constructTypeCheckingASTTopLevel 
                             (StaticErrorStructure.valOf newPreprocessingInfo), true)
                         val _ = if DEBUG andalso updatedTCkingInfo then debugPrint 
                         ("Computed TypeChecking success: " ^ Bool.toString (StaticErrorStructure.isSuccess newTypeCheckingInfo)^ 
                         " updated: " ^ Bool.toString updatedTCkingInfo ^
+                        (* (if (StaticErrorStructure.isSuccess newTypeCheckingInfo) then 
+                            " DEBUG105: " ^ PrettyPrint.show_typecheckingRSig (StaticErrorStructure.valOf newTypeCheckingInfo)
+                             else "") ^ *)
                         "\n") else ()
                     in
                         if levelInt <= (levelToInt UpToLevelTypeCheckingInfo)
@@ -215,7 +218,11 @@ val DEBUG = true
                                     let val (newLLVMInfo, updatedLLVMInfo) = 
                                         if StaticErrorStructure.isSuccess llvmInfo andalso not updatedCPSInfo
                                         then ( llvmInfo, false)
-                                        else (constructLLVMInfo (#3 (StaticErrorStructure.valOf newCPSInfo)) (#pwd cm), true)
+                                        else (constructLLVMInfo (#3 (StaticErrorStructure.valOf newCPSInfo)) 
+                                        (FileResourceURI.make fp)
+                                        (StaticErrorStructure.valOf newDependencyInfo) 
+                                        helperFuncs
+                                        (#pwd cm), true)
                                         val _ = if DEBUG andalso updatedLLVMInfo then debugPrint ("Computed LLVMInfo succes : " ^
                                     Bool.toString (StaticErrorStructure.isSuccess newLLVMInfo) 
                                     ^ " updated: " ^ Bool.toString updatedLLVMInfo
