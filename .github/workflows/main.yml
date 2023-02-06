@@ -45,7 +45,14 @@ jobs:
       - name: make test
         run: make test
 
+      - name: make bsrttcv
+        run: make bsrttcv
+
+      - name: make bsrtv
+        run: make bsrtv
+
       - name: make bsrtvvv
+        if: failure()
         run: make bsrtvvv
 
       - name: make bsr
@@ -106,6 +113,9 @@ jobs:
       
       - name: make test
         run: make test
+
+      - name: make bsrttc
+        run: make bsrttc
 
       - name: make bsrt
         run: make bsrt

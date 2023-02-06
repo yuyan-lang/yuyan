@@ -41,6 +41,18 @@ bsrtvv : yy_bs $(YYTESTSOURCES)
 bsrtvvv : yy_bs $(YYTESTSOURCES)
 	./yy_bs yylib/runtest.yuyan -vvv
 
+bsrttc : yy_bs $(YYTESTSOURCES)
+	./yy_bs yylib/runtest.yuyan --type-check-only
+
+bsrttcv : yy_bs $(YYTESTSOURCES)
+	./yy_bs yylib/runtest.yuyan -v --type-check-only
+
+bsrttcvv : yy_bs $(YYTESTSOURCES)
+	./yy_bs yylib/runtest.yuyan -vv --type-check-only
+
+bsrttcvvv : yy_bs $(YYTESTSOURCES)
+	./yy_bs yylib/runtest.yuyan -vvv --type-check-only
+
 yyt : yy $(YYTESTSOURCES)
 	./yy $(YYTESTSOURCES)
 
