@@ -108,11 +108,10 @@ jobs:
         run: make test
 
       - name: make bsrt
-        if: always()
         run: make bsrt
 
       - name: make bsrtvv
-        if: always()
+        if: failure()
         run: make bsrtvv
 
       - name: make bsr
