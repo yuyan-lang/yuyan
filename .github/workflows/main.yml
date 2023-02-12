@@ -45,10 +45,19 @@ jobs:
       - name: make test
         run: make test
 
+      - name: make bsrttcv
+        run: make bsrttcv
+
+      - name: make bsrtv
+        if: '! github.event.pull_request.draft'
+        run: make bsrtv
+
       - name: make bsrtvvv
+        if: failure()
         run: make bsrtvvv
 
       - name: make bsr
+        if: '! github.event.pull_request.draft'
         run: make bsr
 
       - uses: actions/upload-artifact@v3
@@ -107,7 +116,11 @@ jobs:
       - name: make test
         run: make test
 
+      - name: make bsrttc
+        run: make bsrttc
+
       - name: make bsrt
+        if: '! github.event.pull_request.draft'
         run: make bsrt
 
       - name: make bsrtvv
@@ -115,6 +128,7 @@ jobs:
         run: make bsrtvv
 
       - name: make bsr
+        if: '! github.event.pull_request.draft'
         run: make bsr
 
       - uses: actions/upload-artifact@v3
