@@ -235,13 +235,14 @@ structure PreprocessingPass = struct
                     (* if oper ~=** typeMacroOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx)) *)
                     (* else  *)
-                    if oper ~=** termTypeJudgmentOp
+                    if oper ~=** termTypeJudgmentOp orelse oper ~=** termTypeJudgmentOp2
                     then parseTypeOrExpr l2 ctx >>= (fn l2 => tp l1 >>= (fn l1 =>  Success([PTermTypeJudgment (l1, l2, oper)], ctx)))
-                    else if oper ~=** constructorDeclarationOp
+                    else if oper ~=** constructorDeclarationOp orelse oper ~=** constructorDeclarationOp2
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success([PConstructorDecl (l1, l2, oper)], ctx)))
                     (* else if oper ~=** termMacroOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
                     else if (oper ~=** termDefinitionOp orelse oper ~=** termDefinitionTransparentOp)
+                            orelse (oper ~=** termDefinitionOp2 orelse oper ~=** termDefinitionTransparentOp2)
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  
                         tp l1 >>= (fn l1 => 
                         case l2  of
@@ -287,7 +288,7 @@ structure PreprocessingPass = struct
                     else  
                     raise Fail "pp34"
                     | (oper, [l1, l2, l3]) =>  
-                        if oper ~=** opDeclarationOp
+                        if oper ~=** opDeclarationOp orelse oper ~=** opDeclarationOp2
                         then 
                         tp l1 >>= (fn pl1 => 
                         tp l2 >>= (fn pl2 => 
@@ -311,7 +312,7 @@ structure PreprocessingPass = struct
                     | (oper, [l1]) =>  
                         let fun getStructureOpAST (s : MixedStr.t ) : OpAST witherrsoption = 
                             let 
-                                val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp] (l1)
+                                val parsedStructureRef = PrecedenceParser.parseMixfixExpression [structureRefOp, structureRefOp2] (l1)
                             in 
                                 parsedStructureRef 
                             end
@@ -319,7 +320,7 @@ structure PreprocessingPass = struct
                             (* (* if oper ~=** commentOp
                             then Success(PComment (l1, oper), ctx) *)
                             else  *)
-                            if oper ~=** openStructureOp
+                            if oper ~=** openStructureOp orelse oper ~=** openStructureOp2
                             then 
                                 getStructureOpAST l1 >>= (fn structureOpAST => 
                             ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName => 
@@ -329,7 +330,7 @@ structure PreprocessingPass = struct
                                 )
                             )
                             else
-                            if oper ~=** importStructureOp
+                            if oper ~=** importStructureOp orelse oper ~=** importStructureOp2
                             then getStructureOpAST l1 >>= (fn structureOpAST => 
                             ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  
                             (newContextAfterImportingStructure structureName ctx 
@@ -340,7 +341,7 @@ structure PreprocessingPass = struct
                             )
                             )
                             else
-                            if oper ~=** importOpenStructureOp
+                            if oper ~=** importOpenStructureOp orelse oper ~=** importOpenStructureOp2
                             then getStructureOpAST l1 >>= (fn structureOpAST => 
                             ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  
                             (newContextAfterImportingStructure structureName ctx 
@@ -352,7 +353,7 @@ structure PreprocessingPass = struct
                             )
                             ))
                             else
-                            if oper ~=** reexportStructureOp
+                            if oper ~=** reexportStructureOp orelse oper ~=** reexportStructureOp2
                             then 
                                 getStructureOpAST l1 >>= (fn structureOpAST => 
                             ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName => 
