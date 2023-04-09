@@ -185,7 +185,7 @@ struct
                             elaborateOpASTtoExpr (hd l) ctx >>= (fn hdexpr => 
                             collectAll (map (fn x => case x of
                                                                 OpAST(oper, [pattern, expr]) => 
-                                                                if oper ~=** caseClauseOp
+                                                                if oper ~=** caseClauseOp orelse oper ~=** caseClauseOp2
                                                                 then 
                                                                     elaborateOpASTtoExpr pattern ctx >>= (fn pattern => 
                                                                         elaborateOpASTtoExpr expr ctx >>= (fn body => 

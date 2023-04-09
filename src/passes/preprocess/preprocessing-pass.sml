@@ -363,7 +363,7 @@ structure PreprocessingPass = struct
                                 )
                             )
                             else
-                            raise Fail "pp95"
+                            raise Fail ("pp95: " ^ PrettyPrint.show_op oper)
                         end
                     | _ => raise Fail "pp26: malformed output : not two args or three args"
                 (* val _ = print ("returning " ^ PrettyPrint.show_preprocessaastJ res) *)
