@@ -6,6 +6,7 @@ struct
     val structureRefOp = Operators.parseOperatorStr "〇之〇" true false 710 []
     (* t = T *)
     val termDefinitionOp = Operators.parseOperatorStr "〇者〇也" false false 0 []
+    val termDefinitionTransparentOp = Operators.parseOperatorStr "〇即〇也" false false 0 []
     (* e : T *)
     val termTypeJudgmentOp = Operators.parseOperatorStr "〇乃〇也" false false 0 []
     (* cons e : T *)
@@ -23,10 +24,10 @@ struct
     val reexportStructureOp = Operators.parseOperatorStr "诵〇之书" false false 0 []
     
     val declOpsNoImportOpen = [termTypeJudgmentOp, constructorDeclarationOp, 
-     termDefinitionOp, opDeclarationOp, 
+     termDefinitionOp, opDeclarationOp, termDefinitionTransparentOp,
     openStructureOp, importStructureOp, importOpenStructureOp, reexportStructureOp]
     val declOpsWithImportOpen = [termTypeJudgmentOp, constructorDeclarationOp, 
-     termDefinitionOp, opDeclarationOp, 
+     termDefinitionOp, opDeclarationOp, termDefinitionTransparentOp,
      importOpenStructureOp, reexportStructureOp]
 
     exception PreprocessMalformedAssoc of UTF8String.t

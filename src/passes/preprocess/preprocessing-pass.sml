@@ -240,7 +240,7 @@ structure PreprocessingPass = struct
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success([PConstructorDecl (l1, l2, oper)], ctx)))
                     (* else if oper ~=** termMacroOp
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTermMacro (tp l1, l2, oper), ctx)) *)
-                    else if oper ~=** termDefinitionOp
+                    else if (oper ~=** termDefinitionOp orelse oper ~=** termDefinitionTransparentOp)
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  
                         tp l1 >>= (fn l1 => 
                         case l2  of
