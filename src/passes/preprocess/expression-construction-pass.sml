@@ -128,9 +128,9 @@ struct
                     if oper ~=** structureRefOp
                     then fmap RVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
                     else
-                    if oper ~=** inlineCommentOp
+                    (* if oper ~=** inlineCommentOp
                     then elaborateOpASTtoExpr (hd l) ctx
-                    else
+                    else *)
                     if oper ~=** tpImplOperator
                     then elaborateOpASTtoExpr (hd l) ctx
                     else
@@ -297,9 +297,9 @@ struct
                     if oper ~=** structureRefOp
                     then fmap RVar (collectAll (map elaborateUnknownName (#1 (flattenRight ast structureRefOp))))
                     else 
-                    if oper ~=** inlineCommentOp
+                    (* if oper ~=** inlineCommentOp
                     then elaborateOpASTtoType (hd l) ctx
-                    else 
+                    else  *)
                     if oper ~=** piTypeOp
                     then fmap RPiType (====/=(fmap SOME (elaborateOpASTtoType (hd l) ctx), elaborateNewName (snd l) >>= (fn x => Success(SOME(x))), elaborateOpASTtoType (hd (tl (tl l))) ctx, Success Explicit, Success oper))
                     else 

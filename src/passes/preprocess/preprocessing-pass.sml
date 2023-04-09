@@ -198,7 +198,7 @@ structure PreprocessingPass = struct
                     )
                     | OpUnparsedExpr (e,qi) => parseTypeOrExpr e ctx >>= (fn (parsed) => Success(OpParsedQuotedExpr(parsed, qi), ctx))
                     | OpAST (oper, l) => (
-                        if Operators.eqOpUid oper PreprocessingOperators.inlineCommentOp  (* do not parse the rhs of comment *)
+                        (* if Operators.eqOpUid oper PreprocessingOperators.inlineCommentOp  (* do not parse the rhs of comment *)
                         then
                         recursivelyTraverseAndParseOpAST (hd l) ctx >>= (fn (hdl, _) => Success(OpAST(oper, [hdl, (hd (tl l))]), ctx)) (* context info can be safely ignored in all other cases*)
                         (* else *)
@@ -209,7 +209,8 @@ structure PreprocessingPass = struct
                                     >>= (fn (expr, newContext) => Success(OpAST(oper, [decls, expr]), newContext)))
                                 | _ => raise Fail "pp101"
                             ) *)
-                        else mapM (fn x =>recursivelyTraverseAndParseOpAST x ctx) l >>= (fn l => Success(OpAST(oper, map (#1) l), ctx)) (* context info can be safely ignored in all other cases*)
+                        else *)
+                         mapM (fn x =>recursivelyTraverseAndParseOpAST x ctx) l >>= (fn l => Success(OpAST(oper, map (#1) l), ctx)) (* context info can be safely ignored in all other cases*)
                         )
                     | _ => Success(s, ctx)
 

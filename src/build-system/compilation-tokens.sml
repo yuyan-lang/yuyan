@@ -53,13 +53,13 @@ structure CompilationTokens = struct
         case ast of 
             OpAST (oper as Operator(_, _, _, _, uid), lst) => 
                 ( (* operator itself *)
-                if uid = getUID (PreprocessingOperators.inlineCommentOp)
+                (* if uid = getUID (PreprocessingOperators.inlineCommentOp)
                 then (
                     updateUsefulTokensFromOperator tokensInfo oper (TkTpComment);
                     add (reconstructOriginalFromOpAST (hd (tl lst))) TkTpComment;
                     updateUsefulTokensFromOpAST tokensInfo (hd lst)
                     )
-                else
+                else *)
                     (if uid >= PreprocessingOperators.elabAppBound
                     then (* user defined ops *) 
                         updateUsefulTokensFromOperator tokensInfo oper (TkTpCustomOperatorName)
