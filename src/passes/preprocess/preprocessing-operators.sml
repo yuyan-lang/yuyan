@@ -20,7 +20,7 @@ struct
     val constructorDeclarationOp2 = Operators.parseOperatorStr "〇是类型为〇的构造器" false false 0 []
     (* infixl op 232 *)
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
-    val opDeclarationOp2 = Operators.parseOperatorStr "函数〇结合性〇序〇也" false false 0 []
+    val opDeclarationOp2 = Operators.parseOperatorStr "函数〇结合性〇序〇" false false 0 []
     val openStructureOp = Operators.parseOperatorStr "观〇之书" false false 0 []
     val openStructureOp2 = Operators.parseOperatorStr "打开〇" false false 0 []
     val importStructureOp = Operators.parseOperatorStr "寻〇之书" false false 0 []
