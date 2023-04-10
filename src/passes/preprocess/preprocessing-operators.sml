@@ -15,6 +15,8 @@ struct
     (* e : T *)
     val termTypeJudgmentOp = Operators.parseOperatorStr "〇乃〇也" false false 0 []
     val termTypeJudgmentOp2 = Operators.parseOperatorStr "〇的类型是〇" false false 0 []
+    val termTypeJudgmentTransparentOp = Operators.parseOperatorStr "〇号〇也" false false 0 []
+    val termTypeJudgmentTransparentOp2 = Operators.parseOperatorStr "〇的类型可以是〇" false false 0 []
     (* cons e : T *)
     val constructorDeclarationOp = Operators.parseOperatorStr "〇立〇也" false false 0 []
     val constructorDeclarationOp2 = Operators.parseOperatorStr "〇是类型为〇的构造器" false false 0 []
@@ -31,11 +33,13 @@ struct
     val reexportStructureOp2 = Operators.parseOperatorStr "导出〇" false false 0 []
     
 
-    val baseStructureOps = [termTypeJudgmentOp, constructorDeclarationOp, 
+    val baseStructureOps = [termTypeJudgmentOp, termTypeJudgmentTransparentOp,
+    constructorDeclarationOp, 
      termDefinitionOp, opDeclarationOp, termDefinitionTransparentOp, reexportStructureOp
     ] @ (
         if enableSimplifiedChineseOperator
-        then [termTypeJudgmentOp2, constructorDeclarationOp2, 
+        then [termTypeJudgmentOp2, termTypeJudgmentTransparentOp2,
+        constructorDeclarationOp2, 
         termDefinitionOp2, opDeclarationOp2, termDefinitionTransparentOp2, reexportStructureOp2
         ] else []
     )

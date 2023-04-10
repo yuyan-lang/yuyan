@@ -236,6 +236,7 @@ structure PreprocessingPass = struct
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  Success(PTypeMacro (tp l1, l2, oper), ctx)) *)
                     (* else  *)
                     if oper ~=** termTypeJudgmentOp orelse oper ~=** termTypeJudgmentOp2
+                        orelse oper ~=** termTypeJudgmentTransparentOp orelse oper ~=** termTypeJudgmentTransparentOp2
                     then parseTypeOrExpr l2 ctx >>= (fn l2 => tp l1 >>= (fn l1 =>  Success([PTermTypeJudgment (l1, l2, oper)], ctx)))
                     else if oper ~=** constructorDeclarationOp orelse oper ~=** constructorDeclarationOp2
                     then parseTypeOrExpr l2 ctx >>= (fn l2 =>  tp l1 >>= (fn l1 => Success([PConstructorDecl (l1, l2, oper)], ctx)))
