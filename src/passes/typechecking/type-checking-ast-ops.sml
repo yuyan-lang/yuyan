@@ -206,7 +206,8 @@ infix 5 =/=
             | CBuiltinConstant _ => Success (t)
             | CFix _ => genericError e ctx "Fixpoint expressions 递归表达式不可以用于类型中"
             | _ => raise Fail ("weakHeadNormalizeType not implemented for "  ^ PrettyPrint.show_typecheckingCType t)
-    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^"\n") *)
+    (* val _ = DebugPrint.p ("normalized type " ^ PrettyPrint.show_static_error res PrettyPrint.show_typecheckingCType ^
+                         " input is " ^ PrettyPrint.show_typecheckingCType t ^ "\n") *)
     in
         res
     end
@@ -381,7 +382,7 @@ infix 5 =/=
             fun substTAnn ann = case ann of
                 CTypeAnn t => CTypeAnn (substTypeInCExpr tS x t)
                 | _ => ann
-        in
+            val result = 
             case e of
                 CVar (name, r) => if name ~~~=x then tS else CVar (name, r) 
                 | CMetaVar(name) => if name ~~~=x then tS else e
@@ -412,7 +413,7 @@ infix 5 =/=
                 | CUniverse => CUniverse
                 | CApp(e1, e2, CTypeAnn(t)) => CApp(recur e1, recur e2, CTypeAnn(recur t))
                 | CLam(ev, e2, u) => captureAvoid 
-                    (fn (ev', e2') => CLam(ev, e2, substTAnn u)) ev e2
+                    (fn (ev', e2') => CLam(ev, e2', substTAnn u)) ev e2
                 (* | CLetIn _ => e TODO : do it *)
                 | CLetInSingle(n, e1, e2) => captureAvoid (fn (n', e2') => CLetInSingle(n', recur e1, e2')) n e2
                 | CProj (e1, idx, u) => CProj (recur e1, idx, u)
@@ -423,6 +424,10 @@ infix 5 =/=
         | _ => raise Fail ("substTypeInCExpr undefined for " ^ PrettyPrint.show_typecheckingCType e
         ^ " when substituting " ^ PrettyPrint.show_typecheckingCType tS
         ^ " for " ^ StructureName.toStringPlain x)
+            (* val _ = DebugPrint.p ("SUBST " ^ PrettyPrint.show_typecheckingCType e ^ " with " ^ 
+            PrettyPrint.show_typecheckingCType tS ^ " for " ^ StructureName.toStringPlain x ^ " = " ^ PrettyPrint.show_typecheckingCType result ^ "\n") *)
+        in
+        result
         end
     and substituteTypeInCSignature (tS : CType) (x : StructureName.t) (decls : CSignature ) : CSignature = 
         let 
