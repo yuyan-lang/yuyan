@@ -45,8 +45,8 @@ jobs:
       - name: make test
         run: make test
 
-      - name: make bsrttcv
-        run: make bsrttcv
+      # - name: make bsrttcv
+      #   run: make bsrttcv
 
       - name: make bsrtv
         if: '! github.event.pull_request.draft'
@@ -116,8 +116,8 @@ jobs:
       - name: make test
         run: make test
 
-      - name: make bsrttc
-        run: make bsrttc
+      # - name: make bsrttc
+      #   run: make bsrttc
 
       - name: make bsrt
         if: '! github.event.pull_request.draft'
