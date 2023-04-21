@@ -65,8 +65,10 @@ structure TypeCheckingErrors =
             | RTypeAnnotate (t, e, soi)=> reconstructWithArgs soi [reconstructFromRExpr t,  reconstructFromRExpr e]
             | RApp (e1, e2, p, soi)=> 
                 if Operators.eqOpUid soi PreprocessingOperators.appExprOp 
+                    orelse Operators.eqOpUid soi PreprocessingOperators.appExprOp2
                 then reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
                 else if Operators.eqOpUid soi PreprocessingOperators.implicitAppExprOp
+                    orelse Operators.eqOpUid soi PreprocessingOperators.implicitAppExprOp2
                 then  reconstructWithArgs soi [reconstructFromRExpr e1, reconstructFromRExpr e2]
                 else 
                 let
@@ -83,7 +85,8 @@ structure TypeCheckingErrors =
                                 | _ =>  
                                 (* if argsCount = 1 then [e] else  *)
                                 raise Fail ("tcerr52: not enough args, argcount is " ^ 
-                                Int.toString argsCount ^ " remaining R is " ^ PrettyPrint.show_typecheckingRExpr e)
+                                Int.toString argsCount ^ " remaining R is " ^ PrettyPrint.show_typecheckingRExpr e
+                                ^ " soi is " ^ PrettyPrint.show_op soi)
                     (* val _ = DebugPrint.p (PrettyPrint.show_op soi ^ " Flattening " ^ Int.toString argcount  ^ " " ^ PrettyPrint.show_typecheckingRExpr e ^ " \n") *)
                     (* when RApp is encountered, argcount is at least 1, otherwise
                     RApp would not have been created, the head is assumed to be the thing itself *)
