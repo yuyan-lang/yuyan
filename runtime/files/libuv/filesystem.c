@@ -60,7 +60,8 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
     } else if (result != 0) {
         // Failed to create directory
         fprintf(stderr, "Error creating directory: %s\n", uv_strerror(result));
-        return;
+        errorAndAbort("运行时错误");
+        return unit_to_addr();
     }
 
     // Create a new uv_fs_t structure for writing the file
@@ -72,7 +73,8 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
     if (result < 0) {
         // Failed to open file
         fprintf(stderr, "Error opening file: %s\n", uv_strerror(result));
-        return;
+        errorAndAbort("运行时错误");
+        return unit_to_addr();;
     }
 
     // Write the content to the file
@@ -83,7 +85,8 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
     if (result < 0) {
         // Failed to write to file
         fprintf(stderr, "Error writing to file: %s\n", uv_strerror(result));
-        return;
+         errorAndAbort("运行时错误");
+        return unit_to_addr();
     }
 
     // Close the file
@@ -93,7 +96,8 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
     if (result < 0) {
         // Failed to close file
         fprintf(stderr, "Error closing file: %s\n", uv_strerror(result));
-        return;
+        errorAndAbort("运行时错误");
+        return unit_to_addr();    
     }
 
     return unit_to_addr();
