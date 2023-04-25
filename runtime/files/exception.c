@@ -39,10 +39,14 @@ uint64_t yyThrowException(yy_ptr err){
 
 // I believe abssingle has two arguments , the first is just the closure itself
 uint64_t yyUncaughtException(yy_ptr closure, yy_ptr dynclsfdVal){
-    yy_ptr t = data_to_addr(dynclsfdVal[2]); 
-    fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：%s\n", addr_to_string(t));
+    // yy_ptr t = data_to_addr(dynclsfdVal[2]);
+    // fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：%s\n", addr_to_string(t));
+    // updated version that removes the use of dynamically classified value in exceptions
+    // we do not use dynclsfd but use string directly. Apparently v0.1 has problems with dynclsfd value
+    fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n");
     fprintf(stderr, "尝试打印值：（可能会出现segfault）：\n");
-    fprintf(stderr, "%s", (char*)(data_to_addr(dynclsfdVal[3])));
+    // fprintf(stderr, "%s", (char*)(data_to_addr(dynclsfdVal[3])));
+    fprintf(stderr, "%s", (addr_to_string(dynclsfdVal)));
     fprintf(stderr, "\n");
     exit(1);
     return -1;

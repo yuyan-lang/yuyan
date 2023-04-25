@@ -170,7 +170,9 @@ open CPSHelper
              BFCallCC => transformCallCC cc
             | BFNewDynClsfdValueWithString => transformNewDynClsfdValueWithString cc
             | BFRaise => transformRaise cc
+            | BFRaiseString => transformRaise cc (* the transformations are the same!! *)
             | BFHandle =>  transformHandle cc
+            | BFHandleString => transformHandle cc
             | BFIntSub => transformPrimitiveBinaryOp CPSPOpIntSub cc
             | BFIntEq => transformPrimitiveBinaryOp CPSPOpIntEq cc
             | BFIntGt => transformPrimitiveBinaryOp CPSPOpIntGt cc

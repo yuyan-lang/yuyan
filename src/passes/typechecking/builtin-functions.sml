@@ -45,6 +45,11 @@ val newDynClsfdType : CType =
             cFunc(CBuiltinType(BIDynClsfd),
             typeVarB)
         )
+    val raiseStringType : CType = 
+        cForall(typeBinderB, 
+            cFunc(CBuiltinType(BIString),
+            typeVarB)
+        )
     val handleType : CType = 
         cForall(typeBinderB, 
             cFunc(CBlock([
@@ -58,6 +63,20 @@ val newDynClsfdType : CType =
             ]), typeVarB)
         )
 
+    val handleStringType : CType = 
+        cForall(typeBinderB, 
+            cFunc(CBlock([
+                CPureDeclaration((UTF8String.fromString "尝试"), 
+                    cFunc(CUnitType, typeVarB)),
+                CPureDeclaration((UTF8String.fromString "遇异"),
+                    cFunc(CBuiltinType(BIString), 
+                    typeVarB
+                    )
+                )
+            ]), typeVarB)
+        )
+
+
     val intSubType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIInt)))
     val intEqType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIBool)))
     val intGtType : CType = cFunc(CBuiltinType(BIInt), cFunc(CBuiltinType(BIInt), CBuiltinType(BIBool)))
@@ -66,7 +85,9 @@ val newDynClsfdType : CType =
     BFCallCC => callccType
     | BFNewDynClsfdValueWithString => newDynClsfdType
     | BFRaise => raiseType
+    | BFRaiseString => raiseStringType
     | BFHandle => handleType
+    | BFHandleString => handleStringType
     | BFIntSub => intSubType
     | BFIntEq => intEqType
     | BFIntGt => intGtType
@@ -76,7 +97,9 @@ val newDynClsfdType : CType =
           "《《内建函数：以当前续延调用》》" => SOME(BFCallCC)
         | "《《内建函数：新建动态分类》》" => SOME(BFNewDynClsfdValueWithString)
         | "《《内建函数：抛出异常》》" =>  SOME(BFRaise)
+        | "《《内建函数：抛出异常字符串》》" =>  SOME(BFRaiseString)
         | "《《内建函数：尝试运行》》" =>  SOME(BFHandle)
+        | "《《内建函数：尝试运行字符串》》" =>  SOME(BFHandleString)
         | "《《内建函数：整数：减》》" =>  SOME(BFIntSub)
         | "《《内建函数：整数：相等》》" =>  SOME(BFIntEq)
         | "《《内建函数：整数：大于》》" =>  SOME(BFIntGt)
