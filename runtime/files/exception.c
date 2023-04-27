@@ -79,6 +79,15 @@ uint64_t 全局异常处理器(int64_t* closure, char* errorMsg){
     return -1;
 }
 
+// I believe abssingle has two arguments , the first is just the closure itself
+uint64_t 未赋值递归函数(int64_t* closure, char* kont){
+    fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：不支持的递归表达式，你的递归表达式必须是函数，递归表达式在完成运算前不可以调用自身。\n");
+    fprintf(stderr, "\n");
+    exit(1);
+    return -1;
+}
+
+
 
 void* 当前异常处理器;
 
