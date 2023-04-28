@@ -444,7 +444,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
 fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
     case d of 
     LLVMFunction (fname, args, body) => 
-        ["define i64 "^ toFunctionName fname ^ "(" 
+        ["define internal i64 "^ toFunctionName fname ^ "(" 
             ^ String.concatWith ", " (map (fn arg => "i64* "^ toLocalVar arg ) args)
             (* ^ ") alwaysinline {" *)
             ^ ") {"

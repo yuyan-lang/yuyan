@@ -25,6 +25,11 @@ yy_ptr yyStringEq(yy_ptr s1, yy_ptr s2) {
     }
 }
 
+yy_ptr yyStringByteLength(yy_ptr s1){
+    char *s = addr_to_string(s1);
+    int64_t l = strlen(s);
+    return int_to_addr(l);
+}
 
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
 size_t count_utf8_code_points(const char *s) {

@@ -16,7 +16,9 @@ structure TypeCheckingAST = struct
     datatype BuiltinFunc = BFCallCC
                          | BFNewDynClsfdValueWithString
                          | BFRaise
+                         | BFRaiseString
                          | BFHandle
+                         | BFHandleString
                          | BFIntSub
                          | BFIntEq
                          | BFIntGt
