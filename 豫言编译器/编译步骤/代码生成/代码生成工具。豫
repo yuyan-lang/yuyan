@@ -230,6 +230,6 @@
 「： 『define internal i64* @"』附「恒等函数名」附『"(i64* %"参数") {「：换行：」』附
 『ret i64* %"参数"「：换行：」』附
 『}「：换行：」』附 ：」
-『declare i64** @allocateArray(i64)「：换行：」』附
-『』
+『declare i64** @allocateArray(i64)「：换行：」』
+附『declare i64* @"未赋值递归函数"(i64*, i64*)「：换行：」』
 也。
