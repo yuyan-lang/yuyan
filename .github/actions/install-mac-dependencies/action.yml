@@ -6,5 +6,7 @@ runs:
   using: 'composite'
   steps:
     - name: brew install
-      run: brew install bdw-gc libuv mlton llvm
+      run: |
+        brew install bdw-gc libuv mlton llvm
+        echo "/usr/local/opt/llvm/bin:$PATH" >> $GITHUB_ENV
       shell: bash
