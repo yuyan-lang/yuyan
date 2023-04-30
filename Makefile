@@ -17,6 +17,10 @@ yy:  $(SMLSOURCES)
 yy_bs : yy $(YYBSSOURCES) 
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
+bsrtc : yy_bs 
+	make yyrt
+	./yy_bs 豫言编译器/入口。豫 --type-check-only
+
 bsr : yy_bs 
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫

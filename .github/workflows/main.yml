@@ -13,49 +13,42 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build-macos:
-    # The type of runner that the job will run on
+  build-macos-test:
     runs-on: macos-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      - name: Info
-        run : |
-          pwd
-
-      - name: Install Dependencies
-        run : |
-          echo Installing Dependencies
-          # brew install bdw-gc libuv mlton matplotplusplus llvm
-          brew install bdw-gc libuv mlton llvm
-        
-
-      # Runs a set of commands using the runners shell
-      - name: Install the compiler
-        run: |
-          make 
-          sudo make install
+      - uses: ./.github/actions/install-mac-dependencies
 
       - name: make test
         run: make test
 
-      # - name: make bsrttcv
-      #   run: make bsrttcv
+      # # - name: make bsrttcv
+      # #   run: make bsrttcv
 
-      - name: make bsrtv
+      # - name: make bsrtv
+      #   if: '! github.event.pull_request.draft'
+      #   run: make bsrtv
+
+      # - name: make bsrtvvv
+      #   if: failure()
+      #   run: make bsrtvvv
+
+  build-macos-bs-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-mac-dependencies
+
+      - name: make bsrt
         if: '! github.event.pull_request.draft'
-        run: make bsrtv
+        run: make bsrt
 
-      - name: make bsrtvvv
-        if: failure()
-        run: make bsrtvvv
-
+  build-macos-bs-build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-mac-dependencies
       - name: make bsr
         if: '! github.event.pull_request.draft'
         run: make bsr
@@ -71,53 +64,29 @@ jobs:
             ./yylib
 
   # This workflow contains a single job called "build"
-  build-ubuntu:
-    # The type of runner that the job will run on
+  build-ubuntu-test:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-linux-dependencies
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: pwd
-
-      - name: Install MLton
-        run: |
-          wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz
-          tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
-          cd mlton-20210117-1.amd64-linux-glibc2.31/
-          sudo make
-          sudo make install
-
-      # - name: Install MatPlot++
-      #   run: |
-      #     git clone https://github.com/alandefreitas/matplotplusplus.git
-      #     cd matplotplusplus
-      #     mkdir build
-      #     cd build
-      #     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O2" -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF 
-      #     sudo cmake --build . --parallel 2 --config Release
-      #     sudo cmake --install .
-
-
-
-
-      # Runs a set of commands using the runners shell
-      - name: Install the compiler
-        run: |
-          sudo apt install libgc-dev libuv1-dev llvm libbsd-dev
-
-          make 
-          sudo make install
-      
       - name: make test
         run: make test
 
-      # - name: make bsrttc
-      #   run: make bsrttc
+  build-ubuntu-bs-test-tc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-linux-dependencies
+
+      - name: make bsrttc
+        run: make bsrttc
+
+  build-ubuntu-bs-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-linux-dependencies
 
       - name: make bsrt
         if: '! github.event.pull_request.draft'
@@ -127,6 +96,21 @@ jobs:
         if: failure()
         run: make bsrtvv
 
+  build-ubuntu-bs-build-tc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-linux-dependencies
+      - name: make bsrtc
+        if: '! github.event.pull_request.draft'
+        run: make bsrtc
+
+
+  build-ubuntu-bs-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./.github/actions/install-linux-dependencies
       - name: make bsr
         if: '! github.event.pull_request.draft'
         run: make bsr
@@ -142,3 +126,21 @@ jobs:
             ./yylib
 
 
+
+      # - name: Install MLton
+      #   run: |
+      #     wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz
+      #     tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
+      #     cd mlton-20210117-1.amd64-linux-glibc2.31/
+      #     sudo make
+      #     sudo make install
+
+      # - name: Install MatPlot++
+      #   run: |
+      #     git clone https://github.com/alandefreitas/matplotplusplus.git
+      #     cd matplotplusplus
+      #     mkdir build
+      #     cd build
+      #     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O2" -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF 
+      #     sudo cmake --build . --parallel 2 --config Release
+      #     sudo cmake --install .

@@ -93,7 +93,7 @@ void* 当前异常处理器;
 
 void 初始化全局异常处理器(){
     void **tup = (void**) allocateArray(2);
-    tup[1] = 全局异常处理器;
+    tup[0] = 全局异常处理器;
     当前异常处理器 = tup;
 }
 

@@ -1,0 +1,10 @@
+# .github/actions/install-mac-dependencies/action.yml
+
+name: 'Install Mac Dependencies'
+description: 'Installs the Mac Dependency for Yuyan'
+runs:
+  using: 'composite'
+  steps:
+    - name: brew install
+      run: brew install bdw-gc libuv mlton llvm
+      shell: bash
