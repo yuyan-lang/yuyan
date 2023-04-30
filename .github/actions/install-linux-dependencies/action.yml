@@ -11,7 +11,7 @@ runs:
           tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
           cd mlton-20210117-1.amd64-linux-glibc2.31/
           sudo make
-          sudo make installsudo apt-get update
+          sudo make install
       shell: bash
     - name: Install the libraries
       run: |
