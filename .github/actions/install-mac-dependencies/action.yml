@@ -8,5 +8,5 @@ runs:
     - name: brew install
       run: |
         brew install bdw-gc libuv mlton llvm
-        echo "/usr/local/opt/llvm/bin" >> $GITHUB_ENV
+        echo "PATH=/usr/local/opt/llvm/bin:$PATH" >> $GITHUB_ENV
       shell: bash
