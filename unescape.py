@@ -1,7 +1,8 @@
 import codecs
+import sys
 
-input_file = 'builtin.opt.ll'
-output_file = 'output.txt'
+input_file = sys.argv[1]
+output_file = sys.argv[1] + ".unescape.ll"
 
 with open(input_file, 'rb') as infile:
     with open(output_file, 'wb') as outfile:
