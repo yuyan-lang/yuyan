@@ -110,6 +110,9 @@ jobs:
         if: '! github.event.pull_request.draft'
         run: make bsrtc
 
+      - name: make bsrtcvv
+        if: failure()
+        run: make bsrtcvv
 
   build-ubuntu-bs-build:
     runs-on: ubuntu-latest
@@ -120,9 +123,9 @@ jobs:
         if: '! github.event.pull_request.draft'
         run: make bsr
 
-      - name: make bsrtvv
+      - name: make bsrvv
         if: failure()
-        run: make bsrtvv
+        run: make bsrvv
 
       - uses: actions/upload-artifact@v3
         with:
