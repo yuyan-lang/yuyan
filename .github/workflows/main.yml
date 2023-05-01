@@ -115,6 +115,10 @@ jobs:
         if: '! github.event.pull_request.draft'
         run: make bsr
 
+      - name: make bsrtvv
+        if: failure()
+        run: make bsrtvv
+
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-linux-release-package
