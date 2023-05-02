@@ -22,7 +22,7 @@ jobs:
   build-macos-test:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-mac-dependencies
 
       - name: make test
@@ -42,7 +42,7 @@ jobs:
   build-macos-bs-test:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-mac-dependencies
 
       - name: make bsrt
@@ -52,7 +52,7 @@ jobs:
   build-macos-bs-build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-mac-dependencies
       - name: make bsr
         if: '! github.event.pull_request.draft'
@@ -72,7 +72,7 @@ jobs:
   build-ubuntu-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make test
@@ -81,7 +81,7 @@ jobs:
   build-ubuntu-bs-test-tc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make bsrttc
@@ -90,7 +90,7 @@ jobs:
   build-ubuntu-bs-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make bsrt
@@ -104,7 +104,7 @@ jobs:
   build-ubuntu-bs-build-tc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsrtc
         if: '! github.event.pull_request.draft'
@@ -117,7 +117,7 @@ jobs:
   build-ubuntu-bs-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsr
         if: '! github.event.pull_request.draft'
