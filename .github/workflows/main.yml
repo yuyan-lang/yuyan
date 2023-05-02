@@ -13,11 +13,16 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
+# cancel previous run on new pushes to PR
+concurrency:
+  group:  ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-macos-test:
+  macos-test:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-mac-dependencies
 
       - name: make test
@@ -34,20 +39,20 @@ jobs:
       #   if: failure()
       #   run: make bsrtvvv
 
-  build-macos-bs-test:
+  macos-bs-test:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-mac-dependencies
 
       - name: make bsrt
         if: '! github.event.pull_request.draft'
         run: make bsrt
 
-  build-macos-bs-build:
+  macos-bs-build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-mac-dependencies
       - name: make bsr
         if: '! github.event.pull_request.draft'
@@ -64,28 +69,28 @@ jobs:
             ./yylib
 
   # This workflow contains a single job called "build"
-  build-ubuntu-test:
+  ubuntu-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make test
         run: make test
 
-  build-ubuntu-bs-test-tc:
+  ubuntu-bs-test-tc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make bsrttc
         run: make bsrttc
 
-  build-ubuntu-bs-test:
+  ubuntu-bs-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make bsrt
@@ -96,24 +101,31 @@ jobs:
         if: failure()
         run: make bsrtvv
 
-  build-ubuntu-bs-build-tc:
+  ubuntu-bs-build-tc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsrtc
         if: '! github.event.pull_request.draft'
         run: make bsrtc
 
+      - name: make bsrtcvv
+        if: failure()
+        run: make bsrtcvv
 
-  build-ubuntu-bs-build:
+  ubuntu-bs-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsr
         if: '! github.event.pull_request.draft'
         run: make bsr
+
+      - name: make bsrvv
+        if: failure()
+        run: make bsrvv
 
       - uses: actions/upload-artifact@v3
         with:
