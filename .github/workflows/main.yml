@@ -19,7 +19,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-macos-test:
+  macos-test:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -39,7 +39,7 @@ jobs:
       #   if: failure()
       #   run: make bsrtvvv
 
-  build-macos-bs-test:
+  macos-bs-test:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -49,7 +49,7 @@ jobs:
         if: '! github.event.pull_request.draft'
         run: make bsrt
 
-  build-macos-bs-build:
+  macos-bs-build:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -69,7 +69,7 @@ jobs:
             ./yylib
 
   # This workflow contains a single job called "build"
-  build-ubuntu-test:
+  ubuntu-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -78,7 +78,7 @@ jobs:
       - name: make test
         run: make test
 
-  build-ubuntu-bs-test-tc:
+  ubuntu-bs-test-tc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -87,7 +87,7 @@ jobs:
       - name: make bsrttc
         run: make bsrttc
 
-  build-ubuntu-bs-test:
+  ubuntu-bs-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -101,7 +101,7 @@ jobs:
         if: failure()
         run: make bsrtvv
 
-  build-ubuntu-bs-build-tc:
+  ubuntu-bs-build-tc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -114,7 +114,7 @@ jobs:
         if: failure()
         run: make bsrtcvv
 
-  build-ubuntu-bs-build:
+  ubuntu-bs-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
