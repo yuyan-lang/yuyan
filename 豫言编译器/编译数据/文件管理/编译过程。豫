@@ -291,7 +291,9 @@
             】）
             接（若（读引用于（不写目标三元组））则【
                 『-Wno-override-module』
-            】否则【】）
+            】否则【「：CI上还是需要这个，为什么？：」
+                『-Wno-override-module』
+            】）
             接（【『-g』
                 ，『-Werror』
             】）
