@@ -287,9 +287,12 @@
         】）
         接（【『-l』
             ，『stdc++』
-            ，『-Wno-override-module』
         】）
+        接（若（读引用于（不写目标三元组））则【
+            『-Wno-override-module』
+        】否则【】）
         接（【『-g』
+            ，『-Werror』
         】）
         ）
     ）而
