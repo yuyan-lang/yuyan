@@ -31,6 +31,18 @@ yy_ptr yyStringByteLength(yy_ptr s1){
     return int_to_addr(l);
 }
 
+
+yy_ptr yy_豫言字符串获取字节数组(yy_ptr s1){
+    char *s = addr_to_string(s1);
+    return string_to_addr(s);
+}
+
+yy_ptr yy_豫言字符转整数(yy_ptr s1, yy_ptr idx_ptr){
+    char *s = addr_to_string(s1);
+    uint64_t index = addr_to_int(idx_ptr);
+    return int_to_addr(s[index]);
+}
+
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
 size_t count_utf8_code_points(const char *s) {
     size_t count = 0;
