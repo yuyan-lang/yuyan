@@ -176,10 +176,11 @@ yy_ptr yyRunProcessSyncPipeOutput(yy_ptr program, yy_ptr arguments)
         // return 0;
     }
 
-    int64_t child_exit_status = child_req.status;
 
     uv_run(uv_global_loop, UV_RUN_DEFAULT);
 
+    int64_t child_exit_status = child_req.status;
+    
     return bool_to_addr(child_exit_status == 0);
 }
 
