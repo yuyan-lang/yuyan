@@ -78,6 +78,15 @@ jobs:
       - name: make test
         run: make test
 
+  ubuntu-test-bs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+
+      - name: make test_bs
+        run: make test_bs
+
   ubuntu-bs-test-tc:
     runs-on: ubuntu-latest
     steps:

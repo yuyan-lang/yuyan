@@ -74,9 +74,14 @@ yyllvm:  $(SMLSOURCES)
 buildtest:
 	./yy -c yylib/runtest.yuyan -o yy_test
 
-test: build
+yy_test_temp: build
 	./yy yylib/runtest.yuyan --use-local-lib -c -o ./yy_test_temp
+
+test: build yy_test_temp yy
 	./yy_test_temp yy
+
+test_bs: build yy_bs yy_test_temp
+	./yy_test_temp yy_bs
 	
 genDocs : build
 	rm -rf ./.yybuild.nosync/docs
