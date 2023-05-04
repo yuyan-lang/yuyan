@@ -34,6 +34,10 @@ TODO: 修改？
 路径存在乃化字符串而爻也。
 路径存在者会串而《《C调用》》名『yyPathExists』传串也。
 
+「：返回文件修改时间的时间戳：1970年至今的毫秒数：」
+获得文件修改时间乃化字符串而爻也。
+获得文件修改时间者会串而《《C调用》》名『yyGetFileModifiedTime』传串也。
+
 「：get pwd：」
 获取当前路径乃化有而字符串也。
 获取当前路径者会甲而《《C调用》》名『yyGetCurrentWorkingDirectory』传元也。
