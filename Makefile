@@ -100,6 +100,9 @@ clean:
 cleanbs:
 	rm yy_bs
 
+cleancache:
+	rm -rf .yybuild.nosync/yylib
+
 
 superclean:
 	rm -f yy
