@@ -69,6 +69,21 @@ yy_ptr yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
 
 }
 
+char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
+    char *result = &s[idx];
+    char *end = result;
+    while(*end){
+        end+=1;
+        // when the highest bit is not 10, it is the start of a character
+        if ((*end  &  0xC0) != 0x80) {
+            break;
+        }
+    }
+    char *newStr = GC_MALLOC(end-result+1);
+    strlcpy(newStr, result, end-result+1); // this one will null-terminate
+    return newStr;
+}
+
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
 size_t count_utf8_code_points(const char *s) {
     size_t count = 0;
