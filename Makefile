@@ -1,8 +1,10 @@
 
 SMLSOURCEDIR=src
 YYBSSOURCEDIR=豫言编译器
+YYLIBSOURCEDIR=yylib
 SMLSOURCES := $(shell find $(SMLSOURCEDIR) -name '*.sml' ! -path "*/.cm/*")
 YYBSSOURCES := $(shell find $(YYBSSOURCEDIR) -name '*。豫' ! -path "*/.cm/*")
+YYLIBSOURCES := $(shell find $(YYLIBSOURCEDIR) -name '*。豫' ! -path "*/.cm/*")
 YYTESTSOURCES := $(shell find . -name '*。测试。豫' ! -path "*/.cm/*")
 
 build: yy yyrt
@@ -14,7 +16,7 @@ yyrt:
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
 
-yy_bs : yy $(YYBSSOURCES) 
+yy_bs : yy $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
 bsrtc : yy_bs 
@@ -74,9 +76,14 @@ yyllvm:  $(SMLSOURCES)
 buildtest:
 	./yy -c yylib/runtest.yuyan -o yy_test
 
-test: build
+yy_test_temp: build
 	./yy yylib/runtest.yuyan --use-local-lib -c -o ./yy_test_temp
+
+test: build yy_test_temp yy
 	./yy_test_temp yy
+
+test_bs: build yy_bs yy_test_temp
+	./yy_test_temp yy_bs
 	
 genDocs : build
 	rm -rf ./.yybuild.nosync/docs
@@ -94,6 +101,9 @@ clean:
 
 cleanbs:
 	rm yy_bs
+
+cleancache:
+	rm -rf .yybuild.nosync/yylib
 
 
 superclean:

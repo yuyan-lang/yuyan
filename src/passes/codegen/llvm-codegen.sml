@@ -392,8 +392,8 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         in
         [
             toLLVMLoc resultLoc ^ 
-            " = call i64* @" ^ UTF8String.toString fname ^ 
-                "(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLLVMValue arg) args) ^ ")"
+            " = call i64* @\"" ^ UTF8String.toString fname ^ 
+                "\"(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLLVMValue arg) args) ^ ")"
             (* do not terminate after call *)
         ]
         end
@@ -471,8 +471,8 @@ fun genLLVMDelcaration (d : llvmdeclaration ) : string list =
     | LLVMFfiFunction(fname, numberOfArgs) => 
         let 
         in 
-        ["declare i64* @" ^ UTF8String.toString fname 
-            ^ "("
+        ["declare i64* @\"" ^ UTF8String.toString fname 
+            ^ "\"("
              ^ String.concatWith ", " (List.tabulate ((numberOfArgs),(fn i => "i64*")))
             ^ ")"]
         end

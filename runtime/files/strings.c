@@ -31,6 +31,59 @@ yy_ptr yyStringByteLength(yy_ptr s1){
     return int_to_addr(l);
 }
 
+
+yy_ptr yy_豫言字符串获取字节数组(yy_ptr s1){
+    char *s = addr_to_string(s1);
+    return string_to_addr(s);
+}
+
+yy_ptr yy_豫言字符转整数(yy_ptr s1, yy_ptr idx_ptr){
+    char *s = addr_to_string(s1);
+    uint64_t index = addr_to_int(idx_ptr);
+    return int_to_addr(s[index]);
+}
+
+char* yy_豫言子字符串从字节序数开始(char* s, int64_t idx){
+    char *result = &s[idx];
+    return result;
+}
+
+yy_ptr yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
+    char *matchTarget = yy_豫言子字符串从字节序数开始(search, startIdx);
+
+    char *p1 = matchTarget;
+    char *p2 = match;
+    // checks whether p1 and p2 share prefix, and the length of the prefix is 
+    // the shorter of the p1 and p2
+    while (*p1 && *p2 && *p1 == *p2) {
+        p1++;
+        p2++;
+    }
+    // if p2 is empty, then p1 and p2 share prefix, 
+    // if p1 is empty but p2 is not, then it is not a match!
+    if (!*p2) {
+        return bool_to_addr(true);
+    } else {
+        return bool_to_addr(false);
+    }
+
+}
+
+char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
+    char *result = &s[idx];
+    char *end = result;
+    while(*end){
+        end+=1;
+        // when the highest bit is not 10, it is the start of a character
+        if ((*end  &  0xC0) != 0x80) {
+            break;
+        }
+    }
+    char *newStr = GC_MALLOC(end-result+1);
+    strlcpy(newStr, result, end-result+1); // this one will null-terminate
+    return newStr;
+}
+
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
 size_t count_utf8_code_points(const char *s) {
     size_t count = 0;

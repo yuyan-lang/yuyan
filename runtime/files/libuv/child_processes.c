@@ -130,8 +130,57 @@ yy_ptr yyRunProcessSync(yy_ptr program, yy_ptr arguments)
         // return 0;
     }
 
+    int64_t child_exit_status = child_req.status;
 
     uv_run(uv_global_loop, UV_RUN_DEFAULT);
 
-    return unit_to_addr();
+    return bool_to_addr(child_exit_status == 0);
 }
+
+yy_ptr yyRunProcessSyncPipeOutput(yy_ptr program, yy_ptr arguments)
+{
+    char* programName = addr_to_string(program);
+    char argumentCount = iso_list_get_length(arguments);
+    yy_ptr* argumentArray = iso_list_get_elements(arguments);
+    char* args[argumentCount+2];
+    args[0] = programName;
+    for(int i = 0; i < argumentCount; i ++){
+        args[i+1] = addr_to_string((argumentArray[i]));
+    }
+    args[argumentCount+1]= NULL;
+
+
+    uv_process_options_t options = {};
+
+    uv_stdio_container_t child_stdio[3] = {};
+    child_stdio[0].flags = UV_IGNORE;
+    child_stdio[1].flags = UV_INHERIT_FD;
+    child_stdio[1].data.fd = 1;
+    child_stdio[2].flags = UV_INHERIT_FD;
+    child_stdio[2].data.fd = 2;
+    // child_stdio[1].flags = UV_IGNORE;
+
+    options.stdio_count = 3;
+    options.stdio = child_stdio;
+    options.file = args[0];
+    options.args = args;
+    // options.flags = 0;
+    // options.exit_cb = on_exit;
+
+
+    uv_process_t child_req;
+
+    int r;
+    if ((r = uv_spawn(uv_global_loop, &child_req, &options))) {
+        fprintf(stderr, "uv_spawn [yyrunnooutput] error: (custom) %s\n", uv_strerror(r));
+        // return 0;
+    }
+
+
+    uv_run(uv_global_loop, UV_RUN_DEFAULT);
+
+    int64_t child_exit_status = child_req.status;
+    
+    return bool_to_addr(child_exit_status == 0);
+}
+
