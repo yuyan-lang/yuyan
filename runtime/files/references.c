@@ -9,7 +9,7 @@ yy_ptr yyNewRef(yy_ptr value){
 }
 
 yy_ptr yyReadRef(yy_ptr addr){
-    return data_to_addr(addr[1]);
+    return data_to_addr(addr[0]);
 }
 
 yy_ptr yyWriteRef(yy_ptr new_value, yy_ptr addr){
