@@ -115,3 +115,7 @@ wasm:
 	mkdir -p wasmbuild
 	mlton -output ./wasmbuild/yywasmll -stop g -codegen llvm  -keep g -verbose 2 src/development.mlb
 	emcc wasmbuild/*.ll wasmbuild/*.c -L/usr/local/lib/mlton/targets/self -lmlton -lgdtoa -lm -lgmp -L/usr/local/opt/gmp/lib  -I/usr/local/lib/mlton/targets/self/include -I/usr/local/lib/mlton/include -I/usr/local/opt/gmp/include  -std=gnu11
+
+debugll:
+	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
+	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.ll
