@@ -104,6 +104,7 @@ cleanbs:
 
 cleancache:
 	rm -rf .yybuild.nosync/yylib
+	rm -rf .yybuild.nosync/tests
 
 
 superclean:
