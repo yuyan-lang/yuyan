@@ -181,6 +181,7 @@ yy_ptr yyRunProcessSyncPipeOutput(yy_ptr program, yy_ptr arguments)
 
     int64_t child_exit_status = child_req.status;
     
-    return bool_to_addr(child_exit_status == 0);
+    return int_to_addr(child_exit_status);
+    // return bool_to_addr(child_exit_status == 0);
 }
 
