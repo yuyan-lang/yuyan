@@ -22,6 +22,7 @@ int main(int argc, char* argv[]) {
 
     // initialize global exception handler
     initialize_global_exception_handler();
+    yy_豫言初始化全局异常处理器();
 
     // initialize uv default loop (can replace)
     uv_global_loop = uv_default_loop();

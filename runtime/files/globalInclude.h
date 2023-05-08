@@ -52,3 +52,4 @@ int informResultRec(FILE * file, yy_ptr result, int prevPred);
 int informResult(yy_ptr result);
 
 void initialize_global_exception_handler();
+void yy_豫言初始化全局异常处理器();

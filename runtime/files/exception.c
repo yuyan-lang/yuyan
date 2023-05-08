@@ -91,7 +91,7 @@ uint64_t 全局异常处理器(int64_t* closure, char* errorMsg){
 
 void* 当前异常处理器;
 
-void 初始化全局异常处理器(){
+void yy_豫言初始化全局异常处理器(){
     void **tup = (void**) allocateArray(2);
     tup[0] = 全局异常处理器;
     当前异常处理器 = tup;
