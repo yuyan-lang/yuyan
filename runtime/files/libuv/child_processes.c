@@ -1,6 +1,15 @@
 #include "../globalInclude.h"
 
 
+typedef struct {
+    int exit_status;
+} my_data_t;
+
+void child_exit_cb(uv_process_t* process, int64_t exit_status, int term_signal) {
+    my_data_t* data = (my_data_t*)process->data;
+    data->exit_status = exit_status;
+    uv_close((uv_handle_t*)process, NULL);
+}
 
 
 
@@ -43,10 +52,13 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
     options.file = args[0];
     options.args = args;
 
+    options.exit_cb = child_exit_cb;
 
 
 
     uv_process_t child_req;
+    my_data_t my_data;
+    child_req.data = &my_data;
 
     int r;
     if ((r = uv_spawn(uv_global_loop, &child_req, &options))) {
@@ -71,7 +83,7 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
     char* stdOutOutput = (char * )stdOutPipe.data;
     char* stdErrOutput = (char * )stdErrPipe.data;
 
-    int64_t child_exit_status = child_req.status;
+    int64_t child_exit_status = my_data.exit_status;
 
     yy_ptr results[] = {
         bool_to_addr(child_exit_status==0),
@@ -121,16 +133,19 @@ yy_ptr yyRunProcessSync(yy_ptr program, yy_ptr arguments)
     // options.flags = 0;
     // options.exit_cb = on_exit;
 
+    options.exit_cb = child_exit_cb;
 
     uv_process_t child_req;
-
+    my_data_t my_data;
+    child_req.data = &my_data;
+    
     int r;
     if ((r = uv_spawn(uv_global_loop, &child_req, &options))) {
         fprintf(stderr, "uv_spawn [yyrunnooutput] error: (custom) %s\n", uv_strerror(r));
         // return 0;
     }
 
-    int64_t child_exit_status = child_req.status;
+    int64_t child_exit_status = my_data.exit_status;
 
     uv_run(uv_global_loop, UV_RUN_DEFAULT);
 
@@ -166,10 +181,13 @@ yy_ptr yyRunProcessSyncPipeOutput(yy_ptr program, yy_ptr arguments)
     options.args = args;
     // options.flags = 0;
     // options.exit_cb = on_exit;
+    options.exit_cb = child_exit_cb;
 
 
     uv_process_t child_req;
-
+    my_data_t my_data;
+    child_req.data = &my_data;
+    
     int r;
     if ((r = uv_spawn(uv_global_loop, &child_req, &options))) {
         fprintf(stderr, "uv_spawn [yyrunnooutput] error: (custom) %s\n", uv_strerror(r));
@@ -179,7 +197,7 @@ yy_ptr yyRunProcessSyncPipeOutput(yy_ptr program, yy_ptr arguments)
 
     uv_run(uv_global_loop, UV_RUN_DEFAULT);
 
-    int64_t child_exit_status = child_req.status;
+    int64_t child_exit_status = my_data.exit_status;
     
     return int_to_addr(child_exit_status);
     // return bool_to_addr(child_exit_status == 0);
