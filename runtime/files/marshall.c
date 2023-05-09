@@ -98,6 +98,10 @@ yy_ptr tuple_to_addr(uint64_t length, const yy_ptr elems[]){
     return returnStorage;
 }
 
+yy_ptr* addr_to_tuple(yy_ptr arg){
+    return (yy_ptr *)arg;
+}
+
 // gets the length of a list of type rho t. (0 : 1) + (1 : a x t)
 uint64_t iso_list_length_rec(const yy_ptr list, uint64_t acc) {
     // the type is a fold on the outer left
@@ -119,6 +123,7 @@ uint64_t iso_list_length_rec(const yy_ptr list, uint64_t acc) {
 
 // gets the length of a list of type rho t. (0 : 1) + (1 : a x t)
 uint64_t iso_list_get_length(const yy_ptr list) {
+    yy_ptr *tups = addr_to_tuple(list);
     return iso_list_length_rec(list, 0);
 }
 
