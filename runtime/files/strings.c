@@ -161,36 +161,94 @@ size_t count_utf8_code_points(const char *s) {
 }
 
 // get a list of utf8 code points from utf8 array
+// yy_ptr yyGetCodePoints(yy_ptr str_addr) {
+//     const char* start = addr_to_string(str_addr);
+
+//     const char * end = start;
+//     while(*end){
+//         end+=1;
+//     }
+
+//     const char* prevEnd = end;
+
+//     yy_ptr resultList = iso_list_nil_to_addr();
+
+//     while(end != start) {
+//         end --;
+//         if ((*end  &  0xC0) == 0x80) {
+//             continue;
+//         }
+//         // extract current character
+//         int charLength = prevEnd-end;
+//         char* newChar = GC_MALLOC(charLength+1);
+//         // newChar[charLength] = '\0'; // no need due to strlcpy
+//         strlcpy(newChar, end, charLength+1);
+//         resultList = iso_list_cons_to_addr(string_to_addr(newChar), resultList);
+//         prevEnd = end;
+//     }
+//     return resultList;
+// }
 yy_ptr yyGetCodePoints(yy_ptr str_addr) {
     const char* start = addr_to_string(str_addr);
-
-    const char * end = start;
+    const char* end = start;
     while(*end){
         end+=1;
     }
 
-    const char* prevEnd = end;
-
-
-    yy_ptr resultList = iso_list_nil_to_addr();
-
-
-    while(end != start) {
-        end --;
-        if ((*end  &  0xC0) == 0x80) {
-            continue;
+    // Count the number of UTF-8 code points
+    int numCodePoints = 0;
+    const char* p = start;
+    while (p != end) {
+        if ((*p & 0xC0) != 0x80) {
+            numCodePoints++;
         }
-        // extract current character
-        int charLength = prevEnd-end;
-        char* newChar = GC_MALLOC(charLength+1);
-        // newChar[charLength] = '\0'; // no need due to strlcpy
-        strlcpy(newChar, end, charLength+1);
-        resultList = iso_list_cons_to_addr(string_to_addr(newChar), resultList);
-        prevEnd = end;
+        p++;
     }
 
-    return resultList;
+    // Allocate a heap array for the code points
+    yy_ptr* codePoints = (yy_ptr*)GC_MALLOC(numCodePoints * sizeof(yy_ptr));
+    // if (codePoints == NULL) {
+    //     // Handle allocation failure
+    //     return NULL;
+    // }
 
+    // Extract the code points
+    p = start;
+    const char* codePointStart = p;
+    int i = 0;
+    while (p != end) {
+        if ((*p & 0xC0) != 0x80) {
+            if (p != codePointStart) {
+                int len = p - codePointStart;
+                char* newChar = (char*)GC_MALLOC((len + 1) * sizeof(char));
+                // if (newChar == NULL) {
+                //     // Handle allocation failure
+                //     free(codePoints);
+                //     return NULL;
+                // }
+                strncpy(newChar, codePointStart, len);
+                newChar[len] = '\0';
+                codePoints[i] = string_to_addr(newChar);
+                i++;
+            }
+            codePointStart = p;
+        }
+        p++;
+    }
+
+    // Handle the last code point
+    int len = p - codePointStart;
+    char* newChar = (char*)GC_MALLOC((len + 1) * sizeof(char));
+    // if (newChar == NULL) {
+    //     // Handle allocation failure
+    //     free(codePoints);
+    //     return NULL;
+    // }
+    strncpy(newChar, codePointStart, len);
+    newChar[len] = '\0';
+    codePoints[i] = string_to_addr(newChar);
+
+    return heap_array_to_addr(numCodePoints, codePoints);
 }
 
 

@@ -123,25 +123,26 @@ uint64_t iso_list_length_rec(const yy_ptr list, uint64_t acc) {
 
 // gets the length of a list of type rho t. (0 : 1) + (1 : a x t)
 uint64_t iso_list_get_length(const yy_ptr list) {
-    yy_ptr *tups = addr_to_tuple(list);
-    return iso_list_length_rec(list, 0);
+    yy_ptr *tups = addr_to_tuple(list); // the tuple in c runtime is differnt from yuyanlang 0.2 tuple, which is an iterative linked list
+    return addr_to_int(tups[1]);
 }
 
 // gets the elements of a list of type rho t. (0 : 1) + (1 : a x t)
 yy_ptr* iso_list_get_elements(const yy_ptr list) {
-    uint64_t size = iso_list_get_length(list);
+    // uint64_t size = iso_list_get_length(list);
 
-    yy_ptr* result = (yy_ptr*)allocateArray(size);
+    // yy_ptr* result = (yy_ptr*)allocateArray(size);
 
-    uint64_t curIndex = 0;
-    yy_ptr curList = list;
+    // uint64_t curIndex = 0;
+    // yy_ptr curList = list;
 
-    while(curIndex < size) {
-        result[curIndex] = data_to_addr(curList[2]);
-        curList = data_to_addr(curList[3]);
-        curIndex += 1;
-    }
-    return result;
+    // while(curIndex < size) {
+    //     result[curIndex] = data_to_addr(curList[2]);
+    //     curList = data_to_addr(curList[3]);
+    //     curIndex += 1;
+    // }
+    yy_ptr *tups = addr_to_tuple(list);
+    return (addr_to_tuple((tups[0])));
 }
 
 // const char* iso_list_nil_label = "一";
@@ -158,25 +159,31 @@ yy_ptr function_to_addr(void* func) {
     return result;
 }
 
-yy_ptr iso_list_nil_to_addr() {
-    // the unit here is the implicit type argument
-    yy_ptr tps[] = {int_to_addr(1), unit_to_addr()};
-    return tuple_to_addr(2, tps);
-}
-yy_ptr iso_list_cons_to_addr(yy_ptr elem, yy_ptr rest){
-    yy_ptr tps[] = {int_to_addr(2), unit_to_addr(), elem, rest};
-    return tuple_to_addr(4, tps);
+// yy_ptr iso_list_nil_to_addr() {
+//     // the unit here is the implicit type argument
+//     yy_ptr tps[] = {unit_to_addr(0), int_to_addr(1)};
+//     return tuple_to_addr(2, tps);
+// }
+// yy_ptr iso_list_cons_to_addr(yy_ptr elem, yy_ptr rest){
+//     yy_ptr tps[] = {int_to_addr(2), unit_to_addr(), elem, rest};
+//     return tuple_to_addr(4, tps);
+// }
+
+yy_ptr heap_array_to_addr(uint64_t length, const yy_ptr* elems){
+
+    yy_ptr len = int_to_addr(length);
+
+    yy_ptr res_tup[] = {(yy_ptr)elems, len};
+    yy_ptr res = tuple_to_addr(2, res_tup);
+
+    return res;
 }
 
 yy_ptr array_to_iso_addr(uint64_t length, const yy_ptr elems[]){
 
-    yy_ptr res = iso_list_nil_to_addr();
+    yy_ptr tup = tuple_to_addr(length, elems);
 
-    for (int i = length - 1; i >= 0; i --){
-        res = iso_list_cons_to_addr(elems[i], res);
-    }
-
-    return res;
+    return heap_array_to_addr(length, (yy_ptr *)tup);
 }
 
 
