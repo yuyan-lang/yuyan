@@ -1,86 +1,41 @@
 # 豫言 
-一款函数式中文编程语言
 
 一款中文函数式编程语言
 
-[English Version](README_eng.md)（可能有些信息已过期）
-
 [网站](https://yuyan-lang.github.io/yuyan)
 
-## 版本
-非常早期的预览版（0.1.0alpha)
+# 联系我们
 
-本语言仍在早期的开发阶段，所有的语言功能都可能在后期改变。
+Slack： https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30n7-FQNwZ0tefBePMxPSFrcbGg
 
-## 语言特征
+企业微信：（二维码）
+![wecom_comm](community_qr_wecom.png)
 
-本语言是一款实验性的函数式编程豫言。支持的依赖类型。
+邮箱： yuyanlang@icloud.com
 
 ## 安装
 
-最新的预编译好的包可以从[Build Artifacts](https://github.com/yuyan-lang/yuyan/actions/workflows/main.yml)中下载。下载后请运行`sh install.sh`进行安装。
+从源代码文件编译，请参见[`安装指南`](InstallationInstruction.md)
 
-若要从源代码文件编译，请参见[`安装指南`](InstallationInstruction.md)
+## 语言规范
 
+<!-- [语言规范](LanguageSpecification.md) -->
+
+[语法表](语法表.md)
 
 
 ## 运行
 
-运行一个程序：
-```
-yy filename.yuyan
-```
-
-编译一个程序
-```
-yy filename.yuyan -c -o output.out
-```
-
-显示帮助
-```
-yy -h
-```
-
-## 帮助文档
-### 语言规范
-
-[语言规范](LanguageSpecification.md)
-
-[语法表](SyntaxSheet.md)
-
-### 标准库及工具库文档 (API Docs)
-
-详见[API文档](autogen/docs/目录.html)
+[快速开始](快速开始.md)
 
 ## 语言插件
 
 [VSCode插件](https://marketplace.visualstudio.com/items?itemName=yuyan-lang.yuyan-vscode)
 
-## 样例
-
-可以查看[`标准库`](https://github.com/yuyan-lang/yuyan/tree/master/yylib)，以及[`performance-investigation`](https://github.com/yuyan-lang/yuyan/tree/master/performance-investigation)下的实现文件。
-
-
-## 漏洞(Bugs)
-
-由于处于开发的早期阶段，目前有很多bug，我们正在逐步修复，以及采用新的设计来避免这些bug的发生。
+## 漏洞
 
 如果你遇到了bug，请在`Issues`界面汇报。
 
-## 贡献
+## 提交反馈
 
-出于语言设计的早期阶段，我们会认真听取语言功能方面的建议。
-
-欢迎加入Slack讨论！
-https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30n7-FQNwZ0tefBePMxPSFrcbGg
-
-## 关于调试技巧 
-
-vscode的vim插件有时候会和输入法冲突导致输入一些看不见的字符导致编译失败，可以使用vim，debug。
-
-
-
-## 语言性能
-
-详见[语言性能](LanguagePerformance.md)
-
+如您有任何意见或者建议，欢迎提Issue或通过Slack，邮件，企业微信与我们取得联系。
