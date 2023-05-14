@@ -44,16 +44,16 @@ bst : yy_bs $(YYTESTSOURCES)
 	./yy_bs $(YYTESTSOURCES)
 
 bsrt : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan
+	./yy_bs yylib/runtest.yuyan -- yy
 
 bsrtv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -v
+	./yy_bs yylib/runtest.yuyan -v -- yy
 
 bsrtvv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -vv
+	./yy_bs yylib/runtest.yuyan -vv -- yy
 
 bsrtvvv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -vvv
+	./yy_bs yylib/runtest.yuyan -vvv -- yy
 
 bsrttc : yy_bs $(YYTESTSOURCES)
 	./yy_bs yylib/runtest.yuyan --type-check-only
