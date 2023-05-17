@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "yy_runtest",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/yy_runtest",
+            "args": ["yy"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "lldb"
+        },
+        {
             "name": "(lldb)",
             "type": "cppdbg",
             "request": "launch",

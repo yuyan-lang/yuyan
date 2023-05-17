@@ -120,3 +120,5 @@ wasm:
 debugll:
 	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
 	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.ll
+	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.opt.bc -o ./.yybuild.nosync/豫言编译器默认执行包.opt.ll
+	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.opt.ll
