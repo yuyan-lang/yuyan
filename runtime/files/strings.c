@@ -84,6 +84,73 @@ char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
     return newStr;
 }
 
+// startIdx 必须是引号，返回获取的字符串与前进的字符数
+yy_ptr yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
+    char *start = &s[startIdx];
+    if (*start != '"'){
+        errorAndAbort("JSON字符串必须以引号开始");
+    }
+    char *end = start;
+    while(*end){
+        end+=1;
+        if (*end == '\\') {
+            end+=1;
+            continue;
+        }
+        if (*end == '"') {
+            break;
+        }
+    }
+    if (*end != '"'){
+        errorAndAbort("JSON字符串必须以引号结束");
+    }
+    int64_t byteLength = end-start+1;
+    char* escapedStr = GC_MALLOC(byteLength);
+    char* originalPtr = start+1;
+    char* escapedPtr = escapedStr;
+    while(originalPtr != end){
+        if (*originalPtr == '\\') {
+            originalPtr+=1;
+            switch (*originalPtr)
+            {
+            case 'n':
+                *escapedPtr = '\n';
+                break;
+            case 't':
+                *escapedPtr = '\t';
+                break;
+            case 'r':
+                *escapedPtr = '\r';
+                break;
+            case 'b':
+                *escapedPtr = '\b';
+                break;
+            case 'f':
+                *escapedPtr = '\f';
+                break;
+            case '\\':
+                *escapedPtr = '\\';
+                break;
+            case '/':
+                *escapedPtr = '/';
+                break;
+            case '"':
+                *escapedPtr = '"';
+                break;
+            default:
+                errorAndAbort("JSON字符串中的转义字符不合法");
+                break;
+            }
+        } else {
+            *escapedPtr = *originalPtr;
+        }
+        originalPtr+=1;
+        escapedPtr+=1;
+    }
+    *escapedPtr = '\0';
+    return tuple_to_addr(2, (yy_ptr[]){string_to_addr(escapedStr), int_to_addr(byteLength)});
+}
+
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
 size_t count_utf8_code_points(const char *s) {
     size_t count = 0;
@@ -94,36 +161,94 @@ size_t count_utf8_code_points(const char *s) {
 }
 
 // get a list of utf8 code points from utf8 array
+// yy_ptr yyGetCodePoints(yy_ptr str_addr) {
+//     const char* start = addr_to_string(str_addr);
+
+//     const char * end = start;
+//     while(*end){
+//         end+=1;
+//     }
+
+//     const char* prevEnd = end;
+
+//     yy_ptr resultList = iso_list_nil_to_addr();
+
+//     while(end != start) {
+//         end --;
+//         if ((*end  &  0xC0) == 0x80) {
+//             continue;
+//         }
+//         // extract current character
+//         int charLength = prevEnd-end;
+//         char* newChar = GC_MALLOC(charLength+1);
+//         // newChar[charLength] = '\0'; // no need due to strlcpy
+//         strlcpy(newChar, end, charLength+1);
+//         resultList = iso_list_cons_to_addr(string_to_addr(newChar), resultList);
+//         prevEnd = end;
+//     }
+//     return resultList;
+// }
 yy_ptr yyGetCodePoints(yy_ptr str_addr) {
     const char* start = addr_to_string(str_addr);
-
-    const char * end = start;
+    const char* end = start;
     while(*end){
         end+=1;
     }
 
-    const char* prevEnd = end;
-
-
-    yy_ptr resultList = iso_list_nil_to_addr();
-
-
-    while(end != start) {
-        end --;
-        if ((*end  &  0xC0) == 0x80) {
-            continue;
+    // Count the number of UTF-8 code points
+    int numCodePoints = 0;
+    const char* p = start;
+    while (p != end) {
+        if ((*p & 0xC0) != 0x80) {
+            numCodePoints++;
         }
-        // extract current character
-        int charLength = prevEnd-end;
-        char* newChar = GC_MALLOC(charLength+1);
-        // newChar[charLength] = '\0'; // no need due to strlcpy
-        strlcpy(newChar, end, charLength+1);
-        resultList = iso_list_cons_to_addr(string_to_addr(newChar), resultList);
-        prevEnd = end;
+        p++;
     }
 
-    return resultList;
+    // Allocate a heap array for the code points
+    yy_ptr* codePoints = (yy_ptr*)GC_MALLOC(numCodePoints * sizeof(yy_ptr));
+    // if (codePoints == NULL) {
+    //     // Handle allocation failure
+    //     return NULL;
+    // }
 
+    // Extract the code points
+    p = start;
+    const char* codePointStart = p;
+    int i = 0;
+    while (p != end) {
+        if ((*p & 0xC0) != 0x80) {
+            if (p != codePointStart) {
+                int len = p - codePointStart;
+                char* newChar = (char*)GC_MALLOC((len + 1) * sizeof(char));
+                // if (newChar == NULL) {
+                //     // Handle allocation failure
+                //     free(codePoints);
+                //     return NULL;
+                // }
+                strncpy(newChar, codePointStart, len);
+                newChar[len] = '\0';
+                codePoints[i] = string_to_addr(newChar);
+                i++;
+            }
+            codePointStart = p;
+        }
+        p++;
+    }
+
+    // Handle the last code point
+    int len = p - codePointStart;
+    char* newChar = (char*)GC_MALLOC((len + 1) * sizeof(char));
+    // if (newChar == NULL) {
+    //     // Handle allocation failure
+    //     free(codePoints);
+    //     return NULL;
+    // }
+    strncpy(newChar, codePointStart, len);
+    newChar[len] = '\0';
+    codePoints[i] = string_to_addr(newChar);
+
+    return heap_array_to_addr(numCodePoints, codePoints);
 }
 
 

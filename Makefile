@@ -44,16 +44,19 @@ bst : yy_bs $(YYTESTSOURCES)
 	./yy_bs $(YYTESTSOURCES)
 
 bsrt : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan
+	./yy_bs yylib/runtest.yuyan -- yy
+
+bsrt_bs : yy_bs $(YYTESTSOURCES)
+	./yy_bs yylib/runtest.yuyan -- yy_bs
 
 bsrtv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -v
+	./yy_bs yylib/runtest.yuyan -v -- yy
 
 bsrtvv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -vv
+	./yy_bs yylib/runtest.yuyan -vv -- yy
 
 bsrtvvv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -vvv
+	./yy_bs yylib/runtest.yuyan -vvv -- yy
 
 bsrttc : yy_bs $(YYTESTSOURCES)
 	./yy_bs yylib/runtest.yuyan --type-check-only
@@ -104,6 +107,7 @@ cleanbs:
 
 cleancache:
 	rm -rf .yybuild.nosync/yylib
+	rm -rf .yybuild.nosync/tests
 
 
 superclean:
@@ -115,3 +119,9 @@ wasm:
 	mkdir -p wasmbuild
 	mlton -output ./wasmbuild/yywasmll -stop g -codegen llvm  -keep g -verbose 2 src/development.mlb
 	emcc wasmbuild/*.ll wasmbuild/*.c -L/usr/local/lib/mlton/targets/self -lmlton -lgdtoa -lm -lgmp -L/usr/local/opt/gmp/lib  -I/usr/local/lib/mlton/targets/self/include -I/usr/local/lib/mlton/include -I/usr/local/opt/gmp/include  -std=gnu11
+
+debugll:
+	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
+	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.ll
+	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.opt.bc -o ./.yybuild.nosync/豫言编译器默认执行包.opt.ll
+	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.opt.ll

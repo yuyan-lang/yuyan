@@ -106,8 +106,8 @@ end
 fun storeArrayToLLVMLoc (arrType : llvmarraytype) (llvmLoc : llvmlocation)(values : llvmvalue list)  : string list= 
 let 
     val num = length values
-    val headerPointerVar = UID.next() 
-    val headerPointerVarArr = UID.next() 
+    (* val headerPointerVar = UID.next() 
+    val headerPointerVarArr = UID.next()  *)
     (* naive attempt of storing compile time information for 
     use during runtime ,
     The header will be the first 64 bits of the allocated memory, 
@@ -122,7 +122,7 @@ let
         (so that the length of the header block is always 1)
     *)
      (* compute the header value *)
-     val _ = if num > 65535 then raise Fail "not supported yet llvmcg 81" else ()
+     (* val _ = if num > 65535 then raise Fail "not supported yet llvmcg 81" else ()
     val headerLength = (22 + num) div 62 + (if (22 + num) mod 62 = 0 then 0 else 1) (* only use the last 62 bits per block *)
      val headerInfo = let
     open IntInf
@@ -169,8 +169,8 @@ let
     (* DebugPrint.p ("first five bits " ^ toString firstFiveBits ^ " length " ^ toString lengthOfList ^ " remainingMarking " ^ toString
     (markingBitsToInt markingBits) ^ " result " ^ String.concatWith "," result ^" \n"); *)
     result
-    end
-    val headerArrType = "["  ^ Int.toString headerLength ^" x i64]"
+    end *)
+    (* val headerArrType = "["  ^ Int.toString headerLength ^" x i64]" *)
 in
     (* perform the header computation directly *)
     [
@@ -181,12 +181,12 @@ in
         , "store " ^ headerArrType ^ " [" ^ String.concatWith ", " 
             (map(fn i => "i64 "^ i) headerInfo) ^ "], " ^ headerArrType ^ "* "^ toLocalVar headerPointerVarArr *)
 
-        toLLVMLoc llvmLoc ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num + 1) ^")"
+        toLLVMLoc llvmLoc ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num ) ^")"
           (* get the first block address and store*)
-        , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 0"
-        , "store i64 " ^ hd headerInfo ^ ", i64* "^ toLocalVar headerPointerVar
+        (* , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 0"
+        , "store i64 " ^ hd headerInfo ^ ", i64* "^ toLocalVar headerPointerVar *)
     ]
-    @(List.concat (List.tabulate (headerLength - 1 , fn index => 
+    (* @(List.concat (List.tabulate (headerLength - 1 , fn index => 
     let val tempVar = UID.next()
     in 
     [
@@ -194,12 +194,12 @@ in
     ]@(
        ["store i64 " ^ List.nth(headerInfo, index+1) ^", i64* " ^ toLocalVar tempVar])
     end
-    )))
+    ))) *)
     @(List.concat (List.tabulate (num, fn index => 
     let val tempVar = UID.next()
     in 
     [
-        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 "^ Int.toString (index+1)
+        toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 "^ Int.toString (index)
     ]@(
         convertValueToIntForStorage(List.nth(values, index)) (fn name => 
        ["store i64 "
@@ -226,7 +226,7 @@ in
     toLocalVar headerLengthName ^ " = load i64, i64* " ^ toLocalVar headerLengthPointer,
     toLocalVar hIntermediate1 ^ " = lshiftr i64 " ^ toLocalVar headerLengthName ^ ", " ^ Int.toString(62 - 22),
     toLocalVar hIntermediate2 ^ " = and i64 " ^ toLocalVar hIntermediate1 ^ ", 1023", *)
-    toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLLVMLoc arrptr ^ ", i64 "^ Int.toString (index+1) (* skip header block*),
+    toLocalVar tempVar ^ " = getelementptr i64, i64* "^ toLLVMLoc arrptr ^ ", i64 "^ Int.toString (index) (* skip header block*),
     toLocalVar beforeTypeCast ^ " = load i64, i64* " ^ toLocalVar tempVar,
     toLLVMLoc resultLoc ^ " = inttoptr i64 " ^ toLocalVar beforeTypeCast ^ " to i64*"
     (* casting everything to be a pointer to avoid typing conflict (I don't know whether is is sensible *)

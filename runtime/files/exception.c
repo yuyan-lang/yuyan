@@ -69,7 +69,7 @@ yy_ptr yySetCurrentExceptionHandler(yy_ptr toSet) {
 }
 
 // I believe abssingle has two arguments , the first is just the closure itself
-uint64_t 全局异常处理器(int64_t* closure, char* errorMsg){
+uint64_t 全局异常处理器(int64_t* closure, char* errorMsg, int64_t* kont){
     fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n");
     fprintf(stderr, "尝试打印值：（可能会出现 异常）：\n");
     fflush(stderr);
@@ -79,19 +79,19 @@ uint64_t 全局异常处理器(int64_t* closure, char* errorMsg){
     return -1;
 }
 
-// I believe abssingle has two arguments , the first is just the closure itself
-uint64_t 未赋值递归函数(int64_t* closure, char* kont){
-    fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：不支持的递归表达式，你的递归表达式必须是函数，递归表达式在完成运算前不可以调用自身。\n");
-    fprintf(stderr, "\n");
-    exit(1);
-    return -1;
-}
+// // I believe abssingle has two arguments , the first is just the closure itself
+// uint64_t 未赋值递归函数(int64_t* closure, char* kont){
+//     fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：不支持的递归表达式，你的递归表达式必须是函数，递归表达式在完成运算前不可以调用自身。\n");
+//     fprintf(stderr, "\n");
+//     exit(1);
+//     return -1;
+// }
 
 
 
 void* 当前异常处理器;
 
-void 初始化全局异常处理器(){
+void yy_豫言初始化全局异常处理器(){
     void **tup = (void**) allocateArray(2);
     tup[0] = 全局异常处理器;
     当前异常处理器 = tup;

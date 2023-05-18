@@ -28,17 +28,6 @@ jobs:
       - name: make test
         run: make test
 
-      # # - name: make bsrttcv
-      # #   run: make bsrttcv
-
-      # - name: make bsrtv
-      #   if: '! github.event.pull_request.draft'
-      #   run: make bsrtv
-
-      # - name: make bsrtvvv
-      #   if: failure()
-      #   run: make bsrtvvv
-
   macos-bs-test:
     runs-on: macos-latest
     steps:
@@ -110,6 +99,16 @@ jobs:
         if: failure()
         run: make bsrtvv
 
+  ubuntu-bs-test-bs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+
+      - name: make bsrt_bs
+        if: '! github.event.pull_request.draft'
+        run: make bsrt_bs
+
   ubuntu-bs-build-tc:
     runs-on: ubuntu-latest
     steps:
@@ -146,22 +145,3 @@ jobs:
             ./runtime/libyyrtopt.a
             ./yylib
 
-
-
-      # - name: Install MLton
-      #   run: |
-      #     wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz
-      #     tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
-      #     cd mlton-20210117-1.amd64-linux-glibc2.31/
-      #     sudo make
-      #     sudo make install
-
-      # - name: Install MatPlot++
-      #   run: |
-      #     git clone https://github.com/alandefreitas/matplotplusplus.git
-      #     cd matplotplusplus
-      #     mkdir build
-      #     cd build
-      #     cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS="-O2" -DBUILD_EXAMPLES=OFF -DBUILD_TESTS=OFF 
-      #     sudo cmake --build . --parallel 2 --config Release
-      #     sudo cmake --install .
