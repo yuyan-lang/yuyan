@@ -31,6 +31,10 @@ bsrvv : yy_bs
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫 -vv
 
+bsrvvv : yy_bs 
+	make yyrt
+	./yy_bs 豫言编译器/入口。豫 -vvv
+
 bsr : yy_bs 
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫
@@ -108,6 +112,7 @@ cleanbs:
 cleancache:
 	rm -rf .yybuild.nosync/yylib
 	rm -rf .yybuild.nosync/tests
+	rm -rf .yybuild.nosync/豫言编译器
 
 
 superclean:
