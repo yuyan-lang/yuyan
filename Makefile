@@ -27,6 +27,10 @@ bsrtcvv : yy_bs
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫 --type-check-only -vv
 
+bsrv : yy_bs 
+	make yyrt
+	./yy_bs 豫言编译器/入口。豫 -v
+
 bsrvv : yy_bs 
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫 -vv
