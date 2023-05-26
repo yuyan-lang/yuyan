@@ -12,7 +12,6 @@ build: yy yyrt
 yyrt:
 	make -C runtime/ opt
 	make -C runtime/ debug
-	make -C runtime/ wasmdebug
 
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
@@ -125,6 +124,7 @@ superclean:
 	rm -rf ./.yybuild.nosync/*
 
 wasm: yyrt
+	make -C runtime/ wasmdebug
 	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
 	emcc -o test.html -O3 /Users/zc/yuyan_proj/yuyan/.yybuild.nosync/豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l gc -l uv -l stdc++ -Wno-override-module -g -mtail-call
 
