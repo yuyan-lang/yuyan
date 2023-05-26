@@ -24,6 +24,13 @@ libyyrtdebug.a: $(SOURCES)
 
 debug: libyyrtdebug.a
 
+libyyrtdebugwasm.a: $(SOURCES)
+	emcc -c -g $(SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
+	emcc -c -g $(SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
+	emar rcs libyyrtdebugwasm.a *.o
+
+wasmdebug: libyyrtdebugwasm.a
+
 libyyrtopt.a: $(SOURCES)
 	$(CC) -c -O3 $(SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
 	$(CC) -c -O3 $(SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
