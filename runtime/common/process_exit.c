@@ -1,6 +1,6 @@
 
 
-#include "globalInclude.h"
+#include "common_include.h"
 
 
 yy_ptr yyProcessExit(yy_ptr exitStatusAddr){

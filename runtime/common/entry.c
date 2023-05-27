@@ -1,31 +1,27 @@
 
-#include "globalInclude.h"
+#include "common_include.h"
 
 #include "gc.h"
 
 extern int entryMain(); // the entry to yy llvm ir
 
+extern void initialize_global_exception_handler();
 
 int global_argc = 0;
 char** global_argv = NULL;
 
-uv_loop_t *uv_global_loop;
 int main(int argc, char* argv[]) {
 
     // save global paramters
     global_argc = argc;
     global_argv = argv;
 
-    // initialize garbage collection
-    GC_INIT();
-
+    optional_entry_initialization();
 
     // initialize global exception handler
     initialize_global_exception_handler();
     yy_豫言初始化全局异常处理器();
 
-    // initialize uv default loop (can replace)
-    uv_global_loop = uv_default_loop();
 
     // initialize random seed
     srand ( time ( NULL));

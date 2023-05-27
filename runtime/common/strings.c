@@ -1,5 +1,5 @@
 
-#include "globalInclude.h"
+#include "common_include.h"
 
 
 // returns if s1 is a substring of s2

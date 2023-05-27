@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "gc.h" // https://hboehm.info/gc/ libgc 
-#include <uv.h> 
 #include <stdbool.h>
 #include <time.h>
 
@@ -14,7 +12,6 @@ typedef uint64_t* yy_ptr;
 extern int global_argc;
 extern char** global_argv;
 
-extern uv_loop_t *uv_global_loop;
 
 extern yy_ptr allocateArray(uint64_t size);
 
@@ -49,7 +46,6 @@ yy_ptr function_to_addr(void *func);
 yy_ptr data_to_addr(uint64_t elem);
 uint64_t addr_to_data(yy_ptr ptr);
 
-void readStreamUntilEofIntoDataAync(uv_stream_t *stream);
 int informResultRec(FILE * file, yy_ptr result, int prevPred);
 int informResult(yy_ptr result);
 

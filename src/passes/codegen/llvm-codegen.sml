@@ -70,7 +70,7 @@ let
 fun storeIntToLocalVar (localVar : int)(intValue : int)  : string list= 
 let 
 in
-    [  toLocalVar localVar ^ " = call i64* @allocateArray(i64 1)", 
+    [  toLocalVar localVar ^ " = call i64* @yy_gcAllocateArray(i64 1)", 
        "store i64 "^ Int.toString intValue ^", i64* " ^ toLocalVar localVar
     ]
 end
@@ -174,14 +174,14 @@ let
 in
     (* perform the header computation directly *)
     [
-        (* toLocalVar localVar ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num + headerLength) ^")"
+        (* toLocalVar localVar ^ " = call i64* @yy_gcAllocateArray(i64 " ^ Int.toString (num + headerLength) ^")"
           (* get the first block address and store*)
         , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLocalVar localVar ^ ", i64 0"
         , toLocalVar headerPointerVarArr ^ " = bitcast i64* " ^ toLocalVar headerPointerVar ^ " to " ^ headerArrType ^ "*"
         , "store " ^ headerArrType ^ " [" ^ String.concatWith ", " 
             (map(fn i => "i64 "^ i) headerInfo) ^ "], " ^ headerArrType ^ "* "^ toLocalVar headerPointerVarArr *)
 
-        toLLVMLoc llvmLoc ^ " = call i64* @allocateArray(i64 " ^ Int.toString (num ) ^")"
+        toLLVMLoc llvmLoc ^ " = call i64* @yy_gcAllocateArray(i64 " ^ Int.toString (num ) ^")"
           (* get the first block address and store*)
         (* , toLocalVar headerPointerVar ^ " = getelementptr i64, i64* "^ toLLVMLoc llvmLoc ^ ", i64 0"
         , "store i64 " ^ hd headerInfo ^ ", i64* "^ toLocalVar headerPointerVar *)
@@ -507,7 +507,7 @@ else
         "ret i64 0 ",
         "}",
         (* declare runtime functions *)
-        "declare i64* @allocateArray(i64)",
+        "declare i64* @yy_gcAllocateArray(i64)",
         "declare i64 @internalError()",
         "declare i64 @matchException(i64*)",
         "declare i64 @informResult(i64*)"

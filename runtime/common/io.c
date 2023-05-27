@@ -1,4 +1,4 @@
-#include "globalInclude.h"
+#include "common_include.h"
 
 yy_ptr yyPrintln(yy_ptr s) {
     fprintf(stdout,"%s\n", addr_to_string(s));

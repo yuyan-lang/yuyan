@@ -1,5 +1,5 @@
 
-#include "globalInclude.h"
+#include "common_include.h"
 
 
 yy_ptr yyNewRef(yy_ptr value){
