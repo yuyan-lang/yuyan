@@ -31,3 +31,7 @@ yy_*
 *.gch
 
 wasmbuild
+
+*.yyinfo.json
+*.抽象语法.json
+*.正则签名.json

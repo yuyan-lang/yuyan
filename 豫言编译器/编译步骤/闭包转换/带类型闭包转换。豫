@@ -1,4 +1,4 @@
-「：This is untyped closure conversion. 
+「： 「：This is untyped closure conversion. 
 I have prepared groundwork for typed closure conversion, but I 
 have not yet studied it.
 ：」
@@ -55,7 +55,7 @@ have not yet studied it.
                     式
                 或有（式节点于（检查后结构投影带类型于投影名于序数）于结构签名衔结构衔【】）则
                     （式节点于（检查后结构投影带类型于投影名于序数）于结构签名衔（递归于结构）衔【】）
-                或有（式节点于「递归内联虑带类型」于签名衔递归实现衔递归后式衔【】）则
+                或有（式节点于「递归内联虑带类型」于签名衔递归实现衔「递归后式」衔【】）则
                     （式节点于「递归内联虑带类型」于签名衔（递归于递归实现）衔（绑定递归于递归后式）衔【】）
                 「： 或有（式节点于（拉姆达抽象带类型于拉形）于原抽象类型衔拉参衔【】）则
                     （
@@ -103,4 +103,4 @@ have not yet studied it.
 
 带类型闭包转换顶层乃化表达式而表达式也。
 带类型闭包转换顶层者会式而
-「闭包转换」于式也。
+「闭包转换」于式也。 ：」
