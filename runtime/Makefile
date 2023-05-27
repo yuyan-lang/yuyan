@@ -1,11 +1,11 @@
-WASM_SOURCEDIR=common wasm
+WASM_SOURCEDIR=$(abspath common) $(abspath wasm)
 WASM_SOURCES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' \) )
 WASM_SCFILES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c'  \) )
 # WASM_SCPPFILES := $(shell find $(WASM_SOURCEDIR) \(  -name '*.cpp' \) )
 
 
 
-NATIVE_SOURCEDIR=common native
+NATIVE_SOURCEDIR=$(abspath common) $(abspath native)
 NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' \) )
 NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c'  \) )
 # NATIVE_SCPPFILES := $(shell find $(NATIVE_SOURCEDIR) \(  -name '*.cpp' \) )
@@ -57,21 +57,21 @@ endif
 
 libyyrtdebug.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	$(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/$*.o
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
 debug: libyyrtdebug.a
 
 libyyrtdebugwasm.a: $(WASM_SOURCES)
 	@mkdir -p build/wasm
-	emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/wasm/$*.o
+	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	emar rcs $@ build/wasm/*.o
 
 wasmdebug: libyyrtdebugwasm.a
 
 libyyrtopt.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	$(CC) -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/$*.o
+	cd build/native && $(CC) -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
 opt : libyyrtopt.a
