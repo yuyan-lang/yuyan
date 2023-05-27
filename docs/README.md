@@ -8,9 +8,7 @@
 
 Slack： https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30n7-FQNwZ0tefBePMxPSFrcbGg
 
-企业微信群：（二维码）
-
-![wecom_comm](community_qr_wecom.png)
+微信群：[群二维码](community_qr_wecom.png)
 
 邮箱： yuyanlang@icloud.com
 
