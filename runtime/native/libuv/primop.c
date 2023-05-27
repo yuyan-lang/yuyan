@@ -1,5 +1,5 @@
 // to be replaced by primop direclty in assembly
-#include "../globalInclude.h"
+#include "../native_include.h"
 
 yy_ptr yyIntEqTest(yy_ptr i1, yy_ptr i2){
     int64_t int1 = addr_to_int(i1);
@@ -26,7 +26,7 @@ yy_ptr yyIntToString(yy_ptr i1){
 
     int64_t num = addr_to_int(i1);
     int64_t bufSize = snprintf( NULL, 0, "%lld", (long long )num ) + 1;
-    char *strBuffer = GC_MALLOC(bufSize);
+    char *strBuffer = yy_gcAllocateBytes(bufSize);
     snprintf(strBuffer, bufSize, "%lld", (long long) num);
     return string_to_addr(strBuffer);
 }
@@ -49,7 +49,7 @@ yy_ptr yyDoubleToString(yy_ptr i1){
 
     double num = addr_to_double(i1);
     int64_t bufSize = snprintf( NULL, 0, "%lf", num ) + 1;
-    char *strBuffer = GC_MALLOC(bufSize);
+    char *strBuffer = yy_gcAllocateBytes(bufSize);
     snprintf(strBuffer, bufSize, "%lf", num);
     return string_to_addr(strBuffer);
 }

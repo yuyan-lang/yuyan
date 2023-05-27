@@ -19,7 +19,7 @@ yy_ptr yyWriteRef(yy_ptr new_value, yy_ptr addr){
 
 yy_ptr yyNewRefArray(yy_ptr value, yy_ptr lengthAddr){
     int64_t length = addr_to_int(lengthAddr);
-    yy_ptr *storage = GC_MALLOC(length * sizeof (void*));
+    yy_ptr *storage = yy_gcAllocateBytes(length * sizeof (void*));
     for (int i = 0; i < length; i++)
     {
         storage[i] = value;
@@ -44,7 +44,7 @@ yy_ptr yyWriteRefArray(yy_ptr new_value, yy_ptr indexAddr, yy_ptr refAddr){
 
 yy_ptr yyNewRefArrayGeneric(yy_ptr lengthAddr){
     int64_t length = addr_to_int(lengthAddr);
-    yy_ptr *storage = GC_MALLOC(length * sizeof (void*));
+    yy_ptr *storage = yy_gcAllocateBytes(length * sizeof (void*));
     return (yy_ptr)storage;
 }
 

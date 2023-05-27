@@ -1,8 +1,8 @@
 
-#include "../globalInclude.h"
+#include "../native_include.h"
 
 void on_alloc_buffer(uv_handle_t *handle, size_t suggested_size, uv_buf_t *buf) {
-  buf->base = GC_MALLOC(suggested_size);
+  buf->base = yy_gcAllocateBytes(suggested_size);
   buf->len = suggested_size;
 }
 
@@ -15,7 +15,7 @@ void on_read(uv_stream_t *client, ssize_t nread, const uv_buf_t *buf) {
          return;
      }
  
-     char* newData = (char*) GC_MALLOC(sizeof(char) * (nread+1));
+     char* newData = (char*) yy_gcAllocateBytes(sizeof(char) * (nread+1));
      newData[nread] = '\0';
      strncpy(newData, buf->base, nread);
     

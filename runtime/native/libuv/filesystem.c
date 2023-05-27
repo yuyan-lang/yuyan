@@ -1,10 +1,10 @@
-#include "../globalInclude.h"
+#include "../native_include.h"
 
 
 yy_ptr yyReadFileSync(yy_ptr filenamearg) {
     uv_fs_t open_req;
     uv_fs_t read_req;
-    // open_req = GC_MALLOC(sizeof(uv_fs_t))
+    // open_req = yy_gcAllocateBytes(sizeof(uv_fs_t))
 
     int openResult = uv_fs_open(uv_default_loop(), &open_req, 
         addr_to_string(filenamearg), O_RDONLY, 
@@ -17,10 +17,10 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
         fflush(stderr);
         errorAndAbort("error printed");
     }
-    char* result = GC_MALLOC(1);
+    char* result = yy_gcAllocateBytes(1);
     int resultLength = 0;
     result[0] = '\0';
-    char* tempBuffer = GC_MALLOC(65535);
+    char* tempBuffer = yy_gcAllocateBytes(65535);
     uv_buf_t uvBuf= uv_buf_init(tempBuffer, 65534);
     
     int nread = uv_fs_read(uv_default_loop(), &read_req, open_req.result, &uvBuf, 1, -1, NULL);
@@ -165,7 +165,7 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
 yy_ptr yyListDirectorySync(yy_ptr dirname) {
     uv_fs_t scan_req;
     // uv_fs_t read_req;
-    // open_req = GC_MALLOC(sizeof(uv_fs_t))
+    // open_req = yy_gcAllocateBytes(sizeof(uv_fs_t))
 
 char * dname = addr_to_string(dirname);
     int count = uv_fs_scandir(uv_default_loop(), &scan_req, dname

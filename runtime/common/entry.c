@@ -5,7 +5,7 @@
 
 extern int entryMain(); // the entry to yy llvm ir
 
-extern void initialize_global_exception_handler();
+extern void optional_entry_initialization();
 
 int global_argc = 0;
 char** global_argv = NULL;

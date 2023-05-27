@@ -1,4 +1,4 @@
-#include "../globalInclude.h"
+#include "../native_include.h"
 
 
 typedef struct {

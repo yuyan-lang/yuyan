@@ -13,8 +13,6 @@ extern int global_argc;
 extern char** global_argv;
 
 
-extern yy_ptr allocateArray(uint64_t size);
-
 
 yy_ptr unit_to_addr();
 yy_ptr string_to_addr(const char * str);
@@ -51,3 +49,6 @@ int informResult(yy_ptr result);
 
 void initialize_global_exception_handler();
 void yy_豫言初始化全局异常处理器();
+
+yy_ptr yy_gcAllocateArray(uint64_t size);
+void *yy_gcAllocateBytes(uint64_t size);

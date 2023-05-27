@@ -11,9 +11,9 @@ yy_ptr yyMatPlotCreateLinePlot(
 ){
     int xNum = iso_list_get_length(xValuesListAddr);
     int yNum = iso_list_get_length(ysValuesListAddr);
-    double *xValuesList = GC_MALLOC(xNum * sizeof(double));
-    double **ysValuesList = GC_MALLOC(yNum * sizeof(double));
-    char **legendList = GC_MALLOC(yNum * sizeof(char *));
+    double *xValuesList = yy_gcAllocateBytes(xNum * sizeof(double));
+    double **ysValuesList = yy_gcAllocateBytes(yNum * sizeof(double));
+    char **legendList = yy_gcAllocateBytes(yNum * sizeof(char *));
 
     yy_ptr* xValuesPtrs = iso_list_get_elements(xValuesListAddr);
     yy_ptr* ysValuesPtrs = iso_list_get_elements(ysValuesListAddr);
@@ -23,7 +23,7 @@ yy_ptr yyMatPlotCreateLinePlot(
         xValuesList[i] = addr_to_double(xValuesPtrs[i]);
     }
     for (int j = 0; j < yNum; j ++){
-        ysValuesList[j] = GC_MALLOC(xNum * sizeof(double));
+        ysValuesList[j] = yy_gcAllocateBytes(xNum * sizeof(double));
         yy_ptr *yValuesPtrs = iso_list_get_elements(ysValuesPtrs[j]);
         for (int i = 0; i < xNum; i++)
         {
