@@ -100,7 +100,8 @@
         "stat.h": "c",
         "string.h": "c",
         "unistd.h": "c",
-        "dirent.h": "c"
+        "dirent.h": "c",
+        "targetmachine.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

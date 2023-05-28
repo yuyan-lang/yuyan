@@ -1,13 +1,18 @@
 WASM_SOURCEDIR=$(abspath common) $(abspath wasm)
-WASM_SOURCES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' \) )
-WASM_SCFILES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c'  \) )
+WASM_SOURCES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.ll' \) )
+# WASM_SCFILES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c'  -o -name '*.ll' \) )
+WASM_SCFILES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c'  -o -name '*.ll' \) )
+
+# NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll' \) )
+
 # WASM_SCPPFILES := $(shell find $(WASM_SOURCEDIR) \(  -name '*.cpp' \) )
 
 
 
 NATIVE_SOURCEDIR=$(abspath common) $(abspath native)
-NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' \) )
-NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c'  \) )
+NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h'  -o -name '*.ll' \) )
+# NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll'  \) )
+NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll' \) )
 # NATIVE_SCPPFILES := $(shell find $(NATIVE_SOURCEDIR) \(  -name '*.cpp' \) )
 
 

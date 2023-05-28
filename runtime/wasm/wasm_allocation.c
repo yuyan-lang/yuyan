@@ -1,13 +1,15 @@
 #include "wasm_include.h"
 extern yy_ptr emscripten_allocate(size_t);
 
+// extern void* array.new(uint64_t size);
 
 void* yy_gcAllocateBytes(uint64_t size) {
-    yy_ptr x = (yy_ptr) EM_ASM_PTR({
-        var byteSize = $0;
-        var buffer = new ArrayBuffer(Number(byteSize));
-        return buffer;
-    }, size);
+    // yy_ptr x = (yy_ptr) EM_ASM_PTR({
+    //     var byteSize = $0;
+    //     var buffer = new ArrayBuffer(Number(byteSize));
+    //     return buffer;
+    // }, size);
+    yy_ptr x = malloc(size); // TODO: use GC allocate
     return x;
 }
 
