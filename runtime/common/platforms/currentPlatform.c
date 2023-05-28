@@ -1,8 +1,9 @@
 
 #include <stdbool.h>
+#include <stdint.h>
 
 
-bool yyRunningOnWindows(){
+uint64_t yyRunningOnWindows(){
 #ifdef _WIN32
     return true;
 #else
@@ -10,7 +11,7 @@ bool yyRunningOnWindows(){
 #endif
 }
 
-bool yyRunningOnMacOS(){
+uint64_t yyRunningOnMacOS(){
 #ifdef __APPLE__
     return true;
 #else
@@ -18,7 +19,7 @@ bool yyRunningOnMacOS(){
 #endif
 }
 
-bool yyRunningOnLinux(){
+uint64_t yyRunningOnLinux(){
 #ifdef __linux__
     return true;
 #else

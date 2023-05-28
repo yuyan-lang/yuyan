@@ -4,6 +4,10 @@
 #include <stdbool.h>
 #include <time.h>
 #include "stdint.h"
+#include <sys/stat.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <limits.h>
 
 #ifdef __linux__
     #include <bsd/string.h>
@@ -53,3 +57,4 @@ void yy_豫言初始化全局异常处理器();
 
 yy_ptr yy_gcAllocateArray(uint64_t size);
 void *yy_gcAllocateBytes(uint64_t size);
+
