@@ -3,7 +3,7 @@
 
 #include "gc.h"
 
-extern int entryMain(); // the entry to yy llvm ir
+extern uint64_t entryMain(); // the entry to yy llvm ir
 
 extern void optional_entry_initialization();
 

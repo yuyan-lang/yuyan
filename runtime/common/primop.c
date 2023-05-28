@@ -1,5 +1,5 @@
 // to be replaced by primop direclty in assembly
-#include "../native_include.h"
+#include "common_include.h"
 
 yy_ptr yyIntEqTest(yy_ptr i1, yy_ptr i2){
     int64_t int1 = addr_to_int(i1);

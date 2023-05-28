@@ -64,8 +64,8 @@ debug: libyyrtdebug.a
 
 libyyrtdebugwasm.a: $(WASM_SOURCES)
 	@mkdir -p build/wasm
-	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
-	emar rcs $@ build/wasm/*.o
+	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS)  -sMEMORY64
+	emar rcs $@ build/wasm/*.o 
 
 wasmdebug: libyyrtdebugwasm.a
 

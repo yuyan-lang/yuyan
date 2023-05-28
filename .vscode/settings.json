@@ -94,7 +94,8 @@
         "stdlib.h": "c",
         "time.h": "c",
         "limits.h": "c",
-        "format": "cpp"
+        "format": "cpp",
+        "wasm_include.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [
