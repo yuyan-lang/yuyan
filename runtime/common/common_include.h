@@ -1,10 +1,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include "gc.h" // https://hboehm.info/gc/ libgc 
-#include <uv.h> 
 #include <stdbool.h>
 #include <time.h>
+#include "stdint.h"
+#include <sys/stat.h>
+#include <dirent.h>
+#include <unistd.h>
+#include <limits.h>
 
 #ifdef __linux__
     #include <bsd/string.h>
@@ -14,9 +17,6 @@ typedef uint64_t* yy_ptr;
 extern int global_argc;
 extern char** global_argv;
 
-extern uv_loop_t *uv_global_loop;
-
-extern yy_ptr allocateArray(uint64_t size);
 
 
 yy_ptr unit_to_addr();
@@ -49,9 +49,12 @@ yy_ptr function_to_addr(void *func);
 yy_ptr data_to_addr(uint64_t elem);
 uint64_t addr_to_data(yy_ptr ptr);
 
-void readStreamUntilEofIntoDataAync(uv_stream_t *stream);
 int informResultRec(FILE * file, yy_ptr result, int prevPred);
 int informResult(yy_ptr result);
 
 void initialize_global_exception_handler();
 void yy_豫言初始化全局异常处理器();
+
+yy_ptr yy_gcAllocateArray(uint64_t size);
+void *yy_gcAllocateBytes(uint64_t size);
+

@@ -1,4 +1,4 @@
-#include "globalInclude.h"
+#include "common_include.h"
 
 char * addr_to_string(yy_ptr arg) {
     // return (char *)arg[1];
@@ -32,7 +32,7 @@ uint64_t getHeader(uint64_t type, uint64_t length) {
 }
 
 yy_ptr allocateAndSetHeader(uint64_t type, uint64_t length) {
-    yy_ptr returnStorage = allocateArray(length);
+    yy_ptr returnStorage = yy_gcAllocateArray(length);
     // *returnStorage = getHeader(type, length);
     return returnStorage; 
 }
@@ -131,7 +131,7 @@ uint64_t iso_list_get_length(const yy_ptr list) {
 yy_ptr* iso_list_get_elements(const yy_ptr list) {
     // uint64_t size = iso_list_get_length(list);
 
-    // yy_ptr* result = (yy_ptr*)allocateArray(size);
+    // yy_ptr* result = (yy_ptr*)yy_gcAllocateArray(size);
 
     // uint64_t curIndex = 0;
     // yy_ptr curList = list;

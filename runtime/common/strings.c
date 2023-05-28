@@ -1,5 +1,5 @@
 
-#include "globalInclude.h"
+#include "common_include.h"
 
 
 // returns if s1 is a substring of s2
@@ -79,7 +79,7 @@ char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
             break;
         }
     }
-    char *newStr = GC_MALLOC(end-result+1);
+    char *newStr = yy_gcAllocateBytes(end-result+1);
     strlcpy(newStr, result, end-result+1); // this one will null-terminate
     return newStr;
 }
@@ -105,7 +105,7 @@ yy_ptr yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
         errorAndAbort("JSON字符串必须以引号结束");
     }
     int64_t byteLength = end-start+1;
-    char* escapedStr = GC_MALLOC(byteLength);
+    char* escapedStr = yy_gcAllocateBytes(byteLength);
     char* originalPtr = start+1;
     char* escapedPtr = escapedStr;
     while(originalPtr != end){
@@ -180,7 +180,7 @@ size_t count_utf8_code_points(const char *s) {
 //         }
 //         // extract current character
 //         int charLength = prevEnd-end;
-//         char* newChar = GC_MALLOC(charLength+1);
+//         char* newChar = yy_gcAllocateBytes(charLength+1);
 //         // newChar[charLength] = '\0'; // no need due to strlcpy
 //         strlcpy(newChar, end, charLength+1);
 //         resultList = iso_list_cons_to_addr(string_to_addr(newChar), resultList);
@@ -206,7 +206,7 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
     }
 
     // Allocate a heap array for the code points
-    yy_ptr* codePoints = (yy_ptr*)GC_MALLOC(numCodePoints * sizeof(yy_ptr));
+    yy_ptr* codePoints = (yy_ptr*)yy_gcAllocateBytes(numCodePoints * sizeof(yy_ptr));
     // if (codePoints == NULL) {
     //     // Handle allocation failure
     //     return NULL;
@@ -220,7 +220,7 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
         if ((*p & 0xC0) != 0x80) {
             if (p != codePointStart) {
                 int len = p - codePointStart;
-                char* newChar = (char*)GC_MALLOC((len + 1) * sizeof(char));
+                char* newChar = (char*)yy_gcAllocateBytes((len + 1) * sizeof(char));
                 // if (newChar == NULL) {
                 //     // Handle allocation failure
                 //     free(codePoints);
@@ -238,7 +238,7 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 
     // Handle the last code point
     int len = p - codePointStart;
-    char* newChar = (char*)GC_MALLOC((len + 1) * sizeof(char));
+    char* newChar = (char*)yy_gcAllocateBytes((len + 1) * sizeof(char));
     // if (newChar == NULL) {
     //     // Handle allocation failure
     //     free(codePoints);
@@ -262,7 +262,7 @@ yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
         totalLength += strlen(addr_to_string(strs[i]));
     }
 
-    char * resultString = GC_MALLOC(totalLength + 1);
+    char * resultString = yy_gcAllocateBytes(totalLength + 1);
     resultString[0] = '\0';
 
     for (int i = 0; i < length; i ++){

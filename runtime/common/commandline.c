@@ -1,4 +1,4 @@
-#include "globalInclude.h"
+#include "common_include.h"
 
 yy_ptr yyGetCommandLineProgramName(){
     return string_to_addr(global_argv[0]);

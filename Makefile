@@ -10,7 +10,7 @@ YYTESTSOURCES := $(shell find . -name '*。测试。豫' ! -path "*/.cm/*")
 build: yy yyrt
 
 yyrt:
-	make -C runtime/ opt
+	# make -C runtime/ opt
 	make -C runtime/ debug
 
 yy:  $(SMLSOURCES)
@@ -126,7 +126,7 @@ superclean:
 wasm: yyrt
 	make -C runtime/ wasmdebug
 	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
-	emcc -o test.html -O3 /Users/zc/yuyan_proj/yuyan/.yybuild.nosync/豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l gc -l uv -l stdc++ -Wno-override-module -g -mtail-call
+	emcc -o yy_test.html -O3 ./.yybuild.nosync/豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64
 
 debugll:
 	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll

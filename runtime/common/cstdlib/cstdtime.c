@@ -1,11 +1,11 @@
 
-#include "../globalInclude.h"
+#include "../common_include.h"
 
 
 #include <time.h>
 
 
-char * yyGetCurrentLocalDateTimeStr(char * fmt) {
+char * yyGetCurrentLocalDateTimeStr() {
     time_t t = time(NULL);
     char *result = ctime(&t);
     return result;

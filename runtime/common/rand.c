@@ -1,4 +1,4 @@
-#include "../globalInclude.h"
+#include "common_include.h"
 
 yy_ptr yyGetRandomInt(yy_ptr upperBoundPtr) {
     uint64_t upperBoundInt = addr_to_int(upperBoundPtr);

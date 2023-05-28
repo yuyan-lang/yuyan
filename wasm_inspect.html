@@ -1,0 +1,13 @@
+<script>
+	const importObject = {
+  imports: {
+    // Define imports here
+  }
+};
+WebAssembly.instantiateStreaming(fetch("yy_test.wasm"), importObject).then(
+  (results) => {
+    // Do something with the results!
+	  console.log(results)
+  }
+);
+</script>

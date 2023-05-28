@@ -1,7 +1,19 @@
-SOURCEDIR=files
-SOURCES := $(shell find $(SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' \) )
-SCFILES := $(shell find $(SOURCEDIR) \( -name '*.c'  \) )
-SCPPFILES := $(shell find $(SOURCEDIR) \(  -name '*.cpp' \) )
+WASM_SOURCEDIR=$(abspath common) $(abspath wasm)
+WASM_SOURCES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.ll' \) )
+# WASM_SCFILES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c'  -o -name '*.ll' \) )
+WASM_SCFILES := $(shell find $(WASM_SOURCEDIR) \( -name '*.c'  -o -name '*.ll' \) )
+
+# NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll' \) )
+
+# WASM_SCPPFILES := $(shell find $(WASM_SOURCEDIR) \(  -name '*.cpp' \) )
+
+
+
+NATIVE_SOURCEDIR=$(abspath common) $(abspath native)
+NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h'  -o -name '*.ll' \) )
+# NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll'  \) )
+NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll' \) )
+# NATIVE_SCPPFILES := $(shell find $(NATIVE_SOURCEDIR) \(  -name '*.cpp' \) )
 
 
 CC=clang
@@ -17,27 +29,59 @@ else
 ADDITIONAL_FLAGS=
 endif
 
-libyyrtdebug.a: $(SOURCES)
-	$(CC) -c -g $(SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
-	$(CC) -c -g $(SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
-	ar rcs libyyrtdebug.a *.o 
+# libyyrtdebug.a: $(NATIVE_SOURCES)
+# 	make clean_object_files
+# 	$(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
+# 	# $(CC) -c -g $(NATIVE_SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
+# 	ar rcs libyyrtdebug.a *.o 
+
+# debug: libyyrtdebug.a
+
+# libyyrtdebugwasm.a: $(WASM_SOURCES)
+# 	make clean_object_files
+# 	emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
+# 	# emcc -c -g $(WASM_SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
+# 	emar rcs libyyrtdebugwasm.a *.o
+
+# wasmdebug: libyyrtdebugwasm.a
+
+# libyyrtopt.a: $(NATIVE_SOURCES)
+# 	make clean_object_files
+# 	$(CC) -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
+# 	# $(CC) -c -O3 $(NATIVE_SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
+# 	ar rcs libyyrtopt.a *.o 
+
+# opt : libyyrtopt.a
+
+
+# clean_object_files:
+# 	rm *.o
+
+# clean:
+# 	rm *.o libyyrt*.a
+
+libyyrtdebug.a: $(NATIVE_SOURCES)
+	@mkdir -p build/native
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	ar rcs $@ build/native/*.o
 
 debug: libyyrtdebug.a
 
-libyyrtdebugwasm.a: $(SOURCES)
-	emcc -c -g $(SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
-	emcc -c -g $(SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
-	emar rcs libyyrtdebugwasm.a *.o
+libyyrtdebugwasm.a: $(WASM_SOURCES)
+	@mkdir -p build/wasm
+	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS)  -sMEMORY64
+	emar rcs $@ build/wasm/*.o 
 
 wasmdebug: libyyrtdebugwasm.a
 
-libyyrtopt.a: $(SOURCES)
-	$(CC) -c -O3 $(SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror 
-	$(CC) -c -O3 $(SCPPFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -std=c++17
-	ar rcs libyyrtopt.a *.o 
+libyyrtopt.a: $(NATIVE_SOURCES)
+	@mkdir -p build/native
+	cd build/native && $(CC) -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	ar rcs $@ build/native/*.o
 
 opt : libyyrtopt.a
 
-
+.PHONY: clean
 clean:
-	rm *.o libyyrt*.a
+	rm -rf build
+	rm *.a

@@ -93,7 +93,15 @@
         "cinttypes": "cpp",
         "stdlib.h": "c",
         "time.h": "c",
-        "limits.h": "c"
+        "limits.h": "c",
+        "format": "cpp",
+        "wasm_include.h": "c",
+        "common_include.h": "c",
+        "stat.h": "c",
+        "string.h": "c",
+        "unistd.h": "c",
+        "dirent.h": "c",
+        "targetmachine.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [
