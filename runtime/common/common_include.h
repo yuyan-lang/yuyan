@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include "stdint.h"
 
 #ifdef __linux__
     #include <bsd/string.h>
