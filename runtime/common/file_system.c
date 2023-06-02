@@ -148,7 +148,7 @@ yy_ptr yyGetFileModifiedTime(yy_ptr path) {
 
     struct stat st;
     if (stat(pathC, &st) != 0) {
-        fprintf(stderr, "Cannot stat file");
+        fprintf(stderr, "Cannot stat file: %s", pathC);
         errorAndAbort("Cannot stat file!!!");
     }
     int64_t mtime = st.st_mtime;

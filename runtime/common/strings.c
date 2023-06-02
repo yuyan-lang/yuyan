@@ -252,22 +252,78 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 }
 
 
+// yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
+//     const int length = iso_list_get_length(str_list_addr);
+//     yy_ptr* strs = iso_list_get_elements( str_list_addr);
+
+//     int totalLength = 0;
+
+//     for (int i = 0; i < length; i ++){
+//         totalLength += strlen(addr_to_string(strs[i]));
+//     }
+
+//     char * resultString = yy_gcAllocateBytes(totalLength + 1);
+//     resultString[0] = '\0';
+
+//     for (int i = 0; i < length; i ++){
+//         strlcat(resultString, addr_to_string(strs[i]), totalLength+1);
+//     }
+
+//     return string_to_addr(resultString);
+// }
+
+// MORE MORE EFFICIENT
+// yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
+//     const int length = iso_list_get_length(str_list_addr);
+//     yy_ptr* strs = iso_list_get_elements(str_list_addr);
+
+//     int totalLength = 0;
+
+//     for (int i = 0; i < length; i++) {
+//         totalLength += strlen(addr_to_string(strs[i]));
+//     }
+
+//     char* resultString = (char*)yy_gcAllocateBytes(totalLength + 1);
+//     char* currentPos = resultString;
+
+//     for (int i = 0; i < length; i++) {
+//         const char* currentStr = addr_to_string(strs[i]);
+//         int strLength = strlen(currentStr);
+//         memcpy(currentPos, currentStr, strLength);
+//         currentPos += strLength;
+//     }
+
+//     *currentPos = '\0';
+
+//     return string_to_addr(resultString);
+// }
+
+// EVEN MORE EFFICIENT
 yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
     const int length = iso_list_get_length(str_list_addr);
-    yy_ptr* strs = iso_list_get_elements( str_list_addr);
+    yy_ptr* strs = iso_list_get_elements(str_list_addr);
 
     int totalLength = 0;
+    int* lengths = (int*)malloc(length * sizeof(int));
 
-    for (int i = 0; i < length; i ++){
-        totalLength += strlen(addr_to_string(strs[i]));
+    for (int i = 0; i < length; i++) {
+        lengths[i] = strlen(addr_to_string(strs[i]));
+        totalLength += lengths[i];
     }
 
-    char * resultString = yy_gcAllocateBytes(totalLength + 1);
-    resultString[0] = '\0';
+    char* resultString = (char*)yy_gcAllocateBytes(totalLength + 1);
+    char* currentPos = resultString;
 
-    for (int i = 0; i < length; i ++){
-        strlcat(resultString, addr_to_string(strs[i]), totalLength+1);
+    for (int i = 0; i < length; i++) {
+        const char* currentStr = addr_to_string(strs[i]);
+        int strLength = lengths[i];
+        memcpy(currentPos, currentStr, strLength);
+        currentPos += strLength;
     }
+
+    *currentPos = '\0';
+
+    free(lengths);
 
     return string_to_addr(resultString);
 }
