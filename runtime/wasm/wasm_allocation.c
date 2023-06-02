@@ -1,5 +1,5 @@
 #include "wasm_include.h"
-extern yy_ptr emscripten_allocate(size_t);
+// extern yy_ptr emscripten_allocate(size_t);
 
 // extern void* array.new(uint64_t size);
 
