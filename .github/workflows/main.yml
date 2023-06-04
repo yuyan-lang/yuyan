@@ -109,7 +109,7 @@ jobs:
         if: '! github.event.pull_request.draft'
         run: make bsrt_bs
 
-  ubuntu-bs-build-tc:
+  ubuntu-bs-build-p:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
