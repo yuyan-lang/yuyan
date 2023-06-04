@@ -114,6 +114,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
+      - name: make bsrp
+        if: '! github.event.pull_request.draft'
+        run: make bsrp
+
+      - name: make bsrpvv
+        if: failure()
+        run: make bsrpvv
+
+  ubuntu-bs-build-tc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
       - name: make bsrtc
         if: '! github.event.pull_request.draft'
         run: make bsrtc
