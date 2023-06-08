@@ -159,7 +159,9 @@ a new module is added with root Path being the file's residing directory *)
             ^ (access outputFilePath)
             ^ " " ^ additionalClangOptions
             (* ^ " -save-temps=obj -l matplot " *)
-            ^ " -L /usr/local/lib -l gc -l uv -l stdc++ -Wno-override-module)"
+            ^ " -L /usr/local/lib -l gc -l uv "
+            (* ^ "-l stdc++ " *) (* do not include c++ as this causes a bug on linux *)
+            ^ "-Wno-override-module)"
             val _ = DebugPrint.p (cmd ^ "\n")
             val ret = OS.Process.system (cmd)
             in 
