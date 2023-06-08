@@ -15,5 +15,6 @@ runs:
       shell: bash
     - name: Install the libraries
       run: |
+        sudo apt install make llvm clang libgmp-dev
         sudo apt install libgc-dev libuv1-dev llvm libbsd-dev
       shell: bash
