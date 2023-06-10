@@ -67,12 +67,17 @@ libyyrtdebug.a: $(NATIVE_SOURCES)
 
 debug: libyyrtdebug.a
 
-libyyrtdebugwasm.a: $(WASM_SOURCES)
-	@mkdir -p build/wasm
-	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS)  -sMEMORY64
-	emar rcs $@ build/wasm/*.o 
+# libyyrtdebugwasm.a: $(WASM_SOURCES)
+# 	@mkdir -p build/wasm
+# 	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS)  -sMEMORY64
+# 	emar rcs $@ build/wasm/*.o 
 
-wasmdebug: libyyrtdebugwasm.a
+libyyrtdebugwasm.wasm: $(WASM_SOURCES)
+	@mkdir -p build/wasm
+	cd build/wasm && $(CC) --target=wasm32-wasi -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -I /usr/local/var/wasi-libc/sysroot/include
+	wasm-ld -o $@ build/wasm/*.o --no-entry
+
+wasmdebug: libyyrtdebugwasm.wasm
 
 libyyrtopt.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
