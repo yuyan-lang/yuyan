@@ -131,10 +131,11 @@ superclean:
 	rm -f yy
 	rm -rf ./.yybuild.nosync/*
 
+MODULE_NAME = $(error Please set MODULE_NAME as command line argument when compiling for wasm)
 wasm: yyrt
 	make -C runtime/ wasmdebug
-	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
-	emcc -o yy_test.html -O3 ./.yybuild.nosync/豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64
+	llvm-dis ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.bc -o ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll
+	emcc -o yy_test.html -O3 ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64
 
 debugll:
 	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
