@@ -122,9 +122,7 @@ cleanbs:
 	rm yy_bs
 
 cleancache:
-	rm -rf .yybuild.nosync/yylib
-	rm -rf .yybuild.nosync/tests
-	rm -rf .yybuild.nosync/豫言编译器
+	find .yybuild.nosync/yylib .yybuild.nosync/tests .yybuild.nosync/豫言编译器 -name "*.编译信息.json" -print -exec rm {} \;
 
 
 superclean:
