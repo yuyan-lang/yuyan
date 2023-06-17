@@ -124,6 +124,9 @@ cleanbs:
 cleancache:
 	find .yybuild.nosync/yylib .yybuild.nosync/tests .yybuild.nosync/豫言编译器 -name "*.编译信息.json" -print -exec rm {} \;
 
+cleanallcache:
+	find .yybuild.nosync/yylib .yybuild.nosync/tests .yybuild.nosync/豫言编译器 -name "*.json" -print -exec rm {} \;
+
 
 superclean:
 	rm -f yy
