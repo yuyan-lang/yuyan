@@ -325,5 +325,8 @@ yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
 
     free(lengths);
 
+    // for debugging
+    printf("result string is %s", resultString);
+
     return string_to_addr(resultString);
 }
