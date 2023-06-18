@@ -17,16 +17,21 @@
             "MIMode": "lldb"
         },
         {
-            "name": "(lldb)",
+
+            "name": "yy_bs_bs",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/yy_bs",
-            "args": ["yylib/runtest.yuyan"],
+            "program": "${workspaceRoot}/yy_bs_bs",
+            "args": ["yylib/标准库/语言核心/内建类型。豫"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "lldb"
+            "setupCommands": [
+                {"text": "handle SIGSEGV nostop"}
+            ]
+            // "MIMode": "lldb",
+            // "MIDebuggerPath": "/usr/bin/lldb"
         },
         {
             "name": "(lldb2)",
