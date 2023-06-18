@@ -55,8 +55,8 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
     char *last_slash = strrchr(directory_name, '/');
     if (last_slash != NULL) {
         *last_slash = '\0';
+        _mkdir(directory_name);
     }
-    _mkdir(directory_name);
     free(directory_name);
 
     FILE *file = fopen(filename, "w");
