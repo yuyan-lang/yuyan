@@ -25,8 +25,8 @@ void on_read(uv_stream_t *client, ssize_t nread, const uv_buf_t *buf) {
         char *oldData = client->data;
         int oldDataLength = strlen(oldData);
         int newLength = (nread + oldDataLength + 1);
-        client->data = GC_REALLOC(client->data, sizeof(char) * newLength);
-        strlcat(client->data, newData, newLength);
+        client->data = yy_gcReallocateBytes(client->data, sizeof(char) * newLength);
+        strncat(client->data, newData, nread);
     }
 
 
