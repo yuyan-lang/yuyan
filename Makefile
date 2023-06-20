@@ -136,16 +136,24 @@ MODULE_NAME = $(error Please set MODULE_NAME as a command line argument when com
 wasm: yyrt
 	make -C runtime/ wasmdebug
 	llvm-dis ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.bc -o ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll
-	emcc -o yy_test.html -O3 ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64
+	emcc -o yy_$(MODULE_NAME)_test.js -O3 ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64
 
 emwasm: yyrt
 	make -C runtime/ clean
 	make -C runtime/ emwasmdebug
 	llvm-dis ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.bc -o ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll
-	emcc -o yy_test.html -O3 ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll ./runtime/libyyrtdebugemwasm.a ~/bdwgc/emwasmout/libgc.a -L /usr/local/lib -l stdc++  -Wno-override-module -g3 -mtail-call -Wbad-function-cast -Wcast-function-type -O0
+	emcc -o yy_$(MODULE_NAME)_test.js -O3 ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll ./runtime/libyyrtdebugemwasm.a ~/bdwgc/emwasmout/libgc.a -L /usr/local/lib -l stdc++  -Wno-override-module -g3 -mtail-call -Wbad-function-cast -Wcast-function-type -O0
 
 debugll:
 	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
 	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.ll
 	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.opt.bc -o ./.yybuild.nosync/豫言编译器默认执行包.opt.ll
 	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.opt.ll
+
+USER_CODE_DIR = $(error Please set USER_CODE_DIR as a command line argument in server.js when serving the compilation for wasm/emwasm)
+compile_user_code:
+	make -C runtime/ wasmdebug
+	./yy_bs_bs $(USER_CODE_DIR)/user-code.yuyan
+	cp ./.yybuild.nosync/yy_user-code_豫言编译器默认执行包.bc ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.bc
+	llvm-dis ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.bc -o ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.ll
+	emcc -o ./.yybuild.nosync/$(USER_CODE_DIR)/user-code-compiled.js -O3 ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64 --pre-js ide/client/ide-pre.js
