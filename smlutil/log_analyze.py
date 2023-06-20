@@ -1,17 +1,17 @@
 import pandas as pd
 import sys
 
-import matplotlib.pyplot as plt
-from matplotlib.font_manager import FontProperties
-import matplotlib as mpl
+# import matplotlib.pyplot as plt
+# from matplotlib.font_manager import FontProperties
+# import matplotlib as mpl
 
-import mplcursors
+# import mplcursors
 
 
 
 # mpl.rcParams['font.sans-serif'] = ['Kai']
 
-zhfont = FontProperties(fname='/Users/zc/Downloads/优设标题黑.ttf')
+# zhfont = FontProperties(fname='/Users/zc/Downloads/优设标题黑.ttf')
 
 lines = open(sys.argv[1]).readlines()
 lines = [l.split(" ", 1) for l in lines]
@@ -25,13 +25,14 @@ df = pd.DataFrame({"timestamp":times, "message" : msgs})
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 
 # Add a new column for the first 10 characters of the message
-df['message_10'] = df['message'].str[21:29]
+df['message_10'] = df['message'].str[21:28]
 
 # Sort the dataframe by timestamp
 df.sort_values(by='timestamp', inplace=True)
 
 # Add a new column for the time spent on the previous message
-df['time_spent'] = df['timestamp'].diff().shift(-1)
+df['time_spent'] = df['timestamp'].diff()
+# df['time_spent'] = df['timestamp'].diff().shift(-1)
 
 # print(df)
 

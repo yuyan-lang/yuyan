@@ -101,7 +101,8 @@
         "string.h": "c",
         "unistd.h": "c",
         "dirent.h": "c",
-        "targetmachine.h": "c"
+        "targetmachine.h": "c",
+        "native_include.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

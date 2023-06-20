@@ -79,8 +79,14 @@ char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
             break;
         }
     }
-    char *newStr = yy_gcAllocateBytes(end-result+1);
-    strlcpy(newStr, result, end-result+1); // this one will null-terminate
+
+    int64_t len = end - result;
+    char *newStr = yy_gcAllocateBytes(end - result + 1);
+
+    if (newStr != NULL) {
+        memcpy(newStr, result, len);
+        newStr[len] = '\0'; // null-terminate the string
+    }
     return newStr;
 }
 

@@ -158,3 +158,26 @@ jobs:
             ./runtime/libyyrtopt.a
             ./yylib
 
+  ubuntu-bs-build-custom:
+    runs-on: custom-runner-1
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - name: make bsr
+        if: '! github.event.pull_request.draft'
+        run: |
+          make -C runtime debug
+          yy 豫言编译器/入口。豫 -o yy_bs
+          cp ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc .
+          
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: generic-release
+          path: |
+            ./yy_入口_豫言编译器默认执行包.opt.bc
+            ./yylib
+            ./runtime
+            !./runtime/*.o
+            !./runtime/*.a
+

@@ -14,7 +14,9 @@ Slack： https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30
 
 ## 安装
 
-从源代码文件编译，请参见[`安装指南`](InstallationInstruction.md)
+若要快速编译最新版，请参见[`快速编译`](快速编译.md)
+
+如果想二次开发并从源代码文件编译，请参见[`从源代码编译`](从源代码编译.md)
 
 ## 语言规范
 

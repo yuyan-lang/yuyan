@@ -57,4 +57,5 @@ void yy_豫言初始化全局异常处理器();
 
 yy_ptr yy_gcAllocateArray(uint64_t size);
 void *yy_gcAllocateBytes(uint64_t size);
+void *yy_gcReallocateBytes(void* ptr, uint64_t size);
 

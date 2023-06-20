@@ -16,3 +16,9 @@ void* yy_gcAllocateBytes(uint64_t size) {
     // yy_ptr x = malloc(size); // for testing
     return x;
 }
+
+void* yy_gcReallocateBytes(void* ptr, uint64_t size) {
+    yy_ptr x = GC_REALLOC(ptr, size);
+    // yy_ptr x = malloc(size); // for testing
+    return x;
+}
