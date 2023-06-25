@@ -132,7 +132,7 @@ superclean:
 	rm -f yy
 	rm -rf ./.yybuild.nosync/*
 
-MODULE_NAME = $(error Please set MODULE_NAME as a command line argument when compiling for wasm/emwasm)
+MODULE_NAME = $(error Please set MODULE_NAME as a command line argument for locating target-specific files)
 wasm: yyrt
 	make -C runtime/ wasmdebug
 	llvm-dis ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.bc -o ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll
@@ -145,10 +145,10 @@ emwasm: yyrt
 	emcc -o yy_$(MODULE_NAME)_test.js -O3 ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll ./runtime/libyyrtdebugemwasm.a ~/bdwgc/emwasmout/libgc.a -L /usr/local/lib -l stdc++  -Wno-override-module -g3 -mtail-call -Wbad-function-cast -Wcast-function-type -O0
 
 debugll:
-	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.bc -o ./.yybuild.nosync/豫言编译器默认执行包.ll
-	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.ll
-	llvm-dis ./.yybuild.nosync/豫言编译器默认执行包.opt.bc -o ./.yybuild.nosync/豫言编译器默认执行包.opt.ll
-	python3 unescape.py ./.yybuild.nosync/豫言编译器默认执行包.opt.ll
+	llvm-dis ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.bc -o ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll
+	python3 unescape.py ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll
+	llvm-dis ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.opt.bc -o ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.opt.ll
+	python3 unescape.py ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.opt.ll
 
 USER_CODE_DIR = $(error Please set USER_CODE_DIR as a command line argument in server.js when serving the compilation for wasm/emwasm)
 compile_user_code:
