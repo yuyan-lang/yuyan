@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>豫言编程语言v0.2（测试版）</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #F7F7F7;
+    }
+
+    #container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #code-pane {
+      background-color: #FFF;
+      padding: 20px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+    #code-input {
+      width: 100%;
+      height: 200px;
+      resize: vertical;
+    }
+
+    #execute-button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      text-align: center;
+      background-color: #4CAF50;
+      color: #FFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #execute-button.executing {
+      background-color: #CCC;
+      cursor: not-allowed;
+    }
+
+
+    #output-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .output-column {
+      flex-basis: 100%;
+      background-color: #FFF;
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+
+
+    .output-column h2 {
+      margin-top: 0;
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+    }
+
+    .alert-banner {
+      background-color: #f44336;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>豫言编程语言v0.2（测试版）</h1>
+
+    <div id="alert-banner" class="alert-banner hidden">
+      <p>你的浏览器不支持WASM的MEMORY64功能。请使用Chrome并点击<a href="chrome://flags">这里</a>设置实验性WASM功能。</p>
+    </div>
+
+
+    <div id="code-pane">
+      <textarea id="code-input" rows="10" placeholder="输入你的代码..." autofocus></textarea>
+      <button id="execute-button">执行</button>
+    </div>
+
+    <div id="output-container">
+      <div class="output-column">
+        <h2>标准输出</h2>
+        <pre id="stdout-output"></pre>
+      </div>
+      <div class="output-column">
+        <h2>标准错误输出</h2>
+        <pre id="stderr-output"></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const executeButton = document.getElementById("execute-button");
+    const codeInput = document.getElementById("code-input");
+    const stderrOutput = document.getElementById("stderr-output");
+    const stdoutOutput = document.getElementById("stdout-output");
+    const alertBanner = document.getElementById("alert-banner");
+
+    // Check if the browser supports MEMORY64
+    const isMemory64Supported = () => {
+      try {
+        const memory = new WebAssembly.Memory({ initial: 67108864 }); // 64GB (67108864 pages)
+        return memory.buffer.byteLength >= 68719476736; // 64GB (68719476736 bytes)
+      } catch (error) {
+        return false;
+      }
+    };
+
+    // Show the alert banner if MEMORY64 is not supported
+    if (!isMemory64Supported()) {
+      alertBanner.classList.remove("hidden");
+    }
+
+    codeInput.value = "寻观标准库之书。\n\n打印行于『你好！』"
+
+
+     // Define Module object with custom print and printErr functions
+    // const Module = {
+    //   print: function(text) {
+    //     // Redirect stdout to stderrOutput element
+    //     stdoutOutput.textContent += text + "\n";
+    //   },
+    //   printErr: function(text) {
+    //     // Redirect stderr to stderrOutput element
+    //     stderrOutput.textContent += text + "\n";
+    //   }
+    // };
+
+
+    const restoreButton = () => {
+      // Re-enable the button
+        executeButton.disabled = false;
+        executeButton.classList.remove("executing");
+        executeButton.textContent = "执行";
+    }
+
+    executeButton.addEventListener("click", () => {
+      const code = codeInput.value;
+
+      executeButton.disabled = true;
+      executeButton.classList.add("executing");
+      executeButton.textContent = "正在编译（约需要1分钟）...";
+
+      // Make a POST request to the server to compile the code
+      fetch("/compile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        body: JSON.stringify({ code })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Check if the response has an error
+        if (data.error) {
+          stderrOutput.textContent = data.error;
+          stdoutOutput.textContent = "";
+          restoreButton();
+        } else {
+          stderrOutput.textContent = "";
+          stdoutOutput.textContent = "编译成功\n================\n";
+         
+          // Load the JavaScript file
+          const script = document.createElement("script");
+          script.src = `/compiled/${data.compiledFileDirectory}/user-code-compiled.js`;
+          script.onload = () => {
+            // Enable the button after execution
+            restoreButton();
+          };
+          script.onerror = () => {
+            console.error("Error loading JavaScript file");
+            // Update the stderr output with the error message
+            stderrOutput.textContent = "Error loading JavaScript file";
+            // Enable the button after execution
+            restoreButton();
+          };
+          document.body.appendChild(script);
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        restoreButton();
+      });
+    });
+  </script>
+</body>
+</html>

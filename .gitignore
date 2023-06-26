@@ -39,3 +39,9 @@ wasmbuild
 
 /*.wasm
 /*.wat
+
+/user-*
+
+perf.data
+
+perf.data.old
