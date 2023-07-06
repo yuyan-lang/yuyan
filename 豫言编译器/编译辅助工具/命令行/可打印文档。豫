@@ -38,5 +38,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --override-llvm-target-triple ARG   使用指定的LLVM目标三元组
     --no-debug-print                    不打印调试信息
     --print-llvm-commands               打印执行的LLVM命令
+    --print-opt-info                    打印优化的调试信息
     --about                             显示版权信息
     --version                           显示软件当前版本』也。
