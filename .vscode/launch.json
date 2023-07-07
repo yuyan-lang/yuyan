@@ -37,13 +37,21 @@
             "name": "(lldb2)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/performance-investigation/matrix-multiply/time_plot",
+            "program": "${workspaceRoot}/yy_hello_world_11",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceRoot}/performance-investigation/matrix-multiply/",
+            "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "lldb"
+            "setupCommands": [
+                {
+                    "text": "handle SIGSEGV noprint nostop pass",
+                    "description": "ingore libgc related errors",
+                    "ignoreFailures": false
+                }
+            ]
+            // "MIMode": "lldb",
+            // "miDebuggerPath": "/usr/bin/lldb"
         }
     ]
 }
