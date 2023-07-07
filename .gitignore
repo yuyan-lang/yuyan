@@ -9,8 +9,8 @@ yy
 
 lsplog.txt
 
-debug.ll
-debug*
+/debug.ll
+/debug*
 
 *.o
 *.s
