@@ -510,7 +510,10 @@ else
         "declare i64* @yy_gcAllocateArray(i64)",
         "declare i64 @internalError()",
         "declare i64 @matchException(i64*)",
-        "declare i64 @informResult(i64*)"
+        "declare i64 @informResult(i64*)",
+        "define i64 @\"内部全局异常处理器\"(i64* %i1, i64* %i2, i64* %i3) {", (* for compatibility with v0.2 *)
+        "ret i64 0",
+        "}"
         ]@genSig
 end
 
