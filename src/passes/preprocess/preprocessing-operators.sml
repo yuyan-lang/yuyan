@@ -19,7 +19,7 @@ struct
     val termTypeJudgmentTransparentOp2 = Operators.parseOperatorStr "〇的类型可以是〇" false false 0 []
     (* cons e : T *)
     val constructorDeclarationOp = Operators.parseOperatorStr "〇立〇也" false false 0 []
-    val constructorDeclarationOp2 = Operators.parseOperatorStr "〇是类型为〇的构造器" false false 0 []
+    val constructorDeclarationOp2 = Operators.parseOperatorStr "〇是一种〇" false false 0 []
     (* infixl op 232 *)
     val opDeclarationOp = Operators.parseOperatorStr "术〇交〇序〇也" false false 0 []
     val opDeclarationOp2 = Operators.parseOperatorStr "函数〇结合性〇序〇" false false 0 []
