@@ -142,7 +142,7 @@ struct
     val letinOp = Operators.parseOperatorStr "虑〇" false false 525 []
     val letinOp2 = Operators.parseOperatorStr "执行如下计算〇" false false 525 []
     val letinSingleOp = Operators.parseOperatorStr "虑〇者〇而〇" true false 526 [1]
-    val letinSingleOp2 = Operators.parseOperatorStr "令〇为〇随后〇" true false 526 [1]
+    val letinSingleOp2 = Operators.parseOperatorStr "让〇为〇随后〇" true false 526 [1]
     (* val inlineCommentOp = Operators.parseOperatorStr "〇注〇" false false 480 [] *)
     val tpImplOperator = Operators.parseOperatorStr "〇其实〇" false false 480 [] (* made to be compatible with the bs version, which has a much more restricted notion of sealing *)
     val tpImplOperator2 = Operators.parseOperatorStr "〇实际上是〇" false false 480 [] (* made to be compatible with the bs version, which has a much more restricted notion of sealing *)
