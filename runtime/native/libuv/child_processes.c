@@ -19,7 +19,7 @@ void child_exit_cb(uv_process_t* process, int64_t exit_status, int term_signal) 
 yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 {
     char* programName = addr_to_string(program);
-    char argumentCount = iso_list_get_length(arguments);
+    uint64_t argumentCount = iso_list_get_length(arguments);
     yy_ptr* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;

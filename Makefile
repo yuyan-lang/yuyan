@@ -56,6 +56,10 @@ bsr : yy_bs
 	# ./yy_bs yylib/标准库。豫
 	# ./yy_bs tests/syntax/import/hello-world-2.yuyan
 
+bsrwhole : yy_bs 
+	make yyrt
+	./yy_bs 豫言编译器/入口。豫 -o yy_bs_bs --whole-program-opt
+
 bst : yy_bs $(YYTESTSOURCES)
 	./yy_bs $(YYTESTSOURCES)
 

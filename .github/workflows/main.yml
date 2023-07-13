@@ -158,9 +158,28 @@ jobs:
             ./runtime/libyyrtopt.a
             ./yylib
 
+  ubuntu-bs-build-whole-opt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - name: make bsr
+        if: '! github.event.pull_request.draft'
+        run: make bsrwhole
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-linux-release-package
+          path: |
+            ./yy
+            ./install.sh
+            ./runtime/libyyrtdebug.a
+            ./runtime/libyyrtopt.a
+            ./yylib
+
   ubuntu-bs-build-custom:
     runs-on: custom-runner-1
-    timeout-minutes: 1440
+    timeout-minutes: 2880
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies

@@ -35,6 +35,7 @@ void on_read(uv_stream_t *client, ssize_t nread, const uv_buf_t *buf) {
  }
 
 void readStreamUntilEofIntoDataAync(uv_stream_t *stream){
-    stream->data = NULL;
+    stream->data = (char*)malloc(1);  // Allocate memory for an empty string (null terminator)
+    strcpy(stream->data, "");
     uv_read_start(stream, on_alloc_buffer, on_read);
 }
