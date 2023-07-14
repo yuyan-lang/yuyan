@@ -19,7 +19,7 @@ void child_exit_cb(uv_process_t* process, int64_t exit_status, int term_signal) 
 yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 {
     char* programName = addr_to_string(program);
-    char argumentCount = iso_list_get_length(arguments);
+    uint64_t argumentCount = iso_list_get_length(arguments);
     yy_ptr* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
@@ -77,11 +77,17 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 
    
 
-    // wait for read to finish
-    // uv_run(uv_global_loop, UV_RUN_DEFAULT);
+    // char* stdOutOutput = (char * )stdOutPipe.data;
+    // char* stdErrOutput = (char * )stdErrPipe.data;
 
-    char* stdOutOutput = (char * )stdOutPipe.data;
-    char* stdErrOutput = (char * )stdErrPipe.data;
+    char* stdOutOutput = yy_gcAllocateBytes(strlen((char*)stdOutPipe.data) + 1);
+    char* stdErrOutput = yy_gcAllocateBytes(strlen((char*)stdErrPipe.data) + 1);
+
+    strcpy(stdOutOutput, (char*)stdOutPipe.data);
+    strcpy(stdErrOutput, (char*)stdErrPipe.data);
+
+    free(stdOutPipe.data);
+    free(stdErrPipe.data);
 
     int64_t child_exit_status = my_data.exit_status;
 
