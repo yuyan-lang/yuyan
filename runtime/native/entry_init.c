@@ -6,9 +6,13 @@ uv_loop_t *uv_global_loop;
 
 void optional_entry_initialization(){
         // initialize garbage collection
-    GC_INIT();
-    GC_enable_incremental();
-    GC_expand_hp(60719476736); // about 60 GB   
+    if (use_libgc){
+        GC_INIT();
+        GC_enable_incremental();
+        GC_expand_hp(60719476736); // about 60 GB   
+    } else {
+        yy_fastgc_init(32 * 1024 * 1024);  // Initialize with 32MB buffer size
+    }
         // initialize uv default loop (can replace)
     uv_global_loop = uv_default_loop();
 
