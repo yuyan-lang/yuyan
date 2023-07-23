@@ -9,7 +9,7 @@ void optional_entry_initialization(){
     if (use_libgc){
         GC_INIT();
         GC_enable_incremental();
-        GC_expand_hp(1719476736); // about 2 GB   
+        GC_expand_hp(60719476736); // about 60G
     } else {
         yy_fastgc_init();  // Initialize with 32MB buffer size
     }
