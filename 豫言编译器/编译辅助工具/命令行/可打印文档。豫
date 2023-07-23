@@ -34,6 +34,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --whole-program-opt                 使用全局编译优化
     --do-not-optimize                   不执行任何包括LLVM在内的任何优化
     -O0, -O[1,2,3,5,8,13,21]            执行0,1,2,3,5,8,13或21次优化
+    --optimize-intermediate-files       优化中间文件
+    --target=[js,llvm]                  指定目标平台
     --self-integrity-check              检查自身完整性
     --no-llvm-target-triple             不使用LLVM的目标三元组
     --override-llvm-target-triple ARG   使用指定的LLVM目标三元组
