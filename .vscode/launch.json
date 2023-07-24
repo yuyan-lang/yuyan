@@ -52,6 +52,15 @@
             ]
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
+        },
+        {
+            "name": "NodeJS Debug Current File",
+            "program": "${file}",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
         }
     ]
 }

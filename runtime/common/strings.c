@@ -31,6 +31,12 @@ yy_ptr yyStringByteLength(yy_ptr s1){
     return int_to_addr(l);
 }
 
+yy_ptr yyStringByteArrayGetLength(yy_ptr s1){
+    char *s = addr_to_string(s1);
+    int64_t l = strlen(s);
+    return int_to_addr(l);
+}
+
 
 yy_ptr yy_豫言字符串获取字节数组(yy_ptr s1){
     char *s = addr_to_string(s1);
