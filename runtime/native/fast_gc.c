@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "native_include.h"
+#include <inttypes.h>
 
 
-#define BUFFER_SIZE 268435456UL // 256 MB
+#define BUFFER_SIZE 268435456ULL // 256 MB
 
 void** buffers = NULL;
 uint64_t buffer_count = 0;
@@ -21,7 +22,7 @@ void yy_fastgc_init() {
 
 void* yy_fastgc_malloc(uint64_t size) {
     if (size > BUFFER_SIZE) {
-        fprintf(stderr, "Requested allocation size (%lu bytes) exceeds buffer size limit (%lu bytes).\n",
+        fprintf(stderr, "Requested allocation size (%" PRIu64 " bytes) exceeds buffer size limit (%llu bytes).\n",
                 size, BUFFER_SIZE);
         abort();
     }
