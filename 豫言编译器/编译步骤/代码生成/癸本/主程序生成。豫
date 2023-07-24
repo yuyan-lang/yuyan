@@ -98,7 +98,7 @@
 
                             以『「：换行：」』合并
                                     （
-                                        『#!node「：换行：」』衔
+                                        『#!/usr/bin/env node「：换行：」』衔
                                         （文件系统之读文件于『runtime/nodejs/yylibrary.js』）衔
                             （态射于（会路径而
                                     文件系统之读文件于
