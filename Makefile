@@ -50,11 +50,9 @@ bsrvvv : yy_bs
 bsr : yy_bs 
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫 -o yy_bs_bs
-	# ./yy_bs 豫言编译器/编译步骤/语法分析/词法解析。豫
-	# ./yy_bs tests/example/example-3.yuyan
-	# ./yy_bs tests/comments/nested-1.yuyan
-	# ./yy_bs yylib/标准库。豫
-	# ./yy_bs tests/syntax/import/hello-world-2.yuyan
+
+bsrjs : yy_bs 
+	./yy_bs 豫言编译器/入口。豫 -o yy_bs_bs --target=js
 
 bsrwhole : yy_bs 
 	make yyrt
