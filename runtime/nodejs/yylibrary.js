@@ -6,6 +6,12 @@ const { spawnSync } = require('child_process');
 
 let yyGlobals = {};
 
+class yyContinuationException {
+    constructor(value, id) {
+      this.value = value;
+      this.id = id;
+    }
+  }
 
 const 全局异常处理器 = (errorMsg, kont) => {
     console.error(
@@ -377,7 +383,7 @@ let yyExternalCalls = {
       },
       
       yyCodePointsConcat :(arr) => {
-          let resultString = arr.join('');
+          let resultString = arr[0].join('');
       
         return resultString;
       },
