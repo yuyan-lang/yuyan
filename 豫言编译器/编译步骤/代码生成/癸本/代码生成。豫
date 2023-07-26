@@ -291,14 +291,14 @@
                 或有（式节点于（续延调用节点）于「续参」衔【】）则（
                     「： 发生事故于『未有244』 ：」
                     解绑于续参于（会续延名而会续参体而
-                        虑续延名者下个字符序数于『续延』而
+                        虑续延唯一标识符名者下个字符序数于『续延标_』而
                         『let 』附续延名附『 = (value) => {「：换行：」』附
-                        『    throw yyContinuationException(value, 』附（癸象表示字符串于续延名）附『);「：换行：」』附
+                        『    throw new yyContinuationException(value, 』附（癸象表示字符串于续延唯一标识符名）附『);「：换行：」』附
                         『};「：换行：」』附
                         『try {「：换行：」』附
                         （递归于（已有自由变量接【续延名】）于续参体）附
                         『} catch (e) {「：换行：」』附
-                        『    if (e instanceof yyContinuationException && e.id === 』附（癸象表示字符串于续延名）附『) {「：换行：」』附
+                        『    if (e instanceof yyContinuationException && e.id === 』附（癸象表示字符串于续延唯一标识符名）附『) {「：换行：」』附
                         『        return e.value;「：换行：」』附
                         『    } else {「：换行：」』附
                         『        throw e;「：换行：」』附

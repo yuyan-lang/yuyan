@@ -156,6 +156,9 @@ let yyExternalCalls = {
     yyPrintln : (message) => {
             console.log(message);
         },
+    yyPrintGeneric: (obj) => {
+          console.log(obj)
+        },
 
     yyPrintlnStdErr : (message) => {
             console.error(message);
@@ -379,7 +382,7 @@ let yyExternalCalls = {
         for (let i = 0; i < str.length; i++) {
           characters[i] = str[i];
         }
-        return characters;
+        return [characters, characters.length];
       },
       
       yyCodePointsConcat :(arr) => {

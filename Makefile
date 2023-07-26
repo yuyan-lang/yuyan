@@ -101,10 +101,16 @@ yy_test_temp: build
 	./yy yylib/runtest.yuyan --use-local-lib -c -o ./yy_test_temp
 
 test: build yy_test_temp yy
-	./yy_test_temp yy
+	./yy_test_temp yy --use-local-lib
 
 test_bs: build yy_bs yy_test_temp
 	./yy_test_temp yy_bs
+
+test_bs_js: build yy_bs yy_test_temp
+	./yy_test_temp yy_bs --target=js
+
+test_bs_bs: build yy_test_temp
+	./yy_test_temp yy_bs_bs
 	
 genDocs : build
 	rm -rf ./.yybuild.nosync/docs
@@ -125,10 +131,6 @@ cleanbs:
 
 cleancache:
 	find .yybuild.nosync/ -name "*.编译信息.json" -print -exec rm {} \;
-
-cleanallcache:
-	find .yybuild.nosync/ -name "*.json" -print -exec rm {} \;
-
 
 superclean:
 	rm -f yy
