@@ -60,7 +60,18 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "type": "node"
+            "type": "node",
+            "args": [
+                "${input:filepath}"
+            ]
         }
+    ],
+    "inputs": [
+        {
+            "id": "filepath",
+            "type": "promptString",
+            "description": "Input file"
+        }
+
     ]
 }

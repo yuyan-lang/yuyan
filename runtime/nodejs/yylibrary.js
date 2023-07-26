@@ -351,7 +351,7 @@ let yyExternalCalls = {
       yy_豫言字符串获取JSON字符串 : (b, startIdx) => {
           const str = b.subarray(startIdx).toString('utf-8');
         const start = 0;
-        if (str[start] !== startIdx) {
+        if (str[start] !== '"') {
           throw new Error("JSON字符串必须以引号开始");
         }
         let end = start + 1;
