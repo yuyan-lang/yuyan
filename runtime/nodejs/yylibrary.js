@@ -97,7 +97,7 @@ let yyExternalCalls = {
           process.exit(1)
         }
       
-        return entriesList;
+        return [entriesList, entriesList.length];
     },
       
     yyIsPathDirectory : (path) => {
@@ -411,7 +411,7 @@ let yyExternalCalls = {
         }
       
       
-        return [status, stdout, stderr]; // Trim trailing newlines or whitespaces
+        return [status === 0, stdout, stderr]; // Trim trailing newlines or whitespaces
       },
       yyRunProcessSync : (command, args) => {
         const result = spawnSync(command, args[0], { encoding: 'utf-8', stdio: 'pipe' });
