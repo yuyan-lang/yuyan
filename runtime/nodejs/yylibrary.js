@@ -37,7 +37,7 @@ let yyExternalCalls = {
 
     // commandline.c
     yyGetCommandLineProgramName: () => {
-        return process.argv[1];
+        return process.argv[0];
     }, 
     yyGetCommandLineArgs: () => {
         let args = process.argv.slice(2);
@@ -337,7 +337,7 @@ let yyExternalCalls = {
        yy_豫言字符串匹配 : (search, startIdx, match) => {
         const matchTarget = search.subarray(startIdx).toString('utf-8'); 
       
-            if (startsWith(matchTarget, match)) {
+            if (matchTarget.startsWith(match)) {
                 return true;
             } else {
                 return false;
@@ -355,20 +355,20 @@ let yyExternalCalls = {
           throw new Error("JSON字符串必须以引号开始");
         }
         let end = start + 1;
-        while (end < s.length) {
-          if (s[end] === '\\') {
+        while (end < str.length) {
+          if (str[end] === '\\') {
             end++;
             continue;
           }
-          if (s[end] === '"') {
+          if (str[end] === '"') {
             break;
           }
           end++;
         }
-        if (s[end] !== '"') {
+        if (str[end] !== '"') {
           throw new Error("JSON字符串必须以引号结束");
         }
-        const escapedStr = s.substring(1, end);
+        const escapedStr = str.substring(1, end);
         const byteLength = Buffer.from(escapedStr, 'utf-8').length + 2; // 2 is for " end "
         return [escapedStr, byteLength];
       },
@@ -435,7 +435,7 @@ let yyExternalCalls = {
         }
       
       
-        return status === 0; // Trim trailing newlines or whitespaces
+        return status; // Trim trailing newlines or whitespaces
       },
     
 
