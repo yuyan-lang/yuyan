@@ -62,7 +62,11 @@
             ],
             "type": "node",
             "args": [
-                "${input:filepath}"
+                // "${input:filepath}"
+                "tests/syntax/empty-4.yuyan", 
+                "--do-not-load-cache", 
+                "-vvv",
+                "--parse-only"
             ]
         }
     ],
