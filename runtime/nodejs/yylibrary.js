@@ -30,6 +30,12 @@ const to_yy_list = (arr) => {
     return [arr, arr.length]
 }
 
+let yy_tailcall = (arg) => {
+  let f = arg
+  while (f && typeof f === 'function') {
+    f = f()
+  }
+}
   
 
 let 当前异常处理器 = 全局异常处理器;
@@ -135,7 +141,7 @@ let yyExternalCalls = {
           try {
             const stats = fs.statSync(path);
             const modifiedTime = stats.mtimeMs;
-            return modifiedTime;
+            return Math.floor(modifiedTime/1000);
           } catch (error) {
             console.error(`Cannot stat file: ${path}`, error);
             process.exit(1);

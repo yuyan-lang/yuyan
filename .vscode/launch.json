@@ -54,8 +54,8 @@
             // "miDebuggerPath": "/usr/bin/lldb"
         },
         {
-            "name": "NodeJS Debug Current File",
-            "program": "${file}",
+            "name": "NodeJS Debug bs",
+            // "program": "${file}",
             "request": "launch",
             "skipFiles": [
                 "<node_internals>/**"
@@ -63,12 +63,25 @@
             "type": "node",
             "args": [
                 // "${input:filepath}"
+                "--stack-size=8192",
+                "./yy_bs_bs.js",
                 "tests/syntax/empty-4.yuyan", 
                 "--do-not-load-cache", 
                 "-vvv",
-                "--parse-only"
+                // "--parse-only"
+                // "yy_bs_bs.js", 
+                // "yylib/runtest.yuyan"
             ]
-        }
+        },
+        {
+            "name": "NodeJS Debug Current File",
+            "program": "${file}",
+            "request": "launch",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node",
+        },
     ],
     "inputs": [
         {
