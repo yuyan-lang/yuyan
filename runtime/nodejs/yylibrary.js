@@ -85,7 +85,7 @@ let yyExternalCalls = {
         // Write content to the file
         try {
           fs.writeFileSync(filePath, content);
-          console.log(`Content successfully written to ${filePath}`);
+          // console.log(`Content successfully written to ${filePath}`);
         } catch (error) {
           console.error(`Error writing content to ${filePath}: ${error.message}`);
           process.exit(1)
@@ -333,7 +333,14 @@ let yyExternalCalls = {
       },
       
       yy_豫言字符转整数 : (s1, idx) => {
-        return Buffer.from(s1, 'utf-8').at(idx);
+        let buffer = Buffer.from(s1, 'utf-8');
+        if (idx < buffer.length) {
+          return buffer.at(idx);
+        } else if (idx == buffer.length) {
+          return 0; // return the C null terminator //TODO: perhaps we should forbid this in stdlib
+        } else {
+          throw new Error("yy_豫言字符转整数 序数超限")
+        }
       },
       
       yy_豫言子字符串从字节序数开始 : (b1, idx) => {
