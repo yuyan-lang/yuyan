@@ -65,9 +65,9 @@
                 // "${input:filepath}"
                 "--stack-size=8192",
                 "./yy_bs_bs.js",
-                "tests/syntax/empty-4.yuyan", 
+                "yylib/runtest.yuyan", 
                 "--do-not-load-cache", 
-                "-vvv",
+                // "-vvv",
                 // "--parse-only"
                 // "yy_bs_bs.js", 
                 // "yylib/runtest.yuyan"
