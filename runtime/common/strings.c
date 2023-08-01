@@ -323,7 +323,7 @@ yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
         totalLength += lengths[i];
     }
 
-    char* resultString = (char*)yy_gcAllocateBytes(totalLength + 1);
+    char* resultString = (char*)malloc(totalLength + 1);
     char* currentPos = resultString;
 
     for (int i = 0; i < length; i++) {
@@ -336,6 +336,9 @@ yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
     *currentPos = '\0';
 
     free(lengths);
+    char* resultStringRet = (char*)yy_gcAllocateBytes(totalLength + 1);
+    memcpy(resultStringRet, resultString, totalLength + 1);
+    free(resultString);
 
-    return string_to_addr(resultString);
+    return string_to_addr(resultStringRet);
 }
