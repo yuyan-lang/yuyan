@@ -50,11 +50,9 @@ bsrvvv : yy_bs
 bsr : yy_bs 
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫 -o yy_bs_bs
-	# ./yy_bs 豫言编译器/编译步骤/语法分析/词法解析。豫
-	# ./yy_bs tests/example/example-3.yuyan
-	# ./yy_bs tests/comments/nested-1.yuyan
-	# ./yy_bs yylib/标准库。豫
-	# ./yy_bs tests/syntax/import/hello-world-2.yuyan
+
+bsrjs : yy_bs 
+	./yy_bs 豫言编译器/入口。豫 -o yy_bs_bs --target=js
 
 bsrwhole : yy_bs 
 	make yyrt
@@ -103,10 +101,16 @@ yy_test_temp: build
 	./yy yylib/runtest.yuyan --use-local-lib -c -o ./yy_test_temp
 
 test: build yy_test_temp yy
-	./yy_test_temp yy
+	./yy_test_temp yy --use-local-lib
 
 test_bs: build yy_bs yy_test_temp
 	./yy_test_temp yy_bs
+
+test_bs_js: build yy_bs yy_test_temp
+	./yy_test_temp yy_bs --target=js
+
+test_bs_bs: build yy_test_temp
+	./yy_test_temp yy_bs_bs
 	
 genDocs : build
 	rm -rf ./.yybuild.nosync/docs
@@ -127,10 +131,6 @@ cleanbs:
 
 cleancache:
 	find .yybuild.nosync/ -name "*.编译信息.json" -print -exec rm {} \;
-
-cleanallcache:
-	find .yybuild.nosync/ -name "*.json" -print -exec rm {} \;
-
 
 superclean:
 	rm -f yy

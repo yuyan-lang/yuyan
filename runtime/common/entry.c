@@ -10,11 +10,24 @@ extern void optional_entry_initialization();
 int global_argc = 0;
 char** global_argv = NULL;
 
+// runtime configurations
+int64_t use_libgc = 1;
+
 int main(int argc, char* argv[]) {
 
     // save global paramters
     global_argc = argc;
     global_argv = argv;
+
+    // Check if the first command line argument matches the desired pattern
+    if (argc > 1 && strcmp(argv[1], "@yy:uselibgc=0") == 0) {
+        use_libgc = 0;
+
+        // Update global_argv to exclude the first argument
+        global_argc--;
+        global_argv++;
+    }
+
 
     optional_entry_initialization();
 

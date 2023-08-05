@@ -103,7 +103,8 @@
         "dirent.h": "c",
         "targetmachine.h": "c",
         "native_include.h": "c",
-        "emwasm_include.h": "c"
+        "emwasm_include.h": "c",
+        "inttypes.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

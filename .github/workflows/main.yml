@@ -158,6 +158,24 @@ jobs:
             ./runtime/libyyrtopt.a
             ./yylib
 
+  ubuntu-bs-build-js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - name: make bsrjs
+        if: '! github.event.pull_request.draft'
+        run: make bsr
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-linux-release-package
+          path: |
+            ./yy
+            ./install.sh
+            ./runtime
+            ./yylib
+
   ubuntu-bs-build-whole-opt:
     runs-on: ubuntu-latest
     steps:
