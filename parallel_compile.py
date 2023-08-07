@@ -172,12 +172,13 @@ if __name__ == "__main__":
     parser.add_argument("input_file")
     parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
     parser.add_argument("-j", "--num-cpu", type=int, default=cpu_count(), help="Number of CPU cores to use for compilation")
-    parser.add_argument("--extra", default="")
+    parser.add_argument("--extra", default=None)
 
     args = parser.parse_args()
 
     print(args)
-    yy_bs_global_args = args.extra.split(" ")
+    if args.extra:
+        yy_bs_global_args = args.extra.split(" ")
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
 
