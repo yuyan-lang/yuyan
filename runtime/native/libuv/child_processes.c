@@ -8,7 +8,7 @@ typedef struct {
 void child_exit_cb(uv_process_t* process, int64_t exit_status, int term_signal) {
     my_data_t* data = (my_data_t*)process->data;
     if (term_signal != 0){
-        data->exit_status = -1;
+        data->exit_status = term_signal + 128;
     }
     else
     {

@@ -41,8 +41,8 @@ def exec_worker(args):
 
 def worker(task):
     stage, file = task
-    optimize_task = 'optimize' if file[0] == yy_bs_main_file else 'optimize-no'
-    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage if stage != 'optimize-no' else optimize_task)] + file + yy_bs_global_args
+    optimize_task = 'optimize' if file[0] == yy_bs_main_file else 'optimize-half'
+    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage if stage != 'optimize-half' else optimize_task)] + file + yy_bs_global_args
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if process.returncode != 0:
@@ -86,10 +86,10 @@ def build_dep_graph(input_file):
     return graph, None
 
 def execute_plan(graph):
-    stages = ["parse", "type-check-and-anf", "optimize-no", "cps-transform", "codegen"]
-    completed = {'parse': [], 'type-check-and-anf': [], 'optimize-no': [], 'cps-transform': [], 'codegen': []}
-    executing = {'parse': [], 'type-check-and-anf': [], 'optimize-no': [], 'cps-transform': [], 'codegen': []}
-    scheduled =  {'parse': [], 'type-check-and-anf': [], 'optimize-no': [], 'cps-transform': [], 'codegen': []}
+    stages = ["parse", "type-check-and-anf", "optimize-half", "cps-transform", "codegen"]
+    completed = {'parse': [], 'type-check-and-anf': [], 'optimize-half': [], 'cps-transform': [], 'codegen': []}
+    executing = {'parse': [], 'type-check-and-anf': [], 'optimize-half': [], 'cps-transform': [], 'codegen': []}
+    scheduled =  {'parse': [], 'type-check-and-anf': [], 'optimize-half': [], 'cps-transform': [], 'codegen': []}
 
     all_files = list(graph.keys())
 
@@ -104,9 +104,9 @@ def execute_plan(graph):
                     file not in executing[stage] and
                     file not in completed[stage] and 
                     (all(dep in completed[stage] for dep in graph[file]) 
-                        # or (i > 1 and file != yy_bs_main_file) ## optimizedo not require dependencies, unless it's the entry file
-                        or i > 1
-                        ) and  # optimize, cps-transform, and codegen do not require dependencies
+                        or (i > 1 and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
+                        or i > 2 # cps-transform, and codegen do not require dependencies
+                        ) and  
                     (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                 ):
                     scheduled[stage].append(file)
