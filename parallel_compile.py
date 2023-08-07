@@ -121,7 +121,7 @@ def execute_plan(graph):
     def get_file_args(cur_filename):
         return [cur_filename] + convert_to_override_list(
             # graph[cur_filename] if cur_filename != yy_bs_main_file else 
-            list(graph.keys()))
+            list(graph[cur_filename]))
 
 
     def process_result(future):
