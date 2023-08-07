@@ -7,7 +7,13 @@ typedef struct {
 
 void child_exit_cb(uv_process_t* process, int64_t exit_status, int term_signal) {
     my_data_t* data = (my_data_t*)process->data;
-    data->exit_status = exit_status;
+    if (term_signal != 0){
+        data->exit_status = -1;
+    }
+    else
+    {
+        data->exit_status = exit_status;
+    }
     uv_close((uv_handle_t*)process, NULL);
 }
 

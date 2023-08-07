@@ -34,7 +34,7 @@ def exec_worker(args):
     stdout, stderr = process.communicate()
     if process.returncode != 0:
         return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
-                      f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}"
+                      f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}"
     else:
         print(stdout.decode('utf-8'))
         return args, None
@@ -179,7 +179,7 @@ def execute_plan(graph):
             if k not in exec_args and all(dep in exec_args for dep in graph[k]):
                 exec_args.append(k)
 
-    t, error = exec_worker([yy_bs_main_file, *convert_to_override_list(candidate)])
+    t, error = exec_worker([yy_bs_main_file, *convert_to_override_list(exec_args)])
     if error:
         print(error)
         os._exit(1)
