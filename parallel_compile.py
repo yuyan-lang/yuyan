@@ -27,6 +27,18 @@ num_cpu_limit = None
 #     else:
 #         return task
 
+def exec_worker(args):
+    command = ["./yy_bs", "--mode=worker", "--worker-task=exec-gen"] + args + yy_bs_global_args
+    print("" + " ".join(command))
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, stderr = process.communicate()
+    if process.returncode != 0:
+        return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+                      f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}"
+    else:
+        print(stdout.decode('utf-8'))
+        return args, None
+
 def worker(task):
     stage, file = task
     optimize_task = 'optimize' if file[0] == yy_bs_main_file else 'optimize-no'
@@ -39,8 +51,8 @@ def worker(task):
     else:
         return task, None
 
-def dependency_analysis(file, compile_arguments):
-    command = ["./yy_bs", "--mode=worker", "--worker-task=dependency-analysis"] + compile_arguments + [file]
+def dependency_analysis(file):
+    command = ["./yy_bs", "--mode=worker", "--worker-task=dependency-analysis"] + [file] + yy_bs_global_args
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -51,14 +63,14 @@ def dependency_analysis(file, compile_arguments):
         
     return dependencies, None
 
-def build_dep_graph(input_file, compile_arguments):
+def build_dep_graph(input_file):
     graph = {input_file: []}
     
     to_visit = [input_file]
 
     while to_visit:
         current_file = to_visit.pop()
-        current_deps, error = dependency_analysis(current_file, compile_arguments)
+        current_deps, error = dependency_analysis(current_file)
 
         if error is not None:
             return None, error
@@ -101,14 +113,15 @@ def execute_plan(graph):
 
     update_schedule()
 
+    def convert_to_override_list(input_list):
+        override_list = []
+        for item in input_list:
+            override_list.extend(["--override-add-file-dependency", item])
+        return override_list
     def get_file_args(cur_filename):
-        def convert_to_override_list(input_list):
-            override_list = []
-            for item in input_list:
-                override_list.extend(["--override-add-file-dependency", item])
-            return override_list
         return [cur_filename] + convert_to_override_list(
-            graph[cur_filename] if cur_filename != yy_bs_main_file else list(graph.keys()))
+            # graph[cur_filename] if cur_filename != yy_bs_main_file else 
+            list(graph.keys()))
 
 
     def process_result(future):
@@ -158,7 +171,15 @@ def execute_plan(graph):
                 if not all(file in completed[prev_stage] for prev_stage in stages[:i]):
                     print(f"File {file} is due for {stage} but not all previous stages are completed: {[prev_stage for prev_stage in stages[:i] if file not in completed[prev_stage]]}")
 
-    t, error = worker(("exec-gen", get_file_args(yy_bs_main_file)))
+
+    exec_args = []
+    candidate = [k for k in graph.keys() if k != yy_bs_main_file]
+    while len(exec_args) < len(candidate):
+        for k in candidate:
+            if k not in exec_args and all(dep in exec_args for dep in graph[k]):
+                exec_args.append(k)
+
+    t, error = exec_worker([yy_bs_main_file, *convert_to_override_list(candidate)])
     if error:
         print(error)
         os._exit(1)
@@ -189,7 +210,7 @@ if __name__ == "__main__":
                 graph = json.load(f)
             print("Loaded dependency graph from cache.")
         except FileNotFoundError:
-            graph, error = build_dep_graph(args.input_file, args.extra)
+            graph, error = build_dep_graph(args.input_file)
             if error is not None:
                 print(error)
             else:
@@ -198,7 +219,7 @@ if __name__ == "__main__":
                     json.dump(graph, f)
     else:
         # If no cache file is provided, build the dependency graph as usual
-        graph, error = build_dep_graph(args.input_file, args.extra)
+        graph, error = build_dep_graph(args.input_file)
         if error is not None:
             print(error)
 
