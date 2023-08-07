@@ -158,7 +158,10 @@ def execute_plan(graph):
                 if not all(file in completed[prev_stage] for prev_stage in stages[:i]):
                     print(f"File {file} is due for {stage} but not all previous stages are completed: {[prev_stage for prev_stage in stages[:i] if file not in completed[prev_stage]]}")
 
-    worker(("exec-gen", get_file_args(yy_bs_main_file)))
+    t, error = worker(("exec-gen", get_file_args(yy_bs_main_file)))
+    if error:
+        print(error)
+        os._exit(1)
     return "Compilation finished successfully"
 
 
@@ -167,14 +170,14 @@ if __name__ == "__main__":
     # Create parser, add arguments and parse them
     parser = argparse.ArgumentParser()
     parser.add_argument("input_file")
-    parser.add_argument("extra", nargs="*", default=[])
     parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
     parser.add_argument("-j", "--num-cpu", type=int, default=cpu_count(), help="Number of CPU cores to use for compilation")
+    parser.add_argument("--extra", default=[])
 
     args = parser.parse_args()
 
     print(args)
-    yy_bs_global_args = args.extra
+    yy_bs_global_args = args.extra.split(" ")
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
 
