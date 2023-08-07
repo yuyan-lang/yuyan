@@ -91,8 +91,10 @@ def execute_plan(graph):
                     file not in scheduled[stage] and 
                     file not in executing[stage] and
                     file not in completed[stage] and 
-                    all(dep in completed[stage] for dep in graph[file]) and
-                    all(file in completed[prev_stage] for prev_stage in stages[:i])
+                    (all(dep in completed[stage] for dep in graph[file]) 
+                        or (i > 1 and file != yy_bs_main_file) ## optimizedo not require dependencies, unless it's the entry file
+                        or i > 2) and  # cps-transform, and codegen do not require dependencies
+                    (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                 ):
                     scheduled[stage].append(file)
 
@@ -104,7 +106,8 @@ def execute_plan(graph):
             for item in input_list:
                 override_list.extend(["--override-add-file-dependency", item])
             return override_list
-        return [cur_filename] + convert_to_override_list(graph[cur_filename])
+        return [cur_filename] + convert_to_override_list(
+            graph[cur_filename] if cur_filename != yy_bs_main_file else list(graph.keys()))
 
 
     def process_result(future):
