@@ -3,6 +3,10 @@ import argparse
 import subprocess
 from multiprocessing import cpu_count
 from multiprocessing.pool import ThreadPool
+from concurrent.futures import ThreadPoolExecutor
+import sys
+import os
+
 import queue
 import threading
 import multiprocessing
@@ -11,10 +15,12 @@ import json
 import pprint
 
 yy_bs_global_args = []
+yy_bs_main_file = None
 
+num_cpu_limit = None
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
-#     print("Running command: " + " ".join(command))
+#     print("" + " ".join(command))
 #     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 #     if process.returncode != 0:
 #         return None, f"Error during {task[0]} on {task[1]}: {process.stderr.decode('utf-8')}"
@@ -22,17 +28,20 @@ yy_bs_global_args = []
 #         return task
 
 def worker(task):
-    command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
-    print("Running command: " + " ".join(command))
-    # process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    # if process.returncode != 0:
-    #     return None, f"Error during {task[0]} on {task[1]}: {process.stderr.decode('utf-8')}"
-    # else:
-    return task
+    stage, file = task
+    optimize_task = 'optimize' if file[0] == yy_bs_main_file else 'optimize-no'
+    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage if stage != 'optimize-no' else optimize_task)] + file + yy_bs_global_args
+    print("" + " ".join(command))
+    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if process.returncode != 0:
+        return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}"
+    else:
+        return task, None
 
 def dependency_analysis(file, compile_arguments):
     command = ["./yy_bs", "--mode=worker", "--worker-task=dependency-analysis"] + compile_arguments + [file]
-    print("Running command: " + " ".join(command))
+    print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     if process.returncode != 0:
@@ -89,29 +98,63 @@ def execute_plan(graph):
 
     update_schedule()
 
+    def get_file_args(cur_filename):
+        def convert_to_override_list(input_list):
+            override_list = []
+            for item in input_list:
+                override_list.extend(["--override-add-file-dependency", item])
+            return override_list
+        return [cur_filename] + convert_to_override_list(graph[cur_filename])
 
-    def process_result(result):
+
+    def process_result(future):
         nonlocal results_ready
-        print("processing result", result)
+        result, error = future.result()
+        if error:
+            print(error)
+            os._exit(1)
+        # print("processing result", result)
         comp_stage, comp_file = result
-        completed[comp_stage].append(comp_file)
-        executing[comp_stage].remove(comp_file)
+        completed[comp_stage].append(comp_file[0])
+        executing[comp_stage].remove(comp_file[0])
         results_ready.set()
+    def print_stat():
+        pprint.pprint("=======================================")
+        pprint.pprint("=======================================")
+        pprint.pprint("============== Scheduled ==============")
+        pprint.pprint(scheduled)
+        pprint.pprint("============== Executing ==============")
+        pprint.pprint(executing)
+        pprint.pprint("============== Completed ==============")
+        pprint.pprint({k: len(v) for k, v in completed.items()})
+        pprint.pprint("=======================================")
+        pprint.pprint("=======================================")
+        pprint.pprint("=======================================")
 
 
-    with ThreadPool(processes=cpu_count()) as pool:
-        while any(len(stg) > 0 for stg in scheduled.values()):
-            print(scheduled)
+    with ThreadPoolExecutor(max_workers=num_cpu_limit) as executor:
+        while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
             for stage in stages:
                 while scheduled[stage]:
                     file_name = scheduled[stage].pop()
-                    print("scheduling", (stage, file_name))
+                    print("Scheduling", (stage, file_name))
                     executing[stage].append(file_name)
-                    pool.apply_async(worker, (stage, file_name), callback=process_result)
+                    executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
+            print_stat()
             results_ready.wait()
             results_ready.clear()
             update_schedule()
     
+    print_stat()
+    for file in all_files:
+        for i, stage in enumerate(stages):
+            if (file not in completed[stage]):
+                if not all(dep in completed[stage] for dep in graph[file]):
+                    print(f"File {file} is due for {stage} but not all dependencies are completed: {[dep for dep in graph[file] if dep not in completed[stage]]}")
+                if not all(file in completed[prev_stage] for prev_stage in stages[:i]):
+                    print(f"File {file} is due for {stage} but not all previous stages are completed: {[prev_stage for prev_stage in stages[:i] if file not in completed[prev_stage]]}")
+
+    worker(("exec-gen", get_file_args(yy_bs_main_file)))
     return "Compilation finished successfully"
 
 
@@ -122,10 +165,14 @@ if __name__ == "__main__":
     parser.add_argument("input_file")
     parser.add_argument("extra", nargs="*", default=[])
     parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
+    parser.add_argument("-j", "--num-cpu", type=int, default=cpu_count(), help="Number of CPU cores to use for compilation")
+
     args = parser.parse_args()
 
     print(args)
     yy_bs_global_args = args.extra
+    yy_bs_main_file = args.input_file
+    num_cpu_limit = args.num_cpu
 
     if args.cache_file:
         # If a cache file is provided, attempt to load the cached dependency graph

@@ -40,13 +40,13 @@
         或有『--worker-task=dependency-analysis』衔尾则（（写引用于「单一工作模式任务」于（『dependency-analysis』））；处理命令行参数于尾）
         或有『--worker-task=parse』衔尾则（（写引用于「单一工作模式任务」于（『parse』））；处理命令行参数于尾）
         或有『--worker-task=type-check-and-anf』衔尾则（（写引用于「单一工作模式任务」于（『type-check-and-anf』））；处理命令行参数于尾）
-        或有『--worker-task=̧optimize』衔尾则（（写引用于「单一工作模式任务」于（『optimize』））；处理命令行参数于尾）
-        或有『--worker-task=̧optimize-half』衔尾则（（写引用于「单一工作模式任务」于（『optimize-half』））；处理命令行参数于尾）
-        或有『--worker-task=̧optimize-no』衔尾则（（写引用于「单一工作模式任务」于（『optimize-no』））；处理命令行参数于尾）
-        或有『--worker-task=cps-convert』衔尾则（（写引用于「单一工作模式任务」于（『cps-convert』））；处理命令行参数于尾）
+        或有『--worker-task=optimize』衔尾则（（写引用于「单一工作模式任务」于（『optimize』））；处理命令行参数于尾）
+        或有『--worker-task=optimize-half』衔尾则（（写引用于「单一工作模式任务」于（『optimize-half』））；处理命令行参数于尾）
+        或有『--worker-task=optimize-no』衔尾则（（写引用于「单一工作模式任务」于（『optimize-no』））；处理命令行参数于尾）
+        或有『--worker-task=cps-transform』衔尾则（（写引用于「单一工作模式任务」于（『cps-transform』））；处理命令行参数于尾）
         或有『--worker-task=codegen』衔尾则（（写引用于「单一工作模式任务」于（『codegen』））；处理命令行参数于尾）
-        或有『--worker-task=exec_gen』衔尾则（（写引用于「单一工作模式任务」于（『exec_gen』））；处理命令行参数于尾）
-        或有『--override-file-dependency-info』衔串衔尾则（（写引用于文件编译顺序于（（读引用于文件编译顺序）接【串】））；处理命令行参数于尾）
+        或有『--worker-task=exec-gen』衔尾则（（写引用于「单一工作模式任务」于（『exec-gen』））；处理命令行参数于尾）
+        或有『--override-add-file-dependency』衔串衔尾则（（写引用于文件编译顺序于（（读引用于文件编译顺序）接【串】））；处理命令行参数于尾）
         或有『-O0』衔尾则（（写引用于执行优化总轮数于（零））；处理命令行参数于尾）
         或有『-O1』衔尾则（（写引用于执行优化总轮数于（一））；处理命令行参数于尾）
         或有『-O2』衔尾则（（写引用于执行优化总轮数于（二））；处理命令行参数于尾）
