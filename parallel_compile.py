@@ -34,7 +34,7 @@ def exec_worker(args):
     stdout, stderr = process.communicate()
     if process.returncode != 0:
         return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
-                      f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}"
+                      f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}"
     else:
         print(stdout.decode('utf-8'))
         return args, None
@@ -47,7 +47,7 @@ def worker(task):
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if process.returncode != 0:
         return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
-                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}"
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}"
     else:
         return task, None
 
@@ -118,10 +118,18 @@ def execute_plan(graph):
         for item in input_list:
             override_list.extend(["--override-add-file-dependency", item])
         return override_list
+
+    exec_args = []
+    candidate = [k for k in graph.keys() if k != yy_bs_main_file]
+    while len(exec_args) < len(candidate):
+        for k in candidate:
+            if k not in exec_args and all(dep in exec_args for dep in graph[k]):
+                exec_args.append(k)
+
     def get_file_args(cur_filename):
         return [cur_filename] + convert_to_override_list(
             # graph[cur_filename] if cur_filename != yy_bs_main_file else 
-            list(graph[cur_filename]))
+            list(graph[cur_filename]) if cur_filename != yy_bs_main_file else exec_args)
 
 
     def process_result(future):
@@ -172,12 +180,6 @@ def execute_plan(graph):
                     print(f"File {file} is due for {stage} but not all previous stages are completed: {[prev_stage for prev_stage in stages[:i] if file not in completed[prev_stage]]}")
 
 
-    exec_args = []
-    candidate = [k for k in graph.keys() if k != yy_bs_main_file]
-    while len(exec_args) < len(candidate):
-        for k in candidate:
-            if k not in exec_args and all(dep in exec_args for dep in graph[k]):
-                exec_args.append(k)
 
     t, error = exec_worker([yy_bs_main_file, *convert_to_override_list(exec_args)])
     if error:
