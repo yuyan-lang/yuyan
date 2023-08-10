@@ -18,6 +18,8 @@ yy_bs_global_args = []
 yy_bs_main_file = None
 
 num_cpu_limit = None
+stage_concurrency_limit = [100, 100, 100, 100, 100]
+stage_processing_order = [0,1,4,2,3] # process parse -> tc -> codegen  -> optimize-half -> cps
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
 #     print("" + " ".join(command))
@@ -142,6 +144,7 @@ def execute_plan(graph):
         comp_stage, comp_file = result
         completed[comp_stage].append(comp_file[0])
         executing[comp_stage].remove(comp_file[0])
+        print("completed", comp_stage, comp_file[0])
         results_ready.set()
     def print_stat():
         pprint.pprint("=======================================")
@@ -159,8 +162,11 @@ def execute_plan(graph):
 
     with ThreadPoolExecutor(max_workers=num_cpu_limit) as executor:
         while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
-            for stage in stages:
-                while scheduled[stage]:
+            for i in stage_processing_order:
+                stage = stages[i]
+                while (scheduled[stage] 
+                    and sum(len(stg) for stg in executing.values()) < num_cpu_limit
+                    and len(executing[stage]) < stage_concurrency_limit[i]):
                     file_name = scheduled[stage].pop()
                     print("Scheduling", (stage, file_name))
                     executing[stage].append(file_name)
@@ -196,6 +202,7 @@ if __name__ == "__main__":
     parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
     parser.add_argument("-j", "--num-cpu", type=int, default=cpu_count(), help="Number of CPU cores to use for compilation")
     parser.add_argument("--extra", default=None)
+    parser.add_argument("--codegen-concurrency-limit", default=2)
 
     args = parser.parse_args()
 
@@ -204,6 +211,7 @@ if __name__ == "__main__":
         yy_bs_global_args = args.extra.split(" ")
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
+    stage_concurrency_limit[4] = int(args.codegen_concurrency_limit)
 
     if args.cache_file:
         # If a cache file is provided, attempt to load the cached dependency graph
