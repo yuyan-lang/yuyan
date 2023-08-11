@@ -163,7 +163,7 @@ open StaticErrorStructure
         (
             let 
             val _ = DebugPrint.p ("DEBUG : " ^ StructureName.toStringPlain sname ^ " mapped to " ^ 
-            Int.toString (#1 llvmsig))
+            Int.toString (#1 llvmsig) ^ "\n")
             in
         llvmsig
         end)) orderedDeps
