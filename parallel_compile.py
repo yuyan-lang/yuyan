@@ -202,7 +202,7 @@ if __name__ == "__main__":
     parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
     parser.add_argument("-j", "--num-cpu", type=int, default=cpu_count(), help="Number of CPU cores to use for compilation")
     parser.add_argument("--extra", default=None)
-    parser.add_argument("--codegen-concurrency-limit", default=2)
+    parser.add_argument("--codegen-concurrency-limit", default=100)
 
     args = parser.parse_args()
 
