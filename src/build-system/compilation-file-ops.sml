@@ -162,8 +162,8 @@ open StaticErrorStructure
         val prevLLVMStmts =map (fn (((_, _), _,llvmsig), sname)  => 
         (
             let 
-            (* val _ = DebugPrint.p ("DEBUG : " ^ StructureName.toStringPlain sname ^ " mapped to " ^ 
-            Int.toString (#1 llvmsig)) *)
+            val _ = DebugPrint.p ("DEBUG : " ^ StructureName.toStringPlain sname ^ " mapped to " ^ 
+            Int.toString (#1 llvmsig))
             in
         llvmsig
         end)) orderedDeps
