@@ -18,8 +18,8 @@ yy_bs_global_args = []
 yy_bs_main_file = None
 
 num_cpu_limit = None
-stage_concurrency_limit = [100, 100, 100, 100, 100]
-stage_processing_order = [0,1,4,2,3] # process parse -> tc -> codegen  -> optimize-half -> cps
+stage_concurrency_limit = [100, 100, 100, 100, 100, 100]
+stage_processing_order = [0,1,5,4,2,3] # process parse -> tc -> codegen  -> optimize-half -> cps
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
 #     print("" + " ".join(command))
@@ -88,32 +88,16 @@ def build_dep_graph(input_file):
     return graph, None
 
 def execute_plan(graph):
-    stages = ["parse", "type-check-and-anf", "optimize-half", "cps-transform", "codegen"]
-    completed = {'parse': [], 'type-check-and-anf': [], 'optimize-half': [], 'cps-transform': [], 'codegen': []}
-    executing = {'parse': [], 'type-check-and-anf': [], 'optimize-half': [], 'cps-transform': [], 'codegen': []}
-    scheduled =  {'parse': [], 'type-check-and-anf': [], 'optimize-half': [], 'cps-transform': [], 'codegen': []}
+    stages = ["parse", "type-check-and-anf", "optimize-half", "cps-transform", "closure-convert", "codegen"]
+    completed = {k : [] for k in stages}
+    executing = {k : [] for k in stages}
+    scheduled = {k : [] for k in stages}
 
     all_files = list(graph.keys())
 
     results_ready = multiprocessing.Manager().Event()
 
-    def update_schedule():
-        nonlocal scheduled, completed, stages, all_files
-        for file in all_files:
-            for i, stage in enumerate(stages):
-                if (
-                    file not in scheduled[stage] and 
-                    file not in executing[stage] and
-                    file not in completed[stage] and 
-                    (all(dep in completed[stage] for dep in graph[file]) 
-                        or (i > 1 and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
-                        or i > 2 # cps-transform, and codegen do not require dependencies
-                        ) and  
-                    (all(file in completed[prev_stage] for prev_stage in stages[:i]))
-                ):
-                    scheduled[stage].append(file)
-
-    update_schedule()
+    
 
     def convert_to_override_list(input_list):
         override_list = []
@@ -133,6 +117,28 @@ def execute_plan(graph):
             # graph[cur_filename] if cur_filename != yy_bs_main_file else 
             list(graph[cur_filename]) if cur_filename != yy_bs_main_file else exec_args)
 
+    def update_schedule():
+        nonlocal scheduled, completed, stages, all_files
+        for file in all_files:
+            for i, stage in enumerate(stages):
+                if (
+                    file not in scheduled[stage] and 
+                    file not in executing[stage] and
+                    file not in completed[stage] and 
+                    (all(dep in completed[stage] for dep in graph[file]) 
+                        or (i > 1 and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
+                        or i > 2 # cps-transform, and codegen do not require dependencies
+                        ) and  
+                    (all(file in completed[prev_stage] for prev_stage in stages[:i]))
+                ):
+                    #TODO: optimize for main file need to wait for all opt file to finish
+                    if (file == yy_bs_main_file
+                        and i == 2
+                        and (not all(file in completed[stage] for file in exec_args))):
+                        continue
+                    scheduled[stage].append(file)
+
+    update_schedule()
 
     def process_result(future):
         nonlocal results_ready
@@ -211,7 +217,7 @@ if __name__ == "__main__":
         yy_bs_global_args = args.extra.split(" ")
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
-    stage_concurrency_limit[4] = int(args.codegen_concurrency_limit)
+    stage_concurrency_limit[5] = int(args.codegen_concurrency_limit)
 
     if args.cache_file:
         # If a cache file is provided, attempt to load the cached dependency graph
