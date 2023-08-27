@@ -18,8 +18,9 @@ yy_bs_global_args = []
 yy_bs_main_file = None
 
 num_cpu_limit = None
-stage_concurrency_limit = [100, 100, 100, 100, 100, 100]
-stage_processing_order = [0,1,5,4,2,3] # process parse -> tc -> codegen  -> optimize-half -> cps
+stage_concurrency_limit = [100, 100, 100, 100, 100, 100, 100]
+stages = ["parse", "type-check-and-anf", "optimize-half", "cps-transform", "closure-convert", "closure-opt", "codegen"]
+stage_processing_order = [0,1,6,4,2,3,5] # process parse -> tc -> codegen  -> optimize-half -> cps
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
 #     print("" + " ".join(command))
@@ -88,7 +89,6 @@ def build_dep_graph(input_file):
     return graph, None
 
 def execute_plan(graph):
-    stages = ["parse", "type-check-and-anf", "optimize-half", "cps-transform", "closure-convert", "codegen"]
     completed = {k : [] for k in stages}
     executing = {k : [] for k in stages}
     scheduled = {k : [] for k in stages}
@@ -118,7 +118,7 @@ def execute_plan(graph):
             list(graph[cur_filename]) if cur_filename != yy_bs_main_file else exec_args)
 
     def update_schedule():
-        nonlocal scheduled, completed, stages, all_files
+        nonlocal scheduled, completed, all_files
         for file in all_files:
             for i, stage in enumerate(stages):
                 if (
@@ -217,7 +217,7 @@ if __name__ == "__main__":
         yy_bs_global_args = args.extra.split(" ")
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
-    stage_concurrency_limit[5] = int(args.codegen_concurrency_limit)
+    # stage_concurrency_limit[5] = int(args.codegen_concurrency_limit)
 
     if args.cache_file:
         # If a cache file is provided, attempt to load the cached dependency graph

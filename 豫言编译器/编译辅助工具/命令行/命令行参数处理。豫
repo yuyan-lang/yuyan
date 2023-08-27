@@ -47,6 +47,7 @@
         或有『--worker-task=cps-transform』衔尾则（（写引用于「单一工作模式任务」于（『cps-transform』））；处理命令行参数于尾）
         或有『--worker-task=closure-convert』衔尾则（（写引用于「单一工作模式任务」于（『closure-convert』））；处理命令行参数于尾）
         或有『--worker-task=codegen』衔尾则（（写引用于「单一工作模式任务」于（『codegen』））；处理命令行参数于尾）
+        或有『--worker-task=closure-opt』衔尾则（（写引用于「单一工作模式任务」于（『closure-opt』））；处理命令行参数于尾）
         或有『--worker-task=exec-gen』衔尾则（（写引用于「单一工作模式任务」于（『exec-gen』））；处理命令行参数于尾）
         或有『--override-add-file-dependency』衔串衔尾则（（写引用于文件编译顺序于（（读引用于文件编译顺序）接【串】））；处理命令行参数于尾）
         或有『-O0』衔尾则（（写引用于执行优化总轮数于（零））；处理命令行参数于尾）
