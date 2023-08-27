@@ -9,7 +9,9 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_runtest",
-            "args": ["yy"],
+            "args": [
+                "yy"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
@@ -17,18 +19,21 @@
             "MIMode": "lldb"
         },
         {
-
             "name": "yy_bs_bs",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_bs_bs",
-            "args": ["yylib/标准库/语言核心/内建类型。豫"],
+            "args": [
+                "yylib/标准库/语言核心/内建类型。豫"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
             "setupCommands": [
-                {"text": "handle SIGSEGV nostop"}
+                {
+                    "text": "handle SIGSEGV nostop"
+                }
             ]
             // "MIMode": "lldb",
             // "MIDebuggerPath": "/usr/bin/lldb"
@@ -65,8 +70,8 @@
                 // "${input:filepath}"
                 "--stack-size=8192",
                 "./yy_bs_bs.js",
-                "yylib/runtest.yuyan", 
-                "--do-not-load-cache", 
+                "yylib/runtest.yuyan",
+                "--do-not-load-cache",
                 // "-vvv",
                 // "--parse-only"
                 // "yy_bs_bs.js", 
@@ -82,6 +87,15 @@
             ],
             "type": "node",
         },
+        {
+            "name": "Python Debug Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": ["f"],
+            "justMyCode": true
+        }
     ],
     "inputs": [
         {
@@ -89,6 +103,5 @@
             "type": "promptString",
             "description": "Input file"
         }
-
     ]
 }

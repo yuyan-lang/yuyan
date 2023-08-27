@@ -24,25 +24,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
 帮助文本者
 『豫言编程语言 (』附当前豫言版本附『) 运行：yy [options] [files] [ -- [args]]
 其中 [options] 可以是
-    -h, --help                          显示本帮助信息
-    -v                                  显示粗略的调试信息
-    -vv                                 显示详细的调试信息
-    -vvv                                显示更详细的调试信息
-    --debug-print-add [debug_flag]      打印指定的调试信息
-    --type-check-only                   仅执行类型检查，不生成可执行文件
-    -c, --compile-only                  仅执行编译，不运行编译后的文件
-    -o PATH                             指定可执行文件的输出路径
-    --whole-program-opt                 使用全局编译优化
-    --do-not-optimize                   不执行任何包括LLVM在内的任何优化
-    -O0, -O[1,2,3,5,8,13,21]            执行0,1,2,3,5,8,13或21次优化
-    --optimize-intermediate-files       优化中间文件
-    --target=[js,llvm]                  指定目标平台
-    --self-integrity-check              检查自身完整性
-    --no-llvm-target-triple             不使用LLVM的目标三元组
-    --override-llvm-target-triple ARG   使用指定的LLVM目标三元组
-    --no-debug-print                    不打印调试信息
-    --no-dependency-check               不检查依赖修改时间
-    --print-llvm-commands               打印执行的LLVM命令
-    --print-opt-info                    打印优化的调试信息
-    --about                             显示版权信息
-    --version                           显示软件当前版本』也。
+    -h, --help                           显示本帮助信息
+    -v                                   显示粗略的调试信息
+    -vv                                  显示详细的调试信息
+    -vvv                                 显示更详细的调试信息
+    --debug-print-add [debug_flag]       打印指定的调试信息
+    --type-check-only                    仅执行类型检查，不生成可执行文件
+    -c, --compile-only                   仅执行编译，不运行编译后的文件
+    -o PATH                              指定可执行文件的输出路径
+    --whole-program-opt                  使用全局编译优化
+    --do-not-optimize                    不执行任何包括LLVM在内的任何优化
+    -O0, -O[1,2,3,5,8,13,21]             执行0,1,2,3,5,8,13或21次优化
+    --optimize-intermediate-files        优化中间文件
+    --target=[js,llvm]                   指定目标平台
+    --mode=[regular,worker]              指定运行模式（用于多任务处理）
+    --worker-task=TASK                   指定单一工作模式(worker)当前任务
+    --self-integrity-check               检查自身完整性
+    --no-llvm-target-triple              不使用LLVM的目标三元组
+    --override-llvm-target-triple ARG    使用指定的LLVM目标三元组
+    --override-add-file-dependency PATH  用于在单一工作模式下覆写文件依赖
+    --no-debug-print                     不打印调试信息
+    --no-dependency-check                不检查依赖修改时间
+    --print-llvm-commands                打印执行的LLVM命令
+    --print-opt-info                     打印优化的调试信息
+    --about                              显示版权信息
+    --version                            显示软件当前版本』也。

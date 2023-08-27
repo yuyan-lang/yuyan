@@ -34,7 +34,7 @@ struct
         outputFilePath=NONE,
         inputFiles=[],
         enableProfiling=false,
-        uselocallib=false,
+        uselocallib=true,
         typeCheckOnly=false,
         clangOptions=NONE
         }
