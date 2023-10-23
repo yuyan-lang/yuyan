@@ -130,6 +130,7 @@ def execute_plan():
             for k in candidate:
                 if k not in exec_args and all(dep in exec_args for dep in deps[k]):
                     exec_args.append(k)
+        return exec_args
 
     def get_file_args(cur_filename):
         if cur_filename in deps:
@@ -141,6 +142,7 @@ def execute_plan():
 
     def update_schedule():
         nonlocal scheduled, completed, deps_to_process, deps
+        print("Updating schedule...")
 
         for file in deps_to_process + list(deps.keys()):
             for i, stage in enumerate(stages):
@@ -210,10 +212,11 @@ def execute_plan():
                     print("Scheduling", (stage, file_name))
                     executing[stage].append(file_name)
                     executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
-            print_stat()
+            print("Waiting for updates...")
             results_ready.wait()
             results_ready.clear()
             update_schedule()
+            print_stat()
     
     print_stat()
     for file in deps_to_process:
