@@ -93,7 +93,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["f"],
+            "args": ["/home/zc/yuyan_proj/yuyan/豫言编译器/入口。豫"],
             "justMyCode": true
         }
     ],
