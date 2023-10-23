@@ -53,15 +53,20 @@ def exec_worker(args):
         print(stdout.decode('utf-8'))
         return args, None
 
-def worker(task):
+def worker(task, retry_count=0):
     stage, file = task
     optimize_task = 'optimize' if file[0] == yy_bs_main_file else STG_OPTIMIZE_HALF
     command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage if stage != STG_OPTIMIZE_HALF else optimize_task)] + file + yy_bs_global_args
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if process.returncode != 0:
-        return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
-                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}"
+        print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
+        if retry_count >= 2:
+            return None, (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
+        else:
+            return worker(task, retry_count=retry_count + 1)
     else:
         return (task, process.stdout.decode().split()), None
 
