@@ -1,5 +1,5 @@
 {
   "cm": {
-    "make/onSave": "src/development.cm"
+    "make/onSave": "runtime/mlton/yylibrary.cm"
   }
 }

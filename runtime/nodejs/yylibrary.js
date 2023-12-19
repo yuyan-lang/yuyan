@@ -13,12 +13,13 @@ class yyContinuationException {
     }
   }
 
-const 全局异常处理器 = (errorMsg, kont) => {
+const 全局异常处理器 = (arg) => {
     console.error(
       "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n" +
       "豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n" +
       "尝试打印值：（可能会出现 异常）：\n"
     );
+  let errorMsg = arg[1];
     console.error(errorMsg);
     console.error("\n");
     process.exit(1);
@@ -38,7 +39,7 @@ let yy_tailcall = (arg) => {
 }
   
 
-let 当前异常处理器 = 全局异常处理器;
+let 当前异常处理器 = [全局异常处理器, undefined];
 let yyExternalCalls = {
 
     // commandline.c
