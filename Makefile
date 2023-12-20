@@ -132,6 +132,10 @@ cleanbs:
 cleancache:
 	find .yybuild.nosync/ -name "*.编译信息.json" -print -exec rm {} \;
 
+cleancodegen:
+	find .yybuild.nosync/ -name "*.代码生成形式.json" -print -exec rm {} \;
+
+
 superclean:
 	rm -f yy
 	rm -rf ./.yybuild.nosync/*
