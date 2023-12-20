@@ -44,9 +44,10 @@ yy_ptr yy_豫言字符串获取字节数组(yy_ptr s1){
 }
 
 yy_ptr yy_豫言字符转整数(yy_ptr s1, yy_ptr idx_ptr){
-    char *s = addr_to_string(s1);
+    char *s =  addr_to_string(s1);
     uint64_t index = addr_to_int(idx_ptr);
-    return int_to_addr(s[index]);
+    char result = s[index];
+    return int_to_addr((unsigned char)result);
 }
 
 char* yy_豫言子字符串从字节序数开始(char* s, int64_t idx){

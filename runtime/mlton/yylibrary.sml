@@ -13,7 +13,27 @@ structure YYBasis = struct
   | YYDouble of real
   | YYString of string
   | YYBool of bool
-  | YYVector of YYValue vector
+  | YYVector of YYValue Vector.vector
+  | YYFunc of YYValue -> YYValue
+  | YYUnit 
+
+  fun showYYValue v = 
+    case v of
+      YYInt i => Int.toString i
+    | YYDouble d => Real.toString d
+    | YYString s => "'" ^ s ^ "'"
+    | YYBool b => Bool.toString b
+    | YYVector v => Vector.foldl (fn (x, acc) => acc ^ showYYValue x ^ ",") "[" v ^ "]"
+    | YYFunc v => "<func>"
+    | YYUnit => "()"
+
+  fun yyVectorConstruct(l) : YYValue = YYVector (Vector.fromList l)
+  fun yyVectorProj(i, YYVector v) : YYValue = Vector.sub(v, i)
+  fun yyGetString(YYString v) : string = v
+  fun yyGetInt(YYInt v) : int = v
+  fun yyGetDouble(YYDouble v) : real = v
+  fun yyGetBool(YYBool v) : bool = v
+  fun yyGetFunc(YYFunc v) : YYValue -> YYValue = v
 
   (* Define global variables *)
   val yyGlobals : (string * YYValue) list ref= ref ([])
@@ -26,6 +46,22 @@ structure YYBasis = struct
   fun yyGlobalsSet (name, value) =
     yyGlobals := (name, value) :: List.filter (fn (n, _) => n <> name) (!yyGlobals)
 
+    fun yyIntEq (YYInt i1, YYInt i2) = YYBool (i1 = i2)
+    fun yyIntGt (YYInt i1, YYInt i2) = YYBool (i1 > i2)
+    fun yyIntSubtract (YYInt i1, YYInt i2) = YYInt (i1 - i2)
+
+  val yy_current_exception_handler : YYValue ref = ref (YYFunc (fn arg => 
+  let val _ = TextIO.output (TextIO.stdErr, 
+   "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n" ^
+      "豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n" ^
+      "尝试打印值：（可能会出现 异常）：\n" )
+      val errorMsg = yyVectorProj(1, arg)
+      val _ = TextIO.output (TextIO.stdErr, yyGetString errorMsg ^ "\n")
+      in YYUnit end
+  ))
+  
+
+
 end
 
 open YYBasis
@@ -34,27 +70,49 @@ open YYBasis
 structure YYExternalCalls = struct
 
 
-  (* commandline.c *)
-  fun yyGetCommandLineProgramName () = CommandLine.name ()
+  fun yy_get_current_exception_handler () = !yy_current_exception_handler
 
-  fun yyGetCommandLineArgs () = CommandLine.arguments ()
+  fun yy_set_current_exception_handler (new_handler) = (yy_current_exception_handler := new_handler; YYUnit)
+
+  (* commandline.c *)
+  fun yyGetCommandLineProgramName () = YYString (CommandLine.name ())
+
+  fun yyGetCommandLineArgs () = 
+  let val args = CommandLine.arguments ()
+  in 
+  yyVectorConstruct([YYInt (length args), 
+    yyVectorConstruct (map YYString args)]
+  )
+  end
 
   (* file_system.c *)
   fun yyReadFileSync filename =
     let
-      val fileContent = TextIO.inputAll (TextIO.openIn filename);
+      val fileContent = TextIO.inputAll (TextIO.openIn (yyGetString filename));
     in
-      fileContent
-    end;
+      YYString fileContent
+    end
+
+  fun makeDirExist (dirpath : string) : unit = 
+  if OS.FileSys.access (dirpath, []) then
+    ()
+  else
+    let
+      val _ = makeDirExist (#dir (OS.Path.splitDirFile dirpath))
+    in
+      OS.FileSys.mkDir dirpath
+    end
+
 
   fun yyWriteFileSync (filePath, content) =
     let
-      (* val _ = OS.FileSys.mkDir {isDir = fn _ => true, mkDir = OS.FileSys.mkDir} (FilePath.dirName filePath) *)
-      val oc = TextIO.openOut filePath;
-      val _ = TextIO.output (oc, content);
+      val strFp = yyGetString filePath
+      val _ = makeDirExist (#dir (OS.Path.splitDirFile (strFp)));
+      val oc = TextIO.openOut strFp;
+      val _ = TextIO.output (oc, yyGetString content);
       val _ = TextIO.closeOut oc;
     in
-      ()
+      YYUnit
     end;
 
   fun yyListDirectorySync dirPath =
@@ -68,100 +126,116 @@ structure YYExternalCalls = struct
       (Array.fromList entriesList, length entriesList)
     end;
 
-  fun yyIsPathDirectory path = OS.FileSys.isDir path
+  fun yyIsPathDirectory path = YYBool (OS.FileSys.isDir (yyGetString path))
 
-  fun yyIsPathRegularFile path = not (OS.FileSys.isDir path)
+  fun yyIsPathRegularFile path = 
+    YYBool (not (OS.FileSys.isDir (yyGetString path)))
 
-  fun yyPathExists path = OS.FileSys.access (path, []) handle OS.SysErr _ => false;
+  fun yyPathExists path = YYBool (OS.FileSys.access (yyGetString path, []));
 
   fun yyGetFileModifiedTime path =
     let
       val stats = OS.FileSys.modTime path;
     in
-      Time.toSeconds stats
+      YYInt (Int.fromLarge (Time.toSeconds stats))
     end
 
   fun yyGetCurrentWorkingDirectory () =
-    OS.FileSys.getDir ();
+    YYString (OS.FileSys.getDir ());
 
   (* io.c *)
   fun yyPrintln message =
-    TextIO.output (TextIO.stdOut, message ^ "\n");
+  let val _ = TextIO.output (TextIO.stdOut, yyGetString message ^ "\n")
+  in YYUnit end
 
-  fun yyPrintGeneric obj =
-    print (Int.toString obj);
+  fun yyPrintGeneric obj = raise Fail "yyPrintGeneric: not implemented"
 
   fun yyPrintlnStdErr message =
-    TextIO.output (TextIO.stdErr, message ^ "\n");
+  let val _ = TextIO.output (TextIO.stdErr, yyGetString message ^ "\n")
+  in YYUnit end
 
   fun yyPrintStr str =
-    TextIO.output (TextIO.stdOut, str);
+  let val _ = TextIO.output (TextIO.stdOut, yyGetString str)
+  in YYUnit end
 
   (* platform.c *)
-  fun yyRunningOnWindows () = false
+  fun yyRunningOnWindows () = YYBool false
     (* String.isSubstring "win32" (OS.Process.platform ()); *)
 
-  fun yyRunningOnMacOS () = false
+  fun yyRunningOnMacOS () =  YYBool false
     (* String.isSubstring "darwin" (OS.Process.platform ()); *)
 
-  fun yyRunningOnLinux () = true
+  fun yyRunningOnLinux () = YYBool true
     (* String.isSubstring "linux" (OS.Process.platform ()); *)
 
   fun yyGetCurrentLocalDateTimeStr () =
-    Time.toString (Time.now ());
+    YYString (Time.toString (Time.now ()));
 
   fun yyGetCurrentLocalDateTimeFmt fmt =
     let
-      val now = Time.now ();
     in
-      Time.fmt fmt now
-    end;
+      YYString ( Date.fmt (yyGetString fmt) (Date.fromTimeLocal (Time.now())))
+    end
 
   (* primop.c *)
   fun yyIntEqTest (i1, i2) =
-    i1 = i2;
+  YYBool (yyGetInt i1 = yyGetInt i2)
 
   fun yyIntAdd (i1, i2) =
-    i1 + i2;
+  YYInt (yyGetInt i1 + yyGetInt i2)
 
   fun yyIntSub (i1, i2) =
-    i1 - i2;
+  YYInt (yyGetInt i1 - yyGetInt i2)
 
   fun yyIntMult (i1, i2) =
-    i1 * i2;
+  YYInt (yyGetInt i1 * yyGetInt i2)
 
   fun yyIntDiv (i1, i2) =
-    i1 div i2;
+  YYInt ((yyGetInt i1) div (yyGetInt i2))
 
   fun yyIntToString i1 =
-    Int.toString i1;
+  YYString (Int.toString (yyGetInt i1))
 
   fun yyDoubleAdd (i1, i2) =
-  let open Real in i1 + i2 end
+  let open Real in 
+  YYDouble (yyGetDouble i1 + yyGetDouble i2)
+  end
 
   fun yyDoubleSub (i1, i2) =
-  let open Real in i1 - i2 end
+  let open Real in 
+  YYDouble (yyGetDouble i1 - yyGetDouble i2)
+  end
 
   fun yyDoubleMult (i1, i2) =
-  let open Real in i1 * i2 end
+  let open Real in
+  YYDouble (yyGetDouble i1 * yyGetDouble i2)
+  end
 
   fun yyDoubleDiv (i1, i2) =
-  let open Real in i1 / i2 end
+  let open Real in
+  YYDouble (yyGetDouble i1 / yyGetDouble i2)
+  end
 
   fun yyDoubleToString i1 =
-    Real.toString i1;
+  YYString (Real.toString (yyGetDouble i1))
 
   fun yyDoubleToInt d =
-    Real.floor d;
+  YYInt (Real.floor (yyGetDouble d))
 
   fun yyIntToDouble i =
-    Real.fromInt i;
+  YYDouble (Real.fromInt (yyGetInt i))
 
   fun yyStringToInt s1 =
-    Int.fromString s1 
+  YYInt (case Int.fromString (yyGetString s1) of 
+  SOME i => i
+  | NONE => raise Fail ("yyStringToInt: invalid int " ^ yyGetString s1)
+  )
 
   fun yyStringToDouble s1 =
-    Real.fromString s1
+  YYDouble (case Real.fromString (yyGetString s1) of 
+  SOME d => d
+  | NONE => raise Fail ("yyStringToDouble: invalid double " ^ yyGetString s1)
+  )
 
   (* process_exist.c *)
   fun yyProcessExit st =
