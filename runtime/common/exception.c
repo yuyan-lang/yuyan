@@ -69,11 +69,11 @@ yy_ptr yySetCurrentExceptionHandler(yy_ptr toSet) {
 }
 
 // I believe abssingle has two arguments , the first is just the closure itself
-uint64_t 全局异常处理器(int64_t* closure, char* errorMsg, int64_t* kont){
+uint64_t 全局异常处理器(int64_t* closure){
     fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n");
     fprintf(stderr, "尝试打印值：（可能会出现 异常）：\n");
     fflush(stderr);
-    fprintf(stderr, "%s", errorMsg);
+    fprintf(stderr, "%s", *((char **)(closure) + 1));
     fprintf(stderr, "\n");
     exit(1);
     return -1;
@@ -90,7 +90,7 @@ uint64_t 全局异常处理器(int64_t* closure, char* errorMsg, int64_t* kont){
 
 
 void* 当前异常处理器;
-extern void* 内部全局异常处理器(void* arg1, void* arg2, void* arg3);
+extern void* 内部全局异常处理器(void* arg1);
 
 
 void yy_豫言初始化全局异常处理器(){
