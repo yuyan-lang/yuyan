@@ -15,6 +15,7 @@ structure YYBasis = struct
   | YYBool of bool
   | YYVector of YYValue Vector.vector
   | YYFunc of YYValue -> YYValue
+  | YYRef of YYValue ref
   | YYUnit 
 
   fun showYYValue v = 
@@ -24,16 +25,28 @@ structure YYBasis = struct
     | YYString s => "'" ^ s ^ "'"
     | YYBool b => Bool.toString b
     | YYVector v => Vector.foldl (fn (x, acc) => acc ^ showYYValue x ^ ",") "[" v ^ "]"
+    | YYRef r => "ref " ^ showYYValue (!r)
     | YYFunc v => "<func>"
     | YYUnit => "()"
 
   fun yyVectorConstruct(l) : YYValue = YYVector (Vector.fromList l)
+  fun yyVectorRefConstruct(l: YYValue list) : YYValue = YYRef (ref (YYVector (Vector.fromList l))) 
   fun yyVectorProj(i, YYVector v) : YYValue = Vector.sub(v, i)
+     | yyVectorProj(i, v) : YYValue = raise Fail ("yyVectorProj: not a vector " ^ showYYValue v)
   fun yyGetString(YYString v) : string = v
+      | yyGetString(v) : string = raise Fail ("yyGetString: not a string " ^ showYYValue v)
   fun yyGetInt(YYInt v) : int = v
+      | yyGetInt(v) : int = raise Fail ("yyGetInt: not an int " ^ showYYValue v)
   fun yyGetDouble(YYDouble v) : real = v
+      | yyGetDouble(v) : real = raise Fail ("yyGetDouble: not a double " ^ showYYValue v)
   fun yyGetBool(YYBool v) : bool = v
+      | yyGetBool(v) : bool = raise Fail ("yyGetBool: not a bool " ^ showYYValue v)
   fun yyGetFunc(YYFunc v) : YYValue -> YYValue = v
+      | yyGetFunc(v) : YYValue -> YYValue = raise Fail ("yyGetFunc: not a function " ^ showYYValue v)
+  fun yyGetRef(YYRef v) : YYValue ref = v
+      | yyGetRef(v) : YYValue ref = raise Fail ("yyGetRef: not a ref " ^ showYYValue v)
+  fun yyGetVector(YYVector v) : YYValue Vector.vector = v
+      | yyGetVector(v) : YYValue Vector.vector = raise Fail ("yyGetVector: not a vector " ^ showYYValue v)
 
   (* Define global variables *)
   val yyGlobals : (string * YYValue) list ref= ref ([])
@@ -50,17 +63,17 @@ structure YYBasis = struct
     fun yyIntGt (YYInt i1, YYInt i2) = YYBool (i1 > i2)
     fun yyIntSubtract (YYInt i1, YYInt i2) = YYInt (i1 - i2)
 
-  val yy_current_exception_handler : YYValue ref = ref (YYFunc (fn arg => 
+  val yy_current_exception_handler : YYValue ref = ref (YYVector (Vector.fromList [ (YYFunc (fn arg => 
   let val _ = TextIO.output (TextIO.stdErr, 
-   "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n" ^
-      "豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n" ^
-      "尝试打印值：（可能会出现 异常）：\n" )
+   "!!!!!!!!!!!!!!!!!!!!!1\n" ^
+      "sml yy_runtime Uncaught Exception\n" ^
+      "Trying to print its value:\n" )
       val errorMsg = yyVectorProj(1, arg)
       val _ = TextIO.output (TextIO.stdErr, yyGetString errorMsg ^ "\n")
+      val _ = OS.Process.exit (OS.Process.failure)
       in YYUnit end
-  ))
+  )), YYUnit]))
   
-
 
 end
 
@@ -69,6 +82,16 @@ open YYBasis
 (* Define external calls structure *)
 structure YYExternalCalls = struct
 
+  (* utility funcs *)
+
+  fun encodeList (l : YYValue list) : YYValue = 
+      yyVectorRefConstruct [yyVectorRefConstruct l, YYInt (length l)]
+
+  fun decodeList (v : YYValue) : YYValue list = 
+      let val v = yyVectorProj(0, !(yyGetRef v))
+      in
+        Vector.foldr (fn (x, acc) => x::acc) [] (yyGetVector (!(yyGetRef v)))
+      end
 
   fun yy_get_current_exception_handler () = !yy_current_exception_handler
 
@@ -80,9 +103,7 @@ structure YYExternalCalls = struct
   fun yyGetCommandLineArgs () = 
   let val args = CommandLine.arguments ()
   in 
-  yyVectorConstruct([YYInt (length args), 
-    yyVectorConstruct (map YYString args)]
-  )
+  encodeList(map YYString args)
   end
 
   (* file_system.c *)
@@ -121,9 +142,9 @@ structure YYExternalCalls = struct
         case OS.FileSys.readDir stream of 
         SOME(entry) => entry::get_dir(stream)
       | NONE => []
-      val entriesList = get_dir(OS.FileSys.openDir dirPath)
+      val entriesList = get_dir(OS.FileSys.openDir (yyGetString dirPath))
     in
-      (Array.fromList entriesList, length entriesList)
+    encodeList (map YYString entriesList)
     end;
 
   fun yyIsPathDirectory path = YYBool (OS.FileSys.isDir (yyGetString path))
@@ -135,7 +156,7 @@ structure YYExternalCalls = struct
 
   fun yyGetFileModifiedTime path =
     let
-      val stats = OS.FileSys.modTime path;
+      val stats = OS.FileSys.modTime (yyGetString path);
     in
       YYInt (Int.fromLarge (Time.toSeconds stats))
     end
@@ -239,73 +260,75 @@ structure YYExternalCalls = struct
 
   (* process_exist.c *)
   fun yyProcessExit st =
-    OS.Process.exit st;
+  let val requested_st = (yyGetInt st)
+  in if requested_st = 0 then
+    OS.Process.exit OS.Process.success
+    else
+    OS.Process.exit (OS.Process.failure)
+  end
 
   (* references.c *)
-  fun yyNewRef value = ref value
+  fun yyNewRef value = YYRef (ref value)
 
-  fun yyReadRef addr = !addr
+  fun yyReadRef addr = ! (yyGetRef addr)
 
-  fun yyWriteRef (new_value, addr) = addr := new_value;
+  fun yyWriteRef (new_value, addr) = 
+  let val _ = (yyGetRef addr) := new_value in 
+  YYUnit end
 
-  fun yyNewRefArray (value, length) = Array.array (length, value);
+  fun yyNewRefArray (value, length) = YYRef (ref (YYVector (Vector.tabulate (yyGetInt length, (fn _ => value)))))
 
-  fun yyReadRefArray (addr, index) = Array.sub (addr, index);
+  fun yyReadRefArray (addr, index) = yyVectorProj (yyGetInt index, !(yyGetRef addr));
 
-  fun yyWriteRefArray (new_value, index, refe) = Array.update (refe, index, new_value);
+  fun yyWriteRefArray (new_value, index, refe) = 
+  let val _ = (yyGetRef refe) := YYVector (Vector.update (yyGetVector (!(yyGetRef refe)), yyGetInt index, new_value))
+  in YYUnit end
 
-  fun yyNewRefArrayGeneric length = Array.array (length, ())
+  fun yyNewRefArrayGeneric length =  YYRef (ref (YYVector (Vector.tabulate (yyGetInt length, (fn _ => YYUnit)))))
 
   fun yy_unsafe_cast value = value
 
   (* strings.c *)
   fun yyIsSubstring (s1, s2) =
-    String.isSubstring s1 s2;
+    YYBool (String.isSubstring (yyGetString s1) (yyGetString s2));
 
   fun yyStringEq (s1, s2) =
-    s1 = s2;
+    YYBool (yyGetString s1 = yyGetString s2);
 
-  fun yyStringByteLength s1 = String.size s1
+  fun yyStringByteLength s1 = YYInt (String.size (yyGetString s1))
 
+  (* in the stdlib, byte array IS string *)
   fun yy_string_get_byte_array s1 = s1
 
-  fun yyStringByteArrayGetLength b = String.size b
+  fun yyStringByteArrayGetLength b = YYInt (String.size (yyGetString b))
 
-  fun yy_string_byte_to_int (s1, idx) = String.sub (s1, idx)
+  fun yy_string_byte_to_int (s1, idx) = YYInt (Char.ord (String.sub (yyGetString s1, yyGetInt idx)))
 
   fun yy_substring_from_byte_index (b1, idx) =
-    String.extract (b1, idx, NONE);
+    YYString (String.extract (yyGetString b1, yyGetInt idx, NONE))
 
   fun yy_string_match (search, startIdx, match) =
     let
-      val matchTarget = String.extract (search, startIdx, NONE)
+      val matchTarget = String.extract (yyGetString search, yyGetInt startIdx, NONE)
     in
-      String.isPrefix match matchTarget
+      YYBool (String.isPrefix (yyGetString match) matchTarget)
     end
 
   fun yy_string_get_unicode_char_at_index (b, startIdx) =
   let 
-    (* fun computeLength(cur) = 
-      let val thisChar = String.sub (b, startIdx + cur) in
-
-      if Word8.toInt (Word8.andb ((Word8.fromInt (Char.ord thisChar)),(Word8.fromInt 192 (*0xC0*)))) = 128 (*0x80*) then
-        cur
-      else
-        computeLength(cur + 1)
-        end
-    val strL = computeLength(1) *)
+    (*TODO*)
     val strL = 1
   in
-    String.substring (b, startIdx, strL)
+    YYString (String.substring (yyGetString b, yyGetInt startIdx, strL))
   end
 
   fun yy_string_get_json_string (b, startIdx) =
     let
-      val str = b
-      val start = 0;
+      val str = yyGetString b
+      val start = yyGetInt startIdx;
     in
       if String.sub (str, start) <> #"\"" then
-        raise Fail "JSON字符串必须以引号开始"
+        raise Fail "JSON string needs to start with a quote"
       else
         let
           fun scan (endIdx, acc) =
@@ -314,7 +337,7 @@ structure YYExternalCalls = struct
             else if String.sub (str, endIdx) = #"\\" then
               scan (endIdx + 2, acc@[ (case Char.fromString (String.substring (str, endIdx, 2)) of 
                 SOME c => c
-              | NONE => raise Fail "yy_string_get_json_string: 无效的转义字符")
+              | NONE => raise Fail "yy_string_get_json_string invalid translation squence with backslash")
               ])
             else
               scan (endIdx + 1, acc@[String.sub (str, endIdx)]);
@@ -322,30 +345,32 @@ structure YYExternalCalls = struct
           case scan (start + 1, []) of
             (endIdx, acc) =>
               if String.sub (str, endIdx) <> #"\"" then
-                raise Fail "JSON字符串必须以引号结束"
+                raise Fail "JSON string needs to end with a quote"
               else
-                (String.implode acc, endIdx - start + 2)
+                yyVectorRefConstruct [YYString (String.implode acc), YYInt (endIdx - start + 2)]
           end
         end;
 
   fun count_utf8_code_points s =
-    UTF8.size s;
+    YYInt (UTF8.size (yyGetString s));
 
   fun yyGetCodePoints str =
-  let val exploded = (map (fn x => UTF8.implode [x]) (UTF8.explode str))
+  let val exploded = (map (fn x => YYString (UTF8.implode [x])) (UTF8.explode (yyGetString str)))
   in
-    (Array.fromList exploded, length exploded) end
+    encodeList exploded
+  end
 
   fun yyCodePointsConcat arr =
-    String.concat arr;
+    YYString (String.concat (map yyGetString (decodeList arr)));
 
+  val refTime = Time.now ();
   (* time.c *)
   fun yyCurrentNanosecondTime () =
     let
       val time = Time.now ();
     in
-      0
-    end;
+      YYDouble (Real.fromLargeInt (Time.toNanoseconds time))
+    end
 
   (* child_processes.c *)
   fun yyRunProcessGetOutputSync (command, args) =
@@ -366,20 +391,17 @@ structure YYExternalCalls = struct
 
   (* rand.c *)
   fun yyGetRandomInt upperBound =
-      Random.randRange (0, upperBound)
+    YYInt (Random.randRange (0, yyGetInt upperBound)
     (Random.rand (Int.fromLarge (Time.toSeconds (Time.now ())),
     Int.fromLarge (Time.toSeconds (Time.now ()))
-    ));
+    )))
 
   fun yyGetRandomDouble () =
-    Random.randReal (
+    YYDouble (Random.randReal (
     (Random.rand (Int.fromLarge (Time.toSeconds (Time.now ())),
     Int.fromLarge (Time.toSeconds (Time.now ()))
-    )));
+    ))))
 
 
 
 end;
-
-(* Define the main program *)
-val _ = () (* Add your main program here *)

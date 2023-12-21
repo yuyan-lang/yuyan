@@ -409,7 +409,7 @@ let yyExternalCalls = {
       // time.c
       yyCurrentNanosecondTime : () => {
         const [seconds, nanoseconds] = process.hrtime();
-        const nanosecondsTotal = seconds * 1e9 + nanoseconds;
+        const nanosecondsTotal = seconds * 1e9 + nanoseconds + 0.0;
         return nanosecondsTotal;
       },
       

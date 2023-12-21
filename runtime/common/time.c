@@ -13,6 +13,8 @@ yy_ptr yyCurrentNanosecondTime() {
     // Convert seconds and nanoseconds to nanoseconds
     int64_t nanoseconds = time.tv_sec * 1000000000 + time.tv_nsec;
 
+    double nanoseconds_double = (double) nanoseconds;
+
     // Return the nanoseconds
-    return int_to_addr(nanoseconds);
+    return double_to_addr(nanoseconds_double);
 }
