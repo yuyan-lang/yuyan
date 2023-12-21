@@ -62,19 +62,19 @@ bst : yy_bs $(YYTESTSOURCES)
 	./yy_bs $(YYTESTSOURCES)
 
 bsrt : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -- yy
+	./yy_bs yylib/runtest.yuyan -- ./yy
 
 bsrt_bs : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -- yy_bs
+	./yy_bs yylib/runtest.yuyan -- ./yy_bs
 
 bsrtv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -v -- yy
+	./yy_bs yylib/runtest.yuyan -v -- ./yy
 
 bsrtvv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -vv -- yy
+	./yy_bs yylib/runtest.yuyan -vv -- ./yy
 
 bsrtvvv : yy_bs $(YYTESTSOURCES)
-	./yy_bs yylib/runtest.yuyan -vvv -- yy
+	./yy_bs yylib/runtest.yuyan -vvv -- ./yy
 
 bsrttc : yy_bs $(YYTESTSOURCES)
 	./yy_bs yylib/runtest.yuyan --type-check-only
@@ -101,16 +101,16 @@ yy_test_temp: build
 	./yy yylib/runtest.yuyan --use-local-lib -c -o ./yy_test_temp
 
 test: build yy_test_temp yy
-	./yy_test_temp yy --use-local-lib
+	./yy_test_temp ./yy --use-local-lib
 
 test_bs: build yy_bs yy_test_temp
-	./yy_test_temp yy_bs
+	./yy_test_temp ./yy_bs
 
 test_bs_js: build yy_bs yy_test_temp
-	./yy_test_temp yy_bs --target=js
+	./yy_test_temp ./yy_bs --target=js
 
 test_bs_bs: build yy_test_temp
-	./yy_test_temp yy_bs_bs
+	./yy_test_temp ./yy_bs_bs
 	
 genDocs : build
 	rm -rf ./.yybuild.nosync/docs
@@ -131,6 +131,10 @@ cleanbs:
 
 cleancache:
 	find .yybuild.nosync/ -name "*.编译信息.json" -print -exec rm {} \;
+
+cleancodegen:
+	find .yybuild.nosync/ -name "*.代码生成形式.json" -print -exec rm {} \;
+
 
 superclean:
 	rm -f yy

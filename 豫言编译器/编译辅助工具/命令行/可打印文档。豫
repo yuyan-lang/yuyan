@@ -29,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     -vv                                  显示详细的调试信息
     -vvv                                 显示更详细的调试信息
     --debug-print-add [debug_flag]       打印指定的调试信息
+    --debug-check-add [debug_flag]       执行指定的调试检查
     --type-check-only                    仅执行类型检查，不生成可执行文件
     -c, --compile-only                   仅执行编译，不运行编译后的文件
     -o PATH                              指定可执行文件的输出路径

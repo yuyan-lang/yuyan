@@ -62,7 +62,7 @@ endif
 
 libyyrtdebug.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
 debug: libyyrtdebug.a

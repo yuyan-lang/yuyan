@@ -1,0 +1,19 @@
+$(SML_LIB)/basis/basis.mlb
+$(SML_LIB)/basis/sml-nj.mlb
+$(SML_LIB)/smlnj-lib/smlnj-lib.mlb
+$(SML_LIB)/smlnj-lib/Util/smlnj-lib.mlb
+
+
+local
+    ann
+       "nonexhaustiveMatch ignore"
+       "allowExtendedTextConsts true"
+       "allowOrPats true"
+       "allowFFI true"
+    in
+        yylibrary.sml
+    end
+in
+
+
+end
