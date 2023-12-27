@@ -3,7 +3,7 @@
 一款中文函数式编程语言
 
 [网站](https://yuyan-lang.github.io/yuyan)
-[语言手册](docs/教程/combined_tutorial.pdf)
+[语言手册](教程/combined_tutorial.pdf)
 
 ## 安装
 
