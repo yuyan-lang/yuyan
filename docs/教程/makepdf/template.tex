@@ -1,0 +1,23 @@
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{mdframed}
+
+\colorlet{shadecolor}{gray!15}
+
+\lstdefinestyle{mystyle}{
+    basicstyle=\ttfamily,
+    backgroundcolor=\color{shadecolor},
+    breaklines=true,
+    showstringspaces=false,
+}
+
+\lstset{style=mystyle}
+
+\surroundwithmdframed[
+  hidealllines=true,
+  backgroundcolor=shadecolor,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt,
+  innertopmargin=0pt,
+  innerbottommargin=0pt
+]{lstlisting}

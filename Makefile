@@ -135,12 +135,20 @@ cleancache:
 cleancodegen:
 	find .yybuild.nosync/ -name "*.代码生成形式.json" -print -exec rm {} \;
 
+cleanclosureopt:
+	find .yybuild.nosync/ -name "*.代码生成形式.json" -print -exec rm {} \;
+	find .yybuild.nosync/ -name "*.闭包优化后形式.json" -print -exec rm {} \;
+
 
 superclean:
 	rm -f yy
 	rm -rf ./.yybuild.nosync/*
 
 MODULE_NAME = $(error Please set MODULE_NAME as a command line argument for locating target-specific files)
+
+cleansinglefile:
+	find .yybuild.nosync/ -name "$(MODULE_NAME).*.json" -print -exec rm {} \;
+
 wasm: yyrt
 	make -C runtime/ wasmdebug
 	llvm-dis ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.bc -o ./.yybuild.nosync/yy_$(MODULE_NAME)_豫言编译器默认执行包.ll
