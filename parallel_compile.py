@@ -163,7 +163,7 @@ def execute_plan():
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps and
                             (all(dep in completed[stage] for dep in deps[file]) 
-                                or (i >= stages.index(STG_OPTIMIZE_HALF) and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
+                                or (i >= stages.index(STG_ANF) and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
                                 or i >= stages.index(STG_CPS_TRANSFORM) # cps-transform, and codegen do not require dependencies
                                 ) and  
                             (all(file in completed[prev_stage] for prev_stage in stages[:i]))
