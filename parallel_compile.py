@@ -19,7 +19,8 @@ yy_bs_main_file = None
 
 STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
 STG_PARSE = "parse"
-STG_TYPE_CHECK_AND_ANF = "type-check-and-anf"
+STG_TYPE_CHECK_AND_ERASE = "type-check-and-erase"
+STG_ANF = "anf"
 STG_OPTIMIZE_HALF = "optimize-half"
 STG_CPS_TRANSFORM = "cps-transform"
 STG_CLOSURE_CONVERT = "closure-convert"
@@ -29,9 +30,18 @@ STG_CODEGEN = "codegen"
 
 
 num_cpu_limit = None
-stage_concurrency_limit = [100, 100, 100, 100, 100, 100, 100, 100]
-stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK_AND_ANF, STG_OPTIMIZE_HALF, STG_CPS_TRANSFORM, STG_CLOSURE_CONVERT, STG_CLOSURE_OPT, STG_CODEGEN]
-stage_processing_order = [0,1,2,7,5,3,4,6] # process parse -> tc -> codegen  -> optimize-half -> cps
+stage_concurrency_limit = [100, 100, 100, 100, 100, 100, 100, 100, 100]
+stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK_AND_ERASE, STG_ANF, STG_OPTIMIZE_HALF, STG_CPS_TRANSFORM, STG_CLOSURE_CONVERT, STG_CLOSURE_OPT, STG_CODEGEN]
+stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
+                        stages.index(STG_PARSE),
+                        stages.index(STG_TYPE_CHECK_AND_ERASE),
+                        stages.index(STG_ANF),
+                        stages.index(STG_CODEGEN),
+                        stages.index(STG_CLOSURE_CONVERT),
+                        stages.index(STG_OPTIMIZE_HALF),
+                        stages.index(STG_CPS_TRANSFORM),
+                        stages.index(STG_CLOSURE_OPT),
+                         ] # process parse -> tc -> codegen  -> optimize-half -> cps
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
 #     print("" + " ".join(command))
