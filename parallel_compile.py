@@ -22,10 +22,10 @@ STG_PARSE = "parse"
 STG_TYPE_CHECK_AND_ERASE = "type-check-and-erase"
 STG_PRE_CLOSURE_CONVERT = "pre-closure-convert"
 STG_ANF = "anf"
-STG_OPTIMIZE_HALF = "optimize-half"
-STG_CPS_TRANSFORM = "cps-transform"
-STG_CLOSURE_CONVERT = "closure-convert"
-STG_CLOSURE_OPT = "closure-opt"
+# STG_OPTIMIZE_HALF = "optimize-half"
+# STG_CPS_TRANSFORM = "cps-transform"
+# STG_CLOSURE_CONVERT = "closure-convert"
+# STG_CLOSURE_OPT = "closure-opt"
 STG_CODEGEN = "codegen"
 
 
@@ -36,10 +36,10 @@ stages = [STG_DEPENDENCY_ANALYSIS,
           STG_TYPE_CHECK_AND_ERASE, 
           STG_PRE_CLOSURE_CONVERT,
           STG_ANF, 
-          STG_OPTIMIZE_HALF, 
-          STG_CPS_TRANSFORM, 
-          STG_CLOSURE_CONVERT, 
-          STG_CLOSURE_OPT, 
+        #   STG_OPTIMIZE_HALF, 
+        #   STG_CPS_TRANSFORM, 
+        #   STG_CLOSURE_CONVERT, 
+        #   STG_CLOSURE_OPT, 
           STG_CODEGEN]
 stage_concurrency_limit = [100 for s in stages]
 stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
@@ -48,10 +48,10 @@ stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
                         stages.index(STG_PRE_CLOSURE_CONVERT),
                         stages.index(STG_ANF),
                         stages.index(STG_CODEGEN),
-                        stages.index(STG_CLOSURE_CONVERT),
-                        stages.index(STG_OPTIMIZE_HALF),
-                        stages.index(STG_CPS_TRANSFORM),
-                        stages.index(STG_CLOSURE_OPT),
+                        # stages.index(STG_CLOSURE_CONVERT),
+                        # stages.index(STG_OPTIMIZE_HALF),
+                        # stages.index(STG_CPS_TRANSFORM),
+                        # stages.index(STG_CLOSURE_OPT),
                          ] # process parse -> tc -> codegen  -> optimize-half -> cps
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
@@ -76,8 +76,8 @@ def exec_worker(args):
 
 def worker(task, retry_count=0):
     stage, file = task
-    optimize_task = 'optimize' if file[0] == yy_bs_main_file else STG_OPTIMIZE_HALF
-    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage if stage != STG_OPTIMIZE_HALF else optimize_task)] + file + yy_bs_global_args
+    # optimize_task = 'optimize' if file[0] == yy_bs_main_file else STG_OPTIMIZE_HALF
+    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file + yy_bs_global_args
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if process.returncode != 0:
@@ -174,18 +174,19 @@ def execute_plan():
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps and
                             (all(dep in completed[stage] for dep in deps[file]) 
-                                or (i > stages.index(STG_TYPE_CHECK_AND_ERASE) and file != yy_bs_main_file) ## anything after erase do not require previous thing after erase to be completed
-                                or i >= stages.index(STG_CPS_TRANSFORM) # cps-transform, and codegen do not require dependencies
+                                or (i > stages.index(STG_TYPE_CHECK_AND_ERASE)) ## anything after erase do not require previous thing after erase to be completed
+                                # or i >= stages.index(STG_CPS_TRANSFORM) # cps-transform, and codegen do not require dependencies
                                 ) and  
                             (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                         )
                     )
                 ):
+                    # vvv outdated
                     #TODO: optimize for main file need to wait for all opt file to finish
-                    if (file == yy_bs_main_file
-                        and i == stages.index(STG_OPTIMIZE_HALF)
-                        and (not all(file in completed[stage] for file in get_exec_args()))):
-                        continue
+                    # if (file == yy_bs_main_file
+                    #     # and i == stages.index(STG_OPTIMIZE_HALF)
+                    #     and (not all(file in completed[stage] for file in get_exec_args()))):
+                    #     continue
                     scheduled[stage].append(file)
 
     update_schedule()
