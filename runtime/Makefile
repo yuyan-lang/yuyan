@@ -60,12 +60,12 @@ endif
 # clean:
 # 	rm *.o libyyrt*.a
 
-libyyrtdebug.a: $(NATIVE_SOURCES)
+# libyyrtdebug.a: $(NATIVE_SOURCES)
+
+debug: 
 	@mkdir -p build/native
 	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
-
-debug: libyyrtdebug.a
 
 debug_old: 
 	@mkdir -p build/native

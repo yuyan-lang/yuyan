@@ -88,8 +88,8 @@ int64_t yy_runtime_start() {
     /*
     Argument Format:
     [0]: current_stack_start, callee may use full stack space, when callee calls, it passes a stack offset indicating stack usage
+        the argument will be passed as the first element in the stack
     [1]: calling block id
-    [2] : argument data
     [3]: return_record
 
     Callee may only modify the *contents of* return record and must not modify argument ptr
