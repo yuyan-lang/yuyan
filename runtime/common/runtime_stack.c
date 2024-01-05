@@ -90,12 +90,12 @@ int64_t yy_runtime_start() {
     [0]: current_stack_start, callee may use full stack space, when callee calls, it passes a stack offset indicating stack usage
         the argument will be passed as the first element in the stack
     [1]: calling block id
-    [3]: return_record
+    [2]: return_record
 
     Callee may only modify the *contents of* return record and must not modify argument ptr
 
     */
-    int64_t *argument_record[4] = {stack_ptr, initial_block_id, NULL, return_record};
+    int64_t *argument_record[3] = {stack_ptr, initial_block_id, return_record};
     yy_function_type current_function = entryMain;
 
     entryMain(&argument_record);
@@ -118,12 +118,12 @@ int64_t yy_runtime_start() {
 
             // restore stack
             yy_decrement_stack_ptr(3);
+            stack_ptr[0] = return_value;
             yy_decrement_stack_ptr(stack_offset);
 
             // prepare arguments
             argument_record[0] = stack_ptr;
             argument_record[1] = continuation_label_id;
-            argument_record[2] = return_value;
             argument_record[3] = return_record;
 
             // call caller function
@@ -147,11 +147,11 @@ int64_t yy_runtime_start() {
             stack_ptr[1] = function_to_ptr(current_function);
             stack_ptr[2] = int_to_addr(continuation_label_id);
             yy_increment_stack_ptr(3);
+            stack_ptr[0] = argument_data;
 
             argument_record[0] = stack_ptr;
             argument_record[1] = initial_block_id;
-            argument_record[2] = argument_data;
-            argument_record[3] = return_record;
+            argument_record[2] = return_record;
             current_function = new_function;
             current_function(argument_record);
             break;
@@ -171,12 +171,12 @@ int64_t yy_runtime_start() {
 
             // restore stack
             stack_ptr = exception_handler[2];
+            stack_ptr[0] = exception_data;
 
             // prepare arguments
             argument_record[0] = stack_ptr;
             argument_record[1] = caller_function_label;
-            argument_record[2] = exception_data;
-            argument_record[3] = return_record;
+            argument_record[2] = return_record;
 
             // call caller function
             current_function = ptr_to_function(caller_function);
