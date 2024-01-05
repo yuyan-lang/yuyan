@@ -20,6 +20,7 @@ yy_bs_main_file = None
 STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
 STG_PARSE = "parse"
 STG_TYPE_CHECK_AND_ERASE = "type-check-and-erase"
+STG_PRE_CLOSURE_CONVERT = "pre-closure-convert"
 STG_ANF = "anf"
 STG_OPTIMIZE_HALF = "optimize-half"
 STG_CPS_TRANSFORM = "cps-transform"
@@ -30,11 +31,21 @@ STG_CODEGEN = "codegen"
 
 
 num_cpu_limit = None
-stage_concurrency_limit = [100, 100, 100, 100, 100, 100, 100, 100, 100]
-stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK_AND_ERASE, STG_ANF, STG_OPTIMIZE_HALF, STG_CPS_TRANSFORM, STG_CLOSURE_CONVERT, STG_CLOSURE_OPT, STG_CODEGEN]
+stages = [STG_DEPENDENCY_ANALYSIS, 
+          STG_PARSE, 
+          STG_TYPE_CHECK_AND_ERASE, 
+          STG_PRE_CLOSURE_CONVERT,
+          STG_ANF, 
+          STG_OPTIMIZE_HALF, 
+          STG_CPS_TRANSFORM, 
+          STG_CLOSURE_CONVERT, 
+          STG_CLOSURE_OPT, 
+          STG_CODEGEN]
+stage_concurrency_limit = [100 for s in stages]
 stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
                         stages.index(STG_PARSE),
                         stages.index(STG_TYPE_CHECK_AND_ERASE),
+                        stages.index(STG_PRE_CLOSURE_CONVERT),
                         stages.index(STG_ANF),
                         stages.index(STG_CODEGEN),
                         stages.index(STG_CLOSURE_CONVERT),
@@ -163,7 +174,7 @@ def execute_plan():
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps and
                             (all(dep in completed[stage] for dep in deps[file]) 
-                                or (i >= stages.index(STG_ANF) and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
+                                or (i > stages.index(STG_TYPE_CHECK_AND_ERASE) and file != yy_bs_main_file) ## anything after erase do not require previous thing after erase to be completed
                                 or i >= stages.index(STG_CPS_TRANSFORM) # cps-transform, and codegen do not require dependencies
                                 ) and  
                             (all(file in completed[prev_stage] for prev_stage in stages[:i]))
