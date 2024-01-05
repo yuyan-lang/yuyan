@@ -143,7 +143,7 @@ a new module is added with root Path being the file's residing directory *)
         | NONE =>
             let 
             val cmd =  "(" ^
-            (if uselocallib then "make -C runtime/ " ^ (if optimize then "opt" else "debug") ^ ";" else "") ^
+            (if uselocallib then "make -C runtime/ " ^ (if optimize then "opt" else "debug_old") ^ ";" else "") ^
             "clang " ^
              (#llfilepath (StaticErrorStructure.valOf (#llvmInfo cfile)))
             ^

@@ -67,6 +67,11 @@ libyyrtdebug.a: $(NATIVE_SOURCES)
 
 debug: libyyrtdebug.a
 
+debug_old: 
+	@mkdir -p build/native
+	cd build/native && $(CC) -D OLD_ENTRY -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	ar rcs $@ build/native/*.o
+
 # libyyrtdebugwasm.a: $(WASM_SOURCES)
 # 	@mkdir -p build/wasm
 # 	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS)  -sMEMORY64
