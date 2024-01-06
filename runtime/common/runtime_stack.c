@@ -100,7 +100,7 @@ int64_t yy_runtime_start() {
 
     */
     yy_ptr argument_record[4] = {(yy_ptr)stack_ptr, (yy_ptr)initial_block_id, NULL, (yy_ptr)return_record};
-    yy_function_type current_function = entryMain;
+    yy_function_type current_function = NULL;
 
 
     // entryMain(&argument_record);
@@ -110,11 +110,7 @@ int64_t yy_runtime_start() {
         case 1:
         {
 
-            if (current_function == entryMain && stack_ptr == stack) {
-                // errorAndAbort("TODO");
-                // we're done
-                return 0;
-            }
+            
             // get return value
             yy_ptr return_value = return_record[1];
 
@@ -129,6 +125,11 @@ int64_t yy_runtime_start() {
 
             // reset caller function
             current_function = ptr_to_function(caller_function);
+
+            // we have reached the initial NULL function, and entryMain has returned
+            if (current_function == NULL && stack_ptr == stack) {
+                return 0;
+            }
 
             // transfer control to caller
             return_record[0] = int_to_addr(4);
