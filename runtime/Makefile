@@ -60,17 +60,19 @@ endif
 # clean:
 # 	rm *.o libyyrt*.a
 
-# libyyrtdebug.a: $(NATIVE_SOURCES)
-
-debug: 
+libyyrtdebug.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
 	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
-debug_old: 
+debug: libyyrtdebug.a
+
+libyyrtdebug_old.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
 	cd build/native && $(CC) -D OLD_ENTRY -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
+
+debug_old: libyyrtdebug_old.a
 
 # libyyrtdebugwasm.a: $(WASM_SOURCES)
 # 	@mkdir -p build/wasm

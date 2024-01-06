@@ -95,7 +95,7 @@ extern void* 内部全局异常处理器(void* arg1);
 
 void yy_豫言初始化全局异常处理器(){
     void **tup = (void**) yy_gcAllocateArray(2);
-    tup[0] = 内部全局异常处理器;
+    tup[0] = 全局异常处理器;
     当前异常处理器 = tup;
 }
 
