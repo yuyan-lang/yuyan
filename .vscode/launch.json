@@ -39,7 +39,7 @@
             // "MIDebuggerPath": "/usr/bin/lldb"
         },
         {
-            "name": "(lldb2)",
+            "name": "./yy_hello_world_11",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_hello_world_11",
