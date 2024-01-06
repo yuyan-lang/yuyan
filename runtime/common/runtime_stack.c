@@ -109,8 +109,8 @@ int64_t yy_runtime_start() {
         case 1:
         {
 
-            if (current_function == entryMain) {
-                errorAndAbort("TODO");
+            if (current_function == entryMain && stack_ptr == stack) {
+                // errorAndAbort("TODO");
                 // we're done
                 return 0;
             }
