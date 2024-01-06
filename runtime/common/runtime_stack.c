@@ -73,7 +73,8 @@ int64_t *set_continuation_exception_handler(uint64_t *id, int64_t offset)
 int64_t yy_runtime_start() {
     // allocate a 100 M * 8 bytes stack
     
-    stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
+    // stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
+    stack = (yy_ptr*) yy_gcAllocateBytes(stack_size * sizeof(yy_ptr));
     stack_end = stack + stack_size;
     stack_ptr = stack;
 
