@@ -83,9 +83,10 @@ int64_t yy_runtime_start() {
         1 : return to the caller with [1] = return value
         2 : call function, with [1] = function pointer, [2] = argument data, [3] = continuation label id, [4] stack offset
         3 : continuation exception return to caller with [1] = exception label [2] exception data
+        4 : local control transfer, with [1] = continuation label id [2] = argument data
 
     */
-    yy_ptr return_record[5] = {(yy_ptr)(1), (yy_ptr) entryMain, NULL, NULL, 0};
+    yy_ptr return_record[5] = {(yy_ptr)(2), (yy_ptr) entryMain, NULL, int_to_addr(1), 0};
     yy_ptr initial_block_id = int_to_addr(1);
 
     /*
@@ -126,16 +127,13 @@ int64_t yy_runtime_start() {
             yy_decrement_stack_ptr(3);
             yy_decrement_stack_ptr(addr_to_int(stack_offset));
 
-            // prepare arguments
-            argument_record[0] = (yy_ptr)stack_ptr;
-            argument_record[1] = continuation_label_id;
-            argument_record[2] = return_value;
-            argument_record[3] = (yy_ptr)return_record;
-
-            // call caller function
+            // reset caller function
             current_function = ptr_to_function(caller_function);
-            return_record[0] = int_to_addr(-1);
-            current_function(argument_record);
+
+            // transfer control to caller
+            return_record[0] = int_to_addr(4);
+            return_record[1] = continuation_label_id;
+            return_record[2] = return_value;
         }
             break;
 
@@ -157,13 +155,11 @@ int64_t yy_runtime_start() {
             stack_ptr[2] = int_to_addr(continuation_label_id);
             yy_increment_stack_ptr(3);
 
-            argument_record[0] = (yy_ptr)stack_ptr;
-            argument_record[1] = initial_block_id;
-            argument_record[2] = argument_data;
-            argument_record[3] = (yy_ptr)return_record;
             current_function = new_function;
-            return_record[0] = int_to_addr(-1);
-            current_function(argument_record);
+
+            return_record[0] = int_to_addr(4);
+            return_record[1] = initial_block_id;
+            return_record[2] = argument_data;
         }
             break;
 
@@ -185,6 +181,19 @@ int64_t yy_runtime_start() {
             return_record[1] = exception_data;
         }
 
+            break;
+        case 4:
+        {
+            yy_ptr transfer_block_id = return_record[1];
+            yy_ptr argument_data = return_record[2];
+
+            argument_record[0] = (yy_ptr)stack_ptr;
+            argument_record[1] = transfer_block_id;
+            argument_record[2] = argument_data;
+            argument_record[3] = (yy_ptr)return_record;
+            return_record[0] = int_to_addr(-1);
+            current_function(argument_record);
+        }
             break;
         
         default:
