@@ -26,6 +26,7 @@ STG_ANF = "anf"
 # STG_CPS_TRANSFORM = "cps-transform"
 # STG_CLOSURE_CONVERT = "closure-convert"
 # STG_CLOSURE_OPT = "closure-opt"
+STG_PRE_CODEGEN = "pre-codegen"
 STG_CODEGEN = "codegen"
 
 
@@ -40,6 +41,7 @@ stages = [STG_DEPENDENCY_ANALYSIS,
         #   STG_CPS_TRANSFORM, 
         #   STG_CLOSURE_CONVERT, 
         #   STG_CLOSURE_OPT, 
+        STG_PRE_CODEGEN,
           STG_CODEGEN]
 stage_concurrency_limit = [100 for s in stages]
 stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
@@ -47,6 +49,7 @@ stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
                         stages.index(STG_TYPE_CHECK_AND_ERASE),
                         stages.index(STG_PRE_CLOSURE_CONVERT),
                         stages.index(STG_ANF),
+                        stages.index(STG_PRE_CODEGEN),
                         stages.index(STG_CODEGEN),
                         # stages.index(STG_CLOSURE_CONVERT),
                         # stages.index(STG_OPTIMIZE_HALF),
