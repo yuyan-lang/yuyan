@@ -278,6 +278,11 @@ if __name__ == "__main__":
     print(args)
     if args.extra:
         yy_bs_global_args = args.extra.split(" ")
+
+    if "--type-check-only" in yy_bs_global_args:
+        stages = stages[:(stages.index(STG_TYPE_CHECK_AND_ERASE)+1)]
+        stage_processing_order = stage_processing_order[:(stages.index(STG_TYPE_CHECK_AND_ERASE)+1)]
+
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
     # stage_concurrency_limit[5] = int(args.codegen_concurrency_limit)
