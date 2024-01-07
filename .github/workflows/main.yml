@@ -113,8 +113,7 @@ jobs:
       - name: make yy_bs_bs
         if: '! github.event.pull_request.draft'
         run: |
-          make yy_bs
-          make yy_bs_bs
+          make bsr
 
       - uses: actions/upload-artifact@v3
         with:
