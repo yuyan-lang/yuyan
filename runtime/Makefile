@@ -90,7 +90,7 @@ wasmdebug: libyyrtdebugwasm.a
 
 libyyrtopt.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -flto -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
 opt : libyyrtopt.a

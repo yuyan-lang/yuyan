@@ -7,12 +7,21 @@ extern yy_ptr entryMain(yy_ptr*); // the entry to yy llvm ir
 yy_ptr *stack;
 yy_ptr *stack_end;
 yy_ptr *stack_ptr;
-int64_t stack_size = 100000000;
+int64_t stack_size = 1024 * 1024 * 100;
 
 int64_t yy_increment_stack_ptr(int64_t increment) {
     stack_ptr += increment;
     if (stack_ptr >= stack_end) {
         errorAndAbort("Stack overflow");
+    }
+    else if (stack_ptr - stack >= stack_size / 2) {
+        int64_t stack_ptr_offset =  stack_ptr - stack;
+        while (stack_ptr - stack >= stack_size / 2) {
+            stack_size *= 2;
+        }
+        stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
+        stack_end = stack + stack_size;
+        stack_ptr = stack + stack_ptr_offset;
     }
     return 0;
 }
