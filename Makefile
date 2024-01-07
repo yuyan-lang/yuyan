@@ -19,7 +19,7 @@ yy:  $(SMLSOURCES)
 yy_bs : yy $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
-yy_bs_bs : yy_bs $(YYBSSOURCES) $(YYLIBSOURCES) 
+yy_bs_bs : $(YYBSSOURCES) $(YYLIBSOURCES) 
 	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs --parallel
 
 bsrp : yy_bs 
