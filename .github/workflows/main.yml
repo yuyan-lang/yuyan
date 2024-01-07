@@ -76,29 +76,6 @@ jobs:
       - name: make test_bs
         run: make test_bs
 
-  ubuntu-bs-test-tc:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-linux-dependencies
-
-      - name: make bsrttc
-        run: make bsrttc
-
-  ubuntu-bs-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-linux-dependencies
-
-      - name: make bsrt
-        if: '! github.event.pull_request.draft'
-        run: make bsrt
-
-      - name: make bsrtvv
-        if: failure()
-        run: make bsrtvv
-
   ubuntu-bs-test-bs:
     runs-on: ubuntu-latest
     steps:
@@ -118,9 +95,6 @@ jobs:
         if: '! github.event.pull_request.draft'
         run: make bsrp
 
-      - name: make bsrpvv
-        if: failure()
-        run: make bsrpvv
 
   ubuntu-bs-build-tc:
     runs-on: ubuntu-latest
@@ -131,91 +105,23 @@ jobs:
         if: '! github.event.pull_request.draft'
         run: make bsrtc
 
-      - name: make bsrtcvv
-        if: failure()
-        run: make bsrtcvv
-
   ubuntu-bs-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
-      - name: make bsr
-        if: '! github.event.pull_request.draft'
-        run: make bsr
-
-      - name: make bsrvv
-        if: failure()
-        run: make bsrvv
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu-linux-release-package
-          path: |
-            ./yy
-            ./install.sh
-            ./runtime/libyyrtdebug.a
-            ./runtime/libyyrtopt.a
-            ./yylib
-
-  ubuntu-bs-build-js:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-linux-dependencies
-      - name: make bsrjs
-        if: '! github.event.pull_request.draft'
-        run: make bsr
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu-linux-release-package
-          path: |
-            ./yy
-            ./install.sh
-            ./runtime
-            ./yylib
-
-  ubuntu-bs-build-whole-opt:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-linux-dependencies
-      - name: make bsr
-        if: '! github.event.pull_request.draft'
-        run: make bsrwhole
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ubuntu-linux-release-package
-          path: |
-            ./yy
-            ./install.sh
-            ./runtime/libyyrtdebug.a
-            ./runtime/libyyrtopt.a
-            ./yylib
-
-  ubuntu-bs-build-custom:
-    runs-on: custom-runner-1
-    timeout-minutes: 2880
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-linux-dependencies
-      - name: make bsr
+      - name: make yy_bs_bs
         if: '! github.event.pull_request.draft'
         run: |
-          make -C runtime debug
-          yy 豫言编译器/入口。豫 -o yy_bs
-          cp ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc .
-          
+          make yy_bs
+          make yy_bs_bs
 
       - uses: actions/upload-artifact@v3
         with:
-          name: generic-release
+          name: ubuntu-linux-release-package
           path: |
-            ./yy_入口_豫言编译器默认执行包.opt.bc
+            ./yy
+            ./install.sh
+            ./runtime/libyyrtdebug.a
+            ./runtime/libyyrtopt.a
             ./yylib
-            ./runtime
-            !./runtime/*.o
-            !./runtime/*.a
-
