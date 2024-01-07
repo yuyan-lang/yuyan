@@ -3,8 +3,6 @@
 
 #include "gc.h"
 
-extern int64_t entryMain(); // the entry to yy llvm ir
-
 extern void optional_entry_initialization();
 
 int global_argc = 0;
@@ -12,6 +10,8 @@ char** global_argv = NULL;
 
 // runtime configurations
 int64_t use_libgc = 1;
+
+extern int64_t entryMain(); // the entry to yy llvm ir
 
 int main(int argc, char* argv[]) {
 
@@ -42,8 +42,13 @@ int main(int argc, char* argv[]) {
     
 
 
+#ifdef OLD_ENTRY
     return entryMain();
+#else
+    return yy_runtime_start();
+#endif
 }
+
 
 
 

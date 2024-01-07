@@ -19,19 +19,39 @@ yy_bs_main_file = None
 
 STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
 STG_PARSE = "parse"
-STG_TYPE_CHECK_AND_ANF = "type-check-and-anf"
-STG_OPTIMIZE_HALF = "optimize-half"
-STG_CPS_TRANSFORM = "cps-transform"
-STG_CLOSURE_CONVERT = "closure-convert"
-STG_CLOSURE_OPT = "closure-opt"
+STG_TYPE_CHECK = "type-check"
+STG_TYPE_CHECK_AND_ERASE = "type-check-and-erase" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
+STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN = "type-check-and-erase-through-codegen" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
+STG_PRE_CLOSURE_CONVERT = "pre-closure-convert"
+STG_ANF = "anf"
+# STG_OPTIMIZE_HALF = "optimize-half"
+# STG_CPS_TRANSFORM = "cps-transform"
+# STG_CLOSURE_CONVERT = "closure-convert"
+# STG_CLOSURE_OPT = "closure-opt"
+STG_PRE_CODEGEN = "pre-codegen"
 STG_CODEGEN = "codegen"
 
 
 
 num_cpu_limit = None
-stage_concurrency_limit = [100, 100, 100, 100, 100, 100, 100, 100]
-stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK_AND_ANF, STG_OPTIMIZE_HALF, STG_CPS_TRANSFORM, STG_CLOSURE_CONVERT, STG_CLOSURE_OPT, STG_CODEGEN]
-stage_processing_order = [0,1,2,7,5,3,4,6] # process parse -> tc -> codegen  -> optimize-half -> cps
+stages = [STG_DEPENDENCY_ANALYSIS, 
+          STG_PARSE, 
+          STG_TYPE_CHECK, 
+          ]
+# stage_concurrency_limit = [100 for s in stages]
+# stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
+#                         stages.index(STG_PARSE),
+#                         stages.index(STG_TYPE_CHECK),
+#                         stages.index(STG_TYPE_CHECK_AND_ERASE),
+#                         stages.index(STG_PRE_CLOSURE_CONVERT),
+#                         stages.index(STG_ANF),
+#                         stages.index(STG_PRE_CODEGEN),
+#                         stages.index(STG_CODEGEN),
+#                         # stages.index(STG_CLOSURE_CONVERT),
+#                         # stages.index(STG_OPTIMIZE_HALF),
+#                         # stages.index(STG_CPS_TRANSFORM),
+#                         # stages.index(STG_CLOSURE_OPT),
+#                          ] # process parse -> tc -> codegen  -> optimize-half -> cps
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
 #     print("" + " ".join(command))
@@ -55,14 +75,14 @@ def exec_worker(args):
 
 def worker(task, retry_count=0):
     stage, file = task
-    optimize_task = 'optimize' if file[0] == yy_bs_main_file else STG_OPTIMIZE_HALF
-    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage if stage != STG_OPTIMIZE_HALF else optimize_task)] + file + yy_bs_global_args
+    # optimize_task = 'optimize' if file[0] == yy_bs_main_file else STG_OPTIMIZE_HALF
+    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file + yy_bs_global_args
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if process.returncode != 0:
         print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
-        if retry_count >= 2:
+        if retry_count >= 0:
             return None, (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
         else:
@@ -153,18 +173,19 @@ def execute_plan():
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps and
                             (all(dep in completed[stage] for dep in deps[file]) 
-                                or (i >= stages.index(STG_OPTIMIZE_HALF) and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
-                                or i >= stages.index(STG_CPS_TRANSFORM) # cps-transform, and codegen do not require dependencies
+                                or (i > stages.index(STG_TYPE_CHECK)) ## anything after type check do not require previous thing after erase to be completed
+                                # or i >= stages.index(STG_CPS_TRANSFORM) # cps-transform, and codegen do not require dependencies
                                 ) and  
                             (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                         )
                     )
                 ):
+                    # vvv outdated
                     #TODO: optimize for main file need to wait for all opt file to finish
-                    if (file == yy_bs_main_file
-                        and i == stages.index(STG_OPTIMIZE_HALF)
-                        and (not all(file in completed[stage] for file in get_exec_args()))):
-                        continue
+                    # if (file == yy_bs_main_file
+                    #     # and i == stages.index(STG_OPTIMIZE_HALF)
+                    #     and (not all(file in completed[stage] for file in get_exec_args()))):
+                    #     continue
                     scheduled[stage].append(file)
 
     update_schedule()
@@ -191,11 +212,11 @@ def execute_plan():
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
-        pprint.pprint(scheduled)
+        pprint.pprint(scheduled, sort_dicts=False)
         pprint.pprint("============== Executing ==============")
-        pprint.pprint(executing)
+        pprint.pprint(executing, sort_dicts=False)
         pprint.pprint("============== Completed ==============")
-        pprint.pprint({k: len(v) for k, v in completed.items()})
+        pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
@@ -203,11 +224,12 @@ def execute_plan():
 
     with ThreadPoolExecutor(max_workers=num_cpu_limit) as executor:
         while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
-            for i in stage_processing_order:
+            for i in range(len(stages)):
                 stage = stages[i]
                 while (scheduled[stage] 
                     and sum(len(stg) for stg in executing.values()) < num_cpu_limit
-                    and len(executing[stage]) < stage_concurrency_limit[i]):
+                    # and len(executing[stage]) < stage_concurrency_limit[i]
+                    ):
                     file_name = scheduled[stage].pop()
                     print("Scheduling", (stage, file_name))
                     executing[stage].append(file_name)
@@ -240,11 +262,17 @@ def execute_plan():
 
 
 if __name__ == "__main__":
+
+    num_cpu = cpu_count()
+    if sys.platform == "linux" and num_cpu > 8:
+        default_cpu_limit = num_cpu / 2.5
+    else:
+        default_cpu_limit = num_cpu
     # Create parser, add arguments and parse them
     parser = argparse.ArgumentParser()
     parser.add_argument("input_file")
     # parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
-    parser.add_argument("-j", "--num-cpu", type=int, default=cpu_count(), help="Number of CPU cores to use for compilation")
+    parser.add_argument("-j", "--num-cpu", type=int, default=default_cpu_limit, help="Number of CPU cores to use for compilation")
     parser.add_argument("--extra", default=None)
     parser.add_argument("--codegen-concurrency-limit", default=100)
 
@@ -253,6 +281,20 @@ if __name__ == "__main__":
     print(args)
     if args.extra:
         yy_bs_global_args = args.extra.split(" ")
+
+
+    if "--type-check-only" in yy_bs_global_args:
+        pass
+    elif "-v" in yy_bs_global_args:
+          stages.extend([STG_TYPE_CHECK_AND_ERASE, 
+            STG_PRE_CLOSURE_CONVERT,
+            STG_ANF, 
+            STG_PRE_CODEGEN,
+            STG_CODEGEN])
+    else:
+        stages.append(STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)
+        # stage_processing_order = stage_processing_order[:(stages.index(STG_TYPE_CHECK)+1)]
+
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
     # stage_concurrency_limit[5] = int(args.codegen_concurrency_limit)
