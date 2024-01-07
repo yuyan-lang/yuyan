@@ -44,7 +44,9 @@
         或有『--parallel』衔尾则（（写引用于「使用并行编译」于（阳））；处理命令行参数于尾）
         或有『--worker-task=dependency-analysis』衔尾则（（写引用于「单一工作模式任务」于（『dependency-analysis』））；处理命令行参数于尾）
         或有『--worker-task=parse』衔尾则（（写引用于「单一工作模式任务」于（『parse』））；处理命令行参数于尾）
+        或有『--worker-task=type-check-and-erase-through-codegen』衔尾则（（写引用于「单一工作模式任务」于（『type-check-and-erase-through-codegen』））；处理命令行参数于尾）
         或有『--worker-task=type-check-and-erase』衔尾则（（写引用于「单一工作模式任务」于（『type-check-and-erase』））；处理命令行参数于尾）
+        或有『--worker-task=type-check』衔尾则（（写引用于「单一工作模式任务」于（『type-check』））；处理命令行参数于尾）
         或有『--worker-task=anf』衔尾则（（写引用于「单一工作模式任务」于（『anf』））；处理命令行参数于尾）
         或有『--worker-task=optimize』衔尾则（（写引用于「单一工作模式任务」于（『optimize』））；处理命令行参数于尾）
         或有『--worker-task=optimize-half』衔尾则（（写引用于「单一工作模式任务」于（『optimize-half』））；处理命令行参数于尾）
