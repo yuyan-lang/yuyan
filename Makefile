@@ -26,29 +26,9 @@ bsrp : yy_bs
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫 --parse-only
 
-bsrpvv : yy_bs 
-	make yyrt
-	./yy_bs 豫言编译器/入口。豫 --parse-only -vv
-
 bsrtc : yy_bs 
 	make yyrt
 	./yy_bs 豫言编译器/入口。豫 --type-check-only
-
-bsrtcvv : yy_bs 
-	make yyrt
-	./yy_bs 豫言编译器/入口。豫 --type-check-only -vv
-
-bsrv : yy_bs 
-	make yyrt
-	./yy_bs 豫言编译器/入口。豫 -v -o yy_bs_bs
-
-bsrvv : yy_bs 
-	make yyrt
-	./yy_bs 豫言编译器/入口。豫 -vv -o yy_bs_bs
-
-bsrvvv : yy_bs 
-	make yyrt
-	./yy_bs 豫言编译器/入口。豫 -vvv -o yy_bs_bs
 
 bsr : yy_bs 
 	make yyrt
