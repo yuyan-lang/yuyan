@@ -285,7 +285,7 @@ if __name__ == "__main__":
 
     if "--type-check-only" in yy_bs_global_args:
         pass
-    elif "-v" in yy_bs_global_args:
+    elif "--debug" in yy_bs_global_args:
           stages.extend([STG_TYPE_CHECK_AND_ERASE, 
             STG_PRE_CLOSURE_CONVERT,
             STG_ANF, 
