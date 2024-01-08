@@ -171,12 +171,12 @@ def execute_plan():
                     file not in executing[stage] and
                     file not in completed[stage] and 
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
-                        (file in deps and
-                            (all(dep in completed[stage] for dep in deps[file]) 
-                                or (i > stages.index(STG_TYPE_CHECK)) ## anything after type check do not require previous thing after erase to be completed
-                                # or i >= stages.index(STG_CPS_TRANSFORM) # cps-transform, and codegen do not require dependencies
-                                ) and  
-                            (all(file in completed[prev_stage] for prev_stage in stages[:i]))
+                        (file in deps 
+                            and (all(dep in completed[stage] for dep in deps[file]) 
+                                or (i > stages.index(STG_TYPE_CHECK)) 
+                                ) 
+                            and  (all(file in completed[prev_stage] 
+                                      for prev_stage in stages[:(i-1 if stage == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN else i)]))
                         )
                     )
                 ):
