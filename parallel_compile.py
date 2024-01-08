@@ -175,8 +175,7 @@ def execute_plan():
                             and (all(dep in completed[stage] for dep in deps[file]) 
                                 or (i > stages.index(STG_TYPE_CHECK)) 
                                 ) 
-                            and  (all(file in completed[prev_stage] 
-                                      for prev_stage in stages[:(i-1 if stage == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN else i)]))
+                            and  (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                         )
                     )
                 ):
@@ -187,6 +186,9 @@ def execute_plan():
                     #     and (not all(file in completed[stage] for file in get_exec_args()))):
                     #     continue
                     scheduled[stage].append(file)
+                    if (stage == STG_TYPE_CHECK and i+1 < len(stages) and 
+                        (stages[i+1] == STG_TYPE_CHECK_AND_ERASE or stages[i+1] == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)):
+                        scheduled[stages[i+1]].append(file)
 
     update_schedule()
 
