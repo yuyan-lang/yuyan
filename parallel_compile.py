@@ -14,6 +14,7 @@ import subprocess
 import json
 import pprint
 
+LINUX_PARALLEL_FACTOR = 1.5
 yy_bs_global_args = []
 yy_bs_main_file = None
 
@@ -267,7 +268,7 @@ if __name__ == "__main__":
 
     num_cpu = cpu_count()
     if sys.platform == "linux" and num_cpu > 8:
-        default_cpu_limit = num_cpu / 2.5
+        default_cpu_limit = num_cpu / LINUX_PARALLEL_FACTOR
     else:
         default_cpu_limit = num_cpu
     # Create parser, add arguments and parse them
