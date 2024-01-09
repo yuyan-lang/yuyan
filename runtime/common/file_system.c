@@ -27,6 +27,17 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
     return string_to_addr(result);
 }
 
+yy_ptr yyDeleteFileSync(yy_ptr filenamearg) {
+    const char *filename = addr_to_string(filenamearg);
+    int result = remove(filename);
+    if (result != 0) {
+        fprintf(stderr, "Error deleting file: %s\n", filename);
+        errorAndAbort("error printed");
+    }
+
+    return unit_to_addr();
+}
+
 
 // https://stackoverflow.com/questions/2336242/recursive-mkdir-system-call-on-unix
 static void _mkdir(const char *dir) {

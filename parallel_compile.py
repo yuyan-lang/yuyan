@@ -14,7 +14,7 @@ import subprocess
 import json
 import pprint
 
-LINUX_PARALLEL_FACTOR = 1.5
+LINUX_PARALLEL_FACTOR = 1.2
 yy_bs_global_args = []
 yy_bs_main_file = None
 
