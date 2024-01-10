@@ -56,6 +56,7 @@
         或有『--worker-task=closure-convert』衔尾则（（写引用于「单一工作模式任务」于（『closure-convert』））；处理命令行参数于尾）
         或有『--worker-task=pre-closure-convert』衔尾则（（写引用于「单一工作模式任务」于（『pre-closure-convert』））；处理命令行参数于尾）
         或有『--worker-task=pre-codegen』衔尾则（（写引用于「单一工作模式任务」于（『pre-codegen』））；处理命令行参数于尾）
+        或有『--worker-task=all-codegen』衔尾则（（写引用于「单一工作模式任务」于（『all-codegen』））；处理命令行参数于尾）
         或有『--worker-task=codegen』衔尾则（（写引用于「单一工作模式任务」于（『codegen』））；处理命令行参数于尾）
         或有『--worker-task=closure-opt』衔尾则（（写引用于「单一工作模式任务」于（『closure-opt』））；处理命令行参数于尾）
         或有『--worker-task=exec-gen』衔尾则（（写引用于「单一工作模式任务」于（『exec-gen』））；处理命令行参数于尾）
