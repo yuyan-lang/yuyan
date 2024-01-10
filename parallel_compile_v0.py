@@ -14,13 +14,46 @@ import subprocess
 import json
 import pprint
 
+LINUX_PARALLEL_FACTOR = 1.2
 yy_bs_global_args = []
 yy_bs_main_file = None
 
+STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
+STG_PARSE = "parse"
+STG_TYPE_CHECK = "type-check"
+STG_TYPE_CHECK_AND_ERASE = "type-check-and-erase" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
+STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN = "type-check-and-erase-through-codegen" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
+STG_PRE_CLOSURE_CONVERT = "pre-closure-convert"
+STG_ANF = "anf"
+# STG_OPTIMIZE_HALF = "optimize-half"
+# STG_CPS_TRANSFORM = "cps-transform"
+# STG_CLOSURE_CONVERT = "closure-convert"
+# STG_CLOSURE_OPT = "closure-opt"
+STG_PRE_CODEGEN = "pre-codegen"
+STG_ALL_CODEGEN = "all-codegen"
+STG_CODEGEN = "codegen"
+
+
+
 num_cpu_limit = None
-stage_concurrency_limit = [100, 100, 100, 100, 100, 100, 100]
-stages = ["parse", "type-check-and-anf", "optimize-half", "cps-transform", "closure-convert", "closure-opt", "codegen"]
-stage_processing_order = [0,1,6,4,2,3,5] # process parse -> tc -> codegen  -> optimize-half -> cps
+stages = [STG_DEPENDENCY_ANALYSIS, 
+          STG_PARSE, 
+          STG_TYPE_CHECK, 
+          ]
+# stage_concurrency_limit = [100 for s in stages]
+# stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
+#                         stages.index(STG_PARSE),
+#                         stages.index(STG_TYPE_CHECK),
+#                         stages.index(STG_TYPE_CHECK_AND_ERASE),
+#                         stages.index(STG_PRE_CLOSURE_CONVERT),
+#                         stages.index(STG_ANF),
+#                         stages.index(STG_PRE_CODEGEN),
+#                         stages.index(STG_CODEGEN),
+#                         # stages.index(STG_CLOSURE_CONVERT),
+#                         # stages.index(STG_OPTIMIZE_HALF),
+#                         # stages.index(STG_CPS_TRANSFORM),
+#                         # stages.index(STG_CLOSURE_OPT),
+#                          ] # process parse -> tc -> codegen  -> optimize-half -> cps
 # def worker(task):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=" + task[0]] + task[1] + yy_bs_global_args
 #     print("" + " ".join(command))
@@ -36,64 +69,75 @@ def exec_worker(args):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
-        return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+        return args, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}"
     else:
         print(stdout.decode('utf-8'))
         return args, None
 
-def worker(task):
+def worker(task, retry_count=0):
     stage, file = task
-    optimize_task = 'optimize' if file[0] == yy_bs_main_file else 'optimize-half'
-    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage if stage != 'optimize-half' else optimize_task)] + file + yy_bs_global_args
+    # optimize_task = 'optimize' if file[0] == yy_bs_main_file else STG_OPTIMIZE_HALF
+    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file + yy_bs_global_args
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if process.returncode != 0:
-        return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
-                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}"
+        print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
+        if retry_count >= 0:
+            return (task, process.stdout.decode().split()), (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
+        else:
+            return worker(task, retry_count=retry_count + 1)
     else:
-        return task, None
+        print("Completed")
+        print("" + " ".join(command))
+        print(process.stdout.decode())
+        return (task, process.stdout.decode().split()), None
 
-def dependency_analysis(file):
-    command = ["./yy_bs", "--mode=worker", "--worker-task=dependency-analysis"] + [file] + yy_bs_global_args
-    print("" + " ".join(command))
-    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+# def dependency_analysis(file):
+#     command = ["./yy_bs", "--mode=worker", "--worker-task=dependency-analysis"] + [file] + yy_bs_global_args
+#     print("" + " ".join(command))
+#     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    if process.returncode != 0:
-        return None, f"Error during dependency analysis: {process.stderr.decode('utf-8')}"
-    else:
-        dependencies = process.stdout.decode().split()
+#     if process.returncode != 0:
+#         return None, f"Error during dependency analysis: {process.stderr.decode('utf-8')}"
+#     else:
+#         dependencies = process.stdout.decode().split()
         
-    return dependencies, None
+#     return dependencies, None
 
-def build_dep_graph(input_file):
-    graph = {input_file: []}
+# def build_dep_graph(input_file):
+#     graph = {input_file: []}
     
-    to_visit = [input_file]
+#     to_visit = [input_file]
 
-    while to_visit:
-        current_file = to_visit.pop()
-        current_deps, error = dependency_analysis(current_file)
+#     while to_visit:
+#         current_file = to_visit.pop()
+#         current_deps, error = dependency_analysis(current_file)
 
-        if error is not None:
-            return None, error
+#         if error is not None:
+#             return None, error
 
-        for dep in current_deps:
-            if dep not in graph:
-                graph[dep] = []
-                to_visit.append(dep)
+#         for dep in current_deps:
+#             if dep not in graph:
+#                 graph[dep] = []
+#                 to_visit.append(dep)
         
-        graph[current_file] = current_deps
+#         graph[current_file] = current_deps
 
 
-    return graph, None
+#     return graph, None
 
-def execute_plan(graph):
+def execute_plan():
     completed = {k : [] for k in stages}
     executing = {k : [] for k in stages}
     scheduled = {k : [] for k in stages}
+    errored = {k : [] for k in stages}
+    error_msgs = []
 
-    all_files = list(graph.keys())
+    deps = {}
+    deps_to_process = [yy_bs_main_file]
 
     results_ready = multiprocessing.Manager().Event()
 
@@ -105,62 +149,87 @@ def execute_plan(graph):
             override_list.extend(["--override-add-file-dependency", item])
         return override_list
 
-    exec_args = []
-    candidate = [k for k in graph.keys() if k != yy_bs_main_file]
-    while len(exec_args) < len(candidate):
-        for k in candidate:
-            if k not in exec_args and all(dep in exec_args for dep in graph[k]):
-                exec_args.append(k)
+    def get_exec_args():
+        exec_args = []
+        assert deps_to_process == [], "expecting all dependencies to be processed when generating executables"
+        candidate = [k for k in deps.keys() if k != yy_bs_main_file]
+        while len(exec_args) < len(candidate):
+            for k in candidate:
+                if k not in exec_args and all(dep in exec_args for dep in deps[k]):
+                    exec_args.append(k)
+        return exec_args
 
     def get_file_args(cur_filename):
-        return [cur_filename] + convert_to_override_list(
-            # graph[cur_filename] if cur_filename != yy_bs_main_file else 
-            list(graph[cur_filename]) if cur_filename != yy_bs_main_file else exec_args)
+        if cur_filename in deps:
+            return [cur_filename] + convert_to_override_list(
+                # graph[cur_filename] if cur_filename != yy_bs_main_file else 
+                list(deps[cur_filename]) if cur_filename != yy_bs_main_file else get_exec_args())
+        else:
+            return [cur_filename]
 
     def update_schedule():
-        nonlocal scheduled, completed, all_files
-        for file in all_files:
+        nonlocal scheduled, completed, deps_to_process, deps
+        print("Updating schedule...")
+
+        for file in deps_to_process + list(deps.keys()):
             for i, stage in enumerate(stages):
                 if (
                     file not in scheduled[stage] and 
                     file not in executing[stage] and
                     file not in completed[stage] and 
-                    (all(dep in completed[stage] for dep in graph[file]) 
-                        or (i > 1 and file != yy_bs_main_file) ## optimize-half do not require dependencies, unless it's the entry file
-                        or i > 2 # cps-transform, and codegen do not require dependencies
-                        ) and  
-                    (all(file in completed[prev_stage] for prev_stage in stages[:i]))
+                    file not in errored[stage] and
+                    ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
+                        (file in deps 
+                            and (all(dep in completed[stage] for dep in deps[file]) 
+                                or (i > stages.index(STG_TYPE_CHECK)) 
+                                ) 
+                            and  (all(file in completed[prev_stage] for prev_stage in stages[:i]))
+                        )
+                    )
                 ):
+                    # vvv outdated
                     #TODO: optimize for main file need to wait for all opt file to finish
-                    if (file == yy_bs_main_file
-                        and i == 2
-                        and (not all(file in completed[stage] for file in exec_args))):
-                        continue
+                    # if (file == yy_bs_main_file
+                    #     # and i == stages.index(STG_OPTIMIZE_HALF)
+                    #     and (not all(file in completed[stage] for file in get_exec_args()))):
+                    #     continue
                     scheduled[stage].append(file)
+                    if (stage == STG_TYPE_CHECK and i+1 < len(stages) and 
+                        (stages[i+1] == STG_TYPE_CHECK_AND_ERASE or stages[i+1] == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)):
+                        scheduled[stages[i+1]].append(file)
 
     update_schedule()
 
     def process_result(future):
-        nonlocal results_ready
-        result, error = future.result()
+        nonlocal results_ready, deps, deps_to_process
+        (result, error) = future.result()
+        (comp_stage, comp_file), out_lines = result
         if error:
-            print(error)
-            os._exit(1)
-        # print("processing result", result)
-        comp_stage, comp_file = result
-        completed[comp_stage].append(comp_file[0])
-        executing[comp_stage].remove(comp_file[0])
-        print("completed", comp_stage, comp_file[0])
+            errored[comp_stage].append(comp_file[0])
+            error_msgs.append(error)
+        else:
+            if comp_stage == STG_DEPENDENCY_ANALYSIS:
+                deps[comp_file[0]] = out_lines
+                deps_to_process.remove(comp_file[0])
+                for f in out_lines:
+                    if f not in deps and f not in deps_to_process:
+                        deps_to_process.append(f)
+            completed[comp_stage].append(comp_file[0])
+            executing[comp_stage].remove(comp_file[0])
+            print("completed", comp_stage, comp_file[0])
         results_ready.set()
     def print_stat():
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
-        pprint.pprint(scheduled)
+        pprint.pprint(scheduled, sort_dicts=False)
         pprint.pprint("============== Executing ==============")
-        pprint.pprint(executing)
+        pprint.pprint(executing, sort_dicts=False)
         pprint.pprint("============== Completed ==============")
-        pprint.pprint({k: len(v) for k, v in completed.items()})
+        pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
+        pprint.pprint("============== Errored ==============")
+        pprint.pprint(errored, sort_dicts=False)
+        print(error_msgs)
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
@@ -168,32 +237,36 @@ def execute_plan(graph):
 
     with ThreadPoolExecutor(max_workers=num_cpu_limit) as executor:
         while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
-            for i in stage_processing_order:
+            for i in range(len(stages)):
                 stage = stages[i]
                 while (scheduled[stage] 
                     and sum(len(stg) for stg in executing.values()) < num_cpu_limit
-                    and len(executing[stage]) < stage_concurrency_limit[i]):
+                    # and len(executing[stage]) < stage_concurrency_limit[i]
+                    ):
                     file_name = scheduled[stage].pop()
                     print("Scheduling", (stage, file_name))
                     executing[stage].append(file_name)
                     executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
             print_stat()
+            print("Waiting for updates...")
             results_ready.wait()
             results_ready.clear()
             update_schedule()
     
     print_stat()
-    for file in all_files:
+    for file in deps_to_process:
+        print(f"File {file} is due for dependency-analysis but not done")
+    for file in deps.keys():
         for i, stage in enumerate(stages):
             if (file not in completed[stage]):
-                if not all(dep in completed[stage] for dep in graph[file]):
-                    print(f"File {file} is due for {stage} but not all dependencies are completed: {[dep for dep in graph[file] if dep not in completed[stage]]}")
+                if not all(dep in completed[stage] for dep in deps[file]):
+                    print(f"File {file} is due for {stage} but not all dependencies are completed: {[dep for dep in deps[file] if dep not in completed[stage]]}")
                 if not all(file in completed[prev_stage] for prev_stage in stages[:i]):
                     print(f"File {file} is due for {stage} but not all previous stages are completed: {[prev_stage for prev_stage in stages[:i] if file not in completed[prev_stage]]}")
 
 
 
-    t, error = exec_worker([yy_bs_main_file, *convert_to_override_list(exec_args)])
+    t, error = exec_worker([yy_bs_main_file, *convert_to_override_list(get_exec_args())])
     if error:
         print(error)
         os._exit(1)
@@ -202,11 +275,17 @@ def execute_plan(graph):
 
 
 if __name__ == "__main__":
+
+    num_cpu = cpu_count()
+    if sys.platform == "linux" and num_cpu > 8:
+        default_cpu_limit = num_cpu / LINUX_PARALLEL_FACTOR
+    else:
+        default_cpu_limit = num_cpu
     # Create parser, add arguments and parse them
     parser = argparse.ArgumentParser()
     parser.add_argument("input_file")
-    parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
-    parser.add_argument("-j", "--num-cpu", type=int, default=cpu_count(), help="Number of CPU cores to use for compilation")
+    # parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
+    parser.add_argument("-j", "--num-cpu", type=int, default=default_cpu_limit, help="Number of CPU cores to use for compilation")
     parser.add_argument("--extra", default=None)
     parser.add_argument("--codegen-concurrency-limit", default=100)
 
@@ -215,29 +294,43 @@ if __name__ == "__main__":
     print(args)
     if args.extra:
         yy_bs_global_args = args.extra.split(" ")
+
+
+    if "--type-check-only" in yy_bs_global_args:
+        pass
+    elif "--debug" in yy_bs_global_args:
+          stages.extend([STG_TYPE_CHECK_AND_ERASE, 
+            STG_PRE_CLOSURE_CONVERT,
+            STG_ANF, 
+            STG_ALL_CODEGEN,
+            ])
+    else:
+        stages.append(STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)
+        # stage_processing_order = stage_processing_order[:(stages.index(STG_TYPE_CHECK)+1)]
+
     yy_bs_main_file = args.input_file
     num_cpu_limit = args.num_cpu
     # stage_concurrency_limit[5] = int(args.codegen_concurrency_limit)
 
-    if args.cache_file:
-        # If a cache file is provided, attempt to load the cached dependency graph
-        try:
-            with open(args.cache_file, "r") as f:
-                graph = json.load(f)
-            print("Loaded dependency graph from cache.")
-        except FileNotFoundError:
-            graph, error = build_dep_graph(args.input_file)
-            if error is not None:
-                print(error)
-            else:
-                # Save the freshly built graph to the cache file for future use
-                with open(args.cache_file, "w") as f:
-                    json.dump(graph, f)
-    else:
-        # If no cache file is provided, build the dependency graph as usual
-        graph, error = build_dep_graph(args.input_file)
-        if error is not None:
-            print(error)
+    # if args.cache_file:
+    #     # If a cache file is provided, attempt to load the cached dependency graph
+    #     try:
+    #         with open(args.cache_file, "r") as f:
+    #             graph = json.load(f)
+    #         print("Loaded dependency graph from cache.")
+    #     except FileNotFoundError:
+    #         graph, error = build_dep_graph(args.input_file)
+    #         if error is not None:
+    #             print(error)
+    #         else:
+    #             # Save the freshly built graph to the cache file for future use
+    #             with open(args.cache_file, "w") as f:
+    #                 json.dump(graph, f)
+    # else:
+    #     # If no cache file is provided, build the dependency graph as usual
+    #     graph, error = build_dep_graph(args.input_file)
+    #     if error is not None:
+    #         print(error)
 
-    pprint.pprint({k : len(v) for (k,v) in graph.items()})
-    print(execute_plan(graph))
+    # pprint.pprint({k : len(v) for (k,v) in graph.items()})
+    print(execute_plan())
