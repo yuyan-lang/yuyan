@@ -30,6 +30,7 @@ STG_ANF = "anf"
 # STG_CLOSURE_CONVERT = "closure-convert"
 # STG_CLOSURE_OPT = "closure-opt"
 STG_PRE_CODEGEN = "pre-codegen"
+STG_ALL_CODEGEN = "all-codegen"
 STG_CODEGEN = "codegen"
 
 
@@ -68,7 +69,7 @@ def exec_worker(args):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
-        return None, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+        return args, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}"
     else:
         print(stdout.decode('utf-8'))
@@ -84,11 +85,14 @@ def worker(task, retry_count=0):
         print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
         if retry_count >= 0:
-            return None, (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+            return (task, process.stdout.decode().split()), (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
         else:
             return worker(task, retry_count=retry_count + 1)
     else:
+        print("Completed")
+        print("" + " ".join(command))
+        print(process.stdout.decode())
         return (task, process.stdout.decode().split()), None
 
 # def dependency_analysis(file):
@@ -129,6 +133,8 @@ def execute_plan():
     completed = {k : [] for k in stages}
     executing = {k : [] for k in stages}
     scheduled = {k : [] for k in stages}
+    errored = {k : [] for k in stages}
+    error_msgs = []
 
     deps = {}
     deps_to_process = [yy_bs_main_file]
@@ -171,6 +177,7 @@ def execute_plan():
                     file not in scheduled[stage] and 
                     file not in executing[stage] and
                     file not in completed[stage] and 
+                    file not in errored[stage] and
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps 
                             and (all(dep in completed[stage] for dep in deps[file]) 
@@ -196,20 +203,20 @@ def execute_plan():
     def process_result(future):
         nonlocal results_ready, deps, deps_to_process
         (result, error) = future.result()
-        if error:
-            print(error)
-            os._exit(1)
-        # print("processing result", result)
         (comp_stage, comp_file), out_lines = result
-        if comp_stage == STG_DEPENDENCY_ANALYSIS:
-            deps[comp_file[0]] = out_lines
-            deps_to_process.remove(comp_file[0])
-            for f in out_lines:
-                if f not in deps and f not in deps_to_process:
-                    deps_to_process.append(f)
-        completed[comp_stage].append(comp_file[0])
-        executing[comp_stage].remove(comp_file[0])
-        print("completed", comp_stage, comp_file[0])
+        if error:
+            errored[comp_stage].append(comp_file[0])
+            error_msgs.append(error)
+        else:
+            if comp_stage == STG_DEPENDENCY_ANALYSIS:
+                deps[comp_file[0]] = out_lines
+                deps_to_process.remove(comp_file[0])
+                for f in out_lines:
+                    if f not in deps and f not in deps_to_process:
+                        deps_to_process.append(f)
+            completed[comp_stage].append(comp_file[0])
+            executing[comp_stage].remove(comp_file[0])
+            print("completed", comp_stage, comp_file[0])
         results_ready.set()
     def print_stat():
         pprint.pprint("=======================================")
@@ -220,6 +227,9 @@ def execute_plan():
         pprint.pprint(executing, sort_dicts=False)
         pprint.pprint("============== Completed ==============")
         pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
+        pprint.pprint("============== Errored ==============")
+        pprint.pprint(errored, sort_dicts=False)
+        print(error_msgs)
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
@@ -292,8 +302,8 @@ if __name__ == "__main__":
           stages.extend([STG_TYPE_CHECK_AND_ERASE, 
             STG_PRE_CLOSURE_CONVERT,
             STG_ANF, 
-            STG_PRE_CODEGEN,
-            STG_CODEGEN])
+            STG_ALL_CODEGEN,
+            ])
     else:
         stages.append(STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)
         # stage_processing_order = stage_processing_order[:(stages.index(STG_TYPE_CHECK)+1)]

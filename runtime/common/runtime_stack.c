@@ -41,7 +41,7 @@ int64_t yy_get_stack_offset(yy_ptr *ptr) {
 }
 
 // Define a function type for the pointer
-typedef yy_ptr (*yy_function_type)(yy_ptr*);
+typedef yy_ptr (*yy_function_type)(yy_ptr, yy_ptr, yy_ptr, yy_ptr);
 
 yy_function_type ptr_to_function(yy_ptr ptr) {
     return (yy_function_type) ptr;
@@ -205,7 +205,7 @@ int64_t yy_runtime_start() {
             argument_record[2] = argument_data;
             argument_record[3] = (yy_ptr)return_record;
             return_record[0] = int_to_addr(-1);
-            current_function(argument_record);
+            current_function(argument_record[0], argument_record[1], argument_record[2], argument_record[3]);
         }
             break;
         
