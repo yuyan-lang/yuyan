@@ -160,4 +160,5 @@ createcache:
 	mount -t tmpfs none .yybuild.nosync
 
 cleancache:
-	find .yybuild.nosync/  -maxdepth 1 -type d -type f -print -delete \;
+	find .yybuild.nosync/  -type f -delete 
+	find .yybuild.nosync/ -mindepth 1 -type d -delete 

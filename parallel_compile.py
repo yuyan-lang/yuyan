@@ -77,16 +77,29 @@ def process_pp_dictionary(original_dict):
     new_dict = {}
 
     for key, value in original_dict.items():
-        seen_keys = []
         new_dict[key] = []
         for item in value:
             if isinstance(item, tuple):
                 tuple_key, *tuple_value = item
-                if tuple_key in seen_keys:
-                    continue
+                if len(tuple_value) == 1:
+                    if (any(tk[0] == tuple_key) for tk in new_dict[key]):
+                        continue
+                    else:
+                        new_dict[key].append((tuple_key, len([v[1] for v in value if v[0] == tuple_key])))
+                elif len(tuple_value) == 2:
+                    if not (any(tk[0] == tuple_key for tk in new_dict[key])):
+                        new_dict[key].append([tuple_key, {}])
+                    index = next(i for i, v in enumerate(new_dict[key]) if v[0] == tuple_key)
+                    file_name, *_ = tuple_value
+                    if file_name not in new_dict[key][index][1]:
+                        names = ([v[2] for v in value if v[0] == tuple_key and v[1] == file_name])
+                        if len(names) <= 3:
+                            new_dict[key][index][1][file_name] = names
+                        else:
+                            new_dict[key][index][1][file_name] = len(names)
                 else:
-                    new_dict[key].append((tuple_key, len([v[1] for v in value if v[0] == tuple_key])))
-                    seen_keys.append(tuple_key)
+                    raise ValueError("Error: tuple length is not 1 or 2", item)
+                    
             else:
                 new_dict[key].append(item)
 
