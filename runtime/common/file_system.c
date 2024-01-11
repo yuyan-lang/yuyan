@@ -39,25 +39,71 @@ yy_ptr yyDeleteFileSync(yy_ptr filenamearg) {
 }
 
 
-// https://stackoverflow.com/questions/2336242/recursive-mkdir-system-call-on-unix
-static void _mkdir(const char *dir) {
-    char tmp[256];
-    char *p = NULL;
-    size_t len;
+/* Make a directory; already existing dir okay */
+static int maybe_mkdir(const char* path, mode_t mode)
+{
+    struct stat st;
+    errno = 0;
 
-    snprintf(tmp, sizeof(tmp),"%s",dir);
-    len = strlen(tmp);
-    if (tmp[len - 1] == '/')
-        tmp[len - 1] = 0;
-    for (p = tmp + 1; *p; p++)
-        if (*p == '/') {
-            *p = 0;
-            mkdir(tmp, S_IRWXU);
-            *p = '/';
-        }
-    mkdir(tmp, S_IRWXU);
+    /* Try to make the directory */
+    if (mkdir(path, mode) == 0)
+        return 0;
+
+    /* If it fails for any reason but EEXIST, fail */
+    if (errno != EEXIST)
+        return -1;
+
+    /* Check if the existing path is a directory */
+    if (stat(path, &st) != 0)
+        return -1;
+
+    /* If not, fail with ENOTDIR */
+    if (!S_ISDIR(st.st_mode)) {
+        errno = ENOTDIR;
+        return -1;
+    }
+
+    errno = 0;
+    return 0;
 }
 
+int mkdir_p(const char *path)
+{
+    /* Adapted from http://stackoverflow.com/a/2336245/119527 */
+    char *_path = NULL;
+    char *p; 
+    int result = -1;
+    mode_t mode = 0777;
+
+    errno = 0;
+
+    /* Copy string so it's mutable */
+    _path = strdup(path);
+    if (_path == NULL)
+        goto out;
+
+    /* Iterate the string */
+    for (p = _path + 1; *p; p++) {
+        if (*p == '/') {
+            /* Temporarily truncate */
+            *p = '\0';
+
+            if (maybe_mkdir(_path, mode) != 0)
+                goto out;
+
+            *p = '/';
+        }
+    }   
+
+    if (maybe_mkdir(_path, mode) != 0)
+        goto out;
+
+    result = 0;
+
+out:
+    free(_path);
+    return result;
+}
 yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
     const char *filename = addr_to_string(file_name_addr);
     const char *content = addr_to_string(content_addr);
@@ -66,7 +112,10 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
     char *last_slash = strrchr(directory_name, '/');
     if (last_slash != NULL) {
         *last_slash = '\0';
-        _mkdir(directory_name);
+        if (mkdir_p(directory_name) != 0){
+            fprintf(stderr, "Error creating directory (-p): %s\n", filename);
+            errorAndAbort("运行时错误");
+        }
     }
     free(directory_name);
 

@@ -8,6 +8,7 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <limits.h>
+#include <errno.h>
 
 #ifdef __linux__
     #include <bsd/string.h>
