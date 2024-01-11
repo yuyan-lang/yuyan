@@ -73,7 +73,7 @@ stages = [STG_DEPENDENCY_ANALYSIS,
 #         return None, f"Error during {task[0]} on {task[1]}: {process.stderr.decode('utf-8')}"
 #     else:
 #         return task
-def process_pp_dictionary(original_dict):
+def process_pp_dictionary(original_dict, show_summary = True):
     new_dict = {}
 
     for key, value in original_dict.items():
@@ -81,8 +81,8 @@ def process_pp_dictionary(original_dict):
         for item in value:
             if isinstance(item, tuple):
                 tuple_key, *tuple_value = item
-                if len(tuple_value) == 1:
-                    if (any(tk[0] == tuple_key) for tk in new_dict[key]):
+                if len(tuple_value) == 1 or show_summary:
+                    if (any((tk[0] == tuple_key) for tk in new_dict[key])):
                         continue
                     else:
                         new_dict[key].append((tuple_key, len([v[1] for v in value if v[0] == tuple_key])))
@@ -103,7 +103,7 @@ def process_pp_dictionary(original_dict):
             else:
                 new_dict[key].append(item)
 
-    return new_dict
+    return {k : [len(v), new_dict[k]] for k, v in original_dict.items()}
 
 
 def get_function_names(file: str):
@@ -350,7 +350,7 @@ def execute_plan():
         results_ready.set()
     def print_stat():
         scheduled_pp = process_pp_dictionary(scheduled)
-        executing_pp = process_pp_dictionary(executing)
+        executing_pp = process_pp_dictionary(executing, show_summary=False)
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
