@@ -156,9 +156,30 @@ compile_user_code:
 
 
 createcache:
-	mkdir .yybuild.nosync
+	mkdir -p .yybuild.nosync
 	mount -t tmpfs none .yybuild.nosync
 
 cleancache:
 	find .yybuild.nosync/  -type f -delete 
 	find .yybuild.nosync/ -mindepth 1 -type d -delete 
+
+CACHE_DIR := ./.yybuild.nosync
+ZIP_FILE := yy_cache_data.zip
+
+.PHONY: make backupcache restorecache
+
+backupcache:
+	echo "Creating backup..."
+	mkdir -p yy_backup_temp
+	cp -r $(CACHE_DIR)/* yy_backup_temp
+	rm -f $(ZIP_FILE)
+	(cd yy_backup_temp && zip -q -r ../$(ZIP_FILE) .)
+	rm -rf yy_backup_temp
+	echo "Backup completed. Zip file: $(ZIP_FILE)"
+
+restorecache:
+	echo "Restoring cache..."
+	unzip -q $(ZIP_FILE) -d yy_restore_temp
+	cp -r yy_restore_temp/* $(CACHE_DIR)
+	rm -rf yy_restore_temp
+	echo "Cache restored."
