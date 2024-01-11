@@ -18,7 +18,8 @@ import re
 from datetime import datetime
 
 
-LINUX_PARALLEL_FACTOR = 1.2
+LINUX_PARALLEL_FACTOR = .8
+DEFAULT_PARALLEL_FACTOR = 1.0
 yy_bs_global_args = []
 yy_bs_main_file = None
 
@@ -149,7 +150,7 @@ def exec_worker(args):
     print("" + " ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
-    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + stdout.decode() + "\nSTDERR: \n" + stderr.decode() + "\nRET: \n" + process.returncode + "\n")
+    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + stdout.decode() + "\nSTDERR: \n" + stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")
     if process.returncode != 0:
         return args, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}"
@@ -162,7 +163,7 @@ def worker(task, retry_count=0):
     command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + process.stdout.decode() + "\nSTDERR: \n" + process.stderr.decode() + "\nRET: \n" + process.returncode + "\n")
+    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + process.stdout.decode() + "\nSTDERR: \n" + process.stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")
     if process.returncode != 0:
         print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
@@ -284,7 +285,10 @@ def execute_plan():
                     #     continue
                     scheduled[stage].append(file)
                     if (stage == STG_TYPE_CHECK and i+1 < len(stages) and 
-                        (stages[i+1] == STG_TYPE_CHECK_AND_ERASE or stages[i+1] == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)):
+                        (stages[i+1] == STG_TYPE_CHECK_AND_ERASE 
+                         or stages[i+1] == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN
+                         or stages[i+1] == STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC
+                         )):
                         scheduled[stages[i+1]].append(file)
 
     update_schedule()
@@ -405,7 +409,7 @@ if __name__ == "__main__":
     if sys.platform == "linux" and num_cpu > 8:
         default_cpu_limit = num_cpu / LINUX_PARALLEL_FACTOR
     else:
-        default_cpu_limit = num_cpu
+        default_cpu_limit = num_cpu / DEFAULT_PARALLEL_FACTOR
     # Create parser, add arguments and parse them
     parser = argparse.ArgumentParser()
     parser.add_argument("input_file")

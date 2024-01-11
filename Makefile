@@ -112,9 +112,6 @@ clean:
 cleanbs:
 	rm yy_bs
 
-cleancache:
-	find .yybuild.nosync/ -name "*.编译信息.json" -print -exec rm {} \;
-
 cleancodegen:
 	find .yybuild.nosync/ -name "*.代码生成形式.json" -print -exec rm {} \;
 
@@ -163,5 +160,4 @@ createcache:
 	mount -t tmpfs none .yybuild.nosync
 
 cleancache:
-	rm -rf .yybuild.nosync
-	make createcache
+	find .yybuild.nosync/  -maxdepth 1 -type d -type f -print -delete \;
