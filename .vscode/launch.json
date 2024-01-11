@@ -128,12 +128,12 @@
             "type": "node",
         },
         {
-            "name": "Python Debug Current File",
+            "name": "parallel_compile.py",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
+            "program": "parallel_compile.py",
             "console": "integratedTerminal",
-            "args": ["/home/zc/yuyan_proj/yuyan/豫言编译器/入口。豫"],
+            "args": ["performance-investigation/matrix-multiply/matrix-multiply.yuyan", "--extra=--very-parallel"],
             "justMyCode": true
         }
     ],

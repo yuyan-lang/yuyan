@@ -116,14 +116,14 @@
         或有『codegen-single-func』则（
             虑函数名者读编译属性于『function_name』而
             虑续延名者读编译属性于『block_name』而
-            若（缓存存在于路径于『anf-and-pre-codegen-single-func.』附（函数名））
+            若（缓存存在于路径于『codegen-single-func.』附（函数名）附『.』附续延名）
             则零否则（
                 虑无者进行单函数代码生成于路径于函数名于续延名而
-                虑无者写缓存于路径于『anf-and-pre-codegen-single-func.』附（函数名）于（式节点于待定节点于【】）而
+                虑无者写缓存于路径于『codegen-single-func.』附（函数名）附『.』附续延名于（式节点于待定节点于【】）而
                 零
             ）
         ）
-        或有『codegen-single-func』则（
+        或有『codegen-single-func-final』则（
             若（缓存存在于路径于『codegen-single-func』）
             则零否则（
                 虑无者「低级虚拟机单个代码整合」于路径而

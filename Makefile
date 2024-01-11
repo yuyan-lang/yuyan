@@ -156,3 +156,12 @@ compile_user_code:
 	cp ./.yybuild.nosync/yy_user-code_豫言编译器默认执行包.bc ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.bc
 	llvm-dis ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.bc -o ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.ll
 	emcc -o ./.yybuild.nosync/$(USER_CODE_DIR)/user-code-compiled.js -O3 ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64 --pre-js ide/client/ide-pre.js
+
+
+createcache:
+	mkdir .yybuild.nosync
+	mount -t tmpfs none .yybuild.nosync
+
+cleancache:
+	rm -rf .yybuild.nosync
+	make createcache

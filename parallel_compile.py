@@ -15,6 +15,7 @@ import subprocess
 import json
 import pprint
 import re
+from datetime import datetime
 
 
 LINUX_PARALLEL_FACTOR = 1.2
@@ -31,7 +32,7 @@ STG_ANF = "anf"
 STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC = "type-check-erase-clo-conv-single-func" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
 STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC = "anf-and-pre-codegen-single-func"
 STG_CODEGEN_SINGLE_FUNC = "codegen-single-func"
-STG_CODEGEN_SINGLE_FUNC_FINAL = "codegen-single-func"
+STG_CODEGEN_SINGLE_FUNC_FINAL = "codegen-single-func-final"
 
 # STG_OPTIMIZE_HALF = "optimize-half"
 # STG_CPS_TRANSFORM = "cps-transform"
@@ -41,6 +42,7 @@ STG_PRE_CODEGEN = "pre-codegen"
 STG_ALL_CODEGEN = "all-codegen"
 STG_CODEGEN = "codegen"
 
+log_file = open(".yybuild.nosync/yy_parallel_log.txt", "w+")
 
 
 num_cpu_limit = None
@@ -70,6 +72,25 @@ stages = [STG_DEPENDENCY_ANALYSIS,
 #         return None, f"Error during {task[0]} on {task[1]}: {process.stderr.decode('utf-8')}"
 #     else:
 #         return task
+def process_pp_dictionary(original_dict):
+    new_dict = {}
+
+    for key, value in original_dict.items():
+        seen_keys = []
+        new_dict[key] = []
+        for item in value:
+            if isinstance(item, tuple):
+                tuple_key, *tuple_value = item
+                if tuple_key in seen_keys:
+                    continue
+                else:
+                    new_dict[key].append((tuple_key, len([v[1] for v in value if v[0] == tuple_key])))
+                    seen_keys.append(tuple_key)
+            else:
+                new_dict[key].append(item)
+
+    return new_dict
+
 
 def get_function_names(file: str):
     command = ["./yy_bs", "--mode=worker", "--worker-task=get-function-names"] + [file] + yy_bs_global_args
@@ -77,22 +98,26 @@ def get_function_names(file: str):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
-        raise ValueError(command, stdout, stderr)
+        print("ERROR OCCURRED")
+        print(" ".join(command), stdout.decode(), stderr.decode(), sep="\n")
+        os.abort()
     else:
         return stdout.decode().split()
 
 def get_block_names(file, function_name):
-    command = ["./yy_bs", "--mode=worker", "--worker-task=get-block-names", f"-Dfunction_name={function_name}"] + file + yy_bs_global_args
+    command = ["./yy_bs", "--mode=worker", "--worker-task=get-block-names", f"-Dfunction_name={function_name}"] + [file] + yy_bs_global_args
     print("" + " ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
-        raise ValueError(command, stdout, stderr)
+        print("ERROR OCCURRED")
+        print(" ".join(command), stdout.decode(), stderr.decode(), sep="\n")
+        os.abort()
     else:
         return stdout.decode().split()
 
 def extract_block_name(strings):
-    pattern = re.compile(r'-Dblock=([^,]+)')
+    pattern = re.compile(r'-Dblock_name=([^,]+)')
 
     func_names = []
     for string in strings:
@@ -103,7 +128,7 @@ def extract_block_name(strings):
     if len(func_names) == 1:
         return func_names[0]
     else:
-        raise ValueError("Error: None or multiple function names found.", func_names, strings)
+        raise ValueError("Error: None or multiple block names found.", func_names, strings)
 
 def extract_func_name(strings):
     pattern = re.compile(r'-Dfunction_name=([^,]+)')
@@ -124,6 +149,7 @@ def exec_worker(args):
     print("" + " ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
+    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + stdout.decode() + "\nSTDERR: \n" + stderr.decode() + "\nRET: \n" + process.returncode + "\n")
     if process.returncode != 0:
         return args, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}"
@@ -136,10 +162,13 @@ def worker(task, retry_count=0):
     command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
     print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + process.stdout.decode() + "\nSTDERR: \n" + process.stderr.decode() + "\nRET: \n" + process.returncode + "\n")
     if process.returncode != 0:
         print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
         if retry_count >= 0:
+            print("" + " ".join(command))
+            os.abort()
             return (task, process.stdout.decode().split()), (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
         else:
@@ -291,7 +320,7 @@ def execute_plan():
                 executing[comp_stage].remove((comp_file, function_name))
             elif comp_stage == STG_CODEGEN_SINGLE_FUNC:
                 function_name = extract_func_name(extra_args)
-                block_name = extract_func_name(extra_args)
+                block_name = extract_block_name(extra_args)
                 completed[comp_stage].append((comp_file, function_name, block_name))
                 executing[comp_stage].remove((comp_file, function_name, block_name))
                 if all((comp_file, f) in completed[STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC] for f in function_names[comp_file])\
@@ -303,12 +332,14 @@ def execute_plan():
                 print("completed", comp_stage, comp_file)
         results_ready.set()
     def print_stat():
+        scheduled_pp = process_pp_dictionary(scheduled)
+        executing_pp = process_pp_dictionary(executing)
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
-        pprint.pprint(scheduled, sort_dicts=False)
+        pprint.pprint(scheduled_pp, sort_dicts=False, compact=True)
         pprint.pprint("============== Executing ==============")
-        pprint.pprint(executing, sort_dicts=False)
+        pprint.pprint(executing_pp, sort_dicts=False, compact=True)
         pprint.pprint("============== Completed ==============")
         pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
         pprint.pprint("============== Errored ==============")
