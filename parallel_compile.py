@@ -398,9 +398,8 @@ def execute_plan():
                             # print("Scheduling", (stage, file_name))
                             executing[stage].append(file_name)
                             executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
-                if random() < 0.01:
-                    print_stat()
-                    print("Waiting for updates...")
+                print_stat()
+                print("Waiting for updates...")
                 results_ready.wait()
                 results_ready.clear()
                 update_schedule()
