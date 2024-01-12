@@ -311,8 +311,8 @@ def execute_plan():
         (comp_stage, [comp_file, *extra_args]), out_lines = result
         if error:
             errored[comp_stage].append(comp_file)
-            executing[comp_stage].remove(comp_file)
             error_msgs.append(error)
+            executing[comp_stage].remove(comp_file)
         else:
             if comp_stage == STG_DEPENDENCY_ANALYSIS:
                 deps[comp_file] = out_lines
@@ -356,7 +356,8 @@ def execute_plan():
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
-        pprint.pprint(scheduled_pp, sort_dicts=False, compact=True)
+        # pprint.pprint(scheduled_pp, sort_dicts=False, compact=True)
+        pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
         pprint.pprint("============== Executing ==============")
         pprint.pprint(executing_pp, sort_dicts=False, compact=True)
         pprint.pprint("============== Completed ==============")
