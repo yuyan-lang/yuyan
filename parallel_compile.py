@@ -270,7 +270,7 @@ def execute_plan():
 
     def update_schedule():
         nonlocal scheduled, completed, deps_to_process, deps
-        print("Updating schedule...")
+        # print("Updating schedule...")
 
         for file in deps_to_process + list(deps.keys()):
             for i, stage in enumerate(stages):
@@ -403,7 +403,7 @@ def execute_plan():
                         executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
             if random() < 0.01:
                 print_stat()
-            print("Waiting for updates...")
+                print("Waiting for updates...")
             results_ready.wait()
             results_ready.clear()
             update_schedule()
