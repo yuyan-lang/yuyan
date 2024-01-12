@@ -44,7 +44,10 @@ STG_PRE_CODEGEN = "pre-codegen"
 STG_ALL_CODEGEN = "all-codegen"
 STG_CODEGEN = "codegen"
 
-log_file = open(".yybuild.nosync/yy_parallel_log.txt", "a")
+os.makedirs(".yybuild.nosync", exist_ok=True)
+
+log_file = open(".yybuild.nosync/yy_parallel_log.txt", "a+")
+dependencies_log = open(".yybuild.nosync/yy_parallel_deps.txt", "w")
 
 
 num_cpu_limit = None
@@ -86,7 +89,11 @@ def process_pp_dictionary(original_dict, show_summary = True):
                     if (any((tk[0] == tuple_key) for tk in new_dict[key])):
                         continue
                     else:
-                        new_dict[key].append((tuple_key, len([v[1] for v in value if v[0] == tuple_key])))
+                        names = [v[1] for v in value if v[0] == tuple_key]
+                        if len(names) <= 3:
+                            new_dict[key].append((tuple_key, names))
+                        else:
+                            new_dict[key].append((tuple_key, len(names)))
                 elif len(tuple_value) == 2:
                     if not (any(tk[0] == tuple_key for tk in new_dict[key])):
                         new_dict[key].append([tuple_key, {}])
@@ -162,6 +169,7 @@ def extract_func_name(strings):
 def exec_worker(args):
     command = ["./yy_bs", "--mode=worker", "--worker-task=exec-gen"] + args + yy_bs_global_args
     print("" + " ".join(command))
+    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\nRUN:\n"+ " ".join(command) + "\n")
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + stdout.decode() + "\nSTDERR: \n" + stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")
@@ -174,24 +182,30 @@ def exec_worker(args):
 
 def worker(task, retry_count=0):
     stage, file_and_args = task
+    def pre_fun(i):
+        def set_nice():
+            os.nice(i)
+        return set_nice
     command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
     # print("" + " ".join(command))
-    process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + process.stdout.decode() + "\nSTDERR: \n" + process.stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")
+    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\nRUN:\n"+ " ".join(command) + "\n")
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=pre_fun(stages.index(stage)))
+    stdout, stderr = process.communicate()
+    log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + stdout.decode() + "\nSTDERR: \n" + stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")
     if process.returncode != 0:
         print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
-                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
-        if retry_count >= 0:
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}")
+        if retry_count >= 2:
             print("" + " ".join(command))
-            return (task, process.stdout.decode().split()), (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
-                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{process.stderr.decode('utf-8')}\nstdout:{process.stdout.decode('utf-8')}\nexit code:{process.returncode}")
+            return (task, stdout.decode().split()), (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
+                      f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}")
         else:
             return worker(task, retry_count=retry_count + 1)
     else:
         # print("Completed")
         # print("" + " ".join(command))
         # print(process.stdout.decode())
-        return (task, process.stdout.decode().split()), None
+        return (task, stdout.decode().split()), None
 
 # def dependency_analysis(file):
 #     command = ["./yy_bs", "--mode=worker", "--worker-task=dependency-analysis"] + [file] + yy_bs_global_args
@@ -284,7 +298,7 @@ def execute_plan():
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps 
                             and (all(dep in completed[stage] for dep in deps[file]) 
-                                or (i > stages.index(STG_TYPE_CHECK)) 
+                                or (STG_TYPE_CHECK in stages and i > stages.index(STG_TYPE_CHECK)) 
                                 ) 
                             and  (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                         )
@@ -325,6 +339,7 @@ def execute_plan():
         else:
             if comp_stage == STG_DEPENDENCY_ANALYSIS:
                 deps[comp_file] = out_lines
+                dependencies_log.writelines([f""""{os.path.basename(comp_file)}" -> "{os.path.basename(dep)}"\n""" for dep in out_lines])
                 deps_to_process.remove(comp_file)
                 for f in out_lines:
                     if f not in deps and f not in deps_to_process:
@@ -409,12 +424,14 @@ def execute_plan():
     if error_msgs:
         print("\n\n\n".join(error_msgs))
         os._exit(1)
-    for file in deps.keys():
-        scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(file)
-    run_all()
-    if error_msgs:
-        print("\n\n\n".join(error_msgs))
-        os._exit(1)
+    if STG_CODEGEN_SINGLE_FUNC_FINAL in scheduled:
+        for file in deps.keys():
+            scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(file)
+        run_all()
+
+        if error_msgs:
+            print("\n\n\n".join(error_msgs))
+            os._exit(1)
     
     print_stat()
     for file in deps_to_process:
@@ -459,7 +476,9 @@ if __name__ == "__main__":
         yy_bs_global_args = args.extra.split(" ")
 
 
-    if "--type-check-only" in yy_bs_global_args:
+    if "--parse-only" in yy_bs_global_args:
+        stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE]
+    elif "--type-check-only" in yy_bs_global_args:
         pass
     elif "--type-check-and-erase-only" in yy_bs_global_args:
         if "--very-parallel" in yy_bs_global_args:

@@ -27,6 +27,14 @@ int main(int argc, char* argv[]) {
         global_argc--;
         global_argv++;
     }
+    
+    // disable GC by setting env var
+    // Specify the name of the environment variable you want to read
+    const char *env_var_name = "YY_DISABLE_GC";
+    char *env_var_value = getenv(env_var_name);
+    if (env_var_value != NULL && strcmp(env_var_value, "1") == 0) {
+        use_libgc = 0;
+    } 
 
 
     optional_entry_initialization();

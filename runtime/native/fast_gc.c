@@ -4,7 +4,7 @@
 #include <inttypes.h>
 
 
-#define BUFFER_SIZE 268435456ULL // 256 MB
+#define BUFFER_SIZE 2684354560ULL // 2560 MB
 
 void** buffers = NULL;
 uint64_t buffer_count = 0;
@@ -83,26 +83,28 @@ void* yy_fastgc_malloc(uint64_t size) {
 //     return ptr;
 // }
 
-// void* yy_fastgc_realloc(void* ptr, int64_t size) {
-//     if (ptr == NULL) {
-//         // Treat NULL pointer as malloc
-//         return yy_fastgc_malloc(size);
-//     }
+void* yy_fastgc_realloc(void* ptr, uint64_t size) {
+    errorAndAbort("FASTGC REALLOC NOT IMPLEMENTED\n");
+    return NULL;
+    // if (ptr == NULL) {
+    //     // Treat NULL pointer as malloc
+    //     return yy_fastgc_malloc(size);
+    // }
 
-//     // Allocate a new buffer
-//     void* new_buffer = yy_fastgc_malloc(size);
-//     if (new_buffer == NULL) {
-//         // Handle out-of-memory error
-//         return NULL;
-//     }
+    // // Allocate a new buffer
+    // void* new_buffer = yy_fastgc_malloc(size);
+    // if (new_buffer == NULL) {
+    //     // Handle out-of-memory error
+    //     return NULL;
+    // }
 
-//     // Copy the content from the original buffer
-//     int64_t old_size = current_offset - ((char*)ptr - (char*)buffer);
-//     memcpy(new_buffer, ptr, old_size);
+    // // Copy the content from the original buffer
+    // int64_t old_size = current_offset - ((char*)ptr - (char*)buffer);
+    // memcpy(new_buffer, ptr, old_size);
 
-//     // Update the buffer pointers and size
-//     buffer = new_buffer;
-//     buffer_size = current_offset + size;
+    // // Update the buffer pointers and size
+    // buffer = new_buffer;
+    // buffer_size = current_offset + size;
 
-//     return new_buffer;
-// }
+    // return new_buffer;
+}

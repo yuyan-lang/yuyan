@@ -30,7 +30,7 @@ void* yy_gcReallocateBytes(void* ptr, uint64_t size) {
     {
         x = GC_REALLOC(ptr, size);
     } else {
-        x = realloc(ptr, size);
+        x = yy_fastgc_realloc(ptr, size);
     }
     // yy_ptr x = malloc(size); // for testing
     return x;
