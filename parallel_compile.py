@@ -359,7 +359,7 @@ def execute_plan():
                 print("completed", comp_stage, comp_file)
         results_ready.set()
     def print_stat():
-        scheduled_pp = process_pp_dictionary(scheduled)
+        # scheduled_pp = process_pp_dictionary(scheduled)
         executing_pp = process_pp_dictionary(executing, show_summary=False)
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
