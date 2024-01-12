@@ -15,6 +15,7 @@ import subprocess
 import json
 import pprint
 import re
+from random import random
 from datetime import datetime
 
 
@@ -400,7 +401,8 @@ def execute_plan():
                         # print("Scheduling", (stage, file_name))
                         executing[stage].append(file_name)
                         executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
-            print_stat()
+            if random() < 0.01:
+                print_stat()
             print("Waiting for updates...")
             results_ready.wait()
             results_ready.clear()
