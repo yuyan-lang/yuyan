@@ -377,17 +377,17 @@ def execute_plan():
                     ):
                     if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
                         file_name, function_name = scheduled[stage].pop()
-                        print("Scheduling", (stage, file_name, function_name))
+                        # print("Scheduling", (stage, file_name, function_name))
                         executing[stage].append((file_name, function_name))
                         executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name])).add_done_callback(process_result)
                     elif stage == STG_CODEGEN_SINGLE_FUNC:
                         file_name, function_name, block_name = scheduled[stage].pop()
-                        print("Scheduling", (stage, file_name, function_name, block_name))
+                        # print("Scheduling", (stage, file_name, function_name, block_name))
                         executing[stage].append((file_name, function_name, block_name))
                         executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name, "-Dblock_name=" + block_name])).add_done_callback(process_result)
                     else:
                         file_name = scheduled[stage].pop()
-                        print("Scheduling", (stage, file_name))
+                        # print("Scheduling", (stage, file_name))
                         executing[stage].append(file_name)
                         executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
             print_stat()
