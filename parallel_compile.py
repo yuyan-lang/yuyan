@@ -312,7 +312,15 @@ def execute_plan():
         if error:
             errored[comp_stage].append(comp_file)
             error_msgs.append(error)
-            executing[comp_stage].remove(comp_file)
+            if comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
+                function_name = extract_func_name(extra_args)
+                executing[comp_stage].remove((comp_file, function_name))
+            elif comp_stage == STG_CODEGEN_SINGLE_FUNC:
+                function_name = extract_func_name(extra_args)
+                block_name = extract_block_name(extra_args)
+                executing[comp_stage].remove((comp_file, function_name, block_name))
+            else:
+                executing[comp_stage].remove(comp_file)
         else:
             if comp_stage == STG_DEPENDENCY_ANALYSIS:
                 deps[comp_file] = out_lines
