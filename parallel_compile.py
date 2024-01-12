@@ -366,7 +366,7 @@ def execute_plan():
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
         # pprint.pprint(scheduled_pp, sort_dicts=False, compact=True)
-        pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
+        pprint.pprint({k: len(v) for k, v in scheduled.items()}, sort_dicts=False)
         pprint.pprint("============== Executing ==============")
         pprint.pprint(executing_pp, sort_dicts=False, compact=True)
         pprint.pprint("============== Completed ==============")
