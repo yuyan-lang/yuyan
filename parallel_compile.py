@@ -311,6 +311,7 @@ def execute_plan():
         (comp_stage, [comp_file, *extra_args]), out_lines = result
         if error:
             errored[comp_stage].append(comp_file)
+            executing[comp_stage].remove(comp_file)
             error_msgs.append(error)
         else:
             if comp_stage == STG_DEPENDENCY_ANALYSIS:
