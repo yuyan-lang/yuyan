@@ -108,7 +108,7 @@ def process_pp_dictionary(original_dict, show_summary = True):
 
 def get_function_names(file: str):
     command = ["./yy_bs", "--mode=worker", "--worker-task=get-function-names"] + [file] + yy_bs_global_args
-    print("" + " ".join(command))
+    # print("" + " ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
