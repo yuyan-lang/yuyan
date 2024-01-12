@@ -164,7 +164,6 @@ cleancache:
 	find .yybuild.nosync/ -mindepth 1 -type d -delete 
 
 CACHE_DIR := ./.yybuild.nosync
-ZIP_FILE := yy_cache_data.zip
 
 .PHONY: make backupcache restorecache
 
@@ -172,14 +171,15 @@ backupcache:
 	echo "Creating backup..."
 	mkdir -p yy_backup_temp
 	cp -r $(CACHE_DIR)/* yy_backup_temp
-	rm -f $(ZIP_FILE)
-	(cd yy_backup_temp && zip -q -r ../$(ZIP_FILE) .)
+	# rm -f yy_cache_data.zip
+	(cd yy_backup_temp && zip -q -r ../yy_cache_data_2.zip .)
+	mv yy_cache_data_2.zip yy_cache_data.zip
 	rm -rf yy_backup_temp
-	echo "Backup completed. Zip file: $(ZIP_FILE)"
+	echo "Backup completed. Zip file: yy_cache_data.zip"
 
 restorecache:
 	echo "Restoring cache..."
-	unzip -q $(ZIP_FILE) -d yy_restore_temp
+	unzip -q yy_cache_data.zip -d yy_restore_temp
 	cp -r yy_restore_temp/* $(CACHE_DIR)
 	rm -rf yy_restore_temp
 	echo "Cache restored."

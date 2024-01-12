@@ -28,22 +28,25 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    args.deduplicate_text = args.deduplicate_text.split()
-    args.code_data = args.code_data.split()
 
-    def get_path(name):
-        return args.path_prefix + "." + name + ".json"
+    def open_get_path(name):
+        if isinstance(name, str):
+            with open(args.path_prefix + "." + name + ".json") as f:
+                return json.load(f)
+        else:
+            raise ValueError("Unrecognized name: ", (name))
+
     result_file_text = []
-    result_file_text.extend(json.load(open(get_path(args.prelude))))
+    result_file_text.extend((open_get_path(args.prelude)))
 
     deduplicated = set()
-    for file in args.deduplicate_text:
-        for line in json.load(open(get_path(file))):
+    for file in (open_get_path(args.deduplicate_text)):
+        for line in (open_get_path(file)):
             deduplicated.add(line)
     result_file_text.extend(list(deduplicated))
 
-    for file in args.code_data:
-        result_file_text.extend(json.load(open(get_path(file))))
+    for file in (open_get_path(args.code_data)):
+        result_file_text.extend((open_get_path(file)))
     
     open(args.path_prefix + ".ll", "w").writelines(result_file_text)
 

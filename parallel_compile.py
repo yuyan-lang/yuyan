@@ -120,7 +120,7 @@ def get_function_names(file: str):
 
 def get_block_names(file, function_name):
     command = ["./yy_bs", "--mode=worker", "--worker-task=get-block-names", f"-Dfunction_name={function_name}"] + [file] + yy_bs_global_args
-    print("" + " ".join(command))
+    # print("" + " ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
     if process.returncode != 0:
@@ -174,7 +174,7 @@ def exec_worker(args):
 def worker(task, retry_count=0):
     stage, file_and_args = task
     command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
-    print("" + " ".join(command))
+    # print("" + " ".join(command))
     process = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + process.stdout.decode() + "\nSTDERR: \n" + process.stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")
     if process.returncode != 0:
@@ -188,9 +188,9 @@ def worker(task, retry_count=0):
         else:
             return worker(task, retry_count=retry_count + 1)
     else:
-        print("Completed")
-        print("" + " ".join(command))
-        print(process.stdout.decode())
+        # print("Completed")
+        # print("" + " ".join(command))
+        # print(process.stdout.decode())
         return (task, process.stdout.decode().split()), None
 
 # def dependency_analysis(file):
@@ -324,7 +324,8 @@ def execute_plan():
                 executing[comp_stage].remove(comp_file)
             elif comp_stage == STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC:
                 function_names[comp_file] = get_function_names(comp_file)
-                scheduled[STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC].extend([(comp_file, f) for f in function_names[comp_file]])
+                if STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC in scheduled:
+                    scheduled[STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC].extend([(comp_file, f) for f in function_names[comp_file]])
                 completed[comp_stage].append(comp_file)
                 executing[comp_stage].remove(comp_file)
             elif comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
@@ -440,6 +441,11 @@ if __name__ == "__main__":
 
     if "--type-check-only" in yy_bs_global_args:
         pass
+    elif "--type-check-and-erase-only" in yy_bs_global_args:
+        if "--very-parallel" in yy_bs_global_args:
+            stages.extend([STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC])
+        else:
+            raise ValueError("Error: --type-check-and-erase-only is not supported without --very-parallel")
     elif "--debug" in yy_bs_global_args:
           stages.extend([STG_TYPE_CHECK_AND_ERASE, 
             STG_PRE_CLOSURE_CONVERT,
