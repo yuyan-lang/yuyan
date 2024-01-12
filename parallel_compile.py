@@ -342,7 +342,8 @@ def execute_plan():
                 completed[comp_stage].append((comp_file, function_name, block_name))
                 executing[comp_stage].remove((comp_file, function_name, block_name))
                 if all((comp_file, f) in completed[STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC] for f in function_names[comp_file])\
-                    and all((comp_file, f, b) in completed[STG_CODEGEN_SINGLE_FUNC] for f in function_names[comp_file] for b in block_names[comp_file][f]):
+                    and all((comp_file, f, b) in completed[STG_CODEGEN_SINGLE_FUNC] for f in function_names[comp_file] for b in block_names[comp_file][f])\
+                    and comp_file not in scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL]:
                     scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(comp_file)
             else:
                 completed[comp_stage].append(comp_file)
