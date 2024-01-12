@@ -44,7 +44,7 @@ STG_PRE_CODEGEN = "pre-codegen"
 STG_ALL_CODEGEN = "all-codegen"
 STG_CODEGEN = "codegen"
 
-log_file = open(".yybuild.nosync/yy_parallel_log.txt", "w+")
+log_file = open(".yybuild.nosync/yy_parallel_log.txt", "a")
 
 
 num_cpu_limit = None
@@ -406,9 +406,15 @@ def execute_plan():
 
     run_all()
 
+    if error_msgs:
+        print("\n\n\n".join(error_msgs))
+        os._exit(1)
     for file in deps.keys():
         scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(file)
-        run_all()
+    run_all()
+    if error_msgs:
+        print("\n\n\n".join(error_msgs))
+        os._exit(1)
     
     print_stat()
     for file in deps_to_process:
