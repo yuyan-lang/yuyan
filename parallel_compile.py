@@ -3,7 +3,7 @@ import argparse
 import subprocess
 from multiprocessing import cpu_count
 from multiprocessing.pool import ThreadPool
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, ProcessPoolExecutor
 import sys
 import os
 from typing import *    
@@ -379,7 +379,7 @@ def execute_plan():
         pprint.pprint("=======================================")
 
 
-    with ThreadPoolExecutor(max_workers=num_cpu_limit) as executor:
+    with ProcessPoolExecutor(max_workers=int(num_cpu_limit)) as executor:
         while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
             for i in range(len(stages)):
                 stage = stages[i]
