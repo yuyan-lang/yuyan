@@ -350,10 +350,7 @@ def execute_plan():
                 block_name = extract_block_name(extra_args)
                 completed[comp_stage].append((comp_file, function_name, block_name))
                 executing[comp_stage].remove((comp_file, function_name, block_name))
-                if all((comp_file, f) in completed[STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC] for f in function_names[comp_file])\
-                    and all((comp_file, f, b) in completed[STG_CODEGEN_SINGLE_FUNC] for f in function_names[comp_file] for b in block_names[comp_file][f])\
-                    and comp_file not in scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL]:
-                    scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(comp_file)
+                
             else:
                 completed[comp_stage].append(comp_file)
                 executing[comp_stage].remove(comp_file)
@@ -378,35 +375,41 @@ def execute_plan():
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
 
+    def run_all():
+        with ProcessPoolExecutor(max_workers=int(num_cpu_limit)) as executor:
+            while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
+                for i in range(len(stages)):
+                    stage = stages[i]
+                    while (scheduled[stage] 
+                        and sum(len(stg) for stg in executing.values()) < num_cpu_limit
+                        ):
+                        if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
+                            file_name, function_name = scheduled[stage].pop()
+                            # print("Scheduling", (stage, file_name, function_name))
+                            executing[stage].append((file_name, function_name))
+                            executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name])).add_done_callback(process_result)
+                        elif stage == STG_CODEGEN_SINGLE_FUNC:
+                            file_name, function_name, block_name = scheduled[stage].pop()
+                            # print("Scheduling", (stage, file_name, function_name, block_name))
+                            executing[stage].append((file_name, function_name, block_name))
+                            executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name, "-Dblock_name=" + block_name])).add_done_callback(process_result)
+                        else:
+                            file_name = scheduled[stage].pop()
+                            # print("Scheduling", (stage, file_name))
+                            executing[stage].append(file_name)
+                            executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
+                if random() < 0.01:
+                    print_stat()
+                    print("Waiting for updates...")
+                results_ready.wait()
+                results_ready.clear()
+                update_schedule()
 
-    with ProcessPoolExecutor(max_workers=int(num_cpu_limit)) as executor:
-        while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
-            for i in range(len(stages)):
-                stage = stages[i]
-                while (scheduled[stage] 
-                    and sum(len(stg) for stg in executing.values()) < num_cpu_limit
-                    ):
-                    if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
-                        file_name, function_name = scheduled[stage].pop()
-                        # print("Scheduling", (stage, file_name, function_name))
-                        executing[stage].append((file_name, function_name))
-                        executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name])).add_done_callback(process_result)
-                    elif stage == STG_CODEGEN_SINGLE_FUNC:
-                        file_name, function_name, block_name = scheduled[stage].pop()
-                        # print("Scheduling", (stage, file_name, function_name, block_name))
-                        executing[stage].append((file_name, function_name, block_name))
-                        executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name, "-Dblock_name=" + block_name])).add_done_callback(process_result)
-                    else:
-                        file_name = scheduled[stage].pop()
-                        # print("Scheduling", (stage, file_name))
-                        executing[stage].append(file_name)
-                        executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
-            if random() < 0.01:
-                print_stat()
-                print("Waiting for updates...")
-            results_ready.wait()
-            results_ready.clear()
-            update_schedule()
+    run_all()
+
+    for file in deps.keys():
+        scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(file)
+        run_all()
     
     print_stat()
     for file in deps_to_process:
