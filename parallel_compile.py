@@ -324,16 +324,18 @@ def execute_plan():
         (result, error) = future.result()
         (comp_stage, [comp_file, *extra_args]), out_lines = result
         if error:
-            errored[comp_stage].append(comp_file)
             error_msgs.append(error)
             if comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
                 function_name = extract_func_name(extra_args)
+                errored[comp_stage].append((comp_file, function_name))
                 executing[comp_stage].remove((comp_file, function_name))
             elif comp_stage == STG_CODEGEN_SINGLE_FUNC:
                 function_name = extract_func_name(extra_args)
                 block_name = extract_block_name(extra_args)
+                errored[comp_stage].append((comp_file, function_name, block_name))
                 executing[comp_stage].remove((comp_file, function_name, block_name))
             else:
+                errored[comp_stage].append((comp_file))
                 executing[comp_stage].remove(comp_file)
         else:
             if comp_stage == STG_DEPENDENCY_ANALYSIS:
@@ -384,7 +386,7 @@ def execute_plan():
         pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
         pprint.pprint("============== Errored ==============")
         pprint.pprint(errored, sort_dicts=False)
-        print(error_msgs)
+        print("\n".join(error_msgs))
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
