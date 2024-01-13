@@ -180,6 +180,6 @@ backupcache:
 restorecache:
 	echo "Restoring cache..."
 	unzip -q yy_cache_data.zip -d yy_restore_temp
-	cp -r yy_restore_temp/* $(CACHE_DIR)
+	cp -n -r yy_restore_temp/* $(CACHE_DIR)
 	rm -rf yy_restore_temp
 	echo "Cache restored."
