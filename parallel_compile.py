@@ -44,10 +44,9 @@ STG_PRE_CODEGEN = "pre-codegen"
 STG_ALL_CODEGEN = "all-codegen"
 STG_CODEGEN = "codegen"
 
-os.makedirs(".yybuild.nosync", exist_ok=True)
 
-log_file = open(".yybuild.nosync/yy_parallel_log.txt", "a+")
-dependencies_log = open(".yybuild.nosync/yy_parallel_deps.txt", "w")
+log_file = open("yy_parallel_log.txt", "a+")
+dependencies_log = open("yy_parallel_deps.txt", "w")
 
 
 num_cpu_limit = None

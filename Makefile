@@ -169,12 +169,12 @@ CACHE_DIR := ./.yybuild.nosync
 
 backupcache:
 	echo "Creating backup..."
-	mkdir -p yy_backup_temp
-	cp -r $(CACHE_DIR)/* yy_backup_temp
+	# mkdir -p yy_backup_temp
+	# cp -r $(CACHE_DIR)/* yy_backup_temp
 	# rm -f yy_cache_data.zip
-	(cd yy_backup_temp && zip -q -r ../yy_cache_data_2.zip .)
+	(cd .yybuild.nosync/ && zip -q -r ../yy_cache_data_2.zip .)
 	mv yy_cache_data_2.zip yy_cache_data.zip
-	rm -rf yy_backup_temp
+	# rm -rf yy_backup_temp
 	echo "Backup completed. Zip file: yy_cache_data.zip"
 
 restorecache:
