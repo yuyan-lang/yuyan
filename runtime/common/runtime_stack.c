@@ -65,6 +65,7 @@ int64_t get_next_continuation_exception_id()
         }
         continuation_exception_table = (int64_t*) realloc(continuation_exception_table, continuation_exception_table_size * sizeof(int64_t **));
     }
+    prev_continuation_exception_id = next_continuation_exception_id;
 
     return next_continuation_exception_id;
 }
@@ -81,7 +82,9 @@ int64_t *set_continuation_exception_handler(uint64_t *id, int64_t offset)
     return 0;
 }
 
+
 int64_t yy_runtime_start() {
+    const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
     // allocate a 100 M * 8 bytes stack
     
     // stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
@@ -117,6 +120,9 @@ int64_t yy_runtime_start() {
 
     // entryMain(&argument_record);
     while (true) {
+        if (yy_debug_flag != NULL && strcmp(yy_debug_flag, "1") == 0) {
+            printf("return_record is %p, %p, %p, %p, %p, stack, stack_ptr is %p, %p, current_function: %p\n", return_record[0], return_record[1], return_record[2], return_record[3], return_record[4], stack, stack_ptr, current_function);
+        }
         switch (addr_to_int(return_record[0]))
         {
         case 1:
