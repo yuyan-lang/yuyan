@@ -83,17 +83,17 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": [],
+            "args": ["@yy:uselibgc=0"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": false,
             "setupCommands": [
-                {
-                    "text": "handle SIGSEGV noprint nostop pass",
-                    "description": "ingore libgc related errors",
-                    "ignoreFailures": false
-                }
+                // {
+                //     "text": "handle SIGSEGV noprint nostop pass",
+                //     "description": "ingore libgc related errors",
+                //     "ignoreFailures": false
+                // }
             ]
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
