@@ -4,7 +4,7 @@
 #include <inttypes.h>
 
 
-#define BUFFER_SIZE 2684354560ULL // 2560 MB
+#define BUFFER_SIZE 12684354560ULL // 12560 MB
 
 void** buffers = NULL;
 uint64_t buffer_count = 0;

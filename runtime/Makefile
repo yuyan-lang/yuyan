@@ -95,6 +95,12 @@ libyyrtopt.a: $(NATIVE_SOURCES)
 
 opt : libyyrtopt.a
 
+libyyrtopt.so: $(NATIVE_SOURCES)
+	@mkdir -p build/native
+	cd build/native && $(CC) -shared -o ../../$@ -flto -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+
+optso : libyyrtopt.so
+
 .PHONY: clean
 clean:
 	rm -rf build

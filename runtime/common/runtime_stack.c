@@ -7,8 +7,8 @@ extern yy_ptr entryMain(yy_ptr*); // the entry to yy llvm ir
 yy_ptr *stack;
 yy_ptr *stack_end;
 yy_ptr *stack_ptr;
-int64_t stack_size = 1024 * 128; // 1MB stack
-// int64_t stack_size = 1024 * 1024 * 100; // 800M stack
+// int64_t stack_size = 1024 * 128; // 1MB stack
+int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
 
 int64_t yy_increment_stack_ptr(int64_t increment) {
     // printf("stack_sz, cur %ld, totoal %ld\n", stack_ptr - stack, stack_size);
