@@ -64,3 +64,5 @@ void *yy_gcReallocateBytes(void* ptr, uint64_t size);
 // runtime configurations
 extern int64_t use_libgc;
 int64_t yy_runtime_start();
+
+void start_yy_profiler();

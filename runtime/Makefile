@@ -97,7 +97,8 @@ opt : libyyrtopt.a
 
 libyyrtopt.so: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -shared -o ../../$@ -flto -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -flto -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
+	$(CC) -shared -flto -o $@ build/native/*.o
 
 optso : libyyrtopt.so
 
