@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <limits.h>
 #include <errno.h>
+#include <pthread.h>
 
 #ifdef __linux__
     #include <bsd/string.h>

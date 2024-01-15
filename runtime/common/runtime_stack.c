@@ -9,6 +9,8 @@ yy_ptr *stack_end;
 yy_ptr *stack_ptr;
 // int64_t stack_size = 1024 * 128; // 1MB stack
 int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
+pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
+
 
 int64_t yy_increment_stack_ptr(int64_t increment) {
     // printf("stack_sz, cur %ld, totoal %ld\n", stack_ptr - stack, stack_size);
@@ -138,8 +140,10 @@ int64_t yy_runtime_start() {
             yy_ptr continuation_label_id = stack_ptr[-1];
 
             // restore stack
+            pthread_mutex_lock(&stack_ptr_mutex);
             yy_decrement_stack_ptr(3);
             yy_decrement_stack_ptr(addr_to_int(stack_offset));
+            pthread_mutex_unlock(&stack_ptr_mutex);
 
             // reset caller function
             current_function = ptr_to_function(caller_function);
@@ -168,11 +172,14 @@ int64_t yy_runtime_start() {
             // 1. stack offset
             // 2. current function
             // 3. continuation label id
+            
+            pthread_mutex_lock(&stack_ptr_mutex);
             yy_increment_stack_ptr(stack_offset);
             stack_ptr[0] = int_to_addr(stack_offset);
             stack_ptr[1] = function_to_ptr(current_function);
             stack_ptr[2] = int_to_addr(continuation_label_id);
             yy_increment_stack_ptr(3);
+            pthread_mutex_unlock(&stack_ptr_mutex);
 
             current_function = new_function;
 
@@ -193,7 +200,9 @@ int64_t yy_runtime_start() {
             int64_t offset = continuation_exception_table[addr_to_int(exception_label)];
 
             // restore stack
+            pthread_mutex_lock(&stack_ptr_mutex);
             stack_ptr = stack + offset;
+            pthread_mutex_unlock(&stack_ptr_mutex);
 
             // treat as a normal return, and continue
             return_record[0] = int_to_addr(1);

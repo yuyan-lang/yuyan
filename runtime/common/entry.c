@@ -15,11 +15,15 @@ extern int64_t entryMain(); // the entry to yy llvm ir
 
 // Function to process @yy: arguments
 void processYYArguments(int argc, char* argv[]) {
-    for (int i = 1; i < argc; i++) {
+    int total_consumed_argc = 0;
+    for (int i = 1; i < argc; i++)
+    {
         if (strncmp(argv[i], "@yy:uselibgc=0", 14) == 0) {
             use_libgc = 0;
+            total_consumed_argc++;
         } else if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
             start_yy_profiler();
+            total_consumed_argc++;
         }
         // Add more options as needed
         // else if (strncmp(argv[i], "@yy:another_option", length_of_option) == 0) {
@@ -28,8 +32,8 @@ void processYYArguments(int argc, char* argv[]) {
     }
 
     // Update global_argv to exclude processed arguments
-    global_argc -= (argc - 1);
-    global_argv += (argc - 1);
+    global_argc -= (total_consumed_argc );
+    global_argv += (total_consumed_argc);
 }
 
 

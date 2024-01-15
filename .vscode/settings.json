@@ -104,7 +104,10 @@
         "targetmachine.h": "c",
         "native_include.h": "c",
         "emwasm_include.h": "c",
-        "inttypes.h": "c"
+        "inttypes.h": "c",
+        "stdio.h": "c",
+        "errno.h": "c",
+        "pthread.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

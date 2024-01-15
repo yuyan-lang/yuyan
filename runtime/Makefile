@@ -95,9 +95,16 @@ libyyrtopt.a: $(NATIVE_SOURCES)
 
 opt : libyyrtopt.a
 
+libyyrtdebug.so: $(NATIVE_SOURCES)
+	@mkdir -p build/native
+	cd build/native && $(CC) -flto -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
+	$(CC) -shared -flto -o $@ build/native/*.o
+
+debugso : libyyrtdebug.so
+
 libyyrtopt.so: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -flto -c -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
+	cd build/native && $(CC) -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
 	$(CC) -shared -flto -o $@ build/native/*.o
 
 optso : libyyrtopt.so
