@@ -58,7 +58,7 @@ def process_profiling_data(file_path):
         })
 
     # Sort results by self time in descending order
-    results.sort(key=lambda x: float(x['Self Time (%)']), reverse=True)
+    results.sort(key=lambda x: (float(x['Self Time (%)']), float(x['Other Time (%)'])), reverse=True)
 
     # Print the results
     for result in results:

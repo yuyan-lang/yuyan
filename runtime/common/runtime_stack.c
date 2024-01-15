@@ -10,7 +10,7 @@ yy_ptr *stack_ptr;
 // int64_t stack_size = 1024 * 128; // 1MB stack
 int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
-
+yy_function_type current_function;
 
 int64_t yy_increment_stack_ptr(int64_t increment) {
     // printf("stack_sz, cur %ld, totoal %ld\n", stack_ptr - stack, stack_size);
@@ -41,9 +41,6 @@ int64_t yy_decrement_stack_ptr(int64_t increment) {
 int64_t yy_get_stack_offset(yy_ptr *ptr) {
     return ptr - stack;
 }
-
-// Define a function type for the pointer
-typedef yy_ptr (*yy_function_type)(yy_ptr, yy_ptr, yy_ptr, yy_ptr);
 
 yy_function_type ptr_to_function(yy_ptr ptr) {
     return (yy_function_type) ptr;
@@ -117,7 +114,7 @@ int64_t yy_runtime_start() {
 
     */
     yy_ptr argument_record[4] = {(yy_ptr)stack_ptr, (yy_ptr)initial_block_id, NULL, (yy_ptr)return_record};
-    yy_function_type current_function = NULL;
+    current_function = NULL;
 
 
     // entryMain(&argument_record);
