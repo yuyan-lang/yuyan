@@ -21,6 +21,7 @@ lsplog.txt
 .vscode/c*.json
 .vscode/ltex*.json
 runtime/lib*.a
+runtime/lib*.so
 runtime/lib*.wasm
 
 *.icloud

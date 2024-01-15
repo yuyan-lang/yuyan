@@ -112,9 +112,6 @@ clean:
 cleanbs:
 	rm yy_bs
 
-cleancache:
-	find .yybuild.nosync/ -name "*.编译信息.json" -print -exec rm {} \;
-
 cleancodegen:
 	find .yybuild.nosync/ -name "*.代码生成形式.json" -print -exec rm {} \;
 
@@ -156,3 +153,33 @@ compile_user_code:
 	cp ./.yybuild.nosync/yy_user-code_豫言编译器默认执行包.bc ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.bc
 	llvm-dis ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.bc -o ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.ll
 	emcc -o ./.yybuild.nosync/$(USER_CODE_DIR)/user-code-compiled.js -O3 ./.yybuild.nosync/$(USER_CODE_DIR)/yy_user-code_豫言编译器默认执行包.ll ./runtime/libyyrtdebugwasm.a -L /usr/local/lib -l stdc++ -Wno-override-module -g -mtail-call -sMEMORY64 --pre-js ide/client/ide-pre.js
+
+
+createcache:
+	mkdir -p .yybuild.nosync
+	mount -t tmpfs none .yybuild.nosync
+
+cleancache:
+	find .yybuild.nosync/  -type f -delete 
+	find .yybuild.nosync/ -mindepth 1 -type d -delete 
+
+CACHE_DIR := ./.yybuild.nosync
+
+.PHONY: make backupcache restorecache
+
+backupcache:
+	echo "Creating backup..."
+	# mkdir -p yy_backup_temp
+	# cp -r $(CACHE_DIR)/* yy_backup_temp
+	# rm -f yy_cache_data.zip
+	(cd .yybuild.nosync/ && zip -q -r ../yy_cache_data_2.zip .)
+	mv yy_cache_data_2.zip yy_cache_data.zip
+	# rm -rf yy_backup_temp
+	echo "Backup completed. Zip file: yy_cache_data.zip"
+
+restorecache:
+	echo "Restoring cache..."
+	unzip -q yy_cache_data.zip -d yy_restore_temp
+	cp -n -r yy_restore_temp/* $(CACHE_DIR)
+	rm -rf yy_restore_temp
+	echo "Cache restored."

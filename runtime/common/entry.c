@@ -13,20 +13,45 @@ int64_t use_libgc = 1;
 
 extern int64_t entryMain(); // the entry to yy llvm ir
 
+// Function to process @yy: arguments
+void processYYArguments(int argc, char* argv[]) {
+    int total_consumed_argc = 0;
+    for (int i = 1; i < argc; i++)
+    {
+        if (strncmp(argv[i], "@yy:uselibgc=0", 14) == 0) {
+            use_libgc = 0;
+            total_consumed_argc++;
+        } else if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
+            start_yy_profiler();
+            total_consumed_argc++;
+        }
+        // Add more options as needed
+        // else if (strncmp(argv[i], "@yy:another_option", length_of_option) == 0) {
+        //     // Handle another option
+        // }
+    }
+
+    // Update global_argv to exclude processed arguments
+    global_argc -= (total_consumed_argc );
+    global_argv += (total_consumed_argc);
+}
+
+
 int main(int argc, char* argv[]) {
 
     // save global paramters
     global_argc = argc;
     global_argv = argv;
 
-    // Check if the first command line argument matches the desired pattern
-    if (argc > 1 && strcmp(argv[1], "@yy:uselibgc=0") == 0) {
+    processYYArguments(argc, argv);
+    
+    // disable GC by setting env var
+    // Specify the name of the environment variable you want to read
+    const char *env_var_name = "YY_DISABLE_GC";
+    char *env_var_value = getenv(env_var_name);
+    if (env_var_value != NULL && strcmp(env_var_value, "1") == 0) {
         use_libgc = 0;
-
-        // Update global_argv to exclude the first argument
-        global_argc--;
-        global_argv++;
-    }
+    } 
 
 
     optional_entry_initialization();

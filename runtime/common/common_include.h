@@ -8,6 +8,8 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <limits.h>
+#include <errno.h>
+#include <pthread.h>
 
 #ifdef __linux__
     #include <bsd/string.h>
@@ -63,3 +65,5 @@ void *yy_gcReallocateBytes(void* ptr, uint64_t size);
 // runtime configurations
 extern int64_t use_libgc;
 int64_t yy_runtime_start();
+
+void start_yy_profiler();
