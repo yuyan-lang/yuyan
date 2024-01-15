@@ -83,17 +83,17 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["@yy:uselibgc=0", "@yy:useprofiler=1",  "yylib/标准库/数据结构/多态列。豫", "--parse-only"],
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
             "externalConsole": false,
             "setupCommands": [
-                // {
-                //     "text": "handle SIGSEGV noprint nostop pass",
-                //     "description": "ingore libgc related errors",
-                //     "ignoreFailures": false
-                // }
+                {
+                    "text": "handle SIGSEGV noprint nostop pass",
+                    "description": "ingore libgc related errors",
+                    "ignoreFailures": false
+                }
             ]
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
@@ -128,12 +128,12 @@
             "type": "node",
         },
         {
-            "name": "parallel_compile.py",
+            "name": "Python Debug Current File",
             "type": "python",
             "request": "launch",
-            "program": "parallel_compile.py",
+            "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["performance-investigation/matrix-multiply/matrix-multiply.yuyan", "--extra=--very-parallel"],
+            "args": ["/home/zc/yuyan_proj/yuyan/豫言编译器/入口。豫"],
             "justMyCode": true
         }
     ],
