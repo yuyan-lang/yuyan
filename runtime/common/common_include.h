@@ -67,3 +67,7 @@ extern int64_t use_libgc;
 int64_t yy_runtime_start();
 
 void start_yy_profiler();
+
+
+// Define a function type for the pointer
+typedef yy_ptr (*yy_function_type)(yy_ptr, yy_ptr, yy_ptr, yy_ptr);

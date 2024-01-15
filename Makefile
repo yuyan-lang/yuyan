@@ -162,6 +162,7 @@ createcache:
 cleancache:
 	find .yybuild.nosync/  -type f -delete 
 	find .yybuild.nosync/ -mindepth 1 -type d -delete 
+	rm -f yy_parallel_log.txt
 
 CACHE_DIR := ./.yybuild.nosync
 

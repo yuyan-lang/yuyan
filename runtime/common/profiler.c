@@ -2,21 +2,23 @@
 
 
 FILE* profileFile;
+yy_ptr *local_stack_ptr;
 extern yy_ptr* stack_ptr;
 extern yy_ptr* stack;
-yy_ptr *local_stack_ptr;
+extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
 extern int64_t entryMain(); 
 
 void *interruptFunction(void *arg)
 {
     while (1) {
-        if (stack_ptr == NULL || stack == NULL) {
+        if (stack_ptr == NULL || stack == NULL || current_function == NULL) {
             continue;
         }
         // Declare a local stack pointer for manipulation
         pthread_mutex_lock(&stack_ptr_mutex);
         local_stack_ptr = stack_ptr;
+        fprintf(profileFile, "%p ", (void*)current_function);
         int64_t stack_offset;
         while (local_stack_ptr - stack > 3)
         {
