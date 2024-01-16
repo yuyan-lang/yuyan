@@ -7,8 +7,8 @@ extern yy_ptr entryMain(yy_ptr*); // the entry to yy llvm ir
 yy_ptr *stack;
 yy_ptr *stack_end;
 yy_ptr *stack_ptr;
-// int64_t stack_size = 1024 * 128; // 1MB stack
-int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
+int64_t stack_size = 1024 * 128; // 1MB stack
+// int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
@@ -23,7 +23,11 @@ int64_t yy_increment_stack_ptr(int64_t increment) {
         while (stack_ptr - stack >= stack_size / 2) {
             stack_size *= 2;
         }
-        stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
+        if (use_libgc){
+            stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
+        } else {
+            stack = (yy_ptr*) realloc(stack, stack_size * sizeof(yy_ptr));
+        }
         stack_end = stack + stack_size;
         stack_ptr = stack + stack_ptr_offset;
     }
@@ -87,7 +91,11 @@ int64_t yy_runtime_start() {
     // allocate a 100 M * 8 bytes stack
     
     // stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
-    stack = (yy_ptr*) yy_gcAllocateBytes(stack_size * sizeof(yy_ptr));
+    if (use_libgc) {
+        stack = (yy_ptr*) yy_gcAllocateBytes(stack_size * sizeof(yy_ptr));
+    } else {
+        stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
+    }
     stack_end = stack + stack_size;
     stack_ptr = stack;
 

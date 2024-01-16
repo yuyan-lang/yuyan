@@ -107,7 +107,8 @@
         "inttypes.h": "c",
         "stdio.h": "c",
         "errno.h": "c",
-        "pthread.h": "c"
+        "pthread.h": "c",
+        "uv.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [
