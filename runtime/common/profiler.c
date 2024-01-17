@@ -11,8 +11,17 @@ extern int64_t entryMain();
 
 void *interruptFunction(void *arg)
 {
+    // fprintf(stderr, "Starting Profiler Thread: Stack offset: %ld\n", stack_ptr - stack);
     while (1) {
-        if (stack_ptr == NULL || stack == NULL || current_function == NULL) {
+        // prevent loop optimization
+        // fprintf(stderr, "s");
+        if (stack_ptr == NULL){
+            continue;
+        }
+        if (stack_ptr == NULL){
+            continue;
+        }
+        if (current_function == NULL) {
             continue;
         }
         // Declare a local stack pointer for manipulation
@@ -29,6 +38,7 @@ void *interruptFunction(void *arg)
         }
         pthread_mutex_unlock(&stack_ptr_mutex);
 
+        // fprintf(stderr, "Profiler: Stack offset: %ld\n", stack_ptr - stack);
         fprintf(profileFile, "\n");
         
         // Flush the file to ensure data is written immediately

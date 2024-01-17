@@ -83,7 +83,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["@yy:uselibgc=0", "@yy:useprofiler=1",  "yylib/标准库/数据结构/多态列。豫", "--parse-only"],
+            "args": ["@yy:uselibgc=0", "@yy:useprofiler=1",  "yylib/标准库/数据结构/多态列。豫", "--do-not-load-cache"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
