@@ -28,7 +28,9 @@
 包裹函数体前者会公开而会函数名而
     『define 』衔（若公开则『』否则『internal 』）衔默认调用规范衔『 i64* @"』衔函数名衔『"』衔
     （获取普通参数签名于【『stack_top』，『entry_block_id』，『argument_data』，『return_record』】）衔『 {「：换行：」』衔
-    『br label %"入口续延名_进入标签"』衔『「：换行：」』衔【】
+    『%"argument_data_alloca" = alloca i64「：换行：」』衔
+    『br label %"入口续延名_进入标签"「：换行：」』衔
+    【】
         也。
 
 包裹函数体后乃字符串列也。
