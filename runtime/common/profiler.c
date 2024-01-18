@@ -8,22 +8,22 @@ extern yy_ptr* stack;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
 extern int64_t entryMain(); 
-
+bool use_profiler;
 void *interruptFunction(void *arg)
 {
     // fprintf(stderr, "Starting Profiler Thread: Stack offset: %ld\n", stack_ptr - stack);
     while (1) {
         // prevent loop optimization
         // fprintf(stderr, "s");
-        if (stack_ptr == NULL){
-            continue;
-        }
-        if (stack_ptr == NULL){
-            continue;
-        }
-        if (current_function == NULL) {
-            continue;
-        }
+        // if (stack_ptr == NULL){
+        //     continue;
+        // }
+        // if (stack_ptr == NULL){
+        //     continue;
+        // }
+        // if (current_function == NULL) {
+        //     continue;
+        // }
         // Declare a local stack pointer for manipulation
         pthread_mutex_lock(&stack_ptr_mutex);
         local_stack_ptr = stack_ptr;

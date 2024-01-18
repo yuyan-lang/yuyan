@@ -22,7 +22,7 @@ void processYYArguments(int argc, char* argv[]) {
             use_libgc = 0;
             total_consumed_argc++;
         } else if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
-            start_yy_profiler();
+            use_profiler = true;
             total_consumed_argc++;
         }
         // Add more options as needed

@@ -67,6 +67,7 @@ extern int64_t use_libgc;
 int64_t yy_runtime_start();
 
 void start_yy_profiler();
+extern bool use_profiler;
 
 
 // Define a function type for the pointer
