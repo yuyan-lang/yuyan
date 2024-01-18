@@ -83,7 +83,6 @@ jobs:
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make bsrt_bs
-        if: '! github.event.pull_request.draft'
         run: make bsrt_bs
 
   ubuntu-bs-build-p:
@@ -92,7 +91,6 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsrp
-        if: '! github.event.pull_request.draft'
         run: make bsrp
 
 
@@ -102,7 +100,6 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsrtc
-        if: '! github.event.pull_request.draft'
         run: make bsrtc
 
   ubuntu-bs-build:
@@ -111,13 +108,64 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/install-linux-dependencies
       - name: make yy_bs_bs
-        if: '! github.event.pull_request.draft'
-        run: |
-          make bsr
+        run: make yy_bs_bs
 
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package
+          path: |
+            ./yy_bs_bs
+            ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
+            ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.bc
+            ./runtime/libyyrtdebug.a
+            ./yylib
+
+  ubuntu-bs-bs-build-p:
+    needs: ubuntu-bs-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-linux-amd64-release-package 
+      - name: cp yy_bs_bs yy_bs
+        run: cp yy_bs_bs yy_bs
+      - name: make bsrp
+        run: make bsrp
+
+
+  ubuntu-bs-bs-build-tc:
+    runs-on: ubuntu-latest
+    needs: ubuntu-bs-build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-linux-amd64-release-package 
+      - name: cp yy_bs_bs yy_bs
+        run: cp yy_bs_bs yy_bs
+      - name: make bsrtc
+        run: make bsrtc
+
+  ubuntu-bs-bs-build:
+    runs-on: ubuntu-latest
+    needs: ubuntu-bs-build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-linux-amd64-release-package 
+      - name: cp yy_bs_bs yy_bs
+        run: cp yy_bs_bs yy_bs
+      - name: make yy_bs_bs
+        run: make yy_bs_bs
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-linux-amd64-release-package-bootstrapped
           path: |
             ./yy_bs_bs
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
