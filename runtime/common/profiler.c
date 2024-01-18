@@ -27,7 +27,9 @@ void *interruptFunction(void *arg)
         // Declare a local stack pointer for manipulation
         pthread_mutex_lock(&stack_ptr_mutex);
         local_stack_ptr = stack_ptr;
-        fprintf(profileFile, "%p ", (void*)current_function);
+        if (current_function != NULL){
+            fprintf(profileFile, "%p ", (void*)current_function);
+        }
         int64_t stack_offset;
         while (local_stack_ptr - stack > 3)
         {

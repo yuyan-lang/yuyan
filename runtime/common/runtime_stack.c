@@ -134,7 +134,7 @@ int64_t yy_runtime_start() {
 
     */
     yy_ptr argument_record[4] = {(yy_ptr)stack_ptr, (yy_ptr)initial_block_id, NULL, (yy_ptr)return_record};
-    current_function =(yy_function_type) entryMain;
+    current_function =(yy_function_type) NULL;
     if (use_profiler) {
         start_yy_profiler();
     }

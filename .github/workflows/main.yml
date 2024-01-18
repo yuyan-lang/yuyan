@@ -132,9 +132,12 @@ jobs:
         with:
           name: ubuntu-linux-amd64-release-package 
       - name: cp yy_bs_bs yy_bs
-        run: cp yy_bs_bs yy_bs
+        run: |
+          cp yy_bs_bs ./yy_bs
+          chmod u+x ./yy_bs
       - name: make bsrp
-        run: make bsrp
+        run: ./yy_bs 豫言编译器/入口。豫 --parse-only
+        
 
 
   ubuntu-bs-bs-build-tc:
@@ -147,9 +150,11 @@ jobs:
         with:
           name: ubuntu-linux-amd64-release-package 
       - name: cp yy_bs_bs yy_bs
-        run: cp yy_bs_bs yy_bs
+        run: |
+          cp yy_bs_bs ./yy_bs
+          chmod u+x ./yy_bs
       - name: make bsrtc
-        run: make bsrtc
+        run: ./yy_bs 豫言编译器/入口。豫 --type-check-only
 
   ubuntu-bs-bs-build:
     runs-on: ubuntu-latest
@@ -161,7 +166,9 @@ jobs:
         with:
           name: ubuntu-linux-amd64-release-package 
       - name: cp yy_bs_bs yy_bs
-        run: cp yy_bs_bs yy_bs
+        run: |
+          cp yy_bs_bs ./yy_bs
+          chmod u+x ./yy_bs
       - name: make yy_bs_bs
         run: make yy_bs_bs
 
