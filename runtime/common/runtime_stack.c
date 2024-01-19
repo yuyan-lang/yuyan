@@ -6,7 +6,7 @@
 yy_ptr *stack;
 yy_ptr *stack_end;
 yy_ptr *stack_ptr;
-int64_t stack_size = 1024 * 128; // 1MB stack
+int64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
 // int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
@@ -18,17 +18,19 @@ int64_t yy_increment_stack_ptr(int64_t increment) {
         errorAndAbort("Stack overflow");
     }
     else if (stack_ptr - stack >= stack_size / 2) {
-        int64_t stack_ptr_offset =  stack_ptr - stack;
-        while (stack_ptr - stack >= stack_size / 2) {
-            stack_size *= 2;
-        }
-        if (use_libgc){
-            stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
-        } else {
-            stack = (yy_ptr*) realloc(stack, stack_size * sizeof(yy_ptr));
-        }
-        stack_end = stack + stack_size;
-        stack_ptr = stack + stack_ptr_offset;
+        // uncomment to add stack reallocation
+        // I am commenting them to prepare for stack allocation
+        // int64_t stack_ptr_offset =  stack_ptr - stack;
+        // while (stack_ptr - stack >= stack_size / 2) {
+        //     stack_size *= 2;
+        // }
+        // if (use_libgc){
+        //     stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
+        // } else {
+        //     stack = (yy_ptr*) realloc(stack, stack_size * sizeof(yy_ptr));
+        // }
+        // stack_end = stack + stack_size;
+        // stack_ptr = stack + stack_ptr_offset;
     }
     return 0;
 }
