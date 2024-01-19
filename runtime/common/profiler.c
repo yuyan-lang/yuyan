@@ -3,11 +3,7 @@
 
 FILE* profileFile;
 yy_ptr *local_stack_ptr;
-extern yy_ptr* stack_ptr;
-extern yy_ptr* stack;
-extern yy_function_type current_function;
-extern pthread_mutex_t stack_ptr_mutex;
-extern int64_t entryMain(); 
+
 bool use_profiler;
 void *interruptFunction(void *arg)
 {

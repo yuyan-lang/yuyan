@@ -72,3 +72,9 @@ extern bool use_profiler;
 
 // Define a function type for the pointer
 typedef yy_ptr (*yy_function_type)(yy_ptr, yy_ptr, yy_ptr, yy_ptr);
+
+extern yy_ptr* stack_ptr;
+extern yy_ptr* stack;
+extern yy_function_type current_function;
+extern pthread_mutex_t stack_ptr_mutex;
+extern int64_t entryMain(); 

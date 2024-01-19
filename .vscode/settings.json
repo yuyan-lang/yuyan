@@ -108,7 +108,9 @@
         "stdio.h": "c",
         "errno.h": "c",
         "pthread.h": "c",
-        "uv.h": "c"
+        "uv.h": "c",
+        "fast_gc.h": "c",
+        "garbage_collector.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

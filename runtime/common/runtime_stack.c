@@ -2,7 +2,6 @@
 
 #include "common_include.h"
 
-extern yy_ptr entryMain(yy_ptr*); // the entry to yy llvm ir
 
 yy_ptr *stack;
 yy_ptr *stack_end;
