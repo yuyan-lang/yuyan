@@ -1,7 +1,7 @@
 
 
 #include "common_include.h"
-
+#include "../native/native_include.h"
 
 yy_ptr *stack;
 yy_ptr *stack_end;
@@ -159,6 +159,7 @@ int64_t yy_runtime_start() {
             yy_ptr caller_function = stack_ptr[-2];
             yy_ptr continuation_label_id = stack_ptr[-1];
 
+
             // restore stack
             begin_stack_manipulation();
             yy_decrement_stack_ptr(3);
@@ -172,6 +173,7 @@ int64_t yy_runtime_start() {
             if (current_function == NULL && stack_ptr == stack) {
                 return 0;
             }
+
 
             // transfer control to caller
             return_record[0] = int_to_addr(4);
@@ -202,6 +204,10 @@ int64_t yy_runtime_start() {
             yy_increment_stack_ptr(3);
             end_stack_manipulation();
             // pthread_mutex_unlock(&stack_ptr_mutex);
+
+            // perform gc
+            yy_perform_gc((void**)(&argument_data));
+
 
             current_function = new_function;
 

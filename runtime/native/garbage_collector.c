@@ -7,10 +7,11 @@ complete this file, replace error and abort with actual implementation. I want a
 #define ROOT_POINTS_LIMIT 1000
 #endif
 
-void* gc_root_points[ROOT_POINTS_LIMIT] = {0};
+void** gc_root_points[ROOT_POINTS_LIMIT] = {0};
 int gc_root_points_count = 0;
 
-void yy_register_gc_rootpoint(void* ptr) {
+// must pass pointers to gc root points, a dereference of it will be a gc root point
+void yy_register_gc_rootpoint(void** ptr) {
 #ifdef OLD_ENTRY
     return;
 #else
@@ -23,28 +24,35 @@ void yy_register_gc_rootpoint(void* ptr) {
 }
 
 #ifndef INITIAL_HEAP_SIZE
-#define INITIAL_HEAP_SIZE (512 * 1024 * 1024)  // 512 MB
+// #define INITIAL_HEAP_SIZE (64 * 1024 * 1024)  // 512 MB
+#define INITIAL_HEAP_SIZE (2 * 1024)  // 16 KB
 #endif
 
 #ifndef TINY_HEAP_SIZE
-#define TINY_HEAP_SIZE (32 * 1024 * 1024)  // 32 MB
+#define TINY_HEAP_SIZE (4 * 1024 * 1024)  // 32 MB
 #endif
 
 uint64_t* current_heap = NULL;
 uint64_t* tiny_heap = NULL;
+uint64_t* new_heap = NULL;
 uint64_t current_heap_size = INITIAL_HEAP_SIZE;
 uint64_t current_heap_offset = 0;
 uint64_t tiny_heap_offset = 0;
+uint64_t new_heap_size = 0;
 bool should_expand_heap = false;
 
+#define MALLOC_FUNC(X) calloc(1, X * sizeof(uint64_t))
+
+bool yy_gc_debug_flag = false;
 
 void yy_gc_init() {
-    current_heap = malloc(INITIAL_HEAP_SIZE);
+    current_heap = MALLOC_FUNC(INITIAL_HEAP_SIZE);
     if (!current_heap) errorAndAbort("Failed to initialize major heap");
     
-    tiny_heap = malloc(TINY_HEAP_SIZE);
+    tiny_heap = MALLOC_FUNC(TINY_HEAP_SIZE);
     if (!tiny_heap) errorAndAbort("Failed to initialize tiny heap");
 
+    yy_gc_debug_flag = (getenv("YY_GC_DEBUG_FLAG") != NULL && strcmp(getenv("YY_GC_DEBUG_FLAG"), "1") == 0);
 }
 
 static uint64_t MAGIC_NUMBER = 0xFAFBFC;
@@ -57,7 +65,9 @@ uint64_t get_ptr_size(uint64_t header) {
     return (header & 0xFFFFFFFF);
 }
 
-bool is_a_pointer(void* raw_ptr) {
+bool is_an_old_pointer(void* raw_ptr) {
+    // fprintf(stderr, "\nchecking is_a_pointer: %p ", raw_ptr);
+    // fflush(stderr);
 
     uint64_t* ptr = (uint64_t*)raw_ptr;
     if (ptr - current_heap > 0 && ptr - current_heap < current_heap_size) {
@@ -71,6 +81,17 @@ bool is_a_pointer(void* raw_ptr) {
     }
 }
 
+
+bool is_an_new_pointer(void* raw_ptr) {
+    uint64_t* ptr = (uint64_t*)raw_ptr;
+    if (ptr - new_heap > 0 && ptr - new_heap < new_heap_size) {
+        uint64_t header = *(ptr - 1);
+        return check_magic_number(header) && get_ptr_size(header) <= new_heap_size;
+    } else {
+        return false;
+    }
+}
+
 void* allocate_memory_with_implicit_header(uint64_t array_size, uint64_t* heap_base, uint64_t heap_size, uint64_t* heap_offset) {
     // Allocate memory block from the current heap
     size_t total_size = array_size + 1;
@@ -79,9 +100,10 @@ void* allocate_memory_with_implicit_header(uint64_t array_size, uint64_t* heap_b
         return NULL;  // Cannot allocate from this heap
     }
   
+    uint64_t *block = heap_base + *heap_offset;
+
     *heap_offset += total_size;
 
-    uint64_t *block = heap_base + *heap_offset;
 
     uint64_t header_value = 0;
     header_value |= (MAGIC_NUMBER << 32);
@@ -100,12 +122,14 @@ void* yy_gc_malloc_bytes(uint64_t size) {
 
     void* block = allocate_memory_with_implicit_header(array_size, current_heap, current_heap_size, &current_heap_offset);
     if (block != NULL) {
+        // fprintf(stderr, "Allocated from %ld bytes at %p - %p ", size, block, block + array_size);
         return block;
     }
     
     // If no space left in the minor heap, try allocating from the tiny heap
     block = allocate_memory_with_implicit_header(size, tiny_heap, TINY_HEAP_SIZE, &tiny_heap_offset);
     if (block != NULL) {
+        // fprintf(stderr, "Allocating from minor heap %p ", block);
         return block;
     }
 
@@ -129,7 +153,7 @@ void* yy_gc_realloc_bytes(void* ptr, uint64_t size) {
             if (new_ptr == NULL) {
                 return NULL;
             }
-            memcpy(new_ptr, ptr, ptr_size);
+            memcpy(new_ptr, ptr, (ptr_size) * sizeof(uint64_t));
             return new_ptr;
         }
     }
@@ -146,74 +170,117 @@ bool header_is_marked(uint64_t header){
     return (header >> 60) & 1;
 }
 
-void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offset){
-    if (is_a_pointer(*ptr_ptr)) {
+void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
+    if (is_an_new_pointer(*ptr_ptr)) {
+        return;
+    }
+    if (is_an_old_pointer(*ptr_ptr)) {
         void* ptr = *ptr_ptr;
         uint64_t header = *((uint64_t*)ptr - 1);
         if (header_is_marked(header)) {
             *ptr_ptr = (void*) *(uint64_t**)ptr;
-            return;
+        } else {
+            uint64_t ptr_size = get_ptr_size(header);
+            if (*new_heap_offset + ptr_size + 2 >= new_heap_size) {
+                fprintf(stderr, "No space left during GC, BUG, requested offset %ld, size %ld\n", *new_heap_offset + ptr_size + 1, new_heap_size);
+                errorAndAbort("This means header is not correctly marked");
+            } else {
+                // fprintf(stderr, "requested offset %ld, size %ld OK ", *new_heap_offset + ptr_size + 1, new_heap_size);
+            }
+            // fprintf(stderr, "copying at %ld size %ld data ", *new_heap_offset, ptr_size + 1);
+            // for (int64_t i = 0; i < ptr_size + 1; i++) {
+            //     fprintf(stderr, "%ld %p, ", i, *((void **)(ptr - 1 + i)));
+            // }
+            // fprintf(stderr, ",");
+            memcpy(new_heap + *new_heap_offset, ((uint64_t*)ptr - 1), (ptr_size + 1) * sizeof(uint64_t));
+            uint64_t* new_ptr = new_heap + *new_heap_offset + 1;
+            *new_heap_offset += ptr_size + 1;
+            mark_ptr_header(ptr);
+            *(void**)ptr = new_ptr;
+            *ptr_ptr = new_ptr;
         }
-        uint64_t ptr_size = get_ptr_size(header);
-        if (*new_heap_offset + ptr_size + 1 > current_heap_size) {
-            errorAndAbort("No space left during GC, increase GC factor");
-        }
-        memcpy(new_heap + *new_heap_offset, ((uint64_t*)ptr - 1), ptr_size + 1);
-        uint64_t* new_ptr = new_heap + *new_heap_offset + 1;
-        *new_heap_offset += ptr_size + 1;
-        mark_ptr_header(ptr);
-        *ptr_ptr = new_ptr;
     }
+    // assert( (!is_a_pointer((void*)(*ptr_ptr))) || (!(check_magic_number(*(uint64_t*)(*ptr_ptr)))));
 }
 
+static int64_t gc_count = 0;
 
 void yy_perform_gc(void** additional_root_point) {
     if (tiny_heap_offset == 0) {
         return;  // No garbage collection needed
     }
+    gc_count ++;
 
-    uint64_t *new_heap;
+    if (yy_gc_debug_flag){
+        fprintf(stderr, "%ld Performing garbage collection, current_heap_offset %ld, tiny_heap_offset %ld    ", gc_count, current_heap_offset, tiny_heap_offset);
+        fflush(stderr);
+    }
+
     if (should_expand_heap) {
         // Expand the heap
-        new_heap = malloc(current_heap_size * 2);
+        new_heap_size = current_heap_size * 2 + tiny_heap_offset + 10;
+        new_heap = MALLOC_FUNC(new_heap_size);
         if (!new_heap) errorAndAbort("Failed to expand major heap");
-        current_heap_size *= 2;
         should_expand_heap = false;
     } else {
         // Reuse the current heap
-        new_heap = malloc(current_heap_size);
+        new_heap_size = current_heap_size + tiny_heap_offset + 10;
+        new_heap = MALLOC_FUNC(new_heap_size);
     }
 
-    uint64_t *scan_ptr = new_heap;
+    uint64_t scan_offset = 0;
     uint64_t new_heap_offset = 0;
 
     // copy the root points
     for (int i = 0; i < gc_root_points_count; i++) {
-        copy_root_point(gc_root_points[i], new_heap, &new_heap_offset);
+        copy_root_point((gc_root_points[i]), new_heap, &new_heap_offset, new_heap_size);
     }
     yy_ptr* stack_ptr_gc = (yy_ptr*)stack;
     while(stack_ptr_gc < stack_ptr){
-        copy_root_point((void*)(*stack_ptr_gc), new_heap, &new_heap_offset);
+        copy_root_point((void**)(stack_ptr_gc), new_heap, &new_heap_offset, new_heap_size);
         stack_ptr_gc++;
     }
-    copy_root_point(additional_root_point, new_heap, &new_heap_offset);
+    copy_root_point(additional_root_point, new_heap, &new_heap_offset, new_heap_size);
+    // fprintf(stderr, "Scanning New Heap");
+    // for (int64_t i = 0; i < new_heap_offset; i++) {
+    //     fprintf(stderr, "%ld %p, ", i, *((void **)(new_heap + i)));
+    // }
 
-    while (scan_ptr < new_heap + new_heap_offset) {
-        copy_root_point((void*)(*scan_ptr), new_heap, &new_heap_offset);
+    while (scan_offset <  new_heap_offset) {
+        // fprintf(stderr, "scan_offset %ld, new_heap_offset %ld, heap_value %p,   ", scan_offset, new_heap_offset, *(void**)(new_heap + scan_offset));
+        // fflush(stderr);
+        copy_root_point((void**)(new_heap + scan_offset), new_heap, &new_heap_offset, new_heap_size);
+        scan_offset ++;
+    }
+
+    // remove the extra allocation from tracking
+    if (new_heap_offset + tiny_heap_offset + 10 < new_heap_size) {
+        new_heap_size = new_heap_size - tiny_heap_offset - 10;
     }
 
     // we're all done
     free(current_heap);
+
+    if (yy_gc_debug_flag){
+        fprintf(stderr, "Finished garbage collection, collected %ld remaining, %ld total,  (* 8 bytes) ", new_heap_offset, new_heap_size);
+        fprintf(stderr, "New heap %p - %p size %ld, Prev heap %p - %p size %ld \n", new_heap, new_heap + new_heap_offset, new_heap_size, current_heap, current_heap + current_heap_offset, current_heap_size);
+        fflush(stderr);
+    }
     current_heap = new_heap;
     current_heap_offset = new_heap_offset;
+    current_heap_size = new_heap_size;
+    new_heap = NULL;
+    new_heap_size = 0;
+    
 
-    if ((double)new_heap_offset / current_heap_size > 0.75) {
+    if ((double)new_heap_offset / current_heap_size > 0.15) {
         should_expand_heap = true;
     }
     
 
     // Clean up tiny heap at the end of a successful garbage collection
     tiny_heap_offset = 0;
+
 }
 
 

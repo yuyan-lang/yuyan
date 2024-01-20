@@ -10,11 +10,11 @@
 
 void yy_gc_init();
 
-void yy_register_gc_rootpoint(void* ptr);
+void yy_register_gc_rootpoint(void** ptr);
 
 void* yy_gc_malloc_bytes(uint64_t size);
 
 void* yy_gc_realloc_bytes(void* ptr, uint64_t size);
-void yy_perform_gc();
+void yy_perform_gc(void** additional_root_point);
 
 #endif /* YY_FASTGC_H */

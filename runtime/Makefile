@@ -97,8 +97,8 @@ opt : libyyrtopt.a
 
 libyyrtdebug.so: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -flto -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
-	$(CC) -shared -flto -o $@ build/native/*.o
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror  -fPIC
+	$(CC) -shared -o $@ build/native/*.o
 
 debugso : libyyrtdebug.so
 
