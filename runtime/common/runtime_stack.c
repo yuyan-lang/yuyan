@@ -105,7 +105,7 @@ int64_t yy_runtime_start() {
     
     // stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
     if (use_libgc) {
-        stack = (yy_ptr*) yy_gcAllocateBytes(stack_size * sizeof(yy_ptr));
+        stack = (yy_ptr*) GC_MALLOC(stack_size * sizeof(yy_ptr));
     } else {
         stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
     }

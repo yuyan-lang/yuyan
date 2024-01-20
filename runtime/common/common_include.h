@@ -10,6 +10,8 @@
 #include <limits.h>
 #include <errno.h>
 #include <pthread.h>
+#include "gc.h" // https://hboehm.info/gc/ libgc 
+#include <uv.h> 
 
 #ifdef __linux__
     #include <bsd/string.h>

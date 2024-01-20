@@ -136,20 +136,38 @@ void* yy_gc_realloc_bytes(void* ptr, uint64_t size) {
 
 }
 
-void copy_root_point(void* ptr, uint64_t* new_heap, uint64_t* new_heap_offset){
-    if (is_a_pointer(ptr)) {
+void mark_ptr_header(uint64_t* ptr){
+    uint64_t header = *(ptr - 1);
+    header |= (1L << 60);
+    *(ptr - 1) = header;
+}
+
+bool header_is_marked(uint64_t header){
+    return (header >> 60) & 1;
+}
+
+void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offset){
+    if (is_a_pointer(*ptr_ptr)) {
+        void* ptr = *ptr_ptr;
         uint64_t header = *((uint64_t*)ptr - 1);
+        if (header_is_marked(header)) {
+            *ptr_ptr = (void*) *(uint64_t**)ptr;
+            return;
+        }
         uint64_t ptr_size = get_ptr_size(header);
         if (*new_heap_offset + ptr_size + 1 > current_heap_size) {
             errorAndAbort("No space left during GC, increase GC factor");
         }
         memcpy(new_heap + *new_heap_offset, ((uint64_t*)ptr - 1), ptr_size + 1);
+        uint64_t* new_ptr = new_heap + *new_heap_offset + 1;
         *new_heap_offset += ptr_size + 1;
+        mark_ptr_header(ptr);
+        *ptr_ptr = new_ptr;
     }
 }
 
 
-void yy_perform_gc(void* additional_root_point) {
+void yy_perform_gc(void** additional_root_point) {
     if (tiny_heap_offset == 0) {
         return;  // No garbage collection needed
     }
