@@ -19,11 +19,11 @@
 #ifdef __linux__
     #include <bsd/string.h>
 #endif
-typedef __uint128_t yyvalue;
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 
 #include "marshall.h"
+
 
 extern int global_argc;
 extern char** global_argv;
@@ -74,19 +74,9 @@ void start_yy_profiler();
 extern bool use_profiler;
 
 
-// Define a function type for the pointer
-typedef yyvalue (*yy_function_type)(yyvalue, yyvalue, yyvalue, yyvalue);
 
 extern yyvalue* stack_ptr;
 extern yyvalue* stack;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
 extern int64_t entryMain();
-
-extern int type_empty_value;
-extern int type_tuple;
-extern int type_int;
-extern int type_double;
-extern int type_string;
-extern int type_pointer;
-extern int type_boolean;

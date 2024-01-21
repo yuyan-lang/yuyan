@@ -39,7 +39,8 @@ yyvalue yyReadAllStdIn() {
             char* newBuffer = (char*)realloc(buffer, bufferSize);
             if (newBuffer == NULL) {
                 free(buffer);
-                return NULL; // Failed to reallocate memory
+                errorAndAbort("Failed to reallocate memory");
+                // return 
             }
             buffer = newBuffer;
         }
@@ -52,7 +53,9 @@ yyvalue yyReadAllStdIn() {
     char* finalString = (char*)realloc(buffer, totalSize + 1);
     if (finalString == NULL) {
         free(buffer);
-        return NULL; // Failed to reallocate memory
+        errorAndAbort("Failed to reallocate memory");
+        // return NULL; // Failed to reallocate memory
+        return unit_to_yyvalue();
     }
 
     return string_to_yyvalue(finalString);
@@ -65,7 +68,8 @@ yyvalue yyReadLineFromStdin() {
     if (bytesRead == -1) {
         // Error or end-of-file encountered
         free(line);
-        return NULL;
+        errorAndAbort("Failed to read line from stdin");
+        return unit_to_yyvalue();
     }
 
     // Remove newline character, if present

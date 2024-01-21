@@ -320,7 +320,7 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     int* lengths = (int*)malloc(length * sizeof(int));
 
     for (int i = 0; i < length; i++) {
-        lengths[i] = get_yyvalue_length(strs[i]);
+        lengths[i] = yyvalue_get_strlen(strs[i]);
         totalLength += lengths[i];
     }
 

@@ -110,7 +110,9 @@
         "pthread.h": "c",
         "uv.h": "c",
         "fast_gc.h": "c",
-        "garbage_collector.h": "c"
+        "garbage_collector.h": "c",
+        "type_defs.h": "c",
+        "marshall.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

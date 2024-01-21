@@ -61,30 +61,43 @@ uint64_t get_ptr_size(uint64_t header) {
     return (header & 0xFFFFFFFF);
 }
 
-bool is_an_old_pointer(void* raw_ptr) {
+bool is_an_old_pointer(yyvalue raw_ptr) {
     // fprintf(stderr, "\nchecking is_a_pointer: %p ", raw_ptr);
     // fflush(stderr);
-
-    uint64_t* ptr = (uint64_t*)raw_ptr;
-    if (ptr - current_heap > 0 && ptr - current_heap < current_heap_size) {
-        uint64_t header = *(ptr - 1);
-        return check_magic_number(header) && get_ptr_size(header) <= current_heap_size;
-    } else if (ptr - tiny_heap > 0 && ptr - tiny_heap < TINY_HEAP_SIZE) {
-        uint64_t header = *(ptr - 1);
-        return check_magic_number(header) && get_ptr_size(header) <= TINY_HEAP_SIZE;
-    } else {
+    if (yyvalue_get_type(raw_ptr) != type_tuple){
         return false;
+    } else {
+        yyvalue* ptr = yyvalue_to_tuple(raw_ptr);
+        if (ptr - current_heap > 0 && ptr - current_heap < current_heap_size) {
+            assert(yyvalue_get_length(ptr) <= current_heap_size);
+            return true;
+        }
+        else if (ptr - tiny_heap > 0 && ptr - tiny_heap < TINY_HEAP_SIZE)
+        {
+            assert(yyvalue_get_length(ptr) <= TINY_HEAP_SIZE);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
 
 bool is_an_new_pointer(void* raw_ptr) {
-    uint64_t* ptr = (uint64_t*)raw_ptr;
-    if (ptr - new_heap > 0 && ptr - new_heap < new_heap_size) {
-        uint64_t header = *(ptr - 1);
-        return check_magic_number(header) && get_ptr_size(header) <= new_heap_size;
-    } else {
+    if (yyvalue_get_type(raw_ptr) != type_tuple){
         return false;
+    } else {
+        yyvalue* ptr = yyvalue_to_tuple(raw_ptr);
+        if (ptr - new_heap > 0 && ptr - new_heap < new_heap_size) {
+            assert(yyvalue_get_length(ptr) <= new_heap_size);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
@@ -148,40 +161,34 @@ void* yy_gc_realloc_bytes(void* ptr, uint64_t old_size, uint64_t new_size) {
 
 }
 
-void mark_ptr_header(uint64_t* ptr){
-    uint64_t header = *(ptr - 1);
-    header |= (1L << 60);
-    *(ptr - 1) = header;
-}
 
-bool header_is_marked(uint64_t header){
-    return (header >> 60) & 1;
-}
 
 void copy_root_point(yyvalue* ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
     if (is_an_new_pointer(*ptr_ptr)) {
         return;
     }
     if (is_an_old_pointer(*ptr_ptr)) {
-        void* ptr = *ptr_ptr;
-        uint64_t header = *((uint64_t*)ptr - 1);
-        if (header_is_marked(header)) {
-            *ptr_ptr = (void*) *(uint64_t**)ptr;
-        } else {
-            uint64_t ptr_size = get_ptr_size(header);
-            if (*new_heap_offset + ptr_size + 2 >= new_heap_size) {
+        yyvalue header = yy_read_tuple(*ptr_ptr, 0);
+        if (yyvalue_get_type(header) == type_pointer_transfer_address)
+        {
+            yyvalue new_ptr = tuple_to_yyvalue(yyvalue_get_length(*ptr_ptr), yyvalue_to_transfer_address(header));
+            *ptr_ptr = new_ptr;
+        }
+        else
+        {
+            uint64_t ptr_size = yyvalue_get_length(*ptr_ptr);
+            if (*new_heap_offset + ptr_size + 1 >= new_heap_size) {
                 #ifdef __APPLE__
                     fprintf(stderr, "No space left during GC, BUG, requested offset %llu, size %llu\n", *new_heap_offset + ptr_size + 1, new_heap_size);
                 #else
-                    fprintf(stderr, "No space left during GC, BUG, requested offset %ld, size %ld\n", *new_heap_offset + ptr_size + 1, new_heap_size);
+                    fprintf(stderr, "No space left during GC, BUG, requested offset %ld, size %ld\n", *new_heap_offset + ptr_size, new_heap_size);
                 #endif
                 errorAndAbort("This means header is not correctly marked");
             }
-            memcpy(new_heap + *new_heap_offset, ((uint64_t*)ptr - 1), (ptr_size + 1) * sizeof(uint64_t));
-            uint64_t* new_ptr = new_heap + *new_heap_offset + 1;
-            *new_heap_offset += ptr_size + 1;
-            mark_ptr_header(ptr);
-            *(void**)ptr = new_ptr;
+            memcpy(new_heap + *new_heap_offset, yyvalue_to_tuple(*ptr_ptr), (ptr_size) * sizeof(yyvalue));
+            yyvalue* new_ptr = new_heap + *new_heap_offset;
+            *new_heap_offset += ptr_size;
+            yy_write_tuple(*ptr_ptr, 0, transfer_address_to_yyvalue(new_ptr));
             *ptr_ptr = new_ptr;
         }
     }
@@ -226,7 +233,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
     }
     yyvalue* stack_ptr_gc = (yyvalue*)stack;
     while(stack_ptr_gc < stack_ptr){
-        copy_root_point((void**)(stack_ptr_gc), new_heap, &new_heap_offset, new_heap_size);
+        copy_root_point((stack_ptr_gc), new_heap, &new_heap_offset, new_heap_size);
         stack_ptr_gc++;
     }
     copy_root_point(additional_root_point, new_heap, &new_heap_offset, new_heap_size);
@@ -238,7 +245,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
     while (scan_offset <  new_heap_offset) {
         // fprintf(stderr, "scan_offset %ld, new_heap_offset %ld, heap_value %p,   ", scan_offset, new_heap_offset, *(void**)(new_heap + scan_offset));
         // fflush(stderr);
-        copy_root_point((void**)(new_heap + scan_offset), new_heap, &new_heap_offset, new_heap_size);
+        copy_root_point((new_heap + scan_offset), new_heap, &new_heap_offset, new_heap_size);
         scan_offset ++;
     }
 

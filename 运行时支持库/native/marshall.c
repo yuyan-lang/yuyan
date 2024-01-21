@@ -39,6 +39,7 @@ int type_boolean = 5;
 int type_pointer_to_function = 6;
 int type_pointer_to_static_object = 7;
 int type_pointer_to_stack = 8;
+int type_pointer_transfer_address = 9;
 
 static int offset_type = 64;
 static int offset_length = 80;
@@ -49,21 +50,21 @@ u128 to128literal(uint64_t arg)
     return (__uint128_t)arg;
 }
 
-uint64_t get_yyvalue_type(yyvalue arg) {
+uint64_t yyvalue_get_type(yyvalue arg) {
     return (arg >> offset_type) & 0xF;
 }
 
-void set_yyvalue_type(yyvalue *arg, uint64_t type) {
+void yyvalue_set_type(yyvalue *arg, uint64_t type) {
     u128 mask = to128literal(type) << offset_type;
     u128 mask_bits = to128literal(0xF) << offset_type;
     *arg = (*arg & ~mask_bits) | mask;
 }
 
-uint64_t get_yyvalue_length(yyvalue arg) {
+uint64_t yyvalue_get_length(yyvalue arg) {
     return (arg >> offset_length) & 0xFFFFFFFF;
 }
 
-void set_yyvalue_length(yyvalue *arg, uint64_t length) {
+void yyvalue_set_length(yyvalue *arg, uint64_t length) {
     u128 mask = to128literal(length) << offset_length;
     u128 mask_bits = to128literal(0xFFFFFFFF) << offset_length;
     *arg = (*arg & ~mask_bits) | mask;
@@ -71,47 +72,52 @@ void set_yyvalue_length(yyvalue *arg, uint64_t length) {
 
 
 char * yyvalue_to_string(yyvalue arg) {
-    assert(get_yyvalue_type(arg) == type_string);
+    assert(yyvalue_get_type(arg) == type_string);
     return (char *)arg;
 }
 
 int64_t yyvalue_to_int(yyvalue arg) {
-    assert(get_yyvalue_type(arg) == type_int);
+    assert(yyvalue_get_type(arg) == type_int);
     return (int64_t) arg;
 }
 
 double  yyvalue_to_double(yyvalue arg) {
-    assert(get_yyvalue_type(arg) == type_double);
+    assert(yyvalue_get_type(arg) == type_double);
     return (double) arg;
 }
 
 bool yyvalue_to_bool(yyvalue arg){
-    assert (get_yyvalue_type(arg) == type_boolean);
+    assert (yyvalue_get_type(arg) == type_boolean);
     return (bool)&arg;
 }
 
 yyvalue* yyvalue_to_tuple(yyvalue arg){
-    assert(get_yyvalue_type(arg) == type_tuple);
+    assert(yyvalue_get_type(arg) == type_tuple);
     return (yyvalue *)arg;
 }
 
 uint64_t yyvalue_to_tuple_length(yyvalue arg){
-    assert(get_yyvalue_type(arg) == type_tuple);
-    return get_yyvalue_length(arg);
+    assert(yyvalue_get_type(arg) == type_tuple);
+    return yyvalue_get_type(arg);
 }
 
 yy_function_type yyvalue_to_funcptr(yyvalue arg){
-    assert(get_yyvalue_type(arg) == type_pointer_to_function);
+    assert(yyvalue_get_type(arg) == type_pointer_to_function);
     return (yy_function_type)arg;
 }
 
 yyvalue* yyvalue_to_staticptr(yyvalue arg){
-    assert(get_yyvalue_type(arg) == type_pointer_to_static_object);
+    assert(yyvalue_get_type(arg) == type_pointer_to_static_object);
     return (yyvalue*)arg;
 }
 
 yyvalue* yyvalue_to_stackptr(yyvalue arg){
-    assert(get_yyvalue_type(arg) == type_pointer_to_stack);
+    assert(yyvalue_get_type(arg) == type_pointer_to_stack);
+    return (yyvalue*)arg;
+}
+
+yyvalue* yyvalue_to_transfer_address(yyvalue arg){
+    assert(yyvalue_get_type(arg) == type_pointer_transfer_address);
     return (yyvalue*)arg;
 }
 
@@ -126,52 +132,58 @@ yyvalue unit_to_yyvalue(){
 
 yyvalue string_to_yyvalue(const char * str){
     yyvalue ret = (yyvalue)str;
-    set_yyvalue_type(&ret, type_string);
-    set_yyvalue_length(&ret, strlen(str));
+    yyvalue_set_type(&ret, type_string);
+    yyvalue_set_length(&ret, strlen(str));
     return ret;
 }
 
 yyvalue int_to_yyvalue(int64_t i){
     yyvalue ret = (yyvalue)i;
-    set_yyvalue_type(&ret, type_int);
+    yyvalue_set_type(&ret, type_int);
     return ret;
 }
 
 yyvalue double_to_yyvalue(double i){
     yyvalue ret = (yyvalue)i;
-    set_yyvalue_type(&ret, type_double);
+    yyvalue_set_type(&ret, type_double);
     return ret;
 }
 
 
 yyvalue funcptr_to_yyvalue(yy_function_type func) {
     yyvalue ret = (yyvalue)func;
-    set_yyvalue_type(&ret, type_pointer_to_function);
+    yyvalue_set_type(&ret, type_pointer_to_function);
     return ret;
 }
 
 yyvalue staticptr_to_yyvalue(yyvalue* static_ptr) {
     yyvalue ret = (yyvalue)static_ptr;
-    set_yyvalue_type(&ret, type_pointer_to_static_object);
+    yyvalue_set_type(&ret, type_pointer_to_static_object);
     return ret;
 }
 
 yyvalue stackptr_to_yyvalue(yyvalue* stackptr) {
     yyvalue ret = (yyvalue)stackptr;
-    set_yyvalue_type(&ret, type_pointer_to_stack);
+    yyvalue_set_type(&ret, type_pointer_to_stack);
+    return ret;
+}
+
+yyvalue transfer_address_to_yyvalue(yyvalue* transfer_address) {
+    yyvalue ret = (yyvalue)transfer_address;
+    yyvalue_set_type(&ret, type_pointer_transfer_address);
     return ret;
 }
 
 yyvalue bool_to_yyvalue(bool b){
     yyvalue ret = (yyvalue)b;
-    set_yyvalue_type(&ret, type_boolean);
+    yyvalue_set_type(&ret, type_boolean);
     return ret;
 }
 
 yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
     yyvalue ret = (yyvalue)elems;
-    set_yyvalue_type(&ret, type_tuple);
-    set_yyvalue_length(&ret, length);
+    yyvalue_set_type(&ret, type_tuple);
+    yyvalue_set_length(&ret, length);
     return ret;
 }
 
