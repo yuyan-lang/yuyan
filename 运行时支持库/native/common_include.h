@@ -18,10 +18,17 @@
     #include <bsd/string.h>
 #endif
 typedef uint64_t* yy_ptr;
+#include "gc.h" // https://hboehm.info/gc/ libgc 
+#include <uv.h> 
+
+#include "garbage_collector.h"
 
 extern int global_argc;
 extern char** global_argv;
 
+extern uv_loop_t *uv_global_loop;
+
+void readStreamUntilEofIntoDataAync(uv_stream_t *stream);
 
 
 yy_ptr unit_to_addr();

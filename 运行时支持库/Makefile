@@ -1,6 +1,6 @@
 
 
-NATIVE_SOURCEDIR=$(abspath common) $(abspath native)
+NATIVE_SOURCEDIR= $(abspath native)
 NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h'  -o -name '*.ll' \) )
 NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll' \) )
 
