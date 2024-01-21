@@ -29,7 +29,7 @@ yy_bs_bs_parallel : $(YYBSSOURCES) $(YYLIBSOURCES)
 
 yy_bs_bs_opt : 
 	make -C runtime/ opt
-	clang -flto -g -o  yy_bs_bs_opt /home/zc/yuyan_proj/yuyan/.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc ./runtime/libyyrtopt.a -L /usr/local/lib -l gc -l uv -Wno-override-module -g -Werror
+	clang -flto -g -o  yy_bs_bs_opt .yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc ./runtime/libyyrtopt.a -L /usr/local/lib -l gc -l uv -Wno-override-module -g -Werror
 
 bsrp : yy_bs 
 	make yyrt
