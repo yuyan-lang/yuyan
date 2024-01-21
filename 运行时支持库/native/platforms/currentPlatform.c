@@ -1,28 +1,27 @@
 
-#include <stdbool.h>
-#include <stdint.h>
+#include "../common_include.h"
 
 
-uint64_t yyRunningOnWindows(){
+yyvalue yyRunningOnWindows(){
 #ifdef _WIN32
-    return true;
+    return bool_to_yyvalue(true);
 #else
-    return false;
+    return bool_to_yyvalue(false);
 #endif
 }
 
-uint64_t yyRunningOnMacOS(){
+yyvalue yyRunningOnMacOS(){
 #ifdef __APPLE__
-    return true;
+    return bool_to_yyvalue(true);
 #else
-    return false;
+    return bool_to_yyvalue(false);
 #endif
 }
 
-uint64_t yyRunningOnLinux(){
+yyvalue yyRunningOnLinux(){
 #ifdef __linux__
-    return true;
+    return bool_to_yyvalue(true);
 #else
-    return false;
+    return bool_to_yyvalue(false);
 #endif
 }

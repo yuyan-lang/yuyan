@@ -3,7 +3,7 @@
 
 // yyvalue yyCurrentNanosecondTime(){
 //     uint64_t currentTime = uv_hrtime();
-//     return int_to_addr((int64_t) currentTime);
+//     return int_to_yyvalue((int64_t) currentTime);
 // }
 
 yyvalue yyCurrentNanosecondTime() {
@@ -16,5 +16,5 @@ yyvalue yyCurrentNanosecondTime() {
     double nanoseconds_double = (double) nanoseconds;
 
     // Return the nanoseconds
-    return double_to_addr(nanoseconds_double);
+    return double_to_yyvalue(nanoseconds_double);
 }

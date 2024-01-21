@@ -12,8 +12,9 @@
  *  2: integers
  *  3: doubles
  *  4: strings (data is a pointer to char*)
- *  5: pointers
- *  6: boolean
+ *  5: boolean
+ *  6: pointers to functions
+ *  7: pointers to static objects
  * 
  * Next 8 bits (1 byte): Reserved
  * 
@@ -29,13 +30,15 @@
  * 
 */
 
-static int type_empty_value = 0;
-static int type_tuple = 1;
-static int type_int = 2;
-static int type_double = 3;
-static int type_string = 4;
-static int type_pointer = 5;
-static int type_boolean = 6;
+int type_empty_value = 0;
+int type_tuple = 1; // must point to dyn heap
+int type_int = 2;
+int type_double = 3;
+int type_string = 4;
+int type_boolean = 5;
+int type_pointer_to_function = 6;
+int type_pointer_to_static_object = 7;
+int type_pointer_to_stack = 8;
 
 static int offset_type = 64;
 static int offset_length = 80;
@@ -88,7 +91,32 @@ bool yyvalue_to_bool(yyvalue arg){
 }
 
 yyvalue* yyvalue_to_tuple(yyvalue arg){
+    assert(get_yyvalue_type(arg) == type_tuple);
     return (yyvalue *)arg;
+}
+
+uint64_t yyvalue_to_tuple_length(yyvalue arg){
+    assert(get_yyvalue_type(arg) == type_tuple);
+    return get_yyvalue_length(arg);
+}
+
+yy_function_type yyvalue_to_funcptr(yyvalue arg){
+    assert(get_yyvalue_type(arg) == type_pointer_to_function);
+    return (yy_function_type)arg;
+}
+
+yyvalue* yyvalue_to_staticptr(yyvalue arg){
+    assert(get_yyvalue_type(arg) == type_pointer_to_static_object);
+    return (yyvalue*)arg;
+}
+
+yyvalue* yyvalue_to_stackptr(yyvalue arg){
+    assert(get_yyvalue_type(arg) == type_pointer_to_stack);
+    return (yyvalue*)arg;
+}
+
+void* yyvalue_to_generic_ptr(yyvalue arg) {
+    return (void*)arg;
 }
 
 
@@ -99,6 +127,7 @@ yyvalue unit_to_yyvalue(){
 yyvalue string_to_yyvalue(const char * str){
     yyvalue ret = (yyvalue)str;
     set_yyvalue_type(&ret, type_string);
+    set_yyvalue_length(&ret, strlen(str));
     return ret;
 }
 
@@ -115,104 +144,76 @@ yyvalue double_to_yyvalue(double i){
 }
 
 
+yyvalue funcptr_to_yyvalue(yy_function_type func) {
+    yyvalue ret = (yyvalue)func;
+    set_yyvalue_type(&ret, type_pointer_to_function);
+    return ret;
+}
+
+yyvalue staticptr_to_yyvalue(yyvalue* static_ptr) {
+    yyvalue ret = (yyvalue)static_ptr;
+    set_yyvalue_type(&ret, type_pointer_to_static_object);
+    return ret;
+}
+
+yyvalue stackptr_to_yyvalue(yyvalue* stackptr) {
+    yyvalue ret = (yyvalue)stackptr;
+    set_yyvalue_type(&ret, type_pointer_to_stack);
+    return ret;
+}
+
 yyvalue bool_to_yyvalue(bool b){
     yyvalue ret = (yyvalue)b;
     set_yyvalue_type(&ret, type_boolean);
     return ret;
 }
 
+yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
+    yyvalue ret = (yyvalue)elems;
+    set_yyvalue_type(&ret, type_tuple);
+    set_yyvalue_length(&ret, length);
+    return ret;
+}
+
 yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]){
-
-    yyvalue returnStorage = yy_gcAllocateArray(length);
+    yyvalue* returnStorage = yy_gcAllocateArray(length);
     for (int i = 0; i < length; i ++){
-        returnStorage[i] = (uint64_t) elems[i];
+        returnStorage[i] = elems[i];
     }
-    return returnStorage;
+    return raw_tuple_to_yyvalue(length, returnStorage);
 }
 
-// gets the length of a list of type rho t. (0 : 1) + (1 : a x t)
-uint64_t iso_list_length_rec(const yyvalue list, uint64_t acc) {
-    // the type is a fold on the outer left
-    // yyvalue unfolded = (yyvalue)list[1];
-    // then it is a tuple, the label's position is stored in index 1
-    uint64_t labelIndex = list[0];
-    if (labelIndex == 1) {
-        return acc;
-    } else if (labelIndex == 2){
-        // OLD 0: header 1: index 2: unit (type) 3: current element 4: next element
-        // NOW:  0: index 1: unit (type) 2: current element 3: next element
-        yyvalue next = data_to_yyvalue(list[3]);
-        return iso_list_length_rec(next, acc+1);
-    } else {
-        errorAndAbort("iso_list_get_length error");
-        return -1;
-    }
-}
-
-// gets the length of a list of type rho t. (0 : 1) + (1 : a x t)
 uint64_t iso_list_get_length(const yyvalue list) {
-    yyvalue *tups = yyvalue_to_tuple(list); // the tuple in c runtime is differnt from yuyanlang 0.2 tuple, which is an iterative linked list
+    yyvalue *tups = yyvalue_to_tuple(list); 
     return yyvalue_to_int(tups[1]);
 }
 
-// gets the elements of a list of type rho t. (0 : 1) + (1 : a x t)
 yyvalue* iso_list_get_elements(const yyvalue list) {
-    // uint64_t size = iso_list_get_length(list);
-
-    // yyvalue* result = (yyvalue*)yy_gcAllocateArray(size);
-
-    // uint64_t curIndex = 0;
-    // yyvalue curList = list;
-
-    // while(curIndex < size) {
-    //     result[curIndex] = data_to_yyvalue(curList[2]);
-    //     curList = data_to_yyvalue(curList[3]);
-    //     curIndex += 1;
-    // }
     yyvalue *tups = yyvalue_to_tuple(list);
     return (yyvalue_to_tuple((tups[0])));
 }
 
-// const char* iso_list_nil_label = "一";
-// const char* iso_list_cons_label = "二";
-
-// yyvalue fold_to_yyvalue(yyvalue toFold) {
-//     yyvalue result = allocateAndSetHeader(2, 1);
-//     result[1] = yyvalue_to_data(toFold);
-//     return result;
-// }
-yyvalue function_to_yyvalue(void* func) {
-    yyvalue result = allocateAndSetHeader(1, 1);
-    result[0] = yyvalue_to_data(func);
-    return result;
-}
-
-// yyvalue iso_list_nil_to_yyvalue() {
-//     // the unit here is the implicit type argument
-//     yyvalue tps[] = {unit_to_yyvalue(0), int_to_yyvalue(1)};
-//     return tuple_to_yyvalue(2, tps);
-// }
-// yyvalue iso_list_cons_to_yyvalue(yyvalue elem, yyvalue rest){
-//     yyvalue tps[] = {int_to_yyvalue(2), unit_to_yyvalue(), elem, rest};
-//     return tuple_to_yyvalue(4, tps);
-// }
-
 yyvalue heap_array_to_yyvalue(uint64_t length, const yyvalue* elems){
-
     yyvalue len = int_to_yyvalue(length);
-
     yyvalue res_tup[] = {(yyvalue)elems, len};
     yyvalue res = tuple_to_yyvalue(2, res_tup);
-
     return res;
 }
 
 yyvalue array_to_iso_addr(uint64_t length, const yyvalue elems[]){
-
     yyvalue tup = tuple_to_yyvalue(length, elems);
-
     return heap_array_to_yyvalue(length, (yyvalue *)tup);
 }
 
 
+yyvalue yy_read_tuple(yyvalue tuple, uint64_t index){
+    yyvalue *tup = yyvalue_to_tuple(tuple);
+    assert(0 <= index && index <= yyvalue_to_tuple_length(tuple));
+    return tup[index];
+}
 
+void yy_write_tuple(yyvalue tuple, uint64_t index, yyvalue value){
+    yyvalue *tup = yyvalue_to_tuple(tuple);
+    assert(0 <= index && index <= yyvalue_to_tuple_length(tuple));
+    tup[index] = value;
+}

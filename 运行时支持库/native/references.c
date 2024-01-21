@@ -3,49 +3,45 @@
 
 
 yyvalue yyNewRef(yyvalue value){
-    yyvalue storage = allocateAndSetHeader(9, 1);
-    storage[0] = addr_to_data(value);
+    yyvalue storage = yy_gcAllocateArray(1);
+    yy_write_tuple(storage, 0, value);
     return storage;
 }
 
 yyvalue yyReadRef(yyvalue addr){
-    return data_to_addr(addr[0]);
+    return yy_read_tuple(addr, 0);
 }
 
 yyvalue yyWriteRef(yyvalue new_value, yyvalue addr){
-    addr[0] = addr_to_data(new_value);
-    return unit_to_addr();
+    yy_write_tuple(addr, 0, new_value);
+    return unit_to_yyvalue();
 }
 
 yyvalue yyNewRefArray(yyvalue value, yyvalue lengthAddr){
-    int64_t length = addr_to_int(lengthAddr);
-    yyvalue *storage = yy_gcAllocateBytes(length * sizeof (void*));
+    int64_t length = yyvalue_to_int(lengthAddr);
+    yyvalue storage = yy_gcAllocateArray(length);
     for (int i = 0; i < length; i++)
     {
-        storage[i] = value;
+        yy_write_tuple(storage, i, value);
     }
-    return (yyvalue)storage;
+    return storage;
 }
 
 yyvalue yyReadRefArray(yyvalue addr, yyvalue indexAddr){
-
-    yyvalue *storage = (yyvalue *)(addr);
-    int64_t index = addr_to_int(indexAddr);
-    return storage[index];
+    int64_t index = yyvalue_to_int(indexAddr);
+    return yy_read_tuple(addr, index);
 }
 
 yyvalue yyWriteRefArray(yyvalue new_value, yyvalue indexAddr, yyvalue refAddr){
-    int64_t index = addr_to_int(indexAddr);
-    yyvalue *storage =(yyvalue *) (refAddr);
-    storage[index] = (new_value);
-    return unit_to_addr();
+    int64_t index = yyvalue_to_int(indexAddr);
+    yy_write_tuple(refAddr, index, new_value);
+    return unit_to_yyvalue();
 }
 
 
 yyvalue yyNewRefArrayGeneric(yyvalue lengthAddr){
-    int64_t length = addr_to_int(lengthAddr);
-    yyvalue *storage = yy_gcAllocateBytes(length * sizeof (void*));
-    return (yyvalue)storage;
+    int64_t length = yyvalue_to_int(lengthAddr);
+    return yy_gcAllocateArray(length);
 }
 
 

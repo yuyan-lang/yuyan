@@ -1,7 +1,7 @@
 #include "common_include.h"
 
 yyvalue yyReadFileSync(yyvalue filenamearg) {
-    const char *filename = addr_to_string(filenamearg);
+    const char *filename = yyvalue_to_string(filenamearg);
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
         fprintf(stderr, "Error opening file: %s\n", filename);
@@ -24,18 +24,18 @@ yyvalue yyReadFileSync(yyvalue filenamearg) {
 
     fclose(file);
 
-    return string_to_addr(result);
+    return string_to_yyvalue(result);
 }
 
 yyvalue yyDeleteFileSync(yyvalue filenamearg) {
-    const char *filename = addr_to_string(filenamearg);
+    const char *filename = yyvalue_to_string(filenamearg);
     int result = remove(filename);
     if (result != 0) {
         fprintf(stderr, "Error deleting file: %s\n", filename);
         errorAndAbort("error printed");
     }
 
-    return unit_to_addr();
+    return unit_to_yyvalue();
 }
 
 
@@ -105,8 +105,8 @@ out:
     return result;
 }
 yyvalue yyWriteFileSync(yyvalue file_name_addr, yyvalue content_addr) {
-    const char *filename = addr_to_string(file_name_addr);
-    const char *content = addr_to_string(content_addr);
+    const char *filename = yyvalue_to_string(file_name_addr);
+    const char *content = yyvalue_to_string(content_addr);
 
     char *directory_name = strdup(filename);
     char *last_slash = strrchr(directory_name, '/');
@@ -123,29 +123,29 @@ yyvalue yyWriteFileSync(yyvalue file_name_addr, yyvalue content_addr) {
     if (file == NULL) {
         fprintf(stderr, "Error opening file: %s\n", filename);
         errorAndAbort("运行时错误");
-        return unit_to_addr();
+        return unit_to_yyvalue();
     }
 
     if (fputs(content, file) == EOF) {
         fprintf(stderr, "Error writing to file: %s\n", filename);
         errorAndAbort("运行时错误");
         fclose(file);
-        return unit_to_addr();
+        return unit_to_yyvalue();
     }
 
     fclose(file);
-    return unit_to_addr();
+    return unit_to_yyvalue();
 }
 
 
 // TODO: we should probably make the following functions windows compatible, i.e. use libuv specifically on windows
 yyvalue yyListDirectorySync(yyvalue dirname) {
-    char *dname = addr_to_string(dirname);
+    char *dname = yyvalue_to_string(dirname);
     DIR *dir = opendir(dname);
     if (dir == NULL) {
         fprintf(stderr, "Error opening directory: %s\n", dname);
         fflush(stderr);
-        return unit_to_addr();
+        return unit_to_yyvalue();
     }
 
     struct dirent *entry;
@@ -154,7 +154,7 @@ yyvalue yyListDirectorySync(yyvalue dirname) {
 
     while ((entry = readdir(dir)) != NULL) {
         const char *name = entry->d_name;
-        entries[nread] = string_to_addr(strdup(name));
+        entries[nread] = string_to_yyvalue(strdup(name));
         nread++;
     }
 
@@ -165,7 +165,7 @@ yyvalue yyListDirectorySync(yyvalue dirname) {
 
 
 yyvalue yyIsPathDirectory(yyvalue path) {
-    char *pathC = addr_to_string(path);
+    char *pathC = yyvalue_to_string(path);
 
     struct stat st;
     if (stat(pathC, &st) != 0) {
@@ -175,11 +175,11 @@ yyvalue yyIsPathDirectory(yyvalue path) {
 
     bool isdir = S_ISDIR(st.st_mode);
 
-    return bool_to_addr(isdir);
+    return bool_to_yyvalue(isdir);
 }
 
 yyvalue yyIsPathRegularFile(yyvalue path) {
-    char *pathC = addr_to_string(path);
+    char *pathC = yyvalue_to_string(path);
 
     struct stat st;
     if (stat(pathC, &st) != 0) {
@@ -189,22 +189,22 @@ yyvalue yyIsPathRegularFile(yyvalue path) {
 
     bool isfile = S_ISREG(st.st_mode);
 
-    return bool_to_addr(isfile);
+    return bool_to_yyvalue(isfile);
 }
 
 yyvalue yyPathExists(yyvalue path) {
-    char *pathC = addr_to_string(path);
+    char *pathC = yyvalue_to_string(path);
 
     struct stat st;
     if (stat(pathC, &st) != 0) {
-        return bool_to_addr(false);
+        return bool_to_yyvalue(false);
     }
 
-    return bool_to_addr(true);
+    return bool_to_yyvalue(true);
 }
 
 yyvalue yyGetFileModifiedTime(yyvalue path) {
-    char *pathC = addr_to_string(path);
+    char *pathC = yyvalue_to_string(path);
 
     struct stat st;
     if (stat(pathC, &st) != 0) {
@@ -213,12 +213,12 @@ yyvalue yyGetFileModifiedTime(yyvalue path) {
     }
     int64_t mtime = st.st_mtime;
 
-    return int_to_addr(mtime);
+    return int_to_yyvalue(mtime);
 }
 
 
-char* yyGetCurrentWorkingDirectory() {
-    char* path_buffer = malloc(PATH_MAX * sizeof(char));
+yyvalue yyGetCurrentWorkingDirectory() {
+    char* path_buffer = yy_gcAllocateBytes(PATH_MAX * sizeof(char));
     if (path_buffer == NULL) {
         errorAndAbort("Cannot allocate memory for path buffer!!!");
     }
@@ -227,5 +227,5 @@ char* yyGetCurrentWorkingDirectory() {
         errorAndAbort("Cannot get current working directory!!!");
     }
 
-    return path_buffer;
+    return string_to_yyvalue(path_buffer);
 }

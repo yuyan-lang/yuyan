@@ -7,41 +7,37 @@ complete this file, replace error and abort with actual implementation. I want a
 #define ROOT_POINTS_LIMIT 1000
 #endif
 
-void** gc_root_points[ROOT_POINTS_LIMIT] = {0};
+yyvalue* gc_root_points[ROOT_POINTS_LIMIT] = {0};
 int gc_root_points_count = 0;
 
 // must pass pointers to gc root points, a dereference of it will be a gc root point
-void yy_register_gc_rootpoint(void** ptr) {
-#ifdef OLD_ENTRY
-    return;
-#else
+void yy_register_gc_rootpoint(yyvalue* ptr) {
     if (gc_root_points_count >= ROOT_POINTS_LIMIT) {
         errorAndAbort("Root points limit exceeded");
     }
     gc_root_points[gc_root_points_count++] = ptr;
-#endif
-
 }
 
 #ifndef INITIAL_HEAP_SIZE
-// #define INITIAL_HEAP_SIZE (64 * 1024 * 1024)  // 512 MB
-#define INITIAL_HEAP_SIZE (2 * 1024)  // 16 KB
+// #define INITIAL_HEAP_SIZE (64 * 1024 * 1024)  // 1024 MB
+#define INITIAL_HEAP_SIZE (2 * 1024)  // 32 KB
 #endif
 
 #ifndef TINY_HEAP_SIZE
-#define TINY_HEAP_SIZE (4 * 1024 * 1024)  // 32 MB
+#define TINY_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
 #endif
 
-uint64_t* current_heap = NULL;
-uint64_t* tiny_heap = NULL;
-uint64_t* new_heap = NULL;
+yyvalue* current_heap = NULL;
+yyvalue* tiny_heap = NULL;
+yyvalue* new_heap = NULL;
 uint64_t current_heap_size = INITIAL_HEAP_SIZE;
 uint64_t current_heap_offset = 0;
 uint64_t tiny_heap_offset = 0;
 uint64_t new_heap_size = 0;
 bool should_expand_heap = false;
 
-#define MALLOC_FUNC(X) calloc(1, X * sizeof(uint64_t))
+// #define MALLOC_FUNC(X) malloc(X * sizeof(yyvalue))
+#define MALLOC_FUNC(X) calloc(sizeof(yyvalue), X)
 
 bool yy_gc_debug_flag = false;
 
@@ -92,9 +88,9 @@ bool is_an_new_pointer(void* raw_ptr) {
     }
 }
 
-void* allocate_memory_with_implicit_header(uint64_t array_size, uint64_t* heap_base, uint64_t heap_size, uint64_t* heap_offset) {
+yyvalue* allocate_memory_without_implicit_header(uint64_t array_size, yyvalue* heap_base, uint64_t heap_size, uint64_t* heap_offset) {
     // Allocate memory block from the current heap
-    size_t total_size = array_size + 1;
+    size_t total_size = array_size;
 
     if (*heap_offset + total_size > heap_size) {
         return NULL;  // Cannot allocate from this heap
@@ -104,13 +100,7 @@ void* allocate_memory_with_implicit_header(uint64_t array_size, uint64_t* heap_b
 
     *heap_offset += total_size;
 
-
-    uint64_t header_value = 0;
-    header_value |= (MAGIC_NUMBER << 32);
-    header_value |= array_size;
-    *block = header_value;
-
-    return (void*)(block + 1);
+    return (yyvalue*)(block);
 }
 
 void* yy_gc_malloc_bytes(uint64_t size) {
@@ -118,16 +108,16 @@ void* yy_gc_malloc_bytes(uint64_t size) {
         return NULL;
     }
 
-    uint64_t array_size = size / sizeof(uint64_t) + (size % sizeof(uint64_t) != 0);
+    uint64_t array_size = size / sizeof(yyvalue) + (size % sizeof(yyvalue) != 0);
 
-    void* block = allocate_memory_with_implicit_header(array_size, current_heap, current_heap_size, &current_heap_offset);
+    void* block = allocate_memory_without_implicit_header(array_size, current_heap, current_heap_size, &current_heap_offset);
     if (block != NULL) {
         // fprintf(stderr, "Allocated from %ld bytes at %p - %p ", size, block, block + array_size);
         return block;
     }
     
     // If no space left in the minor heap, try allocating from the tiny heap
-    block = allocate_memory_with_implicit_header(size, tiny_heap, TINY_HEAP_SIZE, &tiny_heap_offset);
+    block = allocate_memory_without_implicit_header(size, tiny_heap, TINY_HEAP_SIZE, &tiny_heap_offset);
     if (block != NULL) {
         // fprintf(stderr, "Allocating from minor heap %p ", block);
         return block;
@@ -140,20 +130,18 @@ void* yy_gc_malloc_bytes(uint64_t size) {
 }
 
 
-void* yy_gc_realloc_bytes(void* ptr, uint64_t size) {
+void* yy_gc_realloc_bytes(void* ptr, uint64_t old_size, uint64_t new_size) {
     if (ptr == NULL) {
-        return yy_gc_malloc_bytes(size);
+        return yy_gc_malloc_bytes(new_size);
     } else {
-        uint64_t header = *((uint64_t*)ptr - 1);
-        uint64_t ptr_size = get_ptr_size(header);
-        if (ptr_size >= size) {
+        if (old_size >= new_size) {
             return ptr;
         } else {
-            void* new_ptr = yy_gc_malloc_bytes(size);
+            void* new_ptr = yy_gc_malloc_bytes(new_size);
             if (new_ptr == NULL) {
                 return NULL;
             }
-            memcpy(new_ptr, ptr, (ptr_size) * sizeof(uint64_t));
+            memcpy(new_ptr, ptr, old_size);
             return new_ptr;
         }
     }
@@ -170,7 +158,7 @@ bool header_is_marked(uint64_t header){
     return (header >> 60) & 1;
 }
 
-void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
+void copy_root_point(yyvalue* ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
     if (is_an_new_pointer(*ptr_ptr)) {
         return;
     }
@@ -188,14 +176,7 @@ void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offs
                     fprintf(stderr, "No space left during GC, BUG, requested offset %ld, size %ld\n", *new_heap_offset + ptr_size + 1, new_heap_size);
                 #endif
                 errorAndAbort("This means header is not correctly marked");
-            } else {
-                // fprintf(stderr, "requested offset %ld, size %ld OK ", *new_heap_offset + ptr_size + 1, new_heap_size);
             }
-            // fprintf(stderr, "copying at %ld size %ld data ", *new_heap_offset, ptr_size + 1);
-            // for (int64_t i = 0; i < ptr_size + 1; i++) {
-            //     fprintf(stderr, "%ld %p, ", i, *((void **)(ptr - 1 + i)));
-            // }
-            // fprintf(stderr, ",");
             memcpy(new_heap + *new_heap_offset, ((uint64_t*)ptr - 1), (ptr_size + 1) * sizeof(uint64_t));
             uint64_t* new_ptr = new_heap + *new_heap_offset + 1;
             *new_heap_offset += ptr_size + 1;
@@ -209,7 +190,7 @@ void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offs
 
 static uint64_t gc_count = 0;
 
-void yy_perform_gc(void** additional_root_point) {
+void yy_perform_gc(yyvalue* additional_root_point) {
     if (tiny_heap_offset == 0) {
         return;  // No garbage collection needed
     }

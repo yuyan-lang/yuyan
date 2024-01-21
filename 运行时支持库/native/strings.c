@@ -4,50 +4,50 @@
 
 // returns if s1 is a substring of s2
 yyvalue yyIsSubstring(yyvalue s1, yyvalue s2) {
-    if (strstr(addr_to_string(s2), addr_to_string(s1)) != NULL) {
-        return bool_to_addr(true);
+    if (strstr(yyvalue_to_string(s2), yyvalue_to_string(s1)) != NULL) {
+        return bool_to_yyvalue(true);
     } else {
-        return bool_to_addr(false);
+        return bool_to_yyvalue(false);
     }
 }
 
 // returns if s1 is a substring of s2
 yyvalue yyStringEq(yyvalue s1, yyvalue s2) {
-    char *str2 = addr_to_string(s2);
-    char *str1 = addr_to_string(s1);
+    char *str2 = yyvalue_to_string(s2);
+    char *str1 = yyvalue_to_string(s1);
     if (strcmp(str2, str1) == 0)
     {
-        return bool_to_addr(true);
+        return bool_to_yyvalue(true);
     }
     else
     {
-        return bool_to_addr(false);
+        return bool_to_yyvalue(false);
     }
 }
 
 yyvalue yyStringByteLength(yyvalue s1){
-    char *s = addr_to_string(s1);
+    char *s = yyvalue_to_string(s1);
     int64_t l = strlen(s);
-    return int_to_addr(l);
+    return int_to_yyvalue(l);
 }
 
 yyvalue yyStringByteArrayGetLength(yyvalue s1){
-    char *s = addr_to_string(s1);
+    char *s = yyvalue_to_string(s1);
     int64_t l = strlen(s);
-    return int_to_addr(l);
+    return int_to_yyvalue(l);
 }
 
 
 yyvalue yy_豫言字符串获取字节数组(yyvalue s1){
-    char *s = addr_to_string(s1);
-    return string_to_addr(s);
+    char *s = yyvalue_to_string(s1);
+    return string_to_yyvalue(s);
 }
 
 yyvalue yy_豫言字符转整数(yyvalue s1, yyvalue idx_ptr){
-    char *s =  addr_to_string(s1);
-    uint64_t index = addr_to_int(idx_ptr);
+    char *s =  yyvalue_to_string(s1);
+    uint64_t index = yyvalue_to_int(idx_ptr);
     char result = s[index];
-    return int_to_addr((unsigned char)result);
+    return int_to_yyvalue((unsigned char)result);
 }
 
 char* yy_豫言子字符串从字节序数开始(char* s, int64_t idx){
@@ -69,9 +69,9 @@ yyvalue yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
     // if p2 is empty, then p1 and p2 share prefix, 
     // if p1 is empty but p2 is not, then it is not a match!
     if (!*p2) {
-        return bool_to_addr(true);
+        return bool_to_yyvalue(true);
     } else {
-        return bool_to_addr(false);
+        return bool_to_yyvalue(false);
     }
 
 }
@@ -161,7 +161,7 @@ yyvalue yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
         escapedPtr+=1;
     }
     *escapedPtr = '\0';
-    return tuple_to_addr(2, (yyvalue[]){string_to_addr(escapedStr), int_to_addr(byteLength)});
+    return tuple_to_yyvalue(2, (yyvalue[]){string_to_yyvalue(escapedStr), int_to_yyvalue(byteLength)});
 }
 
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
@@ -175,7 +175,7 @@ size_t count_utf8_code_points(const char *s) {
 
 // get a list of utf8 code points from utf8 array
 // yyvalue yyGetCodePoints(yyvalue str_addr) {
-//     const char* start = addr_to_string(str_addr);
+//     const char* start = yyvalue_to_string(str_addr);
 
 //     const char * end = start;
 //     while(*end){
@@ -184,7 +184,7 @@ size_t count_utf8_code_points(const char *s) {
 
 //     const char* prevEnd = end;
 
-//     yyvalue resultList = iso_list_nil_to_addr();
+//     yyvalue resultList = iso_list_nil_to_yyvalue();
 
 //     while(end != start) {
 //         end --;
@@ -196,13 +196,13 @@ size_t count_utf8_code_points(const char *s) {
 //         char* newChar = yy_gcAllocateBytes(charLength+1);
 //         // newChar[charLength] = '\0'; // no need due to strlcpy
 //         strlcpy(newChar, end, charLength+1);
-//         resultList = iso_list_cons_to_addr(string_to_addr(newChar), resultList);
+//         resultList = iso_list_cons_to_yyvalue(string_to_yyvalue(newChar), resultList);
 //         prevEnd = end;
 //     }
 //     return resultList;
 // }
 yyvalue yyGetCodePoints(yyvalue str_addr) {
-    const char* start = addr_to_string(str_addr);
+    const char* start = yyvalue_to_string(str_addr);
     const char* end = start;
     while(*end){
         end+=1;
@@ -241,7 +241,7 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
                 // }
                 strncpy(newChar, codePointStart, len);
                 newChar[len] = '\0';
-                codePoints[i] = string_to_addr(newChar);
+                codePoints[i] = string_to_yyvalue(newChar);
                 i++;
             }
             codePointStart = p;
@@ -259,9 +259,9 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     // }
     strncpy(newChar, codePointStart, len);
     newChar[len] = '\0';
-    codePoints[i] = string_to_addr(newChar);
+    codePoints[i] = string_to_yyvalue(newChar);
 
-    return heap_array_to_addr(numCodePoints, codePoints);
+    return heap_array_to_yyvalue(numCodePoints, codePoints);
 }
 
 
@@ -272,17 +272,17 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
 //     int totalLength = 0;
 
 //     for (int i = 0; i < length; i ++){
-//         totalLength += strlen(addr_to_string(strs[i]));
+//         totalLength += strlen(yyvalue_to_string(strs[i]));
 //     }
 
 //     char * resultString = yy_gcAllocateBytes(totalLength + 1);
 //     resultString[0] = '\0';
 
 //     for (int i = 0; i < length; i ++){
-//         strlcat(resultString, addr_to_string(strs[i]), totalLength+1);
+//         strlcat(resultString, yyvalue_to_string(strs[i]), totalLength+1);
 //     }
 
-//     return string_to_addr(resultString);
+//     return string_to_yyvalue(resultString);
 // }
 
 // MORE MORE EFFICIENT
@@ -293,14 +293,14 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
 //     int totalLength = 0;
 
 //     for (int i = 0; i < length; i++) {
-//         totalLength += strlen(addr_to_string(strs[i]));
+//         totalLength += strlen(yyvalue_to_string(strs[i]));
 //     }
 
 //     char* resultString = (char*)yy_gcAllocateBytes(totalLength + 1);
 //     char* currentPos = resultString;
 
 //     for (int i = 0; i < length; i++) {
-//         const char* currentStr = addr_to_string(strs[i]);
+//         const char* currentStr = yyvalue_to_string(strs[i]);
 //         int strLength = strlen(currentStr);
 //         memcpy(currentPos, currentStr, strLength);
 //         currentPos += strLength;
@@ -308,7 +308,7 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
 
 //     *currentPos = '\0';
 
-//     return string_to_addr(resultString);
+//     return string_to_yyvalue(resultString);
 // }
 
 // EVEN MORE EFFICIENT
@@ -320,7 +320,7 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     int* lengths = (int*)malloc(length * sizeof(int));
 
     for (int i = 0; i < length; i++) {
-        lengths[i] = strlen(addr_to_string(strs[i]));
+        lengths[i] = get_yyvalue_length(strs[i]);
         totalLength += lengths[i];
     }
 
@@ -328,7 +328,7 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     char* currentPos = resultString;
 
     for (int i = 0; i < length; i++) {
-        const char* currentStr = addr_to_string(strs[i]);
+        const char* currentStr = yyvalue_to_string(strs[i]);
         int strLength = lengths[i];
         memcpy(currentPos, currentStr, strLength);
         currentPos += strLength;
@@ -341,5 +341,5 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     memcpy(resultStringRet, resultString, totalLength + 1);
     free(resultString);
 
-    return string_to_addr(resultStringRet);
+    return string_to_yyvalue(resultStringRet);
 }

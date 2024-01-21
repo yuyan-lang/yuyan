@@ -1,11 +1,12 @@
 
 
 #include "common_include.h"
-
+#include "garbage_collector.h"
+#include "marshall.h"
 
 yyvalue yy_gcAllocateArray(uint64_t size) {
-    yyvalue x = yy_gcAllocateBytes(size * 8);
-    return x;
+    yyvalue* x = (yyvalue*)yy_gcAllocateBytes(size * sizeof(yyvalue));
+    return raw_tuple_to_yyvalue(size, x);
 }
 
 void* yy_gcAllocateBytes(uint64_t size) {

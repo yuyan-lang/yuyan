@@ -1,4 +1,4 @@
-#include "../native_include.h"
+#include "../common_include.h"
 
 
 typedef struct {
@@ -24,13 +24,13 @@ void child_exit_cb(uv_process_t* process, int64_t exit_status, int term_signal) 
 // program is a string var, arguments is a list of string vars!
 yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
 {
-    char* programName = addr_to_string(program);
+    char* programName = yyvalue_to_string(program);
     uint64_t argumentCount = iso_list_get_length(arguments);
     yyvalue* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
-        args[i+1] = addr_to_string(argumentArray[i]);
+        args[i+1] = yyvalue_to_string(argumentArray[i]);
     }
     args[argumentCount+1]= NULL;
 
@@ -98,9 +98,9 @@ yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
     int64_t child_exit_status = my_data.exit_status;
 
     yyvalue results[] = {
-        bool_to_addr(child_exit_status==0),
-        string_to_addr(stdOutOutput == NULL ? "" : stdOutOutput),
-        string_to_addr(stdErrOutput == NULL ? "" : stdErrOutput)
+        bool_to_yyvalue(child_exit_status==0),
+        string_to_yyvalue(stdOutOutput == NULL ? "" : stdOutOutput),
+        string_to_yyvalue(stdErrOutput == NULL ? "" : stdErrOutput)
     };
 
     // print debug
@@ -112,11 +112,11 @@ yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
     //     fprintf(stderr, " : %s", stdOutOutput);
     // }
 
-    yyvalue resultTuple = tuple_to_addr(3, results);
+    yyvalue resultTuple = tuple_to_yyvalue(3, results);
 
     return resultTuple;
 
-    // return unit_to_addr();
+    // return unit_to_yyvalue();
 }
 
 
@@ -127,13 +127,13 @@ yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
 
 yyvalue yyRunProcessSync(yyvalue program, yyvalue arguments)
 {
-    char* programName = addr_to_string(program);
+    char* programName = yyvalue_to_string(program);
     char argumentCount = iso_list_get_length(arguments);
     yyvalue* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
-        args[i+1] = addr_to_string((argumentArray[i]));
+        args[i+1] = yyvalue_to_string((argumentArray[i]));
     }
     args[argumentCount+1]= NULL;
 
@@ -161,18 +161,18 @@ yyvalue yyRunProcessSync(yyvalue program, yyvalue arguments)
 
     uv_run(uv_global_loop, UV_RUN_DEFAULT);
 
-    return bool_to_addr(child_exit_status == 0);
+    return bool_to_yyvalue(child_exit_status == 0);
 }
 
 yyvalue yyRunProcessSyncPipeOutput(yyvalue program, yyvalue arguments)
 {
-    char* programName = addr_to_string(program);
+    char* programName = yyvalue_to_string(program);
     char argumentCount = iso_list_get_length(arguments);
     yyvalue* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
-        args[i+1] = addr_to_string((argumentArray[i]));
+        args[i+1] = yyvalue_to_string((argumentArray[i]));
     }
     args[argumentCount+1]= NULL;
 
@@ -211,7 +211,7 @@ yyvalue yyRunProcessSyncPipeOutput(yyvalue program, yyvalue arguments)
 
     int64_t child_exit_status = my_data.exit_status;
     
-    return int_to_addr(child_exit_status);
-    // return bool_to_addr(child_exit_status == 0);
+    return int_to_yyvalue(child_exit_status);
+    // return bool_to_yyvalue(child_exit_status == 0);
 }
 
