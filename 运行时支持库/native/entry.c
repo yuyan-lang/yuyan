@@ -11,8 +11,6 @@ char** global_argv = NULL;
 // runtime configurations
 int64_t use_libgc = 1;
 
-extern int64_t entryMain(); // the entry to yy llvm ir
-
 // Function to process @yy: arguments
 void processYYArguments(int argc, char* argv[]) {
     char* program_name = argv[0];

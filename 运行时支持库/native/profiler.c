@@ -30,8 +30,8 @@ void *interruptFunction(void *arg)
         while (local_stack_ptr - stack > 3)
         {
             // Write function pointer address to the file
-            fprintf(profileFile, "%p ", (local_stack_ptr[-2]));
-            stack_offset = ((int64_t)(local_stack_ptr[-3]));
+            fprintf(profileFile, "%p ", yyvalue_to_funcptr(local_stack_ptr[-2]));
+            stack_offset = (yyvalue_to_int(local_stack_ptr[-3]));
             local_stack_ptr = (local_stack_ptr - 3 - stack_offset);
         }
         pthread_mutex_unlock(&stack_ptr_mutex);

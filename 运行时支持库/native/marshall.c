@@ -70,6 +70,11 @@ void yyvalue_set_length(yyvalue *arg, uint64_t length) {
     *arg = (*arg & ~mask_bits) | mask;
 }
 
+uint64_t yyvalue_get_strlen(yyvalue arg) {
+    assert(yyvalue_get_type(arg) == type_string);
+    return yyvalue_get_length(arg);
+}
+
 
 char * yyvalue_to_string(yyvalue arg) {
     assert(yyvalue_get_type(arg) == type_string);
@@ -188,7 +193,7 @@ yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
 }
 
 yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]){
-    yyvalue* returnStorage = yy_gcAllocateArray(length);
+    yyvalue* returnStorage = (yyvalue*) yy_gcAllocateBytes(length * sizeof(yyvalue));
     for (int i = 0; i < length; i ++){
         returnStorage[i] = elems[i];
     }

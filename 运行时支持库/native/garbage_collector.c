@@ -69,12 +69,12 @@ bool is_an_old_pointer(yyvalue raw_ptr) {
     } else {
         yyvalue* ptr = yyvalue_to_tuple(raw_ptr);
         if (ptr - current_heap > 0 && ptr - current_heap < current_heap_size) {
-            assert(yyvalue_get_length(ptr) <= current_heap_size);
+            assert(yyvalue_get_length(raw_ptr) <= current_heap_size);
             return true;
         }
         else if (ptr - tiny_heap > 0 && ptr - tiny_heap < TINY_HEAP_SIZE)
         {
-            assert(yyvalue_get_length(ptr) <= TINY_HEAP_SIZE);
+            assert(yyvalue_get_length(raw_ptr) <= TINY_HEAP_SIZE);
             return true;
         }
         else
@@ -85,13 +85,13 @@ bool is_an_old_pointer(yyvalue raw_ptr) {
 }
 
 
-bool is_an_new_pointer(void* raw_ptr) {
+bool is_an_new_pointer(yyvalue raw_ptr) {
     if (yyvalue_get_type(raw_ptr) != type_tuple){
         return false;
     } else {
         yyvalue* ptr = yyvalue_to_tuple(raw_ptr);
         if (ptr - new_heap > 0 && ptr - new_heap < new_heap_size) {
-            assert(yyvalue_get_length(ptr) <= new_heap_size);
+            assert(yyvalue_get_length(raw_ptr) <= new_heap_size);
             return true;
         }
         else
@@ -109,11 +109,11 @@ yyvalue* allocate_memory_without_implicit_header(uint64_t array_size, yyvalue* h
         return NULL;  // Cannot allocate from this heap
     }
   
-    uint64_t *block = heap_base + *heap_offset;
+    yyvalue *block = heap_base + *heap_offset;
 
     *heap_offset += total_size;
 
-    return (yyvalue*)(block);
+    return block;
 }
 
 void* yy_gc_malloc_bytes(uint64_t size) {
@@ -163,7 +163,7 @@ void* yy_gc_realloc_bytes(void* ptr, uint64_t old_size, uint64_t new_size) {
 
 
 
-void copy_root_point(yyvalue* ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
+void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
     if (is_an_new_pointer(*ptr_ptr)) {
         return;
     }
@@ -189,7 +189,7 @@ void copy_root_point(yyvalue* ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_of
             yyvalue* new_ptr = new_heap + *new_heap_offset;
             *new_heap_offset += ptr_size;
             yy_write_tuple(*ptr_ptr, 0, transfer_address_to_yyvalue(new_ptr));
-            *ptr_ptr = new_ptr;
+            *ptr_ptr = tuple_to_yyvalue(yyvalue_get_length(*ptr_ptr), new_ptr);
         }
     }
     // assert( (!is_a_pointer((void*)(*ptr_ptr))) || (!(check_magic_number(*(uint64_t*)(*ptr_ptr)))));

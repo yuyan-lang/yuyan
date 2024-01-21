@@ -16,15 +16,13 @@ extern int type_pointer_to_static_object;
 extern int type_pointer_to_stack;
 extern int type_pointer_transfer_address;
 
-extern int offset_type;
-extern int offset_length;
-
 
 // type and length
 uint64_t yyvalue_get_type(yyvalue arg);
 void yyvalue_set_type(yyvalue *arg, uint64_t type);
 uint64_t yyvalue_get_length(yyvalue arg);
 void yyvalue_set_length(yyvalue *arg, uint64_t length);
+uint64_t yyvalue_get_strlen(yyvalue arg);
 
 
 // read yyvalue

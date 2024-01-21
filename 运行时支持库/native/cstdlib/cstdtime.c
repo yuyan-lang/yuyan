@@ -14,10 +14,10 @@ yyvalue yyGetCurrentLocalDateTimeStr() {
 yyvalue yyGetCurrentLocalDateTimeFmt(yyvalue fmt) {
     time_t t = time(NULL);
     struct tm *tm = localtime(&t);
-    int bufsz = strlen(fmt) * 2;
+    int bufsz = yyvalue_get_strlen(fmt) * 2;
     char buffer[bufsz];
-    strftime(buffer, bufsz, fmt, tm);
+    strftime(buffer, bufsz, yyvalue_to_string(fmt), tm);
     char *result = strdup(buffer);
-    return result;
+    return string_to_yyvalue(result);
 }
 

@@ -1,7 +1,7 @@
 
 
 #include "common_include.h"
-#include "../native/native_include.h"
+
 
 yyvalue *stack;
 yyvalue *stack_end;
@@ -114,7 +114,7 @@ int64_t yy_runtime_start() {
         4 : local control transfer, with [1] = continuation label id [2] = argument data
 
     */
-    yyvalue return_record_raw[5] = {(yyvalue)(2), (yyvalue) entryMain, NULL, int_to_yyvalue(1), 0};
+    yyvalue return_record_raw[5] = {int_to_yyvalue(2), funcptr_to_yyvalue(entryMain), unit_to_yyvalue(), int_to_yyvalue(1), unit_to_yyvalue()};
     yyvalue return_record = raw_tuple_to_yyvalue(5, return_record_raw);
     yyvalue initial_block_id = int_to_yyvalue(1);
 
@@ -169,7 +169,7 @@ int64_t yy_runtime_start() {
             end_stack_manipulation();
 
             // reset caller function
-            current_function = ptr_to_function(caller_function);
+            current_function = yyvalue_to_funcptr(caller_function);
 
             // we have reached the initial NULL function, and entryMain has returned
             if (current_function == NULL && stack_ptr == stack) {
@@ -201,7 +201,7 @@ int64_t yy_runtime_start() {
             begin_stack_manipulation();
             yy_increment_stack_ptr(stack_offset);
             stack_ptr[0] = int_to_yyvalue(stack_offset);
-            stack_ptr[1] = function_to_ptr(current_function);
+            stack_ptr[1] = funcptr_to_yyvalue(current_function);
             stack_ptr[2] = (continuation_label_id);
             yy_increment_stack_ptr(3);
             end_stack_manipulation();

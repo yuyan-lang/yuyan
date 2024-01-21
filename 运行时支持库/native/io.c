@@ -23,7 +23,8 @@ yyvalue yyReadAllStdIn() {
     size_t bufferSize = 1024;
     char* buffer = (char*)yy_gcAllocateBytes(bufferSize);
     if (buffer == NULL) {
-        return NULL; // Failed to allocate memory
+        errorAndAbort("Failed to allocate memory");
+        return unit_to_yyvalue();
     }
 
     size_t totalSize = 0; // Total size of the input
