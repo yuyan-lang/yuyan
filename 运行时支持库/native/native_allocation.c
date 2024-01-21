@@ -9,6 +9,11 @@ yyvalue yy_gcAllocateArray(uint64_t size) {
     return raw_tuple_to_yyvalue(size, x);
 }
 
+yyvalue yy_gcAllocateArray_yyrt(yyvalue size) {
+    yyvalue* x = (yyvalue*)yy_gcAllocateBytes(yyvalue_to_int(size) * sizeof(yyvalue));
+    return raw_tuple_to_yyvalue(size, x);
+}
+
 void* yy_gcAllocateBytes(uint64_t size) {
     void* x;
     if (use_libgc)

@@ -58,7 +58,6 @@ yyvalue double_to_yyvalue(double i);
 // yyvalue function_to_yyvalue(void *func);
 
 
-void initialize_global_exception_handler();
 void yy_豫言初始化全局异常处理器();
 
 yyvalue yy_gcAllocateArray(uint64_t size);
@@ -79,7 +78,7 @@ extern yyvalue* stack_ptr;
 extern yyvalue* stack;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
-extern yy_function_type entryMain;
+extern yyvalue entryMain(yyvalue, yyvalue, yyvalue, yyvalue);
 
 void yy_perform_gc(yyvalue* additional_root_point);
 void yy_gc_init();

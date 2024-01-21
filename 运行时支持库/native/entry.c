@@ -59,7 +59,6 @@ int main(int argc, char* argv[]) {
     optional_entry_initialization();
 
     // initialize global exception handler
-    initialize_global_exception_handler();
     yy_豫言初始化全局异常处理器();
 
 

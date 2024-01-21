@@ -114,7 +114,9 @@ int64_t yy_runtime_start() {
         4 : local control transfer, with [1] = continuation label id [2] = argument data
 
     */
-    yyvalue return_record_raw[5] = {int_to_yyvalue(2), funcptr_to_yyvalue(entryMain), unit_to_yyvalue(), int_to_yyvalue(1), unit_to_yyvalue()};
+    void* entryMain_addr = (void*)entryMain;
+    yy_function_type entryMain_ref = (yy_function_type) entryMain_addr;
+    yyvalue return_record_raw[5] = {int_to_yyvalue(2), funcptr_to_yyvalue(entryMain_ref), unit_to_yyvalue(), int_to_yyvalue(1), int_to_yyvalue(0)};
     yyvalue return_record = raw_tuple_to_yyvalue(5, return_record_raw);
     yyvalue initial_block_id = int_to_yyvalue(1);
 
@@ -187,7 +189,8 @@ int64_t yy_runtime_start() {
         case 2: 
         {
             // get things from return record
-            yy_function_type new_function = yyvalue_to_funcptr(yy_read_tuple(return_record, 1));
+            yyvalue new_func_value = yy_read_tuple(return_record, 1);
+            yy_function_type new_function = yyvalue_to_funcptr(new_func_value);
             yyvalue argument_data = yy_read_tuple(return_record, 2);
             yyvalue continuation_label_id = (yy_read_tuple(return_record, 3));
             int64_t stack_offset = yyvalue_to_int(yy_read_tuple(return_record, 4));

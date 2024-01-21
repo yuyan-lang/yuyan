@@ -103,7 +103,7 @@ yyvalue* yyvalue_to_tuple(yyvalue arg){
 
 uint64_t yyvalue_to_tuple_length(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_tuple);
-    return yyvalue_get_type(arg);
+    return yyvalue_get_length(arg);
 }
 
 yy_function_type yyvalue_to_funcptr(yyvalue arg){
@@ -225,7 +225,7 @@ yyvalue array_to_iso_addr(uint64_t length, const yyvalue elems[]){
 
 yyvalue yy_read_tuple(yyvalue tuple, uint64_t index){
     yyvalue *tup = yyvalue_to_tuple(tuple);
-    assert(0 <= index && index <= yyvalue_to_tuple_length(tuple));
+    assert(0 <= index && index < yyvalue_to_tuple_length(tuple));
     return tup[index];
 }
 
