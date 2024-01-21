@@ -182,7 +182,11 @@ void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offs
         } else {
             uint64_t ptr_size = get_ptr_size(header);
             if (*new_heap_offset + ptr_size + 2 >= new_heap_size) {
-                fprintf(stderr, "No space left during GC, BUG, requested offset %ld, size %ld\n", *new_heap_offset + ptr_size + 1, new_heap_size);
+                #ifdef __APPLE__
+                    fprintf(stderr, "No space left during GC, BUG, requested offset %llu, size %llu\n", *new_heap_offset + ptr_size + 1, new_heap_size);
+                #else
+                    fprintf(stderr, "No space left during GC, BUG, requested offset %ld, size %ld\n", *new_heap_offset + ptr_size + 1, new_heap_size);
+                #endif
                 errorAndAbort("This means header is not correctly marked");
             } else {
                 // fprintf(stderr, "requested offset %ld, size %ld OK ", *new_heap_offset + ptr_size + 1, new_heap_size);
@@ -203,7 +207,7 @@ void copy_root_point(void** ptr_ptr, uint64_t* new_heap, uint64_t* new_heap_offs
     // assert( (!is_a_pointer((void*)(*ptr_ptr))) || (!(check_magic_number(*(uint64_t*)(*ptr_ptr)))));
 }
 
-static int64_t gc_count = 0;
+static uint64_t gc_count = 0;
 
 void yy_perform_gc(void** additional_root_point) {
     if (tiny_heap_offset == 0) {
@@ -212,7 +216,11 @@ void yy_perform_gc(void** additional_root_point) {
     gc_count ++;
 
     if (yy_gc_debug_flag){
-        fprintf(stderr, "%ld Performing garbage collection, current_heap_offset %ld, tiny_heap_offset %ld    ", gc_count, current_heap_offset, tiny_heap_offset);
+        #ifdef __APPLE__
+            fprintf(stderr, "%llu Performing garbage collection, current_heap_offset %llu, tiny_heap_offset %llu    ", gc_count, current_heap_offset, tiny_heap_offset);
+        #else
+            fprintf(stderr, "%ld Performing garbage collection, current_heap_offset %ld, tiny_heap_offset %ld    ", gc_count, current_heap_offset, tiny_heap_offset);
+        #endif
         fflush(stderr);
     }
 
@@ -262,8 +270,13 @@ void yy_perform_gc(void** additional_root_point) {
     free(current_heap);
 
     if (yy_gc_debug_flag){
+        #ifdef __APPLE__
+        fprintf(stderr, "Finished garbage collection, collected %llu remaining, %llu total,  (* 8 bytes) ", new_heap_offset, new_heap_size);
+        fprintf(stderr, "New heap %p - %p size %llu, Prev heap %p - %p size %llu \n", new_heap, new_heap + new_heap_offset, new_heap_size, current_heap, current_heap + current_heap_offset, current_heap_size);
+        #else
         fprintf(stderr, "Finished garbage collection, collected %ld remaining, %ld total,  (* 8 bytes) ", new_heap_offset, new_heap_size);
         fprintf(stderr, "New heap %p - %p size %ld, Prev heap %p - %p size %ld \n", new_heap, new_heap + new_heap_offset, new_heap_size, current_heap, current_heap + current_heap_offset, current_heap_size);
+        #endif
         fflush(stderr);
     }
     current_heap = new_heap;

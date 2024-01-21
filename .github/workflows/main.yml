@@ -16,7 +16,7 @@ on:
 # cancel previous run on new pushes to PR
 concurrency:
   group:  ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # cancel-in-progress: true
 
 jobs:
   macos-test:
