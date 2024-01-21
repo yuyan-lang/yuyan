@@ -5,7 +5,7 @@
 #include <time.h>
 
 
-char * yyGetCurrentLocalDateTimeStr() {
+yyvalue yyGetCurrentLocalDateTimeStr() {
     time_t t = time(NULL);
     char *result = ctime(&t);
     return result;

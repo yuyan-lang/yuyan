@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "common_include.h"
 
 void yy_gc_init();
 

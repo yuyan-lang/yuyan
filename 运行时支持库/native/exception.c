@@ -30,7 +30,7 @@ uint64_t errorAndAbort(char* errMsg){
     return -1;
 }
 
-uint64_t yyThrowException(yy_ptr err){
+uint64_t yyThrowException(yyvalue err){
     
     fprintf(stderr, "%s", addr_to_string(err));
     exit(1);
@@ -38,8 +38,8 @@ uint64_t yyThrowException(yy_ptr err){
 }
 
 // I believe abssingle has two arguments , the first is just the closure itself
-uint64_t yyUncaughtException(yy_ptr closure, yy_ptr dynclsfdVal){
-    // yy_ptr t = data_to_addr(dynclsfdVal[2]);
+uint64_t yyUncaughtException(yyvalue closure, yyvalue dynclsfdVal){
+    // yyvalue t = data_to_addr(dynclsfdVal[2]);
     // fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：%s\n", addr_to_string(t));
     // updated version that removes the use of dynamically classified value in exceptions
     // we do not use dynclsfd but use string directly. Apparently v0.1 has problems with dynclsfd value
@@ -52,24 +52,24 @@ uint64_t yyUncaughtException(yy_ptr closure, yy_ptr dynclsfdVal){
     return -1;
 }
 
-yy_ptr currentExceptionHandler;
+yyvalue currentExceptionHandler;
 
 void initialize_global_exception_handler(){
     currentExceptionHandler =  function_to_addr(&yyUncaughtException);
 }
 
 
-yy_ptr yyGetCurrentExceptionHandler() {
+yyvalue yyGetCurrentExceptionHandler() {
     return currentExceptionHandler;
 }
  
-yy_ptr yySetCurrentExceptionHandler(yy_ptr toSet) {
+yyvalue yySetCurrentExceptionHandler(yyvalue toSet) {
     currentExceptionHandler = toSet;
     return unit_to_addr();
 }
 
 // I believe abssingle has two arguments , the first is just the closure itself
-uint64_t 全局异常处理器(yy_ptr stack_top, yy_ptr cont_id, yy_ptr argument, yy_ptr return_record){
+uint64_t 全局异常处理器(yyvalue stack_top, yyvalue cont_id, yyvalue argument, yyvalue return_record){
     fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n");
     fprintf(stderr, "尝试打印值：（可能会出现 异常）：\n");
     fflush(stderr);

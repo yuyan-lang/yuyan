@@ -17,11 +17,10 @@
 #ifdef __linux__
     #include <bsd/string.h>
 #endif
-typedef uint64_t* yy_ptr;
+typedef __uint128_t yyvalue;
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 
-#include "garbage_collector.h"
 
 extern int global_argc;
 extern char** global_argv;
@@ -31,43 +30,43 @@ extern uv_loop_t *uv_global_loop;
 void readStreamUntilEofIntoDataAync(uv_stream_t *stream);
 
 
-yy_ptr unit_to_addr();
-yy_ptr string_to_addr(const char * str);
+yyvalue unit_to_addr();
+yyvalue string_to_addr(const char * str);
 
 uint64_t c_runtime_internal_error();
 uint64_t errorAndAbort(char *errMsg);
-char *addr_to_string(yy_ptr arg);
+char *addr_to_string(yyvalue arg);
 
-yy_ptr allocateAndSetHeader(uint64_t type, uint64_t length);
+yyvalue allocateAndSetHeader(uint64_t type, uint64_t length);
 
-uint64_t iso_list_get_length(const yy_ptr list) ;
-yy_ptr* iso_list_get_elements(const yy_ptr list);
-yy_ptr tuple_to_addr(uint64_t length, const yy_ptr elems[]);
-yy_ptr bool_to_addr(bool b);
-// yy_ptr iso_list_nil_to_addr();
-// yy_ptr iso_list_cons_to_addr(yy_ptr elem, yy_ptr rest);
-yy_ptr array_to_iso_addr(uint64_t length, const yy_ptr elems[]);
-yy_ptr heap_array_to_addr(uint64_t length, const yy_ptr *elems);
+uint64_t iso_list_get_length(const yyvalue list) ;
+yyvalue* iso_list_get_elements(const yyvalue list);
+yyvalue tuple_to_addr(uint64_t length, const yyvalue elems[]);
+yyvalue bool_to_addr(bool b);
+// yyvalue iso_list_nil_to_addr();
+// yyvalue iso_list_cons_to_addr(yyvalue elem, yyvalue rest);
+yyvalue array_to_iso_addr(uint64_t length, const yyvalue elems[]);
+yyvalue heap_array_to_addr(uint64_t length, const yyvalue *elems);
 
-int64_t addr_to_int(yy_ptr arg);
-double addr_to_double(yy_ptr arg);
-yy_ptr *addr_to_tuple(yy_ptr arg);
-yy_ptr int_to_addr(int64_t i);
-yy_ptr double_to_addr(double i);
-yy_ptr function_to_addr(void *func);
+int64_t addr_to_int(yyvalue arg);
+double addr_to_double(yyvalue arg);
+yyvalue *addr_to_tuple(yyvalue arg);
+yyvalue int_to_addr(int64_t i);
+yyvalue double_to_addr(double i);
+yyvalue function_to_addr(void *func);
 
 
 // type conversion function
-yy_ptr data_to_addr(uint64_t elem);
-uint64_t addr_to_data(yy_ptr ptr);
+yyvalue data_to_addr(uint64_t elem);
+uint64_t addr_to_data(yyvalue ptr);
 
-int informResultRec(FILE * file, yy_ptr result, int prevPred);
-int informResult(yy_ptr result);
+int informResultRec(FILE * file, yyvalue result, int prevPred);
+int informResult(yyvalue result);
 
 void initialize_global_exception_handler();
 void yy_豫言初始化全局异常处理器();
 
-yy_ptr yy_gcAllocateArray(uint64_t size);
+yyvalue yy_gcAllocateArray(uint64_t size);
 void *yy_gcAllocateBytes(uint64_t size);
 void *yy_gcReallocateBytes(void* ptr, uint64_t size);
 
@@ -81,10 +80,10 @@ extern bool use_profiler;
 
 
 // Define a function type for the pointer
-typedef yy_ptr (*yy_function_type)(yy_ptr, yy_ptr, yy_ptr, yy_ptr);
+typedef yyvalue (*yy_function_type)(yyvalue, yyvalue, yyvalue, yyvalue);
 
-extern yy_ptr* stack_ptr;
-extern yy_ptr* stack;
+extern yyvalue* stack_ptr;
+extern yyvalue* stack;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
 extern int64_t entryMain(); 

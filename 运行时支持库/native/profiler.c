@@ -2,7 +2,7 @@
 
 
 FILE* profileFile;
-yy_ptr *local_stack_ptr;
+yyvalue *local_stack_ptr;
 
 bool use_profiler;
 void *interruptFunction(void *arg)

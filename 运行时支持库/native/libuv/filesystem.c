@@ -1,7 +1,7 @@
 // #include "../native_include.h"
 
 
-// yy_ptr yyReadFileSync(yy_ptr filenamearg) {
+// yyvalue yyReadFileSync(yyvalue filenamearg) {
 //     uv_fs_t open_req;
 //     uv_fs_t read_req;
 //     // open_req = yy_gcAllocateBytes(sizeof(uv_fs_t))
@@ -62,7 +62,7 @@
 //     mkdir(tmp, S_IRWXU);
 // }
 
-// yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
+// yyvalue yyWriteFileSync(yyvalue file_name_addr, yyvalue content_addr) {
 //     const char *filename = addr_to_string(file_name_addr);
 //     const char *content = addr_to_string(content_addr);
 //     uv_loop_t *loop = uv_default_loop();
@@ -162,7 +162,7 @@
 //     return unit_to_addr();
 // }
 
-// yy_ptr yyListDirectorySync(yy_ptr dirname) {
+// yyvalue yyListDirectorySync(yyvalue dirname) {
 //     uv_fs_t scan_req;
 //     // uv_fs_t read_req;
 //     // open_req = yy_gcAllocateBytes(sizeof(uv_fs_t))
@@ -179,7 +179,7 @@
 //     }
 
 //     uv_dirent_t dirs;
-//     yy_ptr entries[count];
+//     yyvalue entries[count];
 //     int nread=0;
 
 //     while(uv_fs_scandir_next(&scan_req, &dirs) != UV_EOF){
@@ -193,7 +193,7 @@
 //     return array_to_iso_addr(nread, entries);
 // }
 
-// yy_ptr yyIsPathDirectory(yy_ptr path){
+// yyvalue yyIsPathDirectory(yyvalue path){
 
 //     uv_fs_t req;
 
@@ -211,7 +211,7 @@
 
 // }
 
-// yy_ptr yyIsPathRegularFile(yy_ptr path){
+// yyvalue yyIsPathRegularFile(yyvalue path){
 
 //     uv_fs_t req;
 
@@ -227,7 +227,7 @@
 //   return bool_to_addr(isfile);
 // }
 
-// yy_ptr yyGetFileModifiedTime(yy_ptr path){
+// yyvalue yyGetFileModifiedTime(yyvalue path){
 
 //     uv_fs_t req;
 
@@ -243,7 +243,7 @@
 //   return int_to_addr(mtime);
 // }
 
-// yy_ptr yyPathExists(yy_ptr path){
+// yyvalue yyPathExists(yyvalue path){
 //     uv_fs_t req;
 
 //     char * pathC = addr_to_string(path);

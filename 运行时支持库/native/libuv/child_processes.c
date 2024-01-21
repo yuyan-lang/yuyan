@@ -22,11 +22,11 @@ void child_exit_cb(uv_process_t* process, int64_t exit_status, int term_signal) 
 
 // https://stackoverflow.com/questions/14751504/capture-a-child-processs-stdout-with-libuv
 // program is a string var, arguments is a list of string vars!
-yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
+yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
 {
     char* programName = addr_to_string(program);
     uint64_t argumentCount = iso_list_get_length(arguments);
-    yy_ptr* argumentArray = iso_list_get_elements(arguments);
+    yyvalue* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
@@ -97,7 +97,7 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 
     int64_t child_exit_status = my_data.exit_status;
 
-    yy_ptr results[] = {
+    yyvalue results[] = {
         bool_to_addr(child_exit_status==0),
         string_to_addr(stdOutOutput == NULL ? "" : stdOutOutput),
         string_to_addr(stdErrOutput == NULL ? "" : stdErrOutput)
@@ -112,7 +112,7 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
     //     fprintf(stderr, " : %s", stdOutOutput);
     // }
 
-    yy_ptr resultTuple = tuple_to_addr(3, results);
+    yyvalue resultTuple = tuple_to_addr(3, results);
 
     return resultTuple;
 
@@ -125,11 +125,11 @@ yy_ptr yyRunProcessGetOutputSync(yy_ptr program, yy_ptr arguments)
 //     uv_close((uv_handle_t*) req, NULL);
 // }
 
-yy_ptr yyRunProcessSync(yy_ptr program, yy_ptr arguments)
+yyvalue yyRunProcessSync(yyvalue program, yyvalue arguments)
 {
     char* programName = addr_to_string(program);
     char argumentCount = iso_list_get_length(arguments);
-    yy_ptr* argumentArray = iso_list_get_elements(arguments);
+    yyvalue* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){
@@ -164,11 +164,11 @@ yy_ptr yyRunProcessSync(yy_ptr program, yy_ptr arguments)
     return bool_to_addr(child_exit_status == 0);
 }
 
-yy_ptr yyRunProcessSyncPipeOutput(yy_ptr program, yy_ptr arguments)
+yyvalue yyRunProcessSyncPipeOutput(yyvalue program, yyvalue arguments)
 {
     char* programName = addr_to_string(program);
     char argumentCount = iso_list_get_length(arguments);
-    yy_ptr* argumentArray = iso_list_get_elements(arguments);
+    yyvalue* argumentArray = iso_list_get_elements(arguments);
     char* args[argumentCount+2];
     args[0] = programName;
     for(int i = 0; i < argumentCount; i ++){

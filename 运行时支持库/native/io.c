@@ -1,23 +1,23 @@
 #include "common_include.h"
 
-yy_ptr yyPrintln(yy_ptr s) {
+yyvalue yyPrintln(yyvalue s) {
     fprintf(stdout,"%s\n", addr_to_string(s));
     fflush(stdout);
     return unit_to_addr();
 }
 
-yy_ptr yyPrintlnStdErr(yy_ptr s) {
+yyvalue yyPrintlnStdErr(yyvalue s) {
     fprintf(stderr,"%s\n", addr_to_string(s));
     fflush(stderr);
     return unit_to_addr();
 }
 
-yy_ptr yyPrintStr(yy_ptr s) {
+yyvalue yyPrintStr(yyvalue s) {
     fprintf(stdout,"%s", addr_to_string(s));
     fflush(stdout);
     return unit_to_addr();
 }
-int informResultRec (FILE *file, yy_ptr result, int prevPred) {
+int informResultRec (FILE *file, yyvalue result, int prevPred) {
     // if it is small, probably not an address
     if ((int64_t)result < 1000) {
         fprintf(file, "%lld",(long long)(int64_t) result);
@@ -42,24 +42,24 @@ int informResultRec (FILE *file, yy_ptr result, int prevPred) {
         fprintf(file,"Received a function closure (length is %d). Did you define a function?\n", length);
         // for (int i = 0; i < length ; i ++){
         //     fprintf(stderr,"%d : ", i);
-        //     informResult((yy_ptr)result[i+1]);
+        //     informResult((yyvalue)result[i+1]);
         // }
         break;
     case 2:
         fprintf(file,"卷");
-        informResultRec(file, (yy_ptr) result[1], preds[type]);
+        informResultRec(file, (yyvalue) result[1], preds[type]);
         break;
    
     case 3:
-        informResultRec(file, (yy_ptr) result[1], preds[type]);
+        informResultRec(file, (yyvalue) result[1], preds[type]);
         for (int i = 1; i < length ; i++) {
             fprintf(file,"与");
-            informResultRec(file, (yy_ptr) result[1+i], preds[type]);
+            informResultRec(file, (yyvalue) result[1+i], preds[type]);
         }
         break;
      case 4:
         fprintf(file,"%s临", (char*)result[2]);
-        informResultRec(file, (yy_ptr) result[3], preds[type]);
+        informResultRec(file, (yyvalue) result[3], preds[type]);
         break;
     case 5:
         fprintf(file,"元");
@@ -90,12 +90,12 @@ int informResultRec (FILE *file, yy_ptr result, int prevPred) {
 
     return 0;
 }
-yy_ptr yyPrintGeneric(yy_ptr obj) {
+yyvalue yyPrintGeneric(yyvalue obj) {
     informResultRec(stdout, obj, 0);
     return unit_to_addr();
 }
 
-yy_ptr yyPrintlnGeneric(yy_ptr obj) {
+yyvalue yyPrintlnGeneric(yyvalue obj) {
     informResultRec(stdout, obj, 0);
     fprintf(stdout, "\n");
     fflush(stdout);

@@ -1,4 +1,4 @@
-#include "native_include.h"
+#include "garbage_collector.h"
 /*
 complete this file, replace error and abort with actual implementation. I want a garbage collector that mallocs 512 MB blocks (the minor heap) from C runtime, and distribute it to user. We should also allocate a 512 MB block as a major heap. Upon getting a byte size, always round up to a multiples of 8, plus a header block before. For example, if the user wants 10 bytes, allocate 24 bytes (3 pointer sizes) from memory, and write a header. The first 3 bytes of a header is a magic number that should rarely appear as a string -- use something that is disjoint from the ASCII table, the next 1 byte is empty and the lower 4 bytes is an unsigned integer representing the length of the allocation block. The data stored in allocated things maybe pointers or others, and the way we check if the data is a pointer is to see if it resides in the 512MB block boundary, and its header has the magic number, and its size is within boundary. If so, it is treated as a pointer, otherwise it is treated as regular data. If spaces run out, we first check if the free space of the major heap is less than 512 MB, the minor heap size. If the space left on the major heap is enough, perform a copy and compaction gc copying the data from the minor heap to the major heap over starting with the root points, and contents already in the major heap. If the major heap doesn't have enough free space, realloate major heap to be twice as large and continue the copying process. The root points should be realized as a static array of 1000 elements. We may register only 1000 root points and errorAndAbort on over registration. Also, there is a extern void** stack and void** stack_ptr whose content should also be treated as root points. Needless to say, if the content of the stack and the gc root points fail to be a pointer, it is not a pointer. We never have pointers that point to the middle of the allocated heap. Thus, give a warning if there is a supposed pointer that points to allcoated memory but the magic number in the header doesn't match up. Before you produce any code, first ask any clarification questions. If everything is clear, simply say "I am ready to produce the code".
 */
@@ -243,7 +243,7 @@ void yy_perform_gc(void** additional_root_point) {
     for (int i = 0; i < gc_root_points_count; i++) {
         copy_root_point((gc_root_points[i]), new_heap, &new_heap_offset, new_heap_size);
     }
-    yy_ptr* stack_ptr_gc = (yy_ptr*)stack;
+    yyvalue* stack_ptr_gc = (yyvalue*)stack;
     while(stack_ptr_gc < stack_ptr){
         copy_root_point((void**)(stack_ptr_gc), new_heap, &new_heap_offset, new_heap_size);
         stack_ptr_gc++;

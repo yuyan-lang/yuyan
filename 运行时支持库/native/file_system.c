@@ -1,6 +1,6 @@
 #include "common_include.h"
 
-yy_ptr yyReadFileSync(yy_ptr filenamearg) {
+yyvalue yyReadFileSync(yyvalue filenamearg) {
     const char *filename = addr_to_string(filenamearg);
     FILE *file = fopen(filename, "rb");
     if (file == NULL) {
@@ -27,7 +27,7 @@ yy_ptr yyReadFileSync(yy_ptr filenamearg) {
     return string_to_addr(result);
 }
 
-yy_ptr yyDeleteFileSync(yy_ptr filenamearg) {
+yyvalue yyDeleteFileSync(yyvalue filenamearg) {
     const char *filename = addr_to_string(filenamearg);
     int result = remove(filename);
     if (result != 0) {
@@ -104,7 +104,7 @@ out:
     free(_path);
     return result;
 }
-yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
+yyvalue yyWriteFileSync(yyvalue file_name_addr, yyvalue content_addr) {
     const char *filename = addr_to_string(file_name_addr);
     const char *content = addr_to_string(content_addr);
 
@@ -139,7 +139,7 @@ yy_ptr yyWriteFileSync(yy_ptr file_name_addr, yy_ptr content_addr) {
 
 
 // TODO: we should probably make the following functions windows compatible, i.e. use libuv specifically on windows
-yy_ptr yyListDirectorySync(yy_ptr dirname) {
+yyvalue yyListDirectorySync(yyvalue dirname) {
     char *dname = addr_to_string(dirname);
     DIR *dir = opendir(dname);
     if (dir == NULL) {
@@ -149,7 +149,7 @@ yy_ptr yyListDirectorySync(yy_ptr dirname) {
     }
 
     struct dirent *entry;
-    yy_ptr entries[4096];  // Assuming a maximum of 4096 entries in the directory
+    yyvalue entries[4096];  // Assuming a maximum of 4096 entries in the directory
     int nread = 0;
 
     while ((entry = readdir(dir)) != NULL) {
@@ -164,7 +164,7 @@ yy_ptr yyListDirectorySync(yy_ptr dirname) {
 }
 
 
-yy_ptr yyIsPathDirectory(yy_ptr path) {
+yyvalue yyIsPathDirectory(yyvalue path) {
     char *pathC = addr_to_string(path);
 
     struct stat st;
@@ -178,7 +178,7 @@ yy_ptr yyIsPathDirectory(yy_ptr path) {
     return bool_to_addr(isdir);
 }
 
-yy_ptr yyIsPathRegularFile(yy_ptr path) {
+yyvalue yyIsPathRegularFile(yyvalue path) {
     char *pathC = addr_to_string(path);
 
     struct stat st;
@@ -192,7 +192,7 @@ yy_ptr yyIsPathRegularFile(yy_ptr path) {
     return bool_to_addr(isfile);
 }
 
-yy_ptr yyPathExists(yy_ptr path) {
+yyvalue yyPathExists(yyvalue path) {
     char *pathC = addr_to_string(path);
 
     struct stat st;
@@ -203,7 +203,7 @@ yy_ptr yyPathExists(yy_ptr path) {
     return bool_to_addr(true);
 }
 
-yy_ptr yyGetFileModifiedTime(yy_ptr path) {
+yyvalue yyGetFileModifiedTime(yyvalue path) {
     char *pathC = addr_to_string(path);
 
     struct stat st;

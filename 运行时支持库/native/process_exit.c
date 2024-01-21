@@ -3,7 +3,7 @@
 #include "common_include.h"
 
 
-yy_ptr yyProcessExit(yy_ptr exitStatusAddr){
+yyvalue yyProcessExit(yyvalue exitStatusAddr){
     int64_t st = addr_to_int(exitStatusAddr);
     exit(st);
 }

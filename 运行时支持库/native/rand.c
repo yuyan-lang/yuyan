@@ -1,6 +1,6 @@
 #include "common_include.h"
 
-yy_ptr yyGetRandomInt(yy_ptr upperBoundPtr) {
+yyvalue yyGetRandomInt(yyvalue upperBoundPtr) {
     uint64_t upperBoundInt = addr_to_int(upperBoundPtr);
     return int_to_addr(rand() % upperBoundInt);
     // uint64_t result = 0;
@@ -25,7 +25,7 @@ yy_ptr yyGetRandomInt(yy_ptr upperBoundPtr) {
     // return int_to_addr(resultInt);
 }
 
-yy_ptr yyGetRandomDouble() {
+yyvalue yyGetRandomDouble() {
     double r = (double)rand() / RAND_MAX;
     return double_to_addr(r);
 }

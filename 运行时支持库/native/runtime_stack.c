@@ -3,9 +3,9 @@
 #include "common_include.h"
 #include "../native/native_include.h"
 
-yy_ptr *stack;
-yy_ptr *stack_end;
-yy_ptr *stack_ptr;
+yyvalue *stack;
+yyvalue *stack_end;
+yyvalue *stack_ptr;
 int64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
 // int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -25,9 +25,9 @@ int64_t yy_increment_stack_ptr(int64_t increment) {
         //     stack_size *= 2;
         // }
         // if (use_libgc){
-        //     stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
+        //     stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yyvalue));
         // } else {
-        //     stack = (yy_ptr*) realloc(stack, stack_size * sizeof(yy_ptr));
+        //     stack = (yyvalue*) realloc(stack, stack_size * sizeof(yyvalue));
         // }
         // stack_end = stack + stack_size;
         // stack_ptr = stack + stack_ptr_offset;
@@ -43,16 +43,16 @@ int64_t yy_decrement_stack_ptr(int64_t increment) {
     return 0;
 }
 
-int64_t yy_get_stack_offset(yy_ptr *ptr) {
+int64_t yy_get_stack_offset(yyvalue *ptr) {
     return ptr - stack;
 }
 
-yy_function_type ptr_to_function(yy_ptr ptr) {
+yy_function_type ptr_to_function(yyvalue ptr) {
     return (yy_function_type) ptr;
 }
 
-yy_ptr function_to_ptr (yy_function_type func) {
-    return (yy_ptr) func;
+yyvalue function_to_ptr (yy_function_type func) {
+    return (yyvalue) func;
 }
 
 int64_t prev_continuation_exception_id = 0;
@@ -103,11 +103,11 @@ int64_t yy_runtime_start() {
     const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
     // allocate a 100 M * 8 bytes stack
     
-    // stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
+    // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     if (use_libgc) {
-        stack = (yy_ptr*) GC_MALLOC(stack_size * sizeof(yy_ptr));
+        stack = (yyvalue*) GC_MALLOC(stack_size * sizeof(yyvalue));
     } else {
-        stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
+        stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     }
     stack_end = stack + stack_size;
     stack_ptr = stack;
@@ -121,8 +121,8 @@ int64_t yy_runtime_start() {
         4 : local control transfer, with [1] = continuation label id [2] = argument data
 
     */
-    yy_ptr return_record[5] = {(yy_ptr)(2), (yy_ptr) entryMain, NULL, int_to_addr(1), 0};
-    yy_ptr initial_block_id = int_to_addr(1);
+    yyvalue return_record[5] = {(yyvalue)(2), (yyvalue) entryMain, NULL, int_to_addr(1), 0};
+    yyvalue initial_block_id = int_to_addr(1);
 
     /*
     Argument Format:
@@ -134,7 +134,7 @@ int64_t yy_runtime_start() {
     Callee may only modify the *contents of* return record and must not modify argument ptr
 
     */
-    yy_ptr argument_record[4] = {(yy_ptr)stack_ptr, (yy_ptr)initial_block_id, NULL, (yy_ptr)return_record};
+    yyvalue argument_record[4] = {(yyvalue)stack_ptr, (yyvalue)initial_block_id, NULL, (yyvalue)return_record};
     current_function =(yy_function_type) NULL;
     if (use_profiler) {
         start_yy_profiler();
@@ -152,12 +152,12 @@ int64_t yy_runtime_start() {
 
             
             // get return value
-            yy_ptr return_value = return_record[1];
+            yyvalue return_value = return_record[1];
 
             // get caller information from the stack
-            yy_ptr stack_offset = stack_ptr[-3];
-            yy_ptr caller_function = stack_ptr[-2];
-            yy_ptr continuation_label_id = stack_ptr[-1];
+            yyvalue stack_offset = stack_ptr[-3];
+            yyvalue caller_function = stack_ptr[-2];
+            yyvalue continuation_label_id = stack_ptr[-1];
 
 
             // restore stack
@@ -186,7 +186,7 @@ int64_t yy_runtime_start() {
         {
             // get things from return record
             yy_function_type new_function = ptr_to_function(return_record[1]);
-            yy_ptr argument_data = return_record[2];
+            yyvalue argument_data = return_record[2];
             int64_t continuation_label_id = addr_to_int(return_record[3]);
             int64_t stack_offset = addr_to_int(return_record[4]);
 
@@ -221,8 +221,8 @@ int64_t yy_runtime_start() {
         {
 
             // get exception label
-            yy_ptr exception_label = return_record[1];
-            yy_ptr exception_data = return_record[2];
+            yyvalue exception_label = return_record[1];
+            yyvalue exception_data = return_record[2];
 
             // get exception handler
             int64_t offset = continuation_exception_table[addr_to_int(exception_label)];
@@ -242,13 +242,13 @@ int64_t yy_runtime_start() {
             break;
         case 4:
         {
-            yy_ptr transfer_block_id = return_record[1];
-            yy_ptr argument_data = return_record[2];
+            yyvalue transfer_block_id = return_record[1];
+            yyvalue argument_data = return_record[2];
 
-            argument_record[0] = (yy_ptr)stack_ptr;
+            argument_record[0] = (yyvalue)stack_ptr;
             argument_record[1] = transfer_block_id;
             argument_record[2] = argument_data;
-            argument_record[3] = (yy_ptr)return_record;
+            argument_record[3] = (yyvalue)return_record;
             return_record[0] = int_to_addr(-1);
             current_function(argument_record[0], argument_record[1], argument_record[2], argument_record[3]);
         }

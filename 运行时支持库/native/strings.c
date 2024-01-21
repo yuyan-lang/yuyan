@@ -3,7 +3,7 @@
 
 
 // returns if s1 is a substring of s2
-yy_ptr yyIsSubstring(yy_ptr s1, yy_ptr s2) {
+yyvalue yyIsSubstring(yyvalue s1, yyvalue s2) {
     if (strstr(addr_to_string(s2), addr_to_string(s1)) != NULL) {
         return bool_to_addr(true);
     } else {
@@ -12,7 +12,7 @@ yy_ptr yyIsSubstring(yy_ptr s1, yy_ptr s2) {
 }
 
 // returns if s1 is a substring of s2
-yy_ptr yyStringEq(yy_ptr s1, yy_ptr s2) {
+yyvalue yyStringEq(yyvalue s1, yyvalue s2) {
     char *str2 = addr_to_string(s2);
     char *str1 = addr_to_string(s1);
     if (strcmp(str2, str1) == 0)
@@ -25,25 +25,25 @@ yy_ptr yyStringEq(yy_ptr s1, yy_ptr s2) {
     }
 }
 
-yy_ptr yyStringByteLength(yy_ptr s1){
+yyvalue yyStringByteLength(yyvalue s1){
     char *s = addr_to_string(s1);
     int64_t l = strlen(s);
     return int_to_addr(l);
 }
 
-yy_ptr yyStringByteArrayGetLength(yy_ptr s1){
+yyvalue yyStringByteArrayGetLength(yyvalue s1){
     char *s = addr_to_string(s1);
     int64_t l = strlen(s);
     return int_to_addr(l);
 }
 
 
-yy_ptr yy_豫言字符串获取字节数组(yy_ptr s1){
+yyvalue yy_豫言字符串获取字节数组(yyvalue s1){
     char *s = addr_to_string(s1);
     return string_to_addr(s);
 }
 
-yy_ptr yy_豫言字符转整数(yy_ptr s1, yy_ptr idx_ptr){
+yyvalue yy_豫言字符转整数(yyvalue s1, yyvalue idx_ptr){
     char *s =  addr_to_string(s1);
     uint64_t index = addr_to_int(idx_ptr);
     char result = s[index];
@@ -55,7 +55,7 @@ char* yy_豫言子字符串从字节序数开始(char* s, int64_t idx){
     return result;
 }
 
-yy_ptr yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
+yyvalue yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
     char *matchTarget = yy_豫言子字符串从字节序数开始(search, startIdx);
 
     char *p1 = matchTarget;
@@ -98,7 +98,7 @@ char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
 }
 
 // startIdx 必须是引号，返回获取的字符串与前进的字符数
-yy_ptr yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
+yyvalue yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
     char *start = &s[startIdx];
     if (*start != '"'){
         errorAndAbort("JSON字符串必须以引号开始");
@@ -161,7 +161,7 @@ yy_ptr yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
         escapedPtr+=1;
     }
     *escapedPtr = '\0';
-    return tuple_to_addr(2, (yy_ptr[]){string_to_addr(escapedStr), int_to_addr(byteLength)});
+    return tuple_to_addr(2, (yyvalue[]){string_to_addr(escapedStr), int_to_addr(byteLength)});
 }
 
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
@@ -174,7 +174,7 @@ size_t count_utf8_code_points(const char *s) {
 }
 
 // get a list of utf8 code points from utf8 array
-// yy_ptr yyGetCodePoints(yy_ptr str_addr) {
+// yyvalue yyGetCodePoints(yyvalue str_addr) {
 //     const char* start = addr_to_string(str_addr);
 
 //     const char * end = start;
@@ -184,7 +184,7 @@ size_t count_utf8_code_points(const char *s) {
 
 //     const char* prevEnd = end;
 
-//     yy_ptr resultList = iso_list_nil_to_addr();
+//     yyvalue resultList = iso_list_nil_to_addr();
 
 //     while(end != start) {
 //         end --;
@@ -201,7 +201,7 @@ size_t count_utf8_code_points(const char *s) {
 //     }
 //     return resultList;
 // }
-yy_ptr yyGetCodePoints(yy_ptr str_addr) {
+yyvalue yyGetCodePoints(yyvalue str_addr) {
     const char* start = addr_to_string(str_addr);
     const char* end = start;
     while(*end){
@@ -219,7 +219,7 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
     }
 
     // Allocate a heap array for the code points
-    yy_ptr* codePoints = (yy_ptr*)yy_gcAllocateBytes(numCodePoints * sizeof(yy_ptr));
+    yyvalue* codePoints = (yyvalue*)yy_gcAllocateBytes(numCodePoints * sizeof(yyvalue));
     // if (codePoints == NULL) {
     //     // Handle allocation failure
     //     return NULL;
@@ -265,9 +265,9 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 }
 
 
-// yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
+// yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
 //     const int length = iso_list_get_length(str_list_addr);
-//     yy_ptr* strs = iso_list_get_elements( str_list_addr);
+//     yyvalue* strs = iso_list_get_elements( str_list_addr);
 
 //     int totalLength = 0;
 
@@ -286,9 +286,9 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 // }
 
 // MORE MORE EFFICIENT
-// yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
+// yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
 //     const int length = iso_list_get_length(str_list_addr);
-//     yy_ptr* strs = iso_list_get_elements(str_list_addr);
+//     yyvalue* strs = iso_list_get_elements(str_list_addr);
 
 //     int totalLength = 0;
 
@@ -312,9 +312,9 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 // }
 
 // EVEN MORE EFFICIENT
-yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
+yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     const int length = iso_list_get_length(str_list_addr);
-    yy_ptr* strs = iso_list_get_elements(str_list_addr);
+    yyvalue* strs = iso_list_get_elements(str_list_addr);
 
     int totalLength = 0;
     int* lengths = (int*)malloc(length * sizeof(int));
