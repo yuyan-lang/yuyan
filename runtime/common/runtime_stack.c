@@ -1,14 +1,13 @@
 
 
 #include "common_include.h"
-
-extern yy_ptr entryMain(yy_ptr*); // the entry to yy llvm ir
+#include "../native/native_include.h"
 
 yy_ptr *stack;
 yy_ptr *stack_end;
 yy_ptr *stack_ptr;
-// int64_t stack_size = 1024 * 128; // 1MB stack
-int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
+int64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
+// int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
@@ -19,13 +18,19 @@ int64_t yy_increment_stack_ptr(int64_t increment) {
         errorAndAbort("Stack overflow");
     }
     else if (stack_ptr - stack >= stack_size / 2) {
-        int64_t stack_ptr_offset =  stack_ptr - stack;
-        while (stack_ptr - stack >= stack_size / 2) {
-            stack_size *= 2;
-        }
-        stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
-        stack_end = stack + stack_size;
-        stack_ptr = stack + stack_ptr_offset;
+        // uncomment to add stack reallocation
+        // I am commenting them to prepare for stack allocation
+        // int64_t stack_ptr_offset =  stack_ptr - stack;
+        // while (stack_ptr - stack >= stack_size / 2) {
+        //     stack_size *= 2;
+        // }
+        // if (use_libgc){
+        //     stack = yy_gcReallocateBytes(stack, stack_size * sizeof(yy_ptr));
+        // } else {
+        //     stack = (yy_ptr*) realloc(stack, stack_size * sizeof(yy_ptr));
+        // }
+        // stack_end = stack + stack_size;
+        // stack_ptr = stack + stack_ptr_offset;
     }
     return 0;
 }
@@ -81,13 +86,29 @@ int64_t *set_continuation_exception_handler(uint64_t *id, int64_t offset)
     return 0;
 }
 
+void begin_stack_manipulation(){
+    if (use_profiler){
+        pthread_mutex_lock(&stack_ptr_mutex);
+    }
+}
+
+void end_stack_manipulation(){
+    if (use_profiler){
+        pthread_mutex_unlock(&stack_ptr_mutex);
+    }
+}
+
 
 int64_t yy_runtime_start() {
     const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
     // allocate a 100 M * 8 bytes stack
     
     // stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
-    stack = (yy_ptr*) yy_gcAllocateBytes(stack_size * sizeof(yy_ptr));
+    if (use_libgc) {
+        stack = (yy_ptr*) GC_MALLOC(stack_size * sizeof(yy_ptr));
+    } else {
+        stack = (yy_ptr*) malloc(stack_size * sizeof(yy_ptr));
+    }
     stack_end = stack + stack_size;
     stack_ptr = stack;
 
@@ -114,8 +135,10 @@ int64_t yy_runtime_start() {
 
     */
     yy_ptr argument_record[4] = {(yy_ptr)stack_ptr, (yy_ptr)initial_block_id, NULL, (yy_ptr)return_record};
-    current_function = NULL;
-
+    current_function =(yy_function_type) NULL;
+    if (use_profiler) {
+        start_yy_profiler();
+    }
 
     // entryMain(&argument_record);
     while (true) {
@@ -136,11 +159,12 @@ int64_t yy_runtime_start() {
             yy_ptr caller_function = stack_ptr[-2];
             yy_ptr continuation_label_id = stack_ptr[-1];
 
+
             // restore stack
-            pthread_mutex_lock(&stack_ptr_mutex);
+            begin_stack_manipulation();
             yy_decrement_stack_ptr(3);
             yy_decrement_stack_ptr(addr_to_int(stack_offset));
-            pthread_mutex_unlock(&stack_ptr_mutex);
+            end_stack_manipulation();
 
             // reset caller function
             current_function = ptr_to_function(caller_function);
@@ -149,6 +173,7 @@ int64_t yy_runtime_start() {
             if (current_function == NULL && stack_ptr == stack) {
                 return 0;
             }
+
 
             // transfer control to caller
             return_record[0] = int_to_addr(4);
@@ -170,13 +195,19 @@ int64_t yy_runtime_start() {
             // 2. current function
             // 3. continuation label id
             
-            pthread_mutex_lock(&stack_ptr_mutex);
+            // pthread_mutex_lock(&stack_ptr_mutex);
+            begin_stack_manipulation();
             yy_increment_stack_ptr(stack_offset);
             stack_ptr[0] = int_to_addr(stack_offset);
             stack_ptr[1] = function_to_ptr(current_function);
             stack_ptr[2] = int_to_addr(continuation_label_id);
             yy_increment_stack_ptr(3);
-            pthread_mutex_unlock(&stack_ptr_mutex);
+            end_stack_manipulation();
+            // pthread_mutex_unlock(&stack_ptr_mutex);
+
+            // perform gc
+            yy_perform_gc((void**)(&argument_data));
+
 
             current_function = new_function;
 
@@ -197,9 +228,11 @@ int64_t yy_runtime_start() {
             int64_t offset = continuation_exception_table[addr_to_int(exception_label)];
 
             // restore stack
-            pthread_mutex_lock(&stack_ptr_mutex);
+            // pthread_mutex_lock(&stack_ptr_mutex);
+            begin_stack_manipulation();
             stack_ptr = stack + offset;
-            pthread_mutex_unlock(&stack_ptr_mutex);
+            end_stack_manipulation();
+            // pthread_mutex_unlock(&stack_ptr_mutex);
 
             // treat as a normal return, and continue
             return_record[0] = int_to_addr(1);

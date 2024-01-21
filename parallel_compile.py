@@ -176,7 +176,10 @@ def exec_worker(args):
         return args, f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during exec-fun on {args[0]}: \n{' '.join(command)}\nstderr:\n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}"
     else:
+        print("Completed. stdout:")
         print(stdout.decode('utf-8'))
+        print("stderr:")
+        print(stderr.decode('utf-8'))
         return args, None
 
 def worker(task, retry_count=0):
@@ -188,6 +191,7 @@ def worker(task, retry_count=0):
     command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
     # print("" + " ".join(command))
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\nRUN:\n"+ " ".join(command) + "\n")
+    assert stage in stages, f"Error: stage {stage} is not in {stages}"
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=pre_fun(stages.index(stage)))
     stdout, stderr = process.communicate()
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + stdout.decode() + "\nSTDERR: \n" + stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")

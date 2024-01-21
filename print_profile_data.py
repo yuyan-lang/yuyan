@@ -1,6 +1,8 @@
 
 import subprocess
 from collections import defaultdict
+from tqdm import tqdm
+from tabulate import tabulate
 
 def get_symbol_offset(executable_path, symbol_name):
     try:
@@ -41,7 +43,7 @@ def process_profiling_data(file_path):
     total_lines = len(lines) - 1
     # Analyze and print the results
     results = []
-    for address in addresses:
+    for address in tqdm(addresses):
         symbol_info = get_symbol_name(executable, hex(int(address, 16) - offset))
         symbol_name = symbol_info[0] if len(symbol_info) > 0 else 'Unknown Symbol'
         
@@ -61,8 +63,24 @@ def process_profiling_data(file_path):
     results.sort(key=lambda x: (float(x['Self Time (%)']), float(x['Other Time (%)'])), reverse=True)
 
     # Print the results
-    for result in results:
-        print(result)
+    # # if not using tabulate:
+    # for result in results:
+    #     print(result)
+
+    max_symbol_name_length = 30
+    # Create a list of lists for tabulate
+    table_data = [
+        [result['Address'], result['Symbol Name'], result['Self Time (%)'], result['Other Time (%)'], result['All Times (%)']]
+        for result in results
+    ]
+
+    # Specify the headers
+    headers = ['Address', 'Symbol Name', 'Self Time (%)', 'Other Time (%)', 'All Times (%)']
+
+    # Print the table
+    print(tabulate(table_data, headers=headers, tablefmt='orgtbl'))
+
+
 
 if __name__ == "__main__":
     profiling_data_file = "yy_profiledata.txt"  # Replace with your actual file path

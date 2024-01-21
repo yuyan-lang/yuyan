@@ -3,22 +3,29 @@
 
 FILE* profileFile;
 yy_ptr *local_stack_ptr;
-extern yy_ptr* stack_ptr;
-extern yy_ptr* stack;
-extern yy_function_type current_function;
-extern pthread_mutex_t stack_ptr_mutex;
-extern int64_t entryMain(); 
 
+bool use_profiler;
 void *interruptFunction(void *arg)
 {
+    // fprintf(stderr, "Starting Profiler Thread: Stack offset: %ld\n", stack_ptr - stack);
     while (1) {
-        if (stack_ptr == NULL || stack == NULL || current_function == NULL) {
-            continue;
-        }
+        // prevent loop optimization
+        // fprintf(stderr, "s");
+        // if (stack_ptr == NULL){
+        //     continue;
+        // }
+        // if (stack_ptr == NULL){
+        //     continue;
+        // }
+        // if (current_function == NULL) {
+        //     continue;
+        // }
         // Declare a local stack pointer for manipulation
         pthread_mutex_lock(&stack_ptr_mutex);
         local_stack_ptr = stack_ptr;
-        fprintf(profileFile, "%p ", (void*)current_function);
+        if (current_function != NULL){
+            fprintf(profileFile, "%p ", (void*)current_function);
+        }
         int64_t stack_offset;
         while (local_stack_ptr - stack > 3)
         {
@@ -29,6 +36,7 @@ void *interruptFunction(void *arg)
         }
         pthread_mutex_unlock(&stack_ptr_mutex);
 
+        // fprintf(stderr, "Profiler: Stack offset: %ld\n", stack_ptr - stack);
         fprintf(profileFile, "\n");
         
         // Flush the file to ensure data is written immediately

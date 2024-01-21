@@ -83,7 +83,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["@yy:uselibgc=0", "@yy:useprofiler=1",  "yylib/标准库/数据结构/多态列。豫", "--parse-only"],
+            "args": ["@yy:uselibgc=0",  "40",],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [],
@@ -94,7 +94,30 @@
                 //     "description": "ingore libgc related errors",
                 //     "ignoreFailures": false
                 // }
-            ]
+            ], 
+            // "MIMode": "lldb",
+            // "miDebuggerPath": "/usr/bin/lldb"
+        },
+        {
+            "name": "./yy_exec_debug yylib/标准库。豫",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/yy_exec_debug",
+            "args": ["@yy:uselibgc=0",  "yylib/标准库。豫", "--do-not-load-cache"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [
+                {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
+                {"name":"YY_DEBUG_FLAG", "value": "1"},
+        ],
+            "externalConsole": false,
+            "setupCommands": [
+                // {
+                //     "text": "handle SIGSEGV noprint nostop pass",
+                //     "description": "ingore libgc related errors",
+                //     "ignoreFailures": false
+                // }
+            ], 
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
         },

@@ -20,7 +20,16 @@ yy_bs : yy $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
 yy_bs_bs : $(YYBSSOURCES) $(YYLIBSOURCES) 
-	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs --parallel
+	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs -c
+
+yy_bs_bs_parallel : $(YYBSSOURCES) $(YYLIBSOURCES) 
+	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs --parallel -c --debug
+
+.PHONY: yy_bs_bs_opt
+
+yy_bs_bs_opt : 
+	make -C runtime/ opt
+	clang -flto -g -o  yy_bs_bs_opt /home/zc/yuyan_proj/yuyan/.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc ./runtime/libyyrtopt.a -L /usr/local/lib -l gc -l uv -Wno-override-module -g -Werror
 
 bsrp : yy_bs 
 	make yyrt
