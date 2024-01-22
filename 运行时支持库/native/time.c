@@ -16,5 +16,6 @@ yyvalue yyCurrentNanosecondTime() {
     double nanoseconds_double = (double) nanoseconds;
 
     // Return the nanoseconds
-    return double_to_yyvalue(nanoseconds_double);
+    yyvalue ret =  double_to_yyvalue(nanoseconds_double);
+    return ret;
 }

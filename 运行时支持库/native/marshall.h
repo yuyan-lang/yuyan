@@ -54,7 +54,6 @@ yyvalue transfer_address_to_yyvalue(yyvalue *transfer_address);
 // list ops
 uint64_t iso_list_get_length(const yyvalue list);
 yyvalue *iso_list_get_elements(const yyvalue list);
-yyvalue heap_array_to_yyvalue(uint64_t length, const yyvalue *elems);
 yyvalue array_to_iso_addr(uint64_t length, const yyvalue elems[]);
 
 // tuple ops

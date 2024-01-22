@@ -80,3 +80,8 @@ yyvalue yyReadLineFromStdin() {
 
     return string_to_yyvalue(line);
 }
+
+yyvalue yyPrintGeneric(yyvalue obj) {
+    fprintf(stderr, "Generic Printing Unimplemented\n");
+    return unit_to_yyvalue();
+}

@@ -261,7 +261,7 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     newChar[len] = '\0';
     codePoints[i] = string_to_yyvalue(newChar);
 
-    return heap_array_to_yyvalue(numCodePoints, codePoints);
+    return tuple_to_yyvalue(2, (yyvalue[]){raw_tuple_to_yyvalue(numCodePoints, codePoints), int_to_yyvalue(numCodePoints)});
 }
 
 

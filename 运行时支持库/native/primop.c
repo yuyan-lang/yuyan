@@ -35,10 +35,18 @@ yyvalue yyDoubleAdd(yyvalue i1, yyvalue i2){
     return double_to_yyvalue(yyvalue_to_double(i1)+ yyvalue_to_double(i2));
 }
 yyvalue yyDoubleSub(yyvalue i1, yyvalue i2){
-    return double_to_yyvalue(yyvalue_to_double(i1)- yyvalue_to_double(i2));
+    double arg1 = yyvalue_to_double(i1);
+    double arg2 = yyvalue_to_double(i2);
+    double ret = arg1 - arg2;
+    // fprintf(stderr, "calculated %lf - %lf = %lf\n", arg1, arg2, ret);
+    return double_to_yyvalue(ret);
 }
 yyvalue yyDoubleMult(yyvalue i1, yyvalue i2){
-    return double_to_yyvalue(yyvalue_to_double(i1) * yyvalue_to_double(i2));
+    double arg1 = yyvalue_to_double(i1);
+    double arg2 = yyvalue_to_double(i2);
+    double ret = arg1 * arg2;
+    // fprintf(stderr, "calculated %lf * %lf = %lf\n", arg1, arg2, ret);
+    return double_to_yyvalue(ret);
 }
 yyvalue yyDoubleDiv(yyvalue i1, yyvalue i2){
     return double_to_yyvalue(yyvalue_to_double(i1) / yyvalue_to_double(i2));

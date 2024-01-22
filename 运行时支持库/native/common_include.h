@@ -47,7 +47,6 @@ yyvalue* iso_list_get_elements(const yyvalue list);
 yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]);
 yyvalue bool_to_yyvalue(bool b);
 yyvalue array_to_iso_addr(uint64_t length, const yyvalue elems[]);
-yyvalue heap_array_to_yyvalue(uint64_t length, const yyvalue *elems);
 
 int64_t yyvalue_to_int(yyvalue arg);
 double yyvalue_to_double(yyvalue arg);

@@ -88,7 +88,8 @@ int64_t yyvalue_to_int(yyvalue arg) {
 
 double  yyvalue_to_double(yyvalue arg) {
     assert(yyvalue_get_type(arg) == type_double);
-    return (double) arg;
+    uint64_t lowerbits = (uint64_t)arg;
+    return *(double *)&arg;
 }
 
 bool yyvalue_to_bool(yyvalue arg){
@@ -149,7 +150,8 @@ yyvalue int_to_yyvalue(int64_t i){
 }
 
 yyvalue double_to_yyvalue(double i){
-    yyvalue ret = (yyvalue)i;
+    uint64_t lowerbits = *(uint64_t *)&i;
+    yyvalue ret = (yyvalue)lowerbits;
     yyvalue_set_type(&ret, type_double);
     return ret;
 }
@@ -210,16 +212,9 @@ yyvalue* iso_list_get_elements(const yyvalue list) {
     return (yyvalue_to_tuple((tups[0])));
 }
 
-yyvalue heap_array_to_yyvalue(uint64_t length, const yyvalue* elems){
-    yyvalue len = int_to_yyvalue(length);
-    yyvalue res_tup[] = {(yyvalue)elems, len};
-    yyvalue res = tuple_to_yyvalue(2, res_tup);
-    return res;
-}
-
 yyvalue array_to_iso_addr(uint64_t length, const yyvalue elems[]){
     yyvalue tup = tuple_to_yyvalue(length, elems);
-    return heap_array_to_yyvalue(length, (yyvalue *)tup);
+    return tuple_to_yyvalue(2, (yyvalue[]){tup, int_to_yyvalue(length)});
 }
 
 
