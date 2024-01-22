@@ -19,17 +19,17 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
     gc_root_points[gc_root_points_count++] = ptr;
 }
 
-// #ifndef INITIAL_HEAP_SIZE
+#ifndef INITIAL_HEAP_SIZE
 // #define INITIAL_HEAP_SIZE (64 * 1024 * 1024)  // 1024 MB
-// #define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
+#define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
 // #define INITIAL_HEAP_SIZE (2 * 1024)  // 32 KB
-// #endif
+#endif
 
 
 yyvalue* current_heap = NULL;
 yyvalue* tiny_heap = NULL;
 yyvalue* new_heap = NULL;
-uint64_t initial_heap_size = (2 * 1024 * 1024); //32 MB
+uint64_t initial_heap_size = INITIAL_HEAP_SIZE; //32 MB
 uint64_t current_heap_size = 0;
 uint64_t current_heap_offset = 0;
 uint64_t tiny_heap_offset = 0;
@@ -42,12 +42,22 @@ bool should_expand_heap = false;
 bool yy_gc_debug_flag = false;
 
 void yy_gc_init() {
+    if (getenv("YY_GC_INITIAL_HEAP_SIZE_MB") != NULL ) {
+        const char* requested_size = getenv("YY_GC_INITIAL_HEAP_SIZE_MB");
+        initial_heap_size = atoi(requested_size) * 1024 * 1024;
+    }
+
+    if (initial_heap_size != INITIAL_HEAP_SIZE) {
+        fprintf(stderr, "YY initial heap size is set to %f MB\n", (double) initial_heap_size / (1024 * 1024));
+    }
+
     current_heap_size = initial_heap_size;
     current_heap = MALLOC_FUNC(initial_heap_size);
     if (!current_heap) errorAndAbort("Failed to initialize major heap");
     
     tiny_heap = MALLOC_FUNC(TINY_HEAP_SIZE);
     if (!tiny_heap) errorAndAbort("Failed to initialize tiny heap");
+
 
     yy_gc_debug_flag = (getenv("YY_GC_DEBUG_FLAG") != NULL && strcmp(getenv("YY_GC_DEBUG_FLAG"), "1") == 0);
 }
