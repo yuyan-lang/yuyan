@@ -80,5 +80,6 @@ extern pthread_mutex_t stack_ptr_mutex;
 extern yyvalue entryMain(yyvalue, yyvalue, yyvalue, yyvalue);
 
 void yy_perform_gc(yyvalue* additional_root_point);
+void verify_gc(yyvalue* additional_root_point);
 void yy_gc_init();
 extern bool during_gc;

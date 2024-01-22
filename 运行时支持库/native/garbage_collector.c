@@ -1,4 +1,5 @@
 #include "garbage_collector.h"
+#include "memory_verifier.h"
 /*
 complete this file, replace error and abort with actual implementation. I want a garbage collector that mallocs 512 MB blocks (the minor heap) from C runtime, and distribute it to user. We should also allocate a 512 MB block as a major heap. Upon getting a byte size, always round up to a multiples of 8, plus a header block before. For example, if the user wants 10 bytes, allocate 24 bytes (3 pointer sizes) from memory, and write a header. The first 3 bytes of a header is a magic number that should rarely appear as a string -- use something that is disjoint from the ASCII table, the next 1 byte is empty and the lower 4 bytes is an unsigned integer representing the length of the allocation block. The data stored in allocated things maybe pointers or others, and the way we check if the data is a pointer is to see if it resides in the 512MB block boundary, and its header has the magic number, and its size is within boundary. If so, it is treated as a pointer, otherwise it is treated as regular data. If spaces run out, we first check if the free space of the major heap is less than 512 MB, the minor heap size. If the space left on the major heap is enough, perform a copy and compaction gc copying the data from the minor heap to the major heap over starting with the root points, and contents already in the major heap. If the major heap doesn't have enough free space, realloate major heap to be twice as large and continue the copying process. The root points should be realized as a static array of 1000 elements. We may register only 1000 root points and errorAndAbort on over registration. Also, there is a extern void** stack and void** stack_ptr whose content should also be treated as root points. Needless to say, if the content of the stack and the gc root points fail to be a pointer, it is not a pointer. We never have pointers that point to the middle of the allocated heap. Thus, give a warning if there is a supposed pointer that points to allcoated memory but the magic number in the header doesn't match up. Before you produce any code, first ask any clarification questions. If everything is clear, simply say "I am ready to produce the code".
 */
@@ -18,19 +19,18 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
     gc_root_points[gc_root_points_count++] = ptr;
 }
 
-#ifndef INITIAL_HEAP_SIZE
+// #ifndef INITIAL_HEAP_SIZE
 // #define INITIAL_HEAP_SIZE (64 * 1024 * 1024)  // 1024 MB
-#define INITIAL_HEAP_SIZE (2 * 1024)  // 32 KB
-#endif
+// #define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
+// #define INITIAL_HEAP_SIZE (2 * 1024)  // 32 KB
+// #endif
 
-#ifndef TINY_HEAP_SIZE
-#define TINY_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
-#endif
 
 yyvalue* current_heap = NULL;
 yyvalue* tiny_heap = NULL;
 yyvalue* new_heap = NULL;
-uint64_t current_heap_size = INITIAL_HEAP_SIZE;
+uint64_t initial_heap_size = (2 * 1024 * 1024); //32 MB
+uint64_t current_heap_size = 0;
 uint64_t current_heap_offset = 0;
 uint64_t tiny_heap_offset = 0;
 uint64_t new_heap_size = 0;
@@ -42,7 +42,8 @@ bool should_expand_heap = false;
 bool yy_gc_debug_flag = false;
 
 void yy_gc_init() {
-    current_heap = MALLOC_FUNC(INITIAL_HEAP_SIZE);
+    current_heap_size = initial_heap_size;
+    current_heap = MALLOC_FUNC(initial_heap_size);
     if (!current_heap) errorAndAbort("Failed to initialize major heap");
     
     tiny_heap = MALLOC_FUNC(TINY_HEAP_SIZE);
@@ -68,11 +69,11 @@ bool is_an_old_pointer(yyvalue raw_ptr) {
         return false;
     } else {
         yyvalue* ptr = yyvalue_to_tuple(raw_ptr);
-        if (ptr - current_heap > 0 && ptr - current_heap < current_heap_size) {
+        if (ptr - current_heap >= 0 && ptr - current_heap < current_heap_size) {
             assert(yyvalue_get_length(raw_ptr) <= current_heap_size);
             return true;
         }
-        else if (ptr - tiny_heap > 0 && ptr - tiny_heap < TINY_HEAP_SIZE)
+        else if (ptr - tiny_heap >= 0 && ptr - tiny_heap < TINY_HEAP_SIZE)
         {
             assert(yyvalue_get_length(raw_ptr) <= TINY_HEAP_SIZE);
             return true;
@@ -90,7 +91,7 @@ bool is_an_new_pointer(yyvalue raw_ptr) {
         return false;
     } else {
         yyvalue* ptr = yyvalue_to_tuple(raw_ptr);
-        if (ptr - new_heap > 0 && ptr - new_heap < new_heap_size) {
+        if (ptr - new_heap >= 0 && ptr - new_heap < new_heap_size) {
             assert(yyvalue_get_length(raw_ptr) <= new_heap_size);
             return true;
         }
@@ -165,9 +166,8 @@ void* yy_gc_realloc_bytes(void* ptr, uint64_t old_size, uint64_t new_size) {
 
 void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
     if (is_an_new_pointer(*ptr_ptr)) {
-        return;
-    }
-    if (is_an_old_pointer(*ptr_ptr)) {
+        
+    } else if (is_an_old_pointer(*ptr_ptr)) {
         yyvalue header = yy_read_tuple(*ptr_ptr, 0);
         if (yyvalue_get_type(header) == type_pointer_transfer_address)
         {
@@ -192,6 +192,8 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_off
             *ptr_ptr = raw_tuple_to_yyvalue(yyvalue_get_length(*ptr_ptr), new_ptr);
         }
     }
+
+    verify_yyvalue_new_heap(*ptr_ptr, false, 0);
     // assert( (!is_a_pointer((void*)(*ptr_ptr))) || (!(check_magic_number(*(uint64_t*)(*ptr_ptr)))));
 }
 
@@ -199,9 +201,7 @@ static uint64_t gc_count = 0;
 bool during_gc = false;
 
 void yy_perform_gc(yyvalue* additional_root_point) {
-    if (tiny_heap_offset == 0) {
-        return;  // No garbage collection needed
-    }
+    
     during_gc = true;
     gc_count++;
 
@@ -283,6 +283,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
 
     // Clean up tiny heap at the end of a successful garbage collection
     tiny_heap_offset = 0;
+    verify_gc(additional_root_point);
     during_gc = false;
 }
 

@@ -1,6 +1,7 @@
 
 
 #include "common_include.h"
+#include "memory_verifier.h"
 
 
 yyvalue *stack;
@@ -209,7 +210,10 @@ int64_t yy_runtime_start() {
             // pthread_mutex_unlock(&stack_ptr_mutex);
 
             // perform gc
-            yy_perform_gc(&argument_data);
+            if (tiny_heap_offset != 0) {
+                verify_yyvalue(argument_data, true, 0);
+                yy_perform_gc(&argument_data);
+            }
 
 
             current_function = new_function;
