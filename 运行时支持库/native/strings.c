@@ -329,6 +329,7 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
 
     for (int i = 0; i < length; i++) {
         const char* currentStr = yyvalue_to_string(strs[i]);
+        assert(strlen(currentStr) == lengths[i]);
         int strLength = lengths[i];
         memcpy(currentPos, currentStr, strLength);
         currentPos += strLength;
