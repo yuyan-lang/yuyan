@@ -47,6 +47,8 @@ libyyrtopt.so: $(NATIVE_SOURCES)
 
 optso : libyyrtopt.so
 
+all: debug opt debugso optso
+
 .PHONY: clean
 clean:
 	rm -rf build

@@ -15,6 +15,10 @@ yyvalue yy_gcAllocateArray_yyrt(yyvalue size) {
 }
 
 void* yy_gcAllocateBytes(uint64_t size) {
+    if (during_gc){
+        printf("GC ERROR: GC is running, cannot allocate memory, check gc implementation\n");
+        abort();
+    }
     void* x;
     if (use_libgc)
     {

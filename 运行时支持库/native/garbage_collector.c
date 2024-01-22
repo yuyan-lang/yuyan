@@ -171,7 +171,7 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_off
         yyvalue header = yy_read_tuple(*ptr_ptr, 0);
         if (yyvalue_get_type(header) == type_pointer_transfer_address)
         {
-            yyvalue new_ptr = tuple_to_yyvalue(yyvalue_get_length(*ptr_ptr), yyvalue_to_transfer_address(header));
+            yyvalue new_ptr = raw_tuple_to_yyvalue(yyvalue_get_length(*ptr_ptr), yyvalue_to_transfer_address(header));
             *ptr_ptr = new_ptr;
         }
         else
@@ -189,19 +189,21 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_off
             yyvalue* new_ptr = new_heap + *new_heap_offset;
             *new_heap_offset += ptr_size;
             yy_write_tuple(*ptr_ptr, 0, transfer_address_to_yyvalue(new_ptr));
-            *ptr_ptr = tuple_to_yyvalue(yyvalue_get_length(*ptr_ptr), new_ptr);
+            *ptr_ptr = raw_tuple_to_yyvalue(yyvalue_get_length(*ptr_ptr), new_ptr);
         }
     }
     // assert( (!is_a_pointer((void*)(*ptr_ptr))) || (!(check_magic_number(*(uint64_t*)(*ptr_ptr)))));
 }
 
 static uint64_t gc_count = 0;
+bool during_gc = false;
 
 void yy_perform_gc(yyvalue* additional_root_point) {
     if (tiny_heap_offset == 0) {
         return;  // No garbage collection needed
     }
-    gc_count ++;
+    during_gc = true;
+    gc_count++;
 
     if (yy_gc_debug_flag){
         #ifdef __APPLE__
@@ -281,7 +283,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
 
     // Clean up tiny heap at the end of a successful garbage collection
     tiny_heap_offset = 0;
-
+    during_gc = false;
 }
 
 

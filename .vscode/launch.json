@@ -84,18 +84,21 @@
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
             "args": [
-                "@yy:uselibgc=0",
-                  "0",],
+                  "1",],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
-            "environment": [],
+            "environment": [
+                {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
+                // {"name":"YY_DEBUG_FLAG", "value": "1"},
+            ],
             "externalConsole": false,
             "setupCommands": [
                 {
                     "text": "handle SIGSEGV noprint nostop pass",
                     "description": "ingore libgc related errors",
                     "ignoreFailures": false
-                }
+                },
+            {"text": "set output-radix 16"}
             ], 
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
