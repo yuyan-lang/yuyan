@@ -6,6 +6,20 @@
  * TODO: THIS CAN BE MOVED TO A SEPARATE FILE
 */
 
+
+
+// do not perform verification when optimizing
+#ifdef NDEBUG
+void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
+}
+void verify_yyvalue(yyvalue arg, bool recursive, int depth){
+}
+void verify_gc(yyvalue* additional_root_point){
+}
+void verify_current_heap(){
+}
+#else
+
 #define VERIFY_REC_LIMIT 4
 
 void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
@@ -110,3 +124,4 @@ void verify_current_heap(){
         }
     }
 }
+#endif
