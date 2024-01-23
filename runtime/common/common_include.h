@@ -1,3 +1,8 @@
+
+#ifndef COMMON_INCLUDE_H
+#define COMMON_INCLUDE_H
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -13,6 +18,7 @@
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 #include <assert.h>
+#include "type_defs.h"
 
 #ifdef __linux__
     #include <bsd/string.h>
@@ -81,3 +87,5 @@ extern yy_ptr* stack;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
 extern int64_t entryMain(); 
+
+#endif

@@ -89,7 +89,7 @@
             "cwd": "${workspaceRoot}",
             "environment": [
                 {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
-                {"name":"YY_DEBUG_FLAG", "value": "1"},
+                // {"name":"YY_DEBUG_FLAG", "value": "1"},
             ],
             "externalConsole": false,
             "setupCommands": [

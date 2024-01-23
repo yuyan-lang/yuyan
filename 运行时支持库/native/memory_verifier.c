@@ -6,7 +6,7 @@
  * TODO: THIS CAN BE MOVED TO A SEPARATE FILE
 */
 
-#define VERIFY_REC_LIMIT 100
+#define VERIFY_REC_LIMIT 4
 
 void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
     if (depth >= VERIFY_REC_LIMIT) {

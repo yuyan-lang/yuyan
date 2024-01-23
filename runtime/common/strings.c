@@ -76,7 +76,9 @@ yy_ptr yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
 
 }
 
-char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
+char* yy_豫言字符串获取字节序数当前字符(yyvalue strVal, yyvalue idxVal){
+    char* s = yyvalue_to_string(strVal);
+    int64_t idx = yyvalue_to_int(idxVal);
     char *result = &s[idx];
     char *end = result;
     while(*end){

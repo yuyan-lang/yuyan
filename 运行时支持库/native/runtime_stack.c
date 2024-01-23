@@ -156,7 +156,7 @@ int64_t yy_runtime_start() {
             
             // get return value
             yyvalue return_value = yy_read_tuple(return_record, 1);
-            verify_yyvalue(return_value, true, 0);
+            verify_yyvalue(return_value, false, 0);
 
             // get caller information from the stack
             yyvalue stack_offset = stack_ptr[-3];
@@ -202,9 +202,9 @@ int64_t yy_runtime_start() {
             
             // pthread_mutex_lock(&stack_ptr_mutex);
             for (int i = 0; i < stack_offset; i++) {
-                verify_yyvalue(stack_ptr[i], true, 0);
+                verify_yyvalue(stack_ptr[i], false, 0);
             }
-            verify_yyvalue(argument_data, true, 0);
+            verify_yyvalue(argument_data, false, 0);
 
             begin_stack_manipulation();
             yy_increment_stack_ptr(stack_offset);

@@ -51,13 +51,19 @@ yyvalue yy_豫言字符转整数(yyvalue s1, yyvalue idx_ptr){
     return int_to_yyvalue((unsigned char)result);
 }
 
-char* yy_豫言子字符串从字节序数开始(char* s, int64_t idx){
+yyvalue yy_豫言子字符串从字节序数开始(yyvalue sVal, yyvalue idxVal){
+
+    char* s = yyvalue_to_string(sVal);
+    int64_t idx = yyvalue_to_int(idxVal);
     char *result = &s[idx];
-    return result;
+    return malloc_string_to_yyvalue(strlen(result) + 1, result);
 }
 
-yyvalue yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
-    char *matchTarget = yy_豫言子字符串从字节序数开始(search, startIdx);
+yyvalue yy_豫言字符串匹配(yyvalue searchVal, yyvalue startIdxVal, yyvalue matchVal) {
+    char* search = yyvalue_to_string(searchVal);
+    int64_t startIdx = yyvalue_to_int(startIdxVal);
+    char* match = yyvalue_to_string(matchVal);
+    char *matchTarget = &search[startIdx];
 
     char *p1 = matchTarget;
     char *p2 = match;
@@ -77,7 +83,9 @@ yyvalue yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
 
 }
 
-yyvalue yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
+yyvalue yy_豫言字符串获取字节序数当前字符(yyvalue strVal, yyvalue idxVal){
+    char* s = yyvalue_to_string(strVal);
+    int64_t idx = yyvalue_to_int(idxVal);
     char *result = &s[idx];
     char *end = result;
     while(*end){
@@ -101,7 +109,9 @@ yyvalue yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
 }
 
 // startIdx 必须是引号，返回获取的字符串与前进的字符数
-yyvalue yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
+yyvalue yy_豫言字符串获取JSON字符串(yyvalue strVal, yyvalue startIdxVal){
+    char* s = yyvalue_to_string(strVal);
+    int64_t startIdx = yyvalue_to_int(startIdxVal);
     char *start = &s[startIdx];
     if (*start != '"'){
         errorAndAbort("JSON字符串必须以引号开始");
@@ -120,7 +130,7 @@ yyvalue yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
     if (*end != '"'){
         errorAndAbort("JSON字符串必须以引号结束");
     }
-    int64_t byteLength = end-start+1;
+    int64_t byteLength = end-start + 1;
     char* escapedStr =  malloc(byteLength);
     char* originalPtr = start+1;
     char* escapedPtr = escapedStr;
@@ -164,7 +174,7 @@ yyvalue yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
         escapedPtr+=1;
     }
     *escapedPtr = '\0';
-    yyvalue escapedStrValue = malloc_string_to_yyvalue(byteLength, escapedStr);
+    yyvalue escapedStrValue = malloc_string_to_yyvalue(strlen(escapedStr) + 1, escapedStr);
     free(escapedStr);
     return tuple_to_yyvalue(2, (yyvalue[]){escapedStrValue, int_to_yyvalue(byteLength)});
 }
@@ -178,34 +188,6 @@ size_t count_utf8_code_points(const char *s) {
     return count;
 }
 
-// get a list of utf8 code points from utf8 array
-// yyvalue yyGetCodePoints(yyvalue str_addr) {
-//     const char* start = yyvalue_to_string(str_addr);
-
-//     const char * end = start;
-//     while(*end){
-//         end+=1;
-//     }
-
-//     const char* prevEnd = end;
-
-//     yyvalue resultList = iso_list_nil_to_yyvalue();
-
-//     while(end != start) {
-//         end --;
-//         if ((*end  &  0xC0) == 0x80) {
-//             continue;
-//         }
-//         // extract current character
-//         int charLength = prevEnd-end;
-//         char* newChar = yy_gcAllocateBytes(charLength+1);
-//         // newChar[charLength] = '\0'; // no need due to strlcpy
-//         strlcpy(newChar, end, charLength+1);
-//         resultList = iso_list_cons_to_yyvalue(string_to_yyvalue(newChar), resultList);
-//         prevEnd = end;
-//     }
-//     return resultList;
-// }
 yyvalue yyGetCodePoints(yyvalue str_addr) {
     const char* start = yyvalue_to_string(str_addr);
     const char* end = start;
@@ -268,52 +250,6 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     return tuple_to_yyvalue(2, (yyvalue[]){raw_tuple_to_yyvalue(numCodePoints, codePoints), int_to_yyvalue(numCodePoints)});
 }
 
-
-// yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
-//     const int length = iso_list_get_length(str_list_addr);
-//     yyvalue* strs = iso_list_get_elements( str_list_addr);
-
-//     int totalLength = 0;
-
-//     for (int i = 0; i < length; i ++){
-//         totalLength += strlen(yyvalue_to_string(strs[i]));
-//     }
-
-//     char * resultString = yy_gcAllocateBytes(totalLength + 1);
-//     resultString[0] = '\0';
-
-//     for (int i = 0; i < length; i ++){
-//         strlcat(resultString, yyvalue_to_string(strs[i]), totalLength+1);
-//     }
-
-//     return string_to_yyvalue(resultString);
-// }
-
-// MORE MORE EFFICIENT
-// yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
-//     const int length = iso_list_get_length(str_list_addr);
-//     yyvalue* strs = iso_list_get_elements(str_list_addr);
-
-//     int totalLength = 0;
-
-//     for (int i = 0; i < length; i++) {
-//         totalLength += strlen(yyvalue_to_string(strs[i]));
-//     }
-
-//     char* resultString = (char*)yy_gcAllocateBytes(totalLength + 1);
-//     char* currentPos = resultString;
-
-//     for (int i = 0; i < length; i++) {
-//         const char* currentStr = yyvalue_to_string(strs[i]);
-//         int strLength = strlen(currentStr);
-//         memcpy(currentPos, currentStr, strLength);
-//         currentPos += strLength;
-//     }
-
-//     *currentPos = '\0';
-
-//     return string_to_yyvalue(resultString);
-// }
 
 // EVEN MORE EFFICIENT
 yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
