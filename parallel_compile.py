@@ -183,6 +183,7 @@ def exec_worker(args):
         return args, None
 
 def worker(task, retry_count=0):
+    global stages
     stage, file_and_args = task
     def pre_fun(i):
         def set_nice():
