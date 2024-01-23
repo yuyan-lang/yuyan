@@ -93,6 +93,7 @@ void end_stack_manipulation(){
 }
 
 
+#define RECURSIVE_VERIFICATION_WHEN_RUNNING true
 int64_t yy_runtime_start() {
     const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
     // allocate a 100 M * 8 bytes stack
@@ -156,7 +157,7 @@ int64_t yy_runtime_start() {
             
             // get return value
             yyvalue return_value = yy_read_tuple(return_record, 1);
-            verify_yyvalue(return_value, false, 0);
+            verify_yyvalue(return_value, RECURSIVE_VERIFICATION_WHEN_RUNNING, 0);
 
             // get caller information from the stack
             yyvalue stack_offset = stack_ptr[-3];
@@ -202,9 +203,9 @@ int64_t yy_runtime_start() {
             
             // pthread_mutex_lock(&stack_ptr_mutex);
             for (int i = 0; i < stack_offset; i++) {
-                verify_yyvalue(stack_ptr[i], false, 0);
+                verify_yyvalue(stack_ptr[i], RECURSIVE_VERIFICATION_WHEN_RUNNING, 0);
             }
-            verify_yyvalue(argument_data, false, 0);
+            verify_yyvalue(argument_data, RECURSIVE_VERIFICATION_WHEN_RUNNING, 0);
 
             begin_stack_manipulation();
             yy_increment_stack_ptr(stack_offset);
@@ -219,7 +220,6 @@ int64_t yy_runtime_start() {
             if (tiny_heap_offset != 0) {
                 verify_yyvalue(argument_data, true, 0);
                 yy_perform_gc(&argument_data);
-                verify_current_heap();
             }
 
             current_function = new_function;

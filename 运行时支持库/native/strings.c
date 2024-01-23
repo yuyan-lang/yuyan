@@ -206,7 +206,7 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     }
 
     // Allocate a heap array for the code points
-    yyvalue* codePoints = (yyvalue*)yy_gcAllocateBytes(numCodePoints * sizeof(yyvalue));
+    yyvalue codePoints = yy_gcAllocateArray(numCodePoints);
     // if (codePoints == NULL) {
     //     // Handle allocation failure
     //     return NULL;
@@ -225,7 +225,7 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
                 newChar[len] = '\0';
                 yyvalue newCharValue = malloc_string_to_yyvalue(len + 1, newChar);
                 free(newChar);
-                codePoints[i] = newCharValue;
+                yy_write_tuple(codePoints, i, newCharValue);
                 i++;
             }
             codePointStart = p;
@@ -234,25 +234,24 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     }
 
     // Handle the last code point
-    int len = p - codePointStart;
-    char* newChar = malloc((len + 1) * sizeof(char));
-    // if (newChar == NULL) {
-    //     // Handle allocation failure
-    //     free(codePoints);
-    //     return NULL;
-    // }
-    strncpy(newChar, codePointStart, len);
-    newChar[len] = '\0';
-    yyvalue newCharValue = malloc_string_to_yyvalue(len + 1, newChar);
-    codePoints[i] = newCharValue;
-    free(newChar);
+    if (p != codePointStart) {
+        int len = p - codePointStart;
+        char* newChar = malloc((len + 1) * sizeof(char));
+        strncpy(newChar, codePointStart, len);
+        newChar[len] = '\0';
+        yyvalue newCharValue = malloc_string_to_yyvalue(len + 1, newChar);
+        yy_write_tuple(codePoints, i, newCharValue);
+        free(newChar);
+    }
 
-    return tuple_to_yyvalue(2, (yyvalue[]){raw_tuple_to_yyvalue(numCodePoints, codePoints), int_to_yyvalue(numCodePoints)});
+    yyvalue ret =  tuple_to_yyvalue(2, (yyvalue[]){codePoints, int_to_yyvalue(numCodePoints)});
+    verify_yyvalue(ret, true, 0);
+    return ret;
 }
-
 
 // EVEN MORE EFFICIENT
 yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
+    verify_yyvalue(str_list_addr, true, 0);
     const int length = iso_list_get_length(str_list_addr);
     yyvalue* strs = iso_list_get_elements(str_list_addr);
 
@@ -260,6 +259,12 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     int* lengths = (int*)malloc(length * sizeof(int));
 
     for (int i = 0; i < length; i++) {
+        yyvalue curStr = strs[i];
+        // fprintf(stderr, "concating %d curStr: %s\n", i , yyvalue_to_string(curStr));
+        if(strlen(yyvalue_to_string(strs[i])) != yyvalue_get_strlen(strs[i])) {
+            verify_yyvalue(strs[i], true, 0);
+        }
+        assert(strlen(yyvalue_to_string(strs[i])) == yyvalue_get_strlen(strs[i]));
         lengths[i] = yyvalue_get_strlen(strs[i]);
         totalLength += lengths[i];
     }
@@ -277,11 +282,14 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
 
     *currentPos = '\0';
 
+
+    assert(currentPos - resultString == totalLength);
     free(lengths);
     char* resultStringRet = malloc(totalLength + 1);
     memcpy(resultStringRet, resultString, totalLength + 1);
     free(resultString);
     yyvalue ret = malloc_string_to_yyvalue(totalLength + 1, resultStringRet);
+    // fprintf(stderr, "result %s, strlen = %d, arraylen= %lu\n", resultStringRet, totalLength, yyvalue_get_heap_pointer_length(ret));
     free(resultStringRet);
     verify_yyvalue(ret, true, 0);
     return ret;

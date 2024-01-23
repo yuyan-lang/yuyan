@@ -47,6 +47,7 @@ char *yyvalue_to_heap_string_pointer(yyvalue arg);
 bool yyvalue_is_heap_pointer(yyvalue arg);
 bool yyvalue_is_tuple(yyvalue arg);
 bool yyvalue_is_heap_string_header(yyvalue arg);
+bool yyvalue_is_string_pointer(yyvalue arg);
 uint64_t string_buffer_length_to_block_length(uint64_t length);
 
 // write yyvalue

@@ -75,6 +75,11 @@ bool yyvalue_is_tuple(yyvalue arg) {
     return yyvalue_get_type(arg) == type_tuple;
 }
 
+bool yyvalue_is_string_pointer(yyvalue arg) {
+    return yyvalue_get_type(arg) == type_static_string || 
+        yyvalue_get_type(arg) == type_heap_string;
+}
+
 bool yyvalue_is_heap_string_header(yyvalue arg) {
     return yyvalue_get_type(arg) == type_heap_string_header;
 
@@ -108,6 +113,9 @@ uint64_t yyvalue_get_heap_pointer_length(yyvalue arg) {
         return yyvalue_to_tuple_length(arg);
         break;
     case type_heap_string:
+        return yyvalue_to_heap_string_length(arg);
+        break;
+    case type_heap_string_header:
         return yyvalue_to_heap_string_length(arg);
         break;
 
@@ -192,9 +200,9 @@ char* yyvalue_to_heap_string_pointer(yyvalue arg){
 }
 
 uint64_t yyvalue_to_heap_string_length(yyvalue arg){
-    assert(yyvalue_get_type(arg) == type_heap_string);
+    assert(yyvalue_get_type(arg) == type_heap_string || yyvalue_get_type(arg) == type_heap_string_header);
     uint64_t raw_length =  yyvalue_get_raw_length(arg);
-    uint64_t actual_length = string_buffer_length_to_block_length(raw_length);
+    uint64_t actual_length = string_buffer_length_to_block_length(raw_length +1);
     return actual_length;
 }
 
@@ -234,13 +242,6 @@ yyvalue static_string_to_yyvalue(const char * str){
     return ret;
 }
 
-yyvalue raw_heap_string_to_yyvalue(uint64_t byte_length, const char * str){
-    yyvalue ret = (yyvalue)str;
-    yyvalue_set_type(&ret, type_heap_string);
-    yyvalue_set_raw_length(&ret, byte_length - 1);
-    return ret;
-}
-
 // the length should include the null terminator
 yyvalue yy_gcAllocateStringBuffer(uint64_t byte_length) {
     uint64_t actual_size = string_buffer_length_to_block_length(byte_length);
@@ -259,7 +260,8 @@ yyvalue yy_gcAllocateStringBuffer(uint64_t byte_length) {
 
 // byte length must contain \0
 yyvalue malloc_string_to_yyvalue(uint64_t byte_length, const char * str){
-    assert(str[byte_length - 1] == '\0');
+    // assert(str[byte_length - 1] == '\0');
+    assert(strlen(str) == byte_length - 1);
     yyvalue ret = yy_gcAllocateStringBuffer(byte_length);
     char* actual_str_ptr = yyvalue_to_heap_string_pointer(ret);
     memcpy(actual_str_ptr, str, byte_length);

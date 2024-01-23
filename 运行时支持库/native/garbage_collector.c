@@ -202,6 +202,13 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_off
         else
         {
             uint64_t ptr_size = yyvalue_get_heap_pointer_length(*ptr_ptr);
+            if (yyvalue_is_string_pointer(*ptr_ptr))
+            {
+                uint64_t l1 = yyvalue_get_strlen(*ptr_ptr);
+                uint64_t l2 = strlen(yyvalue_to_string(*ptr_ptr));
+                char* s = yyvalue_to_string(*ptr_ptr);
+                assert(l1 == l2);
+            }
             if (*new_heap_offset + ptr_size + 1 >= new_heap_size) {
                 #ifdef __APPLE__
                     fprintf(stderr, "No space left during GC, BUG, requested offset %llu, size %llu\n", *new_heap_offset + ptr_size + 1, new_heap_size);
@@ -247,6 +254,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
         #endif
         fflush(stderr);
     }
+    verify_gc(additional_root_point);
 
     if (should_expand_heap) {
         // Expand the heap
@@ -283,7 +291,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
         // fflush(stderr);
         yyvalue* next_scan_pointer = new_heap + scan_offset;
         if (yyvalue_is_heap_string_header(*next_scan_pointer)){
-            scan_offset += string_buffer_length_to_block_length(yyvalue_get_strlen(*next_scan_pointer));
+            scan_offset += yyvalue_get_heap_pointer_length(*next_scan_pointer);
         } else {
             copy_root_point(next_scan_pointer, new_heap, &new_heap_offset, new_heap_size);
             scan_offset ++;
