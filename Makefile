@@ -28,7 +28,7 @@ yy_bs_bs_parallel : $(YYBSSOURCES) $(YYLIBSOURCES)
 .PHONY: yy_bs_bs_debug
 
 yy_bs_bs_debug : 
-	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs_debug --parallel -c --do-not-optimize
+	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs_debug -c --do-not-optimize
 
 bsrp : yy_bs 
 	make yyrt
