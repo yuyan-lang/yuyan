@@ -1,6 +1,6 @@
 
 #include "common_include.h"
-
+#include "memory_verifier.h"
 
 // returns if s1 is a substring of s2
 yyvalue yyIsSubstring(yyvalue s1, yyvalue s2) {
@@ -347,5 +347,6 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     free(resultString);
     yyvalue ret = malloc_string_to_yyvalue(totalLength + 1, resultStringRet);
     free(resultStringRet);
+    verify_yyvalue(ret, true, 0);
     return ret;
 }

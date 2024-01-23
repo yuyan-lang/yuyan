@@ -38,9 +38,12 @@ yyvalue *yyvalue_to_staticptr(yyvalue arg);
 yyvalue *yyvalue_to_stackptr(yyvalue arg);
 yyvalue *yyvalue_to_transfer_address(yyvalue arg);
 void *yyvalue_to_generic_ptr(yyvalue arg);
-bool yyvalue_is_heap_pointer(yyvalue arg);
-yyvalue* yyvalue_to_heap_pointer(yyvalue arg);
+yyvalue *yyvalue_to_heap_pointer(yyvalue arg);
 uint64_t yyvalue_get_heap_pointer_length(yyvalue arg);
+
+// testing type 
+bool yyvalue_is_heap_pointer(yyvalue arg);
+bool yyvalue_is_tuple(yyvalue arg);
 
 // write yyvalue
 yyvalue unit_to_yyvalue();
@@ -67,4 +70,5 @@ yyvalue array_to_iso_addr(uint64_t length, const yyvalue elems[]);
 // tuple ops
 yyvalue yy_read_tuple(yyvalue tuple, uint64_t index);
 void yy_write_tuple(yyvalue tuple, uint64_t index, yyvalue value);
+yyvalue yy_read_heap_pointer(yyvalue ptr, uint64_t index);
 void yy_write_heap_pointer(yyvalue ptr, uint64_t index, yyvalue value);

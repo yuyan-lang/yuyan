@@ -176,10 +176,19 @@ void* yy_gc_realloc_bytes(void* ptr, uint64_t old_size, uint64_t new_size) {
 
 
 void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_offset, uint64_t new_heap_size){
-    if (is_an_new_pointer(*ptr_ptr)) {
-        
-    } else if (is_an_old_pointer(*ptr_ptr)) {
-        yyvalue header = yy_read_tuple(*ptr_ptr, 0);
+    yyvalue ptr_ptr_prev_val = *ptr_ptr;
+    // fprintf(stderr, "Copying root point %p, prev val %p %p,\n", ptr_ptr, (void*)(ptr_ptr_prev_val >> 64),  (void*)ptr_ptr_prev_val);
+    int ptr_ptr_prev_val_type = yyvalue_get_type(ptr_ptr_prev_val);
+    int is_a_new_pointer_flag = -1;
+    int is_an_old_pointer_flag = -1;
+    if (is_an_new_pointer(*ptr_ptr))
+    {
+        is_a_new_pointer_flag = 1;
+    }
+    else if (is_an_old_pointer(*ptr_ptr))
+    {
+        is_an_old_pointer_flag = 1;
+        yyvalue header = yy_read_heap_pointer(*ptr_ptr, 0);
         if (yyvalue_get_type(header) == type_pointer_transfer_address)
         {
             yyvalue new_ptr = heap_pointer_to_yyvalue(

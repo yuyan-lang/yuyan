@@ -64,6 +64,10 @@ bool yyvalue_is_heap_pointer(yyvalue arg) {
     return type == type_tuple || type == type_heap_string;
 }
 
+bool yyvalue_is_tuple(yyvalue arg) {
+    return yyvalue_get_type(arg) == type_tuple;
+}
+
 yyvalue* yyvalue_to_heap_pointer(yyvalue arg) {
     assert(yyvalue_is_heap_pointer(arg));
     return (yyvalue*)(arg);
@@ -205,7 +209,7 @@ yyvalue malloc_string_to_yyvalue(uint64_t byte_length, const char * str){
     assert(str[byte_length - 1] == '\0');
     yyvalue ret_val = yy_gcAllocateStringBuffer(byte_length);
     char* actual_str_ptr = (char*)yyvalue_to_heap_pointer(ret_val);
-    memcpy(actual_str_ptr, str, byte_length + 1);
+    memcpy(actual_str_ptr, str, byte_length);
     return ret_val;
 }
 
@@ -294,6 +298,12 @@ void yy_write_tuple(yyvalue tuple, uint64_t index, yyvalue value){
     yyvalue *tup = yyvalue_to_tuple(tuple);
     assert(0 <= index && index < yyvalue_to_tuple_length(tuple));
     tup[index] = value;
+}
+
+yyvalue yy_read_heap_pointer(yyvalue ptr, uint64_t index){
+    yyvalue *tup = yyvalue_to_heap_pointer(ptr);
+    assert(0 <= index && index < yyvalue_get_heap_pointer_length(ptr));
+    return tup[index];
 }
 
 void yy_write_heap_pointer(yyvalue ptr, uint64_t index, yyvalue value){

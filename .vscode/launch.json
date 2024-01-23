@@ -99,6 +99,7 @@
                 //     "ignoreFailures": false
                 // },
             {"text": "set output-radix 16"}
+            {"text": "set disable-randomization off"}
             ], 
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
