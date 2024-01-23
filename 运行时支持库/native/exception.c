@@ -1,6 +1,7 @@
 
 
 #include "common_include.h"
+#include "memory_verifier.h"
 
 
 int internalError(){
@@ -42,9 +43,11 @@ yyvalue 当前异常处理器;
 void yy_豫言初始化全局异常处理器(){
     当前异常处理器 = tuple_to_yyvalue(2, (yyvalue[]){
         funcptr_to_yyvalue(全局异常处理器), unit_to_yyvalue() });
+    yy_register_gc_rootpoint(&当前异常处理器);
 }
 
 yyvalue 获取当前异常处理器() {
+    verify_yyvalue(当前异常处理器, true, 0); 
     return 当前异常处理器;
 }
  

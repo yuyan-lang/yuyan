@@ -90,3 +90,22 @@ void verify_gc(yyvalue* additional_root_point){
     verify_yyvalue(*additional_root_point, true, 0);
 
 }
+
+void verify_current_heap(){
+    for (int i = 0; i < current_heap_offset ; i++) {
+        yyvalue* next_scan_pointer = current_heap + current_heap_offset;
+        if (yyvalue_is_heap_string_header(*next_scan_pointer)){
+            uint64_t skip = string_buffer_length_to_block_length(yyvalue_get_strlen(*next_scan_pointer));
+            for (int j = 1; j < skip; j++) {
+                yyvalue *skipped_value = next_scan_pointer + j;
+                assert(!((0 <= yyvalue_get_type(*skipped_value))  && (yyvalue_get_type(*skipped_value) < 11)));
+            }
+            i += skip;
+        }
+        else
+        {
+            verify_yyvalue_new_heap(*(next_scan_pointer), false, 0);
+            i ++;
+        }
+    }
+}

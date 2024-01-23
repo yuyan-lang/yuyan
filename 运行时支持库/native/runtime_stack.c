@@ -219,8 +219,8 @@ int64_t yy_runtime_start() {
             if (tiny_heap_offset != 0) {
                 verify_yyvalue(argument_data, true, 0);
                 yy_perform_gc(&argument_data);
+                verify_current_heap();
             }
-
 
             current_function = new_function;
 
@@ -238,7 +238,7 @@ int64_t yy_runtime_start() {
             yyvalue exception_data = yy_read_tuple(return_record, 2);
 
             // get exception handler
-            int64_t offset = continuation_exception_table[yyvalue_to_int(exception_label)];
+            uint64_t offset = continuation_exception_table[yyvalue_to_int(exception_label)];
 
             // restore stack
             // pthread_mutex_lock(&stack_ptr_mutex);
