@@ -12,7 +12,7 @@ yyvalue yyReadFileSync(yyvalue filenamearg) {
     long file_size = ftell(file);
     rewind(file);
 
-    char *result = (char *)yy_gcAllocateBytes(file_size + 1);
+    char *result = malloc(file_size + 1);
     if (result == NULL) {
         fclose(file);
         fprintf(stderr, "Memory allocation error\n");
@@ -24,7 +24,9 @@ yyvalue yyReadFileSync(yyvalue filenamearg) {
 
     fclose(file);
 
-    return string_to_yyvalue(result);
+    yyvalue return_val = malloc_string_to_yyvalue(file_size + 1, result);
+    free(result);
+    return return_val;
 }
 
 yyvalue yyDeleteFileSync(yyvalue filenamearg) {
@@ -154,7 +156,7 @@ yyvalue yyListDirectorySync(yyvalue dirname) {
 
     while ((entry = readdir(dir)) != NULL) {
         const char *name = entry->d_name;
-        entries[nread] = string_to_yyvalue(strdup(name));
+        entries[nread] = malloc_string_to_yyvalue(strlen(name) + 1, name);
         nread++;
     }
 
@@ -218,7 +220,7 @@ yyvalue yyGetFileModifiedTime(yyvalue path) {
 
 
 yyvalue yyGetCurrentWorkingDirectory() {
-    char* path_buffer = yy_gcAllocateBytes(PATH_MAX * sizeof(char));
+    char* path_buffer = malloc(PATH_MAX * sizeof(char));
     if (path_buffer == NULL) {
         errorAndAbort("Cannot allocate memory for path buffer!!!");
     }
@@ -227,5 +229,7 @@ yyvalue yyGetCurrentWorkingDirectory() {
         errorAndAbort("Cannot get current working directory!!!");
     }
 
-    return string_to_yyvalue(path_buffer);
+    yyvalue return_val = malloc_string_to_yyvalue(strlen(path_buffer) + 1, path_buffer);
+    free(path_buffer);
+    return return_val;
 }

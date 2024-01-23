@@ -26,9 +26,11 @@ yyvalue yyIntToString(yyvalue i1){
 
     int64_t num = yyvalue_to_int(i1);
     int64_t bufSize = snprintf( NULL, 0, "%lld", (long long )num ) + 1;
-    char *strBuffer = yy_gcAllocateBytes(bufSize);
+    char *strBuffer = malloc(bufSize); 
     snprintf(strBuffer, bufSize, "%lld", (long long) num);
-    return string_to_yyvalue(strBuffer);
+    yyvalue return_val = malloc_string_to_yyvalue(bufSize, strBuffer);
+    free(strBuffer);
+    return return_val;
 }
 
 yyvalue yyDoubleAdd(yyvalue i1, yyvalue i2){
@@ -57,9 +59,11 @@ yyvalue yyDoubleToString(yyvalue i1){
 
     double num = yyvalue_to_double(i1);
     int64_t bufSize = snprintf( NULL, 0, "%lf", num ) + 1;
-    char *strBuffer = yy_gcAllocateBytes(bufSize);
+    char *strBuffer = malloc(bufSize); 
     snprintf(strBuffer, bufSize, "%lf", num);
-    return string_to_yyvalue(strBuffer);
+    yyvalue ret_value = malloc_string_to_yyvalue(bufSize, strBuffer);
+    free(strBuffer);
+    return ret_value;
 }
 
 yyvalue yyDoubleToInt(yyvalue d) {

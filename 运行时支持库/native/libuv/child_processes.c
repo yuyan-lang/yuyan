@@ -86,8 +86,10 @@ yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
     // char* stdOutOutput = (char * )stdOutPipe.data;
     // char* stdErrOutput = (char * )stdErrPipe.data;
 
-    char* stdOutOutput = yy_gcAllocateBytes(strlen((char*)stdOutPipe.data) + 1);
-    char* stdErrOutput = yy_gcAllocateBytes(strlen((char*)stdErrPipe.data) + 1);
+    uint64_t stdOutBufLength = strlen((char *)stdOutPipe.data) + 1;
+    uint64_t stdErrBufLength = strlen((char *)stdErrPipe.data) + 1;
+    char *stdOutOutput = malloc(stdOutBufLength);
+    char *stdErrOutput = malloc(stdErrBufLength);
 
     strcpy(stdOutOutput, (char*)stdOutPipe.data);
     strcpy(stdErrOutput, (char*)stdErrPipe.data);
@@ -97,10 +99,15 @@ yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
 
     int64_t child_exit_status = my_data.exit_status;
 
+    yyvalue stdOutVal = malloc_string_to_yyvalue(stdErrBufLength, stdOutOutput);
+    yyvalue stdErrVal = malloc_string_to_yyvalue(stdErrBufLength, stdErrOutput);
+    free(stdOutOutput);
+    free(stdErrOutput);
+
     yyvalue results[] = {
         bool_to_yyvalue(child_exit_status==0),
-        string_to_yyvalue(stdOutOutput == NULL ? "" : stdOutOutput),
-        string_to_yyvalue(stdErrOutput == NULL ? "" : stdErrOutput)
+        stdOutVal,
+        stdErrVal
     };
 
     // print debug

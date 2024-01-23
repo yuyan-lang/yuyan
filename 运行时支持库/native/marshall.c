@@ -8,13 +8,17 @@
  * 
  * Next 8 bits (1 byte): Type information. 
  *  0: empty value (unit / void) (data is all zero)
- *  1: pointer to tuples
+ *  1: pointer to tuples - length stores number of elements
  *  2: integers
  *  3: doubles
- *  4: strings (data is a pointer to char*)
+ *  4: strings (data is a pointer to char*) (static)  - length stores number of bytes excluding the NULL byte
  *  5: boolean
  *  6: pointers to functions
  *  7: pointers to static objects
+ *  8: pointers to stack
+ *  9: transfer addresses (used during GC)
+ *  10: heap strings (data is a pointer to the heap)
+ * 
  * 
  * Next 8 bits (1 byte): Reserved
  * 
@@ -30,16 +34,17 @@
  * 
 */
 
-int type_empty_value = 0;
-int type_tuple = 1; // must point to dyn heap
-int type_int = 2;
-int type_double = 3;
-int type_string = 4;
-int type_boolean = 5;
-int type_pointer_to_function = 6;
-int type_pointer_to_static_object = 7;
-int type_pointer_to_stack = 8;
-int type_pointer_transfer_address = 9;
+const int type_empty_value = 0;
+const int type_tuple = 1; // must point to dyn heap
+const int type_int = 2;
+const int type_double = 3;
+const int type_static_string = 4;
+const int type_boolean = 5;
+const int type_pointer_to_function = 6;
+const int type_pointer_to_static_object = 7;
+const int type_pointer_to_stack = 8;
+const int type_pointer_transfer_address = 9;
+const int type_heap_string = 10;
 
 static int offset_type = 64;
 static int offset_length = 80;
@@ -54,30 +59,68 @@ uint64_t yyvalue_get_type(yyvalue arg) {
     return (arg >> offset_type) & 0xF;
 }
 
+bool yyvalue_is_heap_pointer(yyvalue arg) {
+    uint64_t type = yyvalue_get_type(arg);
+    return type == type_tuple || type == type_heap_string;
+}
+
+yyvalue* yyvalue_to_heap_pointer(yyvalue arg) {
+    assert(yyvalue_is_heap_pointer(arg));
+    return (yyvalue*)(arg);
+}
+
+yyvalue heap_pointer_to_yyvalue(int type, uint64_t raw_length, yyvalue* ptr) {
+    assert(type == type_tuple || type == type_heap_string);
+    yyvalue ret = (yyvalue)ptr;
+    yyvalue_set_type(&ret, type);
+    yyvalue_set_raw_length(&ret, raw_length);
+    return ret;
+}
+
+uint64_t yyvalue_get_heap_pointer_length(yyvalue arg) {
+    switch (yyvalue_get_type(arg))
+    {
+    case type_tuple:
+        return yyvalue_to_tuple_length(arg);
+        break;
+    case type_heap_string:
+        return yyvalue_to_heap_string_length(arg);
+        break;
+
+    default:
+        errorAndAbort("yyvalue_get_heap_pointer_length: not a heap pointer");
+        break;
+    }
+    return -1;
+}
+
 void yyvalue_set_type(yyvalue *arg, uint64_t type) {
     u128 mask = to128literal(type) << offset_type;
     u128 mask_bits = to128literal(0xF) << offset_type;
     *arg = (*arg & ~mask_bits) | mask;
 }
 
-uint64_t yyvalue_get_length(yyvalue arg) {
+uint64_t yyvalue_get_raw_length(yyvalue arg) {
     return (arg >> offset_length) & 0xFFFFFFFF;
 }
 
-void yyvalue_set_length(yyvalue *arg, uint64_t length) {
+void yyvalue_set_raw_length(yyvalue *arg, uint64_t length) {
     u128 mask = to128literal(length) << offset_length;
     u128 mask_bits = to128literal(0xFFFFFFFF) << offset_length;
     *arg = (*arg & ~mask_bits) | mask;
 }
 
 uint64_t yyvalue_get_strlen(yyvalue arg) {
-    assert(yyvalue_get_type(arg) == type_string);
-    return yyvalue_get_length(arg);
+    assert(yyvalue_get_type(arg) == type_static_string
+        || yyvalue_get_type(arg) == type_heap_string);
+    return yyvalue_get_raw_length(arg);
 }
 
 
 char * yyvalue_to_string(yyvalue arg) {
-    assert(yyvalue_get_type(arg) == type_string);
+    assert(yyvalue_get_type(arg) == type_static_string 
+        || yyvalue_get_type(arg) == type_heap_string
+    );
     return (char *)arg;
 }
 
@@ -104,7 +147,14 @@ yyvalue* yyvalue_to_tuple(yyvalue arg){
 
 uint64_t yyvalue_to_tuple_length(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_tuple);
-    return yyvalue_get_length(arg);
+    return yyvalue_get_raw_length(arg);
+}
+
+uint64_t yyvalue_to_heap_string_length(yyvalue arg){
+    assert(yyvalue_get_type(arg) == type_heap_string);
+    uint64_t raw_length =  yyvalue_get_raw_length(arg);
+    uint64_t actual_length = raw_length / sizeof(yyvalue) + (raw_length % sizeof(yyvalue) == 0 ? 0 : 1);
+    return actual_length;
 }
 
 yy_function_type yyvalue_to_funcptr(yyvalue arg){
@@ -136,11 +186,27 @@ yyvalue unit_to_yyvalue(){
     return 0;
 }
 
-yyvalue string_to_yyvalue(const char * str){
+yyvalue static_string_to_yyvalue(const char * str){
     yyvalue ret = (yyvalue)str;
-    yyvalue_set_type(&ret, type_string);
-    yyvalue_set_length(&ret, strlen(str));
+    yyvalue_set_type(&ret, type_static_string);
+    yyvalue_set_raw_length(&ret, strlen(str));
     return ret;
+}
+
+yyvalue raw_heap_string_to_yyvalue(uint64_t byte_length, const char * str){
+    yyvalue ret = (yyvalue)str;
+    yyvalue_set_type(&ret, type_heap_string);
+    yyvalue_set_raw_length(&ret, byte_length - 1);
+    return ret;
+}
+
+// byte length must contain \0
+yyvalue malloc_string_to_yyvalue(uint64_t byte_length, const char * str){
+    assert(str[byte_length - 1] == '\0');
+    yyvalue ret_val = yy_gcAllocateStringBuffer(byte_length);
+    char* actual_str_ptr = (char*)yyvalue_to_heap_pointer(ret_val);
+    memcpy(actual_str_ptr, str, byte_length + 1);
+    return ret_val;
 }
 
 yyvalue int_to_yyvalue(int64_t i){
@@ -190,7 +256,7 @@ yyvalue bool_to_yyvalue(bool b){
 yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
     yyvalue ret = (yyvalue)elems;
     yyvalue_set_type(&ret, type_tuple);
-    yyvalue_set_length(&ret, length);
+    yyvalue_set_raw_length(&ret, length);
     return ret;
 }
 
@@ -226,6 +292,12 @@ yyvalue yy_read_tuple(yyvalue tuple, uint64_t index){
 
 void yy_write_tuple(yyvalue tuple, uint64_t index, yyvalue value){
     yyvalue *tup = yyvalue_to_tuple(tuple);
-    assert(0 <= index && index <= yyvalue_to_tuple_length(tuple));
+    assert(0 <= index && index < yyvalue_to_tuple_length(tuple));
+    tup[index] = value;
+}
+
+void yy_write_heap_pointer(yyvalue ptr, uint64_t index, yyvalue value){
+    yyvalue *tup = yyvalue_to_heap_pointer(ptr);
+    assert(0 <= index && index < yyvalue_get_heap_pointer_length(ptr));
     tup[index] = value;
 }

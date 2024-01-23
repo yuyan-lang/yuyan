@@ -34,7 +34,6 @@ void readStreamUntilEofIntoDataAync(uv_stream_t *stream);
 
 
 yyvalue unit_to_yyvalue();
-yyvalue string_to_yyvalue(const char * str);
 
 uint64_t c_runtime_internal_error();
 uint64_t errorAndAbort(char *errMsg);
@@ -61,6 +60,7 @@ void yy_豫言初始化全局异常处理器();
 
 yyvalue yy_gcAllocateArray(uint64_t size);
 void *yy_gcAllocateBytes(uint64_t size);
+yyvalue yy_gcAllocateStringBuffer(uint64_t length);
 void *yy_gcReallocateBytes(void* ptr, uint64_t old_size, uint64_t new_size);
 
 

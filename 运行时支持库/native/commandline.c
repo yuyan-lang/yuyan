@@ -1,7 +1,7 @@
 #include "common_include.h"
 
 yyvalue yyGetCommandLineProgramName(){
-    return string_to_yyvalue(global_argv[0]);
+    return static_string_to_yyvalue(global_argv[0]);
 }
 
 
@@ -15,7 +15,7 @@ yyvalue yyGetCommandLineArgs(){
     yyvalue argPtrString[global_argc - 1];
     
     for (int i = 0; i < global_argc - 1; i ++){
-        argPtrString[i] = string_to_yyvalue(global_argv[i+1]);
+        argPtrString[i] = static_string_to_yyvalue(global_argv[i+1]);
     }
 
     yyvalue result =  array_to_iso_addr(global_argc - 1, argPtrString);

@@ -8,7 +8,7 @@
 yyvalue yyGetCurrentLocalDateTimeStr() {
     time_t t = time(NULL);
     char *result = ctime(&t);
-    return string_to_yyvalue(result);
+    return malloc_string_to_yyvalue(strlen(result) + 1, result);
 }
 
 yyvalue yyGetCurrentLocalDateTimeFmt(yyvalue fmt) {
@@ -17,7 +17,7 @@ yyvalue yyGetCurrentLocalDateTimeFmt(yyvalue fmt) {
     int bufsz = yyvalue_get_strlen(fmt) * 2;
     char buffer[bufsz];
     strftime(buffer, bufsz, yyvalue_to_string(fmt), tm);
-    char *result = strdup(buffer);
-    return string_to_yyvalue(result);
+    yyvalue ret = malloc_string_to_yyvalue(strlen(buffer) + 1, buffer);
+    return ret;
 }
 

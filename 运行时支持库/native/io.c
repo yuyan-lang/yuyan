@@ -21,7 +21,7 @@ yyvalue yyPrintStr(yyvalue s) {
 yyvalue yyReadAllStdIn() {
     // Allocate initial buffer size
     size_t bufferSize = 1024;
-    char* buffer = (char*)yy_gcAllocateBytes(bufferSize);
+    char* buffer = (char*)malloc(bufferSize);
     if (buffer == NULL) {
         errorAndAbort("Failed to allocate memory");
         return unit_to_yyvalue();
@@ -51,15 +51,12 @@ yyvalue yyReadAllStdIn() {
     buffer[totalSize] = '\0';
 
     // Shrink buffer to actual size
-    char* finalString = (char*)realloc(buffer, totalSize + 1);
-    if (finalString == NULL) {
-        free(buffer);
-        errorAndAbort("Failed to reallocate memory");
-        // return NULL; // Failed to reallocate memory
-        return unit_to_yyvalue();
-    }
+    char *result = malloc(totalSize + 1);
+    memcpy(result, buffer, totalSize + 1);
 
-    return string_to_yyvalue(finalString);
+    yyvalue return_val = malloc_string_to_yyvalue(totalSize+1, result);
+    free(result);
+    return return_val;
 }
 
 yyvalue yyReadLineFromStdin() {
@@ -73,12 +70,18 @@ yyvalue yyReadLineFromStdin() {
         return unit_to_yyvalue();
     }
 
+    yyvalue ret;
     // Remove newline character, if present
     if (bytesRead > 0 && line[bytesRead - 1] == '\n') {
         line[bytesRead - 1] = '\0';
+        ret = malloc_string_to_yyvalue(bytesRead, line);
+    } else {
+        line[bytesRead] = '\0';
+        ret = malloc_string_to_yyvalue(bytesRead + 1, line);
     }
 
-    return string_to_yyvalue(line);
+    free(line);
+    return ret;
 }
 
 yyvalue yyPrintGeneric(yyvalue obj) {

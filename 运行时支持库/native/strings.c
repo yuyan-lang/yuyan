@@ -39,8 +39,9 @@ yyvalue yyStringByteArrayGetLength(yyvalue s1){
 
 
 yyvalue yy_豫言字符串获取字节数组(yyvalue s1){
-    char *s = yyvalue_to_string(s1);
-    return string_to_yyvalue(s);
+    return s1;
+    // char *s = yyvalue_to_string(s1);
+    // return string_to_yyvalue(s);
 }
 
 yyvalue yy_豫言字符转整数(yyvalue s1, yyvalue idx_ptr){
@@ -76,7 +77,7 @@ yyvalue yy_豫言字符串匹配(char* search, int64_t startIdx, char* match) {
 
 }
 
-char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
+yyvalue yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
     char *result = &s[idx];
     char *end = result;
     while(*end){
@@ -88,13 +89,15 @@ char* yy_豫言字符串获取字节序数当前字符(char* s, int64_t idx){
     }
 
     int64_t len = end - result;
-    char *newStr = yy_gcAllocateBytes(end - result + 1);
+    char *newStr = malloc(end-result + 1);
 
     if (newStr != NULL) {
         memcpy(newStr, result, len);
         newStr[len] = '\0'; // null-terminate the string
     }
-    return newStr;
+    yyvalue ret_value = malloc_string_to_yyvalue(len + 1, newStr);
+    free(newStr);
+    return ret_value;
 }
 
 // startIdx 必须是引号，返回获取的字符串与前进的字符数
@@ -118,7 +121,7 @@ yyvalue yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
         errorAndAbort("JSON字符串必须以引号结束");
     }
     int64_t byteLength = end-start+1;
-    char* escapedStr = yy_gcAllocateBytes(byteLength);
+    char* escapedStr =  malloc(byteLength);
     char* originalPtr = start+1;
     char* escapedPtr = escapedStr;
     while(originalPtr != end){
@@ -161,7 +164,9 @@ yyvalue yy_豫言字符串获取JSON字符串(char* s, int64_t startIdx){
         escapedPtr+=1;
     }
     *escapedPtr = '\0';
-    return tuple_to_yyvalue(2, (yyvalue[]){string_to_yyvalue(escapedStr), int_to_yyvalue(byteLength)});
+    yyvalue escapedStrValue = malloc_string_to_yyvalue(byteLength, escapedStr);
+    free(escapedStr);
+    return tuple_to_yyvalue(2, (yyvalue[]){escapedStrValue, int_to_yyvalue(byteLength)});
 }
 
 //https://stackoverflow.com/questions/32936646/getting-the-string-length-on-utf-8-in-c
@@ -233,15 +238,12 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
         if ((*p & 0xC0) != 0x80) {
             if (p != codePointStart) {
                 int len = p - codePointStart;
-                char* newChar = (char*)yy_gcAllocateBytes((len + 1) * sizeof(char));
-                // if (newChar == NULL) {
-                //     // Handle allocation failure
-                //     free(codePoints);
-                //     return NULL;
-                // }
+                char* newChar = malloc((len + 1) * sizeof(char));
                 strncpy(newChar, codePointStart, len);
                 newChar[len] = '\0';
-                codePoints[i] = string_to_yyvalue(newChar);
+                yyvalue newCharValue = malloc_string_to_yyvalue(len + 1, newChar);
+                free(newChar);
+                codePoints[i] = newCharValue;
                 i++;
             }
             codePointStart = p;
@@ -251,7 +253,7 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
 
     // Handle the last code point
     int len = p - codePointStart;
-    char* newChar = (char*)yy_gcAllocateBytes((len + 1) * sizeof(char));
+    char* newChar = malloc((len + 1) * sizeof(char));
     // if (newChar == NULL) {
     //     // Handle allocation failure
     //     free(codePoints);
@@ -259,7 +261,9 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     // }
     strncpy(newChar, codePointStart, len);
     newChar[len] = '\0';
-    codePoints[i] = string_to_yyvalue(newChar);
+    yyvalue newCharValue = malloc_string_to_yyvalue(len + 1, newChar);
+    codePoints[i] = newCharValue;
+    free(newChar);
 
     return tuple_to_yyvalue(2, (yyvalue[]){raw_tuple_to_yyvalue(numCodePoints, codePoints), int_to_yyvalue(numCodePoints)});
 }
@@ -338,9 +342,10 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     *currentPos = '\0';
 
     free(lengths);
-    char* resultStringRet = (char*)yy_gcAllocateBytes(totalLength + 1);
+    char* resultStringRet = malloc(totalLength + 1);
     memcpy(resultStringRet, resultString, totalLength + 1);
     free(resultString);
-
-    return string_to_yyvalue(resultStringRet);
+    yyvalue ret = malloc_string_to_yyvalue(totalLength + 1, resultStringRet);
+    free(resultStringRet);
+    return ret;
 }

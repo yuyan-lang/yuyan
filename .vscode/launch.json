@@ -93,11 +93,11 @@
             ],
             "externalConsole": false,
             "setupCommands": [
-                {
-                    "text": "handle SIGSEGV noprint nostop pass",
-                    "description": "ingore libgc related errors",
-                    "ignoreFailures": false
-                },
+                // {
+                //     "text": "handle SIGSEGV noprint nostop pass",
+                //     "description": "ingore libgc related errors",
+                //     "ignoreFailures": false
+                // },
             {"text": "set output-radix 16"}
             ], 
             // "MIMode": "lldb",

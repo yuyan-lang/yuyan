@@ -13,14 +13,14 @@ void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
         return;
     }
     
-    if (yyvalue_get_type(arg) == type_tuple) {
-        yyvalue* ptr = yyvalue_to_tuple(arg);
+    if (yyvalue_is_heap_pointer(arg)) {
+        yyvalue* ptr = yyvalue_to_heap_pointer(arg);
         if (ptr == NULL){
-            uint64_t length = yyvalue_get_length(arg);
+            uint64_t length = yyvalue_get_heap_pointer_length(arg);
             assert(length == 0);
         } else if (ptr - new_heap >= 0 && ptr - new_heap < new_heap_size)
         {
-            uint64_t length = yyvalue_get_length(arg);
+            uint64_t length = yyvalue_get_heap_pointer_length(arg);
             assert(length <= new_heap_size);
             if (recursive) {
                 for (int i = 0; i < length; i++) {
@@ -41,13 +41,13 @@ void verify_yyvalue(yyvalue arg, bool recursive, int depth){
     if (depth >= VERIFY_REC_LIMIT) {
         return;
     }
-    if (yyvalue_get_type(arg) == type_tuple) {
+    if (yyvalue_is_heap_pointer(arg)) {
         yyvalue* ptr = yyvalue_to_tuple(arg);
         if (ptr == NULL){
-            uint64_t length = yyvalue_get_length(arg);
+            uint64_t length = yyvalue_get_heap_pointer_length(arg);
             assert(length == 0);
         } else if (ptr - current_heap >= 0 && ptr - current_heap < current_heap_size) {
-            uint64_t length = yyvalue_get_length(arg);
+            uint64_t length = yyvalue_get_heap_pointer_length(arg);
             assert(length <= current_heap_size);
             if (recursive) {
                 for (int i = 0; i < length; i++) {
@@ -57,7 +57,7 @@ void verify_yyvalue(yyvalue arg, bool recursive, int depth){
         }
         else if (ptr - tiny_heap >= 0 && ptr - tiny_heap < TINY_HEAP_SIZE)
         {
-            uint64_t length = yyvalue_get_length(arg);
+            uint64_t length = yyvalue_get_heap_pointer_length(arg);
             assert(length <= TINY_HEAP_SIZE);
             if (recursive) {
                 for (int i = 0; i < length; i++) {
