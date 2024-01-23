@@ -9,12 +9,7 @@ yyvalue yy_gcAllocateArray(uint64_t size) {
     return raw_tuple_to_yyvalue(size, x);
 }
 
-// the length should include the null terminator
-yyvalue yy_gcAllocateStringBuffer(uint64_t length) {
-    uint64_t actual_size = length / sizeof(yyvalue) + (length % (sizeof(yyvalue)) == 0 ? 0 : 1);
-    char* x = (char*)yy_gcAllocateBytes(actual_size * sizeof(yyvalue));
-    return raw_heap_string_to_yyvalue(length, x);
-}
+
 
 yyvalue yy_gcAllocateArray_yyrt(yyvalue size) {
     yyvalue* x = (yyvalue*)yy_gcAllocateBytes(yyvalue_to_int(size) * sizeof(yyvalue));

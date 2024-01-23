@@ -18,6 +18,7 @@
  *  8: pointers to stack
  *  9: transfer addresses (used during GC)
  *  10: heap strings (data is a pointer to the heap)
+ *  11: heap headers (only in the heap, mark the start of a string, data empty (due to endian issues)), length is the strlen (without null terminator)
  * 
  * 
  * Next 8 bits (1 byte): Reserved
@@ -45,6 +46,7 @@ const int type_pointer_to_static_object = 7;
 const int type_pointer_to_stack = 8;
 const int type_pointer_transfer_address = 9;
 const int type_heap_string = 10;
+const int type_heap_string_header = 11;
 
 static int offset_type = 64;
 static int offset_length = 80;
@@ -64,8 +66,26 @@ bool yyvalue_is_heap_pointer(yyvalue arg) {
     return type == type_tuple || type == type_heap_string;
 }
 
+bool yyvalue_is_heap_string_pointer(yyvalue arg) {
+    uint64_t type = yyvalue_get_type(arg);
+    return type == type_heap_string;
+}
+
 bool yyvalue_is_tuple(yyvalue arg) {
     return yyvalue_get_type(arg) == type_tuple;
+}
+
+bool yyvalue_is_heap_string_header(yyvalue arg) {
+    return yyvalue_get_type(arg) == type_heap_string_header;
+
+}
+
+// given string length (including the NULL terminator), return the number of allocation blocks (16 bytes each) needed 
+uint64_t string_buffer_length_to_block_length(uint64_t length) {
+    assert(sizeof(yyvalue) == 16);
+    uint64_t remaining = length;
+    uint64_t result = 1 + remaining / 16 + (remaining % 16 == 0 ? 0 : 1);
+    return result;
 }
 
 yyvalue* yyvalue_to_heap_pointer(yyvalue arg) {
@@ -116,16 +136,26 @@ void yyvalue_set_raw_length(yyvalue *arg, uint64_t length) {
 
 uint64_t yyvalue_get_strlen(yyvalue arg) {
     assert(yyvalue_get_type(arg) == type_static_string
-        || yyvalue_get_type(arg) == type_heap_string);
+        || yyvalue_get_type(arg) == type_heap_string
+        || yyvalue_get_type(arg) == type_heap_string_header);
     return yyvalue_get_raw_length(arg);
 }
 
 
 char * yyvalue_to_string(yyvalue arg) {
-    assert(yyvalue_get_type(arg) == type_static_string 
-        || yyvalue_get_type(arg) == type_heap_string
-    );
-    return (char *)arg;
+    switch (yyvalue_get_type(arg))
+    {
+    case type_static_string:
+        return (char *)arg;
+        break;
+    case type_heap_string:
+        return yyvalue_to_heap_string_pointer(arg);
+        break;
+    
+    default:
+        abort();
+        break;
+    }
 }
 
 int64_t yyvalue_to_int(yyvalue arg) {
@@ -154,10 +184,17 @@ uint64_t yyvalue_to_tuple_length(yyvalue arg){
     return yyvalue_get_raw_length(arg);
 }
 
+char* yyvalue_to_heap_string_pointer(yyvalue arg){
+    assert(yyvalue_is_heap_string_pointer(arg));
+    yyvalue* buffer_ptr = yyvalue_to_heap_pointer(arg);
+    char *ret = (char *)(buffer_ptr + 1);
+    return ret;
+}
+
 uint64_t yyvalue_to_heap_string_length(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_heap_string);
     uint64_t raw_length =  yyvalue_get_raw_length(arg);
-    uint64_t actual_length = raw_length / sizeof(yyvalue) + (raw_length % sizeof(yyvalue) == 0 ? 0 : 1);
+    uint64_t actual_length = string_buffer_length_to_block_length(raw_length);
     return actual_length;
 }
 
@@ -204,16 +241,32 @@ yyvalue raw_heap_string_to_yyvalue(uint64_t byte_length, const char * str){
     return ret;
 }
 
+// the length should include the null terminator
+yyvalue yy_gcAllocateStringBuffer(uint64_t byte_length) {
+    uint64_t actual_size = string_buffer_length_to_block_length(byte_length);
+    yyvalue* buffer_ptr = yy_gcAllocateBytes(actual_size * sizeof(yyvalue));
+    yyvalue header = 0;
+    yyvalue_set_raw_length(&header, byte_length-1);
+    yyvalue_set_type(&header, type_heap_string_header);
+    buffer_ptr[0] = header;
+    yyvalue ret = (yyvalue)buffer_ptr;
+    yyvalue_set_type(&ret, type_heap_string);
+    yyvalue_set_raw_length(&ret, byte_length - 1);
+    // fprintf(stderr, "Allocated String Buffer byte_length = %lu, strlen = %lu, yy_get_strlen = %lu\n",
+    //         byte_length, strlen(yyvalue_to_string(ret)), yyvalue_get_strlen(ret));
+    return ret;
+}
+
 // byte length must contain \0
 yyvalue malloc_string_to_yyvalue(uint64_t byte_length, const char * str){
     assert(str[byte_length - 1] == '\0');
-    yyvalue ret_val = yy_gcAllocateStringBuffer(byte_length);
-    char* actual_str_ptr = (char*)yyvalue_to_heap_pointer(ret_val);
+    yyvalue ret = yy_gcAllocateStringBuffer(byte_length);
+    char* actual_str_ptr = yyvalue_to_heap_string_pointer(ret);
     memcpy(actual_str_ptr, str, byte_length);
-    return ret_val;
+    return ret;
 }
 
-yyvalue int_to_yyvalue(int64_t i){
+yyvalue int_to_yyvalue(int64_t i){ 
     yyvalue ret = (yyvalue)i;
     yyvalue_set_type(&ret, type_int);
     return ret;

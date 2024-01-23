@@ -272,8 +272,13 @@ void yy_perform_gc(yyvalue* additional_root_point) {
     while (scan_offset <  new_heap_offset) {
         // fprintf(stderr, "scan_offset %ld, new_heap_offset %ld, heap_value %p,   ", scan_offset, new_heap_offset, *(void**)(new_heap + scan_offset));
         // fflush(stderr);
-        copy_root_point((new_heap + scan_offset), new_heap, &new_heap_offset, new_heap_size);
-        scan_offset ++;
+        yyvalue* next_scan_pointer = new_heap + scan_offset;
+        if (yyvalue_is_heap_string_header(*next_scan_pointer)){
+            scan_offset += string_buffer_length_to_block_length(yyvalue_get_strlen(*next_scan_pointer));
+        } else {
+            copy_root_point(next_scan_pointer, new_heap, &new_heap_offset, new_heap_size);
+            scan_offset ++;
+        }
     }
 
     // remove the extra allocation from tracking
@@ -301,7 +306,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
     new_heap_size = 0;
     
 
-    if ((double)new_heap_offset / current_heap_size > 0.15) {
+    if ((double)new_heap_offset / current_heap_size > 0.1) {
         should_expand_heap = true;
     }
     

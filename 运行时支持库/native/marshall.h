@@ -15,6 +15,7 @@ extern const int type_pointer_to_function;
 extern const int type_pointer_to_static_object;
 extern const int type_pointer_to_stack;
 extern const int type_pointer_transfer_address;
+extern const int type_heap_string_header;
 
 
 // type and length
@@ -40,10 +41,13 @@ yyvalue *yyvalue_to_transfer_address(yyvalue arg);
 void *yyvalue_to_generic_ptr(yyvalue arg);
 yyvalue *yyvalue_to_heap_pointer(yyvalue arg);
 uint64_t yyvalue_get_heap_pointer_length(yyvalue arg);
+char *yyvalue_to_heap_string_pointer(yyvalue arg);
 
 // testing type 
 bool yyvalue_is_heap_pointer(yyvalue arg);
 bool yyvalue_is_tuple(yyvalue arg);
+bool yyvalue_is_heap_string_header(yyvalue arg);
+uint64_t string_buffer_length_to_block_length(uint64_t length);
 
 // write yyvalue
 yyvalue unit_to_yyvalue();
