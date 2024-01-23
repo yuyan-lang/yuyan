@@ -191,10 +191,12 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_off
         yyvalue header = yy_read_heap_pointer(*ptr_ptr, 0);
         if (yyvalue_get_type(header) == type_pointer_transfer_address)
         {
+            yyvalue* transfer_address = yyvalue_to_transfer_address(header);
+            assert(transfer_address - new_heap >= 0 && transfer_address - new_heap < new_heap_size);
             yyvalue new_ptr = heap_pointer_to_yyvalue(
-                    yyvalue_get_type(*ptr_ptr), 
-                    yyvalue_get_raw_length(*ptr_ptr),
-                    yyvalue_to_transfer_address(header));
+                yyvalue_get_type(*ptr_ptr),
+                yyvalue_get_raw_length(*ptr_ptr),
+                transfer_address);
             *ptr_ptr = new_ptr;
         }
         else
@@ -212,6 +214,13 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, uint64_t* new_heap_off
             yyvalue* new_ptr = new_heap + *new_heap_offset;
             *new_heap_offset += ptr_size;
             yy_write_heap_pointer(*ptr_ptr, 0, transfer_address_to_yyvalue(new_ptr));
+            // fprintf(stderr, "Written Transfer Address, %p %p\n" , (void*)(transfer_address_to_yyvalue(new_ptr) >> 64), (void*)transfer_address_to_yyvalue(new_ptr));
+            // assert(
+            //     yyvalue_to_transfer_address(yy_read_heap_pointer(*ptr_ptr, 0))
+            //      - new_heap >= 0 && 
+            //     yyvalue_to_transfer_address(yy_read_heap_pointer(*ptr_ptr, 0))
+            //      - new_heap < new_heap_size
+            //     );
             *ptr_ptr = heap_pointer_to_yyvalue(
                 yyvalue_get_type(*ptr_ptr),
                 yyvalue_get_raw_length(*ptr_ptr), new_ptr);
@@ -312,6 +321,7 @@ void yy_perform_gc(yyvalue* additional_root_point) {
     
 
     // Clean up tiny heap at the end of a successful garbage collection
+    memset(tiny_heap, 0, tiny_heap_offset * sizeof(yyvalue));
     tiny_heap_offset = 0;
     verify_gc(additional_root_point);
     during_gc = false;

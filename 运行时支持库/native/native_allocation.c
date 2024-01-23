@@ -6,7 +6,9 @@
 
 yyvalue yy_gcAllocateArray(uint64_t size) {
     yyvalue* x = (yyvalue*)yy_gcAllocateBytes(size * sizeof(yyvalue));
-    return raw_tuple_to_yyvalue(size, x);
+    yyvalue ret = raw_tuple_to_yyvalue(size, x);
+    verify_yyvalue(ret, true, 0);
+    return ret;
 }
 
 

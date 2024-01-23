@@ -1,5 +1,6 @@
 
 #include "common_include.h"
+#include "memory_verifier.h"
 
 
 yyvalue yyNewRef(yyvalue value){
@@ -41,7 +42,9 @@ yyvalue yyWriteRefArray(yyvalue new_value, yyvalue indexAddr, yyvalue refAddr){
 
 yyvalue yyNewRefArrayGeneric(yyvalue lengthAddr){
     int64_t length = yyvalue_to_int(lengthAddr);
-    return yy_gcAllocateArray(length);
+    yyvalue ret = yy_gcAllocateArray(length);
+    // verify_yyvalue(ret, true, 0);
+    return ret;
 }
 
 

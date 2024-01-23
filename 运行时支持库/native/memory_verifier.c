@@ -47,19 +47,19 @@ void verify_yyvalue(yyvalue arg, bool recursive, int depth){
         if (ptr == NULL){
             uint64_t length = yyvalue_get_heap_pointer_length(arg);
             assert(length == 0);
-        } else if (ptr - current_heap >= 0 && ptr - current_heap < current_heap_size) {
+        } else if (ptr - current_heap >= 0 && ptr - current_heap < current_heap_offset) {
             uint64_t length = yyvalue_get_heap_pointer_length(arg);
-            assert(length <= current_heap_size);
+            assert(length <= current_heap_offset);
             if (recursive && yyvalue_is_tuple(arg)) {
                 for (int i = 0; i < length; i++) {
                     verify_yyvalue(yy_read_heap_pointer(arg, i), recursive, depth + 1);
                 }
             }
         }
-        else if (ptr - tiny_heap >= 0 && ptr - tiny_heap < TINY_HEAP_SIZE)
+        else if (ptr - tiny_heap >= 0 && ptr - tiny_heap < tiny_heap_offset)
         {
             uint64_t length = yyvalue_get_heap_pointer_length(arg);
-            assert(length <= TINY_HEAP_SIZE);
+            assert(length <= tiny_heap_offset);
             if (recursive && yyvalue_is_tuple(arg)) {
                 for (int i = 0; i < length; i++) {
                     verify_yyvalue(yy_read_heap_pointer(arg, i), recursive, depth + 1);
@@ -73,6 +73,7 @@ void verify_yyvalue(yyvalue arg, bool recursive, int depth){
         }
     } else {
         assert(yyvalue_get_type(arg) <= type_heap_string);
+        assert(yyvalue_get_type(arg) != type_pointer_transfer_address);
     }
 }
 
