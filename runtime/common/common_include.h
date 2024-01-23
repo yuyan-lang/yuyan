@@ -18,7 +18,6 @@
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 #include <assert.h>
-#include "type_defs.h"
 
 #ifdef __linux__
     #include <bsd/string.h>
