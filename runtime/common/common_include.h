@@ -1,3 +1,8 @@
+
+#ifndef COMMON_INCLUDE_H
+#define COMMON_INCLUDE_H
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -81,3 +86,5 @@ extern yy_ptr* stack;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
 extern int64_t entryMain(); 
+
+#endif

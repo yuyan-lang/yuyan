@@ -23,6 +23,9 @@ lsplog.txt
 runtime/lib*.a
 runtime/lib*.so
 runtime/lib*.wasm
+lib*.a
+lib*.so
+lib*.wasm
 
 *.icloud
 yy\ *

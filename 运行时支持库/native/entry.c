@@ -9,9 +9,7 @@ int global_argc = 0;
 char** global_argv = NULL;
 
 // runtime configurations
-int64_t use_libgc = 1;
-
-extern int64_t entryMain(); // the entry to yy llvm ir
+int64_t use_libgc = 0;
 
 // Function to process @yy: arguments
 void processYYArguments(int argc, char* argv[]) {
@@ -19,8 +17,8 @@ void processYYArguments(int argc, char* argv[]) {
     int total_consumed_argc = 0;
     for (int i = 1; i < argc; i++)
     {
-        if (strncmp(argv[i], "@yy:uselibgc=0", 14) == 0) {
-            use_libgc = 0;
+        if (strncmp(argv[i], "@yy:uselibgc=1", 14) == 0) {
+            use_libgc = 1;
             total_consumed_argc++;
         } else if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
             use_profiler = true;
@@ -61,7 +59,6 @@ int main(int argc, char* argv[]) {
     optional_entry_initialization();
 
     // initialize global exception handler
-    initialize_global_exception_handler();
     yy_豫言初始化全局异常处理器();
 
 
@@ -71,18 +68,9 @@ int main(int argc, char* argv[]) {
     
 
 
-    return entryMain();
+    return yy_runtime_start();
 }
 
 
 
-
-
-int informResult (uint64_t result[]) {
-    // fprintf(stderr, "代码已经运行成功，结果是：");
-    // informResultRec(stderr, result, 0);
-    // fprintf(stderr, "\n");
-    // do not inform result as we're moving to a mature language
-    return 0;
-}
 

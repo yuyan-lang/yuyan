@@ -83,17 +83,23 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["@yy:uselibgc=0",  "40",],
+            "args": [
+                  "tests/example/example-9.yuyan",],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
-            "environment": [],
+            "environment": [
+                {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
+                // {"name":"YY_DEBUG_FLAG", "value": "1"},
+            ],
             "externalConsole": false,
             "setupCommands": [
                 // {
                 //     "text": "handle SIGSEGV noprint nostop pass",
                 //     "description": "ingore libgc related errors",
                 //     "ignoreFailures": false
-                // }
+                // },
+            {"text": "set output-radix 16"}
+            {"text": "set disable-randomization off"}
             ], 
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"

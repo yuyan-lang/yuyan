@@ -14,8 +14,8 @@ on:
   workflow_dispatch:
 
 # cancel previous run on new pushes to PR
-concurrency:
-  group:  ${{ github.workflow }}-${{ github.ref }}
+# concurrency:
+#   group:  ${{ github.workflow }}-${{ github.ref }}
   # cancel-in-progress: true
 
 jobs:
@@ -111,18 +111,21 @@ jobs:
         run: make yy_bs
       - name: make yy_bs_bs
         run: make yy_bs_bs
-      - name: make yy_bs_bs_opt
-        run: make yy_bs_bs_opt
+      - name: make yy_bs_bs_debug
+        run: make yy_bs_bs_debug
 
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package
           path: |
             ./yy_bs_bs
-            ./yy_bs_bs_opt
+            ./yy_bs_bs_debug
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.bc
             ./runtime/libyyrtdebug.a
+            ./runtime/libyyrtdebug.so
+            ./runtime/libyyrtopt.a
+            ./runtime/libyyrtopt.so
             ./yylib
 
   ubuntu-bs-bs-build-p:
@@ -134,9 +137,12 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package 
-      - name: cp yy_bs_bs_opt yy_bs
+          path: .
+      - name: ls -R
+        run: ls -R
+      - name: cp yy_bs_bs_debug yy_bs
         run: |
-          cp yy_bs_bs_opt ./yy_bs
+          cp yy_bs_bs_debug ./yy_bs
           chmod u+x ./yy_bs
       - name: make bsrp
         run: ./yy_bs 豫言编译器/入口。豫 --parse-only
@@ -152,9 +158,12 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package 
-      - name: cp yy_bs_bs_opt yy_bs
+          path: .
+      - name: ls -R
+        run: ls -R
+      - name: cp yy_bs_bs_debug yy_bs
         run: |
-          cp yy_bs_bs_opt ./yy_bs
+          cp yy_bs_bs_debug ./yy_bs
           chmod u+x ./yy_bs
       - name: make bsrtc
         run: ./yy_bs 豫言编译器/入口。豫 --type-check-only
@@ -168,22 +177,28 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package 
-      - name: cp yy_bs_bs_opt yy_bs
+          path: .
+      - name: ls -R
+        run: ls -R
+      - name: cp yy_bs_bs_debug yy_bs
         run: |
-          cp yy_bs_bs_opt ./yy_bs
+          cp yy_bs_bs_debug ./yy_bs
           chmod u+x ./yy_bs
       - name: make yy_bs_bs
         run: make yy_bs_bs
-      - name: make yy_bs_bs_opt
-        run: make yy_bs_bs_opt
+      - name: make yy_bs_bs_debug
+        run: make yy_bs_bs_debug
 
       - uses: actions/upload-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package-bootstrapped
           path: |
             ./yy_bs_bs
-            ./yy_bs_bs_opt
+            ./yy_bs_bs_debug
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.bc
             ./runtime/libyyrtdebug.a
+            ./runtime/libyyrtdebug.so
+            ./runtime/libyyrtopt.a
+            ./runtime/libyyrtopt.so
             ./yylib

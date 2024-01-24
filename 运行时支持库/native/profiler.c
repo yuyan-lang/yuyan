@@ -2,7 +2,24 @@
 
 
 FILE* profileFile;
-yy_ptr *local_stack_ptr;
+yyvalue *local_stack_ptr;
+
+void fprint_stack_trace(FILE *f, const char * separator){
+    local_stack_ptr = stack_ptr;
+    if (current_function != NULL){
+        fprintf(f, "%p ", (void*)current_function);
+    }
+    int64_t stack_offset;
+    while (local_stack_ptr - stack > 3)
+    {
+        // Write function pointer address to the file
+        fprintf(f, "%p", yyvalue_to_funcptr(local_stack_ptr[-2]));
+        fprintf(f, "%s", separator);
+        stack_offset = (yyvalue_to_int(local_stack_ptr[-3]));
+        local_stack_ptr = (local_stack_ptr - 3 - stack_offset);
+    }
+
+}
 
 bool use_profiler;
 void *interruptFunction(void *arg)
@@ -22,18 +39,7 @@ void *interruptFunction(void *arg)
         // }
         // Declare a local stack pointer for manipulation
         pthread_mutex_lock(&stack_ptr_mutex);
-        local_stack_ptr = stack_ptr;
-        if (current_function != NULL){
-            fprintf(profileFile, "%p ", (void*)current_function);
-        }
-        int64_t stack_offset;
-        while (local_stack_ptr - stack > 3)
-        {
-            // Write function pointer address to the file
-            fprintf(profileFile, "%p ", (local_stack_ptr[-2]));
-            stack_offset = ((int64_t)(local_stack_ptr[-3]));
-            local_stack_ptr = (local_stack_ptr - 3 - stack_offset);
-        }
+        fprint_stack_trace(profileFile, " ");
         pthread_mutex_unlock(&stack_ptr_mutex);
 
         // fprintf(stderr, "Profiler: Stack offset: %ld\n", stack_ptr - stack);

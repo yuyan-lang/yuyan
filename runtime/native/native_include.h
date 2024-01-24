@@ -3,7 +3,6 @@
 #include <uv.h> 
 
 #include "fast_gc.h"
-#include "garbage_collector.h"
 
 extern uv_loop_t *uv_global_loop;
 

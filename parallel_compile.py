@@ -52,7 +52,7 @@ dependencies_log = open("yy_parallel_deps.txt", "w")
 num_cpu_limit = None
 stages = [STG_DEPENDENCY_ANALYSIS, 
           STG_PARSE, 
-          STG_TYPE_CHECK, 
+        #   STG_TYPE_CHECK, 
           ]
 # stage_concurrency_limit = [100 for s in stages]
 # stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
@@ -183,6 +183,7 @@ def exec_worker(args):
         return args, None
 
 def worker(task, retry_count=0):
+    global stages
     stage, file_and_args = task
     def pre_fun(i):
         def set_nice():
@@ -302,6 +303,7 @@ def execute_plan():
                         (file in deps 
                             and (all(dep in completed[stage] for dep in deps[file]) 
                                 or (STG_TYPE_CHECK in stages and i > stages.index(STG_TYPE_CHECK)) 
+                                or (STG_TYPE_CHECK_AND_ERASE in stages and i > stages.index(STG_TYPE_CHECK_AND_ERASE)) 
                                 ) 
                             and  (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                         )
