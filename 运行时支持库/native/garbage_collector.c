@@ -28,6 +28,8 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
 #endif
 #endif
 
+#define MAX_HEAP_SIZE (2L * 1024 * 1024 * 1024) // 32 GB is the max heap size
+#define TINY_HEAP_DENOMINATOR 10
 
 yyvalue* current_heap = NULL;
 yyvalue* tiny_heap = NULL;
@@ -36,6 +38,7 @@ uint64_t initial_heap_size = INITIAL_HEAP_SIZE; //32 MB
 uint64_t current_heap_size = 0;
 uint64_t current_heap_offset = 0;
 uint64_t tiny_heap_offset = 0;
+uint64_t tiny_heap_size = 0;
 uint64_t new_heap_size = 0;
 bool should_expand_heap = false;
 
@@ -58,7 +61,8 @@ void yy_gc_init() {
     current_heap = MALLOC_FUNC(initial_heap_size);
     if (!current_heap) errorAndAbort("Failed to initialize major heap");
     
-    tiny_heap = MALLOC_FUNC(TINY_HEAP_SIZE);
+    tiny_heap_size = current_heap_size / TINY_HEAP_DENOMINATOR;
+    tiny_heap = MALLOC_FUNC(tiny_heap_size);
     if (!tiny_heap) errorAndAbort("Failed to initialize tiny heap");
 
 
@@ -84,9 +88,9 @@ bool is_an_old_pointer(yyvalue raw_ptr) {
             assert(yyvalue_get_heap_pointer_length(raw_ptr) <= current_heap_size);
             return true;
         }
-        else if (ptr - tiny_heap >= 0 && ptr - tiny_heap < TINY_HEAP_SIZE)
+        else if (ptr - tiny_heap >= 0 && ptr - tiny_heap < tiny_heap_size)
         {
-            assert(yyvalue_get_heap_pointer_length(raw_ptr) <= TINY_HEAP_SIZE);
+            assert(yyvalue_get_heap_pointer_length(raw_ptr) <= tiny_heap_size);
             return true;
         }
         else
@@ -142,7 +146,7 @@ void* yy_gc_malloc_bytes(uint64_t size) {
     }
     
     // If no space left in the minor heap, try allocating from the tiny heap
-    block = allocate_memory_without_implicit_header(size, tiny_heap, TINY_HEAP_SIZE, &tiny_heap_offset);
+    block = allocate_memory_without_implicit_header(size, tiny_heap, tiny_heap_size, &tiny_heap_offset);
     if (block != NULL) {
         // fprintf(stderr, "Allocating from minor heap %p ", block);
         return block;
@@ -258,13 +262,13 @@ void yy_perform_gc(yyvalue* additional_root_point) {
 
     if (should_expand_heap) {
         // Expand the heap
-        new_heap_size = current_heap_size * 2 + tiny_heap_offset + 10;
+        new_heap_size = MIN(current_heap_size * 2, MAX_HEAP_SIZE) + tiny_heap_offset + 10;
         new_heap = MALLOC_FUNC(new_heap_size);
         if (!new_heap) errorAndAbort("Failed to expand major heap");
         should_expand_heap = false;
     } else {
         // Reuse the current heap
-        new_heap_size = current_heap_size + tiny_heap_offset + 10;
+        new_heap_size = MIN(current_heap_size, MAX_HEAP_SIZE) + tiny_heap_offset + 10;
         new_heap = MALLOC_FUNC(new_heap_size);
     }
 
@@ -330,6 +334,12 @@ void yy_perform_gc(yyvalue* additional_root_point) {
 
     // Clean up tiny heap at the end of a successful garbage collection
     memset(tiny_heap, 0, tiny_heap_offset * sizeof(yyvalue));
+    if (current_heap_size / TINY_HEAP_DENOMINATOR > tiny_heap_size) {
+        uint64_t origial_tiny_heap_size = tiny_heap_size;
+        tiny_heap_size = current_heap_size / TINY_HEAP_DENOMINATOR;
+        tiny_heap = realloc(tiny_heap, tiny_heap_size * sizeof(yyvalue));
+        memset(tiny_heap + origial_tiny_heap_size, 0, (tiny_heap_size - origial_tiny_heap_size) * sizeof(yyvalue));
+    }
     tiny_heap_offset = 0;
     verify_gc(additional_root_point);
     during_gc = false;

@@ -36,7 +36,7 @@ void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth);
 bool is_an_old_pointer(yyvalue arg);
 bool is_an_new_pointer(yyvalue arg);
 
-#ifndef TINY_HEAP_SIZE
-#define TINY_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
-#endif
+// #ifndef TINY_HEAP_SIZE
+// #define TINY_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
+// #endif
 #endif /* YY_FASTGC_H */

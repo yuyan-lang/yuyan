@@ -7,8 +7,8 @@
 yyvalue *stack;
 yyvalue *stack_end;
 yyvalue *stack_ptr;
-uint64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
-// int64_t stack_size = 1024 * 1024 * 1024 * 1 ; // 1GB stack
+// uint64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
+uint64_t stack_size = 1024 * 1024 * 128 ; // 2GB stack
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
