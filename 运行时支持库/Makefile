@@ -18,6 +18,22 @@ else
 ADDITIONAL_FLAGS=
 endif
 
+SO_BUILD_OPTIONS=
+
+ifeq ($(UNAME), Linux)
+SO_BUILD_OPTIONS=-shared 
+else
+SO_BUILD_OPTIONS=-dynamiclib -undefined dynamic_lookup
+endif
+
+
+SO_EXTENSION=
+ifeq ($(UNAME), Linux)
+SO_EXTENSION=so
+else
+SO_EXTENSION=dylib
+endif
+
 
 libyyrtdebug.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
@@ -33,19 +49,19 @@ libyyrtopt.a: $(NATIVE_SOURCES)
 
 opt : libyyrtopt.a
 
-libyyrtdebug.so: $(NATIVE_SOURCES)
+libyyrtdebug.$(SO_EXTENSION): $(NATIVE_SOURCES)
 	@mkdir -p build/native
 	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror  -fPIC
-	$(CC) -shared -o $@ build/native/*.o
+	$(CC) $(SO_BUILD_OPTIONS) -o $@ build/native/*.o
 
-debugso : libyyrtdebug.so
+debugso : libyyrtdebug.$(SO_EXTENSION)
 
-libyyrtopt.so: $(NATIVE_SOURCES)
+libyyrtopt.$(SO_EXTENSION): $(NATIVE_SOURCES)
 	@mkdir -p build/native
 	cd build/native && $(CC) -DNDEBUG -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
-	$(CC) -shared -flto -o $@ build/native/*.o
+	$(CC) $(SO_BUILD_OPTIONS) -flto -o $@ build/native/*.o
 
-optso : libyyrtopt.so
+optso : libyyrtopt.$(SO_EXTENSION)
 
 all: debug opt debugso optso
 
