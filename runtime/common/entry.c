@@ -71,11 +71,7 @@ int main(int argc, char* argv[]) {
     
 
 
-#ifdef OLD_ENTRY
     return entryMain();
-#else
-    return yy_runtime_start();
-#endif
 }
 
 
