@@ -146,7 +146,7 @@ void* yy_gc_malloc_bytes(uint64_t size) {
     }
     
     // If no space left in the minor heap, try allocating from the tiny heap
-    block = allocate_memory_without_implicit_header(size, tiny_heap, tiny_heap_size, &tiny_heap_offset);
+    block = allocate_memory_without_implicit_header(array_size, tiny_heap, tiny_heap_size, &tiny_heap_offset);
     if (block != NULL) {
         // fprintf(stderr, "Allocating from minor heap %p ", block);
         return block;
@@ -154,6 +154,7 @@ void* yy_gc_malloc_bytes(uint64_t size) {
 
     // If no space is available, trigger a garbage collection
     // This should not happen directly if a GC cannot be performed yet; handle appropriately
+    fprintf(stderr, "No space left and garbage collection cannot be performed yet. Heap Size %lu, Heap Offset %lu, Tiny Heap Size %lu, Tiny Heap Offset %lu, Allocation Size %lu\n", current_heap_size, current_heap_offset, tiny_heap_size, tiny_heap_offset, array_size);
     errorAndAbort("No space left and garbage collection cannot be performed yet");
     return NULL;  // This line will not be executed because errorAndAbort exits the program
 }
