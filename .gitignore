@@ -185,3 +185,4 @@ dist
 .pnp.*
 *.ll
 *.bc
+*.dylib
