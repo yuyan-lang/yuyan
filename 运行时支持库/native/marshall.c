@@ -253,7 +253,7 @@ yyvalue yy_gcAllocateStringBuffer(uint64_t byte_length) {
     yyvalue ret = (yyvalue)buffer_ptr;
     yyvalue_set_type(&ret, type_heap_string);
     yyvalue_set_raw_length(&ret, byte_length - 1);
-    // fprintf(stderr, "Allocated String Buffer byte_length = %lu, strlen = %lu, yy_get_strlen = %lu\n",
+    // fprintf(stderr, "Allocated String Buffer byte_length = " PRIu64 ", strlen = " PRIu64 ", yy_get_strlen = " PRIu64 "\n",
     //         byte_length, strlen(yyvalue_to_string(ret)), yyvalue_get_strlen(ret));
     return ret;
 }

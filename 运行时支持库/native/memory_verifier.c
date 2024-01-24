@@ -128,7 +128,7 @@ void verify_gc(yyvalue* additional_root_point){
 
 void verify_current_heap(){
     for (uint64_t i = 0; i < current_heap_offset ; ) {
-        // fprintf(stderr, "Debug: %lu\n", i);
+        // fprintf(stderr, "Debug: " PRIu64 "\n", i);
         yyvalue* next_scan_pointer = current_heap + i;
         if (yyvalue_is_heap_string_header(*next_scan_pointer)){
             uint64_t skip = string_buffer_length_to_block_length(yyvalue_get_strlen(*next_scan_pointer));

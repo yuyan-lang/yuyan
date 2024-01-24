@@ -14,6 +14,8 @@
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 #include <assert.h>
+// #define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include "time.h"
 
 #ifdef __linux__

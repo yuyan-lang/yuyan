@@ -154,7 +154,7 @@ void* yy_gc_malloc_bytes(uint64_t size) {
 
     // If no space is available, trigger a garbage collection
     // This should not happen directly if a GC cannot be performed yet; handle appropriately
-    fprintf(stderr, "No space left and garbage collection cannot be performed yet. Heap Size %lu, Heap Offset %lu, Tiny Heap Size %lu, Tiny Heap Offset %lu, Allocation Size %lu\n", current_heap_size, current_heap_offset, tiny_heap_size, tiny_heap_offset, array_size);
+    fprintf(stderr, "No space left and garbage collection cannot be performed yet. Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", Tiny Heap Size %" PRIu64 ", Tiny Heap Offset %" PRIu64 ", Allocation Size %" PRIu64 "\n", current_heap_size, current_heap_offset, tiny_heap_size, tiny_heap_offset, array_size);
     errorAndAbort("No space left and garbage collection cannot be performed yet");
     return NULL;  // This line will not be executed because errorAndAbort exits the program
 }
