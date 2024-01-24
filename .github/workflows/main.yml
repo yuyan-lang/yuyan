@@ -19,43 +19,43 @@ on:
   # cancel-in-progress: true
 
 jobs:
-  macos-test:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-mac-dependencies
+  # macos-test:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/install-mac-dependencies
 
-      - name: make test
-        run: make test
+  #     - name: make test
+  #       run: make test
 
-  macos-bs-test:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-mac-dependencies
+  # macos-bs-test:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/install-mac-dependencies
 
-      - name: make bsrt
-        if: '! github.event.pull_request.draft'
-        run: make bsrt
+  #     - name: make bsrt
+  #       if: '! github.event.pull_request.draft'
+  #       run: make bsrt
 
-  macos-bs-build:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-mac-dependencies
-      - name: make bsr
-        if: '! github.event.pull_request.draft'
-        run: make bsr
+  # macos-bs-build:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: ./.github/actions/install-mac-dependencies
+  #     - name: make bsr
+  #       if: '! github.event.pull_request.draft'
+  #       run: make bsr
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: macos-release-package
-          path: |
-            ./yy
-            ./install.sh
-            ./runtime/libyyrtdebug.a
-            ./runtime/libyyrtopt.a
-            ./yylib
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: macos-release-package
+  #         path: |
+  #           ./yy
+  #           ./install.sh
+  #           ./runtime/libyyrtdebug.a
+  #           ./runtime/libyyrtopt.a
+  #           ./yylib
 
   # This workflow contains a single job called "build"
   ubuntu-test:
