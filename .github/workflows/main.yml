@@ -137,6 +137,9 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package 
+          path: .
+      - name: ls -R
+        run: ls -R
       - name: cp yy_bs_bs_debug yy_bs
         run: |
           cp yy_bs_bs_debug ./yy_bs
@@ -155,6 +158,9 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package 
+          path: .
+      - name: ls -R
+        run: ls -R
       - name: cp yy_bs_bs_debug yy_bs
         run: |
           cp yy_bs_bs_debug ./yy_bs
@@ -171,6 +177,9 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: ubuntu-linux-amd64-release-package 
+          path: .
+      - name: ls -R
+        run: ls -R
       - name: cp yy_bs_bs_debug yy_bs
         run: |
           cp yy_bs_bs_debug ./yy_bs
