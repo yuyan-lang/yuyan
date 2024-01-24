@@ -126,9 +126,27 @@ jobs:
             ./运行时支持库/libyyrtdebug.so
             ./运行时支持库/libyyrtopt.a
             ./运行时支持库/libyyrtopt.so
-            ./yylib
 
   ubuntu-bs-bs-build-p:
+    needs: ubuntu-bs-build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-linux-amd64-release-package 
+          path: .
+      - name: ls -R
+        run: ls -R
+      - name: cp yy_bs_bs yy_bs
+        run: |
+          cp yy_bs_bs ./yy_bs
+          chmod u+x ./yy_bs
+      - name: make bsrp
+        run: ./yy_bs 豫言编译器/入口。豫 --parse-only
+
+  ubuntu-bs-bs-build-p-debug:
     needs: ubuntu-bs-build
     runs-on: ubuntu-latest
     steps:
@@ -148,8 +166,26 @@ jobs:
         run: ./yy_bs 豫言编译器/入口。豫 --parse-only
         
 
-
   ubuntu-bs-bs-build-tc:
+    runs-on: ubuntu-latest
+    needs: ubuntu-bs-build
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - uses: actions/download-artifact@v3
+        with:
+          name: ubuntu-linux-amd64-release-package 
+          path: .
+      - name: ls -R
+        run: ls -R
+      - name: cp yy_bs_bs yy_bs
+        run: |
+          cp yy_bs_bs ./yy_bs
+          chmod u+x ./yy_bs
+      - name: make bsrtc
+        run: ./yy_bs 豫言编译器/入口。豫 --type-check-only
+
+  ubuntu-bs-bs-build-tc-debug:
     runs-on: ubuntu-latest
     needs: ubuntu-bs-build
     steps:
@@ -201,4 +237,3 @@ jobs:
             ./runtime/libyyrtdebug.so
             ./runtime/libyyrtopt.a
             ./runtime/libyyrtopt.so
-            ./yylib

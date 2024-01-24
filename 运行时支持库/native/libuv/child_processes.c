@@ -99,7 +99,7 @@ yyvalue yyRunProcessGetOutputSync(yyvalue program, yyvalue arguments)
 
     int64_t child_exit_status = my_data.exit_status;
 
-    yyvalue stdOutVal = malloc_string_to_yyvalue(stdErrBufLength, stdOutOutput);
+    yyvalue stdOutVal = malloc_string_to_yyvalue(stdOutBufLength, stdOutOutput);
     yyvalue stdErrVal = malloc_string_to_yyvalue(stdErrBufLength, stdErrOutput);
     free(stdOutOutput);
     free(stdErrOutput);
