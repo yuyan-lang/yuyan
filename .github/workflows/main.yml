@@ -129,6 +129,33 @@ jobs:
             ./运行时支持库/libyyrtopt.a
             ./运行时支持库/libyyrtopt.so
 
+  ubuntu-bs-build-from-bs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: ./.github/actions/install-linux-dependencies
+      - name: curl yy_bs
+        run: |
+          curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0alpha4/yy_bs_bs_opt_static_2
+          chmod u+x yy_bs
+      - name: make yy_bs_bs
+        run: make yy_bs_bs
+      - name: make yy_bs_bs_debug
+        run: make yy_bs_bs_debug
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-linux-amd64-release-package-from-bootstrap
+          path: |
+            ./yy_bs_bs
+            ./yy_bs_bs_debug
+            ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
+            ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.bc
+            ./运行时支持库/libyyrtdebug.a
+            ./运行时支持库/libyyrtdebug.so
+            ./运行时支持库/libyyrtopt.a
+            ./运行时支持库/libyyrtopt.so
+
   ubuntu-bs-bs-build-p:
     needs: ubuntu-bs-build
     runs-on: ubuntu-latest
