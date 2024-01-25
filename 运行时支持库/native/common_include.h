@@ -14,6 +14,8 @@
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include <uv.h> 
 #include <assert.h>
+// #define __STDC_FORMAT_MACROS
+#include <inttypes.h>
 #include "time.h"
 
 #ifdef __linux__
@@ -65,7 +67,6 @@ void *yy_gcReallocateBytes(void* ptr, uint64_t old_size, uint64_t new_size);
 
 
 // runtime configurations
-extern int64_t use_libgc;
 int64_t yy_runtime_start();
 
 void start_yy_profiler();

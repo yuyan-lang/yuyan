@@ -99,11 +99,7 @@ int64_t yy_runtime_start() {
     // allocate a 100 M * 8 bytes stack
     
     // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
-    if (use_libgc) {
-        stack = (yyvalue*) GC_MALLOC(stack_size * sizeof(yyvalue));
-    } else {
-        stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
-    }
+    stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     stack_end = stack + stack_size;
     stack_ptr = stack;
 

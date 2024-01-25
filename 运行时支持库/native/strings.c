@@ -289,7 +289,7 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     memcpy(resultStringRet, resultString, totalLength + 1);
     free(resultString);
     yyvalue ret = malloc_string_to_yyvalue(totalLength + 1, resultStringRet);
-    // fprintf(stderr, "result %s, strlen = %d, arraylen= %lu\n", resultStringRet, totalLength, yyvalue_get_heap_pointer_length(ret));
+    // fprintf(stderr, "result %s, strlen = %d, arraylen= " PRIu64 "\n", resultStringRet, totalLength, yyvalue_get_heap_pointer_length(ret));
     free(resultStringRet);
     verify_yyvalue(ret, true, 0);
     return ret;

@@ -28,13 +28,14 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
 #endif
 #endif
 
-#define MAX_HEAP_SIZE (2L * 1024 * 1024 * 1024) // 32 GB is the max heap size
+#define DEFAULT_MAX_HEAP_SIZE (2L * 1024 * 1024 * 1024) // 32 GB is the max heap size
 #define TINY_HEAP_DENOMINATOR 10
 
 yyvalue* current_heap = NULL;
 yyvalue* tiny_heap = NULL;
 yyvalue* new_heap = NULL;
 uint64_t initial_heap_size = INITIAL_HEAP_SIZE; //32 MB
+uint64_t max_heap_size = DEFAULT_MAX_HEAP_SIZE;
 uint64_t current_heap_size = 0;
 uint64_t current_heap_offset = 0;
 uint64_t tiny_heap_offset = 0;
@@ -53,8 +54,17 @@ void yy_gc_init() {
         initial_heap_size = atoi(requested_size) * 1024 * 1024;
     }
 
+    if (getenv("YY_GC_MAX_HEAP_SIZE_MB") != NULL ) {
+        const char* requested_size = getenv("YY_GC_MAX_HEAP_SIZE_MB");
+        max_heap_size = atoi(requested_size) * 1024 * 1024;
+    }
+
     if (initial_heap_size != INITIAL_HEAP_SIZE) {
-        fprintf(stderr, "YY initial heap size is set to %f MB\n", (double) initial_heap_size / (1024 * 1024));
+        fprintf(stderr, "YY initial heap size is set to %f * 16 MB\n", (double) initial_heap_size / (1024 * 1024));
+    }
+
+    if (max_heap_size != DEFAULT_MAX_HEAP_SIZE) {
+        fprintf(stderr, "YY max heap size is set to %f * 16 MB\n", (double) max_heap_size / (1024 * 1024));
     }
 
     current_heap_size = initial_heap_size;
@@ -154,7 +164,7 @@ void* yy_gc_malloc_bytes(uint64_t size) {
 
     // If no space is available, trigger a garbage collection
     // This should not happen directly if a GC cannot be performed yet; handle appropriately
-    fprintf(stderr, "No space left and garbage collection cannot be performed yet. Heap Size %lu, Heap Offset %lu, Tiny Heap Size %lu, Tiny Heap Offset %lu, Allocation Size %lu\n", current_heap_size, current_heap_offset, tiny_heap_size, tiny_heap_offset, array_size);
+    fprintf(stderr, "No space left and garbage collection cannot be performed yet. Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", Tiny Heap Size %" PRIu64 ", Tiny Heap Offset %" PRIu64 ", Allocation Size %" PRIu64 "\n", current_heap_size, current_heap_offset, tiny_heap_size, tiny_heap_offset, array_size);
     errorAndAbort("No space left and garbage collection cannot be performed yet");
     return NULL;  // This line will not be executed because errorAndAbort exits the program
 }
@@ -263,13 +273,13 @@ void yy_perform_gc(yyvalue* additional_root_point) {
 
     if (should_expand_heap) {
         // Expand the heap
-        new_heap_size = MIN(current_heap_size * 2, MAX_HEAP_SIZE) + tiny_heap_offset + 10;
+        new_heap_size = MIN(current_heap_size * 2, max_heap_size) + tiny_heap_offset + 10;
         new_heap = MALLOC_FUNC(new_heap_size);
         if (!new_heap) errorAndAbort("Failed to expand major heap");
         should_expand_heap = false;
     } else {
         // Reuse the current heap
-        new_heap_size = MIN(current_heap_size, MAX_HEAP_SIZE) + tiny_heap_offset + 10;
+        new_heap_size = MIN(current_heap_size, max_heap_size) + tiny_heap_offset + 10;
         new_heap = MALLOC_FUNC(new_heap_size);
     }
 

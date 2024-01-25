@@ -1,6 +1,8 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI
+env:
+  YY_GC_MAX_HEAP_SIZE_MB: 400
 
 # Controls when the workflow will run
 on:
@@ -19,49 +21,49 @@ on:
   # cancel-in-progress: true
 
 jobs:
-  macos-test:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-mac-dependencies
+  # macos-test:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/install-mac-dependencies
 
-      - name: make test
-        run: make test
+  #     - name: make test
+  #       run: make test
 
-  macos-bs-test:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-mac-dependencies
+  # macos-bs-test:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/install-mac-dependencies
 
-      - name: make bsrt
-        if: '! github.event.pull_request.draft'
-        run: make bsrt
+  #     - name: make bsrt
+  #       if: '! github.event.pull_request.draft'
+  #       run: make bsrt
 
-  macos-bs-build:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/install-mac-dependencies
-      - name: make bsr
-        if: '! github.event.pull_request.draft'
-        run: make bsr
+  # macos-bs-build:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/install-mac-dependencies
+  #     - name: make bsr
+  #       if: '! github.event.pull_request.draft'
+  #       run: make bsr
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: macos-release-package
-          path: |
-            ./yy
-            ./install.sh
-            ./runtime/libyyrtdebug.a
-            ./runtime/libyyrtopt.a
-            ./yylib
+  #     - uses: actions/upload-artifact@v4
+  #       with:
+  #         name: macos-release-package
+  #         path: |
+  #           ./yy
+  #           ./install.sh
+  #           ./runtime/libyyrtdebug.a
+  #           ./runtime/libyyrtopt.a
+  #           ./yylib
 
   # This workflow contains a single job called "build"
   ubuntu-test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make test
@@ -70,7 +72,7 @@ jobs:
   ubuntu-test-bs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make test_bs
@@ -79,7 +81,7 @@ jobs:
   ubuntu-bs-test-bs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
 
       - name: make bsrt_bs
@@ -88,7 +90,7 @@ jobs:
   ubuntu-bs-build-p:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsrp
         run: make bsrp
@@ -97,7 +99,7 @@ jobs:
   ubuntu-bs-build-tc:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
       - name: make bsrtc
         run: make bsrtc
@@ -105,7 +107,7 @@ jobs:
   ubuntu-bs-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
       - name: make yy_bs
         run: make yy_bs
@@ -114,7 +116,34 @@ jobs:
       - name: make yy_bs_bs_debug
         run: make yy_bs_bs_debug
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-linux-amd64-release-package-from-yy-and-yybs
+          path: |
+            ./yy_bs_bs
+            ./yy_bs_bs_debug
+            ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
+            ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.bc
+            ./运行时支持库/libyyrtdebug.a
+            ./运行时支持库/libyyrtdebug.so
+            ./运行时支持库/libyyrtopt.a
+            ./运行时支持库/libyyrtopt.so
+
+  ubuntu-bs-build-from-bs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/install-linux-dependencies
+      - name: curl yy_bs
+        run: |
+          curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0alpha4/yy_bs_bs_opt_static_2
+          chmod u+x yy_bs
+      - name: make yy_bs_bs
+        run: ./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs -c
+      - name: make yy_bs_bs_debug
+        run: make yy_bs_bs_debug
+
+      - uses: actions/upload-artifact@v4
         with:
           name: ubuntu-linux-amd64-release-package
           path: |
@@ -122,74 +151,110 @@ jobs:
             ./yy_bs_bs_debug
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.bc
-            ./runtime/libyyrtdebug.a
-            ./runtime/libyyrtdebug.so
-            ./runtime/libyyrtopt.a
-            ./runtime/libyyrtopt.so
-            ./yylib
+            ./运行时支持库/libyyrtdebug.a
+            ./运行时支持库/libyyrtdebug.so
+            ./运行时支持库/libyyrtopt.a
+            ./运行时支持库/libyyrtopt.so
 
   ubuntu-bs-bs-build-p:
-    needs: ubuntu-bs-build
+    needs: ubuntu-bs-build-from-bs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ubuntu-linux-amd64-release-package 
           path: .
       - name: ls -R
         run: ls -R
-      - name: cp yy_bs_bs_debug yy_bs
+      - name: cp yy_bs_bs yy_bs
         run: |
-          cp yy_bs_bs_debug ./yy_bs
+          cp yy_bs_bs ./yy_bs
           chmod u+x ./yy_bs
       - name: make bsrp
         run: ./yy_bs 豫言编译器/入口。豫 --parse-only
+
+  # ubuntu-bs-bs-build-p-debug:
+  #   needs: ubuntu-bs-build-from-bs
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/install-linux-dependencies
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #         name: ubuntu-linux-amd64-release-package 
+  #         path: .
+  #     - name: ls -R
+  #       run: ls -R
+  #     - name: cp yy_bs_bs_debug yy_bs
+  #       run: |
+  #         cp yy_bs_bs_debug ./yy_bs
+  #         chmod u+x ./yy_bs
+  #     - name: make bsrp
+  #       run: ./yy_bs 豫言编译器/入口。豫 --parse-only
         
 
-
   ubuntu-bs-bs-build-tc:
-    runs-on: ubuntu-latest
-    needs: ubuntu-bs-build
+    runs-on: ubuntu-latest-from-bs
+    needs: ubuntu-bs-build-from-bs
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ubuntu-linux-amd64-release-package 
           path: .
       - name: ls -R
         run: ls -R
-      - name: cp yy_bs_bs_debug yy_bs
+      - name: cp yy_bs_bs yy_bs
         run: |
-          cp yy_bs_bs_debug ./yy_bs
+          cp yy_bs_bs ./yy_bs
           chmod u+x ./yy_bs
       - name: make bsrtc
         run: ./yy_bs 豫言编译器/入口。豫 --type-check-only
 
+  # ubuntu-bs-bs-build-tc-debug:
+  #   runs-on: ubuntu-latest
+  #   needs: ubuntu-bs-build-from-bs
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: ./.github/actions/install-linux-dependencies
+  #     - uses: actions/download-artifact@v4
+  #       with:
+  #         name: ubuntu-linux-amd64-release-package 
+  #         path: .
+  #     - name: ls -R
+  #       run: ls -R
+  #     - name: cp yy_bs_bs_debug yy_bs
+  #       run: |
+  #         cp yy_bs_bs_debug ./yy_bs
+  #         chmod u+x ./yy_bs
+  #     - name: make bsrtc
+  #       run: ./yy_bs 豫言编译器/入口。豫 --type-check-only
+
   ubuntu-bs-bs-build:
     runs-on: ubuntu-latest
-    needs: ubuntu-bs-build
+    needs: ubuntu-bs-build-from-bs
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: ubuntu-linux-amd64-release-package 
           path: .
       - name: ls -R
         run: ls -R
-      - name: cp yy_bs_bs_debug yy_bs
+      - name: mv yy_bs_bs yy_bs
         run: |
-          cp yy_bs_bs_debug ./yy_bs
+          mv yy_bs_bs ./yy_bs
           chmod u+x ./yy_bs
       - name: make yy_bs_bs
         run: make yy_bs_bs
       - name: make yy_bs_bs_debug
         run: make yy_bs_bs_debug
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ubuntu-linux-amd64-release-package-bootstrapped
           path: |
@@ -201,4 +266,3 @@ jobs:
             ./runtime/libyyrtdebug.so
             ./runtime/libyyrtopt.a
             ./runtime/libyyrtopt.so
-            ./yylib

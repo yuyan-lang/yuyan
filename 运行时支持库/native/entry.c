@@ -8,8 +8,6 @@ extern void optional_entry_initialization();
 int global_argc = 0;
 char** global_argv = NULL;
 
-// runtime configurations
-int64_t use_libgc = 0;
 
 // Function to process @yy: arguments
 void processYYArguments(int argc, char* argv[]) {
@@ -17,10 +15,7 @@ void processYYArguments(int argc, char* argv[]) {
     int total_consumed_argc = 0;
     for (int i = 1; i < argc; i++)
     {
-        if (strncmp(argv[i], "@yy:uselibgc=1", 14) == 0) {
-            use_libgc = 1;
-            total_consumed_argc++;
-        } else if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
+        if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
             use_profiler = true;
             total_consumed_argc++;
         }
@@ -49,11 +44,6 @@ int main(int argc, char* argv[]) {
     
     // disable GC by setting env var
     // Specify the name of the environment variable you want to read
-    const char *env_var_name = "YY_DISABLE_GC";
-    char *env_var_value = getenv(env_var_name);
-    if (env_var_value != NULL && strcmp(env_var_value, "1") == 0) {
-        use_libgc = 0;
-    } 
 
 
     optional_entry_initialization();
