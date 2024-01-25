@@ -118,7 +118,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ubuntu-linux-amd64-release-package
+          name: ubuntu-linux-amd64-release-package-from-yy-and-yybs
           path: |
             ./yy_bs_bs
             ./yy_bs_bs_debug
@@ -145,7 +145,7 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ubuntu-linux-amd64-release-package-from-bootstrap
+          name: ubuntu-linux-amd64-release-package
           path: |
             ./yy_bs_bs
             ./yy_bs_bs_debug
@@ -157,7 +157,7 @@ jobs:
             ./运行时支持库/libyyrtopt.so
 
   ubuntu-bs-bs-build-p:
-    needs: ubuntu-bs-build
+    needs: ubuntu-bs-build-from-bs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -176,7 +176,7 @@ jobs:
         run: ./yy_bs 豫言编译器/入口。豫 --parse-only
 
   ubuntu-bs-bs-build-p-debug:
-    needs: ubuntu-bs-build
+    needs: ubuntu-bs-build-from-bs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -196,7 +196,7 @@ jobs:
         
 
   ubuntu-bs-bs-build-tc:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-from-bs
     needs: ubuntu-bs-build
     steps:
       - uses: actions/checkout@v4
@@ -216,7 +216,7 @@ jobs:
 
   ubuntu-bs-bs-build-tc-debug:
     runs-on: ubuntu-latest
-    needs: ubuntu-bs-build
+    needs: ubuntu-bs-build-from-bs
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
@@ -235,7 +235,7 @@ jobs:
 
   ubuntu-bs-bs-build:
     runs-on: ubuntu-latest
-    needs: ubuntu-bs-build
+    needs: ubuntu-bs-build-from-bs
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
