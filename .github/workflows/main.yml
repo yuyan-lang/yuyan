@@ -2,7 +2,7 @@
 
 name: CI
 env:
-  YY_GC_MAX_HEAP_SIZE_MB: 800
+  YY_GC_MAX_HEAP_SIZE_MB: 400
 
 # Controls when the workflow will run
 on:
