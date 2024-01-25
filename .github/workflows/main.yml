@@ -197,7 +197,7 @@ jobs:
 
   ubuntu-bs-bs-build-tc:
     runs-on: ubuntu-latest-from-bs
-    needs: ubuntu-bs-build
+    needs: ubuntu-bs-build-from-bs
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/install-linux-dependencies
