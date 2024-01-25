@@ -139,7 +139,7 @@ jobs:
           curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0alpha4/yy_bs_bs_opt_static_2
           chmod u+x yy_bs
       - name: make yy_bs_bs
-        run: make yy_bs_bs
+        run: ./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs -c
       - name: make yy_bs_bs_debug
         run: make yy_bs_bs_debug
 
