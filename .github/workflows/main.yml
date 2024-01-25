@@ -245,9 +245,9 @@ jobs:
           path: .
       - name: ls -R
         run: ls -R
-      - name: cp yy_bs_bs yy_bs
+      - name: mv yy_bs_bs yy_bs
         run: |
-          cp yy_bs_bs ./yy_bs
+          mv yy_bs_bs ./yy_bs
           chmod u+x ./yy_bs
       - name: make yy_bs_bs
         run: make yy_bs_bs
