@@ -73,7 +73,7 @@ yyvalue yy_set_stack_ptr(yyvalue new_stack_ptr_address)
 
 void yy_exit_function(){
     assert(stack_ptr == stack_start);
-    assert(stack_ptr[4] == 1);
+    assert(yyvalue_to_int(stack_ptr[4]) == 1);
     return;
 }
 

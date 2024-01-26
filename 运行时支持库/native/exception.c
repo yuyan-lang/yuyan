@@ -25,6 +25,13 @@ uint64_t errorAndAbort(char* errMsg){
     return -1;
 }
 
+uint64_t errorAndAbort_yyrt(yyvalue errMsg){
+    
+    fprintf(stderr, "%s\n", yyvalue_to_string(errMsg));
+    exit(1);
+    return -1;
+}
+
 // I believe abssingle has two arguments , the first is just the closure itself
 void 全局异常处理器(){
     yyvalue argument = stack_ptr[3];
