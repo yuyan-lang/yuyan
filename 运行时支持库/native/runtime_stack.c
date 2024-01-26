@@ -13,8 +13,8 @@ pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
 // runtime invokes this function prior to any function call
-// the primary task of this function is to ensure stack does not overflow, set the global stack pointer, and invoke gc if necessary
-yyvalue pre_function_call(){
+// the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
+yyvalue yy_pre_function_call(){
     if (stack_ptr + 3 >= stack_end) {
         errorAndAbort("Stack overflowed, please increase stack size and try again");
         return unit_to_yyvalue();
