@@ -16,6 +16,7 @@ extern yyvalue* current_heap;
 extern yyvalue* new_heap;
 extern yyvalue *current_allocation_ptr;
 extern yyvalue *current_heap_gc_limit;
+extern yyvalue *current_heap_end;
 extern bool should_expand_heap;
 
 void yy_gc_init();

@@ -15,15 +15,35 @@ yy_function_type current_function;
 // runtime invokes this function prior to any function call
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
 yyvalue yy_pre_function_call(){
+#ifndef NDEBUG
+    // checks stack overflow for debug only, for opt, it is checked during gc
     if (stack_ptr + 3 >= stack_end) {
         errorAndAbort("Stack overflowed, please increase stack size and try again");
         return unit_to_yyvalue();
-    } else {
-        if (current_allocation_ptr > current_heap_gc_limit) {
-            stack_ptr += 5;
-            yy_perform_gc();
-            stack_ptr -= 5;
+    }
+#endif
+    if (current_allocation_ptr > current_heap_gc_limit) {
+        if (current_allocation_ptr > current_heap_end) {
+            fprintf(stderr, "[RS] No space left and garbage collection cannot be performed yet. \n" \
+            "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n" \
+            "Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", GC Point Size %" PRIu64 ", \n", 
+                current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
+                current_heap_end - current_heap, 
+                current_allocation_ptr - current_heap, 
+                current_heap_gc_limit - current_heap
+                );
+            errorAndAbort("No space left in the major heap, make GC occur earlier by adjusting the GC limit");
+            return unit_to_yyvalue();
         }
+        if (stack_ptr + 3 >= stack_end) {
+            errorAndAbort("Stack overflowed, please increase stack size and try again");
+            return unit_to_yyvalue();
+        }
+        stack_ptr += 5;
+        yy_perform_gc();
+        stack_ptr -= 5;
+        return unit_to_yyvalue();
+    } else {
         return unit_to_yyvalue();
     }
 }

@@ -114,6 +114,8 @@ bool is_a_new_pointer(yyvalue raw_ptr) {
 }
 
 
+    
+#ifndef NDEBUG
 void* yy_gc_malloc_array(uint64_t size) {
     if (size == 0) {
         return NULL;
@@ -122,7 +124,6 @@ void* yy_gc_malloc_array(uint64_t size) {
     yyvalue *ret = current_allocation_ptr;
 
     current_allocation_ptr += size;
-    
     if (current_allocation_ptr > current_heap_end) {
         fprintf(stderr, "No space left and garbage collection cannot be performed yet. \n" \
         "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n" \
@@ -138,6 +139,17 @@ void* yy_gc_malloc_array(uint64_t size) {
     return ret;
 
 }
+#else
+void* yy_gc_malloc_array(uint64_t size) {
+    if (size == 0) {
+        return NULL;
+    }
+
+    yyvalue *ret = current_allocation_ptr;
+    current_allocation_ptr += size;
+    return ret;
+}
+#endif
 
 
 
