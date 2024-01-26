@@ -67,12 +67,12 @@ yyvalue get_continuation_exception_handler(yyvalue id)
 yyvalue yy_set_stack_ptr(yyvalue new_stack_ptr_address)
 {
     yyvalue* new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_address);
-    const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
-    if (yy_debug_flag != NULL && strcmp(yy_debug_flag, "1") == 0) {
-        fprintf(stderr, "Setting stack pointer, new_offset = %" PRIu64 " prev_offset = %" PRIu64 "\n", 
-            new_stack_ptr - stack_start, stack_ptr - stack_start
-        );
-    }
+    // const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
+    // if (yy_debug_flag != NULL && strcmp(yy_debug_flag, "1") == 0) {
+    //     fprintf(stderr, "Setting stack pointer, new_offset = %" PRIu64 " prev_offset = %" PRIu64 "\n", 
+    //         new_stack_ptr - stack_start, stack_ptr - stack_start
+    //     );
+    // }
     stack_ptr = new_stack_ptr;
     return unit_to_yyvalue();
 }
