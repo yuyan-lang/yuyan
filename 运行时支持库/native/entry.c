@@ -58,7 +58,8 @@ int main(int argc, char* argv[]) {
     
 
 
-    return yy_runtime_start();
+    int return_value =  yy_runtime_start();
+    return return_value;
 }
 
 
