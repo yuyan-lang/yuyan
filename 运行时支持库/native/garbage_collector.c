@@ -124,12 +124,15 @@ void* yy_gc_malloc_array(uint64_t size) {
     current_allocation_ptr += size;
     
     if (current_allocation_ptr > current_heap_end) {
-        errorAndAbort("No space left in the major heap, make GC occur earlier by adjusting the GC limit");
-        fprintf(stderr, "No space left and garbage collection cannot be performed yet. Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", GC Point Size %" PRIu64 ", Allocation Size %" PRIu64 "\n", 
+        fprintf(stderr, "No space left and garbage collection cannot be performed yet. \n" \
+        "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n" \
+        "Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", GC Point Size %" PRIu64 ", Allocation Size %" PRIu64 "\n", 
+            current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
             current_heap_end - current_heap, 
             current_allocation_ptr - current_heap, 
             current_heap_gc_limit - current_heap,
             size);
+        errorAndAbort("No space left in the major heap, make GC occur earlier by adjusting the GC limit");
         return NULL;
     }
     return ret;
@@ -267,7 +270,9 @@ void yy_perform_gc() {
     current_allocation_ptr = new_heap_allocation_ptr;
     current_heap_size = new_heap_size;
     current_heap_gc_limit = current_heap + (uint64_t) (current_heap_size * GC_LIMIT / 100);
+    current_heap_end = new_heap_end;
     new_heap = NULL;
+    new_heap_end = NULL;
     new_heap_size = 0;
     
 
