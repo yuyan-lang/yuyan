@@ -9,7 +9,6 @@
 
 
 // do not perform verification when optimizing
-#ifdef NDEBUG
 void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
 }
 void verify_yyvalue(yyvalue arg, bool recursive, int depth){
@@ -18,7 +17,8 @@ void verify_gc(yyvalue* additional_root_point){
 }
 void verify_current_heap(){
 }
-#else
+#ifdef NDEBUG_IGNORE
+// #else
 
 #define VERIFY_REC_LIMIT 10
 
@@ -50,7 +50,7 @@ void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
             }
         }  else {
             fprintf(stderr, "[52] Not a valid pointer %p, is a new pointer %d, is an old pointer %d\n", yyvalue_to_generic_ptr(arg), 
-            is_an_new_pointer(arg), is_an_old_pointer(arg));
+            is_a_new_pointer(arg), is_an_old_pointer(arg));
             errorAndAbort("Not a valid pointer");
         } 
     }  else  if (yyvalue_is_string_pointer(arg)){

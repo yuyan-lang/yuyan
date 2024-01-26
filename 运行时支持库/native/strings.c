@@ -206,7 +206,7 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     }
 
     // Allocate a heap array for the code points
-    yyvalue codePoints = yy_gcAllocateArray(numCodePoints);
+    yyvalue codePoints = yy_gcAllocateTuple(numCodePoints);
     // if (codePoints == NULL) {
     //     // Handle allocation failure
     //     return NULL;

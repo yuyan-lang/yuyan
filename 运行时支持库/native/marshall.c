@@ -1,4 +1,5 @@
 #include "common_include.h"
+#include "garbage_collector.h"
 
 /**
  * I decided to go with 128 bits (16 bytes) for each data. They arranged as follows:
@@ -11,7 +12,7 @@
  *  1: pointer to tuples - length stores number of elements
  *  2: integers
  *  3: doubles
- *  4: strings (data is a pointer to char*) (static)  - length stores number of bytes excluding the NULL byte
+ *  4: strings (data is a pointer to char*) (static)  - length stores number of bytes INCLUDING the NULL terminator
  *  5: boolean
  *  6: pointers to functions
  *  7: pointers to static objects
@@ -146,7 +147,7 @@ uint64_t yyvalue_get_strlen(yyvalue arg) {
     assert(yyvalue_get_type(arg) == type_static_string
         || yyvalue_get_type(arg) == type_heap_string
         || yyvalue_get_type(arg) == type_heap_string_header);
-    return yyvalue_get_raw_length(arg);
+    return yyvalue_get_raw_length(arg) - 1;
 }
 
 
@@ -202,7 +203,7 @@ char* yyvalue_to_heap_string_pointer(yyvalue arg){
 uint64_t yyvalue_to_heap_string_length(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_heap_string || yyvalue_get_type(arg) == type_heap_string_header);
     uint64_t raw_length =  yyvalue_get_raw_length(arg);
-    uint64_t actual_length = string_buffer_length_to_block_length(raw_length +1);
+    uint64_t actual_length = string_buffer_length_to_block_length(raw_length);
     return actual_length;
 }
 
@@ -238,21 +239,21 @@ yyvalue unit_to_yyvalue(){
 yyvalue static_string_to_yyvalue(const char * str){
     yyvalue ret = (yyvalue)str;
     yyvalue_set_type(&ret, type_static_string);
-    yyvalue_set_raw_length(&ret, strlen(str));
+    yyvalue_set_raw_length(&ret, strlen(str) + 1);
     return ret;
 }
 
 // the length should include the null terminator
 yyvalue yy_gcAllocateStringBuffer(uint64_t byte_length) {
     uint64_t actual_size = string_buffer_length_to_block_length(byte_length);
-    yyvalue* buffer_ptr = yy_gcAllocateBytes(actual_size * sizeof(yyvalue));
+    yyvalue* buffer_ptr = yy_gc_malloc_array(actual_size);
     yyvalue header = 0;
-    yyvalue_set_raw_length(&header, byte_length-1);
+    yyvalue_set_raw_length(&header, byte_length);
     yyvalue_set_type(&header, type_heap_string_header);
     buffer_ptr[0] = header;
     yyvalue ret = (yyvalue)buffer_ptr;
     yyvalue_set_type(&ret, type_heap_string);
-    yyvalue_set_raw_length(&ret, byte_length - 1);
+    yyvalue_set_raw_length(&ret, byte_length);
     // fprintf(stderr, "Allocated String Buffer byte_length = " PRIu64 ", strlen = " PRIu64 ", yy_get_strlen = " PRIu64 "\n",
     //         byte_length, strlen(yyvalue_to_string(ret)), yyvalue_get_strlen(ret));
     return ret;
@@ -320,7 +321,7 @@ yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
 }
 
 yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]){
-    yyvalue* returnStorage = (yyvalue*) yy_gcAllocateBytes(length * sizeof(yyvalue));
+    yyvalue* returnStorage = (yyvalue*) yy_gc_malloc_array(length);
     for (int i = 0; i < length; i ++){
         returnStorage[i] = elems[i];
     }

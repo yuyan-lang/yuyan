@@ -4,7 +4,7 @@
 
 
 yyvalue yyNewRef(yyvalue value){
-    yyvalue storage = yy_gcAllocateArray(1);
+    yyvalue storage = yy_gcAllocateTuple(1);
     yy_write_tuple(storage, 0, value);
     return storage;
 }
@@ -20,7 +20,7 @@ yyvalue yyWriteRef(yyvalue new_value, yyvalue addr){
 
 yyvalue yyNewRefArray(yyvalue value, yyvalue lengthAddr){
     int64_t length = yyvalue_to_int(lengthAddr);
-    yyvalue storage = yy_gcAllocateArray(length);
+    yyvalue storage = yy_gcAllocateTuple(length);
     for (int i = 0; i < length; i++)
     {
         yy_write_tuple(storage, i, value);
@@ -42,7 +42,7 @@ yyvalue yyWriteRefArray(yyvalue new_value, yyvalue indexAddr, yyvalue refAddr){
 
 yyvalue yyNewRefArrayGeneric(yyvalue lengthAddr){
     int64_t length = yyvalue_to_int(lengthAddr);
-    yyvalue ret = yy_gcAllocateArray(length);
+    yyvalue ret = yy_gcAllocateTuple(length);
     // verify_yyvalue(ret, true, 0);
     return ret;
 }
