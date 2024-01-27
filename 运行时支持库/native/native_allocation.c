@@ -13,10 +13,10 @@ yyvalue yy_gcAllocateTuple(uint64_t size) {
 
 
 
-yyvalue yy_gcAllocateTuple_yyrt(yyvalue size) {
-    yyvalue* x = (yyvalue*)yy_gc_malloc_array(yyvalue_to_int(size));
-    return raw_tuple_to_yyvalue(size, x);
-}
+// yyvalue yy_gcAllocateTuple_yyrt(yyvalue size) {
+//     yyvalue* x = (yyvalue*)yy_gc_malloc_array(yyvalue_to_int(size));
+//     return raw_tuple_to_yyvalue(size, x);
+// }
 
 // void* yy_gcAllocateBytes(uint64_t size) {
 //     if (during_gc){

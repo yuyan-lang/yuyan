@@ -20,6 +20,7 @@
  *  9: transfer addresses (used during GC)
  *  10: heap strings (data is a pointer to the heap)
  *  11: heap headers (only in the heap, mark the start of a string, data empty (due to endian issues)), length is the strlen (without null terminator)
+ *  12: generic pointer that are generated in the runtime by reading e.g. stack_ptr or current_allocation_ptr
  * 
  * 
  * Next 8 bits (1 byte): Reserved
@@ -48,6 +49,7 @@ const int type_pointer_to_stack = 8;
 const int type_pointer_transfer_address = 9;
 const int type_heap_string = 10;
 const int type_heap_string_header = 11;
+const int type_runtime_generic_ptr = 12;
 
 static int offset_type = 64;
 static int offset_length = 80;

@@ -5,47 +5,39 @@
 
 
 yyvalue* stack_start;
+yyvalue *stack_gc_limit;
 yyvalue* stack_end;
 yyvalue* stack_ptr;
 // uint64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
 uint64_t stack_size = 1024 * 1024 * 128 ; // 2GB stack
+double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
 // runtime invokes this function prior to any function call
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
-yyvalue yy_pre_function_call(){
-#ifndef NDEBUG
-    // checks stack overflow for debug only, for opt, it is checked during gc
-    if (stack_ptr + 3 >= stack_end) {
+yyvalue yy_pre_function_call_gc(){
+    assert(current_allocation_ptr > current_heap_gc_limit);
+    if (current_allocation_ptr > current_heap_end)
+    {
+        fprintf(stderr, "[RS] No space left and garbage collection cannot be performed yet. \n"
+                        "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n"
+                        "Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", GC Point Size %" PRIu64 ", \n",
+                current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
+                current_heap_end - current_heap,
+                current_allocation_ptr - current_heap,
+                current_heap_gc_limit - current_heap);
+        errorAndAbort("No space left in the major heap, make GC occur earlier by adjusting the GC limit");
+        return unit_to_yyvalue();
+    }
+    if (stack_ptr >= stack_gc_limit) {
         errorAndAbort("Stack overflowed, please increase stack size and try again");
         return unit_to_yyvalue();
     }
-#endif
-    if (current_allocation_ptr > current_heap_gc_limit) {
-        if (current_allocation_ptr > current_heap_end) {
-            fprintf(stderr, "[RS] No space left and garbage collection cannot be performed yet. \n" \
-            "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n" \
-            "Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", GC Point Size %" PRIu64 ", \n", 
-                current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
-                current_heap_end - current_heap, 
-                current_allocation_ptr - current_heap, 
-                current_heap_gc_limit - current_heap
-                );
-            errorAndAbort("No space left in the major heap, make GC occur earlier by adjusting the GC limit");
-            return unit_to_yyvalue();
-        }
-        if (stack_ptr + 3 >= stack_end) {
-            errorAndAbort("Stack overflowed, please increase stack size and try again");
-            return unit_to_yyvalue();
-        }
-        stack_ptr += 5;
-        yy_perform_gc();
-        stack_ptr -= 5;
-        return unit_to_yyvalue();
-    } else {
-        return unit_to_yyvalue();
-    }
+    stack_ptr += 5;
+    yy_perform_gc();
+    stack_ptr -= 5;
+    return unit_to_yyvalue();
 }
 
 
@@ -84,18 +76,18 @@ yyvalue get_continuation_exception_handler(yyvalue id)
     return continuation_exception_table[yyvalue_to_int(id)];
 }
 
-yyvalue yy_set_stack_ptr(yyvalue new_stack_ptr_address)
-{
-    yyvalue* new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_address);
-    // const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
-    // if (yy_debug_flag != NULL && strcmp(yy_debug_flag, "1") == 0) {
-    //     fprintf(stderr, "Setting stack pointer, new_offset = %" PRIu64 " prev_offset = %" PRIu64 "\n", 
-    //         new_stack_ptr - stack_start, stack_ptr - stack_start
-    //     );
-    // }
-    stack_ptr = new_stack_ptr;
-    return unit_to_yyvalue();
-}
+// yyvalue yy_set_stack_ptr(yyvalue new_stack_ptr_address)
+// {
+//     yyvalue* new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_address);
+//     // const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
+//     // if (yy_debug_flag != NULL && strcmp(yy_debug_flag, "1") == 0) {
+//     //     fprintf(stderr, "Setting stack pointer, new_offset = %" PRIu64 " prev_offset = %" PRIu64 "\n", 
+//     //         new_stack_ptr - stack_start, stack_ptr - stack_start
+//     //     );
+//     // }
+//     stack_ptr = new_stack_ptr;
+//     return unit_to_yyvalue();
+// }
 
 
 void yy_exit_function(){
@@ -112,6 +104,8 @@ int64_t yy_runtime_start() {
     // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     stack_start = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     stack_end = stack_start + stack_size;
+    // TODO: we should allow stack growth
+    stack_gc_limit = stack_start + (uint64_t) (stack_size * stack_gc_limit_percentage / 100.0);
     stack_ptr = stack_start;
 
     if (use_profiler) {
