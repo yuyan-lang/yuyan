@@ -35,6 +35,7 @@
 函数指针类型标记值者『u0x60000000000000000』也。
 静态指针类型标记值者『u0x70000000000000000』也。
 栈指针类型标记值者『u0x80000000000000000』也。
+全局指针类型标记值者『u0xc0000000000000000』也。
 长度偏移者『80』也。
 默认元素大小者一六也。
 「： 恒等函数名者『恒等函数』也。 ：」
@@ -103,8 +104,9 @@
 默认编译模块的信息者会无而
 （获取目标三元组代码于元）
 附『
-declare i128 @yy_gcAllocateTuple_yyrt(i128)「：换行：」
 @stack_ptr = external global i128* 「：换行：」
+@current_allocation_ptr = external global i128* 「：换行：」
+@current_heap_gc_limit = external global i128* 「：换行：」
 』
 也。
 

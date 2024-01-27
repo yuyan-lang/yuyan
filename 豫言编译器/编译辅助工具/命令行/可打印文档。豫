@@ -37,6 +37,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --do-not-optimize                    不执行任何包括LLVM在内的任何优化
     -O0, -O[1,2,3,5,8,13,21]             执行0,1,2,3,5,8,13或21次优化
     --optimize-intermediate-files        优化中间文件
+    --static-linking                     使用静态链接生成可执行文件
     --target=[js,llvm]                   指定目标平台
     --mode=[regular,worker]              指定运行模式（用于多任务处理）
     --worker-task=TASK                   指定单一工作模式(worker)当前任务
