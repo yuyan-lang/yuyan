@@ -196,7 +196,7 @@ jobs:
         
 
   ubuntu-bs-bs-build-tc:
-    runs-on: ubuntu-latest-from-bs
+    runs-on: ubuntu-latest
     needs: ubuntu-bs-build-from-bs
     steps:
       - uses: actions/checkout@v4

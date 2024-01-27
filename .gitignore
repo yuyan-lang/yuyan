@@ -187,3 +187,4 @@ dist
 *.bc
 *.dylib
 callgrind.out.*
+cachegrind.out.*
