@@ -96,6 +96,10 @@ bool yyvalue_is_heap_string_header(yyvalue arg) {
 
 }
 
+bool yyvalue_is_constructor_tuple(yyvalue arg) {
+    return yyvalue_get_type(arg) == type_constructor_tuple;
+}
+
 // given string length (including the NULL terminator), return the number of allocation blocks (16 bytes each) needed 
 uint64_t string_buffer_length_to_block_length(uint64_t length) {
     assert(sizeof(yyvalue) == 16);
@@ -113,6 +117,7 @@ yyvalue heap_pointer_to_yyvalue(uint64_t type, uint64_t subtype, uint64_t raw_le
     assert(type == type_tuple || type == type_heap_string || type == type_constructor_tuple);
     yyvalue ret = (yyvalue)ptr;
     yyvalue_set_type(&ret, type);
+    yyvalue_set_subtype(&ret, subtype);
     yyvalue_set_raw_length(&ret, raw_length);
     return ret;
 }
@@ -390,7 +395,8 @@ void yy_write_tuple(yyvalue tuple, uint64_t index, yyvalue value){
 
 yyvalue yy_read_heap_pointer(yyvalue ptr, uint64_t index){
     yyvalue *tup = yyvalue_to_heap_pointer(ptr);
-    assert(0 <= index && index < yyvalue_get_heap_pointer_length(ptr));
+    uint64_t length = yyvalue_get_heap_pointer_length(ptr);
+    assert(0 <= index && index < length);
     return tup[index];
 }
 

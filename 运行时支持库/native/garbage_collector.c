@@ -77,6 +77,18 @@ void yy_gc_init() {
     yy_gc_debug_flag = (getenv("YY_GC_DEBUG_FLAG") != NULL && strcmp(getenv("YY_GC_DEBUG_FLAG"), "1") == 0);
 }
 
+bool is_a_null_pointer(yyvalue raw_ptr) {
+    if (yyvalue_is_heap_pointer(raw_ptr)){
+        yyvalue* ptr = yyvalue_to_heap_pointer(raw_ptr);
+        if (ptr == NULL) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
 
 bool is_an_old_pointer(yyvalue raw_ptr) {
     if (! yyvalue_is_heap_pointer(raw_ptr)){
@@ -89,7 +101,7 @@ bool is_an_old_pointer(yyvalue raw_ptr) {
         }
         else
         {
-            assert(is_a_new_pointer(raw_ptr));
+            assert(is_a_null_pointer(raw_ptr) || is_a_new_pointer(raw_ptr));
             return false;
         }
     }
@@ -107,7 +119,7 @@ bool is_a_new_pointer(yyvalue raw_ptr) {
         }
         else
         {
-            assert(is_an_old_pointer(raw_ptr));
+            assert(is_a_null_pointer(raw_ptr) || is_an_old_pointer(raw_ptr));
             return false;
         }
     }
@@ -226,6 +238,7 @@ void yy_perform_gc() {
         fprintf(stderr, "%" PRIu64 "Performing garbage collection, current_heap_offset %" PRIu64",  ", gc_count, current_allocation_ptr - current_heap);
         fflush(stderr);
     }
+    verify_gc();
 
     uint64_t current_heap_size = current_heap_end - current_heap;
     uint64_t new_heap_size = 0;
