@@ -1,5 +1,8 @@
 {
     "editor.unicodeHighlight.ambiguousCharacters": false,
+    "[c]": {
+        "editor.suggest.insertMode": "insert"
+    },
     "files.associations": {
         "stdint.h": "c",
         "globalinclude.h": "c",

@@ -60,10 +60,8 @@ yyvalue double_to_yyvalue(double i);
 
 void yy_豫言初始化全局异常处理器();
 
-yyvalue yy_gcAllocateArray(uint64_t size);
-void *yy_gcAllocateBytes(uint64_t size);
+yyvalue yy_gcAllocateTuple(uint64_t size);
 yyvalue yy_gcAllocateStringBuffer(uint64_t length);
-void *yy_gcReallocateBytes(void* ptr, uint64_t old_size, uint64_t new_size);
 
 
 // runtime configurations
@@ -74,13 +72,15 @@ extern bool use_profiler;
 
 
 
+
+extern yyvalue* stack_start;
+extern yyvalue* stack_end;
 extern yyvalue* stack_ptr;
-extern yyvalue* stack;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
-extern yyvalue entryMain(yyvalue, yyvalue, yyvalue, yyvalue);
+extern void entryMain();
 
-void yy_perform_gc(yyvalue* additional_root_point);
-void verify_gc(yyvalue* additional_root_point);
+void yy_perform_gc();
+void verify_gc();
 void yy_gc_init();
 extern bool during_gc;

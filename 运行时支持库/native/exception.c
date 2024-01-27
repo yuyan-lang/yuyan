@@ -25,15 +25,22 @@ uint64_t errorAndAbort(char* errMsg){
     return -1;
 }
 
+uint64_t errorAndAbort_yyrt(yyvalue errMsg){
+    
+    fprintf(stderr, "%s\n", yyvalue_to_string(errMsg));
+    exit(1);
+    return -1;
+}
+
 // I believe abssingle has two arguments , the first is just the closure itself
-yyvalue 全局异常处理器(yyvalue stack_top, yyvalue cont_id, yyvalue argument, yyvalue return_record){
+void 全局异常处理器(){
+    yyvalue argument = stack_ptr[3];
     fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n");
     fprintf(stderr, "尝试打印值：（可能会出现 异常）：\n");
     fflush(stderr);
     fprintf(stderr, "%s", yyvalue_to_string(yy_read_tuple(argument, 1)));
     fprintf(stderr, "\n");
     exit(1);
-    return unit_to_yyvalue();
 }
 
 

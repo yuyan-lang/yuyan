@@ -84,7 +84,7 @@
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
             "args": [
-                  "tests/example/example-9.yuyan",],
+                  "20",],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
