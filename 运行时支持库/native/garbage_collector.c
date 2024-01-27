@@ -173,6 +173,7 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, yyvalue** new_heap_all
             assert((new_heap <= transfer_address) && (transfer_address < new_heap_end));
             yyvalue new_ptr = heap_pointer_to_yyvalue(
                 yyvalue_get_type(*ptr_ptr),
+                yyvalue_get_subtype(*ptr_ptr),
                 yyvalue_get_raw_length(*ptr_ptr),
                 transfer_address);
             *ptr_ptr = new_ptr;
@@ -204,6 +205,7 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, yyvalue** new_heap_all
             yy_write_heap_pointer(*ptr_ptr, 0, transfer_address_to_yyvalue(ret));
             *ptr_ptr = heap_pointer_to_yyvalue(
                 yyvalue_get_type(*ptr_ptr),
+                yyvalue_get_subtype(*ptr_ptr),
                 yyvalue_get_raw_length(*ptr_ptr), ret);
         }
     }

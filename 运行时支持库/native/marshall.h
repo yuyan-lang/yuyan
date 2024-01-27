@@ -21,6 +21,8 @@ extern const int type_heap_string_header;
 // type and length
 uint64_t yyvalue_get_type(yyvalue arg);
 void yyvalue_set_type(yyvalue *arg, uint64_t type);
+uint64_t yyvalue_get_subtype(yyvalue arg);
+void yyvalue_set_subtype(yyvalue *arg, uint64_t subtype);
 uint64_t yyvalue_get_raw_length(yyvalue arg);
 void yyvalue_set_raw_length(yyvalue *arg, uint64_t length);
 uint64_t yyvalue_get_strlen(yyvalue arg);
@@ -42,6 +44,7 @@ void *yyvalue_to_generic_ptr(yyvalue arg);
 yyvalue *yyvalue_to_heap_pointer(yyvalue arg);
 uint64_t yyvalue_get_heap_pointer_length(yyvalue arg);
 char *yyvalue_to_heap_string_pointer(yyvalue arg);
+uint64_t yyvalue_to_constructor_tuple_length(yyvalue arg);
 
 // testing type 
 bool yyvalue_is_heap_pointer(yyvalue arg);
@@ -64,8 +67,7 @@ yyvalue stackptr_to_yyvalue(yyvalue *ptr);
 yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems);
 yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]);
 yyvalue transfer_address_to_yyvalue(yyvalue *transfer_address);
-yyvalue heap_pointer_to_yyvalue(int type, uint64_t raw_length, yyvalue *ptr);
-
+yyvalue heap_pointer_to_yyvalue(uint64_t type, uint64_t subtype, uint64_t raw_length, yyvalue *ptr);
 
 // list ops
 uint64_t iso_list_get_length(const yyvalue list);
