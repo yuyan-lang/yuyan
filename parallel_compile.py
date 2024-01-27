@@ -486,7 +486,7 @@ if __name__ == "__main__":
     if "--parse-only" in yy_bs_global_args:
         stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE]
     elif "--type-check-only" in yy_bs_global_args:
-        pass
+        stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK]
     elif "--type-check-and-erase-only" in yy_bs_global_args:
         if "--very-parallel" in yy_bs_global_args:
             stages.extend([STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC])
