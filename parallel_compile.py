@@ -29,6 +29,7 @@ STG_PARSE = "parse"
 STG_TYPE_CHECK = "type-check"
 STG_TYPE_CHECK_AND_ERASE = "type-check-and-erase" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
 STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN = "type-check-and-erase-through-codegen" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
+STG_CROSS_MODULE_OPTIMIZE = "cross-module-optimize"
 STG_PRE_CLOSURE_CONVERT = "pre-closure-convert"
 STG_ANF = "anf"
 STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC = "type-check-erase-clo-conv-single-func" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
@@ -304,8 +305,7 @@ def execute_plan():
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps 
                             and (all(dep in completed[stage] for dep in deps[file]) 
-                                or (STG_TYPE_CHECK in stages and i > stages.index(STG_TYPE_CHECK)) 
-                                or (STG_TYPE_CHECK_AND_ERASE in stages and i > stages.index(STG_TYPE_CHECK_AND_ERASE)) 
+                                or (STG_CROSS_MODULE_OPTIMIZE in stages and i > stages.index(STG_CROSS_MODULE_OPTIMIZE)) 
                                 ) 
                             and  (all(file in completed[prev_stage] for prev_stage in stages[:i]))
                         )
@@ -496,6 +496,7 @@ if __name__ == "__main__":
             raise ValueError("Error: --type-check-and-erase-only is not supported without --very-parallel")
     elif "--debug" in yy_bs_global_args:
           stages.extend([STG_TYPE_CHECK_AND_ERASE, 
+            STG_CROSS_MODULE_OPTIMIZE,
             STG_PRE_CLOSURE_CONVERT,
             STG_ANF, 
             STG_ALL_CODEGEN,
