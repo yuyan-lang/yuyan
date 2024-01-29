@@ -109,7 +109,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["@yy:uselibgc=0",  "yylib/标准库。豫", "--do-not-load-cache"],
+            "args": ["yylib/标准库。豫", "--do-not-load-cache"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
