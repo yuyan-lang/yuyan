@@ -116,7 +116,9 @@
         "garbage_collector.h": "c",
         "type_defs.h": "c",
         "marshall.h": "c",
-        "memory_verifier.h": "c"
+        "memory_verifier.h": "c",
+        "assert.h": "c",
+        "debug_print.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

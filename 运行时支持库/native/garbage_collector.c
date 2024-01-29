@@ -24,7 +24,8 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
 #ifdef NDEBUG
 #define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
 #else
-#define INITIAL_HEAP_SIZE (2 * 1024)  // 32 KB
+// #define INITIAL_HEAP_SIZE (2 * 1024 )  // 32 KB
+#define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
 #endif
 #endif
 

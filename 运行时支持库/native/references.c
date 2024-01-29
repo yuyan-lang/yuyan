@@ -43,7 +43,6 @@ yyvalue yyWriteRefArray(yyvalue new_value, yyvalue indexAddr, yyvalue refAddr){
 yyvalue yyNewRefArrayGeneric(yyvalue lengthAddr){
     int64_t length = yyvalue_to_int(lengthAddr);
     yyvalue ret = yy_gcAllocateTuple(length);
-    // verify_yyvalue(ret, true, 0);
     return ret;
 }
 
