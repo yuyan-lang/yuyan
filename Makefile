@@ -127,6 +127,9 @@ cleanclosureopt:
 	find .yybuild.nosync/ -name "*.代码生成形式.json" -print -exec rm {} \;
 	find .yybuild.nosync/ -name "*.闭包优化后形式.json" -print -exec rm {} \;
 
+cleanopt:
+	find .yybuild.nosync/ -type f ! \( -name '*.抽象语法.json' -o -name '*.正则签名.json' -o -name '*.擦除后形式.json' \) -print -exec rm {} +
+
 
 superclean:
 	rm -f yy
