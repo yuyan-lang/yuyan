@@ -67,14 +67,19 @@ stores the stack pointer, supposedly, raise an exception is the same thing as re
 
 yyvalue set_continuation_exception_handler(yyvalue id, yyvalue stack_ptr_address)
 {
+    assert(yyvalue_to_stackptr(stack_ptr_address) == stack_ptr); // caling function can only return to its return address
     continuation_exception_table[yyvalue_to_int(id)] = stack_ptr_address;
     return unit_to_yyvalue();
 }
 
 yyvalue get_continuation_exception_handler(yyvalue id)
 {
-    return continuation_exception_table[yyvalue_to_int(id)];
+    yyvalue ret = continuation_exception_table[yyvalue_to_int(id)];
+    assert(yyvalue_to_stackptr(ret) <= stack_ptr); // this is an informal check that the calling function should not return to a point that is after the current stack pointer
+    // this is nonexhaustive check
+    return ret;
 }
+
 
 // yyvalue yy_set_stack_ptr(yyvalue new_stack_ptr_address)
 // {
