@@ -229,6 +229,12 @@ uint64_t yyvalue_to_constructor_tuple_length(yyvalue arg){
     return yyvalue_get_subtype(arg);
 }
 
+yyvalue* yyvalue_to_constructor_tuple(yyvalue arg){
+    assert(yyvalue_get_type(arg) == type_constructor_tuple);
+    return (yyvalue *)arg;
+}
+
+
 
 char* yyvalue_to_heap_string_pointer(yyvalue arg){
     assert(yyvalue_is_heap_string_pointer(arg));
@@ -447,6 +453,10 @@ void yy_print_yyvalue(yyvalue v) {
         break;
     case type_heap_string:
         fprintf(stderr, "heap_string: %s", yyvalue_to_string(v));
+        break;
+    case type_constructor_tuple:
+        fprintf(stderr, "constructor_tuple: cid = %" PRIu64 ", tuple_length = %" PRIu64", tuple = %p",
+        yyvalue_to_constructor_index(v), yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v));
         break;
     
     default:

@@ -1,4 +1,5 @@
 #include "common_include.h"
+#include "debug_print.h"
 
 yyvalue yyPrintln(yyvalue s) {
     fprintf(stdout,"%s\n", yyvalue_to_string(s));
@@ -85,6 +86,9 @@ yyvalue yyReadLineFromStdin() {
 }
 
 yyvalue yyPrintGeneric(yyvalue obj) {
-    fprintf(stderr, "Generic Printing Unimplemented\n");
+    fprintf(stderr, "Generic Printing (Debug Only): ");
+    yy_print_yyvalue(obj);
+    fprintf(stderr, "\n");
+
     return unit_to_yyvalue();
 }
