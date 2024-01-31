@@ -34,7 +34,7 @@ yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
 
 update_bs_bs: 
 	mv yy_bs_bs yy_bs_bs_old
-	mv yy_bs_bs_bs_bs yy_bs_bs
+	cp yy_bs_bs_bs_bs yy_bs_bs
 
 .PHONY: yy_bs_bs_debug
 
