@@ -32,7 +32,7 @@ yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
 	make cleancache
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs -c --parallel --debug
 
-update_bs_bs: yy_bs_bs_bs_bs
+update_bs_bs: 
 	mv yy_bs_bs yy_bs_bs_old
 	mv yy_bs_bs_bs_bs yy_bs_bs
 
