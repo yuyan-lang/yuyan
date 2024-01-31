@@ -25,6 +25,7 @@
 #include <uv.h> 
 
 #include "marshall.h"
+#include "debug_print.h"
 
 
 extern int global_argc;

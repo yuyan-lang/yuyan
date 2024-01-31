@@ -229,6 +229,12 @@ uint64_t yyvalue_to_constructor_tuple_length(yyvalue arg){
     return yyvalue_get_subtype(arg);
 }
 
+yyvalue* yyvalue_to_constructor_tuple(yyvalue arg){
+    assert(yyvalue_get_type(arg) == type_constructor_tuple);
+    return (yyvalue *)arg;
+}
+
+
 
 char* yyvalue_to_heap_string_pointer(yyvalue arg){
     assert(yyvalue_is_heap_string_pointer(arg));
@@ -405,3 +411,65 @@ void yy_write_heap_pointer(yyvalue ptr, uint64_t index, yyvalue value){
     assert(0 <= index && index < yyvalue_get_heap_pointer_length(ptr));
     tup[index] = value;
 }
+
+
+
+void yy_print_yyvalue(yyvalue v) {
+    switch (yyvalue_get_type(v))
+    {
+    case type_empty_value:
+        fprintf(stderr, "(nil)");
+        break;
+    case type_tuple:
+        fprintf(stderr, "[");
+        for (int i = 0; i < yyvalue_to_tuple_length(v); i ++){
+            yy_print_yyvalue(yy_read_tuple(v, i));
+            if (i != yyvalue_to_tuple_length(v) - 1){
+                fprintf(stderr, ", ");
+            }
+        }
+        fprintf(stderr, "]");
+        /* code */
+        break;
+    case type_int:
+        fprintf(stderr, "int: %" PRId64 , yyvalue_to_int(v));
+        break;
+    case type_double:
+        fprintf(stderr, "double: %f", yyvalue_to_double(v));
+        break;
+    case type_static_string:
+        fprintf(stderr, "static_string: %s", yyvalue_to_string(v));
+        break;
+    case type_boolean:
+        fprintf(stderr, "boolean: %s", yyvalue_to_bool(v) ? "true" : "false");
+        break;
+    case type_pointer_to_function:
+        fprintf(stderr, "pointer_to_function: %p", yyvalue_to_funcptr(v));
+        break;
+    case type_pointer_to_static_object:
+        fprintf(stderr, "pointer_to_static_object: %p", yyvalue_to_staticptr(v));
+        break;
+    case type_pointer_to_stack:
+        fprintf(stderr, "pointer_to_stack: %p", yyvalue_to_stackptr(v));
+        break;
+    case type_pointer_transfer_address:
+        fprintf(stderr, "pointer_transfer_address: %p", yyvalue_to_transfer_address(v));
+        break;
+    case type_heap_string_header:
+        fprintf(stderr, "heap_string_header: %s", yyvalue_to_string(v));
+        break;
+    case type_heap_string:
+        fprintf(stderr, "heap_string: %s", yyvalue_to_string(v));
+        break;
+    case type_constructor_tuple:
+        fprintf(stderr, "cons(%" PRIu64 "): ", yyvalue_to_constructor_index(v));
+        yy_print_yyvalue(raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v)));
+        break;
+    
+    default:
+        fprintf(stderr, "unknown type: %" PRIu64 , yyvalue_get_type(v));
+        break;
+    }
+
+}
+

@@ -19,7 +19,7 @@ def is_tool(name):
     return which(name) is not None
 
 qat_available = is_tool("qat")
-# qat_available = False # for now, qat doesn't seem to work
+qat_available = False # for now, qat doesn't seem to work
 
 # If qat is available, run it with -S flag and pipe the output to the destination file
 if qat_available:

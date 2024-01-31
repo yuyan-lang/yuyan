@@ -13,8 +13,8 @@ yyvalue yyIsSubstring(yyvalue s1, yyvalue s2) {
 
 // returns if s1 is a substring of s2
 yyvalue yyStringEq(yyvalue s1, yyvalue s2) {
-    char *str2 = yyvalue_to_string(s2);
     char *str1 = yyvalue_to_string(s1);
+    char *str2 = yyvalue_to_string(s2);
     if (strcmp(str2, str1) == 0)
     {
         return bool_to_yyvalue(true);

@@ -84,7 +84,7 @@
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
             "args": [
-                  "20",],
+                  "0",],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
@@ -98,7 +98,7 @@
                 //     "description": "ingore libgc related errors",
                 //     "ignoreFailures": false
                 // },
-            {"text": "set output-radix 16"}
+            {"text": "set output-radix 16"},
             {"text": "set disable-randomization off"}
             ], 
             // "MIMode": "lldb",
@@ -109,7 +109,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["@yy:uselibgc=0",  "yylib/标准库。豫", "--do-not-load-cache"],
+            "args": ["yylib/标准库。豫", "--do-not-load-cache", "--no-comments-in-llvm", "--debug-print-add", "compile_tree"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
@@ -123,6 +123,7 @@
                 //     "description": "ingore libgc related errors",
                 //     "ignoreFailures": false
                 // }
+            {"text": "set output-radix 16"},
             ], 
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"

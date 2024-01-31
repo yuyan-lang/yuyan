@@ -90,7 +90,7 @@ int informResultRec (FILE *file, yy_ptr result, int prevPred) {
 
     return 0;
 }
-yy_ptr yyPrintGeneric(yy_ptr obj) {
+yy_ptr yyPrintGeneric(yy_ptr msg, yy_ptr obj) {
     informResultRec(stdout, obj, 0);
     return unit_to_addr();
 }
