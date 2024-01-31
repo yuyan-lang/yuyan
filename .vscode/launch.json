@@ -115,7 +115,6 @@
             "environment": [
                 {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
                 {"name":"YY_DEBUG_FLAG", "value": "1"},
-                {"name":"YY_GC_INITIAL_HEAP_SIZE_MB", "value": "1024"},
         ],
             "externalConsole": false,
             "setupCommands": [
