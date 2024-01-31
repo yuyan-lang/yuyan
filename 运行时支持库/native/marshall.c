@@ -418,10 +418,17 @@ void yy_print_yyvalue(yyvalue v) {
     switch (yyvalue_get_type(v))
     {
     case type_empty_value:
-        fprintf(stderr, "empty: (nil)");
+        fprintf(stderr, "(nil)");
         break;
     case type_tuple:
-        fprintf(stderr, "tuple: %p", yyvalue_to_tuple(v));
+        fprintf(stderr, "[");
+        for (int i = 0; i < yyvalue_to_tuple_length(v); i ++){
+            yy_print_yyvalue(yy_read_tuple(v, i));
+            if (i != yyvalue_to_tuple_length(v) - 1){
+                fprintf(stderr, ", ");
+            }
+        }
+        fprintf(stderr, "]");
         /* code */
         break;
     case type_int:
@@ -455,8 +462,8 @@ void yy_print_yyvalue(yyvalue v) {
         fprintf(stderr, "heap_string: %s", yyvalue_to_string(v));
         break;
     case type_constructor_tuple:
-        fprintf(stderr, "constructor_tuple: cid = %" PRIu64 ", tuple_length = %" PRIu64", tuple = %p",
-        yyvalue_to_constructor_index(v), yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v));
+        fprintf(stderr, "cons(%" PRIu64 "): ", yyvalue_to_constructor_index(v));
+        yy_print_yyvalue(raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v)));
         break;
     
     default:

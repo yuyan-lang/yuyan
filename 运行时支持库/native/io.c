@@ -85,10 +85,12 @@ yyvalue yyReadLineFromStdin() {
     return ret;
 }
 
-yyvalue yyPrintGeneric(yyvalue obj) {
-    fprintf(stderr, "Generic Printing (Debug Only): ");
+yyvalue yyPrintGeneric(yyvalue msg, yyvalue obj) {
+    fprintf(stderr, "[yy Generic Printing] %s: ", yyvalue_to_string(msg));
     yy_print_yyvalue(obj);
     fprintf(stderr, "\n");
+
+    // errorAndAbort("Generic Printing Indicates Irrecoverable Error");
 
     return unit_to_yyvalue();
 }

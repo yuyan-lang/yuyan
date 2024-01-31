@@ -109,12 +109,13 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["yylib/标准库。豫", "--do-not-load-cache"],
+            "args": ["yylib/标准库。豫", "--do-not-load-cache", "--no-comments-in-llvm", "--debug-print-add", "compile_tree"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
                 {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
                 {"name":"YY_DEBUG_FLAG", "value": "1"},
+                {"name":"YY_GC_INITIAL_HEAP_SIZE_MB", "value": "1024"},
         ],
             "externalConsole": false,
             "setupCommands": [

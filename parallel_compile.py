@@ -23,6 +23,7 @@ LINUX_PARALLEL_FACTOR = .8
 DEFAULT_PARALLEL_FACTOR = 1.0
 yy_bs_global_args = []
 yy_bs_main_file = None
+yy_program_name = None
 
 STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
 STG_PARSE = "parse"
@@ -115,7 +116,7 @@ def process_pp_dictionary(original_dict, show_summary = True):
 
 
 def get_function_names(file: str):
-    command = ["./yy_bs", "--mode=worker", "--worker-task=get-function-names"] + [file] + yy_bs_global_args
+    command = [yy_program_name, "--mode=worker", "--worker-task=get-function-names"] + [file] + yy_bs_global_args
     # print("" + " ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
@@ -127,7 +128,7 @@ def get_function_names(file: str):
         return stdout.decode().split()
 
 def get_block_names(file, function_name):
-    command = ["./yy_bs", "--mode=worker", "--worker-task=get-block-names", f"-Dfunction_name={function_name}"] + [file] + yy_bs_global_args
+    command = [yy_program_name, "--mode=worker", "--worker-task=get-block-names", f"-Dfunction_name={function_name}"] + [file] + yy_bs_global_args
     # print("" + " ".join(command))
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = process.communicate()
@@ -167,7 +168,7 @@ def extract_func_name(strings):
         raise ValueError("Error: None or multiple function names found.", func_names, strings)
 
 def exec_worker(args):
-    command = ["./yy_bs", "--mode=worker", "--worker-task=exec-gen"] + args + yy_bs_global_args
+    command = [yy_program_name, "--mode=worker", "--worker-task=exec-gen"] + args + yy_bs_global_args
     print("" + " ".join(command))
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\nRUN:\n"+ " ".join(command) + "\n")
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -191,7 +192,7 @@ def worker(task, retry_count=0):
         def set_nice():
             os.nice(i)
         return set_nice
-    command = ["./yy_bs", "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
+    command = [yy_program_name, "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
     # print("" + " ".join(command))
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\nRUN:\n"+ " ".join(command) + "\n")
     assert stage in stages, f"Error: stage {stage} is not in {stages}"
@@ -476,6 +477,7 @@ if __name__ == "__main__":
     # parser.add_argument("--cache-file", help="Specify a local JSON file to cache the dependency graph.")
     parser.add_argument("-j", "--num-cpu", type=int, default=default_cpu_limit, help="Number of CPU cores to use for compilation")
     parser.add_argument("--extra", default=None)
+    parser.add_argument("--program-name", default=None, required=True)
     parser.add_argument("--codegen-concurrency-limit", default=100)
 
     args = parser.parse_args()
@@ -483,6 +485,8 @@ if __name__ == "__main__":
     print(args)
     if args.extra:
         yy_bs_global_args = args.extra.split(" ")
+
+    yy_program_name = args.program_name
 
 
     if "--parse-only" in yy_bs_global_args:
