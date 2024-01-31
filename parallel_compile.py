@@ -319,12 +319,12 @@ def execute_plan():
                     #     and (not all(file in completed[stage] for file in get_exec_args()))):
                     #     continue
                     scheduled[stage].append(file)
-                    if (stage == STG_TYPE_CHECK and i+1 < len(stages) and 
-                        (stages[i+1] == STG_TYPE_CHECK_AND_ERASE 
-                         or stages[i+1] == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN
-                         or stages[i+1] == STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC
-                         )):
-                        scheduled[stages[i+1]].append(file)
+                    # if (stage == STG_TYPE_CHECK and i+1 < len(stages) and 
+                    #     (stages[i+1] == STG_TYPE_CHECK_AND_ERASE 
+                    #      or stages[i+1] == STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN
+                    #      or stages[i+1] == STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC
+                    #      )):
+                    #     scheduled[stages[i+1]].append(file)
 
     update_schedule()
 
