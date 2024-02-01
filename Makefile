@@ -33,6 +33,10 @@ yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
 	make cleancache
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs -c --parallel --debug
 
+yy_bs_bs_bs_bs_debug: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
+	make cleancache
+	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize
+
 update_bs_bs: 
 	mv yy_bs_bs yy_bs_bs_old
 	cp yy_bs_bs_bs_bs yy_bs_bs
