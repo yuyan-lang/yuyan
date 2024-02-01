@@ -256,26 +256,26 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     yyvalue* strs = iso_list_get_elements(str_list_addr);
 
     int totalLength = 0;
-    int* lengths = (int*)malloc(length * sizeof(int));
 
     for (int i = 0; i < length; i++) {
         yyvalue curStr = strs[i];
         // fprintf(stderr, "concating %d curStr: %s\n", i , yyvalue_to_string(curStr));
-        if(strlen(yyvalue_to_string(strs[i])) != yyvalue_get_strlen(strs[i])) {
-            verify_yyvalue(strs[i], true, 0);
-        }
+        // if(strlen(yyvalue_to_string(strs[i])) != yyvalue_get_strlen(strs[i])) {
+        //     verify_yyvalue(strs[i], true, 0);
+        // }
         assert(strlen(yyvalue_to_string(strs[i])) == yyvalue_get_strlen(strs[i]));
-        lengths[i] = yyvalue_get_strlen(strs[i]);
-        totalLength += lengths[i];
+        totalLength += yyvalue_get_strlen(strs[i]);
     }
 
-    char* resultString = (char*)malloc(totalLength + 1);
+    yyvalue ret = yy_gcAllocateStringBuffer(totalLength + 1);
+
+    char* resultString = yyvalue_to_heap_string_pointer(ret);
     char* currentPos = resultString;
 
     for (int i = 0; i < length; i++) {
         const char* currentStr = yyvalue_to_string(strs[i]);
-        assert(strlen(currentStr) == lengths[i]);
-        int strLength = lengths[i];
+        assert(strlen(currentStr) == yyvalue_get_strlen(strs[i]));
+        int strLength = yyvalue_get_strlen(strs[i]);
         memcpy(currentPos, currentStr, strLength);
         currentPos += strLength;
     }
@@ -284,13 +284,12 @@ yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
 
 
     assert(currentPos - resultString == totalLength);
-    free(lengths);
-    char* resultStringRet = malloc(totalLength + 1);
-    memcpy(resultStringRet, resultString, totalLength + 1);
-    free(resultString);
-    yyvalue ret = malloc_string_to_yyvalue(totalLength + 1, resultStringRet);
+    // char* resultStringRet = malloc(totalLength + 1);
+    // memcpy(resultStringRet, resultString, totalLength + 1);
+    // free(resultString);
+    // yyvalue ret = malloc_string_to_yyvalue(totalLength + 1, resultStringRet);
     // fprintf(stderr, "result %s, strlen = %d, arraylen= " PRIu64 "\n", resultStringRet, totalLength, yyvalue_get_heap_pointer_length(ret));
-    free(resultStringRet);
+    // free(resultStringRet);
     verify_yyvalue(ret, true, 0);
     return ret;
 }
