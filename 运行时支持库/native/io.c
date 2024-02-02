@@ -87,7 +87,7 @@ yyvalue yyReadLineFromStdin() {
 
 yyvalue yyPrintGeneric(yyvalue msg, yyvalue obj) {
     fprintf(stderr, "[yy Generic Printing] %s: ", yyvalue_to_string(msg));
-    yy_print_yyvalue(obj);
+    yy_print_yyvalue(obj, 0);
     fprintf(stderr, "\n");
 
     // errorAndAbort("Generic Printing Indicates Irrecoverable Error");

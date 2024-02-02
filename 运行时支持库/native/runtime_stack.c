@@ -14,9 +14,59 @@ double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
+yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val){
+
+    yyvalue *new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_val);
+    if (stack_ptr < new_stack_ptr) {
+        assert(yyvalue_to_stackptr(new_stack_ptr[0]) == stack_ptr);
+    } else {
+        assert(stack_ptr == new_stack_ptr);
+    }
+    assert(stack_start <= stack_ptr && stack_ptr <= stack_gc_limit);
+    assert(stack_start <= new_stack_ptr && new_stack_ptr <= stack_gc_limit);
+    assert(current_heap <= current_allocation_ptr && current_allocation_ptr <= current_heap_gc_limit);
+    verify_current_heap();
+    verify_stack();
+
+    if (getenv("YY_DEBUG_FLAG") != NULL && strcmp(getenv("YY_DEBUG_FLAG"), "1") == 0)
+    {
+        fprintf(stderr,
+                "Calling function with RET stack ptr "
+        );
+        yy_print_yyvalue(new_stack_ptr[0], 0);
+        fprintf(stderr,
+                "RET func ptr ");
+        yy_print_yyvalue(new_stack_ptr[1], 0);
+        fprintf(stderr,
+                "RET continuation id "
+        );
+        yy_print_yyvalue(new_stack_ptr[2], 0);
+        fprintf(stderr,
+                "arg "
+        );
+        yy_print_yyvalue(new_stack_ptr[3], 0);
+        fprintf(stderr,
+                "calling block id "
+        );
+        yy_print_yyvalue(new_stack_ptr[4], 0);
+        fprintf(stderr,
+                "calling closure ptr "
+        );
+        yy_print_yyvalue(new_stack_ptr[5], 0);
+
+        fprintf(stderr,
+                "\n"
+        );
+    }
+
+    
+    return unit_to_yyvalue();
+}
 // runtime invokes this function prior to any function call
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
-yyvalue yy_pre_function_call_gc(){
+yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
+    assert(stack_ptr <= yyvalue_to_stackptr(new_stack_ptr));
+    stack_ptr = yyvalue_to_stackptr(new_stack_ptr);
     assert(current_allocation_ptr > current_heap_gc_limit);
     if (current_allocation_ptr > current_heap_end)
     {
@@ -34,9 +84,9 @@ yyvalue yy_pre_function_call_gc(){
         errorAndAbort("Stack overflowed, please increase stack size and try again");
         return unit_to_yyvalue();
     }
-    stack_ptr += 5;
+    stack_ptr += 6;
     yy_perform_gc();
-    stack_ptr -= 5;
+    stack_ptr -= 6;
     return unit_to_yyvalue();
 }
 
@@ -111,7 +161,9 @@ yyvalue get_continuation_exception_handler(yyvalue id)
 // }
 
 
-void yy_exit_function(){
+void yy_exit_function(yyvalue stack_top, yyvalue current_allocation_arg){
+    yyvalue *local_stack_ptr = yyvalue_to_stackptr(stack_top);
+    stack_ptr = local_stack_ptr;
     assert(stack_ptr == stack_start);
     assert(yyvalue_to_int(stack_ptr[4]) == 1);
     return;
@@ -157,8 +209,7 @@ int64_t yy_runtime_start() {
     stack_start[3] = unit_to_yyvalue(); // entryMain 's argument value
     stack_start[4] = int_to_yyvalue(1);  // entryMain 's calling block id
 
-
-    entryMain();
+    entryMain(stackptr_to_yyvalue(stack_start), runtime_heap_pointer_to_yyvalue(current_heap));
 
     return 0;
 }

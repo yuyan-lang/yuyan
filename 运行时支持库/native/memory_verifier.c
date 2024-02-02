@@ -18,6 +18,9 @@ void verify_gc(){
 }
 void verify_current_heap(){
 }
+
+void verify_stack(){
+}
 #else
 
 #define VERIFY_REC_LIMIT 10
@@ -58,8 +61,9 @@ void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
         }  else {
             fprintf(stderr, "[52] Not a valid pointer %p, is a new pointer %d, is an old pointer %d\n", yyvalue_to_generic_ptr(arg), 
             is_a_new_pointer(arg), is_an_old_pointer(arg));
+            abort();
             errorAndAbort("Not a valid pointer");
-        } 
+        }
     }  else  if (yyvalue_is_string_pointer(arg)){
         assert(yyvalue_get_strlen(arg) == strlen(yyvalue_to_string(arg)));
     } 
@@ -92,7 +96,8 @@ void verify_yyvalue(yyvalue arg, bool recursive, int depth){
        
         else
         {
-            fprintf(stderr, "Not a valid pointer %p", yyvalue_to_generic_ptr(arg));
+            fprintf(stderr, "[54] Not a valid pointer %p", yyvalue_to_generic_ptr(arg));
+            abort();
             errorAndAbort("Not a valid pointer");
         }
 
@@ -125,6 +130,15 @@ void verify_gc(){
     while(stack_ptr_gc < stack_ptr){
         verify_yyvalue(*(stack_ptr_gc), true, 0);
         stack_ptr_gc++;
+    }
+
+}
+
+void verify_stack(){
+    yyvalue* stack_ptr_iter = (yyvalue*)stack_start;
+    while(stack_ptr_iter < stack_ptr){
+        verify_yyvalue(*(stack_ptr_iter), false, 0);
+        stack_ptr_iter++;
     }
 
 }

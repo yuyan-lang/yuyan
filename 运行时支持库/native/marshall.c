@@ -53,6 +53,7 @@ const int type_heap_string = 10; // 0x0A
 const int type_heap_string_header = 11; // 0x0B
 const int type_runtime_generic_ptr = 12; // 0x0C
 const int type_constructor_tuple = 13;  // 0x0D
+const int type_pointer_to_c_stack = 14;  // 0x0E // used only in the runtime, should not appear at all on the stack
 
 static int offset_type = 64;
 static int offset_subtype = 72;
@@ -74,6 +75,7 @@ uint64_t yyvalue_get_subtype(yyvalue arg) {
 
 bool yyvalue_is_heap_pointer(yyvalue arg) {
     uint64_t type = yyvalue_get_type(arg);
+    assert(type != type_runtime_generic_ptr);
     return type == type_tuple || type == type_heap_string || type == type_constructor_tuple;
 }
 
@@ -371,6 +373,12 @@ yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]){
     return raw_tuple_to_yyvalue(length, returnStorage);
 }
 
+yyvalue runtime_heap_pointer_to_yyvalue(yyvalue* ptr){
+    yyvalue ret = (yyvalue)ptr;
+    yyvalue_set_type(&ret, type_runtime_generic_ptr);
+    return ret;
+}
+
 uint64_t iso_list_get_length(const yyvalue list) {
     yyvalue *tups = yyvalue_to_tuple(list); 
     return yyvalue_to_int(tups[1]);
@@ -414,7 +422,13 @@ void yy_write_heap_pointer(yyvalue ptr, uint64_t index, yyvalue value){
 
 
 
-void yy_print_yyvalue(yyvalue v) {
+#define PRINT_DEPTH
+void yy_print_yyvalue(yyvalue v, uint64_t depth) {
+    if (depth > 10) {
+        fprintf(stderr, "...");
+        return;
+    }
+
     switch (yyvalue_get_type(v))
     {
     case type_empty_value:
@@ -423,7 +437,7 @@ void yy_print_yyvalue(yyvalue v) {
     case type_tuple:
         fprintf(stderr, "[");
         for (int i = 0; i < yyvalue_to_tuple_length(v); i ++){
-            yy_print_yyvalue(yy_read_tuple(v, i));
+            yy_print_yyvalue(yy_read_tuple(v, i), depth + 1);
             if (i != yyvalue_to_tuple_length(v) - 1){
                 fprintf(stderr, ", ");
             }
@@ -463,7 +477,7 @@ void yy_print_yyvalue(yyvalue v) {
         break;
     case type_constructor_tuple:
         fprintf(stderr, "cons(%" PRIu64 "): ", yyvalue_to_constructor_index(v));
-        yy_print_yyvalue(raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v)));
+        yy_print_yyvalue(raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v)), depth + 1);
         break;
     
     default:

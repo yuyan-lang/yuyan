@@ -3,7 +3,7 @@
 #define DEBUG_PRINT_H
 
 #include "common_include.h"
-void yy_print_yyvalue(yyvalue v);
+void yy_print_yyvalue(yyvalue v, uint64_t depth);
 void yy_debug_log_print_args(uint64_t num, const char *func_name, ...);
 
 

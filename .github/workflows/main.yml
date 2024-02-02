@@ -136,7 +136,7 @@ jobs:
       - uses: ./.github/actions/install-linux-dependencies
       - name: curl yy_bs
         run: |
-          curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0beta5/yy_bs_bs
+          curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0beta5.2/yy_bs_bs
           make -C ./运行时支持库/ all
           chmod u+x yy_bs
       - name: make yy_bs_bs
