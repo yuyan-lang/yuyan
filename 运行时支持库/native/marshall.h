@@ -69,6 +69,7 @@ yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems);
 yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]);
 yyvalue transfer_address_to_yyvalue(yyvalue *transfer_address);
 yyvalue heap_pointer_to_yyvalue(uint64_t type, uint64_t subtype, uint64_t raw_length, yyvalue *ptr);
+yyvalue runtime_heap_pointer_to_yyvalue(yyvalue *ptr);
 
 // list ops
 uint64_t iso_list_get_length(const yyvalue list);

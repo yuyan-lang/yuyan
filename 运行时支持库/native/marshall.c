@@ -53,6 +53,7 @@ const int type_heap_string = 10; // 0x0A
 const int type_heap_string_header = 11; // 0x0B
 const int type_runtime_generic_ptr = 12; // 0x0C
 const int type_constructor_tuple = 13;  // 0x0D
+const int type_pointer_to_c_stack = 14;  // 0x0E // used only in the runtime, should not appear at all on the stack
 
 static int offset_type = 64;
 static int offset_subtype = 72;
@@ -74,6 +75,7 @@ uint64_t yyvalue_get_subtype(yyvalue arg) {
 
 bool yyvalue_is_heap_pointer(yyvalue arg) {
     uint64_t type = yyvalue_get_type(arg);
+    assert(type != type_runtime_generic_ptr);
     return type == type_tuple || type == type_heap_string || type == type_constructor_tuple;
 }
 
@@ -369,6 +371,12 @@ yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]){
         returnStorage[i] = elems[i];
     }
     return raw_tuple_to_yyvalue(length, returnStorage);
+}
+
+yyvalue runtime_heap_pointer_to_yyvalue(yyvalue* ptr){
+    yyvalue ret = (yyvalue)ptr;
+    yyvalue_set_type(&ret, type_runtime_generic_ptr);
+    return ret;
 }
 
 uint64_t iso_list_get_length(const yyvalue list) {
