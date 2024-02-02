@@ -422,7 +422,13 @@ void yy_write_heap_pointer(yyvalue ptr, uint64_t index, yyvalue value){
 
 
 
-void yy_print_yyvalue(yyvalue v) {
+#define PRINT_DEPTH
+void yy_print_yyvalue(yyvalue v, uint64_t depth) {
+    if (depth > 10) {
+        fprintf(stderr, "...");
+        return;
+    }
+
     switch (yyvalue_get_type(v))
     {
     case type_empty_value:
@@ -431,7 +437,7 @@ void yy_print_yyvalue(yyvalue v) {
     case type_tuple:
         fprintf(stderr, "[");
         for (int i = 0; i < yyvalue_to_tuple_length(v); i ++){
-            yy_print_yyvalue(yy_read_tuple(v, i));
+            yy_print_yyvalue(yy_read_tuple(v, i), depth + 1);
             if (i != yyvalue_to_tuple_length(v) - 1){
                 fprintf(stderr, ", ");
             }
@@ -471,7 +477,7 @@ void yy_print_yyvalue(yyvalue v) {
         break;
     case type_constructor_tuple:
         fprintf(stderr, "cons(%" PRIu64 "): ", yyvalue_to_constructor_index(v));
-        yy_print_yyvalue(raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v)));
+        yy_print_yyvalue(raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v)), depth + 1);
         break;
     
     default:

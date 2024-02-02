@@ -14,15 +14,54 @@ double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
-yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr){
-    assert(stack_ptr == yyvalue_to_stackptr(new_stack_ptr));
+yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val){
+
+    yyvalue *new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_val);
+    if (stack_ptr < new_stack_ptr) {
+        assert(yyvalue_to_stackptr(new_stack_ptr[0]) == stack_ptr);
+    } else {
+        assert(stack_ptr == new_stack_ptr);
+    }
     assert(stack_start <= stack_ptr && stack_ptr <= stack_gc_limit);
+    assert(stack_start <= new_stack_ptr && new_stack_ptr <= stack_gc_limit);
     assert(current_heap <= current_allocation_ptr && current_allocation_ptr <= current_heap_gc_limit);
     verify_current_heap();
     verify_stack();
+
+    if (getenv("YY_DEBUG_FLAG") != NULL && strcmp(getenv("YY_DEBUG_FLAG"), "1") == 0)
+    {
+        fprintf(stderr,
+                "Calling function with RET stack ptr "
+        );
+        yy_print_yyvalue(new_stack_ptr[0], 0);
+        fprintf(stderr,
+                "RET func ptr ");
+        yy_print_yyvalue(new_stack_ptr[1], 0);
+        fprintf(stderr,
+                "RET continuation id "
+        );
+        yy_print_yyvalue(new_stack_ptr[2], 0);
+        fprintf(stderr,
+                "arg "
+        );
+        yy_print_yyvalue(new_stack_ptr[3], 0);
+        fprintf(stderr,
+                "calling block id "
+        );
+        yy_print_yyvalue(new_stack_ptr[4], 0);
+        fprintf(stderr,
+                "calling closure ptr "
+        );
+        yy_print_yyvalue(new_stack_ptr[5], 0);
+
+        fprintf(stderr,
+                "\n"
+        );
+    }
+
+    
     return unit_to_yyvalue();
 }
-
 // runtime invokes this function prior to any function call
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
 yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
@@ -45,9 +84,9 @@ yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
         errorAndAbort("Stack overflowed, please increase stack size and try again");
         return unit_to_yyvalue();
     }
-    stack_ptr += 5;
+    stack_ptr += 6;
     yy_perform_gc();
-    stack_ptr -= 5;
+    stack_ptr -= 6;
     return unit_to_yyvalue();
 }
 
