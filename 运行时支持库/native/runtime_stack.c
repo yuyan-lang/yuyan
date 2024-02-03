@@ -14,7 +14,7 @@ double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
-yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val){
+yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_ptr){
 
     yyvalue *new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_val);
     if (stack_ptr < new_stack_ptr) {
@@ -35,24 +35,28 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val){
         );
         yy_print_yyvalue(new_stack_ptr[0], 0);
         fprintf(stderr,
-                "RET func ptr ");
+                " RET func ptr ");
         yy_print_yyvalue(new_stack_ptr[1], 0);
         fprintf(stderr,
-                "RET continuation id "
+                " RET continuation id "
         );
         yy_print_yyvalue(new_stack_ptr[2], 0);
         fprintf(stderr,
-                "arg "
+                " arg "
         );
         yy_print_yyvalue(new_stack_ptr[3], 0);
         fprintf(stderr,
-                "calling block id "
+                " calling block id "
         );
         yy_print_yyvalue(new_stack_ptr[4], 0);
         fprintf(stderr,
-                "calling closure ptr "
+                " calling closure ptr "
         );
         yy_print_yyvalue(new_stack_ptr[5], 0);
+        fprintf(stderr,
+                " calling function "
+        );
+        yy_print_yyvalue(next_fun_ptr, 0);
 
         fprintf(stderr,
                 "\n"
@@ -209,7 +213,7 @@ int64_t yy_runtime_start() {
     stack_start[3] = unit_to_yyvalue(); // entryMain 's argument value
     stack_start[4] = int_to_yyvalue(1);  // entryMain 's calling block id
 
-    entryMain(stackptr_to_yyvalue(stack_start), runtime_heap_pointer_to_yyvalue(current_heap));
+    entryMain(stackptr_to_yyvalue(stack_start), runtime_heap_pointer_to_yyvalue(current_allocation_ptr));
 
     return 0;
 }

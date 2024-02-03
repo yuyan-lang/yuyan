@@ -20,22 +20,33 @@ yy_bs : yy $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
 yy_bs_bs : $(YYBSSOURCES) $(YYLIBSOURCES) 
-	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs -c
+	./yy_bs_bs_rc1 豫言编译器/入口。豫  -o yy_bs_bs -c
 
 yy_bs_bs_parallel : $(YYBSSOURCES) $(YYLIBSOURCES) 
 	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs --parallel -c --debug
 
 yy_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) 
-	make cleancache
 	./yy_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs -c --parallel --debug
 
-yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
-	make cleancache
+yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs -c --parallel --debug --static-linking
 
+yy_bs_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES)
+	./yy_bs_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_bs -c --parallel --debug --static-linking
+
+yy_bs3 : yy_bs_bs_bs
+
+yy_bs4 : yy_bs_bs_bs_bs
+
+yy_bs5 : yy_bs_bs_bs_bs_bs
+
 yy_bs_bs_bs_bs_debug: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
-	make cleancache
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize
+
+restore_bs_bs: 
+	mv yy_bs_bs yy_bs_bs_old
+	cp yy_bs_bs_rc1 yy_bs_bs
+
 
 update_bs_bs: 
 	mv yy_bs_bs yy_bs_bs_old
@@ -187,8 +198,9 @@ createcache:
 	mount -t tmpfs none .yybuild.nosync
 
 cleancache:
-	find .yybuild.nosync/  -type f -delete 
-	find .yybuild.nosync/ -mindepth 1 -type d -delete 
+	rm -rf .yybuild*
+	# find .yybuild.nosync/  -type f -delete 
+	# find .yybuild.nosync/ -mindepth 1 -type d -delete 
 	rm -f yy_parallel_log.txt
 
 CACHE_DIR := ./.yybuild.nosync
