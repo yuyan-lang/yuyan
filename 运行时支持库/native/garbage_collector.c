@@ -236,7 +236,7 @@ void yy_perform_gc() {
     gc_count++;
 
     if (yy_gc_debug_flag){
-        fprintf(stderr, "%" PRIu64 "Performing garbage collection, current_heap_offset %" PRIu64",  ", gc_count, current_allocation_ptr - current_heap);
+        fprintf(stderr, "%" PRIu64 "Performing garbage collection, current_heap_offset %td,  ", gc_count, current_allocation_ptr - current_heap);
         fflush(stderr);
     }
     verify_gc();
