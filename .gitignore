@@ -188,3 +188,4 @@ dist
 *.dylib
 callgrind.out.*
 cachegrind.out.*
+.yybuild.*
