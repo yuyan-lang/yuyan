@@ -72,7 +72,7 @@ yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
     {
         fprintf(stderr, "[RS] No space left and garbage collection cannot be performed yet. \n"
                         "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n"
-                        "Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", GC Point Size %" PRIu64 ", \n",
+                        "Heap Size %td, Heap Offset %td, GC Point Size %td, \n",
                 current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
                 current_heap_end - current_heap,
                 current_allocation_ptr - current_heap,

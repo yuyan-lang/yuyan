@@ -205,7 +205,7 @@ void copy_root_point(yyvalue* ptr_ptr, yyvalue* new_heap, yyvalue** new_heap_all
             yyvalue* incremented_new_heap_allocation_ptr = *new_heap_allocation_ptr + ptr_size;
             if (incremented_new_heap_allocation_ptr > new_heap_end) {
                 errorAndAbort("No space left during GC BUG, should have allocated enough space on new heap" "This may mean that the header is not correctly marked");
-                fprintf(stderr, "No space left during GC BUG. New Heap Size %td, Heap Offset %td, Requested Offset %td, Requested Size %td\n",
+                fprintf(stderr, "No space left during GC BUG. New Heap Size %td, Heap Offset %td, Requested Offset %td, Requested Size %" PRIu64 "\n",
                         new_heap_end - new_heap,
                         ret - new_heap,
                         incremented_new_heap_allocation_ptr - new_heap,
@@ -290,8 +290,8 @@ void yy_perform_gc() {
     free(current_heap);
 
     if (yy_gc_debug_flag){
-        fprintf(stderr, "Finished garbage collection, %" PRIu64 " active, %" PRIu64 " total,  (* 16 bytes) ", new_heap_allocation_ptr - new_heap, current_allocation_ptr - current_heap);
-        fprintf(stderr, "New heap %p - %p size %ld, Prev heap %p - %p size %ld \n", new_heap, new_heap_end, new_heap_size, current_heap, current_heap_end, current_heap_size);
+        fprintf(stderr, "Finished garbage collection, %td active, %td total,  (* 16 bytes) ", new_heap_allocation_ptr - new_heap, current_allocation_ptr - current_heap);
+        fprintf(stderr, "New heap %p - %p size %" PRIu64 ", Prev heap %p - %p size %" PRIu64 " \n", new_heap, new_heap_end, new_heap_size, current_heap, current_heap_end, current_heap_size);
         fflush(stderr);
     }
     current_heap = new_heap;
