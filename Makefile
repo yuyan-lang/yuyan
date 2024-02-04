@@ -43,7 +43,7 @@ yy_bs4 : yy_bs_bs_bs_bs
 yy_bs5 : yy_bs_bs_bs_bs_bs
 
 yy_bs_bs_bs_bs_debug: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
-	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize
+	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize $(OPTIONS)
 
 yy_bs_bs_bs_bs_quick: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_opt -c --parallel --debug 
