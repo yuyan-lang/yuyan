@@ -14,8 +14,9 @@ double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
 
-yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_ptr){
+yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_ptr, yyvalue stack_occupation_arg){
 
+    yy_function_type next_fun = yyvalue_to_funcptr(next_fun_ptr);
     yyvalue *new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_val);
     if (stack_ptr < new_stack_ptr) {
         assert(yyvalue_to_stackptr(new_stack_ptr[0]) == stack_ptr);
@@ -35,32 +36,36 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_pt
         );
         yy_print_yyvalue(new_stack_ptr[0], 0);
         fprintf(stderr,
-                " RET func ptr ");
+                "\n RET func ptr ");
         yy_print_yyvalue(new_stack_ptr[1], 0);
         fprintf(stderr,
-                " RET continuation id "
+                "\n RET continuation id "
         );
         yy_print_yyvalue(new_stack_ptr[2], 0);
         fprintf(stderr,
-                " arg "
+                "\n RET arg"
         );
         yy_print_yyvalue(new_stack_ptr[3], 0);
         fprintf(stderr,
-                " calling block id "
+                "\n calling block id "
         );
         yy_print_yyvalue(new_stack_ptr[4], 0);
         fprintf(stderr,
-                " calling closure ptr "
+                "\n calling closure ptr "
         );
         yy_print_yyvalue(new_stack_ptr[5], 0);
         fprintf(stderr,
-                " calling function "
+                "\n calling function "
         );
         yy_print_yyvalue(next_fun_ptr, 0);
-
+        for (int i = 6; i <= yyvalue_to_int(stack_occupation); i++) {
+            fprintf(stderr,
+                    "\n arg %d ", i - 6
+            );
+            yy_print_yyvalue(new_stack_ptr[i], 0);
+        }
         fprintf(stderr,
-                "\n"
-        );
+                "\n");
     }
 
     
@@ -68,7 +73,10 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_pt
 }
 // runtime invokes this function prior to any function call
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
-yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
+yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr, yyvalue stack_occupy_arg){
+    uint64_t stack_occupy = yyvalue_to_int(stack_occupy_arg);
+    assert (stack_occupy >= 5);
+
     assert(stack_ptr <= yyvalue_to_stackptr(new_stack_ptr));
     stack_ptr = yyvalue_to_stackptr(new_stack_ptr);
     assert(current_allocation_ptr > current_heap_gc_limit);
@@ -88,9 +96,9 @@ yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
         errorAndAbort("Stack overflowed, please increase stack size and try again");
         return unit_to_yyvalue();
     }
-    stack_ptr += 6;
+    stack_ptr += stack_occupy;
     yy_perform_gc();
-    stack_ptr -= 6;
+    stack_ptr -= stack_occupy;
     return unit_to_yyvalue();
 }
 

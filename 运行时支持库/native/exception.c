@@ -34,7 +34,7 @@ uint64_t errorAndAbort_yyrt(yyvalue errMsg){
 
 // I believe abssingle has two arguments , the first is just the closure itself
 void 全局异常处理器(yyvalue stack_top, yyvalue current_allocation_arg){
-    yyvalue argument = yyvalue_to_stackptr(stack_top)[3];
+    yyvalue argument = yyvalue_to_stackptr(stack_top)[6];
     fprintf(stderr, "！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！\n豫言运行环境(yy_runtime)：未捕捉的异常(Uncaught Exception)：\n");
     fprintf(stderr, "尝试打印值：（可能会出现 异常）：\n");
     fflush(stderr);
