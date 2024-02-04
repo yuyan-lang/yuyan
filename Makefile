@@ -34,7 +34,7 @@ yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs -c --parallel --debug --static-linking $(OPTIONS)
 
 yy_bs_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES)
-	./yy_bs_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_bs -c --parallel --debug --static-linking $(OPTIONS)
+	./yy_bs_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_bs -c --parallel --debug --static-linking $(OPTIONS) --optimize
 
 yy_bs3 : yy_bs_bs_bs
 
@@ -45,8 +45,8 @@ yy_bs5 : yy_bs_bs_bs_bs_bs
 yy_bs_bs_bs_bs_debug: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize
 
-yy_bs_bs_bs_bs_opt: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
-	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_opt -c --parallel --debug --optimize
+yy_bs_bs_bs_bs_quick: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
+	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_opt -c --parallel --debug 
 
 restore_bs_bs: 
 	mv yy_bs_bs yy_bs_bs_old

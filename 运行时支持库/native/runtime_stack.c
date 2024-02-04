@@ -9,7 +9,8 @@ yyvalue *stack_gc_limit;
 yyvalue* stack_end;
 yyvalue* stack_ptr;
 // uint64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
-uint64_t stack_size = 1024 * 1024 * 128 ; // 2GB stack
+#define INITIAL_STACK_SIZE_MB 128 * 1024 * 1024
+uint64_t stack_size = INITIAL_STACK_SIZE_MB; // 2GB stack
 double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
@@ -196,9 +197,17 @@ void yy_exit_function(yyvalue stack_top, yyvalue current_allocation_arg){
 int64_t yy_runtime_start() {
     yy_debug_flag = getenv("YY_DEBUG_FLAG") != NULL && strcmp(getenv("YY_DEBUG_FLAG"), "1") == 0;
     // allocate a 100 M * 8 bytes stack
+    if (getenv("YY_GC_INITIAL_STACK_SIZE_MB") != NULL ) {
+        const char* requested_size = getenv("YY_GC_INITIAL_STACK_SIZE_MB");
+        stack_size = atoi(requested_size) * 1024 * 1024;
+    }
+
+    if (stack_size != INITIAL_STACK_SIZE_MB) {
+        fprintf(stderr, "YY initial stack is set to %f * 16 MB\n", (double) INITIAL_STACK_SIZE_MB / (1024 * 1024));
+    }
 
     // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
-    stack_start = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
+    stack_start = (yyvalue*) malloc(stack_size  * sizeof(yyvalue));
     stack_end = stack_start + stack_size;
     // TODO: we should allow stack growth
     stack_gc_limit = stack_start + (uint64_t) (stack_size * stack_gc_limit_percentage / 100.0);
