@@ -45,6 +45,9 @@ yy_bs5 : yy_bs_bs_bs_bs_bs
 yy_bs_bs_bs_bs_debug: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize
 
+yy_bs_bs_bs_bs_opt: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
+	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_opt -c --parallel --debug --optimize
+
 restore_bs_bs: 
 	mv yy_bs_bs yy_bs_bs_old
 	cp yy_bs_bs_rc1 yy_bs_bs
@@ -227,7 +230,7 @@ restorecache:
 	rm -rf yy_restore_temp
 	echo "Cache restored."
 
-VERSION = $(error Please set VERSION=... as a command line argument for uploading to GitHub release.)
+# VERSION = $(error Please set VERSION=... as a command line argument for uploading to GitHub release.)
 RUNTIME_LIB_FILES := $(shell find ./运行时支持库 \( -name '*$(VERSION)*' \) )
 upload_gh_release:
 	echo $(VERSION)

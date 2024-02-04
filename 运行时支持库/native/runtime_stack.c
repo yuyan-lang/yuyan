@@ -13,6 +13,7 @@ uint64_t stack_size = 1024 * 1024 * 128 ; // 2GB stack
 double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
+bool yy_debug_flag = false;
 
 yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_ptr, yyvalue stack_occupation_arg){
 
@@ -30,7 +31,7 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_pt
     verify_current_heap();
     verify_stack();
 
-    if (getenv("YY_DEBUG_FLAG") != NULL && strcmp(getenv("YY_DEBUG_FLAG"), "1") == 0)
+    if (yy_debug_flag)
     {
         fprintf(stderr,
                 "Calling function with RET stack ptr "
@@ -61,7 +62,7 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_pt
                 "\n calling function "
         );
         yy_print_yyvalue(next_fun_ptr, 0);
-        if (stack_occupation < 5)
+        if (stack_occupation <= 5)
         {
             fprintf(stderr,
                     "\n (no args) "
@@ -193,9 +194,9 @@ void yy_exit_function(yyvalue stack_top, yyvalue current_allocation_arg){
 
 #define RECURSIVE_VERIFICATION_WHEN_RUNNING true
 int64_t yy_runtime_start() {
-    const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
+    yy_debug_flag = getenv("YY_DEBUG_FLAG") != NULL && strcmp(getenv("YY_DEBUG_FLAG"), "1") == 0;
     // allocate a 100 M * 8 bytes stack
-    
+
     // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     stack_start = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     stack_end = stack_start + stack_size;
