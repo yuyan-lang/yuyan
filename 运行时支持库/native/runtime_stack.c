@@ -17,6 +17,7 @@ yy_function_type current_function;
 yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_ptr, yyvalue stack_occupation_arg){
 
     yy_function_type next_fun = yyvalue_to_funcptr(next_fun_ptr);
+    uint64_t stack_occupation = yyvalue_to_int(stack_occupation_arg);
     yyvalue *new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_val);
     if (stack_ptr < new_stack_ptr) {
         assert(yyvalue_to_stackptr(new_stack_ptr[0]) == stack_ptr);
@@ -36,6 +37,12 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_pt
         );
         yy_print_yyvalue(new_stack_ptr[0], 0);
         fprintf(stderr,
+                " (offset %td)", yyvalue_to_stackptr(new_stack_ptr[0]) - stack_start);
+        fprintf(stderr,
+                "\n CURRENT stack ptr %p (offset %td) NEXT stack ptr %p (offset %td)",
+                stack_ptr, stack_ptr - stack_start, new_stack_ptr, new_stack_ptr - stack_start
+        );
+        fprintf(stderr,
                 "\n RET func ptr ");
         yy_print_yyvalue(new_stack_ptr[1], 0);
         fprintf(stderr,
@@ -43,7 +50,7 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_pt
         );
         yy_print_yyvalue(new_stack_ptr[2], 0);
         fprintf(stderr,
-                "\n RET arg"
+                "\n RET arg "
         );
         yy_print_yyvalue(new_stack_ptr[3], 0);
         fprintf(stderr,
@@ -51,18 +58,21 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_pt
         );
         yy_print_yyvalue(new_stack_ptr[4], 0);
         fprintf(stderr,
-                "\n calling closure ptr "
-        );
-        yy_print_yyvalue(new_stack_ptr[5], 0);
-        fprintf(stderr,
                 "\n calling function "
         );
         yy_print_yyvalue(next_fun_ptr, 0);
-        for (int i = 6; i <= yyvalue_to_int(stack_occupation); i++) {
+        if (stack_occupation < 5)
+        {
             fprintf(stderr,
-                    "\n arg %d ", i - 6
+                    "\n (no args) "
             );
-            yy_print_yyvalue(new_stack_ptr[i], 0);
+        } else {
+            for (int i = 5; i < stack_occupation; i++) {
+                fprintf(stderr,
+                        "\n arg %d ", i - 5
+                );
+                yy_print_yyvalue(new_stack_ptr[i], 0);
+            }
         }
         fprintf(stderr,
                 "\n");

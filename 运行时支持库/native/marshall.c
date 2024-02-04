@@ -435,7 +435,7 @@ void yy_print_yyvalue(yyvalue v, uint64_t depth) {
         fprintf(stderr, "(nil)");
         break;
     case type_tuple:
-        fprintf(stderr, "[");
+        fprintf(stderr, "tuple(%" PRIu64 "): [", yyvalue_to_tuple_length(v));
         for (int i = 0; i < yyvalue_to_tuple_length(v); i ++){
             yy_print_yyvalue(yy_read_tuple(v, i), depth + 1);
             if (i != yyvalue_to_tuple_length(v) - 1){
