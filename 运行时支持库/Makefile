@@ -68,4 +68,5 @@ all: debug opt debugso optso
 .PHONY: clean
 clean:
 	rm -rf build
-	rm *.a
+	rm -f *.a
+	rm -f *.so

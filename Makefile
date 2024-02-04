@@ -226,3 +226,9 @@ restorecache:
 	cp -n -r yy_restore_temp/* $(CACHE_DIR)
 	rm -rf yy_restore_temp
 	echo "Cache restored."
+
+VERSION = $(error Please set VERSION=... as a command line argument for uploading to GitHub release.)
+RUNTIME_LIB_FILES := $(shell find ./运行时支持库 \( -name '*$(VERSION)*' \) )
+upload_gh_release:
+	echo $(VERSION)
+	gh release upload $(VERSION) yy_bs_bs $(RUNTIME_LIB_FILES)
