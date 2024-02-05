@@ -25,10 +25,11 @@ uint64_t errorAndAbort(char* errMsg){
     return -1;
 }
 
-uint64_t errorAndAbort_yyrt(yyvalue errMsg){
+uint64_t errorAndAbort_yyrt(yyvalue errMsg, yyvalue value){
     
     fprintf(stderr, "%s\n", yyvalue_to_string(errMsg));
-    exit(1);
+    yy_print_yyvalue(value, 0);
+    abort();
     return -1;
 }
 
