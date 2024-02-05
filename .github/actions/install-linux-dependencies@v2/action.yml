@@ -16,3 +16,4 @@ runs:
         curl -o ./运行时支持库/libyyrtoptv0.1.0rc2+0016.so -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/libyyrtoptv0.1.0rc2+0016.so
         curl -o ./运行时支持库/libyyrtdebugv0.1.0rc2+0016.so -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/libyyrtdebugv0.1.0rc2+0016.so
         chmod u+x yy_bs
+      shell: bash
