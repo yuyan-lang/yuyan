@@ -28,7 +28,7 @@ yy_bs_bs_parallel : $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs --parallel -c --debug
 
 yy_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) 
-	./yy_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs -c --parallel --debug
+	./yy_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs -c --parallel --debug $(OPTIONS)
 
 yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs -c --parallel --debug --static-linking $(OPTIONS)
