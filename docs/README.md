@@ -28,9 +28,9 @@
 ## 语言规范
 
 <!-- [语言规范](LanguageSpecification.md) -->
-[教程](教程/教程目录.md)
+[教程](教程/0000-教程目录.md)
 
-[语法表](语法表.md)
+[语法表](教程/0100-语法对照表.md)
 
 
 ## 运行
@@ -49,12 +49,10 @@
 
 ## 提交反馈
 
-如您有任何意见或者建议，欢迎提Issue或通过Slack，邮件，企业微信与我们取得联系。
+如您有任何意见或者建议，欢迎提Issue或PLOC论坛或者微信群与我们取得联系。
 
 ## 联系我们
 
-Slack： https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30n7-FQNwZ0tefBePMxPSFrcbGg
-
 微信群：[群二维码](community_qr_wecom.png)
 
-邮箱： yuyanlang@icloud.com
+<!-- 邮箱： yuyanlang@icloud.com -->
