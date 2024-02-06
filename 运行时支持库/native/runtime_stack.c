@@ -9,13 +9,17 @@ yyvalue *stack_gc_limit;
 yyvalue* stack_end;
 yyvalue* stack_ptr;
 // uint64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
-uint64_t stack_size = 1024 * 1024 * 128 ; // 2GB stack
+#define INITIAL_STACK_SIZE_MB 128 * 1024 * 1024
+uint64_t stack_size = INITIAL_STACK_SIZE_MB; // 2GB stack
 double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
+bool yy_debug_flag = false;
 
-yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val){
+yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val, yyvalue next_fun_ptr, yyvalue stack_occupation_arg){
 
+    yy_function_type next_fun = yyvalue_to_funcptr(next_fun_ptr);
+    uint64_t stack_occupation = yyvalue_to_int(stack_occupation_arg);
     yyvalue *new_stack_ptr = yyvalue_to_stackptr(new_stack_ptr_val);
     if (stack_ptr < new_stack_ptr) {
         assert(yyvalue_to_stackptr(new_stack_ptr[0]) == stack_ptr);
@@ -28,35 +32,52 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val){
     verify_current_heap();
     verify_stack();
 
-    if (getenv("YY_DEBUG_FLAG") != NULL && strcmp(getenv("YY_DEBUG_FLAG"), "1") == 0)
+    if (yy_debug_flag)
     {
         fprintf(stderr,
                 "Calling function with RET stack ptr "
         );
         yy_print_yyvalue(new_stack_ptr[0], 0);
         fprintf(stderr,
-                "RET func ptr ");
+                " (offset %td)", yyvalue_to_stackptr(new_stack_ptr[0]) - stack_start);
+        fprintf(stderr,
+                "\n CURRENT stack ptr %p (offset %td) NEXT stack ptr %p (offset %td)",
+                stack_ptr, stack_ptr - stack_start, new_stack_ptr, new_stack_ptr - stack_start
+        );
+        fprintf(stderr,
+                "\n RET func ptr ");
         yy_print_yyvalue(new_stack_ptr[1], 0);
         fprintf(stderr,
-                "RET continuation id "
+                "\n RET continuation id "
         );
         yy_print_yyvalue(new_stack_ptr[2], 0);
         fprintf(stderr,
-                "arg "
+                "\n RET arg "
         );
         yy_print_yyvalue(new_stack_ptr[3], 0);
         fprintf(stderr,
-                "calling block id "
+                "\n calling block id "
         );
         yy_print_yyvalue(new_stack_ptr[4], 0);
         fprintf(stderr,
-                "calling closure ptr "
+                "\n calling function "
         );
-        yy_print_yyvalue(new_stack_ptr[5], 0);
-
+        yy_print_yyvalue(next_fun_ptr, 0);
+        if (stack_occupation <= 5)
+        {
+            fprintf(stderr,
+                    "\n (no args) "
+            );
+        } else {
+            for (int i = 5; i < stack_occupation; i++) {
+                fprintf(stderr,
+                        "\n arg %d ", i - 5
+                );
+                yy_print_yyvalue(new_stack_ptr[i], 0);
+            }
+        }
         fprintf(stderr,
-                "\n"
-        );
+                "\n");
     }
 
     
@@ -64,7 +85,10 @@ yyvalue yy_pre_function_call_info(yyvalue new_stack_ptr_val){
 }
 // runtime invokes this function prior to any function call
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
-yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
+yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr, yyvalue stack_occupy_arg){
+    uint64_t stack_occupy = yyvalue_to_int(stack_occupy_arg);
+    assert (stack_occupy >= 5);
+
     assert(stack_ptr <= yyvalue_to_stackptr(new_stack_ptr));
     stack_ptr = yyvalue_to_stackptr(new_stack_ptr);
     assert(current_allocation_ptr > current_heap_gc_limit);
@@ -72,7 +96,7 @@ yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
     {
         fprintf(stderr, "[RS] No space left and garbage collection cannot be performed yet. \n"
                         "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n"
-                        "Heap Size %" PRIu64 ", Heap Offset %" PRIu64 ", GC Point Size %" PRIu64 ", \n",
+                        "Heap Size %td, Heap Offset %td, GC Point Size %td, \n",
                 current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
                 current_heap_end - current_heap,
                 current_allocation_ptr - current_heap,
@@ -84,9 +108,9 @@ yyvalue yy_pre_function_call_gc(yyvalue new_stack_ptr){
         errorAndAbort("Stack overflowed, please increase stack size and try again");
         return unit_to_yyvalue();
     }
-    stack_ptr += 6;
+    stack_ptr += stack_occupy;
     yy_perform_gc();
-    stack_ptr -= 6;
+    stack_ptr -= stack_occupy;
     return unit_to_yyvalue();
 }
 
@@ -171,11 +195,19 @@ void yy_exit_function(yyvalue stack_top, yyvalue current_allocation_arg){
 
 #define RECURSIVE_VERIFICATION_WHEN_RUNNING true
 int64_t yy_runtime_start() {
-    const char* yy_debug_flag = getenv("YY_DEBUG_FLAG");
+    yy_debug_flag = getenv("YY_DEBUG_FLAG") != NULL && strcmp(getenv("YY_DEBUG_FLAG"), "1") == 0;
     // allocate a 100 M * 8 bytes stack
-    
+    if (getenv("YY_GC_INITIAL_STACK_SIZE_MB") != NULL ) {
+        const char* requested_size = getenv("YY_GC_INITIAL_STACK_SIZE_MB");
+        stack_size = atoi(requested_size) * 1024 * 1024;
+    }
+
+    if (stack_size != INITIAL_STACK_SIZE_MB) {
+        fprintf(stderr, "YY initial stack is set to %f * 16 MB\n", (double) INITIAL_STACK_SIZE_MB / (1024 * 1024));
+    }
+
     // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
-    stack_start = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
+    stack_start = (yyvalue*) malloc(stack_size  * sizeof(yyvalue));
     stack_end = stack_start + stack_size;
     // TODO: we should allow stack growth
     stack_gc_limit = stack_start + (uint64_t) (stack_size * stack_gc_limit_percentage / 100.0);
@@ -209,7 +241,7 @@ int64_t yy_runtime_start() {
     stack_start[3] = unit_to_yyvalue(); // entryMain 's argument value
     stack_start[4] = int_to_yyvalue(1);  // entryMain 's calling block id
 
-    entryMain(stackptr_to_yyvalue(stack_start), runtime_heap_pointer_to_yyvalue(current_heap));
+    entryMain(stackptr_to_yyvalue(stack_start), runtime_heap_pointer_to_yyvalue(current_allocation_ptr));
 
     return 0;
 }

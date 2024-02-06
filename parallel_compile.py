@@ -27,24 +27,24 @@ yy_program_name = None
 
 STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
 STG_PARSE = "parse"
-STG_TYPE_CHECK = "type-check"
+# STG_TYPE_CHECK = "type-check"
 STG_TYPE_CHECK_AND_ERASE = "type-check-and-erase" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
-STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN = "type-check-and-erase-through-codegen" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
+# STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN = "type-check-and-erase-through-codegen" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
 STG_CROSS_MODULE_OPTIMIZE = "cross-module-optimize"
 STG_PRE_CLOSURE_CONVERT = "pre-closure-convert"
 STG_ANF = "anf"
-STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC = "type-check-erase-clo-conv-single-func" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
-STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC = "anf-and-pre-codegen-single-func"
-STG_CODEGEN_SINGLE_FUNC = "codegen-single-func"
-STG_CODEGEN_SINGLE_FUNC_FINAL = "codegen-single-func-final"
+# STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC = "type-check-erase-clo-conv-single-func" # this is duplicate work, type check is duplicated, but erase takes long, so worth paying extra
+# STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC = "anf-and-pre-codegen-single-func"
+# STG_CODEGEN_SINGLE_FUNC = "codegen-single-func"
+# STG_CODEGEN_SINGLE_FUNC_FINAL = "codegen-single-func-final"
 
 # STG_OPTIMIZE_HALF = "optimize-half"
 # STG_CPS_TRANSFORM = "cps-transform"
 # STG_CLOSURE_CONVERT = "closure-convert"
 # STG_CLOSURE_OPT = "closure-opt"
-STG_PRE_CODEGEN = "pre-codegen"
+# STG_PRE_CODEGEN = "pre-codegen"
 STG_ALL_CODEGEN = "all-codegen"
-STG_CODEGEN = "codegen"
+# STG_CODEGEN = "codegen"
 
 
 log_file = open("yy_parallel_log.txt", "a+")
@@ -54,7 +54,11 @@ dependencies_log = open("yy_parallel_deps.txt", "w")
 num_cpu_limit = None
 stages = [STG_DEPENDENCY_ANALYSIS, 
           STG_PARSE, 
-        #   STG_TYPE_CHECK, 
+          STG_TYPE_CHECK_AND_ERASE,
+          STG_CROSS_MODULE_OPTIMIZE,
+          STG_PRE_CLOSURE_CONVERT,
+          STG_ANF,
+          STG_ALL_CODEGEN
           ]
 # stage_concurrency_limit = [100 for s in stages]
 # stage_processing_order = [stages.index(STG_DEPENDENCY_ANALYSIS),
@@ -115,58 +119,6 @@ def process_pp_dictionary(original_dict, show_summary = True):
     return {k : [len(v), new_dict[k]] for k, v in original_dict.items()}
 
 
-def get_function_names(file: str):
-    command = [yy_program_name, "--mode=worker", "--worker-task=get-function-names"] + [file] + yy_bs_global_args
-    # print("" + " ".join(command))
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    if process.returncode != 0:
-        print("ERROR OCCURRED")
-        print(" ".join(command), stdout.decode(), stderr.decode(), sep="\n")
-        os.abort()
-    else:
-        return stdout.decode().split()
-
-def get_block_names(file, function_name):
-    command = [yy_program_name, "--mode=worker", "--worker-task=get-block-names", f"-Dfunction_name={function_name}"] + [file] + yy_bs_global_args
-    # print("" + " ".join(command))
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, stderr = process.communicate()
-    if process.returncode != 0:
-        print("ERROR OCCURRED")
-        print(" ".join(command), stdout.decode(), stderr.decode(), sep="\n")
-        os.abort()
-    else:
-        return stdout.decode().split()
-
-def extract_block_name(strings):
-    pattern = re.compile(r'-Dblock_name=([^,]+)')
-
-    func_names = []
-    for string in strings:
-        match = pattern.search(string)
-        if match:
-            func_names.append(match.group(1))
-
-    if len(func_names) == 1:
-        return func_names[0]
-    else:
-        raise ValueError("Error: None or multiple block names found.", func_names, strings)
-
-def extract_func_name(strings):
-    pattern = re.compile(r'-Dfunction_name=([^,]+)')
-
-    func_names = []
-    for string in strings:
-        match = pattern.search(string)
-        if match:
-            func_names.append(match.group(1))
-
-    if len(func_names) == 1:
-        return func_names[0]
-    else:
-        raise ValueError("Error: None or multiple function names found.", func_names, strings)
-
 def exec_worker(args):
     command = [yy_program_name, "--mode=worker", "--worker-task=exec-gen"] + args + yy_bs_global_args
     print("" + " ".join(command))
@@ -203,7 +155,7 @@ def worker(task, retry_count=0):
     if process.returncode != 0:
         print(f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}")
-        if retry_count >= 2:
+        if retry_count >= 0:
             print("" + " ".join(command))
             return (task, stdout.decode().split()), (f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!" \
                       f"\nError during {task[0]} on {task[1][0]}: \n{' '.join(command)}\n stderr is: \n{stderr.decode('utf-8')}\nstdout:{stdout.decode('utf-8')}\nexit code:{process.returncode}")
@@ -253,8 +205,8 @@ def execute_plan():
     completed = {k : [] for k in stages}
     executing = {k : [] for k in stages}
     scheduled = {k : [] for k in stages}
-    errored = {k : [] for k in stages}
-    error_msgs = []
+    # errored = {k : [] for k in stages}
+    # error_msgs = []
 
     deps = {}
     deps_to_process = [yy_bs_main_file]
@@ -296,13 +248,13 @@ def execute_plan():
 
         for file in deps_to_process + list(deps.keys()):
             for i, stage in enumerate(stages):
-                if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC or stage == STG_CODEGEN_SINGLE_FUNC or stage == STG_CODEGEN_SINGLE_FUNC_FINAL:
-                    continue
+                # if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC or stage == STG_CODEGEN_SINGLE_FUNC or stage == STG_CODEGEN_SINGLE_FUNC_FINAL:
+                #     continue
                 if (
                     file not in scheduled[stage] and 
                     file not in executing[stage] and
                     file not in completed[stage] and 
-                    file not in errored[stage] and
+                    # file not in errored[stage] and
                     ((file not in deps and i == stages.index(STG_DEPENDENCY_ANALYSIS)) or 
                         (file in deps 
                             and (all(dep in completed[stage] for dep in deps[file]) 
@@ -333,19 +285,21 @@ def execute_plan():
         (result, error) = future.result()
         (comp_stage, [comp_file, *extra_args]), out_lines = result
         if error:
-            error_msgs.append(error)
-            if comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
-                function_name = extract_func_name(extra_args)
-                errored[comp_stage].append((comp_file, function_name))
-                executing[comp_stage].remove((comp_file, function_name))
-            elif comp_stage == STG_CODEGEN_SINGLE_FUNC:
-                function_name = extract_func_name(extra_args)
-                block_name = extract_block_name(extra_args)
-                errored[comp_stage].append((comp_file, function_name, block_name))
-                executing[comp_stage].remove((comp_file, function_name, block_name))
-            else:
-                errored[comp_stage].append((comp_file))
-                executing[comp_stage].remove(comp_file)
+            print(error)
+            os.abort()
+            # error_msgs.append(error)
+            # if comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
+            #     function_name = extract_func_name(extra_args)
+            #     errored[comp_stage].append((comp_file, function_name))
+            #     executing[comp_stage].remove((comp_file, function_name))
+            # elif comp_stage == STG_CODEGEN_SINGLE_FUNC:
+            #     function_name = extract_func_name(extra_args)
+            #     block_name = extract_block_name(extra_args)
+            #     errored[comp_stage].append((comp_file, function_name, block_name))
+            #     executing[comp_stage].remove((comp_file, function_name, block_name))
+            # else:
+            # errored[comp_stage].append((comp_file))
+            # executing[comp_stage].remove(comp_file)
         else:
             if comp_stage == STG_DEPENDENCY_ANALYSIS:
                 deps[comp_file] = out_lines
@@ -356,25 +310,25 @@ def execute_plan():
                         deps_to_process.append(f)
                 completed[comp_stage].append(comp_file)
                 executing[comp_stage].remove(comp_file)
-            elif comp_stage == STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC:
-                function_names[comp_file] = get_function_names(comp_file)
-                if STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC in scheduled:
-                    scheduled[STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC].extend([(comp_file, f) for f in function_names[comp_file]])
-                completed[comp_stage].append(comp_file)
-                executing[comp_stage].remove(comp_file)
-            elif comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
-                if comp_file not in block_names:
-                    block_names[comp_file] = {}
-                function_name = extract_func_name(extra_args)
-                block_names[comp_file][function_name] = get_block_names(comp_file, function_name)
-                scheduled[STG_CODEGEN_SINGLE_FUNC].extend([(comp_file, function_name, f) for f in block_names[comp_file][function_name]])
-                completed[comp_stage].append((comp_file, function_name))
-                executing[comp_stage].remove((comp_file, function_name))
-            elif comp_stage == STG_CODEGEN_SINGLE_FUNC:
-                function_name = extract_func_name(extra_args)
-                block_name = extract_block_name(extra_args)
-                completed[comp_stage].append((comp_file, function_name, block_name))
-                executing[comp_stage].remove((comp_file, function_name, block_name))
+            # elif comp_stage == STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC:
+            #     function_names[comp_file] = get_function_names(comp_file)
+            #     if STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC in scheduled:
+            #         scheduled[STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC].extend([(comp_file, f) for f in function_names[comp_file]])
+            #     completed[comp_stage].append(comp_file)
+            #     executing[comp_stage].remove(comp_file)
+            # elif comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
+            #     if comp_file not in block_names:
+            #         block_names[comp_file] = {}
+            #     function_name = extract_func_name(extra_args)
+            #     block_names[comp_file][function_name] = get_block_names(comp_file, function_name)
+            #     scheduled[STG_CODEGEN_SINGLE_FUNC].extend([(comp_file, function_name, f) for f in block_names[comp_file][function_name]])
+            #     completed[comp_stage].append((comp_file, function_name))
+            #     executing[comp_stage].remove((comp_file, function_name))
+            # elif comp_stage == STG_CODEGEN_SINGLE_FUNC:
+            #     function_name = extract_func_name(extra_args)
+            #     block_name = extract_block_name(extra_args)
+            #     completed[comp_stage].append((comp_file, function_name, block_name))
+            #     executing[comp_stage].remove((comp_file, function_name, block_name))
                 
             else:
                 completed[comp_stage].append(comp_file)
@@ -392,10 +346,9 @@ def execute_plan():
         pprint.pprint("============== Executing ==============")
         pprint.pprint(executing_pp, sort_dicts=False, compact=True)
         pprint.pprint("============== Completed ==============")
-        pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
-        pprint.pprint("============== Errored ==============")
-        pprint.pprint(errored, sort_dicts=False)
-        print("\n".join(error_msgs))
+        # pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
+        print([len(v) for v in completed.values()])
+        print(list(completed.keys()))
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
@@ -408,17 +361,17 @@ def execute_plan():
                     while (scheduled[stage] 
                         and sum(len(stg) for stg in executing.values()) < num_cpu_limit
                         ):
-                        if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
-                            file_name, function_name = scheduled[stage].pop()
-                            # print("Scheduling", (stage, file_name, function_name))
-                            executing[stage].append((file_name, function_name))
-                            executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name])).add_done_callback(process_result)
-                        elif stage == STG_CODEGEN_SINGLE_FUNC:
-                            file_name, function_name, block_name = scheduled[stage].pop()
-                            # print("Scheduling", (stage, file_name, function_name, block_name))
-                            executing[stage].append((file_name, function_name, block_name))
-                            executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name, "-Dblock_name=" + block_name])).add_done_callback(process_result)
-                        else:
+                        # if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
+                        #     file_name, function_name = scheduled[stage].pop()
+                        #     # print("Scheduling", (stage, file_name, function_name))
+                        #     executing[stage].append((file_name, function_name))
+                        #     executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name])).add_done_callback(process_result)
+                        # elif stage == STG_CODEGEN_SINGLE_FUNC:
+                        #     file_name, function_name, block_name = scheduled[stage].pop()
+                        #     # print("Scheduling", (stage, file_name, function_name, block_name))
+                        #     executing[stage].append((file_name, function_name, block_name))
+                        #     executor.submit(worker, (stage, get_file_args(file_name) + ["-Dfunction_name=" + function_name, "-Dblock_name=" + block_name])).add_done_callback(process_result)
+                        # else:
                             file_name = scheduled[stage].pop()
                             # print("Scheduling", (stage, file_name))
                             executing[stage].append(file_name)
@@ -431,17 +384,17 @@ def execute_plan():
 
     run_all()
 
-    if error_msgs:
-        print("\n\n\n".join(error_msgs))
-        os._exit(1)
-    if STG_CODEGEN_SINGLE_FUNC_FINAL in scheduled:
-        for file in deps.keys():
-            scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(file)
-        run_all()
+    # if error_msgs:
+    #     print("\n\n\n".join(error_msgs))
+    #     os._exit(1)
+    # if STG_CODEGEN_SINGLE_FUNC_FINAL in scheduled:
+    #     for file in deps.keys():
+    #         scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(file)
+    #     run_all()
 
-        if error_msgs:
-            print("\n\n\n".join(error_msgs))
-            os._exit(1)
+    #     if error_msgs:
+    #         print("\n\n\n".join(error_msgs))
+    #         os._exit(1)
     
     print_stat()
     for file in deps_to_process:
@@ -489,31 +442,31 @@ if __name__ == "__main__":
     yy_program_name = args.program_name
 
 
-    if "--parse-only" in yy_bs_global_args:
-        stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE]
-    elif "--type-check-only" in yy_bs_global_args:
-        stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK]
-    elif "--type-check-and-erase-only" in yy_bs_global_args:
-        if "--very-parallel" in yy_bs_global_args:
-            stages.extend([STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC])
-        else:
-            raise ValueError("Error: --type-check-and-erase-only is not supported without --very-parallel")
-    elif "--debug" in yy_bs_global_args:
-          stages.extend([STG_TYPE_CHECK_AND_ERASE, 
-            STG_CROSS_MODULE_OPTIMIZE,
-            STG_PRE_CLOSURE_CONVERT,
-            STG_ANF, 
-            STG_ALL_CODEGEN,
-            ])
-    elif "--very-parallel" in yy_bs_global_args:
-        stages.extend([
-            STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC,
-            STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC,
-            STG_CODEGEN_SINGLE_FUNC,
-            STG_CODEGEN_SINGLE_FUNC_FINAL
-        ])
-    else:
-        stages.append(STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)
+    # if "--parse-only" in yy_bs_global_args:
+    #     stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE]
+    # elif "--type-check-only" in yy_bs_global_args:
+    #     stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK]
+    # elif "--type-check-and-erase-only" in yy_bs_global_args:
+    #     if "--very-parallel" in yy_bs_global_args:
+    #         stages.extend([STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC])
+    #     else:
+    #         raise ValueError("Error: --type-check-and-erase-only is not supported without --very-parallel")
+    # elif "--debug" in yy_bs_global_args:
+    #       stages.extend([STG_TYPE_CHECK_AND_ERASE, 
+    #         STG_CROSS_MODULE_OPTIMIZE,
+    #         STG_PRE_CLOSURE_CONVERT,
+    #         STG_ANF, 
+    #         STG_ALL_CODEGEN,
+    #         ])
+    # elif "--very-parallel" in yy_bs_global_args:
+    #     stages.extend([
+    #         STG_TYPE_CHECK_ERASE_CLO_CONV_SINGLE_FUNC,
+    #         STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC,
+    #         STG_CODEGEN_SINGLE_FUNC,
+    #         STG_CODEGEN_SINGLE_FUNC_FINAL
+    #     ])
+    # else:
+    #     stages.append(STG_TYPE_CHECK_AND_ERASE_THROUGH_CODEGEN)
         # stage_processing_order = stage_processing_order[:(stages.index(STG_TYPE_CHECK)+1)]
 
     yy_bs_main_file = args.input_file

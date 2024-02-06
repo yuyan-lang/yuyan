@@ -10,8 +10,10 @@ YYTESTSOURCES := $(shell find . -name '*。测试。豫' ! -path "*/.cm/*")
 build: yy yyrt
 
 yyrt:
-	# make -C runtime/ opt
 	make -C runtime/ debug
+
+yy_runtime_lib:
+	make -C ./运行时支持库 all VERSION=$(shell sed -n -E 's/^.*v(.*)\+([0-9]{4}).*/v\1+\2/p' 豫言编译器/编译辅助工具/命令行/版本管理。豫)
 
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
@@ -26,19 +28,34 @@ yy_bs_bs_parallel : $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs --parallel -c --debug
 
 yy_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) 
-	make cleancache
-	./yy_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs -c --parallel --debug
+	./yy_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs -c --parallel --debug $(OPTIONS)
 
-yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
-	make cleancache
-	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs -c --parallel --debug --static-linking
+yy_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES)
+	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs -c --parallel --debug --static-linking $(OPTIONS) --optimize
+
+yy_bs_bs_bs_bs_bs: $(YYBSSOURCES) $(YYLIBSOURCES)
+	./yy_bs_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_bs -c --parallel --debug --static-linking $(OPTIONS) --optimize
+
+yy_bs3 : yy_bs_bs_bs
+
+yy_bs4 : yy_bs_bs_bs_bs
+
+yy_bs5 : yy_bs_bs_bs_bs_bs
 
 yy_bs_bs_bs_bs_debug: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
-	make cleancache
-	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize
+	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_debug -c --parallel --debug --do-not-optimize $(OPTIONS)
+
+yy_bs_bs_bs_bs_quick: $(YYBSSOURCES) $(YYLIBSOURCES) yy_bs_bs_bs
+	./yy_bs_bs_bs 豫言编译器/入口。豫  -o yy_bs_bs_bs_bs_opt -c --parallel --debug 
+
+restore_bs_bs: 
+	mv yy_bs_bs yy_bs_bs_old
+	cp yy_bs_bs_rc1 yy_bs_bs
+
 
 update_bs_bs: 
 	mv yy_bs_bs yy_bs_bs_old
+	sh increment_build_number.sh
 	cp yy_bs_bs_bs_bs yy_bs_bs
 
 .PHONY: yy_bs_bs_debug
@@ -187,8 +204,9 @@ createcache:
 	mount -t tmpfs none .yybuild.nosync
 
 cleancache:
-	find .yybuild.nosync/  -type f -delete 
-	find .yybuild.nosync/ -mindepth 1 -type d -delete 
+	rm -rf .yybuild*
+	# find .yybuild.nosync/  -type f -delete 
+	# find .yybuild.nosync/ -mindepth 1 -type d -delete 
 	rm -f yy_parallel_log.txt
 
 CACHE_DIR := ./.yybuild.nosync
@@ -211,3 +229,9 @@ restorecache:
 	cp -n -r yy_restore_temp/* $(CACHE_DIR)
 	rm -rf yy_restore_temp
 	echo "Cache restored."
+
+# VERSION = $(error Please set VERSION=... as a command line argument for uploading to GitHub release.)
+RUNTIME_LIB_FILES := $(shell find ./运行时支持库 \( -name '*$(VERSION)*' \) )
+upload_gh_release:
+	echo $(VERSION)
+	gh release upload $(VERSION) yy_bs_bs $(RUNTIME_LIB_FILES)

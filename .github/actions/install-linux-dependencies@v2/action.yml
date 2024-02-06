@@ -1,0 +1,19 @@
+# .github/actions/install-mac-dependencies/action.yml
+
+name: 'Install Linux Software'
+description: 'Installs Linux Yuyan Dependencies'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install the libraries
+      run: |
+        sudo apt install make llvm clang libgmp-dev
+        sudo apt install libgc-dev libuv1-dev llvm libbsd-dev
+      shell: bash
+    - name: Download yy_bs from 
+      run: |
+        curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/yy_bs_bs
+        curl -o ./运行时支持库/libyyrtoptv0.1.0rc2+0016.so -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/libyyrtoptv0.1.0rc2+0016.so
+        curl -o ./运行时支持库/libyyrtdebugv0.1.0rc2+0016.so -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/libyyrtdebugv0.1.0rc2+0016.so
+        chmod u+x yy_bs
+      shell: bash

@@ -133,12 +133,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/install-linux-dependencies
-      - name: curl yy_bs
-        run: |
-          curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0beta5.2/yy_bs_bs
-          make -C ./运行时支持库/ all
-          chmod u+x yy_bs
+      - uses: ./.github/actions/install-linux-dependencies@v2
       - name: make yy_bs_bs
         run: ./yy_bs 豫言编译器/入口。豫  -o yy_bs_bs -c
       - name: make yy_bs_bs_debug
@@ -152,10 +147,8 @@ jobs:
             ./yy_bs_bs_debug
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.opt.bc
             ./.yybuild.nosync/yy_入口_豫言编译器默认执行包.bc
-            ./运行时支持库/libyyrtdebug.a
-            ./运行时支持库/libyyrtdebug.so
-            ./运行时支持库/libyyrtopt.a
-            ./运行时支持库/libyyrtopt.so
+            ./运行时支持库/*.a
+            ./运行时支持库/*.so
 
   ubuntu-bs-bs-build-p:
     needs: ubuntu-bs-build-from-bs

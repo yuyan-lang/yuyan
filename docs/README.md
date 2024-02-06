@@ -2,6 +2,8 @@
 
 专为中文编程设计的高级函数式通用编程语言
 
+本软件仍在早期测试中，仅供测评使用。
+
 [网站](https://yuyan-lang.github.io/yuyan)
 [语言手册](教程/combined_tutorial.pdf)
 
@@ -21,16 +23,14 @@
 
 ## 安装
 
-若要快速编译最新版，请参见[`快速编译`](快速编译.md)
-
-如果想二次开发并从源代码文件编译，请参见[`从源代码编译`](从源代码编译.md)
+请参见[`从源代码编译`](从源代码编译.md)
 
 ## 语言规范
 
 <!-- [语言规范](LanguageSpecification.md) -->
-[教程](教程/00-教程目录.md)
+[教程](教程/0000-教程目录.md)
 
-[语法表](语法表.md)
+[语法表](教程/0100-语法对照表.md)
 
 
 ## 运行
@@ -49,12 +49,10 @@
 
 ## 提交反馈
 
-如您有任何意见或者建议，欢迎提Issue或通过Slack，邮件，企业微信与我们取得联系。
+如您有任何意见或者建议，欢迎提Issue或PLOC论坛或者微信群与我们取得联系。
 
 ## 联系我们
 
-Slack： https://join.slack.com/t/w1668741933-poz509122/shared_invite/zt-1k1hk30n7-FQNwZ0tefBePMxPSFrcbGg
-
 微信群：[群二维码](community_qr_wecom.png)
 
-邮箱： yuyanlang@icloud.com
+<!-- 邮箱： yuyanlang@icloud.com -->
