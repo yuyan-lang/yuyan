@@ -45,7 +45,7 @@ debug: libyyrtdebug.a
 libyyrtopt.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
 	cd build/native && $(CC) -DNDEBUG -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
-	ar rcs $@ build/native/*.o
+	llvm-ar rcs $@ build/native/*.o
 
 opt : libyyrtopt.a
 
