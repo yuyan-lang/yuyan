@@ -348,7 +348,7 @@ def execute_plan():
         pprint.pprint("============== Completed ==============")
         # pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
         print([len(v) for v in completed.values()])
-        print(completed.keys())
+        print(list(completed.keys()))
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
