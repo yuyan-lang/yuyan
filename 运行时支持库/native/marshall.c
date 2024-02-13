@@ -476,8 +476,9 @@ void yy_print_yyvalue(yyvalue v, uint64_t depth) {
         fprintf(stderr, "heap_string: %s", yyvalue_to_string(v));
         break;
     case type_constructor_tuple:
-        fprintf(stderr, "cons(%" PRIu64 "): ", yyvalue_to_constructor_index(v));
+        fprintf(stderr, "<cons(%" PRIu64 "): ", yyvalue_to_constructor_index(v));
         yy_print_yyvalue(raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length(v), yyvalue_to_constructor_tuple(v)), depth + 1);
+        fprintf(stderr, ">");
         break;
     
     default:
