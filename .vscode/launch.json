@@ -35,7 +35,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["yylib/标准库。豫", "--do-not-load-cache", "--no-comments-in-llvm", "--debug-print-add", "compile_tree"],
+            "args": ["yylib/标准库。豫",  "--debug-print-add", "log_print_tree"],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
