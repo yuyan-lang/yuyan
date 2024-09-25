@@ -189,3 +189,4 @@ dist
 callgrind.out.*
 cachegrind.out.*
 .yybuild.*
+*.pyc

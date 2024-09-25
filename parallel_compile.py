@@ -23,7 +23,7 @@ LINUX_PARALLEL_FACTOR = .8
 DEFAULT_PARALLEL_FACTOR = 1.0
 yy_bs_global_args = []
 yy_bs_main_file = None
-yy_program_name = None
+yy_program_name = "./yy_bs"
 
 STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
 STG_PARSE = "parse"
@@ -138,6 +138,7 @@ def exec_worker(args):
         return args, None
 
 def worker(task, retry_count=0):
+    # print(yy_program_name)
     global stages
     stage, file_and_args = task
     def pre_fun(i):
@@ -442,6 +443,8 @@ if __name__ == "__main__":
     yy_program_name = args.program_name
 
 
+    if "--type-check-only" in yy_bs_global_args:
+        stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK_AND_ERASE]
     # if "--parse-only" in yy_bs_global_args:
     #     stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE]
     # elif "--type-check-only" in yy_bs_global_args:

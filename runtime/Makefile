@@ -62,14 +62,14 @@ endif
 
 libyyrtdebug.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I /opt/homebrew/include/ -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
 debug: libyyrtdebug.a
 
 libyyrtdebug_old.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -D OLD_ENTRY -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -D OLD_ENTRY -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I /opt/homebrew/include/ -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
 debug_old: libyyrtdebug_old.a
@@ -81,30 +81,30 @@ debug_old: libyyrtdebug_old.a
 
 libyyrtdebugwasm.a: $(WASM_SOURCES)
 	@mkdir -p build/wasm
-	# cd build/wasm && $(CC) --target=wasm32-wasi -c -g $(WASM_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -I /usr/local/var/wasi-libc/sysroot/include
+	# cd build/wasm && $(CC) --target=wasm32-wasi -c -g $(WASM_SCFILES) -I /usr/local/include  -I /opt/homebrew/include/ $(ADDITIONAL_INCLUDE_PATHS) -I /usr/local/var/wasi-libc/sysroot/include
 	# wasm-ld -o $@ build/wasm/*.o --no-entry
-	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include -I ~/bdwgc/include -sMEMORY64
+	cd build/wasm && emcc -c -g $(WASM_SCFILES) -I /usr/local/include  -I /opt/homebrew/include/ -I ~/bdwgc/include -sMEMORY64
 	emar rcs $@ build/wasm/*.o
 
 wasmdebug: libyyrtdebugwasm.a
 
 libyyrtopt.a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include  -I /opt/homebrew/include/ $(ADDITIONAL_INCLUDE_PATHS) -Werror
 	ar rcs $@ build/native/*.o
 
 opt : libyyrtopt.a
 
 libyyrtdebug.so: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror  -fPIC
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I /opt/homebrew/include/ $(ADDITIONAL_INCLUDE_PATHS) -Werror  -fPIC
 	$(CC) -shared -o $@ build/native/*.o
 
 debugso : libyyrtdebug.so
 
 libyyrtopt.so: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
+	cd build/native && $(CC) -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include  -I /opt/homebrew/include/ $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
 	$(CC) -shared -flto -o $@ build/native/*.o
 
 optso : libyyrtopt.so

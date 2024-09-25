@@ -5,17 +5,35 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "python py-interpreter/interpreter.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/py-interpreter/interpreter.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "豫言编译器/入口"
+            ]
+        },
+        {
             "name": "./yy_exec_debug",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
             "args": [
-                  "5",],
+                "5",
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
-                {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
-                {"name":"YY_DEBUG_FLAG", "value": "1"},
+                {
+                    "name": "YY_GC_DEBUG_FLAG",
+                    "value": "1"
+                },
+                {
+                    "name": "YY_DEBUG_FLAG",
+                    "value": "1"
+                },
             ],
             "externalConsole": false,
             "setupCommands": [
@@ -24,9 +42,13 @@
                 //     "description": "ingore libgc related errors",
                 //     "ignoreFailures": false
                 // },
-            {"text": "set output-radix 16"},
-            {"text": "set disable-randomization off"}
-            ], 
+                {
+                    "text": "set output-radix 16"
+                },
+                {
+                    "text": "set disable-randomization off"
+                }
+            ],
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
         },
@@ -35,13 +57,23 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yy_exec_debug",
-            "args": ["yylib/标准库。豫",  "--debug-print-add", "log_print_tree"],
+            "args": [
+                "yylib/标准库。豫",
+                "--debug-print-add",
+                "log_print_tree"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
-                {"name":"YY_GC_DEBUG_FLAG", "value": "1"},
-                {"name":"YY_DEBUG_FLAG", "value": "1"},
-        ],
+                {
+                    "name": "YY_GC_DEBUG_FLAG",
+                    "value": "1"
+                },
+                {
+                    "name": "YY_DEBUG_FLAG",
+                    "value": "1"
+                },
+            ],
             "externalConsole": false,
             "setupCommands": [
                 // {
@@ -49,8 +81,10 @@
                 //     "description": "ingore libgc related errors",
                 //     "ignoreFailures": false
                 // }
-            {"text": "set output-radix 16"},
-            ], 
+                {
+                    "text": "set output-radix 16"
+                },
+            ],
             // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
         },
@@ -89,7 +123,10 @@
             "request": "launch",
             "program": "parallel_compile.py",
             "console": "integratedTerminal",
-            "args": ["performance-investigation/matrix-multiply/matrix-multiply.yuyan", "--extra=--very-parallel"],
+            "args": [
+                "performance-investigation/matrix-multiply/matrix-multiply.yuyan",
+                "--extra=--very-parallel"
+            ],
             "justMyCode": true
         }
     ],
