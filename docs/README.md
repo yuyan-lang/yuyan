@@ -5,6 +5,7 @@
 本软件仍在早期测试中，仅供测评使用。
 
 [网站](https://yuyan-lang.github.io/yuyan)
+[语言快速入门指南](快速入门指南.md)
 [语言手册](教程/combined_tutorial.pdf)
 
 ## 综述
