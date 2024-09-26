@@ -48,6 +48,7 @@ class DataTupleVal:
 Value = ArrayVal | BoolVal | IntVal | StrVal | FuncVal  | DataTupleVal
 EmptyVal = ArrayVal([])
 GLOBAL_FILE_REFS = {}
+GLOBAL_FUNC_REFS = {}
 
 class Stack:
     def __init__(self, init=[], struct=[]):
@@ -63,7 +64,7 @@ class Stack:
 
 
     def access(self, idx):
-        assert idx <= len(self.stack)
+        assert 0 < idx <= len(self.stack)
         return self.stack[-idx]
 
     def __repr__(self):
@@ -124,6 +125,9 @@ def do_external_call(name: str, args: List[Value]):
             return EmptyVal
         case "获取当前异常处理器", []:
             return CurrentExceptionHandler
+        case "设置当前异常处理器", [v]:
+            CurrentExceptionHandler = v
+            return EmptyVal
         case "yyExceptCallCC", [val, old_handler]:
             CurrentExceptionHandler = old_handler
             raise CCException(val)
@@ -150,6 +154,16 @@ def do_external_call(name: str, args: List[Value]):
             return StrVal(s[idx])
         case "yy_豫言字符串匹配", [StrVal(s), IntVal(startIdx), StrVal(pattern)]:
             return BoolVal(s.find(pattern, startIdx, startIdx+len(pattern)+1) == startIdx)
+        case "yyIsPathRegularFile", [StrVal(path)]:
+            return BoolVal(os.path.isfile(path))
+        case "yyIsPathDirectory", [StrVal(path)]:
+            return BoolVal(os.path.isdir(path))
+        case "yyWriteFileSync", [StrVal(path), StrVal(content)]:
+            with open(path, "w") as f:
+                f.write(content)
+            return EmptyVal
+        case "yyProcessExit", [IntVal(code)]:
+            exit(code)
         case _:
             raise ValueError(f"Unknown external call {name} on {args}")
 
@@ -282,11 +296,18 @@ def interpret_ast(stack: Stack, ast: Abt):
         case N(NT_CallCC(), [Binding(_, next)]):
             global CurrentExceptionHandler
             old_handler = CurrentExceptionHandler
-            cc_handler = FuncVal(stack, N(NT_MultiArgLam(1), [Binding("cc_val", N(NT_ExternalCall("yyExceptCallCC"), [BoundVar(0), old_handler]))]))
+            cc_handler = FuncVal(stack.push(old_handler), N(NT_MultiArgLam(1), [Binding("cc_val", N(NT_ExternalCall("yyExceptCallCC"), [BoundVar(1), BoundVar(2)]))]))
             try:
                 return interpret_ast(stack.push(cc_handler), next)
             except CCException as e:
                 return e.val
+        case N(NT_CallCCRet(), [cc, ret_val]):
+            return interpret_ast(stack, N(NT_MultiArgFuncCall(1), [cc, ret_val]))
+        case N(NT_FuncRef(name), []):
+            if name in GLOBAL_FUNC_REFS:
+                return GLOBAL_FUNC_REFS[name]
+            else:
+                raise ValueError(f"Unknown function reference {name}")
         case _:
             raise ValueError(f"Unknown interpretation {ast}")
 

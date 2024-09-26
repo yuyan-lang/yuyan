@@ -444,7 +444,7 @@ if __name__ == "__main__":
 
 
     if "--type-check-only" in yy_bs_global_args:
-        stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK_AND_ERASE]
+        stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE, STG_TYPE_CHECK_AND_ERASE, STG_CROSS_MODULE_OPTIMIZE]
     # if "--parse-only" in yy_bs_global_args:
     #     stages = [STG_DEPENDENCY_ANALYSIS, STG_PARSE]
     # elif "--type-check-only" in yy_bs_global_args:

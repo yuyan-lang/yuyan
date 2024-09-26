@@ -111,6 +111,14 @@ class NT_CallCC:
     pass
 
 
+@dataclass
+class NT_CallCCRet:
+    pass
+
+@dataclass
+class NT_FuncRef:
+    name: str
+
 NodeType = NTUndef 
 
 
@@ -135,6 +143,8 @@ def decode_json_to_node_type(data: dict) -> NodeType:
                 return NT_DataTupleProjTuple()
             case '续延调用节点':
                 return NT_CallCC()
+            case '续延调用返回节点':
+                return NT_CallCCRet()
             case _:
                 return NTUndef(data)
     match data["名称"]:
@@ -172,6 +182,8 @@ def decode_json_to_node_type(data: dict) -> NodeType:
             return NT_ExternalCall(data["串"])
         case '整数节点':
             return NT_IntConst(data["数"])
+        case '函数引用节点':
+            return NT_FuncRef(data["函数名"])
         case _:
             return NTUndef(data)
 
