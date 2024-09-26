@@ -116,6 +116,18 @@ NodeType = NTUndef
 
 Abt = N | FreeVar | BoundVar  | Binding
 
+
+def find_all_file_refs(ast: Abt) -> List[str]:
+    match ast:
+        case N(NT_FileRef(filename), _):
+            return [filename]
+        case N(_, children):
+            return sum([find_all_file_refs(child) for child in children], [])
+        case Binding(_, next):
+            return find_all_file_refs(next)
+        case _:
+            return []
+
 def decode_json_to_node_type(data: dict) -> NodeType:
     if isinstance(data, str):
         match data:

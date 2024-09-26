@@ -10,7 +10,7 @@ import json
 from ast_util import *
 from datetime import datetime
 from dataclasses import dataclass
-sys.setrecursionlimit(10000000)
+sys.setrecursionlimit(1000000000)
 BASE_PATH = "./.yybuild.v0.1.0rc2+0019.nosync"
 PATH_SUFFIX = ".擦除后形式.json"
 
@@ -48,6 +48,7 @@ class DataTupleVal:
 Value = ArrayVal | BoolVal | IntVal | StrVal | FuncVal  | DataTupleVal
 EmptyVal = ArrayVal([])
 GLOBAL_FILE_REFS = {}
+GLOBAL_ASTS = {}
 
 class Stack:
     def __init__(self, init=[], struct=[]):
@@ -150,6 +151,9 @@ def do_external_call(name: str, args: List[Value]):
             return StrVal(s[idx])
         case "yy_豫言字符串匹配", [StrVal(s), IntVal(startIdx), StrVal(pattern)]:
             return BoolVal(s.find(pattern, startIdx, startIdx+len(pattern)+1) == startIdx)
+        case "设置当前异常处理器", [new_handler]:
+            CurrentExceptionHandler = new_handler
+            return EmptyVal
         case _:
             raise ValueError(f"Unknown external call {name} on {args}")
 
@@ -290,9 +294,7 @@ def interpret_ast(stack: Stack, ast: Abt):
         case _:
             raise ValueError(f"Unknown interpretation {ast}")
 
-
-
-def do_interprete_file(path):
+def file_path_to_key(path):
     # if path begins with cwd (absolute), remove it
     cwd = os.getcwd()
     if path.startswith(cwd):
@@ -301,18 +303,33 @@ def do_interprete_file(path):
     # if path ends with 。豫, remove it
     if path.endswith("。豫"):
         path = path[:-len("。豫")]
+    return path
+
+
+def do_interprete_file(path):
+    path = file_path_to_key(path)
     if path in GLOBAL_FILE_REFS:
         return GLOBAL_FILE_REFS[path]
+    print(f"Interpreting {path}")
+    ast = GLOBAL_ASTS[path]
+    result = interpret_ast(Stack([], [path]), ast)
+    GLOBAL_FILE_REFS[path] = result
+    print(f"Interpreted {path}")
+    return result
+
+def do_load_files(path):
+    path = file_path_to_key(path)
+    if path in GLOBAL_ASTS:
+        return
+    print(f"Loading {path}")
+    path = file_path_to_key(path)
     json_path = f"{BASE_PATH}/{path}{PATH_SUFFIX}"
-    # print(f"Interpreting {json_path}")
     with open(json_path, "r") as f:
         json_data = json.load(f)
         ast = decode_json_to_ast(json_data)
-    result = interpret_ast(Stack([], [path]), ast)
-    GLOBAL_FILE_REFS[path] = result
-    # print(f"Interpreted {json_path}")
-    return result
-    # print(ast)
+    GLOBAL_ASTS[path] = ast
+    for dep in find_all_file_refs(ast):
+        do_load_files(dep)
 
 
 if __name__ == "__main__":
@@ -320,6 +337,7 @@ if __name__ == "__main__":
         print("Usage: python interpreter.py <path_no_extension> <args>")
         sys.exit(1)
     path = sys.argv[1]
+    do_load_files(path)
     do_interprete_file(path)
 
 
