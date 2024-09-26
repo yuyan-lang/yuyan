@@ -107,6 +107,10 @@ class NT_LetIn:
     pass
 
 @dataclass
+class NT_ConsecutiveStmt:
+    pass
+
+@dataclass
 class NT_CallCC:
     pass
 
@@ -116,10 +120,15 @@ class NT_CallCCRet:
     pass
 
 @dataclass
-class NT_FuncRef:
+class NT_GlobalFuncRef:
     name: str
 
-NodeType = NTUndef 
+@dataclass
+class NT_GlobalFuncDecl:
+    name: str
+
+NodeType = NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_FileRef | NT_EmptyVal | NT_Builtin | NTTupleProj | NT_AnnotatedVar | NT_MultiArgLam | NT_MultiArgFuncCall | NT_TupleCons | NT_DataTupleCons | NT_DataTupleProjIdx | NT_DataTupleProjTuple | NT_IfThenElse | NT_StringConst | NT_IntConst | NT_ExternalCall | NT_LetIn | NT_CallCC | NT_CallCCRet | NT_GlobalFuncRef | NT_GlobalFuncDecl
+
 
 
 Abt = N | FreeVar | BoundVar  | Binding
@@ -149,6 +158,8 @@ def decode_json_to_node_type(data: dict) -> NodeType:
                 return NT_IfThenElse()
             case '内联虑':
                 return NT_LetIn()
+            case '顺序执行节点':
+                return NT_ConsecutiveStmt()
             case '唯一构造器序数元组投影序数节点':
                 return NT_DataTupleProjIdx()
             case '唯一构造器序数元组投影元组节点':
@@ -195,7 +206,9 @@ def decode_json_to_node_type(data: dict) -> NodeType:
         case '整数节点':
             return NT_IntConst(data["数"])
         case '函数引用节点':
-            return NT_FuncRef(data["函数名"])
+            return NT_GlobalFuncRef(data["函数名"])
+        case '函数全局声明节点':
+            return NT_GlobalFuncDecl(data["函数名"])
         case _:
             return NTUndef(data)
 

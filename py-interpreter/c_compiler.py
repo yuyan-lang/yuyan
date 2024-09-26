@@ -1,7 +1,7 @@
 from __future__ import annotations
 # this is an experiment project to understand performance bottlenecks
 
-# my plan is to directly interpret the type checking result json file
+# my plan is to directly compile the type checking result json file
 
 
 import sys
@@ -12,75 +12,6 @@ from datetime import datetime
 from dataclasses import dataclass
 from files_manager import *
 sys.setrecursionlimit(1000000000)
-
-STACK = []
-
-@dataclass
-class ArrayVal:
-    elems: List[Value]
-
-    def __post_init__(self):
-        assert all(elem == None or isinstance(elem, Value) for elem in self.elems)
-
-@dataclass
-class BoolVal:
-    val: bool
-
-@dataclass
-class IntVal:
-    val: int
-
-@dataclass
-class StrVal:
-    val: str
-
-@dataclass
-class FuncVal:
-    env: Stack
-    body: Abt
-
-@dataclass
-class DataTupleVal:
-    idx: int
-    elem: ArrayVal
-
-Value = ArrayVal | BoolVal | IntVal | StrVal | FuncVal  | DataTupleVal
-EmptyVal = ArrayVal([])
-GLOBAL_FILE_REFS = {}
-GLOBAL_FUNC_REFS = {}
-
-class Stack:
-    def __init__(self, init=[], struct=[]):
-        self.stack = init
-        self.structure = struct
-    
-    def push(self, val):
-        assert isinstance(val, Value)
-        return Stack(self.stack + [val], self.structure + [])
-
-    def hint_structure(self, proj_label):
-        return Stack(self.stack + [], self.structure + [proj_label])
-
-
-    def access(self, idx):
-        assert 0 < idx <= len(self.stack)
-        return self.stack[-idx]
-
-    def __repr__(self):
-        return ".".join(self.structure) + ": " + ", ".join(str(val) for val in self.stack)
-
-
-CurrentExceptionHandler = FuncVal(Stack([]), N(NT_MultiArgLam(1),[Binding("except_name", N(NT_ExternalCall("yyGlobalExcept"), [BoundVar(0)]))]))
-class CCException(Exception):
-    def __init__(self, val):
-        self.val = val
-    
-def after_interpret_ast_decorator(func):
-    def wrapper(*args):
-        result = func(*args)
-        assert isinstance(result, Value)
-        return result
-    return wrapper
 
 def do_external_call(name: str, args: List[Value]):
     global CurrentExceptionHandler
@@ -167,7 +98,7 @@ def do_external_call(name: str, args: List[Value]):
             raise ValueError(f"Unknown external call {name} on {args}")
 
 
-def interpret_rec_struct(stack: Stack, proj_labels: List[str], ast: Abt):
+def compile_rec_struct(stack: Stack, proj_labels: List[str], ast: Abt):
     """
     The reference of stack is always on top.
 
@@ -177,37 +108,37 @@ def interpret_rec_struct(stack: Stack, proj_labels: List[str], ast: Abt):
     assert len(rec_struct.elems) == len(proj_labels)
     match ast:
         case N(NT_StructEntry(label), [cur, next]):
-            val = interpret_ast(stack.hint_structure(label), cur)
+            val = compile_ast(stack.hint_structure(label), cur)
             if label is not None:
                 rec_struct.elems[proj_labels.index(label)] = val
-            interpret_rec_struct(stack, proj_labels, next)
+            compile_rec_struct(stack, proj_labels, next)
             return
         case N(NT_EmptyStructEntry(), []):
             return
         case _:
-            raise ValueError(f"Unknown interpretation {ast}")
+            raise ValueError(f"Unknown compileation {ast}")
 
 
-# @after_interpret_ast_decorator
-def interpret_func_call(stack: Stack, func: Abt, args: List[Value]):
+# @after_compile_ast_decorator
+def compile_func_call(stack: Stack, func: Abt, args: List[Value]):
     if len(args) == 0:
-        return interpret_ast(stack, func)
+        return compile_ast(stack, func)
     else:
         match func:
             case Binding(_, next):
-                return interpret_func_call(stack.push(args[0]), next, args[1:])
+                return compile_func_call(stack.push(args[0]), next, args[1:])
             case _:
                 raise ValueError(f"Expected binding, got {func}")
     
 
-# @after_interpret_ast_decorator
-def interpret_ast(stack: Stack, ast: Abt) -> Value:
+# @after_compile_ast_decorator
+def compile_ast(stack: Stack, ast: Abt) -> Value:
     match ast:
         case BoundVar(idx):
             return stack.access(idx)
         case N(NT_StructRec(proj_labels), [Binding(_, next)]):
             struct_val = ArrayVal([None] * len(proj_labels))
-            interpret_rec_struct(stack.push(struct_val), proj_labels, next)
+            compile_rec_struct(stack.push(struct_val), proj_labels, next)
             return struct_val
         case N(NT_FileRef(filename), []):
             path = file_path_to_key(filename)
@@ -218,7 +149,7 @@ def interpret_ast(stack: Stack, ast: Abt) -> Value:
         case N(NT_EmptyVal(), []):
             return EmptyVal
         case N(NT_Builtin(name), args):
-            args_val = [interpret_ast(stack, arg) for arg in args]
+            args_val = [compile_ast(stack, arg) for arg in args]
             match name, args_val:
                 case "内建爻阳", []:
                     return BoolVal(True)
@@ -235,20 +166,20 @@ def interpret_ast(stack: Stack, ast: Abt) -> Value:
                 case _:
                     raise ValueError(f"Unknown builtin {name} on {args_val}")
         case N(NTTupleProj(idx), [arg]):
-            val = interpret_ast(stack, arg)
+            val = compile_ast(stack, arg)
             if isinstance(val, ArrayVal):
                 return val.elems[idx]
             else:
                 raise ValueError(f"Expected array value, got {val}")
         case N(NT_AnnotatedVar(_), [arg]):
-            return interpret_ast(stack, arg)
+            return compile_ast(stack, arg)
         case N(NT_MultiArgLam(arg_count), _):
             return FuncVal(stack, ast)
         case N(NT_TupleCons(), args):
-            vals = [interpret_ast(stack, arg) for arg in args]
+            vals = [compile_ast(stack, arg) for arg in args]
             return ArrayVal(vals)
         case N(NT_DataTupleCons(idx, length), [arg]):
-            val = interpret_ast(stack, arg)
+            val = compile_ast(stack, arg)
             if isinstance(val, ArrayVal):
                 assert len(val.elems) == length
                 return DataTupleVal(idx, val)
@@ -256,24 +187,24 @@ def interpret_ast(stack: Stack, ast: Abt) -> Value:
                 raise ValueError(f"Expected array value, got {val}")
         case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
             assert arg_count == len(args)
-            func_val = interpret_ast(stack, func)
+            func_val = compile_ast(stack, func)
             if isinstance(func_val, FuncVal):
                 match func_val.body:
                     case N(NT_MultiArgLam(lam_arg_count), [body]):
                         assert lam_arg_count == arg_count
-                        args_val = [interpret_ast(stack, arg) for arg in args]
-                        return interpret_func_call(func_val.env, body, args_val)
+                        args_val = [compile_ast(stack, arg) for arg in args]
+                        return compile_func_call(func_val.env, body, args_val)
                     case _:
                         raise ValueError(f"Expected multi arg lambda, got {func_val.body}")
             else:
                 raise ValueError(f"Expected function value, got {func_val}")
         case N(NT_IfThenElse(), [cond, then_branch, else_branch]):
-            cond_val = interpret_ast(stack, cond)
+            cond_val = compile_ast(stack, cond)
             if isinstance(cond_val, BoolVal):
                 if cond_val.val:
-                    return interpret_ast(stack, then_branch)
+                    return compile_ast(stack, then_branch)
                 else:
-                    return interpret_ast(stack, else_branch)
+                    return compile_ast(stack, else_branch)
             else:
                 raise ValueError(f"Expected bool value, got {cond_val}")
         case N(NT_StringConst(val), []):
@@ -281,22 +212,22 @@ def interpret_ast(stack: Stack, ast: Abt) -> Value:
         case N(NT_IntConst(val), []):
             return IntVal(val)
         case N(NT_ExternalCall(name), args):
-            args_val = [interpret_ast(stack, arg) for arg in args]
+            args_val = [compile_ast(stack, arg) for arg in args]
             return do_external_call(name, args_val)
         case N(NT_LetIn(), [cur, Binding(_, next)]):
-            val = interpret_ast(stack, cur)
-            return interpret_ast(stack.push(val), next)
+            val = compile_ast(stack, cur)
+            return compile_ast(stack.push(val), next)
         case N(NT_ConsecutiveStmt(), [cur, next]):
-            interpret_ast(stack, cur)
-            return interpret_ast(stack, next)
+            compile_ast(stack, cur)
+            return compile_ast(stack, next)
         case N(NT_DataTupleProjIdx(), [arg]):
-            val = interpret_ast(stack, arg)
+            val = compile_ast(stack, arg)
             if isinstance(val, DataTupleVal):
                 return IntVal(val.idx)
             else:
                 raise ValueError(f"Expected data tuple value, got {val}")
         case N(NT_DataTupleProjTuple(), [arg]):
-            val = interpret_ast(stack, arg)
+            val = compile_ast(stack, arg)
             if isinstance(val, DataTupleVal):
                 return val.elem
             else:
@@ -306,11 +237,11 @@ def interpret_ast(stack: Stack, ast: Abt) -> Value:
             old_handler = CurrentExceptionHandler
             cc_handler = FuncVal(stack.push(old_handler), N(NT_MultiArgLam(1), [Binding("cc_val", N(NT_ExternalCall("yyExceptCallCC"), [BoundVar(1), BoundVar(2)]))]))
             try:
-                return interpret_ast(stack.push(cc_handler), next)
+                return compile_ast(stack.push(cc_handler), next)
             except CCException as e:
                 return e.val
         case N(NT_CallCCRet(), [cc, ret_val]):
-            return interpret_ast(stack, N(NT_MultiArgFuncCall(1), [cc, ret_val]))
+            return compile_ast(stack, N(NT_MultiArgFuncCall(1), [cc, ret_val]))
         case N(NT_GlobalFuncRef(name), []):
             if name in GLOBAL_FUNC_REFS:
                 return GLOBAL_FUNC_REFS[name]
@@ -320,33 +251,33 @@ def interpret_ast(stack: Stack, ast: Abt) -> Value:
             GLOBAL_FUNC_REFS[name] = FuncVal(Stack(), v)
             return EmptyVal
         case _:
-            raise ValueError(f"Unknown interpretation {ast}")
-    # raise ValueError(f"??? Unknown interpretation {ast}")
+            raise ValueError(f"Unknown compileation {ast}")
+    # raise ValueError(f"??? Unknown compileation {ast}")
 
 
-def do_interprete_files():
+def do_compile_files():
 
     for path in ORDERED_FILES:
-        print(f"Interpreting {path}")
+        print(f"compileing {path}")
         ast = GLOBAL_ASTS[path]
         match ast:
             case N(NT_StructRec(proj_labels), [Binding(_, next)]):
                 struct_val = ArrayVal([None] * len(proj_labels))
                 GLOBAL_FILE_REFS[path] = struct_val
-                interpret_rec_struct(Stack([struct_val], [path]), proj_labels, next)
+                compile_rec_struct(Stack([struct_val], [path]), proj_labels, next)
             case _:
-                raise ValueError(f"Unknown interpretation {ast}")
-        print(f"Interpreted {path}")
+                raise ValueError(f"Unknown compileation {ast}")
+        print(f"compileed {path}")
 
 
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python interpreter.py <path_no_extension> <args>")
+        print("Usage: python compiler.py <path_no_extension> <args>")
         sys.exit(1)
     path = sys.argv[1]
     do_load_files(path)
-    do_interprete_files()
+    do_compile_files()
 
 
     
