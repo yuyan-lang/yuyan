@@ -8,7 +8,7 @@ OPT_PATH_SUFFIX = ".擦除后形式.json"
 # OPT_PATH_SUFFIX = ".优化后形式.json"
 
 
-GLOBAL_ASTS = {}
+GLOBAL_INPUT_ASTS = {}
 DEPS = {}
 
 ORDERED_FILES = []
@@ -46,4 +46,4 @@ def do_load_files(path):
         with open(json_path, "r") as f:
             json_data = json.load(f)
             ast = decode_json_to_ast(json_data)
-        GLOBAL_ASTS[file] = ast
+        GLOBAL_INPUT_ASTS[file] = ast

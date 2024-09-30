@@ -259,7 +259,7 @@ def do_compile_files():
 
     for path in ORDERED_FILES:
         print(f"compileing {path}")
-        ast = GLOBAL_ASTS[path]
+        ast = GLOBAL_INPUT_ASTS[path]
         match ast:
             case N(NT_StructRec(proj_labels), [Binding(_, next)]):
                 struct_val = ArrayVal([None] * len(proj_labels))
