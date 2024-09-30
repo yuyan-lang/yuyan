@@ -1,8 +1,9 @@
 
 
 from __future__ import annotations
-from typing import List, Optional
+from typing import List, Optional, Callable, Tuple
 from dataclasses import dataclass
+import random
 
 
 
@@ -132,6 +133,71 @@ NodeType = NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_Fi
 
 
 Abt = N | FreeVar | BoundVar  | Binding
+
+def map_abt(abt: Abt, f: Callable[[Abt], Abt]):
+    match abt:
+        case N(n, children):
+            return N(n, [map_abt(child, f) for child in children])
+        case FreeVar(_):
+            return f(abt)
+        case BoundVar(_):
+            raise ValueError("Cannot map over BoundVar")
+        case Binding(name, next):
+            var_name, body_next = unbind_abt(abt)
+            return abstract_over_abt(f(body_next), var_name)
+
+
+def collect_free_vars(abt: Abt) -> List[str]:
+    match abt:
+        case N(_, children):
+            return sum([collect_free_vars(child) for child in children], [])
+        case FreeVar(name):
+            return [name]
+        case BoundVar(_):
+            return []
+        case Binding(_, next):
+            return collect_free_vars(next)
+
+def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
+    var_name = abt.name
+    while var_name in collect_free_vars(abt.next):
+        var_name += random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+    def traverse(abt: Abt, idx : int) -> Abt:
+        match abt:
+            case N(n, children):
+                return N(n, [traverse(child, idx) for child in children])
+            case FreeVar(name):
+                if name == abt.name:
+                    return BoundVar(idx)
+                else:
+                    return abt
+            case BoundVar(i):
+                if i == idx:
+                    return FreeVar(var_name)
+                else:
+                    return abt
+            case Binding(_, next):
+                return Binding(abt.name, traverse(abt.next, idx + 1))
+    return var_name, traverse(abt.next, 1)
+
+def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
+    def traverse(abt: Abt, idx: int) -> Abt:
+        match abt:
+            case N(n, children):
+                return N(n, [traverse(child, idx) for child in children])
+            case FreeVar(name):
+                if name == var_name:
+                    return BoundVar(idx)
+                else:
+                    return abt
+            case BoundVar(_):
+                return abt
+            case Binding(_, next):
+                return Binding(abt.name, traverse(abt.next, idx + 1))
+    return Binding(var_name, traverse(abt, 1))
+    
+
+
 
 
 def find_all_file_refs(ast: Abt) -> List[str]:
