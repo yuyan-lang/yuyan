@@ -55,7 +55,7 @@ class NT_Builtin:
     name: str
 
 @dataclass
-class NTTupleProj:
+class NT_TupleProj:
     idx: int
 
 @dataclass
@@ -128,7 +128,7 @@ class NT_GlobalFuncRef:
 class NT_GlobalFuncDecl:
     name: str
 
-NodeType = NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_FileRef | NT_EmptyVal | NT_Builtin | NTTupleProj | NT_AnnotatedVar | NT_MultiArgLam | NT_MultiArgFuncCall | NT_TupleCons | NT_DataTupleCons | NT_DataTupleProjIdx | NT_DataTupleProjTuple | NT_IfThenElse | NT_StringConst | NT_IntConst | NT_ExternalCall | NT_LetIn | NT_CallCC | NT_CallCCRet | NT_GlobalFuncRef | NT_GlobalFuncDecl
+NodeType = NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_FileRef | NT_EmptyVal | NT_Builtin | NT_TupleProj | NT_AnnotatedVar | NT_MultiArgLam | NT_MultiArgFuncCall | NT_TupleCons | NT_DataTupleCons | NT_DataTupleProjIdx | NT_DataTupleProjTuple | NT_IfThenElse | NT_StringConst | NT_IntConst | NT_ExternalCall | NT_LetIn | NT_CallCC | NT_CallCCRet | NT_GlobalFuncRef | NT_GlobalFuncDecl
 
 
 
@@ -148,20 +148,29 @@ def map_abt(abt: Abt, f: Callable[[Abt], Abt]):
 
 
 def collect_free_vars(abt: Abt) -> List[str]:
-    match abt:
-        case N(_, children):
-            return sum([collect_free_vars(child) for child in children], [])
-        case FreeVar(name):
-            return [name]
-        case BoundVar(_):
-            return []
-        case Binding(_, next):
-            return collect_free_vars(next)
+    def traverse(abt: Abt) -> List[str]:
+        match abt:
+            case N(_, children):
+                return sum([collect_free_vars(child) for child in children], [])
+            case FreeVar(name):
+                return [name]
+            case BoundVar(_):
+                return []
+            case Binding(_, next):
+                return collect_free_vars(next)
+    result = traverse(abt)
+    # deduplicate
+    return list(set(result))
+
+def unique_name(reference: str, existing: List[str]) -> str:
+    name = reference
+    while name in existing:
+        name += random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+    return name
+
 
 def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
-    var_name = abt.name
-    while var_name in collect_free_vars(abt.next):
-        var_name += random.choice("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890")
+    var_name = unique_name(abt.name, collect_free_vars(abt.next))
     def traverse(abt: Abt, idx : int) -> Abt:
         match abt:
             case N(n, children):
@@ -180,6 +189,16 @@ def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
                 return Binding(abt.name, traverse(abt.next, idx + 1))
     return var_name, traverse(abt.next, 1)
 
+def unbind_abt_list(abt: Binding, num: Optional[str]) -> Tuple[List[str], Abt]:
+    var_names = []
+    while isinstance(abt.next, Binding):
+        var_name, abt = unbind_abt(abt)
+        var_names.append(var_name)
+    if num is not None:
+        assert len(var_names) == num
+    return var_names, abt
+
+
 def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
     def traverse(abt: Abt, idx: int) -> Abt:
         match abt:
@@ -196,6 +215,38 @@ def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
                 return Binding(abt.name, traverse(abt.next, idx + 1))
     return Binding(var_name, traverse(abt, 1))
     
+def abstract_over_abt_list(abt: Abt, var_names: List[str]) -> Binding:
+    while len(var_names) > 0:
+        abt = abstract_over_abt(abt, var_names.pop())
+    return abt
+
+
+def substitute(replacement: Abt, var_name: str, abt: Abt) -> Abt:
+    def traverse(abt: Abt) -> Abt:
+        match abt:
+            case N(n, children):
+                return N(n, [traverse(child) for child in children])
+            case FreeVar(name):
+                if name == var_name:
+                    return replacement
+                else:
+                    return abt
+            case BoundVar(_):
+                return abt
+            case Binding(_, next):
+                return Binding(abt.name, traverse(abt.next))
+    return traverse(abt)
+
+def substitute_list(replacements: List[Abt], var_names: List[str], abt: Abt) -> Abt:
+    while len(replacements) > 0:
+        abt = substitute(replacements.pop(), var_names.pop(), abt)
+    return abt
+
+def instantiate(replacement: Abt, abt: Binding) -> Abt:
+    var_name, body = unbind_abt(abt)
+    return substitute(replacement, var_name, body)
+
+
 
 
 
@@ -246,7 +297,7 @@ def decode_json_to_node_type(data: dict) -> NodeType:
         case '展开后内建节点':
             return NT_Builtin(data["常量"])
         case '元组解构节点':
-            return NTTupleProj(data["序数"])
+            return NT_TupleProj(data["序数"])
         case '自由变量标注节点':
             return NT_AnnotatedVar(data["投影名"])
         case '字符串节点':

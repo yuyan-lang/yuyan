@@ -165,7 +165,7 @@ def compile_ast(stack: Stack, ast: Abt) -> Value:
                     return BoolVal(a > b)
                 case _:
                     raise ValueError(f"Unknown builtin {name} on {args_val}")
-        case N(NTTupleProj(idx), [arg]):
+        case N(NT_TupleProj(idx), [arg]):
             val = compile_ast(stack, arg)
             if isinstance(val, ArrayVal):
                 return val.elems[idx]
