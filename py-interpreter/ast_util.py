@@ -128,7 +128,18 @@ class NT_GlobalFuncRef:
 class NT_GlobalFuncDecl:
     name: str
 
-NodeType = NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_FileRef | NT_EmptyVal | NT_Builtin | NT_TupleProj | NT_AnnotatedVar | NT_MultiArgLam | NT_MultiArgFuncCall | NT_TupleCons | NT_DataTupleCons | NT_DataTupleProjIdx | NT_DataTupleProjTuple | NT_IfThenElse | NT_StringConst | NT_IntConst | NT_ExternalCall | NT_LetIn | NT_CallCC | NT_CallCCRet | NT_GlobalFuncRef | NT_GlobalFuncDecl
+@dataclass
+class NT_WriteGlobalFileRef:
+    filename: str
+
+@dataclass
+class NT_UpdateStruct:
+    index: int
+
+NodeType = (NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_FileRef | NT_EmptyVal | NT_Builtin 
+        | NT_TupleProj | NT_AnnotatedVar | NT_MultiArgLam | NT_MultiArgFuncCall | NT_TupleCons | NT_DataTupleCons | NT_DataTupleProjIdx | NT_DataTupleProjTuple | NT_IfThenElse | NT_StringConst | NT_IntConst | NT_ExternalCall | NT_LetIn | NT_CallCC | NT_CallCCRet | NT_GlobalFuncRef | NT_GlobalFuncDecl
+        | NT_UpdateStruct
+)
 
 
 
@@ -139,11 +150,12 @@ def map_abt(abt: Abt, f: Callable[[Abt], Abt]):
         case N(n, children):
             return N(n, [map_abt(child, f) for child in children])
         case FreeVar(_):
-            return f(abt)
+            return abt
         case BoundVar(_):
             raise ValueError("Cannot map over BoundVar")
         case Binding(name, next):
             var_name, body_next = unbind_abt(abt)
+            # print("Unbinding", var_name, body_next, abt)
             return abstract_over_abt(f(body_next), var_name)
 
 
@@ -176,10 +188,7 @@ def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
             case N(n, children):
                 return N(n, [traverse(child, idx) for child in children])
             case FreeVar(name):
-                if name == abt.name:
-                    return BoundVar(idx)
-                else:
-                    return abt
+                return abt
             case BoundVar(i):
                 if i == idx:
                     return FreeVar(var_name)
@@ -189,14 +198,15 @@ def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
                 return Binding(abt.name, traverse(abt.next, idx + 1))
     return var_name, traverse(abt.next, 1)
 
-def unbind_abt_list(abt: Binding, num: Optional[str]) -> Tuple[List[str], Abt]:
+def unbind_abt_list(abt: Binding, num: Optional[int]) -> Tuple[List[str], Abt]:
     var_names = []
-    while isinstance(abt.next, Binding):
+    while isinstance(abt, Binding):
         var_name, abt = unbind_abt(abt)
         var_names.append(var_name)
     if num is not None:
         assert len(var_names) == num
     return var_names, abt
+
 
 
 def abstract_over_abt(abt: Abt, var_name: str) -> Binding:

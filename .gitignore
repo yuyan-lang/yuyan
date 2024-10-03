@@ -190,3 +190,4 @@ callgrind.out.*
 cachegrind.out.*
 .yybuild.*
 *.pyc
+*.pickle
