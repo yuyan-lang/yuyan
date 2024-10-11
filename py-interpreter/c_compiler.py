@@ -4,23 +4,34 @@ from __future__ import annotations
 # my plan is to directly compile the type checking result json file
 
 
-import sys
+import resource, sys
+resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY,resource.RLIM_INFINITY))
+sys.setrecursionlimit(10**6)
 import os
 import json
 from ast_util import *
 from datetime import datetime
 from dataclasses import dataclass
-from files_manager import *
+from yuyan_import import *
 from closure_convert import *
-sys.setrecursionlimit(1000000000)
+from anf_convert import *
+from recursion_rewrite import *
 print("recursion limit", sys.getrecursionlimit())   
 
+def compile_immediate(immediate: Abt) -> str:
+    match immediate:
+        case _:
+            raise ValueError(f"Unknown immediate {immediate}")
 
 # @after_compile_ast_decorator
 def compile_ast(ast: Abt) -> str:
     match ast:
         case BoundVar(idx):
             raise ValueError(f"Unbound variable {idx}")
+        case FreeVar(v):
+            return v
+        case N(NT_ConsecutiveStmt(), [cur, next]):
+            return compile_immediate(cur) + ";\n" + compile_ast(next)
         case N(NT_FileRef(filename), []):
             return filename + "_ref"
         case N(NT_EmptyVal(), []):
@@ -43,7 +54,7 @@ def compile_ast(ast: Abt) -> str:
                 case _:
                     raise ValueError(f"Unknown builtin {name} on {args_val}")
         case _:
-            return str(ast)
+            raise ValueError(f"Unknown compile ast {ast}")
         # case N(NT_TupleProj(idx), [arg]):
             
         #     val = compile_ast(stack, arg)
@@ -159,13 +170,16 @@ def do_compile_funcs(func_dict):
 
 
 if __name__ == "__main__":
+    os.makedirs(".yybuild.nosync/py/", exist_ok=True)
     if len(sys.argv) < 2:
         print("Usage: python compiler.py <path_no_extension> <args>")
         sys.exit(1)
     path = sys.argv[1]
-    do_load_files(path)
-    closure_convert_top_level()
-    do_compile_funcs(ALL_CLOSURE_FUNCS)
+    asts = do_load_files(path)
+    converted = closure_convert_top_level(asts)
+    rewritten = recursion_rewrite_top_level(converted)
+    anf = anf_convert_top_level(rewritten)
+    do_compile_funcs(anf)
 
 
     

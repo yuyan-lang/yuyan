@@ -1,7 +1,7 @@
 
 
 from __future__ import annotations
-from typing import List, Optional, Callable, Tuple
+from typing import *
 from dataclasses import dataclass
 import random
 
@@ -12,6 +12,11 @@ import random
 class N:
     n: NodeType
     children: List[Abt]
+
+    def __post_init__(self):
+        match self.n:
+            case NT_LetIn():
+                assert len(self.children) == 2
 
 @dataclass
 class FreeVar:
@@ -138,17 +143,18 @@ class NT_UpdateStruct:
 
 NodeType = (NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_FileRef | NT_EmptyVal | NT_Builtin 
         | NT_TupleProj | NT_AnnotatedVar | NT_MultiArgLam | NT_MultiArgFuncCall | NT_TupleCons | NT_DataTupleCons | NT_DataTupleProjIdx | NT_DataTupleProjTuple | NT_IfThenElse | NT_StringConst | NT_IntConst | NT_ExternalCall | NT_LetIn | NT_CallCC | NT_CallCCRet | NT_GlobalFuncRef | NT_GlobalFuncDecl
-        | NT_UpdateStruct
+        | NT_UpdateStruct | NT_ConsecutiveStmt | NT_WriteGlobalFileRef
 )
 
 
 
 Abt = N | FreeVar | BoundVar  | Binding
+Abts = Dict[str, Abt]
 
 def map_abt(abt: Abt, f: Callable[[Abt], Abt]):
     match abt:
         case N(n, children):
-            return N(n, [map_abt(child, f) for child in children])
+            return N(n, [f(child) for child in children])
         case FreeVar(_):
             return abt
         case BoundVar(_):
@@ -207,7 +213,14 @@ def unbind_abt_list(abt: Binding, num: Optional[int]) -> Tuple[List[str], Abt]:
         assert len(var_names) == num
     return var_names, abt
 
+global_unique_name_counter = 0
+global_unique_name_suffix = "_u"
 
+def construct_binding(reference_name: str, body_cons: Callable[[str], Abt]) -> Abt:
+    global global_unique_name_counter
+    global_unique_name_counter += 1
+    reference_name = reference_name + global_unique_name_suffix + str(global_unique_name_counter)
+    return abstract_over_abt(body_cons(reference_name), reference_name)
 
 def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
     def traverse(abt: Abt, idx: int) -> Abt:
@@ -225,7 +238,7 @@ def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
                 return Binding(abt.name, traverse(abt.next, idx + 1))
     return Binding(var_name, traverse(abt, 1))
     
-def abstract_over_abt_list(abt: Abt, var_names: List[str]) -> Binding:
+def abstract_over_abt_list(abt: Abt, var_names: List[str]) -> Abt:
     while len(var_names) > 0:
         abt = abstract_over_abt(abt, var_names.pop())
     return abt
@@ -272,86 +285,16 @@ def find_all_file_refs(ast: Abt) -> List[str]:
         case _:
             return []
 
-def decode_json_to_node_type(data: dict) -> NodeType:
-    if isinstance(data, str):
-        match data:
-            case '空值节点':
-                return NT_EmptyVal()
-            case '空结构节点':
-                return NT_EmptyStructEntry()
-            case '元组构造节点':
-                return NT_TupleCons()
-            case '爻分支节点':
-                return NT_IfThenElse()
-            case '内联虑':
-                return NT_LetIn()
-            case '顺序执行节点':
-                return NT_ConsecutiveStmt()
-            case '唯一构造器序数元组投影序数节点':
-                return NT_DataTupleProjIdx()
-            case '唯一构造器序数元组投影元组节点':
-                return NT_DataTupleProjTuple()
-            case '续延调用节点':
-                return NT_CallCC()
-            case '续延调用返回节点':
-                return NT_CallCCRet()
-            case _:
-                return NTUndef(data)
-    match data["名称"]:
-        case '结构递归节点':
-            return NT_StructRec(data["串"])
-        case '结构节点':
-            return NT_StructEntry(data["标签名"])
-        case '文件引用节点':
-            return NT_FileRef(data["串"])
-        case '展开后内建节点':
-            return NT_Builtin(data["常量"])
-        case '元组解构节点':
-            return NT_TupleProj(data["序数"])
-        case '自由变量标注节点':
-            return NT_AnnotatedVar(data["投影名"])
-        case '字符串节点':
-            return NT_StringConst(data["串"])
-        case '拉姆达抽象':
-            form = data["参式"]
-            match form['名称']:
-                case '多参数形':
-                    return NT_MultiArgLam(form["个数"])
-                case _:
-                    raise ValueError(f"Unknown lambda form {form['名称']}")
-        case '函数调用':
-            form = data["参式"]
-            match form['名称']:
-                case '多参数形':
-                    return NT_MultiArgFuncCall(form["个数"])
-                case _:
-                    raise ValueError(f"Unknown call form {form['名称']}")
-        case '唯一构造器序数元组节点':
-            return NT_DataTupleCons(data["序数"], data["元组长"])
-        case '解析后外部调用节点无类型':
-            return NT_ExternalCall(data["串"])
-        case '整数节点':
-            return NT_IntConst(data["数"])
-        case '函数引用节点':
-            return NT_GlobalFuncRef(data["函数名"])
-        case '函数全局声明节点':
-            return NT_GlobalFuncDecl(data["函数名"])
-        case _:
-            return NTUndef(data)
-
-
-        
-            
-        
-
-
-def decode_json_to_ast(data: dict) -> Abt:
-    if isinstance(data, int):
-        return BoundVar(data)
-    match data["类型"]:
-        case "式节点":
-            return N(decode_json_to_node_type(data["节点名称"]), [decode_json_to_ast(child) for child in data["参数"]])
-        case "绑定":
-            return Binding(data["可能名"], decode_json_to_ast(data["绑定体"]))
-        case _:
-            raise ValueError(f"Unknown type {data['类型']}")
+def find_all_sub_abts_by_predicate(ast: Abt, predicate: Callable[[Abt], bool]) -> List[Abt]:
+    if predicate(ast):
+        return [ast]
+    else:
+        match ast:
+            case N(_, children):
+                return sum([find_all_sub_abts_by_predicate(child, predicate) for child in children], [])
+            case Binding(_, next):
+                return find_all_sub_abts_by_predicate(next, predicate)
+            case FreeVar(_):
+                return []
+            case BoundVar(_):
+                return []
