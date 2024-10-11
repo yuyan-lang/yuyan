@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import resource, sys
 resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY,resource.RLIM_INFINITY))
-sys.setrecursionlimit(10**6)
+sys.setrecursionlimit(10**9)
 import os
 import json
 from ast_util import *

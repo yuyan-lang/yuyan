@@ -1,6 +1,7 @@
 
 import os
 import pickle
+import sys
 
 # define a decorator with an file name
 # the decorator should take file name as an argument
@@ -12,6 +13,7 @@ def cached_pass(name):
                 return pickle.load(open(".yybuild.nosync/py/" + name + ".pickle", "rb"))
             else:
                 result = func(ast)
+                print("recursion limit", sys.getrecursionlimit())   
                 pickle.dump(result, open(".yybuild.nosync/py/" + name + ".pickle", "wb"), protocol=pickle.HIGHEST_PROTOCOL)
                 return result
         return wrapper
