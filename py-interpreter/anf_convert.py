@@ -81,7 +81,7 @@ def anf_convert_func(fun: Abt):
         case N(NT_MultiArgLam(arg_count), [body]):
             assert isinstance(body, Abt)
             abs_names, actual_body = unbind_abt_list(body, arg_count)
-            return N(NT_MultiArgLam(arg_count), [abstract_over_abt(anf_convert(actual_body, lambda x: x), abs_names)])
+            return N(NT_MultiArgLam(arg_count), [abstract_over_abt_list(anf_convert(actual_body, lambda x: x), abs_names)])
 
         
 

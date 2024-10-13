@@ -115,6 +115,8 @@ def decode_json_to_node_type(data: dict) -> NodeType:
             return NT_GlobalFuncRef(data["函数名"])
         case '函数全局声明节点':
             return NT_GlobalFuncDecl(data["函数名"])
+        case '小数节点':
+            return NT_DecimalNumber(data["整部"], data["小部"])
         case _:
             return NTUndef(data)
 

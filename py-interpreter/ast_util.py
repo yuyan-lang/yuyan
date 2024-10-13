@@ -7,6 +7,8 @@ import random
 
 
 
+CHECK_ARITY = True
+
 
 @dataclass
 class N:
@@ -14,9 +16,17 @@ class N:
     children: List[Abt]
 
     def __post_init__(self):
-        match self.n:
-            case NT_LetIn():
-                assert len(self.children) == 2
+        if CHECK_ARITY:
+            expected_arity = arity_of_nt(self.n)
+            if expected_arity is not None:
+                if len(self.children) != len(expected_arity):
+                    raise ValueError(f"Arity mismatch on {self.n} with {self.children}")
+                for i, (child, expected) in enumerate(zip(self.children, expected_arity)):
+                    if get_iterative_binder_length(child) != expected:
+                        raise ValueError(f"Arity mismatch on {self.n} with {self.children} at {i}th child {child}")
+
+                    
+
 
 @dataclass
 class FreeVar:
@@ -34,6 +44,9 @@ class Binding:
 @dataclass
 class NTUndef:
     content: str
+
+    def __post_init__(self):
+        raise ValueError("NTUndef should not be used on " , self.content)
 
 @dataclass
 class NT_StructRec:
@@ -134,6 +147,11 @@ class NT_GlobalFuncDecl:
     name: str
 
 @dataclass
+class NT_DecimalNumber:
+    integral: str
+    fractional: str
+
+@dataclass
 class NT_WriteGlobalFileRef:
     filename: str
 
@@ -150,6 +168,84 @@ NodeType = (NTUndef | NT_StructRec | NT_StructEntry | NT_EmptyStructEntry | NT_F
 
 Abt = N | FreeVar | BoundVar  | Binding
 Abts = Dict[str, Abt]
+
+def arity_of_nt(nt: NodeType) -> Optional[List[int]]:
+    """
+    Arity, 
+    e.g. LetIn[a, x.b] -> [0, 1]
+    e.g. MultiArgLam(3)[a.b.c.body] -> [3]
+    e.g. ExternalCall(name) ->  None (any plain arguments)
+    """
+    match nt:
+        case NT_StructRec(_):
+            return [1]
+        case NT_StructEntry(_):
+            return [0, 0]
+        case NT_EmptyStructEntry():
+            return []
+        case NT_FileRef(_):
+            return []
+        case NT_EmptyVal():
+            return []
+        case NT_Builtin(name):
+            match name:
+                case "内建爻阳":
+                    return []
+                case "内建爻阴":
+                    return []
+                case "内建有元":
+                    return []
+                case "内建函数整数相等":
+                    return [0, 0]
+                case "内建函数整数减":
+                    return [0, 0]
+                case "内建函数整数大于":
+                    return [0, 0]
+                case _:
+                    raise ValueError(f"Unknown builtin {name} on {args_val}")
+        case NT_TupleProj(_):
+            return [0]
+        case NT_AnnotatedVar(_):
+            return [0]
+        case NT_MultiArgLam(arg_count):
+            return [arg_count]
+        case NT_MultiArgFuncCall(arg_count):
+            return [0] * (arg_count + 1)
+        case NT_TupleCons():
+            return None
+        case NT_DataTupleCons(_, _):
+            return [0]
+        case NT_DataTupleProjIdx():
+            return [0]
+        case NT_DataTupleProjTuple():
+            return [0]
+        case NT_IfThenElse():
+            return [0, 0, 0]
+        case NT_StringConst(_):
+            return []
+        case NT_IntConst(_):
+            return []
+        case NT_ExternalCall(_):
+            return None
+        case NT_LetIn():
+            return [0,1]
+        case NT_ConsecutiveStmt():
+            return [0,0]
+        case NT_CallCC():
+            return [1]
+        case NT_CallCCRet():
+            return [0, 0]
+        case NT_GlobalFuncRef(_):
+            return []
+        case NT_GlobalFuncDecl(_):
+            return [0]
+        case NT_UpdateStruct(_):
+            return [0, 0]
+        case NT_WriteGlobalFileRef(_):
+            return [0]
+        case NTUndef(_):
+            raise ValueError("NTUndef should not be used")
+
 
 def map_abt(abt: Abt, f: Callable[[Abt], Abt]):
     match abt:
@@ -298,3 +394,10 @@ def find_all_sub_abts_by_predicate(ast: Abt, predicate: Callable[[Abt], bool]) -
                 return []
             case BoundVar(_):
                 return []
+            
+def get_iterative_binder_length(abt: Abt) -> int:
+    length = 0
+    while isinstance(abt, Binding):
+        length += 1
+        abt = abt.next
+    return length
