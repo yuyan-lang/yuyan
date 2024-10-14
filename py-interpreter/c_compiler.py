@@ -18,132 +18,91 @@ from anf_convert import *
 from recursion_rewrite import *
 print("recursion limit", sys.getrecursionlimit())   
 
-def compile_immediate(immediate: Abt) -> str:
+def compile_immediate(immediate: Abt, store_result: str) -> List[str]:
     match immediate:
+        case N(NT_EmptyVal(), []):
+            return [f"yyvalue {store_result} = unit_to_yyvalue();"]
+        case N(NT_IntConst(val), []):
+            return [f"yyvalue {store_result} = int_to_yyvalue({val});"]
+        case N(NT_DecimalNumber(integral, fractional), []):
+            return [f"yyvalue {store_result} = double_to_yyvalue({integral}.{fractional});"]
+        case N(NT_StringConst(val), []):
+            return [f"yyvalue {store_result} = string_to_yyvalue(\"{val}\");"]
+        case N(NT_TupleCons(), args):
+            return [f"yyvalue {store_result} = tuple_to_yyvalue({{{len(args)}, {', '.join([f"{arg}" for arg in args])}}});"]
+        case N(NT_TupleProj(idx), [arg]):
+            return [f"yyvalue {store_result} = yyvalue_to_tuple({arg})[yyvalue_to_int({idx})];"]
+        case N(NT_Builtin(name), args):
+            match name, args:
+                case "内建爻阳", []:
+                    return [f"yyvalue {store_result} = yyvalue_to_bool(true);"]
+                case "内建爻阴", []:
+                    return [f"yyvalue {store_result} = yyvalue_to_bool(false);"]
+                case "内建有元", []:
+                    return [f"yyvalue {store_result} = unit_to_yyvalue();"]
+                case "内建函数整数相等", [arg1, arg2]:
+                    return [f"yyvalue {store_result} = bool_to_yyvalue(yyvalue_to_int({arg1}) == yyvalue_to_int({arg2}));"]
+                case "内建函数整数减", [arg1, arg2]:
+                    return [f"yyvalue {store_result} = int_to_yyvalue(yyvalue_to_int({arg1}) - yyvalue_to_int({arg2}));"]
+                case "内建函数整数大于", [arg1, arg2]:
+                    return [f"yyvalue {store_result} = bool_to_yyvalue(yyvalue_to_int({arg1}) > yyvalue_to_int({arg2}));"]
+                case _:
+                    raise ValueError(f"Unknown builtin {name} ")
+
+        case N(NT_IfThenElse(), [cond, then_branch, else_branch]):
+            return ([f"yyvalue {store_result};", 
+                    f"if (yyvalue_to_bool({cond})) {{"]
+                    + compile_ast(then_branch) +
+                    [f"}} else {{"]
+                    + compile_ast(else_branch) +
+                    ["}"])
+        case N(NT_DataTupleCons(idx, length), [arg]):
+            return [f"yyvalue {store_result} = raw_constructor_tuple_to_yyvalue({idx}, {length}, yyvalue_to_tuple({arg}));"]
+        case N(NT_DataTupleProjIdx(), [arg]):
+            return [f"yyvalue {store_result} = int_to_yyvalue(yyvalue_to_constructor_tuple_idx({arg}));"]
+        case N(NT_DataTupleProjTuple(), [arg]):
+            return [f"yyvalue {store_result} = raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length({arg}), yyvalue_to_constructor_tuple_tuple({arg}));"]
+        case N(NT_ExternalCall(name), args):
+            return [f"yyvalue {store_result} = {name}({', '.join([f'{arg}' for arg in args])});"]
+        case N(NT_CallCC(), [func]):
+            return [f"yyvalue {store_result} = TODO_CALLCC({func});"]
+        case N(NT_CallCCRet(), [func, arg]):
+            return [f"yyvalue {store_result} = TODO_CALLCCRET({func}, {arg});"]
+        case N(NT_GlobalFuncRef(name), []):
+            return [f"yyvalue {store_result} = funcptr_to_yyvalue({name});"]
+        case N(NT_WriteGlobalFileRef(name), [arg]):
+            return [f"{name} = arg;", f"yyvalue {store_result} = unit_to_yyvalue();"]
+        case N(NT_UpdateStruct(index), [arg1, arg2]):
+            return [f"yyvalue_to_tuple({arg1})[{index}] = {arg2};", f"yyvalue {store_result} = unit_to_yyvalue();"]
+        case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
+            return [f"yyvalue {store_result} = funcptr_to_yyvalue({func})({', '.join([f'{arg}' for arg in args])}) /* TODO!!! */;"]
+        case N(NT_FileRef(filename), []):
+            return [f"yyvalue {store_result} = {filename};"]
+        case FreeVar(name):
+            return [f"yyvalue {store_result} = {name};"]
+
         case _:
-            raise ValueError(f"Unknown immediate {immediate}")
+            raise ValueError(f"Unknown immediate {ast_to_ir(immediate)}")
 
 # @after_compile_ast_decorator
-def compile_ast(ast: Abt) -> str:
+def compile_ast(ast: Abt) -> List[str]:
     match ast:
-        case BoundVar(idx):
-            raise ValueError(f"Unbound variable {idx}")
-        case FreeVar(v):
-            return v
+        case N(NT_LetIn(), [cur, next]):
+            assert isinstance(next, Binding)
+            next_name, next_body = unbind_abt(next)
+            return compile_immediate(cur, next_name) + compile_ast(next_body)
         case N(NT_ConsecutiveStmt(), [cur, next]):
-            return compile_immediate(cur) + ";\n" + compile_ast(next)
-        case N(NT_FileRef(filename), []):
-            return filename + "_ref"
-        case N(NT_EmptyVal(), []):
-            return "0"
-        case N(NT_Builtin(name), args):
-            args_ast = [compile_ast( arg) for arg in args]
-            match name, args_ast:
-                case "内建爻阳", []:
-                    return "1"
-                case "内建爻阴", []:
-                    return "0"
-                case "内建有元", []:
-                    return "1"
-                case "内建函数整数相等", [arg1, arg2]:
-                    return "yyIntEq(" + arg1 + " == " + arg2 + ")"
-                case "内建函数整数减", [arg1, arg2]:
-                    return "yyIntSub(" + arg1 + " - " + arg2 + ")"
-                case "内建函数整数大于", [arg1, arg2]:
-                    return "yyIntGt(" + arg1 + " > " + arg2 + ")"
-                case _:
-                    raise ValueError(f"Unknown builtin {name} on {args_val}")
+            discard_name = global_unique_name("discard")
+            return compile_immediate(cur, discard_name) + compile_ast(next)
+        case N(NT_CallCC(), [next]):
+            assert isinstance(next, Binding)
+            next_name, next_body = unbind_abt(next)
+            return [f"yyvalue {next_name} = TODO_CALLCC;"] + compile_ast(next_body)
+        case FreeVar(name):
+            return ["return " + name + ";"]
         case _:
             raise ValueError(f"Unknown compile ast {ast}")
-        # case N(NT_TupleProj(idx), [arg]):
-            
-        #     val = compile_ast(stack, arg)
-        #     if isinstance(val, ArrayVal):
-        #         return val.elems[idx]
-        #     else:
-        #         raise ValueError(f"Expected array value, got {val}")
-        # case N(NT_AnnotatedVar(_), [arg]):
-        #     return compile_ast(stack, arg)
-        # case N(NT_MultiArgLam(arg_count), _):
-        #     return FuncVal(stack, ast)
-        # case N(NT_TupleCons(), args):
-        #     vals = [compile_ast(stack, arg) for arg in args]
-        #     return ArrayVal(vals)
-        # case N(NT_DataTupleCons(idx, length), [arg]):
-        #     val = compile_ast(stack, arg)
-        #     if isinstance(val, ArrayVal):
-        #         assert len(val.elems) == length
-        #         return DataTupleVal(idx, val)
-        #     else:
-        #         raise ValueError(f"Expected array value, got {val}")
-        # case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
-        #     assert arg_count == len(args)
-        #     func_val = compile_ast(stack, func)
-        #     if isinstance(func_val, FuncVal):
-        #         match func_val.body:
-        #             case N(NT_MultiArgLam(lam_arg_count), [body]):
-        #                 assert lam_arg_count == arg_count
-        #                 args_val = [compile_ast(stack, arg) for arg in args]
-        #                 return compile_func_call(func_val.env, body, args_val)
-        #             case _:
-        #                 raise ValueError(f"Expected multi arg lambda, got {func_val.body}")
-        #     else:
-        #         raise ValueError(f"Expected function value, got {func_val}")
-        # case N(NT_IfThenElse(), [cond, then_branch, else_branch]):
-        #     cond_val = compile_ast(stack, cond)
-        #     if isinstance(cond_val, BoolVal):
-        #         if cond_val.val:
-        #             return compile_ast(stack, then_branch)
-        #         else:
-        #             return compile_ast(stack, else_branch)
-        #     else:
-        #         raise ValueError(f"Expected bool value, got {cond_val}")
-        # case N(NT_StringConst(val), []):
-        #     return StrVal(val)
-        # case N(NT_IntConst(val), []):
-        #     return IntVal(val)
-        # case N(NT_ExternalCall(name), args):
-        #     args_val = [compile_ast(stack, arg) for arg in args]
-        #     return do_external_call(name, args_val)
-        # case N(NT_LetIn(), [cur, Binding(_, next)]):
-        #     val = compile_ast(stack, cur)
-        #     return compile_ast(stack.push(val), next)
-        # case N(NT_ConsecutiveStmt(), [cur, next]):
-        #     compile_ast(stack, cur)
-        #     return compile_ast(stack, next)
-        # case N(NT_DataTupleProjIdx(), [arg]):
-        #     val = compile_ast(stack, arg)
-        #     if isinstance(val, DataTupleVal):
-        #         return IntVal(val.idx)
-        #     else:
-        #         raise ValueError(f"Expected data tuple value, got {val}")
-        # case N(NT_DataTupleProjTuple(), [arg]):
-        #     val = compile_ast(stack, arg)
-        #     if isinstance(val, DataTupleVal):
-        #         return val.elem
-        #     else:
-        #         raise ValueError(f"Expected data tuple value, got {val}")
-        # case N(NT_CallCC(), [Binding(_, next)]):
-        #     global CurrentExceptionHandler
-        #     old_handler = CurrentExceptionHandler
-        #     cc_handler = FuncVal(stack.push(old_handler), N(NT_MultiArgLam(1), [Binding("cc_val", N(NT_ExternalCall("yyExceptCallCC"), [BoundVar(1), BoundVar(2)]))]))
-        #     try:
-        #         return compile_ast(stack.push(cc_handler), next)
-        #     except CCException as e:
-        #         return e.val
-        # case N(NT_CallCCRet(), [cc, ret_val]):
-        #     return compile_ast(stack, N(NT_MultiArgFuncCall(1), [cc, ret_val]))
-        # case N(NT_GlobalFuncRef(name), []):
-        #     if name in GLOBAL_FUNC_REFS:
-        #         return GLOBAL_FUNC_REFS[name]
-        #     else:
-        #         raise ValueError(f"Unknown function reference {name}")
-        # case N(NT_GlobalFuncDecl(name), [v]):
-        #     GLOBAL_FUNC_REFS[name] = FuncVal(Stack(), v)
-        #     return EmptyVal
-        # case _:
-        #     raise ValueError(f"Unknown compileation {ast}")
-    # raise ValueError(f"??? Unknown compileation {ast}")
+        
 
 def do_compile_func(name: str, func: Abt) -> List[str]:
     result = []
@@ -151,9 +110,13 @@ def do_compile_func(name: str, func: Abt) -> List[str]:
         case N(NT_MultiArgLam(arg_count), [body]):
             arg_names, real_body = unbind_abt_list(body, arg_count)
             result.append("yyvalue " + name + "(" + ", ".join([f"yyvalue {arg}" for arg in arg_names]) + ") {")
-            result.append(compile_ast(real_body))
-            result.append("}")
-            return result
+            try:
+                result.append("\n".join(compile_ast(real_body)))
+                result.append("\n}")
+                return result
+            except ValueError as e:
+                print("Error compiling function", name)
+                raise
         case _:
             raise ValueError(f"Expected multi arg lambda, got {func}")
     

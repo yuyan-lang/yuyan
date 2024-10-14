@@ -2,7 +2,7 @@
 #include "garbage_collector.h"
 
 /**
- * I decided to go with 128 bits (16 bytes) for each data. They arranged as follows:
+ * I decided to go with 128 bits (16 bytes) for each data. They arranged as follows (from LSB to MSB):
  * 
  * Lower 64 bits (8 bytes): the actual data, integers, pointers, doubles.
  * 
@@ -25,10 +25,11 @@
  * 
  * 
  * Next 8 bits (1 byte): Subtype information
+ *  For constructor tuple length
  * 
  * Next 32 bits (4 bytes): Length information.
  *  for tuples, it is the length of the tuple
- *  for strings, it is the byte length of the string excluding the trailing \0
+ *  for strings, it is the byte length of the string INCLUDING the trailing \0
  *  for constructor pointers, it is the index of the constructor (not the length) TODO: change this to length(maybe?) under the current setting, we do not allow constuctors with more than 256 elements, otherwise we do not allow constructors with index > 256, which is worse
  * 
  * Next 8 bits (1 byte): Reserved 
@@ -216,6 +217,11 @@ yyvalue* yyvalue_to_tuple(yyvalue arg){
     return (yyvalue *)arg;
 }
 
+yyvalue* yyvalue_to_constructor_tuple_tuple(yyvalue arg){
+    assert(yyvalue_get_type(arg) == type_constructor_tuple);
+    return (yyvalue *)arg;
+}
+
 uint64_t yyvalue_to_tuple_length(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_tuple);
     return yyvalue_get_raw_length(arg);
@@ -234,6 +240,11 @@ uint64_t yyvalue_to_constructor_tuple_length(yyvalue arg){
 yyvalue* yyvalue_to_constructor_tuple(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_constructor_tuple);
     return (yyvalue *)arg;
+}
+
+uint64_t yyvalue_to_constructor_tuple_idx(yyvalue arg){
+    assert(yyvalue_get_type(arg) == type_constructor_tuple);
+    return yyvalue_get_raw_length(arg);
 }
 
 
@@ -365,12 +376,29 @@ yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
     return ret;
 }
 
+
+yyvalue raw_constructor_tuple_to_yyvalue(uint64_t idx, uint64_t length, const yyvalue *elems){
+    yyvalue ret = (yyvalue)elems;
+    yyvalue_set_type(&ret, type_constructor_tuple);
+    yyvalue_set_raw_length(&ret, idx);
+    yyvalue_set_subtype(&ret, length);
+    return ret;
+}
+
 yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]){
     yyvalue* returnStorage = (yyvalue*) yy_gc_malloc_array(length);
     for (int i = 0; i < length; i ++){
         returnStorage[i] = elems[i];
     }
     return raw_tuple_to_yyvalue(length, returnStorage);
+}
+
+yyvalue constructor_tuple_to_yyvalue(uint64_t idx, uint64_t length, const yyvalue elems[]){
+    yyvalue* returnStorage = (yyvalue*) yy_gc_malloc_array(length);
+    for (int i = 0; i < length; i ++){
+        returnStorage[i] = elems[i];
+    }
+    return raw_constructor_tuple_to_yyvalue(idx, length, returnStorage);
 }
 
 yyvalue runtime_heap_pointer_to_yyvalue(yyvalue* ptr){

@@ -25,7 +25,7 @@ def anf_convert(ast: Abt, tail: Callable[[FreeVar], Abt]) -> Abt:
         case N(NT_EmptyVal(), []):
             return anf_convert_immediate(ast, tail)
         case N(NT_Builtin(name), args):
-            return anf_convert_list(args, lambda args_val: N(NT_Builtin(name), args_val)) # type: ignore
+            return anf_convert_list(args, lambda args_val: anf_convert_immediate(N(NT_Builtin(name), args_val), tail)) # type: ignore
         case N(NT_TupleProj(idx), [arg]):
             return anf_convert(arg, lambda arg_val: anf_convert_immediate(N(NT_TupleProj(idx), [arg_val]), tail))
         case N(NT_AnnotatedVar(_), [arg]):
@@ -37,7 +37,7 @@ def anf_convert(ast: Abt, tail: Callable[[FreeVar], Abt]) -> Abt:
         case N(NT_DataTupleCons(idx, length), [arg]):
             return anf_convert(arg, lambda arg_val: anf_convert_immediate(N(NT_DataTupleCons(idx, length), [arg_val]), tail))
         case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
-            return anf_convert_list([func, *args], lambda args_val: N(NT_MultiArgFuncCall(arg_count), args_val)) # type: ignore
+            return anf_convert_list([func, *args], lambda args_val: anf_convert_immediate(N(NT_MultiArgFuncCall(arg_count), args_val),tail)) # type: ignore
         case N(NT_IfThenElse(), [cond, then_branch, else_branch]):
             tail_end = construct_binding("if_then_else_end", lambda x: tail(FreeVar(x)))
             return N(NT_LetIn(), 
@@ -46,6 +46,8 @@ def anf_convert(ast: Abt, tail: Callable[[FreeVar], Abt]) -> Abt:
         case N(NT_StringConst(val), []):
             return anf_convert_immediate(ast, tail)
         case N(NT_IntConst(val), []):
+            return anf_convert_immediate(ast, tail)
+        case N(NT_DecimalNumber(integral, fractional), []):
             return anf_convert_immediate(ast, tail)
         case N(NT_ExternalCall(name), args):
             return anf_convert_list(args, lambda args_val: anf_convert_immediate(N(NT_ExternalCall(name), args_val), tail)) # type: ignore

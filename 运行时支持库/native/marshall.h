@@ -45,6 +45,8 @@ yyvalue *yyvalue_to_heap_pointer(yyvalue arg);
 uint64_t yyvalue_get_heap_pointer_length(yyvalue arg);
 char *yyvalue_to_heap_string_pointer(yyvalue arg);
 uint64_t yyvalue_to_constructor_tuple_length(yyvalue arg);
+uint64_t yyvalue_to_constructor_tuple_idx(yyvalue arg);
+yyvalue* yyvalue_to_constructor_tuple_tuple(yyvalue arg);
 
 // testing type 
 bool yyvalue_is_heap_pointer(yyvalue arg);
@@ -70,6 +72,8 @@ yyvalue tuple_to_yyvalue(uint64_t length, const yyvalue elems[]);
 yyvalue transfer_address_to_yyvalue(yyvalue *transfer_address);
 yyvalue heap_pointer_to_yyvalue(uint64_t type, uint64_t subtype, uint64_t raw_length, yyvalue *ptr);
 yyvalue runtime_heap_pointer_to_yyvalue(yyvalue *ptr);
+yyvalue raw_constructor_tuple_to_yyvalue(uint64_t idx, uint64_t length, const yyvalue *elems);
+yyvalue constructor_tuple_to_yyvalue(uint64_t idx, uint64_t length, const yyvalue elems[]);
 
 // list ops
 uint64_t iso_list_get_length(const yyvalue list);

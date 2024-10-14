@@ -202,7 +202,7 @@ def arity_of_nt(nt: NodeType) -> Optional[List[int]]:
                 case "内建函数整数大于":
                     return [0, 0]
                 case _:
-                    raise ValueError(f"Unknown builtin {name} on {args_val}")
+                    raise ValueError(f"Unknown builtin {name} ")
         case NT_TupleProj(_):
             return [0]
         case NT_AnnotatedVar(_):
@@ -312,10 +312,14 @@ def unbind_abt_list(abt: Binding, num: Optional[int]) -> Tuple[List[str], Abt]:
 global_unique_name_counter = 0
 global_unique_name_suffix = "_u"
 
-def construct_binding(reference_name: str, body_cons: Callable[[str], Abt]) -> Abt:
+def global_unique_name(reference_name: str) -> str:
     global global_unique_name_counter
     global_unique_name_counter += 1
-    reference_name = reference_name + global_unique_name_suffix + str(global_unique_name_counter)
+    return reference_name + global_unique_name_suffix + str(global_unique_name_counter)
+
+
+def construct_binding(reference_name: str, body_cons: Callable[[str], Abt]) -> Abt:
+    reference_name = global_unique_name(reference_name)
     return abstract_over_abt(body_cons(reference_name), reference_name)
 
 def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
