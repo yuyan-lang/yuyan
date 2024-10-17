@@ -3,6 +3,8 @@ from __future__ import annotations
 
 # my plan is to directly compile the type checking result json file
 
+# ACTUALLY THIS FILE SHOULD BE ABANDONED, I NOW REALIZE THAT I SHOULD HAVE MY OWN BYTECODE
+# WHICH IS A STACK MACHINE SIMILAR TO JVM
 
 import resource, sys
 resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY,resource.RLIM_INFINITY))
@@ -16,6 +18,7 @@ from yuyan_import import *
 from closure_convert import *
 from anf_convert import *
 from recursion_rewrite import *
+from tqdm import tqdm
 print("recursion limit", sys.getrecursionlimit())   
 
 def compile_immediate(immediate: Abt, store_result: str) -> List[str]:
@@ -123,9 +126,9 @@ def do_compile_func(name: str, func: Abt) -> List[str]:
 
 def do_compile_funcs(func_dict):
     lines = []
-    for name, func in func_dict.items():
+    for name, func in tqdm(func_dict.items(), desc="Compiling to C"):
         lines.extend(do_compile_func(name, func))
-    with open("output.c", "w") as f:
+    with open("./yybuild.nosync/py/output.c", "w") as f:
         f.write("\n".join(lines))
 
     

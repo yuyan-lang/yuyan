@@ -385,6 +385,29 @@ def find_all_file_refs(ast: Abt) -> List[str]:
         case _:
             return []
 
+def find_all_update_file_refs(ast: Abt) -> List[str]:
+    match ast:
+        case N(NT_WriteGlobalFileRef(filename), _):
+            return [filename]
+        case N(_, children):
+            return sum([find_all_update_file_refs(child) for child in children], [])
+        case Binding(_, next):
+            return find_all_update_file_refs(next)
+        case _:
+            return []
+
+def find_external_call_names(ast: Abt) -> List[str]:
+    match ast:
+        case N(NT_ExternalCall(name), _):
+            return [name]
+        case N(_, children):
+            return sum([find_external_call_names(child) for child in children], [])
+        case Binding(_, next):
+            return find_external_call_names(next)
+        case _:
+            return []
+
+
 def find_all_sub_abts_by_predicate(ast: Abt, predicate: Callable[[Abt], bool]) -> List[Abt]:
     if predicate(ast):
         return [ast]

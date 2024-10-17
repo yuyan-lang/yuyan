@@ -7,6 +7,13 @@ yyvalue yyIntEqTest(yyvalue i1, yyvalue i2){
 
     return bool_to_yyvalue(int1== int2);
 }
+
+yyvalue yyIntGtTest(yyvalue i1, yyvalue i2){
+    int64_t int1 = yyvalue_to_int(i1);
+    int64_t int2 = yyvalue_to_int(i2);
+
+    return bool_to_yyvalue(int1 > int2);
+}
 yyvalue yyIntAdd(yyvalue i1, yyvalue i2){
     return int_to_yyvalue(yyvalue_to_int(i1)+ yyvalue_to_int(i2));
 }

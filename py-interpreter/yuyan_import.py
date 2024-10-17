@@ -82,7 +82,7 @@ def decode_json_to_node_type(data: dict) -> NodeType:
         case '结构节点':
             return NT_StructEntry(data["标签名"])
         case '文件引用节点':
-            return NT_FileRef(data["串"])
+            return NT_FileRef(file_path_to_key(data["串"]))
         case '展开后内建节点':
             return NT_Builtin(data["常量"])
         case '元组解构节点':

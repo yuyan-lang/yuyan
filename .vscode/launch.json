@@ -5,6 +5,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "python py-interpreter/yybc_compiler.py",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/py-interpreter/yybc_compiler.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "豫言编译器/入口"
+            ]
+        },
+        {
             "name": "python py-interpreter/c_compiler.py",
             "type": "debugpy",
             "request": "launch",

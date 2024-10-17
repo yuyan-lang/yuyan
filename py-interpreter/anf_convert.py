@@ -14,6 +14,9 @@ def anf_convert_list(asts: List[Abt], tail: Callable[[List[FreeVar]], Abt]) -> A
     return rec([], asts)
 
 def anf_convert_immediate(ast: Abt, tail: Callable[[FreeVar], Abt]) -> Abt:
+    match ast:
+        case N(NT_LetIn(), _):
+            raise ValueError("LetIn should not be in ANF")
     return N(NT_LetIn(), [ast, construct_binding("anf_end", lambda x: tail(FreeVar(x)))])
 
 def anf_convert(ast: Abt, tail: Callable[[FreeVar], Abt]) -> Abt:
@@ -29,7 +32,7 @@ def anf_convert(ast: Abt, tail: Callable[[FreeVar], Abt]) -> Abt:
         case N(NT_TupleProj(idx), [arg]):
             return anf_convert(arg, lambda arg_val: anf_convert_immediate(N(NT_TupleProj(idx), [arg_val]), tail))
         case N(NT_AnnotatedVar(_), [arg]):
-            return anf_convert_immediate(arg, tail)
+            return anf_convert(arg, tail)
         case N(NT_MultiArgLam(arg_count), _):
             raise ValueError("MultiArgLam should not be in ANF")
         case N(NT_TupleCons(), args):
@@ -39,10 +42,8 @@ def anf_convert(ast: Abt, tail: Callable[[FreeVar], Abt]) -> Abt:
         case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
             return anf_convert_list([func, *args], lambda args_val: anf_convert_immediate(N(NT_MultiArgFuncCall(arg_count), args_val),tail)) # type: ignore
         case N(NT_IfThenElse(), [cond, then_branch, else_branch]):
-            tail_end = construct_binding("if_then_else_end", lambda x: tail(FreeVar(x)))
-            return N(NT_LetIn(), 
-                     [anf_convert(cond, lambda cond_val: N(NT_IfThenElse(), [cond_val, anf_convert(then_branch, lambda x: x), anf_convert(else_branch, lambda x: x)])),
-                        tail_end])
+            return anf_convert(cond, lambda cond_val:
+                anf_convert_immediate(N(NT_IfThenElse(), [cond_val, anf_convert(then_branch, lambda x: x), anf_convert(else_branch, lambda x: x)]), tail))
         case N(NT_StringConst(val), []):
             return anf_convert_immediate(ast, tail)
         case N(NT_IntConst(val), []):
