@@ -339,6 +339,7 @@ def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
     return Binding(var_name, traverse(abt, 1))
     
 def abstract_over_abt_list(abt: Abt, var_names: List[str]) -> Abt:
+    var_names = var_names.copy()
     while len(var_names) > 0:
         abt = abstract_over_abt(abt, var_names.pop())
     return abt
@@ -361,6 +362,8 @@ def substitute(replacement: Abt, var_name: str, abt: Abt) -> Abt:
     return traverse(abt)
 
 def substitute_list(replacements: List[Abt], var_names: List[str], abt: Abt) -> Abt:
+    var_names = var_names.copy()
+    replacements = replacements.copy()
     while len(replacements) > 0:
         abt = substitute(replacements.pop(), var_names.pop(), abt)
     return abt

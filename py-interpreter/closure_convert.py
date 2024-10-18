@@ -24,6 +24,19 @@ def closure_convert(ast: Abt, func_prefix: str, ALL_CLOSURE_FUNCS: Dict[str, Abt
             )
             ALL_CLOSURE_FUNCS[func_unique_name] = N(NT_MultiArgLam(arg_count+1), [abstract_over_abt(substituted_body, block_unique_name)])
             return N(NT_TupleCons(), [N(NT_GlobalFuncRef(func_unique_name), []), N(NT_TupleCons(), [FreeVar(n) for n in body_free_vars])])
+        case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
+            after_func = closure_convert(func, func_prefix, ALL_CLOSURE_FUNCS)
+            after_args = [closure_convert(arg, func_prefix, ALL_CLOSURE_FUNCS) for arg in args]
+            return N(NT_LetIn(), [after_func, 
+                construct_binding(
+                    "func_closure", 
+                    lambda x: N(
+                        NT_MultiArgFuncCall(arg_count+1), 
+                        [
+                            N(NT_TupleProj(0), [FreeVar(x)]),
+                            N(NT_TupleProj(1), [FreeVar(x)]),
+                            *after_args
+                        ]))]) 
         case _:
             return map_abt(ast, lambda x: closure_convert(x, func_prefix, ALL_CLOSURE_FUNCS))
 

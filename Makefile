@@ -235,3 +235,9 @@ RUNTIME_LIB_FILES := $(shell find ./运行时支持库 \( -name '*$(VERSION)*' \
 upload_gh_release:
 	echo $(VERSION)
 	gh release upload $(VERSION) yy_bs_bs $(RUNTIME_LIB_FILES)
+
+
+debug_py_vm:
+	make -C ./yybcvm
+	python3 py-interpreter/yybc_interpreter.py ./.yybuild.nosync/py/output_bc.pickle > yy_debug_py.txt
+	./yybcvm/build/native/vm.exe ./.yybuild.nosync/py/output.yybcb > yy_debug_vm.txt

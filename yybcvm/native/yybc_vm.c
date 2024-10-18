@@ -22,7 +22,7 @@ typedef enum {
     Label,
     BeginFunc,
     EndFunc,
-    ReturnOp,
+    Return,
     PopOpStack,
     BoolConst,
     UnitConst,
@@ -178,7 +178,7 @@ void load_bytecode(const char* filename) {
 
             case ReadTuple:
             case WriteTuple:
-            case ReturnOp:
+            case Return:
             case UnitConst:
             case PopOpStack:
                 // No additional data, just move the program counter forward
@@ -517,8 +517,8 @@ void print_current_disassemble_single(uint8_t *ptr) {
             printf("CallFuncPtr %d %d\n", nargs, stack_offset);
             break;
         }
-        case ReturnOp: {
-            printf("ReturnOp\n");
+        case Return: {
+            printf("Return\n");
             break;
         }
         case FuncRef: {
@@ -541,8 +541,9 @@ void print_current_disassemble_single(uint8_t *ptr) {
             exit(1);
         }
         case Label: {
-            printf("Label\n");
-            exit(1);
+            uint32_t idx = read_uint32(ptr);
+            printf("Label %d\n", idx);
+            break;
         }
         case BeginFunc: {
             uint32_t idx = read_uint32(ptr);
@@ -553,6 +554,16 @@ void print_current_disassemble_single(uint8_t *ptr) {
             uint32_t name_idx = read_uint32(ptr);
             uint32_t nargs = read_uint32(ptr+4);
             printf("ExternalCall %d %d\n", name_idx, nargs);
+            break;
+        }
+        case BranchIfFalse: {
+            uint32_t idx = read_uint32(ptr);
+            printf("BranchIfFalse %d\n", idx);
+            break;
+        }
+        case Branch: {
+            uint32_t idx = read_uint32(ptr);
+            printf("Branch %d\n", idx);
             break;
         }
 
@@ -578,7 +589,10 @@ void execute_vm() {
         switch (opcode) {
             case LoadParam: {
                 uint32_t idx = read_uint32(pc);
-                *op = stack_ptr[-3-idx];
+                printf("LoadParam %d %p\n", -3-idx, stack_ptr);
+                int32_t stack_idx = -3-idx;
+                yyvalue val = stack_ptr[stack_idx];
+                *op = val;
                 op++;
                 pc+=4;
                 break;
@@ -689,11 +703,12 @@ void execute_vm() {
                 // set the new stack_ptr
                 stack_ptr = stack_ptr + stack_offset + nargs + 2;
                 uint64_t func_idx = yyvalue_to_int(func_ptr);
+                printf("Calling %lu %s\n", func_idx, string_table[func_idx]);
                 uint8_t *new_func = funcs_table[func_idx];
                 pc = new_func;
                 break;
             }
-            case ReturnOp: {
+            case Return: {
                 yyvalue ret = *(op - 1);
                 op--;
                 pc = (uint8_t *)yyvalue_to_staticptr(stack_ptr[-1]);
@@ -727,12 +742,13 @@ void execute_vm() {
                 break;
             }
             case EndFunc: {
-                fprintf(stderr, "End of function reached\n");
+                fprintf(stderr, "ERROR: End of function reached\n");
                 exit(1);
             }
             case Label: {
-                fprintf(stderr, "Label reached\n");
-                exit(1);
+                uint32_t idx = read_uint32(pc);
+                pc += 4;
+                break;
             }
             case BeginFunc: {
                 // just start execute this function as calls will always branch here
@@ -743,6 +759,7 @@ void execute_vm() {
                 uint32_t name_idx = read_uint32(pc);
                 pc += 4;
                 uint32_t nargs = read_uint32(pc);
+                pc += 4;
                 yyvalue args[nargs];
                 for (int i = 0; i < nargs; i++) {
                     args[i] = *(op - 1 - i);
@@ -752,6 +769,22 @@ void execute_vm() {
                 yyvalue ret = do_yy_external_call(externalCallName, nargs, args);
                 *op = ret;
                 op++;
+                break;
+            }
+            case BranchIfFalse: {
+                yyvalue val = *(op - 1);
+                op--;
+                uint32_t target_label = read_uint32(pc);
+                pc += 4;
+                if (!yyvalue_to_bool(val)) {
+                    pc = labels_table[target_label];
+                }
+                break;
+            }
+            case Branch: {
+                uint32_t target_label = read_uint32(pc);
+                pc += 4;
+                pc = labels_table[target_label];
                 break;
             }
 
