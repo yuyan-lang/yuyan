@@ -589,7 +589,7 @@ void execute_vm() {
         switch (opcode) {
             case LoadParam: {
                 uint32_t idx = read_uint32(pc);
-                printf("LoadParam %d %p\n", -3-idx, stack_ptr);
+                // printf("LoadParam %d %p\n", -3-idx, stack_ptr);
                 int32_t stack_idx = -3-idx;
                 yyvalue val = stack_ptr[stack_idx];
                 *op = val;
@@ -776,7 +776,8 @@ void execute_vm() {
                 op--;
                 uint32_t target_label = read_uint32(pc);
                 pc += 4;
-                if (!yyvalue_to_bool(val)) {
+                bool cond = yyvalue_to_bool(val);
+                if (!cond) {
                     pc = labels_table[target_label];
                 }
                 break;

@@ -239,5 +239,5 @@ upload_gh_release:
 
 debug_py_vm:
 	make -C ./yybcvm
-	python3 py-interpreter/yybc_interpreter.py ./.yybuild.nosync/py/output_bc.pickle > yy_debug_py.txt
-	./yybcvm/build/native/vm.exe ./.yybuild.nosync/py/output.yybcb > yy_debug_vm.txt
+	-python3 py-interpreter/yybc_interpreter.py ./.yybuild.nosync/py/output_bc.pickle > yy_debug_py.txt
+	-./yybcvm/build/native/vm.exe ./.yybuild.nosync/py/output.yybcb > yy_debug_vm.txt

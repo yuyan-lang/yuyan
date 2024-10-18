@@ -209,7 +209,8 @@ double  yyvalue_to_double(yyvalue arg) {
 
 bool yyvalue_to_bool(yyvalue arg){
     assert (yyvalue_get_type(arg) == type_boolean);
-    return (bool)&arg;
+    // get the lowest bit and convert it to bool
+    return (arg & 1) != 0;
 }
 
 yyvalue* yyvalue_to_tuple(yyvalue arg){
