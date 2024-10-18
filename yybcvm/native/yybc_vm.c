@@ -7,29 +7,29 @@
 
 // Enum for the opcodes
 typedef enum {
-    LOAD_PARAM = 1,
-    LOAD_LOCAL,
-    STORE_LOCAL,
-    READ_TUPLE,
-    WRITE_TUPLE,
-    MAKE_TUPLE,
-    CALL_FUNC_PTR,
-    EXTERNAL_CALL,
-    INT_CONST,
-    STRING_CONST,
-    BRANCH_IF_FALSE,
-    BRANCH,
-    LABEL,
-    BEGIN_FUNC,
-    END_FUNC,
-    RETURN_OP,
-    POP_OP_STACK,
-    BOOL_CONST,
-    UNIT_CONST,
-    DECIMAL_CONST,
-    FUNC_REF,
-    FILE_REF,
-    UPDATE_FILE_REF
+    LoadParam = 1,
+    LoadLocal,
+    StoreLocal,
+    ReadTuple,
+    WriteTuple,
+    MakeTuple,
+    CallFuncPtr,
+    ExternalCall,
+    IntConst,
+    StringConst,
+    BranchIfFalse,
+    Branch,
+    Label,
+    BeginFunc,
+    EndFunc,
+    ReturnOp,
+    PopOpStack,
+    BoolConst,
+    UnitConst,
+    DecimalConst,
+    FuncRef,
+    FileRef,
+    UpdateFileRef
 } Opcode;
 
 // VM memory regions
@@ -123,36 +123,36 @@ void load_bytecode(const char* filename) {
         Opcode opcode = *pc; // Get current opcode
 
         switch (opcode) {
-            case LOAD_PARAM:
-            case LOAD_LOCAL:
-            case STORE_LOCAL:
-            case MAKE_TUPLE:
-            case BRANCH_IF_FALSE:
-            case BRANCH:
-            case END_FUNC:
-            case FUNC_REF:
-            case FILE_REF:
-            case UPDATE_FILE_REF:
-            case STRING_CONST:
+            case LoadParam:
+            case LoadLocal:
+            case StoreLocal:
+            case MakeTuple:
+            case BranchIfFalse:
+            case Branch:
+            case EndFunc:
+            case FuncRef:
+            case FileRef:
+            case UpdateFileRef:
+            case StringConst:
                 // For these opcodes, simply move the program counter forward
                 pc += 1 + sizeof(uint32_t); // Move past opcode + 4 bytes for the index
                 break;
 
-            case BOOL_CONST:
+            case BoolConst:
                 pc += 1 + 1; // Move past opcode + 1 byte for the value
                 break;
 
-            case CALL_FUNC_PTR:
-            case EXTERNAL_CALL:
-            case INT_CONST:
-            case DECIMAL_CONST:
-                // INT_CONST is 1 byte opcode + 8 bytes for the int value
+            case CallFuncPtr:
+            case ExternalCall:
+            case IntConst:
+            case DecimalConst:
+                // IntConst is 1 byte opcode + 8 bytes for the int value
                 pc += 1 + sizeof(uint64_t); // Move past opcode + 8 bytes for the value
                 break;
 
 
-            case LABEL:
-            case BEGIN_FUNC: {
+            case Label:
+            case BeginFunc: {
 
                 // For these opcodes, read the index and update the tables
                 uint32_t index;
@@ -161,7 +161,7 @@ void load_bytecode(const char* filename) {
                 index = swap_uint32(index); // Convert from big-endian to host-endian
 
                 // Populate labels or funcs table as appropriate
-                if (opcode == LABEL) {
+                if (opcode == Label) {
                     labels_table[index] = pc;
                 } else {
                     funcs_table[index] = pc;
@@ -172,11 +172,11 @@ void load_bytecode(const char* filename) {
             }
 
 
-            case READ_TUPLE:
-            case WRITE_TUPLE:
-            case RETURN_OP:
-            case UNIT_CONST:
-            case POP_OP_STACK:
+            case ReadTuple:
+            case WriteTuple:
+            case ReturnOp:
+            case UnitConst:
+            case PopOpStack:
                 // No additional data, just move the program counter forward
                 pc += 1; // Move past the opcode
                 break;
@@ -457,28 +457,28 @@ void execute_vm() {
         uint8_t opcode = *pc++; // Fetch the opcode
 
         switch (opcode) {
-            case LOAD_PARAM: {
+            case LoadParam: {
                 uint32_t idx = read_uint32(pc);
                 *op = stack_ptr[-2-idx];
                 op++;
                 pc+=4;
                 break;
             }
-            case LOAD_LOCAL: {
+            case LoadLocal: {
                 uint32_t idx = read_uint32(pc);
                 *op = stack_ptr[idx];
                 op++;
                 pc+=4;
                 break;
             }
-            case STORE_LOCAL: {
+            case StoreLocal: {
                 uint32_t idx = read_uint32(pc);
                 stack_ptr[idx] = *(op-1);
                 op--;
                 pc+=4;
                 break;
             }
-            case READ_TUPLE: {
+            case ReadTuple: {
                 yyvalue *tuple = yyvalue_to_tuple(*op - 2);
                 uint64_t idx = yyvalue_to_int(*(op-1));
                 yyvalue val = tuple[idx];
@@ -487,14 +487,14 @@ void execute_vm() {
                 op++;
                 break;
             }
-            case WRITE_TUPLE: {
+            case WriteTuple: {
                 yyvalue *tuple = yyvalue_to_tuple(*op - 3);
                 uint64_t idx = yyvalue_to_int(*(op-2));
                 tuple[idx] = *(op-1);
                 op -= 3;
                 break;
             }
-            case MAKE_TUPLE: {
+            case MakeTuple: {
                 uint32_t len = read_uint32(pc);
                 pc += 4;
                 yyvalue elems[len];
@@ -507,7 +507,7 @@ void execute_vm() {
                 op++;
                 break;
             }
-            case INT_CONST: {
+            case IntConst: {
                 uint64_t val = read_uint64(pc);
                 // bit cast into signed 64 bit integer
                 int64_t v = (int64_t)val;
@@ -517,14 +517,14 @@ void execute_vm() {
                 pc+=8;
                 break;
             }
-            case STRING_CONST: {
+            case StringConst: {
                 uint32_t idx = read_uint32(pc);
                 pc += 4;
                 char * str = string_table[idx];
                 yyvalue v_str = static_string_to_yyvalue(str);
                 break;
             }
-            case BOOL_CONST: {
+            case BoolConst: {
                 uint8_t val = *pc;
                 pc++;
                 yyvalue v_bool = bool_to_yyvalue(val);
@@ -532,13 +532,13 @@ void execute_vm() {
                 op++;
                 break;
             }
-            case UNIT_CONST: {
+            case UnitConst: {
                 yyvalue v_unit = unit_to_yyvalue();
                 *op = v_unit;
                 op++;
                 break;
             }
-            case DECIMAL_CONST: {
+            case DecimalConst: {
                 uint64_t val = read_uint64(pc);
                 pc += 8;
                 double val_d = *(double*)&val;
@@ -547,7 +547,7 @@ void execute_vm() {
                 op++;
                 break;
             }
-            case CALL_FUNC_PTR: {
+            case CallFuncPtr: {
                 uint32_t nargs = read_uint32(pc);
                 uint32_t stack_offset = read_uint32(pc + 4);
                 pc += 8;
@@ -572,7 +572,7 @@ void execute_vm() {
                 pc = funcs_table[yyvalue_to_int(func_ptr)];
                 break;
             }
-            case RETURN_OP: {
+            case ReturnOp: {
                 yyvalue ret = *(op - 1);
                 op--;
                 stack_ptr = yyvalue_to_stackptr(stack_ptr[-2]);
@@ -581,7 +581,7 @@ void execute_vm() {
                 op++;
                 break;
             }
-            case FUNC_REF: {
+            case FuncRef: {
                 uint32_t idx = read_uint32(pc);
                 pc += 4;
                 yyvalue func_ref = int_to_yyvalue(idx);
@@ -589,7 +589,7 @@ void execute_vm() {
                 op++;
                 break;
             }
-            case FILE_REF: {
+            case FileRef: {
                 uint32_t idx = read_uint32(pc);
                 pc += 4;
                 yyvalue file_ref = files_table[idx];
@@ -597,7 +597,7 @@ void execute_vm() {
                 op++;
                 break;
             }
-            case UPDATE_FILE_REF: {
+            case UpdateFileRef: {
                 uint32_t idx = read_uint32(pc);
                 pc += 4;
                 yyvalue file_ref = *(op - 1);
@@ -605,20 +605,20 @@ void execute_vm() {
                 op--;
                 break;
             }
-            case END_FUNC: {
+            case EndFunc: {
                 fprintf(stderr, "End of function reached\n");
                 exit(1);
             }
-            case LABEL: {
+            case Label: {
                 fprintf(stderr, "Label reached\n");
                 exit(1);
             }
-            case BEGIN_FUNC: {
+            case BeginFunc: {
                 // just start execute this function as calls will always branch here
                 pc += 4;
                 break;
             }
-            case EXTERNAL_CALL: {
+            case ExternalCall: {
                 uint32_t name_idx = read_uint32(pc);
                 pc += 4;
                 uint32_t nargs = read_uint32(pc);
