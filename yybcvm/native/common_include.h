@@ -30,6 +30,7 @@
 
 extern int global_argc;
 extern char** global_argv;
+extern char *main_bytecode_filename;
 
 extern uv_loop_t *uv_global_loop;
 
@@ -85,3 +86,5 @@ void yy_perform_gc();
 void verify_gc();
 void yy_gc_init();
 extern bool during_gc;
+
+void initialize_runtime_stack();

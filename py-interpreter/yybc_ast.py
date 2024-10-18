@@ -48,6 +48,7 @@ class MakeTuple:
 @dataclass
 class CallFuncPtr:
     nargs: int
+    locals: int # the number of local variables to reserve
 
 # external call
 # ..., arg_n, ..., arg_1 -> ..., result
@@ -149,8 +150,8 @@ def inst_to_text(inst: Instruction) -> str:
             return "WriteTuple"
         case MakeTuple(length):
             return f"MakeTuple {length}"
-        case CallFuncPtr(nargs):
-            return f"CallFuncPtr {nargs}"
+        case CallFuncPtr(nargs, locals):
+            return f"CallFuncPtr {nargs} {locals}"
         case ExternalCall(name, nargs):
             return f"ExternalCall {name} {nargs}"
         case IntConst(val):
@@ -206,9 +207,9 @@ def write_instr_to_bytes(inst: Instruction) -> bytearray:
         case MakeTuple(length):
             # 0x06 opcode for MakeTuple followed by 4-byte length
             return bytearray([0x06]) + struct.pack(">I", length)
-        case CallFuncPtr(nargs):
+        case CallFuncPtr(nargs, locals):
             # 0x07 opcode for CallFuncPtr followed by 4-byte number of args
-            return bytearray([0x07]) + struct.pack(">I", nargs)
+            return bytearray([0x07]) + struct.pack(">II", nargs, locals)
         case ExternalCall(name, nargs):
             # 0x08 opcode for ExternalCall followed by 4-byte name index and 4-byte nargs
             return bytearray([0x08]) + struct.pack(">I", name) + struct.pack(">I", nargs)
@@ -247,9 +248,7 @@ def write_instr_to_bytes(inst: Instruction) -> bytearray:
             return bytearray([0x13])
         case DecimalConst(integral, fractional):
             # 0x14 opcode for DecimalConst followed by two 64-bit integers (strings converted)
-            int_val = int(integral)
-            frac_val = int(fractional)
-            return bytearray([0x14]) + struct.pack(">Q", int_val) + struct.pack(">Q", frac_val)
+            return bytearray([0x14]) + struct.pack(">d", float(integral + "." + fractional))
         case FuncRef(name):
             # 0x15 opcode for FuncRef followed by 4-byte function name index
             return bytearray([0x15]) + struct.pack(">I", name)

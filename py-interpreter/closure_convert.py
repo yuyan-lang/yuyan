@@ -30,12 +30,12 @@ def closure_convert(ast: Abt, func_prefix: str, ALL_CLOSURE_FUNCS: Dict[str, Abt
 
 @cached_pass("closure_convert")
 def closure_convert_top_level(inputs: Dict[str, Abt]) -> Dict[str, Abt]:
-    ALL_CLOSURE_FUNCS: Dict[str, Abt] = {}
+    ALL_CLOSURE_FUNCS: Dict[str, Abt] = {"entryMain": None} # entryMain should appear first
 
     for file, ast in tqdm(inputs.items(), desc="Closure conversion"):
         ALL_CLOSURE_FUNCS[file + "_init"] = N(NT_MultiArgLam(0), 
             [N(NT_WriteGlobalFileRef(file), [closure_convert(ast, file, ALL_CLOSURE_FUNCS)])])
-    init_ast = N(NT_EmptyVal(), [])
+    init_ast = N(NT_ExternalCall("yyProcessExit"), [N(NT_IntConst(0), [])])
     for file in reversed(inputs.keys()):
         init_ast = N(NT_ConsecutiveStmt(), [
             N(NT_MultiArgFuncCall(0), [N(NT_GlobalFuncRef(file + "_init"), [])]),

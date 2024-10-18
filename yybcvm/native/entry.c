@@ -8,12 +8,14 @@ extern void optional_entry_initialization();
 int global_argc = 0;
 char** global_argv = NULL;
 
+char *main_bytecode_filename;
 
 // Function to process @yy: arguments
 void processYYArguments(int argc, char* argv[]) {
     char* program_name = argv[0];
+    main_bytecode_filename = argv[1];
     int total_consumed_argc = 0;
-    for (int i = 1; i < argc; i++)
+    for (int i = 2; i < argc; i++)
     {
         if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
             use_profiler = true;

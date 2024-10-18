@@ -112,7 +112,7 @@ def compile_immediate(params: List[str], locals: List[str], immediate: Abt, stri
         case N(NT_UpdateStruct(index), [arg1, arg2]):
             return compile_immediate(params, locals, arg1, strings) + [IntConst(index)] + compile_immediate(params, locals, arg2, strings) + [WriteTuple()]
         case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
-            return flatten([compile_immediate(params, locals, arg, strings) for arg in args]) + compile_immediate(params, locals, func, strings) + [CallFuncPtr(arg_count)]
+            return flatten([compile_immediate(params, locals, arg, strings) for arg in args]) + compile_immediate(params, locals, func, strings) + [CallFuncPtr(arg_count, len(locals))]
         case N(NT_FileRef(filename), []):
             return [FileRef(strings.index(filename))]
         case FreeVar(name):
@@ -215,8 +215,6 @@ all_external_call_names = [
 "yyPrintlnStdErr",
 "获取当前异常处理器",
 "设置当前异常处理器",
-"yyExceptCallCC",
-"yyGlobalExcept",
 "yyIsSubstring",
 "yyPrintln",
 "yyPathExists",

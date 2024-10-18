@@ -5,6 +5,43 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "./yybcvm/build/native/vm.exe",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/yybcvm/build/native/vm.exe",
+            "args": [
+                "./.yybuild.nosync/py/output.yybcb",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [
+                {
+                    "name": "YY_GC_DEBUG_FLAG",
+                    "value": "1"
+                },
+                {
+                    "name": "YY_DEBUG_FLAG",
+                    "value": "1"
+                },
+            ],
+            "externalConsole": false,
+            "setupCommands": [
+                // {
+                //     "text": "handle SIGSEGV noprint nostop pass",
+                //     "description": "ingore libgc related errors",
+                //     "ignoreFailures": false
+                // },
+                {
+                    "text": "set output-radix 16"
+                },
+                {
+                    "text": "set disable-randomization off"
+                }
+            ],
+            // "MIMode": "lldb",
+            // "miDebuggerPath": "/usr/bin/lldb"
+        },
+        {
             "name": "python py-interpreter/yybc_compiler.py",
             "type": "debugpy",
             "request": "launch",
