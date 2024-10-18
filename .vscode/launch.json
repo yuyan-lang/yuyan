@@ -42,6 +42,18 @@
             // "miDebuggerPath": "/usr/bin/lldb"
         },
         {
+            "name": "python3 ./py-interpreter/yybc_interpreter.py ./.yybuild.nosync/py/output_bc.pickle",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/py-interpreter/yybc_interpreter.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "./.yybuild.nosync/py/output_bc.pickle"
+            ]
+
+        },
+        {
             "name": "python py-interpreter/yybc_compiler.py",
             "type": "debugpy",
             "request": "launch",

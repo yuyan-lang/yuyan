@@ -43,6 +43,8 @@ uint8_t **labels_table;
 uint8_t **funcs_table;
 yyvalue *files_table;
 
+void print_current_disassemble_single(uint8_t *ptr);
+
 // Function to swap bytes for 32-bit values
 uint32_t swap_uint32(uint32_t val) {
     return ntohl(val); // Convert from big-endian to host-endian
@@ -156,17 +158,19 @@ void load_bytecode(const char* filename) {
 
                 // For these opcodes, read the index and update the tables
                 uint32_t index;
-                pc += 1; // Move past the opcode
-                memcpy(&index, pc, sizeof(uint32_t)); // Read the index
+                memcpy(&index, pc+1, sizeof(uint32_t)); // Read the index
                 index = swap_uint32(index); // Convert from big-endian to host-endian
 
                 // Populate labels or funcs table as appropriate
                 if (opcode == Label) {
                     labels_table[index] = pc;
                 } else {
+                    // printf("funcs_table[%d] = %p\n", index, pc);
+                    // print_current_disassemble_single(pc);
                     funcs_table[index] = pc;
                 }
                 
+                pc += 1; // Move past the opcode
                 pc += sizeof(uint32_t); // Move past the index
                 break;
             }
@@ -450,16 +454,131 @@ uint64_t read_uint64(uint8_t* pc) {
     return swap_uint64(val);
 }
 
+void print_current_disassemble_single(uint8_t *ptr) {
+    uint8_t opcode = *ptr++; // Fetch the opcode
+
+    switch (opcode) {
+        case LoadParam: {
+            uint32_t idx = read_uint32(ptr);
+            printf("LoadParam %d\n", idx);
+            break;
+        }
+        case LoadLocal: {
+            uint32_t idx = read_uint32(ptr);
+            printf("LoadLocal %d\n", idx);
+            break;
+        }
+        case StoreLocal: {
+            uint32_t idx = read_uint32(ptr);
+            printf("StoreLocal %d\n", idx);
+            break;
+        }
+        case ReadTuple: {
+            printf("ReadTuple\n");
+            break;
+        }
+        case WriteTuple: {
+            printf("WriteTuple\n");
+            break;
+        }
+        case MakeTuple: {
+            uint32_t len = read_uint32(ptr);
+            printf("MakeTuple %d\n", len);
+            break;
+        }
+        case IntConst: {
+            uint64_t val = read_uint64(ptr);
+            printf("IntConst %ld\n", val);
+            break;
+        }
+        case StringConst: {
+            uint32_t idx = read_uint32(ptr);
+            printf("StringConst %d\n", idx);
+            break;
+        }
+        case BoolConst: {
+            uint8_t val = *ptr;
+            printf("BoolConst %d\n", val);
+            break;
+        }
+        case UnitConst: {
+            printf("UnitConst\n");
+            break;
+        }
+        case DecimalConst: {
+            uint64_t val = read_uint64(ptr);
+            double val_d = *(double*)&val;
+            printf("DecimalConst %f\n", val_d);
+            break;
+        }
+        case CallFuncPtr: {
+            uint32_t nargs = read_uint32(ptr);
+            uint32_t stack_offset = read_uint32(ptr + 4);
+            printf("CallFuncPtr %d %d\n", nargs, stack_offset);
+            break;
+        }
+        case ReturnOp: {
+            printf("ReturnOp\n");
+            break;
+        }
+        case FuncRef: {
+            uint32_t idx = read_uint32(ptr);
+            printf("FuncRef %d\n", idx);
+            break;
+        }
+        case FileRef: {
+            uint32_t idx = read_uint32(ptr);
+            printf("FileRef %d\n", idx);
+            break;
+        }
+        case UpdateFileRef: {
+            uint32_t idx = read_uint32(ptr);
+            printf("UpdateFileRef %d\n", idx);
+            break;
+        }
+        case EndFunc: {
+            printf("EndFunc\n");
+            exit(1);
+        }
+        case Label: {
+            printf("Label\n");
+            exit(1);
+        }
+        case BeginFunc: {
+            uint32_t idx = read_uint32(ptr);
+            printf("BeginFunc %d\n", idx);
+            break;
+        }
+        case ExternalCall: {
+            uint32_t name_idx = read_uint32(ptr);
+            uint32_t nargs = read_uint32(ptr+4);
+            printf("ExternalCall %d %d\n", name_idx, nargs);
+            break;
+        }
+
+
+
+        default:
+            printf("[Disassemble] Unknown opcode %u\n", opcode);
+            exit(1); // Stop on error
+            break;
+    }
+
+}
+
+uint64_t inst_count = 0;
 
 // Function to execute the bytecode
 void execute_vm() {
     while (true) {
+        printf("%ld: ", ++inst_count);
+        print_current_disassemble_single(pc);
         uint8_t opcode = *pc++; // Fetch the opcode
 
         switch (opcode) {
             case LoadParam: {
                 uint32_t idx = read_uint32(pc);
-                *op = stack_ptr[-2-idx];
+                *op = stack_ptr[-3-idx];
                 op++;
                 pc+=4;
                 break;
@@ -479,7 +598,7 @@ void execute_vm() {
                 break;
             }
             case ReadTuple: {
-                yyvalue *tuple = yyvalue_to_tuple(*op - 2);
+                yyvalue *tuple = yyvalue_to_tuple(*(op - 2));
                 uint64_t idx = yyvalue_to_int(*(op-1));
                 yyvalue val = tuple[idx];
                 op -= 2;
@@ -488,7 +607,7 @@ void execute_vm() {
                 break;
             }
             case WriteTuple: {
-                yyvalue *tuple = yyvalue_to_tuple(*op - 3);
+                yyvalue *tuple = yyvalue_to_tuple(*(op - 3));
                 uint64_t idx = yyvalue_to_int(*(op-2));
                 tuple[idx] = *(op-1);
                 op -= 3;
@@ -569,14 +688,16 @@ void execute_vm() {
                 stack_ptr[stack_offset + nargs + 1] = staticptr_to_yyvalue((yyvalue *)pc);
                 // set the new stack_ptr
                 stack_ptr = stack_ptr + stack_offset + nargs + 2;
-                pc = funcs_table[yyvalue_to_int(func_ptr)];
+                uint64_t func_idx = yyvalue_to_int(func_ptr);
+                uint8_t *new_func = funcs_table[func_idx];
+                pc = new_func;
                 break;
             }
             case ReturnOp: {
                 yyvalue ret = *(op - 1);
                 op--;
-                stack_ptr = yyvalue_to_stackptr(stack_ptr[-2]);
                 pc = (uint8_t *)yyvalue_to_staticptr(stack_ptr[-1]);
+                stack_ptr = yyvalue_to_stackptr(stack_ptr[-2]);
                 *op = ret;
                 op++;
                 break;
