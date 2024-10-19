@@ -11,6 +11,8 @@
             "program": "${workspaceRoot}/yybcvm/build/native/vm.exe",
             "args": [
                 "./.yybuild.nosync/py/output.yybcb",
+                "豫言编译器/入口。豫",
+                "--do-not-load-cache",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -25,7 +27,7 @@
                 },
                 {
                     "name": "YY_GC_INITIAL_HEAP_SIZE_MB",
-                    "value": "1000"
+                    "value": "32"
                 }
             ],
             "externalConsole": false,
