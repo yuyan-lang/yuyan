@@ -4,6 +4,7 @@ import pickle
 import sys
 from ir_serialization import *
 from ir_deserialization import *
+import multiprocessing
 
 # define a decorator with an file name
 # the decorator should take file name as an argument
@@ -28,15 +29,11 @@ def cached_pass(name):
         return wrapper
     return decorator
 
-# def cached_pass(name):
-#     def decorator(func):
-#         def wrapper(ast):
-#             if os.path.exists(".yybuild.nosync/py/" + name + ".pickle"):
-#                 return pickle.load(open(".yybuild.nosync/py/" + name + ".pickle", "rb"))
-#             else:
-#                 result = func(ast)
-#                 print("recursion limit", sys.getrecursionlimit())   
-#                 pickle.dump(result, open(".yybuild.nosync/py/" + name + ".pickle", "wb"), protocol=pickle.HIGHEST_PROTOCOL)
-#                 return result
-#         return wrapper
-#     return decorator
+
+MULTI_PROCESSING_WORKERS = 16
+
+def do_multi_process(func, arg_list):
+    def func_wrapper(arg):
+        return func(*arg)
+    with multiprocessing.Pool(processes=MULTI_PROCESSING_WORKERS) as pool:
+        results = list(tqdm(pool.imap(func_wrapper, args), ))

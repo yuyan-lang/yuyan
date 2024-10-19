@@ -5,31 +5,28 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "./yybcvm/build/native/vm.exe [attach]",
+            "name": ".yybuild.nosync/py/豫言编译器/入口/output.exe",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceRoot}/yybcvm/build/native/vm.exe",
+            "program": "${workspaceRoot}/.yybuild.nosync/py/豫言编译器/入口/output.exe",
             "args": [
-                "./.yybuild.nosync/py/output.yybcb",
-                "豫言编译器/入口。豫",
-                "--do-not-load-cache",
-                "-vv",
+
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "environment": [
-                {
-                    "name": "YY_GC_DEBUG_FLAG",
-                    "value": "1"
-                },
-                {
-                    "name": "YY_DEBUG_FLAG",
-                    "value": "1"
-                },
-                {
-                    "name": "YY_GC_INITIAL_HEAP_SIZE_MB",
-                    "value": "32"
-                }
+                // {
+                //     "name": "YY_GC_DEBUG_FLAG",
+                //     "value": "1"
+                // },
+                // {
+                //     "name": "YY_DEBUG_FLAG",
+                //     "value": "1"
+                // },
+                // {
+                //     "name": "YY_GC_INITIAL_HEAP_SIZE_MB",
+                //     "value": "32"
+                // }
             ],
             "externalConsole": false,
             "setupCommands": [
@@ -39,9 +36,48 @@
                 //     "ignoreFailures": false
                 // },
                 {
-                    "text": "target remote | /usr/local/libexec/valgrind/../../bin/vgdb --pid=164540"
-
+                    "text": "set output-radix 16"
+                    // "text": "settings set target.output-radix 16"
                 },
+                {
+                    "text": "set disable-randomization off"
+                }
+            ],
+            // "MIMode": "lldb",
+            // "miDebuggerPath": "/usr/bin/lldb"
+        },
+
+        {
+            "name": ".yybuild.nosync/py/performance-investigation/matrix-multiply/matrix-multiply/output.exe",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/.yybuild.nosync/py/performance-investigation/matrix-multiply/matrix-multiply/output.exe",
+            "args": [
+
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [
+                // {
+                //     "name": "YY_GC_DEBUG_FLAG",
+                //     "value": "1"
+                // },
+                // {
+                //     "name": "YY_DEBUG_FLAG",
+                //     "value": "1"
+                // },
+                // {
+                //     "name": "YY_GC_INITIAL_HEAP_SIZE_MB",
+                //     "value": "32"
+                // }
+            ],
+            "externalConsole": false,
+            "setupCommands": [
+                // {
+                //     "text": "handle SIGSEGV noprint nostop pass",
+                //     "description": "ingore libgc related errors",
+                //     "ignoreFailures": false
+                // },
                 {
                     "text": "set output-radix 16"
                     // "text": "settings set target.output-radix 16"

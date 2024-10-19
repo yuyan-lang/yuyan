@@ -31,7 +31,19 @@ def label_escape(label: str) -> str:
             .replace("【", "SQ_L_OPEN").replace("】", "SQ_R_CLOSE")
             .replace("，", "COMMA").replace("。", "PERIOD")
     )
+def python_string_to_c_string(s):
+    # Escape backslashes and double quotes
+    s = s.replace('\\', '\\\\')  # Escape backslashes
+    s = s.replace('"', '\\"')     # Escape double quotes
+    s = s.replace('\n', '\\n')    # Escape newlines
+    s = s.replace('\t', '\\t')     # Escape tabs
+    s = s.replace('%', '%%')       # Escape percent signs for printf
 
+    # Escape trigraphs by replacing ?? with ?\?
+    s = s.replace('??', '?\\?')  # Escape trigraphs
+
+    # Return the string wrapped in double quotes for C syntax
+    return f'"{s}"'
 # we use the same convention as yybcvm, 
     # /**
     #  * Stack will be arranged like this
@@ -90,17 +102,17 @@ def compile_expression(params: List[str], locals: List[str], expr: Abt) -> List[
         case N(NT_DecimalNumber(integral, fractional), []):
             return [f"rax = double_to_yyvalue({integral}.{fractional});"]
         case N(NT_StringConst(val), []):
-            return [f"rax = static_string_to_yyvalue({json.dumps(val)});"]
+            return [f"rax = static_string_to_yyvalue({python_string_to_c_string(val)});"]
         case N(NT_TupleCons(), args):
             return [f"rax = tuple_to_yyvalue({len(args)}, (yyvalue[])" + '{' + ', '.join([compile_immediate(params, locals, arg) for arg in args]) + "});"]
         case N(NT_TupleProj(idx), [arg]):
-            return [f"rax = yyvalue_to_tuple({ci(arg)})[yyvalue_to_int({idx})];"]
+            return [f"rax = yyvalue_to_tuple({ci(arg)})[{idx}];"]
         case N(NT_Builtin(name), args):
             match name, args:
                 case "内建爻阳", []:
-                    return [f"rax = yyvalue_to_bool(true);"]
+                    return [f"rax = bool_to_yyvalue(true);"]
                 case "内建爻阴", []:
-                    return [f"rax = yyvalue_to_bool(false);"]
+                    return [f"rax = bool_to_yyvalue(false);"]
                 case "内建有元", []:
                     return [f"rax = unit_to_yyvalue();"]
                 case "内建函数整数相等", [arg1, arg2]:
@@ -154,14 +166,17 @@ def compile_expression(params: List[str], locals: List[str], expr: Abt) -> List[
             return [f"rax = {label_escape(filename)};"]
         case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
             continuation_label_name = global_unique_name("continuation_label")
+            func_ptr_name = global_unique_name("called_func_ptr")
             stack_reservation = len(locals)
             args_len = len(args)
             assert args_len == arg_count
             return ([f"stack_ptr[{stack_reservation + i}] = {ci(arg)};" for i, arg in enumerate(reversed(args))] +
-                    [f"stack_ptr[{stack_reservation + args_len}] = stackptr_to_yyvalue(stack_ptr);",
+                    [f"void* {func_ptr_name} = yyvalue_to_staticptr({ci(func)});",
+                     f"stack_ptr[{stack_reservation + args_len}] = stackptr_to_yyvalue(stack_ptr);",
                      f"stack_ptr[{stack_reservation + args_len + 1}] = staticptr_to_yyvalue((void*)(&&{continuation_label_name}));",
                      f"stack_ptr = stack_ptr + {stack_reservation + args_len + 2};", 
-                     f"goto *((void*)yyvalue_to_staticptr({ci(func)}));",
+                     f"yy_pre_function_call_gc();"
+                     f"goto *((void*){func_ptr_name});",
                     f"{continuation_label_name}:",
                     f"rax = rax;"]
             )
@@ -233,10 +248,13 @@ def do_compile_funcs(func_dict):
     lines.extend(
         ['#include "../native/common_include.h"',
          '#include "../native/yystdlib_include.h"',    
+         '#include "../native/garbage_collector.h"',    
          ]
     )
-    lines.extend("yyvalue " + label_escape(name) + ";" for name in file_refs)
-    lines.extend(["int64_t yy_runtime_start() {",
+    lines.extend("yyvalue " + label_escape(name) + " = 0;" for name in file_refs)
+    lines.extend(["int64_t yy_runtime_start() {"]
+                  +["yy_register_gc_rootpoint(&" + label_escape(name) + ");" for name in file_refs]
+                  +[
                   "yyvalue rax = unit_to_yyvalue(); // used for storing return value of functions",
                   "goto entryMain;",
     ])
