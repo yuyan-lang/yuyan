@@ -134,7 +134,7 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "args": [
-                "豫言编译器/入口"
+                "performance-investigation/matrix-multiply/matrix-multiply.yuyan"
             ]
         },
         {

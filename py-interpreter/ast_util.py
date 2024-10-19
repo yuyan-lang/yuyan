@@ -301,6 +301,18 @@ def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
                 return Binding(abt.name, traverse(abt.next, idx + 1))
     return var_name, traverse(abt.next, 1)
 
+
+def unbind_abt_no_repeat(abt: Binding, additional: List[str]) -> Tuple[str, Abt]:
+    name, body = unbind_abt(abt)
+    new_name = name
+    while new_name in additional:
+        new_name = unique_name(new_name, additional)
+    if new_name != name:
+        assert new_name not in collect_free_vars(body)
+        body = substitute(FreeVar(new_name), name, body)
+    return new_name, body
+        
+
 def unbind_abt_list(abt: Binding, num: Optional[int]) -> Tuple[List[str], Abt]:
     var_names = []
     while isinstance(abt, Binding):

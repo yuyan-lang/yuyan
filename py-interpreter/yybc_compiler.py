@@ -29,14 +29,7 @@ def flatten(lst):
     return [item for sublist in lst for item in sublist]
 
 def unbind_no_repeat(abt: Binding, local: List[str], params: List[str]) -> Tuple[str, Abt]:
-    name, body = unbind_abt(abt)
-    new_name = name
-    while new_name in local or name in params:
-        new_name = unique_name(new_name, local+params)
-    if new_name != name:
-        body = substitute(FreeVar(new_name), name, body)
-    return new_name, body
-        
+    return unbind_abt_no_repeat(abt, local + params)
 
 # should assume opstack is empty and should leave opstack to a single entry on top
 def compile_immediate(params: List[str], locals: List[str], immediate: Abt, strings: List[str]) -> List[Instruction]:

@@ -16,93 +16,178 @@ from datetime import datetime
 from dataclasses import dataclass
 from yuyan_import import *
 from closure_convert import *
+import pass_utils
 from anf_convert import *
 from recursion_rewrite import *
 from tqdm import tqdm
 print("recursion limit", sys.getrecursionlimit())   
 
-def compile_immediate(immediate: Abt, store_result: str) -> List[str]:
+
+def label_escape(label: str) -> str:
+    return label.replace(":", "_").replace("-", "_").replace(".", "_").replace("/", "_")
+
+# we use the same convention as yybcvm, 
+    # /**
+    #  * Stack will be arranged like this
+    #  * 
+    #  * Yuyan Call Routine
+    #  * 
+    #  * 
+    #  * For function call, the following values will be pushed to the stack
+    #  * arg n
+    #  * arg n-1
+    #  * ...
+    #  * arg 2
+    #  * arg 1
+    #  * arg 0 (! arguments starts from 0)
+    #  * previous stack_ptr
+    #  * previous pc
+    #  * (SP)
+    #  * local 0
+    #  * local 1
+    #  * ...
+    #  *
+    #  * 
+    #  * 
+    #  * 
+    #  * 
+    #  * 
+    # */
+def return_routine() -> List[str]:
+    return [
+        "void *return_address = (void*)yyvalue_to_staticptr(stack_ptr[-1]);",
+        "stack_ptr = (yyvalue*)yyvalue_to_stackptr(stack_ptr[-2]);",
+        "goto *return_address;",
+    ]
+
+def compile_immediate(params: List[str], locals: List[str], immediate: Abt) -> str:
     match immediate:
+        case FreeVar(name):
+            assert not (name in params and name in locals)
+            if name in params:
+                # 0th param is stack_ptr-3
+                return f"stack_ptr[-{params.index(name) + 3}]"
+            elif name in locals:
+                return f"stack_ptr[{locals.index(name)}]"
+        case _:
+            raise ValueError("Not an immediate: ", immediate)
+
+def compile_expression(params: List[str], locals: List[str], expr: Abt) -> List[str]:
+    def ci(imm):
+        return compile_immediate(params, locals, imm)
+    match expr:
         case N(NT_EmptyVal(), []):
-            return [f"yyvalue {store_result} = unit_to_yyvalue();"]
+            return [f"rax = unit_to_yyvalue();"]
         case N(NT_IntConst(val), []):
-            return [f"yyvalue {store_result} = int_to_yyvalue({val});"]
+            return [f"rax = int_to_yyvalue({val});"]
         case N(NT_DecimalNumber(integral, fractional), []):
-            return [f"yyvalue {store_result} = double_to_yyvalue({integral}.{fractional});"]
+            return [f"rax = double_to_yyvalue({integral}.{fractional});"]
         case N(NT_StringConst(val), []):
-            return [f"yyvalue {store_result} = string_to_yyvalue(\"{val}\");"]
+            return [f"rax = string_to_yyvalue({json.dumps(val)});"]
         case N(NT_TupleCons(), args):
-            return [f"yyvalue {store_result} = tuple_to_yyvalue({{{len(args)}, {', '.join([f"{arg}" for arg in args])}}});"]
+            return [f"rax = tuple_to_yyvalue({{{len(args)}, {', '.join([compile_immediate(params, locals, arg) for arg in args])}}});"]
         case N(NT_TupleProj(idx), [arg]):
-            return [f"yyvalue {store_result} = yyvalue_to_tuple({arg})[yyvalue_to_int({idx})];"]
+            return [f"rax = yyvalue_to_tuple({ci(arg)})[yyvalue_to_int({idx})];"]
         case N(NT_Builtin(name), args):
             match name, args:
                 case "内建爻阳", []:
-                    return [f"yyvalue {store_result} = yyvalue_to_bool(true);"]
+                    return [f"rax = yyvalue_to_bool(true);"]
                 case "内建爻阴", []:
-                    return [f"yyvalue {store_result} = yyvalue_to_bool(false);"]
+                    return [f"rax = yyvalue_to_bool(false);"]
                 case "内建有元", []:
-                    return [f"yyvalue {store_result} = unit_to_yyvalue();"]
+                    return [f"rax = unit_to_yyvalue();"]
                 case "内建函数整数相等", [arg1, arg2]:
-                    return [f"yyvalue {store_result} = bool_to_yyvalue(yyvalue_to_int({arg1}) == yyvalue_to_int({arg2}));"]
+                    return [f"rax = bool_to_yyvalue(yyvalue_to_int({ci(arg1)}) == yyvalue_to_int({ci(arg2)}));"]
                 case "内建函数整数减", [arg1, arg2]:
-                    return [f"yyvalue {store_result} = int_to_yyvalue(yyvalue_to_int({arg1}) - yyvalue_to_int({arg2}));"]
+                    return [f"rax = int_to_yyvalue(yyvalue_to_int({ci(arg1)}) - yyvalue_to_int({ci(arg2)}));"]
                 case "内建函数整数大于", [arg1, arg2]:
-                    return [f"yyvalue {store_result} = bool_to_yyvalue(yyvalue_to_int({arg1}) > yyvalue_to_int({arg2}));"]
+                    return [f"rax = bool_to_yyvalue(yyvalue_to_int({ci(arg1)}) > yyvalue_to_int({ci(arg2)}));"]
                 case _:
                     raise ValueError(f"Unknown builtin {name} ")
 
         case N(NT_IfThenElse(), [cond, then_branch, else_branch]):
-            return ([f"yyvalue {store_result};", 
-                    f"if (yyvalue_to_bool({cond})) {{"]
-                    + compile_ast(then_branch) +
+            store_result_name = global_unique_name("if_result");
+            assert store_result_name not in locals
+            next_locals = locals + [store_result_name]
+            return ([
+                    f"if (yyvalue_to_bool({ci(cond)})) {{"]
+                    + compile_ast(params, next_locals, store_result_name, then_branch) +
                     [f"}} else {{"]
-                    + compile_ast(else_branch) +
-                    ["}"])
+                    + compile_ast(params, next_locals, store_result_name, else_branch) +
+                    ["}",
+                     f"yyvalue rax = {compile_immediate(params, next_locals, FreeVar(store_result_name))};"]
+                    )
         case N(NT_DataTupleCons(idx, length), [arg]):
-            return [f"yyvalue {store_result} = raw_constructor_tuple_to_yyvalue({idx}, {length}, yyvalue_to_tuple({arg}));"]
+            return [f"rax = raw_constructor_tuple_to_yyvalue({idx}, {length}, yyvalue_to_tuple({ci(arg)}));"]
         case N(NT_DataTupleProjIdx(), [arg]):
-            return [f"yyvalue {store_result} = int_to_yyvalue(yyvalue_to_constructor_tuple_idx({arg}));"]
+            return [f"rax = int_to_yyvalue(yyvalue_to_constructor_tuple_idx({ci(arg)}));"]
         case N(NT_DataTupleProjTuple(), [arg]):
-            return [f"yyvalue {store_result} = raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length({arg}), yyvalue_to_constructor_tuple_tuple({arg}));"]
+            return [f"rax = raw_tuple_to_yyvalue(yyvalue_to_constructor_tuple_length({ci(arg)}), yyvalue_to_constructor_tuple_tuple({ci(arg)}));"]
         case N(NT_ExternalCall(name), args):
-            return [f"yyvalue {store_result} = {name}({', '.join([f'{arg}' for arg in args])});"]
-        case N(NT_CallCC(), [func]):
-            return [f"yyvalue {store_result} = TODO_CALLCC({func});"]
+            return [f"rax = {name}({', '.join([f'{ci(arg)}' for arg in args])});"]
         case N(NT_CallCCRet(), [func, arg]):
-            return [f"yyvalue {store_result} = TODO_CALLCCRET({func}, {arg});"]
+            saved_stack_ptr_name = global_unique_name("saved_stack_ptr") # this is the current stack ptr name, we need to 
+            saved_label_name = global_unique_name("saved_label")
+            return [
+                f"rax = {ci(arg)};"
+                f"yyvalue *{saved_stack_ptr_name} = yyvalue_to_stackptr({ci(func)});",
+                f"stack_ptr = yyvalue_to_stackptr({saved_stack_ptr_name}[-2]);"
+                f"void *{saved_label_name} = (void *)yyvalue_to_staticptr({saved_stack_ptr_name}[-1]);",
+                f"goto *{saved_label_name};"
+                ]
         case N(NT_GlobalFuncRef(name), []):
-            return [f"yyvalue {store_result} = funcptr_to_yyvalue({name});"]
+            return [f"rax = staticptr_to_yyvalue((yyvalue *)(&&{label_escape(name)}));"]
         case N(NT_WriteGlobalFileRef(name), [arg]):
-            return [f"{name} = arg;", f"yyvalue {store_result} = unit_to_yyvalue();"]
+            return [f"{label_escape(name)} = {ci(arg)};",
+                    f"rax = unit_to_yyvalue();"]
         case N(NT_UpdateStruct(index), [arg1, arg2]):
-            return [f"yyvalue_to_tuple({arg1})[{index}] = {arg2};", f"yyvalue {store_result} = unit_to_yyvalue();"]
-        case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
-            return [f"yyvalue {store_result} = funcptr_to_yyvalue({func})({', '.join([f'{arg}' for arg in args])}) /* TODO!!! */;"]
+            return [f"yyvalue_to_tuple({ci(arg1)})[{index}] = {ci(arg2)};"
+                    f"rax = unit_to_yyvalue();"]
         case N(NT_FileRef(filename), []):
-            return [f"yyvalue {store_result} = {filename};"]
+            return [f"rax = {label_escape(filename)};"]
+        case N(NT_MultiArgFuncCall(arg_count), [func, *args]):
+            continuation_label_name = global_unique_name("continuation_label")
+            stack_reservation = len(locals)
+            args_len = len(args)
+            assert args_len == arg_count
+            return ([f"stack_ptr[{stack_reservation + i}] = {ci(arg)};" for i, arg in enumerate(reversed(args))] +
+                    [f"stack_ptr[{stack_reservation + args_len}] = stackptr_to_yyvalue(stack_ptr);",
+                     f"stack_ptr[{stack_reservation + args_len + 1}] = staticptr_to_yyvalue((void*)(&&{continuation_label_name}));",
+                     f"stack_ptr = stack_ptr + {stack_reservation + args_len + 2};", 
+                     f"goto *((void*)yyvalue_to_staticptr({ci(func)}));",
+                    f"{continuation_label_name}:",
+                    f"rax = rax;"]
+            )
         case FreeVar(name):
-            return [f"yyvalue {store_result} = {name};"]
-
+            return [f"rax = {ci(expr)};"]
         case _:
-            raise ValueError(f"Unknown immediate {ast_to_ir(immediate)}")
+            raise ValueError(f"Unknown expr {ast_to_ir(expr)}")
 
 # @after_compile_ast_decorator
-def compile_ast(ast: Abt) -> List[str]:
+def compile_ast(params: List[str], locals: List[str], destination_local: str,  ast: Abt) -> List[str]:
     match ast:
         case N(NT_LetIn(), [cur, next]):
             assert isinstance(next, Binding)
-            next_name, next_body = unbind_abt(next)
-            return compile_immediate(cur, next_name) + compile_ast(next_body)
+            next_name, next_body = unbind_abt_no_repeat(next, locals + params)   
+            assert next_name not in locals
+            next_locals = locals + [next_name]
+            return (compile_expression(params, locals, cur) +
+                     [f"stack_ptr[{len(locals)}] = rax;"] + 
+                       compile_ast(params, next_locals, destination_local, next_body)
+            )
         case N(NT_ConsecutiveStmt(), [cur, next]):
             discard_name = global_unique_name("discard")
-            return compile_immediate(cur, discard_name) + compile_ast(next)
+            return compile_expression(cur, discard_name) + compile_ast(next)
         case N(NT_CallCC(), [next]):
             assert isinstance(next, Binding)
-            next_name, next_body = unbind_abt(next)
-            return [f"yyvalue {next_name} = TODO_CALLCC;"] + compile_ast(next_body)
+            next_name, next_body = unbind_abt_no_repeat(next, locals + params)
+            assert next_name not in locals
+            next_locals = locals + [next_name]
+            return ([f"stack_ptr[{len(locals)}] = stackptr_to_yyvalue(stack_ptr);"] +
+                     compile_ast(params, next_locals, destination_local, next_body)
+            )
         case FreeVar(name):
-            return ["return " + name + ";"]
+            return [f"{compile_immediate(params, locals, FreeVar(destination_local))} = {compile_immediate(params, locals, ast)};"]
         case _:
             raise ValueError(f"Unknown compile ast {ast}")
         
@@ -112,10 +197,13 @@ def do_compile_func(name: str, func: Abt) -> List[str]:
     match func:
         case N(NT_MultiArgLam(arg_count), [body]):
             arg_names, real_body = unbind_abt_list(body, arg_count)
-            result.append("yyvalue " + name + "(" + ", ".join([f"yyvalue {arg}" for arg in arg_names]) + ") {")
+            return_val_name = global_unique_name("return_val")
+            arg_names, real_body = unbind_abt_list(body, arg_count)
+            result.append(f"{label_escape(name)}:")
             try:
-                result.append("\n".join(compile_ast(real_body)))
-                result.append("\n}")
+                result.extend(compile_ast(arg_names, [return_val_name], return_val_name, real_body))
+                result.append("rax = return_val;")
+                result.extend(return_routine())
                 return result
             except ValueError as e:
                 print("Error compiling function", name)
@@ -124,11 +212,27 @@ def do_compile_func(name: str, func: Abt) -> List[str]:
             raise ValueError(f"Expected multi arg lambda, got {func}")
     
 
+
+def flatten(lst):
+    return [item for sublist in lst for item in sublist]
+
 def do_compile_funcs(func_dict):
+    read_file_refs = list(set(flatten(find_all_file_refs(v) for _, v in func_dict.items())))
+    update_file_refs = list(set(flatten(find_all_update_file_refs(v) for _, v in func_dict.items())))
+    if not all (name in update_file_refs for name in read_file_refs):
+        print("File refs not updated", [name for name in read_file_refs if name not in update_file_refs])
+    file_refs = update_file_refs
     lines = []
+    lines.extend("yyvalue " + label_escape(name) + ";" for name in file_refs)
+    lines.extend(["int64_t yy_runtime_start() {",
+                  "yyvalue rax = unit_to_yyvalue(); // used for storing return value of functions",
+                  "goto entryMain;",
+    ])
     for name, func in tqdm(func_dict.items(), desc="Compiling to C"):
         lines.extend(do_compile_func(name, func))
-    with open("./yybuild.nosync/py/output.c", "w") as f:
+    lines.extend(["return 0;",
+                  "}"])
+    with open(pass_utils.get_artifact_path("output.c"), "w") as f:
         f.write("\n".join(lines))
 
     
@@ -136,11 +240,12 @@ def do_compile_funcs(func_dict):
 
 
 if __name__ == "__main__":
-    os.makedirs(".yybuild.nosync/py/", exist_ok=True)
     if len(sys.argv) < 2:
         print("Usage: python compiler.py <path_no_extension> <args>")
         sys.exit(1)
     path = sys.argv[1]
+    pass_utils.INPUT_PATH_KEY = file_path_to_key(path)
+    os.makedirs(get_artifact_path(""), exist_ok=True)
     asts = do_load_files(path)
     converted = closure_convert_top_level(asts)
     rewritten = recursion_rewrite_top_level(converted)
