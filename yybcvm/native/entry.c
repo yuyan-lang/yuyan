@@ -14,8 +14,13 @@ char *main_bytecode_filename;
 void processYYArguments(int argc, char* argv[]) {
     char* program_name = argv[0];
     main_bytecode_filename = argv[1];
+
+#ifdef PYGEN
+    int total_consumed_argc = 0;
+#else
     int total_consumed_argc = 1;
-    for (int i = 2; i < argc; i++)
+#endif
+    for (int i = 1 + total_consumed_argc; i < argc; i++)
     {
         if (strncmp(argv[i], "@yy:useprofiler=1", 16) == 0) {
             use_profiler = true;

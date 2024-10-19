@@ -30,10 +30,25 @@ def cached_pass(name):
     return decorator
 
 
-MULTI_PROCESSING_WORKERS = 16
+MULTI_PROCESSING_WORKERS = 1
 
-def do_multi_process(func, arg_list):
-    def func_wrapper(arg):
-        return func(*arg)
-    with multiprocessing.Pool(processes=MULTI_PROCESSING_WORKERS) as pool:
-        results = list(tqdm(pool.imap(func_wrapper, args), ))
+def func_wrapper(farg):
+    [func, arg] = farg
+    return func(*arg)
+
+# because we have global unique names during AST processing, this cannot be used
+def do_multi_process(func, arg_list, desc=None):
+    """
+    arg_list is a list of tuple of arguments, shared structures should use 
+    manager = multiprocessing.Manager()
+    shared_dict = manager.dict()  
+    """
+
+    if MULTI_PROCESSING_WORKERS == 1:
+        results = [func_wrapper((func, arg)) for arg in tqdm(arg_list, desc=desc)]
+        return results
+    else:
+        with multiprocessing.Pool(processes=MULTI_PROCESSING_WORKERS) as pool:
+            results = list(tqdm(pool.imap(func_wrapper, [(func, arg) for arg in arg_list]), total=len(arg_list), desc=desc))
+
+        return results

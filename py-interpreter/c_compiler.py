@@ -258,8 +258,11 @@ def do_compile_funcs(func_dict):
                   "yyvalue rax = unit_to_yyvalue(); // used for storing return value of functions",
                   "goto entryMain;",
     ])
-    for name, func in tqdm(func_dict.items(), desc="Compiling to C"):
-        lines.extend(do_compile_func(name, func))
+    
+    # for name, func in tqdm(func_dict.items(), desc="Compiling to C"):
+    #     lines.extend(do_compile_func(name, func))
+    func_lines = pass_utils.do_multi_process(do_compile_func, list(func_dict.items()), desc="Compiling to C")
+    lines.extend(["\n".join(lines) for lines in func_lines])
     lines.extend(["return 0;",
                   "}"])
     with open(pass_utils.get_artifact_path("output.c"), "w") as f:

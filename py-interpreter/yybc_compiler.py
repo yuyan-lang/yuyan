@@ -286,12 +286,14 @@ def do_compile_funcs(func_dict):
         instrs = []
         for name, func in tqdm(func_dict.items(), desc="Compiling to YYBC"):
             instrs.extend(do_compile_func(name, func, strings))
-        pickle.dump({"strings": strings, "instrs": instrs}, open(pass_utils.get_artifact_path("/output_bc.pickle"), "wb"))
-    with open(pass_utils.get_artifact_path("/output.yybcir"), "w") as f:
+        pickle.dump({"strings": strings, "instrs": instrs}, open(pass_utils.get_artifact_path("output_bc.pickle"), "wb"))
+    with open(pass_utils.get_artifact_path("output.yybcir"), "w") as f:
         f.write(f"EXTERNCALLS {len(all_external_call_names)} FILES {len(file_refs)} FUNCS {len(func_dict)} STRINGS {len(strings)}\n")
         f.write("\n".join([inst_to_text(instr) for instr in instrs]) + "\n")
         f.write("\n".join([f"STRING {i} {json.dumps(s)}" for i, s in enumerate(strings)]) + "\n")
-    write_binary_file(pass_utils.get_artifact_path("/output.yybcb"), instrs, strings, all_external_call_names, file_refs, func_dict)
+    write_binary_file(pass_utils.get_artifact_path("output.yybcb"), instrs, strings, all_external_call_names, file_refs, func_dict)
+    print("[Done] RUN USING CMD:")
+    print(f"./yybcvm/build/native/vmopt.exe {pass_utils.get_artifact_path('output.yybcb')}")
 # it is expected that VM calculates the index into the file list by subtracting the number of builtins
 
     

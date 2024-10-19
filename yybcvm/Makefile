@@ -51,8 +51,8 @@ vmopt: $(NATIVE_SOURCES) $(VM_CFILES)
 PYGEN_EXEC_PATH=$(error Please specify PYGEN_EXEC_PATH to compile pygen)
 PYGEN_OPT_EXEC_PATH=$(PYGEN_EXEC_PATH:.exe=.opt.exe)
 pygen: $(NATIVE_SOURCES) $(PYGEN_CFILES)
-	$(CC) -g $^ -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o $(PYGEN_EXEC_PATH)
-	$(CC) -g -O3 -DNDEBUG $^ -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o $(PYGEN_OPT_EXEC_PATH)
+	$(CC) -DPYGEN -g $^ -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o $(PYGEN_EXEC_PATH)
+	$(CC) -DPYGEN -g -O3 -DNDEBUG $^ -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o $(PYGEN_OPT_EXEC_PATH)
 
 
 
