@@ -2,9 +2,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "common_include.h"
-#include "yystdlib_include.h"
-#include "garbage_collector.h"
+#include "../native/common_include.h"
+#include "../native/yystdlib_include.h"
+#include "../native/garbage_collector.h"
 
 // Enum for the opcodes
 typedef enum {

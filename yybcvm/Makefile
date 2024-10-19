@@ -1,8 +1,12 @@
 
 
 NATIVE_SOURCEDIR= $(abspath native)
-NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h'  -o -name '*.ll' \) )
+NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' \) )
 NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll' \) )
+VM_SOURCEDIR := $(abspath vm)
+VM_CFILES := $(shell find $(VM_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' \) )
+PYGEN_SOURCEDIR := $(abspath pygen)
+PYGEN_CFILES := $(shell find $(PYGEN_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' \) )
 
 
 CC=clang
@@ -36,14 +40,20 @@ endif
 
 allvm:  vm vmopt
 
-vm: $(NATIVE_SOURCES)
+vm: $(NATIVE_SOURCES) $(VM_CFILES)
 	@mkdir -p build/native
-	$(CC) -g $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/vm.exe
+	$(CC) -g $^ -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/vm.exe
 
 
-vmopt: $(NATIVE_SOURCES)
-	$(CC) -g -O3 -DNDEBUG $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/vmopt.exe
+vmopt: $(NATIVE_SOURCES) $(VM_CFILES)
+	$(CC) -g $^ -O3 -DNDEBUG -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/vmopt.exe
 	
+PYGEN_EXEC_PATH=$(error Please specify PYGEN_EXEC_PATH to compile pygen)
+PYGEN_OPT_EXEC_PATH=$(PYGEN_EXEC_PATH:.exe=.opt.exe)
+pygen: $(NATIVE_SOURCES) $(PYGEN_CFILES)
+	$(CC) -g $^ -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o $(PYGEN_EXEC_PATH)
+	$(CC) -g -O3 -DNDEBUG $^ -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o $(PYGEN_OPT_EXEC_PATH)
+
 
 
 libyyrtdebug$(VERSION).a: $(NATIVE_SOURCES)
