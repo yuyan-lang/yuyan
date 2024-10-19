@@ -88,3 +88,4 @@ void yy_gc_init();
 extern bool during_gc;
 
 void initialize_runtime_stack();
+void yy_pre_function_call_gc();

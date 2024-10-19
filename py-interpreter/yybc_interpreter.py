@@ -5,8 +5,10 @@ from yybc_ast import *
 import pickle
 
 import sys
+from datetime import datetime
 import os
 
+CurrentExceptionHandler = []
 
 def do_external_call(name: str, args: List[Any]):
     global CurrentExceptionHandler
@@ -24,6 +26,8 @@ def do_external_call(name: str, args: List[Any]):
             return []
         case "yyIntAdd", [a,b]:
             return a + b
+        case "yyIntSub", [a,b]:
+            return a - b
         case "yyStringEq", [a,b]:
             return a == b
         case "yyNewRefArrayGeneric", [l]:
@@ -42,54 +46,54 @@ def do_external_call(name: str, args: List[Any]):
             res = [c for c in s]
             return [res, len(res)]
         case "yyGetCommandLineArgs", []:
-            res = [StrVal(arg) for arg in sys.argv[2:]]
-            return ArrayVal([ArrayVal(res), IntVal(len(res))])
-        case "yyGetCurrentLocalDateTimeFmt", [StrVal(fmt)]:
-            return StrVal(datetime.now().strftime(fmt))
-        case "yyPrintlnStdErr", [StrVal(s)]:
+            res = [arg for arg in sys.argv[2:]]
+            return [res, len(res)]
+        case "yyGetCurrentLocalDateTimeFmt", [fmt]:
+            return datetime.now().strftime(fmt)
+        case "yyPrintlnStdErr", [s]:
             print(s, file=sys.stderr)
-            return EmptyVal
+            return []
         case "获取当前异常处理器", []:
             return CurrentExceptionHandler
         case "设置当前异常处理器", [v]:
             CurrentExceptionHandler = v
-            return EmptyVal
-        case "yyExceptCallCC", [val, old_handler]:
-            CurrentExceptionHandler = old_handler
-            raise CCException(val)
-        case "yyGlobalExcept", [StrVal(name)]:
-            print(f"Unhandled exception: {name}", file=sys.stderr)
+            return []
+        case "yyTopExceptHandler", [v]: 
+            print(f"Unhandled exception: {v}", file=sys.stderr)
             exit(1)
-        case "yyIsSubstring", [StrVal(sub), StrVal(s)]:
-            return BoolVal(sub in s)
-        case "yyPrintln", [StrVal(s)]:
+        case "yyIsSubstring", [sub, s]:
+            return sub in s
+        case "yyPrintln", [s]:
             print(s)
-            return EmptyVal
-        case "yyPathExists", [StrVal(path)]:
-            return BoolVal(os.path.exists(path))
-        case "yyGetFileModifiedTime", [StrVal(path)]:
-            return IntVal(int(os.path.getmtime(path)))
-        case "yyReadFileSync", [StrVal(path)]:
+            return []
+        case "yyPathExists", [path]:
+            return os.path.exists(path)
+        case "yyGetFileModifiedTime", [path]:
+            return int(os.path.getmtime(path))
+        case "yyReadFileSync", [path]:
             with open(path, "r") as f:
-                return StrVal(f.read())
-        case "yy_豫言字符串获取字节数组", [StrVal(s)]:
-            return args[0]
-        case "yyStringByteArrayGetLength", [StrVal(s)]:
-            return IntVal(len(s))
-        case "yy_豫言字符串获取字节序数当前字符", [StrVal(s), IntVal(idx)]:
-            return StrVal(s[idx])
-        case "yy_豫言字符串匹配", [StrVal(s), IntVal(startIdx), StrVal(pattern)]:
-            return BoolVal(s.find(pattern, startIdx, startIdx+len(pattern)+1) == startIdx)
-        case "yyIsPathRegularFile", [StrVal(path)]:
-            return BoolVal(os.path.isfile(path))
-        case "yyIsPathDirectory", [StrVal(path)]:
-            return BoolVal(os.path.isdir(path))
-        case "yyWriteFileSync", [StrVal(path), StrVal(content)]:
+                return f.read()
+        case "yy_豫言字符串获取字节数组", [s]:
+            return s
+        case "yyStringByteArrayGetLength", [s]:
+            return len(s)
+        case "yy_豫言字符串获取字节序数当前字符", [s, idx]:
+            return s[idx]
+        case "yy_豫言字符串匹配", [s, startIdx, pattern]:
+            assert isinstance(s, str)
+            return s.find(pattern, startIdx, startIdx+len(pattern)+1) == startIdx
+        case "yyIsPathRegularFile", [path]:
+            return os.path.isfile(path)
+        case "yyIsPathDirectory", [path]:
+            return os.path.isdir(path)
+        case "yyWriteFileSync", [path, content]:
             with open(path, "w") as f:
                 f.write(content)
-            return EmptyVal
-        case "yyProcessExit", [IntVal(code)]:
+            return []
+        case "yyProcessExit", [code]:
             exit(code)
+        case "yyIntGtTest", [a, b]:
+            return a > b
         case _:
             raise ValueError(f"Unknown external call {name} on {args}")
 
@@ -97,7 +101,7 @@ def do_external_call(name: str, args: List[Any]):
 instrs = []
 strings = []
 op = []
-stack = [None] * 100000
+stack = [None] * 10000000
 stack_ptr = 0
 functions = {}
 labels = {}
@@ -111,8 +115,8 @@ def start_interpret():
     while True:
         inst_count += 1
         instr = instrs[pc]
-        print(inst_count, end=": ")
-        print(inst_to_text(instr))
+        # print(inst_count, end=": ")
+        # print(inst_to_text(instr))
         pc += 1
         if inst_count >= 43520:
             a = 1
@@ -144,7 +148,7 @@ def start_interpret():
                 stack[stack_ptr + locals + nargs] = stack_ptr
                 stack[stack_ptr + locals + nargs + 1] = pc
                 stack_ptr += locals + nargs + 2
-                print("Calling", func, strings[func])
+                # print("Calling", func, strings[func])
                 pc = functions[func]
             case Return():
                 val = op.pop()

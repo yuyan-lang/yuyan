@@ -7,7 +7,7 @@ from __future__ import annotations
 # WHICH IS A STACK MACHINE SIMILAR TO JVM
 
 import resource, sys
-resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY,resource.RLIM_INFINITY))
+# resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY,resource.RLIM_INFINITY))
 sys.setrecursionlimit(10**9)
 import os
 import json
@@ -66,11 +66,11 @@ def compile_immediate(params: List[str], locals: List[str], immediate: Abt, stri
                 case "内建有元", []:
                     return [UnitConst()]
                 case "内建函数整数相等", [arg1, arg2]:
-                    return compile_immediate(params, locals, arg1, strings) + compile_immediate(params, locals, arg2, strings) + [ExternalCall(strings.index("yyIntEqTest"), 2)]
+                    return compile_immediate(params, locals, arg2, strings) + compile_immediate(params, locals, arg1, strings) + [ExternalCall(strings.index("yyIntEqTest"), 2)]
                 case "内建函数整数减", [arg1, arg2]:
-                    return compile_immediate(params, locals, arg1, strings) + compile_immediate(params, locals, arg2, strings) + [ExternalCall(strings.index("yyIntSub"), 2)]
+                    return compile_immediate(params, locals, arg2, strings) + compile_immediate(params, locals, arg1, strings) + [ExternalCall(strings.index("yyIntSub"), 2)]
                 case "内建函数整数大于", [arg1, arg2]:
-                    return compile_immediate(params, locals, arg1, strings) + compile_immediate(params, locals, arg2, strings) + [ExternalCall(strings.index("yyIntGtTest"), 2)]
+                    return compile_immediate(params, locals, arg2, strings) + compile_immediate(params, locals, arg1, strings) + [ExternalCall(strings.index("yyIntGtTest"), 2)]
                 case _:
                     raise ValueError(f"Unknown builtin {name} ")
 
@@ -102,7 +102,7 @@ def compile_immediate(params: List[str], locals: List[str], immediate: Abt, stri
         case N(NT_DataTupleProjTuple(), [arg]):
             return compile_immediate(params, locals, arg, strings) + [IntConst(1), ReadTuple()]
         case N(NT_ExternalCall(name), args):
-            return flatten([compile_immediate(params, locals, arg, strings) for arg in args]) + [ExternalCall(strings.index(name), len(args))]
+            return flatten([compile_immediate(params, locals, arg, strings) for arg in reversed(args)]) + [ExternalCall(strings.index(name), len(args))]
         case N(NT_CallCCRet(), [func, arg]):
             return compile_immediate(params, locals, func, strings) + compile_immediate(params, locals, arg, strings) + [ExternalCall(strings.index("yyCallCCRet"), 2)]
         case N(NT_GlobalFuncRef(name), []):
@@ -186,6 +186,7 @@ def do_compile_func(name: str, func: Abt, strings: List[str]) -> List[Instructio
             raise ValueError(f"Expected multi arg lambda, got {func}")
     
 all_external_call_names = [
+"yyTopExceptHandler",
 "yyRunningOnWindows",
 "yyNewRef",
 "yyReadRef",

@@ -87,24 +87,25 @@ bool yy_debug_flag = false;
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
 void yy_pre_function_call_gc(){
 
-    assert(current_allocation_ptr > current_heap_gc_limit);
-    if (current_allocation_ptr > current_heap_end)
-    {
-        fprintf(stderr, "[RS] No space left and garbage collection cannot be performed yet. \n"
-                        "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n"
-                        "Heap Size %td, Heap Offset %td, GC Point Size %td, \n",
-                current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
-                current_heap_end - current_heap,
-                current_allocation_ptr - current_heap,
-                current_heap_gc_limit - current_heap);
-        errorAndAbort("No space left in the major heap, make GC occur earlier by adjusting the GC limit");
-        return;
+    if(current_allocation_ptr > current_heap_gc_limit) {
+        if (current_allocation_ptr > current_heap_end)
+        {
+            fprintf(stderr, "[RS] No space left and garbage collection cannot be performed yet. \n"
+                            "Heap Start %p, Heap End %p, Heap GC Limit %p, Allocation Pointer %p \n"
+                            "Heap Size %td, Heap Offset %td, GC Point Size %td, \n",
+                    current_heap, current_heap_end, current_heap_gc_limit, current_allocation_ptr,
+                    current_heap_end - current_heap,
+                    current_allocation_ptr - current_heap,
+                    current_heap_gc_limit - current_heap);
+            errorAndAbort("No space left in the major heap, make GC occur earlier by adjusting the GC limit");
+            return;
+        }
+        if (stack_ptr >= stack_gc_limit) {
+            errorAndAbort("Stack overflowed, please increase stack size and try again");
+            return;
+        }
+        yy_perform_gc();
     }
-    if (stack_ptr >= stack_gc_limit) {
-        errorAndAbort("Stack overflowed, please increase stack size and try again");
-        return;
-    }
-    yy_perform_gc();
     return;
 }
 

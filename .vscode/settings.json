@@ -118,7 +118,8 @@
         "marshall.h": "c",
         "memory_verifier.h": "c",
         "assert.h": "c",
-        "debug_print.h": "c"
+        "debug_print.h": "c",
+        "yystdlib_include.h": "c"
     },
     "editor.formatOnType": true,
     "vim.argumentObjectClosingDelimiters": [

@@ -37,6 +37,9 @@ endif
 ./build/native/vm.exe: $(NATIVE_SOURCES)
 	@mkdir -p build/native
 	$(CC) -g $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/vm.exe
+
+vmopt: $(NATIVE_SOURCES)
+	$(CC) -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include -L /usr/local/lib -L /opt/homebrew/lib -luv -lgc $(ADDITIONAL_INCLUDE_PATHS) -Werror -o build/native/vmopt.exe
 	
 
 

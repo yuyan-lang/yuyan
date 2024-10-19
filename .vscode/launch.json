@@ -23,6 +23,10 @@
                     "name": "YY_DEBUG_FLAG",
                     "value": "1"
                 },
+                {
+                    "name": "YY_GC_INITIAL_HEAP_SIZE_MB",
+                    "value": "1000"
+                }
             ],
             "externalConsole": false,
             "setupCommands": [
@@ -32,13 +36,14 @@
                 //     "ignoreFailures": false
                 // },
                 {
-                    "text": "set output-radix 16"
+                    // "text": "set output-radix 16"
+                    "text": "settings set target.output-radix 16"
                 },
                 {
                     "text": "set disable-randomization off"
                 }
             ],
-            // "MIMode": "lldb",
+            "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
         },
         {

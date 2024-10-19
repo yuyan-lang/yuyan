@@ -28,6 +28,7 @@ void* yy_gc_malloc_array(uint64_t size);
 
 void* yy_gc_realloc_bytes(void* ptr, uint64_t old_size, uint64_t new_size);
 void yy_perform_gc();
+void yy_pre_function_call_gc();
 
 void verify_yyvalue(yyvalue arg, bool recursive, int depth);
 void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth);

@@ -7,6 +7,7 @@ from pass_utils import *
 import pickle
 # ALL_CLOSURE_FUNCS = {}
 # ALL_CLOSURE_ASTS = {}
+import multiprocessing
 
 
 def closure_convert(ast: Abt, func_prefix: str, ALL_CLOSURE_FUNCS: Dict[str, Abt]) -> Abt:
@@ -53,7 +54,15 @@ def closure_convert_top_level(inputs: Dict[str, Abt]) -> Dict[str, Abt]:
         init_ast = N(NT_ConsecutiveStmt(), [
             N(NT_MultiArgFuncCall(0), [N(NT_GlobalFuncRef(file + "_init"), [])]),
             init_ast])
+    assert "yyGlobalInitialExceptionHandler" not in ALL_CLOSURE_FUNCS
+    
 
+    init_ast = N(NT_ConsecutiveStmt(), [
+        N(NT_ExternalCall("设置当前异常处理器"), 
+            [closure_convert(N(NT_MultiArgLam(1), [construct_binding("top_except_str", lambda x: N(NT_ExternalCall("yyTopExceptHandler"), [FreeVar(x)]))]), "__top_exception_handler", ALL_CLOSURE_FUNCS )]),
+        init_ast])
+
+    assert "entryMain" not in ALL_CLOSURE_FUNCS
     ALL_CLOSURE_FUNCS["entryMain"] = N(NT_MultiArgLam(0), [init_ast])
 
     return ALL_CLOSURE_FUNCS

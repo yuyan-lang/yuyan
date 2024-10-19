@@ -394,8 +394,8 @@ yyvalue do_yy_external_call(char * callName, uint32_t nargs, yyvalue args[]){
         assert(nargs == 1);
         return yyListDirectorySync(args[0]);
     } else if (strcmp(callName, "yyGetRandomDouble") == 0) {
-        assert(nargs == 2);
-        return yyGetRandomDouble(args[0], args[1]);
+        assert(nargs == 0);
+        return yyGetRandomDouble();
     } else if (strcmp(callName, "yy_豫言不安全转换") == 0) {
         assert(nargs == 1);
         return yy_豫言不安全转换(args[0]);
@@ -406,8 +406,8 @@ yyvalue do_yy_external_call(char * callName, uint32_t nargs, yyvalue args[]){
         assert(nargs == 2);
         return yyNewRefArray(args[0], args[1]);
     } else if (strcmp(callName, "yyGetCurrentLocalDateTimeStr") == 0) {
-        assert(nargs == 1);
-        return yyGetCurrentLocalDateTimeStr(args[0]);
+        assert(nargs == 0);
+        return yyGetCurrentLocalDateTimeStr();
     } else if (strcmp(callName, "yyRunProcessSyncPipeOutput") == 0) {
         assert(nargs == 2);
         return yyRunProcessSyncPipeOutput(args[0], args[1]);
@@ -435,6 +435,10 @@ yyvalue do_yy_external_call(char * callName, uint32_t nargs, yyvalue args[]){
     } else if (strcmp(callName, "yyCurrentNanosecondTime") == 0) {
         assert(nargs == 0);
         return yyCurrentNanosecondTime();
+    } else if (strcmp(callName, "yyTopExceptHandler") == 0) {
+        assert(nargs == 1);
+        fprintf(stderr, "YYTopExceptionHandler: Unhandled Exception: %s\n", yyvalue_to_string(args[0]));
+        exit(1);
     } else {
         fprintf(stderr, "Unknown external call: %s\n", callName);
         exit(1);
@@ -488,7 +492,7 @@ void print_current_disassemble_single(uint8_t *ptr) {
         }
         case IntConst: {
             uint64_t val = read_uint64(ptr);
-            printf("IntConst %ld\n", val);
+            printf("IntConst %" PRId64 "\n", val);
             break;
         }
         case StringConst: {
@@ -582,9 +586,11 @@ uint64_t inst_count = 0;
 // Function to execute the bytecode
 void execute_vm() {
     while (true) {
-        printf("%ld: ", ++inst_count);
-        print_current_disassemble_single(pc);
+        // printf("%" PRIu64 ": ", ++inst_count);
+        // print_current_disassemble_single(pc);
         uint8_t opcode = *pc++; // Fetch the opcode
+
+        assert(op >= op_start);
 
         switch (opcode) {
             case LoadParam: {
@@ -655,6 +661,8 @@ void execute_vm() {
                 pc += 4;
                 char * str = string_table[idx];
                 yyvalue v_str = static_string_to_yyvalue(str);
+                *op = v_str;
+                op++;
                 break;
             }
             case BoolConst: {
@@ -702,8 +710,9 @@ void execute_vm() {
                 stack_ptr[stack_offset + nargs + 1] = staticptr_to_yyvalue((yyvalue *)pc);
                 // set the new stack_ptr
                 stack_ptr = stack_ptr + stack_offset + nargs + 2;
+                yy_pre_function_call_gc();
                 uint64_t func_idx = yyvalue_to_int(func_ptr);
-                printf("Calling %lu %s\n", func_idx, string_table[func_idx]);
+                // printf("Calling %" PRIu64 " %s\n", func_idx, string_table[func_idx]);
                 uint8_t *new_func = funcs_table[func_idx];
                 pc = new_func;
                 break;
