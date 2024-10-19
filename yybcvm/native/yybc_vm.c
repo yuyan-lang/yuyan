@@ -586,6 +586,7 @@ uint64_t inst_count = 0;
 // Function to execute the bytecode
 void execute_vm() {
     while (true) {
+        ++ inst_count;
         // printf("%" PRIu64 ": ", ++inst_count);
         // print_current_disassemble_single(pc);
         uint8_t opcode = *pc++; // Fetch the opcode
