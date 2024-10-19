@@ -19,6 +19,7 @@ from closure_convert import *
 from anf_convert import *
 from recursion_rewrite import *
 from yybc_ast import *
+import pass_utils
 import struct
 from tqdm import tqdm
 print("recursion limit", sys.getrecursionlimit())   
@@ -104,7 +105,7 @@ def compile_immediate(params: List[str], locals: List[str], immediate: Abt, stri
         case N(NT_ExternalCall(name), args):
             return flatten([compile_immediate(params, locals, arg, strings) for arg in reversed(args)]) + [ExternalCall(strings.index(name), len(args))]
         case N(NT_CallCCRet(), [func, arg]):
-            return compile_immediate(params, locals, func, strings) + compile_immediate(params, locals, arg, strings) + [ExternalCall(strings.index("yyCallCCRet"), 2)]
+            return compile_immediate(params, locals, arg, strings) + compile_immediate(params, locals, func, strings) + [ExternalCall(strings.index("yyCallCCRet"), 2)]
         case N(NT_GlobalFuncRef(name), []):
             return [FuncRef(strings.index(name))]
         case N(NT_WriteGlobalFileRef(name), [arg]):
@@ -283,21 +284,21 @@ def do_compile_funcs(func_dict):
         print("File refs not updated", [name for name in read_file_refs if name not in update_file_refs])
     file_refs = update_file_refs
     strings = [n for n in all_external_call_names] + file_refs + list(func_dict.keys())
-    if os.path.exists("./.yybuild.nosync/py/output_bc.pickle"):
+    if os.path.exists(pass_utils.get_artifact_path("/output_bc.pickle")):
         print("Loading from yybc pickle")
-        cache = pickle.load(open("./.yybuild.nosync/py/output_bc.pickle", "rb"))
+        cache = pickle.load(open(pass_utils.get_artifact_path("/output_bc.pickle"), "rb"))
         strings = cache["strings"]
         instrs = cache["instrs"]
     else:
         instrs = []
         for name, func in tqdm(func_dict.items(), desc="Compiling to YYBC"):
             instrs.extend(do_compile_func(name, func, strings))
-        pickle.dump({"strings": strings, "instrs": instrs}, open("./.yybuild.nosync/py/output_bc.pickle", "wb"))
-    with open("./.yybuild.nosync/py/output.yybcir", "w") as f:
+        pickle.dump({"strings": strings, "instrs": instrs}, open(pass_utils.get_artifact_path("/output_bc.pickle"), "wb"))
+    with open(pass_utils.get_artifact_path("/output.yybcir"), "w") as f:
         f.write(f"EXTERNCALLS {len(all_external_call_names)} FILES {len(file_refs)} FUNCS {len(func_dict)} STRINGS {len(strings)}\n")
         f.write("\n".join([inst_to_text(instr) for instr in instrs]) + "\n")
         f.write("\n".join([f"STRING {i} {json.dumps(s)}" for i, s in enumerate(strings)]) + "\n")
-    write_binary_file("./.yybuild.nosync/py/output.yybcb", instrs, strings, all_external_call_names, file_refs, func_dict)
+    write_binary_file(pass_utils.get_artifact_path("/output.yybcb"), instrs, strings, all_external_call_names, file_refs, func_dict)
 # it is expected that VM calculates the index into the file list by subtracting the number of builtins
 
     
@@ -305,11 +306,12 @@ def do_compile_funcs(func_dict):
 
 
 if __name__ == "__main__":
-    os.makedirs(".yybuild.nosync/py/", exist_ok=True)
     if len(sys.argv) < 2:
         print("Usage: python compiler.py <path_no_extension> <args>")
         sys.exit(1)
     path = sys.argv[1]
+    pass_utils.INPUT_PATH_KEY = file_path_to_key(path)
+    os.makedirs(pass_utils.get_artifact_path(""), exist_ok=True)
     asts = do_load_files(path)
     converted = closure_convert_top_level(asts)
     rewritten = recursion_rewrite_top_level(converted)

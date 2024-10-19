@@ -11,7 +11,7 @@ import os
 CurrentExceptionHandler = []
 
 def do_external_call(name: str, args: List[Any]):
-    global CurrentExceptionHandler
+    global CurrentExceptionHandler, pc, stack_ptr, op
     match name, args:
         case "yyRunningOnWindows", []:
             return os.name == "nt"
@@ -94,6 +94,22 @@ def do_external_call(name: str, args: List[Any]):
             exit(code)
         case "yyIntGtTest", [a, b]:
             return a > b
+        case "yy_豫言字符串获取JSON字符串", [s, startIdx]:
+            assert s[startIdx] == "\""
+            endIdx = startIdx + 1
+            while s[endIdx] != "\"":
+                if s[endIdx] == "\\":
+                    endIdx += 2
+                else:
+                    endIdx += 1
+            length = endIdx - startIdx + 1
+            return [s[startIdx+1:endIdx], length]
+        case "yyCallCC", []:
+            return stack_ptr
+        case "yyCallCCRet", [ptr_addr, val]:
+            pc = stack[ptr_addr - 1]
+            stack_ptr = stack[ptr_addr - 2]
+            return val
         case _:
             raise ValueError(f"Unknown external call {name} on {args}")
 
@@ -115,8 +131,12 @@ def start_interpret():
     while True:
         inst_count += 1
         instr = instrs[pc]
-        # print(inst_count, end=": ")
-        # print(inst_to_text(instr))
+        if inst_count % 10000 == 0:
+            print(inst_count)
+        if inst_count > 19290852:
+            print(inst_count, end=": ")
+            print(inst_to_text(instr))
+        
         pc += 1
         if inst_count >= 43520:
             a = 1
@@ -127,6 +147,7 @@ def start_interpret():
                 op.append(stack[stack_ptr + idx])
             case StoreLocal(idx):
                 val = op.pop()
+                assert len(op) == 0
                 stack[stack_ptr + idx] = val
             case ReadTuple():
                 idx = op.pop()
@@ -136,13 +157,16 @@ def start_interpret():
                 new_val = op.pop()
                 idx = op.pop()
                 tuple = op.pop()
+                assert len(op) == 0
                 tuple[idx] = new_val
             case MakeTuple(length):
                 vals = [op.pop() for _ in range(length)]
+                assert len(op) == 0
                 op.append(list(reversed(vals)))
             case CallFuncPtr(nargs, locals):
                 func = op.pop()
                 args = [op.pop() for _ in range(nargs)]
+                assert len(op) == 0
                 for i in range(nargs):
                     stack[stack_ptr + locals + i] = args[-i-1]
                 stack[stack_ptr + locals + nargs] = stack_ptr
@@ -152,40 +176,52 @@ def start_interpret():
                 pc = functions[func]
             case Return():
                 val = op.pop()
+                assert len(op) == 0
                 pc = stack[stack_ptr - 1]
                 stack_ptr = stack[stack_ptr - 2]
                 op.append(val)
             case ExternalCall(name, nargs):
                 args = [op.pop() for _ in range(nargs)]
+                assert len(op) == 0
                 call_name = strings[name]
                 op.append(do_external_call(call_name, args))
             case IntConst(val):
                 op.append(val)
             case StringConst(val):
+                assert len(op) == 0
                 op.append(strings[val])
             case BranchIfFalse(target):
                 val = op.pop()
+                assert len(op) == 0
                 if not val:
                     pc = labels[target]
             case Branch(target):
+                assert len(op) == 0
                 pc = labels[target]
             case Label(val):
+                assert len(op) == 0
                 pass
             case BeginFunc(name):
+                assert len(op) == 0
                 pass
             case EndFunc(name):
                 raise ValueError("EndFunc")
             case PopOpStack():
                 raise NotImplementedError()
             case BoolConst(val):
+                assert len(op) == 0
                 op.append(val)
             case UnitConst():
+                assert len(op) == 0
                 op.append([])
             case FuncRef(idx):
+                assert len(op) == 0
                 op.append(idx)
             case UpdateFileRef(idx):
                 files[idx] = op.pop()
+                assert len(op) == 0
             case FileRef(idx):
+                assert len(op) == 0
                 op.append(files[idx])
             case _:
                 raise ValueError("Unknown instruction", instr)

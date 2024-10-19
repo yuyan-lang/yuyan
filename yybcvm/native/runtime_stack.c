@@ -179,6 +179,8 @@ void initialize_runtime_stack(){
 
     // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));
     stack_start = (yyvalue*) malloc(stack_size  * sizeof(yyvalue));
+    // zero-fill the stack
+    memset(stack_start, 0, stack_size * sizeof(yyvalue));
     stack_end = stack_start + stack_size;
     // TODO: we should allow stack growth
     stack_gc_limit = stack_start + (uint64_t) (stack_size * stack_gc_limit_percentage / 100.0);

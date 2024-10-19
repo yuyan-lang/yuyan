@@ -23,6 +23,9 @@ def file_path_to_key(path):
     # if path ends with 。豫, remove it
     if path.endswith("。豫"):
         path = path[:-len("。豫")]
+    # if path ends with .yuyan, remove it
+    if path.endswith(".yuyan"):
+        path = path[:-len(".yuyan")]
     return path
 
 def do_load_deps(path):

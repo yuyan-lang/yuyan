@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "./yybcvm/build/native/vm.exe",
+            "name": "./yybcvm/build/native/vm.exe [attach]",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceRoot}/yybcvm/build/native/vm.exe",
@@ -13,6 +13,7 @@
                 "./.yybuild.nosync/py/output.yybcb",
                 "豫言编译器/入口。豫",
                 "--do-not-load-cache",
+                "-vv",
             ],
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
@@ -38,14 +39,65 @@
                 //     "ignoreFailures": false
                 // },
                 {
-                    // "text": "set output-radix 16"
-                    "text": "settings set target.output-radix 16"
+                    "text": "target remote | /usr/local/libexec/valgrind/../../bin/vgdb --pid=164540"
+
+                },
+                {
+                    "text": "set output-radix 16"
+                    // "text": "settings set target.output-radix 16"
                 },
                 {
                     "text": "set disable-randomization off"
                 }
             ],
-            "MIMode": "lldb",
+            // "MIMode": "lldb",
+            // "miDebuggerPath": "/usr/bin/lldb"
+        },
+        {
+            "name": "./yybcvm/build/native/vm.exe",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceRoot}/yybcvm/build/native/vm.exe",
+            "args": [
+                "./.yybuild.nosync/py/output.yybcb",
+                "yylib/标准库/语言核心/内建类型。豫",
+                // "performance-investigation/matrix-multiply/matrix-multiply.yuyan",
+                // "豫言编译器/入口。豫",
+                // "--do-not-load-cache",
+                "-v",
+            ],
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "environment": [
+                // {
+                //     "name": "YY_GC_DEBUG_FLAG",
+                //     "value": "1"
+                // },
+                // {
+                //     "name": "YY_DEBUG_FLAG",
+                //     "value": "1"
+                // },
+                // {
+                //     "name": "YY_GC_INITIAL_HEAP_SIZE_MB",
+                //     "value": "32"
+                // }
+            ],
+            "externalConsole": false,
+            "setupCommands": [
+                // {
+                //     "text": "handle SIGSEGV noprint nostop pass",
+                //     "description": "ingore libgc related errors",
+                //     "ignoreFailures": false
+                // },
+                {
+                    "text": "set output-radix 16"
+                    // "text": "settings set target.output-radix 16"
+                },
+                {
+                    "text": "set disable-randomization off"
+                }
+            ],
+            // "MIMode": "lldb",
             // "miDebuggerPath": "/usr/bin/lldb"
         },
         {
@@ -56,7 +108,10 @@
             "console": "integratedTerminal",
             "cwd": "${workspaceFolder}",
             "args": [
-                "./.yybuild.nosync/py/output_bc.pickle"
+                "./.yybuild.nosync/py/output_bc.pickle",
+                // "performance-investigation/matrix-multiply/matrix-multiply.yuyan",
+                "yylib/标准库/语言核心/内建类型。豫",
+                "-v",
             ]
 
         },

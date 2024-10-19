@@ -4,6 +4,7 @@
 #include <string.h>
 #include "common_include.h"
 #include "yystdlib_include.h"
+#include "garbage_collector.h"
 
 // Enum for the opcodes
 typedef enum {
@@ -42,6 +43,8 @@ uint8_t* pc;           // Program counter (text section)
 uint8_t **labels_table;
 uint8_t **funcs_table;
 yyvalue *files_table;
+bool *files_table_gc_root_point_registered; // bit vector for checking if a file is registered as a gc root point
+// should register as gc root point the first time the file is written (Currently all tables have the same size as strings table)
 
 void print_current_disassemble_single(uint8_t *ptr);
 
@@ -83,6 +86,9 @@ void load_bytecode(const char* filename) {
     labels_table = (uint8_t**)malloc(num_strings * sizeof(uint8_t*));
     funcs_table = (uint8_t**)malloc(num_strings * sizeof(uint8_t*));
     files_table = (yyvalue*)malloc(num_strings * sizeof(yyvalue));
+    memset(files_table, 0, num_strings * sizeof(yyvalue));
+    files_table_gc_root_point_registered = (bool*)malloc(num_strings * sizeof(bool));
+    memset(files_table_gc_root_point_registered, 0, num_strings * sizeof(bool));
     // Allocate memory for the entire bytecode section
     // Size includes the part after the header up to the end of the file
     fseek(f, 0, SEEK_END);
@@ -201,12 +207,10 @@ yyvalue yyCallCC() {
 }
 
 yyvalue yyCallCCRet(yyvalue stack_ptr_address, yyvalue ret_val) {
-    *op = ret_val;
-    op++;
     yyvalue *saved_stack_ptr = yyvalue_to_stackptr(stack_ptr_address);
-    stack_ptr = yyvalue_to_staticptr(saved_stack_ptr[-2]);
     pc =  (uint8_t *)yyvalue_to_staticptr(saved_stack_ptr[-1]);
-    return unit_to_yyvalue();
+    stack_ptr = yyvalue_to_stackptr(saved_stack_ptr[-2]);
+    return ret_val; // caller will push this onto the stack
 }
 
 yyvalue do_yy_external_call(char * callName, uint32_t nargs, yyvalue args[]){
@@ -711,6 +715,15 @@ void execute_vm() {
                 stack_ptr[stack_offset + nargs + 1] = staticptr_to_yyvalue((yyvalue *)pc);
                 // set the new stack_ptr
                 stack_ptr = stack_ptr + stack_offset + nargs + 2;
+                assert(op == op_start);
+                // (It is stupid that the locals[0] is used for the return value, but this value is not overwritten immediately,
+                // causing gc to read previous old values from the stack, we should actually 0-fill every local variable area upon
+                // function entry, but the current bytecode format does not specify the number of local vars explicitly, 
+                // but we have the convention to always write local vars starting from 1 sequentially, we should come up with
+                // a better strategy of call and return)
+                // *stack_ptr = unit_to_yyvalue(); 
+                // ACTUALLY THIS DOESN'T WORK, what ended up working is that we zero-fill unused stack space as the final part of gc
+
                 yy_pre_function_call_gc();
                 uint64_t func_idx = yyvalue_to_int(func_ptr);
                 // printf("Calling %" PRIu64 " %s\n", func_idx, string_table[func_idx]);
@@ -748,6 +761,10 @@ void execute_vm() {
                 pc += 4;
                 yyvalue file_ref = *(op - 1);
                 files_table[idx] = file_ref;
+                if (!files_table_gc_root_point_registered[idx]) {
+                    yy_register_gc_rootpoint(&files_table[idx]);
+                    files_table_gc_root_point_registered[idx] = true;
+                }
                 op--;
                 break;
             }

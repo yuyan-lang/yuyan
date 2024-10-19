@@ -23,7 +23,7 @@ void verify_stack(){
 }
 #else
 
-#define VERIFY_REC_LIMIT 10
+#define VERIFY_REC_LIMIT 2
 
 void verify_yyvalue_new_heap(yyvalue arg, bool recursive, int depth){
     if (depth >= VERIFY_REC_LIMIT) {
@@ -97,6 +97,7 @@ void verify_yyvalue(yyvalue arg, bool recursive, int depth){
         else
         {
             fprintf(stderr, "[54] Not a valid pointer %p", yyvalue_to_generic_ptr(arg));
+            yyvalue referenced = *ptr;
             abort();
             errorAndAbort("Not a valid pointer");
         }

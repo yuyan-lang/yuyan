@@ -24,7 +24,8 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
 #ifdef NDEBUG
 #define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
 #else
-#define INITIAL_HEAP_SIZE (4 * 1024 )  // 32 KB
+// #define INITIAL_HEAP_SIZE (4 * 1024 )  // 32 KB
+#define INITIAL_HEAP_SIZE (512 )  // 32 KB
 // #define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
 #endif
 #endif
@@ -236,10 +237,15 @@ void yy_perform_gc() {
     gc_count++;
 
     if (yy_gc_debug_flag){
-        fprintf(stderr, "%" PRIu64 "Performing garbage collection, current_heap_offset %td,  ", gc_count, current_allocation_ptr - current_heap);
+        fprintf(stderr, "%" PRIu64 ": Performing garbage collection, current_heap_offset %td,  ", gc_count, current_allocation_ptr - current_heap);
         fflush(stderr);
     }
     verify_gc();
+
+    if (yy_gc_debug_flag){
+        fprintf(stderr, ", verify_gc() completed");
+        fflush(stderr);
+    }
 
     uint64_t current_heap_size = current_heap_end - current_heap;
     uint64_t new_heap_size = 0;
@@ -286,12 +292,26 @@ void yy_perform_gc() {
     }
 
 
+    //testing this, erase unused portion of stack to prevent memory leak (e.g. previous values on the stack that are not scanned)
+    // so everything should be good for the ENTIRE stack
+    memset(stack_ptr, 0, (stack_end - stack_ptr) * sizeof(yyvalue));
+
     // we're all done
     free(current_heap);
 
     if (yy_gc_debug_flag){
-        fprintf(stderr, "Finished garbage collection, %td active, %td total,  (* 16 bytes) ", new_heap_allocation_ptr - new_heap, current_allocation_ptr - current_heap);
-        fprintf(stderr, "New heap %p - %p size %" PRIu64 ", Prev heap %p - %p size %" PRIu64 " \n", new_heap, new_heap_end, new_heap_size, current_heap, current_heap_end, current_heap_size);
+        ptrdiff_t new_heap_used_size = new_heap_allocation_ptr - new_heap;
+        ptrdiff_t previous_heap_used_size = current_allocation_ptr - current_heap;
+        double freed_percent = (double)(previous_heap_used_size - new_heap_used_size) / previous_heap_used_size * 100;
+        double new_heap_used_size_MB = (double)new_heap_used_size / (1024 * 1024);
+        double previous_heap_used_size_MB = (double)previous_heap_used_size / (1024 * 1024);
+        fprintf(stderr, "Finished garbage collection, %td active (%.2f M), %td total (%.2f M), (* 16 bytes) (%.2f%% freed) ",
+                new_heap_used_size,
+                new_heap_used_size_MB,
+                previous_heap_used_size,
+                previous_heap_used_size_MB,
+                freed_percent);
+        fprintf(stderr, "New heap %p - %p size %" PRIu64 ", Prev heap %p - %p size %" PRIu64 ", ", new_heap, new_heap_end, new_heap_size, current_heap, current_heap_end, current_heap_size);
         fflush(stderr);
     }
     current_heap = new_heap;
@@ -319,6 +339,13 @@ void yy_perform_gc() {
     // }
     // tiny_heap_offset = 0;
     verify_gc();
+
+    if (yy_gc_debug_flag){
+        fprintf(stderr, ", post verify_gc() completed\n");
+        fflush(stderr);
+    }
+
+
     during_gc = false;
 }
 

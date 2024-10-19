@@ -62,7 +62,6 @@ def closure_convert_top_level(inputs: Dict[str, Abt]) -> Dict[str, Abt]:
             [closure_convert(N(NT_MultiArgLam(1), [construct_binding("top_except_str", lambda x: N(NT_ExternalCall("yyTopExceptHandler"), [FreeVar(x)]))]), "__top_exception_handler", ALL_CLOSURE_FUNCS )]),
         init_ast])
 
-    assert "entryMain" not in ALL_CLOSURE_FUNCS
     ALL_CLOSURE_FUNCS["entryMain"] = N(NT_MultiArgLam(0), [init_ast])
 
     return ALL_CLOSURE_FUNCS
