@@ -20,11 +20,17 @@ import pass_utils
 from anf_convert import *
 from recursion_rewrite import *
 from tqdm import tqdm
+
+import shutil
 print("recursion limit", sys.getrecursionlimit())   
 
 
 def label_escape(label: str) -> str:
-    return label.replace(":", "_").replace("-", "_").replace(".", "_").replace("/", "_")
+    return (label.replace(":", "_").replace("-", "_")
+            .replace(".", "_").replace("/", "_")
+            .replace("【", "SQ_L_OPEN").replace("】", "SQ_R_CLOSE")
+            .replace("，", "COMMA").replace("。", "PERIOD")
+    )
 
 # we use the same convention as yybcvm, 
     # /**
@@ -54,10 +60,11 @@ def label_escape(label: str) -> str:
     #  * 
     # */
 def return_routine() -> List[str]:
+    return_address_name = global_unique_name("return_address")
     return [
-        "void *return_address = (void*)yyvalue_to_staticptr(stack_ptr[-1]);",
+        f"void *{return_address_name} = (void*)yyvalue_to_staticptr(stack_ptr[-1]);",
         "stack_ptr = (yyvalue*)yyvalue_to_stackptr(stack_ptr[-2]);",
-        "goto *return_address;",
+        f"goto *{return_address_name};",
     ]
 
 def compile_immediate(params: List[str], locals: List[str], immediate: Abt) -> str:
@@ -83,9 +90,9 @@ def compile_expression(params: List[str], locals: List[str], expr: Abt) -> List[
         case N(NT_DecimalNumber(integral, fractional), []):
             return [f"rax = double_to_yyvalue({integral}.{fractional});"]
         case N(NT_StringConst(val), []):
-            return [f"rax = string_to_yyvalue({json.dumps(val)});"]
+            return [f"rax = static_string_to_yyvalue({json.dumps(val)});"]
         case N(NT_TupleCons(), args):
-            return [f"rax = tuple_to_yyvalue({{{len(args)}, {', '.join([compile_immediate(params, locals, arg) for arg in args])}}});"]
+            return [f"rax = tuple_to_yyvalue({len(args)}, (yyvalue[])" + '{' + ', '.join([compile_immediate(params, locals, arg) for arg in args]) + "});"]
         case N(NT_TupleProj(idx), [arg]):
             return [f"rax = yyvalue_to_tuple({ci(arg)})[yyvalue_to_int({idx})];"]
         case N(NT_Builtin(name), args):
@@ -115,7 +122,7 @@ def compile_expression(params: List[str], locals: List[str], expr: Abt) -> List[
                     [f"}} else {{"]
                     + compile_ast(params, next_locals, store_result_name, else_branch) +
                     ["}",
-                     f"yyvalue rax = {compile_immediate(params, next_locals, FreeVar(store_result_name))};"]
+                     f"rax = {compile_immediate(params, next_locals, FreeVar(store_result_name))};"]
                     )
         case N(NT_DataTupleCons(idx, length), [arg]):
             return [f"rax = raw_constructor_tuple_to_yyvalue({idx}, {length}, yyvalue_to_tuple({ci(arg)}));"]
@@ -202,7 +209,7 @@ def do_compile_func(name: str, func: Abt) -> List[str]:
             result.append(f"{label_escape(name)}:")
             try:
                 result.extend(compile_ast(arg_names, [return_val_name], return_val_name, real_body))
-                result.append("rax = return_val;")
+                result.append(f"rax = stack_ptr[0]; // {return_val_name}")
                 result.extend(return_routine())
                 return result
             except ValueError as e:
@@ -223,6 +230,11 @@ def do_compile_funcs(func_dict):
         print("File refs not updated", [name for name in read_file_refs if name not in update_file_refs])
     file_refs = update_file_refs
     lines = []
+    lines.extend(
+        ['#include "../native/common_include.h"',
+         '#include "../native/yystdlib_include.h"',    
+         ]
+    )
     lines.extend("yyvalue " + label_escape(name) + ";" for name in file_refs)
     lines.extend(["int64_t yy_runtime_start() {",
                   "yyvalue rax = unit_to_yyvalue(); // used for storing return value of functions",
@@ -236,6 +248,14 @@ def do_compile_funcs(func_dict):
         f.write("\n".join(lines))
 
     
+def do_make_exec():
+    shutil.copyfile(pass_utils.get_artifact_path("output.c"), "./yybcvm/pygen/output.c")
+    cmd = "make -C ./yybcvm pygen PYGEN_EXEC_PATH=../"+pass_utils.get_artifact_path("output.exe")
+    print(cmd)
+    os.system(cmd)
+    print("[OK] [DONE] RUN PROGRAM WITH THIS CMD:")
+    print(pass_utils.get_artifact_path("output.exe"))
+
 
 
 
@@ -251,6 +271,7 @@ if __name__ == "__main__":
     rewritten = recursion_rewrite_top_level(converted)
     anf = anf_convert_top_level(rewritten)
     do_compile_funcs(anf)
+    do_make_exec()
 
 
     

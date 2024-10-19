@@ -19,6 +19,7 @@ yyvalue yyGetCommandLineArgs();
 
 yyvalue 获取当前异常处理器();
 yyvalue 设置当前异常处理器(yyvalue 处理器);
+yyvalue yyTopExceptHandler(yyvalue errMsg);
 
 yyvalue yyPrintln(yyvalue s);
 yyvalue yyPrintlnStdErr(yyvalue s);
@@ -86,3 +87,4 @@ yyvalue yyGetRandomInt(yyvalue upperBoundPtr);
 yyvalue yyGetRandomDouble();
 
 yyvalue yyCurrentNanosecondTime();
+

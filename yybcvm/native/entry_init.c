@@ -10,6 +10,9 @@ void optional_entry_initialization(){
     // initialize uv default loop (can replace)
     uv_global_loop = uv_default_loop();
 
+    initialize_runtime_stack();
+
+
 
 
 }

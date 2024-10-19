@@ -66,3 +66,9 @@ yyvalue 设置当前异常处理器(yyvalue 处理器) {
     当前异常处理器 = 处理器;
     return unit_to_yyvalue();
 }
+
+yyvalue yyTopExceptHandler(yyvalue errMsg) {
+    fprintf(stderr, "YYTopExceptionHandler: Unhandled Exception: %s\n", yyvalue_to_string(errMsg));
+    exit(1);
+    return unit_to_yyvalue();
+}

@@ -441,8 +441,7 @@ yyvalue do_yy_external_call(char * callName, uint32_t nargs, yyvalue args[]){
         return yyCurrentNanosecondTime();
     } else if (strcmp(callName, "yyTopExceptHandler") == 0) {
         assert(nargs == 1);
-        fprintf(stderr, "YYTopExceptionHandler: Unhandled Exception: %s\n", yyvalue_to_string(args[0]));
-        exit(1);
+        return yyTopExceptHandler(args[0]);
     } else {
         fprintf(stderr, "Unknown external call: %s\n", callName);
         exit(1);
@@ -828,7 +827,6 @@ void execute_vm() {
 
 int64_t yy_runtime_start() {
     load_bytecode(main_bytecode_filename);
-    initialize_runtime_stack();
 
     /**
      * Stack will be arranged like this
