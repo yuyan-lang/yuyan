@@ -78,6 +78,7 @@ extern bool use_profiler;
 extern yyvalue* stack_start;
 extern yyvalue* stack_end;
 extern yyvalue* stack_ptr;
+extern yyvalue* highest_stack_ptr;
 extern yy_function_type current_function;
 extern pthread_mutex_t stack_ptr_mutex;
 extern void entryMain(yyvalue stack_top, yyvalue current_allocation_arg);

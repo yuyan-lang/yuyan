@@ -8,6 +8,7 @@ yyvalue* stack_start;
 yyvalue *stack_gc_limit;
 yyvalue* stack_end;
 yyvalue* stack_ptr;
+yyvalue *highest_stack_ptr; // TEMPORARY to track the stack usage (TODO migrate to function callee reserved stack space)
 // uint64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
 #define INITIAL_STACK_SIZE_MB 128 * 1024 * 1024
 uint64_t stack_size = INITIAL_STACK_SIZE_MB; // 2GB stack
@@ -87,6 +88,9 @@ bool yy_debug_flag = false;
 // the primary task of this function is to ensure stack does not overflow, and invoke gc if necessary
 void yy_pre_function_call_gc(){
 
+    if (stack_ptr > highest_stack_ptr) {
+        highest_stack_ptr = stack_ptr;
+    }
     if(current_allocation_ptr > current_heap_gc_limit) {
         if (current_allocation_ptr > current_heap_end)
         {
@@ -185,5 +189,6 @@ void initialize_runtime_stack(){
     // TODO: we should allow stack growth
     stack_gc_limit = stack_start + (uint64_t) (stack_size * stack_gc_limit_percentage / 100.0);
     stack_ptr = stack_start;
+    highest_stack_ptr = stack_start;
 
 }

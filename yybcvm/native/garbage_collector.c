@@ -294,7 +294,7 @@ void yy_perform_gc() {
 
     //testing this, erase unused portion of stack to prevent memory leak (e.g. previous values on the stack that are not scanned)
     // so everything should be good for the ENTIRE stack
-    memset(stack_ptr, 0, (stack_end - stack_ptr) * sizeof(yyvalue));
+    memset(stack_ptr, 0, (highest_stack_ptr - stack_ptr) * sizeof(yyvalue));
 
     // we're all done
     free(current_heap);
