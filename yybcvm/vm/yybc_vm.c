@@ -68,11 +68,13 @@ void load_bytecode(const char* filename) {
 
     // Read header (64 bytes)
     uint64_t num_external_calls, num_files, num_funcs, num_strings, string_offset;
-    fread(&num_external_calls, sizeof(uint64_t), 1, f);
-    fread(&num_files, sizeof(uint64_t), 1, f);
-    fread(&num_funcs, sizeof(uint64_t), 1, f);
-    fread(&num_strings, sizeof(uint64_t), 1, f);
-    fread(&string_offset, sizeof(uint64_t), 1, f);
+    size_t readBytes = 0;
+    readBytes += fread(&num_external_calls, sizeof(uint64_t), 1, f);
+    readBytes += fread(&num_files, sizeof(uint64_t), 1, f);
+    readBytes += fread(&num_funcs, sizeof(uint64_t), 1, f);
+    readBytes += fread(&num_strings, sizeof(uint64_t), 1, f);
+    readBytes += fread(&string_offset, sizeof(uint64_t), 1, f);
+    assert(readBytes == 5 * sizeof(uint64_t));
 
     num_external_calls = swap_uint64(num_external_calls);
     num_files = swap_uint64(num_files);
@@ -98,7 +100,8 @@ void load_bytecode(const char* filename) {
     // Allocate bytecode data
     long byte_code_size = fileSize - 64;
     byte_code_data = (uint8_t*)malloc(byte_code_size);
-    fread(byte_code_data, sizeof(uint8_t), byte_code_size, f);
+    readBytes = fread(byte_code_data, sizeof(uint8_t), byte_code_size, f);
+    assert(readBytes == byte_code_size);
 
     fclose(f);
 

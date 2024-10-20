@@ -8,8 +8,9 @@ yyvalue yyGetCommandLineProgramName(){
 yyvalue yyGetCommandLineArgs(){
 
     if(global_argc < 2){
-        yyvalue elems[] = {};
-        return array_to_iso_addr(0, elems);
+        // yyvalue elems[] = {}; 
+        // return array_to_iso_addr(0, elems);
+        return array_to_iso_addr(0, NULL);
     }
 
     yyvalue argPtrString[global_argc - 1];

@@ -4,20 +4,6 @@
 #include <string.h>
 #include "type_defs.h"
 
-extern const int type_empty_value;
-extern const int type_tuple;
-extern const int type_int;
-extern const int type_double;
-extern const int type_heap_string;
-extern const int type_static_string;
-extern const int type_boolean;
-extern const int type_pointer_to_function;
-extern const int type_pointer_to_static_object;
-extern const int type_pointer_to_stack;
-extern const int type_pointer_transfer_address;
-extern const int type_heap_string_header;
-
-
 // type and length
 uint64_t yyvalue_get_type(yyvalue arg);
 void yyvalue_set_type(yyvalue *arg, uint64_t type);

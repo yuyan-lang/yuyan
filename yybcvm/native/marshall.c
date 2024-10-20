@@ -40,22 +40,6 @@
  * 
 */
 
-const int type_empty_value = 0;
-const int type_tuple = 1; // must point to dyn heap
-const int type_int = 2;
-const int type_double = 3;
-const int type_static_string = 4;
-const int type_boolean = 5;
-const int type_pointer_to_function = 6;
-const int type_pointer_to_static_object = 7;
-const int type_pointer_to_stack = 8;
-const int type_pointer_transfer_address = 9;
-const int type_heap_string = 10; // 0x0A
-const int type_heap_string_header = 11; // 0x0B
-const int type_runtime_generic_ptr = 12; // 0x0C
-const int type_constructor_tuple = 13;  // 0x0D
-const int type_pointer_to_c_stack = 14;  // 0x0E // used only in the runtime, should not appear at all on the stack
-
 static int offset_type = 64;
 static int offset_subtype = 72;
 static int offset_length = 80;
@@ -113,12 +97,12 @@ uint64_t string_buffer_length_to_block_length(uint64_t length) {
 
 yyvalue* yyvalue_to_heap_pointer(yyvalue arg) {
     assert(yyvalue_is_heap_pointer(arg));
-    return (yyvalue*)(arg);
+    return (yyvalue*)(uintptr_t)(arg);
 }
 
 yyvalue heap_pointer_to_yyvalue(uint64_t type, uint64_t subtype, uint64_t raw_length, yyvalue* ptr) {
     assert(type == type_tuple || type == type_heap_string || type == type_constructor_tuple);
-    yyvalue ret = (yyvalue)ptr;
+    yyvalue ret = (yyvalue)(uintptr_t)ptr;
     yyvalue_set_type(&ret, type);
     yyvalue_set_subtype(&ret, subtype);
     yyvalue_set_raw_length(&ret, raw_length);
@@ -184,7 +168,7 @@ char * yyvalue_to_string(yyvalue arg) {
     switch (yyvalue_get_type(arg))
     {
     case type_static_string:
-        return (char *)arg;
+        return (char *)(uintptr_t)arg;
         break;
     case type_heap_string:
         return yyvalue_to_heap_string_pointer(arg);
@@ -215,12 +199,12 @@ bool yyvalue_to_bool(yyvalue arg){
 
 yyvalue* yyvalue_to_tuple(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_tuple);
-    return (yyvalue *)arg;
+    return (yyvalue *)(uintptr_t)arg;
 }
 
 yyvalue* yyvalue_to_constructor_tuple_tuple(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_constructor_tuple);
-    return (yyvalue *)arg;
+    return (yyvalue *)(uintptr_t)arg;
 }
 
 uint64_t yyvalue_to_tuple_length(yyvalue arg){
@@ -240,7 +224,7 @@ uint64_t yyvalue_to_constructor_tuple_length(yyvalue arg){
 
 yyvalue* yyvalue_to_constructor_tuple(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_constructor_tuple);
-    return (yyvalue *)arg;
+    return (yyvalue *)(uintptr_t)arg;
 }
 
 uint64_t yyvalue_to_constructor_tuple_idx(yyvalue arg){
@@ -266,26 +250,26 @@ uint64_t yyvalue_to_heap_string_length(yyvalue arg){
 
 yy_function_type yyvalue_to_funcptr(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_pointer_to_function);
-    return (yy_function_type)arg;
+    return (yy_function_type)(uintptr_t)arg;
 }
 
 yyvalue* yyvalue_to_staticptr(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_pointer_to_static_object);
-    return (yyvalue*)arg;
+    return (yyvalue*)(uintptr_t)arg;
 }
 
 yyvalue* yyvalue_to_stackptr(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_pointer_to_stack);
-    return (yyvalue*)arg;
+    return (yyvalue*)(uintptr_t)arg;
 }
 
 yyvalue* yyvalue_to_transfer_address(yyvalue arg){
     assert(yyvalue_get_type(arg) == type_pointer_transfer_address);
-    return (yyvalue*)arg;
+    return (yyvalue*)(uintptr_t)arg;
 }
 
 void* yyvalue_to_generic_ptr(yyvalue arg) {
-    return (void*)arg;
+    return (void*)(uintptr_t)arg;
 }
 
 
@@ -294,7 +278,7 @@ yyvalue unit_to_yyvalue(){
 }
 
 yyvalue static_string_to_yyvalue(const char * str){
-    yyvalue ret = (yyvalue)str;
+    yyvalue ret = (yyvalue)(uintptr_t)str;
     yyvalue_set_type(&ret, type_static_string);
     yyvalue_set_raw_length(&ret, strlen(str) + 1);
     return ret;
@@ -308,7 +292,7 @@ yyvalue yy_gcAllocateStringBuffer(uint64_t byte_length) {
     yyvalue_set_raw_length(&header, byte_length);
     yyvalue_set_type(&header, type_heap_string_header);
     buffer_ptr[0] = header;
-    yyvalue ret = (yyvalue)buffer_ptr;
+    yyvalue ret = (yyvalue)(uintptr_t)buffer_ptr;
     yyvalue_set_type(&ret, type_heap_string);
     yyvalue_set_raw_length(&ret, byte_length);
     // fprintf(stderr, "Allocated String Buffer byte_length = " PRIu64 ", strlen = " PRIu64 ", yy_get_strlen = " PRIu64 "\n",
@@ -341,25 +325,25 @@ yyvalue double_to_yyvalue(double i){
 
 
 yyvalue funcptr_to_yyvalue(yy_function_type func) {
-    yyvalue ret = (yyvalue)func;
+    yyvalue ret = (yyvalue)(uintptr_t)func;
     yyvalue_set_type(&ret, type_pointer_to_function);
     return ret;
 }
 
 yyvalue staticptr_to_yyvalue(yyvalue* static_ptr) {
-    yyvalue ret = (yyvalue)static_ptr;
+    yyvalue ret = (yyvalue)(uintptr_t)static_ptr;
     yyvalue_set_type(&ret, type_pointer_to_static_object);
     return ret;
 }
 
 yyvalue stackptr_to_yyvalue(yyvalue* stackptr) {
-    yyvalue ret = (yyvalue)stackptr;
+    yyvalue ret = (yyvalue)(uintptr_t)stackptr;
     yyvalue_set_type(&ret, type_pointer_to_stack);
     return ret;
 }
 
 yyvalue transfer_address_to_yyvalue(yyvalue* transfer_address) {
-    yyvalue ret = (yyvalue)transfer_address;
+    yyvalue ret = (yyvalue)(uintptr_t)transfer_address;
     yyvalue_set_type(&ret, type_pointer_transfer_address);
     return ret;
 }
@@ -371,7 +355,7 @@ yyvalue bool_to_yyvalue(bool b){
 }
 
 yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
-    yyvalue ret = (yyvalue)elems;
+    yyvalue ret = (yyvalue)(uintptr_t)elems;
     yyvalue_set_type(&ret, type_tuple);
     yyvalue_set_raw_length(&ret, length);
     return ret;
@@ -379,7 +363,7 @@ yyvalue raw_tuple_to_yyvalue(uint64_t length, const yyvalue* elems){
 
 
 yyvalue raw_constructor_tuple_to_yyvalue(uint64_t idx, uint64_t length, const yyvalue *elems){
-    yyvalue ret = (yyvalue)elems;
+    yyvalue ret = (yyvalue)(uintptr_t)elems;
     yyvalue_set_type(&ret, type_constructor_tuple);
     yyvalue_set_raw_length(&ret, idx);
     yyvalue_set_subtype(&ret, length);
@@ -403,7 +387,7 @@ yyvalue constructor_tuple_to_yyvalue(uint64_t idx, uint64_t length, const yyvalu
 }
 
 yyvalue runtime_heap_pointer_to_yyvalue(yyvalue* ptr){
-    yyvalue ret = (yyvalue)ptr;
+    yyvalue ret = (yyvalue)(uintptr_t)ptr;
     yyvalue_set_type(&ret, type_runtime_generic_ptr);
     return ret;
 }

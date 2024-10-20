@@ -90,3 +90,27 @@ extern bool during_gc;
 
 void initialize_runtime_stack();
 void yy_pre_function_call_gc();
+
+
+#ifndef ENUM_YYVALUE_TYPE
+#define ENUM_YYVALUE_TYPE
+
+typedef enum {
+    type_empty_value = 0,
+    type_tuple = 1, // must point to dyn heap
+    type_int = 2,
+    type_double = 3,
+    type_static_string = 4,
+    type_boolean = 5,
+    type_pointer_to_function = 6,
+    type_pointer_to_static_object = 7,
+    type_pointer_to_stack = 8,
+    type_pointer_transfer_address = 9,
+    type_heap_string = 10, // 0x0A
+    type_heap_string_header = 11, // 0x0B
+    type_runtime_generic_ptr = 12, // 0x0C
+    type_constructor_tuple = 13,  // 0x0D
+    type_pointer_to_c_stack = 14,  // 0x0E // used only in the runtime, should not appear at all on the stack
+} YYValueType;
+
+#endif

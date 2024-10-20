@@ -104,7 +104,10 @@ def compile_expression(params: List[str], locals: List[str], expr: Abt) -> List[
         case N(NT_StringConst(val), []):
             return [f"rax = static_string_to_yyvalue({python_string_to_c_string(val)});"]
         case N(NT_TupleCons(), args):
-            return [f"rax = tuple_to_yyvalue({len(args)}, (yyvalue[])" + '{' + ', '.join([compile_immediate(params, locals, arg) for arg in args]) + "});"]
+            if len(args) == 0:
+                return [f"rax = tuple_to_yyvalue(0, NULL);"] # you can't have an array of size 0
+            else:
+                return [f"rax = tuple_to_yyvalue({len(args)}, (yyvalue[])" + '{' + ', '.join([compile_immediate(params, locals, arg) for arg in args]) + "});"]
         case N(NT_TupleProj(idx), [arg]):
             return [f"rax = yyvalue_to_tuple({ci(arg)})[{idx}];"]
         case N(NT_Builtin(name), args):
@@ -271,7 +274,8 @@ def do_compile_funcs(func_dict):
     
 def do_make_exec():
     shutil.copyfile(pass_utils.get_artifact_path("output.c"), "./yybcvm/pygen/output.c")
-    cmd = "make -C ./yybcvm pygen PYGEN_EXEC_PATH=../"+pass_utils.get_artifact_path("output.exe")
+    # llvm -O3 doesn't terminate gcc is better
+    cmd = "make -C ./yybcvm pygen CC=gcc PYGEN_EXEC_PATH=../"+pass_utils.get_artifact_path("output.exe")
     print(cmd)
     os.system(cmd)
     print("[OK] [DONE] RUN PROGRAM WITH THIS CMD:")
