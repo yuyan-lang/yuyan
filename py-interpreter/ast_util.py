@@ -8,7 +8,6 @@ import random
 
 
 
-# CHECK_ARITY = True
 CHECK_ARITY = False
 
 
@@ -286,21 +285,31 @@ def unique_name(reference: str, existing: List[str]) -> str:
 
 
 def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
-    var_name = unique_name(abt.name, collect_free_vars(abt.next))
-    def traverse_ub(abt: Abt, idx : int) -> Abt:
-        match abt:
-            case N(n, children):
-                return N(n, [traverse_ub(child, idx) for child in children])
-            case FreeVar(name):
-                return abt
-            case BoundVar(i):
-                if i == idx:
-                    return FreeVar(var_name)
-                else:
-                    return abt
-            case Binding(_, next):
-                return Binding(abt.name, traverse_ub(abt.next, idx + 1))
-    return var_name, traverse_ub(abt.next, 1)
+    var_name = abt.name
+    class UnbindException(Exception):
+        pass
+    while True:
+        try: 
+            def traverse_ub(abt: Abt, idx : int) -> Abt:
+                match abt:
+                    case N(n, children):
+                        return N(n, [traverse_ub(child, idx) for child in children])
+                    case FreeVar(name):
+                        if name == var_name:
+                            raise UnbindException()
+                        else:
+                            return abt
+                    case BoundVar(i):
+                        if i == idx:
+                            return FreeVar(var_name)
+                        else:
+                            return abt
+                    case Binding(_, next):
+                        return Binding(abt.name, traverse_ub(abt.next, idx + 1))
+            return var_name, traverse_ub(abt.next, 1)
+        except UnbindException:
+            var_name = unique_name(var_name, [])
+            continue
 
 
 def unbind_abt_no_repeat(abt: Binding, additional: List[str]) -> Tuple[str, Abt]:
