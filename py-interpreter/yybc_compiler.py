@@ -305,6 +305,7 @@ if __name__ == "__main__":
         print("Usage: python compiler.py <path_no_extension> <args>")
         sys.exit(1)
     path = sys.argv[1]
+    options = sys.argv[2:]
     pass_utils.INPUT_PATH_KEY = file_path_to_key(path)
     os.makedirs(pass_utils.get_artifact_path(""), exist_ok=True)
     asts = do_load_files(path)

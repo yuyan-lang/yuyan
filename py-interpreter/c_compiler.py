@@ -7,7 +7,7 @@ from __future__ import annotations
 # WHICH IS A STACK MACHINE SIMILAR TO JVM
 
 import resource, sys
-resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY,resource.RLIM_INFINITY))
+# resource.setrlimit(resource.RLIMIT_STACK, (resource.RLIM_INFINITY,resource.RLIM_INFINITY))
 sys.setrecursionlimit(10**9)
 import os
 import json
@@ -289,6 +289,7 @@ if __name__ == "__main__":
         print("Usage: python compiler.py <path_no_extension> <args>")
         sys.exit(1)
     path = sys.argv[1]
+    options = sys.argv[2:]
     pass_utils.INPUT_PATH_KEY = file_path_to_key(path)
     os.makedirs(get_artifact_path(""), exist_ok=True)
     asts = do_load_files(path)
@@ -296,7 +297,10 @@ if __name__ == "__main__":
     rewritten = recursion_rewrite_top_level(converted)
     anf = anf_convert_top_level(rewritten)
     do_compile_funcs(anf)
-    do_make_exec()
+    if "-c" not in options:
+        do_make_exec()
+    else:
+        print("Not compiling ", pass_utils.get_artifact_path("output.c"))
 
 
     

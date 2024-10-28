@@ -8,7 +8,8 @@ import random
 
 
 
-CHECK_ARITY = True
+# CHECK_ARITY = True
+CHECK_ARITY = False
 
 
 @dataclass
@@ -263,7 +264,7 @@ def map_abt(abt: Abt, f: Callable[[Abt], Abt]):
 
 
 def collect_free_vars(abt: Abt) -> List[str]:
-    def traverse(abt: Abt) -> List[str]:
+    def traverse_cf(abt: Abt) -> List[str]:
         match abt:
             case N(_, children):
                 return sum([collect_free_vars(child) for child in children], [])
@@ -273,7 +274,7 @@ def collect_free_vars(abt: Abt) -> List[str]:
                 return []
             case Binding(_, next):
                 return collect_free_vars(next)
-    result = traverse(abt)
+    result = traverse_cf(abt)
     # deduplicate
     return list(set(result))
 
@@ -286,10 +287,10 @@ def unique_name(reference: str, existing: List[str]) -> str:
 
 def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
     var_name = unique_name(abt.name, collect_free_vars(abt.next))
-    def traverse(abt: Abt, idx : int) -> Abt:
+    def traverse_ub(abt: Abt, idx : int) -> Abt:
         match abt:
             case N(n, children):
-                return N(n, [traverse(child, idx) for child in children])
+                return N(n, [traverse_ub(child, idx) for child in children])
             case FreeVar(name):
                 return abt
             case BoundVar(i):
@@ -298,8 +299,8 @@ def unbind_abt(abt: Binding) -> Tuple[str, Abt]:
                 else:
                     return abt
             case Binding(_, next):
-                return Binding(abt.name, traverse(abt.next, idx + 1))
-    return var_name, traverse(abt.next, 1)
+                return Binding(abt.name, traverse_ub(abt.next, idx + 1))
+    return var_name, traverse_ub(abt.next, 1)
 
 
 def unbind_abt_no_repeat(abt: Binding, additional: List[str]) -> Tuple[str, Abt]:
@@ -336,10 +337,10 @@ def construct_binding(reference_name: str, body_cons: Callable[[str], Abt]) -> A
     return abstract_over_abt(body_cons(reference_name), reference_name)
 
 def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
-    def traverse(abt: Abt, idx: int) -> Abt:
+    def traverse_abs(abt: Abt, idx: int) -> Abt:
         match abt:
             case N(n, children):
-                return N(n, [traverse(child, idx) for child in children])
+                return N(n, [traverse_abs(child, idx) for child in children])
             case FreeVar(name):
                 if name == var_name:
                     return BoundVar(idx)
@@ -348,8 +349,8 @@ def abstract_over_abt(abt: Abt, var_name: str) -> Binding:
             case BoundVar(_):
                 return abt
             case Binding(_, next):
-                return Binding(abt.name, traverse(abt.next, idx + 1))
-    return Binding(var_name, traverse(abt, 1))
+                return Binding(abt.name, traverse_abs(abt.next, idx + 1))
+    return Binding(var_name, traverse_abs(abt, 1))
     
 def abstract_over_abt_list(abt: Abt, var_names: List[str]) -> Abt:
     var_names = var_names.copy()
@@ -359,10 +360,10 @@ def abstract_over_abt_list(abt: Abt, var_names: List[str]) -> Abt:
 
 
 def substitute(replacement: Abt, var_name: str, abt: Abt) -> Abt:
-    def traverse(abt: Abt) -> Abt:
+    def traverse_sub(abt: Abt) -> Abt:
         match abt:
             case N(n, children):
-                return N(n, [traverse(child) for child in children])
+                return N(n, [traverse_sub(child) for child in children])
             case FreeVar(name):
                 if name == var_name:
                     return replacement
@@ -371,8 +372,8 @@ def substitute(replacement: Abt, var_name: str, abt: Abt) -> Abt:
             case BoundVar(_):
                 return abt
             case Binding(_, next):
-                return Binding(abt.name, traverse(abt.next))
-    return traverse(abt)
+                return Binding(abt.name, traverse_sub(abt.next))
+    return traverse_sub(abt)
 
 def substitute_list(replacements: List[Abt], var_names: List[str], abt: Abt) -> Abt:
     var_names = var_names.copy()

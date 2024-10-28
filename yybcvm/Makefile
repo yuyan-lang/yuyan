@@ -86,7 +86,7 @@ optso : libyyrtopt$(VERSION).$(SO_EXTENSION)
 
 all: debug opt debugso optso
 
-.PHONY: clean
+.PHONY: clean pygen
 clean:
 	rm -rf build
 	rm -f *.a

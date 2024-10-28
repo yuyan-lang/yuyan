@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.13" />
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MakefileSettings">
     <option name="linkedExternalProjectsSettings">
@@ -15,4 +18,8 @@
     </option>
   </component>
   <component name="MakefileWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (venv)" project-jdk-type="Python SDK" />
+  <component name="PythonCompatibilityInspectionAdvertiser">
+    <option name="version" value="3" />
+  </component>
 </project>
