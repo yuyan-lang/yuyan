@@ -8,7 +8,7 @@ import random
 
 
 
-CHECK_ARITY = True
+CHECK_ARITY = False
 
 
 @dataclass
