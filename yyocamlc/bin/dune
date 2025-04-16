@@ -1,0 +1,4 @@
+(executable
+ (public_name yyocamlc)
+ (name main)
+ (libraries yyocamlc))
