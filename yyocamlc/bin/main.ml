@@ -1,1 +1,2 @@
-let () = print_endline "Hello, World!"
+open Yyocamlc
+let () = Start.main()
