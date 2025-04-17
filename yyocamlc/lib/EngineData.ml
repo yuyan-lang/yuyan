@@ -51,7 +51,7 @@ module N = YYNode
 module YYAbt = AbtLib.Abt(YYNode)
 module A = YYAbt
 
-type scan_expect = InString | InComment
+type scan_expect = InString | InComment 
 let all_scan_env = [InString; InComment]
 
 type expect = Expression | Scanning of scan_expect

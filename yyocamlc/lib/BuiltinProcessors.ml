@@ -18,6 +18,7 @@ let top_level_empty_space_ignore : unit proc_state_m =
 (* parses a single identifier identifier is something that is quoted between 「 and 」 and without special chars 
 *)
 let identifier_parser : Ext.t_str proc_state_m = 
+  let* _ = pnot (read_string (CS.to_utf8_list "「：")) in
   let* _ = read_one_of_char ["「"] in
   let* (middle, terminal) = scan_past_one_of_char yy_keyword_chars in
   if Ext.get_str_content terminal = "」" then
@@ -52,6 +53,18 @@ let comment_middle : unit proc_state_m =
   let* _ = push_scanned_char read_char in
   ignore ()
 
+let import_start : unit proc_state_m = 
+  let* read_start = read_one_of_string 
+    [CS.to_utf8_list "寻观";
+     CS.to_utf8_list "寻" 
+    ] in
+  push_elem_on_input_acc (PElem.get_keyword_t read_start 0)
+
+let import_end : unit proc_state_m = 
+  let* read_end = read_one_of_string [CS.to_utf8_list "之书"] in
+  let* content = pop_input_acc_past (fun elem -> PE.is_keyword elem "寻" 0 
+    || PE.is_keyword elem "寻观" 0) in            
+  push_elem_on_input_acc (PElem.get_keyword_t read_end 0)
   
 let default_registry = [
   to_processor Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;

@@ -17,6 +17,7 @@ let ignore () : unit proc_state_m =
     fun s -> 
       Some ((), s)
 
+(* pnot m fails if m succeeds, succeeds without consuming inputs when m fails *)
 let pnot (m : 'a proc_state_m) : unit proc_state_m = 
     fun s -> 
       match m s with
@@ -41,6 +42,16 @@ let _then (m : 'a proc_state_m) (f: 'b proc_state_m) : 'b proc_state_m =
 
 let (>>) = _then
 
+
+let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m = 
+  fun s -> 
+    match m1 s with
+    | None -> m2 s
+    | Some (x, s') -> Some (x, s')
+
+let choice_l (ms : 'a proc_state_m list) : 'a proc_state_m = 
+  List.fold_left choice (returnNone ()) ms
+
 let to_processor (env : expect) (name : string) (process : 'a proc_state_m) : processor = 
   { expect = env;
     name=name;
@@ -48,6 +59,10 @@ let to_processor (env : expect) (name : string) (process : 'a proc_state_m) : pr
 
 let to_processor_list (envs : expect list) (name :string) (process : 'a proc_state_m) : processor list = 
   List.map (fun env -> to_processor env name process) envs
+
+let read_proc_state () : proc_state proc_state_m = 
+  fun s -> 
+    Some (s, s)
 
 (* reading inputs *)
 
@@ -86,6 +101,9 @@ let read_string (l : t_char list) : AbtLib.Extent.t_str proc_state_m =
   in
   aux [] l
 
+
+let read_one_of_string (l : t_char list list) : AbtLib.Extent.t_str proc_state_m = 
+  choice_l (List.map read_string l)
 
 let read_any_char_except (except : string list) : AbtLib.Extent.t_str proc_state_m = 
   read_any_char () >>= (fun c -> 
@@ -148,12 +166,16 @@ let pop_input_acc () : PE.t proc_state_m =
 let assertb (b : bool) : unit proc_state_m = 
   if b then return () else pfail "assertb: assertion failed"
 
-let pop_input_acc_past (f : PE.t -> bool) : PE.t list proc_state_m =
+let pop_input_acc_past (f : PE.t -> bool) : (PE.t list * PE.t) proc_state_m =
   let rec aux acc = 
     let* x = pop_input_acc () in
     if f x then
-      return (x::acc)
+      return (acc, x)
     else
       aux (x :: acc)
   in
   aux []
+
+let get_current_file_name () : string proc_state_m = 
+  let* s = read_proc_state () in
+  return s.input_future.filename
