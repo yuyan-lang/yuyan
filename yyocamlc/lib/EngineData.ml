@@ -7,7 +7,8 @@ and a current environment generator
 [Actually it is a list of them, or a decision tree of past states]
 *)
 
-type env = TopLevel | Expression | Scanning
+type scan_env = InString | InComment
+type env = Expression | Scanning of scan_env
 
 
 type ('a, 'b) map = ('a * 'b) list

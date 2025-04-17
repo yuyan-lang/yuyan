@@ -1,5 +1,6 @@
 
 type t = {
+  filename: string;
   str : string;
   idx : int;
   line : int;
@@ -8,10 +9,10 @@ type t = {
 
 type t_char = string
 
-let new_cs (s : string) : t = 
-  { str = s; idx = 0; line = 0; col = 0 }
+let new_cs (filename : string) (s : string) : t = 
+  {filename =filename; str = s; idx = 0; line = 0; col = 0 }
 
-let get_next_char (cs : t) : (t_char * t) option = 
+let get_next_char (cs : t) : (AbtLib.Extent.t_str * t) option = 
   if cs.idx >= String.length cs.str then
     None
   else
@@ -20,15 +21,16 @@ let get_next_char (cs : t) : (t_char * t) option =
     let c_str = String.sub cs.str cs.idx c_size in
     let new_line = if c_str = "\n" then cs.line + 1 else cs.line in
     let new_col = if c_str = "\n" then 0 else cs.col + 1 in
-    let next_cs = { str = cs.str; idx = cs.idx + c_size; line=new_line; col=new_col  } in
-    Some (c_str, next_cs)
+    let next_cs = { filename=cs.filename; str = cs.str; idx = cs.idx + c_size; line=new_line; col=new_col  } in
+    let ext_str = AbtLib.Extent.str_with_extent c_str (cs.filename, (cs.line, cs.col), (new_line, new_col)) in
+    Some (ext_str, next_cs)
 
 let has_next_char (cs : t) : bool = 
   cs.idx < String.length cs.str
   
 
 let to_utf8_list (s : string) : t_char list = 
-  let stream = ref (new_cs s) in
+  let stream = ref (new_cs "" s) in
   let result = ref [] in
   let exception Break in
   try 
@@ -37,7 +39,7 @@ let to_utf8_list (s : string) : t_char list =
       | None -> raise Break
       | Some (c, next_cs) -> 
           stream := next_cs;
-          result := c :: !result
+          result := AbtLib.Extent.get_str_content c :: !result
     done;
   with Break ->
     List.rev !result
@@ -51,5 +53,5 @@ let show_current_position (cs : t) : string =
   ^ (
     match get_next_char cs with
     | None -> "[EOF]"
-    | Some (c, _) -> " " ^ c
+    | Some (c, _) -> " " ^ AbtLib.Extent.get_str_content c
   )

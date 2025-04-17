@@ -10,14 +10,17 @@ let do_process_step  (proc_state : proc_state) : proc_state list =
       None *)
   ) proc_state.registry
 
-let default_registry = []
 
 let do_process_entire_stream (proc_state : proc_state) : (proc_state list , proc_state) result = 
   let last_failure = ref proc_state in
   let all_final_states = ref [] in
   let rec rec_proc_state s = 
-    if s.input_future.idx > !last_failure.input_future.idx then
+    if s.input_future.idx > !last_failure.input_future.idx 
+      (* if equal inputs, things that have more reductions are more likely to be the last failure *)
+      || (s.input_future.idx = !last_failure.input_future.idx && List.length s.input_acc < List.length !last_failure.input_acc)
+       then
       last_failure := s;
+
     if not (CharStream.has_next_char(s.input_future)) && List.length (s.input_acc) = 0 
       then 
         all_final_states := s :: !all_final_states
@@ -35,13 +38,13 @@ let do_process_entire_stream (proc_state : proc_state) : (proc_state list , proc
 
 
 let run_top_level (filename: string)(content : string) : Environment.t = 
-  let input = CharStream.new_cs content in
+  let input = CharStream.new_cs filename content in
   let initial_state = {
     input_future = input;
-    env = TopLevel;
+    env = Expression;
     input_acc = [];
     store = Environment.default_environment;
-    registry = default_registry;
+    registry = BuiltinProcessors.default_registry;
   } in
   let final_state = do_process_entire_stream initial_state in
   match final_state with
