@@ -1,2 +1,2 @@
 open Yyocamlc
-let () = Start.main()
+let _ = Start.main()

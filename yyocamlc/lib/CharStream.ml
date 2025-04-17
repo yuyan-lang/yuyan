@@ -45,13 +45,20 @@ let to_utf8_list (s : string) : t_char list =
     List.rev !result
 
 
+let show_next_char (cs : t) : string = 
+  match get_next_char cs with
+  | None -> "[EOF]"
+  | Some (c, _) -> " " ^ AbtLib.Extent.get_str_content c
 let show_current_position (cs : t) : string = 
   let current_pos = cs.idx in
   "line " ^ string_of_int cs.line ^
   ", col " ^ string_of_int cs.col ^
   ", char " ^ string_of_int current_pos 
-  ^ (
-    match get_next_char cs with
-    | None -> "[EOF]"
-    | Some (c, _) -> " " ^ AbtLib.Extent.get_str_content c
-  )
+  ^ show_next_char cs
+
+let show_cs (cs : t) : string = 
+  "CS [idx " ^ string_of_int cs.idx ^
+  ", line " ^ string_of_int cs.line ^
+  ", col " ^ string_of_int cs.col ^
+  ", nextchar " ^ show_next_char cs ^ 
+  "]"
