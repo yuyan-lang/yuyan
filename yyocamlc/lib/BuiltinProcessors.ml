@@ -42,14 +42,15 @@ let comment_end : unit proc_state_m =
   let* () = assertb (cur_state = Scanning InComment) in
   let* _read_end = read_string (CS.to_utf8_list "：」") in
   let* _ = pop_expect_state () in
-  let* stack_top = pop_input_acc () in
-  let* _ = assertb (PE.is_keyword stack_top "：」" 0) in
+  let* _comments = pop_input_acc_past (fun elem -> PE.is_keyword elem "「：" 0) in
   ignore ()
 
 (* keep reading and ignore result when *)
 let comment_middle : unit proc_state_m = 
   let* _ = pnot (comment_end) in
-  read_any_char () >> ignore ()
+  let* read_char  = read_any_char () in
+  let* _ = push_scanned_char read_char in
+  ignore ()
 
   
 let default_registry = [

@@ -35,7 +35,7 @@ let push_env_state_stack (expect : expect) : unit proc_state_m =
     expect_state_stack = expect :: e.expect_state_stack;
   })
 
-let pop_env_state_stack : expect option proc_state_m =
+let pop_env_state_stack () : expect option proc_state_m =
   wrap_store (fun (e : t) ->
   match e.expect_state_stack with
   | [] -> (None, e)

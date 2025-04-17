@@ -124,13 +124,14 @@ let modify_s (f : proc_state -> proc_state) : unit proc_state_m =
     Some ((), new_s)
 
 let push_expect_state (new_state : expect) : unit proc_state_m = 
-  let* _ = Environment.push_env_state_stack new_state in
+  let* cur_state = get_expect_state () in
+  let* _ = Environment.push_env_state_stack cur_state in
   let* _ = modify_s (fun s -> {s with input_expect = new_state}) in
   return ()
 
 let pop_expect_state () : expect proc_state_m =
-  let* (exp) = Environment.pop_env_state_stack in
-  match exp with
+  let* (prev_expect) = Environment.pop_env_state_stack () in
+  match prev_expect with
   | None -> returnNone ()
   | Some x -> 
       let* _ = modify_s (fun s -> {s with input_expect = x}) in
@@ -146,3 +147,13 @@ let pop_input_acc () : PE.t proc_state_m =
 
 let assertb (b : bool) : unit proc_state_m = 
   if b then return () else pfail "assertb: assertion failed"
+
+let pop_input_acc_past (f : PE.t -> bool) : PE.t list proc_state_m =
+  let rec aux acc = 
+    let* x = pop_input_acc () in
+    if f x then
+      return (x::acc)
+    else
+      aux (x :: acc)
+  in
+  aux []
