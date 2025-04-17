@@ -52,6 +52,8 @@ module type EXTENT = sig
   val str_with_extent : string -> t -> t_str
   val get_str_content : t_str -> string
   val get_str_extent : t_str -> t
+  val join_t_str : t_str -> t_str -> t_str
+  val join_t_str_list : t_str list -> t_str
 
 end
 
@@ -73,6 +75,19 @@ module Extent : EXTENT = struct
   let str_with_extent (s : string) (e : t_extent) : t_str = (s, e)
   let get_str_content (s : t_str) : string = fst s
   let get_str_extent (s : t_str) : t_extent = snd s
+
+  let join_t_str (s1 : t_str) (s2 : t_str) = 
+    let (s1_str, s1_extent) = s1 in
+    let (s2_str, s2_extent) = s2 in
+    let new_extent = combine_extent s1_extent s2_extent in
+    (s1_str ^ s2_str, new_extent)
+
+  let join_t_str_list (s : t_str list) : t_str =
+    match s with
+    | [] -> failwith "join_t_str_list: empty list"
+    | [x] -> x
+    | x :: xs -> List.fold_left join_t_str x xs
+
   
 end
 

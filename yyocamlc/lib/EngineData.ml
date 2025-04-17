@@ -8,7 +8,10 @@ and a current environment generator
 *)
 
 type scan_env = InString | InComment
+let all_scan_env = [InString; InComment]
+
 type env = Expression | Scanning of scan_env
+let all_env = [Expression]@(List.map (fun x -> Scanning x) all_scan_env)
 
 
 type ('a, 'b) map = ('a * 'b) list
