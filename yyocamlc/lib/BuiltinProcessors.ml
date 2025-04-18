@@ -72,6 +72,19 @@ let import_end : binary_op =
       let* module_expr = Imports.get_module_expr prev_comp in
       push_elem_on_input_acc module_expr
   }
+
+let definition_middle : binary_op = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "者";
+    left_precedence = 0;
+    right_precedence = 0;
+    fixity = Infix;
+    reduction = 
+      let* (name, defn) = pop_bin_operand () in
+      push_elem_on_input_acc (A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn])))
+  }
+
   (* let* read_end = read_one_of_string [CS.new_t_string "之书"] in
   let* (content, directive) = pop_input_acc_past (fun elem -> PE.is_keyword elem "寻"
     || PE.is_keyword elem "寻观") in            

@@ -175,6 +175,28 @@ let pop_input_acc () : PE.t proc_state_m =
         let new_s = {s with input_acc = xs} in
         Some (x, new_s)
 
+let pop_input_acc_2 () : (PE.t * PE.t) proc_state_m =
+  let* x = pop_input_acc () in
+  let* y = pop_input_acc () in
+  return (x, y)
+
+let pop_input_acc_3 () : (PE.t * PE.t * PE.t) proc_state_m =
+  let* x = pop_input_acc () in
+  let* y = pop_input_acc () in
+  let* z = pop_input_acc () in
+  return (x, y, z)
+
+let pop_bin_operand (binop : binary_op) : (PE.t * PE.t) proc_state_m =
+  let* (x, y, z) = pop_input_acc_3 () in
+  match A.view y with
+  | A.N(N.ParsingElem(N.OpKeyword(opid)), []) -> 
+    if binop.id = opid then
+      return (x, z)
+    else
+      pfail ("pop_bin_operand: expected " ^ (string_of_int opid) ^ " but got " ^ (string_of_int binop.id))
+  | _ -> 
+    pfail ("pop_bin_operand: expected OpKeyword but got " ^ (A.show_view y))
+
 let assertb (b : bool) : unit proc_state_m = 
   if b then return () else pfail "assertb: assertion failed"
 

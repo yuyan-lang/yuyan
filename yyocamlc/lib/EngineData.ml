@@ -18,14 +18,19 @@ module YYNode  = struct
 
   type parsing_elem = ScannedChar of CS.t_char
                     | Keyword of CS.t_string
+                    | OpKeyword of int (* uid of the binary op *)
+
+  type declaration = ConstantDefn 
 
   type t = Builtin of builtin
          | ParsingElem of parsing_elem
+         | Declaration of declaration
 
   let arity (t : t) : int list option = 
     match t with
     | Builtin (_) -> Some([])
     | ParsingElem (_) -> Some([])
+    | Declaration ConstantDefn  -> Some([0; 0])
 
 
   let show_builtin (b : builtin) : string = 
@@ -40,11 +45,17 @@ module YYNode  = struct
     match p with
     | ScannedChar (s) -> "UnknownChar(" ^ CS.get_t_char s ^ ")"
     | Keyword (s) -> "Keyword(" ^ CS.get_t_string s ^ ")"
+    | OpKeyword (i) -> "OpKeyword(" ^ string_of_int i ^ ")"
+
+  let show_declaration (d : declaration) : string =
+    match d with
+    | ConstantDefn -> "ConstantDefn"
 
   let show (t : t) : string =
     match t with
     | Builtin (b) -> "Builtin(" ^ show_builtin b ^ ")"
     | ParsingElem (p) -> "ParsingElem(" ^ show_parsing_elem p ^ ")"
+    | Declaration (d) -> "Declaration(" ^ show_declaration d ^ ")"
 
 end
 module N = YYNode
@@ -72,6 +83,7 @@ type fixity = Prefix
             | Infix 
             | Postfix 
             | StartBinding of CharStream.t_string (* end string *)
+            | ClosedIdentifier (* this is used for syntax sugar for identifers (* identifier standing for some expression not a free variables *) *)
 
 (* processing state *)
 type proc_state = {
@@ -122,6 +134,8 @@ let show_fixity (f : fixity) : string =
   | Infix -> "Infix"
   | Postfix -> "Postfix"
   | StartBinding (s) -> "StartBinding(" ^ CS.get_t_string s ^ ")"
+  | ClosedIdentifier -> "ClosedIdentifier"
+
 
 
 let show_processor (p : processor) : string =
