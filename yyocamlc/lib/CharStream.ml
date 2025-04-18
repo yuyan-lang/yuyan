@@ -7,7 +7,22 @@ type t = {
   col : int;
 }
 
-type t_char = string
+type t_char = {
+  c : string
+}
+let new_t_char (c : string) : t_char = 
+  assert (String.length c = (Uchar.utf_decode_length (String.get_utf_8_uchar c 0)));
+  { c = c }
+
+type t_string = t_char list
+
+let get_t_char (c : t_char) : string = 
+  c.c
+
+let get_t_string (s : t_string) : string =
+  String.concat "" (List.map get_t_char s)
+
+
 
 let new_cs (filename : string) (s : string) : t = 
   {filename =filename; str = s; idx = 0; line = 0; col = 0 }
@@ -29,7 +44,7 @@ let has_next_char (cs : t) : bool =
   cs.idx < String.length cs.str
   
 
-let to_utf8_list (s : string) : t_char list = 
+let new_t_string (s : string) : t_char list = 
   let stream = ref (new_cs "" s) in
   let result = ref [] in
   let exception Break in
@@ -39,7 +54,7 @@ let to_utf8_list (s : string) : t_char list =
       | None -> raise Break
       | Some (c, next_cs) -> 
           stream := next_cs;
-          result := AbtLib.Extent.get_str_content c :: !result
+          result := new_t_char (AbtLib.Extent.get_str_content c) :: !result
     done;
   with Break ->
     List.rev !result

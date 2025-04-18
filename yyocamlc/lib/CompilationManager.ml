@@ -1,9 +1,9 @@
 
 open EngineData
 
-let compiled_files : (string, t_environment) map ref = ref []
+let compiled_files : (string, A.t) map ref = ref []
 
-let compile_or_retrieve_file_content (filepath : string) : Environment.t = 
+let compile_or_retrieve_file_content (filepath : string) : A.t = 
   match ListUtil.find_elem_by_key !compiled_files filepath with
   | Some (result) ->  result
   | None -> 
@@ -19,3 +19,5 @@ let compile_or_retrieve_file_content (filepath : string) : Environment.t =
    let result = EngineTop.run_top_level filepath content in
    compiled_files := (filepath, result) :: !compiled_files;
    result
+
+let () = compilation_manager_get_file_hook := compile_or_retrieve_file_content

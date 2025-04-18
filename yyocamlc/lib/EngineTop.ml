@@ -1,17 +1,14 @@
 
 
 open EngineData
+open ProcCombinators
 
 let do_process_step  (proc_state : proc_state) : proc_state list = 
   List.filter_map (fun proc -> 
-    if proc.expect <> proc_state.input_expect 
-    then None
-    else
-      match (proc.process proc_state) with
-      | None -> None
-      | Some (new_state) -> 
-        let new_state = {new_state with last_succeeded_processor = proc.name} in
-        Some new_state
+    match run_processor proc proc_state  with
+    | None -> None
+    | Some ((), s) -> 
+        Some({s with last_succeeded_processor = proc})
   ) proc_state.registry
 
 
@@ -55,21 +52,27 @@ let do_process_entire_stream (proc_state : proc_state) : (proc_state list , proc
 
 
 
-let run_top_level (filename: string)(content : string) : Environment.t = 
+let run_top_level (filename: string)(content : string) : A.t = 
   let input = CharStream.new_cs filename content in
   let initial_state = {
     input_future = input;
     input_expect = Expression;
+    expect_state_stack = [];
     input_acc = [];
     store = Environment.default_environment;
     registry = BuiltinProcessors.default_registry;
-    last_succeeded_processor = "None";
+    last_succeeded_processor = ProcIdentifier (CS.new_t_string "[NONE]");
   } in
   let final_state = do_process_entire_stream initial_state in
-  match final_state with
+  match final_state  with
   | Ok [s] -> 
     (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
-    s.store
+    (match s.input_acc with
+    | [t] -> t
+    | _ -> 
+      failwith ("ET75: Final state has multiple elements in input_acc: " ^ 
+        String.concat "" (List.map (fun x -> "\n" ^ A.show_view x) s.input_acc))
+    )
   | Ok [] -> failwith ("ET76: No final state found")
   | Ok _ -> 
     (* print_endline ("Final states: " ^ (Environment.show_environment_list ys)); *)

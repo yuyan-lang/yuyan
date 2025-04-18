@@ -2,7 +2,7 @@
 
 
 let process_file (filename : string) =
-  CompilationManager.compile_or_retrieve_file_content filename;
+  CompilationManager.compile_or_retrieve_file_content filename
   
 
 (* Main function to process command line arguments *)

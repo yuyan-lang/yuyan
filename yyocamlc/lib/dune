@@ -1,4 +1,6 @@
 (library
- (name yyocamlc))
+ (name yyocamlc)
+ (libraries unix)
+ )
 
 (include_subdirs unqualified)

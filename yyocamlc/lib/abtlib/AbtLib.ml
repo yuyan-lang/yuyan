@@ -46,6 +46,7 @@ end
 module type EXTENT = sig
   type t = string * (int * int) * (int * int)
   val combine_extent : t -> t -> t
+  val combine_extent_list : t list -> t
   val show_extent : t -> string
 
   type t_str
@@ -66,6 +67,13 @@ module Extent : EXTENT = struct
     let (file1, (row1, col1), (_row1', _col1')) = s1 in
     let (_file2, (_row2, _col2), (row2', col2')) = s2 in
     (file1, (row1, col1), (row2', col2'))
+
+  let combine_extent_list (s : t_extent list) : t_extent = 
+    match s with
+    | [] -> failwith "combine_extent_list: empty list"
+    | [x] -> x
+    | x :: xs -> List.fold_left combine_extent x xs
+
   
   let show_extent (s : t_extent) : string = 
     let (file, (row1, col1), (row2, col2)) = s in
