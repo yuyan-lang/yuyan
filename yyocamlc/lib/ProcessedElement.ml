@@ -11,6 +11,11 @@ let get_scanned_char_t ((c, ext) : CS.t_char * Ext.t ) : t =
   (A.fold(A.N(N.ParsingElem(N.ScannedChar(c)), [])))
   ( ext)
 
+let get_bound_scanned_string_t ((c, ext) : CS.t_string * Ext.t) : t = 
+  A.annotate_with_extent
+  (A.fold(A.N(N.ParsingElem(N.BoundScannedString(c)), [])))
+  (ext)
+
 let get_identifier_t ((c, ext) : CS.t_string * Ext.t) : t = 
   A.annotate_with_extent
   (A.fold(A.FreeVar(CS.get_t_string c)))

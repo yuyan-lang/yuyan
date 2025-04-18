@@ -9,6 +9,35 @@ and a current environment generator
 
 module Ext = AbtLib.Extent
 module CS = CharStream
+
+type fixity = Prefix 
+            | Infix 
+            | Postfix 
+            | StartBinding of CharStream.t_string (* end string *)
+            | ClosedIdentifier (* this is used for syntax sugar for identifers (* identifier standing for some expression not a free variables *) *)
+type binary_op_meta = {
+  id : int;
+  keyword : CS.t_string;
+  left_precedence: int; (* precedence viewed from left , this value should be set to zero for left-fix operators [I don't think we look at this value for lfix operators]*)
+  right_precedence: int; (* precedence viewed from right , this value should be set to zero for right-fix operators [I don't think we look at this value for rfix operators as reduction will be called]*)
+  fixity : fixity; 
+}
+
+let show_fixity (f : fixity) : string =
+  match f with
+  | Prefix -> "Prefix"
+  | Infix -> "Infix"
+  | Postfix -> "Postfix"
+  | StartBinding (s) -> "StartBinding(" ^ CS.get_t_string s ^ ")"
+  | ClosedIdentifier -> "ClosedIdentifier"
+
+let show_binary_op_meta (b : binary_op_meta) : string =
+  let {id; keyword; left_precedence; right_precedence; fixity} = b in
+    CS.get_t_string keyword ^ ", id: " ^ string_of_int id ^
+    ", left_precedence: " ^ string_of_int left_precedence ^
+    ", right_precedence: " ^ string_of_int right_precedence ^
+    ", fixity: " ^ show_fixity fixity
+
 module YYNode  = struct
   type builtin = String of string
                | Int of int
@@ -18,7 +47,8 @@ module YYNode  = struct
 
   type parsing_elem = ScannedChar of CS.t_char
                     | Keyword of CS.t_string
-                    | OpKeyword of int (* uid of the binary op *)
+                    | BoundScannedString of CS.t_string (* this is used for operator that binds a name *)
+                    | OpKeyword of binary_op_meta (* uid of the binary op *)
 
   type declaration = ConstantDefn 
 
@@ -45,7 +75,8 @@ module YYNode  = struct
     match p with
     | ScannedChar (s) -> "UnknownChar(" ^ CS.get_t_char s ^ ")"
     | Keyword (s) -> "Keyword(" ^ CS.get_t_string s ^ ")"
-    | OpKeyword (i) -> "OpKeyword(" ^ string_of_int i ^ ")"
+    | OpKeyword (i) -> "OpKeyword(" ^ show_binary_op_meta i ^ ")"
+    | BoundScannedString (s) -> "BoundScannedString(" ^ CS.get_t_string s ^ ")"
 
   let show_declaration (d : declaration) : string =
     match d with
@@ -79,11 +110,6 @@ type t_environment =
 
 
 
-type fixity = Prefix 
-            | Infix 
-            | Postfix 
-            | StartBinding of CharStream.t_string (* end string *)
-            | ClosedIdentifier (* this is used for syntax sugar for identifers (* identifier standing for some expression not a free variables *) *)
 
 (* processing state *)
 type proc_state = {
@@ -93,22 +119,20 @@ type proc_state = {
   input_acc : A.t list;
   store : t_environment;
   registry : processor_registry;
-  last_succeeded_processor : processor; (* for debugging on parsing *)
+  last_succeeded_processor : processor_entry; (* for debugging on parsing *)
 }
-and processor = ProcComplex of {
-  expect : expect; (* the environment of the processor should run *)
+and processor = ProcComplex of unit proc_state_m
+              | ProcBinOp of binary_op 
+              | ProcIdentifier of CharStream.t_string (* these two only run in the Expression environment*)
+and processor_entry = {
+  expect : expect;
   name : string;
-  (* future_cond : CharStream.t -> bool; to decide whether it can process this state *)
-  process : unit proc_state_m
-} | ProcBinOp of binary_op | ProcIdentifier of CharStream.t_string (* these two only run in the Expression environment*)
-and processor_registry = processor list
+  processor : processor;
+}
+and processor_registry = processor_entry list
 and 'a proc_state_m = proc_state -> ('a * proc_state) option
 and binary_op = {
-  id : int;
-  keyword : CS.t_string;
-  left_precedence: int; (* precedence viewed from left *)
-  right_precedence: int; (* precedence viewed from right *)
-  fixity : fixity; 
+  meta: binary_op_meta;
   reduction : unit proc_state_m; (* reduction will be invoked if 
     later operator is of fixity Infix or Postfix whose precedence is lower
     *)
@@ -128,30 +152,25 @@ let show_input_expect (e : expect) : string =
   | Scanning (InString) -> "Scanning InString"
   | Scanning (InComment) -> "Scanning InComment"
 
-let show_fixity (f : fixity) : string =
-  match f with
-  | Prefix -> "Prefix"
-  | Infix -> "Infix"
-  | Postfix -> "Postfix"
-  | StartBinding (s) -> "StartBinding(" ^ CS.get_t_string s ^ ")"
-  | ClosedIdentifier -> "ClosedIdentifier"
 
 
 
 let show_processor (p : processor) : string =
   match p with
-  | ProcComplex {expect; name; process=_} -> 
-    "ProcComplex: " ^ name ^ ", expect: " ^ show_input_expect expect
-  | ProcBinOp {id; keyword; left_precedence; right_precedence; fixity; reduction=_} ->
-    "ProcBinOp: " ^ CS.get_t_string keyword ^ ", id: " ^ string_of_int id ^
-    ", left_precedence: " ^ string_of_int left_precedence ^
-    ", right_precedence: " ^ string_of_int right_precedence ^
-    ", fixity: " ^ show_fixity fixity
+  | ProcComplex _ -> 
+    "ProcComplex " 
+  | ProcBinOp {meta; reduction=_} ->
+    "ProcBinOp: " ^ show_binary_op_meta meta
   | ProcIdentifier id -> 
     "ProcIdentifier: " ^ CS.get_t_string id
+let show_processor_entry (p : processor_entry) : string =
+  match p with
+  | {expect; name; processor} -> 
+    "ProcEntry: " ^ name ^ ", expect: " ^ show_input_expect expect ^
+    ", processor: " ^ show_processor processor
 let show_proc_state (s : proc_state) : string =
   "ProcState: " ^
   "\ninput_future: " ^ CharStream.show_cs s.input_future ^ ", " ^
   "\ninput_expect: " ^ show_input_expect s.input_expect ^ ", " ^
   "\ninput_acc: " ^ show_input_acc s.input_acc ^ ", " ^
-  "\nlast_succeeded_processor: " ^ show_processor s.last_succeeded_processor ^ ", " 
+  "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", " 

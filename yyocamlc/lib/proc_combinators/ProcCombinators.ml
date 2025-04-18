@@ -43,6 +43,12 @@ let _then (m : 'a proc_state_m) (f: 'b proc_state_m) : 'b proc_state_m =
 
 let (>>) = _then
 
+let ptry (m : 'a proc_state_m) : 'a option proc_state_m = 
+  fun s -> 
+    match m s with
+    | None -> Some(None, s)
+    | Some (x, s') -> Some (Some x, s')
+
 
 let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m = 
   fun s -> 
@@ -53,14 +59,25 @@ let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m =
 let choice_l (ms : 'a proc_state_m list) : 'a proc_state_m = 
   List.fold_left choice (returnNone ()) ms
 
-let to_processor_complex (env : expect) (name : string) (process : 'a proc_state_m) : processor = 
-  ProcComplex { expect = env;
+let to_processor_binary_op (env : expect) (name : string) (binop : binary_op) : processor_entry = 
+  { expect = env;
     name=name;
-   process = process;
+   processor = ProcBinOp binop;
+  }
+
+let to_processor_identifier (env : expect) (name : string) (id : CharStream.t_string) : processor_entry = 
+  { expect = env;
+    name=name;
+   processor = ProcIdentifier id;
+  }
+let to_processor_complex (env : expect) (name : string) (process : 'a proc_state_m) : processor_entry = 
+  { expect = env;
+    name=name;
+   processor = ProcComplex process;
   }
 
 
-let to_processor_complex_list (envs : expect list) (name :string) (process : 'a proc_state_m) : processor list = 
+let to_processor_complex_list (envs : expect list) (name :string) (process : 'a proc_state_m) : processor_entry list = 
   List.map (fun env -> to_processor_complex env name process) envs
 
 let get_proc_state () : proc_state proc_state_m = 
@@ -140,6 +157,17 @@ let scan_past_one_of_char (l : CS.t_char list) : ((CS.t_string *Ext.t) (* interm
   in
   aux []
 
+let scan_past_one_of_string (t : CS.t_string list) : ((CS.t_string * Ext.t) (* intermediate *) * (CS.t_string * Ext.t) (* one of string in l*)) proc_state_m = 
+  let rec aux acc = 
+    let* result = ptry (read_one_of_string t) in
+    match result with
+    | Some((c, ext)) -> return ((remap_t_char_list_with_ext acc), (c, ext))
+    | None -> 
+      let* (c, ext) = read_any_char () in
+      aux (acc@[(c, ext)])
+  in
+  aux []
+
 let push_elem_on_input_acc (elem : PE.t) : unit proc_state_m = 
   fun s -> 
     let new_s = {s with input_acc = elem :: s.input_acc} in
@@ -167,13 +195,21 @@ let pop_expect_state () : expect proc_state_m =
       let* _ = modify_s (fun s -> {s with input_expect = x; expect_state_stack = tail}) in
       return x
 
+let peek_input_acc (idx : int) : PE.t option proc_state_m =
+  let* s = get_proc_state () in
+  if idx < List.length s.input_acc then
+    return (Some (List.nth s.input_acc idx))
+  else
+    return None
+
 let pop_input_acc () : PE.t proc_state_m =
-  fun s -> 
-    match s.input_acc with
-    | [] -> None
-    | x :: xs -> 
-        let new_s = {s with input_acc = xs} in
-        Some (x, new_s)
+  let* s = get_proc_state () in
+  match s.input_acc with
+  | [] -> returnNone ()
+  | x :: xs -> 
+      let new_s = {s with input_acc = xs} in
+      let* _ = write_proc_state new_s in
+      return x
 
 let pop_input_acc_2 () : (PE.t * PE.t) proc_state_m =
   let* x = pop_input_acc () in
@@ -186,14 +222,14 @@ let pop_input_acc_3 () : (PE.t * PE.t * PE.t) proc_state_m =
   let* z = pop_input_acc () in
   return (x, y, z)
 
-let pop_bin_operand (binop : binary_op) : (PE.t * PE.t) proc_state_m =
+let pop_bin_operand (binop : binary_op_meta) : (PE.t * PE.t) proc_state_m =
   let* (x, y, z) = pop_input_acc_3 () in
   match A.view y with
-  | A.N(N.ParsingElem(N.OpKeyword(opid)), []) -> 
-    if binop.id = opid then
+  | A.N(N.ParsingElem(N.OpKeyword(kop)), []) -> 
+    if binop.id = kop.id then
       return (x, z)
     else
-      pfail ("pop_bin_operand: expected " ^ (string_of_int opid) ^ " but got " ^ (string_of_int binop.id))
+      pfail ("pop_bin_operand: expected " ^ (show_binary_op_meta binop) ^ " but got " ^ (show_binary_op_meta binop))
   | _ -> 
     pfail ("pop_bin_operand: expected OpKeyword but got " ^ (A.show_view y))
 
@@ -214,26 +250,116 @@ let get_current_file_name () : string proc_state_m =
   let* s = get_proc_state () in
   return s.input_future.filename
 
+(* pushes start elem (identifier or )*)
+let push_elem_start (es : A.t) : unit proc_state_m = 
+  let* acc_top = peek_input_acc 0 in
+  match acc_top with
+  | None -> push_elem_on_input_acc es
+  | Some (x) -> 
+    match A.view x with
+    | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+      if meta.fixity = Prefix || meta.fixity = Infix  then
+        push_elem_on_input_acc es
+      else
+        failwith ("ET100: expected prefix or infix but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+    | _ -> 
+      pfail ("ET100: expected OpKeyword but got " ^ (A.show_view x) ^ " cannot push the next identifier")
+
+let push_elem_continue (es : A.t) : unit proc_state_m = 
+  let* acc_top = peek_input_acc 0 in
+  match acc_top with
+  | None -> pfail "PC243: empty stack"
+  | Some (x) -> 
+    match A.view x with
+    | A.N(N.ParsingElem(N.OpKeyword(_)),[]) -> 
+      pfail ("ET100: expected things other than but got " ^ (A.show_view x) ^ " cannot push the next identifier")
+    | _ -> 
+      push_elem_on_input_acc es
+
+
+let lookup_binary_op (meta : binary_op_meta) : binary_op proc_state_m = 
+  let* s = get_proc_state () in
+  match List.filter_map (fun x -> 
+    match x.processor with ProcBinOp(x) -> if x.meta.id = meta.id then Some(x) else None | _ -> None) s.registry with
+  | [x] -> return x
+  | _ -> pfail ("ET100: cannot find binary operator " ^ (show_binary_op_meta meta) ^ " in the registry")
+
+(* this reduces postfix and closed operators already on the stack*)
+let operator_right_most_reduce () : unit proc_state_m = 
+  let* acc_top = peek_input_acc 0 in
+  match acc_top with
+  | None -> failwith "PC244: empty stack"
+  | Some (x) -> 
+    match A.view x with
+    | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+      if meta.fixity = Postfix || meta.fixity = ClosedIdentifier then
+        let* bin_op = lookup_binary_op meta in
+        bin_op.reduction
+      else
+        failwith ("ET100: expected postfix or closed identifier but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+    | _ -> 
+      failwith ("ET100: expected OpKeyword but got " ^ (A.show_view x) ^ " this method should not be invoked when rightmost reduction is not possible")
+
+
+(* reduces all operators A + B on the stack of higher precedence*)
+let rec operator_precedence_reduce (limit : int) : unit proc_state_m = 
+  let* acc_top = peek_input_acc 1 in
+  match acc_top with
+  | None -> return ()
+  | Some (x) -> 
+    match A.view x with
+    | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+      if meta.right_precedence > limit then
+        let* bin_op = lookup_binary_op meta in
+        let* _ = bin_op.reduction in
+        operator_precedence_reduce limit
+      else
+        return () (* cannot reduce, assume successful *)
+    | _ -> 
+      return () (* cannot reduce, assume successful *)
+
 let run_processor (proc : processor)  : unit proc_state_m = 
-  let* proc_state = get_proc_state () in
   match proc with
-  | ProcComplex {expect; name=_; process} -> 
-    if expect <> proc_state.input_expect 
-    then returnNone ()
-    else
-    (
-      let* _ = process in
+  | ProcComplex process -> process
+  | ProcBinOp { meta=({id=_;keyword;left_precedence=lp;right_precedence=_;fixity} as meta);reduction=_} ->
+      let* _read_keyword = read_string keyword in
+      let operator_elem = A.fold(A.N(N.ParsingElem(N.OpKeyword (meta)), [])) in
+      (* reduce existing stack*)
+      let* _ = (match fixity with
+      | Infix | Postfix -> operator_precedence_reduce lp
+      | _ -> return ()) in
+      (* shift operators onto the stack *)
+      let* _ = (match fixity with
+        | Prefix | ClosedIdentifier | StartBinding _ -> push_elem_start operator_elem
+        | Infix | Postfix -> push_elem_continue operator_elem
+        ) in
+      (* reduce right most thing for postfix and closed identifier*)
+      let* _ = (match fixity with
+        | Postfix | ClosedIdentifier -> operator_right_most_reduce ()
+        | _ -> return ()) in
+      (* also lookahead and parse a binding for start binding*)
+      let* _ = (match fixity with
+        | StartBinding end_str -> 
+            let* ((middle_id, id_ext), _end) = scan_past_one_of_string [end_str] in
+            (
+              match middle_id with
+              | [] -> pfail ("PC335: got empty string for binding")
+              | _ -> 
+                  let* _ = push_elem_on_input_acc (PE.get_bound_scanned_string_t (middle_id, id_ext)) in
+                  return ()
+            )
+        | _ -> return ()) in
+      (* reduce the operator*)
       return ()
-    )
-  | ProcBinOp { id=_;keyword;left_precedence=_;right_precedence=_;fixity=_;reduction=_} ->
-    if proc_state.input_expect <> Expression then returnNone ()
-    else
-      let* read_keyword = read_string keyword in
-      push_elem_on_input_acc (PE.get_keyword_t read_keyword);
   | ProcIdentifier id -> 
-    if proc_state.input_expect <> Expression then returnNone ()
-    else 
       let* string_read = read_string id in
       push_elem_on_input_acc (PE.get_identifier_t string_read)
 
 
+let run_processor_entry (proc : processor_entry)  : unit proc_state_m = 
+    let {expect; name=_; processor} = proc in
+    let* proc_state = get_proc_state () in
+    if expect <> proc_state.input_expect 
+    then returnNone ()
+    else
+      run_processor processor

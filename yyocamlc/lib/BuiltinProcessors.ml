@@ -60,28 +60,37 @@ let import_start : unit proc_state_m =
     ] in
   push_elem_on_input_acc (PElem.get_keyword_t read_start)
 
-let import_end : binary_op = 
+let import_end_meta : binary_op_meta = 
   {
     id = Uid.next();
     keyword = CS.new_t_string "之书";
     left_precedence = 50;
     right_precedence = 50;
     fixity = Postfix;
+  }
+let import_end : binary_op = 
+  {
+    meta = import_end_meta;
     reduction = 
       let* prev_comp = pop_input_acc () in
       let* module_expr = Imports.get_module_expr prev_comp in
       push_elem_on_input_acc module_expr
   }
 
-let definition_middle : binary_op = 
+let definition_middle_meta : binary_op_meta = 
   {
     id = Uid.next();
     keyword = CS.new_t_string "者";
     left_precedence = 0;
     right_precedence = 0;
     fixity = Infix;
+  }
+
+let definition_middle : binary_op = 
+  {
+    meta = definition_middle_meta;
     reduction = 
-      let* (name, defn) = pop_bin_operand () in
+      let* (name, defn) = pop_bin_operand definition_middle_meta in
       push_elem_on_input_acc (A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn])))
   }
 
@@ -95,7 +104,8 @@ let default_registry = [
   to_processor_complex Expression "comment_start" comment_start;
   to_processor_complex (Scanning InComment) "comment_middle" comment_middle;
   to_processor_complex (Scanning InComment) "comment_end" comment_end;
-  ProcBinOp import_end;
+  to_processor_binary_op Expression "definition_middle" definition_middle;
+  to_processor_binary_op Expression "import_end" import_end;
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;
  ]

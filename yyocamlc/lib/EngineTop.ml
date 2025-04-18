@@ -5,7 +5,7 @@ open ProcCombinators
 
 let do_process_step  (proc_state : proc_state) : proc_state list = 
   List.filter_map (fun proc -> 
-    match run_processor proc proc_state  with
+    match run_processor_entry proc proc_state  with
     | None -> None
     | Some ((), s) -> 
         Some({s with last_succeeded_processor = proc})
@@ -61,7 +61,7 @@ let run_top_level (filename: string)(content : string) : A.t =
     input_acc = [];
     store = Environment.default_environment;
     registry = BuiltinProcessors.default_registry;
-    last_succeeded_processor = ProcIdentifier (CS.new_t_string "[NONE]");
+    last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");
   } in
   let final_state = do_process_entire_stream initial_state in
   match final_state  with
