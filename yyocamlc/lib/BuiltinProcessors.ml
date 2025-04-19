@@ -107,7 +107,7 @@ let library_root : binary_op =
     reduction = 
     (
       let* ext = pop_closed_identifier_operand library_root_meta in 
-      let default_path = Sys.getcwd() in
+      let default_path = Filename.concat (Sys.getcwd()) "藏书阁" in
       if Sys.file_exists default_path && Sys.is_directory default_path  then
         push_elem_on_input_acc (A.annotate_with_extent (A.fold(A.N(N.Builtin(N.Library default_path), []))) ext)
       else
@@ -151,10 +151,10 @@ let known_structure_deref : unit proc_state_m =
         let* _ = push_elem_on_input_acc input_top in
         return ()
       else
-        returnNone ()
+        pfail ("BP154: Expected a directory but got " ^ path)
     )
   | _ ->
-      returnNone ()
+    pfail ("BP157: Expected a library but got " ^ A.show_view input_top)
     
 let unknown_structure_deref_meta : binary_op_meta = 
   {

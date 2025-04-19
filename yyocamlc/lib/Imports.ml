@@ -27,7 +27,7 @@ let get_module_expr (module_name_parsed : PE.t) : A.t proc_state_m =
   let* path = get_module_real_path module_name_parsed in
   match !compilation_manager_get_file_hook path with
   | Some (result) -> return result
-  | None -> returnNone ()
+  | None -> pfail ("Im30: Module not found: " ^ path)
 
   
   

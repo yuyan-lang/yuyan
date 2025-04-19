@@ -125,6 +125,7 @@ type proc_state = {
   store : t_environment;
   registry : processor_registry;
   last_succeeded_processor : processor_entry; (* for debugging on parsing *)
+  failures : (string * proc_state) list;
 }
 and processor = ProcComplex of unit proc_state_m
               | ProcBinOp of binary_op 
@@ -136,7 +137,10 @@ and processor_entry = {
   processor : processor;
 }
 and processor_registry = processor_entry list
-and 'a proc_state_m = proc_state -> ('a * proc_state) option
+and 'a proc_state_m = proc_state 
+                      -> (string * proc_state -> unit) (* failure continuation*) 
+                      -> (('a * proc_state) -> (string * proc_state -> unit) -> unit) (* success continuation *) 
+                      -> unit
 and binary_op = {
   meta: binary_op_meta;
   reduction : unit proc_state_m; (* reduction will be invoked if 

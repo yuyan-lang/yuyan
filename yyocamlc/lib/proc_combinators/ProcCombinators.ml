@@ -6,60 +6,72 @@ module CS = CharStream
 module PE = ProcessedElement
 
 let return (x : 'a) : 'a proc_state_m = 
-    fun s -> Some (x, s)
+    fun s fc sc -> sc (x, s) fc
 
-let returnNone () : 'a proc_state_m = 
-    fun _ -> None
+let combine_failures ((cur_msg, cur_st) : (string * proc_state) ) (prev : (string * proc_state) list) : (string * proc_state) list = 
+  (* the idea is that if the new s's inputs are consumed more, then replace rest with new s, 
+    if s' inputs are consumed at the same level then append*)
+  let cur_idx = cur_st.input_future.idx in
+  let prev_idx = List.fold_left (fun acc (_, s) -> max acc s.input_future.idx) 0 prev in
+  if cur_idx = prev_idx then
+    if List.mem cur_msg (List.map fst prev) then
+      prev
+    else
+      (cur_msg, cur_st) :: prev
+  else if cur_idx > prev_idx then
+    [(cur_msg, cur_st)]
+  else
+    prev
 
-let pfail (_msg : string) : 'a proc_state_m = 
-    fun _ -> None
+
+let pfail (msg : string) : 'a proc_state_m = 
+    fun s fc _sc -> fc (msg, {s with failures = combine_failures (msg, s) s.failures})
+
+(* let returnNone () : 'a proc_state_m = 
+  pfail "returnNone: no error message provided" *)
 
 let ignore () : unit proc_state_m = 
-    fun s -> 
-      Some ((), s)
+  return ()
 
 (* pnot m fails if m succeeds, succeeds without consuming inputs when m fails *)
+  (* it is a convention that all things do not consume inputs *)
 let pnot (m : 'a proc_state_m) : unit proc_state_m = 
-    fun s -> 
-      match m s with
-      | None -> Some ((), s)
-      | Some (_, _) -> None
+    fun s fc sc -> 
+      m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc ("pnot_fail", s))
 
 let bind  (m : 'a proc_state_m) (f: 'a -> 'b proc_state_m) : 'b proc_state_m = 
-    fun s -> 
-      match m s with
-      | None -> None
-      | Some (x, s') -> f x s'
+    fun s fc sc -> 
+      m s fc (fun (x, s') fc' -> f x s' fc' sc)
 
 let (>>=) = bind
 let (let*) m f = bind m f
 
 
 let _then (m : 'a proc_state_m) (f: 'b proc_state_m) : 'b proc_state_m = 
-  fun s ->
-      match m s with
-      | None -> None
-      | Some (_, s') -> f s'
+  bind m (fun _ -> f)
 
 let (>>) = _then
 
+(* does not pass along tried failures *)
 let ptry (m : 'a proc_state_m) : 'a option proc_state_m = 
-  fun s -> 
-    match m s with
+  fun s fc sc  -> 
+    m s (fun _ -> sc (None, s) fc) (fun (x, s') fc' -> sc (Some x, s') fc')
+    (* match m s with
     | None -> Some(None, s)
-    | Some (x, s') -> Some (Some x, s')
+    | Some (x, s') -> Some (Some x, s') *)
 
 let assertb (b : bool) : unit proc_state_m = 
   if b then return () else pfail "assertb: assertion failed"
 
+(* failures in m1 gets passed to m2 *)
 let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m = 
-  fun s -> 
-    match m1 s with
-    | None -> m2 s
-    | Some (x, s') -> Some (x, s')
+  fun s fc sc  -> 
+    m1 s (fun (_, s') -> m2 {s with failures = s'.failures} fc sc) (fun (x, s') fc' -> sc (x, s') fc')
 
 let choice_l (ms : 'a proc_state_m list) : 'a proc_state_m = 
-  List.fold_left choice (returnNone ()) ms
+  match ms with
+  | (x ::xs) -> List.fold_left choice x xs
+  | [] -> pfail "PC74: choice_l: empty list"
 
 let to_processor_binary_op (env : expect) (name : string) (binop : binary_op) : processor_entry = 
   { expect = env;
@@ -83,34 +95,35 @@ let to_processor_complex_list (envs : expect list) (name :string) (process : 'a 
   List.map (fun env -> to_processor_complex env name process) envs
 
 let get_proc_state () : proc_state proc_state_m = 
-  fun s -> 
-    Some (s, s)
+  fun s fc sc -> 
+    sc (s, s) fc
 
 let update_proc_state (f : proc_state -> proc_state) : unit proc_state_m = 
-  fun s -> 
-    let new_s = f s in
-    Some ((), new_s)
+  fun s fc sc -> 
+    sc ((), f s) fc
 
 let write_proc_state (s : proc_state) : unit proc_state_m = 
-  fun _ -> 
-    Some ((), s)
+  fun _s fc sc -> 
+    sc ((), s) fc
 
 (* reading inputs *)
 
 let read_any_char () : (CS.t_char * Ext.t) proc_state_m = 
-  fun s -> 
-    match CharStream.get_next_char s.input_future with
-    | None -> None
-    | Some (c, next_cs) -> 
-        let new_s = {s with input_future = next_cs} in
-        let cs_t_char = CharStream.new_t_char (Ext.get_str_content c) in
-        Some ((cs_t_char, Ext.get_str_extent c), new_s)
+  let* s = get_proc_state () in
+  match CharStream.get_next_char s.input_future with
+  | None -> pfail "PC95: Cannot get char"
+  | Some (c, next_cs) -> 
+      let new_s = {s with input_future = next_cs} in
+      let cs_t_char = CharStream.new_t_char (Ext.get_str_content c) in
+      let* () = write_proc_state new_s in
+      return (cs_t_char, Ext.get_str_extent c)
 
 
 let push_scanned_char (c : CS.t_char * Ext.t) : unit proc_state_m = 
-  fun s -> 
-    let new_s = {s with input_acc = PE.get_scanned_char_t c :: s.input_acc} in
-    Some ((), new_s)
+  let* s = get_proc_state () in
+  let new_s = {s with input_acc = PE.get_scanned_char_t c :: s.input_acc} in
+  let* () = write_proc_state new_s in
+  return ()
 
 type t_char = CharStream.t_char
 let read_one_of_char (l : t_char list) : (CS.t_char * Ext.t) proc_state_m = 
@@ -118,7 +131,7 @@ let read_one_of_char (l : t_char list) : (CS.t_char * Ext.t) proc_state_m =
   if List.mem c' l then 
     return (c', ext)
   else 
-    returnNone ()
+    pfail ("PC100: expected one of " ^ (String.concat "," (List.map CharStream.get_t_char l)) ^ " but got " ^ (CharStream.get_t_char c'))
 
 (* string is a list of *)
 let read_string (l : t_char list) : (CS.t_string * Ext.t) proc_state_m = 
@@ -139,7 +152,7 @@ let read_one_of_string (l : CS.t_string list) : (CS.t_string * Ext.t) proc_state
 let read_any_char_except (except : CS.t_char list) : (CS.t_char * Ext.t) proc_state_m = 
   let* (c, ext) = read_any_char () in
   if List.mem (c) except then 
-    returnNone ()
+    pfail ("PC155: expected any char except " ^ (String.concat "," (List.map CharStream.get_t_char except)) ^ " but got " ^ (CharStream.get_t_char c))
   else 
     return (c, ext)
 
@@ -171,18 +184,18 @@ let scan_past_one_of_string (t : CS.t_string list) : ((CS.t_string * Ext.t) (* i
   aux []
 
 let push_elem_on_input_acc (elem : PE.t) : unit proc_state_m = 
-  fun s -> 
-    let new_s = {s with input_acc = elem :: s.input_acc} in
-    Some ((), new_s)
+  let* s = get_proc_state () in
+  let new_s = {s with input_acc = elem :: s.input_acc} in
+   write_proc_state new_s
+
 
 let get_expect_state () : expect proc_state_m =
-  fun s -> 
-    Some (s.input_expect, s)
+  let* s = get_proc_state () in
+  return s.input_expect
 
 let modify_s (f : proc_state -> proc_state) : unit proc_state_m = 
-  fun s -> 
-    let new_s = f s in
-    Some ((), new_s)
+  let* s = get_proc_state () in
+  write_proc_state (f s)
 
 let push_expect_state (new_state : expect) : unit proc_state_m = 
   let* cur_state = get_expect_state () in
@@ -208,7 +221,7 @@ let peek_input_acc (idx : int) : PE.t option proc_state_m =
 let pop_input_acc () : PE.t proc_state_m =
   let* s = get_proc_state () in
   match s.input_acc with
-  | [] -> returnNone ()
+  | [] -> failwith "PC224: Attempting to pop from empty input accumulator"
   | x :: xs -> 
       let new_s = {s with input_acc = xs} in
       let* _ = write_proc_state new_s in
@@ -217,13 +230,13 @@ let pop_input_acc () : PE.t proc_state_m =
 let pop_input_acc_2 () : (PE.t * PE.t) proc_state_m =
   let* x = pop_input_acc () in
   let* y = pop_input_acc () in
-  return (x, y)
+  return (y, x)
 
 let pop_input_acc_3 () : (PE.t * PE.t * PE.t) proc_state_m =
   let* x = pop_input_acc () in
   let* y = pop_input_acc () in
   let* z = pop_input_acc () in
-  return (x, y, z)
+  return (z, y, x)
 
 let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_state_m =
   match A.view elem with
@@ -233,7 +246,7 @@ let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_
     else
       pfail ("check_is_operand: expected " ^ (show_binary_op_meta meta) ^ " but got " ^ (show_binary_op_meta kop))
   | _ -> 
-    pfail ("check_is_operand: expected OpKeyword but got " ^ (A.show_view elem))
+    failwith ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ (A.show_view elem))
 
 let pop_bin_operand (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
   let* (x, y, z) = pop_input_acc_3 () in
@@ -395,6 +408,6 @@ let run_processor_entry (proc : processor_entry)  : unit proc_state_m =
     let {expect; name=_; processor} = proc in
     let* proc_state = get_proc_state () in
     if expect <> proc_state.input_expect 
-    then returnNone ()
+    then pfail ("PC100: expected " ^ (show_input_expect expect) ^ " but got " ^ (show_input_expect proc_state.input_expect))
     else
       run_processor processor

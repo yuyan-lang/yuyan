@@ -3,16 +3,16 @@
 open EngineData
 open ProcCombinators
 
-let do_process_step  (proc_state : proc_state) : proc_state list = 
+(* let do_process_step  (proc_state : proc_state) : proc_state list = 
   List.filter_map (fun proc -> 
     match run_processor_entry proc proc_state  with
     | None -> None
     | Some ((), s) -> 
         Some({s with last_succeeded_processor = proc})
-  ) proc_state.registry
+  ) proc_state.registry *)
 
 
-let do_process_entire_stream (proc_state : proc_state) : (proc_state list , proc_state) result = 
+(* let do_process_entire_stream (proc_state : proc_state) : (proc_state list , proc_state) result = 
   let last_failure = ref proc_state in
   let all_final_states = ref [] in
   let rec rec_proc_state ss  = 
@@ -48,7 +48,35 @@ let do_process_entire_stream (proc_state : proc_state) : (proc_state list , proc
   match !all_final_states with
   | [] -> Error !last_failure
   | ys -> Ok ys
-  )
+  ) *)
+
+let rec do_process_entire_stream () : A.t proc_state_m = 
+  let* st = get_proc_state () in
+  if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1 
+    then return (List.hd st.input_acc)
+    else 
+      let* () = choice_l (List.map run_processor_entry st.registry @[pfail "No more processors apply"])  in
+      let* s = get_proc_state () in
+      print_endline ("=========== STATE ======== \n" ^ show_proc_state s);
+      
+      do_process_entire_stream ()
+
+let extract_all_result (st : proc_state) (processor : 'a proc_state_m) : ('a list, 'b) result = 
+  let result = ref [] in
+  let failure = ref None in
+  processor st 
+    (fun (msg, final_s) -> if msg <> "top_level_backtrack_backtrack" then failure := Some(msg, final_s)) 
+    (fun (r, st') fail_c -> 
+      result := r :: !result;
+      fail_c ("top_level_backtrack_backtrack", st')
+    );
+  if !failure <> None then
+    let (msg, final_s) = Option.get !failure in
+    (* print_endline ("Final state: " ^ (Environment.show_environment final_s.store)); *)
+    Error (msg, final_s)
+  else
+    (* print_endline ("Final state: " ^ (Environment.show_environment st.store)); *)
+    Ok !result
 
 
 
@@ -62,21 +90,25 @@ let run_top_level (filename: string)(content : string) : A.t =
     store = Environment.default_environment;
     registry = BuiltinProcessors.default_registry;
     last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");
+    failures = ([]);
   } in
-  let final_state = do_process_entire_stream initial_state in
+  let final_state = extract_all_result initial_state (do_process_entire_stream ()) in
   match final_state  with
   | Ok [s] -> 
     (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
-    (match s.input_acc with
-    | [t] -> t
-    | _ -> 
-      failwith ("ET75: Final state has multiple elements in input_acc: " ^ 
-        String.concat "" (List.map (fun x -> "\n" ^ A.show_view x) s.input_acc))
-    )
+    s
   | Ok [] -> failwith ("ET76: No final state found")
   | Ok _ -> 
     (* print_endline ("Final states: " ^ (Environment.show_environment_list ys)); *)
     failwith ("ET79: Multiple final states found")
-  | Error s -> 
-    Fail.failwith (filename ^ " Processing failed at " ^ CharStream.show_current_position s.input_future)
-    (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
+
+  | Error (msg, s) -> 
+    print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n" 
+      ^ String.concat "\n" (List.mapi (fun i (msg, s) -> 
+        string_of_int i ^ " failure: " ^
+        msg ^ "\n" ^ show_proc_state s
+     ) s.failures));
+    Fail.failwith (msg ^ "\n" ^ filename ^ ":" ^ string_of_int s.input_future.line ^ ":" ^ string_of_int s.input_future.col ^
+     "Processing failed at " ^ CharStream.show_current_position s.input_future
+     ^ "\n"  
+    )
