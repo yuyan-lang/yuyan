@@ -77,6 +77,11 @@ let import_end : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent module_expr ext)
   }
 
+let assert_is_free_var (x : A.t) : unit proc_state_m = 
+  match A.view x with
+  | A.FreeVar(_) -> return ()
+  | _ -> pfail ("ET101: Expected a free variable but got " ^ A.show_view x)
+
 let definition_middle_meta : binary_op_meta = 
   {
     id = Uid.next();
@@ -91,6 +96,7 @@ let definition_middle : binary_op =
     meta = definition_middle_meta;
     reduction = 
       let* ((name, defn), ext) = pop_bin_operand definition_middle_meta in
+      let* () = assert_is_free_var name in
       push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
   }
 
@@ -337,6 +343,57 @@ let module_open : binary_op =
       return ()
       (* push_elem_on_input_acc (A.annotate_with_extent node per_ext) *)
   }
+
+let const_decl_middle_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "乃";
+    left_precedence = 10;
+    right_precedence = 10;
+    fixity = Infix;
+  }
+let const_decl_middle : binary_op = 
+  {
+    meta = const_decl_middle_meta;
+    reduction = 
+      let* ((name, defn), ext) = pop_bin_operand const_decl_middle_meta in
+      let* () = assert_is_free_var name in
+      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), [[], name; [], defn]))) ext)
+  }
+
+let constructor_decl_middle_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "立";
+    left_precedence = 10;
+    right_precedence = 10;
+    fixity = Infix;
+  }
+
+let constructor_del : binary_op = {
+    meta = constructor_decl_middle_meta;
+    reduction = 
+      let* ((name, defn), ext) = pop_bin_operand constructor_decl_middle_meta in
+      let* () = assert_is_free_var name in
+      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), [[], name; [], defn]))) ext)
+}
+
+let type_annotated_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "名";
+    left_precedence = 100;
+    right_precedence = 100;
+    fixity = Infix;
+  }
+let type_annotated : binary_op = 
+  {
+    meta = type_annotated_meta;
+    reduction = 
+      let* ((type_, name), ext) = pop_bin_operand type_annotated_meta in
+      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.TypeAnnotated, [[], type_; [], name]))) ext)
+  }
+
 
 
   (* let* read_end = read_one_of_string [CS.new_t_string "之书"] in

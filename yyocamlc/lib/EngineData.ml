@@ -60,6 +60,9 @@ module YYNode  = struct
                     | OpKeyword of binary_op_meta (* uid of the binary op *)
 
   type declaration = ConstantDefn 
+                  | ConstantDecl 
+                  | ConstructorDecl
+                  | DirectExpr
 
   type t = Builtin of builtin
          | ParsingElem of parsing_elem
@@ -67,15 +70,38 @@ module YYNode  = struct
          | StructureDeref of string (* label *)
          | ModuleDef 
          | FileRef of string (* Library is a folder/file, FileRef is a checked file*)
+         | ExplicitPi 
+         | Arrow
+         | Ap
+         | Sequence of string (* e.g. ， 或 、*)
+         | Match
+         | MatchCase
+         | TypeAnnotated (* A名x*)
+         | Lam
 
   let arity (t : t) : int list option = 
     match t with
     | Builtin (_) -> Some([])
     | ParsingElem (_) -> Some([])
     | Declaration ConstantDefn  -> Some([0; 0])
+    | Declaration ConstantDecl  -> Some([0; 0])
+    | Declaration ConstructorDecl -> Some([0; 0])
+    | Declaration DirectExpr -> Some([0])
     | StructureDeref (_) -> Some([0])
     | ModuleDef -> None
     | FileRef (_) -> Some([])
+    | ExplicitPi -> Some([0; 1])
+    | Arrow -> Some([0; 0])
+    | Ap -> None (* also multi-func app exists here *)
+    | Sequence _ -> Some([0; 0])
+    | Match -> None (* first arg expr, rest cases *)
+    | MatchCase -> Some([0; 0])
+    | Lam -> Some([1])
+    | TypeAnnotated -> Some([0; 0])
+
+
+
+
 
 
   let show_builtin (b : builtin) : string = 
@@ -105,6 +131,10 @@ module YYNode  = struct
   let show_declaration (d : declaration) : string =
     match d with
     | ConstantDefn -> "ConstantDefn"
+    | ConstantDecl -> "ConstantDecl"
+    | ConstructorDecl -> "ConstructorDecl"
+    | DirectExpr -> "DirectExpr"
+
 
   let show (t : t) : string =
     match t with
@@ -114,6 +144,17 @@ module YYNode  = struct
     | StructureDeref (s) -> "StructureDeref(" ^ s ^ ")"
     | ModuleDef -> "ModuleDef"
     | FileRef (s) -> "FileRef(" ^ s ^ ")"
+    | ExplicitPi -> "Π"
+    | Arrow -> "->"
+    | Ap -> "Ap"
+    | Sequence (s) -> "Sequence(" ^ s ^ ")"
+    | Match -> "Match"
+    | MatchCase -> "MatchCase"
+    | Lam -> "λ"
+    | TypeAnnotated -> "TypeAnnotated"
+
+
+
 
 end
 module N = YYNode
