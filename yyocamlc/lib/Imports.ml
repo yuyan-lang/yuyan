@@ -25,7 +25,9 @@ let get_module_real_path (module_name_parsed : PE.t) : string proc_state_m (* pa
 
 let get_module_expr (module_name_parsed : PE.t) : A.t proc_state_m = 
   let* path = get_module_real_path module_name_parsed in
-  return (!compilation_manager_get_file_hook path)
+  match !compilation_manager_get_file_hook path with
+  | Some (result) -> return result
+  | None -> returnNone ()
 
   
   

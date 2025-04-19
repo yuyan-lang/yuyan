@@ -39,10 +39,8 @@ let comment_start : unit proc_state_m =
   push_expect_state (Scanning InComment)
 
 let comment_end : unit proc_state_m =
-  let* cur_state = get_expect_state () in
-  let* () = assertb (cur_state = Scanning InComment) in
   let* _read_end = read_string (CS.new_t_string "：」") in
-  let* _ = pop_expect_state () in
+  let* _ = pop_expect_state (Scanning InComment) in
   let* _comments = pop_input_acc_past (fun elem -> PE.is_keyword elem ("「：")) in
   ignore ()
 
@@ -81,8 +79,8 @@ let definition_middle_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "者";
-    left_precedence = 0;
-    right_precedence = 0;
+    left_precedence = 10;
+    right_precedence = 10;
     fixity = Infix;
   }
 
@@ -90,9 +88,113 @@ let definition_middle : binary_op =
   {
     meta = definition_middle_meta;
     reduction = 
-      let* (name, defn) = pop_bin_operand definition_middle_meta in
-      push_elem_on_input_acc (A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn])))
+      let* ((name, defn), ext) = pop_bin_operand definition_middle_meta in
+      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
   }
+
+let library_root_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "藏书阁";
+    left_precedence = 0;
+    right_precedence = 0;
+    fixity = ClosedIdentifier;
+  }
+
+let library_root : binary_op = 
+  {
+    meta = library_root_meta;
+    reduction = 
+    (
+      let* ext = pop_closed_identifier_operand library_root_meta in 
+      let default_path = Sys.getcwd() in
+      if Sys.file_exists default_path && Sys.is_directory default_path  then
+        push_elem_on_input_acc (A.annotate_with_extent (A.fold(A.N(N.Builtin(N.Library default_path), []))) ext)
+      else
+        pfail ("Directory not found: " ^ default_path)
+    )
+  }
+
+let known_structure_deref : unit proc_state_m =
+  let* (_, _) = read_one_of_string [CS.new_t_string "之"] in
+  let* input_top = pop_input_acc () in
+  match A.view input_top with
+  | A.N(N.Builtin(N.Library path), _) -> 
+    (* check ending *)
+    choice  (
+      let* (_, ext_end) = read_one_of_char [CS.new_t_char "书"] in
+      push_elem_on_input_acc (A.annotate_with_extent input_top (Ext.combine_extent (A.get_extent_some input_top) ext_end))
+    )
+    (* ls dir *)
+    (
+      if Sys.file_exists path && Sys.is_directory path then
+        let new_expt_state = (Scanning (InLibrarySearch path)) in
+        let* _ = push_expect_state new_expt_state in
+        let files = Array.to_list (Sys.readdir path) in
+        let all_new_procs = List.map (fun file -> 
+          let file_name_without_ext = if String.ends_with ~suffix:"。豫" file then 
+            String.sub file 0 (String.length file - String.length "。豫")
+          else file in
+          let file_name_id_parse : unit proc_state_m = (
+              let* (_read_filename, read_filename_ext) = read_one_of_string [CS.new_t_string file_name_without_ext] in
+              let* input_top = pop_input_acc () in
+              let* () = pop_expect_state new_expt_state in
+              let* () = remove_all_proc_registry_with_input_expect_state new_expt_state in
+              let new_lib_node = A.fold(A.N(N.Builtin(N.Library(path ^ "/" ^ file_name_without_ext)), [])) in
+              let new_lib_node_ext = Ext.combine_extent (A.get_extent_some input_top) read_filename_ext in
+              push_elem_on_input_acc (A.annotate_with_extent new_lib_node new_lib_node_ext) 
+            )
+          in
+          to_processor_complex new_expt_state "filename_id_parse" file_name_id_parse
+        ) files in
+        let* _ = add_processor_entry_list all_new_procs in
+        let* _ = push_elem_on_input_acc input_top in
+        return ()
+      else
+        returnNone ()
+    )
+  | _ ->
+      returnNone ()
+    
+let unknown_structure_deref_meta : binary_op_meta = 
+  {
+      id = Uid.next();
+      keyword = CS.new_t_string "之";
+      left_precedence = 100;
+      right_precedence = 100;
+      fixity = Infix;
+  }
+let unknown_structure_deref : binary_op =
+  {
+    meta = unknown_structure_deref_meta;
+    reduction = 
+      let* ((lo, proj_label), ext) = pop_bin_operand unknown_structure_deref_meta in
+      match A.view proj_label with
+      | A.FreeVar(label) -> 
+        let new_node = A.fold(A.N(N.StructureDeref(label), [[],lo])) in
+        push_elem_on_input_acc (A.annotate_with_extent new_node ext)
+      | _ -> pfail ("ET102: Expected a free variable but got " ^ A.show_view proj_label)
+  }
+
+let statement_end_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "也";
+    left_precedence = 5;
+    right_precedence = 0;
+    fixity = Postfix;
+  }
+let statement_end : binary_op = 
+  {
+    meta = statement_end_meta;
+    reduction = 
+      let* (oper, per_ext) = pop_postfix_operand statement_end_meta in
+      push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
+  }
+
+
+
+
 
   (* let* read_end = read_one_of_string [CS.new_t_string "之书"] in
   let* (content, directive) = pop_input_acc_past (fun elem -> PE.is_keyword elem "寻"
@@ -106,6 +208,11 @@ let default_registry = [
   to_processor_complex (Scanning InComment) "comment_end" comment_end;
   to_processor_binary_op Expression "definition_middle" definition_middle;
   to_processor_binary_op Expression "import_end" import_end;
+  to_processor_binary_op Expression "library_root" library_root;
+  to_processor_binary_op Expression "unknown_structure_deref" unknown_structure_deref;
+  to_processor_complex Expression "known_structure_deref" known_structure_deref;
+  to_processor_binary_op Expression "statement_end" statement_end;
+
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;
  ]

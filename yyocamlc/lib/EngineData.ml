@@ -44,6 +44,7 @@ module YYNode  = struct
                | Bool of bool
                | Unit
                | UnderscorePattern (* 「」  or （） *)
+               | Library of string  (* special symbol globally available denoting library root, string denotes a filepath *)
 
   type parsing_elem = ScannedChar of CS.t_char
                     | Keyword of CS.t_string
@@ -55,12 +56,14 @@ module YYNode  = struct
   type t = Builtin of builtin
          | ParsingElem of parsing_elem
          | Declaration of declaration
+         | StructureDeref of string (* label *)
 
   let arity (t : t) : int list option = 
     match t with
     | Builtin (_) -> Some([])
     | ParsingElem (_) -> Some([])
     | Declaration ConstantDefn  -> Some([0; 0])
+    | StructureDeref (_) -> Some([0])
 
 
   let show_builtin (b : builtin) : string = 
@@ -70,6 +73,7 @@ module YYNode  = struct
     | Bool (b) -> string_of_bool b
     | Unit -> "unit"
     | UnderscorePattern -> "_"
+    | Library s -> "Library(" ^ s ^ ")"
 
   let show_parsing_elem (p : parsing_elem) : string =
     match p with
@@ -87,6 +91,7 @@ module YYNode  = struct
     | Builtin (b) -> "Builtin(" ^ show_builtin b ^ ")"
     | ParsingElem (p) -> "ParsingElem(" ^ show_parsing_elem p ^ ")"
     | Declaration (d) -> "Declaration(" ^ show_declaration d ^ ")"
+    | StructureDeref (s) -> "StructureDeref(" ^ s ^ ")"
 
 end
 module N = YYNode
@@ -94,7 +99,7 @@ module N = YYNode
 module YYAbt = AbtLib.Abt(YYNode)
 module A = YYAbt
 
-type scan_expect = InString | InComment 
+type scan_expect = InString | InComment | InLibrarySearch of string (* library path*)
 let all_scan_env = [InString; InComment]
 
 type expect = Expression | Scanning of scan_expect
@@ -125,6 +130,7 @@ and processor = ProcComplex of unit proc_state_m
               | ProcBinOp of binary_op 
               | ProcIdentifier of CharStream.t_string (* these two only run in the Expression environment*)
 and processor_entry = {
+  (* uid: int; unique id for this entry, may record this number on input_acc and may remove it later *)
   expect : expect;
   name : string;
   processor : processor;
@@ -142,7 +148,7 @@ and binary_op = {
 (does not reduce for any operator, then the reduction is encoded when passing along k)
 *)
 
-let compilation_manager_get_file_hook  : (string (* filepath *) ->  A.t) ref =  ref (fun _ -> failwith "compilation_manager_get_file_hook not set")
+let compilation_manager_get_file_hook  : (string (* filepath *) ->  A.t option) ref =  ref (fun _ -> failwith "compilation_manager_get_file_hook not set")
 
 let show_input_acc (acc : A.t list) : string =
   "[" ^ String.concat "; " (List.map A.show_view acc) ^ "]"
@@ -151,6 +157,7 @@ let show_input_expect (e : expect) : string =
   | Expression -> "Expression"
   | Scanning (InString) -> "Scanning InString"
   | Scanning (InComment) -> "Scanning InComment"
+  | Scanning (InLibrarySearch (s)) -> "Scanning InLibrarySearch(" ^ s ^ ")"
 
 
 

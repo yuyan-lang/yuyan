@@ -49,6 +49,8 @@ let ptry (m : 'a proc_state_m) : 'a option proc_state_m =
     | None -> Some(None, s)
     | Some (x, s') -> Some (Some x, s')
 
+let assertb (b : bool) : unit proc_state_m = 
+  if b then return () else pfail "assertb: assertion failed"
 
 let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m = 
   fun s -> 
@@ -187,13 +189,14 @@ let push_expect_state (new_state : expect) : unit proc_state_m =
   let* _ = modify_s (fun s -> {s with input_expect = new_state; expect_state_stack = cur_state::s.expect_state_stack}) in
   return ()
 
-let pop_expect_state () : expect proc_state_m =
+let pop_expect_state (cur_state : expect) : unit proc_state_m =
   let* st = get_proc_state () in
+  let* () = assertb (cur_state = st.input_expect) in
   match st.expect_state_stack with
   | [] -> pfail "pop_expect_state: empty stack"
   | x::tail -> 
       let* _ = modify_s (fun s -> {s with input_expect = x; expect_state_stack = tail}) in
-      return x
+      return ()
 
 let peek_input_acc (idx : int) : PE.t option proc_state_m =
   let* s = get_proc_state () in
@@ -222,19 +225,37 @@ let pop_input_acc_3 () : (PE.t * PE.t * PE.t) proc_state_m =
   let* z = pop_input_acc () in
   return (x, y, z)
 
-let pop_bin_operand (binop : binary_op_meta) : (PE.t * PE.t) proc_state_m =
-  let* (x, y, z) = pop_input_acc_3 () in
-  match A.view y with
+let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_state_m =
+  match A.view elem with
   | A.N(N.ParsingElem(N.OpKeyword(kop)), []) -> 
-    if binop.id = kop.id then
-      return (x, z)
+    if meta.id = kop.id then
+      return ()
     else
-      pfail ("pop_bin_operand: expected " ^ (show_binary_op_meta binop) ^ " but got " ^ (show_binary_op_meta binop))
+      pfail ("check_is_operand: expected " ^ (show_binary_op_meta meta) ^ " but got " ^ (show_binary_op_meta kop))
   | _ -> 
-    pfail ("pop_bin_operand: expected OpKeyword but got " ^ (A.show_view y))
+    pfail ("check_is_operand: expected OpKeyword but got " ^ (A.show_view elem))
 
-let assertb (b : bool) : unit proc_state_m = 
-  if b then return () else pfail "assertb: assertion failed"
+let pop_bin_operand (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (x, y, z) = pop_input_acc_3 () in
+  let* _ = assert_is_correct_operand binop y in
+  return ((x, z), Ext.combine_extent_list [A.get_extent_some x; A.get_extent_some y; A.get_extent_some z])
+
+(* extent is the entirety of expressions *)
+let pop_prefix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
+  let* (x, y) = pop_input_acc_2 () in
+  let* _ = assert_is_correct_operand binop x in
+  return (y, Ext.combine_extent (A.get_extent_some x) (A.get_extent_some y))
+
+let pop_postfix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
+  let* (x, y) = pop_input_acc_2 () in
+  let* _ = assert_is_correct_operand binop y in
+  return (x, Ext.combine_extent (A.get_extent_some x) (A.get_extent_some y))
+
+let pop_closed_identifier_operand (binop : binary_op_meta) : Ext.t proc_state_m =
+  let* (y) = pop_input_acc () in
+  let* _ = assert_is_correct_operand binop y in
+  return (A.get_extent_some y)
+
 
 let pop_input_acc_past (f : PE.t -> bool) : (PE.t list * PE.t) proc_state_m =
   let rec aux acc = 
@@ -250,7 +271,12 @@ let get_current_file_name () : string proc_state_m =
   let* s = get_proc_state () in
   return s.input_future.filename
 
-(* pushes start elem (identifier or )*)
+(* pushes start elem (identifier or )
+CHANGE: I decided that I still want a list of identifiers 
+1. Function as applications if separator is 于 or 、 or 以 
+    [The idea is that A以B、C、D = A于B于C于D]
+2. Form a special sequence type if separator is ， or ；or。
+*)
 let push_elem_start (es : A.t) : unit proc_state_m = 
   let* acc_top = peek_input_acc 0 in
   match acc_top with
@@ -322,8 +348,8 @@ let run_processor (proc : processor)  : unit proc_state_m =
   match proc with
   | ProcComplex process -> process
   | ProcBinOp { meta=({id=_;keyword;left_precedence=lp;right_precedence=_;fixity} as meta);reduction=_} ->
-      let* _read_keyword = read_string keyword in
-      let operator_elem = A.fold(A.N(N.ParsingElem(N.OpKeyword (meta)), [])) in
+      let* (_read_keyword, ext) = read_string keyword in
+      let operator_elem = A.annotate_with_extent (A.fold(A.N(N.ParsingElem(N.OpKeyword (meta)), []))) ext in
       (* reduce existing stack*)
       let* _ = (match fixity with
       | Infix | Postfix -> operator_precedence_reduce lp
@@ -355,6 +381,15 @@ let run_processor (proc : processor)  : unit proc_state_m =
       let* string_read = read_string id in
       push_elem_on_input_acc (PE.get_identifier_t string_read)
 
+    
+let add_processor_entry_list (proc : processor_entry list) : unit proc_state_m = 
+    let* proc_state = get_proc_state () in
+    let new_s = {proc_state with registry = proc @ proc_state.registry} in
+    write_proc_state new_s
+let remove_all_proc_registry_with_input_expect_state (expect : expect) : unit proc_state_m = 
+    let* proc_state = get_proc_state () in
+    let new_s = {proc_state with registry = List.filter (fun x -> x.expect <> expect) proc_state.registry} in
+    write_proc_state new_s
 
 let run_processor_entry (proc : processor_entry)  : unit proc_state_m = 
     let {expect; name=_; processor} = proc in

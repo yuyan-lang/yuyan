@@ -1,4 +1,4 @@
-(* Printexc.record_backtrace true;; *)
+Printexc.record_backtrace true;;
 
 
 let process_file (filename : string) =

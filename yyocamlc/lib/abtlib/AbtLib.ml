@@ -37,6 +37,7 @@ module type ABT = sig
   *)
   val annotate_with_extent : t -> t_extent -> t
   val get_extent : t -> t_extent option
+  val get_extent_some : t -> t_extent 
   val operate_on_view : t -> (t_view -> t_view) -> t
 
   val eq_abt : t -> t -> bool
@@ -622,6 +623,11 @@ module Abt (NodeClass: NODE_CLASS) : ABT
       print_endline ("get_extent: no extent found in " ^ show_raw (ctx, tm));
       None
       )
+
+  let get_extent_some ((ctx, tm): t) : t_extent =
+    match get_extent (ctx, tm) with
+    | Some extent -> extent
+    | None -> failwith ("get_extent_some: no extent found in " ^ show_raw (ctx, tm))
 
   let operate_on_view (tm: t) (f: t_view -> t_view) : t =
     match get_extent tm with
