@@ -50,27 +50,42 @@ open ProcCombinators
   | ys -> Ok ys
   ) *)
 
+let do_process_step  () : unit proc_state_m = 
+  let* st = get_proc_state () in
+  if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1  then 
+      failwith ("ET57: Should not call process step when we are done");
+  choice_l (List.map run_processor_entry st.registry @[pfail "No more processors apply"])  
+
+
 let rec do_process_entire_stream () : A.t proc_state_m = 
   let* st = get_proc_state () in
+  (* print_endline ("=========== STATE ======== \n" ^ show_proc_state st);  *)
   if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1 
-    then return (List.hd st.input_acc)
+    then 
+      (
+        (* print_endline "SUCCESS"; *)
+        return (List.hd st.input_acc)
+      )
     else 
-      let* () = choice_l (List.map run_processor_entry st.registry @[pfail "No more processors apply"])  in
       (* let* s = get_proc_state () in
       print_endline ("=========== STATE ======== \n" ^ show_proc_state s); *)
-      
+      let* _ = do_process_step () in
       do_process_entire_stream ()
 
 let extract_all_result (st : proc_state) (processor : 'a proc_state_m) : ('a list, 'b) result = 
   let result = ref [] in
   let failure = ref None in
   processor st 
-    (fun (msg, final_s) -> if msg <> ErrOther "top_level_backtrack_backtrack" then failure := Some(msg, final_s)) 
+    (fun (msg, final_s) -> 
+      if msg <> ErrOther "top_level_backtrack_backtrack" 
+        then failure := Some(msg, final_s)
+      (* ; print_endline "FAILED" *)
+      ) 
     (fun (r, st') fail_c -> 
       result := r :: !result;
       fail_c (ErrOther "top_level_backtrack_backtrack", st')
     );
-  if !failure <> None then
+  if !result = [] then
     let (msg, final_s) = Option.get !failure in
     (* print_endline ("Final state: " ^ (Environment.show_environment final_s.store)); *)
     Error (msg, final_s)
@@ -91,13 +106,15 @@ let print_proc_errors (msg : proc_error list) : string =
     | ErrOther s -> Some s
   ) msg in
   let expecting_str = if List.length expecting > 0 then
-    "Expecting one of the following strings: " ^ String.concat ", " (List.map (fun (x, _) -> CS.get_t_string x) expecting) ^
-    "\nBut got: " ^ String.concat ", " (List.map (fun (_, x) -> CS.get_t_char x) expecting)
+    "Expecting one of the following strings: " ^ String.concat ", " (List.map (fun (x, _) -> "\"" ^ CS.get_t_string x ^ "\"") expecting) ^
+    "But got: " ^ String.concat ", " (List.map (fun (_, x) -> CS.get_t_char x) expecting)
   else "" in
   let other_str = if List.length other > 0 then
     "Other errors: " ^ String.concat ",\n" (List.map (fun x -> x) other)
   else "" in
-  expecting_str ^ "\n" ^ other_str
+  expecting_str ^ (
+    if expecting_str <> "" && other_str <> "" then "\n" else ""
+  ) ^ other_str
 
 
 
@@ -132,8 +149,9 @@ let run_top_level (filename: string)(content : string) : A.t =
         string_of_int i ^ " failure: " ^
         print_proc_errors msg ^ "\n" ^ show_proc_state s ^ "\n-------------------------------" 
      ) s.failures));
-    Fail.failwith ( filename ^ ":" ^ string_of_int s.input_future.line ^ ":" ^ string_of_int s.input_future.col ^
+     failwith ("Compilation Failed")
+    (* Fail.failwith ( filename ^ ":" ^ string_of_int s.input_future.line ^ ":" ^ string_of_int s.input_future.col ^
      ": Processing failed at " ^ CharStream.show_current_position s.input_future
      ^ "\n"  
-    )
+    ) *)
     )

@@ -42,9 +42,17 @@ module YYNode  = struct
   type builtin = String of string
                | Int of int
                | Bool of bool
+               | Float of string * string
                | Unit
                | UnderscorePattern (* 「」  or （） *)
                | Library of string  (* special symbol globally available denoting library root, string denotes a filepath *)
+               | StringType
+               | IntType
+               | BoolType
+               | UnitType
+               | FloatType
+               | Type
+
 
   type parsing_elem = ScannedChar of CS.t_char
                     | Keyword of CS.t_string
@@ -58,6 +66,7 @@ module YYNode  = struct
          | Declaration of declaration
          | StructureDeref of string (* label *)
          | ModuleDef 
+         | FileRef of string (* Library is a folder/file, FileRef is a checked file*)
 
   let arity (t : t) : int list option = 
     match t with
@@ -66,6 +75,7 @@ module YYNode  = struct
     | Declaration ConstantDefn  -> Some([0; 0])
     | StructureDeref (_) -> Some([0])
     | ModuleDef -> None
+    | FileRef (_) -> Some([])
 
 
   let show_builtin (b : builtin) : string = 
@@ -76,6 +86,14 @@ module YYNode  = struct
     | Unit -> "unit"
     | UnderscorePattern -> "_"
     | Library s -> "Library(" ^ s ^ ")"
+    | StringType -> "StringType"
+    | IntType -> "IntType"
+    | BoolType -> "BoolType"
+    | UnitType -> "UnitType"
+    | FloatType -> "FloatType"
+    | Float (s1, s2) -> "Float(" ^ s1 ^ "." ^ s2 ^ ")"
+    | Type -> "Type"
+
 
   let show_parsing_elem (p : parsing_elem) : string =
     match p with
@@ -95,6 +113,7 @@ module YYNode  = struct
     | Declaration (d) -> "Declaration(" ^ show_declaration d ^ ")"
     | StructureDeref (s) -> "StructureDeref(" ^ s ^ ")"
     | ModuleDef -> "ModuleDef"
+    | FileRef (s) -> "FileRef(" ^ s ^ ")"
 
 end
 module N = YYNode
@@ -188,7 +207,8 @@ let show_processor_entry (p : processor_entry) : string =
     ", processor: " ^ show_processor processor
 let show_proc_state (s : proc_state) : string =
   "ProcState: " ^
+  "\ninput_future: " ^ CharStream.print_cs s.input_future ^ ", " ^
   "\ninput_future: " ^ CharStream.show_cs s.input_future ^ ", " ^
   "\ninput_expect: " ^ show_input_expect s.input_expect ^ ", " ^
-  "\ninput_acc: " ^ show_input_acc s.input_acc ^ ", " ^
-  "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", " 
+  "\ninput_acc: " ^ show_input_acc s.input_acc ^ ", " 
+  (* "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  *)

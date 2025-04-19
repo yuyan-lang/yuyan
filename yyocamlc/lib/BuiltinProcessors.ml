@@ -47,6 +47,7 @@ let comment_end : unit proc_state_m =
 
 (* keep reading and ignore result when *)
 let comment_middle : unit proc_state_m = 
+  let* _ = pnot (comment_start) in
   let* _ = pnot (comment_end) in
   let* read_char  = read_any_char () in
   let* _ = push_scanned_char read_char in
@@ -63,8 +64,8 @@ let import_end_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "之书";
-    left_precedence = 50;
-    right_precedence = 50;
+    left_precedence = 80;
+    right_precedence = 0;
     fixity = Postfix;
   }
 let import_end : binary_op = 
@@ -195,19 +196,147 @@ let statement_end : binary_op =
 
 let sentence_end : unit proc_state_m =
   let* _ = read_one_of_string [CS.new_t_string "。"] in
-  let* module_expr, decl = pop_input_acc_2 () in 
-  match A.view module_expr, A.view decl with
-  | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
-    push_elem_on_input_acc
-      (A.annotate_with_extent
-        (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
-        (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
-      )
-  | _ -> pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+  (* reduce all existing expressions*)
+  let* _ = operator_precedence_reduce (-1) in
+  let* input_acc_size = get_input_acc_size () in
+  if input_acc_size = 1  then
+    let* module_expr = pop_input_acc () in
+    match A.view module_expr with
+    | A.N(N.ModuleDef, _) -> 
+      let* () = push_elem_on_input_acc module_expr in
+      return ()
+    | _ -> pfail ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
+  else if input_acc_size > 1 then
+    let* module_expr, decl = pop_input_acc_2 () in 
+    match A.view module_expr, A.view decl with
+    | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
+      push_elem_on_input_acc
+        (A.annotate_with_extent
+          (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
+          (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
+        )
+    | _ -> pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+  else
+    pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
   
 
+let builtin_op_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "内建";
+    left_precedence = 0;
+    right_precedence = 200;
+    fixity = Prefix;
+  }
+let builtin_op : binary_op = 
+  {
+    meta = builtin_op_meta;
+    reduction = 
+      let* (oper, per_ext) = pop_prefix_operand builtin_op_meta in
+      let* node = (
+        match A.view oper with
+        | A.FreeVar(x) -> 
+          (
+            match x with
+            | "《《内建类型：字符串》》" ->
+              return (A.fold(A.N(N.Builtin(N.StringType), [])))
+            | "《《内建类型：整数》》" ->
+              return (A.fold(A.N(N.Builtin(N.IntType), [])))
+            | "《《内建类型：小数》》" ->
+              return (A.fold(A.N(N.Builtin(N.FloatType), [])))
+            | "《《内建类型：动态分类值》》" ->
+              return (A.fold(A.N(N.Builtin(N.Type), [])))
+            | "《《内建类型：有》》" ->
+              return (A.fold(A.N(N.Builtin(N.UnitType), [])))
+            | "《《内建类型：爻》》" ->
+              return (A.fold(A.N(N.Builtin(N.BoolType), [])))
+            | "《《内建类型：元类型》》" ->
+              return (A.fold(A.N(N.Builtin(N.Type), [])))
+            | "《《内建爻：阳》》" ->
+              return (A.fold(A.N(N.Builtin(N.Bool true), [])))
+            | "《《内建爻：阴》》" ->
+              return (A.fold(A.N(N.Builtin(N.Bool false), [])))
+            | "《《内建有：元》》" ->
+              return (A.fold(A.N(N.Builtin(N.Unit), [])))
+            
+            | _ -> pfail ("ET104: Expected a builtin val but got " ^ x)
+          )
+        | _ -> pfail ("ET105: Builtin Expected a free variable but got " ^ A.show_view oper)
+      ) in
+      push_elem_on_input_acc (A.annotate_with_extent node per_ext)
+  }
 
+let module_open_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "观";
+    left_precedence = 0;
+    right_precedence = 80;
+    fixity = Prefix;
+  }
 
+let get_file_ref (file_path : string) : A.t proc_state_m = 
+  match !compilation_manager_get_file_hook file_path with
+  | Some (result) -> return (result)
+  | None -> failwith ("Im30: Module not found: " ^ file_path ^ " fileRefs should only contain checked modules")
+
+let get_module_expr_defined_names (m : A.t) : (string * Ext.t) list proc_state_m = 
+  let all_names = 
+    (match A.view m with
+    | A.N(N.ModuleDef, args) -> (
+      List.filter_map (fun (_, arg) -> 
+        match A.view arg with
+        | A.N(N.Declaration(N.ConstantDefn), ([], name)::_) ->
+          (
+          match A.view name with
+          | A.FreeVar(x) -> Some (x, A.get_extent_some name)
+          | _ -> failwith ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name)
+          )
+        | _ -> failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view arg)
+      ) args
+    )
+    | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
+    ) in
+  return (ListUtil.remove_duplicates all_names)
+
+let module_open : binary_op = 
+  {
+    meta = module_open_meta;
+    reduction = 
+      let* (module_expr, _per_ext) = pop_prefix_operand module_open_meta in
+      let* () = (
+        match A.view module_expr with
+        | A.N(N.FileRef(path), []) -> (
+          let* file_content = get_file_ref path in
+          let* all_names = get_module_expr_defined_names file_content in
+          (* add new operators corresponding to the names in the file *)
+          let ops = List.map (fun (name, _ext) -> 
+            let meta = {
+              id = Uid.next();
+              keyword = CS.new_t_string name;
+              left_precedence = 0;
+              right_precedence = 0;
+              fixity = ClosedIdentifier;
+            } in
+            let name_oper = {
+              meta = meta;
+              reduction = 
+                let* (per_ext) = pop_closed_identifier_operand meta in
+                let node = A.fold(A.N(N.StructureDeref(name), [([], module_expr)])) in
+                push_elem_on_input_acc (A.annotate_with_extent node per_ext)
+            } in
+            to_processor_binary_op Expression ("open_module_"^name) name_oper
+            ) all_names in
+          add_processor_entry_list ops
+          (* DO WE NEED TO PUSH SOMETHING TO THE INPUT ACCUM? *)
+        )
+        (* | A.FreeVar(x) -> 
+          return (A.fold(A.N(N.Builtin(N.String x), []))) *)
+        | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr)
+      ) in
+      return ()
+      (* push_elem_on_input_acc (A.annotate_with_extent node per_ext) *)
+  }
 
 
   (* let* read_end = read_one_of_string [CS.new_t_string "之书"] in
@@ -218,6 +347,7 @@ let sentence_end : unit proc_state_m =
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
   to_processor_complex Expression "comment_start" comment_start;
+  to_processor_complex (Scanning InComment) "comment_start" comment_start;
   to_processor_complex (Scanning InComment) "comment_middle" comment_middle;
   to_processor_complex (Scanning InComment) "comment_end" comment_end;
   to_processor_binary_op Expression "definition_middle" definition_middle;
@@ -227,6 +357,8 @@ let default_registry = [
   to_processor_complex Expression "known_structure_deref" known_structure_deref;
   to_processor_binary_op Expression "statement_end" statement_end;
   to_processor_complex Expression "sentence_end" sentence_end;
+  to_processor_binary_op Expression "builtin_op" builtin_op;
+  to_processor_binary_op Expression "module_open" module_open;
 
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;

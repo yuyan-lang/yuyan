@@ -1,0 +1,9 @@
+Name ?LP ?RP
+【】之【】 100 100
+【】之书   90
+观【】     80
+【】者【】 10 10
+
+
+Other Reductions
+【】。   Reduces anything >= 0

@@ -77,3 +77,10 @@ let show_cs (cs : t) : string =
   ", col " ^ string_of_int cs.col ^
   ", nextchar " ^ show_next_char cs ^ 
   "]"
+
+let print_cs (cs : t) : string = 
+  "CS [ " ^ cs.filename ^
+  ":" ^ string_of_int (cs.line + 1) ^
+  ":" ^ string_of_int (cs.col + 1) ^
+  ", nextchar " ^ show_next_char cs ^ 
+  "]"

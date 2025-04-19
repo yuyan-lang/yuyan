@@ -154,7 +154,7 @@ let read_one_of_char (l : t_char list) : (CS.t_char * Ext.t) proc_state_m =
 
 (* string is a list of *)
 let read_string (l : t_char list) : (CS.t_string * Ext.t) proc_state_m = 
-  if l = [] then failwith "ET100: empty string" else
+  if l = [] then failwith "PC157: empty string" else
   let rec aux acc rem = 
     match rem with
     | [] -> return (List.map fst acc, Ext.combine_extent_list (List.map snd acc))
@@ -236,11 +236,15 @@ let peek_input_acc (idx : int) : PE.t option proc_state_m =
     return (Some (List.nth s.input_acc idx))
   else
     return None
+  
+let get_input_acc_size () : int proc_state_m =
+  let* s = get_proc_state () in
+  return (List.length s.input_acc)
 
 let pop_input_acc () : PE.t proc_state_m =
   let* s = get_proc_state () in
   match s.input_acc with
-  | [] -> failwith "PC224: Attempting to pop from empty input accumulator"
+  | [] -> pfail ("PC224: Attempting to pop from empty input accumulator: ")
   | x :: xs -> 
       let new_s = {s with input_acc = xs} in
       let* _ = write_proc_state new_s in
@@ -268,17 +272,20 @@ let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_
     failwith ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ (A.show_view elem))
 
 let pop_bin_operand (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
+  assert (binop.fixity = Infix);
   let* (x, y, z) = pop_input_acc_3 () in
   let* _ = assert_is_correct_operand binop y in
   return ((x, z), Ext.combine_extent_list [A.get_extent_some x; A.get_extent_some y; A.get_extent_some z])
 
 (* extent is the entirety of expressions *)
 let pop_prefix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
+  assert (binop.fixity = Prefix);
   let* (x, y) = pop_input_acc_2 () in
   let* _ = assert_is_correct_operand binop x in
   return (y, Ext.combine_extent (A.get_extent_some x) (A.get_extent_some y))
 
 let pop_postfix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
+  assert (binop.fixity = Postfix);
   let* (x, y) = pop_input_acc_2 () in
   let* _ = assert_is_correct_operand binop y in
   return (x, Ext.combine_extent (A.get_extent_some x) (A.get_extent_some y))
@@ -319,9 +326,12 @@ let push_elem_start (es : A.t) : unit proc_state_m =
       if meta.fixity = Prefix || meta.fixity = Infix  then
         push_elem_on_input_acc es
       else
-        failwith ("ET100: expected prefix or infix but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+        failwith ("PC322: expected prefix or infix but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+    | A.N(N.ModuleDef, _) 
+    ->
+      push_elem_on_input_acc es
     | _ -> 
-      pfail ("ET100: expected OpKeyword but got " ^ (A.show_view x) ^ " cannot push the next identifier")
+      pfail ("PC324: expected OpKeyword but got " ^ (A.show_view x) ^ " cannot push the next identifier")
 
 let push_elem_continue (es : A.t) : unit proc_state_m = 
   let* acc_top = peek_input_acc 0 in
@@ -330,7 +340,7 @@ let push_elem_continue (es : A.t) : unit proc_state_m =
   | Some (x) -> 
     match A.view x with
     | A.N(N.ParsingElem(N.OpKeyword(_)),[]) -> 
-      pfail ("ET100: expected things other than but got " ^ (A.show_view x) ^ " cannot push the next identifier")
+      pfail ("PC333: expected things  got " ^ (A.show_view x) ^ " cannot push the next identifier " ^ A.show_view es)
     | _ -> 
       push_elem_on_input_acc es
 
@@ -340,7 +350,7 @@ let lookup_binary_op (meta : binary_op_meta) : binary_op proc_state_m =
   match List.filter_map (fun x -> 
     match x.processor with ProcBinOp(x) -> if x.meta.id = meta.id then Some(x) else None | _ -> None) s.registry with
   | [x] -> return x
-  | [] -> pfail ("ET100: cannot find binary operator " ^ (show_binary_op_meta meta) ^ " in the registry " ^ (
+  | [] -> pfail ("PC343: cannot find binary operator " ^ (show_binary_op_meta meta) ^ " in the registry " ^ (
     String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
   ))
   | _ -> print_failwith ("ET346: multiple binary operators " ^ (show_binary_op_meta meta) ^ " in the registry " ^ (
@@ -359,9 +369,9 @@ let operator_right_most_reduce () : unit proc_state_m =
         let* bin_op = lookup_binary_op meta in
         bin_op.reduction
       else
-        failwith ("ET100: expected postfix or closed identifier but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+        failwith ("PC362: expected postfix or closed identifier but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
     | _ -> 
-      failwith ("ET100: expected OpKeyword but got " ^ (A.show_view x) ^ " this method should not be invoked when rightmost reduction is not possible")
+      failwith ("PC364: expected OpKeyword but got " ^ (A.show_view x) ^ " this method should not be invoked when rightmost reduction is not possible")
 
 
 (* reduces all operators A + B on the stack of higher precedence*)

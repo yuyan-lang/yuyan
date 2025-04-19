@@ -39,7 +39,7 @@ let get_module_real_path (module_name_parsed : PE.t) : string proc_state_m (* pa
 let get_module_expr (module_name_parsed : PE.t) : A.t proc_state_m = 
   let* path = get_module_real_path module_name_parsed in
   match !compilation_manager_get_file_hook path with
-  | Some (result) -> return result
+  | Some (_result) -> return (A.annotate_with_extent(A.fold(A.N(N.FileRef(path), []))) (A.get_extent_some module_name_parsed))
   | None -> pfail ("Im30: Module not found: " ^ path)
 
   
