@@ -35,6 +35,10 @@ and binary_op_meta = {
   *)
 }
 
+let show_string (s : string) : string = 
+  (* replace \n with \\n *)
+  let s = String.concat "\\n" (String.split_on_char '\n' s) in
+  s
 
 let show_fixity (f : fixity) : string =
   (* let show_meta_in_fixity (b : binary_op_meta) : string =
@@ -142,7 +146,7 @@ module YYNode  = struct
     | ScannedChar (s) -> "UnknownChar(" ^ CS.get_t_char s ^ ")"
     | Keyword (s) -> "Keyword(" ^ CS.get_t_string s ^ ")"
     | OpKeyword (i) -> "OpKeyword(" ^ show_binary_op_meta i ^ ")"
-    | BoundScannedString (s) -> "BoundScannedString(" ^ CS.get_t_string s ^ ")"
+    | BoundScannedString (s) -> "BoundScannedString(" ^ show_string (CS.get_t_string s) ^ ")"
 
   let show_declaration (d : declaration) : string =
     match d with

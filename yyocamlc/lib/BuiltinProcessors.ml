@@ -412,7 +412,51 @@ let right_parenthesis : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
   }
 
-let 
+let explicit_pi_start_uid = Uid.next()
+let explicit_pi_middle_1_uid = Uid.next()
+let explicit_pi_middle_2_uid = Uid.next()
+let explicit_pi_start_meta = 
+  {
+    id = explicit_pi_start_uid;
+    keyword = CS.new_t_string "化";
+    left_fixity = FxNone;
+    right_fixity = FxComp explicit_pi_middle_1_uid;
+  }
+let explicit_pi_middle_1_meta = 
+  {
+    id = explicit_pi_middle_1_uid;
+    keyword = CS.new_t_string "者";
+    left_fixity = FxComp explicit_pi_start_uid;
+    right_fixity = FxBinding explicit_pi_middle_2_uid;
+  }
+let explicit_pi_middle_2_meta = 
+  {
+    id = explicit_pi_middle_2_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxBinding explicit_pi_start_uid;
+    right_fixity = FxOp 40;
+  }
+let explicit_pi_start : binary_op = 
+  {
+    meta = explicit_pi_start_meta;
+    reduction = p_internal_error "BP104: explicit_pi_start reduction";
+  }
+let explicit_pi_middle_1 : binary_op = 
+  {
+    meta = explicit_pi_middle_1_meta;
+    reduction = p_internal_error "BP104: explicit_pi_middle_1 reduction";
+  }
+let explicit_pi_middle_2 : binary_op = 
+  {
+    meta = explicit_pi_middle_2_meta;
+    reduction = 
+      let* ((tp_name, bnd_name, range_expr), per_ext) = pop_op_operands_from_second_top_3 explicit_pi_middle_2_meta in
+      match A.view bnd_name with
+      | A.N(N.ParsingElem(N.BoundScannedString(s)), []) -> 
+        let result_expr = A.fold(A.N(N.ExplicitPi, [[], tp_name; [CS.get_t_string s], range_expr])) in
+        push_elem_on_input_acc (A.annotate_with_extent result_expr per_ext)
+      | _ -> failwith ("ET107: Expected a bound scanned string but got " ^ A.show_view bnd_name)
+  }
 
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
@@ -434,6 +478,10 @@ let default_registry = [
   to_processor_binary_op Expression "constructor_decl_middle" constructor_decl_middle;
   to_processor_binary_op Expression "left_parenthesis" left_parenthesis;
   to_processor_binary_op Expression "right_parenthesis" right_parenthesis;
+  to_processor_binary_op Expression "explicit_pi_start" explicit_pi_start;
+  to_processor_binary_op Expression "explicit_pi_middle_1" explicit_pi_middle_1;
+  to_processor_binary_op Expression "explicit_pi_middle_2" explicit_pi_middle_2;
+  
 
 
 ] @ List.concat [

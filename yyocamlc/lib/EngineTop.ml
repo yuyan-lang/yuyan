@@ -59,7 +59,7 @@ let do_process_step  () : unit proc_state_m =
 
 let rec do_process_entire_stream () : A.t proc_state_m = 
   let* st = get_proc_state () in
-  (* print_endline ("=========== STATE ======== \n" ^ show_proc_state st);  *)
+  if !Flags.show_parse_tracing then print_endline ("=========== STATE ======== \n" ^ show_proc_state st); 
   if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1 
     then 
       (

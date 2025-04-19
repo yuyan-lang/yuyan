@@ -83,6 +83,12 @@ let ptry (m : 'a proc_state_m) : 'a option proc_state_m =
     | None -> Some(None, s)
     | Some (x, s') -> Some (Some x, s') *)
 
+(* pcut P will not backtrack into P *)
+let pcut (m : 'a proc_state_m) : 'a proc_state_m = 
+  fun s fc sc  -> 
+    m s fc (fun (x, s') _fc -> sc (x, s') fc)
+
+
 let assertb (b : bool) : unit proc_state_m = 
   if b then return () else pfail "assertb: assertion failed"
 
@@ -205,10 +211,15 @@ let scan_past_one_of_string (t : CS.t_string list) : ((CS.t_string * Ext.t) (* i
     match result with
     | Some((c, ext)) -> return ((remap_t_char_list_with_ext acc), (c, ext))
     | None -> 
-      let* (c, ext) = read_any_char () in
-      aux (acc@[(c, ext)])
+      let* c_result = ptry (read_any_char ()) in
+      match c_result with
+      | Some (c, ext) -> aux (acc@[(c, ext)])
+      | None -> pfail "PC211: scan_past_one_of_string: EOF encountered before string found"
   in
-  aux []
+  (* we pcut here because we either succeed ( there is a scan) or we fail in which case there is no scan
+  we don't want to have multiple successful scans here
+   *)
+  pcut (aux [])
 
 let push_elem_on_input_acc (elem : PE.t) : unit proc_state_m = 
   let* s = get_proc_state () in
