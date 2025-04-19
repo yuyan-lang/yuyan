@@ -8,6 +8,7 @@ module CS = CharStream
 module Env = Environment
   
 
+
 let yy_keyword_chars = CharStream.new_t_string "。（）「」『』"
 (* let top_level_identifier_pusher : unit proc_state_m = 
   read_any_char_except_and_push (CharStream.new_t_string "。（）「」『』\n\t\r"@[" "]) *)
@@ -70,9 +71,9 @@ let import_end : binary_op =
   {
     meta = import_end_meta;
     reduction = 
-      let* prev_comp = pop_input_acc () in
+      let* (prev_comp, ext) = pop_postfix_operand (import_end_meta) in
       let* module_expr = Imports.get_module_expr prev_comp in
-      push_elem_on_input_acc module_expr
+      push_elem_on_input_acc (A.annotate_with_extent module_expr ext)
   }
 
 let definition_middle_meta : binary_op_meta = 
@@ -192,6 +193,19 @@ let statement_end : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
   }
 
+let sentence_end : unit proc_state_m =
+  let* _ = read_one_of_string [CS.new_t_string "。"] in
+  let* module_expr, decl = pop_input_acc_2 () in 
+  match A.view module_expr, A.view decl with
+  | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
+    push_elem_on_input_acc
+      (A.annotate_with_extent
+        (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
+        (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
+      )
+  | _ -> pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+  
+
 
 
 
@@ -212,6 +226,7 @@ let default_registry = [
   to_processor_binary_op Expression "unknown_structure_deref" unknown_structure_deref;
   to_processor_complex Expression "known_structure_deref" known_structure_deref;
   to_processor_binary_op Expression "statement_end" statement_end;
+  to_processor_complex Expression "sentence_end" sentence_end;
 
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;

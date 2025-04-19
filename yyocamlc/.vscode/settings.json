@@ -1,3 +1,4 @@
 {
-    "search.useIgnoreFiles": true
+    "search.useIgnoreFiles": true,
+    "yuyan.executablePath": "./../yy"
 }

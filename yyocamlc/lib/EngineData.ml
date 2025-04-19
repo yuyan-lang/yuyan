@@ -33,10 +33,10 @@ let show_fixity (f : fixity) : string =
 
 let show_binary_op_meta (b : binary_op_meta) : string =
   let {id; keyword; left_precedence; right_precedence; fixity} = b in
-    CS.get_t_string keyword ^ ", id: " ^ string_of_int id ^
-    ", left_precedence: " ^ string_of_int left_precedence ^
-    ", right_precedence: " ^ string_of_int right_precedence ^
-    ", fixity: " ^ show_fixity fixity
+  "BinOp(" ^ CS.get_t_string keyword ^ ", id=" ^ string_of_int id ^
+    ", lp=" ^ string_of_int left_precedence ^
+    ", rp= " ^ string_of_int right_precedence ^
+    ", f=" ^ show_fixity fixity ^ ")"
 
 module YYNode  = struct
   type builtin = String of string
@@ -57,6 +57,7 @@ module YYNode  = struct
          | ParsingElem of parsing_elem
          | Declaration of declaration
          | StructureDeref of string (* label *)
+         | ModuleDef 
 
   let arity (t : t) : int list option = 
     match t with
@@ -64,6 +65,7 @@ module YYNode  = struct
     | ParsingElem (_) -> Some([])
     | Declaration ConstantDefn  -> Some([0; 0])
     | StructureDeref (_) -> Some([0])
+    | ModuleDef -> None
 
 
   let show_builtin (b : builtin) : string = 
@@ -92,6 +94,7 @@ module YYNode  = struct
     | ParsingElem (p) -> "ParsingElem(" ^ show_parsing_elem p ^ ")"
     | Declaration (d) -> "Declaration(" ^ show_declaration d ^ ")"
     | StructureDeref (s) -> "StructureDeref(" ^ s ^ ")"
+    | ModuleDef -> "ModuleDef"
 
 end
 module N = YYNode
@@ -115,6 +118,10 @@ type t_environment =
 
 
 
+type proc_error = ErrExpectString of {
+  expecting: CS.t_string;
+  actual: CS.t_char;
+ } | ErrOther of string
 
 (* processing state *)
 type proc_state = {
@@ -125,7 +132,7 @@ type proc_state = {
   store : t_environment;
   registry : processor_registry;
   last_succeeded_processor : processor_entry; (* for debugging on parsing *)
-  failures : (string * proc_state) list;
+  failures : (proc_error list * proc_state) list;
 }
 and processor = ProcComplex of unit proc_state_m
               | ProcBinOp of binary_op 
@@ -138,8 +145,8 @@ and processor_entry = {
 }
 and processor_registry = processor_entry list
 and 'a proc_state_m = proc_state 
-                      -> (string * proc_state -> unit) (* failure continuation*) 
-                      -> (('a * proc_state) -> (string * proc_state -> unit) -> unit) (* success continuation *) 
+                      -> (proc_error * proc_state -> unit) (* failure continuation*) 
+                      -> (('a * proc_state) -> (proc_error * proc_state -> unit) -> unit) (* success continuation *) 
                       -> unit
 and binary_op = {
   meta: binary_op_meta;

@@ -56,8 +56,8 @@ let rec do_process_entire_stream () : A.t proc_state_m =
     then return (List.hd st.input_acc)
     else 
       let* () = choice_l (List.map run_processor_entry st.registry @[pfail "No more processors apply"])  in
-      let* s = get_proc_state () in
-      print_endline ("=========== STATE ======== \n" ^ show_proc_state s);
+      (* let* s = get_proc_state () in
+      print_endline ("=========== STATE ======== \n" ^ show_proc_state s); *)
       
       do_process_entire_stream ()
 
@@ -65,10 +65,10 @@ let extract_all_result (st : proc_state) (processor : 'a proc_state_m) : ('a lis
   let result = ref [] in
   let failure = ref None in
   processor st 
-    (fun (msg, final_s) -> if msg <> "top_level_backtrack_backtrack" then failure := Some(msg, final_s)) 
+    (fun (msg, final_s) -> if msg <> ErrOther "top_level_backtrack_backtrack" then failure := Some(msg, final_s)) 
     (fun (r, st') fail_c -> 
       result := r :: !result;
-      fail_c ("top_level_backtrack_backtrack", st')
+      fail_c (ErrOther "top_level_backtrack_backtrack", st')
     );
   if !failure <> None then
     let (msg, final_s) = Option.get !failure in
@@ -78,6 +78,27 @@ let extract_all_result (st : proc_state) (processor : 'a proc_state_m) : ('a lis
     (* print_endline ("Final state: " ^ (Environment.show_environment st.store)); *)
     Ok !result
 
+let print_proc_errors (msg : proc_error list) : string = 
+  let expecting = List.filter_map (function
+    | ErrExpectString {
+        expecting = s;
+        actual = a;
+      } -> Some (s,a)
+    | ErrOther _ -> None
+  ) msg in
+  let other = List.filter_map (function
+    | ErrExpectString _ -> None
+    | ErrOther s -> Some s
+  ) msg in
+  let expecting_str = if List.length expecting > 0 then
+    "Expecting one of the following strings: " ^ String.concat ", " (List.map (fun (x, _) -> CS.get_t_string x) expecting) ^
+    "\nBut got: " ^ String.concat ", " (List.map (fun (_, x) -> CS.get_t_char x) expecting)
+  else "" in
+  let other_str = if List.length other > 0 then
+    "Other errors: " ^ String.concat ",\n" (List.map (fun x -> x) other)
+  else "" in
+  expecting_str ^ "\n" ^ other_str
+
 
 
 let run_top_level (filename: string)(content : string) : A.t = 
@@ -85,8 +106,10 @@ let run_top_level (filename: string)(content : string) : A.t =
   let initial_state = {
     input_future = input;
     input_expect = Expression;
-    expect_state_stack = [];
-    input_acc = [];
+    expect_state_stack = []; 
+    input_acc = [A.annotate_with_extent(
+      A.fold(A.N(N.ModuleDef, []))
+    ) (filename, (0, 0), (0, 0))];
     store = Environment.default_environment;
     registry = BuiltinProcessors.default_registry;
     last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");
@@ -102,13 +125,15 @@ let run_top_level (filename: string)(content : string) : A.t =
     (* print_endline ("Final states: " ^ (Environment.show_environment_list ys)); *)
     failwith ("ET79: Multiple final states found")
 
-  | Error (msg, s) -> 
-    print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n" 
+  | Error (_msg, s) -> 
+    (
+    print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n========================\n" 
       ^ String.concat "\n" (List.mapi (fun i (msg, s) -> 
         string_of_int i ^ " failure: " ^
-        msg ^ "\n" ^ show_proc_state s
+        print_proc_errors msg ^ "\n" ^ show_proc_state s ^ "\n-------------------------------" 
      ) s.failures));
-    Fail.failwith (msg ^ "\n" ^ filename ^ ":" ^ string_of_int s.input_future.line ^ ":" ^ string_of_int s.input_future.col ^
-     "Processing failed at " ^ CharStream.show_current_position s.input_future
+    Fail.failwith ( filename ^ ":" ^ string_of_int s.input_future.line ^ ":" ^ string_of_int s.input_future.col ^
+     ": Processing failed at " ^ CharStream.show_current_position s.input_future
      ^ "\n"  
+    )
     )

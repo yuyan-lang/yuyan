@@ -5,27 +5,42 @@ module Ext = AbtLib.Extent
 module CS = CharStream
 module PE = ProcessedElement
 
+let print_failwith (s : string) : 'a = 
+  print_endline s;
+  failwith s
+
 let return (x : 'a) : 'a proc_state_m = 
     fun s fc sc -> sc (x, s) fc
 
-let combine_failures ((cur_msg, cur_st) : (string * proc_state) ) (prev : (string * proc_state) list) : (string * proc_state) list = 
+let combine_failures ((cur_msg, cur_st) : (proc_error * proc_state) ) (prev : (proc_error list * proc_state) list) : (proc_error list * proc_state) list = 
   (* the idea is that if the new s's inputs are consumed more, then replace rest with new s, 
     if s' inputs are consumed at the same level then append*)
   let cur_idx = cur_st.input_future.idx in
   let prev_idx = List.fold_left (fun acc (_, s) -> max acc s.input_future.idx) 0 prev in
   if cur_idx = prev_idx then
-    if List.mem cur_msg (List.map fst prev) then
-      prev
-    else
-      (cur_msg, cur_st) :: prev
+      let to_add, rest = List.partition (fun (_, s) -> 
+        s.input_expect = cur_st.input_expect
+        && s.input_acc = cur_st.input_acc
+        ) prev in
+      match to_add with
+      | [] -> ([cur_msg], cur_st) :: prev
+      | [(xmsg, _)]  -> 
+          if List.mem cur_msg xmsg then
+            prev
+          else
+            (cur_msg::xmsg, cur_st)::rest
+      | _ -> failwith "PC27: multiple failures with same input state"
   else if cur_idx > prev_idx then
-    [(cur_msg, cur_st)]
+    [([cur_msg], cur_st)]
   else
     prev
 
 
-let pfail (msg : string) : 'a proc_state_m = 
+let pfail_error (msg : proc_error) : 'a proc_state_m = 
     fun s fc _sc -> fc (msg, {s with failures = combine_failures (msg, s) s.failures})
+
+let pfail (msg : string) : 'a proc_state_m = 
+  pfail_error (ErrOther msg)
 
 (* let returnNone () : 'a proc_state_m = 
   pfail "returnNone: no error message provided" *)
@@ -37,7 +52,7 @@ let ignore () : unit proc_state_m =
   (* it is a convention that all things do not consume inputs *)
 let pnot (m : 'a proc_state_m) : unit proc_state_m = 
     fun s fc sc -> 
-      m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc ("pnot_fail", s))
+      m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc (ErrOther "pnot_fail", s))
 
 let bind  (m : 'a proc_state_m) (f: 'a -> 'b proc_state_m) : 'b proc_state_m = 
     fun s fc sc -> 
@@ -131,7 +146,11 @@ let read_one_of_char (l : t_char list) : (CS.t_char * Ext.t) proc_state_m =
   if List.mem c' l then 
     return (c', ext)
   else 
-    pfail ("PC100: expected one of " ^ (String.concat "," (List.map CharStream.get_t_char l)) ^ " but got " ^ (CharStream.get_t_char c'))
+    (* pfail_error ("PC100: expected one of " ^ (String.concat "," (List.map CharStream.get_t_char l)) ^ " but got " ^ (CharStream.get_t_char c')) *)
+    pfail_error (ErrExpectString {
+      expecting = l;
+      actual = c';
+    })
 
 (* string is a list of *)
 let read_string (l : t_char list) : (CS.t_string * Ext.t) proc_state_m = 
@@ -321,7 +340,12 @@ let lookup_binary_op (meta : binary_op_meta) : binary_op proc_state_m =
   match List.filter_map (fun x -> 
     match x.processor with ProcBinOp(x) -> if x.meta.id = meta.id then Some(x) else None | _ -> None) s.registry with
   | [x] -> return x
-  | _ -> pfail ("ET100: cannot find binary operator " ^ (show_binary_op_meta meta) ^ " in the registry")
+  | [] -> pfail ("ET100: cannot find binary operator " ^ (show_binary_op_meta meta) ^ " in the registry " ^ (
+    String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
+  ))
+  | _ -> print_failwith ("ET346: multiple binary operators " ^ (show_binary_op_meta meta) ^ " in the registry " ^ (
+    String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
+  ))
 
 (* this reduces postfix and closed operators already on the stack*)
 let operator_right_most_reduce () : unit proc_state_m = 
