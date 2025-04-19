@@ -64,9 +64,8 @@ let import_end_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "之书";
-    left_precedence = 80;
-    right_precedence = 0;
-    fixity = Postfix;
+    left_fixity = FxOp 90;
+    right_fixity = FxNone;
   }
 let import_end : binary_op = 
   {
@@ -82,31 +81,43 @@ let assert_is_free_var (x : A.t) : unit proc_state_m =
   | A.FreeVar(_) -> return ()
   | _ -> pfail ("ET101: Expected a free variable but got " ^ A.show_view x)
 
+let definition_middle_uid = Uid.next()
+let definition_end_uid = Uid.next()
 let definition_middle_meta : binary_op_meta = 
   {
-    id = Uid.next();
+    id = definition_middle_uid;
     keyword = CS.new_t_string "者";
-    left_precedence = 10;
-    right_precedence = 10;
-    fixity = Infix;
+    left_fixity = FxOp 10;
+    right_fixity = FxComp definition_end_uid;
+  }
+let definition_end_meta : binary_op_meta =
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp definition_middle_uid;
+    right_fixity = FxNone;
   }
 
 let definition_middle : binary_op = 
   {
     meta = definition_middle_meta;
-    reduction = 
-      let* ((name, defn), ext) = pop_bin_operand definition_middle_meta in
-      let* () = assert_is_free_var name in
-      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
+    reduction = p_internal_error "BP104: definition_middle reduction";
   }
+
+let definition_end : binary_op = 
+{
+  meta = definition_end_meta;
+  reduction = 
+    let* ((name, defn), ext) = pop_op_operands_from_top_2 definition_end_meta in
+    push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
+}
 
 let library_root_meta : binary_op_meta = 
   {
     id = Uid.next();
     keyword = CS.new_t_string "藏书阁";
-    left_precedence = 0;
-    right_precedence = 0;
-    fixity = ClosedIdentifier;
+    left_fixity = FxNone;
+    right_fixity = FxNone;
   }
 
 let library_root : binary_op = 
@@ -168,9 +179,8 @@ let unknown_structure_deref_meta : binary_op_meta =
   {
       id = Uid.next();
       keyword = CS.new_t_string "之";
-      left_precedence = 100;
-      right_precedence = 100;
-      fixity = Infix;
+      left_fixity = FxOp 100;
+      right_fixity = FxOp 100;
   }
 let unknown_structure_deref : binary_op =
   {
@@ -188,9 +198,8 @@ let statement_end_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "也";
-    left_precedence = 5;
-    right_precedence = 0;
-    fixity = Postfix;
+    left_fixity = FxOp 5;
+    right_fixity = FxNone
   }
 let statement_end : binary_op = 
   {
@@ -230,9 +239,8 @@ let builtin_op_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "内建";
-    left_precedence = 0;
-    right_precedence = 200;
-    fixity = Prefix;
+    left_fixity = FxNone;
+    right_fixity = FxOp 200;
   }
 let builtin_op : binary_op = 
   {
@@ -276,9 +284,8 @@ let module_open_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "观";
-    left_precedence = 0;
-    right_precedence = 80;
-    fixity = Prefix;
+    left_fixity = FxNone;
+    right_fixity = FxOp 80;
   }
 
 let get_file_ref (file_path : string) : A.t proc_state_m = 
@@ -320,9 +327,8 @@ let module_open : binary_op =
             let meta = {
               id = Uid.next();
               keyword = CS.new_t_string name;
-              left_precedence = 0;
-              right_precedence = 0;
-              fixity = ClosedIdentifier;
+              left_fixity = FxNone;
+              right_fixity = FxNone;
             } in
             let name_oper = {
               meta = meta;
@@ -348,9 +354,8 @@ let const_decl_middle_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "乃";
-    left_precedence = 10;
-    right_precedence = 10;
-    fixity = Infix;
+    left_fixity = FxOp 10;
+    right_fixity = FxOp 10;
   }
 let const_decl_middle : binary_op = 
   {
@@ -361,16 +366,16 @@ let const_decl_middle : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), [[], name; [], defn]))) ext)
   }
 
+
 let constructor_decl_middle_meta : binary_op_meta = 
   {
     id = Uid.next();
     keyword = CS.new_t_string "立";
-    left_precedence = 10;
-    right_precedence = 10;
-    fixity = Infix;
+    left_fixity = FxOp 10;
+    right_fixity = FxOp 10;
   }
 
-let constructor_del : binary_op = {
+let constructor_decl_middle : binary_op = {
     meta = constructor_decl_middle_meta;
     reduction = 
       let* ((name, defn), ext) = pop_bin_operand constructor_decl_middle_meta in
@@ -378,29 +383,37 @@ let constructor_del : binary_op = {
       push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), [[], name; [], defn]))) ext)
 }
 
-let type_annotated_meta : binary_op_meta = 
+let left_parenthesis_uid = Uid.next()
+let right_parenthesis_uid = Uid.next()
+let left_parenthesis_meta : binary_op_meta = 
   {
-    id = Uid.next();
-    keyword = CS.new_t_string "名";
-    left_precedence = 100;
-    right_precedence = 100;
-    fixity = Infix;
+    id = left_parenthesis_uid;
+    keyword = CS.new_t_string "（";
+    left_fixity = FxNone;
+    right_fixity = FxComp right_parenthesis_uid;
   }
-let type_annotated : binary_op = 
+let right_parenthesis_meta : binary_op_meta = 
   {
-    meta = type_annotated_meta;
+    id = right_parenthesis_uid;
+    keyword = CS.new_t_string "）";
+    left_fixity = FxComp left_parenthesis_uid;
+    right_fixity = FxNone;
+  }
+let left_parenthesis : binary_op = 
+  {
+    meta = left_parenthesis_meta;
+    reduction = p_internal_error "BP104: left_parenthesis reduction";
+  }
+let right_parenthesis : binary_op = 
+  {
+    meta = right_parenthesis_meta;
     reduction = 
-      let* ((type_, name), ext) = pop_bin_operand type_annotated_meta in
-      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.TypeAnnotated, [[], type_; [], name]))) ext)
+      let* (oper, per_ext) = pop_op_operands_from_top_1 right_parenthesis_meta in
+      push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
   }
 
+let 
 
-
-  (* let* read_end = read_one_of_string [CS.new_t_string "之书"] in
-  let* (content, directive) = pop_input_acc_past (fun elem -> PE.is_keyword elem "寻"
-    || PE.is_keyword elem "寻观") in            
-  push_elem_on_input_acc (PElem.get_keyword_t read_end) *)
-  
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
   to_processor_complex Expression "comment_start" comment_start;
@@ -408,6 +421,7 @@ let default_registry = [
   to_processor_complex (Scanning InComment) "comment_middle" comment_middle;
   to_processor_complex (Scanning InComment) "comment_end" comment_end;
   to_processor_binary_op Expression "definition_middle" definition_middle;
+  to_processor_binary_op Expression "definition_end" definition_end;
   to_processor_binary_op Expression "import_end" import_end;
   to_processor_binary_op Expression "library_root" library_root;
   to_processor_binary_op Expression "unknown_structure_deref" unknown_structure_deref;
@@ -416,6 +430,11 @@ let default_registry = [
   to_processor_complex Expression "sentence_end" sentence_end;
   to_processor_binary_op Expression "builtin_op" builtin_op;
   to_processor_binary_op Expression "module_open" module_open;
+  to_processor_binary_op Expression "const_decl_middle" const_decl_middle;
+  to_processor_binary_op Expression "constructor_decl_middle" constructor_decl_middle;
+  to_processor_binary_op Expression "left_parenthesis" left_parenthesis;
+  to_processor_binary_op Expression "right_parenthesis" right_parenthesis;
+
 
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;

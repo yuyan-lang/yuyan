@@ -10,33 +10,49 @@ and a current environment generator
 module Ext = AbtLib.Extent
 module CS = CharStream
 
-type fixity = Prefix 
-            | Infix 
-            | Postfix 
-            | StartBinding of CharStream.t_string (* end string *)
-            | ClosedIdentifier (* this is used for syntax sugar for identifers (* identifier standing for some expression not a free variables *) *)
-type binary_op_meta = {
+type fixity = 
+              FxOp of int 
+            | FxNone 
+            | FxBinding of int (* uid of the component *)
+            | FxComp of int 
+and binary_op_meta = {
   id : int;
   keyword : CS.t_string;
-  left_precedence: int; (* precedence viewed from left , this value should be set to zero for left-fix operators [I don't think we look at this value for lfix operators]*)
-  right_precedence: int; (* precedence viewed from right , this value should be set to zero for right-fix operators [I don't think we look at this value for rfix operators as reduction will be called]*)
-  fixity : fixity; 
+  (* fixity is the behavior of the operator when viewed from left for left_fixity, and right for right_fixity *)
+  left_fixity : fixity; 
+  right_fixity : fixity;
+  (* 
+    interpretation of left_fixity 
+        FxOp of int (* infix or postfix *) [precedence when viewed from left]
+      | None (* prefix or identifier *) [viewing prefix from left is the same as viewing an identifier]
+      | FxBinding of binary_op_meta  [ends a binding]
+      | FxComp of binary_op_meta (* previos component, e.g. A【】B, B's leftfix is FxComp of A*)
+    interpretation of right_fixity
+        FxOp of int (* infix or prefix *) [precedence when viewed from right]
+      | FxNone (* postfix or identifier *) [vieweing postfix from right is the same as viewing an identifier]
+      | FxBinding of binary_op_meta  [starts a binding]
+      | FxComp of binary_op_meta (* previos component, e.g. A【】B, A's rightfix is FxComp of B*)
+  *)
 }
 
+
 let show_fixity (f : fixity) : string =
+  (* let show_meta_in_fixity (b : binary_op_meta) : string =
+    "" ^ CS.get_t_string b.keyword ^ ", id=" ^ string_of_int b.id 
+  in *)
   match f with
-  | Prefix -> "Prefix"
-  | Infix -> "Infix"
-  | Postfix -> "Postfix"
-  | StartBinding (s) -> "StartBinding(" ^ CS.get_t_string s ^ ")"
-  | ClosedIdentifier -> "ClosedIdentifier"
+  | FxOp (i) -> "FxOp(" ^ string_of_int i ^ ")"
+  | FxNone -> "FxNone"
+  | FxBinding (b) -> "FxBinding(" ^ string_of_int b ^ ")"
+  | FxComp (b) -> "FxComp(" ^ string_of_int b ^ ")"
+
 
 let show_binary_op_meta (b : binary_op_meta) : string =
-  let {id; keyword; left_precedence; right_precedence; fixity} = b in
+  let {id; keyword; left_fixity; right_fixity} = b in
   "BinOp(" ^ CS.get_t_string keyword ^ ", id=" ^ string_of_int id ^
-    ", lp=" ^ string_of_int left_precedence ^
-    ", rp= " ^ string_of_int right_precedence ^
-    ", f=" ^ show_fixity fixity ^ ")"
+    ", l=" ^ show_fixity left_fixity  ^
+    ", r= " ^ show_fixity right_fixity ^
+     ")"
 
 module YYNode  = struct
   type builtin = String of string

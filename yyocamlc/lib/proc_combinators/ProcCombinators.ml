@@ -42,6 +42,14 @@ let pfail_error (msg : proc_error) : 'a proc_state_m =
 let pfail (msg : string) : 'a proc_state_m = 
   pfail_error (ErrOther msg)
 
+(* should not reach here*)
+let p_internal_error (msg : string) : unit proc_state_m = 
+  fun s _fc _sc -> 
+    failwith ("PC47: " ^ msg ^ "\n" ^ show_proc_state s)
+
+(* let returnNone () : 'a proc_state_m = 
+  pfail "returnNone: no error message provided" *)
+
 (* let returnNone () : 'a proc_state_m = 
   pfail "returnNone: no error message provided" *)
 
@@ -270,30 +278,132 @@ let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_
       pfail ("check_is_operand: expected " ^ (show_binary_op_meta meta) ^ " but got " ^ (show_binary_op_meta kop))
   | _ -> 
     failwith ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ (A.show_view elem))
+  
+let lookup_binary_op (meta_id : int) : binary_op proc_state_m = 
+  let* s = get_proc_state () in
+  match List.filter_map (fun x -> 
+    match x.processor with ProcBinOp(x) -> if x.meta.id = meta_id then Some(x) else None | _ -> None) s.registry with
+  | [x] -> return x
+  | [] -> pfail ("PC343: cannot find binary operator " ^ (string_of_int meta_id) ^ " in the registry " ^ (
+    String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
+  ))
+  | _ -> print_failwith ("ET346: multiple binary operators " ^ (string_of_int meta_id) ^ " in the registry " ^ (
+    String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
+  ))
+
+(* extent is the entirety of the expressions *)
+let pop_op_operands_from_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
+  let rec f binop = 
+    let* (top_op) = pop_input_acc() in
+    let* _ = assert_is_correct_operand binop top_op in
+    let top_extent = A.get_extent_some top_op in
+    match A.view top_op with
+    | A.N(N.ParsingElem(N.OpKeyword(meta)), []) -> 
+      (
+        match meta.left_fixity with
+        | FxNone -> return ([], top_extent)
+        | FxOp _ -> (
+          let* next_op = pop_input_acc() in
+          return ([next_op], Ext.combine_extent (A.get_extent_some next_op) top_extent)
+        )
+        | FxBinding prev_op_uid | FxComp prev_op_uid -> (
+          let* comp = pop_input_acc() in
+          let* prev_op_meta = lookup_binary_op prev_op_uid in
+          let* (rest_ops, rest_ext) = f prev_op_meta.meta in
+          return ((rest_ops@[comp]), Ext.combine_extent rest_ext top_extent)
+        )
+      )
+    | _ -> pfail ("PC248: expected " ^ show_binary_op_meta binop ^ " but got " ^ (A.show_view top_op) ^ " ")
+   in
+  f binop
+
+let pop_op_operands_from_second_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
+  let* top_operand = pop_input_acc() in
+  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  return (all_oprands@[top_operand], Ext.combine_extent (ext) (A.get_extent_some top_operand))
+
+let pop_op_operands_from_top_0 (binop : binary_op_meta) : (Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  match all_oprands with
+  | [] -> return ext
+  | _ -> failwith ("PC249: expected 0 operand but got more than 0 operands")
+
+let pop_op_operands_from_top_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  match all_oprands with
+  | [x] -> return (x, ext)
+  | _ -> failwith ("PC249: expected 1 operand but got more than 1 operands")
+
+let pop_op_operands_from_top_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  match all_oprands with
+  | [x;y] -> return ((x, y), ext)
+  | _ -> failwith ("PC249: expected 2 operands but got more than 2 operands")
+
+let pop_op_operands_from_top_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  match all_oprands with
+  | [x;y;z] -> return ((x, y, z), ext)
+  | _ -> failwith ("PC249: expected 3 operands but got more than 3 operands")
+
+let pop_op_operands_from_top_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  match all_oprands with
+  | [x;y;z;w] -> return ((x, y, z, w), ext)
+  | _ -> failwith ("PC249: expected 4 operands but got more than 4 operands")
+
+let pop_op_operands_from_top_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  match all_oprands with
+  | [x;y;z;w;v] -> return ((x, y, z, w, v), ext)
+  | _ -> failwith ("PC249: expected 5 operands but got more than 5 operands")
+
+let pop_op_operands_from_second_top_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+  match all_oprands with
+  | [x] -> return (x, ext)
+  | _ -> failwith ("PC249: expected 1 operand but got more than 1 operands")
+
+let pop_op_operands_from_second_top_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+  match all_oprands with
+  | [x;y] -> return ((x, y), ext)
+  | _ -> failwith ("PC249: expected 2 operands but got more than 2 operands")
+
+let pop_op_operands_from_second_top_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+  match all_oprands with
+  | [x;y;z] -> return ((x, y, z), ext)
+  | _ -> failwith ("PC249: expected 3 operands but got more than 3 operands")
+
+let pop_op_operands_from_second_top_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+  match all_oprands with
+  | [x;y;z;w] -> return ((x, y, z, w), ext)
+  | _ -> failwith ("PC249: expected 4 operands but got more than 4 operands")
+
+let pop_op_operands_from_second_top_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+  match all_oprands with
+  | [x;y;z;w;v] -> return ((x, y, z, w, v), ext)
+  | _ -> failwith ("PC249: expected 5 operands but got more than 5 operands")
+
+
+(* extent is the entirety of expressions *)
+
 
 let pop_bin_operand (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
-  assert (binop.fixity = Infix);
-  let* (x, y, z) = pop_input_acc_3 () in
-  let* _ = assert_is_correct_operand binop y in
-  return ((x, z), Ext.combine_extent_list [A.get_extent_some x; A.get_extent_some y; A.get_extent_some z])
+  pop_op_operands_from_second_top_2 binop
 
 (* extent is the entirety of expressions *)
 let pop_prefix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
-  assert (binop.fixity = Prefix);
-  let* (x, y) = pop_input_acc_2 () in
-  let* _ = assert_is_correct_operand binop x in
-  return (y, Ext.combine_extent (A.get_extent_some x) (A.get_extent_some y))
+  pop_op_operands_from_second_top_1 binop
 
 let pop_postfix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
-  assert (binop.fixity = Postfix);
-  let* (x, y) = pop_input_acc_2 () in
-  let* _ = assert_is_correct_operand binop y in
-  return (x, Ext.combine_extent (A.get_extent_some x) (A.get_extent_some y))
+  pop_op_operands_from_top_1 binop
 
 let pop_closed_identifier_operand (binop : binary_op_meta) : Ext.t proc_state_m =
-  let* (y) = pop_input_acc () in
-  let* _ = assert_is_correct_operand binop y in
-  return (A.get_extent_some y)
+  pop_op_operands_from_top_0 binop
 
 
 let pop_input_acc_past (f : PE.t -> bool) : (PE.t list * PE.t) proc_state_m =
@@ -323,10 +433,13 @@ let push_elem_start (es : A.t) : unit proc_state_m =
   | Some (x) -> 
     match A.view x with
     | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
-      if meta.fixity = Prefix || meta.fixity = Infix  then
-        push_elem_on_input_acc es
-      else
-        failwith ("PC322: expected prefix or infix but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+      (
+        match meta.right_fixity with
+        | FxNone ->
+          failwith ("PC322: expected prefix or infix but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+        | _ ->
+          push_elem_on_input_acc es
+      )
     | A.N(N.ModuleDef, _) 
     ->
       push_elem_on_input_acc es
@@ -345,17 +458,8 @@ let push_elem_continue (es : A.t) : unit proc_state_m =
       push_elem_on_input_acc es
 
 
-let lookup_binary_op (meta : binary_op_meta) : binary_op proc_state_m = 
-  let* s = get_proc_state () in
-  match List.filter_map (fun x -> 
-    match x.processor with ProcBinOp(x) -> if x.meta.id = meta.id then Some(x) else None | _ -> None) s.registry with
-  | [x] -> return x
-  | [] -> pfail ("PC343: cannot find binary operator " ^ (show_binary_op_meta meta) ^ " in the registry " ^ (
-    String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
-  ))
-  | _ -> print_failwith ("ET346: multiple binary operators " ^ (show_binary_op_meta meta) ^ " in the registry " ^ (
-    String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
-  ))
+
+
 
 (* this reduces postfix and closed operators already on the stack*)
 let operator_right_most_reduce () : unit proc_state_m = 
@@ -365,11 +469,14 @@ let operator_right_most_reduce () : unit proc_state_m =
   | Some (x) -> 
     match A.view x with
     | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
-      if meta.fixity = Postfix || meta.fixity = ClosedIdentifier then
-        let* bin_op = lookup_binary_op meta in
-        bin_op.reduction
-      else
-        failwith ("PC362: expected postfix or closed identifier but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+      (
+        match meta.right_fixity with
+        | FxNone -> 
+            let* bin_op = lookup_binary_op meta.id in
+            bin_op.reduction
+        | _ ->
+            failwith ("PC362: expected postfix or closed identifier but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
+      )
     | _ -> 
       failwith ("PC364: expected OpKeyword but got " ^ (A.show_view x) ^ " this method should not be invoked when rightmost reduction is not possible")
 
@@ -382,38 +489,71 @@ let rec operator_precedence_reduce (limit : int) : unit proc_state_m =
   | Some (x) -> 
     match A.view x with
     | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
-      if meta.right_precedence > limit then
-        let* bin_op = lookup_binary_op meta in
-        let* _ = bin_op.reduction in
-        operator_precedence_reduce limit
-      else
-        return () (* cannot reduce, assume successful *)
+      (match meta.right_fixity with
+        | FxOp rp ->
+            if rp > limit then
+              let* bin_op = lookup_binary_op meta.id in
+              let* _ = bin_op.reduction in
+              operator_precedence_reduce limit
+            else
+              return () (* cannot reduce, assume successful *)
+        | _ -> 
+          return () (* cannot reduce, assume successful *)
+      )
     | _ -> 
       return () (* cannot reduce, assume successful *)
+
+
+(* reduce until the stack 's second element is comp *)
+let rec operator_component_reduce (comp_uid : int) : unit proc_state_m = 
+  (* let* stack_size = get_input_acc_size () in
+  if stack_size < 2 then 
+    pfail ("PC399: Expecting at least 2 elements on the stack but got " ^ string_of_int stack_size)
+  else *)
+    let* acc_top = peek_input_acc 1 in
+    match acc_top with
+    | None -> pfail ("PC400: Expecting at least 2 elements on the stack but got " )
+    | Some (x) -> 
+      match A.view x with
+      | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+        if meta.id = comp_uid then
+          return ()
+        else
+          let* oper = lookup_binary_op meta.id in
+          let* () = oper.reduction in
+          operator_component_reduce comp_uid
+      | _ -> 
+        pfail ("PC402: expecting " ^ (string_of_int comp_uid) ^ " but got " ^ (A.show_view x) ^ " ")
+
+
+
 
 let run_processor (proc : processor)  : unit proc_state_m = 
   match proc with
   | ProcComplex process -> process
-  | ProcBinOp { meta=({id=_;keyword;left_precedence=lp;right_precedence=_;fixity} as meta);reduction=_} ->
+  | ProcBinOp { meta=({id=_;keyword;left_fixity;right_fixity} as meta);reduction=_} ->
       let* (_read_keyword, ext) = read_string keyword in
       let operator_elem = A.annotate_with_extent (A.fold(A.N(N.ParsingElem(N.OpKeyword (meta)), []))) ext in
-      (* reduce existing stack*)
-      let* _ = (match fixity with
-      | Infix | Postfix -> operator_precedence_reduce lp
-      | _ -> return ()) in
+      (* reduce existing stack based on the left_fixity of the operator element*)
+      let* _ = (match left_fixity with
+      | FxOp lp -> operator_precedence_reduce lp
+      | FxNone -> return ()
+      | FxBinding c | FxComp c -> operator_component_reduce c
+      ) in
       (* shift operators onto the stack *)
-      let* _ = (match fixity with
-        | Prefix | ClosedIdentifier | StartBinding _ -> push_elem_start operator_elem
-        | Infix | Postfix -> push_elem_continue operator_elem
+      let* _ = (match left_fixity with
+        | FxNone -> push_elem_start operator_elem
+        | FxOp _ | FxBinding _ | FxComp _ -> push_elem_continue operator_elem
         ) in
       (* reduce right most thing for postfix and closed identifier*)
-      let* _ = (match fixity with
-        | Postfix | ClosedIdentifier -> operator_right_most_reduce ()
+      let* _ = (match right_fixity with
+        | FxNone -> operator_right_most_reduce ()
         | _ -> return ()) in
       (* also lookahead and parse a binding for start binding*)
-      let* _ = (match fixity with
-        | StartBinding end_str -> 
-            let* ((middle_id, id_ext), _end) = scan_past_one_of_string [end_str] in
+      let* _ = (match right_fixity with
+        | FxBinding end_str_op_uid -> 
+            let* oper = lookup_binary_op end_str_op_uid in
+            let* ((middle_id, id_ext), _end) = scan_past_one_of_string [oper.meta.keyword] in
             (
               match middle_id with
               | [] -> pfail ("PC335: got empty string for binding")
