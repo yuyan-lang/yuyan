@@ -54,12 +54,19 @@ let do_process_step  () : unit proc_state_m =
   let* st = get_proc_state () in
   if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1  then 
       failwith ("ET57: Should not call process step when we are done");
-  choice_l (List.map run_processor_entry st.registry @[pfail "No more processors apply"])  
+  (* run the usual processors, if none of succeeded, look for bound identifiers
+    if some processor succeeded, discard the bound identifiers
+    *)
+  choice_cut (
+    choice_l (List.map run_processor_entry st.registry)  
+  ) (
+    run_input_acc_identifiers ()
+  )
 
 
 let rec do_process_entire_stream () : A.t proc_state_m = 
   let* st = get_proc_state () in
-  if !Flags.show_parse_tracing then print_endline ("=========== STATE ======== \n" ^ show_proc_state st); 
+  (* if !Flags.show_parse_tracing then print_endline ("=========== STATE ======== \n" ^ show_proc_state st);  *)
   if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1 
     then 
       (

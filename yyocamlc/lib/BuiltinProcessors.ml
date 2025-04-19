@@ -272,8 +272,12 @@ let builtin_op : binary_op =
               return (A.fold(A.N(N.Builtin(N.Bool false), [])))
             | "《《内建有：元》》" ->
               return (A.fold(A.N(N.Builtin(N.Unit), [])))
+            | "《《内建函数：抛出异常字符串》》" ->
+              return (A.fold(A.N(N.Builtin(N.RaiseException), [])))
+            | "《《内建函数：尝试运行字符串》》" ->
+              return (A.fold(A.N(N.Builtin(N.TryCatch), [])))
             
-            | _ -> pfail ("ET104: Expected a builtin val but got " ^ x)
+            | _ -> pfail ("ET104: Expected a builtin val but got >" ^ x ^ "<")
           )
         | _ -> pfail ("ET105: Builtin Expected a free variable but got " ^ A.show_view oper)
       ) in
@@ -433,7 +437,7 @@ let explicit_pi_middle_2_meta =
   {
     id = explicit_pi_middle_2_uid;
     keyword = CS.new_t_string "而";
-    left_fixity = FxBinding explicit_pi_start_uid;
+    left_fixity = FxBinding explicit_pi_middle_1_uid;
     right_fixity = FxOp 40;
   }
 let explicit_pi_start : binary_op = 
@@ -458,6 +462,37 @@ let explicit_pi_middle_2 : binary_op =
       | _ -> failwith ("ET107: Expected a bound scanned string but got " ^ A.show_view bnd_name)
   }
 
+let arrow_start_uid = Uid.next()
+let arrow_middle_uid = Uid.next()
+let arrow_start_meta = 
+  {
+    id = arrow_start_uid;
+    keyword = CS.new_t_string "化";
+    left_fixity = FxNone;
+    right_fixity = FxComp arrow_middle_uid;
+  }
+let arrow_middle_meta = 
+  {
+    id = arrow_middle_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxComp arrow_start_uid;
+    right_fixity = FxOp 40;
+  }
+let arrow_start : binary_op = 
+  {
+    meta = arrow_start_meta;
+    reduction = p_internal_error "BP104: arrow_start reduction";
+  }
+let arrow_middle : binary_op = 
+  {
+    meta = arrow_middle_meta;
+    reduction = 
+      let* ((tp_name, range_expr), per_ext) = pop_op_operands_from_second_top_2 arrow_middle_meta in
+      let result_expr = A.fold(A.N(N.Arrow, [[], tp_name; [], range_expr])) in
+      push_elem_on_input_acc (A.annotate_with_extent result_expr per_ext)
+  }
+
+
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
   to_processor_complex Expression "comment_start" comment_start;
@@ -481,9 +516,8 @@ let default_registry = [
   to_processor_binary_op Expression "explicit_pi_start" explicit_pi_start;
   to_processor_binary_op Expression "explicit_pi_middle_1" explicit_pi_middle_1;
   to_processor_binary_op Expression "explicit_pi_middle_2" explicit_pi_middle_2;
-  
-
-
+  to_processor_binary_op Expression "arrow_start" arrow_start;
+  to_processor_binary_op Expression "arrow_middle" arrow_middle;
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;
  ]

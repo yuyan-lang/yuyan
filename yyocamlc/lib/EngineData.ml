@@ -72,6 +72,8 @@ module YYNode  = struct
                | UnitType
                | FloatType
                | Type
+               | RaiseException
+               | TryCatch
 
 
   type parsing_elem = ScannedChar of CS.t_char
@@ -139,6 +141,8 @@ module YYNode  = struct
     | FloatType -> "FloatType"
     | Float (s1, s2) -> "Float(" ^ s1 ^ "." ^ s2 ^ ")"
     | Type -> "Type"
+    | RaiseException -> "RaiseException"
+    | TryCatch -> "TryCatch"
 
 
   let show_parsing_elem (p : parsing_elem) : string =
@@ -271,5 +275,6 @@ let show_proc_state (s : proc_state) : string =
   "\ninput_future: " ^ CharStream.print_cs s.input_future ^ ", " ^
   "\ninput_future: " ^ CharStream.show_cs s.input_future ^ ", " ^
   "\ninput_expect: " ^ show_input_expect s.input_expect ^ ", " ^
-  "\ninput_acc: " ^ show_input_acc s.input_acc ^ ", " 
+  "\ninput_acc: " ^ show_input_acc s.input_acc ^ ", "  
+  (* ^ "\nregistry: " ^ String.concat "\n, " (List.map show_processor_entry s.registry) ^ ", "   *)
   (* "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  *)
