@@ -30,7 +30,7 @@ let get_module_real_path (module_name_parsed : PE.t) : string proc_state_m (* pa
       else if Sys.file_exists (Filename.concat (Sys.getcwd()) head_name) then
         return (Filename.concat (Sys.getcwd()) file_name)
       else
-        pfail ("Module not found: " ^ head_name)
+        pfail_with_ext ("Im33: Module not found: " ^ head_name) (A.get_extent_some module_name_parsed)
     )
   | _ -> pfail ("ET101: Expected a string but got " ^ A.show_view module_name_parsed)
 
@@ -42,7 +42,6 @@ let get_module_expr (module_name_parsed : PE.t) : A.t proc_state_m =
   let* path = get_module_real_path module_name_parsed in
   match !compilation_manager_get_file_hook path with
   | Some (_result) -> return (A.annotate_with_extent(A.fold(A.N(N.FileRef(path), []))) (A.get_extent_some module_name_parsed))
-  | None -> pfail ("Im30: Module not found: " ^ path)
-
+  | None -> pfail_with_ext ("Im30: Module not found: " ^ path) (A.get_extent_some module_name_parsed)
   
   

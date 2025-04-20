@@ -210,8 +210,8 @@ type t_environment =
 
 type proc_error = ErrExpectString of {
   expecting: CS.t_string;
-  actual: CS.t_char;
- } | ErrOther of string
+  actual: CS.t_char * Ext.t;
+ } | ErrOther of string | ErrWithExt of string * Ext.t
 
 (* processing state *)
 type proc_state = {

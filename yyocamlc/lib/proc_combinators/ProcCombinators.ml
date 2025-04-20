@@ -42,6 +42,11 @@ let pfail_error (msg : proc_error) : 'a proc_state_m =
 let pfail (msg : string) : 'a proc_state_m = 
   pfail_error (ErrOther msg)
 
+let pfail_with_ext (msg : string) (ext : Ext.t) : 'a proc_state_m = 
+  pfail_error (ErrWithExt (msg, ext))
+
+(* pfail_error (ErrOther msg) *)
+
 (* should not reach here*)
 let p_internal_error (msg : string) : unit proc_state_m = 
   fun s _fc _sc -> 
@@ -183,7 +188,7 @@ let read_one_of_char (l : t_char list) : (CS.t_char * Ext.t) proc_state_m =
     (* pfail_error ("PC100: expected one of " ^ (String.concat "," (List.map CharStream.get_t_char l)) ^ " but got " ^ (CharStream.get_t_char c')) *)
     pfail_error (ErrExpectString {
       expecting = l;
-      actual = c';
+      actual = (c', ext);
     })
 
 (* string is a list of *)

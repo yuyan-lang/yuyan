@@ -271,13 +271,15 @@ let get_module_expr_defined_names (m : A.t) : (string * Ext.t) list proc_state_m
     | A.N(N.ModuleDef, args) -> (
       List.filter_map (fun (_, arg) -> 
         match A.view arg with
-        | A.N(N.Declaration(N.ConstantDefn), ([], name)::_) ->
+        | A.N(N.Declaration(N.ConstantDefn), ([], name)::_) 
+        | A.N(N.Declaration(N.ConstructorDecl), ([], name)::_) 
+        | A.N(N.Declaration(N.ConstantDecl), ([], name)::_) ->
           (
           match A.view name with
           | A.FreeVar(x) -> Some (x, A.get_extent_some name)
           | _ -> failwith ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name)
           )
-        | _ -> failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view arg)
+        | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view arg)
       ) args
     )
     | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)

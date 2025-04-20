@@ -2,6 +2,7 @@
 
 open EngineData
 open ProcCombinators
+module Ext = AbtLib.Extent
 
 (* let do_process_step  (proc_state : proc_state) : proc_state list = 
   List.filter_map (fun proc -> 
@@ -103,21 +104,36 @@ let extract_all_result (st : proc_state) (processor : 'a proc_state_m) : ('a lis
 let print_proc_errors (msg : proc_error list) : string = 
   let expecting = List.filter_map (function
     | ErrExpectString {
-        expecting = s;
+        expecting = exp;
         actual = a;
-      } -> Some (s,a)
+      } -> Some (exp,a)
     | ErrOther _ -> None
+    | ErrWithExt _ -> None
   ) msg in
-  let other = List.filter_map (function
+  let other = List.filter_map (fun x -> match x with
     | ErrExpectString _ -> None
-    | ErrOther s -> Some s
+    | ErrOther _ -> Some x
+    | ErrWithExt _ -> Some x
   ) msg in
   let expecting_str = if List.length expecting > 0 then
-    "Expecting one of the following strings: " ^ String.concat ", " (List.map (fun (x, _) -> "\"" ^ CS.get_t_string x ^ "\"") expecting) ^
-    "But got: " ^ String.concat ", " (List.map (fun (_, x) -> CS.get_t_char x) expecting)
+    "Expecting one of the following strings: " ^ String.concat ", " (List.map (fun (x, _) -> "\"" ^ CS.get_t_string x ^ "\"") expecting) ^ "\n"^
+    (
+      if List.length (ListUtil.remove_duplicates (List.map snd expecting)) > 1 then
+      "But got: " ^ String.concat ", " (List.map (fun (_, x) -> CS.get_t_char (fst x)) expecting)
+      else
+      let (_, a) = List.hd expecting in
+      " But got: " ^ CS.get_t_char (fst a) ^ " at the following location: \n" ^
+      Ext.show_extent_1_based (snd a) 
+
+    )
   else "" in
   let other_str = if List.length other > 0 then
-    "Other errors: " ^ String.concat ",\n" (List.map (fun x -> x) other)
+    "Other errors: " ^ String.concat ",\n" (List.map (fun x -> 
+      match x with
+      | ErrExpectString _ ->  failwith "ET124"
+      | ErrOther s -> s
+      | ErrWithExt (s, ext) -> s ^ " at the following location: \n" ^ Ext.show_extent_1_based ext
+      ) other)
   else "" in
   expecting_str ^ (
     if expecting_str <> "" && other_str <> "" then "\n" else ""

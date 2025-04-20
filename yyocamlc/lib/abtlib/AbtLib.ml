@@ -84,7 +84,11 @@ module Extent : EXTENT = struct
 
   let show_extent_1_based (s : t_extent) : string = 
     let (file, (row1, col1), (row2, col2)) = s in
-    Printf.sprintf "%s:%d:%d-%d:%d" file (row1+1) (col1+1) (row2+1) (col2+1)
+    if row1 = row2
+      then
+    Printf.sprintf "%s:%d:%d-%d" file (row1+1) (col1+1) (col2+1)
+      else
+    Printf.sprintf "%s:%d:%d - %d:%d" file (row1+1) (col1+1) (row2+1) (col2+1)
 
   type t_str = string * t_extent
   let str_with_extent (s : string) (e : t_extent) : t_str = (s, e)
