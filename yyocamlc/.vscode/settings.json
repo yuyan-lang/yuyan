@@ -1,4 +1,6 @@
 {
     "search.useIgnoreFiles": true,
-    "yuyan.executablePath": "./../yy"
+    "yuyan.executablePath": "./../yy",
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "terminal.integrated.unicodeVersion": "11"
 }
