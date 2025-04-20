@@ -356,7 +356,7 @@ let lookup_binary_op (meta_id : int) : binary_op proc_state_m =
   ))
 
 (* extent is the entirety of the expressions *)
-let pop_op_operands_from_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
+let pop_postfix_op_operands (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
   let rec f binop = 
     let* (top_op) = pop_input_acc() in
     let* _ = assert_is_correct_op binop top_op in
@@ -383,74 +383,74 @@ let pop_op_operands_from_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) pr
    in
   f binop
 
-let pop_op_operands_from_second_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
+let pop_prefix_op_operands (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
   let* top_operand = pop_input_acc() in
   let* _ = assert_is_not_op_keyword top_operand in
-  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+  let* (all_oprands, ext) = pop_postfix_op_operands binop in
   return (all_oprands@[top_operand], Ext.combine_extent (ext) (A.get_extent_some top_operand))
 
-let pop_op_operands_from_top_0 (binop : binary_op_meta) : (Ext.t) proc_state_m = 
-  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+let pop_postfix_op_operands_0 (binop : binary_op_meta) : (Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [] -> return ext
   | _ -> failwith ("PC249: expected 0 operand but got more than 0 operands")
 
-let pop_op_operands_from_top_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
-  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+let pop_postfix_op_operands_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x] -> return (x, ext)
   | _ -> failwith ("PC249: expected 1 operand but got more than 1 operands")
 
-let pop_op_operands_from_top_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m = 
-  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+let pop_postfix_op_operands_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y] -> return ((x, y), ext)
   | _ -> failwith ("PC249: expected 2 operands but got more than 2 operands")
 
-let pop_op_operands_from_top_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
-  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+let pop_postfix_op_operands_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y;z] -> return ((x, y, z), ext)
   | _ -> failwith ("PC249: expected 3 operands but got more than 3 operands")
 
-let pop_op_operands_from_top_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
-  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+let pop_postfix_op_operands_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y;z;w] -> return ((x, y, z, w), ext)
   | _ -> failwith ("PC249: expected 4 operands but got more than 4 operands")
 
-let pop_op_operands_from_top_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
-  let* (all_oprands, ext) = pop_op_operands_from_top binop in
+let pop_postfix_op_operands_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y;z;w;v] -> return ((x, y, z, w, v), ext)
   | _ -> failwith ("PC249: expected 5 operands but got more than 5 operands")
 
-let pop_op_operands_from_second_top_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
-  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+let pop_prefix_op_operands_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
+  let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x] -> return (x, ext)
   | _ -> failwith ("PC249: expected 1 operand but got more than 1 operands")
 
-let pop_op_operands_from_second_top_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
-  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+let pop_prefix_op_operands_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y] -> return ((x, y), ext)
   | _ -> failwith ("PC249: expected 2 operands but got more than 2 operands")
 
-let pop_op_operands_from_second_top_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
-  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+let pop_prefix_op_operands_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y;z] -> return ((x, y, z), ext)
   | _ -> failwith ("PC249: expected 3 operands but got more than 3 operands")
 
-let pop_op_operands_from_second_top_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
-  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+let pop_prefix_op_operands_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y;z;w] -> return ((x, y, z, w), ext)
   | _ -> failwith ("PC249: expected 4 operands but got more than 4 operands")
 
-let pop_op_operands_from_second_top_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
-  let* (all_oprands, ext) = pop_op_operands_from_second_top binop in
+let pop_prefix_op_operands_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+  let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y;z;w;v] -> return ((x, y, z, w, v), ext)
   | _ -> failwith ("PC249: expected 5 operands but got more than 5 operands")
@@ -460,17 +460,17 @@ let pop_op_operands_from_second_top_5 (binop : binary_op_meta) : ((PE.t * PE.t *
 
 
 let pop_bin_operand (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
-  pop_op_operands_from_second_top_2 binop
+  pop_prefix_op_operands_2 binop
 
 (* extent is the entirety of expressions *)
 let pop_prefix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
-  pop_op_operands_from_second_top_1 binop
+  pop_prefix_op_operands_1 binop
 
 let pop_postfix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
-  pop_op_operands_from_top_1 binop
+  pop_postfix_op_operands_1 binop
 
 let pop_closed_identifier_operand (binop : binary_op_meta) : Ext.t proc_state_m =
-  pop_op_operands_from_top_0 binop
+  pop_postfix_op_operands_0 binop
 
 
 let pop_input_acc_past (f : PE.t -> bool) : (PE.t list * PE.t) proc_state_m =

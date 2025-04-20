@@ -306,5 +306,5 @@ let show_proc_state (s : proc_state) : string =
   "\ninput_future: " ^ CharStream.show_cs s.input_future ^ ", " ^
   "\ninput_expect: " ^ show_input_expect s.input_expect ^ ", " ^
   "\ninput_acc: " ^ show_input_acc s.input_acc ^ ", "  
-  (* ^ "\nregistry: " ^ String.concat "\n, " (List.map show_processor_entry s.registry) ^ ", "   *)
+  ^ "\nregistry: " ^ String.concat "\n, " (List.map show_processor_entry s.registry) ^ ", "  
   (* "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  *)

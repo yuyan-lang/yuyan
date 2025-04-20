@@ -127,8 +127,8 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
           p_internal_error ("UDO105: No reduction for non-terminal operator " ^ CS.get_t_string x)
         else
           let* (operands, oper_ext) = (match global_rightfix with
-          | FxNone -> pop_op_operands_from_top (List.nth component_metas i)
-          | FxOp _ -> pop_op_operands_from_second_top (List.nth component_metas i)
+          | FxNone -> pop_postfix_op_operands (List.nth component_metas i)
+          | FxOp _ -> pop_prefix_op_operands (List.nth component_metas i)
           | _ -> failwith ("UDO110: Should not occur")
           ) in
           if not (List.length operands = List.length parameter_names) then failwith ("UDO119: Number of operands does not match number of parameter names " ^ CS.get_t_string x);

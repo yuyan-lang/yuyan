@@ -102,7 +102,7 @@ let definition_end : binary_op =
 {
   meta = definition_end_meta;
   reduction = 
-    let* ((name, defn), ext) = pop_op_operands_from_top_2 definition_end_meta in
+    let* ((name, defn), ext) = pop_postfix_op_operands_2 definition_end_meta in
     push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
 }
 
@@ -397,7 +397,7 @@ let right_parenthesis : binary_op =
   {
     meta = right_parenthesis_meta;
     reduction = 
-      let* (oper, per_ext) = pop_op_operands_from_top_1 right_parenthesis_meta in
+      let* (oper, per_ext) = pop_postfix_op_operands_1 right_parenthesis_meta in
       push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
   }
 
@@ -426,7 +426,7 @@ let double_parenthesis_right : binary_op =
   {
     meta = double_parenthesis_right_meta;
     reduction = 
-      let* (oper, per_ext) = pop_op_operands_from_top_1 double_parenthesis_right_meta in
+      let* (oper, per_ext) = pop_postfix_op_operands_1 double_parenthesis_right_meta in
       push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
   }
 
@@ -474,7 +474,7 @@ let explicit_pi_middle_2 : binary_op =
   {
     meta = explicit_pi_middle_2_meta;
     reduction = 
-      let* ((tp_name, bnd_name, range_expr), per_ext) = pop_op_operands_from_second_top_3 explicit_pi_middle_2_meta in
+      let* ((tp_name, bnd_name, range_expr), per_ext) = pop_prefix_op_operands_3 explicit_pi_middle_2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent(A.N(N.ExplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
       push_elem_on_input_acc result_expr 
@@ -518,7 +518,7 @@ let implicit_pi_middle_2 : binary_op =
   {
     meta = implicit_pi_middle_2_meta;
     reduction = 
-      let* ((tp_name, bnd_name, range_expr), per_ext) = pop_op_operands_from_second_top_3 implicit_pi_middle_2_meta in
+      let* ((tp_name, bnd_name, range_expr), per_ext) = pop_prefix_op_operands_3 implicit_pi_middle_2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent(A.N(N.ImplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
       push_elem_on_input_acc result_expr 
@@ -549,7 +549,7 @@ let arrow_middle : binary_op =
   {
     meta = arrow_middle_meta;
     reduction = 
-      let* ((tp_name, range_expr), per_ext) = pop_op_operands_from_second_top_2 arrow_middle_meta in
+      let* ((tp_name, range_expr), per_ext) = pop_prefix_op_operands_2 arrow_middle_meta in
       let result_expr = A.fold(A.N(N.Arrow, [[], tp_name; [], range_expr])) in
       push_elem_on_input_acc (A.annotate_with_extent result_expr per_ext)
   }
@@ -579,7 +579,7 @@ let implicit_lam_abs_middle : binary_op =
   {
     meta = implicit_lam_abs_middle_meta;
     reduction = 
-      let* ((bnd_name, range_expr), per_ext) = pop_op_operands_from_second_top_2 implicit_lam_abs_middle_meta in
+      let* ((bnd_name, range_expr), per_ext) = pop_prefix_op_operands_2 implicit_lam_abs_middle_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc result_expr 
@@ -610,7 +610,7 @@ let explicit_lam_abs_middle : binary_op =
   {
     meta = explicit_lam_abs_middle_meta;
     reduction = 
-      let* ((tp_name, range_expr), per_ext) = pop_op_operands_from_second_top_2 explicit_lam_abs_middle_meta in
+      let* ((tp_name, range_expr), per_ext) = pop_prefix_op_operands_2 explicit_lam_abs_middle_meta in
       let* binding_name = get_binding_name tp_name in
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc result_expr 
@@ -759,7 +759,7 @@ let if_then_else_mid2 : binary_op =
   {
     meta = if_then_else_mid2_meta;
     reduction = 
-      let* ((cond, then_expr, else_expr), per_ext) = pop_op_operands_from_second_top_3 if_then_else_mid2_meta in
+      let* ((cond, then_expr, else_expr), per_ext) = pop_prefix_op_operands_3 if_then_else_mid2_meta in
       let result_expr = A.fold_with_extent (A.N(N.IfThenElse, [[], cond; [], then_expr; [], else_expr])) per_ext in
       push_elem_on_input_acc result_expr
   }
@@ -789,7 +789,7 @@ let match_subject_end : binary_op =
   {
     meta = match_subject_end_meta;
     reduction = 
-      let* (oper, per_ext) = pop_op_operands_from_top_1 match_subject_end_meta in
+      let* (oper, per_ext) = pop_postfix_op_operands_1 match_subject_end_meta in
       push_elem_on_input_acc (A.fold_with_extent (A.N(N.Match, [[], oper])) per_ext)
   }
 
@@ -818,7 +818,7 @@ let match_case_mid : binary_op =
   {
     meta = match_case_mid_meta;
     reduction = 
-      let* ((case_expr, then_expr), per_ext) = pop_op_operands_from_second_top_2 match_case_mid_meta in
+      let* ((case_expr, then_expr), per_ext) = pop_prefix_op_operands_2 match_case_mid_meta in
       let result_expr = A.fold_with_extent (A.N(N.MatchCase, [[], case_expr; [], then_expr])) per_ext in
       push_elem_on_input_acc result_expr
   }
@@ -974,7 +974,7 @@ let let_in_mid2 : binary_op =
   {
     meta = let_in_mid2_meta;
     reduction = 
-      let* ((bnd_name, domain_expr, range_expr), per_ext) = pop_op_operands_from_second_top_3 let_in_mid2_meta in
+      let* ((bnd_name, domain_expr, range_expr), per_ext) = pop_prefix_op_operands_3 let_in_mid2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.LetIn, [[], domain_expr;[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc result_expr 
@@ -1040,6 +1040,13 @@ let default_registry = [
   to_processor_complex Expression "custom_operator_decl_start" custom_operator_decl_start;
   to_processor_binary_op Expression "custom_operator_decl_middle" custom_operator_decl_middle;
   to_processor_binary_op Expression "custom_operator_decl_end" custom_operator_decl_end;
+
+  (* let in*)
+  to_processor_binary_op Expression "let_in_start" let_in_start;
+  to_processor_binary_op Expression "let_in_mid1" let_in_mid1;
+  to_processor_binary_op Expression "let_in_mid2" let_in_mid2;
+
+
 
 
 ] @ List.concat [
