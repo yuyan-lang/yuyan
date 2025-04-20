@@ -9,6 +9,11 @@ let input_files = ref []
 let rec process_args (args : string list) =
   match args with
   | [] -> ()
+  | "-v"::remaining_args -> 
+    (
+        Flags.show_parse_progress := true;
+        process_args remaining_args
+    )
   | "-pt"::remaining_args -> 
     (
         Flags.show_parse_tracing := true;

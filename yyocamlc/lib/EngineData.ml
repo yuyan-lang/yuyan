@@ -92,6 +92,7 @@ module YYNode  = struct
          | ParsingElem of parsing_elem
          | Declaration of declaration
          | StructureDeref of string (* label *)
+         | TupleDeref of int (* numeric projection *)
          | ModuleDef 
          | FileRef of string (* Library is a folder/file, FileRef is a checked file*)
          | ExplicitPi 
@@ -117,6 +118,7 @@ module YYNode  = struct
     | Declaration DirectExpr -> Some([0])
     | Declaration CustomOperatorDecl -> Some([0; 0])
     | StructureDeref (_) -> Some([0])
+    | TupleDeref (_) -> Some([0])
     | ModuleDef -> None
     | FileRef (_) -> Some([])
     | ExplicitPi -> Some([0; 1])
@@ -179,6 +181,7 @@ module YYNode  = struct
     | ParsingElem (p) -> "ParsingElem(" ^ show_parsing_elem p ^ ")"
     | Declaration (d) -> "Declaration(" ^ show_declaration d ^ ")"
     | StructureDeref (s) -> "StructureDeref(" ^ s ^ ")"
+    | TupleDeref (i) -> "TupleDeref(" ^ string_of_int i ^ ")"
     | ModuleDef -> "ModuleDef"
     | FileRef (s) -> "FileRef(" ^ s ^ ")"
     | ExplicitPi -> "Π"

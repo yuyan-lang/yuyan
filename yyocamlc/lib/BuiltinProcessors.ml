@@ -17,8 +17,12 @@ let top_level_empty_space_ignore : unit proc_state_m =
 
 
 let identifier_parser_pusher : unit proc_state_m = 
-  let* id = identifier_parser () in
-  push_elem_on_input_acc (PElem.get_identifier_t id)
+  let* (id, ext) = identifier_parser () in
+  if List.for_all (fun x -> List.mem x yy_number_words) id
+    then (let number = get_int_from_t_string id in
+      push_elem_on_input_acc (A.fold_with_extent(A.N(N.Builtin(N.Int number), [])) ext)
+    ) else
+    push_elem_on_input_acc (PElem.get_identifier_t (id, ext))
 
 let string_parser_pusher : unit proc_state_m = 
   let* (_, start_ext) = read_one_of_char [CS.new_t_char "『"] in
@@ -185,6 +189,9 @@ let unknown_structure_deref : binary_op =
       match A.view proj_label with
       | A.FreeVar(label) -> 
         let new_node = A.fold(A.N(N.StructureDeref(label), [[],lo])) in
+        push_elem_on_input_acc (A.annotate_with_extent new_node ext)
+      | A.N(N.Builtin(N.Int i), []) -> 
+        let new_node = A.fold(A.N(N.TupleDeref(i), [[],lo])) in
         push_elem_on_input_acc (A.annotate_with_extent new_node ext)
       | _ -> pfail ("ET102: Expected a free variable but got " ^ A.show_view proj_label)
   }
@@ -665,6 +672,11 @@ let explicit_ap : binary_op =
         push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
     }
   
+  let sentence_end_fail (module_expr : A.t) (decl_expr : A.t) : unit proc_state_m = 
+    let* st = get_proc_state () in
+    pfail ("BP678: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl_expr
+    ^ "input_acc = " ^ show_input_acc st.input_acc) 
+
   let sentence_end : unit proc_state_m =
     let* _ = read_one_of_string [CS.new_t_string "。"] in
     (* reduce all existing expressions*)
@@ -693,9 +705,9 @@ let explicit_ap : binary_op =
           let* _ = push_elem_on_input_acc module_expr in
           let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
           return ()
-        else  pfail ("BP678: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+        else  sentence_end_fail module_expr decl
       (* also for 「「 name *)
-      | _ -> pfail ("BP680: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+      | _ -> sentence_end_fail module_expr decl
     else
       pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
     
@@ -1050,6 +1062,7 @@ let default_registry = [
 
 
 
+  to_processor_complex Expression "identifier_parser_pusher" identifier_parser_pusher;
+  to_processor_complex Expression "number_parser" (integer_number_parser ());
 ] @ List.concat [
-to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;
  ]

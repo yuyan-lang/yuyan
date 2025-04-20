@@ -182,3 +182,8 @@ let show_list (lst : 'a list) (f : 'a -> string) : string =
 
 let forall_i (f : int -> 'a -> bool) (lst : 'a list) : bool =
   List.for_all2 f (List.init (List.length lst) Fun.id) lst
+
+let lookup_index_of (elem : 'a) (lst : 'a list) : int  =
+  match List.find_index (fun x -> x = elem) lst with
+  | Some idx -> idx
+  | None -> failwith ("lookup_index_of: element not found: " )

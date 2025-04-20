@@ -5,53 +5,6 @@ open ProcCombinators
 open BasicParsing
 module Ext = AbtLib.Extent
 
-(* let do_process_step  (proc_state : proc_state) : proc_state list = 
-  List.filter_map (fun proc -> 
-    match run_processor_entry proc proc_state  with
-    | None -> None
-    | Some ((), s) -> 
-        Some({s with last_succeeded_processor = proc})
-  ) proc_state.registry *)
-
-
-(* let do_process_entire_stream (proc_state : proc_state) : (proc_state list , proc_state) result = 
-  let last_failure = ref proc_state in
-  let all_final_states = ref [] in
-  let rec rec_proc_state ss  = 
-    (if ss = [] then ()
-    else
-      (
-        print_endline ("=================\nPCS18: " ^ (string_of_int (List.length ss)) ^ " Processing states: " ^ 
-        String.concat "" (List.mapi (fun i s -> 
-          "\n------------------\nAlternative " ^ string_of_int i ^ ": " ^
-          show_proc_state s ^ "" 
-        ) ss) ^ "\n=================");
-        let new_states = List.concat_map (fun s -> 
-          if s.input_future.idx > !last_failure.input_future.idx 
-            (* if equal inputs, things that have more reductions are more likely to be the last failure *)
-            || (s.input_future.idx = !last_failure.input_future.idx && List.length s.input_acc < List.length !last_failure.input_acc)
-            then
-            last_failure := s;
-
-          if not (CharStream.has_next_char(s.input_future)) && List.length (s.input_acc) = 0 
-            then 
-              (all_final_states := s :: !all_final_states;
-              [])
-            else 
-              let new_states = do_process_step s in
-              new_states
-        ) ss in
-      rec_proc_state new_states
-      )
-    )
-  in
-  rec_proc_state [proc_state];
-  (
-  match !all_final_states with
-  | [] -> Error !last_failure
-  | ys -> Ok ys
-  ) *)
-
 let do_process_step  () : unit proc_state_m = 
   let* st = get_proc_state () in
   if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1  then 
@@ -63,7 +16,8 @@ let do_process_step  () : unit proc_state_m =
   (* choice_cut *)
   choice 
   (
-    choice_l (List.map run_processor_entry st.registry)  
+    (* choice_l (List.map run_processor_entry st.registry)   *)
+    run_processor_entries st.registry
   ) (
     run_input_acc_identifiers ()
   )
@@ -71,6 +25,20 @@ let do_process_step  () : unit proc_state_m =
 
 let rec do_process_entire_stream () : A.t proc_state_m = 
   let* st = get_proc_state () in
+  
+  if !Flags.show_parse_progress then 
+    (
+      (* if st.input_future.idx mod 40 = 0 then *)
+        (
+          print_endline ("Progress: " ^ string_of_int (st.input_future.idx) ^ "/" 
+          ^ string_of_int (String.length st.input_future.str) 
+          ^ " " ^ CS.show_next_char st.input_future ^ " " ^ CS.print_vscode_position st.input_future
+          ^ " " ^ st.last_succeeded_processor.name);
+          flush stdout;
+        )
+    )
+  ;
+
   (* if !Flags.show_parse_tracing then print_endline ("=========== STATE ======== \n" ^ show_proc_state st);  *)
   if not (CharStream.has_next_char st.input_future) && List.length (st.input_acc) = 1 
     then 

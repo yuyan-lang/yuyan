@@ -43,7 +43,15 @@ let combine_failures ((cur_msg, cur_st) : (proc_error * proc_state) ) (prev : (p
 
 
 let pfail_error (msg : proc_error) : 'a proc_state_m = 
-    fun s fc _sc -> fc (msg, {s with failures = combine_failures (msg, s) s.failures})
+    fun s fc _sc -> 
+      if !Flags.show_parse_progress
+        then (
+          match msg with
+          | ErrOther s -> print_endline ("Failed because: " ^ s)
+          | ErrWithExt (s, ext) -> print_endline ("Failed because: " ^ s ^ " " ^ Ext.show_extent ext)
+          | _ -> ()
+        );
+      fc (msg, {s with failures = combine_failures (msg, s) s.failures})
 
 let pfail (msg : string) : 'a proc_state_m = 
   pfail_error (ErrOther msg)
@@ -113,6 +121,7 @@ let choice_l (ms : 'a proc_state_m list) : 'a proc_state_m =
   | (x ::xs) -> List.fold_left choice x xs
   | [] -> pfail "PC74: choice_l: empty list"
 
+
 (* choice_cut m1 m2 will run m1 with backtracking, and if m1 succeeds 
   at least once, backtracking on m1 will not reach m2
   if m1 completely fails, then m2 will run *)
@@ -132,6 +141,21 @@ let choice_cut (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m =
       (* when m1 succeeds, we set a flag*)
       success_found := true;
       sc (x, s') fc')
+
+(* get a non-backtracking list parser *)
+let many1 (m : 'a proc_state_m) : 'a list proc_state_m = 
+  let rec aux acc = 
+    let* x = ptry m in
+    match x with
+    | None -> (
+      if List.is_empty acc
+        then pfail "PC144: many1: no match"
+        else return acc
+    )
+    | Some x -> 
+      aux (acc@[x])
+  in
+  pcut (aux [])
 
 let to_processor_binary_op (env : expect) (name : string) (binop : binary_op) : processor_entry = 
   { expect = env;
@@ -167,7 +191,7 @@ let write_proc_state (s : proc_state) : unit proc_state_m =
     sc ((), s) fc
 
 (* reading inputs *)
-let peek_any_char () : (CS.t_char) proc_state_m = 
+let peek_any_char () : (CS.t_char * Ext.t) proc_state_m = 
   let* s = get_proc_state () in
   match CharStream.peek_next_char s.input_future with
   | None -> pfail "PC95: Cannot get char"

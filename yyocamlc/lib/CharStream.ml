@@ -45,14 +45,17 @@ let get_next_char (cs : t) : (AbtLib.Extent.t_str * t) option =
 let has_next_char (cs : t) : bool = 
   cs.idx < String.length cs.str
   
-let peek_next_char (cs : t) : (t_char) option = 
+let peek_next_char (cs : t) : (t_char * AbtLib.Extent.t) option = 
   if cs.idx >= String.length cs.str then
     None
   else
     let c = String.get_utf_8_uchar cs.str cs.idx in
     let c_size= Uchar.utf_decode_length c in
     let c_str = String.sub cs.str cs.idx c_size in
-    Some (new_t_char c_str)
+    let new_line = if c_str = "\n" then cs.line + 1 else cs.line in
+    let new_col = if c_str = "\n" then 0 else cs.col + 1 in
+    let ext =  (cs.filename, (cs.line, cs.col), (new_line, new_col)) in
+    Some (new_t_char c_str, ext)
 
 let new_t_string (s : string) : t_char list = 
   let stream = ref (new_cs "" s) in
@@ -80,6 +83,9 @@ let show_current_position (cs : t) : string =
   ", col " ^ string_of_int cs.col ^
   ", char " ^ string_of_int current_pos 
   ^ show_next_char cs
+
+let print_vscode_position (cs : t) : string = 
+  Printf.sprintf "%s:%d:%d" cs.filename (cs.line + 1) (cs.col + 1)
 
 let show_cs (cs : t) : string = 
   "CS [idx " ^ string_of_int cs.idx ^

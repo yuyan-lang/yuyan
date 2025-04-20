@@ -121,7 +121,7 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
           )
       | _ -> 
         let* oper = lookup_binary_op comp_uid in
-        pfail ("PC402: expecting " ^ (show_binary_op_meta oper.meta) ^ " but got " ^ (A.show_view x) ^ " ")
+        pfail ("PC402: expecting " ^ (show_binary_op_meta oper.meta) ^ " but got " ^ (pretty_print_elem x) ^ " ")
 
 
 
@@ -130,6 +130,29 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
 (* parses a single identifier identifier is something that is quoted between 「 and 」 and without special chars 
 *)
 let yy_keyword_chars = CharStream.new_t_string "。（）「」『』"
+let yy_number_words = CharStream.new_t_string "零一二三四五六七八九"
+let get_int_from_t_string (number_list : CS.t_char list) : int = 
+  List.fold_left (fun acc x -> acc * 10 + (
+    match List.find_index (fun y -> y = x ) yy_number_words with
+    | None -> failwith ("ET101: Expected a number but got " ^ CS.get_t_char x)
+    | Some i -> i
+    )) 0 number_list
+
+let integer_number_parser() : unit proc_state_m = 
+  let* (top, top_ext) = peek_any_char () in
+  if List.mem top yy_number_words then
+    let* number_list = many1 (read_one_of_char yy_number_words) in
+    let number = get_int_from_t_string (List.map fst number_list) in
+    push_elem_on_input_acc (
+      A.fold_with_extent (A.N(N.Builtin(N.Int number), []))
+      (Ext.combine_extent_list (List.map snd number_list))
+    )
+  else
+    pfail_error (ErrExpectString {
+      expecting = yy_number_words;
+      actual = (top, top_ext);
+    })
+
 let identifier_parser () : (CS.t_string * Ext.t) proc_state_m = 
   let* _ = pnot (read_string (CS.new_t_string "「：")) in
   let* _ = read_one_of_char [CS.new_t_char "「"] in
@@ -229,7 +252,18 @@ let run_processor_entry (proc : processor_entry)  : unit proc_state_m =
     if expect <> proc_state.input_expect 
     then pfail ("PC100: expected " ^ (show_input_expect expect) ^ " but got " ^ (show_input_expect proc_state.input_expect))
     else
-      run_processor processor
+      let* () = run_processor processor in
+      if !Flags.show_parse_progress
+        then (
+          update_proc_state (fun st -> 
+            {st with last_succeeded_processor = proc}
+            )
+        ) else return ()
+
+let run_processor_entries (entries : processor_entry list) : unit proc_state_m = 
+  (* filter entries by input_expect to speedup processing*)
+  let* st = get_proc_state () in
+  choice_l (List.map run_processor_entry (List.filter (fun x -> x.expect = st.input_expect) entries))
 
 let collect_input_acc_identifiers() : CS.t_string list proc_state_m = 
   let* s = get_proc_state () in
@@ -251,6 +285,6 @@ let collect_input_acc_identifiers() : CS.t_string list proc_state_m =
 let run_input_acc_identifiers () : unit proc_state_m = 
   let* all_scanned_ids = collect_input_acc_identifiers () in
   (* print_endline ("PC100: running identifiers " ^ (String.concat "," (List.map CS.get_t_string all_scanned_ids))); *)
-  choice_l (List.map (fun x -> 
-    run_processor_entry (to_processor_identifier Expression "bid" x)
+  run_processor_entries (List.map (fun x -> 
+    (to_processor_identifier Expression ("input_acc_id_" ^ CS.get_t_string x)  x)
     ) all_scanned_ids)
