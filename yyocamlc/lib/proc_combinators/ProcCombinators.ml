@@ -219,7 +219,11 @@ let scan_past_one_of_char (l : CS.t_char list) : ((CS.t_string *Ext.t) (* interm
   let rec aux acc = 
     let* (c, ext) = read_any_char () in
     if List.mem (c) l then 
-      return ((remap_t_char_list_with_ext acc), (c, ext))
+      if List.is_empty acc 
+      then
+        return (([],ext), (c, ext))
+      else
+        return ((remap_t_char_list_with_ext acc), (c, ext))
     else 
       aux (acc@[(c, ext)])
   in
@@ -633,7 +637,10 @@ let run_processor (proc : processor)  : unit proc_state_m =
   | ProcComplex process -> process
   | ProcBinOp { meta;reduction=_} ->
       let* (_read_keyword, ext) = read_string meta.keyword in
-      process_read_operator meta ext
+      (* experiment once an semantic operator parses, no backtrack*)
+      if meta.keyword = CS.new_t_string "之书"
+        then pcut (process_read_operator meta ext)
+        else process_read_operator meta ext
   | ProcIdentifier id -> 
       let* string_read = read_string id in
       push_elem_on_input_acc (PE.get_identifier_t string_read)

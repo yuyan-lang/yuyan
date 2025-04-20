@@ -34,6 +34,15 @@ let identifier_parser_pusher : unit proc_state_m =
   let* id = identifier_parser in
   push_elem_on_input_acc (PElem.get_identifier_t id)
 
+let string_parser_pusher : unit proc_state_m = 
+  let* (_, start_ext) = read_one_of_char [CS.new_t_char "『"] in
+  let* ((middle, _middle_ext), (_end, end_ext)) = scan_past_one_of_char [CS.new_t_char "』"] in
+  push_elem_on_input_acc (
+    A.annotate_with_extent
+      (A.fold(A.N(N.Builtin(N.String(CS.get_t_string middle)), [])))
+      (Ext.combine_extent start_ext end_ext)
+  )
+
 let comment_start : unit proc_state_m = 
   let* read_start = read_string (CS.new_t_string "「：") in
   let* () = push_elem_on_input_acc (PElem.get_keyword_t read_start) in
@@ -134,7 +143,7 @@ let library_root : binary_op =
     )
   }
 
-let known_structure_deref : unit proc_state_m =
+(* let known_structure_deref : unit proc_state_m =
   let* (_, _) = read_one_of_string [CS.new_t_string "之"] in
   let* input_top = pop_input_acc () in
   match A.view input_top with
@@ -174,12 +183,12 @@ let known_structure_deref : unit proc_state_m =
     )
   | _ ->
     pfail ("BP157: Expected a library but got " ^ A.show_view input_top)
-    
+     *)
 let unknown_structure_deref_meta : binary_op_meta = 
   {
       id = Uid.next();
       keyword = CS.new_t_string "之";
-      left_fixity = FxOp 100;
+      left_fixity = FxOp 99;
       right_fixity = FxOp 100;
   }
 let unknown_structure_deref : binary_op =
@@ -193,47 +202,6 @@ let unknown_structure_deref : binary_op =
         push_elem_on_input_acc (A.annotate_with_extent new_node ext)
       | _ -> pfail ("ET102: Expected a free variable but got " ^ A.show_view proj_label)
   }
-
-let statement_end_meta : binary_op_meta = 
-  {
-    id = Uid.next();
-    keyword = CS.new_t_string "也";
-    left_fixity = FxOp 5;
-    right_fixity = FxNone
-  }
-let statement_end : binary_op = 
-  {
-    meta = statement_end_meta;
-    reduction = 
-      let* (oper, per_ext) = pop_postfix_operand statement_end_meta in
-      push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
-  }
-
-let sentence_end : unit proc_state_m =
-  let* _ = read_one_of_string [CS.new_t_string "。"] in
-  (* reduce all existing expressions*)
-  let* _ = operator_precedence_reduce (-1) in
-  let* input_acc_size = get_input_acc_size () in
-  if input_acc_size = 1  then
-    let* module_expr = pop_input_acc () in
-    match A.view module_expr with
-    | A.N(N.ModuleDef, _) -> 
-      let* () = push_elem_on_input_acc module_expr in
-      return ()
-    | _ -> pfail ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
-  else if input_acc_size > 1 then
-    let* module_expr, decl = pop_input_acc_2 () in 
-    match A.view module_expr, A.view decl with
-    | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
-      push_elem_on_input_acc
-        (A.annotate_with_extent
-          (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
-          (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
-        )
-    | _ -> pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
-  else
-    pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
-  
 
 let builtin_op_meta : binary_op_meta = 
   {
@@ -416,6 +384,41 @@ let right_parenthesis : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
   }
 
+let double_parenthesis_left_uid = Uid.next()
+let double_parenthesis_right_uid = Uid.next()
+let double_parenthesis_left_meta : binary_op_meta = 
+  {
+    id = double_parenthesis_left_uid;
+    keyword = CS.new_t_string "「「";
+    left_fixity = FxNone;
+    right_fixity = FxComp double_parenthesis_right_uid;
+  }
+let double_parenthesis_right_meta : binary_op_meta = 
+  {
+    id = double_parenthesis_right_uid;
+    keyword = CS.new_t_string "」」";
+    left_fixity = FxComp double_parenthesis_left_uid;
+    right_fixity = FxNone;
+  }
+let double_parenthesis_left : binary_op = 
+  {
+    meta = double_parenthesis_left_meta;
+    reduction = p_internal_error "BP104: double_parenthesis_left reduction";
+  }
+let double_parenthesis_right : binary_op = 
+  {
+    meta = double_parenthesis_right_meta;
+    reduction = 
+      let* (oper, per_ext) = pop_op_operands_from_top_1 double_parenthesis_right_meta in
+      push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
+  }
+
+
+let get_binding_name (x : A.t) : string proc_state_m = 
+  match A.view x with
+  | A.N(N.ParsingElem(N.BoundScannedString(s)), []) -> return (CS.get_t_string s)
+  | _ -> pfail ("ET107: Expected a bound scanned string but got " ^ A.show_view x)
+
 let explicit_pi_start_uid = Uid.next()
 let explicit_pi_middle_1_uid = Uid.next()
 let explicit_pi_middle_2_uid = Uid.next()
@@ -455,11 +458,53 @@ let explicit_pi_middle_2 : binary_op =
     meta = explicit_pi_middle_2_meta;
     reduction = 
       let* ((tp_name, bnd_name, range_expr), per_ext) = pop_op_operands_from_second_top_3 explicit_pi_middle_2_meta in
-      match A.view bnd_name with
-      | A.N(N.ParsingElem(N.BoundScannedString(s)), []) -> 
-        let result_expr = A.fold(A.N(N.ExplicitPi, [[], tp_name; [CS.get_t_string s], range_expr])) in
-        push_elem_on_input_acc (A.annotate_with_extent result_expr per_ext)
-      | _ -> failwith ("ET107: Expected a bound scanned string but got " ^ A.show_view bnd_name)
+      let* binding_name = get_binding_name bnd_name in
+      let result_expr = A.fold_with_extent(A.N(N.ExplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
+      push_elem_on_input_acc result_expr 
+  }
+
+let implicit_pi_start_uid = Uid.next()
+let implicit_pi_middle_1_uid = Uid.next()
+let implicit_pi_middle_2_uid = Uid.next()
+let implicit_pi_start_meta = 
+  {
+    id = implicit_pi_start_uid;
+    keyword = CS.new_t_string "承";
+    left_fixity = FxNone;
+    right_fixity = FxComp implicit_pi_middle_1_uid;
+  }
+let implicit_pi_middle_1_meta = 
+  {
+    id = implicit_pi_middle_1_uid;
+    keyword = CS.new_t_string "者";
+    left_fixity = FxComp implicit_pi_start_uid;
+    right_fixity = FxBinding implicit_pi_middle_2_uid;
+  }
+let implicit_pi_middle_2_meta = 
+  {
+    id = implicit_pi_middle_2_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxBinding implicit_pi_middle_1_uid;
+    right_fixity = FxOp 40;
+  }
+let implicit_pi_start : binary_op = 
+  {
+    meta = implicit_pi_start_meta;
+    reduction = p_internal_error "BP104: implicit_pi_start reduction";
+  }
+let implicit_pi_middle_1 : binary_op = 
+  {
+    meta = implicit_pi_middle_1_meta;
+    reduction = p_internal_error "BP104: implicit_pi_middle_1 reduction";
+  }
+let implicit_pi_middle_2 : binary_op = 
+  {
+    meta = implicit_pi_middle_2_meta;
+    reduction = 
+      let* ((tp_name, bnd_name, range_expr), per_ext) = pop_op_operands_from_second_top_3 implicit_pi_middle_2_meta in
+      let* binding_name = get_binding_name bnd_name in
+      let result_expr = A.fold_with_extent(A.N(N.ImplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
+      push_elem_on_input_acc result_expr 
   }
 
 let arrow_start_uid = Uid.next()
@@ -492,6 +537,171 @@ let arrow_middle : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent result_expr per_ext)
   }
 
+let implicit_lam_abs_start_uid = Uid.next()
+let implicit_lam_abs_middle_uid = Uid.next()
+let implicit_lam_abs_start_meta = 
+  {
+    id = implicit_lam_abs_start_uid;
+    keyword = CS.new_t_string "受";
+    left_fixity = FxNone;
+    right_fixity = FxBinding implicit_lam_abs_middle_uid;
+  }
+let implicit_lam_abs_middle_meta = 
+  {
+    id = implicit_lam_abs_middle_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxBinding implicit_lam_abs_start_uid;
+    right_fixity = FxOp 50;
+  }
+let implicit_lam_abs_start : binary_op = 
+  {
+    meta = implicit_lam_abs_start_meta;
+    reduction = p_internal_error "BP104: implicit_lam_abs_start reduction";
+  }
+let implicit_lam_abs_middle : binary_op = 
+  {
+    meta = implicit_lam_abs_middle_meta;
+    reduction = 
+      let* ((bnd_name, range_expr), per_ext) = pop_op_operands_from_second_top_2 implicit_lam_abs_middle_meta in
+      let* binding_name = get_binding_name bnd_name in
+      let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
+      push_elem_on_input_acc result_expr 
+  }
+
+let explicit_lam_abs_start_uid = Uid.next()
+let explicit_lam_abs_middle_uid = Uid.next()
+let explicit_lam_abs_start_meta = 
+  {
+    id = explicit_lam_abs_start_uid;
+    keyword = CS.new_t_string "会";
+    left_fixity = FxNone;
+    right_fixity = FxBinding explicit_lam_abs_middle_uid;
+  }
+let explicit_lam_abs_middle_meta = 
+  {
+    id = explicit_lam_abs_middle_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxBinding explicit_lam_abs_start_uid;
+    right_fixity = FxOp 50;
+  }
+let explicit_lam_abs_start : binary_op = 
+  {
+    meta = explicit_lam_abs_start_meta;
+    reduction = p_internal_error "BP104: explicit_lam_abs_start reduction";
+  }
+let explicit_lam_abs_middle : binary_op = 
+  {
+    meta = explicit_lam_abs_middle_meta;
+    reduction = 
+      let* ((tp_name, range_expr), per_ext) = pop_op_operands_from_second_top_2 explicit_lam_abs_middle_meta in
+      let* binding_name = get_binding_name tp_name in
+      let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
+      push_elem_on_input_acc result_expr 
+  }
+
+let implicit_ap_uid = Uid.next()
+let implicit_ap_meta = 
+  {
+    id = implicit_ap_uid;
+    keyword = CS.new_t_string "授以";
+    left_fixity = FxOp 79;
+    right_fixity = FxOp 80;
+  }
+let implicit_ap : binary_op = 
+  {
+    meta = implicit_ap_meta;
+    reduction = 
+      let* ((f, arg), per_ext) = pop_bin_operand implicit_ap_meta in
+      push_elem_on_input_acc (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
+  }
+
+let explicit_ap_uid = Uid.next()
+let explicit_ap_meta = 
+  {
+    id = explicit_ap_uid;
+    keyword = CS.new_t_string "于";
+    left_fixity = FxOp 79;
+    right_fixity = FxOp 80;
+  }
+let explicit_ap : binary_op = 
+  {
+    meta = explicit_ap_meta;
+    reduction = 
+      let* ((f, arg), per_ext) = pop_bin_operand explicit_ap_meta in
+      push_elem_on_input_acc (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
+  }
+
+
+  let statement_end_meta : binary_op_meta = 
+    {
+      id = Uid.next();
+      keyword = CS.new_t_string "也";
+      left_fixity = FxOp 5;
+      right_fixity = FxNone
+    }
+  let statement_end : binary_op = 
+    {
+      meta = statement_end_meta;
+      reduction = 
+        let* (oper, per_ext) = pop_postfix_operand statement_end_meta in
+        push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
+    }
+  
+  let sentence_end : unit proc_state_m =
+    let* _ = read_one_of_string [CS.new_t_string "。"] in
+    (* reduce all existing expressions*)
+    let* _ = operator_precedence_reduce (-1) in
+    let* input_acc_size = get_input_acc_size () in
+    if input_acc_size = 1  then
+      let* module_expr = pop_input_acc () in
+      match A.view module_expr with
+      | A.N(N.ModuleDef, _) -> 
+        let* () = push_elem_on_input_acc module_expr in
+        return ()
+      | _ -> pfail ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
+    else if input_acc_size > 1 then
+      let* module_expr, decl = pop_input_acc_2 () in 
+      match A.view module_expr, A.view decl with
+      | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
+        push_elem_on_input_acc
+          (A.annotate_with_extent
+            (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
+            (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
+          )
+      (* also for 「「 name *)
+      | A.N(N.ParsingElem(N.OpKeyword({id=opid;_})), []), A.N(N.Declaration(_), _) -> 
+        if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
+          (* push 「「 back onto the stack *)
+          let* _ = push_elem_on_input_acc module_expr in
+          let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
+          return ()
+        else  pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+      (* also for 「「 name *)
+      | _ -> pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+    else
+      pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
+    
+
+let external_call_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "《《外部调用》》";
+    left_fixity = FxNone;
+    right_fixity = FxOp 200;
+  }
+let external_call : binary_op = 
+  {
+    meta = external_call_meta;
+    reduction = 
+      let* (oper, per_ext) = pop_prefix_operand external_call_meta in
+        match A.view oper with
+        | A.N(N.Builtin(N.String(x)), []) -> 
+          (
+            push_elem_on_input_acc (A.fold_with_extent (A.N(N.ExternalCall(x), []) ) per_ext)
+          )
+        | _ -> pfail ("BP693: Builtin Expected a string but got " ^ A.show_view oper)
+  }
+  
 
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
@@ -499,12 +709,13 @@ let default_registry = [
   to_processor_complex (Scanning InComment) "comment_start" comment_start;
   to_processor_complex (Scanning InComment) "comment_middle" comment_middle;
   to_processor_complex (Scanning InComment) "comment_end" comment_end;
+  to_processor_complex Expression "string_parser_pusher" string_parser_pusher;
   to_processor_binary_op Expression "definition_middle" definition_middle;
   to_processor_binary_op Expression "definition_end" definition_end;
   to_processor_binary_op Expression "import_end" import_end;
   to_processor_binary_op Expression "library_root" library_root;
   to_processor_binary_op Expression "unknown_structure_deref" unknown_structure_deref;
-  to_processor_complex Expression "known_structure_deref" known_structure_deref;
+  (* to_processor_complex Expression "known_structure_deref" known_structure_deref; *)
   to_processor_binary_op Expression "statement_end" statement_end;
   to_processor_complex Expression "sentence_end" sentence_end;
   to_processor_binary_op Expression "builtin_op" builtin_op;
@@ -516,8 +727,21 @@ let default_registry = [
   to_processor_binary_op Expression "explicit_pi_start" explicit_pi_start;
   to_processor_binary_op Expression "explicit_pi_middle_1" explicit_pi_middle_1;
   to_processor_binary_op Expression "explicit_pi_middle_2" explicit_pi_middle_2;
+  to_processor_binary_op Expression "implicit_pi_start" implicit_pi_start;
+  to_processor_binary_op Expression "implicit_pi_middle_1" implicit_pi_middle_1;
+  to_processor_binary_op Expression "implicit_pi_middle_2" implicit_pi_middle_2;
   to_processor_binary_op Expression "arrow_start" arrow_start;
   to_processor_binary_op Expression "arrow_middle" arrow_middle;
+  to_processor_binary_op Expression "implicit_lam_abs_start" implicit_lam_abs_start;
+  to_processor_binary_op Expression "implicit_lam_abs_middle" implicit_lam_abs_middle;
+  to_processor_binary_op Expression "explicit_lam_abs_start" explicit_lam_abs_start;
+  to_processor_binary_op Expression "explicit_lam_abs_middle" explicit_lam_abs_middle;
+  to_processor_binary_op Expression "implicit_ap" implicit_ap;
+  to_processor_binary_op Expression "explicit_ap" explicit_ap;
+  to_processor_binary_op Expression "double_parenthesis_left" double_parenthesis_left;
+  to_processor_binary_op Expression "double_parenthesis_right" double_parenthesis_right;
+  to_processor_binary_op Expression "external_call" external_call;
+
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;
  ]

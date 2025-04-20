@@ -3,26 +3,26 @@
 
 
 加乃化小数而化小数而小数也。
-加者会甲而会乙而《《C调用》》名『yyDoubleAdd』传甲与乙也。
+加者会甲而会乙而《《外部调用》》『yyDoubleAdd』于甲于乙也。
 
 
 乘乃化小数而化小数而小数也。
-乘者会甲而会乙而《《C调用》》名『yyDoubleMult』传甲与乙也。
+乘者会甲而会乙而《《外部调用》》『yyDoubleMult』于甲于乙也。
 
 除以乃化小数而化小数而小数也。
-除以者会甲而会乙而《《C调用》》名『yyDoubleDiv』传甲与乙也。
+除以者会甲而会乙而《《外部调用》》『yyDoubleDiv』于甲于乙也。
 
 
 减乃化小数而化小数而小数也。
-减者会甲而会乙而《《C调用》》名『yyDoubleSub』传甲与乙也。
+减者会甲而会乙而《《外部调用》》『yyDoubleSub』于甲于乙也。
 
 小数表示乃化小数而字符串也。
-小数表示者会甲而《《C调用》》名『yyDoubleToString』传甲也。
+小数表示者会甲而《《外部调用》》『yyDoubleToString』传甲也。
 
 表示乃化小数而字符串也。
-表示者会甲而《《C调用》》名『yyDoubleToString』传甲也。
+表示者会甲而《《外部调用》》『yyDoubleToString』传甲也。
 
 
 
 理解小数乃化字符串而小数也。
-理解小数者会甲而《《C调用》》名『yyStringToDouble』传甲也。
+理解小数者会甲而《《外部调用》》『yyStringToDouble』传甲也。

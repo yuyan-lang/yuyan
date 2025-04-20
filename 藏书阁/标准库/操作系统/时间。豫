@@ -5,7 +5,7 @@
 寻标准库之数学运算之转换之书。
 
 获取当前纳秒时间乃化有而小数也。
-获取当前纳秒时间者会甲而《《C调用》》名『yyCurrentNanosecondTime』传元也。
+获取当前纳秒时间者会甲而《《外部调用》》『yyCurrentNanosecondTime』传元也。
 
 
 用时秒数表示乃化小数「：开始纳秒时间：」而化小数「：结束纳秒时间：」而字符串「：小数表示：」也。
@@ -16,7 +16,7 @@
 
 
 当前日期时间格式表示乃化字符串而字符串也。
-当前日期时间格式表示者会格式而《《C调用》》名『yyGetCurrentLocalDateTimeFmt』传格式也。
+当前日期时间格式表示者会格式而《《外部调用》》『yyGetCurrentLocalDateTimeFmt』传格式也。
 
 当前日期时间表示乃化有而字符串也。
-当前日期时间表示者会无而《《C调用》》名『yyGetCurrentLocalDateTimeStr』传元也。
+当前日期时间表示者会无而《《外部调用》》『yyGetCurrentLocalDateTimeStr』传元也。

@@ -93,6 +93,7 @@ module YYNode  = struct
          | ModuleDef 
          | FileRef of string (* Library is a folder/file, FileRef is a checked file*)
          | ExplicitPi 
+         | ImplicitPi
          | Arrow
          | Ap
          | Sequence of string (* e.g. ， 或 、*)
@@ -100,6 +101,7 @@ module YYNode  = struct
          | MatchCase
          | TypeAnnotated (* A名x*)
          | Lam
+         | ExternalCall of string
 
   let arity (t : t) : int list option = 
     match t with
@@ -113,6 +115,7 @@ module YYNode  = struct
     | ModuleDef -> None
     | FileRef (_) -> Some([])
     | ExplicitPi -> Some([0; 1])
+    | ImplicitPi -> Some([0; 1])
     | Arrow -> Some([0; 0])
     | Ap -> None (* also multi-func app exists here *)
     | Sequence _ -> Some([0; 0])
@@ -120,6 +123,7 @@ module YYNode  = struct
     | MatchCase -> Some([0; 0])
     | Lam -> Some([1])
     | TypeAnnotated -> Some([0; 0])
+    | ExternalCall _ -> Some([])
 
 
 
@@ -169,6 +173,7 @@ module YYNode  = struct
     | ModuleDef -> "ModuleDef"
     | FileRef (s) -> "FileRef(" ^ s ^ ")"
     | ExplicitPi -> "Π"
+    | ImplicitPi -> "Π(implicit)"
     | Arrow -> "->"
     | Ap -> "Ap"
     | Sequence (s) -> "Sequence(" ^ s ^ ")"
@@ -176,6 +181,7 @@ module YYNode  = struct
     | MatchCase -> "MatchCase"
     | Lam -> "λ"
     | TypeAnnotated -> "TypeAnnotated"
+    | ExternalCall (s) -> "ExternalCall(" ^ s ^ ")"
 
 
 
@@ -246,7 +252,7 @@ and binary_op = {
 let compilation_manager_get_file_hook  : (string (* filepath *) ->  A.t option) ref =  ref (fun _ -> failwith "compilation_manager_get_file_hook not set")
 
 let show_input_acc (acc : A.t list) : string =
-  "[" ^ String.concat "; " (List.map A.show_view acc) ^ "]"
+  "[" ^ String.concat ";\n " (List.map A.show_view acc) ^ "]"
 let show_input_expect (e : expect) : string =
   match e with
   | Expression -> "Expression"

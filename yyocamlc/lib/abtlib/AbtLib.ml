@@ -21,6 +21,7 @@ module type ABT = sig
   val abstract_over_no_name: t -> t
   val view: t -> t_view
   val fold: t_view -> t
+  val fold_with_extent: t_view -> t_extent -> t
   (* val fold_direct_unsafe : ?check_arg_ctx:bool -> t_view -> t *)
   val subst: t -> string -> t -> t
 
@@ -49,6 +50,7 @@ module type EXTENT = sig
   val combine_extent : t -> t -> t
   val combine_extent_list : t list -> t
   val show_extent : t -> string
+  val show_extent_1_based : t -> string
 
   type t_str
   val str_with_extent : string -> t -> t_str
@@ -79,6 +81,10 @@ module Extent : EXTENT = struct
   let show_extent (s : t_extent) : string = 
     let (file, (row1, col1), (row2, col2)) = s in
     Printf.sprintf "%s:%d:%d-%d:%d" file row1 col1 row2 col2
+
+  let show_extent_1_based (s : t_extent) : string = 
+    let (file, (row1, col1), (row2, col2)) = s in
+    Printf.sprintf "%s:%d:%d-%d:%d" file (row1+1) (col1+1) (row2+1) (col2+1)
 
   type t_str = string * t_extent
   let str_with_extent (s : string) (e : t_extent) : t_str = (s, e)
@@ -614,6 +620,9 @@ module Abt (NodeClass: NODE_CLASS) : ABT
     match tm with
     | AnnotatedWithExtent(_, inner_tm) -> (ctx, AnnotatedWithExtent(extent, inner_tm))
     | _ -> (ctx, AnnotatedWithExtent(extent, tm))
+
+  let fold_with_extent (tv : t_view) (extent: t_extent) : t = 
+    annotate_with_extent (fold tv) extent
 
   let rec get_extent ((ctx, tm): t) : t_extent option =
     match tm with

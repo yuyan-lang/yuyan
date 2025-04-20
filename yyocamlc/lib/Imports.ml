@@ -23,7 +23,9 @@ let get_module_real_path (module_name_parsed : PE.t) : string proc_state_m (* pa
       let file_name = List.fold_left Filename.concat head spine ^ "。豫" in
       (* check if head exists in module_dir *)
       let head_name = if List.length spine = 0 then head^"。豫" else head in
-      if Sys.file_exists (Filename.concat cur_module_dir head_name) then
+      if not (Filename.is_relative file_name) && Sys.file_exists file_name then
+        return file_name
+      else if Sys.file_exists (Filename.concat cur_module_dir head_name) then
         return (Filename.concat cur_module_dir file_name)
       else if Sys.file_exists (Filename.concat (Sys.getcwd()) head_name) then
         return (Filename.concat (Sys.getcwd()) file_name)

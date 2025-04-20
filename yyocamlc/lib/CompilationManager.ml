@@ -24,6 +24,7 @@ let compile_or_retrieve_file_content (filepath : string) : A.t option =
       close_in chan;
       (* Print the contents of the file *)
       let result = EngineTop.run_top_level filepath content in
+      print_endline ("Processing file: " ^ filepath ^ " [DONE]");
       compiled_files := (filepath, result) :: !compiled_files;
       Some(result)
     )

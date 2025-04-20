@@ -4,12 +4,12 @@
 
 当前系统是微软Windows乃化有而爻也。
 当前系统是微软Windows者会有而
-    《《C调用》》名『yyRunningOnWindows』传元也。
+    《《外部调用》》『yyRunningOnWindows』传元也。
 
 当前系统是苹果MacOS乃化有而爻也。
-当前系统是苹果MacOS者会有而《《C调用》》名『yyRunningOnMacOS』传元也。
+当前系统是苹果MacOS者会有而《《外部调用》》『yyRunningOnMacOS』传元也。
 
 当前系统是Linux乃化有而爻也。
-当前系统是Linux者会有而《《C调用》》名『yyRunningOnLinux』传元也。
+当前系统是Linux者会有而《《外部调用》》『yyRunningOnLinux』传元也。
 
 
