@@ -6,6 +6,7 @@ module Ext = AbtLib.Extent
 module PElem = ProcessedElement
 module CS = CharStream
 module Env = Environment
+open BasicParsing
   
 
 (* let top_level_identifier_pusher : unit proc_state_m = 

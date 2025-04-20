@@ -40,9 +40,19 @@ let get_next_char (cs : t) : (AbtLib.Extent.t_str * t) option =
     let ext_str = AbtLib.Extent.str_with_extent c_str (cs.filename, (cs.line, cs.col), (new_line, new_col)) in
     Some (ext_str, next_cs)
 
+  
+
 let has_next_char (cs : t) : bool = 
   cs.idx < String.length cs.str
   
+let peek_next_char (cs : t) : (t_char) option = 
+  if cs.idx >= String.length cs.str then
+    None
+  else
+    let c = String.get_utf_8_uchar cs.str cs.idx in
+    let c_size= Uchar.utf_decode_length c in
+    let c_str = String.sub cs.str cs.idx c_size in
+    Some (new_t_char c_str)
 
 let new_t_string (s : string) : t_char list = 
   let stream = ref (new_cs "" s) in
