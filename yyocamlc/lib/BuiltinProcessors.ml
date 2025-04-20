@@ -935,6 +935,50 @@ let custom_operator_decl_end : binary_op =
       | _ -> pfail ("ET109: Expected a scanned operator but got " ^ A.show_view defn)
   }
 
+let let_in_start_uid = Uid.next()
+let let_in_mid1_uid = Uid.next()
+let let_in_mid2_uid = Uid.next()
+
+let let_in_start_meta = 
+  {
+    id = let_in_start_uid;
+    keyword = CS.new_t_string "虑";
+    left_fixity = FxNone;
+    right_fixity = FxBinding let_in_mid1_uid;
+  }
+let let_in_mid1_meta = 
+  {
+    id = let_in_mid1_uid;
+    keyword = CS.new_t_string "者";
+    left_fixity = FxBinding let_in_start_uid;
+    right_fixity = FxComp let_in_mid2_uid;
+  }
+let let_in_mid2_meta = 
+  {
+    id = let_in_mid2_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxComp let_in_mid1_uid;
+    right_fixity = FxOp 75;
+  }
+let let_in_start : binary_op = 
+  {
+    meta = let_in_start_meta;
+    reduction = p_internal_error "BP104: let_in_start reduction";
+  }
+let let_in_mid1 : binary_op = 
+  {
+    meta = let_in_mid1_meta;
+    reduction = p_internal_error "BP104: let_in_mid1 reduction";
+  }
+let let_in_mid2 : binary_op = 
+  {
+    meta = let_in_mid2_meta;
+    reduction = 
+      let* ((bnd_name, domain_expr, range_expr), per_ext) = pop_op_operands_from_second_top_3 let_in_mid2_meta in
+      let* binding_name = get_binding_name bnd_name in
+      let result_expr = A.fold_with_extent (A.N(N.LetIn, [[], domain_expr;[binding_name], range_expr])) per_ext in
+      push_elem_on_input_acc result_expr 
+  }
 
 
 let default_registry = [

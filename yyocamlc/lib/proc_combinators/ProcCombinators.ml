@@ -326,7 +326,7 @@ let pop_input_acc_3 () : (PE.t * PE.t * PE.t) proc_state_m =
   let* z = pop_input_acc () in
   return (z, y, x)
 
-let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_state_m =
+let assert_is_correct_op(meta : binary_op_meta) (elem : PE.t) : unit proc_state_m =
   match A.view elem with
   | A.N(N.ParsingElem(N.OpKeyword(kop)), []) -> 
     if meta.id = kop.id then
@@ -359,7 +359,7 @@ let lookup_binary_op (meta_id : int) : binary_op proc_state_m =
 let pop_op_operands_from_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
   let rec f binop = 
     let* (top_op) = pop_input_acc() in
-    let* _ = assert_is_correct_operand binop top_op in
+    let* _ = assert_is_correct_op binop top_op in
     let top_extent = A.get_extent_some top_op in
     match A.view top_op with
     | A.N(N.ParsingElem(N.OpKeyword(meta)), []) -> 

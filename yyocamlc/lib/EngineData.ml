@@ -105,6 +105,7 @@ module YYNode  = struct
          | Lam
          | ExternalCall of string
          | IfThenElse
+         | LetIn
 
   let arity (t : t) : int list option = 
     match t with
@@ -129,6 +130,7 @@ module YYNode  = struct
     | TypeAnnotated -> Some([0; 0])
     | ExternalCall _ -> Some([])
     | IfThenElse -> Some([0; 0; 0]) (* if, then, else *)
+    | LetIn -> Some([0; 1]) (* let, in, expr *)
 
 
 
@@ -190,6 +192,7 @@ module YYNode  = struct
     | TypeAnnotated -> "TypeAnnotated"
     | ExternalCall (s) -> "ExternalCall(" ^ s ^ ")"
     | IfThenElse -> "IfThenElse"
+    | LetIn -> "LetIn"
 
 
 
