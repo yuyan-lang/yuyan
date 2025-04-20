@@ -107,6 +107,12 @@ let pcut (m : 'a proc_state_m) : 'a proc_state_m =
   fun s fc sc  -> 
     m s fc (fun (x, s') _fc -> sc (x, s') fc)
 
+(* cuts off all current backtracking points unless explicitly remembered *)
+let pcommit () : unit proc_state_m = 
+  fun s _fc sc -> 
+    (* commiting to the current choice, any backtracking of subsequnt call will now backtrack into 
+    last remembered failure handlers*)
+    sc ((), s) (s.top_failure_handler)
 
 let assertb (b : bool) : unit proc_state_m = 
   if b then return () else pfail "assertb: assertion failed"

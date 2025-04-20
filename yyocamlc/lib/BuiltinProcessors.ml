@@ -681,6 +681,9 @@ let explicit_ap : binary_op =
     let* _ = read_one_of_string [CS.new_t_string "。"] in
     (* reduce all existing expressions*)
     let* _ = operator_precedence_reduce (-1) in
+    (* we want to commit once we read 。 if subsequent error occurs, 
+      do not backtrack over interpretation of sentences *)
+    let* () = pcommit () in
     let* input_acc_size = get_input_acc_size () in
     if input_acc_size = 1  then
       let* module_expr = pop_input_acc () in

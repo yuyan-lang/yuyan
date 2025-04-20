@@ -253,6 +253,7 @@ let run_processor_entry (proc : processor_entry)  : unit proc_state_m =
     then pfail ("PC100: expected " ^ (show_input_expect expect) ^ " but got " ^ (show_input_expect proc_state.input_expect))
     else
       let* () = run_processor processor in
+      (* print_endline ("Ran pentry " ^ show_processor_entry proc); *)
       if !Flags.show_parse_progress
         then (
           update_proc_state (fun st -> 

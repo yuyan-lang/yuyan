@@ -237,7 +237,11 @@ type proc_state = {
   registry : processor_registry;
   last_succeeded_processor : processor_entry; (* for debugging on parsing *)
   failures : (proc_error list * proc_state) list;
+  top_failure_handler : failure_handler_arg_type -> unit; (* this is the top-level failure handler for cutting off 
+  backtracking. Useful a combinator to commit (e.g. if subsequent things fail, instead of 
+    backtracking to the failure continuation that I am given, call this to return top level) *)
 }
+and failure_handler_arg_type = (proc_error * proc_state)
 and processor = ProcComplex of unit proc_state_m
               | ProcBinOp of binary_op 
               | ProcIdentifier of CharStream.t_string (* these two only run in the Expression environment*)
@@ -249,8 +253,8 @@ and processor_entry = {
 }
 and processor_registry = processor_entry list
 and 'a proc_state_m = proc_state 
-                      -> (proc_error * proc_state -> unit) (* failure continuation*) 
-                      -> (('a * proc_state) -> (proc_error * proc_state -> unit) -> unit) (* success continuation *) 
+                      -> (failure_handler_arg_type -> unit) (* failure continuation*) 
+                      -> (('a * proc_state) -> (failure_handler_arg_type -> unit) -> unit) (* success continuation *) 
                       -> unit
 and binary_op = {
   meta: binary_op_meta;
@@ -309,5 +313,8 @@ let show_proc_state (s : proc_state) : string =
   "\ninput_future: " ^ CharStream.show_cs s.input_future ^ ", " ^
   "\ninput_expect: " ^ show_input_expect s.input_expect ^ ", " ^
   "\ninput_acc: " ^ show_input_acc s.input_acc ^ ", "  
-  ^ "\nregistry: " ^ String.concat "\n, " (List.map show_processor_entry s.registry) ^ ", "  
+  (* ^ "\nregistry: " ^ String.concat "\n, " (List.map show_processor_entry s.registry) ^ ", "   *)
+  ^ "\n registry: " ^ (string_of_int (List.length s.registry)) ^ " entries, " ^
+  "\nfailures: " ^ string_of_int (List.length s.failures) ^ " entries, " ^
+  "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  
   (* "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  *)

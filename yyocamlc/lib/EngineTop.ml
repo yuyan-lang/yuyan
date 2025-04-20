@@ -52,27 +52,6 @@ let rec do_process_entire_stream () : A.t proc_state_m =
       let* _ = do_process_step () in
       do_process_entire_stream ()
 
-let extract_all_result (st : proc_state) (processor : 'a proc_state_m) : ('a list, 'b) result = 
-  let result = ref [] in
-  let failure = ref None in
-  processor st 
-    (fun (msg, final_s) -> 
-      if msg <> ErrOther "top_level_backtrack_backtrack" 
-        then failure := Some(msg, final_s)
-      (* ; print_endline "FAILED" *)
-      ) 
-    (fun (r, st') fail_c -> 
-      result := r :: !result;
-      fail_c (ErrOther "top_level_backtrack_backtrack", st')
-    );
-  if !result = [] then
-    let (msg, final_s) = Option.get !failure in
-    (* print_endline ("Final state: " ^ (Environment.show_environment final_s.store)); *)
-    Error (msg, final_s)
-  else
-    (* print_endline ("Final state: " ^ (Environment.show_environment st.store)); *)
-    Ok !result
-
 let print_proc_errors (msg : proc_error list) : string = 
   let expecting = List.filter_map (function
     | ErrExpectString {
@@ -111,6 +90,38 @@ let print_proc_errors (msg : proc_error list) : string =
     if expecting_str <> "" && other_str <> "" then "\n" else ""
   ) ^ other_str
 
+let extract_all_result (st : proc_state) (processor : 'a proc_state_m) 
+  (on_success : 'a list -> 'c ) (on_failure : 'b -> 'c) : 'c =
+  let result = ref [] in
+  let failure = ref None in
+  let final_handling () = 
+    (
+      if !result = [] then
+        let (msg, final_s) = Option.get !failure in
+        (* print_endline ("Final state: " ^ (Environment.show_environment final_s.store)); *)
+        on_failure (msg, final_s)
+      else
+        (* print_endline ("Final state: " ^ (Environment.show_environment st.store)); *)
+        on_success !result
+    )
+    in
+  processor {st  with top_failure_handler = fun _ -> final_handling()}
+    (fun (msg, final_s) -> 
+      if msg <> ErrOther "top_level_backtrack_backtrack" 
+        then failure := Some(msg, final_s)
+      (* ; print_endline "FAILED" *)
+      ) 
+    (fun (r, st') fail_c -> 
+      result := r :: !result;
+      (* print_endline (">104>>>! result lengt is: " ^ string_of_int (List.length !result) ^ "\n" ); *)
+      (* clear st' failure tracking as we now succeeded*)
+      (* print_endline ("EXTRACTALL SUCCESS CALLED" ^ show_proc_state st' 
+      ^ " OF WHICH FAILURES ARE " ^ (print_proc_errors (List.concat_map fst st'.failures)) ^ "\n" 
+      ); *)
+      fail_c (ErrOther "top_level_backtrack_backtrack", {st' with failures = []})
+    );
+  final_handling ()
+
 
 
 let run_top_level (filename: string)(content : string) : A.t = 
@@ -125,39 +136,43 @@ let run_top_level (filename: string)(content : string) : A.t =
     store = Environment.default_environment;
     registry = BuiltinProcessors.default_registry;
     last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");
-    failures = ([]);
+    failures = []; (* this is backtracking to top level, directly pass this to handle*)
+    top_failure_handler = (fun (_, _) -> failwith "Should set top level failure on parse entry");
   } in
-  let final_state = extract_all_result initial_state (do_process_entire_stream ()) in
-  match final_state  with
-  | Ok [s] -> 
-    (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
-    s
-  | Ok [] -> failwith ("ET76: No final state found")
-  | Ok (ss) -> 
-    if List.for_all (fun s -> A.eq_abt s (List.hd ss)) ss
-      then 
-        (
-        print_endline ("Final states: " ^ (string_of_int (List.length ss)) ^ " interpretations (CHECK YOUR PARSER) \n");
-        List.hd ss
-        )
-      else
-        (
-        print_endline ("Final states: " ^ (string_of_int (List.length ss)) ^ "\n" ^
-        String.concat "\n" (List.map A.show_view ss));
-        failwith ("ET79: Multiple final states found")
-        )
-
-
-  | Error (_msg, s) -> 
-    (
-    print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n========================\n" 
-      ^ String.concat "\n" (List.mapi (fun i (msg, s) -> 
-        string_of_int i ^ " failure: " ^
-        print_proc_errors msg ^ "\n" ^ show_proc_state s ^ "\n-------------------------------" 
-     ) s.failures));
-     failwith ("Compilation Failed")
-    (* Fail.failwith ( filename ^ ":" ^ string_of_int s.input_future.line ^ ":" ^ string_of_int s.input_future.col ^
-     ": Processing failed at " ^ CharStream.show_current_position s.input_future
-     ^ "\n"  
-    ) *)
+  let exception Return of A.t in
+  try 
+    extract_all_result initial_state (do_process_entire_stream ()) 
+    (fun successes ->
+      match successes  with
+      | [s] -> 
+        (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
+        raise (Return s)
+      | [] -> failwith ("ET76: No final state found")
+      | (ss) -> 
+        if List.for_all (fun s -> A.eq_abt s (List.hd ss)) ss
+          then 
+            (
+            print_endline ("Final states: " ^ (string_of_int (List.length ss)) ^ " interpretations (CHECK YOUR PARSER) \n");
+            raise (Return (List.hd ss))
+            )
+          else
+            (
+            print_endline ("Final states: " ^ (string_of_int (List.length ss)) ^ "\n" ^
+            String.concat "\n" (List.map A.show_view ss));
+            failwith ("ET79: Multiple final states found")
+            )
     )
+    (fun (_, s) -> 
+      (
+      print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n========================\n" 
+        ^ String.concat "\n" (List.mapi (fun i (msg, s) -> 
+          string_of_int i ^ " failure: " ^
+          print_proc_errors msg ^ "\n" ^ show_proc_state s ^ "\n-------------------------------" 
+      ) s.failures));
+      failwith ("Compilation Failed");
+      )
+    );
+    failwith ("ET80: Should not reach here")
+  with
+  | Return s -> s
+  
