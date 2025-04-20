@@ -819,11 +819,33 @@ let match_case_alternative : binary_op =
     reduction = 
       let* ((case_expr, then_expr), per_ext) = pop_bin_operand match_case_alternative_meta in
       match A.view case_expr with
-      | A.N(N.MatchCase, args) -> 
-        let new_case_expr = A.fold(A.N(N.MatchCase, args@[[], then_expr])) in
+      | A.N(N.Match, args) -> 
+        let new_case_expr = A.fold(A.N(N.Match, args@[[], then_expr])) in
         push_elem_on_input_acc (A.annotate_with_extent new_case_expr per_ext)
       | _ -> pfail ("ET108: Expected a match case but got " ^ A.show_view case_expr)
   }
+
+let comma_char = "，"
+
+let comma_sequence_meta : binary_op_meta = {
+      id = Uid.next();
+      keyword = CS.new_t_string comma_char;
+      left_fixity = FxOp 74;
+      right_fixity = FxOp 75;
+    }
+
+let comma_sequence : binary_op =
+  {
+    meta = comma_sequence_meta;
+    reduction = 
+      let* ((x, y), per_ext) = pop_bin_operand comma_sequence_meta in
+      match A.view x with
+      | A.N(N.Sequence "，", args) -> 
+        push_elem_on_input_acc (A.fold_with_extent (A.N(N.Sequence comma_char, args@[[], y])) per_ext)
+      | _ ->
+        push_elem_on_input_acc (A.fold_with_extent(A.N(N.Sequence comma_char, [[], x; [], y])) per_ext)
+  }
+
 
 
 
