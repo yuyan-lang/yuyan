@@ -847,6 +847,24 @@ let comma_sequence : binary_op =
   }
 
 
+let enumeration_comma_char = "、"
+let enumeration_comma_sequence_meta : binary_op_meta = {
+      id = Uid.next();
+      keyword = CS.new_t_string enumeration_comma_char;
+      left_fixity = FxOp 76;
+      right_fixity = FxOp 77;
+    }
+let enumeration_comma_sequence : binary_op =
+  {
+    meta = enumeration_comma_sequence_meta;
+    reduction = 
+      let* ((x, y), per_ext) = pop_bin_operand enumeration_comma_sequence_meta in
+      match A.view x with
+      | A.N(N.Sequence "、", args) -> 
+        push_elem_on_input_acc (A.fold_with_extent (A.N(N.Sequence enumeration_comma_char, args@[[], y])) per_ext)
+      | _ ->
+        push_elem_on_input_acc (A.fold_with_extent(A.N(N.Sequence enumeration_comma_char, [[], x; [], y])) per_ext)
+  }
 
 
 
@@ -902,6 +920,9 @@ let default_registry = [
   to_processor_binary_op Expression "match_case_mid" match_case_mid;
   to_processor_binary_op Expression "match_case_alternative" match_case_alternative;
 
+  (* lists *)
+  to_processor_binary_op Expression "comma_sequence" comma_sequence;
+  to_processor_binary_op Expression "enumeration_comma_sequence" enumeration_comma_sequence;
 
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;
