@@ -186,8 +186,8 @@ let unknown_structure_deref_meta : binary_op_meta =
   {
       id = Uid.next();
       keyword = CS.new_t_string "之";
-      left_fixity = FxOp 99;
-      right_fixity = FxOp 100;
+      left_fixity = FxOp 999;
+      right_fixity = FxOp 1000;
   }
 let unknown_structure_deref : binary_op =
   {
@@ -206,7 +206,7 @@ let builtin_op_meta : binary_op_meta =
     id = Uid.next();
     keyword = CS.new_t_string "内建";
     left_fixity = FxNone;
-    right_fixity = FxOp 200;
+    right_fixity = FxOp 2000;
   }
 let builtin_op : binary_op = 
   {
@@ -604,8 +604,8 @@ let implicit_ap_meta =
   {
     id = implicit_ap_uid;
     keyword = CS.new_t_string "授以";
-    left_fixity = FxOp 79;
-    right_fixity = FxOp 80;
+    left_fixity = FxOp 799;
+    right_fixity = FxOp 800;
   }
 let implicit_ap : binary_op = 
   {
@@ -620,8 +620,8 @@ let explicit_ap_meta =
   {
     id = explicit_ap_uid;
     keyword = CS.new_t_string "于";
-    left_fixity = FxOp 79;
-    right_fixity = FxOp 80;
+    left_fixity = FxOp 799;
+    right_fixity = FxOp 800;
   }
 let explicit_ap : binary_op = 
   {
@@ -675,9 +675,9 @@ let explicit_ap : binary_op =
           let* _ = push_elem_on_input_acc module_expr in
           let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
           return ()
-        else  pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+        else  pfail ("BP678: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
       (* also for 「「 name *)
-      | _ -> pfail ("ET103: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+      | _ -> pfail ("BP680: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
     else
       pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
     
@@ -687,7 +687,7 @@ let external_call_meta : binary_op_meta =
     id = Uid.next();
     keyword = CS.new_t_string "《《外部调用》》";
     left_fixity = FxNone;
-    right_fixity = FxOp 200;
+    right_fixity = FxOp 2000;
   }
 let external_call : binary_op = 
   {
@@ -830,8 +830,8 @@ let comma_char = "，"
 let comma_sequence_meta : binary_op_meta = {
       id = Uid.next();
       keyword = CS.new_t_string comma_char;
-      left_fixity = FxOp 74;
-      right_fixity = FxOp 75;
+      left_fixity = FxOp 89;
+      right_fixity = FxOp 90;
     }
 
 let comma_sequence : binary_op =
@@ -851,8 +851,8 @@ let enumeration_comma_char = "、"
 let enumeration_comma_sequence_meta : binary_op_meta = {
       id = Uid.next();
       keyword = CS.new_t_string enumeration_comma_char;
-      left_fixity = FxOp 76;
-      right_fixity = FxOp 77;
+      left_fixity = FxOp 109;
+      right_fixity = FxOp 110;
     }
 let enumeration_comma_sequence : binary_op =
   {
@@ -866,6 +866,57 @@ let enumeration_comma_sequence : binary_op =
         push_elem_on_input_acc (A.fold_with_extent(A.N(N.Sequence enumeration_comma_char, [[], x; [], y])) per_ext)
   }
 
+
+let custom_operator_decl_start : unit proc_state_m = 
+  let* _ = read_one_of_string [CS.new_t_string "术"] in
+  let* (defn, defn_ext) = scan_until_one_of_string [CS.new_t_string "盖谓"] in
+  (* precheck if operators can be get *)
+  let* _ = UserDefinedOperators.get_operators_m defn (A.fold_with_extent(A.FreeVar("TRIVIAL")) defn_ext) in
+  (* if we can get operators (meaning this is at least well-formed, push the scanned thing onto the stack)*)
+  push_elem_on_input_acc (A.fold_with_extent(A.N(N.Builtin(N.CustomOperatorString defn), [])) defn_ext)
+  (* then we can scan the rest of the line *)
+  (* reduce the stack *)
+
+let custom_operator_decl_middle_uid = Uid.next()
+let custom_operator_decl_end_uid = Uid.next()
+let custom_operator_decl_middle_meta = 
+  {
+    id = custom_operator_decl_middle_uid;
+    keyword = CS.new_t_string "盖谓";
+    left_fixity = FxNone;
+    right_fixity = FxComp custom_operator_decl_end_uid;
+  }
+let custom_operator_decl_end_meta = 
+  {
+    id = custom_operator_decl_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp custom_operator_decl_middle_uid;
+    right_fixity = FxNone;
+  }
+let custom_operator_decl_middle : binary_op = 
+  {
+    meta = custom_operator_decl_middle_meta;
+    reduction = p_internal_error "BP104: custom_operator_decl_middle reduction";
+  }
+let custom_operator_decl_end : binary_op = 
+  {
+    meta = custom_operator_decl_end_meta;
+    reduction = 
+      let* (result, per_ext) = pop_postfix_operand custom_operator_decl_end_meta in
+      let* defn = pop_input_acc () in
+      match A.view defn with
+      | A.N(N.Builtin(N.CustomOperatorString oper_str), []) -> 
+        let* new_ops = UserDefinedOperators.get_operators_m oper_str result in
+        let* () = push_elem_on_input_acc (A.fold_with_extent
+                                    (A.N(N.Declaration(N.CustomOperatorDecl), [[], defn; [], result]))
+                                    (Ext.combine_extent (A.get_extent_some defn) per_ext)
+                                    ) in
+        print_endline ("Adding new Ops: " ^ String.concat ", " (List.map (fun x -> show_binary_op_meta x.meta) new_ops));
+        (* add new operators to the registry *)
+        let* () = add_processor_entry_list (List.map (to_processor_binary_op Expression "custom_ops") new_ops) in
+        return ()
+      | _ -> pfail ("ET109: Expected a scanned operator but got " ^ A.show_view defn)
+  }
 
 
 
@@ -923,6 +974,12 @@ let default_registry = [
   (* lists *)
   to_processor_binary_op Expression "comma_sequence" comma_sequence;
   to_processor_binary_op Expression "enumeration_comma_sequence" enumeration_comma_sequence;
+
+  (* custom operators*)
+  to_processor_complex Expression "custom_operator_decl_start" custom_operator_decl_start;
+  to_processor_binary_op Expression "custom_operator_decl_middle" custom_operator_decl_middle;
+  to_processor_binary_op Expression "custom_operator_decl_end" custom_operator_decl_end;
+
 
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;

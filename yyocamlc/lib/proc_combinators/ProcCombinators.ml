@@ -253,7 +253,7 @@ let scan_until_one_of_string (t : CS.t_string list) : ((CS.t_string * Ext.t) (* 
       let* c_result = ptry (read_any_char ()) in
       match c_result with
       | Some (c, ext) -> aux (acc@[(c, ext)])
-      | None -> pfail "PC211: scan_past_one_of_string: EOF encountered before string found"
+      | None -> pfail ("PC211: scan_past_one_of_string: EOF encountered before one of string found: " ^ (String.concat "," (List.map CharStream.get_t_string t)))
   in
   (* we pcut here because we either succeed ( there is a scan) or we fail in which case there is no scan
   we don't want to have multiple successful scans here
@@ -339,7 +339,7 @@ let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_
 let assert_is_not_op_keyword (elem : A.t) : unit proc_state_m =
   match A.view elem with
   | A.N(N.ParsingElem(N.OpKeyword(_)), []) -> 
-    pfail_with_ext ("PC247: check_is_not_op_keyword: expected not OpKeyword but got " ^ (A.show_view elem)) (A.get_extent_some elem)
+    pfail_with_ext ("PC342: check_is_not_op_keyword: expected not OpKeyword but got " ^ (A.show_view elem)) (A.get_extent_some elem)
   | _ -> 
     return ()
   
@@ -508,6 +508,9 @@ let push_elem_start (es : A.t) : unit proc_state_m =
           push_elem_on_input_acc es
       )
     | A.N(N.ModuleDef, _) 
+    | A.N(N.Builtin(N.CustomOperatorString _), _)  (* special tricks for parsing custom operatos because final operators will pop one more thing from the stack
+    TODO: maybe better if we have a shift-action in operators 
+      *)
     ->
       push_elem_on_input_acc es
     | _ -> 
@@ -603,7 +606,8 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
             | FxNone -> failwith ("PC559: FxNone should not be here " ^ (show_binary_op_meta oper.meta) ^ " " )
           )
       | _ -> 
-        pfail ("PC402: expecting " ^ (string_of_int comp_uid) ^ " but got " ^ (A.show_view x) ^ " ")
+        let* oper = lookup_binary_op comp_uid in
+        pfail ("PC402: expecting " ^ (show_binary_op_meta oper.meta) ^ " but got " ^ (A.show_view x) ^ " ")
 
 
 

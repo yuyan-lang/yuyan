@@ -74,6 +74,7 @@ module YYNode  = struct
                | Type
                | RaiseException
                | TryCatch
+                | CustomOperatorString of CS.t_string (* this is used for custom operators *)
 
 
   type parsing_elem = ScannedChar of CS.t_char
@@ -84,6 +85,7 @@ module YYNode  = struct
   type declaration = ConstantDefn 
                   | ConstantDecl 
                   | ConstructorDecl
+                  | CustomOperatorDecl
                   | DirectExpr
 
   type t = Builtin of builtin
@@ -112,6 +114,7 @@ module YYNode  = struct
     | Declaration ConstantDecl  -> Some([0; 0])
     | Declaration ConstructorDecl -> Some([0; 0])
     | Declaration DirectExpr -> Some([0])
+    | Declaration CustomOperatorDecl -> Some([0; 0])
     | StructureDeref (_) -> Some([0])
     | ModuleDef -> None
     | FileRef (_) -> Some([])
@@ -149,6 +152,7 @@ module YYNode  = struct
     | Type -> "Type"
     | RaiseException -> "RaiseException"
     | TryCatch -> "TryCatch"
+    | CustomOperatorString (s) -> "CustomOperatorString(" ^ show_string (CS.get_t_string s) ^ ")"
 
 
   let show_parsing_elem (p : parsing_elem) : string =
@@ -164,6 +168,7 @@ module YYNode  = struct
     | ConstantDecl -> "ConstantDecl"
     | ConstructorDecl -> "ConstructorDecl"
     | DirectExpr -> "DirectExpr"
+    | CustomOperatorDecl -> "CustomOperatorDecl"
 
 
   let show (t : t) : string =

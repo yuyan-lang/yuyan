@@ -179,3 +179,6 @@ let rec zip lst1 lst2 =
 
 let show_list (lst : 'a list) (f : 'a -> string) : string =
   "[" ^ String.concat "; " (List.map f lst) ^ "]"
+
+let forall_i (f : int -> 'a -> bool) (lst : 'a list) : bool =
+  List.for_all2 f (List.init (List.length lst) Fun.id) lst

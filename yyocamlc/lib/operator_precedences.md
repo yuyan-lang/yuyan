@@ -1,15 +1,15 @@
 I use md because of keybindings don't work for txt files. Treat this as a txt file.
 
 Name ?LP ?RP
-内建（）   200
-《《外部调用》》（） 200
-（）之（） 99 100 (* left assoc *)
+内建（）   2000
+《《外部调用》》（） 2000
+（）之（） 999 1000 (* left assoc *)
 （）之书   90
 观（）     80
-（）授以（） 79 80 (* bounds tighter when viewed from right indicates left-associative)
-（）于（） 79 80
-（）、（） 76 77
-（），（） 74 75
+（）授以（） 799 800 (* bounds tighter when viewed from right indicates left-associative)
+（）于（） 799 800
+（）、（） 109 110
+（），（） 89 90
 有（）则（）70
 （）或（）59 60
 受「」而（） 50
@@ -22,6 +22,7 @@ Name ?LP ?RP
 （）立（） 10 10
 （）也    5
 鉴（）而
+术（）盖谓（）也
 
 
 Other Reductions
