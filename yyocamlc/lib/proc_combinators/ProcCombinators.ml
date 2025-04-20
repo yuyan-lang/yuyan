@@ -21,6 +21,7 @@ let combine_failures ((cur_msg, cur_st) : (proc_error * proc_state) ) (prev : (p
       let to_add, rest = List.partition (fun (_, s) -> 
         s.input_expect = cur_st.input_expect
         && s.input_acc = cur_st.input_acc
+        (* && s.input_future.idx = cur_st.input_future.idx *)
         ) prev in
       match to_add with
       | [] -> ([cur_msg], cur_st) :: prev
@@ -31,7 +32,12 @@ let combine_failures ((cur_msg, cur_st) : (proc_error * proc_state) ) (prev : (p
             (cur_msg::xmsg, cur_st)::rest
       | _ -> failwith "PC27: multiple failures with same input state"
   else if cur_idx > prev_idx then
-    [([cur_msg], cur_st)]
+    (
+      (* match cur_msg with
+      | ErrExpectString _ -> ([cur_msg], cur_st) :: prev (* more input is consumed to produce this error, so should not drop previous ones*)
+      | _ ->  *)
+        [([cur_msg], cur_st)]
+    )
   else
     prev
 
@@ -591,6 +597,8 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
 
 
 
+
+let yy_keyword_chars = CharStream.new_t_string "。（）「」『』"
 let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc_state_m = 
   let {id=_;keyword;left_fixity;right_fixity} = meta in
   let* () = if !Flags.show_parse_tracing then (
@@ -624,8 +632,11 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
           match middle_id with
           | [] -> pfail ("PC335: got empty string for binding")
           | _ -> 
-              let* _ = push_elem_on_input_acc (PE.get_bound_scanned_string_t (middle_id, id_ext)) in
-              return ()
+              if List.exists (fun x -> List.mem x yy_keyword_chars) middle_id then
+                pfail_with_ext ("PC336: got binding " ^ ( CS.get_t_string middle_id) ^ " which contains keywords " ) (id_ext)
+              else
+                let* _ = push_elem_on_input_acc (PE.get_bound_scanned_string_t (middle_id, id_ext)) in
+                return ()
         )
     | _ -> return ()) in
   (* reduce the operator*)
@@ -677,7 +688,11 @@ let collect_input_acc_identifiers() : CS.t_string list proc_state_m =
     | _ ->  List.map (CS.new_t_string) (A.get_free_vars y) in
     aux x
     ) s.input_acc) in
-  return all_scanned_ids
+  let all_existing_ids = List.filter_map (fun x -> 
+    match x.processor with
+    | ProcIdentifier id -> Some id
+    | _ -> None) s.registry in
+  return (ListUtil.minus all_scanned_ids all_existing_ids)
 
 let run_input_acc_identifiers () : unit proc_state_m = 
   let* all_scanned_ids = collect_input_acc_identifiers () in

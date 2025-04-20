@@ -58,7 +58,10 @@ let do_process_step  () : unit proc_state_m =
   (* run the usual processors, if none of succeeded, look for bound identifiers
     if some processor succeeded, discard the bound identifiers
     *)
-  choice_cut (
+  (* choice cut has the unnecessary side effct that if only part of a known name belong to an identifier, then that part is also parsed *)
+  (* choice_cut *)
+  choice 
+  (
     choice_l (List.map run_processor_entry st.registry)  
   ) (
     run_input_acc_identifiers ()
@@ -161,9 +164,20 @@ let run_top_level (filename: string)(content : string) : A.t =
     (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
     s
   | Ok [] -> failwith ("ET76: No final state found")
-  | Ok _ -> 
-    (* print_endline ("Final states: " ^ (Environment.show_environment_list ys)); *)
-    failwith ("ET79: Multiple final states found")
+  | Ok (ss) -> 
+    if List.for_all (fun s -> A.eq_abt s (List.hd ss)) ss
+      then 
+        (
+        print_endline ("Final states: " ^ (string_of_int (List.length ss)) ^ " interpretations (CHECK YOUR PARSER) \n");
+        List.hd ss
+        )
+      else
+        (
+        print_endline ("Final states: " ^ (string_of_int (List.length ss)) ^ "\n" ^
+        String.concat "\n" (List.map A.show_view ss));
+        failwith ("ET79: Multiple final states found")
+        )
+
 
   | Error (_msg, s) -> 
     (

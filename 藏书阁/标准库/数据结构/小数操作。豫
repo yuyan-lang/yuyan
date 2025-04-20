@@ -17,12 +17,12 @@
 减者会甲而会乙而《《外部调用》》『yyDoubleSub』于甲于乙也。
 
 「小数表示」乃化小数而字符串也。
-小数表示者会甲而《《外部调用》》『yyDoubleToString』传甲也。
+小数表示者会甲而《《外部调用》》『yyDoubleToString』于甲也。
 
 「表示」乃化小数而字符串也。
-表示者会甲而《《外部调用》》『yyDoubleToString』传甲也。
+表示者会甲而《《外部调用》》『yyDoubleToString』于甲也。
 
 
 
 「理解小数」乃化字符串而小数也。
-理解小数者会甲而《《外部调用》》『yyStringToDouble』传甲也。
+理解小数者会甲而《《外部调用》》『yyStringToDouble』于甲也。

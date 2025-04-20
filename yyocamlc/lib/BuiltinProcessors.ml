@@ -8,8 +8,6 @@ module CS = CharStream
 module Env = Environment
   
 
-
-let yy_keyword_chars = CharStream.new_t_string "。（）「」『』"
 (* let top_level_identifier_pusher : unit proc_state_m = 
   read_any_char_except_and_push (CharStream.new_t_string "。（）「」『』\n\t\r"@[" "]) *)
 
@@ -704,6 +702,52 @@ let external_call : binary_op =
         | _ -> pfail ("BP693: Builtin Expected a string but got " ^ A.show_view oper)
   }
   
+let if_then_else_start_uid = Uid.next()
+let if_then_else_mid1_uid = Uid.next()
+let if_then_else_mid2_uid = Uid.next()
+
+let if_then_else_start_meta = 
+  {
+    id = if_then_else_start_uid;
+    keyword = CS.new_t_string "若";
+    left_fixity = FxNone;
+    right_fixity = FxComp if_then_else_mid1_uid;
+  }
+let if_then_else_mid1_meta = 
+  {
+    id = if_then_else_mid1_uid;
+    keyword = CS.new_t_string "则";
+    left_fixity = FxComp if_then_else_start_uid;
+    right_fixity = FxComp if_then_else_mid2_uid;
+  }
+let if_then_else_mid2_meta = 
+  {
+    id = if_then_else_mid2_uid;
+    keyword = CS.new_t_string "否则";
+    left_fixity = FxComp if_then_else_mid1_uid;
+    right_fixity = FxOp 60;
+  }
+
+let if_then_else_start : binary_op = 
+  {
+    meta = if_then_else_start_meta;
+    reduction = p_internal_error "BP104: if_then_else_start reduction";
+  }
+let if_then_else_mid1 : binary_op = 
+  {
+    meta = if_then_else_mid1_meta;
+    reduction = p_internal_error "BP104: if_then_else_mid1 reduction";
+  }
+let if_then_else_mid2 : binary_op = 
+  {
+    meta = if_then_else_mid2_meta;
+    reduction = 
+      let* ((cond, then_expr, else_expr), per_ext) = pop_op_operands_from_second_top_3 if_then_else_mid2_meta in
+      let result_expr = A.fold_with_extent (A.N(N.IfThenElse, [[], cond; [], then_expr; [], else_expr])) per_ext in
+      push_elem_on_input_acc result_expr
+  }
+
+
 
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
@@ -743,6 +787,12 @@ let default_registry = [
   to_processor_binary_op Expression "double_parenthesis_left" double_parenthesis_left;
   to_processor_binary_op Expression "double_parenthesis_right" double_parenthesis_right;
   to_processor_binary_op Expression "external_call" external_call;
+
+  (* if *)
+  to_processor_binary_op Expression "if_then_else_start" if_then_else_start;
+  to_processor_binary_op Expression "if_then_else_mid1" if_then_else_mid1;
+  to_processor_binary_op Expression "if_then_else_mid2" if_then_else_mid2;
+
 
 ] @ List.concat [
 to_processor_complex_list [Expression] "identifier_parser_pusher" identifier_parser_pusher;
