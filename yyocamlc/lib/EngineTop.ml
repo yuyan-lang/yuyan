@@ -90,37 +90,39 @@ let print_proc_errors (msg : proc_error list) : string =
     if expecting_str <> "" && other_str <> "" then "\n" else ""
   ) ^ other_str
 
-let extract_all_result (st : proc_state) (processor : 'a proc_state_m) 
-  (on_success : 'a list -> 'c ) (on_failure : 'b -> 'c) : 'c =
+let extract_all_result (st : proc_state) (processor : A.t proc_state_m) 
+  (on_success : A.t list -> 'c ) (on_failure : proc_state -> 'c) : 'c =
   let result = ref [] in
-  let failure = ref None in
-  let final_handling () = 
-    (
-      if !result = [] then
-        let (msg, final_s) = Option.get !failure in
-        (* print_endline ("Final state: " ^ (Environment.show_environment final_s.store)); *)
-        on_failure (msg, final_s)
-      else
-        (* print_endline ("Final state: " ^ (Environment.show_environment st.store)); *)
-        on_success !result
-    )
-    in
-  processor {st  with top_failure_handler = fun _ -> final_handling()}
-    (fun (msg, final_s) -> 
-      if msg <> ErrOther "top_level_backtrack_backtrack" 
-        then failure := Some(msg, final_s)
-      (* ; print_endline "FAILED" *)
+  let _ = processor 
+      {st  with top_failure_handler = fun s -> 
+        if List.is_empty !result
+          then on_failure s
+          else on_success !result
+      }
+      (fun (final_s) -> 
+        if List.is_empty !result
+          then
+            on_failure final_s
+          else 
+            on_success !result
+        ) 
+      (fun (r, st') fail_c -> 
+        result := r :: !result;
+        (* print_endline ("EXTRACTALL SUCCESS CALLED" ^ show_proc_state st'); *)
+        (* print_endline (">104>>>! result lengt is: " ^ string_of_int (List.length !result) ^ "\n" ); *)
+        (* clear st' failure tracking as we now succeeded*)
+        (* print_endline ("EXTRACTALL SUCCESS CALLED" ^ show_proc_state st' 
+        ^ " OF WHICH FAILURES ARE " ^ (print_proc_errors (List.concat_map fst st'.failures)) ^ "\n" 
+        ); *)
+        fail_c ({st' with failures = []})
       ) 
-    (fun (r, st') fail_c -> 
-      result := r :: !result;
-      (* print_endline (">104>>>! result lengt is: " ^ string_of_int (List.length !result) ^ "\n" ); *)
-      (* clear st' failure tracking as we now succeeded*)
-      (* print_endline ("EXTRACTALL SUCCESS CALLED" ^ show_proc_state st' 
-      ^ " OF WHICH FAILURES ARE " ^ (print_proc_errors (List.concat_map fst st'.failures)) ^ "\n" 
-      ); *)
-      fail_c (ErrOther "top_level_backtrack_backtrack", {st' with failures = []})
-    );
-  final_handling ()
+  in
+    if List.is_empty !result
+      then 
+        failwith ("SHould not reach here, no result found")
+    else
+      (* print_endline ("Final state: " ^ (Environment.show_environment st.store)); *)
+      on_success !result
 
 
 
@@ -137,11 +139,11 @@ let run_top_level (filename: string)(content : string) : A.t =
     registry = BuiltinProcessors.default_registry;
     last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");
     failures = []; (* this is backtracking to top level, directly pass this to handle*)
-    top_failure_handler = (fun (_, _) -> failwith "Should set top level failure on parse entry");
+    top_failure_handler = (fun (_) -> failwith "Should set top level failure on parse entry");
   } in
   let exception Return of A.t in
   try 
-    extract_all_result initial_state (do_process_entire_stream ()) 
+    let _ = extract_all_result initial_state (do_process_entire_stream ()) 
     (fun successes ->
       match successes  with
       | [s] -> 
@@ -162,7 +164,7 @@ let run_top_level (filename: string)(content : string) : A.t =
             failwith ("ET79: Multiple final states found")
             )
     )
-    (fun (_, s) -> 
+    (fun (s) -> 
       (
       print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n========================\n" 
         ^ String.concat "\n" (List.mapi (fun i (msg, s) -> 
@@ -171,7 +173,7 @@ let run_top_level (filename: string)(content : string) : A.t =
       ) s.failures));
       failwith ("Compilation Failed");
       )
-    );
+    ) in
     failwith ("ET80: Should not reach here")
   with
   | Return s -> s

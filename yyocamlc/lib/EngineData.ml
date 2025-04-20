@@ -227,6 +227,8 @@ type proc_error = ErrExpectString of {
   actual: CS.t_char * Ext.t;
  } | ErrOther of string | ErrWithExt of string * Ext.t
 
+type void = |
+type monad_ret_tp = void
 (* processing state *)
 type proc_state = {
   input_future : CharStream.t;
@@ -237,11 +239,11 @@ type proc_state = {
   registry : processor_registry;
   last_succeeded_processor : processor_entry; (* for debugging on parsing *)
   failures : (proc_error list * proc_state) list;
-  top_failure_handler : failure_handler_arg_type -> unit; (* this is the top-level failure handler for cutting off 
+  top_failure_handler : failure_handler_arg_type -> monad_ret_tp; (* this is the top-level failure handler for cutting off 
   backtracking. Useful a combinator to commit (e.g. if subsequent things fail, instead of 
     backtracking to the failure continuation that I am given, call this to return top level) *)
 }
-and failure_handler_arg_type = (proc_error * proc_state)
+and failure_handler_arg_type = proc_state
 and processor = ProcComplex of unit proc_state_m
               | ProcBinOp of binary_op 
               | ProcIdentifier of CharStream.t_string (* these two only run in the Expression environment*)
@@ -253,9 +255,9 @@ and processor_entry = {
 }
 and processor_registry = processor_entry list
 and 'a proc_state_m = proc_state 
-                      -> (failure_handler_arg_type -> unit) (* failure continuation*) 
-                      -> (('a * proc_state) -> (failure_handler_arg_type -> unit) -> unit) (* success continuation *) 
-                      -> unit
+                      -> (failure_handler_arg_type -> monad_ret_tp) (* failure continuation*) 
+                      -> (('a * proc_state) -> (failure_handler_arg_type -> monad_ret_tp) -> monad_ret_tp) (* success continuation *) 
+                      -> monad_ret_tp
 and binary_op = {
   meta: binary_op_meta;
   reduction : unit proc_state_m; (* reduction will be invoked if 

@@ -347,35 +347,64 @@ let module_open : binary_op =
       (* push_elem_on_input_acc (A.annotate_with_extent node per_ext) *)
   }
 
+let const_decl_middle_uid = Uid.next()
+let const_decl_end_uid = Uid.next()
 let const_decl_middle_meta : binary_op_meta = 
   {
-    id = Uid.next();
+    id = const_decl_middle_uid;
     keyword = CS.new_t_string "乃";
     left_fixity = FxOp 10;
-    right_fixity = FxOp 10;
+    right_fixity = FxComp const_decl_end_uid;
+  }
+let const_decl_end_meta : binary_op_meta = 
+  {
+    id = const_decl_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp const_decl_middle_uid;
+    right_fixity = FxNone;
   }
 let const_decl_middle : binary_op = 
   {
     meta = const_decl_middle_meta;
-    reduction = 
-      let* ((name, defn), ext) = pop_bin_operand const_decl_middle_meta in
+    reduction = p_internal_error "BP104: const_decl_middle reduction";
+  }
+let const_decl_end : binary_op =
+  {
+    meta = const_decl_end_meta;
+    reduction =
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 const_decl_end_meta in
       let* () = assert_is_free_var name in
       push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), [[], name; [], defn]))) ext)
   }
 
+let constructor_decl_middle_uid = Uid.next()
+let constructor_decl_end_uid = Uid.next()
 
 let constructor_decl_middle_meta : binary_op_meta = 
   {
-    id = Uid.next();
+    id = constructor_decl_middle_uid;
     keyword = CS.new_t_string "立";
     left_fixity = FxOp 10;
-    right_fixity = FxOp 10;
+    right_fixity = FxComp constructor_decl_end_uid;
+  }
+let constructor_decl_end_meta : binary_op_meta = 
+  {
+    id = constructor_decl_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp constructor_decl_middle_uid;
+    right_fixity = FxNone;
   }
 
 let constructor_decl_middle : binary_op = {
     meta = constructor_decl_middle_meta;
     reduction = 
-      let* ((name, defn), ext) = pop_bin_operand constructor_decl_middle_meta in
+      p_internal_error "BP104: constructor_decl_middle reduction";
+  }
+let constructor_decl_end : binary_op =
+  {
+    meta = constructor_decl_end_meta;
+    reduction =
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 constructor_decl_end_meta in
       let* () = assert_is_free_var name in
       push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), [[], name; [], defn]))) ext)
 }
@@ -657,21 +686,7 @@ let explicit_ap : binary_op =
   }
 
 
-  let statement_end_meta : binary_op_meta = 
-    {
-      id = Uid.next();
-      keyword = CS.new_t_string "也";
-      left_fixity = FxOp 5;
-      right_fixity = FxNone
-    }
-  let statement_end : binary_op = 
-    {
-      meta = statement_end_meta;
-      reduction = 
-        let* (oper, per_ext) = pop_postfix_operand statement_end_meta in
-        push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
-    }
-  
+
   let sentence_end_fail (module_expr : A.t) (decl_expr : A.t) : unit proc_state_m = 
     let* st = get_proc_state () in
     pfail ("BP678: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl_expr
@@ -1010,12 +1025,14 @@ let default_registry = [
   to_processor_binary_op Expression "library_root" library_root;
   to_processor_binary_op Expression "unknown_structure_deref" unknown_structure_deref;
   (* to_processor_complex Expression "known_structure_deref" known_structure_deref; *)
-  to_processor_binary_op Expression "statement_end" statement_end;
+  (* to_processor_binary_op Expression "statement_end" statement_end; *)
   to_processor_complex Expression "sentence_end" sentence_end;
   to_processor_binary_op Expression "builtin_op" builtin_op;
   to_processor_binary_op Expression "module_open" module_open;
   to_processor_binary_op Expression "const_decl_middle" const_decl_middle;
+  to_processor_binary_op Expression "const_decl_end" const_decl_end;
   to_processor_binary_op Expression "constructor_decl_middle" constructor_decl_middle;
+  to_processor_binary_op Expression "constructor_decl_end" constructor_decl_end;
   to_processor_binary_op Expression "left_parenthesis" left_parenthesis;
   to_processor_binary_op Expression "right_parenthesis" right_parenthesis;
   to_processor_binary_op Expression "explicit_pi_start" explicit_pi_start;

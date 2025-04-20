@@ -42,6 +42,10 @@ let combine_failures ((cur_msg, cur_st) : (proc_error * proc_state) ) (prev : (p
     prev
 
 
+let push_failure_to_s ((cur_msg, cur_st) : proc_error * proc_state) (s : proc_state) : proc_state = 
+  let new_failures = combine_failures (cur_msg, cur_st) s.failures in
+  {s with failures = new_failures}
+
 let pfail_error (msg : proc_error) : 'a proc_state_m = 
     fun s fc _sc -> 
       if !Flags.show_parse_progress
@@ -51,7 +55,7 @@ let pfail_error (msg : proc_error) : 'a proc_state_m =
           | ErrWithExt (s, ext) -> print_endline ("Failed because: " ^ s ^ " " ^ Ext.show_extent ext)
           | _ -> ()
         );
-      fc (msg, {s with failures = combine_failures (msg, s) s.failures})
+      fc (push_failure_to_s (msg, s) s) 
 
 let pfail (msg : string) : 'a proc_state_m = 
   pfail_error (ErrOther msg)
@@ -75,11 +79,13 @@ let p_internal_error (msg : string) : unit proc_state_m =
 let ignore () : unit proc_state_m = 
   return ()
 
+let do_nothing : unit proc_state_m = return ()
+
 (* pnot m fails if m succeeds, succeeds without consuming inputs when m fails *)
   (* it is a convention that all things do not consume inputs *)
 let pnot (m : 'a proc_state_m) : unit proc_state_m = 
     fun s fc sc -> 
-      m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc (ErrOther "pnot_fail", s))
+      m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc (push_failure_to_s (ErrOther "pnot_fail", s) s))
 
 let bind  (m : 'a proc_state_m) (f: 'a -> 'b proc_state_m) : 'b proc_state_m = 
     fun s fc sc -> 
@@ -120,7 +126,7 @@ let assertb (b : bool) : unit proc_state_m =
 (* failures in m1 gets passed to m2 *)
 let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m = 
   fun s fc sc  -> 
-    m1 s (fun (_, s') -> m2 {s with failures = s'.failures} fc sc) (fun (x, s') fc' -> sc (x, s') fc')
+    m1 s (fun (s') -> m2 {s with failures = s'.failures} fc sc) (fun (x, s') fc' -> sc (x, s') fc')
 
 let choice_l (ms : 'a proc_state_m list) : 'a proc_state_m = 
   match ms with
@@ -134,12 +140,12 @@ let choice_l (ms : 'a proc_state_m list) : 'a proc_state_m =
 let choice_cut (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m = 
   fun s fc sc  -> 
     let success_found = ref false in
-    m1 s (fun (msg, s') -> 
+    m1 s (fun (s') -> 
       (* when m1 eventually fails, read the success found flag to determine 
       if it has succeeded*)
         if !success_found 
           (* if succeeded, do not backtrack into m2*)
-          then (fc (msg, s'))
+          then (fc s')
           (* if not succeeded, backtrack into m2*)
           else (m2 {s with failures = s'.failures} fc sc)
       ) 
