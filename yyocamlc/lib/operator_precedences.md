@@ -24,6 +24,10 @@ Name ?LP ?RP
 鉴（）而
 术（）盖谓（）也
 
+StdLib
+
+（）且（） 340 339
+
 
 Other Reductions
 （）。   Reduces anything >= 0

@@ -259,8 +259,21 @@ and binary_op = {
 
 let compilation_manager_get_file_hook  : (string (* filepath *) ->  A.t option) ref =  ref (fun _ -> failwith "compilation_manager_get_file_hook not set")
 
+let pretty_print_elem (x : A.t) : string = 
+  match A.view x with
+  | A.N(N.ModuleDef, args) -> (
+    match List.rev args with
+    | ([], x)::([], y)::args ->
+        "ModuleDef( " 
+        ^ string_of_int (List.length args) ^ " elements + "
+        ^ A.show_view x ^ ", " ^
+        A.show_view y ^ ", " ^ ")"
+    | _ -> A.show_view x
+  )
+  | _ -> A.show_view x
+
 let show_input_acc (acc : A.t list) : string =
-  "[" ^ String.concat ";\n " (List.map A.show_view acc) ^ "]"
+  "[" ^ String.concat ";\n " (List.map pretty_print_elem acc) ^ "]"
 let show_input_expect (e : expect) : string =
   match e with
   | Expression -> "Expression"
