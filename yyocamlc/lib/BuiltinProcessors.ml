@@ -14,22 +14,9 @@ module Env = Environment
 let top_level_empty_space_ignore : unit proc_state_m = 
   read_one_of_char (CharStream.new_t_string " \n\t\r") >> ignore ()
 
-(* parses a single identifier identifier is something that is quoted between 「 and 」 and without special chars 
-*)
-let identifier_parser : (CS.t_string * Ext.t) proc_state_m = 
-  let* _ = pnot (read_string (CS.new_t_string "「：")) in
-  let* _ = read_one_of_char [CS.new_t_char "「"] in
-  let* ((middle, middle_ext), (terminal, _)) = scan_past_one_of_char yy_keyword_chars in
-  if CS.get_t_char terminal = "」" then
-    match middle with
-    | [] -> failwith ("Unit pattern not implemented")
-    | _ -> return (middle, middle_ext)
-  else
-    pfail ("ET100: Expected '」' but got " ^ CS.get_t_char terminal)
-
 
 let identifier_parser_pusher : unit proc_state_m = 
-  let* id = identifier_parser in
+  let* id = identifier_parser () in
   push_elem_on_input_acc (PElem.get_identifier_t id)
 
 let string_parser_pusher : unit proc_state_m = 
@@ -725,7 +712,7 @@ let if_then_else_mid2_meta =
     id = if_then_else_mid2_uid;
     keyword = CS.new_t_string "否则";
     left_fixity = FxComp if_then_else_mid1_uid;
-    right_fixity = FxOp 60;
+    right_fixity = FxOp 80;
   }
 
 let if_then_else_start : binary_op = 

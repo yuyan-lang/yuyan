@@ -612,7 +612,21 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
 
 
 
+
+(* parses a single identifier identifier is something that is quoted between 「 and 」 and without special chars 
+*)
 let yy_keyword_chars = CharStream.new_t_string "。（）「」『』"
+let identifier_parser () : (CS.t_string * Ext.t) proc_state_m = 
+  let* _ = pnot (read_string (CS.new_t_string "「：")) in
+  let* _ = read_one_of_char [CS.new_t_char "「"] in
+  let* ((middle, middle_ext), (terminal, _)) = scan_past_one_of_char yy_keyword_chars in
+  if CS.get_t_char terminal = "」" then
+    match middle with
+    | [] -> failwith ("Unit pattern not implemented")
+    | _ -> return (middle, middle_ext)
+  else
+    pfail ("ET100: Expected '」' but got " ^ CS.get_t_char terminal ^ " expecting 「id」 or 「「expr」」 or 「：comments：」")
+
 let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc_state_m = 
   let {id=_;keyword;left_fixity;right_fixity} = meta in
   let* () = if !Flags.show_parse_tracing then (
@@ -641,16 +655,26 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
   let* _ = (match right_fixity with
     | FxBinding end_str_op_uid -> 
         let* oper = lookup_binary_op end_str_op_uid in
-        let* ((middle_id, id_ext)) = scan_until_one_of_string [oper.meta.keyword] in
-        (
-          match middle_id with
-          | [] -> pfail ("PC335: got empty string for binding")
-          | _ -> 
-              if List.exists (fun x -> List.mem x yy_keyword_chars) middle_id then
-                pfail_with_ext ("PC336: got binding " ^ ( CS.get_t_string middle_id) ^ " which contains keywords " ) (id_ext)
-              else
-                let* _ = push_elem_on_input_acc (PE.get_bound_scanned_string_t (middle_id, id_ext)) in
-                return ()
+        (* we have a single chance of succeeding, either parse an id or scan *)
+        pcut (choice
+          (
+            let* (id, ext) = identifier_parser () in
+            push_elem_on_input_acc (PE.get_bound_scanned_string_t (id, ext))
+          ) (* *)
+          (
+            let* ((middle_id, id_ext)) = scan_until_one_of_string [oper.meta.keyword] in
+            (
+              match middle_id with
+              | [] -> pfail ("PC335: got empty string for binding")
+              | _ -> 
+                let disallowed_chars_in_binding = CharStream.new_t_string "。（）「」『』 \n\t，、" in
+                  if List.exists (fun x -> List.mem x disallowed_chars_in_binding) middle_id then
+                    pfail_with_ext ("PC336: got binding 『" ^ ( CS.get_t_string middle_id) ^ "』 which contains disallowed_chars " ^ (show_string (CS.get_t_string disallowed_chars_in_binding)) ) (id_ext)
+                  else
+                    let* _ = push_elem_on_input_acc (PE.get_bound_scanned_string_t (middle_id, id_ext)) in
+                    return ()
+            )
+          )
         )
     | _ -> return ()) in
   (* reduce the operator*)
