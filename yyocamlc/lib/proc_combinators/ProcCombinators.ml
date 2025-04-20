@@ -730,10 +730,13 @@ let collect_input_acc_identifiers() : CS.t_string list proc_state_m =
     match x.processor with
     | ProcIdentifier id -> Some id
     | _ -> None) s.registry in
+  (* print_endline ("PC100: all scanned ids " ^ (String.concat "," (List.map CS.get_t_string all_scanned_ids))); *)
+  (* print_endline ("PC100: all existing ids " ^ (String.concat "," (List.map CS.get_t_string all_existing_ids))); *)
   return (ListUtil.minus all_scanned_ids all_existing_ids)
 
 let run_input_acc_identifiers () : unit proc_state_m = 
   let* all_scanned_ids = collect_input_acc_identifiers () in
+  (* print_endline ("PC100: running identifiers " ^ (String.concat "," (List.map CS.get_t_string all_scanned_ids))); *)
   choice_l (List.map (fun x -> 
     run_processor_entry (to_processor_identifier Expression "bid" x)
     ) all_scanned_ids)

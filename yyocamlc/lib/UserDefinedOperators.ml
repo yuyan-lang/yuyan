@@ -37,7 +37,7 @@ let rec parse_operator_name (cur_acc : CS.t_string) (input : CS.t_string) : oper
     | _ -> [Keyword (cur_acc)]
   )
   | (x :: xs) -> (
-    if x = CS.new_t_char "（"
+    if x = CS.new_t_char "「"
       then
         let rec submatch subacc xs = 
           (* print_endline ("Submatching: " ^ CS.get_t_string xs);
@@ -45,7 +45,7 @@ let rec parse_operator_name (cur_acc : CS.t_string) (input : CS.t_string) : oper
           match xs with
           | [] -> failwith "Unmatched opening parenthesis"
           | (y :: ys) -> (
-            if y = CS.new_t_char "）" then
+            if y = CS.new_t_char "」" then
               match subacc with
               | [] -> failwith "Empty parenthesis, need to have a name or a precedence number"
               | _ -> Parenthetical (subacc) :: parse_operator_name [] ys

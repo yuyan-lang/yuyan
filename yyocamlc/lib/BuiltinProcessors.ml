@@ -264,13 +264,40 @@ let get_module_expr_defined_names (m : A.t) : (string * Ext.t) list proc_state_m
           | A.FreeVar(x) -> Some (x, A.get_extent_some name)
           | _ -> failwith ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name)
           )
+        | A.N(N.Declaration(N.CustomOperatorDecl), _) -> None
         | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view arg)
       ) args
     )
     | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
     ) in
   return (ListUtil.remove_duplicates all_names)
+let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m = 
+  let all_names = 
+    (match A.view m with
+    | A.N(N.ModuleDef, args) -> (
+      List.filter_map (fun (_, arg) -> 
+        match A.view arg with
+        | A.N(N.Declaration(N.ConstantDefn), _)
+        | A.N(N.Declaration(N.ConstructorDecl), _)
+        | A.N(N.Declaration(N.ConstantDecl), _) ->
+          (
+            None
+          )
+        | A.N(N.Declaration(N.CustomOperatorDecl), ([], op)::([], elab)::[]) -> (
+          match A.view op with
+          | A.N(N.Builtin(N.CustomOperatorString(x)), []) -> 
+            let all_ops = UserDefinedOperators.get_operators x elab in
+            Some(all_ops)
 
+          | _ -> failwith ("BP279: Expected a string but got " ^ A.show_view op)
+        )
+        | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view arg)
+      ) args
+    )
+    | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
+    ) in
+  return (List.concat all_names)
+  
 let module_open : binary_op = 
   {
     meta = module_open_meta;
@@ -281,6 +308,7 @@ let module_open : binary_op =
         | A.N(N.FileRef(path), []) -> (
           let* file_content = get_file_ref path in
           let* all_names = get_module_expr_defined_names file_content in
+          let* all_custom_ops = get_module_expr_defined_custom_ops file_content in
           (* add new operators corresponding to the names in the file *)
           let ops = List.map (fun (name, _ext) -> 
             let meta = {
@@ -298,7 +326,9 @@ let module_open : binary_op =
             } in
             to_processor_binary_op Expression ("open_module_"^name) name_oper
             ) all_names in
-          add_processor_entry_list ops
+          add_processor_entry_list (ops @
+          (List.map (to_processor_binary_op Expression "imported_ops") all_custom_ops))
+          (* add new operators corresponding to the custom ops in the file *)
           (* DO WE NEED TO PUSH SOMETHING TO THE INPUT ACCUM? *)
         )
         (* | A.FreeVar(x) -> 
