@@ -334,7 +334,14 @@ let assert_is_correct_operand (meta : binary_op_meta) (elem : PE.t) : unit proc_
     else
       pfail ("check_is_operand: expected " ^ (show_binary_op_meta meta) ^ " but got " ^ (show_binary_op_meta kop))
   | _ -> 
-    failwith ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ (A.show_view elem))
+    print_failwith ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ (A.show_view elem))
+
+let assert_is_not_op_keyword (elem : A.t) : unit proc_state_m =
+  match A.view elem with
+  | A.N(N.ParsingElem(N.OpKeyword(_)), []) -> 
+    pfail_with_ext ("PC247: check_is_not_op_keyword: expected not OpKeyword but got " ^ (A.show_view elem)) (A.get_extent_some elem)
+  | _ -> 
+    return ()
   
 let lookup_binary_op (meta_id : int) : binary_op proc_state_m = 
   let* s = get_proc_state () in
@@ -361,10 +368,12 @@ let pop_op_operands_from_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) pr
         | FxNone -> return ([], top_extent)
         | FxOp _ -> (
           let* next_op = pop_input_acc() in
+          let* () = assert_is_not_op_keyword next_op in
           return ([next_op], Ext.combine_extent (A.get_extent_some next_op) top_extent)
         )
         | FxBinding prev_op_uid | FxComp prev_op_uid -> (
           let* comp = pop_input_acc() in
+          let* () = assert_is_not_op_keyword comp in
           let* prev_op_meta = lookup_binary_op prev_op_uid in
           let* (rest_ops, rest_ext) = f prev_op_meta.meta in
           return ((rest_ops@[comp]), Ext.combine_extent rest_ext top_extent)
@@ -376,6 +385,7 @@ let pop_op_operands_from_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) pr
 
 let pop_op_operands_from_second_top (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
   let* top_operand = pop_input_acc() in
+  let* _ = assert_is_not_op_keyword top_operand in
   let* (all_oprands, ext) = pop_op_operands_from_top binop in
   return (all_oprands@[top_operand], Ext.combine_extent (ext) (A.get_extent_some top_operand))
 

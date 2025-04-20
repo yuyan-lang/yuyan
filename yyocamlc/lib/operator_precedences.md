@@ -8,6 +8,8 @@ Name ?LP ?RP
 观（）     80
 （）授以（） 79 80 (* bounds tighter when viewed from right indicates left-associative)
 （）于（） 79 80
+有（）则（）70
+（）或（）59 60
 受「」而（） 50
 会「」而（） 50
 化（）者「」而（）40
@@ -17,6 +19,7 @@ Name ?LP ?RP
 （）乃（） 10 10
 （）立（） 10 10
 （）也    5
+鉴（）而
 
 
 Other Reductions

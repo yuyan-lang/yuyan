@@ -747,6 +747,86 @@ let if_then_else_mid2 : binary_op =
       push_elem_on_input_acc result_expr
   }
 
+let match_subject_start_uid = Uid.next()
+let match_subject_end_uid = Uid.next()
+let match_subject_start_meta = 
+  {
+    id = match_subject_start_uid;
+    keyword = CS.new_t_string "鉴";
+    left_fixity = FxNone;
+    right_fixity = FxComp match_subject_end_uid;
+  }
+let match_subject_end_meta = 
+  {
+    id = match_subject_end_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxComp match_subject_start_uid;
+    right_fixity = FxNone;
+  }
+let match_subject_start : binary_op = 
+  {
+    meta = match_subject_start_meta;
+    reduction = p_internal_error "BP104: match_subject_start reduction";
+  }
+let match_subject_end : binary_op = 
+  {
+    meta = match_subject_end_meta;
+    reduction = 
+      let* (oper, per_ext) = pop_op_operands_from_top_1 match_subject_end_meta in
+      push_elem_on_input_acc (A.fold_with_extent (A.N(N.Match, [[], oper])) per_ext)
+  }
+
+let match_case_start_uid = Uid.next()
+let match_case_mid_uid = Uid.next()
+let match_case_start_meta = 
+  {
+    id = match_case_start_uid;
+    keyword = CS.new_t_string "有";
+    left_fixity = FxNone;
+    right_fixity = FxComp match_case_mid_uid;
+  }
+let match_case_mid_meta = 
+  {
+    id = match_case_mid_uid;
+    keyword = CS.new_t_string "则";
+    left_fixity = FxComp match_case_start_uid;
+    right_fixity = FxOp 70;
+  }
+let match_case_start : binary_op = 
+  {
+    meta = match_case_start_meta;
+    reduction = p_internal_error "BP104: match_case_start reduction";
+  }
+let match_case_mid : binary_op = 
+  {
+    meta = match_case_mid_meta;
+    reduction = 
+      let* ((case_expr, then_expr), per_ext) = pop_op_operands_from_second_top_2 match_case_mid_meta in
+      let result_expr = A.fold_with_extent (A.N(N.MatchCase, [[], case_expr; [], then_expr])) per_ext in
+      push_elem_on_input_acc result_expr
+  }
+
+let match_case_alternative_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "或";
+    left_fixity = FxOp 59;
+    right_fixity = FxOp 60;
+  }
+let match_case_alternative : binary_op = 
+  {
+    meta = match_case_alternative_meta;
+    reduction = 
+      let* ((case_expr, then_expr), per_ext) = pop_bin_operand match_case_alternative_meta in
+      match A.view case_expr with
+      | A.N(N.MatchCase, args) -> 
+        let new_case_expr = A.fold(A.N(N.MatchCase, args@[[], then_expr])) in
+        push_elem_on_input_acc (A.annotate_with_extent new_case_expr per_ext)
+      | _ -> pfail ("ET108: Expected a match case but got " ^ A.show_view case_expr)
+  }
+
+
+
 
 
 let default_registry = [
@@ -792,6 +872,13 @@ let default_registry = [
   to_processor_binary_op Expression "if_then_else_start" if_then_else_start;
   to_processor_binary_op Expression "if_then_else_mid1" if_then_else_mid1;
   to_processor_binary_op Expression "if_then_else_mid2" if_then_else_mid2;
+
+  (* match*)
+  to_processor_binary_op Expression "match_subject_start" match_subject_start;
+  to_processor_binary_op Expression "match_subject_end" match_subject_end;
+  to_processor_binary_op Expression "match_case_start" match_case_start;
+  to_processor_binary_op Expression "match_case_mid" match_case_mid;
+  to_processor_binary_op Expression "match_case_alternative" match_case_alternative;
 
 
 ] @ List.concat [
