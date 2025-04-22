@@ -139,13 +139,24 @@ let run_top_level (filename: string)(content : string) : A.t =
     registry = BuiltinProcessors.default_registry;
     last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");
     failures = []; (* this is backtracking to top level, directly pass this to handle*)
-    top_failure_handler = (fun (_) -> failwith "Should set top level failure on parse entry");
+    top_failure_handler = (fun (s) -> 
+      (
+      print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n========================\n" 
+        ^ String.concat "\n" (List.mapi (fun i (msg, s) -> 
+          string_of_int i ^ " failure: " ^
+          print_proc_errors msg ^ "\n" ^ show_proc_state s ^ "\n-------------------------------" 
+      ) s.failures));
+      failwith ("Compilation Failed");
+      )
+    )
   } in
   let exception Return of A.t in
   try 
-    let _ = extract_all_result initial_state (do_process_entire_stream ()) 
-    (fun successes ->
-      match successes  with
+    let _ = (do_process_entire_stream ()) initial_state 
+    initial_state.top_failure_handler
+    (fun (result, _) _ ->
+      raise (Return result)
+      (* match successes  with
       | [s] -> 
         (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
         raise (Return s)
@@ -162,18 +173,9 @@ let run_top_level (filename: string)(content : string) : A.t =
             print_endline ("Final states: " ^ (string_of_int (List.length ss)) ^ "\n" ^
             String.concat "\n" (List.map A.show_view ss));
             failwith ("ET79: Multiple final states found")
-            )
+            ) *)
     )
-    (fun (s) -> 
-      (
-      print_endline ("Failure history has " ^ string_of_int (List.length s.failures) ^ " entries:\n========================\n" 
-        ^ String.concat "\n" (List.mapi (fun i (msg, s) -> 
-          string_of_int i ^ " failure: " ^
-          print_proc_errors msg ^ "\n" ^ show_proc_state s ^ "\n-------------------------------" 
-      ) s.failures));
-      failwith ("Compilation Failed");
-      )
-    ) in
+  in
     failwith ("ET80: Should not reach here")
   with
   | Return s -> s

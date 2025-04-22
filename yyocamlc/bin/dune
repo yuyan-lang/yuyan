@@ -1,4 +1,5 @@
 (executable
  (public_name yyocamlc)
  (name main)
- (libraries yyocamlc))
+ (libraries yyocamlc)
+ (flags -g))

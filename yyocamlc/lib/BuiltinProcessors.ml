@@ -9,6 +9,11 @@ module Env = Environment
 open BasicParsing
   
 
+let get_binding_name (x : A.t) : string proc_state_m = 
+  match A.view x with
+  | A.N(N.ParsingElem(N.BoundScannedString(s)), []) -> return (CS.get_t_string s)
+  | _ -> pfail ("ET107: Expected a bound scanned string but got " ^ A.show_view x)
+
 (* let top_level_identifier_pusher : unit proc_state_m = 
   read_any_char_except_and_push (CharStream.new_t_string "。（）「」『』\n\t\r"@[" "]) *)
 
@@ -110,6 +115,51 @@ let definition_end : binary_op =
     let* ((name, defn), ext) = pop_postfix_op_operands_2 definition_end_meta in
     push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
 }
+
+let definition2_start_uid = Uid.next()
+let definition2_middle_uid = Uid.next()
+let definition2_end_uid = Uid.next()
+let definition2_start_meta : binary_op_meta = 
+  {
+    id = definition2_start_uid;
+    keyword = CS.new_t_string "夫";
+    left_fixity = FxNone;
+    right_fixity = FxBinding definition2_middle_uid;
+  }
+let definition2_middle_meta : binary_op_meta = 
+  {
+    id = definition2_middle_uid;
+    keyword = CS.new_t_string "者";
+    left_fixity = FxBinding definition2_start_uid;
+    right_fixity = FxComp definition2_end_uid;
+  }
+let definition2_end_meta : binary_op_meta = 
+  {
+    id = definition2_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp definition2_middle_uid;
+    right_fixity = FxNone;
+  }
+let definition2_start : binary_op = 
+  {
+    meta = definition2_start_meta;
+    reduction = p_internal_error "BP104: definition2_start reduction";
+  }
+let definition2_middle : binary_op = 
+  {
+    meta = definition2_middle_meta;
+    reduction = p_internal_error "BP104: definition2_middle reduction";
+  }
+let definition2_end : binary_op = 
+  {
+    meta = definition2_end_meta;
+    reduction = 
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 definition2_end_meta in
+      let* bnd_name = get_binding_name name in
+      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), 
+      [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+  }
+
 
 let library_root_meta : binary_op_meta = 
   {
@@ -377,6 +427,50 @@ let const_decl_end : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), [[], name; [], defn]))) ext)
   }
 
+let const_decl2_start_uid = Uid.next()
+let const_decl2_middle_uid = Uid.next()
+let const_decl2_end_uid = Uid.next()
+let const_decl2_start_meta : binary_op_meta = 
+  {
+    id = const_decl2_start_uid;
+    keyword = CS.new_t_string "夫";
+    left_fixity = FxNone;
+    right_fixity = FxBinding const_decl2_middle_uid;
+  }
+let const_decl2_middle_meta : binary_op_meta = 
+  {
+    id = const_decl2_middle_uid;
+    keyword = CS.new_t_string "乃";
+    left_fixity = FxBinding const_decl2_start_uid;
+    right_fixity = FxComp const_decl2_end_uid;
+  }
+let const_decl2_end_meta : binary_op_meta = 
+  {
+    id = const_decl2_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp const_decl2_middle_uid;
+    right_fixity = FxNone;
+  }
+let const_decl2_start : binary_op = 
+  {
+    meta = const_decl2_start_meta;
+    reduction = p_internal_error "BP104: const_decl2_start reduction";
+  }
+let const_decl2_middle : binary_op = 
+  {
+    meta = const_decl2_middle_meta;
+    reduction = p_internal_error "BP104: const_decl2_middle reduction";
+  }
+let const_decl2_end : binary_op = 
+  {
+    meta = const_decl2_end_meta;
+    reduction =
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 const_decl2_end_meta in
+      let* bnd_name = get_binding_name name in
+      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), 
+      [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+  }
+
 let constructor_decl_middle_uid = Uid.next()
 let constructor_decl_end_uid = Uid.next()
 
@@ -408,6 +502,50 @@ let constructor_decl_end : binary_op =
       let* () = assert_is_free_var name in
       push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), [[], name; [], defn]))) ext)
 }
+
+let constructor_decl2_start_uid = Uid.next()
+let constructor_decl2_middle_uid = Uid.next()
+let constructor_decl2_end_uid = Uid.next()
+let constructor_decl2_start_meta : binary_op_meta = 
+  {
+    id = constructor_decl2_start_uid;
+    keyword = CS.new_t_string "夫";
+    left_fixity = FxNone;
+    right_fixity = FxBinding constructor_decl2_middle_uid;
+  }
+let constructor_decl2_middle_meta : binary_op_meta = 
+  {
+    id = constructor_decl2_middle_uid;
+    keyword = CS.new_t_string "立";
+    left_fixity = FxBinding constructor_decl2_start_uid;
+    right_fixity = FxComp constructor_decl2_end_uid;
+  }
+let constructor_decl2_end_meta : binary_op_meta = 
+  {
+    id = constructor_decl2_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp constructor_decl2_middle_uid;
+    right_fixity = FxNone;
+  }
+let constructor_decl2_start : binary_op = 
+  {
+    meta = constructor_decl2_start_meta;
+    reduction = p_internal_error "BP104: constructor_decl2_start reduction";
+  }
+let constructor_decl2_middle : binary_op = 
+  {
+    meta = constructor_decl2_middle_meta;
+    reduction = p_internal_error "BP104: constructor_decl2_middle reduction";
+  }
+let constructor_decl2_end : binary_op = 
+  {
+    meta = constructor_decl2_end_meta;
+    reduction =
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 constructor_decl2_end_meta in
+      let* bnd_name = get_binding_name name in
+      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), 
+      [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+  }
 
 let left_parenthesis_uid = Uid.next()
 let right_parenthesis_uid = Uid.next()
@@ -467,11 +605,6 @@ let double_parenthesis_right : binary_op =
       push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
   }
 
-
-let get_binding_name (x : A.t) : string proc_state_m = 
-  match A.view x with
-  | A.N(N.ParsingElem(N.BoundScannedString(s)), []) -> return (CS.get_t_string s)
-  | _ -> pfail ("ET107: Expected a bound scanned string but got " ^ A.show_view x)
 
 let explicit_pi_start_uid = Uid.next()
 let explicit_pi_middle_1_uid = Uid.next()
@@ -1081,6 +1214,19 @@ let default_registry = [
   to_processor_binary_op Expression "let_in_mid1" let_in_mid1;
   to_processor_binary_op Expression "let_in_mid2" let_in_mid2;
 
+
+  (* defn 2*)
+  to_processor_binary_op Expression "definition2_start" definition2_start;
+  to_processor_binary_op Expression "definition2_middle" definition2_middle;
+  to_processor_binary_op Expression "definition2_end" definition2_end;
+
+  (* decl 2*)
+  to_processor_binary_op Expression "const_decl2_start" const_decl2_start;
+  to_processor_binary_op Expression "const_decl2_middle" const_decl2_middle;
+  to_processor_binary_op Expression "const_decl2_end" const_decl2_end;
+  to_processor_binary_op Expression "constructor_decl2_start" constructor_decl2_start;
+  to_processor_binary_op Expression "constructor_decl2_middle" constructor_decl2_middle;
+  to_processor_binary_op Expression "constructor_decl2_end" constructor_decl2_end;
 
 
 
