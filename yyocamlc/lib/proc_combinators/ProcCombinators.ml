@@ -19,8 +19,8 @@ let combine_failures ((cur_msg, cur_st) : (proc_error * proc_state) ) (prev : (p
   let prev_idx = List.fold_left (fun acc (_, s) -> max acc s.input_future.idx) 0 prev in
   if cur_idx = prev_idx then
       let to_add, rest = List.partition (fun (_, s) -> 
-        s.input_expect = cur_st.input_expect
-        && s.input_acc = cur_st.input_acc
+        s.input_future.idx = cur_st.input_future.idx
+        && List.length s.input_acc = List.length cur_st.input_acc
         (* && s.input_future.idx = cur_st.input_future.idx *)
         ) prev in
       match to_add with
