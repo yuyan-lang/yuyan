@@ -134,9 +134,10 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
           if not (List.length operands = List.length parameter_names) then failwith ("UDO119: Number of operands does not match number of parameter names " ^ CS.get_t_string x);
           (* if the freevariable of any operands clashes with parameter names, rename parameter names in result*)
           let result_ref = ref result in
+          let operands_free_vars = ListUtil.remove_duplicates (List.concat_map A.get_free_vars operands) in
           let new_param_name = List.map (fun param_name -> 
             let param_name_ref = ref param_name in
-            while List.exists (fun operand -> List.mem !param_name_ref (A.get_free_vars operand)) operands do
+            while List.mem !param_name_ref operands_free_vars do
               param_name_ref := Uid.next_name(param_name);
               result_ref := A.subst (A.fold_with_extent(A.FreeVar(!param_name_ref)) (A.get_extent_some result)) param_name !result_ref;
             done;
