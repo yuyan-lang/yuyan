@@ -847,12 +847,28 @@ let explicit_ap : binary_op =
               (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
               (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
             )
+        
+        | A.N(N.ModuleDef, args), _ -> 
+          let direct_expr_decl = A.fold_with_extent (A.N(N.Declaration(N.DirectExpr), [[], decl])) (A.get_extent_some decl) in
+          push_elem_on_input_acc
+            (A.annotate_with_extent
+              (A.fold(A.N(N.ModuleDef, args@[[], direct_expr_decl]))) 
+              (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
+            )
         (* also for 「「 name *)
         | A.N(N.ParsingElem(N.OpKeyword({id=opid;_})), []), A.N(N.Declaration(_), _) -> 
           if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
             (* push 「「 back onto the stack *)
             let* _ = push_elem_on_input_acc module_expr in
             let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
+            return ()
+          else  sentence_end_fail module_expr decl
+        | A.N(N.ParsingElem(N.OpKeyword({id=opid;_})), []), _ ->
+          if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
+            let direct_expr_decl = A.fold_with_extent (A.N(N.Declaration(N.DirectExpr), [[], decl])) (A.get_extent_some decl) in
+            (* push 「「 back onto the stack *)
+            let* _ = push_elem_on_input_acc module_expr in
+            let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],direct_expr_decl])) (A.get_extent_some decl)) in
             return ()
           else  sentence_end_fail module_expr decl
         (* also for 「「 name *)
