@@ -696,38 +696,40 @@ let explicit_ap : binary_op =
     let* _ = read_one_of_string [CS.new_t_string "。"] in
     (* reduce all existing expressions*)
     let* _ = operator_precedence_reduce (-1) in
-    (* we want to commit once we read 。 if subsequent error occurs, 
-      do not backtrack over interpretation of sentences *)
-    let* () = pcommit () in
     let* input_acc_size = get_input_acc_size () in
-    if input_acc_size = 1  then
-      let* module_expr = pop_input_acc () in
-      match A.view module_expr with
-      | A.N(N.ModuleDef, _) -> 
-        let* () = push_elem_on_input_acc module_expr in
-        return ()
-      | _ -> pfail ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
-    else if input_acc_size > 1 then
-      let* module_expr, decl = pop_input_acc_2 () in 
-      match A.view module_expr, A.view decl with
-      | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
-        push_elem_on_input_acc
-          (A.annotate_with_extent
-            (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
-            (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
-          )
-      (* also for 「「 name *)
-      | A.N(N.ParsingElem(N.OpKeyword({id=opid;_})), []), A.N(N.Declaration(_), _) -> 
-        if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
-          (* push 「「 back onto the stack *)
-          let* _ = push_elem_on_input_acc module_expr in
-          let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
+    let* () = (
+      if input_acc_size = 1  then
+        let* module_expr = pop_input_acc () in
+        match A.view module_expr with
+        | A.N(N.ModuleDef, _) -> 
+          let* () = push_elem_on_input_acc module_expr in
           return ()
-        else  sentence_end_fail module_expr decl
-      (* also for 「「 name *)
-      | _ -> sentence_end_fail module_expr decl
-    else
-      pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
+        | _ -> pfail ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
+      else if input_acc_size > 1 then
+        let* module_expr, decl = pop_input_acc_2 () in 
+        match A.view module_expr, A.view decl with
+        | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
+          push_elem_on_input_acc
+            (A.annotate_with_extent
+              (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
+              (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
+            )
+        (* also for 「「 name *)
+        | A.N(N.ParsingElem(N.OpKeyword({id=opid;_})), []), A.N(N.Declaration(_), _) -> 
+          if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
+            (* push 「「 back onto the stack *)
+            let* _ = push_elem_on_input_acc module_expr in
+            let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
+            return ()
+          else  sentence_end_fail module_expr decl
+        (* also for 「「 name *)
+        | _ -> sentence_end_fail module_expr decl
+      else
+        pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
+    ) in
+    (* we want to commit once we successfully handled 。 if subsequent error occurs, 
+      do not backtrack over interpretation of sentences *)
+    pcommit ()
     
 
 let external_call_meta : binary_op_meta = 
