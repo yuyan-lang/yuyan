@@ -44,6 +44,7 @@ let combine_failures ((cur_msg, cur_st) : (proc_error * proc_state) ) (prev : (p
 
 let push_failure_to_s ((cur_msg, cur_st) : proc_error * proc_state) (s : proc_state) : proc_state = 
   let new_failures = combine_failures (cur_msg, cur_st) s.failures in
+  (* let new_failures = [[cur_msg], cur_st] in *)
   {s with failures = new_failures}
 
 let pfail_error (msg : proc_error) : 'a proc_state_m = 

@@ -448,7 +448,9 @@ let module_reexport : binary_op =
               let* file_content = get_file_ref path in
               let rec aux acc decls = 
                 match decls with
-                | [] -> push_elem_on_input_acc (A.fold(A.N(N.ModuleDef, acc)))
+                | [] -> push_elem_on_input_acc (A.fold_with_extent(A.N(N.ModuleDef, acc))
+                    (Ext.combine_extent (A.get_extent_some cur_module_expr) per_ext)
+                )
                 | x::xs -> (
                   match A.view x with
                   | A.N((N.Declaration(N.ConstantDefn) as hd), ([], name)::_) 
@@ -866,6 +868,51 @@ let explicit_lam_abs_middle : binary_op =
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc result_expr 
   }
+
+let typed_lam_abs_start_uid = Uid.next()
+let typed_lam_abs_middle1_uid = Uid.next()
+let typed_lam_abs_middle2_uid = Uid.next()
+let typed_lam_abs_start_meta = 
+  {
+    id = typed_lam_abs_start_uid;
+    keyword = CS.new_t_string "遇";
+    left_fixity = FxNone;
+    right_fixity = FxComp typed_lam_abs_middle1_uid;
+  }
+let typed_lam_abs_middle1_meta = 
+  {
+    id = typed_lam_abs_middle1_uid;
+    keyword = CS.new_t_string "者";
+    left_fixity = FxComp typed_lam_abs_start_uid;
+    right_fixity = FxBinding typed_lam_abs_middle2_uid;
+  }
+let typed_lam_abs_middle2_meta = 
+  {
+    id = typed_lam_abs_middle2_uid;
+    keyword = CS.new_t_string "而";
+    left_fixity = FxBinding typed_lam_abs_middle1_uid;
+    right_fixity = FxOp (Some 50);
+  }
+let typed_lam_abs_start : binary_op = 
+  {
+    meta = typed_lam_abs_start_meta;
+    reduction = p_internal_error "BP104: typed_lam_abs_start reduction";
+  }
+let typed_lam_abs_middle1 : binary_op = 
+  {
+    meta = typed_lam_abs_middle1_meta;
+    reduction = p_internal_error "BP104: typed_lam_abs_middle1 reduction";
+  }
+let typed_lam_abs_middle2 : binary_op = 
+  {
+    meta = typed_lam_abs_middle2_meta;
+    reduction = 
+      let* ((tp_name, bnd_name, body_expr), per_ext) = pop_prefix_op_operands_3 typed_lam_abs_middle2_meta in
+      let* binding_name = get_binding_name bnd_name in
+      let result_expr = A.fold_with_extent (A.N(N.TypedLam, [[], tp_name;[binding_name], body_expr])) per_ext in
+      push_elem_on_input_acc result_expr 
+  }
+
 
 let implicit_ap_uid = Uid.next()
 let implicit_ap_meta = 
@@ -1294,7 +1341,7 @@ let default_registry = [
 
   to_processor_binary_op Expression "module_open" module_open;
   to_processor_binary_op Expression "module_reexport" module_reexport;
-  
+
   to_processor_binary_op Expression "const_decl_middle" const_decl_middle;
   to_processor_binary_op Expression "const_decl_end" const_decl_end;
   to_processor_binary_op Expression "constructor_decl_middle" constructor_decl_middle;
@@ -1309,10 +1356,17 @@ let default_registry = [
   to_processor_binary_op Expression "implicit_pi_middle_2" implicit_pi_middle_2;
   to_processor_binary_op Expression "arrow_start" arrow_start;
   to_processor_binary_op Expression "arrow_middle" arrow_middle;
+
+  (* lambdas *)
   to_processor_binary_op Expression "implicit_lam_abs_start" implicit_lam_abs_start;
   to_processor_binary_op Expression "implicit_lam_abs_middle" implicit_lam_abs_middle;
   to_processor_binary_op Expression "explicit_lam_abs_start" explicit_lam_abs_start;
   to_processor_binary_op Expression "explicit_lam_abs_middle" explicit_lam_abs_middle;
+  to_processor_binary_op Expression "typed_lam_abs_start" typed_lam_abs_start;
+  to_processor_binary_op Expression "typed_lam_abs_middle1" typed_lam_abs_middle1;
+  to_processor_binary_op Expression "typed_lam_abs_middle2" typed_lam_abs_middle2;
+
+  (* application *)
   to_processor_binary_op Expression "implicit_ap" implicit_ap;
   to_processor_binary_op Expression "explicit_ap" explicit_ap;
   to_processor_binary_op Expression "double_parenthesis_left" double_parenthesis_left;
