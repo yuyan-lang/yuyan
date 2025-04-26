@@ -14,6 +14,7 @@ module type ABT = sig
   type t_view = FreeVar of string | N of node_t * (string list * t) list
 
   val free_var: string -> t
+  val n : node_t * (string list * t) list -> t
   val unbind_abt: t -> string * t
   val unbind_abt_list: t -> int -> string list * t
   val abstract_over: t -> string -> t
@@ -497,6 +498,8 @@ module Abt (NodeClass: NODE_CLASS) : ABT
   (* let _ = print_endline ("fold result: " ^ show_raw result) in *)
   result
 
+
+  let n ((node_type, args): node_t * (string list * t) list) : t = fold(N(node_type, args))
 
    (* let rec switch_bnd_var( int_ctx : int list)  (abt : base_t) : base_t =
     match abt with
