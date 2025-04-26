@@ -75,12 +75,29 @@ let string_parser_pusher : unit proc_state_m =
     )
   )
 
-let comment_start : unit proc_state_m = 
-  let* read_start = read_string (CS.new_t_string "「：") in
-  let* () = push_elem_on_input_acc (PElem.get_keyword_t read_start) in
-  push_expect_state (Scanning InComment)
 
-let comment_end : unit proc_state_m =
+let rec single_comment () : unit proc_state_m = 
+  let* _ = read_string (CS.new_t_string "「：") in
+  (read_until_comment_end ())
+(* using a choice is problematic because of backtracking (things either don't work 
+or dont terminate.).  I don't know why.
+I need a decision unambiguously without backtracking *)
+and read_until_comment_end () : unit proc_state_m = 
+  let* (char1,_) = read_any_char () in
+  let* (char2,_) = peek_any_char () in
+  match CS.get_t_char char1, CS.get_t_char char2 with
+  | "：", "」" -> (
+    let* _ = read_any_char () in (* read the ending comment char*)
+    return ()
+  )
+  | "「", "：" -> (
+    let* _ = read_any_char () in (* read the colon char*)
+    let* () = read_until_comment_end() in (* two levels of comments now, need to read twice*)
+    read_until_comment_end ()
+  )
+  | _ -> read_until_comment_end ()
+
+(* let comment_end : unit proc_state_m =
   let* _read_end = read_string (CS.new_t_string "：」") in
   let* _ = pop_expect_state (Scanning InComment) in
   let* _comments = pop_input_acc_past (fun elem -> PE.is_keyword elem ("「：")) in
@@ -92,7 +109,7 @@ let comment_middle : unit proc_state_m =
   let* _ = pnot (comment_end) in
   let* read_char  = read_any_char () in
   let* _ = push_scanned_char read_char in
-  ignore ()
+  ignore () *)
 
 let import_start : unit proc_state_m = 
   let* read_start = read_one_of_string 
@@ -1343,10 +1360,10 @@ let typing_annotation_end : binary_op =
 
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
-  to_processor_complex Expression "comment_start" comment_start;
-  to_processor_complex (Scanning InComment) "comment_start" comment_start;
+  to_processor_complex Expression "single_comment" (single_comment ());
+  (* to_processor_complex (Scanning InComment) "comment_start" comment_start;
   to_processor_complex (Scanning InComment) "comment_middle" comment_middle;
-  to_processor_complex (Scanning InComment) "comment_end" comment_end;
+  to_processor_complex (Scanning InComment) "comment_end" comment_end; *)
   to_processor_complex Expression "string_parser_pusher" string_parser_pusher;
   to_processor_binary_op Expression "definition_middle" definition_middle;
   to_processor_binary_op Expression "definition_end" definition_end;
