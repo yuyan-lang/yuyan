@@ -436,10 +436,10 @@ let module_open : binary_op =
                 let node = A.fold(A.N(N.StructureDeref(name), [([], module_expr)])) in
                 push_elem_on_input_acc_expr (A.annotate_with_extent node per_ext)
             } in
-            to_processor_binary_op Expression ("open_module_"^name) name_oper
+            to_processor_binary_op ("open_module_"^name) name_oper
             ) all_names in
           add_processor_entry_list (ops @
-          (List.map (to_processor_binary_op Expression "imported_ops") all_custom_ops))
+          (List.map (to_processor_binary_op "imported_ops") all_custom_ops))
           (* add new operators corresponding to the custom ops in the file *)
           (* DO WE NEED TO PUSH SOMETHING TO THE INPUT ACCUM? *)
         )
@@ -1277,7 +1277,7 @@ let custom_operator_decl_end : binary_op =
                                     ) in
         print_endline ("Adding new Ops: " ^ String.concat ", " (List.map (fun x -> show_binary_op_meta x.meta) new_ops));
         (* add new operators to the registry *)
-        let* () = add_processor_entry_list (List.map (to_processor_binary_op Expression "custom_ops") new_ops) in
+        let* () = add_processor_entry_list (List.map (to_processor_binary_op "custom_ops") new_ops) in
         return ()
       | _ -> pfail ("ET109: Expected a scanned operator but got " ^ A.show_view defn)
   }
@@ -1359,103 +1359,103 @@ let typing_annotation_end : binary_op =
 
 
 let default_registry = [
-  to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
-  to_processor_complex Expression "single_comment" (single_comment ());
+  to_processor_complex "top_level_empty_space_ignore" top_level_empty_space_ignore;
+  to_processor_complex "single_comment" (single_comment ());
   (* to_processor_complex (Scanning InComment) "comment_start" comment_start;
   to_processor_complex (Scanning InComment) "comment_middle" comment_middle;
   to_processor_complex (Scanning InComment) "comment_end" comment_end; *)
-  to_processor_complex Expression "string_parser_pusher" string_parser_pusher;
-  to_processor_binary_op Expression "definition_middle" definition_middle;
-  to_processor_binary_op Expression "definition_end" definition_end;
-  to_processor_binary_op Expression "import_end" import_end;
-  to_processor_binary_op Expression "library_root" library_root;
-  to_processor_binary_op Expression "unknown_structure_deref" unknown_structure_deref;
+  to_processor_complex "string_parser_pusher" string_parser_pusher;
+  to_processor_binary_op "definition_middle" definition_middle;
+  to_processor_binary_op "definition_end" definition_end;
+  to_processor_binary_op "import_end" import_end;
+  to_processor_binary_op "library_root" library_root;
+  to_processor_binary_op "unknown_structure_deref" unknown_structure_deref;
   (* to_processor_complex Expression "known_structure_deref" known_structure_deref; *)
   (* to_processor_binary_op Expression "statement_end" statement_end; *)
-  to_processor_complex Expression "sentence_end" sentence_end;
-  to_processor_binary_op Expression "builtin_op" builtin_op;
+  to_processor_complex "sentence_end" sentence_end;
+  to_processor_binary_op "builtin_op" builtin_op;
 
-  to_processor_binary_op Expression "module_open" module_open;
-  to_processor_binary_op Expression "module_reexport" module_reexport;
+  to_processor_binary_op "module_open" module_open;
+  to_processor_binary_op "module_reexport" module_reexport;
 
-  to_processor_binary_op Expression "const_decl_middle" const_decl_middle;
-  to_processor_binary_op Expression "const_decl_end" const_decl_end;
-  to_processor_binary_op Expression "constructor_decl_middle" constructor_decl_middle;
-  to_processor_binary_op Expression "constructor_decl_end" constructor_decl_end;
-  to_processor_binary_op Expression "left_parenthesis" left_parenthesis;
-  to_processor_binary_op Expression "right_parenthesis" right_parenthesis;
-  to_processor_binary_op Expression "explicit_pi_start" explicit_pi_start;
-  to_processor_binary_op Expression "explicit_pi_middle_1" explicit_pi_middle_1;
-  to_processor_binary_op Expression "explicit_pi_middle_2" explicit_pi_middle_2;
-  to_processor_binary_op Expression "implicit_pi_start" implicit_pi_start;
-  to_processor_binary_op Expression "implicit_pi_middle_1" implicit_pi_middle_1;
-  to_processor_binary_op Expression "implicit_pi_middle_2" implicit_pi_middle_2;
-  to_processor_binary_op Expression "arrow_start" arrow_start;
-  to_processor_binary_op Expression "arrow_middle" arrow_middle;
+  to_processor_binary_op "const_decl_middle" const_decl_middle;
+  to_processor_binary_op "const_decl_end" const_decl_end;
+  to_processor_binary_op "constructor_decl_middle" constructor_decl_middle;
+  to_processor_binary_op "constructor_decl_end" constructor_decl_end;
+  to_processor_binary_op "left_parenthesis" left_parenthesis;
+  to_processor_binary_op "right_parenthesis" right_parenthesis;
+  to_processor_binary_op "explicit_pi_start" explicit_pi_start;
+  to_processor_binary_op "explicit_pi_middle_1" explicit_pi_middle_1;
+  to_processor_binary_op "explicit_pi_middle_2" explicit_pi_middle_2;
+  to_processor_binary_op "implicit_pi_start" implicit_pi_start;
+  to_processor_binary_op "implicit_pi_middle_1" implicit_pi_middle_1;
+  to_processor_binary_op "implicit_pi_middle_2" implicit_pi_middle_2;
+  to_processor_binary_op "arrow_start" arrow_start;
+  to_processor_binary_op "arrow_middle" arrow_middle;
 
   (* lambdas *)
-  to_processor_binary_op Expression "implicit_lam_abs_start" implicit_lam_abs_start;
-  to_processor_binary_op Expression "implicit_lam_abs_middle" implicit_lam_abs_middle;
-  to_processor_binary_op Expression "explicit_lam_abs_start" explicit_lam_abs_start;
-  to_processor_binary_op Expression "explicit_lam_abs_middle" explicit_lam_abs_middle;
-  to_processor_binary_op Expression "typed_lam_abs_start" typed_lam_abs_start;
-  to_processor_binary_op Expression "typed_lam_abs_middle1" typed_lam_abs_middle1;
-  to_processor_binary_op Expression "typed_lam_abs_middle2" typed_lam_abs_middle2;
+  to_processor_binary_op "implicit_lam_abs_start" implicit_lam_abs_start;
+  to_processor_binary_op "implicit_lam_abs_middle" implicit_lam_abs_middle;
+  to_processor_binary_op "explicit_lam_abs_start" explicit_lam_abs_start;
+  to_processor_binary_op "explicit_lam_abs_middle" explicit_lam_abs_middle;
+  to_processor_binary_op "typed_lam_abs_start" typed_lam_abs_start;
+  to_processor_binary_op "typed_lam_abs_middle1" typed_lam_abs_middle1;
+  to_processor_binary_op "typed_lam_abs_middle2" typed_lam_abs_middle2;
 
   (* application *)
-  to_processor_binary_op Expression "implicit_ap" implicit_ap;
-  to_processor_binary_op Expression "explicit_ap" explicit_ap;
-  to_processor_binary_op Expression "double_parenthesis_left" double_parenthesis_left;
-  to_processor_binary_op Expression "double_parenthesis_right" double_parenthesis_right;
-  to_processor_binary_op Expression "external_call" external_call;
+  to_processor_binary_op "implicit_ap" implicit_ap;
+  to_processor_binary_op "explicit_ap" explicit_ap;
+  to_processor_binary_op "double_parenthesis_left" double_parenthesis_left;
+  to_processor_binary_op "double_parenthesis_right" double_parenthesis_right;
+  to_processor_binary_op "external_call" external_call;
 
   (* if *)
-  to_processor_binary_op Expression "if_then_else_start" if_then_else_start;
-  to_processor_binary_op Expression "if_then_else_mid1" if_then_else_mid1;
-  to_processor_binary_op Expression "if_then_else_mid2" if_then_else_mid2;
+  to_processor_binary_op "if_then_else_start" if_then_else_start;
+  to_processor_binary_op "if_then_else_mid1" if_then_else_mid1;
+  to_processor_binary_op "if_then_else_mid2" if_then_else_mid2;
 
   (* match*)
-  to_processor_binary_op Expression "match_subject_start" match_subject_start;
-  to_processor_binary_op Expression "match_subject_end" match_subject_end;
-  to_processor_binary_op Expression "match_case_start" match_case_start;
-  to_processor_binary_op Expression "match_case_mid" match_case_mid;
-  to_processor_binary_op Expression "match_case_alternative" match_case_alternative;
+  to_processor_binary_op "match_subject_start" match_subject_start;
+  to_processor_binary_op "match_subject_end" match_subject_end;
+  to_processor_binary_op "match_case_start" match_case_start;
+  to_processor_binary_op "match_case_mid" match_case_mid;
+  to_processor_binary_op "match_case_alternative" match_case_alternative;
 
   (* lists *)
-  to_processor_binary_op Expression "comma_sequence" comma_sequence;
-  to_processor_binary_op Expression "enumeration_comma_sequence" enumeration_comma_sequence;
+  to_processor_binary_op "comma_sequence" comma_sequence;
+  to_processor_binary_op "enumeration_comma_sequence" enumeration_comma_sequence;
 
   (* custom operators*)
-  to_processor_complex Expression "custom_operator_decl_start" custom_operator_decl_start;
-  to_processor_binary_op Expression "custom_operator_decl_middle" custom_operator_decl_middle;
-  to_processor_binary_op Expression "custom_operator_decl_end" custom_operator_decl_end;
+  to_processor_complex "custom_operator_decl_start" custom_operator_decl_start;
+  to_processor_binary_op "custom_operator_decl_middle" custom_operator_decl_middle;
+  to_processor_binary_op "custom_operator_decl_end" custom_operator_decl_end;
 
   (* let in*)
-  to_processor_binary_op Expression "let_in_start" let_in_start;
-  to_processor_binary_op Expression "let_in_mid1" let_in_mid1;
-  to_processor_binary_op Expression "let_in_mid2" let_in_mid2;
+  to_processor_binary_op "let_in_start" let_in_start;
+  to_processor_binary_op "let_in_mid1" let_in_mid1;
+  to_processor_binary_op "let_in_mid2" let_in_mid2;
 
 
   (* defn 2*)
-  to_processor_binary_op Expression "definition2_start" definition2_start;
-  to_processor_binary_op Expression "definition2_middle" definition2_middle;
-  to_processor_binary_op Expression "definition2_end" definition2_end;
+  to_processor_binary_op "definition2_start" definition2_start;
+  to_processor_binary_op "definition2_middle" definition2_middle;
+  to_processor_binary_op "definition2_end" definition2_end;
 
   (* decl 2*)
-  to_processor_binary_op Expression "const_decl2_start" const_decl2_start;
-  to_processor_binary_op Expression "const_decl2_middle" const_decl2_middle;
-  to_processor_binary_op Expression "const_decl2_end" const_decl2_end;
-  to_processor_binary_op Expression "constructor_decl2_start" constructor_decl2_start;
-  to_processor_binary_op Expression "constructor_decl2_middle" constructor_decl2_middle;
-  to_processor_binary_op Expression "constructor_decl2_end" constructor_decl2_end;
+  to_processor_binary_op "const_decl2_start" const_decl2_start;
+  to_processor_binary_op "const_decl2_middle" const_decl2_middle;
+  to_processor_binary_op "const_decl2_end" const_decl2_end;
+  to_processor_binary_op "constructor_decl2_start" constructor_decl2_start;
+  to_processor_binary_op "constructor_decl2_middle" constructor_decl2_middle;
+  to_processor_binary_op "constructor_decl2_end" constructor_decl2_end;
 
   (* typing annotation *)
-  to_processor_binary_op Expression "typing_annotation_middle" typing_annotation_middle;
-  to_processor_binary_op Expression "typing_annotation_end" typing_annotation_end;
+  to_processor_binary_op "typing_annotation_middle" typing_annotation_middle;
+  to_processor_binary_op "typing_annotation_end" typing_annotation_end;
 
-  to_processor_complex Expression "identifier_parser_pusher" identifier_parser_pusher;
-  to_processor_complex Expression "number_parser" (integer_number_parser ());
-  to_processor_complex Expression "decimal_number_parser" (decimal_number_parser ());
+  to_processor_complex "identifier_parser_pusher" identifier_parser_pusher;
+  to_processor_complex "number_parser" (integer_number_parser ());
+  to_processor_complex "decimal_number_parser" (decimal_number_parser ());
 
 ] @ List.concat [
  ]

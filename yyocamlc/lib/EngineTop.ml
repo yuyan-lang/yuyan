@@ -132,14 +132,14 @@ let run_top_level (filename: string)(content : string) : A.t =
   let input = CharStream.new_cs filename content in
   let initial_state = {
     input_future = input;
-    input_expect = Expression;
+    input_expect = TopLevel;
     expect_state_stack = []; 
     input_acc = [Expr(A.annotate_with_extent(
       A.fold(A.N(N.ModuleDef, []))
     ) (filename, (0, 0), (0, 0)))];
     store = Environment.default_environment;
     registry = BuiltinProcessors.default_registry;
-    last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");
+    last_succeeded_processor = to_processor_identifier "initial_none" (CS.new_t_string "[NONE]");
     failures = []; (* this is backtracking to top level, directly pass this to handle*)
     top_failure_handler = (fun (s) -> 
       (

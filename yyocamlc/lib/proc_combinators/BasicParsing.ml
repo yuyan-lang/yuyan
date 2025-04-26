@@ -295,30 +295,24 @@ let add_processor_entry_list (proc : processor_entry list) : unit proc_state_m =
     let* proc_state = get_proc_state () in
     let new_s = {proc_state with registry = proc @ proc_state.registry} in
     write_proc_state new_s
-let remove_all_proc_registry_with_input_expect_state (expect : expect) : unit proc_state_m = 
+let remove_all_proc_registry_with_ids (ids : int list) : unit proc_state_m = 
     let* proc_state = get_proc_state () in
-    let new_s = {proc_state with registry = List.filter (fun x -> x.expect <> expect) proc_state.registry} in
+    let new_s = {proc_state with registry = List.filter (fun x -> not (List.mem x.id ids)) proc_state.registry} in
     write_proc_state new_s
 
 let run_processor_entry (proc : processor_entry)  : unit proc_state_m = 
-    let {expect; name=_; processor} = proc in
-    let* proc_state = get_proc_state () in
-    if expect <> proc_state.input_expect 
-    then pfail ("PC100: expected " ^ (show_input_expect expect) ^ " but got " ^ (show_input_expect proc_state.input_expect))
-    else
-      let* () = run_processor processor in
-      (* print_endline ("Ran pentry " ^ show_processor_entry proc); *)
-      if !Flags.show_parse_progress
-        then (
-          update_proc_state (fun st -> 
-            {st with last_succeeded_processor = proc}
-            )
-        ) else return ()
+    let {id=_;name=_; processor} = proc in
+    let* () = run_processor processor in
+    (* print_endline ("Ran pentry " ^ show_processor_entry proc); *)
+    if !Flags.show_parse_progress
+      then (
+        update_proc_state (fun st -> 
+          {st with last_succeeded_processor = proc}
+          )
+      ) else return ()
 
 let run_processor_entries (entries : processor_entry list) : unit proc_state_m = 
-  (* filter entries by input_expect to speedup processing*)
-  let* st = get_proc_state () in
-  choice_l (List.map run_processor_entry (List.filter (fun x -> x.expect = st.input_expect) entries))
+  choice_l (List.map run_processor_entry entries)
 
 let collect_input_acc_identifiers() : CS.t_string list proc_state_m = 
   let* s = get_proc_state () in
@@ -343,5 +337,5 @@ let run_input_acc_identifiers () : unit proc_state_m =
   let* all_scanned_ids = collect_input_acc_identifiers () in
   (* print_endline ("PC100: running identifiers " ^ (String.concat "," (List.map CS.get_t_string all_scanned_ids))); *)
   run_processor_entries (List.map (fun x -> 
-    (to_processor_identifier Expression ("input_acc_id_" ^ CS.get_t_string x)  x)
+    (to_processor_identifier ("input_acc_id_" ^ CS.get_t_string x)  x)
     ) all_scanned_ids)

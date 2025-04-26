@@ -170,26 +170,23 @@ let many1 (m : 'a proc_state_m) : 'a list proc_state_m =
   in
   pcut (aux [])
 
-let to_processor_binary_op (env : expect) (name : string) (binop : binary_op) : processor_entry = 
-  { expect = env;
+let to_processor_binary_op  (name : string) (binop : binary_op) : processor_entry = 
+  { id = Uid.next();
     name=name;
    processor = ProcBinOp binop;
   }
 
-let to_processor_identifier (env : expect) (name : string) (id : CharStream.t_string) : processor_entry = 
-  { expect = env;
+let to_processor_identifier (name : string) (id : CharStream.t_string) : processor_entry = 
+  { id = Uid.next();
     name=name;
    processor = ProcIdentifier id;
   }
-let to_processor_complex (env : expect) (name : string) (process : 'a proc_state_m) : processor_entry = 
-  { expect = env;
+let to_processor_complex  (name : string) (process : 'a proc_state_m) : processor_entry = 
+  { id = Uid.next();
     name=name;
    processor = ProcComplex process;
   }
 
-
-let to_processor_complex_list (envs : expect list) (name :string) (process : 'a proc_state_m) : processor_entry list = 
-  List.map (fun env -> to_processor_complex env name process) envs
 
 let get_proc_state () : proc_state proc_state_m = 
   fun s fc sc -> 

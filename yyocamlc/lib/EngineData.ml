@@ -15,11 +15,13 @@ module N = YYNode
 module YYAbt = AbtLib.Abt(YYNode)
 module A = YYAbt
 
-type scan_expect = InString | InComment | InLibrarySearch of string (* library path*)
-let all_scan_env = [InString; InComment]
+(* type scan_expect = InString | InComment | InLibrarySearch of string  *)
+(* library path*)
+(* let all_scan_env = [InString; InComment] *)
 
-type expect = Expression | Scanning of scan_expect
-let all_expects = [Expression]@(List.map (fun x -> Scanning x) all_scan_env)
+type expect = Expr of A.t | TopLevel
+(* | Scanning of scan_expect *)
+(* let all_expects = [Expression]@(List.map (fun x -> Scanning x) all_scan_env) *)
 
 
 type ('a, 'b) map = ('a * 'b) list
@@ -89,8 +91,7 @@ and processor = ProcComplex of unit proc_state_m
               | ProcBinOp of binary_op 
               | ProcIdentifier of CharStream.t_string (* these two only run in the Expression environment*)
 and processor_entry = {
-  (* uid: int; unique id for this entry, may record this number on input_acc and may remove it later *)
-  expect : expect;
+  id: int; 
   name : string;
   processor : processor;
 }
@@ -161,10 +162,11 @@ let show_input_acc (acc : input_acc_elem list) : string =
   "[" ^ String.concat ";\n " (List.map show_input_acc_elem acc) ^ "]"
 let show_input_expect (e : expect) : string =
   match e with
-  | Expression -> "Expression"
-  | Scanning (InString) -> "Scanning InString"
+  | Expr (e) -> "Expr(" ^ pretty_print_expr e ^ ")"
+  | TopLevel -> "TopLevel"
+  (* | Scanning (InString) -> "Scanning InString"
   | Scanning (InComment) -> "Scanning InComment"
-  | Scanning (InLibrarySearch (s)) -> "Scanning InLibrarySearch(" ^ s ^ ")"
+  | Scanning (InLibrarySearch (s)) -> "Scanning InLibrarySearch(" ^ s ^ ")" *)
 
 
 
@@ -179,9 +181,8 @@ let show_processor (p : processor) : string =
     "ProcIdentifier: " ^ CS.get_t_string id
 let show_processor_entry (p : processor_entry) : string =
   match p with
-  | {expect; name; processor} -> 
-    "ProcEntry: " ^ name ^ ", expect: " ^ show_input_expect expect ^
-    ", processor: " ^ show_processor processor
+  | {id; name; processor} -> 
+    "ProcEntry: " ^ name ^ ", id=" ^ string_of_int id ^ ", processor: " ^ show_processor processor
 let show_proc_state (s : proc_state) : string =
   "ProcState: " ^
   "\ninput_future: " ^ CharStream.print_cs s.input_future ^ ", " ^
