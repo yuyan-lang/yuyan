@@ -8,6 +8,7 @@ Name ?LP ?RP
 观（）     80
 （）授以（） 799 800 (* bounds tighter when viewed from right indicates left-associative)
 （）于（） 799 800
+（）其（）也 120
 （）、（） 109 110
 （），（） 89 90
 若（）则（）否则（）80

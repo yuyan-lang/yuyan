@@ -1162,6 +1162,36 @@ let let_in_mid2 : binary_op =
       push_elem_on_input_acc result_expr 
   }
 
+let typing_annotation_middle_uid = Uid.next()
+let typing_annotation_end_uid = Uid.next()
+let typing_annotation_middle_meta = 
+  {
+    id = typing_annotation_middle_uid;
+    keyword = CS.new_t_string "其";
+    left_fixity = FxOp 120;
+    right_fixity = FxComp typing_annotation_end_uid;
+  }
+let typing_annotation_end_meta = 
+  {
+    id = typing_annotation_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp typing_annotation_middle_uid;
+    right_fixity = FxNone;
+  }
+let typing_annotation_middle : binary_op = 
+  {
+    meta = typing_annotation_middle_meta;
+    reduction = p_internal_error "BP104: typing_annotation_middle reduction";
+  }
+let typing_annotation_end : binary_op = 
+  {
+    meta = typing_annotation_end_meta;
+    reduction = 
+      let* ((body_expr, type_expr), per_ext) = pop_postfix_op_operands_2 typing_annotation_end_meta in
+      let result_expr = A.fold_with_extent (A.N(N.TypingAnnotation, [[], body_expr; [], type_expr])) per_ext in
+      push_elem_on_input_acc result_expr 
+  }
+
 
 let default_registry = [
   to_processor_complex Expression "top_level_empty_space_ignore" top_level_empty_space_ignore;
@@ -1244,7 +1274,9 @@ let default_registry = [
   to_processor_binary_op Expression "constructor_decl2_middle" constructor_decl2_middle;
   to_processor_binary_op Expression "constructor_decl2_end" constructor_decl2_end;
 
-
+  (* typing annotation *)
+  to_processor_binary_op Expression "typing_annotation_middle" typing_annotation_middle;
+  to_processor_binary_op Expression "typing_annotation_end" typing_annotation_end;
 
   to_processor_complex Expression "identifier_parser_pusher" identifier_parser_pusher;
   to_processor_complex Expression "number_parser" (integer_number_parser ());

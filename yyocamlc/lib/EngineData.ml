@@ -102,7 +102,7 @@ module YYNode  = struct
          | Sequence of string (* e.g. ， 或 、*)
          | Match
          | MatchCase
-         | TypeAnnotated (* A名x*)
+         | TypingAnnotation (* A名x*)
          | Lam
          | ExternalCall of string
          | IfThenElse
@@ -129,7 +129,7 @@ module YYNode  = struct
     | Match -> None (* first arg expr, rest cases *)
     | MatchCase -> Some([0; 0])
     | Lam -> Some([1])
-    | TypeAnnotated -> Some([0; 0])
+    | TypingAnnotation -> Some([0; 0])
     | ExternalCall _ -> Some([])
     | IfThenElse -> Some([0; 0; 0]) (* if, then, else *)
     | LetIn -> Some([0; 1]) (* let, in, expr *)
@@ -192,7 +192,7 @@ module YYNode  = struct
     | Match -> "Match"
     | MatchCase -> "MatchCase"
     | Lam -> "λ"
-    | TypeAnnotated -> "TypeAnnotated"
+    | TypingAnnotation -> "TypingAnnotationt"
     | ExternalCall (s) -> "ExternalCall(" ^ s ^ ")"
     | IfThenElse -> "IfThenElse"
     | LetIn -> "LetIn"
