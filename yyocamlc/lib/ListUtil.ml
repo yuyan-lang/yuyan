@@ -42,7 +42,7 @@ let rec drop_n n lst =
   ;;
 
 
-let rec find_elem_by_key (lst : (string * 'a) list) (key : string) : 'a option =
+let rec find_elem_by_key (lst : ('k * 'a) list) (key : 'k) : 'a option =
   match lst with
   | [] -> None
   | (s, v) :: tl ->
@@ -52,7 +52,12 @@ let rec find_elem_by_key (lst : (string * 'a) list) (key : string) : 'a option =
 let lookup_elem_by_key (lst : (string * 'a) list) (key : string) : 'a =
   match find_elem_by_key lst key with
   | Some v -> v
-  | None -> failwith ("lookup_elem_by_key: key not found: " ^ key)
+  | None -> failwith ("lookup_elem_by_key: key not found: " ^ key ^ " in " ^ String.concat ", " (List.map fst lst))
+
+let lookup_elem_by_key_generic (lst : ('k * 'a) list) (key : 'k) : 'a =
+  match find_elem_by_key lst key with
+  | Some v -> v
+  | None -> failwith ("lookup_elem_by_key: key not found: ")
 
 let lookup_index_of_elem_by_key (lst : (string * 'a) list) (key : string) : int =
   match List.find_index (fun (k, _) -> k = key) lst with
@@ -140,14 +145,22 @@ let filter_map_i (f : int -> 'a -> 'b option) (lst : 'a list) : 'b list =
   aux 0 [] lst
 
 
+let insert_at_index (l : 'a list) (idx : int) (new_input : 'a list) : 'a list =
+  assert (idx >= 0 && idx <= List.length l);
+  take idx l @ new_input @ drop idx l
+
 let replace_idx (inputs : 'a list) (idx : int) (new_input : 'a list) : 'a list =
-  List.concat (List.mapi (fun i x ->
+  assert (idx >= 0 && idx < List.length inputs);
+  take idx inputs @ new_input @ drop (idx + 1) inputs
+  (* List.concat (List.mapi (fun i x ->
     if i = idx then new_input else [x]
-  ) inputs)
+  ) inputs) *)
 
 let insert_after_index (l : 'a list) (idx : int) (new_input : 'a) : 'a list =
-  replace_idx l idx (List.nth l idx :: [new_input])
-  
+  assert (idx >= 0 && idx < List.length l);
+  insert_at_index l (idx + 1) [new_input]
+    
+
 let insert_after_key (lst : (string * 'a) list) (key_idx: string) ((key ,value) : string * 'a) : (string * 'a) list =
   assert (not (elem_exists_by_key lst key));
   match List.find_index (fun (k, _) -> k = key_idx) lst with
@@ -175,15 +188,36 @@ let rec zip lst1 lst2 =
   | x::xs, y::ys -> (x, y) :: zip xs ys
   | _, _ -> invalid_arg "List.zip: lists have different lengths"
   
-
+  
 
 let show_list (lst : 'a list) (f : 'a -> string) : string =
   "[" ^ String.concat "; " (List.map f lst) ^ "]"
 
 let forall_i (f : int -> 'a -> bool) (lst : 'a list) : bool =
   List.for_all2 f (List.init (List.length lst) Fun.id) lst
+  
 
-let lookup_index_of (elem : 'a) (lst : 'a list) : int  =
+
+
+
+
+
+let find_index_i (p : int -> 'a -> bool) (lst : 'a list) : int option =
+  let rec aux i lst =
+    match lst with
+    | [] -> None
+    | x :: xs ->
+        if p i x then Some i
+        else aux (i + 1) xs
+  in
+  aux 0 lst
+
+let lookup_index_of (elem : 'a) (lst : 'a list) : int =
   match List.find_index (fun x -> x = elem) lst with
   | Some idx -> idx
-  | None -> failwith ("lookup_index_of: element not found: " )
+  | None -> failwith ("lookup_index: element not found: ")
+
+let fold_left_non_empty f lst =
+  match lst with
+  | [] -> failwith "fold_left_non_empty: empty list"
+  | x :: xs -> List.fold_left f x xs
