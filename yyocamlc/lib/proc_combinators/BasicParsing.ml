@@ -67,21 +67,40 @@ let operator_right_most_reduce () : unit proc_state_m =
 
 
 (* reduces all operators A + B on the stack of higher precedence*)
-let rec operator_precedence_reduce (limit : int) : unit proc_state_m = 
+let rec operator_precedence_reduce (limit : int option) : unit proc_state_m = 
   let* acc_top = peek_input_acc 1 in
   match acc_top with
   | None -> return ()
   | Some (x) -> 
     match A.view x with
     | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
-      (match meta.right_fixity with
-        | FxOp rp ->
+      (
+        let perform_reduction () = 
+          let* bin_op = lookup_binary_op meta.id in
+          let* _ = bin_op.reduction in
+          operator_precedence_reduce limit
+        in
+        match meta.right_fixity, limit with
+        | FxOp Some rp, Some limit ->
             if rp > limit then
-              let* bin_op = lookup_binary_op meta.id in
-              let* _ = bin_op.reduction in
-              operator_precedence_reduce limit
+              perform_reduction ()
             else
               return () (* cannot reduce, assume successful *)
+        | FxOp None, Some limit -> 
+          (* here we have an option of reducing or not reducing reducing if limit < 400 (more likely) *)
+            if limit < 400 then
+              choice (perform_reduction ()) (return ())
+            else
+              choice (return ()) (perform_reduction ())
+        | FxOp (Some rp), None -> 
+            if rp >= 400 then 
+              choice (perform_reduction ()) (return ())
+            else
+              choice (return ()) (perform_reduction ())
+        | FxOp None, None ->
+          (* by default we do left-associative reductions [to rule out early failures] *)
+            choice (return ()) (perform_reduction ())
+
         | _ -> 
           return () (* cannot reduce, assume successful *)
       )
@@ -131,12 +150,28 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
 *)
 let yy_keyword_chars = CharStream.new_t_string "。（）「」『』"
 let yy_number_words = CharStream.new_t_string "零一二三四五六七八九"
+let yy_number_str_to_numeric_str (number_list : CS.t_char list) : string = 
+  String.concat "" (List.map (fun x -> 
+    match List.find_index (fun y -> y = x ) yy_number_words with
+    | None -> failwith ("ET101: Expected a number but got " ^ CS.get_t_char x)
+    | Some i -> string_of_int i
+    ) number_list)
+
 let get_int_from_t_string (number_list : CS.t_char list) : int = 
-  List.fold_left (fun acc x -> acc * 10 + (
+  int_of_string (yy_number_str_to_numeric_str number_list)
+  (* List.fold_left (fun acc x -> acc * 10 + (
     match List.find_index (fun y -> y = x ) yy_number_words with
     | None -> failwith ("ET101: Expected a number but got " ^ CS.get_t_char x)
     | Some i -> i
-    )) 0 number_list
+    )) 0 number_list *)
+let get_decimal_part_from_t_string (number_list : CS.t_char list) : float = 
+  float_of_string ("." ^ (yy_number_str_to_numeric_str number_list))
+  (* List.fold_right (fun acc x -> acc *. 0.1 + (
+    match List.find_index (fun y -> y = x ) yy_number_words with
+    | None -> failwith ("ET101: Expected a number but got " ^ CS.get_t_char x)
+    | Some i -> i *. 0.1
+    )) number_list 0.0 *)
+
 
 let integer_number_parser() : unit proc_state_m = 
   let* (top, top_ext) = peek_any_char () in
@@ -152,6 +187,18 @@ let integer_number_parser() : unit proc_state_m =
       expecting = yy_number_words;
       actual = (top, top_ext);
     })
+
+let decimal_number_parser() : unit proc_state_m = 
+  let* integral_part = many1 (read_one_of_char yy_number_words) in
+  let* _ = read_one_of_char [CS.new_t_char "点"] in
+  let* decimal_part = many1 (read_one_of_char yy_number_words) in
+  let integral_number = yy_number_str_to_numeric_str (List.map fst integral_part) in
+  let decimal_number = yy_number_str_to_numeric_str (List.map fst decimal_part) in
+  push_elem_on_input_acc (
+    A.fold_with_extent (A.N(N.Builtin(N.Float (integral_number, decimal_number)), []))
+    (Ext.combine_extent_list (List.map snd integral_part @ List.map snd decimal_part))
+  )
+  
 
 let identifier_parser () : (CS.t_string * Ext.t) proc_state_m = 
   let* _ = pnot (read_string (CS.new_t_string "「：")) in

@@ -29,9 +29,39 @@ let identifier_parser_pusher : unit proc_state_m =
     ) else
     push_elem_on_input_acc (PElem.get_identifier_t (id, ext))
 
+let string_escape_sequence_scanner : (CS.t_char * Ext.t) proc_state_m = 
+  let* (_backslash, ext) = read_one_of_char [CS.new_t_char "\\"] in
+  let* (next_char, ext2) = read_any_char () in
+  match CS.get_t_char next_char with
+  | "\\" -> return (next_char, Ext.combine_extent ext ext2)
+  | "』" -> return (CS.new_t_char "』", Ext.combine_extent ext ext2)
+  | _ -> pfail_with_ext ("ET108: Expected a valid escape sequence but got \\" ^ CS.get_t_char next_char) ext2
+
+let string_character_scanner : (CS.t_char * Ext.t) proc_state_m = 
+  pcut (choice string_escape_sequence_scanner (read_any_char ()))
+
+let scan_string_body () : ((CS.t_string * Ext.t) * Ext.t) proc_state_m = 
+  let rec aux acc = 
+    pcut (choice (
+      let* (c, ext) = string_escape_sequence_scanner in
+      aux (acc@[(c, ext)])
+    ) (
+    let* (c, ext) = read_any_char () in
+    if CS.get_t_char c = "』" then
+      if List.is_empty acc 
+      then
+        return (([],ext), ext)
+      else
+        return ((remap_t_char_list_with_ext acc), ext)
+    else 
+      aux (acc@[(c, ext)])
+    ))
+  in
+  aux []
+
 let string_parser_pusher : unit proc_state_m = 
   let* (_, start_ext) = read_one_of_char [CS.new_t_char "『"] in
-  let* ((middle, _middle_ext), (_end, end_ext)) = scan_past_one_of_char [CS.new_t_char "』"] in
+  let* ((middle, _middle_ext), (end_ext)) = scan_string_body () in 
   push_elem_on_input_acc (
     A.annotate_with_extent
       (A.fold(A.N(N.Builtin(N.String(CS.get_t_string middle)), [])))
@@ -68,7 +98,7 @@ let import_end_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "之书";
-    left_fixity = FxOp 90;
+    left_fixity = FxOp (Some 90);
     right_fixity = FxNone;
   }
 let import_end : binary_op = 
@@ -91,7 +121,7 @@ let definition_middle_meta : binary_op_meta =
   {
     id = definition_middle_uid;
     keyword = CS.new_t_string "者";
-    left_fixity = FxOp 10;
+    left_fixity = FxOp (Some 10);
     right_fixity = FxComp definition_end_uid;
   }
 let definition_end_meta : binary_op_meta =
@@ -228,8 +258,8 @@ let unknown_structure_deref_meta : binary_op_meta =
   {
       id = Uid.next();
       keyword = CS.new_t_string "之";
-      left_fixity = FxOp 999;
-      right_fixity = FxOp 1000;
+      left_fixity = FxOp (Some 999);
+      right_fixity = FxOp (Some 1000);
   }
 let unknown_structure_deref : binary_op =
   {
@@ -251,7 +281,7 @@ let builtin_op_meta : binary_op_meta =
     id = Uid.next();
     keyword = CS.new_t_string "内建";
     left_fixity = FxNone;
-    right_fixity = FxOp 2000;
+    right_fixity = FxOp (Some 2000);
   }
 let builtin_op : binary_op = 
   {
@@ -300,7 +330,7 @@ let module_open_meta : binary_op_meta =
     id = Uid.next();
     keyword = CS.new_t_string "观";
     left_fixity = FxNone;
-    right_fixity = FxOp 80;
+    right_fixity = FxOp (Some 80);
   }
 
 let get_file_ref (file_path : string) : A.t proc_state_m = 
@@ -397,13 +427,64 @@ let module_open : binary_op =
       (* push_elem_on_input_acc (A.annotate_with_extent node per_ext) *)
   }
 
+
+let module_reexport_meta : binary_op_meta = 
+  {
+    id = Uid.next();
+    keyword = CS.new_t_string "诵";
+    left_fixity = FxNone;
+    right_fixity = FxOp (Some 80);
+  }
+let module_reexport : binary_op = 
+  {
+    meta = module_reexport_meta;
+    reduction = 
+      let* (module_expr, per_ext) = pop_prefix_operand module_reexport_meta in
+      let* cur_module_expr = pop_input_acc () in 
+      match A.view cur_module_expr with
+      | A.N(N.ModuleDef, args) -> (
+          match A.view module_expr with
+          | A.N(N.FileRef(path), []) -> (
+              let* file_content = get_file_ref path in
+              let rec aux acc decls = 
+                match decls with
+                | [] -> push_elem_on_input_acc (A.fold(A.N(N.ModuleDef, acc)))
+                | x::xs -> (
+                  match A.view x with
+                  | A.N((N.Declaration(N.ConstantDefn) as hd), ([], name)::_) 
+                  | A.N((N.Declaration(N.ConstructorDecl) as hd), ([], name)::_) ->
+                    (
+                      match A.view name with
+                      | A.FreeVar(x) -> 
+                        let new_node = A.fold_with_extent(
+                          A.N(hd, [([],name); [], A.fold(A.N(N.StructureDeref(x), [([], module_expr)]))])
+                        ) per_ext in
+                        aux (acc@[[], new_node]) xs
+                      | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name)
+                    )
+                  | A.N(N.Declaration(N.CustomOperatorDecl), _) -> (
+                    aux (acc@[[], x]) xs
+                  )
+                  | A.N(N.Declaration(N.ConstantDecl), _) -> aux acc xs
+                  | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view x)
+                )
+              in
+              match A.view file_content with
+              | A.N(N.ModuleDef, margs) -> aux args (List.map snd margs)
+              | _ -> print_failwith ("BP282: Expecting moduleDef: " ^ A.show_view file_content)
+              )
+            | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr)
+      )
+      | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr)
+  }
+
 let const_decl_middle_uid = Uid.next()
 let const_decl_end_uid = Uid.next()
 let const_decl_middle_meta : binary_op_meta = 
   {
     id = const_decl_middle_uid;
     keyword = CS.new_t_string "乃";
-    left_fixity = FxOp 10;
+    left_fixity = FxOp (Some 10);
     right_fixity = FxComp const_decl_end_uid;
   }
 let const_decl_end_meta : binary_op_meta = 
@@ -478,7 +559,7 @@ let constructor_decl_middle_meta : binary_op_meta =
   {
     id = constructor_decl_middle_uid;
     keyword = CS.new_t_string "立";
-    left_fixity = FxOp 10;
+    left_fixity = FxOp (Some 10);
     right_fixity = FxComp constructor_decl_end_uid;
   }
 let constructor_decl_end_meta : binary_op_meta = 
@@ -628,7 +709,7 @@ let explicit_pi_middle_2_meta =
     id = explicit_pi_middle_2_uid;
     keyword = CS.new_t_string "而";
     left_fixity = FxBinding explicit_pi_middle_1_uid;
-    right_fixity = FxOp 40;
+    right_fixity = FxOp (Some 40);
   }
 let explicit_pi_start : binary_op = 
   {
@@ -672,7 +753,7 @@ let implicit_pi_middle_2_meta =
     id = implicit_pi_middle_2_uid;
     keyword = CS.new_t_string "而";
     left_fixity = FxBinding implicit_pi_middle_1_uid;
-    right_fixity = FxOp 40;
+    right_fixity = FxOp (Some 40);
   }
 let implicit_pi_start : binary_op = 
   {
@@ -708,7 +789,7 @@ let arrow_middle_meta =
     id = arrow_middle_uid;
     keyword = CS.new_t_string "而";
     left_fixity = FxComp arrow_start_uid;
-    right_fixity = FxOp 40;
+    right_fixity = FxOp (Some 40);
   }
 let arrow_start : binary_op = 
   {
@@ -738,7 +819,7 @@ let implicit_lam_abs_middle_meta =
     id = implicit_lam_abs_middle_uid;
     keyword = CS.new_t_string "而";
     left_fixity = FxBinding implicit_lam_abs_start_uid;
-    right_fixity = FxOp 50;
+    right_fixity = FxOp (Some 50);
   }
 let implicit_lam_abs_start : binary_op = 
   {
@@ -769,7 +850,7 @@ let explicit_lam_abs_middle_meta =
     id = explicit_lam_abs_middle_uid;
     keyword = CS.new_t_string "而";
     left_fixity = FxBinding explicit_lam_abs_start_uid;
-    right_fixity = FxOp 50;
+    right_fixity = FxOp (Some 50);
   }
 let explicit_lam_abs_start : binary_op = 
   {
@@ -791,8 +872,8 @@ let implicit_ap_meta =
   {
     id = implicit_ap_uid;
     keyword = CS.new_t_string "授以";
-    left_fixity = FxOp 799;
-    right_fixity = FxOp 800;
+    left_fixity = FxOp (Some 799);
+    right_fixity = FxOp (Some 800);
   }
 let implicit_ap : binary_op = 
   {
@@ -807,8 +888,8 @@ let explicit_ap_meta =
   {
     id = explicit_ap_uid;
     keyword = CS.new_t_string "于";
-    left_fixity = FxOp 799;
-    right_fixity = FxOp 800;
+    left_fixity = FxOp (Some 799);
+    right_fixity = FxOp (Some 800);
   }
 let explicit_ap : binary_op = 
   {
@@ -828,7 +909,7 @@ let explicit_ap : binary_op =
   let sentence_end : unit proc_state_m =
     let* _ = read_one_of_string [CS.new_t_string "。"] in
     (* reduce all existing expressions*)
-    let* _ = operator_precedence_reduce (-1) in
+    let* _ = operator_precedence_reduce (Some (-1)) in
     let* input_acc_size = get_input_acc_size () in
     let* () = (
       if input_acc_size = 1  then
@@ -886,7 +967,7 @@ let external_call_meta : binary_op_meta =
     id = Uid.next();
     keyword = CS.new_t_string "《《外部调用》》";
     left_fixity = FxNone;
-    right_fixity = FxOp 2000;
+    right_fixity = FxOp (Some 2000);
   }
 let external_call : binary_op = 
   {
@@ -924,7 +1005,7 @@ let if_then_else_mid2_meta =
     id = if_then_else_mid2_uid;
     keyword = CS.new_t_string "否则";
     left_fixity = FxComp if_then_else_mid1_uid;
-    right_fixity = FxOp 80;
+    right_fixity = FxOp (Some 80);
   }
 
 let if_then_else_start : binary_op = 
@@ -989,7 +1070,7 @@ let match_case_mid_meta =
     id = match_case_mid_uid;
     keyword = CS.new_t_string "则";
     left_fixity = FxComp match_case_start_uid;
-    right_fixity = FxOp 70;
+    right_fixity = FxOp (Some 70);
   }
 let match_case_start : binary_op = 
   {
@@ -1009,8 +1090,8 @@ let match_case_alternative_meta : binary_op_meta =
   {
     id = Uid.next();
     keyword = CS.new_t_string "或";
-    left_fixity = FxOp 59;
-    right_fixity = FxOp 60;
+    left_fixity = FxOp (Some 59);
+    right_fixity = FxOp (Some 60);
   }
 let match_case_alternative : binary_op = 
   {
@@ -1029,8 +1110,8 @@ let comma_char = "，"
 let comma_sequence_meta : binary_op_meta = {
       id = Uid.next();
       keyword = CS.new_t_string comma_char;
-      left_fixity = FxOp 89;
-      right_fixity = FxOp 90;
+      left_fixity = FxOp (Some 89);
+      right_fixity = FxOp (Some 90);
     }
 
 let comma_sequence : binary_op =
@@ -1050,8 +1131,8 @@ let enumeration_comma_char = "、"
 let enumeration_comma_sequence_meta : binary_op_meta = {
       id = Uid.next();
       keyword = CS.new_t_string enumeration_comma_char;
-      left_fixity = FxOp 109;
-      right_fixity = FxOp 110;
+      left_fixity = FxOp (Some 109);
+      right_fixity = FxOp (Some 110);
     }
 let enumeration_comma_sequence : binary_op =
   {
@@ -1064,6 +1145,7 @@ let enumeration_comma_sequence : binary_op =
       | _ ->
         push_elem_on_input_acc (A.fold_with_extent(A.N(N.Sequence enumeration_comma_char, [[], x; [], y])) per_ext)
   }
+
 
 
 let custom_operator_decl_start : unit proc_state_m = 
@@ -1140,7 +1222,7 @@ let let_in_mid2_meta =
     id = let_in_mid2_uid;
     keyword = CS.new_t_string "而";
     left_fixity = FxComp let_in_mid1_uid;
-    right_fixity = FxOp 75;
+    right_fixity = FxOp (Some 55);
   }
 let let_in_start : binary_op = 
   {
@@ -1168,7 +1250,7 @@ let typing_annotation_middle_meta =
   {
     id = typing_annotation_middle_uid;
     keyword = CS.new_t_string "其";
-    left_fixity = FxOp 120;
+    left_fixity = FxOp (Some 120);
     right_fixity = FxComp typing_annotation_end_uid;
   }
 let typing_annotation_end_meta = 
@@ -1209,7 +1291,10 @@ let default_registry = [
   (* to_processor_binary_op Expression "statement_end" statement_end; *)
   to_processor_complex Expression "sentence_end" sentence_end;
   to_processor_binary_op Expression "builtin_op" builtin_op;
+
   to_processor_binary_op Expression "module_open" module_open;
+  to_processor_binary_op Expression "module_reexport" module_reexport;
+  
   to_processor_binary_op Expression "const_decl_middle" const_decl_middle;
   to_processor_binary_op Expression "const_decl_end" const_decl_end;
   to_processor_binary_op Expression "constructor_decl_middle" constructor_decl_middle;
@@ -1280,5 +1365,7 @@ let default_registry = [
 
   to_processor_complex Expression "identifier_parser_pusher" identifier_parser_pusher;
   to_processor_complex Expression "number_parser" (integer_number_parser ());
+  to_processor_complex Expression "decimal_number_parser" (decimal_number_parser ());
+
 ] @ List.concat [
  ]

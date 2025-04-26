@@ -70,10 +70,14 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
       (
         components := ys;
         match  int_of_string_opt (CS.get_t_string precedence) with
-        | Some i -> FxOp i, Some pname
+        | Some i -> FxOp (Some i), Some pname
         | None -> failwith ("ET102: Expected a number but got " ^ CS.get_t_string precedence)
       )
-    | Parenthetical _ :: Keyword _ :: _ -> failwith ("Leftfix operator must specify a priority like （72）")
+    | Parenthetical pname :: ys -> 
+      (
+        components := ys;
+        FxOp None, Some pname
+      )
     | Keyword _ :: _ -> 
       (
         FxNone, None
@@ -86,10 +90,14 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
       (
         components := List.rev ys;
         match  int_of_string_opt (CS.get_t_string precedence) with
-        | Some i -> FxOp i, Some pname
+        | Some i -> FxOp (Some i), Some pname
         | None -> failwith ("ET102: Expected a number but got " ^ CS.get_t_string precedence)
       )
-    | Parenthetical _ :: Keyword _ :: _ -> failwith ("Rightfix operator must specify a priority like （72）")
+    | Parenthetical pname :: ys -> 
+      (
+        components := List.rev ys;
+        FxOp None, Some pname
+      )
     | Keyword _ :: _ -> 
       (
         FxNone, None

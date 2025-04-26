@@ -11,7 +11,7 @@ module Ext = AbtLib.Extent
 module CS = CharStream
 
 type fixity = 
-              FxOp of int 
+              FxOp of int option
             | FxNone 
             | FxBinding of int (* uid of the component *)
             | FxComp of int 
@@ -45,7 +45,8 @@ let show_fixity (f : fixity) : string =
     "" ^ CS.get_t_string b.keyword ^ ", id=" ^ string_of_int b.id 
   in *)
   match f with
-  | FxOp (i) -> "FxOp(" ^ string_of_int i ^ ")"
+  | FxOp (Some i) -> "FxOp(" ^ string_of_int i ^ ")"
+  | FxOp (None) -> "FxOp(None)"
   | FxNone -> "FxNone"
   | FxBinding (b) -> "FxBinding(" ^ string_of_int b ^ ")"
   | FxComp (b) -> "FxComp(" ^ string_of_int b ^ ")"
@@ -125,7 +126,7 @@ module YYNode  = struct
     | ImplicitPi -> Some([0; 1])
     | Arrow -> Some([0; 0])
     | Ap -> None (* also multi-func app exists here *)
-    | Sequence _ -> Some([0; 0])
+    | Sequence _ -> None (* multiargs are flat*)
     | Match -> None (* first arg expr, rest cases *)
     | MatchCase -> Some([0; 0])
     | Lam -> Some([1])

@@ -490,7 +490,7 @@ module Abt (NodeClass: NODE_CLASS) : ABT
       if List.length arity_l = List.length args && (List.for_all2 (fun (bnds, _) arity -> List.length bnds = arity) args arity_l)
         then fold_no_arity_check view
       else 
-        (print_endline ("fold: arity mismatch for " ^ NodeClass.show node_type);
+        (print_endline ("fold: arity mismatch for " ^ NodeClass.show node_type ^ " got " ^ show_raw(fold_no_arity_check view));
           failwith ("fold: arity mismatch for " ^ NodeClass.show node_type)
         )
   ) in 
