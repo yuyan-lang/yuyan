@@ -44,7 +44,9 @@ let rec do_process_entire_stream () : A.t proc_state_m =
     then 
       (
         (* print_endline "SUCCESS"; *)
-        return (List.hd st.input_acc)
+        match List.hd st.input_acc with
+        | Expr(x) -> return x
+        | _ -> failwith ("ET490: Expected an expression but got " ^ (show_input_acc_elem (List.hd st.input_acc)))
       )
     else 
       (* let* s = get_proc_state () in
@@ -132,9 +134,9 @@ let run_top_level (filename: string)(content : string) : A.t =
     input_future = input;
     input_expect = Expression;
     expect_state_stack = []; 
-    input_acc = [A.annotate_with_extent(
+    input_acc = [Expr(A.annotate_with_extent(
       A.fold(A.N(N.ModuleDef, []))
-    ) (filename, (0, 0), (0, 0))];
+    ) (filename, (0, 0), (0, 0)))];
     store = Environment.default_environment;
     registry = BuiltinProcessors.default_registry;
     last_succeeded_processor = to_processor_identifier Expression "initial_none" (CS.new_t_string "[NONE]");

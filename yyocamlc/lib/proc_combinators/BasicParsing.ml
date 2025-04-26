@@ -7,13 +7,13 @@ CHANGE: I decided that I still want a list of identifiers
     [The idea is that A以B、C、D = A于B于C于D]
 2. Form a special sequence type if separator is ， or ；or。
 *)
-let push_elem_start (es : A.t) : unit proc_state_m = 
+let push_elem_start (es : input_acc_elem) : unit proc_state_m = 
   let* acc_top = peek_input_acc 0 in
   match acc_top with
   | None -> push_elem_on_input_acc es
   | Some (x) -> 
-    match A.view x with
-    | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+    match x with
+    | ParsingElem(OpKeyword(meta), _) -> 
       (
         match meta.right_fixity with
         | FxNone ->
@@ -21,24 +21,29 @@ let push_elem_start (es : A.t) : unit proc_state_m =
         | _ ->
           push_elem_on_input_acc es
       )
-    | A.N(N.ModuleDef, _) 
-    | A.N(N.Builtin(N.CustomOperatorString _), _)  (* special tricks for parsing custom operatos because final operators will pop one more thing from the stack
-    TODO: maybe better if we have a shift-action in operators 
-      *)
-    ->
-      push_elem_on_input_acc es
+    | Expr (x) -> (
+      match A.view x with
+      | A.N(N.ModuleDef, _)
+      | A.N(N.Builtin(N.CustomOperatorString _), _)  (* special tricks for parsing custom operatos because final operators will pop one more thing from the stack
+          TODO: maybe better if we have a shift-action in operators 
+        *)
+          -> push_elem_on_input_acc es
+      | _ -> 
+        pfail ("PC324: expected An element that allows ids to be pushed but got " ^ (A.show_view x) ^ " cannot push the next identifier, which is "
+          ^ (show_input_acc_elem es) ^ " on the stack")
+    )
     | _ -> 
-      pfail ("PC324: expected An element that allows ids to be pushed but got " ^ (A.show_view x) ^ " cannot push the next identifier, which is "
-        ^ (A.show_view es) ^ " on the stack")
+      pfail ("PC324: expected An element that allows ids to be pushed but got " ^ (show_input_acc_elem x) ^ " cannot push the next identifier, which is "
+        ^ (show_input_acc_elem es) ^ " on the stack")
 
-let push_elem_continue (es : A.t) : unit proc_state_m = 
+let push_elem_continue (es : input_acc_elem) : unit proc_state_m = 
   let* acc_top = peek_input_acc 0 in
   match acc_top with
   | None -> pfail "PC243: empty stack"
   | Some (x) -> 
-    match A.view x with
-    | A.N(N.ParsingElem(N.OpKeyword(_)),[]) -> 
-      pfail ("PC333: expected things  got " ^ (A.show_view x) ^ " cannot push the next identifier " ^ A.show_view es)
+    match x with
+    | ParsingElem(OpKeyword(_), _) ->
+      pfail ("PC333: expected things  got " ^ (show_input_acc_elem x) ^ " cannot push the next identifier " ^ (show_input_acc_elem es))
     | _ -> 
       push_elem_on_input_acc es
 
@@ -52,8 +57,8 @@ let operator_right_most_reduce () : unit proc_state_m =
   match acc_top with
   | None -> failwith "PC244: empty stack"
   | Some (x) -> 
-    match A.view x with
-    | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+    match x with
+    | ParsingElem(OpKeyword(meta), _) -> 
       (
         match meta.right_fixity with
         | FxNone -> 
@@ -63,7 +68,7 @@ let operator_right_most_reduce () : unit proc_state_m =
             failwith ("PC362: expected postfix or closed identifier but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
       )
     | _ -> 
-      failwith ("PC364: expected OpKeyword but got " ^ (A.show_view x) ^ " this method should not be invoked when rightmost reduction is not possible")
+      failwith ("PC364: expected OpKeyword but got " ^ (show_input_acc_elem x) ^ " this method should not be invoked when rightmost reduction is not possible")
 
 
 (* reduces all operators A + B on the stack of higher precedence*)
@@ -72,8 +77,8 @@ let rec operator_precedence_reduce (limit : int option) : unit proc_state_m =
   match acc_top with
   | None -> return ()
   | Some (x) -> 
-    match A.view x with
-    | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+    match x with
+    | ParsingElem(OpKeyword(meta), _) -> 
       (
         let perform_reduction () = 
           let* bin_op = lookup_binary_op meta.id in
@@ -118,8 +123,8 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
     match acc_top with
     | None -> pfail ("PC400: Expecting at least 2 elements on the stack but got " )
     | Some (x) -> 
-      match A.view x with
-      | A.N(N.ParsingElem(N.OpKeyword(meta)),[]) -> 
+      match x with
+      | ParsingElem(OpKeyword(meta), _) -> 
         if meta.id = comp_uid then
           return ()
         else
@@ -140,7 +145,7 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
           )
       | _ -> 
         let* oper = lookup_binary_op comp_uid in
-        pfail ("PC402: expecting " ^ (show_binary_op_meta oper.meta) ^ " but got " ^ (pretty_print_elem x) ^ " ")
+        pfail ("PC402: expecting " ^ (show_binary_op_meta oper.meta) ^ " but got " ^ (show_input_acc_elem x) ^ " ")
 
 
 
@@ -178,10 +183,11 @@ let integer_number_parser() : unit proc_state_m =
   if List.mem top yy_number_words then
     let* number_list = many1 (read_one_of_char yy_number_words) in
     let number = get_int_from_t_string (List.map fst number_list) in
-    push_elem_on_input_acc (
+    push_elem_on_input_acc (Expr (
       A.fold_with_extent (A.N(N.Builtin(N.Int number), []))
       (Ext.combine_extent_list (List.map snd number_list))
     )
+  )
   else
     pfail_error (ErrExpectString {
       expecting = yy_number_words;
@@ -194,9 +200,10 @@ let decimal_number_parser() : unit proc_state_m =
   let* decimal_part = many1 (read_one_of_char yy_number_words) in
   let integral_number = yy_number_str_to_numeric_str (List.map fst integral_part) in
   let decimal_number = yy_number_str_to_numeric_str (List.map fst decimal_part) in
-  push_elem_on_input_acc (
-    A.fold_with_extent (A.N(N.Builtin(N.Float (integral_number, decimal_number)), []))
-    (Ext.combine_extent_list (List.map snd integral_part @ List.map snd decimal_part))
+  push_elem_on_input_acc (Expr (
+      A.fold_with_extent (A.N(N.Builtin(N.Float (integral_number, decimal_number)), []))
+      (Ext.combine_extent_list (List.map snd integral_part @ List.map snd decimal_part))
+    )
   )
   
 
@@ -219,7 +226,7 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
     print_endline ("[OP] Current state " ^ show_proc_state st);
     return ()
   ) else return () in
-  let operator_elem = A.annotate_with_extent (A.fold(A.N(N.ParsingElem(N.OpKeyword (meta)), []))) read_ext in
+  let operator_elem = ParsingElem(OpKeyword(meta), read_ext) in
   (* reduce existing stack based on the left_fixity of the operator element*)
   let* _ = (match left_fixity with
   | FxOp lp -> operator_precedence_reduce lp
@@ -317,10 +324,12 @@ let collect_input_acc_identifiers() : CS.t_string list proc_state_m =
   let* s = get_proc_state () in
   let all_scanned_ids = ListUtil.remove_duplicates (List.concat_map (fun x -> 
     (* aux potentially recursive *)
-    let aux y = match A.view y with 
-    | A.N(N.ParsingElem(N.BoundScannedString s), []) -> [s]
-    | _ ->  List.map (CS.new_t_string) (A.get_free_vars y) in
-    aux x
+    let aux y = match y with 
+      | ParsingElem(BoundScannedString s, _) -> [s]
+      | Expr y ->  List.map (CS.new_t_string) (A.get_free_vars y) 
+      | _ -> []
+    in
+      aux x
     ) s.input_acc) in
   let all_existing_ids = List.filter_map (fun x -> 
     match x.processor with

@@ -9,10 +9,15 @@ module Env = Environment
 open BasicParsing
   
 
+(* let get_binding_name (x : input_acc_elem) : string proc_state_m = 
+  match x with
+  | ParsingElem(BoundScannedString(s), _) -> return (CS.get_t_string s)
+  | _ -> pfail ("ET107: Expected a bound scanned string but got " ^ (show_input_acc_elem x)) *)
+
 let get_binding_name (x : A.t) : string proc_state_m = 
   match A.view x with
-  | A.N(N.ParsingElem(N.BoundScannedString(s)), []) -> return (CS.get_t_string s)
-  | _ -> pfail ("ET107: Expected a bound scanned string but got " ^ A.show_view x)
+  | A.FreeVar(name) -> return name
+  | _ -> pfail ("ET107: Expected a free variable but got " ^ (A.show_view x))
 
 (* let top_level_identifier_pusher : unit proc_state_m = 
   read_any_char_except_and_push (CharStream.new_t_string "。（）「」『』\n\t\r"@[" "]) *)
@@ -25,7 +30,7 @@ let identifier_parser_pusher : unit proc_state_m =
   let* (id, ext) = identifier_parser () in
   if List.for_all (fun x -> List.mem x yy_number_words) id
     then (let number = get_int_from_t_string id in
-      push_elem_on_input_acc (A.fold_with_extent(A.N(N.Builtin(N.Int number), [])) ext)
+      push_elem_on_input_acc (Expr (A.fold_with_extent(A.N(N.Builtin(N.Int number), [])) ext))
     ) else
     push_elem_on_input_acc (PElem.get_identifier_t (id, ext))
 
@@ -63,9 +68,11 @@ let string_parser_pusher : unit proc_state_m =
   let* (_, start_ext) = read_one_of_char [CS.new_t_char "『"] in
   let* ((middle, _middle_ext), (end_ext)) = scan_string_body () in 
   push_elem_on_input_acc (
-    A.annotate_with_extent
-      (A.fold(A.N(N.Builtin(N.String(CS.get_t_string middle)), [])))
-      (Ext.combine_extent start_ext end_ext)
+    Expr (
+      A.annotate_with_extent
+        (A.fold(A.N(N.Builtin(N.String(CS.get_t_string middle)), [])))
+        (Ext.combine_extent start_ext end_ext)
+    )
   )
 
 let comment_start : unit proc_state_m = 
@@ -107,7 +114,7 @@ let import_end : binary_op =
     reduction = 
       let* (prev_comp, ext) = pop_postfix_operand (import_end_meta) in
       let* module_expr = Imports.get_module_expr prev_comp in
-      push_elem_on_input_acc (A.annotate_with_extent module_expr ext)
+      push_elem_on_input_acc (Expr (A.annotate_with_extent module_expr ext))
   }
 
 let assert_is_free_var (x : A.t) : unit proc_state_m = 
@@ -143,7 +150,7 @@ let definition_end : binary_op =
   meta = definition_end_meta;
   reduction = 
     let* ((name, defn), ext) = pop_postfix_op_operands_2 definition_end_meta in
-    push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
+    push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
 }
 
 let definition2_start_uid = Uid.next()
@@ -186,7 +193,7 @@ let definition2_end : binary_op =
     reduction = 
       let* ((name, defn), ext) = pop_postfix_op_operands_2 definition2_end_meta in
       let* bnd_name = get_binding_name name in
-      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), 
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), 
       [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
   }
 
@@ -207,7 +214,7 @@ let library_root : binary_op =
       let* ext = pop_closed_identifier_operand library_root_meta in 
       let default_path = Filename.concat (Sys.getcwd()) "藏书阁" in
       if Sys.file_exists default_path && Sys.is_directory default_path  then
-        push_elem_on_input_acc (A.annotate_with_extent (A.fold(A.N(N.Builtin(N.Library default_path), []))) ext)
+        push_elem_on_input_acc_expr (A.annotate_with_extent (A.fold(A.N(N.Builtin(N.Library default_path), []))) ext)
       else
         pfail ("Directory not found: " ^ default_path)
     )
@@ -269,10 +276,10 @@ let unknown_structure_deref : binary_op =
       match A.view proj_label with
       | A.FreeVar(label) -> 
         let new_node = A.fold(A.N(N.StructureDeref(label), [[],lo])) in
-        push_elem_on_input_acc (A.annotate_with_extent new_node ext)
+        push_elem_on_input_acc_expr (A.annotate_with_extent new_node ext)
       | A.N(N.Builtin(N.Int i), []) -> 
         let new_node = A.fold(A.N(N.TupleDeref(i), [[],lo])) in
-        push_elem_on_input_acc (A.annotate_with_extent new_node ext)
+        push_elem_on_input_acc_expr (A.annotate_with_extent new_node ext)
       | _ -> pfail ("ET102: Expected a free variable but got " ^ A.show_view proj_label)
   }
 
@@ -322,7 +329,7 @@ let builtin_op : binary_op =
           )
         | _ -> pfail ("ET105: Builtin Expected a free variable but got " ^ A.show_view oper)
       ) in
-      push_elem_on_input_acc (A.annotate_with_extent node per_ext)
+      push_elem_on_input_acc_expr (A.annotate_with_extent node per_ext)
   }
 
 let module_open_meta : binary_op_meta = 
@@ -410,7 +417,7 @@ let module_open : binary_op =
               reduction = 
                 let* (per_ext) = pop_closed_identifier_operand meta in
                 let node = A.fold(A.N(N.StructureDeref(name), [([], module_expr)])) in
-                push_elem_on_input_acc (A.annotate_with_extent node per_ext)
+                push_elem_on_input_acc_expr (A.annotate_with_extent node per_ext)
             } in
             to_processor_binary_op Expression ("open_module_"^name) name_oper
             ) all_names in
@@ -440,7 +447,7 @@ let module_reexport : binary_op =
     meta = module_reexport_meta;
     reduction = 
       let* (module_expr, per_ext) = pop_prefix_operand module_reexport_meta in
-      let* cur_module_expr = pop_input_acc () in 
+      let* (cur_module_expr, cur_ext) = pop_input_acc_expr () in 
       match A.view cur_module_expr with
       | A.N(N.ModuleDef, args) -> (
           match A.view module_expr with
@@ -448,8 +455,8 @@ let module_reexport : binary_op =
               let* file_content = get_file_ref path in
               let rec aux acc decls = 
                 match decls with
-                | [] -> push_elem_on_input_acc (A.fold_with_extent(A.N(N.ModuleDef, acc))
-                    (Ext.combine_extent (A.get_extent_some cur_module_expr) per_ext)
+                | [] -> push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.ModuleDef, acc))
+                    (Ext.combine_extent cur_ext per_ext)
                 )
                 | x::xs -> (
                   match A.view x with
@@ -507,7 +514,7 @@ let const_decl_end : binary_op =
     reduction =
       let* ((name, defn), ext) = pop_postfix_op_operands_2 const_decl_end_meta in
       let* () = assert_is_free_var name in
-      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), [[], name; [], defn]))) ext)
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), [[], name; [], defn]))) ext)
   }
 
 let const_decl2_start_uid = Uid.next()
@@ -550,7 +557,7 @@ let const_decl2_end : binary_op =
     reduction =
       let* ((name, defn), ext) = pop_postfix_op_operands_2 const_decl2_end_meta in
       let* bnd_name = get_binding_name name in
-      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), 
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), 
       [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
   }
 
@@ -583,7 +590,7 @@ let constructor_decl_end : binary_op =
     reduction =
       let* ((name, defn), ext) = pop_postfix_op_operands_2 constructor_decl_end_meta in
       let* () = assert_is_free_var name in
-      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), [[], name; [], defn]))) ext)
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), [[], name; [], defn]))) ext)
 }
 
 let constructor_decl2_start_uid = Uid.next()
@@ -626,7 +633,7 @@ let constructor_decl2_end : binary_op =
     reduction =
       let* ((name, defn), ext) = pop_postfix_op_operands_2 constructor_decl2_end_meta in
       let* bnd_name = get_binding_name name in
-      push_elem_on_input_acc (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), 
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), 
       [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
   }
 
@@ -656,7 +663,7 @@ let right_parenthesis : binary_op =
     meta = right_parenthesis_meta;
     reduction = 
       let* (oper, per_ext) = pop_postfix_op_operands_1 right_parenthesis_meta in
-      push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
+      push_elem_on_input_acc_expr (A.annotate_with_extent oper per_ext)
   }
 
 let double_parenthesis_left_uid = Uid.next()
@@ -685,7 +692,7 @@ let double_parenthesis_right : binary_op =
     meta = double_parenthesis_right_meta;
     reduction = 
       let* (oper, per_ext) = pop_postfix_op_operands_1 double_parenthesis_right_meta in
-      push_elem_on_input_acc (A.annotate_with_extent oper per_ext)
+      push_elem_on_input_acc_expr (A.annotate_with_extent oper per_ext)
   }
 
 
@@ -730,7 +737,7 @@ let explicit_pi_middle_2 : binary_op =
       let* ((tp_name, bnd_name, range_expr), per_ext) = pop_prefix_op_operands_3 explicit_pi_middle_2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent(A.N(N.ExplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
-      push_elem_on_input_acc result_expr 
+      push_elem_on_input_acc_expr result_expr 
   }
 
 let implicit_pi_start_uid = Uid.next()
@@ -774,7 +781,7 @@ let implicit_pi_middle_2 : binary_op =
       let* ((tp_name, bnd_name, range_expr), per_ext) = pop_prefix_op_operands_3 implicit_pi_middle_2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent(A.N(N.ImplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
-      push_elem_on_input_acc result_expr 
+      push_elem_on_input_acc_expr result_expr 
   }
 
 let arrow_start_uid = Uid.next()
@@ -804,7 +811,7 @@ let arrow_middle : binary_op =
     reduction = 
       let* ((tp_name, range_expr), per_ext) = pop_prefix_op_operands_2 arrow_middle_meta in
       let result_expr = A.fold(A.N(N.Arrow, [[], tp_name; [], range_expr])) in
-      push_elem_on_input_acc (A.annotate_with_extent result_expr per_ext)
+      push_elem_on_input_acc_expr (A.annotate_with_extent result_expr per_ext)
   }
 
 let implicit_lam_abs_start_uid = Uid.next()
@@ -835,7 +842,7 @@ let implicit_lam_abs_middle : binary_op =
       let* ((bnd_name, range_expr), per_ext) = pop_prefix_op_operands_2 implicit_lam_abs_middle_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
-      push_elem_on_input_acc result_expr 
+      push_elem_on_input_acc_expr result_expr 
   }
 
 let explicit_lam_abs_start_uid = Uid.next()
@@ -866,7 +873,7 @@ let explicit_lam_abs_middle : binary_op =
       let* ((tp_name, range_expr), per_ext) = pop_prefix_op_operands_2 explicit_lam_abs_middle_meta in
       let* binding_name = get_binding_name tp_name in
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
-      push_elem_on_input_acc result_expr 
+      push_elem_on_input_acc_expr result_expr 
   }
 
 let typed_lam_abs_start_uid = Uid.next()
@@ -910,7 +917,7 @@ let typed_lam_abs_middle2 : binary_op =
       let* ((tp_name, bnd_name, body_expr), per_ext) = pop_prefix_op_operands_3 typed_lam_abs_middle2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.TypedLam, [[], tp_name;[binding_name], body_expr])) per_ext in
-      push_elem_on_input_acc result_expr 
+      push_elem_on_input_acc_expr result_expr 
   }
 
 
@@ -927,7 +934,7 @@ let implicit_ap : binary_op =
     meta = implicit_ap_meta;
     reduction = 
       let* ((f, arg), per_ext) = pop_bin_operand implicit_ap_meta in
-      push_elem_on_input_acc (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
+      push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
   }
 
 let explicit_ap_uid = Uid.next()
@@ -943,14 +950,14 @@ let explicit_ap : binary_op =
     meta = explicit_ap_meta;
     reduction = 
       let* ((f, arg), per_ext) = pop_bin_operand explicit_ap_meta in
-      push_elem_on_input_acc (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
+      push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
   }
 
 
 
-  let sentence_end_fail (module_expr : A.t) (decl_expr : A.t) : unit proc_state_m = 
+  let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem) : unit proc_state_m = 
     let* st = get_proc_state () in
-    pfail ("BP678: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl_expr
+    pfail ("BP678: Expected a module defn and a decl but got " ^ (show_input_acc_elem module_expr) ^ " and " ^ (show_input_acc_elem decl_expr)
     ^ "input_acc = " ^ show_input_acc st.input_acc) 
 
   let sentence_end : unit proc_state_m =
@@ -960,47 +967,59 @@ let explicit_ap : binary_op =
     let* input_acc_size = get_input_acc_size () in
     let* () = (
       if input_acc_size = 1  then
-        let* module_expr = pop_input_acc () in
+        let* (module_expr, _) = pop_input_acc_expr () in
         match A.view module_expr with
         | A.N(N.ModuleDef, _) -> 
-          let* () = push_elem_on_input_acc module_expr in
+          let* () = push_elem_on_input_acc_expr module_expr in
           return ()
         | _ -> pfail ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
       else if input_acc_size > 1 then
-        let* module_expr, decl = pop_input_acc_2 () in 
-        match A.view module_expr, A.view decl with
-        | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
-          push_elem_on_input_acc
-            (A.annotate_with_extent
-              (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
-              (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
-            )
-        
-        | A.N(N.ModuleDef, args), _ -> 
-          let direct_expr_decl = A.fold_with_extent (A.N(N.Declaration(N.DirectExpr), [[], decl])) (A.get_extent_some decl) in
-          push_elem_on_input_acc
-            (A.annotate_with_extent
-              (A.fold(A.N(N.ModuleDef, args@[[], direct_expr_decl]))) 
-              (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
-            )
+        let* (poped_left, poped_right) = pop_input_acc_2 () in 
+        match poped_left, poped_right with
+        | Expr(module_expr), Expr(decl) -> 
+          (
+            match A.view module_expr, A.view decl with
+            | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
+              push_elem_on_input_acc_expr
+                (A.annotate_with_extent
+                  (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
+                  (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
+                )
+            
+            | A.N(N.ModuleDef, args), _ -> 
+              let direct_expr_decl = A.fold_with_extent (A.N(N.Declaration(N.DirectExpr), [[], decl])) (A.get_extent_some decl) in
+              push_elem_on_input_acc_expr
+                (A.annotate_with_extent
+                  (A.fold(A.N(N.ModuleDef, args@[[], direct_expr_decl]))) 
+                  (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl))
+                )
+            | _ -> 
+              sentence_end_fail (Expr module_expr) (Expr decl)
+          )
+        | ParsingElem(start_op, _start_op_ext), Expr(decl) -> 
+          (
+            match start_op, A.view decl with
+            (* also for 「「 name *)
+            | OpKeyword({id=opid;_}), A.N(N.Declaration(_), _) -> 
+              if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
+                (* push 「「 back onto the stack *)
+                let* _ = push_elem_on_input_acc poped_left in
+                let* _ = push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
+                return ()
+              else  sentence_end_fail poped_left poped_right
+            | OpKeyword({id=opid;_}), _ ->
+              if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
+                let direct_expr_decl = A.fold_with_extent (A.N(N.Declaration(N.DirectExpr), [[], decl])) (A.get_extent_some decl) in
+                (* push 「「 back onto the stack *)
+                let* _ = push_elem_on_input_acc poped_left in
+                let* _ = push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.ModuleDef, [[],direct_expr_decl])) (A.get_extent_some decl)) in
+                return ()
+              else  sentence_end_fail poped_left poped_right
+            | _ -> 
+              sentence_end_fail poped_left poped_right
+          )
         (* also for 「「 name *)
-        | A.N(N.ParsingElem(N.OpKeyword({id=opid;_})), []), A.N(N.Declaration(_), _) -> 
-          if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
-            (* push 「「 back onto the stack *)
-            let* _ = push_elem_on_input_acc module_expr in
-            let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
-            return ()
-          else  sentence_end_fail module_expr decl
-        | A.N(N.ParsingElem(N.OpKeyword({id=opid;_})), []), _ ->
-          if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
-            let direct_expr_decl = A.fold_with_extent (A.N(N.Declaration(N.DirectExpr), [[], decl])) (A.get_extent_some decl) in
-            (* push 「「 back onto the stack *)
-            let* _ = push_elem_on_input_acc module_expr in
-            let* _ = push_elem_on_input_acc (A.fold_with_extent (A.N(N.ModuleDef, [[],direct_expr_decl])) (A.get_extent_some decl)) in
-            return ()
-          else  sentence_end_fail module_expr decl
-        (* also for 「「 name *)
-        | _ -> sentence_end_fail module_expr decl
+        | _ -> sentence_end_fail poped_left poped_right
       else
         pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
     ) in
@@ -1024,7 +1043,7 @@ let external_call : binary_op =
         match A.view oper with
         | A.N(N.Builtin(N.String(x)), []) -> 
           (
-            push_elem_on_input_acc (A.fold_with_extent (A.N(N.ExternalCall(x), []) ) per_ext)
+            push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.ExternalCall(x), []) ) per_ext)
           )
         | _ -> pfail ("BP693: Builtin Expected a string but got " ^ A.show_view oper)
   }
@@ -1071,7 +1090,7 @@ let if_then_else_mid2 : binary_op =
     reduction = 
       let* ((cond, then_expr, else_expr), per_ext) = pop_prefix_op_operands_3 if_then_else_mid2_meta in
       let result_expr = A.fold_with_extent (A.N(N.IfThenElse, [[], cond; [], then_expr; [], else_expr])) per_ext in
-      push_elem_on_input_acc result_expr
+      push_elem_on_input_acc_expr result_expr
   }
 
 let match_subject_start_uid = Uid.next()
@@ -1100,7 +1119,7 @@ let match_subject_end : binary_op =
     meta = match_subject_end_meta;
     reduction = 
       let* (oper, per_ext) = pop_postfix_op_operands_1 match_subject_end_meta in
-      push_elem_on_input_acc (A.fold_with_extent (A.N(N.Match, [[], oper])) per_ext)
+      push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.Match, [[], oper])) per_ext)
   }
 
 let match_case_start_uid = Uid.next()
@@ -1130,7 +1149,7 @@ let match_case_mid : binary_op =
     reduction = 
       let* ((case_expr, then_expr), per_ext) = pop_prefix_op_operands_2 match_case_mid_meta in
       let result_expr = A.fold_with_extent (A.N(N.MatchCase, [[], case_expr; [], then_expr])) per_ext in
-      push_elem_on_input_acc result_expr
+      push_elem_on_input_acc_expr result_expr
   }
 
 let match_case_alternative_meta : binary_op_meta = 
@@ -1148,7 +1167,7 @@ let match_case_alternative : binary_op =
       match A.view case_expr with
       | A.N(N.Match, args) -> 
         let new_case_expr = A.fold(A.N(N.Match, args@[[], then_expr])) in
-        push_elem_on_input_acc (A.annotate_with_extent new_case_expr per_ext)
+        push_elem_on_input_acc_expr (A.annotate_with_extent new_case_expr per_ext)
       | _ -> pfail ("ET108: Expected a match case but got " ^ A.show_view case_expr)
   }
 
@@ -1168,9 +1187,9 @@ let comma_sequence : binary_op =
       let* ((x, y), per_ext) = pop_bin_operand comma_sequence_meta in
       match A.view x with
       | A.N(N.Sequence "，", args) -> 
-        push_elem_on_input_acc (A.fold_with_extent (A.N(N.Sequence comma_char, args@[[], y])) per_ext)
+        push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.Sequence comma_char, args@[[], y])) per_ext)
       | _ ->
-        push_elem_on_input_acc (A.fold_with_extent(A.N(N.Sequence comma_char, [[], x; [], y])) per_ext)
+        push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Sequence comma_char, [[], x; [], y])) per_ext)
   }
 
 
@@ -1188,9 +1207,9 @@ let enumeration_comma_sequence : binary_op =
       let* ((x, y), per_ext) = pop_bin_operand enumeration_comma_sequence_meta in
       match A.view x with
       | A.N(N.Sequence "、", args) -> 
-        push_elem_on_input_acc (A.fold_with_extent (A.N(N.Sequence enumeration_comma_char, args@[[], y])) per_ext)
+        push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.Sequence enumeration_comma_char, args@[[], y])) per_ext)
       | _ ->
-        push_elem_on_input_acc (A.fold_with_extent(A.N(N.Sequence enumeration_comma_char, [[], x; [], y])) per_ext)
+        push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Sequence enumeration_comma_char, [[], x; [], y])) per_ext)
   }
 
 
@@ -1201,7 +1220,7 @@ let custom_operator_decl_start : unit proc_state_m =
   (* precheck if operators can be get *)
   let* _ = UserDefinedOperators.get_operators_m defn (A.fold_with_extent(A.FreeVar("TRIVIAL")) defn_ext) in
   (* if we can get operators (meaning this is at least well-formed, push the scanned thing onto the stack)*)
-  push_elem_on_input_acc (A.fold_with_extent(A.N(N.Builtin(N.CustomOperatorString defn), [])) defn_ext)
+  push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Builtin(N.CustomOperatorString defn), [])) defn_ext)
   (* then we can scan the rest of the line *)
   (* reduce the stack *)
 
@@ -1231,13 +1250,13 @@ let custom_operator_decl_end : binary_op =
     meta = custom_operator_decl_end_meta;
     reduction = 
       let* (result, per_ext) = pop_postfix_operand custom_operator_decl_end_meta in
-      let* defn = pop_input_acc () in
+      let* (defn, defn_ext) = pop_input_acc_expr () in
       match A.view defn with
       | A.N(N.Builtin(N.CustomOperatorString oper_str), []) -> 
         let* new_ops = UserDefinedOperators.get_operators_m oper_str result in
-        let* () = push_elem_on_input_acc (A.fold_with_extent
+        let* () = push_elem_on_input_acc_expr (A.fold_with_extent
                                     (A.N(N.Declaration(N.CustomOperatorDecl), [[], defn; [], result]))
-                                    (Ext.combine_extent (A.get_extent_some defn) per_ext)
+                                    (Ext.combine_extent defn_ext per_ext)
                                     ) in
         print_endline ("Adding new Ops: " ^ String.concat ", " (List.map (fun x -> show_binary_op_meta x.meta) new_ops));
         (* add new operators to the registry *)
@@ -1288,7 +1307,7 @@ let let_in_mid2 : binary_op =
       let* ((bnd_name, domain_expr, range_expr), per_ext) = pop_prefix_op_operands_3 let_in_mid2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.LetIn, [[], domain_expr;[binding_name], range_expr])) per_ext in
-      push_elem_on_input_acc result_expr 
+      push_elem_on_input_acc_expr result_expr 
   }
 
 let typing_annotation_middle_uid = Uid.next()
@@ -1318,7 +1337,7 @@ let typing_annotation_end : binary_op =
     reduction = 
       let* ((body_expr, type_expr), per_ext) = pop_postfix_op_operands_2 typing_annotation_end_meta in
       let result_expr = A.fold_with_extent (A.N(N.TypingAnnotation, [[], body_expr; [], type_expr])) per_ext in
-      push_elem_on_input_acc result_expr 
+      push_elem_on_input_acc_expr result_expr 
   }
 
 

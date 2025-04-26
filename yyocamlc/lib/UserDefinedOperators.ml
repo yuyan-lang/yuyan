@@ -153,7 +153,7 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
             ) parameter_names in
           (* now new_param_name is bound in result, and no capturing is possible when doing iterative substitution *)
           let final_result = List.fold_right2 (A.subst) operands new_param_name !result_ref in
-          push_elem_on_input_acc (A.annotate_with_extent (final_result) (oper_ext)) 
+          push_elem_on_input_acc (Expr (A.annotate_with_extent (final_result) (oper_ext))) 
       )
     }
   ) components in

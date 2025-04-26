@@ -313,10 +313,13 @@ let scan_past_one_of_string (t : CS.t_string list) : ((CS.t_string * Ext.t) (* i
   | Some((c, ext)) -> return (intermediate, (c, ext))
   | None ->  failwith "PC232: Should not be None"
 
-let push_elem_on_input_acc (elem : PE.t) : unit proc_state_m = 
+let push_elem_on_input_acc (elem : input_acc_elem) : unit proc_state_m = 
   let* s = get_proc_state () in
   let new_s = {s with input_acc = elem :: s.input_acc} in
    write_proc_state new_s
+
+let push_elem_on_input_acc_expr (expr : A.t) : unit proc_state_m = 
+  push_elem_on_input_acc (Expr expr)
 
 
 let get_expect_state () : expect proc_state_m =
@@ -341,7 +344,7 @@ let pop_expect_state (cur_state : expect) : unit proc_state_m =
       let* _ = modify_s (fun s -> {s with input_expect = x; expect_state_stack = tail}) in
       return ()
 
-let peek_input_acc (idx : int) : PE.t option proc_state_m =
+let peek_input_acc (idx : int) : input_acc_elem option proc_state_m =
   let* s = get_proc_state () in
   if idx < List.length s.input_acc then
     return (Some (List.nth s.input_acc idx))
@@ -352,7 +355,7 @@ let get_input_acc_size () : int proc_state_m =
   let* s = get_proc_state () in
   return (List.length s.input_acc)
 
-let pop_input_acc () : PE.t proc_state_m =
+let pop_input_acc () : input_acc_elem proc_state_m =
   let* s = get_proc_state () in
   match s.input_acc with
   | [] -> pfail ("PC224: Attempting to pop from empty input accumulator: ")
@@ -361,31 +364,48 @@ let pop_input_acc () : PE.t proc_state_m =
       let* _ = write_proc_state new_s in
       return x
 
-let pop_input_acc_2 () : (PE.t * PE.t) proc_state_m =
+let pop_input_acc_parsing_elem () : (parsing_elem * Ext.t) proc_state_m =
+  let* elem = pop_input_acc () in
+  match elem with
+  | ParsingElem(x, ext) -> return (x, ext)
+  | _ -> pfail ("PC225: Attempting to pop non-parsing element from input accumulator: " ^ (show_input_acc_elem elem))
+
+let pop_input_acc_expr () : (A.t * Ext.t) proc_state_m =
+  let* elem = pop_input_acc () in
+  match elem with
+  | Expr(x) -> return (x, A.get_extent_some x)
+  | _ -> pfail ("PC226: Attempting to pop non-expr element from input accumulator: " ^ (show_input_acc_elem elem))
+
+let pop_input_acc_2 () : (input_acc_elem * input_acc_elem) proc_state_m =
   let* x = pop_input_acc () in
   let* y = pop_input_acc () in
   return (y, x)
 
-let pop_input_acc_3 () : (PE.t * PE.t * PE.t) proc_state_m =
+let pop_input_acc_2_expr () : (A.t * A.t) proc_state_m =
+  let* (x, _) = pop_input_acc_expr () in
+  let* (y, _) = pop_input_acc_expr () in
+  return (y, x)
+
+let pop_input_acc_3 () : (input_acc_elem * input_acc_elem * input_acc_elem) proc_state_m =
   let* x = pop_input_acc () in
   let* y = pop_input_acc () in
   let* z = pop_input_acc () in
   return (z, y, x)
 
-let assert_is_correct_op(meta : binary_op_meta) (elem : PE.t) : unit proc_state_m =
-  match A.view elem with
-  | A.N(N.ParsingElem(N.OpKeyword(kop)), []) -> 
+let assert_is_correct_op(meta : binary_op_meta) (elem : parsing_elem) : unit proc_state_m =
+  match elem with
+  | OpKeyword(kop) -> 
     if meta.id = kop.id then
       return ()
     else
       pfail ("check_is_operand: expected " ^ (show_binary_op_meta meta) ^ " but got " ^ (show_binary_op_meta kop))
   | _ -> 
-    print_failwith ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ (A.show_view elem))
+    print_failwith ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ (show_parsing_elem elem))
 
-let assert_is_not_op_keyword (elem : A.t) : unit proc_state_m =
-  match A.view elem with
-  | A.N(N.ParsingElem(N.OpKeyword(_)), []) -> 
-    pfail_with_ext ("PC342: check_is_not_op_keyword: expected not OpKeyword but got " ^ (A.show_view elem)) (A.get_extent_some elem)
+let assert_is_not_op_keyword (elem : input_acc_elem) : unit proc_state_m =
+  match elem with
+  | ParsingElem(OpKeyword(_), ext) -> 
+    pfail_with_ext ("PC342: check_is_not_op_keyword: expected not OpKeyword but got " ^ (show_input_acc_elem elem)) ext
   | _ -> 
     return ()
   
@@ -402,38 +422,45 @@ let lookup_binary_op (meta_id : int) : binary_op proc_state_m =
   ))
 
 (* extent is the entirety of the expressions *)
-let pop_postfix_op_operands (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
+let pop_postfix_op_operands (binop : binary_op_meta) : ((A.t list) * Ext.t) proc_state_m = 
   let rec f binop = 
-    let* (top_op) = pop_input_acc() in
+    let* (top_op, top_extent) = pop_input_acc_parsing_elem() in
     let* _ = assert_is_correct_op binop top_op in
-    let top_extent = A.get_extent_some top_op in
-    match A.view top_op with
-    | A.N(N.ParsingElem(N.OpKeyword(meta)), []) -> 
+    match top_op with
+    | OpKeyword(meta) -> 
       (
         match meta.left_fixity with
         | FxNone -> return ([], top_extent)
         | FxOp _ -> (
-          let* next_op = pop_input_acc() in
-          let* () = assert_is_not_op_keyword next_op in
-          return ([next_op], Ext.combine_extent (A.get_extent_some next_op) top_extent)
+          let* (next_op, next_op_ext) = pop_input_acc_expr () in
+          return ([next_op], Ext.combine_extent next_op_ext top_extent)
         )
-        | FxBinding prev_op_uid | FxComp prev_op_uid -> (
-          let* comp = pop_input_acc() in
-          let* () = assert_is_not_op_keyword comp in
+        | FxComp prev_op_uid -> (
+          let* (comp, _comp_ext) = pop_input_acc_expr() in
           let* prev_op_meta = lookup_binary_op prev_op_uid in
           let* (rest_ops, rest_ext) = f prev_op_meta.meta in
           return ((rest_ops@[comp]), Ext.combine_extent rest_ext top_extent)
         )
+        | FxBinding prev_op_uid -> (
+          let* (comp, comp_ext) = pop_input_acc_parsing_elem() in
+          match comp with
+          | BoundScannedString(str) -> (
+            let* prev_op_meta = lookup_binary_op prev_op_uid in
+            let* (rest_ops, rest_ext) = f prev_op_meta.meta in
+            return (rest_ops@[A.annotate_with_extent(A.free_var (CS.get_t_string str)) comp_ext],
+             Ext.combine_extent rest_ext top_extent)
+          )
+          | _ -> pfail ("PC248: expected BoundScannedString but got " ^ (show_parsing_elem comp))
+        )
       )
-    | _ -> pfail ("PC248: expected " ^ show_binary_op_meta binop ^ " but got " ^ (A.show_view top_op) ^ " ")
+    | _ -> pfail ("PC248: expected " ^ show_binary_op_meta binop ^ " but got " ^ (show_parsing_elem top_op) ^ " ")
    in
   f binop
 
-let pop_prefix_op_operands (binop : binary_op_meta) : ((PE.t list) * Ext.t) proc_state_m = 
-  let* top_operand = pop_input_acc() in
-  let* _ = assert_is_not_op_keyword top_operand in
+let pop_prefix_op_operands (binop : binary_op_meta) : ((A.t list) * Ext.t) proc_state_m = 
+  let* (top_operand, top_extent) = pop_input_acc_expr () in
   let* (all_oprands, ext) = pop_postfix_op_operands binop in
-  return (all_oprands@[top_operand], Ext.combine_extent (ext) (A.get_extent_some top_operand))
+  return (all_oprands@[top_operand], Ext.combine_extent ext top_extent)
 
 let pop_postfix_op_operands_0 (binop : binary_op_meta) : (Ext.t) proc_state_m = 
   let* (all_oprands, ext) = pop_postfix_op_operands binop in
@@ -441,61 +468,61 @@ let pop_postfix_op_operands_0 (binop : binary_op_meta) : (Ext.t) proc_state_m =
   | [] -> return ext
   | _ -> failwith ("PC249: expected 0 operand but got more than 0 operands")
 
-let pop_postfix_op_operands_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
+let pop_postfix_op_operands_1 (binop : binary_op_meta) : (A.t * Ext.t) proc_state_m = 
   let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x] -> return (x, ext)
   | _ -> failwith ("PC249: expected 1 operand but got more than 1 operands")
 
-let pop_postfix_op_operands_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m = 
+let pop_postfix_op_operands_2 (binop : binary_op_meta) : ((A.t * A.t) * Ext.t) proc_state_m = 
   let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y] -> return ((x, y), ext)
   | _ -> failwith ("PC249: expected 2 operands but got more than 2 operands")
 
-let pop_postfix_op_operands_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+let pop_postfix_op_operands_3 (binop : binary_op_meta) : ((A.t * A.t * A.t) * Ext.t) proc_state_m = 
   let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y;z] -> return ((x, y, z), ext)
   | _ -> failwith ("PC249: expected 3 operands but got more than 3 operands")
 
-let pop_postfix_op_operands_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+let pop_postfix_op_operands_4 (binop : binary_op_meta) : ((A.t * A.t * A.t * A.t) * Ext.t) proc_state_m = 
   let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y;z;w] -> return ((x, y, z, w), ext)
   | _ -> failwith ("PC249: expected 4 operands but got more than 4 operands")
 
-let pop_postfix_op_operands_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m = 
+let pop_postfix_op_operands_5 (binop : binary_op_meta) : ((A.t * A.t * A.t * A.t * A.t) * Ext.t) proc_state_m = 
   let* (all_oprands, ext) = pop_postfix_op_operands binop in
   match all_oprands with
   | [x;y;z;w;v] -> return ((x, y, z, w, v), ext)
   | _ -> failwith ("PC249: expected 5 operands but got more than 5 operands")
 
-let pop_prefix_op_operands_1 (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m = 
+let pop_prefix_op_operands_1 (binop : binary_op_meta) : (A.t * Ext.t) proc_state_m = 
   let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x] -> return (x, ext)
   | _ -> failwith ("PC249: expected 1 operand but got more than 1 operands")
 
-let pop_prefix_op_operands_2 (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
+let pop_prefix_op_operands_2 (binop : binary_op_meta) : ((A.t * A.t) * Ext.t) proc_state_m =
   let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y] -> return ((x, y), ext)
   | _ -> failwith ("PC249: expected 2 operands but got more than 2 operands")
 
-let pop_prefix_op_operands_3 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+let pop_prefix_op_operands_3 (binop : binary_op_meta) : ((A.t * A.t * A.t) * Ext.t) proc_state_m =
   let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y;z] -> return ((x, y, z), ext)
   | _ -> failwith ("PC249: expected 3 operands but got more than 3 operands")
 
-let pop_prefix_op_operands_4 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+let pop_prefix_op_operands_4 (binop : binary_op_meta) : ((A.t * A.t * A.t * A.t) * Ext.t) proc_state_m =
   let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y;z;w] -> return ((x, y, z, w), ext)
   | _ -> failwith ("PC249: expected 4 operands but got more than 4 operands")
 
-let pop_prefix_op_operands_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * PE.t * PE.t) * Ext.t) proc_state_m =
+let pop_prefix_op_operands_5 (binop : binary_op_meta) : ((A.t * A.t * A.t * A.t * A.t) * Ext.t) proc_state_m =
   let* (all_oprands, ext) = pop_prefix_op_operands binop in
   match all_oprands with
   | [x;y;z;w;v] -> return ((x, y, z, w, v), ext)
@@ -505,21 +532,21 @@ let pop_prefix_op_operands_5 (binop : binary_op_meta) : ((PE.t * PE.t * PE.t * P
 (* extent is the entirety of expressions *)
 
 
-let pop_bin_operand (binop : binary_op_meta) : ((PE.t * PE.t) * Ext.t) proc_state_m =
+let pop_bin_operand (binop : binary_op_meta) : ((A.t * A.t) * Ext.t) proc_state_m =
   pop_prefix_op_operands_2 binop
 
 (* extent is the entirety of expressions *)
-let pop_prefix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
+let pop_prefix_operand (binop : binary_op_meta) : (A.t * Ext.t) proc_state_m =
   pop_prefix_op_operands_1 binop
 
-let pop_postfix_operand (binop : binary_op_meta) : (PE.t * Ext.t) proc_state_m =
+let pop_postfix_operand (binop : binary_op_meta) : (A.t * Ext.t) proc_state_m =
   pop_postfix_op_operands_1 binop
 
 let pop_closed_identifier_operand (binop : binary_op_meta) : Ext.t proc_state_m =
   pop_postfix_op_operands_0 binop
 
 
-let pop_input_acc_past (f : PE.t -> bool) : (PE.t list * PE.t) proc_state_m =
+let pop_input_acc_past (f : input_acc_elem -> bool) : (input_acc_elem list * input_acc_elem) proc_state_m =
   let rec aux acc = 
     let* x = pop_input_acc () in
     if f x then
