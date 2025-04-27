@@ -64,16 +64,17 @@ FxOp of int (* infix or prefix *) [precedence when viewed from right]
 }
 
 
-type parsing_elem = ScannedChar of CS.t_char
-| Keyword of CS.t_string
-| BoundScannedString of CS.t_string (* this is used for operator that binds a name *)
-| OpKeyword of binary_op_meta (* uid of the binary op *)
 
 type void = |
 type monad_ret_tp = void
-type input_acc_elem = Expr of A.t | ParsingElem of parsing_elem * Ext.t
+type parsing_elem = ScannedChar of CS.t_char
+| Keyword of CS.t_string
+| BoundScannedString of CS.t_string (* this is used for operator that binds a name *)
+| OpKeyword of binary_op_meta * unit proc_state_m (* uid of the binary op *)
+and input_acc_elem = Expr of A.t | ParsingElem of parsing_elem * Ext.t  (* this will be executed after the 
+element is poped via pop_*fix_operator_x where the  *)
 (* processing state *)
-type proc_state = {
+and proc_state = {
   input_future : CharStream.t;
   input_expect : expect;
   expect_state_stack : expect list;
@@ -133,7 +134,7 @@ let show_binary_op_meta (b : binary_op_meta) : string =
     match p with
     | ScannedChar (s) -> "UnknownChar(" ^ CS.get_t_char s ^ ")"
     | Keyword (s) -> "Keyword(" ^ CS.get_t_string s ^ ")"
-    | OpKeyword (i) -> "OpKeyword(" ^ show_binary_op_meta i ^ ")"
+    | OpKeyword (i, _) -> "OpKeyword(" ^ show_binary_op_meta i ^ ")"
     | BoundScannedString (s) -> "BoundScannedString(" ^ show_string (CS.get_t_string s) ^ ")"
 
 let pretty_print_expr (x : A.t) : string = 

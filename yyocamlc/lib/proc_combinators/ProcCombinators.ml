@@ -3,7 +3,6 @@ open EngineData
 
 module Ext = AbtLib.Extent
 module CS = CharStream
-module PE = ProcessedElement
 
 let print_failwith (s : string) : 'a = 
   print_endline s;
@@ -187,7 +186,29 @@ let to_processor_complex  (name : string) (process : 'a proc_state_m) : processo
    processor = ProcComplex process;
   }
 
+             
+let get_scanned_char_t ((c, ext) : CS.t_char * Ext.t ) : input_acc_elem = 
+  ParsingElem(ScannedChar(c), ext)
 
+let get_bound_scanned_string_t ((c, ext) : CS.t_string * Ext.t) : input_acc_elem = 
+  ParsingElem(BoundScannedString(c), ext)
+
+
+let get_identifier_t ((c, ext) : CS.t_string * Ext.t) : input_acc_elem = 
+  Expr(
+    A.annotate_with_extent
+    (A.fold(A.FreeVar(CS.get_t_string c)))
+    (ext)
+  )
+
+let get_keyword_t ((keyword, ext) : CS.t_string * Ext.t)  : input_acc_elem = 
+  ParsingElem(Keyword(keyword), ext)
+
+let is_keyword (x : input_acc_elem) (string : string)  : bool = 
+  match x with
+  | ParsingElem(Keyword(s), _) -> CS.get_t_string s = string 
+  | _ -> false
+  
 let get_proc_state () : proc_state proc_state_m = 
   fun s fc sc -> 
     sc (s, s) fc
@@ -222,7 +243,7 @@ let read_any_char () : (CS.t_char * Ext.t) proc_state_m =
 
 let push_scanned_char (c : CS.t_char * Ext.t) : unit proc_state_m = 
   let* s = get_proc_state () in
-  let new_s = {s with input_acc = PE.get_scanned_char_t c :: s.input_acc} in
+  let new_s = {s with input_acc = get_scanned_char_t c :: s.input_acc} in
   let* () = write_proc_state new_s in
   return ()
 
@@ -361,7 +382,7 @@ let pop_input_acc () : input_acc_elem proc_state_m =
       let* _ = write_proc_state new_s in
       return x
 
-let pop_input_acc_parsing_elem () : (parsing_elem * Ext.t) proc_state_m =
+let pop_input_acc_parsing_elem () : (parsing_elem * Ext.t ) proc_state_m =
   let* elem = pop_input_acc () in
   match elem with
   | ParsingElem(x, ext) -> return (x, ext)
@@ -391,7 +412,7 @@ let pop_input_acc_3 () : (input_acc_elem * input_acc_elem * input_acc_elem) proc
 
 let assert_is_correct_op(meta : binary_op_meta) (elem : parsing_elem) : unit proc_state_m =
   match elem with
-  | OpKeyword(kop) -> 
+  | OpKeyword(kop, _) -> 
     if meta.id = kop.id then
       return ()
     else
@@ -424,8 +445,10 @@ let pop_postfix_op_operands (binop : binary_op_meta) : ((A.t list) * Ext.t) proc
     let* (top_op, top_extent) = pop_input_acc_parsing_elem() in
     let* _ = assert_is_correct_op binop top_op in
     match top_op with
-    | OpKeyword(meta) -> 
+    | OpKeyword(meta, pop_action) -> 
       (
+      (* now the parsing elem is poped, we can execute the pop action *)
+        let* () = pop_action in
         match meta.left_fixity with
         | FxNone -> return ([], top_extent)
         | FxOp _ -> (

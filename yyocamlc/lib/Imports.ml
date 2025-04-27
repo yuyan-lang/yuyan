@@ -1,7 +1,6 @@
 open EngineData
 open ProcCombinators
 
-module PE = ProcessedElement
 
 let get_module_real_path (module_name_parsed : A.t) : string proc_state_m (* path *)  = 
   let* cur_module_path = get_current_file_name () in

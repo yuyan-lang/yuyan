@@ -13,7 +13,7 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
   | None -> push_elem_on_input_acc es
   | Some (x) -> 
     match x with
-    | ParsingElem(OpKeyword(meta), _) -> 
+    | ParsingElem(OpKeyword(meta, _), _) -> 
       (
         match meta.right_fixity with
         | FxNone ->
@@ -58,11 +58,12 @@ let operator_right_most_reduce () : unit proc_state_m =
   | None -> failwith "PC244: empty stack"
   | Some (x) -> 
     match x with
-    | ParsingElem(OpKeyword(meta), _) -> 
+    | ParsingElem(OpKeyword(meta, _), _) -> 
       (
         match meta.right_fixity with
         | FxNone -> 
             let* bin_op = lookup_binary_op meta.id in
+            (* no need to execute pop action because reduction will call pop which is responsible for executing the pop action *)
             bin_op.reduction
         | _ ->
             failwith ("PC362: expected postfix or closed identifier but got " ^ (show_binary_op_meta meta) ^ " others should be reduced directly not remain on the stack")
@@ -78,7 +79,7 @@ let rec operator_precedence_reduce (limit : int option) : unit proc_state_m =
   | None -> return ()
   | Some (x) -> 
     match x with
-    | ParsingElem(OpKeyword(meta), _) -> 
+    | ParsingElem(OpKeyword(meta, _), _) -> 
       (
         let perform_reduction () = 
           let* bin_op = lookup_binary_op meta.id in
@@ -124,7 +125,7 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
     | None -> pfail ("PC400: Expecting at least 2 elements on the stack but got " )
     | Some (x) -> 
       match x with
-      | ParsingElem(OpKeyword(meta), _) -> 
+      | ParsingElem(OpKeyword(meta, _), _) -> 
         if meta.id = comp_uid then
           return ()
         else
@@ -226,7 +227,7 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
     print_endline ("[OP] Current state " ^ show_proc_state st);
     return ()
   ) else return () in
-  let operator_elem = ParsingElem(OpKeyword(meta), read_ext) in
+  let operator_elem = ParsingElem(OpKeyword(meta, ignore()), read_ext) in (* TODO: REPLACE IGNORE WITH A PROPER ACTION *)
   (* reduce existing stack based on the left_fixity of the operator element*)
   let* _ = (match left_fixity with
   | FxOp lp -> operator_precedence_reduce lp
@@ -250,7 +251,7 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
         pcut (choice
           (
             let* (id, ext) = identifier_parser () in
-            push_elem_on_input_acc (PE.get_bound_scanned_string_t (id, ext))
+            push_elem_on_input_acc (get_bound_scanned_string_t (id, ext))
           ) (* *)
           (
             let* ((middle_id, id_ext)) = scan_until_one_of_string [oper.meta.keyword] in
@@ -262,7 +263,7 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
                   if List.exists (fun x -> List.mem x disallowed_chars_in_binding) middle_id then
                     pfail_with_ext ("PC336: got binding 『" ^ ( CS.get_t_string middle_id) ^ "』 which contains disallowed_chars " ^ (show_string (CS.get_t_string disallowed_chars_in_binding)) ) (id_ext)
                   else
-                    let* _ = push_elem_on_input_acc (PE.get_bound_scanned_string_t (middle_id, id_ext)) in
+                    let* _ = push_elem_on_input_acc (get_bound_scanned_string_t (middle_id, id_ext)) in
                     return ()
             )
           )
@@ -283,12 +284,13 @@ let run_processor (proc : processor)  : unit proc_state_m =
   | ProcBinOp { meta;_} ->
       let* (_read_keyword, ext) = read_string meta.keyword in
       (* experiment once an semantic operator parses, no backtrack*)
-      if meta.keyword = CS.new_t_string "之书"
+      (* if meta.keyword = CS.new_t_string "之书"
         then pcut (process_read_operator meta ext)
-        else process_read_operator meta ext
+        else  *)
+        process_read_operator meta ext
   | ProcIdentifier id -> 
       let* string_read = read_string id in
-      push_elem_on_input_acc (PE.get_identifier_t string_read)
+      push_elem_on_input_acc (get_identifier_t string_read)
 
     
 let add_processor_entry_list (proc : processor_entry list) : unit proc_state_m = 

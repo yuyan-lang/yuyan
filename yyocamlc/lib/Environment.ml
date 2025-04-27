@@ -2,8 +2,6 @@
 open EngineData
 
 module Ext = AbtLib.Extent
-module PE = ProcessedElement
-module A = ProcessedElement.A
 
 type t = t_environment
 
