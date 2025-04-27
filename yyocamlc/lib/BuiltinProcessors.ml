@@ -810,7 +810,7 @@ let explicit_pi_middle_2 : binary_op =
       let result_expr = A.fold_with_extent(A.N(N.ExplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
     );
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 
 let implicit_pi_start_uid = Uid.next()
@@ -963,7 +963,7 @@ let explicit_lam_abs_middle : binary_op =
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
   );
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 
 let typed_lam_abs_start_uid = Uid.next()
@@ -1055,6 +1055,20 @@ let explicit_ap : binary_op =
   }
 
 
+let add_declaration_name_identifier (declaration : A.t) : unit proc_state_m = 
+  match A.view declaration with
+  | A.N(N.Declaration(N.ConstantDecl), [[], name; _ ]) 
+  | A.N(N.Declaration(N.ConstructorDecl), [[], name; _ ])
+  | A.N(N.Declaration(N.ConstantDefn), [[], name; _ ])
+  -> 
+    (
+      match A.view name with
+      | A.FreeVar(name) -> (
+        add_identifier_processor_no_repeat (CS.new_t_string name)
+      )
+      | _ -> pfail ("BP679: Expected a constant declaration but got " ^ A.show_view declaration)
+    )
+  | _ -> failwith ("BP679: Expected a constant declaration but got " ^ A.show_view declaration)
 
   let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem) : unit proc_state_m = 
     let* st = get_proc_state () in
@@ -1081,6 +1095,7 @@ let explicit_ap : binary_op =
           (
             match A.view module_expr, A.view decl with
             | A.N(N.ModuleDef, args), A.N(N.Declaration(_), _) -> 
+              let* () = add_declaration_name_identifier decl in
               push_elem_on_input_acc_expr
                 (A.annotate_with_extent
                   (A.fold(A.N(N.ModuleDef, args@[[], decl]))) 
@@ -1105,6 +1120,7 @@ let explicit_ap : binary_op =
               if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid then 
                 (* push 「「 back onto the stack *)
                 let* _ = push_elem_on_input_acc poped_left in
+                let* _ = add_declaration_name_identifier decl in (* we choose not to descope this *)
                 let* _ = push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.ModuleDef, [[],decl])) (A.get_extent_some decl)) in
                 return ()
               else  sentence_end_fail poped_left poped_right

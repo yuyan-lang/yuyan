@@ -74,39 +74,7 @@ const showTreeDisposable = commands.registerCommand('yuyan.debugshowtree', () =>
 const showTreesDisposable = commands.registerCommand('yuyan.debugshowtrees', () => executeDebugCommandOnCurrentFile("showtrees"));
 
 function activate(context ) {
-  // languages.registerOnTypeFormattingEditProvider("yuyan", 
-  // {
-  //   provideOnTypeFormattingEdits: function (model, position, ch, options, token) {
-	// 	console.log("inside provideOnTypeFormattingEdits");
-	// 	return [
-	// 		{
-	// 		  range: {
-	// 			startLineNumber: position.line,
-	// 			startColumn: position.character-1,
-	// 			endLineNumber: position.line,
-	// 			endColumn: position.character
-	// 		  },
-	// 		  text: (() => {
-  //         switch(ch){
-  //           case '（':
-  //           case '(':
-  //             return '「'
-  //           case '）':
-  //           case ')':
-  //             return '」'
-  //           case '`':
-  //             return '『'
-  //           case '\'':
-  //             return '』';
-  //           default:
-  //             return "BUG!!! in vscode extension"
-  //         }
-  //       })()
-	// 		}
-	// 	]
-  //   }
-  // }, "（", ["(", "）", ")", "`", "'"]
-  //   ); 
+  
 
   // The server is implemented in node
 //   let serverModule = context.asAbsolutePath(path.join('server', 'out', 'server.js'));

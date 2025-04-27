@@ -299,6 +299,24 @@ let add_processor_entry_list (proc : processor_entry list) : unit proc_state_m =
     let* proc_state = get_proc_state () in
     let new_s = {proc_state with registry = proc @ proc_state.registry} in
     write_proc_state new_s
+
+let add_identifier_processor (id : CS.t_string) : int proc_state_m = 
+  let entry = to_processor_identifier ("id_" ^ CS.get_t_string id) id in
+  let* () = add_processor_entry_list [entry] in
+  return entry.id
+
+let add_identifier_processor_no_repeat (target : CS.t_string) : unit proc_state_m = 
+  let* proc_state = get_proc_state () in
+  if List.exists (fun x -> match x.processor with
+  | ProcIdentifier id -> id = target
+  | _ -> false
+  ) proc_state.registry then
+    return ()
+  else
+    let entry = to_processor_identifier ("id_" ^ CS.get_t_string target) target in
+    let* () = add_processor_entry_list [entry] in
+    return ()
+
 let remove_all_proc_registry_with_ids (ids : int list) : unit proc_state_m = 
     let* proc_state = get_proc_state () in
     let new_s = {proc_state with registry = List.filter (fun x -> not (List.mem x.id ids)) proc_state.registry} in
@@ -343,3 +361,10 @@ let run_input_acc_identifiers () : unit proc_state_m =
   run_processor_entries (List.map (fun x -> 
     (to_processor_identifier ("input_acc_id_" ^ CS.get_t_string x)  x)
     ) all_scanned_ids)
+
+let add_prev_identifier_shift_action : shift_action = 
+  let* (top, _) = peek_input_acc_parsing_elem_bound_scanned_string () in
+  let* id = add_identifier_processor top in
+  return (
+    remove_all_proc_registry_with_ids [id]
+  )

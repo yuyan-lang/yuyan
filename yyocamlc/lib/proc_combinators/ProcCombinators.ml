@@ -370,7 +370,13 @@ let peek_input_acc (idx : int) : input_acc_elem option proc_state_m =
     return (Some (List.nth s.input_acc idx))
   else
     return None
+let peek_input_acc_parsing_elem_bound_scanned_string () : (CS.t_string * Ext.t) proc_state_m =
+  let* s = get_proc_state () in
+  match List.hd s.input_acc with
+  | ParsingElem(BoundScannedString(str), ext) -> return (str, ext)
+  | _ -> pfail "PC225: Attempting to peek a non-bound scanned string from input accumulator"
   
+
 let get_input_acc_size () : int proc_state_m =
   let* s = get_proc_state () in
   return (List.length s.input_acc)

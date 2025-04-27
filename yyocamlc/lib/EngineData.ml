@@ -101,11 +101,12 @@ and 'a proc_state_m = proc_state
                       -> (failure_handler_arg_type -> monad_ret_tp) (* failure continuation*) 
                       -> (('a * proc_state) -> (failure_handler_arg_type -> monad_ret_tp) -> monad_ret_tp) (* success continuation *) 
                       -> monad_ret_tp
+and shift_action = unit proc_state_m proc_state_m
 and binary_op = {
   meta: binary_op_meta;
   reduction : unit proc_state_m; (* reduction will only be invoked on the last operator 
 in an operator chain, and only when we have a parse *)
-  shift_action : (unit proc_state_m) proc_state_m; (* shift action will be invoked after the operator is shifted onto the stack, 
+  shift_action : shift_action; (* shift action will be invoked before the operator is shifted onto the stack, 
   shift action should return a pop action *)
 }
 
