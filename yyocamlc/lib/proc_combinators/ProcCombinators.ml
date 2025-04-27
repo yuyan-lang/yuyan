@@ -102,6 +102,13 @@ let _then (m : 'a proc_state_m) (f: 'b proc_state_m) : 'b proc_state_m =
 
 let (>>) = _then
 
+let psequence (m : 'a proc_state_m list) : 'a list proc_state_m = 
+  List.fold_left (fun acc m -> 
+    let* x = acc in
+    let* y = m in
+    return (x@[y])
+  ) (return []) m
+
 (* does not pass along tried failures *)
 let ptry (m : 'a proc_state_m) : 'a option proc_state_m = 
   fun s fc sc  -> 
@@ -370,6 +377,13 @@ let peek_input_acc (idx : int) : input_acc_elem option proc_state_m =
     return (Some (List.nth s.input_acc idx))
   else
     return None
+
+let peek_input_acc_expr () : (A.t * Ext.t) proc_state_m =
+  let* s = get_proc_state () in
+  match List.hd s.input_acc with
+  | Expr(expr) -> return (expr, A.get_extent_some expr)
+  | _ -> pfail "PC225: Attempting to peek a non-expr from input accumulator"
+
 let peek_input_acc_parsing_elem_bound_scanned_string () : (CS.t_string * Ext.t) proc_state_m =
   let* s = get_proc_state () in
   match List.hd s.input_acc with

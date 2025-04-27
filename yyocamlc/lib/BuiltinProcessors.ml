@@ -1286,7 +1286,7 @@ let match_case_mid : binary_op =
       let result_expr = A.fold_with_extent (A.N(N.MatchCase, [[], case_expr; [], then_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr
     );
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_expr_shift_action;
   }
 
 let match_case_alternative_meta : binary_op_meta = 

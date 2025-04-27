@@ -368,3 +368,10 @@ let add_prev_identifier_shift_action : shift_action =
   return (
     remove_all_proc_registry_with_ids [id]
   )
+
+let add_prev_expr_shift_action : shift_action = 
+  let* (top, _) = peek_input_acc_expr () in
+  let* ids = psequence (List.map (fun x -> add_identifier_processor (CS.new_t_string x)) (A.get_free_vars top)) in
+  return (
+    remove_all_proc_registry_with_ids ids
+  )
