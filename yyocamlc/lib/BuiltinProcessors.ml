@@ -209,7 +209,7 @@ let definition2_middle : binary_op =
   {
     meta = definition2_middle_meta;
     reduction = p_internal_error "BP104: definition2_middle reduction";
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 let definition2_end : binary_op = 
   {
@@ -682,7 +682,7 @@ let constructor_decl2_middle : binary_op =
   {
     meta = constructor_decl2_middle_meta;
     reduction = p_internal_error "BP104: constructor_decl2_middle reduction";
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 let constructor_decl2_end : binary_op = 
   {
@@ -859,7 +859,7 @@ let implicit_pi_middle_2 : binary_op =
       let result_expr = A.fold_with_extent(A.N(N.ImplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
   );
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 
 let arrow_start_uid = Uid.next()
@@ -928,7 +928,7 @@ let implicit_lam_abs_middle : binary_op =
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
     );
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 
 let explicit_lam_abs_start_uid = Uid.next()
@@ -1012,7 +1012,7 @@ let typed_lam_abs_middle2 : binary_op =
       let result_expr = A.fold_with_extent (A.N(N.TypedLam, [[], tp_name;[binding_name], body_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
   );
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 
 
@@ -1067,6 +1067,10 @@ let add_declaration_name_identifier (declaration : A.t) : unit proc_state_m =
         add_identifier_processor_no_repeat (CS.new_t_string name)
       )
       | _ -> pfail ("BP679: Expected a constant declaration but got " ^ A.show_view declaration)
+    )
+  | A.N(N.Declaration(N.CustomOperatorDecl), [[], _; _ ]) -> 
+    (
+      return ()
     )
   | _ -> failwith ("BP679: Expected a constant declaration but got " ^ A.show_view declaration)
 
@@ -1446,7 +1450,7 @@ let let_in_mid1 : binary_op =
   {
     meta = let_in_mid1_meta;
     reduction = p_internal_error "BP104: let_in_mid1 reduction";
-    shift_action = do_nothing_shift_action;
+    shift_action = add_prev_identifier_shift_action;
   }
 let let_in_mid2 : binary_op = 
   {
