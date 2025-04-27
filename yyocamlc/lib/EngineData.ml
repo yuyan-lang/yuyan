@@ -102,14 +102,10 @@ and 'a proc_state_m = proc_state
                       -> monad_ret_tp
 and binary_op = {
   meta: binary_op_meta;
-  reduction : unit proc_state_m; (* reduction will be invoked if 
-    later operator is of fixity Infix or Postfix whose precedence is lower
-    *)
-    (* you are expected to modify the input elems stack *)
+  reduction : unit proc_state_m; (* reduction will only be invoked on the last operator 
+in an operator chain, and only when we have a parse *)
+  shift_action : unit proc_state_m; (* shift action will be invoked after the operator is shifted onto the stack *)
 }
-(* for mixfix operators, _y_g_h_k_, you have all the generated precedence of yghk set to zero 
-(does not reduce for any operator, then the reduction is encoded when passing along k)
-*)
 
 let compilation_manager_get_file_hook  : (string (* filepath *) ->  A.t option) ref =  ref (fun _ -> failwith "compilation_manager_get_file_hook not set")
 
@@ -175,7 +171,7 @@ let show_processor (p : processor) : string =
   match p with
   | ProcComplex _ -> 
     "ProcComplex " 
-  | ProcBinOp {meta; reduction=_} ->
+  | ProcBinOp {meta; _} ->
     "ProcBinOp: " ^ show_binary_op_meta meta
   | ProcIdentifier id -> 
     "ProcIdentifier: " ^ CS.get_t_string id

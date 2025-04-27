@@ -280,7 +280,7 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
 let run_processor (proc : processor)  : unit proc_state_m = 
   match proc with
   | ProcComplex process -> process
-  | ProcBinOp { meta;reduction=_} ->
+  | ProcBinOp { meta;_} ->
       let* (_read_keyword, ext) = read_string meta.keyword in
       (* experiment once an semantic operator parses, no backtrack*)
       if meta.keyword = CS.new_t_string "之书"

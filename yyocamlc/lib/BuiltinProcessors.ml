@@ -129,9 +129,12 @@ let import_end : binary_op =
   {
     meta = import_end_meta;
     reduction = 
+    (
       let* (prev_comp, ext) = pop_postfix_operand (import_end_meta) in
       let* module_expr = Imports.get_module_expr prev_comp in
       push_elem_on_input_acc (Expr (A.annotate_with_extent module_expr ext))
+    );
+    shift_action = (ignore ());
   }
 
 let assert_is_free_var (x : A.t) : unit proc_state_m = 
@@ -160,14 +163,18 @@ let definition_middle : binary_op =
   {
     meta = definition_middle_meta;
     reduction = p_internal_error "BP104: definition_middle reduction";
+    shift_action = (ignore ());
   }
 
 let definition_end : binary_op = 
 {
   meta = definition_end_meta;
   reduction = 
+  (
     let* ((name, defn), ext) = pop_postfix_op_operands_2 definition_end_meta in
     push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), [[], name; [], defn]))) ext)
+  );
+  shift_action = (ignore ());
 }
 
 let definition2_start_uid = Uid.next()
@@ -198,20 +205,25 @@ let definition2_start : binary_op =
   {
     meta = definition2_start_meta;
     reduction = p_internal_error "BP104: definition2_start reduction";
+    shift_action = (ignore ());
   }
 let definition2_middle : binary_op = 
   {
     meta = definition2_middle_meta;
     reduction = p_internal_error "BP104: definition2_middle reduction";
+    shift_action = (ignore ());
   }
 let definition2_end : binary_op = 
   {
     meta = definition2_end_meta;
     reduction = 
+    (
       let* ((name, defn), ext) = pop_postfix_op_operands_2 definition2_end_meta in
       let* bnd_name = get_binding_name name in
       push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDefn), 
       [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+    );
+    shift_action = (ignore ());
   }
 
 
@@ -234,7 +246,8 @@ let library_root : binary_op =
         push_elem_on_input_acc_expr (A.annotate_with_extent (A.fold(A.N(N.Builtin(N.Library default_path), []))) ext)
       else
         pfail ("Directory not found: " ^ default_path)
-    )
+    );
+    shift_action = (ignore ());
   }
 
 (* let known_structure_deref : unit proc_state_m =
@@ -289,6 +302,7 @@ let unknown_structure_deref : binary_op =
   {
     meta = unknown_structure_deref_meta;
     reduction = 
+    (
       let* ((lo, proj_label), ext) = pop_bin_operand unknown_structure_deref_meta in
       match A.view proj_label with
       | A.FreeVar(label) -> 
@@ -298,6 +312,8 @@ let unknown_structure_deref : binary_op =
         let new_node = A.fold(A.N(N.TupleDeref(i), [[],lo])) in
         push_elem_on_input_acc_expr (A.annotate_with_extent new_node ext)
       | _ -> pfail ("ET102: Expected a free variable but got " ^ A.show_view proj_label)
+    );
+    shift_action = (ignore ());
   }
 
 let builtin_op_meta : binary_op_meta = 
@@ -311,6 +327,7 @@ let builtin_op : binary_op =
   {
     meta = builtin_op_meta;
     reduction = 
+    (
       let* (oper, per_ext) = pop_prefix_operand builtin_op_meta in
       let* node = (
         match A.view oper with
@@ -347,6 +364,8 @@ let builtin_op : binary_op =
         | _ -> pfail ("ET105: Builtin Expected a free variable but got " ^ A.show_view oper)
       ) in
       push_elem_on_input_acc_expr (A.annotate_with_extent node per_ext)
+  );
+  shift_action = (ignore ());
   }
 
 let module_open_meta : binary_op_meta = 
@@ -414,6 +433,7 @@ let module_open : binary_op =
   {
     meta = module_open_meta;
     reduction = 
+    (
       let* (module_expr, _per_ext) = pop_prefix_operand module_open_meta in
       let* () = (
         match A.view module_expr with
@@ -432,9 +452,12 @@ let module_open : binary_op =
             let name_oper = {
               meta = meta;
               reduction = 
+              (
                 let* (per_ext) = pop_closed_identifier_operand meta in
                 let node = A.fold(A.N(N.StructureDeref(name), [([], module_expr)])) in
                 push_elem_on_input_acc_expr (A.annotate_with_extent node per_ext)
+              );
+              shift_action = (ignore ());
             } in
             to_processor_binary_op ("open_module_"^name) name_oper
             ) all_names in
@@ -449,6 +472,8 @@ let module_open : binary_op =
       ) in
       return ()
       (* push_elem_on_input_acc (A.annotate_with_extent node per_ext) *)
+    );
+    shift_action = (ignore ());
   }
 
 
@@ -463,6 +488,7 @@ let module_reexport : binary_op =
   {
     meta = module_reexport_meta;
     reduction = 
+    (
       let* (module_expr, per_ext) = pop_prefix_operand module_reexport_meta in
       let* (cur_module_expr, cur_ext) = pop_input_acc_expr () in 
       match A.view cur_module_expr with
@@ -502,6 +528,8 @@ let module_reexport : binary_op =
             | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr)
       )
       | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr)
+    );
+    shift_action = (ignore ());
   }
 
 let const_decl_middle_uid = Uid.next()
@@ -524,14 +552,18 @@ let const_decl_middle : binary_op =
   {
     meta = const_decl_middle_meta;
     reduction = p_internal_error "BP104: const_decl_middle reduction";
+    shift_action = (ignore ());
   }
 let const_decl_end : binary_op =
   {
     meta = const_decl_end_meta;
     reduction =
+    (
       let* ((name, defn), ext) = pop_postfix_op_operands_2 const_decl_end_meta in
       let* () = assert_is_free_var name in
       push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), [[], name; [], defn]))) ext)
+    );
+    shift_action = (ignore ());
   }
 
 let const_decl2_start_uid = Uid.next()
@@ -562,20 +594,25 @@ let const_decl2_start : binary_op =
   {
     meta = const_decl2_start_meta;
     reduction = p_internal_error "BP104: const_decl2_start reduction";
+    shift_action = (ignore ());
   }
 let const_decl2_middle : binary_op = 
   {
     meta = const_decl2_middle_meta;
     reduction = p_internal_error "BP104: const_decl2_middle reduction";
+    shift_action = (ignore ());
   }
 let const_decl2_end : binary_op = 
   {
     meta = const_decl2_end_meta;
     reduction =
+    (
       let* ((name, defn), ext) = pop_postfix_op_operands_2 const_decl2_end_meta in
       let* bnd_name = get_binding_name name in
       push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstantDecl), 
       [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+    );
+    shift_action = (ignore ());
   }
 
 let constructor_decl_middle_uid = Uid.next()
@@ -598,16 +635,19 @@ let constructor_decl_end_meta : binary_op_meta =
 
 let constructor_decl_middle : binary_op = {
     meta = constructor_decl_middle_meta;
-    reduction = 
-      p_internal_error "BP104: constructor_decl_middle reduction";
+    reduction = p_internal_error "BP104: constructor_decl_middle reduction";
+    shift_action = (ignore ());
   }
 let constructor_decl_end : binary_op =
   {
     meta = constructor_decl_end_meta;
     reduction =
+    (
       let* ((name, defn), ext) = pop_postfix_op_operands_2 constructor_decl_end_meta in
       let* () = assert_is_free_var name in
       push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), [[], name; [], defn]))) ext)
+    );
+    shift_action = (ignore ());
 }
 
 let constructor_decl2_start_uid = Uid.next()
@@ -638,20 +678,25 @@ let constructor_decl2_start : binary_op =
   {
     meta = constructor_decl2_start_meta;
     reduction = p_internal_error "BP104: constructor_decl2_start reduction";
+    shift_action = (ignore ());
   }
 let constructor_decl2_middle : binary_op = 
   {
     meta = constructor_decl2_middle_meta;
     reduction = p_internal_error "BP104: constructor_decl2_middle reduction";
+    shift_action = (ignore ());
   }
 let constructor_decl2_end : binary_op = 
   {
     meta = constructor_decl2_end_meta;
     reduction =
+    (
       let* ((name, defn), ext) = pop_postfix_op_operands_2 constructor_decl2_end_meta in
       let* bnd_name = get_binding_name name in
       push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.ConstructorDecl), 
       [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+    );
+    shift_action = (ignore ());
   }
 
 let left_parenthesis_uid = Uid.next()
@@ -674,13 +719,17 @@ let left_parenthesis : binary_op =
   {
     meta = left_parenthesis_meta;
     reduction = p_internal_error "BP104: left_parenthesis reduction";
+    shift_action = (ignore ());
   }
 let right_parenthesis : binary_op = 
   {
     meta = right_parenthesis_meta;
     reduction = 
+    (
       let* (oper, per_ext) = pop_postfix_op_operands_1 right_parenthesis_meta in
       push_elem_on_input_acc_expr (A.annotate_with_extent oper per_ext)
+    );
+    shift_action = (ignore ());
   }
 
 let double_parenthesis_left_uid = Uid.next()
@@ -703,13 +752,17 @@ let double_parenthesis_left : binary_op =
   {
     meta = double_parenthesis_left_meta;
     reduction = p_internal_error "BP104: double_parenthesis_left reduction";
+    shift_action = (ignore ());
   }
 let double_parenthesis_right : binary_op = 
   {
     meta = double_parenthesis_right_meta;
     reduction = 
+    (
       let* (oper, per_ext) = pop_postfix_op_operands_1 double_parenthesis_right_meta in
       push_elem_on_input_acc_expr (A.annotate_with_extent oper per_ext)
+    );
+    shift_action = (ignore ());
   }
 
 
@@ -741,20 +794,25 @@ let explicit_pi_start : binary_op =
   {
     meta = explicit_pi_start_meta;
     reduction = p_internal_error "BP104: explicit_pi_start reduction";
+    shift_action = (ignore ());
   }
 let explicit_pi_middle_1 : binary_op = 
   {
     meta = explicit_pi_middle_1_meta;
     reduction = p_internal_error "BP104: explicit_pi_middle_1 reduction";
+    shift_action = (ignore ());
   }
 let explicit_pi_middle_2 : binary_op = 
   {
     meta = explicit_pi_middle_2_meta;
     reduction = 
+    (
       let* ((tp_name, bnd_name, range_expr), per_ext) = pop_prefix_op_operands_3 explicit_pi_middle_2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent(A.N(N.ExplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
+    );
+    shift_action = (ignore ());
   }
 
 let implicit_pi_start_uid = Uid.next()
@@ -785,20 +843,25 @@ let implicit_pi_start : binary_op =
   {
     meta = implicit_pi_start_meta;
     reduction = p_internal_error "BP104: implicit_pi_start reduction";
+    shift_action = (ignore ());
   }
 let implicit_pi_middle_1 : binary_op = 
   {
     meta = implicit_pi_middle_1_meta;
     reduction = p_internal_error "BP104: implicit_pi_middle_1 reduction";
+    shift_action = (ignore ());
   }
 let implicit_pi_middle_2 : binary_op = 
   {
     meta = implicit_pi_middle_2_meta;
     reduction = 
+    (
       let* ((tp_name, bnd_name, range_expr), per_ext) = pop_prefix_op_operands_3 implicit_pi_middle_2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent(A.N(N.ImplicitPi, [[], tp_name; [binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
+  );
+    shift_action = (ignore ());
   }
 
 let arrow_start_uid = Uid.next()
@@ -821,14 +884,18 @@ let arrow_start : binary_op =
   {
     meta = arrow_start_meta;
     reduction = p_internal_error "BP104: arrow_start reduction";
+    shift_action = (ignore ());
   }
 let arrow_middle : binary_op = 
   {
     meta = arrow_middle_meta;
     reduction = 
+    (
       let* ((tp_name, range_expr), per_ext) = pop_prefix_op_operands_2 arrow_middle_meta in
       let result_expr = A.fold(A.N(N.Arrow, [[], tp_name; [], range_expr])) in
       push_elem_on_input_acc_expr (A.annotate_with_extent result_expr per_ext)
+    );
+    shift_action = (ignore ());
   }
 
 let implicit_lam_abs_start_uid = Uid.next()
@@ -851,15 +918,19 @@ let implicit_lam_abs_start : binary_op =
   {
     meta = implicit_lam_abs_start_meta;
     reduction = p_internal_error "BP104: implicit_lam_abs_start reduction";
+    shift_action = (ignore ());
   }
 let implicit_lam_abs_middle : binary_op = 
   {
     meta = implicit_lam_abs_middle_meta;
     reduction = 
+    (
       let* ((bnd_name, range_expr), per_ext) = pop_prefix_op_operands_2 implicit_lam_abs_middle_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
+    );
+    shift_action = (ignore ());
   }
 
 let explicit_lam_abs_start_uid = Uid.next()
@@ -882,15 +953,19 @@ let explicit_lam_abs_start : binary_op =
   {
     meta = explicit_lam_abs_start_meta;
     reduction = p_internal_error "BP104: explicit_lam_abs_start reduction";
+    shift_action = (ignore ());
   }
 let explicit_lam_abs_middle : binary_op = 
   {
     meta = explicit_lam_abs_middle_meta;
     reduction = 
+    (
       let* ((tp_name, range_expr), per_ext) = pop_prefix_op_operands_2 explicit_lam_abs_middle_meta in
       let* binding_name = get_binding_name tp_name in
       let result_expr = A.fold_with_extent (A.N(N.Lam, [[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
+  );
+    shift_action = (ignore ());
   }
 
 let typed_lam_abs_start_uid = Uid.next()
@@ -921,20 +996,25 @@ let typed_lam_abs_start : binary_op =
   {
     meta = typed_lam_abs_start_meta;
     reduction = p_internal_error "BP104: typed_lam_abs_start reduction";
+    shift_action = (ignore ());
   }
 let typed_lam_abs_middle1 : binary_op = 
   {
     meta = typed_lam_abs_middle1_meta;
     reduction = p_internal_error "BP104: typed_lam_abs_middle1 reduction";
+    shift_action = (ignore ());
   }
 let typed_lam_abs_middle2 : binary_op = 
   {
     meta = typed_lam_abs_middle2_meta;
     reduction = 
+    (
       let* ((tp_name, bnd_name, body_expr), per_ext) = pop_prefix_op_operands_3 typed_lam_abs_middle2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.TypedLam, [[], tp_name;[binding_name], body_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
+  );
+    shift_action = (ignore ());
   }
 
 
@@ -950,8 +1030,11 @@ let implicit_ap : binary_op =
   {
     meta = implicit_ap_meta;
     reduction = 
+    (
       let* ((f, arg), per_ext) = pop_bin_operand implicit_ap_meta in
       push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
+  );
+    shift_action = (ignore ());
   }
 
 let explicit_ap_uid = Uid.next()
@@ -966,8 +1049,11 @@ let explicit_ap : binary_op =
   {
     meta = explicit_ap_meta;
     reduction = 
+    (
       let* ((f, arg), per_ext) = pop_bin_operand explicit_ap_meta in
       push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Ap, [[], f; [], arg])) per_ext)
+  );
+    shift_action = (ignore ());
   }
 
 
@@ -1056,6 +1142,7 @@ let external_call : binary_op =
   {
     meta = external_call_meta;
     reduction = 
+    (
       let* (oper, per_ext) = pop_prefix_operand external_call_meta in
         match A.view oper with
         | A.N(N.Builtin(N.String(x)), []) -> 
@@ -1063,6 +1150,8 @@ let external_call : binary_op =
             push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.ExternalCall(x), []) ) per_ext)
           )
         | _ -> pfail ("BP693: Builtin Expected a string but got " ^ A.show_view oper)
+    );
+    shift_action = (ignore ());
   }
   
 let if_then_else_start_uid = Uid.next()
@@ -1095,19 +1184,24 @@ let if_then_else_start : binary_op =
   {
     meta = if_then_else_start_meta;
     reduction = p_internal_error "BP104: if_then_else_start reduction";
+    shift_action = (ignore ());
   }
 let if_then_else_mid1 : binary_op = 
   {
     meta = if_then_else_mid1_meta;
     reduction = p_internal_error "BP104: if_then_else_mid1 reduction";
+    shift_action = (ignore ());
   }
 let if_then_else_mid2 : binary_op = 
   {
     meta = if_then_else_mid2_meta;
     reduction = 
+    (
       let* ((cond, then_expr, else_expr), per_ext) = pop_prefix_op_operands_3 if_then_else_mid2_meta in
       let result_expr = A.fold_with_extent (A.N(N.IfThenElse, [[], cond; [], then_expr; [], else_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr
+  );
+    shift_action = (ignore ());
   }
 
 let match_subject_start_uid = Uid.next()
@@ -1130,13 +1224,17 @@ let match_subject_start : binary_op =
   {
     meta = match_subject_start_meta;
     reduction = p_internal_error "BP104: match_subject_start reduction";
+    shift_action = (ignore ());
   }
 let match_subject_end : binary_op = 
   {
     meta = match_subject_end_meta;
     reduction = 
+    (
       let* (oper, per_ext) = pop_postfix_op_operands_1 match_subject_end_meta in
       push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.Match, [[], oper])) per_ext)
+    );
+    shift_action = (ignore ());
   }
 
 let match_case_start_uid = Uid.next()
@@ -1159,14 +1257,18 @@ let match_case_start : binary_op =
   {
     meta = match_case_start_meta;
     reduction = p_internal_error "BP104: match_case_start reduction";
+    shift_action = (ignore ());
   }
 let match_case_mid : binary_op = 
   {
     meta = match_case_mid_meta;
     reduction = 
+    (
       let* ((case_expr, then_expr), per_ext) = pop_prefix_op_operands_2 match_case_mid_meta in
       let result_expr = A.fold_with_extent (A.N(N.MatchCase, [[], case_expr; [], then_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr
+    );
+    shift_action = (ignore ());
   }
 
 let match_case_alternative_meta : binary_op_meta = 
@@ -1180,12 +1282,15 @@ let match_case_alternative : binary_op =
   {
     meta = match_case_alternative_meta;
     reduction = 
+    (
       let* ((case_expr, then_expr), per_ext) = pop_bin_operand match_case_alternative_meta in
       match A.view case_expr with
       | A.N(N.Match, args) -> 
         let new_case_expr = A.fold(A.N(N.Match, args@[[], then_expr])) in
         push_elem_on_input_acc_expr (A.annotate_with_extent new_case_expr per_ext)
       | _ -> pfail ("ET108: Expected a match case but got " ^ A.show_view case_expr)
+    );
+    shift_action = (ignore ());
   }
 
 let comma_char = "，"
@@ -1201,12 +1306,15 @@ let comma_sequence : binary_op =
   {
     meta = comma_sequence_meta;
     reduction = 
+    (
       let* ((x, y), per_ext) = pop_bin_operand comma_sequence_meta in
       match A.view x with
       | A.N(N.Sequence "，", args) -> 
         push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.Sequence comma_char, args@[[], y])) per_ext)
       | _ ->
         push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Sequence comma_char, [[], x; [], y])) per_ext)
+    );
+    shift_action = (ignore ());
   }
 
 
@@ -1221,12 +1329,15 @@ let enumeration_comma_sequence : binary_op =
   {
     meta = enumeration_comma_sequence_meta;
     reduction = 
+    (
       let* ((x, y), per_ext) = pop_bin_operand enumeration_comma_sequence_meta in
       match A.view x with
       | A.N(N.Sequence "、", args) -> 
         push_elem_on_input_acc_expr (A.fold_with_extent (A.N(N.Sequence enumeration_comma_char, args@[[], y])) per_ext)
       | _ ->
         push_elem_on_input_acc_expr (A.fold_with_extent(A.N(N.Sequence enumeration_comma_char, [[], x; [], y])) per_ext)
+    );
+    shift_action = (ignore ());
   }
 
 
@@ -1261,11 +1372,13 @@ let custom_operator_decl_middle : binary_op =
   {
     meta = custom_operator_decl_middle_meta;
     reduction = p_internal_error "BP104: custom_operator_decl_middle reduction";
+    shift_action = (ignore ());
   }
 let custom_operator_decl_end : binary_op = 
   {
     meta = custom_operator_decl_end_meta;
     reduction = 
+    (
       let* (result, per_ext) = pop_postfix_operand custom_operator_decl_end_meta in
       let* (defn, defn_ext) = pop_input_acc_expr () in
       match A.view defn with
@@ -1280,6 +1393,8 @@ let custom_operator_decl_end : binary_op =
         let* () = add_processor_entry_list (List.map (to_processor_binary_op "custom_ops") new_ops) in
         return ()
       | _ -> pfail ("ET109: Expected a scanned operator but got " ^ A.show_view defn)
+    );
+    shift_action = (ignore ());
   }
 
 let let_in_start_uid = Uid.next()
@@ -1311,20 +1426,25 @@ let let_in_start : binary_op =
   {
     meta = let_in_start_meta;
     reduction = p_internal_error "BP104: let_in_start reduction";
+    shift_action = (ignore ());
   }
 let let_in_mid1 : binary_op = 
   {
     meta = let_in_mid1_meta;
     reduction = p_internal_error "BP104: let_in_mid1 reduction";
+    shift_action = (ignore ());
   }
 let let_in_mid2 : binary_op = 
   {
     meta = let_in_mid2_meta;
     reduction = 
+    (
       let* ((bnd_name, domain_expr, range_expr), per_ext) = pop_prefix_op_operands_3 let_in_mid2_meta in
       let* binding_name = get_binding_name bnd_name in
       let result_expr = A.fold_with_extent (A.N(N.LetIn, [[], domain_expr;[binding_name], range_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
+    );
+    shift_action = (ignore ());
   }
 
 let typing_annotation_middle_uid = Uid.next()
@@ -1347,14 +1467,18 @@ let typing_annotation_middle : binary_op =
   {
     meta = typing_annotation_middle_meta;
     reduction = p_internal_error "BP104: typing_annotation_middle reduction";
+    shift_action = (ignore ());
   }
 let typing_annotation_end : binary_op = 
   {
     meta = typing_annotation_end_meta;
     reduction = 
+    (
       let* ((body_expr, type_expr), per_ext) = pop_postfix_op_operands_2 typing_annotation_end_meta in
       let result_expr = A.fold_with_extent (A.N(N.TypingAnnotation, [[], body_expr; [], type_expr])) per_ext in
       push_elem_on_input_acc_expr result_expr 
+    );
+    shift_action = (ignore ());
   }
 
 
