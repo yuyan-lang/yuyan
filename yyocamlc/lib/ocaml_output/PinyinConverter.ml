@@ -9935,7 +9935,7 @@ let convert_to_pinyin (input: CS.t_char) : string =
   | "鱓" -> "Shan"
   | "鲖" -> "Tong"
   | "鴒" -> "Ling"
-  | _ -> "UNKNOWN_PINYIN"
+  | _ -> "_"
 
-let convert_to_pinyin_string (input: CS.t_string) : string = 
-  String.concat "" (List.map convert_to_pinyin (input))
+
+

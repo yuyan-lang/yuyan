@@ -29,4 +29,27 @@ let compile_or_retrieve_file_content (filepath : string) : A.t option =
       Some(result)
     )
 
+let output_ocaml() : string = 
+  let files = List.rev !compiled_files in
+  OcamlOutput.output_ocaml_code_top_level files
+
+let compile_and_run_ocaml(ocaml_filepath : string) : unit = 
+  print_endline ("[Running] ocamlc " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe");
+  let _ = Sys.command ("ocamlc " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe") in
+  print_endline ("[Running] " ^ ocaml_filepath ^ ".exe");
+  let _ = Sys.command ("" ^ ocaml_filepath ^ ".exe") in
+  (* let pout, pin, perr = Unix.open_process_args_full "ocaml" [|"ocaml";ocaml_filepath|] (Unix.environment()) in
+  let result = input_line pout in
+  let error = input_line perr in
+  print_endline "1";
+  close_in pout;
+  print_endline "2";
+  close_out pin;
+  print_endline "3";
+  close_in perr;
+  print_endline "4";
+  print_endline ("[Done] Running ocaml " ^ ocaml_filepath);
+  print_endline ("stdout:\n" ^ result);
+  print_endline ("stderr:\n" ^ error) *)
+
 let () = compilation_manager_get_file_hook := compile_or_retrieve_file_content

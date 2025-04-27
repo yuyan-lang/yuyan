@@ -2,7 +2,11 @@ Printexc.record_backtrace true;;
 
 
 let process_file (filename : string) =
-  CompilationManager.compile_or_retrieve_file_content filename
+  let _ = CompilationManager.compile_or_retrieve_file_content (Unix.realpath filename) in
+  let file_path = CompilationManager.output_ocaml() in
+  print_endline ("[Done] Writing " ^ file_path);
+  CompilationManager.compile_and_run_ocaml file_path
+
   
 
 let input_files = ref []
