@@ -79,7 +79,9 @@ let p_internal_error (msg : string) : unit proc_state_m =
 let ignore () : unit proc_state_m = 
   return ()
 
+
 let do_nothing : unit proc_state_m = return ()
+let do_nothing_shift_action : (unit proc_state_m) proc_state_m = return (return ())
 
 (* pnot m fails if m succeeds, succeeds without consuming inputs when m fails *)
   (* it is a convention that all things do not consume inputs *)

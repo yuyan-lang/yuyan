@@ -227,7 +227,6 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
     print_endline ("[OP] Current state " ^ show_proc_state st);
     return ()
   ) else return () in
-  let operator_elem = ParsingElem(OpKeyword(meta, ignore()), read_ext) in (* TODO: REPLACE IGNORE WITH A PROPER ACTION *)
   (* reduce existing stack based on the left_fixity of the operator element*)
   let* _ = (match left_fixity with
   | FxOp lp -> operator_precedence_reduce lp
@@ -235,6 +234,9 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
   | FxBinding c | FxComp c -> operator_component_reduce c
   ) in
   (* shift operators onto the stack *)
+  let* bin_op = lookup_binary_op meta.id in
+  let* pop_action = bin_op.shift_action in
+  let operator_elem = ParsingElem(OpKeyword(meta, pop_action), read_ext) in
   let* _ = (match left_fixity with
     | FxNone -> push_elem_start operator_elem
     | FxOp _ | FxBinding _ | FxComp _ -> push_elem_continue operator_elem

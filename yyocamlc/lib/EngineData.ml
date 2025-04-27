@@ -105,7 +105,8 @@ and binary_op = {
   meta: binary_op_meta;
   reduction : unit proc_state_m; (* reduction will only be invoked on the last operator 
 in an operator chain, and only when we have a parse *)
-  shift_action : unit proc_state_m; (* shift action will be invoked after the operator is shifted onto the stack *)
+  shift_action : (unit proc_state_m) proc_state_m; (* shift action will be invoked after the operator is shifted onto the stack, 
+  shift action should return a pop action *)
 }
 
 let compilation_manager_get_file_hook  : (string (* filepath *) ->  A.t option) ref =  ref (fun _ -> failwith "compilation_manager_get_file_hook not set")
