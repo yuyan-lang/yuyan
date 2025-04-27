@@ -16,10 +16,10 @@ let do_process_step  () : unit proc_state_m =
   (* choice_cut *)
   choice 
   (
-    (* choice_l (List.map run_processor_entry st.registry)   *)
     run_processor_entries st.registry
   ) (
-    run_input_acc_identifiers ()
+    pfail "ET58: No processor succeeded"
+    (* run_input_acc_identifiers () *)
   )
 
 
