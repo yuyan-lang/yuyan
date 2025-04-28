@@ -129,9 +129,9 @@ let rec operator_precedence_reduce (uid : int) : unit proc_state_m =
             operator_precedence_reduce uid
           in
           match meta.right_fixity, rhs_precedence, lhs_fixity_type, rhs_fixity_type with
-          (* FxComp called on precedence reduce always have lower precedence, since it is 
+          (* FxComp/FxBinding called on precedence reduce always have lower precedence, since it is 
           expecting the next component to call operator_component_reduce *)
-          | (FxComp _), _, _, _ -> return ()
+          | (FxComp _ | FxBinding _), _, _, _ -> return ()
           | FxOp Some rp, Some limit, _, _ ->
               if rp > limit then
                 perform_reduction ()
@@ -152,7 +152,8 @@ let rec operator_precedence_reduce (uid : int) : unit proc_state_m =
             (* by default we do left-associative reductions [to rule out early failures] *)
               choice (return ()) (perform_reduction ())
           | _ -> 
-            print_failwith ("PC561: unexpected fixity combination " ^ (show_binary_op_meta meta) ^ " " ^ (show_fixity meta.right_fixity) ^ " > < " ^ (show_fixity op.meta.left_fixity))
+            print_failwith ("PC561: unexpected fixity combination " ^ (show_binary_op_meta meta) ^ " " ^ (show_fixity meta.right_fixity) 
+            ^ " > < " ^ (show_fixity op.meta.left_fixity) ^ " " ^ (show_binary_op_meta op.meta))
         )
       | _ -> 
         return () (* cannot reduce, assume successful *)

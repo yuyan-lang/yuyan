@@ -1270,28 +1270,28 @@ let match_subject_end : binary_op =
     shift_action = do_nothing_shift_action;
   }
 
-let match_case_start_uid = Uid.next()
+(* let match_case_start_uid = Uid.next() *)
 let match_case_mid_uid = Uid.next()
-let match_case_start_meta = 
+(* let match_case_start_meta = 
   {
     id = match_case_start_uid;
     keyword = CS.new_t_string "有";
     left_fixity = FxNone;
     right_fixity = FxComp match_case_mid_uid;
-  }
+  } *)
 let match_case_mid_meta = 
   {
     id = match_case_mid_uid;
     keyword = CS.new_t_string "则";
-    left_fixity = FxComp match_case_start_uid;
+    left_fixity = FxOp (Some 70);
     right_fixity = FxOp (Some 70);
   }
-let match_case_start : binary_op = 
+(* let match_case_start : binary_op = 
   {
     meta = match_case_start_meta;
     reduction = p_internal_error "BP104: match_case_start reduction";
     shift_action = do_nothing_shift_action;
-  }
+  } *)
 let match_case_mid : binary_op = 
   {
     meta = match_case_mid_meta;
@@ -1307,7 +1307,7 @@ let match_case_mid : binary_op =
 let match_case_alternative_meta : binary_op_meta = 
   {
     id = Uid.next();
-    keyword = CS.new_t_string "或";
+    keyword = CS.new_t_string "或有";
     left_fixity = FxOp (Some 59);
     right_fixity = FxOp (Some 60);
   }
@@ -1575,7 +1575,7 @@ let default_registry = [
   (* match*)
   to_processor_binary_op "match_subject_start" match_subject_start;
   to_processor_binary_op "match_subject_end" match_subject_end;
-  to_processor_binary_op "match_case_start" match_case_start;
+  (* to_processor_binary_op "match_case_start" match_case_start; *)
   to_processor_binary_op "match_case_mid" match_case_mid;
   to_processor_binary_op "match_case_alternative" match_case_alternative;
 
