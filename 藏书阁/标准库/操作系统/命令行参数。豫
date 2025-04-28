@@ -6,7 +6,7 @@
 观「藏书阁」之「标准库」之「数学运算」之「数组转换」之书。
 
 「获取程序名」乃化有而字符串也。
-获取程序名者会甲而《《外部调用》》『yyGetCommandLineProgramName』于元也。
+获取程序名者会甲而《《外部调用『yyGetCommandLineProgramName』》》于元也。
 
 「获取参数」乃化有而字符串列也。
-获取参数者会甲而「数组转多态列」于（《《外部调用》》『yyGetCommandLineArgs』于元）也。
+获取参数者会甲而「数组转多态列」于（《《外部调用『yyGetCommandLineArgs』》》于元）也。
