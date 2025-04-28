@@ -38,6 +38,7 @@ let compile_and_run_ocaml(ocaml_filepath : string) : unit =
   let _ = Sys.command ("ocamlc " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe") in
   print_endline ("[Running] " ^ ocaml_filepath ^ ".exe");
   let _ = Sys.command ("" ^ ocaml_filepath ^ ".exe") in
+  ()
   (* let pout, pin, perr = Unix.open_process_args_full "ocaml" [|"ocaml";ocaml_filepath|] (Unix.environment()) in
   let result = input_line pout in
   let error = input_line perr in

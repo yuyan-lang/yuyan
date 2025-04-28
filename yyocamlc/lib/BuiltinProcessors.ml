@@ -151,7 +151,7 @@ let definition_middle_meta : binary_op_meta =
   }
 let definition_end_meta : binary_op_meta =
   {
-    id = Uid.next();
+    id = definition_end_uid;
     keyword = CS.new_t_string "也";
     left_fixity = FxComp definition_middle_uid;
     right_fixity = FxNone;
@@ -1082,7 +1082,7 @@ let add_declaration_name_identifier (declaration : A.t) : unit proc_state_m =
   let sentence_end : unit proc_state_m =
     let* _ = read_one_of_string [CS.new_t_string "。"] in
     (* reduce all existing expressions*)
-    let* _ = operator_precedence_reduce (Some (-1)) in
+    let* _ = operator_precedence_reduce_always () in
     let* input_acc_size = get_input_acc_size () in
     let* () = (
       if input_acc_size = 1  then

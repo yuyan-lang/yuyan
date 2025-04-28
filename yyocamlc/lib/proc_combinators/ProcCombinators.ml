@@ -455,7 +455,7 @@ let lookup_binary_op (meta_id : int) : binary_op proc_state_m =
     match x.processor with ProcBinOp(x) -> if x.meta.id = meta_id then Some(x) else None | _ -> None) s.registry with
   | [x] -> return x
   | [] -> pfail ("PC343: cannot find binary operator " ^ (string_of_int meta_id) ^ " in the registry " ^ (
-    String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
+    String.concat ",\n" (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)
   ))
   | _ -> print_failwith ("ET346: multiple binary operators " ^ (string_of_int meta_id) ^ " in the registry " ^ (
     String.concat "," (List.filter_map (fun x -> match x.processor with ProcBinOp x -> Some(show_binary_op_meta x.meta) | _ -> None) s.registry)

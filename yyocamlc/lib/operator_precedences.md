@@ -1,5 +1,23 @@
 I use md because of keybindings don't work for txt files. Treat this as a txt file.
 
+Update: I decided that prefix operators should be all ordered below
+postfix and infix.
+So once we parse any prefix operator, we know we have determined the parsing patterns 
+for the next bit.
+in this way, a decision >< is unambiguous between:
+Prefix and Infix 
+Prefix and Postfix
+Only priority is needed for Infix <-> Infix, and Infix <-> Postfix pairs
+(* you only need 
+to declare priority if you are infix or postfix, and by default, infix operators associates to 
+the left for type checking efficiency purposes, so no need to declare any fixity now
+(with backtracking to fix to the right)
+( I think by default I am going to make postfix of lower precedence 
+than infix, but also with backtracking)
+However, if fixity is declared they are strictly followed without backtracking
+*)
+
+
 Name ?LP ?RP
 内建（）   2000
 《《外部调用》》（） 2000

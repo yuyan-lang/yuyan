@@ -72,8 +72,92 @@ let operator_right_most_reduce () : unit proc_state_m =
       failwith ("PC364: expected OpKeyword but got " ^ (show_input_acc_elem x) ^ " this method should not be invoked when rightmost reduction is not possible")
 
 
+(* temporary type to help with parsing *)
+type parsing_fixity_type = Prefix | Postfix | Infix | Closed
+
+let rec get_operator_left_most_fixity (uid : int) : fixity proc_state_m = 
+  let* bin_op = lookup_binary_op uid in
+  match bin_op.meta.left_fixity with
+  | FxBinding next | FxComp next -> get_operator_left_most_fixity next
+  | _ -> return bin_op.meta.left_fixity
+
+let rec get_operator_right_most_fixity (uid : int) : fixity proc_state_m = 
+  let* bin_op = lookup_binary_op uid in
+  match bin_op.meta.right_fixity with
+  | FxBinding next | FxComp next -> get_operator_right_most_fixity next
+  | _ -> return bin_op.meta.right_fixity
+
+let get_operator_fixity (uid : int) : parsing_fixity_type proc_state_m = 
+  let* left_fixity = get_operator_left_most_fixity uid in
+  let* right_fixity = get_operator_right_most_fixity uid in
+  match left_fixity, right_fixity with
+  | FxOp _, FxOp _ -> return Infix
+  | FxOp _, _ -> return Postfix
+  | _, FxOp _ -> return Prefix
+  | _, _ -> return Closed
+
+
 (* reduces all operators A + B on the stack of higher precedence*)
-let rec operator_precedence_reduce (limit : int option) : unit proc_state_m = 
+let rec operator_precedence_reduce (uid : int) : unit proc_state_m = 
+  let* op = lookup_binary_op uid in
+  match op.meta.left_fixity with
+  | FxNone | FxBinding _ | FxComp _ -> pfail ("PC560: expected FxOp but got " ^ (show_binary_op_meta op.meta))
+  | FxOp rhs_precedence -> 
+    let* rhs_fixity_type = get_operator_fixity uid in
+    let* acc_top = peek_input_acc 1 in
+    match acc_top with
+    | None -> return ()
+    | Some (x) -> 
+      match x with
+      | ParsingElem(OpKeyword(meta, _), _) -> 
+        (
+          let* lhs_fixity_type = get_operator_fixity meta.id in
+          (* we should not reduce if lhs is prefix and rhs is not prefix*)
+          match lhs_fixity_type, rhs_fixity_type with
+          | Prefix, (Postfix | Closed | Infix)  -> return ()
+          (* | (Closed | Postfix), _ -> 
+            (
+              let* st = get_proc_state () in
+              print_failwith ("BP119: closed operators should never appear on the stack"
+            ^ " got " ^ (show_input_acc_elem x) ^ " on the stack " ^ (show_proc_state st))
+            ) *)
+          | (Prefix, Prefix)  -> failwith "prefix operators cannot have left OpComp"
+          | (_ , _) ->
+          let perform_reduction () = 
+            let* bin_op = lookup_binary_op meta.id in
+            let* _ = bin_op.reduction in
+            operator_precedence_reduce uid
+          in
+          match meta.right_fixity, rhs_precedence, lhs_fixity_type, rhs_fixity_type with
+          (* FxComp called on precedence reduce always have lower precedence, since it is 
+          expecting the next component to call operator_component_reduce *)
+          | (FxComp _), _, _, _ -> return ()
+          | FxOp Some rp, Some limit, _, _ ->
+              if rp > limit then
+                perform_reduction ()
+              else
+                return () (* cannot reduce, assume successful *)
+          | FxOp None, Some limit, _, _ -> 
+            (* here we have an option of reducing or not reducing reducing if limit < 400 (more likely) *)
+              if limit < 400 then
+                choice (perform_reduction ()) (return ())
+              else
+                choice (return ()) (perform_reduction ())
+          | FxOp (Some rp), None, _, _ -> 
+              if rp >= 400 then 
+                choice (perform_reduction ()) (return ())
+              else
+                choice (return ()) (perform_reduction ())
+          | FxOp None, None, (Infix | Postfix), (Infix | Postfix) ->
+            (* by default we do left-associative reductions [to rule out early failures] *)
+              choice (return ()) (perform_reduction ())
+          | _ -> 
+            print_failwith ("PC561: unexpected fixity combination " ^ (show_binary_op_meta meta) ^ " " ^ (show_fixity meta.right_fixity) ^ " > < " ^ (show_fixity op.meta.left_fixity))
+        )
+      | _ -> 
+        return () (* cannot reduce, assume successful *)
+
+let rec operator_precedence_reduce_always () : unit proc_state_m = 
   let* acc_top = peek_input_acc 1 in
   match acc_top with
   | None -> return ()
@@ -81,34 +165,14 @@ let rec operator_precedence_reduce (limit : int option) : unit proc_state_m =
     match x with
     | ParsingElem(OpKeyword(meta, _), _) -> 
       (
-        let perform_reduction () = 
           let* bin_op = lookup_binary_op meta.id in
-          let* _ = bin_op.reduction in
-          operator_precedence_reduce limit
-        in
-        match meta.right_fixity, limit with
-        | FxOp Some rp, Some limit ->
-            if rp > limit then
-              perform_reduction ()
-            else
-              return () (* cannot reduce, assume successful *)
-        | FxOp None, Some limit -> 
-          (* here we have an option of reducing or not reducing reducing if limit < 400 (more likely) *)
-            if limit < 400 then
-              choice (perform_reduction ()) (return ())
-            else
-              choice (return ()) (perform_reduction ())
-        | FxOp (Some rp), None -> 
-            if rp >= 400 then 
-              choice (perform_reduction ()) (return ())
-            else
-              choice (return ()) (perform_reduction ())
-        | FxOp None, None ->
-          (* by default we do left-associative reductions [to rule out early failures] *)
-            choice (return ()) (perform_reduction ())
-
-        | _ -> 
-          return () (* cannot reduce, assume successful *)
+          match bin_op.meta.right_fixity with
+          | FxComp _ -> return () (* component should not ever be reduced in precedence reduce*)
+          | FxOp _ -> 
+              let* _ = bin_op.reduction in
+              operator_precedence_reduce_always ()
+          | FxNone -> print_failwith ("PC562: FxNone should not be here " ^ (show_binary_op_meta bin_op.meta))
+          | FxBinding _ -> pfail ("BP175: Always reduce cannot be invoked on a binding, but rather should be on component reduce")
       )
     | _ -> 
       return () (* cannot reduce, assume successful *)
@@ -229,7 +293,7 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
   ) else return () in
   (* reduce existing stack based on the left_fixity of the operator element*)
   let* _ = (match left_fixity with
-  | FxOp lp -> operator_precedence_reduce lp
+  | FxOp _ -> operator_precedence_reduce meta.id
   | FxNone -> return ()
   | FxBinding c | FxComp c -> operator_component_reduce c
   ) in
