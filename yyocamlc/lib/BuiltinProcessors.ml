@@ -1149,19 +1149,34 @@ let add_declaration_name_identifier (declaration : A.t) : unit proc_state_m =
     pcommit ()
     
 
-let external_call_meta : binary_op_meta = 
+let external_call_start_uid = Uid.next()
+let external_call_end_uid = Uid.next()
+let external_call_start_meta : binary_op_meta = 
   {
-    id = Uid.next();
-    keyword = CS.new_t_string "《《外部调用》》";
+    id = external_call_start_uid;
+    keyword = CS.new_t_string "《《外部调用";
     left_fixity = FxNone;
-    right_fixity = FxOp (Some 2000);
+    right_fixity = FxComp external_call_end_uid;
   }
-let external_call : binary_op = 
+let external_call_end_meta : binary_op_meta = 
   {
-    meta = external_call_meta;
+    id = external_call_end_uid;
+    keyword = CS.new_t_string "》》";
+    left_fixity = FxComp external_call_start_uid;
+    right_fixity = FxNone;
+  }
+let external_call_start : binary_op = 
+  {
+    meta = external_call_start_meta;
+    reduction = p_internal_error "BP104: external_call_start reduction";
+    shift_action = do_nothing_shift_action;
+  }
+let external_call_end : binary_op = 
+  {
+    meta = external_call_end_meta;
     reduction = 
     (
-      let* (oper, per_ext) = pop_prefix_operand external_call_meta in
+      let* (oper, per_ext) = pop_postfix_operand external_call_end_meta in
         match A.view oper with
         | A.N(N.Builtin(N.String(x)), []) -> 
           (
@@ -1549,7 +1564,8 @@ let default_registry = [
   to_processor_binary_op "explicit_ap" explicit_ap;
   to_processor_binary_op "double_parenthesis_left" double_parenthesis_left;
   to_processor_binary_op "double_parenthesis_right" double_parenthesis_right;
-  to_processor_binary_op "external_call" external_call;
+  to_processor_binary_op "external_call_start" external_call_start;
+  to_processor_binary_op "external_call_end" external_call_end;
 
   (* if *)
   to_processor_binary_op "if_then_else_start" if_then_else_start;
