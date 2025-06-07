@@ -6,8 +6,8 @@ let convert_to_ocaml_identifier_no_uid (input: string) : string =
       let char =  CS.get_t_char c in
       if String.length char = 1 then
         (match char.[0] with
-        | '/'
-        -> "_"
+        | '/' -> "_"
+        | '-' -> "MINUS"
         | _ -> char
         )
       else 
@@ -25,8 +25,50 @@ let get_identifier_name (expr : A.t) : string =
   | A.FreeVar(name) -> "v_" ^ convert_to_ocaml_identifier_no_uid name
   | _ -> failwith ("OO33: Expecting free variable, got: " ^ A.show_view expr)
 
+let rec get_ocaml_type (tp_expr : A.t) : string = 
+  match A.view tp_expr with
+  | A.N((N.ExplicitPi | N.ImplicitPi), [[],cod;[_bound_name],dom]) -> (
+    "(" ^ get_ocaml_type cod ^ " -> " ^ get_ocaml_type dom ^ ")"
+  )
+  | A.N((N.Arrow), [[],cod;[],dom]) -> (
+    "(" ^ get_ocaml_type cod ^ " -> " ^ get_ocaml_type dom ^ ")"
+  )
+  | A.N(N.StructureDeref(_label), [[],_subject]) -> (
+    "dt"
+    (* "dt " ^ label ^ " " *)
+  )
+  | A.FreeVar(_name) -> (
+    "dt"
+    (* "dt " ^ name ^ " " *)
+  )
+  | A.N(N.Ap, _) -> (
+    "dt"
+    (* "dt (* " ^ A.show_view tp_expr ^ " *) " *)
+  )
+  | _ -> ("(TODO OO30 tp_expr: " ^ A.show_view tp_expr ^ ")")
 
-let get_ocaml_code (expr : A.t) : string = 
+let rec get_ocaml_constructor_type (tp_expr : A.t) : string list = 
+  match A.view tp_expr with
+  | A.N((N.ExplicitPi | N.ImplicitPi), [[],dom;[_],cod]) 
+  | A.N((N.Arrow), [[],cod;[],dom]) -> (
+    get_ocaml_type dom :: get_ocaml_constructor_type cod
+  )
+  | A.N(N.StructureDeref(_label), [[],_subject]) -> (
+    (* ["dt " ^ label ^ " "] *)
+    ["dt"]
+  )
+  | A.FreeVar(_name) -> (
+    (* ["dt " ^ name ^ " "] *)
+    ["dt"]
+  )
+  | A.N(N.Ap, _) -> (
+    ["dt"]
+    (* ["dt " ^ A.show_view tp_expr ^ " "] *)
+  )
+  | _ -> ["(TODO OO30 cons_tp_expr: " ^ A.show_view tp_expr ^ ")"]
+
+
+let rec get_ocaml_code (expr : A.t) : string = 
   match A.view expr with
   | A.N(N.Builtin(StringType), []) -> "Builtin.stringType"
   | A.N(N.Builtin(IntType), []) -> "Builtin.intType"
@@ -40,24 +82,83 @@ let get_ocaml_code (expr : A.t) : string =
   | A.N(N.Builtin(N.Unit), []) -> "Builtin.unitValue"
   | A.N(N.Builtin(N.Bool true), []) -> "Builtin.trueValue"
   | A.N(N.Builtin(N.Bool false), []) -> "Builtin.falseValue"
+  | A.N(N.Builtin(N.RaiseException), []) -> "Builtin.raiseException"
+  | A.N(N.ExternalCall(name), []) -> "ExternalCall." ^ name
+  | A.N(N.Lam, [[name],body]) -> (
+    "fun " ^ get_identifier_name (A.free_var name) ^ "-> " ^ get_ocaml_code body
+  )
+  | A.FreeVar(_name) -> (
+    get_identifier_name expr 
+    (* ^ "" ^ name ^ "" *)
+  )
+  | A.N(N.Ap, [[], func;[], arg]) -> (
+    "(" ^ get_ocaml_code func ^ " " ^ get_ocaml_code arg ^ ")"
+  )
+  | A.N(N.FileRef(filepath), []) -> (
+    "(module " ^ get_module_name_from_filepath filepath ^ ")"
+  )
+  | A.N(N.IfThenElse, [[],cond;[],then_branch;[],else_branch]) -> (
+    "(if Builtin.yy_dt_to_bool (" ^ get_ocaml_code cond ^ ") then " ^ get_ocaml_code then_branch ^ " else " ^ get_ocaml_code else_branch ^ ")"
+  )
+  | A.N(N.StructureDeref(label), [[],subject]) -> (
+    "(" ^ get_ocaml_code subject ^ ")." ^ get_identifier_name (A.free_var label)
+  )
+  |A.N(N.Match, ([],subject)::cases) -> (
+    let get_ocaml_code_for_case (case : A.t) : string = 
+      match A.view case with
+      | A.N(N.MatchCase, [[],pattern;[],body]) -> (
+        "| (" ^ get_ocaml_code pattern ^ ") -> (" ^ get_ocaml_code body ^ ")"
+      )
+      | _ -> failwith ("OO31: Expecting match case, got: " ^ A.show_view case)
+    in
+    "(match (" ^ get_ocaml_code subject ^ ") with " ^ String.concat " " (List.map (fun (_, case) -> get_ocaml_code_for_case case) cases) ^ ")"
+  )
   | _ -> ("(TODO OO25 expr: " ^ A.show_view expr ^ ")")
   (* | _ -> failwith ("OO5: OCaml output not implemented for expression: " ^ A.show_view expr) *)
-let process_declaration (decl : A.t) : string = 
+let process_declaration_in_module (env : OutputEnv.t) (decl : A.t) : string = 
   match A.view decl with
   | A.N(N.Declaration(N.ConstantDefn), [[],name;[], value]) ->  (
     match A.view name with
-    | A.FreeVar(_) -> (
+    | A.FreeVar(fvname) -> (
+      match OutputEnv.find_entry_and_remove env fvname with
+      | None ->(
+
       "let " ^ get_identifier_name name ^ " = " ^ get_ocaml_code value
+      )
+      | Some(tp) -> (
+        "let rec " ^ get_identifier_name name ^ " : " ^ get_ocaml_type tp ^ " = " ^ get_ocaml_code value
+      )
     )
     | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
   )
+  | A.N(N.Declaration(N.ConstantDecl), [[],name;[], value]) ->  (
+    match A.view name with
+    | A.FreeVar(name) -> (
+      OutputEnv.add_entry env name value;
+      "(* " ^ name ^ " decl *)"
+    )
+    | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+  )
+  | A.N(N.Declaration(N.ConstructorDecl), [[],name;[], value]) -> (
+    match A.view name with
+    | A.FreeVar(name) -> (
+      let args = get_ocaml_constructor_type value in
+      let args_literals = (List.map (fun arg -> "v_" ^ string_of_int arg) (ListUtil.range 0 (List.length args))) in
+      "(* " ^ name ^ " cons *)\n" ^
+      "type dt += C_" ^ get_identifier_name (A.free_var name)  ^ " of " ^ String.concat " * " args ^ "\n" ^
+      "let " ^ get_identifier_name (A.free_var name) ^ "(* " ^ name ^ " *) " ^ String.concat " "  args_literals
+      ^ " = C_" ^ string_of_int c_idx ^ " (" ^ String.concat "," args_literals ^ ")"
+    )
+    | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+  )
+  | A.N(N.Declaration(N.CustomOperatorDecl), _) -> ""
   | _ -> ("(TODO OO32 decl: " ^ A.show_view decl ^ ")")
   (* | _ -> Fail.failwith ("OO29: OCaml output not implemented for declaration: " ^ A.show_view decl) *)
 
-
 let get_ocaml_code_for_module (module_expr : A.t) : string = 
+  let env = OutputEnv.new_env () in
   let process_declarations (decls : A.t list) : string list = 
-    List.map process_declaration decls
+    List.map (process_declaration_in_module env) decls
   in
   match A.view module_expr with
   | A.N(N.ModuleDef, (decls))-> 
@@ -69,6 +170,8 @@ let get_ocaml_code_for_module (module_expr : A.t) : string =
 let prelude = 
   String.concat "\n" [
   "type dt = ..";
+  "exception BuiltinException of dt";
+  "exception YYTypeError";
   "module Builtin = struct";
   "type dt += C_BuiltinStringType";
   "let stringType = C_BuiltinStringType";
@@ -94,6 +197,24 @@ let prelude =
   "let stringValue v = C_BuiltinStringValue v";
   "type dt += C_BuiltinIntValue of int";
   "let intValue v = C_BuiltinIntValue v";
+  "let raiseException _ v = raise (BuiltinException v)";
+  "(* conversion functions *)";
+  "let yy_dt_to_bool v = match v with C_BuiltinTrueValue -> true | C_BuiltinFalseValue -> false | _ -> raise YYTypeError";
+  "let yy_bool_to_dt b = if b then C_BuiltinTrueValue else C_BuiltinFalseValue";
+  "let yy_dt_to_int v = match v with C_BuiltinIntValue v -> v | _ -> raise YYTypeError";
+  "let yy_int_to_dt v = C_BuiltinIntValue v";
+  "let yy_dt_to_float v = match v with C_BuiltinFloatValue v -> v | _ -> raise YYTypeError";
+  "let yy_float_to_dt v = C_BuiltinFloatValue v";
+  "let yy_dt_to_string v = match v with C_BuiltinStringValue v -> v | _ -> raise YYTypeError";
+  "let yy_string_to_dt v = C_BuiltinStringValue v";
+  "let yy_dt_to_unit v = match v with C_BuiltinUnitValue -> () | _ -> raise YYTypeError";
+  "let yy_unit_to_dt () = C_BuiltinUnitValue";
+  "end";
+  "module ExternalCall = struct";
+  "let yyNewRef v = ref v";
+  "let yyReadRef v = !v";
+  "let yyWriteRef v new_value = v := new_value";
+  "let yyNewRefArray v length = Array.make length v";
   "end"
   ]
 let get_ocaml_code_top_level (files : (string * A.t) list) : string = 
