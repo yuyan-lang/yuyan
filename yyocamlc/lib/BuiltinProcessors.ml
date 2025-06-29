@@ -697,6 +697,91 @@ let constructor_decl2_end : binary_op =
     shift_action = do_nothing_shift_action;
   }
 
+
+let type_constructor_decl_middle_uid = Uid.next()
+let type_constructor_decl_end_uid = Uid.next()
+
+let type_constructor_decl_middle_meta : binary_op_meta = 
+  {
+    id = type_constructor_decl_middle_uid;
+    keyword = CS.new_t_string "作";
+    left_fixity = FxOp (Some 10);
+    right_fixity = FxComp type_constructor_decl_end_uid;
+  }
+let type_constructor_decl_end_meta : binary_op_meta = 
+  {
+    id = type_constructor_decl_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp type_constructor_decl_middle_uid;
+    right_fixity = FxNone;
+  }
+
+let type_constructor_decl_middle : binary_op = {
+    meta = type_constructor_decl_middle_meta;
+    reduction = p_internal_error "BP104: type_constructor_decl_middle reduction";
+    shift_action = do_nothing_shift_action;
+  }
+let type_constructor_decl_end : binary_op =
+  {
+    meta = type_constructor_decl_end_meta;
+    reduction =
+    (
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 type_constructor_decl_end_meta in
+      let* () = assert_is_free_var name in
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.TypeConstructorDecl), [[], name; [], defn]))) ext)
+    );
+    shift_action = do_nothing_shift_action;
+}
+
+let type_constructor_decl2_start_uid = Uid.next()
+let type_constructor_decl2_middle_uid = Uid.next()
+let type_constructor_decl2_end_uid = Uid.next()
+let type_constructor_decl2_start_meta : binary_op_meta = 
+  {
+    id = type_constructor_decl2_start_uid;
+    keyword = CS.new_t_string "夫";
+    left_fixity = FxNone;
+    right_fixity = FxBinding type_constructor_decl2_middle_uid;
+  }
+let type_constructor_decl2_middle_meta : binary_op_meta = 
+  {
+    id = type_constructor_decl2_middle_uid;
+    keyword = CS.new_t_string "作";
+    left_fixity = FxBinding type_constructor_decl2_start_uid;
+    right_fixity = FxComp type_constructor_decl2_end_uid;
+  }
+let type_constructor_decl2_end_meta : binary_op_meta = 
+  {
+    id = type_constructor_decl2_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp type_constructor_decl2_middle_uid;
+    right_fixity = FxNone;
+  }
+let type_constructor_decl2_start : binary_op = 
+  {
+    meta = type_constructor_decl2_start_meta;
+    reduction = p_internal_error "BP104: type_constructor_decl2_start reduction";
+    shift_action = do_nothing_shift_action;
+  }
+let type_constructor_decl2_middle : binary_op = 
+  {
+    meta = type_constructor_decl2_middle_meta;
+    reduction = p_internal_error "BP104: type_constructor_decl2_middle reduction";
+    shift_action = add_prev_identifier_shift_action;
+  }
+let type_constructor_decl2_end : binary_op = 
+  {
+    meta = type_constructor_decl2_end_meta;
+    reduction =
+    (
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 type_constructor_decl2_end_meta in
+      let* bnd_name = get_binding_name name in
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.TypeConstructorDecl), 
+      [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+    );
+    shift_action = do_nothing_shift_action;
+  }
+
 let left_parenthesis_uid = Uid.next()
 let right_parenthesis_uid = Uid.next()
 let left_parenthesis_meta : binary_op_meta = 
@@ -1539,6 +1624,11 @@ let default_registry = [
   to_processor_binary_op "const_decl_end" const_decl_end;
   to_processor_binary_op "constructor_decl_middle" constructor_decl_middle;
   to_processor_binary_op "constructor_decl_end" constructor_decl_end;
+  to_processor_binary_op "type_constructor_decl_middle" type_constructor_decl_middle;
+  to_processor_binary_op "type_constructor_decl_end" type_constructor_decl_end;
+  to_processor_binary_op "type_constructor_decl2_start" type_constructor_decl2_start;
+  to_processor_binary_op "type_constructor_decl2_middle" type_constructor_decl2_middle;
+  to_processor_binary_op "type_constructor_decl2_end" type_constructor_decl2_end;
   to_processor_binary_op "left_parenthesis" left_parenthesis;
   to_processor_binary_op "right_parenthesis" right_parenthesis;
   to_processor_binary_op "explicit_pi_start" explicit_pi_start;

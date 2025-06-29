@@ -2,5 +2,9 @@
     "search.useIgnoreFiles": true,
     "yuyan.executablePath": "./../yy",
     "editor.unicodeHighlight.ambiguousCharacters": false,
-    "terminal.integrated.unicodeVersion": "11"
+    "terminal.integrated.unicodeVersion": "11",
+    "ocaml.sandbox": {
+        "kind": "opam",
+        "switch": "default"
+    }
 }

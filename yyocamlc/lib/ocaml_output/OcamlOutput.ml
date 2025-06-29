@@ -20,6 +20,16 @@ let convert_to_ocaml_identifier_no_uid (input: string) : string =
 let get_module_name_from_filepath (filepath : string) : string = 
   "M_" ^ (convert_to_ocaml_identifier_no_uid (filepath))
 
+let get_constructor_name (expr : A.t) : string = 
+  match A.view expr with
+  | A.FreeVar(name) -> "C_" ^ convert_to_ocaml_identifier_no_uid name
+  | _ -> failwith ("OO33: Expecting free variable, got: " ^ A.show_view expr)
+
+let get_type_constructor_name (expr : A.t) : string = 
+  match A.view expr with
+  | A.FreeVar(name) -> "t_" ^ convert_to_ocaml_identifier_no_uid name
+  | _ -> failwith ("OO33: Expecting free variable, got: " ^ A.show_view expr)
+
 let get_identifier_name (expr : A.t) : string = 
   match A.view expr with
   | A.FreeVar(name) -> "v_" ^ convert_to_ocaml_identifier_no_uid name
@@ -67,6 +77,62 @@ let rec get_ocaml_constructor_type (tp_expr : A.t) : string list =
   )
   | _ -> ["(TODO OO30 cons_tp_expr: " ^ A.show_view tp_expr ^ ")"]
 
+let get_ocaml_tp_expr (tp_expr : A.t) : string = 
+  match A.view tp_expr with
+  | A.FreeVar(_) -> "dt"
+  | _ -> failwith ("OO 78: Not yet implemented, got: " ^ A.show_view tp_expr)
+
+let get_ocaml_type_constructor_type (tp_expr : A.t) : string = 
+  let rec aux (tp_expr : A.t) : A.t list = 
+    match A.view tp_expr with
+    | A.N((N.ExplicitPi | N.ImplicitPi), [[],_dom;[_],_cod])  -> (
+      failwith ("OO 78: Higher-order kinds not supported")
+    )
+    | A.N((N.Arrow), [[],dom;[],cod]) -> (
+      dom :: aux cod
+    )
+    | _ -> failwith ("(TODO OO30 tp_expr: " ^ A.show_view tp_expr ^ ")")
+  in
+  let tps = aux tp_expr |> List.map get_ocaml_tp_expr in
+  "(" ^ String.concat ", " tps ^ ")"
+
+let rec get_ocaml_code_for_pattern (pattern : A.t) : string = 
+  (* TODO: pattern match elaboration *)
+  match A.view pattern with
+  | A.FreeVar(_) -> get_identifier_name pattern
+  | A.N(N.Ap, ([], func)::args) -> (
+    match A.view func with
+    | A.FreeVar(_) -> (
+      get_constructor_name func ^ " (" ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args) ^ ")"
+    )
+    | _ -> get_ocaml_code_for_pattern func ^ " (" ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args) ^ ")"
+  )
+  | A.N(N.Sequence("、"), args) -> (
+    "(" ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args) ^ ")"
+  )
+  | A.N(N.StructureDeref(label), [[],subject]) -> (
+    match A.view subject with
+    | A.N(N.FileRef(filepath), []) -> (
+      get_module_name_from_filepath filepath ^ "." ^ (get_constructor_name (A.free_var label))
+    )
+    | _ -> Fail.failwith ("OO94: Not yet implemented, got: " ^ A.show_view pattern)
+  )
+  | A.N(N.Builtin(N.String s), []) -> (
+    "(Builtin.C_BuiltinStringValue \"" ^ String.escaped s ^ "\")"
+  )
+  | A.N(N.Builtin(N.Int i), []) -> (
+    "(Builtin.C_BuiltinIntValue " ^ string_of_int i ^ ")"
+  )
+  | A.N(N.Builtin(N.Unit), []) -> (
+    "(Builtin.C_BuiltinUnitValue)"
+  )
+  | A.N(N.Builtin(N.Bool true), []) -> (
+    "Builtin.C_BuiltinTrueValue"
+  )
+  | A.N(N.Builtin(N.Bool false), []) -> (
+    "Builtin.C_BuiltinFalseValue"
+  )
+  | _ -> Fail.failwith ("OO86: Not yet implemented, got: " ^ A.show_view pattern)
 
 let rec get_ocaml_code (expr : A.t) : string = 
   match A.view expr with
@@ -76,9 +142,9 @@ let rec get_ocaml_code (expr : A.t) : string =
   | A.N(N.Builtin(UnitType), []) -> "Builtin.unitType"
   | A.N(N.Builtin(FloatType), []) -> "Builtin.floatType"
   | A.N(N.Builtin(Type), []) -> "Builtin.typeType"
-  | A.N(N.Builtin(N.Int i ), []) -> "Builtin.intValue " ^ string_of_int i
-  | A.N(N.Builtin(N.Float(int_part,decimal_part)), []) -> "Builtin.floatValue " ^ int_part ^ "." ^ decimal_part
-  | A.N(N.Builtin(N.String s ), []) -> "Builtin.stringValue " ^ "\"" ^ String.escaped s ^ "\""
+  | A.N(N.Builtin(N.Int i ), []) -> "(Builtin.intValue " ^ string_of_int i ^ ")"
+  | A.N(N.Builtin(N.Float(int_part,decimal_part)), []) -> "(Builtin.floatValue " ^ int_part ^ "." ^ decimal_part ^ ")"
+  | A.N(N.Builtin(N.String s ), []) -> "(Builtin.stringValue " ^ "\"" ^ String.escaped s ^ "\")"
   | A.N(N.Builtin(N.Unit), []) -> "Builtin.unitValue"
   | A.N(N.Builtin(N.Bool true), []) -> "Builtin.trueValue"
   | A.N(N.Builtin(N.Bool false), []) -> "Builtin.falseValue"
@@ -107,15 +173,19 @@ let rec get_ocaml_code (expr : A.t) : string =
     let get_ocaml_code_for_case (case : A.t) : string = 
       match A.view case with
       | A.N(N.MatchCase, [[],pattern;[],body]) -> (
-        "| (" ^ get_ocaml_code pattern ^ ") -> (" ^ get_ocaml_code body ^ ")"
+        "| (" ^ get_ocaml_code_for_pattern pattern ^ ") -> (" ^ get_ocaml_code body ^ ")"
       )
-      | _ -> failwith ("OO31: Expecting match case, got: " ^ A.show_view case)
+      | _ -> Fail.failwith ("OO31: Expecting match case, got: " ^ A.show_view case)
     in
     "(match (" ^ get_ocaml_code subject ^ ") with " ^ String.concat " " (List.map (fun (_, case) -> get_ocaml_code_for_case case) cases) ^ ")"
   )
+  | A.N(N.Sequence("、"), args) -> (
+    "(" ^ String.concat "," (List.map (fun x -> snd x |> get_ocaml_code) args) ^ ")"
+  )
   | _ -> ("(TODO OO25 expr: " ^ A.show_view expr ^ ")")
   (* | _ -> failwith ("OO5: OCaml output not implemented for expression: " ^ A.show_view expr) *)
-let process_declaration_in_module (env : OutputEnv.t) (decl : A.t) : string = 
+
+let process_declaration_in_module (env : OutputEnv.t) (decl : A.t) (decls : A.t list) : string =  
   match A.view decl with
   | A.N(N.Declaration(N.ConstantDefn), [[],name;[], value]) ->  (
     match A.view name with
@@ -141,19 +211,41 @@ let process_declaration_in_module (env : OutputEnv.t) (decl : A.t) : string =
   )
   | A.N(N.Declaration(N.ConstructorDecl), [[],name;[], value]) -> (
     match A.view name with
-    | A.FreeVar(name) -> (
+    | A.FreeVar(sname) -> (
       let args = get_ocaml_constructor_type value in
       let args_literals = (List.map (fun arg -> "v_" ^ string_of_int arg) (ListUtil.range 0 (List.length args))) in
-      "(* " ^ name ^ " cons *)\n" ^
-      "type dt += C_" ^ get_identifier_name (A.free_var name)  ^ " of " ^ String.concat " * " args ^ "\n" ^
-      "let " ^ get_identifier_name (A.free_var name) ^ "(* " ^ name ^ " *) " ^ String.concat " "  args_literals
-      ^ " = C_" ^ string_of_int c_idx ^ " (" ^ String.concat "," args_literals ^ ")"
+      "(* " ^ sname ^ " cons *)\n" ^
+      "type dt += " ^ get_constructor_name name  ^ " of " ^ String.concat " * " args ^ "\n" ^
+      "let " ^ get_identifier_name name ^ " " ^ String.concat " "  args_literals
+      ^ " = " ^ get_constructor_name name ^ " (" ^ String.concat "," args_literals ^ ")"
+    )
+    | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+  )
+  | A.N(N.Declaration(N.TypeConstructorDecl), [[],name;[], value]) -> (
+    match A.view name with
+    | A.FreeVar(sname) -> (
+      let args = get_ocaml_type_constructor_type value in
+      "(* " ^ sname ^ " type cons *)\n" ^
+      "type " ^ args ^ " " ^ get_type_constructor_name name ^ " = "
     )
     | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
   )
   | A.N(N.Declaration(N.CustomOperatorDecl), _) -> ""
   | _ -> ("(TODO OO32 decl: " ^ A.show_view decl ^ ")")
   (* | _ -> Fail.failwith ("OO29: OCaml output not implemented for declaration: " ^ A.show_view decl) *)
+
+
+let group_declarations (decls : A.t list) : (A.t * A.t list) list = 
+  match decls with
+  | [] -> []
+  | hd :: tl -> (
+    match A.view hd with
+    | (A.N(N.Declaration(N.ConstantDecl), _) as this)  -> (
+      failwith ""
+    )
+    | _ -> failwith ""
+  )
+  | _ -> (failwith ("OO242: Expecting constant declaration, got: " ^ A.show_view decls))
 
 let get_ocaml_code_for_module (module_expr : A.t) : string = 
   let env = OutputEnv.new_env () in
