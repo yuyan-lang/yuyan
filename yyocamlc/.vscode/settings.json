@@ -5,6 +5,6 @@
     "terminal.integrated.unicodeVersion": "11",
     "ocaml.sandbox": {
         "kind": "opam",
-        "switch": "default"
+        "switch": "yyocamlc-5.3.0"
     }
 }

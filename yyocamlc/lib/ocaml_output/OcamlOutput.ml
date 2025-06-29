@@ -185,72 +185,104 @@ let rec get_ocaml_code (expr : A.t) : string =
   | _ -> ("(TODO OO25 expr: " ^ A.show_view expr ^ ")")
   (* | _ -> failwith ("OO5: OCaml output not implemented for expression: " ^ A.show_view expr) *)
 
-let process_declaration_in_module (env : OutputEnv.t) (decl : A.t) (decls : A.t list) : string =  
-  match A.view decl with
-  | A.N(N.Declaration(N.ConstantDefn), [[],name;[], value]) ->  (
-    match A.view name with
-    | A.FreeVar(fvname) -> (
-      match OutputEnv.find_entry_and_remove env fvname with
-      | None ->(
 
-      "let " ^ get_identifier_name name ^ " = " ^ get_ocaml_code value
+let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t list) : string = 
+  match A.view decl, decls with
+  | A.N(N.Declaration(N.ConstantDecl), [[],decl_name;[], decl_value]), [defn] ->  (
+    match A.view defn with
+    | A.N(N.Declaration(N.ConstantDefn), [[],defn_name;[], defn_value]) -> (
+      match A.view decl_name, A.view defn_name with
+      | A.FreeVar(decl_name), A.FreeVar(defn_name) -> (
+        if decl_name <> defn_name then failwith ("OO31: Declaration and definition names do not match: " ^ decl_name ^ " <> " ^ defn_name);
+        "let rec " ^ get_identifier_name (A.free_var decl_name) ^ " : " ^ get_ocaml_type decl_value ^ " = " ^ get_ocaml_code defn_value
       )
-      | Some(tp) -> (
-        "let rec " ^ get_identifier_name name ^ " : " ^ get_ocaml_type tp ^ " = " ^ get_ocaml_code value
-      )
+      | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view decl_name ^ " and " ^ A.show_view defn_name)
     )
-    | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+    | _ -> failwith ("OO31: Expecting constant definition, got: " ^ A.show_view defn)
   )
-  | A.N(N.Declaration(N.ConstantDecl), [[],name;[], value]) ->  (
-    match A.view name with
-    | A.FreeVar(name) -> (
-      OutputEnv.add_entry env name value;
-      "(* " ^ name ^ " decl *)"
-    )
-    | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+  | A.N(N.Declaration(N.DirectExpr), [[],expr]), [] -> (
+    "let _direct_expr = " ^ get_ocaml_code expr
   )
-  | A.N(N.Declaration(N.ConstructorDecl), [[],name;[], value]) -> (
+  | A.N(N.Declaration(N.TypeDefn), [[],name;[], value]), [] -> (
+    "type " ^ get_identifier_name name ^ " = " ^ get_ocaml_type value
+  )
+  | A.N(N.Declaration(N.TypeConstructorDecl), [[],name;[], value]), _ -> (
     match A.view name with
     | A.FreeVar(sname) -> (
-      let args = get_ocaml_constructor_type value in
-      let args_literals = (List.map (fun arg -> "v_" ^ string_of_int arg) (ListUtil.range 0 (List.length args))) in
-      "(* " ^ sname ^ " cons *)\n" ^
-      "type dt += " ^ get_constructor_name name  ^ " of " ^ String.concat " * " args ^ "\n" ^
-      "let " ^ get_identifier_name name ^ " " ^ String.concat " "  args_literals
-      ^ " = " ^ get_constructor_name name ^ " (" ^ String.concat "," args_literals ^ ")"
+          let args = get_ocaml_type_constructor_type value in
+          "(* " ^ sname ^ " type cons *)\n" ^
+          "type " ^ args ^ " " ^ get_type_constructor_name name ^ " = "
+          ^ String.concat " | " (
+            Fun.flip List.map decls ( fun decl -> 
+              match A.view decl with
+              | A.N(N.Declaration(N.ConstructorDecl), [[],name;[], value]) -> (
+                match A.view name with
+                | A.FreeVar(sname) -> (
+                  let args = get_ocaml_constructor_type value in
+                  let args_literals = (List.map (fun arg -> "v_" ^ string_of_int arg) (ListUtil.range 0 (List.length args))) in
+                  "(* " ^ sname ^ " cons *)\n" ^
+                  "type dt += " ^ get_constructor_name name  ^ " of " ^ String.concat " * " args ^ "\n" ^
+                  "let " ^ get_identifier_name name ^ " " ^ String.concat " "  args_literals
+                  ^ " = " ^ get_constructor_name name ^ " (" ^ String.concat "," args_literals ^ ")"
+                )
+                | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+              )
+              | _ -> failwith ("OO31: Expecting constructor declaration, got: " ^ A.show_view decl)
+            )
+          )
     )
-    | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+    | _ -> failwith ("OO31: Expecting free var got " ^ A.show_view name)
   )
-  | A.N(N.Declaration(N.TypeConstructorDecl), [[],name;[], value]) -> (
-    match A.view name with
-    | A.FreeVar(sname) -> (
-      let args = get_ocaml_type_constructor_type value in
-      "(* " ^ sname ^ " type cons *)\n" ^
-      "type " ^ args ^ " " ^ get_type_constructor_name name ^ " = "
-    )
-    | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
-  )
-  | A.N(N.Declaration(N.CustomOperatorDecl), _) -> ""
-  | _ -> ("(TODO OO32 decl: " ^ A.show_view decl ^ ")")
-  (* | _ -> Fail.failwith ("OO29: OCaml output not implemented for declaration: " ^ A.show_view decl) *)
+  | _ -> failwith ("OO31: Expecting type constructor declaration, got: " ^ A.show_view decl)
 
 
-let group_declarations (decls : A.t list) : (A.t * A.t list) list = 
+let rec group_declarations (decls : A.t list) : (A.t * A.t list) list = 
   match decls with
   | [] -> []
   | hd :: tl -> (
     match A.view hd with
-    | (A.N(N.Declaration(N.ConstantDecl), _) as this)  -> (
-      failwith ""
+    | A.N(N.Declaration(N.ConstantDecl), _)  -> (
+      match tl with
+      | [] -> failwith ("OO245: Unexpected end of declaration list")
+      | tl_hd :: tl_tl -> (
+        match A.view tl_hd with
+        | A.N(N.Declaration(N.ConstantDefn), _) -> (
+          (hd, [tl_hd]) :: group_declarations tl_tl
+        )
+        | _ -> failwith ("OO246: Expecting constant definition, got: " ^ A.show_view tl_hd)
+      )
     )
-    | _ -> failwith ""
+    | A.N(N.Declaration(N.DirectExpr), _) -> (
+      (hd, []) :: group_declarations tl
+    )
+    | A.N(N.Declaration(N.CustomOperatorDecl), _) -> (
+      group_declarations tl
+    )
+    | A.N(N.Declaration(N.TypeConstructorDecl), _) -> (
+      let rec aux (sofar : A.t list) (decls : A.t list) : (A.t * A.t list) list = 
+        match decls with
+        | [] -> (hd, sofar)  :: []
+        | tl_hd :: tl_tl -> (
+          match A.view hd with
+          | A.N(N.Declaration(N.ConstantDecl), _) -> (
+            aux (sofar @ [tl_hd]) tl_tl
+          )
+          | _ -> (hd, sofar) :: group_declarations tl_tl
+        )
+      in
+      aux [] tl
+    )
+    | A.N(N.Declaration(N.TypeDefn), _) -> (
+      (hd, []) :: group_declarations tl
+    )
+    | _ -> Fail.failwith ("OO31: Expecting group leading constructor declaration, got: " ^ A.show_view hd)
   )
-  | _ -> (failwith ("OO242: Expecting constant declaration, got: " ^ A.show_view decls))
 
 let get_ocaml_code_for_module (module_expr : A.t) : string = 
   let env = OutputEnv.new_env () in
   let process_declarations (decls : A.t list) : string list = 
-    List.map (process_declaration_in_module env) decls
+    let grouped_decls = group_declarations decls in
+    List.map (fun (decl, decls) -> process_declaration_group env decl decls) grouped_decls
   in
   match A.view module_expr with
   | A.N(N.ModuleDef, (decls))-> 

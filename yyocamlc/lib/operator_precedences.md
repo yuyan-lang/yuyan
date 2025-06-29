@@ -25,6 +25,7 @@ Name ?LP ?RP
 （）点（） 1000 1000 (* decimal points)
 （）授以（） 799 800 (* bounds tighter when viewed from right indicates left-associative)
 （）于（） 799 800
+结构虑（） 80
 
 （）之书   90
 观（）     80
@@ -42,8 +43,10 @@ Name ?LP ?RP
 化（）者「」而（）40
 化（）而（）40
 （）者（） 10 10
+（）即（） 10 10
 （）乃（） 10 10
 （）立（） 10 10
+（）作（） 10 10
 （）也    5
 鉴（）而
 术（）盖谓（）也

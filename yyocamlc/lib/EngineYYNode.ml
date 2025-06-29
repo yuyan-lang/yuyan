@@ -28,6 +28,7 @@ module YYNode  = struct
   type declaration = ConstantDefn 
                   | ConstantDecl 
                   | ConstructorDecl
+                  | TypeDefn
                   | TypeConstructorDecl
                   | CustomOperatorDecl
                   | DirectExpr
@@ -51,6 +52,7 @@ module YYNode  = struct
          | ExternalCall of string
          | IfThenElse
          | LetIn
+         | StructLetIn
 
   let arity (t : t) : int list option = 
     match t with
@@ -61,6 +63,7 @@ module YYNode  = struct
     | Declaration TypeConstructorDecl -> Some([0; 0])
     | Declaration DirectExpr -> Some([0])
     | Declaration CustomOperatorDecl -> Some([0; 0])
+    | Declaration TypeDefn -> Some([0; 0])
     | StructureDeref (_) -> Some([0])
     | TupleDeref (_) -> Some([0])
     | ModuleDef -> None
@@ -78,6 +81,7 @@ module YYNode  = struct
     | ExternalCall _ -> Some([])
     | IfThenElse -> Some([0; 0; 0]) (* if, then, else *)
     | LetIn -> Some([0; 1]) (* let, in, expr *)
+    | StructLetIn -> Some([0]) (* struct, let, in, expr *)
 
 
 
@@ -112,7 +116,7 @@ module YYNode  = struct
     | TypeConstructorDecl -> "TypeConstructorDecl"
     | DirectExpr -> "DirectExpr"
     | CustomOperatorDecl -> "CustomOperatorDecl"
-
+    | TypeDefn -> "TypeDefn"
 
   let show (t : t) : string =
     match t with
@@ -135,6 +139,7 @@ module YYNode  = struct
     | ExternalCall (s) -> "ExternalCall(" ^ s ^ ")"
     | IfThenElse -> "IfThenElse"
     | LetIn -> "LetIn"
+    | StructLetIn -> "StructLetIn"
 
 
 

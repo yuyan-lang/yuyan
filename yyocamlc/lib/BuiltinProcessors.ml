@@ -224,6 +224,91 @@ let definition2_end : binary_op =
     shift_action = do_nothing_shift_action;
   }
 
+let type_definition_middle_uid = Uid.next()
+let type_definition_end_uid = Uid.next()
+let type_definition_middle_meta : binary_op_meta = 
+  {
+    id = type_definition_middle_uid;
+    keyword = CS.new_t_string "即";
+    left_fixity = FxOp (Some 10);
+    right_fixity = FxComp type_definition_end_uid;
+  }
+let type_definition_end_meta : binary_op_meta =
+  {
+    id = type_definition_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp type_definition_middle_uid;
+    right_fixity = FxNone;
+  }
+
+let type_definition_middle : binary_op = 
+  {
+    meta = type_definition_middle_meta;
+    reduction = p_internal_error "BP104: type_definition_middle reduction";
+    shift_action = do_nothing_shift_action;
+  }
+
+let type_definition_end : binary_op = 
+{
+  meta = type_definition_end_meta;
+  reduction = 
+  (
+    let* ((name, defn), ext) = pop_postfix_op_operands_2 type_definition_end_meta in
+    push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.TypeDefn), [[], name; [], defn]))) ext)
+  );
+  shift_action = do_nothing_shift_action;
+}
+
+let type_definition2_start_uid = Uid.next()
+let type_definition2_middle_uid = Uid.next()
+let type_definition2_end_uid = Uid.next()
+let type_definition2_start_meta : binary_op_meta = 
+  {
+    id = type_definition2_start_uid;
+    keyword = CS.new_t_string "夫";
+    left_fixity = FxNone;
+    right_fixity = FxBinding type_definition2_middle_uid;
+  }
+let type_definition2_middle_meta : binary_op_meta = 
+  {
+    id = type_definition2_middle_uid;
+    keyword = CS.new_t_string "即";
+    left_fixity = FxBinding type_definition2_start_uid;
+    right_fixity = FxComp type_definition2_end_uid;
+  }
+let type_definition2_end_meta : binary_op_meta = 
+  {
+    id = type_definition2_end_uid;
+    keyword = CS.new_t_string "也";
+    left_fixity = FxComp type_definition2_middle_uid;
+    right_fixity = FxNone;
+  }
+let type_definition2_start : binary_op = 
+  {
+    meta = type_definition2_start_meta;
+    reduction = p_internal_error "BP104: type_definition2_start reduction";
+    shift_action = do_nothing_shift_action;
+  }
+let type_definition2_middle : binary_op = 
+  {
+    meta = type_definition2_middle_meta;
+    reduction = p_internal_error "BP104: type_definition2_middle reduction";
+    shift_action = add_prev_identifier_shift_action;
+  }
+let type_definition2_end : binary_op = 
+  {
+    meta = type_definition2_end_meta;
+    reduction = 
+    (
+      let* ((name, defn), ext) = pop_postfix_op_operands_2 type_definition2_end_meta in
+      let* bnd_name = get_binding_name name in
+      push_elem_on_input_acc_expr (A.annotate_with_extent(A.fold(A.N(N.Declaration(N.TypeDefn), 
+      [[], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn]))) ext)
+    );
+    shift_action = do_nothing_shift_action;
+  }
+
+
 
 let library_root_meta : binary_op_meta = 
   {
@@ -1564,7 +1649,26 @@ let let_in_mid2 : binary_op =
     );
     shift_action = do_nothing_shift_action;
   }
+let struct_let_in_start_uid = Uid.next()
 
+let struct_let_in_start_meta = 
+  {
+    id = struct_let_in_start_uid;
+    keyword = CS.new_t_string "结构虑";
+    left_fixity = FxNone;
+    right_fixity = FxOp (Some 80)
+  }
+let struct_let_in_start : binary_op = 
+  {
+    meta = struct_let_in_start_meta;
+    reduction = (
+      let* (struct_expr, per_ext) = pop_prefix_op_operands_1 struct_let_in_start_meta in
+      let result_expr = A.fold_with_extent (A.N(N.StructLetIn, [[], struct_expr])) per_ext in
+      push_elem_on_input_acc_expr result_expr
+    );
+    shift_action = do_nothing_shift_action;
+  }
+  
 let typing_annotation_middle_uid = Uid.next()
 let typing_annotation_end_uid = Uid.next()
 let typing_annotation_middle_meta = 
