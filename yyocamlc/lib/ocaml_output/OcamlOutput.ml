@@ -175,7 +175,7 @@ let rec get_ocaml_code (expr : A.t) : string =
       | A.N(N.MatchCase, [[],pattern;[],body]) -> (
         "| (" ^ get_ocaml_code_for_pattern pattern ^ ") -> (" ^ get_ocaml_code body ^ ")"
       )
-      | _ -> Fail.failwith ("OO31: Expecting match case, got: " ^ A.show_view case)
+      | _ -> Fail.failwith ("OO232: Expecting match case, got: " ^ A.show_view case)
     in
     "(match (" ^ get_ocaml_code subject ^ ") with " ^ String.concat " " (List.map (fun (_, case) -> get_ocaml_code_for_case case) cases) ^ ")"
   )
@@ -193,12 +193,12 @@ let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t lis
     | A.N(N.Declaration(N.ConstantDefn), [[],defn_name;[], defn_value]) -> (
       match A.view decl_name, A.view defn_name with
       | A.FreeVar(decl_name), A.FreeVar(defn_name) -> (
-        if decl_name <> defn_name then failwith ("OO31: Declaration and definition names do not match: " ^ decl_name ^ " <> " ^ defn_name);
+        if decl_name <> defn_name then failwith ("OO196: Declaration and definition names do not match: " ^ decl_name ^ " <> " ^ defn_name);
         "let rec " ^ get_identifier_name (A.free_var decl_name) ^ " : " ^ get_ocaml_type decl_value ^ " = " ^ get_ocaml_code defn_value
       )
-      | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view decl_name ^ " and " ^ A.show_view defn_name)
+      | _ -> failwith ("OO199: Expecting free variable, got: " ^ A.show_view decl_name ^ " and " ^ A.show_view defn_name)
     )
-    | _ -> failwith ("OO31: Expecting constant definition, got: " ^ A.show_view defn)
+    | _ -> failwith ("OO200: Expecting constant definition, got: " ^ A.show_view defn)
   )
   | A.N(N.Declaration(N.DirectExpr), [[],expr]), [] -> (
     "let _direct_expr = " ^ get_ocaml_code expr
@@ -225,15 +225,15 @@ let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t lis
                   "let " ^ get_identifier_name name ^ " " ^ String.concat " "  args_literals
                   ^ " = " ^ get_constructor_name name ^ " (" ^ String.concat "," args_literals ^ ")"
                 )
-                | _ -> failwith ("OO31: Expecting free variable, got: " ^ A.show_view name)
+                | _ -> failwith ("OO228: Expecting free variable, got: " ^ A.show_view name)
               )
-              | _ -> failwith ("OO31: Expecting constructor declaration, got: " ^ A.show_view decl)
+              | _ -> failwith ("OO229: Expecting constructor declaration, got: " ^ A.show_view decl)
             )
           )
     )
-    | _ -> failwith ("OO31: Expecting free var got " ^ A.show_view name)
+    | _ -> failwith ("OO230: Expecting free var got " ^ A.show_view name)
   )
-  | _ -> failwith ("OO31: Expecting type constructor declaration, got: " ^ A.show_view decl)
+  | _ -> failwith ("OO231: Expecting type constructor declaration, got: " ^ A.show_view decl)
 
 
 let rec group_declarations (decls : A.t list) : (A.t * A.t list) list = 
@@ -275,7 +275,7 @@ let rec group_declarations (decls : A.t list) : (A.t * A.t list) list =
     | A.N(N.Declaration(N.TypeDefn), _) -> (
       (hd, []) :: group_declarations tl
     )
-    | _ -> Fail.failwith ("OO31: Expecting group leading constructor declaration, got: " ^ A.show_view hd)
+    | _ -> Fail.failwith ("OO278: Expecting group leading constructor declaration, got: " ^ A.show_view hd)
   )
 
 let get_ocaml_code_for_module (module_expr : A.t) : string = 

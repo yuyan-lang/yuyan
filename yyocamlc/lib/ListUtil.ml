@@ -221,3 +221,9 @@ let fold_left_non_empty f lst =
   match lst with
   | [] -> failwith "fold_left_non_empty: empty list"
   | x :: xs -> List.fold_left f x xs
+
+let rec last lst =
+  match lst with
+  | [] -> failwith "last: empty list"
+  | [x] -> x
+  | _ :: xs -> last xs

@@ -1249,6 +1249,33 @@ let add_declaration_name_identifier (declaration : A.t) : unit proc_state_m =
     pfail ("BP678: Expected a module defn and a decl but got " ^ (show_input_acc_elem module_expr) ^ " and " ^ (show_input_acc_elem decl_expr)
     ^ "input_acc = " ^ show_input_acc st.input_acc) 
 
+let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_state_m = 
+  match A.view module_expr, A.view decl with
+  | A.N(N.ModuleDef, args), A.N(N.Declaration(ConstantDefn), [[], defn_name; _]) ->  
+    (
+      match args with
+      | [] -> (
+        pfail_with_ext ("BP1258: Expecting ConstantDecl before ConstantDefn but got nothing") (A.get_extent_some decl)
+      )
+      | _::_ -> (
+        match A.view (snd (ListUtil.last args)) with
+        | A.N(N.Declaration(ConstantDecl), [[], decl_name; _]) -> (
+          match A.view defn_name, A.view decl_name with
+          | A.FreeVar(defn_name), A.FreeVar(decl_name) -> (
+            if defn_name = decl_name then (
+              return (A.fold(A.N(N.ModuleDef, args@[[], decl])))
+            ) else (
+              pfail_with_ext ("BP1263: Declaration and definition names do not match: " ^ defn_name ^ " <> " ^ decl_name) (A.get_extent_some decl)
+            )
+          )
+          | _ -> pfail_with_ext ("BP1264: Expecting free variable, got " ^ A.show_view defn_name ^ " and " ^ A.show_view decl_name) (A.get_extent_some decl)
+        )
+        | _ -> pfail_with_ext ("BP1261: Expecting ConstantDecl before ConstantDefn but got " ^ A.show_view (snd (ListUtil.last args))) (A.get_extent_some decl)
+
+      )
+    )
+  | _ -> pfail ("BP679: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+
   let sentence_end : unit proc_state_m =
     let* _ = read_one_of_string [CS.new_t_string "。"] in
     (* reduce all existing expressions*)
