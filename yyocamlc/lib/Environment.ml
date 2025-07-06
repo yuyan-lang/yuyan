@@ -1,22 +1,16 @@
-
 open EngineData
-
 module Ext = AbtLib.Extent
 
 type t = t_environment
 
+let show (_x : t) : string = "Environment"
 
-let show (_x : t) : string = 
-  "Environment"
-
-
-let default_environment : t = 
+let default_environment : t =
   (* Initialize the environment here *)
-  {
-    constants = [];
-  }
-(* 
-let wrap_store (f : t -> 'a * t) : 'a proc_state_m = 
+  { constants = [] }
+;;
+(*
+   let wrap_store (f : t -> 'a * t) : 'a proc_state_m = 
   fun s -> 
     let (r, new_env) = f s.store in
     let new_s = {s with store = new_env} in
@@ -25,9 +19,8 @@ let wrap_store (f : t -> 'a * t) : 'a proc_state_m =
 let wrap_store_simple (f : t -> t ) : unit proc_state_m = 
   wrap_store (fun s -> ((), f s)) *)
 
-
-(* 
-let push_env_state_stack (expect : expect) : unit proc_state_m = 
+(*
+   let push_env_state_stack (expect : expect) : unit proc_state_m = 
   wrap_store_simple (fun e -> {e with
     expect_state_stack = expect :: e.expect_state_stack;
   })

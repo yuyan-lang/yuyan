@@ -1,6 +1,6 @@
 module CS = CharStream
 
-let convert_to_pinyin (input: CS.t_char) : string = 
+let convert_to_pinyin (input : CS.t_char) : string =
   match CS.get_t_char input with
   | "的" -> "De"
   | "一" -> "Yi"
@@ -9936,6 +9936,4 @@ let convert_to_pinyin (input: CS.t_char) : string =
   | "鲖" -> "Tong"
   | "鴒" -> "Ling"
   | _ -> "_"
-
-
-
+;;
