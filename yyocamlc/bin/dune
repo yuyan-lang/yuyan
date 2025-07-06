@@ -2,4 +2,5 @@
  (public_name yyocamlc)
  (name main)
  (libraries yyocamlc)
- (flags (:standard -g)))
+ (flags
+  (:standard -g)))
