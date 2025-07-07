@@ -431,6 +431,19 @@ let builtin_op : binary_op =
   }
 ;;
 
+let builtin_type_meta : binary_op_meta =
+  { id = Uid.next (); keyword = CS.new_t_string "元类型"; left_fixity = FxNone; right_fixity = FxNone }
+;;
+
+let builtin_type : binary_op =
+  { meta = builtin_type_meta
+  ; reduction =
+      (let* ext = pop_postfix_op_operands_0 builtin_type_meta in
+       push_elem_on_input_acc_expr (A.annotate_with_extent (A.fold (A.N (N.Builtin N.Type, []))) ext))
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
 let module_open_meta : binary_op_meta =
   { id = Uid.next (); keyword = CS.new_t_string "观"; left_fixity = FxNone; right_fixity = FxOp (Some 80) }
 ;;
@@ -1889,6 +1902,8 @@ let default_registry =
   ; to_processor_complex "identifier_parser_pusher" identifier_parser_pusher
   ; to_processor_complex "number_parser" (integer_number_parser ())
   ; to_processor_complex "decimal_number_parser" (decimal_number_parser ())
+  ; (* type*)
+    to_processor_binary_op "builtin_type" builtin_type
   ]
   @ List.concat []
 ;;
