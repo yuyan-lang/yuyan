@@ -66,6 +66,7 @@ let rec get_ocaml_constructor_type (tp_expr : A.t) : string list =
 let get_ocaml_tp_expr (tp_expr : A.t) : string =
   match A.view tp_expr with
   | A.FreeVar _ -> "dt"
+  | A.N (N.Builtin N.Type, []) -> "'a"
   | _ -> failwith ("OO 78: Not yet implemented, got: " ^ A.show_view tp_expr)
 ;;
 
@@ -73,12 +74,16 @@ let get_ocaml_type_constructor_type (tp_expr : A.t) : string =
   let rec aux (tp_expr : A.t) : A.t list =
     match A.view tp_expr with
     | A.N ((N.ExplicitPi | N.ImplicitPi), [ ([], _dom); ([ _ ], _cod) ]) ->
-      Fail.failwith "OO 78: Higher-order kinds not supported"
+      Fail.failwith "OO 88: Higher-order kinds not supported"
     | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> dom :: aux cod
+    | A.N (N.Builtin N.Type, []) -> []
     | _ -> Fail.failwith ("(TODO OO72 tp_expr: " ^ A.show_view tp_expr ^ ")")
   in
   let tps = aux tp_expr |> List.map get_ocaml_tp_expr in
-  "(" ^ String.concat ", " tps ^ ")"
+  match tps with
+  | [] -> ""
+  | [ tp ] -> tp
+  | _ -> "(" ^ String.concat ", " tps ^ ")"
 ;;
 
 let rec get_ocaml_code_for_pattern (pattern : A.t) : string =
