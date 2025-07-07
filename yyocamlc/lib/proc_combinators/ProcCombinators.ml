@@ -322,7 +322,8 @@ let scan_past_one_of_string (t : CS.t_string list)
 
 let push_elem_on_input_acc (elem : input_acc_elem) : unit proc_state_m =
   let* s = get_proc_state () in
-  let new_s = { s with input_acc = elem :: s.input_acc } in
+  let new_s = { s with input_acc = elem :: s.input_acc; last_input_acc_before_pop = None } in
+  (* reset the last_input_acc_before_pop *)
   write_proc_state new_s
 ;;
 
@@ -385,7 +386,16 @@ let pop_input_acc () : input_acc_elem proc_state_m =
   match s.input_acc with
   | [] -> pfail "PC224: Attempting to pop from empty input accumulator: "
   | x :: xs ->
-    let new_s = { s with input_acc = xs } in
+    let new_s =
+      { s with
+        input_acc = xs
+      ; last_input_acc_before_pop =
+          (match s.last_input_acc_before_pop with
+           (* only set it if not set. so that consecutive pops will not overwrite the last_input_acc_before_pop *)
+           | None -> Some s.input_acc
+           | Some ys -> Some ys)
+      }
+    in
     let* _ = write_proc_state new_s in
     return x
 ;;

@@ -132,6 +132,7 @@ let run_top_level (filename : string) (content : string) : A.t =
     ; input_expect = TopLevel
     ; expect_state_stack = []
     ; input_acc = [ Expr (A.annotate_with_extent (A.fold (A.N (N.ModuleDef, []))) (filename, (0, 0), (0, 0))) ]
+    ; last_input_acc_before_pop = None
     ; store = Environment.default_environment
     ; registry = BuiltinProcessors.default_registry
     ; last_succeeded_processor = to_processor_identifier "initial_none" (CS.new_t_string "[NONE]")

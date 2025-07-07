@@ -79,6 +79,7 @@ and proc_state =
   ; input_expect : expect
   ; expect_state_stack : expect list
   ; input_acc : input_acc_elem list
+  ; last_input_acc_before_pop : input_acc_elem list option
   ; store : t_environment
   ; registry : processor_registry
   ; last_succeeded_processor : processor_entry (* for debugging on parsing *)
@@ -224,6 +225,11 @@ let show_proc_state (s : proc_state) : string =
   ^ ", "
   ^ "\ninput_acc: "
   ^ show_input_acc s.input_acc
+  ^ ", "
+  ^ "\nlast_input_acc_before_pop: "
+  ^ (match s.last_input_acc_before_pop with
+     | None -> "None"
+     | Some xs -> "Some(" ^ show_input_acc xs ^ ")")
   ^ ", "
   (* ^ "\nregistry: " ^ String.concat "\n, " (List.map show_processor_entry s.registry) ^ ", "   *)
   ^ "\n registry: "

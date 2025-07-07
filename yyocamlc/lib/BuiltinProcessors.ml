@@ -450,12 +450,14 @@ let get_module_expr_defined_names (m : A.t) : (string * Ext.t) list proc_state_m
            match A.view arg with
            | A.N (N.Declaration N.ConstantDefn, ([], name) :: _)
            | A.N (N.Declaration N.ConstructorDecl, ([], name) :: _)
-           | A.N (N.Declaration N.ConstantDecl, ([], name) :: _) ->
+           | A.N (N.Declaration N.ConstantDecl, ([], name) :: _)
+           | A.N (N.Declaration N.TypeConstructorDecl, ([], name) :: _)
+           | A.N (N.Declaration N.TypeDefn, ([], name) :: _) ->
              (match A.view name with
               | A.FreeVar x -> Some (x, A.get_extent_some name)
               | _ -> failwith ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
            | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
-           | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view arg))
+           | _ -> print_failwith ("BP288: Expected a Declaration but got " ^ A.show_view arg))
         args
     | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
   in
@@ -471,14 +473,16 @@ let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
            match A.view arg with
            | A.N (N.Declaration N.ConstantDefn, _)
            | A.N (N.Declaration N.ConstructorDecl, _)
-           | A.N (N.Declaration N.ConstantDecl, _) -> None
+           | A.N (N.Declaration N.ConstantDecl, _)
+           | A.N (N.Declaration N.TypeConstructorDecl, _)
+           | A.N (N.Declaration N.TypeDefn, _) -> None
            | A.N (N.Declaration N.CustomOperatorDecl, [ ([], op); ([], elab) ]) ->
              (match A.view op with
               | A.N (N.Builtin (N.CustomOperatorString x), []) ->
                 let all_ops = UserDefinedOperators.get_operators x elab in
                 Some all_ops
               | _ -> failwith ("BP279: Expected a string but got " ^ A.show_view op))
-           | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view arg))
+           | _ -> print_failwith ("BP483: Expected a Declaration but got " ^ A.show_view arg))
         args
     | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
   in
@@ -1234,12 +1238,14 @@ let add_declaration_name_identifier (declaration : A.t) : unit proc_state_m =
   match A.view declaration with
   | A.N (N.Declaration N.ConstantDecl, [ ([], name); _ ])
   | A.N (N.Declaration N.ConstructorDecl, [ ([], name); _ ])
-  | A.N (N.Declaration N.ConstantDefn, [ ([], name); _ ]) ->
+  | A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); _ ])
+  | A.N (N.Declaration N.ConstantDefn, [ ([], name); _ ])
+  | A.N (N.Declaration N.TypeDefn, [ ([], name); _ ]) ->
     (match A.view name with
      | A.FreeVar name -> add_identifier_processor_no_repeat (CS.new_t_string name)
      | _ -> pfail ("BP679: Expected a constant declaration but got " ^ A.show_view declaration))
   | A.N (N.Declaration N.CustomOperatorDecl, [ ([], _); _ ]) -> return ()
-  | _ -> failwith ("BP679: Expected a constant declaration but got " ^ A.show_view declaration)
+  | _ -> failwith ("BP1245: Expected a constant declaration but got " ^ A.show_view declaration)
 ;;
 
 let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem) : unit proc_state_m =
@@ -1278,8 +1284,50 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
           pfail_with_ext
             ("BP1261: Expecting ConstantDecl before ConstantDefn but got " ^ A.show_view (snd (ListUtil.last args)))
             (A.get_extent_some decl)))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstructorDecl, [ ([], _name); ([], cons_tp) ]) ->
+    (match args with
+     | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
+     | _ :: _ ->
+       let rec find_cons_decl (args_reversed : A.t list) : A.t proc_state_m =
+         match args_reversed with
+         | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
+         | hd :: tl ->
+           (match A.view hd with
+            | A.N (N.Declaration N.TypeConstructorDecl, [ ([], decl_name); _ ]) ->
+              (match A.view decl_name with
+               | A.FreeVar decl_name ->
+                 let cons_hd_name = TypeChecking.get_constructor_tp_head cons_tp in
+                 if decl_name = cons_hd_name
+                 then return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+                 else
+                   pfail_with_ext
+                     ("BP1266: Declaration and constructor names do not match: " ^ decl_name ^ " <> " ^ cons_hd_name)
+                     (A.get_extent_some decl)
+               | _ ->
+                 pfail_with_ext
+                   ("BP1267: Expecting free variable, got " ^ A.show_view decl_name)
+                   (A.get_extent_some decl))
+            | A.N (N.Declaration N.ConstructorDecl, _) -> find_cons_decl tl
+            | _ ->
+              pfail_with_ext
+                ("BP1268: Expecting type constructor declaration or (constructor declaration leading to type \
+                  constructor) declaration, got "
+                 ^ A.show_view hd)
+                (A.get_extent_some decl))
+       in
+       find_cons_decl (List.rev (List.map snd args)))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _) ->
+    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _) ->
+    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) ->
+    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, _) ->
+    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstantDecl, _) ->
+    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
   | _ ->
-    pfail ("BP679: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+    pfail ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
 ;;
 
 let sentence_end : unit proc_state_m =
@@ -1302,19 +1350,21 @@ let sentence_end : unit proc_state_m =
       match poped_left, poped_right with
       | Expr module_expr, Expr decl ->
         (match A.view module_expr, A.view decl with
-         | A.N (N.ModuleDef, args), A.N (N.Declaration _, _) ->
+         | A.N (N.ModuleDef, _), A.N (N.Declaration _, _) ->
            let* () = add_declaration_name_identifier decl in
+           let* combined_expr = check_and_append_module_defn module_expr decl in
            push_elem_on_input_acc_expr
              (A.annotate_with_extent
-                (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+                combined_expr
                 (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl)))
-         | A.N (N.ModuleDef, args), _ ->
+         | A.N (N.ModuleDef, _), _ ->
            let direct_expr_decl =
              A.fold_with_extent (A.N (N.Declaration N.DirectExpr, [ [], decl ])) (A.get_extent_some decl)
            in
+           let* combined_expr = check_and_append_module_defn module_expr direct_expr_decl in
            push_elem_on_input_acc_expr
              (A.annotate_with_extent
-                (A.fold (A.N (N.ModuleDef, args @ [ [], direct_expr_decl ])))
+                combined_expr
                 (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl)))
          | _ -> sentence_end_fail (Expr module_expr) (Expr decl))
       | ParsingElem (start_op, _start_op_ext), Expr decl ->
@@ -1326,11 +1376,9 @@ let sentence_end : unit proc_state_m =
              (* push 「「 back onto the stack *)
              let* _ = push_elem_on_input_acc poped_left in
              let* _ = add_declaration_name_identifier decl in
+             let* combined_expr = check_and_append_module_defn (A.n (N.ModuleDef, [])) decl in
              (* we choose not to descope this *)
-             let* _ =
-               push_elem_on_input_acc_expr
-                 (A.fold_with_extent (A.N (N.ModuleDef, [ [], decl ])) (A.get_extent_some decl))
-             in
+             let* _ = push_elem_on_input_acc_expr (A.annotate_with_extent combined_expr (A.get_extent_some decl)) in
              return ()
            else sentence_end_fail poped_left poped_right
          | OpKeyword ({ id = opid; _ }, _), _ ->
@@ -1339,12 +1387,10 @@ let sentence_end : unit proc_state_m =
              let direct_expr_decl =
                A.fold_with_extent (A.N (N.Declaration N.DirectExpr, [ [], decl ])) (A.get_extent_some decl)
              in
+             let* combined_expr = check_and_append_module_defn (A.n (N.ModuleDef, [])) direct_expr_decl in
              (* push 「「 back onto the stack *)
              let* _ = push_elem_on_input_acc poped_left in
-             let* _ =
-               push_elem_on_input_acc_expr
-                 (A.fold_with_extent (A.N (N.ModuleDef, [ [], direct_expr_decl ])) (A.get_extent_some decl))
-             in
+             let* _ = push_elem_on_input_acc_expr (A.annotate_with_extent combined_expr (A.get_extent_some decl)) in
              return ())
            else sentence_end_fail poped_left poped_right
          | _ -> sentence_end_fail poped_left poped_right)
@@ -1775,6 +1821,10 @@ let default_registry =
   ; to_processor_binary_op "type_constructor_decl2_start" type_constructor_decl2_start
   ; to_processor_binary_op "type_constructor_decl2_middle" type_constructor_decl2_middle
   ; to_processor_binary_op "type_constructor_decl2_end" type_constructor_decl2_end
+  ; to_processor_binary_op "type_definition_middle" type_definition_middle
+  ; to_processor_binary_op "type_definition_end" type_definition_end
+  ; to_processor_binary_op "type_definition2_middle" type_definition2_middle
+  ; to_processor_binary_op "type_definition2_end" type_definition2_end
   ; to_processor_binary_op "left_parenthesis" left_parenthesis
   ; to_processor_binary_op "right_parenthesis" right_parenthesis
   ; to_processor_binary_op "explicit_pi_start" explicit_pi_start
@@ -1821,6 +1871,7 @@ let default_registry =
     to_processor_binary_op "let_in_start" let_in_start
   ; to_processor_binary_op "let_in_mid1" let_in_mid1
   ; to_processor_binary_op "let_in_mid2" let_in_mid2
+  ; to_processor_binary_op "struct_let_in_start" struct_let_in_start
   ; (* defn 2*)
     to_processor_binary_op "definition2_start" definition2_start
   ; to_processor_binary_op "definition2_middle" definition2_middle

@@ -44,7 +44,13 @@ let rec get_ocaml_type (tp_expr : A.t) : string =
   | A.N (N.StructureDeref _label, [ ([], _subject) ]) -> "dt" (* "dt " ^ label ^ " " *)
   | A.FreeVar _name -> "dt" (* "dt " ^ name ^ " " *)
   | A.N (N.Ap, _) -> "dt" (* "dt (* " ^ A.show_view tp_expr ^ " *) " *)
-  | _ -> "(TODO OO30 tp_expr: " ^ A.show_view tp_expr ^ ")"
+  | A.N (N.Builtin N.Type, []) -> "unit (* this type should never appear *)"
+  | A.N (N.Builtin N.UnitType, []) -> "unit"
+  | A.N (N.Builtin N.IntType, []) -> "int"
+  | A.N (N.Builtin N.FloatType, []) -> "float"
+  | A.N (N.Builtin N.BoolType, []) -> "bool"
+  | A.N (N.Builtin N.StringType, []) -> "string"
+  | _ -> "(TODO OO47 tp_expr: " ^ A.show_view tp_expr ^ ")"
 ;;
 
 let rec get_ocaml_constructor_type (tp_expr : A.t) : string list =
@@ -54,7 +60,7 @@ let rec get_ocaml_constructor_type (tp_expr : A.t) : string list =
   | A.N (N.StructureDeref _label, [ ([], _subject) ]) -> [ (* ["dt " ^ label ^ " "] *) "dt" ]
   | A.FreeVar _name -> [ (* ["dt " ^ name ^ " "] *) "dt" ]
   | A.N (N.Ap, _) -> [ "dt" (* ["dt " ^ A.show_view tp_expr ^ " "] *) ]
-  | _ -> [ "(TODO OO30 cons_tp_expr: " ^ A.show_view tp_expr ^ ")" ]
+  | _ -> [ "(TODO OO57 cons_tp_expr: " ^ A.show_view tp_expr ^ ")" ]
 ;;
 
 let get_ocaml_tp_expr (tp_expr : A.t) : string =
@@ -67,9 +73,9 @@ let get_ocaml_type_constructor_type (tp_expr : A.t) : string =
   let rec aux (tp_expr : A.t) : A.t list =
     match A.view tp_expr with
     | A.N ((N.ExplicitPi | N.ImplicitPi), [ ([], _dom); ([ _ ], _cod) ]) ->
-      failwith "OO 78: Higher-order kinds not supported"
+      Fail.failwith "OO 78: Higher-order kinds not supported"
     | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> dom :: aux cod
-    | _ -> failwith ("(TODO OO30 tp_expr: " ^ A.show_view tp_expr ^ ")")
+    | _ -> Fail.failwith ("(TODO OO72 tp_expr: " ^ A.show_view tp_expr ^ ")")
   in
   let tps = aux tp_expr |> List.map get_ocaml_tp_expr in
   "(" ^ String.concat ", " tps ^ ")"
@@ -222,38 +228,10 @@ let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t lis
   | _ -> failwith ("OO231: Expecting type constructor declaration, got: " ^ A.show_view decl)
 ;;
 
-let rec group_declarations (decls : A.t list) : (A.t * A.t list) list =
-  match decls with
-  | [] -> []
-  | hd :: tl ->
-    (match A.view hd with
-     | A.N (N.Declaration N.ConstantDecl, _) ->
-       (match tl with
-        | [] -> failwith "OO245: Unexpected end of declaration list"
-        | tl_hd :: tl_tl ->
-          (match A.view tl_hd with
-           | A.N (N.Declaration N.ConstantDefn, _) -> (hd, [ tl_hd ]) :: group_declarations tl_tl
-           | _ -> failwith ("OO246: Expecting constant definition, got: " ^ A.show_view tl_hd)))
-     | A.N (N.Declaration N.DirectExpr, _) -> (hd, []) :: group_declarations tl
-     | A.N (N.Declaration N.CustomOperatorDecl, _) -> group_declarations tl
-     | A.N (N.Declaration N.TypeConstructorDecl, _) ->
-       let rec aux (sofar : A.t list) (decls : A.t list) : (A.t * A.t list) list =
-         match decls with
-         | [] -> (hd, sofar) :: []
-         | tl_hd :: tl_tl ->
-           (match A.view hd with
-            | A.N (N.Declaration N.ConstantDecl, _) -> aux (sofar @ [ tl_hd ]) tl_tl
-            | _ -> (hd, sofar) :: group_declarations tl_tl)
-       in
-       aux [] tl
-     | A.N (N.Declaration N.TypeDefn, _) -> (hd, []) :: group_declarations tl
-     | _ -> Fail.failwith ("OO278: Expecting group leading constructor declaration, got: " ^ A.show_view hd))
-;;
-
 let get_ocaml_code_for_module (module_expr : A.t) : string =
   let env = OutputEnv.new_env () in
   let process_declarations (decls : A.t list) : string list =
-    let grouped_decls = group_declarations decls in
+    let grouped_decls = TypeChecking.group_declarations decls in
     List.map (fun (decl, decls) -> process_declaration_group env decl decls) grouped_decls
   in
   match A.view module_expr with
