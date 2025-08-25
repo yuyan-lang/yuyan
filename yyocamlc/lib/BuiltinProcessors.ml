@@ -1086,15 +1086,12 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
                 (A.get_extent_some decl))
        in
        find_cons_decl (List.rev (List.map snd args)))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _) ->
-    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _) ->
-    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) ->
-    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, _) ->
-    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstantDecl, _) ->
+  | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _) 
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _) 
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) 
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, _) 
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstantDecl, _) 
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDecl, _) ->
     return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
   | _ ->
     pfail ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
