@@ -95,7 +95,6 @@ and failure_handler_arg_type = proc_state
 and processor =
   | ProcComplex of unit proc_state_m
   | ProcBinOp of binary_op
-  | ProcIdentifier of CharStream.t_string (* these two only run in the Expression environment*)
 
 and processor_entry =
   { id : int
@@ -203,7 +202,6 @@ let show_processor (p : processor) : string =
   match p with
   | ProcComplex _ -> "ProcComplex "
   | ProcBinOp { meta; _ } -> "ProcBinOp: " ^ show_binary_op_meta meta
-  | ProcIdentifier id -> "ProcIdentifier: " ^ CS.get_t_string id
 ;;
 
 let show_processor_entry (p : processor_entry) : string =

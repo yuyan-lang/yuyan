@@ -170,9 +170,6 @@ let to_processor_binary_op (name : string) (binop : binary_op) : processor_entry
   { id = Uid.next (); name; processor = ProcBinOp binop }
 ;;
 
-let to_processor_identifier (name : string) (id : CharStream.t_string) : processor_entry =
-  { id = Uid.next (); name; processor = ProcIdentifier id }
-;;
 
 let to_processor_complex (name : string) (process : 'a proc_state_m) : processor_entry =
   { id = Uid.next (); name; processor = ProcComplex process }

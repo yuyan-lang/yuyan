@@ -343,29 +343,11 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
   let* _ =
     match right_fixity with
     | FxBinding end_str_op_uid ->
-      let* oper = lookup_binary_op end_str_op_uid in
-      (* we have a single chance of succeeding, either parse an id or scan *)
+      let* _ = lookup_binary_op end_str_op_uid in
+      (* only allow quoted identifiers for binding names *)
       pcut
-        (choice
-           (let* id, ext = identifier_parser () in
-            push_elem_on_input_acc (get_bound_scanned_string_t (id, ext)))
-           (* *)
-           (let* middle_id, id_ext = scan_until_one_of_string [ oper.meta.keyword ] in
-            match middle_id with
-            | [] -> pfail "PC335: got empty string for binding"
-            | _ ->
-              let disallowed_chars_in_binding = CharStream.new_t_string "。（）「」『』 \n\t，、" in
-              if List.exists (fun x -> List.mem x disallowed_chars_in_binding) middle_id
-              then
-                pfail_with_ext
-                  ("PC336: got binding 『"
-                   ^ CS.get_t_string middle_id
-                   ^ "』 which contains disallowed_chars "
-                   ^ show_string (CS.get_t_string disallowed_chars_in_binding))
-                  id_ext
-              else
-                let* _ = push_elem_on_input_acc (get_bound_scanned_string_t (middle_id, id_ext)) in
-                return ()))
+        (let* id, ext = identifier_parser () in
+         push_elem_on_input_acc (get_bound_scanned_string_t (id, ext)))
     | _ -> return ()
   in
   (* reduce the operator*)
@@ -391,9 +373,6 @@ let run_processor (proc : processor) : unit proc_state_m =
         then pcut (process_read_operator meta ext)
         else  *)
     process_read_operator meta ext
-  | ProcIdentifier id ->
-    let* string_read = read_string id in
-    push_elem_on_input_acc (get_identifier_t string_read)
 ;;
 
 let add_processor_entry_list (proc : processor_entry list) : unit proc_state_m =
@@ -402,27 +381,6 @@ let add_processor_entry_list (proc : processor_entry list) : unit proc_state_m =
   write_proc_state new_s
 ;;
 
-let add_identifier_processor (id : CS.t_string) : int proc_state_m =
-  let entry = to_processor_identifier ("id_" ^ CS.get_t_string id) id in
-  let* () = add_processor_entry_list [ entry ] in
-  return entry.id
-;;
-
-let add_identifier_processor_no_repeat (target : CS.t_string) : unit proc_state_m =
-  let* proc_state = get_proc_state () in
-  if
-    List.exists
-      (fun x ->
-         match x.processor with
-         | ProcIdentifier id -> id = target
-         | _ -> false)
-      proc_state.registry
-  then return ()
-  else (
-    let entry = to_processor_identifier ("id_" ^ CS.get_t_string target) target in
-    let* () = add_processor_entry_list [ entry ] in
-    return ())
-;;
 
 let remove_all_proc_registry_with_ids (ids : int list) : unit proc_state_m =
   let* proc_state = get_proc_state () in
@@ -443,50 +401,4 @@ let run_processor_entries (entries : processor_entry list) : unit proc_state_m =
   choice_l (List.map run_processor_entry entries)
 ;;
 
-let collect_input_acc_identifiers () : CS.t_string list proc_state_m =
-  let* s = get_proc_state () in
-  let all_scanned_ids =
-    ListUtil.remove_duplicates
-      (List.concat_map
-         (fun x ->
-            (* aux potentially recursive *)
-            let aux y =
-              match y with
-              | ParsingElem (BoundScannedString s, _) -> [ s ]
-              | Expr y -> List.map CS.new_t_string (A.get_free_vars y)
-              | _ -> []
-            in
-            aux x)
-         s.input_acc)
-  in
-  let all_existing_ids =
-    List.filter_map
-      (fun x ->
-         match x.processor with
-         | ProcIdentifier id -> Some id
-         | _ -> None)
-      s.registry
-  in
-  (* print_endline ("PC100: all scanned ids " ^ (String.concat "," (List.map CS.get_t_string all_scanned_ids))); *)
-  (* print_endline ("PC100: all existing ids " ^ (String.concat "," (List.map CS.get_t_string all_existing_ids))); *)
-  return (ListUtil.minus all_scanned_ids all_existing_ids)
-;;
 
-let run_input_acc_identifiers () : unit proc_state_m =
-  let* all_scanned_ids = collect_input_acc_identifiers () in
-  (* print_endline ("PC100: running identifiers " ^ (String.concat "," (List.map CS.get_t_string all_scanned_ids))); *)
-  run_processor_entries
-    (List.map (fun x -> to_processor_identifier ("input_acc_id_" ^ CS.get_t_string x) x) all_scanned_ids)
-;;
-
-let add_prev_identifier_shift_action : shift_action =
-  let* top, _ = peek_input_acc_parsing_elem_bound_scanned_string () in
-  let* id = add_identifier_processor top in
-  return (remove_all_proc_registry_with_ids [ id ])
-;;
-
-let add_prev_expr_shift_action : shift_action =
-  let* top, _ = peek_input_acc_expr () in
-  let* ids = psequence (List.map (fun x -> add_identifier_processor (CS.new_t_string x)) (A.get_free_vars top)) in
-  return (remove_all_proc_registry_with_ids ids)
-;;

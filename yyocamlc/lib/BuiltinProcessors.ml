@@ -206,7 +206,7 @@ let definition2_start : binary_op =
 let definition2_middle : binary_op =
   { meta = definition2_middle_meta
   ; reduction = p_internal_error "BP104: definition2_middle reduction"
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -300,7 +300,7 @@ let type_definition2_start : binary_op =
 let type_definition2_middle : binary_op =
   { meta = type_definition2_middle_meta
   ; reduction = p_internal_error "BP104: type_definition2_middle reduction"
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -759,7 +759,7 @@ let constructor_decl2_start : binary_op =
 let constructor_decl2_middle : binary_op =
   { meta = constructor_decl2_middle_meta
   ; reduction = p_internal_error "BP104: constructor_decl2_middle reduction"
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -854,7 +854,7 @@ let type_constructor_decl2_start : binary_op =
 let type_constructor_decl2_middle : binary_op =
   { meta = type_constructor_decl2_middle_meta
   ; reduction = p_internal_error "BP104: type_constructor_decl2_middle reduction"
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -995,7 +995,7 @@ let explicit_pi_middle_2 : binary_op =
          A.fold_with_extent (A.N (N.ExplicitPi, [ [], tp_name; [ binding_name ], range_expr ])) per_ext
        in
        push_elem_on_input_acc_expr result_expr)
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -1050,7 +1050,7 @@ let implicit_pi_middle_2 : binary_op =
          A.fold_with_extent (A.N (N.ImplicitPi, [ [], tp_name; [ binding_name ], range_expr ])) per_ext
        in
        push_elem_on_input_acc_expr result_expr)
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -1119,7 +1119,7 @@ let implicit_lam_abs_middle : binary_op =
        let* binding_name = get_binding_name bnd_name in
        let result_expr = A.fold_with_extent (A.N (N.Lam, [ [ binding_name ], range_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -1156,7 +1156,7 @@ let explicit_lam_abs_middle : binary_op =
        let* binding_name = get_binding_name tp_name in
        let result_expr = A.fold_with_extent (A.N (N.Lam, [ [ binding_name ], range_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -1209,7 +1209,7 @@ let typed_lam_abs_middle2 : binary_op =
        let* binding_name = get_binding_name bnd_name in
        let result_expr = A.fold_with_extent (A.N (N.TypedLam, [ [], tp_name; [ binding_name ], body_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -1247,19 +1247,6 @@ let explicit_ap : binary_op =
   }
 ;;
 
-let add_declaration_name_identifier (declaration : A.t) : unit proc_state_m =
-  match A.view declaration with
-  | A.N (N.Declaration N.ConstantDecl, [ ([], name); _ ])
-  | A.N (N.Declaration N.ConstructorDecl, [ ([], name); _ ])
-  | A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); _ ])
-  | A.N (N.Declaration N.ConstantDefn, [ ([], name); _ ])
-  | A.N (N.Declaration N.TypeDefn, [ ([], name); _ ]) ->
-    (match A.view name with
-     | A.FreeVar name -> add_identifier_processor_no_repeat (CS.new_t_string name)
-     | _ -> pfail ("BP679: Expected a constant declaration but got " ^ A.show_view declaration))
-  | A.N (N.Declaration N.CustomOperatorDecl, [ ([], _); _ ]) -> return ()
-  | _ -> failwith ("BP1245: Expected a constant declaration but got " ^ A.show_view declaration)
-;;
 
 let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem) : unit proc_state_m =
   let* st = get_proc_state () in
@@ -1364,7 +1351,6 @@ let sentence_end : unit proc_state_m =
       | Expr module_expr, Expr decl ->
         (match A.view module_expr, A.view decl with
          | A.N (N.ModuleDef, _), A.N (N.Declaration _, _) ->
-           let* () = add_declaration_name_identifier decl in
            let* combined_expr = check_and_append_module_defn module_expr decl in
            push_elem_on_input_acc_expr
              (A.annotate_with_extent
@@ -1388,7 +1374,6 @@ let sentence_end : unit proc_state_m =
            then
              (* push 「「 back onto the stack *)
              let* _ = push_elem_on_input_acc poped_left in
-             let* _ = add_declaration_name_identifier decl in
              let* combined_expr = check_and_append_module_defn (A.n (N.ModuleDef, [])) decl in
              (* we choose not to descope this *)
              let* _ = push_elem_on_input_acc_expr (A.annotate_with_extent combined_expr (A.get_extent_some decl)) in
@@ -1571,7 +1556,7 @@ let match_case_mid : binary_op =
       (let* (case_expr, then_expr), per_ext = pop_prefix_op_operands_2 match_case_mid_meta in
        let result_expr = A.fold_with_extent (A.N (N.MatchCase, [ [], case_expr; [], then_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
-  ; shift_action = add_prev_expr_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
@@ -1738,7 +1723,7 @@ let let_in_start : binary_op =
 let let_in_mid1 : binary_op =
   { meta = let_in_mid1_meta
   ; reduction = p_internal_error "BP104: let_in_mid1 reduction"
-  ; shift_action = add_prev_identifier_shift_action
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 

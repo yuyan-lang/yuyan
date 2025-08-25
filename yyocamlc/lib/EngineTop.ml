@@ -12,7 +12,7 @@ let do_process_step () : unit proc_state_m =
     *)
   (* choice cut has the unnecessary side effct that if only part of a known name belong to an identifier, then that part is also parsed *)
   (* choice_cut *)
-  choice (run_processor_entries st.registry) (pfail "ET58: No processor succeeded" (* run_input_acc_identifiers () *))
+  choice (run_processor_entries st.registry) (pfail "ET58: No processor succeeded")
 ;;
 
 let rec do_process_entire_stream () : A.t proc_state_m =
@@ -135,7 +135,7 @@ let run_top_level (filename : string) (content : string) : A.t =
     ; last_input_acc_before_pop = None
     ; store = Environment.default_environment
     ; registry = BuiltinProcessors.default_registry
-    ; last_succeeded_processor = to_processor_identifier "initial_none" (CS.new_t_string "[NONE]")
+    ; last_succeeded_processor = { id = -1; name = "initial_none"; processor = ProcComplex (return ()) }
     ; failures = []
     ; (* this is backtracking to top level, directly pass this to handle*)
       top_failure_handler =
