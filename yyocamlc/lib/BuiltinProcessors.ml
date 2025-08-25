@@ -168,63 +168,6 @@ let definition_end : binary_op =
   }
 ;;
 
-let definition2_start_uid = Uid.next ()
-let definition2_middle_uid = Uid.next ()
-let definition2_end_uid = Uid.next ()
-
-let definition2_start_meta : binary_op_meta =
-  { id = definition2_start_uid
-  ; keyword = CS.new_t_string "夫"
-  ; left_fixity = FxNone
-  ; right_fixity = FxBinding definition2_middle_uid
-  }
-;;
-
-let definition2_middle_meta : binary_op_meta =
-  { id = definition2_middle_uid
-  ; keyword = CS.new_t_string "者"
-  ; left_fixity = FxBinding definition2_start_uid
-  ; right_fixity = FxComp definition2_end_uid
-  }
-;;
-
-let definition2_end_meta : binary_op_meta =
-  { id = definition2_end_uid
-  ; keyword = CS.new_t_string "也"
-  ; left_fixity = FxComp definition2_middle_uid
-  ; right_fixity = FxNone
-  }
-;;
-
-let definition2_start : binary_op =
-  { meta = definition2_start_meta
-  ; reduction = p_internal_error "BP104: definition2_start reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let definition2_middle : binary_op =
-  { meta = definition2_middle_meta
-  ; reduction = p_internal_error "BP104: definition2_middle reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let definition2_end : binary_op =
-  { meta = definition2_end_meta
-  ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 definition2_end_meta in
-       let* bnd_name = get_binding_name name in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent
-            (A.fold
-               (A.N
-                  ( N.Declaration N.ConstantDefn
-                  , [ [], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn ] )))
-            ext))
-  ; shift_action = do_nothing_shift_action
-  }
-;;
 
 let type_definition_middle_uid = Uid.next ()
 let type_definition_end_uid = Uid.next ()
@@ -262,63 +205,6 @@ let type_definition_end : binary_op =
   }
 ;;
 
-let type_definition2_start_uid = Uid.next ()
-let type_definition2_middle_uid = Uid.next ()
-let type_definition2_end_uid = Uid.next ()
-
-let type_definition2_start_meta : binary_op_meta =
-  { id = type_definition2_start_uid
-  ; keyword = CS.new_t_string "夫"
-  ; left_fixity = FxNone
-  ; right_fixity = FxBinding type_definition2_middle_uid
-  }
-;;
-
-let type_definition2_middle_meta : binary_op_meta =
-  { id = type_definition2_middle_uid
-  ; keyword = CS.new_t_string "即"
-  ; left_fixity = FxBinding type_definition2_start_uid
-  ; right_fixity = FxComp type_definition2_end_uid
-  }
-;;
-
-let type_definition2_end_meta : binary_op_meta =
-  { id = type_definition2_end_uid
-  ; keyword = CS.new_t_string "也"
-  ; left_fixity = FxComp type_definition2_middle_uid
-  ; right_fixity = FxNone
-  }
-;;
-
-let type_definition2_start : binary_op =
-  { meta = type_definition2_start_meta
-  ; reduction = p_internal_error "BP104: type_definition2_start reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let type_definition2_middle : binary_op =
-  { meta = type_definition2_middle_meta
-  ; reduction = p_internal_error "BP104: type_definition2_middle reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let type_definition2_end : binary_op =
-  { meta = type_definition2_end_meta
-  ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 type_definition2_end_meta in
-       let* bnd_name = get_binding_name name in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent
-            (A.fold
-               (A.N
-                  ( N.Declaration N.TypeDefn
-                  , [ [], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn ] )))
-            ext))
-  ; shift_action = do_nothing_shift_action
-  }
-;;
 
 let library_root_meta : binary_op_meta =
   { id = Uid.next (); keyword = CS.new_t_string "藏书阁"; left_fixity = FxNone; right_fixity = FxNone }
@@ -626,63 +512,6 @@ let const_decl_end : binary_op =
   }
 ;;
 
-let const_decl2_start_uid = Uid.next ()
-let const_decl2_middle_uid = Uid.next ()
-let const_decl2_end_uid = Uid.next ()
-
-let const_decl2_start_meta : binary_op_meta =
-  { id = const_decl2_start_uid
-  ; keyword = CS.new_t_string "夫"
-  ; left_fixity = FxNone
-  ; right_fixity = FxBinding const_decl2_middle_uid
-  }
-;;
-
-let const_decl2_middle_meta : binary_op_meta =
-  { id = const_decl2_middle_uid
-  ; keyword = CS.new_t_string "乃"
-  ; left_fixity = FxBinding const_decl2_start_uid
-  ; right_fixity = FxComp const_decl2_end_uid
-  }
-;;
-
-let const_decl2_end_meta : binary_op_meta =
-  { id = const_decl2_end_uid
-  ; keyword = CS.new_t_string "也"
-  ; left_fixity = FxComp const_decl2_middle_uid
-  ; right_fixity = FxNone
-  }
-;;
-
-let const_decl2_start : binary_op =
-  { meta = const_decl2_start_meta
-  ; reduction = p_internal_error "BP104: const_decl2_start reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let const_decl2_middle : binary_op =
-  { meta = const_decl2_middle_meta
-  ; reduction = p_internal_error "BP104: const_decl2_middle reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let const_decl2_end : binary_op =
-  { meta = const_decl2_end_meta
-  ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 const_decl2_end_meta in
-       let* bnd_name = get_binding_name name in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent
-            (A.fold
-               (A.N
-                  ( N.Declaration N.ConstantDecl
-                  , [ [], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn ] )))
-            ext))
-  ; shift_action = do_nothing_shift_action
-  }
-;;
 
 let constructor_decl_middle_uid = Uid.next ()
 let constructor_decl_end_uid = Uid.next ()
@@ -721,63 +550,6 @@ let constructor_decl_end : binary_op =
   }
 ;;
 
-let constructor_decl2_start_uid = Uid.next ()
-let constructor_decl2_middle_uid = Uid.next ()
-let constructor_decl2_end_uid = Uid.next ()
-
-let constructor_decl2_start_meta : binary_op_meta =
-  { id = constructor_decl2_start_uid
-  ; keyword = CS.new_t_string "夫"
-  ; left_fixity = FxNone
-  ; right_fixity = FxBinding constructor_decl2_middle_uid
-  }
-;;
-
-let constructor_decl2_middle_meta : binary_op_meta =
-  { id = constructor_decl2_middle_uid
-  ; keyword = CS.new_t_string "立"
-  ; left_fixity = FxBinding constructor_decl2_start_uid
-  ; right_fixity = FxComp constructor_decl2_end_uid
-  }
-;;
-
-let constructor_decl2_end_meta : binary_op_meta =
-  { id = constructor_decl2_end_uid
-  ; keyword = CS.new_t_string "也"
-  ; left_fixity = FxComp constructor_decl2_middle_uid
-  ; right_fixity = FxNone
-  }
-;;
-
-let constructor_decl2_start : binary_op =
-  { meta = constructor_decl2_start_meta
-  ; reduction = p_internal_error "BP104: constructor_decl2_start reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let constructor_decl2_middle : binary_op =
-  { meta = constructor_decl2_middle_meta
-  ; reduction = p_internal_error "BP104: constructor_decl2_middle reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let constructor_decl2_end : binary_op =
-  { meta = constructor_decl2_end_meta
-  ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 constructor_decl2_end_meta in
-       let* bnd_name = get_binding_name name in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent
-            (A.fold
-               (A.N
-                  ( N.Declaration N.ConstructorDecl
-                  , [ [], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn ] )))
-            ext))
-  ; shift_action = do_nothing_shift_action
-  }
-;;
 
 let type_constructor_decl_middle_uid = Uid.next ()
 let type_constructor_decl_end_uid = Uid.next ()
@@ -816,63 +588,6 @@ let type_constructor_decl_end : binary_op =
   }
 ;;
 
-let type_constructor_decl2_start_uid = Uid.next ()
-let type_constructor_decl2_middle_uid = Uid.next ()
-let type_constructor_decl2_end_uid = Uid.next ()
-
-let type_constructor_decl2_start_meta : binary_op_meta =
-  { id = type_constructor_decl2_start_uid
-  ; keyword = CS.new_t_string "夫"
-  ; left_fixity = FxNone
-  ; right_fixity = FxBinding type_constructor_decl2_middle_uid
-  }
-;;
-
-let type_constructor_decl2_middle_meta : binary_op_meta =
-  { id = type_constructor_decl2_middle_uid
-  ; keyword = CS.new_t_string "作"
-  ; left_fixity = FxBinding type_constructor_decl2_start_uid
-  ; right_fixity = FxComp type_constructor_decl2_end_uid
-  }
-;;
-
-let type_constructor_decl2_end_meta : binary_op_meta =
-  { id = type_constructor_decl2_end_uid
-  ; keyword = CS.new_t_string "也"
-  ; left_fixity = FxComp type_constructor_decl2_middle_uid
-  ; right_fixity = FxNone
-  }
-;;
-
-let type_constructor_decl2_start : binary_op =
-  { meta = type_constructor_decl2_start_meta
-  ; reduction = p_internal_error "BP104: type_constructor_decl2_start reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let type_constructor_decl2_middle : binary_op =
-  { meta = type_constructor_decl2_middle_meta
-  ; reduction = p_internal_error "BP104: type_constructor_decl2_middle reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let type_constructor_decl2_end : binary_op =
-  { meta = type_constructor_decl2_end_meta
-  ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 type_constructor_decl2_end_meta in
-       let* bnd_name = get_binding_name name in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent
-            (A.fold
-               (A.N
-                  ( N.Declaration N.TypeConstructorDecl
-                  , [ [], A.annotate_with_extent (A.free_var bnd_name) (A.get_extent_some name); [], defn ] )))
-            ext))
-  ; shift_action = do_nothing_shift_action
-  }
-;;
 
 let left_parenthesis_uid = Uid.next ()
 let right_parenthesis_uid = Uid.next ()
@@ -1816,13 +1531,8 @@ let default_registry =
   ; to_processor_binary_op "constructor_decl_end" constructor_decl_end
   ; to_processor_binary_op "type_constructor_decl_middle" type_constructor_decl_middle
   ; to_processor_binary_op "type_constructor_decl_end" type_constructor_decl_end
-  ; to_processor_binary_op "type_constructor_decl2_start" type_constructor_decl2_start
-  ; to_processor_binary_op "type_constructor_decl2_middle" type_constructor_decl2_middle
-  ; to_processor_binary_op "type_constructor_decl2_end" type_constructor_decl2_end
   ; to_processor_binary_op "type_definition_middle" type_definition_middle
   ; to_processor_binary_op "type_definition_end" type_definition_end
-  ; to_processor_binary_op "type_definition2_middle" type_definition2_middle
-  ; to_processor_binary_op "type_definition2_end" type_definition2_end
   ; to_processor_binary_op "left_parenthesis" left_parenthesis
   ; to_processor_binary_op "right_parenthesis" right_parenthesis
   ; to_processor_binary_op "explicit_pi_start" explicit_pi_start
@@ -1870,17 +1580,6 @@ let default_registry =
   ; to_processor_binary_op "let_in_mid1" let_in_mid1
   ; to_processor_binary_op "let_in_mid2" let_in_mid2
   ; to_processor_binary_op "struct_let_in_start" struct_let_in_start
-  ; (* defn 2*)
-    to_processor_binary_op "definition2_start" definition2_start
-  ; to_processor_binary_op "definition2_middle" definition2_middle
-  ; to_processor_binary_op "definition2_end" definition2_end
-  ; (* decl 2*)
-    to_processor_binary_op "const_decl2_start" const_decl2_start
-  ; to_processor_binary_op "const_decl2_middle" const_decl2_middle
-  ; to_processor_binary_op "const_decl2_end" const_decl2_end
-  ; to_processor_binary_op "constructor_decl2_start" constructor_decl2_start
-  ; to_processor_binary_op "constructor_decl2_middle" constructor_decl2_middle
-  ; to_processor_binary_op "constructor_decl2_end" constructor_decl2_end
   ; (* typing annotation *)
     to_processor_binary_op "typing_annotation_middle" typing_annotation_middle
   ; to_processor_binary_op "typing_annotation_end" typing_annotation_end
