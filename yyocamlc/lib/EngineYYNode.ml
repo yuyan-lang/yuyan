@@ -55,7 +55,7 @@ module YYNode = struct
     | ExternalCall of string
     | IfThenElse
     | LetIn
-    | StructLetIn
+    | RecLetIn
 
   let arity (t : t) : int list option =
     match t with
@@ -84,10 +84,8 @@ module YYNode = struct
     | ExternalCall _ -> Some []
     | IfThenElse -> Some [ 0; 0; 0 ] (* if, then, else *)
     | LetIn -> Some [ 0; 1 ] (* let, in, expr *)
-    | StructLetIn -> Some [ 0 ]
+    | RecLetIn -> Some [ 0; 0; 1 ] (* rec let type, defn, in expr *)
   ;;
-
-  (* struct, let, in, expr *)
 
   let show_builtin (b : builtin) : string =
     match b with
@@ -141,6 +139,6 @@ module YYNode = struct
     | ExternalCall s -> "ExternalCall(" ^ s ^ ")"
     | IfThenElse -> "IfThenElse"
     | LetIn -> "LetIn"
-    | StructLetIn -> "StructLetIn"
+    | RecLetIn -> "RecLetIn"
   ;;
 end

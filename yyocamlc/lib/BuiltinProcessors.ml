@@ -1455,21 +1455,77 @@ let let_in_mid2 : binary_op =
   }
 ;;
 
-let struct_let_in_start_uid = Uid.next ()
+let rec_let_in_start_uid = Uid.next ()
+let rec_let_in_mid1_uid = Uid.next ()
+let rec_let_in_mid2_uid = Uid.next ()
+let rec_let_in_mid3_uid = Uid.next ()
 
-let struct_let_in_start_meta =
-  { id = struct_let_in_start_uid; keyword = CS.new_t_string "结构虑"; left_fixity = FxNone; right_fixity = FxOp (Some 80) }
+let rec_let_in_start_meta =
+  { id = rec_let_in_start_uid
+  ; keyword = CS.new_t_string "递归虑"
+  ; left_fixity = FxNone
+  ; right_fixity = FxBinding rec_let_in_mid1_uid
+  }
 ;;
 
-let struct_let_in_start : binary_op =
-  { meta = struct_let_in_start_meta
+let rec_let_in_mid1_meta =
+  { id = rec_let_in_mid1_uid
+  ; keyword = CS.new_t_string "其"
+  ; left_fixity = FxBinding rec_let_in_start_uid
+  ; right_fixity = FxComp rec_let_in_mid2_uid
+  }
+;;
+
+let rec_let_in_mid2_meta =
+  { id = rec_let_in_mid2_uid
+  ; keyword = CS.new_t_string "者"
+  ; left_fixity = FxComp rec_let_in_mid1_uid
+  ; right_fixity = FxComp rec_let_in_mid3_uid
+  }
+;;
+
+let rec_let_in_mid3_meta =
+  { id = rec_let_in_mid3_uid
+  ; keyword = CS.new_t_string "而"
+  ; left_fixity = FxComp rec_let_in_mid2_uid
+  ; right_fixity = FxOp (Some 55)
+  }
+;;
+
+let rec_let_in_start : binary_op =
+  { meta = rec_let_in_start_meta
+  ; reduction = p_internal_error "BP104: rec_let_in_start reduction"
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+let rec_let_in_mid1 : binary_op =
+  { meta = rec_let_in_mid1_meta
+  ; reduction = p_internal_error "BP104: rec_let_in_mid1 reduction"
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+let rec_let_in_mid2 : binary_op =
+  { meta = rec_let_in_mid2_meta
+  ; reduction = p_internal_error "BP104: rec_let_in_mid2 reduction"
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+let rec_let_in_mid3 : binary_op =
+  { meta = rec_let_in_mid3_meta
   ; reduction =
-      (let* struct_expr, per_ext = pop_prefix_op_operands_1 struct_let_in_start_meta in
-       let result_expr = A.fold_with_extent (A.N (N.StructLetIn, [ [], struct_expr ])) per_ext in
+      (let* (bnd_name, type_expr, domain_expr, range_expr), per_ext = pop_prefix_op_operands_4 rec_let_in_mid3_meta in
+       let* binding_name = get_binding_name bnd_name in
+       let result_expr =
+         A.fold_with_extent (A.N (N.RecLetIn, [ [], type_expr; [], domain_expr; [ binding_name ], range_expr ])) per_ext
+       in
        push_elem_on_input_acc_expr result_expr)
   ; shift_action = do_nothing_shift_action
   }
 ;;
+
 
 let typing_annotation_middle_uid = Uid.next ()
 let typing_annotation_end_uid = Uid.next ()
@@ -1579,7 +1635,11 @@ let default_registry =
     to_processor_binary_op "let_in_start" let_in_start
   ; to_processor_binary_op "let_in_mid1" let_in_mid1
   ; to_processor_binary_op "let_in_mid2" let_in_mid2
-  ; to_processor_binary_op "struct_let_in_start" struct_let_in_start
+  ; (* rec let in*)
+    to_processor_binary_op "rec_let_in_start" rec_let_in_start
+  ; to_processor_binary_op "rec_let_in_mid1" rec_let_in_mid1
+  ; to_processor_binary_op "rec_let_in_mid2" rec_let_in_mid2
+  ; to_processor_binary_op "rec_let_in_mid3" rec_let_in_mid3
   ; (* typing annotation *)
     to_processor_binary_op "typing_annotation_middle" typing_annotation_middle
   ; to_processor_binary_op "typing_annotation_end" typing_annotation_end
