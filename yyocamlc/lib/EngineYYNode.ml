@@ -33,6 +33,7 @@ module YYNode = struct
     | TypeDefn
     | TypeConstructorDecl
     | CustomOperatorDecl
+    | ModuleAliasDecl
     | DirectExpr
 
   type t =
@@ -64,6 +65,7 @@ module YYNode = struct
     | Declaration ConstantDecl -> Some [ 0; 0 ]
     | Declaration ConstructorDecl -> Some [ 0; 0 ]
     | Declaration TypeConstructorDecl -> Some [ 0; 0 ]
+    | Declaration ModuleAliasDecl -> Some [ 0; 0 ]
     | Declaration DirectExpr -> Some [ 0 ]
     | Declaration CustomOperatorDecl -> Some [ 0; 0 ]
     | Declaration TypeDefn -> Some [ 0; 0 ]
@@ -113,6 +115,7 @@ module YYNode = struct
     | ConstantDecl -> "ConstantDecl"
     | ConstructorDecl -> "ConstructorDecl"
     | TypeConstructorDecl -> "TypeConstructorDecl"
+    | ModuleAliasDecl -> "ModuleAliasDecl"
     | DirectExpr -> "DirectExpr"
     | CustomOperatorDecl -> "CustomOperatorDecl"
     | TypeDefn -> "TypeDefn"

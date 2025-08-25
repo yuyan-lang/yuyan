@@ -589,6 +589,61 @@ let type_constructor_decl_end : binary_op =
 ;;
 
 
+let module_alias_decl_start_uid = Uid.next ()
+let module_alias_decl_middle_uid = Uid.next ()
+let module_alias_decl_end_uid = Uid.next ()
+
+let module_alias_decl_start_meta =
+  { id = module_alias_decl_start_uid
+  ; keyword = CS.new_t_string "模块"
+  ; left_fixity = FxNone
+  ; right_fixity = FxBinding module_alias_decl_middle_uid
+  }
+;;
+
+let module_alias_decl_middle_meta : binary_op_meta =
+  { id = module_alias_decl_middle_uid
+  ; keyword = CS.new_t_string "即"
+  ; left_fixity = FxBinding module_alias_decl_start_uid
+  ; right_fixity = FxComp module_alias_decl_end_uid
+  }
+;;
+
+let module_alias_decl_end_meta : binary_op_meta =
+  { id = module_alias_decl_end_uid
+  ; keyword = CS.new_t_string "也"
+  ; left_fixity = FxComp module_alias_decl_middle_uid
+  ; right_fixity = FxNone
+  }
+;;
+
+let module_alias_decl_start : binary_op =
+  { meta = module_alias_decl_start_meta
+  ; reduction = p_internal_error "BP105: module_alias_decl_start reduction"
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+let module_alias_decl_middle : binary_op =
+  { meta = module_alias_decl_middle_meta
+  ; reduction = p_internal_error "BP106: module_alias_decl_middle reduction"
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+let module_alias_decl_end : binary_op =
+  { meta = module_alias_decl_end_meta
+  ; reduction =
+      (let* (name, defn), ext = pop_postfix_op_operands_2 module_alias_decl_end_meta in
+       let* () = assert_is_free_var name in
+       let* resolved_defn = Imports.get_module_expr defn in
+       push_elem_on_input_acc_expr
+         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ModuleAliasDecl, [ [], name; [], resolved_defn ]))) ext))
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+
 let left_parenthesis_uid = Uid.next ()
 let right_parenthesis_uid = Uid.next ()
 
@@ -1587,6 +1642,9 @@ let default_registry =
   ; to_processor_binary_op "constructor_decl_end" constructor_decl_end
   ; to_processor_binary_op "type_constructor_decl_middle" type_constructor_decl_middle
   ; to_processor_binary_op "type_constructor_decl_end" type_constructor_decl_end
+  ; to_processor_binary_op "module_alias_decl_start" module_alias_decl_start
+  ; to_processor_binary_op "module_alias_decl_middle" module_alias_decl_middle
+  ; to_processor_binary_op "module_alias_decl_end" module_alias_decl_end
   ; to_processor_binary_op "type_definition_middle" type_definition_middle
   ; to_processor_binary_op "type_definition_end" type_definition_end
   ; to_processor_binary_op "left_parenthesis" left_parenthesis
