@@ -340,28 +340,6 @@ let get_file_ref (file_path : string) : A.t proc_state_m =
   | None -> failwith ("Im30: Module not found: " ^ file_path ^ " fileRefs should only contain checked modules")
 ;;
 
-let get_module_expr_defined_names (m : A.t) : (string * Ext.t) list proc_state_m =
-  let all_names =
-    match A.view m with
-    | A.N (N.ModuleDef, args) ->
-      List.filter_map
-        (fun (_, arg) ->
-           match A.view arg with
-           | A.N (N.Declaration N.ConstantDefn, ([], name) :: _)
-           | A.N (N.Declaration N.ConstructorDecl, ([], name) :: _)
-           | A.N (N.Declaration N.ConstantDecl, ([], name) :: _)
-           | A.N (N.Declaration N.TypeConstructorDecl, ([], name) :: _)
-           | A.N (N.Declaration N.TypeDefn, ([], name) :: _) ->
-             (match A.view name with
-              | A.FreeVar x -> Some (x, A.get_extent_some name)
-              | _ -> failwith ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
-           | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
-           | _ -> print_failwith ("BP288: Expected a Declaration but got " ^ A.show_view arg))
-        args
-    | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
-  in
-  return (ListUtil.remove_duplicates all_names)
-;;
 
 let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
   let all_names =
@@ -396,28 +374,9 @@ let module_open : binary_op =
          match A.view module_expr with
          | A.N (N.FileRef path, []) ->
            let* file_content = get_file_ref path in
-           let* all_names = get_module_expr_defined_names file_content in
            let* all_custom_ops = get_module_expr_defined_custom_ops file_content in
-           (* add new operators corresponding to the names in the file *)
-           let ops =
-             List.map
-               (fun (name, _ext) ->
-                  let meta =
-                    { id = Uid.next (); keyword = CS.new_t_string name; left_fixity = FxNone; right_fixity = FxNone }
-                  in
-                  let name_oper =
-                    { meta
-                    ; reduction =
-                        (let* per_ext = pop_closed_identifier_operand meta in
-                         let node = A.fold (A.N (N.StructureDeref name, [ [], module_expr ])) in
-                         push_elem_on_input_acc_expr (A.annotate_with_extent node per_ext))
-                    ; shift_action = do_nothing_shift_action
-                    }
-                  in
-                  to_processor_binary_op ("open_module_" ^ name) name_oper)
-               all_names
-           in
-           add_processor_entry_list (ops @ List.map (to_processor_binary_op "imported_ops") all_custom_ops)
+           (* only add custom operators, no automatic name operators since all identifiers must be quoted *)
+           add_processor_entry_list (List.map (to_processor_binary_op "imported_ops") all_custom_ops)
          (* add new operators corresponding to the custom ops in the file *)
          (* DO WE NEED TO PUSH SOMETHING TO THE INPUT ACCUM? *)
          (* | A.FreeVar(x) -> 
@@ -464,6 +423,7 @@ let module_reexport : binary_op =
                     | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
                  | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration N.ConstantDecl, _) -> aux acc xs
+                 | A.N (N.Declaration N.ModuleAliasDecl, _) -> aux (acc @ [ [], x ]) xs
                  | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view x))
             in
             (match A.view file_content with
