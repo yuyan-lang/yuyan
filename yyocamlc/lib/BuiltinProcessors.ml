@@ -1015,12 +1015,12 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
     let* checked_tp = TypeChecking.check_type_valid tp in
     let* () = TypeChecking.assert_no_free_vars checked_tp in
     let* id = Environment.add_constant (Expression { tp = checked_tp; tm = None }) in
-    let* name = get_free_var name in
-    let* () = Environment.add_binding name id None in
+    let* name_str = get_free_var name in
+    let* () = Environment.add_binding name_str id in
     return module_expr
   | A.N (N.ModuleDef, args), A.N (N.Declaration ConstantDefn, [ ([], defn_name); ([], defn_body) ]) ->
     let* defn_name_str = get_free_var defn_name in
-    let* tp_id, _ = Environment.lookup_binding defn_name_str in
+    let* tp_id = Environment.lookup_binding defn_name_str in
     let* tp = Environment.lookup_constant tp_id in
     (match tp with
      | Expression { tp = tp_expr; tm = None } ->
@@ -1031,60 +1031,32 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
          (A.fold
             (A.N
                ( N.ModuleDef
-               , args @ [ [], A.n (N.Declaration ConstantDefn, [ [], defn_name; [], A.n (N.Constant tp_id, []) ]) ] )))
+               , args @ [ [], A.n (N.Declaration (CheckedConstantDefn (defn_name_str, tp_id)), []) ] )))
      | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineData.show_t_constant tp)
     )
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); ([], cons_tp) ]) ->
     let* name_str = get_free_var name in
     let* checked_cons_tp = TypeChecking.check_kind_valid cons_tp in
     let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-    let* id = Environment.add_constant (TypeConstructor (name_str, Uid.next ())) in
-    let* () = Environment.add_binding name_str id (Some id) in
-    return
-      (A.fold
-         (A.N
-            ( N.ModuleDef
-            , args @ [ [], A.n (N.Declaration TypeConstructorDecl, [ [], _name; [], A.n (N.Constant id, []) ]) ] )))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstructorDecl, [ ([], _name); ([], cons_tp) ]) ->
-       (match args with
-        | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
-        | _ :: _ ->
-          let rec find_cons_decl (args_reversed : A.t list) : A.t proc_state_m =
-            match args_reversed with
-            | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
-            | hd :: tl ->
-              (match A.view hd with
-               | A.N (N.Declaration N.TypeConstructorDecl, [ ([], decl_name); _ ]) ->
-                 (match A.view decl_name with
-                  | A.FreeVar decl_name ->
-                    let cons_hd_name = TypeChecking.get_constructor_tp_head cons_tp in
-                    if decl_name = cons_hd_name
-                    then return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-                    else
-                      pfail_with_ext
-                        ("BP1266: Declaration and constructor names do not match: " ^ decl_name ^ " <> " ^ cons_hd_name)
-                        (A.get_extent_some decl)
-                  | _ ->
-                    pfail_with_ext
-                      ("BP1267: Expecting free variable, got " ^ A.show_view decl_name)
-                      (A.get_extent_some decl))
-               | A.N (N.Declaration N.ConstructorDecl, _) -> find_cons_decl tl
-               | _ ->
-                 pfail_with_ext
-                   ("BP1268: Expecting type constructor declaration or (constructor declaration leading to type \
-                     constructor) declaration, got "
-                    ^ A.show_view hd)
-                   (A.get_extent_some decl))
-          in
-          find_cons_decl (List.rev (List.map snd args)))
-     | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _)
-     | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _)
-     | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _)
-     | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _) ->
-       return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-     | _ ->
-       pfail
-         ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl))
+    let* id = Environment.add_constant (TypeConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp }) in
+    let* () = Environment.add_binding name_str id in
+    return (A.fold (A.N ( N.ModuleDef , args @ [ [], A.n (N.Declaration (CheckedConstantDefn (name_str, id)), []) ] )))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstructorDecl, [ ([], name); ([], cons_tp) ]) ->
+    let* name_str = get_free_var name in
+    let* checked_cons_tp = TypeChecking.check_type_valid cons_tp in
+    let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
+    let* id = Environment.add_constant (DataConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp }) in
+    let* () = Environment.add_binding name_str id in
+    return (A.fold (A.N ( N.ModuleDef , args @ [ [], A.n (N.Declaration (CheckedConstantDefn (name_str, id)), []) ] )))
+
+  | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _)
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _)
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _)
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _) ->
+    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+  | _ ->
+    pfail
+      ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl))
 ;;
 
 let sentence_end : unit proc_state_m =

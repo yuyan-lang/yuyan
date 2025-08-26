@@ -35,6 +35,7 @@ module YYNode = struct
     | CustomOperatorDecl
     | ModuleAliasDefn
     | DirectExpr
+    | CheckedConstantDefn of Ext.t_str * int
 
   type t =
     | Builtin of builtin
@@ -70,6 +71,7 @@ module YYNode = struct
     | Declaration DirectExpr -> Some [ 0 ]
     | Declaration CustomOperatorDecl -> Some [ 0; 0 ]
     | Declaration TypeDefn -> Some [ 0; 0 ]
+    | Declaration (CheckedConstantDefn (_, _)) -> Some []
     | StructureDeref _ -> Some [ 0 ]
     | TupleDeref _ -> Some [ 0 ]
     | ModuleDef -> None
@@ -121,6 +123,8 @@ module YYNode = struct
     | DirectExpr -> "DirectExpr"
     | CustomOperatorDecl -> "CustomOperatorDecl"
     | TypeDefn -> "TypeDefn"
+    | CheckedConstantDefn (name, uid) ->
+      "CheckedConstantDefn(" ^ Ext.get_str_content name ^ ", " ^ string_of_int uid ^ ")"
   ;;
 
   let show (t : t) : string =

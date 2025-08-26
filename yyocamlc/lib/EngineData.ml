@@ -24,14 +24,23 @@ type ('a, 'b) map = ('a * 'b) list
 
 type t_constant =
   | Type
-  | TypeConstructor of Ext.t_str * int
-  | DataConstructor of Ext.t_str * int
-  | Expression of
+  | TypeConstructor of
+      { name : Ext.t_str
+      ; id : int
+      ; tp : A.t
+      }
+  | DataConstructor of
+      { name : Ext.t_str
+      ; id : int
+      ; tp : A.t
+      }
+  | TypeExpression of A.t
+  | DataExpression of
       { tp : A.t
-      ; tm : A.t option
+      ; tm : A.t option (* is None if it is a recursive definition (forward declaration only)*)
       }
 
-type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *) * int option (* tm *)) list
+type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *)) list
 type t_constants = (int * t_constant) list
 
 type proc_error =
@@ -225,10 +234,13 @@ let show_processor_entry (p : processor_entry) : string =
 let show_t_constant (c : t_constant) : string =
   match c with
   | Type -> "Type"
-  | TypeConstructor (name, id) -> "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ")"
-  | DataConstructor (name, id) -> "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ")"
-  | Expression { tp; tm } ->
-    "Expression("
+  | TypeConstructor { name; id; tp } ->
+    "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ", " ^ A.show_view tp ^ ")"
+  | DataConstructor { name; id; tp } ->
+    "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ", " ^ A.show_view tp ^ ")"
+  | TypeExpression tp -> "TypeExpression(" ^ A.show_view tp ^ ")"
+  | DataExpression { tp; tm } ->
+    "DataExpression("
     ^ A.show_view tp
     ^ ", "
     ^ (match tm with
