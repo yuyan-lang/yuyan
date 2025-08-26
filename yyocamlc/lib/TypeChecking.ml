@@ -42,7 +42,7 @@ let rec group_declarations (decls : A.t list) : (A.t * A.t list) list =
         | tl_hd :: tl_tl ->
           (match A.view tl_hd with
            | A.N (N.Declaration N.ConstantDefn, _) -> (hd, [ tl_hd ]) :: group_declarations tl_tl
-           | _ -> failwith ("OO246: Expecting constant definition, got: " ^ A.show_view tl_hd)))
+           | _ -> Fail.failwith ("OO246: Expecting constant definition, got: " ^ A.show_view tl_hd)))
      | A.N (N.Declaration N.DirectExpr, _) -> (hd, []) :: group_declarations tl
      | A.N (N.Declaration N.CustomOperatorDecl, _) -> group_declarations tl
      | A.N (N.Declaration N.TypeConstructorDecl, _) ->

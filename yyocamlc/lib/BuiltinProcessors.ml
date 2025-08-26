@@ -437,6 +437,7 @@ let module_reexport : binary_op =
                     | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
                  | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration N.ConstantDecl, _) -> aux acc xs
+                 | A.N (N.Declaration N.TypeDefn, _) -> aux acc xs
                  | _ -> print_failwith ("BP281: Expected a Declaration but got " ^ A.show_view x))
             in
             (match A.view file_content with
