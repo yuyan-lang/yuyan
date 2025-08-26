@@ -26,9 +26,9 @@ type t_constant =
   | TypeConstructor of Ext.t_str * int
   | DataConstructor of Ext.t_str * int
   | Expression of {tp : A.t; tm : A.t option}
-type t_environment = {
-  env : (Ext.t_str * A.t * A.t option) list ;
-  constants : (int * t_constant) list }
+
+type t_env = (Ext.t_str * A.t * A.t option) list
+type t_constants = (int * t_constant) list
 
 type proc_error =
   | ErrExpectString of
@@ -87,7 +87,8 @@ and proc_state =
   (* ; expect_state_stack : expect list *)
   ; input_acc : input_acc_elem list
   ; last_input_acc_before_pop : input_acc_elem list option
-  ; store : t_environment
+  ; env : t_env
+  ; constants : t_constants
   ; registry : processor_registry
   ; last_succeeded_processor : processor_entry (* for debugging on parsing *)
   ; failures : (proc_error list * proc_state) list

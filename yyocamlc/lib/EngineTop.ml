@@ -128,12 +128,14 @@ let extract_all_result
 let run_top_level (filename : string) (content : string) : A.t =
   let input = CharStream.new_cs filename content in
   let initial_state =
-    { input_future = input
-    (* ; input_expect = TopLevel
+    { input_future =
+        input
+        (* ; input_expect = TopLevel
     ; expect_state_stack = [] *)
     ; input_acc = [ Expr (A.annotate_with_extent (A.fold (A.N (N.ModuleDef, []))) (filename, (0, 0), (0, 0))) ]
     ; last_input_acc_before_pop = None
-    ; store = Environment.default_environment
+    ; constants = Environment.default_constants
+    ; env = Environment.default_env
     ; registry = BuiltinProcessors.default_registry
     ; last_succeeded_processor = { id = -1; name = "initial_none"; processor = ProcComplex (return ()) }
     ; failures = []
