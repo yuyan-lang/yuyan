@@ -67,6 +67,7 @@ let get_ocaml_tp_expr (tp_expr : A.t) : string =
   match A.view tp_expr with
   | A.FreeVar _ -> "dt"
   | A.N (N.Builtin N.Type, []) -> "'a"
+  | A.N (N.StructureDeref _, _) -> "structure_deref_TODO"
   | _ -> failwith ("OO 78: Not yet implemented, got: " ^ A.show_view tp_expr)
 ;;
 
@@ -77,7 +78,9 @@ let get_ocaml_type_constructor_type (tp_expr : A.t) : string =
       Fail.failwith "OO 88: Higher-order kinds not supported"
     | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> dom :: aux cod
     | A.N (N.Builtin N.Type, []) -> []
-    | _ -> Fail.failwith ("(TODO OO72 tp_expr: " ^ A.show_view tp_expr ^ ")")
+    | A.FreeVar "元类型" -> []
+    | _ -> [ tp_expr ]
+    (* | _ -> Fail.failwith ("(TODO OO72 tp_expr: " ^ A.show_view tp_expr ^ ")") *)
   in
   let tps = aux tp_expr |> List.map get_ocaml_tp_expr in
   match tps with
@@ -187,6 +190,14 @@ let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t lis
   | A.N (N.Declaration N.DirectExpr, [ ([], expr) ]), [] -> "let _direct_expr = " ^ get_ocaml_code expr
   | A.N (N.Declaration N.TypeDefn, [ ([], name); ([], value) ]), [] ->
     "type " ^ get_identifier_name name ^ " = " ^ get_ocaml_type value
+  | A.N (N.Declaration N.ModuleAliasDefn, [ ([], alias_name); ([], target) ]), [] ->
+    (match A.view alias_name with
+     | A.FreeVar alias_name ->
+       "module "
+       ^ convert_to_ocaml_identifier_no_uid alias_name
+       ^ " = "
+       ^ get_ocaml_code target
+     | _ -> Fail.failwith ("OO220: Expecting free variable, got: " ^ A.show_view alias_name ^ " and " ^ A.show_view target))
   | A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); ([], value) ]), _ ->
     (match A.view name with
      | A.FreeVar sname ->

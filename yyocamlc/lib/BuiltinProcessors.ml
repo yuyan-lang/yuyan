@@ -436,7 +436,8 @@ let module_reexport : binary_op =
                       aux (acc @ [ [], new_node ]) xs
                     | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
                  | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
-                 | A.N (N.Declaration N.ConstantDecl, _) -> aux acc xs
+                 | A.N ((N.Declaration N.ConstantDecl as _hd), ([], _name) :: ([], _tp) :: _) ->
+                    ( aux (acc @ [ [], x ]) xs)
                  | A.N (N.Declaration N.TypeDefn, _) -> aux acc xs
                  | _ -> print_failwith ("BP281: Expected a Declaration but got " ^ A.show_view x))
             in
@@ -1060,11 +1061,21 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
                 (A.get_extent_some decl))
        in
        find_cons_decl (List.rev (List.map snd args)))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstantDecl, _) ->
+    (* Check if the last declaration was also a ConstantDecl *)
+    (match args with
+     | [] -> return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+     | _ :: _ ->
+       (match A.view (snd (ListUtil.last args)) with
+        | A.N (N.Declaration N.ConstantDecl, _) ->
+          pfail_with_ext
+            "BP1309: Two consecutive constant declarations are not allowed"
+            (A.get_extent_some decl)
+        | _ -> return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))))
   | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _) 
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _) 
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) 
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, _) 
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstantDecl, _) 
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _) ->
     return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
   | _ ->

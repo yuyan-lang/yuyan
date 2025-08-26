@@ -49,6 +49,7 @@ let rec group_declarations (decls : A.t list) : (A.t * A.t list) list =
        let cons_decls, remaining = group_type_constructor_declarations decls in
        cons_decls :: group_declarations remaining
      | A.N (N.Declaration N.TypeDefn, _) -> (hd, []) :: group_declarations tl
+     | A.N (N.Declaration N.ModuleAliasDefn, _) -> (hd, []) :: group_declarations tl
      | _ -> Fail.failwith ("TC278: Expecting group leading constructor declaration, got: " ^ A.show_view hd))
 ;;
 
