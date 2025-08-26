@@ -23,6 +23,18 @@ let top_level_empty_space_ignore : unit proc_state_m = read_one_of_char (CharStr
 
 let identifier_parser_pusher : unit proc_state_m =
   let* id, ext = identifier_parser () in
+  (* Check for consecutive identifiers *)
+  let* acc_top = peek_input_acc 0 in
+  let* () = (match acc_top with
+  | Some (Expr x) ->
+    (match A.view x with
+    | A.FreeVar prev_id ->
+      pfail_with_ext 
+        ("Syntax Error: Consecutive quoted identifiers are not allowed. Found 「" ^ prev_id ^ "」「" ^ CS.get_t_string id ^ "」. " ^
+         "An operator is required between identifiers.") 
+        ext
+    | _ -> return ())
+  | _ -> return ()) in
   if List.for_all (fun x -> List.mem x yy_number_words) id
   then (
     let number = get_int_from_t_string id in
@@ -411,6 +423,8 @@ let module_reexport : binary_op =
               | x :: xs ->
                 (match A.view x with
                  | A.N ((N.Declaration N.ConstantDefn as hd), ([], name) :: _)
+                 | A.N ((N.Declaration N.ModuleAliasDefn as hd), ([], name) :: _)
+                 | A.N ((N.Declaration N.TypeConstructorDecl as hd), ([], name) :: _)
                  | A.N ((N.Declaration N.ConstructorDecl as hd), ([], name) :: _) ->
                    (match A.view name with
                     | A.FreeVar x ->
@@ -423,8 +437,7 @@ let module_reexport : binary_op =
                     | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
                  | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration N.ConstantDecl, _) -> aux acc xs
-                 | A.N (N.Declaration N.ModuleAliasDecl, _) -> aux (acc @ [ [], x ]) xs
-                 | _ -> print_failwith ("BP281: Expected a ConstantDefn but got " ^ A.show_view x))
+                 | _ -> print_failwith ("BP281: Expected a Declaration but got " ^ A.show_view x))
             in
             (match A.view file_content with
              | A.N (N.ModuleDef, margs) -> aux args (List.map snd margs)
@@ -598,7 +611,7 @@ let module_alias_decl_end : binary_op =
        let* () = assert_is_free_var name in
        let* resolved_defn = Imports.get_module_expr defn in
        push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ModuleAliasDecl, [ [], name; [], resolved_defn ]))) ext))
+         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ModuleAliasDefn, [ [], name; [], resolved_defn ]))) ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1051,7 +1064,7 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) 
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, _) 
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstantDecl, _) 
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDecl, _) ->
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _) ->
     return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
   | _ ->
     pfail ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
