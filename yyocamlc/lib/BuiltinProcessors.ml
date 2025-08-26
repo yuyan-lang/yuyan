@@ -25,16 +25,22 @@ let identifier_parser_pusher : unit proc_state_m =
   let* id, ext = identifier_parser () in
   (* Check for consecutive identifiers *)
   let* acc_top = peek_input_acc 0 in
-  let* () = (match acc_top with
-  | Some (Expr x) ->
-    (match A.view x with
-    | A.FreeVar prev_id ->
-      pfail_with_ext 
-        ("Syntax Error: Consecutive quoted identifiers are not allowed. Found 「" ^ prev_id ^ "」「" ^ CS.get_t_string id ^ "」. " ^
-         "An operator is required between identifiers.") 
-        ext
-    | _ -> return ())
-  | _ -> return ()) in
+  let* () =
+    match acc_top with
+    | Some (Expr x) ->
+      (match A.view x with
+       | A.FreeVar prev_id ->
+         pfail_with_ext
+           ("Syntax Error: Consecutive quoted identifiers are not allowed. Found 「"
+            ^ prev_id
+            ^ "」「"
+            ^ CS.get_t_string id
+            ^ "」. "
+            ^ "An operator is required between identifiers.")
+           ext
+       | _ -> return ())
+    | _ -> return ()
+  in
   if List.for_all (fun x -> List.mem x yy_number_words) id
   then (
     let number = get_int_from_t_string id in
@@ -180,7 +186,6 @@ let definition_end : binary_op =
   }
 ;;
 
-
 let type_definition_middle_uid = Uid.next ()
 let type_definition_end_uid = Uid.next ()
 
@@ -216,7 +221,6 @@ let type_definition_end : binary_op =
   ; shift_action = do_nothing_shift_action
   }
 ;;
-
 
 let library_root_meta : binary_op_meta =
   { id = Uid.next (); keyword = CS.new_t_string "藏书阁"; left_fixity = FxNone; right_fixity = FxNone }
@@ -352,7 +356,6 @@ let get_file_ref (file_path : string) : A.t proc_state_m =
   | None -> failwith ("Im30: Module not found: " ^ file_path ^ " fileRefs should only contain checked modules")
 ;;
 
-
 let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
   let all_names =
     match A.view m with
@@ -437,7 +440,7 @@ let module_reexport : binary_op =
                     | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
                  | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
                  | A.N ((N.Declaration N.ConstantDecl as _hd), ([], _name) :: ([], _tp) :: _) ->
-                    ( aux (acc @ [ [], x ]) xs)
+                   aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration N.TypeDefn, _) -> aux acc xs
                  | _ -> print_failwith ("BP281: Expected a Declaration but got " ^ A.show_view x))
             in
@@ -487,7 +490,6 @@ let const_decl_end : binary_op =
   }
 ;;
 
-
 let constructor_decl_middle_uid = Uid.next ()
 let constructor_decl_end_uid = Uid.next ()
 
@@ -525,7 +527,6 @@ let constructor_decl_end : binary_op =
   }
 ;;
 
-
 let type_constructor_decl_middle_uid = Uid.next ()
 let type_constructor_decl_end_uid = Uid.next ()
 
@@ -562,7 +563,6 @@ let type_constructor_decl_end : binary_op =
   ; shift_action = do_nothing_shift_action
   }
 ;;
-
 
 let module_alias_decl_start_uid = Uid.next ()
 let module_alias_decl_middle_uid = Uid.next ()
@@ -617,7 +617,6 @@ let module_alias_decl_end : binary_op =
   ; shift_action = do_nothing_shift_action
   }
 ;;
-
 
 let left_parenthesis_uid = Uid.next ()
 let right_parenthesis_uid = Uid.next ()
@@ -992,7 +991,6 @@ let explicit_ap : binary_op =
   }
 ;;
 
-
 let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem) : unit proc_state_m =
   let* st = get_proc_state () in
   pfail
@@ -1004,82 +1002,89 @@ let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem
      ^ show_input_acc st.input_acc)
 ;;
 
+let get_free_var (expr : A.t) : Ext.t_str proc_state_m =
+  match A.view expr with
+  | A.FreeVar name -> return (Ext.str_with_extent name (A.get_extent_some expr))
+  | _ -> pfail ("BP1269: Expecting free variable, got " ^ A.show_view expr)
+;;
+
 let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_state_m =
+  (* Original logic for appending to module *)
   match A.view module_expr, A.view decl with
-  | A.N (N.ModuleDef, args), A.N (N.Declaration ConstantDefn, [ ([], defn_name); _ ]) ->
-    (match args with
-     | [] ->
-       pfail_with_ext "BP1258: Expecting ConstantDecl before ConstantDefn but got nothing" (A.get_extent_some decl)
-     | _ :: _ ->
-       (match A.view (snd (ListUtil.last args)) with
-        | A.N (N.Declaration ConstantDecl, [ ([], decl_name); _ ]) ->
-          (match A.view defn_name, A.view decl_name with
-           | A.FreeVar defn_name, A.FreeVar decl_name ->
-             if defn_name = decl_name
-             then return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-             else
-               pfail_with_ext
-                 ("BP1263: Declaration and definition names do not match: " ^ defn_name ^ " <> " ^ decl_name)
-                 (A.get_extent_some decl)
-           | _ ->
-             pfail_with_ext
-               ("BP1264: Expecting free variable, got " ^ A.show_view defn_name ^ " and " ^ A.show_view decl_name)
-               (A.get_extent_some decl))
-        | _ ->
-          pfail_with_ext
-            ("BP1261: Expecting ConstantDecl before ConstantDefn but got " ^ A.show_view (snd (ListUtil.last args)))
-            (A.get_extent_some decl)))
+  | A.N (N.ModuleDef, _args), A.N (N.Declaration N.ConstantDecl, [ ([], name); ([], tp) ]) ->
+    let* checked_tp = TypeChecking.check_type_valid tp in
+    let* () = TypeChecking.assert_no_free_vars checked_tp in
+    let* id = Environment.add_constant (Expression { tp = checked_tp; tm = None }) in
+    let* name = get_free_var name in
+    let* () = Environment.add_binding name id None in
+    return module_expr
+  | A.N (N.ModuleDef, args), A.N (N.Declaration ConstantDefn, [ ([], defn_name); ([], defn_body) ]) ->
+    let* defn_name_str = get_free_var defn_name in
+    let* tp_id, _ = Environment.lookup_binding defn_name_str in
+    let* tp = Environment.lookup_constant tp_id in
+    (match tp with
+     | Expression { tp = tp_expr; tm = None } ->
+       let* checked_defn_body = TypeChecking.check defn_body tp_expr in
+       let* () = TypeChecking.assert_no_free_vars checked_defn_body in
+       let* () = Environment.update_constant_term tp_id checked_defn_body in
+       return
+         (A.fold
+            (A.N
+               ( N.ModuleDef
+               , args @ [ [], A.n (N.Declaration ConstantDefn, [ [], defn_name; [], A.n (N.Constant tp_id, []) ]) ] )))
+     | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineData.show_t_constant tp)
+    )
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); ([], cons_tp) ]) ->
+    let* name_str = get_free_var name in
+    let* checked_cons_tp = TypeChecking.check_kind_valid cons_tp in
+    let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
+    let* id = Environment.add_constant (TypeConstructor (name_str, Uid.next ())) in
+    let* () = Environment.add_binding name_str id (Some id) in
+    return
+      (A.fold
+         (A.N
+            ( N.ModuleDef
+            , args @ [ [], A.n (N.Declaration TypeConstructorDecl, [ [], _name; [], A.n (N.Constant id, []) ]) ] )))
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstructorDecl, [ ([], _name); ([], cons_tp) ]) ->
-    (match args with
-     | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
-     | _ :: _ ->
-       let rec find_cons_decl (args_reversed : A.t list) : A.t proc_state_m =
-         match args_reversed with
-         | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
-         | hd :: tl ->
-           (match A.view hd with
-            | A.N (N.Declaration N.TypeConstructorDecl, [ ([], decl_name); _ ]) ->
-              (match A.view decl_name with
-               | A.FreeVar decl_name ->
-                 let cons_hd_name = TypeChecking.get_constructor_tp_head cons_tp in
-                 if decl_name = cons_hd_name
-                 then return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-                 else
-                   pfail_with_ext
-                     ("BP1266: Declaration and constructor names do not match: " ^ decl_name ^ " <> " ^ cons_hd_name)
-                     (A.get_extent_some decl)
+       (match args with
+        | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
+        | _ :: _ ->
+          let rec find_cons_decl (args_reversed : A.t list) : A.t proc_state_m =
+            match args_reversed with
+            | [] -> pfail_with_ext "BP1265: Expecting constructor declaration but got nothing" (A.get_extent_some decl)
+            | hd :: tl ->
+              (match A.view hd with
+               | A.N (N.Declaration N.TypeConstructorDecl, [ ([], decl_name); _ ]) ->
+                 (match A.view decl_name with
+                  | A.FreeVar decl_name ->
+                    let cons_hd_name = TypeChecking.get_constructor_tp_head cons_tp in
+                    if decl_name = cons_hd_name
+                    then return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+                    else
+                      pfail_with_ext
+                        ("BP1266: Declaration and constructor names do not match: " ^ decl_name ^ " <> " ^ cons_hd_name)
+                        (A.get_extent_some decl)
+                  | _ ->
+                    pfail_with_ext
+                      ("BP1267: Expecting free variable, got " ^ A.show_view decl_name)
+                      (A.get_extent_some decl))
+               | A.N (N.Declaration N.ConstructorDecl, _) -> find_cons_decl tl
                | _ ->
                  pfail_with_ext
-                   ("BP1267: Expecting free variable, got " ^ A.show_view decl_name)
+                   ("BP1268: Expecting type constructor declaration or (constructor declaration leading to type \
+                     constructor) declaration, got "
+                    ^ A.show_view hd)
                    (A.get_extent_some decl))
-            | A.N (N.Declaration N.ConstructorDecl, _) -> find_cons_decl tl
-            | _ ->
-              pfail_with_ext
-                ("BP1268: Expecting type constructor declaration or (constructor declaration leading to type \
-                  constructor) declaration, got "
-                 ^ A.show_view hd)
-                (A.get_extent_some decl))
-       in
-       find_cons_decl (List.rev (List.map snd args)))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstantDecl, _) ->
-    (* Check if the last declaration was also a ConstantDecl *)
-    (match args with
-     | [] -> return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-     | _ :: _ ->
-       (match A.view (snd (ListUtil.last args)) with
-        | A.N (N.Declaration N.ConstantDecl, _) ->
-          pfail_with_ext
-            "BP1309: Two consecutive constant declarations are not allowed"
-            (A.get_extent_some decl)
-        | _ -> return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _) 
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _) 
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) 
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, _) 
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _) ->
-    return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
-  | _ ->
-    pfail ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+          in
+          find_cons_decl (List.rev (List.map snd args)))
+     | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _)
+     | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _)
+     | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _)
+     | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _) ->
+       return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
+     | _ ->
+       pfail
+         ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl))
 ;;
 
 let sentence_end : unit proc_state_m =
@@ -1562,7 +1567,6 @@ let rec_let_in_mid3 : binary_op =
   ; shift_action = do_nothing_shift_action
   }
 ;;
-
 
 let typing_annotation_middle_uid = Uid.next ()
 let typing_annotation_end_uid = Uid.next ()

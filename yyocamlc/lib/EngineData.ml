@@ -21,13 +21,17 @@ module A = YYAbt
 (* let all_expects = [Expression]@(List.map (fun x -> Scanning x) all_scan_env) *)
 
 type ('a, 'b) map = ('a * 'b) list
-type t_constant = 
+
+type t_constant =
   | Type
   | TypeConstructor of Ext.t_str * int
   | DataConstructor of Ext.t_str * int
-  | Expression of {tp : A.t; tm : A.t option}
+  | Expression of
+      { tp : A.t
+      ; tm : A.t option
+      }
 
-type t_env = (Ext.t_str * A.t * A.t option) list
+type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *) * int option (* tm *)) list
 type t_constants = (int * t_constant) list
 
 type proc_error =
@@ -83,8 +87,8 @@ element is poped via pop_*fix_operator_x where the  *)
 (* processing state *)
 and proc_state =
   { input_future : CharStream.t
-  (* ; input_expect : expect *)
-  (* ; expect_state_stack : expect list *)
+    (* ; input_expect : expect *)
+    (* ; expect_state_stack : expect list *)
   ; input_acc : input_acc_elem list
   ; last_input_acc_before_pop : input_acc_elem list option
   ; env : t_env
@@ -216,6 +220,21 @@ let show_processor_entry (p : processor_entry) : string =
   match p with
   | { id; name; processor } ->
     "ProcEntry: " ^ name ^ ", id=" ^ string_of_int id ^ ", processor: " ^ show_processor processor
+;;
+
+let show_t_constant (c : t_constant) : string =
+  match c with
+  | Type -> "Type"
+  | TypeConstructor (name, id) -> "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ")"
+  | DataConstructor (name, id) -> "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ")"
+  | Expression { tp; tm } ->
+    "Expression("
+    ^ A.show_view tp
+    ^ ", "
+    ^ (match tm with
+       | None -> "None"
+       | Some tm -> A.show_view tm)
+    ^ ")"
 ;;
 
 let show_proc_state (s : proc_state) : string =

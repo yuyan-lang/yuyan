@@ -1,6 +1,51 @@
 open EngineData
 open! ProcCombinators
+module Env = Environment
 
+(* Bidirectional type checking skeleton *)
+
+let check_is_type (tp : A.t) : A.t proc_state_m =
+  match A.view tp with
+  | A.N (N.Builtin N.Type, _) -> return tp
+  | _ -> pfail_with_ext "Expecting type but got " (A.get_extent_some tp)
+;;
+
+let rec check_kind_valid (tp : A.t) : A.t proc_state_m =
+  match A.view tp with
+  | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
+    let* checked_dom = check_is_type dom in
+    let* checked_cod = check_kind_valid cod in
+    return (A.fold_with_extent (A.N (N.Arrow, [ [], checked_dom; [], checked_cod ])) (A.get_extent_some tp))
+  | _ -> check_is_type tp
+;;
+
+(* Check that a type is well-formed *)
+let check_type_valid (tp : A.t) : A.t proc_state_m = pfail ("TC_check_type_valid: unimplemented for " ^ A.show_view tp)
+
+(* Synthesize/infer type from an expression *)
+let synth (expr : A.t) : A.t proc_state_m = pfail ("TC_synth: unimplemented for " ^ A.show_view expr)
+
+(* Check expression against a type *)
+let check (expr : A.t) (tp : A.t) : A.t proc_state_m =
+  pfail ("TC_check: unimplemented for expr=" ^ A.show_view expr ^ " against type=" ^ A.show_view tp)
+;;
+
+(* Type equality check *)
+let type_equal (tp1 : A.t) (tp2 : A.t) : bool proc_state_m =
+  pfail ("TC_type_equal: unimplemented for " ^ A.show_view tp1 ^ " and " ^ A.show_view tp2)
+;;
+
+(* Normalize a type *)
+let normalize_type (tp : A.t) : A.t proc_state_m = pfail ("TC_normalize_type: unimplemented for " ^ A.show_view tp)
+
+(* Normalize an expression *)
+let normalize_expr (expr : A.t) : A.t proc_state_m = pfail ("TC_normalize_expr: unimplemented for " ^ A.show_view expr)
+
+let assert_no_free_vars (tp : A.t) : unit proc_state_m =
+  match A.get_free_vars tp with
+  | [] -> return ()
+  | free_vars -> pfail ("TC_assert_no_free_vars: free variables found in type: " ^ String.concat ", " free_vars)
+;;
 
 let group_type_constructor_declarations (decls : A.t list) : (A.t * A.t list) * A.t list =
   (* print_endline ("group_type_constructor_declarations: " ^ String.concat ", " (List.map A.show_view decls)); *)
@@ -57,4 +102,3 @@ let rec get_constructor_tp_head (tp : A.t) : string =
   | A.N (N.Arrow, [ ([], _); ([], cod) ]) -> get_constructor_tp_head cod
   | _ -> Fail.failwith ("TC41: Expecting constructor type but got " ^ A.show_view tp)
 ;;
-

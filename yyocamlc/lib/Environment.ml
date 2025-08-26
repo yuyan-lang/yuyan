@@ -8,14 +8,14 @@ let default_constants : t_constants = []
 (* Environment manipulation using get_proc_state and write_proc_state *)
 
 (* Add a binding to the environment - duplicates allowed, most recent takes precedence *)
-let add_binding (name : Ext.t_str) (tp : A.t) (tm : A.t option) : unit proc_state_m =
+let add_binding (name : Ext.t_str) (tp : int) (tm : int option) : unit proc_state_m =
   let* s = get_proc_state () in
   let new_env = (name, tp, tm) :: s.env in
   write_proc_state { s with env = new_env }
 ;;
 
 (* Update the term (tm) for the most recent binding with given name *)
-let update_binding_term (name : Ext.t_str) (tm : A.t) : unit proc_state_m =
+let update_binding_term (name : Ext.t_str) (tm : int) : unit proc_state_m =
   let* s = get_proc_state () in
   let rec update_first = function
     | [] -> []
@@ -27,7 +27,7 @@ let update_binding_term (name : Ext.t_str) (tm : A.t) : unit proc_state_m =
 ;;
 
 (* Find a binding - returns option *)
-let find_binding (name : Ext.t_str) : (A.t * A.t option) option proc_state_m =
+let find_binding (name : Ext.t_str) : (int * int option) option proc_state_m =
   let* s = get_proc_state () in
   match List.find_opt (fun (n, _, _) -> n = name) s.env with
   | Some (_, tp, tm) -> return (Some (tp, tm))
@@ -35,7 +35,7 @@ let find_binding (name : Ext.t_str) : (A.t * A.t option) option proc_state_m =
 ;;
 
 (* Lookup a binding - fails if not found *)
-let lookup_binding (name : Ext.t_str) : (A.t * A.t option) proc_state_m =
+let lookup_binding (name : Ext.t_str) : (int * int option) proc_state_m =
   let* result = find_binding name in
   match result with
   | Some binding -> return binding
@@ -49,13 +49,15 @@ let binding_exists (name : Ext.t_str) : bool proc_state_m =
 ;;
 
 (* Add a constant - no duplicates allowed *)
-let add_constant (uid : int) (const : t_constant) : unit proc_state_m =
+let add_constant (const : t_constant) : int proc_state_m =
   let* s = get_proc_state () in
+  let uid = List.length s.constants in
   if List.mem_assoc uid s.constants
   then pfail ("Duplicate constant with uid: " ^ string_of_int uid)
   else (
     let new_constants = (uid, const) :: s.constants in
-    write_proc_state { s with constants = new_constants })
+    let* () = write_proc_state { s with constants = new_constants } in
+    return uid)
 ;;
 
 (* Update the term for an Expression constant *)
