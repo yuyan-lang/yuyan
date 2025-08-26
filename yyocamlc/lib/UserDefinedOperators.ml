@@ -84,6 +84,9 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
     | Keyword _ :: _ -> FxNone, None
     | _ -> failwith ("UDO54: Must have at least one keyword operator but got  " ^ CS.get_t_string input)
   in
+  (* print components *)
+  if List.length !components = 0
+  then failwith ("UDO70: Must have at least one keyword operator but got " ^ CS.get_t_string input);
   (* now check all odd-indexed components are (), and even-indexed are kw*)
   if not (ListUtil.forall_i (fun i x -> if i mod 2 = 0 then is_keyword x else is_parenthetical x) !components)
   then failwith ("UDO86: Not correctly alternated " ^ CS.get_t_string input);
