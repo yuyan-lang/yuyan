@@ -326,9 +326,9 @@ let push_elem_on_input_acc (elem : input_acc_elem) : unit proc_state_m =
 
 let push_elem_on_input_acc_expr (expr : A.t) : unit proc_state_m = push_elem_on_input_acc (Expr expr)
 
-let get_expect_state () : expect proc_state_m =
+(* let get_expect_state () : expect proc_state_m =
   let* s = get_proc_state () in
-  return s.input_expect
+  return s.input_expect *)
 ;;
 
 let modify_s (f : proc_state -> proc_state) : unit proc_state_m =
@@ -336,7 +336,7 @@ let modify_s (f : proc_state -> proc_state) : unit proc_state_m =
   write_proc_state (f s)
 ;;
 
-let push_expect_state (new_state : expect) : unit proc_state_m =
+(* let push_expect_state (new_state : expect) : unit proc_state_m =
   let* cur_state = get_expect_state () in
   let* _ =
     modify_s (fun s -> { s with input_expect = new_state; expect_state_stack = cur_state :: s.expect_state_stack })
@@ -352,7 +352,7 @@ let pop_expect_state (cur_state : expect) : unit proc_state_m =
   | x :: tail ->
     let* _ = modify_s (fun s -> { s with input_expect = x; expect_state_stack = tail }) in
     return ()
-;;
+;; *)
 
 let peek_input_acc (idx : int) : input_acc_elem option proc_state_m =
   let* s = get_proc_state () in

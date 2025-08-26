@@ -7,7 +7,7 @@ let show (_x : t) : string = "Environment"
 
 let default_environment : t =
   (* Initialize the environment here *)
-  { constants = [] }
+  { env = [] ; constants = [] }
 ;;
 (*
    let wrap_store (f : t -> 'a * t) : 'a proc_state_m = 

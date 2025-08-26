@@ -14,14 +14,21 @@ module A = YYAbt
 (* library path*)
 (* let all_scan_env = [InString; InComment] *)
 
-type expect =
+(* type expect =
   | Expr of A.t
-  | TopLevel
+  | TopLevel *)
 (* | Scanning of scan_expect *)
 (* let all_expects = [Expression]@(List.map (fun x -> Scanning x) all_scan_env) *)
 
 type ('a, 'b) map = ('a * 'b) list
-type t_environment = { constants : (Ext.t_str * A.t * A.t) list }
+type t_constant = 
+  | Type
+  | TypeConstructor of Ext.t_str * int
+  | DataConstructor of Ext.t_str * int
+  | Expression of {tp : A.t; tm : A.t option}
+type t_environment = {
+  env : (Ext.t_str * A.t * A.t option) list ;
+  constants : (int * t_constant) list }
 
 type proc_error =
   | ErrExpectString of
@@ -76,8 +83,8 @@ element is poped via pop_*fix_operator_x where the  *)
 (* processing state *)
 and proc_state =
   { input_future : CharStream.t
-  ; input_expect : expect
-  ; expect_state_stack : expect list
+  (* ; input_expect : expect *)
+  (* ; expect_state_stack : expect list *)
   ; input_acc : input_acc_elem list
   ; last_input_acc_before_pop : input_acc_elem list option
   ; store : t_environment
@@ -188,11 +195,11 @@ let show_input_acc (acc : input_acc_elem list) : string =
   "[" ^ String.concat ";\n " (List.map show_input_acc_elem acc) ^ "]"
 ;;
 
-let show_input_expect (e : expect) : string =
+(* let show_input_expect (e : expect) : string =
   match e with
   | Expr e -> "Expr(" ^ pretty_print_expr e ^ ")"
   | TopLevel -> "TopLevel"
-;;
+;; *)
 
 (* | Scanning (InString) -> "Scanning InString"
   | Scanning (InComment) -> "Scanning InComment"
@@ -218,9 +225,9 @@ let show_proc_state (s : proc_state) : string =
   ^ "\ninput_future: "
   ^ CharStream.show_cs s.input_future
   ^ ", "
-  ^ "\ninput_expect: "
+  (* ^ "\ninput_expect: "
   ^ show_input_expect s.input_expect
-  ^ ", "
+  ^ ", " *)
   ^ "\ninput_acc: "
   ^ show_input_acc s.input_acc
   ^ ", "

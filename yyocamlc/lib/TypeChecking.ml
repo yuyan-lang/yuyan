@@ -1,10 +1,6 @@
 open EngineData
-open ProcCombinators
+open! ProcCombinators
 
-let assert_input_expect_top_level () : unit proc_state_m =
-  let* proc_state = get_proc_state () in
-  if proc_state.input_expect <> TopLevel then failwith "TypeChecking.assert_input_expect_top_level" else return ()
-;;
 
 let group_type_constructor_declarations (decls : A.t list) : (A.t * A.t list) * A.t list =
   (* print_endline ("group_type_constructor_declarations: " ^ String.concat ", " (List.map A.show_view decls)); *)
@@ -61,3 +57,4 @@ let rec get_constructor_tp_head (tp : A.t) : string =
   | A.N (N.Arrow, [ ([], _); ([], cod) ]) -> get_constructor_tp_head cod
   | _ -> Fail.failwith ("TC41: Expecting constructor type but got " ^ A.show_view tp)
 ;;
+
