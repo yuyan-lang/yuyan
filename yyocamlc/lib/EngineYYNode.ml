@@ -29,6 +29,7 @@ module YYNode = struct
   type declaration =
     | ConstantDefn
     | ConstantDecl
+    | ConstantDeclPlaceholder
     | ConstructorDecl
     | TypeDefn
     | TypeConstructorDecl
@@ -36,6 +37,7 @@ module YYNode = struct
     | ModuleAliasDefn
     | DirectExpr
     | CheckedConstantDefn of Ext.t_str * int
+    | CheckedDirectExpr of int
 
   type t =
     | Builtin of builtin
@@ -65,6 +67,7 @@ module YYNode = struct
     | Builtin _ -> Some []
     | Declaration ConstantDefn -> Some [ 0; 0 ]
     | Declaration ConstantDecl -> Some [ 0; 0 ]
+    | Declaration ConstantDeclPlaceholder -> Some []
     | Declaration ConstructorDecl -> Some [ 0; 0 ]
     | Declaration TypeConstructorDecl -> Some [ 0; 0 ]
     | Declaration ModuleAliasDefn -> Some [ 0; 0 ]
@@ -72,6 +75,7 @@ module YYNode = struct
     | Declaration CustomOperatorDecl -> Some [ 0; 0 ]
     | Declaration TypeDefn -> Some [ 0; 0 ]
     | Declaration (CheckedConstantDefn (_, _)) -> Some []
+    | Declaration (CheckedDirectExpr _) -> Some []
     | StructureDeref _ -> Some [ 0 ]
     | TupleDeref _ -> Some [ 0 ]
     | ModuleDef -> None
@@ -117,6 +121,7 @@ module YYNode = struct
     match d with
     | ConstantDefn -> "ConstantDefn"
     | ConstantDecl -> "ConstantDecl"
+    | ConstantDeclPlaceholder -> "ConstantDeclPlaceholder"
     | ConstructorDecl -> "ConstructorDecl"
     | TypeConstructorDecl -> "TypeConstructorDecl"
     | ModuleAliasDefn -> "ModuleAliasDefn"
@@ -125,6 +130,7 @@ module YYNode = struct
     | TypeDefn -> "TypeDefn"
     | CheckedConstantDefn (name, uid) ->
       "CheckedConstantDefn(" ^ Ext.get_str_content name ^ ", " ^ string_of_int uid ^ ")"
+    | CheckedDirectExpr uid -> "CheckedDirectExpr(" ^ string_of_int uid ^ ")"
   ;;
 
   let show (t : t) : string =

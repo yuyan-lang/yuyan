@@ -23,7 +23,7 @@ let rec check_kind_valid (tp : A.t) : A.t proc_state_m =
 let check_type_valid (tp : A.t) : A.t proc_state_m = pfail ("TC_check_type_valid: unimplemented for " ^ A.show_view tp)
 
 (* Synthesize/infer type from an expression *)
-let synth (expr : A.t) : A.t proc_state_m = pfail ("TC_synth: unimplemented for " ^ A.show_view expr)
+let synth (expr : A.t) : (A.t * A.t) proc_state_m = pfail ("TC_synth: unimplemented for " ^ A.show_view expr)
 
 (* Check expression against a type *)
 let check (expr : A.t) (tp : A.t) : A.t proc_state_m =

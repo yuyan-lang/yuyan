@@ -180,8 +180,17 @@ let definition_end : binary_op =
   { meta = definition_end_meta
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 definition_end_meta in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ConstantDefn, [ [], name; [], defn ]))) ext))
+       let* defn_name_str = get_free_var name in
+       let* tp_id = Environment.lookup_binding defn_name_str in
+       let* tp = Environment.lookup_constant tp_id in
+       match tp with
+       | DataExpression { tp = tp_expr; tm = None } ->
+         let* checked_defn_body = TypeChecking.check defn tp_expr in
+         let* () = TypeChecking.assert_no_free_vars checked_defn_body in
+         let* () = Environment.update_constant_term tp_id checked_defn_body in
+         push_elem_on_input_acc_expr
+           (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (defn_name_str, tp_id)), []))) ext)
+       | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineData.show_t_constant tp))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -216,8 +225,13 @@ let type_definition_end : binary_op =
   { meta = type_definition_end_meta
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 type_definition_end_meta in
+       let* name_str = get_free_var name in
+       let* checked_defn_body = TypeChecking.check_type_valid defn in
+       let* () = TypeChecking.assert_no_free_vars checked_defn_body in
+       let* id = Environment.add_constant (TypeExpression checked_defn_body) in
+       let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.TypeDefn, [ [], name; [], defn ]))) ext))
+         (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (name_str, id)), []))) ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -482,10 +496,15 @@ let const_decl_middle : binary_op =
 let const_decl_end : binary_op =
   { meta = const_decl_end_meta
   ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 const_decl_end_meta in
+      (let* (name, tp), ext = pop_postfix_op_operands_2 const_decl_end_meta in
        let* () = assert_is_free_var name in
+       let* checked_tp = TypeChecking.check_type_valid tp in
+       let* () = TypeChecking.assert_no_free_vars checked_tp in
+       let* id = Environment.add_constant (DataExpression { tp = checked_tp; tm = None }) in
+       let* name_str = get_free_var name in
+       let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ConstantDecl, [ [], name; [], defn ]))) ext))
+         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ConstantDeclPlaceholder, []))) ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -519,10 +538,17 @@ let constructor_decl_middle : binary_op =
 let constructor_decl_end : binary_op =
   { meta = constructor_decl_end_meta
   ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 constructor_decl_end_meta in
+      (let* (name, cons_tp), ext = pop_postfix_op_operands_2 constructor_decl_end_meta in
        let* () = assert_is_free_var name in
+       let* name_str = get_free_var name in
+       let* checked_cons_tp = TypeChecking.check_type_valid cons_tp in
+       let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
+       let* id =
+         Environment.add_constant (DataConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp })
+       in
+       let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ConstructorDecl, [ [], name; [], defn ]))) ext))
+         (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (name_str, id)), []))) ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -558,8 +584,15 @@ let type_constructor_decl_end : binary_op =
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 type_constructor_decl_end_meta in
        let* () = assert_is_free_var name in
+       let* name_str = get_free_var name in
+       let* checked_cons_tp = TypeChecking.check_kind_valid defn in
+       let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
+       let* id =
+         Environment.add_constant (TypeConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp })
+       in
+       let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.TypeConstructorDecl, [ [], name; [], defn ]))) ext))
+         (A.annotate_with_extent (A.n (N.Declaration (CheckedConstantDefn (name_str, id)), [])) ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1002,61 +1035,20 @@ let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem
      ^ show_input_acc st.input_acc)
 ;;
 
-let get_free_var (expr : A.t) : Ext.t_str proc_state_m =
-  match A.view expr with
-  | A.FreeVar name -> return (Ext.str_with_extent name (A.get_extent_some expr))
-  | _ -> pfail ("BP1269: Expecting free variable, got " ^ A.show_view expr)
-;;
-
 let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_state_m =
   (* Original logic for appending to module *)
   match A.view module_expr, A.view decl with
-  | A.N (N.ModuleDef, _args), A.N (N.Declaration N.ConstantDecl, [ ([], name); ([], tp) ]) ->
-    let* checked_tp = TypeChecking.check_type_valid tp in
-    let* () = TypeChecking.assert_no_free_vars checked_tp in
-    let* id = Environment.add_constant (Expression { tp = checked_tp; tm = None }) in
-    let* name_str = get_free_var name in
-    let* () = Environment.add_binding name_str id in
-    return module_expr
-  | A.N (N.ModuleDef, args), A.N (N.Declaration ConstantDefn, [ ([], defn_name); ([], defn_body) ]) ->
-    let* defn_name_str = get_free_var defn_name in
-    let* tp_id = Environment.lookup_binding defn_name_str in
-    let* tp = Environment.lookup_constant tp_id in
-    (match tp with
-     | Expression { tp = tp_expr; tm = None } ->
-       let* checked_defn_body = TypeChecking.check defn_body tp_expr in
-       let* () = TypeChecking.assert_no_free_vars checked_defn_body in
-       let* () = Environment.update_constant_term tp_id checked_defn_body in
-       return
-         (A.fold
-            (A.N
-               ( N.ModuleDef
-               , args @ [ [], A.n (N.Declaration (CheckedConstantDefn (defn_name_str, tp_id)), []) ] )))
-     | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineData.show_t_constant tp)
-    )
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); ([], cons_tp) ]) ->
-    let* name_str = get_free_var name in
-    let* checked_cons_tp = TypeChecking.check_kind_valid cons_tp in
-    let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-    let* id = Environment.add_constant (TypeConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp }) in
-    let* () = Environment.add_binding name_str id in
-    return (A.fold (A.N ( N.ModuleDef , args @ [ [], A.n (N.Declaration (CheckedConstantDefn (name_str, id)), []) ] )))
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ConstructorDecl, [ ([], name); ([], cons_tp) ]) ->
-    let* name_str = get_free_var name in
-    let* checked_cons_tp = TypeChecking.check_type_valid cons_tp in
-    let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-    let* id = Environment.add_constant (DataConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp }) in
-    let* () = Environment.add_binding name_str id in
-    return (A.fold (A.N ( N.ModuleDef , args @ [ [], A.n (N.Declaration (CheckedConstantDefn (name_str, id)), []) ] )))
-
+  | A.N (N.ModuleDef, _args), A.N (N.Declaration N.ConstantDeclPlaceholder, _) -> return module_expr
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) ->
+    let* checked_body, tp = TypeChecking.synth decl in
+    let* id = Environment.add_constant (DataExpression { tp; tm = Some checked_body }) in
+    return (A.fold (A.N (N.ModuleDef, args @ [ [], A.n (N.Declaration (CheckedDirectExpr id), []) ])))
   | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _)
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.TypeDefn, _)
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _)
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _) ->
+  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _)
+  | A.N (N.ModuleDef, args), A.N (N.Declaration (CheckedConstantDefn _), _) ->
     return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
   | _ ->
-    pfail
-      ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl))
+    pfail ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
 ;;
 
 let sentence_end : unit proc_state_m =

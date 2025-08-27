@@ -170,7 +170,6 @@ let to_processor_binary_op (name : string) (binop : binary_op) : processor_entry
   { id = Uid.next (); name; processor = ProcBinOp binop }
 ;;
 
-
 let to_processor_complex (name : string) (process : 'a proc_state_m) : processor_entry =
   { id = Uid.next (); name; processor = ProcComplex process }
 ;;
@@ -329,7 +328,6 @@ let push_elem_on_input_acc_expr (expr : A.t) : unit proc_state_m = push_elem_on_
 (* let get_expect_state () : expect proc_state_m =
   let* s = get_proc_state () in
   return s.input_expect *)
-;;
 
 let modify_s (f : proc_state -> proc_state) : unit proc_state_m =
   let* s = get_proc_state () in
@@ -624,4 +622,10 @@ let pop_input_acc_past (f : input_acc_elem -> bool) : (input_acc_elem list * inp
 let get_current_file_name () : string proc_state_m =
   let* s = get_proc_state () in
   return s.input_future.filename
+;;
+
+let get_free_var (expr : A.t) : Ext.t_str proc_state_m =
+  match A.view expr with
+  | A.FreeVar name -> return (Ext.str_with_extent name (A.get_extent_some expr))
+  | _ -> pfail ("BP1269: Expecting free variable, got " ^ A.show_view expr)
 ;;
