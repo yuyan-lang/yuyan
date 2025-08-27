@@ -145,8 +145,8 @@ module YYNode = struct
 
   let show_sequence_type (s : sequence_type) : string =
     match s with
-    | Dot -> ","
-    | Comma -> "、"
+    | Dot -> "、"
+    | Comma -> "，"
   ;;
 
   let show (t : t) : string =

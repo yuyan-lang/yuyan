@@ -25,13 +25,12 @@ type ('a, 'b) map = ('a * 'b) list
 type t_constant =
   | TypeConstructor of
       { name : Ext.t_str
-      ; id : int
       ; tp : A.t
       }
   | DataConstructor of
       { name : Ext.t_str
-      ; id : int
       ; tp : A.t
+      ; tp_id : int
       }
   | TypeExpression of A.t
   | DataExpression of
@@ -234,10 +233,9 @@ let show_processor_entry (p : processor_entry) : string =
 
 let show_t_constant (c : t_constant) : string =
   match c with
-  | TypeConstructor { name; id; tp } ->
-    "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ", " ^ A.show_view tp ^ ")"
-  | DataConstructor { name; id; tp } ->
-    "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ", " ^ A.show_view tp ^ ")"
+  | TypeConstructor { name; tp } -> "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ")"
+  | DataConstructor { name; tp; tp_id } ->
+    "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ", " ^ string_of_int tp_id ^ ")"
   | TypeExpression tp -> "TypeExpression(" ^ A.show_view tp ^ ")"
   | DataExpression { tp; tm } ->
     "DataExpression("
@@ -252,8 +250,8 @@ let show_t_constant (c : t_constant) : string =
 
 let show_t_constant_short (c : t_constant) : string =
   match c with
-  | TypeConstructor { id; _ } -> "TC" ^ string_of_int id
-  | DataConstructor { id; _ } -> "DC" ^ string_of_int id
+  | TypeConstructor _ -> "TC"
+  | DataConstructor { tp_id; _ } -> "DC" ^ string_of_int tp_id
   | TypeExpression _ -> "TE"
   | DataExpression { tm; _ } ->
     "DE"

@@ -174,10 +174,58 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
      | TypeExpression _ | TypeConstructor _ -> return normalized_tp
      | DataExpression _ | DataConstructor _ | PatternVar _ ->
        pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
+  | A.N (N.Sequence Comma, args) ->
+    let* args =
+      psequence
+        (List.map
+           (fun (_, arg) ->
+              let* arg = check_type_valid env arg in
+              return ([], arg))
+           args)
+    in
+    return (A.fold_with_extent (A.N (N.Sequence Comma, args)) (A.get_extent_some tp))
   | _ ->
     pfail_with_ext
       (__LOC__ ^ "TC26: Expecting type but got " ^ A.show_view normalized_tp)
       (A.get_extent_some normalized_tp)
+;;
+
+let check_data_constructor_final_type_valid (env : local_env) (tp : A.t) : (A.t * int) proc_state_m =
+  with_type_checking_history ("checking data constructor is a direct type: " ^ A.show_view tp)
+  @@
+  let* checked_tp = check_type_valid env tp in
+  match A.view checked_tp with
+  | A.N (N.Constant id, []) -> return (checked_tp, id)
+  | A.N (N.Ap, [ ([], f); ([], _) ]) ->
+    (match A.view f with
+     | A.N (N.Constant id, []) -> return (checked_tp, id)
+     | _ ->
+       pfail_with_ext
+         (__LOC__ ^ "TC144: Ill-formed data constructor type, head is not a type constructor " ^ A.show_view checked_tp)
+         (A.get_extent_some tp))
+  | _ ->
+    pfail_with_ext
+      (__LOC__
+       ^ "TC145: Ill-formed data constructor type, expecting type constructor or applied to a single argument"
+       ^ A.show_view tp)
+      (A.get_extent_some tp)
+;;
+
+let rec check_data_constructor_type_valid (env : local_env) (tp : A.t)
+  : (A.t * int (* id of the final type*)) proc_state_m
+  =
+  with_type_checking_history ("checking data constructor type is valid: " ^ A.show_view tp)
+  @@
+  match A.view tp with
+  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
+    let env' = extend_local_env_tp env bnd in
+    let* checked_cod, id = check_data_constructor_type_valid env' cod in
+    return (A.fold_with_extent (A.N (N.ImplicitPi, [ [ bnd ], checked_cod ])) (A.get_extent_some tp), id)
+  | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
+    let* dom = check_type_valid env dom in
+    let* cod, id = check_data_constructor_final_type_valid env cod in
+    return (A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod ])) (A.get_extent_some tp), id)
+  | _ -> check_data_constructor_final_type_valid env tp
 ;;
 
 let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_state_m =
@@ -459,6 +507,14 @@ let check_type_valid_top (tp : A.t) : A.t proc_state_m =
   let* checked_tp = check_type_valid empty_local_env tp in
   let* () = assert_no_free_vars checked_tp in
   return checked_tp
+;;
+
+let check_data_constructor_type_valid_top (tp : A.t) : (A.t * int) proc_state_m =
+  with_type_checking_history ("checking data constructor type is valid: " ^ A.show_view tp)
+  @@
+  let* checked_tp, id = check_data_constructor_type_valid empty_local_env tp in
+  let* () = assert_no_free_vars checked_tp in
+  return (checked_tp, id)
 ;;
 
 let check_top (expr : A.t) (tp : A.t) : A.t proc_state_m =

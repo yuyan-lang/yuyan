@@ -569,11 +569,9 @@ let constructor_decl_end : binary_op =
       (let* (name, cons_tp), ext = pop_postfix_op_operands_2 constructor_decl_end_meta in
        let* () = assert_is_free_var name in
        let* name_str = get_free_var name in
-       let* checked_cons_tp = TypeChecking.check_type_valid_top cons_tp in
+       let* checked_cons_tp, id = TypeChecking.check_data_constructor_type_valid_top cons_tp in
        let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-       let* id =
-         Environment.add_constant (DataConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp })
-       in
+       let* id = Environment.add_constant (DataConstructor { name = name_str; tp = checked_cons_tp; tp_id = id }) in
        let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
          (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (name_str, id)), []))) ext))
@@ -615,9 +613,7 @@ let type_constructor_decl_end : binary_op =
        let* name_str = get_free_var name in
        let* checked_cons_tp = TypeChecking.check_kind_valid defn in
        let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-       let* id =
-         Environment.add_constant (TypeConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp })
-       in
+       let* id = Environment.add_constant (TypeConstructor { name = name_str; tp = checked_cons_tp }) in
        let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
          (A.annotate_with_extent (A.n (N.Declaration (CheckedConstantDefn (name_str, id)), [])) ext))
