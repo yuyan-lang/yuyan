@@ -326,6 +326,13 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        let* tm = check env tm tp in
        let expr = A.fold_with_extent (A.N (N.TypingAnnotation, [ [], tp; [], tm ])) (A.get_extent_some expr) in
        return (expr, tp)
+     | A.N (N.TypedLam, [ ([], dom); ([ bnd ], body) ]) ->
+       let* dom = check_type_valid env dom in
+       let env' = extend_local_env_tm env bnd dom in
+       let* body, cod_tp = synth env' body in
+       let tp = A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod_tp ])) (A.get_extent_some expr) in
+       let expr = A.fold_with_extent (A.N (N.TypedLam, [ [], dom; [ bnd ], body ])) (A.get_extent_some expr) in
+       return (expr, tp)
      | A.N (N.TupleDeref idx, [ ([], f) ]) ->
        let* f, f_tp = synth env f in
        (match A.view f_tp with
@@ -412,6 +419,13 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
   with_type_checking_history (HistTwo ("checking ", expr, " against ", tp))
   @@
   let* tp_normalized = normalize_type tp in
+  let default_synth_then_unify () =
+    let* synth_expr, synth_tp = synth env expr in
+    (* we can assume tp is not implicit pi as it has been filled, and expr is not implicit lam as this was a previosu case *)
+    let* synth_expr, synth_tp = apply_implicit_args synth_expr synth_tp in
+    let* _ = type_unify synth_expr [] synth_tp tp_normalized in
+    return synth_expr
+  in
   match A.view expr with
   | A.N (N.ExternalCall fname, args) ->
     let* args =
@@ -484,10 +498,7 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
          in
          let new_args = A.fold_with_extent (A.N (N.Sequence Dot, args_checked)) (A.get_extent_some expr) in
          return new_args
-     | _ ->
-       pfail_with_ext
-         ("TC133: Expecting its type to be an arrow but got " ^ A.show_view tp_normalized)
-         (A.get_extent_some expr))
+     | _ -> default_synth_then_unify ())
   | A.N (N.Match, ([], scrut) :: cases) ->
     let* scrut, scrut_tp = synth env scrut in
     let* cases =
@@ -504,12 +515,7 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
            cases)
     in
     return (A.fold_with_extent (A.N (N.Match, [ [], scrut ] @ cases)) (A.get_extent_some expr))
-  | _ ->
-    let* synth_expr, synth_tp = synth env expr in
-    (* we can assume tp is not implicit pi as it has been filled, and expr is not implicit lam as this was a previosu case *)
-    let* synth_expr, synth_tp = apply_implicit_args synth_expr synth_tp in
-    let* _ = type_unify synth_expr [] synth_tp tp_normalized in
-    return synth_expr
+  | _ -> default_synth_then_unify ()
 
 and pattern_fill_implicit_args (pat : A.t) (pat_tp : A.t) : (A.t * A.t) proc_state_m =
   match A.view pat_tp with
