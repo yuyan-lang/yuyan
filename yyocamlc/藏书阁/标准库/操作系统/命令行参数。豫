@@ -9,4 +9,4 @@
 「获取程序名」者会「甲」而《《外部调用『(fun () -> Sys.argv.(0))』》》于「元」也。
 
 「获取参数」乃化「有」而「字符串」列也。
-「获取参数」者会「甲」而（《《外部调用『(fun () -> Array.sub Sys.argv 1 (Array.length Sys.argv - 1))』》》于「元」）也。
+「获取参数」者会「甲」而（「数组转多态列」于（《《外部调用『(fun () -> Array.sub Sys.argv 1 (Array.length Sys.argv - 1))』》》于「元」））也。

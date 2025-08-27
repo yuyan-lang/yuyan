@@ -18,15 +18,69 @@
 
 
 「串转通字符」乃化「字符串」而「字符串」列也。
-「串转通字符」者会「串」而（《《外部调用『(fun s -> let len = String.length s in Array.init len (String.get s))』》》于「串」）也。
+「串转通字符」者会「串」而
+    「数组转多态列」于（《《外部调用『(fun s ->
+        let len = String.length s in
+        let arr = Array.make len "" in
+        let rec fill i =
+            if i < len then (
+                let byte = String.get s i in
+                let code = Char.code byte in
+                if code < 0x80 then (
+                    (* ASCII character *)
+                    arr.(i) <- String.make 1 byte;
+                    fill (i + 1)
+                ) else if code < 0xC0 then (
+                    (* Invalid UTF-8 start byte, treat as single byte *)
+                    arr.(i) <- String.make 1 byte;
+                    fill (i + 1)
+                ) else if code < 0xE0 then (
+                    (* 2-byte UTF-8 character *)
+                    if i + 1 < len then (
+                        arr.(i) <- String.sub s i 2;
+                        fill (i + 2)
+                    ) else (
+                        arr.(i) <- String.make 1 byte;
+                        fill (i + 1)
+                    )
+                ) else if code < 0xF0 then (
+                    (* 3-byte UTF-8 character *)
+                    if i + 2 < len then (
+                        arr.(i) <- String.sub s i 3;
+                        fill (i + 3)
+                    ) else (
+                        arr.(i) <- String.make 1 byte;
+                        fill (i + 1)
+                    )
+                ) else if code < 0xF8 then (
+                    (* 4-byte UTF-8 character *)
+                    if i + 3 < len then (
+                        arr.(i) <- String.sub s i 4;
+                        fill (i + 4)
+                    ) else (
+                        arr.(i) <- String.make 1 byte;
+                        fill (i + 1)
+                    )
+                ) else (
+                    (* Invalid UTF-8 start byte *)
+                    arr.(i) <- String.make 1 byte;
+                    fill (i + 1)
+                )
+            )
+        in
+        fill 0;
+        (* Remove empty slots *)
+        let non_empty = Array.fold_left (fun acc s -> if s = "" then acc else s :: acc) [] arr in
+        Array.of_list (List.rev non_empty)
+    )』》》于「串」）也。
 
 「获取字符」乃化「字符串」而「字符串」列也。
 「获取字符」者「串转通字符」也。
 
 「通字符转串」乃化「字符串」列而「字符串」也。
 「通字符转串」者会「列」而
-    虑「后列」者（「列」）而
-    《《外部调用『(fun arr -> String.concat "" (Array.to_list (Array.map (String.make 1) arr)))』》》于「后列」也。
+    虑「后列」者（「多态列转数组」于「列」）而
+    《《外部调用『(fun arr -> String.concat "" (Array.to_list arr))』》》于「后列」也。
 
 「合并」乃化「字符串」列而「字符串」也。
 「合并」者「通字符转串」也。
@@ -70,7 +124,7 @@
 
 
 「是子字符串吗」乃化「字符串」而化「字符串」而「爻」也。
-「是子字符串吗」者会「串甲」而会「串乙」而《《外部调用『(fun (needle, haystack) -> try let _ = Str.search_forward (Str.regexp_string needle) haystack 0 in true with Not_found -> false)』》》于「串甲」于「串乙」也。
+「是子字符串吗」者会「串甲」而会「串乙」而《《外部调用『(fun needle haystack -> try let _ = Str.search_forward (Str.regexp_string needle) haystack 0 in true with Not_found -> false)』》》于「串甲」于「串乙」也。
 
 术「甲」为「乙」子字符串盖谓「是子字符串吗」于「甲」于「乙」也。
 
@@ -170,7 +224,7 @@
 「字符转整数」乃化「字符串」而化「整数」而「整数」也。
 「字符转整数」者会「串」而会「序数」而
     若（「序数」大于（「字节长度」于「串」））则「发生事故」于『序数超出范围』
-    否则（《《外部调用『(fun (s, i) -> Char.code (String.get s i))』》》于「串」于「序数」）也。
+    否则（《《外部调用『(fun s i -> Char.code (String.get s i))』》》于「串」于「序数」）也。
 
 
 「串查找替换」乃化「字符串」「：目标字符串：」
