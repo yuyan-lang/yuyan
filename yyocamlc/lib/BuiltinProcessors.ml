@@ -382,7 +382,9 @@ let add_module_expr_defined_names_to_env (m : A.t) : unit proc_state_m =
       List.filter_map
         (fun (_, arg) ->
            match A.view arg with
-           | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), _) -> Some (Environment.add_binding name id)
+           | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), _)
+           | A.N (N.Declaration (N.ReexportedCheckedConstantDefn (name, id)), _) ->
+             Some (Environment.add_binding name id)
            | A.N (N.Declaration N.ConstantDefn, _)
            | A.N (N.Declaration N.ConstructorDecl, _)
            | A.N (N.Declaration N.ConstantDecl, _)
@@ -414,6 +416,7 @@ let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
            | A.N (N.Declaration N.TypeConstructorDecl, _)
            | A.N (N.Declaration N.ModuleAliasDefn, _)
            | A.N (N.Declaration (N.CheckedConstantDefn _), _)
+           | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), _)
            | A.N (N.Declaration (N.CheckedDirectExpr _), _)
            | A.N (N.Declaration N.TypeDefn, _) -> None
            | A.N (N.Declaration N.CustomOperatorDecl, [ ([], op); ([], elab) ]) ->
@@ -489,7 +492,9 @@ let module_reexport : binary_op =
                       aux (acc @ [ [], new_node ]) xs
                     | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
                  | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
-                 | A.N (N.Declaration (N.CheckedConstantDefn _), _) -> aux (acc @ [ [], x ]) xs
+                 | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
+                   aux (acc @ [ [], A.fold (A.N (N.Declaration (N.ReexportedCheckedConstantDefn (name, id)), [])) ]) xs
+                 | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), []) -> aux (acc @ [ [], x ]) xs
                  | A.N ((N.Declaration N.ConstantDecl as _hd), ([], _name) :: ([], _tp) :: _) ->
                    aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration N.TypeDefn, _) -> aux acc xs

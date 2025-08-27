@@ -252,42 +252,45 @@ let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants
     ^ generate_type_definitions constants
     ^ String.concat
         "\n"
-        (List.map
+        (List.filter_map
            (fun (_, decl) ->
               match A.view decl with
-              | A.N (N.Declaration N.CustomOperatorDecl, _) -> get_comment_str ("Not Impl: " ^ A.show_view decl)
-              | A.N (N.Declaration N.ModuleAliasDefn, _) -> get_comment_str ("Not Impl: " ^ A.show_view decl)
+              | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
+              | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), []) -> None
+              | A.N (N.Declaration N.ModuleAliasDefn, _) -> Some (get_comment_str ("Not Impl: " ^ A.show_view decl))
               | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
-                (match lookup_constant_id id with
-                 | DataExpression { tp; tm = Some tm } ->
-                   let is_recursive = List.mem id (AbtUtil.get_referenced_constant_ids tm) in
-                   get_comment_ext_str name
-                   ^ "\n"
-                   ^ "let "
-                   ^ (if is_recursive then "rec " else "")
-                   ^ "v_"
-                   ^ string_of_int id
-                   ^ " : "
-                   ^ get_type_code empty_var_env tp
-                   ^ "\n= "
-                   ^ get_ocaml_code empty_var_env tm
-                   ^ "\n"
-                 | TypeConstructor _ | DataConstructor _ -> ""
-                 | TypeExpression tp ->
-                   (match A.view tp with
-                    | A.N (N.Builtin RefType, []) ->
-                      get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a ref"
-                    | A.N (N.Builtin ArrayRefType, []) ->
-                      get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a array"
-                    | _ ->
-                      get_comment_ext_str name
-                      ^ "\n"
-                      ^ "type t_"
-                      ^ string_of_int id
-                      ^ " = "
-                      ^ get_type_code empty_var_env tp)
-                 | tcons ->
-                   Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant tcons))
+                Some
+                  (match lookup_constant_id id with
+                   | DataExpression { tp; tm = Some tm } ->
+                     let is_recursive = List.mem id (AbtUtil.get_referenced_constant_ids tm) in
+                     get_comment_ext_str name
+                     ^ "\n"
+                     ^ "let "
+                     ^ (if is_recursive then "rec " else "")
+                     ^ "v_"
+                     ^ string_of_int id
+                     ^ " : "
+                     ^ get_type_code empty_var_env tp
+                     ^ "\n= "
+                     ^ get_ocaml_code empty_var_env tm
+                     ^ "\n"
+                   | TypeConstructor _ | DataConstructor _ -> ""
+                   | TypeExpression tp ->
+                     (match A.view tp with
+                      | A.N (N.Builtin RefType, []) ->
+                        get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a ref"
+                      | A.N (N.Builtin ArrayRefType, []) ->
+                        get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a array"
+                      | _ ->
+                        get_comment_ext_str name
+                        ^ "\n"
+                        ^ "type t_"
+                        ^ string_of_int id
+                        ^ " = "
+                        ^ get_type_code empty_var_env tp)
+                   | tcons ->
+                     Fail.failwith
+                       (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant tcons))
               | _ -> Fail.failwith (__LOC__ ^ ": Doesn't know how to handle declaration: " ^ A.show_view decl))
            decls)
   | _ -> failwith ("OO30: Expecting module expression, got: " ^ A.show_view module_expr)

@@ -30,8 +30,12 @@ let output_ocaml () : string =
 ;;
 
 let compile_and_run_ocaml (ocaml_filepath : string) : unit =
-  print_endline ("[Running] ocamlc " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe");
-  let _ = Sys.command ("ocamlc " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe") in
+  (* -w -26: disable unused var warnings *)
+  (* -I +unix -I +str: add unix and str to the search path *)
+  (* unix.cma str.cma: add unix and str to the library path *)
+  let flags = "-w -26 -I +unix -I +str unix.cma str.cma " in
+  print_endline ("[Running] ocamlc " ^ flags ^ " " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe");
+  let _ = Sys.command ("ocamlc " ^ flags ^ " " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe") in
   print_endline ("[Running] " ^ ocaml_filepath ^ ".exe");
   let _ = Sys.command ("" ^ ocaml_filepath ^ ".exe") in
   ()

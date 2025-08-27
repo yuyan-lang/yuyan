@@ -39,6 +39,7 @@ module YYNode = struct
     | ModuleAliasDefn
     | DirectExpr
     | CheckedConstantDefn of Ext.t_str * int
+    | ReexportedCheckedConstantDefn of Ext.t_str * int
     | CheckedDirectExpr of int
 
   type sequence_type =
@@ -89,6 +90,7 @@ module YYNode = struct
     | Declaration CustomOperatorDecl -> Some [ 0; 0 ]
     | Declaration TypeDefn -> Some [ 0; 0 ]
     | Declaration (CheckedConstantDefn (_, _)) -> Some []
+    | Declaration (ReexportedCheckedConstantDefn (_, _)) -> Some []
     | Declaration (CheckedDirectExpr _) -> Some []
     | StructureDeref _ -> Some [ 0 ]
     | TupleDeref _ -> Some [ 0 ]
@@ -153,6 +155,8 @@ module YYNode = struct
     | TypeDefn -> "TypeDefn"
     | CheckedConstantDefn (name, uid) ->
       "CheckedConstantDefn(" ^ Ext.get_str_content name ^ ", " ^ string_of_int uid ^ ")"
+    | ReexportedCheckedConstantDefn (name, uid) ->
+      "ReexportedCheckedConstantDefn(" ^ Ext.get_str_content name ^ ", " ^ string_of_int uid ^ ")"
     | CheckedDirectExpr uid -> "CheckedDirectExpr(" ^ string_of_int uid ^ ")"
   ;;
 
