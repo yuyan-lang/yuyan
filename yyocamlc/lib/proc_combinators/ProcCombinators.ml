@@ -101,6 +101,15 @@ let psequence (m : 'a proc_state_m list) : 'a list proc_state_m =
     m
 ;;
 
+let pfold_left (f : 'a -> 'b -> 'a proc_state_m) (acc : 'a) (m : 'b list) : 'a proc_state_m =
+  List.fold_left
+    (fun acc y ->
+       let* x = acc in
+       f x y)
+    (return acc)
+    m
+;;
+
 (* does not pass along tried failures *)
 let ptry (m : 'a proc_state_m) : 'a option proc_state_m =
   fun s fc sc -> m s (fun _ -> sc (None, s) fc) (fun (x, s') fc' -> sc (Some x, s') fc')

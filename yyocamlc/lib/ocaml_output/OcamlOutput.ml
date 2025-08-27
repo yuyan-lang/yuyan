@@ -105,7 +105,7 @@ let rec get_ocaml_code_for_pattern (pattern : A.t) : string =
        ^ " ("
        ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args)
        ^ ")")
-  | A.N (N.Sequence "、", args) ->
+  | A.N (N.Sequence Dot, args) ->
     "(" ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args) ^ ")"
   | A.N (N.StructureDeref label, [ ([], subject) ]) ->
     (match A.view subject with
@@ -163,7 +163,7 @@ let rec get_ocaml_code (expr : A.t) : string =
     ^ ") with "
     ^ String.concat " " (List.map (fun (_, case) -> get_ocaml_code_for_case case) cases)
     ^ ")"
-  | A.N (N.Sequence "、", args) -> "(" ^ String.concat "," (List.map (fun x -> snd x |> get_ocaml_code) args) ^ ")"
+  | A.N (N.Sequence Dot, args) -> "(" ^ String.concat "," (List.map (fun x -> snd x |> get_ocaml_code) args) ^ ")"
   | _ -> "(TODO OO25 expr: " ^ A.show_view expr ^ ")"
 ;;
 

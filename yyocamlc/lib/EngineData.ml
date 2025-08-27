@@ -38,6 +38,7 @@ type t_constant =
       { tp : A.t
       ; tm : A.t option (* is None if it is a recursive definition (forward declaration only)*)
       }
+  | PatternVar of { tp : A.t }
 
 type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *)) list
 type t_constants = (int * t_constant) list
@@ -246,6 +247,7 @@ let show_t_constant (c : t_constant) : string =
        | None -> "None"
        | Some tm -> A.show_view tm)
     ^ ")"
+  | PatternVar { tp } -> "PatternVar(" ^ A.show_view tp ^ ")"
 ;;
 
 let show_t_constant_short (c : t_constant) : string =
@@ -259,6 +261,7 @@ let show_t_constant_short (c : t_constant) : string =
       (match tm with
       | None -> "N"
       | Some _ -> "S")
+  | PatternVar _ -> "PV"
 ;;
 
 let show_proc_state (s : proc_state) : string =

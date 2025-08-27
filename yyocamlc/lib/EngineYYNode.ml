@@ -39,6 +39,10 @@ module YYNode = struct
     | CheckedConstantDefn of Ext.t_str * int
     | CheckedDirectExpr of int
 
+  type sequence_type =
+    | Dot
+    | Comma
+
   type t =
     | Builtin of builtin
     | Declaration of declaration
@@ -51,7 +55,7 @@ module YYNode = struct
     | Arrow
     | Ap
     | ImplicitAp
-    | Sequence of string (* e.g. ， 或 、*)
+    | Sequence of sequence_type
     | Match
     | MatchCase
     | TypingAnnotation (* A名x*)
@@ -95,7 +99,7 @@ module YYNode = struct
     | ImplicitLam -> Some [ 1 ]
     | TypedLam -> Some [ 0; 1 ]
     | TypingAnnotation -> Some [ 0; 0 ]
-    | ExternalCall _ -> Some []
+    | ExternalCall _ -> None (* external call is a special case, arguments appear directly *)
     | IfThenElse -> Some [ 0; 0; 0 ] (* if, then, else *)
     | LetIn -> Some [ 0; 1 ] (* let, in, expr *)
     | RecLetIn -> Some [ 0; 0; 1 ] (* rec let type, defn, in expr *)
@@ -139,6 +143,12 @@ module YYNode = struct
     | CheckedDirectExpr uid -> "CheckedDirectExpr(" ^ string_of_int uid ^ ")"
   ;;
 
+  let show_sequence_type (s : sequence_type) : string =
+    match s with
+    | Dot -> ","
+    | Comma -> "、"
+  ;;
+
   let show (t : t) : string =
     match t with
     | Builtin b -> "Builtin(" ^ show_builtin b ^ ")"
@@ -152,7 +162,7 @@ module YYNode = struct
     | Arrow -> "->"
     | Ap -> "Ap"
     | ImplicitAp -> "Ap(implicit)"
-    | Sequence s -> "Sequence(" ^ s ^ ")"
+    | Sequence s -> "Sequence(" ^ show_sequence_type s ^ ")"
     | Match -> "Match"
     | MatchCase -> "MatchCase"
     | Lam -> "λ"

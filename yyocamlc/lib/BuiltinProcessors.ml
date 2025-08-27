@@ -1046,7 +1046,10 @@ let explicit_ap : binary_op =
   { meta = explicit_ap_meta
   ; reduction =
       (let* (f, arg), per_ext = pop_bin_operand explicit_ap_meta in
-       push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) per_ext))
+       match A.view f with
+       | A.N (N.ExternalCall fname, cur_args) ->
+         push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.ExternalCall fname, cur_args @ [ [], arg ])) per_ext)
+       | _ -> push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) per_ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1325,14 +1328,8 @@ let match_case_alternative : binary_op =
   }
 ;;
 
-let comma_char = "，"
-
 let comma_sequence_meta : binary_op_meta =
-  { id = Uid.next ()
-  ; keyword = CS.new_t_string comma_char
-  ; left_fixity = FxOp (Some 89)
-  ; right_fixity = FxOp (Some 90)
-  }
+  { id = Uid.next (); keyword = CS.new_t_string "，"; left_fixity = FxOp (Some 89); right_fixity = FxOp (Some 90) }
 ;;
 
 let comma_sequence : binary_op =
@@ -1340,21 +1337,15 @@ let comma_sequence : binary_op =
   ; reduction =
       (let* (x, y), per_ext = pop_bin_operand comma_sequence_meta in
        match A.view x with
-       | A.N (N.Sequence "，", args) ->
-         push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence comma_char, args @ [ [], y ])) per_ext)
-       | _ -> push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence comma_char, [ [], x; [], y ])) per_ext))
+       | A.N (N.Sequence Comma, args) ->
+         push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence Comma, args @ [ [], y ])) per_ext)
+       | _ -> push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence Comma, [ [], x; [], y ])) per_ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
 
-let enumeration_comma_char = "、"
-
 let enumeration_comma_sequence_meta : binary_op_meta =
-  { id = Uid.next ()
-  ; keyword = CS.new_t_string enumeration_comma_char
-  ; left_fixity = FxOp (Some 109)
-  ; right_fixity = FxOp (Some 110)
-  }
+  { id = Uid.next (); keyword = CS.new_t_string "、"; left_fixity = FxOp (Some 109); right_fixity = FxOp (Some 110) }
 ;;
 
 let enumeration_comma_sequence : binary_op =
@@ -1362,12 +1353,9 @@ let enumeration_comma_sequence : binary_op =
   ; reduction =
       (let* (x, y), per_ext = pop_bin_operand enumeration_comma_sequence_meta in
        match A.view x with
-       | A.N (N.Sequence "、", args) ->
-         push_elem_on_input_acc_expr
-           (A.fold_with_extent (A.N (N.Sequence enumeration_comma_char, args @ [ [], y ])) per_ext)
-       | _ ->
-         push_elem_on_input_acc_expr
-           (A.fold_with_extent (A.N (N.Sequence enumeration_comma_char, [ [], x; [], y ])) per_ext))
+       | A.N (N.Sequence Dot, args) ->
+         push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence Dot, args @ [ [], y ])) per_ext)
+       | _ -> push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence Dot, [ [], x; [], y ])) per_ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;

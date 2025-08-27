@@ -64,8 +64,8 @@ let rec normalize_type (tp : A.t) : A.t proc_state_m =
        (match tp_constant with
         | TypeExpression tp -> normalize_type tp
         | TypeConstructor _ -> return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some tp))
-        | DataExpression _ -> pfail_with_ext ("TC27: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)
-        | DataConstructor _ -> pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
+        | DataExpression _ | PatternVar _ | DataConstructor _ ->
+          pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
   | A.N (N.UnifiableTp uid, []) ->
     (match get_from_global_unification_ctx uid with
      | None -> return tp
@@ -102,12 +102,25 @@ let rec type_unify (free_var_names : (string * A.t option) list) (tp1 : A.t) (tp
   | A.N (N.Builtin N.BoolType, []), A.N (N.Builtin N.BoolType, []) -> return free_var_names
   | A.N (N.Builtin N.UnitType, []), A.N (N.Builtin N.UnitType, []) -> return free_var_names
   | A.N (N.Builtin N.FloatType, []), A.N (N.Builtin N.FloatType, []) -> return free_var_names
+  | A.N (N.Constant id1, []), A.N (N.Constant id2, []) when id1 = id2 -> return free_var_names
+  | A.FreeVar name1, A.FreeVar name2 when name1 = name2 -> return free_var_names
   | A.N (N.Arrow, [ ([], dom1); ([], cod1) ]), A.N (N.Arrow, [ ([], dom2); ([], cod2) ]) ->
     let* new_free_var_names = type_unify free_var_names dom1 dom2 in
     type_unify new_free_var_names cod1 cod2
+  | A.N (N.Ap, [ ([], f1); ([], arg1) ]), A.N (N.Ap, [ ([], f2); ([], arg2) ]) ->
+    let* new_free_var_names = type_unify free_var_names f1 f2 in
+    type_unify new_free_var_names arg1 arg2
   | _ ->
     pfail_with_ext
-      (__LOC__ ^ " TC51: Failed to unify " ^ A.show_view tp1 ^ " and " ^ A.show_view tp2)
+      (__LOC__
+       ^ " TC51: Failed to unify "
+       ^ A.show_view tp1
+       ^ " and "
+       ^ A.show_view tp2
+       ^ " i.e. "
+       ^ A.show_view normalized_tp1
+       ^ " and "
+       ^ A.show_view normalized_tp2)
       (A.get_extent_some tp1)
 ;;
 
@@ -159,7 +172,7 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
     let* tp_constant = Environment.lookup_constant id in
     (match tp_constant with
      | TypeExpression _ | TypeConstructor _ -> return normalized_tp
-     | DataExpression _ | DataConstructor _ ->
+     | DataExpression _ | DataConstructor _ | PatternVar _ ->
        pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
   | _ ->
     pfail_with_ext
@@ -197,12 +210,12 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
         | None -> pfail_with_ext ("TC83: Free variable not found in environment: " ^ name) (A.get_extent_some expr)
         | Some id ->
           let* tp_constant = Environment.lookup_constant id in
+          let expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
           (match tp_constant with
-           | DataExpression { tp; _ } ->
-             return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr), tp)
+           | DataExpression { tp; _ } | DataConstructor { tp; _ } -> return (expr, tp)
            | _ ->
              pfail_with_ext
-               ("TC84: Expecting some data but got " ^ show_t_constant tp_constant)
+               (__LOC__ ^ "TC84: Expecting some data but got " ^ show_t_constant tp_constant)
                (A.get_extent_some expr))))
   | A.N (N.Builtin (N.Bool _), []) ->
     return (expr, A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some expr))
@@ -223,6 +236,23 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        return (A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) (A.get_extent_some expr), cod)
      | _ ->
        pfail_with_ext ("TC134: Expecting its type to be an arrow but got " ^ A.show_view f_tp) (A.get_extent_some f))
+  | A.N (N.Constant id, []) ->
+    let* tp_constant = Environment.lookup_constant id in
+    (match tp_constant with
+     | PatternVar { tp; _ } -> return (expr, tp)
+     | _ -> pfail_with_ext ("TC84: Expecting some data but got " ^ show_t_constant tp_constant) (A.get_extent_some expr))
+  | A.N (N.Sequence Dot, args) ->
+    let* args_checked =
+      psequence
+        (List.map
+           (fun (_, arg) ->
+              let* arg, arg_tp = synth env arg in
+              return (([], arg), ([], arg_tp)))
+           args)
+    in
+    let new_arg = A.fold_with_extent (A.N (N.Sequence Dot, List.map fst args_checked)) (A.get_extent_some expr) in
+    let new_tp = A.fold_with_extent (A.N (N.Sequence Comma, List.map snd args_checked)) (A.get_extent_some expr) in
+    return (new_arg, new_tp)
   | _ ->
     pfail_with_ext
       (__LOC__ ^ " TC82: Expression does not support type synthesis, please specify the type " ^ A.show_view expr)
@@ -251,7 +281,16 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
   @@
   let* tp_normalized = normalize_type tp in
   match A.view expr with
-  | A.N (N.ExternalCall _, []) -> return expr
+  | A.N (N.ExternalCall fname, args) ->
+    let* args =
+      psequence
+        (List.map
+           (fun (_, arg) ->
+              let* arg, _arg_tp = synth env arg in
+              return ([], arg))
+           args)
+    in
+    return (A.fold_with_extent (A.N (N.ExternalCall fname, args)) (A.get_extent_some expr))
   | A.N (N.IfThenElse, [ ([], cond); ([], then_branch); ([], else_branch) ]) ->
     let* cond = check env cond (A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some cond)) in
     let* then_branch = check env then_branch tp in
@@ -279,10 +318,126 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
        pfail_with_ext
          ("TC133: Expecting its type to be an arrow but got " ^ A.show_view tp_normalized)
          (A.get_extent_some expr))
+  | A.N (N.Match, ([], scrut) :: cases) ->
+    let* scrut, scrut_tp = synth env scrut in
+    let* cases =
+      psequence
+        (List.map
+           (fun (_, case) ->
+              match A.view case with
+              | A.N (N.MatchCase, [ ([], pat); ([], body) ]) ->
+                let* env, pat, body = check_pattern env pat scrut_tp body in
+                let* body = check env body tp in
+                return ([], A.fold_with_extent (A.N (N.MatchCase, [ [], pat; [], body ])) (A.get_extent_some case))
+              | _ ->
+                pfail_with_ext ("TC135: Expecting a match case but got " ^ A.show_view case) (A.get_extent_some expr))
+           cases)
+    in
+    return (A.fold_with_extent (A.N (N.Match, [ [], scrut ] @ cases)) (A.get_extent_some expr))
   | _ ->
     let* synth_expr, synth_tp = synth env expr in
+    (* we can assume tp is not implicit pi as it has been filled, and expr is not implicit lam as this was a previosu case *)
+    let* synth_expr, synth_tp = apply_implicit_args synth_expr synth_tp in
     let* _ = type_unify [] synth_tp tp_normalized in
     return synth_expr
+
+and pattern_fill_implicit_args (pat : A.t) (pat_tp : A.t) : (A.t * A.t) proc_state_m =
+  match A.view pat_tp with
+  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
+    let id = Uid.next () in
+    let _ = add_to_global_unification_ctx id None in
+    let new_var = A.fold_with_extent (A.N (N.UnifiableTp id, [])) (A.get_extent_some pat) in
+    let cod = A.subst new_var bnd cod in
+    (* TODO: head spine form for implicit arg apps *)
+    pattern_fill_implicit_args pat cod
+  | _ -> return (pat, pat_tp)
+
+and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.t)
+  : (local_env * A.t * A.t) proc_state_m
+  =
+  with_type_checking_history ("checking pattern " ^ A.show_view pat ^ " against " ^ A.show_view scrut_tp)
+  @@
+  match A.view pat with
+  | A.FreeVar name ->
+    let* id = Environment.find_binding name in
+    (match List.assoc_opt name env.tm, id with
+     | Some _, _ (* local var, shadowing*) | None, None ->
+       (* fresh var *)
+       (* this is a new var*)
+       let* id = Environment.add_constant (PatternVar { tp = scrut_tp }) in
+       let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
+       let case_body = A.subst pat name case_body in
+       return (env, pat, case_body)
+     | None, Some id ->
+       (* this is an existing constant *)
+       let* tp_constant = Environment.lookup_constant id in
+       (match tp_constant with
+        | DataConstructor { tp = pat_tp; _ } ->
+          let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
+          let* pat, pat_tp = pattern_fill_implicit_args pat pat_tp in
+          let* _ = type_unify [] pat_tp scrut_tp in
+          return (env, pat, case_body)
+        | _ ->
+          pfail_with_ext
+            ("TC139: Expecting a data constructor but got " ^ show_t_constant tp_constant)
+            (A.get_extent_some pat)))
+  | A.N (N.Sequence Dot, args) ->
+    (match A.view scrut_tp with
+     | A.N (N.Sequence Comma, args_tps) ->
+       if List.length args <> List.length args_tps
+       then
+         pfail_with_ext
+           ("TC142: Expecting the same number of arguments and types but got "
+            ^ A.show_view scrut_tp
+            ^ " for pattern "
+            ^ A.show_view pat)
+           (A.get_extent_some pat)
+       else
+         let* env, args, case_body =
+           pfold_left
+             (fun (env, acc, case_body) ((_, arg), (_, arg_tp)) ->
+                let* env, arg, case_body = check_pattern env arg arg_tp case_body in
+                return (env, acc @ [ [], arg ], case_body))
+             (env, [], case_body)
+             (ListUtil.zip args args_tps)
+         in
+         return (env, A.fold_with_extent (A.N (N.Sequence Dot, args)) (A.get_extent_some pat), case_body)
+     | _ ->
+       pfail_with_ext ("TC143: Expecting a sequence of comma but got " ^ A.show_view scrut_tp) (A.get_extent_some pat))
+  | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
+    (match A.view f with
+     | A.FreeVar name ->
+       let* id = Environment.find_binding name in
+       (match List.assoc_opt name env.tm, id with
+        | Some _, _ (* local var, shadowing*) | None, None ->
+          pfail_with_ext ("TC140: Unexpected local/fresh variable but got " ^ A.show_view f) (A.get_extent_some pat)
+        | None, Some id ->
+          (* this is an existing constant *)
+          let* tp_constant = Environment.lookup_constant id in
+          (match tp_constant with
+           | DataConstructor { tp = pat_tp; _ } ->
+             let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
+             let* pat, pat_tp = pattern_fill_implicit_args pat pat_tp in
+             (match A.view pat_tp with
+              | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
+                let* _ = type_unify [] scrut_tp cod in
+                let* env, arg, case_body = check_pattern env arg dom case_body in
+                let f = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some f) in
+                let pat = A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) (A.get_extent_some pat) in
+                return (env, pat, case_body)
+              | _ ->
+                pfail_with_ext
+                  ("TC141: Expecting head's type to be an arrow but got " ^ A.show_view pat_tp)
+                  (A.get_extent_some pat))
+           | _ ->
+             pfail_with_ext
+               ("TC139: Expecting a data constructor but got " ^ show_t_constant tp_constant)
+               (A.get_extent_some pat)))
+     | _ ->
+       pfail_with_ext
+         ("TC374: Expecting a free variable in head position but got " ^ A.show_view pat)
+         (A.get_extent_some pat))
+  | _ -> pfail_with_ext ("TC137: Expecting a pattern but got " ^ A.show_view pat) (A.get_extent_some pat)
 ;;
 
 let assert_no_free_vars (tp : A.t) : unit proc_state_m =
