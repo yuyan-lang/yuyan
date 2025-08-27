@@ -1,7 +1,18 @@
 Printexc.record_backtrace true
 
+let print_all_constants () =
+  List.iter
+    (fun (filepath, (_, constants)) ->
+       print_endline ("Constants in " ^ filepath);
+       List.iter
+         (fun (id, value) -> print_endline ("  " ^ string_of_int id ^ " = " ^ EngineDataPrint.show_t_constant value))
+         (List.rev constants))
+    (List.rev !CompilationCache.compiled_files)
+;;
+
 let process_file (filename : string) =
   let _ = CompilationManager.compile_or_retrieve_file_content (Unix.realpath filename) in
+  (* let _ = print_all_constants () in *)
   let file_path = CompilationManager.output_ocaml () in
   print_endline ("[Done] Writing " ^ file_path);
   CompilationManager.compile_and_run_ocaml file_path

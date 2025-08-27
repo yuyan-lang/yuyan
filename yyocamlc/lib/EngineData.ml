@@ -112,11 +112,11 @@ and proc_state =
   ; last_succeeded_processor : processor_entry (* for debugging on parsing *)
   ; failures : (proc_error list * proc_state) list
   ; top_failure_handler : failure_handler_arg_type -> monad_ret_tp
-  ; type_checking_history : tc_history_elem list
-  ; unification_ctx : (int * A.t option) list
     (* this is the top-level failure handler for cutting off 
   backtracking. Useful a combinator to commit (e.g. if subsequent things fail, instead of 
     backtracking to the failure continuation that I am given, call this to return top level) *)
+  ; type_checking_history : tc_history_elem list
+  ; unification_ctx : (int * A.t option) list
   }
 
 and failure_handler_arg_type = proc_state
