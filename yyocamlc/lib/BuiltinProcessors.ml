@@ -181,7 +181,7 @@ let definition_end : binary_op =
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 definition_end_meta in
        let* defn_name_str = get_free_var name in
-       let* tp_id = Environment.lookup_binding defn_name_str in
+       let* tp_id = Environment.lookup_binding (Ext.get_str_content defn_name_str) in
        let* tp = Environment.lookup_constant tp_id in
        match tp with
        | DataExpression { tp = tp_expr; tm = None } ->
@@ -381,6 +381,9 @@ let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
            | A.N (N.Declaration N.ConstructorDecl, _)
            | A.N (N.Declaration N.ConstantDecl, _)
            | A.N (N.Declaration N.TypeConstructorDecl, _)
+           | A.N (N.Declaration N.ModuleAliasDefn, _)
+           | A.N (N.Declaration (N.CheckedConstantDefn _), _)
+           | A.N (N.Declaration (N.CheckedDirectExpr _), _)
            | A.N (N.Declaration N.TypeDefn, _) -> None
            | A.N (N.Declaration N.CustomOperatorDecl, [ ([], op); ([], elab) ]) ->
              (match A.view op with

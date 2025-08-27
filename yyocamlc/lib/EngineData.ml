@@ -23,7 +23,6 @@ module A = YYAbt
 type ('a, 'b) map = ('a * 'b) list
 
 type t_constant =
-  | Type
   | TypeConstructor of
       { name : Ext.t_str
       ; id : int
@@ -233,7 +232,6 @@ let show_processor_entry (p : processor_entry) : string =
 
 let show_t_constant (c : t_constant) : string =
   match c with
-  | Type -> "Type"
   | TypeConstructor { name; id; tp } ->
     "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ string_of_int id ^ ", " ^ A.show_view tp ^ ")"
   | DataConstructor { name; id; tp } ->
