@@ -70,6 +70,8 @@ let pretty_print_expr (x : A.t) : string =
 let rec aka_print_expr (s : proc_state) (x : A.t) : string =
   match A.view x with
   | A.FreeVar name -> name
+  (* | A.N (N.Ap, [ ([], f); ([], targ) ]) ->
+    "(" ^ aka_print_expr s f ^ " " ^ aka_print_expr s targ ^ ")" *)
   | A.N (N.UnifiableTp id, []) ->
     (match List.assoc_opt id s.unification_ctx |> Option.join with
      | Some tp -> aka_print_expr s tp
@@ -89,7 +91,10 @@ let rec aka_print_expr (s : proc_state) (x : A.t) : string =
            | [] -> "DE"
            | (name, _) :: _ -> Ext.get_str_content name)
         | PatternVar { name; _ } -> Ext.get_str_content name)
-     | None -> "Constant(" ^ string_of_int id ^ ")")
+     | None ->
+       (match List.filter (fun (_, cod_id) -> cod_id = id) s.env with
+        | [] -> "Constant(" ^ string_of_int id ^ ")"
+        | (name, _) :: _ -> Ext.get_str_content name))
   | A.N (node_type, args) ->
     let arg_str =
       List.map

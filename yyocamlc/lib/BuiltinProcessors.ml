@@ -184,6 +184,8 @@ let definition_end : binary_op =
        let* defn_name_str = get_free_var name in
        let* tp_id = Environment.lookup_binding (Ext.get_str_content defn_name_str) in
        let* tp = Environment.lookup_constant tp_id in
+       (* we are now ready to type check, so we commit to the current choice *)
+       let* () = pcommit () in
        match tp with
        | DataExpression { tp = tp_expr; tm = None } ->
          let* checked_defn_body = TypeChecking.check_top defn tp_expr in
@@ -485,6 +487,7 @@ let module_reexport : binary_op =
                       aux (acc @ [ [], new_node ]) xs
                     | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
                  | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
+                 | A.N (N.Declaration (N.CheckedConstantDefn _), _) -> aux (acc @ [ [], x ]) xs
                  | A.N ((N.Declaration N.ConstantDecl as _hd), ([], _name) :: ([], _tp) :: _) ->
                    aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration N.TypeDefn, _) -> aux acc xs
@@ -1543,7 +1546,9 @@ let rec_let_in_mid3 : binary_op =
       (let* (bnd_name, type_expr, domain_expr, range_expr), per_ext = pop_prefix_op_operands_4 rec_let_in_mid3_meta in
        let* binding_name = get_binding_name bnd_name in
        let result_expr =
-         A.fold_with_extent (A.N (N.RecLetIn, [ [], type_expr; [], domain_expr; [ binding_name ], range_expr ])) per_ext
+         A.fold_with_extent
+           (A.N (N.RecLetIn, [ [], type_expr; [ binding_name ], domain_expr; [ binding_name ], range_expr ]))
+           per_ext
        in
        push_elem_on_input_acc_expr result_expr)
   ; shift_action = do_nothing_shift_action
@@ -1563,7 +1568,7 @@ let typing_annotation_start_meta =
 
 let typing_annotation_middle_meta =
   { id = typing_annotation_middle_uid
-  ; keyword = CS.new_t_string "也"
+  ; keyword = CS.new_t_string "者"
   ; left_fixity = FxComp typing_annotation_start_uid
   ; right_fixity = FxOp (Some 120)
   }

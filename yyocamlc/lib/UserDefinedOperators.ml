@@ -84,6 +84,16 @@ let rec name_resolve_result_elab (param_names : string list) (result : A.t) : A.
            args
     in
     return (A.fold_with_extent (A.N (N.Sequence Dot, args)) (A.get_extent_some result))
+  | A.N (N.ComponentFoldRight, args) ->
+    let* args =
+      psequence
+      @@ List.map
+           (fun (_, x) ->
+              let* arg = name_resolve_result_elab param_names x in
+              return ([], arg))
+           args
+    in
+    return (A.fold_with_extent (A.N (N.ComponentFoldRight, args)) (A.get_extent_some result))
   | A.N (N.Constant _, []) -> return result
   | _ ->
     pfail_with_ext

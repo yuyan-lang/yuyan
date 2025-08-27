@@ -208,6 +208,7 @@ let write_proc_state (s : proc_state) : unit proc_state_m = fun _s fc sc -> sc (
 
 let with_type_checking_history (msg : tc_history_elem) (cont : 'a proc_state_m) : 'a proc_state_m =
   let* s = get_proc_state () in
+  if !Flags.show_type_checking_progress then print_endline ("Type checking history: " ^ show_tc_history_elem s msg);
   let new_s = { s with type_checking_history = msg :: s.type_checking_history } in
   let* () = write_proc_state new_s in
   let* result = cont in

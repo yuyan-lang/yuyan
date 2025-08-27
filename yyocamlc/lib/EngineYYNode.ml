@@ -103,7 +103,7 @@ module YYNode = struct
     | ExternalCall _ -> None (* external call is a special case, arguments appear directly *)
     | IfThenElse -> Some [ 0; 0; 0 ] (* if, then, else *)
     | LetIn -> Some [ 0; 1 ] (* let, in, expr *)
-    | RecLetIn -> Some [ 0; 0; 1 ] (* rec let type, defn, in expr *)
+    | RecLetIn -> Some [ 0; 1; 1 ] (* rec let type, defn, in expr *)
     | Constant _ -> Some []
     | UnifiableTp _ -> Some []
     | ComponentFoldRight -> Some [ 0; 0; 0 ]
