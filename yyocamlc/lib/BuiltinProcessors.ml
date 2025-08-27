@@ -395,7 +395,9 @@ let add_module_expr_defined_names_to_env (m : A.t) : unit proc_state_m =
 ;;
 
 let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
-  let all_names =
+  let* all_names =
+    psequence
+    @@
     match A.view m with
     | A.N (N.ModuleDef, args) ->
       List.filter_map
@@ -412,8 +414,9 @@ let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
            | A.N (N.Declaration N.CustomOperatorDecl, [ ([], op); ([], elab) ]) ->
              (match A.view op with
               | A.N (N.Builtin (N.CustomOperatorString x), []) ->
-                let all_ops = UserDefinedOperators.get_operators x elab in
-                Some all_ops
+                Some
+                  (let* all_ops, _ = UserDefinedOperators.get_operators_m x elab in
+                   return all_ops)
               | _ -> failwith ("BP279: Expected a string but got " ^ A.show_view op))
            | _ -> print_failwith ("BP483: Expected a Declaration but got " ^ A.show_view arg))
         args
@@ -1359,9 +1362,12 @@ let enumeration_comma_sequence : binary_op =
 let custom_operator_decl_start : unit proc_state_m =
   let* _ = read_one_of_string [ CS.new_t_string "术" ] in
   let* defn, defn_ext = scan_until_one_of_string [ CS.new_t_string "盖谓" ] in
-  (* precheck if operators can be get *)
-  let* _ = UserDefinedOperators.get_operators_m defn (A.fold_with_extent (A.FreeVar "TRIVIAL") defn_ext) in
-  (* if we can get operators (meaning this is at least well-formed, push the scanned thing onto the stack)*)
+  (* NO precheck if operators can be get *)
+  (* let* _ = UserDefinedOperators.get_operators_m defn (A.fold_with_extent (A.FreeVar "TRIVIAL") defn_ext) in *)
+  (* if we can get operators (meaning this is at least well-formed, push the scanned thing onto the stack)
+    
+    We can push the malformed thing, it will be rejected later. It is fine.
+    *)
   push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Builtin (N.CustomOperatorString defn), [])) defn_ext)
 ;;
 
@@ -1401,7 +1407,7 @@ let custom_operator_decl_end : binary_op =
        let* defn, defn_ext = pop_input_acc_expr () in
        match A.view defn with
        | A.N (N.Builtin (N.CustomOperatorString oper_str), []) ->
-         let* new_ops = UserDefinedOperators.get_operators_m oper_str result in
+         let* new_ops, result = UserDefinedOperators.get_operators_m oper_str result in
          let* () =
            push_elem_on_input_acc_expr
              (A.fold_with_extent

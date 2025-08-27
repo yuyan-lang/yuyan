@@ -55,7 +55,43 @@ let rec parse_operator_name (cur_acc : CS.t_string) (input : CS.t_string) : oper
     else parse_operator_name (cur_acc @ [ x ]) xs
 ;;
 
-let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
+let rec name_resolve_result_elab (param_names : string list) (result : A.t) : A.t proc_state_m =
+  match A.view result with
+  | A.FreeVar name ->
+    if List.mem name param_names
+    then return result
+    else
+      let* id = Environment.lookup_binding name in
+      return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some result))
+  | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
+    (match A.view f, A.view arg with
+     | A.FreeVar "《《组件右折叠》》", A.N (N.Sequence Dot, [ ([], f); ([], acc); ([], l) ]) ->
+       let* f = name_resolve_result_elab param_names f in
+       let* acc = name_resolve_result_elab param_names acc in
+       let* l = name_resolve_result_elab param_names l in
+       return (A.fold_with_extent (A.N (N.ComponentFoldRight, [ [], f; [], acc; [], l ])) (A.get_extent_some result))
+     | _ ->
+       let* f = name_resolve_result_elab param_names f in
+       let* targ = name_resolve_result_elab param_names arg in
+       return (A.fold_with_extent (A.N (N.Ap, [ [], f; [], targ ])) (A.get_extent_some result)))
+  | A.N (N.Sequence Dot, args) ->
+    let* args =
+      psequence
+      @@ List.map
+           (fun (_, x) ->
+              let* arg = name_resolve_result_elab param_names x in
+              return ([], arg))
+           args
+    in
+    return (A.fold_with_extent (A.N (N.Sequence Dot, args)) (A.get_extent_some result))
+  | A.N (N.Constant _, []) -> return result
+  | _ ->
+    pfail_with_ext
+      (__LOC__ ^ "UDO123: Do not know how to name resolve " ^ A.show_view result)
+      (A.get_extent_some result)
+;;
+
+let get_operators (input : CS.t_string) (result : A.t) : (binary_op list * A.t) proc_state_m =
   let components = ref (parse_operator_name [] input) in
   (* print_endline ("Components: " ^ String.concat ", " (List.map show_operator_component !components)); *)
   let global_leftfix, global_left_parameter_name =
@@ -103,6 +139,7 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
                 !components)
           @ [ global_right_parameter_name ]))
   in
+  let* result = name_resolve_result_elab parameter_names result in
   let components =
     List.filter_map
       (function
@@ -164,12 +201,12 @@ let get_operators (input : CS.t_string) (result : A.t) : binary_op list =
          })
       components
   in
-  final_components
+  return (final_components, result)
 ;;
 
-let get_operators_m (input : CS.t_string) (result : A.t) : binary_op list proc_state_m =
+let get_operators_m (input : CS.t_string) (result : A.t) : (binary_op list * A.t) proc_state_m =
   try
-    let operators = get_operators input result in
+    let* operators = get_operators input result in
     return operators
   with
   | Failure s -> pfail_with_ext s (A.get_extent_some result)

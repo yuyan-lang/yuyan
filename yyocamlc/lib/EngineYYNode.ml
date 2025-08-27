@@ -68,6 +68,7 @@ module YYNode = struct
     | RecLetIn
     | UnifiableTp of int
     | Constant of int (* uid of the constant *)
+    | ComponentFoldRight (* used for custom operators *)
 
   let arity (t : t) : int list option =
     match t with
@@ -105,7 +106,10 @@ module YYNode = struct
     | RecLetIn -> Some [ 0; 0; 1 ] (* rec let type, defn, in expr *)
     | Constant _ -> Some []
     | UnifiableTp _ -> Some []
+    | ComponentFoldRight -> Some [ 0; 0; 0 ]
   ;;
+
+  (* f acc init *)
 
   let show_builtin (b : builtin) : string =
     match b with
@@ -175,5 +179,6 @@ module YYNode = struct
     | RecLetIn -> "RecLetIn"
     | UnifiableTp uid -> "UnifiableTp(" ^ string_of_int uid ^ ")"
     | Constant uid -> "Constant(" ^ string_of_int uid ^ ")"
+    | ComponentFoldRight -> "ComponentFoldRight"
   ;;
 end
