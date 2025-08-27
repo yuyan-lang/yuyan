@@ -6,3 +6,10 @@ let failwith (msg : string) : 'a =
   (* Raise an exception *)
   failwith msg
 ;;
+
+let when_fail (msg : string) (f : unit -> 'a) : 'a =
+  try f () with
+  | Failure fmsg ->
+    print_endline ("Fail.when: " ^ msg);
+    failwith fmsg
+;;

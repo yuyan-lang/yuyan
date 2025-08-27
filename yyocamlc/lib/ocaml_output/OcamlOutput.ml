@@ -43,231 +43,6 @@ let get_or_create_var_id (env : var_env ref) (chinese_name : string) : string =
     new_name
 ;;
 
-let get_module_name_from_filepath (filepath : string) : string = "M_" ^ convert_to_ocaml_identifier_no_uid filepath
-
-let get_constructor_name (expr : A.t) : string =
-  match A.view expr with
-  | A.FreeVar name -> "C_" ^ convert_to_ocaml_identifier_no_uid name
-  | _ -> failwith ("OO33: Expecting free variable, got: " ^ A.show_view expr)
-;;
-
-let get_type_constructor_name (expr : A.t) : string =
-  match A.view expr with
-  | A.FreeVar name -> "t_" ^ convert_to_ocaml_identifier_no_uid name
-  | _ -> failwith ("OO33: Expecting free variable, got: " ^ A.show_view expr)
-;;
-
-let get_identifier_name (expr : A.t) : string =
-  match A.view expr with
-  | A.FreeVar name -> "v_" ^ convert_to_ocaml_identifier_no_uid name
-  | _ -> failwith ("OO33: Expecting free variable, got: " ^ A.show_view expr)
-;;
-
-let rec get_ocaml_type (tp_expr : A.t) : string =
-  match A.view tp_expr with
-  | A.N ((N.ExplicitPi | N.ImplicitPi), [ ([], cod); ([ _bound_name ], dom) ]) ->
-    "(" ^ get_ocaml_type cod ^ " -> " ^ get_ocaml_type dom ^ ")"
-  | A.N (N.Arrow, [ ([], cod); ([], dom) ]) -> "(" ^ get_ocaml_type cod ^ " -> " ^ get_ocaml_type dom ^ ")"
-  | A.N (N.StructureDeref _label, [ ([], _subject) ]) -> "dt" (* "dt " ^ label ^ " " *)
-  | A.FreeVar _name -> "dt" (* "dt " ^ name ^ " " *)
-  | A.N (N.Ap, _) -> "dt" (* "dt (* " ^ A.show_view tp_expr ^ " *) " *)
-  | A.N (N.Builtin N.Type, []) -> "unit (* this type should never appear *)"
-  | A.N (N.Builtin N.UnitType, []) -> "unit"
-  | A.N (N.Builtin N.IntType, []) -> "int"
-  | A.N (N.Builtin N.FloatType, []) -> "float"
-  | A.N (N.Builtin N.BoolType, []) -> "bool"
-  | A.N (N.Builtin N.StringType, []) -> "string"
-  | _ -> "(TODO OO47 tp_expr: " ^ A.show_view tp_expr ^ ")"
-;;
-
-let rec get_ocaml_constructor_type (tp_expr : A.t) : string list =
-  match A.view tp_expr with
-  | A.N ((N.ExplicitPi | N.ImplicitPi), [ ([], dom); ([ _ ], cod) ]) | A.N (N.Arrow, [ ([], cod); ([], dom) ]) ->
-    get_ocaml_type dom :: get_ocaml_constructor_type cod
-  | A.N (N.StructureDeref _label, [ ([], _subject) ]) -> [ (* ["dt " ^ label ^ " "] *) "dt" ]
-  | A.FreeVar _name -> [ (* ["dt " ^ name ^ " "] *) "dt" ]
-  | A.N (N.Ap, _) -> [ "dt" (* ["dt " ^ A.show_view tp_expr ^ " "] *) ]
-  | _ -> [ "(TODO OO57 cons_tp_expr: " ^ A.show_view tp_expr ^ ")" ]
-;;
-
-let get_ocaml_tp_expr (tp_expr : A.t) : string =
-  match A.view tp_expr with
-  | A.FreeVar _ -> "dt"
-  | A.N (N.Builtin N.Type, []) -> "'a"
-  | A.N (N.StructureDeref _, _) -> "structure_deref_TODO"
-  | _ -> failwith ("OO 78: Not yet implemented, got: " ^ A.show_view tp_expr)
-;;
-
-let get_ocaml_type_constructor_type (tp_expr : A.t) : string =
-  let rec aux (tp_expr : A.t) : A.t list =
-    match A.view tp_expr with
-    | A.N ((N.ExplicitPi | N.ImplicitPi), [ ([], _dom); ([ _ ], _cod) ]) ->
-      Fail.failwith "OO 88: Higher-order kinds not supported"
-    | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> dom :: aux cod
-    | A.N (N.Builtin N.Type, []) -> []
-    | A.FreeVar "元类型" -> []
-    | _ -> [ tp_expr ]
-    (* | _ -> Fail.failwith ("(TODO OO72 tp_expr: " ^ A.show_view tp_expr ^ ")") *)
-  in
-  let tps = aux tp_expr |> List.map get_ocaml_tp_expr in
-  match tps with
-  | [] -> ""
-  | [ tp ] -> tp
-  | _ -> "(" ^ String.concat ", " tps ^ ")"
-;;
-
-let rec get_ocaml_code_for_pattern (pattern : A.t) : string =
-  (* TODO: pattern match elaboration *)
-  match A.view pattern with
-  | A.FreeVar _ -> get_identifier_name pattern
-  | A.N (N.Ap, ([], func) :: args) ->
-    (match A.view func with
-     | A.FreeVar _ ->
-       get_constructor_name func
-       ^ " ("
-       ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args)
-       ^ ")"
-     | _ ->
-       get_ocaml_code_for_pattern func
-       ^ " ("
-       ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args)
-       ^ ")")
-  | A.N (N.Sequence Dot, args) ->
-    "(" ^ String.concat ", " (List.map (fun x -> snd x |> get_ocaml_code_for_pattern) args) ^ ")"
-  | A.N (N.StructureDeref label, [ ([], subject) ]) ->
-    (match A.view subject with
-     | A.N (N.FileRef filepath, []) ->
-       get_module_name_from_filepath filepath ^ "." ^ get_constructor_name (A.free_var label)
-     | _ -> Fail.failwith ("OO94: Not yet implemented, got: " ^ A.show_view pattern))
-  | A.N (N.Builtin (N.String s), []) -> "(Builtin.C_BuiltinStringValue \"" ^ String.escaped s ^ "\")"
-  | A.N (N.Builtin (N.Int i), []) -> "(Builtin.C_BuiltinIntValue " ^ string_of_int i ^ ")"
-  | A.N (N.Builtin N.Unit, []) -> "(Builtin.C_BuiltinUnitValue)"
-  | A.N (N.Builtin (N.Bool true), []) -> "Builtin.C_BuiltinTrueValue"
-  | A.N (N.Builtin (N.Bool false), []) -> "Builtin.C_BuiltinFalseValue"
-  | _ -> Fail.failwith ("OO86: Not yet implemented, got: " ^ A.show_view pattern)
-;;
-
-let rec get_ocaml_code (expr : A.t) : string =
-  match A.view expr with
-  | A.N (N.Builtin StringType, []) -> "Builtin.stringType"
-  | A.N (N.Builtin IntType, []) -> "Builtin.intType"
-  | A.N (N.Builtin BoolType, []) -> "Builtin.boolType"
-  | A.N (N.Builtin UnitType, []) -> "Builtin.unitType"
-  | A.N (N.Builtin FloatType, []) -> "Builtin.floatType"
-  | A.N (N.Builtin Type, []) -> "Builtin.typeType"
-  | A.N (N.Builtin (N.Int i), []) -> "(Builtin.intValue " ^ string_of_int i ^ ")"
-  | A.N (N.Builtin (N.Float (int_part, decimal_part)), []) ->
-    "(Builtin.floatValue " ^ int_part ^ "." ^ decimal_part ^ ")"
-  | A.N (N.Builtin (N.String s), []) -> "(Builtin.stringValue " ^ "\"" ^ String.escaped s ^ "\")"
-  | A.N (N.Builtin N.Unit, []) -> "Builtin.unitValue"
-  | A.N (N.Builtin (N.Bool true), []) -> "Builtin.trueValue"
-  | A.N (N.Builtin (N.Bool false), []) -> "Builtin.falseValue"
-  | A.N (N.Builtin N.RaiseException, []) -> "Builtin.raiseException"
-  | A.N (N.ExternalCall name, []) -> "ExternalCall." ^ name
-  | A.N (N.Lam, [ ([ name ], body) ]) -> "fun " ^ get_identifier_name (A.free_var name) ^ "-> " ^ get_ocaml_code body
-  | A.FreeVar _name -> get_identifier_name expr (* ^ "" ^ name ^ "" *)
-  | A.N (N.Ap, [ ([], func); ([], arg) ]) -> "(" ^ get_ocaml_code func ^ " " ^ get_ocaml_code arg ^ ")"
-  | A.N (N.FileRef filepath, []) -> "(module " ^ get_module_name_from_filepath filepath ^ ")"
-  | A.N (N.IfThenElse, [ ([], cond); ([], then_branch); ([], else_branch) ]) ->
-    "(if Builtin.yy_dt_to_bool ("
-    ^ get_ocaml_code cond
-    ^ ") then "
-    ^ get_ocaml_code then_branch
-    ^ " else "
-    ^ get_ocaml_code else_branch
-    ^ ")"
-  | A.N (N.StructureDeref label, [ ([], subject) ]) ->
-    "(" ^ get_ocaml_code subject ^ ")." ^ get_identifier_name (A.free_var label)
-  | A.N (N.Match, ([], subject) :: cases) ->
-    let get_ocaml_code_for_case (case : A.t) : string =
-      match A.view case with
-      | A.N (N.MatchCase, [ ([], pattern); ([], body) ]) ->
-        "| (" ^ get_ocaml_code_for_pattern pattern ^ ") -> (" ^ get_ocaml_code body ^ ")"
-      | _ -> Fail.failwith ("OO232: Expecting match case, got: " ^ A.show_view case)
-    in
-    "(match ("
-    ^ get_ocaml_code subject
-    ^ ") with "
-    ^ String.concat " " (List.map (fun (_, case) -> get_ocaml_code_for_case case) cases)
-    ^ ")"
-  | A.N (N.Sequence Dot, args) -> "(" ^ String.concat "," (List.map (fun x -> snd x |> get_ocaml_code) args) ^ ")"
-  | _ -> "(TODO OO25 expr: " ^ A.show_view expr ^ ")"
-;;
-
-(* | _ -> failwith ("OO5: OCaml output not implemented for expression: " ^ A.show_view expr) *)
-
-let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t list) : string =
-  match A.view decl, decls with
-  | A.N (N.Declaration N.ConstantDecl, [ ([], decl_name); ([], decl_value) ]), [ defn ] ->
-    (match A.view defn with
-     | A.N (N.Declaration N.ConstantDefn, [ ([], defn_name); ([], defn_value) ]) ->
-       (match A.view decl_name, A.view defn_name with
-        | A.FreeVar decl_name, A.FreeVar defn_name ->
-          if decl_name <> defn_name
-          then failwith ("OO196: Declaration and definition names do not match: " ^ decl_name ^ " <> " ^ defn_name);
-          "let rec "
-          ^ get_identifier_name (A.free_var decl_name)
-          ^ " : "
-          ^ get_ocaml_type decl_value
-          ^ " = "
-          ^ get_ocaml_code defn_value
-        | _ ->
-          failwith ("OO199: Expecting free variable, got: " ^ A.show_view decl_name ^ " and " ^ A.show_view defn_name))
-     | _ -> failwith ("OO200: Expecting constant definition, got: " ^ A.show_view defn))
-  | A.N (N.Declaration N.DirectExpr, [ ([], expr) ]), [] -> "let _direct_expr = " ^ get_ocaml_code expr
-  | A.N (N.Declaration N.TypeDefn, [ ([], name); ([], value) ]), [] ->
-    "type " ^ get_identifier_name name ^ " = " ^ get_ocaml_type value
-  | A.N (N.Declaration N.ModuleAliasDefn, [ ([], alias_name); ([], target) ]), [] ->
-    (match A.view alias_name with
-     | A.FreeVar alias_name -> "module " ^ convert_to_ocaml_identifier_no_uid alias_name ^ " = " ^ get_ocaml_code target
-     | _ ->
-       Fail.failwith ("OO220: Expecting free variable, got: " ^ A.show_view alias_name ^ " and " ^ A.show_view target))
-  | A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); ([], value) ]), _ ->
-    (match A.view name with
-     | A.FreeVar sname ->
-       let args = get_ocaml_type_constructor_type value in
-       "(* "
-       ^ sname
-       ^ " type cons *)\n"
-       ^ "type "
-       ^ args
-       ^ " "
-       ^ get_type_constructor_name name
-       ^ " = "
-       ^ String.concat
-           " | "
-           (Fun.flip List.map decls (fun decl ->
-              match A.view decl with
-              | A.N (N.Declaration N.ConstructorDecl, [ ([], name); ([], value) ]) ->
-                (match A.view name with
-                 | A.FreeVar sname ->
-                   let args = get_ocaml_constructor_type value in
-                   let args_literals =
-                     List.map (fun arg -> "v_" ^ string_of_int arg) (ListUtil.range 0 (List.length args))
-                   in
-                   "(* "
-                   ^ sname
-                   ^ " cons *)\n"
-                   ^ "type dt += "
-                   ^ get_constructor_name name
-                   ^ " of "
-                   ^ String.concat " * " args
-                   ^ "\n"
-                   ^ "let "
-                   ^ get_identifier_name name
-                   ^ " "
-                   ^ String.concat " " args_literals
-                   ^ " = "
-                   ^ get_constructor_name name
-                   ^ " ("
-                   ^ String.concat "," args_literals
-                   ^ ")"
-                 | _ -> failwith ("OO228: Expecting free variable, got: " ^ A.show_view name))
-              | _ -> failwith ("OO229: Expecting constructor declaration, got: " ^ A.show_view decl)))
-     | _ -> failwith ("OO230: Expecting free var got " ^ A.show_view name))
-  | _ -> failwith ("OO231: Expecting type constructor declaration, got: " ^ A.show_view decl)
-;;
-
 let lookup_constant_id (id : int) : t_constant =
   match List.assoc_opt id (CompilationCache.get_all_constants ()) with
   | Some x -> x
@@ -275,9 +50,77 @@ let lookup_constant_id (id : int) : t_constant =
 ;;
 
 let get_comment_str (str : string) : string = "(* " ^ str ^ " *)"
+let annotate_with_name (str : string) : string = " " ^ get_comment_str str
 let get_comment_ext_str (ext_str : Ext.t_str) : string = get_comment_str (Ext.get_str_content ext_str)
+let annotate_with_name_ext (ext_str : Ext.t_str) : string = " " ^ get_comment_ext_str ext_str
 
-let rec get_type_code (env : var_env) (tp : A.t) : string =
+let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string =
+  (* TODO: pattern match elaboration *)
+  match A.view pattern with
+  | A.N (N.Builtin (N.String _), [])
+  | A.N (N.Builtin (N.Int _), [])
+  | A.N (N.Builtin N.Unit, [])
+  | A.N (N.Builtin (N.Bool _), []) -> get_ocaml_code var_env pattern
+  | A.N (N.Sequence Dot, elems) ->
+    "(" ^ String.concat ", " (List.map (fun (_, x) -> get_ocaml_code_for_pattern var_env x) elems) ^ ")"
+  | A.N (N.Constant id, []) ->
+    (match lookup_constant_id id with
+     | DataConstructor { name; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
+     | PatternVar { name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
+     | tcons -> Fail.failwith (__LOC__ ^ ": Expecting data constructor, got: " ^ EngineDataPrint.show_t_constant tcons))
+  | A.N (N.Ap, [ ([], func); ([], arg) ]) ->
+    "(" ^ get_ocaml_code_for_pattern var_env func ^ " " ^ get_ocaml_code_for_pattern var_env arg ^ ")"
+  | _ -> Fail.failwith (__LOC__ ^ ": Not yet implemented, got: " ^ A.show_view pattern)
+
+and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
+  match A.view expr with
+  | A.N (N.Builtin (N.Int i), []) -> string_of_int i
+  | A.N (N.Builtin (N.Float (int_part, decimal_part)), []) -> int_part ^ "." ^ decimal_part
+  | A.N (N.Builtin (N.String s), []) -> "\"" ^ String.escaped s ^ "\""
+  | A.N (N.Builtin N.Unit, []) -> "()"
+  | A.N (N.Builtin (N.Bool true), []) -> "true"
+  | A.N (N.Builtin (N.Bool false), []) -> "false"
+  | A.N (N.Lam, [ ([ name ], body) ]) ->
+    let env', v_name = add_var_env var_env name in
+    "(fun " ^ v_name ^ "-> " ^ get_ocaml_code env' body ^ ")"
+  | A.FreeVar name -> lookup_var_env var_env name
+  | A.N (N.Ap, [ ([], func); ([], arg) ]) -> "(" ^ get_ocaml_code var_env func ^ " " ^ get_ocaml_code var_env arg ^ ")"
+  | A.N (N.IfThenElse, [ ([], cond); ([], then_branch); ([], else_branch) ]) ->
+    "(if ("
+    ^ get_ocaml_code var_env cond
+    ^ ") then "
+    ^ get_ocaml_code var_env then_branch
+    ^ " else "
+    ^ get_ocaml_code var_env else_branch
+    ^ ")"
+  | A.N (N.Match, ([], subject) :: cases) ->
+    let get_ocaml_code_for_case (case : A.t) : string =
+      match A.view case with
+      | A.N (N.MatchCase, [ ([], pattern); ([], body) ]) ->
+        "| (" ^ get_ocaml_code_for_pattern var_env pattern ^ ") -> (" ^ get_ocaml_code var_env body ^ ")"
+      | _ -> Fail.failwith ("OO232: Expecting match case, got: " ^ A.show_view case)
+    in
+    "(match ("
+    ^ get_ocaml_code var_env subject
+    ^ ") with "
+    ^ String.concat " " (List.map (fun (_, case) -> get_ocaml_code_for_case case) cases)
+    ^ ")"
+  | A.N (N.Sequence Dot, args) ->
+    "(" ^ String.concat "," (List.map (fun x -> snd x |> get_ocaml_code var_env) args) ^ ")"
+  | A.N (N.ImplicitLam, [ ([ bnd ], body) ]) ->
+    let env', bnd_name = add_var_env var_env bnd in
+    get_comment_str ("(type " ^ bnd_name ^ annotate_with_name bnd ^ " )") ^ get_ocaml_code env' body
+  | A.N (N.ImplicitAp, [ ([], func); ([], targ) ]) ->
+    "(" ^ get_ocaml_code var_env func ^ " " ^ get_comment_str (get_type_code var_env targ) ^ ")"
+  | A.N (N.ExternalCall fname, args) ->
+    "(" ^ fname ^ " (" ^ String.concat ", " (List.map (fun (_, x) -> get_ocaml_code var_env x) args) ^ "))"
+  | A.N (N.Constant id, []) ->
+    (match lookup_constant_id id with
+     | TypeConstructor { name; _ } -> "t_" ^ string_of_int id ^ annotate_with_name_ext name
+     | tcons -> Fail.failwith (__LOC__ ^ ": Expecting type constructor, got: " ^ EngineDataPrint.show_t_constant tcons))
+  | _ -> Fail.failwith (__LOC__ ^ ": Not yet implemented, got: " ^ A.show_view expr)
+
+and get_type_code (env : var_env) (tp : A.t) : string =
   match A.view tp with
   | A.FreeVar name -> "'" ^ lookup_var_env env name
   | A.N (N.Ap, [ ([], func); ([], arg) ]) -> get_type_code env arg ^ " " ^ get_type_code env func
@@ -286,6 +129,16 @@ let rec get_type_code (env : var_env) (tp : A.t) : string =
      | TypeConstructor _ -> "t_" ^ string_of_int id
      | _ -> Fail.failwith (__LOC__ ^ ": Expecting type constructor, got: " ^ string_of_int id))
   | A.N (N.Sequence Comma, args) -> "(" ^ String.concat " * " (List.map (fun (_, x) -> get_type_code env x) args) ^ ")"
+  | A.N (N.Builtin StringType, []) -> "string"
+  | A.N (N.Builtin IntType, []) -> "int"
+  | A.N (N.Builtin BoolType, []) -> "bool"
+  | A.N (N.Builtin UnitType, []) -> "unit"
+  | A.N (N.Builtin FloatType, []) -> "float"
+  | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> "(" ^ get_type_code env dom ^ " -> " ^ get_type_code env cod ^ ")"
+  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
+    let env', y_name = add_var_env env bnd in
+    get_comment_str ("'" ^ y_name) ^ get_type_code env' cod
+  | A.N (N.UnifiableTp id, []) -> "?" ^ string_of_int id
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting free variable, got: " ^ A.show_view tp)
 ;;
 
@@ -343,12 +196,49 @@ let generate_type_definitions (constants : t_constants) : string =
          | _ -> None)
       constants
   in
-  if List.length all_type_defs = 0 then "" else "type " ^ String.concat "\nand\n" all_type_defs
+  if List.length all_type_defs = 0 then "" else "type\n" ^ String.concat "\nand\n" all_type_defs
 ;;
 
 let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants : t_constants) : string =
   match A.view module_expr with
-  | A.N (N.ModuleDef, _) -> get_comment_str filepath ^ "\n\n" ^ generate_type_definitions constants
+  | A.N (N.ModuleDef, decls) ->
+    get_comment_str filepath
+    ^ "\n\n"
+    ^ generate_type_definitions constants
+    ^ String.concat
+        "\n"
+        (List.map
+           (fun (_, decl) ->
+              match A.view decl with
+              | A.N (N.Declaration N.CustomOperatorDecl, _) -> get_comment_str ("Not Impl: " ^ A.show_view decl)
+              | A.N (N.Declaration N.ModuleAliasDefn, _) -> get_comment_str ("Not Impl: " ^ A.show_view decl)
+              | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
+                (match lookup_constant_id id with
+                 | DataExpression { tp; tm = Some tm } ->
+                   let is_recursive = List.mem id (AbtUtil.get_referenced_constant_ids tm) in
+                   get_comment_ext_str name
+                   ^ "\n"
+                   ^ "let "
+                   ^ (if is_recursive then "rec " else "")
+                   ^ "v_"
+                   ^ string_of_int id
+                   ^ " : "
+                   ^ get_type_code empty_var_env tp
+                   ^ " = "
+                   ^ get_ocaml_code empty_var_env tm
+                   ^ "\n"
+                 | TypeConstructor _ | DataConstructor _ -> ""
+                 | TypeExpression tp ->
+                   get_comment_ext_str name
+                   ^ "\n"
+                   ^ "type t_"
+                   ^ string_of_int id
+                   ^ " = "
+                   ^ get_type_code empty_var_env tp
+                 | tcons ->
+                   Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant tcons))
+              | _ -> Fail.failwith (__LOC__ ^ ": Doesn't know how to handle declaration: " ^ A.show_view decl))
+           decls)
   | _ -> failwith ("OO30: Expecting module expression, got: " ^ A.show_view module_expr)
 ;;
 
