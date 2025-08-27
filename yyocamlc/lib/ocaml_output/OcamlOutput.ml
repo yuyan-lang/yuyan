@@ -120,8 +120,10 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     let env', _bnd_name = add_var_env var_env bnd in
     (* get_comment_str ("(type " ^ bnd_name ^ annotate_with_name bnd ^ " )") ^  *)
     get_ocaml_code env' body
-  | A.N (N.ImplicitAp, [ ([], func); ([], targ) ]) ->
-    "(" ^ get_ocaml_code var_env func ^ " " ^ get_comment_str (get_type_code var_env targ) ^ ")"
+  | A.N (N.ImplicitAp, [ ([], func); ([], _targ) ]) ->
+    (* "(" ^  *)
+    get_ocaml_code var_env func
+    (* ^ " " ^ get_comment_str (get_type_code var_env targ) ^ ")" *)
   | A.N (N.ExternalCall fname, args) ->
     "(" ^ fname ^ " " ^ String.concat " " (List.map (fun (_, x) -> get_ocaml_code var_env x) args) ^ ")"
   | A.N (N.CheckedTupleDeref { idx; len }, [ ([], tuple) ]) ->
