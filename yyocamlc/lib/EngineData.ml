@@ -37,7 +37,10 @@ type t_constant =
       { tp : A.t
       ; tm : A.t option (* is None if it is a recursive definition (forward declaration only)*)
       }
-  | PatternVar of { tp : A.t }
+  | PatternVar of
+      { tp : A.t
+      ; name : Ext.t_str
+      }
 
 type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *)) list
 type t_constants = (int * t_constant) list
@@ -110,6 +113,7 @@ and proc_state =
   ; failures : (proc_error list * proc_state) list
   ; top_failure_handler : failure_handler_arg_type -> monad_ret_tp
   ; type_checking_history : tc_history_elem list
+  ; unification_ctx : (int * A.t option) list
     (* this is the top-level failure handler for cutting off 
   backtracking. Useful a combinator to commit (e.g. if subsequent things fail, instead of 
     backtracking to the failure continuation that I am given, call this to return top level) *)

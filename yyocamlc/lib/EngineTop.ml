@@ -160,6 +160,7 @@ let run_top_level (filename : string) (content : string) : A.t * t_constants =
                     s.failures));
           failwith "Compilation Failed")
     ; type_checking_history = []
+    ; unification_ctx = []
     }
   in
   let exception Return of A.t * t_constants in

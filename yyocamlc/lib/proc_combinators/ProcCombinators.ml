@@ -217,7 +217,7 @@ let with_type_checking_history (msg : tc_history_elem) (cont : 'a proc_state_m) 
     let new_s = { s with type_checking_history = tail } in
     let* () = write_proc_state new_s in
     return result
-  | _ -> pfail ("PC209: Type checking history mismatch: " ^ show_tc_history_elem msg)
+  | _ -> pfail ("PC209: Type checking history mismatch: " ^ show_tc_history_elem s msg)
 ;;
 
 (* let clear_type_checking_history () : unit proc_state_m =

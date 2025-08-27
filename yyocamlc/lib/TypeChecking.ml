@@ -2,24 +2,27 @@ open EngineData
 open! ProcCombinators
 module Env = Environment
 
-type unification_ctx = (int * A.t option) list
-
-let global_unification_ctx : unification_ctx ref = ref []
-
-let add_to_global_unification_ctx (uid : int) (tp : A.t option) : unit =
-  global_unification_ctx := (uid, tp) :: !global_unification_ctx
+let add_to_global_unification_ctx (uid : int) (tp : A.t option) : unit proc_state_m =
+  let* s = get_proc_state () in
+  let new_ctx = (uid, tp) :: s.unification_ctx in
+  write_proc_state { s with unification_ctx = new_ctx }
 ;;
 
-let get_from_global_unification_ctx (uid : int) : A.t option = List.assoc_opt uid !global_unification_ctx |> Option.join
+let get_from_global_unification_ctx (uid : int) : A.t option proc_state_m =
+  let* s = get_proc_state () in
+  return (List.assoc_opt uid s.unification_ctx |> Option.join)
+;;
 
-let set_global_unification_ctx (uid : int) (tp : A.t) : unit =
-  if List.mem_assoc uid !global_unification_ctx
+let set_global_unification_ctx (uid : int) (tp : A.t) : unit proc_state_m =
+  let* s = get_proc_state () in
+  if List.mem_assoc uid s.unification_ctx
   then
-    global_unification_ctx
-    := List.map
-         (fun (cur_uid, cur_tp) -> if cur_uid = uid then uid, Some tp else cur_uid, cur_tp)
-         !global_unification_ctx
-  else failwith ("uid " ^ string_of_int uid ^ " not found in global unification context")
+    write_proc_state
+      { s with
+        unification_ctx =
+          List.map (fun (cur_uid, cur_tp) -> if cur_uid = uid then uid, Some tp else cur_uid, cur_tp) s.unification_ctx
+      }
+  else pfail ("uid " ^ string_of_int uid ^ " not found in global unification context")
 ;;
 
 (* Bidirectional type checking skeleton *)
@@ -67,7 +70,8 @@ let rec normalize_type (tp : A.t) : A.t proc_state_m =
         | DataExpression _ | PatternVar _ | DataConstructor _ ->
           pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
   | A.N (N.UnifiableTp uid, []) ->
-    (match get_from_global_unification_ctx uid with
+    let* tp_deref = get_from_global_unification_ctx uid in
+    (match tp_deref with
      | None -> return tp
      | Some tp -> normalize_type tp)
   | _ -> return tp
@@ -98,10 +102,10 @@ let rec type_unify (free_var_names : (string * A.t option) list) (tp1 : A.t) (tp
   in
   match A.view normalized_tp1, A.view normalized_tp2 with
   | A.N (N.UnifiableTp uid, []), _ ->
-    set_global_unification_ctx uid normalized_tp2;
+    let* () = set_global_unification_ctx uid normalized_tp2 in
     return free_var_names
   | _, A.N (N.UnifiableTp uid, []) ->
-    set_global_unification_ctx uid normalized_tp1;
+    let* () = set_global_unification_ctx uid normalized_tp1 in
     return free_var_names
   | A.N (N.Builtin N.StringType, []), A.N (N.Builtin N.StringType, []) -> return free_var_names
   | A.N (N.Builtin N.IntType, []), A.N (N.Builtin N.IntType, []) -> return free_var_names
@@ -245,7 +249,7 @@ let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_stat
   match A.view normalized_expr_tp with
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
     let id = Uid.next () in
-    let _ = add_to_global_unification_ctx id None in
+    let* () = add_to_global_unification_ctx id None in
     let new_var = A.fold_with_extent (A.N (N.UnifiableTp id, [])) (A.get_extent_some expr) in
     let cod = A.subst new_var bnd cod in
     let new_expr = A.fold_with_extent (A.N (N.ImplicitAp, [ [], expr; [], new_var ])) (A.get_extent_some expr) in
@@ -483,7 +487,7 @@ and pattern_fill_implicit_args (pat : A.t) (pat_tp : A.t) : (A.t * A.t) proc_sta
   match A.view pat_tp with
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
     let id = Uid.next () in
-    let _ = add_to_global_unification_ctx id None in
+    let* () = add_to_global_unification_ctx id None in
     let new_var = A.fold_with_extent (A.N (N.UnifiableTp id, [])) (A.get_extent_some pat) in
     let cod = A.subst new_var bnd cod in
     (* TODO: head spine form for implicit arg apps *)
@@ -503,7 +507,10 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
      | Some _, _ (* local var, shadowing*) | None, None ->
        (* fresh var *)
        (* this is a new var*)
-       let* id = Environment.add_constant (PatternVar { tp = scrut_tp }) in
+       let* id =
+         Environment.add_constant
+           (PatternVar { tp = scrut_tp; name = Ext.str_with_extent name (A.get_extent_some pat) })
+       in
        let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
        let case_body = A.subst pat name case_body in
        return (env, pat, case_body)

@@ -33,6 +33,23 @@ let show_parsing_elem (p : parsing_elem) : string =
   | BoundScannedString s -> "BoundScannedString(" ^ show_string (CS.get_t_string s) ^ ")"
 ;;
 
+let show_t_constant (c : t_constant) : string =
+  match c with
+  | TypeConstructor { name; tp } -> "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ")"
+  | DataConstructor { name; tp; tp_id } ->
+    "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ", " ^ string_of_int tp_id ^ ")"
+  | TypeExpression tp -> "TypeExpression(" ^ A.show_view tp ^ ")"
+  | DataExpression { tp; tm } ->
+    "DataExpression("
+    ^ A.show_view tp
+    ^ ", "
+    ^ (match tm with
+       | None -> "None"
+       | Some tm -> A.show_view tm)
+    ^ ")"
+  | PatternVar { tp; name } -> "PatternVar(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ")"
+;;
+
 let pretty_print_expr (x : A.t) : string =
   match A.view x with
   | A.N (N.ModuleDef, args) ->
@@ -48,6 +65,39 @@ let pretty_print_expr (x : A.t) : string =
        ^ ")"
      | _ -> A.show_view x)
   | _ -> A.show_view x
+;;
+
+let rec aka_print_expr (s : proc_state) (x : A.t) : string =
+  match A.view x with
+  | A.FreeVar name -> name
+  | A.N (N.UnifiableTp id, []) ->
+    (match List.assoc_opt id s.unification_ctx |> Option.join with
+     | Some tp -> aka_print_expr s tp
+     | None -> "?" ^ string_of_int id)
+  | A.N (N.Constant id, []) ->
+    (match List.assoc_opt id s.constants with
+     | Some c ->
+       (match c with
+        | TypeConstructor { name; _ } -> Ext.get_str_content name
+        | DataConstructor { name; _ } -> Ext.get_str_content name
+        | TypeExpression _ ->
+          (match List.filter (fun (_, cod_id) -> cod_id = id) s.env with
+           | [] -> "TE"
+           | (name, _) :: _ -> Ext.get_str_content name)
+        | DataExpression _ ->
+          (match List.filter (fun (_, cod_id) -> cod_id = id) s.env with
+           | [] -> "DE"
+           | (name, _) :: _ -> Ext.get_str_content name)
+        | PatternVar { name; _ } -> Ext.get_str_content name)
+     | None -> "Constant(" ^ string_of_int id ^ ")")
+  | A.N (node_type, args) ->
+    let arg_str =
+      List.map
+        (fun (bound_vars, arg) -> String.concat "" (List.map (fun v -> v ^ ".") bound_vars) ^ "" ^ aka_print_expr s arg)
+        args
+    in
+    let arg_str = "[" ^ String.concat "; " arg_str ^ "]" in
+    YYNode.show node_type ^ "" ^ arg_str
 ;;
 
 let show_input_acc_elem (x : input_acc_elem) : string =
@@ -82,23 +132,6 @@ let show_processor_entry (p : processor_entry) : string =
     "ProcEntry: " ^ name ^ ", id=" ^ string_of_int id ^ ", processor: " ^ show_processor processor
 ;;
 
-let show_t_constant (c : t_constant) : string =
-  match c with
-  | TypeConstructor { name; tp } -> "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ")"
-  | DataConstructor { name; tp; tp_id } ->
-    "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ", " ^ string_of_int tp_id ^ ")"
-  | TypeExpression tp -> "TypeExpression(" ^ A.show_view tp ^ ")"
-  | DataExpression { tp; tm } ->
-    "DataExpression("
-    ^ A.show_view tp
-    ^ ", "
-    ^ (match tm with
-       | None -> "None"
-       | Some tm -> A.show_view tm)
-    ^ ")"
-  | PatternVar { tp } -> "PatternVar(" ^ A.show_view tp ^ ")"
-;;
-
 let show_t_constant_short (c : t_constant) : string =
   match c with
   | TypeConstructor _ -> "TC"
@@ -113,11 +146,11 @@ let show_t_constant_short (c : t_constant) : string =
   | PatternVar _ -> "PV"
 ;;
 
-let show_tc_history_elem (h : tc_history_elem) : string =
+let show_tc_history_elem (s : proc_state) (h : tc_history_elem) : string =
   match h with
-  | HistOne (s, e) -> s ^ A.show_view e ^ " aka " ^ s ^ pretty_print_expr e
+  | HistOne (msg, e) -> msg ^ aka_print_expr s e ^ " aka " ^ msg ^ A.show_view e
   | HistTwo (s1, e1, s2, e2) ->
-    s1 ^ A.show_view e1 ^ s2 ^ A.show_view e2 ^ " aka " ^ s1 ^ pretty_print_expr e1 ^ s2 ^ pretty_print_expr e2
+    s1 ^ aka_print_expr s e1 ^ s2 ^ aka_print_expr s e2 ^ " aka " ^ s1 ^ A.show_view e1 ^ s2 ^ A.show_view e2
 ;;
 
 let show_proc_state (s : proc_state) : string =
@@ -154,6 +187,6 @@ let show_proc_state (s : proc_state) : string =
   ^ "\nconstants: "
   ^ String.concat ", " (List.map (fun (id, c) -> string_of_int id ^ ":" ^ show_t_constant_short c) s.constants)
   ^ "\ntype_checking_history: "
-  ^ String.concat "\n" (List.map (fun s -> " - " ^ show_tc_history_elem s) s.type_checking_history)
+  ^ String.concat "\n" (List.map (fun h -> " - " ^ show_tc_history_elem s h) s.type_checking_history)
 ;;
 (* "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  *)
