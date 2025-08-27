@@ -1,8 +1,8 @@
 open EngineData
 
-let compiled_files : (string, A.t) map ref = ref []
+let compiled_files : (string, A.t * t_constants) map ref = ref []
 
-let compile_or_retrieve_file_content (filepath : string) : A.t option =
+let compile_or_retrieve_file_content (filepath : string) : (A.t * t_constants) option =
   match ListUtil.find_elem_by_key !compiled_files filepath with
   | Some result -> Some result
   | None ->

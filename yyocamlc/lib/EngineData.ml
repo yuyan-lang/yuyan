@@ -105,6 +105,7 @@ and proc_state =
   ; last_succeeded_processor : processor_entry (* for debugging on parsing *)
   ; failures : (proc_error list * proc_state) list
   ; top_failure_handler : failure_handler_arg_type -> monad_ret_tp
+  ; type_checking_history : string list
     (* this is the top-level failure handler for cutting off 
   backtracking. Useful a combinator to commit (e.g. if subsequent things fail, instead of 
     backtracking to the failure continuation that I am given, call this to return top level) *)
@@ -144,7 +145,7 @@ in an operator chain, and only when we have a parse *)
   shift action should return a pop action *)
   }
 
-let compilation_manager_get_file_hook : (string (* filepath *) -> A.t option) ref =
+let compilation_manager_get_file_hook : (string (* filepath *) -> (A.t * t_constants) option) ref =
   ref (fun _ -> failwith "compilation_manager_get_file_hook not set")
 ;;
 
@@ -247,6 +248,19 @@ let show_t_constant (c : t_constant) : string =
     ^ ")"
 ;;
 
+let show_t_constant_short (c : t_constant) : string =
+  match c with
+  | TypeConstructor { id; _ } -> "TC" ^ string_of_int id
+  | DataConstructor { id; _ } -> "DC" ^ string_of_int id
+  | TypeExpression _ -> "TE"
+  | DataExpression { tm; _ } ->
+    "DE"
+    ^
+      (match tm with
+      | None -> "N"
+      | Some _ -> "S")
+;;
+
 let show_proc_state (s : proc_state) : string =
   "ProcState: "
   ^ "\ninput_future: "
@@ -276,5 +290,11 @@ let show_proc_state (s : proc_state) : string =
   ^ "\nlast_succeeded_processor: "
   ^ show_processor_entry s.last_succeeded_processor
   ^ ", "
+  ^ "\nenvironment: "
+  ^ String.concat ", " (List.map (fun (name, id) -> Ext.get_str_content name ^ ":" ^ string_of_int id) s.env)
+  ^ "\nconstants: "
+  ^ String.concat ", " (List.map (fun (id, c) -> string_of_int id ^ ":" ^ show_t_constant_short c) s.constants)
+  ^ "\ntype_checking_history: "
+  ^ String.concat "\n" (List.map (fun s -> " - " ^ s) s.type_checking_history)
 ;;
 (* "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  *)

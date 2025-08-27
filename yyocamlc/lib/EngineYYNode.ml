@@ -50,16 +50,19 @@ module YYNode = struct
     | ImplicitPi
     | Arrow
     | Ap
+    | ImplicitAp
     | Sequence of string (* e.g. ， 或 、*)
     | Match
     | MatchCase
     | TypingAnnotation (* A名x*)
     | Lam
+    | ImplicitLam
     | TypedLam
     | ExternalCall of string
     | IfThenElse
     | LetIn
     | RecLetIn
+    | UnifiableTp of int
     | Constant of int (* uid of the constant *)
 
   let arity (t : t) : int list option =
@@ -81,13 +84,15 @@ module YYNode = struct
     | ModuleDef -> None
     | FileRef _ -> Some []
     | ExplicitPi -> Some [ 0; 1 ]
-    | ImplicitPi -> Some [ 0; 1 ]
+    | ImplicitPi -> Some [ 1 ]
     | Arrow -> Some [ 0; 0 ]
     | Ap -> None (* also multi-func app exists here *)
+    | ImplicitAp -> Some [ 0; 0 ]
     | Sequence _ -> None (* multiargs are flat*)
     | Match -> None (* first arg expr, rest cases *)
     | MatchCase -> Some [ 0; 0 ]
     | Lam -> Some [ 1 ]
+    | ImplicitLam -> Some [ 1 ]
     | TypedLam -> Some [ 0; 1 ]
     | TypingAnnotation -> Some [ 0; 0 ]
     | ExternalCall _ -> Some []
@@ -95,6 +100,7 @@ module YYNode = struct
     | LetIn -> Some [ 0; 1 ] (* let, in, expr *)
     | RecLetIn -> Some [ 0; 0; 1 ] (* rec let type, defn, in expr *)
     | Constant _ -> Some []
+    | UnifiableTp _ -> Some []
   ;;
 
   let show_builtin (b : builtin) : string =
@@ -145,16 +151,19 @@ module YYNode = struct
     | ImplicitPi -> "Π(implicit)"
     | Arrow -> "->"
     | Ap -> "Ap"
+    | ImplicitAp -> "Ap(implicit)"
     | Sequence s -> "Sequence(" ^ s ^ ")"
     | Match -> "Match"
     | MatchCase -> "MatchCase"
     | Lam -> "λ"
+    | ImplicitLam -> "λ(implicit)"
     | TypedLam -> "λₜ"
     | TypingAnnotation -> "TypingAnnotationt"
     | ExternalCall s -> "ExternalCall(" ^ s ^ ")"
     | IfThenElse -> "IfThenElse"
     | LetIn -> "LetIn"
     | RecLetIn -> "RecLetIn"
+    | UnifiableTp uid -> "UnifiableTp(" ^ string_of_int uid ^ ")"
     | Constant uid -> "Constant(" ^ string_of_int uid ^ ")"
   ;;
 end

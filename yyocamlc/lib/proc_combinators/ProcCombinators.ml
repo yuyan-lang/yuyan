@@ -196,6 +196,17 @@ let get_proc_state () : proc_state proc_state_m = fun s fc sc -> sc (s, s) fc
 let update_proc_state (f : proc_state -> proc_state) : unit proc_state_m = fun s fc sc -> sc ((), f s) fc
 let write_proc_state (s : proc_state) : unit proc_state_m = fun _s fc sc -> sc ((), s) fc
 
+let push_type_checking_history (msg : string) : unit proc_state_m =
+  let* s = get_proc_state () in
+  let new_s = { s with type_checking_history = msg :: s.type_checking_history } in
+  write_proc_state new_s
+;;
+
+let clear_type_checking_history () : unit proc_state_m =
+  let* s = get_proc_state () in
+  write_proc_state { s with type_checking_history = [] }
+;;
+
 (* reading inputs *)
 let peek_any_char () : (CS.t_char * Ext.t) proc_state_m =
   let* s = get_proc_state () in

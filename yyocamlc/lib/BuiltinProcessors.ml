@@ -185,7 +185,7 @@ let definition_end : binary_op =
        let* tp = Environment.lookup_constant tp_id in
        match tp with
        | DataExpression { tp = tp_expr; tm = None } ->
-         let* checked_defn_body = TypeChecking.check defn tp_expr in
+         let* checked_defn_body = TypeChecking.check_top defn tp_expr in
          let* () = TypeChecking.assert_no_free_vars checked_defn_body in
          let* () = Environment.update_constant_term tp_id checked_defn_body in
          push_elem_on_input_acc_expr
@@ -226,7 +226,7 @@ let type_definition_end : binary_op =
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 type_definition_end_meta in
        let* name_str = get_free_var name in
-       let* checked_defn_body = TypeChecking.check_type_valid defn in
+       let* checked_defn_body = TypeChecking.check_type_valid_top defn in
        let* () = TypeChecking.assert_no_free_vars checked_defn_body in
        let* id = Environment.add_constant (TypeExpression checked_defn_body) in
        let* () = Environment.add_binding name_str id in
@@ -364,10 +364,34 @@ let module_open_meta : binary_op_meta =
   { id = Uid.next (); keyword = CS.new_t_string "观"; left_fixity = FxNone; right_fixity = FxOp (Some 80) }
 ;;
 
-let get_file_ref (file_path : string) : A.t proc_state_m =
+let get_file_ref (file_path : string) : (A.t * t_constants) proc_state_m =
   match !compilation_manager_get_file_hook file_path with
   | Some result -> return result
   | None -> failwith ("Im30: Module not found: " ^ file_path ^ " fileRefs should only contain checked modules")
+;;
+
+let add_module_expr_defined_names_to_env (m : A.t) : unit proc_state_m =
+  let all_names =
+    match A.view m with
+    | A.N (N.ModuleDef, args) ->
+      List.filter_map
+        (fun (_, arg) ->
+           match A.view arg with
+           | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), _) -> Some (Environment.add_binding name id)
+           | A.N (N.Declaration N.ConstantDefn, _)
+           | A.N (N.Declaration N.ConstructorDecl, _)
+           | A.N (N.Declaration N.ConstantDecl, _)
+           | A.N (N.Declaration N.TypeConstructorDecl, _)
+           | A.N (N.Declaration N.ModuleAliasDefn, _)
+           | A.N (N.Declaration (N.CheckedDirectExpr _), _)
+           | A.N (N.Declaration N.TypeDefn, _)
+           | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
+           | _ -> print_failwith ("BP483: Expected a Declaration but got " ^ A.show_view arg))
+        args
+    | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
+  in
+  let* _ = psequence all_names in
+  return ()
 ;;
 
 let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
@@ -405,7 +429,9 @@ let module_open : binary_op =
        let* () =
          match A.view module_expr with
          | A.N (N.FileRef path, []) ->
-           let* file_content = get_file_ref path in
+           let* file_content, constants = get_file_ref path in
+           let* () = Environment.import_constants constants in
+           let* () = add_module_expr_defined_names_to_env file_content in
            let* all_custom_ops = get_module_expr_defined_custom_ops file_content in
            (* only add custom operators, no automatic name operators since all identifiers must be quoted *)
            add_processor_entry_list (List.map (to_processor_binary_op "imported_ops") all_custom_ops)
@@ -434,7 +460,8 @@ let module_reexport : binary_op =
        | A.N (N.ModuleDef, args) ->
          (match A.view module_expr with
           | A.N (N.FileRef path, []) ->
-            let* file_content = get_file_ref path in
+            let* file_content, constants = get_file_ref path in
+            let* () = Environment.import_constants constants in
             let rec aux acc decls =
               match decls with
               | [] ->
@@ -501,7 +528,7 @@ let const_decl_end : binary_op =
   ; reduction =
       (let* (name, tp), ext = pop_postfix_op_operands_2 const_decl_end_meta in
        let* () = assert_is_free_var name in
-       let* checked_tp = TypeChecking.check_type_valid tp in
+       let* checked_tp = TypeChecking.check_type_valid_top tp in
        let* () = TypeChecking.assert_no_free_vars checked_tp in
        let* id = Environment.add_constant (DataExpression { tp = checked_tp; tm = None }) in
        let* name_str = get_free_var name in
@@ -544,7 +571,7 @@ let constructor_decl_end : binary_op =
       (let* (name, cons_tp), ext = pop_postfix_op_operands_2 constructor_decl_end_meta in
        let* () = assert_is_free_var name in
        let* name_str = get_free_var name in
-       let* checked_cons_tp = TypeChecking.check_type_valid cons_tp in
+       let* checked_cons_tp = TypeChecking.check_type_valid_top cons_tp in
        let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
        let* id =
          Environment.add_constant (DataConstructor { name = name_str; id = Uid.next (); tp = checked_cons_tp })
@@ -780,29 +807,30 @@ let explicit_pi_middle_2 : binary_op =
 ;;
 
 let implicit_pi_start_uid = Uid.next ()
-let implicit_pi_middle_1_uid = Uid.next ()
+
+(* let implicit_pi_middle_1_uid = Uid.next () *)
 let implicit_pi_middle_2_uid = Uid.next ()
 
 let implicit_pi_start_meta =
   { id = implicit_pi_start_uid
   ; keyword = CS.new_t_string "承"
   ; left_fixity = FxNone
-  ; right_fixity = FxComp implicit_pi_middle_1_uid
+  ; right_fixity = FxBinding implicit_pi_middle_2_uid
   }
 ;;
 
-let implicit_pi_middle_1_meta =
+(* let implicit_pi_middle_1_meta =
   { id = implicit_pi_middle_1_uid
   ; keyword = CS.new_t_string "者"
   ; left_fixity = FxComp implicit_pi_start_uid
   ; right_fixity = FxBinding implicit_pi_middle_2_uid
   }
-;;
+;; *)
 
 let implicit_pi_middle_2_meta =
   { id = implicit_pi_middle_2_uid
   ; keyword = CS.new_t_string "而"
-  ; left_fixity = FxBinding implicit_pi_middle_1_uid
+  ; left_fixity = FxBinding implicit_pi_start_uid
   ; right_fixity = FxOp (Some 40)
   }
 ;;
@@ -814,21 +842,19 @@ let implicit_pi_start : binary_op =
   }
 ;;
 
-let implicit_pi_middle_1 : binary_op =
+(* let implicit_pi_middle_1 : binary_op =
   { meta = implicit_pi_middle_1_meta
   ; reduction = p_internal_error "BP104: implicit_pi_middle_1 reduction"
   ; shift_action = do_nothing_shift_action
   }
-;;
+;; *)
 
 let implicit_pi_middle_2 : binary_op =
   { meta = implicit_pi_middle_2_meta
   ; reduction =
-      (let* (tp_name, bnd_name, range_expr), per_ext = pop_prefix_op_operands_3 implicit_pi_middle_2_meta in
+      (let* (bnd_name, range_expr), per_ext = pop_prefix_op_operands_2 implicit_pi_middle_2_meta in
        let* binding_name = get_binding_name bnd_name in
-       let result_expr =
-         A.fold_with_extent (A.N (N.ImplicitPi, [ [], tp_name; [ binding_name ], range_expr ])) per_ext
-       in
+       let result_expr = A.fold_with_extent (A.N (N.ImplicitPi, [ [ binding_name ], range_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
   ; shift_action = do_nothing_shift_action
   }
@@ -897,7 +923,7 @@ let implicit_lam_abs_middle : binary_op =
   ; reduction =
       (let* (bnd_name, range_expr), per_ext = pop_prefix_op_operands_2 implicit_lam_abs_middle_meta in
        let* binding_name = get_binding_name bnd_name in
-       let result_expr = A.fold_with_extent (A.N (N.Lam, [ [ binding_name ], range_expr ])) per_ext in
+       let result_expr = A.fold_with_extent (A.N (N.ImplicitLam, [ [ binding_name ], range_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
   ; shift_action = do_nothing_shift_action
   }
@@ -1007,7 +1033,7 @@ let implicit_ap : binary_op =
   { meta = implicit_ap_meta
   ; reduction =
       (let* (f, arg), per_ext = pop_bin_operand implicit_ap_meta in
-       push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) per_ext))
+       push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.ImplicitAp, [ [], f; [], arg ])) per_ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1043,7 +1069,7 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
   match A.view module_expr, A.view decl with
   | A.N (N.ModuleDef, _args), A.N (N.Declaration N.ConstantDeclPlaceholder, _) -> return module_expr
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) ->
-    let* checked_body, tp = TypeChecking.synth decl in
+    let* checked_body, tp = TypeChecking.synth_top decl in
     let* id = Environment.add_constant (DataExpression { tp; tm = Some checked_body }) in
     return (A.fold (A.N (N.ModuleDef, args @ [ [], A.n (N.Declaration (CheckedDirectExpr id), []) ])))
   | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _)
@@ -1535,37 +1561,37 @@ let rec_let_in_mid3 : binary_op =
   }
 ;;
 
+let typing_annotation_start_uid = Uid.next ()
 let typing_annotation_middle_uid = Uid.next ()
-let typing_annotation_end_uid = Uid.next ()
 
-let typing_annotation_middle_meta =
-  { id = typing_annotation_middle_uid
+let typing_annotation_start_meta =
+  { id = typing_annotation_start_uid
   ; keyword = CS.new_t_string "其"
-  ; left_fixity = FxOp (Some 120)
-  ; right_fixity = FxComp typing_annotation_end_uid
+  ; left_fixity = FxNone
+  ; right_fixity = FxComp typing_annotation_middle_uid
   }
 ;;
 
-let typing_annotation_end_meta =
-  { id = typing_annotation_end_uid
+let typing_annotation_middle_meta =
+  { id = typing_annotation_middle_uid
   ; keyword = CS.new_t_string "也"
-  ; left_fixity = FxComp typing_annotation_middle_uid
-  ; right_fixity = FxNone
+  ; left_fixity = FxComp typing_annotation_start_uid
+  ; right_fixity = FxOp (Some 120)
+  }
+;;
+
+let typing_annotation_start : binary_op =
+  { meta = typing_annotation_start_meta
+  ; reduction = p_internal_error "BP104: typing_annotation_start reduction"
+  ; shift_action = do_nothing_shift_action
   }
 ;;
 
 let typing_annotation_middle : binary_op =
   { meta = typing_annotation_middle_meta
-  ; reduction = p_internal_error "BP104: typing_annotation_middle reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let typing_annotation_end : binary_op =
-  { meta = typing_annotation_end_meta
   ; reduction =
-      (let* (body_expr, type_expr), per_ext = pop_postfix_op_operands_2 typing_annotation_end_meta in
-       let result_expr = A.fold_with_extent (A.N (N.TypingAnnotation, [ [], body_expr; [], type_expr ])) per_ext in
+      (let* (type_expr, body_expr), per_ext = pop_prefix_op_operands_2 typing_annotation_middle_meta in
+       let result_expr = A.fold_with_extent (A.N (N.TypingAnnotation, [ [], type_expr; [], body_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
   ; shift_action = do_nothing_shift_action
   }
@@ -1606,7 +1632,7 @@ let default_registry =
   ; to_processor_binary_op "explicit_pi_middle_1" explicit_pi_middle_1
   ; to_processor_binary_op "explicit_pi_middle_2" explicit_pi_middle_2
   ; to_processor_binary_op "implicit_pi_start" implicit_pi_start
-  ; to_processor_binary_op "implicit_pi_middle_1" implicit_pi_middle_1
+    (* ; to_processor_binary_op "implicit_pi_middle_1" implicit_pi_middle_1 *)
   ; to_processor_binary_op "implicit_pi_middle_2" implicit_pi_middle_2
   ; to_processor_binary_op "arrow_start" arrow_start
   ; to_processor_binary_op "arrow_middle" arrow_middle
@@ -1652,8 +1678,8 @@ let default_registry =
   ; to_processor_binary_op "rec_let_in_mid2" rec_let_in_mid2
   ; to_processor_binary_op "rec_let_in_mid3" rec_let_in_mid3
   ; (* typing annotation *)
-    to_processor_binary_op "typing_annotation_middle" typing_annotation_middle
-  ; to_processor_binary_op "typing_annotation_end" typing_annotation_end
+    to_processor_binary_op "typing_annotation_start" typing_annotation_start
+  ; to_processor_binary_op "typing_annotation_middle" typing_annotation_middle
   ; to_processor_complex "identifier_parser_pusher" identifier_parser_pusher
   ; to_processor_complex "number_parser" (integer_number_parser ())
   ; to_processor_complex "decimal_number_parser" (decimal_number_parser ())

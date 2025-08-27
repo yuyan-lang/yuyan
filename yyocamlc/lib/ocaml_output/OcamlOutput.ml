@@ -192,12 +192,9 @@ let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t lis
     "type " ^ get_identifier_name name ^ " = " ^ get_ocaml_type value
   | A.N (N.Declaration N.ModuleAliasDefn, [ ([], alias_name); ([], target) ]), [] ->
     (match A.view alias_name with
-     | A.FreeVar alias_name ->
-       "module "
-       ^ convert_to_ocaml_identifier_no_uid alias_name
-       ^ " = "
-       ^ get_ocaml_code target
-     | _ -> Fail.failwith ("OO220: Expecting free variable, got: " ^ A.show_view alias_name ^ " and " ^ A.show_view target))
+     | A.FreeVar alias_name -> "module " ^ convert_to_ocaml_identifier_no_uid alias_name ^ " = " ^ get_ocaml_code target
+     | _ ->
+       Fail.failwith ("OO220: Expecting free variable, got: " ^ A.show_view alias_name ^ " and " ^ A.show_view target))
   | A.N (N.Declaration N.TypeConstructorDecl, [ ([], name); ([], value) ]), _ ->
     (match A.view name with
      | A.FreeVar sname ->
@@ -244,7 +241,7 @@ let process_declaration_group (_env : OutputEnv.t) (decl : A.t) (decls : A.t lis
   | _ -> failwith ("OO231: Expecting type constructor declaration, got: " ^ A.show_view decl)
 ;;
 
-let get_ocaml_code_for_module (module_expr : A.t) : string =
+let get_ocaml_code_for_module (module_expr : A.t) (_constants : t_constants) : string =
   let env = OutputEnv.new_env () in
   let process_declarations (decls : A.t list) : string list =
     let grouped_decls = TypeChecking.group_declarations decls in
@@ -309,12 +306,14 @@ let prelude =
     ]
 ;;
 
-let get_ocaml_code_top_level (files : (string * A.t) list) : string =
-  let output_file (filepath : string) (expr : A.t) : string =
-    let code = get_ocaml_code_for_module expr in
+let get_ocaml_code_top_level (files : (string * (A.t * t_constants)) list) : string =
+  let output_file (filepath : string) (expr : A.t) (constants : t_constants) : string =
+    let code = get_ocaml_code_for_module expr constants in
     Printf.sprintf "(* %s *)\nmodule %s = %s" filepath (get_module_name_from_filepath filepath) code
   in
-  prelude ^ "\n" ^ String.concat "\n" (List.map (fun (filepath, expr) -> output_file filepath expr) files)
+  prelude
+  ^ "\n"
+  ^ String.concat "\n" (List.map (fun (filepath, (expr, constants)) -> output_file filepath expr constants) files)
 ;;
 
 let rec makedir_p (path : string) : unit =
@@ -326,10 +325,10 @@ let rec makedir_p (path : string) : unit =
     Unix.mkdir dir 0o755)
 ;;
 
-let output_ocaml_code_top_level (files : (string * A.t) list) : string =
+let output_ocaml_code_top_level (files : (string * (A.t * t_constants)) list) : string =
   let final_string = get_ocaml_code_top_level files in
   (* write to ./.yybuild.nosync/ocaml/<lastfilename>.ml *)
-  let filename = List.hd (List.rev (List.map fst files)) in
+  let filename = List.hd (List.rev (List.map (fun (filepath, _) -> filepath) files)) in
   let path =
     Filename.concat "./.yybuild.nosync/ocaml" (convert_to_ocaml_identifier_no_uid (Filename.basename filename) ^ ".ml")
   in

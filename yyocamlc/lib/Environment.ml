@@ -30,21 +30,25 @@ let lookup_binding (name : string) : int proc_state_m =
   | None -> pfail ("Binding not found: " ^ name)
 ;;
 
-let get_next_uid () : int proc_state_m =
-  let* s = get_proc_state () in
-  return (List.length s.constants)
-;;
-
 (* Add a constant - no duplicates allowed *)
 let add_constant (const : t_constant) : int proc_state_m =
   let* s = get_proc_state () in
-  let* uid = get_next_uid () in
+  let uid = Uid.next () in
   if List.mem_assoc uid s.constants
   then pfail ("Duplicate constant with uid: " ^ string_of_int uid)
   else (
     let new_constants = (uid, const) :: s.constants in
     let* () = write_proc_state { s with constants = new_constants } in
     return uid)
+;;
+
+let add_constant_with_uid (uid : int) (const : t_constant) : unit proc_state_m =
+  let* s = get_proc_state () in
+  if List.mem_assoc uid s.constants
+  then pfail ("Duplicate constant with uid: " ^ string_of_int uid)
+  else (
+    let new_constants = (uid, const) :: s.constants in
+    write_proc_state { s with constants = new_constants })
 ;;
 
 (* Update the term for an Expression constant *)
@@ -80,30 +84,7 @@ let lookup_constant (uid : int) : t_constant proc_state_m =
   | None -> pfail ("Constant not found with uid: " ^ string_of_int uid)
 ;;
 
-(* Check if a constant exists *)
-let constant_exists (uid : int) : bool proc_state_m =
-  let* s = get_proc_state () in
-  return (List.mem_assoc uid s.constants)
+let import_constants (constants : t_constants) : unit proc_state_m =
+  let* _ = psequence (List.map (fun (id, const) -> add_constant_with_uid id const) constants) in
+  return ()
 ;;
-(*
-   let wrap_store (f : t -> 'a * t) : 'a proc_state_m = 
-  fun s -> 
-    let (r, new_env) = f s.store in
-    let new_s = {s with store = new_env} in
-    Some (r, new_s)
-
-let wrap_store_simple (f : t -> t ) : unit proc_state_m = 
-  wrap_store (fun s -> ((), f s)) *)
-
-(*
-   let push_env_state_stack (expect : expect) : unit proc_state_m = 
-  wrap_store_simple (fun e -> {e with
-    expect_state_stack = expect :: e.expect_state_stack;
-  })
-
-let pop_env_state_stack () : expect option proc_state_m =
-  wrap_store (fun (e : t) ->
-  match e.expect_state_stack with
-  | [] -> (None, e)
-  | x :: xs -> (Some x, {e with expect_state_stack = xs})
-  ) *)

@@ -125,7 +125,7 @@ let extract_all_result
     on_success !result
 ;;
 
-let run_top_level (filename : string) (content : string) : A.t =
+let run_top_level (filename : string) (content : string) : A.t * t_constants =
   let input = CharStream.new_cs filename content in
   let initial_state =
     { input_future =
@@ -158,13 +158,14 @@ let run_top_level (filename : string) (content : string) : A.t =
                        ^ "\n-------------------------------")
                     s.failures));
           failwith "Compilation Failed")
+    ; type_checking_history = []
     }
   in
-  let exception Return of A.t in
+  let exception Return of A.t * t_constants in
   try
     let _ =
-      (do_process_entire_stream ()) initial_state initial_state.top_failure_handler (fun (result, _) _ ->
-        raise (Return result)
+      (do_process_entire_stream ()) initial_state initial_state.top_failure_handler (fun (result, s) _ ->
+        raise (Return (result, s.constants))
         (* match successes  with
       | [s] -> 
         (* print_endline ("Final state: " ^ (Environment.show_environment s.store)); *)
@@ -186,5 +187,5 @@ let run_top_level (filename : string) (content : string) : A.t =
     in
     failwith "ET80: Should not reach here"
   with
-  | Return s -> s
+  | Return (result, constants) -> result, constants
 ;;
