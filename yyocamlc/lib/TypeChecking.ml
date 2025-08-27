@@ -80,15 +80,7 @@ let rec type_unify (free_var_names : (string * A.t option) list) (tp1 : A.t) (tp
   =
   let* normalized_tp1 = normalize_type tp1 in
   let* normalized_tp2 = normalize_type tp2 in
-  with_type_checking_history
-    ("unifying "
-     ^ A.show_view tp1
-     ^ " and "
-     ^ A.show_view tp2
-     ^ " i.e. "
-     ^ A.show_view normalized_tp1
-     ^ " and "
-     ^ A.show_view normalized_tp2)
+  with_type_checking_history (HistTwo ("unifying ", tp1, " and ", tp2))
   @@
   let fail_to_unify msg =
     pfail_with_ext
@@ -143,8 +135,7 @@ let rec type_unify (free_var_names : (string * A.t option) list) (tp1 : A.t) (tp
 (* Check that a type is well-formed *)
 let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   let* normalized_tp = normalize_type tp in
-  with_type_checking_history
-    ("checking type is valid: " ^ A.show_view tp ^ " (normalized to " ^ A.show_view normalized_tp)
+  with_type_checking_history (HistOne ("checking type is valid ", tp))
   @@
   match A.view normalized_tp with
   | A.FreeVar name ->
@@ -184,7 +175,7 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
         | _ -> pfail_with_ext (__LOC__ ^ "TC141: Cannot be applied to " ^ A.show_view arg) (A.get_extent_some tp))
      | _ ->
        pfail_with_ext
-         (__LOC__ ^ "TC141: Expecting some data but got " ^ show_t_constant tp_constant)
+         (__LOC__ ^ "TC141: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
          (A.get_extent_some tp))
   | A.N (N.Constant id, []) ->
     let* tp_constant = Environment.lookup_constant id in
@@ -209,7 +200,7 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
 ;;
 
 let check_data_constructor_final_type_valid (env : local_env) (tp : A.t) : (A.t * int) proc_state_m =
-  with_type_checking_history ("checking data constructor is a direct type: " ^ A.show_view tp)
+  with_type_checking_history (HistOne ("checking data constructor is a direct type: ", tp))
   @@
   let* checked_tp = check_type_valid env tp in
   match A.view checked_tp with
@@ -232,7 +223,7 @@ let check_data_constructor_final_type_valid (env : local_env) (tp : A.t) : (A.t 
 let rec check_data_constructor_type_valid (env : local_env) (tp : A.t)
   : (A.t * int (* id of the final type*)) proc_state_m
   =
-  with_type_checking_history ("checking data constructor type is valid: " ^ A.show_view tp)
+  with_type_checking_history (HistOne ("checking data constructor type is valid: ", tp))
   @@
   match A.view tp with
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
@@ -247,7 +238,7 @@ let rec check_data_constructor_type_valid (env : local_env) (tp : A.t)
 ;;
 
 let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_state_m =
-  with_type_checking_history ("applying implicit args to " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
+  with_type_checking_history (HistTwo ("applying implicit args to ", expr, " with type ", expr_tp))
   @@
   let* normalized_expr_tp = normalize_type expr_tp in
   (* TODO! *)
@@ -285,7 +276,7 @@ let rec desugar_top_level (expr : A.t) : A.t option proc_state_m =
 
 (* Synthesize/infer type from an expression *)
 let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
-  with_type_checking_history ("synthesizing " ^ A.show_view expr)
+  with_type_checking_history (HistOne ("synthesizing ", expr))
   @@
   let* expr_desugared = desugar_top_level expr in
   match expr_desugared with
@@ -306,7 +297,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
               | DataExpression { tp; _ } | DataConstructor { tp; _ } -> return (expr, tp)
               | _ ->
                 pfail_with_ext
-                  (__LOC__ ^ "TC84: Expecting some data but got " ^ show_t_constant tp_constant)
+                  (__LOC__ ^ "TC84: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
                   (A.get_extent_some expr))))
      | A.N (N.Builtin (N.Bool _), []) ->
        return (expr, A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some expr))
@@ -359,7 +350,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
         | DataExpression { tp; _ } -> return (expr, tp)
         | _ ->
           pfail_with_ext
-            (__LOC__ ^ "TC331: Expecting some data but got " ^ show_t_constant tp_constant)
+            (__LOC__ ^ "TC331: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
             (A.get_extent_some expr))
      | A.N (N.Sequence Dot, args) ->
        let* args_checked =
@@ -389,7 +380,7 @@ and fill_implicit_lam_then_check (env : local_env) (expr : A.t) (expr_tp : A.t) 
   match A.view expr, A.view normalized_expr_tp with
   | A.N (N.ImplicitLam, _), _ -> check_after_filling_implicit_lam env expr expr_tp
   | _, A.N (N.ImplicitPi, [ ([ bnd_name ], cod) ]) ->
-    with_type_checking_history ("filling implicit lam " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
+    with_type_checking_history (HistTwo ("filling implicit lam ", expr, " with type ", expr_tp))
     @@
     let env' = extend_local_env_tp env bnd_name in
     let* checked_body = check env' expr cod in
@@ -401,7 +392,7 @@ and fill_implicit_lam_then_check (env : local_env) (expr : A.t) (expr_tp : A.t) 
 
 (* Check expression against a type *)
 and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
-  with_type_checking_history ("checking " ^ A.show_view expr ^ " against " ^ A.show_view tp)
+  with_type_checking_history (HistTwo ("checking ", expr, " against ", tp))
   @@
   let* tp_normalized = normalize_type tp in
   match A.view expr with
@@ -503,7 +494,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
   : (local_env * A.t * A.t) proc_state_m
   =
   let* scrut_tp = normalize_type scrut_tp in
-  with_type_checking_history ("checking pattern " ^ A.show_view pat ^ " against " ^ A.show_view scrut_tp)
+  with_type_checking_history (HistTwo ("checking pattern ", pat, " against ", scrut_tp))
   @@
   match A.view pat with
   | A.FreeVar name ->
@@ -527,7 +518,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
           return (env, pat, case_body)
         | _ ->
           pfail_with_ext
-            ("TC139: Expecting a data constructor but got " ^ show_t_constant tp_constant)
+            ("TC139: Expecting a data constructor but got " ^ EngineDataPrint.show_t_constant tp_constant)
             (A.get_extent_some pat)))
   | A.N (N.Sequence Dot, args) ->
     (match A.view scrut_tp with
@@ -586,13 +577,13 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
             (A.get_extent_some pat))
      | _ ->
        pfail_with_ext
-         ("TC139: Expecting a data constructor but got " ^ show_t_constant tp_constant)
+         ("TC139: Expecting a data constructor but got " ^ EngineDataPrint.show_t_constant tp_constant)
          (A.get_extent_some pat))
   | _ -> pfail_with_ext ("TC137: Expecting a pattern but got " ^ A.show_view pat) (A.get_extent_some pat)
 ;;
 
 let assert_no_free_vars (tp : A.t) : unit proc_state_m =
-  with_type_checking_history ("asserting no free vars in " ^ A.show_view tp)
+  with_type_checking_history (HistOne ("asserting no free vars in ", tp))
   @@
   match A.get_free_vars tp with
   | [] -> return ()
@@ -605,7 +596,7 @@ let assert_no_free_vars (tp : A.t) : unit proc_state_m =
 ;;
 
 let check_type_valid_top (tp : A.t) : A.t proc_state_m =
-  with_type_checking_history ("checking type is valid: " ^ A.show_view tp)
+  with_type_checking_history (HistOne ("checking type is valid: ", tp))
   @@
   let* checked_tp = check_type_valid empty_local_env tp in
   let* () = assert_no_free_vars checked_tp in
@@ -613,7 +604,7 @@ let check_type_valid_top (tp : A.t) : A.t proc_state_m =
 ;;
 
 let check_data_constructor_type_valid_top (tp : A.t) : (A.t * int) proc_state_m =
-  with_type_checking_history ("checking data constructor type is valid: " ^ A.show_view tp)
+  with_type_checking_history (HistOne ("checking data constructor type is valid: ", tp))
   @@
   let* checked_tp, id = check_data_constructor_type_valid empty_local_env tp in
   let* () = assert_no_free_vars checked_tp in
@@ -621,12 +612,11 @@ let check_data_constructor_type_valid_top (tp : A.t) : (A.t * int) proc_state_m 
 ;;
 
 let check_top (expr : A.t) (tp : A.t) : A.t proc_state_m =
-  with_type_checking_history ("checking " ^ A.show_view expr ^ " against " ^ A.show_view tp)
-  @@ check empty_local_env expr tp
+  with_type_checking_history (HistTwo ("checking ", expr, " against ", tp)) @@ check empty_local_env expr tp
 ;;
 
 let synth_top (expr : A.t) : (A.t * A.t) proc_state_m =
-  with_type_checking_history ("synthesizing " ^ A.show_view expr) @@ synth empty_local_env expr
+  with_type_checking_history (HistOne ("synthesizing ", expr)) @@ synth empty_local_env expr
 ;;
 
 let group_type_constructor_declarations (decls : A.t list) : (A.t * A.t list) * A.t list =

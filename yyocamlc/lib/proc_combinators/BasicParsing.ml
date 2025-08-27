@@ -1,5 +1,6 @@
 open EngineData
 open ProcCombinators
+open EngineDataPrint
 
 (* pushes start elem (identifier or )
 CHANGE: I decided that I still want a list of identifiers 
@@ -18,7 +19,7 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
         | FxNone ->
           failwith
             ("PC322: expected prefix or infix but got "
-             ^ show_binary_op_meta meta
+             ^ EngineDataPrint.show_binary_op_meta meta
              ^ " others should be reduced directly not remain on the stack")
         | _ -> push_elem_on_input_acc es)
      | Expr x ->
@@ -33,14 +34,14 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
             ("PC324: expected An element that allows ids to be pushed but got "
              ^ A.show_view x
              ^ " cannot push the next identifier, which is "
-             ^ show_input_acc_elem es
+             ^ EngineDataPrint.show_input_acc_elem es
              ^ " on the stack"))
      | _ ->
        pfail
          ("PC324: expected An element that allows ids to be pushed but got "
-          ^ show_input_acc_elem x
+          ^ EngineDataPrint.show_input_acc_elem x
           ^ " cannot push the next identifier, which is "
-          ^ show_input_acc_elem es
+          ^ EngineDataPrint.show_input_acc_elem es
           ^ " on the stack"))
 ;;
 
@@ -53,9 +54,9 @@ let push_elem_continue (es : input_acc_elem) : unit proc_state_m =
      | ParsingElem (OpKeyword _, _) ->
        pfail
          ("PC333: expected things  got "
-          ^ show_input_acc_elem x
+          ^ EngineDataPrint.show_input_acc_elem x
           ^ " cannot push the next identifier "
-          ^ show_input_acc_elem es)
+          ^ EngineDataPrint.show_input_acc_elem es)
      | _ -> push_elem_on_input_acc es)
 ;;
 
@@ -75,12 +76,12 @@ let operator_right_most_reduce () : unit proc_state_m =
         | _ ->
           failwith
             ("PC362: expected postfix or closed identifier but got "
-             ^ show_binary_op_meta meta
+             ^ EngineDataPrint.show_binary_op_meta meta
              ^ " others should be reduced directly not remain on the stack"))
      | _ ->
        failwith
          ("PC364: expected OpKeyword but got "
-          ^ show_input_acc_elem x
+          ^ EngineDataPrint.show_input_acc_elem x
           ^ " this method should not be invoked when rightmost reduction is not possible"))
 ;;
 
@@ -119,7 +120,8 @@ let get_operator_fixity (uid : int) : parsing_fixity_type proc_state_m =
 let rec operator_precedence_reduce (uid : int) : unit proc_state_m =
   let* op = lookup_binary_op uid in
   match op.meta.left_fixity with
-  | FxNone | FxBinding _ | FxComp _ -> pfail ("PC560: expected FxOp but got " ^ show_binary_op_meta op.meta)
+  | FxNone | FxBinding _ | FxComp _ ->
+    pfail ("PC560: expected FxOp but got " ^ EngineDataPrint.show_binary_op_meta op.meta)
   | FxOp rhs_precedence ->
     let* rhs_fixity_type = get_operator_fixity uid in
     let* acc_top = peek_input_acc 1 in
@@ -166,13 +168,13 @@ let rec operator_precedence_reduce (uid : int) : unit proc_state_m =
               | _ ->
                 print_failwith
                   ("PC561: unexpected fixity combination "
-                   ^ show_binary_op_meta meta
+                   ^ EngineDataPrint.show_binary_op_meta meta
                    ^ " "
-                   ^ show_fixity meta.right_fixity
+                   ^ EngineDataPrint.show_fixity meta.right_fixity
                    ^ " > < "
-                   ^ show_fixity op.meta.left_fixity
+                   ^ EngineDataPrint.show_fixity op.meta.left_fixity
                    ^ " "
-                   ^ show_binary_op_meta op.meta)))
+                   ^ EngineDataPrint.show_binary_op_meta op.meta)))
         | _ -> return () (* cannot reduce, assume successful *)))
 ;;
 
@@ -189,7 +191,8 @@ let rec operator_precedence_reduce_always () : unit proc_state_m =
         | FxOp _ ->
           let* _ = bin_op.reduction in
           operator_precedence_reduce_always ()
-        | FxNone -> print_failwith ("PC562: FxNone should not be here " ^ show_binary_op_meta bin_op.meta)
+        | FxNone ->
+          print_failwith ("PC562: FxNone should not be here " ^ EngineDataPrint.show_binary_op_meta bin_op.meta)
         | FxBinding _ ->
           pfail "BP175: Always reduce cannot be invoked on a binding, but rather should be on component reduce")
      | _ -> return () (* cannot reduce, assume successful *))
@@ -381,7 +384,6 @@ let add_processor_entry_list (proc : processor_entry list) : unit proc_state_m =
   write_proc_state new_s
 ;;
 
-
 let remove_all_proc_registry_with_ids (ids : int list) : unit proc_state_m =
   let* proc_state = get_proc_state () in
   let new_s = { proc_state with registry = List.filter (fun x -> not (List.mem x.id ids)) proc_state.registry } in
@@ -400,5 +402,3 @@ let run_processor_entry (proc : processor_entry) : unit proc_state_m =
 let run_processor_entries (entries : processor_entry list) : unit proc_state_m =
   choice_l (List.map run_processor_entry entries)
 ;;
-
-

@@ -4,6 +4,7 @@ module Ext = AbtLib.Extent
 module CS = CharStream
 module Env = Environment
 open BasicParsing
+open EngineDataPrint
 
 (* let get_binding_name (x : input_acc_elem) : string proc_state_m = 
   match x with
@@ -190,7 +191,7 @@ let definition_end : binary_op =
          let* () = Environment.update_constant_term tp_id checked_defn_body in
          push_elem_on_input_acc_expr
            (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (defn_name_str, tp_id)), []))) ext)
-       | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineData.show_t_constant tp))
+       | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineDataPrint.show_t_constant tp))
   ; shift_action = do_nothing_shift_action
   }
 ;;

@@ -33,7 +33,9 @@ let lookup_binding (name : string) : int proc_state_m =
 let add_constant_with_uid (uid : int) (const : t_constant) : unit proc_state_m =
   let* s = get_proc_state () in
   if List.mem_assoc uid s.constants
-  then pfail ("Duplicate constant with uid: " ^ string_of_int uid ^ " and constant: " ^ show_t_constant const)
+  then
+    pfail
+      ("Duplicate constant with uid: " ^ string_of_int uid ^ " and constant: " ^ EngineDataPrint.show_t_constant const)
   else (
     let new_constants = (uid, const) :: s.constants in
     write_proc_state { s with constants = new_constants })

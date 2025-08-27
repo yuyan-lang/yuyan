@@ -1,4 +1,5 @@
 open EngineData
+open EngineDataPrint
 module Ext = AbtLib.Extent
 module CS = CharStream
 
@@ -205,18 +206,18 @@ let get_proc_state () : proc_state proc_state_m = fun s fc sc -> sc (s, s) fc
 let update_proc_state (f : proc_state -> proc_state) : unit proc_state_m = fun s fc sc -> sc ((), f s) fc
 let write_proc_state (s : proc_state) : unit proc_state_m = fun _s fc sc -> sc ((), s) fc
 
-let with_type_checking_history (msg : string) (cont : 'a proc_state_m) : 'a proc_state_m =
+let with_type_checking_history (msg : tc_history_elem) (cont : 'a proc_state_m) : 'a proc_state_m =
   let* s = get_proc_state () in
   let new_s = { s with type_checking_history = msg :: s.type_checking_history } in
   let* () = write_proc_state new_s in
   let* result = cont in
   let* s = get_proc_state () in
   match s.type_checking_history with
-  | hdmsg :: tail when msg = hdmsg ->
+  | _ :: tail ->
     let new_s = { s with type_checking_history = tail } in
     let* () = write_proc_state new_s in
     return result
-  | _ -> pfail ("PC209: Type checking history mismatch: " ^ msg)
+  | _ -> pfail ("PC209: Type checking history mismatch: " ^ show_tc_history_elem msg)
 ;;
 
 (* let clear_type_checking_history () : unit proc_state_m =
