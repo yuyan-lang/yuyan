@@ -29,16 +29,24 @@ let output_ocaml () : string =
   OcamlOutput.output_ocaml_code_top_level files
 ;;
 
-let compile_and_run_ocaml (ocaml_filepath : string) : unit =
+let compile_and_run_ocaml (ocaml_filepath : string) (output_path : string option) (compile_only : bool) : unit =
   (* -w -26: disable unused var warnings *)
   (* -I +unix -I +str: add unix and str to the search path *)
   (* unix.cma str.cma: add unix and str to the library path *)
   let flags = " -O3 -w -26 -I +unix -I +str unix.cmxa str.cmxa " in
-  print_endline ("[Running] ocamlopt " ^ flags ^ " " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe");
-  let _ = Sys.command ("ocamlopt " ^ flags ^ " " ^ ocaml_filepath ^ " -o " ^ ocaml_filepath ^ ".exe") in
-  print_endline ("[Running] " ^ ocaml_filepath ^ ".exe");
-  let _ = Sys.command ("" ^ ocaml_filepath ^ ".exe") in
-  ()
+  let exe_path = match output_path with
+    | Some path -> path
+    | None -> ocaml_filepath ^ ".exe"
+  in
+  print_endline ("[Running] ocamlopt " ^ flags ^ " " ^ ocaml_filepath ^ " -o " ^ exe_path);
+  let _ = Sys.command ("ocamlopt " ^ flags ^ " " ^ ocaml_filepath ^ " -o " ^ exe_path) in
+  (* Only run the executable if compile_only is false *)
+  if not compile_only then begin
+    print_endline ("[Running] " ^ exe_path);
+    let _ = Sys.command exe_path in
+    ()
+  end else
+    print_endline ("[已编译] " ^ exe_path)
 ;;
 
 (* let pout, pin, perr = Unix.open_process_args_full "ocaml" [|"ocaml";ocaml_filepath|] (Unix.environment()) in
