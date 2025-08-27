@@ -48,6 +48,10 @@ module YYNode = struct
     | Declaration of declaration
     | StructureDeref of string (* label *)
     | TupleDeref of int (* numeric projection *)
+    | CheckedTupleDeref of
+        { idx : int
+        ; len : int
+        }
     | ModuleDef
     | FileRef of string (* Library is a folder/file, FileRef is a checked file*)
     | ExplicitPi
@@ -86,6 +90,7 @@ module YYNode = struct
     | Declaration (CheckedDirectExpr _) -> Some []
     | StructureDeref _ -> Some [ 0 ]
     | TupleDeref _ -> Some [ 0 ]
+    | CheckedTupleDeref _ -> Some [ 0 ]
     | ModuleDef -> None
     | FileRef _ -> Some []
     | ExplicitPi -> Some [ 0; 1 ]
@@ -159,6 +164,7 @@ module YYNode = struct
     | Declaration d -> "Declaration(" ^ show_declaration d ^ ")"
     | StructureDeref s -> "StructureDeref(" ^ s ^ ")"
     | TupleDeref i -> "TupleDeref(" ^ string_of_int i ^ ")"
+    | CheckedTupleDeref { idx; len } -> "CheckedTupleDeref(" ^ string_of_int idx ^ ", " ^ string_of_int len ^ ")"
     | ModuleDef -> "ModuleDef"
     | FileRef s -> "FileRef(" ^ s ^ ")"
     | ExplicitPi -> "Π"

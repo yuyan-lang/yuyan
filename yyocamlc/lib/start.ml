@@ -29,6 +29,9 @@ let rec process_args (args : string list) =
   | "-vtc" :: remaining_args ->
     Flags.show_type_checking_progress := true;
     process_args remaining_args
+  | "-vcgen" :: remaining_args ->
+    Flags.show_codegen_progress := true;
+    process_args remaining_args
   | "-pt" :: remaining_args ->
     Flags.show_parse_tracing := true;
     process_args remaining_args

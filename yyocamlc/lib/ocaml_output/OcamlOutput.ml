@@ -2,6 +2,8 @@ open EngineData
 module StringSet = Set.Make (String)
 module IntSet = Set.Make (Int)
 
+let log_progress (msg : string) : unit = if !Flags.show_codegen_progress then print_endline msg else ()
+
 let convert_to_ocaml_identifier_no_uid (input : string) : string =
   String.concat
     ""
@@ -26,6 +28,11 @@ let empty_var_env : var_env = []
 let add_var_env (env : var_env) (bnd_name : string) : var_env * string (* var name *) =
   let new_name = "v_" ^ string_of_int (Uid.next ()) in
   (bnd_name, new_name) :: env, new_name
+;;
+
+let add_var_env_list (env : var_env) (bnd_names : string list) : var_env * string (* var names *) =
+  let new_name = "v_" ^ string_of_int (Uid.next ()) in
+  List.map (fun bnd_name -> bnd_name, new_name) bnd_names @ env, new_name
 ;;
 
 let lookup_var_env (env : var_env) (chinese_name : string) : string =
@@ -55,6 +62,7 @@ let get_comment_ext_str (ext_str : Ext.t_str) : string = get_comment_str (Ext.ge
 let annotate_with_name_ext (ext_str : Ext.t_str) : string = " " ^ get_comment_ext_str ext_str
 
 let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string =
+  log_progress ("get_ocaml_code_for_pattern: " ^ A.show_view pattern);
   (* TODO: pattern match elaboration *)
   match A.view pattern with
   | A.N (N.Builtin (N.String _), [])
@@ -73,6 +81,7 @@ let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string 
   | _ -> Fail.failwith (__LOC__ ^ ": Not yet implemented, got: " ^ A.show_view pattern)
 
 and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
+  log_progress ("get_ocaml_code: " ^ A.show_view expr);
   match A.view expr with
   | A.N (N.Builtin (N.Int i), []) -> string_of_int i
   | A.N (N.Builtin (N.Float (int_part, decimal_part)), []) -> int_part ^ "." ^ decimal_part
@@ -114,13 +123,43 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     "(" ^ get_ocaml_code var_env func ^ " " ^ get_comment_str (get_type_code var_env targ) ^ ")"
   | A.N (N.ExternalCall fname, args) ->
     "(" ^ fname ^ " (" ^ String.concat ", " (List.map (fun (_, x) -> get_ocaml_code var_env x) args) ^ "))"
+  | A.N (N.CheckedTupleDeref { idx; len }, [ ([], tuple) ]) ->
+    "((fun ("
+    ^ String.concat ", " (List.map (fun i -> "x" ^ string_of_int i) (List.init len (fun i -> i)))
+    ^ ") -> x"
+    ^ string_of_int idx
+    ^ ") "
+    ^ get_ocaml_code var_env tuple
+    ^ ")"
+  | A.N (N.LetIn, [ ([], let_def); ([ bnd ], body) ]) ->
+    let env', bnd_name = add_var_env var_env bnd in
+    "(let " ^ bnd_name ^ " = " ^ get_ocaml_code var_env let_def ^ " in " ^ get_ocaml_code env' body ^ ")"
+  | A.N (N.RecLetIn, [ ([], dom_tp); ([ bnd ], dom); ([ bnd_body ], body) ]) ->
+    let env', bnd_name = add_var_env_list var_env [ bnd; bnd_body ] in
+    "(let rec "
+    ^ bnd_name
+    ^ " : "
+    ^ get_type_code var_env dom_tp
+    ^ " = "
+    ^ get_ocaml_code env' dom (* TODO: Name clash here? *)
+    ^ " in "
+    ^ get_ocaml_code env' body
+    ^ ")"
+  | A.N (N.TypingAnnotation, [ ([], tp); ([], tm) ]) ->
+    "(" ^ get_ocaml_code var_env tm ^ " : " ^ get_type_code var_env tp ^ ")"
+  | A.N (N.TypedLam, [ ([], dom_tp); ([ bnd ], body) ]) ->
+    let env', bnd_name = add_var_env var_env bnd in
+    "(fun (" ^ bnd_name ^ " : " ^ get_type_code var_env dom_tp ^ ") -> " ^ get_ocaml_code env' body ^ ")"
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
-     | TypeConstructor { name; _ } -> "t_" ^ string_of_int id ^ annotate_with_name_ext name
-     | tcons -> Fail.failwith (__LOC__ ^ ": Expecting type constructor, got: " ^ EngineDataPrint.show_t_constant tcons))
+     | DataConstructor { name; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
+     | PatternVar { name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
+     | DataExpression { tm = Some _; _ } -> "v_" ^ string_of_int id
+     | tcons -> Fail.failwith (__LOC__ ^ ": Expecting constant, got: " ^ EngineDataPrint.show_t_constant tcons))
   | _ -> Fail.failwith (__LOC__ ^ ": Not yet implemented, got: " ^ A.show_view expr)
 
 and get_type_code (env : var_env) (tp : A.t) : string =
+  log_progress ("get_type_code: " ^ A.show_view tp);
   match A.view tp with
   | A.FreeVar name -> "'" ^ lookup_var_env env name
   | A.N (N.Ap, [ ([], func); ([], arg) ]) -> get_type_code env arg ^ " " ^ get_type_code env func

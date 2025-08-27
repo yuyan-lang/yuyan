@@ -341,7 +341,11 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
           then pfail_with_ext ("TC134: Index out of bounds: " ^ string_of_int idx) (A.get_extent_some expr)
           else (
             let _, tp = List.nth args idx in
-            return (A.fold_with_extent (A.N (N.TupleDeref idx, [ [], f ])) (A.get_extent_some expr), tp))
+            return
+              ( A.fold_with_extent
+                  (A.N (N.CheckedTupleDeref { idx; len = List.length args }, [ [], f ]))
+                  (A.get_extent_some expr)
+              , tp ))
         | _ ->
           pfail_with_ext
             ("TC134: Expecting its type to be a sequence but got " ^ A.show_view f_tp)
