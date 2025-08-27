@@ -13,15 +13,3 @@
 
 「写」乃化「字符串」而「有」也。
 「写」者会「串」而《《外部调用『print_endline』》》于「串」也。
-
-「调试打印」乃（承「乙」而化「字符串」而化「乙」而「有」）也。
-「调试打印」者受「乙」而会「名」而会「物」而《《外部调用『(fun name obj -> Printf.printf "%s: %s\n" name (Obj.repr obj |> string_of_int))』》》于「名」于「物」也。
-
-「： 注：设写为__BUILTIN_STRING_PRINT。
-注：设新行为__BUILTIN_STRING_NEWLINE于元。
-注：设续为__BUILTIN_STRING_APPEND。
-注：设〇续〇续也。
-注：写于『你好！FFI！
-』。
-注：『你好！FFI！
-』。 ：」

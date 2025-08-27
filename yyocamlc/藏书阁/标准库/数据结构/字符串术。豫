@@ -18,14 +18,14 @@
 
 
 「串转通字符」乃化「字符串」而「字符串」列也。
-「串转通字符」者会「串」而「数组转多态列」于（《《外部调用『(fun s -> let len = String.length s in Array.init len (String.get s))』》》于「串」）也。
+「串转通字符」者会「串」而（《《外部调用『(fun s -> let len = String.length s in Array.init len (String.get s))』》》于「串」）也。
 
 「获取字符」乃化「字符串」而「字符串」列也。
 「获取字符」者「串转通字符」也。
 
 「通字符转串」乃化「字符串」列而「字符串」也。
 「通字符转串」者会「列」而
-    虑「后列」者（「多态列转数组」于「列」）而
+    虑「后列」者（「列」）而
     《《外部调用『(fun arr -> String.concat "" (Array.to_list (Array.map (String.make 1) arr)))』》》于「后列」也。
 
 「合并」乃化「字符串」列而「字符串」也。

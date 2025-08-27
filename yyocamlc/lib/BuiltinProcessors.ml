@@ -337,6 +337,8 @@ let builtin_op : binary_op =
             | "《《内建类型：有》》" -> return (A.fold (A.N (N.Builtin N.UnitType, [])))
             | "《《内建类型：爻》》" -> return (A.fold (A.N (N.Builtin N.BoolType, [])))
             | "《《内建类型：元类型》》" -> return (A.fold (A.N (N.Builtin N.Type, [])))
+            | "《《内建类型：引用类》》" -> return (A.fold (A.N (N.Builtin N.RefType, [])))
+            | "《《内建类型：数组引用类》》" -> return (A.fold (A.N (N.Builtin N.ArrayRefType, [])))
             | "《《内建爻：阳》》" -> return (A.fold (A.N (N.Builtin (N.Bool true), [])))
             | "《《内建爻：阴》》" -> return (A.fold (A.N (N.Builtin (N.Bool false), [])))
             | "《《内建有：元》》" -> return (A.fold (A.N (N.Builtin N.Unit, [])))

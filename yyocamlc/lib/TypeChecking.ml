@@ -159,6 +159,8 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   | A.N (N.Builtin N.BoolType, []) -> return normalized_tp
   | A.N (N.Builtin N.UnitType, []) -> return normalized_tp
   | A.N (N.Builtin N.FloatType, []) -> return normalized_tp
+  | A.N (N.Builtin N.RefType, []) -> return normalized_tp
+  | A.N (N.Builtin N.ArrayRefType, []) -> return normalized_tp
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
     let env' = extend_local_env_tp env bnd in
     let* checked_coid = check_type_valid env' cod in
@@ -179,6 +181,15 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
      | TypeConstructor { tp = tcons_tp; _ } ->
        (match A.view tcons_tp with
         | A.N (N.Arrow, [ ([], _); ([], _) ]) ->
+          let* arg = check_type_valid env arg in
+          return
+            (A.fold_with_extent
+               (A.N (N.Ap, [ [], A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some f); [], arg ]))
+               (A.get_extent_some tp))
+        | _ -> pfail_with_ext (__LOC__ ^ "TC141: Cannot be applied to " ^ A.show_view arg) (A.get_extent_some tp))
+     | TypeExpression tp ->
+       (match A.view tp with
+        | A.N (N.Builtin N.RefType, []) | A.N (N.Builtin N.ArrayRefType, []) ->
           let* arg = check_type_valid env arg in
           return
             (A.fold_with_extent

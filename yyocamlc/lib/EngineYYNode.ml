@@ -21,6 +21,8 @@ module YYNode = struct
     | BoolType
     | UnitType
     | FloatType
+    | RefType
+    | ArrayRefType
     | Type
     | RaiseException
     | TryCatch
@@ -129,6 +131,8 @@ module YYNode = struct
     | BoolType -> "BoolType"
     | UnitType -> "UnitType"
     | FloatType -> "FloatType"
+    | RefType -> "RefType"
+    | ArrayRefType -> "ArrayRefType"
     | Float (s1, s2) -> "Float(" ^ s1 ^ "." ^ s2 ^ ")"
     | Type -> "Type"
     | RaiseException -> "RaiseException"

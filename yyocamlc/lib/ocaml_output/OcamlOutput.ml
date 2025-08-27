@@ -117,8 +117,9 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
   | A.N (N.Sequence Dot, args) ->
     "(" ^ String.concat "," (List.map (fun x -> snd x |> get_ocaml_code var_env) args) ^ ")"
   | A.N (N.ImplicitLam, [ ([ bnd ], body) ]) ->
-    let env', bnd_name = add_var_env var_env bnd in
-    get_comment_str ("(type " ^ bnd_name ^ annotate_with_name bnd ^ " )") ^ get_ocaml_code env' body
+    let env', _bnd_name = add_var_env var_env bnd in
+    (* get_comment_str ("(type " ^ bnd_name ^ annotate_with_name bnd ^ " )") ^  *)
+    get_ocaml_code env' body
   | A.N (N.ImplicitAp, [ ([], func); ([], targ) ]) ->
     "(" ^ get_ocaml_code var_env func ^ " " ^ get_comment_str (get_type_code var_env targ) ^ ")"
   | A.N (N.ExternalCall fname, args) ->
@@ -133,7 +134,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     ^ ")"
   | A.N (N.LetIn, [ ([], let_def); ([ bnd ], body) ]) ->
     let env', bnd_name = add_var_env var_env bnd in
-    "(let " ^ bnd_name ^ " = " ^ get_ocaml_code var_env let_def ^ " in " ^ get_ocaml_code env' body ^ ")"
+    "(let " ^ bnd_name ^ " = " ^ get_ocaml_code var_env let_def ^ " in\n" ^ get_ocaml_code env' body ^ ")"
   | A.N (N.RecLetIn, [ ([], dom_tp); ([ bnd ], dom); ([ bnd_body ], body) ]) ->
     let env', bnd_name = add_var_env_list var_env [ bnd; bnd_body ] in
     "(let rec "
@@ -142,7 +143,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     ^ get_type_code var_env dom_tp
     ^ " = "
     ^ get_ocaml_code env' dom (* TODO: Name clash here? *)
-    ^ " in "
+    ^ " in\n"
     ^ get_ocaml_code env' body
     ^ ")"
   | A.N (N.TypingAnnotation, [ ([], tp); ([], tm) ]) ->
@@ -166,6 +167,7 @@ and get_type_code (env : var_env) (tp : A.t) : string =
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
      | TypeConstructor _ -> "t_" ^ string_of_int id
+     | TypeExpression tp -> get_type_code env tp
      | _ -> Fail.failwith (__LOC__ ^ ": Expecting type constructor, got: " ^ string_of_int id))
   | A.N (N.Sequence Comma, args) -> "(" ^ String.concat " * " (List.map (fun (_, x) -> get_type_code env x) args) ^ ")"
   | A.N (N.Builtin StringType, []) -> "string"
@@ -173,6 +175,8 @@ and get_type_code (env : var_env) (tp : A.t) : string =
   | A.N (N.Builtin BoolType, []) -> "bool"
   | A.N (N.Builtin UnitType, []) -> "unit"
   | A.N (N.Builtin FloatType, []) -> "float"
+  | A.N (N.Builtin RefType, []) -> "ref"
+  | A.N (N.Builtin ArrayRefType, []) -> "array"
   | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> "(" ^ get_type_code env dom ^ " -> " ^ get_type_code env cod ^ ")"
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
     let env', y_name = add_var_env env bnd in
@@ -263,17 +267,23 @@ let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants
                    ^ string_of_int id
                    ^ " : "
                    ^ get_type_code empty_var_env tp
-                   ^ " = "
+                   ^ "\n= "
                    ^ get_ocaml_code empty_var_env tm
                    ^ "\n"
                  | TypeConstructor _ | DataConstructor _ -> ""
                  | TypeExpression tp ->
-                   get_comment_ext_str name
-                   ^ "\n"
-                   ^ "type t_"
-                   ^ string_of_int id
-                   ^ " = "
-                   ^ get_type_code empty_var_env tp
+                   (match A.view tp with
+                    | A.N (N.Builtin RefType, []) ->
+                      get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a ref"
+                    | A.N (N.Builtin ArrayRefType, []) ->
+                      get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a array"
+                    | _ ->
+                      get_comment_ext_str name
+                      ^ "\n"
+                      ^ "type t_"
+                      ^ string_of_int id
+                      ^ " = "
+                      ^ get_type_code empty_var_env tp)
                  | tcons ->
                    Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant tcons))
               | _ -> Fail.failwith (__LOC__ ^ ": Doesn't know how to handle declaration: " ^ A.show_view decl))
