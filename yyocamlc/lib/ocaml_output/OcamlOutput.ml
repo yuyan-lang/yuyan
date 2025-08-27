@@ -122,7 +122,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
   | A.N (N.ImplicitAp, [ ([], func); ([], targ) ]) ->
     "(" ^ get_ocaml_code var_env func ^ " " ^ get_comment_str (get_type_code var_env targ) ^ ")"
   | A.N (N.ExternalCall fname, args) ->
-    "(" ^ fname ^ " (" ^ String.concat ", " (List.map (fun (_, x) -> get_ocaml_code var_env x) args) ^ "))"
+    "(" ^ fname ^ " " ^ String.concat " " (List.map (fun (_, x) -> get_ocaml_code var_env x) args) ^ ")"
   | A.N (N.CheckedTupleDeref { idx; len }, [ ([], tuple) ]) ->
     "((fun ("
     ^ String.concat ", " (List.map (fun i -> "x" ^ string_of_int i) (List.init len (fun i -> i)))

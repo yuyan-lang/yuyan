@@ -5,7 +5,7 @@
 观「藏书阁」之「标准库」之「数学运算」之「转换」之书。
 
 「获取当前纳秒时间」乃化「有」而「小数」也。
-「获取当前纳秒时间」者会「甲」而《《外部调用『yyCurrentNanosecondTime』》》于「元」也。
+「获取当前纳秒时间」者会「甲」而《《外部调用『(fun () -> Unix.gettimeofday () *. 1e9)』》》于「元」也。
 
 
 「用时秒数表示」乃化「小数」「：开始纳秒时间：」而化「小数」「：结束纳秒时间：」而「字符串」「：小数表示：」也。
@@ -16,7 +16,7 @@
 
 
 「当前日期时间格式表示」乃化「字符串」而「字符串」也。
-「当前日期时间格式表示」者会「格式」而《《外部调用『yyGetCurrentLocalDateTimeFmt』》》于「格式」也。
+「当前日期时间格式表示」者会「格式」而《《外部调用『(fun fmt -> let tm = Unix.localtime (Unix.time ()) in Printf.sprintf fmt tm.tm_year tm.tm_mon tm.tm_mday)』》》于「格式」也。
 
 「当前日期时间表示」乃化「有」而「字符串」也。
-「当前日期时间表示」者会「无」而《《外部调用『yyGetCurrentLocalDateTimeStr』》》于「元」也。
+「当前日期时间表示」者会「无」而《《外部调用『(fun () -> let tm = Unix.localtime (Unix.time ()) in Printf.sprintf "%04d-%02d-%02d %02d:%02d:%02d" (tm.tm_year + 1900) (tm.tm_mon + 1) tm.tm_mday tm.tm_hour tm.tm_min tm.tm_sec)』》》于「元」也。

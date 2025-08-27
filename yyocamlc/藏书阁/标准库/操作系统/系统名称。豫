@@ -4,12 +4,12 @@
 
 「当前系统是微软Windows」乃化「有」而「爻」也。
 「当前系统是微软Windows」者会「有」而
-    《《外部调用『yyRunningOnWindows』》》于「元」也。
+    《《外部调用『(fun () -> Sys.os_type = "Win32")』》》于「元」也。
 
 「当前系统是苹果MacOS」乃化「有」而「爻」也。
-「当前系统是苹果MacOS」者会「有」而《《外部调用『yyRunningOnMacOS』》》于「元」也。
+「当前系统是苹果MacOS」者会「有」而《《外部调用『(fun () -> Sys.os_type = "Unix" && Sys.command "uname | grep -q Darwin" = 0)』》》于「元」也。
 
 「当前系统是Linux」乃化「有」而「爻」也。
-「当前系统是Linux」者会「有」而《《外部调用『yyRunningOnLinux』》》于「元」也。
+「当前系统是Linux」者会「有」而《《外部调用『(fun () -> Sys.os_type = "Unix" && Sys.command "uname | grep -q Linux" = 0)』》》于「元」也。
 
 
