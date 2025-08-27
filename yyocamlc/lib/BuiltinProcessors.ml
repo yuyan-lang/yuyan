@@ -429,8 +429,7 @@ let module_open : binary_op =
        let* () =
          match A.view module_expr with
          | A.N (N.FileRef path, []) ->
-           let* file_content, constants = get_file_ref path in
-           let* () = Environment.import_constants constants in
+           let* file_content, _ = get_file_ref path in
            let* () = add_module_expr_defined_names_to_env file_content in
            let* all_custom_ops = get_module_expr_defined_custom_ops file_content in
            (* only add custom operators, no automatic name operators since all identifiers must be quoted *)
@@ -460,8 +459,7 @@ let module_reexport : binary_op =
        | A.N (N.ModuleDef, args) ->
          (match A.view module_expr with
           | A.N (N.FileRef path, []) ->
-            let* file_content, constants = get_file_ref path in
-            let* () = Environment.import_constants constants in
+            let* file_content, _ = get_file_ref path in
             let rec aux acc decls =
               match decls with
               | [] ->

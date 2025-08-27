@@ -30,25 +30,20 @@ let lookup_binding (name : string) : int proc_state_m =
   | None -> pfail ("Binding not found: " ^ name)
 ;;
 
-(* Add a constant - no duplicates allowed *)
-let add_constant (const : t_constant) : int proc_state_m =
-  let* s = get_proc_state () in
-  let uid = Uid.next () in
-  if List.mem_assoc uid s.constants
-  then pfail ("Duplicate constant with uid: " ^ string_of_int uid)
-  else (
-    let new_constants = (uid, const) :: s.constants in
-    let* () = write_proc_state { s with constants = new_constants } in
-    return uid)
-;;
-
 let add_constant_with_uid (uid : int) (const : t_constant) : unit proc_state_m =
   let* s = get_proc_state () in
   if List.mem_assoc uid s.constants
-  then pfail ("Duplicate constant with uid: " ^ string_of_int uid)
+  then pfail ("Duplicate constant with uid: " ^ string_of_int uid ^ " and constant: " ^ show_t_constant const)
   else (
     let new_constants = (uid, const) :: s.constants in
     write_proc_state { s with constants = new_constants })
+;;
+
+(* Add a constant - no duplicates allowed *)
+let add_constant (const : t_constant) : int proc_state_m =
+  let uid = Uid.next () in
+  let* () = add_constant_with_uid uid const in
+  return uid
 ;;
 
 (* Update the term for an Expression constant *)
@@ -73,7 +68,13 @@ let update_constant_term (uid : int) (tm : A.t) : unit proc_state_m =
 (* Find a constant - returns option *)
 let find_constant (uid : int) : t_constant option proc_state_m =
   let* s = get_proc_state () in
-  return (List.assoc_opt uid s.constants)
+  match List.assoc_opt uid s.constants with
+  | Some const -> return (Some const)
+  | None ->
+    (* look in other files*)
+    (match List.assoc_opt uid (CompilationCache.get_all_constants ()) with
+     | Some const -> return (Some const)
+     | None -> return None)
 ;;
 
 (* Lookup a constant - fails if not found *)
@@ -83,8 +84,8 @@ let lookup_constant (uid : int) : t_constant proc_state_m =
   | Some const -> return const
   | None -> pfail ("Constant not found with uid: " ^ string_of_int uid)
 ;;
-
-let import_constants (constants : t_constants) : unit proc_state_m =
+(*
+   let import_constants (constants : t_constants) : unit proc_state_m =
   let* _ = psequence (List.map (fun (id, const) -> add_constant_with_uid id const) constants) in
   return ()
-;;
+;; *)

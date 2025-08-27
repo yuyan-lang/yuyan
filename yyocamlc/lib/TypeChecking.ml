@@ -115,6 +115,10 @@ let rec type_unify (free_var_names : (string * A.t option) list) (tp1 : A.t) (tp
 (* Check that a type is well-formed *)
 let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   let* normalized_tp = normalize_type tp in
+  let* () =
+    push_type_checking_history
+      ("checking type is valid: " ^ A.show_view tp ^ " (normalized to " ^ A.show_view normalized_tp)
+  in
   match A.view normalized_tp with
   | A.FreeVar name ->
     if List.mem name env.tp
@@ -133,15 +137,45 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
     let* dom = check_type_valid env dom in
     let* cod = check_type_valid env cod in
     return (A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod ])) (A.get_extent_some normalized_tp))
-  | _ -> pfail_with_ext ("TC26: Expecting type but got " ^ A.show_view normalized_tp) (A.get_extent_some normalized_tp)
+  | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
+    (match A.view f with
+     | A.FreeVar name ->
+       let* id = Environment.lookup_binding name in
+       let* tp_constant = Environment.lookup_constant id in
+       (match tp_constant with
+        | TypeConstructor { tp = tcons_tp; _ } ->
+          (match A.view tcons_tp with
+           | A.N (N.Arrow, [ ([], _); ([], _) ]) ->
+             let* arg = check_type_valid env arg in
+             return
+               (A.fold_with_extent
+                  (A.N (N.Ap, [ [], A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some f); [], arg ]))
+                  (A.get_extent_some tp))
+           | _ -> pfail_with_ext (__LOC__ ^ "TC141: Cannot be applied to " ^ A.show_view arg) (A.get_extent_some tp))
+        | _ ->
+          pfail_with_ext
+            (__LOC__ ^ "TC141: Expecting some data but got " ^ show_t_constant tp_constant)
+            (A.get_extent_some tp))
+     | _ -> pfail_with_ext (__LOC__ ^ "TC140: Expecting free variable but got " ^ A.show_view f) (A.get_extent_some tp))
+  | A.N (N.Constant id, []) ->
+    let* tp_constant = Environment.lookup_constant id in
+    (match tp_constant with
+     | TypeExpression _ | TypeConstructor _ -> return normalized_tp
+     | DataExpression _ | DataConstructor _ ->
+       pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
+  | _ ->
+    pfail_with_ext
+      (__LOC__ ^ "TC26: Expecting type but got " ^ A.show_view normalized_tp)
+      (A.get_extent_some normalized_tp)
 ;;
 
 let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_state_m =
   let* () =
     push_type_checking_history ("applying implicit args to " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
   in
+  let* normalized_expr_tp = normalize_type expr_tp in
   (* TODO! *)
-  match A.view expr_tp with
+  match A.view normalized_expr_tp with
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
     let id = Uid.next () in
     let _ = add_to_global_unification_ctx id None in
@@ -149,7 +183,7 @@ let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_stat
     let cod = A.subst new_var bnd cod in
     let new_expr = A.fold_with_extent (A.N (N.ImplicitAp, [ [], expr; [], new_var ])) (A.get_extent_some expr) in
     apply_implicit_args new_expr cod
-  | _ -> return (expr, expr_tp)
+  | _ -> return (expr, normalized_expr_tp)
 ;;
 
 (* Synthesize/infer type from an expression *)
@@ -196,12 +230,36 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
       (__LOC__ ^ " TC82: Expression does not support type synthesis, please specify the type " ^ A.show_view expr)
       (A.get_extent_some expr)
 
+and check (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m = fill_implicit_lam_then_check env expr tp
+
+and fill_implicit_lam_then_check (env : local_env) (expr : A.t) (expr_tp : A.t) : A.t proc_state_m =
+  let* normalized_expr_tp = normalize_type expr_tp in
+  match A.view expr, A.view normalized_expr_tp with
+  | A.N (N.ImplicitLam, _), _ -> check_after_filling_implicit_lam env expr expr_tp
+  | _, A.N (N.ImplicitPi, [ ([ bnd_name ], cod) ]) ->
+    let* () =
+      push_type_checking_history ("filling implicit lam " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
+    in
+    let env' = extend_local_env_tp env bnd_name in
+    let* checked_body = check env' expr cod in
+    let checked_expr =
+      A.fold_with_extent (A.N (N.ImplicitLam, [ [ bnd_name ], checked_body ])) (A.get_extent_some expr)
+    in
+    return checked_expr
+  | _, _ -> check_after_filling_implicit_lam env expr expr_tp
+
 (* Check expression against a type *)
-and check (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
+and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
   let* () = push_type_checking_history ("checking " ^ A.show_view expr ^ " against " ^ A.show_view tp) in
   let* tp_normalized = normalize_type tp in
   match A.view expr with
   | A.N (N.ExternalCall _, []) -> return expr
+  | A.N (N.IfThenElse, [ ([], cond); ([], then_branch); ([], else_branch) ]) ->
+    let* cond = check env cond (A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some cond)) in
+    let* then_branch = check env then_branch tp in
+    let* else_branch = check env else_branch tp in
+    return
+      (A.fold_with_extent (A.N (N.IfThenElse, [ [], cond; [], then_branch; [], else_branch ])) (A.get_extent_some expr))
   | A.N (N.ImplicitLam, [ ([ bnd ], body) ]) ->
     (match A.view tp_normalized with
      | A.N (N.ImplicitPi, [ ([ tp_bnd ], cod) ]) ->
@@ -229,9 +287,23 @@ and check (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
     return synth_expr
 ;;
 
+let assert_no_free_vars (tp : A.t) : unit proc_state_m =
+  let* () = push_type_checking_history ("asserting no free vars in " ^ A.show_view tp) in
+  match A.get_free_vars tp with
+  | [] -> return ()
+  | free_vars ->
+    pfail
+      ("TC_assert_no_free_vars: free variables found in type: "
+       ^ String.concat ", " free_vars
+       ^ " in type: "
+       ^ A.show_view tp)
+;;
+
 let check_type_valid_top (tp : A.t) : A.t proc_state_m =
   let* () = clear_type_checking_history () in
-  check_type_valid empty_local_env tp
+  let* checked_tp = check_type_valid empty_local_env tp in
+  let* () = assert_no_free_vars checked_tp in
+  return checked_tp
 ;;
 
 let check_top (expr : A.t) (tp : A.t) : A.t proc_state_m =
@@ -242,17 +314,6 @@ let check_top (expr : A.t) (tp : A.t) : A.t proc_state_m =
 let synth_top (expr : A.t) : (A.t * A.t) proc_state_m =
   let* () = clear_type_checking_history () in
   synth empty_local_env expr
-;;
-
-let assert_no_free_vars (tp : A.t) : unit proc_state_m =
-  match A.get_free_vars tp with
-  | [] -> return ()
-  | free_vars ->
-    pfail
-      ("TC_assert_no_free_vars: free variables found in type: "
-       ^ String.concat ", " free_vars
-       ^ " in type: "
-       ^ A.show_view tp)
 ;;
 
 let group_type_constructor_declarations (decls : A.t list) : (A.t * A.t list) * A.t list =

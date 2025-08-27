@@ -1,9 +1,7 @@
 open EngineData
 
-let compiled_files : (string, A.t * t_constants) map ref = ref []
-
 let compile_or_retrieve_file_content (filepath : string) : (A.t * t_constants) option =
-  match ListUtil.find_elem_by_key !compiled_files filepath with
+  match ListUtil.find_elem_by_key !CompilationCache.compiled_files filepath with
   | Some result -> Some result
   | None ->
     (* If the file is not already compiled, compile it *)
@@ -22,12 +20,12 @@ let compile_or_retrieve_file_content (filepath : string) : (A.t * t_constants) o
       (* Print the contents of the file *)
       let result = EngineTop.run_top_level filepath content in
       print_endline ("Processing file: " ^ filepath ^ " [DONE]");
-      compiled_files := (filepath, result) :: !compiled_files;
+      CompilationCache.compiled_files := (filepath, result) :: !CompilationCache.compiled_files;
       Some result)
 ;;
 
 let output_ocaml () : string =
-  let files = List.rev !compiled_files in
+  let files = List.rev !CompilationCache.compiled_files in
   OcamlOutput.output_ocaml_code_top_level files
 ;;
 
