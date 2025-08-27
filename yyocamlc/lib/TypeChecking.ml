@@ -80,17 +80,16 @@ let rec type_unify (free_var_names : (string * A.t option) list) (tp1 : A.t) (tp
   =
   let* normalized_tp1 = normalize_type tp1 in
   let* normalized_tp2 = normalize_type tp2 in
-  let* () =
-    push_type_checking_history
-      ("unifying "
-       ^ A.show_view tp1
-       ^ " and "
-       ^ A.show_view tp2
-       ^ " i.e. "
-       ^ A.show_view normalized_tp1
-       ^ " and "
-       ^ A.show_view normalized_tp2)
-  in
+  with_type_checking_history
+    ("unifying "
+     ^ A.show_view tp1
+     ^ " and "
+     ^ A.show_view tp2
+     ^ " i.e. "
+     ^ A.show_view normalized_tp1
+     ^ " and "
+     ^ A.show_view normalized_tp2)
+  @@
   match A.view normalized_tp1, A.view normalized_tp2 with
   | A.N (N.UnifiableTp uid, []), _ ->
     set_global_unification_ctx uid normalized_tp2;
@@ -115,10 +114,9 @@ let rec type_unify (free_var_names : (string * A.t option) list) (tp1 : A.t) (tp
 (* Check that a type is well-formed *)
 let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   let* normalized_tp = normalize_type tp in
-  let* () =
-    push_type_checking_history
-      ("checking type is valid: " ^ A.show_view tp ^ " (normalized to " ^ A.show_view normalized_tp)
-  in
+  with_type_checking_history
+    ("checking type is valid: " ^ A.show_view tp ^ " (normalized to " ^ A.show_view normalized_tp)
+  @@
   match A.view normalized_tp with
   | A.FreeVar name ->
     if List.mem name env.tp
@@ -170,9 +168,8 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
 ;;
 
 let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_state_m =
-  let* () =
-    push_type_checking_history ("applying implicit args to " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
-  in
+  with_type_checking_history ("applying implicit args to " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
+  @@
   let* normalized_expr_tp = normalize_type expr_tp in
   (* TODO! *)
   match A.view normalized_expr_tp with
@@ -188,7 +185,8 @@ let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_stat
 
 (* Synthesize/infer type from an expression *)
 let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
-  let* () = push_type_checking_history ("synthesizing " ^ A.show_view expr) in
+  with_type_checking_history ("synthesizing " ^ A.show_view expr)
+  @@
   match A.view expr with
   | A.FreeVar name ->
     (match List.assoc_opt name env.tm with
@@ -237,9 +235,8 @@ and fill_implicit_lam_then_check (env : local_env) (expr : A.t) (expr_tp : A.t) 
   match A.view expr, A.view normalized_expr_tp with
   | A.N (N.ImplicitLam, _), _ -> check_after_filling_implicit_lam env expr expr_tp
   | _, A.N (N.ImplicitPi, [ ([ bnd_name ], cod) ]) ->
-    let* () =
-      push_type_checking_history ("filling implicit lam " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
-    in
+    with_type_checking_history ("filling implicit lam " ^ A.show_view expr ^ " with type " ^ A.show_view expr_tp)
+    @@
     let env' = extend_local_env_tp env bnd_name in
     let* checked_body = check env' expr cod in
     let checked_expr =
@@ -250,7 +247,8 @@ and fill_implicit_lam_then_check (env : local_env) (expr : A.t) (expr_tp : A.t) 
 
 (* Check expression against a type *)
 and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
-  let* () = push_type_checking_history ("checking " ^ A.show_view expr ^ " against " ^ A.show_view tp) in
+  with_type_checking_history ("checking " ^ A.show_view expr ^ " against " ^ A.show_view tp)
+  @@
   let* tp_normalized = normalize_type tp in
   match A.view expr with
   | A.N (N.ExternalCall _, []) -> return expr
@@ -288,7 +286,8 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
 ;;
 
 let assert_no_free_vars (tp : A.t) : unit proc_state_m =
-  let* () = push_type_checking_history ("asserting no free vars in " ^ A.show_view tp) in
+  with_type_checking_history ("asserting no free vars in " ^ A.show_view tp)
+  @@
   match A.get_free_vars tp with
   | [] -> return ()
   | free_vars ->
@@ -300,20 +299,20 @@ let assert_no_free_vars (tp : A.t) : unit proc_state_m =
 ;;
 
 let check_type_valid_top (tp : A.t) : A.t proc_state_m =
-  let* () = clear_type_checking_history () in
+  with_type_checking_history ("checking type is valid: " ^ A.show_view tp)
+  @@
   let* checked_tp = check_type_valid empty_local_env tp in
   let* () = assert_no_free_vars checked_tp in
   return checked_tp
 ;;
 
 let check_top (expr : A.t) (tp : A.t) : A.t proc_state_m =
-  let* () = clear_type_checking_history () in
-  check empty_local_env expr tp
+  with_type_checking_history ("checking " ^ A.show_view expr ^ " against " ^ A.show_view tp)
+  @@ check empty_local_env expr tp
 ;;
 
 let synth_top (expr : A.t) : (A.t * A.t) proc_state_m =
-  let* () = clear_type_checking_history () in
-  synth empty_local_env expr
+  with_type_checking_history ("synthesizing " ^ A.show_view expr) @@ synth empty_local_env expr
 ;;
 
 let group_type_constructor_declarations (decls : A.t list) : (A.t * A.t list) * A.t list =
