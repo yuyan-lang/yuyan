@@ -29,7 +29,13 @@ interface TokenInfo {
 
 function getTokensInfo(document: vscode.TextDocument): any[] | undefined {
   const docPath = document.uri.path;
-  const tokenFilePath = `./_build/lsp_tokens_info${docPath}.tokens.json`;
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+  
+  if (!workspaceFolder) {
+    return undefined;
+  }
+  
+  const tokenFilePath = path.join(workspaceFolder.uri.fsPath, '_build', 'lsp_tokens_info', `${docPath}.tokens.json`);
   
   if (fs.existsSync(tokenFilePath)) {
     try {
