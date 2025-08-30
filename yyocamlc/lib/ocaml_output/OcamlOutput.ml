@@ -61,26 +61,6 @@ let annotate_with_name (str : string) : string = " " ^ get_comment_str str
 let get_comment_ext_str (ext_str : Ext.t_str) : string = get_comment_str (Ext.get_str_content ext_str)
 let annotate_with_name_ext (ext_str : Ext.t_str) : string = " " ^ get_comment_ext_str ext_str
 
-let escaped_unicode (s : string) : string =
-  let buf = Buffer.create (String.length s) in
-  String.iter
-    (fun c ->
-       match c with
-       | '"' -> Buffer.add_string buf "\\\""
-       | '\\' -> Buffer.add_string buf "\\\\"
-       | '\n' -> Buffer.add_string buf "\\n"
-       | '\t' -> Buffer.add_string buf "\\t"
-       | '\r' -> Buffer.add_string buf "\\r"
-       | c when Char.code c < 0x20 ->
-         (* control chars -> decimal escape *)
-         Buffer.add_string buf (Printf.sprintf "\\%03d" (Char.code c))
-       | c ->
-         (* leave everything else (including UTF-8) untouched *)
-         Buffer.add_char buf c)
-    s;
-  Buffer.contents buf
-;;
-
 let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string =
   log_progress ("get_ocaml_code_for_pattern: " ^ A.show_view pattern);
   (* TODO: pattern match elaboration *)
@@ -106,7 +86,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
   match A.view expr with
   | A.N (N.Builtin (N.Int i), []) -> string_of_int i
   | A.N (N.Builtin (N.Float (int_part, decimal_part)), []) -> int_part ^ "." ^ decimal_part
-  | A.N (N.Builtin (N.String s), []) -> "\"" ^ escaped_unicode s ^ "\""
+  | A.N (N.Builtin (N.String s), []) -> "\"" ^ StringEscape.escaped_unicode s ^ "\""
   | A.N (N.Builtin N.Unit, []) -> "()"
   | A.N (N.Builtin (N.Bool true), []) -> "true"
   | A.N (N.Builtin (N.Bool false), []) -> "false"

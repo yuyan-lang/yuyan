@@ -12,8 +12,15 @@ let show_fixity (f : fixity) : string =
   | FxComp b -> "FxComp(" ^ string_of_int b ^ ")"
 ;;
 
+let show_operator_classification (c : operator_classification) : string =
+  match c with
+  | Structural -> "S"
+  | Expression -> "E"
+  | UserDefined -> "U"
+;;
+
 let show_binary_op_meta (b : binary_op_meta) : string =
-  let { id; keyword; left_fixity; right_fixity } = b in
+  let { id; keyword; left_fixity; right_fixity; classification } = b in
   "BinOp("
   ^ CS.get_t_string keyword
   ^ ", id="
@@ -22,6 +29,8 @@ let show_binary_op_meta (b : binary_op_meta) : string =
   ^ show_fixity left_fixity
   ^ ", r="
   ^ show_fixity right_fixity
+  ^ ", classification="
+  ^ show_operator_classification classification
   ^ ")"
 ;;
 

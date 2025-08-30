@@ -166,6 +166,7 @@ let get_operators (input : CS.t_string) (result : A.t) : (binary_op list * A.t) 
          ; left_fixity = (if i = 0 then global_leftfix else FxComp (List.nth component_ids (i - 1)))
          ; right_fixity =
              (if i = List.length component_ids - 1 then global_rightfix else FxComp (List.nth component_ids (i + 1)))
+         ; classification = UserDefined
          })
       components
   in

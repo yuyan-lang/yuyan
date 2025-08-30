@@ -310,7 +310,16 @@ let identifier_parser () : (CS.t_string * Ext.t) proc_state_m =
 ;;
 
 let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc_state_m =
-  let { id = _; keyword; left_fixity; right_fixity } = meta in
+  let { id = _; keyword; left_fixity; right_fixity; classification } = meta in
+  let* () =
+    TokenInfo.add_token_info
+      read_ext
+      (SemanticToken
+         (match classification with
+          | Structural -> StructureKeyword
+          | Expression -> ExpressionKeyword
+          | UserDefined -> UserDefinedOperatorKeyword))
+  in
   let* () =
     if !Flags.show_parse_tracing
     then (

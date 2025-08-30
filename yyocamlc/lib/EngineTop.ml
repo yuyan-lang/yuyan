@@ -161,6 +161,7 @@ let run_top_level (filename : string) (content : string) : A.t * t_constants =
           failwith "Compilation Failed")
     ; type_checking_history = []
     ; unification_ctx = []
+    ; tokens_info = []
     }
   in
   let exception Return of A.t * t_constants in

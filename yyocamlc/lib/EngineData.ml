@@ -71,12 +71,18 @@ type fixity =
   (* uid of the component *)
   | FxComp of int
 
-and binary_op_meta =
+type operator_classification =
+  | Structural
+  | Expression
+  | UserDefined
+
+type binary_op_meta =
   { id : int
   ; keyword : CS.t_string
   ; (* fixity is the behavior of the operator when viewed from left for left_fixity, and right for right_fixity *)
     left_fixity : fixity
   ; right_fixity : fixity
+  ; classification : operator_classification
     (*
        interpretation of left_fixity 
 FxOp of int (* infix or postfix *) [precedence when viewed from left]
@@ -97,6 +103,24 @@ type monad_ret_tp = void
 type tc_history_elem =
   | HistOne of string * A.t
   | HistTwo of string * A.t * string * A.t
+
+type semantic_token_type =
+  | StringConstant
+  | NumericConstant
+  | StructureKeyword
+  | ExpressionKeyword
+  | UserDefinedOperatorKeyword
+  | Identifier
+
+type token_info_detail =
+  | SemanticToken of semantic_token_type
+  | Definition of Ext.t (* target of jump to definition *)
+  | Hover of string (* hover content *)
+
+type token_info =
+  { extent : Ext.t
+  ; detail : token_info_detail
+  }
 
 type parsing_elem =
   | ScannedChar of CS.t_char
@@ -128,6 +152,7 @@ and proc_state =
     backtracking to the failure continuation that I am given, call this to return top level) *)
   ; type_checking_history : tc_history_elem list
   ; unification_ctx : (int * A.t option) list
+  ; tokens_info : token_info list
   }
 
 and failure_handler_arg_type = proc_state
