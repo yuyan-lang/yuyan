@@ -191,3 +191,4 @@ cachegrind.out.*
 .yybuild.*
 *.pyc
 *.pickle
+_build/

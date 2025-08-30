@@ -9,34 +9,111 @@ import {
   TransportKind
 } from 'vscode-languageclient/node';
 
-function getTokensInfo(document: vscode.TextDocument): void {
-  let path = document.uri.path;
-  let token_file_path = "./_build/lsp_tokens_info/" + path + ".tokens.json";
-  if (fs.existsSync(token_file_path)) {
-    let tokens = JSON.parse(fs.readFileSync(token_file_path, 'utf8'));
-    return tokens;
+interface TokenExtent {
+  file: string;
+  start_line: number;
+  start_col: number;
+  end_line: number;
+  end_col: number;
+}
+
+interface TokenDetail {
+  type: string;
+  semantic_token_type: string;
+}
+
+interface TokenInfo {
+  extent: TokenExtent;
+  detail: TokenDetail;
+}
+
+function getTokensInfo(document: vscode.TextDocument): any[] | undefined {
+  const docPath = document.uri.path;
+  const tokenFilePath = `./_build/lsp_tokens_info${docPath}.tokens.json`;
+  
+  if (fs.existsSync(tokenFilePath)) {
+    try {
+      const tokens = JSON.parse(fs.readFileSync(tokenFilePath, 'utf8'));
+      return tokens;
+    } catch (error) {
+      console.error('Error parsing token file:', error);
+      return undefined;
+    }
   }
   return undefined;
+}
 
+function provideSemanticTokens(
+  document: vscode.TextDocument,
+  legend: vscode.SemanticTokensLegend
+): vscode.SemanticTokens | undefined {
+  const allTokens = getTokensInfo(document);
+  
+  if (!allTokens) {
+    return undefined;
+  }
+  
+  // Filter for semantic tokens only
+  const semanticTokens = allTokens.filter(t => 
+    t.detail && t.detail.type === "SemanticToken" && t.detail.semantic_token_type
+  );
+  
+  // Sort tokens by position (line, then column)
+  semanticTokens.sort((a, b) => {
+    if (a.extent.start_line !== b.extent.start_line) {
+      return a.extent.start_line - b.extent.start_line;
+    }
+    return a.extent.start_col - b.extent.start_col;
+  });
+  
+  const builder = new vscode.SemanticTokensBuilder(legend);
+  const tokenTypes = legend.tokenTypes;
+  
+  for (const tokenInfo of semanticTokens) {
+    const tokenType = tokenInfo.detail.semantic_token_type;
+    const tokenTypeIndex = tokenTypes.indexOf(tokenType);
+    
+    if (tokenTypeIndex === -1) {
+      console.warn(`Unknown token type: ${tokenType}`);
+      continue;
+    }
+    
+    // VSCode uses 0-based indexing, token file uses 1-based
+    const line = tokenInfo.extent.start_line - 1;
+    const startChar = tokenInfo.extent.start_col - 1;
+    const endChar = tokenInfo.extent.end_col - 1;
+    const length = endChar - startChar;
+    
+    if (line >= 0 && startChar >= 0 && length > 0) {
+      builder.push(line, startChar, length, tokenTypeIndex);
+    }
+  }
+  
+  return builder.build();
 }
 
 function startLSP(): void {
   let language_selector = "*";
+  
+  const tokenTypes = [
+    "StringConstant",
+    "NumericConstant",
+    "StructureKeyword",
+    "ExpressionKeyword",
+    "UserDefinedOperatorKeyword",
+    "Identifier"
+  ];
+  
+  const legend = new vscode.SemanticTokensLegend(tokenTypes);
+  
   vscode.languages.registerDocumentSemanticTokensProvider(language_selector, {
     provideDocumentSemanticTokens(
       document: vscode.TextDocument,
       token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.SemanticTokens> {
-      return undefined;
+      return provideSemanticTokens(document, legend);
     }
-  }, new vscode.SemanticTokensLegend(
-    ["StringConstant",
-      "NumericConstant",
-      "StructureKeyword",
-      "ExpressionKeyword",
-      "UserDefinedOperatorKeyword",
-      "Identifier"]
-  ));
+  }, legend);
   vscode.languages.registerCompletionItemProvider(language_selector, {
     provideCompletionItems(
       document: vscode.TextDocument,
