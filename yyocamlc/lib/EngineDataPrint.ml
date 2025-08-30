@@ -58,8 +58,12 @@ let show_t_constant (c : t_constant) : string =
        | None -> "None")
     ^ ")"
   | TypeExpression tp -> "TypeExpression(" ^ A.show_view tp ^ ")"
-  | DataExpression { tp; tm } ->
+  | DataExpression { tp; tm; name } ->
     "DataExpression("
+    ^ (match name with
+       | Some name -> Ext.get_str_content name
+       | None -> "None")
+    ^ ", "
     ^ A.show_view tp
     ^ ", "
     ^ (match tm with

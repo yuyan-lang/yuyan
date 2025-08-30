@@ -40,12 +40,13 @@ type t_constant =
       }
   | TypeExpression of A.t
   | DataExpression of
-      { tp : A.t
+      { name : Ext.t_str option
+      ; tp : A.t
       ; tm : A.t option (* is None if it is a recursive definition (forward declaration only)*)
       }
   | PatternVar of
-      { tp : A.t
-      ; name : Ext.t_str
+      { name : Ext.t_str
+      ; tp : A.t
       }
 
 type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *)) list

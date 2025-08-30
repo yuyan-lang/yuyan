@@ -187,7 +187,7 @@ let definition_end : binary_op =
        (* we are now ready to type check, so we commit to the current choice *)
        let* () = pcommit () in
        match tp with
-       | DataExpression { tp = tp_expr; tm = None } ->
+       | DataExpression { tp = tp_expr; tm = None; _ } ->
          let* checked_defn_body = TypeChecking.check_top defn tp_expr in
          let* () = TypeChecking.assert_no_free_vars checked_defn_body in
          let* () = Environment.update_constant_term tp_id checked_defn_body in
@@ -521,8 +521,8 @@ let const_decl_end : binary_op =
        let* () = assert_is_free_var name in
        let* checked_tp = TypeChecking.check_type_valid_top tp in
        let* () = TypeChecking.assert_no_free_vars checked_tp in
-       let* id = Environment.add_constant (DataExpression { tp = checked_tp; tm = None }) in
        let* name_str = get_free_var name in
+       let* id = Environment.add_constant (DataExpression { tp = checked_tp; tm = None; name = Some name_str }) in
        let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
          (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ConstantDeclPlaceholder, []))) ext))
@@ -1061,7 +1061,7 @@ let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem
 
 let check_and_create_direct_expr (expr : A.t) : A.t proc_state_m =
   let* checked_body, tp = TypeChecking.synth_top expr in
-  let* id = Environment.add_constant (DataExpression { tp; tm = Some checked_body }) in
+  let* id = Environment.add_constant (DataExpression { tp; tm = Some checked_body; name = None }) in
   return (A.fold (A.N (N.Declaration (CheckedDirectExpr id), [])))
 ;;
 

@@ -67,7 +67,7 @@ let update_constant (uid : int) (update : t_constant -> t_constant) : unit proc_
 let update_constant_term (uid : int) (tm : A.t) : unit proc_state_m =
   update_constant uid (fun const ->
     match const with
-    | DataExpression { tp; tm = _ } -> DataExpression { tp; tm = Some tm }
+    | DataExpression { tp; tm = _; name } -> DataExpression { tp; tm = Some tm; name }
     | _ -> Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant const))
 ;;
 

@@ -73,7 +73,8 @@ let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string 
     "(" ^ String.concat ", " (List.map (fun (_, x) -> get_ocaml_code_for_pattern var_env x) elems) ^ ")"
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
-     | DataConstructor { name; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
+     | DataConstructor { name; ocaml_bind_name = None; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
+     | DataConstructor { name; ocaml_bind_name = Some c_name; _ } -> c_name ^ annotate_with_name_ext name
      | PatternVar { name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
      | tcons -> Fail.failwith (__LOC__ ^ ": Expecting data constructor, got: " ^ EngineDataPrint.show_t_constant tcons))
   | A.N (N.Ap, [ ([], func); ([], arg) ]) ->
@@ -91,8 +92,8 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
   | A.N (N.Builtin (N.Bool false), []) -> "false"
   | A.N (N.Lam, [ ([ name ], body) ]) ->
     let env', v_name = add_var_env var_env name in
-    "(fun " ^ v_name ^ "-> " ^ get_ocaml_code env' body ^ ")"
-  | A.FreeVar name -> lookup_var_env var_env name
+    "(fun " ^ v_name ^ annotate_with_name name ^ " -> \n " ^ get_ocaml_code env' body ^ ")"
+  | A.FreeVar name -> lookup_var_env var_env name ^ annotate_with_name name
   | A.N (N.Ap, [ ([], func); ([], arg) ]) -> "(" ^ get_ocaml_code var_env func ^ " " ^ get_ocaml_code var_env arg ^ ")"
   | A.N (N.IfThenElse, [ ([], cond); ([], then_branch); ([], else_branch) ]) ->
     "(if ("
@@ -106,7 +107,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     let get_ocaml_code_for_case (case : A.t) : string =
       match A.view case with
       | A.N (N.MatchCase, [ ([], pattern); ([], body) ]) ->
-        "| (" ^ get_ocaml_code_for_pattern var_env pattern ^ ") -> (" ^ get_ocaml_code var_env body ^ ")"
+        "\n| (" ^ get_ocaml_code_for_pattern var_env pattern ^ ") -> (" ^ get_ocaml_code var_env body ^ ")"
       | _ -> Fail.failwith ("OO232: Expecting match case, got: " ^ A.show_view case)
     in
     "(match ("
@@ -155,20 +156,28 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     "(fun (" ^ bnd_name ^ " : " ^ get_type_code var_env dom_tp ^ ") -> " ^ get_ocaml_code env' body ^ ")"
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
-     | DataConstructor { name; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
+     | DataConstructor { name; ocaml_bind_name = None; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
+     | DataConstructor { name; ocaml_bind_name = Some c_name; _ } -> c_name ^ annotate_with_name_ext name
      | PatternVar { name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
-     | DataExpression { tm = Some _; _ } -> "v_" ^ string_of_int id
+     | DataExpression { name; tm = Some _; _ } ->
+       "v_"
+       ^ string_of_int id
+       ^
+         (match name with
+         | Some name -> annotate_with_name_ext name
+         | None -> "")
      | tcons -> Fail.failwith (__LOC__ ^ ": Expecting constant, got: " ^ EngineDataPrint.show_t_constant tcons))
   | _ -> Fail.failwith (__LOC__ ^ ": Not yet implemented, got: " ^ A.show_view expr)
 
 and get_type_code (env : var_env) (tp : A.t) : string =
   log_progress ("get_type_code: " ^ A.show_view tp);
   match A.view tp with
-  | A.FreeVar name -> "'" ^ lookup_var_env env name
+  | A.FreeVar name -> "'" ^ lookup_var_env env name ^ annotate_with_name name
   | A.N (N.Ap, [ ([], func); ([], arg) ]) -> get_type_code env arg ^ " " ^ get_type_code env func
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
-     | TypeConstructor _ -> "t_" ^ string_of_int id
+     | TypeConstructor { name; ocaml_bind_name = None; _ } -> "t_" ^ string_of_int id ^ annotate_with_name_ext name
+     | TypeConstructor { name; ocaml_bind_name = Some c_name; _ } -> c_name ^ annotate_with_name_ext name
      | TypeExpression tp -> get_type_code env tp
      | _ -> Fail.failwith (__LOC__ ^ ": Expecting type constructor, got: " ^ string_of_int id))
   | A.N (N.Sequence Comma, args) -> "(" ^ String.concat " * " (List.map (fun (_, x) -> get_type_code env x) args) ^ ")"
@@ -181,37 +190,28 @@ and get_type_code (env : var_env) (tp : A.t) : string =
   | A.N (N.Builtin ArrayRefType, []) -> "array"
   | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> "(" ^ get_type_code env dom ^ " -> " ^ get_type_code env cod ^ ")"
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
-    let env', y_name = add_var_env env bnd in
-    get_comment_str ("'" ^ y_name) ^ get_type_code env' cod
+    let env', _y_name = add_var_env env bnd in
+    (* get_comment_str ("'" ^ y_name ^ annotate_with_name bnd) ^  *)
+    get_type_code env' cod
   | A.N (N.UnifiableTp id, []) -> "?" ^ string_of_int id
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting free variable, got: " ^ A.show_view tp)
 ;;
 
-let rec get_data_constructor_type_code (env : var_env) (id : int) (tp : A.t) (ocaml_bind_name : string option) : string =
-  let cons_name =
-    match ocaml_bind_name with
-    | Some name -> name
-    | None -> "C_" ^ string_of_int id
-  in
+let rec get_data_constructor_type_code (env : var_env) (id : int) (tp : A.t) : string =
   match A.view tp with
   | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-    "| " ^ cons_name ^ " : " ^ get_type_code env dom ^ " -> " ^ get_type_code env cod
+    "| C_" ^ string_of_int id ^ " : " ^ get_type_code env dom ^ " -> " ^ get_type_code env cod
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
     let env', _ = add_var_env env bnd in
-    get_data_constructor_type_code env' id cod ocaml_bind_name
+    get_data_constructor_type_code env' id cod
   | A.N (N.Ap, _) -> "| C_" ^ string_of_int id ^ " : " ^ get_type_code env tp
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting arrow or implicit pi, got: " ^ A.show_view tp)
 ;;
 
-let get_type_constructor_code (_env : var_env) (id : int) (tp : A.t) (ocaml_bind_name : string option) : string =
-  let tp_name =
-    match ocaml_bind_name with
-    | Some name -> name
-    | None -> "t_" ^ string_of_int id
-  in
+let get_type_constructor_code (_env : var_env) (id : int) (tp : A.t) : string =
   match A.view tp with
-  | A.N (N.Arrow, [ ([], _); ([], _) ]) -> "_ " ^ tp_name ^ " = "
-  | A.N (N.Builtin Type, []) -> tp_name ^ " = "
+  | A.N (N.Arrow, [ ([], _); ([], _) ]) -> "_ t_" ^ string_of_int id ^ " = "
+  | A.N (N.Builtin Type, []) -> "t_" ^ string_of_int id ^ " = "
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting arrow or type, got: " ^ A.show_view tp)
 ;;
 
@@ -221,19 +221,20 @@ let generate_type_definitions (constants : t_constants) : string =
     List.filter_map
       (fun (tcons_id, const) ->
          match const with
-         | TypeConstructor { name; tp; ocaml_bind_name } ->
+         (* if has ocaml binding, skip generation *)
+         | TypeConstructor { name; tp; ocaml_bind_name = None } ->
            Some
              (get_comment_ext_str name
               ^ "\n"
-              ^ get_type_constructor_code empty_var_env tcons_id tp ocaml_bind_name
+              ^ get_type_constructor_code empty_var_env tcons_id tp
               ^ "\n"
               ^
               let constructors =
                 List.filter_map
                   (fun (cons_id, const) ->
                      match const with
-                     | DataConstructor { name; tp; tp_id; ocaml_bind_name } ->
-                       if tp_id = tcons_id then Some (cons_id, tp, name, ocaml_bind_name) else None
+                     | DataConstructor { name; tp; tp_id; ocaml_bind_name = None } ->
+                       if tp_id = tcons_id then Some (cons_id, tp, name) else None
                      | _ -> None)
                   constants
               in
@@ -242,10 +243,10 @@ let generate_type_definitions (constants : t_constants) : string =
                 String.concat
                   "\n"
                   (List.map
-                     (fun (cons_id, cons_tp, cons_name, ocaml_bind_name) ->
+                     (fun (cons_id, cons_tp, cons_name) ->
                         get_comment_ext_str cons_name
                         ^ "\n"
-                        ^ get_data_constructor_type_code empty_var_env cons_id cons_tp ocaml_bind_name)
+                        ^ get_data_constructor_type_code empty_var_env cons_id cons_tp)
                      constructors)
               else "|")
          | _ -> None)
@@ -271,19 +272,18 @@ let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants
               | A.N (N.Declaration (N.CheckedDirectExpr id), []) ->
                 Some
                   (match lookup_constant_id id with
-                   | DataExpression { tp = _; tm = Some tm } -> "let _ = " ^ get_ocaml_code empty_var_env tm
+                   | DataExpression { tp = _; tm = Some tm; _ } -> "let _ = " ^ get_ocaml_code empty_var_env tm
                    | _ -> Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ string_of_int id))
               | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
                 Some
                   (match lookup_constant_id id with
-                   | DataExpression { tp; tm = Some tm } ->
+                   | DataExpression { tp; tm = Some tm; _ } ->
                      let is_recursive = List.mem id (AbtUtil.get_referenced_constant_ids tm) in
-                     get_comment_ext_str name
-                     ^ "\n"
-                     ^ "let "
+                     "let "
                      ^ (if is_recursive then "rec " else "")
                      ^ "v_"
                      ^ string_of_int id
+                     ^ annotate_with_name_ext name
                      ^ " : "
                      ^ get_type_code empty_var_env tp
                      ^ "\n= "
