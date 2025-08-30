@@ -385,13 +385,8 @@ let add_module_expr_defined_names_to_env (m : A.t) : unit proc_state_m =
            | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), _)
            | A.N (N.Declaration (N.ReexportedCheckedConstantDefn (name, id)), _) ->
              Some (Environment.add_binding name id)
-           | A.N (N.Declaration N.ConstantDefn, _)
-           | A.N (N.Declaration N.ConstructorDecl, _)
-           | A.N (N.Declaration N.ConstantDecl, _)
-           | A.N (N.Declaration N.TypeConstructorDecl, _)
            | A.N (N.Declaration N.ModuleAliasDefn, _)
            | A.N (N.Declaration (N.CheckedDirectExpr _), _)
-           | A.N (N.Declaration N.TypeDefn, _)
            | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
            | _ -> print_failwith ("BP483: Expected a Declaration but got " ^ A.show_view arg))
         args
@@ -410,15 +405,10 @@ let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
       List.filter_map
         (fun (_, arg) ->
            match A.view arg with
-           | A.N (N.Declaration N.ConstantDefn, _)
-           | A.N (N.Declaration N.ConstructorDecl, _)
-           | A.N (N.Declaration N.ConstantDecl, _)
-           | A.N (N.Declaration N.TypeConstructorDecl, _)
            | A.N (N.Declaration N.ModuleAliasDefn, _)
            | A.N (N.Declaration (N.CheckedConstantDefn _), _)
            | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), _)
-           | A.N (N.Declaration (N.CheckedDirectExpr _), _)
-           | A.N (N.Declaration N.TypeDefn, _) -> None
+           | A.N (N.Declaration (N.CheckedDirectExpr _), _) -> None
            | A.N (N.Declaration N.CustomOperatorDecl, [ ([], op); ([], elab) ]) ->
              (match A.view op with
               | A.N (N.Builtin (N.CustomOperatorString x), []) ->
@@ -478,26 +468,11 @@ let module_reexport : binary_op =
                   (A.fold_with_extent (A.N (N.ModuleDef, acc)) (Ext.combine_extent cur_ext per_ext))
               | x :: xs ->
                 (match A.view x with
-                 | A.N ((N.Declaration N.ConstantDefn as hd), ([], name) :: _)
-                 | A.N ((N.Declaration N.ModuleAliasDefn as hd), ([], name) :: _)
-                 | A.N ((N.Declaration N.TypeConstructorDecl as hd), ([], name) :: _)
-                 | A.N ((N.Declaration N.ConstructorDecl as hd), ([], name) :: _) ->
-                   (match A.view name with
-                    | A.FreeVar x ->
-                      let new_node =
-                        A.fold_with_extent
-                          (A.N (hd, [ [], name; [], A.fold (A.N (N.StructureDeref x, [ [], module_expr ])) ]))
-                          per_ext
-                      in
-                      aux (acc @ [ [], new_node ]) xs
-                    | _ -> pfail ("BP280: ConstantDefn should be a free variable but got " ^ A.show_view name))
-                 | A.N (N.Declaration N.CustomOperatorDecl, _) -> aux (acc @ [ [], x ]) xs
+                 | A.N (N.Declaration N.ModuleAliasDefn, _) | A.N (N.Declaration N.CustomOperatorDecl, _) ->
+                   aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
                    aux (acc @ [ [], A.fold (A.N (N.Declaration (N.ReexportedCheckedConstantDefn (name, id)), [])) ]) xs
                  | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), []) -> aux (acc @ [ [], x ]) xs
-                 | A.N ((N.Declaration N.ConstantDecl as _hd), ([], _name) :: ([], _tp) :: _) ->
-                   aux (acc @ [ [], x ]) xs
-                 | A.N (N.Declaration N.TypeDefn, _) -> aux acc xs
                  | _ -> print_failwith ("BP281: Expected a Declaration but got " ^ A.show_view x))
             in
             (match A.view file_content with
@@ -1075,14 +1050,17 @@ let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem
      ^ show_input_acc st.input_acc)
 ;;
 
+let check_and_create_direct_expr (expr : A.t) : A.t proc_state_m =
+  let* checked_body, tp = TypeChecking.synth_top expr in
+  let* id = Environment.add_constant (DataExpression { tp; tm = Some checked_body }) in
+  return (A.fold (A.N (N.Declaration (CheckedDirectExpr id), [])))
+;;
+
 let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_state_m =
   (* Original logic for appending to module *)
   match A.view module_expr, A.view decl with
   | A.N (N.ModuleDef, _args), A.N (N.Declaration N.ConstantDeclPlaceholder, _) -> return module_expr
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.DirectExpr, _) ->
-    let* checked_body, tp = TypeChecking.synth_top decl in
-    let* id = Environment.add_constant (DataExpression { tp; tm = Some checked_body }) in
-    return (A.fold (A.N (N.ModuleDef, args @ [ [], A.n (N.Declaration (CheckedDirectExpr id), []) ])))
+  | A.N (N.ModuleDef, args), A.N (N.Declaration (N.CheckedDirectExpr _), _)
   | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _)
   | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _)
   | A.N (N.ModuleDef, args), A.N (N.Declaration (CheckedConstantDefn _), _) ->
@@ -1118,9 +1096,7 @@ let sentence_end : unit proc_state_m =
                 combined_expr
                 (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl)))
          | A.N (N.ModuleDef, _), _ ->
-           let direct_expr_decl =
-             A.fold_with_extent (A.N (N.Declaration N.DirectExpr, [ [], decl ])) (A.get_extent_some decl)
-           in
+           let* direct_expr_decl = check_and_create_direct_expr decl in
            let* combined_expr = check_and_append_module_defn module_expr direct_expr_decl in
            push_elem_on_input_acc_expr
              (A.annotate_with_extent
@@ -1142,15 +1118,13 @@ let sentence_end : unit proc_state_m =
            else sentence_end_fail poped_left poped_right
          | OpKeyword ({ id = opid; _ }, _), _ ->
            if opid = double_parenthesis_left_uid || opid = left_parenthesis_uid
-           then (
-             let direct_expr_decl =
-               A.fold_with_extent (A.N (N.Declaration N.DirectExpr, [ [], decl ])) (A.get_extent_some decl)
-             in
+           then
+             let* direct_expr_decl = check_and_create_direct_expr decl in
              let* combined_expr = check_and_append_module_defn (A.n (N.ModuleDef, [])) direct_expr_decl in
              (* push 「「 back onto the stack *)
              let* _ = push_elem_on_input_acc poped_left in
              let* _ = push_elem_on_input_acc_expr (A.annotate_with_extent combined_expr (A.get_extent_some decl)) in
-             return ())
+             return ()
            else sentence_end_fail poped_left poped_right
          | _ -> sentence_end_fail poped_left poped_right)
       (* also for 「「 name *)

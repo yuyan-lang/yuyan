@@ -258,6 +258,11 @@ let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants
               | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
               | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), []) -> None
               | A.N (N.Declaration N.ModuleAliasDefn, _) -> Some (get_comment_str ("Not Impl: " ^ A.show_view decl))
+              | A.N (N.Declaration (N.CheckedDirectExpr id), []) ->
+                Some
+                  (match lookup_constant_id id with
+                   | DataExpression { tp = _; tm = Some tm } -> "let _ = " ^ get_ocaml_code empty_var_env tm
+                   | _ -> Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ string_of_int id))
               | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
                 Some
                   (match lookup_constant_id id with

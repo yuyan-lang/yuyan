@@ -29,15 +29,9 @@ module YYNode = struct
     | CustomOperatorString of CS.t_string (* this is used for custom operators *)
 
   type declaration =
-    | ConstantDefn
-    | ConstantDecl
-    | ConstantDeclPlaceholder
-    | ConstructorDecl
-    | TypeDefn
-    | TypeConstructorDecl
     | CustomOperatorDecl
     | ModuleAliasDefn
-    | DirectExpr
+    | ConstantDeclPlaceholder
     | CheckedConstantDefn of Ext.t_str * int
     | ReexportedCheckedConstantDefn of Ext.t_str * int
     | CheckedDirectExpr of int
@@ -80,15 +74,9 @@ module YYNode = struct
   let arity (t : t) : int list option =
     match t with
     | Builtin _ -> Some []
-    | Declaration ConstantDefn -> Some [ 0; 0 ]
-    | Declaration ConstantDecl -> Some [ 0; 0 ]
-    | Declaration ConstantDeclPlaceholder -> Some []
-    | Declaration ConstructorDecl -> Some [ 0; 0 ]
-    | Declaration TypeConstructorDecl -> Some [ 0; 0 ]
     | Declaration ModuleAliasDefn -> Some [ 0; 0 ]
-    | Declaration DirectExpr -> Some [ 0 ]
     | Declaration CustomOperatorDecl -> Some [ 0; 0 ]
-    | Declaration TypeDefn -> Some [ 0; 0 ]
+    | Declaration ConstantDeclPlaceholder -> Some []
     | Declaration (CheckedConstantDefn (_, _)) -> Some []
     | Declaration (ReexportedCheckedConstantDefn (_, _)) -> Some []
     | Declaration (CheckedDirectExpr _) -> Some []
@@ -144,15 +132,9 @@ module YYNode = struct
 
   let show_declaration (d : declaration) : string =
     match d with
-    | ConstantDefn -> "ConstantDefn"
-    | ConstantDecl -> "ConstantDecl"
-    | ConstantDeclPlaceholder -> "ConstantDeclPlaceholder"
-    | ConstructorDecl -> "ConstructorDecl"
-    | TypeConstructorDecl -> "TypeConstructorDecl"
     | ModuleAliasDefn -> "ModuleAliasDefn"
-    | DirectExpr -> "DirectExpr"
     | CustomOperatorDecl -> "CustomOperatorDecl"
-    | TypeDefn -> "TypeDefn"
+    | ConstantDeclPlaceholder -> "ConstantDeclPlaceholder"
     | CheckedConstantDefn (name, uid) ->
       "CheckedConstantDefn(" ^ Ext.get_str_content name ^ ", " ^ string_of_int uid ^ ")"
     | ReexportedCheckedConstantDefn (name, uid) ->
