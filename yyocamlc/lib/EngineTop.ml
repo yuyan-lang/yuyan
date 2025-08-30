@@ -126,6 +126,15 @@ let extract_all_result
     on_success !result
 ;;
 
+let dump_token_info (filepath : string) (st : proc_state) : unit =
+  let path = Filename.concat "./_build/lsp_tokens_info/" (filepath ^ ".tokens.json") in
+  FileSystemUtils.makedir_p path;
+  let oc = open_out path in
+  output_string oc (TokenInfo.token_info_to_json st.tokens_info);
+  close_out oc;
+  ()
+;;
+
 let run_top_level (filename : string) (content : string) : A.t * t_constants =
   let input = CharStream.new_cs filename content in
   let initial_state =
@@ -143,6 +152,7 @@ let run_top_level (filename : string) (content : string) : A.t * t_constants =
     ; (* this is backtracking to top level, directly pass this to handle*)
       top_failure_handler =
         (fun s ->
+          dump_token_info filename s;
           print_endline
             ("Failure history has "
              ^ string_of_int (List.length s.failures)
@@ -168,6 +178,7 @@ let run_top_level (filename : string) (content : string) : A.t * t_constants =
   try
     let _ =
       (do_process_entire_stream ()) initial_state initial_state.top_failure_handler (fun (result, s) _ ->
+        dump_token_info filename s;
         raise (Return (result, s.constants))
         (* match successes  with
       | [s] -> 

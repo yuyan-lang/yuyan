@@ -325,15 +325,6 @@ let get_ocaml_code_top_level (files : (string * (A.t * t_constants)) list) : str
     (List.map (fun (filepath, (expr, constants)) -> get_ocaml_code_for_module filepath expr constants) files)
 ;;
 
-let rec makedir_p (path : string) : unit =
-  let dir = Filename.dirname path in
-  (* print_endline ("makedir_p: " ^ dir);   *)
-  if not (Sys.file_exists dir)
-  then (
-    makedir_p dir;
-    Unix.mkdir dir 0o755)
-;;
-
 let output_ocaml_code_top_level (files : (string * (A.t * t_constants)) list) : string =
   let final_string = get_ocaml_code_top_level files in
   (* write to ./.yybuild.nosync/ocaml/<lastfilename>.ml *)
@@ -341,7 +332,7 @@ let output_ocaml_code_top_level (files : (string * (A.t * t_constants)) list) : 
   let path =
     Filename.concat "./.yybuild.nosync/ocaml" (convert_to_ocaml_identifier_no_uid (Filename.basename filename) ^ ".ml")
   in
-  makedir_p path;
+  FileSystemUtils.makedir_p path;
   let oc = open_out path in
   output_string oc final_string;
   close_out oc;
