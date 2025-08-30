@@ -187,21 +187,31 @@ and get_type_code (env : var_env) (tp : A.t) : string =
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting free variable, got: " ^ A.show_view tp)
 ;;
 
-let rec get_data_constructor_type_code (env : var_env) (id : int) (tp : A.t) : string =
+let rec get_data_constructor_type_code (env : var_env) (id : int) (tp : A.t) (ocaml_bind_name : string option) : string =
+  let cons_name =
+    match ocaml_bind_name with
+    | Some name -> name
+    | None -> "C_" ^ string_of_int id
+  in
   match A.view tp with
   | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-    "| C_" ^ string_of_int id ^ " : " ^ get_type_code env dom ^ " -> " ^ get_type_code env cod
+    "| " ^ cons_name ^ " : " ^ get_type_code env dom ^ " -> " ^ get_type_code env cod
   | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
     let env', _ = add_var_env env bnd in
-    get_data_constructor_type_code env' id cod
+    get_data_constructor_type_code env' id cod ocaml_bind_name
   | A.N (N.Ap, _) -> "| C_" ^ string_of_int id ^ " : " ^ get_type_code env tp
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting arrow or implicit pi, got: " ^ A.show_view tp)
 ;;
 
-let get_type_constructor_code (_env : var_env) (id : int) (tp : A.t) : string =
+let get_type_constructor_code (_env : var_env) (id : int) (tp : A.t) (ocaml_bind_name : string option) : string =
+  let tp_name =
+    match ocaml_bind_name with
+    | Some name -> name
+    | None -> "t_" ^ string_of_int id
+  in
   match A.view tp with
-  | A.N (N.Arrow, [ ([], _); ([], _) ]) -> "_ t_" ^ string_of_int id ^ " = "
-  | A.N (N.Builtin Type, []) -> "t_" ^ string_of_int id ^ " = "
+  | A.N (N.Arrow, [ ([], _); ([], _) ]) -> "_ " ^ tp_name ^ " = "
+  | A.N (N.Builtin Type, []) -> tp_name ^ " = "
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting arrow or type, got: " ^ A.show_view tp)
 ;;
 
@@ -211,19 +221,19 @@ let generate_type_definitions (constants : t_constants) : string =
     List.filter_map
       (fun (tcons_id, const) ->
          match const with
-         | TypeConstructor { name; tp } ->
+         | TypeConstructor { name; tp; ocaml_bind_name } ->
            Some
              (get_comment_ext_str name
               ^ "\n"
-              ^ get_type_constructor_code empty_var_env tcons_id tp
+              ^ get_type_constructor_code empty_var_env tcons_id tp ocaml_bind_name
               ^ "\n"
               ^
               let constructors =
                 List.filter_map
                   (fun (cons_id, const) ->
                      match const with
-                     | DataConstructor { name; tp; tp_id } ->
-                       if tp_id = tcons_id then Some (cons_id, tp, name) else None
+                     | DataConstructor { name; tp; tp_id; ocaml_bind_name } ->
+                       if tp_id = tcons_id then Some (cons_id, tp, name, ocaml_bind_name) else None
                      | _ -> None)
                   constants
               in
@@ -232,10 +242,10 @@ let generate_type_definitions (constants : t_constants) : string =
                 String.concat
                   "\n"
                   (List.map
-                     (fun (cons_id, cons_tp, cons_name) ->
+                     (fun (cons_id, cons_tp, cons_name, ocaml_bind_name) ->
                         get_comment_ext_str cons_name
                         ^ "\n"
-                        ^ get_data_constructor_type_code empty_var_env cons_id cons_tp)
+                        ^ get_data_constructor_type_code empty_var_env cons_id cons_tp ocaml_bind_name)
                      constructors)
               else "|")
          | _ -> None)

@@ -193,6 +193,10 @@ let definition_end : binary_op =
          let* () = Environment.update_constant_term tp_id checked_defn_body in
          push_elem_on_input_acc_expr
            (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (defn_name_str, tp_id)), []))) ext)
+       | DataConstructor _ | TypeConstructor _ ->
+         (match A.view defn with
+          | A.N (N.ExternalCall fname, []) -> Environment.update_constant_ocaml_bind_name tp_id fname
+          | _ -> pfail_with_ext (__LOC__ ^ "Constructors can only be defined as external calls") ext)
        | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineDataPrint.show_t_constant tp))
   ; shift_action = do_nothing_shift_action
   }
@@ -560,7 +564,10 @@ let constructor_decl_end : binary_op =
        let* name_str = get_free_var name in
        let* checked_cons_tp, id = TypeChecking.check_data_constructor_type_valid_top cons_tp in
        let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-       let* id = Environment.add_constant (DataConstructor { name = name_str; tp = checked_cons_tp; tp_id = id }) in
+       let* id =
+         Environment.add_constant
+           (DataConstructor { name = name_str; tp = checked_cons_tp; tp_id = id; ocaml_bind_name = None })
+       in
        let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
          (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (name_str, id)), []))) ext))
@@ -602,7 +609,9 @@ let type_constructor_decl_end : binary_op =
        let* name_str = get_free_var name in
        let* checked_cons_tp = TypeChecking.check_kind_valid defn in
        let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-       let* id = Environment.add_constant (TypeConstructor { name = name_str; tp = checked_cons_tp }) in
+       let* id =
+         Environment.add_constant (TypeConstructor { name = name_str; tp = checked_cons_tp; ocaml_bind_name = None })
+       in
        let* () = Environment.add_binding name_str id in
        push_elem_on_input_acc_expr
          (A.annotate_with_extent (A.n (N.Declaration (CheckedConstantDefn (name_str, id)), [])) ext))

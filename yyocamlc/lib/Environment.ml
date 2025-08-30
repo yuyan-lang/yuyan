@@ -48,23 +48,36 @@ let add_constant (const : t_constant) : int proc_state_m =
   return uid
 ;;
 
-(* Update the term for an Expression constant *)
-let update_constant_term (uid : int) (tm : A.t) : unit proc_state_m =
+let update_constant (uid : int) (update : t_constant -> t_constant) : unit proc_state_m =
   let* s = get_proc_state () in
-  let rec update = function
+  let rec update_list = function
     | [] -> None
-    | (id, const) :: rest when id = uid ->
-      (match const with
-       | DataExpression { tp; tm = _ } -> Some ((id, DataExpression { tp; tm = Some tm }) :: rest)
-       | _ -> None)
+    | (id, const) :: rest when id = uid -> Some ((id, update const) :: rest)
     | binding :: rest ->
-      (match update rest with
+      (match update_list rest with
        | Some updated -> Some (binding :: updated)
        | None -> None)
   in
-  match update s.constants with
+  match update_list s.constants with
   | Some new_constants -> write_proc_state { s with constants = new_constants }
-  | None -> pfail ("Cannot update constant with uid " ^ string_of_int uid ^ ": not found or not an Expression")
+  | None -> pfail ("Cannot update constant with uid " ^ string_of_int uid ^ ": not found")
+;;
+
+(* Update the term for an Expression constant *)
+let update_constant_term (uid : int) (tm : A.t) : unit proc_state_m =
+  update_constant uid (fun const ->
+    match const with
+    | DataExpression { tp; tm = _ } -> DataExpression { tp; tm = Some tm }
+    | _ -> Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant const))
+;;
+
+let update_constant_ocaml_bind_name (uid : int) (ocaml_bind_name : string) : unit proc_state_m =
+  update_constant uid (fun const ->
+    match const with
+    | DataConstructor { name; tp; tp_id; _ } ->
+      DataConstructor { tp; tp_id; ocaml_bind_name = Some ocaml_bind_name; name }
+    | TypeConstructor { name; tp; _ } -> TypeConstructor { tp; ocaml_bind_name = Some ocaml_bind_name; name }
+    | _ -> Fail.failwith (__LOC__ ^ ": Expecting data constructor, got: " ^ EngineDataPrint.show_t_constant const))
 ;;
 
 (* Find a constant - returns option *)

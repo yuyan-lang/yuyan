@@ -35,9 +35,28 @@ let show_parsing_elem (p : parsing_elem) : string =
 
 let show_t_constant (c : t_constant) : string =
   match c with
-  | TypeConstructor { name; tp } -> "TypeConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ")"
-  | DataConstructor { name; tp; tp_id } ->
-    "DataConstructor(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ", " ^ string_of_int tp_id ^ ")"
+  | TypeConstructor { name; tp; ocaml_bind_name } ->
+    "TypeConstructor("
+    ^ Ext.get_str_content name
+    ^ ", "
+    ^ A.show_view tp
+    ^ ", "
+    ^ (match ocaml_bind_name with
+       | Some s -> s
+       | None -> "None")
+    ^ ")"
+  | DataConstructor { name; tp; tp_id; ocaml_bind_name } ->
+    "DataConstructor("
+    ^ Ext.get_str_content name
+    ^ ", "
+    ^ A.show_view tp
+    ^ ", "
+    ^ string_of_int tp_id
+    ^ ", "
+    ^ (match ocaml_bind_name with
+       | Some s -> s
+       | None -> "None")
+    ^ ")"
   | TypeExpression tp -> "TypeExpression(" ^ A.show_view tp ^ ")"
   | DataExpression { tp; tm } ->
     "DataExpression("
