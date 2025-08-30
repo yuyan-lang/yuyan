@@ -61,7 +61,7 @@ let rec name_resolve_result_elab (param_names : string list) (result : A.t) : A.
     if List.mem name param_names
     then return result
     else
-      let* id = Environment.lookup_binding name in
+      let* id = Environment.lookup_binding (Ext.str_with_extent name (A.get_extent_some result)) in
       return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some result))
   | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
     (match A.view f, A.view arg with

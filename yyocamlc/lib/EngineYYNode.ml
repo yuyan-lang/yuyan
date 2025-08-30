@@ -30,7 +30,7 @@ module YYNode = struct
 
   type declaration =
     | CustomOperatorDecl
-    | ModuleAliasDefn
+    | ModuleAliasDefn of Ext.t_str * int (* module file path *)
     | ConstantDeclPlaceholder
     | CheckedConstantDefn of Ext.t_str * int
     | ReexportedCheckedConstantDefn of Ext.t_str * int
@@ -74,7 +74,7 @@ module YYNode = struct
   let arity (t : t) : int list option =
     match t with
     | Builtin _ -> Some []
-    | Declaration ModuleAliasDefn -> Some [ 0; 0 ]
+    | Declaration (ModuleAliasDefn (_, _)) -> Some []
     | Declaration CustomOperatorDecl -> Some [ 0; 0 ]
     | Declaration ConstantDeclPlaceholder -> Some []
     | Declaration (CheckedConstantDefn (_, _)) -> Some []
@@ -132,7 +132,7 @@ module YYNode = struct
 
   let show_declaration (d : declaration) : string =
     match d with
-    | ModuleAliasDefn -> "ModuleAliasDefn"
+    | ModuleAliasDefn (name, path) -> "ModuleAliasDefn(" ^ Ext.get_str_content name ^ ", " ^ string_of_int path ^ ")"
     | CustomOperatorDecl -> "CustomOperatorDecl"
     | ConstantDeclPlaceholder -> "ConstantDeclPlaceholder"
     | CheckedConstantDefn (name, uid) ->

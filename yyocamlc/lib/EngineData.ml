@@ -48,6 +48,10 @@ type t_constant =
       { name : Ext.t_str
       ; tp : A.t
       }
+  | ModuleAlias of
+      { name : Ext.t_str
+      ; filepath : string
+      }
 
 type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *)) list
 type t_constants = (int * t_constant) list

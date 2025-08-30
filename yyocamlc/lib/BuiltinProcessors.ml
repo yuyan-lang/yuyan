@@ -140,7 +140,7 @@ let import_end : binary_op =
   ; reduction =
       (let* prev_comp, ext = pop_postfix_operand import_end_meta in
        let* module_expr = Imports.get_module_expr prev_comp in
-       push_elem_on_input_acc (Expr (A.annotate_with_extent module_expr ext)))
+       push_elem_on_input_acc (Expr (A.annotate_with_extent (A.fold (A.N (N.FileRef module_expr, []))) ext)))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -182,7 +182,7 @@ let definition_end : binary_op =
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 definition_end_meta in
        let* defn_name_str = get_free_var name in
-       let* tp_id = Environment.lookup_binding (Ext.get_str_content defn_name_str) in
+       let* tp_id = Environment.lookup_binding defn_name_str in
        let* tp = Environment.lookup_constant tp_id in
        (* we are now ready to type check, so we commit to the current choice *)
        let* () = pcommit () in
@@ -387,11 +387,9 @@ let add_module_expr_defined_names_to_env (m : A.t) : unit proc_state_m =
         (fun (_, arg) ->
            match A.view arg with
            | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), _)
-           | A.N (N.Declaration (N.ReexportedCheckedConstantDefn (name, id)), _) ->
-             Some (Environment.add_binding name id)
-           | A.N (N.Declaration N.ModuleAliasDefn, _)
-           | A.N (N.Declaration (N.CheckedDirectExpr _), _)
-           | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
+           | A.N (N.Declaration (N.ReexportedCheckedConstantDefn (name, id)), _)
+           | A.N (N.Declaration (N.ModuleAliasDefn (name, id)), _) -> Some (Environment.add_binding name id)
+           | A.N (N.Declaration (N.CheckedDirectExpr _), _) | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
            | _ -> print_failwith ("BP483: Expected a Declaration but got " ^ A.show_view arg))
         args
     | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
@@ -409,7 +407,7 @@ let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
       List.filter_map
         (fun (_, arg) ->
            match A.view arg with
-           | A.N (N.Declaration N.ModuleAliasDefn, _)
+           | A.N (N.Declaration (N.ModuleAliasDefn _), _)
            | A.N (N.Declaration (N.CheckedConstantDefn _), _)
            | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), _)
            | A.N (N.Declaration (N.CheckedDirectExpr _), _) -> None
@@ -472,7 +470,7 @@ let module_reexport : binary_op =
                   (A.fold_with_extent (A.N (N.ModuleDef, acc)) (Ext.combine_extent cur_ext per_ext))
               | x :: xs ->
                 (match A.view x with
-                 | A.N (N.Declaration N.ModuleAliasDefn, _) | A.N (N.Declaration N.CustomOperatorDecl, _) ->
+                 | A.N (N.Declaration (N.ModuleAliasDefn _), _) | A.N (N.Declaration N.CustomOperatorDecl, _) ->
                    aux (acc @ [ [], x ]) xs
                  | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
                    aux (acc @ [ [], A.fold (A.N (N.Declaration (N.ReexportedCheckedConstantDefn (name, id)), [])) ]) xs
@@ -665,10 +663,11 @@ let module_alias_decl_end : binary_op =
   { meta = module_alias_decl_end_meta
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 module_alias_decl_end_meta in
-       let* () = assert_is_free_var name in
-       let* resolved_defn = Imports.get_module_expr defn in
+       let* name_str = get_free_var name in
+       let* filepath = Imports.get_module_expr defn in
+       let* id = Environment.add_constant (ModuleAlias { name = name_str; filepath }) in
        push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ModuleAliasDefn, [ [], name; [], resolved_defn ]))) ext))
+         (A.annotate_with_extent (A.fold (A.N (N.Declaration (N.ModuleAliasDefn (name_str, id)), []))) ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1071,7 +1070,7 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
   | A.N (N.ModuleDef, _args), A.N (N.Declaration N.ConstantDeclPlaceholder, _) -> return module_expr
   | A.N (N.ModuleDef, args), A.N (N.Declaration (N.CheckedDirectExpr _), _)
   | A.N (N.ModuleDef, args), A.N (N.Declaration CustomOperatorDecl, _)
-  | A.N (N.ModuleDef, args), A.N (N.Declaration N.ModuleAliasDefn, _)
+  | A.N (N.ModuleDef, args), A.N (N.Declaration (N.ModuleAliasDefn _), _)
   | A.N (N.ModuleDef, args), A.N (N.Declaration (CheckedConstantDefn _), _) ->
     return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
   | _ ->

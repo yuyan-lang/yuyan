@@ -296,7 +296,7 @@ let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants
               match A.view decl with
               | A.N (N.Declaration N.CustomOperatorDecl, _) -> None
               | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), []) -> None
-              | A.N (N.Declaration N.ModuleAliasDefn, _) -> Some (get_comment_str ("Not Impl: " ^ A.show_view decl))
+              | A.N (N.Declaration (N.ModuleAliasDefn _), _) -> None
               | A.N (N.Declaration (N.CheckedDirectExpr id), []) ->
                 Some
                   (match lookup_constant_id id with

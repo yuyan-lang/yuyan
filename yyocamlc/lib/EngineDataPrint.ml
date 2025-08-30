@@ -20,7 +20,7 @@ let show_binary_op_meta (b : binary_op_meta) : string =
   ^ string_of_int id
   ^ ", l="
   ^ show_fixity left_fixity
-  ^ ", r= "
+  ^ ", r="
   ^ show_fixity right_fixity
   ^ ")"
 ;;
@@ -71,6 +71,7 @@ let show_t_constant (c : t_constant) : string =
        | Some tm -> A.show_view tm)
     ^ ")"
   | PatternVar { tp; name } -> "PatternVar(" ^ Ext.get_str_content name ^ ", " ^ A.show_view tp ^ ")"
+  | ModuleAlias { name; filepath } -> "ModuleAlias(" ^ Ext.get_str_content name ^ ", " ^ filepath ^ ")"
 ;;
 
 let pretty_print_expr (x : A.t) : string =
@@ -113,7 +114,8 @@ let rec aka_print_expr (s : proc_state) (x : A.t) : string =
           (match List.filter (fun (_, cod_id) -> cod_id = id) s.env with
            | [] -> "DE"
            | (name, _) :: _ -> Ext.get_str_content name)
-        | PatternVar { name; _ } -> Ext.get_str_content name)
+        | PatternVar { name; _ } -> Ext.get_str_content name
+        | ModuleAlias { name; _ } -> Ext.get_str_content name)
      | None ->
        (match List.filter (fun (_, cod_id) -> cod_id = id) s.env with
         | [] -> "Constant(" ^ string_of_int id ^ ")"
@@ -172,6 +174,7 @@ let show_t_constant_short (c : t_constant) : string =
       | None -> "N"
       | Some _ -> "S")
   | PatternVar _ -> "PV"
+  | ModuleAlias _ -> "MA"
 ;;
 
 let show_tc_history_elem (s : proc_state) (h : tc_history_elem) : string =

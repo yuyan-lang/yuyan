@@ -30,10 +30,9 @@ let get_module_real_path (module_name_parsed : A.t) : string proc_state_m (* pat
   | _ -> pfail ("ET101: Expected a string but got " ^ A.show_view module_name_parsed)
 ;;
 
-let get_module_expr (module_name_parsed : A.t) : A.t proc_state_m =
+let get_module_expr (module_name_parsed : A.t) : string proc_state_m =
   let* path = get_module_real_path module_name_parsed in
   match !compilation_manager_get_file_hook path with
-  | Some _result ->
-    return (A.annotate_with_extent (A.fold (A.N (N.FileRef path, []))) (A.get_extent_some module_name_parsed))
+  | Some _result -> return path
   | None -> pfail_with_ext ("Im30: Module not found: " ^ path) (A.get_extent_some module_name_parsed)
 ;;

@@ -23,11 +23,12 @@ let find_binding (name : string) : int option proc_state_m =
 ;;
 
 (* Lookup a binding - fails if not found *)
-let lookup_binding (name : string) : int proc_state_m =
-  let* result = find_binding name in
+let lookup_binding (name : Ext.t_str) : int proc_state_m =
+  let name_str = Ext.get_str_content name in
+  let* result = find_binding name_str in
   match result with
   | Some binding -> return binding
-  | None -> pfail ("Binding not found: " ^ name)
+  | None -> pfail_with_ext ("Binding not found: " ^ name_str) (Ext.get_str_extent name)
 ;;
 
 let add_constant_with_uid (uid : int) (const : t_constant) : unit proc_state_m =

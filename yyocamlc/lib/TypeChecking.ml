@@ -67,7 +67,7 @@ let rec normalize_type (tp : A.t) : A.t proc_state_m =
        (match tp_constant with
         | TypeExpression tp -> normalize_type tp
         | TypeConstructor _ -> return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some tp))
-        | DataExpression _ | PatternVar _ | DataConstructor _ ->
+        | DataExpression _ | PatternVar _ | DataConstructor _ | ModuleAlias _ ->
           pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
   | A.N (N.UnifiableTp uid, []) ->
     let* tp_deref = get_from_global_unification_ctx uid in
@@ -172,7 +172,7 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
     let* id =
       match A.view f with
-      | A.FreeVar name -> Environment.lookup_binding name
+      | A.FreeVar name -> Environment.lookup_binding (Ext.str_with_extent name (A.get_extent_some f))
       | A.N (N.Constant id, []) -> return id
       | _ -> pfail_with_ext (__LOC__ ^ "TC140: Expecting free variable but got " ^ A.show_view f) (A.get_extent_some tp)
     in
@@ -204,7 +204,7 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
     let* tp_constant = Environment.lookup_constant id in
     (match tp_constant with
      | TypeExpression _ | TypeConstructor _ -> return normalized_tp
-     | DataExpression _ | DataConstructor _ | PatternVar _ ->
+     | DataExpression _ | DataConstructor _ | PatternVar _ | ModuleAlias _ ->
        pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
   | A.N (N.Sequence Comma, args) ->
     let* args =
@@ -276,6 +276,7 @@ let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_stat
   | _ -> return (expr, normalized_expr_tp)
 ;;
 
+(* expand component fold right *)
 let rec desugar_top_level (expr : A.t) : A.t option proc_state_m =
   match A.view expr with
   | A.N (N.ComponentFoldRight, [ ([], f); ([], l); ([], acc) ]) ->
@@ -295,6 +296,60 @@ let rec desugar_top_level (expr : A.t) : A.t option proc_state_m =
        let expr = A.fold_with_extent (A.N (N.ComponentFoldRight, [ [], f; [], l; [], acc ])) (A.get_extent_some expr) in
        desugar_top_level expr)
   | _ -> return None
+;;
+
+let get_tp_for_expr_id (id : int) : A.t proc_state_m =
+  let* const = Environment.lookup_constant id in
+  match const with
+  | DataExpression { tp; _ } | DataConstructor { tp; _ } -> return tp
+  | _ -> pfail (__LOC__ ^ " Expecting some data but got " ^ EngineDataPrint.show_t_constant const)
+;;
+
+let partial_resolve_structure_deref (_env : local_env) (expr : A.t) : int proc_state_m =
+  match A.view expr with
+  | A.FreeVar name ->
+    let* id = Environment.lookup_binding (Ext.str_with_extent name (A.get_extent_some expr)) in
+    return id
+  | _ -> pfail_with_ext (__LOC__ ^ " Only dereference from a free variable is supported") (A.get_extent_some expr)
+;;
+
+let resolve_structure_deref (env : local_env) (expr : A.t)
+  : (A.t (* resolved constant *) * A.t (* resolved type *)) proc_state_m
+  =
+  match A.view expr with
+  | A.N (N.StructureDeref deref_name, [ ([], arg) ]) ->
+    let* id = partial_resolve_structure_deref env arg in
+    let* const = Environment.lookup_constant id in
+    (match const with
+     | ModuleAlias { name = _; filepath } ->
+       (match !compilation_manager_get_file_hook filepath with
+        | None -> failwith "Impossible"
+        | Some (mexpr, _) ->
+          (match A.view mexpr with
+           | A.N (N.ModuleDef, args) ->
+             (match
+                List.filter_map
+                  (fun (_, arg) ->
+                     match A.view arg with
+                     | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), _)
+                       when Ext.get_str_content name = deref_name -> Some id
+                     | A.N (N.Declaration (N.ModuleAliasDefn (name, _)), _) when Ext.get_str_content name = deref_name
+                       -> failwith "TODO double module alias deref"
+                     | _ -> None)
+                  (List.rev args)
+              with
+              | id :: _ ->
+                let ret_expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
+                let* ret_tp = get_tp_for_expr_id id in
+                return (ret_expr, ret_tp)
+              | _ ->
+                pfail_with_ext
+                  (__LOC__ ^ " Name not " ^ deref_name ^ " not found in " ^ filepath)
+                  (A.get_extent_some expr))
+           | _ -> failwith (__LOC__ ^ " Expecting a module expression, got " ^ A.show_view mexpr)))
+     | _ ->
+       pfail_with_ext (__LOC__ ^ " Expecting a module alias as subject of structure deref") (A.get_extent_some expr))
+  | _ -> Fail.failwith (__LOC__ ^ " Expecting a structure deref on the top level, got " ^ A.show_view expr)
 ;;
 
 (* Synthesize/infer type from an expression *)
@@ -403,6 +458,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        let new_arg = A.fold_with_extent (A.N (N.Sequence Dot, List.map fst args_checked)) (A.get_extent_some expr) in
        let new_tp = A.fold_with_extent (A.N (N.Sequence Comma, List.map snd args_checked)) (A.get_extent_some expr) in
        return (new_arg, new_tp)
+     | A.N (N.StructureDeref _, _) -> resolve_structure_deref env expr
      | _ ->
        pfail_with_ext
          (__LOC__ ^ " TC82: Expression does not support type synthesis, please specify the type " ^ A.show_view expr)
