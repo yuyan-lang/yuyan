@@ -132,7 +132,12 @@ let import_start : unit proc_state_m =
   push_elem_on_input_acc (get_keyword_t read_start) *)
 
 let import_end_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "之书"; left_fixity = FxOp (Some 90); right_fixity = FxNone }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "之书"
+  ; left_fixity = FxOp (Some 90)
+  ; right_fixity = FxNone
+  ; classification = Structural
+  }
 ;;
 
 let import_end : binary_op =
@@ -159,6 +164,7 @@ let definition_middle_meta : binary_op_meta =
   ; keyword = CS.new_t_string "者"
   ; left_fixity = FxOp (Some 10)
   ; right_fixity = FxComp definition_end_uid
+  ; classification = Structural
   }
 ;;
 
@@ -167,6 +173,7 @@ let definition_end_meta : binary_op_meta =
   ; keyword = CS.new_t_string "也"
   ; left_fixity = FxComp definition_middle_uid
   ; right_fixity = FxNone
+  ; classification = Structural
   }
 ;;
 
@@ -210,6 +217,7 @@ let type_definition_middle_meta : binary_op_meta =
   ; keyword = CS.new_t_string "即"
   ; left_fixity = FxOp (Some 10)
   ; right_fixity = FxComp type_definition_end_uid
+  ; classification = Structural
   }
 ;;
 
@@ -218,6 +226,7 @@ let type_definition_end_meta : binary_op_meta =
   ; keyword = CS.new_t_string "也"
   ; left_fixity = FxComp type_definition_middle_uid
   ; right_fixity = FxNone
+  ; classification = Structural
   }
 ;;
 
@@ -243,7 +252,7 @@ let type_definition_end : binary_op =
   }
 ;;
 
-let library_root_meta : binary_op_meta =
+(* let library_root_meta : binary_op_meta =
   { id = Uid.next (); keyword = CS.new_t_string "藏书阁"; left_fixity = FxNone; right_fixity = FxNone }
 ;;
 
@@ -259,7 +268,7 @@ let library_root : binary_op =
        else pfail ("Directory not found: " ^ default_path))
   ; shift_action = do_nothing_shift_action
   }
-;;
+;; *)
 
 (* let known_structure_deref : unit proc_state_m =
   let* (_, _) = read_one_of_string [CS.new_t_string "之"] in
@@ -302,8 +311,14 @@ let library_root : binary_op =
   | _ ->
     pfail ("BP157: Expected a library but got " ^ A.show_view input_top)
 *)
+
 let unknown_structure_deref_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "之"; left_fixity = FxOp (Some 999); right_fixity = FxOp (Some 1000) }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "之"
+  ; left_fixity = FxOp (Some 999)
+  ; right_fixity = FxOp (Some 1000)
+  ; classification = Expression
+  }
 ;;
 
 let unknown_structure_deref : binary_op =
@@ -323,7 +338,12 @@ let unknown_structure_deref : binary_op =
 ;;
 
 let builtin_op_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "内建"; left_fixity = FxNone; right_fixity = FxOp (Some 2000) }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "内建"
+  ; left_fixity = FxNone
+  ; right_fixity = FxOp (Some 2000)
+  ; classification = Expression
+  }
 ;;
 
 let builtin_op : binary_op =
@@ -357,7 +377,12 @@ let builtin_op : binary_op =
 ;;
 
 let builtin_type_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "元类型"; left_fixity = FxNone; right_fixity = FxNone }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "元类型"
+  ; left_fixity = FxNone
+  ; right_fixity = FxNone
+  ; classification = Expression
+  }
 ;;
 
 let builtin_type : binary_op =
@@ -370,7 +395,12 @@ let builtin_type : binary_op =
 ;;
 
 let module_open_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "观"; left_fixity = FxNone; right_fixity = FxOp (Some 80) }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "观"
+  ; left_fixity = FxNone
+  ; right_fixity = FxOp (Some 80)
+  ; classification = Structural
+  }
 ;;
 
 let get_file_ref (file_path : string) : (A.t * t_constants) proc_state_m =
@@ -450,7 +480,12 @@ let module_open : binary_op =
 ;;
 
 let module_reexport_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "诵"; left_fixity = FxNone; right_fixity = FxOp (Some 80) }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "诵"
+  ; left_fixity = FxNone
+  ; right_fixity = FxOp (Some 80)
+  ; classification = Structural
+  }
 ;;
 
 let module_reexport : binary_op =
@@ -494,6 +529,7 @@ let const_decl_middle_meta : binary_op_meta =
   ; keyword = CS.new_t_string "乃"
   ; left_fixity = FxOp (Some 10)
   ; right_fixity = FxComp const_decl_end_uid
+  ; classification = Structural
   }
 ;;
 
@@ -502,6 +538,7 @@ let const_decl_end_meta : binary_op_meta =
   ; keyword = CS.new_t_string "也"
   ; left_fixity = FxComp const_decl_middle_uid
   ; right_fixity = FxNone
+  ; classification = Structural
   }
 ;;
 
@@ -536,6 +573,7 @@ let constructor_decl_middle_meta : binary_op_meta =
   ; keyword = CS.new_t_string "立"
   ; left_fixity = FxOp (Some 10)
   ; right_fixity = FxComp constructor_decl_end_uid
+  ; classification = Structural
   }
 ;;
 
@@ -544,6 +582,7 @@ let constructor_decl_end_meta : binary_op_meta =
   ; keyword = CS.new_t_string "也"
   ; left_fixity = FxComp constructor_decl_middle_uid
   ; right_fixity = FxNone
+  ; classification = Structural
   }
 ;;
 
@@ -581,6 +620,7 @@ let type_constructor_decl_middle_meta : binary_op_meta =
   ; keyword = CS.new_t_string "作"
   ; left_fixity = FxOp (Some 10)
   ; right_fixity = FxComp type_constructor_decl_end_uid
+  ; classification = Structural
   }
 ;;
 
@@ -589,6 +629,7 @@ let type_constructor_decl_end_meta : binary_op_meta =
   ; keyword = CS.new_t_string "也"
   ; left_fixity = FxComp type_constructor_decl_middle_uid
   ; right_fixity = FxNone
+  ; classification = Structural
   }
 ;;
 
@@ -626,6 +667,7 @@ let module_alias_decl_start_meta =
   ; keyword = CS.new_t_string "模块"
   ; left_fixity = FxNone
   ; right_fixity = FxBinding module_alias_decl_middle_uid
+  ; classification = Structural
   }
 ;;
 
@@ -634,6 +676,7 @@ let module_alias_decl_middle_meta : binary_op_meta =
   ; keyword = CS.new_t_string "即"
   ; left_fixity = FxBinding module_alias_decl_start_uid
   ; right_fixity = FxComp module_alias_decl_end_uid
+  ; classification = Structural
   }
 ;;
 
@@ -642,6 +685,7 @@ let module_alias_decl_end_meta : binary_op_meta =
   ; keyword = CS.new_t_string "也"
   ; left_fixity = FxComp module_alias_decl_middle_uid
   ; right_fixity = FxNone
+  ; classification = Structural
   }
 ;;
 
@@ -680,6 +724,7 @@ let left_parenthesis_meta : binary_op_meta =
   ; keyword = CS.new_t_string "（"
   ; left_fixity = FxNone
   ; right_fixity = FxComp right_parenthesis_uid
+  ; classification = Expression
   }
 ;;
 
@@ -688,6 +733,7 @@ let right_parenthesis_meta : binary_op_meta =
   ; keyword = CS.new_t_string "）"
   ; left_fixity = FxComp left_parenthesis_uid
   ; right_fixity = FxNone
+  ; classification = Expression
   }
 ;;
 
@@ -707,7 +753,7 @@ let right_parenthesis : binary_op =
   }
 ;;
 
-let double_parenthesis_left_uid = Uid.next ()
+(* let double_parenthesis_left_uid = Uid.next ()
 let double_parenthesis_right_uid = Uid.next ()
 
 let double_parenthesis_left_meta : binary_op_meta =
@@ -740,7 +786,7 @@ let double_parenthesis_right : binary_op =
        push_elem_on_input_acc_expr (A.annotate_with_extent oper per_ext))
   ; shift_action = do_nothing_shift_action
   }
-;;
+;; *)
 
 let explicit_pi_start_uid = Uid.next ()
 let explicit_pi_middle_1_uid = Uid.next ()
@@ -751,6 +797,7 @@ let explicit_pi_start_meta =
   ; keyword = CS.new_t_string "化"
   ; left_fixity = FxNone
   ; right_fixity = FxComp explicit_pi_middle_1_uid
+  ; classification = Expression
   }
 ;;
 
@@ -759,6 +806,7 @@ let explicit_pi_middle_1_meta =
   ; keyword = CS.new_t_string "者"
   ; left_fixity = FxComp explicit_pi_start_uid
   ; right_fixity = FxBinding explicit_pi_middle_2_uid
+  ; classification = Expression
   }
 ;;
 
@@ -767,6 +815,7 @@ let explicit_pi_middle_2_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxBinding explicit_pi_middle_1_uid
   ; right_fixity = FxOp (Some 40)
+  ; classification = Expression
   }
 ;;
 
@@ -807,6 +856,7 @@ let implicit_pi_start_meta =
   ; keyword = CS.new_t_string "承"
   ; left_fixity = FxNone
   ; right_fixity = FxBinding implicit_pi_middle_2_uid
+  ; classification = Expression
   }
 ;;
 
@@ -823,6 +873,7 @@ let implicit_pi_middle_2_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxBinding implicit_pi_start_uid
   ; right_fixity = FxOp (Some 40)
+  ; classification = Expression
   }
 ;;
 
@@ -855,7 +906,12 @@ let arrow_start_uid = Uid.next ()
 let arrow_middle_uid = Uid.next ()
 
 let arrow_start_meta =
-  { id = arrow_start_uid; keyword = CS.new_t_string "化"; left_fixity = FxNone; right_fixity = FxComp arrow_middle_uid }
+  { id = arrow_start_uid
+  ; keyword = CS.new_t_string "化"
+  ; left_fixity = FxNone
+  ; right_fixity = FxComp arrow_middle_uid
+  ; classification = Expression
+  }
 ;;
 
 let arrow_middle_meta =
@@ -863,6 +919,7 @@ let arrow_middle_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxComp arrow_start_uid
   ; right_fixity = FxOp (Some 40)
+  ; classification = Expression
   }
 ;;
 
@@ -891,6 +948,7 @@ let implicit_lam_abs_start_meta =
   ; keyword = CS.new_t_string "受"
   ; left_fixity = FxNone
   ; right_fixity = FxBinding implicit_lam_abs_middle_uid
+  ; classification = Expression
   }
 ;;
 
@@ -899,6 +957,7 @@ let implicit_lam_abs_middle_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxBinding implicit_lam_abs_start_uid
   ; right_fixity = FxOp (Some 50)
+  ; classification = Expression
   }
 ;;
 
@@ -928,6 +987,7 @@ let explicit_lam_abs_start_meta =
   ; keyword = CS.new_t_string "会"
   ; left_fixity = FxNone
   ; right_fixity = FxBinding explicit_lam_abs_middle_uid
+  ; classification = Expression
   }
 ;;
 
@@ -936,6 +996,7 @@ let explicit_lam_abs_middle_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxBinding explicit_lam_abs_start_uid
   ; right_fixity = FxOp (Some 50)
+  ; classification = Expression
   }
 ;;
 
@@ -966,6 +1027,7 @@ let typed_lam_abs_start_meta =
   ; keyword = CS.new_t_string "遇"
   ; left_fixity = FxNone
   ; right_fixity = FxComp typed_lam_abs_middle1_uid
+  ; classification = Expression
   }
 ;;
 
@@ -974,6 +1036,7 @@ let typed_lam_abs_middle1_meta =
   ; keyword = CS.new_t_string "者"
   ; left_fixity = FxComp typed_lam_abs_start_uid
   ; right_fixity = FxBinding typed_lam_abs_middle2_uid
+  ; classification = Expression
   }
 ;;
 
@@ -982,6 +1045,7 @@ let typed_lam_abs_middle2_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxBinding typed_lam_abs_middle1_uid
   ; right_fixity = FxOp (Some 50)
+  ; classification = Expression
   }
 ;;
 
@@ -1017,6 +1081,7 @@ let implicit_ap_meta =
   ; keyword = CS.new_t_string "授以"
   ; left_fixity = FxOp (Some 799)
   ; right_fixity = FxOp (Some 800)
+  ; classification = Expression
   }
 ;;
 
@@ -1032,7 +1097,12 @@ let implicit_ap : binary_op =
 let explicit_ap_uid = Uid.next ()
 
 let explicit_ap_meta =
-  { id = explicit_ap_uid; keyword = CS.new_t_string "于"; left_fixity = FxOp (Some 799); right_fixity = FxOp (Some 800) }
+  { id = explicit_ap_uid
+  ; keyword = CS.new_t_string "于"
+  ; left_fixity = FxOp (Some 799)
+  ; right_fixity = FxOp (Some 800)
+  ; classification = Expression
+  }
 ;;
 
 let explicit_ap : binary_op =
@@ -1111,7 +1181,7 @@ let sentence_end : unit proc_state_m =
                 combined_expr
                 (Ext.combine_extent (A.get_extent_some module_expr) (A.get_extent_some decl)))
          | _ -> sentence_end_fail (Expr module_expr) (Expr decl))
-      | ParsingElem (start_op, _start_op_ext), Expr decl ->
+      (* | ParsingElem (start_op, _start_op_ext), Expr decl ->
         (match start_op, A.view decl with
          (* also for 「「 name *)
          | OpKeyword ({ id = opid; _ }, _), A.N (N.Declaration _, _) ->
@@ -1134,7 +1204,7 @@ let sentence_end : unit proc_state_m =
              let* _ = push_elem_on_input_acc_expr (A.annotate_with_extent combined_expr (A.get_extent_some decl)) in
              return ()
            else sentence_end_fail poped_left poped_right
-         | _ -> sentence_end_fail poped_left poped_right)
+         | _ -> sentence_end_fail poped_left poped_right) *)
       (* also for 「「 name *)
       | _ -> sentence_end_fail poped_left poped_right
     else pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
@@ -1152,6 +1222,7 @@ let external_call_start_meta : binary_op_meta =
   ; keyword = CS.new_t_string "《《外部调用"
   ; left_fixity = FxNone
   ; right_fixity = FxComp external_call_end_uid
+  ; classification = Expression
   }
 ;;
 
@@ -1160,6 +1231,7 @@ let external_call_end_meta : binary_op_meta =
   ; keyword = CS.new_t_string "》》"
   ; left_fixity = FxComp external_call_start_uid
   ; right_fixity = FxNone
+  ; classification = Expression
   }
 ;;
 
@@ -1191,6 +1263,7 @@ let if_then_else_start_meta =
   ; keyword = CS.new_t_string "若"
   ; left_fixity = FxNone
   ; right_fixity = FxComp if_then_else_mid1_uid
+  ; classification = Expression
   }
 ;;
 
@@ -1199,6 +1272,7 @@ let if_then_else_mid1_meta =
   ; keyword = CS.new_t_string "则"
   ; left_fixity = FxComp if_then_else_start_uid
   ; right_fixity = FxComp if_then_else_mid2_uid
+  ; classification = Expression
   }
 ;;
 
@@ -1207,6 +1281,7 @@ let if_then_else_mid2_meta =
   ; keyword = CS.new_t_string "否则"
   ; left_fixity = FxComp if_then_else_mid1_uid
   ; right_fixity = FxOp (Some 80)
+  ; classification = Expression
   }
 ;;
 
@@ -1242,6 +1317,7 @@ let match_subject_start_meta =
   ; keyword = CS.new_t_string "鉴"
   ; left_fixity = FxNone
   ; right_fixity = FxComp match_subject_end_uid
+  ; classification = Expression
   }
 ;;
 
@@ -1250,6 +1326,7 @@ let match_subject_end_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxComp match_subject_start_uid
   ; right_fixity = FxNone
+  ; classification = Expression
   }
 ;;
 
@@ -1284,6 +1361,7 @@ let match_case_mid_meta =
   ; keyword = CS.new_t_string "则"
   ; left_fixity = FxOp (Some 70)
   ; right_fixity = FxOp (Some 70)
+  ; classification = Expression
   }
 ;;
 
@@ -1304,7 +1382,12 @@ let match_case_mid : binary_op =
 ;;
 
 let match_case_alternative_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "或有"; left_fixity = FxOp (Some 59); right_fixity = FxOp (Some 60) }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "或有"
+  ; left_fixity = FxOp (Some 59)
+  ; right_fixity = FxOp (Some 60)
+  ; classification = Expression
+  }
 ;;
 
 let match_case_alternative : binary_op =
@@ -1321,7 +1404,12 @@ let match_case_alternative : binary_op =
 ;;
 
 let comma_sequence_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "，"; left_fixity = FxOp (Some 89); right_fixity = FxOp (Some 90) }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "，"
+  ; left_fixity = FxOp (Some 89)
+  ; right_fixity = FxOp (Some 90)
+  ; classification = Expression
+  }
 ;;
 
 let comma_sequence : binary_op =
@@ -1337,7 +1425,12 @@ let comma_sequence : binary_op =
 ;;
 
 let enumeration_comma_sequence_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "、"; left_fixity = FxOp (Some 109); right_fixity = FxOp (Some 110) }
+  { id = Uid.next ()
+  ; keyword = CS.new_t_string "、"
+  ; left_fixity = FxOp (Some 109)
+  ; right_fixity = FxOp (Some 110)
+  ; classification = Expression
+  }
 ;;
 
 let enumeration_comma_sequence : binary_op =
@@ -1353,7 +1446,8 @@ let enumeration_comma_sequence : binary_op =
 ;;
 
 let custom_operator_decl_start : unit proc_state_m =
-  let* _ = read_one_of_string [ CS.new_t_string "术" ] in
+  let* _, ext = read_one_of_string [ CS.new_t_string "术" ] in
+  let* () = TokenInfo.add_token_info ext (SemanticToken StructureKeyword) in
   let* defn, defn_ext = scan_until_one_of_string [ CS.new_t_string "盖谓" ] in
   (* NO precheck if operators can be get *)
   (* let* _ = UserDefinedOperators.get_operators_m defn (A.fold_with_extent (A.FreeVar "TRIVIAL") defn_ext) in *)
@@ -1375,6 +1469,7 @@ let custom_operator_decl_middle_meta =
   ; keyword = CS.new_t_string "盖谓"
   ; left_fixity = FxNone
   ; right_fixity = FxComp custom_operator_decl_end_uid
+  ; classification = Structural
   }
 ;;
 
@@ -1383,6 +1478,7 @@ let custom_operator_decl_end_meta =
   ; keyword = CS.new_t_string "也"
   ; left_fixity = FxComp custom_operator_decl_middle_uid
   ; right_fixity = FxNone
+  ; classification = Structural
   }
 ;;
 
@@ -1425,6 +1521,7 @@ let let_in_start_meta =
   ; keyword = CS.new_t_string "虑"
   ; left_fixity = FxNone
   ; right_fixity = FxBinding let_in_mid1_uid
+  ; classification = Structural
   }
 ;;
 
@@ -1433,6 +1530,7 @@ let let_in_mid1_meta =
   ; keyword = CS.new_t_string "者"
   ; left_fixity = FxBinding let_in_start_uid
   ; right_fixity = FxComp let_in_mid2_uid
+  ; classification = Structural
   }
 ;;
 
@@ -1441,6 +1539,7 @@ let let_in_mid2_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxComp let_in_mid1_uid
   ; right_fixity = FxOp (Some 55)
+  ; classification = Structural
   }
 ;;
 
@@ -1481,6 +1580,7 @@ let rec_let_in_start_meta =
   ; keyword = CS.new_t_string "递归虑"
   ; left_fixity = FxNone
   ; right_fixity = FxBinding rec_let_in_mid1_uid
+  ; classification = Structural
   }
 ;;
 
@@ -1489,6 +1589,7 @@ let rec_let_in_mid1_meta =
   ; keyword = CS.new_t_string "其"
   ; left_fixity = FxBinding rec_let_in_start_uid
   ; right_fixity = FxComp rec_let_in_mid2_uid
+  ; classification = Structural
   }
 ;;
 
@@ -1497,6 +1598,7 @@ let rec_let_in_mid2_meta =
   ; keyword = CS.new_t_string "者"
   ; left_fixity = FxComp rec_let_in_mid1_uid
   ; right_fixity = FxComp rec_let_in_mid3_uid
+  ; classification = Structural
   }
 ;;
 
@@ -1505,6 +1607,7 @@ let rec_let_in_mid3_meta =
   ; keyword = CS.new_t_string "而"
   ; left_fixity = FxComp rec_let_in_mid2_uid
   ; right_fixity = FxOp (Some 55)
+  ; classification = Structural
   }
 ;;
 
@@ -1552,6 +1655,7 @@ let typing_annotation_start_meta =
   ; keyword = CS.new_t_string "其"
   ; left_fixity = FxNone
   ; right_fixity = FxComp typing_annotation_middle_uid
+  ; classification = Expression
   }
 ;;
 
@@ -1560,6 +1664,7 @@ let typing_annotation_middle_meta =
   ; keyword = CS.new_t_string "者"
   ; left_fixity = FxComp typing_annotation_start_uid
   ; right_fixity = FxOp (Some 120)
+  ; classification = Expression
   }
 ;;
 
@@ -1589,8 +1694,7 @@ let default_registry =
     to_processor_complex "string_parser_pusher" string_parser_pusher
   ; to_processor_binary_op "definition_middle" definition_middle
   ; to_processor_binary_op "definition_end" definition_end
-  ; to_processor_binary_op "import_end" import_end
-  ; to_processor_binary_op "library_root" library_root
+  ; to_processor_binary_op "import_end" import_end (* ; to_processor_binary_op "library_root" library_root *)
   ; to_processor_binary_op "unknown_structure_deref" unknown_structure_deref
   ; (* to_processor_complex Expression "known_structure_deref" known_structure_deref; *)
     (* to_processor_binary_op Expression "statement_end" statement_end; *)
@@ -1630,8 +1734,8 @@ let default_registry =
   ; (* application *)
     to_processor_binary_op "implicit_ap" implicit_ap
   ; to_processor_binary_op "explicit_ap" explicit_ap
-  ; to_processor_binary_op "double_parenthesis_left" double_parenthesis_left
-  ; to_processor_binary_op "double_parenthesis_right" double_parenthesis_right
+    (* ; to_processor_binary_op "double_parenthesis_left" double_parenthesis_left
+  ; to_processor_binary_op "double_parenthesis_right" double_parenthesis_right *)
   ; to_processor_binary_op "external_call_start" external_call_start
   ; to_processor_binary_op "external_call_end" external_call_end
   ; (* if *)
