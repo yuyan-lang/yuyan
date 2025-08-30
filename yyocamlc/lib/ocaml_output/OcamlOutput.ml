@@ -112,7 +112,19 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
   | A.N (N.Builtin (N.Bool false), []) -> "false"
   | A.N (N.Lam, [ ([ name ], body) ]) ->
     let env', v_name = add_var_env var_env name in
-    "(fun " ^ v_name ^ annotate_with_name name ^ " -> \n " ^ get_ocaml_code env' body ^ ")"
+    (* "(fun " ^ v_name ^ annotate_with_name name ^ " -> \n " ^ get_ocaml_code env' body ^ ")" *)
+    (* give function names for debugging/profiling *)
+    "(let "
+    ^ v_name
+    ^ annotate_with_name name
+    ^ " = (fun "
+    ^ v_name
+    ^ annotate_with_name name
+    ^ " -> \n "
+    ^ get_ocaml_code env' body
+    ^ ") in "
+    ^ v_name
+    ^ ")"
   | A.FreeVar name -> lookup_var_env var_env name ^ annotate_with_name name
   | A.N (N.Ap, [ ([], func); ([], arg) ]) -> "(" ^ get_ocaml_code var_env func ^ " " ^ get_ocaml_code var_env arg ^ ")"
   | A.N (N.IfThenElse, [ ([], cond); ([], then_branch); ([], else_branch) ]) ->
