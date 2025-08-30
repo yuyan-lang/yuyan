@@ -20,7 +20,7 @@ module type ABT = sig
   val unbind_abt_list : t -> int -> string list * t
   val abstract_over : t -> string -> t
   val abstract_over_list : t -> string list -> t
-  val abstract_over_no_name : t -> t
+  val abstract_over_no_name : ?bnd_name:string -> t -> t
   val view : t -> t_view
   val fold : t_view -> t
   val fold_with_extent : t_view -> t_extent -> t
@@ -384,7 +384,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     !final_ctx, final_tms
   ;;
 
-  let abstract_over_no_name ((ctx, abt) : t) : t =
+  let abstract_over_no_name ?(bnd_name = "__no_name") ((ctx, abt) : t) : t =
     (*  let rec increment_all_bnd_var (abt: base_t): base_t = 
       match abt with
       | BoundVar(i) -> BoundVar(i + 1)
@@ -393,12 +393,12 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
       | AnnotatedWithExtent(extent, i) -> AnnotatedWithExtent(extent, increment_all_bnd_var i)
       | Subst(_, _) -> increment_all_bnd_var (subst_head_reduce abt)
     in *)
-    ctx, Binding ("__no_name", explicit_subst (abt, Upshift))
+    ctx, Binding (bnd_name, explicit_subst (abt, Upshift))
   ;;
 
   let abstract_over ((ctx, abt) : t) (name : string) : t =
     match List.find_index (fun x -> x = name) ctx with
-    | None -> abstract_over_no_name (ctx, abt)
+    | None -> abstract_over_no_name ~bnd_name:name (ctx, abt)
     | Some outer_name_idx_in_list ->
       (* Helper function to shift and replace bound variables as required, 
         shifts idx below name_idx and above outer_index by 1, and replaces name_idx with 1

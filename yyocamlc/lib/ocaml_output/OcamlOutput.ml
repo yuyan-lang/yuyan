@@ -61,6 +61,26 @@ let annotate_with_name (str : string) : string = " " ^ get_comment_str str
 let get_comment_ext_str (ext_str : Ext.t_str) : string = get_comment_str (Ext.get_str_content ext_str)
 let annotate_with_name_ext (ext_str : Ext.t_str) : string = " " ^ get_comment_ext_str ext_str
 
+let escaped_unicode (s : string) : string =
+  let buf = Buffer.create (String.length s) in
+  String.iter
+    (fun c ->
+       match c with
+       | '"' -> Buffer.add_string buf "\\\""
+       | '\\' -> Buffer.add_string buf "\\\\"
+       | '\n' -> Buffer.add_string buf "\\n"
+       | '\t' -> Buffer.add_string buf "\\t"
+       | '\r' -> Buffer.add_string buf "\\r"
+       | c when Char.code c < 0x20 ->
+         (* control chars -> decimal escape *)
+         Buffer.add_string buf (Printf.sprintf "\\%03d" (Char.code c))
+       | c ->
+         (* leave everything else (including UTF-8) untouched *)
+         Buffer.add_char buf c)
+    s;
+  Buffer.contents buf
+;;
+
 let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string =
   log_progress ("get_ocaml_code_for_pattern: " ^ A.show_view pattern);
   (* TODO: pattern match elaboration *)
@@ -86,7 +106,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
   match A.view expr with
   | A.N (N.Builtin (N.Int i), []) -> string_of_int i
   | A.N (N.Builtin (N.Float (int_part, decimal_part)), []) -> int_part ^ "." ^ decimal_part
-  | A.N (N.Builtin (N.String s), []) -> "\"" ^ String.escaped s ^ "\""
+  | A.N (N.Builtin (N.String s), []) -> "\"" ^ escaped_unicode s ^ "\""
   | A.N (N.Builtin N.Unit, []) -> "()"
   | A.N (N.Builtin (N.Bool true), []) -> "true"
   | A.N (N.Builtin (N.Bool false), []) -> "false"
@@ -107,7 +127,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     let get_ocaml_code_for_case (case : A.t) : string =
       match A.view case with
       | A.N (N.MatchCase, [ ([], pattern); ([], body) ]) ->
-        "\n| (" ^ get_ocaml_code_for_pattern var_env pattern ^ ") -> (" ^ get_ocaml_code var_env body ^ ")"
+        "\n | (" ^ get_ocaml_code_for_pattern var_env pattern ^ ") ->\n     (" ^ get_ocaml_code var_env body ^ ")"
       | _ -> Fail.failwith ("OO232: Expecting match case, got: " ^ A.show_view case)
     in
     "(match ("
@@ -137,11 +157,19 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     ^ ")"
   | A.N (N.LetIn, [ ([], let_def); ([ bnd ], body) ]) ->
     let env', bnd_name = add_var_env var_env bnd in
-    "(let " ^ bnd_name ^ " = " ^ get_ocaml_code var_env let_def ^ " in\n" ^ get_ocaml_code env' body ^ ")"
+    "(let "
+    ^ bnd_name
+    ^ annotate_with_name bnd
+    ^ " = "
+    ^ get_ocaml_code var_env let_def
+    ^ " in\n"
+    ^ get_ocaml_code env' body
+    ^ ")"
   | A.N (N.RecLetIn, [ ([], dom_tp); ([ bnd ], dom); ([ bnd_body ], body) ]) ->
     let env', bnd_name = add_var_env_list var_env [ bnd; bnd_body ] in
     "(let rec "
     ^ bnd_name
+    ^ annotate_with_name bnd
     ^ " : "
     ^ get_type_code var_env dom_tp
     ^ " = "
