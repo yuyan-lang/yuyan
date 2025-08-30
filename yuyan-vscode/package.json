@@ -14,7 +14,7 @@
   "activationEvents": [
     "onLanguage:yuyan"
   ],
-  "main": "./extension.js",
+  "main": "./out/extension.js",
   "contributes": {
     "configuration": {
       "title": "Yuyan",
@@ -113,8 +113,11 @@
     ]
   },
   "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
     "lint": "eslint .",
-    "pretest": "npm run lint",
+    "pretest": "npm run lint && npm run compile",
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
