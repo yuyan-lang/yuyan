@@ -118,9 +118,9 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
   | A.N (N.IfThenElse, [ ([], cond); ([], then_branch); ([], else_branch) ]) ->
     "(if ("
     ^ get_ocaml_code var_env cond
-    ^ ") then "
+    ^ ")\n then "
     ^ get_ocaml_code var_env then_branch
-    ^ " else "
+    ^ "\n else "
     ^ get_ocaml_code var_env else_branch
     ^ ")"
   | A.N (N.Match, ([], subject) :: cases) ->
