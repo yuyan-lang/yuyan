@@ -1,0 +1,45 @@
+观「藏书阁」之「标准库」之「语言核心」之「内建类型」之书。
+
+
+观「藏书阁」之「标准库」之「数据结构」之「多态列」之书。
+
+
+观「藏书阁」之「标准库」之「数学运算」之「数组转换」之书。
+
+「读文件」乃化「字符串」而「字符串」也。
+「读文件」者会「串」而《《外部调用『(fun filename -> In_channel.with_open_text filename In_channel.input_all)』》》于「串」也。
+
+「删文件」乃化「字符串」而「字符串」也。
+「删文件」者会「串」而《《外部调用『(fun filename -> Unix.unlink filename; "ok")』》》于「串」也。
+
+「写文件」乃化「字符串」而化「字符串」而「有」也。
+「写文件」者会「文件名」而会「串」而《《外部调用『(fun filename content -> Out_channel.with_open_text filename (fun oc -> Out_channel.output_string oc content))』》》于「文件名」于「串」也。
+
+「读」乃化「字符串」而「字符串」也。
+「读」者「读文件」也。
+
+「读文件夹」乃化「字符串」而「字符串」列也。
+「读文件夹」者会「串」而（「数组转多态列」于（《《外部调用『(fun dir -> Sys.readdir dir)』》》于「串」））也。
+
+「：路径必须存在！否则报错
+TODO: 修改？
+：」
+「其文件夹乎」乃化「字符串」而「爻」也。
+「其文件夹乎」者会「串」而《《外部调用『(fun path -> try Sys.is_directory path with _ -> false)』》》于「串」也。
+
+「路径是文件夹」乃化「字符串」而「爻」也。
+「路径是文件夹」者会「串」而《《外部调用『(fun path -> try Sys.is_directory path with _ -> false)』》》于「串」也。
+
+「路径是普通文件」乃化「字符串」而「爻」也。
+「路径是普通文件」者会「串」而《《外部调用『(fun path -> try let stat = Unix.stat path in stat.st_kind = Unix.S_REG with _ -> false)』》》于「串」也。
+
+「路径存在」乃化「字符串」而「爻」也。
+「路径存在」者会「串」而《《外部调用『(fun path -> Sys.file_exists path)』》》于「串」也。
+
+「：返回文件修改时间的时间戳：1970年至今的毫秒数：」
+「获得文件修改时间」乃化「字符串」而「整数」也。
+「获得文件修改时间」者会「串」而《《外部调用『(fun path -> let stat = Unix.stat path in int_of_float (stat.st_mtime *. 1000.0))』》》于「串」也。
+
+「：get pwd：」
+「获取当前路径」乃化「有」而「字符串」也。
+「获取当前路径」者会「甲」而《《外部调用『(fun () -> Sys.getcwd ())』》》于「元」也。

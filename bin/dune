@@ -1,0 +1,6 @@
+(executable
+ (public_name yyocamlc)
+ (name main)
+ (libraries yyocamlc)
+ (flags
+  (:standard -g)))

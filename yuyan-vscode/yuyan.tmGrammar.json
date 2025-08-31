@@ -1,0 +1,26 @@
+{
+    "scopeName": "source.yuyan",
+    "patterns": [{ "include": "#expression" }],
+    "repository": {
+      "expression": {
+        "patterns": [{ "include": "#coment" }]
+      },
+      "letter": {
+        "match": "a|b|c",
+        "name": "keyword.letter"
+      },
+      "comments": {
+        "patterns": [
+          {
+            "name": "comment.line.percentage.twelf",
+            "match": "%[^a-z{].*$"
+          },
+          {
+            "name": "comment.block",
+            "begin": "「：",
+            "end": "：」"
+          }
+        ]
+      }
+    }
+}

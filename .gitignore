@@ -191,3 +191,8 @@ cachegrind.out.*
 .yybuild.*
 *.pyc
 *.pickle
+_build/
+
+_build/**
+debug*.txt
+test*。豫

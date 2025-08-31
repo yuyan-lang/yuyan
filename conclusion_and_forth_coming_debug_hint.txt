@@ -1,7 +1,0 @@
-run yy_test
-
-
-pay attention to the difference between hello-world-1 and hello-world-2. 
-The reason is pending investigation, but we've just implemented first class modules.
-
-I will not touch this project until Dec 30, 2022

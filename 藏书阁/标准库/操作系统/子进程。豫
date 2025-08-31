@@ -1,0 +1,47 @@
+
+
+观「藏书阁」之「标准库」之「语言核心」之「内建类型」之书。
+观「藏书阁」之「标准库」之「语言核心」之「异常」之书。
+
+
+观「藏书阁」之「标准库」之「数据结构」之「字符串术」之书。
+
+观「藏书阁」之「标准库」之「数据结构」之「多态列」之书。
+
+观「藏书阁」之「标准库」之「输入输出」之「笔」之书。
+观「藏书阁」之「标准库」之「数学运算」之「数组转换」之书。
+
+「获取输出」乃化「字符串」而化「字符串」列而（「爻」，「字符串」，「字符串」）也。
+「获取输出」者会「程序名」而会「参数列」而
+    虑「后参数列」者（「多态列转数组」于「参数列」）而
+    《《外部调用『(fun prog args -> let ic, oc, ec = Unix.open_process_full (prog ^ " " ^ String.concat " " (Array.to_list args)) [||] in let out = In_channel.input_all ic in let err = In_channel.input_all ec in let status = Unix.close_process_full (ic, oc, ec) in (status = Unix.WEXITED 0, out, err))』》》于「程序名」于「后参数列」也。
+
+「运行」乃化「字符串」而化「字符串」列而「爻」也。
+「运行」者会「程序名」而会「参数列」而
+    虑「后参数列」者（「多态列转数组」于「参数列」）而
+    《《外部调用『(fun prog args -> let args_with_prog = Array.make (1 + Array.length args) "" in args_with_prog.(0) <- prog; Array.blit args 0 args_with_prog 1 (Array.length args); let pid = Unix.create_process prog args_with_prog Unix.stdin Unix.stdout Unix.stderr in let _, status = Unix.waitpid [] pid in status = Unix.WEXITED 0)』》》于「程序名」于「后参数列」也。
+
+「运行并传递输出」乃化「字符串」而化「字符串」列而「整数」也。
+「运行并传递输出」者会「程序名」而会「参数列」而
+    虑「后参数列」者（「多态列转数组」于「参数列」）而
+    《《外部调用『(fun prog args -> let args_with_prog = Array.make (1 + Array.length args) "" in args_with_prog.(0) <- prog; Array.blit args 0 args_with_prog 1 (Array.length args); let pid = Unix.create_process prog args_with_prog Unix.stdin Unix.stdout Unix.stderr in let _, status = Unix.waitpid [] pid in match status with Unix.WEXITED code -> code | _ -> -1)』》》于「程序名」于「后参数列」也。
+
+「成功运行并打印结果」乃化「字符串」而化「字符串」列而「爻」也。
+「成功运行并打印结果」者会「程序名」而会「参数列」而
+    （虑「无」者「标准错误打印行」于（「程序名」附『 』附（以『 』合并「参数列」）附『  』）而
+    （虑「结果」者「获取输出」于「程序名」于「参数列」而
+    （
+        虑「无」者「标准错误打印行」于（『标准输出：』附（（「结果」之一）））而
+        虑「无」者「标准错误打印行」于（『错误输出：』附（「结果」之二））而
+        （若（「结果」之零）则「阳」否则「发生事故」于
+        （『命令执行失败』附「程序名」附『 』附（以『 』合并「参数列」）附『「：换行：」标准输出：』附（（「结果」之一））附『「：换行：」错误输出：』附（「结果」之二）））
+    ）））
+    也。
+「成功运行」乃化「字符串」而化「字符串」列而「爻」也。
+「成功运行」者会「程序名」而会「参数列」而
+    虑「结果」者「获取输出」于「程序名」于「参数列」而
+    （
+        （若（「结果」之零）则「阳」否则「发生事故」于
+        （『命令执行失败：「：换行：」』附「程序名」附『 』附（以『 』合并「参数列」）附『「：换行：」标准输出：』附（（「结果」之一））附『「：换行：」错误输出：』附（「结果」之二）））
+    ）
+    也。

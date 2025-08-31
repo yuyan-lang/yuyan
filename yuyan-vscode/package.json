@@ -1,0 +1,133 @@
+{
+  "name": "yuyan-vscode",
+  "displayName": "yuyan-vscode",
+  "description": "",
+  "version": "0.0.18",
+  "repository": "https://github.com/yuyan-lang/yuyan-vscode",
+  "publisher": "yuyan-lang",
+  "engines": {
+    "vscode": "^1.73.1"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "browser": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "Yuyan",
+      "properties": {
+        "yuyan.executablePath": {
+          "type": "string",
+          "default": "",
+          "description": "Path of the yuyan implementation `yy`. "
+        },
+        "yuyan.languageSelector": {
+          "type": "string",
+          "default": "yuyan",
+          "description": "Language selector for providers. Use '*' for all files, 'yuyan' for .yuyan files only, or any valid language ID."
+        },
+        "yuyan.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "verbose",
+          "description": "Traces the communication between VS Code and the language server."
+        }
+      }
+    },
+    "languages": [
+      {
+        "id": "yuyan",
+        "extensions": [
+          ".yuyan",
+          "。豫",
+          ".yyon"
+        ],
+        "aliases": [
+          "Yuyan"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "dark": "./yu-char-xiaozhuan-dark.svg",
+          "light": "./yu-char-xiaozhuan-light.svg"
+        }
+      }
+    ],
+    "grammars": [
+      {
+        "language": "yuyan",
+        "scopeName": "source.yuyan",
+        "path": "./yuyan.tmGrammar.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "yuyan.restartyuyanlsp",
+        "title": "Yuyan: Restart Yuyan Language Server 重启豫言的语言服务器"
+      },
+      {
+        "command": "yuyan.debugshowtree",
+        "title": "Yuyan: Debug Show Tree 调试显式语法树"
+      },
+      {
+        "command": "yuyan.debugshowtrees",
+        "title": "Yuyan: Debug Show Trees 调试显式语法树组"
+      }
+    ],
+    "semanticTokenScopes": [
+      {
+        "language": "yuyan",
+        "scopes": {
+          "StringConstant": [
+            "string.quoted"
+          ],
+          "NumericConstant": [
+            "constant.numeric"
+          ],
+          "StructureKeyword": [
+            "markup.bold"
+          ],
+          "ExpressionKeyword": [
+            "keyword.operator"
+          ],
+          "UserDefinedOperatorKeyword": [
+            "entity.other.inherited-class"
+          ],
+          "Identifier": [
+            "variable.other"
+          ],
+          "Comment": [
+            "comment.line"
+          ]
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "lint": "eslint .",
+    "pretest": "npm run lint && npm run compile",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^7.1.4",
+    "@types/mocha": "^9.1.1",
+    "@types/node": "^14.18.33",
+    "@types/vscode": "^1.73.1",
+    "@vscode/test-electron": "^1.6.2",
+    "eslint": "^8.28.0",
+    "glob": "^7.2.3",
+    "mocha": "^9.2.2",
+    "typescript": "^4.9.3"
+  }
+}
