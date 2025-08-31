@@ -25,9 +25,17 @@ let set_global_unification_ctx (uid : int) (tp : A.t) : unit proc_state_m =
   else pfail ("uid " ^ string_of_int uid ^ " not found in global unification context")
 ;;
 
+(* Until binding contains extent, we need to resort to string.
+AbtLib did not design bindings to contain extents.
+*)
+(* type bnd_name = Ext.t_str *)
+type bnd_name = string
+
+let bnd_name_to_string (name : bnd_name) : string = name
+
 (* Bidirectional type checking skeleton *)
-type local_tm_env = (string * A.t) list
-type local_tp_env = string list
+type local_tm_env = (bnd_name * A.t) list
+type local_tp_env = bnd_name list
 
 type local_env =
   { tp : local_tp_env
@@ -35,10 +43,20 @@ type local_env =
   }
 
 let empty_local_env : local_env = { tp = []; tm = [] }
-let extend_local_env_tp (env : local_env) (name : string) : local_env = { env with tp = name :: env.tp }
+let extend_local_env_tp (env : local_env) (name : bnd_name) : local_env = { env with tp = name :: env.tp }
 
-let extend_local_env_tm (env : local_env) (name : string) (tp : A.t) : local_env =
+let extend_local_env_tm (env : local_env) (name : bnd_name) (tp : A.t) : local_env =
   { env with tm = (name, tp) :: env.tm }
+;;
+
+let find_in_local_env_tm (env : local_env) (name : string) : A.t option =
+  match List.find_opt (fun (n, _) -> bnd_name_to_string n = name) env.tm with
+  | Some (_, tp) -> Some tp
+  | None -> None
+;;
+
+let find_in_local_env_tp (env : local_env) (name : string) : bnd_name option =
+  List.find_opt (fun n -> bnd_name_to_string n = name) env.tp
 ;;
 
 let check_is_type (tp : A.t) : A.t proc_state_m =
@@ -172,7 +190,8 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
     let* id =
       match A.view f with
-      | A.FreeVar name -> Environment.lookup_binding (Ext.str_with_extent name (A.get_extent_some f))
+      | A.FreeVar name ->
+        Environment.lookup_binding_with_extent_token_info (Ext.str_with_extent name (A.get_extent_some f))
       | A.N (N.Constant id, []) -> return id
       | _ -> pfail_with_ext (__LOC__ ^ "TC140: Expecting free variable but got " ^ A.show_view f) (A.get_extent_some tp)
     in
@@ -308,7 +327,7 @@ let get_tp_for_expr_id (id : int) : A.t proc_state_m =
 let partial_resolve_structure_deref (_env : local_env) (expr : A.t) : int proc_state_m =
   match A.view expr with
   | A.FreeVar name ->
-    let* id = Environment.lookup_binding (Ext.str_with_extent name (A.get_extent_some expr)) in
+    let* id = Environment.lookup_binding_with_extent_token_info (Ext.str_with_extent name (A.get_extent_some expr)) in
     return id
   | _ -> pfail_with_ext (__LOC__ ^ " Only dereference from a free variable is supported") (A.get_extent_some expr)
 ;;
@@ -365,18 +384,21 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        (match List.assoc_opt name env.tm with
         | Some tp -> return (expr, tp)
         | None ->
-          let* id = Environment.find_binding name in
-          (match id with
-           | None -> pfail_with_ext ("TC83: Free variable not found in environment: " ^ name) (A.get_extent_some expr)
-           | Some id ->
-             let* tp_constant = Environment.lookup_constant id in
-             let expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
-             (match tp_constant with
-              | DataExpression { tp; _ } | DataConstructor { tp; _ } -> return (expr, tp)
-              | _ ->
-                pfail_with_ext
-                  (__LOC__ ^ "TC84: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
-                  (A.get_extent_some expr))))
+          let* id =
+            Environment.lookup_binding_with_extent_token_info (Ext.str_with_extent name (A.get_extent_some expr))
+          in
+          let* tp_constant = Environment.lookup_constant id in
+          let expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
+          (match tp_constant with
+           | DataExpression { tp; _ } | DataConstructor { tp; _ } ->
+             let* () =
+               TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some expr)) (Hover (A.show_view tp))
+             in
+             return (expr, tp)
+           | _ ->
+             pfail_with_ext
+               (__LOC__ ^ "TC84: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
+               (A.get_extent_some expr)))
      | A.N (N.Builtin (N.Bool _), []) ->
        return (expr, A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some expr))
      | A.N (N.Builtin (N.Int _), []) ->
@@ -627,6 +649,8 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
        return (env, pat, case_body)
      | None, Some id ->
        (* this is an existing constant *)
+       let* extent = Environment.get_extent_of_constant id in
+       let* () = TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some pat)) (Definition extent) in
        let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
        check_pattern env pat scrut_tp case_body)
   | A.N (N.Constant id, []) ->
@@ -671,7 +695,10 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
         (match List.assoc_opt name env.tm, id with
          | Some _, _ (* local var, shadowing*) | None, None ->
            pfail_with_ext ("TC140: Unexpected local/fresh variable but got " ^ A.show_view f) (A.get_extent_some pat)
-         | None, Some id -> return id)
+         | None, Some id ->
+           let* extent = Environment.get_extent_of_constant id in
+           let* () = TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some pat)) (Definition extent) in
+           return id)
       | A.N (N.Constant id, []) -> return id
       | _ ->
         pfail_with_ext

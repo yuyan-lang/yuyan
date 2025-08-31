@@ -100,6 +100,27 @@ let lookup_constant (uid : int) : t_constant proc_state_m =
   | Some const -> return const
   | None -> pfail ("Constant not found with uid: " ^ string_of_int uid)
 ;;
+
+let get_extent_of_constant (uid : int) : Ext.t proc_state_m =
+  let* const = lookup_constant uid in
+  match const with
+  | TypeConstructor { name; _ } -> return (Ext.get_str_extent name)
+  | DataConstructor { name; _ } -> return (Ext.get_str_extent name)
+  | TypeExpression tp -> return (A.get_extent_some tp)
+  | DataExpression { name = Some name; _ } -> return (Ext.get_str_extent name)
+  | DataExpression { name = None; tm = Some expr; tp = _ } -> return (A.get_extent_some expr)
+  | DataExpression { name = None; tm = None; tp = _ } -> failwith "DataExpression with no name and no term"
+  | PatternVar { name; _ } -> return (Ext.get_str_extent name)
+  | ModuleAlias { name; _ } -> return (Ext.get_str_extent name)
+;;
+
+let lookup_binding_with_extent_token_info (name : Ext.t_str) : int proc_state_m =
+  let* id = lookup_binding name in
+  let* extent = get_extent_of_constant id in
+  let* () = TokenInfo.add_token_info name (Definition extent) in
+  return id
+;;
+
 (*
    let import_constants (constants : t_constants) : unit proc_state_m =
   let* _ = psequence (List.map (fun (id, const) -> add_constant_with_uid id const) constants) in
