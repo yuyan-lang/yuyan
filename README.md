@@ -43,7 +43,7 @@
 
 最简单的体验豫言编程语言的方式是使用 GitHub Codespaces，它提供了预配置的开发环境：
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan/tree/demo)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan/)
 
 Codespace 环境包含：
 - OCaml 5.3.0 及 opam 包管理器
