@@ -85,13 +85,42 @@ function provideSemanticTokens(
     }
     
     // Both VSCode and token file use 0-based indexing
-    const line = tokenInfo.extent.start_line;
+    const startLine = tokenInfo.extent.start_line;
     const startChar = tokenInfo.extent.start_col;
+    const endLine = tokenInfo.extent.end_line;
     const endChar = tokenInfo.extent.end_col;
-    const length = endChar - startChar;
     
-    if (line >= 0 && startChar >= 0 && length > 0) {
-      builder.push(line, startChar, length, tokenTypeIndex);
+    // Handle multi-line tokens
+    if (startLine === endLine) {
+      // Single line token
+      const length = endChar - startChar;
+      if (startLine >= 0 && startChar >= 0 && length > 0) {
+        builder.push(startLine, startChar, length, tokenTypeIndex);
+      }
+    } else {
+      // Multi-line token - need to get actual line content to calculate lengths
+      const lines = document.getText().split('\n');
+      
+      // First line: from startChar to end of line
+      if (startLine < lines.length) {
+        const firstLineLength = lines[startLine].length - startChar;
+        if (firstLineLength > 0) {
+          builder.push(startLine, startChar, firstLineLength, tokenTypeIndex);
+        }
+      }
+      
+      // Middle lines: entire lines
+      for (let line = startLine + 1; line < endLine && line < lines.length; line++) {
+        const lineLength = lines[line].length;
+        if (lineLength > 0) {
+          builder.push(line, 0, lineLength, tokenTypeIndex);
+        }
+      }
+      
+      // Last line: from start of line to endChar
+      if (endLine < lines.length && endChar > 0) {
+        builder.push(endLine, 0, endChar, tokenTypeIndex);
+      }
     }
   }
   
