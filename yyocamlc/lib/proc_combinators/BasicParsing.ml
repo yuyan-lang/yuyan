@@ -14,7 +14,7 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
   | None -> push_elem_on_input_acc es
   | Some x ->
     (match x with
-     | ParsingElem (OpKeyword (meta, _), _) ->
+     | ParsingElem (OpKeyword meta, _) ->
        (match meta.right_fixity with
         | FxNone ->
           failwith
@@ -67,7 +67,7 @@ let operator_right_most_reduce () : unit proc_state_m =
   | None -> failwith "PC244: empty stack"
   | Some x ->
     (match x with
-     | ParsingElem (OpKeyword (meta, _), _) ->
+     | ParsingElem (OpKeyword meta, _) ->
        (match meta.right_fixity with
         | FxNone ->
           let* bin_op = lookup_binary_op meta.id in
@@ -129,7 +129,7 @@ let rec operator_precedence_reduce (uid : int) : unit proc_state_m =
      | None -> return ()
      | Some x ->
        (match x with
-        | ParsingElem (OpKeyword (meta, _), _) ->
+        | ParsingElem (OpKeyword meta, _) ->
           let* lhs_fixity_type = get_operator_fixity meta.id in
           (* we should not reduce if lhs is prefix and rhs is not prefix*)
           (match lhs_fixity_type, rhs_fixity_type with
@@ -184,7 +184,7 @@ let rec operator_precedence_reduce_always () : unit proc_state_m =
   | None -> return ()
   | Some x ->
     (match x with
-     | ParsingElem (OpKeyword (meta, _), _) ->
+     | ParsingElem (OpKeyword meta, _) ->
        let* bin_op = lookup_binary_op meta.id in
        (match bin_op.meta.right_fixity with
         | FxComp _ -> return () (* component should not ever be reduced in precedence reduce*)
@@ -209,7 +209,7 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
   | None -> pfail "PC400: Expecting at least 2 elements on the stack but got "
   | Some x ->
     (match x with
-     | ParsingElem (OpKeyword (meta, _), _) ->
+     | ParsingElem (OpKeyword meta, _) ->
        if meta.id = comp_uid
        then return ()
        else
@@ -359,8 +359,8 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
   in
   (* shift operators onto the stack *)
   let* bin_op = lookup_binary_op meta.id in
-  let* pop_action = bin_op.shift_action in
-  let operator_elem = ParsingElem (OpKeyword (meta, pop_action), read_ext) in
+  let* () = bin_op.shift_action read_ext in
+  let operator_elem = ParsingElem (OpKeyword meta, read_ext) in
   let* _ =
     match left_fixity with
     | FxNone -> push_elem_start operator_elem

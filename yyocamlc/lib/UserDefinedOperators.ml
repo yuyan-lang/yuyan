@@ -102,7 +102,7 @@ let rec name_resolve_result_elab (param_names : string list) (result : A.t) : A.
       (A.get_extent_some result)
 ;;
 
-let get_operators (input : CS.t_string) (result : A.t) : (binary_op list * A.t) proc_state_m =
+let get_operators (input : CS.t_string) (ext : Ext.t) (result : A.t) : (binary_op list * A.t) proc_state_m =
   let components = ref (parse_operator_name [] input) in
   (* print_endline ("Components: " ^ String.concat ", " (List.map show_operator_component !components)); *)
   let global_leftfix, global_left_parameter_name =
@@ -209,16 +209,20 @@ let get_operators (input : CS.t_string) (result : A.t) : (binary_op list * A.t) 
                 (* now new_param_name is bound in result, and no capturing is possible when doing iterative substitution *)
                 let final_result = List.fold_right2 A.subst operands new_param_name !result_ref in
                 push_elem_on_input_acc (Expr (A.annotate_with_extent final_result oper_ext)))
-         ; shift_action = do_nothing_shift_action
+         ; shift_action =
+             (fun op_ext ->
+               TokenInfo.add_token_info
+                 (Ext.str_with_extent (CS.get_t_string (List.nth component_metas i).keyword) op_ext)
+                 (Definition ext))
          })
       components
   in
   return (final_components, result)
 ;;
 
-let get_operators_m (input : CS.t_string) (result : A.t) : (binary_op list * A.t) proc_state_m =
+let get_operators_m (input : CS.t_string) (ext : Ext.t) (result : A.t) : (binary_op list * A.t) proc_state_m =
   try
-    let* operators = get_operators input result in
+    let* operators = get_operators input ext result in
     return operators
   with
   | Failure s -> pfail_with_ext s (A.get_extent_some result)

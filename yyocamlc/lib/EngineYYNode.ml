@@ -26,7 +26,7 @@ module YYNode = struct
     | Type
     | RaiseException
     | TryCatch
-    | CustomOperatorString of CS.t_string (* this is used for custom operators *)
+    | CustomOperatorString of CS.t_string * Ext.t (* this is used for custom operators *)
 
   type declaration =
     | CustomOperatorDecl
@@ -127,7 +127,7 @@ module YYNode = struct
     | Type -> "Type"
     | RaiseException -> "RaiseException"
     | TryCatch -> "TryCatch"
-    | CustomOperatorString s -> "CustomOperatorString(" ^ show_string (CS.get_t_string s) ^ ")"
+    | CustomOperatorString (s, _) -> "CustomOperatorString(" ^ show_string (CS.get_t_string s) ^ ")"
   ;;
 
   let show_declaration (d : declaration) : string =

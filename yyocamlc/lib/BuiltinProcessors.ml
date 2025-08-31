@@ -222,7 +222,12 @@ let definition_end : binary_op =
        (* we are now ready to type check, so we commit to the current choice *)
        let* () = pcommit () in
        match tp with
-       | DataExpression { tp = tp_expr; tm = None; _ } ->
+       | DataExpression { tp = tp_expr; tm = None; name = Some decl_name_str; _ } ->
+         let* () = TokenInfo.add_token_info defn_name_str (Definition (Ext.get_str_extent decl_name_str)) in
+         let* () =
+           let* aka_print_tp = ProcCombinators.aka_print_expr tp_expr in
+           TokenInfo.add_token_info defn_name_str (Hover aka_print_tp)
+         in
          let* checked_defn_body = TypeChecking.check_top defn tp_expr in
          let* () = TypeChecking.assert_no_free_vars checked_defn_body in
          let* () = Environment.update_constant_term tp_id checked_defn_body in
@@ -465,9 +470,9 @@ let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
            | A.N (N.Declaration (N.CheckedDirectExpr _), _) -> None
            | A.N (N.Declaration N.CustomOperatorDecl, [ ([], op); ([], elab) ]) ->
              (match A.view op with
-              | A.N (N.Builtin (N.CustomOperatorString x), []) ->
+              | A.N (N.Builtin (N.CustomOperatorString (x, ext)), []) ->
                 Some
-                  (let* all_ops, _ = UserDefinedOperators.get_operators_m x elab in
+                  (let* all_ops, _ = UserDefinedOperators.get_operators_m x ext elab in
                    return all_ops)
               | _ -> failwith ("BP279: Expected a string but got " ^ A.show_view op))
            | _ -> print_failwith ("BP483: Expected a Declaration but got " ^ A.show_view arg))
@@ -1480,7 +1485,8 @@ let custom_operator_decl_start : unit proc_state_m =
     
     We can push the malformed thing, it will be rejected later. It is fine.
     *)
-  push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Builtin (N.CustomOperatorString defn), [])) defn_ext)
+  push_elem_on_input_acc_expr
+    (A.fold_with_extent (A.N (N.Builtin (N.CustomOperatorString (defn, defn_ext)), [])) defn_ext)
 ;;
 
 (* then we can scan the rest of the line *)
@@ -1520,8 +1526,8 @@ let custom_operator_decl_end : binary_op =
       (let* result, per_ext = pop_postfix_operand custom_operator_decl_end_meta in
        let* defn, defn_ext = pop_input_acc_expr () in
        match A.view defn with
-       | A.N (N.Builtin (N.CustomOperatorString oper_str), []) ->
-         let* new_ops, result = UserDefinedOperators.get_operators_m oper_str result in
+       | A.N (N.Builtin (N.CustomOperatorString (oper_str, oper_ext)), []) ->
+         let* new_ops, result = UserDefinedOperators.get_operators_m oper_str oper_ext result in
          let* () =
            push_elem_on_input_acc_expr
              (A.fold_with_extent

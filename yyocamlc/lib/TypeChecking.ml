@@ -49,6 +49,14 @@ let extend_local_env_tm (env : local_env) (name : bnd_name) (tp : A.t) : local_e
   { env with tm = (name, tp) :: env.tm }
 ;;
 
+let extend_local_env_tm_with_token_info (env : local_env) (name : bnd_name) (tp : A.t) : local_env proc_state_m =
+  let* () =
+    let* aka_print_tp = aka_print_expr tp in
+    TokenInfo.add_token_info name (Hover aka_print_tp)
+  in
+  return (extend_local_env_tm env name tp)
+;;
+
 let find_in_local_env_tm (env : local_env) (name : bnd_name) : (Ext.t * A.t) option =
   match List.find_opt (fun (n, _) -> bnd_name_to_string n = Ext.get_str_content name) env.tm with
   | Some (bnd_name, tp) -> Some (Ext.get_str_extent bnd_name, tp)
@@ -326,11 +334,6 @@ let get_tp_for_expr_id (id : int) : A.t proc_state_m =
   | _ -> pfail (__LOC__ ^ " Expecting some data but got " ^ EngineDataPrint.show_t_constant const)
 ;;
 
-let aka_print_tp (tp : A.t) : string proc_state_m =
-  let* s = get_proc_state () in
-  return (EngineDataPrint.aka_print_expr s tp)
-;;
-
 let partial_resolve_structure_deref (_env : local_env) (expr : A.t) : int proc_state_m =
   match A.view expr with
   | A.FreeVar name ->
@@ -348,6 +351,7 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
     let* const = Environment.lookup_constant id in
     (match const with
      | ModuleAlias { name = _; filepath } ->
+       let* () = TokenInfo.add_token_info deref_name (Hover filepath) in
        (match !compilation_manager_get_file_hook filepath with
         | None -> failwith "Impossible"
         | Some (mexpr, _) ->
@@ -371,7 +375,7 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
                 let* extent = Environment.get_extent_of_constant id in
                 let* () = TokenInfo.add_token_info deref_name (Definition extent) in
                 let* () =
-                  let* aka_print_tp = aka_print_tp ret_tp in
+                  let* aka_print_tp = aka_print_expr ret_tp in
                   TokenInfo.add_token_info deref_name (Hover aka_print_tp)
                 in
                 return (ret_expr, ret_tp)
@@ -398,7 +402,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        (match find_in_local_env_tm env name with
         | Some (target_ext, tp) ->
           let* () =
-            let* aka_print_tp = aka_print_tp tp in
+            let* aka_print_tp = aka_print_expr tp in
             TokenInfo.add_token_info name (Hover aka_print_tp)
           in
           let* () = TokenInfo.add_token_info name (Definition target_ext) in
@@ -410,7 +414,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
           (match tp_constant with
            | DataExpression { tp; _ } | DataConstructor { tp; _ } ->
              let* () =
-               let* aka_print_tp = aka_print_tp tp in
+               let* aka_print_tp = aka_print_expr tp in
                TokenInfo.add_token_info name (Hover aka_print_tp)
              in
              return (expr, tp)
@@ -435,7 +439,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        return (expr, tp)
      | A.N (N.TypedLam, [ ([], dom); ([ bnd ], body) ]) ->
        let* dom = check_type_valid env dom in
-       let env' = extend_local_env_tm env bnd dom in
+       let* env' = extend_local_env_tm_with_token_info env bnd dom in
        let* body, cod_tp = synth env' body in
        let tp = A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod_tp ])) (A.get_extent_some expr) in
        let expr = A.fold_with_extent (A.N (N.TypedLam, [ [], dom; [ bnd ], body ])) (A.get_extent_some expr) in
@@ -482,7 +486,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        (match tp_constant with
         | PatternVar { tp; name; _ } | DataConstructor { tp; name; _ } | DataExpression { tp; name = Some name; _ } ->
           let* () =
-            let* aka_print_tp = aka_print_tp tp in
+            let* aka_print_tp = aka_print_expr tp in
             TokenInfo.add_token_info
               (Ext.str_with_extent (Ext.get_str_content name) (A.get_extent_some expr))
               (Hover aka_print_tp)
@@ -562,14 +566,14 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
       (A.fold_with_extent (A.N (N.IfThenElse, [ [], cond; [], then_branch; [], else_branch ])) (A.get_extent_some expr))
   | A.N (N.LetIn, [ ([], sub); ([ bnd ], body) ]) ->
     let* sub, sub_tp = synth env sub in
-    let env' = extend_local_env_tm env bnd sub_tp in
+    let* env' = extend_local_env_tm_with_token_info env bnd sub_tp in
     let* body = check env' body tp in
     return (A.fold_with_extent (A.N (N.LetIn, [ [], sub; [ bnd ], body ])) (A.get_extent_some expr))
   | A.N (N.RecLetIn, [ ([], sub_tp); ([ bnd_sub ], sub); ([ bnd_body ], body) ]) ->
     let* sub_tp = check_type_valid env sub_tp in
-    let env_sub = extend_local_env_tm env bnd_sub sub_tp in
+    let* env_sub = extend_local_env_tm_with_token_info env bnd_sub sub_tp in
     let* sub = check env_sub sub sub_tp in
-    let env_body = extend_local_env_tm env bnd_body sub_tp in
+    let* env_body = extend_local_env_tm_with_token_info env bnd_body sub_tp in
     let* body = check env_body body tp in
     return
       (A.fold_with_extent
@@ -591,7 +595,7 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
   | A.N (N.Lam, [ ([ bnd ], body) ]) ->
     (match A.view tp_normalized with
      | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-       let env' = extend_local_env_tm env bnd dom in
+       let* env' = extend_local_env_tm_with_token_info env bnd dom in
        let* checked_body = check env' body cod in
        return (A.fold_with_extent (A.N (N.Lam, [ [ bnd ], checked_body ])) (A.get_extent_some expr))
      | _ ->

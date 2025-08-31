@@ -38,7 +38,7 @@ let show_parsing_elem (p : parsing_elem) : string =
   match p with
   | ScannedChar s -> "UnknownChar(" ^ CS.get_t_char s ^ ")"
   | Keyword s -> "Keyword(" ^ CS.get_t_string s ^ ")"
-  | OpKeyword (i, _) -> "OpKeyword(" ^ show_binary_op_meta i ^ ")"
+  | OpKeyword i -> "OpKeyword(" ^ show_binary_op_meta i ^ ")"
   | BoundScannedString s -> "BoundScannedString(" ^ show_string (CS.get_t_string s) ^ ")"
 ;;
 
@@ -230,4 +230,3 @@ let show_proc_state (s : proc_state) : string =
   ^ "\ntype_checking_history: "
   ^ String.concat "\n" (List.map (fun h -> " - " ^ show_tc_history_elem s h) s.type_checking_history)
 ;;
-(* "\nlast_succeeded_processor: " ^ show_processor_entry s.last_succeeded_processor ^ ", "  *)

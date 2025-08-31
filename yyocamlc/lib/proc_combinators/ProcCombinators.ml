@@ -75,7 +75,7 @@ let p_internal_error (msg : string) : unit proc_state_m =
 
 let ignore () : unit proc_state_m = return ()
 let do_nothing : unit proc_state_m = return ()
-let do_nothing_shift_action : unit proc_state_m proc_state_m = return (return ())
+let do_nothing_shift_action : Ext.t -> unit proc_state_m = fun _ -> return ()
 
 (* pnot m fails if m succeeds, succeeds without consuming inputs when m fails *)
 (* it is a convention that all things do not consume inputs *)
@@ -460,7 +460,7 @@ let pop_input_acc_3 () : (input_acc_elem * input_acc_elem * input_acc_elem) proc
 
 let assert_is_correct_op (meta : binary_op_meta) (elem : parsing_elem) : unit proc_state_m =
   match elem with
-  | OpKeyword (kop, _) ->
+  | OpKeyword kop ->
     if meta.id = kop.id
     then return ()
     else pfail ("check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ show_binary_op_meta kop)
@@ -521,9 +521,7 @@ let pop_postfix_op_operands (binop : binary_op_meta) : (A.t list * Ext.t) proc_s
     let* top_op, top_extent = pop_input_acc_parsing_elem () in
     let* _ = assert_is_correct_op binop top_op in
     match top_op with
-    | OpKeyword (meta, pop_action) ->
-      (* now the parsing elem is poped, we can execute the pop action *)
-      let* () = pop_action in
+    | OpKeyword meta ->
       (match meta.left_fixity with
        | FxNone -> return ([], top_extent)
        | FxOp _ ->
@@ -658,4 +656,9 @@ let get_free_var (expr : A.t) : Ext.t_str proc_state_m =
   match A.view expr with
   | A.FreeVar name -> return name
   | _ -> pfail ("BP1269: Expecting free variable, got " ^ A.show_view expr)
+;;
+
+let aka_print_expr (expr : A.t) : string proc_state_m =
+  let* s = get_proc_state () in
+  return (EngineDataPrint.aka_print_expr s expr)
 ;;

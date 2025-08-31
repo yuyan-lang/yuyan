@@ -128,7 +128,7 @@ type parsing_elem =
   | ScannedChar of CS.t_char
   | Keyword of CS.t_string
   | BoundScannedString of CS.t_string (* this is used for operator that binds a name *)
-  | OpKeyword of binary_op_meta * unit proc_state_m (* uid of the binary op *)
+  | OpKeyword of binary_op_meta (* uid of the binary op *)
 
 and input_acc_elem =
   | Expr of A.t
@@ -179,16 +179,14 @@ and 'a proc_state_m =
   -> (* success continuation *)
      monad_ret_tp
 
-and shift_action = unit proc_state_m proc_state_m
+and shift_action = Ext.t -> unit proc_state_m
 
 and binary_op =
   { meta : binary_op_meta
   ; reduction : unit proc_state_m
     (* reduction will only be invoked on the last operator 
 in an operator chain, and only when we have a parse *)
-  ; shift_action : shift_action
-    (* shift action will be invoked before the operator is shifted onto the stack, 
-  shift action should return a pop action *)
+  ; shift_action : shift_action (* shift action will be invoked before the operator is shifted onto the stack *)
   }
 
 let compilation_manager_get_file_hook : (string (* filepath *) -> (A.t * t_constants) option) ref =
