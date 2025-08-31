@@ -44,7 +44,7 @@
 
 为了获得更好的开发体验，推荐安装豫言语言的 VSCode 扩展：
 
-- **从 Marketplace 安装**：[豫言语言扩展](https://marketplace.visualstudio.com/items?itemName=yuyan-lang.yuyan)
+- **从 Marketplace 安装**：[豫言语言扩展](https://marketplace.visualstudio.com/items?itemName=yuyan-lang.yuyan-vscode)
 - **本地开发版本**：项目中包含了 VSCode 扩展源码，位于 `./yuyan-vscode` 目录下，可用于开发和调试扩展功能
 
 ### 依赖安装
