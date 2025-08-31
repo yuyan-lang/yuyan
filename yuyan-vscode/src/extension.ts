@@ -307,7 +307,7 @@ function startLSP(context: vscode.ExtensionContext): void {
   
   // Get language selector from configuration or default to all files
   const config = vscode.workspace.getConfiguration('yuyan');
-  const languageSelector = config.get<string>('languageSelector', '*');
+  const languageSelector = config.get<string>('languageSelector', 'yuyan');
   log(`Using language selector: ${languageSelector}`);
   
   const tokenTypes = [
