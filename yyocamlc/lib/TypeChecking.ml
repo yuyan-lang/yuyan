@@ -49,9 +49,9 @@ let extend_local_env_tm (env : local_env) (name : bnd_name) (tp : A.t) : local_e
   { env with tm = (name, tp) :: env.tm }
 ;;
 
-let find_in_local_env_tm (env : local_env) (name : bnd_name) : A.t option =
+let find_in_local_env_tm (env : local_env) (name : bnd_name) : (Ext.t * A.t) option =
   match List.find_opt (fun (n, _) -> bnd_name_to_string n = Ext.get_str_content name) env.tm with
-  | Some (_, tp) -> Some tp
+  | Some (_, tp) -> Some (Ext.get_str_extent name, tp)
   | None -> None
 ;;
 
@@ -389,12 +389,13 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
   | None ->
     (match A.view expr with
      | A.FreeVar name ->
-       (match List.assoc_opt name env.tm with
-        | Some tp ->
+       (match find_in_local_env_tm env name with
+        | Some (target_ext, tp) ->
           let* () =
             let* aka_print_tp = aka_print_tp tp in
             TokenInfo.add_token_info name (Hover aka_print_tp)
           in
+          let* () = TokenInfo.add_token_info name (Definition target_ext) in
           return (expr, tp)
         | None ->
           let* id = Environment.lookup_binding_with_extent_token_info name in
@@ -655,7 +656,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
     return (env, pat, case_body)
   | A.FreeVar name ->
     let* id = Environment.find_binding name in
-    (match List.assoc_opt name env.tm, id with
+    (match find_in_local_env_tm env name, id with
      | Some _, _ (* local var, shadowing*) | None, None ->
        (* fresh var *)
        (* this is a new var*)
@@ -708,7 +709,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
       match A.view f with
       | A.FreeVar name ->
         let* id = Environment.find_binding name in
-        (match List.assoc_opt name env.tm, id with
+        (match find_in_local_env_tm env name, id with
          | Some _, _ (* local var, shadowing*) | None, None ->
            pfail_with_ext ("TC140: Unexpected local/fresh variable but got " ^ A.show_view f) (A.get_extent_some pat)
          | None, Some id ->
