@@ -81,31 +81,25 @@
       {
         "language": "yuyan",
         "scopes": {
-          "TkTpStructureKeyword": [
-            "markup.bold"
-          ],
-          "TkTpTypeKeyword": [
-            "keyword.control"
-          ],
-          "TkTpExprKeyword": [
-            "keyword.operator"
-          ],
-          "TkTpIdentifierBinder": [
-            "variable.parameter"
-          ],
-          "TkTpIdentifierReference": [
-            "variable.other"
-          ],
-          "TkTpCustomOperatorName": [
-            "entity.other.inherited-class"
-          ],
-          "TkTpStringLiteral": [
+          "StringConstant": [
             "string.quoted"
           ],
-          "TkTpLabel": [
-            "entity.name.tag"
+          "NumericConstant": [
+            "constant.numeric"
           ],
-          "TkTpComment": [
+          "StructureKeyword": [
+            "markup.bold"
+          ],
+          "ExpressionKeyword": [
+            "keyword.operator"
+          ],
+          "UserDefinedOperatorKeyword": [
+            "entity.other.inherited-class"
+          ],
+          "Identifier": [
+            "variable.other"
+          ],
+          "Comment": [
             "comment.line"
           ]
         }

@@ -84,10 +84,10 @@ function provideSemanticTokens(
       continue;
     }
     
-    // VSCode uses 0-based indexing, token file uses 1-based
-    const line = tokenInfo.extent.start_line - 1;
-    const startChar = tokenInfo.extent.start_col - 1;
-    const endChar = tokenInfo.extent.end_col - 1;
+    // Both VSCode and token file use 0-based indexing
+    const line = tokenInfo.extent.start_line;
+    const startChar = tokenInfo.extent.start_col;
+    const endChar = tokenInfo.extent.end_col;
     const length = endChar - startChar;
     
     if (line >= 0 && startChar >= 0 && length > 0) {
@@ -107,7 +107,8 @@ function startLSP(): void {
     "StructureKeyword",
     "ExpressionKeyword",
     "UserDefinedOperatorKeyword",
-    "Identifier"
+    "Identifier",
+    "Comment"
   ];
   
   const legend = new vscode.SemanticTokensLegend(tokenTypes);

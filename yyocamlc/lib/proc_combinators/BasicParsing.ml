@@ -278,6 +278,13 @@ let integer_number_parser () : unit proc_state_m =
   then
     let* number_list = many1 (read_one_of_char yy_number_words) in
     let number = get_int_from_t_string (List.map fst number_list) in
+    let* () =
+      TokenInfo.add_token_info
+        (Ext.str_with_extent
+           (CS.get_t_string (List.map fst number_list))
+           (Ext.combine_extent_list (List.map snd number_list)))
+        (SemanticToken NumericConstant)
+    in
     push_elem_on_input_acc
       (Expr
          (A.fold_with_extent (A.N (N.Builtin (N.Int number), [])) (Ext.combine_extent_list (List.map snd number_list))))
@@ -290,6 +297,14 @@ let decimal_number_parser () : unit proc_state_m =
   let* decimal_part = many1 (read_one_of_char yy_number_words) in
   let integral_number = yy_number_str_to_numeric_str (List.map fst integral_part) in
   let decimal_number = yy_number_str_to_numeric_str (List.map fst decimal_part) in
+  let ext = Ext.combine_extent_list (List.map snd integral_part @ List.map snd decimal_part) in
+  let* () =
+    TokenInfo.add_token_info
+      (Ext.str_with_extent
+         (CS.get_t_string (List.map fst integral_part @ CS.new_t_string "点" @ List.map fst decimal_part))
+         ext)
+      (SemanticToken NumericConstant)
+  in
   push_elem_on_input_acc
     (Expr
        (A.fold_with_extent
@@ -299,8 +314,14 @@ let decimal_number_parser () : unit proc_state_m =
 
 let identifier_parser () : (CS.t_string * Ext.t) proc_state_m =
   let* _ = pnot (read_string (CS.new_t_string "「：")) in
-  let* _ = read_one_of_char [ CS.new_t_char "「" ] in
-  let* (middle, middle_ext), (terminal, _) = scan_past_one_of_char yy_keyword_chars in
+  let* _, initial_ext = read_one_of_char [ CS.new_t_char "「" ] in
+  let* (middle, middle_ext), (terminal, terminal_ext) = scan_past_one_of_char yy_keyword_chars in
+  let ext = Ext.combine_extent_list [ initial_ext; middle_ext; terminal_ext ] in
+  let* () =
+    TokenInfo.add_token_info
+      (Ext.str_with_extent (CS.get_t_string (CS.new_t_string "「" @ middle @ [ terminal ])) ext)
+      (SemanticToken Identifier)
+  in
   if CS.get_t_char terminal = "」"
   then (
     match middle with
@@ -313,7 +334,7 @@ let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc
   let { id = _; keyword; left_fixity; right_fixity; classification } = meta in
   let* () =
     TokenInfo.add_token_info
-      read_ext
+      (Ext.str_with_extent (CS.get_t_string meta.keyword) read_ext)
       (SemanticToken
          (match classification with
           | Structural -> StructureKeyword

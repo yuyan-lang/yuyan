@@ -111,6 +111,7 @@ type semantic_token_type =
   | ExpressionKeyword
   | UserDefinedOperatorKeyword
   | Identifier
+  | Comment
 
 type token_info_detail =
   | SemanticToken of semantic_token_type
@@ -119,6 +120,7 @@ type token_info_detail =
 
 type token_info =
   { extent : Ext.t
+  ; text : string
   ; detail : token_info_detail
   }
 

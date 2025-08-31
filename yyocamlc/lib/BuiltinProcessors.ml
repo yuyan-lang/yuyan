@@ -77,8 +77,15 @@ let scan_string_body () : ((CS.t_string * Ext.t) * Ext.t) proc_state_m =
 ;;
 
 let string_parser_pusher : unit proc_state_m =
-  let* _, start_ext = read_one_of_char [ CS.new_t_char "『" ] in
+  let* start_char, start_ext = read_one_of_char [ CS.new_t_char "『" ] in
   let* (middle, _middle_ext), end_ext = scan_string_body () in
+  let* () =
+    TokenInfo.add_token_info
+      (Ext.str_with_extent
+         (CS.get_t_string ([ start_char ] @ middle @ [ CS.new_t_char "』" ]))
+         (Ext.combine_extent start_ext end_ext))
+      (SemanticToken StringConstant)
+  in
   push_elem_on_input_acc
     (Expr
        (A.annotate_with_extent
@@ -87,27 +94,44 @@ let string_parser_pusher : unit proc_state_m =
 ;;
 
 let rec single_comment () : unit proc_state_m =
-  let* _ = read_string (CS.new_t_string "「：") in
+  let* comment_text, comment_ext = read_string (CS.new_t_string "「：") in
+  let* () =
+    TokenInfo.add_token_info (Ext.str_with_extent (CS.get_t_string comment_text) comment_ext) (SemanticToken Comment)
+  in
   read_until_comment_end ()
 
 (* using a choice is problematic because of backtracking (things either don't work 
 or dont terminate.).  I don't know why.
 I need a decision unambiguously without backtracking *)
 and read_until_comment_end () : unit proc_state_m =
-  let* char1, _ = read_any_char () in
-  let* char2, _ = peek_any_char () in
+  let* char1, char1_ext = read_any_char () in
+  let* char2, char2_ext = peek_any_char () in
   match CS.get_t_char char1, CS.get_t_char char2 with
   | "：", "」" ->
     let* _ = read_any_char () in
     (* read the ending comment char*)
+    let* () =
+      TokenInfo.add_token_info
+        (Ext.str_with_extent (CS.get_t_string [ char1; char2 ]) (Ext.combine_extent char1_ext char2_ext))
+        (SemanticToken Comment)
+    in
     return ()
   | "「", "：" ->
     let* _ = read_any_char () in
+    let* () =
+      TokenInfo.add_token_info
+        (Ext.str_with_extent (CS.get_t_string [ char1; char2 ]) (Ext.combine_extent char1_ext char2_ext))
+        (SemanticToken Comment)
+    in
     (* read the colon char*)
     let* () = read_until_comment_end () in
     (* two levels of comments now, need to read twice*)
     read_until_comment_end ()
-  | _ -> read_until_comment_end ()
+  | _ ->
+    let* () =
+      TokenInfo.add_token_info (Ext.str_with_extent (CS.get_t_string [ char1 ]) char1_ext) (SemanticToken Comment)
+    in
+    read_until_comment_end ()
 ;;
 
 (* let comment_end : unit proc_state_m =
@@ -1148,7 +1172,8 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
 ;;
 
 let sentence_end : unit proc_state_m =
-  let* _ = read_one_of_string [ CS.new_t_string "。" ] in
+  let* _, ext = read_one_of_string [ CS.new_t_string "。" ] in
+  let* () = TokenInfo.add_token_info (Ext.str_with_extent "。" ext) (SemanticToken StructureKeyword) in
   (* reduce all existing expressions*)
   let* _ = operator_precedence_reduce_always () in
   let* input_acc_size = get_input_acc_size () in
@@ -1447,7 +1472,7 @@ let enumeration_comma_sequence : binary_op =
 
 let custom_operator_decl_start : unit proc_state_m =
   let* _, ext = read_one_of_string [ CS.new_t_string "术" ] in
-  let* () = TokenInfo.add_token_info ext (SemanticToken StructureKeyword) in
+  let* () = TokenInfo.add_token_info (Ext.str_with_extent "术" ext) (SemanticToken StructureKeyword) in
   let* defn, defn_ext = scan_until_one_of_string [ CS.new_t_string "盖谓" ] in
   (* NO precheck if operators can be get *)
   (* let* _ = UserDefinedOperators.get_operators_m defn (A.fold_with_extent (A.FreeVar "TRIVIAL") defn_ext) in *)

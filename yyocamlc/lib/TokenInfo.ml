@@ -1,9 +1,11 @@
 open EngineData
 open ProcCombinators
 
-let add_token_info (extent : Ext.t) (token_info : token_info_detail) : unit proc_state_m =
+let add_token_info (text : Ext.t_str) (token_info : token_info_detail) : unit proc_state_m =
   let* s = get_proc_state () in
-  let new_tokens_info = { extent; detail = token_info } :: s.tokens_info in
+  let new_tokens_info =
+    { extent = Ext.get_str_extent text; text = Ext.get_str_content text; detail = token_info } :: s.tokens_info
+  in
   write_proc_state { s with tokens_info = new_tokens_info }
 ;;
 
@@ -15,6 +17,7 @@ let show_semantic_token_type (semantic_token_type : semantic_token_type) : strin
   | ExpressionKeyword -> "ExpressionKeyword"
   | Identifier -> "Identifier"
   | UserDefinedOperatorKeyword -> "UserDefinedOperatorKeyword"
+  | Comment -> "Comment"
 ;;
 
 let print_token_info_detail (token_info_detail : token_info_detail) : string =
@@ -29,7 +32,7 @@ let print_token_info (token_info : token_info list) : string =
     "\n"
     (List.map
        (fun (token_info : token_info) ->
-          Ext.show_extent token_info.extent ^ " " ^ print_token_info_detail token_info.detail)
+          token_info.text ^ " " ^ Ext.show_extent token_info.extent ^ " " ^ print_token_info_detail token_info.detail)
        token_info)
 ;;
 
@@ -61,7 +64,9 @@ let token_info_to_json (token_info : token_info list) : string =
       ",\n"
       (List.map
          (fun (token_info : token_info) ->
-            "{\"extent\": "
+            "{\"text\": \""
+            ^ StringEscape.escaped_unicode token_info.text
+            ^ "\", \"extent\": "
             ^ extent_to_json token_info.extent
             ^ ",\n    \"detail\": "
             ^ token_detail_to_json token_info.detail
