@@ -29,10 +29,10 @@ echo "Testing build..."
 dune build
 
 echo "Running matrix multiplication demo..."
-dune exec -- yyocamlc 矩阵乘法。豫 || echo "Matrix multiplication demo completed with warnings/errors"
+dune exec -- yyocamlc performance-investigation/matrix-multiply/矩阵乘法。豫 || echo "Matrix multiplication demo completed with warnings/errors"
 
 echo "Setup complete! You can now:"
 echo "  - Run 'dune build' to compile the project"
-echo "  - Run 'dune exec -- yyocamlc 矩阵乘法。豫' to run the matrix multiplication demo"
+echo "  - Run 'dune exec -- yyocamlc performance-investigation/matrix-multiply/矩阵乘法。豫' to run the matrix multiplication demo"
 echo "  - Run 'dune exec -- yyocamlc <file>' to execute other Yuyan files"
 echo "  - Use VS Code with OCaml and Yuyan language support"
