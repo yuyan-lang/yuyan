@@ -1,5 +1,8 @@
 # 豫言 (Yuyan) 编程语言
 
+[![VS Code Extension](https://img.shields.io/visual-studio-marketplace/v/yuyan-lang.yuyan-vscode.svg)](https://marketplace.visualstudio.com/items?itemName=yuyan-lang.yuyan-vscode)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan)
+
 豫言是一个现代化的函数式编程语言，使用中文语法，旨在让中文使用者能够用自然的方式编写代码。豫言使用 OCaml 作为后端编译器，未来计划实现与 OCaml 的双向集成。
 
 ## 语言特性
