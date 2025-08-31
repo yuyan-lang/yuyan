@@ -42,14 +42,43 @@ async function getTokensInfo(document: vscode.TextDocument): Promise<any[] | und
   log(`Document URI: ${docUri}`);
   log(`Document scheme: ${document.uri.scheme}`);
   
-  const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+  // Log all workspace folders for debugging
+  const allWorkspaceFolders = vscode.workspace.workspaceFolders;
+  if (allWorkspaceFolders) {
+    log(`Total workspace folders: ${allWorkspaceFolders.length}`);
+    allWorkspaceFolders.forEach((folder, index) => {
+      log(`Workspace folder ${index}: ${folder.uri.fsPath}`);
+    });
+  } else {
+    log('No workspace folders open');
+  }
+  
+  let workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
+  
+  // Fallback: If no workspace folder found, try to find one that contains the file
+  if (!workspaceFolder && allWorkspaceFolders) {
+    log('Attempting fallback workspace folder detection');
+    for (const folder of allWorkspaceFolders) {
+      if (docPath.startsWith(folder.uri.fsPath)) {
+        workspaceFolder = folder;
+        log(`Fallback found workspace folder: ${folder.uri.fsPath}`);
+        break;
+      }
+    }
+  }
+  
+  // Second fallback: Use the first workspace folder if file is outside all workspaces
+  if (!workspaceFolder && allWorkspaceFolders && allWorkspaceFolders.length > 0) {
+    workspaceFolder = allWorkspaceFolders[0];
+    log(`Using first workspace folder as fallback: ${workspaceFolder.uri.fsPath}`);
+  }
   
   if (!workspaceFolder) {
-    log('No workspace folder found for document');
+    log('No workspace folder found for document after all attempts');
     return undefined;
   }
   
-  log(`Workspace folder: ${workspaceFolder.uri.fsPath}`);
+  log(`Using workspace folder: ${workspaceFolder.uri.fsPath}`);
   const tokenFileUri = vscode.Uri.joinPath(workspaceFolder.uri, '_build', 'lsp_tokens_info', `${docPath}.tokens.json`);
   log(`Looking for token file at: ${tokenFileUri.fsPath}`);
   
