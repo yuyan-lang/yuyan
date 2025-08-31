@@ -2,7 +2,7 @@
   "name": "yuyan-vscode",
   "displayName": "yuyan-vscode",
   "description": "",
-  "version": "0.0.14",
+  "version": "0.0.16",
   "repository": "https://github.com/yuyan-lang/yuyan-vscode",
   "publisher": "yuyan-lang",
   "engines": {
@@ -53,7 +53,6 @@
         "icon": {
           "dark": "./yu-char-xiaozhuan-dark.svg",
           "light": "./yu-char-xiaozhuan-light.svg"
-
         }
       }
     ],
