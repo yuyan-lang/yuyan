@@ -1,6 +1,6 @@
 # 豫言 (Yuyan) 编程语言
 
-豫言是一个现代化的函数式编程语言，使用中文语法，旨在让中文使用者能够用自然的方式编写代码。
+豫言是一个现代化的函数式编程语言，使用中文语法，旨在让中文使用者能够用自然的方式编写代码。豫言使用 OCaml 作为后端编译器，未来计划实现与 OCaml 的双向集成。
 
 ## 语言特性
 
@@ -33,11 +33,38 @@
     ...
 ```
 
-## 构建说明
+## 开发环境设置
 
-### 环境要求
-- OCaml 编译器
-- Dune 构建系统
+### VSCode 扩展支持
+
+为了获得更好的开发体验，推荐安装豫言语言的 VSCode 扩展：
+
+- **从 Marketplace 安装**：[豫言语言扩展](https://marketplace.visualstudio.com/items?itemName=yuyan-lang.yuyan)
+- **本地开发版本**：项目中包含了 VSCode 扩展源码，位于 `./yuyan-vscode` 目录下，可用于开发和调试扩展功能
+
+### 依赖安装
+
+1. **安装 OPAM**（OCaml 包管理器）：
+   ```bash
+   # macOS
+   brew install opam
+   
+   # Ubuntu/Debian
+   sudo apt-get install opam
+   
+   # 其他系统请参考：https://opam.ocaml.org/doc/Install.html
+   ```
+
+2. **初始化 OPAM 环境**：
+   ```bash
+   opam init
+   eval $(opam env)
+   ```
+
+3. **安装 OCaml 和 Dune**：
+   ```bash
+   opam install ocaml dune
+   ```
 
 ### 编译项目
 ```bash
@@ -101,6 +128,15 @@ dune exec -- yyocamlc performance-investigation/matrix-multiply/矩阵乘法。�
                         于（「第N个」于「K」于（「第N个」于「行」于「矩阵A」））
                         于（「第N个」于「列」于（「第N个」于「K」于「矩阵B」））））也。
 ```
+
+## 技术架构
+
+豫言编程语言采用 OCaml 作为编译后端，这使得豫言能够：
+
+- **高性能**：利用 OCaml 的优化编译器生成高效的原生代码
+- **类型安全**：继承 OCaml 强大的类型系统
+- **函数式特性**：完全支持高阶函数、模式匹配等函数式编程特性
+- **互操作性**：未来计划实现与 OCaml 生态的双向集成，允许豫言代码调用 OCaml 库，反之亦然
 
 ## 贡献
 
