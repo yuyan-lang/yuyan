@@ -139,4 +139,10 @@
         "（"
     ],
     "vim.matchpairs": "(:),{:},[:],（:）,【:】,「:」,『:』",
+    "search.useIgnoreFiles": true,
+    "terminal.integrated.unicodeVersion": "11",
+    "ocaml.sandbox": {
+        "kind": "opam",
+        "switch": "yyocamlc-5.3.0"
+    }
 }
