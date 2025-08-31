@@ -15,20 +15,19 @@ let add_binding (name : Ext.t_str) (tp : int) : unit proc_state_m =
 ;;
 
 (* Find a binding - returns option *)
-let find_binding (name : string) : int option proc_state_m =
+let find_binding (name : Ext.t_str) : int option proc_state_m =
   let* s = get_proc_state () in
-  match List.find_opt (fun (n, _) -> Ext.get_str_content n = name) s.env with
+  match List.find_opt (fun (n, _) -> Ext.get_str_content n = Ext.get_str_content name) s.env with
   | Some (_, tp) -> return (Some tp)
   | None -> return None
 ;;
 
 (* Lookup a binding - fails if not found *)
 let lookup_binding (name : Ext.t_str) : int proc_state_m =
-  let name_str = Ext.get_str_content name in
-  let* result = find_binding name_str in
+  let* result = find_binding name in
   match result with
   | Some binding -> return binding
-  | None -> pfail_with_ext ("Binding not found: " ^ name_str) (Ext.get_str_extent name)
+  | None -> pfail_with_ext ("Binding not found: " ^ Ext.get_str_content name) (Ext.get_str_extent name)
 ;;
 
 let add_constant_with_uid (uid : int) (const : t_constant) : unit proc_state_m =

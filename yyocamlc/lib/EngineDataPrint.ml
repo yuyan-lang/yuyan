@@ -102,7 +102,7 @@ let pretty_print_expr (x : A.t) : string =
 
 let rec aka_print_expr (s : proc_state) (x : A.t) : string =
   match A.view x with
-  | A.FreeVar name -> name
+  | A.FreeVar name -> Ext.get_str_content name
   (* | A.N (N.Ap, [ ([], f); ([], targ) ]) ->
     "(" ^ aka_print_expr s f ^ " " ^ aka_print_expr s targ ^ ")" *)
   | A.N (N.UnifiableTp id, []) ->
@@ -132,7 +132,8 @@ let rec aka_print_expr (s : proc_state) (x : A.t) : string =
   | A.N (node_type, args) ->
     let arg_str =
       List.map
-        (fun (bound_vars, arg) -> String.concat "" (List.map (fun v -> v ^ ".") bound_vars) ^ "" ^ aka_print_expr s arg)
+        (fun (bound_vars, arg) ->
+           String.concat "" (List.map (fun v -> Ext.get_str_content v ^ ".") bound_vars) ^ "" ^ aka_print_expr s arg)
         args
     in
     let arg_str = "[" ^ String.concat "; " arg_str ^ "]" in

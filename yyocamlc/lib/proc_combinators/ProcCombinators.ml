@@ -191,7 +191,7 @@ let get_bound_scanned_string_t ((c, ext) : CS.t_string * Ext.t) : input_acc_elem
 ;;
 
 let get_identifier_t ((c, ext) : CS.t_string * Ext.t) : input_acc_elem =
-  Expr (A.annotate_with_extent (A.fold (A.FreeVar (CS.get_t_string c))) ext)
+  Expr (A.free_var (Ext.str_with_extent (CS.get_t_string c) ext))
 ;;
 
 let get_keyword_t ((keyword, ext) : CS.t_string * Ext.t) : input_acc_elem = ParsingElem (Keyword keyword, ext)
@@ -541,7 +541,7 @@ let pop_postfix_op_operands (binop : binary_op_meta) : (A.t list * Ext.t) proc_s
             let* prev_op_meta = lookup_binary_op prev_op_uid in
             let* rest_ops, rest_ext = f prev_op_meta.meta in
             return
-              ( rest_ops @ [ A.annotate_with_extent (A.free_var (CS.get_t_string str)) comp_ext ]
+              ( rest_ops @ [ A.free_var (Ext.str_with_extent (CS.get_t_string str) comp_ext) ]
               , Ext.combine_extent rest_ext top_extent )
           | _ -> pfail ("PC248: expected BoundScannedString but got " ^ show_parsing_elem comp)))
     | _ -> pfail ("PC248: expected " ^ show_binary_op_meta binop ^ " but got " ^ show_parsing_elem top_op ^ " ")
@@ -656,6 +656,6 @@ let get_current_file_name () : string proc_state_m =
 
 let get_free_var (expr : A.t) : Ext.t_str proc_state_m =
   match A.view expr with
-  | A.FreeVar name -> return (Ext.str_with_extent name (A.get_extent_some expr))
+  | A.FreeVar name -> return name
   | _ -> pfail ("BP1269: Expecting free variable, got " ^ A.show_view expr)
 ;;

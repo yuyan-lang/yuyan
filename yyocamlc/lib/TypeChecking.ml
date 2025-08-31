@@ -28,10 +28,10 @@ let set_global_unification_ctx (uid : int) (tp : A.t) : unit proc_state_m =
 (* Until binding contains extent, we need to resort to string.
 AbtLib did not design bindings to contain extents.
 *)
-(* type bnd_name = Ext.t_str *)
-type bnd_name = string
+type bnd_name = Ext.t_str
+(* type bnd_name = string *)
 
-let bnd_name_to_string (name : bnd_name) : string = name
+let bnd_name_to_string (name : bnd_name) : string = Ext.get_str_content name
 
 (* Bidirectional type checking skeleton *)
 type local_tm_env = (bnd_name * A.t) list
@@ -49,14 +49,14 @@ let extend_local_env_tm (env : local_env) (name : bnd_name) (tp : A.t) : local_e
   { env with tm = (name, tp) :: env.tm }
 ;;
 
-let find_in_local_env_tm (env : local_env) (name : string) : A.t option =
-  match List.find_opt (fun (n, _) -> bnd_name_to_string n = name) env.tm with
+let find_in_local_env_tm (env : local_env) (name : bnd_name) : A.t option =
+  match List.find_opt (fun (n, _) -> bnd_name_to_string n = Ext.get_str_content name) env.tm with
   | Some (_, tp) -> Some tp
   | None -> None
 ;;
 
-let find_in_local_env_tp (env : local_env) (name : string) : bnd_name option =
-  List.find_opt (fun n -> bnd_name_to_string n = name) env.tp
+let find_in_local_env_tp (env : local_env) (name : bnd_name) : bnd_name option =
+  List.find_opt (fun n -> bnd_name_to_string n = Ext.get_str_content name) env.tp
 ;;
 
 let check_is_type (tp : A.t) : A.t proc_state_m =
@@ -169,9 +169,12 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   @@
   match A.view normalized_tp with
   | A.FreeVar name ->
-    if List.mem name env.tp
+    if List.exists (fun x -> Ext.get_str_content x = Ext.get_str_content name) env.tp
     then return normalized_tp
-    else pfail_with_ext ("TC98: Free variable not found in the environment: " ^ name) (A.get_extent_some normalized_tp)
+    else
+      pfail_with_ext
+        ("TC98: Free variable not found in the environment: " ^ Ext.get_str_content name)
+        (A.get_extent_some normalized_tp)
   | A.N (N.Builtin N.StringType, []) -> return normalized_tp
   | A.N (N.Builtin N.IntType, []) -> return normalized_tp
   | A.N (N.Builtin N.BoolType, []) -> return normalized_tp
@@ -190,8 +193,7 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
     let* id =
       match A.view f with
-      | A.FreeVar name ->
-        Environment.lookup_binding_with_extent_token_info (Ext.str_with_extent name (A.get_extent_some f))
+      | A.FreeVar name -> Environment.lookup_binding_with_extent_token_info name
       | A.N (N.Constant id, []) -> return id
       | _ -> pfail_with_ext (__LOC__ ^ "TC140: Expecting free variable but got " ^ A.show_view f) (A.get_extent_some tp)
     in
@@ -289,7 +291,7 @@ let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_stat
     let id = Uid.next () in
     let* () = add_to_global_unification_ctx id None in
     let new_var = A.fold_with_extent (A.N (N.UnifiableTp id, [])) (A.get_extent_some expr) in
-    let cod = A.subst new_var bnd cod in
+    let cod = A.subst new_var (Ext.get_str_content bnd) cod in
     let new_expr = A.fold_with_extent (A.N (N.ImplicitAp, [ [], expr; [], new_var ])) (A.get_extent_some expr) in
     apply_implicit_args new_expr cod
   | _ -> return (expr, normalized_expr_tp)
@@ -327,7 +329,7 @@ let get_tp_for_expr_id (id : int) : A.t proc_state_m =
 let partial_resolve_structure_deref (_env : local_env) (expr : A.t) : int proc_state_m =
   match A.view expr with
   | A.FreeVar name ->
-    let* id = Environment.lookup_binding_with_extent_token_info (Ext.str_with_extent name (A.get_extent_some expr)) in
+    let* id = Environment.lookup_binding_with_extent_token_info name in
     return id
   | _ -> pfail_with_ext (__LOC__ ^ " Only dereference from a free variable is supported") (A.get_extent_some expr)
 ;;
@@ -351,9 +353,10 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
                   (fun (_, arg) ->
                      match A.view arg with
                      | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), _)
-                       when Ext.get_str_content name = deref_name -> Some id
-                     | A.N (N.Declaration (N.ModuleAliasDefn (name, _)), _) when Ext.get_str_content name = deref_name
-                       -> failwith "TODO double module alias deref"
+                       when Ext.get_str_content name = Ext.get_str_content deref_name -> Some id
+                     | A.N (N.Declaration (N.ModuleAliasDefn (name, _)), _)
+                       when Ext.get_str_content name = Ext.get_str_content deref_name ->
+                       failwith "TODO double module alias deref"
                      | _ -> None)
                   (List.rev args)
               with
@@ -363,7 +366,7 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
                 return (ret_expr, ret_tp)
               | _ ->
                 pfail_with_ext
-                  (__LOC__ ^ " Name not " ^ deref_name ^ " not found in " ^ filepath)
+                  (__LOC__ ^ " Name not " ^ Ext.get_str_content deref_name ^ " not found in " ^ filepath)
                   (A.get_extent_some expr))
            | _ -> failwith (__LOC__ ^ " Expecting a module expression, got " ^ A.show_view mexpr)))
      | _ ->
@@ -390,20 +393,18 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
         | Some tp ->
           let* () =
             let* aka_print_tp = aka_print_tp tp in
-            TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some expr)) (Hover aka_print_tp)
+            TokenInfo.add_token_info name (Hover aka_print_tp)
           in
           return (expr, tp)
         | None ->
-          let* id =
-            Environment.lookup_binding_with_extent_token_info (Ext.str_with_extent name (A.get_extent_some expr))
-          in
+          let* id = Environment.lookup_binding_with_extent_token_info name in
           let* tp_constant = Environment.lookup_constant id in
           let expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
           (match tp_constant with
            | DataExpression { tp; _ } | DataConstructor { tp; _ } ->
              let* () =
                let* aka_print_tp = aka_print_tp tp in
-               TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some expr)) (Hover aka_print_tp)
+               TokenInfo.add_token_info name (Hover aka_print_tp)
              in
              return (expr, tp)
            | _ ->
@@ -454,7 +455,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
        (match A.view f_tp with
         | A.N (N.ImplicitPi, [ ([ name ], cod) ]) ->
           let* targ = check_type_valid env targ in
-          let cod = A.subst targ name cod in
+          let cod = A.subst targ (Ext.get_str_content name) cod in
           return (A.fold_with_extent (A.N (N.ImplicitAp, [ [], f; [], targ ])) (A.get_extent_some expr), cod)
         | _ ->
           pfail_with_ext
@@ -571,7 +572,9 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
     (match A.view tp_normalized with
      | A.N (N.ImplicitPi, [ ([ tp_bnd ], cod) ]) ->
        let env' = extend_local_env_tp env tp_bnd in
-       let body = A.subst (A.annotate_with_extent (A.free_var bnd) (A.get_extent_some expr)) tp_bnd body in
+       let cod =
+         A.subst (A.annotate_with_extent (A.free_var bnd) (A.get_extent_some expr)) (Ext.get_str_content tp_bnd) cod
+       in
        let* checked_body = check env' body cod in
        return (A.fold_with_extent (A.N (N.ImplicitLam, [ [ bnd ], checked_body ])) (A.get_extent_some expr))
      | _ ->
@@ -632,7 +635,7 @@ and pattern_fill_implicit_args (pat : A.t) (pat_tp : A.t) : (A.t * A.t) proc_sta
     let id = Uid.next () in
     let* () = add_to_global_unification_ctx id None in
     let new_var = A.fold_with_extent (A.N (N.UnifiableTp id, [])) (A.get_extent_some pat) in
-    let cod = A.subst new_var bnd cod in
+    let cod = A.subst new_var (Ext.get_str_content bnd) cod in
     (* TODO: head spine form for implicit arg apps *)
     pattern_fill_implicit_args pat cod
   | _ -> return (pat, pat_tp)
@@ -656,17 +659,14 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
      | Some _, _ (* local var, shadowing*) | None, None ->
        (* fresh var *)
        (* this is a new var*)
-       let* id =
-         Environment.add_constant
-           (PatternVar { tp = scrut_tp; name = Ext.str_with_extent name (A.get_extent_some pat) })
-       in
+       let* id = Environment.add_constant (PatternVar { tp = scrut_tp; name }) in
        let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
-       let case_body = A.subst pat name case_body in
+       let case_body = A.subst pat (Ext.get_str_content name) case_body in
        return (env, pat, case_body)
      | None, Some id ->
        (* this is an existing constant *)
        let* extent = Environment.get_extent_of_constant id in
-       let* () = TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some pat)) (Definition extent) in
+       let* () = TokenInfo.add_token_info name (Definition extent) in
        let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
        check_pattern env pat scrut_tp case_body)
   | A.N (N.Constant id, []) ->
@@ -713,7 +713,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
            pfail_with_ext ("TC140: Unexpected local/fresh variable but got " ^ A.show_view f) (A.get_extent_some pat)
          | None, Some id ->
            let* extent = Environment.get_extent_of_constant id in
-           let* () = TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some pat)) (Definition extent) in
+           let* () = TokenInfo.add_token_info name (Definition extent) in
            return id)
       | A.N (N.Constant id, []) -> return id
       | _ ->

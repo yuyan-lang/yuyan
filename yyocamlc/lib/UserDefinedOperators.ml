@@ -58,14 +58,15 @@ let rec parse_operator_name (cur_acc : CS.t_string) (input : CS.t_string) : oper
 let rec name_resolve_result_elab (param_names : string list) (result : A.t) : A.t proc_state_m =
   match A.view result with
   | A.FreeVar name ->
-    if List.mem name param_names
+    if List.exists (fun x -> x = Ext.get_str_content name) param_names
     then return result
     else
-      let* id = Environment.lookup_binding (Ext.str_with_extent name (A.get_extent_some result)) in
+      let* id = Environment.lookup_binding name in
       return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some result))
   | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
     (match A.view f, A.view arg with
-     | A.FreeVar "《《组件右折叠》》", A.N (N.Sequence Dot, [ ([], f); ([], acc); ([], l) ]) ->
+     | A.FreeVar name, A.N (N.Sequence Dot, [ ([], f); ([], acc); ([], l) ]) when Ext.get_str_content name = "《《组件右折叠》》"
+       ->
        let* f = name_resolve_result_elab param_names f in
        let* acc = name_resolve_result_elab param_names acc in
        let* l = name_resolve_result_elab param_names l in
@@ -198,7 +199,7 @@ let get_operators (input : CS.t_string) (result : A.t) : (binary_op list * A.t) 
                          param_name_ref := Uid.next_name param_name;
                          result_ref
                          := A.subst
-                              (A.fold_with_extent (A.FreeVar !param_name_ref) (A.get_extent_some result))
+                              (A.free_var (Ext.str_with_extent !param_name_ref (A.get_extent_some result)))
                               param_name
                               !result_ref
                        done;

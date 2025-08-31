@@ -6,6 +6,11 @@ let rec remove_duplicates (l : 'a list) : 'a list =
 
 let is_sublist (a : 'a list) (b : 'a list) : bool = List.for_all (fun a -> List.mem a b) a
 let minus (a : 'a list) (b : 'a list) : 'a list = List.filter (fun a -> not (List.mem a b)) a
+
+let minus_eq (eq : 'a -> 'a -> bool) (a : 'a list) (b : 'a list) : 'a list =
+  List.filter (fun a -> not (List.exists (eq a) b)) a
+;;
+
 let intersect (a : 'a list) (b : 'a list) : 'a list = List.filter (fun a -> List.mem a b) a
 let equal_as_sets (a : 'a list) (b : 'a list) : bool = is_sublist a b && is_sublist b a
 

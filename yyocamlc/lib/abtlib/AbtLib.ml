@@ -1,48 +1,3 @@
-module type NODE_CLASS = sig
-  type t
-
-  val arity : t -> int list option
-  val show : t -> string
-end
-
-module type ABT = sig
-  type t
-  type node_t
-  type t_extent
-
-  type t_view =
-    | FreeVar of string
-    | N of node_t * (string list * t) list
-
-  val free_var : string -> t
-  val n : node_t * (string list * t) list -> t
-  val unbind_abt : t -> string * t
-  val unbind_abt_list : t -> int -> string list * t
-  val abstract_over : t -> string -> t
-  val abstract_over_list : t -> string list -> t
-  val abstract_over_no_name : ?bnd_name:string -> t -> t
-  val view : t -> t_view
-  val fold : t_view -> t
-  val fold_with_extent : t_view -> t_extent -> t
-
-  (* val fold_direct_unsafe : ?check_arg_ctx:bool -> t_view -> t *)
-  val subst : t -> string -> t -> t
-  val appears_in_expr : string -> t -> bool
-  val possibly_appears_in_expr : string -> t -> bool
-  val get_free_vars : t -> string list
-  val show_raw : t -> string
-  val show_view : t -> string
-
-  (*
-     extent is not preserved by view/fold pair
-  *)
-  val annotate_with_extent : t -> t_extent -> t
-  val get_extent : t -> t_extent option
-  val get_extent_some : t -> t_extent
-  val operate_on_view : t -> (t_view -> t_view) -> t
-  val eq_abt : t -> t -> bool
-end
-
 module type EXTENT = sig
   type t = string * (int * int) * (int * int)
 
@@ -110,12 +65,57 @@ module Extent : EXTENT = struct
   ;;
 end
 
+module type NODE_CLASS = sig
+  type t
+
+  val arity : t -> int list option
+  val show : t -> string
+end
+
+module type ABT = sig
+  type t
+  type node_t
+  type t_extent
+
+  type t_view =
+    | FreeVar of Extent.t_str
+    | N of node_t * (Extent.t_str list * t) list
+
+  val free_var : Extent.t_str -> t
+  val n : node_t * (Extent.t_str list * t) list -> t
+  val unbind_abt : t -> Extent.t_str * t
+  val unbind_abt_list : t -> int -> Extent.t_str list * t
+  val abstract_over : t -> Extent.t_str -> t
+  val abstract_over_list : t -> Extent.t_str list -> t
+  val abstract_over_no_name : ?bnd_name:Extent.t_str -> t -> t
+  val view : t -> t_view
+  val fold : t_view -> t
+  val fold_with_extent : t_view -> t_extent -> t
+
+  (* val fold_direct_unsafe : ?check_arg_ctx:bool -> t_view -> t *)
+  val subst : t -> string -> t -> t
+  val appears_in_expr : string -> t -> bool
+  val possibly_appears_in_expr : string -> t -> bool
+  val get_free_vars : t -> string list
+  val show_raw : t -> string
+  val show_view : t -> string
+
+  (*
+     extent is not preserved by view/fold pair
+  *)
+  val annotate_with_extent : t -> t_extent -> t
+  val get_extent : t -> t_extent option
+  val get_extent_some : t -> t_extent
+  val operate_on_view : t -> (t_view -> t_view) -> t
+  val eq_abt : t -> t -> bool
+end
+
 module Flags = struct
   let use_lazy_substitution () = false
 end
 
 module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and type t_extent = Extent.t = struct
-  type ctx = string list (* Bnd 1 means the first element in tis list *)
+  type ctx = Extent.t_str list (* Bnd 1 means the first element in tis list *)
   type t_extent = string * (int * int) * (int * int)
   type node_t = NodeClass.t
 
@@ -127,7 +127,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
   type base_t =
     | BoundVar of int
     | N of NodeClass.t * base_t list
-    | Binding of string * base_t
+    | Binding of Extent.t_str * base_t
     | Subst of base_t * subst_t
     | AnnotatedWithExtent of t_extent * base_t
 
@@ -140,18 +140,19 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
   and t = ctx * base_t (* The ctx here is an over approximation, to get it precise requires more work than I wanted*)
 
   type t_view =
-    | FreeVar of string
-    | N of NodeClass.t * (string list * t) list
+    | FreeVar of Extent.t_str
+    | N of NodeClass.t * (Extent.t_str list * t) list
 
   (* let _id_subst = Id *)
-  let rec show_ctx (ctx : string list) : string = "⟨" ^ String.concat "," (List.rev ctx) ^ "⟩"
+  let rec show_ctx (ctx : Extent.t_str list) : string =
+    "⟨" ^ String.concat "," (List.rev (List.map Extent.get_str_content ctx)) ^ "⟩"
 
   (* and show_arg_ctx (ctx: int list) : string = 
     "⟨" ^ String.concat "," (List.map string_of_int (List.rev ctx)) ^ "⟩" *)
   and show_raw_base_t (tm : base_t) : string =
     match tm with
     | BoundVar i -> string_of_int i
-    | Binding (name, i) -> "" ^ name ^ "." ^ show_raw_base_t i
+    | Binding (name, i) -> "" ^ Extent.get_str_content name ^ "." ^ show_raw_base_t i
     | N (node_type, args) ->
       let arg_str =
         List.map
@@ -179,10 +180,13 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
 
   and show_raw ((ctx, tm) : t) : string = show_ctx ctx ^ "" ^ show_raw_base_t tm
 
-  let possibly_appears_in_expr (name : string) ((ctx, _) : t) : bool = List.mem name ctx
-  let free_var (name : string) : t = [ name ], BoundVar 1
+  let possibly_appears_in_expr (name : string) ((ctx, _) : t) : bool =
+    List.exists (fun x -> Extent.get_str_content x = name) ctx
+  ;;
 
-  let ctx_nth (ctx : string list) (i : int) : string =
+  let free_var (name : Extent.t_str) : t = [ name ], AnnotatedWithExtent (Extent.get_str_extent name, BoundVar 1)
+
+  let ctx_nth (ctx : Extent.t_str list) (i : int) : Extent.t_str =
     try List.nth ctx i with
     | _ -> failwith ("ctx_nth: " ^ string_of_int i ^ " not found in " ^ show_ctx ctx)
   ;;
@@ -190,7 +194,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
   (* let int_ctx_nth (ctx: int list) (i: int) : int = 
     try List.nth ctx (i ) with _ -> failwith ("int_ctx_nth: " ^ string_of_int i ^ " not found in " ^ show_arg_ctx ctx) *)
 
-  let rec find_uniq_name (name : string) (name_list : string list) : string =
+  let rec find_uniq_name (name : Extent.t_str) (name_list : Extent.t_str list) : Extent.t_str =
     if List.mem name name_list
     then (
       (* append a random charcter from [A-Z][a-z][0-9] until this does not hold *)
@@ -202,7 +206,9 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
         | _ -> Char.chr (Random.int 26 + 97)
         (* [a-z] *)
       in
-      find_uniq_name (name ^ String.make 1 random_char) name_list)
+      find_uniq_name
+        (Extent.str_with_extent (Extent.get_str_content name ^ String.make 1 random_char) (Extent.get_str_extent name))
+        name_list)
     else name
   ;;
 
@@ -300,7 +306,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     if Flags.use_lazy_substitution () then Subst (base, subst) else hereditary_subst_head_reduce (Subst (base, subst))
   ;;
 
-  let rec unbind_abt ((ctx, abt) : t) : string * t =
+  let rec unbind_abt ((ctx, abt) : t) : Extent.t_str * t =
     match abt with
     | Binding (name, under) ->
       let bnd_name = find_uniq_name name ctx in
@@ -309,8 +315,8 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     | _ -> failwith "unbind_expr_list: not a bound expression"
   ;;
 
-  let unbind_abt_list (tm : t) (bnd_count : int) : string list * t =
-    let rec unbind_rec (sofar : string list) (tm : t) (bnd_count : int) : string list * t =
+  let unbind_abt_list (tm : t) (bnd_count : int) : Extent.t_str list * t =
+    let rec unbind_rec (sofar : Extent.t_str list) (tm : t) (bnd_count : int) : Extent.t_str list * t =
       if bnd_count <= 0
       then sofar, tm
       else (
@@ -349,8 +355,10 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
   let get_free_vars (tm : t) : string list =
     let rec aux (tm : t) : string list =
       match view tm with
-      | FreeVar name -> [ name ]
-      | N (_, args) -> List.flatten (List.map (fun (bnds, arg) -> ListUtil.minus (aux arg) bnds) args)
+      | FreeVar name -> [ Extent.get_str_content name ]
+      | N (_, args) ->
+        List.flatten
+          (List.map (fun (bnds, arg) -> ListUtil.minus (aux arg) (List.map Extent.get_str_content bnds)) args)
     in
     ListUtil.remove_duplicates (aux tm)
   ;;
@@ -361,7 +369,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     List.fold_right (fun _ acc -> Comp (Upshift, acc)) (ListUtil.python_range 0 count) Id
   ;;
 
-  let unify_tm_contexts (tms : (string list * base_t) list) : string list * base_t list =
+  let unify_tm_contexts (tms : (Extent.t_str list * base_t) list) : Extent.t_str list * base_t list =
     let final_ctx = ref [] in
     let final_tms =
       List.map
@@ -369,7 +377,9 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
            let subst =
              List.fold_right
                (fun arg_free_var acc ->
-                  match List.find_index (fun x -> x = arg_free_var) !final_ctx with
+                  match
+                    List.find_index (fun x -> Extent.get_str_content x = Extent.get_str_content arg_free_var) !final_ctx
+                  with
                   | None ->
                     let _ = final_ctx := !final_ctx @ [ arg_free_var ] in
                     Cons (BoundVar (List.length !final_ctx), acc)
@@ -384,7 +394,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     !final_ctx, final_tms
   ;;
 
-  let abstract_over_no_name ?(bnd_name = "__no_name") ((ctx, abt) : t) : t =
+  let abstract_over_no_name ?(bnd_name = Extent.str_with_extent "__no_name" ("", (0, 0), (0, 0))) ((ctx, abt) : t) : t =
     (*  let rec increment_all_bnd_var (abt: base_t): base_t = 
       match abt with
       | BoundVar(i) -> BoundVar(i + 1)
@@ -396,8 +406,8 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     ctx, Binding (bnd_name, explicit_subst (abt, Upshift))
   ;;
 
-  let abstract_over ((ctx, abt) : t) (name : string) : t =
-    match List.find_index (fun x -> x = name) ctx with
+  let abstract_over ((ctx, abt) : t) (name : Extent.t_str) : t =
+    match List.find_index (fun x -> Extent.get_str_content x = Extent.get_str_content name) ctx with
     | None -> abstract_over_no_name ~bnd_name:name (ctx, abt)
     | Some outer_name_idx_in_list ->
       (* Helper function to shift and replace bound variables as required, 
@@ -435,7 +445,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     (* let _ = print_endline ("abstract_over: " ^ name ^ " in " ^ show_raw tm ^ " = " ^ show_raw result) in *)
     result *)
 
-  let abstract_over_list (tm : t) (names : string list) : t =
+  let abstract_over_list (tm : t) (names : Extent.t_str list) : t =
     List.fold_right (fun name acc -> abstract_over acc name) names tm
   ;;
 
@@ -512,7 +522,7 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     result
   ;;
 
-  let n ((node_type, args) : node_t * (string list * t) list) : t = fold (N (node_type, args))
+  let n ((node_type, args) : node_t * (Extent.t_str list * t) list) : t = fold (N (node_type, args))
 
   (* let rec switch_bnd_var( int_ctx : int list)  (abt : base_t) : base_t =
     match abt with
@@ -619,16 +629,19 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
     | _ -> failwith "instantiate: not a binding"  *)
 
   let subst (tm_b : t) (var : string) ((ctx, tm) : t) : t =
-    if possibly_appears_in_expr var (ctx, tm) then instantiate tm_b (abstract_over (ctx, tm) var) else ctx, tm
+    if possibly_appears_in_expr var (ctx, tm)
+    then instantiate tm_b (abstract_over (ctx, tm) (Extent.str_with_extent var ("", (0, 0), (0, 0))))
+    else ctx, tm
   ;;
 
   let rec show_view (tm : t) : string =
     match view tm with
-    | FreeVar name -> name
+    | FreeVar name -> Extent.get_str_content name
     | N (node_type, args) ->
       let arg_str =
         List.map
-          (fun (bound_vars, arg) -> String.concat "" (List.map (fun v -> v ^ ".") bound_vars) ^ "" ^ show_view arg)
+          (fun (bound_vars, arg) ->
+             String.concat "" (List.map (fun v -> Extent.get_str_content v ^ ".") bound_vars) ^ "" ^ show_view arg)
           args
       in
       let arg_str = "[" ^ String.concat "; " arg_str ^ "]" in

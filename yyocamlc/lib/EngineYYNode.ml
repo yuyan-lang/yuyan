@@ -43,7 +43,7 @@ module YYNode = struct
   type t =
     | Builtin of builtin
     | Declaration of declaration
-    | StructureDeref of string (* label *)
+    | StructureDeref of Ext.t_str (* label *)
     | TupleDeref of int (* numeric projection *)
     | CheckedTupleDeref of
         { idx : int
@@ -152,7 +152,7 @@ module YYNode = struct
     match t with
     | Builtin b -> "Builtin(" ^ show_builtin b ^ ")"
     | Declaration d -> "Declaration(" ^ show_declaration d ^ ")"
-    | StructureDeref s -> "StructureDeref(" ^ s ^ ")"
+    | StructureDeref s -> "StructureDeref(" ^ Ext.get_str_content s ^ ")"
     | TupleDeref i -> "TupleDeref(" ^ string_of_int i ^ ")"
     | CheckedTupleDeref { idx; len } -> "CheckedTupleDeref(" ^ string_of_int idx ^ ", " ^ string_of_int len ^ ")"
     | ModuleDef -> "ModuleDef"

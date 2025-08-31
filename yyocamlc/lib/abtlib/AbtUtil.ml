@@ -5,8 +5,8 @@ let rec get_head_spine_for_iterative_structure_deref (expr : A.t) : string * str
   match A.view expr with
   | A.N (N.StructureDeref label, ([], arg) :: []) ->
     let head, spine = get_head_spine_for_iterative_structure_deref arg in
-    head, spine @ [ label ]
-  | A.FreeVar label -> label, []
+    head, spine @ [ Ext.get_str_content label ]
+  | A.FreeVar label -> Ext.get_str_content label, []
   | A.N (N.Builtin (N.Library path), []) -> path, []
   | _ ->
     print_failwith

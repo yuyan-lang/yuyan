@@ -25,17 +25,20 @@ type var_env = (string * string) list
 
 let empty_var_env : var_env = []
 
-let add_var_env (env : var_env) (bnd_name : string) : var_env * string (* var name *) =
+let add_var_env (env : var_env) (bnd_name : Ext.t_str) : var_env * string (* var name *) =
+  let bnd_name = Ext.get_str_content bnd_name in
   let new_name = "v_" ^ string_of_int (Uid.next ()) in
   (bnd_name, new_name) :: env, new_name
 ;;
 
-let add_var_env_list (env : var_env) (bnd_names : string list) : var_env * string (* var names *) =
+let add_var_env_list (env : var_env) (bnd_names : Ext.t_str list) : var_env * string (* var names *) =
+  let bnd_names = List.map Ext.get_str_content bnd_names in
   let new_name = "v_" ^ string_of_int (Uid.next ()) in
   List.map (fun bnd_name -> bnd_name, new_name) bnd_names @ env, new_name
 ;;
 
-let lookup_var_env (env : var_env) (chinese_name : string) : string =
+let lookup_var_env (env : var_env) (chinese_name : Ext.t_str) : string =
+  let chinese_name = Ext.get_str_content chinese_name in
   match List.assoc_opt chinese_name env with
   | Some ocaml_name -> ocaml_name
   | None -> failwith (__LOC__ ^ ": cannot find " ^ chinese_name ^ " in var_env")
@@ -57,7 +60,7 @@ let lookup_constant_id (id : int) : t_constant =
 ;;
 
 let get_comment_str (str : string) : string = "(* " ^ str ^ " *)"
-let annotate_with_name (str : string) : string = " " ^ get_comment_str str
+let annotate_with_name (str : Ext.t_str) : string = " " ^ get_comment_str (Ext.get_str_content str)
 let get_comment_ext_str (ext_str : Ext.t_str) : string = get_comment_str (Ext.get_str_content ext_str)
 let annotate_with_name_ext (ext_str : Ext.t_str) : string = " " ^ get_comment_ext_str ext_str
 

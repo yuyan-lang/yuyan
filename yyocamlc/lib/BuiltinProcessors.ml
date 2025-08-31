@@ -11,7 +11,7 @@ open EngineDataPrint
   | ParsingElem(BoundScannedString(s), _) -> return (CS.get_t_string s)
   | _ -> pfail ("ET107: Expected a bound scanned string but got " ^ (show_input_acc_elem x)) *)
 
-let get_binding_name (x : A.t) : string proc_state_m =
+let get_binding_name (x : A.t) : Ext.t_str proc_state_m =
   match A.view x with
   | A.FreeVar name -> return name
   | _ -> pfail ("ET107: Expected a free variable but got " ^ A.show_view x)
@@ -33,7 +33,7 @@ let identifier_parser_pusher : unit proc_state_m =
        | A.FreeVar prev_id ->
          pfail_with_ext
            ("Syntax Error: Consecutive quoted identifiers are not allowed. Found 「"
-            ^ prev_id
+            ^ Ext.get_str_content prev_id
             ^ "」「"
             ^ CS.get_t_string id
             ^ "」. "
@@ -376,22 +376,16 @@ let builtin_op : binary_op =
       (let* oper, per_ext = pop_prefix_operand builtin_op_meta in
        let* node =
          match A.view oper with
-         | A.FreeVar x ->
+         | A.N (N.Builtin (String x), []) ->
            (match x with
             | "《《内建类型：字符串》》" -> return (A.fold (A.N (N.Builtin N.StringType, [])))
             | "《《内建类型：整数》》" -> return (A.fold (A.N (N.Builtin N.IntType, [])))
             | "《《内建类型：小数》》" -> return (A.fold (A.N (N.Builtin N.FloatType, [])))
-            | "《《内建类型：动态分类值》》" -> return (A.fold (A.N (N.Builtin N.Type, [])))
             | "《《内建类型：有》》" -> return (A.fold (A.N (N.Builtin N.UnitType, [])))
             | "《《内建类型：爻》》" -> return (A.fold (A.N (N.Builtin N.BoolType, [])))
-            | "《《内建类型：元类型》》" -> return (A.fold (A.N (N.Builtin N.Type, [])))
-            | "《《内建类型：引用类》》" -> return (A.fold (A.N (N.Builtin N.RefType, [])))
-            | "《《内建类型：数组引用类》》" -> return (A.fold (A.N (N.Builtin N.ArrayRefType, [])))
             | "《《内建爻：阳》》" -> return (A.fold (A.N (N.Builtin (N.Bool true), [])))
             | "《《内建爻：阴》》" -> return (A.fold (A.N (N.Builtin (N.Bool false), [])))
             | "《《内建有：元》》" -> return (A.fold (A.N (N.Builtin N.Unit, [])))
-            | "《《内建函数：抛出异常字符串》》" -> return (A.fold (A.N (N.Builtin N.RaiseException, [])))
-            | "《《内建函数：尝试运行字符串》》" -> return (A.fold (A.N (N.Builtin N.TryCatch, [])))
             | _ -> pfail ("ET104: Expected a builtin val but got >" ^ x ^ "<"))
          | _ -> pfail ("ET105: Builtin Expected a free variable but got " ^ A.show_view oper)
        in
