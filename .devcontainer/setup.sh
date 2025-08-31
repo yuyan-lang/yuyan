@@ -24,10 +24,11 @@ opam install dune ocaml-lsp-server ocamlformat utop merlin -y
 echo "Testing build..."
 dune build
 
-echo "Testing standard library..."
-dune exec -- yyocamlc 藏书阁/标准库。豫 || echo "Standard library test completed with warnings/errors"
+echo "Running matrix multiplication demo..."
+dune exec -- yyocamlc 矩阵乘法。豫 || echo "Matrix multiplication demo completed with warnings/errors"
 
 echo "Setup complete! You can now:"
 echo "  - Run 'dune build' to compile the project"
-echo "  - Run 'dune exec -- yyocamlc <file>' to execute Yuyan files"
+echo "  - Run 'dune exec -- yyocamlc 矩阵乘法。豫' to run the matrix multiplication demo"
+echo "  - Run 'dune exec -- yyocamlc <file>' to execute other Yuyan files"
 echo "  - Use VS Code with OCaml and Yuyan language support"
