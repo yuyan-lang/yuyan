@@ -346,6 +346,8 @@ module Abt (NodeClass : NODE_CLASS) : ABT with type node_t = NodeClass.t and typ
         (* prints a stack trace here*)
         Printexc.print_raw_backtrace Stdlib.stdout (Printexc.get_callstack 20);
         failwith ("view: cannot view a binding " ^ show_raw (ctx, abt))
+      | AnnotatedWithExtent (ext, BoundVar i) ->
+        FreeVar (Extent.str_with_extent (Extent.get_str_content (ctx_nth ctx (i - 1))) ext)
       | AnnotatedWithExtent (_, inner_abt) -> view (ctx, inner_abt)
       | Subst (_, _) -> view (ctx, subst_head_reduce abt)
     with

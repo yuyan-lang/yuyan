@@ -51,7 +51,7 @@ let extend_local_env_tm (env : local_env) (name : bnd_name) (tp : A.t) : local_e
 
 let find_in_local_env_tm (env : local_env) (name : bnd_name) : (Ext.t * A.t) option =
   match List.find_opt (fun (n, _) -> bnd_name_to_string n = Ext.get_str_content name) env.tm with
-  | Some (_, tp) -> Some (Ext.get_str_extent name, tp)
+  | Some (bnd_name, tp) -> Some (Ext.get_str_extent bnd_name, tp)
   | None -> None
 ;;
 
@@ -139,7 +139,7 @@ let rec type_unify
   | A.N (N.Builtin N.UnitType, []), A.N (N.Builtin N.UnitType, []) -> return free_var_names
   | A.N (N.Builtin N.FloatType, []), A.N (N.Builtin N.FloatType, []) -> return free_var_names
   | A.N (N.Constant id1, []), A.N (N.Constant id2, []) when id1 = id2 -> return free_var_names
-  | A.FreeVar name1, A.FreeVar name2 when name1 = name2 -> return free_var_names
+  | A.FreeVar name1, A.FreeVar name2 when Ext.get_str_content name1 = Ext.get_str_content name2 -> return free_var_names
   | A.N (N.Arrow, [ ([], dom1); ([], cod1) ]), A.N (N.Arrow, [ ([], dom2); ([], cod2) ]) ->
     let* new_free_var_names = type_unify free_var_names dom1 dom2 in
     type_unify new_free_var_names cod1 cod2
