@@ -12,7 +12,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onLanguage:yuyan"
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "browser": "./out/extension.js",
@@ -24,6 +24,11 @@
           "type": "string",
           "default": "",
           "description": "Path of the yuyan implementation `yy`. "
+        },
+        "yuyan.languageSelector": {
+          "type": "string",
+          "default": "*",
+          "description": "Language selector for providers. Use '*' for all files, 'yuyan' for .yuyan files only, or any valid language ID."
         },
         "yuyan.trace.server": {
           "scope": "window",

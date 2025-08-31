@@ -1,5 +1,19 @@
 import * as vscode from 'vscode';
 
+// Create output channel for logging
+const outputChannel = vscode.window.createOutputChannel('Yuyan Language Extension');
+
+function log(message: string, ...args: any[]): void {
+  const timestamp = new Date().toISOString();
+  const formattedMessage = `[${timestamp}] ${message}`;
+  
+  if (args.length > 0) {
+    outputChannel.appendLine(formattedMessage + ' ' + JSON.stringify(args));
+  } else {
+    outputChannel.appendLine(formattedMessage);
+  }
+}
+
 interface TokenExtent {
   file: string;
   start_line: number;
@@ -23,21 +37,27 @@ interface TokenInfo {
 
 async function getTokensInfo(document: vscode.TextDocument): Promise<any[] | undefined> {
   const docPath = document.uri.path;
+  log(`getTokensInfo called for document: ${docPath}`);
+  
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
   
   if (!workspaceFolder) {
+    log('No workspace folder found for document');
     return undefined;
   }
   
+  log(`Workspace folder: ${workspaceFolder.uri.fsPath}`);
   const tokenFileUri = vscode.Uri.joinPath(workspaceFolder.uri, '_build', 'lsp_tokens_info', `${docPath}.tokens.json`);
+  log(`Looking for token file at: ${tokenFileUri.fsPath}`);
   
   try {
     const tokenFileData = await vscode.workspace.fs.readFile(tokenFileUri);
     const tokenFileContent = new TextDecoder().decode(tokenFileData);
     const tokens = JSON.parse(tokenFileContent);
+    log(`Successfully loaded ${tokens.length} tokens from file`);
     return tokens;
-  } catch (error) {
-    // File doesn't exist or parsing error
+  } catch (error: any) {
+    log(`Failed to load token file: ${error.message || error}`);
     return undefined;
   }
 }
@@ -46,9 +66,11 @@ async function provideSemanticTokens(
   document: vscode.TextDocument,
   legend: vscode.SemanticTokensLegend
 ): Promise<vscode.SemanticTokens | undefined> {
+  log('provideSemanticTokens called');
   const allTokens = await getTokensInfo(document);
   
   if (!allTokens) {
+    log('No tokens found, returning undefined');
     return undefined;
   }
   
@@ -231,8 +253,13 @@ async function provideDefinition(
   return new vscode.Location(targetUri, targetRange);
 }
 
-function startLSP(): void {
-  let language_selector = "*";
+function startLSP(context: vscode.ExtensionContext): void {
+  log('Starting LSP initialization');
+  
+  // Get language selector from configuration or default to all files
+  const config = vscode.workspace.getConfiguration('yuyan');
+  const languageSelector = config.get<string>('languageSelector', '*');
+  log(`Using language selector: ${languageSelector}`);
   
   const tokenTypes = [
     "StringConstant",
@@ -245,8 +272,9 @@ function startLSP(): void {
   ];
   
   const legend = new vscode.SemanticTokensLegend(tokenTypes);
+  log('Token types registered:', tokenTypes);
   
-  vscode.languages.registerDocumentSemanticTokensProvider(language_selector, {
+  const semanticTokensProvider = vscode.languages.registerDocumentSemanticTokensProvider(languageSelector, {
     async provideDocumentSemanticTokens(
       document: vscode.TextDocument,
       token: vscode.CancellationToken
@@ -254,7 +282,10 @@ function startLSP(): void {
       return await provideSemanticTokens(document, legend);
     }
   }, legend);
-  vscode.languages.registerCompletionItemProvider(language_selector, {
+  context.subscriptions.push(semanticTokensProvider);
+  log('Semantic tokens provider registered');
+  
+  const completionProvider = vscode.languages.registerCompletionItemProvider(languageSelector, {
     provideCompletionItems(
       document: vscode.TextDocument,
       position: vscode.Position,
@@ -264,7 +295,9 @@ function startLSP(): void {
       return undefined;
     }
   }, '/');
-  vscode.languages.registerHoverProvider(language_selector, {
+  context.subscriptions.push(completionProvider);
+  
+  const hoverProvider = vscode.languages.registerHoverProvider(languageSelector, {
     async provideHover(
       document: vscode.TextDocument,
       position: vscode.Position,
@@ -273,7 +306,10 @@ function startLSP(): void {
       return await provideHover(document, position);
     }
   });
-  vscode.languages.registerDocumentSymbolProvider(language_selector, {
+  context.subscriptions.push(hoverProvider);
+  log('Hover provider registered');
+  
+  const symbolProvider = vscode.languages.registerDocumentSymbolProvider(languageSelector, {
     async provideDocumentSymbols(
       document: vscode.TextDocument,
       token: vscode.CancellationToken
@@ -281,7 +317,9 @@ function startLSP(): void {
       return undefined;
     }
   });
-  vscode.languages.registerDefinitionProvider(language_selector, {
+  context.subscriptions.push(symbolProvider);
+  
+  const definitionProvider = vscode.languages.registerDefinitionProvider(languageSelector, {
     async provideDefinition(
       document: vscode.TextDocument,
       position: vscode.Position,
@@ -290,12 +328,31 @@ function startLSP(): void {
       return await provideDefinition(document, position);
     }
   });
+  context.subscriptions.push(definitionProvider);
+  log('Definition provider registered');
+  
+  log('All LSP providers registered successfully');
 }
 
 export function activate(context: vscode.ExtensionContext): void {
-  startLSP();
+  log('Extension activation started');
+  log(`Extension path: ${context.extensionPath}`);
+  log(`Extension mode: ${context.extensionMode === vscode.ExtensionMode.Production ? 'Production' : 'Development'}`);
+  log(`VS Code version: ${vscode.version}`);
+  
+  // Show output channel for debugging
+  outputChannel.show(true);
+  
+  try {
+    startLSP(context);
+    log('Extension activated successfully');
+  } catch (error: any) {
+    log(`Extension activation failed: ${error.message || error}`);
+    vscode.window.showErrorMessage(`Yuyan Extension failed to activate: ${error.message || error}`);
+  }
 }
 
 export function deactivate(): void {
-
+  log('Extension deactivation started');
+  outputChannel.dispose();
 }
