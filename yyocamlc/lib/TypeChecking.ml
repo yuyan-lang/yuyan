@@ -326,6 +326,11 @@ let get_tp_for_expr_id (id : int) : A.t proc_state_m =
   | _ -> pfail (__LOC__ ^ " Expecting some data but got " ^ EngineDataPrint.show_t_constant const)
 ;;
 
+let aka_print_tp (tp : A.t) : string proc_state_m =
+  let* s = get_proc_state () in
+  return (EngineDataPrint.aka_print_expr s tp)
+;;
+
 let partial_resolve_structure_deref (_env : local_env) (expr : A.t) : int proc_state_m =
   match A.view expr with
   | A.FreeVar name ->
@@ -363,6 +368,12 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
               | id :: _ ->
                 let ret_expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
                 let* ret_tp = get_tp_for_expr_id id in
+                let* extent = Environment.get_extent_of_constant id in
+                let* () = TokenInfo.add_token_info deref_name (Definition extent) in
+                let* () =
+                  let* aka_print_tp = aka_print_tp ret_tp in
+                  TokenInfo.add_token_info deref_name (Hover aka_print_tp)
+                in
                 return (ret_expr, ret_tp)
               | _ ->
                 pfail_with_ext
@@ -372,11 +383,6 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
      | _ ->
        pfail_with_ext (__LOC__ ^ " Expecting a module alias as subject of structure deref") (A.get_extent_some expr))
   | _ -> Fail.failwith (__LOC__ ^ " Expecting a structure deref on the top level, got " ^ A.show_view expr)
-;;
-
-let aka_print_tp (tp : A.t) : string proc_state_m =
-  let* s = get_proc_state () in
-  return (EngineDataPrint.aka_print_expr s tp)
 ;;
 
 (* Synthesize/infer type from an expression *)

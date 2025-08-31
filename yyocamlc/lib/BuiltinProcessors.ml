@@ -168,8 +168,12 @@ let import_end : binary_op =
   { meta = import_end_meta
   ; reduction =
       (let* prev_comp, ext = pop_postfix_operand import_end_meta in
-       let* module_expr = Imports.get_module_expr prev_comp in
-       push_elem_on_input_acc (Expr (A.annotate_with_extent (A.fold (A.N (N.FileRef module_expr, []))) ext)))
+       let* module_path = Imports.get_module_expr prev_comp in
+       let* () =
+         TokenInfo.add_token_info (Ext.str_with_extent "<import>" ext) (Definition (module_path, (0, 0), (0, 0)))
+       in
+       let* () = TokenInfo.add_token_info (Ext.str_with_extent "<import>" ext) (Hover module_path) in
+       push_elem_on_input_acc (Expr (A.annotate_with_extent (A.fold (A.N (N.FileRef module_path, []))) ext)))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -726,10 +730,12 @@ let module_alias_decl_end : binary_op =
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 module_alias_decl_end_meta in
        let* name_str = get_free_var name in
-       let* filepath = Imports.get_module_expr defn in
-       let* id = Environment.add_constant (ModuleAlias { name = name_str; filepath }) in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration (N.ModuleAliasDefn (name_str, id)), []))) ext))
+       match A.view defn with
+       | A.N (N.FileRef filepath, []) ->
+         let* id = Environment.add_constant (ModuleAlias { name = name_str; filepath }) in
+         push_elem_on_input_acc_expr
+           (A.annotate_with_extent (A.fold (A.N (N.Declaration (N.ModuleAliasDefn (name_str, id)), []))) ext)
+       | _ -> pfail ("BP283: Expected a file reference but got " ^ A.show_view defn))
   ; shift_action = do_nothing_shift_action
   }
 ;;
