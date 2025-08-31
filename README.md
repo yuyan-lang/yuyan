@@ -91,7 +91,7 @@ dune exec -- yyocamlc performance-investigation/matrix-multiply/矩阵乘法。�
 
 你可以在 GitHub.dev 上直接体验豫言编程语言：
 
-[![在 GitHub.dev 中打开](https://github.com/codespaces/badge.svg)](https://github.dev/yuyan-lang/yuyan/tree/demo)
+[![在 GitHub.dev 中打开](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/tree/demo)
 
 默认会打开矩阵乘法示例文件，展示豫言语言的基本语法和功能。
 
