@@ -371,6 +371,11 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
   | _ -> Fail.failwith (__LOC__ ^ " Expecting a structure deref on the top level, got " ^ A.show_view expr)
 ;;
 
+let aka_print_tp (tp : A.t) : string proc_state_m =
+  let* s = get_proc_state () in
+  return (EngineDataPrint.aka_print_expr s tp)
+;;
+
 (* Synthesize/infer type from an expression *)
 let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
   with_type_checking_history (HistOne ("synthesizing ", expr))
@@ -382,7 +387,12 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
     (match A.view expr with
      | A.FreeVar name ->
        (match List.assoc_opt name env.tm with
-        | Some tp -> return (expr, tp)
+        | Some tp ->
+          let* () =
+            let* aka_print_tp = aka_print_tp tp in
+            TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some expr)) (Hover aka_print_tp)
+          in
+          return (expr, tp)
         | None ->
           let* id =
             Environment.lookup_binding_with_extent_token_info (Ext.str_with_extent name (A.get_extent_some expr))
@@ -392,7 +402,8 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
           (match tp_constant with
            | DataExpression { tp; _ } | DataConstructor { tp; _ } ->
              let* () =
-               TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some expr)) (Hover (A.show_view tp))
+               let* aka_print_tp = aka_print_tp tp in
+               TokenInfo.add_token_info (Ext.str_with_extent name (A.get_extent_some expr)) (Hover aka_print_tp)
              in
              return (expr, tp)
            | _ ->
@@ -461,9 +472,14 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
      | A.N (N.Constant id, []) ->
        let* tp_constant = Environment.lookup_constant id in
        (match tp_constant with
-        | PatternVar { tp; _ } -> return (expr, tp)
-        | DataConstructor { tp; _ } -> return (expr, tp)
-        | DataExpression { tp; _ } -> return (expr, tp)
+        | PatternVar { tp; name; _ } | DataConstructor { tp; name; _ } | DataExpression { tp; name = Some name; _ } ->
+          let* () =
+            let* aka_print_tp = aka_print_tp tp in
+            TokenInfo.add_token_info
+              (Ext.str_with_extent (Ext.get_str_content name) (A.get_extent_some expr))
+              (Hover aka_print_tp)
+          in
+          return (expr, tp)
         | _ ->
           pfail_with_ext
             (__LOC__ ^ "TC331: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)

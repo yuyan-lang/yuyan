@@ -19,10 +19,13 @@ interface TokenExtent {
 
 interface TokenDetail {
   type: string;
-  semantic_token_type: string;
+  semantic_token_type?: string;
+  content?: string; // For Hover
+  extent?: TokenExtent; // For Definition
 }
 
 interface TokenInfo {
+  text: string;
   extent: TokenExtent;
   detail: TokenDetail;
 }
@@ -127,6 +130,117 @@ function provideSemanticTokens(
   return builder.build();
 }
 
+function provideHover(
+  document: vscode.TextDocument,
+  position: vscode.Position
+): vscode.Hover | undefined {
+  const allTokens = getTokensInfo(document);
+  
+  if (!allTokens) {
+    return undefined;
+  }
+  
+  // Filter for hover tokens at the current position
+  const hoverTokens = allTokens.filter(t => {
+    if (t.detail.type !== "Hover") return false;
+    
+    const startLine = t.extent.start_line;
+    const startCol = t.extent.start_col;
+    const endLine = t.extent.end_line;
+    const endCol = t.extent.end_col;
+    
+    // Check if position is within token range
+    if (position.line < startLine || position.line > endLine) return false;
+    
+    if (position.line === startLine && position.line === endLine) {
+      // Single line token
+      return position.character >= startCol && position.character < endCol;
+    } else if (position.line === startLine) {
+      // First line of multi-line token
+      return position.character >= startCol;
+    } else if (position.line === endLine) {
+      // Last line of multi-line token
+      return position.character < endCol;
+    } else {
+      // Middle line of multi-line token
+      return true;
+    }
+  });
+  
+  if (hoverTokens.length === 0) {
+    return undefined;
+  }
+  
+  // Use the first hover token found
+  const hoverToken = hoverTokens[0];
+  const content = hoverToken.detail.content || "";
+  
+  const range = new vscode.Range(
+    new vscode.Position(hoverToken.extent.start_line, hoverToken.extent.start_col),
+    new vscode.Position(hoverToken.extent.end_line, hoverToken.extent.end_col)
+  );
+  
+  return new vscode.Hover(content, range);
+}
+
+function provideDefinition(
+  document: vscode.TextDocument,
+  position: vscode.Position
+): vscode.Location | undefined {
+  const allTokens = getTokensInfo(document);
+  
+  if (!allTokens) {
+    return undefined;
+  }
+  
+  // Filter for definition tokens at the current position
+  const definitionTokens = allTokens.filter(t => {
+    if (t.detail.type !== "Definition") return false;
+    
+    const startLine = t.extent.start_line;
+    const startCol = t.extent.start_col;
+    const endLine = t.extent.end_line;
+    const endCol = t.extent.end_col;
+    
+    // Check if position is within token range
+    if (position.line < startLine || position.line > endLine) return false;
+    
+    if (position.line === startLine && position.line === endLine) {
+      // Single line token
+      return position.character >= startCol && position.character < endCol;
+    } else if (position.line === startLine) {
+      // First line of multi-line token
+      return position.character >= startCol;
+    } else if (position.line === endLine) {
+      // Last line of multi-line token
+      return position.character < endCol;
+    } else {
+      // Middle line of multi-line token
+      return true;
+    }
+  });
+  
+  if (definitionTokens.length === 0) {
+    return undefined;
+  }
+  
+  // Use the first definition token found
+  const defToken = definitionTokens[0];
+  const defExtent = defToken.detail.extent;
+  
+  if (!defExtent) {
+    return undefined;
+  }
+  
+  const targetUri = vscode.Uri.file(defExtent.file);
+  const targetRange = new vscode.Range(
+    new vscode.Position(defExtent.start_line, defExtent.start_col),
+    new vscode.Position(defExtent.end_line, defExtent.end_col)
+  );
+  
+  return new vscode.Location(targetUri, targetRange);
+}
+
 function startLSP(): void {
   let language_selector = "*";
   
@@ -166,7 +280,7 @@ function startLSP(): void {
       position: vscode.Position,
       token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.Hover> {
-      return undefined;
+      return provideHover(document, position);
     }
   });
   vscode.languages.registerDocumentSymbolProvider(language_selector, {
@@ -183,7 +297,7 @@ function startLSP(): void {
       position: vscode.Position,
       token: vscode.CancellationToken
     ): vscode.ProviderResult<vscode.Definition | vscode.LocationLink[]> {
-      return undefined;
+      return provideDefinition(document, position);
     }
   });
 }
