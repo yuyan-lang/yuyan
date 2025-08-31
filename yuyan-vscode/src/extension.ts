@@ -37,7 +37,10 @@ interface TokenInfo {
 
 async function getTokensInfo(document: vscode.TextDocument): Promise<any[] | undefined> {
   const docPath = document.uri.path;
-  log(`getTokensInfo called for document: ${docPath}`);
+  const docUri = document.uri.toString();
+  log(`getTokensInfo called for document path: ${docPath}`);
+  log(`Document URI: ${docUri}`);
+  log(`Document scheme: ${document.uri.scheme}`);
   
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
   
@@ -66,6 +69,11 @@ async function provideSemanticTokens(
   document: vscode.TextDocument,
   legend: vscode.SemanticTokensLegend
 ): Promise<vscode.SemanticTokens | undefined> {
+  // Skip non-file documents (output panels, etc.)
+  if (document.uri.scheme !== 'file') {
+    return undefined;
+  }
+  
   log('provideSemanticTokens called');
   const allTokens = await getTokensInfo(document);
   
@@ -139,13 +147,20 @@ async function provideSemanticTokens(
     }
   }
   
-  return builder.build();
+  const result = builder.build();
+  log(`Semantic tokens provided: ${semanticTokens.length} tokens processed`);
+  return result;
 }
 
 async function provideHover(
   document: vscode.TextDocument,
   position: vscode.Position
 ): Promise<vscode.Hover | undefined> {
+  // Skip non-file documents
+  if (document.uri.scheme !== 'file') {
+    return undefined;
+  }
+  
   const allTokens = await getTokensInfo(document);
   
   if (!allTokens) {
@@ -199,6 +214,11 @@ async function provideDefinition(
   document: vscode.TextDocument,
   position: vscode.Position
 ): Promise<vscode.Location | undefined> {
+  // Skip non-file documents
+  if (document.uri.scheme !== 'file') {
+    return undefined;
+  }
+  
   const allTokens = await getTokensInfo(document);
   
   if (!allTokens) {
