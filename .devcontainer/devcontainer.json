@@ -1,0 +1,33 @@
+{
+  "name": "Yuyan Development Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+  
+  "features": {},
+
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ocamllabs.ocaml-platform",
+        "ms-vscode.extension-test-runner",
+        "yuyan-lang.yuyan-vscode"
+      ],
+      "settings": {
+        "ocaml.sandbox": {
+          "kind": "opam",
+          "switch": "yuyan-dev"
+        },
+        "files.associations": {
+          "*.豫": "plaintext"
+        }
+      }
+    }
+  },
+
+  "forwardPorts": [],
+
+  "portsAttributes": {},
+
+  "remoteUser": "vscode"
+}
