@@ -2,11 +2,7 @@
   "name": "Yuyan Development Environment",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   
-  "features": {
-    "ghcr.io/devcontainers-extra/features/opam:1": {
-      "version": "2.1"
-    }
-  },
+  "features": {},
 
   "postCreateCommand": "bash .devcontainer/setup.sh",
 

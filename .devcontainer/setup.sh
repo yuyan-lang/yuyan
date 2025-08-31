@@ -5,6 +5,10 @@ set -e
 
 echo "Setting up Yuyan development environment..."
 
+# Install opam and OCaml dependencies
+sudo apt-get update
+sudo apt-get install -y opam build-essential m4 pkg-config libssl-dev libgmp-dev
+
 # Initialize opam
 opam init --disable-sandboxing -y
 eval $(opam env)
