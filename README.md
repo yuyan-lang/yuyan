@@ -1,8 +1,9 @@
 # 豫言 (Yuyan) 编程语言
 
 
-[![Open in GitHub.dev](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/tree/demo)
-<!-- [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan/tree/demo) -->
+[![Open in GitHub.dev](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/)
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan/)
 
 豫言是一个现代化的函数式编程语言，使用中文语法，旨在让中文使用者能够用自然的方式编写代码。豫言使用 OCaml 作为后端编译器，未来计划实现与 OCaml 的双向集成。
 
@@ -55,7 +56,7 @@ Codespace 环境包含：
 
 你也可以在 GitHub.dev 上直接体验豫言编程语言：
 
-[![在 GitHub.dev 中打开](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/tree/demo)
+[![在 GitHub.dev 中打开](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/)
 
 默认会打开矩阵乘法示例文件，展示豫言语言的基本语法和功能。
 
