@@ -1,13 +1,4 @@
 import * as vscode from 'vscode';
-import * as fs from 'fs';
-import * as path from 'path';
-import { exec } from 'child_process';
-import {
-  LanguageClient,
-  LanguageClientOptions,
-  ServerOptions,
-  TransportKind
-} from 'vscode-languageclient/node';
 
 interface TokenExtent {
   file: string;
@@ -30,7 +21,7 @@ interface TokenInfo {
   detail: TokenDetail;
 }
 
-function getTokensInfo(document: vscode.TextDocument): any[] | undefined {
+async function getTokensInfo(document: vscode.TextDocument): Promise<any[] | undefined> {
   const docPath = document.uri.path;
   const workspaceFolder = vscode.workspace.getWorkspaceFolder(document.uri);
   
@@ -38,25 +29,24 @@ function getTokensInfo(document: vscode.TextDocument): any[] | undefined {
     return undefined;
   }
   
-  const tokenFilePath = path.join(workspaceFolder.uri.fsPath, '_build', 'lsp_tokens_info', `${docPath}.tokens.json`);
+  const tokenFileUri = vscode.Uri.joinPath(workspaceFolder.uri, '_build', 'lsp_tokens_info', `${docPath}.tokens.json`);
   
-  if (fs.existsSync(tokenFilePath)) {
-    try {
-      const tokens = JSON.parse(fs.readFileSync(tokenFilePath, 'utf8'));
-      return tokens;
-    } catch (error) {
-      console.error('Error parsing token file:', error);
-      return undefined;
-    }
+  try {
+    const tokenFileData = await vscode.workspace.fs.readFile(tokenFileUri);
+    const tokenFileContent = new TextDecoder().decode(tokenFileData);
+    const tokens = JSON.parse(tokenFileContent);
+    return tokens;
+  } catch (error) {
+    // File doesn't exist or parsing error
+    return undefined;
   }
-  return undefined;
 }
 
-function provideSemanticTokens(
+async function provideSemanticTokens(
   document: vscode.TextDocument,
   legend: vscode.SemanticTokensLegend
-): vscode.SemanticTokens | undefined {
-  const allTokens = getTokensInfo(document);
+): Promise<vscode.SemanticTokens | undefined> {
+  const allTokens = await getTokensInfo(document);
   
   if (!allTokens) {
     return undefined;
@@ -130,11 +120,11 @@ function provideSemanticTokens(
   return builder.build();
 }
 
-function provideHover(
+async function provideHover(
   document: vscode.TextDocument,
   position: vscode.Position
-): vscode.Hover | undefined {
-  const allTokens = getTokensInfo(document);
+): Promise<vscode.Hover | undefined> {
+  const allTokens = await getTokensInfo(document);
   
   if (!allTokens) {
     return undefined;
@@ -183,11 +173,11 @@ function provideHover(
   return new vscode.Hover(content, range);
 }
 
-function provideDefinition(
+async function provideDefinition(
   document: vscode.TextDocument,
   position: vscode.Position
-): vscode.Location | undefined {
-  const allTokens = getTokensInfo(document);
+): Promise<vscode.Location | undefined> {
+  const allTokens = await getTokensInfo(document);
   
   if (!allTokens) {
     return undefined;
@@ -257,11 +247,11 @@ function startLSP(): void {
   const legend = new vscode.SemanticTokensLegend(tokenTypes);
   
   vscode.languages.registerDocumentSemanticTokensProvider(language_selector, {
-    provideDocumentSemanticTokens(
+    async provideDocumentSemanticTokens(
       document: vscode.TextDocument,
       token: vscode.CancellationToken
-    ): vscode.ProviderResult<vscode.SemanticTokens> {
-      return provideSemanticTokens(document, legend);
+    ): Promise<vscode.SemanticTokens | undefined> {
+      return await provideSemanticTokens(document, legend);
     }
   }, legend);
   vscode.languages.registerCompletionItemProvider(language_selector, {
@@ -275,12 +265,12 @@ function startLSP(): void {
     }
   }, '/');
   vscode.languages.registerHoverProvider(language_selector, {
-    provideHover(
+    async provideHover(
       document: vscode.TextDocument,
       position: vscode.Position,
       token: vscode.CancellationToken
-    ): vscode.ProviderResult<vscode.Hover> {
-      return provideHover(document, position);
+    ): Promise<vscode.Hover | undefined> {
+      return await provideHover(document, position);
     }
   });
   vscode.languages.registerDocumentSymbolProvider(language_selector, {
@@ -292,12 +282,12 @@ function startLSP(): void {
     }
   });
   vscode.languages.registerDefinitionProvider(language_selector, {
-    provideDefinition(
+    async provideDefinition(
       document: vscode.TextDocument,
       position: vscode.Position,
       token: vscode.CancellationToken
-    ): vscode.ProviderResult<vscode.Definition | vscode.LocationLink[]> {
-      return provideDefinition(document, position);
+    ): Promise<vscode.Location | undefined> {
+      return await provideDefinition(document, position);
     }
   });
 }
