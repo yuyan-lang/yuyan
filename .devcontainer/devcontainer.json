@@ -14,7 +14,8 @@
     "vscode": {
       "extensions": [
         "ocamllabs.ocaml-platform",
-        "ms-vscode.extension-test-runner"
+        "ms-vscode.extension-test-runner",
+        "yuyan-lang.yuyan-vscode"
       ],
       "settings": {
         "ocaml.sandbox": {

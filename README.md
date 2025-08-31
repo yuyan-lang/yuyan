@@ -2,7 +2,7 @@
 
 
 [![Open in GitHub.dev](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/tree/demo)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan/tree/demo)
 
 豫言是一个现代化的函数式编程语言，使用中文语法，旨在让中文使用者能够用自然的方式编写代码。豫言使用 OCaml 作为后端编译器，未来计划实现与 OCaml 的双向集成。
 
@@ -43,13 +43,13 @@
 
 最简单的体验豫言编程语言的方式是使用 GitHub Codespaces，它提供了预配置的开发环境：
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan/tree/demo)
 
 Codespace 环境包含：
-- OCaml 5.1.1 及 opam 包管理器
+- OCaml 5.3.0 及 opam 包管理器
 - Dune 构建系统
 - OCaml Language Server，提供 VS Code 语言支持
-- 豫言 VS Code 扩展（如果可用）
+- 豫言 VS Code 扩展（从 Marketplace 自动安装）
 
 ### 在线体验
 

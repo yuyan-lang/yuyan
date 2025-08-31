@@ -10,23 +10,15 @@ opam init --disable-sandboxing -y
 eval $(opam env)
 
 # Create a switch for yuyan development
-opam switch create yuyan-dev 5.1.1 -y
+opam switch create yuyan-dev 5.3.0 -y
 eval $(opam env --switch=yuyan-dev)
 
 # Install required OCaml packages
 echo "Installing OCaml dependencies..."
 opam install dune ocaml-lsp-server ocamlformat utop merlin -y
 
-# Install the yuyan VS Code extension if it exists locally
-if [ -d "yuyan-vscode" ]; then
-    echo "Installing Yuyan VS Code extension..."
-    cd yuyan-vscode
-    if [ -f "package.json" ]; then
-        npm install
-        npm run compile 2>/dev/null || echo "Extension compilation skipped (may not be needed)"
-    fi
-    cd ..
-fi
+# The Yuyan VS Code extension will be automatically installed from the marketplace
+# as specified in devcontainer.json extensions list
 
 # Test build
 echo "Testing build..."
