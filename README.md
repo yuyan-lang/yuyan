@@ -2,6 +2,7 @@
 
 
 [![Open in GitHub.dev](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/tree/demo)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan)
 
 豫言是一个现代化的函数式编程语言，使用中文语法，旨在让中文使用者能够用自然的方式编写代码。豫言使用 OCaml 作为后端编译器，未来计划实现与 OCaml 的双向集成。
 
@@ -35,6 +36,28 @@
     虑「长宽」者「长度」于「矩阵A」而
     ...
 ```
+
+## 快速开始
+
+### 使用 GitHub Codespaces（推荐）
+
+最简单的体验豫言编程语言的方式是使用 GitHub Codespaces，它提供了预配置的开发环境：
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/yuyan-lang/yuyan)
+
+Codespace 环境包含：
+- OCaml 5.1.1 及 opam 包管理器
+- Dune 构建系统
+- OCaml Language Server，提供 VS Code 语言支持
+- 豫言 VS Code 扩展（如果可用）
+
+### 在线体验
+
+你也可以在 GitHub.dev 上直接体验豫言编程语言：
+
+[![在 GitHub.dev 中打开](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/tree/demo)
+
+默认会打开矩阵乘法示例文件，展示豫言语言的基本语法和功能。
 
 ## 开发环境设置
 
@@ -87,13 +110,6 @@ dune exec -- yyocamlc 藏书阁/标准库。豫
 dune exec -- yyocamlc performance-investigation/matrix-multiply/矩阵乘法。豫
 ```
 
-## 在线体验
-
-你可以在 GitHub.dev 上直接体验豫言编程语言：
-
-[![在 GitHub.dev 中打开](https://img.shields.io/badge/Open%20in-GitHub.dev-blue?logo=github)](https://github.dev/yuyan-lang/yuyan/tree/demo)
-
-默认会打开矩阵乘法示例文件，展示豫言语言的基本语法和功能。
 
 ## 标准库
 
