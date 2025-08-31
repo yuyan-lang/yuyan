@@ -27,7 +27,7 @@
         },
         "yuyan.languageSelector": {
           "type": "string",
-          "default": "*",
+          "default": "yuyan",
           "description": "Language selector for providers. Use '*' for all files, 'yuyan' for .yuyan files only, or any valid language ID."
         },
         "yuyan.trace.server": {
