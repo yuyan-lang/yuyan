@@ -2,8 +2,12 @@
   "name": "yuyan-vscode",
   "displayName": "yuyan-vscode",
   "description": "",
-  "version": "0.0.19",
-  "repository": "https://github.com/yuyan-lang/yuyan",
+  "version": "0.0.20",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yuyan-lang/yuyan",
+    "directory": "yuyan-vscode"
+  },
   "publisher": "yuyan-lang",
   "engines": {
     "vscode": "^1.73.1"
