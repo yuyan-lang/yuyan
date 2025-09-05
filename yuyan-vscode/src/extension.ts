@@ -389,8 +389,8 @@ export function activate(context: vscode.ExtensionContext): void {
   log(`Extension mode: ${context.extensionMode === vscode.ExtensionMode.Production ? 'Production' : 'Development'}`);
   log(`VS Code version: ${vscode.version}`);
   
-  // Show output channel for debugging
-  outputChannel.show(true);
+  // Output channel available but not auto-shown
+  // outputChannel.show(true);
   
   try {
     startLSP(context);
