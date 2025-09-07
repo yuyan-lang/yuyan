@@ -100,6 +100,18 @@ let dump_token_info (filepath : string) (st : proc_state) : unit =
   ()
 ;;
 
+let dump_diagnostic_info (_filepath : string) (st : proc_state) : unit =
+  let path = Filename.concat "./_build/lsp_tokens_info/" "diagnostics.json" in
+  FileSystemUtils.makedir_p path;
+  let oc = open_out path in
+  output_string
+    oc
+    (TokenInfo.token_info_to_json
+       (List.map (fun err -> { extent = err.ext; text = "<diagnostic>"; detail = DiagnosticError err.msg }) st.failures));
+  close_out oc;
+  ()
+;;
+
 let run_top_level (filename : string) (content : string) : A.t * t_constants =
   let input = CharStream.new_cs filename content in
   let initial_state =
@@ -117,15 +129,7 @@ let run_top_level (filename : string) (content : string) : A.t * t_constants =
     ; (* this is backtracking to top level, directly pass this to handle*)
       top_failure_handler =
         (fun s ->
-          let s =
-            { s with
-              tokens_info =
-                List.map
-                  (fun err -> { extent = err.ext; text = "<diagnostic>"; detail = DiagnosticError err.msg })
-                  s.failures
-                @ s.tokens_info
-            }
-          in
+          dump_diagnostic_info filename s;
           dump_token_info filename s;
           print_endline ("========\nFailure history has " ^ print_proc_errors s.failures ^ "\n========\n");
           failwith "Compilation Failed")
