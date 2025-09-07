@@ -48,49 +48,18 @@ let rec do_process_entire_stream () : A.t proc_state_m =
 ;;
 
 let print_proc_errors (msg : proc_error list) : string =
-  let expecting =
-    List.filter_map
-      (function
-        | ErrWithExt _ -> None)
-      msg
-  in
-  let other =
-    List.filter_map
-      (fun x ->
-         match x with
-         | ErrWithExt _ -> Some x)
-      msg
-  in
-  let expecting_str =
-    if List.length expecting > 0
-    then
-      "Expecting one of the following strings: "
-      ^ String.concat ", " (List.map (fun (x, _) -> "\"" ^ CS.get_t_string x ^ "\"") expecting)
-      ^ "\n"
-      ^
-      if List.length (ListUtil.remove_duplicates (List.map snd expecting)) > 1
-      then "But got: " ^ String.concat ", " (List.map (fun (_, x) -> CS.get_t_char (fst x)) expecting)
-      else (
-        let _, a = List.hd expecting in
-        " But got: " ^ CS.get_t_char (fst a) ^ " at the following location: \n" ^ Ext.show_extent_1_based (snd a))
-    else ""
-  in
-  let other_str =
-    if List.length other > 0
-    then
-      "Other errors: "
-      ^ String.concat
-          ",\n"
-          (List.map
-             (fun x ->
-                match x with
-                (* | ErrExpectString _ -> failwith "ET124" *)
-                (* | ErrOther s -> s *)
-                | ErrWithExt (s, ext) -> s ^ " at the following location: \n" ^ Ext.show_extent_1_based ext)
-             other)
-    else ""
-  in
-  expecting_str ^ (if expecting_str <> "" && other_str <> "" then "\n" else "") ^ other_str
+  if List.length msg > 0
+  then
+    string_of_int (List.length msg)
+    ^ " errors: "
+    ^ String.concat
+        ",\n"
+        (List.map
+           (fun x ->
+              match x with
+              | { msg = s; ext; state = _ } -> s ^ " at the following location: \n" ^ Ext.show_extent_1_based ext)
+           msg)
+  else "Did not succeed but no reportable errors"
 ;;
 
 let extract_all_result
@@ -148,22 +117,17 @@ let run_top_level (filename : string) (content : string) : A.t * t_constants =
     ; (* this is backtracking to top level, directly pass this to handle*)
       top_failure_handler =
         (fun s ->
+          let s =
+            { s with
+              tokens_info =
+                List.map
+                  (fun err -> { extent = err.ext; text = "<diagnostic>"; detail = DiagnosticError err.msg })
+                  s.failures
+                @ s.tokens_info
+            }
+          in
           dump_token_info filename s;
-          print_endline
-            ("Failure history has "
-             ^ string_of_int (List.length s.failures)
-             ^ " entries:\n========================\n"
-             ^ String.concat
-                 "\n"
-                 (List.mapi
-                    (fun i (msg, s) ->
-                       string_of_int i
-                       ^ " failure: "
-                       ^ print_proc_errors msg
-                       ^ "\n"
-                       ^ show_proc_state s
-                       ^ "\n-------------------------------")
-                    s.failures));
+          print_endline ("========\nFailure history has " ^ print_proc_errors s.failures ^ "\n========\n");
           failwith "Compilation Failed")
     ; type_checking_history = []
     ; unification_ctx = []

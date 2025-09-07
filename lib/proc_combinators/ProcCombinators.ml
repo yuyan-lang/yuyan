@@ -9,55 +9,43 @@ let print_failwith (s : string) : 'a =
 ;;
 
 let return (x : 'a) : 'a proc_state_m = fun s fc sc -> sc (x, s) fc
+let get_proc_state () : proc_state proc_state_m = fun s fc sc -> sc (s, s) fc
+let update_proc_state (f : proc_state -> proc_state) : unit proc_state_m = fun s fc sc -> sc ((), f s) fc
+let write_proc_state (s : proc_state) : unit proc_state_m = fun _s fc sc -> sc ((), s) fc
 
-let combine_failures ((cur_msg, cur_st) : proc_error * proc_state) (prev : (proc_error list * proc_state) list)
-  : (proc_error list * proc_state) list
-  =
-  (* the idea is that if the new s's inputs are consumed more, then replace rest with new s, 
-    if s' inputs are consumed at the same level then append*)
-  let cur_idx = cur_st.input_future.idx in
-  let prev_idx = List.fold_left (fun acc (_, s) -> max acc s.input_future.idx) 0 prev in
-  if cur_idx = prev_idx
-  then (
-    let to_add, rest =
-      List.partition
-        (fun (_, s) ->
-           s.input_future.idx = cur_st.input_future.idx && List.length s.input_acc = List.length cur_st.input_acc
-           (* && s.input_future.idx = cur_st.input_future.idx *))
-        prev
-    in
-    match to_add with
-    | [] -> ([ cur_msg ], cur_st) :: prev
-    | [ (xmsg, _) ] -> if List.mem cur_msg xmsg then prev else (cur_msg :: xmsg, cur_st) :: rest
-    | _ -> failwith "PC27: multiple failures with same input state")
-  else if cur_idx > prev_idx
-  then
-    [ (* match cur_msg with
-      | ErrExpectString _ -> ([cur_msg], cur_st) :: prev (* more input is consumed to produce this error, so should not drop previous ones*)
-      | _ ->  *)
-      [ cur_msg ], cur_st
-    ]
-  else prev
+let bind (m : 'a proc_state_m) (f : 'a -> 'b proc_state_m) : 'b proc_state_m =
+  fun s fc sc -> m s fc (fun (x, s') fc' -> f x s' fc' sc)
 ;;
 
-let push_failure_to_s ((cur_msg, cur_st) : proc_error * proc_state) (s : proc_state) : proc_state =
-  let new_failures = combine_failures (cur_msg, cur_st) s.failures in
-  (* let new_failures = [[cur_msg], cur_st] in *)
+let ( >>= ) = bind
+let ( let* ) m f = bind m f
+let _then (m : 'a proc_state_m) (f : 'b proc_state_m) : 'b proc_state_m = bind m (fun _ -> f)
+let ( >> ) = _then
+
+let combine_failures (cur_error : proc_error) (prev : proc_error list) : proc_error list =
+  (* the idea is that if the new s's inputs are consumed more, then replace rest with new s, 
+    if s' inputs are consumed at the same level then append*)
+  let cur_idx = cur_error.state.input_future.idx in
+  let prev_idx = List.fold_left (fun acc e -> max acc e.state.input_future.idx) 0 prev in
+  if cur_idx = prev_idx then cur_error :: prev else if cur_idx > prev_idx then [ cur_error ] else prev
+;;
+
+let push_failure_to_s (cur_error : proc_error) (s : proc_state) : proc_state =
+  let new_failures = combine_failures cur_error s.failures in
   { s with failures = new_failures }
 ;;
 
-let pfail_error (msg : proc_error) : 'a proc_state_m =
+let pfail_error (cur_error : proc_error) : 'a proc_state_m =
   fun s fc _sc ->
   if !Flags.show_parse_progress
-  then (
-    match msg with
-    | ErrWithExt (s, ext) -> print_endline ("Failed because: " ^ s ^ " " ^ Ext.show_extent ext));
-  fc (push_failure_to_s (msg, s) s)
+  then print_endline ("Failed because: " ^ cur_error.msg ^ " " ^ Ext.show_extent cur_error.ext);
+  fc (push_failure_to_s cur_error s)
 ;;
 
 let pfail_with_ext (msg : string) (ext : Ext.t) : 'a proc_state_m =
-  (* print_endline ("FAILING WITH " ^ msg); *)
-  pfail_error (ErrWithExt (msg, ext))
+  let* s = get_proc_state () in
+  let cur_error = { msg; ext; state = s } in
+  pfail_error cur_error
 ;;
 
 let pfail_inapplicable_parser_rule (_rule_name : string) (_ext : Ext.t) : 'a proc_state_m = fun s fc _sc -> fc s
@@ -82,15 +70,6 @@ let do_nothing_shift_action : Ext.t -> unit proc_state_m = fun _ -> return ()
 (* pnot m fails if m succeeds, succeeds without consuming inputs when m fails *)
 (* it is a convention that all things do not consume inputs *)
 let pnot (m : 'a proc_state_m) : unit proc_state_m = fun s fc sc -> m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc s)
-
-let bind (m : 'a proc_state_m) (f : 'a -> 'b proc_state_m) : 'b proc_state_m =
-  fun s fc sc -> m s fc (fun (x, s') fc' -> f x s' fc' sc)
-;;
-
-let ( >>= ) = bind
-let ( let* ) m f = bind m f
-let _then (m : 'a proc_state_m) (f : 'b proc_state_m) : 'b proc_state_m = bind m (fun _ -> f)
-let ( >> ) = _then
 
 let psequence (m : 'a proc_state_m list) : 'a list proc_state_m =
   List.fold_left
@@ -165,10 +144,6 @@ let choice_cut (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m =
        success_found := true;
        sc (x, s') fc')
 ;;
-
-let get_proc_state () : proc_state proc_state_m = fun s fc sc -> sc (s, s) fc
-let update_proc_state (f : proc_state -> proc_state) : unit proc_state_m = fun s fc sc -> sc ((), f s) fc
-let write_proc_state (s : proc_state) : unit proc_state_m = fun _s fc sc -> sc ((), s) fc
 
 let get_input_acc_position_as_ext () : Ext.t proc_state_m =
   let* s = get_proc_state () in

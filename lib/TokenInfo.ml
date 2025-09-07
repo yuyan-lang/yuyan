@@ -25,6 +25,7 @@ let print_token_info_detail (token_info_detail : token_info_detail) : string =
   | SemanticToken semantic_token_type -> "SemanticToken(" ^ show_semantic_token_type semantic_token_type ^ ")"
   | Definition extent -> "Definition(" ^ Ext.show_extent extent ^ ")"
   | Hover content -> "Hover(" ^ content ^ ")"
+  | DiagnosticError content -> "DiagnosticError(" ^ content ^ ")"
 ;;
 
 let print_token_info (token_info : token_info list) : string =
@@ -56,6 +57,8 @@ let token_detail_to_json (token_info_detail : token_info_detail) : string =
     "{\"type\": \"SemanticToken\", \"semantic_token_type\": \"" ^ show_semantic_token_type semantic_token_type ^ "\"}"
   | Definition extent -> "{\"type\": \"Definition\", \"extent\": " ^ extent_to_json extent ^ "}"
   | Hover content -> "{\"type\": \"Hover\", \"content\": \"" ^ StringEscape.escaped_unicode content ^ "\"}"
+  | DiagnosticError content ->
+    "{\"type\": \"DiagnosticError\", \"content\": \"" ^ StringEscape.escaped_unicode content ^ "\"}"
 ;;
 
 let token_info_to_json (token_info : token_info list) : string =

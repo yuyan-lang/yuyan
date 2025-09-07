@@ -55,7 +55,6 @@ type t_constant =
 
 type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *)) list
 type t_constants = (int * t_constant) list
-type proc_error = ErrWithExt of string * Ext.t
 
 type fixity =
   | FxOp of int option
@@ -110,6 +109,7 @@ type token_info_detail =
   | SemanticToken of semantic_token_type
   | Definition of Ext.t (* target of jump to definition *)
   | Hover of string (* hover content *)
+  | DiagnosticError of string (* diagnostic message *)
 
 type token_info =
   { extent : Ext.t
@@ -122,6 +122,12 @@ type parsing_elem =
   | Keyword of CS.t_string
   | BoundScannedString of CS.t_string (* this is used for operator that binds a name *)
   | OpKeyword of binary_op_meta (* uid of the binary op *)
+
+and proc_error =
+  { msg : string
+  ; ext : Ext.t
+  ; state : proc_state
+  }
 
 and input_acc_elem =
   | Expr of A.t
@@ -140,7 +146,7 @@ and proc_state =
   ; constants : t_constants
   ; registry : processor_registry
   ; last_succeeded_processor : processor_entry (* for debugging on parsing *)
-  ; failures : (proc_error list * proc_state) list
+  ; failures : proc_error list
   ; top_failure_handler : failure_handler_arg_type -> monad_ret_tp
     (* this is the top-level failure handler for cutting off 
   backtracking. Useful a combinator to commit (e.g. if subsequent things fail, instead of 
