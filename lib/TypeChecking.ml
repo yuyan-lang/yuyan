@@ -22,7 +22,7 @@ let set_global_unification_ctx (uid : int) (tp : A.t) : unit proc_state_m =
         unification_ctx =
           List.map (fun (cur_uid, cur_tp) -> if cur_uid = uid then uid, Some tp else cur_uid, cur_tp) s.unification_ctx
       }
-  else pfail ("uid " ^ string_of_int uid ^ " not found in global unification context")
+  else Fail.failwith ("uid " ^ string_of_int uid ^ " not found in global unification context")
 ;;
 
 (* Until binding contains extent, we need to resort to string.
@@ -341,7 +341,7 @@ let get_tp_for_expr_id (id : int) : A.t proc_state_m =
   let* const = Environment.lookup_constant id in
   match const with
   | DataExpression { tp; _ } | DataConstructor { tp; _ } -> return tp
-  | _ -> pfail (__LOC__ ^ " Expecting some data but got " ^ EngineDataPrint.show_t_constant const)
+  | _ -> Fail.failwith (__LOC__ ^ " Expecting some data but got " ^ EngineDataPrint.show_t_constant const)
 ;;
 
 let partial_resolve_structure_deref (_env : local_env) (expr : A.t) : int proc_state_m =
@@ -772,7 +772,7 @@ let assert_no_free_vars (tp : A.t) : unit proc_state_m =
   match A.get_free_vars tp with
   | [] -> return ()
   | free_vars ->
-    pfail
+    Fail.failwith
       ("TC_assert_no_free_vars: free variables found in type: "
        ^ String.concat ", " free_vars
        ^ " in type: "

@@ -34,7 +34,7 @@ let add_constant_with_uid (uid : int) (const : t_constant) : unit proc_state_m =
   let* s = get_proc_state () in
   if List.mem_assoc uid s.constants
   then
-    pfail
+    Fail.failwith
       ("Duplicate constant with uid: " ^ string_of_int uid ^ " and constant: " ^ EngineDataPrint.show_t_constant const)
   else (
     let new_constants = (uid, const) :: s.constants in
@@ -60,7 +60,7 @@ let update_constant (uid : int) (update : t_constant -> t_constant) : unit proc_
   in
   match update_list s.constants with
   | Some new_constants -> write_proc_state { s with constants = new_constants }
-  | None -> pfail ("Cannot update constant with uid " ^ string_of_int uid ^ ": not found")
+  | None -> Fail.failwith ("Cannot update constant with uid " ^ string_of_int uid ^ ": not found")
 ;;
 
 (* Update the term for an Expression constant *)
@@ -97,7 +97,7 @@ let lookup_constant (uid : int) : t_constant proc_state_m =
   let* result = find_constant uid in
   match result with
   | Some const -> return const
-  | None -> pfail ("Constant not found with uid: " ^ string_of_int uid)
+  | None -> Fail.failwith ("Constant not found with uid: " ^ string_of_int uid)
 ;;
 
 let get_extent_of_constant (uid : int) : Ext.t proc_state_m =

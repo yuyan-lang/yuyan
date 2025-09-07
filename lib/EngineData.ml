@@ -55,14 +55,7 @@ type t_constant =
 
 type t_env = (Ext.t_str * int (* int is the uid of the constant, tp *)) list
 type t_constants = (int * t_constant) list
-
-type proc_error =
-  | ErrExpectString of
-      { expecting : CS.t_string
-      ; actual : CS.t_char * Ext.t
-      }
-  | ErrOther of string
-  | ErrWithExt of string * Ext.t
+type proc_error = ErrWithExt of string * Ext.t
 
 type fixity =
   | FxOp of int option

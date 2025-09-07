@@ -9,12 +9,12 @@ open EngineDataPrint
 (* let get_binding_name (x : input_acc_elem) : string proc_state_m = 
   match x with
   | ParsingElem(BoundScannedString(s), _) -> return (CS.get_t_string s)
-  | _ -> pfail ("ET107: Expected a bound scanned string but got " ^ (show_input_acc_elem x)) *)
+  | _ -> Fail.failwith ("ET107: Expected a bound scanned string but got " ^ (show_input_acc_elem x)) *)
 
 let get_binding_name (x : A.t) : Ext.t_str proc_state_m =
   match A.view x with
   | A.FreeVar name -> return name
-  | _ -> pfail ("ET107: Expected a free variable but got " ^ A.show_view x)
+  | _ -> Fail.failwith ("ET107: Expected a free variable but got " ^ A.show_view x)
 ;;
 
 (* let top_level_identifier_pusher : unit proc_state_m = 
@@ -181,7 +181,7 @@ let import_end : binary_op =
 let assert_is_free_var (x : A.t) : unit proc_state_m =
   match A.view x with
   | A.FreeVar _ -> return ()
-  | _ -> pfail ("ET101: Expected a free variable but got " ^ A.show_view x)
+  | _ -> Fail.failwith ("ET101: Expected a free variable but got " ^ A.show_view x)
 ;;
 
 let definition_middle_uid = Uid.next ()
@@ -216,11 +216,12 @@ let definition_end : binary_op =
   { meta = definition_end_meta
   ; reduction =
       (let* (name, defn), ext = pop_postfix_op_operands_2 definition_end_meta in
+       (* *)
+       let* () = pcommit () in
        let* defn_name_str = get_free_var name in
        let* tp_id = Environment.lookup_binding defn_name_str in
        let* tp = Environment.lookup_constant tp_id in
        (* we are now ready to type check, so we commit to the current choice *)
-       let* () = pcommit () in
        match tp with
        | DataExpression { tp = tp_expr; tm = None; name = Some decl_name_str; _ } ->
          let* () = TokenInfo.add_token_info defn_name_str (Definition (Ext.get_str_extent decl_name_str)) in
@@ -237,7 +238,7 @@ let definition_end : binary_op =
          (match A.view defn with
           | A.N (N.ExternalCall fname, []) -> Environment.update_constant_ocaml_bind_name tp_id fname
           | _ -> pfail_with_ext (__LOC__ ^ "Constructors can only be defined as external calls") ext)
-       | _ -> pfail ("BP1269: Expecting tp to be a pure type but got " ^ EngineDataPrint.show_t_constant tp))
+       | _ -> Fail.failwith ("BP1269: Expecting tp to be a pure type but got " ^ EngineDataPrint.show_t_constant tp))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -298,7 +299,7 @@ let library_root : binary_op =
        then
          push_elem_on_input_acc_expr
            (A.annotate_with_extent (A.fold (A.N (N.Builtin (N.Library default_path), []))) ext)
-       else pfail ("Directory not found: " ^ default_path))
+       else Fail.failwith ("Directory not found: " ^ default_path))
   ; shift_action = do_nothing_shift_action
   }
 ;; *)
@@ -339,10 +340,10 @@ let library_root : binary_op =
         let* _ = push_elem_on_input_acc input_top in
         return ()
       else
-        pfail ("BP154: Expected a directory but got " ^ path)
+        Fail.failwith ("BP154: Expected a directory but got " ^ path)
     )
   | _ ->
-    pfail ("BP157: Expected a library but got " ^ A.show_view input_top)
+    Fail.failwith ("BP157: Expected a library but got " ^ A.show_view input_top)
 *)
 
 let unknown_structure_deref_meta : binary_op_meta =
@@ -365,7 +366,7 @@ let unknown_structure_deref : binary_op =
        | A.N (N.Builtin (N.Int i), []) ->
          let new_node = A.fold (A.N (N.TupleDeref i, [ [], lo ])) in
          push_elem_on_input_acc_expr (A.annotate_with_extent new_node ext)
-       | _ -> pfail ("ET102: Expected a free variable but got " ^ A.show_view proj_label))
+       | _ -> Fail.failwith ("ET102: Expected a free variable but got " ^ A.show_view proj_label))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -395,8 +396,8 @@ let builtin_op : binary_op =
             | "《《内建爻：阳》》" -> return (A.fold (A.N (N.Builtin (N.Bool true), [])))
             | "《《内建爻：阴》》" -> return (A.fold (A.N (N.Builtin (N.Bool false), [])))
             | "《《内建有：元》》" -> return (A.fold (A.N (N.Builtin N.Unit, [])))
-            | _ -> pfail ("ET104: Expected a builtin val but got >" ^ x ^ "<"))
-         | _ -> pfail ("ET105: Builtin Expected a free variable but got " ^ A.show_view oper)
+            | _ -> Fail.failwith ("ET104: Expected a builtin val but got >" ^ x ^ "<"))
+         | _ -> Fail.failwith ("ET105: Builtin Expected a free variable but got " ^ A.show_view oper)
        in
        push_elem_on_input_acc_expr (A.annotate_with_extent node per_ext))
   ; shift_action = do_nothing_shift_action
@@ -498,7 +499,7 @@ let module_open : binary_op =
          (* DO WE NEED TO PUSH SOMETHING TO THE INPUT ACCUM? *)
          (* | A.FreeVar(x) -> 
           return (A.fold(A.N(N.Builtin(N.String x), []))) *)
-         | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr)
+         | _ -> Fail.failwith ("BP273: Expected a module Expression but got " ^ A.show_view module_expr)
        in
        return ()
        (* push_elem_on_input_acc (A.annotate_with_extent node per_ext) *))
@@ -542,8 +543,8 @@ let module_reexport : binary_op =
             (match A.view file_content with
              | A.N (N.ModuleDef, margs) -> aux args (List.map snd margs)
              | _ -> print_failwith ("BP282: Expecting moduleDef: " ^ A.show_view file_content))
-          | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr))
-       | _ -> pfail ("BP273: Expected a module Expression but got " ^ A.show_view module_expr))
+          | _ -> Fail.failwith ("BP273: Expected a module Expression but got " ^ A.show_view module_expr))
+       | _ -> Fail.failwith ("BP273: Expected a module Expression but got " ^ A.show_view module_expr))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -740,7 +741,7 @@ let module_alias_decl_end : binary_op =
          let* id = Environment.add_constant (ModuleAlias { name = name_str; filepath }) in
          push_elem_on_input_acc_expr
            (A.annotate_with_extent (A.fold (A.N (N.Declaration (N.ModuleAliasDefn (name_str, id)), []))) ext)
-       | _ -> pfail ("BP283: Expected a file reference but got " ^ A.show_view defn))
+       | _ -> Fail.failwith ("BP283: Expected a file reference but got " ^ A.show_view defn))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1148,7 +1149,7 @@ let explicit_ap : binary_op =
 
 let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem) : unit proc_state_m =
   let* st = get_proc_state () in
-  pfail
+  Fail.failwith
     ("BP678: Expected a module defn and a decl but got "
      ^ show_input_acc_elem module_expr
      ^ " and "
@@ -1173,7 +1174,8 @@ let check_and_append_module_defn (module_expr : A.t) (decl : A.t) : A.t proc_sta
   | A.N (N.ModuleDef, args), A.N (N.Declaration (CheckedConstantDefn _), _) ->
     return (A.fold (A.N (N.ModuleDef, args @ [ [], decl ])))
   | _ ->
-    pfail ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
+    Fail.failwith
+      ("BP1308: Expected a module defn and a decl but got " ^ A.show_view module_expr ^ " and " ^ A.show_view decl)
 ;;
 
 let sentence_end : unit proc_state_m =
@@ -1190,7 +1192,7 @@ let sentence_end : unit proc_state_m =
       | A.N (N.ModuleDef, _) ->
         let* () = push_elem_on_input_acc_expr module_expr in
         return ()
-      | _ -> pfail ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
+      | _ -> Fail.failwith ("BP207: Expected a module defn but got " ^ A.show_view module_expr)
     else if input_acc_size > 1
     then
       let* poped_left, poped_right = pop_input_acc_2 () in
@@ -1237,7 +1239,7 @@ let sentence_end : unit proc_state_m =
          | _ -> sentence_end_fail poped_left poped_right) *)
       (* also for 「「 name *)
       | _ -> sentence_end_fail poped_left poped_right
-    else pfail ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
+    else Fail.failwith ("ET106: Expected at least 2 elements in the input acc but got " ^ string_of_int input_acc_size)
   in
   (* we want to commit once we successfully handled 。 if subsequent error occurs, 
       do not backtrack over interpretation of sentences *)
@@ -1279,7 +1281,7 @@ let external_call_end : binary_op =
        match A.view oper with
        | A.N (N.Builtin (N.String x), []) ->
          push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.ExternalCall x, [])) per_ext)
-       | _ -> pfail ("BP693: Builtin Expected a string but got " ^ A.show_view oper))
+       | _ -> Fail.failwith ("BP693: Builtin Expected a string but got " ^ A.show_view oper))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1428,7 +1430,7 @@ let match_case_alternative : binary_op =
        | A.N (N.Match, args) ->
          let new_case_expr = A.fold (A.N (N.Match, args @ [ [], then_expr ])) in
          push_elem_on_input_acc_expr (A.annotate_with_extent new_case_expr per_ext)
-       | _ -> pfail ("ET108: Expected a match case but got " ^ A.show_view case_expr))
+       | _ -> Fail.failwith ("ET108: Expected a match case but got " ^ A.show_view case_expr))
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1538,7 +1540,7 @@ let custom_operator_decl_end : binary_op =
          (* add new operators to the registry *)
          let* () = add_processor_entry_list (List.map (to_processor_binary_op "custom_ops") new_ops) in
          return ()
-       | _ -> pfail ("ET109: Expected a scanned operator but got " ^ A.show_view defn))
+       | _ -> Fail.failwith ("ET109: Expected a scanned operator but got " ^ A.show_view defn))
   ; shift_action = do_nothing_shift_action
   }
 ;;

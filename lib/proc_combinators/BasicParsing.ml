@@ -30,14 +30,14 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
           TODO: maybe better if we have a shift-action in operators
         *) -> push_elem_on_input_acc es
         | _ ->
-          pfail
+          Fail.failwith
             ("PC324: expected An element that allows ids to be pushed but got "
              ^ A.show_view x
              ^ " cannot push the next identifier, which is "
              ^ EngineDataPrint.show_input_acc_elem es
              ^ " on the stack"))
      | _ ->
-       pfail
+       Fail.failwith
          ("PC324: expected An element that allows ids to be pushed but got "
           ^ EngineDataPrint.show_input_acc_elem x
           ^ " cannot push the next identifier, which is "
@@ -48,15 +48,18 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
 let push_elem_continue (es : input_acc_elem) : unit proc_state_m =
   let* acc_top = peek_input_acc 0 in
   match acc_top with
-  | None -> pfail "PC243: empty stack"
+  | None -> Fail.failwith "PC243: empty stack"
   | Some x ->
     (match x with
      | ParsingElem (OpKeyword _, _) ->
-       pfail
-         ("PC333: expected things  got "
+       let ext = get_input_acc_elem_ext x in
+       pfail_with_ext
+         (__LOC__
+          ^ " PC333: expected things  got "
           ^ EngineDataPrint.show_input_acc_elem x
           ^ " cannot push the next identifier "
           ^ EngineDataPrint.show_input_acc_elem es)
+         ext
      | _ -> push_elem_on_input_acc es)
 ;;
 
@@ -121,7 +124,7 @@ let rec operator_precedence_reduce (uid : int) : unit proc_state_m =
   let* op = lookup_binary_op uid in
   match op.meta.left_fixity with
   | FxNone | FxBinding _ | FxComp _ ->
-    pfail ("PC560: expected FxOp but got " ^ EngineDataPrint.show_binary_op_meta op.meta)
+    Fail.failwith ("PC560: expected FxOp but got " ^ EngineDataPrint.show_binary_op_meta op.meta)
   | FxOp rhs_precedence ->
     let* rhs_fixity_type = get_operator_fixity uid in
     let* acc_top = peek_input_acc 1 in
@@ -194,7 +197,7 @@ let rec operator_precedence_reduce_always () : unit proc_state_m =
         | FxNone ->
           print_failwith ("PC562: FxNone should not be here " ^ EngineDataPrint.show_binary_op_meta bin_op.meta)
         | FxBinding _ ->
-          pfail "BP175: Always reduce cannot be invoked on a binding, but rather should be on component reduce")
+          Fail.failwith "BP175: Always reduce cannot be invoked on a binding, but rather should be on component reduce")
      | _ -> return () (* cannot reduce, assume successful *))
 ;;
 
@@ -202,11 +205,11 @@ let rec operator_precedence_reduce_always () : unit proc_state_m =
 let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
   (* let* stack_size = get_input_acc_size () in
   if stack_size < 2 then 
-    pfail ("PC399: Expecting at least 2 elements on the stack but got " ^ string_of_int stack_size)
+    Fail.failwith ("PC399: Expecting at least 2 elements on the stack but got " ^ string_of_int stack_size)
   else *)
   let* acc_top = peek_input_acc 1 in
   match acc_top with
-  | None -> pfail "PC400: Expecting at least 2 elements on the stack but got "
+  | None -> Fail.failwith "PC400: Expecting at least 2 elements on the stack but got "
   | Some x ->
     (match x with
      | ParsingElem (OpKeyword meta, _) ->
@@ -224,16 +227,22 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
             operator_component_reduce comp_uid
           | FxBinding _ | FxComp _ ->
             let* comp_oper = lookup_binary_op comp_uid in
-            pfail
-              ("PC401: Expecting "
+            let ext = get_input_acc_elem_ext x in
+            pfail_with_ext
+              (__LOC__
+               ^ " PC401: Expecting "
                ^ show_binary_op_meta comp_oper.meta
                ^ " but got "
                ^ show_binary_op_meta oper.meta
                ^ " in the operator component reduction")
+              ext
           | FxNone -> failwith ("PC559: FxNone should not be here " ^ show_binary_op_meta oper.meta ^ " "))
      | _ ->
        let* oper = lookup_binary_op comp_uid in
-       pfail ("PC402: expecting " ^ show_binary_op_meta oper.meta ^ " but got " ^ show_input_acc_elem x ^ " "))
+       let ext = get_input_acc_elem_ext x in
+       pfail_with_ext
+         (__LOC__ ^ " PC402: expecting " ^ show_binary_op_meta oper.meta ^ " but got " ^ show_input_acc_elem x ^ " ")
+         ext)
 ;;
 
 (* parses a single identifier identifier is something that is quoted between 「 and 」 and without special chars
@@ -288,8 +297,10 @@ let integer_number_parser () : unit proc_state_m =
     push_elem_on_input_acc
       (Expr
          (A.fold_with_extent (A.N (N.Builtin (N.Int number), [])) (Ext.combine_extent_list (List.map snd number_list))))
-  else pfail_error (ErrExpectString { expecting = yy_number_words; actual = top, top_ext })
+  else pfail_inapplicable_parser_rule "basic_parsing" top_ext
 ;;
+
+(* pfail_error (ErrExpectString { expecting = yy_number_words; actual = top, top_ext }) *)
 
 let decimal_number_parser () : unit proc_state_m =
   let* integral_part = many1 (read_one_of_char yy_number_words) in
@@ -327,7 +338,9 @@ let identifier_parser () : (CS.t_string * Ext.t) proc_state_m =
     match middle with
     | [] -> failwith "Unit pattern not implemented"
     | _ -> return (middle, middle_ext))
-  else pfail ("ET100: Expected '」' but got " ^ CS.get_t_char terminal ^ " expecting 「id」 or 「「expr」」 or 「：comments：」")
+  else
+    Fail.failwith
+      ("ET100: Expected '」' but got " ^ CS.get_t_char terminal ^ " expecting 「id」 or 「「expr」」 or 「：comments：」")
 ;;
 
 let process_read_operator (meta : binary_op_meta) (read_ext : Ext.t) : unit proc_state_m =

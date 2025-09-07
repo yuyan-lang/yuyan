@@ -51,14 +51,16 @@ let pfail_error (msg : proc_error) : 'a proc_state_m =
   if !Flags.show_parse_progress
   then (
     match msg with
-    | ErrOther s -> print_endline ("Failed because: " ^ s)
-    | ErrWithExt (s, ext) -> print_endline ("Failed because: " ^ s ^ " " ^ Ext.show_extent ext)
-    | _ -> ());
+    | ErrWithExt (s, ext) -> print_endline ("Failed because: " ^ s ^ " " ^ Ext.show_extent ext));
   fc (push_failure_to_s (msg, s) s)
 ;;
 
-let pfail (msg : string) : 'a proc_state_m = pfail_error (ErrOther msg)
-let pfail_with_ext (msg : string) (ext : Ext.t) : 'a proc_state_m = pfail_error (ErrWithExt (msg, ext))
+let pfail_with_ext (msg : string) (ext : Ext.t) : 'a proc_state_m =
+  (* print_endline ("FAILING WITH " ^ msg); *)
+  pfail_error (ErrWithExt (msg, ext))
+;;
+
+let pfail_inapplicable_parser_rule (_rule_name : string) (_ext : Ext.t) : 'a proc_state_m = fun s fc _sc -> fc s
 
 (* pfail_error (ErrOther msg) *)
 
@@ -68,10 +70,10 @@ let p_internal_error (msg : string) : unit proc_state_m =
 ;;
 
 (* let returnNone () : 'a proc_state_m = 
-  pfail "returnNone: no error message provided" *)
+  Fail.failwith "returnNone: no error message provided" *)
 
 (* let returnNone () : 'a proc_state_m = 
-  pfail "returnNone: no error message provided" *)
+  Fail.failwith "returnNone: no error message provided" *)
 
 let ignore () : unit proc_state_m = return ()
 let do_nothing : unit proc_state_m = return ()
@@ -79,9 +81,7 @@ let do_nothing_shift_action : Ext.t -> unit proc_state_m = fun _ -> return ()
 
 (* pnot m fails if m succeeds, succeeds without consuming inputs when m fails *)
 (* it is a convention that all things do not consume inputs *)
-let pnot (m : 'a proc_state_m) : unit proc_state_m =
-  fun s fc sc -> m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc (push_failure_to_s (ErrOther "pnot_fail", s) s))
-;;
+let pnot (m : 'a proc_state_m) : unit proc_state_m = fun s fc sc -> m s (fun _ -> sc ((), s) fc) (fun _ _ -> fc s)
 
 let bind (m : 'a proc_state_m) (f : 'a -> 'b proc_state_m) : 'b proc_state_m =
   fun s fc sc -> m s fc (fun (x, s') fc' -> f x s' fc' sc)
@@ -126,12 +126,13 @@ let pcut (m : 'a proc_state_m) : 'a proc_state_m = fun s fc sc -> m s fc (fun (x
 (* cuts off all current backtracking points unless explicitly remembered *)
 let pcommit () : unit proc_state_m =
   fun s _fc sc ->
+  (* print_endline "COMMITTING"; *)
   (* commiting to the current choice, any backtracking of subsequnt call will now backtrack into 
     last remembered failure handlers*)
   sc ((), s) s.top_failure_handler
 ;;
 
-let assertb (b : bool) : unit proc_state_m = if b then return () else pfail "assertb: assertion failed"
+let assertb (b : bool) : unit proc_state_m = if b then return () else Fail.failwith "assertb: assertion failed"
 
 (* failures in m1 gets passed to m2 *)
 let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m =
@@ -141,7 +142,7 @@ let choice (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m =
 let choice_l (ms : 'a proc_state_m list) : 'a proc_state_m =
   match ms with
   | x :: xs -> List.fold_left choice x xs
-  | [] -> pfail "PC74: choice_l: empty list"
+  | [] -> Fail.failwith "PC74: choice_l: empty list"
 ;;
 
 (* choice_cut m1 m2 will run m1 with backtracking, and if m1 succeeds 
@@ -165,12 +166,26 @@ let choice_cut (m1 : 'a proc_state_m) (m2 : 'a proc_state_m) : 'a proc_state_m =
        sc (x, s') fc')
 ;;
 
+let get_proc_state () : proc_state proc_state_m = fun s fc sc -> sc (s, s) fc
+let update_proc_state (f : proc_state -> proc_state) : unit proc_state_m = fun s fc sc -> sc ((), f s) fc
+let write_proc_state (s : proc_state) : unit proc_state_m = fun _s fc sc -> sc ((), s) fc
+
+let get_input_acc_position_as_ext () : Ext.t proc_state_m =
+  let* s = get_proc_state () in
+  return (s.input_future.filename, (s.input_future.line, s.input_future.col), (s.input_future.line, s.input_future.col))
+;;
+
 (* get a non-backtracking list parser *)
 let many1 (m : 'a proc_state_m) : 'a list proc_state_m =
   let rec aux acc =
     let* x = ptry m in
     match x with
-    | None -> if List.is_empty acc then pfail "PC144: many1: no match" else return acc
+    | None ->
+      if List.is_empty acc
+      then
+        let* ext = get_input_acc_position_as_ext () in
+        pfail_with_ext (__LOC__ ^ " PC144: many1: no match") ext
+      else return acc
     | Some x -> aux (acc @ [ x ])
   in
   pcut (aux [])
@@ -202,10 +217,6 @@ let is_keyword (x : input_acc_elem) (string : string) : bool =
   | _ -> false
 ;;
 
-let get_proc_state () : proc_state proc_state_m = fun s fc sc -> sc (s, s) fc
-let update_proc_state (f : proc_state -> proc_state) : unit proc_state_m = fun s fc sc -> sc ((), f s) fc
-let write_proc_state (s : proc_state) : unit proc_state_m = fun _s fc sc -> sc ((), s) fc
-
 let with_type_checking_history (msg : tc_history_elem) (cont : 'a proc_state_m) : 'a proc_state_m =
   let* s = get_proc_state () in
   if !Flags.show_type_checking_progress then print_endline ("Type checking history: " ^ show_tc_history_elem s msg);
@@ -218,7 +229,7 @@ let with_type_checking_history (msg : tc_history_elem) (cont : 'a proc_state_m) 
     let new_s = { s with type_checking_history = tail } in
     let* () = write_proc_state new_s in
     return result
-  | _ -> pfail ("PC209: Type checking history mismatch: " ^ show_tc_history_elem s msg)
+  | _ -> Fail.failwith ("PC209: Type checking history mismatch: " ^ show_tc_history_elem s msg)
 ;;
 
 (* let clear_type_checking_history () : unit proc_state_m =
@@ -230,14 +241,14 @@ let with_type_checking_history (msg : tc_history_elem) (cont : 'a proc_state_m) 
 let peek_any_char () : (CS.t_char * Ext.t) proc_state_m =
   let* s = get_proc_state () in
   match CharStream.peek_next_char s.input_future with
-  | None -> pfail "PC95: Cannot get char"
+  | None -> Fail.failwith "PC95: Cannot get char"
   | Some c -> return c
 ;;
 
 let read_any_char () : (CS.t_char * Ext.t) proc_state_m =
   let* s = get_proc_state () in
   match CharStream.get_next_char s.input_future with
-  | None -> pfail "PC95: Cannot get char"
+  | None -> Fail.failwith "PC95: Cannot get char"
   | Some (c, next_cs) ->
     let new_s = { s with input_future = next_cs } in
     let cs_t_char = CharStream.new_t_char (Ext.get_str_content c) in
@@ -260,7 +271,8 @@ let read_one_of_char (l : t_char list) : (CS.t_char * Ext.t) proc_state_m =
   then return (c', ext)
   else
     (* pfail_error ("PC100: expected one of " ^ (String.concat "," (List.map CharStream.get_t_char l)) ^ " but got " ^ (CharStream.get_t_char c')) *)
-    pfail_error (ErrExpectString { expecting = l; actual = c', ext })
+    (* pfail_error (ErrExpectString { expecting = l; actual = c', ext }) *)
+    pfail_inapplicable_parser_rule "read_one_of_char" ext
 ;;
 
 (* string is a list of *)
@@ -284,7 +296,7 @@ let read_any_char_except (except : CS.t_char list) : (CS.t_char * Ext.t) proc_st
   let* c, ext = read_any_char () in
   if List.mem c except
   then
-    pfail
+    Fail.failwith
       ("PC155: expected any char except "
        ^ String.concat "," (List.map CharStream.get_t_char except)
        ^ " but got "
@@ -326,7 +338,7 @@ let scan_until_one_of_string (t : CS.t_string list) : (CS.t_string * Ext.t) (* i
       (match c_result with
        | Some (c, ext) -> aux (acc @ [ c, ext ])
        | None ->
-         pfail
+         Fail.failwith
            ("PC211: scan_past_one_of_string: EOF encountered before one of string found: "
             ^ String.concat "," (List.map CharStream.get_t_string t)))
   in
@@ -376,7 +388,7 @@ let pop_expect_state (cur_state : expect) : unit proc_state_m =
   let* st = get_proc_state () in
   let* () = assertb (cur_state = st.input_expect) in
   match st.expect_state_stack with
-  | [] -> pfail "pop_expect_state: empty stack"
+  | [] -> Fail.failwith "pop_expect_state: empty stack"
   | x :: tail ->
     let* _ = modify_s (fun s -> { s with input_expect = x; expect_state_stack = tail }) in
     return ()
@@ -387,18 +399,24 @@ let peek_input_acc (idx : int) : input_acc_elem option proc_state_m =
   if idx < List.length s.input_acc then return (Some (List.nth s.input_acc idx)) else return None
 ;;
 
+let get_input_acc_elem_ext (elem : input_acc_elem) : Ext.t =
+  match elem with
+  | Expr exp -> A.get_extent_some exp
+  | ParsingElem (_, ext) -> ext
+;;
+
 let peek_input_acc_expr () : (A.t * Ext.t) proc_state_m =
   let* s = get_proc_state () in
   match List.hd s.input_acc with
   | Expr expr -> return (expr, A.get_extent_some expr)
-  | _ -> pfail "PC225: Attempting to peek a non-expr from input accumulator"
+  | _ -> Fail.failwith "PC225: Attempting to peek a non-expr from input accumulator"
 ;;
 
 let peek_input_acc_parsing_elem_bound_scanned_string () : (CS.t_string * Ext.t) proc_state_m =
   let* s = get_proc_state () in
   match List.hd s.input_acc with
   | ParsingElem (BoundScannedString str, ext) -> return (str, ext)
-  | _ -> pfail "PC225: Attempting to peek a non-bound scanned string from input accumulator"
+  | _ -> Fail.failwith "PC225: Attempting to peek a non-bound scanned string from input accumulator"
 ;;
 
 let get_input_acc_size () : int proc_state_m =
@@ -409,7 +427,7 @@ let get_input_acc_size () : int proc_state_m =
 let pop_input_acc () : input_acc_elem proc_state_m =
   let* s = get_proc_state () in
   match s.input_acc with
-  | [] -> pfail "PC224: Attempting to pop from empty input accumulator: "
+  | [] -> Fail.failwith "PC224: Attempting to pop from empty input accumulator: "
   | x :: xs ->
     let new_s =
       { s with
@@ -429,14 +447,22 @@ let pop_input_acc_parsing_elem () : (parsing_elem * Ext.t) proc_state_m =
   let* elem = pop_input_acc () in
   match elem with
   | ParsingElem (x, ext) -> return (x, ext)
-  | _ -> pfail ("PC225: Attempting to pop non-parsing element from input accumulator: " ^ show_input_acc_elem elem)
+  | _ ->
+    let ext = get_input_acc_elem_ext elem in
+    pfail_with_ext
+      (__LOC__ ^ " PC225: Attempting to pop non-parsing element from input accumulator: " ^ show_input_acc_elem elem)
+      ext
 ;;
 
 let pop_input_acc_expr () : (A.t * Ext.t) proc_state_m =
   let* elem = pop_input_acc () in
   match elem with
   | Expr x -> return (x, A.get_extent_some x)
-  | _ -> pfail ("PC226: Attempting to pop non-expr element from input accumulator: " ^ show_input_acc_elem elem)
+  | _ ->
+    let ext = get_input_acc_elem_ext elem in
+    pfail_with_ext
+      (__LOC__ ^ " PC226: Attempting to pop non-expr element from input accumulator: " ^ show_input_acc_elem elem)
+      ext
 ;;
 
 let pop_input_acc_2 () : (input_acc_elem * input_acc_elem) proc_state_m =
@@ -463,7 +489,7 @@ let assert_is_correct_op (meta : binary_op_meta) (elem : parsing_elem) : unit pr
   | OpKeyword kop ->
     if meta.id = kop.id
     then return ()
-    else pfail ("check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ show_binary_op_meta kop)
+    else Fail.failwith ("check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ show_binary_op_meta kop)
   | _ ->
     print_failwith
       ("PC247: check_is_operand: expected " ^ show_binary_op_meta meta ^ " but got " ^ show_parsing_elem elem)
@@ -488,7 +514,7 @@ let lookup_binary_op (meta_id : int) : binary_op proc_state_m =
   with
   | [ x ] -> return x
   | [] ->
-    pfail
+    Fail.failwith
       ("PC343: cannot find binary operator "
        ^ string_of_int meta_id
        ^ " in the registry "
@@ -541,8 +567,8 @@ let pop_postfix_op_operands (binop : binary_op_meta) : (A.t list * Ext.t) proc_s
             return
               ( rest_ops @ [ A.free_var (Ext.str_with_extent (CS.get_t_string str) comp_ext) ]
               , Ext.combine_extent rest_ext top_extent )
-          | _ -> pfail ("PC248: expected BoundScannedString but got " ^ show_parsing_elem comp)))
-    | _ -> pfail ("PC248: expected " ^ show_binary_op_meta binop ^ " but got " ^ show_parsing_elem top_op ^ " ")
+          | _ -> Fail.failwith ("PC248: expected BoundScannedString but got " ^ show_parsing_elem comp)))
+    | _ -> Fail.failwith ("PC248: expected " ^ show_binary_op_meta binop ^ " but got " ^ show_parsing_elem top_op ^ " ")
   in
   f binop
 ;;
@@ -655,7 +681,7 @@ let get_current_file_name () : string proc_state_m =
 let get_free_var (expr : A.t) : Ext.t_str proc_state_m =
   match A.view expr with
   | A.FreeVar name -> return name
-  | _ -> pfail ("BP1269: Expecting free variable, got " ^ A.show_view expr)
+  | _ -> Fail.failwith ("BP1269: Expecting free variable, got " ^ A.show_view expr)
 ;;
 
 let aka_print_expr (expr : A.t) : string proc_state_m =

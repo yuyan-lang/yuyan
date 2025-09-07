@@ -27,7 +27,7 @@ let get_module_real_path (module_name_parsed : A.t) : string proc_state_m (* pat
     else if Sys.file_exists (Filename.concat (Sys.getcwd ()) head_name)
     then return (Filename.concat (Sys.getcwd ()) file_name)
     else pfail_with_ext ("Im33: Module not found: " ^ head_name) (A.get_extent_some module_name_parsed)
-  | _ -> pfail ("ET101: Expected a string but got " ^ A.show_view module_name_parsed)
+  | _ -> Fail.failwith ("ET101: Expected a string but got " ^ A.show_view module_name_parsed)
 ;;
 
 let get_module_expr (module_name_parsed : A.t) : string proc_state_m =

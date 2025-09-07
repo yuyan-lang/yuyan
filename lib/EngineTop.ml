@@ -13,7 +13,7 @@ let do_process_step () : unit proc_state_m =
     *)
   (* choice cut has the unnecessary side effct that if only part of a known name belong to an identifier, then that part is also parsed *)
   (* choice_cut *)
-  choice (run_processor_entries st.registry) (pfail "ET58: No processor succeeded")
+  run_processor_entries st.registry
 ;;
 
 let rec do_process_entire_stream () : A.t proc_state_m =
@@ -51,8 +51,6 @@ let print_proc_errors (msg : proc_error list) : string =
   let expecting =
     List.filter_map
       (function
-        | ErrExpectString { expecting = exp; actual = a } -> Some (exp, a)
-        | ErrOther _ -> None
         | ErrWithExt _ -> None)
       msg
   in
@@ -60,8 +58,6 @@ let print_proc_errors (msg : proc_error list) : string =
     List.filter_map
       (fun x ->
          match x with
-         | ErrExpectString _ -> None
-         | ErrOther _ -> Some x
          | ErrWithExt _ -> Some x)
       msg
   in
@@ -88,8 +84,8 @@ let print_proc_errors (msg : proc_error list) : string =
           (List.map
              (fun x ->
                 match x with
-                | ErrExpectString _ -> failwith "ET124"
-                | ErrOther s -> s
+                (* | ErrExpectString _ -> failwith "ET124" *)
+                (* | ErrOther s -> s *)
                 | ErrWithExt (s, ext) -> s ^ " at the following location: \n" ^ Ext.show_extent_1_based ext)
              other)
     else ""
