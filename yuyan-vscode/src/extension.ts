@@ -1,4 +1,6 @@
 import * as vscode from 'vscode';
+import * as child_process from 'child_process';
+import * as path from 'path';
 
 // Create output channel for logging
 const outputChannel = vscode.window.createOutputChannel('Yuyan Language Extension');
@@ -302,6 +304,60 @@ async function provideDefinition(
   return new vscode.Location(targetUri, targetRange);
 }
 
+interface CompilerCommand {
+  fileEnding: string;
+  command: string;
+}
+
+function executeCompilerCommand(filePath: string): void {
+  const config = vscode.workspace.getConfiguration('yuyan');
+  const compilerCommands = config.get<CompilerCommand[]>('compilerCommand', []);
+  
+  // Find matching command based on file ending
+  const matchingCommand = compilerCommands.find(cmd => filePath.endsWith(cmd.fileEnding));
+  
+  if (!matchingCommand) {
+    log(`No compiler command configured for file: ${filePath}`);
+    return;
+  }
+  
+  // Replace <filepath> placeholder with actual file path
+  const command = matchingCommand.command.replace('<filepath>', filePath);
+  
+  log(`Executing compiler command: ${command}`);
+  outputChannel.appendLine(`\n--- Executing compiler command ---`);
+  outputChannel.appendLine(`Command: ${command}`);
+  
+  // Get workspace folder for working directory
+  const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
+  const cwd = workspaceFolder ? workspaceFolder.uri.fsPath : path.dirname(filePath);
+  
+  // Execute command
+  child_process.exec(command, { cwd }, (error, stdout, stderr) => {
+    if (error) {
+      outputChannel.appendLine(`Error: ${error.message}`);
+      if (stderr) {
+        outputChannel.appendLine(`stderr: ${stderr}`);
+      }
+      outputChannel.show(true);
+      vscode.window.showErrorMessage(`Compiler error: ${error.message}`);
+    } else {
+      if (stdout) {
+        outputChannel.appendLine(stdout);
+      }
+      if (stderr) {
+        outputChannel.appendLine(`stderr: ${stderr}`);
+      }
+      log(`Compiler command executed successfully`);
+      // Only show output if there's actual content or error
+      if (stdout || stderr) {
+        outputChannel.show(true);
+      }
+    }
+    outputChannel.appendLine(`--- Compiler command finished ---`);
+  });
+}
+
 function startLSP(context: vscode.ExtensionContext): void {
   log('Starting LSP initialization');
   
@@ -394,6 +450,23 @@ export function activate(context: vscode.ExtensionContext): void {
   
   try {
     startLSP(context);
+    
+    // Register file save event handler for compiler commands
+    const onSaveDisposable = vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
+      // Only process file documents
+      if (document.uri.scheme !== 'file') {
+        return;
+      }
+      
+      const filePath = document.uri.fsPath;
+      log(`File saved: ${filePath}`);
+      
+      // Execute compiler command if configured
+      executeCompilerCommand(filePath);
+    });
+    context.subscriptions.push(onSaveDisposable);
+    log('File save handler registered for compiler commands');
+    
     log('Extension activated successfully');
   } catch (error: any) {
     log(`Extension activation failed: ${error.message || error}`);
