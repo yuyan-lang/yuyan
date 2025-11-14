@@ -76,10 +76,8 @@ let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string 
     "(" ^ String.concat ", " (List.map (fun (_, x) -> get_ocaml_code_for_pattern var_env x) elems) ^ ")"
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
-     | DataConstructor { name; ocaml_bind_name = None; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
-     | DataConstructor { name; ocaml_bind_name = Some c_name; _ } -> c_name ^ annotate_with_name_ext name
-     | PatternVar { name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
-     | tcons -> Fail.failwith (__LOC__ ^ ": Expecting data constructor, got: " ^ EngineDataPrint.show_t_constant tcons))
+     | DataExpression { name = Some name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
+     | tcons -> Fail.failwith (__LOC__ ^ ": Expecting pattern variable in constant, got: " ^ EngineDataPrint.show_t_constant tcons))
   | A.N (N.Ap, [ ([], func); ([], arg) ]) ->
     "(" ^ get_ocaml_code_for_pattern var_env func ^ " " ^ get_ocaml_code_for_pattern var_env arg ^ ")"
   | _ -> Fail.failwith (__LOC__ ^ ": Not yet implemented, got: " ^ A.show_view pattern)
@@ -167,10 +165,7 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     "(fun (" ^ bnd_name ^ " : " ^ get_type_code var_env dom_tp ^ ") -> " ^ get_ocaml_code env' body ^ ")"
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
-     | DataConstructor { name; ocaml_bind_name = None; _ } -> "C_" ^ string_of_int id ^ annotate_with_name_ext name
-     | DataConstructor { name; ocaml_bind_name = Some c_name; _ } -> c_name ^ annotate_with_name_ext name
-     | PatternVar { name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
-     | DataExpression { name; tm = Some _; _ } ->
+     | DataExpression { name; _ } ->
        "v_"
        ^ string_of_int id
        ^
@@ -186,11 +181,7 @@ and get_type_code (env : var_env) (tp : A.t) : string =
   | A.FreeVar name -> "'" ^ lookup_var_env env name ^ annotate_with_name name
   | A.N (N.Ap, [ ([], func); ([], arg) ]) -> get_type_code env arg ^ " " ^ get_type_code env func
   | A.N (N.Constant id, []) ->
-    (match lookup_constant_id id with
-     | TypeConstructor { name; ocaml_bind_name = None; _ } -> "t_" ^ string_of_int id ^ annotate_with_name_ext name
-     | TypeConstructor { name; ocaml_bind_name = Some c_name; _ } -> c_name ^ annotate_with_name_ext name
-     | TypeExpression tp -> get_type_code env tp
-     | _ -> Fail.failwith (__LOC__ ^ ": Expecting type constructor, got: " ^ string_of_int id))
+    Fail.failwith (__LOC__ ^ ": Type constructors no longer supported, got constant id: " ^ string_of_int id)
   | A.N (N.Sequence Comma, args) -> "(" ^ String.concat " * " (List.map (fun (_, x) -> get_type_code env x) args) ^ ")"
   | A.N (N.Builtin StringType, []) -> "string"
   | A.N (N.Builtin IntType, []) -> "int"
@@ -227,43 +218,8 @@ let get_type_constructor_code (_env : var_env) (id : int) (tp : A.t) : string =
 ;;
 
 (* Generate type definitions only *)
-let generate_type_definitions (constants : t_constants) : string =
-  let all_type_defs =
-    List.filter_map
-      (fun (tcons_id, const) ->
-         match const with
-         (* if has ocaml binding, skip generation *)
-         | TypeConstructor { name; tp; ocaml_bind_name = None } ->
-           Some
-             (get_comment_ext_str name
-              ^ "\n"
-              ^ get_type_constructor_code empty_var_env tcons_id tp
-              ^ "\n"
-              ^
-              let constructors =
-                List.filter_map
-                  (fun (cons_id, const) ->
-                     match const with
-                     | DataConstructor { name; tp; tp_id; ocaml_bind_name = None } ->
-                       if tp_id = tcons_id then Some (cons_id, tp, name) else None
-                     | _ -> None)
-                  constants
-              in
-              if List.length constructors > 0
-              then
-                String.concat
-                  "\n"
-                  (List.map
-                     (fun (cons_id, cons_tp, cons_name) ->
-                        get_comment_ext_str cons_name
-                        ^ "\n"
-                        ^ get_data_constructor_type_code empty_var_env cons_id cons_tp)
-                     constructors)
-              else "|")
-         | _ -> None)
-      constants
-  in
-  if List.length all_type_defs = 0 then "" else "type\n" ^ String.concat "\nand\n" all_type_defs
+let generate_type_definitions (_constants : t_constants) : string =
+  "" (* No type constructors anymore *)
 ;;
 
 let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants : t_constants) : string =
@@ -283,12 +239,12 @@ let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants
               | A.N (N.Declaration (N.CheckedDirectExpr id), []) ->
                 Some
                   (match lookup_constant_id id with
-                   | DataExpression { tp = _; tm = Some tm; _ } -> "let _ = " ^ get_ocaml_code empty_var_env tm
+                   | DataExpression { tm; _ } -> "let _ = " ^ get_ocaml_code empty_var_env tm
                    | _ -> Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ string_of_int id))
               | A.N (N.Declaration (N.CheckedConstantDefn (name, id)), []) ->
                 Some
                   (match lookup_constant_id id with
-                   | DataExpression { tp; tm = Some tm; _ } ->
+                   | DataExpression { tp; tm; _ } ->
                      let is_recursive = List.mem id (AbtUtil.get_referenced_constant_ids tm) in
                      "let "
                      ^ (if is_recursive then "rec " else "")
@@ -300,20 +256,6 @@ let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants
                      ^ "\n= "
                      ^ get_ocaml_code empty_var_env tm
                      ^ "\n"
-                   | TypeConstructor _ | DataConstructor _ -> ""
-                   | TypeExpression tp ->
-                     (match A.view tp with
-                      | A.N (N.Builtin RefType, []) ->
-                        get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a ref"
-                      | A.N (N.Builtin ArrayRefType, []) ->
-                        get_comment_ext_str name ^ "\n" ^ "type 'a t_" ^ string_of_int id ^ " = 'a array"
-                      | _ ->
-                        get_comment_ext_str name
-                        ^ "\n"
-                        ^ "type t_"
-                        ^ string_of_int id
-                        ^ " = "
-                        ^ get_type_code empty_var_env tp)
                    | tcons ->
                      Fail.failwith
                        (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant tcons))

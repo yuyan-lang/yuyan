@@ -23,30 +23,10 @@ module A = YYAbt
 type ('a, 'b) map = ('a * 'b) list
 
 type t_constant =
-  | TypeConstructor of
-      { name : Ext.t_str
-      ; tp : A.t
-      ; ocaml_bind_name : string option
-        (* optionally bind an ocaml type to this type. 
-      If specified, this type constructor is compiled as the underlying ocaml type constructor.*)
-      }
-  | DataConstructor of
-      { name : Ext.t_str
-      ; tp : A.t
-      ; tp_id : int
-      ; ocaml_bind_name : string option
-        (* optionally bind an ocaml type to this type. 
-      If specified, this data constructor is compiled as the underlying ocaml constructor.*)
-      }
-  | TypeExpression of A.t
   | DataExpression of
       { name : Ext.t_str option
       ; tp : A.t
-      ; tm : A.t option (* is None if it is a recursive definition (forward declaration only)*)
-      }
-  | PatternVar of
-      { name : Ext.t_str
-      ; tp : A.t
+      ; tm : A.t
       }
   | ModuleAlias of
       { name : Ext.t_str

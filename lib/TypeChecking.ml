@@ -91,9 +91,7 @@ let rec normalize_type (tp : A.t) : A.t proc_state_m =
      | Some id ->
        let* tp_constant = Environment.lookup_constant id in
        (match tp_constant with
-        | TypeExpression tp -> normalize_type tp
-        | TypeConstructor _ -> return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some tp))
-        | DataExpression _ | PatternVar _ | DataConstructor _ | ModuleAlias _ ->
+        | DataExpression _ | ModuleAlias _ ->
           pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
   | A.N (N.UnifiableTp uid, []) ->
     let* tp_deref = get_from_global_unification_ctx uid in
@@ -192,9 +190,7 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
          let* () = TokenInfo.add_token_info name (Definition extent) in
          let* tp_constant = Environment.lookup_constant id in
          (match tp_constant with
-          | TypeExpression tp -> normalize_type tp
-          | TypeConstructor _ -> return (A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some tp))
-          | DataExpression _ | PatternVar _ | DataConstructor _ | ModuleAlias _ ->
+          | DataExpression _ | ModuleAlias _ ->
             pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
   | A.N (N.Builtin N.StringType, []) -> return tp
   | A.N (N.Builtin N.IntType, []) -> return tp
@@ -211,42 +207,19 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
     let* dom = check_type_valid env dom in
     let* cod = check_type_valid env cod in
     return (A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod ])) (A.get_extent_some tp))
-  | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
+  | A.N (N.Ap, [ ([], f); ([], _arg) ]) ->
     let* id =
       match A.view f with
       | A.FreeVar name -> Environment.lookup_binding_with_extent_token_info name
       | A.N (N.Constant id, []) -> return id
       | _ -> pfail_with_ext (__LOC__ ^ "TC140: Expecting free variable but got " ^ A.show_view f) (A.get_extent_some tp)
     in
-    let* tp_constant = Environment.lookup_constant id in
-    (match tp_constant with
-     | TypeConstructor { tp = tcons_tp; _ } ->
-       (match A.view tcons_tp with
-        | A.N (N.Arrow, [ ([], _); ([], _) ]) ->
-          let* arg = check_type_valid env arg in
-          return
-            (A.fold_with_extent
-               (A.N (N.Ap, [ [], A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some f); [], arg ]))
-               (A.get_extent_some tp))
-        | _ -> pfail_with_ext (__LOC__ ^ "TC141: Cannot be applied to " ^ A.show_view arg) (A.get_extent_some tp))
-     | TypeExpression tp ->
-       (match A.view tp with
-        | A.N (N.Builtin N.RefType, []) | A.N (N.Builtin N.ArrayRefType, []) ->
-          let* arg = check_type_valid env arg in
-          return
-            (A.fold_with_extent
-               (A.N (N.Ap, [ [], A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some f); [], arg ]))
-               (A.get_extent_some tp))
-        | _ -> pfail_with_ext (__LOC__ ^ "TC141: Cannot be applied to " ^ A.show_view arg) (A.get_extent_some tp))
-     | _ ->
-       pfail_with_ext
-         (__LOC__ ^ "TC141: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
-         (A.get_extent_some tp))
+    let* _tp_constant = Environment.lookup_constant id in
+    pfail_with_ext (__LOC__ ^ "TC141: Type constructors no longer supported") (A.get_extent_some tp)
   | A.N (N.Constant id, []) ->
     let* tp_constant = Environment.lookup_constant id in
     (match tp_constant with
-     | TypeExpression _ | TypeConstructor _ -> return tp
-     | DataExpression _ | DataConstructor _ | PatternVar _ | ModuleAlias _ ->
+     | DataExpression _ | ModuleAlias _ ->
        pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
   | A.N (N.Sequence Comma, args) ->
     let* args =
@@ -340,8 +313,8 @@ let rec desugar_top_level (expr : A.t) : A.t option proc_state_m =
 let get_tp_for_expr_id (id : int) : A.t proc_state_m =
   let* const = Environment.lookup_constant id in
   match const with
-  | DataExpression { tp; _ } | DataConstructor { tp; _ } -> return tp
-  | _ -> Fail.failwith (__LOC__ ^ " Expecting some data but got " ^ EngineDataPrint.show_t_constant const)
+  | DataExpression { tp; _ } -> return tp
+  | _ -> Fail.failwith (__LOC__ ^ " Expecting data expression but got " ^ EngineDataPrint.show_t_constant const)
 ;;
 
 let partial_resolve_structure_deref (_env : local_env) (expr : A.t) : int proc_state_m =
@@ -422,7 +395,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
           let* tp_constant = Environment.lookup_constant id in
           let expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
           (match tp_constant with
-           | DataExpression { tp; _ } | DataConstructor { tp; _ } ->
+           | DataExpression { tp; _ } ->
              let* () =
                let* aka_print_tp = aka_print_expr tp in
                TokenInfo.add_token_info name (Hover aka_print_tp)
@@ -430,7 +403,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
              return (expr, tp)
            | _ ->
              pfail_with_ext
-               (__LOC__ ^ "TC84: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
+               (__LOC__ ^ "TC84: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
                (A.get_extent_some expr)))
      | A.N (N.Builtin (N.Bool _), []) ->
        return (expr, A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some expr))
@@ -494,7 +467,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
      | A.N (N.Constant id, []) ->
        let* tp_constant = Environment.lookup_constant id in
        (match tp_constant with
-        | PatternVar { tp; name; _ } | DataConstructor { tp; name; _ } | DataExpression { tp; name = Some name; _ } ->
+        | DataExpression { tp; name = Some name; _ } ->
           let* () =
             let* aka_print_tp = aka_print_expr tp in
             TokenInfo.add_token_info
@@ -502,9 +475,10 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
               (Hover aka_print_tp)
           in
           return (expr, tp)
+        | DataExpression { tp; name = None; _ } -> return (expr, tp)
         | _ ->
           pfail_with_ext
-            (__LOC__ ^ "TC331: Expecting some data but got " ^ EngineDataPrint.show_t_constant tp_constant)
+            (__LOC__ ^ "TC331: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
             (A.get_extent_some expr))
      | A.N (N.Sequence Dot, args) ->
        let* args_checked =
@@ -679,8 +653,8 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
     (match find_in_local_env_tm env name, id with
      | Some _, _ (* local var, shadowing*) | None, None ->
        (* fresh var *)
-       (* this is a new var*)
-       let* id = Environment.add_constant (PatternVar { tp = scrut_tp; name }) in
+       (* this is a new var - use DataExpression for pattern variables now *)
+       let* id = Environment.add_constant (DataExpression { tp = scrut_tp; name = Some name; tm = A.fold (A.FreeVar name) }) in
        let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
        let case_body = A.subst pat (Ext.get_str_content name) case_body in
        return (env, pat, case_body)
@@ -691,16 +665,8 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
        let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
        check_pattern env pat scrut_tp case_body)
   | A.N (N.Constant id, []) ->
-    let* tp_constant = Environment.lookup_constant id in
-    (match tp_constant with
-     | DataConstructor { tp = pat_tp; _ } ->
-       let* pat, pat_tp = pattern_fill_implicit_args pat pat_tp in
-       let* _ = type_unify pat [] pat_tp scrut_tp in
-       return (env, pat, case_body)
-     | _ ->
-       pfail_with_ext
-         ("TC139: Expecting a data constructor but got " ^ EngineDataPrint.show_t_constant tp_constant)
-         (A.get_extent_some pat))
+    let* _tp_constant = Environment.lookup_constant id in
+    pfail_with_ext ("TC139: Data constructors no longer supported") (A.get_extent_some pat)
   | A.N (N.Sequence Dot, args) ->
     (match A.view scrut_tp with
      | A.N (N.Sequence Comma, args_tps) ->
@@ -724,7 +690,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
          return (env, A.fold_with_extent (A.N (N.Sequence Dot, args)) (A.get_extent_some pat), case_body)
      | _ ->
        pfail_with_ext ("TC143: Expecting a sequence of comma but got " ^ A.show_view scrut_tp) (A.get_extent_some pat))
-  | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
+  | A.N (N.Ap, [ ([], f); ([], _arg) ]) ->
     let* id =
       match A.view f with
       | A.FreeVar name ->
@@ -743,26 +709,8 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
           (A.get_extent_some pat)
     in
     (* this is an existing constant *)
-    let* tp_constant = Environment.lookup_constant id in
-    (match tp_constant with
-     | DataConstructor { tp = pat_tp; _ } ->
-       let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
-       let* pat, pat_tp = pattern_fill_implicit_args pat pat_tp in
-       (match A.view pat_tp with
-        | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-          let* _ = type_unify pat [] scrut_tp cod in
-          let* env, arg, case_body = check_pattern env arg dom case_body in
-          let f = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some f) in
-          let pat = A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) (A.get_extent_some pat) in
-          return (env, pat, case_body)
-        | _ ->
-          pfail_with_ext
-            ("TC141: Expecting head's type to be an arrow but got " ^ A.show_view pat_tp)
-            (A.get_extent_some pat))
-     | _ ->
-       pfail_with_ext
-         ("TC139: Expecting a data constructor but got " ^ EngineDataPrint.show_t_constant tp_constant)
-         (A.get_extent_some pat))
+    let* _tp_constant = Environment.lookup_constant id in
+    pfail_with_ext ("TC139: Data constructors no longer supported in patterns") (A.get_extent_some pat)
   | _ -> pfail_with_ext (__LOC__ ^ "TC137: Expecting a pattern but got " ^ A.show_view pat) (A.get_extent_some pat)
 ;;
 

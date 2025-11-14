@@ -234,10 +234,10 @@ let definition_end : binary_op =
          let* () = Environment.update_constant_term tp_id checked_defn_body in
          push_elem_on_input_acc_expr
            (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (defn_name_str, tp_id)), []))) ext)
-       | DataConstructor _ | TypeConstructor _ ->
+       (* | DataConstructor _ | TypeConstructor _ ->
          (match A.view defn with
           | A.N (N.ExternalCall fname, []) -> Environment.update_constant_ocaml_bind_name tp_id fname
-          | _ -> pfail_with_ext (__LOC__ ^ "Constructors can only be defined as external calls") ext)
+          | _ -> pfail_with_ext (__LOC__ ^ "Constructors can only be defined as external calls") ext) *)
        | _ -> Fail.failwith ("BP1269: Expecting tp to be a pure type but got " ^ EngineDataPrint.show_t_constant tp))
   ; shift_action = do_nothing_shift_action
   }
@@ -274,14 +274,8 @@ let type_definition_middle : binary_op =
 let type_definition_end : binary_op =
   { meta = type_definition_end_meta
   ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 type_definition_end_meta in
-       let* name_str = get_free_var name in
-       let* checked_defn_body = TypeChecking.check_type_valid_top defn in
-       let* () = TypeChecking.assert_no_free_vars checked_defn_body in
-       let* id = Environment.add_constant (TypeExpression checked_defn_body) in
-       let* () = Environment.add_binding name_str id in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (name_str, id)), []))) ext))
+      (let* (_name, _defn), ext = pop_postfix_op_operands_2 type_definition_end_meta in
+       pfail_with_ext "BP: Type definitions no longer supported" ext)
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -456,31 +450,9 @@ let add_module_expr_defined_names_to_env (m : A.t) : unit proc_state_m =
   return ()
 ;;
 
-let get_module_expr_defined_custom_ops (m : A.t) : binary_op list proc_state_m =
-  let* all_names =
-    psequence
-    @@
-    match A.view m with
-    | A.N (N.ModuleDef, args) ->
-      List.filter_map
-        (fun (_, arg) ->
-           match A.view arg with
-           | A.N (N.Declaration (N.ModuleAliasDefn _), _)
-           | A.N (N.Declaration (N.CheckedConstantDefn _), _)
-           | A.N (N.Declaration (N.ReexportedCheckedConstantDefn _), _)
-           | A.N (N.Declaration (N.CheckedDirectExpr _), _) -> None
-           | A.N (N.Declaration N.CustomOperatorDecl, [ ([], op); ([], elab) ]) ->
-             (match A.view op with
-              | A.N (N.Builtin (N.CustomOperatorString (x, ext)), []) ->
-                Some
-                  (let* all_ops, _ = UserDefinedOperators.get_operators_m x ext elab in
-                   return all_ops)
-              | _ -> failwith ("BP279: Expected a string but got " ^ A.show_view op))
-           | _ -> print_failwith ("BP483: Expected a Declaration but got " ^ A.show_view arg))
-        args
-    | _ -> failwith ("BP282: Expecting moduleDef: " ^ A.show_view m)
-  in
-  return (List.concat all_names)
+let get_module_expr_defined_custom_ops (_m : A.t) : binary_op list proc_state_m =
+  (* User-defined operators no longer supported *)
+  return []
 ;;
 
 let module_open : binary_op =
@@ -580,15 +552,8 @@ let const_decl_middle : binary_op =
 let const_decl_end : binary_op =
   { meta = const_decl_end_meta
   ; reduction =
-      (let* (name, tp), ext = pop_postfix_op_operands_2 const_decl_end_meta in
-       let* () = assert_is_free_var name in
-       let* checked_tp = TypeChecking.check_type_valid_top tp in
-       let* () = TypeChecking.assert_no_free_vars checked_tp in
-       let* name_str = get_free_var name in
-       let* id = Environment.add_constant (DataExpression { tp = checked_tp; tm = None; name = Some name_str }) in
-       let* () = Environment.add_binding name_str id in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration N.ConstantDeclPlaceholder, []))) ext))
+      (let* (_name, _tp), ext = pop_postfix_op_operands_2 const_decl_end_meta in
+       pfail_with_ext "BP: Constant declarations (forward declarations) no longer supported" ext)
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -624,18 +589,8 @@ let constructor_decl_middle : binary_op =
 let constructor_decl_end : binary_op =
   { meta = constructor_decl_end_meta
   ; reduction =
-      (let* (name, cons_tp), ext = pop_postfix_op_operands_2 constructor_decl_end_meta in
-       let* () = assert_is_free_var name in
-       let* name_str = get_free_var name in
-       let* checked_cons_tp, id = TypeChecking.check_data_constructor_type_valid_top cons_tp in
-       let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-       let* id =
-         Environment.add_constant
-           (DataConstructor { name = name_str; tp = checked_cons_tp; tp_id = id; ocaml_bind_name = None })
-       in
-       let* () = Environment.add_binding name_str id in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (name_str, id)), []))) ext))
+      (let* (_name, _cons_tp), ext = pop_postfix_op_operands_2 constructor_decl_end_meta in
+       pfail_with_ext "BP: Data constructors no longer supported" ext)
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -671,17 +626,8 @@ let type_constructor_decl_middle : binary_op =
 let type_constructor_decl_end : binary_op =
   { meta = type_constructor_decl_end_meta
   ; reduction =
-      (let* (name, defn), ext = pop_postfix_op_operands_2 type_constructor_decl_end_meta in
-       let* () = assert_is_free_var name in
-       let* name_str = get_free_var name in
-       let* checked_cons_tp = TypeChecking.check_kind_valid defn in
-       let* () = TypeChecking.assert_no_free_vars checked_cons_tp in
-       let* id =
-         Environment.add_constant (TypeConstructor { name = name_str; tp = checked_cons_tp; ocaml_bind_name = None })
-       in
-       let* () = Environment.add_binding name_str id in
-       push_elem_on_input_acc_expr
-         (A.annotate_with_extent (A.n (N.Declaration (CheckedConstantDefn (name_str, id)), [])) ext))
+      (let* (_name, _defn), ext = pop_postfix_op_operands_2 type_constructor_decl_end_meta in
+       pfail_with_ext "BP: Type constructors no longer supported" ext)
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1160,7 +1106,7 @@ let sentence_end_fail (module_expr : input_acc_elem) (decl_expr : input_acc_elem
 
 let check_and_create_direct_expr (expr : A.t) : A.t proc_state_m =
   let* checked_body, tp = TypeChecking.synth_top expr in
-  let* id = Environment.add_constant (DataExpression { tp; tm = Some checked_body; name = None }) in
+  let* id = Environment.add_constant (DataExpression { tp; tm = checked_body; name = None }) in
   return (A.fold (A.N (N.Declaration (CheckedDirectExpr id), [])))
 ;;
 
@@ -1525,22 +1471,9 @@ let custom_operator_decl_middle : binary_op =
 let custom_operator_decl_end : binary_op =
   { meta = custom_operator_decl_end_meta
   ; reduction =
-      (let* result, per_ext = pop_postfix_operand custom_operator_decl_end_meta in
-       let* defn, defn_ext = pop_input_acc_expr () in
-       match A.view defn with
-       | A.N (N.Builtin (N.CustomOperatorString (oper_str, oper_ext)), []) ->
-         let* new_ops, result = UserDefinedOperators.get_operators_m oper_str oper_ext result in
-         let* () =
-           push_elem_on_input_acc_expr
-             (A.fold_with_extent
-                (A.N (N.Declaration N.CustomOperatorDecl, [ [], defn; [], result ]))
-                (Ext.combine_extent defn_ext per_ext))
-         in
-         print_endline ("Adding new Ops: " ^ String.concat ", " (List.map (fun x -> show_binary_op_meta x.meta) new_ops));
-         (* add new operators to the registry *)
-         let* () = add_processor_entry_list (List.map (to_processor_binary_op "custom_ops") new_ops) in
-         return ()
-       | _ -> Fail.failwith ("ET109: Expected a scanned operator but got " ^ A.show_view defn))
+      (let* _result, per_ext = pop_postfix_operand custom_operator_decl_end_meta in
+       let* _defn, defn_ext = pop_input_acc_expr () in
+       pfail_with_ext "BP: User-defined operators no longer supported" (Ext.combine_extent defn_ext per_ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;

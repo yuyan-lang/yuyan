@@ -67,17 +67,8 @@ let update_constant (uid : int) (update : t_constant -> t_constant) : unit proc_
 let update_constant_term (uid : int) (tm : A.t) : unit proc_state_m =
   update_constant uid (fun const ->
     match const with
-    | DataExpression { tp; tm = _; name } -> DataExpression { tp; tm = Some tm; name }
+    | DataExpression { tp; name; _ } -> DataExpression { tp; tm; name }
     | _ -> Fail.failwith (__LOC__ ^ ": Expecting data expression, got: " ^ EngineDataPrint.show_t_constant const))
-;;
-
-let update_constant_ocaml_bind_name (uid : int) (ocaml_bind_name : string) : unit proc_state_m =
-  update_constant uid (fun const ->
-    match const with
-    | DataConstructor { name; tp; tp_id; _ } ->
-      DataConstructor { tp; tp_id; ocaml_bind_name = Some ocaml_bind_name; name }
-    | TypeConstructor { name; tp; _ } -> TypeConstructor { tp; ocaml_bind_name = Some ocaml_bind_name; name }
-    | _ -> Fail.failwith (__LOC__ ^ ": Expecting data constructor, got: " ^ EngineDataPrint.show_t_constant const))
 ;;
 
 (* Find a constant - returns option *)
@@ -103,13 +94,8 @@ let lookup_constant (uid : int) : t_constant proc_state_m =
 let get_extent_of_constant (uid : int) : Ext.t proc_state_m =
   let* const = lookup_constant uid in
   match const with
-  | TypeConstructor { name; _ } -> return (Ext.get_str_extent name)
-  | DataConstructor { name; _ } -> return (Ext.get_str_extent name)
-  | TypeExpression tp -> return (A.get_extent_some tp)
   | DataExpression { name = Some name; _ } -> return (Ext.get_str_extent name)
-  | DataExpression { name = None; tm = Some expr; tp = _ } -> return (A.get_extent_some expr)
-  | DataExpression { name = None; tm = None; tp = _ } -> failwith "DataExpression with no name and no term"
-  | PatternVar { name; _ } -> return (Ext.get_str_extent name)
+  | DataExpression { name = None; tm; _ } -> return (A.get_extent_some tm)
   | ModuleAlias { name; _ } -> return (Ext.get_str_extent name)
 ;;
 

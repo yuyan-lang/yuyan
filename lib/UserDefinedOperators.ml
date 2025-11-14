@@ -1,4 +1,4 @@
-module CS = CharStream
+(* module CS = CharStream
 module Ext = AbtLib.Extent
 open EngineData
 open ProcCombinators
@@ -227,4 +227,4 @@ let get_operators_m (input : CS.t_string) (ext : Ext.t) (result : A.t) : (binary
     return operators
   with
   | Failure s -> pfail_with_ext s (A.get_extent_some result)
-;;
+;; *)
