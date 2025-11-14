@@ -654,7 +654,9 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
      | Some _, _ (* local var, shadowing*) | None, None ->
        (* fresh var *)
        (* this is a new var - use DataExpression for pattern variables now *)
-       let* id = Environment.add_constant (DataExpression { tp = scrut_tp; name = Some name; tm = A.fold (A.FreeVar name) }) in
+       let* id =
+         Environment.add_constant (DataExpression { tp = scrut_tp; name = Some name; tm = A.fold (A.FreeVar name) })
+       in
        let pat = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some pat) in
        let case_body = A.subst pat (Ext.get_str_content name) case_body in
        return (env, pat, case_body)
@@ -666,7 +668,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
        check_pattern env pat scrut_tp case_body)
   | A.N (N.Constant id, []) ->
     let* _tp_constant = Environment.lookup_constant id in
-    pfail_with_ext ("TC139: Data constructors no longer supported") (A.get_extent_some pat)
+    pfail_with_ext "TC139: Data constructors no longer supported" (A.get_extent_some pat)
   | A.N (N.Sequence Dot, args) ->
     (match A.view scrut_tp with
      | A.N (N.Sequence Comma, args_tps) ->
@@ -710,7 +712,7 @@ and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.
     in
     (* this is an existing constant *)
     let* _tp_constant = Environment.lookup_constant id in
-    pfail_with_ext ("TC139: Data constructors no longer supported in patterns") (A.get_extent_some pat)
+    pfail_with_ext "TC139: Data constructors no longer supported in patterns" (A.get_extent_some pat)
   | _ -> pfail_with_ext (__LOC__ ^ "TC137: Expecting a pattern but got " ^ A.show_view pat) (A.get_extent_some pat)
 ;;
 

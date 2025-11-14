@@ -219,26 +219,18 @@ let definition_end : binary_op =
        (* *)
        let* () = pcommit () in
        let* defn_name_str = get_free_var name in
-       let* tp_id = Environment.lookup_binding defn_name_str in
-       let* tp = Environment.lookup_constant tp_id in
-       (* we are now ready to type check, so we commit to the current choice *)
-       match tp with
-       | DataExpression { tp = tp_expr; tm = None; name = Some decl_name_str; _ } ->
-         let* () = TokenInfo.add_token_info defn_name_str (Definition (Ext.get_str_extent decl_name_str)) in
-         let* () =
-           let* aka_print_tp = ProcCombinators.aka_print_expr tp_expr in
-           TokenInfo.add_token_info defn_name_str (Hover aka_print_tp)
-         in
-         let* checked_defn_body = TypeChecking.check_top defn tp_expr in
-         let* () = TypeChecking.assert_no_free_vars checked_defn_body in
-         let* () = Environment.update_constant_term tp_id checked_defn_body in
-         push_elem_on_input_acc_expr
-           (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (defn_name_str, tp_id)), []))) ext)
-       (* | DataConstructor _ | TypeConstructor _ ->
-         (match A.view defn with
-          | A.N (N.ExternalCall fname, []) -> Environment.update_constant_ocaml_bind_name tp_id fname
-          | _ -> pfail_with_ext (__LOC__ ^ "Constructors can only be defined as external calls") ext) *)
-       | _ -> Fail.failwith ("BP1269: Expecting tp to be a pure type but got " ^ EngineDataPrint.show_t_constant tp))
+       (* let* () = TokenInfo.add_token_info defn_name_str (Definition (Ext.get_str_extent decl_name_str)) in *)
+       let* checked_defn_body, tp_expr = TypeChecking.synth_top defn in
+       let* () =
+         let* aka_print_tp = ProcCombinators.aka_print_expr tp_expr in
+         TokenInfo.add_token_info defn_name_str (Hover aka_print_tp)
+       in
+       let* () = TypeChecking.assert_no_free_vars checked_defn_body in
+       let* def_id =
+         Environment.add_constant (DataExpression { tp = tp_expr; tm = checked_defn_body; name = Some defn_name_str })
+       in
+       push_elem_on_input_acc_expr
+         (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (defn_name_str, def_id)), []))) ext))
   ; shift_action = do_nothing_shift_action
   }
 ;;
