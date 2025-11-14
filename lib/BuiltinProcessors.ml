@@ -390,7 +390,7 @@ let builtin_op : binary_op =
   }
 ;;
 
-let single_word_op (name : string) (expr : N.builtin) : binary_op =
+let single_word_op (expr : N.builtin) (name : string) : binary_op =
   let meta =
     { id = Uid.next ()
     ; keyword = CS.new_t_string name
@@ -407,10 +407,11 @@ let single_word_op (name : string) (expr : N.builtin) : binary_op =
   }
 ;;
 
-let builtin_type = single_word_op "元类型" N.Type
-let builtin_data_type = single_word_op "数据类型" N.DataType
-let builtin_data_constructor = single_word_op "数据构造" N.DataConstructor
-let builtin_data_case = single_word_op "数据分析" N.DataCase
+let builtin_type = single_word_op N.Type "元类型"
+let builtin_data_type = single_word_op N.DataType "数据类型"
+let builtin_data_constructor = single_word_op N.DataConstructor "数据构造"
+let builtin_data_case = single_word_op N.DataCase "数据分析"
+let builtin_recurse = single_word_op N.Recurse "递归"
 
 let module_open_meta : binary_op_meta =
   { id = Uid.next ()
@@ -1255,6 +1256,10 @@ let default_registry =
   ; to_processor_complex "decimal_number_parser" (decimal_number_parser ())
   ; (* type*)
     to_processor_binary_op "builtin_type" builtin_type
+  ; to_processor_binary_op "builtin_data_type" builtin_data_type
+  ; to_processor_binary_op "builtin_data_constructor" builtin_data_constructor
+  ; to_processor_binary_op "builtin_data_case" builtin_data_case
+  ; to_processor_binary_op "builtin_recurse" builtin_recurse
   ]
   @ List.concat []
 ;;

@@ -30,6 +30,7 @@ module YYNode = struct
     | DataType
     | DataConstructor
     | DataCase
+    | Recurse
 
   type declaration =
     | CustomOperatorDecl
@@ -128,6 +129,7 @@ module YYNode = struct
     | DataType -> "DataType"
     | DataConstructor -> "DataConstructor"
     | DataCase -> "DataCase"
+    | Recurse -> "Recurse"
   ;;
 
   let show_declaration (d : declaration) : string =
