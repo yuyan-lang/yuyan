@@ -35,18 +35,13 @@ let bnd_name_to_string (name : bnd_name) : string = Ext.get_str_content name
 
 (* Bidirectional type checking skeleton *)
 type local_tm_env = (bnd_name * A.t) list
-type local_tp_env = bnd_name list
+type local_env = local_tm_env
 
-type local_env =
-  { tp : local_tp_env
-  ; tm : local_tm_env
-  }
+let empty_local_env : local_env = []
+let extend_local_env_tm (env : local_env) (name : bnd_name) (tp : A.t) : local_env = (name, tp) :: env
 
-let empty_local_env : local_env = { tp = []; tm = [] }
-let extend_local_env_tp (env : local_env) (name : bnd_name) : local_env = { env with tp = name :: env.tp }
-
-let extend_local_env_tm (env : local_env) (name : bnd_name) (tp : A.t) : local_env =
-  { env with tm = (name, tp) :: env.tm }
+let extend_local_env_tp (env : local_env) (name : bnd_name) : local_env =
+  extend_local_env_tm env name (A.fold_with_extent (A.N (N.Builtin N.Type, [])) (Ext.get_str_extent name))
 ;;
 
 let extend_local_env_tm_with_token_info (env : local_env) (name : bnd_name) (tp : A.t) : local_env proc_state_m =
@@ -58,19 +53,23 @@ let extend_local_env_tm_with_token_info (env : local_env) (name : bnd_name) (tp 
 ;;
 
 let find_in_local_env_tm (env : local_env) (name : bnd_name) : (Ext.t * A.t) option =
-  match List.find_opt (fun (n, _) -> bnd_name_to_string n = Ext.get_str_content name) env.tm with
+  match List.find_opt (fun (n, _) -> bnd_name_to_string n = Ext.get_str_content name) env with
   | Some (bnd_name, tp) -> Some (Ext.get_str_extent bnd_name, tp)
   | None -> None
-;;
-
-let find_in_local_env_tp (env : local_env) (name : bnd_name) : bnd_name option =
-  List.find_opt (fun n -> bnd_name_to_string n = Ext.get_str_content name) env.tp
 ;;
 
 let check_is_type (tp : A.t) : A.t proc_state_m =
   match A.view tp with
   | A.N (N.Builtin N.Type, _) -> return tp
   | _ -> pfail_with_ext "Expecting type but got " (A.get_extent_some tp)
+;;
+
+let find_in_local_env_tp (env : local_env) (name : bnd_name) : bnd_name option proc_state_m =
+  match List.find_opt (fun (n, _) -> bnd_name_to_string n = Ext.get_str_content name) env with
+  | Some (bnd_name, tp) ->
+    let* _ = check_is_type tp in
+    return (Some bnd_name)
+  | None -> return None
 ;;
 
 let check_kind_valid (tp : A.t) : A.t proc_state_m =
@@ -176,7 +175,8 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   match A.view tp with
   | A.FreeVar name ->
     (* TODO: The extent of operands are wrong due to substitution *)
-    if List.exists (fun x -> Ext.get_str_content x = Ext.get_str_content name) env.tp
+    let* bnd_name = find_in_local_env_tp env name in
+    if Option.is_some bnd_name
     then return tp
     else
       let* id = Environment.find_binding name in
@@ -190,8 +190,13 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
          let* () = TokenInfo.add_token_info name (Definition extent) in
          let* tp_constant = Environment.lookup_constant id in
          (match tp_constant with
-          | DataExpression _ | ModuleAlias _ ->
-            pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
+          | DataExpression { tp; _ } ->
+            (match A.view tp with
+             | A.N (N.Builtin N.Type, []) -> return tp
+             | _ -> pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
+          | ModuleAlias _ ->
+            pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
+  | A.N (N.Builtin N.Type, []) -> return tp
   | A.N (N.Builtin N.StringType, []) -> return tp
   | A.N (N.Builtin N.IntType, []) -> return tp
   | A.N (N.Builtin N.BoolType, []) -> return tp
@@ -203,6 +208,11 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
     let* dom = check_type_valid env dom in
     let* cod = check_type_valid env cod in
     return (A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod ])) (A.get_extent_some tp))
+  | A.N (N.ExplicitPi, [ ([], dom); ([ bnd_name ], cod) ]) ->
+    let* dom = check_type_valid env dom in
+    let env' = extend_local_env_tp env bnd_name in
+    let* cod = check_type_valid env' cod in
+    return (A.fold_with_extent (A.N (N.ExplicitPi, [ [], dom; [ bnd_name ], cod ])) (A.get_extent_some tp))
   | A.N (N.Ap, [ ([], f); ([], _arg) ]) ->
     let* id =
       match A.view f with
@@ -368,6 +378,13 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
              pfail_with_ext
                (__LOC__ ^ "TC84: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
                (A.get_extent_some expr)))
+     | A.N (N.Builtin N.Type, [])
+     | A.N (N.Builtin N.IntType, [])
+     | A.N (N.Builtin N.FloatType, [])
+     | A.N (N.Builtin N.UnitType, [])
+     | A.N (N.Builtin N.BoolType, [])
+     | A.N (N.Builtin N.StringType, []) ->
+       return (expr, A.fold_with_extent (A.N (N.Builtin N.Type, [])) (A.get_extent_some expr))
      | A.N (N.Builtin (N.Bool _), []) ->
        return (expr, A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some expr))
      | A.N (N.Builtin (N.Int _), []) ->
@@ -500,9 +517,14 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
        let* env' = extend_local_env_tm_with_token_info env bnd dom in
        let* checked_body = check env' body cod in
        return (A.fold_with_extent (A.N (N.Lam, [ [ bnd ], checked_body ])) (A.get_extent_some expr))
+     | A.N (N.ExplicitPi, [ ([], dom); ([ bnd_name ], cod) ]) ->
+       let* env' = extend_local_env_tm_with_token_info env bnd dom in
+       let cod = A.subst (A.free_var bnd) (Ext.get_str_content bnd_name) cod in
+       let* checked_body = check env' body cod in
+       return (A.fold_with_extent (A.N (N.Lam, [ [ bnd ], checked_body ])) (A.get_extent_some expr))
      | _ ->
        pfail_with_ext
-         ("TC133: Expecting its type to be an arrow but got " ^ A.show_view tp_normalized)
+         (__LOC__ ^ "TC133: Expecting its type to be an arrow but got " ^ A.show_view tp_normalized)
          (A.get_extent_some expr))
   | A.N (N.Sequence Dot, args) ->
     (match A.view tp_normalized with

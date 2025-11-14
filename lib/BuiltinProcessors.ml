@@ -235,103 +235,6 @@ let definition_end : binary_op =
   }
 ;;
 
-let type_definition_middle_uid = Uid.next ()
-let type_definition_end_uid = Uid.next ()
-
-let type_definition_middle_meta : binary_op_meta =
-  { id = type_definition_middle_uid
-  ; keyword = CS.new_t_string "即"
-  ; left_fixity = FxOp (Some 10)
-  ; right_fixity = FxComp type_definition_end_uid
-  ; classification = Structural
-  }
-;;
-
-let type_definition_end_meta : binary_op_meta =
-  { id = type_definition_end_uid
-  ; keyword = CS.new_t_string "也"
-  ; left_fixity = FxComp type_definition_middle_uid
-  ; right_fixity = FxNone
-  ; classification = Structural
-  }
-;;
-
-let type_definition_middle : binary_op =
-  { meta = type_definition_middle_meta
-  ; reduction = p_internal_error "BP104: type_definition_middle reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let type_definition_end : binary_op =
-  { meta = type_definition_end_meta
-  ; reduction =
-      (let* (_name, _defn), ext = pop_postfix_op_operands_2 type_definition_end_meta in
-       pfail_with_ext "BP: Type definitions no longer supported" ext)
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-(* let library_root_meta : binary_op_meta =
-  { id = Uid.next (); keyword = CS.new_t_string "藏书阁"; left_fixity = FxNone; right_fixity = FxNone }
-;;
-
-let library_root : binary_op =
-  { meta = library_root_meta
-  ; reduction =
-      (let* ext = pop_closed_identifier_operand library_root_meta in
-       let default_path = Filename.concat (Sys.getcwd ()) "藏书阁" in
-       if Sys.file_exists default_path && Sys.is_directory default_path
-       then
-         push_elem_on_input_acc_expr
-           (A.annotate_with_extent (A.fold (A.N (N.Builtin (N.Library default_path), []))) ext)
-       else Fail.failwith ("Directory not found: " ^ default_path))
-  ; shift_action = do_nothing_shift_action
-  }
-;; *)
-
-(* let known_structure_deref : unit proc_state_m =
-  let* (_, _) = read_one_of_string [CS.new_t_string "之"] in
-  let* input_top = pop_input_acc () in
-  match A.view input_top with
-  | A.N(N.Builtin(N.Library path), _) -> 
-    (* check ending *)
-    choice  (
-      let* (_, ext_end) = read_one_of_char [CS.new_t_char "书"] in
-      push_elem_on_input_acc (A.annotate_with_extent input_top (Ext.combine_extent (A.get_extent_some input_top) ext_end))
-    )
-    (* ls dir *)
-    (
-      if Sys.file_exists path && Sys.is_directory path then
-        let new_expt_state = (Scanning (InLibrarySearch path)) in
-        let* _ = push_expect_state new_expt_state in
-        let files = Array.to_list (Sys.readdir path) in
-        let all_new_procs = List.map (fun file -> 
-          let file_name_without_ext = if String.ends_with ~suffix:"。豫" file then 
-            String.sub file 0 (String.length file - String.length "。豫")
-          else file in
-          let file_name_id_parse : unit proc_state_m = (
-              let* (_read_filename, read_filename_ext) = read_one_of_string [CS.new_t_string file_name_without_ext] in
-              let* input_top = pop_input_acc () in
-              let* () = pop_expect_state new_expt_state in
-              let* () = remove_all_proc_registry_with_input_expect_state new_expt_state in
-              let new_lib_node = A.fold(A.N(N.Builtin(N.Library(path ^ "/" ^ file_name_without_ext)), [])) in
-              let new_lib_node_ext = Ext.combine_extent (A.get_extent_some input_top) read_filename_ext in
-              push_elem_on_input_acc (A.annotate_with_extent new_lib_node new_lib_node_ext) 
-            )
-          in
-          to_processor_complex new_expt_state "filename_id_parse" file_name_id_parse
-        ) files in
-        let* _ = add_processor_entry_list all_new_procs in
-        let* _ = push_elem_on_input_acc input_top in
-        return ()
-      else
-        Fail.failwith ("BP154: Expected a directory but got " ^ path)
-    )
-  | _ ->
-    Fail.failwith ("BP157: Expected a library but got " ^ A.show_view input_top)
-*)
-
 let unknown_structure_deref_meta : binary_op_meta =
   { id = Uid.next ()
   ; keyword = CS.new_t_string "之"
@@ -1176,9 +1079,9 @@ let typing_annotation_start_meta =
 
 let typing_annotation_middle_meta =
   { id = typing_annotation_middle_uid
-  ; keyword = CS.new_t_string "者"
+  ; keyword = CS.new_t_string "焉"
   ; left_fixity = FxComp typing_annotation_start_uid
-  ; right_fixity = FxOp (Some 120)
+  ; right_fixity = FxOp (Some 20)
   ; classification = Expression
   }
 ;;
@@ -1215,8 +1118,6 @@ let default_registry =
   ; to_processor_binary_op "module_alias_decl_start" module_alias_decl_start
   ; to_processor_binary_op "module_alias_decl_middle" module_alias_decl_middle
   ; to_processor_binary_op "module_alias_decl_end" module_alias_decl_end
-  ; to_processor_binary_op "type_definition_middle" type_definition_middle
-  ; to_processor_binary_op "type_definition_end" type_definition_end
   ; to_processor_binary_op "left_parenthesis" left_parenthesis
   ; to_processor_binary_op "right_parenthesis" right_parenthesis
   ; to_processor_binary_op "explicit_pi_start" explicit_pi_start

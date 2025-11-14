@@ -656,7 +656,9 @@ let get_current_file_name () : string proc_state_m =
 let get_free_var (expr : A.t) : Ext.t_str proc_state_m =
   match A.view expr with
   | A.FreeVar name -> return name
-  | _ -> Fail.failwith ("BP1269: Expecting free variable, got " ^ A.show_view expr)
+  | _ ->
+    let* st = get_proc_state () in
+    Fail.failwith (__LOC__ ^ "BP1269: Expecting free variable, got " ^ A.show_view expr ^ " at " ^ show_proc_state st)
 ;;
 
 let aka_print_expr (expr : A.t) : string proc_state_m =
