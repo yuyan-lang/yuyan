@@ -199,10 +199,6 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
   | A.N (N.Builtin N.FloatType, []) -> return tp
   | A.N (N.Builtin N.RefType, []) -> return tp
   | A.N (N.Builtin N.ArrayRefType, []) -> return tp
-  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
-    let env' = extend_local_env_tp env bnd in
-    let* checked_coid = check_type_valid env' cod in
-    return (A.fold_with_extent (A.N (N.ImplicitPi, [ [ bnd ], checked_coid ])) (A.get_extent_some tp))
   | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
     let* dom = check_type_valid env dom in
     let* cod = check_type_valid env cod in
@@ -253,39 +249,6 @@ let check_data_constructor_final_type_valid (env : local_env) (tp : A.t) : (A.t 
        ^ "TC145: Ill-formed data constructor type, expecting type constructor or applied to a single argument"
        ^ A.show_view tp)
       (A.get_extent_some tp)
-;;
-
-let rec check_data_constructor_type_valid (env : local_env) (tp : A.t)
-  : (A.t * int (* id of the final type*)) proc_state_m
-  =
-  with_type_checking_history (HistOne ("checking data constructor type is valid: ", tp))
-  @@
-  match A.view tp with
-  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
-    let env' = extend_local_env_tp env bnd in
-    let* checked_cod, id = check_data_constructor_type_valid env' cod in
-    return (A.fold_with_extent (A.N (N.ImplicitPi, [ [ bnd ], checked_cod ])) (A.get_extent_some tp), id)
-  | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-    let* dom = check_type_valid env dom in
-    let* cod, id = check_data_constructor_final_type_valid env cod in
-    return (A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod ])) (A.get_extent_some tp), id)
-  | _ -> check_data_constructor_final_type_valid env tp
-;;
-
-let rec apply_implicit_args (expr : A.t) (expr_tp : A.t) : (A.t * A.t) proc_state_m =
-  with_type_checking_history (HistTwo ("applying implicit args to ", expr, " with type ", expr_tp))
-  @@
-  let* normalized_expr_tp = normalize_type expr_tp in
-  (* TODO! *)
-  match A.view normalized_expr_tp with
-  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
-    let id = Uid.next () in
-    let* () = add_to_global_unification_ctx id None in
-    let new_var = A.fold_with_extent (A.N (N.UnifiableTp id, [])) (A.get_extent_some expr) in
-    let cod = A.subst new_var (Ext.get_str_content bnd) cod in
-    let new_expr = A.fold_with_extent (A.N (N.ImplicitAp, [ [], expr; [], new_var ])) (A.get_extent_some expr) in
-    apply_implicit_args new_expr cod
-  | _ -> return (expr, normalized_expr_tp)
 ;;
 
 (* expand component fold right *)
@@ -444,20 +407,8 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
           pfail_with_ext
             ("TC134: Expecting its type to be a sequence but got " ^ A.show_view f_tp)
             (A.get_extent_some f))
-     | A.N (N.ImplicitAp, [ ([], f); ([], targ) ]) ->
-       let* f, f_tp = synth env f in
-       (match A.view f_tp with
-        | A.N (N.ImplicitPi, [ ([ name ], cod) ]) ->
-          let* targ = check_type_valid env targ in
-          let cod = A.subst targ (Ext.get_str_content name) cod in
-          return (A.fold_with_extent (A.N (N.ImplicitAp, [ [], f; [], targ ])) (A.get_extent_some expr), cod)
-        | _ ->
-          pfail_with_ext
-            ("TC134: Expecting its type to be an implicit pi but got " ^ A.show_view f_tp)
-            (A.get_extent_some f))
      | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
        let* f, f_tp = synth env f in
-       let* f, f_tp = apply_implicit_args f f_tp in
        (match A.view f_tp with
         | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
           let* arg = check env arg dom in
@@ -508,15 +459,6 @@ and fill_implicit_lam_then_check (env : local_env) (expr : A.t) (expr_tp : A.t) 
   let* normalized_expr_tp = normalize_type expr_tp in
   match A.view expr, A.view normalized_expr_tp with
   | A.N (N.ImplicitLam, _), _ -> check_after_filling_implicit_lam env expr expr_tp
-  | _, A.N (N.ImplicitPi, [ ([ bnd_name ], cod) ]) ->
-    with_type_checking_history (HistTwo ("filling implicit lam ", expr, " with type ", expr_tp))
-    @@
-    let env' = extend_local_env_tp env bnd_name in
-    let* checked_body = check env' expr cod in
-    let checked_expr =
-      A.fold_with_extent (A.N (N.ImplicitLam, [ [ bnd_name ], checked_body ])) (A.get_extent_some expr)
-    in
-    return checked_expr
   | _, _ -> check_after_filling_implicit_lam env expr expr_tp
 
 (* Check expression against a type *)
@@ -527,7 +469,6 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
   let default_synth_then_unify () =
     let* synth_expr, synth_tp = synth env expr in
     (* we can assume tp is not implicit pi as it has been filled, and expr is not implicit lam as this was a previosu case *)
-    let* synth_expr, synth_tp = apply_implicit_args synth_expr synth_tp in
     let* _ = type_unify synth_expr [] synth_tp tp_normalized in
     return synth_expr
   in
@@ -553,29 +494,6 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
     let* env' = extend_local_env_tm_with_token_info env bnd sub_tp in
     let* body = check env' body tp in
     return (A.fold_with_extent (A.N (N.LetIn, [ [], sub; [ bnd ], body ])) (A.get_extent_some expr))
-  | A.N (N.RecLetIn, [ ([], sub_tp); ([ bnd_sub ], sub); ([ bnd_body ], body) ]) ->
-    let* sub_tp = check_type_valid env sub_tp in
-    let* env_sub = extend_local_env_tm_with_token_info env bnd_sub sub_tp in
-    let* sub = check env_sub sub sub_tp in
-    let* env_body = extend_local_env_tm_with_token_info env bnd_body sub_tp in
-    let* body = check env_body body tp in
-    return
-      (A.fold_with_extent
-         (A.N (N.RecLetIn, [ [], sub_tp; [ bnd_sub ], sub; [ bnd_body ], body ]))
-         (A.get_extent_some expr))
-  | A.N (N.ImplicitLam, [ ([ bnd ], body) ]) ->
-    (match A.view tp_normalized with
-     | A.N (N.ImplicitPi, [ ([ tp_bnd ], cod) ]) ->
-       let env' = extend_local_env_tp env tp_bnd in
-       let cod =
-         A.subst (A.annotate_with_extent (A.free_var bnd) (A.get_extent_some expr)) (Ext.get_str_content tp_bnd) cod
-       in
-       let* checked_body = check env' body cod in
-       return (A.fold_with_extent (A.N (N.ImplicitLam, [ [ bnd ], checked_body ])) (A.get_extent_some expr))
-     | _ ->
-       pfail_with_ext
-         ("TC132: Expecting its type to be an implicit pi but got " ^ A.show_view tp_normalized)
-         (A.get_extent_some expr))
   | A.N (N.Lam, [ ([ bnd ], body) ]) ->
     (match A.view tp_normalized with
      | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
@@ -606,33 +524,10 @@ and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) :
          let new_args = A.fold_with_extent (A.N (N.Sequence Dot, args_checked)) (A.get_extent_some expr) in
          return new_args
      | _ -> default_synth_then_unify ())
-  | A.N (N.Match, ([], scrut) :: cases) ->
-    let* scrut, scrut_tp = synth env scrut in
-    let* cases =
-      psequence
-        (List.map
-           (fun (_, case) ->
-              match A.view case with
-              | A.N (N.MatchCase, [ ([], pat); ([], body) ]) ->
-                let* env, pat, body = check_pattern env pat scrut_tp body in
-                let* body = check env body tp in
-                return ([], A.fold_with_extent (A.N (N.MatchCase, [ [], pat; [], body ])) (A.get_extent_some case))
-              | _ ->
-                pfail_with_ext ("TC135: Expecting a match case but got " ^ A.show_view case) (A.get_extent_some expr))
-           cases)
-    in
-    return (A.fold_with_extent (A.N (N.Match, [ [], scrut ] @ cases)) (A.get_extent_some expr))
   | _ -> default_synth_then_unify ()
 
 and pattern_fill_implicit_args (pat : A.t) (pat_tp : A.t) : (A.t * A.t) proc_state_m =
   match A.view pat_tp with
-  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
-    let id = Uid.next () in
-    let* () = add_to_global_unification_ctx id None in
-    let new_var = A.fold_with_extent (A.N (N.UnifiableTp id, [])) (A.get_extent_some pat) in
-    let cod = A.subst new_var (Ext.get_str_content bnd) cod in
-    (* TODO: head spine form for implicit arg apps *)
-    pattern_fill_implicit_args pat cod
   | _ -> return (pat, pat_tp)
 
 and check_pattern (env : local_env) (pat : A.t) (scrut_tp : A.t) (case_body : A.t)
@@ -727,22 +622,6 @@ let assert_no_free_vars (tp : A.t) : unit proc_state_m =
        ^ String.concat ", " free_vars
        ^ " in type: "
        ^ A.show_view tp)
-;;
-
-let check_type_valid_top (tp : A.t) : A.t proc_state_m =
-  with_type_checking_history (HistOne ("checking type is valid: ", tp))
-  @@
-  let* checked_tp = check_type_valid empty_local_env tp in
-  let* () = assert_no_free_vars checked_tp in
-  return checked_tp
-;;
-
-let check_data_constructor_type_valid_top (tp : A.t) : (A.t * int) proc_state_m =
-  with_type_checking_history (HistOne ("checking data constructor type is valid: ", tp))
-  @@
-  let* checked_tp, id = check_data_constructor_type_valid empty_local_env tp in
-  let* () = assert_no_free_vars checked_tp in
-  return (checked_tp, id)
 ;;
 
 let check_top (expr : A.t) (tp : A.t) : A.t proc_state_m =

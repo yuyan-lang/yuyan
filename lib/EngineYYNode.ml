@@ -27,6 +27,9 @@ module YYNode = struct
     | RaiseException
     | TryCatch
     | CustomOperatorString of CS.t_string * Ext.t (* this is used for custom operators *)
+    | DataType
+    | DataConstructor
+    | DataCase
 
   type declaration =
     | CustomOperatorDecl
@@ -52,13 +55,11 @@ module YYNode = struct
     | ModuleDef
     | FileRef of string (* Library is a folder/file, FileRef is a checked file*)
     | ExplicitPi
-    | ImplicitPi
     | Arrow
     | Ap
     | ImplicitAp
     | Sequence of sequence_type
-    | Match
-    | MatchCase
+    | SumCase of Ext.t_str (* label *)
     | TypingAnnotation (* A名x*)
     | Lam
     | ImplicitLam
@@ -66,7 +67,6 @@ module YYNode = struct
     | ExternalCall of string
     | IfThenElse
     | LetIn
-    | RecLetIn
     | UnifiableTp of int
     | Constant of int (* uid of the constant *)
     | ComponentFoldRight (* used for custom operators *)
@@ -86,13 +86,11 @@ module YYNode = struct
     | ModuleDef -> None
     | FileRef _ -> Some []
     | ExplicitPi -> Some [ 0; 1 ]
-    | ImplicitPi -> Some [ 1 ]
     | Arrow -> Some [ 0; 0 ]
     | Ap -> None (* also multi-func app exists here *)
     | ImplicitAp -> Some [ 0; 0 ]
     | Sequence _ -> None (* multiargs are flat*)
-    | Match -> None (* first arg expr, rest cases *)
-    | MatchCase -> Some [ 0; 0 ]
+    | SumCase _ -> Some [ 0 ]
     | Lam -> Some [ 1 ]
     | ImplicitLam -> Some [ 1 ]
     | TypedLam -> Some [ 0; 1 ]
@@ -100,7 +98,6 @@ module YYNode = struct
     | ExternalCall _ -> None (* external call is a special case, arguments appear directly *)
     | IfThenElse -> Some [ 0; 0; 0 ] (* if, then, else *)
     | LetIn -> Some [ 0; 1 ] (* let, in, expr *)
-    | RecLetIn -> Some [ 0; 1; 1 ] (* rec let type, defn, in expr *)
     | Constant _ -> Some []
     | UnifiableTp _ -> Some []
     | ComponentFoldRight -> Some [ 0; 0; 0 ]
@@ -128,6 +125,9 @@ module YYNode = struct
     | RaiseException -> "RaiseException"
     | TryCatch -> "TryCatch"
     | CustomOperatorString (s, _) -> "CustomOperatorString(" ^ show_string (CS.get_t_string s) ^ ")"
+    | DataType -> "DataType"
+    | DataConstructor -> "DataConstructor"
+    | DataCase -> "DataCase"
   ;;
 
   let show_declaration (d : declaration) : string =
@@ -158,13 +158,11 @@ module YYNode = struct
     | ModuleDef -> "ModuleDef"
     | FileRef s -> "FileRef(" ^ s ^ ")"
     | ExplicitPi -> "Π"
-    | ImplicitPi -> "Π(implicit)"
     | Arrow -> "->"
     | Ap -> "Ap"
     | ImplicitAp -> "Ap(implicit)"
     | Sequence s -> "Sequence(" ^ show_sequence_type s ^ ")"
-    | Match -> "Match"
-    | MatchCase -> "MatchCase"
+    | SumCase label -> "SumCase(" ^ Ext.get_str_content label ^ ")"
     | Lam -> "λ"
     | ImplicitLam -> "λ(implicit)"
     | TypedLam -> "λₜ"
@@ -172,7 +170,6 @@ module YYNode = struct
     | ExternalCall s -> "ExternalCall(" ^ s ^ ")"
     | IfThenElse -> "IfThenElse"
     | LetIn -> "LetIn"
-    | RecLetIn -> "RecLetIn"
     | UnifiableTp uid -> "UnifiableTp(" ^ string_of_int uid ^ ")"
     | Constant uid -> "Constant(" ^ string_of_int uid ^ ")"
     | ComponentFoldRight -> "ComponentFoldRight"

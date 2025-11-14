@@ -77,7 +77,9 @@ let rec get_ocaml_code_for_pattern (var_env : var_env) (pattern : A.t) : string 
   | A.N (N.Constant id, []) ->
     (match lookup_constant_id id with
      | DataExpression { name = Some name; _ } -> "p_" ^ string_of_int id ^ annotate_with_name_ext name
-     | tcons -> Fail.failwith (__LOC__ ^ ": Expecting pattern variable in constant, got: " ^ EngineDataPrint.show_t_constant tcons))
+     | tcons ->
+       Fail.failwith
+         (__LOC__ ^ ": Expecting pattern variable in constant, got: " ^ EngineDataPrint.show_t_constant tcons))
   | A.N (N.Ap, [ ([], func); ([], arg) ]) ->
     "(" ^ get_ocaml_code_for_pattern var_env func ^ " " ^ get_ocaml_code_for_pattern var_env arg ^ ")"
   | _ -> Fail.failwith (__LOC__ ^ ": Not yet implemented, got: " ^ A.show_view pattern)
@@ -103,18 +105,6 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     ^ get_ocaml_code var_env then_branch
     ^ "\n else "
     ^ get_ocaml_code var_env else_branch
-    ^ ")"
-  | A.N (N.Match, ([], subject) :: cases) ->
-    let get_ocaml_code_for_case (case : A.t) : string =
-      match A.view case with
-      | A.N (N.MatchCase, [ ([], pattern); ([], body) ]) ->
-        "\n | (" ^ get_ocaml_code_for_pattern var_env pattern ^ ") ->\n     (" ^ get_ocaml_code var_env body ^ ")"
-      | _ -> Fail.failwith ("OO232: Expecting match case, got: " ^ A.show_view case)
-    in
-    "(match ("
-    ^ get_ocaml_code var_env subject
-    ^ ") with "
-    ^ String.concat " " (List.map (fun (_, case) -> get_ocaml_code_for_case case) cases)
     ^ ")"
   | A.N (N.Sequence Dot, args) ->
     "(" ^ String.concat "," (List.map (fun x -> snd x |> get_ocaml_code var_env) args) ^ ")"
@@ -143,18 +133,6 @@ and get_ocaml_code (var_env : var_env) (expr : A.t) : string =
     ^ annotate_with_name bnd
     ^ " = "
     ^ get_ocaml_code var_env let_def
-    ^ " in\n"
-    ^ get_ocaml_code env' body
-    ^ ")"
-  | A.N (N.RecLetIn, [ ([], dom_tp); ([ bnd ], dom); ([ bnd_body ], body) ]) ->
-    let env', bnd_name = add_var_env_list var_env [ bnd; bnd_body ] in
-    "(let rec "
-    ^ bnd_name
-    ^ annotate_with_name bnd
-    ^ " : "
-    ^ get_type_code var_env dom_tp
-    ^ " = "
-    ^ get_ocaml_code env' dom (* TODO: Name clash here? *)
     ^ " in\n"
     ^ get_ocaml_code env' body
     ^ ")"
@@ -191,36 +169,12 @@ and get_type_code (env : var_env) (tp : A.t) : string =
   | A.N (N.Builtin RefType, []) -> "ref"
   | A.N (N.Builtin ArrayRefType, []) -> "array"
   | A.N (N.Arrow, [ ([], dom); ([], cod) ]) -> "(" ^ get_type_code env dom ^ " -> " ^ get_type_code env cod ^ ")"
-  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
-    let env', _y_name = add_var_env env bnd in
-    (* get_comment_str ("'" ^ y_name ^ annotate_with_name bnd) ^  *)
-    get_type_code env' cod
   | A.N (N.UnifiableTp id, []) -> "?" ^ string_of_int id
   | _ -> Fail.failwith (__LOC__ ^ ": Expecting free variable, got: " ^ A.show_view tp)
 ;;
 
-let rec get_data_constructor_type_code (env : var_env) (id : int) (tp : A.t) : string =
-  match A.view tp with
-  | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-    "| C_" ^ string_of_int id ^ " : " ^ get_type_code env dom ^ " -> " ^ get_type_code env cod
-  | A.N (N.ImplicitPi, [ ([ bnd ], cod) ]) ->
-    let env', _ = add_var_env env bnd in
-    get_data_constructor_type_code env' id cod
-  | A.N (N.Ap, _) -> "| C_" ^ string_of_int id ^ " : " ^ get_type_code env tp
-  | _ -> Fail.failwith (__LOC__ ^ ": Expecting arrow or implicit pi, got: " ^ A.show_view tp)
-;;
-
-let get_type_constructor_code (_env : var_env) (id : int) (tp : A.t) : string =
-  match A.view tp with
-  | A.N (N.Arrow, [ ([], _); ([], _) ]) -> "_ t_" ^ string_of_int id ^ " = "
-  | A.N (N.Builtin Type, []) -> "t_" ^ string_of_int id ^ " = "
-  | _ -> Fail.failwith (__LOC__ ^ ": Expecting arrow or type, got: " ^ A.show_view tp)
-;;
-
 (* Generate type definitions only *)
-let generate_type_definitions (_constants : t_constants) : string =
-  "" (* No type constructors anymore *)
-;;
+let generate_type_definitions (_constants : t_constants) : string = "" (* No type constructors anymore *)
 
 let get_ocaml_code_for_module (filepath : string) (module_expr : A.t) (constants : t_constants) : string =
   match A.view module_expr with

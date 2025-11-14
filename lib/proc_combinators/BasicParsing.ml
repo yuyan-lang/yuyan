@@ -28,7 +28,8 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
         | A.N (N.Builtin (N.CustomOperatorString _), _)
         (* special tricks for parsing custom operatos because final operators will pop one more thing from the stack
           TODO: maybe better if we have a shift-action in operators
-        *) -> push_elem_on_input_acc es
+        *)
+          -> push_elem_on_input_acc es
         | _ ->
           Fail.failwith
             ("PC324: expected An element that allows ids to be pushed but got "
@@ -337,7 +338,7 @@ let identifier_parser () : (CS.t_string * Ext.t) proc_state_m =
   then (
     match middle with
     | [] -> failwith "Unit pattern not implemented"
-    | _ -> return (middle, middle_ext))
+    | _ -> return (middle, ext))
   else
     Fail.failwith
       ("ET100: Expected '」' but got " ^ CS.get_t_char terminal ^ " expecting 「id」 or 「「expr」」 or 「：comments：」")
