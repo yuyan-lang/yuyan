@@ -43,6 +43,7 @@ module YYNode = struct
   type sequence_type =
     | Dot
     | Comma
+    | List
 
   type t =
     | Builtin of builtin
@@ -71,6 +72,7 @@ module YYNode = struct
     | UnifiableTp of int
     | Constant of int (* uid of the constant *)
     | ComponentFoldRight (* used for custom operators *)
+    | Label of Ext.t_str
 
   let arity (t : t) : int list option =
     match t with
@@ -102,6 +104,7 @@ module YYNode = struct
     | Constant _ -> Some []
     | UnifiableTp _ -> Some []
     | ComponentFoldRight -> Some [ 0; 0; 0 ]
+    | Label _ -> Some []
   ;;
 
   (* f acc init *)
@@ -148,6 +151,7 @@ module YYNode = struct
     match s with
     | Dot -> "、"
     | Comma -> "，"
+    | List -> "【】"
   ;;
 
   let show (t : t) : string =
@@ -175,5 +179,6 @@ module YYNode = struct
     | UnifiableTp uid -> "UnifiableTp(" ^ string_of_int uid ^ ")"
     | Constant uid -> "Constant(" ^ string_of_int uid ^ ")"
     | ComponentFoldRight -> "ComponentFoldRight"
+    | Label s -> "Label(" ^ Ext.get_str_content s ^ ")"
   ;;
 end

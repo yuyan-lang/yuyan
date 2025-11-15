@@ -84,6 +84,7 @@ type semantic_token_type =
   | UserDefinedOperatorKeyword
   | Identifier
   | Comment
+  | Label
 
 type token_info_detail =
   | SemanticToken of semantic_token_type

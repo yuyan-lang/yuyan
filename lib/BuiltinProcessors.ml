@@ -17,6 +17,12 @@ let get_binding_name (x : A.t) : Ext.t_str proc_state_m =
   | _ -> Fail.failwith ("ET107: Expected a free variable but got " ^ A.show_view x)
 ;;
 
+let get_label_name (x : A.t) : Ext.t_str proc_state_m =
+  match A.view x with
+  | A.N (N.Label name, []) -> return name
+  | _ -> Fail.failwith ("ET107: Expected a label but got " ^ A.show_view x)
+;;
+
 (* let top_level_identifier_pusher : unit proc_state_m = 
   read_any_char_except_and_push (CharStream.new_t_string "。（）「」『』\n\t\r"@[" "]) *)
 
@@ -47,6 +53,15 @@ let identifier_parser_pusher : unit proc_state_m =
     let number = get_int_from_t_string id in
     push_elem_on_input_acc (Expr (A.fold_with_extent (A.N (N.Builtin (N.Int number), [])) ext)))
   else push_elem_on_input_acc (get_identifier_t (id, ext))
+;;
+
+let get_label_t ((c, ext) : CS.t_string * Ext.t) : input_acc_elem =
+  Expr (A.fold_with_extent (A.N (N.Label (Ext.str_with_extent (CS.get_t_string c) ext), [])) ext)
+;;
+
+let label_parser_pusher : unit proc_state_m =
+  let* id, ext = label_parser () in
+  push_elem_on_input_acc (get_label_t (id, ext))
 ;;
 
 let string_escape_sequence_scanner : (CS.t_char * Ext.t) proc_state_m =
@@ -941,8 +956,8 @@ let sum_case_start_meta =
 
 let sum_case_mid_meta =
   { id = sum_case_mid_uid
-  ; keyword = CS.new_t_string "则"
-  ; left_fixity = FxOp (Some 70)
+  ; keyword = CS.new_t_string "携"
+  ; left_fixity = FxComp sum_case_start_uid
   ; right_fixity = FxOp (Some 70)
   ; classification = Expression
   }
@@ -959,7 +974,7 @@ let sum_case_mid : binary_op =
   { meta = sum_case_mid_meta
   ; reduction =
       (let* (case_expr, tp_expr), per_ext = pop_prefix_op_operands_2 sum_case_mid_meta in
-       let* label = get_binding_name case_expr in
+       let* label = get_label_name case_expr in
        let result_expr = A.fold_with_extent (A.N (N.SumCase label, [ [], tp_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
   ; shift_action = do_nothing_shift_action
@@ -969,8 +984,8 @@ let sum_case_mid : binary_op =
 let comma_sequence_meta : binary_op_meta =
   { id = Uid.next ()
   ; keyword = CS.new_t_string "，"
-  ; left_fixity = FxOp (Some 89)
-  ; right_fixity = FxOp (Some 90)
+  ; left_fixity = FxOp (Some 49)
+  ; right_fixity = FxOp (Some 50)
   ; classification = Expression
   }
 ;;
@@ -1004,6 +1019,48 @@ let enumeration_comma_sequence : binary_op =
        | A.N (N.Sequence Dot, args) ->
          push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence Dot, args @ [ [], y ])) per_ext)
        | _ -> push_elem_on_input_acc_expr (A.fold_with_extent (A.N (N.Sequence Dot, [ [], x; [], y ])) per_ext))
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+let list_sequence_start_uid = Uid.next ()
+let list_sequence_end_uid = Uid.next ()
+
+let list_sequence_start_meta : binary_op_meta =
+  { id = list_sequence_start_uid
+  ; keyword = CS.new_t_string "【"
+  ; left_fixity = FxNone
+  ; right_fixity = FxComp list_sequence_end_uid
+  ; classification = Expression
+  }
+;;
+
+let list_sequence_end_meta : binary_op_meta =
+  { id = list_sequence_end_uid
+  ; keyword = CS.new_t_string "】"
+  ; left_fixity = FxComp list_sequence_start_uid
+  ; right_fixity = FxNone
+  ; classification = Expression
+  }
+;;
+
+let list_sequence_start : binary_op =
+  { meta = list_sequence_start_meta
+  ; reduction = p_internal_error "BP104: list_sequence_start reduction"
+  ; shift_action = do_nothing_shift_action
+  }
+;;
+
+let list_sequence_end : binary_op =
+  { meta = list_sequence_end_meta
+  ; reduction =
+      (let* arg, per_ext = pop_postfix_op_operands_1 list_sequence_end_meta in
+       let* arg =
+         match A.view arg with
+         | A.N (N.Sequence Comma, args) -> return (A.fold_with_extent (A.N (N.Sequence List, args)) per_ext)
+         | _ -> return (A.fold_with_extent (A.N (N.Sequence List, [ [], arg ])) per_ext)
+       in
+       push_elem_on_input_acc_expr arg)
   ; shift_action = do_nothing_shift_action
   }
 ;;
@@ -1146,6 +1203,8 @@ let default_registry =
   ; (* lists *)
     to_processor_binary_op "comma_sequence" comma_sequence
   ; to_processor_binary_op "enumeration_comma_sequence" enumeration_comma_sequence
+  ; to_processor_binary_op "list_sequence_start" list_sequence_start
+  ; to_processor_binary_op "list_sequence_end" list_sequence_end
   ; (* let in*)
     to_processor_binary_op "let_in_start" let_in_start
   ; to_processor_binary_op "let_in_mid1" let_in_mid1
@@ -1154,6 +1213,7 @@ let default_registry =
     to_processor_binary_op "typing_annotation_start" typing_annotation_start
   ; to_processor_binary_op "typing_annotation_middle" typing_annotation_middle
   ; to_processor_complex "identifier_parser_pusher" identifier_parser_pusher
+  ; to_processor_complex "label_parser_pusher" label_parser_pusher
   ; to_processor_complex "number_parser" (integer_number_parser ())
   ; to_processor_complex "decimal_number_parser" (decimal_number_parser ())
   ; (* type*)

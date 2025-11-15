@@ -292,6 +292,20 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
      | A.N (N.Builtin N.Type, []) -> return checked_tp
      | _ -> pfail_with_ext (__LOC__ ^ "TC26: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
 
+and check_valid_sum_cases (env : local_env) (cases : A.t list) : A.t list proc_state_m =
+  psequence
+    (List.map
+       (fun case ->
+          match A.view case with
+          | A.N (N.SumCase label, [ ([], tp) ]) ->
+            let* tp = check_type_valid env tp in
+            return (A.fold_with_extent (A.N (N.SumCase label, [ [], tp ])) (A.get_extent_some case))
+          | _ ->
+            pfail_with_ext
+              (__LOC__ ^ "TC134: Expecting a sum case but got " ^ A.show_view case)
+              (A.get_extent_some case))
+       cases)
+
 (* Synthesize/infer type from an expression *)
 and synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
   with_type_checking_history (HistOne ("synthesizing ", expr))
@@ -321,6 +335,7 @@ and synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
           pfail_with_ext
             (__LOC__ ^ "TC84: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
             (A.get_extent_some expr)))
+  | A.N (N.Builtin N.DataType, []) -> return (expr, expr) (* Builtin combinators are typed to have its own type *)
   | A.N (N.Builtin N.Type, [])
   | A.N (N.Builtin N.IntType, [])
   | A.N (N.Builtin N.FloatType, [])
@@ -371,6 +386,17 @@ and synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
      | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
        let* arg = check env arg dom in
        return (A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) (A.get_extent_some expr), cod)
+     | A.N (N.Builtin N.DataType, []) ->
+       (match A.view arg with
+        | A.N (N.Sequence List, args) ->
+          let* args = check_valid_sum_cases env (List.map snd args) in
+          return
+            ( A.fold_with_extent (A.N (N.Sequence List, List.map (fun arg -> [], arg) args)) (A.get_extent_some arg)
+            , A.fold_with_extent (A.N (N.Builtin N.Type, [])) (A.get_extent_some arg) )
+        | _ ->
+          pfail_with_ext
+            (__LOC__ ^ "TC134: Expecting a list sequence of sum cases but got " ^ A.show_view arg)
+            (A.get_extent_some arg))
      | _ ->
        pfail_with_ext ("TC134: Expecting its type to be an arrow but got " ^ A.show_view f_tp) (A.get_extent_some f))
   | A.N (N.Constant id, []) ->

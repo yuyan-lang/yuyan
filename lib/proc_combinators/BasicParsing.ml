@@ -32,7 +32,7 @@ let push_elem_start (es : input_acc_elem) : unit proc_state_m =
           -> push_elem_on_input_acc es
         | _ ->
           Fail.failwith
-            ("PC324: expected An element that allows ids to be pushed but got "
+            ("PC325: expected An element that allows ids to be pushed but got "
              ^ A.show_view x
              ^ " cannot push the next identifier, which is "
              ^ EngineDataPrint.show_input_acc_elem es
@@ -229,13 +229,16 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
           | FxBinding _ | FxComp _ ->
             let* comp_oper = lookup_binary_op comp_uid in
             let ext = get_input_acc_elem_ext x in
+            let* st = get_proc_state () in
             pfail_with_ext
               (__LOC__
                ^ " PC401: Expecting "
                ^ show_binary_op_meta comp_oper.meta
                ^ " but got "
                ^ show_binary_op_meta oper.meta
-               ^ " in the operator component reduction")
+               ^ " in the operator component reduction"
+               ^ " stack: "
+               ^ show_proc_state st)
               ext
           | FxNone -> failwith ("PC559: FxNone should not be here " ^ show_binary_op_meta oper.meta ^ " "))
      | _ ->
@@ -248,7 +251,7 @@ let rec operator_component_reduce (comp_uid : int) : unit proc_state_m =
 
 (* parses a single identifier identifier is something that is quoted between 「 and 」 and without special chars
 *)
-let yy_keyword_chars = CharStream.new_t_string "。（）「」『』"
+let yy_keyword_chars = CharStream.new_t_string "。（）「」『』《》"
 let yy_number_words = CharStream.new_t_string "零一二三四五六七八九"
 
 let yy_number_str_to_numeric_str (number_list : CS.t_char list) : string =
@@ -332,9 +335,29 @@ let identifier_parser () : (CS.t_string * Ext.t) proc_state_m =
   let* () =
     TokenInfo.add_token_info
       (Ext.str_with_extent (CS.get_t_string (CS.new_t_string "「" @ middle @ [ terminal ])) ext)
-      (SemanticToken Identifier)
+      (SemanticToken Label)
   in
   if CS.get_t_char terminal = "」"
+  then (
+    match middle with
+    | [] -> failwith "Unit pattern not implemented"
+    | _ -> return (middle, ext))
+  else
+    Fail.failwith
+      ("ET100: Expected '」' but got " ^ CS.get_t_char terminal ^ " expecting 「id」 or 「「expr」」 or 「：comments：」")
+;;
+
+let label_parser () : (CS.t_string * Ext.t) proc_state_m =
+  let* _ = pnot (read_string (CS.new_t_string "《《")) in
+  let* _, initial_ext = read_one_of_char [ CS.new_t_char "《" ] in
+  let* (middle, middle_ext), (terminal, terminal_ext) = scan_past_one_of_char yy_keyword_chars in
+  let ext = Ext.combine_extent_list [ initial_ext; middle_ext; terminal_ext ] in
+  let* () =
+    TokenInfo.add_token_info
+      (Ext.str_with_extent (CS.get_t_string (CS.new_t_string "《" @ middle @ [ terminal ])) ext)
+      (SemanticToken Identifier)
+  in
+  if CS.get_t_char terminal = "》"
   then (
     match middle with
     | [] -> failwith "Unit pattern not implemented"

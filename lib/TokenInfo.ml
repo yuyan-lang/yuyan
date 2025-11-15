@@ -18,6 +18,7 @@ let show_semantic_token_type (semantic_token_type : semantic_token_type) : strin
   | Identifier -> "Identifier"
   | UserDefinedOperatorKeyword -> "UserDefinedOperatorKeyword"
   | Comment -> "Comment"
+  | Label -> "Label"
 ;;
 
 let print_token_info_detail (token_info_detail : token_info_detail) : string =
