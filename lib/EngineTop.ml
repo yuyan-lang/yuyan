@@ -57,7 +57,15 @@ let print_proc_errors (msg : proc_error list) : string =
         (List.map
            (fun x ->
               match x with
-              | { msg = s; ext; state = _ } -> s ^ " at the following location: \n" ^ Ext.show_extent_1_based ext)
+              | { msg = s; ext; state } ->
+                s
+                ^ " at the following location: \n"
+                ^ Ext.show_extent_1_based ext
+                ^ (if List.length state.type_checking_history > 0
+                   then
+                     "\nType checking history:\n"
+                     ^ String.concat "\n" (List.map (fun h -> "  " ^ EngineDataPrint.show_tc_history_elem state h) state.type_checking_history)
+                   else ""))
            msg)
   else "Did not succeed but no reportable errors"
 ;;

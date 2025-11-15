@@ -190,9 +190,9 @@ let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
          let* () = TokenInfo.add_token_info name (Definition extent) in
          let* tp_constant = Environment.lookup_constant id in
          (match tp_constant with
-          | DataExpression { tp; _ } ->
+          | DataExpression { tp; tm; _ } ->
             (match A.view tp with
-             | A.N (N.Builtin N.Type, []) -> return tp
+             | A.N (N.Builtin N.Type, []) -> return tm
              | _ -> pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
           | ModuleAlias _ ->
             pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
