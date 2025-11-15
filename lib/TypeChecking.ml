@@ -261,28 +261,6 @@ let check_data_constructor_final_type_valid (env : local_env) (tp : A.t) : (A.t 
       (A.get_extent_some tp)
 ;;
 
-(* expand component fold right *)
-let rec desugar_top_level (expr : A.t) : A.t option proc_state_m =
-  match A.view expr with
-  | A.N (N.ComponentFoldRight, [ ([], f); ([], l); ([], acc) ]) ->
-    (match A.view l with
-     | A.N (N.Sequence Dot, args) ->
-       let expr =
-         List.fold_right
-           (fun (_, arg) acc ->
-              let f_arg = A.fold_with_extent (A.N (N.Sequence Dot, ([], arg) :: [ [], acc ])) (A.get_extent_some arg) in
-              A.fold_with_extent (A.N (N.Ap, [ [], f; [], f_arg ])) (A.get_extent_some arg))
-           args
-           acc
-       in
-       return (Some expr)
-     | _ ->
-       let l = A.fold_with_extent (A.N (N.Sequence Dot, ([], l) :: [])) (A.get_extent_some l) in
-       let expr = A.fold_with_extent (A.N (N.ComponentFoldRight, [ [], f; [], l; [], acc ])) (A.get_extent_some expr) in
-       desugar_top_level expr)
-  | _ -> return None
-;;
-
 let get_tp_for_expr_id (id : int) : A.t proc_state_m =
   let* const = Environment.lookup_constant id in
   match const with
