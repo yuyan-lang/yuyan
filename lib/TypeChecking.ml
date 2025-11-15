@@ -138,6 +138,7 @@ let rec type_unify
   | _, A.N (N.UnifiableTp uid, []) ->
     let* () = set_global_unification_ctx uid normalized_tp1 in
     return free_var_names
+  | A.N (N.Builtin N.Type, []), A.N (N.Builtin N.Type, []) -> return free_var_names
   | A.N (N.Builtin N.StringType, []), A.N (N.Builtin N.StringType, []) -> return free_var_names
   | A.N (N.Builtin N.IntType, []), A.N (N.Builtin N.IntType, []) -> return free_var_names
   | A.N (N.Builtin N.BoolType, []), A.N (N.Builtin N.BoolType, []) -> return free_var_names
@@ -168,99 +169,6 @@ let rec type_unify
 ;;
 
 (* Check that a type is well-formed *)
-let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
-  (* let* normalized_tp = normalize_type tp in *)
-  with_type_checking_history (HistOne ("checking type is valid ", tp))
-  @@
-  match A.view tp with
-  | A.FreeVar name ->
-    (* TODO: The extent of operands are wrong due to substitution *)
-    let* bnd_name = find_in_local_env_tp env name in
-    if Option.is_some bnd_name
-    then return tp
-    else
-      let* id = Environment.find_binding name in
-      (match id with
-       | None ->
-         pfail_with_ext
-           ("TC98: Free variable not found in the environment: " ^ Ext.get_str_content name)
-           (A.get_extent_some tp)
-       | Some id ->
-         let* extent = Environment.get_extent_of_constant id in
-         let* () = TokenInfo.add_token_info name (Definition extent) in
-         let* tp_constant = Environment.lookup_constant id in
-         (match tp_constant with
-          | DataExpression { tp; tm; _ } ->
-            (match A.view tp with
-             | A.N (N.Builtin N.Type, []) -> return tm
-             | _ -> pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
-          | ModuleAlias _ ->
-            pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
-  | A.N (N.Builtin N.Type, []) -> return tp
-  | A.N (N.Builtin N.StringType, []) -> return tp
-  | A.N (N.Builtin N.IntType, []) -> return tp
-  | A.N (N.Builtin N.BoolType, []) -> return tp
-  | A.N (N.Builtin N.UnitType, []) -> return tp
-  | A.N (N.Builtin N.FloatType, []) -> return tp
-  | A.N (N.Builtin N.RefType, []) -> return tp
-  | A.N (N.Builtin N.ArrayRefType, []) -> return tp
-  | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-    let* dom = check_type_valid env dom in
-    let* cod = check_type_valid env cod in
-    return (A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod ])) (A.get_extent_some tp))
-  | A.N (N.ExplicitPi, [ ([], dom); ([ bnd_name ], cod) ]) ->
-    let* dom = check_type_valid env dom in
-    let env' = extend_local_env_tp env bnd_name in
-    let* cod = check_type_valid env' cod in
-    return (A.fold_with_extent (A.N (N.ExplicitPi, [ [], dom; [ bnd_name ], cod ])) (A.get_extent_some tp))
-  | A.N (N.Ap, [ ([], f); ([], _arg) ]) ->
-    let* id =
-      match A.view f with
-      | A.FreeVar name -> Environment.lookup_binding_with_extent_token_info name
-      | A.N (N.Constant id, []) -> return id
-      | _ -> pfail_with_ext (__LOC__ ^ "TC140: Expecting free variable but got " ^ A.show_view f) (A.get_extent_some tp)
-    in
-    let* _tp_constant = Environment.lookup_constant id in
-    pfail_with_ext (__LOC__ ^ "TC141: Type constructors no longer supported") (A.get_extent_some tp)
-  | A.N (N.Constant id, []) ->
-    let* tp_constant = Environment.lookup_constant id in
-    (match tp_constant with
-     | DataExpression _ | ModuleAlias _ ->
-       pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
-  | A.N (N.Sequence Comma, args) ->
-    let* args =
-      psequence
-        (List.map
-           (fun (_, arg) ->
-              let* arg = check_type_valid env arg in
-              return ([], arg))
-           args)
-    in
-    return (A.fold_with_extent (A.N (N.Sequence Comma, args)) (A.get_extent_some tp))
-  | _ -> pfail_with_ext (__LOC__ ^ "TC26: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)
-;;
-
-let check_data_constructor_final_type_valid (env : local_env) (tp : A.t) : (A.t * int) proc_state_m =
-  with_type_checking_history (HistOne ("checking data constructor is a direct type: ", tp))
-  @@
-  let* checked_tp = check_type_valid env tp in
-  match A.view checked_tp with
-  | A.N (N.Constant id, []) -> return (checked_tp, id)
-  | A.N (N.Ap, [ ([], f); ([], _) ]) ->
-    (match A.view f with
-     | A.N (N.Constant id, []) -> return (checked_tp, id)
-     | _ ->
-       pfail_with_ext
-         (__LOC__ ^ "TC144: Ill-formed data constructor type, head is not a type constructor " ^ A.show_view checked_tp)
-         (A.get_extent_some tp))
-  | _ ->
-    pfail_with_ext
-      (__LOC__
-       ^ "TC145: Ill-formed data constructor type, expecting type constructor or applied to a single argument"
-       ^ A.show_view tp)
-      (A.get_extent_some tp)
-;;
-
 let get_tp_for_expr_id (id : int) : A.t proc_state_m =
   let* const = Environment.lookup_constant id in
   match const with
@@ -323,8 +231,69 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
   | _ -> Fail.failwith (__LOC__ ^ " Expecting a structure deref on the top level, got " ^ A.show_view expr)
 ;;
 
+let rec check_type_valid (env : local_env) (tp : A.t) : A.t proc_state_m =
+  (* let* normalized_tp = normalize_type tp in *)
+  with_type_checking_history (HistOne ("checking type is valid ", tp))
+  @@
+  match A.view tp with
+  | A.FreeVar name ->
+    (* TODO: The extent of operands are wrong due to substitution *)
+    let* bnd_name = find_in_local_env_tp env name in
+    if Option.is_some bnd_name
+    then return tp
+    else
+      let* id = Environment.find_binding name in
+      (match id with
+       | None ->
+         pfail_with_ext
+           ("TC98: Free variable not found in the environment: " ^ Ext.get_str_content name)
+           (A.get_extent_some tp)
+       | Some id ->
+         let* extent = Environment.get_extent_of_constant id in
+         let* () = TokenInfo.add_token_info name (Definition extent) in
+         let* tp_constant = Environment.lookup_constant id in
+         (match tp_constant with
+          | DataExpression { tp; tm; _ } ->
+            (match A.view tp with
+             | A.N (N.Builtin N.Type, []) -> return tm
+             | _ -> pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
+          | ModuleAlias _ ->
+            pfail_with_ext (__LOC__ ^ "TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
+  | A.N (N.Builtin N.Type, []) -> return tp
+  | A.N (N.Builtin N.StringType, []) -> return tp
+  | A.N (N.Builtin N.IntType, []) -> return tp
+  | A.N (N.Builtin N.BoolType, []) -> return tp
+  | A.N (N.Builtin N.UnitType, []) -> return tp
+  | A.N (N.Builtin N.FloatType, []) -> return tp
+  | A.N (N.Builtin N.RefType, []) -> return tp
+  | A.N (N.Builtin N.ArrayRefType, []) -> return tp
+  | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
+    let* dom = check_type_valid env dom in
+    let* cod = check_type_valid env cod in
+    return (A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod ])) (A.get_extent_some tp))
+  | A.N (N.ExplicitPi, [ ([], dom); ([ bnd_name ], cod) ]) ->
+    let* dom = check_type_valid env dom in
+    let env' = extend_local_env_tp env bnd_name in
+    let* cod = check_type_valid env' cod in
+    return (A.fold_with_extent (A.N (N.ExplicitPi, [ [], dom; [ bnd_name ], cod ])) (A.get_extent_some tp))
+  | A.N (N.Sequence Comma, args) ->
+    let* args =
+      psequence
+        (List.map
+           (fun (_, arg) ->
+              let* arg = check_type_valid env arg in
+              return ([], arg))
+           args)
+    in
+    return (A.fold_with_extent (A.N (N.Sequence Comma, args)) (A.get_extent_some tp))
+  | _ ->
+    let* checked_tp, kind = synth env tp in
+    (match A.view kind with
+     | A.N (N.Builtin N.Type, []) -> return checked_tp
+     | _ -> pfail_with_ext (__LOC__ ^ "TC26: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
+
 (* Synthesize/infer type from an expression *)
-let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
+and synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
   with_type_checking_history (HistOne ("synthesizing ", expr))
   @@
   match A.view expr with
@@ -439,19 +408,7 @@ let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
       (A.get_extent_some expr)
 
 and check (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
-  let* expr_desugared = desugar_top_level expr in
-  match expr_desugared with
-  | Some expr_desugared -> check env expr_desugared tp
-  | None -> fill_implicit_lam_then_check env expr tp
-
-and fill_implicit_lam_then_check (env : local_env) (expr : A.t) (expr_tp : A.t) : A.t proc_state_m =
-  let* normalized_expr_tp = normalize_type expr_tp in
-  match A.view expr, A.view normalized_expr_tp with
-  | A.N (N.ImplicitLam, _), _ -> check_after_filling_implicit_lam env expr expr_tp
-  | _, _ -> check_after_filling_implicit_lam env expr expr_tp
-
-(* Check expression against a type *)
-and check_after_filling_implicit_lam (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
+  (* Check expression against a type *)
   with_type_checking_history (HistTwo ("checking ", expr, " against ", tp))
   @@
   let* tp_normalized = normalize_type tp in
