@@ -229,6 +229,7 @@ let definition_end : binary_op =
        let* def_id =
          Environment.add_constant (DataExpression { tp = tp_expr; tm = checked_defn_body; name = Some defn_name_str })
        in
+       let* () = Environment.add_binding defn_name_str def_id in
        push_elem_on_input_acc_expr
          (A.annotate_with_extent (A.fold (A.N (N.Declaration (CheckedConstantDefn (defn_name_str, def_id)), []))) ext))
   ; shift_action = do_nothing_shift_action
