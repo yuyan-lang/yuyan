@@ -327,122 +327,116 @@ let resolve_structure_deref (env : local_env) (expr : A.t)
 let rec synth (env : local_env) (expr : A.t) : (A.t * A.t) proc_state_m =
   with_type_checking_history (HistOne ("synthesizing ", expr))
   @@
-  let* expr_desugared = desugar_top_level expr in
-  match expr_desugared with
-  | Some expr_desugared -> synth env expr_desugared
-  | None ->
-    (match A.view expr with
-     | A.FreeVar name ->
-       (match find_in_local_env_tm env name with
-        | Some (target_ext, tp) ->
+  match A.view expr with
+  | A.FreeVar name ->
+    (match find_in_local_env_tm env name with
+     | Some (target_ext, tp) ->
+       let* () =
+         let* aka_print_tp = aka_print_expr tp in
+         TokenInfo.add_token_info name (Hover aka_print_tp)
+       in
+       let* () = TokenInfo.add_token_info name (Definition target_ext) in
+       return (expr, tp)
+     | None ->
+       let* id = Environment.lookup_binding_with_extent_token_info name in
+       let* tp_constant = Environment.lookup_constant id in
+       let expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
+       (match tp_constant with
+        | DataExpression { tp; _ } ->
           let* () =
             let* aka_print_tp = aka_print_expr tp in
             TokenInfo.add_token_info name (Hover aka_print_tp)
           in
-          let* () = TokenInfo.add_token_info name (Definition target_ext) in
           return (expr, tp)
-        | None ->
-          let* id = Environment.lookup_binding_with_extent_token_info name in
-          let* tp_constant = Environment.lookup_constant id in
-          let expr = A.fold_with_extent (A.N (N.Constant id, [])) (A.get_extent_some expr) in
-          (match tp_constant with
-           | DataExpression { tp; _ } ->
-             let* () =
-               let* aka_print_tp = aka_print_expr tp in
-               TokenInfo.add_token_info name (Hover aka_print_tp)
-             in
-             return (expr, tp)
-           | _ ->
-             pfail_with_ext
-               (__LOC__ ^ "TC84: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
-               (A.get_extent_some expr)))
-     | A.N (N.Builtin N.Type, [])
-     | A.N (N.Builtin N.IntType, [])
-     | A.N (N.Builtin N.FloatType, [])
-     | A.N (N.Builtin N.UnitType, [])
-     | A.N (N.Builtin N.BoolType, [])
-     | A.N (N.Builtin N.StringType, []) ->
-       return (expr, A.fold_with_extent (A.N (N.Builtin N.Type, [])) (A.get_extent_some expr))
-     | A.N (N.Builtin (N.Bool _), []) ->
-       return (expr, A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some expr))
-     | A.N (N.Builtin (N.Int _), []) ->
-       return (expr, A.fold_with_extent (A.N (N.Builtin N.IntType, [])) (A.get_extent_some expr))
-     | A.N (N.Builtin (N.String _), []) ->
-       return (expr, A.fold_with_extent (A.N (N.Builtin N.StringType, [])) (A.get_extent_some expr))
-     | A.N (N.Builtin N.Unit, []) ->
-       return (expr, A.fold_with_extent (A.N (N.Builtin N.UnitType, [])) (A.get_extent_some expr))
-     | A.N (N.Builtin (N.Float _), []) ->
-       return (expr, A.fold_with_extent (A.N (N.Builtin N.FloatType, [])) (A.get_extent_some expr))
-     | A.N (N.TypingAnnotation, [ ([], tp); ([], tm) ]) ->
-       let* tp = check_type_valid env tp in
-       let* tm = check env tm tp in
-       let expr = A.fold_with_extent (A.N (N.TypingAnnotation, [ [], tp; [], tm ])) (A.get_extent_some expr) in
-       return (expr, tp)
-     | A.N (N.TypedLam, [ ([], dom); ([ bnd ], body) ]) ->
-       let* dom = check_type_valid env dom in
-       let* env' = extend_local_env_tm_with_token_info env bnd dom in
-       let* body, cod_tp = synth env' body in
-       let tp = A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod_tp ])) (A.get_extent_some expr) in
-       let expr = A.fold_with_extent (A.N (N.TypedLam, [ [], dom; [ bnd ], body ])) (A.get_extent_some expr) in
-       return (expr, tp)
-     | A.N (N.TupleDeref idx, [ ([], f) ]) ->
-       let* f, f_tp = synth env f in
-       (match A.view f_tp with
-        | A.N (N.Sequence Comma, args) ->
-          if idx < 0 || idx >= List.length args
-          then pfail_with_ext ("TC134: Index out of bounds: " ^ string_of_int idx) (A.get_extent_some expr)
-          else (
-            let _, tp = List.nth args idx in
-            return
-              ( A.fold_with_extent
-                  (A.N (N.CheckedTupleDeref { idx; len = List.length args }, [ [], f ]))
-                  (A.get_extent_some expr)
-              , tp ))
         | _ ->
           pfail_with_ext
-            ("TC134: Expecting its type to be a sequence but got " ^ A.show_view f_tp)
-            (A.get_extent_some f))
-     | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
-       let* f, f_tp = synth env f in
-       (match A.view f_tp with
-        | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
-          let* arg = check env arg dom in
-          return (A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) (A.get_extent_some expr), cod)
-        | _ ->
-          pfail_with_ext ("TC134: Expecting its type to be an arrow but got " ^ A.show_view f_tp) (A.get_extent_some f))
-     | A.N (N.Constant id, []) ->
-       let* tp_constant = Environment.lookup_constant id in
-       (match tp_constant with
-        | DataExpression { tp; name = Some name; _ } ->
-          let* () =
-            let* aka_print_tp = aka_print_expr tp in
-            TokenInfo.add_token_info
-              (Ext.str_with_extent (Ext.get_str_content name) (A.get_extent_some expr))
-              (Hover aka_print_tp)
-          in
-          return (expr, tp)
-        | DataExpression { tp; name = None; _ } -> return (expr, tp)
-        | _ ->
-          pfail_with_ext
-            (__LOC__ ^ "TC331: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
-            (A.get_extent_some expr))
-     | A.N (N.Sequence Dot, args) ->
-       let* args_checked =
-         psequence
-           (List.map
-              (fun (_, arg) ->
-                 let* arg, arg_tp = synth env arg in
-                 return (([], arg), ([], arg_tp)))
-              args)
+            (__LOC__ ^ "TC84: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
+            (A.get_extent_some expr)))
+  | A.N (N.Builtin N.Type, [])
+  | A.N (N.Builtin N.IntType, [])
+  | A.N (N.Builtin N.FloatType, [])
+  | A.N (N.Builtin N.UnitType, [])
+  | A.N (N.Builtin N.BoolType, [])
+  | A.N (N.Builtin N.StringType, []) ->
+    return (expr, A.fold_with_extent (A.N (N.Builtin N.Type, [])) (A.get_extent_some expr))
+  | A.N (N.Builtin (N.Bool _), []) ->
+    return (expr, A.fold_with_extent (A.N (N.Builtin N.BoolType, [])) (A.get_extent_some expr))
+  | A.N (N.Builtin (N.Int _), []) ->
+    return (expr, A.fold_with_extent (A.N (N.Builtin N.IntType, [])) (A.get_extent_some expr))
+  | A.N (N.Builtin (N.String _), []) ->
+    return (expr, A.fold_with_extent (A.N (N.Builtin N.StringType, [])) (A.get_extent_some expr))
+  | A.N (N.Builtin N.Unit, []) ->
+    return (expr, A.fold_with_extent (A.N (N.Builtin N.UnitType, [])) (A.get_extent_some expr))
+  | A.N (N.Builtin (N.Float _), []) ->
+    return (expr, A.fold_with_extent (A.N (N.Builtin N.FloatType, [])) (A.get_extent_some expr))
+  | A.N (N.TypingAnnotation, [ ([], tp); ([], tm) ]) ->
+    let* tp = check_type_valid env tp in
+    let* tm = check env tm tp in
+    let expr = A.fold_with_extent (A.N (N.TypingAnnotation, [ [], tp; [], tm ])) (A.get_extent_some expr) in
+    return (expr, tp)
+  | A.N (N.TypedLam, [ ([], dom); ([ bnd ], body) ]) ->
+    let* dom = check_type_valid env dom in
+    let* env' = extend_local_env_tm_with_token_info env bnd dom in
+    let* body, cod_tp = synth env' body in
+    let tp = A.fold_with_extent (A.N (N.Arrow, [ [], dom; [], cod_tp ])) (A.get_extent_some expr) in
+    let expr = A.fold_with_extent (A.N (N.TypedLam, [ [], dom; [ bnd ], body ])) (A.get_extent_some expr) in
+    return (expr, tp)
+  | A.N (N.TupleDeref idx, [ ([], f) ]) ->
+    let* f, f_tp = synth env f in
+    (match A.view f_tp with
+     | A.N (N.Sequence Comma, args) ->
+       if idx < 0 || idx >= List.length args
+       then pfail_with_ext ("TC134: Index out of bounds: " ^ string_of_int idx) (A.get_extent_some expr)
+       else (
+         let _, tp = List.nth args idx in
+         return
+           ( A.fold_with_extent
+               (A.N (N.CheckedTupleDeref { idx; len = List.length args }, [ [], f ]))
+               (A.get_extent_some expr)
+           , tp ))
+     | _ ->
+       pfail_with_ext ("TC134: Expecting its type to be a sequence but got " ^ A.show_view f_tp) (A.get_extent_some f))
+  | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
+    let* f, f_tp = synth env f in
+    (match A.view f_tp with
+     | A.N (N.Arrow, [ ([], dom); ([], cod) ]) ->
+       let* arg = check env arg dom in
+       return (A.fold_with_extent (A.N (N.Ap, [ [], f; [], arg ])) (A.get_extent_some expr), cod)
+     | _ ->
+       pfail_with_ext ("TC134: Expecting its type to be an arrow but got " ^ A.show_view f_tp) (A.get_extent_some f))
+  | A.N (N.Constant id, []) ->
+    let* tp_constant = Environment.lookup_constant id in
+    (match tp_constant with
+     | DataExpression { tp; name = Some name; _ } ->
+       let* () =
+         let* aka_print_tp = aka_print_expr tp in
+         TokenInfo.add_token_info
+           (Ext.str_with_extent (Ext.get_str_content name) (A.get_extent_some expr))
+           (Hover aka_print_tp)
        in
-       let new_arg = A.fold_with_extent (A.N (N.Sequence Dot, List.map fst args_checked)) (A.get_extent_some expr) in
-       let new_tp = A.fold_with_extent (A.N (N.Sequence Comma, List.map snd args_checked)) (A.get_extent_some expr) in
-       return (new_arg, new_tp)
-     | A.N (N.StructureDeref _, _) -> resolve_structure_deref env expr
+       return (expr, tp)
+     | DataExpression { tp; name = None; _ } -> return (expr, tp)
      | _ ->
        pfail_with_ext
-         (__LOC__ ^ " TC82: Expression does not support type synthesis, please specify the type " ^ A.show_view expr)
+         (__LOC__ ^ "TC331: Expecting data expression but got " ^ EngineDataPrint.show_t_constant tp_constant)
          (A.get_extent_some expr))
+  | A.N (N.Sequence Dot, args) ->
+    let* args_checked =
+      psequence
+        (List.map
+           (fun (_, arg) ->
+              let* arg, arg_tp = synth env arg in
+              return (([], arg), ([], arg_tp)))
+           args)
+    in
+    let new_arg = A.fold_with_extent (A.N (N.Sequence Dot, List.map fst args_checked)) (A.get_extent_some expr) in
+    let new_tp = A.fold_with_extent (A.N (N.Sequence Comma, List.map snd args_checked)) (A.get_extent_some expr) in
+    return (new_arg, new_tp)
+  | A.N (N.StructureDeref _, _) -> resolve_structure_deref env expr
+  | _ ->
+    pfail_with_ext
+      (__LOC__ ^ " TC82: Expression does not support type synthesis, please specify the type " ^ A.show_view expr)
+      (A.get_extent_some expr)
 
 and check (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
   let* expr_desugared = desugar_top_level expr in
