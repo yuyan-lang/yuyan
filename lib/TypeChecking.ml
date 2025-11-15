@@ -92,11 +92,11 @@ let rec normalize_type (tp : A.t) : A.t proc_state_m =
        (match tp_constant with
         | DataExpression _ | ModuleAlias _ ->
           pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp)))
-  | A.N (N.UnifiableTp uid, []) ->
-    let* tp_deref = get_from_global_unification_ctx uid in
-    (match tp_deref with
-     | None -> return tp
-     | Some tp -> normalize_type tp)
+  | A.N (N.Constant id, []) ->
+    let* tp_constant = Environment.lookup_constant id in
+    (match tp_constant with
+     | DataExpression { tm; _ } -> normalize_type tm
+     | _ -> pfail_with_ext ("TC28: Expecting type but got " ^ A.show_view tp) (A.get_extent_some tp))
   | _ -> return tp
 ;;
 
@@ -501,7 +501,72 @@ and check (env : local_env) (expr : A.t) (tp : A.t) : A.t proc_state_m =
          let new_args = A.fold_with_extent (A.N (N.Sequence Dot, args_checked)) (A.get_extent_some expr) in
          return new_args
      | _ -> default_synth_then_unify ())
+  | A.N (N.Ap, _) ->
+    let* hd, args = get_head_spine expr in
+    (match A.view hd with
+     | A.N (N.Builtin N.DataConstructor, []) ->
+       (match args with
+        | [ hd_arg; rest_arg ] ->
+          (match A.view hd_arg with
+           | A.N (N.Label label, []) ->
+             let* cases = get_datatype_cases expr tp_normalized in
+             (match
+                List.filter (fun (case_label, _) -> Ext.get_str_content case_label = Ext.get_str_content label) cases
+              with
+              | (_, arg_tp) :: [] -> check env rest_arg arg_tp
+              | _ ->
+                pfail_with_ext
+                  (__LOC__ ^ "TC134: Expecting a single case but got " ^ A.show_view tp_normalized)
+                  (A.get_extent_some expr))
+           | _ ->
+             pfail_with_ext
+               (__LOC__ ^ "TC134: Expecting a label but got " ^ A.show_view hd_arg)
+               (A.get_extent_some expr))
+        | _ ->
+          pfail_with_ext
+            (__LOC__ ^ "TC134: Expecting a head and a rest argument but got " ^ A.show_view expr)
+            (A.get_extent_some expr))
+     | _ -> default_synth_then_unify ())
   | _ -> default_synth_then_unify ()
+
+and get_datatype_cases (error_loc : A.t) (datatype : A.t) : (Ext.t_str * A.t) list proc_state_m =
+  match A.view datatype with
+  | A.N (N.Ap, [ ([], datatype); ([], datatype_arg) ]) ->
+    let* datatype_normalized = normalize_type datatype in
+    (match A.view datatype_normalized with
+     | A.N (N.Builtin N.DataType, []) ->
+       let* datatype_arg_normalized = normalize_type datatype_arg in
+       (match A.view datatype_arg_normalized with
+        | A.N (N.Sequence List, cases) ->
+          psequence
+            (List.map
+               (fun (_, case) ->
+                  match A.view case with
+                  | A.N (N.SumCase label, [ ([], case_arg) ]) -> return (label, case_arg)
+                  | _ ->
+                    pfail_with_ext
+                      (__LOC__ ^ "TC137: Expecting a sum case but got " ^ A.show_view case)
+                      (A.get_extent_some error_loc))
+               cases)
+        | _ ->
+          pfail_with_ext
+            (__LOC__ ^ "TC136: Expecting a sequence of list but got " ^ A.show_view datatype_arg)
+            (A.get_extent_some error_loc))
+     | _ ->
+       pfail_with_ext
+         (__LOC__ ^ "TC135: Expecting a datatype but got " ^ A.show_view datatype_normalized)
+         (A.get_extent_some error_loc))
+  | _ ->
+    pfail_with_ext
+      (__LOC__ ^ "TC134: Expecting a datatype but got " ^ A.show_view datatype)
+      (A.get_extent_some error_loc)
+
+and get_head_spine (expr : A.t) : (A.t * A.t list) proc_state_m =
+  match A.view expr with
+  | A.N (N.Ap, [ ([], f); ([], arg) ]) ->
+    let* hd, args = get_head_spine f in
+    return (hd, args @ [ arg ])
+  | _ -> return (expr, [])
 
 and pattern_fill_implicit_args (pat : A.t) (pat_tp : A.t) : (A.t * A.t) proc_state_m =
   match A.view pat_tp with
