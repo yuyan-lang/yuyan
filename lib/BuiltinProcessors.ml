@@ -942,39 +942,20 @@ let if_then_else_mid2 : binary_op =
   }
 ;;
 
-let sum_case_start_uid = Uid.next ()
-let sum_case_mid_uid = Uid.next ()
-
-let sum_case_start_meta =
-  { id = sum_case_start_uid
-  ; keyword = CS.new_t_string "有"
-  ; left_fixity = FxNone
-  ; right_fixity = FxComp sum_case_mid_uid
-  ; classification = Expression
-  }
-;;
-
-let sum_case_mid_meta =
-  { id = sum_case_mid_uid
+let sum_case_meta : binary_op_meta =
+  { id = Uid.next ()
   ; keyword = CS.new_t_string "携"
-  ; left_fixity = FxComp sum_case_start_uid
+  ; left_fixity = FxOp (Some 69)
   ; right_fixity = FxOp (Some 70)
   ; classification = Expression
   }
 ;;
 
-let sum_case_start : binary_op =
-  { meta = sum_case_start_meta
-  ; reduction = p_internal_error "BP104: match_case_start reduction"
-  ; shift_action = do_nothing_shift_action
-  }
-;;
-
-let sum_case_mid : binary_op =
-  { meta = sum_case_mid_meta
+let sum_case : binary_op =
+  { meta = sum_case_meta
   ; reduction =
-      (let* (case_expr, tp_expr), per_ext = pop_prefix_op_operands_2 sum_case_mid_meta in
-       let* label = get_label_name case_expr in
+      (let* (label_expr, tp_expr), per_ext = pop_bin_operand sum_case_meta in
+       let* label = get_label_name label_expr in
        let result_expr = A.fold_with_extent (A.N (N.SumCase label, [ [], tp_expr ])) per_ext in
        push_elem_on_input_acc_expr result_expr)
   ; shift_action = do_nothing_shift_action
@@ -984,8 +965,8 @@ let sum_case_mid : binary_op =
 let comma_sequence_meta : binary_op_meta =
   { id = Uid.next ()
   ; keyword = CS.new_t_string "，"
-  ; left_fixity = FxOp (Some 49)
-  ; right_fixity = FxOp (Some 50)
+  ; left_fixity = FxOp (Some 59)
+  ; right_fixity = FxOp (Some 60)
   ; classification = Expression
   }
 ;;
@@ -1198,8 +1179,7 @@ let default_registry =
   ; to_processor_binary_op "if_then_else_mid1" if_then_else_mid1
   ; to_processor_binary_op "if_then_else_mid2" if_then_else_mid2
   ; (* match*)
-    to_processor_binary_op "sum_case_start" sum_case_start
-  ; to_processor_binary_op "sum_case_mid" sum_case_mid
+    to_processor_binary_op "sum_case" sum_case
   ; (* lists *)
     to_processor_binary_op "comma_sequence" comma_sequence
   ; to_processor_binary_op "enumeration_comma_sequence" enumeration_comma_sequence
