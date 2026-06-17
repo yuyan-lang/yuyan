@@ -189,3 +189,5 @@ dist
 callgrind.out.*
 cachegrind.out.*
 .yybuild.*
+
+.reasonix

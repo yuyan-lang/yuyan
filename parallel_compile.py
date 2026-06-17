@@ -139,12 +139,12 @@ def exec_worker(args):
 
 def worker(task, retry_count=0):
     global stages
-    stage, file_and_args = task
+    stage, file_and_args, prog_name, global_args = task
     def pre_fun(i):
         def set_nice():
             os.nice(i)
         return set_nice
-    command = [yy_program_name, "--mode=worker", "--worker-task=" + (stage)] + file_and_args + yy_bs_global_args 
+    command = [prog_name, "--mode=worker", "--worker-task=" + (stage)] + file_and_args + global_args
     # print("" + " ".join(command))
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\nRUN:\n"+ " ".join(command) + "\n")
     assert stage in stages, f"Error: stage {stage} is not in {stages}"
@@ -283,7 +283,9 @@ def execute_plan():
     def process_result(future):
         nonlocal results_ready, deps, deps_to_process
         (result, error) = future.result()
-        (comp_stage, [comp_file, *extra_args]), out_lines = result
+        (comp_stage, file_and_args, prog_name, global_args), out_lines = result
+        comp_file = file_and_args[0]
+        extra_args = file_and_args[1:]
         if error:
             print(error)
             os.abort()
@@ -375,7 +377,7 @@ def execute_plan():
                             file_name = scheduled[stage].pop()
                             # print("Scheduling", (stage, file_name))
                             executing[stage].append(file_name)
-                            executor.submit(worker, (stage, get_file_args(file_name))).add_done_callback(process_result)
+                            executor.submit(worker, (stage, get_file_args(file_name), yy_program_name, yy_bs_global_args)).add_done_callback(process_result)
                 print_stat()
                 print("Waiting for updates...")
                 results_ready.wait()

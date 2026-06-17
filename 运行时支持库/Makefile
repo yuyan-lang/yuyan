@@ -10,7 +10,7 @@ CC=clang
 
 UNAME := $(shell uname)
 
-ADDITIONAL_INCLUDE_PATHS=
+ADDITIONAL_INCLUDE_PATHS=-I /opt/homebrew/include
 
 ifeq ($(UNAME), Linux)
 ADDITIONAL_FLAGS=-l bsd
@@ -37,28 +37,28 @@ endif
 
 libyyrtdebug$(VERSION).a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include  -I $(abspath ../../bdwgc/include) $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error
 	ar rcs $@ build/native/*.o
 
 debug: libyyrtdebug$(VERSION).a
 
 libyyrtopt$(VERSION).a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -DNDEBUG -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror
+	cd build/native && $(CC) -DNDEBUG -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error
 	llvm-ar rcs $@ build/native/*.o
 
 opt : libyyrtopt$(VERSION).a
 
 libyyrtdebug$(VERSION).$(SO_EXTENSION): $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror  -fPIC
+	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error -fPIC
 	$(CC) $(SO_BUILD_OPTIONS) -o $@ build/native/*.o
 
 debugso : libyyrtdebug$(VERSION).$(SO_EXTENSION)
 
 libyyrtopt$(VERSION).$(SO_EXTENSION): $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -DNDEBUG -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include $(ADDITIONAL_INCLUDE_PATHS) -Werror -fPIC
+	cd build/native && $(CC) -DNDEBUG -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error -fPIC
 	$(CC) $(SO_BUILD_OPTIONS) -flto -o $@ build/native/*.o
 
 optso : libyyrtopt$(VERSION).$(SO_EXTENSION)

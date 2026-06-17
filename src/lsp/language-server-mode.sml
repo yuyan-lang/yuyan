@@ -236,7 +236,7 @@ struct
         (handleJSONNotification server method params; continueLSP(server))
         )
     end
-    handle JSONUtil.FieldNotFound (jv, s) => (print "Field Not Found Exeption"; print s; raise JSONUtil.FieldNotFound (jv, s))
+    handle JSONUtil.FieldNotFound s => (print "Field Not Found Exception"; print s; raise JSONUtil.FieldNotFound s)
 
 
 
