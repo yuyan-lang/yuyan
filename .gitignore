@@ -190,6 +190,6 @@ callgrind.out.*
 cachegrind.out.*
 .yybuild.*
 
-.reasonix
+.reasonix/*.json
 
 yybs_*
