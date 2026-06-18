@@ -10,7 +10,7 @@ YYTESTSOURCES := $(shell find . -name '*。测试。豫' ! -path "*/.cm/*")
 build: yy yyrt
 
 yybs_v2: 
-	./yy_bs_stable 豫言编译器v2/入口。豫  -o yybs_v2 --parallel
+	./yy_bs_stable 豫言编译器/入口。豫  -o yybs_v2 --parallel
 
 yyrt:
 	make -C runtime/ debug

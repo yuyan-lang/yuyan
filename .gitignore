@@ -191,3 +191,5 @@ cachegrind.out.*
 .yybuild.*
 
 .reasonix
+
+yybs_*
