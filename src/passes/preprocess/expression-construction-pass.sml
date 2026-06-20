@@ -151,6 +151,31 @@ struct
                     if oper ~=** appExprOp orelse oper ~=** appExprOp2
                     then fmap RApp(===/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, Success Explicit, operSuc))
                     else 
+                    if oper ~=** stringConcatExprOp
+                    then
+                        elaborateOpASTtoExpr (hd l) ctx >>= (fn leftExpr =>
+                        elaborateOpASTtoExpr (snd l) ctx >>= (fn rightExpr =>
+                            let
+                                val leftName = UTF8String.fromString ("__yy_string_concat_left_" ^ Int.toString (UID.next()))
+                                val rightName = UTF8String.fromString ("__yy_string_concat_right_" ^ Int.toString (UID.next()))
+                                val stringType = RBuiltinType(BIString, UTF8String.fromString "《《内建类型：字符串》》")
+                                fun stringTyped e = RTypeAnnotate(stringType, e, typeAnnotateExprOp)
+                                val cFuncName = RStringLiteral(
+                                    UTF8String.fromString "yyStringConcat",
+                                    (SpecialChars.leftDoubleQuote, SpecialChars.rightDoubleQuote)
+                                )
+                                val cArgs = RTuple([RVar [leftName], RVar [rightName]], [pairExprOp])
+                                val cCall = RFfiCCall(cFuncName, cArgs, ffiCCallOp)
+                            in
+                                Success(
+                                    RLetInSingle(leftName, stringTyped leftExpr,
+                                        RLetInSingle(rightName, stringTyped rightExpr,
+                                            stringTyped cCall,
+                                            letinSingleOp),
+                                        letinSingleOp)
+                                )
+                            end))
+                    else
                     if oper ~=** typeAnnotateExprOp orelse oper ~=** typeAnnotateExprOp2
                     then fmap RTypeAnnotate(==/= (elaborateOpASTtoExpr (hd l) ctx , elaborateOpASTtoExpr (snd l) ctx, operSuc))
                     else

@@ -295,6 +295,9 @@ structure YYExternalCalls = struct
   fun yyStringEq (s1, s2) =
     YYBool (yyGetString s1 = yyGetString s2);
 
+  fun yyStringConcat (s1, s2) =
+    YYString (yyGetString s1 ^ yyGetString s2);
+
   fun yyStringByteLength s1 = YYInt (String.size (yyGetString s1))
 
   (* in the stdlib, byte array IS string *)

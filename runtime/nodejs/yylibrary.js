@@ -321,6 +321,10 @@ let yyExternalCalls = {
         return s1 === s2;
       },
       
+      yyStringConcat : (s1, s2) => {
+        return s1 + s2;
+      },
+      
       yyStringByteLength : (s1) => {
           return Buffer.from(s1, 'utf-8').length;
       },

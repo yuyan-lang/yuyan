@@ -249,6 +249,29 @@ yyvalue yyGetCodePoints(yyvalue str_addr) {
     return ret;
 }
 
+yyvalue yyStringConcat(yyvalue s1, yyvalue s2) {
+    verify_yyvalue(s1, true, 0);
+    verify_yyvalue(s2, true, 0);
+    uint64_t str1Length = yyvalue_get_strlen(s1);
+    uint64_t str2Length = yyvalue_get_strlen(s2);
+    uint64_t resultLength = str1Length + str2Length;
+
+    yyvalue ret = yy_gcAllocateStringBuffer(resultLength + 1);
+    char *resultString = yyvalue_to_heap_string_pointer(ret);
+    const char *str1 = yyvalue_to_string(s1);
+    const char *str2 = yyvalue_to_string(s2);
+
+    assert(strlen(str1) == str1Length);
+    assert(strlen(str2) == str2Length);
+
+    memcpy(resultString, str1, str1Length);
+    memcpy(resultString + str1Length, str2, str2Length);
+    resultString[resultLength] = '\0';
+
+    verify_yyvalue(ret, true, 0);
+    return ret;
+}
+
 // EVEN MORE EFFICIENT
 yyvalue yyCodePointsConcat(yyvalue str_list_addr) {
     verify_yyvalue(str_list_addr, true, 0);

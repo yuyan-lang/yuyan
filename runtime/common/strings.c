@@ -311,6 +311,21 @@ yy_ptr yyGetCodePoints(yy_ptr str_addr) {
 //     return string_to_addr(resultString);
 // }
 
+yy_ptr yyStringConcat(yy_ptr s1, yy_ptr s2) {
+    const char *str1 = addr_to_string(s1);
+    const char *str2 = addr_to_string(s2);
+    size_t str1Length = strlen(str1);
+    size_t str2Length = strlen(str2);
+    size_t resultLength = str1Length + str2Length;
+
+    char *resultString = yy_gcAllocateBytes(resultLength + 1);
+    memcpy(resultString, str1, str1Length);
+    memcpy(resultString + str1Length, str2, str2Length);
+    resultString[resultLength] = '\0';
+
+    return string_to_addr(resultString);
+}
+
 // EVEN MORE EFFICIENT
 yy_ptr yyCodePointsConcat(yy_ptr str_list_addr) {
     const int length = iso_list_get_length(str_list_addr);

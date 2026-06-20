@@ -112,6 +112,7 @@ struct
 
     val projExprOp = Operators.parseOperatorStr "〇中〇" true true 700 [] (* only numerical projetion *)
     val projExprOp2 = Operators.parseOperatorStr "〇中的第〇个" true true 700 [] (* only numerical projetion *)
+    val stringConcatExprOp = Operators.parseOperatorStr "〇附〇" true false 695 []
     val appExprOp = Operators.parseOperatorStr "〇于〇" true true 690 []
     val appExprOp2 = Operators.parseOperatorStr "〇使用于〇" true true 690 []
     val pairExprOp = Operators.parseOperatorStr "〇与〇" true false 680 []
@@ -173,7 +174,7 @@ struct
             else []
         )
     val allTypeAndExprOps = allTypeOps @ [ 
-            projExprOp, appExprOp, pairExprOp,
+            projExprOp, appExprOp, stringConcatExprOp, pairExprOp,
             caseClauseOp, 
             caseAlternativeOp, caseExprOp, ifThenElseExprOp, implicitAppExprOp, 
             lambdaExprOp,
