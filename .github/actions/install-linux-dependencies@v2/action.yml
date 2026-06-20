@@ -1,19 +1,269 @@
-# .github/actions/install-mac-dependencies/action.yml
-
-name: 'Install Linux Software'
-description: 'Installs Linux Yuyan Dependencies'
+name: 'Install Linux bootstrap compiler'
+description: 'Installs Linux Yuyan dependencies, bootstrap compiler, and matching runtime libraries'
+inputs:
+  repository:
+    description: 'GitHub repository containing the bootstrap release'
+    default: 'yuyan-lang/yuyan'
+  release-name:
+    description: 'Stable release name to install'
+    default: 'restart v4'
+  compiler-asset:
+    description: 'Release asset containing the bootstrap compiler'
+    default: 'yy_bs_bs_bs_bs_bs'
+  compiler-output:
+    description: 'Path to install the bootstrap compiler to'
+    default: 'yy_bs'
+  yybuild-asset:
+    description: 'Release asset containing the .yybuild cache'
+    default: 'yybs_v2+1781787363.nosync.zip'
+  yybuild-output:
+    description: 'Path to restore the .yybuild cache to'
+    default: '.yybuild.nosync'
+outputs:
+  release-tag:
+    description: 'Tag resolved from the stable release name'
+    value: ${{ steps.resolve-release.outputs.release_tag }}
+  compiler-path:
+    description: 'Installed bootstrap compiler path'
+    value: ${{ steps.install-compiler.outputs.compiler_path }}
+  yybuild-path:
+    description: 'Restored .yybuild cache path'
+    value: ${{ steps.install-yybuild.outputs.yybuild_path }}
+  runtime-version:
+    description: 'Runtime library version installed from the stable source zip'
+    value: ${{ steps.install-runtime.outputs.runtime_version }}
 runs:
   using: 'composite'
   steps:
     - name: Install the libraries
       run: |
-        sudo apt install make llvm clang libgmp-dev
-        sudo apt install libgc-dev libuv1-dev llvm libbsd-dev
+        set -euo pipefail
+        sudo apt-get update
+        sudo apt-get install -y make llvm clang libgmp-dev libgc-dev libuv1-dev libbsd-dev curl unzip file jq
       shell: bash
-    - name: Download yy_bs from 
+
+    - name: Resolve restart v4 release
+      id: resolve-release
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        YY_BOOTSTRAP_REPOSITORY: ${{ inputs.repository }}
+        YY_BOOTSTRAP_RELEASE_NAME: ${{ inputs.release-name }}
+        YY_BOOTSTRAP_COMPILER_ASSET: ${{ inputs.compiler-asset }}
+        YY_BOOTSTRAP_YYBUILD_ASSET: ${{ inputs.yybuild-asset }}
       run: |
-        curl -o yy_bs -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/yy_bs_bs
-        curl -o ./运行时支持库/libyyrtoptv0.1.0rc2+0016.so -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/libyyrtoptv0.1.0rc2+0016.so
-        curl -o ./运行时支持库/libyyrtdebugv0.1.0rc2+0016.so -L https://github.com/yuyan-lang/yuyan/releases/download/v0.1.0rc1.4/libyyrtdebugv0.1.0rc2+0016.so
-        chmod u+x yy_bs
+        set -euo pipefail
+
+        work_dir="$RUNNER_TEMP/yuyan-bootstrap"
+        releases_json="$work_dir/releases.json"
+        release_json="$work_dir/release.json"
+        mkdir -p "$work_dir"
+
+        curl_args=(--fail --location --retry 3 --header "Accept: application/vnd.github+json")
+        if [ -n "${GITHUB_TOKEN:-}" ]; then
+          curl_args+=(--header "Authorization: Bearer $GITHUB_TOKEN")
+        fi
+
+        curl "${curl_args[@]}" --output "$releases_json" \
+          "https://api.github.com/repos/$YY_BOOTSTRAP_REPOSITORY/releases?per_page=100"
+
+        jq --arg release_name "$YY_BOOTSTRAP_RELEASE_NAME" \
+          '[.[] | select(.name == $release_name)] | first // empty' \
+          "$releases_json" > "$release_json"
+
+        if [ ! -s "$release_json" ]; then
+          echo "Could not find release named $YY_BOOTSTRAP_RELEASE_NAME in $YY_BOOTSTRAP_REPOSITORY" >&2
+          jq -r '.[].name' "$releases_json" >&2
+          exit 1
+        fi
+
+        release_tag="$(jq -r '.tag_name' "$release_json")"
+        source_zip_url="$(jq -r '.zipball_url' "$release_json")"
+        compiler_url="$(jq -r --arg asset_name "$YY_BOOTSTRAP_COMPILER_ASSET" \
+          '.assets[] | select(.name == $asset_name) | .browser_download_url' "$release_json")"
+        yybuild_url="$(jq -r --arg asset_name "$YY_BOOTSTRAP_YYBUILD_ASSET" \
+          '.assets[] | select(.name == $asset_name) | .browser_download_url' "$release_json")"
+
+        if [ -z "$compiler_url" ]; then
+          echo "Could not find compiler asset $YY_BOOTSTRAP_COMPILER_ASSET in $YY_BOOTSTRAP_RELEASE_NAME" >&2
+          jq -r '.assets[].name' "$release_json" >&2
+          exit 1
+        fi
+        if [ -z "$yybuild_url" ]; then
+          echo "Could not find .yybuild asset $YY_BOOTSTRAP_YYBUILD_ASSET in $YY_BOOTSTRAP_RELEASE_NAME" >&2
+          jq -r '.assets[].name' "$release_json" >&2
+          exit 1
+        fi
+
+        echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
+        echo "source_zip_url=$source_zip_url" >> "$GITHUB_OUTPUT"
+        echo "compiler_url=$compiler_url" >> "$GITHUB_OUTPUT"
+        echo "yybuild_url=$yybuild_url" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Install bootstrap compiler
+      id: install-compiler
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        YY_BOOTSTRAP_COMPILER_URL: ${{ steps.resolve-release.outputs.compiler_url }}
+        YY_BOOTSTRAP_COMPILER_ASSET: ${{ inputs.compiler-asset }}
+        YY_BOOTSTRAP_COMPILER_OUTPUT: ${{ inputs.compiler-output }}
+      run: |
+        set -euo pipefail
+
+        work_dir="$RUNNER_TEMP/yuyan-bootstrap"
+        compiler_download="$work_dir/$YY_BOOTSTRAP_COMPILER_ASSET"
+        compiler_unpack="$work_dir/compiler-unpack"
+        compiler_output="$GITHUB_WORKSPACE/$YY_BOOTSTRAP_COMPILER_OUTPUT"
+
+        mkdir -p "$work_dir"
+        rm -rf "$compiler_unpack"
+        mkdir -p "$compiler_unpack" "$(dirname "$compiler_output")"
+
+        curl_args=(--fail --location --retry 3)
+        if [ -n "${GITHUB_TOKEN:-}" ]; then
+          curl_args+=(--header "Authorization: Bearer $GITHUB_TOKEN")
+        fi
+
+        curl "${curl_args[@]}" --output "$compiler_download" "$YY_BOOTSTRAP_COMPILER_URL"
+
+        if unzip -tq "$compiler_download" >/dev/null 2>&1; then
+          unzip -q "$compiler_download" -d "$compiler_unpack"
+        elif tar -tf "$compiler_download" >/dev/null 2>&1; then
+          tar -xf "$compiler_download" -C "$compiler_unpack"
+        else
+          cp "$compiler_download" "$compiler_output"
+        fi
+
+        if [ ! -f "$compiler_output" ]; then
+          compiler_candidate="$(find "$compiler_unpack" -type f \( -name yy_bs -o -name yy_bs_bs -o -name yybuild \) -print -quit)"
+          if [ -z "$compiler_candidate" ]; then
+            compiler_candidate="$(find "$compiler_unpack" -type f -perm -111 -print -quit)"
+          fi
+          if [ -z "$compiler_candidate" ]; then
+            echo "Could not find a compiler executable inside $YY_BOOTSTRAP_COMPILER_ASSET" >&2
+            find "$compiler_unpack" -maxdepth 3 -type f -print >&2
+            exit 1
+          fi
+          cp "$compiler_candidate" "$compiler_output"
+        fi
+
+        chmod u+x "$compiler_output"
+        echo "compiler_path=$compiler_output" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Install .yybuild cache
+      id: install-yybuild
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        YY_BOOTSTRAP_YYBUILD_URL: ${{ steps.resolve-release.outputs.yybuild_url }}
+        YY_BOOTSTRAP_YYBUILD_ASSET: ${{ inputs.yybuild-asset }}
+        YY_BOOTSTRAP_YYBUILD_OUTPUT: ${{ inputs.yybuild-output }}
+      run: |
+        set -euo pipefail
+
+        work_dir="$RUNNER_TEMP/yuyan-bootstrap"
+        yybuild_download="$work_dir/$YY_BOOTSTRAP_YYBUILD_ASSET"
+        yybuild_unpack="$work_dir/yybuild-unpack"
+        yybuild_output="$GITHUB_WORKSPACE/$YY_BOOTSTRAP_YYBUILD_OUTPUT"
+
+        rm -rf "$yybuild_unpack" "$yybuild_output"
+        mkdir -p "$work_dir" "$yybuild_unpack" "$yybuild_output"
+
+        curl_args=(--fail --location --retry 3)
+        if [ -n "${GITHUB_TOKEN:-}" ]; then
+          curl_args+=(--header "Authorization: Bearer $GITHUB_TOKEN")
+        fi
+
+        curl "${curl_args[@]}" --output "$yybuild_download" "$YY_BOOTSTRAP_YYBUILD_URL"
+
+        if unzip -tq "$yybuild_download" >/dev/null 2>&1; then
+          unzip -q "$yybuild_download" -d "$yybuild_unpack"
+        elif tar -tf "$yybuild_download" >/dev/null 2>&1; then
+          tar -xf "$yybuild_download" -C "$yybuild_unpack"
+        else
+          echo "$YY_BOOTSTRAP_YYBUILD_ASSET is not a zip or tar archive" >&2
+          exit 1
+        fi
+
+        if [ -d "$yybuild_unpack/.yybuild.nosync" ]; then
+          yybuild_source="$yybuild_unpack/.yybuild.nosync"
+        elif [ -d "$yybuild_unpack/.yybuild" ]; then
+          yybuild_source="$yybuild_unpack/.yybuild"
+        elif [ "$(find "$yybuild_unpack" -mindepth 1 -maxdepth 1 -print | wc -l)" -eq 1 ]; then
+          yybuild_source="$(find "$yybuild_unpack" -mindepth 1 -maxdepth 1 -type d -print -quit)"
+        else
+          yybuild_source="$yybuild_unpack"
+        fi
+
+        if [ -z "$yybuild_source" ] || [ ! -d "$yybuild_source" ]; then
+          echo "Could not find the extracted .yybuild directory inside $YY_BOOTSTRAP_YYBUILD_ASSET" >&2
+          find "$yybuild_unpack" -maxdepth 2 -print >&2
+          exit 1
+        fi
+
+        cp -a "$yybuild_source"/. "$yybuild_output"/
+
+        if ! find "$yybuild_output" -type f -name '*.ll' -print -quit | grep -q .; then
+          echo "The restored .yybuild cache does not contain any .ll files" >&2
+          find "$yybuild_output" -maxdepth 3 -type f -print >&2
+          exit 1
+        fi
+
+        echo "yybuild_path=$yybuild_output" >> "$GITHUB_OUTPUT"
+      shell: bash
+
+    - name: Install matching runtime libraries
+      id: install-runtime
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+        YY_BOOTSTRAP_RELEASE_NAME: ${{ inputs.release-name }}
+        YY_BOOTSTRAP_SOURCE_ZIP_URL: ${{ steps.resolve-release.outputs.source_zip_url }}
+      run: |
+        set -euo pipefail
+
+        work_dir="$RUNNER_TEMP/yuyan-bootstrap"
+        source_zip="$work_dir/source.zip"
+        source_unpack="$work_dir/source"
+
+        mkdir -p "$work_dir"
+        rm -rf "$source_unpack"
+        mkdir -p "$source_unpack"
+
+        curl_args=(--fail --location --retry 3)
+        if [ -n "${GITHUB_TOKEN:-}" ]; then
+          curl_args+=(--header "Authorization: Bearer $GITHUB_TOKEN")
+        fi
+
+        curl "${curl_args[@]}" --output "$source_zip" "$YY_BOOTSTRAP_SOURCE_ZIP_URL"
+        unzip -q "$source_zip" -d "$source_unpack"
+
+        release_source="$(find "$source_unpack" -mindepth 1 -maxdepth 1 -type d -print -quit)"
+        runtime_source="$release_source/运行时支持库"
+        version_file="$release_source/豫言编译器/编译辅助工具/命令行/版本管理。豫"
+
+        if [ ! -d "$runtime_source" ]; then
+          echo "Could not find runtime source directory in $YY_BOOTSTRAP_RELEASE_NAME source zip" >&2
+          exit 1
+        fi
+        if [ ! -f "$version_file" ]; then
+          echo "Could not find version file in $YY_BOOTSTRAP_RELEASE_NAME source zip" >&2
+          exit 1
+        fi
+
+        runtime_version="$(sed -n -E 's/^.*v(.*)\+([0-9]{4}).*/v\1+\2/p' "$version_file" | head -n 1)"
+        if [ -z "$runtime_version" ]; then
+          echo "Could not read runtime version from $version_file" >&2
+          exit 1
+        fi
+
+        make -C "$runtime_source" all VERSION="$runtime_version"
+
+        workspace_runtime_dir="$GITHUB_WORKSPACE/运行时支持库"
+        mkdir -p "$workspace_runtime_dir"
+        cp "$runtime_source/libyyrtdebug$runtime_version.a" "$workspace_runtime_dir/"
+        cp "$runtime_source/libyyrtopt$runtime_version.a" "$workspace_runtime_dir/"
+        cp "$runtime_source/libyyrtdebug$runtime_version.so" "$workspace_runtime_dir/"
+        cp "$runtime_source/libyyrtopt$runtime_version.so" "$workspace_runtime_dir/"
+
+        echo "runtime_version=$runtime_version" >> "$GITHUB_OUTPUT"
       shell: bash
