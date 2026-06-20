@@ -52,27 +52,17 @@ val newDynClsfdType : CType =
         )
     val handleType : CType = 
         cForall(typeBinderB, 
-            cFunc(CBlock([
-                CPureDeclaration((UTF8String.fromString "尝试"), 
-                    cFunc(CUnitType, typeVarB)),
-                CPureDeclaration((UTF8String.fromString "遇异"),
-                    cFunc(CBuiltinType(BIDynClsfd), 
-                    typeVarB
-                    )
-                )
+            cFunc(CProd([
+                cFunc(CUnitType, typeVarB),
+                cFunc(CBuiltinType(BIDynClsfd), typeVarB)
             ]), typeVarB)
         )
 
     val handleStringType : CType = 
         cForall(typeBinderB, 
-            cFunc(CBlock([
-                CPureDeclaration((UTF8String.fromString "尝试"), 
-                    cFunc(CUnitType, typeVarB)),
-                CPureDeclaration((UTF8String.fromString "遇异"),
-                    cFunc(CBuiltinType(BIString), 
-                    typeVarB
-                    )
-                )
+            cFunc(CProd([
+                cFunc(CUnitType, typeVarB),
+                cFunc(CBuiltinType(BIString), typeVarB)
             ]), typeVarB)
         )
 
