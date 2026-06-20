@@ -254,6 +254,17 @@ struct
                     if oper ~=** letinSingleOp orelse oper ~=** letinSingleOp2
                     then fmap RLetInSingle (===/= (elaborateNewName (hd l), elaborateOpASTtoExpr (snd l) ctx , elaborateOpASTtoExpr (hd (tl (tl l))) ctx, operSuc))
                     else
+                    if oper ~=** recursiveLetInSingleOp
+                    then fmap (fn (bindingName, bindingType, bindingBody, tailExpr) =>
+                        RLetInSingle(bindingName,
+                            RTypeAnnotate(bindingType, RFix(bindingName, bindingBody, fixExprOp), typeAnnotateExprOp2),
+                            tailExpr,
+                            letinSingleOp))
+                        (===/= (elaborateNewName (hd l),
+                            elaborateOpASTtoType (snd l) ctx,
+                            elaborateOpASTtoExpr (hd (tl (tl l))) ctx,
+                            elaborateOpASTtoExpr (hd (tl (tl (tl l)))) ctx))
+                    else
                     if oper ~=** letinOp orelse oper ~=** letinOp2
                     then (
                         let 
