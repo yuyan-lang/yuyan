@@ -138,4 +138,5 @@
         "（"
     ],
     "vim.matchpairs": "(:),{:},[:],（:）,【:】,「:」,『:』",
+    "makefile.configureOnOpen": false,
 }
