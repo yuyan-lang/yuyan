@@ -78,7 +78,6 @@ Important details:
 - Remove `循「名」以` when the recursive binding itself supplies the self name.
 - Remove helper aliases like `虑「递归」者「处理」而`; call `「处理」` directly.
 - Remove the declaration-tail `也。` from `「名」者 ... 也。`. In reclet, the `而` after the definition is the separator.
-- Do not wrap the definition as `者（会...也）而`; this preserves the wrong declaration boundary and confuses parsing.
 - Do not leave `也` immediately before the reclet separator `而`. An error like `不期待也字后有其他输入，却得到了[『而』...]` usually means the old declaration-tail `也` survived.
 
 ## Direct Expressions In Structure Blocks
