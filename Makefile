@@ -21,6 +21,10 @@ yy_runtime_lib:
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
 
+yy3: 
+	./yy_bs_stable 豫言编译器/入口。豫  -o yy2 --parallel
+	./yy2 豫言编译器/入口。豫  -o yy3 --parallel
+
 yy_bs : yy $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 
