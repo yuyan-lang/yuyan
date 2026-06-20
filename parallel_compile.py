@@ -21,7 +21,6 @@ from datetime import datetime
 
 LINUX_PARALLEL_FACTOR = .8
 DEFAULT_PARALLEL_FACTOR = 1.0
-DARWIN_DEFAULT_CPU_LIMIT = 6
 yy_bs_global_args = []
 yy_bs_main_file = None
 yy_program_name = None
@@ -425,8 +424,6 @@ if __name__ == "__main__":
     num_cpu = cpu_count()
     if sys.platform == "linux" and num_cpu > 8:
         default_cpu_limit = num_cpu / LINUX_PARALLEL_FACTOR
-    elif sys.platform == "darwin":
-        default_cpu_limit = min(num_cpu, DARWIN_DEFAULT_CPU_LIMIT)
     else:
         default_cpu_limit = num_cpu / DEFAULT_PARALLEL_FACTOR
     # Create parser, add arguments and parse them
