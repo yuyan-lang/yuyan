@@ -7,9 +7,9 @@ runs:
   steps:
     - name: Install MLTon
       run: |
-          wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20210117/mlton-20210117-1.amd64-linux-glibc2.31.tgz
-          tar -xvzf mlton-20210117-1.amd64-linux-glibc2.31.tgz
-          cd mlton-20210117-1.amd64-linux-glibc2.31/
+          wget https://phoenixnap.dl.sourceforge.net/project/mlton/mlton/20241230/mlton-20241230-1.amd64-linux.ubuntu-22.04_glibc2.35.tgz
+          tar -xvzf mlton-20241230-1.amd64-linux.ubuntu-22.04_glibc2.35.tgz
+          cd mlton-20241230-1.amd64-linux.ubuntu-22.04_glibc2.35/
           sudo make
           sudo make install
       shell: bash
