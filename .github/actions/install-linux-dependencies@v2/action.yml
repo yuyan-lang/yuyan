@@ -5,23 +5,23 @@ inputs:
     description: 'GitHub repository containing the bootstrap release'
     default: 'yuyan-lang/yuyan'
   release-name:
-    description: 'Stable release name to install'
-    default: 'restart v4'
+    description: 'Release tag or name to install'
+    default: 'v0.1.0rc2.1'
   compiler-asset:
     description: 'Release asset containing the bootstrap compiler'
-    default: 'yy_bs_bs_bs_bs_bs'
+    default: '__yy3+1781938078.nosync.zip'
   compiler-output:
     description: 'Path to install the bootstrap compiler to'
     default: 'yy_bs'
   yybuild-asset:
     description: 'Release asset containing the .yybuild cache'
-    default: 'yybs_v2+1781787363.nosync.zip'
+    default: '__yy3+1781938078.nosync.zip'
   yybuild-output:
     description: 'Path to restore the .yybuild cache to'
     default: '.yybuild.nosync'
 outputs:
   release-tag:
-    description: 'Tag resolved from the stable release name'
+    description: 'Tag resolved from the release tag or name'
     value: ${{ steps.resolve-release.outputs.release_tag }}
   compiler-path:
     description: 'Installed bootstrap compiler path'
@@ -42,7 +42,7 @@ runs:
         sudo apt-get install -y make llvm clang libgmp-dev libgc-dev libuv1-dev libbsd-dev curl unzip file jq
       shell: bash
 
-    - name: Resolve restart v4 release
+    - name: Resolve bootstrap release
       id: resolve-release
       env:
         GITHUB_TOKEN: ${{ github.token }}
@@ -66,13 +66,13 @@ runs:
         curl "${curl_args[@]}" --output "$releases_json" \
           "https://api.github.com/repos/$YY_BOOTSTRAP_REPOSITORY/releases?per_page=100"
 
-        jq --arg release_name "$YY_BOOTSTRAP_RELEASE_NAME" \
-          '[.[] | select(.name == $release_name)] | first // empty' \
+        jq --arg release_ref "$YY_BOOTSTRAP_RELEASE_NAME" \
+          '[.[] | select(.tag_name == $release_ref or .name == $release_ref)] | first // empty' \
           "$releases_json" > "$release_json"
 
         if [ ! -s "$release_json" ]; then
-          echo "Could not find release named $YY_BOOTSTRAP_RELEASE_NAME in $YY_BOOTSTRAP_REPOSITORY" >&2
-          jq -r '.[].name' "$releases_json" >&2
+          echo "Could not find release tag or name $YY_BOOTSTRAP_RELEASE_NAME in $YY_BOOTSTRAP_REPOSITORY" >&2
+          jq -r '.[] | "\(.tag_name) \(.name)"' "$releases_json" >&2
           exit 1
         fi
 
@@ -136,6 +136,14 @@ runs:
 
         if [ ! -f "$compiler_output" ]; then
           compiler_candidate="$(find "$compiler_unpack" -type f \( -name yy_bs -o -name yy_bs_bs -o -name yybuild \) -print -quit)"
+          if [ -z "$compiler_candidate" ]; then
+            compiler_candidate="$(
+              find "$compiler_unpack" -maxdepth 2 -type f -perm -111 -name 'yy_*.exe' -printf '%s\t%p\n' \
+                | sort -n \
+                | tail -n 1 \
+                | cut -f2-
+            )"
+          fi
           if [ -z "$compiler_candidate" ]; then
             compiler_candidate="$(find "$compiler_unpack" -type f -perm -111 -print -quit)"
           fi
