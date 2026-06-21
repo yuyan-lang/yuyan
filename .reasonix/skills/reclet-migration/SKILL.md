@@ -49,7 +49,7 @@ Old local structure form:
 ```yuyan
 虑（
     「处理」乃化「字符串」列而「字符串」列也。
-    「处理」者循「处理」以会「剩余」而
+    「处理」者会「剩余」而
         鉴「剩余」而
             有「空」则「空」
             或有「多」于「头」于「尾」则 ...
@@ -75,7 +75,7 @@ Preferred reclet form:
 Important details:
 
 - Move the `乃 ... 也。` type into `其 ...`.
-- Remove `循「名」以` when the recursive binding itself supplies the self name.
+- Remove `` when the recursive binding itself supplies the self name.
 - Remove helper aliases like `虑「递归」者「处理」而`; call `「处理」` directly.
 - Remove the declaration-tail `也。` from `「名」者 ... 也。`. In reclet, the `而` after the definition is the separator.
 - Do not leave `也` immediately before the reclet separator `而`. An error like `不期待也字后有其他输入，却得到了[『而』...]` usually means the old declaration-tail `也` survived.
@@ -137,7 +137,7 @@ For trivial aliases that exist only to support the old structure style, inline t
 ## Checklist Before Finishing
 
 - Each migrated recursive helper has no remaining `乃 ... 也。` declaration line.
-- Each migrated recursive helper has no `循「同名」以` unless there is a deliberate reason.
+- Each migrated recursive helper has no `` unless there is a deliberate reason.
 - The old declaration-tail `也。` after the recursive helper is gone.
 - Any old direct expression sequence using `。` is now either a `；` sequence expression or a `虑「无」者...而...` chain.
 - `递归虑` body is a single expression.
