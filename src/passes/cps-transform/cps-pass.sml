@@ -329,8 +329,6 @@ exception CPSInternalError
         and cpsTransformSig  (ctx : context) (s : CSignature)  (acc : CSignature)
         (cc :  cpsvar -> cpscomputation)
         :  cpscomputation  =
-        let 
-        in
                 (* print ("eraseSigLazy DEBUG " ^ PrettyPrint.show_typecheckingSig s )
                 ; *)
                 case s of
@@ -369,7 +367,7 @@ exception CPSInternalError
                 (* cpsTransformExpr ctx e (fn resvar => 
                 cc (ctx, SOME resvar)) *)
             | (d as CTermDefinition(name, def, tp)):: ss =>  
-                cpsTransformExpr ctx def 
+                cpsTransformExpr ctx (CFix(name, def, CTypeAnn tp))
                 (fn resvar =>
                     (cpsTransformSig (([name], PlainVar resvar)::ctx) ss (acc@[d]) cc)
                 )
@@ -429,7 +427,6 @@ exception CPSInternalError
                 (* ((DebugPrint.p ("pure declaration encountered when compiling " ^ PrettyPrint.show_typecheckingCDecl d))
             ; raise CPSInternalError) *)
             (* raise Fail "cannot compile pure declaration" *)
-        end
             (* handle CPSInternalError =>
                 ((DebugPrint.p ("When transforming signature " ^  (if 
                 length s > 0 then 
