@@ -354,6 +354,22 @@ structure PreprocessingPass = struct
                             )
                             ))
                             else
+                            if oper ~=** importReexportStructureOp orelse oper ~=** importReexportStructureOp2
+                            then getStructureOpAST l1 >>= (fn structureOpAST => 
+                            ExpressionConstructionPass.getStructureName structureOpAST >>= (fn structureName =>  
+                            (newContextAfterImportingStructure structureName ctx 
+                                <?> (fn _ => genSingletonError (StructureName.toString structureName) "导入模块时出错" NONE)
+                            ) >>= (fn (ctx, path) =>
+                                let val importedName = List.last structureName
+                                in
+                                    Success([
+                                        PImportStructure (structureOpAST, path, oper),
+                                        PReExportStructure (UnknownOpName(importedName), getReExportDecls [importedName] ctx, oper)
+                                    ], ctx)
+                                end
+                            )
+                            ))
+                            else
                             if oper ~=** reexportStructureOp orelse oper ~=** reexportStructureOp2
                             then 
                                 getStructureOpAST l1 >>= (fn structureOpAST => 

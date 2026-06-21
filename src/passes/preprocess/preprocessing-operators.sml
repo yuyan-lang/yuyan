@@ -29,6 +29,8 @@ struct
     val importStructureOp2 = Operators.parseOperatorStr "导入〇" false false 0 []
     val importOpenStructureOp = Operators.parseOperatorStr "寻观〇之书" false false 0 []
     val importOpenStructureOp2 = Operators.parseOperatorStr "导入并打开〇" false false 0 []
+    val importReexportStructureOp = Operators.parseOperatorStr "寻诵〇之书" false false 0 []
+    val importReexportStructureOp2 = Operators.parseOperatorStr "导入并导出〇" false false 0 []
     val reexportStructureOp = Operators.parseOperatorStr "诵〇之书" false false 0 []
     val reexportStructureOp2 = Operators.parseOperatorStr "导出〇" false false 0 []
     
@@ -47,12 +49,12 @@ struct
     val declOpsNoImportOpen = baseStructureOps @ [openStructureOp, importStructureOp]
         @ (
             if enableSimplifiedChineseOperator
-            then [openStructureOp2, importOpenStructureOp2]
+            then [openStructureOp2, importStructureOp2]
             else []
         )
-    val declOpsWithImportOpen = baseStructureOps @ [importOpenStructureOp ] @(
+    val declOpsWithImportOpen = baseStructureOps @ [importOpenStructureOp, importReexportStructureOp] @(
         if enableSimplifiedChineseOperator
-        then [importOpenStructureOp2]
+        then [importOpenStructureOp2, importReexportStructureOp2]
         else []
     )
 
