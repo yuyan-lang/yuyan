@@ -367,7 +367,12 @@ exception CPSInternalError
                 (* cpsTransformExpr ctx e (fn resvar => 
                 cc (ctx, SOME resvar)) *)
             | (d as CTermDefinition(name, def, tp)):: ss =>  
-                cpsTransformExpr ctx (CFix(name, def, CTypeAnn tp))
+                cpsTransformExpr ctx (
+                    case def of
+                        CFix _ => def
+                        | CLam _ => CFix(name, def, CTypeAnn tp)
+                        | _ => def
+                )
                 (fn resvar =>
                     (cpsTransformSig (([name], PlainVar resvar)::ctx) ss (acc@[d]) cc)
                 )
