@@ -381,7 +381,7 @@ fun genLLVMStatement (s : llvmstatement) : string list =
         in
         [
             toLocalVar castedFname ^ " = bitcast i64* " ^ toLLVMLoc fname  ^ " to " ^ ftype ^ "*",
-            toLocalVar discard ^ " = musttail call i64 " ^ toLocalVar castedFname ^ 
+            toLocalVar discard ^ " = tail call i64 " ^ toLocalVar castedFname ^ 
                 "(" ^  String.concatWith ", " (map (fn arg => "i64* " ^ toLLVMLoc arg) args) ^ ")",
             (* assumed to terminate after call *)
             "ret i64 " ^ toLocalVar discard
