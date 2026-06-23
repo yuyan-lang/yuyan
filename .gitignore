@@ -193,6 +193,6 @@ cachegrind.out.*
 .reasonix/*.json
 
 yybs_*
-yy2
-yy3
-yy4
+yy2*
+yy3*
+yy4*
