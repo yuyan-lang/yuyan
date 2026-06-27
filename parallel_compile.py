@@ -206,7 +206,7 @@ def execute_plan():
     executing = {k : [] for k in stages}
     scheduled = {k : [] for k in stages}
     # errored = {k : [] for k in stages}
-    # error_msgs = []
+    error_msgs = []
 
     deps = {}
     deps_to_process = [yy_bs_main_file]
@@ -281,15 +281,16 @@ def execute_plan():
     update_schedule()
 
     def process_result(future):
-        nonlocal results_ready, deps, deps_to_process
+        nonlocal results_ready, deps, deps_to_process, error_msgs
         (result, error) = future.result()
         (comp_stage, file_and_args, prog_name, global_args), out_lines = result
         comp_file = file_and_args[0]
         extra_args = file_and_args[1:]
         if error:
             print(error)
-            os.abort()
-            # error_msgs.append(error)
+            error_msgs.append(error)
+            if comp_file in executing[comp_stage]:
+                executing[comp_stage].remove(comp_file)
             # if comp_stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
             #     function_name = extract_func_name(extra_args)
             #     errored[comp_stage].append((comp_file, function_name))
@@ -356,11 +357,13 @@ def execute_plan():
         pprint.pprint("=======================================")
 
     def run_all():
-        with ProcessPoolExecutor(max_workers=int(num_cpu_limit)) as executor:
-            while any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values()):
+        executor = ProcessPoolExecutor(max_workers=int(num_cpu_limit))
+        try:
+            while not error_msgs and (any(len(stg) > 0 for stg in scheduled.values()) or any(len(stg) > 0 for stg in executing.values())):
                 for i in range(len(stages)):
                     stage = stages[i]
                     while (scheduled[stage] 
+                        and not error_msgs
                         and sum(len(stg) for stg in executing.values()) < num_cpu_limit
                         ):
                         # if stage == STG_ANF_AND_PRE_CODEGEN_SINGLE_FUNC:
@@ -382,13 +385,17 @@ def execute_plan():
                 print("Waiting for updates...")
                 results_ready.wait()
                 results_ready.clear()
-                update_schedule()
+                if not error_msgs:
+                    update_schedule()
+        finally:
+            executor.shutdown(wait=(not error_msgs), cancel_futures=bool(error_msgs))
 
     run_all()
 
-    # if error_msgs:
-    #     print("\n\n\n".join(error_msgs))
-    #     os._exit(1)
+    if error_msgs:
+        sys.stdout.flush()
+        sys.stderr.flush()
+        sys.exit(-1)
     # if STG_CODEGEN_SINGLE_FUNC_FINAL in scheduled:
     #     for file in deps.keys():
     #         scheduled[STG_CODEGEN_SINGLE_FUNC_FINAL].append(file)
@@ -414,7 +421,9 @@ def execute_plan():
     t, error = exec_worker([yy_bs_main_file, *convert_to_override_list(get_exec_args())])
     if error:
         print(error)
-        os._exit(1)
+        sys.stdout.flush()
+        sys.stderr.flush()
+        sys.exit(-1)
     return "Compilation finished successfully"
 
 

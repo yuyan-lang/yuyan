@@ -8,9 +8,9 @@ yyvalue* stack_start;
 yyvalue *stack_gc_limit;
 yyvalue* stack_end;
 yyvalue* stack_ptr;
-// uint64_t stack_size = 1024 * 1024 * 32; // 32M array size, 256MB stack
-#define INITIAL_STACK_SIZE_MB 128 * 1024 * 1024
-uint64_t stack_size = INITIAL_STACK_SIZE_MB; // 2GB stack
+// stack_size is the number of yyvalue slots. Each yyvalue is 16 bytes.
+#define INITIAL_STACK_SIZE_SLOTS (32 * 1024 * 1024)
+uint64_t stack_size = INITIAL_STACK_SIZE_SLOTS; // 512MB stack
 double stack_gc_limit_percentage = 80.0;
 pthread_mutex_t stack_ptr_mutex = PTHREAD_MUTEX_INITIALIZER;
 yy_function_type current_function;
@@ -202,8 +202,8 @@ int64_t yy_runtime_start() {
         stack_size = atoi(requested_size) * 1024 * 1024;
     }
 
-    if (stack_size != INITIAL_STACK_SIZE_MB) {
-        fprintf(stderr, "YY initial stack is set to %f * 16 MB\n", (double) INITIAL_STACK_SIZE_MB / (1024 * 1024));
+    if (stack_size != INITIAL_STACK_SIZE_SLOTS) {
+        fprintf(stderr, "YY initial stack is set to %.0f MB\n", (double) stack_size * sizeof(yyvalue) / (1024 * 1024));
     }
 
     // stack = (yyvalue*) malloc(stack_size * sizeof(yyvalue));

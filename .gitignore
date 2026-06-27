@@ -196,3 +196,5 @@ yybs_*
 yy2*
 yy3*
 yy4*
+
+*.pyc

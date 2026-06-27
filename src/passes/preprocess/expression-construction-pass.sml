@@ -102,11 +102,12 @@ struct
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：爻》》") then Success(RBuiltinType(BIBool, s)) else
                 if UTF8String.semanticEqual s (UTF8String.fromString "《《内建类型：元类型》》") then Success(RUniverse(s)) 
                 else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阳》》") then Success(RBoolConstant(true, s)) 
-                else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阴》》") then Success(RBoolConstant(false, s)) 
-                else if UTF8String.semanticEqual s (UTF8String.fromString "阳") then Success(RBoolConstant(true, s))  (* make them primitive *)
-                else if UTF8String.semanticEqual s (UTF8String.fromString "阴") then Success(RBoolConstant(false, s)) 
-                else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建有：元》》") then Success(RUnitExpr(s)) 
-                else
+        else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建爻：阴》》") then Success(RBoolConstant(false, s)) 
+        else if UTF8String.semanticEqual s (UTF8String.fromString "阳") then Success(RBoolConstant(true, s))  (* make them primitive *)
+        else if UTF8String.semanticEqual s (UTF8String.fromString "阴") then Success(RBoolConstant(false, s)) 
+        else if UTF8String.semanticEqual s (UTF8String.fromString "元") then Success(RUnitExpr(s))
+        else if UTF8String.semanticEqual s (UTF8String.fromString "《《内建有：元》》") then Success(RUnitExpr(s)) 
+        else
               (case BuiltinFunctions.parseStr (UTF8String.toString s) of 
                 SOME f => Success(RBuiltinFunc(f, s))
                 | NONE => Success (RVar [s])

@@ -31,6 +31,7 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
 
 #define DEFAULT_MAX_HEAP_SIZE (2L * 1024 * 1024 * 1024) // 32 GB is the max heap size
 #define GC_LIMIT 90.0 // percentage of heap if this is filled up
+#define HEAP_EXPANSION_LIVE_RATIO 0.45
 
 yyvalue* current_heap = NULL;
 yyvalue* current_allocation_ptr = NULL;
@@ -304,7 +305,7 @@ void yy_perform_gc() {
     new_heap_size = 0;
     
 
-    if ((double)(current_allocation_ptr - current_heap) / current_heap_size > 0.1) {
+    if ((double)(current_allocation_ptr - current_heap) / current_heap_size > HEAP_EXPANSION_LIVE_RATIO) {
         should_expand_heap = true;
     }
     
@@ -321,5 +322,4 @@ void yy_perform_gc() {
     verify_gc();
     during_gc = false;
 }
-
 
