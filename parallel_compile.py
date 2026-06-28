@@ -137,7 +137,7 @@ def exec_worker(args):
         print(stderr.decode('utf-8'))
         return args, None
 
-def worker(task, retry_count=0):
+def worker(task, retry_count=0, running_pids=None, task_key=None, process_started=None):
     global stages
     stage, file_and_args, prog_name, global_args = task
     def pre_fun(i):
@@ -149,7 +149,16 @@ def worker(task, retry_count=0):
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\nRUN:\n"+ " ".join(command) + "\n")
     assert stage in stages, f"Error: stage {stage} is not in {stages}"
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, preexec_fn=pre_fun(stages.index(stage)))
+    if running_pids is not None and task_key is not None:
+        running_pids[task_key] = process.pid
+        if process_started is not None:
+            process_started.set()
     stdout, stderr = process.communicate()
+    if running_pids is not None and task_key is not None:
+        try:
+            del running_pids[task_key]
+        except KeyError:
+            pass
     log_file.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n"+ " ".join(command) + "\nSTDOUT: \n" + stdout.decode() + "\nSTDERR: \n" + stderr.decode() + "\nRET: \n" + str(process.returncode) + "\n")
     log_file.flush()
     if process.returncode != 0:
@@ -211,7 +220,9 @@ def execute_plan():
     deps = {}
     deps_to_process = [yy_bs_main_file]
 
-    results_ready = multiprocessing.Manager().Event()
+    process_manager = multiprocessing.Manager()
+    results_ready = process_manager.Event()
+    running_pids = process_manager.dict()
 
     
     function_names : Dict[str, List[str]] = {}
@@ -278,6 +289,19 @@ def execute_plan():
                     #      )):
                     #     scheduled[stages[i+1]].append(file)
 
+    def running_process_key(stage, file_name):
+        return f"{stage}\0{file_name}"
+
+    def print_executing_with_pids():
+        for stage, files in executing.items():
+            if not files:
+                print(f"{stage}: []")
+            else:
+                print(f"{stage}:")
+                for file_name in files:
+                    pid = running_pids.get(running_process_key(stage, file_name), "?")
+                    print(f"  pid={pid:<7} {file_name}")
+
     update_schedule()
 
     def process_result(future):
@@ -340,14 +364,13 @@ def execute_plan():
         results_ready.set()
     def print_stat():
         # scheduled_pp = process_pp_dictionary(scheduled)
-        executing_pp = process_pp_dictionary(executing, show_summary=False)
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
         # pprint.pprint(scheduled_pp, sort_dicts=False, compact=True)
         pprint.pprint({k: len(v) for k, v in scheduled.items()}, sort_dicts=False)
         pprint.pprint("============== Executing ==============")
-        pprint.pprint(executing_pp, sort_dicts=False, compact=True)
+        print_executing_with_pids()
         pprint.pprint("============== Completed ==============")
         # pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
         print([len(v) for v in completed.values()])
@@ -380,7 +403,14 @@ def execute_plan():
                             file_name = scheduled[stage].pop()
                             # print("Scheduling", (stage, file_name))
                             executing[stage].append(file_name)
-                            executor.submit(worker, (stage, get_file_args(file_name), yy_program_name, yy_bs_global_args)).add_done_callback(process_result)
+                            executor.submit(
+                                worker,
+                                (stage, get_file_args(file_name), yy_program_name, yy_bs_global_args),
+                                0,
+                                running_pids,
+                                running_process_key(stage, file_name),
+                                results_ready,
+                            ).add_done_callback(process_result)
                 print_stat()
                 print("Waiting for updates...")
                 results_ready.wait()
