@@ -1,10 +1,10 @@
-# Builtin List Constructors
+# 内建列表构造子
 
-## Goal
+## 目标
 
-Make list constructors builtin to reduce parsing/type-checking overhead and improve source readability.
+把列表构造子变成内建，减少解析和类型检查开销，同时改善源码可读性。
 
-The intended builtin list surface is:
+预期的列表表面语法是：
 
 ```text
 列
@@ -15,16 +15,16 @@ The intended builtin list surface is:
 ，
 ```
 
-`多` and `空` are historical names. They should be replaced by:
+`多` 和 `空` 是历史名称，应迁移为：
 
 ```text
 多 -> 缀
 空 -> 罄
 ```
 
-## Builtin Semantics
+## 内建语义
 
-Introduce builtin list constants:
+新增内建列表常量：
 
 ```text
 内建类型列
@@ -32,7 +32,7 @@ Introduce builtin list constants:
 内建列缀
 ```
 
-Their types are:
+它们的类型是：
 
 ```text
 列 : 元类型 -> 元类型
@@ -40,27 +40,27 @@ Their types are:
 缀 : {甲 : 元类型} -> 甲 -> 列 甲 -> 列 甲
 ```
 
-`缀` and `罄` should behave as constructors, not ordinary functions.
+`缀` 和 `罄` 应该表现为构造器，而不是普通函数。
 
-Use the existing constructor path:
+优先复用现有构造器路径：
 
 ```text
 唯一构造器节点
 展开后唯一构造器节点
 ```
 
-The compiler may assign fixed unique constructor ids for the builtin list constructors, for example:
+编译器可以为内建列表构造器分配固定构造器序数，例如：
 
 ```text
 内建列罄构造器序数 = -1001
 内建列缀构造器序数 = -1002
 ```
 
-Before using negative ids, verify that later stages do not assume constructor ids are positive. If they do, reserve a high positive range instead.
+使用负数序数前，需要确认后续阶段没有假设构造器序数必须为正。若存在正数假设，则改用保留的高位正数范围。
 
-## Operators
+## 操作符
 
-Add these operators:
+新增这些操作符：
 
 ```text
 【】
@@ -68,31 +68,31 @@ Add these operators:
 〇，〇
 ```
 
-`：：` is the user-facing cons operator.
+`：：` 是面向用户的 cons 操作符：
 
 ```text
 甲 ：： 乙
 ```
 
-expands to:
+展开为：
 
 ```text
 缀 甲 乙
 ```
 
-`：：` should be right-associative:
+`：：` 应该右结合：
 
 ```text
 甲 ：： 乙 ：： 罄
 ```
 
-means:
+表示：
 
 ```text
 甲 ：： (乙 ：： 罄)
 ```
 
-The list literal syntax:
+列表字面量语法：
 
 ```text
 【】
@@ -100,7 +100,7 @@ The list literal syntax:
 【甲，乙，丙】
 ```
 
-expands to:
+展开为：
 
 ```text
 罄
@@ -108,25 +108,25 @@ expands to:
 缀 甲 (缀 乙 (缀 丙 罄))
 ```
 
-`，` should only be used as a parser-local sequence operator for list literals at first. It must not survive into type checking.
+`，` 初期只作为列表字面量内部的解析期序列操作符使用，不应残留到类型检查阶段。
 
-## Parsing Shape
+## 解析形态
 
-The preferred implementation is:
+推荐实现方式：
 
-1. `，` builds a parser-local sequence representation inside list brackets.
-2. `【...】` consumes that sequence and right-folds it into `缀 ... 罄`.
-3. The final AST contains only ordinary applications of `缀` and `罄`, or direct builtin constructor nodes if that is cleaner.
+1. `，` 在列表括号内部构建解析期序列。
+2. `【...】` 消费该序列，并右折叠为 `缀 ... 罄`。
+3. 最终 AST 只包含普通的 `缀/罄` 应用；如果更干净，也可以直接生成内建构造器节点。
 
-Do not introduce a serialized list-literal AST node unless absolutely necessary.
+除非确实必要，不要新增需要序列化的列表字面量 AST 节点。
 
-## YY Compiler Changes
+## 豫言编译器改动
 
-Update the 豫言 compiler:
+更新豫言编译器：
 
-1. Add builtin constants for `列`, `罄`, and `缀`.
-2. Add string representations for those builtins.
-3. Resolve source names directly during parsing/desugaring:
+1. 为 `列/罄/缀` 添加内建常量。
+2. 添加这些内建常量的字符串表示。
+3. 在解析或去糖化阶段直接解析源名：
 
 ```text
 列 -> 内建类型列
@@ -134,23 +134,23 @@ Update the 豫言 compiler:
 缀 -> 内建列缀
 ```
 
-4. Keep temporary compatibility while migrating:
+4. 迁移期间可暂时保留兼容：
 
 ```text
 多 -> 内建列缀
 空 -> 内建列罄
 ```
 
-5. Make `内建物类型` return the correct dependent function types.
-6. Make `罄/缀` lower through the existing constructor machinery with fixed constructor ids.
-7. Ensure pattern matching, type erasure, CPS, and code generation keep working through the existing constructor path.
+5. 让 `内建物类型` 返回正确的依赖函数类型。
+6. 让 `罄/缀` 通过现有构造器机制降到固定构造器序数。
+7. 确保模式匹配、类型擦除、CPS 和代码生成仍通过现有构造器路径工作。
 
-## SML Compiler Changes
+## SML 编译器改动
 
-Update the SML compiler in parallel:
+同步更新 SML 编译器：
 
-1. Add builtin list type / constructor representation in the SML AST layer.
-2. Update expression construction so these names parse as builtins:
+1. 在 SML AST 层添加内建列表类型/构造器表示。
+2. 更新表达式构造，使这些名称解析为内建：
 
 ```text
 列
@@ -160,20 +160,20 @@ Update the SML compiler in parallel:
 空
 ```
 
-3. Add fixed constructor ids for `罄` and `缀`.
-4. Reuse the existing `CConsInfoTypeConstructor` / `CConsInfoElementConstructor` path.
-5. Avoid introducing a separate list runtime unless the existing constructor path cannot support it.
+3. 为 `罄` 和 `缀` 添加固定构造器序数。
+4. 复用现有 `CConsInfoTypeConstructor` / `CConsInfoElementConstructor` 路径。
+5. 除非现有构造器路径无法支持，否则不要引入新的列表运行时。
 
-## Migration Order
+## 迁移顺序
 
-1. Mechanically replace complete identifiers:
+1. 先机械替换完整标识符：
 
 ```text
 「多」 -> 「缀」
 「空」 -> 「罄」
 ```
 
-Only replace complete quoted identifiers. Do not touch compound names such as:
+只替换完整引号标识符。不要误改这些复合名：
 
 ```text
 多态列
@@ -182,14 +182,14 @@ Only replace complete quoted identifiers. Do not touch compound names such as:
 空串典
 ```
 
-2. Add builtin support for `列/罄/缀`.
-3. Add `：：`.
-4. Add list literal syntax using `【】` and `，`.
-5. Remove ordinary stdlib declarations for `列/罄/缀` after bootstrap succeeds.
-6. Optionally migrate nested cons expressions to list literals for readability.
+2. 添加 `列/罄/缀` 的内建支持。
+3. 添加 `：：`。
+4. 添加 `【】` 和 `，` 的列表字面量语法。
+5. 自举成功后，再移除标准库中 `列/罄/缀` 的普通声明。
+6. 可选：把嵌套 cons 表达式逐步迁移成列表字面量，提高可读性。
 
-## Validation
+## 验证
 
-Run type-checking validation after the compiler parses again.
+编译器重新能解析后，先运行类型检查验证。
 
-Run full bootstrapping validation once both the YY compiler and SML compiler agree on builtin list constructors and fixed constructor ids.
+当豫言编译器和 SML 编译器都认同内建列表构造器及固定构造器序数后，再运行完整自举验证。
