@@ -15,6 +15,7 @@ import subprocess
 import json
 import pprint
 import re
+import time
 from random import random
 from datetime import datetime
 
@@ -24,6 +25,19 @@ DEFAULT_PARALLEL_FACTOR = 1.0
 yy_bs_global_args = []
 yy_bs_main_file = None
 yy_program_name = None
+
+def format_elapsed(seconds):
+    total_seconds = int(seconds)
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, secs = divmod(remainder, 60)
+    if hours:
+        return f"{hours:d}:{minutes:02d}:{secs:02d}"
+    return f"{minutes:02d}:{secs:02d}"
+
+def clear_terminal_for_progress():
+    if sys.stdout.isatty():
+        sys.stdout.write("\033[2J\033[H")
+        sys.stdout.flush()
 
 STG_DEPENDENCY_ANALYSIS = "dependency-analysis"
 STG_PARSE = "parse"
@@ -211,6 +225,7 @@ def worker(task, retry_count=0, running_pids=None, task_key=None, process_starte
 #     return graph, None
 
 def execute_plan():
+    start_time = time.monotonic()
     completed = {k : [] for k in stages}
     executing = {k : [] for k in stages}
     scheduled = {k : [] for k in stages}
@@ -363,18 +378,20 @@ def execute_plan():
                 print("completed", comp_stage, comp_file)
         results_ready.set()
     def print_stat():
+        clear_terminal_for_progress()
         # scheduled_pp = process_pp_dictionary(scheduled)
+        pprint.pprint(f"Elapsed: {format_elapsed(time.monotonic() - start_time)}")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("============== Scheduled ==============")
         # pprint.pprint(scheduled_pp, sort_dicts=False, compact=True)
         pprint.pprint({k: len(v) for k, v in scheduled.items()}, sort_dicts=False)
-        pprint.pprint("============== Executing ==============")
-        print_executing_with_pids()
         pprint.pprint("============== Completed ==============")
         # pprint.pprint({k: len(v) for k, v in completed.items()}, sort_dicts=False)
         print([len(v) for v in completed.values()])
         print(list(completed.keys()))
+        pprint.pprint("============== Executing ==============")
+        print_executing_with_pids()
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
         pprint.pprint("=======================================")
