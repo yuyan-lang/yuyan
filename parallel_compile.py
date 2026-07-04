@@ -307,6 +307,22 @@ def execute_plan():
     def running_process_key(stage, file_name):
         return f"{stage}\0{file_name}"
 
+    def progress_file_name(item):
+        if isinstance(item, tuple):
+            return item[0]
+        return item
+
+    def known_progress_files():
+        files = set(deps_to_process) | set(deps.keys())
+        for stage_files in list(scheduled.values()) + list(executing.values()) + list(completed.values()):
+            files.update(progress_file_name(file) for file in stage_files)
+        return files
+
+    def overall_progress():
+        completed_tasks = sum(len(stage_completed) for stage_completed in completed.values())
+        overall_tasks = len(known_progress_files()) * len(stages)
+        return completed_tasks, overall_tasks
+
     def print_executing_with_pids():
         for stage, files in executing.items():
             if not files:
@@ -379,6 +395,8 @@ def execute_plan():
         results_ready.set()
     def print_stat():
         clear_terminal_for_progress()
+        completed_tasks, overall_tasks = overall_progress()
+        print(f"Overall: {completed_tasks} / {overall_tasks}")
         # scheduled_pp = process_pp_dictionary(scheduled)
         pprint.pprint(f"Elapsed: {format_elapsed(time.monotonic() - start_time)}")
         pprint.pprint("=======================================")
