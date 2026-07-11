@@ -4,7 +4,8 @@
 - Prefer the cheapest validation that gives useful confidence for the change.
 - Type-checking validation may be run after manual review:
   - `./yy 豫言编译器/入口。豫 --type-check-only`
-  - `./yy_bs_stable 豫言编译器/入口。豫 --type-check-only`
+  - The fastest type-checking validation is `./yy_bs_stable 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null`.
+  - If it fails, rerun it without `--parallel` and without redirecting stdout/stderr to see the diagnostic.
 - Full bootstrapping validation should be run for compiler changes that may affect generated compiler semantics, unless the user explicitly asks not to run validation. Use exactly this pipeline:
   - `./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs --parallel >/dev/null 2>/dev/null`
   - `./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel >/dev/null 2>/dev/null`
