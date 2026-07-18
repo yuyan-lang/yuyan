@@ -5,7 +5,7 @@ complete this file, replace error and abort with actual implementation. I want a
 */
 
 #ifndef ROOT_POINTS_LIMIT
-#define ROOT_POINTS_LIMIT 1000
+#define ROOT_POINTS_LIMIT 65536
 #endif
 
 yyvalue* gc_root_points[ROOT_POINTS_LIMIT] = {0};
@@ -322,4 +322,3 @@ void yy_perform_gc() {
     verify_gc();
     during_gc = false;
 }
-
