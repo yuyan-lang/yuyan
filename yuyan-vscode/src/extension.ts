@@ -29,7 +29,6 @@ interface TokenExtent {
 
 interface TokenDetail {
   type: string;
-  semantic_token_type?: string;
   content?: string; // For Hover
   extent?: TokenExtent; // For Definition
 }
@@ -99,93 +98,6 @@ async function getTokensInfo(document: vscode.TextDocument): Promise<any[] | und
     log(`Failed to load token file: ${error.message || error}`);
     return undefined;
   }
-}
-
-async function provideSemanticTokens(
-  document: vscode.TextDocument,
-  legend: vscode.SemanticTokensLegend
-): Promise<vscode.SemanticTokens | undefined> {
-  // Skip non-file documents (output panels, etc.)
-  if (document.uri.scheme !== 'file') {
-    return undefined;
-  }
-
-  log('provideSemanticTokens called');
-  const allTokens = await getTokensInfo(document);
-
-  if (!allTokens) {
-    log('No tokens found, returning undefined');
-    return undefined;
-  }
-
-  // Filter for semantic tokens only
-  const semanticTokens = allTokens.filter(t =>
-    t.detail && t.detail.type === "SemanticToken" && t.detail.semantic_token_type
-  );
-
-  // Sort tokens by position (line, then column)
-  semanticTokens.sort((a, b) => {
-    if (a.extent.start_line !== b.extent.start_line) {
-      return a.extent.start_line - b.extent.start_line;
-    }
-    return a.extent.start_col - b.extent.start_col;
-  });
-
-  const builder = new vscode.SemanticTokensBuilder(legend);
-  const tokenTypes = legend.tokenTypes;
-
-  for (const tokenInfo of semanticTokens) {
-    const tokenType = tokenInfo.detail.semantic_token_type;
-    const tokenTypeIndex = tokenTypes.indexOf(tokenType);
-
-    if (tokenTypeIndex === -1) {
-      console.warn(`Unknown token type: ${tokenType}`);
-      continue;
-    }
-
-    // Both VSCode and token file use 0-based indexing
-    const startLine = tokenInfo.extent.start_line;
-    const startChar = tokenInfo.extent.start_col;
-    const endLine = tokenInfo.extent.end_line;
-    const endChar = tokenInfo.extent.end_col;
-
-    // Handle multi-line tokens
-    if (startLine === endLine) {
-      // Single line token
-      const length = endChar - startChar;
-      if (startLine >= 0 && startChar >= 0 && length > 0) {
-        builder.push(startLine, startChar, length, tokenTypeIndex);
-      }
-    } else {
-      // Multi-line token - need to get actual line content to calculate lengths
-      const lines = document.getText().split('\n');
-
-      // First line: from startChar to end of line
-      if (startLine < lines.length) {
-        const firstLineLength = lines[startLine].length - startChar;
-        if (firstLineLength > 0) {
-          builder.push(startLine, startChar, firstLineLength, tokenTypeIndex);
-        }
-      }
-
-      // Middle lines: entire lines
-      for (let line = startLine + 1; line < endLine && line < lines.length; line++) {
-        const lineLength = lines[line].length;
-        if (lineLength > 0) {
-          builder.push(line, 0, lineLength, tokenTypeIndex);
-        }
-      }
-
-      // Last line: from start of line to endChar
-      if (endLine < lines.length && endChar > 0) {
-        builder.push(endLine, 0, endChar, tokenTypeIndex);
-      }
-    }
-  }
-
-  const result = builder.build();
-  log(`Semantic tokens provided: ${semanticTokens.length} tokens processed`);
-  return result;
 }
 
 async function provideHover(
@@ -440,37 +352,13 @@ function executeCompilerCommand(filePath: string): void {
   });
 }
 
-function startLSP(context: vscode.ExtensionContext): void {
-  log('Starting LSP initialization');
+function registerLanguageProviders(context: vscode.ExtensionContext): void {
+  log('Registering language providers');
 
   // Get language selector from configuration or default to all files
   const config = vscode.workspace.getConfiguration('yuyan');
   const languageSelector = config.get<string>('languageSelector', 'yuyan');
   log(`Using language selector: ${languageSelector}`);
-
-  const tokenTypes = [
-    "StringConstant",
-    "NumericConstant",
-    "StructureKeyword",
-    "ExpressionKeyword",
-    "UserDefinedOperatorKeyword",
-    "Identifier",
-    "Comment"
-  ];
-
-  const legend = new vscode.SemanticTokensLegend(tokenTypes);
-  log('Token types registered:', tokenTypes);
-
-  const semanticTokensProvider = vscode.languages.registerDocumentSemanticTokensProvider(languageSelector, {
-    async provideDocumentSemanticTokens(
-      document: vscode.TextDocument,
-      token: vscode.CancellationToken
-    ): Promise<vscode.SemanticTokens | undefined> {
-      return await provideSemanticTokens(document, legend);
-    }
-  }, legend);
-  context.subscriptions.push(semanticTokensProvider);
-  log('Semantic tokens provider registered');
 
   const completionProvider = vscode.languages.registerCompletionItemProvider(languageSelector, {
     provideCompletionItems(
@@ -519,7 +407,7 @@ function startLSP(context: vscode.ExtensionContext): void {
 
   log('Definition provider registered');
 
-  log('All LSP providers registered successfully');
+  log('All language providers registered successfully');
 }
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -532,7 +420,7 @@ export function activate(context: vscode.ExtensionContext): void {
   // outputChannel.show(true);
 
   try {
-    startLSP(context);
+    registerLanguageProviders(context);
 
     // Register file save event handler for compiler commands
     const onSaveDisposable = vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {

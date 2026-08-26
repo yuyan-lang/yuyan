@@ -1,26 +1,266 @@
 {
-    "scopeName": "source.yuyan",
-    "patterns": [{ "include": "#expression" }],
-    "repository": {
-      "expression": {
-        "patterns": [{ "include": "#coment" }]
+  "name": "Yuyan",
+  "scopeName": "source.yuyan",
+  "patterns": [
+    { "include": "#block-comment" },
+    { "include": "#string" },
+    { "include": "#structure-declaration" },
+    { "include": "#builtin" },
+    { "include": "#numeric-identifier" },
+    { "include": "#identifier" },
+    { "include": "#quoted-expression" },
+    { "include": "#label" },
+    { "include": "#number" },
+    { "include": "#expression-symbol-keyword" },
+    { "include": "#keyword-run" },
+    { "include": "#structure-terminator" },
+    { "include": "#punctuation" },
+    { "include": "#bare-identifier" }
+  ],
+  "repository": {
+    "block-comment": {
+      "name": "comment.block.yuyan",
+      "begin": "「：",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.begin.yuyan" }
       },
-      "letter": {
-        "match": "a|b|c",
-        "name": "keyword.letter"
+      "end": "：」",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.comment.end.yuyan" }
       },
-      "comments": {
-        "patterns": [
-          {
-            "name": "comment.line.percentage.twelf",
-            "match": "%[^a-z{].*$"
+      "patterns": [
+        { "include": "#block-comment" }
+      ]
+    },
+    "string": {
+      "name": "string.quoted.other.yuyan",
+      "begin": "『",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.yuyan" }
+      },
+      "end": "』",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.yuyan" }
+      },
+      "patterns": [
+        {
+          "name": "constant.character.escape.yuyan",
+          "begin": "「：",
+          "end": "：」"
+        }
+      ]
+    },
+    "structure-declaration": {
+      "patterns": [
+        {
+          "name": "meta.declaration.yuyan",
+          "begin": "^(「)(?!：)([^「」『』（）。\\r\\n]+)(」)(的类型可以是|的类型是|的定义是|其实就是|是一种|者|即|乃|立|号)((?:(?:执行如下计算|实际上是|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|否则|授以|给予|随后|结合|如果|那么|或者|分析|递归|连结|中的|其实|化|承|从|到|自|合|之|的|会|遇|循|以|受|虑|其|让|为|于|与|附|中|有|则|或|鉴|若|也|传|而|者|个))+(?![\\p{L}\\p{N}_]))?",
+          "beginCaptures": {
+            "1": { "name": "punctuation.definition.variable.begin.yuyan" },
+            "2": { "name": "variable.other.yuyan" },
+            "3": { "name": "punctuation.definition.variable.end.yuyan" },
+            "4": { "name": "markup.bold.structure.yuyan" },
+            "5": {
+              "patterns": [
+                { "include": "#expression-long-keyword-component" },
+                { "include": "#type-keyword-component" },
+                { "include": "#expression-keyword-component" }
+              ]
+            }
           },
-          {
-            "name": "comment.block",
-            "begin": "「：",
-            "end": "：」"
-          }
-        ]
+          "end": "(?=。)",
+          "patterns": [
+            { "include": "#structure-declaration-end" },
+            { "include": "$self" }
+          ]
+        },
+        {
+          "name": "meta.declaration.yuyan",
+          "begin": "^([\\p{L}_][\\p{L}\\p{N}_]*?)(的类型可以是|的类型是|的定义是|其实就是|是一种|者|即|乃|立|号)(?:((?:(?:执行如下计算|实际上是|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|否则|授以|给予|随后|结合|如果|那么|或者|分析|递归|连结|中的|其实|化|承|从|到|自|合|之|的|会|遇|循|以|受|虑|其|让|为|于|与|附|中|有|则|或|鉴|若|也|传|而|者|个))+(?![\\p{L}\\p{N}_]))|(?=[^\\p{L}\\p{N}_]|$))",
+          "beginCaptures": {
+            "1": { "name": "variable.other.yuyan" },
+            "2": { "name": "markup.bold.structure.yuyan" },
+            "3": {
+              "patterns": [
+                { "include": "#expression-long-keyword-component" },
+                { "include": "#type-keyword-component" },
+                { "include": "#expression-keyword-component" }
+              ]
+            }
+          },
+          "end": "(?=。)",
+          "patterns": [
+            { "include": "#structure-declaration-end" },
+            { "include": "$self" }
+          ]
+        },
+        {
+          "name": "meta.declaration.operator.yuyan",
+          "begin": "^(术|函数)",
+          "beginCaptures": {
+            "1": { "name": "markup.bold.structure.yuyan" }
+          },
+          "end": "(?=。)",
+          "patterns": [
+            { "include": "#structure-declaration-end" },
+            { "include": "$self" }
+          ]
+        }
+      ]
+    },
+    "structure-declaration-end": {
+      "name": "markup.bold.structure.yuyan",
+      "match": "也(?=\\s*。)"
+    },
+    "builtin": {
+      "patterns": [
+        {
+          "name": "support.type.builtin.yuyan",
+          "match": "《《内建类型：[^》]+》》"
+        },
+        {
+          "name": "constant.language.builtin.yuyan",
+          "match": "《《(?:内建爻|内建有)：[^》]+》》"
+        },
+        {
+          "name": "support.function.builtin.yuyan",
+          "match": "《《(?:内建函数：[^》]+|C调用)》》(?>函数名是|名)?"
+        },
+        {
+          "name": "constant.language.builtin.yuyan",
+          "match": "《《[^》]+》》"
+        }
+      ]
+    },
+    "numeric-identifier": {
+      "name": "constant.numeric.yuyan",
+      "match": "「[零一二三四五六七八九0-9]+(?:[点.][零一二三四五六七八九0-9]+)?」"
+    },
+    "identifier": {
+      "name": "variable.other.yuyan",
+      "match": "(「)(?!：)([^「」『』（）。\\r\\n]+)(」)",
+      "captures": {
+        "1": { "name": "punctuation.definition.variable.begin.yuyan" },
+        "3": { "name": "punctuation.definition.variable.end.yuyan" }
       }
+    },
+    "quoted-expression": {
+      "name": "meta.group.expression.quoted.yuyan",
+      "begin": "「(?!：)",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.group.begin.yuyan" }
+      },
+      "end": "」",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.group.end.yuyan" }
+      },
+      "patterns": [
+        { "include": "$self" }
+      ]
+    },
+    "label": {
+      "name": "entity.name.label.yuyan",
+      "begin": "《(?!《)",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.label.begin.yuyan" }
+      },
+      "end": "》",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.label.end.yuyan" }
+      }
+    },
+    "number": {
+      "name": "constant.numeric.yuyan",
+      "match": "[零一二三四五六七八九0-9]+(?:[点.][零一二三四五六七八九0-9]+)?"
+    },
+    "keyword-run": {
+      "match": "(?<![\\p{L}\\p{N}_])(?:(?:导入并打开|导入并导出|的类型可以是|执行如下计算|《《C调用》》函数名是|其实就是|的类型是|的定义是|实际上是|寻观诵|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|寻观|寻诵|观诵|是一种|结合性|否则|授以|给予|随后|之书|打开|导入|导出|函数|结合|如果|那么|或者|分析|递归|连结|中的|其实|化|承|从|到|自|合|之|的|会|遇|循|以|受|虑|其|让|为|于|与|附|中|有|则|或|鉴|若|也|传|而|者|个|立|乃|即|号|术|交|序|寻|观|诵))+(?![\\p{L}\\p{N}_])",
+      "captures": {
+        "0": {
+          "patterns": [
+            { "include": "#structure-keyword-component" },
+            { "include": "#expression-long-keyword-component" },
+            { "include": "#type-keyword-component" },
+            { "include": "#expression-keyword-component" }
+          ]
+        }
+      }
+    },
+    "structure-keyword-component": {
+      "patterns": [
+        {
+          "name": "markup.bold.structure.yuyan",
+          "match": "导入并打开|导入并导出|的类型可以是|的类型是|其实就是|的定义是|寻观诵|寻观|寻诵|观诵|是一种|结合性|之书|打开|导入|导出|函数|立|乃|即|号|术|交|序|寻|观|诵"
+        }
+      ]
+    },
+    "expression-long-keyword-component": {
+      "patterns": [
+        {
+          "name": "keyword.operator.word.yuyan",
+          "match": "执行如下计算|《《C调用》》函数名是|实际上是|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|否则|授以|给予|随后|如果|那么|或者|分析|递归|连结|其实"
+        }
+      ]
+    },
+    "type-keyword-component": {
+      "patterns": [
+        {
+          "name": "storage.type.function.yuyan",
+          "match": "结合|中的|化|承|从|到|自|合|之|的"
+        }
+      ]
+    },
+    "expression-keyword-component": {
+      "patterns": [
+        {
+          "name": "keyword.control.conditional.yuyan",
+          "match": "否则|若|则"
+        },
+        {
+          "name": "keyword.control.yuyan",
+          "match": "递归虑|如果是|如果|那么|或者|分析|递归|虑|其|者|而|鉴|有|或"
+        },
+        {
+          "name": "keyword.operator.word.yuyan",
+          "match": "执行如下计算|实际上是|遇到了|得到了|使用于|中的第|类型为|参数是|授以|给予|随后|连结|其实|会|遇|循|以|受|虑|让|为|附|于|与|中|也|传|个"
+        }
+      ]
+    },
+    "expression-symbol-keyword": {
+      "name": "keyword.operator.yuyan",
+      "match": "；"
+    },
+    "structure-terminator": {
+      "name": "markup.bold.structure.terminator.yuyan",
+      "match": "。"
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.section.parens.begin.yuyan",
+          "match": "（"
+        },
+        {
+          "name": "punctuation.section.parens.end.yuyan",
+          "match": "）"
+        },
+        {
+          "name": "punctuation.section.brackets.begin.yuyan",
+          "match": "【"
+        },
+        {
+          "name": "punctuation.section.brackets.end.yuyan",
+          "match": "】"
+        },
+        {
+          "name": "punctuation.separator.sequence.yuyan",
+          "match": "，"
+        }
+      ]
+    },
+    "bare-identifier": {
+      "name": "variable.other.yuyan",
+      "match": "[\\p{L}_][\\p{L}\\p{N}_]*"
     }
+  }
 }
