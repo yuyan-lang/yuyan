@@ -16,7 +16,8 @@
     "Other"
   ],
   "activationEvents": [
-    "onStartupFinished"
+    "onStartupFinished",
+    "onCommand:yuyan.jumpToBuildArtifact"
   ],
   "main": "./out/extension.js",
   "browser": "./out/extension.js",
@@ -95,6 +96,10 @@
       {
         "command": "yuyan.debugshowtrees",
         "title": "Yuyan: Debug Show Trees 调试显式语法树组"
+      },
+      {
+        "command": "yuyan.jumpToBuildArtifact",
+        "title": "Yuyan: Jump to Build Artifact 跳转到构建产物"
       }
     ]
   },
@@ -103,8 +108,9 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint . --ignore-pattern out",
-    "pretest": "npm run lint && npm run compile && npm run test:grammar",
+    "pretest": "npm run lint && npm run compile && npm run test:grammar && npm run test:build-artifacts",
     "test:grammar": "node test/grammar.test.js",
+    "test:build-artifacts": "node test/buildArtifacts.test.js",
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {

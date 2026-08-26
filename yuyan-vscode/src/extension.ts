@@ -1,12 +1,48 @@
 import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import * as path from 'path';
+import {
+  jsonArtifactStage,
+  sortBuildCachesNewestFirst,
+  sourceRelativePathToArtifactStem
+} from './buildArtifacts';
+
+const BUILD_ARTIFACT_SCHEME = 'yuyan-build-artifact';
+const JUMP_TO_BUILD_ARTIFACT_COMMAND = 'yuyan.jumpToBuildArtifact';
 
 // Create output channel for logging
 const outputChannel = vscode.window.createOutputChannel('Yuyan Language Extension');
 
 // Create diagnostic collection for compiler errors/warnings
 const diagnosticCollection = vscode.languages.createDiagnosticCollection('yuyan');
+
+interface BuildArtifactQuickPickItem extends vscode.QuickPickItem {
+  artifactUri: vscode.Uri;
+}
+
+class BuildArtifactContentProvider implements vscode.TextDocumentContentProvider {
+  private readonly contents = new Map<string, string>();
+  private nextDocumentId = 0;
+
+  provideTextDocumentContent(uri: vscode.Uri): string | undefined {
+    return this.contents.get(uri.toString());
+  }
+
+  createDocumentUri(fileName: string, content: string): vscode.Uri {
+    this.nextDocumentId += 1;
+    const uri = vscode.Uri.from({
+      scheme: BUILD_ARTIFACT_SCHEME,
+      path: `/${fileName}`,
+      query: `document=${this.nextDocumentId}`
+    });
+    this.contents.set(uri.toString(), content);
+    return uri;
+  }
+
+  forgetDocument(uri: vscode.Uri): void {
+    this.contents.delete(uri.toString());
+  }
+}
 
 function log(message: string, ...args: any[]): void {
   const timestamp = new Date().toISOString();
@@ -410,6 +446,193 @@ function registerLanguageProviders(context: vscode.ExtensionContext): void {
   log('All language providers registered successfully');
 }
 
+interface BuildCacheDirectory {
+  name: string;
+  mtime: number;
+  uri: vscode.Uri;
+}
+
+async function findJsonBuildArtifacts(
+  workspaceFolder: vscode.WorkspaceFolder,
+  artifactStem: string
+): Promise<BuildArtifactQuickPickItem[]> {
+  const buildRootUri = vscode.Uri.joinPath(workspaceFolder.uri, '.yybuild');
+  const buildRootEntries = await vscode.workspace.fs.readDirectory(buildRootUri);
+  const cacheDirectories = await Promise.all(
+    buildRootEntries
+      .filter(([, fileType]) => (fileType & vscode.FileType.Directory) !== 0)
+      .map(async ([name]) => {
+        const uri = vscode.Uri.joinPath(buildRootUri, name);
+        const stat = await vscode.workspace.fs.stat(uri);
+        return { name, mtime: stat.mtime, uri };
+      })
+  );
+  const sortedCaches = sortBuildCachesNewestFirst<BuildCacheDirectory>(cacheDirectories);
+  const artifactDirectory = path.posix.dirname(artifactStem);
+  const sourceBaseName = path.posix.basename(artifactStem);
+  const quickPickItems: BuildArtifactQuickPickItem[] = [];
+
+  for (const [cacheIndex, cache] of sortedCaches.entries()) {
+    const artifactDirectoryUri = artifactDirectory === '.'
+      ? cache.uri
+      : vscode.Uri.joinPath(cache.uri, artifactDirectory);
+    let entries: [string, vscode.FileType][];
+
+    try {
+      entries = await vscode.workspace.fs.readDirectory(artifactDirectoryUri);
+    } catch {
+      continue;
+    }
+
+    const artifacts = entries
+      .filter(([, fileType]) => (fileType & vscode.FileType.File) !== 0)
+      .map(([fileName]) => ({ fileName, stage: jsonArtifactStage(fileName, sourceBaseName) }))
+      .filter((artifact): artifact is { fileName: string; stage: string } => artifact.stage !== undefined)
+      .sort((left, right) => left.stage.localeCompare(right.stage, 'zh-CN'));
+
+    for (const artifact of artifacts) {
+      const artifactUri = vscode.Uri.joinPath(artifactDirectoryUri, artifact.fileName);
+      quickPickItems.push({
+        label: `$(json) ${artifact.stage}`,
+        description: cacheIndex === 0 ? `最新缓存 · ${cache.name}` : cache.name,
+        detail: artifactUri.fsPath,
+        artifactUri
+      });
+    }
+  }
+
+  return quickPickItems;
+}
+
+function prettyPrintBuildArtifact(
+  workspaceFolder: vscode.WorkspaceFolder,
+  artifactUri: vscode.Uri
+): Promise<string> {
+  const compilerPath = vscode.Uri.joinPath(workspaceFolder.uri, 'yy_bs_stable').fsPath;
+  return new Promise((resolve, reject) => {
+    child_process.execFile(
+      compilerPath,
+      ['debug', 'showtrees', artifactUri.fsPath],
+      {
+        cwd: workspaceFolder.uri.fsPath,
+        encoding: 'utf8',
+        maxBuffer: 128 * 1024 * 1024
+      },
+      (error, stdout, stderr) => {
+        if (error) {
+          const diagnostic = stderr.trim() || stdout.trim() || error.message;
+          reject(new Error(diagnostic));
+          return;
+        }
+        resolve(stdout.endsWith('\n') ? stdout : `${stdout}\n`);
+      }
+    );
+  });
+}
+
+async function jumpToBuildArtifact(
+  contentProvider: BuildArtifactContentProvider,
+  resource?: vscode.Uri
+): Promise<void> {
+  const sourceUri = resource?.scheme === 'file'
+    ? resource
+    : vscode.window.activeTextEditor?.document.uri;
+  if (!sourceUri || sourceUri.scheme !== 'file') {
+    void vscode.window.showErrorMessage(
+      '请先打开豫言源文件。 Open a Yuyan source file before jumping to a build artifact.'
+    );
+    return;
+  }
+
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(sourceUri);
+  if (!workspaceFolder) {
+    void vscode.window.showErrorMessage(
+      '当前源文件不在工作区中。 The current source file is not inside a workspace.'
+    );
+    return;
+  }
+
+  const relativeSourcePath = path.relative(workspaceFolder.uri.fsPath, sourceUri.fsPath);
+  const artifactStem = sourceRelativePathToArtifactStem(relativeSourcePath);
+  if (!artifactStem) {
+    void vscode.window.showErrorMessage(
+      '当前文件不是受支持的豫言源文件（。豫、.yuyan 或 .yyon）。'
+    );
+    return;
+  }
+
+  let artifacts: BuildArtifactQuickPickItem[];
+  try {
+    artifacts = await findJsonBuildArtifacts(workspaceFolder, artifactStem);
+  } catch (error: any) {
+    log(`Failed to inspect .yybuild: ${error.message || error}`);
+    void vscode.window.showErrorMessage(
+      `无法读取 ${vscode.Uri.joinPath(workspaceFolder.uri, '.yybuild').fsPath}。请先构建项目。`
+    );
+    return;
+  }
+
+  if (artifacts.length === 0) {
+    void vscode.window.showInformationMessage(
+      `没有找到 ${artifactStem}.<阶段>.json 构建产物。 No matching JSON build artifacts were found.`
+    );
+    return;
+  }
+
+  const selectedArtifact = await vscode.window.showQuickPick(artifacts, {
+    title: 'Yuyan: Jump to Build Artifact 跳转到构建产物',
+    placeHolder: '选择要查看的 JSON 阶段产物（最新缓存优先）',
+    matchOnDescription: true,
+    matchOnDetail: true
+  });
+  if (!selectedArtifact) {
+    return;
+  }
+
+  try {
+    const prettyArtifact = await vscode.window.withProgress(
+      {
+        location: vscode.ProgressLocation.Window,
+        title: `Yuyan: 正在解码 ${path.basename(selectedArtifact.artifactUri.fsPath)}`
+      },
+      () => prettyPrintBuildArtifact(workspaceFolder, selectedArtifact.artifactUri)
+    );
+    const artifactFileName = path.basename(selectedArtifact.artifactUri.fsPath);
+    const previewFileName = artifactFileName.endsWith('.json')
+      ? `${artifactFileName.slice(0, -'.json'.length)}.pretty.yuyan`
+      : `${artifactFileName}.pretty.yuyan`;
+    const virtualUri = contentProvider.createDocumentUri(
+      previewFileName,
+      prettyArtifact
+    );
+    const document = await vscode.workspace.openTextDocument(virtualUri);
+    await vscode.window.showTextDocument(document, { preview: true });
+  } catch (error: any) {
+    log(`Failed to open build artifact ${selectedArtifact.artifactUri.fsPath}: ${error.message || error}`);
+    const diagnostic = String(error.message || error).replace(/\s+/g, ' ').slice(0, 300);
+    void vscode.window.showErrorMessage(
+      `编译器无法解码构建产物：${diagnostic}`
+    );
+  }
+}
+
+function registerBuildArtifactCommand(context: vscode.ExtensionContext): void {
+  const contentProvider = new BuildArtifactContentProvider();
+  context.subscriptions.push(
+    vscode.workspace.registerTextDocumentContentProvider(BUILD_ARTIFACT_SCHEME, contentProvider),
+    vscode.commands.registerCommand(
+      JUMP_TO_BUILD_ARTIFACT_COMMAND,
+      (resource?: vscode.Uri) => jumpToBuildArtifact(contentProvider, resource)
+    ),
+    vscode.workspace.onDidCloseTextDocument(document => {
+      if (document.uri.scheme === BUILD_ARTIFACT_SCHEME) {
+        contentProvider.forgetDocument(document.uri);
+      }
+    })
+  );
+  log('Build artifact command registered');
+}
+
 export function activate(context: vscode.ExtensionContext): void {
   log('Extension activation started');
   log(`Extension path: ${context.extensionPath}`);
@@ -421,6 +644,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   try {
     registerLanguageProviders(context);
+    registerBuildArtifactCommand(context);
 
     // Register file save event handler for compiler commands
     const onSaveDisposable = vscode.workspace.onDidSaveTextDocument((document: vscode.TextDocument) => {
