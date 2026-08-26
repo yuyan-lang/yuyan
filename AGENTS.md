@@ -6,6 +6,7 @@
   - `./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs --parallel >/dev/null 2>/dev/null`
   - `./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel >/dev/null 2>/dev/null`
   - `./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel >/dev/null 2>/dev/null`
+  - `yy3_bs` and `yy4_bs` should be identical.
 - Type-checking validation should also be run after manual review:
   - `./yy 豫言编译器/入口。豫 --type-check-only`
   - The fastest type-checking validation is `./yy_bs_stable 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null`.
