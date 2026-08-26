@@ -27,6 +27,10 @@ yy2:  $(YYBSSOURCES)  $(YYLIBSOURCES)
 yy3:  $(YYBSSOURCES) yy2  $(YYLIBSOURCES)
 	./yy2 豫言编译器/入口。豫  -o yy3 --parallel
 
+yy4:  $(YYBSSOURCES) yy3  $(YYLIBSOURCES)
+	./yy3 豫言编译器/入口。豫  -o yy4 --parallel
+
+
 yy_bs : yy $(YYBSSOURCES) $(YYLIBSOURCES)
 	./yy -c --use-local-lib 豫言编译器/入口。豫  -o yy_bs
 

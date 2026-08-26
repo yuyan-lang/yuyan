@@ -253,7 +253,7 @@ def execute_plan():
     def get_exec_args():
         exec_args = []
         assert deps_to_process == [], "expecting all dependencies to be processed when generating executables"
-        candidate = [k for k in deps.keys() if k != yy_bs_main_file]
+        candidate = sorted(k for k in deps.keys() if k != yy_bs_main_file)
         while len(exec_args) < len(candidate):
             for k in candidate:
                 if k not in exec_args and all(dep in exec_args for dep in deps[k]):
