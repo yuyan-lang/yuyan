@@ -119,7 +119,7 @@ async function main() {
       '寻观诵', '寻观', '寻诵', '观诵', '是一种', '结合性', '之书',
       '打开', '导入', '导出', '函数', '立', '乃', '即', '号', '术', '交', '序', '寻', '观', '诵'
     ];
-    const typeWords = ['结合', '中的', '化', '承', '从', '到', '自', '合', '之', '的'];
+    const typeWords = ['结合', '中的', '承', '从', '到', '自', '合', '之', '的'];
     const expressionWords = [
       '执行如下计算', '实际上是', '遇到了', '得到了', '使用于', '中的第',
       '递归虑', '类型为', '如果是', '参数是', '否则', '授以', '给予', '随后', '如果',
@@ -155,9 +155,28 @@ async function main() {
 
     assert.ok(hasScope(findToken(tokens, '乃'), 'markup.bold.structure.yuyan'));
     assert.ok(hasScope(findToken(tokens, '化'), 'storage.type.function.yuyan'));
-    assert.ok(findToken(tokens, '而').scopes.some(scope => scope.startsWith('keyword.')));
+    assert.ok(hasScope(findToken(tokens, '而'), 'storage.type.function.yuyan'));
     assert.ok(hasScope(findToken(tokens, '也'), 'markup.bold.structure.yuyan'));
     assert.ok(hasScope(findToken(tokens, '。'), 'markup.bold.structure.terminator.yuyan'));
+  });
+
+  await runTest('pairs and nests function type keywords', () => {
+    const line = '化「输入」而化「中间」而「输出」';
+    const tokens = tokensWithText(line, grammar.tokenizeLine(line));
+    const functionKeywords = tokens.filter(token => token.text === '化' || token.text === '而');
+
+    assert.strictEqual(functionKeywords.map(token => token.text).join(''), '化而化而');
+    assert.ok(functionKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
+  });
+
+  await runTest('pairs function types after a recursive let prefix', () => {
+    const line = '递归虑「处理参数」其化「字符串」而化「整数」而化（「列」于「表达式」）而「表达式」者';
+    const tokens = tokensWithText(line, grammar.tokenizeLine(line));
+    const functionKeywords = tokens.filter(token => token.text === '化' || token.text === '而');
+
+    assert.strictEqual(functionKeywords.map(token => token.text).join(''), '化而化而化而');
+    assert.ok(functionKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
+    assert.ok(hasScope(findToken(tokens, '其'), 'keyword.control.yuyan'));
   });
 
   await runTest('highlights punctuation', () => {
