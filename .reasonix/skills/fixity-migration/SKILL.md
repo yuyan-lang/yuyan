@@ -12,7 +12,6 @@ description: Migration from component-based operators to fixity-based operators 
 
 ## 待更新（引用旧类型的文件）
 - `操作符操作。豫` — `获取标号`、`组件表示`、`获取所有组件`、`操作符是开放的` 等用到了旧字段
-- `操作符集术。豫` — `插入闭合操作符`、`插入开放操作符`、优先级计算
 - `内建操作符对象定义。豫` — 所有操作符定义要转成新 fixity 格式
 - `表达式解析。豫` — `匹配组件获取参数` 改为基于 fixity 的 operand pop
 - `表达式解析输入分析。豫` — 操作符匹配和归约逻辑
