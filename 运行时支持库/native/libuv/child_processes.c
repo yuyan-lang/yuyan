@@ -156,17 +156,18 @@ yyvalue yyRunProcessSync(yyvalue program, yyvalue arguments)
 
     uv_process_t child_req;
     my_data_t my_data;
+    my_data.exit_status = 1;
     child_req.data = &my_data;
     
     int r;
     if ((r = uv_spawn(uv_global_loop, &child_req, &options))) {
         fprintf(stderr, "uv_spawn [yyrunnooutput] error: (custom) %s\n", uv_strerror(r));
-        // return 0;
+        return bool_to_yyvalue(false);
     }
 
-    int64_t child_exit_status = my_data.exit_status;
-
     uv_run(uv_global_loop, UV_RUN_DEFAULT);
+
+    int64_t child_exit_status = my_data.exit_status;
 
     return bool_to_yyvalue(child_exit_status == 0);
 }
@@ -205,12 +206,13 @@ yyvalue yyRunProcessSyncPipeOutput(yyvalue program, yyvalue arguments)
 
     uv_process_t child_req;
     my_data_t my_data;
+    my_data.exit_status = 1;
     child_req.data = &my_data;
     
     int r;
     if ((r = uv_spawn(uv_global_loop, &child_req, &options))) {
         fprintf(stderr, "uv_spawn [yyrunnooutput] error: (custom) %s\n", uv_strerror(r));
-        // return 0;
+        return int_to_yyvalue(r);
     }
 
 
@@ -221,4 +223,3 @@ yyvalue yyRunProcessSyncPipeOutput(yyvalue program, yyvalue arguments)
     return int_to_yyvalue(child_exit_status);
     // return bool_to_yyvalue(child_exit_status == 0);
 }
-
