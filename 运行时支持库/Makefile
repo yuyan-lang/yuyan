@@ -13,6 +13,14 @@ CC=clang
 
 UNAME := $(shell uname)
 
+OPT_STATIC_FLAGS=-flto
+OPT_STATIC_AR=llvm-ar
+
+ifeq ($(UNAME), Linux)
+OPT_STATIC_FLAGS=
+OPT_STATIC_AR=ar
+endif
+
 ADDITIONAL_INCLUDE_PATHS=-I /opt/homebrew/include
 
 ifeq ($(UNAME), Linux)
@@ -48,9 +56,9 @@ debug: libyyrtdebug$(VERSION).a
 
 libyyrtopt$(VERSION).a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
-	cd build/native && $(CC) -DNDEBUG -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error
+	cd build/native && $(CC) -DNDEBUG $(OPT_STATIC_FLAGS) -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error
 	$(RM) $@
-	ar rcs $@ $(NATIVE_OBJECTS)
+	$(OPT_STATIC_AR) rcs $@ $(NATIVE_OBJECTS)
 
 opt : libyyrtopt$(VERSION).a
 
