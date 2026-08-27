@@ -42,6 +42,7 @@ jobs:
             "$YY_BOOTSTRAP_URL"
           mkdir -p "$bootstrap_root"
           tar -xzf "$bootstrap_archive" -C "$bootstrap_root" --strip-components=1
+          find "$bootstrap_root" -type f \( -name '._*' -o -name '.DS_Store' \) -delete
 
           "$bootstrap_root/build.sh"
           install -m 755 "$bootstrap_root/yy_bundled_bs" ./yy_bs_stable
@@ -73,5 +74,6 @@ jobs:
           ./yy3_bs 豫言编译器/入口。豫 \
             --emit-bootstrap-bundle dist/yy-bootstrap \
             --parallel
+          find dist/yy-bootstrap -type f \( -name '._*' -o -name '.DS_Store' \) -delete
           tar -czf "$bundle_archive" -C dist yy-bootstrap
           gh release upload continuous-bootstrap "$bundle_archive" --clobber
