@@ -1,11 +1,6 @@
 
 #include "common_include.h"
 
-// yyvalue yyCurrentNanosecondTime(){
-//     uint64_t currentTime = uv_hrtime();
-//     return int_to_yyvalue((int64_t) currentTime);
-// }
-
 yyvalue yyCurrentNanosecondTime() {
     struct timespec time;
     clock_gettime(CLOCK_MONOTONIC, &time);

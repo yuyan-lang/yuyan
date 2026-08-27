@@ -12,7 +12,6 @@
 #include <errno.h>
 #include <pthread.h>
 #include "gc.h" // https://hboehm.info/gc/ libgc 
-#include <uv.h> 
 #include <assert.h>
 // #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
@@ -22,19 +21,12 @@
     #include <bsd/string.h>
 #endif
 #include "gc.h" // https://hboehm.info/gc/ libgc 
-#include <uv.h> 
-
 #include "marshall.h"
 #include "debug_print.h"
 
 
 extern int global_argc;
 extern char** global_argv;
-
-extern uv_loop_t *uv_global_loop;
-
-void readStreamUntilEofIntoDataAync(uv_stream_t *stream);
-
 
 yyvalue unit_to_yyvalue();
 

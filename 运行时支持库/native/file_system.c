@@ -140,7 +140,7 @@ yyvalue yyWriteFileSync(yyvalue file_name_addr, yyvalue content_addr) {
 }
 
 
-// TODO: we should probably make the following functions windows compatible, i.e. use libuv specifically on windows
+// TODO: provide a Windows implementation for the following functions.
 yyvalue yyListDirectorySync(yyvalue dirname) {
     char *dname = yyvalue_to_string(dirname);
     DIR *dir = opendir(dname);

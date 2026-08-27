@@ -1,5 +1,7 @@
 #include "common_include.h"
 
+#include <stdarg.h>
+
 
 void yy_debug_log_print_args(uint64_t num, const char *func_name, ...) {
     va_list args;

@@ -1,5 +1,10 @@
 #include "garbage_collector.h"
 #include "memory_verifier.h"
+
+static uint64_t min_uint64(uint64_t left, uint64_t right) {
+    return left < right ? left : right;
+}
+
 /*
 complete this file, replace error and abort with actual implementation. I want a garbage collector that mallocs 512 MB blocks (the minor heap) from C runtime, and distribute it to user. We should also allocate a 512 MB block as a major heap. Upon getting a byte size, always round up to a multiples of 8, plus a header block before. For example, if the user wants 10 bytes, allocate 24 bytes (3 pointer sizes) from memory, and write a header. The first 3 bytes of a header is a magic number that should rarely appear as a string -- use something that is disjoint from the ASCII table, the next 1 byte is empty and the lower 4 bytes is an unsigned integer representing the length of the allocation block. The data stored in allocated things maybe pointers or others, and the way we check if the data is a pointer is to see if it resides in the 512MB block boundary, and its header has the magic number, and its size is within boundary. If so, it is treated as a pointer, otherwise it is treated as regular data. If spaces run out, we first check if the free space of the major heap is less than 512 MB, the minor heap size. If the space left on the major heap is enough, perform a copy and compaction gc copying the data from the minor heap to the major heap over starting with the root points, and contents already in the major heap. If the major heap doesn't have enough free space, realloate major heap to be twice as large and continue the copying process. The root points should be realized as a static array of 1000 elements. We may register only 1000 root points and errorAndAbort on over registration. Also, there is a extern void** stack and void** stack_ptr whose content should also be treated as root points. Needless to say, if the content of the stack and the gc root points fail to be a pointer, it is not a pointer. We never have pointers that point to the middle of the allocated heap. Thus, give a warning if there is a supposed pointer that points to allcoated memory but the magic number in the header doesn't match up. Before you produce any code, first ask any clarification questions. If everything is clear, simply say "I am ready to produce the code".
 */
@@ -67,7 +72,7 @@ void yy_gc_init() {
         fprintf(stderr, "YY max heap size is set to %f * 16 MB\n", (double) max_heap_size / (1024 * 1024));
     }
 
-    uint64_t current_heap_size = MIN(initial_heap_size, max_heap_size);
+    uint64_t current_heap_size = min_uint64(initial_heap_size, max_heap_size);
     current_heap = MALLOC_FUNC(initial_heap_size);
     current_heap_end = current_heap + current_heap_size;
     current_heap_gc_limit = current_heap + (uint64_t) (current_heap_size * GC_LIMIT / 100);
@@ -247,13 +252,13 @@ void yy_perform_gc() {
 
     if (should_expand_heap) {
         // Expand the heap
-        new_heap_size = MIN(current_heap_size * 2, max_heap_size) ;
+        new_heap_size = min_uint64(current_heap_size * 2, max_heap_size) ;
         new_heap = MALLOC_FUNC(new_heap_size);
         new_heap_end = new_heap + new_heap_size;
         should_expand_heap = false;
     } else {
         // Reuse the current heap
-        new_heap_size = MIN(current_heap_size, max_heap_size);
+        new_heap_size = min_uint64(current_heap_size, max_heap_size);
         new_heap = MALLOC_FUNC(new_heap_size);
         new_heap_end = new_heap + new_heap_size;
     }
