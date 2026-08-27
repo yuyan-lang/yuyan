@@ -2,6 +2,7 @@ name: CI
 
 env:
   YY_GC_MAX_HEAP_SIZE_MB: 400
+  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-bootstrap/yuyan-bootstrap-bundle.tar.gz
 
 on:
   push:
@@ -15,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   bootstrap:
@@ -25,8 +26,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install bootstrap compiler and runtime
-        uses: ./.github/actions/install-linux-dependencies@v2
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang llvm make libgmp-dev libgc-dev curl
+
+      - name: Build stable compiler from portable bootstrap release
+        run: |
+          set -euo pipefail
+          bootstrap_archive="$RUNNER_TEMP/yuyan-bootstrap-bundle.tar.gz"
+          bootstrap_root="$RUNNER_TEMP/yuyan-bootstrap"
+
+          curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
+            --output "$bootstrap_archive" \
+            "$YY_BOOTSTRAP_URL"
+          mkdir -p "$bootstrap_root"
+          tar -xzf "$bootstrap_archive" -C "$bootstrap_root" --strip-components=1
+
+          "$bootstrap_root/build.sh"
+          install -m 755 "$bootstrap_root/yy_bundled_bs" ./yy_bs_stable
+          ./yy_bs_stable --version
 
       - name: Type-check compiler with stable bootstrap
         run: ./yy_bs_stable 豫言编译器/入口。豫 --type-check-only --parallel
@@ -43,12 +62,16 @@ jobs:
       - name: Verify fixed point
         run: cmp yy3_bs yy4_bs
 
-      - name: Upload bootstrapped compiler
-        uses: actions/upload-artifact@v4
-        with:
-          name: ubuntu-linux-amd64-bootstrap-compiler
-          if-no-files-found: error
-          path: |
-            ./yy3_bs
-            ./运行时支持库/*.a
-            ./运行时支持库/*.so
+      - name: Update continuous bootstrap release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          bundle_archive="$RUNNER_TEMP/yuyan-bootstrap-bundle.tar.gz"
+
+          ./yy3_bs 豫言编译器/入口。豫 \
+            --emit-bootstrap-bundle dist/yy-bootstrap \
+            --parallel
+          tar -czf "$bundle_archive" -C dist yy-bootstrap
+          gh release upload continuous-bootstrap "$bundle_archive" --clobber
