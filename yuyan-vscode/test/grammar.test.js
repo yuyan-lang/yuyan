@@ -179,6 +179,34 @@ async function main() {
     assert.ok(hasScope(findToken(tokens, '其'), 'keyword.control.yuyan'));
   });
 
+  await runTest('pairs function types after universal quantification and parenthesized types', () => {
+    const line = '「表达式收集元素」乃承「甲」而化（化「表达式」而（「或可有」于「甲」））而化「表达式」而（「列」于「甲」）也。';
+    const tokens = tokensWithText(line, grammar.tokenizeLine(line));
+    const functionKeywords = tokens.filter(token => ['承', '化', '而'].includes(token.text));
+
+    assert.strictEqual(functionKeywords.map(token => token.text).join(''), '承而化化而而化而');
+    assert.ok(functionKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
+    assert.ok(!tokens.some(token => token.text === '而化'));
+  });
+
+  await runTest('uses type context in constructor declarations', () => {
+    const lines = [
+      '「列」立化「元类型」而「元类型」也。',
+      '「罄」立（承「元类型」者「甲」而「列」于「甲」）也。'
+    ];
+
+    for (const line of lines) {
+      const tokens = tokensWithText(line, grammar.tokenizeLine(line));
+      const expectedTypeKeywords = line.startsWith('「列」')
+        ? ['化', '而']
+        : ['承', '者', '而'];
+
+      for (const keyword of expectedTypeKeywords) {
+        assert.ok(hasScope(findToken(tokens, keyword), 'storage.type.function.yuyan'));
+      }
+    }
+  });
+
   await runTest('highlights punctuation', () => {
     const line = '（甲）【乙】，甲；乙。';
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));

@@ -4,7 +4,9 @@
   "patterns": [
     { "include": "#block-comment" },
     { "include": "#string" },
+    { "include": "#type-declaration" },
     { "include": "#function-type-prefix" },
+    { "include": "#function-type-separator" },
     { "include": "#function-type" },
     { "include": "#structure-declaration" },
     { "include": "#builtin" },
@@ -52,9 +54,43 @@
         }
       ]
     },
+    "type-declaration": {
+      "name": "meta.declaration.type.yuyan",
+      "begin": "^(「)(?!：)([^「」『』（）。\\r\\n]+)(」)(的类型可以是|的类型是|是一种|乃|立|号)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.variable.begin.yuyan" },
+        "2": { "name": "variable.other.yuyan" },
+        "3": { "name": "punctuation.definition.variable.end.yuyan" },
+        "4": { "name": "markup.bold.structure.yuyan" }
+      },
+      "end": "(?=。)",
+      "patterns": [
+        { "include": "#structure-declaration-end" },
+        { "include": "#type-context-keyword-run" },
+        { "include": "$self" }
+      ]
+    },
+    "type-context-keyword-run": {
+      "match": "(?:(?:结合|中的|承|从|到|自|合|之|的|化|而|者))+(?=[「（《『])",
+      "captures": {
+        "0": {
+          "patterns": [
+            { "include": "#type-context-keyword-component" }
+          ]
+        }
+      }
+    },
+    "type-context-keyword-component": {
+      "name": "storage.type.function.yuyan",
+      "match": "结合|中的|承|从|到|自|合|之|的|化|而|者"
+    },
     "function-type-prefix": {
       "name": "keyword.control.yuyan",
       "match": "其(?=化(?=[「（《『]))"
+    },
+    "function-type-separator": {
+      "name": "storage.type.function.yuyan",
+      "match": "而(?=化(?=[「（《『]))"
     },
     "function-type": {
       "name": "meta.type.function.yuyan",
