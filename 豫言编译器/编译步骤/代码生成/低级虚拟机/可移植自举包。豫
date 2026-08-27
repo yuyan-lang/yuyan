@@ -1,0 +1,115 @@
+寻观「标准库」之书。
+
+寻观「豫言编译器」之「编译步骤」之「总体过程」之「编译过程工具」之书。
+
+
+「确保可移植自举包目录」乃化「字符串」而「有」也。
+「确保可移植自举包目录」者会「路径」而
+    虑「无」者「操作系统」之「子进程」之「成功运行并打印结果」于『mkdir』于
+        （「缀」于『-p』于（「缀」于「路径」于「罄」））而
+    「元」
+也。
+
+「复制可移植自举包文本文件」乃化「字符串」而化「字符串」而「有」也。
+「复制可移植自举包文本文件」者会「源路径」而会「目标路径」而
+    虑「无」者「确保可移植自举包目录」于（「路径」之「获取文件夹名」于「目标路径」）而
+    虑「无」者「操作系统」之「子进程」之「成功运行并打印结果」于『cp』于
+        （「缀」于「源路径」于（「缀」于「目标路径」于「罄」））而
+    「元」
+也。
+
+「复制可移植自举包LLVM文件」乃化「字符串」而「有」也。
+「复制可移植自举包LLVM文件」者会「输出目录」而
+    虑「LLVM输出目录」者「路径」之「路径合并」于「输出目录」于『llvm』而
+    虑「无」者「确保可移植自举包目录」于「LLVM输出目录」而
+    虑「缓存根路径」者「路径」之「路径合并」于（「文件系统」之「获取当前路径」于「元」）于
+        （「编译器缓存目录名称」附『.portable-bundle』）而
+    虑「复制脚本」者『set -eu
+cache_root=$1
+llvm_output=$2
+case "$llvm_output" in
+    /*) ;;
+    *) llvm_output="$(pwd)/$llvm_output" ;;
+esac
+cd "$cache_root"
+find . -type f -name '*.ll' | while IFS= read -r source_path; do
+    target_path="$llvm_output/$source_path"
+    mkdir -p "$(dirname "$target_path")"
+    cp "$source_path" "$target_path"
+done
+』而
+    虑「参数们」者（「缀」授以「字符串」）于『-c』于
+        （（「缀」授以「字符串」）于「复制脚本」于
+        （（「缀」授以「字符串」）于『yuyan-bootstrap-bundle-copy』于
+        （（「缀」授以「字符串」）于「缓存根路径」于
+        （（「缀」授以「字符串」）于「LLVM输出目录」于「罄」））））而
+    虑「无」者「操作系统」之「子进程」之「成功运行并打印结果」于『sh』于「参数们」而
+    「元」
+也。
+
+「复制可移植自举包运行时目录」乃化「字符串」而化「字符串」而「有」也。
+「复制可移植自举包运行时目录」者会「输出目录」而会「运行时根路径」而
+    虑「运行时输出目录」者「路径」之「路径合并」于「输出目录」于『runtime/native』而
+    虑「无」者「确保可移植自举包目录」于「运行时输出目录」而
+    虑「复制脚本」者『set -eu
+cp -R "$1/." "$2/"
+』而
+    虑「参数们」者（「缀」授以「字符串」）于『-c』于
+        （（「缀」授以「字符串」）于「复制脚本」于
+        （（「缀」授以「字符串」）于『yuyan-bootstrap-bundle-runtime-copy』于
+        （（「缀」授以「字符串」）于「运行时根路径」于
+        （（「缀」授以「字符串」）于「运行时输出目录」于「罄」））））而
+    虑「无」者「操作系统」之「子进程」之「成功运行并打印结果」于『sh』于「参数们」而
+    「元」
+也。
+
+「生成可移植自举包」乃化「字符串」「：输出目录：」而「有」也。
+「生成可移植自举包」者会「输出目录」而
+    虑「当前路径」者「文件系统」之「获取当前路径」于「元」而
+    虑「运行时根路径」者「路径」之「路径合并」于「当前路径」于『运行时支持库/native』而
+    虑「无」者若（「文件系统」之「路径是文件夹」于「运行时根路径」）
+        则「元」
+        否则（「发生事故」于『找不到运行时源码目录：』附「运行时根路径」）而
+    虑「无」者「确保可移植自举包目录」于「输出目录」而
+    虑「无」者「复制可移植自举包LLVM文件」于「输出目录」而
+    虑「无」者「复制可移植自举包运行时目录」于「输出目录」于「运行时根路径」而
+    虑「构建脚本」者『#!/bin/sh
+set -eu
+cd "$(dirname "$0")"
+clang -O3 -DNDEBUG -Wno-override-module -Wno-error -Iruntime/native -I/usr/local/include -I/opt/homebrew/include $(find llvm -type f -name '*.ll') $(find runtime/native -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.ll' \)) -L/usr/local/lib -L/opt/homebrew/lib -lgc -pthread -o yy_bundled_bs
+』而
+    虑「构建脚本路径」者「路径」之「路径合并」于「输出目录」于『build.sh』而
+    虑「无」者「文件系统」之「写文件」于「构建脚本路径」于「构建脚本」而
+    虑「无」者「操作系统」之「子进程」之「成功运行并打印结果」于『chmod』于
+        （「缀」于『u+x』于（「缀」于「构建脚本路径」于「罄」））而
+    虑「自述路径」者「路径」之「路径合并」于「输出目录」于『README.md』而
+    虑「无」者「文件系统」之「写文件」于「自述路径」于
+        『# Yuyan portable bootstrap bundle
+
+This directory contains target-independent LLVM IR and the complete native Yuyan runtime source.
+
+Requirements: `clang` and the Boehm GC development package (`libgc-dev` on Debian/Ubuntu or `bdw-gc` with Homebrew).
+
+Build from any working directory with:
+
+```sh
+./build.sh
+```
+
+The resulting compiler is `yy_bundled_bs`.
+』而
+    虑「清单路径」者「路径」之「路径合并」于「输出目录」于『manifest.txt』而
+    虑「无」者「文件系统」之「写文件」于「清单路径」于
+        『LLVM modules:
+llvm/**/*.ll
+
+Runtime sources:
+runtime/native/
+』而
+    虑「许可源路径」者「路径」之「路径合并」于「当前路径」于『LICENSE』而
+    虑「无」者若（「文件系统」之「路径是普通文件」于「许可源路径」）
+        则（「复制可移植自举包文本文件」于「许可源路径」于（「路径」之「路径合并」于「输出目录」于『LICENSE』））
+        否则「元」而
+    虑「无」者「打印行」于（『已生成可移植自举包：』附「输出目录」）而
+    「元」
+也。

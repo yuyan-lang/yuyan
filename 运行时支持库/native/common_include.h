@@ -17,9 +17,6 @@
 #include <inttypes.h>
 #include "time.h"
 
-#ifdef __linux__
-    #include <bsd/string.h>
-#endif
 #include "gc.h" // https://hboehm.info/gc/ libgc 
 #include "marshall.h"
 #include "debug_print.h"
