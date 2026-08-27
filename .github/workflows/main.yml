@@ -74,5 +74,6 @@ jobs:
           ./yy3_bs 豫言编译器/入口。豫 \
             --emit-bootstrap-bundle dist/yy-bootstrap \
             --parallel
+          find dist/yy-bootstrap -type f \( -name '._*' -o -name '.DS_Store' \) -delete
           tar -czf "$bundle_archive" -C dist yy-bootstrap
           gh release upload continuous-bootstrap "$bundle_archive" --clobber
