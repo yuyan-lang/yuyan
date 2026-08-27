@@ -32,6 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --type-check-only                    仅执行类型检查，不生成可执行文件
     -c, --compile-only                   仅执行编译，不运行编译后的文件
     -o PATH                              指定可执行文件的输出路径
+    --emit-bootstrap-bundle PATH         输出可跨平台重新链接的自举源码包
     --library-root PATH                  指定标准库搜索根路径（默认：./藏书阁）
     --whole-program-opt                  使用全局编译优化
     --do-not-optimize                    不执行任何包括LLVM在内的任何优化
