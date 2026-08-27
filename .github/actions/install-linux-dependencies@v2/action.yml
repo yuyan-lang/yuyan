@@ -6,16 +6,16 @@ inputs:
     default: 'yuyan-lang/yuyan'
   release-name:
     description: 'Release tag or name to install'
-    default: 'v0.1.0rc2.1'
+    default: 'v0.1.0rc2.2'
   compiler-asset:
     description: 'Release asset containing the bootstrap compiler'
-    default: '__yy3+1781938078.nosync.zip'
+    default: '__yy3+1781941443.nosync.zip'
   compiler-output:
     description: 'Path to install the bootstrap compiler to'
-    default: 'yy_bs'
+    default: 'yy_bs_stable'
   yybuild-asset:
     description: 'Release asset containing the .yybuild cache'
-    default: '__yy3+1781938078.nosync.zip'
+    default: '__yy3+1781941443.nosync.zip'
   yybuild-output:
     description: 'Path to restore the .yybuild cache to'
     default: '.yybuild.nosync'
@@ -30,7 +30,7 @@ outputs:
     description: 'Restored .yybuild cache path'
     value: ${{ steps.install-yybuild.outputs.yybuild_path }}
   runtime-version:
-    description: 'Runtime library version installed from the stable source zip'
+    description: 'Runtime library version built from the current checkout'
     value: ${{ steps.install-runtime.outputs.runtime_version }}
 runs:
   using: 'composite'
@@ -39,7 +39,7 @@ runs:
       run: |
         set -euo pipefail
         sudo apt-get update
-        sudo apt-get install -y make llvm clang libgmp-dev libgc-dev libuv1-dev libbsd-dev curl unzip file jq
+        sudo apt-get install -y make llvm clang libgmp-dev libgc-dev libbsd-dev curl unzip file jq
       shell: bash
 
     - name: Resolve bootstrap release
@@ -77,7 +77,6 @@ runs:
         fi
 
         release_tag="$(jq -r '.tag_name' "$release_json")"
-        source_zip_url="$(jq -r '.zipball_url' "$release_json")"
         compiler_url="$(jq -r --arg asset_name "$YY_BOOTSTRAP_COMPILER_ASSET" \
           '.assets[] | select(.name == $asset_name) | .browser_download_url' "$release_json")"
         yybuild_url="$(jq -r --arg asset_name "$YY_BOOTSTRAP_YYBUILD_ASSET" \
@@ -95,7 +94,6 @@ runs:
         fi
 
         echo "release_tag=$release_tag" >> "$GITHUB_OUTPUT"
-        echo "source_zip_url=$source_zip_url" >> "$GITHUB_OUTPUT"
         echo "compiler_url=$compiler_url" >> "$GITHUB_OUTPUT"
         echo "yybuild_url=$yybuild_url" >> "$GITHUB_OUTPUT"
       shell: bash
@@ -222,39 +220,18 @@ runs:
 
     - name: Install matching runtime libraries
       id: install-runtime
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-        YY_BOOTSTRAP_RELEASE_NAME: ${{ inputs.release-name }}
-        YY_BOOTSTRAP_SOURCE_ZIP_URL: ${{ steps.resolve-release.outputs.source_zip_url }}
       run: |
         set -euo pipefail
 
-        work_dir="$RUNNER_TEMP/yuyan-bootstrap"
-        source_zip="$work_dir/source.zip"
-        source_unpack="$work_dir/source"
-
-        mkdir -p "$work_dir"
-        rm -rf "$source_unpack"
-        mkdir -p "$source_unpack"
-
-        curl_args=(--fail --location --retry 3)
-        if [ -n "${GITHUB_TOKEN:-}" ]; then
-          curl_args+=(--header "Authorization: Bearer $GITHUB_TOKEN")
-        fi
-
-        curl "${curl_args[@]}" --output "$source_zip" "$YY_BOOTSTRAP_SOURCE_ZIP_URL"
-        unzip -q "$source_zip" -d "$source_unpack"
-
-        release_source="$(find "$source_unpack" -mindepth 1 -maxdepth 1 -type d -print -quit)"
-        runtime_source="$release_source/运行时支持库"
-        version_file="$release_source/豫言编译器/编译辅助工具/命令行/版本管理。豫"
+        runtime_source="$GITHUB_WORKSPACE/运行时支持库"
+        version_file="$GITHUB_WORKSPACE/豫言编译器/编译辅助工具/命令行/版本管理。豫"
 
         if [ ! -d "$runtime_source" ]; then
-          echo "Could not find runtime source directory in $YY_BOOTSTRAP_RELEASE_NAME source zip" >&2
+          echo "Could not find runtime source directory in the current checkout" >&2
           exit 1
         fi
         if [ ! -f "$version_file" ]; then
-          echo "Could not find version file in $YY_BOOTSTRAP_RELEASE_NAME source zip" >&2
+          echo "Could not find version file in the current checkout" >&2
           exit 1
         fi
 
@@ -266,12 +243,10 @@ runs:
 
         make -C "$runtime_source" all VERSION="$runtime_version"
 
-        workspace_runtime_dir="$GITHUB_WORKSPACE/运行时支持库"
-        mkdir -p "$workspace_runtime_dir"
-        cp "$runtime_source/libyyrtdebug$runtime_version.a" "$workspace_runtime_dir/"
-        cp "$runtime_source/libyyrtopt$runtime_version.a" "$workspace_runtime_dir/"
-        cp "$runtime_source/libyyrtdebug$runtime_version.so" "$workspace_runtime_dir/"
-        cp "$runtime_source/libyyrtopt$runtime_version.so" "$workspace_runtime_dir/"
+        test -f "$runtime_source/libyyrtdebug$runtime_version.a"
+        test -f "$runtime_source/libyyrtopt$runtime_version.a"
+        test -f "$runtime_source/libyyrtdebug$runtime_version.so"
+        test -f "$runtime_source/libyyrtopt$runtime_version.so"
 
         echo "runtime_version=$runtime_version" >> "$GITHUB_OUTPUT"
       shell: bash
