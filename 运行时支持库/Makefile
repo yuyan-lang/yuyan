@@ -50,7 +50,7 @@ libyyrtopt$(VERSION).a: $(NATIVE_SOURCES)
 	@mkdir -p build/native
 	cd build/native && $(CC) -DNDEBUG -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error
 	$(RM) $@
-	llvm-ar rcs $@ $(NATIVE_OBJECTS)
+	ar rcs $@ $(NATIVE_OBJECTS)
 
 opt : libyyrtopt$(VERSION).a
 
