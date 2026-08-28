@@ -25,12 +25,10 @@ void yy_register_gc_rootpoint(yyvalue* ptr) {
 }
 
 #ifndef INITIAL_HEAP_SIZE
-// #define INITIAL_HEAP_SIZE (64 * 1024 * 1024)  // 1024 MB
 #ifdef NDEBUG
-#define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
+#define INITIAL_HEAP_SIZE ((256ULL * 1024 * 1024) / sizeof(yyvalue))  // 256 MiB
 #else
-#define INITIAL_HEAP_SIZE (4 * 1024 )  // 32 KB
-// #define INITIAL_HEAP_SIZE (2 * 1024 * 1024)  // 32 MB
+#define INITIAL_HEAP_SIZE (4 * 1024)  // 64 KiB with 16-byte yyvalue
 #endif
 #endif
 
@@ -44,7 +42,7 @@ yyvalue *current_heap_end = NULL;
 yyvalue *current_heap_gc_limit = NULL;
 yyvalue* new_heap = NULL;
 yyvalue *new_heap_end = NULL;
-uint64_t initial_heap_size = INITIAL_HEAP_SIZE; //32 MB
+uint64_t initial_heap_size = INITIAL_HEAP_SIZE;
 uint64_t max_heap_size = DEFAULT_MAX_HEAP_SIZE;
 bool should_expand_heap = false;
 
@@ -56,24 +54,26 @@ bool yy_gc_debug_flag = false;
 void yy_gc_init() {
     if (getenv("YY_GC_INITIAL_HEAP_SIZE_MB") != NULL ) {
         const char* requested_size = getenv("YY_GC_INITIAL_HEAP_SIZE_MB");
-        initial_heap_size = atoi(requested_size) * 1024 * 1024;
+        initial_heap_size = (uint64_t) atoi(requested_size) * 1024 * 1024 / sizeof(yyvalue);
     }
 
     if (getenv("YY_GC_MAX_HEAP_SIZE_MB") != NULL ) {
         const char* requested_size = getenv("YY_GC_MAX_HEAP_SIZE_MB");
-        max_heap_size = atoi(requested_size) * 1024 * 1024;
+        max_heap_size = (uint64_t) atoi(requested_size) * 1024 * 1024 / sizeof(yyvalue);
     }
 
     if (initial_heap_size != INITIAL_HEAP_SIZE) {
-        fprintf(stderr, "YY initial heap size is set to %f * 16 MB\n", (double) initial_heap_size / (1024 * 1024));
+        fprintf(stderr, "YY initial heap size is set to %.2f MB\n",
+                (double) initial_heap_size * sizeof(yyvalue) / (1024 * 1024));
     }
 
     if (max_heap_size != DEFAULT_MAX_HEAP_SIZE) {
-        fprintf(stderr, "YY max heap size is set to %f * 16 MB\n", (double) max_heap_size / (1024 * 1024));
+        fprintf(stderr, "YY max heap size is set to %.2f MB\n",
+                (double) max_heap_size * sizeof(yyvalue) / (1024 * 1024));
     }
 
     uint64_t current_heap_size = min_uint64(initial_heap_size, max_heap_size);
-    current_heap = MALLOC_FUNC(initial_heap_size);
+    current_heap = MALLOC_FUNC(current_heap_size);
     current_heap_end = current_heap + current_heap_size;
     current_heap_gc_limit = current_heap + (uint64_t) (current_heap_size * GC_LIMIT / 100);
     current_allocation_ptr = current_heap;
