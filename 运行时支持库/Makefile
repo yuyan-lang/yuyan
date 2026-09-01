@@ -1,86 +1,86 @@
+原生源码目录 := $(abspath 原生)
+原生源码 := $(shell find $(原生源码目录) \( -name '*.c' -o -name '*.cpp' -o -name '*.h' -o -name '*.ll' \))
+自举桥接源码 := $(原生源码目录)/自举桥接.c
+原生编译源码 := $(filter-out $(自举桥接源码),$(shell find $(原生源码目录) \( -name '*.c' -o -name '*.ll' \)))
+构建目录 := 构建/原生
+原生目标文件 := $(addprefix $(构建目录)/,$(notdir $(原生编译源码)))
+原生目标文件 := $(原生目标文件:.c=.o)
+原生目标文件 := $(原生目标文件:.ll=.o)
+自举桥接目标文件 := $(构建目录)/自举桥接.o
 
+编译器 := clang
+系统名称 := $(shell uname)
+版本 ?=
 
-NATIVE_SOURCEDIR= $(abspath native)
-NATIVE_SOURCES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.cpp' -o -name '*.h'  -o -name '*.ll' \) )
-NATIVE_SCFILES := $(shell find $(NATIVE_SOURCEDIR) \( -name '*.c' -o -name '*.ll' \) )
-NATIVE_OBJECTS := $(addprefix build/native/,$(notdir $(NATIVE_SCFILES)))
-NATIVE_OBJECTS := $(NATIVE_OBJECTS:.c=.o)
-NATIVE_OBJECTS := $(NATIVE_OBJECTS:.ll=.o)
+优化静态编译参数 := -flto
+优化静态归档器 := llvm-ar
 
-
-CC=clang
-
-
-UNAME := $(shell uname)
-
-OPT_STATIC_FLAGS=-flto
-OPT_STATIC_AR=llvm-ar
-
-ifeq ($(UNAME), Linux)
-OPT_STATIC_FLAGS=
-OPT_STATIC_AR=ar
+ifeq ($(系统名称),Linux)
+优化静态编译参数 :=
+优化静态归档器 := ar
 endif
 
-ADDITIONAL_INCLUDE_PATHS=-I /opt/homebrew/include
+附加包含路径 := -I /opt/homebrew/include
 
-ifeq ($(UNAME), Linux)
-ADDITIONAL_FLAGS=-l bsd
+动态库构建参数 :=
+ifeq ($(系统名称),Linux)
+动态库构建参数 := -shared
 else
-ADDITIONAL_FLAGS=
+动态库构建参数 := -dynamiclib -undefined dynamic_lookup
 endif
 
-SO_BUILD_OPTIONS=
-
-ifeq ($(UNAME), Linux)
-SO_BUILD_OPTIONS=-shared 
+动态库扩展名 :=
+ifeq ($(系统名称),Linux)
+动态库扩展名 := so
 else
-SO_BUILD_OPTIONS=-dynamiclib -undefined dynamic_lookup
+动态库扩展名 := dylib
 endif
 
+lib豫言运行时调试$(版本).a: $(原生源码)
+	@mkdir -p $(构建目录)
+	cd $(构建目录) && $(编译器) -c -g $(原生编译源码) -I /usr/local/include -I /opt/homebrew/include $(附加包含路径) -Wno-error
+	rm -f $@
+	ar rcs $@ $(原生目标文件)
 
-SO_EXTENSION=
-ifeq ($(UNAME), Linux)
-SO_EXTENSION=so
-else
-SO_EXTENSION=dylib
-endif
+调试静态库: lib豫言运行时调试$(版本).a
 
+lib豫言运行时优化$(版本).a: $(原生源码)
+	@mkdir -p $(构建目录)
+	cd $(构建目录) && $(编译器) -DNDEBUG $(优化静态编译参数) -c -g -O3 $(原生编译源码) -I /usr/local/include -I /opt/homebrew/include $(附加包含路径) -Wno-error
+	rm -f $@
+	$(优化静态归档器) rcs $@ $(原生目标文件)
 
-libyyrtdebug$(VERSION).a: $(NATIVE_SOURCES)
-	@mkdir -p build/native
-	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error
-	$(RM) $@
-	ar rcs $@ $(NATIVE_OBJECTS)
+优化静态库: lib豫言运行时优化$(版本).a
 
-debug: libyyrtdebug$(VERSION).a
+lib豫言运行时调试$(版本).$(动态库扩展名): $(原生源码)
+	@mkdir -p $(构建目录)
+	cd $(构建目录) && $(编译器) -c -g $(原生编译源码) -I /usr/local/include -I /opt/homebrew/include $(附加包含路径) -Wno-error -fPIC
+	$(编译器) $(动态库构建参数) -o $@ $(原生目标文件)
 
-libyyrtopt$(VERSION).a: $(NATIVE_SOURCES)
-	@mkdir -p build/native
-	cd build/native && $(CC) -DNDEBUG $(OPT_STATIC_FLAGS) -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error
-	$(RM) $@
-	$(OPT_STATIC_AR) rcs $@ $(NATIVE_OBJECTS)
+调试动态库: lib豫言运行时调试$(版本).$(动态库扩展名)
 
-opt : libyyrtopt$(VERSION).a
+lib豫言运行时优化$(版本).$(动态库扩展名): $(原生源码)
+	@mkdir -p $(构建目录)
+	cd $(构建目录) && $(编译器) -DNDEBUG -flto -c -g -O3 $(原生编译源码) -I /usr/local/include -I /opt/homebrew/include $(附加包含路径) -Wno-error -fPIC
+	$(编译器) $(动态库构建参数) -flto -o $@ $(原生目标文件)
 
-libyyrtdebug$(VERSION).$(SO_EXTENSION): $(NATIVE_SOURCES)
-	@mkdir -p build/native
-	cd build/native && $(CC) -c -g $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error -fPIC
-	$(CC) $(SO_BUILD_OPTIONS) -o $@ $(NATIVE_OBJECTS)
+优化动态库: lib豫言运行时优化$(版本).$(动态库扩展名)
 
-debugso : libyyrtdebug$(VERSION).$(SO_EXTENSION)
+# 仅供现有稳定编译器完成第一级自举；新编译器直接链接上面的中文库名。
+libyyrtopt$(版本).a: lib豫言运行时优化$(版本).a $(自举桥接源码)
+	@mkdir -p $(构建目录)
+	cd $(构建目录) && $(编译器) -DNDEBUG $(优化静态编译参数) -c -g -O3 $(自举桥接源码) -I /usr/local/include -I /opt/homebrew/include $(附加包含路径) -Wno-error -o 自举桥接.o
+	cp -f $< $@
+	$(优化静态归档器) rcs $@ $(自举桥接目标文件)
 
-libyyrtopt$(VERSION).$(SO_EXTENSION): $(NATIVE_SOURCES)
-	@mkdir -p build/native
-	cd build/native && $(CC) -DNDEBUG -flto -c -g -O3 $(NATIVE_SCFILES) -I /usr/local/include -I /opt/homebrew/include $(ADDITIONAL_INCLUDE_PATHS) -Wno-error -fPIC
-	$(CC) $(SO_BUILD_OPTIONS) -flto -o $@ $(NATIVE_OBJECTS)
+首级自举运行时库: libyyrtopt$(版本).a
 
-optso : libyyrtopt$(VERSION).$(SO_EXTENSION)
+全部: 调试静态库 优化静态库 调试动态库 优化动态库 首级自举运行时库
 
-all: debug opt debugso optso
-
-.PHONY: clean
-clean:
-	rm -rf build
-	rm -f *.a
-	rm -f *.so
-	rm -f *.dylib
+.PHONY: 调试静态库 优化静态库 调试动态库 优化动态库 首级自举运行时库 全部 清理
+清理:
+	rm -rf 构建
+	rm -f lib豫言运行时*.a
+	rm -f lib豫言运行时*.so
+	rm -f lib豫言运行时*.dylib
+	rm -f libyyrtopt*.a

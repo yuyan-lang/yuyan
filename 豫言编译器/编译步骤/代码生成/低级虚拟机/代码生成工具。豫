@@ -111,9 +111,9 @@
 「默认编译模块的信息」者会「无」而
 （「获取目标三元组代码」于「元」）
 附『
-@stack_ptr = external global i128* 「：换行：」
-@current_allocation_ptr = external global i128* 「：换行：」
-@current_heap_gc_limit = external global i128* 「：换行：」
+@"豫言_栈指针" = external global i128* 「：换行：」
+@"豫言_当前分配指针" = external global i128* 「：换行：」
+@"豫言_当前堆垃圾回收阈值" = external global i128* 「：换行：」
 』
 也。
 

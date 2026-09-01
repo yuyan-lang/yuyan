@@ -49,10 +49,11 @@ done
 
 「复制可移植自举包运行时目录」乃化「字符串」而化「字符串」而「有」也。
 「复制可移植自举包运行时目录」者会「输出目录」而会「运行时根路径」而
-    虑「运行时输出目录」者「路径」之「路径合并」于「输出目录」于『runtime/native』而
+    虑「运行时输出目录」者「路径」之「路径合并」于「输出目录」于『运行时/原生』而
     虑「无」者「确保可移植自举包目录」于「运行时输出目录」而
     虑「复制脚本」者『set -eu
 cp -R "$1/." "$2/"
+rm -f "$2/自举桥接.c"
 』而
     虑「参数们」者（「缀」授以「字符串」）于『-c』于
         （（「缀」授以「字符串」）于「复制脚本」于
@@ -66,7 +67,7 @@ cp -R "$1/." "$2/"
 「生成可移植自举包」乃化「字符串」「：输出目录：」而「有」也。
 「生成可移植自举包」者会「输出目录」而
     虑「当前路径」者「文件系统」之「获取当前路径」于「元」而
-    虑「运行时根路径」者「路径」之「路径合并」于「当前路径」于『运行时支持库/native』而
+    虑「运行时根路径」者「路径」之「路径合并」于「当前路径」于『运行时支持库/原生』而
     虑「无」者若（「文件系统」之「路径是文件夹」于「运行时根路径」）
         则「元」
         否则（「发生事故」于『找不到运行时源码目录：』附「运行时根路径」）而
@@ -76,35 +77,35 @@ cp -R "$1/." "$2/"
     虑「构建脚本」者『#!/bin/sh
 set -eu
 cd "$(dirname "$0")"
-clang -O3 -DNDEBUG -Wno-override-module -Wno-error -Iruntime/native -I/usr/local/include -I/opt/homebrew/include $(find llvm -type f -name '*.ll') $(find runtime/native -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.ll' \)) -L/usr/local/lib -L/opt/homebrew/lib -lgc -pthread -o yy_bundled_bs
+clang -O3 -DNDEBUG -Wno-override-module -Wno-error -I运行时/原生 -I/usr/local/include -I/opt/homebrew/include $(find llvm -type f -name '*.ll') $(find 运行时/原生 -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.ll' \)) -L/usr/local/lib -L/opt/homebrew/lib -lgc -pthread -o 豫言自举编译器
 』而
-    虑「构建脚本路径」者「路径」之「路径合并」于「输出目录」于『build.sh』而
+    虑「构建脚本路径」者「路径」之「路径合并」于「输出目录」于『构建.sh』而
     虑「无」者「文件系统」之「写文件」于「构建脚本路径」于「构建脚本」而
     虑「无」者「操作系统」之「子进程」之「成功运行并打印结果」于『chmod』于
         （「缀」于『u+x』于（「缀」于「构建脚本路径」于「罄」））而
-    虑「自述路径」者「路径」之「路径合并」于「输出目录」于『README.md』而
+    虑「自述路径」者「路径」之「路径合并」于「输出目录」于『自述.md』而
     虑「无」者「文件系统」之「写文件」于「自述路径」于
-        『# Yuyan portable bootstrap bundle
+        『# 豫言可移植自举包
 
-This directory contains target-independent LLVM IR and the complete native Yuyan runtime source.
+此目录包含与目标机器无关的 LLVM 中间表示，以及完整的豫言原生运行时源码。
 
-Requirements: `clang` and the Boehm GC development package (`libgc-dev` on Debian/Ubuntu or `bdw-gc` with Homebrew).
+构建需要 `clang` 和 Boehm GC 开发包（Debian、Ubuntu 使用 `libgc-dev`，Homebrew 使用 `bdw-gc`）。
 
-Build from any working directory with:
+可在任意工作目录执行：
 
 ```sh
-./build.sh
+./构建.sh
 ```
 
-The resulting compiler is `yy_bundled_bs`.
+生成的编译器名为 `豫言自举编译器`。
 』而
-    虑「清单路径」者「路径」之「路径合并」于「输出目录」于『manifest.txt』而
+    虑「清单路径」者「路径」之「路径合并」于「输出目录」于『清单.txt』而
     虑「无」者「文件系统」之「写文件」于「清单路径」于
-        『LLVM modules:
+        『LLVM 模块：
 llvm/**/*.ll
 
-Runtime sources:
-runtime/native/
+运行时源码：
+运行时/原生/
 』而
     虑「许可源路径」者「路径」之「路径合并」于「当前路径」于『LICENSE』而
     虑「无」者若（「文件系统」之「路径是普通文件」于「许可源路径」）

@@ -16,7 +16,7 @@ yyrt:
 	make -C runtime/ debug
 
 yy_runtime_lib:
-	make -C ./运行时支持库 all VERSION=$(shell sed -n -E 's/^.*v(.*)\+([0-9]{4}).*/v\1+\2/p' 豫言编译器/编译辅助工具/命令行/版本管理。豫)
+	make -C ./运行时支持库 全部 版本=$(shell sed -n -E 's/^.*v(.*)\+([0-9]{4}).*/v\1+\2/p' 豫言编译器/编译辅助工具/命令行/版本管理。豫)
 
 yy:  $(SMLSOURCES)
 	mlton -output yy -verbose 2 src/development.mlb
