@@ -34,3 +34,4 @@
 ## Tool Writing
 
 When writing a tool, the generated executable should be prefixed with `yy` or postfixed with `.exe` so that things can be properly ignored.
+When asked to write a tool, always use yuyan language intead of python and write chinese only.
