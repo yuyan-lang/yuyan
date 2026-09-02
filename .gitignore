@@ -27,6 +27,7 @@ yarn-error.log*
 /yy
 /yy_bs_stable
 /yy[2-9]_bs
+/yy*
 /yybs_*
 /yy_parallel_deps.txt
 /yy_parallel_log.txt
