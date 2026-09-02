@@ -5,7 +5,6 @@
 当前仓库使用自托管编译器，并通过连续自举包保持可重复构建。
 
 [网站](https://yuyan-lang.github.io/yuyan)
-[语言手册](教程/combined_tutorial.pdf)
 
 ## 综述
 
@@ -42,13 +41,3 @@
 ## 漏洞
 
 如果你遇到了bug，请在`Issues`界面汇报。
-
-## 提交反馈
-
-如您有任何意见或者建议，欢迎提Issue或PLOC论坛或者微信群与我们取得联系。
-
-## 联系我们
-
-微信群：[群二维码](community_qr_wecom.png)
-
-<!-- 邮箱： yuyanlang@icloud.com -->
