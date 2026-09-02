@@ -1,108 +1,108 @@
 import java.util.Arrays;
 
-public final class Benchmark {
-    private static long fibonacci(long n) {
-        if (n < 2) {
-            return n;
+final class 性能基准 {
+    private static long 斐波那契(long 数) {
+        if (数 < 2) {
+            return 数;
         }
-        return fibonacci(n - 1) + fibonacci(n - 2);
+        return 斐波那契(数 - 1) + 斐波那契(数 - 2);
     }
 
-    private static long sieve(int limit) {
-        boolean[] isPrime = new boolean[limit + 1];
-        Arrays.fill(isPrime, true);
-        isPrime[0] = false;
-        isPrime[1] = false;
-        for (int prime = 2; (long) prime * prime <= limit; prime++) {
-            if (isPrime[prime]) {
-                for (int multiple = prime * prime; multiple <= limit; multiple += prime) {
-                    isPrime[multiple] = false;
+    private static long 素数筛(int 上限) {
+        boolean[] 是否质数 = new boolean[上限 + 1];
+        Arrays.fill(是否质数, true);
+        是否质数[0] = false;
+        是否质数[1] = false;
+        for (int 质数 = 2; (long) 质数 * 质数 <= 上限; 质数++) {
+            if (是否质数[质数]) {
+                for (int 倍数 = 质数 * 质数; 倍数 <= 上限; 倍数 += 质数) {
+                    是否质数[倍数] = false;
                 }
             }
         }
-        long count = 0;
-        for (int value = 2; value <= limit; value++) {
-            if (isPrime[value]) {
-                count++;
+        long 个数 = 0;
+        for (int 数值 = 2; 数值 <= 上限; 数值++) {
+            if (是否质数[数值]) {
+                个数++;
             }
         }
-        return count;
+        return 个数;
     }
 
-    private static long matrixMultiply(int size) {
-        int total = size * size;
-        long[] a = new long[total];
-        long[] b = new long[total];
-        long[] c = new long[total];
-        for (int index = 0; index < total; index++) {
-            int row = index / size;
-            int col = index - row * size;
-            a[index] = row + col + 1L;
-            b[index] = row * 2L + col + 1L;
+    private static long 矩阵乘法(int 边长) {
+        int 总长 = 边长 * 边长;
+        long[] 矩阵甲 = new long[总长];
+        long[] 矩阵乙 = new long[总长];
+        long[] 矩阵丙 = new long[总长];
+        for (int 序数 = 0; 序数 < 总长; 序数++) {
+            int 行 = 序数 / 边长;
+            int 列 = 序数 - 行 * 边长;
+            矩阵甲[序数] = 行 + 列 + 1L;
+            矩阵乙[序数] = 行 * 2L + 列 + 1L;
         }
-        for (int row = 0; row < size; row++) {
-            for (int col = 0; col < size; col++) {
-                long sum = 0;
-                for (int k = 0; k < size; k++) {
-                    sum += a[row * size + k] * b[k * size + col];
+        for (int 行 = 0; 行 < 边长; 行++) {
+            for (int 列 = 0; 列 < 边长; 列++) {
+                long 总和 = 0;
+                for (int 中间序数 = 0; 中间序数 < 边长; 中间序数++) {
+                    总和 += 矩阵甲[行 * 边长 + 中间序数] * 矩阵乙[中间序数 * 边长 + 列];
                 }
-                c[row * size + col] = sum;
+                矩阵丙[行 * 边长 + 列] = 总和;
             }
         }
-        return c[0] + c[total - 1];
+        return 矩阵丙[0] + 矩阵丙[总长 - 1];
     }
 
-    private static void swap(long[] values, int left, int right) {
-        long value = values[left];
-        values[left] = values[right];
-        values[right] = value;
+    private static void 交换(long[] 数组, int 左序, int 右序) {
+        long 数值 = 数组[左序];
+        数组[左序] = 数组[右序];
+        数组[右序] = 数值;
     }
 
-    private static int partition(long[] values, int low, int high) {
-        int middle = low + (high - low) / 2;
-        swap(values, middle, high);
-        long pivot = values[high];
-        int store = low;
-        for (int index = low; index < high; index++) {
-            if (values[index] < pivot) {
-                swap(values, index, store);
-                store++;
+    private static int 分区(long[] 数组, int 下界, int 上界) {
+        int 中点 = 下界 + (上界 - 下界) / 2;
+        交换(数组, 中点, 上界);
+        long 枢轴 = 数组[上界];
+        int 存放序数 = 下界;
+        for (int 序数 = 下界; 序数 < 上界; 序数++) {
+            if (数组[序数] < 枢轴) {
+                交换(数组, 序数, 存放序数);
+                存放序数++;
             }
         }
-        swap(values, store, high);
-        return store;
+        交换(数组, 存放序数, 上界);
+        return 存放序数;
     }
 
-    private static void quicksort(long[] values, int low, int high) {
-        if (low < high) {
-            int split = partition(values, low, high);
-            quicksort(values, low, split - 1);
-            quicksort(values, split + 1, high);
+    private static void 快速排序(long[] 数组, int 下界, int 上界) {
+        if (下界 < 上界) {
+            int 分区序数 = 分区(数组, 下界, 上界);
+            快速排序(数组, 下界, 分区序数 - 1);
+            快速排序(数组, 分区序数 + 1, 上界);
         }
     }
 
-    private static long quicksortBenchmark(int length) {
-        long[] values = new long[length];
-        for (int index = 0; index < length; index++) {
-            values[index] = length - index;
+    private static long 快速排序基准(int 长度) {
+        long[] 数组 = new long[长度];
+        for (int 序数 = 0; 序数 < 长度; 序数++) {
+            数组[序数] = 长度 - 序数;
         }
-        quicksort(values, 0, length - 1);
-        return values[0] + values[length / 2] + values[length - 1];
+        快速排序(数组, 0, 长度 - 1);
+        return 数组[0] + 数组[长度 / 2] + 数组[长度 - 1];
     }
 
-    public static void main(String[] args) {
-        if (args.length != 2) {
-            throw new IllegalArgumentException("usage: Benchmark <fib|sieve|matrix|quicksort> <size>");
+    public static void main(String[] 参数) {
+        if (参数.length != 2) {
+            throw new IllegalArgumentException("用法：性能基准 <斐波那契|素数筛|矩阵乘法|快速排序> <规模>");
         }
-        String algorithm = args[0];
-        int size = Integer.parseInt(args[1]);
-        long result = switch (algorithm) {
-            case "fib" -> fibonacci(size);
-            case "sieve" -> sieve(size);
-            case "matrix" -> matrixMultiply(size);
-            case "quicksort" -> quicksortBenchmark(size);
-            default -> throw new IllegalArgumentException("unknown algorithm: " + algorithm);
+        String 算法 = 参数[0];
+        int 规模 = Integer.parseInt(参数[1]);
+        long 结果 = switch (算法) {
+            case "斐波那契" -> 斐波那契(规模);
+            case "素数筛" -> 素数筛(规模);
+            case "矩阵乘法" -> 矩阵乘法(规模);
+            case "快速排序" -> 快速排序基准(规模);
+            default -> throw new IllegalArgumentException("未知算法：" + 算法);
         };
-        System.out.println(result);
+        System.out.println(结果);
     }
 }

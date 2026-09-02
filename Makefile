@@ -19,6 +19,15 @@ yy3_bs: $(编译器源码) yy2_bs
 yy4_bs: $(编译器源码) yy3_bs
 	./yy3_bs $(编译器入口) -o $@ --parallel
 
+yy2: $(编译器源码) yy_bs_stable
+	$(稳定编译器) $(编译器入口) -o $@ --parallel
+
+yy3: $(编译器源码) yy2
+	./yy2 $(编译器入口) -o $@ --parallel
+
+yy4: $(编译器源码) yy3
+	./yy3 $(编译器入口) -o $@ --parallel
+
 连续自举: yy4_bs
 	cmp yy3_bs yy4_bs
 
