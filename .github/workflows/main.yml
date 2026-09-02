@@ -76,8 +76,8 @@ jobs:
         run: |
           set -euo pipefail
           continuous_archive="$RUNNER_TEMP/yuyan-bootstrap-bundle.tar.gz"
-          historical_tag="bootstrap-bundle-${GITHUB_SHA}"
-          historical_asset="${historical_tag}.tar.gz"
+          historical_release="historical-bootstrap"
+          historical_asset="bootstrap-bundle-${GITHUB_SHA}.tar.gz"
           historical_archive="$RUNNER_TEMP/${historical_asset}"
 
           ./yy3_bs 豫言编译器/入口。豫 \
@@ -87,19 +87,19 @@ jobs:
           tar -czf "$continuous_archive" -C dist yy-bootstrap
           cp "$continuous_archive" "$historical_archive"
 
-          if gh release view "$historical_tag" >/dev/null 2>&1; then
-            if gh release view "$historical_tag" --json assets --jq '.assets[].name' \
-              | grep -Fxq "$historical_asset"; then
-              echo "Historical bootstrap release already exists: $historical_tag"
-            else
-              gh release upload "$historical_tag" "$historical_archive"
-            fi
-          else
-            gh release create "$historical_tag" "$historical_archive" \
+          if ! gh release view "$historical_release" >/dev/null 2>&1; then
+            gh release create "$historical_release" \
               --target "$GITHUB_SHA" \
-              --title "$historical_tag" \
+              --title "Historical bootstrap bundles" \
               --latest=false \
-              --notes "Portable bootstrap bundle generated from commit ${GITHUB_SHA}."
+              --notes "Immutable portable bootstrap bundles, indexed by their source commit."
+          fi
+
+          if gh release view "$historical_release" --json assets --jq '.assets[].name' \
+            | grep -Fxq "$historical_asset"; then
+            echo "Historical bootstrap asset already exists: $historical_asset"
+          else
+            gh release upload "$historical_release" "$historical_archive"
           fi
 
           gh release upload continuous-bootstrap "$continuous_archive" --clobber
