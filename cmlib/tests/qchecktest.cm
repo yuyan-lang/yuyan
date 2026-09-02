@@ -1,5 +1,0 @@
-Group is
-    ../../qcheck-1.0/qcheck.cm
-
-    ../cmlib.cm
-    mergesort-qcheck.sml

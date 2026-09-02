@@ -1,7 +1,0 @@
-library
-   signature TESTING
-   structure Testing
-is
-   ../cmlib.cm
-   testing.sig
-   testing.sml
