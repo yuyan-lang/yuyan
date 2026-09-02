@@ -8,14 +8,15 @@ extern const int 空值类型标记;
 extern const int 元组类型标记;
 extern const int 整数类型标记;
 extern const int 小数类型标记;
-extern const int 堆字符串类型标记;
-extern const int 静态字符串类型标记;
+extern const int 静态字节串类型标记;
 extern const int 爻类型标记;
 extern const int 函数指针类型标记;
 extern const int 静态对象指针类型标记;
 extern const int 栈指针类型标记;
 extern const int 转移地址类型标记;
-extern const int 堆字符串头类型标记;
+extern const int 堆字节串类型标记;
+extern const int 字节串头类型标记;
+extern const int C栈指针类型标记;
 
 
 // 类型与长度。
@@ -26,6 +27,7 @@ void 设置豫言值子类型(豫言值 *参数, uint64_t 子类型);
 uint64_t 获取豫言值原始长度(豫言值 参数);
 void 设置豫言值原始长度(豫言值 *参数, uint64_t 长度);
 uint64_t 获取豫言_字符串长度(豫言值 参数);
+uint64_t 获取豫言_字节串长度(豫言值 参数);
 
 
 // 读取豫言值。
@@ -35,7 +37,6 @@ double 豫言值转小数(豫言值 参数);
 bool 豫言值转爻(豫言值 参数);
 豫言值 *豫言值转元组(豫言值 参数);
 uint64_t 获取豫言元组长度(豫言值 参数);
-uint64_t 获取堆字符串占用块数(豫言值 参数);
 豫言函数指针类型 豫言值转函数指针(豫言值 参数);
 豫言值 *豫言值转静态指针(豫言值 参数);
 豫言值 *豫言值转栈指针(豫言值 参数);
@@ -43,21 +44,25 @@ uint64_t 获取堆字符串占用块数(豫言值 参数);
 void *豫言值转通用指针(豫言值 参数);
 豫言值 *豫言值转堆指针(豫言值 参数);
 uint64_t 获取堆对象占用块数(豫言值 参数);
-char *豫言值转堆字符串指针(豫言值 参数);
+unsigned char *豫言值转字节串指针(豫言值 参数);
 uint64_t 获取构造器元组长度(豫言值 参数);
+uint64_t 获取字节串占用块数(豫言值 参数);
 
 // 判断类型。
 bool 豫言值是堆指针(豫言值 参数);
 bool 豫言值是元组(豫言值 参数);
-bool 豫言值是堆字符串头(豫言值 参数);
-bool 豫言值是字符串指针(豫言值 参数);
+bool 豫言值是堆字节串(豫言值 参数);
+bool 豫言值是字节串头(豫言值 参数);
+bool 豫言值是字节串(豫言值 参数);
 bool 豫言值是构造器元组(豫言值 参数);
-uint64_t 字符串缓冲长度转块数(uint64_t 长度);
+uint64_t 字节缓冲长度转块数(uint64_t 长度);
 
 // 构造豫言值。
 豫言值 单元转豫言值();
-豫言值 原始堆字符串转豫言值(uint64_t 字节长度, const char *字符串);
+// 文本 API 保留原有约定：字节长度包含结尾零字节。
 豫言值 复制字符串为豫言值(uint64_t 字节长度, const char *字符串);
+豫言值 分配豫言_字节串缓冲区(uint64_t 字节长度);
+豫言值 复制字节为豫言值(uint64_t 字节长度, const void *字节);
 豫言值 静态字符串转豫言值(const char *字符串);
 豫言值 整数转豫言值(int64_t 整数);
 豫言值 小数转豫言值(double 小数);
