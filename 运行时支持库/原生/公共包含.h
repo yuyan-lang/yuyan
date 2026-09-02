@@ -10,7 +10,6 @@
 #include <limits.h>
 #include <errno.h>
 #include <pthread.h>
-#include "gc.h"
 #include <assert.h>
 #include <inttypes.h>
 #include "值编解码.h"

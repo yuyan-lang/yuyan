@@ -29,7 +29,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang llvm make libgmp-dev libgc-dev curl
+          sudo apt-get install -y clang llvm make curl
 
       - name: Build stable compiler from portable bootstrap release
         run: |
@@ -43,6 +43,14 @@ jobs:
           mkdir -p "$bootstrap_root"
           tar -xzf "$bootstrap_archive" -C "$bootstrap_root" --strip-components=1
           find "$bootstrap_root" -type f \( -name '._*' -o -name '.DS_Store' \) -delete
+
+          # 兼容仍含有已废弃 Boehm GC 引用的旧连续自举包。
+          if [[ -f "$bootstrap_root/构建.sh" ]]; then
+            sed -i '/^[[:space:]]*#include "gc.h"[[:space:]]*$/d' \
+              "$bootstrap_root/运行时/原生/公共包含.h" \
+              "$bootstrap_root/运行时/原生/入口.c"
+            sed -i 's/ -lgc / /g' "$bootstrap_root/构建.sh"
+          fi
 
           if [[ -x "$bootstrap_root/构建.sh" ]]; then
             "$bootstrap_root/构建.sh"

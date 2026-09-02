@@ -1,8 +1,6 @@
 
 #include "公共包含.h"
 
-#include "gc.h"
-
 extern void 可选入口初始化();
 
 int 全局参数数量 = 0;
@@ -48,4 +46,3 @@ int main(int 参数数量, char* 参数值[]) {
     int 返回值 = 启动豫言运行时();
     return 返回值;
 }
-

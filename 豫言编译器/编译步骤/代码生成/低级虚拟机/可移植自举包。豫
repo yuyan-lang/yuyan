@@ -77,7 +77,7 @@ rm -f "$2/自举桥接.c"
     虑「构建脚本」者『#!/bin/sh
 set -eu
 cd "$(dirname "$0")"
-clang -O3 -DNDEBUG -Wno-override-module -Wno-error -I运行时/原生 -I/usr/local/include -I/opt/homebrew/include $(find llvm -type f -name '*.ll') $(find 运行时/原生 -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.ll' \)) -L/usr/local/lib -L/opt/homebrew/lib -lgc -pthread -o 豫言自举编译器
+clang -O3 -DNDEBUG -Wno-override-module -Wno-error -I运行时/原生 $(find llvm -type f -name '*.ll') $(find 运行时/原生 -type f \( -name '*.c' -o -name '*.cpp' -o -name '*.ll' \)) -pthread -o 豫言自举编译器
 』而
     虑「构建脚本路径」者「路径」之「路径合并」于「输出目录」于『构建.sh』而
     虑「无」者「文件系统」之「写文件」于「构建脚本路径」于「构建脚本」而
@@ -89,7 +89,7 @@ clang -O3 -DNDEBUG -Wno-override-module -Wno-error -I运行时/原生 -I/usr/loc
 
 此目录包含与目标机器无关的 LLVM 中间表示，以及完整的豫言原生运行时源码。
 
-构建需要 `clang` 和 Boehm GC 开发包（Debian、Ubuntu 使用 `libgc-dev`，Homebrew 使用 `bdw-gc`）。
+构建只需要 `clang`；垃圾回收器已经包含在运行时源码中。
 
 可在任意工作目录执行：
 
