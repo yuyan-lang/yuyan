@@ -2,7 +2,7 @@
 
 专为中文编程设计的高级函数式通用编程语言
 
-本软件仍在早期测试中，仅供测评使用。
+当前仓库使用自托管编译器，并通过连续自举包保持可重复构建。
 
 [网站](https://yuyan-lang.github.io/yuyan)
 [语言手册](教程/combined_tutorial.pdf)
@@ -38,8 +38,6 @@
 ## 语言插件
 
 [VSCode插件](https://marketplace.visualstudio.com/items?itemName=yuyan-lang.yuyan-vscode)
-
-目前插件需要从源代码编译v0.1版本，v0.2版本插件仍在开发中
 
 ## 漏洞
 

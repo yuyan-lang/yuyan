@@ -61,7 +61,7 @@ STG_ALL_CODEGEN = "all-codegen"
 # STG_CODEGEN = "codegen"
 
 
-log_file = open("yy_parallel_log.txt", "a+")
+log_file = open("yy_parallel_log.txt", "w")
 dependencies_log = open("yy_parallel_deps.txt", "w")
 
 
