@@ -44,8 +44,14 @@ jobs:
           tar -xzf "$bootstrap_archive" -C "$bootstrap_root" --strip-components=1
           find "$bootstrap_root" -type f \( -name '._*' -o -name '.DS_Store' \) -delete
 
-          "$bootstrap_root/build.sh"
-          install -m 755 "$bootstrap_root/yy_bundled_bs" ./yy_bs_stable
+          if [[ -x "$bootstrap_root/构建.sh" ]]; then
+            "$bootstrap_root/构建.sh"
+            bundled_compiler="$bootstrap_root/豫言自举编译器"
+          else
+            "$bootstrap_root/build.sh"
+            bundled_compiler="$bootstrap_root/yy_bundled_bs"
+          fi
+          install -m 755 "$bundled_compiler" ./yy_bs_stable
           ./yy_bs_stable --version
 
       - name: Type-check compiler with stable bootstrap
@@ -63,17 +69,37 @@ jobs:
       - name: Verify fixed point
         run: cmp yy3_bs yy4_bs
 
-      - name: Update continuous bootstrap release
+      - name: Publish continuous and historical bootstrap releases
         if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          bundle_archive="$RUNNER_TEMP/yuyan-bootstrap-bundle.tar.gz"
+          continuous_archive="$RUNNER_TEMP/yuyan-bootstrap-bundle.tar.gz"
+          historical_tag="bootstrap-bundle-${GITHUB_SHA}"
+          historical_asset="${historical_tag}.tar.gz"
+          historical_archive="$RUNNER_TEMP/${historical_asset}"
 
           ./yy3_bs 豫言编译器/入口。豫 \
             --emit-bootstrap-bundle dist/yy-bootstrap \
             --parallel
           find dist/yy-bootstrap -type f \( -name '._*' -o -name '.DS_Store' \) -delete
-          tar -czf "$bundle_archive" -C dist yy-bootstrap
-          gh release upload continuous-bootstrap "$bundle_archive" --clobber
+          tar -czf "$continuous_archive" -C dist yy-bootstrap
+          cp "$continuous_archive" "$historical_archive"
+
+          if gh release view "$historical_tag" >/dev/null 2>&1; then
+            if gh release view "$historical_tag" --json assets --jq '.assets[].name' \
+              | grep -Fxq "$historical_asset"; then
+              echo "Historical bootstrap release already exists: $historical_tag"
+            else
+              gh release upload "$historical_tag" "$historical_archive"
+            fi
+          else
+            gh release create "$historical_tag" "$historical_archive" \
+              --target "$GITHUB_SHA" \
+              --title "$historical_tag" \
+              --latest=false \
+              --notes "Portable bootstrap bundle generated from commit ${GITHUB_SHA}."
+          fi
+
+          gh release upload continuous-bootstrap "$continuous_archive" --clobber

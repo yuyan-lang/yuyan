@@ -1,0 +1,5 @@
+# Identify every Yuyan source suffix consistently for GitHub Linguist.
+*.yuyan linguist-language=yuyan-lang
+*.yyon linguist-language=yuyan-lang
+*。豫 linguist-language=yuyan-lang
+*。豫库 linguist-language=yuyan-lang
