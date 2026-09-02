@@ -1,6 +1,6 @@
 import java.util.Arrays;
 
-final class 性能基准 {
+public final class 性能基准 {
     private static long 斐波那契(long 数) {
         if (数 < 2) {
             return 数;

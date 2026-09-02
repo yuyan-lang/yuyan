@@ -17,3 +17,8 @@
 - To update cache identity for `yy_bs_stable` or `yy*_bs*`, touch the executable; the cache directory is based on the executable mtime.
 - Ignore `*_v0` directories unless the user explicitly asks about them.
 - Always provide answers in Chinese.
+
+
+# 使用中文
+
+除了`yuyan-vscode`之外，所有的文档代码文件名均应使用中文。

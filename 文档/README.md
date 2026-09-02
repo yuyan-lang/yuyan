@@ -28,7 +28,7 @@
 
 ## 语言规范
 
-[语言规范](LanguageSpecification.md)
+[语言规范](语言规范.md)
 
 ## 运行
 
