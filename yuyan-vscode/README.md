@@ -19,6 +19,14 @@ puts the newest cache first, and asks `yy_bs_stable debug showtrees` to decode a
 pretty-print the selected compiler tree. The result opens as a read-only Yuyan
 preview that can be closed without saving; the raw JSON is not shown.
 
+## Hover and Jump to Definition
+
+The compiler writes `<source stem>.语言服务.json` alongside the other artifacts
+under `.yybuild`. The extension reads the newest matching artifact when VS Code
+requests hover help or a definition location. The metadata protocol uses Chinese
+field names and Chinese kind values throughout; the removed `_build/lsp_tokens_info`
+protocol is not used.
+
 ## Icon Attribution
 
 Icon design inspired by the Chinese character 豫 (yu): https://www.zdic.net/hans/豫

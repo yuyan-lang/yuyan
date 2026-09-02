@@ -35,7 +35,7 @@
           "default": [
             {
               "fileEnding": "。豫",
-              "command": "dune exec -- yyocamlc -c <filepath>"
+              "command": "./yy_bs_stable \"<filepath>\" --type-check-only"
             }
           ],
           "description": "Compiler commands to execute on file save. Each item should have 'fileEnding' and 'command' properties. Use <filepath> as placeholder for the actual file path.",
@@ -108,9 +108,10 @@
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
     "lint": "eslint . --ignore-pattern out",
-    "pretest": "npm run lint && npm run compile && npm run test:grammar && npm run test:build-artifacts",
+    "pretest": "npm run lint && npm run compile && npm run test:grammar && npm run test:build-artifacts && npm run test:language-service-artifacts",
     "test:grammar": "node test/grammar.test.js",
     "test:build-artifacts": "node test/buildArtifacts.test.js",
+    "test:language-service-artifacts": "node test/languageServiceArtifacts.test.js",
     "test": "node ./test/runTest.js"
   },
   "devDependencies": {
