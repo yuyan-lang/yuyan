@@ -139,4 +139,7 @@
     ],
     "vim.matchpairs": "(:),{:},[:],（:）,【:】,「:」,『:』",
     "makefile.configureOnOpen": false,
+    "files.watcherExclude": {
+        "**/.yybuild/**": true
+    }
 }
