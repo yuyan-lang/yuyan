@@ -207,6 +207,52 @@ async function main() {
     }
   });
 
+  await runTest('uses type context in indented algebraic data type constructors', () => {
+    const lines = [
+      {
+        source: '   「文字片」立化「字符串」而「排版片」也。「：连续的具体语法字符。：」',
+        typeKeywordText: '化而',
+        hasComment: true
+      },
+      {
+        source: '\t「括号片」立化（「列」于「排版片」）而「排版片」也。',
+        typeKeywordText: '化而',
+        hasComment: false
+      },
+      {
+        source: '   「句号片」立「排版片」也。',
+        typeKeywordText: '',
+        hasComment: false
+      },
+      {
+        source: '   「注释片」立化「字符串」而化「注释方向」而「排版片」也。',
+        typeKeywordText: '化而化而',
+        hasComment: false
+      },
+      {
+        source: '   「构造排版状态」立化（「列」于「字符串」）「：倒序输出片段：」而化「整数」「：当前列：」而化「整数」「：连续换行数：」而「排版状态」也。',
+        typeKeywordText: '化而化而化而',
+        hasComment: true
+      }
+    ];
+
+    for (const { source, typeKeywordText, hasComment } of lines) {
+      const tokens = tokensWithText(source, grammar.tokenizeLine(source));
+      const declarationKeyword = findToken(tokens, '立');
+      const typeKeywords = tokens.filter(token => token.text === '化' || token.text === '而');
+      const declarationEnd = findToken(tokens, '也');
+
+      assert.ok(hasScope(declarationKeyword, 'markup.bold.structure.yuyan'));
+      assert.strictEqual(typeKeywords.map(token => token.text).join(''), typeKeywordText);
+      assert.ok(typeKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
+      assert.ok(hasScope(declarationEnd, 'markup.bold.structure.yuyan'));
+      assert.strictEqual(
+        tokens.some(token => hasScope(token, 'comment.block.yuyan')),
+        hasComment
+      );
+    }
+  });
+
   await runTest('highlights punctuation', () => {
     const line = '（甲）【乙】，甲；乙。';
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));
