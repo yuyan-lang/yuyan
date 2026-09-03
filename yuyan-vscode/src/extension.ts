@@ -76,11 +76,45 @@ function sourceRangeToVscodeRange(range: SourceRangeInfo): vscode.Range {
   );
 }
 
+async function findProjectRoot(sourceUri: vscode.Uri): Promise<vscode.Uri | undefined> {
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(sourceUri);
+  if (!workspaceFolder) {
+    return undefined;
+  }
+
+  const workspaceRootPath = path.resolve(workspaceFolder.uri.fsPath);
+  let candidatePath = path.resolve(path.dirname(sourceUri.fsPath));
+
+  while (true) {
+    for (const marker of ['.yybuild', '.git']) {
+      try {
+        await vscode.workspace.fs.stat(vscode.Uri.joinPath(vscode.Uri.file(candidatePath), marker));
+        return vscode.Uri.file(candidatePath);
+      } catch {
+        // Keep walking toward the containing workspace folder.
+      }
+    }
+
+    if (candidatePath === workspaceRootPath) {
+      return workspaceFolder.uri;
+    }
+
+    const parentPath = path.dirname(candidatePath);
+    if (
+      parentPath === candidatePath ||
+      path.relative(workspaceRootPath, parentPath).startsWith('..')
+    ) {
+      return workspaceFolder.uri;
+    }
+    candidatePath = parentPath;
+  }
+}
+
 async function findLanguageServiceArtifact(
-  workspaceFolder: vscode.WorkspaceFolder,
+  projectRootUri: vscode.Uri,
   artifactRelativePath: string
 ): Promise<{ uri: vscode.Uri; mtime: number } | undefined> {
-  const buildRootUri = vscode.Uri.joinPath(workspaceFolder.uri, '.yybuild');
+  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.yybuild');
   let buildRootEntries: [string, vscode.FileType][];
   try {
     buildRootEntries = await vscode.workspace.fs.readDirectory(buildRootUri);
@@ -88,41 +122,38 @@ async function findLanguageServiceArtifact(
     return undefined;
   }
 
-  const cacheDirectories = await Promise.all(
+  const artifacts = await Promise.all(
     buildRootEntries
       .filter(([, fileType]) => (fileType & vscode.FileType.Directory) !== 0)
       .map(async ([name]) => {
-        const uri = vscode.Uri.joinPath(buildRootUri, name);
-        const stat = await vscode.workspace.fs.stat(uri);
-        return { name, mtime: stat.mtime, uri };
+        const uri = vscode.Uri.joinPath(buildRootUri, name, artifactRelativePath);
+        try {
+          const stat = await vscode.workspace.fs.stat(uri);
+          return (stat.type & vscode.FileType.File) !== 0
+            ? { name, mtime: stat.mtime, uri }
+            : undefined;
+        } catch {
+          return undefined;
+        }
       })
   );
 
-  for (const cache of sortBuildCachesNewestFirst<BuildCacheDirectory>(cacheDirectories)) {
-    const uri = vscode.Uri.joinPath(cache.uri, artifactRelativePath);
-    try {
-      const stat = await vscode.workspace.fs.stat(uri);
-      if ((stat.type & vscode.FileType.File) !== 0) {
-        return { uri, mtime: stat.mtime };
-      }
-    } catch {
-      // This compiler cache does not contain metadata for the source file.
-    }
-  }
-
-  return undefined;
+  const newest = sortBuildCachesNewestFirst<BuildCacheDirectory>(
+    artifacts.filter((artifact): artifact is BuildCacheDirectory => artifact !== undefined)
+  )[0];
+  return newest ? { uri: newest.uri, mtime: newest.mtime } : undefined;
 }
 
 async function getLanguageServiceDocument(
   sourceDocument: vscode.TextDocument
 ): Promise<LanguageServiceDocument | undefined> {
-  const workspaceFolder = vscode.workspace.getWorkspaceFolder(sourceDocument.uri);
-  if (!workspaceFolder) {
+  const projectRootUri = await findProjectRoot(sourceDocument.uri);
+  if (!projectRootUri) {
     return undefined;
   }
 
   const relativeSourcePath = path.relative(
-    workspaceFolder.uri.fsPath,
+    projectRootUri.fsPath,
     sourceDocument.uri.fsPath
   );
   const artifactRelativePath = languageServiceArtifactPath(relativeSourcePath);
@@ -130,7 +161,7 @@ async function getLanguageServiceDocument(
     return undefined;
   }
 
-  const artifact = await findLanguageServiceArtifact(workspaceFolder, artifactRelativePath);
+  const artifact = await findLanguageServiceArtifact(projectRootUri, artifactRelativePath);
   if (!artifact) {
     return undefined;
   }
@@ -150,6 +181,10 @@ async function getLanguageServiceDocument(
     const metadata = parseLanguageServiceDocument(content);
     if (!metadata) {
       log(`Invalid language service artifact: ${artifact.uri.fsPath}`);
+      return undefined;
+    }
+    if (path.resolve(metadata.源文件) !== path.resolve(sourceDocument.uri.fsPath)) {
+      log(`Language service artifact source mismatch: ${artifact.uri.fsPath}`);
       return undefined;
     }
     languageServiceCache.set(cacheKey, {
@@ -222,8 +257,9 @@ interface CompilerCommand {
   command: string;
 }
 
-function executeCompilerCommand(filePath: string): void {
-  const config = vscode.workspace.getConfiguration('yuyan');
+async function executeCompilerCommand(filePath: string): Promise<void> {
+  const sourceUri = vscode.Uri.file(filePath);
+  const config = vscode.workspace.getConfiguration('yuyan', sourceUri);
   const compilerCommands = config.get<CompilerCommand[]>('compilerCommand', []);
 
   // Find matching command based on file ending
@@ -241,9 +277,8 @@ function executeCompilerCommand(filePath: string): void {
   outputChannel.appendLine(`\n--- Executing compiler command ---`);
   outputChannel.appendLine(`Command: ${command}`);
 
-  // Get workspace folder for working directory
-  const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-  const cwd = workspaceFolder ? workspaceFolder.uri.fsPath : path.dirname(filePath);
+  const projectRootUri = await findProjectRoot(sourceUri);
+  const cwd = projectRootUri ? projectRootUri.fsPath : path.dirname(filePath);
 
   // Execute command
   child_process.exec(command, { cwd }, (error, stdout, stderr) => {
@@ -334,10 +369,10 @@ interface BuildCacheDirectory {
 }
 
 async function findJsonBuildArtifacts(
-  workspaceFolder: vscode.WorkspaceFolder,
+  projectRootUri: vscode.Uri,
   artifactStem: string
 ): Promise<BuildArtifactQuickPickItem[]> {
-  const buildRootUri = vscode.Uri.joinPath(workspaceFolder.uri, '.yybuild');
+  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.yybuild');
   const buildRootEntries = await vscode.workspace.fs.readDirectory(buildRootUri);
   const cacheDirectories = await Promise.all(
     buildRootEntries
@@ -386,16 +421,16 @@ async function findJsonBuildArtifacts(
 }
 
 function prettyPrintBuildArtifact(
-  workspaceFolder: vscode.WorkspaceFolder,
+  projectRootUri: vscode.Uri,
   artifactUri: vscode.Uri
 ): Promise<string> {
-  const compilerPath = vscode.Uri.joinPath(workspaceFolder.uri, 'yy_bs_stable').fsPath;
+  const compilerPath = vscode.Uri.joinPath(projectRootUri, 'yy_bs_stable').fsPath;
   return new Promise((resolve, reject) => {
     child_process.execFile(
       compilerPath,
       ['debug', 'showtrees', artifactUri.fsPath],
       {
-        cwd: workspaceFolder.uri.fsPath,
+        cwd: projectRootUri.fsPath,
         encoding: 'utf8',
         maxBuffer: 128 * 1024 * 1024
       },
@@ -425,15 +460,15 @@ async function jumpToBuildArtifact(
     return;
   }
 
-  const workspaceFolder = vscode.workspace.getWorkspaceFolder(sourceUri);
-  if (!workspaceFolder) {
+  const projectRootUri = await findProjectRoot(sourceUri);
+  if (!projectRootUri) {
     void vscode.window.showErrorMessage(
       '当前源文件不在工作区中。 The current source file is not inside a workspace.'
     );
     return;
   }
 
-  const relativeSourcePath = path.relative(workspaceFolder.uri.fsPath, sourceUri.fsPath);
+  const relativeSourcePath = path.relative(projectRootUri.fsPath, sourceUri.fsPath);
   const artifactStem = sourceRelativePathToArtifactStem(relativeSourcePath);
   if (!artifactStem) {
     void vscode.window.showErrorMessage(
@@ -444,11 +479,11 @@ async function jumpToBuildArtifact(
 
   let artifacts: BuildArtifactQuickPickItem[];
   try {
-    artifacts = await findJsonBuildArtifacts(workspaceFolder, artifactStem);
+    artifacts = await findJsonBuildArtifacts(projectRootUri, artifactStem);
   } catch (error: any) {
     log(`Failed to inspect .yybuild: ${error.message || error}`);
     void vscode.window.showErrorMessage(
-      `无法读取 ${vscode.Uri.joinPath(workspaceFolder.uri, '.yybuild').fsPath}。请先构建项目。`
+      `无法读取 ${vscode.Uri.joinPath(projectRootUri, '.yybuild').fsPath}。请先构建项目。`
     );
     return;
   }
@@ -476,7 +511,7 @@ async function jumpToBuildArtifact(
         location: vscode.ProgressLocation.Window,
         title: `Yuyan: 正在解码 ${path.basename(selectedArtifact.artifactUri.fsPath)}`
       },
-      () => prettyPrintBuildArtifact(workspaceFolder, selectedArtifact.artifactUri)
+      () => prettyPrintBuildArtifact(projectRootUri, selectedArtifact.artifactUri)
     );
     const artifactFileName = path.basename(selectedArtifact.artifactUri.fsPath);
     const previewFileName = artifactFileName.endsWith('.json')
@@ -538,7 +573,7 @@ export function activate(context: vscode.ExtensionContext): void {
       log(`File saved: ${filePath}`);
 
       // Execute compiler command if configured
-      executeCompilerCommand(filePath);
+      void executeCompilerCommand(filePath);
     });
     context.subscriptions.push(onSaveDisposable);
     log('File save handler registered for compiler commands');
