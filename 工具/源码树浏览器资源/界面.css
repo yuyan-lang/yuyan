@@ -1,0 +1,468 @@
+@font-face {
+  font-family: QIJI;
+  font-display: swap;
+  src:
+    url("https://cdn.jsdelivr.net/gh/wenyan-lang/book@3899aad7a917d0f000716ca97fe29221fe4b56d6/assets/font.woff2") format("woff2"),
+    url("https://cdn.jsdelivr.net/gh/wenyan-lang/book@3899aad7a917d0f000716ca97fe29221fe4b56d6/assets/font.ttf") format("truetype");
+}
+
+:root {
+  color-scheme: light;
+  --page: #efefef;
+  --paper: #f4f4f2;
+  --paper-deep: #e9e9e6;
+  --ink: #292929;
+  --ink-soft: #707070;
+  --ink-faint: #a8a8a8;
+  --line: #d2d2d0;
+  --line-dark: #bcbcb9;
+  --accent: #a44f3c;
+  --hover: #335577;
+  --structure: #232323;
+  --keyword: #344f58;
+  --type: #586b25;
+  --string: #77601d;
+  --number: #765c27;
+  --comment: #777;
+  --builtin: #315d58;
+  --selection: #ccd9de;
+  --ui: Helvetica, Arial, sans-serif;
+  --book: QIJI, "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+  --mono: "SFMono-Regular", "Cascadia Code", "Noto Sans Mono CJK SC", monospace;
+  --column: 34px;
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; }
+body { color: var(--ink); background: var(--page); font: 16px/1.5 var(--ui); }
+::selection { color: var(--ink); background: var(--selection); }
+
+.state-toggle {
+  position: fixed;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shell {
+  height: 100%;
+  display: grid;
+  grid-template-rows: 68px minmax(0, 1fr);
+  background: var(--page);
+}
+
+.masthead {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--line);
+  background: #f7f7f6;
+}
+.identity { display: contents; }
+.seal {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-dark);
+  border-radius: 7px;
+  color: var(--ink);
+  background: var(--paper);
+  font: 28px/1 var(--book);
+}
+.title-group { justify-self: start; min-width: 0; text-align: left; }
+h1 { margin: 0; color: var(--ink); font: 600 15px/1.25 var(--ui); }
+h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
+.subtitle { margin: 3px 0 0; color: var(--ink-soft); font: 12px/1.25 var(--ui); }
+
+.toolbar { display: flex; align-items: center; justify-content: flex-end; }
+.tool-button {
+  min-height: 32px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line-dark);
+  border-radius: 2px;
+  color: var(--ink-soft);
+  background: rgba(255, 255, 255, .24);
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+}
+.tool-button:hover { color: #000; border-color: var(--ink-soft); }
+.tool-button:focus-visible, .tree-summary:focus-visible, .tree-link:focus-visible, .source-link:focus-visible {
+  outline: 2px solid var(--hover);
+  outline-offset: 2px;
+}
+.tool-icon { width: 16px; display: inline-grid; place-items: center; font: 14px/1 var(--ui); }
+.horizontal-label { display: none; }
+.vertical-label { display: inline; }
+#writing-toggle:checked ~ .shell .writing-button { color: var(--ink); border-color: var(--ink-soft); background: var(--paper-deep); }
+#writing-toggle:checked ~ .shell .horizontal-label { display: inline; }
+#writing-toggle:checked ~ .shell .vertical-label { display: none; }
+
+/* 常规左侧文件树；源码阅读区始终位于右侧。 */
+.workspace {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: clamp(240px, 22vw, 340px) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+.sidebar {
+  position: relative;
+  z-index: 12;
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border-right: 1px solid var(--line);
+  background: #f7f7f6;
+}
+.sidebar-head {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--line);
+}
+.section-label {
+  margin: 0;
+  color: var(--ink);
+  font: 600 13px/1.35 var(--ui);
+}
+.sidebar-note {
+  margin: 3px 0 0;
+  color: var(--ink-soft);
+  font: 12px/1.35 var(--ui);
+}
+.sidebar-foot {
+  min-width: 0;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font: 11px/1.35 var(--ui);
+}
+.sidebar-foot span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tree {
+  height: 100%;
+  overflow: auto;
+  padding: 8px;
+  direction: ltr;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-dark) var(--page);
+}
+.tree ul { list-style: none; margin: 0; padding: 0; }
+.tree > .tree-list {
+  width: 100%;
+  min-width: 0;
+  display: block;
+}
+.tree > .tree-list > .tree-item {
+  position: relative;
+  width: 100%;
+}
+.tree details > summary { list-style: none; }
+.tree details > summary::-webkit-details-marker { display: none; }
+.tree-summary, .tree-link {
+  min-height: 34px;
+  margin: 1px 0;
+  padding: 5px 8px;
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  color: var(--ink-soft);
+  background: transparent;
+  font: 13px/1.3 var(--ui);
+  text-decoration: none;
+  cursor: pointer;
+}
+.tree-summary .tree-name, .tree-link .tree-name { grid-column: 2; grid-row: 1; text-align: left; }
+.tree-summary .node-icon, .tree-link .node-icon { grid-column: 1; grid-row: 1; }
+.tree-summary:hover, .tree-link:hover,
+.tree details[open] > .tree-summary {
+  color: var(--ink);
+  border-color: var(--line);
+  background: var(--paper-deep);
+}
+.tree-link.is-default { color: var(--ink); background: var(--paper-deep); }
+.tree-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.node-icon { position: relative; width: 15px; height: 16px; color: currentColor; }
+.node-icon.folder::before { content: ""; position: absolute; inset: 5px 1px 1px; border: 1px solid currentColor; border-radius: 2px; }
+.node-icon.folder::after { content: ""; position: absolute; left: 3px; top: 2px; width: 7px; height: 4px; border: 1px solid currentColor; border-bottom: 0; border-radius: 2px 2px 0 0; }
+.node-icon.file::before { content: ""; position: absolute; inset: 1px 2px; border: 1px solid currentColor; border-radius: 1px; }
+.node-icon.file::after { content: ""; position: absolute; left: 5px; top: 6px; width: 6px; height: 1px; background: currentColor; box-shadow: 0 3px currentColor, 0 6px currentColor; }
+
+.tree > .tree-list > .directory-item > details > ul {
+  position: static;
+  display: block;
+  padding-left: 16px;
+}
+.tree > .tree-list > .directory-item > details > ul ul { padding-left: 14px; }
+
+.reader { grid-column: 2; min-width: 0; min-height: 0; background: var(--paper); }
+.source-stack { position: relative; width: 100%; height: 100%; min-width: 0; min-height: 0; }
+.source-document {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  min-width: 0;
+  min-height: 0;
+  display: none;
+  grid-template-columns: minmax(0, 1fr) clamp(220px, 19vw, 310px);
+  grid-template-rows: minmax(0, 1fr);
+  background: var(--page);
+}
+.source-document.is-default,
+.source-document:target { display: grid; }
+.source-document:target { z-index: 2; }
+
+/* 文件信息成为右侧卷首，与参考书页的封面位置相同。 */
+.reader-head {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  margin: 12px 18px 14px 8px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 44px minmax(86px, 1fr) minmax(58px, .68fr);
+  overflow: hidden;
+  border: 2px solid var(--ink);
+  background: var(--page);
+}
+.reader-head::before {
+  content: "豫";
+  grid-column: 2;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  border-inline: 1px solid var(--ink);
+  color: #080808;
+  font: 112px/1 var(--book);
+}
+.path-block {
+  grid-column: 3;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 14px 9px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  overflow: hidden;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+.breadcrumb {
+  max-height: 74%;
+  overflow: hidden;
+  color: var(--ink);
+  font: 19px/1.55 var(--book);
+  letter-spacing: .12em;
+}
+.file-meta { display: none; }
+.source-link {
+  grid-column: 1;
+  grid-row: 1;
+  align-self: end;
+  justify-self: center;
+  margin-bottom: 14px;
+  padding: 7px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font: 18px/1 var(--book);
+  text-decoration: none;
+}
+.source-link:hover { color: #000; border-color: #000; }
+
+.code-viewport {
+  grid-column: 1;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  direction: rtl;
+  overscroll-behavior: contain;
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background:
+    repeating-linear-gradient(90deg, transparent 0, transparent calc(var(--column) - 1px), rgba(40, 40, 40, .10) calc(var(--column) - 1px), rgba(40, 40, 40, .10) var(--column)),
+    var(--paper);
+  scrollbar-color: var(--line-dark) var(--page);
+}
+.code-layout {
+  min-width: 100%;
+  min-height: 100%;
+  width: max-content;
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+  direction: ltr;
+}
+.line-numbers, .source-code {
+  margin: 0;
+  border: 0;
+  tab-size: 4;
+  font-variant-ligatures: none;
+}
+.line-numbers { display: none; }
+.source-code {
+  flex: 0 0 auto;
+  width: max-content;
+  height: 100%;
+  min-height: 100%;
+  padding: 14px 17px 28px;
+  color: var(--ink);
+  background: transparent;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font: 18px/1.9 var(--book);
+  letter-spacing: .055em;
+}
+
+/* 默认勾选横排模式，显示常规源码视图和行号。 */
+#writing-toggle:checked ~ .shell .source-document {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 58px minmax(0, 1fr);
+}
+#writing-toggle:checked ~ .shell .reader-head {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+  padding: 7px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  overflow: visible;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+}
+#writing-toggle:checked ~ .shell .reader-head::before { display: none; }
+#writing-toggle:checked ~ .shell .path-block {
+  min-width: 0;
+  padding: 0;
+  display: block;
+  overflow: visible;
+  writing-mode: horizontal-tb;
+}
+#writing-toggle:checked ~ .shell .breadcrumb {
+  max-height: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 14px/1.35 var(--mono);
+  letter-spacing: 0;
+}
+#writing-toggle:checked ~ .shell .file-meta {
+  display: block;
+  max-height: none;
+  margin-top: 2px;
+  overflow: visible;
+  font: 12px/1.35 var(--ui);
+  letter-spacing: 0;
+}
+#writing-toggle:checked ~ .shell .source-link {
+  align-self: auto;
+  justify-self: auto;
+  margin: 0;
+  padding: 4px 8px;
+  border: 0;
+  color: var(--ink-soft);
+  font: 16px/1 var(--book);
+}
+#writing-toggle:checked ~ .shell .code-viewport {
+  grid-column: 1;
+  grid-row: 2;
+  border-top: 0;
+  background: var(--paper);
+  direction: ltr;
+}
+#writing-toggle:checked ~ .shell .code-layout {
+  height: auto;
+  display: grid;
+  grid-template-columns: 58px minmax(max-content, 1fr);
+}
+#writing-toggle:checked ~ .shell .line-numbers {
+  display: block;
+  min-height: 100%;
+  padding: 16px 10px 48px 5px;
+  border-right: 1px solid var(--line);
+  color: var(--ink-faint);
+  background: var(--paper-deep);
+  white-space: pre;
+  text-align: right;
+  font: 12px/1.7 var(--mono);
+  user-select: none;
+}
+#writing-toggle:checked ~ .shell .source-code {
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  padding: 16px 28px 48px 15px;
+  background: var(--paper);
+  white-space: pre;
+  overflow-wrap: normal;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  font: 16px/1.7 var(--mono);
+  letter-spacing: 0;
+}
+
+.tok-comment { color: var(--comment); }
+.tok-string { color: var(--string); }
+.tok-number { color: var(--number); }
+.tok-keyword { color: var(--keyword); }
+.tok-structure { color: var(--structure); font-weight: 600; }
+.tok-type { color: var(--type); }
+.tok-builtin { color: var(--builtin); }
+.tok-label { color: var(--accent); }
+.tok-identifier { color: var(--ink); }
+.tok-punctuation { color: var(--accent); }
+.tok-plain { color: inherit; }
+
+@media (max-width: 760px) {
+  .shell { grid-template-rows: 62px minmax(0, 1fr); }
+  .masthead { gap: 8px; padding: 7px 9px; }
+  .seal { width: 38px; height: 38px; font-size: 25px; }
+  .title-group { justify-self: start; }
+  h1 span, .subtitle { display: none; }
+  .toolbar { position: static; }
+  .tool-button { min-height: 27px; padding-block: 2px; }
+  .workspace { grid-template-columns: minmax(180px, 38vw) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+  .sidebar-head { padding: 10px; }
+  .sidebar-note { display: none; }
+  .tree { padding: 5px; }
+  .tree-summary, .tree-link { min-height: 32px; padding: 4px 6px; font-size: 12px; }
+  .sidebar-foot { padding: 6px 8px; }
+  .source-document { grid-template-columns: minmax(0, 1fr) 138px; }
+  .reader-head { margin: 7px 7px 8px 5px; grid-template-columns: 28px minmax(52px, 1fr) 45px; }
+  .reader-head::before { font-size: 68px; }
+  .path-block { padding: 8px 5px; }
+  .breadcrumb { font-size: 14px; }
+  .file-meta { display: none; }
+  .source-link { margin-bottom: 8px; padding: 4px; font-size: 14px; }
+  .source-code { padding: 10px 12px 20px; font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; }
+}

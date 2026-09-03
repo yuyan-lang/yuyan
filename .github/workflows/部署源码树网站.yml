@@ -1,0 +1,80 @@
+name: 部署源码树网站
+
+env:
+  YY_GC_MAX_HEAP_SIZE_MB: 400
+  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-bootstrap/yuyan-bootstrap-bundle.tar.gz
+
+on:
+  push:
+    branches: [yybs]
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    name: 以豫言构建静态站
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: 检出源码
+        uses: actions/checkout@v6
+
+      - name: 安装豫言构建依赖
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang llvm make libgmp-dev libgc-dev curl
+
+      - name: 安装稳定豫言编译器
+        run: |
+          set -euo pipefail
+          bootstrap_archive="$RUNNER_TEMP/yuyan-bootstrap-bundle.tar.gz"
+          bootstrap_root="$RUNNER_TEMP/yuyan-bootstrap"
+
+          curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
+            --output "$bootstrap_archive" \
+            "$YY_BOOTSTRAP_URL"
+          mkdir -p "$bootstrap_root"
+          tar -xzf "$bootstrap_archive" -C "$bootstrap_root" --strip-components=1
+          find "$bootstrap_root" -type f \( -name '._*' -o -name '.DS_Store' \) -delete
+
+          if [[ -x "$bootstrap_root/构建.sh" ]]; then
+            "$bootstrap_root/构建.sh"
+            bundled_compiler="$bootstrap_root/豫言自举编译器"
+          else
+            "$bootstrap_root/build.sh"
+            bundled_compiler="$bootstrap_root/yy_bundled_bs"
+          fi
+          install -m 755 "$bundled_compiler" ./yy_bs_stable
+
+      - name: 编译并运行豫言静态站生成器
+        run: |
+          ./yy_bs_stable 工具/源码树浏览器。豫 -o yybs_源码树网站 --parallel
+          ./yybs_源码树网站 构建 dist/源码树浏览器
+
+      - name: 配置 GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: 上传静态站
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/源码树浏览器
+
+  deploy:
+    name: 发布 GitHub Pages
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: 部署
+        id: deployment
+        uses: actions/deploy-pages@v4
