@@ -223,7 +223,7 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
   min-width: 0;
   min-height: 0;
   display: none;
-  grid-template-columns: minmax(0, 1fr) clamp(220px, 19vw, 310px);
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
   background: var(--page);
 }
@@ -231,7 +231,7 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
 .source-document:target { display: grid; }
 .source-document:target { z-index: 2; }
 
-/* 文件信息成为右侧卷首，与参考书页的封面位置相同。 */
+/* 竖排专注于正文；文件信息栏只在横排模式显示。 */
 .reader-head {
   position: relative;
   grid-column: 2;
@@ -240,7 +240,7 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
   min-height: 0;
   margin: 12px 18px 14px 8px;
   padding: 0;
-  display: grid;
+  display: none;
   grid-template-columns: 44px minmax(86px, 1fr) minmax(58px, .68fr);
   overflow: hidden;
   border: 2px solid var(--ink);
@@ -462,7 +462,7 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
   .tree { padding: 3px 0; }
   .tree-summary, .tree-link { min-height: 24px; padding: 1px 5px; font-size: 12px; line-height: 20px; }
   .sidebar-foot { padding: 6px 8px; }
-  .source-document { grid-template-columns: minmax(0, 1fr) 138px; }
+  .source-document { grid-template-columns: minmax(0, 1fr); }
   .reader-head { margin: 7px 7px 8px 5px; grid-template-columns: 28px minmax(52px, 1fr) 45px; }
   .reader-head::before { font-size: 68px; }
   .path-block { padding: 8px 5px; }
