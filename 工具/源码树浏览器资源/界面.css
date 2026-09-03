@@ -18,13 +18,15 @@
   --line-dark: #bcbcb9;
   --accent: #a44f3c;
   --hover: #335577;
-  --structure: #232323;
-  --keyword: #344f58;
-  --type: #586b25;
-  --string: #77601d;
-  --number: #765c27;
-  --comment: #777;
-  --builtin: #315d58;
+  --structure: #b21f56;
+  --keyword: #7048b5;
+  --operator: #7048b5;
+  --control: #b54708;
+  --type: #0067a3;
+  --string: #287044;
+  --number: #0b6e75;
+  --comment: #777b82;
+  --builtin: #8b3f84;
   --selection: #ccd9de;
   --ui: Helvetica, Arial, sans-serif;
   --book: QIJI, "Songti SC", "STSong", "Noto Serif CJK SC", serif;
@@ -429,14 +431,20 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
 
 .tok-comment { color: var(--comment); }
 .tok-string { color: var(--string); }
+.tok-escape { color: #bd2c00; font-weight: 600; }
 .tok-number { color: var(--number); }
 .tok-keyword { color: var(--keyword); }
-.tok-structure { color: var(--structure); font-weight: 600; }
-.tok-type { color: var(--type); }
+.tok-operator { color: var(--operator); }
+.tok-control { color: var(--control); font-weight: 600; }
+.tok-structure, .tok-structure-terminator { color: var(--structure); font-weight: 700; }
+.tok-type { color: var(--type); font-weight: 600; }
 .tok-builtin { color: var(--builtin); }
+.tok-builtin-type { color: #007078; font-weight: 600; }
+.tok-builtin-function { color: var(--builtin); }
+.tok-builtin-constant { color: #9b4d14; }
 .tok-label { color: var(--accent); }
 .tok-identifier { color: var(--ink); }
-.tok-punctuation { color: var(--accent); }
+.tok-punctuation { color: #73777e; }
 .tok-plain { color: inherit; }
 
 @media (max-width: 760px) {

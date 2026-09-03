@@ -54,6 +54,21 @@ jobs:
           fi
           install -m 755 "$bundled_compiler" ./yy_bs_stable
 
+      - name: 安装源码高亮依赖
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: yuyan-vscode/package-lock.json
+
+      - name: 准备 TextMate 语法引擎
+        run: npm ci --prefix yuyan-vscode
+
+      - name: 验证源码高亮
+        run: |
+          npm run test:grammar --prefix yuyan-vscode
+          node 工具/生成源码高亮。测试.js
+
       - name: 编译并运行豫言静态站生成器
         run: |
           ./yy_bs_stable 工具/源码树浏览器。豫 -o yybs_源码树网站 --parallel
