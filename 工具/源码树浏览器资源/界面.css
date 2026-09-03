@@ -158,7 +158,7 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
 .tree {
   height: 100%;
   overflow: auto;
-  padding: 8px;
+  padding: 4px 0;
   direction: ltr;
   scrollbar-width: thin;
   scrollbar-color: var(--line-dark) var(--page);
@@ -176,18 +176,18 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
 .tree details > summary { list-style: none; }
 .tree details > summary::-webkit-details-marker { display: none; }
 .tree-summary, .tree-link {
-  min-height: 34px;
-  margin: 1px 0;
-  padding: 5px 8px;
+  min-height: 22px;
+  margin: 0;
+  padding: 0 6px;
   display: grid;
-  grid-template-columns: 18px minmax(0, 1fr);
+  grid-template-columns: 16px minmax(0, 1fr);
   align-items: center;
-  gap: 7px;
+  gap: 3px;
   border: 1px solid transparent;
-  border-radius: 5px;
+  border-radius: 0;
   color: var(--ink-soft);
   background: transparent;
-  font: 13px/1.3 var(--ui);
+  font: 13px/20px var(--ui);
   text-decoration: none;
   cursor: pointer;
 }
@@ -210,9 +210,9 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
 .tree > .tree-list > .directory-item > details > ul {
   position: static;
   display: block;
-  padding-left: 16px;
+  padding-left: 12px;
 }
-.tree > .tree-list > .directory-item > details > ul ul { padding-left: 14px; }
+.tree > .tree-list > .directory-item > details > ul ul { padding-left: 12px; }
 
 .reader { grid-column: 2; min-width: 0; min-height: 0; background: var(--paper); }
 .source-stack { position: relative; width: 100%; height: 100%; min-width: 0; min-height: 0; }
@@ -459,8 +459,8 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
   .workspace { grid-template-columns: minmax(180px, 38vw) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
   .sidebar-head { padding: 10px; }
   .sidebar-note { display: none; }
-  .tree { padding: 5px; }
-  .tree-summary, .tree-link { min-height: 32px; padding: 4px 6px; font-size: 12px; }
+  .tree { padding: 3px 0; }
+  .tree-summary, .tree-link { min-height: 24px; padding: 1px 5px; font-size: 12px; line-height: 20px; }
   .sidebar-foot { padding: 6px 8px; }
   .source-document { grid-template-columns: minmax(0, 1fr) 138px; }
   .reader-head { margin: 7px 7px 8px 5px; grid-template-columns: 28px minmax(52px, 1fr) 45px; }
