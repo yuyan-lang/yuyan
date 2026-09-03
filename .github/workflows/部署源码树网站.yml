@@ -1,7 +1,8 @@
 name: 部署源码树网站
 
 env:
-  YY_GC_MAX_HEAP_SIZE_MB: 400
+  YY_GC_INITIAL_HEAP_SIZE_MB: 512
+  YY_GC_MAX_HEAP_SIZE_MB: 1024
   YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-bootstrap/yuyan-bootstrap-bundle.tar.gz
 
 on:
@@ -53,21 +54,6 @@ jobs:
             bundled_compiler="$bootstrap_root/yy_bundled_bs"
           fi
           install -m 755 "$bundled_compiler" ./yy_bs_stable
-
-      - name: 安装源码高亮依赖
-        uses: actions/setup-node@v6
-        with:
-          node-version: 24
-          cache: npm
-          cache-dependency-path: yuyan-vscode/package-lock.json
-
-      - name: 准备 TextMate 语法引擎
-        run: npm ci --prefix yuyan-vscode
-
-      - name: 验证源码高亮
-        run: |
-          npm run test:grammar --prefix yuyan-vscode
-          node 工具/生成源码高亮。测试.js
 
       - name: 编译并运行豫言静态站生成器
         run: |

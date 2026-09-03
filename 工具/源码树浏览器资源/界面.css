@@ -443,6 +443,7 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
 .tok-builtin-function { color: var(--builtin); }
 .tok-builtin-constant { color: #9b4d14; }
 .tok-label { color: var(--accent); }
+.tok-binder { color: #136f63; font-weight: 600; }
 .tok-identifier { color: var(--ink); }
 .tok-punctuation { color: #73777e; }
 .tok-plain { color: inherit; }
