@@ -30,7 +30,7 @@
 ## `sync [branch_name] with yybs`
 
 当用户调用 `sync [branch_name] with yybs` 时，同步指定分支；若省略 `[branch_name]`，则使用当前分支，并先确认该分支及 `yybs` 的 worktree 都是干净状态。
-先在目标分支的 worktree 执行 `git rebase yybs`，解决所有冲突并完成 rebase，再运行相关验证。
+先在目标分支的 worktree 执行 `git rebase yybs`，解决所有冲突并完成 rebase，do not run time consuming validation unless there is a conflict resolution。
 然后在 `yybs` 的 worktree 执行 `git merge --no-ff --no-edit <目标分支>`；除非用户明确要求，否则不要 fetch、push、删除分支或移除 worktree。
 
 
