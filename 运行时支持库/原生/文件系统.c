@@ -310,3 +310,99 @@ int 递归创建文件夹(const char *路径)
     free(路径缓冲区);
     return 返回值;
 }
+
+豫言值 豫言_切换当前工作目录(豫言值 路径) {
+    const char *路径文本 = 豫言值转字符串(路径);
+    if (chdir(路径文本) == 0) {
+        豫言值 值组[] = {
+            整数转豫言值(0),
+            复制字节为豫言值(0, ""),
+        };
+        return 元组转豫言值(2, 值组);
+    }
+
+    int 状态 = errno;
+    const char *错误 = strerror(状态);
+    豫言值 值组[] = {
+        整数转豫言值(状态),
+        复制字节为豫言值(strlen(错误), 错误),
+    };
+    return 元组转豫言值(2, 值组);
+}
+
+豫言值 豫言_路径可执行(豫言值 路径) {
+    const char *路径文本 = 豫言值转字符串(路径);
+    struct stat 状态信息;
+    bool 可执行 = stat(路径文本, &状态信息) == 0
+        && S_ISREG(状态信息.st_mode)
+        && access(路径文本, X_OK) == 0;
+    return 爻转豫言值(可执行);
+}
+
+static bool 文本路径可执行(const char *路径) {
+    struct stat 状态信息;
+    return stat(路径, &状态信息) == 0
+        && S_ISREG(状态信息.st_mode)
+        && access(路径, X_OK) == 0;
+}
+
+static 豫言值 可执行搜索结果(bool 找到, const char *路径) {
+    豫言值 值组[] = {
+        爻转豫言值(找到),
+        复制字节为豫言值(找到 ? strlen(路径) : 0, 找到 ? 路径 : ""),
+    };
+    return 元组转豫言值(2, 值组);
+}
+
+豫言值 豫言_查找可执行程序(豫言值 程序名) {
+    const char *名称 = 豫言值转字符串(程序名);
+    if (strchr(名称, '/') != NULL) {
+        return 可执行搜索结果(文本路径可执行(名称), 名称);
+    }
+
+    size_t 名称长度 = strlen(名称);
+    char *本地路径 = malloc(名称长度 + 3);
+    if (本地路径 == NULL) {
+        报错并中止("查找可执行程序时无法分配内存");
+    }
+    memcpy(本地路径, "./", 2);
+    memcpy(本地路径 + 2, 名称, 名称长度 + 1);
+    if (文本路径可执行(本地路径)) {
+        豫言值 结果 = 可执行搜索结果(true, 本地路径);
+        free(本地路径);
+        return 结果;
+    }
+    free(本地路径);
+
+    const char *环境路径 = getenv("PATH");
+    if (环境路径 == NULL) 环境路径 = "/usr/local/bin:/usr/bin:/bin";
+    const char *当前 = 环境路径;
+    for (;;) {
+        const char *分隔处 = strchr(当前, ':');
+        size_t 目录长度 = 分隔处 == NULL ? strlen(当前) : (size_t)(分隔处 - 当前);
+        const char *目录 = 当前;
+        if (目录长度 == 0) {
+            目录 = ".";
+            目录长度 = 1;
+        }
+        if (目录长度 <= SIZE_MAX - 名称长度 - 2) {
+            size_t 路径长度 = 目录长度 + 1 + 名称长度;
+            char *路径 = malloc(路径长度 + 1);
+            if (路径 == NULL) {
+                报错并中止("查找可执行程序时无法分配内存");
+            }
+            memcpy(路径, 目录, 目录长度);
+            路径[目录长度] = '/';
+            memcpy(路径 + 目录长度 + 1, 名称, 名称长度 + 1);
+            if (文本路径可执行(路径)) {
+                豫言值 结果 = 可执行搜索结果(true, 路径);
+                free(路径);
+                return 结果;
+            }
+            free(路径);
+        }
+        if (分隔处 == NULL) break;
+        当前 = 分隔处 + 1;
+    }
+    return 可执行搜索结果(false, "");
+}
