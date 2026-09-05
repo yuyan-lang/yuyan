@@ -1,4 +1,4 @@
-name: 部署源码树网站
+name: 部署豫言官方网站
 
 env:
   YY_GC_INITIAL_HEAP_SIZE_MB: 512
@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   build:
-    name: 以豫言构建静态站
+    name: 从零构建官网、文档与源码树
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -55,18 +55,37 @@ jobs:
           fi
           install -m 755 "$bundled_compiler" ./yy_bs_stable
 
-      - name: 编译并运行豫言静态站生成器
+      - name: 从源码编译静态站生成器
         run: |
           ./yy_bs_stable 工具/源码树浏览器。豫 -o yybs_源码树网站 --parallel
-          ./yybs_源码树网站 构建 dist/源码树浏览器
+          ./yy_bs_stable 工具/文档网站生成器/入口。豫 -o yybs_文档网站 --parallel
 
       - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
 
+      - name: 构建官方网站
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./网站
+          destination: ./dist/网站
+
+      - name: 构建接口文档与源码树
+        run: |
+          ./yybs_文档网站 构建 豫言编译器/入口。豫 dist/网站/文档
+          ./yybs_源码树网站 构建 dist/网站/源码
+
+      - name: 验证完整站点
+        run: |
+          test -f dist/网站/index.html
+          test -f dist/网站/文档/index.html
+          test -f dist/网站/源码/index.html
+          grep -Fq 'href="文档/"' dist/网站/index.html
+          grep -Fq 'href="源码/"' dist/网站/index.html
+
       - name: 上传静态站
         uses: actions/upload-pages-artifact@v4
         with:
-          path: dist/源码树浏览器
+          path: dist/网站
 
   deploy:
     name: 发布 GitHub Pages
