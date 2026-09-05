@@ -69,6 +69,13 @@ jobs:
           source: ./网站
           destination: ./dist/网站
 
+      - name: 恢复站点目录所有权
+        run: |
+          # 容器以超级用户建目录，宜归执行者，使后续可书。
+          # Jekyll 容器以 root 创建输出目录，恢复为 runner 所有以便后续生成器写入。
+          sudo chown -R "$(id -u):$(id -g)" dist/网站
+          test -w dist/网站
+
       - name: 构建接口文档与源码树
         run: |
           ./yybs_文档网站 构建 豫言编译器/入口。豫 dist/网站/文档

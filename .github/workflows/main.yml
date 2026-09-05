@@ -63,16 +63,16 @@ jobs:
           ./yy_bs_stable --version
 
       - name: Type-check compiler with stable bootstrap
-        run: ./yy_bs_stable 豫言编译器/入口。豫 --type-check-only --parallel
+        run: ./yy_bs_stable 豫言编译器/入口。豫 --type-check-only
 
       - name: Build stage 2 compiler
-        run: ./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs --parallel
+        run: ./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs
 
       - name: Build stage 3 compiler
-        run: ./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel
+        run: ./yy2_bs 豫言编译器/入口。豫 -o yy3_bs
 
       - name: Build stage 4 compiler
-        run: ./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel
+        run: ./yy3_bs 豫言编译器/入口。豫 -o yy4_bs
 
       - name: Verify fixed point
         run: cmp yy3_bs yy4_bs
@@ -89,8 +89,7 @@ jobs:
           historical_archive="$RUNNER_TEMP/${historical_asset}"
 
           ./yy3_bs 豫言编译器/入口。豫 \
-            --emit-bootstrap-bundle dist/yy-bootstrap \
-            --parallel
+            --emit-bootstrap-bundle dist/yy-bootstrap
           find dist/yy-bootstrap -type f \( -name '._*' -o -name '.DS_Store' \) -delete
           tar -czf "$continuous_archive" -C dist yy-bootstrap
           cp "$continuous_archive" "$historical_archive"
