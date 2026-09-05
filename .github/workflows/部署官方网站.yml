@@ -2,7 +2,7 @@ name: 部署豫言官方网站
 
 env:
   YY_GC_INITIAL_HEAP_SIZE_MB: 512
-  YY_GC_MAX_HEAP_SIZE_MB: 1024
+  YY_GC_MAX_HEAP_SIZE_MB: 6144
   YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-bootstrap/yuyan-bootstrap-bundle.tar.gz
 
 on:
