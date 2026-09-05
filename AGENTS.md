@@ -3,15 +3,15 @@
 - Run relevant validation by default after making code changes, unless the user explicitly asks not to run validation.
 - Prefer the cheapest validation that gives useful confidence for the change.
 - Full bootstrapping validation should be run for compiler changes that may affect generated compiler semantics, unless the user explicitly asks not to run validation. Use exactly this pipeline:
-  - `./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs --parallel >/dev/null 2>/dev/null`
+  - `./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs >/dev/null 2>/dev/null`
   - `./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel >/dev/null 2>/dev/null`
   - `./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel >/dev/null 2>/dev/null`
   - `yy3_bs` and `yy4_bs` should be identical.
 - Type-checking validation should also be run after manual review:
   - `./yy 豫言编译器/入口。豫 --type-check-only`
-  - The fastest type-checking validation is `./yy_bs_stable 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null`.
+  - Use `./yy_bs_stable 豫言编译器/入口。豫 --type-check-only >/dev/null 2>/dev/null` for the old stable compiler, or `./yy3_bs 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null` after bootstrapping.
   - If it fails, rerun it without `--parallel` and without redirecting stdout/stderr to see the diagnostic.
-- In Codex, run `--parallel` validation outside the sandbox / with escalated permissions. The parallel runner uses Python `multiprocessing.Manager`, which binds a local socket; the Codex sandbox may reject that bind with `PermissionError: [Errno 1] Operation not permitted`, even when the compiler itself is fine.
+- 并行调度今以豫言行之，不复用 Python。新的 `--parallel` 使用豫言异步调度和原生子进程，不再启动 Python 或绑定 `multiprocessing.Manager` 本地套接字。旧 `yy_bs_stable` 的首级自举须串行；其后二级、三级可并行。
 - The bootstrapping validation is considered successful if `yy3_bs` is produced, which means the compiler semantics did not change.
 - If a bootstrapping validation command fails, rerun the failed command without `--parallel` and without redirecting stdout/stderr to extract the error message. The cache is shared, so the diagnostic rerun can reuse work from the parallel run.
 - To update cache identity for `yy_bs_stable` or `yy*_bs*`, touch the executable; the cache directory is based on the executable mtime.
