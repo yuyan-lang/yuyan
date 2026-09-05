@@ -9,7 +9,12 @@
 豫言值* 豫言栈结束;
 豫言值* 豫言_栈指针;
 // 栈大小以豫言值槽位计数；每个豫言值占十六字节。
+/* 网页汇编小其栈。Wasm 初始栈为四兆字节，原生默认值不变。 */
+#ifdef __wasi__
+#define 初始栈槽位数量 (4 * 1024 * 1024 / 16)
+#else
 #define 初始栈槽位数量 (32 * 1024 * 1024)
+#endif
 uint64_t 栈大小 = 初始栈槽位数量;
 double 栈垃圾回收阈值百分比 = 80.0;
 pthread_mutex_t 豫言栈指针锁 = PTHREAD_MUTEX_INITIALIZER;
@@ -158,7 +163,14 @@ int64_t 启动豫言运行时() {
     // 根据环境变量调整初始栈大小。
     if (getenv("YY_GC_INITIAL_STACK_SIZE_MB") != NULL ) {
         const char* 请求大小 = getenv("YY_GC_INITIAL_STACK_SIZE_MB");
+#ifdef __wasi__
+        /* 兆字节化槽位。Wasm 参数单位为 MiB，限制在固定内存预算内。 */
+        int 请求兆字节 = atoi(请求大小);
+        if (请求兆字节 <= 0 || 请求兆字节 > 32) 报错并中止("网页汇编栈大小须为一至三十二 MiB");
+        栈大小 = (uint64_t)请求兆字节 * 1024 * 1024 / sizeof(豫言值);
+#else
         栈大小 = atoi(请求大小) * 1024 * 1024;
+#endif
     }
 
     if (栈大小 != 初始栈槽位数量) {

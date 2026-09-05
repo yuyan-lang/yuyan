@@ -1,6 +1,8 @@
 #include "公共包含.h"
 #include "调试打印.h"
 
+/* WASI 无原生终端。原始终端实现仅用于原生目标。 */
+#ifndef __wasi__
 #include <poll.h>
 #include <termios.h>
 
@@ -13,6 +15,8 @@ static void 恢复终端输入模式(void) {
         已进入原始输入模式 = false;
     }
 }
+
+#endif
 
 豫言值 豫言_打印行(豫言值 字符串) {
     fprintf(stdout,"%s\n", 豫言值转字符串(字符串));
@@ -135,6 +139,7 @@ static void 恢复终端输入模式(void) {
     return 爻转豫言值(isatty(STDOUT_FILENO));
 }
 
+#ifndef __wasi__
 豫言值 豫言_进入终端原始输入模式() {
     if (已进入原始输入模式) {
         return 爻转豫言值(true);
@@ -215,6 +220,8 @@ static ssize_t 读取按键字节(unsigned char *缓冲区, size_t 需要字节�
     };
     return 元组转豫言值(2, 值组);
 }
+
+#endif
 
 豫言值 豫言_打印通用值(豫言值 消息, 豫言值 对象) {
     fprintf(stderr, "[豫言通用值打印] %s: ", 豫言值转字符串(消息));

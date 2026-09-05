@@ -40,7 +40,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     -O0, -O[1,2,3,5,8,13,21]             执行0,1,2,3,5,8,13或21次优化
     --optimize-intermediate-files        优化中间文件
     --static-linking                     使用静态链接生成可执行文件
-    --target=[js,llvm]                   指定目标平台
+    --target=[llvm,wasm]                 指定原生或实验性 Wasm 目标
+    --wasi-sdk PATH                      WASI SDK 目录，默认 ./yy_wasi_sdk
     --mode=[regular,worker]              指定运行模式（用于多任务处理）
     --worker-task=TASK                   指定单一工作模式(worker)当前任务
     --self-integrity-check               检查自身完整性
