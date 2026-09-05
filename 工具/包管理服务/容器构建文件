@@ -1,0 +1,56 @@
+# 古曰：自举之材必验其印，成器后去其炉。
+# 白话：固定连续自举包的 SHA-256，以双阶段镜像编译豫言服务，运行镜像不保留编译工具链。
+
+FROM --platform=linux/amd64 debian:bookworm-slim AS builder
+
+ARG YY_BOOTSTRAP_URL=https://github.com/yuyan-lang/yuyan/releases/download/continuous-bootstrap/yuyan-bootstrap-bundle.tar.gz
+ARG YY_BOOTSTRAP_SHA256=29e6ec0a325680dce1f46670829d4e648c659ed5a6df3720611d888694a6882f
+
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends ca-certificates clang curl llvm make tar \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /构建
+RUN curl --fail --location --retry 3 --retry-all-errors "$YY_BOOTSTRAP_URL" --output 自举包.tar.gz \
+    && echo "$YY_BOOTSTRAP_SHA256  自举包.tar.gz" | sha256sum --check - \
+    && mkdir 自举包 \
+    && tar -xzf 自举包.tar.gz -C 自举包 --strip-components=1 \
+    && if [ -x 自举包/构建.sh ]; then 自举包/构建.sh && cp 自举包/豫言自举编译器 yy稳定编译器; else 自举包/build.sh && cp 自举包/yy_bundled_bs yy稳定编译器; fi \
+    && chmod 0755 yy稳定编译器
+
+COPY Makefile /源码/Makefile
+COPY 豫言编译器 /源码/豫言编译器
+COPY 藏书阁 /源码/藏书阁
+COPY 运行时支持库 /源码/运行时支持库
+WORKDIR /源码
+RUN make yy_runtime_lib \
+    && find 运行时支持库 -maxdepth 1 -type f -name '*.a' -exec ranlib {} +
+RUN /构建/yy稳定编译器 豫言编译器/入口。豫 -o /构建/yy当前编译器
+COPY 工具/包管理服务/超文本服务。豫 \
+     工具/包管理服务/包规则。豫 \
+     工具/包管理服务/存储适配。豫 \
+     工具/包管理服务/压缩包验证。豫 \
+     工具/包管理服务/入口。豫 \
+     /源码/工具/包管理服务/
+RUN touch /构建/yy当前编译器 \
+    && /构建/yy当前编译器 工具/包管理服务/入口。豫 -o /构建/yy包管理服务
+
+FROM --platform=linux/amd64 debian:bookworm-slim AS runtime
+
+RUN apt-get update \
+    && apt-get install --yes --no-install-recommends ca-certificates coreutils openssl unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+# 古曰：器内行路用拉丁字，以避 OCI 宿主异同之患。
+# 白话：镜像内入口路径使用 ASCII，避免不同容器运行时处理 Unicode argv 的差异。
+COPY --from=builder /构建/yy包管理服务 /usr/local/bin/yy-package-registry
+
+# 古曰：小室量入为出，栈堆之限刻于器中，不假外桥传令。
+# 白话：镜像级 ENV 保证 OCI 入口必定取得内存限制；现行栈变量的 2 实际表示 32 MiB。
+ENV YY_GC_INITIAL_STACK_SIZE_MB=2 \
+    YY_GC_INITIAL_HEAP_SIZE_MB=4 \
+    YY_GC_MAX_HEAP_SIZE_MB=64
+
+USER 65532:65532
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/yy-package-registry"]

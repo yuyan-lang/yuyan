@@ -1,0 +1,60 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yuyan-package-registry",
+  "main": "源码/云桥.js",
+  "compatibility_date": "2026-09-04",
+  "observability": {
+    "enabled": true,
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  },
+  "routes": [
+    {
+      // 「包管理.yuyan-lang.org」的 IDNA ASCII 形式。
+      "pattern": "xn--uiry18e4gf.yuyan-lang.org",
+      "custom_domain": true
+    }
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yuyan-package-registry",
+      "database_id": "93a386e6-128f-49cb-b69a-56c545ea524a",
+      "migrations_dir": "迁移"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "PACKAGES",
+      "bucket_name": "yuyan-user-packages"
+    }
+  ],
+  "containers": [
+    {
+      "class_name": "PackageRegistryContainer",
+      "image": "./容器构建文件",
+      "image_build_context": "../..",
+      "max_instances": 1,
+      "instance_type": "lite"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PACKAGE_CONTAINER",
+        "class_name": "PackageRegistryContainer"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["PackageRegistryContainer"]
+    }
+  ],
+  "vars": {
+    "MAX_PACKAGE_BYTES": "10485760"
+  }
+}

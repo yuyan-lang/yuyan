@@ -1,0 +1,10 @@
+.git
+.yybuild
+yy
+yy_*
+yy2_bs
+yy3_bs
+yy4_bs
+**/*_v0
+工具/包管理服务/node_modules
+工具/包管理服务/.wrangler

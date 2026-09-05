@@ -1,0 +1,21 @@
+{
+  "name": "yuyan-package-registry",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "npm run 检查配置 && node --test 测试/*.test.js",
+    "测试:豫言": "cd ../.. && ./yy2_bs 工具/包管理服务/包规则。测试。豫 -o /tmp/yy包规则测试 && /tmp/yy包规则测试 && ./yy2_bs 工具/包管理服务/压缩包验证。测试。豫 -o /tmp/yy压缩包验证测试 && /tmp/yy压缩包验证测试 && ./yy2_bs 工具/包管理服务/存储适配。测试。豫 -o /tmp/yy存储适配测试 && YY_PACKAGE_SQLITE=/tmp/yy包管理适配测试.sqlite /tmp/yy存储适配测试",
+    "检查配置": "WRANGLER_LOG_PATH=/tmp/yy-package-registry-wrangler.log wrangler deploy --dry-run --containers-rollout=none --outdir /tmp/yy-package-registry-worker",
+    "开发": "wrangler dev",
+    "部署": "wrangler deploy",
+    "迁移:本地": "wrangler d1 migrations apply yuyan-package-registry --local",
+    "迁移:远程": "wrangler d1 migrations apply yuyan-package-registry --remote"
+  },
+  "dependencies": {
+    "@cloudflare/containers": "0.3.7"
+  },
+  "devDependencies": {
+    "wrangler": "4.129.0"
+  }
+}
