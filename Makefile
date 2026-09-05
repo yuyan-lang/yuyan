@@ -3,7 +3,7 @@
 编译器源码 := $(shell find 豫言编译器 藏书阁 工具/豫构 -type f \( -name '*。豫' -o -name '*.豫' -o -name '*.yuyan' \))
 版本 := $(shell sed -n -E 's/^.*v(.*)\+([0-9]{4}).*/v\1+\2/p' 豫言编译器/编译辅助工具/命令行/版本管理。豫)
 
-.PHONY: 全部 类型检查 连续自举 自举包 运行时 yy_runtime_lib 清理生成数据
+.PHONY: 全部 类型检查 连续自举 自举包 豫构 豫构测试 运行时 yy_runtime_lib 清理生成数据
 
 全部: 连续自举
 
@@ -30,6 +30,18 @@ yy4: $(编译器源码) yy3
 
 连续自举: yy4_bs
 	cmp yy3_bs yy4_bs
+
+# 文言：以新编译器造豫构。汉语：工具独立运行，默认使用同目录的 yy4_bs 编译包。
+豫构: yy豫构
+
+yy豫构: yy4_bs $(编译器源码)
+	./yy4_bs 工具/豫构/入口。豫 -o $@ --parallel
+
+豫构测试: yy豫构
+	./yy4_bs 工具/豫构/配置解析。测试。豫 -o yy豫构配置测试 --parallel
+	./yy豫构配置测试
+	./yy4_bs 工具/豫构/包系统。测试。豫 -o yy豫构包测试 --parallel
+	./yy豫构包测试 ./yy豫构 ./yy4_bs
 
 自举包: yy3_bs
 	./yy3_bs $(编译器入口) --emit-bootstrap-bundle dist/yy-bootstrap --parallel

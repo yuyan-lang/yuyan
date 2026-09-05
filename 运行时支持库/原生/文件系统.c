@@ -1,4 +1,77 @@
 #include "公共包含.h"
+#include <fcntl.h>
+#include <sys/file.h>
+
+// 文言：取实径以定界，察链接而不循之。汉语：包发现使用真实路径和 lstat，避免符号链接绕过边界。
+豫言值 豫言_路径为符号链接(豫言值 路径值) {
+    struct stat 状态;
+    if (lstat(豫言值转字符串(路径值), &状态) != 0) {
+        if (errno == ENOENT) return 爻转豫言值(false);
+        报错并中止("无法检查路径的符号链接状态");
+    }
+    return 爻转豫言值(S_ISLNK(状态.st_mode));
+}
+
+豫言值 豫言_取得真实路径(豫言值 路径值) {
+    char *路径 = realpath(豫言值转字符串(路径值), NULL);
+    if (路径 == NULL) 报错并中止("无法取得真实路径");
+    豫言值 结果 = 复制字符串为豫言值(strlen(路径) + 1, 路径);
+    free(路径);
+    return 结果;
+}
+
+// 文言：同文用旧号，异文另立号，既存不改。汉语：在当前工具链目录保存不可变上下文；逐字比较去重，避免摘要碰撞或覆盖旧缓存。
+豫言值 豫言_存放包上下文(豫言值 内容值) {
+    const char *内容 = 豫言值转字符串(内容值);
+    const char *目录们[] = {".yybuild", ".yybuild/豫构上下文"};
+    for (int 序 = 0; 序 < 2; ++序) {
+        if (mkdir(目录们[序], 0700) != 0 && errno != EEXIST) 报错并中止("无法创建包上下文目录");
+        struct stat 状态;
+        if (lstat(目录们[序], &状态) != 0 || !S_ISDIR(状态.st_mode)) 报错并中止("包上下文目录不是普通目录");
+    }
+    int 锁 = open(".yybuild/豫构上下文/锁", O_CREAT | O_RDWR | O_CLOEXEC | O_NOFOLLOW, 0600);
+    if (锁 < 0) 报错并中止("无法打开包上下文锁");
+    if (flock(锁, LOCK_EX) != 0) { close(锁); 报错并中止("无法取得包上下文锁"); }
+    char 路径[160];
+    size_t 长度 = strlen(内容);
+    for (uint64_t 号 = 1; ; ++号) {
+        snprintf(路径, sizeof(路径), ".yybuild/豫构上下文/%" PRIu64 ".上下文", 号);
+        int 文件 = open(路径, O_RDONLY | O_CLOEXEC | O_NOFOLLOW);
+        if (文件 >= 0) {
+            struct stat 状态;
+            bool 相同 = fstat(文件, &状态) == 0 && S_ISREG(状态.st_mode) && 状态.st_size == (off_t)长度;
+            size_t 位置 = 0;
+            char 块[4096];
+            while (相同 && 位置 < 长度) {
+                ssize_t 数 = read(文件, 块, sizeof(块));
+                if (数 < 0 && errno == EINTR) continue;
+                if (数 <= 0 || (size_t)数 > 长度 - 位置 || memcmp(块, 内容 + 位置, (size_t)数) != 0) { 相同 = false; break; }
+                位置 += (size_t)数;
+            }
+            close(文件);
+            if (相同) break;
+            continue;
+        }
+        if (errno != ENOENT) { close(锁); 报错并中止("无法读取包上下文"); }
+        文件 = open(路径, O_CREAT | O_EXCL | O_WRONLY | O_CLOEXEC | O_NOFOLLOW, 0600);
+        if (文件 < 0) { close(锁); 报错并中止("无法创建包上下文"); }
+        size_t 位置 = 0;
+        while (位置 < 长度) {
+            ssize_t 数 = write(文件, 内容 + 位置, 长度 - 位置);
+            if (数 < 0 && errno == EINTR) continue;
+            if (数 <= 0) { close(文件); unlink(路径); close(锁); 报错并中止("无法写入包上下文"); }
+            位置 += (size_t)数;
+        }
+        if (close(文件) != 0) { unlink(路径); close(锁); 报错并中止("无法保存包上下文"); }
+        break;
+    }
+    close(锁);
+    char *实径 = realpath(路径, NULL);
+    if (实径 == NULL) 报错并中止("无法定位包上下文");
+    豫言值 结果 = 复制字符串为豫言值(strlen(实径) + 1, 实径);
+    free(实径);
+    return 结果;
+}
 
 豫言值 豫言_同步读取文件(豫言值 文件名参数) {
     const char *文件名 = 豫言值转字符串(文件名参数);
@@ -224,22 +297,36 @@ int 递归创建文件夹(const char *路径)
     if (文件夹句柄 == NULL) {
         fprintf(stderr, "无法打开文件夹：%s\n", 文件夹名文本);
         fflush(stderr);
-        return 单元转豫言值();
+        报错并中止("无法读取文件夹");
     }
 
     struct dirent *条目;
-    豫言值 条目组[4096];  // 当前最多读取四千零九十六个条目。
-    int 读取数量 = 0;
+    // 文言：项多则益其容，不越所储。汉语：包发现可能扫描大目录，不使用固定大小的栈缓冲区。
+    size_t 容量 = 32;
+    豫言值 *条目组 = malloc(容量 * sizeof(豫言值));
+    if (条目组 == NULL) { closedir(文件夹句柄); 报错并中止("无法分配目录条目"); }
+    size_t 读取数量 = 0;
 
+    errno = 0;
     while ((条目 = readdir(文件夹句柄)) != NULL) {
+        if (读取数量 == 容量) {
+            if (容量 > SIZE_MAX / sizeof(豫言值) / 2) { free(条目组); closedir(文件夹句柄); 报错并中止("目录条目过多"); }
+            容量 *= 2;
+            豫言值 *新组 = realloc(条目组, 容量 * sizeof(豫言值));
+            if (新组 == NULL) { free(条目组); closedir(文件夹句柄); 报错并中止("无法扩展目录条目"); }
+            条目组 = 新组;
+        }
         const char *名称 = 条目->d_name;
         条目组[读取数量] = 复制字符串为豫言值(strlen(名称) + 1, 名称);
         读取数量++;
+        errno = 0;
     }
-
+    int 读取错误 = errno;
     closedir(文件夹句柄);
-
-    return 数组转同构列(读取数量, 条目组);
+    if (读取错误 != 0) { free(条目组); 报错并中止("读取目录条目失败"); }
+    豫言值 结果 = 数组转同构列(读取数量, 条目组);
+    free(条目组);
+    return 结果;
 }
 
 
