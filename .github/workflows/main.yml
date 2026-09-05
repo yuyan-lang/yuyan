@@ -30,7 +30,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang llvm make curl
+          sudo apt-get install -y clang llvm make curl ripgrep
 
       - name: Build stable compiler from portable bootstrap release
         run: |
@@ -64,19 +64,22 @@ jobs:
           ./yy_bs_stable --version
 
       - name: Type-check compiler with stable bootstrap
-        run: ./yy_bs_stable 豫言编译器/入口。豫 --type-check-only --parallel
+        run: ./yy_bs_stable 豫言编译器/入口。豫 --type-check-only
 
       - name: Build stage 2 compiler
-        run: ./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs --parallel
+        run: make yy2_bs yy豫构引导
 
       - name: Build stage 3 compiler
-        run: ./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel
+        run: make yy3_bs
 
       - name: Build stage 4 compiler
-        run: ./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel
+        run: make yy4_bs
 
       - name: Verify fixed point
         run: cmp yy3_bs yy4_bs
+
+      - name: 验证包构建与依赖边界
+        run: make 类型检查 豫构测试
 
       - name: Publish continuous and historical bootstrap releases
         if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'

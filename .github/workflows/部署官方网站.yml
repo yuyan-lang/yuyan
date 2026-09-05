@@ -31,7 +31,7 @@ jobs:
       - name: 安装豫言构建依赖
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang llvm make libgmp-dev libgc-dev curl
+          sudo apt-get install -y clang llvm make libgmp-dev libgc-dev curl ripgrep
 
       - name: 安装稳定豫言编译器
         run: |
@@ -57,8 +57,9 @@ jobs:
 
       - name: 从源码编译静态站生成器
         run: |
-          ./yy_bs_stable 工具/源码树浏览器。豫 -o yybs_源码树网站 --parallel
-          ./yy_bs_stable 工具/文档网站生成器/入口。豫 -o yybs_文档网站 --parallel
+          make yy2_bs yy豫构引导
+          ./yy豫构引导 构建 工具 源码树浏览器 --编译器 ./yy2_bs --输出 yybs_源码树网站
+          ./yy豫构引导 构建 工具 文档网站生成器 入口 --编译器 ./yy2_bs --输出 yybs_文档网站
 
       - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
