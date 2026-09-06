@@ -1,4 +1,9 @@
-theme: jekyll-theme-slate
+url: https://yuyan-lang.org
+baseurl: ""
+exclude: [使用说明.汉语.md, 使用说明.文言.md, 测试, 入口, node_modules, package.json, package-lock.json]
+markdown: kramdown
+kramdown:
+  input: GFM
 title: 豫言
 description: 一款函数式中文编程语言
 lang: zh-CN

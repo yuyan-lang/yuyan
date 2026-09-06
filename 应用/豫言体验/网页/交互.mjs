@@ -1,12 +1,21 @@
 // 古曰：新稿先示而后易，客之手笔不可骤失。
 // 今释：AI 生成结果须显式应用；请求期间仍可编辑，不覆盖用户的新修改。
 import { 读取日志流 } from "./日志流.mjs";
+import { 示例 as 共用示例 } from "./共用/示例.mjs";
 const 取 = 名 => document.getElementById(名);
+// 古曰：界面之辞可易，客之所出不易。今释：用独立节点翻译状态说明，原始诊断仍作为文本保留。
+function 写界面文字(域, 汉, 文) {
+  const 节 = document.createElement("span"); 节.dataset.han = 汉; 节.dataset.wen = 文;
+  节.textContent = window.豫言界面?.语言 === "wen" ? 文 : 汉; 域.replaceChildren(节);
+}
 const 示例们 = {
   你好: "寻观「标准库」之书。\n\n「打印行」于『你好，豫言！』。\n",
   算术: "寻观「标准库」之书。\n\n「答案」者「加」于「三」于「五」也。\n「打印行」于（「整数表示」于「答案」）。\n"
 };
-取("源码").value = 示例们.你好;
+Object.assign(示例们, Object.fromEntries(Object.entries(共用示例).map(([名, 例]) => [名, 例.code])));
+const 指定示例 = new URL(location.href).searchParams.get("example");
+取("源码").value = Object.hasOwn(共用示例, 指定示例) ? 共用示例[指定示例].code : 示例们.你好;
+if (Object.hasOwn(共用示例, 指定示例)) 取("示例").value = 指定示例;
 let 可用 = false, 有助手 = false, 运行中 = false, 生成中 = false;
 let 上个输出, 上个输出键;
 let 编译日志长度 = 0;
@@ -24,6 +33,8 @@ function 写编译日志(文) {
   钮.setAttribute("aria-expanded", String(!域.hidden));
 });
 function 开始日志(标题) {
+  // 古曰：客文既至，不复以初辞易之。今释：开始请求后移除占位译文，避免切换语言覆盖真实输出。
+  for (const 名 of ["输出", "诊断", "编译日志"]) { delete 取(名).dataset.han; delete 取(名).dataset.wen; }
   编译日志长度 = 0;
   取("编译日志").textContent = "等待编译器输出…";
   取("编译日志计数").textContent = "等待编译";
@@ -96,12 +107,14 @@ document.querySelectorAll(".需求示例").forEach(钮 => 钮.addEventListener("
   if ((事.metaKey || 事.ctrlKey) && 事.key === "Enter") { 事.preventDefault(); 取("运行").click(); }
 });
 取("运行").addEventListener("click", async () => {
-  运行中 = true; 刷新(); 取("执行状态").textContent = "编译运行中"; 取("输出").textContent = "正在编译并运行…"; 取("诊断").textContent = "首次启动可能需要稍等。";
+  运行中 = true; 刷新(); 取("执行状态").textContent = "编译运行中"; 写界面文字(取("输出"), "正在编译并运行…", "正编而行之…"); 写界面文字(取("诊断"), "首次启动可能需要稍等。", "初启须稍候。");
   取("输出").dataset.streaming = "false"; 开始日志("编译与运行");
   try {
     const 值 = await 请求("/api/run", { code: 取("源码").value });
-    取("输出").textContent = 值.stdout || (值.ok ? "程序正常结束，没有文本输出。" : "没有输出。");
-    取("诊断").textContent = [值.error, 值.stderr, 值.ok ? "编译与运行成功。" : `${值.phase === "compile" ? "编译" : "运行"}未完成。`].filter(Boolean).join("\n");
+    if (值.stdout) 取("输出").textContent = 值.stdout; else 写界面文字(取("输出"), 值.ok ? "程序正常结束，没有文本输出。" : "没有输出。", 值.ok ? "程序已毕，无文字所出。" : "无所出。");
+    写界面文字(取("诊断"), 值.ok ? "编译与运行成功。" : `${值.phase === "compile" ? "编译" : "运行"}未完成。`, 值.ok ? "编行皆成。" : `${值.phase === "compile" ? "编译" : "运行"}未成。`);
+    const 原诊 = [值.error, 值.stderr].filter(Boolean).join("\n");
+    if (原诊) 取("诊断").prepend(document.createTextNode(原诊 + "\n"));
     取("执行状态").textContent = 值.ok ? "已完成" : "待修正";
   } catch (错) { 完成日志({ error: 错.message }); 取("诊断").textContent = 错.name === "TimeoutError" ? "等待超时，已收到的日志保留在下方。" : 错.message; 取("执行状态").textContent = "暂不可用"; }
   finally { 运行中 = false; 刷新(); }

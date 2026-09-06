@@ -1,3 +1,4 @@
+import { 网页资源地址 } from "./网页路由.js";
 import { Container } from "@cloudflare/containers";
 import {
   下载已发布包,
@@ -65,6 +66,15 @@ PackageRegistryContainer.outboundByHost = {
 export default {
   async fetch(请求, 环境) {
     try {
+      // 古曰：网页供人观，旧接口仍通。今释：浏览器首页与静态资源独立提供，JSON 健康检查和包接口不变。
+      const 网址 = 网页资源地址(请求);
+      if (环境.ASSETS && 网址) {
+        const 回 = await 环境.ASSETS.fetch(new Request(网址, 请求));
+        const 标头 = new Headers(回.headers);
+        标头.set("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'");
+        标头.set("X-Content-Type-Options", "nosniff");
+        return new Response(回.body, { status: 回.status, headers: 标头 });
+      }
       const 文件名 = 是包下载路径(请求);
       if (文件名 !== null) return await 下载已发布包(请求, 环境, 文件名);
       const 上传摘要 = 是包数据上传路径(请求);

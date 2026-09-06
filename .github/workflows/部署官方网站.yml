@@ -30,6 +30,14 @@ jobs:
       - name: 检出源码
         uses: actions/checkout@v6
 
+      - name: 安装界面验证运行时
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: 验证共用界面
+        run: npm ci --prefix 网站 && npm test --prefix 网站
+
       - name: 安装豫言构建依赖
         run: |
           sudo apt-get update
@@ -63,6 +71,13 @@ jobs:
           ./yy豫构引导 构建 工具 源码树浏览器 --编译器 ./yy2_bs --输出 yybs_源码树网站
           ./yy豫构引导 构建 工具 文档网站生成器 入口 --编译器 ./yy2_bs --输出 yybs_文档网站
 
+      - name: 生成双语教程与指南
+        run: |
+          ./yy豫构引导 构建 工具 网站资料生成 --编译器 ./yy2_bs --输出 yy网站资料
+          ./yy网站资料
+          mkdir -p 网站/教程/示例
+          cp 文档/豫言赋/示例/* 网站/教程/示例/
+
       - name: 配置 GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -88,6 +103,10 @@ jobs:
       - name: 验证完整站点
         run: |
           test -f dist/网站/index.html
+          test -f dist/网站/教程/index.html
+          test -f dist/网站/共用/界面.js
+          test -f dist/网站/文档/主题.css
+          test -f dist/网站/源码/通用.js
           test -f dist/网站/文档/index.html
           test -f dist/网站/源码/index.html
           grep -Fq 'href="文档/"' dist/网站/index.html

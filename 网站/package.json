@@ -1,0 +1,7 @@
+{
+  "name": "yuyan-sites-ui",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test 测试/*.mjs" },
+  "devDependencies": { "jsdom": "30.0.1" }
+}
