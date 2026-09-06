@@ -23,7 +23,9 @@ jobs:
   build:
     name: 从零构建官网、文档与源码树
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    # 自举与全站生成共用时限，三十分不足，故增至六十分。
+    # 冷启动包含编译器自举、生成器编译和全站生成，需预留六十分钟。
+    timeout-minutes: 60
     steps:
       - name: 检出源码
         uses: actions/checkout@v6
@@ -77,10 +79,11 @@ jobs:
           sudo chown -R "$(id -u):$(id -g)" dist/网站
           test -w dist/网站
 
-      - name: 构建接口文档与源码树
-        run: |
-          ./yybs_文档网站 构建 豫言编译器/入口。豫 dist/网站/文档
-          ./yybs_源码树网站 构建 dist/网站/源码
+      - name: 构建接口文档
+        run: ./yybs_文档网站 构建 豫言编译器/入口。豫 dist/网站/文档
+
+      - name: 构建源码树
+        run: ./yybs_源码树网站 构建 dist/网站/源码
 
       - name: 验证完整站点
         run: |
