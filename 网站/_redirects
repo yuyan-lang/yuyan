@@ -1,0 +1,11 @@
+/ /index.html 200
+/教程 /教程/ 301
+/教程/ /教程/index.html 200
+/文档 /文档/ 301
+/文档/ /文档/index.html 200
+/源码 /源码/ 301
+/源码/ /源码/index.html 200
+/文言 /文言/ 301
+/文言/ /文言/index.html 200
+/yuyan / 301
+/yuyan/* /:splat 301

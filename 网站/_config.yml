@@ -12,3 +12,5 @@ google_site_verification: 5czGwj7rXQ5Iel0c-Zq2qTgS7V_QRwFalbTNgEjmWeU
 
 plugins:
   - jekyll-sitemap
+
+include: [_redirects, _headers]

@@ -1,8 +1,18 @@
 {
   "name": "yuyan-homepage",
-  "main": "云桥.mjs",
   "compatibility_date": "2026-09-06",
   "account_id": "90c58fd531223290a358e4df01dadb5b",
   "workers_dev": true,
-  "routes": [{"pattern":"yuyan-lang.org","custom_domain":true,"zone_name":"yuyan-lang.org"}]
+  "routes": [
+    {
+      "pattern": "yuyan-lang.org",
+      "custom_domain": true,
+      "zone_name": "yuyan-lang.org"
+    }
+  ],
+  "assets": {
+    "directory": "../../dist/网站",
+    "html_handling": "none",
+    "not_found_handling": "404-page"
+  }
 }
