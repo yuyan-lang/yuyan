@@ -2,6 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "yuyan-package-registry",
   "main": "源码/云桥.js",
+  "assets": { "directory": "网页", "binding": "ASSETS", "run_worker_first": true },
   "compatibility_date": "2026-09-04",
   "observability": {
     "enabled": true,

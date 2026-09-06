@@ -1,0 +1,3 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {网页资源地址} from '../源码/网页路由.js';
+// 古曰：增其门，不改旧径。今释：新页面不能截获既有 API 或包文件请求。
+test('HTML 首页与静态资源可用，原 API 路径保持原样',()=>{const b='https://包管理.yuyan-lang.org';assert.equal(decodeURIComponent(网页资源地址(new Request(b+'/',{headers:{Accept:'text/html'}})).pathname),'/首页.html');for(const p of ['/','/health','/parser-core-2.0.zip','/upload/prepare/包-1.zip'])assert.equal(网页资源地址(new Request(b+p)),null);assert.equal(网页资源地址(new Request(b+'/',{method:'POST',headers:{Accept:'text/html'}})),null);assert.equal(网页资源地址(new Request(b+'/%ZZ')),null);assert.ok(网页资源地址(new Request(b+'/共用/主题.css')));});

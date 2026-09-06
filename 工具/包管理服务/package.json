@@ -10,7 +10,11 @@
     "开发": "wrangler dev",
     "部署": "wrangler deploy",
     "迁移:本地": "wrangler d1 migrations apply yuyan-package-registry --local",
-    "迁移:远程": "wrangler d1 migrations apply yuyan-package-registry --remote"
+    "迁移:远程": "wrangler d1 migrations apply yuyan-package-registry --remote",
+    "准备界面": "mkdir -p 网页/共用 && cp ../../网站/共用/* 网页/共用/",
+    "pre检查配置": "npm run 准备界面",
+    "pre部署": "npm run 准备界面",
+    "pre开发": "npm run 准备界面"
   },
   "dependencies": {
     "@cloudflare/containers": "0.3.7"

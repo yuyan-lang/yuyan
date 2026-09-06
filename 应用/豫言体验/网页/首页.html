@@ -1,26 +1,26 @@
 <!doctype html>
 <html lang="zh-CN">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="在浏览器里用中文写程序，体验豫言与 AI 助写。"><title>豫言 · 试写间</title><link rel="stylesheet" href="/样式.css"><script type="module" src="/交互.mjs"></script></head>
-<body>
-<header><a class="标志" href="/">豫<span>言</span></a><span class="页名">试写间 <small>以中文，述算法。</small></span><a href="https://github.com/yuyan-lang/yuyan" target="_blank" rel="noreferrer">语言与源码 ↗</a></header>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="在浏览器里用中文写程序，体验豫言与 AI 助写。"><title>豫言 · 试写间</title><link rel="stylesheet" href="/样式.css"><link rel="stylesheet" href="/共用/主题.css"><script defer src="/共用/界面.js"></script><script type="module" src="/交互.mjs"></script></head>
+<body><div data-yuyan-site="playground" data-home="/"></div>
+<header><a class="标志" href="https://yuyan-lang.org/">豫<span>言</span></a><a class="页名" href="/">试写间</a><a href="https://github.com/yuyan-lang/yuyan" target="_blank" rel="noreferrer">语言与源码 ↗</a></header>
 <main>
   <div class="题头"><div><p class="眉题">写下所想，让文字运行</p><h1>你的第一段豫言。</h1></div><p id="服务状态" role="status">正在连接编译室…</p></div>
   <div class="工作台">
     <section class="助手"><div class="栏头"><h2>01 <span>与豫言共写</span></h2><span class="标签">AI 助写</span></div>
       <div class="助手内"><p class="引言">从一个想法开始。</p><p>描述你想写的程序，助手会生成豫言源码，并检查它能否编译。</p>
-      <label for="需求">你想让程序做什么？</label><textarea id="需求" maxlength="2000" placeholder="例如：用豫言计算 1 到 10 的和，并打印结果。"></textarea>
+      <label for="需求">你想让程序做什么？</label><textarea id="需求" maxlength="2000" placeholder="例如：用豫言计算 1 到 10 的和，并打印结果。" data-placeholder-han="例如：用豫言计算 1 到 10 的和，并打印结果。" data-placeholder-wen="如：以豫言求一至十之和，而印其值。"></textarea>
       <button id="生成" class="主按钮" disabled>生成豫言代码 <span>↗</span></button>
       <p id="助手消息" class="消息" role="status">仅接受豫言程序的编写与修改。需求及当前代码会发送至 DeepSeek。</p>
       <div id="建议区" hidden><p>新代码已通过编译，可应用到右侧编辑器。</p><pre id="建议"></pre><button id="应用">应用代码</button></div>
       <div class="小注"><span>从这些开始</span><button class="需求示例" data-prompt="用豫言打印九九乘法表。">九九乘法表 ↗</button><button class="需求示例" data-prompt="用豫言写一个计算阶乘的函数，并打印五的阶乘。">递归与阶乘 ↗</button></div>
       </div>
     </section>
-    <section class="编辑区"><div class="栏头"><h2>02 <span>落笔成篇</span></h2><label class="示例选择">示例 <select id="示例"><option value="你好">你好，豫言</option><option value="算术">做一道算术</option></select></label></div>
+    <section class="编辑区"><div class="栏头"><h2>02 <span>落笔成篇</span></h2><label class="示例选择">示例 <select id="示例"><option value="你好">你好，豫言</option><option value="算术">做一道算术</option><option value="函数" data-han="函数与类型" data-wen="函数与类型">函数与类型</option><option value="匹配" data-han="模式匹配" data-wen="鉴形">模式匹配</option></select></label></div>
       <div class="文件栏"><span>程序。豫</span><span id="字数"></span></div>
       <label class="隐字" for="源码">豫言源码</label><textarea id="源码" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="编辑提示"></textarea>
       <div class="编辑底"><small id="编辑提示">「」命名 · 『』字符串 · 。句末</small><button id="运行" class="主按钮" disabled>▶ 运行</button></div>
     </section>
-    <section class="结果区"><div class="栏头"><h2>03 <span>听见回响</span></h2><span id="执行状态" class="标签">待运行</span></div><div class="输出内"><p class="输出题">程序输出</p><pre id="输出" aria-live="polite">点击「运行」，在这里查看结果。</pre><section class="编译日志区"><div class="编译日志栏"><h3>编译器日志 <small id="编译日志计数">等待编译</small></h3><button id="切换编译日志" type="button" aria-expanded="false" aria-controls="编译日志">显示</button></div><pre id="编译日志" hidden role="log" aria-label="编译器实时输出">点击运行或生成后，编译器的实时输出会直接显示在这里。</pre></section><p class="输出题">运行与错误诊断</p><pre id="诊断" aria-live="polite">尚无诊断。</pre></div><p class="运行注">每次运行使用独立隔离空间。暂不支持联网、交互输入与第三方包。</p></section>
+    <section class="结果区"><div class="栏头"><h2>03 <span>听见回响</span></h2><span id="执行状态" class="标签">待运行</span></div><div class="输出内"><p class="输出题">程序输出</p><pre id="输出" data-han="点击「运行」，在这里查看结果。" data-wen="按运行，于此观其果。" aria-live="polite">点击「运行」，在这里查看结果。</pre><section class="编译日志区"><div class="编译日志栏"><h3>编译器日志 <small id="编译日志计数">等待编译</small></h3><button id="切换编译日志" type="button" aria-expanded="false" aria-controls="编译日志">显示</button></div><pre id="编译日志" data-han="点击运行或生成后，编译器的实时输出会直接显示在这里。" data-wen="按运行或生成，编译之出随至随示。" hidden role="log" aria-label="编译器实时输出">点击运行或生成后，编译器的实时输出会直接显示在这里。</pre></section><p class="输出题">运行与错误诊断</p><pre id="诊断" data-han="尚无诊断。" data-wen="尚无诊误。" aria-live="polite">尚无诊断。</pre></div><p class="运行注">每次运行使用独立隔离空间。暂不支持联网、交互输入与第三方包。</p></section>
   </div>
   <details id="日志面板" class="日志面板">
     <summary>对话与调试日志 <span id="日志摘要">暂无请求 · 点击隐藏 / 显示</span></summary>
