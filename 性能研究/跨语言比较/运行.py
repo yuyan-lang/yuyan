@@ -336,7 +336,7 @@ def 主程序():
         json.dumps(JSON内容, ensure_ascii=False, indent=2) + "\n"
     )
     报告文本 = 生成报告(汇总, 版本表, 参数.次数, 参数.预热次数, 机器)
-    (比较目录 / "结果.md").write_text(报告文本)
+    (比较目录 / "结果.汉语.md").write_text(报告文本)
     print("\n" + 报告文本)
 
 
