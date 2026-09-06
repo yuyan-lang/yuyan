@@ -1,6 +1,0 @@
-# 古曰：库已成，惟验其在，不复开炉。
-# 今释：编译器固定调用 make yy_runtime_lib；镜像已经构建运行库，此处只验证预构建产物。
-.PHONY: yy_runtime_lib
-yy_runtime_lib:
-	@test -n "$(wildcard 运行时支持库/lib豫言运行时优化*.a)"
-	@test -n "$(wildcard 运行时支持库/lib豫言运行时调试*.a)"

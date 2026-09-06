@@ -14,8 +14,8 @@ process.stdout.write('Yuyan build artifact helpers\n');
 
 runTest('maps supported source paths to artifact stems', () => {
   assert.strictEqual(
-    sourceRelativePathToArtifactStem('藏书阁/标准库/数据结构/多态列。豫'),
-    '藏书阁/标准库/数据结构/多态列'
+    sourceRelativePathToArtifactStem('库/标准库/数据结构/多态列。豫'),
+    '库/标准库/数据结构/多态列'
   );
   assert.strictEqual(sourceRelativePathToArtifactStem('src/example.yuyan'), 'src/example');
   assert.strictEqual(sourceRelativePathToArtifactStem('src\\example.yyon'), 'src/example');

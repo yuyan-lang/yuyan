@@ -61,8 +61,8 @@ runTest('rejects the removed English token schema', () => {
 
 runTest('maps source paths to the Chinese artifact stage', () => {
   assert.strictEqual(
-    languageServiceArtifactPath('藏书阁/标准库/例子。豫'),
-    '藏书阁/标准库/例子.语言服务.json'
+    languageServiceArtifactPath('库/标准库/例子。豫'),
+    '库/标准库/例子.语言服务.json'
   );
   assert.strictEqual(languageServiceArtifactPath('../例子。豫'), undefined);
 });

@@ -1,5 +1,5 @@
 import { spawn } from "node:child_process";
-import { mkdtemp, writeFile, rm, cp } from "node:fs/promises";
+import { mkdtemp, mkdir, writeFile, rm, cp } from "node:fs/promises";
 import { join } from "node:path";
 import { StringDecoder } from "node:string_decoder";
 
@@ -44,8 +44,8 @@ export function 隔离参数(目录, 命令, 参数, 编译) {
     "--dir", "/proc", "--dev", "/dev", "--tmpfs", "/tmp", "--dir", "/work",
     "--ro-bind", "/opt/yuyan", "/opt/yuyan", "--bind", 目录, "/work",
     "--ro-bind", "/opt/yuyan/运行时支持库", "/work/运行时支持库",
-    "--ro-bind", "/opt/yuyan/藏书阁", "/work/藏书阁",
-    "--ro-bind", "/opt/yuyan/构建规则", "/work/Makefile",
+    "--ro-bind", "/opt/yuyan/库", "/work/库",
+    "--ro-bind", "/opt/yuyan/yy", "/work/yy",
     "--setenv", "PATH", "/usr/bin:/bin", "--setenv", "LANG", "C.UTF-8", "--setenv", "HOME", "/tmp",
     "--setenv", "YY_GC_INITIAL_STACK_SIZE_MB", "2", "--setenv", "YY_GC_INITIAL_HEAP_SIZE_MB", "4",
     "--setenv", "YY_GC_MAX_HEAP_SIZE_MB", "256", "--chdir", "/work", "--", 命令, ...参数];
@@ -58,10 +58,13 @@ export async function 编译运行(源码, 仅编译 = false, 报告 = () => {})
     // 古曰：官书先备，客稿各藏；不取前客之余墨。
     // 今释：只复制镜像构建时的可信标准库缓存，每个请求独占副本，避免重新编译标准库与跨访客污染。
     await cp("/opt/yuyan/预热缓存", join(目录, ".yybuild"), { recursive: true, preserveTimestamps: true });
-    await writeFile(join(目录, "程序。豫"), 源码, { mode: 0o600 });
+    // 古曰：客稿亦有籍，与诸包同制。今释：每次请求创建独立软件包，入口与依赖明确声明。
+    await mkdir(join(目录, "用户程序"), { recursive: true });
+    await writeFile(join(目录, "用户程序/用户程序。包。豫"), "「依赖」者「列」【『标准库』】也。「入口」者『入口』也。", { mode: 0o600 });
+    await writeFile(join(目录, "用户程序/入口。豫"), 源码, { mode: 0o600 });
     报告({ type: "stage", phase: "compile", label: "正在编译（最多 30 秒）" });
-    const 编译 = await 执行受限("/usr/bin/prlimit", 隔离参数(目录, "/opt/yuyan/yy", [
-      "/work/程序。豫", "--compile-only", "--library-root", "藏书阁", "-o", "/work/yy程序"
+    const 编译 = await 执行受限("/usr/bin/prlimit", 隔离参数(目录, "/opt/yuyan/yy豫构", [
+      "构建", "用户程序", "--编译器", "/work/yy", "--输出", "/work/yy程序", "-j", "1", "--", "--compile-only", "--no-debug-print"
     ], true), 30000, 65536, 事件 => 报告({ ...事件, phase: "compile" }));
     if (!编译.ok) return { ...编译, phase: "compile" };
     if (仅编译) return { ...编译, phase: "compile" };
