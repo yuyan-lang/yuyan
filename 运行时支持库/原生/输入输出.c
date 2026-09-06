@@ -5,6 +5,7 @@
 #ifndef __wasi__
 #include <poll.h>
 #include <termios.h>
+#include <sys/ioctl.h>
 
 static struct termios 原终端设置;
 static bool 已进入原始输入模式 = false;
@@ -17,6 +18,69 @@ static void 恢复终端输入模式(void) {
 }
 
 #endif
+
+/* 文言：屏仅司绘，事数属豫言。汉语：这里只提供终端检测、裁剪和区域重绘，不持有构建状态。 */
+static int 面板旧行数 = 0;
+static unsigned short 面板旧宽 = 0, 面板旧高 = 0;
+
+豫言值 豫言_可绘监视面板(void) {
+#ifndef __wasi__
+    struct winsize 尺寸;
+    const char *类型 = getenv("TERM");
+    return 爻转豫言值(isatty(STDERR_FILENO) && 类型 && strcmp(类型, "dumb") &&
+        ioctl(STDERR_FILENO, TIOCGWINSZ, &尺寸) == 0 && 尺寸.ws_row >= 6 && 尺寸.ws_col >= 20);
+#else
+    return 爻转豫言值(false);
+#endif
+}
+
+豫言值 豫言_绘监视面板(豫言值 文本值) {
+#ifndef __wasi__
+    struct winsize 尺寸;
+    bool 有尺寸 = ioctl(STDERR_FILENO, TIOCGWINSZ, &尺寸) == 0;
+    /* 文言：窗改则另起，勿误删旧辞。汉语：缩放可能触发终端自动折行；此时保留旧快照，避免按旧行数擦除历史输出。 */
+    if (面板旧行数 && (!有尺寸 || 尺寸.ws_col != 面板旧宽 || 尺寸.ws_row != 面板旧高)) {
+        fputc('\n', stderr);
+        面板旧行数 = 0;
+    }
+    if (面板旧行数) {
+        fprintf(stderr, "\r\033[%dA\033[J", 面板旧行数);
+        面板旧行数 = 0;
+    }
+    const unsigned char *文 = (const unsigned char *)豫言值转字符串(文本值);
+    if (!*文 || !有尺寸 || 尺寸.ws_row < 6 || 尺寸.ws_col < 20) {
+        fflush(stderr);
+        return 单元转豫言值();
+    }
+    面板旧宽 = 尺寸.ws_col;
+    面板旧高 = 尺寸.ws_row;
+    int 限行 = 尺寸.ws_row - 2;
+    while (*文 && 面板旧行数 < 限行) {
+        if (面板旧行数 == 限行 - 1 && strchr((const char *)文, '\n')) {
+            fputs("...\n", stderr);
+            ++面板旧行数;
+            break;
+        }
+        int 宽 = 0;
+        while (*文 && *文 != '\n') {
+            int 长 = *文 < 0x80 ? 1 : (*文 < 0xe0 ? 2 : (*文 < 0xf0 ? 3 : 4));
+            int 字宽 = *文 < 0x80 ? 1 : 2;
+            int 有效长 = 1;
+            while (有效长 < 长 && 文[有效长] && (文[有效长] & 0xc0) == 0x80) ++有效长;
+            /* 文言：制符不入屏，宽留一格。汉语：过滤路径中的控制符，保守估计非 ASCII 宽度，避免折行。 */
+            if (宽 + 字宽 < 尺寸.ws_col && *文 >= 0x20 && *文 != 0x7f)
+                fwrite(文, 1, 有效长, stderr);
+            宽 += 字宽;
+            文 += 有效长;
+        }
+        if (*文 == '\n') ++文;
+        fputc('\n', stderr);
+        ++面板旧行数;
+    }
+    fflush(stderr);
+#endif
+    return 单元转豫言值();
+}
 
 豫言值 豫言_打印行(豫言值 字符串) {
     fprintf(stdout,"%s\n", 豫言值转字符串(字符串));
