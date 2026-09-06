@@ -1,0 +1,58 @@
+{
+  "name": "yuyan-playground",
+  "main": "源码/云桥.mjs",
+  "compatibility_date": "2026-09-05",
+  "assets": {
+    "directory": "网页",
+    "binding": "ASSETS",
+    "run_worker_first": true
+  },
+  "containers": [
+    {
+      "class_name": "YuyanContainer",
+      "image": "./容器构建文件",
+      "image_build_context": "../..",
+      "max_instances": 2,
+      "instance_type": "standard-1"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RUNNER",
+        "class_name": "YuyanContainer"
+      },
+      {
+        "name": "QUOTA",
+        "class_name": "Quota"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "YuyanContainer",
+        "Quota"
+      ]
+    }
+  ],
+  "vars": {
+    "ENABLED": "false",
+    "MODEL": "deepseek-v4-pro",
+    "RUNNER_RELEASE": "pro-tools-v1",
+    "DAILY_RUN_LIMIT": "1000",
+    "DAILY_AI_LIMIT": "100"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "workers_dev": true,
+  "routes": [
+    {
+      "pattern": "playground.yuyan-lang.org",
+      "custom_domain": true,
+      "zone_name": "yuyan-lang.org"
+    }
+  ]
+}
