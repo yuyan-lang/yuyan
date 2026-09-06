@@ -67,3 +67,5 @@ coverage/
 .cache/
 .nyc_output/
 user-*/
+
+.wrangler/
