@@ -34,7 +34,7 @@ RUN ln -s /opt/yuyan/藏书阁 /work/藏书阁 && ln -s /opt/yuyan/运行时支�
     && cd /work && /opt/yuyan/yy 预热。豫 --compile-only --no-debug-print -o /work/yy预热 \
     && cp -a /work/.yybuild /opt/yuyan/预热缓存 && rm -rf /work
 COPY 应用/豫言体验/源码 /app/源码
-COPY 语言指南.md /app/语言指南.md
+COPY 语言指南.汉语.md /app/语言指南.汉语.md
 COPY 应用/豫言体验/知识 /app/知识
 # 古曰：不以尊位行客事；别室不成，则闭门。
 # 今释：服务使用非 root 用户；启动时必须成功建立所有 namespace，否则拒绝启动。
