@@ -1,5 +1,5 @@
 // 古曰：密码加盐藏其验，会话持符不露于页。今释：邮箱不验证，密码仅保存派生值，会话使用 HttpOnly Cookie。
-export const 条款版本 = '2026-09-06';
+export const 条款版本 = '2026-09-07';
 const 编码 = new TextEncoder(), 迭代数 = 100000, 会话秒数 = 604800;
 const 十六进制 = b => Array.from(new Uint8Array(b), x => x.toString(16).padStart(2, '0')).join('');
 export const 摘要 = async s => 十六进制(await crypto.subtle.digest('SHA-256', 编码.encode(s)));
@@ -23,6 +23,7 @@ export async function 账户入口(req,env) {
     if(req.method==='GET'&&action==='session'){return 回({user:await 查会话(req,db,now)});}
     if(req.method!=='POST')return 回({error:'不支持的请求'},405);
     if(req.headers.get('Origin')!==url.origin)拒('仅接受本站请求',403);
+    if(env.REGISTRATION_ENABLED==='false'&&['register','token'].includes(action))拒('注册与令牌生成暂未开放，请稍后重试',503);
     const data=await 读正文(req);
     const ip=req.headers.get('CF-Connecting-IP');if(!ip)拒('无法识别请求来源',403);
     await 限流(db,'ip:'+await 摘要(ip),60,now);
@@ -52,7 +53,7 @@ export async function 账户入口(req,env) {
     if(action==='logout'){await db.prepare('DELETE FROM "登录会话" WHERE "摘要"=?').bind(await 摘要(会话值(req))).run();return 回({ok:true},200,{'Set-Cookie':cookie('',0)});}
     if(action==='token'){
       // 古曰：新符既出，旧符尽废。今释：每次生成令牌撤销本账户所有旧上传令牌，不影响其他用户。
-      const token=随机();await db.batch([db.prepare('UPDATE "访问令牌" SET "已启用"=0 WHERE "用户编号"=?').bind(user.id),db.prepare('INSERT INTO "访问令牌" ("用户编号","名称","SHA256") VALUES (?,?,?)').bind(user.id,'自行生成',await 摘要(token))]);return 回({token});
+      const token=随机();await db.batch([db.prepare('UPDATE "访问令牌" SET "已启用"=0 WHERE "用户编号"=?').bind(user.id),db.prepare('INSERT INTO "访问令牌" ("用户编号","名称","SHA256","可上传") VALUES (?,?,?,1)').bind(user.id,'自行生成',await 摘要(token))]);return 回({token,scope:'packages:upload'});
     }
     if(action==='revoke'){await db.prepare('UPDATE "访问令牌" SET "已启用"=0 WHERE "用户编号"=?').bind(user.id).run();return 回({ok:true});}
     return 回({error:'未知账户操作'},404);
