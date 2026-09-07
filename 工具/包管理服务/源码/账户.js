@@ -72,15 +72,15 @@ export async function 账户入口(req,env) {
       }
       return 回({ok:true,emailSent},action==='register'?201:200,{'Set-Cookie':cookie(token)});
     }
+    if(action==='verify-email'){
+      await 使用邮件凭据(db,'verify',data.token,now,null);return 回({ok:true});
+    }
     const user=await 查会话(req,db,now);if(!user)拒('请先登录',401);
     if(action==='logout'){await db.prepare('DELETE FROM "登录会话" WHERE "摘要"=?').bind(await 摘要(会话值(req))).run();return 回({ok:true},200,{'Set-Cookie':cookie('',0)});}
     if(action==='resend-verification'){
       if(user.emailVerified===1)return 回({ok:true});
       await 限流(db,'mail:'+await 摘要(user.email),3,now);await 限流(db,'mail-global',100,now);
       await 发送账户邮件(env,user,'verify',now);return 回({ok:true});
-    }
-    if(action==='verify-email'){
-      await 使用邮件凭据(db,'verify',data.token,now,user.id);return 回({ok:true});
     }
     if(action==='token'){
       if(user.emailVerified!==1)拒('请先完成邮箱验证再生成上传令牌',403);

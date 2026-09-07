@@ -9,8 +9,8 @@ function 文案(el,han,wen){el.dataset.han=han;el.dataset.wen=wen;el.textContent
 function 标识(el,value){el.textContent=value==='verified'?'verified':'unverified';el.dataset.verified=String(value==='verified');}
 function 状态(han,wen=han){文案(元素('账户状态'),han,wen);}
 async function 请求账户(action,data){const r=await fetch('/api/account/'+action,data===undefined?{cache:'no-store'}:{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});const result=await r.json();if(!r.ok)throw new Error(result.error||'账户请求失败');return result;}
-async function 刷账户(){const {user}=await 请求账户('session');当前账户=user;window.dispatchEvent(new Event("账户变化"));元素('账户表单').hidden=!!user;元素('账户面板').hidden=!user;if(user){标识(元素('账户验证'),user.verification);文案(元素('邮箱状态'),user.emailVerified?'邮箱已验证':'邮箱尚未验证，暂不能上传包',user.emailVerified?'邮箱已验':'邮箱未验，未可上传');元素('重发验证').hidden=!!user.emailVerified;元素('生成上传令牌').hidden=!user.emailVerified;}元素('账户身份').textContent=user?user.email+' · '+user.name:'';元素('上传令牌').value='';元素('令牌区域').hidden=true;更新验证提示();}
-async function 执行账户(fn){const buttons=[...document.querySelectorAll('.账户区 button')];buttons.forEach(b=>b.disabled=true);状态('正在处理…','正处理…');try{await fn();}catch(e){状态(e.message);}finally{buttons.forEach(b=>b.disabled=false);更新验证提示();}}
+async function 刷账户(){const {user}=await 请求账户('session');当前账户=user;window.dispatchEvent(new Event("账户变化"));元素('账户表单').hidden=!!user;元素('账户面板').hidden=!user;if(user){标识(元素('账户验证'),user.verification);文案(元素('邮箱状态'),user.emailVerified?'邮箱已验证':'邮箱尚未验证，暂不能上传包',user.emailVerified?'邮箱已验':'邮箱未验，未可上传');元素('重发验证').hidden=!!user.emailVerified;元素('生成上传令牌').hidden=!user.emailVerified;}元素('账户身份').textContent=user?user.email+' · '+user.name:'';元素('上传令牌').value='';元素('令牌区域').hidden=true;}
+async function 执行账户(fn){const buttons=[...document.querySelectorAll('.账户区 button')];buttons.forEach(b=>b.disabled=true);状态('正在处理…','正处理…');try{await fn();}catch(e){状态(e.message);}finally{buttons.forEach(b=>b.disabled=false);}}
 元素('切换账户模式').addEventListener('click',()=>{注册模式=!注册模式;元素('接受区域').hidden=!注册模式;元素('接受条款').required=注册模式;元素('账户密码').minLength=注册模式?15:1;元素('账户密码').autocomplete=注册模式?'new-password':'current-password';文案(元素('账户提交'),注册模式?'创建账户':'登录',注册模式?'立户':'登入');文案(元素('切换账户模式'),注册模式?'已有账户？登录':'没有账户？注册',注册模式?'已有户？入之':'尚无户？立之');状态('');});
 元素('账户表单').addEventListener('submit',e=>{e.preventDefault();执行账户(async()=>{const result=await 请求账户(注册模式?'register':'login',{email:元素('账户邮箱').value,password:元素('账户密码').value,acceptTerms:元素('接受条款').checked,termsVersion:'2026-09-07'});元素('账户密码').value='';await 刷账户();状态(注册模式?(result.emailSent?'账户已创建，请查收验证邮件。':'账户已创建，但邮件未能发送，请点击重发验证邮件。'):'已登录。',注册模式?(result.emailSent?'户已立，请收验信。':'户已立，验信未发，请再发之。'):'已登入。');});});
 元素('生成上传令牌').addEventListener('click',()=>执行账户(async()=>{const {token}=await 请求账户('token',{});元素('上传令牌').value=token;元素('令牌区域').hidden=false;状态('新令牌已生成，旧令牌已撤销。','新符已生，旧符已废。');}));
@@ -19,12 +19,16 @@ async function 执行账户(fn){const buttons=[...document.querySelectorAll('.�
 元素('复制上传令牌').addEventListener('click',()=>执行账户(async()=>{await navigator.clipboard.writeText(元素('上传令牌').value);状态('令牌已复制。','符已复制。');}));
 
 
-// 古曰：券不留于史，须亲按而用。今释：立即移除 URL fragment；邮件扫描器的 GET 不验证邮箱或重置密码。
-function 更新验证提示(){
-  if(!验证凭据)return;
-  元素('确认邮箱').disabled=!当前账户;
-  文案(元素('验证步骤'),当前账户?'已登录。请点击下方按钮完成邮箱验证；身份认证标识不会改变。':'已收到验证链接。请先使用注册时的邮箱和密码登录，再点击确认验证。无需重新注册。',当前账户?'已登入，请按下钮验邮箱；身份之记如故。':'已得验信之券。请以立户邮箱密码登入，乃按确认；无须复立户。');
-  if(!当前账户&&注册模式)元素('切换账户模式').click();
+// 古曰：券不留于史，循址即验。今释：立即移除 URL fragment；验证在页面加载后自动提交，不创建登录会话。
+async function 自动验证邮箱(token){
+  文案(元素('验证步骤'),'正在验证邮箱…','正验邮箱…');
+  try{
+    await 请求账户('verify-email',{token});
+    验证凭据=null;
+    await 刷账户();
+    文案(元素('验证步骤'),'邮箱验证成功！已保存验证状态。登录后即可生成上传令牌。身份认证标识不会改变。','邮箱已验，其记已存！登入即可生上传之符，身份之记如故。');
+    if(!当前账户&&注册模式)元素('切换账户模式').click();
+  }catch(e){文案(元素('验证步骤'),e.message+'。可登录账户后重发验证邮件。',e.message+'。可登入再请验信。');}
 }
 function 读取邮件链接(){
   const 参数=new URLSearchParams(location.hash.slice(1)),verify=参数.get('verify'),reset=参数.get('reset');
@@ -32,15 +36,13 @@ function 读取邮件链接(){
   验证凭据=verify;重置凭据=reset;
   history.replaceState(null,'',location.pathname+location.search);
   元素('确认邮箱区').hidden=!verify;元素('重置表单').hidden=!reset;
-  更新验证提示();
+  if(verify)自动验证邮箱(verify);
   const 面板=元素(verify?'确认邮箱区':'重置表单');面板.scrollIntoView({block:'start'});面板.focus({preventScroll:true});
 }
 window.addEventListener('hashchange',读取邮件链接);
 元素('重发验证').addEventListener('click',()=>执行账户(async()=>{await 请求账户('resend-verification',{});状态('验证邮件已发送，请检查收件箱及垃圾邮件。','验信已发，请察信箱。');}));
-元素('确认邮箱').addEventListener('click',()=>执行账户(async()=>{await 请求账户('verify-email',{token:验证凭据});验证凭据=null;元素('确认邮箱区').hidden=true;await 刷账户();状态('邮箱验证完成，现在可以生成上传令牌。身份认证标识保持不变。','邮箱已验，可生上传之符；身份之记如故。');}));
 元素('忘记密码').addEventListener('click',()=>{元素('找回表单').hidden=false;元素('找回邮箱').value=元素('账户邮箱').value;元素('找回邮箱').focus();});
 元素('找回表单').addEventListener('submit',e=>{e.preventDefault();执行账户(async()=>{await 请求账户('forgot-password',{email:元素('找回邮箱').value});状态('若此邮箱已注册，将收到密码重置邮件，请检查收件箱及垃圾邮件。','若此邮箱已有户，将得更密之信，请察信箱。');});});
 元素('重置表单').addEventListener('submit',e=>{e.preventDefault();执行账户(async()=>{if(元素('新密码').value!==元素('确认密码').value)throw Error('两次输入的密码不一致');await 请求账户('reset-password',{token:重置凭据,password:元素('新密码').value});重置凭据=null;元素('新密码').value='';元素('确认密码').value='';元素('重置表单').hidden=true;await 刷账户();if(注册模式)元素('切换账户模式').click();状态('密码已重置，旧会话和上传令牌已撤销，请重新登录。','密已更，旧会话及上传之符皆废，请复登入。');});});
 
-读取邮件链接();
-刷账户().catch(()=>状态('账户服务暂不可用，请稍后重试。','账户未通，请稍后再试。'));
+刷账户().catch(()=>状态('账户服务暂不可用，请稍后重试。','账户未通，请稍后再试。')).finally(读取邮件链接);

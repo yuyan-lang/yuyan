@@ -45,17 +45,18 @@ test('上传 Access Token 不能充当登录会话或操作账户',async()=>{
 });
 
 const 邮件券=(db,purpose)=>db.邮件.filter(x=>x.text.includes('#'+purpose+'=')).at(-1)?.text.match(new RegExp('#'+purpose+'=([a-f0-9]{64})'))[1];
-test('邮箱凭据一次有效、绑定账户、用途隔离，邮箱验证不授予身份标识',async()=>{
+test('邮箱凭据无需登录、只验证凭据所属账户、一次有效且用途隔离，邮箱验证不授予身份标识',async()=>{
  const {sql,db}=数据库();const a=await 注册(db,'verify@example.com'),cookie=a.headers.get('set-cookie');const b=await 注册(db,'other@example.com','192.0.2.2');
  const token=邮件券(db,'verify');const first=db.邮件[0].text.match(/#verify=([a-f0-9]{64})/)[1];
  assert.equal(db.邮件[0].from,'noreply@yuyan-lang.org');assert.ok(!sql.prepare('SELECT 摘要 FROM 邮件凭据').all().some(r=>r.摘要===first));
  assert.equal((await 请求(db,'token',{},cookie)).status,403);
  // 手动注入启用令牌也不能绕过上传授权视图。
  sql.exec('INSERT INTO 访问令牌 (用户编号,名称,SHA256,可上传) VALUES (2,\'旧符\',\'old\',1)');assert.equal(sql.prepare('SELECT COUNT(*) AS n FROM 上传授权').get().n,0);
- assert.equal((await 请求(db,'verify-email',{token},cookie)).status,400);
- assert.equal((await 请求(db,'verify-email',{token:first},b.headers.get('set-cookie'))).status,400);
+ assert.equal((await 请求(db,'verify-email',{token},cookie)).status,200);
+ assert.equal(sql.prepare('SELECT 邮箱已验证 AS v FROM 邮箱账户 WHERE 用户编号=3').get().v,1);
+ assert.equal(sql.prepare('SELECT 邮箱已验证 AS v FROM 邮箱账户 WHERE 用户编号=2').get().v,0);
  assert.equal((await 请求(db,'reset-password',{token:first,password:'另一个很长很长很长很长的新密码！'})).status,400);
- assert.equal((await 请求(db,'verify-email',{token:first},cookie)).status,200);
+ assert.equal((await 请求(db,'verify-email',{token:first})).status,200);
  assert.equal((await 请求(db,'verify-email',{token:first},cookie)).status,400);
  const user=(await (await 请求(db,'session',undefined,cookie)).json()).user;assert.equal(user.emailVerified,1);assert.equal(user.verification,'unverified');
  assert.equal((await 请求(db,'token',{},cookie)).status,200);assert.equal(sql.prepare('SELECT 已验证 FROM 用户 WHERE 编号=1').get().已验证,1);sql.close();
