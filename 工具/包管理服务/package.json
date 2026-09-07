@@ -14,7 +14,8 @@
     "准备界面": "mkdir -p 网页/共用 && cp ../../网站/共用/* 网页/共用/",
     "pre检查配置": "npm run 准备界面",
     "pre部署": "npm run 准备界面",
-    "pre开发": "npm run 准备界面"
+    "pre开发": "npm run 准备界面",
+    "测试:归档": "cd ../.. && ./yy豫构 文件 工具/包管理服务/归档发布。测试。豫 --输出 /tmp/yy归档发布测试 && cd 工具/包管理服务 && node --test 测试/归档业务.integration.mjs"
   },
   "dependencies": {
     "@cloudflare/containers": "0.3.7"
