@@ -31,14 +31,17 @@ export async function 归档上传入口(req,env){
 export async function 存归档材料(req,env){
   try{
     const id=req.headers.get('X-Release-Id');
-    const payload=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(await 有限字节(req,Math.ceil(上限/3)*4+8192)));
-    const raw=payload.path;
+    const text=new TextDecoder('utf-8',{fatal:true}).decode(await 有限字节(req,Math.ceil(上限/3)*4+8192));
+    const newline=text.indexOf('\n');
+    // 文言：首行记径，余文载物。汉语：兼容部署过渡期的旧 JSON 格式，新协议只解析很小的路径前缀。
+    const payload=newline<0?JSON.parse(text):null;
+    const raw=newline<0?payload.path:JSON.parse(text.slice(0,newline));
     if(req.method!=='POST'||! /^[a-f0-9]{32}$/.test(id||'')||typeof raw!=='string')return 回('内部参数错误',400);
     const path=安全文件路径(raw.split('/').map(encodeURIComponent).join('/'));
     if(!/^(source|docs|build|runtime|archive)\//.test(path))return 回('分类错误',400);
     const row=await env.DB.prepare('SELECT "归档摘要" AS hash FROM "即时版本" WHERE "编号"=?').bind(id).first();
     if(!row?.hash)return 回('版本不存在',404);
-    const encoded=payload.data;
+    const encoded=newline<0?payload.data:text.slice(newline+1);
     if(typeof encoded!=='string'||encoded.length>Math.ceil(上限/3)*4)return 回('材料编码过大',413);
     const binary=atob(encoded);if(binary.length>上限)return 回('材料过大',413);
     const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),hash=await 印(bytes),key='releases/'+id+'/'+path;

@@ -47,10 +47,12 @@ test('未验证、未绑定、跨站请求及令牌绑定名称被阻止',async(
 test('材料桥支持二进制、原始 ZIP 摘要核对、同内容重试及并发不可覆盖',async()=>{
   const {e,sql,objects}=await env();
   sql.prepare('INSERT INTO 即时版本 (编号,所有者编号,名称,版本,类型,简介,归档摘要) VALUES (?,1,?,?,?,?,?)').run(id,'包','1.0.0','库','说明',await 摘要('zip'));
-  const put=(path,data)=>存归档材料(new Request('http://release.internal/',{method:'POST',headers:{'X-Release-Id':id},body:JSON.stringify({path,data:Buffer.from(data).toString('base64')})}),e);
+  const put=(path,data)=>存归档材料(new Request('http://release.internal/',{method:'POST',headers:{'X-Release-Id':id},body:JSON.stringify(path)+'\n'+Buffer.from(data).toString('base64')}),e);
   assert.equal((await put('archive/发布.zip','bad')).status,409);
   assert.equal((await put('archive/发布.zip','zip')).status,204);
   assert.equal((await put('docs/index.html','hello')).status,204);
+  // 文言：旧器未退，亦受其文。汉语：滚动部署时仍接受旧容器的紧凑 JSON 请求。
+  assert.equal((await 存归档材料(new Request('http://release.internal/',{method:'POST',headers:{'X-Release-Id':id},body:JSON.stringify({path:'docs/index.html',data:btoa('hello')})}),e)).status,204);
   assert.equal((await put('docs/index.html','hello')).status,204);
   assert.equal((await put('docs/index.html','different')).status,409);
   assert.equal((await put('source/../bad','bad')).status,503);
