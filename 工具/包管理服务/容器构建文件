@@ -7,7 +7,7 @@ ARG YY_BOOTSTRAP_URL=https://github.com/yuyan-lang/yuyan/releases/download/histo
 ARG YY_BOOTSTRAP_SHA256=903b242e8d4845ce99bafc467ed019c706d265f978dd90cf9c25a475487767be
 
 RUN apt-get update \
-    && apt-get install --yes --no-install-recommends ca-certificates clang curl llvm make tar \
+    && apt-get install --yes --no-install-recommends ca-certificates clang curl llvm make tar zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /构建
@@ -39,7 +39,7 @@ RUN ./yy豫构 构建 包管理服务 --编译器 ./yy2_bs --输出 /构建/yy�
 FROM --platform=linux/amd64 debian:bookworm-slim AS runtime
 
 RUN apt-get update \
-    && apt-get install --yes --no-install-recommends ca-certificates coreutils openssl unzip \
+    && apt-get install --yes --no-install-recommends ca-certificates coreutils openssl unzip zlib1g \
     && rm -rf /var/lib/apt/lists/*
 
 # 古曰：器内行路用拉丁字，以避 OCI 宿主异同之患。

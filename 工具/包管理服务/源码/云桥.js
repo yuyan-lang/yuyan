@@ -1,4 +1,5 @@
 import { 公开包入口 } from "./公开包.js";
+import { 归档上传入口, 存归档材料 } from "./归档桥.js";
 import { 即时发布入口, 用户内容入口, 门户来源, 内容来源 } from "./即时发布桥.js";
 import { 账户入口 } from "./账户.js";
 import { 网页资源地址 } from "./网页路由.js";
@@ -59,6 +60,7 @@ export class PackageRegistryContainer extends Container {
 }
 
 PackageRegistryContainer.outboundByHost = {
+  "release.internal": 存归档材料,
   "database.internal": 处理数据库,
   "digest.internal": 处理摘要,
   "packages.internal": 处理待发布对象,
@@ -77,6 +79,8 @@ export default {
         return Response.redirect(门户来源(环境) + url.pathname + url.search, 302);
       }
       if (decodeURIComponent(url.pathname).startsWith('/__direct/')) return 回应错误(404, "内部接口不公开");
+      const 归档回应 = await 归档上传入口(请求, 环境);
+      if (归档回应) return 归档回应;
       const 即时回应 = await 即时发布入口(请求, 环境);
       if (即时回应) return 即时回应;
       const 账户回应 = await 账户入口(请求, 环境);
@@ -92,6 +96,8 @@ export default {
         标头.set("X-Content-Type-Options", "nosniff");
         return new Response(回.body, { status: 回.status, headers: 标头 });
       }
+      // 文言：旧下载仍通，旧写门尽闭。汉语：防止旧 ZIP 流程绕过所有者声明检查。
+      if (!['GET', 'HEAD'].includes(请求.method)) return 回应错误(410, "请使用 /api/releases/zip 发布完整归档");
       const 文件名 = 是包下载路径(请求);
       if (文件名 !== null) return await 下载已发布包(请求, 环境, 文件名);
       const 上传摘要 = 是包数据上传路径(请求);
