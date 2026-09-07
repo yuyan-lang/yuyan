@@ -49,8 +49,8 @@ COPY --from=builder /构建/yy包管理服务 /usr/local/bin/yy-package-registry
 # 古曰：小室量入为出，栈堆之限刻于器中，不假外桥传令。
 # 白话：镜像级 ENV 保证 OCI 入口必定取得内存限制；现行栈变量的 2 实际表示 32 MiB。
 ENV YY_GC_INITIAL_STACK_SIZE_MB=2 \
-    YY_GC_INITIAL_HEAP_SIZE_MB=4 \
-    YY_GC_MAX_HEAP_SIZE_MB=64
+    YY_GC_INITIAL_HEAP_SIZE_MB=128 \
+    YY_GC_MAX_HEAP_SIZE_MB=128
 
 USER 65532:65532
 EXPOSE 8080

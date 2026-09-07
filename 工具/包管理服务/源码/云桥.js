@@ -41,8 +41,9 @@ export class PackageRegistryContainer extends Container {
   // 今释：lite 容器仅有 256 MiB；现行栈变量仍以百万个十六字节槽位计，故 2 表示 32 MiB。
   envVars = {
     YY_GC_INITIAL_STACK_SIZE_MB: "2",
-    YY_GC_INITIAL_HEAP_SIZE_MB: "4",
-    YY_GC_MAX_HEAP_SIZE_MB: "64",
+    // 文言：大档入服，堆先备足。汉语：ZIP/base64 会同时存活，避免小初始堆在读取大正文时耗尽。
+    YY_GC_INITIAL_HEAP_SIZE_MB: "128",
+    YY_GC_MAX_HEAP_SIZE_MB: "128",
   };
 
   onStart() {
