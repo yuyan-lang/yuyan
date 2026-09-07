@@ -30,3 +30,16 @@ test('官方 verified，新用户与其包 unverified，不能通过注册字段
  sql.prepare('UPDATE "用户" SET "已验证"=1 WHERE "编号"=?').run(user.id);assert.equal((await (await query('第三方包')).json()).verification,'verified');
  assert.equal((await query('不存在')).status,404);sql.close();
 });
+
+
+test('上传 Access Token 不能充当登录会话或操作账户',async()=>{
+ const {sql,db}=数据库();const register=await 注册(db,'upload-only@example.com');
+ const cookie=register.headers.get('set-cookie');const tokenReply=await 请求(db,'token',{},cookie);const {token,scope}=await tokenReply.json();assert.equal(scope,'packages:upload');
+ assert.equal((await 请求(db,'token',{})).status,401);
+ for(const action of ['token','revoke','logout']){
+  const r=await 账户入口(new Request(基址+'/api/account/'+action,{method:'POST',headers:{Origin:基址,'Content-Type':'application/json','CF-Connecting-IP':'192.0.2.20',Authorization:'Bearer '+token},body:'{}'}),{DB:db});assert.equal(r.status,401,action);
+ }
+ const r=await 账户入口(new Request(基址+'/api/account/session',{headers:{Authorization:'Bearer '+token}}),{DB:db});assert.equal((await r.json()).user,null);
+ assert.equal((await (await 请求(db,'session',undefined,'__Host-yy_session='+token)).json()).user,null);
+ const row=sql.prepare('SELECT "可上传" AS upload,"SHA256" AS hash FROM "访问令牌" WHERE "SHA256"=?').get(await 摘要(token));assert.equal(row.upload,1);assert.notEqual(row.hash,token);sql.close();
+});
