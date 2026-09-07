@@ -2,7 +2,8 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "yuyan-package-registry",
   "main": "源码/云桥.js",
-  "assets": { "directory": "网页", "binding": "ASSETS", "run_worker_first": true },
+  // 文言：版本之址不易。汉语：禁用 HTML 自动重定向，保留 /release/<编号> 的浏览器地址。
+  "assets": { "directory": "网页", "binding": "ASSETS", "run_worker_first": true, "html_handling": "none" },
   "compatibility_date": "2026-09-04",
   "observability": {
     "enabled": true,
