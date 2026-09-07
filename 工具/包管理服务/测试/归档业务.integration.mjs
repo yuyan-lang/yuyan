@@ -63,20 +63,23 @@ test('绑定唯一且不可改名，未验证邮箱和未绑定账户不可发�
   assert.equal(db.prepare('SELECT COUNT(*) n FROM 即时版本').get().n,0);
   db.close();
 });
-test('服务器填充元数据、完整归档和二进制材料；同档补传，不同档拒绝，两人同包名各归其主',()=>{
+test('服务器填充元数据；同档补传复用序数，异档追加修订，所有者保持隔离',()=>{
   const {db,run,publish}=env();run(2,'owner',{name:'甲'});run(3,'owner',{name:'乙'});
   const bytes=zip(entries()),first=publish(2,bytes,'docs/index.html');
   assert.equal(first.status,200,JSON.stringify(first));assert.equal(first.body.incomplete,true);
   const next=publish(2,bytes);assert.equal(next.status,200);assert.equal(next.body.id,first.body.id);assert.equal(next.body.incomplete,false);
+  assert.equal(next.body.revision,1);
   assert.deepEqual(Buffer.from(next.files.find(f=>f.path==='archive/发布.zip').data,'base64'),bytes);
   assert.deepEqual(Buffer.from(next.files.find(f=>f.path==='build/独立.tar').data,'base64'),Buffer.from([0,1,255,13]));
   assert.equal(publish(3,bytes).status,400);
   assert.equal(publish(3,zip(entries('乙'))).status,200);
-  assert.equal(publish(2,zip([...entries(),['源码/新增。豫','改变']])).status,400);
+  const changed=publish(2,zip([...entries(),['源码/新增。豫','改变']]));assert.equal(changed.status,200);assert.equal(changed.body.revision,2);assert.notEqual(changed.body.id,first.body.id);
+  const retryOld=publish(2,bytes);assert.equal(retryOld.body.id,first.body.id);assert.equal(retryOld.body.revision,1);
+  const third=publish(2,zip([...entries(),['源码/另增。豫','再改变']]));assert.equal(third.body.revision,3);
   const exe=publish(2,zip([...entries('甲',true).map(([n,b,...rest])=>[n,n.endsWith('。包。豫')?String(b).replace('1.0.0','1.0.1'):b,...rest]),['运行/linux/yy例包','binary']]));
   assert.equal(exe.status,200);assert.equal(exe.body.incomplete,false);
   const rows=db.prepare('SELECT 名称,版本,类型,所有者编号 FROM 即时版本 ORDER BY 所有者编号').all();
-  assert.equal(rows.length,3);assert.equal(rows[0].名称,'例包');assert.equal(rows[0].类型,'库');db.close();
+  assert.equal(rows.length,5);assert.equal(rows[0].名称,'例包');assert.equal(rows[0].类型,'库');db.close();
 });
 test('坏路径、重复路径、符号链接、CRC、尺寸、缺失材料和动态包声明拒绝且不公开',()=>{
   const {db,run,publish}=env();run(2,'owner',{name:'甲'});

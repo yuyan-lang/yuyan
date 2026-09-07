@@ -33,11 +33,22 @@ async function 求(url, options) {
   if (!r.ok) throw Error(data.error || '请求失败'); return data;
 }
 function 链接(text, url) { const a = document.createElement('a'); a.textContent = text; a.href = url; return a; }
+// 文言：诸次皆可追，旧档不失。汉语：历史按页读取；链接来自已认证服务器字段，文字仅用 textContent。
+async function 展示上传历史(data,容器){
+  容器.querySelector('[data-upload-history]')?.remove();
+  if(!data.historyUrl)return;
+  const section=document.createElement('section');section.dataset.uploadHistory='';
+  const title=document.createElement('h3');title.textContent='同版本上传历史 / 同版诸次';section.append(title);
+  if(data.latestId&&data.latestId!==data.id){const a=document.createElement('a');a.textContent='查看最新修订';a.href='/release/'+data.latestId;section.append(a);}
+  const list=document.createElement('ul'),more=document.createElement('button');more.type='button';more.textContent='更多历史';section.append(list,more);容器.append(section);let offset=0;
+  async function load(){more.disabled=true;try{const page=await 求(data.historyUrl+'?offset='+offset);for(const r of page.revisions){const li=document.createElement('li'),a=document.createElement('a'),zip=document.createElement('a');a.textContent='第 '+r.revision+' 次上传 · '+r.created;a.href=r.url;zip.textContent='下载 ZIP';zip.href=r.downloadUrl;li.append(a,' · ',zip);list.append(li);}offset=page.nextOffset;more.hidden=offset===null;}catch(e){more.textContent='重试读取历史：'+e.message;}finally{more.disabled=false;}}
+  more.addEventListener('click',load);await load();
+}
 async function 展示(id) {
   let data = await 求('/api/releases/' + id), files = [...data.files];
   while (data.cursor) { const page = await 求('/api/releases/' + id + '?cursor=' + encodeURIComponent(data.cursor)); files.push(...page.files); data.cursor = page.cursor; }
   当前版本 = id; 元素('版本详情').hidden = false;
-  元素('版本标题').textContent = data.owner + ' / ' + data.name + ' / ' + data.version + ' · ' + data.type;
+  元素('版本标题').textContent = data.owner + ' / ' + data.name + ' / ' + data.version + ' · 上传 #' + (data.revision || 1) + ' · ' + data.type;
   元素('版本说明').textContent = data.description;
   const required = data.type === '可执行文件' ? ['source', 'build', 'docs', 'runtime', 'archive'] : ['source', 'build', 'docs', 'archive'];
   const missing = required.filter(k => k === 'docs' ? !files.some(f => f.path === 'docs/index.html') : !files.some(f => f.path.startsWith(k + '/')));
@@ -48,6 +59,7 @@ async function 展示(id) {
   const docs = new URL(data.docsUrl);
   if (docs.protocol !== 'https:' || docs.hostname !== 'usercontent.yuyan-lang.org') throw Error('文档来源配置错误');
   元素('包文档').src = docs.href;
+  await 展示上传历史(data,元素('版本详情'));
 }
 async function 列表() {
   const data = await 求('/api/releases?mine=1&offset=' + 下页);
