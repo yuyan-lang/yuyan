@@ -22,7 +22,7 @@ const 区 = document.createElement('section');
     <p>以下为上传者提供的未审查文档，运行在独立来源中。请勿在文档中输入密码或令牌。</p>
     <iframe id="包文档" title="上传者提供的包文档" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
   </section>
-  <h2>最近发布的包</h2><ul id="版本列表"></ul><button id="更多版本" type="button" hidden>更多</button>`;
+  <h2 data-han="我的包" data-wen="吾包">我的包</h2><ul id="版本列表"></ul><button id="更多版本" type="button" hidden>更多</button>`;
 document.getElementById('正文').append(区);
 const 元素 = id => document.getElementById(id), 表单 = 元素('即时表单');
 let 当前版本 = location.pathname.match(/^\/release\/([a-f0-9]{32})$/)?.[1], 下页 = 0;
@@ -50,7 +50,7 @@ async function 展示(id) {
   元素('包文档').src = docs.href;
 }
 async function 列表() {
-  const data = await 求('/api/releases?offset=' + 下页);
+  const data = await 求('/api/releases?mine=1&offset=' + 下页);
   for (const v of data.releases) { const li = document.createElement('li'); li.append(链接(v.owner + ' / ' + v.name + ' ' + v.version, '/release/' + v.id)); 元素('版本列表').append(li); }
   下页 = data.nextOffset; 元素('更多版本').hidden = 下页 === null;
 }
@@ -65,17 +65,18 @@ async function 列表() {
     if (!file || file.size > 16777216) throw Error('请选择不超过 16 MiB 的 ZIP');
     提示('正在上传并检查包声明，随后展开材料…');
     const version = await 求('/api/releases/zip', { method: 'POST', headers: { 'Content-Type': 'application/zip' }, body: file });
-    当前版本 = version.id; history.replaceState(null, '', version.url); await 展示(version.id);
+    当前版本 = version.id; history.replaceState(null, '', '/个人'); await 展示(version.id);await 刷所有者();
     提示(version.incomplete ? '版本已公开，但部分材料暂不可获取；请重传同一 ZIP 补齐。' : '发布完成。包声明与所有者已核对，材料内容尚未审查。');
   } catch (error) { 提示(error.message); } finally { controls.forEach(c => { c.disabled = false; }); }
 });
 元素('刷新版本').addEventListener('click', () => 展示(当前版本).catch(e => 提示(e.message)));
 元素('更多版本').addEventListener('click', () => 列表().catch(e => 提示(e.message)));
-列表().catch(e => 提示(e.message));
+
 if (当前版本) 展示(当前版本).catch(e => 提示(e.message));
 
 async function 刷所有者() {
   const {user}=await 求('/api/account/session');
+  表单.hidden=!user;下页=0;元素('版本列表').replaceChildren();元素('更多版本').hidden=true;if(user)await 列表();
   元素('所有者状态').textContent=user ? (user.ownerBound ? '所有者：'+user.name : '尚未绑定所有者名称') : '请先登录账户。';
   元素('设置所有者').hidden=!user || !!user.ownerBound;
 }

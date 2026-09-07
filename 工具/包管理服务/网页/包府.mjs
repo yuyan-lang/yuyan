@@ -1,10 +1,7 @@
 // 古曰：取名须审，不以客辞作路径。今释：下载链接仅接受单个 zip 文件名，不发送上传凭据。
 import './发布.mjs';
-let 查询序=0;
-document.getElementById('包查询').addEventListener('submit',async e=>{e.preventDefault();const seq=++查询序,名=document.getElementById('包名').value.trim(),提示=document.getElementById('包提示'),链接=document.getElementById('包下载'),发布者=document.getElementById('包发布者');链接.hidden=true;发布者.hidden=true;if(!/^[\p{L}\p{N}][\p{L}\p{N}._-]*\.zip$/u.test(名)||名.includes('..')){文案(提示,'请输入单个 .zip 包文件名，不能包含路径。','请书单一 .zip 包名，不可含路径。');return;}文案(提示,'正在查询…','正查询…');try{const r=await fetch('/api/packages/'+encodeURIComponent(名),{cache:'no-store'}),data=await r.json();if(seq!==查询序)return;if(!r.ok)throw Error(data.error||'查询失败');document.getElementById('发布者名称').textContent=data.publisher.name;标识(document.getElementById('包验证'),data.verification);发布者.hidden=false;链接.href=data.downloadUrl;链接.hidden=false;文案(提示,'已找到此包，可查看发布者状态并下载。','已得其包，可观发布者而取之。');}catch(e){if(seq===查询序)文案(提示,e.message,e.message);}});
-
 // 古曰：私符不藏于浏览器久库。今释：登录使用 HttpOnly 会话，上传令牌仅暂存在当前页面，不写入 localStorage。
-const 元素=id=>document.getElementById(id);let 注册模式=true,当前账户=null,验证凭据=null,重置凭据=null;
+const 元素=id=>document.getElementById(id);let 注册模式=false,当前账户=null,验证凭据=null,重置凭据=null;
 function 文案(el,han,wen){el.dataset.han=han;el.dataset.wen=wen;el.textContent=window.豫言界面?.语言==='wen'?wen:han;}
 function 标识(el,value){el.textContent=value==='verified'?'verified':'unverified';el.dataset.verified=String(value==='verified');}
 function 状态(han,wen=han){文案(元素('账户状态'),han,wen);}

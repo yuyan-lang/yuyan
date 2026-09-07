@@ -15,7 +15,7 @@ export function 安全文件路径(raw) {
   return path;
 }
 const 编路径 = path => path.split('/').map(encodeURIComponent).join('/');
-const 版本查询 = 'SELECT v."编号" AS id,u."名称" AS owner,v."名称" AS name,v."版本" AS version,v."类型" AS type,v."简介" AS description,v."创建时间" AS created FROM "即时版本" v JOIN "用户" u ON u."编号"=v."所有者编号"';
+const 版本查询 = 'SELECT v."编号" AS id,u."名称" AS owner,u."已验证" AS identityVerified,v."名称" AS name,v."版本" AS version,v."类型" AS type,v."简介" AS description,v."创建时间" AS created FROM "即时版本" v JOIN "用户" u ON u."编号"=v."所有者编号"';
 async function 查版本(env, id) { return env.DB.prepare(版本查询 + ' WHERE v."编号"=?').bind(id).first(); }
 export async function 请求内服(req, env, action, body) {
   if (env.REGISTRATION_ENABLED === 'false') return 回({ error: '发布暂未开放' }, 503);
@@ -49,7 +49,16 @@ export async function 即时发布入口(req, env) {
       if (req.method !== 'GET') return 回({ error: '不支持的方法' }, 405);
       const offset = Number(url.searchParams.get('offset') || 0);
       if (!Number.isSafeInteger(offset) || offset < 0 || offset > 1000000) 错('分页参数错误');
-      const result = await env.DB.prepare(版本查询 + ' ORDER BY v."创建时间" DESC,v."编号" DESC LIMIT 50 OFFSET ?').bind(offset).all();
+      const conditions=[],args=[];
+      if(url.searchParams.get('mine')==='1'){
+        const user=await 查会话(req,env.DB,Math.floor(Date.now()/1000));
+        if(!user)return 回({error:'请先登录'},401);
+        conditions.push('v."所有者编号"=?');args.push(user.id);
+      }
+      if(url.searchParams.get('catalog')==='1')conditions.push('NOT EXISTS (SELECT 1 FROM "即时版本" newer WHERE newer."所有者编号"=v."所有者编号" AND newer."名称"=v."名称" AND (newer."创建时间">v."创建时间" OR (newer."创建时间"=v."创建时间" AND newer."编号">v."编号")))');
+      const q=(url.searchParams.get('q')||'').trim();if(q.length>100)错('搜索词过长');
+      if(q){conditions.push('(instr(v."名称",?)>0 OR instr(u."名称",?)>0 OR instr(v."简介",?)>0)');args.push(q,q,q);}
+      const result = await env.DB.prepare(版本查询 + (conditions.length?' WHERE '+conditions.join(' AND '):'') + ' ORDER BY v."创建时间" DESC,v."编号" DESC LIMIT 50 OFFSET ?').bind(...args,offset).all();
       return 回({ releases: result.results, nextOffset: result.results.length === 50 ? offset + 50 : null });
     }
     if (!编号式.test(id || '')) return 回({ error: '版本不存在' }, 404);

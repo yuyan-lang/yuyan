@@ -7,7 +7,7 @@ export async function 发送账户邮件(env,user,purpose,now){
   if(!env.EMAIL?.send)拒('邮件服务暂不可用，请稍后重试',503);
   const token=随机凭据(),hash=await 邮件摘要(token),minutes=purpose==='verify'?60:30;
   // 古曰：址定于内，不从客辞。今释：不使用请求 Host 或用户提供的跳转地址生成邮件链接。
-  const link='https://xn--uiry18e4gf.yuyan-lang.org/#'+purpose+'='+token;
+  const link='https://xn--uiry18e4gf.yuyan-lang.org/个人#'+purpose+'='+token;
   await env.DB.prepare('INSERT INTO "邮件凭据" VALUES (?,?,?,?)').bind(hash,user.id,purpose,now+minutes*60).run();
   try{
     await env.EMAIL.send({from:'noreply@yuyan-lang.org',to:user.email,subject:purpose==='verify'?'豫言：验证邮箱':'豫言：重置密码',text:purpose==='verify'

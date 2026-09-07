@@ -30,7 +30,7 @@ test('未绑定先弹窗，绑定后只上传 ZIP，失败补传仍用同一归�
   owner.dispatchEvent(new w.Event('submit',{cancelable:true}));await tick();
   assert.equal(dialog.open,false);assert.match(w.document.getElementById('所有者状态').textContent,/甲/);
   form.dispatchEvent(new w.Event('submit',{cancelable:true}));await tick();await tick();
-  assert.equal(w.location.pathname,'/release/'+id);
+  assert.equal(decodeURIComponent(w.location.pathname),'/个人');
   assert.match(w.document.getElementById('即时提示').textContent,/部分材料/);
   assert.equal(w.document.querySelector('#版本标题 img'),null);
   const iframe=w.document.getElementById('包文档');

@@ -80,3 +80,15 @@ test('旧元数据和逐文件写入均关闭，缺失下载仍为 no-store',asy
  assert.equal(r.status,404);assert.equal(r.headers.get('Cache-Control'),'no-store');
  for(const p of ['../a','a//b','a%2f..%2fb','a%5cb','a%00b','%ZZ','/abs'])assert.throws(()=>安全文件路径(p));
 });
+
+test('包市场按所有者与包名聚合、支持搜索，我的包只取当前账户',async()=>{
+ const {env,sql}=环境();sql.exec(`INSERT INTO 用户 (编号,名称) VALUES (2,'另一位');`);
+ const add=sql.prepare('INSERT INTO 即时版本 (编号,所有者编号,名称,版本,类型,简介,创建时间) VALUES (?,?,?,?,?,?,?)');
+ add.run('b'.repeat(32),1,'例包','0.2.0','库','新版描述','2099-01-01');add.run('c'.repeat(32),2,'例包','0.1.0','库','独立命名空间','2099-01-02');
+ const catalog=await (await 即时发布入口(请求('?catalog=1'),env)).json();assert.equal(catalog.releases.length,2);assert.ok(!catalog.releases.some(x=>x.id===id));
+ const search=await (await 即时发布入口(请求('?catalog=1&q='+encodeURIComponent('独立')),env)).json();assert.equal(search.releases.length,1);assert.equal(search.releases[0].owner,'另一位');
+ assert.equal((await 即时发布入口(请求('?mine=1'),env)).status,401);
+ sql.exec(`INSERT INTO 邮箱账户 (用户编号,邮箱,密码摘要,盐,迭代数,条款版本,接受时间) VALUES (2,'test@example.invalid','h','s',1,'test',0);`);
+ const token='d'.repeat(64);sql.prepare('INSERT INTO 登录会话 VALUES (?,?,?)').run(await 摘要(token),2,Math.floor(Date.now()/1000)+60);
+ const mine=await (await 即时发布入口(请求('?mine=1',{headers:{Cookie:'__Host-yy_session='+token}}),env)).json();assert.equal(mine.releases.length,1);assert.equal(mine.releases[0].owner,'另一位');sql.close();
+});
