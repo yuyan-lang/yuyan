@@ -1,3 +1,5 @@
+import { 公开包入口 } from "./公开包.js";
+import { 账户入口 } from "./账户.js";
 import { 网页资源地址 } from "./网页路由.js";
 import { Container } from "@cloudflare/containers";
 import {
@@ -66,6 +68,10 @@ PackageRegistryContainer.outboundByHost = {
 export default {
   async fetch(请求, 环境) {
     try {
+      const 账户回应 = await 账户入口(请求, 环境);
+      if (账户回应) return 账户回应;
+      const 包资料回应 = await 公开包入口(请求, 环境);
+      if (包资料回应) return 包资料回应;
       // 古曰：网页供人观，旧接口仍通。今释：浏览器首页与静态资源独立提供，JSON 健康检查和包接口不变。
       const 网址 = 网页资源地址(请求);
       if (环境.ASSETS && 网址) {
