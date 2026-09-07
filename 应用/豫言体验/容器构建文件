@@ -27,7 +27,7 @@ RUN cp /构建/yy稳定编译器 ./yy_bs_stable && cp /构建/yy稳定豫构 ./y
     && cp yy2_bs /构建/yy当前编译器
 
 FROM --platform=linux/amd64 node:22-bookworm-slim AS sandbox-base
-RUN apt-get update && apt-get install --yes --no-install-recommends clang llvm bubblewrap util-linux \
+RUN apt-get update && apt-get install --yes --no-install-recommends clang llvm bubblewrap util-linux tini \
     && rm -rf /var/lib/apt/lists/*
 FROM sandbox-base AS runtime
 COPY --from=builder /构建/yy当前编译器 /opt/yuyan/yy
@@ -52,4 +52,6 @@ COPY 应用/豫言体验/知识 /app/知识
 # 今释：服务使用非 root 用户；启动时必须成功建立所有 namespace，否则拒绝启动。
 USER 1000:1000
 EXPOSE 8080
-ENTRYPOINT ["node", "/app/源码/服务.mjs"]
+# 古曰：遗子必收，毋使积尸塞途。
+# 今释：镜像自带 PID 1 回收器，回收沙箱遗留子进程，避免耗尽同用户的进程配额。
+ENTRYPOINT ["/usr/bin/tini", "--", "node", "/app/源码/服务.mjs"]

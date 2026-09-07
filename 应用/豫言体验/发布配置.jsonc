@@ -10,7 +10,7 @@
   "containers": [
     {
       "class_name": "YuyanContainer",
-      "image": "registry.cloudflare.com/90c58fd531223290a358e4df01dadb5b/yy-playground@sha256:c105d869f1bac13cb49f2d9f6c0613f95d3eced0c9261c013c71f631d1608d8c",
+      "image": "registry.cloudflare.com/90c58fd531223290a358e4df01dadb5b/yy-playground@sha256:c2a79761108822faafd25736265738e0706f8e7aad4e2b6e9a3db6d57a420da5",
       "max_instances": 2,
       "instance_type": "standard-1"
     }
@@ -39,7 +39,7 @@
   "vars": {
     "ENABLED": "true",
     "MODEL": "deepseek-v4-pro",
-    "RUNNER_RELEASE": "pro-tools-v1",
+    "RUNNER_RELEASE": "pro-tools-reaper-v1",
     "DAILY_RUN_LIMIT": "1000",
     "DAILY_AI_LIMIT": "100"
   },

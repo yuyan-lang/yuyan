@@ -1,5 +1,5 @@
-// 古曰：新稿先示而后易，客之手笔不可骤失。
-// 今释：AI 生成结果须显式应用；请求期间仍可编辑，不覆盖用户的新修改。
+// 古曰：新稿验成，即易今稿。
+// 今释：AI 生成验证通过的代码后直接替换编辑器内容，无需单独应用。
 import { 读取日志流 } from "./日志流.mjs";
 import { 示例 as 共用示例 } from "./共用/示例.mjs";
 const 取 = 名 => document.getElementById(名);
@@ -121,16 +121,16 @@ document.querySelectorAll(".需求示例").forEach(钮 => 钮.addEventListener("
 });
 取("生成").addEventListener("click", async () => {
   if (!取("需求").value.trim()) { 取("需求").focus(); return; }
-  生成中 = true; 刷新(); 取("建议区").hidden = true; 取("助手消息").textContent = "正在理解需求、生成源码并验证编译…";
+  生成中 = true; 刷新(); 取("助手消息").textContent = "正在理解需求、生成源码并验证编译…";
   开始日志("AI 助写");
   try {
     const 值 = await 请求("/api/assist", { prompt: 取("需求").value, code: 取("源码").value });
     if (!值.code) { 取("助手消息").textContent = 值.error; if (值.diagnostic) 取("诊断").textContent = 值.diagnostic; return; }
-    取("建议").textContent = 值.code; 取("建议区").hidden = false; 取("助手消息").textContent = "已生成通过编译的豫言程序。";
+    取("源码").value = 值.code;
+    写界面文字(取("助手消息"), "代码已通过编译并更新到编辑器。", "新稿已验可编，已易今稿。");
   } catch (错) { 完成日志({ error: 错.message }); 取("助手消息").textContent = 错.name === "TimeoutError" ? "等待超时，已收到的对话保留在下方。" : 错.message; }
   finally { 生成中 = false; 刷新(); }
 });
-取("应用").addEventListener("click", () => { 取("源码").value = 取("建议").textContent; 取("建议区").hidden = true; 刷新(); 取("源码").focus(); });
 try {
   const 回 = await fetch("/api/status"); if (!回.ok) throw new Error();
   const 状态 = await 回.json(); 可用 = 状态.enabled; 有助手 = 状态.ai;
