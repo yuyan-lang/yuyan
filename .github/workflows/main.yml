@@ -30,7 +30,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang llvm make curl ripgrep
+          sudo apt-get install -y clang llvm make curl ripgrep libsqlite3-dev
 
       - name: Build stable compiler from portable bootstrap release
         run: |

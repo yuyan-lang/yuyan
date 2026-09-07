@@ -60,7 +60,14 @@ export async function 编译运行(源码, 仅编译 = false, 报告 = () => {})
     await cp("/opt/yuyan/预热缓存", join(目录, ".yybuild"), { recursive: true, preserveTimestamps: true });
     // 古曰：客稿亦有籍，与诸包同制。今释：每次请求创建独立软件包，入口与依赖明确声明。
     await mkdir(join(目录, "用户程序"), { recursive: true });
-    await writeFile(join(目录, "用户程序/用户程序。包。豫"), "「依赖」者「列」【『标准库』】也。「入口」者『入口』也。", { mode: 0o600 });
+    await writeFile(join(目录, "用户程序/用户程序。包。豫"),
+      "「名称」者『用户程序』也。「所有者」者『访客』也。「版本」者『0.1.0』也。" +
+      "「简介」者『隔离执行的用户程序。』也。「类型」者「典」【「种类」者『可执行文件』也，「入口」者『入口』也，「文件名」者『yy程序』也，】也。" +
+      "「说明」者「典」【「汉语」者『说明.汉语.md』也，「文言」者『说明.文言.md』也，】也。" +
+      "「依赖」者「列」【「典」【「所有者」者『豫言』也，「包」者『标准库』也，】】也。",
+      { mode: 0o600 });
+    await writeFile(join(目录, "用户程序/说明.汉语.md"), "本包仅用于本次隔离运行。", { mode: 0o600 });
+    await writeFile(join(目录, "用户程序/说明.文言.md"), "此包惟供今次隔离之用。", { mode: 0o600 });
     await writeFile(join(目录, "用户程序/入口。豫"), 源码, { mode: 0o600 });
     报告({ type: "stage", phase: "compile", label: "正在编译（最多 30 秒）" });
     const 编译 = await 执行受限("/usr/bin/prlimit", 隔离参数(目录, "/opt/yuyan/yy豫构", [
