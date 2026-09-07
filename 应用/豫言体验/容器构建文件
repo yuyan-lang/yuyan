@@ -1,8 +1,8 @@
 # 古曰：取旧炉之验材，铸今本之器。
 # 今释：复用已固定摘要的自举包，构建当前仓库编译器，不更改编译器语义。
 FROM --platform=linux/amd64 debian:bookworm-slim AS builder
-ARG YY_BOOTSTRAP_URL=https://github.com/yuyan-lang/yuyan/releases/download/historical-bootstrap/bootstrap-pair-0e915ed65338da2734664b73124504ed07c21d00ccaf1627916000cc18d440f3.tar.gz
-ARG YY_BOOTSTRAP_SHA256=0e915ed65338da2734664b73124504ed07c21d00ccaf1627916000cc18d440f3
+ARG YY_BOOTSTRAP_URL=https://github.com/yuyan-lang/yuyan/releases/download/historical-bootstrap/bootstrap-pair-903b242e8d4845ce99bafc467ed019c706d265f978dd90cf9c25a475487767be.tar.gz
+ARG YY_BOOTSTRAP_SHA256=903b242e8d4845ce99bafc467ed019c706d265f978dd90cf9c25a475487767be
 RUN apt-get update && apt-get install --yes --no-install-recommends ca-certificates clang curl llvm make tar && rm -rf /var/lib/apt/lists/*
 WORKDIR /构建
 RUN curl --fail --location --retry 3 --retry-all-errors "$YY_BOOTSTRAP_URL" --output 自举包.tar.gz \
