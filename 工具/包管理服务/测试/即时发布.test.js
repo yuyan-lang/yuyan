@@ -7,9 +7,9 @@ import { 摘要 } from '../源码/账户.js';
 
 // 古曰：验缺物可观，越权不可传，客页不得借主权。今释：真实 SQLite 加模拟原子 R2，验证简化上传和安全边界。
 const id = 'a'.repeat(32), origin = 'https://packages.yuyan-lang.org';
-function 环境() {
+function 环境(修订=true) {
   const sql = new DatabaseSync(':memory:'); sql.exec('PRAGMA foreign_keys=ON');
-  for (const file of ['0001_建立包管理.sql', '0002_邮箱注册.sql', '0003_发布者验证.sql', '0004_邮箱验证与密码重置.sql', '0005_即时发布.sql', '0006_所有者绑定.sql'])
+  for (const file of ['0001_建立包管理.sql', '0002_邮箱注册.sql', '0003_发布者验证.sql', '0004_邮箱验证与密码重置.sql', '0005_即时发布.sql', '0006_所有者绑定.sql', '0007_上传修订.sql'].filter(f=>修订||!f.startsWith('0007')))
     sql.exec('BEGIN;' + readFileSync(new URL('../迁移/' + file, import.meta.url), 'utf8') + 'COMMIT;');
   sql.prepare('INSERT INTO "即时版本" ("编号","所有者编号","名称","版本","类型","简介") VALUES (?,1,?,?,?,?)')
     .run(id, '例包', '0.1.0', '可执行文件', '<script>不应执行</script>');
@@ -37,6 +37,22 @@ function 环境() {
   return { env, sql, objects, calls };
 }
 function 请求(path, options = {}) { return new Request(origin + '/api/releases' + path, options); }
+test('修订迁移保留已有发布 ID、时间和归档摘要，设置序数 1',()=>{
+  const {sql}=环境(false);sql.prepare('UPDATE 即时版本 SET 归档摘要=? WHERE 编号=?').run('legacyhash',id);
+  const before=sql.prepare('SELECT * FROM 即时版本').get();sql.exec(readFileSync(new URL('../迁移/0007_上传修订.sql',import.meta.url),'utf8'));
+  const after=sql.prepare('SELECT * FROM 即时版本').get();assert.deepEqual({...after},{...before,上传序数:1});assert.deepEqual(sql.prepare('PRAGMA foreign_key_check').all(),[]);sql.close();
+});
+test('同版本列表只示最新修订，历史分页可下载旧 ZIP，旧详情保留原文件',async()=>{
+  const {env,sql,objects}=环境(),newId='0'.repeat(32);
+  sql.prepare('INSERT INTO 即时版本 (编号,所有者编号,名称,版本,类型,简介,创建时间,上传序数,归档摘要) SELECT ?,所有者编号,名称,版本,类型,简介,创建时间,2,? FROM 即时版本 WHERE 编号=?').run(newId,'newhash',id);
+  objects.set('releases/'+id+'/archive/发布.zip',{bytes:new TextEncoder().encode('old zip')});
+  for(const query of ['', '?catalog=1']){const page=await(await 即时发布入口(请求(query),env)).json();assert.deepEqual(page.releases.map(x=>x.id),[newId]);assert.equal(page.releases[0].revision,2);}
+  const old=await(await 即时发布入口(请求('/'+id),env)).json();assert.equal(old.revision,1);assert.equal(old.latestId,newId);
+  const history=await(await 即时发布入口(请求('/'+newId+'/history'),env)).json();assert.deepEqual(history.revisions.map(x=>x.revision),[2,1]);assert.equal(history.nextOffset,null);
+  const download=await 即时发布入口(new Request(origin+history.revisions[1].downloadUrl),env);assert.equal(await download.text(),'old zip');assert.match(download.headers.get('cache-control'),/immutable/);
+  const page=await(await 即时发布入口(请求('/'+id+'/history?offset=1'),env)).json();assert.equal(page.revisions[0].id,id);
+  assert.equal((await 即时发布入口(请求('/'+id+'/history?offset=-1'),env)).status,400);sql.close();
+});
 async function 上传(env, body = 'hello', headers = {}, path = '/files/docs/index.html') {
   return 即时发布入口(请求('/' + id + path, { method: 'PUT', body, headers: {
     Authorization: 'Bearer test-token', 'X-Package-Size': String(new TextEncoder().encode(body).length),
