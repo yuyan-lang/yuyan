@@ -38,7 +38,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     -c, --compile-only                   仅执行编译，不运行编译后的文件
     -o PATH                              指定可执行文件的输出路径
     --emit-bootstrap-bundle PATH         输出可跨平台重新链接的自举源码包
-    --library-root PATH                  指定标准库搜索根路径（默认：./藏书阁）
+    编译输入须由 yy豫构 提供包上下文，不再提供特殊标准库搜索路径。
     --whole-program-opt                  使用全局编译优化
     --do-not-optimize                    不执行任何包括LLVM在内的任何优化
     -O0, -O[1,2,3,5,8,13,21]             执行0,1,2,3,5,8,13或21次优化

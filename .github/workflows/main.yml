@@ -3,7 +3,7 @@ name: CI
 env:
   YY_GC_INITIAL_HEAP_SIZE_MB: 512
   YY_GC_MAX_HEAP_SIZE_MB: 6144
-  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-bootstrap/yuyan-bootstrap-bundle.tar.gz
+  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-bootstrap/bootstrap-pair-0e915ed65338da2734664b73124504ed07c21d00ccaf1627916000cc18d440f3.tar.gz
 
 on:
   push:
@@ -41,33 +41,22 @@ jobs:
           curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
             --output "$bootstrap_archive" \
             "$YY_BOOTSTRAP_URL"
+          echo "0e915ed65338da2734664b73124504ed07c21d00ccaf1627916000cc18d440f3  $bootstrap_archive" | sha256sum --check -
           mkdir -p "$bootstrap_root"
           tar -xzf "$bootstrap_archive" -C "$bootstrap_root" --strip-components=1
           find "$bootstrap_root" -type f \( -name '._*' -o -name '.DS_Store' \) -delete
 
-          # 兼容仍含有已废弃 Boehm GC 引用的旧连续自举包。
-          if [[ -f "$bootstrap_root/构建.sh" ]]; then
-            sed -i '/^[[:space:]]*#include "gc.h"[[:space:]]*$/d' \
-              "$bootstrap_root/运行时/原生/公共包含.h" \
-              "$bootstrap_root/运行时/原生/入口.c"
-            sed -i 's/ -lgc / /g' "$bootstrap_root/构建.sh"
-          fi
-
-          if [[ -x "$bootstrap_root/构建.sh" ]]; then
-            "$bootstrap_root/构建.sh"
-            bundled_compiler="$bootstrap_root/豫言自举编译器"
-          else
-            "$bootstrap_root/build.sh"
-            bundled_compiler="$bootstrap_root/yy_bundled_bs"
-          fi
-          install -m 755 "$bundled_compiler" ./yy_bs_stable
+          test "$(cat "$bootstrap_root/种子格式")" = "豫言双种子一"
+          "$bootstrap_root/构建.sh"
+          install -m 755 "$bootstrap_root/yy_bs_stable" ./yy_bs_stable
+          install -m 755 "$bootstrap_root/yy豫构_stable" ./yy豫构_stable
           ./yy_bs_stable --version
 
       - name: Type-check compiler with stable bootstrap
-        run: ./yy_bs_stable 豫言编译器/入口。豫 --type-check-only
+        run: ./yy豫构_stable 类型检查 豫言编译器 --编译器 ./yy_bs_stable
 
       - name: Build stage 2 compiler
-        run: make yy2_bs yy豫构引导
+        run: make yy2_bs
 
       - name: Build stage 3 compiler
         run: make yy3_bs
@@ -92,8 +81,10 @@ jobs:
           historical_asset="bootstrap-bundle-${GITHUB_SHA}.tar.gz"
           historical_archive="$RUNNER_TEMP/${historical_asset}"
 
-          ./yy3_bs 豫言编译器/入口。豫 \
-            --emit-bootstrap-bundle dist/yy-bootstrap --parallel
+          ./yy豫构 自举包 --编译器 ./yy3_bs --输出 dist/yy-bootstrap
+          validation_root="$(mktemp -d "$RUNNER_TEMP/yy-seed-validation.XXXXXX")"
+          cp -R dist/yy-bootstrap "$validation_root/种子"
+          "$validation_root/种子/构建.sh"
           find dist/yy-bootstrap -type f \( -name '._*' -o -name '.DS_Store' \) -delete
           tar -czf "$continuous_archive" -C dist yy-bootstrap
           cp "$continuous_archive" "$historical_archive"
