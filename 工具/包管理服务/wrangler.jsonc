@@ -12,6 +12,8 @@
     }
   },
   "routes": [
+    { "pattern": "packages.yuyan-lang.org", "custom_domain": true },
+    { "pattern": "usercontent.yuyan-lang.org", "custom_domain": true },
     {
       // 「包管理.yuyan-lang.org」的 IDNA ASCII 形式。
       "pattern": "xn--uiry18e4gf.yuyan-lang.org",
@@ -57,6 +59,9 @@
   ],
   "send_email": [{ "name": "EMAIL", "allowed_sender_addresses": ["noreply@yuyan-lang.org"] }],
   "vars": {
+    "PORTAL_ORIGIN": "https://packages.yuyan-lang.org",
+    "USERCONTENT_ORIGIN": "https://usercontent.yuyan-lang.org",
+    "MAX_RELEASE_FILE_BYTES": "104857600",
     "MAX_PACKAGE_BYTES": "10485760",
     "REGISTRATION_ENABLED": "true"
   }
