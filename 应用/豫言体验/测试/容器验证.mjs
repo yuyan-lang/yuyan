@@ -2,11 +2,17 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
 import { mkdtemp, rm, readFile } from "node:fs/promises";
-import { 编译运行, 隔离参数, 执行受限 } from "../源码/隔离.mjs";
+import { 编译运行, 隔离参数, 执行受限, 验隔离 } from "../源码/隔离.mjs";
 
 // 古曰：恶客之试止于器中，不及宿主。
 // 今释：这些测试只允许在显式指定的 Linux 测试容器中运行。
 const 跳过 = process.platform !== "linux" || process.env.YY_SANDBOX_TEST !== "1";
+// 古曰：屡启其室，遗子皆收，而后可久用。
+// 今释：必须由镜像自带的 init 启动；旧镜像反复创建沙箱后会耗尽 32 个进程的配额。
+test("连续创建六十四次沙箱仍可用且镜像自带进程回收器", { skip: 跳过 }, async () => {
+  assert.equal((await readFile("/proc/1/comm", "utf8")).trim(), "tini");
+  for (let 次 = 0; 次 < 64; 次++) await 验隔离();
+});
 test("隔离空间看不到服务源码、父进程环境或本地模型服务", { skip: 跳过 }, async () => {
   const 服务 = createServer((求, 应) => 应.end("不应被用户程序读到"));
   await new Promise(成 => 服务.listen(18081, "127.0.0.1", 成));
