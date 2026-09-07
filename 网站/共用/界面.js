@@ -25,3 +25,6 @@ function 设置(v){if(!['han','wen'].includes(v))return;语言=v;存();const u=n
 window.豫言界面={译,设置语言:设置,get 语言(){return 语言}};if(参数)存();刷();let 排队=false;new MutationObserver(()=>{if(排队)return;排队=true;queueMicrotask(()=>{排队=false;刷();});}).observe(document.body,{childList:true,subtree:true,characterData:true});
 if(站.dataset.hanPage||站.dataset.wenPage){const peer=站.dataset[语言==='wen'?'wenPage':'hanPage'];if(peer&&new URL(peer,location.href).pathname!==location.pathname){const u=new URL(peer,location.href);u.searchParams.set('lang',语言);u.hash=location.hash;location.replace(u);}}
 })();
+
+// 古曰：诸站同示其约，正文别藏。今释：条款内容由私有发布目录提供，共用界面只维护入口。
+(()=>{let foot=document.querySelector('footer');if(!foot){foot=document.createElement('footer');foot.className='豫页脚';document.body.append(foot);}if(foot.querySelector('[data-yuyan-legal]'))return;const nav=document.createElement('nav');nav.dataset.yuyanLegal='true';for(const [path,han,wen] of [['条款','内测条款','内测之约'],['隐私','隐私说明','隐私之说']]){const a=document.createElement('a');a.href='https://yuyan-lang.org/条款/'+path+'.汉语.html';a.dataset.han=han;a.dataset.wen=wen;a.textContent=document.documentElement.lang==='lzh'?wen:han;nav.append(a);}foot.append(nav);})();
