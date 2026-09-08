@@ -5,6 +5,12 @@ import { readFileSync } from 'node:fs';
 import { 即时发布入口, 用户内容入口, 安全文件路径 } from '../源码/即时发布桥.js';
 import { 摘要 } from '../源码/账户.js';
 import { 阅读页面入口 } from '../源码/阅读转发.js';
+test('旧文档地址进入统一阅读器，无总集时等待选择文件',async()=>{
+ const {env,objects,sql}=环境();objects.set('releases/'+id+'/source/入口。豫',{bytes:new TextEncoder().encode('源码')});
+ let received;env.PACKAGE_CONTAINER={getByName(){return{async fetch(req){received=await req.json();return new Response('选择文件');}};}};
+ const r=await 阅读页面入口(new Request(origin+'/release/'+id+'/docs?lang=han'),env);
+ assert.equal(r.status,200);assert.equal(received.tab,'files');assert.equal(received.path,'');assert.deepEqual(received.file,{});sql.close();
+});
 
 // 古曰：所指有误，不以他篇代之。今释：桥只传材料；错误、语言及 HTTP 状态不因缓存或 HEAD 丢失。
 test('原生阅读桥保留错误路径与语言，默认总集且不将 cookie 传入容器',async()=>{

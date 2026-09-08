@@ -22,6 +22,14 @@ async function env(){
   return{e,sql,calls,objects};
 }
 const req=(path,body,headers={})=>new Request(origin+path,{method:'POST',headers:{Origin:origin,Cookie:'__Host-yy_session='+token,...headers},body});
+test('上传完成只可靠入队不等待渲染，入队故障保留上传成功',async()=>{
+ const{e,sql}=await env();let sent=0,calls=0,incomplete=false;
+ e.PACKAGE_CONTAINER={getByName(){return{async fetch(r){calls++;assert.ok(!r.url.includes('render'));return Response.json({id,incomplete});}};}};
+ e.PAGE_QUEUE={async send(task){sent++;assert.equal(task.kind,'release');assert.equal(task.id,id);}};
+ assert.equal((await 归档上传入口(req('/api/releases/zip','zip',{'Content-Type':'application/zip'}),e)).status,200);assert.equal(sent,1);assert.equal(calls,2);
+ incomplete=true;await 归档上传入口(req('/api/releases/zip','zip',{'Content-Type':'application/zip'}),e);assert.equal(sent,1);
+ incomplete=false;e.PAGE_QUEUE.send=async()=>{throw Error('暂时不可用');};assert.equal((await 归档上传入口(req('/api/releases/zip','zip',{'Content-Type':'application/zip'}),e)).status,200);sql.close();
+});
 test('ZIP 一次上传自行计算摘要，身份标头不可伪造，旧 JSON 不被接受',async()=>{
   const {e,calls,sql}=await env(),r=await 归档上传入口(req('/api/releases/zip','hello',{'Content-Type':'application/zip','X-Yuyan-Publisher':'999','X-Package-SHA256':'bad'}),e);
   assert.equal(r.status,200);assert.equal(calls.length,2);
@@ -51,6 +59,9 @@ test('材料桥支持二进制、原始 ZIP 摘要核对、同内容重试及并
   assert.equal((await put('archive/发布.zip','bad')).status,409);
   assert.equal((await put('archive/发布.zip','zip')).status,204);
   assert.equal((await put('docs/index.html','hello')).status,204);
+  assert.equal((await put('__published__','{}')).status,204);
+  assert.ok(objects.has('publication-ready/'+id));
+  assert.equal(objects.has('releases/'+id+'/__published__'),false);
   // 文言：旧器未退，亦受其文。汉语：滚动部署时仍接受旧容器的紧凑 JSON 请求。
   assert.equal((await 存归档材料(new Request('http://release.internal/',{method:'POST',headers:{'X-Release-Id':id},body:JSON.stringify({path:'docs/index.html',data:btoa('hello')})}),e)).status,204);
   assert.equal((await put('docs/index.html','hello')).status,204);

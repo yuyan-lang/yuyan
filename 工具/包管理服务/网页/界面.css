@@ -4,7 +4,9 @@
 /* 古曰：立户之表，大小屏皆可用。今释：账户表单与下载区域共享配色。 */
 .账户区{padding:28px 32px;border:1px solid var(--豫线);margin-bottom:28px;background:var(--豫纸)}.账户区 form{max-width:540px}.账户区 label{display:block;margin:15px 0 6px}.账户区 input:not([type=checkbox]),.账户区 textarea{display:block;width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--豫线);background:#fffefa;color:var(--豫墨);font:inherit}.账户区 .接受{display:flex;align-items:flex-start;gap:9px;font-size:14px}.账户操作{display:flex;flex-wrap:wrap;gap:10px;margin:18px 0}.账户区 button{cursor:pointer;border:1px solid var(--豫线);background:#fffefa;padding:10px 16px;color:var(--豫墨);font:inherit}.账户区 button[type=submit]{background:var(--豫朱);color:white}.账户区 button:disabled{opacity:.5;cursor:wait}.账户区 a{color:var(--豫朱)}.账户区 [hidden]{display:none!important}#账户身份{overflow-wrap:anywhere}#上传令牌{font-family:var(--豫码)}@media(max-width:650px){.账户区{padding:20px}}
 
-.验证标识{display:inline-block;border:1px solid var(--豫线);border-radius:4px;padding:2px 8px;font:12px var(--豫码);background:#f1eee8;color:#625b50}.验证标识[data-verified="true"]{border-color:#4b7566;background:#edf6f0;color:#285a43}
+/* 文言：暂隐验身之章，不改其权。汉语：市场与账户均暂不展示认证标识，后台认证数据与权限校验不变。 */
+.验证标识{display:none}
+.原生阅读页 [hidden]{display:none!important}
 .即时发布{margin-top:3rem}.即时发布 form{display:grid;gap:1rem;max-width:48rem}.即时发布 label{display:grid;gap:.35rem}.即时发布 input,.即时发布 select{max-width:100%;padding:.6rem}.即时发布 button{padding:.65rem 1rem;cursor:pointer}.即时发布 iframe{width:100%;height:70vh;border:1px solid #8885;margin-top:1rem}.即时发布 li{overflow-wrap:anywhere;margin:.5rem 0}
 
 /* 古曰：众包列市，各有其门。今释：公开市场用卡片展示，管理页保留统一表单主题。 */

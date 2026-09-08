@@ -5,6 +5,11 @@
   // 文言：版本之址不易。汉语：禁用 HTML 自动重定向，保留 /release/<编号> 的浏览器地址。
   "assets": { "directory": "网页", "binding": "ASSETS", "run_worker_first": true, "html_handling": "none" },
   "compatibility_date": "2026-09-04",
+  "queues": {
+    "producers": [{ "binding": "PAGE_QUEUE", "queue": "yuyan-page-render" }],
+    "consumers": [{ "queue": "yuyan-page-render", "max_batch_size": 5, "max_batch_timeout": 1, "max_concurrency": 6, "max_retries": 10, "dead_letter_queue": "yuyan-page-render-failed" }]
+  },
+  "triggers": { "crons": ["*/10 * * * *"] },
   "observability": {
     "enabled": true,
     "logs": {
@@ -40,8 +45,9 @@
       "class_name": "PackageRegistryContainer",
       "image": "./容器构建文件",
       "image_build_context": "../..",
-      "max_instances": 1,
-      "instance_type": "lite"
+      // 文言：一器纳包，三器析篇。汉语：主服务一份，后台渲染池固定三份，闲置自动休眠。
+      "max_instances": 4,
+      "instance_type": "standard-1"
     }
   ],
   "durable_objects": {
@@ -61,6 +67,7 @@
   "send_email": [{ "name": "EMAIL", "allowed_sender_addresses": ["noreply@yuyan-lang.org"] }],
   "vars": {
     "NATIVE_READER_ENABLED": "true",
+    "PERSISTENT_PAGES": "true",
     "PORTAL_ORIGIN": "https://packages.yuyan-lang.org",
     "USERCONTENT_ORIGIN": "https://usercontent.yuyan-lang.org",
     "MAX_PACKAGE_BYTES": "10485760",

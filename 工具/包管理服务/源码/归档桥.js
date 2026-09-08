@@ -1,4 +1,5 @@
 import { 请求内服, 安全文件路径 } from './即时发布桥.js';
+import { 提交修订, 完成键 } from './持久页面.js';
 const 上限 = 16 * 1024 * 1024;
 const 回 = (error, status) => Response.json({ error }, { status, headers: { 'Cache-Control': 'no-store' } });
 async function 有限字节(req, max) {
@@ -24,7 +25,12 @@ export async function 归档上传入口(req,env){
     // 文言：先验身份，后受大物。汉语：用内部权限查询拒绝未绑定或无权账户，避免其触发归档解析。
     const auth=await 请求内服(req,env,'zip-auth','{}');if(!auth.ok)return auth;
     const bytes=await 有限字节(req,上限);
-    return await 请求内服(req,env,'zip',(await 印(bytes))+'\n'+六四(bytes));
+    const response=await 请求内服(req,env,'zip',(await 印(bytes))+'\n'+六四(bytes));
+    if(response.ok && env.PAGE_QUEUE) {
+      const result=await response.clone().json();
+      if(result.incomplete===false)try{await 提交修订(env,result.id);}catch(error){console.error('页面任务待定时补发',error.message);}
+    }
+    return response;
   }catch{return 回('上传未完成、格式错误或超过 16 MiB，可以重试',400);}
 }
 // 文言：内桥纳受限字节，成物不覆。汉语：仅容器可调用；按文件原子写入，同内容重试成功。
@@ -38,13 +44,13 @@ export async function 存归档材料(req,env){
     const raw=newline<0?payload.path:JSON.parse(text.slice(0,newline));
     if(req.method!=='POST'||! /^[a-f0-9]{32}$/.test(id||'')||typeof raw!=='string')return 回('内部参数错误',400);
     const path=安全文件路径(raw.split('/').map(encodeURIComponent).join('/'));
-    if(!/^(source|docs|build|runtime|archive)\//.test(path))return 回('分类错误',400);
+    if(path!=='__published__'&&!/^(source|docs|build|runtime|archive)\//.test(path))return 回('分类错误',400);
     const row=await env.DB.prepare('SELECT "归档摘要" AS hash FROM "即时版本" WHERE "编号"=?').bind(id).first();
     if(!row?.hash)return 回('版本不存在',404);
     const encoded=newline<0?payload.data:text.slice(newline+1);
     if(typeof encoded!=='string'||encoded.length>Math.ceil(上限/3)*4)return 回('材料编码过大',413);
     const binary=atob(encoded);if(binary.length>上限)return 回('材料过大',413);
-    const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),hash=await 印(bytes),key='releases/'+id+'/'+path;
+    const bytes=Uint8Array.from(binary,c=>c.charCodeAt(0)),hash=await 印(bytes),key=path==='__published__'?完成键(id):'releases/'+id+'/'+path;
     if(path.startsWith('archive/')&&(path!=='archive/发布.zip'||hash!==row.hash))return 回('归档摘要不一致',409);
     const existing=await env.PACKAGES.head(key);
     if(existing)return existing.customMetadata?.sha256===hash?new Response(null,{status:204}):回('文件内容冲突',409);

@@ -2,6 +2,12 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {JSDOM} from 'jsdom';
+// 文言：隐其章而存其籍。汉语：认证标识只在呈现层隐藏，不改变认证状态。
+test('市场与账户的认证标识均不展示',()=>{
+ const dom=new JSDOM('<style>'+readFileSync(new URL('../网页/界面.css',import.meta.url),'utf8')+'</style><span class="验证标识" data-verified="true">verified</span><span class="验证标识" data-verified="false">unverified</span>');
+ for(const badge of dom.window.document.querySelectorAll('.验证标识'))assert.equal(dom.window.getComputedStyle(badge).display,'none');
+ dom.window.close();
+});
 // 文言：豫源可览，杂材不陈。汉语：仅过滤浏览界面，并验证旧链接不会打开被隐藏的文件。
 test('所有文件仅展示豫言源码和包定义，空包不请求其他材料',async()=>{
  for(const sources of [['source/目录/例。豫','source/例。包。豫'],[]]){
@@ -44,7 +50,7 @@ test('包首页、文档目录与文件树分路由，文件默认全页阅读�
   const dom=new JSDOM(readFileSync(new URL('../网页/首页.html',import.meta.url),'utf8'),{url:base+tab,runScripts:'outside-only'}),w=dom.window,calls=[];
   w.fetch=async url=>{calls.push(url);return Response.json(url.endsWith('/reading')?{modules:[{source:'目录/例。豫',document:'接口/模块-1.html'}]}:{id,owner:'甲',name:'例',version:'1',revision:2,type:'库',created:'今天',description:'介绍',files:[{path:'source/目录/例。豫',size:10,url:'/下载'}],docsUrl:'https://usercontent.yuyan-lang.org/'+id+'/index.html'});};
   w.eval(readFileSync(new URL('../网页/市场.mjs',import.meta.url),'utf8'));await new Promise(r=>setTimeout(r,30));
-  assert.equal(w.document.querySelector('iframe'),null);assert.equal(w.document.querySelectorAll('#包导航 a').length,3);
+  assert.equal(w.document.querySelector('iframe'),null);assert.equal(w.document.querySelectorAll('#包导航 a').length,2);
   const content=w.document.getElementById('包内容');if(!tab){assert.doesNotMatch(content.textContent,/目录\/例。豫/);assert.ok(calls.every(x=>!x.endsWith('/reading')));}else{const a=[...content.querySelectorAll('a')].find(x=>x.textContent.includes('例。豫'));assert.ok(a);assert.equal(new URL(a.href).hostname,'packages.yuyan-lang.org');assert.equal(new URL(a.href).searchParams.get('view'),'docs');if(tab==='/files')assert.ok(content.querySelector('details'));}dom.window.close();
  }
 });

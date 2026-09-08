@@ -4,6 +4,7 @@ import { 即时发布入口, 用户内容入口, 门户来源, 内容来源 } fr
 import { 账户入口 } from "./账户.js";
 import { 网页资源地址 } from "./网页路由.js";
 import { 阅读页面入口 } from "./阅读转发.js";
+import { 消费页面, 补发页面, 页面状态 } from "./持久页面.js";
 import { Container } from "@cloudflare/containers";
 import {
   下载已发布包,
@@ -38,13 +39,13 @@ export class PackageRegistryContainer extends Container {
   requiredPorts = [8080];
   sleepAfter = "10m";
   enableInternet = false;
-  // 古曰：小室不可先辟巨府，量其室而节其栈与堆。
-  // 今释：lite 容器仅有 256 MiB；现行栈变量仍以百万个十六字节槽位计，故 2 表示 32 MiB。
+  // 文言：析篇须宽其堆，成页藏之，闲则寝。
+  // 汉语：文档解析需超过旧 128 MiB 上限；4 GiB 容器容纳复制式 GC 的双半区。栈值 2 表示 32 MiB。
   envVars = {
     YY_GC_INITIAL_STACK_SIZE_MB: "2",
     // 文言：大档入服，堆先备足。汉语：ZIP/base64 会同时存活，避免小初始堆在读取大正文时耗尽。
     YY_GC_INITIAL_HEAP_SIZE_MB: "128",
-    YY_GC_MAX_HEAP_SIZE_MB: "128",
+    YY_GC_MAX_HEAP_SIZE_MB: "1024",
   };
 
   onStart() {
@@ -71,6 +72,8 @@ PackageRegistryContainer.outboundByHost = {
 };
 
 export default {
+  async queue(batch, env) { await 消费页面(batch, env); },
+  async scheduled(event, env, ctx) { ctx.waitUntil(补发页面(env)); },
   async fetch(请求, 环境) {
     try {
       const url = new URL(请求.url);
@@ -81,6 +84,8 @@ export default {
         return Response.redirect(门户来源(环境) + url.pathname + url.search, 302);
       }
       if (decodeURIComponent(url.pathname).startsWith('/__direct/')) return 回应错误(404, "内部接口不公开");
+      const 生成状态 = await 页面状态(请求, 环境);
+      if (生成状态) return 生成状态;
       const 阅读回应 = 环境.NATIVE_READER_ENABLED === 'true' ? await 阅读页面入口(请求, 环境) : null;
       if (阅读回应) return 阅读回应;
       const 归档回应 = await 归档上传入口(请求, 环境);
