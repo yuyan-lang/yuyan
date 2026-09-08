@@ -65,8 +65,9 @@ function 请求(path, options = {}) { return new Request(origin + '/api/releases
 test('主站文件接口返回结构化文档与纯文本源码，不返回上传 HTML',async()=>{
  const {env,objects,sql}=环境(),put=(path,text)=>objects.set('releases/'+id+'/'+path,{bytes:new TextEncoder().encode(text)});
  put('source/例。豫','<script>source</script>');put('docs/接口/模块映射.json',JSON.stringify([{source:'例。豫',document:'模块-1.html'}]));
- put('docs/接口/模块-1.json',JSON.stringify({names:[{name:'<script>x</script>',type:'字符串',description:'说明'}]}));
+ put('docs/接口/模块-1.json',JSON.stringify({names:[{name:'<script>x</script>',type:'字符串',description:'说明',source:'source/例。豫'}]}));
  let data=await(await 即时发布入口(请求('/'+id+'/file?path='+encodeURIComponent('source/例。豫')),env)).json();assert.equal(data.source,'<script>source</script>');assert.equal(data.documentation.names[0].name,'<script>x</script>');assert.equal(data.html,undefined);
+ assert.equal(data.documentation.names[0].source,'source/例。豫');
  objects.delete('releases/'+id+'/docs/接口/模块-1.json');put('docs/接口/模块-1.html','<article class="symbol-card"><h3>甲&lt;乙</h3><pre class="type-signature"><code>字符串</code></pre><p class="symbol-description">说明</p></article>');
  data=await(await 即时发布入口(请求('/'+id+'/file?path='+encodeURIComponent('source/例。豫')),env)).json();assert.equal(data.documentation.names[0].name,'甲<乙');
  assert.equal((await 即时发布入口(请求('/'+id+'/file?path=../bad'),env)).status,400);sql.close();

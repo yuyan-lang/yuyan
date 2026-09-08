@@ -48,11 +48,13 @@ test('过期概览先返回R2旧页，再异步刷新',async()=>{
 test('后台成功后才原子保存HTML，失败刷新不覆盖旧页面',async()=>{
  const{env}=setup(),u=url+'&view=source',key=await 页面键(u),release={id,name:'例',owner:'豫言',version:'1',type:'库',files:[{path:'source/例。豫',url:'/原文'}]};
  await env.PACKAGES.put(完成键(id),'{}');await env.PACKAGES.put('rendered/'+页面版本+'/'+id+'/release.json',JSON.stringify(release));await env.PACKAGES.put('releases/'+id+'/source/例。豫','源码');
- let ack=0,retry=0;env.PACKAGE_CONTAINER={getByName(name){assert.match(name,/^豫言文档-[012]$/);return{async fetch(r){assert.equal(r.headers.get('cookie'),null);return new Response('<html>生成成功</html>');}};}};
+ let ack=0,retry=0;env.PACKAGE_CONTAINER={getByName(name){assert.match(name,/^豫言文档-[012]$/);return{async fetch(r){assert.equal(r.headers.get('cookie'),null);return new Response('<html><meta name="yuyan-document-layout" content="3">生成成功</html>');}};}};
  const message={body:{kind:'page',url:u,version:页面版本},ack(){ack++;},retry(){retry++;}};
  await 消费页面({messages:[message]},env);assert.equal(ack,1);assert.equal(retry,0);assert.match(await(await env.PACKAGES.get(key)).text(),/生成成功/);
  env.PACKAGE_CONTAINER={getByName(){return{async fetch(){return new Response('错误',{status:500});}};}};message.body.refresh=true;
  await 消费页面({messages:[message]},env);assert.equal(retry,1);assert.match(await(await env.PACKAGES.get(key)).text(),/生成成功/);
+ env.PACKAGE_CONTAINER={getByName(){return{async fetch(){return new Response('<html>旧布局</html>');}};}};
+ await 消费页面({messages:[message]},env);assert.equal(retry,2);assert.match(await(await env.PACKAGES.get(key)).text(),/生成成功/);
 });
 test('无效历史分页和越界路径不会放大生成队列',async()=>{
  const{env,sent}=setup();await env.PACKAGES.put(完成键(id),'{}');
@@ -78,7 +80,7 @@ test('旧修订迁移时缺页沿用即时渲染，成功后持久保存',async(
  await env.PACKAGES.put(完成键(id),'{}',{customMetadata:{legacy:'true'}});
  env.PACKAGES.list=async()=>({objects:[],truncated:false});
  env.DB.prepare=()=>({bind(){return this;},async first(){return release;}});
- env.PACKAGE_CONTAINER={getByName(){return{async fetch(){return new Response('<html>旧文档继续可读</html>');}};}};
+ env.PACKAGE_CONTAINER={getByName(){return{async fetch(){return new Response('<html><meta name="yuyan-document-layout" content="3">旧文档继续可读</html>');}};}};
  const u=origin+'/release/'+id+'/files?lang=han';
  const r=await 阅读页面入口(new Request(u),env);assert.equal(r.status,200);assert.match(await r.text(),/旧文档继续可读/);
  assert.ok(await env.PACKAGES.get(await 页面键(u)));
