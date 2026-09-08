@@ -49,17 +49,14 @@ function 统一浏览器(files,data,container){
   const restore=()=>{const q=new URLSearchParams(location.search),path=files.find(f=>f.path===q.get('path'))?.path||files[0]?.path;if(path)select(path,q.get('view'));else{body.textContent='此包暂无豫言源文件。';元素('看文档').disabled=true;元素('看源码').disabled=true;}};window.addEventListener('popstate',restore);restore();
 }
 async function 详情(id,tab=''){
+  if(tab==='docs')tab='files';
   for(const key of ['市场搜索','市场列表','市场更多'])元素(key).hidden=true;
   document.querySelector('.市场标题')?.setAttribute('hidden','');文(元素('市场状态'),'正在读取包详情…','正读包之详…');
   try{let data=await 求('/api/releases/'+id),files=[...data.files];while(data.cursor){const page=await 求('/api/releases/'+id+'?cursor='+encodeURIComponent(data.cursor));files.push(...page.files);data.cursor=page.cursor;}
     元素('市场详情').hidden=false;元素('详情标题').textContent=data.owner+' / '+data.name+' · '+data.version+' · 上传 #'+(data.revision||1);元素('详情简介').textContent=data.description;
     const nav=元素('包导航'),content=元素('包内容');nav.replaceChildren();content.replaceChildren();
-    for(const[key,label]of [['','包首页'],['docs','文档'],['files','所有文件']]){const a=链(label,'/release/'+id+(key?'/'+key:''));if(key===tab)a.setAttribute('aria-current','page');nav.append(a,' ');}
-    if(tab==='files'){统一浏览器(files,data,content);}
-    else if(tab==='docs'){
-      content.append(链('全页阅读文档',阅读地址(data)));const mapping=await 求('/api/releases/'+id+'/reading'),ul=document.createElement('ul');
-      for(const m of mapping.modules){const li=document.createElement('li');li.append(链(m.source,阅读地址(data,m.source)));ul.append(li);}content.append(ul);
-      if(!mapping.modules.length){const p=document.createElement('p');p.textContent='暂无按文件的生成文档；仍可浏览文档首页或切换源码。';content.append(p);}
+    for(const[key,label]of [['','概览'],['files','文档与源码']]){const a=链(label,'/release/'+id+(key?'/'+key:''));if(key===tab)a.setAttribute('aria-current','page');nav.append(a,' ');}
+    if(tab==='files'){统一浏览器(files,data,content);
     }else{
       const summary=document.createElement('p');summary.textContent='类型：'+data.type+' · 上传时间：'+data.created;content.append(summary);
       const downloads=document.createElement('section'),h=document.createElement('h3');h.textContent='下载';downloads.append(h);

@@ -46,11 +46,11 @@ RUN apt-get update \
 # 白话：镜像内入口路径使用 ASCII，避免不同容器运行时处理 Unicode argv 的差异。
 COPY --from=builder /构建/yy包管理服务 /usr/local/bin/yy-package-registry
 
-# 古曰：小室量入为出，栈堆之限刻于器中，不假外桥传令。
-# 白话：镜像级 ENV 保证 OCI 入口必定取得内存限制；现行栈变量的 2 实际表示 32 MiB。
+# 文言：析篇宽堆，闲则寝；其限刻于器中。
+# 汉语：文档解析使用可增长堆，避免旧 128 MiB 上限造成反复 GC；栈值 2 表示 32 MiB。
 ENV YY_GC_INITIAL_STACK_SIZE_MB=2 \
     YY_GC_INITIAL_HEAP_SIZE_MB=128 \
-    YY_GC_MAX_HEAP_SIZE_MB=128
+    YY_GC_MAX_HEAP_SIZE_MB=1024
 
 USER 65532:65532
 EXPOSE 8080

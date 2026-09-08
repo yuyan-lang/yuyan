@@ -2,6 +2,12 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
 const {JSDOM,CookieJar}=await import(process.env.YY_DOM_MODULE||'jsdom');
 const 脚本=await readFile(new URL('../共用/界面.js',import.meta.url),'utf8');
+test('主站旧文档已退出发布，文档导航指向包文档',async()=>{
+ const home=await readFile(new URL('../首页.汉语.md',import.meta.url),'utf8');assert.ok(!home.includes('href="文档/"'));assert.ok(home.includes('c3d275c3e7974ee6bd44dfb4a438f57c/files'));
+ assert.ok(脚本.includes('https://packages.yuyan-lang.org/release/c3d275c3e7974ee6bd44dfb4a438f57c/files'));
+ const routes=await readFile(new URL('../_redirects',import.meta.url),'utf8');assert.ok(!routes.includes('%E6%96%87%E6%A1%A3'));
+ const build=await readFile(new URL('../../工具/网站发布/入口。豫',import.meta.url),'utf8');assert.ok(!build.includes('yy网站文档'));assert.ok(build.includes('『!』，『-e』，『dist/网站/文档』'));
+});
 const 页=(url,jar)=>new JSDOM('<body><div data-yuyan-site="playground" data-home="/"></div><main><p data-han="现代文本" data-wen="古辞">现代文本</p><p id="动态">正在连接编译室…</p><pre id="源码">显示</pre><div role="log">显示</div><details id="日志面板"><summary>对话与调试日志</summary></details><pre id="编译日志" hidden>编译</pre></main></body>',{url,runScripts:'outside-only',cookieJar:jar});
 // 古曰：禁其存，不禁其阅。今释：模拟包文档 sandbox 禁用 Cookie 和历史记录的环境。
 test('包文档沙箱拒绝存储时仍能初始化和切换语言',()=>{const dom=页('https://usercontent.yuyan-lang.org/版本/index.html',new CookieJar());const d=dom.window.document;d.querySelector('[data-yuyan-site]').dataset.yuyanSite='docs';Object.defineProperty(d,'cookie',{get(){throw new dom.window.DOMException('禁止','SecurityError');},set(){throw new dom.window.DOMException('禁止','SecurityError');}});dom.window.history.replaceState=()=>{throw new dom.window.DOMException('禁止','SecurityError');};assert.doesNotThrow(()=>dom.window.eval(脚本));assert.equal(d.documentElement.lang,'zh-CN');assert.doesNotThrow(()=>dom.window.豫言界面.设置语言('wen'));assert.equal(d.querySelector('main [data-han]').textContent,'古辞');assert.equal(d.getElementById('源码').textContent,'显示');assert.doesNotThrow(()=>dom.window.豫言界面.设置语言('han'));assert.equal(d.querySelector('main [data-han]').textContent,'现代文本');dom.window.close();});
