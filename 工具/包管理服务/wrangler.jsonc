@@ -60,6 +60,7 @@
   ],
   "send_email": [{ "name": "EMAIL", "allowed_sender_addresses": ["noreply@yuyan-lang.org"] }],
   "vars": {
+    "NATIVE_READER_ENABLED": "true",
     "PORTAL_ORIGIN": "https://packages.yuyan-lang.org",
     "USERCONTENT_ORIGIN": "https://usercontent.yuyan-lang.org",
     "MAX_PACKAGE_BYTES": "10485760",

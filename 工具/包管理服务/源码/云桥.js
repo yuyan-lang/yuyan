@@ -3,6 +3,7 @@ import { 归档上传入口, 存归档材料 } from "./归档桥.js";
 import { 即时发布入口, 用户内容入口, 门户来源, 内容来源 } from "./即时发布桥.js";
 import { 账户入口 } from "./账户.js";
 import { 网页资源地址 } from "./网页路由.js";
+import { 阅读页面入口 } from "./阅读转发.js";
 import { Container } from "@cloudflare/containers";
 import {
   下载已发布包,
@@ -80,6 +81,8 @@ export default {
         return Response.redirect(门户来源(环境) + url.pathname + url.search, 302);
       }
       if (decodeURIComponent(url.pathname).startsWith('/__direct/')) return 回应错误(404, "内部接口不公开");
+      const 阅读回应 = 环境.NATIVE_READER_ENABLED === 'true' ? await 阅读页面入口(请求, 环境) : null;
+      if (阅读回应) return 阅读回应;
       const 归档回应 = await 归档上传入口(请求, 环境);
       if (归档回应) return 归档回应;
       const 即时回应 = await 即时发布入口(请求, 环境);
@@ -93,7 +96,7 @@ export default {
       if (环境.ASSETS && 网址) {
         const 回 = await 环境.ASSETS.fetch(new Request(网址, 请求));
         const 标头 = new Headers(回.headers);
-        标头.set("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-src " + 内容来源(环境) + "; frame-ancestors 'none'; base-uri 'none'");
+        标头.set("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'");
         标头.set("X-Content-Type-Options", "nosniff");
         return new Response(回.body, { status: 回.status, headers: 标头 });
       }

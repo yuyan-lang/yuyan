@@ -8,4 +8,233 @@
 .即时发布{margin-top:3rem}.即时发布 form{display:grid;gap:1rem;max-width:48rem}.即时发布 label{display:grid;gap:.35rem}.即时发布 input,.即时发布 select{max-width:100%;padding:.6rem}.即时发布 button{padding:.65rem 1rem;cursor:pointer}.即时发布 iframe{width:100%;height:70vh;border:1px solid #8885;margin-top:1rem}.即时发布 li{overflow-wrap:anywhere;margin:.5rem 0}
 
 /* 古曰：众包列市，各有其门。今释：公开市场用卡片展示，管理页保留统一表单主题。 */
+/* 文言：沿旧览器之形，文源同窗。汉语：复用代码浏览器样式，仅补充主站容器与模式切换。 */
+/* 文言：借其色，不受其囿。汉语：共享浏览器不得锁住主站页面滚动。 */
+html:has(body.浏览模式),body.浏览模式{height:auto;min-height:100%;overflow:visible}
+body.浏览模式{font-family:var(--豫字体);line-height:1.7}
+.包页:has(#市场详情:not([hidden])){margin:24px auto 40px}
+.包页:has(#市场详情:not([hidden]))>.眉{display:none}
+#市场状态:empty{display:none}
+#市场详情> a:first-child{font-size:13px;color:var(--豫次);text-decoration:none}
+#市场详情 #详情标题{font:600 clamp(20px,2vw,27px)/1.45 var(--豫字体);margin:10px 0 6px}
+#详情简介{margin:0;color:var(--豫次);font-size:14px;max-width:76ch}
+body.浏览模式 .包页{max-width:1600px;width:100%;padding:0 28px}
+body.浏览模式 .豫导航{min-height:64px;padding-block:10px}
+body.浏览模式 #包导航{padding:6px 0 0;margin:12px 0 16px;gap:8px}
+body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:14px}
+.统一浏览器.workspace{display:grid;grid-template-columns:clamp(220px,23vw,310px) minmax(0,1fr);grid-template-rows:minmax(0,1fr);height:calc(100dvh - 265px);min-height:420px;border:1px solid var(--豫线);border-radius:5px;overflow:hidden;background:#fffefa}
+.统一浏览器 .sidebar{display:flex;flex-direction:column;overflow:hidden;background:var(--豫纸);border-right:1px solid var(--豫线)}
+.统一浏览器 .sidebar-head{padding:14px 18px;font-size:13px;font-weight:600;border-bottom:1px solid var(--豫线)}
+.统一浏览器 .tree{height:auto;min-height:0;flex:1;overflow:auto;padding:10px 8px}
+#浏览文件树 ul{list-style:none;padding:0;margin:0}
+#浏览文件树 ul ul{padding-left:14px;border-left:1px solid var(--豫线);margin-left:9px}
+#浏览文件树 .tree-item{margin:1px 0}
+#浏览文件树 summary{list-style:revert;padding:5px 8px;color:var(--豫次);font:13px/1.7 var(--豫字体);white-space:nowrap;cursor:pointer}
+#浏览文件树 summary::-webkit-details-marker{display:inline}
+/* 文言：文件名自成一行，毋入图标之隙。汉语：当前节点为纯文本链接，不能继承旧图标的双列网格。 */
+#浏览文件树 .tree-link{display:block;min-width:0;padding:5px 10px;border:1px solid transparent;border-radius:3px;font:13px/1.7 var(--豫字体);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--豫墨);text-decoration:none}
+#浏览文件树 .tree-link:hover,#浏览文件树 summary:hover{background:var(--豫浅);color:var(--豫朱)}
+#浏览文件树 .tree-link[aria-current=page],#浏览文件树 .tree-link.is-default{background:var(--豫浅);border-color:var(--豫线);color:var(--豫朱);font-weight:600}
+.统一浏览器 .reader{display:flex;flex-direction:column;grid-column:2;min-width:0;min-height:0;background:#fffefa}
+.统一阅读头{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:56px;padding:10px 20px;border-bottom:1px solid var(--豫线);background:#fffefa}
+#当前文件名{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 13px/1.7 var(--豫码)}
+.统一阅读头 [role=group]{display:flex;flex-shrink:0;gap:2px;padding:3px;border:1px solid var(--豫线);border-radius:5px;background:var(--豫纸)}
+.统一阅读头 button{min-height:30px;padding:4px 12px;border:0;border-radius:3px;background:transparent;color:var(--豫次);font:13px/1.5 var(--豫字体);cursor:pointer;white-space:nowrap}
+.统一阅读头 button:hover{color:var(--豫朱)}
+.统一阅读头 button[aria-pressed=true],.统一阅读头 button[aria-pressed=true]:hover{background:var(--豫朱);color:white}
+.统一阅读头 button:disabled{opacity:.45;cursor:default}
+#统一阅读内容{overflow:auto;min-height:0;padding:24px 28px;flex:1;scrollbar-gutter:stable;overscroll-behavior:contain}
+#统一阅读内容>a:first-child{font-size:12px;color:var(--豫次);text-underline-offset:3px}
+#统一阅读内容 pre{white-space:pre-wrap;overflow-wrap:anywhere}
+#统一阅读内容 .symbol-card{max-width:850px;border-bottom:1px solid var(--豫线);padding:20px 0}
+#统一阅读内容 .symbol-card:first-of-type{padding-top:12px}
+#统一阅读内容 .symbol-card:last-child{border-bottom:0}
+#统一阅读内容 .symbol-card h3{font:600 20px/1.5 var(--豫字体);margin:0 0 12px;color:var(--豫墨)}
+#统一阅读内容 .symbol-card pre{padding:12px 16px;margin:0;background:var(--豫纸);border:1px solid var(--豫线);border-radius:4px;font:14px/1.8 var(--豫码)}
+#统一阅读内容 .symbol-card p{font-size:15px;line-height:1.85;margin:12px 0 0;white-space:pre-wrap}
+#统一阅读内容 .symbol-card p:empty{display:none}
+/* 文言：行号与文同度，长行自横行。汉语：源码不折行，统一行高及内边距，避免行号错位。 */
+#统一阅读内容 .code-layout{display:grid;grid-template-columns:auto minmax(max-content,1fr);width:max-content;min-width:100%;height:auto;min-height:0;margin-top:16px}
+#统一阅读内容 .source-code,#统一阅读内容 .line-numbers{writing-mode:horizontal-tb;text-orientation:mixed;width:auto;height:auto;min-height:0;margin:0;padding:12px 16px 24px;font:14px/1.8 var(--豫码,monospace);letter-spacing:normal;white-space:pre;overflow-wrap:normal}
+#统一阅读内容 .source-code{background:transparent;color:var(--豫墨)}
+#统一阅读内容 .line-numbers{display:block;user-select:none;text-align:right;padding-left:8px;color:var(--豫次);border-right:1px solid var(--豫线);background:var(--豫纸)}
+@media(max-width:760px){
+  body.浏览模式 .包页{padding:0 16px;margin-top:16px}
+  .统一浏览器.workspace{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(320px,1fr);height:auto;min-height:0}
+  .统一浏览器 .sidebar{max-height:200px;border-right:0;border-bottom:1px solid var(--豫线)}
+  .统一浏览器 .sidebar-head{padding:10px 14px}
+  .统一浏览器 .tree{max-height:150px;padding:6px}
+  .统一浏览器 .reader{grid-column:1;min-height:420px;height:65dvh}
+  .统一阅读头{flex-wrap:wrap;padding:10px 14px;gap:8px}
+  #当前文件名{flex:1 1 160px}
+  .统一阅读头 [role=group]{margin-left:auto}
+  #统一阅读内容{padding:18px 14px}
+  #统一阅读内容 .symbol-card h3{font-size:18px}
+  #统一阅读内容 .symbol-card pre{padding:10px;font-size:13px}
+}
+#包导航{display:flex;gap:1rem;flex-wrap:wrap;border-bottom:1px solid var(--豫线);padding:1rem 0;margin-bottom:1.5rem}#包导航 a{padding:.5rem .8rem;color:var(--豫朱)}#包导航 [aria-current=page]{font-weight:bold;border-bottom:3px solid var(--豫朱)}#包内容{overflow-wrap:anywhere}#包内容 summary{cursor:pointer;padding:.25rem}#包内容 li{margin:.4rem 0}.包说明原文{white-space:pre-wrap;font:inherit;overflow-wrap:anywhere;background:var(--豫纸);padding:1rem}
 .市场标题{display:flex;align-items:center;justify-content:space-between;gap:24px}.主链接{display:inline-block;white-space:nowrap;background:var(--豫朱);color:white;padding:12px 18px;border-radius:4px;text-decoration:none}.市场搜索{margin:25px 0}.市场搜索 label{display:block;margin-bottom:10px;color:var(--豫次)}.市场搜索>div{display:flex;gap:12px}.市场搜索 input{flex:1;min-width:0;padding:12px;background:white;border:1px solid var(--豫线);font:inherit}.市场搜索 button,#市场更多{padding:12px 22px;border:1px solid var(--豫线);background:var(--豫纸);font:inherit;cursor:pointer}.市场列表{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:0;margin:24px 0}.包卡片{border:1px solid var(--豫线);background:#fffefa;padding:22px;overflow-wrap:anywhere}.包卡片 h2{margin:8px 0}.包卡片 h2 a{color:var(--豫朱)}.包卡片>p:not(.包卡片主){font-size:14px}.包卡片主{font-size:12px;color:var(--豫次)}#市场详情 iframe{width:100%;height:65vh;border:1px solid var(--豫线)}#详情文件{overflow-wrap:anywhere}.包页 [hidden]{display:none!important}@media(max-width:800px){.市场列表{grid-template-columns:repeat(2,minmax(0,1fr))}.市场标题{display:block}}@media(max-width:500px){.市场列表{grid-template-columns:1fr}}
+
+/* 文言：文源同席，纲举目张。汉语：豫言服务端阅读页独立布局，不依赖旧浏览器脚本与样式。 */
+.原生阅读页{--阅读白:#fffefa;margin:0;min-width:0;font-size:14px}
+.原生阅读页 .站头{display:flex;align-items:center;gap:22px;min-height:65px;border-bottom:1px solid var(--豫线);padding:12px max(32px,calc((100vw - 1376px)/2));font-size:13px}
+.原生阅读页 .站头>a{font:600 24px/1.5 var(--豫题);color:var(--豫墨);text-decoration:none;white-space:nowrap}
+.原生阅读页 .站头 nav{display:flex;gap:22px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.原生阅读页 .站头 nav a{text-decoration:none;color:var(--豫次)}
+.原生阅读页 .站头 nav a:hover{color:var(--豫朱)}
+.原生阅读页 .包页面{max-width:1440px;margin:24px auto 64px;padding:0 32px;min-width:0}
+.原生阅读页 a{color:var(--豫朱);text-underline-offset:3px}
+.原生阅读页 a:focus-visible{outline-offset:3px}
+.原生阅读页 .跳正文{position:fixed;top:-100px;left:16px;z-index:1000;padding:10px 16px;border:1px solid var(--豫朱);border-radius:3px;background:var(--阅读白);color:var(--豫朱);font-size:14px}
+.原生阅读页 .跳正文:focus{top:12px}
+.原生阅读页 .包页头{padding:0 0 4px;min-width:0}
+.原生阅读页 .包页头>a:first-child{font-size:12px;color:var(--豫次);text-decoration:none}
+.原生阅读页 .包页头 h1{font:600 clamp(23px,2.7vw,32px)/1.4 var(--豫题);letter-spacing:.02em;margin:12px 0 6px;overflow-wrap:anywhere}
+.原生阅读页 .包页头 p{margin:6px 0;color:var(--豫次);max-width:80ch;overflow-wrap:anywhere}
+.原生阅读页 .包页头 .包元信息{font-size:12px;color:var(--豫次)}
+.原生阅读页 .包页头 small,.原生阅读页 .包版本{font:400 13px/1.6 var(--豫码);color:var(--豫次);letter-spacing:0}
+.原生阅读页 .包导航,.原生阅读页 #包导航{display:flex;gap:24px;flex-wrap:wrap;border-bottom:1px solid var(--豫线);margin:16px 0 22px;padding:0}
+.原生阅读页 .包导航 a,.原生阅读页 #包导航 a{display:block;padding:10px 2px 11px;color:var(--豫次);font-size:14px;text-decoration:none;border-bottom:2px solid transparent;margin-bottom:-1px}
+.原生阅读页 .包导航 a:hover,.原生阅读页 #包导航 a:hover{color:var(--豫朱)}
+.原生阅读页 .包导航 [aria-current=page],.原生阅读页 #包导航 [aria-current=page]{border-bottom-color:var(--豫朱);color:var(--豫朱);font-weight:600}
+.原生阅读页 .阅读框架{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:480px;height:calc(100dvh - 284px);border:1px solid var(--豫线);border-radius:5px;overflow:hidden;background:var(--阅读白)}
+.原生阅读页 .阅读树{min-width:0;overflow:auto;border-right:1px solid var(--豫线);padding:16px 10px;background:var(--豫纸);scrollbar-gutter:stable}
+.原生阅读页 .阅读树 h2{font:600 12px/1.6 var(--豫字体);color:var(--豫次);letter-spacing:.08em;margin:0 10px 12px}
+.原生阅读页 .阅读树 ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+/* 文言：所观之枝居先，余序不易。汉语：当前文件所在分支置顶，长目录无需脚本滚动也能看见选中项。 */
+.原生阅读页 .阅读树 li:has(a[aria-current=page]){order:-1}
+.原生阅读页 .阅读树 ul ul{padding-left:12px;border-left:1px solid var(--豫线);margin-left:10px}
+.原生阅读页 .阅读树 li{margin:2px 0;min-width:0}
+.原生阅读页 .阅读树 summary{padding:5px 8px;color:var(--豫次);font-size:13px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.原生阅读页 .阅读树 a{display:block;padding:6px 10px;border-radius:3px;color:var(--豫墨);text-decoration:none;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.原生阅读页 .阅读树 a:hover,.原生阅读页 .阅读树 summary:hover{background:var(--豫浅);color:var(--豫朱)}
+.原生阅读页 .阅读树 a[aria-current=page]{background:#eee5db;color:#873326;font-weight:600;box-shadow:inset 2px 0 0 var(--豫朱)}
+.原生阅读页 .阅读正文{min-width:0;min-height:0;overflow:auto;position:relative;scrollbar-gutter:stable;background:var(--阅读白)}
+.原生阅读页 .阅读工具条{position:sticky;top:0;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:58px;padding:12px 24px;border-bottom:1px solid var(--豫线);background:var(--阅读白)}
+.原生阅读页 .阅读工具条>span,.原生阅读页 .阅读工具条>p,.原生阅读页 .阅读工具条>strong,.原生阅读页 .阅读工具条>h2{min-width:0;margin:0;font:500 13px/1.6 var(--豫码);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.原生阅读页 .阅读工具条 nav,.原生阅读页 .阅读工具条 [role=group]{display:flex;gap:2px;flex-shrink:0;border:1px solid var(--豫线);padding:3px;border-radius:5px;background:var(--豫纸)}
+.原生阅读页 .阅读工具条 a{display:block;padding:4px 12px;border-radius:3px;font-size:12px;color:var(--豫次);text-decoration:none;white-space:nowrap}
+.原生阅读页 .阅读工具条 a[aria-current=page]{background:var(--豫朱);color:#fff}
+.原生阅读页 .阅读内容,.原生阅读页 .文档正文{padding:24px 32px 48px;overflow-wrap:anywhere}
+.原生阅读页 .模块文档{padding:24px 32px 48px;overflow-wrap:anywhere}
+.原生阅读页 .阅读空态{padding:34px 32px;color:var(--豫次);max-width:680px}
+.原生阅读页 .阅读空态 h3{font:600 18px/1.6 var(--豫字体);color:var(--豫墨);margin:0 0 10px}
+.原生阅读页 .阅读空态 p{margin:0 0 20px;line-height:1.9}
+.原生阅读页 .阅读空态 a{font-size:13px}
+.原生阅读页 .声明说明{font-size:14px;line-height:1.9;overflow-wrap:anywhere}
+.原生阅读页 .声明说明 ul,.原生阅读页 .声明说明 ol{padding-left:24px}
+.原生阅读页 .声明说明 h1,.原生阅读页 .声明说明 h2,.原生阅读页 .声明说明 h3{font-size:16px;margin:20px 0 10px}
+.原生阅读页 .声明说明 blockquote{margin:14px 0;padding-left:16px;border-left:3px solid var(--豫线);color:var(--豫次)}
+.原生阅读页 .声明说明 :not(pre)>code{padding:2px 4px;background:var(--豫浅);font-size:.9em;border-radius:3px}
+.原生阅读页 .声明说明 pre{margin:14px 0}
+.原生阅读页 .文档索引{max-width:1000px;padding-bottom:28px}
+.原生阅读页 .文档索引>h2{font:600 21px/1.6 var(--豫题);margin:0 0 6px}
+.原生阅读页 .文档索引>.注{margin:0 0 24px;font-size:13px}
+.原生阅读页 .文档索引 ul{list-style:none;padding:0;margin:0}
+.原生阅读页 .文档索引>ul{border:1px solid var(--豫线);border-radius:4px;background:var(--阅读白);overflow:hidden}
+.原生阅读页 .文档索引>ul>li+li{border-top:1px solid var(--豫线)}
+.原生阅读页 .文档索引 ul ul{padding:0 0 10px 18px;margin:0 18px;border-left:1px solid var(--豫线)}
+.原生阅读页 .文档索引 a{display:block;padding:9px 18px;font-size:14px;text-decoration:none;overflow-wrap:anywhere}
+.原生阅读页 .文档索引 a:hover{background:var(--豫纸);text-decoration:underline}
+.原生阅读页 .文档索引 summary{cursor:pointer;padding:12px 18px;font-size:14px;font-weight:500;color:var(--豫墨)}
+.原生阅读页 .文档索引 summary:hover{background:var(--豫纸);color:var(--豫朱)}
+.原生阅读页 .文档索引 details[open]>summary{color:var(--豫朱)}
+.原生阅读页 .文档声明{padding:22px 0;border-bottom:1px solid var(--豫线);max-width:900px;scroll-margin-top:80px}
+.原生阅读页 .文档声明:first-child{padding-top:4px}
+.原生阅读页 .文档声明:last-child{border-bottom:0}
+.原生阅读页 .阅读正文>.文档声明{margin-left:32px;margin-right:32px}
+.原生阅读页 .阅读正文>.文档声明:first-of-type{padding-top:26px}
+.原生阅读页 .文档声明 h2,.原生阅读页 .文档声明 h3{font:600 19px/1.6 var(--豫字体);margin:0 0 12px}
+.原生阅读页 .文档声明 p{line-height:1.9;margin:14px 0 0;white-space:pre-wrap}
+.原生阅读页 .文档声明 pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px 16px;background:var(--豫纸);border:1px solid var(--豫线);border-radius:4px;font:13px/1.9 var(--豫码)}
+.原生阅读页 .源码正文,.原生阅读页 .源码内容{padding:16px 0 40px;overflow:auto;font:13px/1.9 var(--豫码);tab-size:4}
+.原生阅读页 .源码行{display:flex;min-width:max-content;line-height:1.9;white-space:pre;scroll-margin-top:72px}
+.原生阅读页 .源码行:target{background:#f4e8d3}
+.原生阅读页 .源码行号{display:block;flex:0 0 64px;user-select:none;text-align:right;padding:0 16px 0 8px;color:#85877c;border-right:1px solid var(--豫线);text-decoration:none;font:inherit}
+.原生阅读页 .源码行文{display:block;flex:1;padding:0 24px 0 18px;white-space:pre;font:inherit}
+/* 文言：文色通篇，行次同律。汉语：高亮保持跨行语法完整，双栏用相同行高对齐源码与行号。 */
+.原生阅读页 .源码双栏{display:grid;grid-template-columns:64px minmax(max-content,1fr);width:max-content;min-width:100%;overflow:visible}
+.原生阅读页 .源码号码{user-select:none;border-right:1px solid var(--豫线);font:inherit;line-height:inherit}
+.原生阅读页 .源码号码 .源码行号{border:0;display:block;padding:0 16px 0 8px;height:1.9em;font:inherit;line-height:1.9;white-space:pre}
+.原生阅读页 .源码全文{margin:0;padding:0 24px 0 18px;font:inherit;line-height:inherit;white-space:pre;overflow-wrap:normal;tab-size:4;background:transparent;color:var(--豫墨)}
+.原生阅读页 .源码全文 code{font:inherit;line-height:inherit}
+.原生阅读页 .tok-structure,.原生阅读页 .tok-keyword{color:#a33c2c}
+.原生阅读页 .tok-string{color:#567348}.原生阅读页 .tok-comment{color:#747c6a}
+.原生阅读页 .tok-builtin,.原生阅读页 .tok-type{color:#385d62}
+.原生阅读页 .tok-number{color:#896444}.原生阅读页 .tok-label{color:#80583e}
+.原生阅读页 .tok-punctuation{color:#75776e}.原生阅读页 .tok-identifier,.原生阅读页 .tok-plain{color:var(--豫墨)}
+.原生阅读页 .包概览{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:40px;align-items:start}
+.原生阅读页 .包说明,.原生阅读页 .文档排版{max-width:850px;min-width:0;overflow-wrap:anywhere;font-size:15px;line-height:1.9}
+.原生阅读页 .包说明 h1,.原生阅读页 .文档排版 h1{font:600 27px/1.5 var(--豫题);margin:8px 0 20px}
+.原生阅读页 .包说明 h2,.原生阅读页 .文档排版 h2{font:600 21px/1.5 var(--豫字体);margin:32px 0 14px;padding-bottom:9px;border-bottom:1px solid var(--豫线)}
+.原生阅读页 .包说明 h3,.原生阅读页 .文档排版 h3{font-size:17px;margin:25px 0 10px}
+.原生阅读页 .包说明 p,.原生阅读页 .文档排版 p{margin:12px 0}
+.原生阅读页 .包说明 ul,.原生阅读页 .包说明 ol,.原生阅读页 .文档排版 ul,.原生阅读页 .文档排版 ol{padding-left:24px;margin:12px 0}
+.原生阅读页 .包说明 li,.原生阅读页 .文档排版 li{padding-left:3px;margin:5px 0}
+.原生阅读页 .包说明 pre,.原生阅读页 .文档排版 pre{padding:16px 18px;border:1px solid var(--豫线);border-radius:4px;background:var(--阅读白);overflow:auto;font:13px/1.85 var(--豫码);white-space:pre}
+.原生阅读页 .包说明 :not(pre)>code,.原生阅读页 .文档排版 :not(pre)>code{font-size:.9em;background:var(--豫浅);padding:2px 5px;border-radius:3px}
+.原生阅读页 .包说明 blockquote,.原生阅读页 .文档排版 blockquote{margin:18px 0;padding:1px 18px;border-left:3px solid var(--豫线);color:var(--豫次)}
+.原生阅读页 .包信息{padding:20px 22px;background:var(--阅读白);border:1px solid var(--豫线);border-radius:4px;overflow-wrap:anywhere}
+.原生阅读页 .包信息 h2{font-size:14px;margin:0 0 12px}
+.原生阅读页 .包信息 dl{margin:0;font-size:13px}.原生阅读页 .包信息 dt{color:var(--豫次);margin-top:14px}.原生阅读页 .包信息 dd{margin:3px 0 0}
+.原生阅读页 .下载列表{list-style:none;padding:0;margin:12px 0}.原生阅读页 .下载列表 li{padding:9px 0;border-bottom:1px solid var(--豫线)}.原生阅读页 .下载列表 li:last-child{border-bottom:0}
+/* 文言：同名之档，明其用。汉语：构建包和运行包可以同名，展示用途避免混淆。 */
+.原生阅读页 .下载列表 a[href*="/files/build/"]::before{content:"构建包 · ";color:var(--豫次)}
+.原生阅读页 .下载列表 a[href*="/files/runtime/"]::before{content:"运行包 · ";color:var(--豫次)}
+.原生阅读页 section.下载列表{margin-top:24px;padding-top:18px;border-top:1px solid var(--豫线)}
+.原生阅读页 section.下载列表 ul{list-style:none;margin:0;padding:0;font-size:13px}
+.原生阅读页 section.下载列表 a{text-decoration:none}.原生阅读页 section.下载列表 a:hover{text-decoration:underline}
+.原生阅读页 .站头 .站语言{display:flex;gap:2px;margin-left:0;padding:3px;border:1px solid var(--豫线);border-radius:4px;font-size:12px}
+.原生阅读页 .站头 .站语言 a{display:block;padding:4px 8px;text-decoration:none;color:var(--豫次);font:inherit;border-radius:2px}
+.原生阅读页 .站头 .站语言 a[aria-current=page]{background:var(--豫墨);color:var(--豫纸)}
+.原生阅读页 .模块列表{list-style:none;margin:0;padding:0;max-width:1000px}.原生阅读页 .模块列表 li{padding:13px 16px;border-bottom:1px solid var(--豫线)}.原生阅读页 .模块列表 li:nth-child(odd){background:var(--阅读白)}.原生阅读页 .模块列表 a{text-decoration:none}.原生阅读页 .模块列表 a:hover{text-decoration:underline}
+.原生阅读页 .空态{color:var(--豫次);padding:28px 32px;line-height:1.9}
+@media(min-width:1600px){.原生阅读页 .包页面{margin-top:30px}.原生阅读页 .阅读框架{grid-template-columns:260px minmax(0,1fr)}}
+@media(max-width:900px){.原生阅读页{padding:0 20px;margin-top:20px}.原生阅读页 .阅读框架{grid-template-columns:210px minmax(0,1fr)}.原生阅读页 .阅读内容,.原生阅读页 .文档正文{padding:20px 22px 36px}.原生阅读页 .包概览{grid-template-columns:minmax(0,1fr);gap:24px}.原生阅读页 .包信息{max-width:850px}.原生阅读页 .阅读工具条{padding:10px 16px}}
+@media(max-width:620px){.原生阅读页{padding:0 14px;margin:16px auto 36px}.原生阅读页 .包页头 h1{font-size:25px}.原生阅读页 .包导航,.原生阅读页 #包导航{gap:21px;margin:12px 0 16px}.原生阅读页 .阅读框架{display:block;height:auto;min-height:0}.原生阅读页 .阅读树{max-height:180px;border-right:0;border-bottom:1px solid var(--豫线);padding:12px 8px}.原生阅读页 .阅读树 h2{margin-bottom:6px}.原生阅读页 .阅读正文{max-height:none;min-height:380px;overflow:visible}.原生阅读页 .阅读工具条{flex-wrap:wrap;position:relative;padding:10px 12px;gap:8px}.原生阅读页 .阅读工具条>span,.原生阅读页 .阅读工具条>p,.原生阅读页 .阅读工具条>strong{flex:1 1 160px}.原生阅读页 .阅读工具条 nav,.原生阅读页 .阅读工具条 [role=group]{margin-left:auto}.原生阅读页 .阅读内容,.原生阅读页 .文档正文{padding:18px 16px 30px}.原生阅读页 .文档声明{padding:18px 0}.原生阅读页 .文档声明 h2,.原生阅读页 .文档声明 h3{font-size:18px}.原生阅读页 .文档声明 pre{padding:10px 12px;font-size:12px}.原生阅读页 .源码正文{font-size:12px;max-width:100%;overflow:auto}.原生阅读页 .源码行号{flex-basis:45px;padding-right:10px}.原生阅读页 .源码行文{padding-left:12px}.原生阅读页 .包说明,.原生阅读页 .文档排版{font-size:14px}.原生阅读页 .包说明 pre,.原生阅读页 .文档排版 pre{font-size:12px;padding:12px}.原生阅读页 .空态{padding:22px 16px}}
+/* 文言：站首通幅，正文自限。汉语：小屏仅收紧内容边距，不挤压整个页面。 */
+@media(max-width:900px){.原生阅读页{margin:0;padding:0}.原生阅读页 .包页面{padding:0 20px;margin-top:20px}.原生阅读页 .站头{padding:12px 20px;gap:12px}.原生阅读页 .站头 nav{gap:14px}.原生阅读页 .阅读正文>.文档声明{margin-left:22px;margin-right:22px}}
+@media(max-width:620px){.原生阅读页 .包页面{padding:0 14px;margin:16px auto 36px}.原生阅读页 .站头{padding:12px 14px;flex-wrap:wrap}.原生阅读页 .站头>a{font-size:22px}.原生阅读页 .站头 nav{font-size:12px;gap:12px}.原生阅读页 .阅读工具条>h2{flex:1 1 160px}.原生阅读页 .阅读正文>.文档声明{margin-left:16px;margin-right:16px}.原生阅读页 .源码内容{font-size:12px;max-width:100%;overflow:auto}}
+@media(max-width:900px){.原生阅读页 .模块文档{padding:20px 22px 36px}.原生阅读页 .阅读空态{padding:28px 22px}}
+@media(max-width:620px){.原生阅读页 .模块文档{padding:18px 16px 30px}.原生阅读页 .阅读空态{padding:26px 16px}.原生阅读页 .文档索引>h2{font-size:19px}.原生阅读页 .文档索引 summary{padding:10px 14px}.原生阅读页 .文档索引 a{font-size:13px;padding:8px 14px}.原生阅读页 .文档索引 ul ul{margin:0 12px;padding-left:10px}.原生阅读页 .站头 .站语言{gap:2px}}
+@media(max-width:620px){.原生阅读页 .阅读正文:has(.源码双栏){overflow:auto}.原生阅读页 .源码双栏{grid-template-columns:45px minmax(max-content,1fr);max-width:none;overflow:visible}.原生阅读页 .源码号码 .源码行号{padding-right:10px}.原生阅读页 .源码全文{padding-left:12px}.原生阅读页 .站头 .站内导航{order:3;width:100%;margin:0;gap:18px;padding-top:4px;font-size:12px}.原生阅读页 .站头 .站语言{margin-left:auto}}
+/* 文言：首简而名实俱存。汉语：包身份并排，缩短阅读前的固定区域，不隐藏所有者与版本。 */
+.原生阅读页 .站头{min-height:60px;padding-top:10px;padding-bottom:10px}
+.原生阅读页 .包页面{margin-top:18px}
+.原生阅读页 .包页头{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:18px;row-gap:2px;padding-bottom:0}
+.原生阅读页 .包页头>a:first-child{flex-basis:100%;line-height:1.6;margin-bottom:2px}
+.原生阅读页 .包页头 h1{margin:0;font-size:28px;line-height:1.5}
+.原生阅读页 .包页头 .包元信息{margin:0;line-height:1.7}
+.原生阅读页 .包页头 .包简介{flex-basis:100%;margin:2px 0 0;line-height:1.7}
+.原生阅读页 .包导航,.原生阅读页 #包导航{margin-top:10px;margin-bottom:16px}
+.原生阅读页 .阅读框架{height:calc(100dvh - 264px)}
+.原生阅读页 .发布附录{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;margin-top:36px;padding-top:26px;border-top:1px solid var(--豫线)}
+.原生阅读页 .发布附录>section{min-width:0}
+.原生阅读页 .发布附录 h2{font:600 17px/1.6 var(--豫字体);margin:0 0 12px}
+.原生阅读页 .发布附录 ul,.原生阅读页 .历史列表{list-style:none;padding:0;margin:0;font-size:13px}
+.原生阅读页 .发布附录 li,.原生阅读页 .历史列表 li{padding:10px 0;border-bottom:1px solid var(--豫线);overflow-wrap:anywhere}
+.原生阅读页 .发布附录 li:last-child,.原生阅读页 .历史列表 li:last-child{border-bottom:0}
+.原生阅读页 .发布附录 a{text-decoration:none}.原生阅读页 .发布附录 a:hover{text-decoration:underline}
+.原生阅读页 .发布附录 p,.原生阅读页 .历史列表 small{font-size:13px;color:var(--豫次)}
+@media(max-width:620px){.原生阅读页 .包页面{margin-top:14px}.原生阅读页 .包页头{column-gap:12px}.原生阅读页 .包页头 h1{font-size:25px}.原生阅读页 .包页头 .包元信息{font-size:11px}.原生阅读页 .包页头 .包简介{font-size:13px}.原生阅读页 .阅读框架{height:auto}.原生阅读页 .发布附录{grid-template-columns:minmax(0,1fr);gap:24px;margin-top:28px;padding-top:22px}}
+/* 文言：包市与阅页同章，疏密适中。汉语：只收紧市场首页，不改变账户表单与卡片网格。 */
+.市场页{margin-top:30px;margin-bottom:64px}
+.市场页>.眉{margin:0 0 10px;font-size:11px;letter-spacing:1.5px}
+.市场页 .市场标题{align-items:center;gap:24px}
+.市场页 .市场标题 h1{font:600 clamp(25px,3vw,33px)/1.5 var(--豫题);margin:0 0 8px}
+.市场页 .市场标题 .引{font-size:14px;line-height:1.8;margin:0;max-width:70ch}
+.市场页 .主链接{padding:10px 15px;font-size:13px}
+.市场页 .市场搜索{margin:24px 0 18px}
+.市场页 .市场搜索 label{font-size:12px;margin-bottom:7px}
+.市场页 .市场搜索 input{padding:10px 12px;font-size:14px;background:#fffefa;border-radius:3px}
+.市场页 .市场搜索 button{padding:10px 22px;font-size:14px;border-radius:3px}
+.市场页 #市场状态{font-size:13px;color:var(--豫次);margin:12px 0}
+.市场页 .市场列表{gap:16px;margin:18px 0 24px}
+.市场页 .包卡片{padding:18px 20px;border-radius:4px}
+.市场页 .包卡片 h2{font:600 19px/1.5 var(--豫字体);margin:7px 0 10px}
+.市场页 .包卡片 h2 a{text-decoration:none}.市场页 .包卡片 h2 a:hover{text-decoration:underline}
+.市场页 .包卡片 p{margin:8px 0;line-height:1.8}
+.市场页 .包卡片>p:not(.包卡片主){font-size:13px}
+.市场页 .包卡片主{font-size:11px;line-height:1.7}
+@media(max-width:800px){.市场页 .市场标题 .主链接{margin-top:16px}.市场页 .市场标题{display:block}}
+@media(max-width:500px){.市场页{margin-top:22px;padding:0 16px}.市场页 .市场标题 h1{font-size:26px}.市场页 .市场搜索{margin-top:22px}.市场页 .市场列表{gap:12px}.市场页 .包卡片{padding:16px 18px}}

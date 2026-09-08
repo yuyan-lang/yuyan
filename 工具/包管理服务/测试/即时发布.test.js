@@ -37,6 +37,34 @@ function 环境(修订=true) {
   return { env, sql, objects, calls };
 }
 function 请求(path, options = {}) { return new Request(origin + '/api/releases' + path, options); }
+test('主站文件接口返回结构化文档与纯文本源码，不返回上传 HTML',async()=>{
+ const {env,objects,sql}=环境(),put=(path,text)=>objects.set('releases/'+id+'/'+path,{bytes:new TextEncoder().encode(text)});
+ put('source/例。豫','<script>source</script>');put('docs/接口/模块映射.json',JSON.stringify([{source:'例。豫',document:'模块-1.html'}]));
+ put('docs/接口/模块-1.json',JSON.stringify({names:[{name:'<script>x</script>',type:'字符串',description:'说明'}]}));
+ let data=await(await 即时发布入口(请求('/'+id+'/file?path='+encodeURIComponent('source/例。豫')),env)).json();assert.equal(data.source,'<script>source</script>');assert.equal(data.documentation.names[0].name,'<script>x</script>');assert.equal(data.html,undefined);
+ objects.delete('releases/'+id+'/docs/接口/模块-1.json');put('docs/接口/模块-1.html','<article class="symbol-card"><h3>甲&lt;乙</h3><pre class="type-signature"><code>字符串</code></pre><p class="symbol-description">说明</p></article>');
+ data=await(await 即时发布入口(请求('/'+id+'/file?path='+encodeURIComponent('source/例。豫')),env)).json();assert.equal(data.documentation.names[0].name,'甲<乙');
+ assert.equal((await 即时发布入口(请求('/'+id+'/file?path=../bad'),env)).status,400);sql.close();
+});
+test('文件阅读默认映射文档，源码复用浏览器，普通文本转义，路径与来源隔离',async()=>{
+  const {env,objects,sql}=环境(),put=(p,text)=>objects.set('releases/'+id+'/'+p,{bytes:new TextEncoder().encode(text)}),source='目录/例。豫';
+  put('source/'+source,'源码');put('docs/接口/模块映射.json',JSON.stringify([{source,document:'模块-1.html'},{source:'../越界',document:'模块-2.html'}]));
+  put('docs/接口/模块-1.html','<html><body><p class="source-path">目录/例。豫</p>接口</body></html>');
+  put('docs/源码浏览/index.html','<body><article id="源码-1"><div class="breadcrumb">目录/例。豫</div></article></body>');
+  const read=(file,view='docs')=>用户内容入口(new Request('https://usercontent.yuyan-lang.org/'+id+'/阅读?'+new URLSearchParams({file,view})),env);
+  const mapping=await(await 即时发布入口(请求('/'+id+'/reading'),env)).json();assert.equal(mapping.modules.length,1);
+  let r=await read(source);assert.equal(r.status,302);assert.match(decodeURIComponent(r.headers.get('location')),/接口\/模块-1.html/);
+  r=await 用户内容入口(new Request('https://usercontent.yuyan-lang.org'+r.headers.get('location')),env);const html=await r.text();assert.match(html,/包阅读导航/);assert.match(html,/源代码/);assert.match(r.headers.get('content-security-policy'),/sandbox allow-scripts/);assert.doesNotMatch(r.headers.get('content-security-policy'),/allow-same-origin/);
+  r=await read(source,'source');assert.equal(r.status,302);assert.match(decodeURIComponent(r.headers.get('location')),/源码浏览\/index.html/);
+  r=await 用户内容入口(new Request('https://usercontent.yuyan-lang.org'+r.headers.get('location')),env);assert.match(await r.text(),/location.hash=e.id/);
+  put('source/绑定.c','<script>不执行</script>');r=await read('绑定.c','source');assert.match(await r.text(),/&lt;script&gt;/);
+  r=await read('绑定.c');assert.match(await r.text(),/暂无生成文档/);
+  assert.equal((await read('../越界')).status,400);assert.equal((await read('不存在。豫')).status,404);assert.equal((await read(source,'evil')).status,400);sql.close();
+});
+test('旧修订可从生成页面恢复源码映射，受限路径不采纳',async()=>{
+  const {env,objects,sql}=环境();objects.set('releases/'+id+'/docs/接口/模块-1.html',{bytes:new TextEncoder().encode('<p class="source-path">甲&amp;乙。豫</p>')});
+  const data=await(await 即时发布入口(请求('/'+id+'/reading'),env)).json();assert.deepEqual(data.modules,[{source:'甲&乙。豫',document:'接口/模块-1.html'}]);sql.close();
+});
 test('修订迁移保留已有发布 ID、时间和归档摘要，设置序数 1',()=>{
   const {sql}=环境(false);sql.prepare('UPDATE 即时版本 SET 归档摘要=? WHERE 编号=?').run('legacyhash',id);
   const before=sql.prepare('SELECT * FROM 即时版本').get();sql.exec(readFileSync(new URL('../迁移/0007_上传修订.sql',import.meta.url),'utf8'));

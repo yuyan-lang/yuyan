@@ -20,7 +20,7 @@ const 区 = document.createElement('section');
   <section id="版本详情" hidden><h2 id="版本标题"></h2><p id="版本说明"></p><p id="材料状态"></p>
     <button id="刷新版本" type="button">刷新文件状态</button><ul id="版本文件"></ul>
     <p>以下为上传者提供的未审查文档，运行在独立来源中。请勿在文档中输入密码或令牌。</p>
-    <iframe id="包文档" title="上传者提供的包文档" sandbox="allow-scripts" referrerpolicy="no-referrer"></iframe>
+    <p><a id="包文档" referrerpolicy="no-referrer">全页阅读文档</a></p>
   </section>
   <h2 data-han="我的包" data-wen="吾包">我的包</h2><ul id="版本列表"></ul><button id="更多版本" type="button" hidden>更多</button>`;
 document.getElementById('正文').append(区);
@@ -58,7 +58,7 @@ async function 展示(id) {
   // 古曰：客页不入主文。今释：只使用服务端配置的独立文档 URL，绝不把上传内容插入门户 DOM。
   const docs = new URL(data.docsUrl);
   if (docs.protocol !== 'https:' || docs.hostname !== 'usercontent.yuyan-lang.org') throw Error('文档来源配置错误');
-  元素('包文档').src = docs.href;
+  元素('包文档').href = '/release/'+id+'/docs';
   await 展示上传历史(data,元素('版本详情'));
 }
 async function 列表() {

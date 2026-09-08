@@ -33,8 +33,8 @@ test('未绑定先弹窗，绑定后只上传 ZIP，失败补传仍用同一归�
   assert.equal(decodeURIComponent(w.location.pathname),'/个人');
   assert.match(w.document.getElementById('即时提示').textContent,/部分材料/);
   assert.equal(w.document.querySelector('#版本标题 img'),null);
-  const iframe=w.document.getElementById('包文档');
-  assert.equal(iframe.getAttribute('sandbox'),'allow-scripts');assert.equal(iframe.hasAttribute('srcdoc'),false);
+  const reader=w.document.getElementById('包文档');
+  assert.equal(reader.tagName,'A');assert.equal(w.document.querySelector('iframe'),null);assert.equal(new URL(reader.href).hostname,'packages.yuyan-lang.org');
   fail=false;form.dispatchEvent(new w.Event('submit',{cancelable:true}));await tick();await tick();
   assert.match(w.document.getElementById('即时提示').textContent,/发布完成/);
   const uploads=calls.filter(c=>c.url==='/api/releases/zip');assert.equal(uploads.length,2);
