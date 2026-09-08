@@ -162,22 +162,30 @@ int 递归创建文件夹(const char *路径)
     free(可修改路径);
     return 结果;
 }
+// 文言：径存则直书，唯缺其父乃建之。汉语：已有目录直接打开；避免每份阶段产物都重复遍历父目录并调用 mkdir/stat。
+static FILE *打开写入文件(const char *文件名, const char *模式) {
+    FILE *文件 = fopen(文件名, 模式);
+    if (文件 != NULL || errno != ENOENT) return 文件;
+
+    char *文件夹名 = strdup(文件名);
+    if (文件夹名 == NULL) 报错并中止("无法复制写入路径");
+    char *最后斜线 = strrchr(文件夹名, '/');
+    if (最后斜线 != NULL) {
+        *最后斜线 = 0;
+        if (递归创建文件夹(文件夹名) != 0) {
+            free(文件夹名);
+            return NULL;
+        }
+    }
+    free(文件夹名);
+    return fopen(文件名, 模式);
+}
+
 豫言值 豫言_同步写入文件(豫言值 文件名地址, 豫言值 内容地址) {
     const char *文件名 = 豫言值转字符串(文件名地址);
     const char *内容 = 豫言值转字符串(内容地址);
 
-    char *文件夹名 = strdup(文件名);
-    char *最后斜线 = strrchr(文件夹名, '/');
-    if (最后斜线 != NULL) {
-        *最后斜线 = '\0';
-        if (递归创建文件夹(文件夹名) != 0){
-            fprintf(stderr, "无法递归创建文件夹：%s\n", 文件名);
-            报错并中止("创建文件夹失败");
-        }
-    }
-    free(文件夹名);
-
-    FILE *文件 = fopen(文件名, "w");
+    FILE *文件 = 打开写入文件(文件名, "w");
     if (文件 == NULL) {
         fprintf(stderr, "无法打开文件：%s\n", 文件名);
         报错并中止("写入文件失败");
@@ -200,22 +208,7 @@ int 递归创建文件夹(const char *路径)
     const unsigned char *内容 = 豫言值转字节串指针(内容地址);
     uint64_t 内容长度 = 获取豫言_字节串长度(内容地址);
 
-    char *文件夹名 = strdup(文件名);
-    if (文件夹名 == NULL) {
-        报错并中止("写入文件字节串时无法复制文件名");
-    }
-    char *最后斜线 = strrchr(文件夹名, '/');
-    if (最后斜线 != NULL) {
-        *最后斜线 = '\0';
-        if (递归创建文件夹(文件夹名) != 0){
-            free(文件夹名);
-            fprintf(stderr, "无法递归创建文件夹：%s\n", 文件名);
-            报错并中止("创建文件夹失败");
-        }
-    }
-    free(文件夹名);
-
-    FILE *文件 = fopen(文件名, "wb");
+    FILE *文件 = 打开写入文件(文件名, "wb");
     if (文件 == NULL) {
         fprintf(stderr, "无法打开文件：%s\n", 文件名);
         报错并中止("写入文件字节串失败");
