@@ -46,6 +46,7 @@ test('计划无产物，实际 ZIP 包含源码、文档、构建与运行包，
   assert.match(list,/文档\/接口\/index.html/);assert.match(list,/文档\/源码浏览\/index.html/);assert.doesNotMatch(list,/临时发布文档索引/);
   const extract=p=>execFileSync('unzip',['-p',zip,p],{encoding:'utf8'});
   assert.deepEqual(JSON.parse(extract('文档/生成状态.json')),{'源码浏览':'已生成','API文档':'已生成'});
+  assert.deepEqual(JSON.parse(extract('文档/包信息.json')),{dependencies:[],readmes:['说明.汉语.md','说明.文言.md']});
   assert.match(extract('文档/接口/index.html'),/\.\.\/源码浏览\/index.html/);
   assert.match(extract('文档/源码浏览/index.html'),/\.\.\/接口\/index.html/);
   r=await f.run(['--打包','--所有者','甲']);assert.equal(r.code,0,r.text);assert.match(r.text,/复用/);assert.deepEqual(readFileSync(zip),before);

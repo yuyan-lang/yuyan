@@ -4,6 +4,8 @@ import {readFileSync} from 'node:fs';
 test('版本详情保留编号，静态托管关闭 HTML 地址改写',()=>{
   const url=new URL('https://packages.yuyan-lang.org/release/'+'a'.repeat(32));
   assert.equal(decodeURIComponent(网页资源地址(new Request(url)).pathname),'/首页.html');
+  for(const tab of ['docs','files'])assert.equal(decodeURIComponent(网页资源地址(new Request(url+'/'+tab)).pathname),'/首页.html');
+  assert.equal(网页资源地址(new Request(url+'/不支持')),null);
   assert.match(readFileSync(new URL('../wrangler.jsonc',import.meta.url),'utf8'),/"html_handling":\s*"none"/);
 });
 // 古曰：增其门，不改旧径。今释：新页面不能截获既有 API 或包文件请求。

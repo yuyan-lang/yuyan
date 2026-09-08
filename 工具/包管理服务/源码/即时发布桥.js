@@ -1,4 +1,5 @@
 import { 查会话 } from './账户.js';
+import { 读取文档映射, 阅读入口, 补全阅读页, 文件阅读数据 } from './阅读.js';
 
 // 古曰：内服定籍与权，外桥惟送字节。今释：版本写入和发布权限由豫言处理；此桥负责流式 R2、公开查询和浏览器隔离。
 export const 门户来源 = env => env.PORTAL_ORIGIN || 'https://packages.yuyan-lang.org';
@@ -62,6 +63,14 @@ export async function 即时发布入口(req, env) {
       return 回({ releases: result.results, nextOffset: result.results.length === 50 ? offset + 50 : null });
     }
     if (!编号式.test(id || '')) return 回({ error: '版本不存在' }, 404);
+    if(parts.length===2&&parts[1]==='file'&&req.method==='GET'){
+      if(!await 查版本(env,id))return 回({error:'版本不存在'},404);
+      return 回(await 文件阅读数据(env,id,url.searchParams.get('path'),url.searchParams.get('view')));
+    }
+    if(parts.length===2&&parts[1]==='reading'&&req.method==='GET'){
+      if(!await 查版本(env,id))return 回({error:'版本不存在'},404);
+      return 回({modules:await 读取文档映射(env,id)});
+    }
     // 文言：旧号仍指旧物，别列其同版诸次。汉语：历史按修订降序分页，下载固定在原 ID，不重定向到新文件。
     if(parts.length===2&&parts[1]==='history'&&req.method==='GET'){
       const version=await 查版本(env,id);if(!version)return 回({error:'版本不存在'},404);
@@ -112,6 +121,7 @@ export async function 用户内容入口(req, env) {
     if (!编号式.test(id || '')) return unavailable();
     const path = 安全文件路径(parts.join('/'));
     if (!await 查版本(env, id)) return unavailable();
+    if(path==='阅读')return 阅读入口(req,env,id,headers);
     const object = await env.PACKAGES.get('releases/' + id + '/docs/' + path);
     if (!object) return unavailable();
     const mime = { html: 'text/html; charset=utf-8', htm: 'text/html; charset=utf-8',
@@ -120,6 +130,10 @@ export async function 用户内容入口(req, env) {
       png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', svg: 'image/svg+xml',
       webp: 'image/webp', woff: 'font/woff', woff2: 'font/woff2', ico: 'image/x-icon' }[path.split('.').at(-1).toLowerCase()];
     if (!mime) return unavailable(415);
+    if(mime.startsWith('text/html')){
+      const html=req.method==='HEAD'?null:补全阅读页(await new Response(object.body).text(),env,id,url.searchParams.get('file')||'');
+      return new Response(html,{headers:{...headers,'Content-Type':mime,'Cache-Control':'no-store'}});
+    }
     return new Response(req.method === 'HEAD' ? null : object.body, { headers: { ...headers, 'Content-Type': mime,
       'Content-Length': String(object.size), 'Cache-Control': 'public, max-age=31536000, immutable' } });
   } catch { return unavailable(); }
