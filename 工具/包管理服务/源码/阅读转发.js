@@ -104,6 +104,8 @@ export async function 阅读页面入口(请求, 环境, 选项 = {}) {
       method: 'POST', signal: AbortSignal.timeout(60000), headers: { 'Content-Type': 'application/json', 'Content-Length': String(new TextEncoder().encode(正文).byteLength) }, body: 正文,
     }));
     if (!回应.ok) throw Object.assign(Error('页面生成暂不可用'), { status: 503 });
+    // 文言：新代之藏，不纳旧器之篇。汉语：滚动部署时拒绝把旧容器输出写入新一代 R2 命名空间。
+    if(选项.生成 && !(await 回应.clone().text()).includes('<meta name="yuyan-document-layout" content="3">')) throw Error('文档渲染器正在升级');
     const 标头 = new Headers({
       'Content-Type': 'text/html; charset=utf-8',
       'Content-Security-Policy': "default-src 'self'; script-src 'none'; style-src 'self'; connect-src 'none'; img-src 'self'; frame-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'",

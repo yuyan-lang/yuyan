@@ -2,7 +2,7 @@ import { 即时发布入口 } from './即时发布桥.js';
 async function 公开数据(env,origin,path) { const r=await 即时发布入口(new Request(origin+path),env);if(!r?.ok)throw Error('发布材料不可用');return r.json(); }
 
 // 文言：豫言定篇，云桥存取；成页不失，败事可续。汉语：此模块只桥接 R2、Queue 与内部豫言生成器。
-export const 页面版本 = 'persistent-reader-1';
+export const 页面版本 = 'persistent-reader-3';
 const 前缀 = 'rendered/' + 页面版本 + '/';
 const 来源 = env => env.PORTAL_ORIGIN || 'https://packages.yuyan-lang.org';
 const 合号 = id => /^[a-f0-9]{32}$/.test(id || '');

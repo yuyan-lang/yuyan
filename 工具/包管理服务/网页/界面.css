@@ -279,3 +279,35 @@ body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:1
   .原生阅读页 .站头 .站内导航{column-gap:16px;row-gap:8px}
   .原生阅读页 .站头 .站名{padding-left:12px;font-size:12px}
 }
+.原生阅读页 .修订列表>li>div{display:flex;align-items:baseline;flex-wrap:wrap;gap:.35em 1em}
+.原生阅读页 .修订列表 time{color:var(--豫次);font-size:12px;white-space:nowrap}
+/* 文言：文如篇章，目居其右；源码之器仍旧。汉语：文档使用整页阅读与右侧展开目录，源码保留独立滚动的浏览器布局。 */
+.原生阅读页 .阅读框架.文档页面{height:auto;min-height:520px;grid-template-columns:minmax(0,1fr) 245px;gap:48px;border:0;background:transparent;overflow:visible;align-items:start}
+.原生阅读页 .文档页面>.阅读树{grid-column:2;grid-row:1;position:sticky;top:24px;border:0;border-left:1px solid var(--豫线);background:transparent;padding:8px 0 8px 22px;max-height:calc(100dvh - 48px);overflow:auto}
+.原生阅读页 .文档页面>.阅读正文{grid-column:1;grid-row:1;overflow:visible;max-height:none;background:transparent;min-width:0}
+.原生阅读页 .文档页面 .阅读工具条{position:static;background:transparent;border:0;border-bottom:1px solid var(--豫线);padding:4px 0 20px;gap:16px;align-items:baseline}
+.原生阅读页 .文档页面 .阅读工具条>h2{font:600 22px/1.6 var(--豫字体)}
+.原生阅读页 .文档页面 .阅读工具条 nav{font-size:12px}
+.原生阅读页 .文档页面 .模块文档{padding:12px 0 48px;max-width:900px}
+.原生阅读页 .文档页面 .文档声明,.原生阅读页 .文档页面 .文档声明.无说明{display:block;padding:26px 0 30px;border-bottom:1px solid var(--豫线);scroll-margin-top:28px}
+.原生阅读页 .文档页面 .文档声明 h3,.原生阅读页 .文档页面 .文档声明.无说明 h3{font:600 20px/1.6 var(--豫字体);margin:0 0 10px;overflow-wrap:anywhere}
+.原生阅读页 .文档页面 .声明来源{display:block;margin:4px 0 8px;font-size:12px;font-weight:400}
+.原生阅读页 .定义分类{display:inline-block;padding:2px 8px;border:1px solid #dadbd2;border-radius:4px;background:#f0f2ea;color:#4d6352;font:500 11px/1.6 var(--豫字体);vertical-align:middle}
+.原生阅读页 .定义直达{display:inline-block;margin-left:14px;font-size:12px;text-decoration:none;vertical-align:middle}
+.原生阅读页 .文档页面 .文档声明 .类型签名{display:block;padding:14px 16px;margin:14px 0 16px;border:1px solid var(--豫线);border-radius:4px;background:var(--阅读白);font:13px/1.9 var(--豫码);white-space:pre-wrap;overflow-wrap:anywhere}
+.原生阅读页 .类型引用{text-decoration:underline;text-decoration-color:#c6b5a1;text-underline-offset:3px}
+.原生阅读页 .文档页面 .声明说明{font-size:15px;line-height:1.95;max-width:76ch}
+.原生阅读页 .定义展开{margin-top:18px;border:1px solid var(--豫线);border-radius:4px;background:var(--阅读白);overflow:hidden}
+.原生阅读页 .定义展开>summary{padding:10px 14px;cursor:pointer;font:500 12px/1.7 var(--豫字体);color:var(--豫次)}
+.原生阅读页 .定义展开[open]>summary{border-bottom:1px solid var(--豫线)}
+.原生阅读页 .文档页面 .文档声明 .定义代码,.原生阅读页 .定义代码{margin:0;padding:16px;border:0;border-radius:0;font:12px/1.85 var(--豫码);white-space:pre-wrap;overflow-wrap:anywhere;max-height:560px;overflow:auto;background:transparent}
+.原生阅读页 .包定义文档{max-width:900px;padding:28px 0 48px}
+.原生阅读页 .文档眉题{font-size:12px;letter-spacing:.08em;color:var(--豫次);margin:0 0 8px}
+.原生阅读页 .包定义文档>h2{font-size:27px;margin:0 0 12px}
+.原生阅读页 .文档导语{line-height:1.9;color:var(--豫次)}
+.原生阅读页 .包字段表{margin:24px 0;border-top:1px solid var(--豫线)}
+.原生阅读页 .包字段表>div{display:grid;grid-template-columns:130px minmax(0,1fr);gap:20px;padding:14px 0;border-bottom:1px solid var(--豫线);font-size:14px}
+.原生阅读页 .包字段表 dt{color:var(--豫次)}
+.原生阅读页 .包字段表 dd{margin:0;overflow-wrap:anywhere}
+@media(max-width:1000px){.原生阅读页 .阅读框架.文档页面{grid-template-columns:minmax(0,1fr) 200px;gap:24px}}
+@media(max-width:620px){.原生阅读页 .阅读框架.文档页面{display:flex;flex-direction:column;gap:20px}.原生阅读页 .文档页面>.阅读树{position:static;max-height:none;border:1px solid var(--豫线);padding:0;width:100%;order:0}.原生阅读页 .文档页面>.阅读正文{width:100%;order:1}.原生阅读页 .文档页面 .阅读工具条{padding:0 0 16px}.原生阅读页 .文档页面 .阅读工具条>h2{font-size:19px}.原生阅读页 .文档页面 .文档声明,.原生阅读页 .文档页面 .文档声明.无说明{padding:22px 0}.原生阅读页 .包字段表>div{grid-template-columns:95px minmax(0,1fr);gap:12px}.原生阅读页 .文档页面 .声明说明{font-size:14px}}

@@ -41,9 +41,9 @@ export async function 文件阅读数据(env,id,path,view='docs'){
   let source=null;if(object.size<=1048576){try{source=new TextDecoder('utf-8',{fatal:true}).decode(await new Response(object.body).arrayBuffer());if(source.includes('\0'))source=null;}catch{}}
   const result={path,size:object.size,source,documentation:null};
   if(source!==null&&path.startsWith('source/')){try{const raw=await textObject(env,prefix+'docs/源码浏览/语义标记/'+path.slice(7)+'.json');if(raw){const marks=JSON.parse(raw).标记;if(Array.isArray(marks)&&marks.length<=50000)result.tokens=marks;}}catch{}}
-  if(view!=='source'&&path.startsWith('source/')){
+  if(view!=='source'&&path.startsWith('source/')&&!path.endsWith('。包。豫')){
     let row;try{row=(await 读取文档映射(env,id)).find(x=>x.source===path.slice(7));}catch{return {...result,documentationError:'文档映射暂不可用'};}
-    if(row){const data=await textObject(env,prefix+'docs/'+row.document.replace(/\.html$/,'.json'));if(data!==null){const doc=JSON.parse(data);if(!Array.isArray(doc.names)||doc.names.length>10000)throw Error('文档数据无效');result.documentation={names:doc.names.map(x=>({name:String(x.name??''),type:String(x.type??''),description:String(x.description??'')}))};}
+    if(row){const data=await textObject(env,prefix+'docs/'+row.document.replace(/\.html$/,'.json'));if(data!==null){const doc=JSON.parse(data);if(!Array.isArray(doc.names)||doc.names.length>10000)throw Error('文档数据无效');result.documentation={names:doc.names.map(x=>({name:String(x.name??''),type:String(x.type??''),description:String(x.description??''),source:String(x.source??'')}))};}
       else{const html=await textObject(env,prefix+'docs/'+row.document,16777216);if(html!==null){const text=s=>decode(s.replace(/<[^>]*>/g,''));const names=[];for(const m of html.matchAll(/<article class="symbol-card">([\s\S]*?)<\/article>/g)){const name=m[1].match(/<h3>([\s\S]*?)<\/h3>/),type=m[1].match(/<pre class="type-signature"><code>([\s\S]*?)<\/code><\/pre>/),description=m[1].match(/<p class="symbol-description[^\"]*">([\s\S]*?)<\/p>/);if(name&&type)names.push({name:text(name[1]),type:text(type[1]),description:text(description?.[1]||'')});}result.documentation={names};}else result.documentationError='文档材料暂不可用';}
     }
   }
