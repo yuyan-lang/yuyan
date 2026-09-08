@@ -1,9 +1,10 @@
 // 古曰：市示众包，私事归己。今释：市场只读公开接口；旧邮件链接携带原 fragment 转至个人页。
 const 元素=id=>document.getElementById(id);
 const 文=(el,han,wen=han)=>{el.dataset.han=han;el.dataset.wen=wen;el.textContent=window.豫言界面?.语言==='wen'?wen:han;};
-let 下页=0,查询='',序=0,忙=false;
+// 古曰：所寻载于址，往返不失。今释：此处仅桥接浏览器 URL 状态，包数据仍来自公开接口。
+let 下页=0,查询=new URLSearchParams(location.search).get('q')?.trim().slice(0,100)||'',序=0,忙=false;
 async function 求(url){const r=await fetch(url,{cache:'no-store'});const data=await r.json();if(!r.ok)throw Error(data.error||'读取失败');return data;}
-function 链(text,url){const a=document.createElement('a');a.textContent=text;a.href=url;return a;}
+function 链(text,url){const a=document.createElement('a');a.textContent=text;const u=new URL(url,location.href);if(u.origin===location.origin&&u.pathname.startsWith('/release/'))u.searchParams.set('lang',window.豫言界面?.语言||new URLSearchParams(location.search).get('lang')||'han');a.href=u.href;return a;}
 async function 列表(reset=false){
   if(忙&&!reset)return;const 当前=reset?++序:序;忙=true;元素('市场更多').disabled=true;
   if(reset){下页=0;元素('市场列表').replaceChildren();元素('市场更多').hidden=true;}
@@ -75,6 +76,8 @@ async function 详情(id,tab=''){
 }
 function 邮件跳转(){const p=new URLSearchParams(location.hash.slice(1));if(!p.has('verify')&&!p.has('reset'))return false;location.replace('/个人'+location.search+location.hash);return true;}
 window.addEventListener('hashchange',邮件跳转);
-元素('市场搜索').addEventListener('submit',e=>{e.preventDefault();查询=元素('搜索词').value.trim();列表(true);});
+元素('搜索词').value=查询;
+元素('市场搜索').addEventListener('submit',e=>{e.preventDefault();查询=元素('搜索词').value.trim();const u=new URL(location.href);if(查询)u.searchParams.set('q',查询);else u.searchParams.delete('q');history.pushState(null,'',u);列表(true);});
+window.addEventListener('popstate',()=>{if(location.pathname!=='/')return;查询=new URLSearchParams(location.search).get('q')?.trim().slice(0,100)||'';元素('搜索词').value=查询;列表(true);});
 元素('市场更多').addEventListener('click',()=>列表());
 if(!邮件跳转()){const match=location.pathname.match(/^\/release\/([a-f0-9]{32})(?:\/(docs|files))?$/);if(match)详情(match[1],match[2]||'');else 列表(true);}

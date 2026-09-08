@@ -29,7 +29,14 @@ test('市场展示真实字段、转义上传者文字并支持搜索',async()=>
  w.eval(readFileSync(new URL('../网页/市场.mjs',import.meta.url),'utf8'));await new Promise(r=>setTimeout(r,20));
  assert.equal(w.document.querySelectorAll('.包卡片').length,1);assert.equal(w.document.querySelectorAll('.包卡片 img,.包卡片 script').length,0);assert.match(w.document.querySelector('.包卡片').textContent,/unverified/);
  w.document.getElementById('搜索词').value='解析器';w.document.getElementById('市场搜索').dispatchEvent(new w.Event('submit',{cancelable:true}));await new Promise(r=>setTimeout(r,20));
- assert.ok(calls.at(-1).includes(encodeURIComponent('解析器')));assert.ok(calls.every(x=>x.startsWith('/api/releases?catalog=1')));assert.equal(w.document.getElementById('账户表单'),null);dom.window.close();
+ assert.ok(calls.at(-1).includes(encodeURIComponent('解析器')));assert.equal(new URL(w.location.href).searchParams.get('q'),'解析器');assert.ok(calls.every(x=>x.startsWith('/api/releases?catalog=1')));assert.equal(w.document.getElementById('账户表单'),null);dom.window.close();
+});
+test('市场恢复链接中的查询与语言，浏览器返回恢复搜索',async()=>{
+ const dom=new JSDOM(readFileSync(new URL('../网页/首页.html',import.meta.url),'utf8'),{url:'https://packages.yuyan-lang.org/?q=标准库&lang=wen',runScripts:'outside-only'}),w=dom.window,calls=[];
+ w.fetch=async url=>{calls.push(url);return Response.json({releases:[{id:'a'.repeat(32),owner:'豫言',name:'标准库',version:'1',type:'库'}],nextOffset:null});};
+ w.eval(readFileSync(new URL('../网页/市场.mjs',import.meta.url),'utf8'));await new Promise(r=>setTimeout(r,20));
+ assert.equal(w.document.getElementById('搜索词').value,'标准库');assert.ok(calls[0].includes(encodeURIComponent('标准库')));assert.equal(new URL(w.document.querySelector('.包卡片 h2 a').href).searchParams.get('lang'),'wen');
+ w.history.pushState(null,'','/?q=解析&lang=wen');w.dispatchEvent(new w.PopStateEvent('popstate'));await new Promise(r=>setTimeout(r,20));assert.equal(w.document.getElementById('搜索词').value,'解析');assert.ok(calls.at(-1).includes(encodeURIComponent('解析')));dom.window.close();
 });
 test('包首页、文档目录与文件树分路由，文件默认全页阅读，不嵌入上传 HTML',async()=>{
  const id='a'.repeat(32),base='https://packages.yuyan-lang.org/release/'+id;

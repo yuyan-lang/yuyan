@@ -4,6 +4,25 @@ import { DatabaseSync } from 'node:sqlite';
 import { readFileSync } from 'node:fs';
 import { 即时发布入口, 用户内容入口, 安全文件路径 } from '../源码/即时发布桥.js';
 import { 摘要 } from '../源码/账户.js';
+import { 阅读页面入口 } from '../源码/阅读转发.js';
+
+// 古曰：所指有误，不以他篇代之。今释：桥只传材料；错误、语言及 HTTP 状态不因缓存或 HEAD 丢失。
+test('原生阅读桥保留错误路径与语言，默认总集且不将 cookie 传入容器',async()=>{
+ const {env,objects,sql}=环境();
+ objects.set('releases/'+id+'/source/总集。豫',{bytes:new TextEncoder().encode('总集源码')});
+ let received;
+ env.PACKAGE_CONTAINER={getByName(){return{async fetch(req){assert.equal(req.headers.get('cookie'),null);received=await req.json();return new Response('<html>由豫言成页</html>');}};}};
+ let response=await 阅读页面入口(new Request(origin+'/release/'+id+'/files?path=source/不存在。豫',{headers:{Cookie:'yuyan_lang=wen'}}),env);
+ assert.equal(response.status,404);assert.equal(received.lang,'wen');assert.equal(received.path,'source/不存在。豫');assert.ok(received.error);assert.deepEqual(received.file,{});
+ response=await 阅读页面入口(new Request(origin+'/release/'+id+'/files?lang=han&historyOffset=bad',{method:'HEAD',headers:{Cookie:'yuyan_lang=wen'}}),env);
+ assert.equal(response.status,200);assert.equal(received.lang,'han');assert.equal(received.path,'source/总集。豫');assert.equal(await response.text(),'');assert.match(response.headers.get('set-cookie'),/yuyan_lang=han/);sql.close();
+});
+test('不存在的修订保留404并提供不依赖容器的静态返回入口',async()=>{
+ const {env,sql}=环境();let staticReads=0;
+ env.ASSETS={async fetch(req){staticReads++;assert.equal(decodeURIComponent(new URL(req.url).pathname),'/错误.html');return new Response('<html><a href="/">返回全部包</a></html>');}};
+ const response=await 阅读页面入口(new Request(origin+'/release/'+'b'.repeat(32)),env);
+ assert.equal(response.status,404);assert.equal(staticReads,1);assert.match(await response.text(),/返回全部包/);assert.match(response.headers.get('content-security-policy'),/default-src 'none'/);sql.close();
+});
 
 // 古曰：验缺物可观，越权不可传，客页不得借主权。今释：真实 SQLite 加模拟原子 R2，验证简化上传和安全边界。
 const id = 'a'.repeat(32), origin = 'https://packages.yuyan-lang.org';
