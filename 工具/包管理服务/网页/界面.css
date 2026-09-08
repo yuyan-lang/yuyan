@@ -100,9 +100,8 @@ body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:1
 .原生阅读页 .阅读框架{display:grid;grid-template-columns:240px minmax(0,1fr);min-height:480px;height:calc(100dvh - 284px);border:1px solid var(--豫线);border-radius:5px;overflow:hidden;background:var(--阅读白)}
 .原生阅读页 .阅读树{min-width:0;overflow:auto;border-right:1px solid var(--豫线);padding:16px 10px;background:var(--豫纸);scrollbar-gutter:stable}
 .原生阅读页 .阅读树 h2{font:600 12px/1.6 var(--豫字体);color:var(--豫次);letter-spacing:.08em;margin:0 10px 12px}
-.原生阅读页 .阅读树 ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
-/* 文言：所观之枝居先，余序不易。汉语：当前文件所在分支置顶，长目录无需脚本滚动也能看见选中项。 */
-.原生阅读页 .阅读树 li:has(a[aria-current=page]){order:-1}
+/* 文言：枝序有常，所观独明。汉语：文件树保持固定顺序，使视觉顺序与键盘顺序一致。 */
+.原生阅读页 .阅读树 ul{list-style:none;margin:0;padding:0}
 .原生阅读页 .阅读树 ul ul{padding-left:12px;border-left:1px solid var(--豫线);margin-left:10px}
 .原生阅读页 .阅读树 li{margin:2px 0;min-width:0}
 .原生阅读页 .阅读树 summary{padding:5px 8px;color:var(--豫次);font-size:13px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -139,12 +138,12 @@ body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:1
 .原生阅读页 .文档索引 summary{cursor:pointer;padding:12px 18px;font-size:14px;font-weight:500;color:var(--豫墨)}
 .原生阅读页 .文档索引 summary:hover{background:var(--豫纸);color:var(--豫朱)}
 .原生阅读页 .文档索引 details[open]>summary{color:var(--豫朱)}
-.原生阅读页 .文档声明{padding:22px 0;border-bottom:1px solid var(--豫线);max-width:900px;scroll-margin-top:80px}
+.原生阅读页 .文档声明{padding:18px 0;border-bottom:1px solid var(--豫线);max-width:900px;scroll-margin-top:80px}
 .原生阅读页 .文档声明:first-child{padding-top:4px}
 .原生阅读页 .文档声明:last-child{border-bottom:0}
 .原生阅读页 .阅读正文>.文档声明{margin-left:32px;margin-right:32px}
 .原生阅读页 .阅读正文>.文档声明:first-of-type{padding-top:26px}
-.原生阅读页 .文档声明 h2,.原生阅读页 .文档声明 h3{font:600 19px/1.6 var(--豫字体);margin:0 0 12px}
+.原生阅读页 .文档声明 h2,.原生阅读页 .文档声明 h3{font:600 18px/1.6 var(--豫字体);margin:0 0 10px}
 .原生阅读页 .文档声明 p{line-height:1.9;margin:14px 0 0;white-space:pre-wrap}
 .原生阅读页 .文档声明 pre{white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px 16px;background:var(--豫纸);border:1px solid var(--豫线);border-radius:4px;font:13px/1.9 var(--豫码)}
 .原生阅读页 .源码正文,.原生阅读页 .源码内容{padding:16px 0 40px;overflow:auto;font:13px/1.9 var(--豫码);tab-size:4}
@@ -153,7 +152,7 @@ body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:1
 .原生阅读页 .源码行号{display:block;flex:0 0 64px;user-select:none;text-align:right;padding:0 16px 0 8px;color:#85877c;border-right:1px solid var(--豫线);text-decoration:none;font:inherit}
 .原生阅读页 .源码行文{display:block;flex:1;padding:0 24px 0 18px;white-space:pre;font:inherit}
 /* 文言：文色通篇，行次同律。汉语：高亮保持跨行语法完整，双栏用相同行高对齐源码与行号。 */
-.原生阅读页 .源码双栏{display:grid;grid-template-columns:64px minmax(max-content,1fr);width:max-content;min-width:100%;overflow:visible}
+.原生阅读页 .源码双栏{display:grid;grid-template-columns:64px minmax(max-content,1fr);width:100%;min-width:0;max-width:100%;overflow:auto}
 .原生阅读页 .源码号码{user-select:none;border-right:1px solid var(--豫线);font:inherit;line-height:inherit}
 .原生阅读页 .源码号码 .源码行号{border:0;display:block;padding:0 16px 0 8px;height:1.9em;font:inherit;line-height:1.9;white-space:pre}
 .原生阅读页 .源码全文{margin:0;padding:0 24px 0 18px;font:inherit;line-height:inherit;white-space:pre;overflow-wrap:normal;tab-size:4;background:transparent;color:var(--豫墨)}
@@ -178,9 +177,8 @@ body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:1
 .原生阅读页 .包信息 h2{font-size:14px;margin:0 0 12px}
 .原生阅读页 .包信息 dl{margin:0;font-size:13px}.原生阅读页 .包信息 dt{color:var(--豫次);margin-top:14px}.原生阅读页 .包信息 dd{margin:3px 0 0}
 .原生阅读页 .下载列表{list-style:none;padding:0;margin:12px 0}.原生阅读页 .下载列表 li{padding:9px 0;border-bottom:1px solid var(--豫线)}.原生阅读页 .下载列表 li:last-child{border-bottom:0}
-/* 文言：同名之档，明其用。汉语：构建包和运行包可以同名，展示用途避免混淆。 */
-.原生阅读页 .下载列表 a[href*="/files/build/"]::before{content:"构建包 · ";color:var(--豫次)}
-.原生阅读页 .下载列表 a[href*="/files/runtime/"]::before{content:"运行包 · ";color:var(--豫次)}
+/* 文言：用途明于上，原名附于下。汉语：用途由豫言生成，原文件名另列，不再用伪元素重复前缀。 */
+.原生阅读页 .下载原名{display:block;margin-top:4px;color:var(--豫次);font:11px/1.7 var(--豫码);overflow-wrap:anywhere}
 .原生阅读页 section.下载列表{margin-top:24px;padding-top:18px;border-top:1px solid var(--豫线)}
 .原生阅读页 section.下载列表 ul{list-style:none;margin:0;padding:0;font-size:13px}
 .原生阅读页 section.下载列表 a{text-decoration:none}.原生阅读页 section.下载列表 a:hover{text-decoration:underline}
@@ -197,7 +195,7 @@ body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:1
 @media(max-width:620px){.原生阅读页 .包页面{padding:0 14px;margin:16px auto 36px}.原生阅读页 .站头{padding:12px 14px;flex-wrap:wrap}.原生阅读页 .站头>a{font-size:22px}.原生阅读页 .站头 nav{font-size:12px;gap:12px}.原生阅读页 .阅读工具条>h2{flex:1 1 160px}.原生阅读页 .阅读正文>.文档声明{margin-left:16px;margin-right:16px}.原生阅读页 .源码内容{font-size:12px;max-width:100%;overflow:auto}}
 @media(max-width:900px){.原生阅读页 .模块文档{padding:20px 22px 36px}.原生阅读页 .阅读空态{padding:28px 22px}}
 @media(max-width:620px){.原生阅读页 .模块文档{padding:18px 16px 30px}.原生阅读页 .阅读空态{padding:26px 16px}.原生阅读页 .文档索引>h2{font-size:19px}.原生阅读页 .文档索引 summary{padding:10px 14px}.原生阅读页 .文档索引 a{font-size:13px;padding:8px 14px}.原生阅读页 .文档索引 ul ul{margin:0 12px;padding-left:10px}.原生阅读页 .站头 .站语言{gap:2px}}
-@media(max-width:620px){.原生阅读页 .阅读正文:has(.源码双栏){overflow:auto}.原生阅读页 .源码双栏{grid-template-columns:45px minmax(max-content,1fr);max-width:none;overflow:visible}.原生阅读页 .源码号码 .源码行号{padding-right:10px}.原生阅读页 .源码全文{padding-left:12px}.原生阅读页 .站头 .站内导航{order:3;width:100%;margin:0;gap:18px;padding-top:4px;font-size:12px}.原生阅读页 .站头 .站语言{margin-left:auto}}
+@media(max-width:620px){.原生阅读页 .阅读正文:has(.源码双栏){overflow:auto}.原生阅读页 .源码双栏{grid-template-columns:45px minmax(max-content,1fr)}.原生阅读页 .源码号码 .源码行号{padding-right:10px}.原生阅读页 .源码全文{padding-left:12px}.原生阅读页 .站头 .站内导航{order:3;width:100%;margin:0;gap:18px;padding-top:4px;font-size:12px}.原生阅读页 .站头 .站语言{margin-left:auto}}
 /* 文言：首简而名实俱存。汉语：包身份并排，缩短阅读前的固定区域，不隐藏所有者与版本。 */
 .原生阅读页 .站头{min-height:60px;padding-top:10px;padding-bottom:10px}
 .原生阅读页 .包页面{margin-top:18px}
@@ -238,3 +236,44 @@ body.浏览模式 #包导航 a{padding:8px 14px;text-decoration:none;font-size:1
 .市场页 .包卡片主{font-size:11px;line-height:1.7}
 @media(max-width:800px){.市场页 .市场标题 .主链接{margin-top:16px}.市场页 .市场标题{display:block}}
 @media(max-width:500px){.市场页{margin-top:22px;padding:0 16px}.市场页 .市场标题 h1{font-size:26px}.市场页 .市场搜索{margin-top:22px}.市场页 .市场列表{gap:12px}.市场页 .包卡片{padding:16px 18px}}
+
+/* 文言：有文者舒，无文者简；名与型相邻。汉语：无说明声明紧凑展示，不让重复空态占据阅读首屏。 */
+.原生阅读页 .文档声明.无说明{display:grid;grid-template-columns:minmax(120px,30%) minmax(0,1fr);align-items:baseline;gap:8px 18px;padding:11px 0}
+.原生阅读页 .文档声明.无说明 h3{margin:0;font-size:15px;overflow-wrap:anywhere}
+.原生阅读页 .文档声明.无说明 pre{padding:0;border:0;background:transparent;border-radius:0;font-size:13px;line-height:1.8}
+.原生阅读页 .文档声明 h3 a{text-decoration:none}
+.原生阅读页 .文档声明 h3 a:hover{text-decoration:underline}
+.原生阅读页 .文档声明:target{background:#f8efdf;box-shadow:0 0 0 8px #f8efdf;border-radius:2px}
+
+/* 文言：指行有迹，循迹可复。汉语：行号链接显示悬停、键盘焦点与网址定位状态。 */
+.原生阅读页 .源码号码 .源码行号{scroll-margin-top:76px;color:var(--豫次)}
+.原生阅读页 .源码号码 .源码行号:hover{background:var(--豫浅);color:var(--豫朱)}
+.原生阅读页 .源码号码 .源码行号:target{background:#f4e8d3;color:#873326;font-weight:600;box-shadow:inset 3px 0 0 var(--豫朱)}
+.原生阅读页 a:focus-visible,.原生阅读页 summary:focus-visible{outline:2px solid var(--豫朱);outline-offset:2px}
+.原生阅读页 .阅读工具条>h2{white-space:normal;overflow-wrap:anywhere;line-height:1.6}
+.原生阅读页 .手机文件目录{display:none}
+.原生阅读页 .阅读工具条 a{min-height:30px;display:flex;align-items:center;justify-content:center}
+.原生阅读页 .站品牌 b{color:var(--豫朱)}
+.原生阅读页 .站头 .站内导航 a[aria-current=page]{color:var(--豫朱)}
+.原生阅读页 .站头 .站名{border-left:1px solid var(--豫线);padding-left:18px;font-size:14px;white-space:nowrap}
+
+/* 文言：小屏先见其文，目录启而后陈。汉语：手机默认收起目录，长路径完整换行，源码横滚不撑宽整页。 */
+@media(max-width:620px){
+  .原生阅读页 .桌面文件目录{display:none}
+  .原生阅读页 .手机文件目录{display:block}
+  .原生阅读页 .阅读树{max-height:none;padding:0;overflow:visible;scrollbar-gutter:auto}
+  .原生阅读页 .手机文件目录>summary{padding:11px 14px;font-weight:600;color:var(--豫墨)}
+  .原生阅读页 .手机文件目录>div{max-height:240px;overflow:auto;padding:4px 8px 10px;border-top:1px solid var(--豫线)}
+  .原生阅读页 .阅读树 a{padding-top:8px;padding-bottom:8px}
+  .原生阅读页 .阅读工具条{align-items:flex-start}
+  .原生阅读页 .阅读工具条>h2{flex-basis:100%;font-size:12px}
+  .原生阅读页 .阅读工具条 nav{margin-left:0}
+  .原生阅读页 .阅读工具条 a{min-height:32px;padding:5px 13px}
+  .原生阅读页 .阅读正文:has(.源码双栏){overflow:visible}
+  .原生阅读页 .文档声明.无说明{grid-template-columns:minmax(0,1fr);gap:4px;padding:11px 0}
+  .原生阅读页 .文档声明.无说明 h3{font-size:15px}
+  .原生阅读页 .文档声明.无说明 pre{font-size:12px}
+  .原生阅读页 .模块文档{padding-top:12px}
+  .原生阅读页 .站头 .站内导航{column-gap:16px;row-gap:8px}
+  .原生阅读页 .站头 .站名{padding-left:12px;font-size:12px}
+}
