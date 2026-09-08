@@ -1,0 +1,47 @@
+--- a/crates/c-api/src/arrayref.rs
++++ b/crates/c-api/src/arrayref.rs
+@@ -134,3 +134,44 @@
+     let ty = arrayref.ty(&mut cx).expect("should be rooted");
+     Some(Box::new(ty.into()))
+ }
++
++// 文言：整段转字节，毋逐字立根。汉语：为自举宿主暴露已有批量复制 API，保持 GC 根与类型检查。
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn yy_wasmtime_arrayref_copy_bytes(
++    mut cx: WasmtimeStoreContextMut<'_>,
++    arrayref: Option<&wasmtime_arrayref_t>,
++    dst: *mut u8,
++    len: usize,
++) -> Option<Box<crate::wasmtime_error_t>> {
++    let result = (|| {
++        let arrayref = arrayref.and_then(|a| a.as_wasmtime())
++            .ok_or_else(|| wasmtime::format_err!("non-null arrayref required"))?;
++        let mut scope = RootScope::new(&mut cx);
++        let rooted = arrayref.to_rooted(&mut scope);
++        let bytes = if len == 0 { &mut [] } else { unsafe { std::slice::from_raw_parts_mut(dst, len) } };
++        rooted.copy_to_i8_slice(&mut scope, bytes)
++    })();
++    crate::handle_result(result, |_| {})
++}
++#[unsafe(no_mangle)]
++pub unsafe extern "C" fn yy_wasmtime_arrayref_from_bytes(
++    mut cx: WasmtimeStoreContextMut<'_>,
++    pre: &wasmtime_array_ref_pre_t,
++    src: *const u8,
++    len: usize,
++    out: &mut MaybeUninit<wasmtime_arrayref_t>,
++) -> Option<Box<crate::wasmtime_error_t>> {
++    let mut scope = RootScope::new(&mut cx);
++    let bytes = if len == 0 { &[] } else { unsafe { std::slice::from_raw_parts(src, len) } };
++    match ArrayRef::new_from_i8_slice(&mut scope, &pre.pre, bytes) {
++        Ok(arrayref) => {
++            let owned = arrayref.to_owned_rooted(&mut scope).expect("just allocated");
++            out.write(Some(owned).into());
++            None
++        }
++        Err(e) => {
++            out.write(None::<OwnedRooted<ArrayRef>>.into());
++            Some(Box::new(e.into()))
++        }
++    }
++}

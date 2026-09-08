@@ -1,0 +1,15 @@
+;; 文言：越界与伪柄皆拒之。汉语：验证导入函数的内存边界、畸形参数、无效句柄，不启动真实子进程。
+(module
+  (import "yuyan:build-host/v1" "call" (func (param i32 i32 i32 i32 i32) (result i32)))
+  (memory (export "memory") 1)
+  (data (i32.const 16) "\01\00\00\00\03\00\00\00a\00b")
+  (func (param i32) (param i32)
+    (if (i32.ne (local.get 0) (local.get 1)) (then unreachable)))
+  (func (export "_start")
+    (call 1 (call 0 (i32.const 1) (i32.const 65530) (i32.const 16) (i32.const 0) (i32.const 0)) (i32.const -14))
+    (call 1 (call 0 (i32.const 1) (i32.const 0) (i32.const 4) (i32.const 0) (i32.const 0)) (i32.const -7))
+    (call 1 (call 0 (i32.const 1) (i32.const 16) (i32.const 11) (i32.const 0) (i32.const 0)) (i32.const -22))
+    (call 1 (call 0 (i32.const 2) (i32.const 123) (i32.const 0) (i32.const 0) (i32.const 0)) (i32.const -9))
+    (call 1 (call 0 (i32.const 5) (i32.const 123) (i32.const 0) (i32.const 0) (i32.const 0)) (i32.const -9))
+    (call 1 (call 0 (i32.const 8) (i32.const 0) (i32.const -1) (i32.const 0) (i32.const 0)) (i32.const -22))
+    (call 1 (call 0 (i32.const 9) (i32.const 65535) (i32.const 10) (i32.const 0) (i32.const 0)) (i32.const -14))))

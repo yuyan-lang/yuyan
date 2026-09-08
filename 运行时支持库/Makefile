@@ -88,16 +88,18 @@ lib豫言运行时包调试$(版本).a: lib豫言运行时调试$(版本).a
 	rm -f libyyrtopt*.a
 
 # 因原生核心而适配网页汇编。WASI 首版静态库，仅收集可移植核心与显式替代接口。
+网页汇编桥接参数 := $(if $(filter 1,$(YY_WASM_HOST_BRIDGE)),-DYY_WASM_HOST_BRIDGE,)
+网页汇编初始堆 := $(if $(filter 1,$(YY_WASM_HOST_BRIDGE)),4194304,262144)
 网页汇编工具链 ?= $(abspath ../yy_wasi_sdk)
 网页汇编目录 := 构建/网页汇编
 网页汇编排除 := 子进程.c 传输控制协议.c 拉丁拼写.c 输入输出多路等待.c
 网页汇编核心 := $(filter-out $(addprefix $(原生源码目录)/,$(网页汇编排除)),$(原生编译源码))
-网页汇编源码 := $(网页汇编核心) $(abspath 网页汇编/宿主适配.c)
+网页汇编源码 := $(网页汇编核心) $(abspath 网页汇编/宿主适配.c) $(abspath 网页汇编/宿主进程.c)
 网页汇编对象 := $(addprefix $(网页汇编目录)/,$(notdir $(网页汇编源码:.c=.o)))
 
 .PHONY: 网页汇编库
 网页汇编库:
 	@mkdir -p $(网页汇编目录)
-	cd $(网页汇编目录) && "$(网页汇编工具链)/bin/clang" --target=wasm32-wasip1 -mtail-call -O2 -DNDEBUG -D初始堆大小=262144 -I "$(原生源码目录)" -c $(网页汇编源码)
+	cd $(网页汇编目录) && "$(网页汇编工具链)/bin/clang" --target=wasm32-wasip1 -mtail-call -O2 -DNDEBUG $(网页汇编桥接参数) -D初始堆大小=$(网页汇编初始堆) -I "$(原生源码目录)" -c $(网页汇编源码)
 	rm -f $(网页汇编目录)/运行时.a
 	"$(网页汇编工具链)/bin/llvm-ar" rcs $(网页汇编目录)/运行时.a $(网页汇编对象)

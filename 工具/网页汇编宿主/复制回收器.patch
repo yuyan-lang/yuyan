@@ -1,0 +1,53 @@
+--- a/crates/c-api/src/config.rs
++++ b/crates/c-api/src/config.rs
+@@ -57,6 +57,19 @@
+ #[unsafe(no_mangle)]
+ pub extern "C" fn wasm_config_new() -> Box<wasm_config_t> {
+-    Box::new(wasm_config_t {
+-        config: Config::default(),
+-    })
++    // 文言：此本专验复制回收。汉语：本地自举宿主显式采用复制式 GC 和 128 MiB 初始堆。
++    let mut config = Config::default();
++    config.collector(wasmtime::Collector::Copying);
++    // 文言：堆额可设，以验搬迁之费。汉语：只调整初始堆，保留默认 128 MiB 以复现旧对照。
++    let heap_mb = std::env::var("YY_WASM_GC_HEAP_MB").ok()
++        .map(|v| v.parse::<u64>().expect("YY_WASM_GC_HEAP_MB must be an integer"))
++        .unwrap_or(128);
++    assert!((64..=2048).contains(&heap_mb), "YY_WASM_GC_HEAP_MB must be in 64..=2048");
++    config.gc_heap_initial_size(heap_mb * 1024 * 1024);
++    config.async_stack_size(128 * 1024 * 1024);
++    config.max_wasm_stack(64 * 1024 * 1024);
++    // 文言：另试内联，循外设而定。汉语：显式设置后才启用内联，保留默认对照的可复现性。
++    if std::env::var("YY_WASM_GC_INLINE").as_deref() == Ok("1") {
++        config.compiler_inlining(wasmtime::Inlining::Yes);
++    }
++    Box::new(wasm_config_t { config })
+ }
+--- a/crates/c-api/build.rs
++++ b/crates/c-api/build.rs
+@@ -34,4 +34,10 @@
+ fn main() {
++    // 文言：同版头文已备，则复用之。汉语：本地宿主已持有同版本官方 C 头文件，无须再通过 CMake 安装。
++    if let Ok(headers) = env::var("YY_WASMTIME_PREBUILT_HEADERS") {
++        assert!(std::path::Path::new(&headers).join("wasmtime.h").exists());
++        println!("cargo:include={headers}");
++        return;
++    }
+     println!("cargo:rerun-if-changed=cmake/features.cmake");
+     println!("cargo:rerun-if-changed=cmake/install-headers.cmake");
+     println!("cargo:rerun-if-changed=include");
+--- a/crates/c-api/src/engine.rs
++++ b/crates/c-api/src/engine.rs
+@@ -35,5 +35,9 @@
+     let config = c.config;
+-    Box::new(wasm_engine_t {
+-        engine: Engine::new(&config).unwrap(),
+-    })
++    let engine = Engine::new(&config).unwrap();
++    // 文言：验实成之设，非徒记所求。汉语：诊断开关输出已构造引擎的实际配置，避免只验证设置代码。
++    if std::env::var("YY_WASM_GC_CONFIG_LOG").as_deref() == Ok("1") {
++        eprintln!("GC engine: heap_initial={} bytes, inlining={:?}",
++            engine.get_gc_heap_initial_size(), engine.get_compiler_inlining());
++    }
++    Box::new(wasm_engine_t { engine })
+ }

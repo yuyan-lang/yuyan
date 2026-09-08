@@ -13,11 +13,17 @@
 }
 
 豫言值 豫言_取得真实路径(豫言值 路径值) {
+#ifdef YY_WASM_HOST_BRIDGE
+    /* 文言：以宿主实径定包界。汉语：避免 WASI realpath 无法遍历预打开目录的父目录。 */
+    extern 豫言值 豫言_宿主真实路径(豫言值);
+    return 豫言_宿主真实路径(路径值);
+#else
     char *路径 = realpath(豫言值转字符串(路径值), NULL);
     if (路径 == NULL) 报错并中止("无法取得真实路径");
     豫言值 结果 = 复制字符串为豫言值(strlen(路径) + 1, 路径);
     free(路径);
     return 结果;
+#endif
 }
 
 
@@ -325,6 +331,11 @@ static FILE *打开写入文件(const char *文件名, const char *模式) {
 
 
 豫言值 豫言_获取当前工作目录() {
+#ifdef YY_WASM_HOST_BRIDGE
+    /* 文言：编译路径与宿主同名。汉语：宿主授予同名工作目录，避免把 guest 根路径传给原生工具。 */
+    const char *宿主目录 = getenv("YY_WASM_HOST_CWD");
+    if (宿主目录) return 复制字符串为豫言值(strlen(宿主目录) + 1, 宿主目录);
+#endif
     char* 路径缓冲区 = malloc(PATH_MAX * sizeof(char));
     if (路径缓冲区 == NULL) {
         报错并中止("无法为当前工作目录分配路径缓冲区");
