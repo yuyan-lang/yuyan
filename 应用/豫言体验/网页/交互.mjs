@@ -1,6 +1,6 @@
 // 古曰：新稿验成，即易今稿。
 // 今释：AI 生成验证通过的代码后直接替换编辑器内容，无需单独应用。
-import { 读取日志流 } from "./日志流.mjs";
+import { 浏览器编译, 浏览器助写, 停止编译 } from "./编译/客户端.mjs";
 import { 示例 as 共用示例 } from "./共用/示例.mjs";
 const 取 = 名 => document.getElementById(名);
 // 古曰：界面之辞可易，客之所出不易。今释：用独立节点翻译状态说明，原始诊断仍作为文本保留。
@@ -40,7 +40,7 @@ function 开始日志(标题) {
   取("编译日志计数").textContent = "等待编译";
   取("过程日志").querySelector(".日志空")?.remove(); 上个输出 = null; 上个输出键 = null;
   取("日志摘要").textContent = `${标题} · 等待响应`;
-  记日志({ type: "stage", label: `新请求：${标题}，等待编译室响应` });
+  记日志({ type: "stage", label: `新请求：${标题}` });
 }
 function 记日志(事件) {
   const 日志 = 取("过程日志");
@@ -90,16 +90,17 @@ function 完成日志(值) {
 function 刷新() {
   取("运行").disabled = !可用 || 运行中 || 生成中;
   取("生成").disabled = !可用 || !有助手 || 生成中 || 运行中;
+  取("停止").disabled = !运行中;
   取("字数").textContent = `${new TextEncoder().encode(取("源码").value).length} 字节`;
 }
 async function 请求(路径, 内容) {
-  记日志({ type: "request", label: "浏览器发送", data: { path: 路径, body: 内容 } });
-  const 回 = await fetch(路径, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/x-ndjson" }, body: JSON.stringify(内容), signal: AbortSignal.timeout(600000) });
-  const 值 = await 读取日志流(回, 记日志);
+  记日志({ type: "request", label: 路径 === "/api/run" ? "浏览器本地编译" : "请求 AI 助写", data: 内容 });
+  const 值 = 路径 === "/api/run" ? await 浏览器编译(内容.code, false, 记日志) : await 浏览器助写(内容, 记日志);
   完成日志(值);
   return 值;
 }
 取("源码").addEventListener("input", 刷新);
+取("停止").addEventListener("click", 停止编译);
 取("示例").addEventListener("change", () => { 取("源码").value = 示例们[取("示例").value]; 刷新(); });
 document.querySelectorAll(".需求示例").forEach(钮 => 钮.addEventListener("click", () => { 取("需求").value = 钮.dataset.prompt; 取("需求").focus(); }));
 取("源码").addEventListener("keydown", 事 => {
@@ -107,7 +108,7 @@ document.querySelectorAll(".需求示例").forEach(钮 => 钮.addEventListener("
   if ((事.metaKey || 事.ctrlKey) && 事.key === "Enter") { 事.preventDefault(); 取("运行").click(); }
 });
 取("运行").addEventListener("click", async () => {
-  运行中 = true; 刷新(); 取("执行状态").textContent = "编译运行中"; 写界面文字(取("输出"), "正在编译并运行…", "正编而行之…"); 写界面文字(取("诊断"), "首次启动可能需要稍等。", "初启须稍候。");
+  运行中 = true; 刷新(); 取("执行状态").textContent = "编译运行中"; 写界面文字(取("输出"), "正在浏览器内编译并运行…", "正于客端编而行之…"); 写界面文字(取("诊断"), "首次运行需要下载编译器和标准库。", "初行须取编器及官书。");
   取("输出").dataset.streaming = "false"; 开始日志("编译与运行");
   try {
     const 值 = await 请求("/api/run", { code: 取("源码").value });
@@ -131,9 +132,12 @@ document.querySelectorAll(".需求示例").forEach(钮 => 钮.addEventListener("
   } catch (错) { 完成日志({ error: 错.message }); 取("助手消息").textContent = 错.name === "TimeoutError" ? "等待超时，已收到的对话保留在下方。" : 错.message; }
   finally { 生成中 = false; 刷新(); }
 });
+可用 = typeof WebAssembly === "object" && typeof WebAssembly.promising === "function" && typeof Worker === "function" && typeof DecompressionStream === "function";
+取("服务状态").textContent = 可用 ? "浏览器内编译运行 · AI 状态查询中" : "请使用支持 WasmGC 和 JSPI 的新版浏览器";
+刷新();
 try {
   const 回 = await fetch("/api/status"); if (!回.ok) throw new Error();
-  const 状态 = await 回.json(); 可用 = 状态.enabled; 有助手 = 状态.ai;
-  取("服务状态").textContent = 可用 ? `编译室已就绪 · ${有助手 ? 状态.model : "AI 待配置"}` : "编译室准备中 · 可先编辑代码";
-} catch { 取("服务状态").textContent = "暂未连接到编译室"; }
+  const 状态 = await 回.json(); 有助手 = 状态.ai && 状态.backend === "wasmgc";
+  if (可用) 取("服务状态").textContent = `浏览器内编译运行 · ${有助手 ? 状态.model : "AI 暂不可用"}`;
+} catch { if (可用) 取("服务状态").textContent = "浏览器内编译运行 · AI 暂未连接"; }
 刷新();

@@ -4,7 +4,7 @@
 <body><div data-yuyan-site="playground" data-home="/"></div>
 <header><a class="标志" href="https://yuyan-lang.org/">豫<span>言</span></a><a class="页名" href="/">试写间</a><a href="https://github.com/yuyan-lang/yuyan" target="_blank" rel="noreferrer">语言与源码 ↗</a></header>
 <main>
-  <div class="题头"><div><p class="眉题">写下所想，让文字运行</p><h1>你的第一段豫言。</h1></div><p id="服务状态" role="status">正在连接编译室…</p></div>
+  <div class="题头"><div><p class="眉题">写下所想，让文字运行</p><h1>你的第一段豫言。</h1></div><p id="服务状态" role="status">正在准备浏览器编译…</p></div>
   <div class="工作台">
     <section class="助手"><div class="栏头"><h2>01 <span>与豫言共写</span></h2><span class="标签">AI 助写</span></div>
       <div class="助手内"><p class="引言">从一个想法开始。</p><p>描述你想写的程序，助手会生成豫言源码，并检查它能否编译。</p>
@@ -17,7 +17,7 @@
     <section class="编辑区"><div class="栏头"><h2>02 <span>落笔成篇</span></h2><label class="示例选择">示例 <select id="示例"><option value="你好">你好，豫言</option><option value="算术">做一道算术</option><option value="函数" data-han="函数与类型" data-wen="函数与类型">函数与类型</option><option value="匹配" data-han="模式匹配" data-wen="鉴形">模式匹配</option></select></label></div>
       <div class="文件栏"><span>程序。豫</span><span id="字数"></span></div>
       <label class="隐字" for="源码">豫言源码</label><textarea id="源码" spellcheck="false" autocomplete="off" autocapitalize="off" aria-describedby="编辑提示"></textarea>
-      <div class="编辑底"><small id="编辑提示">「」命名 · 『』字符串 · 。句末</small><button id="运行" class="主按钮" disabled>▶ 运行</button></div>
+      <div class="编辑底"><small id="编辑提示">「」命名 · 『』字符串 · 。句末</small><button id="停止" type="button" disabled data-han="停止" data-wen="止">停止</button><button id="运行" class="主按钮" disabled>▶ 运行</button></div>
     </section>
     <section class="结果区"><div class="栏头"><h2>03 <span>听见回响</span></h2><span id="执行状态" class="标签">待运行</span></div><div class="输出内"><p class="输出题">程序输出</p><pre id="输出" data-han="点击「运行」，在这里查看结果。" data-wen="按运行，于此观其果。" aria-live="polite">点击「运行」，在这里查看结果。</pre><section class="编译日志区"><div class="编译日志栏"><h3>编译器日志 <small id="编译日志计数">等待编译</small></h3><button id="切换编译日志" type="button" aria-expanded="false" aria-controls="编译日志">显示</button></div><pre id="编译日志" data-han="点击运行或生成后，编译器的实时输出会直接显示在这里。" data-wen="按运行或生成，编译之出随至随示。" hidden role="log" aria-label="编译器实时输出">点击运行或生成后，编译器的实时输出会直接显示在这里。</pre></section><p class="输出题">运行与错误诊断</p><pre id="诊断" data-han="尚无诊断。" data-wen="尚无诊误。" aria-live="polite">尚无诊断。</pre></div><p class="运行注">每次运行使用独立隔离空间。暂不支持联网、交互输入与第三方包。</p></section>
   </div>

@@ -7,20 +7,8 @@
     "binding": "ASSETS",
     "run_worker_first": true
   },
-  "containers": [
-    {
-      "class_name": "YuyanContainer",
-      "image": "registry.cloudflare.com/90c58fd531223290a358e4df01dadb5b/yy-playground@sha256:c2a79761108822faafd25736265738e0706f8e7aad4e2b6e9a3db6d57a420da5",
-      "max_instances": 2,
-      "instance_type": "standard-1"
-    }
-  ],
   "durable_objects": {
     "bindings": [
-      {
-        "name": "RUNNER",
-        "class_name": "YuyanContainer"
-      },
       {
         "name": "QUOTA",
         "class_name": "Quota"
@@ -39,7 +27,6 @@
   "vars": {
     "ENABLED": "true",
     "MODEL": "deepseek-v4-pro",
-    "RUNNER_RELEASE": "pro-tools-reaper-v1",
     "DAILY_RUN_LIMIT": "1000",
     "DAILY_AI_LIMIT": "100"
   },
@@ -53,6 +40,16 @@
       "pattern": "playground.yuyan-lang.org",
       "custom_domain": true,
       "zone_name": "yuyan-lang.org"
+    }
+  ],
+  "rules": [
+    {
+      "type": "Text",
+      "globs": [
+        "**/*.md",
+        "**/*。豫"
+      ],
+      "fallthrough": true
     }
   ]
 }
