@@ -1,0 +1,84 @@
+{
+  "日期": "2026-09-08",
+  "源码提交": "8860c57b",
+  "任务": "串行编译同一份编译器源码，三者均生成 WasmGC 编译器，每轮刷新编译缓存身份",
+  "引擎配置": {
+    "Cranelift": "Wasmtime 48.0.1，copying GC，2048 MiB 初始堆，Inlining::Yes，输入 AOT 已准备",
+    "V8": "Node 26.3.0 / V8 14.6.202.34-node.20，独立进程，默认延迟编译及分层优化，128 MiB worker 栈，默认 GC 堆",
+    "native": "当前原生编译器，同源码 --target=wasmgc"
+  },
+  "秒": {
+    "Cranelift": [
+      {
+        "real": 301.77,
+        "user": 293.97,
+        "sys": 5.77
+      },
+      {
+        "real": 226.91,
+        "user": 221.91,
+        "sys": 4.02
+      }
+    ],
+    "V8": [
+      {
+        "real": 81.28,
+        "user": 92.67,
+        "sys": 6.02
+      },
+      {
+        "real": 75.74,
+        "user": 85.98,
+        "sys": 5.66
+      }
+    ],
+    "native": [
+      {
+        "real": 117.49,
+        "user": 112.29,
+        "sys": 3.23
+      },
+      {
+        "real": 107.78,
+        "user": 104.53,
+        "sys": 2.56
+      }
+    ]
+  },
+  "均值秒": {
+    "Cranelift": 264.34,
+    "V8": 78.51,
+    "native": 112.635
+  },
+  "AOT准备秒": {
+    "real": 78.32,
+    "user": 85.15,
+    "sys": 2.72
+  },
+  "已剔除": {
+    "文件": "yy三路原生二时间.txt",
+    "原因": "20:46:52 合盖后反复 Sleep/DarkWake，随后长休眠；已通过原执行会话中断，退出130，未完成编译。"
+  },
+  "有效窗口": [
+    {
+      "开始": "2026-09-08 20:37:56",
+      "结束": "2026-09-08 20:46:17"
+    },
+    {
+      "开始": "2026-09-08 21:10:21",
+      "结束": "2026-09-08 21:17:40"
+    }
+  ],
+  "复测休眠事件数": 0,
+  "产物SHA256": {
+    "yy三路种子.wasm": "a4bc35c1b8b0686f8c4a40170bb7f2a0267334c0f5d61ad4a444c269a6cdd999",
+    "yy三路种子.cwasm": "88c5ccc500213fff15c4cdd738f9b87e623590ec4ad4f347429b730a0ff868b3",
+    "yy三路原生": "b2bd4d9e3a0dd8727f10e4ccf036dfe48ecf9970f760eb8d9926ca8042334c37",
+    "yy三路克兰.wasm": "415099fde18db7e5bef1866a07bf4f1a5ea3cbb72df7e277db993a23a7dfc0c0",
+    "yy三路节点.wasm": "415099fde18db7e5bef1866a07bf4f1a5ea3cbb72df7e277db993a23a7dfc0c0",
+    "yy三路原生.wasm": "415099fde18db7e5bef1866a07bf4f1a5ea3cbb72df7e277db993a23a7dfc0c0",
+    "yy三路克兰复测.wasm": "415099fde18db7e5bef1866a07bf4f1a5ea3cbb72df7e277db993a23a7dfc0c0",
+    "yy三路节点复测.wasm": "415099fde18db7e5bef1866a07bf4f1a5ea3cbb72df7e277db993a23a7dfc0c0",
+    "yy三路原生复测.wasm": "415099fde18db7e5bef1866a07bf4f1a5ea3cbb72df7e277db993a23a7dfc0c0"
+  }
+}
