@@ -23,7 +23,7 @@ function fixture(){
   write(join(kit,'yy豫构'),'#!/bin/sh\nwhile [ "$#" -gt 0 ]; do if [ "$1" = "--输出" ]; then shift; printf "binary" > "$1"; chmod +x "$1"; fi; shift; done\n',0o755);
   write(join(kit,'yy文档网站生成器'),'#!/bin/sh\n[ "$1" = "构建包" ] || exit 9\n[ -f "$2" ] || exit 8\nmkdir -p "$3"\nprintf "<!doctype html><body>测试文档</body>" > "$3/index.html"\n',0o755);
   write(join(kit,'yy源码树浏览器'),'#!/bin/sh\n[ "$1" = "构建源码" ] || exit 9\n[ -d "$2" ] || exit 8\nmkdir -p "$3"\nprintf "<!doctype html><body>源码浏览</body>" > "$3/index.html"\n',0o755);
-  for(const p of ['LICENSE','运行时支持库/Makefile','运行时支持库/原生/头.h','运行时支持库/库.a','网站/共用/主题.css','网站/共用/界面.js','工具/文档网站生成器/界面.css','工具/源码树浏览器/资源/界面.css'])write(join(kit,p),'fixture');
+  for(const p of ['LICENSE','运行时支持库/Makefile','运行时支持库/原生/头.h','运行时支持库/库.a','工具/文档界面/主题.css','工具/文档界面/界面.js','工具/文档网站生成器/界面.css','工具/源码树浏览器/资源/界面.css'])write(join(kit,p),'fixture');
   function pack(name,owner='甲',exe=false){
     const dir=join(root,name);
     write(join(dir,name+'。包。豫'),`「名称」者『${name}』也。「所有者」者『${owner}』也。「版本」者『1.0.0』也。「类型」者「典」【「种类」者『${exe?'可执行文件':'库'}』也，${exe?'「入口」者『入口』也，「文件名」者『yy样例』也，':''}】也。「简介」者『测试』也。「说明」者「典」【「汉语」者『说明.汉语.md』也，「文言」者『说明.文言.md』也，】也。`);
