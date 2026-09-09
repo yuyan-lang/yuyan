@@ -7,21 +7,8 @@
     "binding": "ASSETS",
     "run_worker_first": true
   },
-  "containers": [
-    {
-      "class_name": "YuyanContainer",
-      "image": "./容器构建文件",
-      "image_build_context": "../..",
-      "max_instances": 2,
-      "instance_type": "standard-1"
-    }
-  ],
   "durable_objects": {
     "bindings": [
-      {
-        "name": "RUNNER",
-        "class_name": "YuyanContainer"
-      },
       {
         "name": "QUOTA",
         "class_name": "Quota"
@@ -40,7 +27,6 @@
   "vars": {
     "ENABLED": "false",
     "MODEL": "deepseek-v4-pro",
-    "RUNNER_RELEASE": "pro-tools-v1",
     "DAILY_RUN_LIMIT": "1000",
     "DAILY_AI_LIMIT": "100"
   },
@@ -53,6 +39,16 @@
       "pattern": "playground.yuyan-lang.org",
       "custom_domain": true,
       "zone_name": "yuyan-lang.org"
+    }
+  ],
+  "rules": [
+    {
+      "type": "Text",
+      "globs": [
+        "**/*.md",
+        "**/*。豫"
+      ],
+      "fallthrough": true
     }
   ]
 }
