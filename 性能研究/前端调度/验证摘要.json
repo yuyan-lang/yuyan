@@ -1,0 +1,132 @@
+{
+  "日期": "2026-09-09",
+  "平台": "Apple M5 Pro / macOS arm64",
+  "并发": 18,
+  "驱动编译器": "yy调度对照编译器",
+  "驱动SHA256": "033a8b2b993c4a1bcaa0a45a666cbf4a867062aba2d0618c3aab994779ea7d38",
+  "源码指纹": "计时源码指纹.json",
+  "包上下文": ".yybuild/豫构上下文/30.上下文",
+  "包上下文SHA256": "bc4dc3cbd3cab62ab4c24bcfbc48833ca392181a4961dab612c1e3c32a69ffad",
+  "公共参数": [
+    "豫言编译器/入口。豫",
+    "--package-context",
+    ".yybuild/豫构上下文/30.上下文",
+    "--parallel",
+    "-j",
+    "18",
+    "--do-not-load-cache",
+    "-c"
+  ],
+  "原生附加参数": [
+    "--native-link-inputs",
+    "yy自举原生链接清单"
+  ],
+  "结果": [
+    {
+      "名称": "WasmGC合并一",
+      "目标": "wasmgc-anf",
+      "粒度": "combined",
+      "秒": {
+        "real": 23.17,
+        "user": 81.31,
+        "sys": 9.97
+      },
+      "产物": "yy前端合并一.wasm",
+      "产物SHA256": "ff74df5a490d705fe683c0761a1ec3bf1122cd4296a3a8321c744762269c3539"
+    },
+    {
+      "名称": "WasmGC拆分一",
+      "目标": "wasmgc-anf",
+      "粒度": "split",
+      "秒": {
+        "real": 18.93,
+        "user": 91.98,
+        "sys": 20.23
+      },
+      "产物": "yy前端拆分一.wasm",
+      "产物SHA256": "13d035acb0408dc6261d763aa9fae5fce07829ab4220379b10c48fccdbd113dd"
+    },
+    {
+      "名称": "WasmGC拆分二",
+      "目标": "wasmgc-anf",
+      "粒度": "split",
+      "秒": {
+        "real": 18.16,
+        "user": 86.24,
+        "sys": 20.93
+      },
+      "产物": "yy前端拆分二.wasm",
+      "产物SHA256": "13d035acb0408dc6261d763aa9fae5fce07829ab4220379b10c48fccdbd113dd"
+    },
+    {
+      "名称": "WasmGC合并二",
+      "目标": "wasmgc-anf",
+      "粒度": "combined",
+      "秒": {
+        "real": 22.35,
+        "user": 73.38,
+        "sys": 11.33
+      },
+      "产物": "yy前端合并二.wasm",
+      "产物SHA256": "ff74df5a490d705fe683c0761a1ec3bf1122cd4296a3a8321c744762269c3539"
+    },
+    {
+      "名称": "shadow合并",
+      "目标": "shadow",
+      "粒度": "combined",
+      "秒": {
+        "real": 73.65,
+        "user": 123.46,
+        "sys": 12.75
+      },
+      "产物": "yy影子前端合并",
+      "产物SHA256": "1fb97b82ae629d052894b3baa08ac626df3ef0fbca921003aaed9557cfd43dff"
+    },
+    {
+      "名称": "shadow拆分",
+      "目标": "shadow",
+      "粒度": "split",
+      "秒": {
+        "real": 68.73,
+        "user": 131.91,
+        "sys": 24.31
+      },
+      "产物": "yy影子前端拆分",
+      "产物SHA256": "41936b6b69b1fd1efef4d36d9ba7e9cdfafac15312f507f31155d930b40532f4"
+    }
+  ],
+  "重复产物一致": {
+    "合并": true,
+    "拆分": true
+  },
+  "跨模式差异": "264 条模式匹配诊断字符串及 16 处字符串长度；其余 WAT 相同。shadow C 去除字符串与其长度编码后相同，帮助输出相同。",
+  "Wasm产物自举": {
+    "下一代一致": true,
+    "下一代SHA256": "5ff87ead0d8a80e85242c5224e817a20502faa5e797e94afa3453db98b6e98af",
+    "模式": "Node/V8，串行全量自举，两路并行验证，不计入性能"
+  },
+  "最终native固定点": {
+    "一致": true,
+    "SHA256": "d4407e6574d842a088228e6713def01ff6365acc2d60d43bd8107a656ac15228",
+    "类型检查": "yy3_bs --type-check-only --parallel 通过",
+    "旧stable": "首级及诊断重跑均失败：文件夹未找到；以已有可信编译器通过豫构构建 yy2",
+    "缓存": "默认值修改后增量固定点曾失败；touch yy2 后按规定的后两级管线重跑并通过"
+  },
+  "调度器测试": "并发上限、失败停派与收拢、环、动态图、阶段优先级、同级顺序、被阻塞高优先级、粒度选项边界均通过",
+  "计时后源码调整": "仅将整卷目标默认前端粒度从 combined 改为 split 及修改说明注释；正式计时均显式指定粒度",
+  "默认拆分验证": {
+    "成功": true,
+    "各阶段启动数": {
+      "dependency-analysis": 182,
+      "parse": 182,
+      "type-check-and-erase": 182,
+      "cross-module-optimize": 182,
+      "pre-closure-convert": 182,
+      "exec-gen": 1
+    },
+    "SHA256": "4034abd7b75f369e12909471da183e1152efcad14482bb0acf507e4ce8bc8d80"
+  },
+  "计时后实际源码差异": [
+    "库/构建基础/并行编译。豫"
+  ]
+}

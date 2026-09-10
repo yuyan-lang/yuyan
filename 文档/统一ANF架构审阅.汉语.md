@@ -1,3 +1,5 @@
+现行默认目标为 `native`：统一 ANF → C → clang，并使用影子根栈。`llvm`、`shadow` 是兼容别名。`wasmgc` 使用同一 ANF；`wasm`、`wasmgc-anf` 是其别名。旧手动栈 LLVM/WASI 代码生成器已移除。运行时仍保留旧种子所需 ABI；这不是可选后端。可移植自举包改为 C 源码。循环节点、完整原语效果表等后续事项仍以正文限制为准。
+
 # 统一 ANF 架构审阅稿
 
 状态：方案已进入实现。已确定带结果的 if、native 真实调用栈＋shadow stack、不允许保存 continuation、保留默认阶段导出。本文以下包含完整目标设计，不代表全部条目已经落地；当前实验目标为 `--target=shadow` 和 `--target=wasmgc-anf`。这里的示例是 IR 展示草案，不是已经支持的豫言源码语法。
