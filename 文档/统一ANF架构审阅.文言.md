@@ -1,3 +1,5 @@
+今以 native 为默认，由统一正则生 C，以 clang 成器，根存影栈。llvm、shadow 皆其别名；wasmgc 同用正则，wasm、wasmgc-anf 皆其别名。旧手栈 LLVM/WASI 生码已去；运行时留旧种 ABI，非别立后端。可移植种改载 C。循环与原语效果诸未竟事，仍见正文。
+
 # 统一 ANF 架构审阅稿
 
 议已入工。今定结果 if、原生真栈与影子根栈，续延不得保存，默认导出仍旧。下文兼载全案，非谓诸项皆成；实验目标为 `shadow` 与 `wasmgc-anf`。

@@ -45,21 +45,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --no-link                           只生成模块产物，不链接或运行可执行文件
     编译输入须由 yy豫构 提供包上下文，不再提供特殊标准库搜索路径。
     --whole-program-opt                  使用全局编译优化
-    --do-not-optimize                    不执行任何包括LLVM在内的任何优化
+    --do-not-optimize                    原生使用 -O0 并链接调试运行时
     -O0, -O[1,2,3,5,8,13,21]             执行0,1,2,3,5,8,13或21次优化
-    --optimize-intermediate-files        优化中间文件
+    --optimize                          原生默认已启用整程序 -O3/LTO
     --static-linking                     使用静态链接生成可执行文件
-    --target=[llvm,wasm]                 指定原生或实验性 Wasm 目标
-    --wasi-sdk PATH                      WASI SDK 目录，默认 ./yy_wasi_sdk
+    --target=[native,wasmgc]             统一 ANF 后端；默认 native，真实调用栈与影子根栈
+    llvm/shadow 为 native 别名；wasm/wasmgc-anf 为 WasmGC 别名
+    --frontend-tasks=[split,combined]    前端并行任务粒度，默认 split
     --mode=[regular,worker]              指定运行模式（用于多任务处理）
     --worker-task=TASK                   指定单一工作模式(worker)当前任务
     --self-integrity-check               检查自身完整性
-    --no-llvm-target-triple              不使用LLVM的目标三元组
-    --override-llvm-target-triple ARG    使用指定的LLVM目标三元组
+    --no-llvm-target-triple              兼容选项；统一 C 源码不写目标三元组
+    --override-llvm-target-triple ARG    向 native 的 clang 传递 -target
     --override-add-file-dependency PATH  用于在单一工作模式下覆写文件依赖
     --no-debug-print                     不打印调试信息
     --no-dependency-check                不检查依赖修改时间
-    --print-llvm-commands                打印执行的LLVM命令
+    --print-llvm-commands                打印 native 的 clang 链接命令
     --print-opt-info                     打印优化的调试信息
     --about                              显示版权信息
     --version                            显示软件当前版本』也。
