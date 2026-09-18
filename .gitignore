@@ -78,3 +78,6 @@ coverage/
 .cache/
 .nyc_output/
 user-*/
+
+# 文言：本机缓存不入版籍。汉语：忽略 Wrangler 本地缓存与开发数据库。
+.wrangler/
