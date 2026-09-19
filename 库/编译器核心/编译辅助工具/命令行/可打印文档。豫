@@ -48,6 +48,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --do-not-optimize                    原生使用 -O0 并链接调试运行时
     -O0, -O[1,2,3,5,8,13,21]             执行0,1,2,3,5,8,13或21次优化
     --optimize                          原生默认已启用整程序 -O3/LTO
+    --native-lto=[full,thin]            原生链接优化，默认 full；thin 为性能对照
     --static-linking                     使用静态链接生成可执行文件
     --target=[native,wasmgc]             统一 ANF 后端；默认 native，真实调用栈与影子根栈
     llvm/shadow 为 native 别名；wasm/wasmgc-anf 为 WasmGC 别名

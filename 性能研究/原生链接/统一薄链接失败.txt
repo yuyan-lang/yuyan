@@ -1,0 +1,6 @@
+LLVM ERROR: Unsupported stack probing method
+clang: error: unable to execute command: Abort trap: 6
+clang: error: linker command failed due to signal (use -v to see invocation)
+real 3.95
+user 3.73
+sys 0.16

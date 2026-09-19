@@ -1,0 +1,6 @@
+模式,输入,输出,墙钟秒,用户CPU秒,系统CPU秒,任务数,输出SHA256
+线程,yy网页最终种子.wasm,yy网页终一.wasm,21.14,116.26,8.14,856,51e55088ce1c976bbfc1cc26d66d8010a2cc9eb6d9152796fe0af673d9bed0f0
+线程,yy网页终一.wasm,yy网页终二.wasm,21.45,118.90,8.09,856,51e55088ce1c976bbfc1cc26d66d8010a2cc9eb6d9152796fe0af673d9bed0f0
+线程,yy网页终二.wasm,yy网页终三.wasm,21.82,119.64,8.36,856,51e55088ce1c976bbfc1cc26d66d8010a2cc9eb6d9152796fe0af673d9bed0f0
+串行,yy网页终三.wasm,yy网页最终串行.wasm,83.33,93.07,4.98,,766151f2b8f69f33b75c068f0edb068ca3d322644d84f74fc81ae2acb36206af
+进程,yy网页终三.wasm,yy网页最终进程.wasm,39.97,426.46,38.63,856,51e55088ce1c976bbfc1cc26d66d8010a2cc9eb6d9152796fe0af673d9bed0f0

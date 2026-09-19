@@ -2,28 +2,39 @@
 'use strict';
 const 文件 = require('node:fs'), 路径 = require('node:path'), 系统 = require('node:os');
 const 子进程 = require('node:child_process');
-const {Worker, isMainThread, workerData} = require('node:worker_threads');
+const {Worker, MessageChannel, isMainThread, workerData, threadId} = require('node:worker_threads');
+const {接管进程, 客体请求} = require('./进程桥接.cjs');
+const {建立编译线程} = require('./编译线程.cjs');
+const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
 if (isMainThread) {
-  const 工 = new Worker(__filename, {workerData: process.argv.slice(2), resourceLimits:{stackSizeMb:128}});
+  // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
+  const {port1, port2} = new MessageChannel(), 信号 = new SharedArrayBuffer(4);
+  const 模式=process.env.YY_NODE_COMPILER_WORKERS??'threads';
+  if(!['process','threads'].includes(模式))throw Error('YY_NODE_COMPILER_WORKERS 须为 process 或 threads');
+  const 清理 = 接管进程(port1, 信号, 模式==='threads'?建立编译线程(__filename,process.argv[2],选引擎参数(process.execArgv)):null);
+  let 终止码 = null;
+  const 工 = new Worker(__filename, {workerData: {参数:process.argv.slice(2), 端口:port2, 信号}, transferList:[port2], resourceLimits:{stackSizeMb:128}});
   工.on('error', 错 => {console.error(错); process.exitCode=1;});
-  工.on('exit', 码 => {process.exitCode=码;});
+  工.on('exit', 码 => {清理(); process.exitCode=终止码??码;});
+  for (const 信 of ['SIGINT', 'SIGTERM']) process.once(信, () => {终止码=信==='SIGINT'?130:143; 清理(); 工.terminate();});
 } else {
   try {
     let 缓存=null;
-    const 轮数=Number(process.env.YY_NODE_REPEAT??1);
+    const 轮数=workerData.编译线程?1:Number(process.env.YY_NODE_REPEAT??1);
     if(!Number.isInteger(轮数)||轮数<1||轮数>5)throw Error('重复次数须为一至五');
     for(let 轮=1;轮<=轮数;轮++){
-      const 参数=[...workerData];
+      const 参数=[...workerData.参数];
       if(轮>1){const 当前=new Date();文件.utimesSync(参数[0],当前,当前);const 位=参数.indexOf('-o');if(位<0)throw Error('重复验证须指定 -o');参数[位+1]=参数[位+1]+'.第'+轮+'.wasm';}
       缓存=执行(参数,缓存,轮);
     }
   } catch (错) { console.error(错); process.exitCode=1; }
+  finally {workerData.端口.close();}
 }
 function 执行(参数, 缓存, 轮) {
   const 开始=performance.now();
   const 模块路径=路径.resolve(参数[0]), 客参数=参数.slice(1);
-  const 桥=new WebAssembly.Instance(new WebAssembly.Module(文件.readFileSync('yy节点值桥接.wasm'))).exports;
-  const 模块=缓存??new WebAssembly.Module(文件.readFileSync(模块路径));
+  const 桥=new WebAssembly.Instance(workerData.桥模块??new WebAssembly.Module(文件.readFileSync('yy节点值桥接.wasm'))).exports;
+  const 模块=缓存??workerData.模块??new WebAssembly.Module(文件.readFileSync(模块路径));
   const 编译毕=performance.now();
   function 留字节(数) { const 差=数-桥.memory.buffer.byteLength; if(差>0) 桥.memory.grow(Math.ceil(差/65536)); }
   function 解(值) {
@@ -50,8 +61,14 @@ function 执行(参数, 缓存, 轮) {
   const 数=值=>Number(值?.小数??值);
   const 列=诸值=>[诸值,诸值.length];
   const 可执行=名=>{try{文件.accessSync(名,文件.constants.X_OK);return 文件.statSync(名).isFile();}catch{return false;}};
+  // 文言：线程之出各归其管。汉语：内部编译线程通过 Worker 标准流汇集输出，不能直接写共享进程的文件描述符。
+  const 写输出=(号,值)=>workerData.编译线程?(号===1?process.stdout:process.stderr).write(值):文件.writeSync(号,值);
   function 精确小数(值){const 数字=数(值);if(Object.is(数字,-0))return '-0';if(!Number.isFinite(数字))return String(数字).toLowerCase().replace('infinity','inf');const [尾,指数]=数字.toExponential(16).split('e');const 幂=Number(指数);if(幂 < -4 || 幂 >= 17)return 尾.replace(/\.?0+$/,'')+'e'+(幂>=0?'+':'-')+String(Math.abs(幂)).padStart(2,'0');return 数字.toFixed(Math.max(0,16-幂)).replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'');}
-  function 运行子进程(名,参){let 程序=文(名),参数组=参[0].map(文);if(路径.resolve(程序)===模块路径 || 程序.endsWith('.wasm')){参数组=[__filename,路径.resolve(程序),...参数组];程序=process.execPath;}const 果=子进程.spawnSync(程序,参数组,{maxBuffer:256*1024*1024});if(果.error)throw 果.error;const 结果=[果.status===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=果.status??1;return 结果;}
+  // 文言：诸客同用引擎之制，不令调参独及调度者。汉语：传播显式 Wasm 与 V8 线程池选项；不传播调试端口或 CPU 剖析输出选项。
+  const 引擎参数=workerData.引擎参数??选引擎参数(process.execArgv);
+  function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文);const 客体=路径.resolve(程序)===模块路径 || 程序.endsWith('.wasm');if(客体){参数组=[...引擎参数,__filename,路径.resolve(程序),...参数组];程序=process.execPath;}return [程序,参数组,客体];}
+  function 运行子进程(名,参){const [程序,参数组,客体]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{maxBuffer:256*1024*1024,env:客体?{...process.env,YY_NODE_REPEAT:'1'}:process.env});if(果.error)throw 果.error;const 结果=[果.status===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=果.status??1;return 结果;}
+  const 请求进程=客体请求(workerData.端口,workerData.信号);
   const 原语={
     豫言_存放包上下文:内容=>{for(const 名 of 文件.readdirSync(".yybuild/豫构上下文")){if(!名.endsWith(".上下文"))continue;const 径=路径.resolve(".yybuild/豫构上下文",名);if(文件.readFileSync(径).equals(内容))return 径;}throw Error("请先用豫构准备相同包上下文");},
     豫言_获取命令行程序名:()=>模块路径,
@@ -76,15 +93,19 @@ function 执行(参数, 缓存, 轮) {
     豫言_路径可执行:名=>可执行(文(名)),
     豫言_查找可执行程序:名=>{const 候选=文(名).includes('/')?[文(名)]:(process.env.PATH??'').split(':').map(径=>路径.join(径,文(名)));const 找到=候选.find(可执行);return [!!找到,找到?路径.resolve(找到):''];},
     豫言_在线处理器数量:()=>系统.availableParallelism(),
+    豫言_启动异步子进程:(名,参)=>请求进程('启动',...子进程参数(名,参)),
+    豫言_尝试收取异步子进程:号=>请求进程('收取',号),
+    // 文言：此桥唯候自身子进程。汉语：未知句柄返回错误事件，不冒充通用网络或文件描述符轮询。
+    豫言_异步_输入输出多路等待:(关注,超时)=>请求进程('等待',关注[0],数(超时)),
     豫言_运行于Windows:()=>process.platform==='win32',
     豫言_运行于MacOS:()=>process.platform==='darwin',
     豫言_运行于Linux:()=>process.platform==='linux',
     豫言_可绘监视面板:()=>false,
     豫言_标准输出是终端:()=>false,
     豫言_标准输入是终端:()=>false,
-    豫言_打印行:值=>{文件.writeSync(1,Buffer.concat([值,Buffer.from('\n')]));},
-    豫言_标准错误打印行:值=>{文件.writeSync(2,Buffer.concat([值,Buffer.from('\n')]));},
-    豫言_打印字符串:值=>{文件.writeSync(1,值);},
+    豫言_打印行:值=>{写输出(1,Buffer.concat([值,Buffer.from('\n')]));},
+    豫言_标准错误打印行:值=>{写输出(2,Buffer.concat([值,Buffer.from('\n')]));},
+    豫言_打印字符串:值=>{写输出(1,值);},
     豫言_字节转字符串:值=>Buffer.from([数(值)]),
     豫言_整数转小数:值=>({小数:数(值)}),
     豫言_小数转整数:值=>BigInt(Math.trunc(数(值))),
@@ -106,17 +127,23 @@ function 执行(参数, 缓存, 轮) {
     豫言_源码字符串表示:值=>'『'+文(值).replace(/「：|』/g,字=>字==='』'?'「：』：」':'「：「：：」')+'』',
     豫言_同步运行子进程并获取输出:运行子进程,
     豫言_同步运行子进程:(名,参)=>运行子进程(名,参).状态,
-    豫言_同步运行子进程并传递输出:(名,参)=>{const 果=运行子进程(名,参);文件.writeSync(1,果[1]);文件.writeSync(2,果[2]);return 果.状态;},
-    豫言_同步运行子进程并继承标准流:(名,参)=>{const 果=运行子进程(名,参);文件.writeSync(1,果[1]);文件.writeSync(2,果[2]);return 果.状态;},
+    豫言_同步运行子进程并传递输出:(名,参)=>{const 果=运行子进程(名,参);写输出(1,果[1]);写输出(2,果[2]);return 果.状态;},
+    豫言_同步运行子进程并继承标准流:(名,参)=>{const 果=运行子进程(名,参);写输出(1,果[1]);写输出(2,果[2]);return 果.状态;},
     豫言_退出进程:码=>{const 错=Error('客体退出');错.退出码=数(码);throw 错;}
   };
   let 调用数=0;
+  // 文言：外术之名为常字，同值毋重解。汉语：编译器以不可变字面量指定原语；按 GC 对象身份弱缓存名称，不保留参数或结果。
+  const 名称缓存=new WeakMap();
+  const 原语次数=process.env.YY_NODE_PROFILE==='1'?Object.create(null):null;
   const 实例=new WebAssembly.Instance(模块,{'yuyan:gc-host/v1':{call:(名,参)=>{
-    const 名称=文(解(名)),参数组=解(参);调用数++;
+    let 名称=名称缓存.get(名);
+    if(名称===undefined){名称=文(解(名));名称缓存.set(名,名称);}
+    const 参数组=解(参);调用数++;
+    if(原语次数)原语次数[名称]=(原语次数[名称]??0)+1;
     if(!原语[名称])throw Error('未实现 Node 宿主原语：'+名称);
     try{return 编(原语[名称](...参数组));}catch(错){错.message=名称+': '+错.message;throw 错;}
   }}});
   try{实例.exports._start();}catch(错){if(错.退出码!==0)throw 错;}
-  console.error(JSON.stringify({轮次:轮,复用模块:!!缓存,引擎:process.versions.v8,模块准备毫秒:编译毕-开始,执行毫秒:performance.now()-编译毕,宿主调用数:调用数}));
+  console.error(JSON.stringify({轮次:轮,复用模块:!!缓存,引擎:process.versions.v8,进程:process.pid,线程:threadId,编译工作模式:process.env.YY_NODE_COMPILER_WORKERS??'threads',模块准备毫秒:编译毕-开始,执行毫秒:performance.now()-编译毕,宿主调用数:调用数,...(原语次数?{原语次数}:{})}));
   return 模块;
 }

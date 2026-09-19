@@ -1,0 +1,19 @@
+豫言初始堆已设为 64.00 MB
+        1.30 real         1.12 user         0.02 sys
+           136036352  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                8626  page reclaims
+                   2  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                 220  involuntary context switches
+         15719890324  instructions retired
+          4979704806  cycles elapsed
+           135479728  peak memory footprint

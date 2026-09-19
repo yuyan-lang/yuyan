@@ -37,6 +37,32 @@
  global.get $escape_counter ref.i31)
 (type $float (struct (field f64)))
 (type $bytes (array (mut i8)))
+;; 文言：整数自书于客堆，不出宿主；负极以无符号绝值除之。
+;; 汉语：完整 i64 的十进制转换在 Wasm 内完成，只分配一次结果；无符号取商兼容 INT64_MIN。
+(func $int_string (param $v (ref null eq)) (result (ref null eq))
+ (local $n i64) (local $rest i64) (local $negative i32)
+ (local $length i32) (local $position i32) (local $out (ref $bytes))
+ local.get $v call $unbox local.tee $n i64.const 0 i64.lt_s local.set $negative
+ local.get $negative if i64.const 0 local.get $n i64.sub local.set $n end
+ local.get $n local.set $rest
+ i32.const 1 local.set $length
+ block $counted
+  loop $count
+   local.get $rest i64.const 10 i64.lt_u br_if $counted
+   local.get $rest i64.const 10 i64.div_u local.set $rest
+   local.get $length i32.const 1 i32.add local.set $length
+   br $count
+  end
+ end
+ local.get $length local.get $negative i32.add local.tee $position array.new_default $bytes local.set $out
+ loop $digits
+  local.get $position i32.const 1 i32.sub local.set $position
+  local.get $out local.get $position
+  local.get $n i64.const 10 i64.rem_u i32.wrap_i64 i32.const 48 i32.add array.set $bytes
+  local.get $n i64.const 10 i64.div_u local.tee $n i64.const 0 i64.ne br_if $digits
+ end
+ local.get $negative if local.get $out i32.const 0 i32.const 45 array.set $bytes end
+ local.get $out)
 (global $exception (mut (ref null eq)) (ref.null eq))
 (func $new_uninit (param $n (ref null eq)) (result (ref null eq))
  ref.null eq local.get $n call $index array.new $tuple)

@@ -1,0 +1,19 @@
+{"轮次":1,"复用模块":false,"引擎":"14.6.202.34-node.20","进程":16751,"线程":1,"编译工作模式":"threads","模块准备毫秒":0.7441250000000039,"执行毫秒":437.241125,"宿主调用数":5}
+        0.50 real         0.49 user         0.02 sys
+            81756160  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+                5290  page reclaims
+                  76  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   0  voluntary context switches
+                2640  involuntary context switches
+         16480863032  instructions retired
+          2221512255  cycles elapsed
+            45699872  peak memory footprint
