@@ -1,0 +1,39 @@
+{
+  "version": 132,
+  "optimization": "O2",
+  "rows": [
+    {
+      "generation": "二代",
+      "seconds": 22.82
+    },
+    {
+      "generation": "三代",
+      "seconds": 22.31
+    }
+  ],
+  "hashes": [
+    {
+      "path": "yy编译器二进制O2.wasm",
+      "sha256": "5db62d15227a348e3e80b7c7b7ddb9a9712e1a28eff00b71b52ef739191cd301"
+    },
+    {
+      "path": "yy优化器二代.wasm",
+      "sha256": "5db62d15227a348e3e80b7c7b7ddb9a9712e1a28eff00b71b52ef739191cd301"
+    },
+    {
+      "path": "yy优化器三代.wasm",
+      "sha256": "5db62d15227a348e3e80b7c7b7ddb9a9712e1a28eff00b71b52ef739191cd301"
+    }
+  ],
+  "raw": [
+    {
+      "path": "yy优化器二代原始.wasm",
+      "identicalToBaseline": true
+    },
+    {
+      "path": "yy优化器三代原始.wasm",
+      "identicalToBaseline": true
+    }
+  ],
+  "mode": "完整冷缓存 Wasm 自举及 O2 后处理，外层 time 实测；未接入现有编译流程"
+}

@@ -1,0 +1,81 @@
+--- yy单用素数筛.wasm.wat	2026-09-20 03:37:05
++++ yy筛尾参原型.wat	2026-09-20 03:40:01
+@@ -106275,8 +106275,6 @@
+ 
+ else
+ local.get $a0
+-
+-ref.cast (ref $octs)
+ local.get $i3
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ i32.const 0 ref.i31
+@@ -106289,16 +106287,7 @@
+ i64.add
+ 
+ local.set $i6
+-local.get $a0
+- ref.cast (ref $octs)
+-local.get $i1
+-local.get $i2
+-local.get $i6
+-
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
++local.get $i6 local.set $i3
+ br $self
+ end return
+ )
+@@ -106907,8 +106896,6 @@
+ 
+ else
+ local.get $a0
+-
+-ref.cast (ref $octs)
+ local.get $i2
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get_u $octs i64.extend_i32_u
+@@ -106921,7 +106908,6 @@
+ 
+ local.set $i6
+ local.get $a0
+- ref.cast (ref $octs)
+ local.get $i1
+ local.get $i2
+ local.get $i6
+@@ -106940,7 +106926,6 @@
+ 
+ local.set $i9
+ local.get $a0
+- ref.cast (ref $octs)
+ local.get $i1
+ local.get $i9
+ 
+@@ -107462,8 +107447,6 @@
+ 
+ local.set $i5
+ local.get $a0
+-
+-ref.cast (ref $octs)
+ local.get $i2
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get_u $octs i64.extend_i32_u
+@@ -107479,16 +107462,7 @@
+ else
+ local.get $i3
+ end local.set $i8
+-local.get $a0
+- ref.cast (ref $octs)
+-local.get $i1
+-local.get $i5
+-local.get $i8
+-
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
++local.get $i5 local.get $i8 local.set $i3 local.set $i2
+ br $self
+ end return
+ )

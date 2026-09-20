@@ -1,0 +1,67 @@
+{
+  "基准提交": "e55c39dc54653b3a32fbe985913ac326d5ec3fac",
+  "Node": "v26.3.0",
+  "V8": "14.6.202.34-node.20",
+  "文件": [
+    {
+      "路径": "yy旋转二种子.wasm",
+      "字节": 2959641,
+      "sha256": "bf7ad8f10de40dfbae9b35a09e78f7af04b842ad155fc62ba3c0d22ea4c7dc8e"
+    },
+    {
+      "路径": "yy旋转二自举二代.wasm",
+      "字节": 2959641,
+      "sha256": "bf7ad8f10de40dfbae9b35a09e78f7af04b842ad155fc62ba3c0d22ea4c7dc8e"
+    },
+    {
+      "路径": "yy旋转二自举三代.wasm",
+      "字节": 2959641,
+      "sha256": "bf7ad8f10de40dfbae9b35a09e78f7af04b842ad155fc62ba3c0d22ea4c7dc8e"
+    },
+    {
+      "路径": "yy3_bs",
+      "字节": 3847656,
+      "sha256": "fb658d2e5a5e861ae51bf43c86d17e1cdc1100378a0b6a0eda02a6f1fb038aa0"
+    },
+    {
+      "路径": "yy4_bs",
+      "字节": 3847656,
+      "sha256": "fb658d2e5a5e861ae51bf43c86d17e1cdc1100378a0b6a0eda02a6f1fb038aa0"
+    },
+    {
+      "路径": "yy旋转二斐波那契.wasm",
+      "字节": 331444,
+      "sha256": "c1122a1173f186a212344aa317a228e94c8f7a28edb2bbb9ccd6d5fd0d06c807"
+    },
+    {
+      "路径": "yy旋转二素数筛.wasm",
+      "字节": 336842,
+      "sha256": "dd21f2bd9a95912bee8c7b1b4c27920b12406283dd36a127d3fa933a974126a6"
+    },
+    {
+      "路径": "yy旋转二矩阵乘法.wasm",
+      "字节": 337104,
+      "sha256": "904256f941a801c5f77a57e179aaa00c0138c0d40dfc9dfa7f785e67d7828d0e"
+    },
+    {
+      "路径": "yy旋转二快速排序.wasm",
+      "字节": 340640,
+      "sha256": "b02287ebe4b5cb89baf07b3081525b08d786016948ee2b40fb7a2c71a93f5038"
+    },
+    {
+      "路径": "yy旋转二树基准.wasm",
+      "字节": 337666,
+      "sha256": "aa6afba7b072d9c03a6f35274263f32917dbe1978bbfecdca96e61a12674bf94"
+    },
+    {
+      "路径": "yy旋转二数组基准.wasm",
+      "字节": 337669,
+      "sha256": "ee9ad238682dca42a7ff1f1f0aa1d1ce38c11bc1f9781a2686e1132843767b02"
+    },
+    {
+      "路径": "yy旋转二高阶调用.wasm",
+      "字节": 332946,
+      "sha256": "a92f9e98dd65ffc70fe74cd38bf50f79837b197b6748f1513852a2ddd37dae1c"
+    }
+  ]
+}

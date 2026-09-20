@@ -1,0 +1,44 @@
+[
+  {
+    "name": "斐波那契",
+    "file": "yy容器图栈斐波那契.wasm",
+    "baseline": "yy前缀栈斐波那契.wasm",
+    "identical": true
+  },
+  {
+    "name": "素数筛",
+    "file": "yy容器图栈素数筛.wasm",
+    "baseline": "yy前缀栈素数筛.wasm",
+    "identical": true
+  },
+  {
+    "name": "矩阵乘法",
+    "file": "yy容器图栈矩阵乘法.wasm",
+    "baseline": "yy前缀栈矩阵乘法.wasm",
+    "identical": true
+  },
+  {
+    "name": "树基准",
+    "file": "yy容器图栈树基准.wasm",
+    "baseline": "yy前缀栈树基准.wasm",
+    "identical": true
+  },
+  {
+    "name": "数组基准",
+    "file": "yy容器图栈数组基准.wasm",
+    "baseline": "yy前缀栈数组基准.wasm",
+    "identical": true
+  },
+  {
+    "name": "快速排序",
+    "file": "yy容器图栈快速排序.wasm",
+    "baseline": "yy前缀栈快速排序.wasm",
+    "identical": true
+  },
+  {
+    "name": "默认排序",
+    "file": "yy容器图栈默认排序.wasm",
+    "baseline": "yy前缀默认排序.wasm",
+    "identical": true
+  }
+]

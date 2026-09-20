@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "cases": 10086,
+  "checks": 280894,
+  "nonzeroBases": [
+    4096,
+    8192
+  ],
+  "scope": "Cross-index pointer copies, small address increments, -17 offset recomputation fallback, independent array simulation, disjoint-frame sentinel preservation, random i64 wrapping sums."
+}

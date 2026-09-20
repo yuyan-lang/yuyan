@@ -1,0 +1,20 @@
+--- yy逐项裸值.wat	2026-09-19 14:53:57
++++ yy值域裸值负数.wat	2026-09-19 14:55:05
+@@ -93072,7 +93072,7 @@
+ local.get $j local.get $a1 call $unbox i64.ge_u br_if $checked
+ local.get $a2 ref.cast (ref $ints) local.get $j i32.wrap_i64 array.get $ints
+ 
+-local.get $j i64.const 1 i64.add i64.ne if unreachable end
++local.get $j local.get $a1 call $unbox i64.sub i64.ne if unreachable end
+ local.get $j i64.const 1 i64.add local.set $j br $check
+ end end
+ local.get $i12 call $box
+@@ -94049,7 +94049,7 @@
+ local.get $i1
+ local.get $i2
+ i64.sub
+-
++i64.const -1 i64.mul
+ local.set $i4
+ local.get $a0
+ 

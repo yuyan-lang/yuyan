@@ -1,0 +1,41 @@
+{
+  "description": "默认GC模式，18个工作线程，禁用编译缓存，未清空操作系统页缓存；计时期间无并发构建",
+  "wasm": [
+    {
+      "file": "yy容器图定稿种子.wasm",
+      "sha256": "cf5b4bc9d90834d0c0139b239bf368ce62665b63398928212a87a83f0f77a45c"
+    },
+    {
+      "file": "yy容器图二代.wasm",
+      "sha256": "cf5b4bc9d90834d0c0139b239bf368ce62665b63398928212a87a83f0f77a45c"
+    },
+    {
+      "file": "yy容器图三代.wasm",
+      "sha256": "cf5b4bc9d90834d0c0139b239bf368ce62665b63398928212a87a83f0f77a45c"
+    }
+  ],
+  "native": [
+    {
+      "file": "yy3_bs",
+      "sha256": "d388568e49f86da0100a81145f1ea78bd645a657738cb526b8d3c4c400c1b1d4"
+    },
+    {
+      "file": "yy4_bs",
+      "sha256": "d388568e49f86da0100a81145f1ea78bd645a657738cb526b8d3c4c400c1b1d4"
+    }
+  ],
+  "coldBootstrap": [
+    {
+      "generation": "二代",
+      "wallSeconds": 21.57
+    },
+    {
+      "generation": "三代",
+      "wallSeconds": 23.01
+    }
+  ],
+  "nativeBootstrapPassed": true,
+  "typeChecksPassed": true,
+  "graphCases": 1020,
+  "allocationCodegenChanged": false
+}

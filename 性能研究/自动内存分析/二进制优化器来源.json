@@ -1,0 +1,9 @@
+{
+  "version": 132,
+  "release": "https://github.com/WebAssembly/binaryen/releases/tag/version_132",
+  "asset": "https://github.com/WebAssembly/binaryen/releases/download/version_132/binaryen-version_132-arm64-macos.tar.gz",
+  "sha256": "sha256:98aad827847af7ef990ed7098d885725c8e5b5aae75073403635617ae4e259aa",
+  "temporaryTool": "/tmp/yy二进制优化器132/bin/wasm-opt",
+  "compilerOriginalBytes": 3848573,
+  "compilerOptimizedBytes": 2235322
+}

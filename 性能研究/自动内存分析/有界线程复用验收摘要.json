@@ -1,0 +1,55 @@
+{
+  "nativeBootstrapPassed": true,
+  "native3Equals4": true,
+  "bothTypeChecksPassed": true,
+  "hostRegressionGroups": 10,
+  "kernelRegressionRounds": 36,
+  "finalColdSeconds": 15.84,
+  "artifacts": [
+    {
+      "file": "yy3_bs",
+      "sha256": "d388568e49f86da0100a81145f1ea78bd645a657738cb526b8d3c4c400c1b1d4"
+    },
+    {
+      "file": "yy4_bs",
+      "sha256": "d388568e49f86da0100a81145f1ea78bd645a657738cb526b8d3c4c400c1b1d4"
+    },
+    {
+      "file": "yy容器图三代.wasm",
+      "sha256": "cf5b4bc9d90834d0c0139b239bf368ce62665b63398928212a87a83f0f77a45c"
+    },
+    {
+      "file": "yy有界线程验收1.wasm",
+      "sha256": "cf5b4bc9d90834d0c0139b239bf368ce62665b63398928212a87a83f0f77a45c"
+    },
+    {
+      "file": "yy有界线程验收2.wasm",
+      "sha256": "cf5b4bc9d90834d0c0139b239bf368ce62665b63398928212a87a83f0f77a45c"
+    },
+    {
+      "file": "yy线程最终确认.wasm",
+      "sha256": "cf5b4bc9d90834d0c0139b239bf368ce62665b63398928212a87a83f0f77a45c"
+    }
+  ],
+  "files": [
+    {
+      "file": "工具/节点网页汇编宿主/宿主.cjs",
+      "sha256": "d4aeecd1d17923a243a7229005250452ebbfc1c3be108fcdc30c91d13fd3ff29"
+    },
+    {
+      "file": "工具/节点网页汇编宿主/编译线程.cjs",
+      "sha256": "44e6eae0628a3793005aad932355c63ca7c5168610cdc5e92d0887e7230818ca"
+    },
+    {
+      "file": "测试/节点宿主/线程复用。测试.cjs",
+      "sha256": "e12bfe4fb6f20cdc24aa281b7a2d98980c212be88a9c57ee55da4237d7976e65"
+    }
+  ],
+  "mode": {
+    "defaultReuse": true,
+    "maxJobsPerThread": 4,
+    "idleTimeoutMs": 250,
+    "optOut": "YY_NODE_COMPILER_REUSE=0"
+  },
+  "note": "原生首次链接遇旧候选缓存；touch stable 后完整流水线通过；最终冷确认包含取消竞态修正"
+}

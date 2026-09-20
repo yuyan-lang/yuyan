@@ -1,0 +1,28 @@
+{
+  "rows": [
+    {
+      "generation": "二代",
+      "seconds": 23.95
+    },
+    {
+      "generation": "三代",
+      "seconds": 24.34
+    }
+  ],
+  "hashes": [
+    {
+      "path": "yy栈保检种子.wasm",
+      "sha256": "bdd065849b258ebc441b85e5ad5462f71846e4c6f95049671fe3ab0883f09076"
+    },
+    {
+      "path": "yy栈保检二代.wasm",
+      "sha256": "bdd065849b258ebc441b85e5ad5462f71846e4c6f95049671fe3ab0883f09076"
+    },
+    {
+      "path": "yy栈保检三代.wasm",
+      "sha256": "bdd065849b258ebc441b85e5ad5462f71846e4c6f95049671fe3ab0883f09076"
+    }
+  ],
+  "identical": true,
+  "mode": "默认模式；--do-not-load-cache --parallel -j 18；本机完整 Wasm 自举"
+}

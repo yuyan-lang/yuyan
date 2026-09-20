@@ -1,0 +1,42 @@
+--- yy双步定稿排序.wasm.wat	2026-09-19 23:48:47
++++ yy双步倒数32原型.wat	2026-09-20 00:23:25
+@@ -107650,7 +107650,8 @@
+ (param $i2 i64)
+ (param $i3 i64)
+ (param $i4 i64)
+-(result i64) (local $u (ref null eq)) (local $j i64)
++(result i64) (local $yremaining i32)
++(local $u (ref null eq)) (local $j i64)
+ 
+ (local $a1 (ref null eq))
+ (local $a2 (ref null eq))
+@@ -107757,10 +107758,14 @@
+ 
+ local.get $i3 i64.const 1 i64.add local.set $i3
+ end
+-(block $ydone (loop $ybatch
+-local.get $i3
+-local.get $i1
+-i64.eq br_if $ydone
++local.get $i1 local.get $i3 i64.sub
++i32.wrap_i64
++i32.const 1 i32.shr_u
++local.tee $yremaining
++i32.eqz
++if
++else
++(loop $ybatch
+ 
+ local.get $a0
+ local.get $i3 i32.wrap_i64
+@@ -107869,7 +107874,9 @@
+ end
+ 
+ local.get $i3 i64.const 1 i64.add local.set $i3
+-br $ybatch))
++local.get $yremaining i32.const 1 i32.sub local.tee $yremaining
++br_if $ybatch)
++end
+ 
+ local.get $i4
+ )

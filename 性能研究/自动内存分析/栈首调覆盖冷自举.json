@@ -1,0 +1,14 @@
+[
+  {
+    "seed": "yy首调覆盖定稿种子.wasm",
+    "out": "yy首调覆盖二代.wasm",
+    "seconds": 21.85,
+    "identical": true
+  },
+  {
+    "seed": "yy首调覆盖二代.wasm",
+    "out": "yy首调覆盖三代.wasm",
+    "seconds": 23.66,
+    "identical": true
+  }
+]

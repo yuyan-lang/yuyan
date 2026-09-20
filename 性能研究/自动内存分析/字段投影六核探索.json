@@ -1,0 +1,74 @@
+[
+  {
+    "name": "斐波那契",
+    "file": "yy字段投影栈斐波那契.wasm",
+    "baseline": "yy容器图栈斐波那契.wasm",
+    "identical": false,
+    "oldFunctions": 795,
+    "newFunctions": 795,
+    "changed": [
+      "$f660"
+    ],
+    "changedHelper": "字典术_串典所有键_提升函数199"
+  },
+  {
+    "name": "素数筛",
+    "file": "yy字段投影栈素数筛.wasm",
+    "baseline": "yy容器图栈素数筛.wasm",
+    "identical": false,
+    "oldFunctions": 823,
+    "newFunctions": 823,
+    "changed": [
+      "$f660"
+    ],
+    "changedHelper": "字典术_串典所有键_提升函数199"
+  },
+  {
+    "name": "矩阵乘法",
+    "file": "yy字段投影栈矩阵乘法.wasm",
+    "baseline": "yy容器图栈矩阵乘法.wasm",
+    "identical": false,
+    "oldFunctions": 830,
+    "newFunctions": 830,
+    "changed": [
+      "$f660"
+    ],
+    "changedHelper": "字典术_串典所有键_提升函数199"
+  },
+  {
+    "name": "树基准",
+    "file": "yy字段投影栈树基准.wasm",
+    "baseline": "yy容器图栈树基准.wasm",
+    "identical": false,
+    "oldFunctions": 843,
+    "newFunctions": 843,
+    "changed": [
+      "$f691"
+    ],
+    "changedHelper": "字典术_串典所有键_提升函数199"
+  },
+  {
+    "name": "数组基准",
+    "file": "yy字段投影栈数组基准.wasm",
+    "baseline": "yy容器图栈数组基准.wasm",
+    "identical": false,
+    "oldFunctions": 843,
+    "newFunctions": 843,
+    "changed": [
+      "$f691"
+    ],
+    "changedHelper": "字典术_串典所有键_提升函数199"
+  },
+  {
+    "name": "快速排序",
+    "file": "yy字段投影栈快速排序.wasm",
+    "baseline": "yy容器图栈快速排序.wasm",
+    "identical": false,
+    "oldFunctions": 841,
+    "newFunctions": 841,
+    "changed": [
+      "$f660"
+    ],
+    "changedHelper": "字典术_串典所有键_提升函数199"
+  }
+]

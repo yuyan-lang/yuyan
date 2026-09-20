@@ -1,0 +1,174 @@
+--- yy本轮快速排序.wasm.wat	2026-09-19 14:26:23
++++ yy消融内联.wat	2026-09-19 14:52:34
+@@ -92490,6 +92490,34 @@
+ (local $i19 i64)
+ 
+ 
++(local $pu (ref null eq))
++(local $pj i64)
++(local $pa1 (ref null eq))
++(local $pa2 (ref null eq))
++(local $pa3 (ref null eq))
++(local $pa4 (ref null eq))
++(local $pa5 (ref null eq))
++(local $pa6 (ref null eq))
++(local $pa7 (ref null eq))
++(local $pa8 (ref null eq))
++(local $pa9 (ref null eq))
++(local $pa10 (ref null eq))
++(local $pa11 (ref null eq))
++(local $pa12 (ref null eq))
++(local $pa13 (ref null eq))
++(local $pa14 (ref null eq))
++(local $pa15 (ref null eq))
++(local $pa16 (ref null eq))
++(local $pa17 (ref null eq))
++(local $pa18 (ref null eq))
++(local $pi12 i64)
++(local $pi13 i64)
++(local $pi15 i64)
++(local $pa0 (ref $tuple))
++(local $pi1 i64)
++(local $pi2 i64)
++(local $pi3 i64)
++(local $pi4 i64)
+ (loop $self (result (ref null eq))
+ local.get $i2
+ local.get $i1
+@@ -92554,21 +92582,124 @@
+ local.set $a11
+ 
+ 
+-local.get $i2 call $box local.set $a2
+-
+-local.get $i1 call $box local.set $a1
+-local.get $i1 call $box local.set $a1
+ local.get $a0
+-
+-local.get $a2
+-
++local.get $i2
+ local.get $a11
+-
+-local.get $a1
+-
+-local.get $a1
++call $unbox
++local.get $i1
++local.get $i1
++local.set $pi4
++local.set $pi3
++local.set $pi2
++local.set $pi1
++local.set $pa0
++(block $partret (result (ref null eq))
++(loop $pself (result (ref null eq))
++local.get $pi3
++local.get $pi1
++i64.eq i64.extend_i32_u
++i32.wrap_i64 ref.i31
++local.set $pa5
++local.get $pa5
+ 
+-call $f756
++ref.cast (ref i31) i31.get_u if (result (ref null eq))
++local.get $pi4 call $box
++else
++local.get $pa0
++
++ref.cast (ref $tuple)
++local.get $pi3
++local.tee $pj i64.const 4294967295 i64.gt_u if unreachable end local.get $pj i32.wrap_i64
++array.get $tuple
++local.set $pa6
++local.get $pi2
++local.get $pa6
++
++local.tee $pu ref.test (ref i31) if (result i64) local.get $pu ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $pu ref.cast (ref $big) struct.get $big 0 end
++i64.gt_s i64.extend_i32_u
++i32.wrap_i64 ref.i31
++local.set $pa7
++local.get $pa7
++
++ref.cast (ref i31) i31.get_u if (result (ref null eq))
++local.get $pa0
++
++ref.cast (ref $tuple)
++local.get $pi3
++local.tee $pj i64.const 4294967295 i64.gt_u if unreachable end local.get $pj i32.wrap_i64
++array.get $tuple
++local.set $pa8
++local.get $pa0
++
++ref.cast (ref $tuple)
++local.get $pi4
++local.tee $pj i64.const 4294967295 i64.gt_u if unreachable end local.get $pj i32.wrap_i64
++array.get $tuple
++local.set $pa9
++local.get $pa0
++
++ref.cast (ref $tuple)
++local.get $pi3
++local.tee $pj i64.const 4294967295 i64.gt_u if unreachable end local.get $pj i32.wrap_i64
++local.get $pa9
++
++array.set $tuple ref.null eq
++local.set $pa10
++local.get $pa0
++
++ref.cast (ref $tuple)
++local.get $pi4
++local.tee $pj i64.const 4294967295 i64.gt_u if unreachable end local.get $pj i32.wrap_i64
++local.get $pa8
++
++array.set $tuple ref.null eq
++local.set $pa11
++local.get $pi3
++i64.const 1
++i64.add
++
++local.set $pi12
++local.get $pi4
++i64.const 1
++i64.add
++
++local.set $pi13
++local.get $pa0
++ ref.cast (ref $tuple)
++local.get $pi1
++local.get $pi2
++local.get $pi12
++local.get $pi13
++
++local.set $pi4
++local.set $pi3
++local.set $pi2
++local.set $pi1
++local.set $pa0
++br $pself
++else
++local.get $pi3
++i64.const 1
++i64.add
++
++local.set $pi15
++local.get $pa0
++ ref.cast (ref $tuple)
++local.get $pi1
++local.get $pi2
++local.get $pi15
++local.get $pi4
++
++local.set $pi4
++local.set $pi3
++local.set $pi2
++local.set $pi1
++local.set $pa0
++br $pself
++end br $partret
++end br $partret
++)
++)
+ local.set $a12
+ local.get $a0
+ 

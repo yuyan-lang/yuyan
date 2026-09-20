@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "cases": 6916,
+  "elementComparisons": 156712,
+  "seed": "0x51a27b3",
+  "scope": "Actual compiler --wasm-stack output against unchanged GC clone and independent JS sorted values; test-only exports appended, algorithm bodies unchanged."
+}

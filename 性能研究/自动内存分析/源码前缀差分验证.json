@@ -1,0 +1,7 @@
+{
+  "cases": 10516,
+  "checksPerCase": 12,
+  "checks": 126192,
+  "passed": true,
+  "description": "每例比较声明后缀与11个源码前缀（含空前缀），旧实现作参考"
+}

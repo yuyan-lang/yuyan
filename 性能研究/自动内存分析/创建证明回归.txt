@@ -1,0 +1,40 @@
+创建证明二十一项通过
+造消配合六项通过
+(module (func $nfusion (export "test") (param $i0 i64) (result i64) (local $acc i64)
+(local $i1 i64)
+(local $i2 i64)
+(local $i3 i64)
+(local $i4 i64)
+(local $i5 i64)
+(local $i6 i64)
+(local $i7 i64)
+(local $i8 i64)
+(local $i9 i64)
+(local $i10 i64)
+(local $i11 i64)
+(local $i12 i64)
+(loop $sum_loop (result i64)
+local.get $i0
+i64.const 0
+i64.gt_s i64.extend_i32_u
+local.set $i1
+local.get $i1
+i64.const 0 i64.ne if (result i64)
+local.get $i0
+i64.const 1
+i64.sub
+local.set $i2
+local.get $i2
+call $nfusion
+local.set $i3
+local.get $i3
+local.get $i3
+i64.add
+local.set $i12
+local.get $i12
+else
+i64.const 1
+end local.set $i10
+local.get $i10
+) local.get $acc i64.add))
+{"轮次":1,"复用模块":false,"引擎":"14.6.202.34-node.20","进程":22765,"线程":1,"编译工作模式":"threads","模块准备毫秒":1.6462920000000025,"执行毫秒":12.180082999999996,"宿主调用数":10}

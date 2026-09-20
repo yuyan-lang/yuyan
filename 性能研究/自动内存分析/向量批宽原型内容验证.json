@@ -1,0 +1,12 @@
+{
+  "prototypes": [
+    "四项",
+    "八项复用",
+    "十六项",
+    "三十二项"
+  ],
+  "casesEach": 8515,
+  "elementChecksEach": 732290,
+  "range": "长度0..129，所有0≤起点≤长度，验证前缀未改与后缀值",
+  "passed": true
+}

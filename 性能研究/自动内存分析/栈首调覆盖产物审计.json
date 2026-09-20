@@ -1,0 +1,5 @@
+{
+  "exactExpectedWat": true,
+  "onlyChange": "根入口完整初始化改为初始化值解码后drop；私有体及GC后备不变",
+  "proofCases": 11
+}

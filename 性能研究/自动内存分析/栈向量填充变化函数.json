@@ -1,0 +1,10 @@
+{
+  "baseline": "yy栈长度排序.wasm",
+  "current": "yy向量原生栈快速排序.wasm",
+  "normalization": "去除函数文本空白后比较",
+  "beforeCount": 841,
+  "afterCount": 841,
+  "changed": [
+    "$stack766_752q"
+  ]
+}

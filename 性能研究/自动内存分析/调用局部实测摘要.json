@@ -1,0 +1,26 @@
+{
+  "reportCompiler": "yy3_bs native, because Node-hosted long report was truncated",
+  "results": [
+    {
+      "name": "树基准",
+      "allocationCount": 1713,
+      "callLocalCandidates": [],
+      "baseline": "yy双步树基准.wasm",
+      "identical": true
+    },
+    {
+      "name": "快速排序",
+      "allocationCount": 1684,
+      "callLocalCandidates": [],
+      "baseline": "yy双步定稿排序.wasm",
+      "identical": true
+    },
+    {
+      "name": "矩阵乘法",
+      "allocationCount": 1689,
+      "callLocalCandidates": [],
+      "baseline": "yy双步矩阵乘法.wasm",
+      "identical": true
+    }
+  ]
+}

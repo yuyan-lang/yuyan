@@ -1,0 +1,23 @@
+{
+  "node": "v26.3.0",
+  "v8": "14.6.202.34-node.20",
+  "records": [
+    {
+      "file": "yy栈自动入口.wasm",
+      "cases": 295,
+      "unitCases": 12,
+      "typeCases": 3,
+      "passed": true,
+      "pages": 2
+    },
+    {
+      "file": "yy栈自动入口增长失败.wasm",
+      "cases": 295,
+      "unitCases": 12,
+      "typeCases": 3,
+      "passed": true,
+      "pages": 0
+    }
+  ],
+  "scope": "Automatically generated public reference-ABI wrapper and private ANF stack body against hand-written GC reference. Tests value/error equality, route counters, type guard, unused null arguments, zero/nonzero/extreme initializers, capacity fallback and forced memory growth failure. Not integrated into default compiler yet."
+}

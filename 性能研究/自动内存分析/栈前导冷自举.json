@@ -1,0 +1,16 @@
+[
+  {
+    "compiler": "yy栈前导桥编译器.wasm",
+    "out": "yy栈前导二代.wasm",
+    "墙钟秒": 15.55,
+    "与种子一致": true,
+    "SHA256": "990f53f79ffddbb7f768d90f10f311f9f4287a116f2a5557982a2fb0207b2b45"
+  },
+  {
+    "compiler": "yy栈前导二代.wasm",
+    "out": "yy栈前导三代.wasm",
+    "墙钟秒": 15.87,
+    "与种子一致": true,
+    "SHA256": "990f53f79ffddbb7f768d90f10f311f9f4287a116f2a5557982a2fb0207b2b45"
+  }
+]

@@ -1,0 +1,20 @@
+{
+  "premiseDischarged": false,
+  "integerPayloadProofPending": true,
+  "entries": [
+    {
+      "消费者": "/Users/zc/repos/yuyan-worktrees/yuyan/性能研究/网页汇编直生/基准库。豫_满参递归74",
+      "创建者序号": "72",
+      "标签": "1",
+      "前提": "普通载荷须由创建者另证整数",
+      "摘要": "整数域[0]"
+    },
+    {
+      "消费者": "/Users/zc/repos/yuyan-worktrees/yuyan/性能研究/网页汇编直生/基准库。豫_满参递归74",
+      "创建者序号": "72",
+      "标签": "2",
+      "前提": "普通载荷须由创建者另证整数",
+      "摘要": "豫言_整数加(子折[0],子折[1])"
+    }
+  ]
+}

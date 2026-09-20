@@ -1,0 +1,87 @@
+{
+  "date": "2026-09-20T04:42:51.323Z",
+  "productionCompilerChanged": false,
+  "prototypeOnly": true,
+  "files": [
+    {
+      "path": "性能研究/自动内存分析/造消同调用原型.补丁",
+      "sha256": "a2988f92254fdb429cf1f03c469d887d8eff55b8839d8a0ad6db9a6be33a2843"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消同调用批量对照.json",
+      "sha256": "467cf5ecff8e7dd9ba5bcdb3e3a2618a2570e7062ddabb0c2095f7d1d2db0fb7"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消同调用边界.json",
+      "sha256": "19d4ae29e9bc84933e708cf043ca7d0423f943e15ba90fe8c1dece607e9705e2"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合C.c",
+      "sha256": "d4a83dfbb4822a8d401f9cacbb685e1803f3b9ad273877c42bdb7b38442e78d9"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合C优化摘录.txt",
+      "sha256": "5691dbd1d04d7307fe4dec975d59e565ffeaee8059769bb002c6b4dd0f15981d"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合原型.补丁",
+      "sha256": "028a97cf280d5b704a5880f6f5dd71cd9d12e31779670ee122817168cff5b281"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合同期对照.json",
+      "sha256": "2dadf9c30a55495a1e3d47726badfbe2519709a3440c1cbd8633a2e30e499ce4"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合批量C.c",
+      "sha256": "fd0a36a5d2e5c97e9200ac9ced557812c8a1ac7afcd357a8510b33de626efab0"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合探索.文言.md",
+      "sha256": "44d2cef3936dd33b4791b1d5daac41eb6a22a5727a048998e4384368aca4be55"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合探索.汉语.md",
+      "sha256": "07abe2cd950d66677a225ca372c323dab8cbbe1749c97efae99d2831e1c61569"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合等算法对照.json",
+      "sha256": "0677a8e6a1ef4aec26d7152474199b6701beb7106827239476a38026376277c1"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合边界.json",
+      "sha256": "bea2fb958c23c71aeb13271a0c8f00636dc773231417fca4de214515bfbed512"
+    },
+    {
+      "path": "yy双步树基准.wasm",
+      "sha256": "cd9be38cbd95d604d50e0967fd3524ac46755200c504c12089a515d85623d389"
+    },
+    {
+      "path": "yy内核C.wasm",
+      "sha256": "d47d789da9410190f2d1726c8c0a80c020763e0b00bb24c340c9f050f07d5b64"
+    },
+    {
+      "path": "yy造消融合原型.wasm",
+      "sha256": "22253111256da4f9734db40c485de6b3aa3476d6a4a758e78016fb65bf1f30fc"
+    },
+    {
+      "path": "yy造消融合C.wasm",
+      "sha256": "98753363ba13b097d503ec0f32a9a8902ec1723602538fb2936b4d8564102a44"
+    },
+    {
+      "path": "yy造消边界.wasm",
+      "sha256": "2c161e5ca4b02aebc7052efcf5595af0b38cfc14e7195a7d54d3772ed9d8855f"
+    },
+    {
+      "path": "yy造消同调用原型.wasm",
+      "sha256": "c7c5a4fdb7cf94cc7c796618b51d0eaf7bfc45d07fbfa553c6162efe0aad99a1"
+    },
+    {
+      "path": "yy造消同调用边界.wasm",
+      "sha256": "fc7828cda09f8fe7cd0cb4bbb21cbfe640aa4e752de0402d6a704e543cb3fc7b"
+    },
+    {
+      "path": "yy造消融合批量C.wasm",
+      "sha256": "b2fa625b8b09776578a968b3d809d6e038681981940c6f543d93ebc035d91d3d"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+--- yy单扫快速排序.wasm.wat	2026-09-20 04:26:44
++++ yy排序仅恒参.wat	2026-09-20 04:41:05
+@@ -108392,13 +108392,15 @@
+ local.get $i2
+ local.get $i1
+ i64.gt_s
+-
++local.set $p3
++local.get $p3
+ if (result (ref null eq))
+ local.get $i2
+ local.get $i1
+ i64.sub
+-
+ 
++local.set $i4
++local.get $i4
+ i64.const 2
+ i64.div_s
+ local.set $i5
+@@ -108492,6 +108494,8 @@
+ local.get $i12
+ i64.const 1
+ i64.add
++
++
+ 
+ 
+ 

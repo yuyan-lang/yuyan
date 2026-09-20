@@ -1,0 +1,388 @@
+{
+  "date": "2026-09-20T06:30:26.451Z",
+  "automaticFusionImplemented": true,
+  "manualAnnotationsRequired": false,
+  "persistentRuntimeBuffer": false,
+  "native3Equals4": true,
+  "wasm2Equals3": true,
+  "commentOnlyRebuildIdentical": true,
+  "coldCompilerCacheWallSeconds": [
+    22.21,
+    21.79
+  ],
+  "osPageCacheCleared": false,
+  "runtimeRegressions": 38,
+  "guardDifferentialCases": 1750,
+  "guardDifferentialErrors": 1568,
+  "wholeGoalComplete": false,
+  "files": [
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编创建证明。豫",
+      "sha256": "e6a4a373ad877420614c0851e306150dbca16b862a3276d765035d94eede8119"
+    },
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编融合构造。豫",
+      "sha256": "f74c8ca3015c2a756a84bb63aa2b85d43d345194ded70629d3a2493d3ebc3c68"
+    },
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编融合入口。豫",
+      "sha256": "55c03a9a619b8f8e302c046a381740245237282448231d41d6c69bf5c799eaf3"
+    },
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫",
+      "sha256": "ffe516748080b063d5c69f76e904f76d81f02aca6004174fbe1c7ef52c6c4ab4"
+    },
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/统一网页汇编。豫",
+      "sha256": "e670ef2cce00a3ce8acb5cb9eb4e305d10989ef6def98229c7a19bb2853592e1"
+    },
+    {
+      "path": "测试/编译器/创建证明。测试。豫",
+      "sha256": "e7ce8d169dcda15f7997a09f5ce1fca22204e7bfd861aea65dd6c2bbf20ba94f"
+    },
+    {
+      "path": "测试/网页汇编/造消融合-1。豫",
+      "sha256": "1de7c47107c0aea04e92e8ab7a22350f4244acb527c301524257a632da51fb48"
+    },
+    {
+      "path": "测试/网页汇编/造消融合。成功",
+      "sha256": "9eb91404fafc3f130bc07fcd324a551ff829488ec89865678914beb66b8eec24"
+    },
+    {
+      "path": "yy3_bs",
+      "sha256": "955afe5d9ea46a1bf9e4c1d9ed6ff1dbfd8cde19926ee80acec869552a880abb"
+    },
+    {
+      "path": "yy4_bs",
+      "sha256": "955afe5d9ea46a1bf9e4c1d9ed6ff1dbfd8cde19926ee80acec869552a880abb"
+    },
+    {
+      "path": "yy融合定稿种子.wasm",
+      "sha256": "40c35654a2d0dc24ad2bb350f552b80d28d2757ba8c5a8ea1e25afc6428a1ed8"
+    },
+    {
+      "path": "yy融合自举二代.wasm",
+      "sha256": "40c35654a2d0dc24ad2bb350f552b80d28d2757ba8c5a8ea1e25afc6428a1ed8"
+    },
+    {
+      "path": "yy融合自举三代.wasm",
+      "sha256": "40c35654a2d0dc24ad2bb350f552b80d28d2757ba8c5a8ea1e25afc6428a1ed8"
+    },
+    {
+      "path": "yy融合注释复核.wasm",
+      "sha256": "40c35654a2d0dc24ad2bb350f552b80d28d2757ba8c5a8ea1e25afc6428a1ed8"
+    },
+    {
+      "path": "yy融合自举复核树.wasm",
+      "sha256": "ed075eb9d433e2bcbdbb39158e743d2aa9b47e82fe4c776ff40aac97e538dede"
+    },
+    {
+      "path": "yy融合自举复核边界.wasm",
+      "sha256": "bd9a3783216a387854441fd6465fd80137ba5a9ce776b548678913e7fc042e43"
+    },
+    {
+      "path": "yy自动融合批量.wasm",
+      "sha256": "1667ba1c51a9f856207daa633acfbca967d9e69982165254257ee113d5f59d89"
+    },
+    {
+      "path": "yy融合守卫旧.wasm",
+      "sha256": "8a5a5d5aa36d88e59ca02a1a18dc20a94895684baf39f05c2026aa9e8a7f75e9"
+    },
+    {
+      "path": "yy融合守卫新.wasm",
+      "sha256": "b97099461e5864f2de42059405633a7fab033df1796814a59030f20beb99b82f"
+    },
+    {
+      "path": "yy内核C.wasm",
+      "sha256": "d47d789da9410190f2d1726c8c0a80c020763e0b00bb24c340c9f050f07d5b64"
+    },
+    {
+      "path": "yy造消融合批量C.wasm",
+      "sha256": "b2fa625b8b09776578a968b3d809d6e038681981940c6f543d93ebc035d91d3d"
+    },
+    {
+      "path": "yy融合斐波那契.wasm",
+      "sha256": "5c12141669ab5bf7fccb4fcfaf1fc41beba52d2bc6499e116ce5a75947ce42ff"
+    },
+    {
+      "path": "yy融合素数筛.wasm",
+      "sha256": "ce4a53d7e1a09dfea5d77faa99a683feadb7437756cab0fd8d0126db3c23766e"
+    },
+    {
+      "path": "yy融合矩阵乘法.wasm",
+      "sha256": "a1315f05b853603f99a2ba286f38bc4890453f43795cf4a7c4f333ef6c144b0f"
+    },
+    {
+      "path": "yy融合快速排序.wasm",
+      "sha256": "eee479000eb68520203cca5487703ce3e7ed0f7bd4375b6502610a03fb1fd07e"
+    },
+    {
+      "path": "yy融合树基准.wasm",
+      "sha256": "ed075eb9d433e2bcbdbb39158e743d2aa9b47e82fe4c776ff40aac97e538dede"
+    },
+    {
+      "path": "yy融合数组基准.wasm",
+      "sha256": "24cac2edbbf057960c928e90fca3a3f2769ef4798fb8f979c4fe8910498da3bc"
+    },
+    {
+      "path": "yy融合验基础.wasm",
+      "sha256": "5f3e7a9db587fb1fa2d8e394ef30017e011c965f3b6002c1729f12156feb93d5"
+    },
+    {
+      "path": "yy融合验大数组.wasm",
+      "sha256": "6f529fc5cdb040446fe63adab09cafce026b00c1c2524f77f2b108ced5dc7eab"
+    },
+    {
+      "path": "yy融合验长打表.wasm",
+      "sha256": "097e2c7f855f0eca16de6d1329782866adce3591925fdf6f4baa7ef2560f92ee"
+    },
+    {
+      "path": "yy融合验深栈.wasm",
+      "sha256": "2dc1d0ab1f45013388b3d8e7f53825d6590b24164bb455a6c778f374f234e6bb"
+    },
+    {
+      "path": "yy融合验递归回收.wasm",
+      "sha256": "473efa8347847a840291b3016e98222d56e73863e32f72dd35b2e4bf94a059dc"
+    },
+    {
+      "path": "yy融合验整数文本.wasm",
+      "sha256": "6cb563b6a61fde22667c90ae31af270b06bd533c06628d07f28efeec19048d06"
+    },
+    {
+      "path": "yy融合验短列态射.wasm",
+      "sha256": "615ef92b47df5433b87b14a51f33c7a74842aa01a10104d98ab36f62507346af"
+    },
+    {
+      "path": "yy融合验替换共享.wasm",
+      "sha256": "82bacae3de7d460b20bbe0744c07391ded9f9691fd9190a6cae2cd9b44bb0cba"
+    },
+    {
+      "path": "yy融合验癸象转义.wasm",
+      "sha256": "4adf51d737cf1e6e6fef9499dacda9925b8a3996a86beccd5b0904c1026bb7d9"
+    },
+    {
+      "path": "yy融合验进程等待.wasm",
+      "sha256": "9107725667e2c9a2be60dcfbda57ea42c4127a4f36a619fda5ccff6674fbd91d"
+    },
+    {
+      "path": "yy融合验构造常量.wasm",
+      "sha256": "262e85bf7bd13ce9de9fdd2a5b4102ee40832a02fd5da43f09b7e79a65d3e746"
+    },
+    {
+      "path": "yy融合验满参递归.wasm",
+      "sha256": "5d26398b3d8bed7b44fc9e02ba97f4ecaf70d0db28d0dbe132f7d802b4bfc235"
+    },
+    {
+      "path": "yy融合验去柯里化边界.wasm",
+      "sha256": "72feecd77271e2cbe017559422ea1cff67d4ab7b021d9e4c8b3dd0644b66379d"
+    },
+    {
+      "path": "yy融合验私有入口.wasm",
+      "sha256": "3e9625c00d8576984390509e9552391c9cb36be0e95e3b63d135a88f0296ad12"
+    },
+    {
+      "path": "yy融合验整数除法边界.wasm",
+      "sha256": "e3e5450e578671a8fa3d637845b855b524ffec84561163b1dcfea25b51400995"
+    },
+    {
+      "path": "yy融合验直线内联.wasm",
+      "sha256": "71fde0255a9e4a327b58d9ac5deeeda269ca57f7d4006554a8eec1344f2502bc"
+    },
+    {
+      "path": "yy融合验排序逐项.wasm",
+      "sha256": "0d71032ac77ec28491bfb111ef27b1e65f2dee4afbfe1cf1b259a4b59269e89b"
+    },
+    {
+      "path": "yy融合验递归累加.wasm",
+      "sha256": "8f0aad8925af6994011e3c1156f6a338f14627c69ce1a9d56cde46bf1a6bfda7"
+    },
+    {
+      "path": "yy融合验私有整组排序.wasm",
+      "sha256": "42d605f9dea8671c3c92211a297eb760826017f1651b57aa6c5dd22f6e6ab661"
+    },
+    {
+      "path": "yy融合验数组索引边界.wasm",
+      "sha256": "62700cd215d602f489b6afcb415d4ddef427770685da7557239cd60032da6e09"
+    },
+    {
+      "path": "yy融合验跨函私有调用.wasm",
+      "sha256": "223c8b39a871a67888d07d919b0a7d8943dac023a09cd8ee57bebc44a4fa7daa"
+    },
+    {
+      "path": "yy融合验整数专门化.wasm",
+      "sha256": "4334d99f21e91b16df330fa6082f10915865859b11b195e48629a07b72069fde"
+    },
+    {
+      "path": "yy融合验整组逃逸边界.wasm",
+      "sha256": "6707ece146b6bb0e0990f64ac6b7b0455856926f7b7433a691caf81e7d41b83a"
+    },
+    {
+      "path": "yy融合验整组值域.wasm",
+      "sha256": "329de6dfd36908d32ef1fbf5fb03a7bb9cae97981730403d22b133a314693237"
+    },
+    {
+      "path": "yy融合验裸爻边界.wasm",
+      "sha256": "73a66118f53502e4c4ca1da090b86c4aabe0cb4b8e5c29bc549798643c8aeb48"
+    },
+    {
+      "path": "yy融合验私有条件边界.wasm",
+      "sha256": "a24c80b08b194d9ab5efe10971453da7b51a123a2870e8b526a358c4bbe1d034"
+    },
+    {
+      "path": "yy融合验纯整条件边界.wasm",
+      "sha256": "c865643bfb9fa85dc9e29ced70736adce7eb67c73218194a630383c55be1a36b"
+    },
+    {
+      "path": "yy融合验双整组边界.wasm",
+      "sha256": "6651c1e71ca06f1d462dff18901d077307fa67c1cceeb7beec6a7a6ad9040d53"
+    },
+    {
+      "path": "yy融合验双整组逃逸.wasm",
+      "sha256": "d1e0fe24095a24c3526c37098c8026b766d74fc502c849fbd349897f3620c025"
+    },
+    {
+      "path": "yy融合验双整组矩阵.wasm",
+      "sha256": "059b7eda03d2fb525c0b01316daae9eba1440b3d0b79a4ca12435cf4deffdb69"
+    },
+    {
+      "path": "yy融合验私有构造.wasm",
+      "sha256": "87088ee0fb7f5b628a85da3db8f73d6ef276504b64b355260ad838b7db01d5ce"
+    },
+    {
+      "path": "yy融合验重复索引边界.wasm",
+      "sha256": "cfc913910625d43c287a673c95bb966e84ed55079583eb50e9390db305e09d74"
+    },
+    {
+      "path": "yy融合验整数返回边界.wasm",
+      "sha256": "0a86a9ba1c8609469cf3761e549ad3815ef61685dd2e9e31adab2bd275bc4859"
+    },
+    {
+      "path": "yy融合验虚拟数组.wasm",
+      "sha256": "3d9c46453afb016ad1fc191f3b4974fe6ca613d978e3b5464e0265a9dbbe1a62"
+    },
+    {
+      "path": "yy融合验双步循环.wasm",
+      "sha256": "cbcff3ce17e1a9bac6f24c96b7ae85a6012055e13f47b9727a68df70f9999d0a"
+    },
+    {
+      "path": "yy融合验双步陷阱.wasm",
+      "sha256": "36e8b090c372eb89112676f6f10306e0a65d86ee1e556a0ba7e887678ca39a4a"
+    },
+    {
+      "path": "yy融合验纯调复用.wasm",
+      "sha256": "c6a34762e705c2615cf0c2d3c6384dccedbc0e4f0588294de0404344cae82256"
+    },
+    {
+      "path": "yy融合验造消融合.wasm",
+      "sha256": "bd9a3783216a387854441fd6465fd80137ba5a9ce776b548678913e7fc042e43"
+    },
+    {
+      "path": "yy融合定稿纯调用证明.wasm",
+      "sha256": "8dbda04d3b59194e3458c25589cbf62f9ed11bf8ee46d3b1e0f232b99fa5fcc0"
+    },
+    {
+      "path": "yy融合定稿纯调用复用.wasm",
+      "sha256": "9833353224e53a3856b046751f0e841c6f9d2d2dfd631ee62cde53760fb1f50f"
+    },
+    {
+      "path": "yy融合定稿折叠摘要.wasm",
+      "sha256": "f6bbd317d01e4c865717a8c54eb802e8bfce293b41fd6e88268c1aac28769f59"
+    },
+    {
+      "path": "yy融合定稿创建证明.wasm",
+      "sha256": "3b5a543a9da21924d471383fef52e5ff0cac15ae941587b268bc85ad08403317"
+    },
+    {
+      "path": "性能研究/自动内存分析/创建证明回归.txt",
+      "sha256": "617ac6f2145373cc9f41f911c8b354bf70b934d1150f1bc7a3bddf1f9e8a8d43"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合分析回归.json",
+      "sha256": "d1977caacef19dc8ef39a3ef4ae7948aa3bcb4f725c30102f44768bbeba03c87"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合同算法C批量.json",
+      "sha256": "02570263174b254b54052d3ce8e0c9d5f7baa3d96b1e7bbb18ac29e738b84946"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合回归.json",
+      "sha256": "2493d8672885d620ebc3fd09d2cf841ae7f15369ef8238524b8ff1ca34e2e9fe"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合夹具执行.json",
+      "sha256": "2c13396291a817742566d25ed76e29d596a2845ae745c739ae6114577b2260a3"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合守卫差分.json",
+      "sha256": "ac6a9eac596d54159e4cb0514b0bd5c854b3a059b474aa5f6819d6d0e041e640"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合既有产物.json",
+      "sha256": "30e4f87bed119a9ffbe59c16c4cb7dc9e93f232d19711249de50e559958f891a"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合树报告.txt",
+      "sha256": "2eef97e630fa191b2c4e411c6b2672d4c28c352544da0189e9c914db763bb991"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合模块边界.json",
+      "sha256": "7e08b3d9dc41c3f461228239b27012554c367d966ac5767631f788ef0e0200b6"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合正式对照.json",
+      "sha256": "7e952ce32ee4a3c18c95c320e5085f06dc7af015fe71cf1ac6bf3cf93af5c441"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合源码.补丁",
+      "sha256": "194f6b48fbcd9f9f50d680b013b29b75a7fedd51d6a354f4fb01af5066de4be7"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动融合自举复核.json",
+      "sha256": "c2493816733c7890c70b7ba2c1b7e3245c4012bbb2772ec1a861109f4f136146"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动造消融合进展.文言.md",
+      "sha256": "8dd07589c619cf651cc5ed0db4160f898966258dba48f489205e975f6b0375de"
+    },
+    {
+      "path": "性能研究/自动内存分析/自动造消融合进展.汉语.md",
+      "sha256": "6db9e33a8f5ffba84c9b35c1c9ea937b7054cf541ad2e62350780f988b51c78d"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合定稿创建证明回归.txt",
+      "sha256": "434fe2e7c151b59ba1a5f509d562b46e6ad980b61864666361fdc02e2b59bbc2"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合定稿折叠摘要回归.txt",
+      "sha256": "8cd45359b120df741edff47a465ab165e4991cebe9e7fddc1bfa5d7b5302a91b"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合定稿纯调用复用回归.txt",
+      "sha256": "fb28bd26ad9163ebf7be815345884037e5e5975bead8ab7ad87d4ec99dc6a3d3"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合定稿纯调用证明回归.txt",
+      "sha256": "7241b410655afdd48332063baee5479dbebbe4d6d51f08cf004727bb9052b801"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合自举三代计时.txt",
+      "sha256": "b7b95d13df84afb0e69e6a2048f5fe80167b5be41d75f876fc96e525c623d42f"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合自举三代输出.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合自举二代计时.txt",
+      "sha256": "c4e964ad88b77c8abbd668aff4dcccc99ce05b9ac866e1b3770bff0b325c2d5b"
+    },
+    {
+      "path": "性能研究/自动内存分析/融合自举二代输出.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "性能研究/自动内存分析/造消融合回归输出.txt",
+      "sha256": "a53569ee292c6520c0754455b849bf8b682ee14508ea05bd42caaaf5fc382e50"
+    }
+  ]
+}

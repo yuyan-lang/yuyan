@@ -1,0 +1,21 @@
+{
+  "signatureChanges": [],
+  "changedOriginalBodies": [
+    "$f766"
+  ],
+  "importsExportsIdentical": true,
+  "fast": [
+    {
+      "name": "$stack766_756q",
+      "pointerMirror": true,
+      "increments": true,
+      "repeatedChecks": false
+    },
+    {
+      "name": "$stack766_752q",
+      "pointerMirror": true,
+      "increments": true,
+      "repeatedChecks": false
+    }
+  ]
+}

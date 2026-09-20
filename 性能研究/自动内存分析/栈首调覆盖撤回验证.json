@@ -1,0 +1,7 @@
+{
+  "native3": "d388568e49f86da0100a81145f1ea78bd645a657738cb526b8d3c4c400c1b1d4",
+  "native4": "d388568e49f86da0100a81145f1ea78bd645a657738cb526b8d3c4c400c1b1d4",
+  "expectedPrior": "d388568e49f86da0100a81145f1ea78bd645a657738cb526b8d3c4c400c1b1d4",
+  "bothTypeChecksPassed": true,
+  "codegenIntegrationReverted": true
+}

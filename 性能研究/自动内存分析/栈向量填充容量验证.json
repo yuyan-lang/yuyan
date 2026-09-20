@@ -1,0 +1,7 @@
+{
+  "maxBytes": 67108864,
+  "maximumElements": 8388607,
+  "tailStart": 8388590,
+  "variants": 7,
+  "passed": true
+}

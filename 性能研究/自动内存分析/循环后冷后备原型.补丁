@@ -1,0 +1,22 @@
+--- yy循环实排序.wasm.wat	2026-09-19 22:27:50
++++ yy循环冷后备原型.wat	2026-09-19 22:46:15
+@@ -224,6 +224,9 @@
+ 
+ (type $variant (struct (field i32) (field (ref $tuple))))
+ (type $ints (array (mut i64)))
++(type $slow756 (func (param (ref $ints) i64 i64 i64 i64) (result i64)))
++(global $slowptr756 (ref $slow756) (ref.func $rdz756))
++(elem declare func $rdz756)
+ (type $octs (array (mut i8)))
+ 
+ 
+@@ -107055,7 +107058,8 @@
+ local.get $i2
+ local.get $i3
+ local.get $i4
+-return_call $rdz756
++global.get $slowptr756
++return_call_ref $slow756
+ end)
+ 
+ 

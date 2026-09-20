@@ -1,0 +1,236 @@
+--- yy双步定稿排序.wasm.wat	2026-09-19 23:48:47
++++ yy四步原型.wat	2026-09-20 00:06:39
+@@ -107756,7 +107756,118 @@
+ end
+ 
+ local.get $i3 i64.const 1 i64.add local.set $i3
++end
++local.get $i1 local.get $i3 i64.sub i64.const 2 i64.and i64.eqz i32.eqz
++if
++
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i6
++local.get $i2
++local.get $i6
++i64.gt_s
++local.set $p7
++local.get $p7
++if
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i8
++local.get $a0
++local.get $i4 i32.wrap_i64
++array.get $ints
++local.set $i9
++local.get $a0
++local.get $i3 i32.wrap_i64
++local.get $i9
++array.set $ints 
++local.get $a0
++local.get $i4 i32.wrap_i64
++local.get $i8
++array.set $ints 
++
++local.get $i4
++i64.const 1
++i64.add
++
++local.set $i13
++
++
++
++
++local.get $i13
++
++local.set $i4
++
++else
++
++
++
++
++
++
++
++
++
+ end
++
++local.get $i3 i64.const 1 i64.add local.set $i3
++
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i6
++local.get $i2
++local.get $i6
++i64.gt_s
++local.set $p7
++local.get $p7
++if
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i8
++local.get $a0
++local.get $i4 i32.wrap_i64
++array.get $ints
++local.set $i9
++local.get $a0
++local.get $i3 i32.wrap_i64
++local.get $i9
++array.set $ints 
++local.get $a0
++local.get $i4 i32.wrap_i64
++local.get $i8
++array.set $ints 
++
++local.get $i4
++i64.const 1
++i64.add
++
++local.set $i13
++
++
++
++
++local.get $i13
++
++local.set $i4
++
++else
++
++
++
++
++
++
++
++
++
++end
++
++local.get $i3 i64.const 1 i64.add local.set $i3
++end
+ (block $ydone (loop $ybatch
+ local.get $i3
+ local.get $i1
+@@ -107869,6 +107980,114 @@
+ end
+ 
+ local.get $i3 i64.const 1 i64.add local.set $i3
++
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i6
++local.get $i2
++local.get $i6
++i64.gt_s
++local.set $p7
++local.get $p7
++if
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i8
++local.get $a0
++local.get $i4 i32.wrap_i64
++array.get $ints
++local.set $i9
++local.get $a0
++local.get $i3 i32.wrap_i64
++local.get $i9
++array.set $ints 
++local.get $a0
++local.get $i4 i32.wrap_i64
++local.get $i8
++array.set $ints 
++
++local.get $i4
++i64.const 1
++i64.add
++
++local.set $i13
++
++
++
++
++local.get $i13
++
++local.set $i4
++
++else
++
++
++
++
++
++
++
++
++
++end
++
++local.get $i3 i64.const 1 i64.add local.set $i3
++
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i6
++local.get $i2
++local.get $i6
++i64.gt_s
++local.set $p7
++local.get $p7
++if
++local.get $a0
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i8
++local.get $a0
++local.get $i4 i32.wrap_i64
++array.get $ints
++local.set $i9
++local.get $a0
++local.get $i3 i32.wrap_i64
++local.get $i9
++array.set $ints 
++local.get $a0
++local.get $i4 i32.wrap_i64
++local.get $i8
++array.set $ints 
++
++local.get $i4
++i64.const 1
++i64.add
++
++local.set $i13
++
++
++
++
++local.get $i13
++
++local.set $i4
++
++else
++
++
++
++
++
++
++
++
++
++end
++
++local.get $i3 i64.const 1 i64.add local.set $i3
+ br $ybatch))
+ 
+ local.get $i4

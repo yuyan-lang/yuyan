@@ -1,0 +1,29 @@
+{
+  "description": "原型单槽提升，不含正式代码生成实现；相同当前源码，ABBA，无并发构建，默认GC模式完整冷自举",
+  "runs": [
+    {
+      "compiler": "yy容器图诊断编译器.wasm",
+      "out": "yy容器单槽冷探0.wasm",
+      "wallSeconds": 22.02,
+      "sameOutput": true
+    },
+    {
+      "compiler": "yy容器单槽原型.wasm",
+      "out": "yy容器单槽冷探1.wasm",
+      "wallSeconds": 22.64,
+      "sameOutput": true
+    },
+    {
+      "compiler": "yy容器单槽原型.wasm",
+      "out": "yy容器单槽冷探2.wasm",
+      "wallSeconds": 22.93,
+      "sameOutput": true
+    },
+    {
+      "compiler": "yy容器图诊断编译器.wasm",
+      "out": "yy容器单槽冷探3.wasm",
+      "wallSeconds": 23.48,
+      "sameOutput": true
+    }
+  ]
+}

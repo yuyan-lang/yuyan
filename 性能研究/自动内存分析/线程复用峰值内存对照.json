@@ -1,0 +1,20 @@
+[
+  {
+    "reuse": true,
+    "code": 0,
+    "samples": 713,
+    "maxRss": 4413620224,
+    "wallMs": 14992.877708,
+    "note": "20ms采样本进程RSS，包含Worker，不含外部子进程；不是精确峰值",
+    "identical": true
+  },
+  {
+    "reuse": false,
+    "code": 0,
+    "samples": 1056,
+    "maxRss": 2335555584,
+    "wallMs": 21827.969667,
+    "note": "20ms采样本进程RSS，包含Worker，不含外部子进程；不是精确峰值",
+    "identical": true
+  }
+]

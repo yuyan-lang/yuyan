@@ -1,0 +1,195 @@
+{
+  "正常值断言": 45,
+  "失败对照断言": 21,
+  "失败用例": [
+    {
+      "函数": "identity",
+      "长度": "0",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "affine",
+      "长度": "0",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "overflow",
+      "长度": "0",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "identity",
+      "长度": "1",
+      "索引": "1",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "affine",
+      "长度": "1",
+      "索引": "1",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "overflow",
+      "长度": "1",
+      "索引": "1",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "identity",
+      "长度": "3",
+      "索引": "3",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "affine",
+      "长度": "3",
+      "索引": "3",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "overflow",
+      "长度": "3",
+      "索引": "3",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "array element access out of bounds"
+      }
+    },
+    {
+      "函数": "identity",
+      "长度": "1",
+      "索引": "-1",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "affine",
+      "长度": "1",
+      "索引": "-1",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "overflow",
+      "长度": "1",
+      "索引": "-1",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "identity",
+      "长度": "1",
+      "索引": "4294967296",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "affine",
+      "长度": "1",
+      "索引": "4294967296",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "overflow",
+      "长度": "1",
+      "索引": "4294967296",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "identity",
+      "长度": "-1",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "affine",
+      "长度": "-1",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "overflow",
+      "长度": "-1",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "identity",
+      "长度": "4294967296",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "affine",
+      "长度": "4294967296",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    },
+    {
+      "函数": "overflow",
+      "长度": "4294967296",
+      "索引": "0",
+      "错误": {
+        "类别": "RuntimeError",
+        "信息": "unreachable"
+      }
+    }
+  ]
+}

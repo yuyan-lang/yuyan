@@ -1,0 +1,53 @@
+{
+  "hashes": [
+    {
+      "file": "yy3_bs",
+      "sha256": "8c427a9e553e77a82821347039c2d226539e9644b006dae0f13e01fa0523fa97"
+    },
+    {
+      "file": "yy4_bs",
+      "sha256": "8c427a9e553e77a82821347039c2d226539e9644b006dae0f13e01fa0523fa97"
+    },
+    {
+      "file": "yy首调覆盖定稿种子.wasm",
+      "sha256": "26ca5b4f5f1c08ad073d801f83a57bb3965691e330b17e5b3c5f852cb1f06c66"
+    },
+    {
+      "file": "yy首调覆盖二代.wasm",
+      "sha256": "26ca5b4f5f1c08ad073d801f83a57bb3965691e330b17e5b3c5f852cb1f06c66"
+    },
+    {
+      "file": "yy首调覆盖三代.wasm",
+      "sha256": "26ca5b4f5f1c08ad073d801f83a57bb3965691e330b17e5b3c5f852cb1f06c66"
+    },
+    {
+      "file": "yy首调覆盖定稿快速排序.wasm",
+      "sha256": "45ad475175cb4464ece63d3ea6d81e5f5298909668c8606976785d8c691dd5b4"
+    }
+  ],
+  "nativeBootstrapPassed": true,
+  "bothTypeChecksPassed": true,
+  "proofCases": 11,
+  "rootCases": 2051,
+  "elementChecks": 1049600,
+  "initializationChecks": 515,
+  "capacityBoundaryPassed": true,
+  "defaultStackEnabled": false,
+  "coldBootstrap": [
+    {
+      "seed": "yy首调覆盖定稿种子.wasm",
+      "out": "yy首调覆盖二代.wasm",
+      "seconds": 21.85,
+      "identical": true
+    },
+    {
+      "seed": "yy首调覆盖二代.wasm",
+      "out": "yy首调覆盖三代.wasm",
+      "seconds": 23.66,
+      "identical": true
+    }
+  ],
+  "status": "候选验证记录；生成接线因性能未显示收益而撤回",
+  "adopted": false,
+  "retained": "独立覆盖证明和测试，不接入代码生成"
+}

@@ -1,0 +1,69 @@
+version: 5.5.0
+standard_library_default: /opt/homebrew/lib/ocaml
+standard_library_relative: 
+standard_library: /opt/homebrew/lib/ocaml
+ccomp_type: cc
+c_compiler: clang
+bytecode_cflags: -O2 -fno-strict-aliasing -fwrapv   -pthread 
+ocamlc_cflags: -O2 -fno-strict-aliasing -fwrapv   -pthread 
+bytecode_cppflags:  -D_FILE_OFFSET_BITS=64 
+ocamlc_cppflags:  -D_FILE_OFFSET_BITS=64 
+native_cflags: -O2 -fno-strict-aliasing -fwrapv   -pthread 
+ocamlopt_cflags: -O2 -fno-strict-aliasing -fwrapv   -pthread 
+native_cppflags:  -D_FILE_OFFSET_BITS=64 
+ocamlopt_cppflags:  -D_FILE_OFFSET_BITS=64 
+bytecomp_c_compiler: clang -O2 -fno-strict-aliasing -fwrapv   -pthread   -D_FILE_OFFSET_BITS=64 
+native_c_compiler: clang -O2 -fno-strict-aliasing -fwrapv   -pthread   -D_FILE_OFFSET_BITS=64 
+bytecomp_c_libraries:     -lpthread
+native_c_libraries:    -lpthread
+compression_c_libraries: 
+native_ldflags: 
+native_pack_linker: ld -r -o 
+native_compiler: true
+architecture: arm64
+model: default
+int_size: 63
+word_size: 64
+system: macosx
+asm: clang -c -Wno-trigraphs
+asm_cfi_supported: true
+asm_size_type_directives: false
+with_frame_pointers: false
+with_nonexecstack_note: false
+ext_exe: 
+ext_obj: .o
+ext_asm: .s
+ext_lib: .a
+ext_dll: .so
+os_type: Unix
+default_executable_name: a.out
+systhread_supported: true
+host: aarch64-apple-darwin25.4.0
+target: aarch64-apple-darwin25.4.0
+bytecode_runtime_id: a104
+native_runtime_id: a104
+flambda: false
+safe_string: true
+default_safe_string: true
+flat_float_array: true
+align_double: false
+align_int64: false
+function_sections: false
+afl_instrument: false
+tsan: false
+windows_unicode: false
+supports_shared_libraries: true
+native_dynlink: true
+naked_pointers: false
+with_codegen_invariants: true
+exec_magic_number: Caml1999X037
+cmi_magic_number: Caml1999I037
+cmo_magic_number: Caml1999O037
+cma_magic_number: Caml1999A037
+cmx_magic_number: Caml1999Y037
+cmxa_magic_number: Caml1999Z037
+ast_impl_magic_number: Caml1999M037
+ast_intf_magic_number: Caml1999N037
+cmxs_magic_number: Caml1999D037
+cmt_magic_number: Caml1999T037
+linear_magic_number: Caml1999L037

@@ -1,0 +1,11 @@
+{
+  "previousFunctionCount": 841,
+  "allSignaturesUnchanged": true,
+  "importsExportsUnchanged": true,
+  "changedFunctions": [
+    "$stack766_762"
+  ],
+  "sortChecksBefore": 9,
+  "sortChecksAfter": 3,
+  "fallbackUnchanged": true
+}

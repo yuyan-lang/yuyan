@@ -1,0 +1,31 @@
+{
+  "oldWallSeconds": [
+    23,
+    23.48,
+    22.84,
+    23.66
+  ],
+  "newWallSeconds": [
+    21.86,
+    23.32,
+    21.71,
+    23.05
+  ],
+  "oldMean": 23.245,
+  "newMean": 22.485,
+  "oldMedian": 23.240000000000002,
+  "newMedian": 22.455,
+  "meanReductionPercent": 3.2695203269520356,
+  "allOutputsEqualSeed": true,
+  "newSeedHash": "300463023705e570c237e6d1fb3713999ca93e37eeba4d53f6483b3864251834",
+  "native3Hash": "1a228f9e6f7573152b90ccb69e0c0e68f22223ee6346b5ef36e16e95ec46b558",
+  "native4Hash": "1a228f9e6f7573152b90ccb69e0c0e68f22223ee6346b5ef36e16e95ec46b558",
+  "nativeIdentical": true,
+  "yyTypeCheck": true,
+  "native3TypeCheck": true,
+  "proofCases": 10516,
+  "proofChecks": 126192,
+  "nativeWasmSeedIdentical": true,
+  "defaultSortIdentical": true,
+  "nativeCacheRetriedSeparately": true
+}

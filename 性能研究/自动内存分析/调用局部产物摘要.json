@@ -1,0 +1,134 @@
+{
+  "date": "2026-09-20T04:35:49.508Z",
+  "validation": {
+    "nativeBootstrap": true,
+    "native3Equals4": true,
+    "entryTypeChecks": [
+      "./yy",
+      "./yy3_bs --parallel"
+    ],
+    "wasmColdCompilerCacheWallSeconds": [
+      21.04,
+      21.86
+    ],
+    "osPageCacheCleared": false,
+    "wasm2Equals3": true,
+    "newTests": 10,
+    "existingAllocationTests": 7,
+    "existingSummaryTests": 8
+  },
+  "files": [
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编分配分析。豫",
+      "sha256": "582e9fa17669628c4b0c0c8fe203f11bca53ec12e1dbe412ba1ffe275ad47300"
+    },
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编调用逃逸。豫",
+      "sha256": "586e04003fc3ba85d8b2d9b5a20813f1cd991baff394ed00ff34306e9da708bd"
+    },
+    {
+      "path": "测试/编译器/调用局部分配。测试。豫",
+      "sha256": "50c91d78e2fbacf90e650a7390eee4d81c090cfb0ad0b1af9c8de1849ea648f5"
+    },
+    {
+      "path": "测试/编译器/分配分析。测试。豫",
+      "sha256": "679c8f314c8f3cb23cdd77c7131d0d6ec2b86263598f0c4b9129604600990688"
+    },
+    {
+      "path": "测试/编译器/调用逃逸。测试。豫",
+      "sha256": "badf1b2c467f8c3a98b3450c6a7c148306baa4c6d7d4536fadea247c3ae0dbce"
+    },
+    {
+      "path": "yy3_bs",
+      "sha256": "53ba097994010bab3f72e1b970ea8bea8775d38dc263e7782761127cc281ca6e"
+    },
+    {
+      "path": "yy4_bs",
+      "sha256": "53ba097994010bab3f72e1b970ea8bea8775d38dc263e7782761127cc281ca6e"
+    },
+    {
+      "path": "yy调用局部种子.wasm",
+      "sha256": "cfb1e1fc4a26b55d43ab480df13e35f10039d56ea2656b8c89dcb2d0ba6de6c6"
+    },
+    {
+      "path": "yy调用局部自举二代.wasm",
+      "sha256": "cfb1e1fc4a26b55d43ab480df13e35f10039d56ea2656b8c89dcb2d0ba6de6c6"
+    },
+    {
+      "path": "yy调用局部自举三代.wasm",
+      "sha256": "cfb1e1fc4a26b55d43ab480df13e35f10039d56ea2656b8c89dcb2d0ba6de6c6"
+    },
+    {
+      "path": "yy调用局部测试.wasm",
+      "sha256": "051339266f35997f055f14c487a920e35db7a49856fbf6866b0ea1d5d7c43013"
+    },
+    {
+      "path": "yy调用局部旧分配测试.wasm",
+      "sha256": "8f718b819bd543e2599a9324c3961d8693e274db161ab1243431de3e9bce83d1"
+    },
+    {
+      "path": "yy调用局部摘要测试.wasm",
+      "sha256": "ba92661aeab55df39157867a486b622b9e7d4cd7fece007ce4ed74546de84c94"
+    },
+    {
+      "path": "yy调用局部树基准.wasm",
+      "sha256": "cd9be38cbd95d604d50e0967fd3524ac46755200c504c12089a515d85623d389"
+    },
+    {
+      "path": "yy调用局部快速排序.wasm",
+      "sha256": "eee479000eb68520203cca5487703ce3e7ed0f7bd4375b6502610a03fb1fd07e"
+    },
+    {
+      "path": "yy调用局部矩阵乘法.wasm",
+      "sha256": "a1315f05b853603f99a2ba286f38bc4890453f43795cf4a7c4f333ef6c144b0f"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部回归输出.txt",
+      "sha256": "05ae064b6943ed9b43a7ca1237e2298f3a24b53b917d18a7e290dea98fdcd408"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部实测摘要.json",
+      "sha256": "bef6d7d0d4e38f191cced9449282dab0696142925e427a6ed59f53fd57e9284a"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部快速排序报告.txt",
+      "sha256": "de64d9215231b2b17933d2e9fb309751795fe656fde11da74913a021a5b04d06"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部树基准报告.txt",
+      "sha256": "33f38f9f23f53db8221b624c74dc177b371ebac2cb041d085b29595fc7a68aca"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部源码.补丁",
+      "sha256": "55a83c101b32fed238bd37dfbab267e68b0638b8184d0b4d1873c85112dd5493"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部矩阵乘法报告.txt",
+      "sha256": "e1495d52e8bc7de2ea9184306388c3d359338d39f8b0f6986d11c8a88e8bde90"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部自举三代计时.txt",
+      "sha256": "89475ce88572bd4cf2f9e90d36795a9d6984d0b4c1f6821f879bb179b2965a20"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部自举三代输出.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部自举二代计时.txt",
+      "sha256": "0fd8e2c35d20480d9d68482917cf0fceab6dc343dd053951cff3d6667f918f8c"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部自举二代输出.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部进展.文言.md",
+      "sha256": "db8dec6ceb0e4613ca7d48d7711786b65d7e1ef328205d251d901a4c21f8a98b"
+    },
+    {
+      "path": "性能研究/自动内存分析/调用局部进展.汉语.md",
+      "sha256": "7b26dd98d029997e87fe836df9de970b0faf060d392948870e2e63c0f0935931"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "checks": 515,
+  "stackPassed": true,
+  "codegen": [
+    {
+      "i": 753,
+      "name": "栈覆盖初始化-1_全写_提升函数86",
+      "fill": false,
+      "stack": true
+    },
+    {
+      "i": 754,
+      "name": "栈覆盖初始化-1_少写_提升函数87",
+      "fill": true,
+      "stack": true
+    }
+  ],
+  "gcPassed": true
+}

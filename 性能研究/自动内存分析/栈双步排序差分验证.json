@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "sortCases": 6916,
+  "sortValues": 156712,
+  "partitionCases": 10287,
+  "partitionValues": 87855,
+  "scope": "Actual compiler two-step stack loops versus original GC functions, including guard fallback and post-trap contents. Only test exports appended."
+}

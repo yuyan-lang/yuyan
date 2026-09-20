@@ -1,0 +1,26 @@
+[
+  {
+    "name": "斐波那契",
+    "identical": true
+  },
+  {
+    "name": "素数筛",
+    "identical": true
+  },
+  {
+    "name": "矩阵乘法",
+    "identical": true
+  },
+  {
+    "name": "快速排序",
+    "identical": true
+  },
+  {
+    "name": "树基准",
+    "identical": true
+  },
+  {
+    "name": "数组基准",
+    "identical": true
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "jobs": 12,
+    "seconds": 15.77,
+    "identical": true,
+    "out": "yy并发探索12.wasm"
+  },
+  {
+    "jobs": 18,
+    "seconds": 16.16,
+    "identical": true,
+    "out": "yy并发探索18.wasm"
+  },
+  {
+    "jobs": 8,
+    "seconds": 17.48,
+    "identical": true,
+    "out": "yy并发探索8.wasm"
+  },
+  {
+    "jobs": 16,
+    "seconds": 16.86,
+    "identical": true,
+    "out": "yy并发探索16.wasm"
+  }
+]

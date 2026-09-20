@@ -1,0 +1,155 @@
+--- yy本轮快速排序.wasm.wat	2026-09-19 14:26:23
++++ yy消融合并.wat	2026-09-19 14:50:03
+@@ -91948,13 +91948,13 @@
+ 
+ ref.cast (ref $tuple)
+ local.get $i3
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a6
+ local.get $i2
+ local.get $a6
+ 
+-local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
++ref.cast (ref i31) i31.get_s i64.extend_i32_s
+ i64.gt_s i64.extend_i32_u
+ i32.wrap_i64 ref.i31
+ local.set $a7
+@@ -91965,21 +91965,21 @@
+ 
+ ref.cast (ref $tuple)
+ local.get $i3
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a8
+ local.get $a0
+ 
+ ref.cast (ref $tuple)
+ local.get $i4
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a9
+ local.get $a0
+ 
+ ref.cast (ref $tuple)
+ local.get $i3
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ local.get $a9
+ 
+ array.set $tuple ref.null eq
+@@ -91988,7 +91988,7 @@
+ 
+ ref.cast (ref $tuple)
+ local.get $i4
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ local.get $a8
+ 
+ array.set $tuple ref.null eq
+@@ -92517,21 +92517,21 @@
+ 
+ ref.cast (ref $tuple)
+ local.get $i6
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a7
+ local.get $a0
+ 
+ ref.cast (ref $tuple)
+ local.get $i2
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a8
+ local.get $a0
+ 
+ ref.cast (ref $tuple)
+ local.get $i6
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ local.get $a8
+ 
+ array.set $tuple ref.null eq
+@@ -92540,7 +92540,7 @@
+ 
+ ref.cast (ref $tuple)
+ local.get $i2
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ local.get $a7
+ 
+ array.set $tuple ref.null eq
+@@ -92549,26 +92549,18 @@
+ 
+ ref.cast (ref $tuple)
+ local.get $i2
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a11
+-
+-
+-local.get $i2 call $box local.set $a2
+-
+-local.get $i1 call $box local.set $a1
+-local.get $i1 call $box local.set $a1
+-local.get $a0
+ 
+-local.get $a2
+ 
++local.get $a0
++local.get $i2
+ local.get $a11
+-
+-local.get $a1
+-
+-local.get $a1
+-
+-call $f756
++call $unbox
++local.get $i1
++local.get $i1
++call $m756
+ local.set $a12
+ local.get $a0
+ 
+@@ -92576,14 +92568,14 @@
+ local.get $a12
+ 
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a13
+ local.get $a0
+ 
+ ref.cast (ref $tuple)
+ local.get $i2
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ array.get $tuple
+ local.set $a14
+ local.get $a0
+@@ -92592,7 +92584,7 @@
+ local.get $a12
+ 
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ local.get $a14
+ 
+ array.set $tuple ref.null eq
+@@ -92601,7 +92593,7 @@
+ 
+ ref.cast (ref $tuple)
+ local.get $i2
+-local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
++i32.wrap_i64
+ local.get $a13
+ 
+ array.set $tuple ref.null eq

@@ -1,0 +1,6793 @@
+{
+  "description": "相同统一网页汇编源码及工作树，单任务GC诊断；仅工作线程1，包含JS与WasmGC，allocated仅已报告区间，不作为冷自举墙钟验收",
+  "variants": [
+    {
+      "label": "旧",
+      "compiler": "yy栈向量三代.wasm",
+      "events": 486,
+      "reportedAllocatedBytes": 15897026624,
+      "pauseMs": 266.8840000000001,
+      "maxObjectAfterBytes": 142869088,
+      "records": [
+        {
+          "timeMs": 2,
+          "allocated": 1484352,
+          "pauseMs": 0.127,
+          "before": 1484352,
+          "after": 764896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 3,
+          "allocated": 1071056,
+          "pauseMs": 0.166,
+          "before": 1835952,
+          "after": 1492456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 5,
+          "allocated": 1264064,
+          "pauseMs": 0.228,
+          "before": 2756520,
+          "after": 2513176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 19,
+          "allocated": 3377112,
+          "pauseMs": 0.252,
+          "before": 5890288,
+          "after": 5287728,
+          "collector": "s"
+        },
+        {
+          "timeMs": 20,
+          "allocated": 902368,
+          "pauseMs": 0.246,
+          "before": 6190096,
+          "after": 6075416,
+          "collector": "s"
+        },
+        {
+          "timeMs": 35,
+          "allocated": 3336904,
+          "pauseMs": 0.488,
+          "before": 9412320,
+          "after": 6726752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 35,
+          "allocated": 3585784,
+          "pauseMs": 0.214,
+          "before": 10312536,
+          "after": 6688264,
+          "collector": "s"
+        },
+        {
+          "timeMs": 37,
+          "allocated": 4102608,
+          "pauseMs": 0.097,
+          "before": 10790872,
+          "after": 6764984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 38,
+          "allocated": 4081872,
+          "pauseMs": 0.075,
+          "before": 10846856,
+          "after": 6741096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 44,
+          "allocated": 4169376,
+          "pauseMs": 0.075,
+          "before": 10910472,
+          "after": 6828536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 58,
+          "allocated": 4303568,
+          "pauseMs": 0.809,
+          "before": 11132104,
+          "after": 9383320,
+          "collector": "s"
+        },
+        {
+          "timeMs": 62,
+          "allocated": 6558120,
+          "pauseMs": 1.017,
+          "before": 15941440,
+          "after": 10622800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 64,
+          "allocated": 6140968,
+          "pauseMs": 0.851,
+          "before": 16763768,
+          "after": 11225800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 67,
+          "allocated": 1507856,
+          "pauseMs": 1.618,
+          "before": 12733656,
+          "after": 10170104,
+          "collector": "mc"
+        },
+        {
+          "timeMs": 70,
+          "allocated": 8386560,
+          "pauseMs": 1.13,
+          "before": 18556664,
+          "after": 11072008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 73,
+          "allocated": 7493136,
+          "pauseMs": 1.653,
+          "before": 18565144,
+          "after": 11873000,
+          "collector": "s"
+        },
+        {
+          "timeMs": 79,
+          "allocated": 15911792,
+          "pauseMs": 1.931,
+          "before": 27784792,
+          "after": 13431416,
+          "collector": "s"
+        },
+        {
+          "timeMs": 85,
+          "allocated": 15098232,
+          "pauseMs": 2.869,
+          "before": 28529648,
+          "after": 14868656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 90,
+          "allocated": 15198488,
+          "pauseMs": 2.652,
+          "before": 30067144,
+          "after": 16298256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 113,
+          "allocated": 15444032,
+          "pauseMs": 1.515,
+          "before": 31742288,
+          "after": 17020728,
+          "collector": "s"
+        },
+        {
+          "timeMs": 116,
+          "allocated": 14743144,
+          "pauseMs": 1.575,
+          "before": 31763872,
+          "after": 18440288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 124,
+          "allocated": 16321016,
+          "pauseMs": 1.038,
+          "before": 34761304,
+          "after": 19225616,
+          "collector": "s"
+        },
+        {
+          "timeMs": 127,
+          "allocated": 15575120,
+          "pauseMs": 1.687,
+          "before": 34800736,
+          "after": 20706520,
+          "collector": "s"
+        },
+        {
+          "timeMs": 135,
+          "allocated": 32031936,
+          "pauseMs": 3.242,
+          "before": 52738456,
+          "after": 23826832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 145,
+          "allocated": 30393888,
+          "pauseMs": 4.522,
+          "before": 54220720,
+          "after": 26674720,
+          "collector": "s"
+        },
+        {
+          "timeMs": 152,
+          "allocated": 30570776,
+          "pauseMs": 4.171,
+          "before": 57245496,
+          "after": 29544288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 158,
+          "allocated": 30843288,
+          "pauseMs": 1.632,
+          "before": 60387576,
+          "after": 31110160,
+          "collector": "s"
+        },
+        {
+          "timeMs": 164,
+          "allocated": 29705416,
+          "pauseMs": 2.388,
+          "before": 60815576,
+          "after": 31742088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 169,
+          "allocated": 31630608,
+          "pauseMs": 0.859,
+          "before": 63372696,
+          "after": 31767800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 174,
+          "allocated": 32138312,
+          "pauseMs": 2.729,
+          "before": 63906112,
+          "after": 34816272,
+          "collector": "s"
+        },
+        {
+          "timeMs": 178,
+          "allocated": 30450776,
+          "pauseMs": 2.414,
+          "before": 65267048,
+          "after": 37699616,
+          "collector": "s"
+        },
+        {
+          "timeMs": 184,
+          "allocated": 30848024,
+          "pauseMs": 1.506,
+          "before": 68547640,
+          "after": 37415112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 189,
+          "allocated": 31798680,
+          "pauseMs": 1.192,
+          "before": 69213792,
+          "after": 38817064,
+          "collector": "s"
+        },
+        {
+          "timeMs": 194,
+          "allocated": 31787728,
+          "pauseMs": 2.701,
+          "before": 70604792,
+          "after": 41878064,
+          "collector": "s"
+        },
+        {
+          "timeMs": 200,
+          "allocated": 31065000,
+          "pauseMs": 0.759,
+          "before": 72943064,
+          "after": 40860672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 204,
+          "allocated": 32163848,
+          "pauseMs": 2.201,
+          "before": 73024520,
+          "after": 43986152,
+          "collector": "s"
+        },
+        {
+          "timeMs": 208,
+          "allocated": 30398064,
+          "pauseMs": 1.772,
+          "before": 74384216,
+          "after": 46898088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 214,
+          "allocated": 31130568,
+          "pauseMs": 0.909,
+          "before": 78028656,
+          "after": 46422296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 218,
+          "allocated": 31682720,
+          "pauseMs": 1.612,
+          "before": 78105016,
+          "after": 49478008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 221,
+          "allocated": 30396520,
+          "pauseMs": 1.446,
+          "before": 79874528,
+          "after": 52301624,
+          "collector": "s"
+        },
+        {
+          "timeMs": 226,
+          "allocated": 1311240,
+          "pauseMs": 4.871,
+          "before": 53612864,
+          "after": 25870576,
+          "collector": "mc"
+        },
+        {
+          "timeMs": 231,
+          "allocated": 33827456,
+          "pauseMs": 1.196,
+          "before": 59698032,
+          "after": 29321584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 237,
+          "allocated": 30610064,
+          "pauseMs": 2.059,
+          "before": 59931648,
+          "after": 30022416,
+          "collector": "s"
+        },
+        {
+          "timeMs": 242,
+          "allocated": 31372080,
+          "pauseMs": 1.438,
+          "before": 61394496,
+          "after": 30672800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 248,
+          "allocated": 31151608,
+          "pauseMs": 0.574,
+          "before": 61824408,
+          "after": 29434336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 253,
+          "allocated": 32898328,
+          "pauseMs": 0.31,
+          "before": 62332664,
+          "after": 29389312,
+          "collector": "s"
+        },
+        {
+          "timeMs": 257,
+          "allocated": 33518832,
+          "pauseMs": 0.121,
+          "before": 62908144,
+          "after": 29392936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 260,
+          "allocated": 33516240,
+          "pauseMs": 0.061,
+          "before": 62909176,
+          "after": 29395216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 263,
+          "allocated": 33518360,
+          "pauseMs": 0.068,
+          "before": 62913576,
+          "after": 29394352,
+          "collector": "s"
+        },
+        {
+          "timeMs": 265,
+          "allocated": 33519224,
+          "pauseMs": 0.065,
+          "before": 62913576,
+          "after": 29394752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 270,
+          "allocated": 33824104,
+          "pauseMs": 1.485,
+          "before": 63218856,
+          "after": 31744752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 275,
+          "allocated": 31474120,
+          "pauseMs": 0.488,
+          "before": 63218872,
+          "after": 30496984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 277,
+          "allocated": 32768024,
+          "pauseMs": 0.309,
+          "before": 63265008,
+          "after": 30436632,
+          "collector": "s"
+        },
+        {
+          "timeMs": 279,
+          "allocated": 33518864,
+          "pauseMs": 0.077,
+          "before": 63955496,
+          "after": 30437304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 281,
+          "allocated": 33519224,
+          "pauseMs": 0.076,
+          "before": 63956528,
+          "after": 30440224,
+          "collector": "s"
+        },
+        {
+          "timeMs": 284,
+          "allocated": 33517464,
+          "pauseMs": 0.088,
+          "before": 63957688,
+          "after": 30442328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 286,
+          "allocated": 33519336,
+          "pauseMs": 0.083,
+          "before": 63961664,
+          "after": 30442328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 288,
+          "allocated": 33519336,
+          "pauseMs": 0.066,
+          "before": 63961664,
+          "after": 30443496,
+          "collector": "s"
+        },
+        {
+          "timeMs": 290,
+          "allocated": 33518608,
+          "pauseMs": 0.103,
+          "before": 63962104,
+          "after": 30445128,
+          "collector": "s"
+        },
+        {
+          "timeMs": 292,
+          "allocated": 33516976,
+          "pauseMs": 0.061,
+          "before": 63962104,
+          "after": 30447088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 294,
+          "allocated": 33518576,
+          "pauseMs": 0.05,
+          "before": 63965664,
+          "after": 30446296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 297,
+          "allocated": 33519368,
+          "pauseMs": 0.051,
+          "before": 63965664,
+          "after": 30461192,
+          "collector": "s"
+        },
+        {
+          "timeMs": 299,
+          "allocated": 33504472,
+          "pauseMs": 0.058,
+          "before": 63965664,
+          "after": 30453816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 301,
+          "allocated": 33518176,
+          "pauseMs": 0.064,
+          "before": 63971992,
+          "after": 30458200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 303,
+          "allocated": 33517512,
+          "pauseMs": 0.063,
+          "before": 63975712,
+          "after": 30461216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 305,
+          "allocated": 33518536,
+          "pauseMs": 0.047,
+          "before": 63979752,
+          "after": 30461392,
+          "collector": "s"
+        },
+        {
+          "timeMs": 308,
+          "allocated": 33518360,
+          "pauseMs": 0.105,
+          "before": 63979752,
+          "after": 30460896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 310,
+          "allocated": 33519296,
+          "pauseMs": 0.056,
+          "before": 63980192,
+          "after": 30497392,
+          "collector": "s"
+        },
+        {
+          "timeMs": 313,
+          "allocated": 33482800,
+          "pauseMs": 0.071,
+          "before": 63980192,
+          "after": 30471584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 315,
+          "allocated": 33517512,
+          "pauseMs": 0.049,
+          "before": 63989096,
+          "after": 30474680,
+          "collector": "s"
+        },
+        {
+          "timeMs": 317,
+          "allocated": 33518456,
+          "pauseMs": 0.041,
+          "before": 63993136,
+          "after": 30474568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 319,
+          "allocated": 33518568,
+          "pauseMs": 0.058,
+          "before": 63993136,
+          "after": 30474968,
+          "collector": "s"
+        },
+        {
+          "timeMs": 324,
+          "allocated": 33523224,
+          "pauseMs": 0.619,
+          "before": 63998192,
+          "after": 31489672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 330,
+          "allocated": 32706984,
+          "pauseMs": 1.783,
+          "before": 64196656,
+          "after": 33699920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 335,
+          "allocated": 30957696,
+          "pauseMs": 1.52,
+          "before": 64657616,
+          "after": 33562320,
+          "collector": "s"
+        },
+        {
+          "timeMs": 340,
+          "allocated": 32063432,
+          "pauseMs": 1.188,
+          "before": 65625752,
+          "after": 34526424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 345,
+          "allocated": 31396568,
+          "pauseMs": 0.687,
+          "before": 65922992,
+          "after": 34201848,
+          "collector": "s"
+        },
+        {
+          "timeMs": 349,
+          "allocated": 32392664,
+          "pauseMs": 0.844,
+          "before": 66594512,
+          "after": 34612936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 354,
+          "allocated": 32558616,
+          "pauseMs": 0.36,
+          "before": 67171552,
+          "after": 34393384,
+          "collector": "s"
+        },
+        {
+          "timeMs": 356,
+          "allocated": 33320624,
+          "pauseMs": 0.125,
+          "before": 67714008,
+          "after": 34372000,
+          "collector": "s"
+        },
+        {
+          "timeMs": 358,
+          "allocated": 33485864,
+          "pauseMs": 0.07,
+          "before": 67857864,
+          "after": 34340048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 360,
+          "allocated": 33519048,
+          "pauseMs": 0.054,
+          "before": 67859096,
+          "after": 34341568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 363,
+          "allocated": 33517944,
+          "pauseMs": 0.049,
+          "before": 67859512,
+          "after": 34342888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 365,
+          "allocated": 33518608,
+          "pauseMs": 0.043,
+          "before": 67861496,
+          "after": 34342200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 367,
+          "allocated": 33519296,
+          "pauseMs": 0.056,
+          "before": 67861496,
+          "after": 34342888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 369,
+          "allocated": 33518640,
+          "pauseMs": 0.055,
+          "before": 67861528,
+          "after": 34344408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 371,
+          "allocated": 33517120,
+          "pauseMs": 0.065,
+          "before": 67861528,
+          "after": 34345168,
+          "collector": "s"
+        },
+        {
+          "timeMs": 373,
+          "allocated": 33518120,
+          "pauseMs": 0.087,
+          "before": 67863288,
+          "after": 34344872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 376,
+          "allocated": 33518416,
+          "pauseMs": 0.058,
+          "before": 67863288,
+          "after": 34381016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 380,
+          "allocated": 33482288,
+          "pauseMs": 0.107,
+          "before": 67863304,
+          "after": 34456664,
+          "collector": "s"
+        },
+        {
+          "timeMs": 383,
+          "allocated": 33412168,
+          "pauseMs": 0.069,
+          "before": 67868832,
+          "after": 34409904,
+          "collector": "s"
+        },
+        {
+          "timeMs": 386,
+          "allocated": 33473360,
+          "pauseMs": 0.1,
+          "before": 67883264,
+          "after": 34420488,
+          "collector": "s"
+        },
+        {
+          "timeMs": 388,
+          "allocated": 33484312,
+          "pauseMs": 0.079,
+          "before": 67904800,
+          "after": 34387296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 391,
+          "allocated": 33518824,
+          "pauseMs": 0.113,
+          "before": 67906120,
+          "after": 34393512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 393,
+          "allocated": 33512760,
+          "pauseMs": 0.053,
+          "before": 67906272,
+          "after": 34421360,
+          "collector": "s"
+        },
+        {
+          "timeMs": 396,
+          "allocated": 33485152,
+          "pauseMs": 0.079,
+          "before": 67906512,
+          "after": 34447104,
+          "collector": "s"
+        },
+        {
+          "timeMs": 401,
+          "allocated": 33696384,
+          "pauseMs": 0.351,
+          "before": 68143488,
+          "after": 34960576,
+          "collector": "s"
+        },
+        {
+          "timeMs": 404,
+          "allocated": 32973616,
+          "pauseMs": 0.242,
+          "before": 67934192,
+          "after": 34969936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 408,
+          "allocated": 33479048,
+          "pauseMs": 0.104,
+          "before": 68448984,
+          "after": 34943936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 411,
+          "allocated": 33512560,
+          "pauseMs": 0.076,
+          "before": 68456496,
+          "after": 34979952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 414,
+          "allocated": 33482144,
+          "pauseMs": 0.077,
+          "before": 68462096,
+          "after": 34994936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 416,
+          "allocated": 33484176,
+          "pauseMs": 0.05,
+          "before": 68479112,
+          "after": 34964008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 418,
+          "allocated": 33519120,
+          "pauseMs": 0.053,
+          "before": 68483128,
+          "after": 34965896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 420,
+          "allocated": 33517648,
+          "pauseMs": 0.063,
+          "before": 68483544,
+          "after": 34966624,
+          "collector": "s"
+        },
+        {
+          "timeMs": 422,
+          "allocated": 33518928,
+          "pauseMs": 0.056,
+          "before": 68485552,
+          "after": 34967904,
+          "collector": "s"
+        },
+        {
+          "timeMs": 425,
+          "allocated": 33518296,
+          "pauseMs": 0.111,
+          "before": 68486200,
+          "after": 34967656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 427,
+          "allocated": 33518576,
+          "pauseMs": 0.046,
+          "before": 68486232,
+          "after": 34968488,
+          "collector": "s"
+        },
+        {
+          "timeMs": 429,
+          "allocated": 33517744,
+          "pauseMs": 0.05,
+          "before": 68486232,
+          "after": 34969872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 431,
+          "allocated": 33518120,
+          "pauseMs": 0.035,
+          "before": 68487992,
+          "after": 34968696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 433,
+          "allocated": 33519296,
+          "pauseMs": 0.055,
+          "before": 68487992,
+          "after": 35003728,
+          "collector": "s"
+        },
+        {
+          "timeMs": 436,
+          "allocated": 33484264,
+          "pauseMs": 0.063,
+          "before": 68487992,
+          "after": 34972712,
+          "collector": "s"
+        },
+        {
+          "timeMs": 438,
+          "allocated": 33518864,
+          "pauseMs": 0.068,
+          "before": 68491576,
+          "after": 34973272,
+          "collector": "s"
+        },
+        {
+          "timeMs": 440,
+          "allocated": 33519080,
+          "pauseMs": 0.13,
+          "before": 68492352,
+          "after": 35007664,
+          "collector": "s"
+        },
+        {
+          "timeMs": 442,
+          "allocated": 33485104,
+          "pauseMs": 0.053,
+          "before": 68492768,
+          "after": 34976672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 444,
+          "allocated": 33518824,
+          "pauseMs": 0.054,
+          "before": 68495496,
+          "after": 34977752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 447,
+          "allocated": 33518392,
+          "pauseMs": 0.035,
+          "before": 68496144,
+          "after": 34976880,
+          "collector": "s"
+        },
+        {
+          "timeMs": 449,
+          "allocated": 33519296,
+          "pauseMs": 0.032,
+          "before": 68496176,
+          "after": 34978400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 451,
+          "allocated": 33517776,
+          "pauseMs": 0.052,
+          "before": 68496176,
+          "after": 34979472,
+          "collector": "s"
+        },
+        {
+          "timeMs": 453,
+          "allocated": 33518360,
+          "pauseMs": 0.085,
+          "before": 68497832,
+          "after": 34978568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 455,
+          "allocated": 33519520,
+          "pauseMs": 0.074,
+          "before": 68498088,
+          "after": 34986176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 459,
+          "allocated": 33511912,
+          "pauseMs": 0.118,
+          "before": 68498088,
+          "after": 35025240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 461,
+          "allocated": 33475136,
+          "pauseMs": 0.059,
+          "before": 68500376,
+          "after": 35002024,
+          "collector": "s"
+        },
+        {
+          "timeMs": 463,
+          "allocated": 33518688,
+          "pauseMs": 0.047,
+          "before": 68520712,
+          "after": 35004152,
+          "collector": "s"
+        },
+        {
+          "timeMs": 465,
+          "allocated": 33517752,
+          "pauseMs": 0.043,
+          "before": 68521904,
+          "after": 35005976,
+          "collector": "s"
+        },
+        {
+          "timeMs": 467,
+          "allocated": 33517936,
+          "pauseMs": 0.066,
+          "before": 68523912,
+          "after": 35005296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 469,
+          "allocated": 33519264,
+          "pauseMs": 0.059,
+          "before": 68524560,
+          "after": 35006016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 471,
+          "allocated": 33518576,
+          "pauseMs": 0.045,
+          "before": 68524592,
+          "after": 35006784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 473,
+          "allocated": 33517808,
+          "pauseMs": 0.124,
+          "before": 68524592,
+          "after": 35007056,
+          "collector": "s"
+        },
+        {
+          "timeMs": 476,
+          "allocated": 33519296,
+          "pauseMs": 0.046,
+          "before": 68526352,
+          "after": 35007888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 478,
+          "allocated": 33518464,
+          "pauseMs": 0.046,
+          "before": 68526352,
+          "after": 35042088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 480,
+          "allocated": 33484264,
+          "pauseMs": 0.047,
+          "before": 68526352,
+          "after": 35010784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 482,
+          "allocated": 33518760,
+          "pauseMs": 0.044,
+          "before": 68529544,
+          "after": 35013624,
+          "collector": "s"
+        },
+        {
+          "timeMs": 484,
+          "allocated": 33516696,
+          "pauseMs": 0.048,
+          "before": 68530320,
+          "after": 35013256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 486,
+          "allocated": 33519264,
+          "pauseMs": 0.045,
+          "before": 68532520,
+          "after": 35013584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 488,
+          "allocated": 33518968,
+          "pauseMs": 0.039,
+          "before": 68532552,
+          "after": 35014520,
+          "collector": "s"
+        },
+        {
+          "timeMs": 490,
+          "allocated": 33518032,
+          "pauseMs": 0.081,
+          "before": 68532552,
+          "after": 35016408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 493,
+          "allocated": 33517640,
+          "pauseMs": 0.053,
+          "before": 68534048,
+          "after": 35050384,
+          "collector": "s"
+        },
+        {
+          "timeMs": 495,
+          "allocated": 33485608,
+          "pauseMs": 0.059,
+          "before": 68535992,
+          "after": 35085008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 497,
+          "allocated": 33453000,
+          "pauseMs": 0.049,
+          "before": 68538008,
+          "after": 35020704,
+          "collector": "s"
+        },
+        {
+          "timeMs": 499,
+          "allocated": 33519264,
+          "pauseMs": 0.032,
+          "before": 68539968,
+          "after": 35021400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 501,
+          "allocated": 33518568,
+          "pauseMs": 0.044,
+          "before": 68539968,
+          "after": 35021672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 503,
+          "allocated": 33518328,
+          "pauseMs": 0.046,
+          "before": 68540000,
+          "after": 35023184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 505,
+          "allocated": 33516816,
+          "pauseMs": 0.046,
+          "before": 68540000,
+          "after": 35022424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 508,
+          "allocated": 33519232,
+          "pauseMs": 0.121,
+          "before": 68541656,
+          "after": 35022392,
+          "collector": "s"
+        },
+        {
+          "timeMs": 510,
+          "allocated": 33519296,
+          "pauseMs": 0.058,
+          "before": 68541688,
+          "after": 35058488,
+          "collector": "s"
+        },
+        {
+          "timeMs": 512,
+          "allocated": 33483200,
+          "pauseMs": 0.055,
+          "before": 68541688,
+          "after": 35028504,
+          "collector": "s"
+        },
+        {
+          "timeMs": 514,
+          "allocated": 33516984,
+          "pauseMs": 0.043,
+          "before": 68545488,
+          "after": 35029272,
+          "collector": "s"
+        },
+        {
+          "timeMs": 516,
+          "allocated": 33519296,
+          "pauseMs": 0.045,
+          "before": 68548568,
+          "after": 35030032,
+          "collector": "s"
+        },
+        {
+          "timeMs": 518,
+          "allocated": 33518536,
+          "pauseMs": 0.05,
+          "before": 68548568,
+          "after": 35030088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 521,
+          "allocated": 33518512,
+          "pauseMs": 0.073,
+          "before": 68548600,
+          "after": 35031304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 523,
+          "allocated": 33517296,
+          "pauseMs": 0.104,
+          "before": 68548600,
+          "after": 35033464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 525,
+          "allocated": 33517600,
+          "pauseMs": 0.054,
+          "before": 68551064,
+          "after": 35067640,
+          "collector": "s"
+        },
+        {
+          "timeMs": 528,
+          "allocated": 33485736,
+          "pauseMs": 0.105,
+          "before": 68553376,
+          "after": 35068920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 530,
+          "allocated": 33485728,
+          "pauseMs": 0.081,
+          "before": 68554648,
+          "after": 35037616,
+          "collector": "s"
+        },
+        {
+          "timeMs": 533,
+          "allocated": 33518392,
+          "pauseMs": 0.07,
+          "before": 68556008,
+          "after": 35036712,
+          "collector": "s"
+        },
+        {
+          "timeMs": 536,
+          "allocated": 33519328,
+          "pauseMs": 0.214,
+          "before": 68556040,
+          "after": 35039016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 538,
+          "allocated": 33517024,
+          "pauseMs": 0.177,
+          "before": 68556040,
+          "after": 35038400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 541,
+          "allocated": 33519400,
+          "pauseMs": 0.09,
+          "before": 68557800,
+          "after": 35038432,
+          "collector": "s"
+        },
+        {
+          "timeMs": 544,
+          "allocated": 33519368,
+          "pauseMs": 0.097,
+          "before": 68557800,
+          "after": 35053512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 547,
+          "allocated": 33504288,
+          "pauseMs": 0.065,
+          "before": 68557800,
+          "after": 35055920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 549,
+          "allocated": 33518864,
+          "pauseMs": 0.069,
+          "before": 68574784,
+          "after": 35058824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 551,
+          "allocated": 33516736,
+          "pauseMs": 0.05,
+          "before": 68575560,
+          "after": 35058280,
+          "collector": "s"
+        },
+        {
+          "timeMs": 553,
+          "allocated": 33519264,
+          "pauseMs": 0.051,
+          "before": 68577544,
+          "after": 35058720,
+          "collector": "s"
+        },
+        {
+          "timeMs": 555,
+          "allocated": 33518824,
+          "pauseMs": 0.056,
+          "before": 68577544,
+          "after": 35061464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 558,
+          "allocated": 33516080,
+          "pauseMs": 0.112,
+          "before": 68577544,
+          "after": 35062232,
+          "collector": "s"
+        },
+        {
+          "timeMs": 560,
+          "allocated": 33518904,
+          "pauseMs": 0.062,
+          "before": 68581136,
+          "after": 35096984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 562,
+          "allocated": 33484928,
+          "pauseMs": 0.061,
+          "before": 68581912,
+          "after": 35065832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 564,
+          "allocated": 33518824,
+          "pauseMs": 0.044,
+          "before": 68584656,
+          "after": 35067024,
+          "collector": "s"
+        },
+        {
+          "timeMs": 566,
+          "allocated": 33518384,
+          "pauseMs": 0.042,
+          "before": 68585408,
+          "after": 35066944,
+          "collector": "s"
+        },
+        {
+          "timeMs": 568,
+          "allocated": 33518464,
+          "pauseMs": 0.043,
+          "before": 68585408,
+          "after": 35068744,
+          "collector": "s"
+        },
+        {
+          "timeMs": 570,
+          "allocated": 33516664,
+          "pauseMs": 0.113,
+          "before": 68585408,
+          "after": 35068664,
+          "collector": "s"
+        },
+        {
+          "timeMs": 573,
+          "allocated": 33518504,
+          "pauseMs": 0.062,
+          "before": 68587168,
+          "after": 35067800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 575,
+          "allocated": 33519368,
+          "pauseMs": 0.049,
+          "before": 68587168,
+          "after": 35067904,
+          "collector": "s"
+        },
+        {
+          "timeMs": 577,
+          "allocated": 33519296,
+          "pauseMs": 0.06,
+          "before": 68587200,
+          "after": 35070824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 579,
+          "allocated": 33516376,
+          "pauseMs": 0.046,
+          "before": 68587200,
+          "after": 35071784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 581,
+          "allocated": 33518856,
+          "pauseMs": 0.047,
+          "before": 68590640,
+          "after": 35072896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 583,
+          "allocated": 33518496,
+          "pauseMs": 0.048,
+          "before": 68591392,
+          "after": 35072936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 586,
+          "allocated": 33518456,
+          "pauseMs": 0.091,
+          "before": 68591392,
+          "after": 35109528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 588,
+          "allocated": 33481864,
+          "pauseMs": 0.084,
+          "before": 68591392,
+          "after": 35079200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 590,
+          "allocated": 33517696,
+          "pauseMs": 0.095,
+          "before": 68596896,
+          "after": 35080936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 592,
+          "allocated": 33517904,
+          "pauseMs": 0.065,
+          "before": 68598840,
+          "after": 35080296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 594,
+          "allocated": 33519296,
+          "pauseMs": 0.046,
+          "before": 68599592,
+          "after": 35080296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 598,
+          "allocated": 33519296,
+          "pauseMs": 0.148,
+          "before": 68599592,
+          "after": 35369032,
+          "collector": "s"
+        },
+        {
+          "timeMs": 600,
+          "allocated": 33230576,
+          "pauseMs": 0.088,
+          "before": 68599608,
+          "after": 35174856,
+          "collector": "s"
+        },
+        {
+          "timeMs": 603,
+          "allocated": 33447912,
+          "pauseMs": 0.1,
+          "before": 68622768,
+          "after": 35147328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 605,
+          "allocated": 33484848,
+          "pauseMs": 0.047,
+          "before": 68632176,
+          "after": 35116232,
+          "collector": "s"
+        },
+        {
+          "timeMs": 607,
+          "allocated": 33518640,
+          "pauseMs": 0.107,
+          "before": 68634872,
+          "after": 35116488,
+          "collector": "s"
+        },
+        {
+          "timeMs": 609,
+          "allocated": 33518384,
+          "pauseMs": 0.045,
+          "before": 68634872,
+          "after": 35116224,
+          "collector": "s"
+        },
+        {
+          "timeMs": 613,
+          "allocated": 33518680,
+          "pauseMs": 0.095,
+          "before": 68634904,
+          "after": 35166192,
+          "collector": "s"
+        },
+        {
+          "timeMs": 615,
+          "allocated": 33468712,
+          "pauseMs": 0.055,
+          "before": 68634904,
+          "after": 35149784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 617,
+          "allocated": 33517648,
+          "pauseMs": 0.057,
+          "before": 68667432,
+          "after": 35153912,
+          "collector": "s"
+        },
+        {
+          "timeMs": 620,
+          "allocated": 33515480,
+          "pauseMs": 0.113,
+          "before": 68669392,
+          "after": 35153672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 622,
+          "allocated": 33518640,
+          "pauseMs": 0.067,
+          "before": 68672312,
+          "after": 35156312,
+          "collector": "s"
+        },
+        {
+          "timeMs": 624,
+          "allocated": 33516000,
+          "pauseMs": 0.09,
+          "before": 68672312,
+          "after": 35156464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 627,
+          "allocated": 33518328,
+          "pauseMs": 0.04,
+          "before": 68674792,
+          "after": 35155424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 629,
+          "allocated": 33519368,
+          "pauseMs": 0.042,
+          "before": 68674792,
+          "after": 35156400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 632,
+          "allocated": 33518392,
+          "pauseMs": 0.086,
+          "before": 68674792,
+          "after": 35203832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 635,
+          "allocated": 33472664,
+          "pauseMs": 0.116,
+          "before": 68676496,
+          "after": 35187432,
+          "collector": "s"
+        },
+        {
+          "timeMs": 637,
+          "allocated": 33513368,
+          "pauseMs": 0.071,
+          "before": 68700800,
+          "after": 35205824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 640,
+          "allocated": 33500232,
+          "pauseMs": 0.128,
+          "before": 68706056,
+          "after": 35196624,
+          "collector": "s"
+        },
+        {
+          "timeMs": 642,
+          "allocated": 33511112,
+          "pauseMs": 0.062,
+          "before": 68707736,
+          "after": 35197736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 644,
+          "allocated": 33518824,
+          "pauseMs": 0.043,
+          "before": 68716560,
+          "after": 35198640,
+          "collector": "s"
+        },
+        {
+          "timeMs": 646,
+          "allocated": 33518568,
+          "pauseMs": 0.066,
+          "before": 68717208,
+          "after": 35201400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 648,
+          "allocated": 33515808,
+          "pauseMs": 0.059,
+          "before": 68717208,
+          "after": 35200536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 651,
+          "allocated": 33519400,
+          "pauseMs": 0.069,
+          "before": 68719936,
+          "after": 35235272,
+          "collector": "s"
+        },
+        {
+          "timeMs": 654,
+          "allocated": 33484664,
+          "pauseMs": 0.087,
+          "before": 68719936,
+          "after": 35236240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 658,
+          "allocated": 33484984,
+          "pauseMs": 0.144,
+          "before": 68721224,
+          "after": 35318208,
+          "collector": "s"
+        },
+        {
+          "timeMs": 660,
+          "allocated": 33422520,
+          "pauseMs": 0.08,
+          "before": 68740728,
+          "after": 35312776,
+          "collector": "s"
+        },
+        {
+          "timeMs": 662,
+          "allocated": 33479104,
+          "pauseMs": 0.074,
+          "before": 68791880,
+          "after": 35282528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 665,
+          "allocated": 33519360,
+          "pauseMs": 0.071,
+          "before": 68801888,
+          "after": 35284544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 667,
+          "allocated": 33517416,
+          "pauseMs": 0.057,
+          "before": 68801960,
+          "after": 35285504,
+          "collector": "s"
+        },
+        {
+          "timeMs": 669,
+          "allocated": 33518792,
+          "pauseMs": 0.108,
+          "before": 68804296,
+          "after": 35286984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 672,
+          "allocated": 33518360,
+          "pauseMs": 0.108,
+          "before": 68805344,
+          "after": 35332640,
+          "collector": "s"
+        },
+        {
+          "timeMs": 676,
+          "allocated": 33473416,
+          "pauseMs": 0.146,
+          "before": 68806056,
+          "after": 35338368,
+          "collector": "s"
+        },
+        {
+          "timeMs": 678,
+          "allocated": 33480624,
+          "pauseMs": 0.087,
+          "before": 68818992,
+          "after": 35342160,
+          "collector": "s"
+        },
+        {
+          "timeMs": 680,
+          "allocated": 33517712,
+          "pauseMs": 0.053,
+          "before": 68859872,
+          "after": 35343096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 682,
+          "allocated": 33518720,
+          "pauseMs": 0.047,
+          "before": 68861816,
+          "after": 35345448,
+          "collector": "s"
+        },
+        {
+          "timeMs": 684,
+          "allocated": 33517560,
+          "pauseMs": 0.061,
+          "before": 68863008,
+          "after": 35345592,
+          "collector": "s"
+        },
+        {
+          "timeMs": 687,
+          "allocated": 33519296,
+          "pauseMs": 0.138,
+          "before": 68864888,
+          "after": 35346464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 689,
+          "allocated": 33518456,
+          "pauseMs": 0.085,
+          "before": 68864920,
+          "after": 35347112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 691,
+          "allocated": 33517808,
+          "pauseMs": 0.075,
+          "before": 68864920,
+          "after": 35347464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 693,
+          "allocated": 33519112,
+          "pauseMs": 0.066,
+          "before": 68866576,
+          "after": 35347344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 697,
+          "allocated": 33519280,
+          "pauseMs": 0.107,
+          "before": 68866624,
+          "after": 35395472,
+          "collector": "s"
+        },
+        {
+          "timeMs": 699,
+          "allocated": 33471152,
+          "pauseMs": 0.092,
+          "before": 68866624,
+          "after": 35413128,
+          "collector": "s"
+        },
+        {
+          "timeMs": 702,
+          "allocated": 33485296,
+          "pauseMs": 0.088,
+          "before": 68898424,
+          "after": 35382136,
+          "collector": "s"
+        },
+        {
+          "timeMs": 705,
+          "allocated": 33518248,
+          "pauseMs": 0.101,
+          "before": 68900384,
+          "after": 35418424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 709,
+          "allocated": 33482792,
+          "pauseMs": 0.145,
+          "before": 68901216,
+          "after": 35441880,
+          "collector": "s"
+        },
+        {
+          "timeMs": 711,
+          "allocated": 33478240,
+          "pauseMs": 0.078,
+          "before": 68920120,
+          "after": 35446232,
+          "collector": "s"
+        },
+        {
+          "timeMs": 713,
+          "allocated": 33516568,
+          "pauseMs": 0.069,
+          "before": 68962800,
+          "after": 35449008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 715,
+          "allocated": 33517264,
+          "pauseMs": 0.049,
+          "before": 68966272,
+          "after": 35449984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 717,
+          "allocated": 33519296,
+          "pauseMs": 0.043,
+          "before": 68969280,
+          "after": 35451400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 720,
+          "allocated": 33517880,
+          "pauseMs": 0.094,
+          "before": 68969280,
+          "after": 35452608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 722,
+          "allocated": 33518328,
+          "pauseMs": 0.086,
+          "before": 68970936,
+          "after": 35454048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 724,
+          "allocated": 33516888,
+          "pauseMs": 0.124,
+          "before": 68970936,
+          "after": 35456368,
+          "collector": "s"
+        },
+        {
+          "timeMs": 727,
+          "allocated": 33518064,
+          "pauseMs": 0.063,
+          "before": 68974432,
+          "after": 35458688,
+          "collector": "s"
+        },
+        {
+          "timeMs": 729,
+          "allocated": 33517776,
+          "pauseMs": 0.075,
+          "before": 68976464,
+          "after": 35462328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 732,
+          "allocated": 33515720,
+          "pauseMs": 0.066,
+          "before": 68978048,
+          "after": 35510744,
+          "collector": "s"
+        },
+        {
+          "timeMs": 735,
+          "allocated": 33470976,
+          "pauseMs": 0.119,
+          "before": 68981720,
+          "after": 35502328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 738,
+          "allocated": 33972816,
+          "pauseMs": 0.815,
+          "before": 69475144,
+          "after": 37025984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 743,
+          "allocated": 32457120,
+          "pauseMs": 1.897,
+          "before": 69483104,
+          "after": 40161504,
+          "collector": "s"
+        },
+        {
+          "timeMs": 747,
+          "allocated": 30389008,
+          "pauseMs": 0.619,
+          "before": 70550512,
+          "after": 39373072,
+          "collector": "s"
+        },
+        {
+          "timeMs": 750,
+          "allocated": 31230552,
+          "pauseMs": 0.426,
+          "before": 70603624,
+          "after": 38136152,
+          "collector": "s"
+        },
+        {
+          "timeMs": 752,
+          "allocated": 33481576,
+          "pauseMs": 0.09,
+          "before": 71617728,
+          "after": 38141120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 756,
+          "allocated": 33483616,
+          "pauseMs": 0.11,
+          "before": 71624736,
+          "after": 38158824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 758,
+          "allocated": 33469040,
+          "pauseMs": 0.156,
+          "before": 71627864,
+          "after": 38144040,
+          "collector": "s"
+        },
+        {
+          "timeMs": 760,
+          "allocated": 33515408,
+          "pauseMs": 0.066,
+          "before": 71659448,
+          "after": 38178912,
+          "collector": "s"
+        },
+        {
+          "timeMs": 762,
+          "allocated": 33484992,
+          "pauseMs": 0.068,
+          "before": 71663904,
+          "after": 38148560,
+          "collector": "s"
+        },
+        {
+          "timeMs": 765,
+          "allocated": 33518024,
+          "pauseMs": 0.049,
+          "before": 71666584,
+          "after": 38149112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 767,
+          "allocated": 33518120,
+          "pauseMs": 0.046,
+          "before": 71667232,
+          "after": 38148800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 769,
+          "allocated": 33518464,
+          "pauseMs": 0.087,
+          "before": 71667264,
+          "after": 38150144,
+          "collector": "s"
+        },
+        {
+          "timeMs": 771,
+          "allocated": 33517120,
+          "pauseMs": 0.074,
+          "before": 71667264,
+          "after": 38150616,
+          "collector": "s"
+        },
+        {
+          "timeMs": 773,
+          "allocated": 33518304,
+          "pauseMs": 0.101,
+          "before": 71668920,
+          "after": 38150536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 776,
+          "allocated": 33518416,
+          "pauseMs": 0.069,
+          "before": 71668952,
+          "after": 38154488,
+          "collector": "s"
+        },
+        {
+          "timeMs": 778,
+          "allocated": 33514464,
+          "pauseMs": 0.055,
+          "before": 71668952,
+          "after": 38154528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 780,
+          "allocated": 33518640,
+          "pauseMs": 0.07,
+          "before": 71673168,
+          "after": 38156960,
+          "collector": "s"
+        },
+        {
+          "timeMs": 783,
+          "allocated": 33516208,
+          "pauseMs": 0.069,
+          "before": 71673168,
+          "after": 38159480,
+          "collector": "s"
+        },
+        {
+          "timeMs": 785,
+          "allocated": 33517040,
+          "pauseMs": 0.064,
+          "before": 71676520,
+          "after": 38160688,
+          "collector": "s"
+        },
+        {
+          "timeMs": 787,
+          "allocated": 33517880,
+          "pauseMs": 0.108,
+          "before": 71678568,
+          "after": 38161544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 789,
+          "allocated": 33517808,
+          "pauseMs": 0.074,
+          "before": 71679352,
+          "after": 38163656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 792,
+          "allocated": 33517728,
+          "pauseMs": 0.08,
+          "before": 71681384,
+          "after": 38164712,
+          "collector": "s"
+        },
+        {
+          "timeMs": 794,
+          "allocated": 33518832,
+          "pauseMs": 0.058,
+          "before": 71683544,
+          "after": 38166888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 796,
+          "allocated": 33517776,
+          "pauseMs": 0.071,
+          "before": 71684664,
+          "after": 38168568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 798,
+          "allocated": 33517848,
+          "pauseMs": 0.05,
+          "before": 71686416,
+          "after": 38169400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 800,
+          "allocated": 33517736,
+          "pauseMs": 0.055,
+          "before": 71687136,
+          "after": 38171752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 802,
+          "allocated": 33516968,
+          "pauseMs": 0.055,
+          "before": 71688720,
+          "after": 38173224,
+          "collector": "s"
+        },
+        {
+          "timeMs": 804,
+          "allocated": 33517080,
+          "pauseMs": 0.096,
+          "before": 71690304,
+          "after": 38174888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 807,
+          "allocated": 33517000,
+          "pauseMs": 0.121,
+          "before": 71691888,
+          "after": 38209280,
+          "collector": "s"
+        },
+        {
+          "timeMs": 809,
+          "allocated": 33483912,
+          "pauseMs": 0.069,
+          "before": 71693192,
+          "after": 38179832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 812,
+          "allocated": 33515440,
+          "pauseMs": 0.113,
+          "before": 71695272,
+          "after": 38239296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 815,
+          "allocated": 33459616,
+          "pauseMs": 0.084,
+          "before": 71698912,
+          "after": 38242800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 820,
+          "allocated": 33483312,
+          "pauseMs": 0.384,
+          "before": 71726112,
+          "after": 39086784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 823,
+          "allocated": 32674448,
+          "pauseMs": 0.171,
+          "before": 71761232,
+          "after": 38330080,
+          "collector": "s"
+        },
+        {
+          "timeMs": 826,
+          "allocated": 33473728,
+          "pauseMs": 0.072,
+          "before": 71803808,
+          "after": 38303736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 828,
+          "allocated": 33516552,
+          "pauseMs": 0.061,
+          "before": 71820288,
+          "after": 38306424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 830,
+          "allocated": 33517144,
+          "pauseMs": 0.089,
+          "before": 71823568,
+          "after": 38342016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 833,
+          "allocated": 33483080,
+          "pauseMs": 0.063,
+          "before": 71825096,
+          "after": 38318784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 836,
+          "allocated": 33510752,
+          "pauseMs": 0.123,
+          "before": 71829536,
+          "after": 38326336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 839,
+          "allocated": 33512192,
+          "pauseMs": 0.115,
+          "before": 71838528,
+          "after": 38368880,
+          "collector": "s"
+        },
+        {
+          "timeMs": 843,
+          "allocated": 33476072,
+          "pauseMs": 0.094,
+          "before": 71844952,
+          "after": 38344568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 846,
+          "allocated": 33511080,
+          "pauseMs": 0.099,
+          "before": 71855648,
+          "after": 38359432,
+          "collector": "s"
+        },
+        {
+          "timeMs": 849,
+          "allocated": 33504408,
+          "pauseMs": 0.088,
+          "before": 71863840,
+          "after": 38382112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 853,
+          "allocated": 33496656,
+          "pauseMs": 0.104,
+          "before": 71878768,
+          "after": 38387800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 857,
+          "allocated": 33507048,
+          "pauseMs": 0.164,
+          "before": 71894848,
+          "after": 38409744,
+          "collector": "s"
+        },
+        {
+          "timeMs": 860,
+          "allocated": 33497040,
+          "pauseMs": 0.093,
+          "before": 71906784,
+          "after": 38420888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 864,
+          "allocated": 33502344,
+          "pauseMs": 0.106,
+          "before": 71923232,
+          "after": 38439176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 868,
+          "allocated": 33501584,
+          "pauseMs": 0.129,
+          "before": 71940760,
+          "after": 38457520,
+          "collector": "s"
+        },
+        {
+          "timeMs": 872,
+          "allocated": 33501528,
+          "pauseMs": 0.153,
+          "before": 71959048,
+          "after": 38478344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 876,
+          "allocated": 33494832,
+          "pauseMs": 0.136,
+          "before": 71973176,
+          "after": 38504528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 879,
+          "allocated": 33494856,
+          "pauseMs": 0.125,
+          "before": 71999384,
+          "after": 38510536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 883,
+          "allocated": 33504728,
+          "pauseMs": 0.091,
+          "before": 72015264,
+          "after": 38533152,
+          "collector": "s"
+        },
+        {
+          "timeMs": 886,
+          "allocated": 33494736,
+          "pauseMs": 0.15,
+          "before": 72027888,
+          "after": 38566800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 890,
+          "allocated": 33478288,
+          "pauseMs": 0.182,
+          "before": 72045088,
+          "after": 38583168,
+          "collector": "s"
+        },
+        {
+          "timeMs": 894,
+          "allocated": 33494824,
+          "pauseMs": 0.12,
+          "before": 72077992,
+          "after": 38621656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 897,
+          "allocated": 33481136,
+          "pauseMs": 0.121,
+          "before": 72102792,
+          "after": 38701096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 899,
+          "allocated": 33438312,
+          "pauseMs": 0.079,
+          "before": 72139408,
+          "after": 38649048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 903,
+          "allocated": 33511384,
+          "pauseMs": 0.12,
+          "before": 72160432,
+          "after": 38702920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 906,
+          "allocated": 33465232,
+          "pauseMs": 0.144,
+          "before": 72168152,
+          "after": 38744696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 909,
+          "allocated": 33462264,
+          "pauseMs": 0.08,
+          "before": 72206960,
+          "after": 38716952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 911,
+          "allocated": 33515328,
+          "pauseMs": 0.056,
+          "before": 72232280,
+          "after": 38719976,
+          "collector": "s"
+        },
+        {
+          "timeMs": 913,
+          "allocated": 33516976,
+          "pauseMs": 0.075,
+          "before": 72236952,
+          "after": 38723568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 915,
+          "allocated": 33516792,
+          "pauseMs": 0.051,
+          "before": 72240360,
+          "after": 38723776,
+          "collector": "s"
+        },
+        {
+          "timeMs": 917,
+          "allocated": 33518320,
+          "pauseMs": 0.051,
+          "before": 72242096,
+          "after": 38724976,
+          "collector": "s"
+        },
+        {
+          "timeMs": 919,
+          "allocated": 33518456,
+          "pauseMs": 0.076,
+          "before": 72243432,
+          "after": 38726736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 921,
+          "allocated": 33516944,
+          "pauseMs": 0.075,
+          "before": 72243680,
+          "after": 38726792,
+          "collector": "s"
+        },
+        {
+          "timeMs": 924,
+          "allocated": 33518544,
+          "pauseMs": 0.123,
+          "before": 72245336,
+          "after": 38731464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 927,
+          "allocated": 33513872,
+          "pauseMs": 0.063,
+          "before": 72245336,
+          "after": 38732304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 929,
+          "allocated": 33518296,
+          "pauseMs": 0.073,
+          "before": 72250600,
+          "after": 38733696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 931,
+          "allocated": 33517184,
+          "pauseMs": 0.057,
+          "before": 72250880,
+          "after": 38734560,
+          "collector": "s"
+        },
+        {
+          "timeMs": 933,
+          "allocated": 33517312,
+          "pauseMs": 0.102,
+          "before": 72251872,
+          "after": 38735792,
+          "collector": "s"
+        },
+        {
+          "timeMs": 937,
+          "allocated": 33517688,
+          "pauseMs": 0.149,
+          "before": 72253480,
+          "after": 38793808,
+          "collector": "s"
+        },
+        {
+          "timeMs": 941,
+          "allocated": 33460600,
+          "pauseMs": 0.139,
+          "before": 72254408,
+          "after": 38793056,
+          "collector": "s"
+        },
+        {
+          "timeMs": 944,
+          "allocated": 33470304,
+          "pauseMs": 0.103,
+          "before": 72263360,
+          "after": 38784408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 948,
+          "allocated": 33495008,
+          "pauseMs": 0.096,
+          "before": 72279416,
+          "after": 38803288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 951,
+          "allocated": 33500824,
+          "pauseMs": 0.099,
+          "before": 72304112,
+          "after": 38821120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 954,
+          "allocated": 33496600,
+          "pauseMs": 0.136,
+          "before": 72317720,
+          "after": 38875632,
+          "collector": "s"
+        },
+        {
+          "timeMs": 958,
+          "allocated": 33463072,
+          "pauseMs": 0.121,
+          "before": 72338704,
+          "after": 38881912,
+          "collector": "s"
+        },
+        {
+          "timeMs": 962,
+          "allocated": 33501888,
+          "pauseMs": 0.108,
+          "before": 72383800,
+          "after": 38906528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 965,
+          "allocated": 33495320,
+          "pauseMs": 0.093,
+          "before": 72401848,
+          "after": 38918192,
+          "collector": "s"
+        },
+        {
+          "timeMs": 969,
+          "allocated": 33497600,
+          "pauseMs": 0.079,
+          "before": 72415792,
+          "after": 38923880,
+          "collector": "s"
+        },
+        {
+          "timeMs": 973,
+          "allocated": 33507072,
+          "pauseMs": 0.135,
+          "before": 72430952,
+          "after": 38946384,
+          "collector": "s"
+        },
+        {
+          "timeMs": 976,
+          "allocated": 33496560,
+          "pauseMs": 0.118,
+          "before": 72442944,
+          "after": 39007728,
+          "collector": "s"
+        },
+        {
+          "timeMs": 979,
+          "allocated": 33457384,
+          "pauseMs": 0.127,
+          "before": 72465112,
+          "after": 39034936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 983,
+          "allocated": 33478864,
+          "pauseMs": 0.328,
+          "before": 72513800,
+          "after": 39847680,
+          "collector": "s"
+        },
+        {
+          "timeMs": 985,
+          "allocated": 32670752,
+          "pauseMs": 0.395,
+          "before": 72518432,
+          "after": 40096784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 988,
+          "allocated": 32479328,
+          "pauseMs": 0.136,
+          "before": 72576112,
+          "after": 39103352,
+          "collector": "s"
+        },
+        {
+          "timeMs": 991,
+          "allocated": 33479672,
+          "pauseMs": 0.13,
+          "before": 72583024,
+          "after": 39078296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 994,
+          "allocated": 33514304,
+          "pauseMs": 0.094,
+          "before": 72592600,
+          "after": 39112144,
+          "collector": "s"
+        },
+        {
+          "timeMs": 997,
+          "allocated": 33485832,
+          "pauseMs": 0.131,
+          "before": 72597976,
+          "after": 39152200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1000,
+          "allocated": 33455808,
+          "pauseMs": 0.11,
+          "before": 72608008,
+          "after": 39153984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1004,
+          "allocated": 33486696,
+          "pauseMs": 0.159,
+          "before": 72640680,
+          "after": 39182016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1008,
+          "allocated": 33482056,
+          "pauseMs": 0.169,
+          "before": 72664072,
+          "after": 39203768,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1011,
+          "allocated": 33487416,
+          "pauseMs": 0.103,
+          "before": 72691184,
+          "after": 39230744,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1015,
+          "allocated": 33491912,
+          "pauseMs": 0.108,
+          "before": 72722656,
+          "after": 39251168,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1018,
+          "allocated": 33498688,
+          "pauseMs": 0.137,
+          "before": 72749856,
+          "after": 39321368,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1022,
+          "allocated": 33444592,
+          "pauseMs": 0.157,
+          "before": 72765960,
+          "after": 39353392,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1026,
+          "allocated": 33480848,
+          "pauseMs": 0.147,
+          "before": 72834240,
+          "after": 39409672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1030,
+          "allocated": 33450336,
+          "pauseMs": 0.587,
+          "before": 72860008,
+          "after": 40293856,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1035,
+          "allocated": 32606224,
+          "pauseMs": 0.19,
+          "before": 72900080,
+          "after": 39433696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1039,
+          "allocated": 33492024,
+          "pauseMs": 0.151,
+          "before": 72925720,
+          "after": 39436632,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1042,
+          "allocated": 33504728,
+          "pauseMs": 0.149,
+          "before": 72941360,
+          "after": 39453296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1046,
+          "allocated": 33502680,
+          "pauseMs": 0.148,
+          "before": 72955976,
+          "after": 39474352,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1051,
+          "allocated": 33497464,
+          "pauseMs": 0.499,
+          "before": 72971816,
+          "after": 40558760,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1054,
+          "allocated": 32431400,
+          "pauseMs": 0.48,
+          "before": 72990160,
+          "after": 40595992,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1057,
+          "allocated": 32458784,
+          "pauseMs": 0.483,
+          "before": 73054776,
+          "after": 40569112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1061,
+          "allocated": 32486728,
+          "pauseMs": 0.439,
+          "before": 73055840,
+          "after": 40583992,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1065,
+          "allocated": 32478392,
+          "pauseMs": 0.319,
+          "before": 73062384,
+          "after": 40534544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1068,
+          "allocated": 32544072,
+          "pauseMs": 0.461,
+          "before": 73078616,
+          "after": 40656984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1071,
+          "allocated": 32446032,
+          "pauseMs": 0.45,
+          "before": 73103016,
+          "after": 40661928,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1074,
+          "allocated": 32452152,
+          "pauseMs": 0.643,
+          "before": 73114080,
+          "after": 41238816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1077,
+          "allocated": 31877744,
+          "pauseMs": 0.122,
+          "before": 73116560,
+          "after": 39636088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1080,
+          "allocated": 33486752,
+          "pauseMs": 0.105,
+          "before": 73122840,
+          "after": 39646880,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1084,
+          "allocated": 33482168,
+          "pauseMs": 0.103,
+          "before": 73129048,
+          "after": 39674136,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1088,
+          "allocated": 33470816,
+          "pauseMs": 0.634,
+          "before": 73144952,
+          "after": 40643072,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1092,
+          "allocated": 32521024,
+          "pauseMs": 0.479,
+          "before": 73164096,
+          "after": 40738920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1095,
+          "allocated": 32441856,
+          "pauseMs": 0.582,
+          "before": 73180776,
+          "after": 41294824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1097,
+          "allocated": 31908480,
+          "pauseMs": 0.424,
+          "before": 73203304,
+          "after": 41263312,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1100,
+          "allocated": 33518880,
+          "pauseMs": 0.421,
+          "before": 74782192,
+          "after": 42301336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1103,
+          "allocated": 32480872,
+          "pauseMs": 0.463,
+          "before": 74782208,
+          "after": 42336224,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1107,
+          "allocated": 32458736,
+          "pauseMs": 0.546,
+          "before": 74794960,
+          "after": 42312584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1118,
+          "allocated": 32484888,
+          "pauseMs": 0.794,
+          "before": 74797472,
+          "after": 42513304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1137,
+          "allocated": 32293064,
+          "pauseMs": 4.948,
+          "before": 74806368,
+          "after": 51902376,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1144,
+          "allocated": 24069520,
+          "pauseMs": 3.859,
+          "before": 75971896,
+          "after": 52028784,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1147,
+          "allocated": 33369904,
+          "pauseMs": 0.143,
+          "before": 85398688,
+          "after": 52237752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1152,
+          "allocated": 52092152,
+          "pauseMs": 0.193,
+          "before": 104329904,
+          "after": 52393640,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1156,
+          "allocated": 43810832,
+          "pauseMs": 0.274,
+          "before": 96204472,
+          "after": 52611328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1161,
+          "allocated": 59683888,
+          "pauseMs": 0.181,
+          "before": 112295216,
+          "after": 52728360,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1162,
+          "allocated": 33487952,
+          "pauseMs": 0.081,
+          "before": 86216312,
+          "after": 52812680,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1164,
+          "allocated": 33412728,
+          "pauseMs": 0.122,
+          "before": 86225408,
+          "after": 53010120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1165,
+          "allocated": 33215288,
+          "pauseMs": 0.134,
+          "before": 86225408,
+          "after": 52952968,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1189,
+          "allocated": 38306800,
+          "pauseMs": 0.314,
+          "before": 91259768,
+          "after": 55118408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1197,
+          "allocated": 40087008,
+          "pauseMs": 0.456,
+          "before": 95205416,
+          "after": 54997168,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1244,
+          "allocated": 32841224,
+          "pauseMs": 1.171,
+          "before": 87838392,
+          "after": 57974144,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1262,
+          "allocated": 30436160,
+          "pauseMs": 1.941,
+          "before": 88410304,
+          "after": 59892208,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1271,
+          "allocated": 31480088,
+          "pauseMs": 0.924,
+          "before": 91372296,
+          "after": 60812608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1281,
+          "allocated": 32543808,
+          "pauseMs": 0.68,
+          "before": 93356416,
+          "after": 61648536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1291,
+          "allocated": 31793888,
+          "pauseMs": 1.127,
+          "before": 93442424,
+          "after": 64683696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1298,
+          "allocated": 29367672,
+          "pauseMs": 1.06,
+          "before": 94051368,
+          "after": 62723536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1316,
+          "allocated": 31835248,
+          "pauseMs": 0.977,
+          "before": 94558784,
+          "after": 64490816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1329,
+          "allocated": 30408632,
+          "pauseMs": 1.455,
+          "before": 94899448,
+          "after": 63822296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1336,
+          "allocated": 34128576,
+          "pauseMs": 1.259,
+          "before": 97950872,
+          "after": 63335632,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1345,
+          "allocated": 32173152,
+          "pauseMs": 4.823,
+          "before": 95508784,
+          "after": 77746128,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1351,
+          "allocated": 19079584,
+          "pauseMs": 3.972,
+          "before": 96825712,
+          "after": 77801192,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1354,
+          "allocated": 33344400,
+          "pauseMs": 0.156,
+          "before": 111145592,
+          "after": 77985888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1358,
+          "allocated": 33306176,
+          "pauseMs": 0.167,
+          "before": 111292064,
+          "after": 78185824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1361,
+          "allocated": 33290736,
+          "pauseMs": 0.151,
+          "before": 111476560,
+          "after": 78442832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1364,
+          "allocated": 33995120,
+          "pauseMs": 0.886,
+          "before": 112437952,
+          "after": 78457792,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1368,
+          "allocated": 36835512,
+          "pauseMs": 0.288,
+          "before": 115293304,
+          "after": 79037720,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1374,
+          "allocated": 52166544,
+          "pauseMs": 0.672,
+          "before": 131204264,
+          "after": 79230640,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1377,
+          "allocated": 33505544,
+          "pauseMs": 0.154,
+          "before": 112736184,
+          "after": 79484184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1380,
+          "allocated": 38474872,
+          "pauseMs": 0.61,
+          "before": 117959056,
+          "after": 79432096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1384,
+          "allocated": 53905848,
+          "pauseMs": 0.271,
+          "before": 133337944,
+          "after": 79877200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1387,
+          "allocated": 33486584,
+          "pauseMs": 0.151,
+          "before": 113363784,
+          "after": 79993040,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1397,
+          "allocated": 59841344,
+          "pauseMs": 0.587,
+          "before": 139834384,
+          "after": 82667408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1409,
+          "allocated": 36016512,
+          "pauseMs": 4.633,
+          "before": 118683920,
+          "after": 97171400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1415,
+          "allocated": 18189344,
+          "pauseMs": 4.224,
+          "before": 115360744,
+          "after": 97256464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1418,
+          "allocated": 33381320,
+          "pauseMs": 0.175,
+          "before": 130637784,
+          "after": 97466856,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1421,
+          "allocated": 33301208,
+          "pauseMs": 0.138,
+          "before": 130768064,
+          "after": 97658760,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1426,
+          "allocated": 33305000,
+          "pauseMs": 0.229,
+          "before": 130963760,
+          "after": 97977424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1429,
+          "allocated": 43427840,
+          "pauseMs": 0.518,
+          "before": 141405264,
+          "after": 97988496,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1432,
+          "allocated": 35006320,
+          "pauseMs": 0.132,
+          "before": 132994816,
+          "after": 98570336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1439,
+          "allocated": 50636800,
+          "pauseMs": 0.907,
+          "before": 149207136,
+          "after": 98771472,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1443,
+          "allocated": 33491080,
+          "pauseMs": 0.16,
+          "before": 132262552,
+          "after": 99010256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1446,
+          "allocated": 37164528,
+          "pauseMs": 0.547,
+          "before": 136174784,
+          "after": 98954400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1449,
+          "allocated": 52002168,
+          "pauseMs": 0.165,
+          "before": 150956568,
+          "after": 99396968,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1451,
+          "allocated": 33485320,
+          "pauseMs": 0.182,
+          "before": 132882288,
+          "after": 99511432,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1463,
+          "allocated": 58888448,
+          "pauseMs": 0.659,
+          "before": 158399880,
+          "after": 102176544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1481,
+          "allocated": 35950632,
+          "pauseMs": 0.448,
+          "before": 138127176,
+          "after": 101788864,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1488,
+          "allocated": 33064408,
+          "pauseMs": 1.334,
+          "before": 134853272,
+          "after": 105303576,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1493,
+          "allocated": 29883240,
+          "pauseMs": 1.092,
+          "before": 135186816,
+          "after": 105587752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1497,
+          "allocated": 33368000,
+          "pauseMs": 1.497,
+          "before": 138955752,
+          "after": 109287552,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1500,
+          "allocated": 29839056,
+          "pauseMs": 1.523,
+          "before": 139126608,
+          "after": 109617200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1504,
+          "allocated": 29329288,
+          "pauseMs": 0.891,
+          "before": 138946488,
+          "after": 107841248,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1508,
+          "allocated": 31265848,
+          "pauseMs": 0.742,
+          "before": 139107096,
+          "after": 107792824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1512,
+          "allocated": 33357584,
+          "pauseMs": 1.276,
+          "before": 141150408,
+          "after": 110654200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1516,
+          "allocated": 30322440,
+          "pauseMs": 0.849,
+          "before": 140976640,
+          "after": 109477080,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1525,
+          "allocated": 31890112,
+          "pauseMs": 5.805,
+          "before": 141367192,
+          "after": 117596768,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1535,
+          "allocated": 24116936,
+          "pauseMs": 7.33,
+          "before": 141713704,
+          "after": 121767992,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1539,
+          "allocated": 29349240,
+          "pauseMs": 2.33,
+          "before": 151117232,
+          "after": 121873208,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1542,
+          "allocated": 33359456,
+          "pauseMs": 0.159,
+          "before": 155232664,
+          "after": 122050104,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1545,
+          "allocated": 33334624,
+          "pauseMs": 0.143,
+          "before": 155384728,
+          "after": 122179448,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1548,
+          "allocated": 33327440,
+          "pauseMs": 0.162,
+          "before": 155506888,
+          "after": 122329232,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1550,
+          "allocated": 36253616,
+          "pauseMs": 0.312,
+          "before": 158582848,
+          "after": 122331080,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1553,
+          "allocated": 33508328,
+          "pauseMs": 0.905,
+          "before": 155839408,
+          "after": 122613536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1557,
+          "allocated": 45588280,
+          "pauseMs": 0.551,
+          "before": 168201816,
+          "after": 123060656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1560,
+          "allocated": 38935760,
+          "pauseMs": 0.167,
+          "before": 161996416,
+          "after": 123210824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1566,
+          "allocated": 61496048,
+          "pauseMs": 1.055,
+          "before": 184706872,
+          "after": 123519576,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1570,
+          "allocated": 60448512,
+          "pauseMs": 0.183,
+          "before": 183968088,
+          "after": 123656792,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1573,
+          "allocated": 39868032,
+          "pauseMs": 0.22,
+          "before": 163524824,
+          "after": 123842928,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1574,
+          "allocated": 33407200,
+          "pauseMs": 0.12,
+          "before": 157250128,
+          "after": 123862104,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1585,
+          "allocated": 39853304,
+          "pauseMs": 0.306,
+          "before": 163715408,
+          "after": 126180552,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1597,
+          "allocated": 34693480,
+          "pauseMs": 0.636,
+          "before": 160874032,
+          "after": 126642368,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1605,
+          "allocated": 32197288,
+          "pauseMs": 3.577,
+          "before": 158839656,
+          "after": 135343368,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1609,
+          "allocated": 24094344,
+          "pauseMs": 1.16,
+          "before": 159437712,
+          "after": 128918456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1614,
+          "allocated": 33069072,
+          "pauseMs": 1.834,
+          "before": 161987528,
+          "after": 135676272,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1616,
+          "allocated": 26388704,
+          "pauseMs": 0.366,
+          "before": 162064976,
+          "after": 129820984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1621,
+          "allocated": 33096000,
+          "pauseMs": 1.165,
+          "before": 162916984,
+          "after": 133202680,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1626,
+          "allocated": 29795360,
+          "pauseMs": 2.545,
+          "before": 162998040,
+          "after": 133891712,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1635,
+          "allocated": 29794144,
+          "pauseMs": 6.659,
+          "before": 163685856,
+          "after": 142757816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1642,
+          "allocated": 24622656,
+          "pauseMs": 4.943,
+          "before": 167380472,
+          "after": 142869088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1649,
+          "allocated": 1301376,
+          "pauseMs": 5.645,
+          "before": 144170464,
+          "after": 50826088,
+          "collector": "mc"
+        },
+        {
+          "timeMs": 1651,
+          "allocated": 33552384,
+          "pauseMs": 0.14,
+          "before": 84378472,
+          "after": 51016184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1654,
+          "allocated": 33362288,
+          "pauseMs": 0.17,
+          "before": 84378472,
+          "after": 51139160,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1659,
+          "allocated": 66051128,
+          "pauseMs": 0.343,
+          "before": 117190288,
+          "after": 51272248,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1662,
+          "allocated": 33540888,
+          "pauseMs": 0.75,
+          "before": 84813136,
+          "after": 51555376,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1665,
+          "allocated": 36952400,
+          "pauseMs": 0.182,
+          "before": 88507776,
+          "after": 51977600,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1668,
+          "allocated": 38669136,
+          "pauseMs": 0.177,
+          "before": 90646736,
+          "after": 52134176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1674,
+          "allocated": 60025712,
+          "pauseMs": 0.98,
+          "before": 112159888,
+          "after": 52397144,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1677,
+          "allocated": 52967104,
+          "pauseMs": 0.158,
+          "before": 105364248,
+          "after": 52590216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1680,
+          "allocated": 34307256,
+          "pauseMs": 0.118,
+          "before": 86897472,
+          "after": 52708872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1681,
+          "allocated": 33401968,
+          "pauseMs": 0.065,
+          "before": 86110840,
+          "after": 52695496,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1694,
+          "allocated": 42854640,
+          "pauseMs": 0.421,
+          "before": 95550136,
+          "after": 53075400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1699,
+          "allocated": 33053000,
+          "pauseMs": 2.232,
+          "before": 86128400,
+          "after": 59317080,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1703,
+          "allocated": 26838736,
+          "pauseMs": 1.857,
+          "before": 86155816,
+          "after": 57778800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1708,
+          "allocated": 32936744,
+          "pauseMs": 1.921,
+          "before": 90715544,
+          "after": 62803096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1712,
+          "allocated": 27989872,
+          "pauseMs": 1.202,
+          "before": 90792968,
+          "after": 61048528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1715,
+          "allocated": 30241576,
+          "pauseMs": 0.575,
+          "before": 91290104,
+          "after": 59283992,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1724,
+          "allocated": 32450488,
+          "pauseMs": 6.199,
+          "before": 91734480,
+          "after": 71084832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1730,
+          "allocated": 21084256,
+          "pauseMs": 5.278,
+          "before": 92169088,
+          "after": 71127336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1733,
+          "allocated": 33369584,
+          "pauseMs": 0.08,
+          "before": 104496920,
+          "after": 71257192,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1736,
+          "allocated": 33351008,
+          "pauseMs": 0.127,
+          "before": 104608200,
+          "after": 71387592,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1739,
+          "allocated": 33347872,
+          "pauseMs": 0.201,
+          "before": 104735464,
+          "after": 71538200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1741,
+          "allocated": 36941864,
+          "pauseMs": 0.425,
+          "before": 108480064,
+          "after": 71527112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1745,
+          "allocated": 33543672,
+          "pauseMs": 0.989,
+          "before": 105070784,
+          "after": 71810256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1747,
+          "allocated": 36952632,
+          "pauseMs": 0.155,
+          "before": 108762888,
+          "after": 72232512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1750,
+          "allocated": 38669320,
+          "pauseMs": 0.122,
+          "before": 110901832,
+          "after": 72388632,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1756,
+          "allocated": 60027728,
+          "pauseMs": 1.051,
+          "before": 132416360,
+          "after": 72651064,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1759,
+          "allocated": 52968120,
+          "pauseMs": 0.152,
+          "before": 125619184,
+          "after": 72812448,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1762,
+          "allocated": 34340136,
+          "pauseMs": 0.119,
+          "before": 107152584,
+          "after": 72964088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1763,
+          "allocated": 33401720,
+          "pauseMs": 0.072,
+          "before": 106365808,
+          "after": 72950464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1775,
+          "allocated": 42833696,
+          "pauseMs": 0.226,
+          "before": 115784160,
+          "after": 72915448,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1781,
+          "allocated": 33457104,
+          "pauseMs": 2.071,
+          "before": 106372552,
+          "after": 79886416,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1784,
+          "allocated": 26486816,
+          "pauseMs": 0.777,
+          "before": 106373232,
+          "after": 75967776,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1790,
+          "allocated": 32947464,
+          "pauseMs": 2.1,
+          "before": 108915240,
+          "after": 82631008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1793,
+          "allocated": 26385520,
+          "pauseMs": 1.467,
+          "before": 109016528,
+          "after": 78425760,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1802,
+          "allocated": 31078472,
+          "pauseMs": 5.981,
+          "before": 109504232,
+          "after": 87431656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1809,
+          "allocated": 22674232,
+          "pauseMs": 5.254,
+          "before": 110105888,
+          "after": 87474656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1812,
+          "allocated": 33437392,
+          "pauseMs": 0.087,
+          "before": 120912048,
+          "after": 87627128,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1815,
+          "allocated": 33324488,
+          "pauseMs": 0.126,
+          "before": 120951616,
+          "after": 87801184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1817,
+          "allocated": 33327024,
+          "pauseMs": 0.127,
+          "before": 121128208,
+          "after": 87930568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1820,
+          "allocated": 63788392,
+          "pauseMs": 0.408,
+          "before": 151718960,
+          "after": 87972552,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1824,
+          "allocated": 43255832,
+          "pauseMs": 0.42,
+          "before": 131228384,
+          "after": 88384736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1826,
+          "allocated": 33389392,
+          "pauseMs": 0.115,
+          "before": 121774128,
+          "after": 88469256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1831,
+          "allocated": 57607848,
+          "pauseMs": 0.649,
+          "before": 146077104,
+          "after": 88656216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1833,
+          "allocated": 39590344,
+          "pauseMs": 0.111,
+          "before": 128246560,
+          "after": 88743432,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1835,
+          "allocated": 33427888,
+          "pauseMs": 0.108,
+          "before": 122171320,
+          "after": 88838200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1843,
+          "allocated": 38728368,
+          "pauseMs": 0.286,
+          "before": 127566568,
+          "after": 90663200,
+          "collector": "s"
+        }
+      ]
+    },
+    {
+      "label": "新",
+      "compiler": "yy源码前缀种子.wasm",
+      "events": 360,
+      "reportedAllocatedBytes": 11688986672,
+      "pauseMs": 249.10699999999997,
+      "maxObjectAfterBytes": 142632544,
+      "records": [
+        {
+          "timeMs": 2,
+          "allocated": 1484352,
+          "pauseMs": 0.129,
+          "before": 1484352,
+          "after": 746336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 3,
+          "allocated": 1114344,
+          "pauseMs": 0.158,
+          "before": 1860680,
+          "after": 1543640,
+          "collector": "s"
+        },
+        {
+          "timeMs": 5,
+          "allocated": 1197872,
+          "pauseMs": 0.166,
+          "before": 2741512,
+          "after": 2490456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 20,
+          "allocated": 3414144,
+          "pauseMs": 0.234,
+          "before": 5904600,
+          "after": 5295608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 21,
+          "allocated": 892656,
+          "pauseMs": 0.231,
+          "before": 6188264,
+          "after": 6077456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 35,
+          "allocated": 3349880,
+          "pauseMs": 0.363,
+          "before": 9427336,
+          "after": 6777072,
+          "collector": "s"
+        },
+        {
+          "timeMs": 35,
+          "allocated": 3539168,
+          "pauseMs": 0.126,
+          "before": 10316240,
+          "after": 6691336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 37,
+          "allocated": 4103288,
+          "pauseMs": 0.069,
+          "before": 10794624,
+          "after": 6798984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 38,
+          "allocated": 4051624,
+          "pauseMs": 0.069,
+          "before": 10850608,
+          "after": 6738984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 43,
+          "allocated": 4175240,
+          "pauseMs": 0.063,
+          "before": 10914224,
+          "after": 6825856,
+          "collector": "s"
+        },
+        {
+          "timeMs": 56,
+          "allocated": 4310000,
+          "pauseMs": 0.798,
+          "before": 11135856,
+          "after": 9309632,
+          "collector": "s"
+        },
+        {
+          "timeMs": 61,
+          "allocated": 6634992,
+          "pauseMs": 1.157,
+          "before": 15944624,
+          "after": 10626528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 64,
+          "allocated": 6141000,
+          "pauseMs": 0.829,
+          "before": 16767528,
+          "after": 11232808,
+          "collector": "s"
+        },
+        {
+          "timeMs": 66,
+          "allocated": 1638896,
+          "pauseMs": 1.498,
+          "before": 12871704,
+          "after": 10194472,
+          "collector": "mc"
+        },
+        {
+          "timeMs": 69,
+          "allocated": 8386496,
+          "pauseMs": 0.706,
+          "before": 18580968,
+          "after": 11094424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 71,
+          "allocated": 7495024,
+          "pauseMs": 1.481,
+          "before": 18589448,
+          "after": 11924728,
+          "collector": "s"
+        },
+        {
+          "timeMs": 78,
+          "allocated": 15883848,
+          "pauseMs": 2.262,
+          "before": 27808576,
+          "after": 13485872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 84,
+          "allocated": 15066248,
+          "pauseMs": 2.621,
+          "before": 28552120,
+          "after": 14882096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 88,
+          "allocated": 15208304,
+          "pauseMs": 1.8,
+          "before": 30090400,
+          "after": 16313392,
+          "collector": "s"
+        },
+        {
+          "timeMs": 107,
+          "allocated": 15452272,
+          "pauseMs": 0.961,
+          "before": 31765664,
+          "after": 17210176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 110,
+          "allocated": 14576688,
+          "pauseMs": 1.825,
+          "before": 31786864,
+          "after": 18577248,
+          "collector": "s"
+        },
+        {
+          "timeMs": 116,
+          "allocated": 16333944,
+          "pauseMs": 0.756,
+          "before": 34911192,
+          "after": 19515360,
+          "collector": "s"
+        },
+        {
+          "timeMs": 118,
+          "allocated": 15435488,
+          "pauseMs": 1.436,
+          "before": 34950848,
+          "after": 20962240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 125,
+          "allocated": 32040432,
+          "pauseMs": 3.107,
+          "before": 53002672,
+          "after": 24016872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 133,
+          "allocated": 30448904,
+          "pauseMs": 3.512,
+          "before": 54465776,
+          "after": 26920200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 138,
+          "allocated": 30570840,
+          "pauseMs": 3.037,
+          "before": 57491040,
+          "after": 29795904,
+          "collector": "s"
+        },
+        {
+          "timeMs": 146,
+          "allocated": 30844880,
+          "pauseMs": 1.985,
+          "before": 60640784,
+          "after": 31453472,
+          "collector": "s"
+        },
+        {
+          "timeMs": 152,
+          "allocated": 29615528,
+          "pauseMs": 2.658,
+          "before": 61069000,
+          "after": 32129568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 158,
+          "allocated": 31496072,
+          "pauseMs": 1.149,
+          "before": 63625640,
+          "after": 32109456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 163,
+          "allocated": 32049192,
+          "pauseMs": 2.948,
+          "before": 64158648,
+          "after": 35145032,
+          "collector": "s"
+        },
+        {
+          "timeMs": 168,
+          "allocated": 30462536,
+          "pauseMs": 2.564,
+          "before": 65607568,
+          "after": 38031728,
+          "collector": "s"
+        },
+        {
+          "timeMs": 174,
+          "allocated": 30846352,
+          "pauseMs": 1.513,
+          "before": 68878080,
+          "after": 37845248,
+          "collector": "s"
+        },
+        {
+          "timeMs": 179,
+          "allocated": 31699016,
+          "pauseMs": 1.177,
+          "before": 69544264,
+          "after": 39221616,
+          "collector": "s"
+        },
+        {
+          "timeMs": 184,
+          "allocated": 31713648,
+          "pauseMs": 2.715,
+          "before": 70935264,
+          "after": 42247112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 189,
+          "allocated": 31093472,
+          "pauseMs": 0.974,
+          "before": 73340584,
+          "after": 41321864,
+          "collector": "s"
+        },
+        {
+          "timeMs": 193,
+          "allocated": 32099840,
+          "pauseMs": 1.708,
+          "before": 73421704,
+          "after": 44437120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 197,
+          "allocated": 30406256,
+          "pauseMs": 1.72,
+          "before": 74843376,
+          "after": 47311240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 203,
+          "allocated": 31173408,
+          "pauseMs": 0.993,
+          "before": 78484648,
+          "after": 46927576,
+          "collector": "s"
+        },
+        {
+          "timeMs": 207,
+          "allocated": 31632120,
+          "pauseMs": 1.763,
+          "before": 78559696,
+          "after": 49963336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 211,
+          "allocated": 30429064,
+          "pauseMs": 1.828,
+          "before": 80392400,
+          "after": 52835512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 217,
+          "allocated": 1573408,
+          "pauseMs": 4.886,
+          "before": 54408920,
+          "after": 25958424,
+          "collector": "mc"
+        },
+        {
+          "timeMs": 222,
+          "allocated": 33827456,
+          "pauseMs": 1.449,
+          "before": 59785880,
+          "after": 29443328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 227,
+          "allocated": 30576168,
+          "pauseMs": 1.61,
+          "before": 60019496,
+          "after": 30171800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 232,
+          "allocated": 31312504,
+          "pauseMs": 1.134,
+          "before": 61484304,
+          "after": 30880768,
+          "collector": "s"
+        },
+        {
+          "timeMs": 240,
+          "allocated": 31031088,
+          "pauseMs": 0.613,
+          "before": 61911856,
+          "after": 29487432,
+          "collector": "s"
+        },
+        {
+          "timeMs": 245,
+          "allocated": 32932520,
+          "pauseMs": 0.337,
+          "before": 62419952,
+          "after": 29474936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 249,
+          "allocated": 33518904,
+          "pauseMs": 0.101,
+          "before": 62993840,
+          "after": 29477792,
+          "collector": "s"
+        },
+        {
+          "timeMs": 253,
+          "allocated": 33821920,
+          "pauseMs": 0.197,
+          "before": 63299712,
+          "after": 30020536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 258,
+          "allocated": 33281104,
+          "pauseMs": 2.101,
+          "before": 63301640,
+          "after": 33196912,
+          "collector": "s"
+        },
+        {
+          "timeMs": 262,
+          "allocated": 30304488,
+          "pauseMs": 0.493,
+          "before": 63501400,
+          "after": 30764536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 264,
+          "allocated": 32790928,
+          "pauseMs": 0.315,
+          "before": 63555464,
+          "after": 30704296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 266,
+          "allocated": 33518680,
+          "pauseMs": 0.079,
+          "before": 64222976,
+          "after": 30706608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 268,
+          "allocated": 33518560,
+          "pauseMs": 0.065,
+          "before": 64225168,
+          "after": 30707736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 271,
+          "allocated": 33518856,
+          "pauseMs": 0.056,
+          "before": 64226592,
+          "after": 30709352,
+          "collector": "s"
+        },
+        {
+          "timeMs": 273,
+          "allocated": 33517744,
+          "pauseMs": 0.099,
+          "before": 64227096,
+          "after": 30761216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 276,
+          "allocated": 33467464,
+          "pauseMs": 0.101,
+          "before": 64228680,
+          "after": 30716792,
+          "collector": "s"
+        },
+        {
+          "timeMs": 278,
+          "allocated": 33518216,
+          "pauseMs": 0.161,
+          "before": 64235008,
+          "after": 30753568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 281,
+          "allocated": 33485160,
+          "pauseMs": 0.057,
+          "before": 64238728,
+          "after": 30726096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 283,
+          "allocated": 33514264,
+          "pauseMs": 0.067,
+          "before": 64240360,
+          "after": 30729616,
+          "collector": "s"
+        },
+        {
+          "timeMs": 285,
+          "allocated": 33518832,
+          "pauseMs": 0.065,
+          "before": 64248448,
+          "after": 30731968,
+          "collector": "s"
+        },
+        {
+          "timeMs": 289,
+          "allocated": 33517512,
+          "pauseMs": 0.472,
+          "before": 64249480,
+          "after": 31362872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 294,
+          "allocated": 33088488,
+          "pauseMs": 1.031,
+          "before": 64451360,
+          "after": 32558344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 300,
+          "allocated": 32169304,
+          "pauseMs": 1.007,
+          "before": 64727648,
+          "after": 32752528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 304,
+          "allocated": 32755128,
+          "pauseMs": 0.632,
+          "before": 65507656,
+          "after": 33811968,
+          "collector": "s"
+        },
+        {
+          "timeMs": 312,
+          "allocated": 32342920,
+          "pauseMs": 3.055,
+          "before": 66154888,
+          "after": 37313664,
+          "collector": "s"
+        },
+        {
+          "timeMs": 316,
+          "allocated": 30103136,
+          "pauseMs": 1.234,
+          "before": 67416800,
+          "after": 35806344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 321,
+          "allocated": 32228136,
+          "pauseMs": 0.44,
+          "before": 68034480,
+          "after": 35378696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 324,
+          "allocated": 33045368,
+          "pauseMs": 0.261,
+          "before": 68424064,
+          "after": 35357976,
+          "collector": "s"
+        },
+        {
+          "timeMs": 326,
+          "allocated": 33485896,
+          "pauseMs": 0.097,
+          "before": 68843872,
+          "after": 35325984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 329,
+          "allocated": 33519120,
+          "pauseMs": 0.096,
+          "before": 68845104,
+          "after": 35327520,
+          "collector": "s"
+        },
+        {
+          "timeMs": 331,
+          "allocated": 33518000,
+          "pauseMs": 0.06,
+          "before": 68845520,
+          "after": 35328104,
+          "collector": "s"
+        },
+        {
+          "timeMs": 333,
+          "allocated": 33519296,
+          "pauseMs": 0.068,
+          "before": 68847400,
+          "after": 35329656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 337,
+          "allocated": 33517744,
+          "pauseMs": 0.089,
+          "before": 68847400,
+          "after": 35362152,
+          "collector": "s"
+        },
+        {
+          "timeMs": 342,
+          "allocated": 33486848,
+          "pauseMs": 0.175,
+          "before": 68849000,
+          "after": 35394648,
+          "collector": "s"
+        },
+        {
+          "timeMs": 345,
+          "allocated": 33468456,
+          "pauseMs": 0.186,
+          "before": 68863104,
+          "after": 35405112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 348,
+          "allocated": 33485112,
+          "pauseMs": 0.08,
+          "before": 68890224,
+          "after": 35398048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 353,
+          "allocated": 33729096,
+          "pauseMs": 1.643,
+          "before": 69127144,
+          "after": 37962216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 358,
+          "allocated": 31190464,
+          "pauseMs": 0.387,
+          "before": 69152680,
+          "after": 36182304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 362,
+          "allocated": 33012552,
+          "pauseMs": 0.303,
+          "before": 69194856,
+          "after": 36172440,
+          "collector": "s"
+        },
+        {
+          "timeMs": 366,
+          "allocated": 33504896,
+          "pauseMs": 0.106,
+          "before": 69677336,
+          "after": 36203096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 368,
+          "allocated": 33481328,
+          "pauseMs": 0.094,
+          "before": 69684424,
+          "after": 36184288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 370,
+          "allocated": 33518760,
+          "pauseMs": 0.061,
+          "before": 69703048,
+          "after": 36186560,
+          "collector": "s"
+        },
+        {
+          "timeMs": 373,
+          "allocated": 33517680,
+          "pauseMs": 0.098,
+          "before": 69704240,
+          "after": 36187360,
+          "collector": "s"
+        },
+        {
+          "timeMs": 375,
+          "allocated": 33518888,
+          "pauseMs": 0.104,
+          "before": 69706248,
+          "after": 36188944,
+          "collector": "s"
+        },
+        {
+          "timeMs": 377,
+          "allocated": 33517808,
+          "pauseMs": 0.066,
+          "before": 69706752,
+          "after": 36192280,
+          "collector": "s"
+        },
+        {
+          "timeMs": 379,
+          "allocated": 33516056,
+          "pauseMs": 0.066,
+          "before": 69708336,
+          "after": 36193312,
+          "collector": "s"
+        },
+        {
+          "timeMs": 382,
+          "allocated": 33518608,
+          "pauseMs": 0.318,
+          "before": 69711920,
+          "after": 36987952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 384,
+          "allocated": 32724744,
+          "pauseMs": 0.067,
+          "before": 69712696,
+          "after": 36196608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 386,
+          "allocated": 33517192,
+          "pauseMs": 0.041,
+          "before": 69713800,
+          "after": 36197088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 388,
+          "allocated": 33519400,
+          "pauseMs": 0.068,
+          "before": 69716488,
+          "after": 36198680,
+          "collector": "s"
+        },
+        {
+          "timeMs": 392,
+          "allocated": 33518032,
+          "pauseMs": 0.109,
+          "before": 69716712,
+          "after": 36231688,
+          "collector": "s"
+        },
+        {
+          "timeMs": 394,
+          "allocated": 33486608,
+          "pauseMs": 0.079,
+          "before": 69718296,
+          "after": 36222056,
+          "collector": "s"
+        },
+        {
+          "timeMs": 396,
+          "allocated": 33518864,
+          "pauseMs": 0.056,
+          "before": 69740920,
+          "after": 36224160,
+          "collector": "s"
+        },
+        {
+          "timeMs": 398,
+          "allocated": 33517536,
+          "pauseMs": 0.048,
+          "before": 69741696,
+          "after": 36225192,
+          "collector": "s"
+        },
+        {
+          "timeMs": 400,
+          "allocated": 33518928,
+          "pauseMs": 0.055,
+          "before": 69744120,
+          "after": 36226816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 402,
+          "allocated": 33517808,
+          "pauseMs": 0.042,
+          "before": 69744624,
+          "after": 36226984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 405,
+          "allocated": 33519296,
+          "pauseMs": 0.047,
+          "before": 69746280,
+          "after": 36230280,
+          "collector": "s"
+        },
+        {
+          "timeMs": 407,
+          "allocated": 33516000,
+          "pauseMs": 0.053,
+          "before": 69746280,
+          "after": 36232688,
+          "collector": "s"
+        },
+        {
+          "timeMs": 409,
+          "allocated": 33517344,
+          "pauseMs": 0.077,
+          "before": 69750032,
+          "after": 36234016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 411,
+          "allocated": 33518072,
+          "pauseMs": 0.077,
+          "before": 69752088,
+          "after": 36235984,
+          "collector": "s"
+        },
+        {
+          "timeMs": 414,
+          "allocated": 33517600,
+          "pauseMs": 0.052,
+          "before": 69753584,
+          "after": 36238024,
+          "collector": "s"
+        },
+        {
+          "timeMs": 416,
+          "allocated": 33517920,
+          "pauseMs": 0.062,
+          "before": 69755944,
+          "after": 36270936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 418,
+          "allocated": 33486608,
+          "pauseMs": 0.046,
+          "before": 69757544,
+          "after": 36241512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 420,
+          "allocated": 33517744,
+          "pauseMs": 0.06,
+          "before": 69759256,
+          "after": 36241616,
+          "collector": "s"
+        },
+        {
+          "timeMs": 423,
+          "allocated": 33519296,
+          "pauseMs": 0.067,
+          "before": 69760912,
+          "after": 36245624,
+          "collector": "s"
+        },
+        {
+          "timeMs": 425,
+          "allocated": 33515288,
+          "pauseMs": 0.086,
+          "before": 69760912,
+          "after": 36280456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 428,
+          "allocated": 33485032,
+          "pauseMs": 0.082,
+          "before": 69765488,
+          "after": 36250168,
+          "collector": "s"
+        },
+        {
+          "timeMs": 430,
+          "allocated": 33517160,
+          "pauseMs": 0.065,
+          "before": 69767328,
+          "after": 36252280,
+          "collector": "s"
+        },
+        {
+          "timeMs": 432,
+          "allocated": 33517512,
+          "pauseMs": 0.05,
+          "before": 69769792,
+          "after": 36286128,
+          "collector": "s"
+        },
+        {
+          "timeMs": 434,
+          "allocated": 33485560,
+          "pauseMs": 0.068,
+          "before": 69771688,
+          "after": 36255120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 436,
+          "allocated": 33518256,
+          "pauseMs": 0.04,
+          "before": 69773376,
+          "after": 36256816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 438,
+          "allocated": 33517776,
+          "pauseMs": 0.068,
+          "before": 69774592,
+          "after": 36257016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 441,
+          "allocated": 33519232,
+          "pauseMs": 0.123,
+          "before": 69776248,
+          "after": 36297112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 443,
+          "allocated": 33479136,
+          "pauseMs": 0.055,
+          "before": 69776248,
+          "after": 36276320,
+          "collector": "s"
+        },
+        {
+          "timeMs": 446,
+          "allocated": 33517640,
+          "pauseMs": 0.105,
+          "before": 69793960,
+          "after": 36311480,
+          "collector": "s"
+        },
+        {
+          "timeMs": 448,
+          "allocated": 33484168,
+          "pauseMs": 0.058,
+          "before": 69795648,
+          "after": 36280408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 450,
+          "allocated": 33518832,
+          "pauseMs": 0.062,
+          "before": 69799240,
+          "after": 36282808,
+          "collector": "s"
+        },
+        {
+          "timeMs": 452,
+          "allocated": 33517208,
+          "pauseMs": 0.047,
+          "before": 69800016,
+          "after": 36284008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 454,
+          "allocated": 33518752,
+          "pauseMs": 0.038,
+          "before": 69802760,
+          "after": 36285456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 457,
+          "allocated": 33517808,
+          "pauseMs": 0.051,
+          "before": 69803264,
+          "after": 36285688,
+          "collector": "s"
+        },
+        {
+          "timeMs": 459,
+          "allocated": 33519232,
+          "pauseMs": 0.1,
+          "before": 69804920,
+          "after": 36288400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 461,
+          "allocated": 33516520,
+          "pauseMs": 0.075,
+          "before": 69804920,
+          "after": 36289432,
+          "collector": "s"
+        },
+        {
+          "timeMs": 464,
+          "allocated": 33518928,
+          "pauseMs": 0.057,
+          "before": 69808360,
+          "after": 36327064,
+          "collector": "s"
+        },
+        {
+          "timeMs": 466,
+          "allocated": 33481800,
+          "pauseMs": 0.046,
+          "before": 69808864,
+          "after": 36296624,
+          "collector": "s"
+        },
+        {
+          "timeMs": 468,
+          "allocated": 33517744,
+          "pauseMs": 0.051,
+          "before": 69814368,
+          "after": 36297424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 471,
+          "allocated": 33518904,
+          "pauseMs": 0.064,
+          "before": 69816328,
+          "after": 36330224,
+          "collector": "s"
+        },
+        {
+          "timeMs": 473,
+          "allocated": 33486608,
+          "pauseMs": 0.064,
+          "before": 69816832,
+          "after": 36331664,
+          "collector": "s"
+        },
+        {
+          "timeMs": 476,
+          "allocated": 33517736,
+          "pauseMs": 0.098,
+          "before": 69849400,
+          "after": 36332456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 480,
+          "allocated": 33518888,
+          "pauseMs": 0.122,
+          "before": 69851344,
+          "after": 36383112,
+          "collector": "s"
+        },
+        {
+          "timeMs": 482,
+          "allocated": 33468736,
+          "pauseMs": 0.065,
+          "before": 69851848,
+          "after": 36367080,
+          "collector": "s"
+        },
+        {
+          "timeMs": 484,
+          "allocated": 33515768,
+          "pauseMs": 0.082,
+          "before": 69882848,
+          "after": 36401824,
+          "collector": "s"
+        },
+        {
+          "timeMs": 486,
+          "allocated": 33484512,
+          "pauseMs": 0.054,
+          "before": 69886336,
+          "after": 36372160,
+          "collector": "s"
+        },
+        {
+          "timeMs": 489,
+          "allocated": 33516736,
+          "pauseMs": 0.07,
+          "before": 69888896,
+          "after": 36412792,
+          "collector": "s"
+        },
+        {
+          "timeMs": 493,
+          "allocated": 33479680,
+          "pauseMs": 0.169,
+          "before": 69892472,
+          "after": 36402184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 495,
+          "allocated": 33499376,
+          "pauseMs": 0.09,
+          "before": 69901560,
+          "after": 36443568,
+          "collector": "s"
+        },
+        {
+          "timeMs": 497,
+          "allocated": 33478672,
+          "pauseMs": 0.06,
+          "before": 69922240,
+          "after": 36413920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 500,
+          "allocated": 33518824,
+          "pauseMs": 0.07,
+          "before": 69932744,
+          "after": 36416392,
+          "collector": "s"
+        },
+        {
+          "timeMs": 503,
+          "allocated": 33516872,
+          "pauseMs": 0.085,
+          "before": 69933264,
+          "after": 36449024,
+          "collector": "s"
+        },
+        {
+          "timeMs": 507,
+          "allocated": 33486608,
+          "pauseMs": 0.147,
+          "before": 69935632,
+          "after": 36500064,
+          "collector": "s"
+        },
+        {
+          "timeMs": 509,
+          "allocated": 33464024,
+          "pauseMs": 0.103,
+          "before": 69964088,
+          "after": 36532392,
+          "collector": "s"
+        },
+        {
+          "timeMs": 512,
+          "allocated": 33484816,
+          "pauseMs": 0.113,
+          "before": 70017208,
+          "after": 36504288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 515,
+          "allocated": 33515432,
+          "pauseMs": 0.092,
+          "before": 70019720,
+          "after": 36573040,
+          "collector": "s"
+        },
+        {
+          "timeMs": 518,
+          "allocated": 33447184,
+          "pauseMs": 0.096,
+          "before": 70020224,
+          "after": 36584528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 520,
+          "allocated": 33477144,
+          "pauseMs": 0.062,
+          "before": 70061672,
+          "after": 36557256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 522,
+          "allocated": 33519152,
+          "pauseMs": 0.056,
+          "before": 70076408,
+          "after": 36559584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 524,
+          "allocated": 33517240,
+          "pauseMs": 0.1,
+          "before": 70076824,
+          "after": 36561216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 527,
+          "allocated": 33517704,
+          "pauseMs": 0.071,
+          "before": 70078920,
+          "after": 36600992,
+          "collector": "s"
+        },
+        {
+          "timeMs": 530,
+          "allocated": 33479528,
+          "pauseMs": 0.124,
+          "before": 70080520,
+          "after": 36642712,
+          "collector": "s"
+        },
+        {
+          "timeMs": 532,
+          "allocated": 33444704,
+          "pauseMs": 0.107,
+          "before": 70087416,
+          "after": 36608176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 537,
+          "allocated": 33505112,
+          "pauseMs": 0.107,
+          "before": 70113288,
+          "after": 36664840,
+          "collector": "s"
+        },
+        {
+          "timeMs": 539,
+          "allocated": 33452360,
+          "pauseMs": 0.09,
+          "before": 70117200,
+          "after": 36659032,
+          "collector": "s"
+        },
+        {
+          "timeMs": 541,
+          "allocated": 33516024,
+          "pauseMs": 0.078,
+          "before": 70175056,
+          "after": 36662064,
+          "collector": "s"
+        },
+        {
+          "timeMs": 543,
+          "allocated": 33517112,
+          "pauseMs": 0.056,
+          "before": 70179176,
+          "after": 36663544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 546,
+          "allocated": 33517808,
+          "pauseMs": 0.074,
+          "before": 70181352,
+          "after": 36700096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 548,
+          "allocated": 33482840,
+          "pauseMs": 0.063,
+          "before": 70182936,
+          "after": 36670936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 551,
+          "allocated": 33515752,
+          "pauseMs": 0.085,
+          "before": 70186688,
+          "after": 36707888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 555,
+          "allocated": 33943744,
+          "pauseMs": 1.002,
+          "before": 70651632,
+          "after": 38730680,
+          "collector": "s"
+        },
+        {
+          "timeMs": 559,
+          "allocated": 31959544,
+          "pauseMs": 1.928,
+          "before": 70690224,
+          "after": 41794864,
+          "collector": "s"
+        },
+        {
+          "timeMs": 564,
+          "allocated": 30420240,
+          "pauseMs": 0.618,
+          "before": 72215104,
+          "after": 39817816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 566,
+          "allocated": 32449064,
+          "pauseMs": 0.406,
+          "before": 72266880,
+          "after": 39806352,
+          "collector": "s"
+        },
+        {
+          "timeMs": 569,
+          "allocated": 33470656,
+          "pauseMs": 0.085,
+          "before": 73277008,
+          "after": 39796544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 571,
+          "allocated": 33489944,
+          "pauseMs": 0.071,
+          "before": 73286488,
+          "after": 39833656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 573,
+          "allocated": 33484992,
+          "pauseMs": 0.055,
+          "before": 73318648,
+          "after": 39802368,
+          "collector": "s"
+        },
+        {
+          "timeMs": 576,
+          "allocated": 33518960,
+          "pauseMs": 0.122,
+          "before": 73321328,
+          "after": 39804024,
+          "collector": "s"
+        },
+        {
+          "timeMs": 578,
+          "allocated": 33517808,
+          "pauseMs": 0.123,
+          "before": 73321832,
+          "after": 39807776,
+          "collector": "s"
+        },
+        {
+          "timeMs": 581,
+          "allocated": 33515640,
+          "pauseMs": 0.068,
+          "before": 73323416,
+          "after": 39841952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 583,
+          "allocated": 33485216,
+          "pauseMs": 0.068,
+          "before": 73327168,
+          "after": 39812152,
+          "collector": "s"
+        },
+        {
+          "timeMs": 585,
+          "allocated": 33516704,
+          "pauseMs": 0.07,
+          "before": 73328856,
+          "after": 39847584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 587,
+          "allocated": 33484152,
+          "pauseMs": 0.061,
+          "before": 73331736,
+          "after": 39817096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 590,
+          "allocated": 33517920,
+          "pauseMs": 0.103,
+          "before": 73335016,
+          "after": 39818920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 592,
+          "allocated": 33518352,
+          "pauseMs": 0.062,
+          "before": 73337272,
+          "after": 39822184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 594,
+          "allocated": 33517056,
+          "pauseMs": 0.071,
+          "before": 73339240,
+          "after": 39826832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 597,
+          "allocated": 33514712,
+          "pauseMs": 0.079,
+          "before": 73341544,
+          "after": 39841416,
+          "collector": "s"
+        },
+        {
+          "timeMs": 600,
+          "allocated": 33504600,
+          "pauseMs": 0.111,
+          "before": 73346016,
+          "after": 39885552,
+          "collector": "s"
+        },
+        {
+          "timeMs": 604,
+          "allocated": 33467768,
+          "pauseMs": 0.117,
+          "before": 73353320,
+          "after": 39933048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 608,
+          "allocated": 33463696,
+          "pauseMs": 0.168,
+          "before": 73396744,
+          "after": 39968040,
+          "collector": "s"
+        },
+        {
+          "timeMs": 610,
+          "allocated": 33486608,
+          "pauseMs": 0.117,
+          "before": 73454648,
+          "after": 39989000,
+          "collector": "s"
+        },
+        {
+          "timeMs": 614,
+          "allocated": 33484112,
+          "pauseMs": 0.105,
+          "before": 73473112,
+          "after": 39976408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 617,
+          "allocated": 33500160,
+          "pauseMs": 0.097,
+          "before": 73476568,
+          "after": 40014384,
+          "collector": "s"
+        },
+        {
+          "timeMs": 621,
+          "allocated": 33475616,
+          "pauseMs": 0.083,
+          "before": 73490000,
+          "after": 39994280,
+          "collector": "s"
+        },
+        {
+          "timeMs": 625,
+          "allocated": 33506856,
+          "pauseMs": 0.123,
+          "before": 73501136,
+          "after": 40023240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 629,
+          "allocated": 33490504,
+          "pauseMs": 0.155,
+          "before": 73513744,
+          "after": 40032304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 633,
+          "allocated": 33499488,
+          "pauseMs": 0.119,
+          "before": 73531792,
+          "after": 40068232,
+          "collector": "s"
+        },
+        {
+          "timeMs": 636,
+          "allocated": 33483656,
+          "pauseMs": 0.082,
+          "before": 73551888,
+          "after": 40078544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 640,
+          "allocated": 33492120,
+          "pauseMs": 0.159,
+          "before": 73570664,
+          "after": 40101816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 645,
+          "allocated": 33490376,
+          "pauseMs": 0.195,
+          "before": 73592192,
+          "after": 40122896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 649,
+          "allocated": 33491920,
+          "pauseMs": 0.109,
+          "before": 73614816,
+          "after": 40139880,
+          "collector": "s"
+        },
+        {
+          "timeMs": 653,
+          "allocated": 33501920,
+          "pauseMs": 0.118,
+          "before": 73641800,
+          "after": 40158672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 657,
+          "allocated": 33501368,
+          "pauseMs": 0.182,
+          "before": 73660040,
+          "after": 40187440,
+          "collector": "s"
+        },
+        {
+          "timeMs": 661,
+          "allocated": 33489136,
+          "pauseMs": 0.165,
+          "before": 73676576,
+          "after": 40223544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 666,
+          "allocated": 33473920,
+          "pauseMs": 0.493,
+          "before": 73697464,
+          "after": 41750272,
+          "collector": "s"
+        },
+        {
+          "timeMs": 669,
+          "allocated": 31982880,
+          "pauseMs": 0.113,
+          "before": 73733152,
+          "after": 40299048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 672,
+          "allocated": 33486608,
+          "pauseMs": 0.181,
+          "before": 73785656,
+          "after": 40524088,
+          "collector": "s"
+        },
+        {
+          "timeMs": 676,
+          "allocated": 33285544,
+          "pauseMs": 0.153,
+          "before": 73809632,
+          "after": 40361848,
+          "collector": "s"
+        },
+        {
+          "timeMs": 679,
+          "allocated": 33492008,
+          "pauseMs": 0.126,
+          "before": 73853856,
+          "after": 40366344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 681,
+          "allocated": 33516840,
+          "pauseMs": 0.1,
+          "before": 73883184,
+          "after": 40369544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 683,
+          "allocated": 33517048,
+          "pauseMs": 0.069,
+          "before": 73886592,
+          "after": 40371024,
+          "collector": "s"
+        },
+        {
+          "timeMs": 687,
+          "allocated": 33517808,
+          "pauseMs": 0.144,
+          "before": 73888832,
+          "after": 40438592,
+          "collector": "s"
+        },
+        {
+          "timeMs": 691,
+          "allocated": 33451824,
+          "pauseMs": 0.2,
+          "before": 73890416,
+          "after": 40378032,
+          "collector": "s"
+        },
+        {
+          "timeMs": 695,
+          "allocated": 33516048,
+          "pauseMs": 0.19,
+          "before": 73894080,
+          "after": 40385104,
+          "collector": "s"
+        },
+        {
+          "timeMs": 703,
+          "allocated": 33512456,
+          "pauseMs": 0.189,
+          "before": 73897560,
+          "after": 40400448,
+          "collector": "s"
+        },
+        {
+          "timeMs": 708,
+          "allocated": 33500664,
+          "pauseMs": 0.2,
+          "before": 73901112,
+          "after": 40430896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 714,
+          "allocated": 33488864,
+          "pauseMs": 0.196,
+          "before": 73919760,
+          "after": 40444584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 718,
+          "allocated": 33504176,
+          "pauseMs": 0.123,
+          "before": 73948760,
+          "after": 40481744,
+          "collector": "s"
+        },
+        {
+          "timeMs": 722,
+          "allocated": 33481968,
+          "pauseMs": 0.174,
+          "before": 73963712,
+          "after": 40538736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 726,
+          "allocated": 33451456,
+          "pauseMs": 0.193,
+          "before": 73990192,
+          "after": 40549592,
+          "collector": "s"
+        },
+        {
+          "timeMs": 731,
+          "allocated": 33492368,
+          "pauseMs": 0.18,
+          "before": 74041960,
+          "after": 40565664,
+          "collector": "s"
+        },
+        {
+          "timeMs": 735,
+          "allocated": 33494824,
+          "pauseMs": 0.126,
+          "before": 74060488,
+          "after": 40571952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 739,
+          "allocated": 33504792,
+          "pauseMs": 0.246,
+          "before": 74076744,
+          "after": 41044640,
+          "collector": "s"
+        },
+        {
+          "timeMs": 742,
+          "allocated": 33046032,
+          "pauseMs": 0.128,
+          "before": 74090672,
+          "after": 40667528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 746,
+          "allocated": 33447504,
+          "pauseMs": 0.274,
+          "before": 74115032,
+          "after": 41097896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 749,
+          "allocated": 33073152,
+          "pauseMs": 0.113,
+          "before": 74171048,
+          "after": 40714144,
+          "collector": "s"
+        },
+        {
+          "timeMs": 752,
+          "allocated": 33486624,
+          "pauseMs": 0.092,
+          "before": 74200768,
+          "after": 40761120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 756,
+          "allocated": 33455664,
+          "pauseMs": 0.115,
+          "before": 74216784,
+          "after": 40753528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 760,
+          "allocated": 33479760,
+          "pauseMs": 0.15,
+          "before": 74233288,
+          "after": 40798552,
+          "collector": "s"
+        },
+        {
+          "timeMs": 764,
+          "allocated": 33474768,
+          "pauseMs": 0.172,
+          "before": 74273320,
+          "after": 40838504,
+          "collector": "s"
+        },
+        {
+          "timeMs": 768,
+          "allocated": 33472712,
+          "pauseMs": 0.125,
+          "before": 74311216,
+          "after": 40861672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 772,
+          "allocated": 33489640,
+          "pauseMs": 0.165,
+          "before": 74351312,
+          "after": 40947176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 777,
+          "allocated": 33433832,
+          "pauseMs": 0.16,
+          "before": 74381008,
+          "after": 41024944,
+          "collector": "s"
+        },
+        {
+          "timeMs": 781,
+          "allocated": 33428208,
+          "pauseMs": 0.118,
+          "before": 74453152,
+          "after": 41034328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 784,
+          "allocated": 33452368,
+          "pauseMs": 0.121,
+          "before": 74486696,
+          "after": 41106752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 787,
+          "allocated": 33425472,
+          "pauseMs": 0.099,
+          "before": 74532224,
+          "after": 41097304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 791,
+          "allocated": 33460896,
+          "pauseMs": 0.154,
+          "before": 74558200,
+          "after": 41091488,
+          "collector": "s"
+        },
+        {
+          "timeMs": 796,
+          "allocated": 33487920,
+          "pauseMs": 0.487,
+          "before": 74579408,
+          "after": 42206200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 799,
+          "allocated": 32399800,
+          "pauseMs": 0.1,
+          "before": 74606000,
+          "after": 41185016,
+          "collector": "s"
+        },
+        {
+          "timeMs": 802,
+          "allocated": 33486640,
+          "pauseMs": 0.102,
+          "before": 74671656,
+          "after": 41195312,
+          "collector": "s"
+        },
+        {
+          "timeMs": 806,
+          "allocated": 33486640,
+          "pauseMs": 0.446,
+          "before": 74681952,
+          "after": 42275864,
+          "collector": "s"
+        },
+        {
+          "timeMs": 809,
+          "allocated": 32430392,
+          "pauseMs": 0.587,
+          "before": 74706256,
+          "after": 42855344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 813,
+          "allocated": 31877440,
+          "pauseMs": 0.149,
+          "before": 74732784,
+          "after": 41285608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 816,
+          "allocated": 33453856,
+          "pauseMs": 0.113,
+          "before": 74739464,
+          "after": 41330672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 820,
+          "allocated": 33431704,
+          "pauseMs": 0.186,
+          "before": 74762376,
+          "after": 41820120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 823,
+          "allocated": 32970240,
+          "pauseMs": 0.632,
+          "before": 74790360,
+          "after": 42879368,
+          "collector": "s"
+        },
+        {
+          "timeMs": 826,
+          "allocated": 31940320,
+          "pauseMs": 0.449,
+          "before": 74819688,
+          "after": 42409744,
+          "collector": "s"
+        },
+        {
+          "timeMs": 830,
+          "allocated": 32415024,
+          "pauseMs": 0.178,
+          "before": 74824768,
+          "after": 41331808,
+          "collector": "s"
+        },
+        {
+          "timeMs": 853,
+          "allocated": 33508224,
+          "pauseMs": 4.189,
+          "before": 74840032,
+          "after": 51924536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 859,
+          "allocated": 22925840,
+          "pauseMs": 3.364,
+          "before": 74850376,
+          "after": 52000168,
+          "collector": "s"
+        },
+        {
+          "timeMs": 862,
+          "allocated": 33368232,
+          "pauseMs": 0.139,
+          "before": 85368400,
+          "after": 52186168,
+          "collector": "s"
+        },
+        {
+          "timeMs": 864,
+          "allocated": 33295320,
+          "pauseMs": 0.093,
+          "before": 85481488,
+          "after": 52349584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 869,
+          "allocated": 52167696,
+          "pauseMs": 0.157,
+          "before": 104517280,
+          "after": 52575696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 873,
+          "allocated": 43707672,
+          "pauseMs": 0.153,
+          "before": 96283368,
+          "after": 52778624,
+          "collector": "s"
+        },
+        {
+          "timeMs": 877,
+          "allocated": 59595488,
+          "pauseMs": 0.182,
+          "before": 112374112,
+          "after": 52867856,
+          "collector": "s"
+        },
+        {
+          "timeMs": 879,
+          "allocated": 33427352,
+          "pauseMs": 0.159,
+          "before": 86295208,
+          "after": 53170584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 880,
+          "allocated": 33124696,
+          "pauseMs": 0.114,
+          "before": 86295280,
+          "after": 53027288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 897,
+          "allocated": 38322592,
+          "pauseMs": 0.386,
+          "before": 91349880,
+          "after": 54794872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 906,
+          "allocated": 37923088,
+          "pauseMs": 1.456,
+          "before": 92717960,
+          "after": 57249400,
+          "collector": "s"
+        },
+        {
+          "timeMs": 947,
+          "allocated": 33294320,
+          "pauseMs": 1.055,
+          "before": 90543720,
+          "after": 57827304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 965,
+          "allocated": 30407448,
+          "pauseMs": 1.338,
+          "before": 88234752,
+          "after": 58467896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 976,
+          "allocated": 32846704,
+          "pauseMs": 0.878,
+          "before": 91314600,
+          "after": 61129832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 986,
+          "allocated": 30773264,
+          "pauseMs": 0.672,
+          "before": 91903096,
+          "after": 60110344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 993,
+          "allocated": 31929696,
+          "pauseMs": 0.572,
+          "before": 92040040,
+          "after": 60757768,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1000,
+          "allocated": 31885376,
+          "pauseMs": 0.891,
+          "before": 92643144,
+          "after": 61711360,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1012,
+          "allocated": 32563408,
+          "pauseMs": 0.543,
+          "before": 94274768,
+          "after": 62147976,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1026,
+          "allocated": 32222480,
+          "pauseMs": 0.471,
+          "before": 94370456,
+          "after": 61762512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1033,
+          "allocated": 33183424,
+          "pauseMs": 1.693,
+          "before": 94945936,
+          "after": 65660904,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1040,
+          "allocated": 32311344,
+          "pauseMs": 2.936,
+          "before": 97972248,
+          "after": 77446672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1046,
+          "allocated": 17825608,
+          "pauseMs": 4.323,
+          "before": 95272280,
+          "after": 77509048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1049,
+          "allocated": 33354928,
+          "pauseMs": 0.116,
+          "before": 110863976,
+          "after": 77700464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1052,
+          "allocated": 33318672,
+          "pauseMs": 0.102,
+          "before": 111019136,
+          "after": 77888304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1055,
+          "allocated": 33329448,
+          "pauseMs": 0.159,
+          "before": 111217752,
+          "after": 78210216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1059,
+          "allocated": 42117200,
+          "pauseMs": 0.822,
+          "before": 120327416,
+          "after": 78221288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1062,
+          "allocated": 36835512,
+          "pauseMs": 0.239,
+          "before": 115056800,
+          "after": 78801216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1067,
+          "allocated": 52166544,
+          "pauseMs": 0.487,
+          "before": 130967760,
+          "after": 78994136,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1070,
+          "allocated": 33505544,
+          "pauseMs": 0.133,
+          "before": 112499680,
+          "after": 79247680,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1073,
+          "allocated": 38474872,
+          "pauseMs": 0.616,
+          "before": 117722552,
+          "after": 79195592,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1078,
+          "allocated": 53905848,
+          "pauseMs": 0.393,
+          "before": 133101440,
+          "after": 79640696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1080,
+          "allocated": 33486584,
+          "pauseMs": 0.115,
+          "before": 113127280,
+          "after": 79756536,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1090,
+          "allocated": 59841344,
+          "pauseMs": 0.587,
+          "before": 139597880,
+          "after": 82431224,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1101,
+          "allocated": 36016192,
+          "pauseMs": 3.985,
+          "before": 118447416,
+          "after": 96931512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1106,
+          "allocated": 18192728,
+          "pauseMs": 4.091,
+          "before": 115124240,
+          "after": 97019904,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1110,
+          "allocated": 33381376,
+          "pauseMs": 0.171,
+          "before": 130401280,
+          "after": 97230264,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1113,
+          "allocated": 33301296,
+          "pauseMs": 0.163,
+          "before": 130531560,
+          "after": 97421656,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1116,
+          "allocated": 33305600,
+          "pauseMs": 0.145,
+          "before": 130727256,
+          "after": 97740920,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1120,
+          "allocated": 43427840,
+          "pauseMs": 0.596,
+          "before": 141168760,
+          "after": 97751992,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1123,
+          "allocated": 35006320,
+          "pauseMs": 0.177,
+          "before": 132758312,
+          "after": 98333832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1128,
+          "allocated": 50636800,
+          "pauseMs": 0.68,
+          "before": 148970632,
+          "after": 98534968,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1132,
+          "allocated": 33491080,
+          "pauseMs": 0.135,
+          "before": 132026048,
+          "after": 98773752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1135,
+          "allocated": 37164528,
+          "pauseMs": 0.528,
+          "before": 135938280,
+          "after": 98717896,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1139,
+          "allocated": 52002168,
+          "pauseMs": 0.172,
+          "before": 150720064,
+          "after": 99160464,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1141,
+          "allocated": 33485320,
+          "pauseMs": 0.127,
+          "before": 132645784,
+          "after": 99274928,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1150,
+          "allocated": 58888448,
+          "pauseMs": 0.634,
+          "before": 158163376,
+          "after": 101940040,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1167,
+          "allocated": 35950632,
+          "pauseMs": 0.413,
+          "before": 137890672,
+          "after": 101587760,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1174,
+          "allocated": 33029008,
+          "pauseMs": 2.093,
+          "before": 134616768,
+          "after": 105042672,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1180,
+          "allocated": 29907640,
+          "pauseMs": 1.167,
+          "before": 134950312,
+          "after": 105351240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1184,
+          "allocated": 33367536,
+          "pauseMs": 1.642,
+          "before": 138718776,
+          "after": 109051048,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1187,
+          "allocated": 29839056,
+          "pauseMs": 1.427,
+          "before": 138890104,
+          "after": 109380696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1191,
+          "allocated": 29329288,
+          "pauseMs": 1.061,
+          "before": 138709984,
+          "after": 107580648,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1196,
+          "allocated": 31289944,
+          "pauseMs": 0.831,
+          "before": 138870592,
+          "after": 107556096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1200,
+          "allocated": 33357808,
+          "pauseMs": 1.49,
+          "before": 140913904,
+          "after": 110455736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1204,
+          "allocated": 30284400,
+          "pauseMs": 0.592,
+          "before": 140740136,
+          "after": 109241408,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1212,
+          "allocated": 31889280,
+          "pauseMs": 5.472,
+          "before": 141130688,
+          "after": 117368488,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1222,
+          "allocated": 24108712,
+          "pauseMs": 7.072,
+          "before": 141477200,
+          "after": 121531528,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1227,
+          "allocated": 29336248,
+          "pauseMs": 2.479,
+          "before": 150867776,
+          "after": 121636736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1230,
+          "allocated": 33359432,
+          "pauseMs": 0.182,
+          "before": 154996168,
+          "after": 121813608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1233,
+          "allocated": 33334624,
+          "pauseMs": 0.138,
+          "before": 155148232,
+          "after": 121942952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1235,
+          "allocated": 33327440,
+          "pauseMs": 0.162,
+          "before": 155270392,
+          "after": 122092736,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1237,
+          "allocated": 36253616,
+          "pauseMs": 0.279,
+          "before": 158346352,
+          "after": 122094584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1241,
+          "allocated": 33508328,
+          "pauseMs": 1.09,
+          "before": 155602912,
+          "after": 122377040,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1245,
+          "allocated": 45588280,
+          "pauseMs": 0.6,
+          "before": 167965320,
+          "after": 122824160,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1248,
+          "allocated": 38935760,
+          "pauseMs": 0.144,
+          "before": 161759920,
+          "after": 122974328,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1254,
+          "allocated": 61496048,
+          "pauseMs": 0.993,
+          "before": 184470376,
+          "after": 123277136,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1258,
+          "allocated": 60454456,
+          "pauseMs": 0.186,
+          "before": 183731592,
+          "after": 123420296,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1261,
+          "allocated": 39868032,
+          "pauseMs": 0.202,
+          "before": 163288328,
+          "after": 123639160,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1262,
+          "allocated": 33374472,
+          "pauseMs": 0.122,
+          "before": 157013632,
+          "after": 123625608,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1273,
+          "allocated": 39853304,
+          "pauseMs": 0.295,
+          "before": 163478912,
+          "after": 125944304,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1285,
+          "allocated": 34693232,
+          "pauseMs": 0.653,
+          "before": 160637536,
+          "after": 126406336,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1293,
+          "allocated": 32196824,
+          "pauseMs": 3.74,
+          "before": 158603160,
+          "after": 135124696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1296,
+          "allocated": 24076520,
+          "pauseMs": 0.996,
+          "before": 159201216,
+          "after": 128671496,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1301,
+          "allocated": 33079536,
+          "pauseMs": 1.942,
+          "before": 161751032,
+          "after": 135402480,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1304,
+          "allocated": 26426000,
+          "pauseMs": 0.439,
+          "before": 161828480,
+          "after": 129600456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1309,
+          "allocated": 33079832,
+          "pauseMs": 1.299,
+          "before": 162680288,
+          "after": 132959008,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1314,
+          "allocated": 29802536,
+          "pauseMs": 1.89,
+          "before": 162761544,
+          "after": 133661752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1323,
+          "allocated": 29787608,
+          "pauseMs": 6.547,
+          "before": 163449360,
+          "after": 142521320,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1330,
+          "allocated": 24639128,
+          "pauseMs": 4.83,
+          "before": 167160448,
+          "after": 142632544,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1336,
+          "allocated": 1487160,
+          "pauseMs": 5.552,
+          "before": 144119704,
+          "after": 50918776,
+          "collector": "mc"
+        },
+        {
+          "timeMs": 1339,
+          "allocated": 33552384,
+          "pauseMs": 0.156,
+          "before": 84471160,
+          "after": 51108952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1342,
+          "allocated": 33362208,
+          "pauseMs": 0.145,
+          "before": 84471160,
+          "after": 51231696,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1346,
+          "allocated": 65789152,
+          "pauseMs": 0.335,
+          "before": 117020848,
+          "after": 51364936,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1350,
+          "allocated": 33540888,
+          "pauseMs": 0.935,
+          "before": 84905824,
+          "after": 51648064,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1353,
+          "allocated": 36952400,
+          "pauseMs": 0.164,
+          "before": 88600464,
+          "after": 52070288,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1356,
+          "allocated": 38669136,
+          "pauseMs": 0.182,
+          "before": 90739424,
+          "after": 52226864,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1362,
+          "allocated": 60025712,
+          "pauseMs": 0.974,
+          "before": 112252576,
+          "after": 52489832,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1365,
+          "allocated": 52967104,
+          "pauseMs": 0.131,
+          "before": 105456936,
+          "after": 52650176,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1367,
+          "allocated": 34339984,
+          "pauseMs": 0.117,
+          "before": 86990160,
+          "after": 52775256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1368,
+          "allocated": 33428272,
+          "pauseMs": 0.057,
+          "before": 86203528,
+          "after": 52788184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1381,
+          "allocated": 42854640,
+          "pauseMs": 0.402,
+          "before": 95642824,
+          "after": 53167728,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1387,
+          "allocated": 33053360,
+          "pauseMs": 2.375,
+          "before": 86221088,
+          "after": 59407552,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1391,
+          "allocated": 26840952,
+          "pauseMs": 1.632,
+          "before": 86248504,
+          "after": 57873096,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1396,
+          "allocated": 32935136,
+          "pauseMs": 1.909,
+          "before": 90808232,
+          "after": 62897320,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1400,
+          "allocated": 27988336,
+          "pauseMs": 1.042,
+          "before": 90885656,
+          "after": 61130480,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1402,
+          "allocated": 30252312,
+          "pauseMs": 0.508,
+          "before": 91382792,
+          "after": 59130240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1412,
+          "allocated": 32696928,
+          "pauseMs": 6.564,
+          "before": 91827168,
+          "after": 71177584,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1420,
+          "allocated": 21084256,
+          "pauseMs": 6.158,
+          "before": 92261840,
+          "after": 71188664,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1423,
+          "allocated": 33400944,
+          "pauseMs": 0.14,
+          "before": 104589608,
+          "after": 71356952,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1426,
+          "allocated": 33343936,
+          "pauseMs": 0.16,
+          "before": 104700888,
+          "after": 71483976,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1429,
+          "allocated": 33344176,
+          "pauseMs": 0.174,
+          "before": 104828152,
+          "after": 71629344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1431,
+          "allocated": 36681280,
+          "pauseMs": 0.297,
+          "before": 108310624,
+          "after": 71619800,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1434,
+          "allocated": 33543672,
+          "pauseMs": 0.938,
+          "before": 105163472,
+          "after": 71902944,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1437,
+          "allocated": 36952632,
+          "pauseMs": 0.177,
+          "before": 108855576,
+          "after": 72325200,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1440,
+          "allocated": 38669320,
+          "pauseMs": 0.174,
+          "before": 110994520,
+          "after": 72481320,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1446,
+          "allocated": 60027728,
+          "pauseMs": 0.835,
+          "before": 132509048,
+          "after": 72743752,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1449,
+          "allocated": 52968120,
+          "pauseMs": 0.136,
+          "before": 125711872,
+          "after": 72905136,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1451,
+          "allocated": 34340136,
+          "pauseMs": 0.128,
+          "before": 107245272,
+          "after": 73056776,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1452,
+          "allocated": 33401720,
+          "pauseMs": 0.079,
+          "before": 106458496,
+          "after": 73043152,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1465,
+          "allocated": 42833696,
+          "pauseMs": 0.216,
+          "before": 115876848,
+          "after": 73008184,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1471,
+          "allocated": 33457056,
+          "pauseMs": 2.21,
+          "before": 106465240,
+          "after": 79979104,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1475,
+          "allocated": 26486816,
+          "pauseMs": 0.788,
+          "before": 106465920,
+          "after": 76060456,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1480,
+          "allocated": 32947472,
+          "pauseMs": 1.914,
+          "before": 109007928,
+          "after": 82736136,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1484,
+          "allocated": 26373080,
+          "pauseMs": 1.517,
+          "before": 109109216,
+          "after": 78523512,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1492,
+          "allocated": 31073408,
+          "pauseMs": 6.104,
+          "before": 109596920,
+          "after": 87524216,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1499,
+          "allocated": 22674232,
+          "pauseMs": 4.889,
+          "before": 110198448,
+          "after": 87567344,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1502,
+          "allocated": 33437392,
+          "pauseMs": 0.07,
+          "before": 121004736,
+          "after": 87719816,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1504,
+          "allocated": 33324488,
+          "pauseMs": 0.115,
+          "before": 121044304,
+          "after": 87893872,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1507,
+          "allocated": 33327024,
+          "pauseMs": 0.288,
+          "before": 121220896,
+          "after": 88023256,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1510,
+          "allocated": 63788392,
+          "pauseMs": 0.393,
+          "before": 151811648,
+          "after": 88065240,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1514,
+          "allocated": 43255832,
+          "pauseMs": 0.34,
+          "before": 131321072,
+          "after": 88477424,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1516,
+          "allocated": 33389392,
+          "pauseMs": 0.111,
+          "before": 121866816,
+          "after": 88561944,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1522,
+          "allocated": 57607848,
+          "pauseMs": 0.95,
+          "before": 146169792,
+          "after": 88748904,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1524,
+          "allocated": 39590344,
+          "pauseMs": 0.155,
+          "before": 128339248,
+          "after": 88836120,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1526,
+          "allocated": 33427888,
+          "pauseMs": 0.105,
+          "before": 122264008,
+          "after": 88930888,
+          "collector": "s"
+        },
+        {
+          "timeMs": 1533,
+          "allocated": 38728368,
+          "pauseMs": 0.299,
+          "before": 127659256,
+          "after": 90755856,
+          "collector": "s"
+        }
+      ]
+    }
+  ]
+}

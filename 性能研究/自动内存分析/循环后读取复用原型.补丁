@@ -1,0 +1,15 @@
+--- yy循环实排序.wasm.wat	2026-09-19 22:27:50
++++ yy循环读取复用原型.wat	2026-09-19 22:37:43
+@@ -106959,11 +106959,7 @@
+ local.set $p7
+ local.get $p7
+ if (result i64)
+-local.get $a0
+-
+-ref.cast (ref $ints)
+-local.get $i3 i32.wrap_i64
+-array.get $ints
++local.get $i6
+ local.set $i8
+ local.get $a0
+ 

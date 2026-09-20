@@ -1,0 +1,66 @@
+[
+  {
+    "文件": "yy条件数组基准.wasm",
+    "导入": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "导出": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  {
+    "文件": "yy组完整覆盖.wasm",
+    "导入": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "导出": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  }
+]

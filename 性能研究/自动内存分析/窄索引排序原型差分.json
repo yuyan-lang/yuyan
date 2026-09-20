@@ -1,0 +1,14 @@
+[
+  {
+    "name": "yy栈窄索引守分区原型",
+    "cases": 7959,
+    "checks": 181565,
+    "passed": true
+  },
+  {
+    "name": "yy栈窄索引直分区原型",
+    "cases": 7959,
+    "checks": 181565,
+    "passed": true
+  }
+]

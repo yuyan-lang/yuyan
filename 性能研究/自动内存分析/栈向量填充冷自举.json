@@ -1,0 +1,24 @@
+{
+  "coldWallSeconds": [
+    22.37,
+    22.88
+  ],
+  "generations": [
+    {
+      "file": "yy栈向量定稿种子.wasm",
+      "sha256": "7cb9bc90c737bad190700a5f926acdc93fd1ec1530d73476af0ea99b15bcb87a"
+    },
+    {
+      "file": "yy栈向量二代.wasm",
+      "sha256": "7cb9bc90c737bad190700a5f926acdc93fd1ec1530d73476af0ea99b15bcb87a"
+    },
+    {
+      "file": "yy栈向量三代.wasm",
+      "sha256": "7cb9bc90c737bad190700a5f926acdc93fd1ec1530d73476af0ea99b15bcb87a"
+    }
+  ],
+  "cacheDisabled": true,
+  "workers": 18,
+  "experimentalStack": false,
+  "under30Seconds": true
+}

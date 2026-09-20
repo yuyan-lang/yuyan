@@ -1,0 +1,34 @@
+{
+  "数值断言": 31,
+  "失败断言": 7,
+  "错误": [
+    {
+      "用例": "sum_capacity",
+      "错误": "unreachable"
+    },
+    {
+      "用例": "sum_oob",
+      "错误": "array element access out of bounds"
+    },
+    {
+      "用例": "recursive_oob",
+      "错误": "array element access out of bounds"
+    },
+    {
+      "用例": "condition_high",
+      "错误": "illegal cast"
+    },
+    {
+      "用例": "condition_low",
+      "错误": "illegal cast"
+    },
+    {
+      "用例": "division_zero",
+      "错误": "divide by zero"
+    },
+    {
+      "用例": "division_overflow",
+      "错误": "divide result unrepresentable"
+    }
+  ]
+}

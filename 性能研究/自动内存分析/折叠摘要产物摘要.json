@@ -1,0 +1,128 @@
+{
+  "date": "2026-09-20T05:23:07.419Z",
+  "diagnosticOnly": true,
+  "automaticFusionImplemented": false,
+  "conditionalScalarPayloadPremisePending": true,
+  "native3Equals4": true,
+  "wasm2Equals3": true,
+  "coldCompilerCacheWallSeconds": [
+    20.21,
+    22.04
+  ],
+  "osPageCacheCleared": false,
+  "tests": 22,
+  "files": [
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫",
+      "sha256": "909de8502ef5bb858a41af3ebbc0669fffe0d24c165cd118c86dbe84b644e0e1"
+    },
+    {
+      "path": "库/编译器核心/编译步骤/代码生成/网页汇编私有构造。豫",
+      "sha256": "bd8e919dfa63013f06ef79ecc0a46590ccf2a1c39de8331ccf4358a06c5f3025"
+    },
+    {
+      "path": "测试/编译器/折叠摘要。测试。豫",
+      "sha256": "add1fe4b37fc914281843d12d529721bf07c27cc67d1c2ddb24745334f87d21d"
+    },
+    {
+      "path": "yy3_bs",
+      "sha256": "cf46a1439df02127317a207f14d6246adbc80fdee0001c33958edb7ba3579424"
+    },
+    {
+      "path": "yy4_bs",
+      "sha256": "cf46a1439df02127317a207f14d6246adbc80fdee0001c33958edb7ba3579424"
+    },
+    {
+      "path": "yy折叠种子.wasm",
+      "sha256": "1c3ce25bc38dc0ea2685d93e1cc3fc1a488e1dfa94df4f01029b6a55b6034a8a"
+    },
+    {
+      "path": "yy折叠自举二代.wasm",
+      "sha256": "1c3ce25bc38dc0ea2685d93e1cc3fc1a488e1dfa94df4f01029b6a55b6034a8a"
+    },
+    {
+      "path": "yy折叠自举三代.wasm",
+      "sha256": "1c3ce25bc38dc0ea2685d93e1cc3fc1a488e1dfa94df4f01029b6a55b6034a8a"
+    },
+    {
+      "path": "yy折叠定稿测试.wasm",
+      "sha256": "f6bbd317d01e4c865717a8c54eb802e8bfce293b41fd6e88268c1aac28769f59"
+    },
+    {
+      "path": "yy折叠报告树.wasm",
+      "sha256": "cd9be38cbd95d604d50e0967fd3524ac46755200c504c12089a515d85623d389"
+    },
+    {
+      "path": "yy折叠斐波那契.wasm",
+      "sha256": "5c12141669ab5bf7fccb4fcfaf1fc41beba52d2bc6499e116ce5a75947ce42ff"
+    },
+    {
+      "path": "yy折叠素数筛.wasm",
+      "sha256": "ce4a53d7e1a09dfea5d77faa99a683feadb7437756cab0fd8d0126db3c23766e"
+    },
+    {
+      "path": "yy折叠矩阵乘法.wasm",
+      "sha256": "a1315f05b853603f99a2ba286f38bc4890453f43795cf4a7c4f333ef6c144b0f"
+    },
+    {
+      "path": "yy折叠快速排序.wasm",
+      "sha256": "eee479000eb68520203cca5487703ce3e7ed0f7bd4375b6502610a03fb1fd07e"
+    },
+    {
+      "path": "yy折叠树基准.wasm",
+      "sha256": "cd9be38cbd95d604d50e0967fd3524ac46755200c504c12089a515d85623d389"
+    },
+    {
+      "path": "yy折叠数组基准.wasm",
+      "sha256": "7403a1ac465b5a429d5fe9cf818ba1412c90ffd549e64db2d31c39c373665f5f"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要回归.txt",
+      "sha256": "920a4ad4cae793cdce563562536334f62a7869ae54a5ceff43aed96fe79352a1"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要定稿回归.txt",
+      "sha256": "048508e45acbf6f2da875ca5b0dee8f43bf51bfe9535c79d537659b6a9c454d1"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要实际结果.json",
+      "sha256": "d8b507bb39c9f9ffaaba8b352e2994f8336ce3cb2cab743b339d53347756a6b5"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要既有产物.json",
+      "sha256": "7f9810872bbf1c8529588e0d25aae09872319739ccb8e464afb765c64737b4ed"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要树报告.txt",
+      "sha256": "1e492fde0d7d0eb3d131df1d675b37b214dd55afd03b246d446bf7734cd7a322"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要源码.补丁",
+      "sha256": "b2bcdc7080a425bdd39f9f82a29de178be393e40a8eae2e557beb7d11667e483"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要进展.文言.md",
+      "sha256": "8e2839f364fcdcdcc15aa79bd87e056a39062f09e0dc4c5ba3db1ea7b2655651"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠摘要进展.汉语.md",
+      "sha256": "a0337fc72993c817fca996772b08c4576e1fbce23adfd93ab504d76f1805b315"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠自举三代计时.txt",
+      "sha256": "0edc2a3bceff35485f7068c7ddacc8e38474aa73205ac22ba6e1172e6da1e290"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠自举三代输出.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠自举二代计时.txt",
+      "sha256": "7bc00479a7825d10f9f3fb5ef040487d44c21d614d14488ddf353de03de86bd3"
+    },
+    {
+      "path": "性能研究/自动内存分析/折叠自举二代输出.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

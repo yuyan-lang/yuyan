@@ -1,0 +1,93 @@
+--- yy单用素数筛.wasm.wat	2026-09-20 03:37:05
++++ yy筛计数紧化原型.wat	2026-09-20 03:42:52
+@@ -107416,83 +107416,19 @@
+ return_call $eb758
+ end
+ )
+-(func $db758
+-(param $a0 (ref $octs))
+-(param $i1 i64)
+-(param $i2 i64)
+-(param $i3 i64)
+-(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+-
+-(local $a1 (ref null eq))
+-(local $a2 (ref null eq))
+-(local $a3 (ref null eq))
+-(local $a4 (ref null eq))
+-(local $a5 (ref null eq))
+-(local $a6 (ref null eq))
+-(local $a7 (ref null eq))
+-(local $a8 (ref null eq))
+-(local $a9 (ref null eq))
+-(local $a10 (ref null eq))
+-
+-(local $i5 i64)
+-(local $i6 i64)
+-(local $i7 i64)
+-(local $i8 i64)
+-
+-
+-(local $p4 i32)
+-
+-
+-
+-
+-
+-
++(func $db758 (param $a0 (ref $octs)) (param $i1 i64) (param $i2 i64) (param $i3 i64) (result (ref null eq)) (local $j i64)
+ (loop $self (result (ref null eq))
+-local.get $i2
+-local.get $i1
+-i64.gt_s
+-local.set $p4
+-local.get $p4
++local.get $i2 local.get $i1 i64.gt_s
+ if (result (ref null eq))
+ local.get $i3 call $box
+ else
+-local.get $i2
+-i64.const 1
+-i64.add
+-
+-local.set $i5
+-local.get $a0
+-
+-ref.cast (ref $octs)
+-local.get $i2
++local.get $a0 local.get $i2
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+-array.get_u $octs i64.extend_i32_u
+-local.set $i6
+-local.get $i6 i32.wrap_i64
+-if (result i64)
+-local.get $i3
+-i64.const 1
+-i64.add
+-
+-local.set $i7
+-local.get $i7
+-else
+-local.get $i3
+-end local.set $i8
+-local.get $a0
+- ref.cast (ref $octs)
+-local.get $i1
+-local.get $i5
+-local.get $i8
+-
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
++array.get_u $octs i32.const 0 i32.ne i64.extend_i32_u
++local.get $i3 i64.add local.set $i3
++local.get $i2 i64.const 1 i64.add local.set $i2
+ br $self
+-end return
+-)
+-)
++end return))
+ (func $eb758
+ (param $a0 (ref $octs))
+ (param $a1 (ref null eq))

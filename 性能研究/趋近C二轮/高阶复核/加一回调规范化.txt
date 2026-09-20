@@ -1,0 +1,16 @@
+(func $m同
+(param $a0 (ref null eq))
+(param $i1 i64)
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+
+(local $a1 (ref null eq))
+(local $a2 (ref null eq))
+(local $i2 i64)
+(loop $self (result (ref null eq))
+local.get $i1
+i64.const 1
+i64.add
+
+local.set $i2
+local.get $i2 call $box
+) )

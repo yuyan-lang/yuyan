@@ -1,0 +1,9 @@
+{
+  "cases": 1020,
+  "edgeCases": 19,
+  "exhaustiveFunctionalGraphs": 1000,
+  "deepChainNodes": 40,
+  "wasmPassed": true,
+  "nativePassed": true,
+  "description": "三节点、每节点五种指向、四种根、返回与未知调用两种外传方式；比较独立可达性预期，另有外部修改后写入与保守拒绝反例"
+}

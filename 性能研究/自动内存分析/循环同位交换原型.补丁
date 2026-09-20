@@ -1,0 +1,20 @@
+--- yy循环实排序.wasm.wat	2026-09-19 22:27:50
++++ yy循环同位交换原型.wat	2026-09-19 22:56:01
+@@ -106959,6 +106959,8 @@
+ local.set $p7
+ local.get $p7
+ if (result i64)
++local.get $i3 local.get $i4 i64.ne
++if
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+@@ -106985,6 +106987,8 @@
+ local.get $i8
+ array.set $ints ref.null eq
+ local.set $a11
++end
++
+ local.get $i3
+ i64.const 1
+ i64.add

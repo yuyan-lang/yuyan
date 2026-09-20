@@ -1,0 +1,149 @@
+--- yy循环实排序.wasm.wat	2026-09-19 22:27:50
++++ yy循环双步原型.wat	2026-09-19 22:57:32
+@@ -106927,109 +106927,55 @@
+ (local $p5 i32)
+ 
+ (local $p7 i32)
+-
+-
+-
+-
+-
+-
+-
+-
+ 
+ 
+ 
+-(loop $self (result i64)
+-local.get $i3
+-local.get $i1
+-i64.eq
+-local.set $p5
+-local.get $p5
+-if (result i64)
+-local.get $i4
+-else
+-local.get $a0
+ 
+-ref.cast (ref $ints)
+-local.get $i3 i32.wrap_i64
+-array.get $ints
+-local.set $i6
+-local.get $i2
+-local.get $i6
+-i64.gt_s
+-local.set $p7
+-local.get $p7
+-if (result i64)
+-local.get $a0
+ 
+-ref.cast (ref $ints)
+-local.get $i3 i32.wrap_i64
+-array.get $ints
+-local.set $i8
+-local.get $a0
+ 
+-ref.cast (ref $ints)
+-local.get $i4 i32.wrap_i64
+-array.get $ints
+-local.set $i9
+-local.get $a0
+ 
+-ref.cast (ref $ints)
+-local.get $i3 i32.wrap_i64
+-local.get $i9
+-array.set $ints ref.null eq
+-local.set $a10
+-local.get $a0
+ 
+-ref.cast (ref $ints)
+-local.get $i4 i32.wrap_i64
+-local.get $i8
+-array.set $ints ref.null eq
+-local.set $a11
+-local.get $i3
+-i64.const 1
+-i64.add
+ 
+-local.set $i12
+-local.get $i4
+-i64.const 1
+-i64.add
+ 
+-local.set $i13
+-local.get $a0
+- ref.cast (ref $ints)
+-local.get $i1
+-local.get $i2
+-local.get $i12
+-local.get $i13
+ 
+-local.set $i4
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
+-br $self
+-else
+-local.get $i3
+-i64.const 1
+-i64.add
+-
+-local.set $i15
+-local.get $a0
+- ref.cast (ref $ints)
+-local.get $i1
+-local.get $i2
+-local.get $i15
+-local.get $i4
++local.get $i1 local.get $i3 i64.sub i64.const 1 i64.and i64.eqz i32.eqz
++if
++local.get $a0 local.get $i3 i32.wrap_i64 array.get $ints local.set $i6
++local.get $i2 local.get $i6 i64.gt_s
++if
++local.get $a0 local.get $i3 i32.wrap_i64 array.get $ints local.set $i8
++local.get $a0 local.get $i4 i32.wrap_i64 array.get $ints local.set $i9
++local.get $a0 local.get $i3 i32.wrap_i64 local.get $i9 array.set $ints
++local.get $a0 local.get $i4 i32.wrap_i64 local.get $i8 array.set $ints
++local.get $i4 i64.const 1 i64.add local.set $i4
++end
++local.get $i3 i64.const 1 i64.add local.set $i3
++end
++(block $done (loop $batch
++local.get $i3 local.get $i1 i64.eq br_if $done
++local.get $a0 local.get $i3 i32.wrap_i64 array.get $ints local.set $i6
++local.get $i2 local.get $i6 i64.gt_s
++if
++local.get $a0 local.get $i3 i32.wrap_i64 array.get $ints local.set $i8
++local.get $a0 local.get $i4 i32.wrap_i64 array.get $ints local.set $i9
++local.get $a0 local.get $i3 i32.wrap_i64 local.get $i9 array.set $ints
++local.get $a0 local.get $i4 i32.wrap_i64 local.get $i8 array.set $ints
++local.get $i4 i64.const 1 i64.add local.set $i4
++end
++local.get $i3 i64.const 1 i64.add local.set $i3
++local.get $a0 local.get $i3 i32.wrap_i64 array.get $ints local.set $i6
++local.get $i2 local.get $i6 i64.gt_s
++if
++local.get $a0 local.get $i3 i32.wrap_i64 array.get $ints local.set $i8
++local.get $a0 local.get $i4 i32.wrap_i64 array.get $ints local.set $i9
++local.get $a0 local.get $i3 i32.wrap_i64 local.get $i9 array.set $ints
++local.get $a0 local.get $i4 i32.wrap_i64 local.get $i8 array.set $ints
++local.get $i4 i64.const 1 i64.add local.set $i4
++end
++local.get $i3 i64.const 1 i64.add local.set $i3
++br $batch))
++local.get $i4)
+ 
+-local.set $i4
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
+-br $self
+-end return
+-end return
+-) )
+ (func $rd756
+ (param $a0 (ref $ints))
+ (param $i1 i64)

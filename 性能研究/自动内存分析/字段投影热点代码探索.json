@@ -1,0 +1,47 @@
+{
+  "note": "函数编号需正式诊断复核，暂作为代码尺寸比较，不代表速度",
+  "rows": [
+    {
+      "file": "yy容器图三代.wasm.wat",
+      "function": "f2537",
+      "watBytes": 4493,
+      "indirect": 6,
+      "tupleCreates": 3
+    },
+    {
+      "file": "yy容器图三代.wasm.wat",
+      "function": "f2557",
+      "watBytes": 15598,
+      "indirect": 31,
+      "tupleCreates": 5
+    },
+    {
+      "file": "yy容器图三代.wasm.wat",
+      "function": "f2561",
+      "watBytes": 13656,
+      "indirect": 26,
+      "tupleCreates": 5
+    },
+    {
+      "file": "yy字段投影优化种子.wasm.wat",
+      "function": "f2537",
+      "watBytes": 3428,
+      "indirect": 1,
+      "tupleCreates": 3
+    },
+    {
+      "file": "yy字段投影优化种子.wasm.wat",
+      "function": "f2557",
+      "watBytes": 12874,
+      "indirect": 19,
+      "tupleCreates": 5
+    },
+    {
+      "file": "yy字段投影优化种子.wasm.wat",
+      "function": "f2561",
+      "watBytes": 11030,
+      "indirect": 14,
+      "tupleCreates": 5
+    }
+  ]
+}

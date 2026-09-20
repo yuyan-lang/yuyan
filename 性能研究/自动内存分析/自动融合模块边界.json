@@ -1,0 +1,36 @@
+[
+  {
+    "test": "树基准",
+    "changed": [
+      "f76"
+    ],
+    "added": [
+      "fusion72_74",
+      "nfusion72_74"
+    ],
+    "boundary": {
+      "importsEqual": true,
+      "exportsEqual": true,
+      "tableEqual": true,
+      "elementEqual": true,
+      "originalCreatorAndConsumerUnchanged": true
+    }
+  },
+  {
+    "test": "数组基准",
+    "changed": [
+      "f76"
+    ],
+    "added": [
+      "fusion72_74",
+      "nfusion72_74"
+    ],
+    "boundary": {
+      "importsEqual": true,
+      "exportsEqual": true,
+      "tableEqual": true,
+      "elementEqual": true,
+      "originalCreatorAndConsumerUnchanged": true
+    }
+  }
+]

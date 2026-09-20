@@ -1,0 +1,11 @@
+{
+  "previousFunctionCount": 841,
+  "allSignaturesUnchanged": true,
+  "importsExportsUnchanged": true,
+  "changedFunctions": [
+    "$stack766_756q",
+    "$stack766_752q"
+  ],
+  "payloadMirrorAndVoidStepSelected": true,
+  "checkedFallbackRetained": true
+}

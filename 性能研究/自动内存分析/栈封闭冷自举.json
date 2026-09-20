@@ -1,0 +1,26 @@
+{
+  "rows": [
+    {
+      "name": "新种子",
+      "seconds": 36.37,
+      "log": "性能研究/自动内存分析/栈封闭新种子计时.txt"
+    },
+    {
+      "name": "新二代",
+      "seconds": 27.09,
+      "log": "性能研究/自动内存分析/栈封闭新二代计时.txt"
+    },
+    {
+      "name": "旧编译器同源码对照",
+      "seconds": 24.94,
+      "log": "性能研究/自动内存分析/栈封闭旧编译器同源码对照计时.txt"
+    },
+    {
+      "name": "新三代复测",
+      "seconds": 26.18,
+      "log": "性能研究/自动内存分析/栈封闭新三代复测计时.txt"
+    }
+  ],
+  "compilerBinariesIdentical": true,
+  "under30EveryRun": false
+}

@@ -1,0 +1,11 @@
+--- yy就绪索引核快速排序.wasm.wat	2026-09-20 14:27:02
++++ yy跨函范围直调原型.wat	2026-09-20 14:36:10
+@@ -109970,7 +109970,7 @@
+ local.get $sv11
+ local.get $sv1
+ local.get $sv1
+-call $stack766_756
++call $stack766_756q
+ local.set $sv12
+ local.get $sv0
+ local.set $sp

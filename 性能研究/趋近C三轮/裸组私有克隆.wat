@@ -1,0 +1,1075 @@
+
+(type $ints (array (mut i64)))
+(func $newints (param $v (ref null eq)) (param $n (ref null eq)) (result (ref null eq)) local.get $v call $unbox local.get $n call $unbox i32.wrap_i64 array.new $ints)
+(func $zf752 (type $t3)
+(param $a0 (ref null eq))
+(param $a1 (ref null eq))
+(param $a2 (ref null eq))
+(result (ref null eq))
+i32.const 1
+
+local.get $a0 ref.test (ref $ints) i32.and
+local.get $a1 ref.test (ref i31)
+local.get $a1 ref.test (ref $big) i32.or i32.and
+
+local.get $a2 ref.test (ref i31)
+local.get $a2 ref.test (ref $big) i32.or i32.and
+
+if (result (ref null eq))
+local.get $a0 ref.cast (ref $ints)
+local.get $a1 call $unbox
+local.get $a2 call $unbox
+return_call $zm752
+else
+local.get $a0
+local.get $a1
+local.get $a2
+return_call $zb752
+end
+)
+(func $zm752
+(param $a0 (ref $ints))
+(param $i1 i64)
+(param $i2 i64)
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+
+(local $a1 (ref null eq))
+(local $a2 (ref null eq))
+(local $a3 (ref null eq))
+(local $a4 (ref null eq))
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+
+(local $i4 i64)
+
+(local $i6 i64)
+
+
+(loop $self (result (ref null eq))
+local.get $i2
+local.get $i1
+i64.eq i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a3
+local.get $a3
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+ref.null eq
+
+else
+local.get $i1
+local.get $i2
+i64.sub
+
+local.set $i4
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i2
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $i4 call $box
+call $unbox array.set $ints ref.null eq
+local.set $a5
+local.get $i2
+i64.const 1
+i64.add
+
+local.set $i6
+local.get $a0
+ ref.cast (ref $ints)
+local.get $i1
+local.get $i6
+
+local.set $i2
+local.set $i1
+local.set $a0
+br $self
+end return
+) )
+(func $zb752
+(param $a0 (ref null eq))
+(param $a1 (ref null eq))
+(param $a2 (ref null eq))
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+(local $a3 (ref null eq))
+(local $a4 (ref null eq))
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+
+(local $i4 i64)
+
+(local $i6 i64)
+
+
+(loop $self (result (ref null eq))
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.eq i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a3
+local.get $a3
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+ref.null eq
+
+else
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.sub
+
+local.set $i4
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $i4 call $box
+call $unbox array.set $ints ref.null eq
+local.set $a5
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.add
+
+local.set $i6
+local.get $a0
+
+local.get $a1
+
+local.get $i6 call $box
+local.set $a2
+local.set $a1
+local.set $a0
+br $self
+end return
+) )
+
+(func $zf756 (type $t5)
+(param $a0 (ref null eq))
+(param $a1 (ref null eq))
+(param $a2 (ref null eq))
+(param $a3 (ref null eq))
+(param $a4 (ref null eq))
+(result (ref null eq))
+i32.const 1
+
+local.get $a0 ref.test (ref $ints) i32.and
+local.get $a1 ref.test (ref i31)
+local.get $a1 ref.test (ref $big) i32.or i32.and
+
+local.get $a2 ref.test (ref i31)
+local.get $a2 ref.test (ref $big) i32.or i32.and
+
+local.get $a3 ref.test (ref i31)
+local.get $a3 ref.test (ref $big) i32.or i32.and
+
+local.get $a4 ref.test (ref i31)
+local.get $a4 ref.test (ref $big) i32.or i32.and
+
+if (result (ref null eq))
+local.get $a0 ref.cast (ref $ints)
+local.get $a1 call $unbox
+local.get $a2 call $unbox
+local.get $a3 call $unbox
+local.get $a4 call $unbox
+return_call $zm756
+else
+local.get $a0
+local.get $a1
+local.get $a2
+local.get $a3
+local.get $a4
+return_call $zb756
+end
+)
+(func $zm756
+(param $a0 (ref $ints))
+(param $i1 i64)
+(param $i2 i64)
+(param $i3 i64)
+(param $i4 i64)
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+
+(local $a1 (ref null eq))
+(local $a2 (ref null eq))
+(local $a3 (ref null eq))
+(local $a4 (ref null eq))
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+(local $a9 (ref null eq))
+(local $a10 (ref null eq))
+(local $a11 (ref null eq))
+(local $a12 (ref null eq))
+(local $a13 (ref null eq))
+(local $a14 (ref null eq))
+(local $a15 (ref null eq))
+(local $a16 (ref null eq))
+(local $a17 (ref null eq))
+(local $a18 (ref null eq))
+
+
+
+
+
+
+
+(local $i12 i64)
+(local $i13 i64)
+
+(local $i15 i64)
+
+
+
+(loop $self (result (ref null eq))
+local.get $i3
+local.get $i1
+i64.eq i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a5
+local.get $a5
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+local.get $i4 call $box
+else
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i3
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a6
+local.get $i2
+local.get $a6
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.gt_s i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a7
+local.get $a7
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i3
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a8
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i4
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a9
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i3
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a9
+
+call $unbox array.set $ints ref.null eq
+local.set $a10
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i4
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a8
+
+call $unbox array.set $ints ref.null eq
+local.set $a11
+local.get $i3
+i64.const 1
+i64.add
+
+local.set $i12
+local.get $i4
+i64.const 1
+i64.add
+
+local.set $i13
+local.get $a0
+ ref.cast (ref $ints)
+local.get $i1
+local.get $i2
+local.get $i12
+local.get $i13
+
+local.set $i4
+local.set $i3
+local.set $i2
+local.set $i1
+local.set $a0
+br $self
+else
+local.get $i3
+i64.const 1
+i64.add
+
+local.set $i15
+local.get $a0
+ ref.cast (ref $ints)
+local.get $i1
+local.get $i2
+local.get $i15
+local.get $i4
+
+local.set $i4
+local.set $i3
+local.set $i2
+local.set $i1
+local.set $a0
+br $self
+end return
+end return
+) )
+(func $zb756
+(param $a0 (ref null eq))
+(param $a1 (ref null eq))
+(param $a2 (ref null eq))
+(param $a3 (ref null eq))
+(param $a4 (ref null eq))
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+(local $a9 (ref null eq))
+(local $a10 (ref null eq))
+(local $a11 (ref null eq))
+(local $a12 (ref null eq))
+(local $a13 (ref null eq))
+(local $a14 (ref null eq))
+(local $a15 (ref null eq))
+(local $a16 (ref null eq))
+(local $a17 (ref null eq))
+(local $a18 (ref null eq))
+
+
+
+
+
+
+
+(local $i12 i64)
+(local $i13 i64)
+
+(local $i15 i64)
+
+
+
+(loop $self (result (ref null eq))
+local.get $a3
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.eq i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a5
+local.get $a5
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+local.get $a4
+
+else
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a3
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a6
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $a6
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.gt_s i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a7
+local.get $a7
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a3
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a8
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a4
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a9
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a3
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a9
+
+call $unbox array.set $ints ref.null eq
+local.set $a10
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a4
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a8
+
+call $unbox array.set $ints ref.null eq
+local.set $a11
+local.get $a3
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.add
+
+local.set $i12
+local.get $a4
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.add
+
+local.set $i13
+local.get $a0
+
+local.get $a1
+
+local.get $a2
+
+local.get $i12 call $box
+local.get $i13 call $box
+local.set $a4
+local.set $a3
+local.set $a2
+local.set $a1
+local.set $a0
+br $self
+else
+local.get $a3
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.add
+
+local.set $i15
+local.get $a0
+
+local.get $a1
+
+local.get $a2
+
+local.get $i15 call $box
+local.get $a4
+
+local.set $a4
+local.set $a3
+local.set $a2
+local.set $a1
+local.set $a0
+br $self
+end return
+end return
+) )
+
+(func $zf762 (type $t3)
+(param $a0 (ref null eq))
+(param $a1 (ref null eq))
+(param $a2 (ref null eq))
+(result (ref null eq))
+i32.const 1
+
+local.get $a0 ref.test (ref $ints) i32.and
+local.get $a1 ref.test (ref i31)
+local.get $a1 ref.test (ref $big) i32.or i32.and
+
+local.get $a2 ref.test (ref i31)
+local.get $a2 ref.test (ref $big) i32.or i32.and
+
+if (result (ref null eq))
+local.get $a0 ref.cast (ref $ints)
+local.get $a1 call $unbox
+local.get $a2 call $unbox
+return_call $zm762
+else
+local.get $a0
+local.get $a1
+local.get $a2
+return_call $zb762
+end
+)
+(func $zm762
+(param $a0 (ref $ints))
+(param $i1 i64)
+(param $i2 i64)
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+
+(local $a1 (ref null eq))
+(local $a2 (ref null eq))
+(local $a3 (ref null eq))
+(local $a4 (ref null eq))
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+(local $a9 (ref null eq))
+(local $a10 (ref null eq))
+(local $a11 (ref null eq))
+(local $a12 (ref null eq))
+(local $a13 (ref null eq))
+(local $a14 (ref null eq))
+(local $a15 (ref null eq))
+(local $a16 (ref null eq))
+(local $a17 (ref null eq))
+(local $a18 (ref null eq))
+(local $a19 (ref null eq))
+(local $a20 (ref null eq))
+(local $a21 (ref null eq))
+
+(local $i4 i64)
+(local $i5 i64)
+(local $i6 i64)
+
+
+
+
+
+
+
+
+
+
+(local $i17 i64)
+
+(local $i19 i64)
+
+
+(loop $self (result (ref null eq))
+local.get $i2
+local.get $i1
+i64.gt_s i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a3
+local.get $a3
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+local.get $i2
+local.get $i1
+i64.sub
+
+local.set $i4
+local.get $i4
+i64.const 2
+i64.div_s
+local.set $i5
+local.get $i1
+local.get $i5
+i64.add
+
+local.set $i6
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i6
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a7
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i2
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a8
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i6
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a8
+
+call $unbox array.set $ints ref.null eq
+local.set $a9
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i2
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a7
+
+call $unbox array.set $ints ref.null eq
+local.set $a10
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i2
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a11
+
+
+local.get $i2 call $box local.set $a2
+
+local.get $i1 call $box local.set $a1
+local.get $i1 call $box local.set $a1
+local.get $a0
+
+local.get $a2
+
+local.get $a11
+
+local.get $a1
+
+local.get $a1
+
+call $zf756
+local.set $a12
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a13
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i2
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a14
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a14
+
+call $unbox array.set $ints ref.null eq
+local.set $a15
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i2
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a13
+
+call $unbox array.set $ints ref.null eq
+local.set $a16
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.sub
+
+local.set $i17
+local.get $a0
+ ref.cast (ref $ints)
+local.get $i1
+local.get $i17
+
+call $zm762
+local.set $a18
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.add
+
+local.set $i19
+local.get $a0
+ ref.cast (ref $ints)
+local.get $i19
+local.get $i2
+
+local.set $i2
+local.set $i1
+local.set $a0
+br $self
+else
+ref.null eq
+
+end return
+) )
+(func $zb762
+(param $a0 (ref null eq))
+(param $a1 (ref null eq))
+(param $a2 (ref null eq))
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+(local $a3 (ref null eq))
+(local $a4 (ref null eq))
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+(local $a9 (ref null eq))
+(local $a10 (ref null eq))
+(local $a11 (ref null eq))
+(local $a12 (ref null eq))
+(local $a13 (ref null eq))
+(local $a14 (ref null eq))
+(local $a15 (ref null eq))
+(local $a16 (ref null eq))
+(local $a17 (ref null eq))
+(local $a18 (ref null eq))
+(local $a19 (ref null eq))
+(local $a20 (ref null eq))
+(local $a21 (ref null eq))
+
+(local $i4 i64)
+(local $i5 i64)
+(local $i6 i64)
+
+
+
+
+
+
+
+
+
+
+(local $i17 i64)
+
+(local $i19 i64)
+
+
+(loop $self (result (ref null eq))
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.gt_s i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a3
+local.get $a3
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.sub
+
+local.set $i4
+local.get $i4
+i64.const 2
+i64.div_s
+local.set $i5
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $i5
+i64.add
+
+local.set $i6
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i6
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a7
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a8
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $i6
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a8
+
+call $unbox array.set $ints ref.null eq
+local.set $a9
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a7
+
+call $unbox array.set $ints ref.null eq
+local.set $a10
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a11
+
+
+
+
+
+
+local.get $a0
+
+local.get $a2
+
+local.get $a11
+
+local.get $a1
+
+local.get $a1
+
+call $zf756
+local.set $a12
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a13
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a14
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a14
+
+call $unbox array.set $ints ref.null eq
+local.set $a15
+local.get $a0
+
+ref.cast (ref $ints)
+local.get $a2
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+local.get $a13
+
+call $unbox array.set $ints ref.null eq
+local.set $a16
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.sub
+
+local.set $i17
+
+
+
+local.get $i17 call $box local.set $a17
+local.get $a0
+
+local.get $a1
+
+local.get $a17
+
+call $zf762
+local.set $a18
+local.get $a12
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.add
+
+local.set $i19
+local.get $a0
+
+local.get $i19 call $box
+local.get $a2
+
+local.set $a2
+local.set $a1
+local.set $a0
+br $self
+else
+ref.null eq
+
+end return
+) )
+
+(func $f766 (type $t2)
+(param $a0 (ref null eq))
+(param $a1 (ref null eq))
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+
+
+(local $a2 (ref null eq))
+(local $a3 (ref null eq))
+(local $a4 (ref null eq))
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+(local $a9 (ref null eq))
+(local $a10 (ref null eq))
+(local $a11 (ref null eq))
+(local $a12 (ref null eq))
+
+
+(local $i4 i64)
+
+
+(local $i7 i64)
+
+(local $i9 i64)
+(local $i10 i64)
+
+(local $i12 i64)
+(loop $self (result (ref null eq))
+
+
+i32.const 0 ref.i31
+
+local.get $a1
+
+call $newints
+
+local.set $a2
+
+
+
+
+local.get $a2
+
+local.get $a1
+
+i32.const 0 ref.i31
+
+call $zf752
+local.set $a3
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.sub
+
+local.set $i4
+
+
+
+local.get $i4 call $box local.set $a4
+local.get $a2
+
+i32.const 0 ref.i31
+
+local.get $a4
+
+call $zf762
+local.set $a5
+local.get $a2
+
+ref.cast (ref $ints)
+i64.const 0
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a6
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 2
+i64.div_s
+local.set $i7
+local.get $a2
+
+ref.cast (ref $ints)
+local.get $i7
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a8
+local.get $a6
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+local.get $a8
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.add
+
+local.set $i9
+local.get $a1
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.const 1
+i64.sub
+
+local.set $i10
+local.get $a2
+
+ref.cast (ref $ints)
+local.get $i10
+local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+array.get $ints call $box
+local.set $a11
+local.get $i9
+local.get $a11
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.add
+
+local.set $i12
+local.get $i12 call $box
+) )

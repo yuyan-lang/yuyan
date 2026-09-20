@@ -1,0 +1,52 @@
+{
+  "initialFailure": "稳定编译器沿用旧缓存时链接缺少网页栈实验模式全局符号；更新 yy_bs_stable 的 mtime 后从新缓存重建成功。",
+  "checks": [
+    {
+      "command": "./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs >/dev/null 2>/dev/null",
+      "exit": 0,
+      "afterCacheIdentityRefresh": true
+    },
+    {
+      "command": "./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel >/dev/null 2>/dev/null",
+      "exit": 0
+    },
+    {
+      "command": "./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel >/dev/null 2>/dev/null",
+      "exit": 0
+    },
+    {
+      "command": "cmp yy3_bs yy4_bs",
+      "exit": 0
+    },
+    {
+      "command": "./yy 豫言编译器/入口。豫 --type-check-only",
+      "exit": 0
+    },
+    {
+      "command": "./yy3_bs 豫言编译器/入口。豫 --type-check-only --parallel",
+      "exit": 0
+    }
+  ],
+  "hashes": [
+    {
+      "path": "yy3_bs",
+      "sha256": "8fdf4abb2b5a8f43d02b696175f7b402c77977be16dece272aea3fe40b0a95ab"
+    },
+    {
+      "path": "yy4_bs",
+      "sha256": "8fdf4abb2b5a8f43d02b696175f7b402c77977be16dece272aea3fe40b0a95ab"
+    },
+    {
+      "path": "yy自动栈排序.wasm",
+      "sha256": "12023faddd2d83f450cac9fae77bf1739d3fcff56e6866cb918f5d6e7e826e93"
+    },
+    {
+      "path": "yy接入栈快速排序.wasm",
+      "sha256": "12023faddd2d83f450cac9fae77bf1739d3fcff56e6866cb918f5d6e7e826e93"
+    },
+    {
+      "path": "yy栈接入默认排序.wasm",
+      "sha256": "20c4e0339fd5f49a53e557f9ada790dbc8e76eeb235a933425a0e910ee3bf47f"
+    }
+  ]
+}

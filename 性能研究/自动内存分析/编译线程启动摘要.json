@@ -1,0 +1,46 @@
+{
+  "wallMs": 21956.944208,
+  "workers": 1096,
+  "totalStartupMs": 12660.005649000022,
+  "medianStartupMs": 10.736499999999978,
+  "medianLifetimeMs": 45.80687500000022,
+  "failed": 0,
+  "groups": {
+    "dependency-analysis": {
+      "count": 219,
+      "totalStartupMs": 2139.579963999998,
+      "medianStartupMs": 9.512917000000016,
+      "medianLifetimeMs": 26.12975
+    },
+    "parse": {
+      "count": 219,
+      "totalStartupMs": 2211.623048000006,
+      "medianStartupMs": 9.78204099999948,
+      "medianLifetimeMs": 34.09925000000021
+    },
+    "type-check-and-erase": {
+      "count": 219,
+      "totalStartupMs": 2725.861045000008,
+      "medianStartupMs": 12.13208399999985,
+      "medianLifetimeMs": 160.4238750000004
+    },
+    "cross-module-optimize": {
+      "count": 219,
+      "totalStartupMs": 2790.7818810000203,
+      "medianStartupMs": 12.677499999999782,
+      "medianLifetimeMs": 50.559291999999914
+    },
+    "pre-closure-convert": {
+      "count": 219,
+      "totalStartupMs": 2783.2240859999883,
+      "medianStartupMs": 12.718332999998893,
+      "medianLifetimeMs": 63.06304199999977
+    },
+    "exec-gen": {
+      "count": 1,
+      "totalStartupMs": 8.935625000001892,
+      "medianStartupMs": 8.935625000001892,
+      "medianLifetimeMs": 1922.1822500000017
+    }
+  }
+}

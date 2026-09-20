@@ -1,0 +1,58 @@
+{
+  "nativeBootstrapPassed": true,
+  "native3Equals4": true,
+  "bothTypeChecksPassed": true,
+  "wasmDifferentialCases": 904,
+  "nativeDifferentialCases": 904,
+  "kernelByteEquality": true,
+  "coldBootstrap": [
+    {
+      "seed": "yy就绪索引定稿种子.wasm",
+      "out": "yy就绪索引二代.wasm",
+      "seconds": 15.29,
+      "identical": true
+    },
+    {
+      "seed": "yy就绪索引二代.wasm",
+      "out": "yy就绪索引三代.wasm",
+      "seconds": 15.84,
+      "identical": true
+    }
+  ],
+  "artifacts": [
+    {
+      "file": "yy3_bs",
+      "sha256": "5dbf16a3b310da9c305da6943451f3378520594db02d9bc0d962fa4961ef9bf3"
+    },
+    {
+      "file": "yy4_bs",
+      "sha256": "5dbf16a3b310da9c305da6943451f3378520594db02d9bc0d962fa4961ef9bf3"
+    },
+    {
+      "file": "yy就绪索引定稿种子.wasm",
+      "sha256": "dbea822b79bbb87dae9ab4a039352003e619e4a21f68c22ac9f7af9769f7cdd8"
+    },
+    {
+      "file": "yy就绪索引二代.wasm",
+      "sha256": "dbea822b79bbb87dae9ab4a039352003e619e4a21f68c22ac9f7af9769f7cdd8"
+    },
+    {
+      "file": "yy就绪索引三代.wasm",
+      "sha256": "dbea822b79bbb87dae9ab4a039352003e619e4a21f68c22ac9f7af9769f7cdd8"
+    }
+  ],
+  "files": [
+    {
+      "file": "库/构建基础/调度器。豫",
+      "sha256": "9547a7964b422e3d0c49015f93b9f0b04b9fe57884b445b45c03aa5359e498a6"
+    },
+    {
+      "file": "测试/测试。包。豫",
+      "sha256": "dfcf588cd262059eb7f4c62e6a79af233bac3f9e67648d3195f2dc5c860304e9"
+    },
+    {
+      "file": "测试/编译器/调度就绪索引。测试。豫",
+      "sha256": "df2d5f9fa285d974c2a17df55de845c18cb38d6b13c90897ea32429025dbeaf6"
+    }
+  ]
+}

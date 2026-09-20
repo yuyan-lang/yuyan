@@ -1,0 +1,562 @@
+{
+  "cases": [
+    {
+      "depth": "-9223372036854775808",
+      "kind": 0,
+      "result": {
+        "value": "1"
+      }
+    },
+    {
+      "depth": "-9223372036854775808",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "-9223372036854775808",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "-10",
+      "kind": 0,
+      "result": {
+        "value": "1"
+      }
+    },
+    {
+      "depth": "-10",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "-10",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "-1",
+      "kind": 0,
+      "result": {
+        "value": "1"
+      }
+    },
+    {
+      "depth": "-1",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "-1",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "0",
+      "kind": 0,
+      "result": {
+        "value": "1"
+      }
+    },
+    {
+      "depth": "0",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "0",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "1",
+      "kind": 0,
+      "result": {
+        "value": "2"
+      }
+    },
+    {
+      "depth": "1",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "1",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "2",
+      "kind": 0,
+      "result": {
+        "value": "4"
+      }
+    },
+    {
+      "depth": "2",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "2",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "3",
+      "kind": 0,
+      "result": {
+        "value": "8"
+      }
+    },
+    {
+      "depth": "3",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "3",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "4",
+      "kind": 0,
+      "result": {
+        "value": "16"
+      }
+    },
+    {
+      "depth": "4",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "4",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "5",
+      "kind": 0,
+      "result": {
+        "value": "32"
+      }
+    },
+    {
+      "depth": "5",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "5",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "6",
+      "kind": 0,
+      "result": {
+        "value": "64"
+      }
+    },
+    {
+      "depth": "6",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "6",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "7",
+      "kind": 0,
+      "result": {
+        "value": "128"
+      }
+    },
+    {
+      "depth": "7",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "7",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "8",
+      "kind": 0,
+      "result": {
+        "value": "256"
+      }
+    },
+    {
+      "depth": "8",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "8",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "9",
+      "kind": 0,
+      "result": {
+        "value": "512"
+      }
+    },
+    {
+      "depth": "9",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "9",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "10",
+      "kind": 0,
+      "result": {
+        "value": "1024"
+      }
+    },
+    {
+      "depth": "10",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "10",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "11",
+      "kind": 0,
+      "result": {
+        "value": "2048"
+      }
+    },
+    {
+      "depth": "11",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "11",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "12",
+      "kind": 0,
+      "result": {
+        "value": "4096"
+      }
+    },
+    {
+      "depth": "12",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "12",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "13",
+      "kind": 0,
+      "result": {
+        "value": "8192"
+      }
+    },
+    {
+      "depth": "13",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "13",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "14",
+      "kind": 0,
+      "result": {
+        "value": "16384"
+      }
+    },
+    {
+      "depth": "14",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "14",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "15",
+      "kind": 0,
+      "result": {
+        "value": "32768"
+      }
+    },
+    {
+      "depth": "15",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "15",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "16",
+      "kind": 0,
+      "result": {
+        "value": "65536"
+      }
+    },
+    {
+      "depth": "16",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "16",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "17",
+      "kind": 0,
+      "result": {
+        "value": "131072"
+      }
+    },
+    {
+      "depth": "17",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "17",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "18",
+      "kind": 0,
+      "result": {
+        "value": "262144"
+      }
+    },
+    {
+      "depth": "18",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "18",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "19",
+      "kind": 0,
+      "result": {
+        "value": "524288"
+      }
+    },
+    {
+      "depth": "19",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "19",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "20",
+      "kind": 0,
+      "result": {
+        "value": "1048576"
+      }
+    },
+    {
+      "depth": "20",
+      "kind": 1,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    },
+    {
+      "depth": "20",
+      "kind": 2,
+      "result": {
+        "error": "RuntimeError",
+        "message": "illegal cast"
+      }
+    }
+  ],
+  "extraWrapDepths": [
+    40,
+    63,
+    64,
+    128
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "sameWithoutStrings": false,
+  "stringCounts": [
+    7037,
+    7037
+  ],
+  "changes": [
+    {
+      "index": 517,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a",
+      "b": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a"
+    },
+    {
+      "index": 518,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a",
+      "b": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a"
+    },
+    {
+      "index": 520,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a",
+      "b": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a"
+    },
+    {
+      "index": 521,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a",
+      "b": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a"
+    },
+    {
+      "index": 525,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a",
+      "b": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a"
+    },
+    {
+      "index": 526,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a",
+      "b": "模式匹配错误，缺少分支：case[「 数字组成 」；|→[⌂(2)（展开）[$单个数字[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[内建：《《内建类型：字符串》》[]]]]；⌂(1)（展开）[]]；a"
+    },
+    {
+      "index": 1075,
+      "lengthA": 625,
+      "lengthB": 625,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 乙 」]]；|→",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 乙 」]]；|→"
+    },
+    {
+      "index": 1076,
+      "lengthA": 625,
+      "lengthB": 625,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 乙 」]]；|→",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 乙 」]]；|→"
+    },
+    {
+      "index": 1078,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 甲 」]]；|→",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 甲 」]]；|→"
+    },
+    {
+      "index": 1079,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 甲 」]]；|→",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/代码生成/网页汇编折叠摘要。豫#折叠取式(13)』[]；arg[「 甲 」]]；|→"
+    },
+    {
+      "index": 1081,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[「 段 」；|→[⌂(1)（展开）[$令们[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[⌂(统一正则数据。豫#1,正则指令)[(Type)[]]]]]；$终[⌂(统一",
+      "b": "模式匹配错误，缺少分支：case[「 段 」；|→[⌂(1)（展开）[$令们[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[⌂(统一正则数据。豫#1,正则指令)[(Type)[]]]]]；$终[⌂(统一"
+    },
+    {
+      "index": 1082,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[「 段 」；|→[⌂(1)（展开）[$令们[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[⌂(统一正则数据。豫#1,正则指令)[(Type)[]]]]]；$终[⌂(统一",
+      "b": "模式匹配错误，缺少分支：case[「 段 」；|→[⌂(1)（展开）[$令们[ap[⌂(多态列。豫#1,列)[→[(Type)[]；(Type)[]]]；arg[⌂(统一正则数据。豫#1,正则指令)[(Type)[]]]]]；$终[⌂(统一"
+    },
+    {
+      "index": 4708,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[「 待处理 」；|→[⌂(1)（展开）[]；「 已有 」]；|→[⌂(2)（展开）[$当前[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]]；$剩余[ap[⌂(多态列。豫#1,列)[→[(Type",
+      "b": "模式匹配错误，缺少分支：case[「 待处理 」；|→[⌂(1)（展开）[]；「 已有 」]；|→[⌂(2)（展开）[$当前[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]]；$剩余[ap[⌂(多态列。豫#1,列)[→[(Type"
+    },
+    {
+      "index": 4709,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[「 待处理 」；|→[⌂(1)（展开）[]；「 已有 」]；|→[⌂(2)（展开）[$当前[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]]；$剩余[ap[⌂(多态列。豫#1,列)[→[(Type",
+      "b": "模式匹配错误，缺少分支：case[「 待处理 」；|→[⌂(1)（展开）[]；「 已有 」]；|→[⌂(2)（展开）[$当前[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]]；$剩余[ap[⌂(多态列。豫#1,列)[→[(Type"
+    },
+    {
+      "index": 4720,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg[",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg["
+    },
+    {
+      "index": 4721,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg[",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg["
+    },
+    {
+      "index": 4727,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数633.λ[构造器参数634.⌂ᶜ(1,2)[元组[2；1]]]]；arg",
+      "b": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数328.λ[构造器参数329.⌂ᶜ(1,2)[元组[2；1]]]]；arg"
+    },
+    {
+      "index": 4728,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数633.λ[构造器参数634.⌂ᶜ(1,2)[元组[2；1]]]]；arg",
+      "b": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数328.λ[构造器参数329.⌂ᶜ(1,2)[元组[2；1]]]]；arg"
+    },
+    {
+      "index": 4731,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数633.λ[构造器参数634.⌂ᶜ(1,2)[元组[2；1]]]]；arg",
+      "b": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数328.λ[构造器参数329.⌂ᶜ(1,2)[元组[2；1]]]]；arg"
+    },
+    {
+      "index": 4732,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数633.λ[构造器参数634.⌂ᶜ(1,2)[元组[2；1]]]]；arg",
+      "b": "模式匹配错误，缺少分支：case[↓(0)[「 模式头及参数长 」]；|→[⌂(55)（展开）[$构造序数[内建：《《内建类型：整数》》[]]]；ap[λ[构造器参数328.λ[构造器参数329.⌂ᶜ(1,2)[元组[2；1]]]]；arg"
+    },
+    {
+      "index": 4734,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg[",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg["
+    },
+    {
+      "index": 4735,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg[",
+      "b": "模式匹配错误，缺少分支：case[ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫#第N个(23)』[]；arg（隐式）[⌂ᶜ(1,0)[元组[]]]；arg["
+    },
+    {
+      "index": 4746,
+      "lengthA": 670,
+      "lengthB": 670,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/语言核心/异常。豫#发生事故(2)』[]；arg（隐",
+      "b": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/语言核心/异常。豫#发生事故(2)』[]；arg（隐"
+    },
+    {
+      "index": 4747,
+      "lengthA": 670,
+      "lengthB": 670,
+      "equalAfterTemporaryNumberNormalization": true,
+      "a": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/语言核心/异常。豫#发生事故(2)』[]；arg（隐",
+      "b": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；ap[文件定义引用『/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/语言核心/异常。豫#发生事故(2)』[]；arg（隐"
+    },
+    {
+      "index": 4763,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；虑(带类型)[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]；ap[λ[构造器参数1269.λ[构造器参数1270.⌂ᶜ(1,2)[元组[2；1]]]",
+      "b": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；虑(带类型)[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]；ap[λ[构造器参数964.λ[构造器参数965.⌂ᶜ(1,2)[元组[2；1]]]]；"
+    },
+    {
+      "index": 4764,
+      "lengthA": 1012,
+      "lengthB": 1012,
+      "equalAfterTemporaryNumberNormalization": false,
+      "a": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；虑(带类型)[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]；ap[λ[构造器参数1269.λ[构造器参数1270.⌂ᶜ(1,2)[元组[2；1]]]",
+      "b": "模式匹配错误，缺少分支：case[「 默认分支 」；|→[⌂(2)（展开）[]；虑(带类型)[⌂(抽象语法树数据。豫#1,表达式)[(Type)[]]；ap[λ[构造器参数964.λ[构造器参数965.⌂ᶜ(1,2)[元组[2；1]]]]；"
+    }
+  ]
+}

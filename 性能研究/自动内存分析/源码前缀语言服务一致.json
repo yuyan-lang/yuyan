@@ -1,0 +1,62 @@
+[
+  {
+    "name": "斐波那契",
+    "kind": "语言服务",
+    "identical": true
+  },
+  {
+    "name": "斐波那契",
+    "kind": "语义标记",
+    "identical": true
+  },
+  {
+    "name": "素数筛",
+    "kind": "语言服务",
+    "identical": true
+  },
+  {
+    "name": "素数筛",
+    "kind": "语义标记",
+    "identical": true
+  },
+  {
+    "name": "矩阵乘法",
+    "kind": "语言服务",
+    "identical": true
+  },
+  {
+    "name": "矩阵乘法",
+    "kind": "语义标记",
+    "identical": true
+  },
+  {
+    "name": "树基准",
+    "kind": "语言服务",
+    "identical": true
+  },
+  {
+    "name": "树基准",
+    "kind": "语义标记",
+    "identical": true
+  },
+  {
+    "name": "数组基准",
+    "kind": "语言服务",
+    "identical": true
+  },
+  {
+    "name": "数组基准",
+    "kind": "语义标记",
+    "identical": true
+  },
+  {
+    "name": "快速排序",
+    "kind": "语言服务",
+    "identical": true
+  },
+  {
+    "name": "快速排序",
+    "kind": "语义标记",
+    "identical": true
+  }
+]

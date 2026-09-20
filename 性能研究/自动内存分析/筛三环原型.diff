@@ -1,0 +1,115 @@
+--- yy条件素数筛.wasm.wat	2026-09-20 03:49:46
++++ yy筛三环原型.wat	2026-09-20 03:57:55
+@@ -106268,8 +106268,7 @@
+ local.get $i3
+ local.get $i1
+ i64.gt_s
+-local.set $p4
+-local.get $p4
++
+ if (result (ref null eq))
+ ref.null eq
+ 
+@@ -106289,16 +106288,7 @@
+ i64.add
+ 
+ local.set $i6
+-local.get $a0
+- ref.cast (ref $octs)
+-local.get $i1
+-local.get $i2
+-local.get $i6
+-
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
++local.get $i6 local.set $i3
+ br $self
+ end return
+ )
+@@ -106896,12 +106886,10 @@
+ local.get $i2
+ i64.mul
+ 
+-local.set $i3
+-local.get $i3
++
+ local.get $i1
+ i64.gt_s
+-local.set $p4
+-local.get $p4
++
+ if (result (ref null eq))
+ ref.null eq
+ 
+@@ -106912,8 +106900,7 @@
+ local.get $i2
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get_u $octs i64.extend_i32_u
+-local.set $i5
+-local.get $i5 i32.wrap_i64
++ i32.wrap_i64
+ if (result (ref null eq))
+ local.get $i2
+ local.get $i2
+@@ -106927,8 +106914,7 @@
+ local.get $i6
+ 
+ call $db749
+-local.set $a7
+-local.get $a7
++
+ 
+ else
+ ref.null eq
+@@ -106939,14 +106925,7 @@
+ i64.add
+ 
+ local.set $i9
+-local.get $a0
+- ref.cast (ref $octs)
+-local.get $i1
+-local.get $i9
+-
+-local.set $i2
+-local.set $i1
+-local.set $a0
++local.get $i9 local.set $i2
+ br $self
+ end return
+ )
+@@ -107444,8 +107423,7 @@
+ local.get $i2
+ local.get $i1
+ i64.gt_s
+-local.set $p4
+-local.get $p4
++
+ if (result (ref null eq))
+ local.get $i3 call $box
+ else
+@@ -107460,21 +107438,11 @@
+ local.get $i2
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get_u $octs i64.extend_i32_u
+-local.set $i6
+-local.get $i6 i32.wrap_i64
++ i32.wrap_i64
+ i32.const 0 i32.ne i64.extend_i32_u
+ local.get $i3
+ i64.add local.set $i8
+-local.get $a0
+- ref.cast (ref $octs)
+-local.get $i1
+-local.get $i5
+-local.get $i8
+-
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
++local.get $i5 local.get $i8 local.set $i3 local.set $i2
+ br $self
+ end return
+ )

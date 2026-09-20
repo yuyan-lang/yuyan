@@ -1,0 +1,36 @@
+--- yy双步树基准.wasm.wat	2026-09-19 23:41:25
++++ yy造消融合原型.wat	2026-09-20 00:37:24
+@@ -8232,13 +8232,9 @@
+ 
+ 
+ (loop $self (result (ref null eq))
+-local.get $a1
+-
+-call $fp72
+-local.set $a2
+-local.get $a2
+-
+-return_call $fr72_74
++local.get $a1 call $unbox
++call $yfused
++call $box
+ )
+ )
+ 
+@@ -109847,4 +109843,15 @@
+ call $f779 drop
+ 
+ )
++
++(func $yfused (param $depth i64) (result i64)
++local.get $depth i64.const 0 i64.gt_s
++if (result i64)
++local.get $depth i64.const 1 i64.sub call $yfused
++local.get $depth i64.const 1 i64.sub call $yfused
++i64.add
++else
++global.get $k1 ref.cast (ref $variant) struct.get $variant 1
++i32.const 0 array.get $tuple call $unbox
++end)
+ )
+\ No newline at end of file

@@ -1,0 +1,31 @@
+--- yy本轮快速排序.wasm.wat	2026-09-19 14:26:23
++++ yy消融直入.wat	2026-09-19 14:50:03
+@@ -92552,23 +92552,15 @@
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $tuple
+ local.set $a11
+-
+ 
+-local.get $i2 call $box local.set $a2
+ 
+-local.get $i1 call $box local.set $a1
+-local.get $i1 call $box local.set $a1
+ local.get $a0
+-
+-local.get $a2
+-
++local.get $i2
+ local.get $a11
+-
+-local.get $a1
+-
+-local.get $a1
+-
+-call $f756
++call $unbox
++local.get $i1
++local.get $i1
++call $m756
+ local.set $a12
+ local.get $a0
+ 

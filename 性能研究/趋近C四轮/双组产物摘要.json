@@ -1,0 +1,32 @@
+[
+  {
+    "文件": "yy双组种子.wasm",
+    "字节": 3013415,
+    "sha256": "3b075ecdea4f998bcc78cbdf0e573960d1aed943bc5d5338bca104b4f6ab82ad"
+  },
+  {
+    "文件": "yy双组自举二代.wasm",
+    "字节": 3013415,
+    "sha256": "3b075ecdea4f998bcc78cbdf0e573960d1aed943bc5d5338bca104b4f6ab82ad"
+  },
+  {
+    "文件": "yy双组自举三代.wasm",
+    "字节": 3013415,
+    "sha256": "3b075ecdea4f998bcc78cbdf0e573960d1aed943bc5d5338bca104b4f6ab82ad"
+  },
+  {
+    "文件": "yy双组矩阵乘法.wasm",
+    "字节": 340316,
+    "sha256": "26e583b1d6cb55fd7401c86c73ff734d1beafaaf300d97a597a48323b2b1a6d8"
+  },
+  {
+    "文件": "yy3_bs",
+    "字节": 3916056,
+    "sha256": "13a22722cc259e088576849e3d25137d9fa8bce2f4f9d76b2b0dde17bac6fb99"
+  },
+  {
+    "文件": "yy4_bs",
+    "字节": 3916056,
+    "sha256": "13a22722cc259e088576849e3d25137d9fa8bce2f4f9d76b2b0dde17bac6fb99"
+  }
+]

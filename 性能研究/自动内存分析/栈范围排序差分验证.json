@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "sortCases": 6916,
+  "sortValues": 156712,
+  "partitionCases": 10287,
+  "partitionValues": 87855,
+  "scope": "Actual automatically generated guarded stack sort versus original GC functions. Includes partition guard failures, out-of-range and misordered indices, i64 extreme pivots, return/error and post-trap array state comparisons."
+}

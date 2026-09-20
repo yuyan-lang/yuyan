@@ -1,0 +1,643 @@
+{
+  "totalMs": 1882.634,
+  "self": [
+    [
+      "(garbage collector)",
+      265865
+    ],
+    [
+      "f202",
+      136811
+    ],
+    [
+      "f213",
+      94465
+    ],
+    [
+      "f975",
+      83485
+    ],
+    [
+      "f2555",
+      59068
+    ],
+    [
+      "f2553",
+      56114
+    ],
+    [
+      "f970",
+      54738
+    ],
+    [
+      "f4332",
+      54508
+    ],
+    [
+      "f2559",
+      43309
+    ],
+    [
+      "f2547",
+      42751
+    ],
+    [
+      "f184",
+      42327
+    ],
+    [
+      "join",
+      37933
+    ],
+    [
+      "f155",
+      33784
+    ],
+    [
+      "f637",
+      30134
+    ],
+    [
+      "f338",
+      29512
+    ],
+    [
+      "解",
+      29278
+    ],
+    [
+      "f2225",
+      28454
+    ],
+    [
+      "f670",
+      26397
+    ],
+    [
+      "f15",
+      25032
+    ],
+    [
+      "f341",
+      24134
+    ],
+    [
+      "f984",
+      22661
+    ],
+    [
+      "f634",
+      22318
+    ],
+    [
+      "f974",
+      22306
+    ],
+    [
+      "m1810",
+      22191
+    ],
+    [
+      "f1782",
+      22050
+    ],
+    [
+      "f2554",
+      20967
+    ],
+    [
+      "f2534",
+      20753
+    ],
+    [
+      "f187",
+      19785
+    ],
+    [
+      "utf8_end",
+      19514
+    ],
+    [
+      "f152",
+      19417
+    ]
+  ],
+  "inclusive": [
+    [
+      "(root)",
+      1882634
+    ],
+    [
+      "Module._compile",
+      1509460
+    ],
+    [
+      "执行",
+      1508108
+    ],
+    [
+      "Module._extensions..js",
+      1507993
+    ],
+    [
+      "Module.load",
+      1506485
+    ],
+    [
+      "Module._load",
+      1506485
+    ],
+    [
+      "wrapModuleLoad",
+      1506485
+    ],
+    [
+      "js-to-wasm",
+      1503608
+    ],
+    [
+      "executeUserEntryPoint",
+      1503535
+    ],
+    [
+      "wasm-function[5139]",
+      1501027
+    ],
+    [
+      "f5018",
+      1491985
+    ],
+    [
+      "f4971",
+      1481466
+    ],
+    [
+      "f155",
+      1326781
+    ],
+    [
+      "f4960",
+      1049314
+    ],
+    [
+      "f4637",
+      948987
+    ],
+    [
+      "f4616",
+      938523
+    ],
+    [
+      "f4624",
+      837005
+    ],
+    [
+      "f4614",
+      740587
+    ],
+    [
+      "f152",
+      611927
+    ],
+    [
+      "f2575",
+      390768
+    ],
+    [
+      "f2555",
+      389266
+    ],
+    [
+      "f4332",
+      319230
+    ],
+    [
+      "f4592",
+      316686
+    ],
+    [
+      "f4589",
+      315293
+    ],
+    [
+      "f4334",
+      281500
+    ],
+    [
+      "(garbage collector)",
+      265865
+    ],
+    [
+      "f2554",
+      242853
+    ],
+    [
+      "f975",
+      226466
+    ],
+    [
+      "f974",
+      218983
+    ],
+    [
+      "f4615",
+      208671
+    ],
+    [
+      "f15",
+      182735
+    ],
+    [
+      "f4587",
+      177890
+    ],
+    [
+      "f4961",
+      161426
+    ],
+    [
+      "f2553",
+      148918
+    ],
+    [
+      "f4607",
+      143348
+    ],
+    [
+      "f2576",
+      140348
+    ],
+    [
+      "f202",
+      136811
+    ],
+    [
+      "f2559",
+      134337
+    ],
+    [
+      "wasm-to-js",
+      119865
+    ],
+    [
+      "call",
+      112379
+    ]
+  ],
+  "mappingSource": "报告调用逃逸按正则模块顺序打印全部函数；统一直生模块按同一顺序赋予f编号。",
+  "functionCount": 5023,
+  "selfNamed": [
+    {
+      "id": "(garbage collector)",
+      "name": "(garbage collector)",
+      "selfOrInclusiveMs": 265.865
+    },
+    {
+      "id": "f202",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫_满参递归131",
+      "selfOrInclusiveMs": 136.811
+    },
+    {
+      "id": "f213",
+      "name": "多态列_打表_提升函数297",
+      "selfOrInclusiveMs": 94.465
+    },
+    {
+      "id": "f975",
+      "name": "癸象数据结构_癸象表示_提升函数117",
+      "selfOrInclusiveMs": 83.485
+    },
+    {
+      "id": "f2555",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归188",
+      "selfOrInclusiveMs": 59.068
+    },
+    {
+      "id": "f2553",
+      "name": "语言服务信息_声明后缀_提升函数561",
+      "selfOrInclusiveMs": 56.114
+    },
+    {
+      "id": "f970",
+      "name": "癸象数据结构_癸象字符串无需转义_提升函数114",
+      "selfOrInclusiveMs": 54.738
+    },
+    {
+      "id": "f4332",
+      "name": "编译文件缓存工具_读树组缓存_提升函数350",
+      "selfOrInclusiveMs": 54.508
+    },
+    {
+      "id": "f2559",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归210",
+      "selfOrInclusiveMs": 43.309
+    },
+    {
+      "id": "f2547",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归162",
+      "selfOrInclusiveMs": 42.751
+    },
+    {
+      "id": "f184",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫_满参递归106",
+      "selfOrInclusiveMs": 42.327
+    },
+    {
+      "id": "join",
+      "name": "join",
+      "selfOrInclusiveMs": 37.933
+    },
+    {
+      "id": "f155",
+      "name": "多态列_态射_提升函数243",
+      "selfOrInclusiveMs": 33.784
+    },
+    {
+      "id": "f637",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/列表搜索。豫_满参递归63",
+      "selfOrInclusiveMs": 30.134
+    },
+    {
+      "id": "f338",
+      "name": "数组转换_多态列转数组_提升函数86",
+      "selfOrInclusiveMs": 29.512
+    },
+    {
+      "id": "解",
+      "name": "解",
+      "selfOrInclusiveMs": 29.278
+    },
+    {
+      "id": "f2225",
+      "name": "序列化总集_抽象语法反序列化_提升函数120",
+      "selfOrInclusiveMs": 28.454
+    },
+    {
+      "id": "f670",
+      "name": "字典术_存在键_提升函数210",
+      "selfOrInclusiveMs": 26.397
+    },
+    {
+      "id": "f15",
+      "name": "异常_内建尝试运行_提升函数86",
+      "selfOrInclusiveMs": 25.032
+    },
+    {
+      "id": "f341",
+      "name": "数组转换_数组转多态列_提升函数87",
+      "selfOrInclusiveMs": 24.134
+    },
+    {
+      "id": "f984",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/拓展库/癸象工具/癸象移位规约解析。豫_满参递归67",
+      "selfOrInclusiveMs": 22.661
+    },
+    {
+      "id": "f634",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/列表搜索。豫_满参递归60",
+      "selfOrInclusiveMs": 22.318
+    },
+    {
+      "id": "f974",
+      "name": "癸象数据结构_癸象表示_提升函数118",
+      "selfOrInclusiveMs": 22.306
+    },
+    {
+      "id": "m1810",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/抽象绑定树结构/抽象语法树/抽象语法树基础操作。豫_满参递归61",
+      "selfOrInclusiveMs": 22.191
+    },
+    {
+      "id": "f1782",
+      "name": "抽象语法树反序列化节点名称_节点名称反序列化_提升函数124",
+      "selfOrInclusiveMs": 22.05
+    },
+    {
+      "id": "f2554",
+      "name": "语言服务信息_声明后缀_提升函数560",
+      "selfOrInclusiveMs": 20.967
+    },
+    {
+      "id": "f2534",
+      "name": "语言服务信息_源码状态前进一字_提升函数545",
+      "selfOrInclusiveMs": 20.753
+    },
+    {
+      "id": "f187",
+      "name": "多态列_反转_提升函数272",
+      "selfOrInclusiveMs": 19.785
+    },
+    {
+      "id": "utf8_end",
+      "name": "utf8_end",
+      "selfOrInclusiveMs": 19.514
+    },
+    {
+      "id": "f152",
+      "name": "多态列_态射_提升函数246",
+      "selfOrInclusiveMs": 19.417
+    }
+  ],
+  "inclusiveNamed": [
+    {
+      "id": "(root)",
+      "name": "(root)",
+      "selfOrInclusiveMs": 1882.634
+    },
+    {
+      "id": "Module._compile",
+      "name": "Module._compile",
+      "selfOrInclusiveMs": 1509.46
+    },
+    {
+      "id": "执行",
+      "name": "执行",
+      "selfOrInclusiveMs": 1508.108
+    },
+    {
+      "id": "Module._extensions..js",
+      "name": "Module._extensions..js",
+      "selfOrInclusiveMs": 1507.993
+    },
+    {
+      "id": "Module.load",
+      "name": "Module.load",
+      "selfOrInclusiveMs": 1506.485
+    },
+    {
+      "id": "Module._load",
+      "name": "Module._load",
+      "selfOrInclusiveMs": 1506.485
+    },
+    {
+      "id": "wrapModuleLoad",
+      "name": "wrapModuleLoad",
+      "selfOrInclusiveMs": 1506.485
+    },
+    {
+      "id": "js-to-wasm",
+      "name": "js-to-wasm",
+      "selfOrInclusiveMs": 1503.608
+    },
+    {
+      "id": "executeUserEntryPoint",
+      "name": "executeUserEntryPoint",
+      "selfOrInclusiveMs": 1503.535
+    },
+    {
+      "id": "wasm-function[5139]",
+      "name": "wasm-function[5139]",
+      "selfOrInclusiveMs": 1501.027
+    },
+    {
+      "id": "f5018",
+      "name": "豫言模块__Users_zc_repos_yuyan_worktrees_yuyan_豫言编译器_入口_豫_计算函数",
+      "selfOrInclusiveMs": 1491.985
+    },
+    {
+      "id": "f4971",
+      "name": "分布编译步骤_执行类型检查并擦除_提升函数421",
+      "selfOrInclusiveMs": 1481.466
+    },
+    {
+      "id": "f155",
+      "name": "多态列_态射_提升函数243",
+      "selfOrInclusiveMs": 1326.781
+    },
+    {
+      "id": "f4960",
+      "name": "分布编译步骤_执行名称解析_提升函数410",
+      "selfOrInclusiveMs": 1049.314
+    },
+    {
+      "id": "f4637",
+      "name": "名称解析_进行文件名称解析顶层_提升函数389",
+      "selfOrInclusiveMs": 948.987
+    },
+    {
+      "id": "f4616",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/名称解析/名称解析。豫_满参递归118",
+      "selfOrInclusiveMs": 938.523
+    },
+    {
+      "id": "f4624",
+      "name": "名称解析_进行顶层定义名称解析_提升函数382",
+      "selfOrInclusiveMs": 837.005
+    },
+    {
+      "id": "f4614",
+      "name": "名称解析_进行名称解析表达式_提升函数366",
+      "selfOrInclusiveMs": 740.587
+    },
+    {
+      "id": "f152",
+      "name": "多态列_态射_提升函数246",
+      "selfOrInclusiveMs": 611.927
+    },
+    {
+      "id": "f2575",
+      "name": "语言服务信息_查找下个名称源码范围_提升函数578",
+      "selfOrInclusiveMs": 390.768
+    },
+    {
+      "id": "f2555",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归188",
+      "selfOrInclusiveMs": 389.266
+    },
+    {
+      "id": "f4332",
+      "name": "编译文件缓存工具_读树组缓存_提升函数350",
+      "selfOrInclusiveMs": 319.23
+    },
+    {
+      "id": "f4592",
+      "name": "名称解析_名称解析自由变量_提升函数349",
+      "selfOrInclusiveMs": 316.686
+    },
+    {
+      "id": "f4589",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/名称解析/名称解析。豫_满参递归82",
+      "selfOrInclusiveMs": 315.293
+    },
+    {
+      "id": "f4334",
+      "name": "编译文件缓存工具_写树组缓存_提升函数354",
+      "selfOrInclusiveMs": 281.5
+    },
+    {
+      "id": "(garbage collector)",
+      "name": "(garbage collector)",
+      "selfOrInclusiveMs": 265.865
+    },
+    {
+      "id": "f2554",
+      "name": "语言服务信息_声明后缀_提升函数560",
+      "selfOrInclusiveMs": 242.853
+    },
+    {
+      "id": "f975",
+      "name": "癸象数据结构_癸象表示_提升函数117",
+      "selfOrInclusiveMs": 226.466
+    },
+    {
+      "id": "f974",
+      "name": "癸象数据结构_癸象表示_提升函数118",
+      "selfOrInclusiveMs": 218.983
+    },
+    {
+      "id": "f4615",
+      "name": "名称解析_进行名称解析表达式_提升函数367",
+      "selfOrInclusiveMs": 208.671
+    },
+    {
+      "id": "f15",
+      "name": "异常_内建尝试运行_提升函数86",
+      "selfOrInclusiveMs": 182.735
+    },
+    {
+      "id": "f4587",
+      "name": "名称解析_名称解析文件投影_提升函数343",
+      "selfOrInclusiveMs": 177.89
+    },
+    {
+      "id": "f4961",
+      "name": "分布编译步骤_执行类型检查_提升函数411",
+      "selfOrInclusiveMs": 161.426
+    },
+    {
+      "id": "f2553",
+      "name": "语言服务信息_声明后缀_提升函数561",
+      "selfOrInclusiveMs": 148.918
+    },
+    {
+      "id": "f4607",
+      "name": "名称解析_进行名称解析表达式_提升函数359",
+      "selfOrInclusiveMs": 143.348
+    },
+    {
+      "id": "f2576",
+      "name": "语言服务信息_查找下个绑定源码范围_提升函数579",
+      "selfOrInclusiveMs": 140.348
+    },
+    {
+      "id": "f202",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫_满参递归131",
+      "selfOrInclusiveMs": 136.811
+    },
+    {
+      "id": "f2559",
+      "name": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归210",
+      "selfOrInclusiveMs": 134.337
+    },
+    {
+      "id": "wasm-to-js",
+      "name": "wasm-to-js",
+      "selfOrInclusiveMs": 119.865
+    },
+    {
+      "id": "call",
+      "name": "call",
+      "selfOrInclusiveMs": 112.379
+    }
+  ]
+}

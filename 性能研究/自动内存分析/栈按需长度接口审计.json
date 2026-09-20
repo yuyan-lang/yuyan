@@ -1,0 +1,22 @@
+{
+  "previousFunctionCount": 841,
+  "allSignaturesUnchanged": true,
+  "importsExportsUnchanged": true,
+  "changedFunctions": [
+    {
+      "name": "$stack766_766",
+      "headerLoadsBefore": 3,
+      "headerLoadsAfter": 1,
+      "boundsBefore": 3,
+      "boundsAfter": 3
+    },
+    {
+      "name": "$stack766_762",
+      "headerLoadsBefore": 3,
+      "headerLoadsAfter": 1,
+      "boundsBefore": 3,
+      "boundsAfter": 3
+    }
+  ],
+  "fallbackUnchanged": true
+}

@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "checks": 98426,
+  "batchLoops": 4,
+  "scope": "Automatically generated two-step loops: zero/odd/even/million counts, cross-dependent tail parameter swaps against checked single-step reference, division traps and reuse, guard failure returns/traps/mutation state against previous bounded emitter.",
+  "independentSwapChecks": 98021,
+  "independentSwapPassed": true,
+  "wrappingSumChecks": 200,
+  "wrappingSumPassed": true
+}

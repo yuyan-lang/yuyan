@@ -1,0 +1,22 @@
+--- yy单用素数筛.wasm.wat	2026-09-20 03:37:05
++++ yy筛条件累加原型.wat	2026-09-20 03:43:20
+@@ -107468,17 +107468,9 @@
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get_u $octs i64.extend_i32_u
+ local.set $i6
+-local.get $i6 i32.wrap_i64
+-if (result i64)
+ local.get $i3
+-i64.const 1
+-i64.add
+-
+-local.set $i7
+-local.get $i7
+-else
+-local.get $i3
+-end local.set $i8
++local.get $i6 i32.wrap_i64 i32.const 0 i32.ne i64.extend_i32_u
++i64.add local.set $i8
+ local.get $a0
+  ref.cast (ref $octs)
+ local.get $i1

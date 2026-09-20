@@ -1,0 +1,213 @@
+--- yy循环实排序.wasm.wat	2026-09-19 22:27:50
++++ yy循环外层关系原型.wat	2026-09-19 22:43:31
+@@ -107842,7 +107842,7 @@
+ return_call $e762
+ end
+ )
+-(func $d762
++(func $dslow762
+ (param $a0 (ref $ints))
+ (param $i1 i64)
+ (param $i2 i64)
+@@ -108029,6 +108029,201 @@
+ 
+ end return
+ ) )
++(func $dfast762
++(param $a0 (ref $ints))
++(param $i1 i64)
++(param $i2 i64)
++(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
++
++(local $a1 (ref null eq))
++(local $a2 (ref null eq))
++(local $a3 (ref null eq))
++(local $a4 (ref null eq))
++(local $a5 (ref null eq))
++(local $a6 (ref null eq))
++(local $a7 (ref null eq))
++(local $a8 (ref null eq))
++(local $a9 (ref null eq))
++(local $a10 (ref null eq))
++(local $a11 (ref null eq))
++(local $a12 (ref null eq))
++(local $a13 (ref null eq))
++(local $a14 (ref null eq))
++(local $a15 (ref null eq))
++(local $a16 (ref null eq))
++(local $a17 (ref null eq))
++(local $a18 (ref null eq))
++(local $a19 (ref null eq))
++(local $a20 (ref null eq))
++(local $a21 (ref null eq))
++
++(local $i4 i64)
++(local $i5 i64)
++(local $i6 i64)
++(local $i7 i64)
++(local $i8 i64)
++
++
++(local $i11 i64)
++(local $i12 i64)
++(local $i13 i64)
++(local $i14 i64)
++
++
++(local $i17 i64)
++
++(local $i19 i64)
++
++
++(local $p3 i32)
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++
++(loop $self (result (ref null eq))
++local.get $i2
++local.get $i1
++i64.gt_s
++local.set $p3
++local.get $p3
++if (result (ref null eq))
++local.get $i2
++local.get $i1
++i64.sub
++
++local.set $i4
++local.get $i4
++i64.const 2
++i64.div_s
++local.set $i5
++local.get $i1
++local.get $i5
++i64.add
++
++local.set $i6
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i6
++i32.wrap_i64
++array.get $ints
++local.set $i7
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i2
++i32.wrap_i64
++array.get $ints
++local.set $i8
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i6 i32.wrap_i64
++local.get $i8
++array.set $ints ref.null eq
++local.set $a9
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i2 i32.wrap_i64
++local.get $i7
++array.set $ints ref.null eq
++local.set $a10
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i2 i32.wrap_i64
++array.get $ints
++local.set $i11
++local.get $a0
++ ref.cast (ref $ints)
++local.get $i2
++local.get $i11
++local.get $i1
++local.get $i1
++
++call $rd756
++local.set $i12
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i12
++i32.wrap_i64
++array.get $ints
++local.set $i13
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i2 i32.wrap_i64
++array.get $ints
++local.set $i14
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i12 i32.wrap_i64
++local.get $i14
++array.set $ints ref.null eq
++local.set $a15
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i2 i32.wrap_i64
++local.get $i13
++array.set $ints ref.null eq
++local.set $a16
++local.get $i12
++i64.const 1
++i64.sub
++
++local.set $i17
++local.get $a0
++ ref.cast (ref $ints)
++local.get $i1
++local.get $i17
++
++call $d762
++local.set $a18
++local.get $i12
++i64.const 1
++i64.add
++
++local.set $i19
++local.get $a0
++ ref.cast (ref $ints)
++local.get $i19
++local.get $i2
++
++local.set $i2
++local.set $i1
++local.set $a0
++br $self
++else
++ref.null eq
++
++end return
++) )
++(func $d762 (param $a0 (ref $ints)) (param $i1 i64) (param $i2 i64) (result (ref null eq))
++local.get $i2 i64.const 4294967295 i64.le_u local.get $i1 local.get $i2 i64.le_u i32.and
++if (result (ref null eq))
++local.get $a0 local.get $i1 local.get $i2 return_call $dfast762
++else
++local.get $a0 local.get $i1 local.get $i2 return_call $dslow762
++end)
++
+ (func $e762
+ (param $a0 (ref $ints))
+ (param $a1 (ref null eq))

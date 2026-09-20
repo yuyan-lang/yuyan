@@ -1,0 +1,54 @@
+{
+  "version": 132,
+  "flags": [
+    "--enable-gc",
+    "--enable-reference-types",
+    "--enable-tail-call",
+    "--enable-bulk-memory",
+    "--enable-multivalue",
+    "--enable-sign-ext",
+    "--enable-nontrapping-float-to-int",
+    "--enable-simd",
+    "--enable-exception-handling"
+  ],
+  "rows": [
+    {
+      "input": "yy栈长度排序.wasm",
+      "out": "yy栈优化器O2.wasm",
+      "opts": [
+        "-O2"
+      ],
+      "ms": 80.712542,
+      "status": 0,
+      "signal": null,
+      "stderr": "warning: unknown name subsection with id 3 at 322609\n",
+      "bytes": 189486
+    },
+    {
+      "input": "yy栈长度排序.wasm",
+      "out": "yy栈优化器内联.wasm",
+      "opts": [
+        "-O3",
+        "--inline-functions-with-loops"
+      ],
+      "ms": 93.964834,
+      "status": 0,
+      "signal": null,
+      "stderr": "warning: unknown name subsection with id 3 at 322609\n",
+      "bytes": 190415
+    },
+    {
+      "input": "yy内核C.wasm",
+      "out": "yyC优化器O3.wasm",
+      "opts": [
+        "-O3"
+      ],
+      "ms": 153.72633299999998,
+      "status": 0,
+      "signal": null,
+      "stderr": "",
+      "bytes": 152435
+    }
+  ],
+  "excludedO4": "Flatten.cpp:231 unexpected expr type, exit 134"
+}

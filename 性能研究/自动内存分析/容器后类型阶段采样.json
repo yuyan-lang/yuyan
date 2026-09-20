@@ -1,0 +1,358 @@
+{
+  "profile": "/tmp/yy容器后类型剖析/CPU.20260920.124212.23424.1.002.cpuprofile",
+  "totalMs": 1580.013,
+  "self": [
+    {
+      "function": "(garbage collector)",
+      "ms": 284.08,
+      "source": ""
+    },
+    {
+      "function": "f4382",
+      "ms": 59.316,
+      "source": "编译文件缓存工具_读树组缓存_提升函数350"
+    },
+    {
+      "function": "f213",
+      "ms": 55.853,
+      "source": "多态列_打表_提升函数297"
+    },
+    {
+      "function": "f2561",
+      "ms": 53.474,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归205"
+    },
+    {
+      "function": "f155",
+      "ms": 46.437,
+      "source": "多态列_态射_提升函数243"
+    },
+    {
+      "function": "f2557",
+      "ms": 44.473,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归183"
+    },
+    {
+      "function": "f338",
+      "ms": 43.058,
+      "source": "数组转换_多态列转数组_提升函数86"
+    },
+    {
+      "function": "f984",
+      "ms": 41.525,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/拓展库/癸象工具/癸象移位规约解析。豫_满参递归67"
+    },
+    {
+      "function": "join",
+      "ms": 32.791,
+      "source": ""
+    },
+    {
+      "function": "f2225",
+      "ms": 30.616,
+      "source": "序列化总集_抽象语法反序列化_提升函数120"
+    },
+    {
+      "function": "f2550",
+      "ms": 29.839,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归166"
+    },
+    {
+      "function": "f637",
+      "ms": 28.477,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/列表搜索。豫_满参递归63"
+    },
+    {
+      "function": "f184",
+      "ms": 24.864,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫_满参递归106"
+    },
+    {
+      "function": "f2537",
+      "ms": 24.082,
+      "source": "语言服务信息_源码状态前进一字_提升函数547"
+    },
+    {
+      "function": "f634",
+      "ms": 23.389,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/列表搜索。豫_满参递归60"
+    },
+    {
+      "function": "f2532",
+      "ms": 22.53,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归125"
+    },
+    {
+      "function": "f152",
+      "ms": 22.473,
+      "source": "多态列_态射_提升函数246"
+    },
+    {
+      "function": "f2200",
+      "ms": 19.396,
+      "source": "编译过程工具_获取输出文件路径_提升函数138"
+    },
+    {
+      "function": "解",
+      "ms": 18.851,
+      "source": ""
+    },
+    {
+      "function": "f187",
+      "ms": 15.069,
+      "source": "多态列_反转_提升函数272"
+    },
+    {
+      "function": "f1782",
+      "ms": 13.195,
+      "source": "抽象语法树反序列化节点名称_节点名称反序列化_提升函数124"
+    },
+    {
+      "function": "f2416",
+      "ms": 11.996,
+      "source": "模块操作_文件定义列项名_提升函数97"
+    },
+    {
+      "function": "f14",
+      "ms": 10.545,
+      "source": "异常_内建尝试运行_提升函数89"
+    },
+    {
+      "function": "wasm-function[5192]",
+      "ms": 10.332,
+      "source": ""
+    },
+    {
+      "function": "f420",
+      "ms": 9.233,
+      "source": "字符流术_字符流获取下个字符_提升函数109"
+    },
+    {
+      "function": "f2543",
+      "ms": 9.045,
+      "source": "语言服务信息_源码状态是注释开头_提升函数552"
+    },
+    {
+      "function": "str_cmp",
+      "ms": 7.559,
+      "source": ""
+    },
+    {
+      "function": "f2548",
+      "ms": 7.548,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归161"
+    },
+    {
+      "function": "f421",
+      "ms": 7.524,
+      "source": "字符流术_字符流获取癸象字符串_提升函数110"
+    },
+    {
+      "function": "m190",
+      "ms": 7.523,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫_满参递归113"
+    },
+    {
+      "function": "concat",
+      "ms": 7.518,
+      "source": ""
+    },
+    {
+      "function": "str_eq",
+      "ms": 7.514,
+      "source": ""
+    },
+    {
+      "function": "utf8_end",
+      "ms": 7.511,
+      "source": ""
+    },
+    {
+      "function": "f296",
+      "ms": 7.494,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列工具。豫_满参递归147"
+    },
+    {
+      "function": "wasm-function[11]",
+      "ms": 7.459,
+      "source": ""
+    }
+  ],
+  "inclusive": [
+    {
+      "function": "(root)",
+      "ms": 1580.013,
+      "source": ""
+    },
+    {
+      "function": "",
+      "ms": 1199.524,
+      "source": ""
+    },
+    {
+      "function": "Module._compile",
+      "ms": 1190.407,
+      "source": ""
+    },
+    {
+      "function": "Module._extensions..js",
+      "ms": 1188.985,
+      "source": ""
+    },
+    {
+      "function": "执行",
+      "ms": 1188.925,
+      "source": ""
+    },
+    {
+      "function": "executeUserEntryPoint",
+      "ms": 1188.726,
+      "source": ""
+    },
+    {
+      "function": "Module._load",
+      "ms": 1187.482,
+      "source": ""
+    },
+    {
+      "function": "wrapModuleLoad",
+      "ms": 1187.482,
+      "source": ""
+    },
+    {
+      "function": "Module.load",
+      "ms": 1187.482,
+      "source": ""
+    },
+    {
+      "function": "js-to-wasm",
+      "ms": 1182.915,
+      "source": ""
+    },
+    {
+      "function": "wasm-function[5192]",
+      "ms": 1178.388,
+      "source": ""
+    },
+    {
+      "function": "f5068",
+      "ms": 1168.288,
+      "source": "豫言模块__Users_zc_repos_yuyan_worktrees_yuyan_豫言编译器_入口_豫_计算函数"
+    },
+    {
+      "function": "f5021",
+      "ms": 1159.63,
+      "source": "分布编译步骤_执行类型检查并擦除_提升函数421"
+    },
+    {
+      "function": "f155",
+      "ms": 1014.235,
+      "source": "多态列_态射_提升函数243"
+    },
+    {
+      "function": "f5010",
+      "ms": 724.549,
+      "source": "分布编译步骤_执行名称解析_提升函数410"
+    },
+    {
+      "function": "f4687",
+      "ms": 631.372,
+      "source": "名称解析_进行文件名称解析顶层_提升函数389"
+    },
+    {
+      "function": "f4666",
+      "ms": 626.878,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/名称解析/名称解析。豫_满参递归118"
+    },
+    {
+      "function": "f4674",
+      "ms": 534.351,
+      "source": "名称解析_进行顶层定义名称解析_提升函数382"
+    },
+    {
+      "function": "f152",
+      "ms": 534.204,
+      "source": "多态列_态射_提升函数246"
+    },
+    {
+      "function": "f4664",
+      "ms": 450.54,
+      "source": "名称解析_进行名称解析表达式_提升函数366"
+    },
+    {
+      "function": "f4639",
+      "ms": 332.459,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译步骤/名称解析/名称解析。豫_满参递归82"
+    },
+    {
+      "function": "f4642",
+      "ms": 332.459,
+      "source": "名称解析_名称解析自由变量_提升函数349"
+    },
+    {
+      "function": "f4382",
+      "ms": 330.616,
+      "source": "编译文件缓存工具_读树组缓存_提升函数350"
+    },
+    {
+      "function": "(garbage collector)",
+      "ms": 284.08,
+      "source": ""
+    },
+    {
+      "function": "f4637",
+      "ms": 194.374,
+      "source": "名称解析_名称解析文件投影_提升函数343"
+    },
+    {
+      "function": "f15",
+      "ms": 181.044,
+      "source": "异常_内建尝试运行_提升函数86"
+    },
+    {
+      "function": "f5020",
+      "ms": 179.3,
+      "source": "分布编译步骤_执行擦除_提升函数420"
+    },
+    {
+      "function": "f4665",
+      "ms": 172.642,
+      "source": "名称解析_进行名称解析表达式_提升函数367"
+    },
+    {
+      "function": "f5011",
+      "ms": 162.222,
+      "source": "分布编译步骤_执行类型检查_提升函数411"
+    },
+    {
+      "function": "f2577",
+      "ms": 144.404,
+      "source": "语言服务信息_查找下个名称源码范围_提升函数579"
+    },
+    {
+      "function": "f2557",
+      "ms": 141.389,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归183"
+    },
+    {
+      "function": "f2578",
+      "ms": 116.117,
+      "source": "语言服务信息_查找下个绑定源码范围_提升函数580"
+    },
+    {
+      "function": "f4657",
+      "ms": 116.117,
+      "source": "名称解析_进行名称解析表达式_提升函数359"
+    },
+    {
+      "function": "f2561",
+      "ms": 114.636,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/编译器核心/编译数据/语言服务信息。豫_满参递归205"
+    },
+    {
+      "function": "wasm-to-js",
+      "ms": 112.106,
+      "source": ""
+    }
+  ]
+}

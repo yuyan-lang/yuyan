@@ -1,0 +1,30 @@
+[
+  {
+    "compiler": "yy容器图三代.wasm",
+    "out": "yy字段投影冷比较0.wasm",
+    "wallSeconds": 22.79,
+    "expected": "yy字段投影候选.wasm",
+    "identical": true
+  },
+  {
+    "compiler": "yy字段投影优化种子.wasm",
+    "out": "yy字段投影冷比较1.wasm",
+    "wallSeconds": 23.69,
+    "expected": "yy字段投影优化种子.wasm",
+    "identical": true
+  },
+  {
+    "compiler": "yy字段投影优化种子.wasm",
+    "out": "yy字段投影冷比较2.wasm",
+    "wallSeconds": 23.01,
+    "expected": "yy字段投影优化种子.wasm",
+    "identical": true
+  },
+  {
+    "compiler": "yy容器图三代.wasm",
+    "out": "yy字段投影冷比较3.wasm",
+    "wallSeconds": 23.16,
+    "expected": "yy字段投影候选.wasm",
+    "identical": true
+  }
+]

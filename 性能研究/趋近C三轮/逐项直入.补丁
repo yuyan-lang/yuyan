@@ -1,0 +1,17 @@
+--- yy消融直入.wat	2026-09-19 14:50:03
++++ yy逐项直入.wat	2026-09-19 14:53:55
+@@ -93065,6 +93065,14 @@
+ i64.add
+ 
+ local.set $i12
++i64.const 0 local.set $j
++block $checked loop $check
++local.get $j local.get $a1 call $unbox i64.ge_u br_if $checked
++local.get $a2 ref.cast (ref $tuple) local.get $j i32.wrap_i64 array.get $tuple
++call $unbox
++local.get $j i64.const 1 i64.add i64.ne if unreachable end
++local.get $j i64.const 1 i64.add local.set $j br $check
++end end
+ local.get $i12 call $box
+ ) )
+ (func $f767 (type $t1)

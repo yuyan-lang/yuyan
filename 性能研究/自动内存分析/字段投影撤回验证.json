@@ -1,0 +1,8 @@
+{
+  "restoredFile": "库/编译器核心/编译步骤/优化/跨文件优化/常量内联。豫",
+  "sha256": "d36793e541efa3145148c8251436c4f33cdfda5a926efbea6a953e3b4fcc1e5e",
+  "matchesBefore": true,
+  "typeCheckPassed": true,
+  "adopted": false,
+  "reason": "完整冷自举未见收益，六个计算内核没有改变"
+}

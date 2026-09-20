@@ -1,0 +1,44 @@
+[
+  {
+    "label": "前导夹具",
+    "cmd": "./yy栈前导生成测试 > yy栈前导夹具.wat",
+    "秒": 0.204,
+    "退出": 0
+  },
+  {
+    "label": "前导组装",
+    "cmd": "./yy网页汇编宿主 --组装 yy栈前导夹具.wat yy栈前导夹具.wasm",
+    "秒": 0.007,
+    "退出": 0
+  },
+  {
+    "label": "原入口夹具",
+    "cmd": "./yy前导原入口生成测试 > yy前导原入口夹具.wat",
+    "秒": 0.192,
+    "退出": 0
+  },
+  {
+    "label": "原入口组装",
+    "cmd": "./yy网页汇编宿主 --组装 yy前导原入口夹具.wat yy前导原入口夹具.wasm",
+    "秒": 0.008,
+    "退出": 0
+  },
+  {
+    "label": "端到端前导测试",
+    "cmd": "./yy3_bs 测试/网页汇编/栈前导初始化-1。豫 --target=wasmgc --parallel --wasm-stack -c -o yy前导初始化测试.wasm",
+    "秒": 1.635,
+    "退出": 0
+  },
+  {
+    "label": "新前导排序",
+    "cmd": "node 工具/节点网页汇编宿主/宿主.cjs yy栈前导编译器.wasm 性能研究/运行内核/前导排序。豫 --package-context .yybuild/豫构上下文/17.上下文 --target=wasmgc --parallel -j 18 --wasm-stack -c -o yy前导排序新.wasm",
+    "秒": 1.723,
+    "退出": 0
+  },
+  {
+    "label": "旧前导排序",
+    "cmd": "node 工具/节点网页汇编宿主/宿主.cjs yy就绪索引三代.wasm 性能研究/运行内核/前导排序。豫 --package-context .yybuild/豫构上下文/17.上下文 --target=wasmgc --parallel -j 18 --wasm-stack -c -o yy前导排序旧.wasm",
+    "秒": 1.737,
+    "退出": 0
+  }
+]

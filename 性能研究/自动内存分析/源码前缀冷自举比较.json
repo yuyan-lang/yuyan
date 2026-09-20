@@ -1,0 +1,33 @@
+{
+  "description": "相同当前源码，ABBA顺序，默认GC路径，18工，禁用编译缓存，无并发构建",
+  "runs": [
+    {
+      "compiler": "yy栈向量三代.wasm",
+      "out": "yy源码前缀冷比较0.wasm",
+      "wallSeconds": 23,
+      "sha256": "300463023705e570c237e6d1fb3713999ca93e37eeba4d53f6483b3864251834",
+      "sameAsSeed": true
+    },
+    {
+      "compiler": "yy源码前缀种子.wasm",
+      "out": "yy源码前缀冷比较1.wasm",
+      "wallSeconds": 21.86,
+      "sha256": "300463023705e570c237e6d1fb3713999ca93e37eeba4d53f6483b3864251834",
+      "sameAsSeed": true
+    },
+    {
+      "compiler": "yy源码前缀种子.wasm",
+      "out": "yy源码前缀冷比较2.wasm",
+      "wallSeconds": 23.32,
+      "sha256": "300463023705e570c237e6d1fb3713999ca93e37eeba4d53f6483b3864251834",
+      "sameAsSeed": true
+    },
+    {
+      "compiler": "yy栈向量三代.wasm",
+      "out": "yy源码前缀冷比较3.wasm",
+      "wallSeconds": 23.48,
+      "sha256": "300463023705e570c237e6d1fb3713999ca93e37eeba4d53f6483b3864251834",
+      "sameAsSeed": true
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+--- yy形态快速排序.wasm.wat	2026-09-20 04:53:39
++++ yy排序数组界守卫.wat	2026-09-20 05:00:58
+@@ -107332,6 +107332,8 @@
+ 
+ 
+ 
++local.get $i1 local.get $a0 array.len i64.extend_i32_u i64.lt_u
++if (result i64)
+ local.get $i1
+ local.get $i3
+ i64.sub i64.const 1 i64.and i64.eqz i32.eqz
+@@ -107506,6 +107508,10 @@
+ br $ybatch))
+ 
+ local.get $i4
++
++else
++local.get $a0 local.get $i1 local.get $i2 local.get $i3 local.get $i4 call $rdz756
++end
+ )
+ (func $rd756
+ (param $a0 (ref $ints))

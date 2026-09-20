@@ -1,0 +1,37 @@
+{
+  "公开边界一致": true,
+  "边界": {
+    "导入": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "导出": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ],
+    "函数表": []
+  },
+  "语义测试双步入口": 3,
+  "陷阱测试双步入口": 1
+}

@@ -1,0 +1,29 @@
+[function 836: expanding topmost caller... budget=min(1725, 6000), size 345->345 no feedback yet or no callees]
+[function 836: emitted 108 nodes]
+[function 833: expanding topmost caller... budget=min(1655, 6000), size 331->331 no feedback yet or no callees]
+[function 833: emitted 172 nodes]
+[function 831: call #0 inlineable (monomorphic)]
+[function 831: call #1 inlineable (monomorphic)]
+[function 831: expanding topmost caller... budget=min(1345, 6000), size 269->269 queueing 2 callee(s)]
+[function 831: in function 831, considering call #1, case #0, to function 831 (relative_call_count=0.999905, size=269, score=0.003717)... budget=min(1345, 6000), size 269->538 decided to inline! queueing 2 callee(s)]
+[function 831: in function 831, considering call #1, case #0, to function 831 (relative_call_count=0.999809, size=269, score=0.003717)... budget=min(1345, 6000), size 532->801 decided to inline! queueing 2 callee(s)]
+[function 831: in function 831, considering call #1, case #0, to function 831 (relative_call_count=0.999714, size=269, score=0.003716)... budget=min(1345, 6000), size 795->1064 decided to inline! queueing 2 callee(s)]
+[function 831: in function 831, considering call #1, case #0, to function 831 (relative_call_count=0.999619, size=269, score=0.003716)... budget=min(1345, 6000), size 1058->1327 decided to inline! queueing 2 callee(s)]
+[function 831: in function 831, considering call #1, case #0, to function 831 (relative_call_count=0.999524, size=269, score=0.003716)... budget=min(1345, 6000), size 1321->1590 not enough inlining budget]
+[function 831: in function 831, considering call #0, case #0, to function 833 (relative_call_count=0.999905, size=331, score=0.003021)... budget=min(1345, 6000), size 1321->1652 not enough inlining budget]
+[function 831: in function 831, considering call #0, case #0, to function 833 (relative_call_count=0.999809, size=331, score=0.003021)... budget=min(1345, 6000), size 1321->1652 not enough inlining budget]
+[function 831: in function 831, considering call #0, case #0, to function 833 (relative_call_count=0.999714, size=331, score=0.003020)... budget=min(1345, 6000), size 1321->1652 not enough inlining budget]
+[function 831: in function 831, considering call #0, case #0, to function 833 (relative_call_count=0.999619, size=331, score=0.003020)... budget=min(1345, 6000), size 1321->1652 not enough inlining budget]
+[function 831: in function 831, considering call #0, case #0, to function 833 (relative_call_count=0.999524, size=331, score=0.003020)... budget=min(1345, 6000), size 1321->1652 not enough inlining budget]
+[function 831: inlining direct call #1 to function 831]
+[function 831 (inlined): inlining direct call #1 to function 831]
+[function 831 (inlined): inlining direct call #1 to function 831]
+[function 831 (inlined): inlining direct call #1 to function 831]
+[function 831: emitted 702 nodes]
+快速排序,0,0.012116,1500002
+快速排序,1,0.009596,1500002
+快速排序,2,0.009523,1500002
+快速排序,3,0.009197,1500002
+快速排序,4,0.009115,1500002
+快速排序,5,0.009376,1500002
+{"轮次":1,"复用模块":false,"引擎":"14.6.202.34-node.20","进程":93931,"线程":1,"编译工作模式":"threads","模块准备毫秒":0.752791000000002,"执行毫秒":62.133542000000006,"宿主调用数":40}

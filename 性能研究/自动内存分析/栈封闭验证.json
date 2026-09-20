@@ -1,0 +1,39 @@
+{
+  "checks": [
+    {
+      "name": "稳定编译器生成二代",
+      "exit": 0
+    },
+    {
+      "name": "二代生成三代",
+      "exit": 0
+    },
+    {
+      "name": "三代生成四代",
+      "exit": 0
+    },
+    {
+      "name": "本机三四代一致",
+      "exit": 0
+    },
+    {
+      "name": "./yy 类型检查",
+      "exit": 0
+    },
+    {
+      "name": "./yy3_bs 并行类型检查",
+      "exit": 0
+    },
+    {
+      "name": "栈封闭20项Wasm测试",
+      "exit": 0
+    }
+  ],
+  "sha256": {
+    "yy3_bs": "650ffd0c57c9ace79bb0c50637cb085b75a5a4bc0c28bb7cfa79f699d5b37df8",
+    "yy4_bs": "650ffd0c57c9ace79bb0c50637cb085b75a5a4bc0c28bb7cfa79f699d5b37df8",
+    "yy栈封闭种子.wasm": "dde3a9c259bfd206b46da09dff1b2a933e75cb9eef3340950abddb432e392bfa",
+    "yy栈封闭二代.wasm": "dde3a9c259bfd206b46da09dff1b2a933e75cb9eef3340950abddb432e392bfa",
+    "yy栈封闭三代.wasm": "dde3a9c259bfd206b46da09dff1b2a933e75cb9eef3340950abddb432e392bfa"
+  }
+}

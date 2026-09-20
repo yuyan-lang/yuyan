@@ -1,0 +1,47 @@
+--- yy单扫快速排序.wasm.wat	2026-09-20 04:26:44
++++ yy排序内联守卫.wat	2026-09-20 04:35:16
+@@ -108388,6 +108388,11 @@
+ 
+ 
+ 
++(local $in_a0 (ref $ints))
++(local $in_i1 i64)
++(local $in_i2 i64)
++(local $in_i3 i64)
++(local $in_i4 i64)
+ (loop $self (result (ref null eq))
+ local.get $i2
+ local.get $i1
+@@ -108448,7 +108453,31 @@
+ local.get $i1
+ local.get $i1
+ 
+-call $rd756
++local.set $in_i4
++local.set $in_i3
++local.set $in_i2
++local.set $in_i1
++local.set $in_a0
++local.get $in_i1 i64.const 4294967295 i64.le_u
++local.get $in_i3
++local.get $in_i1 i64.le_u i32.and
++local.get $in_i4
++local.get $in_i3 i64.le_u i32.and
++if (result i64)
++local.get $in_a0
++local.get $in_i1
++local.get $in_i2
++local.get $in_i3
++local.get $in_i4
++call $rdq756
++else
++local.get $in_a0
++local.get $in_i1
++local.get $in_i2
++local.get $in_i3
++local.get $in_i4
++call $rdz756
++end
+ local.set $i12
+ local.get $a0
+ 

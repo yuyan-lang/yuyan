@@ -1,0 +1,74 @@
+(func $m同
+(param $a0 (ref null eq))
+(param $i1 i64)
+(param $i2 i64)
+(result (ref null eq)) (local $u (ref null eq)) (local $j i64)
+
+(local $a1 (ref null eq))
+(local $a2 (ref null eq))
+(local $a3 (ref null eq))
+(local $a4 (ref null eq))
+(local $a5 (ref null eq))
+(local $a6 (ref null eq))
+(local $a7 (ref null eq))
+(local $a8 (ref null eq))
+(local $a9 (ref null eq))
+
+(local $i4 i64)
+
+
+(local $i7 i64)
+
+
+(loop $self (result (ref null eq))
+local.get $i1
+i64.const 0
+i64.eq i64.extend_i32_u
+i32.wrap_i64 ref.i31
+local.set $a3
+local.get $a3
+
+ref.cast (ref i31) i31.get_u if (result (ref null eq))
+local.get $i2 call $box
+else
+local.get $i1
+i64.const 1
+i64.sub
+
+local.set $i4
+
+local.get $a0
+
+ref.cast (ref $tuple) i32.const 0 array.get $tuple
+
+local.set $a5
+
+
+local.get $i1 call $box local.set $a1
+local.get $a0
+
+local.get $a1
+
+local.get $a5
+
+ref.cast (ref i31) i31.get_u
+call_indirect (type $t2)
+local.set $a6
+local.get $i2
+local.get $a6
+
+local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+i64.add
+
+local.set $i7
+local.get $a0
+
+local.get $i4
+local.get $i7
+
+local.set $i2
+local.set $i1
+local.set $a0
+br $self
+end return
+) )

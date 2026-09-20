@@ -1,0 +1,38 @@
+[
+  {
+    "name": "斐波那契",
+    "old": "yy折叠斐波那契.wasm",
+    "out": "yy融合斐波那契.wasm",
+    "identical": true
+  },
+  {
+    "name": "素数筛",
+    "old": "yy折叠素数筛.wasm",
+    "out": "yy融合素数筛.wasm",
+    "identical": true
+  },
+  {
+    "name": "矩阵乘法",
+    "old": "yy折叠矩阵乘法.wasm",
+    "out": "yy融合矩阵乘法.wasm",
+    "identical": true
+  },
+  {
+    "name": "快速排序",
+    "old": "yy折叠快速排序.wasm",
+    "out": "yy融合快速排序.wasm",
+    "identical": true
+  },
+  {
+    "name": "树基准",
+    "old": "yy折叠树基准.wasm",
+    "out": "yy融合树基准.wasm",
+    "identical": false
+  },
+  {
+    "name": "数组基准",
+    "old": "yy折叠数组基准.wasm",
+    "out": "yy融合数组基准.wasm",
+    "identical": false
+  }
+]

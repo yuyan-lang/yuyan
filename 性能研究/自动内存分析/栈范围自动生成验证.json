@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "checks": 517,
+  "fastBodiesWithoutRepeatedChecks": [
+    "s0q",
+    "s1q"
+  ],
+  "fallbackBodiesRetainChecks": [
+    "s0z",
+    "s1z"
+  ],
+  "scope": "Automatically emitted guarded loops versus previously validated fully checked emitter; values, traps and post-trap contents compared."
+}

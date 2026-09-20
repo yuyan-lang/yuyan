@@ -1,0 +1,44 @@
+[
+  {
+    "name": "斐波那契",
+    "out": "yy向量原生栈斐波那契.wasm",
+    "baseline": "yy长度栈斐波那契.wasm",
+    "identical": true,
+    "sha256": "1a715581614a4c3065ff2dc18a45636d9d82422f114153bbed0940aff0c0a4ae"
+  },
+  {
+    "name": "素数筛",
+    "out": "yy向量原生栈素数筛.wasm",
+    "baseline": "yy长度栈素数筛.wasm",
+    "identical": true,
+    "sha256": "1b06ef0810baa7560a59e9fe8bc71facd56a95f2d7119493fec15045e98f3bde"
+  },
+  {
+    "name": "矩阵乘法",
+    "out": "yy向量原生栈矩阵乘法.wasm",
+    "baseline": "yy长度栈矩阵乘法.wasm",
+    "identical": true,
+    "sha256": "ca5b8358f4d925b33616287ecb91c1f86d6f642f4eeb5c5c617a4c8e1c2f6771"
+  },
+  {
+    "name": "树基准",
+    "out": "yy向量原生栈树基准.wasm",
+    "baseline": "yy长度栈树基准.wasm",
+    "identical": true,
+    "sha256": "876487a613d387347835653f9021d780c49a26886ca25a847d1e5d9b45f19619"
+  },
+  {
+    "name": "数组基准",
+    "out": "yy向量原生栈数组基准.wasm",
+    "baseline": "yy长度栈数组基准.wasm",
+    "identical": true,
+    "sha256": "936003e9b827705b248d383e7b9a8763cde05df2f76aacba7536a98d5c870212"
+  },
+  {
+    "name": "快速排序",
+    "out": "yy向量原生默认快速排序.wasm",
+    "baseline": "yy长度默认排序.wasm",
+    "identical": true,
+    "sha256": "20c4e0339fd5f49a53e557f9ada790dbc8e76eeb235a933425a0e910ee3bf47f"
+  }
+]

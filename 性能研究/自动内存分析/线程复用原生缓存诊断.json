@@ -1,0 +1,7 @@
+{
+  "initialNativeBootstrapPassed": false,
+  "diagnostic": "旧 stable 缓存中的网页汇编栈调用图.o 仍引用已撤回接线的验栈首调覆盖，链接报告 Undefined symbols；源码中该引用已不存在",
+  "recovery": "按仓库规则 touch yy_bs_stable 刷新缓存身份，重新执行完整 pipeline",
+  "recoveryPassed": true,
+  "native3Equals4": true
+}

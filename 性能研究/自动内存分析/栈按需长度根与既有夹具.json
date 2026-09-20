@@ -1,0 +1,6 @@
+{
+  "rootCases": 1024,
+  "emptyRootError": "array element access out of bounds",
+  "genericFixtureIdenticalToPrevious": true,
+  "previousValidation": "栈保检去重生成验证.json"
+}

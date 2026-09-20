@@ -1,0 +1,5 @@
+{
+  "用例": 2065,
+  "范围": "-3..1024, 2^32-1, 2^32, INT64_MAX, INT64_MIN；同一实例交替运行公开入口、私有桥和GC参考，比较值及异常名称消息。非法引用参数另验。",
+  "新增导出": "\n(func (export \"public\") (param $n i64) (result i64) ref.null eq local.get $n call $box call $f766 call $unbox)\n(func (export \"private\") (param $n i64) (result i64) ref.null eq local.get $n call $m766 call $unbox)\n(func (export \"reference\") (param $n i64) (result i64) ref.null eq local.get $n call $box call $fsg766 call $unbox)\n(func (export \"bad\") (param $old i32) (result i64) ref.null eq ref.null eq local.get $old if (param (ref null eq) (ref null eq)) (result (ref null eq)) call $fsg766 else call $f766 end call $unbox)\n)"
+}

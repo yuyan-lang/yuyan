@@ -1,0 +1,49 @@
+{
+  "graphCases": 15,
+  "executionCases": 8,
+  "passed": true,
+  "rows": [
+    {
+      "n": "-1",
+      "actual": "RuntimeError:unreachable",
+      "expected": "RuntimeError:unreachable"
+    },
+    {
+      "n": "0",
+      "actual": "RuntimeError:array element access out of bounds",
+      "expected": "RuntimeError:array element access out of bounds"
+    },
+    {
+      "n": "1",
+      "actual": "7",
+      "expected": "7"
+    },
+    {
+      "n": "2",
+      "actual": "7",
+      "expected": "7"
+    },
+    {
+      "n": "64",
+      "actual": "7",
+      "expected": "7"
+    },
+    {
+      "n": "8193",
+      "actual": "7",
+      "expected": "7"
+    },
+    {
+      "n": "8388608",
+      "actual": "7",
+      "expected": "7"
+    },
+    {
+      "n": "4294967296",
+      "actual": "RuntimeError:unreachable",
+      "expected": "RuntimeError:unreachable"
+    }
+  ],
+  "imports": [],
+  "note": "Candidate signatures checked against every reachable body; public wrapper and all reachable private functions generated together from ANF. Test GC reference and exports hand-written. Default compiler not integrated."
+}

@@ -1,0 +1,30 @@
+[
+  {
+    "i": 0,
+    "seed": "yy就绪索引候选.wasm",
+    "out": "yy就绪索引复测0.wasm",
+    "seconds": 15.8,
+    "identical": true
+  },
+  {
+    "i": 1,
+    "seed": "yy容器图三代.wasm",
+    "out": "yy就绪索引复测1.wasm",
+    "seconds": 16.95,
+    "identical": true
+  },
+  {
+    "i": 2,
+    "seed": "yy容器图三代.wasm",
+    "out": "yy就绪索引复测2.wasm",
+    "seconds": 16.7,
+    "identical": true
+  },
+  {
+    "i": 3,
+    "seed": "yy就绪索引候选.wasm",
+    "out": "yy就绪索引复测3.wasm",
+    "seconds": 16.03,
+    "identical": true
+  }
+]

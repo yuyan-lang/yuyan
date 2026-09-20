@@ -1,0 +1,90 @@
+{
+  "日期": "2026-09-20T19:02:10.261Z",
+  "状态": "本轮扩展已验证；总体达到C目标仍未完成",
+  "源码未变": true,
+  "artifacts": [
+    {
+      "file": "yy3_bs",
+      "SHA256": "5803a847617c690ad58b3762b88a7b0966b4fe7e39736ee5be2c9bfde82898d7",
+      "字节": 5289048
+    },
+    {
+      "file": "yy4_bs",
+      "SHA256": "5803a847617c690ad58b3762b88a7b0966b4fe7e39736ee5be2c9bfde82898d7",
+      "字节": 5289048
+    },
+    {
+      "file": "yy栈前导桥编译器.wasm",
+      "SHA256": "990f53f79ffddbb7f768d90f10f311f9f4287a116f2a5557982a2fb0207b2b45",
+      "字节": 3985529
+    },
+    {
+      "file": "yy栈前导二代.wasm",
+      "SHA256": "990f53f79ffddbb7f768d90f10f311f9f4287a116f2a5557982a2fb0207b2b45",
+      "字节": 3985529
+    },
+    {
+      "file": "yy栈前导三代.wasm",
+      "SHA256": "990f53f79ffddbb7f768d90f10f311f9f4287a116f2a5557982a2fb0207b2b45",
+      "字节": 3985529
+    },
+    {
+      "file": "yy前导排序旧.wasm",
+      "SHA256": "7e5a5351aa837077def9edffb8ee1eb9c40a80c110facdd147d63a77ce5897e5",
+      "字节": 339586
+    },
+    {
+      "file": "yy前导排序新桥.wasm",
+      "SHA256": "e51e481aba6bb6e1e87de2b66e0c0e8332a821ad9b1da5779f7279a393fdbe09",
+      "字节": 342908
+    }
+  ],
+  "原生验证": [
+    {
+      "命令": "./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs >/dev/null 2>/dev/null",
+      "秒": 58.044,
+      "退出": 0
+    },
+    {
+      "命令": "./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel >/dev/null 2>/dev/null",
+      "秒": 81.926,
+      "退出": 0
+    },
+    {
+      "命令": "./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel >/dev/null 2>/dev/null",
+      "秒": 79.054,
+      "退出": 0
+    },
+    {
+      "命令": "cmp yy3_bs yy4_bs",
+      "秒": 0.017,
+      "退出": 0
+    },
+    {
+      "命令": "./yy 豫言编译器/入口。豫 --type-check-only",
+      "秒": 8.006,
+      "退出": 0
+    },
+    {
+      "命令": "./yy3_bs 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null",
+      "秒": 0.923,
+      "退出": 0
+    }
+  ],
+  "Wasm冷自举": [
+    {
+      "compiler": "yy栈前导桥编译器.wasm",
+      "out": "yy栈前导二代.wasm",
+      "墙钟秒": 15.55,
+      "与种子一致": true,
+      "SHA256": "990f53f79ffddbb7f768d90f10f311f9f4287a116f2a5557982a2fb0207b2b45"
+    },
+    {
+      "compiler": "yy栈前导二代.wasm",
+      "out": "yy栈前导三代.wasm",
+      "墙钟秒": 15.87,
+      "与种子一致": true,
+      "SHA256": "990f53f79ffddbb7f768d90f10f311f9f4287a116f2a5557982a2fb0207b2b45"
+    }
+  ]
+}

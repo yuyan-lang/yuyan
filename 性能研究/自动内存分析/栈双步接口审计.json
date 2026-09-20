@@ -1,0 +1,19 @@
+{
+  "signatureChanges": [],
+  "changedOriginalBodies": [
+    "$f766"
+  ],
+  "importsExportsIdentical": true,
+  "fast": [
+    {
+      "name": "$stack766_756q",
+      "batch": true,
+      "repeatedChecks": false
+    },
+    {
+      "name": "$stack766_752q",
+      "batch": true,
+      "repeatedChecks": false
+    }
+  ]
+}

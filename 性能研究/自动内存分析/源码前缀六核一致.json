@@ -1,0 +1,38 @@
+[
+  {
+    "name": "斐波那契",
+    "file": "yy前缀栈斐波那契.wasm",
+    "baseline": "yy向量原生栈斐波那契.wasm",
+    "identical": true
+  },
+  {
+    "name": "素数筛",
+    "file": "yy前缀栈素数筛.wasm",
+    "baseline": "yy向量原生栈素数筛.wasm",
+    "identical": true
+  },
+  {
+    "name": "矩阵乘法",
+    "file": "yy前缀栈矩阵乘法.wasm",
+    "baseline": "yy向量原生栈矩阵乘法.wasm",
+    "identical": true
+  },
+  {
+    "name": "树基准",
+    "file": "yy前缀栈树基准.wasm",
+    "baseline": "yy向量原生栈树基准.wasm",
+    "identical": true
+  },
+  {
+    "name": "数组基准",
+    "file": "yy前缀栈数组基准.wasm",
+    "baseline": "yy向量原生栈数组基准.wasm",
+    "identical": true
+  },
+  {
+    "name": "快速排序",
+    "file": "yy前缀栈快速排序.wasm",
+    "baseline": "yy向量原生栈快速排序.wasm",
+    "identical": true
+  }
+]

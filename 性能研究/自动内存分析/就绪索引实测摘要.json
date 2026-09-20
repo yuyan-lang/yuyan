@@ -1,0 +1,10 @@
+{
+  "oldMeanSeconds": 16.6525,
+  "newMeanSeconds": 16.0125,
+  "reductionPercent": 3.8432667767602458,
+  "wasmDifferentialCases": 904,
+  "nativeDifferentialCases": 904,
+  "allOutputsIdentical": true,
+  "oldLookupSampleMs": 3545.383,
+  "newLookupSampleMs": 782.365
+}

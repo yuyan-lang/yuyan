@@ -1,0 +1,68 @@
+{
+  "说明": "每行独立配对，不跨批次直接比较；均为手改研究产物，未合入编译器",
+  "rows": [
+    {
+      "name": "省清零",
+      "file": "栈省初始化上限实测.json",
+      "baselineWarm": 37.255,
+      "prototypeWarm": 37.047,
+      "changePercent": -0.5583143202254837,
+      "baselineFirst": 46.458,
+      "prototypeFirst": 47.919000000000004
+    },
+    {
+      "name": "删重复检查",
+      "file": "栈重复检查原型实测.json",
+      "baselineWarm": 36.89,
+      "prototypeWarm": 41.986999999999995,
+      "changePercent": 13.816752507454577,
+      "baselineFirst": 47.254,
+      "prototypeFirst": 52.005
+    },
+    {
+      "name": "递归范围守卫",
+      "file": "栈递归范围原型实测.json",
+      "baselineWarm": 37.292,
+      "prototypeWarm": 42.323,
+      "changePercent": 13.490829132253568,
+      "baselineFirst": 46.356,
+      "prototypeFirst": 53.18
+    },
+    {
+      "name": "递归范围传递",
+      "file": "栈范围传递原型实测.json",
+      "baselineWarm": 36.683,
+      "prototypeWarm": 41.469,
+      "changePercent": 13.046915464929265,
+      "baselineFirst": 48.232,
+      "prototypeFirst": 53.644
+    },
+    {
+      "name": "SIMD填充",
+      "file": "栈向量填充新原型实测.json",
+      "baselineWarm": 37.779,
+      "prototypeWarm": 38.64,
+      "changePercent": 2.2790439132851503,
+      "baselineFirst": 51.54,
+      "prototypeFirst": 51.812
+    },
+    {
+      "name": "范围传递及循环内联",
+      "file": "栈循环内联原型实测.json",
+      "baselineWarm": 37.268,
+      "prototypeWarm": 37.955000000000005,
+      "changePercent": 1.843404529354964,
+      "baselineFirst": 47.298,
+      "prototypeFirst": 51.43
+    },
+    {
+      "name": "私有单元无返回",
+      "file": "栈单元无返原型实测.json",
+      "baselineWarm": 37.285,
+      "prototypeWarm": 37.195,
+      "changePercent": -0.2413839345581259,
+      "baselineFirst": 49.4,
+      "prototypeFirst": 47.475
+    }
+  ]
+}

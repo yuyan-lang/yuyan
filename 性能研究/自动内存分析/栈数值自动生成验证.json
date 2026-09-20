@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "checks": 128,
+  "randomSeed": 123,
+  "randomCases": 100,
+  "traps": [
+    {
+      "action": "sum",
+      "index": "-1",
+      "message": "unreachable"
+    },
+    {
+      "action": "fill",
+      "index": "-1",
+      "message": "unreachable"
+    },
+    {
+      "action": "sum",
+      "index": "4294967296",
+      "message": "unreachable"
+    },
+    {
+      "action": "fill",
+      "index": "4294967296",
+      "message": "unreachable"
+    },
+    {
+      "action": "sum",
+      "index": "4",
+      "message": "array element access out of bounds"
+    },
+    {
+      "action": "fill",
+      "index": "4",
+      "message": "array element access out of bounds"
+    }
+  ],
+  "node": "v26.3.0",
+  "v8": "14.6.202.34-node.20",
+  "scope": "Yuyan ANF automatically generated stack functions; million-iteration tail recursion, cross-dependent argument swaps, non-contiguous parameter IDs, i64 wrapping sums, direct loads/stores, bounds traps and post-trap reuse. Entry allocation is a test wrapper, not default compiler integration."
+}

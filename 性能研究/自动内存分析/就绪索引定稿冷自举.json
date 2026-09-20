@@ -1,0 +1,14 @@
+[
+  {
+    "seed": "yy就绪索引定稿种子.wasm",
+    "out": "yy就绪索引二代.wasm",
+    "seconds": 15.29,
+    "identical": true
+  },
+  {
+    "seed": "yy就绪索引二代.wasm",
+    "out": "yy就绪索引三代.wasm",
+    "seconds": 15.84,
+    "identical": true
+  }
+]

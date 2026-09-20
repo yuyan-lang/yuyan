@@ -1,0 +1,247 @@
+--- yy单扫快速排序.wasm.wat	2026-09-20 04:26:44
++++ yy排序内联借参.wat	2026-09-20 04:36:37
+@@ -108388,6 +108388,43 @@
+ 
+ 
+ 
++(local $in_a0 (ref $ints))
++(local $in_i1 i64)
++(local $in_i2 i64)
++(local $in_i3 i64)
++(local $in_i4 i64)
++(local $in_u (ref null eq))
++(local $in_j i64)
++(local $in_a1 (ref null eq))
++(local $in_a2 (ref null eq))
++(local $in_a3 (ref null eq))
++(local $in_a4 (ref null eq))
++(local $in_a5 (ref null eq))
++(local $in_a6 (ref null eq))
++(local $in_a7 (ref null eq))
++(local $in_a8 (ref null eq))
++(local $in_a9 (ref null eq))
++(local $in_a10 (ref null eq))
++(local $in_a11 (ref null eq))
++(local $in_a12 (ref null eq))
++(local $in_a13 (ref null eq))
++(local $in_a14 (ref null eq))
++(local $in_a15 (ref null eq))
++(local $in_a16 (ref null eq))
++(local $in_a17 (ref null eq))
++(local $in_a18 (ref null eq))
++(local $in_i6 i64)
++(local $in_i8 i64)
++(local $in_i9 i64)
++(local $in_i12 i64)
++(local $in_i13 i64)
++(local $in_i14 i64)
++(local $in_i15 i64)
++(local $in_i16 i64)
++(local $in_i17 i64)
++(local $in_i18 i64)
++(local $in_p5 i32)
++(local $in_p7 i32)
+ (loop $self (result (ref null eq))
+ local.get $i2
+ local.get $i1
+@@ -108441,14 +108478,196 @@
+ local.get $i2 i32.wrap_i64
+ array.get $ints
+ local.set $i11
++local.get $i1 local.get $i1 local.set $in_i4 local.set $in_i3
++local.get $i2 i64.const 4294967295 i64.le_u
++local.get $in_i3
++local.get $i2 i64.le_u i32.and
++local.get $in_i4
++local.get $in_i3 i64.le_u i32.and
++if (result i64)
++local.get $i2
++local.get $in_i3
++i64.sub i64.const 1 i64.and i64.eqz i32.eqz
++if
++
+ local.get $a0
+- ref.cast (ref $ints)
++local.get $in_i3 i32.wrap_i64
++array.get $ints
++local.set $in_i6
++local.get $i11
++local.get $in_i6
++i64.gt_s
++local.set $in_p7
++local.get $in_p7
++if
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++array.get $ints
++local.set $in_i8
++local.get $a0
++local.get $in_i4 i32.wrap_i64
++array.get $ints
++local.set $in_i9
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++local.get $in_i9
++array.set $ints 
++local.get $a0
++local.get $in_i4 i32.wrap_i64
++local.get $in_i8
++array.set $ints 
++
++local.get $in_i4
++i64.const 1
++i64.add
++
++local.set $in_i13
++
++
++
++
++local.get $in_i13
++
++local.set $in_i4
++
++else
++
++
++
++
++
++
++
++
++
++end
++
++local.get $in_i3 i64.const 1 i64.add local.set $in_i3
++end
++(block $in_ydone (loop $in_ybatch
++local.get $in_i3
+ local.get $i2
++i64.eq br_if $in_ydone
++
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++array.get $ints
++local.set $in_i6
+ local.get $i11
+-local.get $i1
+-local.get $i1
++local.get $in_i6
++i64.gt_s
++local.set $in_p7
++local.get $in_p7
++if
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++array.get $ints
++local.set $in_i8
++local.get $a0
++local.get $in_i4 i32.wrap_i64
++array.get $ints
++local.set $in_i9
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++local.get $in_i9
++array.set $ints 
++local.get $a0
++local.get $in_i4 i32.wrap_i64
++local.get $in_i8
++array.set $ints 
+ 
+-call $rd756
++local.get $in_i4
++i64.const 1
++i64.add
++
++local.set $in_i13
++
++
++
++
++local.get $in_i13
++
++local.set $in_i4
++
++else
++
++
++
++
++
++
++
++
++
++end
++
++local.get $in_i3 i64.const 1 i64.add local.set $in_i3
++
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++array.get $ints
++local.set $in_i6
++local.get $i11
++local.get $in_i6
++i64.gt_s
++local.set $in_p7
++local.get $in_p7
++if
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++array.get $ints
++local.set $in_i8
++local.get $a0
++local.get $in_i4 i32.wrap_i64
++array.get $ints
++local.set $in_i9
++local.get $a0
++local.get $in_i3 i32.wrap_i64
++local.get $in_i9
++array.set $ints 
++local.get $a0
++local.get $in_i4 i32.wrap_i64
++local.get $in_i8
++array.set $ints 
++
++local.get $in_i4
++i64.const 1
++i64.add
++
++local.set $in_i13
++
++
++
++
++local.get $in_i13
++
++local.set $in_i4
++
++else
++
++
++
++
++
++
++
++
++
++end
++
++local.get $in_i3 i64.const 1 i64.add local.set $in_i3
++br $in_ybatch))
++
++local.get $in_i4
++
++else
++local.get $a0
++local.get $i2
++local.get $i11
++local.get $in_i3
++local.get $in_i4
++call $rdz756
++end
+ local.set $i12
+ local.get $a0
+ 

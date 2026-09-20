@@ -1,0 +1,214 @@
+--- yy就绪索引核快速排序.wasm.wat	2026-09-20 14:27:02
++++ yy跨函范围省检内联原型.wat	2026-09-20 14:37:41
+@@ -109910,6 +109910,31 @@
+ (local $sv20 i64)
+ (local $sv21 i64)
+ (local $sl7 i32)
++(local $qp_sv0 i32)
++(local $qp_sv1 i64)
++(local $qp_sv2 i64)
++(local $qp_sv3 i64)
++(local $qp_sv4 i64)
++(local $qp_sp i32)
++(local $qp_si i32)
++(local $qp_sj i64)
++(local $qp_sv5 i64)
++(local $qp_sv6 i64)
++(local $qp_sv7 i64)
++(local $qp_sv8 i64)
++(local $qp_sv9 i64)
++(local $qp_sv10 i64)
++(local $qp_sv11 i64)
++(local $qp_sv12 i64)
++(local $qp_sv13 i64)
++(local $qp_sv14 i64)
++(local $qp_sv15 i64)
++(local $qp_sv16 i64)
++(local $qp_sv17 i64)
++(local $qp_sv18 i64)
++(local $qp_pa3 i32)
++(local $qp_pa4 i32)
++(local $qp_pend i32)
+ (loop $self (result i64)
+ local.get $sv2
+ local.get $sv1
+@@ -109932,21 +109957,13 @@
+ local.get $sv0
+ local.set $sp
+ local.get $sv6
+-local.tee $sj i64.const 4294967295 i64.gt_u if unreachable end
+- local.get $sj i32.wrap_i64 local.tee $si
+-local.get $sp i32.load local.tee $sl7
+-i32.ge_u
+- if call $stack_bad drop unreachable end
++i32.wrap_i64 local.set $si
+  local.get $sp local.get $si i32.const 3 i32.shl i32.add i64.load offset=8
+ local.set $sv7
+ local.get $sv0
+ local.set $sp
+ local.get $sv2
+-local.tee $sj i64.const 4294967295 i64.gt_u if unreachable end
+- local.get $sj i32.wrap_i64 local.tee $si
+-local.get $sl7
+-i32.ge_u
+- if call $stack_bad drop unreachable end
++i32.wrap_i64 local.set $si
+  local.get $sp local.get $si i32.const 3 i32.shl i32.add i64.load offset=8
+ local.set $sv8
+ local.get $sv0
+@@ -109970,16 +109987,149 @@
+ local.get $sv11
+ local.get $sv1
+ local.get $sv1
+-call $stack766_756
++local.set $qp_sv4
++local.set $qp_sv3
++local.set $qp_sv2
++local.set $qp_sv1
++local.set $qp_sv0
++local.get $qp_sv0
++local.get $qp_sv1
++i32.wrap_i64 i32.const 3 i32.shl i32.add i32.const 8 i32.add local.set $qp_pend
++local.get $qp_sv0
++local.get $qp_sv3
++i32.wrap_i64 i32.const 3 i32.shl i32.add i32.const 8 i32.add local.set $qp_pa3
++local.get $qp_sv0
++local.get $qp_sv4
++i32.wrap_i64 i32.const 3 i32.shl i32.add i32.const 8 i32.add local.set $qp_pa4
++local.get $qp_sv1
++local.get $qp_sv3
++i64.sub i64.const 1 i64.and i64.eqz i32.eqz if
++(block $step i64.const 0 local.set $qp_sv5
++local.get $qp_pa3 i64.load offset=0
++local.set $qp_sv6
++local.get $qp_sv2
++local.get $qp_sv6
++i64.gt_s i64.extend_i32_u
++local.set $qp_sv7
++local.get $qp_sv7
++i32.wrap_i64 if
++local.get $qp_pa3 i64.load offset=0
++local.set $qp_sv8
++local.get $qp_pa4 i64.load offset=0
++local.set $qp_sv9
++local.get $qp_pa3
++local.get $qp_sv9
++i64.store offset=0 i64.const 0
++local.set $qp_sv10
++local.get $qp_pa4
++local.get $qp_sv8
++i64.store offset=0 i64.const 0
++local.set $qp_sv11
++
++
++
++local.get $qp_pa4 i32.const 8 i32.add
++local.set $qp_pa4
++
++
++else
++
++
++
++
++
++
++end
++)
++local.get $qp_pa3 i32.const 8 i32.add local.set $qp_pa3
++end (block $done (loop $batch
++local.get $qp_pa3 local.get $qp_pend i32.eq br_if $done
++(block $step i64.const 0 local.set $qp_sv5
++local.get $qp_pa3 i64.load offset=0
++local.set $qp_sv6
++local.get $qp_sv2
++local.get $qp_sv6
++i64.gt_s i64.extend_i32_u
++local.set $qp_sv7
++local.get $qp_sv7
++i32.wrap_i64 if
++local.get $qp_pa3 i64.load offset=0
++local.set $qp_sv8
++local.get $qp_pa4 i64.load offset=0
++local.set $qp_sv9
++local.get $qp_pa3
++local.get $qp_sv9
++i64.store offset=0 i64.const 0
++local.set $qp_sv10
++local.get $qp_pa4
++local.get $qp_sv8
++i64.store offset=0 i64.const 0
++local.set $qp_sv11
++
++
++
++local.get $qp_pa4 i32.const 8 i32.add
++local.set $qp_pa4
++
++
++else
++
++
++
++
++
++
++end
++)
++local.get $qp_pa3 i32.const 8 i32.add local.set $qp_pa3
++(block $step i64.const 0 local.set $qp_sv5
++local.get $qp_pa3 i64.load offset=0
++local.set $qp_sv6
++local.get $qp_sv2
++local.get $qp_sv6
++i64.gt_s i64.extend_i32_u
++local.set $qp_sv7
++local.get $qp_sv7
++i32.wrap_i64 if
++local.get $qp_pa3 i64.load offset=0
++local.set $qp_sv8
++local.get $qp_pa4 i64.load offset=0
++local.set $qp_sv9
++local.get $qp_pa3
++local.get $qp_sv9
++i64.store offset=0 i64.const 0
++local.set $qp_sv10
++local.get $qp_pa4
++local.get $qp_sv8
++i64.store offset=0 i64.const 0
++local.set $qp_sv11
++
++
++
++local.get $qp_pa4 i32.const 8 i32.add
++local.set $qp_pa4
++
++
++else
++
++
++
++
++
++
++end
++)
++local.get $qp_pa3 i32.const 8 i32.add local.set $qp_pa3
++br $batch)) i64.const 1 local.set $qp_sv5
++local.get $qp_pa4
++local.get $qp_sv0
++i32.sub i32.const 8 i32.sub i32.const 3 i32.shr_u i64.extend_i32_u
++
+ local.set $sv12
+ local.get $sv0
+ local.set $sp
+ local.get $sv12
+-local.tee $sj i64.const 4294967295 i64.gt_u if unreachable end
+- local.get $sj i32.wrap_i64 local.tee $si
+-local.get $sl7
+-i32.ge_u
+- if call $stack_bad drop unreachable end
++i32.wrap_i64 local.set $si
+  local.get $sp local.get $si i32.const 3 i32.shl i32.add i64.load offset=8
+ local.set $sv13
+ local.get $sv0

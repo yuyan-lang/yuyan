@@ -1,0 +1,47 @@
+{
+  "note": "正确性回归，与原生构建并行，不使用计时作性能判断",
+  "rows": [
+    {
+      "name": "斐波那契",
+      "n": 40,
+      "expected": "102334155",
+      "rounds": 6,
+      "passed": true
+    },
+    {
+      "name": "素数筛",
+      "n": 10000000,
+      "expected": "664579",
+      "rounds": 6,
+      "passed": true
+    },
+    {
+      "name": "矩阵乘法",
+      "n": 600,
+      "expected": "827280100",
+      "rounds": 6,
+      "passed": true
+    },
+    {
+      "name": "数组基准",
+      "n": 10000000,
+      "expected": "50000005000000",
+      "rounds": 6,
+      "passed": true
+    },
+    {
+      "name": "快速排序",
+      "n": 4000000,
+      "expected": "6000002",
+      "rounds": 6,
+      "passed": true
+    },
+    {
+      "name": "树基准",
+      "n": 20,
+      "expected": "1048576",
+      "rounds": 6,
+      "passed": true
+    }
+  ]
+}

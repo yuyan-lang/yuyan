@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "sortCases": 6916,
+  "sortValues": 156712,
+  "partitionCases": 10287,
+  "partitionValues": 87855,
+  "scope": "Actual compiler address-mirror loops versus original GC functions; values, traps and post-trap contents. Test exports only."
+}

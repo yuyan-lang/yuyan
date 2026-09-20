@@ -1,0 +1,20 @@
+--- yy双步定稿排序.wasm.wat	2026-09-19 23:48:47
++++ yy空递归原型.wat	2026-09-20 00:01:33
+@@ -108852,12 +108852,17 @@
+ i64.sub
+ 
+ local.set $i17
++local.get $i17 local.get $i1 i64.gt_s
++if (result (ref null eq))
+ local.get $a0
+  ref.cast (ref $ints)
+ local.get $i1
+ local.get $i17
+ 
+ call $d762
++else
++ref.null eq
++end
+ local.set $a18
+ local.get $i12
+ i64.const 1

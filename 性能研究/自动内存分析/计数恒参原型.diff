@@ -1,0 +1,20 @@
+--- yy条件素数筛.wasm.wat	2026-09-20 03:49:46
++++ yy计数恒参原型.wat	2026-09-20 03:56:04
+@@ -107465,16 +107465,7 @@
+ i32.const 0 i32.ne i64.extend_i32_u
+ local.get $i3
+ i64.add local.set $i8
+-local.get $a0
+- ref.cast (ref $octs)
+-local.get $i1
+-local.get $i5
+-local.get $i8
+-
+-local.set $i3
+-local.set $i2
+-local.set $i1
+-local.set $a0
++local.get $i5 local.get $i8 local.set $i3 local.set $i2
+ br $self
+ end return
+ )

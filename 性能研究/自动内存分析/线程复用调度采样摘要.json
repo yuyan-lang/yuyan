@@ -1,0 +1,375 @@
+{
+  "note": "主协调Worker的CPU采样归因时间，可能包含阻塞等待；不代表所有线程CPU总量",
+  "self": [
+    {
+      "name": "",
+      "ms": 11065.314,
+      "source": ""
+    },
+    {
+      "name": "f1113",
+      "ms": 3545.383,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/构建基础/调度器。豫_满参递归68"
+    },
+    {
+      "name": "f202",
+      "ms": 144.521,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫_满参递归131"
+    },
+    {
+      "name": "f1124",
+      "ms": 128.552,
+      "source": "调度器_执行任务图并监视_提升函数210"
+    },
+    {
+      "name": "writeSync",
+      "ms": 59.758,
+      "source": ""
+    },
+    {
+      "name": "receiveMessageOnPort",
+      "ms": 52.142,
+      "source": ""
+    },
+    {
+      "name": "f1116",
+      "ms": 34.823,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/构建基础/调度器。豫_满参递归73"
+    },
+    {
+      "name": "f1120",
+      "ms": 30.743,
+      "source": "调度器_就绪任务_提升函数204"
+    },
+    {
+      "name": "(garbage collector)",
+      "ms": 29.166,
+      "source": ""
+    },
+    {
+      "name": "解",
+      "ms": 16.152,
+      "source": ""
+    },
+    {
+      "name": "wasm-to-js",
+      "ms": 12.666,
+      "source": ""
+    },
+    {
+      "name": "call",
+      "ms": 12.102,
+      "source": ""
+    },
+    {
+      "name": "f1692",
+      "ms": 11.36,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/构建基础/并行编译。豫_满参递归74"
+    },
+    {
+      "name": "wasm-function[5192]",
+      "ms": 10.312,
+      "source": ""
+    },
+    {
+      "name": "chars",
+      "ms": 8.754,
+      "source": ""
+    },
+    {
+      "name": "f307",
+      "ms": 7.597,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列工具。豫_满参递归170"
+    },
+    {
+      "name": "f339",
+      "ms": 7.398,
+      "source": "数组转换_多态列转数组_提升函数85"
+    },
+    {
+      "name": "还字节",
+      "ms": 7.292,
+      "source": ""
+    },
+    {
+      "name": "from",
+      "ms": 6.489,
+      "source": ""
+    },
+    {
+      "name": "子进程参数",
+      "ms": 6.053,
+      "source": ""
+    },
+    {
+      "name": "js-to-wasm",
+      "ms": 6.039,
+      "source": ""
+    },
+    {
+      "name": "编",
+      "ms": 5.884,
+      "source": ""
+    },
+    {
+      "name": "写输出",
+      "ms": 5.494,
+      "source": ""
+    },
+    {
+      "name": "f1127",
+      "ms": 5.391,
+      "source": "调度器_执行任务图并监视_提升函数213"
+    },
+    {
+      "name": "compileForInternalLoader",
+      "ms": 4.552,
+      "source": ""
+    },
+    {
+      "name": "f1755",
+      "ms": 4.443,
+      "source": "并行编译_运行并行编译_提升函数430"
+    },
+    {
+      "name": "f579",
+      "ms": 4.197,
+      "source": "异步_派生可等待_提升函数198"
+    },
+    {
+      "name": "get",
+      "ms": 4.145,
+      "source": ""
+    },
+    {
+      "name": "str_eq",
+      "ms": 3.769,
+      "source": ""
+    },
+    {
+      "name": "f15",
+      "ms": 3.378,
+      "source": "异常_内建尝试运行_提升函数86"
+    }
+  ],
+  "inclusive": [
+    {
+      "name": "(root)",
+      "ms": 15539.824,
+      "source": ""
+    },
+    {
+      "name": "",
+      "ms": 15491.572,
+      "source": ""
+    },
+    {
+      "name": "wrapModuleLoad",
+      "ms": 15477.822,
+      "source": ""
+    },
+    {
+      "name": "executeUserEntryPoint",
+      "ms": 15477.822,
+      "source": ""
+    },
+    {
+      "name": "Module._compile",
+      "ms": 15476.572,
+      "source": ""
+    },
+    {
+      "name": "Module._extensions..js",
+      "ms": 15476.572,
+      "source": ""
+    },
+    {
+      "name": "Module.load",
+      "ms": 15476.572,
+      "source": ""
+    },
+    {
+      "name": "Module._load",
+      "ms": 15476.572,
+      "source": ""
+    },
+    {
+      "name": "执行",
+      "ms": 15473.581,
+      "source": ""
+    },
+    {
+      "name": "js-to-wasm",
+      "ms": 15467.447,
+      "source": ""
+    },
+    {
+      "name": "wasm-function[5192]",
+      "ms": 15462.906,
+      "source": ""
+    },
+    {
+      "name": "f5068",
+      "ms": 15448.131,
+      "source": "豫言模块__Users_zc_repos_yuyan_worktrees_yuyan_豫言编译器_入口_豫_计算函数"
+    },
+    {
+      "name": "f5072",
+      "ms": 15447.049,
+      "source": "入口_《《内部匿名顶层表达式_100》》_提升函数108"
+    },
+    {
+      "name": "f1757",
+      "ms": 15435.641,
+      "source": "并行编译_运行并行编译_提升函数405"
+    },
+    {
+      "name": "f15",
+      "ms": 15435.641,
+      "source": "异常_内建尝试运行_提升函数86"
+    },
+    {
+      "name": "f1130",
+      "ms": 13508.899,
+      "source": "调度器_执行任务图并监视_提升函数216"
+    },
+    {
+      "name": "wasm-to-js",
+      "ms": 11309.636,
+      "source": ""
+    },
+    {
+      "name": "call",
+      "ms": 11293.957,
+      "source": ""
+    },
+    {
+      "name": "f570",
+      "ms": 10729.269,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/控制/异步。豫_满参递归92"
+    },
+    {
+      "name": "f569",
+      "ms": 10130.99,
+      "source": "异步_推进输入输出_提升函数192"
+    },
+    {
+      "name": "f564",
+      "ms": 10124.122,
+      "source": "异步_输入输出多路等待_提升函数189"
+    },
+    {
+      "name": "豫言_异步_输入输出多路等待",
+      "ms": 10111.06,
+      "source": ""
+    },
+    {
+      "name": "f584",
+      "ms": 8835.49,
+      "source": "异步_让出_提升函数205"
+    },
+    {
+      "name": "f167",
+      "ms": 3612.003,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/标准库/数据结构/多态列。豫_满参递归84"
+    },
+    {
+      "name": "f1120",
+      "ms": 3569.554,
+      "source": "调度器_就绪任务_提升函数204"
+    },
+    {
+      "name": "f1113",
+      "ms": 3547.668,
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/构建基础/调度器。豫_满参递归68"
+    },
+    {
+      "name": "f1127",
+      "ms": 760.94,
+      "source": "调度器_执行任务图并监视_提升函数213"
+    },
+    {
+      "name": "f1125",
+      "ms": 726.436,
+      "source": "调度器_执行任务图并监视_提升函数214"
+    },
+    {
+      "name": "f576",
+      "ms": 580.629,
+      "source": "异步_派生可等待_提升函数200"
+    },
+    {
+      "name": "f749",
+      "ms": 574.917,
+      "source": "异步子进程_异步获取输出_提升函数73"
+    }
+  ],
+  "scheduler": [
+    {
+      "name": "f1113",
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/构建基础/调度器。豫_满参递归68",
+      "inclusiveMs": 3547.668,
+      "selfMs": 3545.383
+    },
+    {
+      "name": "f1124",
+      "source": "调度器_执行任务图并监视_提升函数210",
+      "inclusiveMs": 295.709,
+      "selfMs": 128.552
+    },
+    {
+      "name": "f1116",
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/构建基础/调度器。豫_满参递归73",
+      "inclusiveMs": 43.68,
+      "selfMs": 34.823
+    },
+    {
+      "name": "f1120",
+      "source": "调度器_就绪任务_提升函数204",
+      "inclusiveMs": 3569.554,
+      "selfMs": 30.743
+    },
+    {
+      "name": "f1119",
+      "source": "调度器_就绪任务_提升函数203",
+      "inclusiveMs": 14.936,
+      "selfMs": 14.936
+    },
+    {
+      "name": "f1130",
+      "source": "调度器_执行任务图并监视_提升函数216",
+      "inclusiveMs": 13508.899,
+      "selfMs": 6.885
+    },
+    {
+      "name": "f1111",
+      "source": "/Users/zc/repos/yuyan-worktrees/yuyan/库/构建基础/调度器。豫_满参递归62",
+      "inclusiveMs": 6.019,
+      "selfMs": 6.019
+    },
+    {
+      "name": "f1127",
+      "source": "调度器_执行任务图并监视_提升函数213",
+      "inclusiveMs": 760.94,
+      "selfMs": 5.391
+    },
+    {
+      "name": "f1125",
+      "source": "调度器_执行任务图并监视_提升函数214",
+      "inclusiveMs": 726.436,
+      "selfMs": 0
+    },
+    {
+      "name": "f1122",
+      "source": "调度器_执行任务图并监视_提升函数211",
+      "inclusiveMs": 164.151,
+      "selfMs": 0
+    },
+    {
+      "name": "f1121",
+      "source": "调度器_就绪任务_提升函数202",
+      "inclusiveMs": 22.032,
+      "selfMs": 0
+    }
+  ]
+}

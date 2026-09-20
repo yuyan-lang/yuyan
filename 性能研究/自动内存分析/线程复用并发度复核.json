@@ -1,0 +1,45 @@
+{
+  "note": "相同20ms RSS采样的ABBA对照；墙钟来自进程内观测，非无采样验收",
+  "results": [
+    {
+      "i": 0,
+      "jobs": 18,
+      "out": "yy并发复核0.wasm",
+      "code": 0,
+      "samples": 751,
+      "maxRss": 3276718080,
+      "wallMs": 15693.695583,
+      "identical": true
+    },
+    {
+      "i": 1,
+      "jobs": 12,
+      "out": "yy并发复核1.wasm",
+      "code": 0,
+      "samples": 765,
+      "maxRss": 2783444992,
+      "wallMs": 15986.2835,
+      "identical": true
+    },
+    {
+      "i": 2,
+      "jobs": 12,
+      "out": "yy并发复核2.wasm",
+      "code": 0,
+      "samples": 764,
+      "maxRss": 2640035840,
+      "wallMs": 15950.62,
+      "identical": true
+    },
+    {
+      "i": 3,
+      "jobs": 18,
+      "out": "yy并发复核3.wasm",
+      "code": 0,
+      "samples": 769,
+      "maxRss": 3164438528,
+      "wallMs": 16099.744792,
+      "identical": true
+    }
+  ]
+}

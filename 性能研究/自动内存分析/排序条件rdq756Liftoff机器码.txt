@@ -1,0 +1,334 @@
+
+name: rdq756
+index: 808
+kind: wasm function
+compiler: Liftoff
+Body (size = 1248 = 1224 + 24 padding)
+Instructions (size = 1188)
+0x232b479fd540     0  d2800610       movz x16, #0x30
+0x232b479fd544     4  a9be43e7       stp x7, x16, [sp, #-32]!
+0x232b479fd548     8  a9017bfd       stp fp, lr, [sp, #16]
+0x232b479fd54c     c  910043fd       add fp, sp, #0x10 (16)
+0x232b479fd550    10  528064e8       movz w8, #0x327
+0x232b479fd554    14  97fece3f       bl #-0x4c704 (addr 0x232b479b0e50)
+0x232b479fd558    18  d10483ff       sub sp, sp, #0x120 (288)
+0x232b479fd55c    1c  d10503b0       sub x16, fp, #0x140 (320)
+0x232b479fd560    20  d2800811       movz x17, #0x40
+0x232b479fd564    24  d1000631       sub x17, x17, #0x1 (1)
+0x232b479fd568    28  b800461f       str wzr, [x16], #4
+0x232b479fd56c    2c  b5ffffd1       cbnz x17, #-0x8 (addr 0x232b479fd564)
+0x232b479fd570    30  f940e341       ldr x1, [x26, #448]
+0x232b479fd574    34  f943b346       ldr x6, [x26, #1888]
+0x232b479fd578    38  f81b83a6       stur x6, [fp, #-72]
+0x232b479fd57c    3c  f81a83a6       stur x6, [fp, #-88]
+0x232b479fd580    40  f81a03a6       stur x6, [fp, #-96]
+0x232b479fd584    44  f81983a6       stur x6, [fp, #-104]
+0x232b479fd588    48  f81903a6       stur x6, [fp, #-112]
+0x232b479fd58c    4c  f81883a6       stur x6, [fp, #-120]
+0x232b479fd590    50  f81803a6       stur x6, [fp, #-128]
+0x232b479fd594    54  f81783a6       stur x6, [fp, #-136]
+0x232b479fd598    58  f81703a6       stur x6, [fp, #-144]
+0x232b479fd59c    5c  f81683a6       stur x6, [fp, #-152]
+0x232b479fd5a0    60  f81603a6       stur x6, [fp, #-160]
+0x232b479fd5a4    64  f81583a6       stur x6, [fp, #-168]
+0x232b479fd5a8    68  f81503a6       stur x6, [fp, #-176]
+0x232b479fd5ac    6c  f81483a6       stur x6, [fp, #-184]
+0x232b479fd5b0    70  f81403a6       stur x6, [fp, #-192]
+0x232b479fd5b4    74  f81383a6       stur x6, [fp, #-200]
+0x232b479fd5b8    78  f81303a6       stur x6, [fp, #-208]
+0x232b479fd5bc    7c  f81283a6       stur x6, [fp, #-216]
+0x232b479fd5c0    80  f81203a6       stur x6, [fp, #-224]
+0x232b479fd5c4    84  f8520350       ldur x16, [x26, #-224]
+0x232b479fd5c8    88  eb3063ff       cmp sp, x16
+0x232b479fd5cc    8c  54001bc9       b.ls #+0x378 (addr 0x232b479fd944)
+0x232b479fd5d0    90  cb030001       sub x1, x0, x3
+0x232b479fd5d4    94  92400021       and x1, x1, #0x1
+0x232b479fd5d8    98  eb1f003f       cmp x1, xzr
+0x232b479fd5dc    9c  1a9f17e1       cset w1, eq
+0x232b479fd5e0    a0  6b1f003f       cmp w1, wzr
+0x232b479fd5e4    a4  54000641       b.ne #+0xc8 (addr 0x232b479fd6ac)
+0x232b479fd5e8    a8  2a0303e1       mov w1, w3
+0x232b479fd5ec    ac  b840f0a6       ldur w6, [x5, #15]
+0x232b479fd5f0    b0  6b06003f       cmp w1, w6
+0x232b479fd5f4    b4  54001ba2       b.hs #+0x374 (addr 0x232b479fd968)
+0x232b479fd5f8    b8  531d7021       lsl w1, w1, #3
+0x232b479fd5fc    bc  91005cb0       add x16, x5, #0x17 (23)
+0x232b479fd600    c0  f8614a06       ldr x6, [x16, w1, uxtw]
+0x232b479fd604    c4  eb06005f       cmp x2, x6
+0x232b479fd608    c8  1a9fd7e1       cset w1, gt
+0x232b479fd60c    cc  6b1f003f       cmp w1, wzr
+0x232b479fd610    d0  54000400       b.eq #+0x80 (addr 0x232b479fd690)
+0x232b479fd614    d4  2a0303e8       mov w8, w3
+0x232b479fd618    d8  b840f0a9       ldur w9, [x5, #15]
+0x232b479fd61c    dc  6b09011f       cmp w8, w9
+0x232b479fd620    e0  54001a62       b.hs #+0x34c (addr 0x232b479fd96c)
+0x232b479fd624    e4  531d7108       lsl w8, w8, #3
+0x232b479fd628    e8  91005cb0       add x16, x5, #0x17 (23)
+0x232b479fd62c    ec  f8684a09       ldr x9, [x16, w8, uxtw]
+0x232b479fd630    f0  2a0403e8       mov w8, w4
+0x232b479fd634    f4  b840f0aa       ldur w10, [x5, #15]
+0x232b479fd638    f8  6b0a011f       cmp w8, w10
+0x232b479fd63c    fc  540019a2       b.hs #+0x334 (addr 0x232b479fd970)
+0x232b479fd640   100  531d7108       lsl w8, w8, #3
+0x232b479fd644   104  91005cb0       add x16, x5, #0x17 (23)
+0x232b479fd648   108  f8684a0a       ldr x10, [x16, w8, uxtw]
+0x232b479fd64c   10c  2a0303e8       mov w8, w3
+0x232b479fd650   110  b840f0ab       ldur w11, [x5, #15]
+0x232b479fd654   114  6b0b011f       cmp w8, w11
+0x232b479fd658   118  540018e2       b.hs #+0x31c (addr 0x232b479fd974)
+0x232b479fd65c   11c  531d7108       lsl w8, w8, #3
+0x232b479fd660   120  91005cb0       add x16, x5, #0x17 (23)
+0x232b479fd664   124  f8284a0a       str x10, [x16, w8, uxtw]
+0x232b479fd668   128  2a0403e8       mov w8, w4
+0x232b479fd66c   12c  b840f0ab       ldur w11, [x5, #15]
+0x232b479fd670   130  6b0b011f       cmp w8, w11
+0x232b479fd674   134  54001822       b.hs #+0x304 (addr 0x232b479fd978)
+0x232b479fd678   138  531d7108       lsl w8, w8, #3
+0x232b479fd67c   13c  91005cb0       add x16, x5, #0x17 (23)
+0x232b479fd680   140  f8284a09       str x9, [x16, w8, uxtw]
+0x232b479fd684   144  91000488       add x8, x4, #0x1 (1)
+0x232b479fd688   148  aa0803e4       mov x4, x8
+0x232b479fd68c   14c  14000006       b #+0x18 (addr 0x232b479fd6a4)
+0x232b479fd690   150  aa0403e8       mov x8, x4
+0x232b479fd694   154  928020f0       movn x16, #0x107
+0x232b479fd698   158  f8706ba4       ldr x4, [fp, x16]
+0x232b479fd69c   15c  f85103a9       ldur x9, [fp, #-240]
+0x232b479fd6a0   160  f85083aa       ldur x10, [fp, #-248]
+0x232b479fd6a4   164  9100046b       add x11, x3, #0x1 (1)
+0x232b479fd6a8   168  1400000a       b #+0x28 (addr 0x232b479fd6d0)
+0x232b479fd6ac   16c  aa0403e8       mov x8, x4
+0x232b479fd6b0   170  aa0303eb       mov x11, x3
+0x232b479fd6b4   174  928027f0       movn x16, #0x13f
+0x232b479fd6b8   178  b8706ba1       ldr w1, [fp, x16]
+0x232b479fd6bc   17c  928020f0       movn x16, #0x107
+0x232b479fd6c0   180  f8706ba4       ldr x4, [fp, x16]
+0x232b479fd6c4   184  f85183a6       ldur x6, [fp, #-232]
+0x232b479fd6c8   188  f85103a9       ldur x9, [fp, #-240]
+0x232b479fd6cc   18c  f85083aa       ldur x10, [fp, #-248]
+0x232b479fd6d0   190  f81e03a5       stur x5, [fp, #-32]
+0x232b479fd6d4   194  f81d83a0       stur x0, [fp, #-40]
+0x232b479fd6d8   198  f81d03a2       stur x2, [fp, #-48]
+0x232b479fd6dc   19c  f81c83ab       stur x11, [fp, #-56]
+0x232b479fd6e0   1a0  f81c03a8       stur x8, [fp, #-64]
+0x232b479fd6e4   1a4  f81183a6       stur x6, [fp, #-232]
+0x232b479fd6e8   1a8  f81103a9       stur x9, [fp, #-240]
+0x232b479fd6ec   1ac  f81083aa       stur x10, [fp, #-248]
+0x232b479fd6f0   1b0  928020f0       movn x16, #0x107
+0x232b479fd6f4   1b4  f8306ba4       str x4, [fp, x16]
+0x232b479fd6f8   1b8  928027f0       movn x16, #0x13f
+0x232b479fd6fc   1bc  b8306ba1       str w1, [fp, x16]
+0x232b479fd700   1c0  f85c83a0       ldur x0, [fp, #-56]
+0x232b479fd704   1c4  f85d83a1       ldur x1, [fp, #-40]
+0x232b479fd708   1c8  eb01001f       cmp x0, x1
+0x232b479fd70c   1cc  1a9f17e0       cset w0, eq
+0x232b479fd710   1d0  6b1f001f       cmp w0, wzr
+0x232b479fd714   1d4  54000040       b.eq #+0x8 (addr 0x232b479fd71c)
+0x232b479fd718   1d8  14000082       b #+0x208 (addr 0x232b479fd920)
+0x232b479fd71c   1dc  f85e03a0       ldur x0, [fp, #-32]
+0x232b479fd720   1e0  f85c83a1       ldur x1, [fp, #-56]
+0x232b479fd724   1e4  2a0103e1       mov w1, w1
+0x232b479fd728   1e8  b840f002       ldur w2, [x0, #15]
+0x232b479fd72c   1ec  6b02003f       cmp w1, w2
+0x232b479fd730   1f0  54001262       b.hs #+0x24c (addr 0x232b479fd97c)
+0x232b479fd734   1f4  531d7021       lsl w1, w1, #3
+0x232b479fd738   1f8  91005c10       add x16, x0, #0x17 (23)
+0x232b479fd73c   1fc  f8614a02       ldr x2, [x16, w1, uxtw]
+0x232b479fd740   200  f85d03a0       ldur x0, [fp, #-48]
+0x232b479fd744   204  eb02001f       cmp x0, x2
+0x232b479fd748   208  1a9fd7e0       cset w0, gt
+0x232b479fd74c   20c  6b1f001f       cmp w0, wzr
+0x232b479fd750   210  54000520       b.eq #+0xa4 (addr 0x232b479fd7f4)
+0x232b479fd754   214  f85e03a1       ldur x1, [fp, #-32]
+0x232b479fd758   218  f85c83a3       ldur x3, [fp, #-56]
+0x232b479fd75c   21c  2a0303e3       mov w3, w3
+0x232b479fd760   220  b840f024       ldur w4, [x1, #15]
+0x232b479fd764   224  6b04007f       cmp w3, w4
+0x232b479fd768   228  540010c2       b.hs #+0x218 (addr 0x232b479fd980)
+0x232b479fd76c   22c  531d7063       lsl w3, w3, #3
+0x232b479fd770   230  91005c30       add x16, x1, #0x17 (23)
+0x232b479fd774   234  f8634a04       ldr x4, [x16, w3, uxtw]
+0x232b479fd778   238  f85e03a1       ldur x1, [fp, #-32]
+0x232b479fd77c   23c  f85c03a3       ldur x3, [fp, #-64]
+0x232b479fd780   240  2a0303e3       mov w3, w3
+0x232b479fd784   244  b840f025       ldur w5, [x1, #15]
+0x232b479fd788   248  6b05007f       cmp w3, w5
+0x232b479fd78c   24c  54000fc2       b.hs #+0x1f8 (addr 0x232b479fd984)
+0x232b479fd790   250  531d7063       lsl w3, w3, #3
+0x232b479fd794   254  91005c30       add x16, x1, #0x17 (23)
+0x232b479fd798   258  f8634a05       ldr x5, [x16, w3, uxtw]
+0x232b479fd79c   25c  f85e03a1       ldur x1, [fp, #-32]
+0x232b479fd7a0   260  f85c83a3       ldur x3, [fp, #-56]
+0x232b479fd7a4   264  2a0303e3       mov w3, w3
+0x232b479fd7a8   268  b840f026       ldur w6, [x1, #15]
+0x232b479fd7ac   26c  6b06007f       cmp w3, w6
+0x232b479fd7b0   270  54000ec2       b.hs #+0x1d8 (addr 0x232b479fd988)
+0x232b479fd7b4   274  531d7063       lsl w3, w3, #3
+0x232b479fd7b8   278  91005c30       add x16, x1, #0x17 (23)
+0x232b479fd7bc   27c  f8234a05       str x5, [x16, w3, uxtw]
+0x232b479fd7c0   280  f85e03a1       ldur x1, [fp, #-32]
+0x232b479fd7c4   284  f85c03a3       ldur x3, [fp, #-64]
+0x232b479fd7c8   288  2a0303e3       mov w3, w3
+0x232b479fd7cc   28c  b840f026       ldur w6, [x1, #15]
+0x232b479fd7d0   290  6b06007f       cmp w3, w6
+0x232b479fd7d4   294  54000dc2       b.hs #+0x1b8 (addr 0x232b479fd98c)
+0x232b479fd7d8   298  531d7063       lsl w3, w3, #3
+0x232b479fd7dc   29c  91005c30       add x16, x1, #0x17 (23)
+0x232b479fd7e0   2a0  f8234a04       str x4, [x16, w3, uxtw]
+0x232b479fd7e4   2a4  f85c03a1       ldur x1, [fp, #-64]
+0x232b479fd7e8   2a8  91000421       add x1, x1, #0x1 (1)
+0x232b479fd7ec   2ac  aa0103e3       mov x3, x1
+0x232b479fd7f0   2b0  14000006       b #+0x18 (addr 0x232b479fd808)
+0x232b479fd7f4   2b4  f85c03a1       ldur x1, [fp, #-64]
+0x232b479fd7f8   2b8  928020f0       movn x16, #0x107
+0x232b479fd7fc   2bc  f8706ba3       ldr x3, [fp, x16]
+0x232b479fd800   2c0  f85103a4       ldur x4, [fp, #-240]
+0x232b479fd804   2c4  f85083a5       ldur x5, [fp, #-248]
+0x232b479fd808   2c8  f85c83a6       ldur x6, [fp, #-56]
+0x232b479fd80c   2cc  910004c6       add x6, x6, #0x1 (1)
+0x232b479fd810   2d0  f85e03a8       ldur x8, [fp, #-32]
+0x232b479fd814   2d4  2a0603e9       mov w9, w6
+0x232b479fd818   2d8  b840f10a       ldur w10, [x8, #15]
+0x232b479fd81c   2dc  6b0a013f       cmp w9, w10
+0x232b479fd820   2e0  54000b82       b.hs #+0x170 (addr 0x232b479fd990)
+0x232b479fd824   2e4  531d7129       lsl w9, w9, #3
+0x232b479fd828   2e8  91005d10       add x16, x8, #0x17 (23)
+0x232b479fd82c   2ec  f8694a0a       ldr x10, [x16, w9, uxtw]
+0x232b479fd830   2f0  f85d03a2       ldur x2, [fp, #-48]
+0x232b479fd834   2f4  eb0a005f       cmp x2, x10
+0x232b479fd838   2f8  1a9fd7e2       cset w2, gt
+0x232b479fd83c   2fc  6b1f005f       cmp w2, wzr
+0x232b479fd840   300  54000480       b.eq #+0x90 (addr 0x232b479fd8d0)
+0x232b479fd844   304  f85e03a0       ldur x0, [fp, #-32]
+0x232b479fd848   308  2a0603e8       mov w8, w6
+0x232b479fd84c   30c  b840f009       ldur w9, [x0, #15]
+0x232b479fd850   310  6b09011f       cmp w8, w9
+0x232b479fd854   314  54000a02       b.hs #+0x140 (addr 0x232b479fd994)
+0x232b479fd858   318  531d7108       lsl w8, w8, #3
+0x232b479fd85c   31c  91005c10       add x16, x0, #0x17 (23)
+0x232b479fd860   320  f8684a09       ldr x9, [x16, w8, uxtw]
+0x232b479fd864   324  f85e03a0       ldur x0, [fp, #-32]
+0x232b479fd868   328  2a0103e4       mov w4, w1
+0x232b479fd86c   32c  b840f008       ldur w8, [x0, #15]
+0x232b479fd870   330  6b08009f       cmp w4, w8
+0x232b479fd874   334  54000922       b.hs #+0x124 (addr 0x232b479fd998)
+0x232b479fd878   338  531d7084       lsl w4, w4, #3
+0x232b479fd87c   33c  91005c10       add x16, x0, #0x17 (23)
+0x232b479fd880   340  f8644a08       ldr x8, [x16, w4, uxtw]
+0x232b479fd884   344  f85e03a0       ldur x0, [fp, #-32]
+0x232b479fd888   348  2a0603e4       mov w4, w6
+0x232b479fd88c   34c  b840f005       ldur w5, [x0, #15]
+0x232b479fd890   350  6b05009f       cmp w4, w5
+0x232b479fd894   354  54000842       b.hs #+0x108 (addr 0x232b479fd99c)
+0x232b479fd898   358  531d7084       lsl w4, w4, #3
+0x232b479fd89c   35c  91005c10       add x16, x0, #0x17 (23)
+0x232b479fd8a0   360  f8244a08       str x8, [x16, w4, uxtw]
+0x232b479fd8a4   364  f85e03a0       ldur x0, [fp, #-32]
+0x232b479fd8a8   368  2a0103e4       mov w4, w1
+0x232b479fd8ac   36c  b840f005       ldur w5, [x0, #15]
+0x232b479fd8b0   370  6b05009f       cmp w4, w5
+0x232b479fd8b4   374  54000762       b.hs #+0xec (addr 0x232b479fd9a0)
+0x232b479fd8b8   378  531d7084       lsl w4, w4, #3
+0x232b479fd8bc   37c  91005c10       add x16, x0, #0x17 (23)
+0x232b479fd8c0   380  f8244a09       str x9, [x16, w4, uxtw]
+0x232b479fd8c4   384  91000420       add x0, x1, #0x1 (1)
+0x232b479fd8c8   388  aa0003e1       mov x1, x0
+0x232b479fd8cc   38c  14000005       b #+0x14 (addr 0x232b479fd8e0)
+0x232b479fd8d0   390  aa0103e0       mov x0, x1
+0x232b479fd8d4   394  aa0303e1       mov x1, x3
+0x232b479fd8d8   398  aa0503e8       mov x8, x5
+0x232b479fd8dc   39c  aa0403e9       mov x9, x4
+0x232b479fd8e0   3a0  910004c3       add x3, x6, #0x1 (1)
+0x232b479fd8e4   3a4  f84470f0       ldur x16, [x7, #71]
+0x232b479fd8e8   3a8  b94c9e11       ldr w17, [x16, #3228]
+0x232b479fd8ec   3ac  7107e231       subs w17, w17, #0x1f8 (504)
+0x232b479fd8f0   3b0  b90c9e11       str w17, [x16, #3228]
+0x232b479fd8f4   3b4  54000584       b.mi #+0xb0 (addr 0x232b479fd9a4)
+0x232b479fd8f8   3b8  f81c83a3       stur x3, [fp, #-56]
+0x232b479fd8fc   3bc  f81c03a0       stur x0, [fp, #-64]
+0x232b479fd900   3c0  f81183aa       stur x10, [fp, #-232]
+0x232b479fd904   3c4  f81103a9       stur x9, [fp, #-240]
+0x232b479fd908   3c8  f81083a8       stur x8, [fp, #-248]
+0x232b479fd90c   3cc  928020f0       movn x16, #0x107
+0x232b479fd910   3d0  f8306ba1       str x1, [fp, x16]
+0x232b479fd914   3d4  928027f0       movn x16, #0x13f
+0x232b479fd918   3d8  b8306ba2       str w2, [fp, x16]
+0x232b479fd91c   3dc  17ffff79       b #-0x21c (addr 0x232b479fd700)
+0x232b479fd920   3e0  f85c03a0       ldur x0, [fp, #-64]
+0x232b479fd924   3e4  f84470f0       ldur x16, [x7, #71]
+0x232b479fd928   3e8  b94c9e11       ldr w17, [x16, #3228]
+0x232b479fd92c   3ec  71108231       subs w17, w17, #0x420 (1056)
+0x232b479fd930   3f0  b90c9e11       str w17, [x16, #3228]
+0x232b479fd934   3f4  540004e4       b.mi #+0x9c (addr 0x232b479fd9d0)
+0x232b479fd938   3f8  910003bf       mov sp, fp
+0x232b479fd93c   3fc  a8c17bfd       ldp fp, lr, [sp], #16
+0x232b479fd940   400  d65f03c0       ret
+0x232b479fd944   404  a9be13e3       stp x3, x4, [sp, #-32]!
+0x232b479fd948   408  a9017fe5       stp x5, xzr, [sp, #16]
+0x232b479fd94c   40c  a9bf0be0       stp x0, x2, [sp, #-16]!
+0x232b479fd950   410  97fecdac       bl #-0x4c950 (addr 0x232b479b1000)
+0x232b479fd954   414  a94113e3       ldp x3, x4, [sp, #16]
+0x232b479fd958   418  a8c20be0       ldp x0, x2, [sp], #32
+0x232b479fd95c   41c  a8c17fe5       ldp x5, xzr, [sp], #16
+0x232b479fd960   420  f85f03a7       ldur x7, [fp, #-16]
+0x232b479fd964   424  17ffff1b       b #-0x394 (addr 0x232b479fd5d0)
+0x232b479fd968   428  97fecd22       bl #-0x4cb78 (addr 0x232b479b0df0)
+0x232b479fd96c   42c  97fecd21       bl #-0x4cb7c (addr 0x232b479b0df0)
+0x232b479fd970   430  97fecd20       bl #-0x4cb80 (addr 0x232b479b0df0)
+0x232b479fd974   434  97fecd1f       bl #-0x4cb84 (addr 0x232b479b0df0)
+0x232b479fd978   438  97fecd1e       bl #-0x4cb88 (addr 0x232b479b0df0)
+0x232b479fd97c   43c  97fecd1d       bl #-0x4cb8c (addr 0x232b479b0df0)
+0x232b479fd980   440  97fecd1c       bl #-0x4cb90 (addr 0x232b479b0df0)
+0x232b479fd984   444  97fecd1b       bl #-0x4cb94 (addr 0x232b479b0df0)
+0x232b479fd988   448  97fecd1a       bl #-0x4cb98 (addr 0x232b479b0df0)
+0x232b479fd98c   44c  97fecd19       bl #-0x4cb9c (addr 0x232b479b0df0)
+0x232b479fd990   450  97fecd18       bl #-0x4cba0 (addr 0x232b479b0df0)
+0x232b479fd994   454  97fecd17       bl #-0x4cba4 (addr 0x232b479b0df0)
+0x232b479fd998   458  97fecd16       bl #-0x4cba8 (addr 0x232b479b0df0)
+0x232b479fd99c   45c  97fecd15       bl #-0x4cbac (addr 0x232b479b0df0)
+0x232b479fd9a0   460  97fecd14       bl #-0x4cbb0 (addr 0x232b479b0df0)
+0x232b479fd9a4   464  a9be27e8       stp x8, x9, [sp, #-32]!
+0x232b479fd9a8   468  a9017fea       stp x10, xzr, [sp, #16]
+0x232b479fd9ac   46c  a9be07e0       stp x0, x1, [sp, #-32]!
+0x232b479fd9b0   470  a9010fe2       stp x2, x3, [sp, #16]
+0x232b479fd9b4   474  97fecd23       bl #-0x4cb74 (addr 0x232b479b0e40)
+0x232b479fd9b8   478  a9410fe2       ldp x2, x3, [sp, #16]
+0x232b479fd9bc   47c  a8c207e0       ldp x0, x1, [sp], #32
+0x232b479fd9c0   480  a9417fea       ldp x10, xzr, [sp, #16]
+0x232b479fd9c4   484  a8c227e8       ldp x8, x9, [sp], #32
+0x232b479fd9c8   488  f85f03a7       ldur x7, [fp, #-16]
+0x232b479fd9cc   48c  17ffffcb       b #-0xd4 (addr 0x232b479fd8f8)
+0x232b479fd9d0   490  a9bf7fe0       stp x0, xzr, [sp, #-16]!
+0x232b479fd9d4   494  97fecd1b       bl #-0x4cb94 (addr 0x232b479b0e40)
+0x232b479fd9d8   498  a8c17fe0       ldp x0, xzr, [sp], #16
+0x232b479fd9dc   49c  f85f03a7       ldur x7, [fp, #-16]
+0x232b479fd9e0   4a0  17ffffd6       b #-0xa8 (addr 0x232b479fd938)
+
+Source positions:
+ pc offset  position
+       410         0  statement
+       428        28  statement
+       42c        49  statement
+       430        59  statement
+       434        71  statement
+       438        81  statement
+       43c       121  statement
+       440       142  statement
+       444       152  statement
+       448       164  statement
+       44c       174  statement
+       450       202  statement
+       454       223  statement
+       458       233  statement
+       45c       245  statement
+       460       255  statement
+       474       278  statement
+       494       284  statement
+
+Safepoints (stack slots = 50, entries = 3, byte size = 36)
+0x232b479fd954    414  slots (sp->fp): 00000010000000000000111111111111111111010000000000
+0x232b479fd96c    42c  slots (sp->fp): 00000000000000000000000000000000000000000000000000
+0x232b479fd9b8    478  slots (sp->fp): 00000000000000000000111111111111111111010000100000
+
+RelocInfo (size = 0)
+
+--- End code ---

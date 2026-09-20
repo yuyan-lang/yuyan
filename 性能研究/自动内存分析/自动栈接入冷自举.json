@@ -1,0 +1,29 @@
+{
+  "rows": [
+    {
+      "name": "二代",
+      "seconds": 22.04
+    },
+    {
+      "name": "三代",
+      "seconds": 22.04
+    }
+  ],
+  "hashes": [
+    {
+      "path": "yy栈接入种子.wasm",
+      "sha256": "2019a1db13aa55cc0e182ca21cb5bff5a1248a54aa01b451d8c6d8b20e7b0538"
+    },
+    {
+      "path": "yy栈接入二代.wasm",
+      "sha256": "2019a1db13aa55cc0e182ca21cb5bff5a1248a54aa01b451d8c6d8b20e7b0538"
+    },
+    {
+      "path": "yy栈接入三代.wasm",
+      "sha256": "2019a1db13aa55cc0e182ca21cb5bff5a1248a54aa01b451d8c6d8b20e7b0538"
+    }
+  ],
+  "binariesIdentical": true,
+  "under30EveryMeasuredRun": true,
+  "mode": "Wasm compiler, --do-not-load-cache, --parallel -j 18; default allocation policy, experimental stack flag off"
+}

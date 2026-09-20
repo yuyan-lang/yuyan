@@ -1,0 +1,29 @@
+diff --git "a/yy\346\266\210\346\225\260\347\273\204\345\216\237\345\236\213.wat" "b/yy\350\231\232\347\273\204\345\270\246\346\243\200\345\216\237\345\236\213.wat"
+index 2fcc5d72..c6187dfb 100644
+--- "a/yy\346\266\210\346\225\260\347\273\204\345\216\237\345\236\213.wat"
++++ "b/yy\350\231\232\347\273\204\345\270\246\346\243\200\345\216\237\345\236\213.wat"
+@@ -9213,13 +9213,22 @@ local.get $a2
+ 
+ (func $f90 (type $t2)
+ (param $a0 (ref null eq)) (param $a1 (ref null eq)) (result (ref null eq))
+-(local $n i64) (local $s i64)
++(local $n i64) (local $s i64) (local $len i64) (local $idx i64)
+ local.get $a1 call $unbox local.tee $n
+ i64.const 4294967295 i64.gt_u if unreachable end
++local.get $n local.set $len
+ (block $done
+ (loop $fold
+ local.get $n i64.eqz br_if $done
+-local.get $s local.get $n i64.add local.set $s
++local.get $s
++local.get $n i64.const 1 i64.sub local.tee $idx
++i64.const 4294967295 i64.gt_u if unreachable end
++local.get $idx local.get $len i64.ge_u
++if
++ i32.const 0 array.new_default $ints i32.const 0 array.get $ints drop unreachable
++end
++local.get $idx i64.const 1 i64.add
++i64.add local.set $s
+ local.get $n i64.const 1 i64.sub local.set $n
+ br $fold
+ ))

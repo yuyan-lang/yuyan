@@ -1,0 +1,66 @@
+{
+  "lookupFunctionIdentical": true,
+  "lookupSelfMs": 782.365,
+  "top": [
+    {
+      "name": "",
+      "ms": 13714.906
+    },
+    {
+      "name": "f1113",
+      "ms": 782.365
+    },
+    {
+      "name": "f1127",
+      "ms": 158.859
+    },
+    {
+      "name": "f202",
+      "ms": 137.415
+    },
+    {
+      "name": "f1122",
+      "ms": 119.447
+    },
+    {
+      "name": "receiveMessageOnPort",
+      "ms": 50.785
+    },
+    {
+      "name": "f1121",
+      "ms": 42.228
+    },
+    {
+      "name": "f152",
+      "ms": 41.366
+    },
+    {
+      "name": "writeSync",
+      "ms": 40.87
+    },
+    {
+      "name": "f1123",
+      "ms": 31.867
+    },
+    {
+      "name": "(garbage collector)",
+      "ms": 23.476
+    },
+    {
+      "name": "f167",
+      "ms": 22.509
+    },
+    {
+      "name": "f184",
+      "ms": 20.174
+    },
+    {
+      "name": "f285",
+      "ms": 17.777
+    },
+    {
+      "name": "f1695",
+      "ms": 14.619
+    }
+  ]
+}

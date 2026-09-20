@@ -1,0 +1,20 @@
+define internal fastcc range(i64 0, -1) i64 @"\E8\9E\8D\E5\90\88\E6\A0\91"(i64 noundef %0) unnamed_addr #4 {
+  %2 = icmp eq i64 %0, 0
+  br i1 %2, label %3, label %5
+
+3:                                                ; preds = %1, %5
+  %4 = phi i64 [ %8, %5 ], [ 1, %1 ]
+  ret i64 %4
+
+5:                                                ; preds = %1
+  %6 = add i64 %0, -1
+  %7 = tail call fastcc i64 @"\E8\9E\8D\E5\90\88\E6\A0\91"(i64 noundef %6)
+  %8 = shl i64 %7, 1
+  br label %3
+}
+
+; Function Attrs: mustprogress nofree nounwind willreturn allockind("alloc,uninitialized") allocsize(0) memory(inaccessiblemem: readwrite, errnomem: write)
+declare noalias noundef ptr @malloc(i32 noundef) local_unnamed_addr #5
+
+; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+declare void @llvm.lifetime.end.p0(ptr captures(none)) #1

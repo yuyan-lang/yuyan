@@ -1,0 +1,121 @@
+[
+  {
+    "文件": "yy本轮快速排序.wasm",
+    "导入": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "导出": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  {
+    "文件": "yy消融裸联.wasm",
+    "导入": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "导出": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  {
+    "文件": "yy内核C.wasm",
+    "导入": [
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "args_get",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "args_sizes_get",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "clock_time_get",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "fd_close",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "fd_fdstat_get",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "fd_seek",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "fd_write",
+        "kind": "function"
+      },
+      {
+        "module": "wasi_snapshot_preview1",
+        "name": "proc_exit",
+        "kind": "function"
+      }
+    ],
+    "导出": [
+      {
+        "name": "memory",
+        "kind": "memory"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  }
+]

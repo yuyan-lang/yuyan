@@ -1,0 +1,389 @@
+{
+  "说明": "直接执行24次同一根私有函数，100微秒CPU采样，仅用于热点定位，不作耗时成绩",
+  "rows": [
+    {
+      "name": "stack766_762",
+      "ms": 899.286
+    },
+    {
+      "name": "stack766_752q",
+      "ms": 30.672
+    },
+    {
+      "name": "compileForInternalLoader",
+      "ms": 19.334
+    },
+    {
+      "name": "stack766_756q",
+      "ms": 10.334000000000001
+    },
+    {
+      "name": "wasm-function[842]",
+      "ms": 4.785
+    },
+    {
+      "name": "",
+      "ms": 3.224999999999999
+    },
+    {
+      "name": "(program)",
+      "ms": 0.685
+    },
+    {
+      "name": "Module",
+      "ms": 0.656
+    },
+    {
+      "name": "(garbage collector)",
+      "ms": 0.629
+    },
+    {
+      "name": "requireBuiltin",
+      "ms": 0.613
+    },
+    {
+      "name": "(idle)",
+      "ms": 0.609
+    },
+    {
+      "name": "internalBinding",
+      "ms": 0.46299999999999997
+    },
+    {
+      "name": "ReadStream",
+      "ms": 0.312
+    },
+    {
+      "name": "prepareExecution",
+      "ms": 0.306
+    },
+    {
+      "name": "get hasSubscribers",
+      "ms": 0.16
+    },
+    {
+      "name": "wrappedCwd",
+      "ms": 0.158
+    },
+    {
+      "name": "copyImpl",
+      "ms": 0.157
+    },
+    {
+      "name": "initializeModuleLoaders",
+      "ms": 0.156
+    },
+    {
+      "name": "fromStringFast",
+      "ms": 0.155
+    },
+    {
+      "name": "createUnsafeBuffer",
+      "ms": 0.155
+    },
+    {
+      "name": "debug",
+      "ms": 0.155
+    },
+    {
+      "name": "getOptionValue",
+      "ms": 0.154
+    },
+    {
+      "name": "tryStatSync",
+      "ms": 0.154
+    },
+    {
+      "name": "js-to-wasm",
+      "ms": 0.154
+    },
+    {
+      "name": "RegExp: %[dfijoOs]",
+      "ms": 0.153
+    },
+    {
+      "name": "prepareMainThreadExecution",
+      "ms": 0.153
+    },
+    {
+      "name": "emit",
+      "ms": 0.153
+    },
+    {
+      "name": "onceWrapper",
+      "ms": 0.153
+    },
+    {
+      "name": "wrapSafe",
+      "ms": 0.153
+    },
+    {
+      "name": "runScriptInThisContext",
+      "ms": 0.153
+    },
+    {
+      "name": "SafeWeakMap",
+      "ms": 0.152
+    },
+    {
+      "name": "resolve",
+      "ms": 0.152
+    },
+    {
+      "name": "getStdin",
+      "ms": 0.152
+    },
+    {
+      "name": "nextTick",
+      "ms": 0.152
+    },
+    {
+      "name": "evalTypeScript",
+      "ms": 0.152
+    },
+    {
+      "name": "BuiltinModule",
+      "ms": 0.151
+    },
+    {
+      "name": "makeNodeErrorWithCode",
+      "ms": 0.151
+    },
+    {
+      "name": "set",
+      "ms": 0.151
+    },
+    {
+      "name": "addListener",
+      "ms": 0.151
+    },
+    {
+      "name": "initializeSourceMapsHandlers",
+      "ms": 0.151
+    },
+    {
+      "name": "read",
+      "ms": 0.151
+    },
+    {
+      "name": "onEofChunk",
+      "ms": 0.151
+    },
+    {
+      "name": "get href",
+      "ms": 0.148
+    },
+    {
+      "name": "processTicksAndRejections",
+      "ms": 0.147
+    },
+    {
+      "name": "wrapResolveFilename",
+      "ms": 0.144
+    },
+    {
+      "name": "next",
+      "ms": 0.135
+    },
+    {
+      "name": "getAllBuiltinModuleIds",
+      "ms": 0.018
+    },
+    {
+      "name": "(root)",
+      "ms": 0
+    },
+    {
+      "name": "setupPrepareStackTrace",
+      "ms": 0
+    },
+    {
+      "name": "E",
+      "ms": 0
+    },
+    {
+      "name": "getExpectedArgumentLength",
+      "ms": 0
+    },
+    {
+      "name": "channel",
+      "ms": 0
+    },
+    {
+      "name": "Channel",
+      "ms": 0
+    },
+    {
+      "name": "from",
+      "ms": 0
+    },
+    {
+      "name": "fromString",
+      "ms": 0
+    },
+    {
+      "name": "setupProcessObject",
+      "ms": 0
+    },
+    {
+      "name": "setupBuffer",
+      "ms": 0
+    },
+    {
+      "name": "createPool",
+      "ms": 0
+    },
+    {
+      "name": "createGlobalConsole",
+      "ms": 0
+    },
+    {
+      "name": "patchProcessObject",
+      "ms": 0
+    },
+    {
+      "name": "addReadOnlyProcessAlias",
+      "ms": 0
+    },
+    {
+      "name": "initializeCJS",
+      "ms": 0
+    },
+    {
+      "name": "Module._initPaths",
+      "ms": 0
+    },
+    {
+      "name": "readStdin",
+      "ms": 0
+    },
+    {
+      "name": "get ReadStream",
+      "ms": 0
+    },
+    {
+      "name": "lazyLoadStreams",
+      "ms": 0
+    },
+    {
+      "name": "Readable",
+      "ms": 0
+    },
+    {
+      "name": "construct",
+      "ms": 0
+    },
+    {
+      "name": "Readable.on",
+      "ms": 0
+    },
+    {
+      "name": "Readable.resume",
+      "ms": 0
+    },
+    {
+      "name": "logger",
+      "ms": 0
+    },
+    {
+      "name": "onConstruct",
+      "ms": 0
+    },
+    {
+      "name": "maybeReadMore_",
+      "ms": 0
+    },
+    {
+      "name": "Readable.read",
+      "ms": 0
+    },
+    {
+      "name": "ReadStream._read",
+      "ms": 0
+    },
+    {
+      "name": "endReadableNT",
+      "ms": 0
+    },
+    {
+      "name": "createModule",
+      "ms": 0
+    },
+    {
+      "name": "tryGetCwd",
+      "ms": 0
+    },
+    {
+      "name": "compileScript",
+      "ms": 0
+    },
+    {
+      "name": "makeContextifyScript",
+      "ms": 0
+    },
+    {
+      "name": "registerImportModuleDynamically",
+      "ms": 0
+    },
+    {
+      "name": "evalFunction",
+      "ms": 0
+    },
+    {
+      "name": "runScriptInContext",
+      "ms": 0
+    },
+    {
+      "name": "Module._compile",
+      "ms": 0
+    },
+    {
+      "name": "require",
+      "ms": 0
+    },
+    {
+      "name": "Module.require",
+      "ms": 0
+    },
+    {
+      "name": "wrapModuleLoad",
+      "ms": 0
+    },
+    {
+      "name": "Module._load",
+      "ms": 0
+    },
+    {
+      "name": "resolveForCJSWithHooks",
+      "ms": 0
+    },
+    {
+      "name": "defaultResolveImplForCJSLoading",
+      "ms": 0
+    },
+    {
+      "name": "readFileSync",
+      "ms": 0
+    },
+    {
+      "name": "stack766_766",
+      "ms": 0
+    },
+    {
+      "name": "wrapper",
+      "ms": 0
+    },
+    {
+      "name": "copy",
+      "ms": 0
+    },
+    {
+      "name": "Readable.push",
+      "ms": 0
+    },
+    {
+      "name": "readableAddChunkPushByteMode",
+      "ms": 0
+    }
+  ]
+}

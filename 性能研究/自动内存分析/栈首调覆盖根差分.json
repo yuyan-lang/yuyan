@@ -1,0 +1,19 @@
+{
+  "cases": 2051,
+  "elementChecks": 1049600,
+  "dirtyReuse": true,
+  "errors": [
+    {
+      "n": 0,
+      "result": "RuntimeError:array element access out of bounds"
+    },
+    {
+      "n": -1,
+      "result": "RuntimeError:unreachable"
+    },
+    {
+      "n": 4294967296,
+      "result": "RuntimeError:unreachable"
+    }
+  ]
+}

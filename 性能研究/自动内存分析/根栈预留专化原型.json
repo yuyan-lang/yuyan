@@ -1,0 +1,6 @@
+{
+  "基准": "yy前导核快速排序.wasm.wat",
+  "替换次数": 1,
+  "增加函数": "\n(func $reserve_root (param $n i64) (result i32) (local $end i32) (local $pages i32)\n local.get $n i64.const 8388607 i64.gt_u if i32.const -1 return end\n local.get $n i32.wrap_i64 i32.const 3 i32.shl i32.const 8 i32.add local.tee $end\n i32.const 65535 i32.add i32.const 16 i32.shr_u local.set $pages\n local.get $pages memory.size i32.gt_u if local.get $pages memory.size i32.sub memory.grow i32.const -1 i32.eq if i32.const -1 return end end\n local.get $end)\n",
+  "说明": "根入口已证明sp恒为0；unsigned上界检查同时拒绝负长度。仅受限原型，未接入编译器。"
+}

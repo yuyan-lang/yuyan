@@ -1,0 +1,146 @@
+[
+  {
+    "name": "斐波那契",
+    "n": 40,
+    "yuyan": {
+      "firstMedianMs": 104.807,
+      "warmMedianMs": 102.383,
+      "processWarmMedians": [
+        101.884,
+        101.868,
+        105.395
+      ]
+    },
+    "c": {
+      "firstMedianMs": 132.274958,
+      "warmMedianMs": 128.36462500000002,
+      "processWarmMedians": [
+        127.958291,
+        128.36462500000002,
+        129.284917
+      ]
+    },
+    "ratio": 0.7975951318363605,
+    "checksum": "102334155"
+  },
+  {
+    "name": "素数筛",
+    "n": 10000000,
+    "yuyan": {
+      "firstMedianMs": 30.613999999999997,
+      "warmMedianMs": 15.841999999999999,
+      "processWarmMedians": [
+        15.841999999999999,
+        15.674000000000001,
+        15.902
+      ]
+    },
+    "c": {
+      "firstMedianMs": 32.003042,
+      "warmMedianMs": 30.253166,
+      "processWarmMedians": [
+        30.022958999999997,
+        30.083208,
+        30.684124999999998
+      ]
+    },
+    "ratio": 0.523647673767433,
+    "checksum": "664579"
+  },
+  {
+    "name": "矩阵乘法",
+    "n": 600,
+    "yuyan": {
+      "firstMedianMs": 178.568,
+      "warmMedianMs": 156.257,
+      "processWarmMedians": [
+        153.846,
+        158.63,
+        156.95000000000002
+      ]
+    },
+    "c": {
+      "firstMedianMs": 185.606041,
+      "warmMedianMs": 187.362042,
+      "processWarmMedians": [
+        188.883291,
+        187.44691699999998,
+        187.31537500000002
+      ]
+    },
+    "ratio": 0.8339842922933131,
+    "checksum": "827280100"
+  },
+  {
+    "name": "树基准",
+    "n": 22,
+    "yuyan": {
+      "firstMedianMs": 0.04,
+      "warmMedianMs": 0.001,
+      "processWarmMedians": [
+        0.002,
+        0.001,
+        0.001
+      ]
+    },
+    "c": {
+      "firstMedianMs": 506.170417,
+      "warmMedianMs": 69.705333,
+      "processWarmMedians": [
+        69.794667,
+        69.65620799999999,
+        69.705333
+      ]
+    },
+    "ratio": 0.000014346104623013565,
+    "checksum": "4194304"
+  },
+  {
+    "name": "数组基准",
+    "n": 10000000,
+    "yuyan": {
+      "firstMedianMs": 11.392,
+      "warmMedianMs": 2.5509999999999997,
+      "processWarmMedians": [
+        2.541,
+        2.518,
+        2.5860000000000003
+      ]
+    },
+    "c": {
+      "firstMedianMs": 16.247666000000002,
+      "warmMedianMs": 10.807374999999999,
+      "processWarmMedians": [
+        10.747333,
+        10.758291999999999,
+        10.882583
+      ]
+    },
+    "ratio": 0.2360425172625175,
+    "checksum": "50000005000000"
+  },
+  {
+    "name": "快速排序",
+    "n": 4000000,
+    "yuyan": {
+      "firstMedianMs": 42.876999999999995,
+      "warmMedianMs": 33.305,
+      "processWarmMedians": [
+        33.217000000000006,
+        33.27,
+        33.766
+      ]
+    },
+    "c": {
+      "firstMedianMs": 42.548875,
+      "warmMedianMs": 33.26925,
+      "processWarmMedians": [
+        32.967583000000005,
+        33.001834,
+        33.959542
+      ]
+    },
+    "ratio": 1.0010745658528521,
+    "checksum": "6000002"
+  }
+]

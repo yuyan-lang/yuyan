@@ -1,0 +1,461 @@
+--- yy循环实排序.wasm.wat	2026-09-19 22:27:50
++++ yy循环双窄原型.wat	2026-09-19 22:40:31
+@@ -223,7 +223,7 @@
+  local.get $r local.get $end local.get $begin i32.sub i32.const 1 i32.add i64.extend_i32_u call $box array.new_fixed $tuple 2)
+ 
+ (type $variant (struct (field i32) (field (ref $tuple))))
+-(type $ints (array (mut i64)))
++(type $ints (array (mut i32)))
+ (type $octs (array (mut i8)))
+ 
+ 
+@@ -105784,7 +105784,7 @@
+ local.get $i2
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ local.get $i4
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a5
+ local.get $i2
+ i64.const 1
+@@ -105856,7 +105856,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ local.get $i4
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a5
+ local.get $a2
+ 
+@@ -106477,6 +106477,7 @@
+ local.get $i3
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i6
+ local.get $i2
+ local.get $i6
+@@ -106490,6 +106491,7 @@
+ local.get $i3
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i8
+ local.get $a0
+ 
+@@ -106497,20 +106499,21 @@
+ local.get $i4
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i9
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i3 i32.wrap_i64
+ local.get $i9
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a10
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i4 i32.wrap_i64
+ local.get $i8
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a11
+ local.get $i3
+ i64.const 1
+@@ -106628,6 +106631,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i6
+ local.get $a2
+ 
+@@ -106645,6 +106649,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i8
+ local.get $a0
+ 
+@@ -106654,6 +106659,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i9
+ local.get $a0
+ 
+@@ -106663,7 +106669,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ local.get $i9
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a10
+ local.get $a0
+ 
+@@ -106673,7 +106679,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ local.get $i8
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a11
+ local.get $a3
+ 
+@@ -106803,6 +106809,7 @@
+ local.get $i3
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i6
+ local.get $i2
+ local.get $i6
+@@ -106816,6 +106823,7 @@
+ local.get $i3
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i8
+ local.get $a0
+ 
+@@ -106823,20 +106831,21 @@
+ local.get $i4
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i9
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i3 i32.wrap_i64
+ local.get $i9
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a10
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i4 i32.wrap_i64
+ local.get $i8
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a11
+ local.get $i3
+ i64.const 1
+@@ -106886,10 +106895,10 @@
+ 
+ (func $rdq756
+ (param $a0 (ref $ints))
+-(param $i1 i64)
++(param $i1 i32)
+ (param $i2 i64)
+-(param $i3 i64)
+-(param $i4 i64)
++(param $i3 i32)
++(param $i4 i32)
+ (result i64) (local $u (ref null eq)) (local $j i64)
+ 
+ (local $a1 (ref null eq))
+@@ -106917,10 +106926,10 @@
+ (local $i9 i64)
+ 
+ 
+-(local $i12 i64)
+-(local $i13 i64)
++(local $i12 i32)
++(local $i13 i32)
+ (local $i14 i64)
+-(local $i15 i64)
++(local $i15 i32)
+ (local $i16 i64)
+ (local $i17 i64)
+ (local $i18 i64)
+@@ -106941,17 +106950,18 @@
+ (loop $self (result i64)
+ local.get $i3
+ local.get $i1
+-i64.eq
++i32.eq
+ local.set $p5
+ local.get $p5
+ if (result i64)
+-local.get $i4
++local.get $i4 i64.extend_i32_u
+ else
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+-local.get $i3 i32.wrap_i64
++local.get $i3
+ array.get $ints
++i64.extend_i32_s
+ local.set $i6
+ local.get $i2
+ local.get $i6
+@@ -106962,37 +106972,39 @@
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+-local.get $i3 i32.wrap_i64
++local.get $i3
+ array.get $ints
++i64.extend_i32_s
+ local.set $i8
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+-local.get $i4 i32.wrap_i64
++local.get $i4
+ array.get $ints
++i64.extend_i32_s
+ local.set $i9
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+-local.get $i3 i32.wrap_i64
++local.get $i3
+ local.get $i9
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a10
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+-local.get $i4 i32.wrap_i64
++local.get $i4
+ local.get $i8
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a11
+ local.get $i3
+-i64.const 1
+-i64.add
++i32.const 1
++i32.add
+ 
+ local.set $i12
+ local.get $i4
+-i64.const 1
+-i64.add
++i32.const 1
++i32.add
+ 
+ local.set $i13
+ local.get $a0
+@@ -107010,8 +107022,8 @@
+ br $self
+ else
+ local.get $i3
+-i64.const 1
+-i64.add
++i32.const 1
++i32.add
+ 
+ local.set $i15
+ local.get $a0
+@@ -107044,10 +107056,10 @@
+ local.get $i3 i64.le_u i32.and
+ if (result i64)
+ local.get $a0
+-local.get $i1
++local.get $i1 i32.wrap_i64
+ local.get $i2
+-local.get $i3
+-local.get $i4
++local.get $i3 i32.wrap_i64
++local.get $i4 i32.wrap_i64
+ return_call $rdq756
+ else
+ local.get $a0
+@@ -107934,6 +107946,7 @@
+ local.get $i6
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i7
+ local.get $a0
+ 
+@@ -107941,26 +107954,28 @@
+ local.get $i2
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i8
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i6 i32.wrap_i64
+ local.get $i8
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a9
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i2 i32.wrap_i64
+ local.get $i7
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a10
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i2 i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i11
+ local.get $a0
+  ref.cast (ref $ints)
+@@ -107977,26 +107992,28 @@
+ local.get $i12
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i13
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i2 i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i14
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i12 i32.wrap_i64
+ local.get $i14
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a15
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i2 i32.wrap_i64
+ local.get $i13
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a16
+ local.get $i12
+ i64.const 1
+@@ -108128,6 +108145,7 @@
+ local.get $i6
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i7
+ local.get $a0
+ 
+@@ -108137,13 +108155,14 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i8
+ local.get $a0
+ 
+ ref.cast (ref $ints)
+ local.get $i6 i32.wrap_i64
+ local.get $i8
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a9
+ local.get $a0
+ 
+@@ -108153,7 +108172,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ local.get $i7
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a10
+ local.get $a0
+ 
+@@ -108163,6 +108182,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i11
+ local.get $a0
+  ref.cast (ref $ints)
+@@ -108184,6 +108204,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i13
+ local.get $a0
+ 
+@@ -108193,6 +108214,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i14
+ local.get $a0
+ 
+@@ -108202,7 +108224,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ local.get $i14
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a15
+ local.get $a0
+ 
+@@ -108212,7 +108234,7 @@
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ local.get $i13
+-array.set $ints ref.null eq
++i32.wrap_i64 array.set $ints ref.null eq
+ local.set $a16
+ local.get $a12
+ 
+@@ -108423,7 +108445,7 @@
+ 
+ local.tee $u ref.test (ref i31) if (result i64) local.get $u ref.cast (ref i31) i31.get_s i64.extend_i32_s else local.get $u ref.cast (ref $big) struct.get $big 0 end
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+-array.new $ints
++call $newints32
+ local.set $a2
+ local.get $a2
+  ref.cast (ref $ints)
+@@ -108454,6 +108476,7 @@
+ i64.const 0
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i6
+ local.get $a1
+ 
+@@ -108467,6 +108490,7 @@
+ local.get $i7
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i8
+ local.get $i6
+ local.get $i8
+@@ -108486,6 +108510,7 @@
+ local.get $i10
+ local.tee $j i64.const 4294967295 i64.gt_u if unreachable end local.get $j i32.wrap_i64
+ array.get $ints
++i64.extend_i32_s
+ local.set $i11
+ local.get $i9
+ local.get $i11
+@@ -109456,4 +109481,5 @@
+ call $f748 drop
+ 
+ )
++(func $newints32 (param i64) (param i32) (result (ref $ints)) local.get 0 i32.wrap_i64 local.get 1 array.new $ints)
+ )
+\ No newline at end of file

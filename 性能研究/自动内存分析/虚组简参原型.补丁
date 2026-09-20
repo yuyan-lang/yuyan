@@ -1,0 +1,26 @@
+--- yy融合数组基准.wasm.wat	2026-09-20 02:06:47
++++ yy虚组简参原型.wat	2026-09-20 03:09:34
+@@ -9481,9 +9481,7 @@
+ i64.const 1
+ i64.sub
+ local.set $v4
+-local.get $v1
+-i64.const 1
+-i64.sub
++local.get $v4
+ local.set $v5
+ local.get $v5
+ local.tee $vx i64.const 4294967295 i64.gt_u if unreachable end
+@@ -9498,12 +9496,10 @@
+ local.get $v6
+ i64.add
+ local.set $v7
+-local.get $v0
+ local.get $v4
+ local.get $v7
+ local.set $v2
+ local.set $v1
+-local.set $v0
+ br $vloop
+ else
+ local.get $v2

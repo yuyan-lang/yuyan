@@ -1,0 +1,18 @@
+[
+  {
+    "name": "纯调用证明",
+    "passed": true
+  },
+  {
+    "name": "纯调用复用",
+    "passed": true
+  },
+  {
+    "name": "折叠摘要",
+    "passed": true
+  },
+  {
+    "name": "创建证明",
+    "passed": true
+  }
+]

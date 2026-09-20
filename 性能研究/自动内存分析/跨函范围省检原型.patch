@@ -1,0 +1,45 @@
+--- yy就绪索引核快速排序.wasm.wat	2026-09-20 14:27:02
++++ yy跨函范围省检原型.wat	2026-09-20 14:36:10
+@@ -109932,21 +109932,13 @@
+ local.get $sv0
+ local.set $sp
+ local.get $sv6
+-local.tee $sj i64.const 4294967295 i64.gt_u if unreachable end
+- local.get $sj i32.wrap_i64 local.tee $si
+-local.get $sp i32.load local.tee $sl7
+-i32.ge_u
+- if call $stack_bad drop unreachable end
++i32.wrap_i64 local.set $si
+  local.get $sp local.get $si i32.const 3 i32.shl i32.add i64.load offset=8
+ local.set $sv7
+ local.get $sv0
+ local.set $sp
+ local.get $sv2
+-local.tee $sj i64.const 4294967295 i64.gt_u if unreachable end
+- local.get $sj i32.wrap_i64 local.tee $si
+-local.get $sl7
+-i32.ge_u
+- if call $stack_bad drop unreachable end
++i32.wrap_i64 local.set $si
+  local.get $sp local.get $si i32.const 3 i32.shl i32.add i64.load offset=8
+ local.set $sv8
+ local.get $sv0
+@@ -109970,16 +109962,12 @@
+ local.get $sv11
+ local.get $sv1
+ local.get $sv1
+-call $stack766_756
++call $stack766_756q
+ local.set $sv12
+ local.get $sv0
+ local.set $sp
+ local.get $sv12
+-local.tee $sj i64.const 4294967295 i64.gt_u if unreachable end
+- local.get $sj i32.wrap_i64 local.tee $si
+-local.get $sl7
+-i32.ge_u
+- if call $stack_bad drop unreachable end
++i32.wrap_i64 local.set $si
+  local.get $sp local.get $si i32.const 3 i32.shl i32.add i64.load offset=8
+ local.set $sv13
+ local.get $sv0

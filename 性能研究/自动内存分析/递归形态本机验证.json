@@ -1,0 +1,32 @@
+[
+  {
+    "命令": "./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs >/dev/null 2>/dev/null",
+    "退出": 0,
+    "秒": 12.902
+  },
+  {
+    "命令": "./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel >/dev/null 2>/dev/null",
+    "退出": 0,
+    "秒": 83.504
+  },
+  {
+    "命令": "./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel >/dev/null 2>/dev/null",
+    "退出": 0,
+    "秒": 71.576
+  },
+  {
+    "命令": "cmp yy3_bs yy4_bs",
+    "退出": 0,
+    "秒": 0.015
+  },
+  {
+    "命令": "./yy 豫言编译器/入口。豫 --type-check-only >/tmp/yy形态新版验型 2>&1",
+    "退出": 0,
+    "秒": 7.534
+  },
+  {
+    "命令": "./yy3_bs 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null",
+    "退出": 0,
+    "秒": 0.93
+  }
+]

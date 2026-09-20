@@ -1,0 +1,179 @@
+--- yy双步定稿排序.wasm.wat	2026-09-19 23:48:47
++++ yy长短循环8原型.wat	2026-09-20 00:14:18
+@@ -107873,6 +107873,152 @@
+ 
+ local.get $i4
+ )
++(func $rdsingle756
++(param $a0 (ref $ints))
++(param $i1 i64)
++(param $i2 i64)
++(param $i3 i64)
++(param $i4 i64)
++(result i64) (local $u (ref null eq)) (local $j i64)
++
++(local $a1 (ref null eq))
++(local $a2 (ref null eq))
++(local $a3 (ref null eq))
++(local $a4 (ref null eq))
++(local $a5 (ref null eq))
++(local $a6 (ref null eq))
++(local $a7 (ref null eq))
++(local $a8 (ref null eq))
++(local $a9 (ref null eq))
++(local $a10 (ref null eq))
++(local $a11 (ref null eq))
++(local $a12 (ref null eq))
++(local $a13 (ref null eq))
++(local $a14 (ref null eq))
++(local $a15 (ref null eq))
++(local $a16 (ref null eq))
++(local $a17 (ref null eq))
++(local $a18 (ref null eq))
++
++(local $i6 i64)
++
++(local $i8 i64)
++(local $i9 i64)
++
++
++(local $i12 i64)
++(local $i13 i64)
++(local $i14 i64)
++(local $i15 i64)
++(local $i16 i64)
++(local $i17 i64)
++(local $i18 i64)
++(local $p5 i32)
++
++(local $p7 i32)
++
++
++
++
++
++
++
++
++
++
++
++(loop $self (result i64)
++local.get $i3
++local.get $i1
++i64.eq
++local.set $p5
++local.get $p5
++if (result i64)
++local.get $i4
++else
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i6
++local.get $i2
++local.get $i6
++i64.gt_s
++local.set $p7
++local.get $p7
++if (result i64)
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i3 i32.wrap_i64
++array.get $ints
++local.set $i8
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i4 i32.wrap_i64
++array.get $ints
++local.set $i9
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i3 i32.wrap_i64
++local.get $i9
++array.set $ints ref.null eq
++local.set $a10
++local.get $a0
++
++ref.cast (ref $ints)
++local.get $i4 i32.wrap_i64
++local.get $i8
++array.set $ints ref.null eq
++local.set $a11
++local.get $i3
++i64.const 1
++i64.add
++
++local.set $i12
++local.get $i4
++i64.const 1
++i64.add
++
++local.set $i13
++local.get $a0
++ ref.cast (ref $ints)
++local.get $i1
++local.get $i2
++local.get $i12
++local.get $i13
++
++local.set $i4
++local.set $i3
++local.set $i2
++local.set $i1
++local.set $a0
++br $self
++else
++local.get $i3
++i64.const 1
++i64.add
++
++local.set $i15
++local.get $a0
++ ref.cast (ref $ints)
++local.get $i1
++local.get $i2
++local.get $i15
++local.get $i4
++
++local.set $i4
++local.set $i3
++local.set $i2
++local.set $i1
++local.set $a0
++br $self
++end return
++end return
++) )
+ (func $rd756
+ (param $a0 (ref $ints))
+ (param $i1 i64)
+@@ -107885,6 +108031,8 @@
+ local.get $i1 i64.le_u i32.and
+ local.get $i4
+ local.get $i3 i64.le_u i32.and
++if (result i64)
++local.get $i1 local.get $i3 i64.sub i64.const 8 i64.ge_u
+ if (result i64)
+ local.get $a0
+ local.get $i1
+@@ -107892,6 +108040,14 @@
+ local.get $i3
+ local.get $i4
+ return_call $rdq756
++else
++local.get $a0
++local.get $i1
++local.get $i2
++local.get $i3
++local.get $i4
++return_call $rdsingle756
++end
+ else
+ local.get $a0
+ local.get $i1

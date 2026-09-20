@@ -1,0 +1,29 @@
+{
+  "rows": [
+    {
+      "name": "斐波那契",
+      "sameAsPrevious": true
+    },
+    {
+      "name": "素数筛",
+      "sameAsPrevious": true
+    },
+    {
+      "name": "矩阵乘法",
+      "sameAsPrevious": true
+    },
+    {
+      "name": "快速排序",
+      "sameAsPrevious": false
+    },
+    {
+      "name": "树基准",
+      "sameAsPrevious": true
+    },
+    {
+      "name": "数组基准",
+      "sameAsPrevious": true
+    }
+  ],
+  "nativeAndWasmSortIdentical": true
+}

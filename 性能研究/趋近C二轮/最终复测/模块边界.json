@@ -1,0 +1,188 @@
+{
+  "斐波那契": {
+    "imports": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  "素数筛": {
+    "imports": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  "矩阵乘法": {
+    "imports": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  "快速排序": {
+    "imports": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  "树基准": {
+    "imports": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  },
+  "数组基准": {
+    "imports": [
+      {
+        "module": "yuyan:gc-host/v1",
+        "name": "call",
+        "kind": "function"
+      }
+    ],
+    "exports": [
+      {
+        "name": "yy_bytes",
+        "kind": "global"
+      },
+      {
+        "name": "yy_tuple",
+        "kind": "global"
+      },
+      {
+        "name": "yy_big",
+        "kind": "global"
+      },
+      {
+        "name": "yy_float",
+        "kind": "global"
+      },
+      {
+        "name": "_start",
+        "kind": "function"
+      }
+    ]
+  }
+}

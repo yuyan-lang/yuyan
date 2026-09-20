@@ -1,0 +1,38 @@
+[
+  {
+    "name": "斐波那契",
+    "old": "yy双步斐波那契.wasm",
+    "out": "yy纯调斐波那契.wasm",
+    "identical": true
+  },
+  {
+    "name": "素数筛",
+    "old": "yy双步素数筛.wasm",
+    "out": "yy纯调素数筛.wasm",
+    "identical": true
+  },
+  {
+    "name": "矩阵乘法",
+    "old": "yy双步矩阵乘法.wasm",
+    "out": "yy纯调矩阵乘法.wasm",
+    "identical": true
+  },
+  {
+    "name": "快速排序",
+    "old": "yy双步定稿排序.wasm",
+    "out": "yy纯调快速排序.wasm",
+    "identical": true
+  },
+  {
+    "name": "树基准",
+    "old": "yy双步树基准.wasm",
+    "out": "yy纯调树基准.wasm",
+    "identical": true
+  },
+  {
+    "name": "数组基准",
+    "old": "yy双步数组基准.wasm",
+    "out": "yy纯调数组基准.wasm",
+    "identical": true
+  }
+]

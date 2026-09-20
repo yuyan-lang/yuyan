@@ -1,0 +1,30 @@
+[
+  {
+    "i": 0,
+    "reuse": false,
+    "out": "yy线程复用冷对照0.wasm",
+    "seconds": 21.97,
+    "identical": true
+  },
+  {
+    "i": 1,
+    "reuse": true,
+    "out": "yy线程复用冷对照1.wasm",
+    "seconds": 15.45,
+    "identical": true
+  },
+  {
+    "i": 2,
+    "reuse": true,
+    "out": "yy线程复用冷对照2.wasm",
+    "seconds": 15.8,
+    "identical": true
+  },
+  {
+    "i": 3,
+    "reuse": false,
+    "out": "yy线程复用冷对照3.wasm",
+    "seconds": 23.25,
+    "identical": true
+  }
+]

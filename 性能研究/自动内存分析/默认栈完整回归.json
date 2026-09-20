@@ -1,0 +1,1236 @@
+{
+  "说明": "测试/网页汇编内全部具有成功期望的-1源码；WASI专用不支持子进程失败测试不在GC目标正例集合。",
+  "总数": 41,
+  "results": [
+    {
+      "源码": "测试/网页汇编/去柯里化边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC去柯里化边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "去柯里化边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "a669784af47ab9f12d07079bb2ac381a11415a12e5535a8e45fd8120b6a7dc7e"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈去柯里化边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "去柯里化边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "a669784af47ab9f12d07079bb2ac381a11415a12e5535a8e45fd8120b6a7dc7e"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/双整组矩阵-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC双整组矩阵.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双整组矩阵通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "a61504500ad0252a2fa4ecf2e61bcff448c921e3694584ea884d898d16706e07"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈双整组矩阵.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双整组矩阵通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "a61504500ad0252a2fa4ecf2e61bcff448c921e3694584ea884d898d16706e07"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/双整组边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC双整组边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双整组边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "c0b2d90ab791e55cf47a19ff76ea40c5ea8398f2fa36063f2084fb7b972a3d54"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈双整组边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双整组边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "c0b2d90ab791e55cf47a19ff76ea40c5ea8398f2fa36063f2084fb7b972a3d54"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/双整组逃逸-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC双整组逃逸.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双整组逃逸通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "9ee47a1bfa5c24abe50d851aa047c949a9c28a24bc7e74afb06ea1efcf88b7af"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈双整组逃逸.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双整组逃逸通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "9ee47a1bfa5c24abe50d851aa047c949a9c28a24bc7e74afb06ea1efcf88b7af"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/双步循环-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC双步循环.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双步循环通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "4f2a671f3a523182a7bc0775d81e32dbc701e670388c5c3c4a8d443faba3a4d7"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈双步循环.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双步循环通过\n",
+          "stderr": "",
+          "栈运行时": true,
+          "SHA256": "10d314dc456085f2fab2b5c86d556d5692fdd134877f61663045968445ad3481"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/双步陷阱-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC双步陷阱.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双步陷阱通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "7d59d93ccf12a9edec23d21f8096226c2d0e5d2a680862316e6c0c1bbc706e1f"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈双步陷阱.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "双步陷阱通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "7d59d93ccf12a9edec23d21f8096226c2d0e5d2a680862316e6c0c1bbc706e1f"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/基础-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC基础.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "你好，网页汇编！\n42\n1.500000\n已捕获异常\n42\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "9267b912dc3f94b2e4b181eaf6ccd2304d31a6f481a3e014ba797c3c97fce959"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈基础.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "你好，网页汇编！\n42\n1.500000\n已捕获异常\n42\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "9267b912dc3f94b2e4b181eaf6ccd2304d31a6f481a3e014ba797c3c97fce959"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/大数组-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC大数组.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "42\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "272f7638504ae17031ef5f47c941af0c4c50739f27ddfb4db80361081bef349a"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈大数组.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "42\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "272f7638504ae17031ef5f47c941af0c4c50739f27ddfb4db80361081bef349a"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/宿主参数-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC宿主参数.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "宿主参数测试通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "123f4e270ddd01de52d41c87e44371358730d01fdedd674d8bb74d585eb36167"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈宿主参数.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "宿主参数测试通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "123f4e270ddd01de52d41c87e44371358730d01fdedd674d8bb74d585eb36167"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/排序逐项-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC排序逐项.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "排序逐项验证通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "5a00853300f7f27e5625f814ab1fdfffad6285a94db9e54339fed45533bff1e9"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈排序逐项.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "排序逐项验证通过\n",
+          "stderr": "",
+          "栈运行时": true,
+          "SHA256": "200fff30c088cd0dc7a7999aaf7c6f267e8a90ea05b424dd5f4cdf94c1aff307"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/数组索引边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC数组索引边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "数组索引边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "81964e43b6eafb66040cac62882149f629396b3a5b3a55e99d29ad844cbcc784"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈数组索引边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "数组索引边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "81964e43b6eafb66040cac62882149f629396b3a5b3a55e99d29ad844cbcc784"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/整数专门化-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC整数专门化.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数专门化通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b2cdabc4806d77732a90f4f221fd81200f5971143cb2c51c9fe4fbae2aec586e"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈整数专门化.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数专门化通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b2cdabc4806d77732a90f4f221fd81200f5971143cb2c51c9fe4fbae2aec586e"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/整数文本-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC整数文本.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数文本边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "195c0f993f3266a63855f0d4c80726646655624539b8cc1ca82bd18a0e792e83"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈整数文本.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数文本边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "195c0f993f3266a63855f0d4c80726646655624539b8cc1ca82bd18a0e792e83"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/整数返回边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC整数返回边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数返回边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "c09d85e9ddca6204155adff9ac45ecdc16b46d63aa3f6052ceecef77f6aad709"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈整数返回边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数返回边界通过\n",
+          "stderr": "",
+          "栈运行时": true,
+          "SHA256": "bddd396b7344f302240615b3f628557cc2d45833861ba136b5446be8aceae0fc"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/整数除法边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC整数除法边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数除法边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "392112daab4ba3ad11deff770969ddc35f9b5c2d352fce01e8704134c523624c"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈整数除法边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整数除法边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "392112daab4ba3ad11deff770969ddc35f9b5c2d352fce01e8704134c523624c"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/整组值域-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC整组值域.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整组值域通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b3640d68c36e7e161508277113ce5c46e939a710743f11809148611678f0bc5c"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈整组值域.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整组值域通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b3640d68c36e7e161508277113ce5c46e939a710743f11809148611678f0bc5c"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/整组逃逸边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC整组逃逸边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整组逃逸边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "58ef2f82000663f849bd987634e2428282a94cee04c07d052aa3c03333ffb655"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈整组逃逸边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "整组逃逸边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "58ef2f82000663f849bd987634e2428282a94cee04c07d052aa3c03333ffb655"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/替换共享-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC替换共享.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "替换共享通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "0734429ec07b2dabeee3e8094d807d3edd575761ed847e201990aab66d73c0e6"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈替换共享.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "替换共享通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "0734429ec07b2dabeee3e8094d807d3edd575761ed847e201990aab66d73c0e6"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/构造常量-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC构造常量.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "构造常量通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "a972ecfcd0a2df282d133a74a1be5615ac36aead04ab61b59f7219ee17a382fc"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈构造常量.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "构造常量通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "a972ecfcd0a2df282d133a74a1be5615ac36aead04ab61b59f7219ee17a382fc"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/栈前导初始化-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC栈前导初始化.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "栈前导初始化通过：516\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "44224d8443833f8bc2c1c2907797422821a21c75436a34acbadb8ee163cd888c"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈栈前导初始化.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "栈前导初始化通过：516\n",
+          "stderr": "",
+          "栈运行时": true,
+          "SHA256": "f3c5d443978df0578b0642d8a1d70d8abc8d6a3c8e60c29dcecaf27c9745786e"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/栈覆盖初始化-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC栈覆盖初始化.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "栈覆盖初始化通过：515\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "32da4651cbf885a6d4b1887d07eb8df6132a52368abeffae4c2515cc71efebc1"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈栈覆盖初始化.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "栈覆盖初始化通过：515\n",
+          "stderr": "",
+          "栈运行时": true,
+          "SHA256": "6c38b01e041e7846fec4fc3799103a5aebe247e6b10c1a5cb3de71e474153fbb"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/深栈-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC深栈.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "500500\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "4a027fecdab70445137a412093ae22cd789e60da4ca31949f9077d8c77c923f3"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈深栈.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "500500\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "4a027fecdab70445137a412093ae22cd789e60da4ca31949f9077d8c77c923f3"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/满参递归-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC满参递归.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "满参递归通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "6b5e5e24d09509228888aca6cb5ac842c8addedd84f5fb0e6a8a9488bc68e30d"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈满参递归.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "满参递归通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "6b5e5e24d09509228888aca6cb5ac842c8addedd84f5fb0e6a8a9488bc68e30d"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/癸象转义-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC癸象转义.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "癸象转义通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "51962e92f298603abe964ff9c0c239e05a94c74bf9052453ddde52f9f115e5e9"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈癸象转义.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "癸象转义通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "51962e92f298603abe964ff9c0c239e05a94c74bf9052453ddde52f9f115e5e9"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/直线内联-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC直线内联.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "直线内联通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "528dacb6bd52da233953319f5a3a498f255966f2ca4456e9361ccad4d86dfdb8"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈直线内联.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "直线内联通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "528dacb6bd52da233953319f5a3a498f255966f2ca4456e9361ccad4d86dfdb8"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/短列态射-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC短列态射.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "短列态射通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "f7a06e0af48c462bf9f43cc02272c12fc4f560c3edf79eb860182be5f18d6ed2"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈短列态射.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "短列态射通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "f7a06e0af48c462bf9f43cc02272c12fc4f560c3edf79eb860182be5f18d6ed2"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/私有入口-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC私有入口.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有入口兼容通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "9d282481ed06b62d6e3c5e761552bdb91f6a4eb28d17eee0f7d564907b4fd96b"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈私有入口.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有入口兼容通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "9d282481ed06b62d6e3c5e761552bdb91f6a4eb28d17eee0f7d564907b4fd96b"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/私有整组排序-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC私有整组排序.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有整组排序通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "75c98c5dce799741fb20790ee561534c82e714d6d26bd3ee4cff209646182c14"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈私有整组排序.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有整组排序通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "75c98c5dce799741fb20790ee561534c82e714d6d26bd3ee4cff209646182c14"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/私有条件边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC私有条件边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有条件边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "1050c8a3d903aaee040a37f36d041d61665e4582c4a4a473643fb911d3ab46c1"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈私有条件边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有条件边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "1050c8a3d903aaee040a37f36d041d61665e4582c4a4a473643fb911d3ab46c1"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/私有构造-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC私有构造.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有构造通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "6c2827c0d70debb52fef620a635922d28eb0210a9df79f74b28d917cede7e822"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈私有构造.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "私有构造通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "6c2827c0d70debb52fef620a635922d28eb0210a9df79f74b28d917cede7e822"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/纯整条件边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC纯整条件边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "纯整条件边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "1344640e91f8246e620f49818c52299db5e16e6cebb50d380c4c746c0dcfdf89"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈纯整条件边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "纯整条件边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "1344640e91f8246e620f49818c52299db5e16e6cebb50d380c4c746c0dcfdf89"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/纯调复用-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC纯调复用.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "-9223372036854775808\n0\n-4\n0\n3072\n-1\n89\n-4\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "3a724162c92196c798c253af3b9ec0af139a3fcede44349dcce91a5607af8d37"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈纯调复用.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "-9223372036854775808\n0\n-4\n0\n3072\n-1\n89\n-4\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "3a724162c92196c798c253af3b9ec0af139a3fcede44349dcce91a5607af8d37"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/虚拟数组-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC虚拟数组.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "虚拟数组通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "0119ae6be1ff313275cc16c45f96a2ef4887245659ffa50ef46d120bf6ac7a90"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈虚拟数组.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "虚拟数组通过\n",
+          "stderr": "",
+          "栈运行时": true,
+          "SHA256": "242d67c3701adb27bbc1462d98c6da23f78734892daccf9c9819d1e2d71129a9"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/裸爻边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC裸爻边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "裸爻边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "07294e411d96bdd49caeb148eace2d2cce563e411f900503e0e94fec64b2b72e"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈裸爻边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "裸爻边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "07294e411d96bdd49caeb148eace2d2cce563e411f900503e0e94fec64b2b72e"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/跨函私有调用-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC跨函私有调用.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "跨函私有调用通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b6a1dde166a19f5a39a1983bf7440a57306caa40b6851f4f34c5c9c627e7c99f"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈跨函私有调用.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "跨函私有调用通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b6a1dde166a19f5a39a1983bf7440a57306caa40b6851f4f34c5c9c627e7c99f"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/进程等待-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC进程等待.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "进程等待边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "c0188914ed8f01200abece86f37799a7fe3dc592c147c8a95203b3660efae8c3"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈进程等待.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "进程等待边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "c0188914ed8f01200abece86f37799a7fe3dc592c147c8a95203b3660efae8c3"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/递归回收-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC递归回收.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "20000\n200010000\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "c474e89105180dc77603dc0c3c8a77d72e52b49b15b6f00f21d4f791240f7e75"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈递归回收.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "20000\n200010000\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "c474e89105180dc77603dc0c3c8a77d72e52b49b15b6f00f21d4f791240f7e75"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/递归累加-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC递归累加.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "递归累加通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b9a5db7feef3aa0bb39bab356ca6cbbdec4886c88c4038fa6469cb72aa686ac9"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈递归累加.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "递归累加通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "b9a5db7feef3aa0bb39bab356ca6cbbdec4886c88c4038fa6469cb72aa686ac9"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/造消融合-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC造消融合.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "造消融合通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "53483a00aadf675d21563e5367f651bfa135c901685572d48988a702b7d55132"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈造消融合.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "造消融合通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "53483a00aadf675d21563e5367f651bfa135c901685572d48988a702b7d55132"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/重复索引边界-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC重复索引边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "重复索引边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "97c4269c3dd1b76881c60e68f55b21897df5da577775508c87a989e3a2753afe"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈重复索引边界.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "重复索引边界通过\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "97c4269c3dd1b76881c60e68f55b21897df5da577775508c87a989e3a2753afe"
+        }
+      ],
+      "双模式一致": true
+    },
+    {
+      "源码": "测试/网页汇编/长打表-1。豫",
+      "variants": [
+        {
+          "flag": false,
+          "out": "yy栈默认回归GC长打表.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "长打表验证成功\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "18bc89a2d56152c4b3a39299cc40a2cfe4d48ea004be3ce984ed173942670b0f"
+        },
+        {
+          "flag": true,
+          "out": "yy栈默认回归栈长打表.wasm",
+          "编译退出": 0,
+          "模块有效": true,
+          "运行退出": 0,
+          "匹配期望": true,
+          "stdout": "长打表验证成功\n",
+          "stderr": "",
+          "栈运行时": false,
+          "SHA256": "18bc89a2d56152c4b3a39299cc40a2cfe4d48ea004be3ce984ed173942670b0f"
+        }
+      ],
+      "双模式一致": true
+    }
+  ]
+}
