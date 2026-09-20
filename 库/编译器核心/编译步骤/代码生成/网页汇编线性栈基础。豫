@@ -1,0 +1,23 @@
+寻观「标准库」之书。
+「：文言：顶以值授，退则自复；此基由试旗启用。汉语：64 MiB 原型运行时。reserve 只增长容量并返回下一栈顶，不修改全局栈顶；调用者负责初始化、传递标记及证明生命周期。仅存放原生数值，不存放 GC 引用。容量失败返回 -1，由调用者转入 GC 后备。由统一生成器的实验开关启用，默认关闭。：」
+「线性栈基础」者『
+;; 文言：顶以值传，无全局栈顶。汉语：封闭无宿主重入的原型，每次重新初始化内容；容量保留。
+(memory $stack 0 1024)
+(global $stack_error (ref $ints) (array.new_fixed $ints 0))
+(func $stack_bad (result i64) global.get $stack_error i32.const 0 array.get $ints)
+(func $lin_get (param $p i32) (param $i i32) (result i64)
+ local.get $i local.get $p i32.load i32.ge_u if call $stack_bad drop unreachable end
+ local.get $p local.get $i i32.const 3 i32.shl i32.add i64.load offset=8)
+(func $lin_set (param $p i32) (param $i i32) (param $v i64)
+ local.get $i local.get $p i32.load i32.ge_u if call $stack_bad drop unreachable end
+ local.get $p local.get $i i32.const 3 i32.shl i32.add local.get $v i64.store offset=8)
+(func $reserve (param $sp i32) (param $n i64) (result i32) (local $end i64) (local $pages i32)
+ local.get $n i64.const 0 i64.lt_s if i32.const -1 return end
+ local.get $n i64.const 8388607 i64.gt_u if i32.const -1 return end
+ local.get $sp i32.const 7 i32.and if i32.const -1 return end
+ local.get $sp i64.extend_i32_u local.get $n i64.const 8 i64.mul i64.add i64.const 8 i64.add local.tee $end
+ i64.const 67108864 i64.gt_u if i32.const -1 return end
+ local.get $end i32.wrap_i64 i32.const 65535 i32.add i32.const 16 i32.shr_u local.set $pages
+ local.get $pages memory.size i32.gt_u if local.get $pages memory.size i32.sub memory.grow i32.const -1 i32.eq if i32.const -1 return end end
+ local.get $end i32.wrap_i64)
+』也。

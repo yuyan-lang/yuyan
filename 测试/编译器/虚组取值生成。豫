@@ -1,0 +1,19 @@
+寻观「标准库」之书。
+寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编初始化证明」之书。
+寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编虚组取值」之书。
+「：文言：造可独验之模块，正读与误读皆较实组。汉语：生成可独立执行的 Wasm 测试模块；读取生成器的值由测试端独立计算，失败类别与实际 GC 数组读取比较。：」
+「造试函」乃化「字符串」而化「虚组值式」而「字符串」也。
+「造试函」者会「名」而会「式」而「虚组拼」于（「列」【
+ 『(func (export "』附「名」附『") (param $len i64) (param $idx i64) (result i64) (local $vx i64) (local $vk i64)』，
+ 「写虚组容量检查」于『local.get $len』，「写虚组读取」于「式」于『local.get $len』于『local.get $idx』，『)』】）也。
+「打印行」于（「虚组拼」于（「列」【
+ 『(module (type $ints (array (mut i64)))』，
+ 「造试函」于『identity』于「虚组计数」，
+ 「造试函」于『affine』于（「虚组减」于（「虚组乘」于「虚组计数」于（「虚组常数」于「二」））于（「虚组常数」于「三」）），
+ 「造试函」于『overflow』于（「虚组乘」于「虚组计数」于（「虚组常数」于「九二二三三七二零三六八五四七七五八零七」）），
+ 『(func (export "reference") (param $len i64) (param $idx i64) (result i64) (local $a (ref null $ints))』，
+ 「写虚组容量检查」于『local.get $len』，
+ 『i64.const 0 local.get $len i32.wrap_i64 array.new $ints local.set $a』，
+ 『local.get $idx i64.const 4294967295 i64.gt_u if unreachable end』，
+ 『local.get $a ref.cast (ref $ints) local.get $idx i32.wrap_i64 array.get $ints)』，
+ 『)』】））。

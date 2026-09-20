@@ -1,0 +1,61 @@
+寻观「标准库」之书。
+寻观「编译器核心」之「编译步骤」之「求值正则变换」之「统一正则数据」之书。
+寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编栈表示证明」之书。
+寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编栈数值生成」之书。
+寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编栈入口」之书。
+寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编线性栈基础」之书。
+「：文言：新数组取其一位，以验公门与后备。汉语：算法、私有体和公开包装均由 ANF 自动生成；GC 参考体与测试导出手写。保留一个未使用环境参数，以验证其类型不影响快路径。：」
+「函」者（「正则函数」也（『根』与「阴」与（「列」【「零」，「一」，「二」，「三」】）与（「正则段」于（「列」【
+ 「正则运算」于「四」于「正则通用值」于（「正则原语」于『豫言_新建引用数组』）于（「列」【「正则局部」于「二」，「正则局部」于「一」】），
+ 「正则运算」于「五」于「正则整数值」于（「正则原语」于『豫言_读取引用数组』）于（「列」【「正则局部」于「四」，「正则局部」于「三」】）】）于（「正则产出」于（「正则局部」于「五」）））与「六」））也。
+「签」者（「栈表示签」也（（「列」【「一」，「一」，「一」，「一」】）与「一」））也。
+「查」乃化「字符串」而「栈表示签」也。
+「查」者会「名」而（「罄」授以「整数」）与「零」也。
+「名」乃化「字符串」而「字符串」也。
+「名」者会「字」而『$private』也。
+「必有」乃化（「或可有」于「字符串」）而「字符串」也。
+「必有」者会「果」而鉴「果」而有（「可有」于「文」）则「文」或有「可无」则「发生事故」授以「字符串」于『入口夹具生成失败』也。
+「元函」者（「正则函数」也鉴（「函」中「三」）而有（「正则段」于（「缀」于「首」于「余」）于「终」）则『元根』与「阴」与（「函」中「二」）与（「正则段」于（「列」【「首」】）于（「正则产出」于「正则单元」））与「五」或有「其他」则「发生事故」授以「正则函数」于『夹具根体错误』）也。
+「元签」者（「栈表示签」也（（「签」中「零」）与「三」））也。
+「元名」乃化「字符串」而「字符串」也。
+「元名」者会「字」而『$private_unit』也。
+「打印行」于（「栈接」于（「列」【『(module
+(type $ints (array (mut i64))) (type $big (struct (field i64)))
+(type $t4 (func (param (ref null eq) (ref null eq) (ref null eq) (ref null eq)) (result (ref null eq))))
+(func $box (param $n i64) (result (ref null eq))
+ local.get $n i64.const -1073741824 i64.ge_s local.get $n i64.const 1073741823 i64.le_s i32.and
+ if (result (ref null eq)) local.get $n i32.wrap_i64 ref.i31 else local.get $n struct.new $big end)
+(func $unbox (param $v (ref null eq)) (result i64)
+ local.get $v ref.test (ref i31) if (result i64)
+ local.get $v ref.cast (ref i31) i31.get_s i64.extend_i32_s
+ else local.get $v ref.cast (ref $big) struct.get $big 0 end)
+(global $fallback (mut i32) (i32.const 0))
+(func $index (param $i i64) (result i32)
+ local.get $i i64.const 4294967295 i64.gt_u if unreachable end local.get $i i32.wrap_i64)
+(func $old (type $t4) (param $env (ref null eq)) (param $n (ref null eq)) (param $v (ref null eq)) (param $i (ref null eq)) (result (ref null eq))
+ global.get $fallback i32.const 1 i32.add global.set $fallback
+ local.get $v call $unbox local.get $n call $unbox call $index array.new $ints
+ local.get $i call $unbox call $index array.get $ints call $box)
+(func $old_unit (type $t4) (param $env (ref null eq)) (param $n (ref null eq)) (param $v (ref null eq)) (param $i (ref null eq)) (result (ref null eq))
+ global.get $fallback i32.const 1 i32.add global.set $fallback
+ local.get $v call $unbox local.get $n call $unbox call $index array.new $ints drop ref.null eq)
+』，「线性栈基础」，
+ 「必有」于（「生成栈数值体」于「查」于「名」于「签」于「四」于「函」），
+ 「必有」于（「生成栈入口」于「查」于『$public』于『$old』于『$private』于「签」于「函」），
+ 「必有」于（「生成栈数值体」于「查」于「元名」于「元签」于「四」于「元函」），
+ 「必有」于（「生成栈入口」于「查」于『$public_unit』于『$old_unit』于『$private_unit』于「元签」于「元函」），
+ 『(func (export "unit") (param $n i64) (param $v i64) (result i32)
+ ref.null eq local.get $n call $box local.get $v call $box ref.null eq call $public_unit ref.is_null)
+ (func (export "run") (param $n i64) (param $v i64) (param $i i64) (result i64)
+ ref.null eq local.get $n call $box local.get $v call $box local.get $i call $box call $public call $unbox)
+(func (export "reference") (param $n i64) (param $v i64) (param $i i64) (result i64)
+ ref.null eq local.get $n call $box local.get $v call $box local.get $i call $box call $old call $unbox)
+(func (export "bad") (param $which i32) (param $old i32) (result i64)
+ ref.null eq
+ local.get $which i32.const 0 i32.eq if (result (ref null eq)) ref.null eq else i64.const 3 call $box end
+ local.get $which i32.const 1 i32.eq if (result (ref null eq)) ref.null eq else i64.const 7 call $box end
+ local.get $which i32.const 2 i32.eq if (result (ref null eq)) ref.null eq else i64.const 1 call $box end
+ local.get $old if (param (ref null eq) (ref null eq) (ref null eq) (ref null eq)) (result (ref null eq)) call $old else call $public end call $unbox)
+(func (export "fallbacks") (result i32) global.get $fallback)
+(func (export "pages") (result i32) memory.size)
+)』】））。

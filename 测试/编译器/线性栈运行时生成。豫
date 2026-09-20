@@ -1,0 +1,11 @@
+寻观「标准库」之书。
+寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编线性栈基础」之书。
+「：文言：独立夹具验栈，导出不入正式接口。汉语：仅为运行时测试导出 init、reserve、get、set、pages；这些导出不会加入正式程序。：」
+「打印行」于（『(module (type $ints (array (mut i64)))』附「线性栈基础」附『(func (export "init") (param $sp i32) (param $n i64) (result i32) (local $top i32)
+local.get $sp local.get $n call $reserve local.tee $top i32.const -1 i32.eq if i32.const -1 return end
+local.get $sp local.get $n i32.wrap_i64 i32.store
+local.get $sp i32.const 8 i32.add i32.const 0 local.get $n i32.wrap_i64 i32.const 3 i32.shl memory.fill
+local.get $top)
+(export "reserve" (func $reserve)) (export "get" (func $lin_get)) (export "set" (func $lin_set))
+(func (export "pages") (result i32) memory.size)
+)』）。
