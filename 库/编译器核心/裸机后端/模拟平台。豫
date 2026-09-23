@@ -1,0 +1,8 @@
+寻观「标准库」之书。
+「：文言：两机各立其隔离硬件，不以旁路冒映射。汉语：隔离平台采用 ARM SMMUv3 与 AMD64 Q35/VT-d；这只选择模拟硬件，不表示客体已配置地址转换。驱动必须接受平台 DMA 翻译，不能靠清除特性位绕过。：」
+「裸机模拟平台参数」乃化「爻」而化「爻」而化「爻」而（「列」于「字符串」）也。
+「裸机模拟平台参数」者会「臂」而会「设备」而会「隔离」而
+ 若「臂」则「列」【『-machine』，（若「隔离」则『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off』否则若「设备」则『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off』否则『virt,gic-version=2,virtualization=off,secure=off』），『-cpu』，『cortex-a53』，『-semihosting-config』，『enable=on,target=native』】
+ 否则「附加」授以「字符串」于（「列」【『-machine』，（若「隔离」则『q35』否则『pc』），『-device』，『isa-debug-exit,iobase=0xf4,iosize=0x04』】）于（若「隔离」则「列」【『-device』，『intel-iommu,intremap=off,caching-mode=on,dma-translation=on』】否则「罄」）也。
+「裸机磁盘设备参数」乃化「爻」而「字符串」也。
+「裸机磁盘设备参数」者会「隔离」而若「隔离」则『virtio-blk-pci,disable-legacy=on,addr=4,drive=yy_disk,iommu_platform=on,ats=off』否则『virtio-blk-pci,disable-legacy=on,addr=4,drive=yy_disk』也。
