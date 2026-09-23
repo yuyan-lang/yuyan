@@ -448,6 +448,9 @@ h1 span { color: var(--ink-soft); font-size: 12px; font-weight: 400; }
 .tok-punctuation { color: #73777e; }
 .tok-plain { color: inherit; }
 
+/* 文言：独篇常见。汉语：独立文件页无需锚点也应显示正文。 */
+.source-stack > .source-document:only-child { display: grid; }
+
 @media (max-width: 760px) {
   .shell { grid-template-rows: 62px minmax(0, 1fr); }
   .masthead { gap: 8px; padding: 7px 9px; }
