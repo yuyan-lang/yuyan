@@ -1,0 +1,434 @@
+[
+  {
+    "id": 1,
+    "title": "十进制交替位和",
+    "signature": "化「整数」而「整数」",
+    "statement": "输入为零至一百万的非负整数，自最高位起对数字依次作加、减、加、减，返回结果；零的结果为零。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          0
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          7
+        ],
+        "expected": "7"
+      },
+      {
+        "args": [
+          12030
+        ],
+        "expected": "-4"
+      },
+      {
+        "args": [
+          1000
+        ],
+        "expected": "1"
+      },
+      {
+        "args": [
+          987654
+        ],
+        "expected": "3"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 2,
+    "title": "数字根",
+    "signature": "化「整数」而「整数」",
+    "statement": "输入为非负整数。反复求其十进制各位数字之和，直到结果只有一位，返回该位。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          0
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          9
+        ],
+        "expected": "9"
+      },
+      {
+        "args": [
+          38
+        ],
+        "expected": "2"
+      },
+      {
+        "args": [
+          999
+        ],
+        "expected": "9"
+      },
+      {
+        "args": [
+          100000
+        ],
+        "expected": "1"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 3,
+    "title": "二进制一的个数",
+    "signature": "化「整数」而「整数」",
+    "statement": "输入为非负整数，返回其二进制表示中一的个数。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          0
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          1
+        ],
+        "expected": "1"
+      },
+      {
+        "args": [
+          7
+        ],
+        "expected": "3"
+      },
+      {
+        "args": [
+          1023
+        ],
+        "expected": "10"
+      },
+      {
+        "args": [
+          1024
+        ],
+        "expected": "1"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 4,
+    "title": "整数汉明距离",
+    "signature": "化「整数」而化「整数」而「整数」",
+    "statement": "输入两个非负整数，返回其二进制表示中不同位的数量，较短表示左边补零。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          1,
+          4
+        ],
+        "expected": "2"
+      },
+      {
+        "args": [
+          3,
+          1
+        ],
+        "expected": "1"
+      },
+      {
+        "args": [
+          0,
+          0
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          7,
+          0
+        ],
+        "expected": "3"
+      },
+      {
+        "args": [
+          10,
+          5
+        ],
+        "expected": "4"
+      }
+    ],
+    "arg_types": [
+      "整数",
+      "整数"
+    ]
+  },
+  {
+    "id": 5,
+    "title": "整数平方根",
+    "signature": "化「整数」而「整数」",
+    "statement": "输入为零至一百万的非负整数，返回平方不大于输入的最大非负整数。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          0
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          1
+        ],
+        "expected": "1"
+      },
+      {
+        "args": [
+          8
+        ],
+        "expected": "2"
+      },
+      {
+        "args": [
+          16
+        ],
+        "expected": "4"
+      },
+      {
+        "args": [
+          99
+        ],
+        "expected": "9"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 6,
+    "title": "完全数判断",
+    "signature": "化「整数」而「爻」",
+    "statement": "输入为一至一千的整数；若小于自身的全部正因数之和等于自身，返回阳，否则返回阴。",
+    "result_type": "爻",
+    "cases": [
+      {
+        "args": [
+          1
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          6
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          12
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          28
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          496
+        ],
+        "expected": "阳"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 7,
+    "title": "阶乘末尾零",
+    "signature": "化「整数」而「整数」",
+    "statement": "输入为零至一千的非负整数，返回其阶乘十进制表示末尾零的数量；无需算出阶乘。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          0
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          5
+        ],
+        "expected": "1"
+      },
+      {
+        "args": [
+          10
+        ],
+        "expected": "2"
+      },
+      {
+        "args": [
+          25
+        ],
+        "expected": "6"
+      },
+      {
+        "args": [
+          100
+        ],
+        "expected": "24"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 8,
+    "title": "完全平方数判断",
+    "signature": "化「整数」而「爻」",
+    "statement": "输入为零至一百万的非负整数，若存在整数的平方恰等于输入则返回阳，否则返回阴。",
+    "result_type": "爻",
+    "cases": [
+      {
+        "args": [
+          0
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          1
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          4
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          8
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          99
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          100
+        ],
+        "expected": "阳"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 9,
+    "title": "快乐数判断",
+    "signature": "化「整数」而「爻」",
+    "statement": "输入为一至一百的正整数。反复将整数换成十进制各位数字平方之和；若最终到一返回阳，若进入不含一的循环返回阴。",
+    "result_type": "爻",
+    "cases": [
+      {
+        "args": [
+          1
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          19
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          2
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          20
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          10
+        ],
+        "expected": "阳"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  },
+  {
+    "id": 10,
+    "title": "二的幂判断",
+    "signature": "化「整数」而「爻」",
+    "statement": "输入为零至一百万的非负整数，若恰为二的非负整数次幂则返回阳，否则返回阴。",
+    "result_type": "爻",
+    "cases": [
+      {
+        "args": [
+          0
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          1
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          2
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          3
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          1024
+        ],
+        "expected": "阳"
+      }
+    ],
+    "arg_types": [
+      "整数"
+    ]
+  }
+]

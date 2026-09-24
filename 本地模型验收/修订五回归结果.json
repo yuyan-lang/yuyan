@@ -1,0 +1,16 @@
+{
+  "id": 9,
+  "temperature": 0,
+  "guide_sha256": "e6ed2b75b739dcaa0f5539b3cce4e643c643e40bf8555d5832799d5f86eaeeab",
+  "first": {
+    "done_reason": "stop",
+    "eval_count": 15935,
+    "status": "pass"
+  },
+  "second": {
+    "done_reason": "stop",
+    "eval_count": 15935,
+    "status": "same_source_as_first"
+  },
+  "source_sha256": "9ada47d42c04b2362d9d8e77a336a5ce834b2e2748498632e6817c81e6be8d39"
+}

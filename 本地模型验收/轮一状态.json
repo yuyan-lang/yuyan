@@ -1,0 +1,15 @@
+{
+  "round": 1,
+  "guide_sha256": "d1a2de58b179e232d80ee46b6a72f1a9c6b070d2f2b906440934a9920110d51c",
+  "model_digest": "debd90a8c6bc58d0e05259930b3cad0c8623ec78955cac28802460f15f40197e",
+  "processed": 20,
+  "passed": 16,
+  "failed": 4,
+  "stopped_reason": "已出现四道失败，本轮不可能达到至少 99/100；据真实失败修改指南，下一轮须从第一题重测。",
+  "failure_ids": [
+    9,
+    12,
+    14,
+    17
+  ]
+}

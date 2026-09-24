@@ -1,0 +1,467 @@
+[
+  {
+    "id": 21,
+    "title": "字符串首次匹配位置",
+    "signature": "化「字符串」而化「字符串」而「整数」",
+    "statement": "第一参数为原串，第二参数为待找的连续子串；返回第一次出现的零起位置，未找到返回负一，空待找串返回零。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          "sadbutsad",
+          "sad"
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          "leetcode",
+          "leeto"
+        ],
+        "expected": "-1"
+      },
+      {
+        "args": [
+          "abc",
+          ""
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          "aaaaa",
+          "bba"
+        ],
+        "expected": "-1"
+      },
+      {
+        "args": [
+          "mississippi",
+          "issip"
+        ],
+        "expected": "4"
+      },
+      {
+        "args": [
+          "abcabc",
+          "cab"
+        ],
+        "expected": "2"
+      }
+    ],
+    "arg_types": [
+      "字符串",
+      "字符串"
+    ]
+  },
+  {
+    "id": 22,
+    "title": "最长公共前缀",
+    "signature": "化（「列」于「字符串」）而「字符串」",
+    "statement": "输入字符串列表，返回所有字符串共有的最长前缀；空列表返回空串。",
+    "result_type": "字符串",
+    "cases": [
+      {
+        "args": [
+          [
+            "flower",
+            "flow",
+            "flight"
+          ]
+        ],
+        "expected": "fl"
+      },
+      {
+        "args": [
+          []
+        ],
+        "expected": ""
+      },
+      {
+        "args": [
+          [
+            "dog",
+            "racecar",
+            "car"
+          ]
+        ],
+        "expected": ""
+      },
+      {
+        "args": [
+          [
+            "interspecies",
+            "interstellar",
+            "interstate"
+          ]
+        ],
+        "expected": "inters"
+      },
+      {
+        "args": [
+          [
+            "a"
+          ]
+        ],
+        "expected": "a"
+      }
+    ],
+    "arg_types": [
+      "list_string"
+    ]
+  },
+  {
+    "id": 23,
+    "title": "互为字母重排",
+    "signature": "化「字符串」而化「字符串」而「爻」",
+    "statement": "两个输入仅含小写英文字母，判断其各字符出现次数是否完全相同。",
+    "result_type": "爻",
+    "cases": [
+      {
+        "args": [
+          "anagram",
+          "nagaram"
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          "rat",
+          "car"
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          "",
+          ""
+        ],
+        "expected": "阳"
+      },
+      {
+        "args": [
+          "a",
+          "ab"
+        ],
+        "expected": "阴"
+      },
+      {
+        "args": [
+          "abc",
+          "bca"
+        ],
+        "expected": "阳"
+      }
+    ],
+    "arg_types": [
+      "字符串",
+      "字符串"
+    ]
+  },
+  {
+    "id": 24,
+    "title": "首个不重复字符位置",
+    "signature": "化「字符串」而「整数」",
+    "statement": "输入仅含小写英文字母。返回第一个只出现一次的字符的零起下标；不存在则返回负一。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          "leetcode"
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          "loveleetcode"
+        ],
+        "expected": "2"
+      },
+      {
+        "args": [
+          "aabb"
+        ],
+        "expected": "-1"
+      },
+      {
+        "args": [
+          ""
+        ],
+        "expected": "-1"
+      },
+      {
+        "args": [
+          "z"
+        ],
+        "expected": "0"
+      }
+    ],
+    "arg_types": [
+      "字符串"
+    ]
+  },
+  {
+    "id": 25,
+    "title": "反转单词次序",
+    "signature": "化「字符串」而「字符串」",
+    "statement": "输入仅含小写字母和单个空格，且无首尾空格。把单词的顺序反过来，单词内部字符不变；空串返回空串。",
+    "result_type": "字符串",
+    "cases": [
+      {
+        "args": [
+          "the sky is blue"
+        ],
+        "expected": "blue is sky the"
+      },
+      {
+        "args": [
+          "a"
+        ],
+        "expected": "a"
+      },
+      {
+        "args": [
+          "a b"
+        ],
+        "expected": "b a"
+      },
+      {
+        "args": [
+          ""
+        ],
+        "expected": ""
+      },
+      {
+        "args": [
+          "one two three"
+        ],
+        "expected": "three two one"
+      }
+    ],
+    "arg_types": [
+      "字符串"
+    ]
+  },
+  {
+    "id": 26,
+    "title": "游程压缩",
+    "signature": "化「字符串」而「字符串」",
+    "statement": "输入仅含小写英文字母，把每段连续相同字符编码为该字符后接十进制次数，包括次数一。",
+    "result_type": "字符串",
+    "cases": [
+      {
+        "args": [
+          "aaabbc"
+        ],
+        "expected": "a3b2c1"
+      },
+      {
+        "args": [
+          ""
+        ],
+        "expected": ""
+      },
+      {
+        "args": [
+          "a"
+        ],
+        "expected": "a1"
+      },
+      {
+        "args": [
+          "abb"
+        ],
+        "expected": "a1b2"
+      },
+      {
+        "args": [
+          "aaaaaaaaaa"
+        ],
+        "expected": "a10"
+      }
+    ],
+    "arg_types": [
+      "字符串"
+    ]
+  },
+  {
+    "id": 27,
+    "title": "二进制字符串相加",
+    "signature": "化「字符串」而化「字符串」而「字符串」",
+    "statement": "输入均为非空二进制字符串，返回其和的二进制字符串；不保留前导零，零写作 0。",
+    "result_type": "字符串",
+    "cases": [
+      {
+        "args": [
+          "11",
+          "1"
+        ],
+        "expected": "100"
+      },
+      {
+        "args": [
+          "0",
+          "0"
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          "1010",
+          "1011"
+        ],
+        "expected": "10101"
+      },
+      {
+        "args": [
+          "1",
+          "111"
+        ],
+        "expected": "1000"
+      },
+      {
+        "args": [
+          "0001",
+          "1"
+        ],
+        "expected": "10"
+      }
+    ],
+    "arg_types": [
+      "字符串",
+      "字符串"
+    ]
+  },
+  {
+    "id": 28,
+    "title": "无重复字符最长子串长度",
+    "signature": "化「字符串」而「整数」",
+    "statement": "输入仅含小写英文字母。返回最长连续子串长度，要求其中任何字符至多出现一次。",
+    "result_type": "整数",
+    "cases": [
+      {
+        "args": [
+          "abcabcbb"
+        ],
+        "expected": "3"
+      },
+      {
+        "args": [
+          "bbbbb"
+        ],
+        "expected": "1"
+      },
+      {
+        "args": [
+          "pwwkew"
+        ],
+        "expected": "3"
+      },
+      {
+        "args": [
+          ""
+        ],
+        "expected": "0"
+      },
+      {
+        "args": [
+          "abba"
+        ],
+        "expected": "2"
+      }
+    ],
+    "arg_types": [
+      "字符串"
+    ]
+  },
+  {
+    "id": 29,
+    "title": "最长回文子串",
+    "signature": "化「字符串」而「字符串」",
+    "statement": "输入仅含小写英文字母。返回最长连续回文子串；若存在多个同长度答案，取起点最小者。",
+    "result_type": "字符串",
+    "cases": [
+      {
+        "args": [
+          "babad"
+        ],
+        "expected": "bab"
+      },
+      {
+        "args": [
+          "cbbd"
+        ],
+        "expected": "bb"
+      },
+      {
+        "args": [
+          "a"
+        ],
+        "expected": "a"
+      },
+      {
+        "args": [
+          "ac"
+        ],
+        "expected": "a"
+      },
+      {
+        "args": [
+          "forgeeksskeegfor"
+        ],
+        "expected": "geeksskeeg"
+      }
+    ],
+    "arg_types": [
+      "字符串"
+    ]
+  },
+  {
+    "id": 30,
+    "title": "最短覆盖子串",
+    "signature": "化「字符串」而化「字符串」而「字符串」",
+    "statement": "输入原串与非空目标串。返回原串中包含目标各字符及其出现次数的最短连续子串；不存在则返回空串，同长取最左者。",
+    "result_type": "字符串",
+    "cases": [
+      {
+        "args": [
+          "ADOBECODEBANC",
+          "ABC"
+        ],
+        "expected": "BANC"
+      },
+      {
+        "args": [
+          "a",
+          "a"
+        ],
+        "expected": "a"
+      },
+      {
+        "args": [
+          "a",
+          "aa"
+        ],
+        "expected": ""
+      },
+      {
+        "args": [
+          "ab",
+          "b"
+        ],
+        "expected": "b"
+      },
+      {
+        "args": [
+          "aa",
+          "aa"
+        ],
+        "expected": "aa"
+      }
+    ],
+    "arg_types": [
+      "字符串",
+      "字符串"
+    ]
+  }
+]

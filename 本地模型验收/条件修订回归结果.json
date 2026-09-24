@@ -1,0 +1,23 @@
+{
+  "guide_sha256": "28389c882f3c1ce49d662567eb0d84cdde464e50007d6285bf65a66167198ed9",
+  "temperature": 0,
+  "max_wait_seconds": 900,
+  "results": [
+    {
+      "id": 29,
+      "status": "pass",
+      "done_reason": "stop",
+      "eval_count": 53507,
+      "total_seconds": 824.911444362,
+      "hidden_cases": 5
+    },
+    {
+      "id": 30,
+      "status": "pass",
+      "done_reason": "stop",
+      "eval_count": 41535,
+      "total_seconds": 626.389160876,
+      "hidden_cases": 5
+    }
+  ]
+}

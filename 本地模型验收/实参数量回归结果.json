@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "status": "pass",
+  "guide_sha256": "69e300edf013ae483d1d69404842771fe98255909df8e1563ccfbbe6eb0cec41",
+  "temperature": 0,
+  "max_wait_seconds": 900,
+  "done_reason": "stop",
+  "eval_count": 17481,
+  "hidden_cases": 5
+}

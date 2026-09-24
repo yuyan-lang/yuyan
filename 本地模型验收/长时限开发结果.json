@@ -1,0 +1,23 @@
+{
+  "guide_sha256": "e6ed2b75b739dcaa0f5539b3cce4e643c643e40bf8555d5832799d5f86eaeeab",
+  "temperature": 0,
+  "think": "xhigh",
+  "num_ctx": 262144,
+  "max_wait_seconds": 1200,
+  "results": [
+    {
+      "id": 29,
+      "completion_seconds": 711.725833505,
+      "eval_count": 46842,
+      "original_status": "fail_typecheck",
+      "diagnosis": "若表达式的否则之前多写也。；仅修这一处后的开发副本通过五组用例"
+    },
+    {
+      "id": 30,
+      "completion_seconds": 733.023484233,
+      "eval_count": 48127,
+      "original_status": "pass",
+      "hidden_cases": 5
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "round": 5,
+  "guide_sha256": "28389c882f3c1ce49d662567eb0d84cdde464e50007d6285bf65a66167198ed9",
+  "model_digest": "debd90a8c6bc58d0e05259930b3cad0c8623ec78955cac28802460f15f40197e",
+  "temperature": 0,
+  "max_wait_seconds": 900,
+  "processed": 15,
+  "passed": 13,
+  "failed": 2,
+  "status": "stopped_unreachable",
+  "failure_ids": [
+    1,
+    15
+  ]
+}

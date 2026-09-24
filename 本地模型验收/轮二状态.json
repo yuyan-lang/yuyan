@@ -1,0 +1,13 @@
+{
+  "round": 2,
+  "guide_sha256": "6c446a627c672c0ca2ce1ac7f129c4ddb6274c79a1da383f949cc51d8ff59997",
+  "model_digest": "debd90a8c6bc58d0e05259930b3cad0c8623ec78955cac28802460f15f40197e",
+  "processed": 11,
+  "passed": 9,
+  "failed": 2,
+  "stopped_reason": "已出现两道失败，本轮不可能达到至少 99/100；下一轮需以新指南从第一题重测。",
+  "failure_ids": [
+    10,
+    11
+  ]
+}

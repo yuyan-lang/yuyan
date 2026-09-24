@@ -1,0 +1,12 @@
+{
+  "id": 15,
+  "status": "pass",
+  "role": "development_retry",
+  "original_round5_status": "fail_model_error",
+  "guide_sha256": "28389c882f3c1ce49d662567eb0d84cdde464e50007d6285bf65a66167198ed9",
+  "temperature": 0,
+  "max_wait_seconds": 900,
+  "done_reason": "stop",
+  "eval_count": 22828,
+  "hidden_cases": 5
+}

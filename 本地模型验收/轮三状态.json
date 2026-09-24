@@ -1,0 +1,14 @@
+{
+  "round": 3,
+  "guide_sha256": "8fb31b854f697942cfe5a5de4bb8f411b6d1fecfe7af87da0539a9f9c523878c",
+  "model_digest": "debd90a8c6bc58d0e05259930b3cad0c8623ec78955cac28802460f15f40197e",
+  "processed": 21,
+  "passed": 19,
+  "failed": 2,
+  "status": "stopped_unreachable",
+  "stopped_reason": "第二道失败出现在第 21 题，无法达到至少 99/100；依据原始诊断修订指南。",
+  "failure_ids": [
+    9,
+    21
+  ]
+}
