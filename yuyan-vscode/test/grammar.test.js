@@ -253,6 +253,44 @@ async function main() {
     }
   });
 
+  // 文言：典中字段之「者」为结构辞，列中同字不冒称字段。
+  // 汉语：典的字段声明不依赖行首；嵌套列表中的「者」不继承字段类别。
+  await runTest('classifies dictionary field declarations on the same line', () => {
+    const line = '「类型」者「典」【「种类」者『库』也，「入口」者『入口』也，】也。';
+    const tokens = tokensWithText(line, grammar.tokenizeLine(line));
+    const markers = tokens.filter(token => token.text === '者');
+
+    assert.strictEqual(markers.length, 3);
+    assert.ok(markers.every(token => hasScope(token, 'markup.bold.structure.yuyan')));
+    assert.ok(markers.slice(1).every(token => hasScope(token, 'meta.dictionary.yuyan')));
+  });
+
+  await runTest('keeps dictionary fields scoped across lines and nested brackets', () => {
+    const lines = [
+      '「典」【',
+      '  「子典」者「典」【「甲」者『值』也，】也，',
+      '  「列表」者「列」【「乙」者『值』也】也，',
+      '】「外」者『值』也。'
+    ];
+    let ruleStack = textmate.INITIAL;
+    const tokenized = lines.map(line => {
+      const result = grammar.tokenizeLine(line, ruleStack);
+      ruleStack = result.ruleStack;
+      return tokensWithText(line, result);
+    });
+    const dictionaryFields = tokenized.slice(1, 3).flatMap(tokens =>
+      tokens.filter(token => token.text === '者' && hasScope(token, 'markup.bold.structure.yuyan'))
+    );
+    const listMarker = findToken(tokenized[2], '者');
+
+    assert.strictEqual(dictionaryFields.length, 3);
+    assert.ok(hasScope(listMarker, 'markup.bold.structure.yuyan'));
+    const innerListMarker = tokenized[2].filter(token => token.text === '者')[1];
+    assert.ok(hasScope(innerListMarker, 'keyword.control.yuyan'));
+    assert.ok(!hasScope(innerListMarker, 'markup.bold.structure.yuyan'));
+    assert.ok(!hasScope(findToken(tokenized[3], '外'), 'meta.dictionary.yuyan'));
+  });
+
   await runTest('highlights punctuation', () => {
     const line = '（甲）【乙】，甲；乙。';
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));

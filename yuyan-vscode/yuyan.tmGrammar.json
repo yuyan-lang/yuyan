@@ -4,6 +4,7 @@
   "patterns": [
     { "include": "#block-comment" },
     { "include": "#string" },
+    { "include": "#dictionary" },
     { "include": "#type-declaration" },
     { "include": "#function-type-prefix" },
     { "include": "#function-type-separator" },
@@ -53,6 +54,54 @@
           "end": "：」"
         }
       ]
+    },
+    "dictionary": {
+      "name": "meta.dictionary.yuyan",
+      "begin": "(「)(典)(」)([\\t ]*)(【)",
+      "beginCaptures": {
+        "1": { "name": "punctuation.definition.variable.begin.yuyan" },
+        "2": { "name": "variable.other.yuyan" },
+        "3": { "name": "punctuation.definition.variable.end.yuyan" },
+        "5": { "name": "punctuation.section.brackets.begin.yuyan" }
+      },
+      "end": "】",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.brackets.end.yuyan" }
+      },
+      "patterns": [
+        { "include": "#block-comment" },
+        { "include": "#string" },
+        { "include": "#dictionary" },
+        { "include": "#dictionary-field" },
+        { "include": "#dictionary-brackets" },
+        { "include": "$self" }
+      ]
+    },
+    "dictionary-brackets": {
+      "begin": "【",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.brackets.begin.yuyan" }
+      },
+      "end": "】",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.brackets.end.yuyan" }
+      },
+      "patterns": [
+        { "include": "#block-comment" },
+        { "include": "#string" },
+        { "include": "#dictionary" },
+        { "include": "#dictionary-brackets" },
+        { "include": "$self" }
+      ]
+    },
+    "dictionary-field": {
+      "match": "(?:^[\\t ]*)?(「)(?!：)([^「」『』（）。\\r\\n]+)(」)(者)",
+      "captures": {
+        "1": { "name": "punctuation.definition.variable.begin.yuyan" },
+        "2": { "name": "variable.other.yuyan" },
+        "3": { "name": "punctuation.definition.variable.end.yuyan" },
+        "4": { "name": "markup.bold.structure.yuyan" }
+      }
     },
     "type-declaration": {
       "name": "meta.declaration.type.yuyan",
