@@ -119,13 +119,13 @@ async function main() {
       '寻观诵', '寻观', '寻诵', '观诵', '是一种', '结合性', '之书',
       '打开', '导入', '导出', '函数', '立', '乃', '即', '号', '术', '交', '序', '寻', '观', '诵'
     ];
-    const typeWords = ['结合', '中的', '承', '从', '到', '自', '合', '之', '的'];
+    const typeWords = ['结合', '中的', '承', '从', '到', '自', '合', '的'];
     const expressionWords = [
       '执行如下计算', '实际上是', '遇到了', '得到了', '使用于', '中的第',
       '递归虑', '类型为', '如果是', '参数是', '否则', '授以', '给予', '随后', '如果',
       '那么', '或者', '分析', '递归', '连结', '其实', '会', '遇', '循', '以', '受',
-      '虑', '其', '让', '为', '于', '与', '附', '中', '有', '则', '或', '鉴', '若', '也',
-      '传', '而', '者', '个', '；'
+      '虑', '其', '让', '为', '于', '与', '附', '中', '有', '则', '或', '鉴', '若',
+      '传', '而', '者', '个', '之', '；'
     ];
     const line = structureWords.concat(typeWords, expressionWords, [
       '《《内建类型：整数》》', '《《内建爻：阳》》', '《《内建函数：整数：相等》》',
@@ -145,7 +145,7 @@ async function main() {
     assert.ok(hasScope(findToken(tokens, '《《内建类型：整数》》'), 'support.type.builtin.yuyan'));
     assert.ok(hasScope(findToken(tokens, '《《内建爻：阳》》'), 'constant.language.builtin.yuyan'));
     assert.ok(hasScope(findToken(tokens, '《《内建函数：整数：相等》》'), 'support.function.builtin.yuyan'));
-    assert.ok(hasScope(findToken(tokens, '《《C调用》》名'), 'support.function.builtin.yuyan'));
+    assert.ok(hasScope(findToken(tokens, '《《C调用》》名'), 'keyword.operator.word.yuyan'));
     assert.ok(tokens.some(token => token.text === '标签' && hasScope(token, 'entity.name.label.yuyan')));
   });
 
@@ -187,6 +187,35 @@ async function main() {
     assert.strictEqual(functionKeywords.map(token => token.text).join(''), '承而化化而而化而');
     assert.ok(functionKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
     assert.ok(!tokens.some(token => token.text === '而化'));
+  });
+
+  // 文言：多行型签之行末「而」，与行中之「而」同属类型辞。
+  // 汉语：保留触发问题的多行类型签名，避免依赖会被移走的排版样本文件。
+  await runTest('keeps line-ending separators in multiline polymorphic types', () => {
+    const declaration = [
+      '「对任意元素列表施行两级变换」乃',
+      '承「甲」而',
+      '承「乙」而',
+      '承「丙」而',
+      '化（「列」于「甲」）而',
+      '化（化「甲」而「乙」）而',
+      '化（化「乙」而「丙」）而',
+      '（「列」于「丙」）也。'
+    ].join('\n');
+    const markers = [];
+    let ruleStack = textmate.INITIAL;
+
+    for (const line of declaration.split('\n')) {
+      const result = grammar.tokenizeLine(line, ruleStack);
+      ruleStack = result.ruleStack;
+      markers.push(...tokensWithText(line, result)
+        .filter(token => ['承', '化', '而'].includes(token.text)));
+    }
+
+    assert.strictEqual(markers.filter(token => token.text === '承').length, 3);
+    assert.strictEqual(markers.filter(token => token.text === '化').length, 5);
+    assert.strictEqual(markers.filter(token => token.text === '而').length, 8);
+    assert.ok(markers.every(token => hasScope(token, 'storage.type.function.yuyan')));
   });
 
   await runTest('uses type context in constructor declarations', () => {

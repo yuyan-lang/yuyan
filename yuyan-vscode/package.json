@@ -109,7 +109,7 @@
     "watch": "tsc -watch -p ./",
     "lint": "eslint . --ignore-pattern out",
     "pretest": "npm run lint && npm run compile && npm run test:grammar && npm run test:build-artifacts && npm run test:language-service-artifacts",
-    "test:grammar": "node test/grammar.test.js",
+    "test:grammar": "node test/grammar.test.js && node --test test/语法高亮核验.test.mjs",
     "test:build-artifacts": "node test/buildArtifacts.test.js",
     "test:language-service-artifacts": "node test/languageServiceArtifacts.test.js",
     "test": "node ./test/runTest.js"

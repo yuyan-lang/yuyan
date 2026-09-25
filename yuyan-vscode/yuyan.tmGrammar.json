@@ -9,6 +9,7 @@
     { "include": "#function-type-prefix" },
     { "include": "#function-type-separator" },
     { "include": "#function-type" },
+    { "include": "#type-application" },
     { "include": "#structure-declaration" },
     { "include": "#builtin" },
     { "include": "#numeric-identifier" },
@@ -73,6 +74,7 @@
         { "include": "#string" },
         { "include": "#dictionary" },
         { "include": "#dictionary-field" },
+        { "include": "#dictionary-field-end" },
         { "include": "#dictionary-brackets" },
         { "include": "$self" }
       ]
@@ -103,6 +105,10 @@
         "4": { "name": "markup.bold.structure.yuyan" }
       }
     },
+    "dictionary-field-end": {
+      "name": "markup.bold.structure.yuyan",
+      "match": "也(?=[\\t ]*，)"
+    },
     "type-declaration": {
       "name": "meta.declaration.type.yuyan",
       "begin": "^[\\t ]*(「)(?!：)([^「」『』（）。\\r\\n]+)(」)(的类型可以是|的类型是|是一种|乃|立|号)",
@@ -120,7 +126,7 @@
       ]
     },
     "type-context-keyword-run": {
-      "match": "(?:(?:结合|中的|承|从|到|自|合|之|的|化|而|者))+(?=[「（《『])",
+      "match": "(?:(?:结合|中的|承|从|到|自|合|之|的|化|而|者))+(?=[「（《『]|[\\t ]*$|[\\t ]*「：)",
       "captures": {
         "0": {
           "patterns": [
@@ -135,15 +141,15 @@
     },
     "function-type-prefix": {
       "name": "keyword.control.yuyan",
-      "match": "其(?=化(?=[「（《『]))"
+      "match": "其(?=化(?=[「（《『]|[\\t ]*$))"
     },
     "function-type-separator": {
       "name": "storage.type.function.yuyan",
-      "match": "而(?=化(?=[「（《『]))"
+      "match": "而(?=化(?=[「（《『]|[\\t ]*$))"
     },
     "function-type": {
       "name": "meta.type.function.yuyan",
-      "begin": "(?:(?<![\\p{L}\\p{N}_])|(?<=[乃而其]))化(?=[「（《『])",
+      "begin": "(?:(?<![\\p{L}\\p{N}_])|(?<=[乃而其即]))化(?=[「（《『]|[\\t ]*$)",
       "beginCaptures": {
         "0": { "name": "storage.type.function.yuyan" }
       },
@@ -155,11 +161,15 @@
         { "include": "$self" }
       ]
     },
+    "type-application": {
+      "name": "storage.type.function.yuyan",
+      "match": "也(?![\\t ]*[。，])"
+    },
     "structure-declaration": {
       "patterns": [
         {
           "name": "meta.declaration.yuyan",
-          "begin": "^[\\t ]*(「)(?!：)([^「」『』（）。\\r\\n]+)(」)(的类型可以是|的类型是|的定义是|其实就是|是一种|者|即|乃|立|号)((?:(?:执行如下计算|实际上是|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|否则|授以|给予|随后|结合|如果|那么|或者|分析|递归|连结|中的|其实|承|从|到|自|合|之|的|会|遇|循|以|受|虑|其|让|为|于|与|附|中|有|则|或|鉴|若|也|传|而|者|个))+(?![\\p{L}\\p{N}_]))?",
+          "begin": "^(?![ ]{4,}「[^「」\\r\\n]+」者)[\\t ]*(「)(?!：)([^「」『』（）。\\r\\n]+)(」)(的类型可以是|的类型是|的定义是|其实就是|是一种|者|即|乃|立|号)((?:(?:执行如下计算|实际上是|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|否则|授以|给予|随后|结合|如果|那么|或者|分析|递归|连结|中的|其实|承|从|到|自|合|之|的|会|遇|循|以|受|虑|其|让|为|于|与|附|中|有|则|或|鉴|若|也|传|而|者|个))+(?![\\p{L}\\p{N}_]))?",
           "beginCaptures": {
             "1": { "name": "punctuation.definition.variable.begin.yuyan" },
             "2": { "name": "variable.other.yuyan" },
@@ -229,7 +239,11 @@
         },
         {
           "name": "support.function.builtin.yuyan",
-          "match": "《《(?:内建函数：[^》]+|C调用)》》(?>函数名是|名)?"
+          "match": "《《内建函数：[^》]+》》"
+        },
+        {
+          "name": "keyword.operator.word.yuyan",
+          "match": "《《C调用》》(?>函数名是|名)?"
         },
         {
           "name": "constant.language.builtin.yuyan",
@@ -239,7 +253,7 @@
     },
     "numeric-identifier": {
       "name": "constant.numeric.yuyan",
-      "match": "「[零一二三四五六七八九0-9]+(?:[点.][零一二三四五六七八九0-9]+)?」"
+      "match": "(?<![虑会让])「(?:[零一二三四五六七八九0-9]+(?:[点.][零一二三四五六七八九0-9]+)?|点)」"
     },
     "identifier": {
       "name": "variable.other.yuyan",
@@ -250,7 +264,7 @@
       }
     },
     "quoted-expression": {
-      "name": "meta.group.expression.quoted.yuyan",
+      "name": "meta.group.expression.quoted.yuyan variable.other.yuyan",
       "begin": "「(?!：)",
       "beginCaptures": {
         "0": { "name": "punctuation.section.group.begin.yuyan" }
@@ -279,7 +293,7 @@
       "match": "[零一二三四五六七八九0-9]+(?:[点.][零一二三四五六七八九0-9]+)?"
     },
     "keyword-run": {
-      "match": "(?<![\\p{L}\\p{N}_])(?:(?:导入并打开|导入并导出|的类型可以是|执行如下计算|《《C调用》》函数名是|其实就是|的类型是|的定义是|实际上是|寻观诵|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|寻观|寻诵|观诵|是一种|结合性|否则|授以|给予|随后|之书|打开|导入|导出|函数|结合|如果|那么|或者|分析|递归|连结|中的|其实|承|从|到|自|合|之|的|会|遇|循|以|受|虑|其|让|为|于|与|附|中|有|则|或|鉴|若|也|传|而|者|个|立|乃|即|号|术|交|序|寻|观|诵))+(?![\\p{L}\\p{N}_])",
+      "match": "(?:(?<![\\p{L}\\p{N}_])|(?<=也))(?:(?:导入并打开|导入并导出|的类型可以是|执行如下计算|《《C调用》》函数名是|其实就是|的类型是|的定义是|实际上是|寻观诵|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|寻观|寻诵|观诵|是一种|结合性|否则|授以|给予|随后|之书|打开|导入|导出|函数|结合|如果|那么|或者|分析|递归|连结|中的|其实|承|从|到|自|合|之|的|会|遇|循|以|受|虑|其|让|为|于|与|附|中|有|则|或|鉴|若|也|传|而|者|个|立|乃|即|号|术|交|序|寻|观|诵))+(?![\\p{L}\\p{N}_])",
       "captures": {
         "0": {
           "patterns": [
@@ -303,7 +317,7 @@
       "patterns": [
         {
           "name": "keyword.operator.word.yuyan",
-          "match": "执行如下计算|《《C调用》》函数名是|实际上是|遇到了|得到了|使用于|中的第|递归虑|类型为|如果是|参数是|否则|授以|给予|随后|如果|那么|或者|分析|递归|连结|其实"
+          "match": "执行如下计算|《《C调用》》函数名是|实际上是|遇到了|得到了|使用于|中的第|类型为|参数是|授以|给予|随后|连结|其实"
         }
       ]
     },
@@ -311,7 +325,7 @@
       "patterns": [
         {
           "name": "storage.type.function.yuyan",
-          "match": "结合|中的|承|从|到|自|合|之|的"
+          "match": "结合|中的|承|从|到|自|合|的"
         }
       ]
     },
@@ -323,11 +337,11 @@
         },
         {
           "name": "keyword.control.yuyan",
-          "match": "递归虑|如果是|如果|那么|或者|分析|递归|虑|其|者|而|鉴|有|或"
+          "match": "递归虑|如果是|如果|那么|或者|分析|递归|会|遇|循|以|受|虑|其|者|而|鉴|有|或"
         },
         {
           "name": "keyword.operator.word.yuyan",
-          "match": "执行如下计算|实际上是|遇到了|得到了|使用于|中的第|类型为|参数是|授以|给予|随后|连结|其实|会|遇|循|以|受|虑|让|为|附|于|与|中|也|传|个"
+          "match": "执行如下计算|实际上是|遇到了|得到了|使用于|中的第|类型为|参数是|授以|给予|随后|连结|其实|之|让|为|附|于|与|中|也|传|个"
         }
       ]
     },
