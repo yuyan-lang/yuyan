@@ -1,0 +1,33 @@
+BCD路径	豫言接口	状态	验证
+api.CSSStyleDeclaration.@@iterator	无专门接口	待补	符号迭代未封装
+api.CSSStyleDeclaration.cssFloat	无专门接口	待补	需核对浏览器支持差异
+api.CSSStyleDeclaration.cssText	浏览器样式原文、浏览器样式设原文	已实测	Chrome 豫言 Wasm 写后读
+api.CSSStyleDeclaration.getPropertyCSSValue	无专门接口	待补	旧式接口仅部分浏览器支持
+api.CSSStyleDeclaration.getPropertyPriority	浏览器样式取优先级	已实测	Chrome 豫言 Wasm important
+api.CSSStyleDeclaration.getPropertyValue	浏览器样式取属性	已实测	Chrome 豫言 Wasm
+api.CSSStyleDeclaration.item	浏览器样式第项	已实测	Chrome 豫言 Wasm
+api.CSSStyleDeclaration.length	浏览器样式数目	已实测	Chrome 豫言 Wasm
+api.CSSStyleDeclaration.parentRule	无专门接口	待补	行内样式无父规则，样式表规则待验
+api.CSSStyleDeclaration.removeProperty	浏览器样式删除	已实测	Chrome 豫言 Wasm 返回旧值
+api.CSSStyleDeclaration.setProperty	浏览器样式设置、浏览器样式设置优先级	已实测	Chrome 豫言 Wasm 普通与 important
+api.DOMTokenList.@@iterator	无专门接口	待补	符号迭代未封装
+api.DOMTokenList.add	浏览器类名添加、浏览器类名多添	已实测	Chrome 豫言 Wasm
+api.DOMTokenList.add.multiple_parameters	浏览器类名多添	已实测	Chrome 豫言 Wasm 两项
+api.DOMTokenList.contains	浏览器类名有	已实测	Chrome 豫言 Wasm
+api.DOMTokenList.entries	无专门接口	待补	原生迭代器待封装
+api.DOMTokenList.forEach	无专门接口	待补	回调与遍历时修改语义待补
+api.DOMTokenList.item	浏览器类名第项	已实测	Chrome 豫言 Wasm
+api.DOMTokenList.keys	无专门接口	待补	原生迭代器待封装
+api.DOMTokenList.length	浏览器类名数目	已实测	Chrome 豫言 Wasm
+api.DOMTokenList.remove	浏览器类名删除、浏览器类名多删	已实测	Chrome 豫言 Wasm 单项与双项
+api.DOMTokenList.remove.multiple_parameters	浏览器类名多删	已实测	Chrome 豫言 Wasm 两项
+api.DOMTokenList.remove_duplicates	浏览器类名添加	待验	重复项语义未测
+api.DOMTokenList.replace	浏览器类名替换	已实测	Chrome 豫言 Wasm
+api.DOMTokenList.replace.boolean_value	浏览器类名替换	已实测	Chrome 豫言 Wasm 返回爻
+api.DOMTokenList.supports	无专门接口	待补	需用支持此方法的 token list 验证
+api.DOMTokenList.toString	无专门接口	待补	可经通用句柄调用，待具名封装
+api.DOMTokenList.toggle	浏览器类名切换、浏览器类名强制切换	已实测	Chrome 豫言 Wasm
+api.DOMTokenList.toggle.force_parameter	浏览器类名强制切换	已实测	Chrome 豫言 Wasm
+api.DOMTokenList.trim_whitespace	浏览器类名取值	待验	空白规范化未测
+api.DOMTokenList.value	浏览器类名取值、浏览器类名设值	已实测	Chrome 豫言 Wasm 写后读
+api.DOMTokenList.values	无专门接口	待补	原生迭代器待封装

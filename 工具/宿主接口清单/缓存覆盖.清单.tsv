@@ -1,0 +1,18 @@
+BCD路径	浏览器豫言封装	浏览器验证	尚需核验
+api.Cache	缓存。豫	真实浏览器基本往返	完整方法及生命周期
+api.Cache.add	浏览器缓存添加	真实浏览器静态资源实测	请求与网络失败语义
+api.Cache.addAll	浏览器缓存批量添加	真实浏览器两项静态资源实测	批量原子性及网络失败语义
+api.Cache.delete	浏览器缓存删除	真实浏览器实测	CacheQueryOptions及异常
+api.Cache.keys	浏览器缓存诸请求、浏览器缓存筛选请求	真实浏览器句柄列表实测	CacheQueryOptions及句柄释放
+api.Cache.match	浏览器缓存匹配	真实浏览器实测	CacheQueryOptions及失效语义
+api.Cache.matchAll	浏览器缓存诸响应、浏览器缓存匹配全部	真实浏览器句柄列表实测	CacheQueryOptions及句柄释放
+api.Cache.put	浏览器缓存写入	真实浏览器实测	非法请求及响应异常
+api.Cache.worker_support	待核验	未测	专用Worker与Service Worker
+api.CacheStorage	浏览器缓存仓	真实浏览器实测	完整接口及生命周期
+api.CacheStorage.delete	浏览器缓存仓删除	真实浏览器实测	异常及并发
+api.CacheStorage.has	浏览器缓存仓有	真实浏览器实测	异常及并发
+api.CacheStorage.keys	浏览器缓存仓诸名	真实浏览器列表调用实测	缓存名内容及并发
+api.CacheStorage.match	浏览器缓存仓匹配	真实浏览器跨缓存匹配实测	MultiCacheQueryOptions及多仓顺序
+api.CacheStorage.open	浏览器打开缓存	真实浏览器实测	并发及异常
+api.CacheStorage.secure_context_required	待核验	本地可信上下文实测	不安全上下文拒绝行为
+api.CacheStorage.worker_support	待核验	未测	专用Worker与Service Worker

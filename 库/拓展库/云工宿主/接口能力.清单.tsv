@@ -1,0 +1,48 @@
+类别	能力	状态
+运行时	Cache	部分
+运行时	Console	部分
+运行时	Context	部分
+运行时	Encoding	部分
+运行时	EventSource	部分
+运行时	Fetch	部分
+运行时	Handlers	部分
+运行时	Headers	部分
+运行时	HTMLRewriter	部分
+运行时	MessageChannel	部分
+运行时	Node.js compatibility	待补
+运行时	Performance and timers	部分
+运行时	Remote-procedure call	待补
+运行时	Request	部分
+运行时	Response	部分
+运行时	Scheduler	部分
+运行时	Streams	部分
+运行时	TCP sockets	部分
+运行时	Web Crypto	部分
+运行时	Web standards	部分
+运行时	WebAssembly	部分
+运行时	WebSockets	部分
+绑定	AI	待补
+绑定	Analytics Engine	部分
+绑定	Assets	部分
+绑定	Browser Run	待补
+绑定	D1	部分
+绑定	Dispatcher	待补
+绑定	Durable Objects	部分
+绑定	Dynamic Worker Loaders	部分
+绑定	Environment Variables	部分
+绑定	Hyperdrive	待补
+绑定	Images	待补
+绑定	KV	部分
+绑定	Media Transformations	待补
+绑定	mTLS	待补
+绑定	Queues	部分
+绑定	R2	部分
+绑定	Rate Limiting	部分
+绑定	Secrets	部分
+绑定	Secrets Store	部分
+绑定	Send Email	部分
+绑定	Service bindings	部分
+绑定	Stream	待补
+绑定	Vectorize	待补
+绑定	Version metadata	部分
+绑定	Workflows	部分

@@ -1,0 +1,38 @@
+BCD路径	豫言接口	状态	验证与边界
+api.Worker.Worker	浏览器工作线程新建	部分实测	真实 Chrome 从应用目录解析相对网址，以默认 module 类型创建 Worker；name 选项在 Worker 豫言 Wasm 读回；classic、credentials 和跨源边界待验
+api.Worker.postMessage	浏览器工作线程发值	部分实测	页面豫言 Wasm 发送 JSON 对象，Worker 豫言 Wasm 回显；MessagePort 与 0、255、65 三字节 ArrayBuffer 同次转移，页面端脱离、Worker 端无损读回；其他结构化克隆值待验
+api.Worker.terminate	浏览器工作线程终止	已实测	真实 Chrome 一次终止返回真，重复终止返回假；排队消息清理已接入，竞态边界待验
+api.Worker.message_event	等待浏览器事件	已实测	构造时立即安装监听；真实 Chrome 中页面豫言 Wasm 收到 Worker 豫言 Wasm 立即发出的 ready 和后续回显
+api.Worker.error_event	等待浏览器事件	已实测	真实 Chrome 加载同源不存在的 Worker 脚本，豫言 Wasm 收到 error 事件；错误消息、文件、行列快照与跨源边界待验
+api.Worker.messageerror_event	等待浏览器事件	已接未实测	消息反序列化失败事件已接入；真实失败边界待验
+api.KeyboardEvent.key、api.KeyboardEvent.code	浏览器事件订阅选项	部分实测	真实 Chrome Tab keydown 快照含键、代码；其他键位和布局待验
+api.KeyboardEvent.ctrlKey、api.KeyboardEvent.metaKey、api.KeyboardEvent.altKey、api.KeyboardEvent.shiftKey	浏览器事件订阅选项	部分实测	按键快照和预声明匹配规则已接入；真实 Chrome 已验无 Ctrl/Meta 的 Tab，其他修饰键组合待验
+api.Event.preventDefault	键盘阻止默认规则	已实测	真实 Chrome 的原生 Tab keydown 同步阻止默认，焦点仍留在输入框，豫言随后收到已阻止默认为真
+api.DedicatedWorkerGlobalScope.postMessage	浏览器工作线程向主线程发值	已实测	真实 Chrome 的 Dedicated Worker 内豫言 Wasm 发 ready 和结果，页面豫言 Wasm 接收；反向转移列表待验
+api.DedicatedWorkerGlobalScope.message_event	浏览器工作线程自身句柄、浏览器事件订阅选项、等待浏览器事件	已实测	Worker 豫言 Wasm 先订阅 self 的 message，再收到页面消息和 data 快照；自动启动外壳已由双宿主构建器复制
+api.DedicatedWorkerGlobalScope.name	浏览器工作线程自身名称	已实测	页面设置豫言验收，Worker 豫言 Wasm 读取并确认相同名称
+api.DedicatedWorkerGlobalScope.close	浏览器工作线程自行关闭	部分实测	Worker 豫言 Wasm 发完 MessagePort 回信后调用 close，页面收到回信；关闭后的队列丢弃及竞态待验
+api.Worker.Worker.ecmascript_modules	浏览器工作线程新建	已实测	默认 type 为 module，真实 Chrome 加载构建器复制的 module 外壳及豫言 Wasm
+api.Worker.Worker.options_name_parameter	浏览器工作线程新建	已实测	页面设置 name 为豫言验收，Worker 豫言 Wasm 读回同名
+api.Worker.Worker.options_type_parameter	浏览器工作线程新建	部分实测	module 已验；classic 构造与脚本行为待验
+api.Worker.Worker.enforces_trusted_types	无专门接口	待补	Trusted Types 策略下 URL 构造和脚本限制待验
+api.Worker.Worker.mime_checks	无专门接口	待补	不同浏览器对 Worker 脚本 MIME 检查待验
+api.Worker.postMessage.options_includeUserActivation_parameter	无专门接口	待补	现有接口第二参数仅接受 transfer 数组，未接选项对象
+api.Worker.worker_support	浏览器工作线程新建	已接未实测	Dedicated Worker 内理论可创建嵌套 Worker，真实嵌套生命周期待验
+api.DedicatedWorkerGlobalScope.messageerror_event	浏览器工作线程自身句柄、浏览器事件订阅选项	已接未实测	泛型事件订阅可接 messageerror，真实反序列化失败待验
+api.DedicatedWorkerGlobalScope.cancelAnimationFrame	浏览器取消动画帧	已实测	真实 Chrome Worker 豫言 Wasm 取消未触发的帧，首个收到的事件属于后续请求
+api.DedicatedWorkerGlobalScope.requestAnimationFrame	浏览器请求动画帧	已实测	真实 Chrome Worker 豫言 Wasm 收到带标记的动画帧事件后向页面发送 ready；无页面所有者的 Worker 待验
+api.DedicatedWorkerGlobalScope.rtctransform_event	无	待补	WebRTC 编码流变换事件尚未接入
+api.WorkerGlobalScope.error_event	浏览器工作线程自身句柄、浏览器事件订阅选项	已接未实测	泛型事件订阅可接 error，工内实际未捕获异常待验
+api.WorkerGlobalScope.fonts	无专门接口	待补	工内 FontFaceSet 具名接口与真实行为待验
+api.WorkerGlobalScope.importScripts	无专门接口	待补	classic Worker 的同步脚本导入未提供具名接口，业务应保持豫言
+api.WorkerGlobalScope.importScripts.enforces_trusted_types	无	待补	Trusted Types 边界待验
+api.WorkerGlobalScope.importScripts.mime_checks	无	待补	脚本 MIME 检查边界待验
+api.WorkerGlobalScope.languagechange_event	浏览器工作线程自身句柄、浏览器事件订阅选项	已接未实测	泛型事件订阅可接事件，真实语言变化待验
+api.WorkerGlobalScope.location	浏览器全局句柄、浏览器读取属性	部分	可由现有句柄读取，具名封装与真实 Worker 往返待验
+api.WorkerGlobalScope.navigator	浏览器全局句柄、浏览器读取属性	部分	可由现有句柄读取，具名封装与真实 Worker 往返待验
+api.WorkerGlobalScope.offline_event、api.WorkerGlobalScope.online_event	浏览器工作线程自身句柄、浏览器事件订阅选项	已接未实测	泛型事件订阅可接事件，真实网络切换待验
+api.WorkerGlobalScope.rejectionhandled_event、api.WorkerGlobalScope.unhandledrejection_event	浏览器工作线程自身句柄、浏览器事件订阅选项	已接未实测	泛型事件订阅可接事件，拒绝原因与时序待验
+api.WorkerGlobalScope.securitypolicyviolation_event	浏览器工作线程自身句柄、浏览器事件订阅选项	已接未实测	泛型事件订阅可接事件，CSP 快照字段与真实限制待验
+api.WorkerGlobalScope.self	浏览器工作线程自身句柄	已实测	真实 Chrome Worker 豫言 Wasm 取得 self 句柄并订阅 message
+api.WorkerGlobalScope.dump	无	待补	Firefox 特有调试接口，跨浏览器业务不宜依赖

@@ -1,0 +1,4 @@
+接口	豫言接口	状态	验证	待补
+RateLimit.limit({key})	云工限流尝试	本地已验	Wrangler 4.129.0 配额 1 次/10 秒，同键重复调用被拒绝，异键通过	生产多地区、最终一致性与窗口边界
+RateLimitResult.success	云工限流尝试返回爻	本地已验	豫言按布尔结果分别处理允许与拒绝	错误与限额异常边界
+Wrangler ratelimits 配置	许可清单 RATE_LIMIT 与部署配置 ratelimits	本地已验	真实 workerd 绑定名测试限流可用	生产命名空间共享与部署验收

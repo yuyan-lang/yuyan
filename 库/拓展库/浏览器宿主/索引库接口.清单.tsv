@@ -1,0 +1,29 @@
+BCD 路径或能力	豫言接口	状态	真实运行验证	待补
+api.indexedDB、api.IDBFactory.open	浏览器索引库打开	已实测	Chrome 版本 1 打开并建仓，关闭后重新打开	无版本打开、阻塞升级、跨标签页
+api.IDBFactory.deleteDatabase	浏览器索引库删除	已实测	Chrome 关闭连接后删除，列表不再含库名	阻塞删除与错误边界
+api.IDBFactory.databases	浏览器索引库列表文	已实测	Chrome 删除前后枚举	跨浏览器支持与权限拒绝
+api.IDBFactory.cmp	浏览器索引库比键	已实测	Chrome 字符串键 a 小于 b	数组、日期与二进制键
+api.IDBOpenDBRequest.upgradeneeded_event	浏览器索引库打开之方案文	已实测	Chrome 升级回调同步建仓和索引	旧版本迁移、blocked 与错误
+api.IDBOpenDBRequest.blocked_event	打开请求内部处理	已封装	尚未真实阻塞验收	阻塞连接后的资源清理
+api.IDBDatabase.createObjectStore	浏览器索引库打开之 stores 方案	已实测	Chrome 新建记录仓	keyPath、autoIncrement 与参数错误
+api.IDBDatabase.transaction	浏览器索引库事务、浏览器索引库事务安全	已实测	Chrome readwrite 与 readonly，多请求同一活期排队	跨事件动态分支及多仓事务
+api.IDBDatabase.close	浏览器索引库关闭	已实测	Chrome 关闭后重开并读回	versionchange 中连接生命周期
+api.IDBObjectStore.put	浏览器索引库事务	已实测	Chrome 同一事务写入两项	复杂结构化克隆值
+api.IDBObjectStore.add	浏览器索引库事务安全	已实测	Chrome 对已有键 add 导致 ConstraintError，整事务回滚	成功 add 与生成键
+api.IDBObjectStore.get	浏览器索引库事务	已实测	Chrome 读回对象和缺失标记，关闭重开后仍可读	非 JSON 值
+api.IDBObjectStore.getAllKeys	浏览器索引库事务	已实测	Chrome 枚举两个键	查询与数量选项
+api.IDBObjectStore.count	浏览器索引库事务	已实测	Chrome 写入后计数	范围查询
+api.IDBObjectStore.getAll	浏览器索引库事务及键界句柄	已实测	Chrome 原生 IDBKeyRange 作为查询参数，返回范围内两对象	数量选项与非 JSON 值
+api.IDBObjectStore.getKey、delete、clear	浏览器索引库事务	已封装	尚未逐项实测	结果、异常和边界
+api.IDBObjectStore.createIndex	浏览器索引库打开之 indexes 方案	已实测	Chrome 按 name 字段建立索引	多值与唯一索引
+api.IDBIndex.get	浏览器索引库事务之 index 字段	已实测	Chrome 按乙查到对象	其他 Index 方法
+api.IDBObjectStore.openCursor	浏览器索引库游标文	已实测	Chrome bound 范围内 prev 方向读到 k2 与 k1	游标动态写入及超上限分页
+api.IDBIndex.openKeyCursor	浏览器索引库游标文	已实测	Chrome 按名索引 only 乙，返回 primaryKey k2	其他方向与重复索引键
+api.IDBCursor.continue、key、primaryKey、value	浏览器索引库游标文内部推进	部分	Chrome 请求回调内逐项继续并返回键、主键和值	advance、continue(key)、continuePrimaryKey、update、delete
+api.IDBTransaction.complete_event	浏览器索引库事务	已实测	Chrome 提交后返回每请求结果	durability 与显式 commit
+api.IDBTransaction.abort_event	浏览器索引库事务安全	已实测	Chrome 重复键触发 ConstraintError，先前 put 未提交	显式 abort 与其他错误
+api.IDBRequest.success_event、error_event	浏览器索引库事务	部分	Chrome 成功结果及失败后事务错误	逐请求错误与阻止默认
+api.IDBKeyRange.only、bound、lowerBound、upperBound	浏览器索引库键界	已实测	Chrome 四种原生键界句柄，bound 传入 getAll 和游标	开放边界及非文字键
+api.IDBKeyRange.includes、lower、upper、lowerOpen、upperOpen	浏览器索引库键界含、键界信息文	部分	Chrome 包含 k1、不含 k3，读回 lower 属性	上下界开放组合及非文字键
+api.IDBCursor、api.IDBCursorWithValue	浏览器索引库游标文	部分	Chrome 对象仓与索引键游标均返回有序快照	动态推进、更新、删除和迭代期间修改
+api.IDBDatabase.versionchange_event	无专门接口	待补	尚未实测	跨连接升级通知

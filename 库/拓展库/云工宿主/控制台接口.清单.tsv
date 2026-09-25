@@ -1,0 +1,5 @@
+平台 API	豫言入口	平台状态	本地验证	未竟
+console.debug/info/log/warn/error	云工调试日志、云工信息、云工日志、云工警告、云工错误日志、云工控制台调用	Cloudflare 支持	Wrangler 4.129.0 本地 workerd 五级均有对应输出；log 多参数含数值与对象	Tail Worker、生产日志管道未验
+console.clear/count/group/table/trace	云工控制台调用	Cloudflare 部分支持	count 可调用且请求成功；其余逐项未验	本地开发与远程预览行为差异
+console.assert/countReset/dir/dirxml/groupCollapsed/groupEnd/profile/profileEnd/time/timeEnd/timeLog/timeStamp	云工控制台调用	Cloudflare 无操作	assert(false) 可调用且请求成功；其余逐项未验	生产无操作语义依平台文档
+console.createTask	云工控制台调用	Cloudflare 生产抛错	方法已可调，未运行	本地任务对象与生产异常；不可作为跨环境能力

@@ -1,0 +1,5 @@
+规范成员	豫言入口	状态	证据与边界
+TextEncoderStream constructor、encoding	云工文字编码流新建、云工文字转换流信息文	本地实测	Wrangler 4.129.0 本地 workerd 构造后编码为 utf-8；豫言两次写入“甲”“乙”，输出六个 UTF-8 字节；代理项拆分与云端部署待验
+TextEncoderStream.readable、writable	云工文字转换流读端、云工文字转换流写端、云工写器发文字	本地实测	豫言取得两端与写器、读器，两块文字异步写入并在读完输出后等待三个 Promise；大量分块背压与取消待验
+TextDecoderStream constructor、encoding、fatal、ignoreBOM	云工文字解码流新建、云工文字转换流信息文	本地实测部分边界	本地 workerd 默认与 fatal/ignoreBOM 为真的属性值均按豫言参数设置；fatal 模式读写坏 UTF-8 返回 TypeError，非 fatal 模式产出替换字符；其他编码标签待验
+TextDecoderStream.readable、writable	云工文字转换流读端、云工文字转换流写端、云工读取文字流块、云工读取文字流块安全	本地实测	UTF-8“甲”三字节拆成一字节与两字节写入后读回完整文字；BOM 的三字节拆在两块，默认被去除；错误通过安全读取返回阴；背压与非 UTF-8 待验

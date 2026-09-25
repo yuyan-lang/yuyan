@@ -1,0 +1,4 @@
+规范成员	豫言入口	状态	证据与边界
+encodeURI、encodeURIComponent	浏览器网址编解码安全	已实测	真实 Chrome 保留完整 URL 分隔符、按成分转义斜线和 UTF-8“甲”
+decodeURI、decodeURIComponent	浏览器网址编解码安全、浏览器解码网址成分安全	已实测	真实 Chrome 对 %2F 分别保留和还原斜线，%E7%94%B2 还原“甲”；%ZZ、%FF 返回阴与 URIError
+全局函数错误隔离	浏览器调用全局安全	已实测	真实 Chrome 的 decodeURIComponent 同步 URIError 及 fetch 无效 URL 的 Promise TypeError 均返回阴与错误 JSON；其他全局函数及非 Error 拒绝待验

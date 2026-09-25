@@ -1,0 +1,8 @@
+接口	豫言入口	状态	真实运行验证	待补
+ReadableStream.getReader/read/releaseLock	云工打开可读流、云工读取流块、云工释放流读取器	已接	本地 workerd 请求流三字节往返	BYOB
+Response.body/status/headers	云工回应正文流句柄、云工回应状态、云工回应标头句柄	部分实测	本地 workerd 原生 Response 206 的流体与标头由豫言读取；UTF-8“豫”跨两块解码，204 无正文返回阴	真实上游 fetch 的长流与错误传播待验
+安全读取与字节解码	云工读取流块安全、云工解安全流块	已接	本地 workerd 首块原始 UTF-8 字节解码为“甲”，第二块为结束；生产者故障返回阴与错误文，HTTP 仍成功	其他异常类型、重复读取错误及跨运行时
+ReadableStreamDefaultReader.cancel	云工取消流读取器	已接	本地 workerd 读首块后以“停”取消，等待底层回调写 KV	HTTP 客户端断连与错误传播
+主动供块 ReadableStream	云工创建可读流、云工写入流块、云工关闭可读流	已接	本地 workerd 三块响应；HTML 回调内双块写入会背压互等	跨事件生产者与错误回调
+按需拉取 ReadableStream	云工创建回调可读流、云工流回调状态文、云工流回调供块	已接	本地 workerd 三次重入豫言 Wasm，HTML 流式内容完整输出；生产者故障由安全读取显式捕获	长流与非安全读取错误
+取消回调	云工流回调取消原因文	已接	本地 workerd 回调收到状态“次”与原因“停”，写 KV 后原请求读回	客户端断连与资源清理失败

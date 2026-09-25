@@ -1,0 +1,19 @@
+BCD 路径	豫言接口	状态	真实运行验证	待补
+api.Window.localStorage	浏览器储存读取、写入、删除、清空、计数、序键（本地）	已实测	Chrome 本地值与会话值隔离	跨标签页与重启持久性
+api.Window.sessionStorage	浏览器储存读取、写入、删除、清空、计数、序键（会话）	已实测	Chrome 同键不同值	标签页复制及导航存续
+api.Storage	储存。豫	部分	Chrome 两个 Storage 对象调用	异常及多文档并发
+api.Storage.getItem	浏览器储存读取	已实测	Chrome 缺失、空字符串与文字值	受限来源异常
+api.Storage.setItem	浏览器储存写入	已实测	Chrome 本地、会话与跨文档事件	配额异常
+api.Storage.removeItem	浏览器储存删除	已实测	Chrome 删除后缺失	跨文档删除事件
+api.Storage.clear	浏览器储存清空	已实测	Chrome 两区域清空及计数	跨文档清空事件
+api.Storage.key	浏览器储存序键	已实测	Chrome 序号零与越界	多个键的顺序与并发修改
+api.Storage.length	浏览器储存计数	已实测	Chrome 零与一	多文档并发
+api.Window.storage_event	浏览器订阅储存变化、等待浏览器事件	已实测	Chrome 同源 iframe 的豫言子程序写入并触发父页	不同标签页、会话区域与卸载时序
+api.StorageEvent	浏览器事件队列中的 storage 事件载荷	部分	Chrome 父页收到真实 StorageEvent	构造、初始化和全部字段边界
+api.StorageEvent.StorageEvent	通用浏览器构造对象	待补	未验证专门构造	构造选项与异常
+api.StorageEvent.initStorageEvent	通用浏览器调用方法	待补	未验证	遗留初始化方法
+api.StorageEvent.key	等待浏览器事件之键字段	已实测	Chrome 事件键	删除和清空时为 null
+api.StorageEvent.oldValue	等待浏览器事件之旧值字段	已封装	本次未断言旧值	覆盖改值、删除与清空
+api.StorageEvent.newValue	等待浏览器事件之新值字段	已实测	Chrome 来自子页	删除和清空时为 null
+api.StorageEvent.url	等待浏览器事件之网址字段	已封装	本次未断言网址	同源跨文档 URL
+api.StorageEvent.storageArea	等待浏览器事件之区域字段	已实测	Chrome 标记本地区域	会话区域事件

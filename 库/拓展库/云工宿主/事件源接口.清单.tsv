@@ -1,0 +1,7 @@
+平台 API	豫言入口	状态	证据与边界
+EventSource(url, {withCredentials})	云工事件源连接	已实测	Wrangler 4.129.0 本地 workerd 连 127.0.0.1:8822 SSE 服务，收到自定义 notice、数据“甲”、id 7	跨源凭据、重连与 Last-Event-ID 待验
+EventSource(url, {fetcher})	云工事件源连接服务	已实测	两个豫言 Wasm Worker 在 Wrangler 4.129.0 本地通过授权 SERVICE 绑定相连；服务端按需流供 notice、id 7	服务绑定故障、生产环境待验
+EventSource.from(ReadableStream)	云工事件源接流	已实测	豫言按需流回调供 SSE 字节，同一程序的事件源收到 notice 和 id 7	多块拆分、取消及错误流待验
+open/message/error、自定义事件	云工事件源订阅、云工事件源等事文	部分实测	自定义 notice、数据和 id 已验；open 经过等待但未单独断言	普通 message、error、重连与 origin 待验
+url、readyState、withCredentials	云工事件源状态文	部分实测	已调用状态读取；字段未逐项断言	状态转换与凭据待验
+close()	云工事件源关闭	已实测短例	两种连接均由豫言显式关闭，HTTP 请求完成	重复关闭及中途取消待验

@@ -1,0 +1,10 @@
+规范成员	豫言入口	状态	证据与边界
+FileReader constructor	浏览器文件读取器新建、浏览器文件读取器释放	已实测	真实 Chrome 构造并释放五个读取器
+FileReader.readAsArrayBuffer、result	浏览器文件读取字节、浏览器文件读取结果字节安全	已实测	00 FF 41 三字节无损往返；读取前 result 为空
+FileReader.readAsText、result	浏览器文件读取文字、浏览器文件读取结果文字安全	已实测	UTF-8“甲”读回
+FileReader.readAsDataURL	浏览器文件读取网址、浏览器文件读取结果文字安全	已实测	application/octet-stream 的 00 FF 41 得 base64 AP9B
+FileReader.readAsBinaryString	浏览器文件读取旧二进制、浏览器文件读取旧二进制字节安全	已实测	旧二进制字符串逐码位还原 00 FF 41
+FileReader.abort	浏览器文件读取中止	已实测	读取开始后立即中止；abort 与 loadend 到达且结果为空
+FileReader.readyState、error	浏览器文件读取状态文	部分已实测	初态 0、完成态 2；错误名和错误文已接入但错误路径待验
+FileReader 进度与生命周期事件	浏览器文件读取等事文	部分已实测	loadstart、progress、load、loadend、abort 的事件次序通过；大文件进度及 error 路径待验
+FileList.length、item	浏览器文件列表从输入、浏览器文件列表数量、浏览器文件列表取项安全	已实测	file input 注入原生 FileList 后数量 1、首项文件名、越界返回阴	真实用户选择文件流程待验

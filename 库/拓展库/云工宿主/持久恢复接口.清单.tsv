@@ -1,0 +1,5 @@
+Cloudflare API	豫言入口	状态	验证与边界
+DurableObjectStorage.getCurrentBookmark	云工持久当前书签安全	本地部分实测	Wrangler 4.129.0 本地 SQLite 对象返回书签 00000000-00000002-00000000-00000000000000000000000000000000；本地无恢复日志，云端实际时间点语义待验
+DurableObjectStorage.getBookmarkForTime	云工持久时刻书签安全	安全失败已实测	本地 workerd 报存储后端未实现 point-in-time recovery，豫言得到阴与错误文；负一毫秒由宿主拒绝；云端 30 日内边界待验
+DurableObjectStorage.onNextSessionRestoreBookmark	云工持久下次会话恢复书签安全	安全失败已实测	本地 workerd 对无效书签报后端未实现，豫言得到阴与错误文；空书签由宿主拒绝；没有执行实际恢复，云端待验
+DurableObjectState.abort	云工持久重启对象	已接未实测	豫言可显式传原因与 retryAlarm；本地未实际重启，恢复组合流程只可在有 PITR 的云端验证

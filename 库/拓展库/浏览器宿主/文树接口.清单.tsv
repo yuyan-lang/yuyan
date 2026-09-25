@@ -1,0 +1,21 @@
+BCD路径	豫言接口	状态	验证
+api.Document.createElement	浏览器新建元素	已实测	Chrome 豫言 Wasm 创建 article
+api.Document.createElement.html_name_validity	浏览器新建元素	待验	标签名边界未测
+api.Document.createElement.options_parameter	无重载接口	待补	自定义元素选项未封装
+api.Document.createElement.options_parameter.customElementRegistry_option	无重载接口	待补	作用域注册表选项未封装
+api.Document.createElement.options_parameter.options_is_parameter	无重载接口	待补	旧式选项未封装
+api.Document.createTextNode	浏览器新建文本节点	已实测	Chrome 豫言 Wasm 创建文本并附加到元素
+api.Document.getElementById	浏览器按标识取节点	已实测	Chrome 豫言 Wasm 获取根节点
+api.Document.querySelector	浏览器文档选一	已实测	Chrome 豫言 Wasm 创建后查询与删除后复查
+api.Document.querySelectorAll	浏览器文档选全	已封装	待真实浏览器验证
+api.Element.getAttribute	浏览器元素取属性	已实测	Chrome 豫言 Wasm 读取与删除后复查
+api.Element.querySelector	浏览器节点选一	已封装	待真实浏览器验证
+api.Element.querySelectorAll	浏览器节点选全	已实测	Chrome 豫言 Wasm 数组化查询
+api.Element.remove	浏览器节点自删	已实测	Chrome 豫言 Wasm 删除后复查
+api.Element.removeAttribute	浏览器元素删属性	已实测	Chrome 豫言 Wasm 删除后复查
+api.Element.setAttribute	浏览器元素设属性	已实测	Chrome 豫言 Wasm 设 id 与 data-kind
+api.Element.setAttribute.enforces_trusted_types	浏览器元素设属性	待验	Trusted Types 约束未测
+api.Element.setAttribute.html_name_validity	浏览器元素设属性	待验	HTML 属性名边界未测
+api.Node.appendChild	浏览器节点附子、浏览器调用方法原始	已实测	Chrome 豫言 Wasm 具名与原始通路均插入文本节点并取回 Node 句柄；注册观察器后原始通路亦通过
+api.Node.removeChild	浏览器节点删子	已封装	待真实浏览器验证
+api.Node.textContent	浏览器节点文字、浏览器节点设文字	已实测	Chrome 豫言 Wasm 写后读

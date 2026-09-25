@@ -1,0 +1,27 @@
+接口	状态	实测	待补
+HTMLRewriter.on(selector).transform(Response)	已接	Wrangler 4.129.0 本地 workerd 元素与全回调	上游流取消
+多选择器规则	已接	p、a 两条规则分别改写属性	选择器错误与重叠规则次序
+异步 element 回调重入豫言 Wasm	已接	两个元素分别读取属性并改写	错误后的流截断语义
+Element.getAttribute	已接	两种属性值分支	命名空间属性
+Element.hasAttribute/removeAttribute	已接	删除前 true、删除后 false，输出不含旧属性	非法属性名错误
+Element.attributes	已接	枚举到 old=x 名值对	命名空间及迭代期间修改
+Element.tagName/namespaceURI	已接	改名 h2 后读回并确认 HTML 命名空间	SVG/MathML 命名空间
+Element.removed	已接	替换与删除后读回 true	前置处理器已移除时的后续规则
+Element.setAttribute	已接	分别写入豫言一与豫言二	非法属性名异常
+Element.setInnerContent	已接	分别替换文字，HTML 模式生成 q 元素	流式内容
+Element.before/after/prepend/append	已接	文本前插、HTML 后插、HTML 首插、文本末插均按位输出	Response/ReadableStream 内容与取消
+Content=Response	已接	豫言元素回调构造 Response，替换为 strong 标签	大响应、错误与取消
+Content=ReadableStream	已接	按需拉取三块，豫言状态机重入 Wasm，生成 em 标签	下游取消与生产者失败
+回调内主动双块写入	不支持此时序	真实 workerd 因背压互等取消请求；改用按需拉取流	通用流的跨事件调度
+回调抛错后的改写响应	已实测	本地 workerd 返回已发送的 HTTP 200 与 <main>前，后续内容截断并记运行异常	客户端错误表征与生产环境差异
+Element.replace/remove/removeAndKeepContent	已接	替换成 u、整元素删除、仅留原内文	嵌套元素与异常边界
+Element.setInnerContent({html:true})	已接	em 内生成 q 元素；流式内容生成 em 元素	下游取消
+ContentOptions.html=false	已接	<raw> 输出为 &lt;raw&gt;	恶意 HTML 边界
+元素 text 回调	已接	分两块输入得到续|甲续|乙终|，lastInTextNode 为终块另行触发	跨块拼接策略由豫言业务决定
+元素 comments 回调	已接	注释 text 属性改为注已改	插入与删除边界
+文档 doctype 回调	已接	读取 name=html，写 KV 标记供 end 回调校验	publicId 与 systemId 边界
+文档 text 回调	已接	旧字前插入文前	跨块语义
+文档 comments 回调	已接	注释后插入篇注	异常与流取消
+文档 end 回调	已接	文档末尾追加篇终	流式内容插入
+原两参数元素改写接口	已接	扩展后以本地 workerd 再验两个元素的原有输出	错误传播边界
+元素 onEndTag 回调	已接	p 尾标签重入豫言，以 before/after 插入尾前、尾后	嵌套元素、错误与异步 I/O 边界

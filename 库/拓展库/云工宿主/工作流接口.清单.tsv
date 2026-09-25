@@ -1,0 +1,21 @@
+接口	豫言接口或外壳	状态	真实运行验证	待补
+WorkflowEntrypoint.run	豫言工作流.run、云工事件种类、云工工作流事件文	已实测	workerd 运行豫言 Wasm，实例 complete	定时触发与全部事件字段
+WorkflowStep.do	云工工作流步做、云工工作流步做可回滚、workflow-step 与 workflow-rollback 事件	部分	workerd 前向步骤成功，rollback:true 后豫言回滚分支按前向输出写入真实 KV	自定义重试、超时、逆序多步回滚、失败回滚与非 JSON 值
+WorkflowStepContext	云工工作流步骤上下文文	部分	workerd 首次尝试值为一	重试次数与动态配置
+WorkflowStep.sleep	云工工作流休眠	已封装	尚未实测	休眠后跨进程恢复与时长边界
+WorkflowStep.sleepUntil	云工工作流休眠至	部分	workerd 豫言以 Date.now 加一秒，CLI 记一秒 Sleeping 步骤且实例 complete	日期对象形式、过去时刻错误与云端时钟
+WorkflowStep.waitForEvent	云工工作流候事件	已实测	workerd 登记候信步骤，收到事件后继续；重启前后同实例恢复	超时与多事件竞态
+Workflow.create	云工工作流创建	已实测	workerd 经 WORKFLOW 许可创建指定 ID 与载荷	自动 ID、留存策略与异常
+Workflow.createBatch	云工工作流批量创建文	部分	workerd 一次返回两 ID；重复调用未重跑实例但仍返回相同两 ID	官方文档称重复 ID 应从返回数组排除；本地模拟器行为待辨，限额待验
+Workflow.deleteBatch	云工工作流批量删除文	部分	workerd 删除两实例，并对不存在 ID 返回 code 10400 的逐项错误	重复 ID、无效 ID 原子失败及云端行为
+Workflow.get	云工工作流状态文、云工工作流送事件内部取实例	已实测	workerd 跨请求与重启后按 ID 取得实例	不存在与非法 ID 错误
+WorkflowInstance.id	云工工作流创建返回字符串	已实测	workerd 返回指定 ID	自动生成 ID
+WorkflowInstance.status	云工工作流状态文	已实测	workerd 返回 running、paused、complete、terminated、errored 与输出或错误	等待态、rollback
+WorkflowInstance.sendEvent	云工工作流送事件	已实测	workerd 重启后发送继续事件，实例完成	重复发送与错误状态
+WorkflowInstance.pause	云工工作流暂停	已实测	workerd 等待中实例变为 paused	步骤运行中的暂停时序；本地运行时打印中断告警
+WorkflowInstance.resume	云工工作流恢复	已实测	workerd paused 实例恢复为 running	重复恢复及跨进程恢复
+WorkflowInstance.restart	云工工作流重启	部分	workerd 已完成实例从豫言业务步骤重启并回到 running	缓存保留、多次同名步骤与其他 from 类型
+WorkflowInstance.terminate	云工工作流终止	部分	workerd 等待中实例以 rollback:false 和 rollback:true 终止；后者触发豫言回滚写 KV	多步回滚、失败回滚及运行中步骤终止
+WorkflowInstance.delete	云工工作流删除	已实测	workerd 终止后删除；再次 get 返回 instance.not_found	执行中删除及留存清理
+WorkflowInstance.subscribe	无专门接口	待补	尚未实测	游标、事件流与释放
+NonRetryableError	无专门接口	待补	尚未实测	阻止步骤重试

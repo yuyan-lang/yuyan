@@ -1,0 +1,12 @@
+平台 API	豫言入口	状态	证据与边界
+Blob([parts], options)	云工物字造字节、云工物字造组合	已实测	Wrangler 4.129.0 本地 workerd 构造 00 FF 41 及 Blob+“甲”组合，后者长六字节	更多 BlobPart 类型、endings 选项待验
+Blob.size、type	云工物字信息文	已实测	三字节及组合六字节；TEXT/PLAIN 归一为 text/plain	超大对象与非法 MIME 待验
+Blob.arrayBuffer()、bytes()	云工物字原字、云工物字原生字节安全	已实测	两种方法对 00 FF 41 均逐字节核对	大文件单次交换受 16 MiB 值桥上限约束
+Blob.slice()	云工物字切片、云工物字切片至尾	已实测	[1,3) 得 FF 41；负起点 -1 得 41；切片 MIME 归一	越界及空切片待验
+Blob.text()	云工物字文字	已实测	UTF-8“甲”读回	错误编码及 BOM 待验
+Blob.stream()	云工物字流、云工打开可读流、云工读取流块	已实测	00 FF 41 经原生流逐字节读回	长流、取消与错误待验
+Blob.textStream()	云工物字文字流安全、云工读取文字流块	本地不可用	Wrangler 4.129.0 方法不存在，豫言安全入口返回阴	平台后续实现时复验
+File([parts], name, options)	云工文件造字节、云工文件造组合	已实测	字节 File 与 Blob+“X”组合 File 皆成功	默认 lastModified、路径来源与文件系统对象待验
+File.name、lastModified、type	云工物字信息文	已实测	测.bin/1234、合.bin/5678，MIME 类别归一	非 ASCII 名称规范化边界待验
+File.webkitRelativePath	云工物字信息文	已接未断言	信息 JSON 输出空路径或平台值	真实目录选择产生的路径不适用于当前构造例
+FileReader、FileList	无	待补	未接事件式读取及文件列表	需与浏览器文件选择另行验收

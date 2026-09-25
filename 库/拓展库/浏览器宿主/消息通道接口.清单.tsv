@@ -1,0 +1,8 @@
+平台 API	豫言入口	状态	证据与边界
+MessageChannel()、port1、port2	浏览器消息通道新建	已实测	真实 Chrome 创建两端	其他引擎待验
+MessagePort.postMessage(结构化值)	浏览器消息端口发值	已实测	JSON 对象含文字“甲”和数字 7，经另一端 message 收到	Date、Map、循环引用等结构化值待验
+MessagePort.postMessage(字节及转移)	浏览器消息端口发字节	已实测	转移 ArrayBuffer，另一端逐字节读回 00 FF 41	缓冲区分离状态及大消息待验
+MessagePort.postMessage(转移端口)	浏览器消息端口发值、等转入端口	已实测	Chrome 将第二通道端口转入第一通道，转入后仍收第二通道消息	跨 Worker 传端口待验
+MessagePort.message、start()	浏览器消息端口等事文、等字节、启动	已实测	创建时安装监听并启动；JSPI 等待异步消息	多在途等待待验
+MessagePort.close、close 事件	浏览器消息端口关闭、等事文	部分	关闭方法已调用；Chrome close 事件未单独验	事件兼容性与跨文档语义
+MessagePort.messageerror	浏览器消息端口等事文	已接未验	事件被归入豫言结果	故障触发待验

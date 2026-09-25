@@ -1,0 +1,8 @@
+接口	豫言入口	状态	真实运行验证	待补
+WebSocket(url, protocols)	浏览器套接字连接、浏览器套接字协议	已接	Chrome 对普通 Worker 提议 yuyan.v1、backup.v1 并读回 yuyan.v1；对 Durable Object 提议 yuyan.do.v1、backup.v1 并读回 yuyan.do.v1	相对 URL、重复协议与握手失败
+WebSocket.send(string)	浏览器套接字发送文字	已接	发送“豫言”并收到“回:豫言”	CONNECTING 异常与缓冲阈值
+WebSocket.send(ArrayBuffer)	浏览器套接字发送字节	已接	发送 00 FF 41 并逐字节核对回显	Blob、TypedArray 其他形式与大消息
+message/open/close/error 事件	等待浏览器事件	部分	open、文字与字节 message、正常 close 已验	error 事件及异常关闭待验
+binaryType=arraybuffer	浏览器套接字连接	已接	二进制消息以原始字节句柄进入豫言	blob 模式
+readyState/bufferedAmount	浏览器套接字状态、浏览器套接字缓冲字节	部分	open 时 readyState=1 已验	缓冲字节变化与全部状态
+WebSocket.close/release	浏览器套接字关闭、浏览器套接字释放	已接	Chrome 正常关闭后豫言释放句柄	异常代码和原因边界

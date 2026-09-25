@@ -1,0 +1,14 @@
+接口	豫言接口	状态	验证	待补
+Crypto.randomUUID	云工密码随机识别	已验	Wrangler 4.129.0 本地 workerd 返回 36 字符 UUID	生产验收
+Crypto.getRandomValues	云工密码随机字节	已验	本地 workerd 返回 12 字节	其他整型 TypedArray
+SubtleCrypto.digest	云工密码摘要	部分	SHA-256(abc) 首字节及长度通过	其他摘要算法
+SubtleCrypto.importKey	云工密码导入AES、云工密码导入HMAC	部分	AES-GCM 与 HMAC 原始钥通过	JWK、SPKI、PKCS8 等格式
+SubtleCrypto.encrypt、decrypt	云工密码AES加密、云工密码AES解密	部分	AES-GCM 含附加认证数据往返通过	其他算法、鉴别失败验收
+SubtleCrypto.sign、verify	云工密码HMAC签、云工密码HMAC验	部分	HMAC 真验与假验通过	其他签名算法
+SubtleCrypto.generateKey	云工密码生成AES	部分	本地 workerd 生成 256 位可导 AES-GCM 密钥并用于加密	其他算法与用途组合
+SubtleCrypto.exportKey	云工密码导出AES	部分	原始字节导出、重新导入并解密	JWK、SPKI、PKCS8 等格式及不可导异常
+SubtleCrypto.deriveBits	云工密码PBKDF2派生字节、云工密码HKDF派生字节	部分	SHA-256 256 位结果首字节与独立结果相符，并用于 AES 解密	其他散列与长度、ECDH 等
+SubtleCrypto.deriveKey	云工密码PBKDF2派生AES、云工密码HKDF派生AES	部分	派生 AES-GCM 密钥加密后由 deriveBits 原始钥解密	其他派生算法与目标钥类型
+SubtleCrypto.wrapKey、unwrapKey	无具名豫言接口	待补	未验	密钥封装与解封
+CryptoKey 属性	通用句柄接口	部分	无专项验收	类型、算法、可导出性、用途
+Workers DigestStream、timingSafeEqual	无具名豫言接口	待补	未验	Workers 扩展方法

@@ -1,0 +1,12 @@
+Cloudflare API	豫言接口	状态	本地验证与边界
+DurableObjectNamespace.idFromName	云工持久空间命名ID	已本地实测	同一命名空间与同名两次生成的 ID equals 为真；对象在取桩或请求前不应启动的边界待验
+DurableObjectNamespace.newUniqueId	云工持久空间唯一ID、云工持久空间唯一ID安全	部分本地实测	Wrangler 4.129.0 两次生成的 ID 不等，均为 64 字符十六进制串；jurisdiction=eu 在本地返回未实现错误，安全入口归阴，云端待验
+DurableObjectNamespace.idFromString	云工持久空间还原ID安全	已本地实测	唯一 ID 转字符串后还原 equals 为真；坏字符串归阴与错误文；异空间 ID 待验
+DurableObjectNamespace.get	云工持久空间按ID取桩	已本地实测	命名 ID 与还原的唯一 ID 均取桩，fetch 请求进入豫言对象；ctx.id.name 对命名 ID 为同一对象、对唯一 ID 为 null；locationHint=enam 被接受，实际路由待云端验
+DurableObjectNamespace.getByName	云工持久空间按名取桩	已本地实测	同名取桩并 fetch 进入豫言对象，ctx.id.name 为同一对象；locationHint=enam 被接受，实际路由待云端验
+DurableObjectNamespace.jurisdiction	云工持久空间辖区、云工持久空间辖区安全	已接未云端实测	本地 workerd 明确返回 Jurisdiction restrictions are not implemented in workerd，安全入口归阴并保留错误；云端辖区约束待验
+DurableObjectId.toString	云工持久ID字符串、云工持久ID信息文	已本地实测	命名 ID 与唯一 ID 均为 64 字符字符串
+DurableObjectId.equals	云工持久ID相等	已本地实测	同名为真、两唯一 ID 为假、字符串还原与原唯一 ID 为真
+DurableObjectId.name/jurisdiction	云工持久ID信息文	部分实测	原生命名 ID 的名称为同一对象，唯一 ID 名称为 null；辖区属性待云端验
+DurableObjectState.id.name/jurisdiction	云工持久对象标识信息文	部分实测	按名或命名 ID 进入对象时 ctx.id.name 为同一对象，唯一 ID 为 null；辖区属性待云端验
+DurableObjectStub.fetch	云工调用方法、云工回应文字安全	已本地实测	按名、命名 ID 和唯一 ID 三种桩均 fetch 到豫言 Durable Object；二进制正文及 RPC 待验

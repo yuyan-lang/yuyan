@@ -1,0 +1,13 @@
+BCD 路径或规范成员	豫言入口	状态	证据与边界
+api.Blob.Blob	浏览器物字造字节、浏览器物字造组合	已实测	真实 Chrome 构造 00 FF 41 及 Blob+“甲”组合，后者长六字节	更多 BlobPart 类型、endings 选项待验
+api.Blob.size、api.Blob.type	浏览器物字信息文	已实测	三字节及组合六字节；TEXT/PLAIN 归一为 text/plain	超大对象与非法 MIME 待验
+api.Blob.arrayBuffer、api.Blob.bytes	浏览器物字原字、浏览器物字原生字节安全	已实测	两种方法对 00 FF 41 均逐字节核对	大文件单次交换受 16 MiB 值桥上限约束
+api.Blob.slice	浏览器物字切片、浏览器物字切片至尾	已实测	[1,3) 得 FF 41；负起点 -1 得 41；切片 MIME 归一	越界及空切片待验
+api.Blob.text	浏览器物字文字	已实测	UTF-8“甲”读回	错误编码及 BOM 待验
+api.Blob.stream	浏览器物字流、浏览器打开可读流、浏览器读取流块	已实测	00 FF 41 经原生流逐字节读回	长流、取消与错误待验
+api.Blob.textStream	浏览器物字文字流安全、浏览器读取文字流块	已实测	真实 Chrome 的文字流读回“甲”	Firefox、Safari 当前 BCD 无支持记录；跨引擎待验
+api.File.File	浏览器文件造字节、浏览器文件造组合	已实测	字节 File 与 Blob+“X”组合 File 皆成功	默认 lastModified、真实文件选择待验
+api.File.name、api.File.lastModified	浏览器物字信息文	已实测	测.bin/1234、合.bin/5678	非 ASCII 名称边界待验
+api.File.webkitRelativePath	浏览器物字信息文	已接未断言	信息 JSON 包含构造文件的空路径	目录选择产生的路径待验
+api.File.lastModifiedDate	无	当前 BCD 仅 Chrome 有支持记录	未加入非标准旧属性入口	若有业务依赖再逐项处理
+FileReader、FileList	文件读取。豫	已接入，部分已实测	真实 Chrome 的四种读取方式、事件与程序注入的原生 FileList 通过	真实用户选择文件流程、错误事件和大文件进度待验；详文件读取接口.清单.tsv

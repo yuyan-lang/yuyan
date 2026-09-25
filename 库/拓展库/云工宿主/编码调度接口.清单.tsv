@@ -1,0 +1,7 @@
+能力	豫言接口	JS 宿主实现	真实运行验证	待补边界
+TextEncoder.encode	云工编码UTF8	TextEncoder.encode	workerd 中文 UTF-8 往返	替代字符与极大输入
+TextEncoder.encodeInto	云工编码入容量	TextEncoder.encodeInto	workerd 容量 3 与 0	代理项边界与部分写入
+TextDecoder.decode	云工解码文字	TextDecoder.decode	workerd UTF-8 中文往返	fatal、ignoreBOM、其他编码标签异常
+TextDecoder 流式解码	云工创建解码器、云工续解码、云工终解码	TextDecoder.decode(stream)	workerd 中文三字节分块	不完整序列、错误恢复与句柄释放
+scheduler.wait	云工调度等待	await scheduler.wait	workerd 1.5 毫秒调用	实际延迟与云端时钟冻结
+scheduler.wait(signal)	云工调度控制器、云工调度可取消等待、云工调度中断、云工调度等结果	scheduler.wait(signal)、AbortController.abort	workerd 取消返回 AbortError、正常完成	竞态、外部信号与资源释放

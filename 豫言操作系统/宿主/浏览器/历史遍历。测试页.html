@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="zh"><meta charset="utf-8"><title>豫言历史遍历验收</title><body><p id="结果">运行中</p><script type="module">
+// 文言：页唯候客器之果。汉语：测试页只启动豫言程序并显示错误。
+import {完成} from './自动启动.mjs';
+try { await 完成; } catch (错) { document.getElementById('结果').textContent = '验证失败：' + 错.message; }
+</script></body></html>

@@ -1,0 +1,7 @@
+BCD 路径或规范成员	豫言入口	状态	实测证据	剩余边界
+api.BroadcastChannel.BroadcastChannel	浏览器广播频道新建	已实测	真实 Chrome 页面及 Dedicated Worker 各运行豫言 Wasm，创建同名频道并跨上下文通信	跨标签页、不同储存分区与其他浏览器待验
+api.BroadcastChannel.name	浏览器广播频道名称	已实测	页面豫言取得原生频道名称并核对原值	空名称及 Unicode 边界待验
+api.BroadcastChannel.postMessage	浏览器广播频道发值、浏览器广播频道发字节	已实测	页面内两个频道双向交换 JSON 兼容值，字节串 00 FF 41 无损送达；页面与 Worker 互发文字消息	Date、Map、循环引用、Blob 等结构化克隆类型待验；广播不支持 transfer list
+api.BroadcastChannel.message_event、api.BroadcastChannel.onmessage	等待浏览器事件、浏览器广播频道事件字节	已实测	真实 Chrome 的事件由宿主投递统一豫言队列，页面与 Worker 均读出对端消息及频道句柄，字节从 Uint8Array 句柄读回	消息顺序与跨标签页生命周期待验
+api.BroadcastChannel.messageerror_event、api.BroadcastChannel.onmessageerror	等待浏览器事件	已接未验	宿主安装原生 messageerror 监听并投递种类字段	反序列化失败触发条件待构造
+api.BroadcastChannel.close	浏览器广播频道关闭	已实测	页面两频道关闭返回真，重复关闭返回假；Worker 使用后关闭；宿主关闭时清理余频道	与已排队消息的竞态待验

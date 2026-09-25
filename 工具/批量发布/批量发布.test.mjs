@@ -23,7 +23,7 @@ function fixture(){
   write(join(kit,'yy豫构'),'#!/bin/sh\nwhile [ "$#" -gt 0 ]; do if [ "$1" = "--输出" ]; then shift; printf "binary" > "$1"; chmod +x "$1"; fi; shift; done\n',0o755);
   write(join(kit,'yy文档网站生成器'),'#!/bin/sh\n[ "$1" = "构建包" ] || exit 9\n[ -f "$2" ] || exit 8\nmkdir -p "$3"\nprintf "<!doctype html><body>测试文档</body>" > "$3/index.html"\n',0o755);
   write(join(kit,'yy源码树浏览器'),'#!/bin/sh\n[ "$1" = "构建源码" ] || exit 9\n[ -d "$2" ] || exit 8\nmkdir -p "$3"\nprintf "<!doctype html><body>源码浏览</body>" > "$3/index.html"\n',0o755);
-  for(const p of ['LICENSE','运行时支持库/Makefile','运行时支持库/原生/头.h','运行时支持库/库.a','工具/文档界面/主题.css','工具/文档界面/界面.js','工具/文档网站生成器/界面.css','工具/源码树浏览器/资源/界面.css'])write(join(kit,p),'fixture');
+  for(const p of ['LICENSE','运行时支持库/Makefile','运行时支持库/库.a','豫言操作系统/宿主/原生/运行时/头.h','豫言操作系统/宿主/节点/值桥接.wat','工具/文档界面/主题.css','工具/文档界面/界面.js','工具/文档网站生成器/界面.css','工具/源码树浏览器/资源/界面.css'])write(join(kit,p),'fixture');
   function pack(name,owner='甲',exe=false){
     const dir=join(root,name);
     write(join(dir,name+'。包。豫'),`「名称」者『${name}』也。「所有者」者『${owner}』也。「版本」者『1.0.0』也。「类型」者「典」【「种类」者『${exe?'可执行文件':'库'}』也，${exe?'「入口」者『入口』也，「文件名」者『yy样例』也，':''}】也。「简介」者『测试』也。「说明」者「典」【「汉语」者『说明.汉语.md』也，「文言」者『说明.文言.md』也，】也。`);
@@ -43,6 +43,9 @@ test('计划无产物，实际 ZIP 包含源码、文档、构建与运行包，
   let cursor=before.readUInt32LE(before.length-6),names=[];
   while(before.readUInt32LE(cursor)===0x02014b50){const n=before.readUInt16LE(cursor+28),x=before.readUInt16LE(cursor+30),c=before.readUInt16LE(cursor+32);names.push(before.subarray(cursor+46,cursor+46+n).toString('utf8'));cursor+=46+n+x+c;}
   const list=names.join('\n');assert.match(list,/源码\/样例。包。豫/);assert.match(list,/文档\/index.html/);assert.match(list,/构建\/.+tar.gz/);assert.match(list,/运行\/.+tar.gz/);
+  const 构建档=names.find(名=>/^构建\/.+\.tar\.gz$/.test(名));
+  const 构建清单=execFileSync('tar',['-tzf','-'],{input:execFileSync('unzip',['-p',zip,构建档]),encoding:'utf8'});
+  assert.match(构建清单,/豫言操作系统\/宿主\/原生\/运行时\/头.h/);
   assert.match(list,/文档\/接口\/index.html/);assert.match(list,/文档\/源码浏览\/index.html/);assert.doesNotMatch(list,/临时发布文档索引/);
   const extract=p=>execFileSync('unzip',['-p',zip,p],{encoding:'utf8'});
   assert.deepEqual(JSON.parse(extract('文档/生成状态.json')),{'源码浏览':'已生成','API文档':'已生成'});

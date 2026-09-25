@@ -1,0 +1,7 @@
+接口	豫言接口	状态	验证	待补
+文本环境变量	云工环境文字	本地已验	Wrangler 4.129.0 读回 hello 与空字符串	生产配置与异常边界
+JSON 环境变量	云工环境值文、云工环境值	本地已验	Wrangler JSON 对象 {"n":3} 经豫言读回	其他 JSON 类型与上限
+Secret 文本绑定	云工秘密文字、云工秘密文字安全文	部分实测	必需 Secret 本地无敏值已验；可选读取用本地假绑定验缺失、空串与有值且响应未泄露	未授权路径、生产 Secret 与轮换待验
+Version metadata	云工版本元数据文、云工版本元数据	本地已验	workerd 返回 id、tag、timestamp 三字段	生产版本标识语义
+Analytics Engine.writeDataPoint	云工分析写点文、云工分析写点	部分实测	本地 workerd 接受原始与类型化数据点写入	云端持久化、SQL 查询、错误与配额
+许可分离	ENV、SECRET、VERSION、ANALYTICS	本地已验	测试清单分别列出可访问绑定名	拒绝路径专项验收

@@ -1,0 +1,41 @@
+BCD路径	豫言接口	状态	验证
+api.URL.URL	云工新建网址、云工新建相对网址	部分实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URL.canParse_static	云工网址可解析、云工相对网址可解析	部分实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URL.createObjectURL_static	无具名接口	不支持	Wrangler 4.129.0 本地 workerd：createObjectURL 未实现
+api.URL.hash	云工网址片段、云工网址设片段	已封装	待逐项 workerd 验收
+api.URL.host	云工网址主机、云工网址设主机	已封装	待逐项 workerd 验收
+api.URL.hostname	云工网址主机名、云工网址设主机名	已封装	待逐项 workerd 验收
+api.URL.href	云工网址全文、云工网址设全文	部分实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URL.origin	云工网址源	已封装	待逐项 workerd 验收
+api.URL.parse_static	云工解析网址、云工解析相对网址	部分实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URL.password	云工网址口令、云工网址设口令	已封装	待逐项 workerd 验收
+api.URL.pathname	云工网址路径、云工网址设路径	部分实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URL.pathname.encodes_trailing_space_in_opaque_path	云工网址路径	待验	未测试不透明路径尾空格
+api.URL.port	云工网址端口、云工网址设端口	已封装	待逐项 workerd 验收
+api.URL.protocol	云工网址协议、云工网址设协议	已封装	待逐项 workerd 验收
+api.URL.revokeObjectURL_static	无具名接口	未验	createObjectURL 未实现，故未独立测试撤销
+api.URL.search	云工网址查询、云工网址设查询	已封装	待逐项 workerd 验收
+api.URL.searchParams	云工网址查询参数	已实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URL.toJSON	云工网址转癸象文	已封装	待逐项 workerd 验收
+api.URL.toString	云工网址转文字	已封装	待逐项 workerd 验收
+api.URL.username	云工网址用户、云工网址设用户	已封装	待逐项 workerd 验收
+api.URLSearchParams.@@iterator	无专门接口	待补	尚无专门接口
+api.URLSearchParams.URLSearchParams.USVString	云工新建查询参数	已封装	待逐项 workerd 验收
+api.URLSearchParams.URLSearchParams	云工新建查询参数	已封装	待逐项 workerd 验收
+api.URLSearchParams.URLSearchParams.record	云工新建查询参数自记录	已封装	待逐项 workerd 验收
+api.URLSearchParams.URLSearchParams.sequence	云工新建查询参数自项	已封装	待逐项 workerd 验收
+api.URLSearchParams.append	云工查询参数追加	已实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URLSearchParams.delete	云工查询参数删除	已封装	待逐项 workerd 验收
+api.URLSearchParams.delete.value_parameter	云工查询参数删除值	已实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URLSearchParams.entries	云工查询参数诸项	已封装	待逐项 workerd 验收
+api.URLSearchParams.forEach	无专门接口	待补	尚无专门接口
+api.URLSearchParams.get	云工查询参数取	已封装	待逐项 workerd 验收
+api.URLSearchParams.getAll	云工查询参数诸值	已实测	Wrangler 4.129.0 本地 workerd，请求改写测试
+api.URLSearchParams.has	云工查询参数有	已封装	待逐项 workerd 验收
+api.URLSearchParams.has.value_parameter	云工查询参数有值	已封装	待逐项 workerd 验收
+api.URLSearchParams.keys	云工查询参数诸名	已封装	待逐项 workerd 验收
+api.URLSearchParams.set	云工查询参数设置	已封装	待逐项 workerd 验收
+api.URLSearchParams.size	云工查询参数数目	已封装	待逐项 workerd 验收
+api.URLSearchParams.sort	云工查询参数排序	已封装	待逐项 workerd 验收
+api.URLSearchParams.toString	云工查询参数成文	已封装	待逐项 workerd 验收
+api.URLSearchParams.values	云工查询参数诸值游	已封装	待逐项 workerd 验收

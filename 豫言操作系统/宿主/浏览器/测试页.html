@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>豫言浏览器宿主验证</title></head>
+<body>
+  <p id="结果">正在运行豫言 Wasm…</p>
+  <script type="module">
+    // 文言：测试页但载客器，成败皆照实呈之。汉语：测试页只加载豫言程序并显示结果或错误。
+    import {启动豫言浏览器应用} from './入口.mjs';
+    try {
+      const 宿主 = await 启动豫言浏览器应用();
+      await 宿主.完成;
+    } catch (错) {
+      document.getElementById('结果').textContent = '验证失败：' + 错.message;
+    }
+  </script>
+</body>
+</html>

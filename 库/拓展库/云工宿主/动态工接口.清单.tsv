@@ -1,0 +1,7 @@
+类别	接口	豫言接口	本地验收	尚缺
+装载	WorkerLoader.load	云工动态加载	Wrangler 4.129.0 真载豫言子工并返回 HTTP 200	异常分类、限额触发、生产验收
+装载	WorkerLoader.get	云工动态按号取	同标识两次请求均返回豫言子工响应	换码约束、生产缓存行为
+入口	WorkerStub.getEntrypoint	云工动态入口句柄	真子工入口可调用	命名入口点与 RPC
+请求	Entrypoint.fetch	云工动态转发请求	父工转发原生 Request，得原生 Response	流取消及长连接
+模块	WorkerCode.modules	双宿主构建生成固定模块源码及值桥字节	真子工运行豫言 Wasm	其他模块格式与非豫言客程序
+隔离	WorkerCode.globalOutbound、env、limits	空绑定、禁外发、CPU 与子请求限额	装载配置被本地 workerd 接受	限额触发与生产隔离效果

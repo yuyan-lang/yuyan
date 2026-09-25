@@ -1,0 +1,4 @@
+规范成员	豫言入口	状态	证据与边界
+encodeURI、encodeURIComponent	云工网址编解码安全	已实测	Wrangler 4.129.0 本地 workerd 保留完整 URL 分隔符、按成分转义斜线和 UTF-8“甲”
+decodeURI、decodeURIComponent	云工网址编解码安全、云工解码网址成分安全	已实测	本地 workerd 对 %2F 分别保留和还原斜线，%E7%94%B2 还原“甲”；%ZZ、%FF 返回阴与 URIError
+全局函数错误隔离	云工调用全局安全	已实测	本地 workerd 的 decodeURIComponent 同步 URIError 及 fetch 无效 URL 的 Promise TypeError 均返回阴与错误 JSON；其他全局函数、非 Error 拒绝及云端部署待验

@@ -1,0 +1,6 @@
+接口	豫言接口	状态	真实运行验证	待补
+fetch 文本请求	浏览器请求文字	已实测	浏览器豫言程序可取状态与正文	Request/Response 全属性、流和取消
+fetch 文本安全请求	浏览器请求文字安全、浏览器请求发起可中断、浏览器请求候回应安全	已实测	Chrome 连接拒绝返回阴和 TypeError；本地 HTTP 404 返回阳及状态 404；AbortSignal 在途取消返回 AbortError	超时、正文读取失败及跨浏览器异常
+fetch JSON 写请求	浏览器请求JSON安全	已实测	Chrome POST 回显 application/json; charset=utf-8 与原正文；同页 GET 仍无该标头	PUT/PATCH、跨源 CORS、认证与大正文
+HTTP 4xx/5xx	浏览器请求文字安全	部分	Chrome 404 与网络拒绝已区分	其他状态、重定向与缓存策略
+网络异常	浏览器请求文字安全	部分	Chrome 连接拒绝后豫言仍可设置页面结果	错误分类、重试时序与离线恢复

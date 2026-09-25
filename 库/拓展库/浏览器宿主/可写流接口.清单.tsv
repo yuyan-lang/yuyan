@@ -1,0 +1,11 @@
+BCD 路径或规范成员	豫言入口	状态	证据与边界
+api.WritableStream.getWriter、api.WritableStream.locked	浏览器打开可写流、浏览器可写流已锁	已实测	真实 Chrome 取得 gzip 压缩流写器，locked 为真	重复取写器异常待验
+api.WritableStreamDefaultWriter.write	浏览器写器发字节、浏览器写器候操作安全	已实测	先发 00 与 FF 41 两块，消费压缩输出后逐一等待成功；字节经解压无损	大量在途写入及拒绝待验
+api.WritableStreamDefaultWriter.close	浏览器写器发关闭、浏览器写器候操作安全	已实测	写后发关闭，读完输出后等待关闭 Promise 成功	写入失败后的关闭待验
+api.WritableStreamDefaultWriter.ready	浏览器写器就绪安全	已实测短例	首次写入前等待成功	真实背压后的 pending/恢复待验
+api.WritableStreamDefaultWriter.closed	浏览器写器已闭安全	已实测短例	关闭后 fulfilled	错误后的 rejected 待验
+api.WritableStreamDefaultWriter.desiredSize	浏览器写器容量文	部分	首次写入前已读取 JSON 值	背压时数值变化与 null 待验
+api.WritableStreamDefaultWriter.abort	浏览器写器中断安全	已实测短例	真实 Chrome gzip 写器 abort 返回阳，释放后 writable.locked 为假	传播到可读侧及在途写入待验
+api.WritableStreamDefaultWriter.releaseLock	浏览器释放流写器	已实测	正常关闭后释放写器	未完成写入时释放待验
+api.WritableStream.WritableStream、abort、close、transferable	通用句柄桥	待逐项验	本轮只覆盖由原生压缩流取得的 writable 与 writer	直接构造、自定义 sink、转移与流自身方法待补
+无效写器句柄	浏览器写器候操作安全、浏览器写器中断安全	已实测	真实 Chrome 两种调用均返回阴，后续正常写入仍完成	其他错误类型待验

@@ -1,0 +1,5 @@
+平台 API	豫言入口	状态	证据与边界
+EventSource(url, {withCredentials})	浏览器事件源连接	已实测	真实 Chrome 连接本地跨源 SSE，withCredentials=false	含凭据跨源访问待验
+open/message/error、自定义事件	浏览器事件源订阅、浏览器事件源等事文	部分实测	自定义 notice、数据“甲”、id 7 已验	普通 message、error、重连与 origin 待验
+url、readyState、withCredentials	浏览器事件源状态文	部分实测	withCredentials=false 已断言；url、readyState 未逐项断言	状态转换待验
+close()	浏览器事件源关闭	已实测短例	豫言收到通知后显式关闭，页面完成	重复关闭及中途取消待验

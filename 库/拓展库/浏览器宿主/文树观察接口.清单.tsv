@@ -1,0 +1,10 @@
+接口	豫言接口	状态	验证	待补
+Document.createTreeWalker	浏览器新建文树游标	部分实测	Chrome SHOW_TEXT 遍历根节点	filter 回调与其他 whatToShow
+TreeWalker.nextNode	浏览器文树游标后继	已实测	Chrome 取得新增文本节点	边界与跨变动游标
+TreeWalker.previousNode、currentNode	浏览器文树游标前驱、浏览器文树游标当前、浏览器文树游标设当前	已封装	未逐项实测	遍历边界
+TreeWalker.parentNode、firstChild、lastChild、previousSibling、nextSibling	浏览器文树游标父节点、浏览器文树游标首子、浏览器文树游标末子、浏览器文树游标前邻、浏览器文树游标后邻	已封装	未逐项实测	遍历边界与过滤器
+MutationObserver.observe	浏览器观察变动	部分实测	Chrome childList 回调进入豫言事件队列，记录句柄可解析	其他选项与大批量记录
+MutationObserver.disconnect	浏览器停止观察变动	已实测	Chrome 观察后断开	回调队列竞态
+MutationObserver.takeRecords	浏览器观察待取	部分实测	Chrome 回调送达后返回空队列	未发送记录完整性
+MutationRecord.type、target、addedNodes	浏览器变动种类、浏览器变动目标、浏览器变动新增节点	已实测	Chrome childList 类型、原目标及一个新增节点	复杂节点列表与移除
+MutationRecord.removedNodes、oldValue、attributeName、attributeNamespace、previousSibling、nextSibling	浏览器变动删除节点、浏览器变动旧值、浏览器变动属性名、浏览器变动命名空间、浏览器变动前邻、浏览器变动后邻	已封装	未逐项实测	属性与文本变动细节

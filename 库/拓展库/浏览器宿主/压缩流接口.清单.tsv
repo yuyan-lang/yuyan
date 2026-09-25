@@ -1,0 +1,9 @@
+BCD 路径或规范成员	豫言入口	状态	证据与边界
+api.CompressionStream.CompressionStream.gzip	浏览器压缩流创建、浏览器压缩字节安全	已实测短字	真实 Chrome 原字 00 FF 41 经 gzip 往返	逐块写入、背压与大流待验
+api.CompressionStream.CompressionStream.deflate	浏览器压缩流创建、浏览器压缩字节安全	已实测短字	同一原字经 deflate 往返	逐块流式处理待验
+api.CompressionStream.CompressionStream.deflate-raw	浏览器压缩流创建、浏览器压缩字节安全	已实测短字	同一原字经 deflate-raw 往返	逐块流式处理待验
+api.DecompressionStream.DecompressionStream.gzip/deflate/deflate-raw	浏览器解压流创建、浏览器解压字节安全	已实测短字	三格式解压后逐字节核对	附加尾字、校验和与截断边界待验
+api.CompressionStream.readable/writable、api.DecompressionStream.readable/writable	浏览器压缩流读端、浏览器压缩流写端、浏览器流接转换	部分实测	真实 Chrome 由豫言主动写入 00 与 FF 41 两块，经两层 pipeThrough 后逐字节读回；构造、取端和句柄释放也已验	大量分块的背压、取消与错误传播待验
+无效格式或坏 gzip	浏览器压缩字节安全、浏览器解压字节安全	已实测	返回阴和 UTF-8 错误字节	具体异常文本跨引擎待验
+api.CompressionStream.CompressionStream.brotli、api.DecompressionStream.DecompressionStream.brotli	同上	按浏览器能力	MDN BCD 8.1.2 显示 Chrome 无支持记录，宿主交由原生构造器判定	Firefox、Safari 的实际版本待验
+api.CompressionStream.CompressionStream.zstd、api.DecompressionStream.DecompressionStream.zstd	无	BCD 无支持记录	宿主未增加非标准 zstd 实现	浏览器实现变化后复查

@@ -77,9 +77,9 @@ yy豫构: yy4_bs yy豫构_stable $(编译器源码)
 .PHONY: 网页汇编宿主
 网页汇编宿主: yy网页汇编宿主
 
-yy网页汇编宿主: 工具/网页汇编宿主/回收桥接.h 工具/网页汇编宿主/回收原语.h Makefile 工具/网页汇编宿主/入口。豫 工具/网页汇编宿主/宿主.c 运行时支持库/网页汇编/宿主协议.h 运行时支持库/原生/公共包含.h 运行时支持库/原生/值编解码.h 库/构建基础/包上下文.c yy_wasmtime_c_api/lib/libwasmtime.a
-	clang -O2 -DNDEBUG -I 运行时支持库/原生 -I 运行时支持库/网页汇编 -I yy_wasmtime_c_api/include -c 工具/网页汇编宿主/宿主.c -o yy_网页宿主.o
-	clang -O3 -DNDEBUG -I 运行时支持库/原生 -c 库/构建基础/包上下文.c -o yy_宿主包上下文.o
+yy网页汇编宿主: 豫言操作系统/宿主/原生/网页汇编宿主/回收桥接.h 豫言操作系统/宿主/原生/网页汇编宿主/回收原语.h Makefile 工具/网页汇编宿主/入口。豫 豫言操作系统/宿主/原生/网页汇编宿主/宿主.c 豫言操作系统/宿主/原生/网页汇编/宿主协议.h 豫言操作系统/宿主/原生/运行时/公共包含.h 豫言操作系统/宿主/原生/运行时/值编解码.h 库/构建基础/包上下文.c yy_wasmtime_c_api/lib/libwasmtime.a
+	clang -O2 -DNDEBUG -I 豫言操作系统/宿主/原生/运行时 -I 豫言操作系统/宿主/原生/网页汇编 -I yy_wasmtime_c_api/include -c 豫言操作系统/宿主/原生/网页汇编宿主/宿主.c -o yy_网页宿主.o
+	clang -O3 -DNDEBUG -I 豫言操作系统/宿主/原生/运行时 -c 库/构建基础/包上下文.c -o yy_宿主包上下文.o
 	llvm-ar rcs yy_网页宿主.a yy_网页宿主.o yy_宿主包上下文.o
 	printf '%s\n' '豫构原生链接二' '$(CURDIR)/yy_网页宿主.a' '$(CURDIR)/yy_wasmtime_c_api/lib/libwasmtime.a' '-lpthread' '-lm' '-ldl' > yy_网页宿主链接清单
 	./yy豫构 构建 网页汇编宿主 --编译器 $(网页汇编宿主编译器) --输出 $@ -j 4 -- --native-link-inputs '$(CURDIR)/yy_网页宿主链接清单'
@@ -89,7 +89,7 @@ yy网页汇编宿主: 工具/网页汇编宿主/回收桥接.h 工具/网页汇�
 网页汇编复制宿主: yy网页汇编复制宿主
 
 yy网页汇编复制宿主: yy网页汇编宿主 yy_wasmtime_gc_source/target/release/libwasmtime.a
-	clang -O2 -DNDEBUG -DYY_WASM_GC_BULK -I 运行时支持库/原生 -I 运行时支持库/网页汇编 -I yy_wasmtime_c_api/include -c 工具/网页汇编宿主/宿主.c -o yy_网页批量宿主.o
+	clang -O2 -DNDEBUG -DYY_WASM_GC_BULK -I 豫言操作系统/宿主/原生/运行时 -I 豫言操作系统/宿主/原生/网页汇编 -I yy_wasmtime_c_api/include -c 豫言操作系统/宿主/原生/网页汇编宿主/宿主.c -o yy_网页批量宿主.o
 	llvm-ar rcs yy_网页批量宿主.a yy_网页批量宿主.o yy_宿主包上下文.o
 	printf '%s\n' '豫构原生链接二' '$(CURDIR)/yy_网页批量宿主.a' '$(CURDIR)/yy_wasmtime_gc_source/target/release/libwasmtime.a' '-lpthread' '-lm' '-ldl' > yy_网页复制宿主链接清单
 	./yy豫构 构建 网页汇编宿主 --编译器 $(网页汇编宿主编译器) --输出 $@ -j 4 -- --native-link-inputs '$(CURDIR)/yy_网页复制宿主链接清单'

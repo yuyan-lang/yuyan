@@ -1,0 +1,10 @@
+接口	豫言接口	状态	验证	待补
+Document.cookie	浏览器读取饼、浏览器写饼、浏览器读取饼安全、浏览器写饼安全	已实测	Chrome 同源文档写入后读回；JSDOM 受限 getter/setter 抛 SecurityError 时旧版豫言 Wasm 仍可切换语言，新接口返回受限状态	Cookie Store API、其他异常与跨浏览器
+Location.href	浏览器当前网址	已实测	Chrome 读初始与 History 更新后的 URL	其他 Location 属性
+Location.assign、replace、reload	浏览器导航至、浏览器导航替换、浏览器导航重载	已封装	未真实导航验收	跨文档卸载与安全边界
+History.pushState	浏览器历史推入、浏览器历史改态安全	已实测	Chrome URL 与状态更新	跨条目行为及事件
+History.replaceState	浏览器历史替换、浏览器历史改态安全	已实测	Chrome URL 与状态更新；JSDOM 受限文档抛 SecurityError 时继续切换语言	其他异常及跨文档边界
+History.state	浏览器历史状态文	已实测	Chrome 读回豫言写入的 JSON 状态	结构化克隆特殊类型
+History.back、forward	浏览器历史后退、浏览器历史前进	已实测	Chrome 同页遍历分别收到 popstate，URL 与 state 正确	跨文档遍历及取消
+History.go	浏览器历史移动	已封装	未真实遍历验收	正负步数及边界
+Window.popstate	浏览器订阅历史变化、浏览器取消历史变化、等待浏览器事件	已实测	Chrome 回退和前进各送一次事件	事件对象的 state 全类型与队列时序

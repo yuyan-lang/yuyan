@@ -1,0 +1,16 @@
+BCD路径	豫言封装	浏览器验证	云工验证	尚需核验
+api.Headers	标头。豫	真实浏览器基本行为	本地workerd基本行为	对象保护状态、异常、全接口
+api.Headers.@@iterator	开启游标、游标下项、关闭游标	entries游标真实浏览器实测	entries游标本地workerd实测	直接@@iterator与遍历中修改
+api.Headers.Headers	新建标头、新建标头自项	成对初值真实浏览器实测	成对初值本地workerd实测	记录初值、复制现有Headers、非法初值
+api.Headers.append	标头追加	真实浏览器实测	本地workerd实测	保护状态与非法值
+api.Headers.delete	标头删除	真实浏览器实测	本地workerd实测	保护状态与非法名
+api.Headers.entries	标头诸项、开启游标	真实浏览器实测	本地workerd实测	遍历中修改
+api.Headers.forEach	标头逐项	豫言快照回调已编译	豫言快照回调已编译	与原生回调的实时语义
+api.Headers.get	标头取	真实浏览器实测	本地workerd实测	非法名
+api.Headers.getSetCookie	标头取饼	两条值真实浏览器实测	两条值本地workerd实测	浏览器响应过滤及保护状态
+api.Headers.has	标头有	真实浏览器实测	本地workerd实测	非法名
+api.Headers.iterate_combined_duplicates	标头诸项	普通重复值真实浏览器实测	普通重复值本地workerd实测	多种可合并标头
+api.Headers.iterate_lexicographically	标头诸项	首项顺序真实浏览器实测	首项顺序本地workerd实测	完整排序与遍历中修改
+api.Headers.keys	标头诸名	真实浏览器数组化实测	本地workerd数组化实测	原生keys游标
+api.Headers.set	标头设置	真实浏览器实测	本地workerd实测	保护状态与非法值
+api.Headers.values	标头诸值	真实浏览器数组化实测	本地workerd数组化实测	原生values游标

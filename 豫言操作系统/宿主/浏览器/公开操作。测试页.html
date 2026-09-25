@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh"><meta charset="utf-8"><title>豫言公开操作验收</title><body><p id="结果">运行中</p><script type="module">
+// 文言：测试页唯呼宿主公开门，成败据真果呈之。汉语：测试页只调用宿主暴露的方法并检查 Promise 结果。
+import {就绪, 完成} from './自动启动.mjs';
+const 结果 = document.getElementById('结果');
+try {
+  await 就绪;
+  if (!window.豫言测试?.回声 || !window.豫言测试?.失败 || !window.豫言测试?.并发) throw Error('豫言未注册公开方法');
+  const 回答 = await window.豫言测试.回声('ping', {n: 1});
+  let 已拒绝 = false;
+  try { await window.豫言测试.失败(); } catch (错) { 已拒绝 = 错.message === '豫言拒绝示例'; }
+  const [甲, 乙] = await Promise.all([window.豫言测试.并发('甲'), window.豫言测试.并发('乙')]);
+  await 完成;
+  结果.textContent = 回答?.答 === 'pong' && 已拒绝 && 甲 === '甲' && 乙 === '乙' && window.豫言测试 === undefined
+    ? '公开操作通过' : '公开操作失败';
+} catch (错) { 结果.textContent = '验证失败：' + 错.message; }
+</script></body></html>

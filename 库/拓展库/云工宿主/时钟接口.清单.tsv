@@ -1,0 +1,7 @@
+接口	豫言接口	状态	真实运行验证	待补
+Date.now	云工当前Unix毫秒	已实测	workerd 豫言据当前毫秒计算一秒后的 Workflow.sleepUntil，CLI 记一秒 Sleeping 步骤	生产无 I/O 时冻结、精度和边界
+performance.now	云工性能时刻文	部分实测	Wrangler 4.129.0 本地 workerd 中豫言读取原始十进制文本，等待定时事件后数值变化	生产环境时刻只在 I/O 后推进的语义待云端验
+performance.timeOrigin	云工性能原点文	已本地实测	Wrangler 4.129.0 本地 workerd 中豫言读回字符串 0	其他兼容日期及云端待验
+setTimeout、clearTimeout	云工定时一次、云工取消定时、云工等待定时事件文	已本地实测	真实 workerd 一次事件含标记；提前取消另一一次性定时器返回真，余事件后等待收到 timeout；调用结束清理未完成定时器	长延时、取消竞态和生产环境节流待验
+setInterval、clearInterval	云工定时重复、云工取消定时、云工等待定时事件文	已本地实测	真实 workerd 10 毫秒周期两次送达，取消返回真、重复取消返回假	后台节流、长寿命与队列合并边界待验
+scheduler.wait	云工调度等待、云工调度可取消等待	已本地实测	既有编码调度验收覆盖小数毫秒等待和 AbortError 取消	生产时钟冻结边界待验

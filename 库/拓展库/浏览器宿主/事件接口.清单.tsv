@@ -1,0 +1,39 @@
+BCD路径	豫言接口	状态	验证
+api.Event.Event	浏览器事件新建	已实测	真实 Chrome 以 EventInit 构造冒泡、可取消、组合事件
+api.Event.bubbles	浏览器事件状态文、事件队列冒泡字段	已实测	Chrome 传播快照为 true
+api.Event.cancelBubble	无专门接口	待补	尚未逐项封装和实测
+api.Event.cancelable	浏览器事件状态文、事件队列可取消字段	已实测	Chrome 可取消事件的同步默认取消与 dispatchEvent 假值
+api.Event.composed	浏览器事件状态文、事件队列组合字段	已实测	Chrome 传播快照为 true
+api.Event.composedPath	事件队列路径字段	已实测	Chrome 父捕获回调中快照路径以子、父句柄开头；回调结束后原生路径为空
+api.Event.currentTarget	事件队列当前句柄字段	已实测	Chrome 父捕获回调中当前句柄为父；回调结束后为空
+api.Event.defaultPrevented	事件队列中的已阻止默认字段	部分实测	Chrome 豫言 Wasm 确认 true
+api.Event.eventPhase	事件队列阶段字段、浏览器事件状态文	已实测	Chrome 父捕获为 1、子目标为 2、发前和发后为 0
+api.Event.explicitOriginalTarget	无专门接口	待补	尚未逐项封装和实测
+api.Event.initEvent	浏览器事件旧式初始化	已实测	Chrome 将旧事初始化为新事并发送；冒泡为真
+api.Event.isTrusted	事件队列是否可信字段、浏览器事件状态文	已接未断言	合成事件状态可读取；用户真实输入边界待验
+api.Event.originalTarget	无专门接口	待补	尚未逐项封装和实测
+api.Event.preventDefault	浏览器订阅并阻止默认	部分实测	Chrome 原生 submit 回调即时取消默认动作
+api.Event.returnValue	无专门接口	待补	尚未逐项封装和实测
+api.Event.srcElement	无专门接口	待补	尚未逐项封装和实测
+api.Event.stopImmediatePropagation	浏览器事件订阅多之止同处	已实测	Chrome 同目标两监听器中首监听器止同处，次监听器未入队，下一项为标记事件
+api.Event.stopPropagation	浏览器事件订阅选项之止传播	已实测	Chrome 父捕获后子监听未入队，下一队列项为标记事件
+api.Event.target	事件队列目标句柄字段	已实测	Chrome 父捕获事件目标为子句柄
+api.Event.timeStamp	事件队列时间戳字段、浏览器事件状态文	已接未断言	时间戳来源为原生 Event.timeStamp
+api.Event.type	事件队列中的名称字段	部分实测	Chrome 豫言 Wasm 区分 click 与 submit
+api.EventTarget.EventTarget	浏览器事件目标新建	已实测	Chrome 构造独立 EventTarget 并接收新事
+api.EventTarget.addEventListener	浏览器订阅事件、浏览器事件订阅选项、浏览器事件订阅多	部分实测	Chrome 豫言 Wasm 捕获、目标、once、AbortSignal、同目标同名多监听器及独立撤销；监听器对象身份与全部选项边界待验
+api.EventTarget.addEventListener.options_parameter	浏览器事件订阅选项、浏览器事件订阅多	部分实测	capture、once、signal、passive、阻止默认和止传播已验；组合边界待验
+api.EventTarget.addEventListener.options_parameter.options_capture_parameter	浏览器事件订阅选项	已实测	Chrome 父捕获先于子目标
+api.EventTarget.addEventListener.options_parameter.options_once_parameter	浏览器事件订阅选项	已实测	第二次发送后下一队列项为标记事件，子 once 已撤
+api.EventTarget.addEventListener.options_parameter.options_passive_parameter	浏览器事件订阅多	已实测	Chrome 被动监听器调用 preventDefault 后事件未取消、dispatchEvent 为真；主动监听器同法取消并返回假；浏览器默认值待验
+api.EventTarget.addEventListener.options_parameter.options_passive_parameter_default_true_touch	无专门接口	待补	尚未逐项封装和实测
+api.EventTarget.addEventListener.options_parameter.options_passive_parameter_default_true_wheel	无专门接口	待补	尚未逐项封装和实测
+api.EventTarget.addEventListener.options_parameter.options_signal_parameter	浏览器事件订阅选项	已实测	Chrome AbortController.abort 后信号事不入队，下一项为标记事件
+api.EventTarget.addEventListener.useCapture_parameter_optional	浏览器事件订阅选项	已实测	以 capture 字段实现，父节点先收到捕获阶段事件
+api.EventTarget.dispatchEvent	浏览器事件发送	已实测	Chrome 合成事件发送、传播和取消默认后的真假返回值
+api.EventTarget.removeEventListener	浏览器取消订阅事件、浏览器事件取消订阅号	部分实测	Chrome 两个同名监听器按订阅号独立撤销；DOM 按钮事件中撤一留一且根监听不重复投递；外部监听器身份语义待补
+api.EventTarget.removeEventListener.options_parameter	无专门接口	待补	尚未逐项封装和实测
+api.EventTarget.removeEventListener.useCapture_parameter_optional	无专门接口	待补	尚未逐项封装和实测
+api.EventTarget.when	无专门接口	待补	尚未逐项封装和实测
+api.SubmitEvent.SubmitEvent	无专门接口	待补	尚未逐项封装和实测
+api.SubmitEvent.submitter	无专门接口	待补	尚未逐项封装和实测

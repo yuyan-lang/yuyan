@@ -1,0 +1,20 @@
+事件	接口	状态	验证
+fetch	处理器分派	部分	Wrangler 4.129.0 本地 workerd
+service-fetch	命名 WorkerEntrypoint.fetch、云工事件种类	部分实测	构建器导出 CloudModel 别名；本地同 Worker 服务绑定命中 service-fetch，公开 default 仍命中 fetch；RPC 自定义方法待补
+queue	处理器分派	部分	Wrangler 4.129.0 本地 workerd
+queue	批次名称与消息数组	部分	Wrangler 4.129.0 本地 workerd
+queue	消息标识、尝试数与时间	部分	Node/V8 真实 Wasm 与模拟批次
+queue	逐条确认与批次确认	部分	Node/V8 真实 Wasm 与模拟批次
+queue	逐条重试、批次重试与延后重试	部分	Node/V8 真实 Wasm 与模拟批次
+scheduled	处理器分派	部分	Wrangler 4.129.0 本地 workerd
+scheduled	cron	部分	Wrangler 4.129.0 本地 workerd
+scheduled	scheduledTime	部分	Wrangler 4.129.0 本地 workerd
+scheduled	noRetry	部分	Wrangler 4.129.0 本地 workerd
+email	处理器分派	部分	Wrangler 4.129.0 本地 workerd
+email	from、to、rawSize	部分	Wrangler 4.129.0 本地 workerd
+email	headers、raw	部分	Wrangler 4.129.0 本地 workerd 首块
+email	canBeForwarded	部分	Node/V8 真实 Wasm 与模拟信件
+email	setReject	部分	Wrangler 4.129.0 本地 workerd
+email	forward 收件地址	部分	Node/V8 真实 Wasm 与模拟信件
+email	forward 自定义 Headers	部分	Node/V8 真实 Wasm 与模拟信件
+email	reply	部分	Wrangler 4.129.0 本地 workerd，豫言生成 MIME 与线程标头

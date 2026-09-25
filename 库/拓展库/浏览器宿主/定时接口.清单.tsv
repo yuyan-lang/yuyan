@@ -1,0 +1,13 @@
+BCD 路径或规范成员	豫言入口	状态	实测证据	剩余边界
+api.setTimeout	浏览器定时一次	已实测	真实 Chrome 10 毫秒一次定时投递“定时”事件，标记、编号匹配；每宿主至多 64 个活动定时器	后台节流、长延时与精度待验
+api.setInterval	浏览器定时重复	已实测	真实 Chrome 20 毫秒间隔收到三次事件，均由豫言等待处理	后台节流、长期运行与事件合并待验
+api.clearTimeout、api.clearInterval	浏览器取消定时	已实测	周期定时取消返回真；重复取消返回假；宿主结束时清理余定时器	已排队与回调竞态待验
+api.setTimeout.supports_parameters_for_callback、api.setInterval.supports_parameters_for_callback	标记参数	部分	单个豫言标记被放入事件 JSON，业务可自行编码更多参数	原生可变参数及复杂结构化值未逐项验
+api.setTimeout.code_param_enforces_trusted_types、api.setInterval.code_param_enforces_trusted_types	无	不暴露字符串代码	业务逻辑仅用豫言，宿主不执行传入代码字符串	Trusted Types 对脚本字符串路径不适用
+api.setTimeout.worker_support、api.setInterval.worker_support、api.clearTimeout.worker_support、api.clearInterval.worker_support	浏览器定时一次、浏览器定时重复、浏览器取消定时	已实测	真实 Chrome 的 Dedicated Worker 豫言 Wasm 先取消一次定时器，再收两次周期事件、取消周期器并收一次事件	后台节流、长时间运行与队列合并边界待验
+api.Window.requestAnimationFrame	浏览器请求动画帧	已实测	真实 Chrome 页面豫言 Wasm 收到带帧号和标记的动画帧事件	高刷新率与后台标签节流待验
+api.Window.cancelAnimationFrame	浏览器取消动画帧	已实测	真实 Chrome 页面取消未触发帧返回真，已触发帧重复取消返回假	取消与回调竞态待验
+api.DedicatedWorkerGlobalScope.requestAnimationFrame	浏览器请求动画帧	已实测	真实 Chrome 页面创建的 Dedicated Worker 内，豫言 Wasm 收到动画帧后发送 ready	无页面所有者的 Worker 应抛 NotSupportedError，待验
+api.DedicatedWorkerGlobalScope.cancelAnimationFrame	浏览器取消动画帧	已实测	真实 Chrome Worker 内先取消一帧，首个收到的帧事件来自下一请求	取消与回调竞态待验
+api.Window.requestIdleCallback	浏览器请求空闲回调、浏览器请求限时空闲回调	已实测	真实 Chrome 页面豫言 Wasm 分别收到有、无 timeout 请求的空闲事件，编号、标记、didTimeout 与 timeRemaining 字段到达	Safari 当前缺少原生接口；页面繁忙时序及 timeout 强制触发待验
+api.Window.cancelIdleCallback	浏览器取消空闲回调	已实测	真实 Chrome 页面取消未触发请求返回真，已触发请求重复取消返回假；宿主结束时清理	取消与回调竞态待验

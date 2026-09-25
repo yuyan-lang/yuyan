@@ -1,0 +1,4 @@
+接口	豫言接口	状态	验证	待补
+Secrets Store binding.get()	云工密仓读取	本地已验	Wrangler 4.129.0 本地 Store 假 Secret，经真实 workerd 异步读取并在豫言内核对	生产 Store、轮换、失败与缺失值语义
+Secrets Store 许可	SECRETS_STORE 绑定名清单	本地已验	仅清单列出的 TEST_ACCOUNT_SECRET 进入豫言宿主调用	未授权路径专项验收
+Wrangler secrets_store_secrets	构建产物许可与部署配置分别提供	本地已验	本地 store_id、secret_name、binding 配置使 workerd 暴露绑定	生产部署与权限角色

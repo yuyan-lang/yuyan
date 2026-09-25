@@ -1,0 +1,7 @@
+接口	豫言接口	状态	验证	待补
+CookieStore.get	浏览器饼仓取文、浏览器饼仓按选项取文	部分实测	Chrome 按名读取 Cookie 的 name 和 value	选项对象重载与所有返回属性
+CookieStore.getAll	浏览器饼仓取全文	部分实测	Chrome 以空选项枚举并命中已写 Cookie	名称及 URL 过滤选项
+CookieStore.set	浏览器饼仓设置、浏览器饼仓按选项设置	部分实测	Chrome 以 name/value/path/sameSite 写入	过期、分区、maxAge 与拒绝语义
+CookieStore.delete	浏览器饼仓删除、浏览器饼仓按选项删除	部分实测	Chrome 按名删除后 get 返回 null	分区与选项对象
+CookieStore.change	浏览器订阅饼变化、等待浏览器事件	部分实测	Chrome 写入后收到原生 change 事件	changed/deleted 全字段与事件时序
+CookieStoreManager	无具名豫言接口	待补	未验	Service Worker 订阅管理与跨事件恢复

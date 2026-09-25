@@ -1,0 +1,9 @@
+规范成员	豫言入口	状态	证据与边界
+AbortController constructor、signal	浏览器中断控制器新建、浏览器中断控制器信号	已实测	真实 Chrome 创建控制器，信号初态未中断
+AbortController.abort(reason)	浏览器中断控制器中断、浏览器中断控制器带理由	已实测	文字及对象理由均由豫言传入，信号随后中断；重复中断保留首次理由
+AbortSignal.aborted、reason	浏览器中断信号已中断、浏览器中断信号状态文	已实测	初态 false，文字与对象理由按原值返回；无理由静态中断的名称为 AbortError
+AbortSignal.throwIfAborted	浏览器中断信号检查安全	已实测	未中断时返回阳；文字或对象理由被安全捕获为错误 JSON
+AbortSignal.abort(reason)	浏览器中断信号立断、浏览器中断信号立断无理由	已实测	静态文字理由及默认 AbortError 均通过
+AbortSignal.any(signals)	浏览器中断信号合一安全	已实测	两个活信号合并，第二个中断后组合信号继承“合一”理由；空数组与已中断输入待验
+AbortSignal.timeout(ms)	浏览器中断信号限时安全	已实测	0ms 后理由名为 TimeoutError；-1ms 返回阴与 RangeError；后台页活跃时间语义待验
+AbortSignal abort 事件	浏览器中断信号等事文	已实测	已中断信号即时返回 abort、限时信号异步返回 abort、未中断信号返回 timeout；多等待者与竞态待验

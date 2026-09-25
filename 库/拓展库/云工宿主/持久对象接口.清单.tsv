@@ -1,0 +1,42 @@
+平台接口	豫言入口	状态	验证与余项
+DurableObject.fetch	云工事件种类=durable-fetch	已实测	Wrangler 4.129.0 本地 workerd 请求往返
+DurableObject.alarm	云工事件种类=durable-alarm	已实测	本地 alarm 触发写入持久存储
+DurableObject.webSocketMessage	云工事件种类=durable-websocket-message、云工套接字消息文字	已实测	本地 workerd 两次消息回调读取并更新连接附件；实际休眠未验
+DurableObject.webSocketClose	云工事件种类=durable-websocket-close、云工套接字事件文	已实测	关闭回调写入持久存储，查询得代码 1000、原因“完成”、正常 true
+DurableObject.webSocketError	云工事件种类=durable-websocket-error、云工套接字事件文	已接未验	外壳已转发；故障路径待实测
+DurableObjectState.id	云工持久对象标识、云工持久对象标识信息文	部分实测	本地按名或命名 ID 进入对象时 ctx.id.name 为同一对象；唯一 ID 进入时 name 为 null；辖区待云端验
+DurableObjectState.storage	云工持久仓句柄	已实测	本地 SQLite 存储、SQL 与 alarm
+DurableObjectState.exports	无专门接口	待补	对象内 loopback RPC 待封装
+DurableObjectState.waitUntil	云工上下文句柄	部分	Cloudflare 文档说明在对象内不延长寿命
+DurableObjectState.blockConcurrencyWhile	无专门接口	待补	初始化与并发门待封装
+DurableObjectState.acceptWebSocket	云工持久套接字建对并应答	已实测	本地 workerd 以“房”标签接受连接；实际休眠未验
+DurableObject WebSocket 子协议	云工套接字请求协议文、云工持久套接字建对并应答协议	已实测	真实 Chrome 提议两协议，豫言选择 yuyan.do.v1 并完成消息/关闭流程；云端未验
+DurableObjectState.getWebSockets	云工持久套接字诸柄文	已实测	消息回调中按“房”标签取到当前连接
+DurableObjectState.setWebSocketAutoResponse	云工持久套接字设自动回复、清自动回复	已实测	本地 workerd “探→应”；清除后相同消息进入豫言回调并得“续|探”；实际休眠未验
+DurableObjectState.getWebSocketAutoResponse	云工持久套接字自动回复文	已实测	配置后读回配对、清除后读回无；本地用 request/response 属性，文档列 getRequest/getResponse，宿主兼容两形
+DurableObjectState.getWebSocketAutoResponseTimestamp	云工持久套接字自动回复时刻	已实测	自动回复后普通消息回调读到 ISO 时刻；云上计时待验
+DurableObjectState.set/getHibernatableWebSocketEventTimeout	云工持久套接字设事件时限、事件时限文	已实测	本地设置并读回 1000 毫秒；超时触发语义待验
+DurableObjectState.getTags	云工持久套接字标签文	已实测	消息回调读取“房”标签；非法连接异常待验
+WebSocket.serializeAttachment/deserializeAttachment	云工持久套接字设附件、云工持久套接字附件文	已实测	同一连接两次消息读到“始”与“续”；实际对象驱逐后恢复未验
+DurableObjectStorage.get	云工持久读取文字、云工持久读取癸象、云工持久读取值安全文、云工持久批读癸象	部分实测	字符串与 JSON 对象跨事件；事务内缺键单文结果、多键 Map 排序及缺键省略已验；其他克隆值和选项待验
+DurableObjectStorage.put	云工持久写入文字、云工持久写入癸象、云工持久批写癸象	部分实测	字符串、JSON 对象及多键写入、事务回滚已验；选项与其他值类型待验
+DurableObjectStorage.delete	云工持久删除、云工持久批删癸象	部分实测	多键删返回实际删除数已验；单键返回值及选项待验
+DurableObjectStorage.list	云工持久列举值文、云工持久列举癸象	部分实测	本地 workerd 验前缀、start、startAfter、end、reverse、limit、事务内新键与回滚、JSON 对象值；旧 KV 后端及特殊克隆值待验
+DurableObjectStorage.deleteAll	云工持久清仓、云工持久清仓值文	部分实测	本地 SQLite 对象 KV、SQL 表、alarm 一并删除且重启后仍空；allowUnconfirmed 传入后 workerd 提示不支持并禁用；旧 KV 后端待验
+DurableObjectStorage.sync	云工持久同步	部分实测	allowUnconfirmed 写入后调用 sync，重启本地 workerd 仍有 KV、SQL 表和 alarm；云端确认语义待验
+DurableObjectStorage.getAlarm	云工持久取告警	已封装	有无告警及边界待实测
+DurableObjectStorage.setAlarm	云工持久设告警、云工持久延后告警	部分实测	延后告警本地触发；绝对时刻待验
+DurableObjectStorage.deleteAlarm	云工持久删告警	已封装	删除语义待实测
+DurableObjectStorage.transaction	云工持久事务执行、云工持久事务名、云工持久事务输出、云工持久事务回滚	部分实测	事务回调重入豫言；本地 SQLite 对象验两键条件提交、显式回滚与异常回滚；旧 KV 后端及并发待验
+DurableObjectStorage.transactionSync	云工持久SQL事务	部分实测	豫言给出两步参数化 SQL；故障自动回滚，本地 workerd 验证；交互式回调待补
+DurableObjectStorage.kv.get/put/delete/list	云工同步键值读取癸象、云工同步键值写入癸象、云工同步键值删除、云工同步键值列举癸象	部分实测	本地 SQLite 对象验异步与同步 KV 互见、缺键与 null 区分、逆序限量、删除布尔值及重启持久性；特殊克隆值待验
+DurableObjectStorage.sql.exec	云工持久SQL执行、云工持久SQL游标新建	部分实测	参数化 CREATE、INSERT、SELECT 与游标句柄；大整数精度、特殊值及错误待验
+SqlStorageCursor.toArray	云工持久SQL执行、云工持久SQL游标余行	已实测	同一宿主调用内消费余行，原始行与对象行均已验
+SqlStorageCursor.raw/next	云工持久SQL游标下一行、云工持久SQL游标余行	部分实测	原始行与对象行共享位置，本地 workerd 已验；跨 await 快照不稳定依平台文档
+SqlStorageCursor.one	云工持久SQL游标单行安全文	部分实测	单行成功，零行和多行转安全错误；错误文与游标状态边界待验
+SqlStorageCursor.columnNames/rowsRead/rowsWritten	云工持久SQL游标属性文	部分实测	列名、读取计数增长和单行写入计数已验；rowsRead 可包含扫描行，多种查询待验
+SqlStorage.databaseSize	云工持久SQL数据库大小文	部分实测	本地 SQLite 对象返回正数；大小变化及精度边界待验
+DurableObjectStorage.PITR bookmarks	云工持久当前书签安全、云工持久时刻书签安全、云工持久下次会话恢复书签安全	部分实测	Wrangler 4.129.0 本地 getCurrentBookmark 返回书签；getBookmarkForTime 和 onNextSessionRestoreBookmark 报后端未实现，安全入口使豫言继续；真实恢复需云端验
+DurableObjectNamespace.idFromName/get	云工持久空间命名ID、云工持久空间按ID取桩、云工持久对象请求文字	部分实测	本地同名 ID 相等、按 ID 取桩并请求豫言对象；实际位置与桩生命周期待验
+DurableObjectNamespace.getByName/newUniqueId/idFromString	云工持久空间按名取桩、云工持久空间唯一ID、云工持久空间还原ID安全	部分实测	本地同名取桩、两唯一 ID 不等、64 位字符串还原同 ID、坏串安全返回错误；辖区限制待云端验
+DurableObjectStub.fetch	云工持久对象请求文字	部分实测	本地文字 HTTP 往返；二进制与 RPC 待补

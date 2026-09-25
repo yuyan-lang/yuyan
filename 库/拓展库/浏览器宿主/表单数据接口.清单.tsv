@@ -1,0 +1,11 @@
+规范成员	豫言入口	状态	证据与边界
+FormData constructor	浏览器表单新建、浏览器表单从表格	已实测	真实 Chrome 构造空表单，亦由 HTMLFormElement 与提交按钮构造，包含输入框及按钮字段
+FormDataEvent constructor、formData	浏览器表单事件新建、浏览器表单事件自定、浏览器表单事件数据、浏览器表单事件从队列	已实测	真实 Chrome 自定事件名、bubbles、cancelable、composed 构造成功，并在 new FormData(form) 时从事件队列取得 FormData；事件对象可改，但队列消费晚于同步构造和原生提交
+HTMLFormElement formdata 事件	浏览器表单订阅生成、浏览器表单取消订阅生成	已实测	真实 Chrome 在构造表单时投递 formdata；取消订阅入口已接；异步消费不可修改已完成的原生提交
+SubmitEvent.submitter、拦截提交	浏览器表单拦截提交、浏览器表单提交钮从队列安全、浏览器表单取消拦截提交	已实测	真实 Chrome requestSubmit 触发 submit，宿主同步阻止默认；豫言读取提交钮后构造 FormData、追加字段并完成 Request multipart 往返
+FormData.append	浏览器表单追加文字、浏览器表单追加文件、浏览器表单追加原文件	已实测	重名文字追加，Blob 显式文件名，File 继承原文件名
+FormData.set	浏览器表单设置文字、浏览器表单设置文件、浏览器表单设置原文件	已实测	文字替换后保留同名顺序，文件显式与原名设置成功
+FormData.delete、has	浏览器表单删除、浏览器表单含名	已实测	删除临时字段后 has 返回阴，文件字段为阳
+FormData.get、getAll	浏览器表单首项文、浏览器表单首文件安全、浏览器表单同名诸项文	已实测	首文字、缺失 null、同名文字顺序、File 句柄和原始字节通过
+FormData.entries、keys、values、迭代	浏览器表单诸项文、浏览器表单键列文、浏览器表单值列文	已实测	键序为名、名、件、原件；值和文件句柄保留顺序；forEach 回调可由豫言遍历条目实现，尚无专门回调 API
+Request.formData、Response.formData	浏览器表单解析正文	已实测	FormData 作 Request POST 与 Response 正文，均经原生 multipart 序列化解析；00 FF 41 文件无损

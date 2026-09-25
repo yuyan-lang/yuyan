@@ -1,0 +1,12 @@
+接口	豫言入口	状态	真实运行验证	待补
+WebSocketPair 与 HTTP 101	云工套接字建对并应答	已接	Wrangler 4.129.0 本地 workerd GET / 返回 101，真实 Chrome 连入	拒绝升级与代理
+入站子协议协商	云工套接字请求协议文、云工套接字建对并应答协议	已实测	Chrome 提议 yuyan.v1、backup.v1，豫言选择 yuyan.v1，浏览器读回该协议并完成消息往返	无效 token 与多协议选择策略
+Durable Object 子协议协商	云工持久套接字建对并应答协议	已实测	Chrome 提议 yuyan.do.v1、backup.v1，豫言选择 yuyan.do.v1；自动回复、附件及正常关闭流程再次通过	无效协议、拒绝协商与休眠恢复
+server.accept()	云工套接字建对并应答	已接	服务端接受并收到消息	入站 allowHalfOpen 选项
+message 文字回调	云工套接字消息种类、消息文字、发送文字	已接	豫言 Wasm 收“豫言”并回“回:豫言”	并发消息顺序与大消息
+message 二进制回调	云工套接字消息字节、发送字节	已接	豫言 Wasm 回显 00 FF 41，Chrome 逐字节核对	Blob、超限关闭与大消息
+close/error 回调	云工套接字事件文、当前句柄	已接未逐项验	浏览器端正常 close 事件已验	服务端关闭字段、故障原因与半关闭
+Durable Object Hibernation API	云工持久套接字建对并应答、诸柄文、附件文、设附件、自动回复诸术	部分实测	本地 workerd 附件状态转换、标签查询、关闭持久标记及“探→应”自动回复，清规则后由豫言处理	本地不驱逐对象；云端休眠恢复、error 与超时触发待验
+出站 WebSocket 构造器	云工套接字出站连接、当前句柄、发送文字/字节、关闭	部分实测	真实 workerd 连接本地 Node ws 服务，文字与 00 FF 41 字节往返，关闭 1000/完成；不可达端口触发 error 与 1006/正常 false	长连接寿命、子协议
+出站 fetch Upgrade	云工套接字请求出站	已实测短例	本地 workerd 以 Upgrade 请求本地 ws 服务，豫言 open、文字、00 FF 41 字节及正常关闭事件均完成	拒绝升级、跨域生产环境与长连接
+allowHalfOpen	云工套接字请求出站、云工套接字状态	已实测短例	本地 Node ws 远端先关闭；豫言 close 回调读到 readyState=2，随后主动 close 完成握手	并发关闭与代理场景

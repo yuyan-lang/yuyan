@@ -1,0 +1,9 @@
+平台 API	豫言入口	状态	证据与边界
+cloudflare:sockets connect(address, options)	云工TCP连接安全	已实测短例	Wrangler 4.129.0 本地 workerd 连 127.0.0.1:8820；off、allowHalfOpen=true；非法端口由桥拒绝
+Socket.opened	云工TCP已连安全	已实测短例	等待成功后才写入；远端与本地地址以 JSON 返回；不可达本地端口返回 proxy request failed 错误文
+Socket.readable	云工TCP读流、云工打开可读流、云工读取流块安全	已实测短例	读取本地回声 00 FF 41；长流、取消与故障待验
+Socket.writable	云工TCP写流、云工TCP取写器、云工TCP写字节、云工TCP终写、云工TCP释写器	已实测短例	写入 00 FF 41 后关闭写端；背压、连续写及写入失败待验
+Socket.close()	云工TCP关闭	已实测短例	回声读完后关闭；重复关闭待验
+Socket.closed	云工TCP已关闭安全	已实测短例	关闭后等待成功；异常后状态待验
+Socket.startTls()	云工TCP升级TLS	已接未验	仅 starttls 连接可用；真实 TLS 升级待验
+secureTransport=on/starttls	云工TCP连接安全	已接未验	TLS 证书验证与升级后旧句柄失效待验

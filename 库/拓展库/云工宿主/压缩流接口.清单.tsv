@@ -1,0 +1,8 @@
+平台 API	豫言入口	状态	证据与边界
+CompressionStream(gzip)	云工压缩流创建、云工压缩字节安全	已实测短字	Wrangler 4.129.0 本地 workerd 原字 00 FF 41 经 gzip 往返	逐块写入、背压与大流待验
+CompressionStream(deflate)	云工压缩流创建、云工压缩字节安全	已实测短字	同一原字经 deflate 往返	逐块流式处理待验
+CompressionStream(deflate-raw)	云工压缩流创建、云工压缩字节安全	已实测短字	同一原字经 deflate-raw 往返	逐块流式处理待验
+DecompressionStream(gzip/deflate/deflate-raw)	云工解压流创建、云工解压字节安全	已实测短字	三格式解压与逐字节核对	附加尾字、校验和与截断边界待验
+CompressionStream/DecompressionStream.readable/writable	云工压缩流读端、云工压缩流写端、云工流接转换	部分实测	按需流两次重新进入豫言 Wasm 供“甲”与 00 FF 41，两层 pipeThrough 后读回六字节；构造、取端和句柄释放也已验	大量分块的背压、取消与错误传播待验
+格式或输入无效	云工压缩字节安全、云工解压字节安全	部分实测	不存在的格式及无效 gzip 字节返回阴和 UTF-8 错误字节，HTTP 请求仍为 200	损坏 gzip 在 workerd 同时打印 Uncaught TypeError 诊断；显式等待管道与读取 Promise 后仍出现，待定位运行时与流错误传播
+brotli	同上	平台文档未列支持	宿主不拦截格式，交由原生构造器判定	Cloudflare 文档当前只列 gzip、deflate、deflate-raw
