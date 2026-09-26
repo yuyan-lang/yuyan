@@ -514,6 +514,156 @@ test('定时事件积压时合并为一个待处理；被丢弃后周期定时�
 }));
 
 // ---------------------------------------------------------------------------
+// 八·五、0.2.0/0.3.0 新增：选择器过滤、带属性与矩形、属性读回与移除、点击、位置与矩形
+// ---------------------------------------------------------------------------
+const 存在文 = 文 => [文.startsWith('1|'), 文.slice(2)];
+const 点 = (窗, 元素, 型 = 'click', 附 = {}) => {
+  const 事件 = new 窗.MouseEvent(型, {bubbles: true, cancelable: true, ...附});
+  元素.dispatchEvent(事件);
+  return 事件;
+};
+
+test('选择器过滤：只对匹配元素产生事件并同步阻止默认；载荷取匹配元素，另报目标标识、属性与矩形', 用页({
+  html: 页面('<div id="容器"><a id="链" href="/x" title="题"><span id="内">字</span></a><button id="钮" type="button">按钮</button></div>')
+}, async 页 => {
+  const 号 = Number(await 页.调('订阅界面事件', '文档', 'click', JSON.stringify({捕获: true, 选择器: 'a[href]', 阻止默认: true, 带属性: ['href', 'title', 'data-none'], 带矩形: true})));
+  assert.ok(号 > 0);
+  const 内 = 页.文.getElementById('内');
+  const 点击 = 点(页.窗, 内);
+  assert.equal(点击.defaultPrevented, true, 'dispatchEvent 一返回默认动作即被阻止');
+  const 事 = await 事件(页);
+  assert.equal(事.类型, '界面');
+  assert.equal(事.订阅号, 号);
+  assert.equal(事.名称, 'click');
+  assert.equal(事.标识, '链', '标识取匹配元素');
+  assert.equal(事.目标标识, '内', '原始目标由目标标识报告');
+  assert.deepEqual(事.属性, {href: '/x', title: '题'}, '不存在的属性省略');
+  assert.deepEqual(Object.keys(事.矩形).sort(), ['上', '下', '右', '左'].sort());
+  assert.ok(Object.values(事.矩形).every(Number.isInteger));
+  assert.equal(事.已阻止默认, true);
+  // 点击不匹配的按钮：没有事件，也不阻止默认，也不会由旧式隐式监听重复上报
+  const 钮点击 = 点(页.窗, 页.文.getElementById('钮'));
+  assert.equal(钮点击.defaultPrevented, false);
+  await 睡(20);
+  assert.equal(页.宿主.状态().各类积压.界面 ?? 0, 0);
+}));
+
+test('选择器过滤：匹配必须在订阅边界内；操作键从匹配元素向上找；非元素目标不匹配', 用页({
+  html: 页面('<section data-yy="外"><div id="域"><p data-yy="行:1" class="行"><em id="字">甲</em></p></div></section><p class="行 外">域外</p>')
+}, async 页 => {
+  await 页.调('订阅界面事件', '域', 'click', JSON.stringify({选择器: '.行'}));
+  const 事甲 = await (async () => { 点(页.窗, 页.文.getElementById('字')); return 事件(页); })();
+  assert.equal(事甲.标识, '', '匹配元素没有 id 时为空');
+  assert.equal(事甲.操作键, '行:1');
+  assert.equal(事甲.目标标识, '字');
+  // 域外的同类元素点击不产生事件（订阅边界之外）
+  点(页.窗, 页.文.querySelector('p.外'));
+  await 睡(20);
+  assert.equal(页.宿主.状态().各类积压.界面 ?? 0, 0);
+  // 文档订阅 scroll：目标是文档而不是元素，选择器订阅不匹配
+  await 页.调('订阅界面事件', '文档', 'scroll', JSON.stringify({选择器: '.行'}));
+  页.文.dispatchEvent(new 页.窗.Event('scroll'));
+  await 睡(20);
+  assert.equal(页.宿主.状态().各类积压.界面 ?? 0, 0);
+}));
+
+test('选择器与带属性的校验：语法错误、超限、重复、危险属性名都在订阅时抛事故且不留监听', 用页({html: 页面('<div id="域"></div>')}, async 页 => {
+  const 前 = 页.宿主.状态().界面订阅数;
+  const 试 = (策略, 期望) => 失败(页.调('订阅界面事件', '文档', 'click', JSON.stringify(策略)), 期望);
+  await 试({选择器: 'button['}, /选择器无效/);
+  await 试({选择器: ''}, /选择器须为/);
+  await 试({选择器: 'a'.repeat(513)}, /选择器须为/);
+  await 试({带属性: ['a', 'a']}, /重复/);
+  await 试({带属性: ['onclick']}, /无效的属性名/);
+  await 试({带属性: ['style']}, /无效的属性名/);
+  await 试({带属性: ['Bad']}, /无效的属性名/);
+  await 试({带属性: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']}, /不超过 8 个/);
+  await 试({带矩形: 'yes'}, /须为布尔/);
+  assert.equal(页.宿主.状态().界面订阅数, 前);
+}));
+
+test('带属性与带矩形在没有选择器时作用于原始目标；口令框的 value 属性不带出', 用页({
+  html: 页面('<button id="钮" data-k="v">钮</button><input id="口令" type="password" value="秘密" data-k="w">')
+}, async 页 => {
+  await 页.调('订阅界面事件', '文档', 'click', JSON.stringify({带属性: ['data-k', 'value'], 带矩形: true}));
+  点(页.窗, 页.文.getElementById('钮'));
+  const 事 = await 事件(页);
+  assert.deepEqual(事.属性, {'data-k': 'v'});
+  assert.equal(事.目标标识, undefined, '没有选择器时不带目标标识');
+  assert.ok(事.矩形);
+  点(页.窗, 页.文.getElementById('口令'));
+  const 乙 = await 事件(页);
+  assert.deepEqual(乙.属性, {'data-k': 'w'}, '口令框的 value 属性不带出');
+  assert.equal(乙.值, undefined, '口令框的值本来就不带出');
+}));
+
+test('读取节点属性、移除节点属性、读取节点文字：保留字文档根与页体、布尔属性、白册与危险元素', 用页({
+  html: 页面('<div id="盒" data-x="值" hidden>文字<b>粗</b></div><details id="项" open></details><script id="脚"></script><iframe id="框" title="题" data-a="b" src="/x"></iframe>')
+}, async 页 => {
+  页.文.documentElement.setAttribute('data-lang', 'wen');
+  页.文.body.setAttribute('aria-busy', 'true');
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '文档根', 'data-lang')), [true, 'wen']);
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '文档根', 'data-none')), [false, '']);
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '页体', 'aria-busy')), [true, 'true']);
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '盒', 'data-x')), [true, '值']);
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '盒', 'hidden')), [true, ''], '布尔属性存在时值为空文字');
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '项', 'open')), [true, '']);
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '框', 'title')), [true, '题']);
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '框', 'data-a')), [true, 'b']);
+  await 失败(页.调('读取节点属性', '框', 'src'), /iframe/);
+  await 失败(页.调('读取节点属性', '脚', 'id'), /不允许操作/);
+  await 失败(页.调('读取节点属性', '不存在', 'id'), /不存在/);
+  for (const 坏名 of ['onclick', 'style', 'srcdoc', 'Bad', '1a', '']) await 失败(页.调('读取节点属性', '盒', 坏名), /不受支持/, 坏名);
+  await 页.调('移除节点属性', '项', 'open');
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '项', 'open')), [false, '']);
+  await 页.调('移除节点属性', '项', 'open'); // 本来就没有：无事
+  await 页.调('移除节点属性', '盒', 'data-x');
+  assert.equal(页.文.getElementById('盒').hasAttribute('data-x'), false);
+  await 页.调('移除节点属性', '盒', 'hidden');
+  assert.equal(页.文.getElementById('盒').hidden, false);
+  for (const 坏 of ['style', 'onclick', 'data-yy-内部', 'rel', 'src']) await 失败(页.调('移除节点属性', '盒', 坏), /不受支持|保留/, 坏);
+  await 失败(页.调('移除节点属性', '框', 'src'), /不受支持/);
+  assert.equal(await 页.调('读取节点文字', '盒'), '文字粗');
+  await 失败(页.调('读取节点文字', '脚'), /不允许操作/);
+  await 失败(页.调('读取节点文字', '没有'), /不存在/);
+}));
+
+test('点击节点：经全部订阅收到 click；被禁用无效果；文件框与危险链接抛事故；回放被拦截点击须先撤订阅', 用页({
+  html: 页面('<button id="钮">钮</button><button id="禁" disabled>禁</button><input id="文件" type="file"><a id="脚本链" href="javascript:alert(1)">x</a><a id="锚链" href="#below">锚</a><div id="below"></div>')
+}, async 页 => {
+  const 号 = Number(await 页.调('订阅界面事件', '文档', 'click', JSON.stringify({捕获: true, 选择器: 'button', 阻止默认: true, 停止同处: true})));
+  let 冒泡到 = 0;
+  页.文.getElementById('钮').addEventListener('click', () => { 冒泡到++; });
+  await 页.调('点击节点', '钮');
+  const 事 = await 事件(页);
+  assert.deepEqual([事.名称, 事.标识], ['click', '钮']);
+  assert.equal(冒泡到, 0, '被拦截订阅停止同处，页面上别的监听者收不到');
+  // 回放：先撤订阅，再点击，页面上别的监听者才收到
+  await 页.调('取消订阅界面事件', 号);
+  await 页.调('点击节点', '钮');
+  assert.equal(冒泡到, 1);
+  await 页.调('点击节点', '禁'); // 被禁用：无效果不抛事故
+  await 失败(页.调('点击节点', '文件'), /文件输入框/);
+  await 失败(页.调('点击节点', '脚本链'), /链接不受支持/);
+  await 失败(页.调('点击节点', '没有'), /不存在/);
+  await 页.调('点击节点', '锚链');
+  await 等待(() => 页.窗.location.hash === '#below', '锚点导航');
+}));
+
+test('设置节点位置与读取节点矩形：像素整数、范围、危险元素', 用页({html: 页面('<div id="提示" style="position:absolute"></div><script id="脚"></script>')}, async 页 => {
+  await 页.调('设置节点位置', '提示', 12, -34);
+  assert.equal(页.文.getElementById('提示').style.left, '12px');
+  assert.equal(页.文.getElementById('提示').style.top, '-34px');
+  await 页.调('设置节点位置', '提示', 100000, -100000);
+  await 失败(页.调('设置节点位置', '提示', 100001, 0), /越界/);
+  await 失败(页.调('设置节点位置', '脚', 1, 1), /不允许操作/);
+  const 框 = JSON.parse(await 页.调('读取节点矩形', '提示'));
+  assert.deepEqual(Object.keys(框).sort(), ['上', '下', '右', '左'].sort());
+  assert.ok(Object.values(框).every(Number.isInteger));
+  await 失败(页.调('读取节点矩形', '没有'), /不存在/);
+}));
+
+// ---------------------------------------------------------------------------
 // 九、关闭语义
 // ---------------------------------------------------------------------------
 test('宿主关闭：阻塞的等待返回关闭，应用正常退出；之后的等待继续返回关闭', async () => {

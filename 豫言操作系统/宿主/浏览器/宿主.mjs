@@ -205,11 +205,14 @@ export function 创建事件队列({上限 = {}, 离队钩子 = () => {}, 就绪
     return new Promise(完成 => { 等待者.push({接受, 格式, 完成, 关闭值}); });
   };
   const 删除若 = 谓词 => {
+    let 数 = 0;
     for (let 位 = 队列.length - 1; 位 >= 0; 位--) {
       if (!谓词(队列[位])) continue;
       const [项] = 队列.splice(位, 1);
       离队(项);
+      数++;
     }
+    return 数;
   };
   const 关闭 = () => {
     if (已关闭) return;
@@ -243,7 +246,7 @@ const 高频事件 = new Set(['scroll', 'resize', 'mousemove', 'pointermove', 't
 const 无值事件 = new Set([...高频事件, 'mouseover', 'mouseout', 'mouseenter', 'mouseleave', 'pointerover', 'pointerout', 'pointerenter', 'pointerleave']);
 const 被动默认事件 = new Set(['scroll', 'wheel', 'touchstart', 'touchmove']);
 const 布尔属性名 = new Set(['hidden', 'disabled', 'readonly', 'checked', 'selected', 'open']);
-const 策略字段 = new Set(['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中', '键规则']);
+const 策略字段 = new Set(['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中', '键规则', '选择器', '带属性', '带矩形']);
 const 键规则字段 = new Set(['键', '代码', 'ctrl', 'meta', 'alt', 'shift', '含组字', '仅选区为空', '仅目标标识', '仅当属性']);
 const 键事件名 = new Set(['keydown', 'keyup', 'keypress']);
 
@@ -274,19 +277,29 @@ export const 解析界面策略 = (文, 事件名) => {
   try { 策 = 文 === '' ? {} : JSON.parse(文); } catch { throw Error('界面事件策略不是有效 JSON'); }
   if (!策 || typeof 策 !== 'object' || Array.isArray(策)) throw Error('界面事件策略须为 JSON 对象');
   for (const 名 of Object.keys(策)) if (!策略字段.has(名)) throw Error('界面事件策略含未知字段：' + 名);
-  检布尔字段(策, ['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中'], '界面事件策略字段');
+  检布尔字段(策, ['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中', '带矩形'], '界面事件策略字段');
   const 律们 = 策.键规则 ?? [];
   if (!Array.isArray(律们) || 律们.length > 32) throw Error('键规则须为不超过 32 条的数组');
   律们.forEach(检键规则项);
   if (律们.length && !键事件名.has(事件名)) throw Error('键规则只适用于 keydown、keyup、keypress 事件');
   if (策.仅命中 && !律们.length) throw Error('仅命中 须配合非空的键规则');
+  // 文言：选择器、带属性、带矩形，订时严验，笔误不默失。汉语：0.2.0 新增字段的静态校验；选择器的语法在订阅时用 DOM 再验一次。
+  if (策.选择器 !== undefined && (typeof 策.选择器 !== 'string' || !策.选择器.trim() || 策.选择器.length > 512)) throw Error('选择器须为 1 至 512 个字符的文字');
+  if (策.带属性 !== undefined) {
+    if (!Array.isArray(策.带属性) || 策.带属性.length > 8) throw Error('带属性须为不超过 8 个属性名的数组');
+    for (const 名 of 策.带属性) {
+      if (typeof 名 !== 'string' || !/^[a-z][a-z0-9:_-]{0,63}$/u.test(名) || 名.startsWith('on') || 名 === 'style' || 名 === 'srcdoc') throw Error('带属性含无效的属性名：' + String(名).slice(0, 64));
+    }
+    if (new Set(策.带属性).size !== 策.带属性.length) throw Error('带属性含重复的属性名');
+  }
   const 显式动作 = ['阻止默认', '停止传播', '停止同处'].some(名 => 策[名] !== undefined);
   const 会阻止 = 律们.length ? (显式动作 ? Boolean(策.阻止默认) : true) : Boolean(策.阻止默认);
   if (策.被动 === true && (会阻止 || 策.停止传播 || 策.停止同处)) throw Error('被动订阅不能阻止默认或停止传播');
   return {
     阻止默认: 会阻止, 停止传播: Boolean(策.停止传播), 停止同处: Boolean(策.停止同处),
     捕获: Boolean(策.捕获) || 不冒泡事件.has(事件名), 被动: 策.被动, 合并: 策.合并 ?? 高频事件.has(事件名),
-    一次: Boolean(策.一次), 仅命中: Boolean(策.仅命中), 键规则: 律们
+    一次: Boolean(策.一次), 仅命中: Boolean(策.仅命中), 键规则: 律们,
+    选择器: 策.选择器, 带属性: 策.带属性 ?? [], 带矩形: Boolean(策.带矩形)
   };
 };
 
@@ -338,16 +351,46 @@ export function 创建界面订阅器({根, 全局, 投递, 已关闭 = () => fa
       return typeof 文 === 'string' && 文.length <= 65536 ? JSON.parse(文) : null;
     } catch { return null; }
   };
-  const 造界面体 = (订阅, 事件) => {
-    const 目标 = 事件.target;
+  // 文言：委托之合：自事目标向上求最近合选择器者，必在订阅之界内；无则此事不与此订阅相涉。
+  // 汉语：选择器过滤——取原始目标（文本节点取其父元素）向上（含自身）第一个匹配选择器的元素，且必须在订阅边界之内；没有则返回 null。
+  const 找匹配 = (目标, 选择器, 边界) => {
+    let 元 = 目标;
+    if (元 && 元.nodeType === 3) 元 = 元.parentElement;
+    if (!元 || 元.nodeType !== 1 || typeof 元.closest !== 'function') return null;
+    let 合;
+    try { 合 = 元.closest(选择器); } catch { return null; }
+    if (!合) return null;
+    if (边界 && !边界.contains(合)) return null;
+    return 合;
+  };
+  const 读属性们 = (元, 名们) => {
+    const 果 = {};
+    for (const 名 of 名们) {
+      if (!元.hasAttribute(名)) continue;
+      if (名 === 'value' && 标签名(元) === 'input' && 元.type === 'password') continue;
+      const 值 = 元.getAttribute(名);
+      if (typeof 值 === 'string' && 值.length <= 4096) 果[名] = 值;
+    }
+    return 果;
+  };
+  const 造界面体 = (订阅, 事件, 匹配 = null) => {
+    const 原目标 = 事件.target;
+    const 目标 = 匹配 ?? 原目标;
     const 名 = 事件.type;
     const 体 = {订阅号: 订阅.号};
     if (订阅.类型 === '界面') {
       const 标 = 标签名(目标);
       体.标识 = 元素标识(目标);
       体.名称 = 名;
+      if (匹配) 体.目标标识 = 元素标识(原目标);
       const 键 = 找操作键(目标, 订阅.边界);
       if (键 !== '') 体.操作键 = 键;
+      const 属性元 = 目标 && 目标.nodeType === 1 ? 目标 : null;
+      if (订阅.策.带属性.length && 属性元) 体.属性 = 读属性们(属性元, 订阅.策.带属性);
+      if (订阅.策.带矩形 && 属性元 && typeof 属性元.getBoundingClientRect === 'function') {
+        const 框 = 属性元.getBoundingClientRect();
+        体.矩形 = {左: Math.round(框.left), 上: Math.round(框.top), 右: Math.round(框.right), 下: Math.round(框.bottom)};
+      }
       // 文言：口令之框，其值不入事列。汉语：type=password 的输入框不带值（避免口令流入事件队列与日志）；应用需要时显式用读取节点值。
       if (!无值事件.has(名) && (标 === 'input' || 标 === 'textarea' || 标 === 'select') && !(标 === 'input' && 目标.type === 'password')) {
         const 值 = String(目标.value ?? '');
@@ -400,6 +443,10 @@ export function 创建界面订阅器({根, 全局, 投递, 已关闭 = () => fa
     if (订阅表.size >= 256) throw Error('界面事件订阅数量达到上限');
     if (!/^[A-Za-z][A-Za-z0-9_.:-]{0,63}$/u.test(事件名)) throw Error('界面事件名无效：' + 事件名.slice(0, 64));
     const 策 = 解析界面策略(策略文, 事件名);
+    if (策.选择器 !== undefined) {
+      try { 根.createDocumentFragment().querySelector(策.选择器); }
+      catch { throw Error('选择器无效：' + 策.选择器.slice(0, 128)); }
+    }
     let 目标;
     let 边界 = null;
     if (目标名 === '文档') 目标 = 根;
@@ -415,12 +462,17 @@ export function 创建界面订阅器({根, 全局, 投递, 已关闭 = () => fa
     const 处理 = 事件 => {
       if (已关闭()) return;
       try {
+        let 匹配 = null;
+        if (策.选择器 !== undefined) {
+          匹配 = 找匹配(事件.target, 策.选择器, 项.边界);
+          if (!匹配) return;
+        }
         const 有律 = 策.键规则.length > 0;
         const 命中 = 有律 && 是键盘事件(事件) && 策.键规则.some(律 => 匹配键律(律, 事件));
         const 动作 = 有律 ? 命中 : true;
         if (动作 && 策.阻止默认 && 事件.cancelable) 事件.preventDefault();
         if (策.仅命中 && !命中) return;
-        const 体 = 造界面体(项, 事件);
+        const 体 = 造界面体(项, 事件, 匹配);
         // 文言：欲止其默认而事不可取，则明告之。汉语：订阅要求阻止默认，但浏览器不允许取消这个事件时（如未经用户激活的 dialog cancel），载荷带 可取消:false，以解释“已阻止默认”为假。
         if (动作 && 策.阻止默认 && !事件.cancelable) 体.可取消 = false;
         投递({
@@ -507,6 +559,8 @@ const 空元素 = new Set(['br', 'input']);
 const 输入类型 = new Set(['button', 'submit', 'reset', 'checkbox', 'radio', 'text', 'search', 'number', 'email', 'url', 'tel', 'password', 'range', 'date', 'time', 'datetime-local']);
 const 按钮类型 = new Set(['button', 'submit', 'reset']);
 const 文字上限 = 8 * 1024 * 1024;
+// 文言：可设之属性名，去除与读回皆循此册。汉语：属性白册的名称集合（布尔属性另见 布尔属性名；aria-*、data-* 按前缀判）。
+const 白册属性名 = new Set(['class', 'id', 'role', 'type', 'title', 'placeholder', 'tabindex', 'datetime', 'maxlength', 'rows', 'colspan', 'rowspan', 'for', 'value', 'href', 'target']);
 const 页面标识式 = /^[^\s"'<>&`\\\u0000-\u001f\u007f]{1,128}$/u;
 const 控制字符式 = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
 
@@ -756,6 +810,52 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
       }
       return 'true';
     },
+    // ---- 0.3.0：属性读回与移除、文字读回、点击、位置与矩形 ----
+    // 文言：读回之名式与设置同严；“文档根”“页体”乃根与身之保留字。汉语：读取属性原文，返回“1”加值或“0”；标识可为保留字 文档根（html）与 页体（body）。
+    读取属性: (标识, 名) => {
+      const 元 = 标识 === '文档根' ? 根.documentElement : 标识 === '页体' ? 根.body : 找元素(标识, true);
+      if (!元) throw Error('网页元素不存在：' + 标识);
+      if (typeof 名 !== 'string' || !/^[a-z][a-z0-9:_-]{0,63}$/u.test(名) || 名.startsWith('on') || 名 === 'style' || 名 === 'srcdoc') throw Error('页面属性不受支持：' + String(名).slice(0, 64));
+      if (标签名(元) === 'iframe' && !['class', 'title', 'hidden'].includes(名) && !/^(?:data|aria)-/u.test(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
+      if (!元.hasAttribute(名)) return '0';
+      const 值 = String(元.getAttribute(名));
+      if (值.length > 65536) throw Error('页面属性值过长：' + 名);
+      return '1' + 值;
+    },
+    移除属性: (标识, 名) => {
+      const 元 = 找元素(标识, true);
+      if (typeof 名 !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/u.test(名)) throw Error('页面属性不受支持：' + String(名).slice(0, 64));
+      if (名.startsWith('data-yy-')) throw Error('页面属性名为宿主保留：' + 名);
+      const 通配 = 名 === 'data-yy' || /^data-[a-z0-9-]+$/u.test(名) || /^aria-[a-z0-9-]+$/u.test(名);
+      if (!通配 && !布尔属性名.has(名) && !白册属性名.has(名)) throw Error('页面属性不受支持：' + 名);
+      if (标签名(元) === 'iframe' && !通配 && !['class', 'title', 'hidden'].includes(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
+      元.removeAttribute(名);
+    },
+    读取文字: 标识 => {
+      const 文 = String(找元素(标识).textContent ?? '');
+      if (字节超限(文, 文字上限)) throw Error('网页元素文字超过八 MiB，不能读回');
+      return 文;
+    },
+    // 文言：程序之点，文件框与不合规之链不许。汉语：HTMLElement.click()；文件输入框与 href 不满足链接规则的 a 抛错。
+    点击: 标识 => {
+      const 元 = 找元素(标识);
+      const 标 = 标签名(元);
+      if (标 === 'input' && 元.type === 'file') throw Error('不得点击文件输入框');
+      if (标 === 'a' && 元.hasAttribute('href')) 校验链接(String(元.getAttribute('href')));
+      if (typeof 元.click !== 'function') throw Error('网页元素不可点击');
+      元.click();
+    },
+    设置位置: (标识, 左串, 上串) => {
+      const 元 = 找元素(标识);
+      const 左 = 整数参(左串, '左位置'), 上 = 整数参(上串, '上位置');
+      if (Math.abs(左) > 100000 || Math.abs(上) > 100000) throw Error('元素位置越界：须在 -100000 至 100000 之间');
+      元.style.left = 左 + 'px';
+      元.style.top = 上 + 'px';
+    },
+    读取矩形: 标识 => {
+      const 框 = 找元素(标识).getBoundingClientRect();
+      return JSON.stringify({左: Math.round(框.left), 上: Math.round(框.top), 右: Math.round(框.right), 下: Math.round(框.bottom)});
+    },
     设置文字: (标识, 文) => { 设文字(找元素(标识), 文); },
     设置属性: (标识, 名, 值) => { 应用属性(找元素(标识, true), 名, 值); }
   };
@@ -945,13 +1045,704 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
 }
 
 
-export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 队列上限 = {}}) {
+// ---------------------------------------------------------------------------
+// 四、网页能力：定时、储存、导航、环境、请求、事件源、编译、应用
+// ---------------------------------------------------------------------------
+// 文言：诸新包之行术皆归此一表，操作以名，参皆文；校验于此一处，败则抛，由外层归为（阴，因）。
+// 汉语：网页定时、网页储存、网页导航、网页环境、网页请求、网页事件源、网页编译、网页应用八个接口的宿主实现。所有操作按“操作名 + 文字参数”调用，
+//       由 `豫言_浏览器_网页能力`（同步）与 `豫言_浏览器_网页能力异步` 两个原语进入；校验与限额只在这里写一处。纯工厂函数，可脱离 Wasm 用 JSDOM 单独测试。
+
+// 文言：SSE 之解，依 WHATWG 之规，逐块而喂；行终可为 LF、CR、CRLF；流首 BOM 略之；未毕之事于断连时弃之。
+// 汉语：服务器推送事件流解析器：喂入字节块，返回 {事件们, 重试, 致命}；跨块的 CR LF、多字节字符与半行都由它处理。
+export function 创建SSE解析器({起始事件号 = '', 单事上限 = 1048576} = {}) {
+  let 解码 = new TextDecoder('utf-8');
+  let 缓冲 = '';
+  let 跳过LF = false;
+  let 数据行 = [];
+  let 事名 = '';
+  let 号缓冲 = 起始事件号;
+  let 数据字节 = 0;
+  let 重试 = null;
+  let 致命 = null;
+  const 事们 = [];
+  const 分发 = () => {
+    if (数据行.length) 事们.push({事件号: 号缓冲, 事件名: 事名 || 'message', 数据: 数据行.join('\n')});
+    数据行 = [];
+    事名 = '';
+    数据字节 = 0;
+  };
+  const 处理行 = 行 => {
+    if (行 === '') { 分发(); return; }
+    if (行[0] === ':') return;
+    const 冒 = 行.indexOf(':');
+    let 字段 = 行;
+    let 值 = '';
+    if (冒 >= 0) {
+      字段 = 行.slice(0, 冒);
+      值 = 行.slice(冒 + 1);
+      if (值[0] === ' ') 值 = 值.slice(1);
+    }
+    switch (字段) {
+      case 'event': 事名 = 值; break;
+      case 'data':
+        数据字节 += 字节数(值) + 1;
+        if (数据字节 > 单事上限 + 1) { 致命 = '事件过大'; return; }
+        数据行.push(值);
+        break;
+      case 'id': if (!值.includes('\u0000')) 号缓冲 = 值; break;
+      case 'retry': if (/^[0-9]{1,9}$/u.test(值)) 重试 = Number(值); break;
+      default: break;
+    }
+  };
+  const 喂 = (字节, 结束 = false) => {
+    缓冲 += 解码.decode(字节, {stream: !结束});
+    let 起 = 0;
+    for (let i = 0; i < 缓冲.length && 致命 === null; i++) {
+      const 字 = 缓冲[i];
+      if (跳过LF) {
+        跳过LF = false;
+        if (字 === '\n') { 起 = i + 1; continue; }
+      }
+      if (字 === '\n' || 字 === '\r') {
+        处理行(缓冲.slice(起, i));
+        起 = i + 1;
+        if (字 === '\r') {
+          if (缓冲[i + 1] === '\n') { i++; 起 = i + 1; } else if (i + 1 >= 缓冲.length) 跳过LF = true;
+        }
+      }
+    }
+    缓冲 = 缓冲.slice(起);
+    if (缓冲.length > 单事上限 + 65536) 致命 ??= '事件过大';
+    const 出 = {事件们: 事们.splice(0), 重试, 致命};
+    重试 = null;
+    return 出;
+  };
+  // 文言：重连则半行与未毕之事皆弃，末事件号独存。汉语：重新连接时丢弃半行和未派发的事件，只保留最后事件号。
+  const 重置连接 = () => {
+    解码 = new TextDecoder('utf-8');
+    缓冲 = ''; 跳过LF = false; 数据行 = []; 事名 = ''; 数据字节 = 0; 重试 = null; 致命 = null;
+    事们.length = 0;
+  };
+  return {喂, 重置连接, 最后号: () => 号缓冲};
+}
+
+const 网页能力允许字段 = (对象, 名单, 说明) => {
+  for (const 名 of Object.keys(对象)) if (!名单.includes(名)) throw Error(说明 + '含未知字段：' + 名.slice(0, 64));
+};
+const 检整数串 = (串, 名, 下, 上) => {
+  if (typeof 串 !== 'string' || !/^-?\d{1,16}$/u.test(串)) throw Error(名 + '须为整数');
+  const 数 = Number(串);
+  if (!Number.isSafeInteger(数) || 数 < 下 || 数 > 上) throw Error(名 + '越界：须在 ' + 下 + ' 至 ' + 上 + ' 之间');
+  return 数;
+};
+const 检整数值 = (值, 名, 下, 上) => {
+  if (!Number.isSafeInteger(值) || 值 < 下 || 值 > 上) throw Error(名 + '须为 ' + 下 + ' 至 ' + 上 + ' 之间的整数');
+  return 值;
+};
+// 文言：fetch 规范所禁之标头，宿主一概拒之，免默被浏览器吞。汉语：fetch 规范的禁用标头名（含 sec-、proxy- 前缀）；宿主明确拒绝，而不是让浏览器悄悄忽略。
+const 禁用标头名 = new Set(['accept-charset', 'accept-encoding', 'access-control-request-headers', 'access-control-request-method', 'connection',
+  'content-length', 'cookie', 'cookie2', 'date', 'dnt', 'expect', 'host', 'keep-alive', 'origin', 'referer', 'set-cookie', 'te', 'trailer',
+  'transfer-encoding', 'upgrade', 'user-agent', 'via']);
+const 请求方法集 = new Set(['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE']);
+const 十兆 = 10 * 1024 * 1024;
+const 八兆 = 8 * 1024 * 1024;
+const 十六兆 = 16 * 1024 * 1024;
+const 背压阈值 = 8;
+
+export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 队列, 已关闭 = () => false, 定时 = null,
+  编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000}) {
+  const 导入 = 导入模块 ?? (地址 => import(地址));
+  const 基址 = () => {
+    try { return new URL(String(全局.location?.href ?? 路径)); } catch { return new URL(String(路径)); }
+  };
+  const 检开着 = () => { if (已关闭()) throw Error('豫言浏览器宿主已关闭'); };
+  const 睡 = (毫秒, 登记) => new Promise(完成 => {
+    const 计时 = 全局.setTimeout(() => { 登记(null); 完成(); }, 毫秒);
+    登记(() => { 全局.clearTimeout(计时); 完成(); });
+  });
+
+  // 文言：站内之径或同源之绝对址，余者一概不受。汉语：网页请求、事件源用的网址规则：以 / 开头（不以 // 开头）的站内路径，或与当前页面同源的 http(s) 绝对网址。
+  const 解析同源网址 = (原, 说明) => {
+    if (typeof 原 !== 'string' || !原) throw Error(说明 + '网址不能为空');
+    if (原.length > 8192) throw Error(说明 + '网址过长（至多 8192 个 UTF-16 码元）');
+    if (/[\u0000-\u001f\u007f\\]/u.test(原)) throw Error(说明 + '网址含控制字符或反斜杠');
+    if (!(原.startsWith('/') && !原.startsWith('//')) && !/^https?:\/\//iu.test(原)) throw Error(说明 + '网址须为站内路径（以 / 开头）或同源的绝对网址');
+    const 基 = 基址();
+    let 址;
+    try { 址 = new URL(原, 基); } catch { throw Error(说明 + '网址无法解析'); }
+    if (基.origin === 'null' || 址.origin !== 基.origin) throw Error(说明 + '只允许同源网址');
+    return 址;
+  };
+  // 文言：导航之址可相对当前页而解，惟许 http、https。汉语：导航用的网址规则：可以是相对当前页面的引用，解析后协议只能是 http 或 https。
+  const 解析导航网址 = 原 => {
+    if (typeof 原 !== 'string' || !原) throw Error('导航网址不能为空');
+    if (原.length > 8192) throw Error('导航网址过长（至多 8192 个 UTF-16 码元）');
+    if (/[\u0000-\u001f\u007f\\]/u.test(原)) throw Error('导航网址含控制字符或反斜杠');
+    let 址;
+    try { 址 = new URL(原, 基址()); } catch { throw Error('导航网址无法解析'); }
+    if (址.protocol !== 'http:' && 址.protocol !== 'https:') throw Error('导航网址只允许 http 或 https');
+    return 址;
+  };
+
+  // ---- 背压管线：按来源限制未取走的事件数；超限时先缓存，待应用取走后续投 ----
+  // 文言：一源之事，列中至多阈数；余者暂存，取一则补一，故不失事亦不塞列。
+  // 汉语：事件源与编译进度都经它投递：队列里该来源未取走的事件达到阈值（8）时，新事件暂存在宿主里，应用每取走一个再补投一个；
+  //       事件源据 等余量() 暂停读取网络流，从而不丢事件、也不撑爆队列。
+  const 管线表 = new Map();
+  const 造管线 = (来源键, 类型, 号) => {
+    const 待发 = [];
+    let 在队 = 0;
+    let 等待 = null;
+    let 已停 = false;
+    const 泵 = () => {
+      while (!已停 && 待发.length && 在队 < 背压阈值) {
+        const {名称, 详情} = 待发.shift();
+        在队++;
+        const 成 = 队列.投递({类型, 事件: {订阅号: 号, 名称, 详情}, 新式: true, 来源键});
+        if (!成) { 已停 = true; 待发.length = 0; }
+      }
+      if (等待 && (已停 || 待发.length + 在队 < 背压阈值)) { const 醒 = 等待; 等待 = null; 醒(); }
+    };
+    const 管 = {
+      推: (名称, 详情) => { if (已停) return; 待发.push({名称, 详情}); 泵(); },
+      离队: () => { 在队 = Math.max(0, 在队 - 1); 泵(); },
+      等余量: () => (已停 || 待发.length + 在队 < 背压阈值 ? Promise.resolve() : new Promise(醒 => { 等待 = 醒; })),
+      待数: () => 待发.length + 在队,
+      停: () => { 已停 = true; 待发.length = 0; if (等待) { const 醒 = 等待; 等待 = null; 醒(); } }
+    };
+    管线表.set(来源键, 管);
+    return 管;
+  };
+  const 拆批 = (项们, 计字节) => {
+    const 批们 = [];
+    let 现 = [];
+    let 量 = 0;
+    for (const 项 of 项们) {
+      const 字节 = 计字节(项);
+      if (现.length && (现.length >= 256 || 量 + 字节 > 1048576)) { 批们.push(现); 现 = []; 量 = 0; }
+      现.push(项);
+      量 += 字节;
+    }
+    if (现.length) 批们.push(现);
+    return 批们;
+  };
+
+  // ---- 定时 ----
+  const 检标记 = 标记 => {
+    if (typeof 标记 !== 'string' || 标记.length > 1024) throw Error('定时标记至多 1024 个 UTF-16 码元');
+  };
+  const 定时操作 = {
+    一次: (毫秒串, 标记) => {
+      检开着();
+      const 毫秒 = 检整数串(毫秒串, '定时延时毫秒', 0, 2147483647);
+      检标记(标记);
+      return 定时.造(毫秒, 标记, false);
+    },
+    重复: (毫秒串, 标记) => {
+      检开着();
+      const 毫秒 = 检整数串(毫秒串, '定时间隔毫秒', 10, 2147483647);
+      检标记(标记);
+      return 定时.造(毫秒, 标记, true);
+    },
+    取消: 号串 => String(定时.取消(String(检整数串(号串, '定时号', 1, Number.MAX_SAFE_INTEGER))))
+  };
+
+  // ---- 储存 ----
+  const 取储存区 = 区 => {
+    if (区 !== '本地' && 区 !== '会话') throw Error('网页储存区域无效：' + String(区).slice(0, 32) + '（只能是 会话 或 本地）');
+    return 区;
+  };
+  const 检储存键 = 键 => {
+    if (typeof 键 !== 'string' || !键) throw Error('网页储存键不能为空');
+    if (键.length > 512) throw Error('网页储存键至多 512 个 UTF-16 码元');
+  };
+  const 开储存 = 区 => (区 === '本地' ? (储存 ?? 全局.localStorage) : 全局.sessionStorage);
+  const 储存操作 = {
+    读取: (区, 键) => {
+      取储存区(区); 检储存键(键);
+      try {
+        const 值 = 开储存(区).getItem(键);
+        return 值 === null || 值 === undefined ? '0' : '1' + 值;
+      } catch { return '0'; }
+    },
+    写入: (区, 键, 值) => {
+      取储存区(区); 检储存键(键);
+      if (typeof 值 !== 'string' || 值.length > 1048576) throw Error('网页储存值至多 1048576 个 UTF-16 码元');
+      try { 开储存(区).setItem(键, 值); return 'true'; } catch { return 'false'; }
+    },
+    删除: (区, 键) => {
+      取储存区(区); 检储存键(键);
+      try { 开储存(区).removeItem(键); } catch { /* 文言：储存不可用则无事。汉语：储存不可用时删除什么也不做。 */ }
+      return '';
+    }
+  };
+
+  // ---- 导航 ----
+  const 导航操作 = {
+    前往: 址 => { 全局.location.assign(解析导航网址(址).href); return ''; },
+    替换当前: 址 => { 全局.location.replace(解析导航网址(址).href); return ''; },
+    重载: () => { 全局.location.reload(); return ''; },
+    压入: 址 => {
+      const 解 = 解析导航网址(址);
+      if (解.origin !== 基址().origin) throw Error('历史记录只允许同源网址');
+      try { 全局.history.pushState(null, '', 解.href); } catch (错) { throw Error('浏览器拒绝压入历史：' + String(错?.message ?? 错)); }
+      return '';
+    },
+    替换历史: 址 => {
+      const 解 = 解析导航网址(址);
+      if (解.origin !== 基址().origin) throw Error('历史记录只允许同源网址');
+      try { 全局.history.replaceState(null, '', 解.href); } catch (错) { throw Error('浏览器拒绝替换历史：' + String(错?.message ?? 错)); }
+      return '';
+    },
+    移动: 数串 => {
+      const 步 = 检整数串(数串, '历史步数', -50, 50);
+      if (步 === 0) throw Error('历史步数不能为 0（重载请用重载页面）');
+      全局.history.go(步);
+      return '';
+    }
+  };
+
+  // ---- 环境 ----
+  const 环境操作 = {
+    时区偏移: 毫秒串 => {
+      const 毫秒 = 检整数串(毫秒串, '时间毫秒', -8640000000000000, 8640000000000000);
+      const 偏 = -new (全局.Date ?? Date)(毫秒).getTimezoneOffset();
+      return String(Math.round(偏) + 0);
+    },
+    饼: 名 => {
+      if (typeof 名 !== 'string' || !名 || 名.length > 256 || /[=;\s\u0000-\u001f\u007f]/u.test(名)) throw Error('饼名称无效：不得为空、超过 256 个 UTF-16 码元，或含等号、分号、空白、控制字符');
+      let 全 = '';
+      try { 全 = String(根.cookie ?? ''); } catch { return '0'; }
+      for (const 段 of 全.split(';')) {
+        const 项 = 段.trim();
+        const 等 = 项.indexOf('=');
+        if (等 > 0 && 项.slice(0, 等) === 名) return '1' + 项.slice(等 + 1);
+      }
+      return '0';
+    }
+  };
+
+  // ---- 请求 ----
+  const 请求表 = new Map();
+  let 下请求号 = 1;
+  const 检请求 = 文 => {
+    if (typeof 文 !== 'string' || 文.length > 十兆) throw Error('网页请求 JSON 过大（至多 10 MiB）');
+    let 对象;
+    try { 对象 = JSON.parse(文); } catch { throw Error('网页请求不是有效 JSON'); }
+    if (!对象 || typeof 对象 !== 'object' || Array.isArray(对象)) throw Error('网页请求须为 JSON 对象');
+    网页能力允许字段(对象, ['网址', '方法', '标头', '正文', '缓存', '超时毫秒', '正文上限', '标记'], '网页请求');
+    const 址 = 解析同源网址(对象.网址, '网页请求');
+    const 方法 = 对象.方法 ?? 'GET';
+    if (typeof 方法 !== 'string' || !请求方法集.has(方法)) throw Error('网页请求方法只能是 GET、HEAD、POST、PUT、PATCH、DELETE');
+    const 标头 = {};
+    if (对象.标头 !== undefined) {
+      const 头们 = 对象.标头;
+      if (!头们 || typeof 头们 !== 'object' || Array.isArray(头们)) throw Error('网页请求标头须为对象');
+      const 名们 = Object.keys(头们);
+      if (名们.length > 32) throw Error('网页请求标头至多 32 项');
+      for (const 名 of 名们) {
+        const 值 = 头们[名];
+        if (!/^[A-Za-z0-9-]{1,64}$/u.test(名)) throw Error('网页请求标头名无效：' + 名.slice(0, 64));
+        const 小 = 名.toLowerCase();
+        if (禁用标头名.has(小) || 小.startsWith('sec-') || 小.startsWith('proxy-')) throw Error('网页请求标头名被禁用：' + 名);
+        if (typeof 值 !== 'string' || 值.length > 4096 || /[\u0000-\u001f\u007f]/u.test(值)) throw Error('网页请求标头值无效：' + 名);
+        标头[名] = 值;
+      }
+    }
+    let 正文;
+    if (对象.正文 !== undefined) {
+      if (typeof 对象.正文 !== 'string') throw Error('网页请求正文须为文字');
+      if (方法 === 'GET' || 方法 === 'HEAD') throw Error('GET 与 HEAD 请求不能带正文');
+      if (字节超限(对象.正文, 八兆)) throw Error('网页请求正文至多 8 MiB');
+      正文 = 对象.正文;
+    }
+    const 缓存 = 对象.缓存 ?? '默认';
+    if (缓存 !== '默认' && 缓存 !== '不缓存') throw Error('网页请求缓存只能是 默认 或 不缓存');
+    const 超时毫秒 = 对象.超时毫秒 === undefined ? 60000 : 检整数值(对象.超时毫秒, '网页请求超时毫秒', 1, 600000);
+    const 正文上限 = 对象.正文上限 === undefined ? 八兆 : 检整数值(对象.正文上限, '网页请求正文上限', 1, 十六兆);
+    const 标记 = 对象.标记 ?? '';
+    if (typeof 标记 !== 'string' || 标记.length > 256) throw Error('网页请求标记至多 256 个 UTF-16 码元');
+    return {址, 方法, 标头, 正文, 缓存, 超时毫秒, 正文上限, 标记};
+  };
+  const 登记请求 = (阻塞) => {
+    检开着();
+    if (请求表.size >= 32) throw Error('网页请求并发达到上限（32）');
+    const 号 = 下请求号++;
+    const 项 = {号, 阻塞, 控制器: new AbortController(), 原因: null, 已投: false};
+    请求表.set(号, 项);
+    return 项;
+  };
+  const 读正文 = async (响应, 上限, 项) => {
+    if (!响应.body) return new Uint8Array(0);
+    const 读器 = 响应.body.getReader();
+    const 诸块 = [];
+    let 总数 = 0;
+    try {
+      for (;;) {
+        const {value, done} = await 读器.read();
+        if (done) break;
+        总数 += value.byteLength;
+        if (总数 > 上限) { 项.原因 = '正文过大'; await 读器.cancel().catch(() => {}); throw Error('正文过大'); }
+        诸块.push(value);
+      }
+    } finally { try { 读器.releaseLock(); } catch { /* 文言：已释。汉语：读取器已被取消时释放会抛错，忽略。 */ } }
+    const 合 = new Uint8Array(总数);
+    let 位 = 0;
+    for (const 块 of 诸块) { 合.set(块, 位); 位 += 块.byteLength; }
+    return 合;
+  };
+  // 文言：成败皆归一癸象，网败不发事故；取消与宿主闭则无果。汉语：执行一个请求，返回响应对象（成为真或假）；因取消或宿主关闭而中止时返回 null（不产生任何结果）。
+  const 执行请求 = async (规, 项) => {
+    const 计时 = 全局.setTimeout(() => { 项.原因 ??= '超时'; 项.控制器.abort(); }, 规.超时毫秒);
+    try {
+      const 初 = {method: 规.方法, headers: 规.标头, credentials: 'same-origin', mode: 'same-origin', redirect: 'follow', signal: 项.控制器.signal};
+      if (规.缓存 === '不缓存') 初.cache = 'no-store';
+      if (规.正文 !== undefined) 初.body = 规.正文;
+      const 响应 = await 网络(规.址.href, 初);
+      const 字节 = 规.方法 === 'HEAD' ? new Uint8Array(0) : await 读正文(响应, 规.正文上限, 项);
+      let 正文;
+      try { 正文 = new TextDecoder('utf-8', {fatal: true}).decode(字节); }
+      catch { return {成: false, 原因: '正文不是有效UTF-8', 说明: '响应正文不是有效的 UTF-8 文字', 标记: 规.标记}; }
+      const 标头 = {};
+      for (const [名, 值] of 响应.headers ?? []) 标头[String(名).toLowerCase()] = String(值);
+      return {成: true, 状态: 响应.status, 状态文: String(响应.statusText ?? ''), 网址: String(响应.url || 规.址.href), 标头, 正文, 字节数: 字节.byteLength, 标记: 规.标记};
+    } catch (错) {
+      if (项.原因 === '取消' || 项.原因 === '关闭') return null;
+      if (项.原因 === '超时') return {成: false, 原因: '超时', 说明: '请求超过 ' + 规.超时毫秒 + ' 毫秒未完成', 标记: 规.标记};
+      if (项.原因 === '正文过大') return {成: false, 原因: '正文过大', 说明: '响应正文超过 ' + 规.正文上限 + ' 字节上限', 标记: 规.标记};
+      return {成: false, 原因: '网络错误', 说明: '网络请求失败：' + String(错?.message ?? 错).slice(0, 200), 标记: 规.标记};
+    } finally { 全局.clearTimeout(计时); }
+  };
+  const 请求操作 = {
+    发起: 文 => {
+      const 规 = 检请求(文);
+      const 项 = 登记请求(false);
+      const 键 = '请求:' + 项.号;
+      执行请求(规, 项).then(响应 => {
+        if (响应 === null || 项.原因 === '取消' || 项.原因 === '关闭') { 请求表.delete(项.号); return; }
+        项.已投 = true;
+        const 成 = 队列.投递({类型: '请求', 事件: {订阅号: 项.号, 名称: 响应.成 ? '完成' : '失败', 详情: 响应}, 新式: true, 来源键: 键});
+        if (!成) 请求表.delete(项.号);
+      }, () => { 请求表.delete(项.号); });
+      return String(项.号);
+    },
+    取消: 号串 => {
+      const 号 = 检整数串(号串, '请求号', 1, Number.MAX_SAFE_INTEGER);
+      const 项 = 请求表.get(号);
+      if (!项 || 项.阻塞) return 'false';
+      项.原因 = '取消';
+      项.控制器.abort();
+      队列.删除若(队列项 => 队列项.来源键 === '请求:' + 号);
+      请求表.delete(号);
+      return 'true';
+    }
+  };
+  const 同步请求 = async 文 => {
+    const 规 = 检请求(文);
+    const 项 = 登记请求(true);
+    try {
+      const 响应 = await 执行请求(规, 项);
+      return JSON.stringify(响应 ?? {成: false, 原因: '网络错误', 说明: '豫言浏览器宿主已关闭', 标记: 规.标记});
+    } finally { 请求表.delete(项.号); }
+  };
+
+  // ---- 事件源 ----
+  const 事件源表 = new Map();
+  let 下事件源号 = 1;
+  const 解析事件源选项 = 文 => {
+    if (typeof 文 !== 'string') throw Error('事件源选项须为文字');
+    let 对象 = {};
+    if (文.trim() !== '') {
+      try { 对象 = JSON.parse(文); } catch { throw Error('事件源选项不是有效 JSON'); }
+    }
+    if (!对象 || typeof 对象 !== 'object' || Array.isArray(对象)) throw Error('事件源选项须为 JSON 对象');
+    网页能力允许字段(对象, ['起始事件号', '重连毫秒'], '事件源选项');
+    const 起始事件号 = 对象.起始事件号 ?? '';
+    if (typeof 起始事件号 !== 'string' || 起始事件号.length > 256 || /[\r\n\u0000]/u.test(起始事件号)) throw Error('事件源起始事件号无效：至多 256 个 UTF-16 码元，不含换行与 NUL');
+    const 重连毫秒 = 对象.重连毫秒 === undefined ? 3000 : 检整数值(对象.重连毫秒, '事件源重连毫秒', 100, 60000);
+    return {起始事件号, 重连毫秒};
+  };
+  const 事件源终清 = 项 => {
+    if (项.终止 && 项.管.待数() === 0) { 事件源表.delete(项.号); 管线表.delete(项.键); }
+  };
+  const 运行事件源 = async (项, 址, 选项) => {
+    const 解析器 = 创建SSE解析器({起始事件号: 选项.起始事件号});
+    let 重连 = 选项.重连毫秒;
+    let 首次 = true;
+    const 投批 = 事们 => {
+      for (const 批 of 拆批(事们, 事 => 字节数(事.数据) + 64)) 项.管.推('消息', {批});
+    };
+    while (!项.已关) {
+      项.控制器 = new AbortController();
+      let 致命 = null;
+      let 状态码;
+      let 原因 = '网络中断';
+      try {
+        const 头 = {Accept: 'text/event-stream', 'Cache-Control': 'no-cache'};
+        if (解析器.最后号()) 头['Last-Event-ID'] = 解析器.最后号();
+        const 响应 = await 网络(址.href, {method: 'GET', headers: 头, credentials: 'same-origin', mode: 'same-origin', cache: 'no-store', signal: 项.控制器.signal});
+        if (项.已关) { try { await 响应.body?.cancel(); } catch { /* 忽略 */ } return; }
+        const 类型头 = String(响应.headers?.get?.('content-type') ?? '');
+        if (响应.status !== 200) {
+          致命 = 'HTTP 状态 ' + 响应.status; 状态码 = 响应.status;
+          try { await 响应.body?.cancel(); } catch { /* 忽略 */ }
+        } else if (!/^\s*text\/event-stream\s*(?:;|$)/iu.test(类型头)) {
+          致命 = '内容类型不是 text/event-stream';
+          try { await 响应.body?.cancel(); } catch { /* 忽略 */ }
+        } else {
+          解析器.重置连接();
+          项.管.推('打开', {重连: !首次});
+          首次 = false;
+          const 读器 = 响应.body.getReader();
+          try {
+            for (;;) {
+              const {value, done} = await 读器.read();
+              if (项.已关) return;
+              const 出 = 解析器.喂(done ? new Uint8Array(0) : value, done);
+              投批(出.事件们);
+              if (出.重试 !== null) 重连 = Math.min(60000, Math.max(100, 出.重试));
+              if (出.致命) { 致命 = 出.致命; await 读器.cancel().catch(() => {}); break; }
+              if (done) break;
+              await 项.管.等余量();
+            }
+          } finally { try { 读器.releaseLock(); } catch { /* 忽略 */ } }
+          if (!致命) 原因 = '服务端关闭';
+        }
+      } catch (错) {
+        if (项.已关) return;
+        原因 = '网络中断';
+      }
+      if (项.已关) return;
+      if (致命) {
+        项.终止 = true;
+        项.管.推('错误', 状态码 === undefined ? {状态: '已关闭', 原因: 致命} : {状态: '已关闭', 原因: 致命, HTTP状态: 状态码});
+        事件源终清(项);
+        return;
+      }
+      项.管.推('错误', {状态: '重连中', 原因});
+      await 睡(重连, 唤 => { 项.唤醒睡 = 唤; });
+    }
+  };
+  const 事件源操作 = {
+    打开: (址串, 选项文) => {
+      检开着();
+      const 址 = 解析同源网址(址串, '事件源');
+      const 选项 = 解析事件源选项(选项文);
+      if (事件源表.size >= 8) throw Error('事件源数量达到上限（8）');
+      const 号 = 下事件源号++;
+      const 键 = '事件源:' + 号;
+      const 项 = {号, 键, 管: 造管线(键, '事件流', 号), 已关: false, 终止: false, 控制器: null, 唤醒睡: null};
+      事件源表.set(号, 项);
+      运行事件源(项, 址, 选项).catch(错 => { 全局.console?.error?.(错); });
+      return String(号);
+    },
+    关闭: 号串 => {
+      const 号 = 检整数串(号串, '事件源号', 1, Number.MAX_SAFE_INTEGER);
+      const 项 = 事件源表.get(号);
+      if (!项) return 'false';
+      const 有事 = 项.管.待数() > 0;
+      项.已关 = true;
+      try { 项.控制器?.abort(); } catch { /* 忽略 */ }
+      项.唤醒睡?.();
+      项.管.停();
+      队列.删除若(队列项 => 队列项.来源键 === 项.键);
+      事件源表.delete(号);
+      管线表.delete(项.键);
+      return String(!项.终止 || 有事);
+    }
+  };
+
+  // ---- 编译 ----
+  let 下编译号 = 1;
+  let 当前编译 = null;
+  const 编译可用 = () => typeof 全局.WebAssembly?.promising === 'function' && typeof 全局.Worker === 'function' && typeof 全局.DecompressionStream === 'function';
+  const 检编译文件 = 文 => {
+    if (typeof 文 !== 'string') throw Error('本地编译文件须为 JSON 文字');
+    let 对象;
+    try { 对象 = JSON.parse(文); } catch { throw Error('本地编译文件不是有效 JSON'); }
+    if (!对象 || typeof 对象 !== 'object' || Array.isArray(对象)) throw Error('本地编译文件须为 {"路径":"内容"} 对象');
+    const 名们 = Object.keys(对象);
+    if (名们.length === 0) throw Error('本地编译至少需要一个文件');
+    if (名们.length > 4096) throw Error('本地编译文件至多 4096 个');
+    let 总 = 0;
+    for (const 名 of 名们) {
+      if (!名 || 名.length > 512 || 名.includes('\u0000')) throw Error('本地编译文件路径无效：1 至 512 个 UTF-16 码元且不含 NUL');
+      if (typeof 对象[名] !== 'string') throw Error('本地编译文件内容须为文字：' + 名.slice(0, 64));
+      总 += 字节数(对象[名]);
+      if (总 > 32 * 1024 * 1024) throw Error('本地编译内容总量至多 32 MiB');
+    }
+    return 对象;
+  };
+  const 取编译客户端 = async () => {
+    if (编译客户端 && typeof 编译客户端 === 'object') return 编译客户端;
+    const 地址 = typeof 编译客户端 === 'string' ? new URL(编译客户端, 基址()).href : new URL('编译/客户端.mjs', 基址()).href;
+    const 模块 = await 导入(地址);
+    if (typeof 模块?.浏览器编译 !== 'function' || typeof 模块?.停止编译 !== 'function') throw Error('缺少导出 浏览器编译 或 停止编译');
+    return 模块;
+  };
+  const 映射编译事件 = 事 => {
+    if (事?.type === 'stage') return {类: '阶段', 阶段: String(事.phase ?? ''), 标签: String(事.label ?? '')};
+    if (事?.type === 'output') return {类: '输出', 流: 事.stream === 'stdout' ? 'stdout' : 'stderr', 文字: String(事.text ?? '')};
+    if (事?.type === 'diagnostic') return {类: '诊断', 文字: String(事.text ?? '')};
+    return null;
+  };
+  const 运行编译 = async (项, 文件) => {
+    let 待批 = [];
+    let 批计时 = null;
+    const 冲 = () => {
+      if (批计时 !== null) { 全局.clearTimeout(批计时); 批计时 = null; }
+      if (!待批.length) return;
+      for (const 批 of 拆批(待批, 事 => 字节数(事.文字 ?? '') + 字节数(事.标签 ?? '') + 64)) 项.管.推('进度', {批});
+      待批 = [];
+    };
+    const 报告 = 事 => {
+      const 映 = 映射编译事件(事);
+      if (!映) return;
+      待批.push(映);
+      if (待批.length >= 64) 冲();
+      else if (批计时 === null) 批计时 = 全局.setTimeout(冲, 50);
+    };
+    let 结果;
+    try {
+      项.客户端 = await 取编译客户端();
+      if (项.请求停止) 结果 = {ok: false, error: '已停止'};
+      else 结果 = await 项.客户端.浏览器编译({files: 文件}, true, 报告);
+    } catch (错) {
+      结果 = {ok: false, error: '编译客户端不可用：' + String(错?.message ?? 错).slice(0, 300)};
+    }
+    冲();
+    if (当前编译 === 项) 当前编译 = null;
+    项.管.推('完成', {
+      成: 结果?.ok === true, 标准输出: String(结果?.stdout ?? ''), 标准错误: String(结果?.stderr ?? ''),
+      错误: String(结果?.error ?? ''), 阶段: String(结果?.phase ?? ''), 产物摘要: String(结果?.artifact?.sha256 ?? '')
+    });
+  };
+  const 编译操作 = {
+    可用: () => String(编译可用()),
+    启动: 文 => {
+      检开着();
+      const 文件 = 检编译文件(文);
+      if (当前编译) throw Error('已有本地编译在运行');
+      const 号 = 下编译号++;
+      const 键 = '编译:' + 号;
+      const 项 = {号, 键, 管: 造管线(键, '编译', 号), 客户端: null, 请求停止: false};
+      当前编译 = 项;
+      运行编译(项, 文件).catch(错 => { 全局.console?.error?.(错); });
+      return String(号);
+    },
+    停止: () => {
+      const 项 = 当前编译;
+      if (!项) return 'false';
+      项.请求停止 = true;
+      try { 项.客户端?.停止编译(); } catch { /* 文言：客户端自败则以完成事报之。汉语：客户端停止时抛错则忽略，编译最终仍会以“完成”事件收尾。 */ }
+      return 'true';
+    }
+  };
+
+  // ---- 应用 ----
+  const 已启应用 = new Map();
+  const 检应用路径 = 串 => {
+    if (typeof 串 !== 'string' || !串) throw Error('页面应用路径不能为空');
+    if (串.length > 512) throw Error('页面应用路径过长（至多 512 个 UTF-16 码元）');
+    if (!串.startsWith('/') || 串.startsWith('//')) throw Error('页面应用路径须以单个 / 开头');
+    if (!串.endsWith('/入口.mjs')) throw Error('页面应用路径须以 /入口.mjs 结尾');
+    if (/[?#\\%\u0000-\u001f\u007f]/u.test(串)) throw Error('页面应用路径不得含查询、片段、反斜杠、百分号编码与控制字符');
+    if (串.split('/').some(段 => 段 === '.' || 段 === '..')) throw Error('页面应用路径不得含 . 或 .. 目录段');
+    return 串;
+  };
+  const 启动页面应用 = async 串 => {
+    检开着();
+    const 路 = 检应用路径(串);
+    if (已启应用.has(路)) throw Error('页面应用已启动：' + 路);
+    if (已启应用.size >= 8) throw Error('页面应用数量达到上限（8）');
+    已启应用.set(路, null);
+    try {
+      const 模块 = await 导入(new URL(路, 基址()).href);
+      if (typeof 模块?.启动豫言浏览器应用 !== 'function') throw Error('模块没有导出 启动豫言浏览器应用');
+      const 实例 = await 模块.启动豫言浏览器应用();
+      已启应用.set(路, 实例);
+      实例?.完成?.catch?.(() => {});
+      let 计时;
+      const 超时 = new Promise((_, 拒) => { 计时 = 全局.setTimeout(() => 拒(Error('页面应用 ' + 页面应用超时 + ' 毫秒内未就绪')), 页面应用超时); });
+      try { await Promise.race([实例.就绪, 超时]); } finally { 全局.clearTimeout(计时); }
+    } catch (错) {
+      const 半启 = 已启应用.get(路);
+      if (半启) { try { 半启.关闭?.(); } catch { /* 文言：半启之应用尽力而闭。汉语：启动失败时尽力关闭已创建的子应用。 */ } }
+      已启应用.delete(路);
+      throw Error('页面应用启动失败：' + String(错?.message ?? 错).slice(0, 300));
+    }
+    return '';
+  };
+
+  // ---- 分派 ----
+  const 表们 = {定时: 定时操作, 储存: 储存操作, 导航: 导航操作, 环境: 环境操作, 请求: 请求操作, 事件源: 事件源操作, 编译: 编译操作};
+  const 找操作 = 名 => {
+    const 点 = typeof 名 === 'string' ? 名.indexOf('.') : -1;
+    const 表 = 点 > 0 ? 表们[名.slice(0, 点)] : undefined;
+    const 函 = 表 && Object.hasOwn(表, 名.slice(点 + 1)) ? 表[名.slice(点 + 1)] : undefined;
+    if (typeof 函 !== 'function') throw Error('网页能力操作不受支持：' + String(名).slice(0, 64));
+    return 函;
+  };
+  const 运行 = (名, 参 = []) => {
+    const 果 = 找操作(名)(...参);
+    return 果 === undefined ? '' : String(果);
+  };
+  const 异步运行 = async (名, 参 = []) => {
+    if (名 === '请求.同步') return 同步请求(参[0]);
+    if (名 === '应用.启动') return 启动页面应用(参[0]);
+    throw Error('网页能力异步操作不受支持：' + String(名).slice(0, 64));
+  };
+  // 文言：事出列则通其管线，请求之表亦削。汉语：队列项离开队列（被取走、丢弃、撤销）时调用：给背压管线放行，并清理请求登记。
+  const 离队 = 项 => {
+    if (!项.来源键) return;
+    const 管 = 管线表.get(项.来源键);
+    if (管) {
+      管.离队();
+      for (const 源 of 事件源表.values()) if (源.键 === 项.来源键) 事件源终清(源);
+      return;
+    }
+    if (项.来源键.startsWith('请求:')) 请求表.delete(Number(项.来源键.slice(3)));
+  };
+  const 清理 = () => {
+    for (const 项 of 请求表.values()) { 项.原因 = '关闭'; try { 项.控制器.abort(); } catch { /* 忽略 */ } }
+    请求表.clear();
+    for (const 项 of 事件源表.values()) {
+      项.已关 = true;
+      try { 项.控制器?.abort(); } catch { /* 忽略 */ }
+      项.唤醒睡?.();
+      项.管.停();
+    }
+    事件源表.clear();
+    if (当前编译) {
+      当前编译.请求停止 = true;
+      try { 当前编译.客户端?.停止编译(); } catch { /* 忽略 */ }
+      当前编译.管.停();
+      当前编译 = null;
+    }
+    for (const 管 of 管线表.values()) 管.停();
+    管线表.clear();
+    for (const 实例 of 已启应用.values()) { try { 实例?.关闭?.(); } catch { /* 忽略 */ } }
+    已启应用.clear();
+  };
+  const 状态 = () => ({请求数: 请求表.size, 事件源数: 事件源表.size, 编译中: 当前编译 !== null, 页面应用数: 已启应用.size, 管线数: 管线表.size});
+  return {运行, 异步运行, 离队, 清理, 状态};
+}
+
+
+// ---------------------------------------------------------------------------
+// 五、浏览器宿主：把上面的工厂接到豫言原语
+// ---------------------------------------------------------------------------
+export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 队列上限 = {}, 编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000}) {
+  let 网页能力 = null;
   const 定时器 = new Map();
   const 定时待处理 = new Set();
   // 文言：诸事归一列；事离列则销其定时待办之记。汉语：统一事件队列；事件离开队列（被取走、丢弃或直接交付）时清理定时器「待处理」标记，使周期定时器能继续投递。
   const 队列 = 创建事件队列({
     上限: 队列上限,
-    离队钩子: 项 => { if (项.事件?.名称 === '定时' && 项.事件.定时号 !== undefined) 定时待处理.delete(项.事件.定时号); },
+    离队钩子: 项 => {
+      if (项.事件?.名称 === '定时' && 项.事件.定时号 !== undefined) 定时待处理.delete(项.事件.定时号);
+      网页能力?.离队(项);
+    },
     就绪钩子: () => 标记就绪()
   });
   let 下定时号 = 1;
@@ -1063,6 +1854,18 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     队列.删除若(项 => 项.类型 === '定时' && 项.事件.定时号 === 名);
     return true;
   };
+  // 文言：新接口之取消，事已入列而未取者亦去之，故其后必无此号之事。汉语：网页定时的取消：连同队列里该定时号尚未取走的事件一并移除（一次定时已到期但事件未取时也能取消）。
+  const 取消定时全 = 名 => {
+    const 有期 = 撤定时(名);
+    定时待处理.delete(名);
+    const 删数 = 队列.删除若(项 => 项.类型 === '定时' && 项.事件?.定时号 === 名);
+    return 有期 || 删数 > 0;
+  };
+  // 文言：网页定时等八包之行术，一处成之。汉语：网页定时、储存、导航、环境、请求、事件源、编译、应用的宿主实现（见 创建网页能力）。
+  网页能力 = 创建网页能力({
+    根, 全局, 网络, 路径, 储存, 队列, 已关闭: () => 关闭, 编译客户端, 导入模块, 页面应用超时,
+    定时: {造: 造定时, 取消: 取消定时全}
+  });
   // 文言：帧时由浏览器原生驱动，客唯候事件而裁绘。汉语：原生动画帧回调只投递时间戳和标记，绘制逻辑留在豫言。
   const 造动画帧 = 标记 => {
     if (typeof 全局.requestAnimationFrame !== 'function') throw Error('宿主不支持动画帧');
@@ -1297,6 +2100,12 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     豫言_浏览器_定时一次: (毫秒, 标记) => 造定时(毫秒, 标记, false),
     豫言_浏览器_定时重复: (毫秒, 标记) => 造定时(毫秒, 标记, true),
     豫言_浏览器_取消定时: 撤定时,
+    // 文言：新八包之行术两口而入：同步者返（成，果），异步者候其毕。汉语：网页定时、储存、导航、环境、请求、事件源、编译的同步入口与 请求.同步、应用.启动 的异步入口；失败以（阴，错误文）返回，不让异常越桥。
+    豫言_浏览器_网页能力: (操作, 一, 二, 三) => 安全结果(() => 网页能力.运行(文字(操作), [文字(一), 文字(二), 文字(三)])),
+    豫言_浏览器_网页能力异步: async (操作, 一) => {
+      try { return [true, await 网页能力.异步运行(文字(操作), [文字(一)])]; }
+      catch (错) { return [false, String(错?.message ?? 错)]; }
+    },
     豫言_浏览器_请求动画帧: 造动画帧,
     豫言_浏览器_取消动画帧: 撤动画帧,
     豫言_浏览器_请求空闲回调: 标记 => 造空闲回调(标记),
@@ -2311,6 +3120,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
       }
       可写流.clear();
       订阅器.清空();
+      网页能力.清理();
       队列.关闭();
   };
   完成.then(
@@ -2318,6 +3128,6 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     错 => { if (!已就绪) { 已就绪 = true; 报就绪失败(错); } 关闭宿主(); }
   );
   // 文言：状态供验与察，不为业务所用。汉语：返回当前队列积压、丢弃数、句柄数与订阅数，供测试和诊断使用。
-  const 状态 = () => ({...队列.状态(), 句柄数: 句柄.数量(), 界面订阅数: 订阅器.订阅数(), 消息订阅数: 订阅器.消息订阅数()});
+  const 状态 = () => ({...队列.状态(), 句柄数: 句柄.数量(), 界面订阅数: 订阅器.订阅数(), 消息订阅数: 订阅器.消息订阅数(), 定时数: 定时器.size, ...网页能力.状态()});
   return {就绪, 完成, 关闭: 关闭宿主, 状态};
 }
