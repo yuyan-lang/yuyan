@@ -1,6 +1,7 @@
 // 文言：云工之桥但行受授诸能；路由、权限与事序皆归豫言。汉语：Worker 桥只执行授权的平台调用，业务决策由豫言程序完成。
 import {创建豫言实例, 文字} from './值桥.mjs';
 import {创建句柄表} from './句柄.mjs';
+import {创建平台资料} from './平台资料.mjs';
 
 const 控制台诸法 = new Set([
   'debug', 'error', 'info', 'log', 'warn', 'clear', 'count', 'group', 'table', 'trace',
@@ -144,6 +145,8 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
   const 造隔离客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离入口.mjs', ['宿主.mjs', '句柄.mjs', '值桥.mjs'], 程序字节, cpuMs, subRequests);
   // 文言：文件式客器载内存文件系之宿主与其入口，令用户程序读写虚籍而不触平台。汉语：文件式程序（读写内存文件系统、输出到标准输出）的隔离入口，模块为 隔离运行客.mjs 与浏览器编译器宿主 编译宿主.mjs。
   const 造隔离运行客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离运行客.mjs', ['编译宿主.mjs'], 程序字节, cpuMs, subRequests);
+  // 文言：平台资料之器，一宿主一器，缓存与之同寿。汉语：平台资料能力（接口 豫言操作系统平台资料）的宿主级实例，跨事件共享缓存。
+  const 平台资料 = 创建平台资料({全局});
   const 执行 = async (种类, 载荷, 环境, 上下文, 对象状态 = null, 工作流步 = null, 事务仓 = null) => {
       const 请求 = 种类 === 'fetch' || 种类 === 'durable-fetch' || 种类 === 'service-fetch' ? 载荷 : null;
       const 批次 = 种类 === 'queue' ? 载荷 : null;
@@ -1211,6 +1214,8 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           const 结果 = await 绑定(环境, 许可, 名, 'D1').prepare(文字(语句)).all();
           return JSON.stringify(结果);
         },
+        豫言_云工_平台资料列键安全: async (集, 前缀) => 平台资料.列键安全(环境, 许可, 文字(集), 文字(前缀)),
+        豫言_云工_平台资料读文字安全: async (集, 键) => 平台资料.读文字安全(环境, 许可, 文字(集), 文字(键)),
         豫言_云工_服务请求文字: async (名, 方法, 网址, 内容) => {
           const 请求 = new Request(文字(网址), {method: 文字(方法), body: 文字(方法) === 'GET' ? undefined : 文字(内容)});
           const 回应 = await 绑定(环境, 许可, 名, 'SERVICE').fetch(请求);
