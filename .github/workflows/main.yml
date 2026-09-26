@@ -3,7 +3,9 @@ name: CI
 env:
   YY_GC_INITIAL_HEAP_SIZE_MB: 512
   YY_GC_MAX_HEAP_SIZE_MB: 6144
-  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-bootstrap/bootstrap-pair-903b242e8d4845ce99bafc467ed019c706d265f978dd90cf9c25a475487767be.tar.gz
+  # 固定的双种子：由提交 2db3178f 导出（支持包描述的“编译模式”与“包含在／包含包”）。更换时须同时更新下面两项。
+  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-bootstrap/bootstrap-bundle-2db3178f36a0f092432586eef183abf10036533c.tar.gz
+  YY_BOOTSTRAP_SHA256: 84c1850d1f6ee35677205690f074d7f71208d793531fb1ff732cb12197db7e7f
 
 on:
   push:
@@ -41,7 +43,7 @@ jobs:
           curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
             --output "$bootstrap_archive" \
             "$YY_BOOTSTRAP_URL"
-          echo "903b242e8d4845ce99bafc467ed019c706d265f978dd90cf9c25a475487767be  $bootstrap_archive" | sha256sum --check -
+          echo "$YY_BOOTSTRAP_SHA256  $bootstrap_archive" | sha256sum --check -
           mkdir -p "$bootstrap_root"
           tar -xzf "$bootstrap_archive" -C "$bootstrap_root" --strip-components=1
           find "$bootstrap_root" -type f \( -name '._*' -o -name '.DS_Store' \) -delete
