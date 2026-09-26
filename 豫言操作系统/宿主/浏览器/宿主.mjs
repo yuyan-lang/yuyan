@@ -729,6 +729,8 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
     if (危险标签.has(标签名(元)) && 标签名(元) !== 'iframe') throw Error('网页元素类型不允许操作：' + 标签名(元));
     if (标签名(元) === 'iframe' && !['class', 'title', 'hidden'].includes(名) && !/^(?:data|aria)-/u.test(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
     if (!元.hasAttribute(名)) return '0';
+    // 文言：口令之框其值之属性不外露，与事之载同。汉语：type=password 输入框的 value 属性视为不存在，与界面事件载荷的规则一致。
+    if (名 === 'value' && 标签名(元) === 'input' && 元.type === 'password') return '0';
     const 值 = String(元.getAttribute(名));
     if (值.length > 65536) throw Error('页面属性值过长：' + 名);
     return '1' + 值;
@@ -1114,6 +1116,7 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
         const 属性 = {};
         for (const 属 of Array.from(元.attributes)) {
           if (属.name === 'class' || !可导属性(属.name) || 属.value.length > 65536) continue;
+          if (属.name === 'value' && 标签名(元) === 'input' && 元.type === 'password') continue;
           属性[属.name] = 属.value;
         }
         if (Object.keys(属性).length) 项.属性 = 属性;

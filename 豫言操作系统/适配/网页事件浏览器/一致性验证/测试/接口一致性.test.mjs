@@ -622,8 +622,11 @@ test('带属性与带矩形在没有选择器时作用于原始目标；口令�
 }));
 
 test('读取节点属性、移除节点属性、读取节点文字：保留字文档根与页体、布尔属性、白册与危险元素', 用页({
-  html: 页面('<div id="盒" data-x="值" hidden>文字<b>粗</b></div><details id="项" open></details><script id="脚"></script><iframe id="框" title="题" data-a="b" src="/x"></iframe>')
+  html: 页面('<div id="盒" data-x="值" hidden>文字<b>粗</b></div><details id="项" open></details><script id="脚"></script><iframe id="框" title="题" data-a="b" src="/x"></iframe><input id="口令" type="password" value="秘" data-k="w">')
 }, async 页 => {
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '口令', 'value')), [false, ''], '口令框的 value 属性视为不存在');
+  assert.deepEqual(存在文(await 页.调('读取节点属性', '口令', 'data-k')), [true, 'w']);
+  assert.deepEqual(JSON.parse(await 页.调('读取页面节点树', await 页.调('取得页面节点', '口令'), 2)).属性, {id: '口令', type: 'password', 'data-k': 'w'}, '导出树同样不带口令框的 value');
   页.文.documentElement.setAttribute('data-lang', 'wen');
   页.文.body.setAttribute('aria-busy', 'true');
   assert.deepEqual(存在文(await 页.调('读取节点属性', '文档根', 'data-lang')), [true, 'wen']);
