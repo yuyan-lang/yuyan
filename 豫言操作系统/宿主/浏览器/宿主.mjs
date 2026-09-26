@@ -34,10 +34,926 @@ export async function 读取同源资源文字(路径文, 基址文, 网络) {
   return new TextDecoder('utf-8', {fatal: true}).decode(合);
 }
 
-export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}}) {
-  const 事件队列 = [];
+// ============================================================================
+// 文言：以下三块（事件列、界面订阅器、页面控制）皆为纯工厂，凭注入之根与全局而行，可离 Wasm 独测；创建浏览器宿主惟接线。
+// 汉语：下面三块（统一事件队列、界面订阅器、页面控制）都是纯工厂函数，依赖注入的 document 与全局对象，可以脱离 Wasm 单独测试；
+//       创建浏览器宿主只负责把它们接到豫言原语上。
+// ============================================================================
+
+const 编码器 = new TextEncoder();
+// 文言：宿主术之败，归（阴，因）而不越桥。汉语：把宿主原语的同步异常转成（爻, 字符串）结果，避免异常穿过 Wasm 边界而无法被豫言捕获。
+const 安全结果 = 函 => {
+  try {
+    const 果 = 函();
+    return [true, 果 === undefined ? '' : String(果)];
+  } catch (错) { return [false, String(错?.message ?? 错)]; }
+};
+// 文言：文之字节数逾限则真；先以码元数粗判，免巨文全编。汉语：判断字符串的 UTF-8 字节数是否超过上限，先用码元数快速判断，只在灰区才真正编码。
+const 字节超限 = (文, 限) => {
+  if (文.length > 限) return true;
+  if (文.length * 3 <= 限) return false;
+  return 编码器.encode(文).length > 限;
+};
+const 字节数 = 文 => 编码器.encode(文).length;
+
+const 标签名 = 目标 => (目标 && typeof 目标.localName === 'string' ? 目标.localName : '');
+const 元素标识 = 目标 => (目标 && typeof 目标.id === 'string' ? 目标.id : '');
+// 文言：自触发之节上溯，取最近带 data-yy 者之值，至边界（含）而止。汉语：从事件目标向上找最近带 data-yy 属性的元素（含自身），到订阅边界为止；无则空字符串。
+const 找操作键 = (目标, 边界) => {
+  for (let 节 = 目标; 节; 节 = 节.parentNode) {
+    if (节.nodeType === 1 && 节.hasAttribute('data-yy')) return 节.getAttribute('data-yy');
+    if (节 === 边界) break;
+  }
+  return '';
+};
+const 是键盘事件 = 事件 => typeof 事件.key === 'string' && typeof 事件.code === 'string' && typeof 事件.ctrlKey === 'boolean';
+const 是鼠标事件 = 事件 => typeof 事件.button === 'number' && typeof 事件.ctrlKey === 'boolean' && typeof 事件.clientX === 'number';
+// 文言：豫言串以码点计，DOM 以码元计；二者互换于宿主。汉语：豫言字符串按 Unicode 码点计数，DOM 按 UTF-16 码元计数，光标位置在宿主里互相换算。
+const 码点转码元 = (串, 码点位) => {
+  let 码元 = 0;
+  let 点 = 0;
+  while (点 < 码点位 && 码元 < 串.length) { 码元 += 串.codePointAt(码元) > 0xffff ? 2 : 1; 点++; }
+  if (点 < 码点位) throw Error('位置超出文字长度');
+  return 码元;
+};
+const 码元转码点 = (串, 码元位) => {
+  let 点 = 0;
+  for (let 位 = 0; 位 < 码元位 && 位 < 串.length; 位 += 串.codePointAt(位) > 0xffff ? 2 : 1) 点++;
+  return 点;
+};
+
+// ---------------------------------------------------------------------------
+// 一、统一事件队列
+// ---------------------------------------------------------------------------
+// 文言：诸源之事同入一列，各类自有其限；溢则去其最旧而记其数，「宿主」类独拒新事，免失待答之请。
+// 汉语：所有事件来源共用一个先进先出队列，事件带类型；每个类型独立上限（默认 1024），超限丢弃该类型最旧事件并计数。
+//       「宿主」类（低层宿主库的原始事件，如公开操作）保持旧行为：满则报错，因为丢弃其中的调用会让页面侧 Promise 永不返回。
+export const 网页事件类型 = Object.freeze(['界面', '消息', '定时', '事件流', '请求', '编译', '可见性', '联机', '历史', '关闭', '宿主']);
+const 默认事件队列上限 = 1024;
+
+// 文言：旧式原始事件依其名而归类；已带类型之新式事件从其所标。汉语：给尚未带类型的旧式原始事件分类；新式事件（含合法「类型」字段）保持自己的类型。
+export const 分类网页事件 = 事件 => {
+  if (typeof 事件.类型 === 'string' && 事件.类型 !== '宿主' && 网页事件类型.includes(事件.类型)) return 事件.类型;
+  if (事件.名称 === '定时') return '定时';
+  if (事件.名称 === '关闭') return '关闭';
+  if (['click', 'input', 'change', 'submit'].includes(事件.名称) && typeof 事件.标识 === 'string' && !('来源句柄' in 事件)) return '界面';
+  return '宿主';
+};
+
+// 文言：统一之形：类型、序、订阅号、名称及各类所需之字段。汉语：把队列项转成统一事件对象；旧式原始事件在此映射，新式事件本身已是统一形状。
+export const 统一事件体 = 项 => {
+  const 事 = 项.事件;
+  if (项.新式) return {类型: 项.类型, 序: 项.序, ...事};
+  switch (项.类型) {
+    case '界面': {
+      const 体 = {类型: '界面', 序: 项.序, 订阅号: 0, 标识: String(事.标识 ?? ''), 名称: String(事.名称 ?? '')};
+      if (项.附加?.操作键) 体.操作键 = 项.附加.操作键;
+      体.值 = String(事.值 ?? '');
+      体.选中 = Boolean(事.选中);
+      return 体;
+    }
+    case '定时':
+      return {类型: '定时', 序: 项.序, 订阅号: Number(事.定时号) || 0, 名称: '定时', 详情: {种类: 事.种类, 标记: 事.标记, 时刻: 事.时刻}};
+    case '关闭':
+      return {类型: '关闭', 序: 项.序, 订阅号: 0, 名称: '关闭'};
+    default:
+      return {类型: '宿主', 序: 项.序, 订阅号: 0, 名称: String(事.名称 ?? ''), 详情: 事};
+  }
+};
+// 文言：详情文本身已是癸象，直接拼入，不再解析。汉语：消息事件的详情本来就是 JSON 文本，直接拼接进事件文本，避免对最大 1 MiB 的正文做一次解析与重编码。
+export const 统一事件文 = 项 => {
+  if (项.详情文 !== undefined || 项.详情错误 !== undefined) {
+    const 头 = JSON.stringify({类型: 项.类型, 序: 项.序, ...项.事件});
+    const 尾 = 项.详情错误 !== undefined
+      ? ',"详情":null,"详情错误":' + JSON.stringify(项.详情错误)
+      : ',"详情":' + 项.详情文;
+    return 头.slice(0, -1) + 尾 + '}';
+  }
+  return JSON.stringify(统一事件体(项));
+};
+// 文言：旧法取事，其形如旧。汉语：旧的 等待浏览器事件 看到的仍是原来的原始 JSON；新式事件没有旧形状，直接用统一形状。
+export const 原始事件文 = 项 => (项.新式 ? 统一事件文(项) : JSON.stringify(项.事件));
+const 消息错误文 = 错 => '网页消息详情' + 错;
+
+export function 创建事件队列({上限 = {}, 离队钩子 = () => {}, 就绪钩子 = () => {}} = {}) {
+  const 队列 = [];
+  const 各类计数 = new Map();
+  const 各类丢弃 = new Map();
+  const 类型上限 = new Map();
+  const 等待者 = [];
+  let 总丢弃 = 0;
+  let 下序 = 0;
+  let 已关闭 = false;
+  const 取上限 = 类 => 类型上限.get(类) ?? 默认事件队列上限;
+  const 设上限 = (类, 限) => {
+    if (!网页事件类型.includes(类)) throw Error('网页事件类型无效：' + 类);
+    const 数 = Number(限);
+    if (!Number.isSafeInteger(数) || 数 < 1 || 数 > 65536) throw Error('网页事件队列上限须为 1 至 65536 的整数');
+    类型上限.set(类, 数);
+  };
+  if (!上限 || typeof 上限 !== 'object' || Array.isArray(上限)) throw Error('事件队列上限须为对象');
+  for (const [类, 限] of Object.entries(上限)) 设上限(类, 限);
+  const 离队 = 项 => { 各类计数.set(项.类型, (各类计数.get(项.类型) ?? 1) - 1); 离队钩子(项); };
+  const 记丢弃 = 类 => { 总丢弃++; 各类丢弃.set(类, (各类丢弃.get(类) ?? 0) + 1); };
+  const 入队 = 项 => {
+    const 类 = 项.类型;
+    // 文言：同订阅同标识之高频事件相接，则以新代旧，序位不移。汉语：合并——尾项与新项同类型且合并键相同，就地替换，保持与其他事件的先后次序。
+    if (项.合并键 !== undefined && 队列.length) {
+      const 尾 = 队列[队列.length - 1];
+      if (尾.类型 === 类 && 尾.合并键 === 项.合并键) { 队列[队列.length - 1] = 项; return; }
+    }
+    const 限 = 取上限(类);
+    if (类 === '宿主') {
+      if ((各类计数.get(类) ?? 0) >= 限) throw Error('浏览器事件队列已满');
+    } else {
+      while ((各类计数.get(类) ?? 0) >= 限) {
+        const 位 = 队列.findIndex(旧 => 旧.类型 === 类);
+        if (位 < 0) break;
+        const [旧] = 队列.splice(位, 1);
+        离队(旧);
+        记丢弃(类);
+      }
+    }
+    队列.push(项);
+    各类计数.set(类, (各类计数.get(类) ?? 0) + 1);
+  };
+  // 文言：新事至，先付待者；无待者则入列。汉语：投递事件：分配序号；有接受该类型的等待者就直接交付，否则入队并执行背压。
+  const 投递 = 项 => {
+    if (已关闭) return false;
+    项.序 = ++下序;
+    const 位 = 等待者.findIndex(者 => 者.接受(项.类型));
+    if (位 >= 0) {
+      const [者] = 等待者.splice(位, 1);
+      离队钩子(项);
+      者.完成(者.格式(项));
+      return true;
+    }
+    入队(项);
+    return true;
+  };
+  // 文言：候事：先取列中首个合类者；无则待。已关则返关闭标记。汉语：等待事件：先从队列取第一个类型被接受的事件（不动别的类型）；没有就挂起。
+  //       粘滞=真时，关闭后每次调用都返回关闭标记（异步返回，避免不检查关闭的循环霸占线程）。
+  const 等待 = (接受, 格式, 关闭值, 粘滞) => {
+    就绪钩子();
+    for (let 位 = 0; 位 < 队列.length; 位++) {
+      if (!接受(队列[位].类型)) continue;
+      const [项] = 队列.splice(位, 1);
+      离队(项);
+      return 格式(项);
+    }
+    if (已关闭) return 粘滞 ? new Promise(完成 => setTimeout(() => 完成(关闭值()), 0)) : new Promise(() => {});
+    return new Promise(完成 => { 等待者.push({接受, 格式, 完成, 关闭值}); });
+  };
+  const 删除若 = 谓词 => {
+    for (let 位 = 队列.length - 1; 位 >= 0; 位--) {
+      if (!谓词(队列[位])) continue;
+      const [项] = 队列.splice(位, 1);
+      离队(项);
+    }
+  };
+  const 关闭 = () => {
+    if (已关闭) return;
+    已关闭 = true;
+    for (const 者 of 等待者.splice(0)) 者.完成(者.关闭值());
+  };
+  return {
+    投递, 等待, 删除若, 关闭, 设上限,
+    取上限,
+    丢弃数: 类 => (类 === undefined ? 总丢弃 : 各类丢弃.get(类) ?? 0),
+    已关闭: () => 已关闭,
+    状态: () => ({积压: 队列.length, 各类积压: Object.fromEntries(各类计数), 丢弃: 总丢弃, 各类丢弃: Object.fromEntries(各类丢弃), 等待者: 等待者.length, 序: 下序})
+  };
+}
+
+// 文言：旧法取界面事，惟返名与标识；取消息，返名、详情与错。汉语：旧的等待界面事件、等待网页消息各自需要的元组形状。
+export const 界面事件元组 = 项 => [String(项.事件.名称 ?? ''), String(项.事件.标识 ?? '')];
+export const 消息事件元组 = 项 => [
+  String(项.事件.名称 ?? ''),
+  项.详情错误 !== undefined ? 'null' : (项.详情文 ?? 'null'),
+  项.详情错误 !== undefined ? 消息错误文(项.详情错误) : ''
+];
+
+// ---------------------------------------------------------------------------
+// 二、界面订阅器：委托事件、同步键规则、组字与滚动等载荷
+// ---------------------------------------------------------------------------
+// 文言：事不冒泡者，必于捕获相而听，方能委托于祖；高频者相接则合。
+// 汉语：不冒泡的事件（focus、blur、scroll、close、cancel……）一律在捕获阶段监听，才能在祖先上委托；高频事件默认合并相邻同源事件。
+const 不冒泡事件 = new Set(['focus', 'blur', 'scroll', 'close', 'cancel', 'load', 'error', 'toggle', 'invalid', 'mouseenter', 'mouseleave', 'pointerenter', 'pointerleave']);
+const 高频事件 = new Set(['scroll', 'resize', 'mousemove', 'pointermove', 'touchmove', 'wheel', 'dragover', 'selectionchange']);
+const 无值事件 = new Set([...高频事件, 'mouseover', 'mouseout', 'mouseenter', 'mouseleave', 'pointerover', 'pointerout', 'pointerenter', 'pointerleave']);
+const 被动默认事件 = new Set(['scroll', 'wheel', 'touchstart', 'touchmove']);
+const 布尔属性名 = new Set(['hidden', 'disabled', 'readonly', 'checked', 'selected', 'open']);
+const 策略字段 = new Set(['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中', '键规则']);
+const 键规则字段 = new Set(['键', '代码', 'ctrl', 'meta', 'alt', 'shift', '含组字', '仅选区为空', '仅目标标识', '仅当属性']);
+const 键事件名 = new Set(['keydown', 'keyup', 'keypress']);
+
+const 检布尔字段 = (对象, 名单, 说明) => {
+  for (const 名 of 名单) if (对象[名] !== undefined && typeof 对象[名] !== 'boolean') throw Error(说明 + '须为布尔：' + 名);
+};
+const 检键规则项 = 律 => {
+  if (!律 || typeof 律 !== 'object' || Array.isArray(律)) throw Error('键规则项须为对象');
+  for (const 名 of Object.keys(律)) if (!键规则字段.has(名)) throw Error('键规则含未知字段：' + 名);
+  if (律.键 === undefined && 律.代码 === undefined) throw Error('键规则须含 键 或 代码');
+  for (const 名 of ['键', '代码']) {
+    if (律[名] !== undefined && (typeof 律[名] !== 'string' || !律[名] || 律[名].length > 64)) throw Error('键规则字段须为 1 至 64 字符的文字：' + 名);
+  }
+  检布尔字段(律, ['ctrl', 'meta', 'alt', 'shift', '含组字', '仅选区为空'], '键规则字段');
+  if (律.仅目标标识 !== undefined && (typeof 律.仅目标标识 !== 'string' || !律.仅目标标识 || 律.仅目标标识.length > 256)) throw Error('键规则字段 仅目标标识 无效');
+  const 条 = 律.仅当属性;
+  if (条 !== undefined) {
+    if (!条 || typeof 条 !== 'object' || Array.isArray(条)) throw Error('键规则字段 仅当属性 须为对象');
+    for (const 名 of Object.keys(条)) if (!['标识', '属性', '值'].includes(名)) throw Error('仅当属性含未知字段：' + 名);
+    if (typeof 条.标识 !== 'string' || !条.标识 || 条.标识.length > 256) throw Error('仅当属性.标识 无效');
+    if (typeof 条.属性 !== 'string' || !/^[a-z][a-z0-9:_-]{0,63}$/u.test(条.属性)) throw Error('仅当属性.属性 无效');
+    if (条.值 !== null && typeof 条.值 !== 'string') throw Error('仅当属性.值 须为文字或 null');
+  }
+};
+// 文言：策略以癸象文定，先验后用；未识之字段必拒，免笔误默失。汉语：解析并严格校验订阅策略 JSON：未知字段、类型错误和自相矛盾的组合都在订阅时报错。
+export const 解析界面策略 = (文, 事件名) => {
+  let 策;
+  try { 策 = 文 === '' ? {} : JSON.parse(文); } catch { throw Error('界面事件策略不是有效 JSON'); }
+  if (!策 || typeof 策 !== 'object' || Array.isArray(策)) throw Error('界面事件策略须为 JSON 对象');
+  for (const 名 of Object.keys(策)) if (!策略字段.has(名)) throw Error('界面事件策略含未知字段：' + 名);
+  检布尔字段(策, ['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中'], '界面事件策略字段');
+  const 律们 = 策.键规则 ?? [];
+  if (!Array.isArray(律们) || 律们.length > 32) throw Error('键规则须为不超过 32 条的数组');
+  律们.forEach(检键规则项);
+  if (律们.length && !键事件名.has(事件名)) throw Error('键规则只适用于 keydown、keyup、keypress 事件');
+  if (策.仅命中 && !律们.length) throw Error('仅命中 须配合非空的键规则');
+  const 显式动作 = ['阻止默认', '停止传播', '停止同处'].some(名 => 策[名] !== undefined);
+  const 会阻止 = 律们.length ? (显式动作 ? Boolean(策.阻止默认) : true) : Boolean(策.阻止默认);
+  if (策.被动 === true && (会阻止 || 策.停止传播 || 策.停止同处)) throw Error('被动订阅不能阻止默认或停止传播');
+  return {
+    阻止默认: 会阻止, 停止传播: Boolean(策.停止传播), 停止同处: Boolean(策.停止同处),
+    捕获: Boolean(策.捕获) || 不冒泡事件.has(事件名), 被动: 策.被动, 合并: 策.合并 ?? 高频事件.has(事件名),
+    一次: Boolean(策.一次), 仅命中: Boolean(策.仅命中), 键规则: 律们
+  };
+};
+
+const 键相同 = (律键, 实键) => 律键 === 实键 || (律键.length === 1 && 实键.length === 1 && 律键.toLowerCase() === 实键.toLowerCase());
+const 事件类型之别 = 名 => (名 === 'visibilitychange' ? '可见性' : 名 === 'online' || 名 === 'offline' ? '联机' : 名 === 'popstate' || 名 === 'hashchange' ? '历史' : '界面');
+const 度量元素 = 元 => ({顶: Math.round(元.scrollTop), 总高: Math.round(元.scrollHeight), 可视高: Math.round(元.clientHeight)});
+
+export function 创建界面订阅器({根, 全局, 投递, 已关闭 = () => false, 删除若 = () => {}}) {
+  const 订阅表 = new Map();
+  const 消息表 = new Map();
+  let 下号 = 1;
+  let 下消息号 = 1;
+  const 页面选区为空 = () => {
+    const 活 = 根.activeElement;
+    if (活 && (标签名(活) === 'input' || 标签名(活) === 'textarea') && typeof 活.selectionStart === 'number' && 活.selectionStart !== 活.selectionEnd) return false;
+    const 选 = typeof 根.getSelection === 'function' ? 根.getSelection() : typeof 全局.getSelection === 'function' ? 全局.getSelection() : null;
+    return !选 || 选.isCollapsed !== false;
+  };
+  const 属性条件成立 = 条 => {
+    const 元 = 根.getElementById?.(条.标识);
+    if (!元) return false;
+    const 有 = 元.hasAttribute(条.属性);
+    if (条.值 === null) return !有;
+    if (布尔属性名.has(条.属性)) return 条.值 === 'true' ? 有 : 条.值 === 'false' ? !有 : false;
+    return 有 && 元.getAttribute(条.属性) === 条.值;
+  };
+  // 文言：键律相合，须诸条件皆备；组字之际，回车方为字选，故默认不合。汉语：一条键规则命中的全部条件；输入法组字期间的按键默认不匹配（含组字=真才匹配）。
+  const 匹配键律 = (律, 事件) => {
+    if (!律.含组字 && (事件.isComposing || 事件.keyCode === 229)) return false;
+    if (律.键 !== undefined && !键相同(律.键, String(事件.key))) return false;
+    if (律.代码 !== undefined && 律.代码 !== 事件.code) return false;
+    for (const [名, 属] of [['ctrl', 'ctrlKey'], ['meta', 'metaKey'], ['alt', 'altKey'], ['shift', 'shiftKey']]) {
+      if (律[名] !== undefined && 律[名] !== Boolean(事件[属])) return false;
+    }
+    if (律.仅选区为空 && !页面选区为空()) return false;
+    if (律.仅目标标识 !== undefined) {
+      const 域 = 根.getElementById?.(律.仅目标标识);
+      const 目标 = 事件.target;
+      if (!域) return false;
+      if (!(目标 === 域 || (目标 && typeof 目标.nodeType === 'number' && typeof 域.contains === 'function' && 域.contains(目标)))) return false;
+    }
+    if (律.仅当属性 !== undefined && !属性条件成立(律.仅当属性)) return false;
+    return true;
+  };
+  const 状态JSON = 状 => {
+    if (状 === undefined) return null;
+    try {
+      const 文 = JSON.stringify(状);
+      return typeof 文 === 'string' && 文.length <= 65536 ? JSON.parse(文) : null;
+    } catch { return null; }
+  };
+  const 造界面体 = (订阅, 事件) => {
+    const 目标 = 事件.target;
+    const 名 = 事件.type;
+    const 体 = {订阅号: 订阅.号};
+    if (订阅.类型 === '界面') {
+      const 标 = 标签名(目标);
+      体.标识 = 元素标识(目标);
+      体.名称 = 名;
+      const 键 = 找操作键(目标, 订阅.边界);
+      if (键 !== '') 体.操作键 = 键;
+      // 文言：口令之框，其值不入事列。汉语：type=password 的输入框不带值（避免口令流入事件队列与日志）；应用需要时显式用读取节点值。
+      if (!无值事件.has(名) && (标 === 'input' || 标 === 'textarea' || 标 === 'select') && !(标 === 'input' && 目标.type === 'password')) {
+        const 值 = String(目标.value ?? '');
+        if (值.length > 65536) 体.值过长 = true; else 体.值 = 值;
+        if (标 === 'input' && (目标.type === 'checkbox' || 目标.type === 'radio')) 体.选中 = Boolean(目标.checked);
+      }
+      if (是键盘事件(事件)) {
+        Object.assign(体, {键: 事件.key, 代码: 事件.code, ctrl: 事件.ctrlKey, meta: 事件.metaKey, alt: 事件.altKey, shift: 事件.shiftKey,
+          重复: Boolean(事件.repeat), 组字中: Boolean(事件.isComposing)});
+      } else if (是鼠标事件(事件)) {
+        Object.assign(体, {ctrl: 事件.ctrlKey, meta: 事件.metaKey, alt: 事件.altKey, shift: 事件.shiftKey, 按钮: 事件.button});
+      }
+      if (名 === 'compositionstart' || 名 === 'compositionupdate' || 名 === 'compositionend') {
+        体.组字中 = 名 !== 'compositionend';
+        体.详情 = {数据: String(事件.data ?? '')};
+      } else if (名 === 'input' && typeof 事件.inputType === 'string') {
+        体.组字中 = Boolean(事件.isComposing);
+        体.详情 = {输入类型: 事件.inputType, 数据: 事件.data ?? null};
+      } else if (名 === 'focus' || 名 === 'blur' || 名 === 'focusin' || 名 === 'focusout') {
+        体.详情 = {关联标识: 元素标识(事件.relatedTarget)};
+      } else if (名 === 'scroll') {
+        const 元 = 目标 && 目标.nodeType === 9 ? (目标.scrollingElement ?? 目标.documentElement) : 目标;
+        if (元 && typeof 元.scrollTop === 'number') 体.详情 = 度量元素(元);
+      } else if ((名 === 'close' || 名 === 'cancel') && 标签名(目标) === 'dialog') {
+        体.详情 = {返回值: String(目标.returnValue ?? '')};
+      }
+      体.已阻止默认 = Boolean(事件.defaultPrevented);
+      return 体;
+    }
+    体.名称 = 名;
+    if (订阅.类型 === '可见性') 体.详情 = {可见: !(根.hidden ?? false)};
+    else if (订阅.类型 === '联机') 体.详情 = {联机: 名 === 'online'};
+    else if (名 === 'popstate') 体.详情 = {网址: String(全局.location?.href ?? ''), 状态: 状态JSON(事件.state)};
+    else 体.详情 = {旧网址: String(事件.oldURL ?? ''), 新网址: String(事件.newURL ?? '')};
+    return 体;
+  };
+
+  // 文言：主动撤订并去其未取之事；一次订阅自撤，其已投之事须留。汉语：取消订阅；主动取消同时移除该订阅尚未取走的事件，“一次”订阅自动撤销时则保留刚投递的那个事件。
+  const 取消 = (号, 清队 = true) => {
+    const 项 = 订阅表.get(号);
+    if (!项) return false;
+    项.清理();
+    订阅表.delete(号);
+    if (清队) 删除若(队列项 => 队列项.来源键 === '界面:' + 号);
+    return true;
+  };
+  // 文言：订而后听；键规则、止默认、止传播皆于原生回调即行，豫言不能追改。汉语：订阅界面事件——所有同步决定（键规则、preventDefault、stopPropagation）都在原生回调里做完。
+  const 订阅 = (目标名, 事件名, 策略文) => {
+    if (已关闭()) throw Error('豫言浏览器宿主已关闭');
+    if (订阅表.size >= 256) throw Error('界面事件订阅数量达到上限');
+    if (!/^[A-Za-z][A-Za-z0-9_.:-]{0,63}$/u.test(事件名)) throw Error('界面事件名无效：' + 事件名.slice(0, 64));
+    const 策 = 解析界面策略(策略文, 事件名);
+    let 目标;
+    let 边界 = null;
+    if (目标名 === '文档') 目标 = 根;
+    else if (目标名 === '窗口') 目标 = 全局;
+    else {
+      目标 = 根.getElementById?.(目标名);
+      if (!目标) throw Error('网页元素不存在：' + 目标名.slice(0, 128));
+      边界 = 目标;
+    }
+    if (typeof 目标?.addEventListener !== 'function') throw Error('界面事件目标不可订阅：' + 目标名.slice(0, 128));
+    const 号 = 下号++;
+    const 项 = {号, 名: 事件名, 类型: 事件类型之别(事件名), 边界, 目标, 策, 清理: null};
+    const 处理 = 事件 => {
+      if (已关闭()) return;
+      try {
+        const 有律 = 策.键规则.length > 0;
+        const 命中 = 有律 && 是键盘事件(事件) && 策.键规则.some(律 => 匹配键律(律, 事件));
+        const 动作 = 有律 ? 命中 : true;
+        if (动作 && 策.阻止默认 && 事件.cancelable) 事件.preventDefault();
+        if (策.仅命中 && !命中) return;
+        const 体 = 造界面体(项, 事件);
+        // 文言：欲止其默认而事不可取，则明告之。汉语：订阅要求阻止默认，但浏览器不允许取消这个事件时（如未经用户激活的 dialog cancel），载荷带 可取消:false，以解释“已阻止默认”为假。
+        if (动作 && 策.阻止默认 && !事件.cancelable) 体.可取消 = false;
+        投递({
+          类型: 项.类型, 事件: 体, 新式: true, 来源键: '界面:' + 号,
+          合并键: 策.合并 ? 号 + ':' + (体.标识 ?? '') : undefined
+        });
+        if (动作) {
+          if (策.停止同处) 事件.stopImmediatePropagation();
+          else if (策.停止传播) 事件.stopPropagation();
+        }
+        if (策.一次) 取消(号, false);
+      } catch (错) { 全局.console?.error?.(错); }
+    };
+    const 选项 = {capture: 策.捕获};
+    if (策.被动 !== undefined) 选项.passive = 策.被动;
+    else if (被动默认事件.has(事件名)) 选项.passive = !策.阻止默认 && !策.停止传播 && !策.停止同处;
+    目标.addEventListener(事件名, 处理, 选项);
+    项.清理 = () => 目标.removeEventListener(事件名, 处理, {capture: 策.捕获});
+    订阅表.set(号, 项);
+    return 号;
+  };
+  // 文言：旧法只听有标识之元素；祖先已委托同名之事，则旧听让之，免一事二报。
+  // 汉语：旧的隐式监听（只报带 id 元素）遇到已被新订阅覆盖的事件就让路，避免同一次点击报两遍。
+  const 覆盖 = 事件 => {
+    if (!订阅表.size) return false;
+    const 目标 = 事件.target;
+    for (const 项 of 订阅表.values()) {
+      if (项.类型 !== '界面' || 项.名 !== 事件.type) continue;
+      if (项.边界 === null) return true;
+      if (目标 && typeof 目标.nodeType === 'number' && typeof 项.边界.contains === 'function' && 项.边界.contains(目标)) return true;
+    }
+    return false;
+  };
+
+  const 订阅消息 = 名 => {
+    if (typeof 名 !== 'string' || !名.startsWith('豫言') || 字节数(名) > 128) throw Error('网页消息名称无效');
+    if (已关闭()) throw Error('豫言浏览器宿主已关闭');
+    if (消息表.has(名)) return;
+    if (消息表.size >= 128) throw Error('网页消息订阅数量达到上限');
+    const 号 = 下消息号++;
+    const 处理 = 事件 => {
+      if (已关闭()) return;
+      try {
+        let 详情文;
+        let 错;
+        try { 详情文 = JSON.stringify(事件.detail === undefined ? null : 事件.detail); } catch { 错 = '不是有效 JSON'; }
+        if (错 === undefined && typeof 详情文 !== 'string') 错 = '不是有效 JSON';
+        if (错 === undefined && 字节超限(详情文, 1048576)) 错 = '超过一 MiB';
+        投递({类型: '消息', 事件: {订阅号: 号, 名称: 名}, 新式: true, 来源键: '消息:' + 号, 详情文: 错 === undefined ? 详情文 : undefined, 详情错误: 错});
+      } catch (错) { 全局.console?.error?.(错); }
+    };
+    根.addEventListener(名, 处理);
+    消息表.set(名, {号, 清理: () => 根.removeEventListener(名, 处理)});
+  };
+  const 取消消息 = 名 => {
+    const 项 = 消息表.get(名);
+    if (!项) return false;
+    项.清理();
+    消息表.delete(名);
+    删除若(队列项 => 队列项.来源键 === '消息:' + 项.号);
+    return true;
+  };
+  const 清空 = () => {
+    for (const 项 of 订阅表.values()) 项.清理();
+    订阅表.clear();
+    for (const 项 of 消息表.values()) 项.清理();
+    消息表.clear();
+  };
+  return {订阅, 取消, 覆盖, 订阅消息, 取消消息, 清空, 订阅数: () => 订阅表.size, 消息订阅数: () => 消息表.size};
+}
+
+
+// ---------------------------------------------------------------------------
+// 三、页面控制：界面读回与控制；受限文树（白册、一次建树、句柄管理）
+// ---------------------------------------------------------------------------
+// 文言：白册之外，一概不造；危险之签，不许取、不许改。汉语：标签、属性、链接的白册是这里的唯一来源，所有文树函数（含旧函数）都经它校验。
+const 危险标签 = new Set(['script', 'style', 'iframe', 'object', 'embed', 'link', 'meta', 'base', 'frame', 'frameset', 'applet']);
+export const 允许标签 = new Set([
+  'a', 'span', 'small', 'h1', 'h2', 'h3', 'h4', 'h5', 'p', 'section', 'div', 'article', 'b', 'strong', 'br',
+  'button', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'code', 'time', 'ul', 'ol', 'li', 'label',
+  'select', 'option', 'nav', 'form', 'input', 'textarea', 'details', 'summary'
+]);
+const 空元素 = new Set(['br', 'input']);
+const 输入类型 = new Set(['button', 'submit', 'reset', 'checkbox', 'radio', 'text', 'search', 'number', 'email', 'url', 'tel', 'password', 'range', 'date', 'time', 'datetime-local']);
+const 按钮类型 = new Set(['button', 'submit', 'reset']);
+const 文字上限 = 8 * 1024 * 1024;
+const 页面标识式 = /^[^\s"'<>&`\\\u0000-\u001f\u007f]{1,128}$/u;
+const 控制字符式 = /[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u;
+
+// 文言：DOM 之异常译为华言，使豫言得读其因。汉语：把常见 DOMException 翻成中文错误，其余原样抛出。
+const 翻译DOM错误 = 错 => {
+  switch (错?.name) {
+    case 'HierarchyRequestError': return Error('页面节点层级无效：不能把节点放入自身或其后代');
+    case 'NotFoundError': return Error('参照节点不是父节点的子节点');
+    case 'InvalidStateError': return Error('页面元素当前状态不允许此操作：' + String(错.message ?? ''));
+    default: return 错;
+  }
+};
+const 校验类名 = 串 => {
+  if (typeof 串 !== 'string') throw Error('页面类名须为文字');
+  if (串.length > 512) throw Error('页面类名过长');
+  if (/[^\p{L}\p{N}_ -]/u.test(串)) throw Error('页面类名含不允许的字符：仅允许字母、数字、下划线、短横线与空格');
+  const 令牌 = 串.split(' ').filter(项 => 项 !== '');
+  if (令牌.length > 32) throw Error('页面类名过多（至多 32 个）');
+  if (令牌.some(项 => 项.length > 64)) throw Error('单个页面类名过长（至多 64 个字符）');
+  return 令牌.join(' ');
+};
+// 文言：链接限同源径、锚、二种网络址；含空白、控制、反斜杠者拒。汉语：a[href] 允许 /路径（不含 //）、#锚、https:// 与 http://；含空白、控制字符或反斜杠一律拒绝。
+const 校验链接 = 值 => {
+  if (值.length > 8192 || /[\s\u0000-\u001f\u007f\\]/u.test(值)) throw Error('页面链接不受支持');
+  if (值.startsWith('#')) return;
+  if (值.startsWith('/') && !值.startsWith('//')) return;
+  if (/^https?:\/\/[^/?#]+/iu.test(值)) return;
+  throw Error('页面链接不受支持');
+};
+const 整数参 = (串, 名) => {
+  if (!/^-?\d{1,15}$/u.test(串)) throw Error(名 + '须为整数');
+  return Number(串);
+};
+const 布尔参 = 串 => {
+  if (串 === 'true') return true;
+  if (串 === 'false') return false;
+  throw Error('布尔参数须为 true 或 false');
+};
+
+export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放句柄全部}) {
+  const 找元素 = (标识, 含框架 = false) => {
+    if (!标识) throw Error('网页元素标识为空');
+    const 元 = 根.getElementById?.(标识);
+    if (!元) throw Error('网页元素不存在：' + 标识.slice(0, 128));
+    const 标 = 标签名(元);
+    if (危险标签.has(标) && !(含框架 && 标 === 'iframe')) throw Error('网页元素类型不允许操作：' + 标);
+    return 元;
+  };
+  const 输入控件 = 元 => {
+    const 标 = 标签名(元);
+    if (标 !== 'input' && 标 !== 'textarea' && 标 !== 'select') throw Error('网页元素不是输入控件：' + 元素标识(元));
+    return 元;
+  };
+  const 文本框 = 元 => {
+    const 标 = 标签名(元);
+    if (标 !== 'input' && 标 !== 'textarea') throw Error('网页元素不是文本输入框：' + 元素标识(元));
+    return 元;
+  };
+  const 应用类名 = (元, 串) => {
+    const 净 = 校验类名(串);
+    if (净 === '') 元.removeAttribute('class'); else 元.setAttribute('class', 净);
+  };
+  const 设文字 = (元, 文) => {
+    if (文.length > 文字上限) throw Error('页面文字超过八 MiB');
+    if (空元素.has(标签名(元)) && 文 !== '') throw Error('空元素不能含文字：' + 标签名(元));
+    元.textContent = 文;
+  };
+  // 文言：属性验于此一处，名值皆严；宿主留名不许客改。汉语：属性白册——class role type title hidden disabled readonly placeholder tabindex datetime
+  //       maxlength rows aria-* data-* 及 id for value checked selected open colspan rowspan href target；`data-yy-` 前缀留给宿主。
+  const 应用属性 = (元, 名, 值) => {
+    if (typeof 名 !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/u.test(名)) throw Error('页面属性不受支持：' + String(名).slice(0, 64));
+    if (typeof 值 !== 'string' || 值.length > 65536) throw Error('页面属性值无效或过长：' + 名);
+    if (控制字符式.test(值)) throw Error('页面属性值含控制字符：' + 名);
+    const 标 = 标签名(元);
+    if (危险标签.has(标) && 标 !== 'iframe') throw Error('页面标签不受支持：' + 标);
+    if (名.startsWith('data-yy-')) throw Error('页面属性名为宿主保留：' + 名);
+    if (名 === 'data-yy' || /^data-[a-z0-9-]+$/u.test(名) || /^aria-[a-z0-9-]+$/u.test(名)) { 元.setAttribute(名, 值); return; }
+    if (标 === 'iframe' && !['class', 'title', 'hidden'].includes(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
+    if (布尔属性名.has(名)) {
+      if (值 === '' || 值 === 'true') 元.setAttribute(名, '');
+      else if (值 === 'false') 元.removeAttribute(名);
+      else throw Error('页面属性值不受支持：' + 名);
+      return;
+    }
+    const 限定 = (可用签, 说明) => { if (!可用签.includes(标)) throw Error('页面属性不受支持：' + 说明); };
+    switch (名) {
+      case 'class': 应用类名(元, 值); return;
+      case 'id': {
+        if (值 === '') { 元.removeAttribute('id'); return; }
+        if (!页面标识式.test(值)) throw Error('页面标识无效');
+        const 旧 = 根.getElementById?.(值);
+        if (旧 && 旧 !== 元) throw Error('页面标识已存在：' + 值);
+        元.setAttribute('id', 值);
+        return;
+      }
+      case 'role':
+        if (!/^[a-z][a-z-]{0,31}$/u.test(值)) throw Error('页面属性值不受支持：role');
+        元.setAttribute(名, 值);
+        return;
+      case 'type':
+        限定(['button', 'input'], '仅 button 与 input 可设 type');
+        if (!(标 === 'button' ? 按钮类型 : 输入类型).has(值)) throw Error('页面属性值不受支持：type=' + 值.slice(0, 32));
+        元.setAttribute(名, 值);
+        return;
+      case 'title':
+      case 'placeholder':
+        if (名 === 'placeholder') 限定(['input', 'textarea'], '仅 input 与 textarea 可设 placeholder');
+        if (值.length > 4096) throw Error('页面属性值过长：' + 名);
+        元.setAttribute(名, 值);
+        return;
+      case 'tabindex':
+        if (值 !== '-1' && 值 !== '0') throw Error('页面属性值不受支持：tabindex 仅允许 -1 与 0');
+        元.setAttribute(名, 值);
+        return;
+      case 'datetime':
+        限定(['time'], '仅 time 可设 datetime');
+        if (!/^[0-9TZ:.+\- ]{1,64}$/u.test(值)) throw Error('页面属性值不受支持：datetime');
+        元.setAttribute(名, 值);
+        return;
+      case 'maxlength':
+      case 'rows':
+      case 'colspan':
+      case 'rowspan':
+        限定(名 === 'maxlength' ? ['input', 'textarea'] : 名 === 'rows' ? ['textarea'] : ['td', 'th'], '此元素不可设 ' + 名);
+        if (!/^[0-9]{1,6}$/u.test(值)) throw Error('页面属性值不受支持：' + 名);
+        元.setAttribute(名, 值);
+        return;
+      case 'for':
+        限定(['label'], '仅 label 可设 for');
+        if (!页面标识式.test(值)) throw Error('页面标识无效');
+        元.setAttribute(名, 值);
+        return;
+      case 'value':
+        限定(['input', 'option', 'button'], '仅 input、option、button 可设 value');
+        元.setAttribute(名, 值);
+        return;
+      case 'href':
+        限定(['a'], '仅 a 可设 href');
+        校验链接(值);
+        元.setAttribute(名, 值);
+        return;
+      case 'target':
+        限定(['a'], '仅 a 可设 target');
+        if (值 !== '_blank' && 值 !== '_self') throw Error('页面属性值不受支持：target 仅允许 _blank 与 _self');
+        元.setAttribute(名, 值);
+        if (值 === '_blank') 元.setAttribute('rel', 'noopener noreferrer');
+        return;
+      default:
+        throw Error('页面属性不受支持：' + 名);
+    }
+  };
+
+  // ---- 界面操作：以元素标识为址，不产生句柄 ----
+  const 页面状态 = () => {
+    const 隐 = Boolean(根.hidden ?? (根.visibilityState === 'hidden'));
+    const 联机 = typeof 全局.navigator?.onLine === 'boolean' ? 全局.navigator.onLine : true;
+    let 窄屏 = false;
+    try { 窄屏 = Boolean(全局.matchMedia?.('(max-width: 700px)')?.matches); } catch { 窄屏 = false; }
+    return JSON.stringify({可见: !隐, 联机, 窄屏});
+  };
+  const 选区文字 = () => {
+    const 活 = 根.activeElement;
+    if (活 && (标签名(活) === 'input' || 标签名(活) === 'textarea') && typeof 活.selectionStart === 'number' && 活.selectionStart !== 活.selectionEnd) {
+      return String(活.value).slice(活.selectionStart, 活.selectionEnd);
+    }
+    const 选 = typeof 根.getSelection === 'function' ? 根.getSelection() : typeof 全局.getSelection === 'function' ? 全局.getSelection() : null;
+    return 选 ? String(选.toString()) : '';
+  };
+  const 界面操作表 = {
+    // 文言：读逾八 MiB 则拒，免越值桥之界而客不能捕。汉语：读回的文字按 UTF-8 字节至多 8 MiB，超过则报错（值桥单次交换上限 16 MiB，越界会变成无法捕获的宿主异常）。
+    读取值: 标识 => {
+      const 值 = String(输入控件(找元素(标识)).value);
+      if (字节超限(值, 文字上限)) throw Error('网页控件值超过八 MiB，不能读回');
+      return 值;
+    },
+    设置值: (标识, 值) => {
+      if (值.length > 文字上限) throw Error('网页控件值超过八 MiB');
+      const 元 = 输入控件(找元素(标识));
+      if (标签名(元) === 'input' && 元.type === 'file') throw Error('不得设置文件输入框的值');
+      元.value = 值;
+      if (标签名(元) === 'select' && 元.value !== 值) throw Error('选择框没有此选项值');
+    },
+    设置显示: (标识, 显) => { 找元素(标识, true).hidden = !布尔参(显); },
+    设置禁用: (标识, 是) => { 找元素(标识).toggleAttribute('disabled', 布尔参(是)); },
+    设置只读: (标识, 是) => { 找元素(标识).toggleAttribute('readonly', 布尔参(是)); },
+    设置类名: (标识, 类) => { 应用类名(找元素(标识, true), 类); },
+    设置类标记: (标识, 类, 有) => {
+      if (!/^[\p{L}\p{N}_-]{1,64}$/u.test(类)) throw Error('页面类标记须为单个类名：仅允许字母、数字、下划线与短横线，至多 64 个字符');
+      找元素(标识, true).classList.toggle(类, 布尔参(有));
+    },
+    聚焦: 标识 => {
+      const 元 = 找元素(标识);
+      if (typeof 元.focus !== 'function') throw Error('网页元素不可聚焦');
+      元.focus();
+    },
+    读取聚焦标识: () => 元素标识(根.activeElement),
+    包含焦点: 标识 => {
+      const 元 = 找元素(标识);
+      const 活 = 根.activeElement;
+      return 活 && 元.contains(活) ? 'true' : 'false';
+    },
+    设置光标: (标识, 起串, 止串) => {
+      const 元 = 文本框(找元素(标识));
+      const 起 = 整数参(起串, '光标起点');
+      const 止 = 整数参(止串, '光标止点');
+      if (起 < 0 || 止 < 起) throw Error('光标位置无效：须 0 ≤ 起 ≤ 止');
+      const 值 = String(元.value);
+      try { 元.setSelectionRange(码点转码元(值, 起), 码点转码元(值, 止)); } catch (错) { throw 翻译DOM错误(错); }
+    },
+    读取光标起: 标识 => {
+      const 元 = 文本框(找元素(标识));
+      if (typeof 元.selectionStart !== 'number') throw Error('此输入框类型不支持光标');
+      return String(码元转码点(String(元.value), 元.selectionStart));
+    },
+    读取光标止: 标识 => {
+      const 元 = 文本框(找元素(标识));
+      if (typeof 元.selectionEnd !== 'number') throw Error('此输入框类型不支持光标');
+      return String(码元转码点(String(元.value), 元.selectionEnd));
+    },
+    读取选区文字: () => {
+      const 文 = 选区文字();
+      if (字节超限(文, 文字上限)) throw Error('选区文字超过八 MiB，不能读回');
+      return 文;
+    },
+    读取滚动度量: 标识 => JSON.stringify(度量元素(找元素(标识))),
+    设置滚动顶: (标识, 顶) => { 找元素(标识).scrollTop = 整数参(顶, '滚动位置'); },
+    打开模态框: 标识 => {
+      const 元 = 找元素(标识);
+      if (标签名(元) !== 'dialog') throw Error('网页元素不是 dialog：' + 标识);
+      if (typeof 元.showModal !== 'function') throw Error('宿主不支持 dialog 模态框');
+      try { 元.showModal(); } catch (错) { throw 翻译DOM错误(错); }
+    },
+    关闭模态框: 标识 => {
+      const 元 = 找元素(标识);
+      if (标签名(元) !== 'dialog') throw Error('网页元素不是 dialog：' + 标识);
+      if (typeof 元.close !== 'function') throw Error('宿主不支持 dialog 模态框');
+      元.close();
+    },
+    读取页面状态: () => 页面状态(),
+    读取节点可见: 标识 => {
+      const 元 = 找元素(标识, true);
+      const 窗 = typeof 全局.getComputedStyle === 'function' ? 全局 : 根.defaultView;
+      if (!窗 || typeof 窗.getComputedStyle !== 'function') throw Error('宿主不支持 getComputedStyle');
+      if (!元.isConnected) return 'false';
+      for (let 节 = 元; 节 && 节.nodeType === 1; 节 = 节.parentElement) {
+        if (窗.getComputedStyle(节).display === 'none') return 'false';
+      }
+      return 'true';
+    },
+    设置文字: (标识, 文) => { 设文字(找元素(标识), 文); },
+    设置属性: (标识, 名, 值) => { 应用属性(找元素(标识, true), 名, 值); }
+  };
+
+  // ---- 文树操作：以句柄为址；句柄由本组产生，须释放 ----
+  const 登记节点 = 元 => {
+    try { return 句柄.登记(元); } catch { throw Error('页面节点句柄达到上限（' + 句柄.上限 + '），请及时释放不再使用的节点'); }
+  };
+  const 取节点 = 号 => {
+    let 值;
+    try { 值 = 句柄.取得(号); } catch { throw Error('页面节点句柄无效：' + 号.slice(0, 32)); }
+    if (!值 || typeof 值.nodeType !== 'number') throw Error('句柄不是页面节点：' + 号.slice(0, 32));
+    return 值;
+  };
+  const 取父元素 = 号 => {
+    const 节 = 取节点(号);
+    if (节.nodeType !== 1) throw Error('父节点须为元素：' + 号.slice(0, 32));
+    return 节;
+  };
+  // 文言：节点既离文树，其身与其下诸柄同释，免柄表渐满。汉语：从文档里移除的子树，宿主同步释放子树内所有节点的句柄（含节点自身），防止句柄表被泄漏填满。
+  const 释放子树句柄 = 节点 => {
+    for (const [号, 值] of 句柄.条目()) {
+      if (值 && typeof 值.nodeType === 'number' && (值 === 节点 || (typeof 节点.contains === 'function' && 节点.contains(值)))) 释放句柄全部(String(号));
+    }
+  };
+  const 建树 = 描述文 => {
+    if (描述文.length > 2 * 1024 * 1024) throw Error('页面节点树描述超过 2 MiB');
+    let 描述;
+    try { 描述 = JSON.parse(描述文); } catch { throw Error('页面节点树描述不是有效 JSON'); }
+    const 计 = {节点: 0, 文字字节: 0, 属性字符: 0, 标识: new Set()};
+    const 记文字 = 文 => {
+      计.文字字节 += 字节数(文);
+      if (计.文字字节 > 1048576) throw Error('页面节点树文字总量超过 1 MiB');
+    };
+    const 造 = (项, 深, 位置) => {
+      if (深 > 32) throw Error('页面节点树深度超过 32：' + 位置);
+      if (++计.节点 > 2000) throw Error('页面节点树节点数超过 2000');
+      if (typeof 项 === 'string') { 记文字(项); return 根.createTextNode(项); }
+      if (!项 || typeof 项 !== 'object' || Array.isArray(项)) throw Error('页面节点描述须为对象或文字：' + 位置);
+      for (const 键 of Object.keys(项)) {
+        if (!['标签', '类', '属性', '文字', '子'].includes(键)) throw Error('页面节点描述含未知字段：' + 键 + '（' + 位置 + '）');
+      }
+      const 签 = 项.标签;
+      if (typeof 签 !== 'string' || !允许标签.has(签)) throw Error('页面标签不受支持：' + String(签).slice(0, 32) + '（' + 位置 + '）');
+      const 元 = 根.createElement(签);
+      if (项.类 !== undefined) 应用类名(元, 项.类);
+      if (项.属性 !== undefined) {
+        if (!项.属性 || typeof 项.属性 !== 'object' || Array.isArray(项.属性)) throw Error('页面节点属性须为对象：' + 位置);
+        for (const [名, 原值] of Object.entries(项.属性)) {
+          const 值 = typeof 原值 === 'boolean' || typeof 原值 === 'number' ? String(原值) : 原值;
+          if (typeof 值 !== 'string') throw Error('页面节点属性值须为文字、数字或布尔：' + 名 + '（' + 位置 + '）');
+          计.属性字符 += 名.length + 值.length;
+          if (计.属性字符 > 1048576) throw Error('页面节点树属性总量超过 1 MiB');
+          if (名 === 'id' && 值 !== '') {
+            if (计.标识.has(值)) throw Error('页面节点树内标识重复：' + 值.slice(0, 64));
+            计.标识.add(值);
+          }
+          应用属性(元, 名, 值);
+        }
+      }
+      if (项.文字 !== undefined) {
+        if (typeof 项.文字 !== 'string') throw Error('页面节点文字须为文字：' + 位置);
+        记文字(项.文字);
+        if (空元素.has(签) && 项.文字 !== '') throw Error('空元素不能含文字：' + 签 + '（' + 位置 + '）');
+        if (项.文字 !== '') 元.appendChild(根.createTextNode(项.文字));
+      }
+      if (项.子 !== undefined) {
+        if (!Array.isArray(项.子)) throw Error('页面节点子项须为数组：' + 位置);
+        if (空元素.has(签) && 项.子.length) throw Error('空元素不能含子节点：' + 签 + '（' + 位置 + '）');
+        项.子.forEach((子, 序) => { 元.appendChild(造(子, 深 + 1, 位置 + '.子[' + 序 + ']')); });
+      }
+      return 元;
+    };
+    if (typeof 描述 === 'string') throw Error('页面节点树的根须为元素描述');
+    return 登记节点(造(描述, 1, '根'));
+  };
+  const 设框架地址 = (标识, 网址) => {
+    const 框 = 找元素(标识, true);
+    if (标签名(框) !== 'iframe') throw Error('网页元素不是 iframe：' + 标识.slice(0, 128));
+    if (!框.hasAttribute('sandbox')) throw Error('iframe 未声明 sandbox，拒绝设置地址');
+    if (网址 === '') { 框.removeAttribute('src'); return; }
+    if (网址.length > 2048 || /[\s\u0000-\u001f\u007f\\]/u.test(网址)) throw Error('框架地址无效');
+    const 页面源 = (() => { try { return new URL(路径).origin; } catch { return 'null'; } })();
+    let 解析;
+    try { 解析 = new URL(网址, 页面源 === 'null' ? undefined : 路径); } catch { throw Error('框架地址无效'); }
+    if (网址.startsWith('/') && !网址.startsWith('//')) {
+      if (页面源 === 'null' || 解析.origin !== 页面源) throw Error('框架地址不得跨站');
+    } else if (/^https:\/\//iu.test(网址)) {
+      const 允许 = (框.getAttribute('data-yy-frame-origins') ?? '').split(' ').filter(项 => 项 !== '')
+        .map(项 => { try { const 址 = new URL(项); return 址.protocol === 'https:' ? 址.origin : ''; } catch { return ''; } });
+      if (解析.origin !== 页面源 && !允许.includes(解析.origin)) throw Error('框架地址来源未获页面声明：' + 解析.origin);
+    } else throw Error('框架地址无效');
+    框.setAttribute('src', 网址);
+  };
+  const 清洗模板子树 = 根元素 => {
+    const 全部 = [根元素, ...根元素.querySelectorAll('*')];
+    for (const 元 of 全部) {
+      if (!根元素.contains(元)) continue;
+      if (危险标签.has(标签名(元)) || 标签名(元) === 'template') { 元.remove(); continue; }
+      for (const 属 of Array.from(元.attributes)) {
+        const 名 = 属.name.toLowerCase();
+        const 值 = 属.value.replace(/[\u0000- ]/gu, '');
+        if (名.startsWith('on') || 名 === 'srcdoc' || 名 === 'formaction' ||
+            (['href', 'src', 'action', 'xlink:href', 'poster'].includes(名) && /^(javascript|vbscript):/iu.test(值))) 元.removeAttribute(属.name);
+      }
+      if (标签名(元) === 'a' && 元.getAttribute('target') === '_blank') 元.setAttribute('rel', 'noopener noreferrer');
+    }
+  };
+  // 文言：取同源之页，惟采其一节，去脚本与事处而后装之。汉语：取同源 HTML 模板，按标识选出一个元素，剔除脚本类元素与 on* 等危险属性，作为目标元素的唯一子节点装入。
+  const 装入模板 = async (资源路径, 选择标识, 目标标识) => {
+    const 目标 = 找元素(目标标识);
+    const 文 = await 读取同源资源文字(资源路径, 路径, 网络);
+    const 模板 = 根.createElement('template');
+    模板.innerHTML = 文;
+    const 选 = 模板.content.getElementById?.(选择标识);
+    if (!选) throw Error('页面模板中没有标识：' + 选择标识.slice(0, 128));
+    if (危险标签.has(标签名(选)) || 标签名(选) === 'template') throw Error('页面模板根元素类型不允许：' + 标签名(选));
+    const 副本 = 根.importNode(选, true);
+    清洗模板子树(副本);
+    for (const 子 of Array.from(目标.childNodes)) if (子.nodeType === 1) 释放子树句柄(子);
+    目标.replaceChildren(副本);
+  };
+  const 文树操作表 = {
+    取得: 标识 => 登记节点(找元素(标识)),
+    新建: (签, 文, 类) => {
+      if (!允许标签.has(签)) throw Error('页面标签不受支持：' + 签.slice(0, 32));
+      const 元 = 根.createElement(签);
+      if (文 !== '') 设文字(元, 文);
+      if (类 !== '') 应用类名(元, 类);
+      return 登记节点(元);
+    },
+    设置文字: (号, 文) => { 设文字(取节点(号), 文); },
+    设置属性: (号, 名, 值) => { 应用属性(取父元素(号), 名, 值); },
+    添加子: (父, 子) => {
+      const 父元素 = 取父元素(父);
+      const 子节点 = 取节点(子);
+      try { 父元素.appendChild(子节点); } catch (错) { throw 翻译DOM错误(错); }
+    },
+    清空子: 号 => {
+      const 元 = 取父元素(号);
+      const 旧 = Array.from(元.childNodes);
+      元.replaceChildren();
+      for (const 子 of 旧) if (子.nodeType === 1) 释放子树句柄(子);
+    },
+    插入子前: (父, 子, 参照) => {
+      const 父元素 = 取父元素(父);
+      const 子节点 = 取节点(子);
+      const 参照节点 = 参照 === '' ? null : 取节点(参照);
+      try { 父元素.insertBefore(子节点, 参照节点); } catch (错) { throw 翻译DOM错误(错); }
+    },
+    替换子: (父, 子们文) => {
+      const 父元素 = 取父元素(父);
+      let 诸号;
+      try { 诸号 = JSON.parse(子们文); } catch { throw Error('子节点句柄列表不是有效 JSON'); }
+      if (!Array.isArray(诸号) || 诸号.length > 2000 || 诸号.some(项 => typeof 项 !== 'string')) throw Error('子节点句柄列表须为不超过 2000 项的文字数组');
+      const 新 = 诸号.map(取节点);
+      if (new Set(新).size !== 新.length) throw Error('子节点句柄列表含重复项');
+      const 旧 = Array.from(父元素.childNodes).filter(节 => !新.includes(节));
+      try { 父元素.replaceChildren(...新); } catch (错) { throw 翻译DOM错误(错); }
+      for (const 节 of 旧) if (节.nodeType === 1) 释放子树句柄(节);
+    },
+    移除: 号 => {
+      const 节 = 取节点(号);
+      节.remove();
+      释放子树句柄(节);
+    },
+    释放: 号 => { 取节点(号); 释放句柄全部(号); },
+    追加文字: (号, 文) => {
+      const 元 = 取父元素(号);
+      if (文.length > 文字上限) throw Error('页面文字超过八 MiB');
+      if (空元素.has(标签名(元)) && 文 !== '') throw Error('空元素不能含文字：' + 标签名(元));
+      const 末 = 元.lastChild;
+      if (末 && 末.nodeType === 3) {
+        if (末.length + 文.length > 文字上限) throw Error('页面节点文字超过八 MiB');
+        末.appendData(文);
+      } else 元.appendChild(根.createTextNode(文));
+    },
+    构建树: 描述文 => 建树(描述文),
+    设置框架地址: (标识, 网址) => { 设框架地址(标识, 网址); },
+    读取页面网址: () => String(全局.location?.href ?? 路径)
+  };
+  const 运行表 = (表, 名, 参) => {
+    if (typeof 名 !== 'string' || !Object.hasOwn(表, 名)) throw Error('网页操作不受支持：' + String(名).slice(0, 64));
+    return 表[名](...参);
+  };
+  return {界面操作表, 文树操作表, 装入模板, 运行表, 应用属性, 校验链接};
+}
+
+
+export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 队列上限 = {}}) {
   const 定时器 = new Map();
   const 定时待处理 = new Set();
+  // 文言：诸事归一列；事离列则销其定时待办之记。汉语：统一事件队列；事件离开队列（被取走、丢弃或直接交付）时清理定时器「待处理」标记，使周期定时器能继续投递。
+  const 队列 = 创建事件队列({
+    上限: 队列上限,
+    离队钩子: 项 => { if (项.事件?.名称 === '定时' && 项.事件.定时号 !== undefined) 定时待处理.delete(项.事件.定时号); },
+    就绪钩子: () => 标记就绪()
+  });
   let 下定时号 = 1;
   const 动画帧 = new Map();
   let 下帧号 = 1;
@@ -101,30 +1017,17 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     if (读果.status === 'rejected') throw 读果.reason;
     return new Uint8Array(读果.value);
   };
-  let 唤醒;
   let 关闭 = false;
   let 报就绪;
   let 报就绪失败;
   let 已就绪 = false;
   const 就绪 = new Promise((完成, 失败) => { 报就绪 = 完成; 报就绪失败 = 失败; });
   就绪.catch(() => {});
-  const 推事件 = 事件 => {
-    if (关闭) return;
-    const 文 = JSON.stringify(事件);
-    if (唤醒) {
-      if (事件.名称 === '定时') 定时待处理.delete(事件.定时号);
-      const 完成 = 唤醒; 唤醒 = null; 完成(文);
-    }
-    else if (事件队列.length < 1024) 事件队列.push(文);
-    else throw Error('浏览器事件队列已满');
-  };
-  const 取队列事件 = () => {
-    const 文 = 事件队列.shift();
-    if (文) {
-      const 事 = JSON.parse(文);
-      if (事.名称 === '定时') 定时待处理.delete(事.定时号);
-    }
-    return 文;
+  const 标记就绪 = () => { if (!已就绪) { 已就绪 = true; 报就绪(); } };
+  // 文言：旧式事件由此入列，依其名归类；新式事件自带类型。汉语：所有原始事件仍从推事件进入；这里给旧式事件分类，再交给统一队列。
+  const 推事件 = (事件, 附加 = {}) => {
+    const 类型 = 分类网页事件(事件);
+    队列.投递({类型, 事件, 附加, 新式: 事件.类型 === 类型, 合并键: 附加.合并键});
   };
   const 造定时 = (延时, 标记, 重复) => {
     const 毫秒 = Number(延时);
@@ -157,10 +1060,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     else 全局.clearTimeout(项.原号);
     定时器.delete(名);
     定时待处理.delete(名);
-    for (let 序 = 事件队列.length - 1; 序 >= 0; 序--) {
-      const 事 = JSON.parse(事件队列[序]);
-      if (事.名称 === '定时' && 事.定时号 === 名) 事件队列.splice(序, 1);
-    }
+    队列.删除若(项 => 项.类型 === '定时' && 项.事件.定时号 === 名);
     return true;
   };
   // 文言：帧时由浏览器原生驱动，客唯候事件而裁绘。汉语：原生动画帧回调只投递时间戳和标记，绘制逻辑留在豫言。
@@ -210,11 +1110,14 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     空闲回调.delete(名);
     return true;
   };
+  const 订阅器 = 创建界面订阅器({根, 全局, 投递: 项 => 队列.投递(项), 已关闭: () => 队列.已关闭(), 删除若: 谓词 => 队列.删除若(谓词)});
+  // 文言：旧听惟报有标识之元素；祖先已委托同名之事者，旧听让之。汉语：隐式监听保持旧行为（只报带 id 的元素），并额外带上操作键；若同名事件已被 订阅界面事件 覆盖则让路，避免重复。
   const 监听 = 事件 => {
     const 目标 = 事件.target;
     if (!目标 || typeof 目标.id !== 'string' || !目标.id) return;
     if (精听.get(目标)?.has(事件.type)) return;
-    推事件({名称: 事件.type, 标识: 目标.id, 值: 'value' in 目标 ? String(目标.value) : '', 选中: Boolean(目标.checked)});
+    if (订阅器.覆盖(事件)) return;
+    推事件({名称: 事件.type, 标识: 目标.id, 值: 'value' in 目标 ? String(目标.value) : '', 选中: Boolean(目标.checked)}, {操作键: 找操作键(目标, null)});
   };
   for (const 名 of ['click', 'input', 'change', 'submit']) 根.addEventListener(名, 监听);
   const 取元素 = 标识 => {
@@ -362,10 +1265,33 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
       态.唤醒 = 事 => { clearTimeout(计时); 完成(事); };
     });
   };
+  // 文言：释句柄并撤其观察与订阅。汉语：释放一个句柄，同时断开它上面的 MutationObserver 和通用事件订阅。
+  const 释放句柄全部 = 标识 => {
+    const 观察 = 观察器.get(标识);
+    if (观察) { 观察.disconnect(); 观察器.delete(标识); }
+    for (const [键, 项] of 订阅) if (项.目标号 === 标识) { 项.清理(); 订阅.delete(键); }
+    句柄.释放(标识);
+  };
+  const 页面 = 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放句柄全部});
   const 能力 = {
-    豫言_浏览器_等待事件: () => {
-      if (!已就绪) { 已就绪 = true; 报就绪(); }
-      return 事件队列.length ? 取队列事件() : new Promise(完成 => { 唤醒 = 完成; });
+    豫言_浏览器_等待事件: () => 队列.等待(() => true, 原始事件文, () => JSON.stringify({名称: '关闭'}), false),
+    // 文言：新法按类取事，不吞他类；界面、消息之旧术亦然。汉语：统一等待点与按类型等待：只取自己关心的类型，其余事件留在队列里。
+    豫言_浏览器_等待网页事件: () => 队列.等待(() => true, 统一事件文, () => JSON.stringify({类型: '关闭', 订阅号: 0, 名称: '关闭'}), true),
+    豫言_浏览器_等待界面事件: () => 队列.等待(类 => 类 === '界面', 界面事件元组, () => ['关闭', ''], true),
+    豫言_浏览器_等待网页消息: () => 队列.等待(类 => 类 === '消息', 消息事件元组, () => ['关闭', 'null', ''], true),
+    豫言_浏览器_订阅界面事件: (目标, 事件名, 策略) => 安全结果(() => String(订阅器.订阅(文字(目标), 文字(事件名), 文字(策略)))),
+    豫言_浏览器_取消订阅界面事件: 号 => { 订阅器.取消(Number(号)); },
+    豫言_浏览器_订阅网页消息: 名 => 安全结果(() => { 订阅器.订阅消息(文字(名)); return ''; }),
+    豫言_浏览器_取消订阅网页消息: 名 => 安全结果(() => { 订阅器.取消消息(文字(名)); return ''; }),
+    豫言_浏览器_事件丢弃数: () => 队列.丢弃数(),
+    豫言_浏览器_事件类型丢弃数: 类 => 队列.丢弃数(文字(类)),
+    豫言_浏览器_设置事件队列上限: (类, 限) => 安全结果(() => { 队列.设上限(文字(类), Number(限)); return ''; }),
+    // 文言：界面与文树诸术，失败归阴与因，不使异常越桥。汉语：界面操作（按元素标识）与文树操作（按句柄）：返回（成功, 结果或错误文）。
+    豫言_浏览器_界面操作: (操作, 标识, 一, 二) => 安全结果(() => 页面.运行表(页面.界面操作表, 文字(操作), [文字(标识), 文字(一), 文字(二)])),
+    豫言_浏览器_文树操作: (操作, 一, 二, 三) => 安全结果(() => 页面.运行表(页面.文树操作表, 文字(操作), [文字(一), 文字(二), 文字(三)])),
+    豫言_浏览器_文树装入模板: async (资源路径, 选择标识, 目标标识) => {
+      try { await 页面.装入模板(文字(资源路径), 文字(选择标识), 文字(目标标识)); return [true, '']; }
+      catch (错) { return [false, String(错?.message ?? 错)]; }
     },
     // 文言：计时事入客列，客自决更新；撤时清其未交之事。汉语：定时器只投递事件，刷新业务由豫言决定；取消时清除尚未交付的事件。
     豫言_浏览器_定时一次: (毫秒, 标记) => 造定时(毫秒, 标记, false),
@@ -412,10 +1338,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
       态.工者.terminate();
       工作线程.delete(名);
       for (const [键, 项] of 订阅) if (项.目标号 === 名) { 项.清理(); 订阅.delete(键); }
-      for (let 序 = 事件队列.length - 1; 序 >= 0; 序--) {
-        const 事 = JSON.parse(事件队列[序]);
-        if (事.名称 === '工作线程' && 事.线程号 === 名) 事件队列.splice(序, 1);
-      }
+      队列.删除若(项 => 项.类型 === '宿主' && 项.事件.名称 === '工作线程' && 项.事件.线程号 === 名);
       句柄.释放(名);
       return true;
     },
@@ -1045,13 +1968,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
       观察器.delete(标识);
       句柄.释放(标识);
     },
-    豫言_浏览器_释放句柄: 号 => {
-      const 标识 = 文字(号);
-      const 观察 = 观察器.get(标识);
-      if (观察) { 观察.disconnect(); 观察器.delete(标识); }
-      for (const [键, 项] of 订阅) if (项.目标号 === 标识) { 项.清理(); 订阅.delete(键); }
-      句柄.释放(标识);
-    },
+    豫言_浏览器_释放句柄: 号 => { 释放句柄全部(文字(号)); },
     豫言_浏览器_句柄取字节: async 号 => {
       const 值 = 句柄.取得(文字(号));
       if (值 instanceof ArrayBuffer) return new Uint8Array(值).slice();
@@ -1393,11 +2310,14 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
         if (态.唤醒) { const 完成 = 态.唤醒; 态.唤醒 = null; 完成(); }
       }
       可写流.clear();
-      if (唤醒) { const 完毕 = 唤醒; 唤醒 = null; 完毕(JSON.stringify({名称: '关闭'})); }
+      订阅器.清空();
+      队列.关闭();
   };
   完成.then(
     () => { if (!已就绪) { 已就绪 = true; 报就绪(); } 关闭宿主(); },
     错 => { if (!已就绪) { 已就绪 = true; 报就绪失败(错); } 关闭宿主(); }
   );
-  return {就绪, 完成, 关闭: 关闭宿主};
+  // 文言：状态供验与察，不为业务所用。汉语：返回当前队列积压、丢弃数、句柄数与订阅数，供测试和诊断使用。
+  const 状态 = () => ({...队列.状态(), 句柄数: 句柄.数量(), 界面订阅数: 订阅器.订阅数(), 消息订阅数: 订阅器.消息订阅数()});
+  return {就绪, 完成, 关闭: 关闭宿主, 状态};
 }
