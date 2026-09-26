@@ -219,27 +219,8 @@
  虑「无」者（「写四」于「状态_导入数」于「导」）而
  虑「无」者（「写四」于「状态_函数数」于（「加」于「导」于「定」））而
  「写四」于「状态_函数表」于（「取存」于（「乘」于（「加」于（「加」于「导」于「定」）于「一」）于「函数条长」））也。
-「：文言：WASI 之名：函数名化为号，非 WASI 之模块则零，未识之名号九十九。汉语：WASI preview1 函数名到编号（名表里逗号分隔，序号从 1 起，须与 WASI 模块的分派一致）：1 args_get、2 args_sizes_get、3 clock_res_get、4 clock_time_get、5 environ_get、6 environ_sizes_get、7 fd_close、8 fd_fdstat_get、9 fd_read、10 fd_seek、11 fd_write、12 proc_exit、13 random_get、14 sched_yield、15 fd_prestat_get、16 fd_prestat_dir_name、17 fd_filestat_get、18 poll_oneoff、19 fd_advise、20 fd_allocate、21 fd_datasync、22 fd_fdstat_set_flags、23 fd_fdstat_set_rights、24 fd_filestat_set_size、25 fd_filestat_set_times、26 fd_pread、27 fd_pwrite、28 fd_readdir、29 fd_renumber、30 fd_sync、31 fd_tell、32 path_create_directory、33 path_filestat_get、34 path_filestat_set_times、35 path_link、36 path_open、37 path_readlink、38 path_remove_directory、39 path_rename、40 path_symlink、41 path_unlink_file、42 proc_raise、43 sock_accept、44 sock_recv、45 sock_send、46 sock_shutdown；模块名不是 wasi_snapshot_preview1 得 0；表里没有的名得 99，调用时统一返回“未实现”（52）。：」
-「瓦名表」者（「静态串」于『args_get,args_sizes_get,clock_res_get,clock_time_get,environ_get,environ_sizes_get,fd_close,fd_fdstat_get,fd_read,fd_seek,fd_write,proc_exit,random_get,sched_yield,fd_prestat_get,fd_prestat_dir_name,fd_filestat_get,poll_oneoff,fd_advise,fd_allocate,fd_datasync,fd_fdstat_set_flags,fd_fdstat_set_rights,fd_filestat_set_size,fd_filestat_set_times,fd_pread,fd_pwrite,fd_readdir,fd_renumber,fd_sync,fd_tell,path_create_directory,path_filestat_get,path_filestat_set_times,path_link,path_open,path_readlink,path_remove_directory,path_rename,path_symlink,path_unlink_file,proc_raise,sock_accept,sock_recv,sock_send,sock_shutdown』）也。
-「瓦名段长」乃化「整数」而化「整数」而「整数」也。
-「瓦名段长」者会「游」而会「位」而
- 虑「字」者「读一」于（「加」于「游」于「位」）而
- 若「或者」于（「等零」于「字」）于（「等」于「字」于「四四」）则「位」否则「瓦名段长」于「游」于（「加」于「位」于「一」）也。
-「瓦名逐项」乃化「整数」而化「整数」而化「整数」而化「整数」而「整数」也。
-「瓦名逐项」者会「游」而会「名址」而会「名长」而会「序」而
- 若「等零」于（「读一」于「游」）则「九九」
- 否则
-  虑「长」者「瓦名段长」于「游」于「零」而
-  若「且」于（「等」于「长」于「名长」）于（「相同字节」于「游」于「名址」于「长」）则「序」
-  否则（若「等零」于（「读一」于（「加」于「游」于「长」））则「九九」
-  否则「瓦名逐项」于（「加」于（「加」于「游」于「长」）于「一」）于「名址」于「名长」于（「加」于「序」于「一」））也。
-「瓦号」乃化「整数」而化「整数」而化「整数」而化「整数」而「整数」也。
-「瓦号」者会「宿址」而会「宿长」而会「名址」而会「名长」而
- 若「非」于（「名相同」于「宿址」于「宿长」于（「静态串」于『wasi_snapshot_preview1』））则「零」
- 否则「瓦名逐项」于「瓦名表」于「名址」于「名长」于「一」也。
 「解析导入段」乃化「有」而「有」也。
 「解析导入段」者会「无」而
- 虑「无」者（「写四」于「状态_有瓦」于「零」）而
  虑「起」者「节起」于「二」而
  若「等零」于「起」则「元」
  否则
@@ -260,16 +241,12 @@
     虑「条」者「函数条」于「位」而
     虑「类型」者「类型条」于「类型号」而
     虑「宿主调用」者「且」于（「名相同」于「宿址」于「宿长」于「串_导入宿」）于（「名相同」于「名址」于「名长」于「串_导入名」）而
-    虑「瓦」者「瓦号」于「宿址」于「宿长」于「名址」于「名长」而
-    虑「宿号」者「选择」于「宿主调用」于「宿主号_宿主」于（「选择」于（「不等于」于「瓦」于「零」）于「宿主号_WASI」于「宿主号_未连接」）而
     虑「无」者（「写字段」于「条」于「函数条_类型」于「类型号」）而
     虑「无」者（「写字段」于「条」于「函数条_参数数」于（「读字段」于「类型」于「类型条_甲」））而
     虑「无」者（「写字段」于「条」于「函数条_结果数」于（「读字段」于「类型」于「类型条_乙」））而
     虑「无」者（「写字段」于「条」于「函数条_局部总数」于（「读字段」于「类型」于「类型条_甲」））而
-    虑「无」者（若「等」于「宿号」于「宿主号_未连接」则「写字段」于「条」于「函数条_导入项」于「游」否则「元」）而
-    虑「无」者（若「等」于「宿号」于「宿主号_WASI」则「写字段」于「条」于「函数条_链接函数」于「瓦」否则「元」）而
-    虑「无」者（若「等」于「宿号」于「宿主号_WASI」则「写四」于「状态_有瓦」于「一」否则「元」）而
-    虑「无」者（「写字段」于「条」于「函数条_标志」于（「位或」于「一」于（「左移」于「宿号」于「八」）））而
+    虑「无」者（若「宿主调用」则「元」否则「写字段」于「条」于「函数条_导入项」于「游」）而
+    虑「无」者（「写字段」于「条」于「函数条_标志」于（「位或」于「一」于（「左移」于（「爻整」于「宿主调用」）于「八」）））而
     「逐」于（「加」于「位」于「一」）于「后」
    否则「元」
   而「逐」于「零」于「首址」也。
@@ -540,8 +517,8 @@
    虑「标志」者「读一」于「首址」而
    虑「最小」者「读无符号变长」于（「加」于「首址」于「一」）而
    虑「有上限」者「不等于」于（「位与」于「标志」于「一」）于「零」而
-   虑「声明大」者「选择」于「有上限」于（「读无符号变长」于（「读四」于「状态_读址」））于（「选择」于（「不等于」于（「读四」于「状态_有瓦」）于「零」）于「客页缺省上限」于「最小」）而
-   虑「限一」者「选择」于（「大于」于「声明大」于「客页缺省上限」）于「客页缺省上限」于「声明大」而
+   虑「声明大」者「选择」于「有上限」于（「读无符号变长」于（「读四」于「状态_读址」））于「最小」而
+   虑「限一」者「选择」于（「大于」于「声明大」于「一二八」）于「一二八」于「声明大」而
    虑「最大」者「选择」于（「小于」于「限一」于「最小」）于「最小」于「限一」而
    虑「无」者（「写四」于「状态_客页数」于「最小」）而
    虑「无」者（「写四」于「状态_客页上限」于「最大」）而
