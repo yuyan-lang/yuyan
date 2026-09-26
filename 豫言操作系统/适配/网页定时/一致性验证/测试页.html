@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="han">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>豫言前端接口真实浏览器冒烟</title>
+<style>
+  #悬浮{position:absolute;left:0;top:0;padding:2px 6px;border:1px solid #888;background:#ffd}
+  .文件目录面板{max-height:60px;overflow:auto}
+  .行{display:block}
+</style></head>
+<body>
+  <p id="结果">等待启动</p>
+  <nav id="导航"><a id="链接甲" class="引用" href="/x" title="提示甲"><span id="内层">甲</span></a> <button id="语言钮" type="button" data-lang="wen">文言</button></nav>
+  <details class="文件目录" id="目录"><summary id="摘要">目录</summary><div class="文件目录面板" id="面板"><a class="行" href="#a">甲</a><a class="行" href="#b">乙</a><a class="行" href="#c" aria-current="page">丙</a><a class="行" href="#d">丁</a></div></details>
+  <p id="外部" data-yy="外面">页面其他位置</p>
+  <div id="子根"></div>
+  <div id="悬浮" hidden>悬浮提示</div>
+  <template id="资料"><a data-qualified="甲.乙" href="/a">甲</a></template>
+  <script type="module">
+    // 文言：探针客之命令通道：以豫言测试命令发请求，收豫言测试回复。
+    // 汉语：把前端接口探针应用的产物（自动启动.mjs、程序.wasm 等）放在本页同目录后，用静态服务器打开本页（另需同源的 /api/* 与 /编译/客户端.mjs 等，
+    //       服务器脚本见验收说明）；在控制台或自动化工具里调用 window.__发(操作, ...参) 逐个调用接口，window.__宿主 是宿主对象。
+    import {宿主, 就绪} from './自动启动.mjs';
+    window.__就绪 = 就绪.then(() => { document.getElementById('结果').textContent = '已就绪'; });
+    window.__回复 = new Map(); let 号 = 1;
+    document.addEventListener('豫言测试回复', 事 => { const 待 = window.__回复.get(事.detail.号); if (待) { window.__回复.delete(事.detail.号); 待(事.detail); } });
+    window.__发 = (操作, ...参) => new Promise(解析 => { const n = 号++; window.__回复.set(n, 解析); document.dispatchEvent(new CustomEvent('豫言测试命令', {detail: {号: n, 操作, 参}})); });
+    window.__宿主 = 宿主;
+  </script>
+</body>
+</html>
