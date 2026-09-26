@@ -1,9 +1,9 @@
 // 文言：工虽再用，客态不得相遗，二出不得相杂。汉语：直接测试 Node 宿主适配层的实例隔离、模块更新、输出完整性、异常恢复与取消；不执行编译算法。
 'use strict';
 const 文件=require('node:fs'),路径=require('node:path'),系统=require('node:os'),{spawnSync}=require('node:child_process'),断言=require('node:assert/strict');
-const 根=路径.resolve(__dirname,'../..'),宿主=路径.join(根,'工具/节点网页汇编宿主/宿主.cjs');
+const 根=路径.resolve(__dirname,'../..'),宿主=路径.join(根,'豫言操作系统/宿主/节点/宿主.cjs');
 const 临时=文件.mkdtempSync(路径.join(系统.tmpdir(),'yy线程复用验-')),输入=路径.join(临时,'yy探针.wasm');
-const {建立编译线程}=require('../../工具/节点网页汇编宿主/编译线程.cjs');
+const {建立编译线程}=require('../../豫言操作系统/宿主/节点/编译线程.cjs');
 process.env.YY_NODE_COMPILER_REUSE='1';
 const 启动=建立编译线程(宿主,输入,[]),记录=[];
 function 造(体){const 文=路径.join(临时,'yy探针.wat');文件.writeFileSync(文,体);const 果=spawnSync(路径.join(根,'yy网页汇编宿主'),['--组装',文,输入],{cwd:根,encoding:'utf8'});断言.equal(果.status,0,果.stderr);}
