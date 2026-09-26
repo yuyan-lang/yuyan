@@ -21,15 +21,6 @@ yy3_bs: $(编译器源码) yy2_bs yy豫构_stable
 yy4_bs: $(编译器源码) yy3_bs yy豫构_stable
 	./yy豫构_stable 构建 豫言编译器 --编译器 ./yy3_bs --输出 $@
 
-yy2: $(编译器源码) yy_bs_stable yy豫构_stable | 运行时
-	$(稳定豫构) 构建 豫言编译器 --编译器 $(稳定编译器) --输出 $@
-
-yy3: $(编译器源码) yy2 yy豫构_stable
-	./yy豫构_stable 构建 豫言编译器 --编译器 ./yy2 --输出 $@
-
-yy4: $(编译器源码) yy3 yy豫构_stable
-	./yy豫构_stable 构建 豫言编译器 --编译器 ./yy3 --输出 $@
-
 连续自举: yy4_bs
 	cmp yy3_bs yy4_bs
 

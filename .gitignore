@@ -21,16 +21,9 @@ yarn-error.log*
 
 # 豫言编译产物与缓存
 /.yybuild/
-/.yybuild.nosync/
 /.yybuild.*
 /dist/
-/yy
-/yy_bs_stable
-/yy[2-9]_bs
 /yy*
-/yybs_*
-/yy_parallel_deps.txt
-/yy_parallel_log.txt
 /*.wasm
 /*.wat
 *.yyinfo.json
@@ -38,7 +31,6 @@ yarn-error.log*
 *.正则签名.json
 
 # 原生与性能测试编译产物
-a.out
 *.out
 *.o
 *.a
