@@ -258,3 +258,19 @@ test('先读后作原答：已开始增量读取的柄抛可捕获的事故；�
   const 回 = await 宿主.fetch(new Request('https://x.test/dopass', {headers: {'x-cfg': 转义(JSON.stringify({url: 'https://internal/events', readfirst: true}))}}), {DOS: 空间});
   assert.equal(回.status, 400); assert.match(await 回.text(), /持久服务响应正文已被增量读取，不可再作原答/);
 });
+
+test('对象名可含斜线（0.3.0）：账户编号/项目编号按原名定位（文字、流、转发三处）；点、空格、反斜线、非 ASCII、冒号、空串、过长仍抛事故', async () => {
+  const 空间 = 造();
+  const 名 = '7/3f2a9c1e-4b5d-4e6f-8a7b-9c0d1e2f3a4b';
+  const 甲 = await 流({object: 名, url: 'https://internal/events', read: 'none'}, 空间); assert.equal(甲.状态, 200);
+  const 乙 = await 文字({object: 名, url: 'https://internal/read', method: 'GET'}, 空间); assert.equal(乙.状态, 200);
+  const 丙 = await 发宿主(造宿主(), 空间, {}, {...基, object: 名, url: 'https://internal/events'});
+  assert.equal(丙.status, 200); await 丙.arrayBuffer();
+  assert.deepEqual(空间.取名们, [名, 名, 名], '宿主以原名 getByName');
+  assert.deepEqual([...空间.对象们.keys()], [名]);
+  for (const 坏 of ['a b', 'a.b', 'a\\b', '中文', '', 'a'.repeat(129), '7/项目', 'a:b']) {
+    const 果 = await 流({object: 坏, url: 'https://internal/events', read: 'none'}, 空间);
+    assert.equal(果.状态, 400, JSON.stringify(坏)); assert.match(果.文, /持久服务对象名无效/, JSON.stringify(坏));
+  }
+  assert.equal(空间.对象们.size, 1, '违规名不得触及对象');
+});

@@ -203,6 +203,16 @@ test('旧函数创建的响应柄可用于新读取函数', async () => {
   assert.deepEqual(终于(果.文), [1, '']);
 });
 
+test('旧函数 请求授权服务：服务绑定的 fetch 抛出或被拒绝时转为可捕获的事故，事件不失败（路由代理修订）', async () => {
+  for (const 造行为 of [() => { throw new Error('服务挂了'); }, () => Promise.reject(new Error('服务挂了'))]) {
+    const s = new 服务桩(造行为);
+    const 果 = await 跑({op: 'svcold', url: 'https://svc/x', read: 'chunks', max: 65536}, {SVC: s});
+    assert.equal(果.状态, 400, 果.文);
+    assert.match(果.文, /授权服务请求失败：Error: 服务挂了/);
+    assert.equal(s.请求们.length, 1, '请求已发出，失败发生在服务一侧');
+  }
+});
+
 test('请求形态：方法、固定标头、任意字符正文（含引号、反斜线、换行、制表、表情）逐字节送达；信号与 manual', async () => {
   const s = new 服务桩((路径, 请求, 桩, 记) => new Response('{}'));
   const 正文 = '甲"乙\\丙\n丁\t戊\r\n😀 末尾';
