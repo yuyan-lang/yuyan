@@ -64,4 +64,5 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --print-llvm-commands                打印 native 的 clang 链接命令
     --print-opt-info                     打印优化的调试信息
     --about                              显示版权信息
-    --version                            显示软件当前版本』也。
+    --version                            显示软件当前版本』
+也。
