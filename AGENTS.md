@@ -1,40 +1,46 @@
-# Agent Instructions
+# 代理指令
 
-- Run relevant validation by default after making code changes, unless the user explicitly asks not to run validation.
-- Prefer the cheapest validation that gives useful confidence for the change.
-- Full bootstrapping validation should be run for compiler changes that may affect generated compiler semantics, unless the user explicitly asks not to run validation. Use exactly this pipeline:
+- 一律用中文答复，含进度短句与工具调用说明。
+- 只做被布置的任务；新增功能、ABI、兼容层前先问，被叫停即停。
+- 忽略 `*_v0` 目录，除非用户明确提及。
+
+## 语言与文件
+
+- 除 `yuyan-vscode` 外，文件名、标识符、代码、文档一律用中文。
+- 代码注释与 `.md` 用先秦文言文（简体字）及现代汉语双语，文言力求精确可懂。注释写 `「：文言：…汉语：…：」`；文档成对 `X.文言.md`、`X.汉语.md`，须同步修改。
+- 只写豫言：工具不用 Python、shell、JS，不自造语言或 DSL；系统层代码用普通豫言加底层模式。语言设计有缺口时，先向用户说明缺口与方案。
+- 工具产物名以 `yy` 开头或以 `.exe` 结尾（据此忽略）；临时脚本放草稿目录，不入库。确需非豫言宿主代码（JS、C、WAT）时，放进 `豫言操作系统/宿主/`。
+- 语法坑速查见 `LOCALAGENTS.md`（如嵌套 `鉴` 须加括号、无前向引用）；遇到新坑就补进去。
+- 行为变更同步文档：语言规则 → `文档/语言技术规范/`，包 → `包说明`，接口 → `规范`。
+
+## 包与接口
+
+- 一切皆包：`名。包。豫`（必填名称、所有者、版本、简介、说明、类型；依赖按需）加双语 `包说明`，缺说明文件则豫构报错。详见 `工具/豫构/包系统.汉语.md`、`文档/仓库包构建.汉语.md`。
+- 只能导入自身与直接依赖，同包导入也带包名；单段导入取手写的 `总集。豫`；可执行包不可被依赖。依赖不得成环：标准库 → 构建基础／拓展库 → 编译器核心 → 包配置 → 豫构；标准库居底，需测试框架的测试放 `测试/标准库`。
+- 包描述或包上下文新增字段，旧种子不认：先升级种子（`./yy豫构 自举包`，并更新 `.github/workflows/main.yml` 的 `YY_BOOTSTRAP_URL`、`YY_BOOTSTRAP_SHA256`），再在包文件中使用。
+- 底层（无 GC）包在包描述写 `「编译模式」者『底层』也。`，只能依赖底层包，见 `文档/底层模式.汉语.md`。
+- `豫言操作系统接口/` 是纯规范：`。接口。豫`（宿主提供）与 `。应用接口。豫`（应用提供）只写类型与 `乃` 签名，不写函数体；行为写进双语 `规范`。规范文字及接口目录根的公共 `.md` 参与清单摘要，改后须重生成 `豫言操作系统/适配/` 下各适配的 `宿主提供.json`。
+
+## 验证
+
+- 改动后默认跑最便宜且有用的验证，除非用户明确说不跑。库：`./yy豫构 检查 <包>` 与 `类型检查 <包>`，并构建运行相关 `X。测试。豫`（`构建 <包> 子目录 X。测试 --输出 yyX测试`）；包系统、构建基础、包配置、豫构：`make 类型检查 豫构测试`（CI 同）；豫言裸机：见 `工具/豫言裸机/说明.汉语.md`。
+- 构建走豫构：`./yy豫构 构建|类型检查 <包> [入口段…] [--输出 yy名] -j 24 [-- 编译器参数]`，单文件用 `./yy豫构 文件 <路径> …`；`-j` 不低于 20。同一缓存同一时刻只跑一个构建，勿并发。
+- 编译器改动可能影响生成语义时，须跑完整自举，且只用这组命令（仅改只被 `工具/豫言裸机/` 引用的 `库/编译器核心/裸机后端` 则不必）：
   - `./yy_bs_stable 豫言编译器/入口。豫 -o yy2_bs >/dev/null 2>/dev/null`
   - `./yy2_bs 豫言编译器/入口。豫 -o yy3_bs --parallel >/dev/null 2>/dev/null`
   - `./yy3_bs 豫言编译器/入口。豫 -o yy4_bs --parallel >/dev/null 2>/dev/null`
-  - `yy3_bs` and `yy4_bs` should be identical.
-- Type-checking validation should also be run after manual review:
-  - `./yy 豫言编译器/入口。豫 --type-check-only`
-  - Use `./yy_bs_stable 豫言编译器/入口。豫 --type-check-only >/dev/null 2>/dev/null` for the old stable compiler, or `./yy3_bs 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null` after bootstrapping.
-  - If it fails, rerun it without `--parallel` and without redirecting stdout/stderr to see the diagnostic.
-- 并行调度今以豫言行之，不复用 Python。新的 `--parallel` 使用豫言异步调度和原生子进程，不再启动 Python 或绑定 `multiprocessing.Manager` 本地套接字。旧 `yy_bs_stable` 的首级自举须串行；其后二级、三级可并行。
-- The bootstrapping validation is considered successful if `yy3_bs` is produced, which means the compiler semantics did not change.
-- If a bootstrapping validation command fails, rerun the failed command without `--parallel` and without redirecting stdout/stderr to extract the error message. The cache is shared, so the diagnostic rerun can reuse work from the parallel run.
-- To update cache identity for `yy_bs_stable` or `yy*_bs*`, touch the executable; the cache directory is based on the executable mtime.
-- Ignore `*_v0` directories unless the user explicitly asks about them.
-- Always provide answers in Chinese.
+  - 产出 `yy3_bs` 即语义未变；`yy3_bs` 与 `yy4_bs` 应一致。
+- 人工复核后还须类型检查：`./yy 豫言编译器/入口。豫 --type-check-only`；旧稳定编译器用 `./yy_bs_stable 豫言编译器/入口。豫 --type-check-only >/dev/null 2>/dev/null`，自举后用 `./yy3_bs 豫言编译器/入口。豫 --type-check-only --parallel >/dev/null 2>/dev/null`。
+- 命令失败：去掉 `--parallel` 与重定向重跑以取诊断（缓存共享，可复用并行运行的成果）。
+- `--parallel` 用豫言原生调度（不用 Python）；`yy_bs_stable` 的首级自举须串行，其后可并行。
+- 缓存目录取决于可执行文件的 mtime；要换缓存就 `touch` `yy_bs_stable` 或 `yy*_bs*`。
+- `make` 须能在 PATH 找到 `rg`，否则依赖列表为空、目标被误判为最新。
 
+## 提交
 
-# 使用中文
-
-除了`yuyan-vscode`之外，所有的文档代码文件名均应使用中文。
-对于Agent而言，代码中应当使用先秦文言文简体字及现代汉语双语书写。
-`md` 使用文档也应当使用先秦文言文简体字及现代汉语双语书写，其中文言文的结尾为`.文言.md`，现代汉语的结尾为`.汉语.md`。
-文言文的书写应力求精确和可理解。
-
+- 工作树常有并行会话的未提交改动：勿 `git add -A`，勿还原或提交他人改动；暂存与提交写在同一条命令，如 `git add -- 路径 && git commit -- 路径`。
+- 提交信息用中文，格式 `范围：摘要`，正文列改动与验证。
 
 ## `sync [branch_name] with yybs`
 
-当用户调用 `sync [branch_name] with yybs` 时，同步指定分支；若省略 `[branch_name]`，则使用当前分支，并先确认该分支及 `yybs` 的 worktree 都是干净状态。
-先在目标分支的 worktree 执行 `git rebase yybs`，解决所有冲突并完成 rebase，do not run time consuming validation unless there is a conflict resolution。
-然后在 `yybs` 的 worktree 执行 `git merge --no-ff --no-edit <目标分支>`；Do not push the worktree branch to remote but do push yybs to remote after syncing.
-
-
-## Tool Writing
-
-When writing a tool, the generated executable should be prefixed with `yy` or postfixed with `.exe` so that things can be properly ignored.
-When asked to write a tool, always use yuyan language intead of python and write chinese only.
+省略分支则取当前分支；先确认该分支与 `yybs` 的 worktree 都干净，否则停下报告。先在目标分支的 worktree 执行 `git rebase yybs` 并解决全部冲突，无冲突时不跑耗时验证，有冲突才验证；再在 `yybs` 的 worktree 执行 `git merge --no-ff --no-edit <目标分支>`。只推送 `yybs`，不推送 worktree 分支。
