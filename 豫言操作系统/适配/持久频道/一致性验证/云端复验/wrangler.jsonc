@@ -1,0 +1,11 @@
+{
+  // 文言：本地 workerd 复验之配置；须开 enable_request_signal，否则请求信号不止，客断无从察。
+  // 汉语：本地 workerd（wrangler dev --local）复验用的配置；兼容标志 enable_request_signal 必须开启，否则请求 AbortSignal 不会中止，客户端断开无从察觉。
+  "name": "yy-conformance",
+  "main": "rig.mjs",
+  "compatibility_date": "2026-09-10",
+  "compatibility_flags": ["enable_request_signal"],
+  "durable_objects": {"bindings": [{"name": "DO", "class_name": "豫言持久对象"}]},
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["豫言持久对象"]}],
+  "d1_databases": [{"binding": "DB", "database_name": "yy-db", "database_id": "00000000-0000-4000-8000-000000000001"}]
+}

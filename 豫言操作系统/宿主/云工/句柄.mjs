@@ -8,13 +8,21 @@ const 允名 = 名 => {
 export function 创建句柄表({上限 = 4096} = {}) {
   const 表 = new Map();
   const 反查 = new Map();
-  let 下号 = 1;
+  // 文言：号不可推，则应用之 JSON 不能伪造宿主物之引。汉语：句柄号取密码学随机的 53 位安全整数，而非自增序号；应用传入的 JSON 里即使写了 {"$句柄":"1"} 也指不到任何现存句柄。
+  const 随机号 = () => {
+    for (;;) {
+      const 缓 = new Uint32Array(2);
+      crypto.getRandomValues(缓);
+      const 号 = (缓[0] & 0x1fffff) * 4294967296 + 缓[1];
+      if (号 > 2 ** 40 && !表.has(号)) return 号;
+    }
+  };
   const 登记 = 值 => {
     if ((typeof 值 !== 'object' || 值 === null) && typeof 值 !== 'function' && typeof 值 !== 'symbol') throw Error('仅对象或符号可登记句柄');
     const 旧号 = 反查.get(值);
     if (旧号 && 表.has(旧号)) return String(旧号);
     if (表.size >= 上限) throw Error('宿主句柄达到上限');
-    const 号 = 下号++;
+    const 号 = 随机号();
     表.set(号, 值);
     反查.set(值, 号);
     return String(号);
@@ -36,8 +44,14 @@ export function 创建句柄表({上限 = 4096} = {}) {
     if (值 && typeof 值 === 'object') {
       if (Object.keys(值).length === 1 && Object.hasOwn(值, '$句柄')) return 取得(值.$句柄);
       if (Object.keys(值).length === 1 && Object.hasOwn(值, '$未定义')) return undefined;
-      if (Object.keys(值).length === 1 && Object.hasOwn(值, '$大整数')) return BigInt(值.$大整数);
-      if (Object.keys(值).length === 1 && Object.hasOwn(值, '$数字')) return Number(值.$数字);
+      if (Object.keys(值).length === 1 && Object.hasOwn(值, '$大整数')) {
+        if (typeof 值.$大整数 !== 'string' || !/^-?[0-9]{1,40}$/.test(值.$大整数)) throw Error('宿主大整数记号格式无效');
+        return BigInt(值.$大整数);
+      }
+      if (Object.keys(值).length === 1 && Object.hasOwn(值, '$数字')) {
+        if (!['NaN', 'Infinity', '-Infinity'].includes(值.$数字)) throw Error('宿主数字记号只可为 NaN、Infinity、-Infinity');
+        return Number(值.$数字);
+      }
       return Object.fromEntries(Object.entries(值).map(([名, 项]) => [名, 入(项, 深 + 1)]));
     }
     return 值;

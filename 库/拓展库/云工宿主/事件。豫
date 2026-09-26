@@ -1,5 +1,5 @@
 寻观「标准库」之「豫言标准内核」之书。
 
-「：文言：每次调入自辨其事，事毕不留客栈。汉语：每次 Wasm 调用识别 fetch、service-fetch、queue、scheduled、email、durable-fetch、durable-alarm、durable-transaction、workflow、workflow-step 或 workflow-rollback 事件；跨调用状态由豫言及平台步骤结果恢复。：」
+「：文言：每次调入自辨其事，事毕不留客栈。汉语：每次 Wasm 调用识别 fetch、service-fetch、queue、scheduled、email、durable-fetch、durable-alarm、durable-transaction、durable-block、workflow、workflow-step 或 workflow-rollback 事件（另有套接字、流回调与 HTML 改写等重入事件）；跨调用状态由豫言及平台步骤结果恢复。：」
 「云工事件种类」乃化「有」而「字符串」也。
 「云工事件种类」者会「无」而《《C调用》》名『豫言_云工_事件种类』传「元」也。

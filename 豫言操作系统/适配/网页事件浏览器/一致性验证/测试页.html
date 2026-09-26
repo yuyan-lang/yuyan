@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>豫言网页事件与文树真实浏览器冒烟</title>
+<style>#面板{height:100px;overflow:auto;border:1px solid #888}#面板 div{height:400px}#候选[hidden]{display:none}</style></head>
+<body>
+  <input id="命令" value="a😀bc" aria-label="命令">
+  <ul id="候选" hidden><li>一</li></ul>
+  <div id="日志"></div>
+  <div id="面板"><div>内容</div></div>
+  <dialog id="创建弹窗"><p>弹窗</p><button id="关弹窗" type="button">关</button></dialog>
+  <iframe id="网站画面" sandbox="allow-same-origin allow-forms" data-yy-frame-origins="https://example.com"></iframe>
+  <p id="结果">等待启动</p>
+  <script type="module">
+    // 文言：探针客之命令通道：以豫言测试命令发请求，收豫言测试回复。
+    // 汉语：把接口探针应用的产物（自动启动.mjs、程序.wasm 等）放在本页同目录后，用任意静态服务器打开本页；
+    //       在控制台或自动化工具里调用 window.__发(操作, ...参) 即可逐个调用四个接口包的函数。
+    import {宿主, 就绪} from './自动启动.mjs';
+    window.__就绪 = 就绪.then(() => { document.getElementById('结果').textContent = '已就绪'; });
+    window.__回复 = new Map(); let 号 = 1;
+    document.addEventListener('豫言测试回复', 事 => { const 待 = window.__回复.get(事.detail.号); if (待) { window.__回复.delete(事.detail.号); 待(事.detail); } });
+    window.__发 = (操作, ...参) => new Promise(解析 => { const n = 号++; window.__回复.set(n, 解析); document.dispatchEvent(new CustomEvent('豫言测试命令', {detail: {号: n, 操作, 参}})); });
+    window.__宿主 = 宿主;
+  </script>
+</body>
+</html>

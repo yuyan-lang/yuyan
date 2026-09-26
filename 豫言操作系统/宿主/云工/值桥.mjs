@@ -1,6 +1,6 @@
 // 文言：桥唯传客值，毋决应用之事。汉语：值桥只转换 WasmGC 值，不承载业务规则。
 const 编码 = new TextEncoder();
-const 解码 = new TextDecoder();
+const 解码 = new TextDecoder('utf-8', {ignoreBOM: true});
 export const 文字 = 值 => 值 instanceof Uint8Array ? 解码.decode(值) : String(值);
 
 export function 创建值桥(模块) {

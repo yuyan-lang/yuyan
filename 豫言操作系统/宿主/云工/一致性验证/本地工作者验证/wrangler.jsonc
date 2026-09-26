@@ -1,0 +1,8 @@
+{
+  "name": "shell-check",
+  "main": "前置.mjs",
+  "compatibility_date": "2026-09-05",
+  "durable_objects": {"bindings": [{"name": "OBJ", "class_name": "Shell"}]},
+  "migrations": [{"tag": "v1", "new_sqlite_classes": ["Shell"]}],
+  "observability": {"enabled": false}
+}

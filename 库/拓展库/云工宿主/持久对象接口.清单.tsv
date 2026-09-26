@@ -7,8 +7,8 @@ DurableObject.webSocketError	云工事件种类=durable-websocket-error、云工
 DurableObjectState.id	云工持久对象标识、云工持久对象标识信息文	部分实测	本地按名或命名 ID 进入对象时 ctx.id.name 为同一对象；唯一 ID 进入时 name 为 null；辖区待云端验
 DurableObjectState.storage	云工持久仓句柄	已实测	本地 SQLite 存储、SQL 与 alarm
 DurableObjectState.exports	无专门接口	待补	对象内 loopback RPC 待封装
-DurableObjectState.waitUntil	云工上下文句柄	部分	Cloudflare 文档说明在对象内不延长寿命
-DurableObjectState.blockConcurrencyWhile	无专门接口	待补	初始化与并发门待封装
+DurableObjectState.waitUntil	云工上下文句柄；宿主对每事件的运行承诺调用	部分实测	Cloudflare 文档说明在对象内不延长寿命；本地 workerd 4.129.0 实测响应返回后继续运行的代码无论是否 waitUntil 都存活、客户端断开不取消运行；云端待验证
+DurableObjectState.blockConcurrencyWhile	云工持久独占执行安全、云工持久独占名、云工持久独占参数、云工持久独占输出安全（事件种类=durable-block）	已实测	本地 workerd：区内等待外部输入输出时他事排队、多区依次执行、区内失败以值返回故对象不重置（原生回调抛错则重置）、超过 30 秒平台重置对象；云端待验证
 DurableObjectState.acceptWebSocket	云工持久套接字建对并应答	已实测	本地 workerd 以“房”标签接受连接；实际休眠未验
 DurableObject WebSocket 子协议	云工套接字请求协议文、云工持久套接字建对并应答协议	已实测	真实 Chrome 提议两协议，豫言选择 yuyan.do.v1 并完成消息/关闭流程；云端未验
 DurableObjectState.getWebSockets	云工持久套接字诸柄文	已实测	消息回调中按“房”标签取到当前连接
@@ -27,7 +27,9 @@ DurableObjectStorage.sync	云工持久同步	部分实测	allowUnconfirmed 写�
 DurableObjectStorage.getAlarm	云工持久取告警	已封装	有无告警及边界待实测
 DurableObjectStorage.setAlarm	云工持久设告警、云工持久延后告警	部分实测	延后告警本地触发；绝对时刻待验
 DurableObjectStorage.deleteAlarm	云工持久删告警	已封装	删除语义待实测
-DurableObjectStorage.transaction	云工持久事务执行、云工持久事务名、云工持久事务输出、云工持久事务回滚	部分实测	事务回调重入豫言；本地 SQLite 对象验两键条件提交、显式回滚与异常回滚；旧 KV 后端及并发待验
+DurableObjectStorage.transaction	云工持久事务执行、云工持久事务名、云工持久事务输出、云工持久事务回滚	部分实测	事务回调重入豫言；本地 SQLite 对象验两键条件提交、显式回滚与异常回滚；旧 KV 后端及并发待验；本地另验：事务回调运行期间他事排队、回调内告警与直接 storage 写入随事务回滚、超过 30 秒平台重置对象；云工持久事务执行安全把失败归为值
+DurableObjectStorage.put（校验后的 JSON 值）	云工持久写入值安全	已实测	宿主原生 JSON 校验、键 1–2048 字节、值 ≤ 2 MiB、拒绝保留单键对象，失败归为值；本地 SQLite 对象约 2 MiB 的值可写读，超限的平台错误待验
+DurableObjectStorage.list（规整选项）	云工持久列举值安全	已实测	空字符串视同未指定、未知字段与冲突选项归为失败、结果 ≤ 8 MiB；本地与模拟的排序一致（UTF-8 字节序）
 DurableObjectStorage.transactionSync	云工持久SQL事务	部分实测	豫言给出两步参数化 SQL；故障自动回滚，本地 workerd 验证；交互式回调待补
 DurableObjectStorage.kv.get/put/delete/list	云工同步键值读取癸象、云工同步键值写入癸象、云工同步键值删除、云工同步键值列举癸象	部分实测	本地 SQLite 对象验异步与同步 KV 互见、缺键与 null 区分、逆序限量、删除布尔值及重启持久性；特殊克隆值待验
 DurableObjectStorage.sql.exec	云工持久SQL执行、云工持久SQL游标新建	部分实测	参数化 CREATE、INSERT、SELECT 与游标句柄；大整数精度、特殊值及错误待验

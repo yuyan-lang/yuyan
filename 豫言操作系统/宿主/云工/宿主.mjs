@@ -27,7 +27,83 @@ const 取值绑定 = (环境, 许可, 名, 种类) => {
   return 环境[名称];
 };
 
-export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 网络 = fetch, 全局 = globalThis, 输出 = () => {}}) {
+// 文言：事有多类，各有墙钟之限；未另定者三十秒，客器可于产物之执行配置中改之，然不得逾十五分。
+// 汉语：每个事件的豫言执行墙钟时限默认 30 秒；应用目录的 `执行配置.json`（结构 `{"事件时限毫秒":{"默认":n,"<事件种类>":n}}`，由构建器写入产物 动态资源.mjs 的导出 `执行配置`）可按事件种类改写，上限 15 分钟（平台后台事件的墙钟上限）。
+export const 默认事件时限毫秒 = 30000;
+export const 事件时限上限毫秒 = 900000;
+// 文言：独占之区与事务之回调，平台逾三十秒则重置对象；故其默认限二十五秒，且不得逾三十秒，令败于豫言而不败于平台。
+// 汉语：durable-block 与 durable-transaction 的回调实际运行在平台的 blockConcurrencyWhile/transaction 里，超过 30 秒平台会重置整个对象（本地 workerd 已验）；
+// 这两类事件的默认时限为 25 秒，不受 `默认` 影响，显式配置也不得超过 30 秒，使超时表现为可捕获的“豫言执行超过时限”而不是对象被重置。
+export const 独占类事件种类 = Object.freeze(['durable-block', 'durable-transaction']);
+export const 独占类事件默认时限毫秒 = 25000;
+export const 独占类事件时限上限毫秒 = 30000;
+// 文言：此表列宿主所发之诸事类；增新类须并入此表，配置之误拼方可当场见拒。
+// 汉语：可配置时限的事件种类全集；新增事件种类时必须同步加入，以便拼写错误的配置在加载时立即失败。
+export const 可配时限事件种类 = Object.freeze([
+  'fetch', 'service-fetch', 'queue', 'scheduled', 'email',
+  'durable-fetch', 'durable-alarm', 'durable-transaction', 'durable-block',
+  'durable-websocket-message', 'durable-websocket-close', 'durable-websocket-error',
+  'websocket-open', 'websocket-message', 'websocket-close', 'websocket-error',
+  'workflow', 'workflow-step', 'workflow-rollback', 'stream-pull', 'stream-cancel',
+  'html-element', 'html-text', 'html-comments', 'html-doctype', 'html-document-text',
+  'html-document-comments', 'html-end', 'html-end-tag'
+]);
+// 文言：配置缺、空对象，皆守默认；有误则加载即败，不待事发。
+// 汉语：null、undefined 或 `{}` 表示全部使用默认值；结构、事件种类、数值任一不合法都抛错，避免运行期才发现限额没有生效。
+export function 解析执行配置(配置) {
+  const 时限 = new Map();
+  if (配置 === null || 配置 === undefined) return 时限;
+  if (typeof 配置 !== 'object' || Array.isArray(配置)) throw Error('执行配置须为对象');
+  for (const 键 of Object.keys(配置)) if (键 !== '事件时限毫秒') throw Error('执行配置含未知字段：' + 键);
+  const 表 = 配置.事件时限毫秒;
+  if (表 === undefined) return 时限;
+  if (!表 || typeof 表 !== 'object' || Array.isArray(表)) throw Error('执行配置的事件时限毫秒须为对象');
+  for (const [种类, 毫秒] of Object.entries(表)) {
+    if (种类 !== '默认' && !可配时限事件种类.includes(种类)) throw Error('执行配置含未知事件种类：' + 种类);
+    if (!Number.isSafeInteger(毫秒) || 毫秒 < 1 || 毫秒 > 事件时限上限毫秒) {
+      throw Error('执行配置的事件时限须为 1 至 ' + 事件时限上限毫秒 + ' 之间的整数毫秒：' + 种类);
+    }
+    if (独占类事件种类.includes(种类) && 毫秒 > 独占类事件时限上限毫秒) {
+      throw Error('执行配置的 ' + 种类 + ' 时限不得超过 ' + 独占类事件时限上限毫秒 + ' 毫秒（平台在回调超过 30 秒时重置对象）');
+    }
+    时限.set(种类, 毫秒);
+  }
+  return 时限;
+}
+// 文言：先取本类之专限，独占类次取二十五秒，余取默认项，终守三十秒。
+// 汉语：某事件种类的墙钟时限：显式配置的该种类 > （独占类事件）25 秒 > 配置的“默认” > 30 秒。
+export const 选事件时限 = (时限表, 种类) => 时限表.get(种类) ??
+  (独占类事件种类.includes(种类) ? 独占类事件默认时限毫秒 : 时限表.get('默认') ?? 默认事件时限毫秒);
+// 文言：普通之错唯书其辞，异名之错并书其名；Wasm 异常等异类亦得其形。汉语：把 JS 错误整理成可读文字：普通 Error 只给消息，其他错误类型给“名称: 消息”，Wasm 异常或非 Error 值退化为 String(错)。
+const 描述错误 = 错 => {
+  const 名 = (typeof 错?.name === 'string' && 错.name) || (错 && typeof 错 === 'object' && 错.constructor?.name) || 'Error';
+  const 消息 = typeof 错?.message === 'string' && 错.message ? 错.message : String(错);
+  const 文 = 名 === 'Error' ? 消息 : 名 + ': ' + 消息;
+  // 文言：豫言异常无人捕，出壳则为非法转型；释其意，免客惑。汉语：未被捕获的豫言异常穿出 Wasm 边界时表现为 RuntimeError: illegal cast，附上说明。
+  return 名 === 'RuntimeError' && 消息 === 'illegal cast' ? 文 + '（多为豫言处理入口抛出了未捕获的异常，请在入口内用「尝试运行」捕获并自行报告原因）' : 文;
+};
+// 文言：宿主保留之四形，不得为数据之键，免暗被解为柄或数。汉语：写入持久仓的值里不能出现只含 `$句柄`、`$未定义`、`$大整数` 或 `$数字` 之一的单键对象。
+const 保留单键 = new Set(['$句柄', '$未定义', '$大整数', '$数字']);
+// 文言：层者，数组或对象之嵌套；顶层容器为一层，逾三十二层则拒，故所写之值必可读回。
+// 汉语：容器（数组或对象）嵌套层数，最外层容器算一层；超过 32 层拒绝写入，保证写入的值都能被宿主读回（句柄桥最多 32 层）。
+const 查保留形 = (值, 层 = 0) => {
+  if (Array.isArray(值)) {
+    if (层 + 1 > 32) return '嵌套超过 32 层';
+    for (const 项 of 值) { const 果 = 查保留形(项, 层 + 1); if (果) return 果; }
+  } else if (值 && typeof 值 === 'object') {
+    if (层 + 1 > 32) return '嵌套超过 32 层';
+    const 诸键 = Object.keys(值);
+    if (诸键.length === 1 && 保留单键.has(诸键[0])) return '含宿主保留键 ' + 诸键[0];
+    for (const 键 of 诸键) { const 果 = 查保留形(值[键], 层 + 1); if (果) return 果; }
+  }
+  return '';
+};
+const 字节长 = 文 => new TextEncoder().encode(文).length;
+
+export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 网络 = fetch, 全局 = globalThis, 输出 = () => {}, 执行配置 = null}) {
+  // 文言：配置于创建之时即验，误则壳加载失败。汉语：执行配置在创建宿主时解析校验，非法配置使 Worker 加载失败而不是运行中静默失效。
+  const 事件时限 = 解析执行配置(执行配置);
+  const 取事件时限 = 种类 => 选事件时限(事件时限, 种类);
   const 已授外发网址 = 原文 => {
     let 目标;
     try { 目标 = new URL(原文); } catch { return false; }
@@ -41,30 +117,33 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
     if (!名 || 名.length > 128) throw Error('云工广播频道名无效');
     return 名;
   };
-  // 文言：隔离客器只受程序字节及空许可。汉语：子 Worker 只能运行传入的豫言 Wasm，不继承父 Worker 的绑定。
-  const 造隔离客码 = (程序字节, cpuMs, subRequests) => {
+  // 文言：隔离客器只受程序字节及空许可；二式客器同一造法，惟主模块与所附源码有别。汉语：子 Worker 只能运行传入的 Wasm，不继承父 Worker 的绑定；豫言客器（云工宿主）与文件式客器（内存文件系统）共用本函数，只是主模块与附带的源码不同。
+  const 造子工码 = (主模块, 附源码名, 程序字节, cpuMs, subRequests) => {
     if (!动态资源) throw Error('缺少动态 Worker 资源');
     if (!(程序字节 instanceof Uint8Array) || !WebAssembly.validate(程序字节)) throw Error('动态 Worker 程序不是有效 Wasm');
     const CPU = Number(cpuMs);
     const 次数 = Number(subRequests);
     if (!Number.isSafeInteger(CPU) || CPU < 1 || !Number.isSafeInteger(次数) || 次数 < 0) throw Error('动态 Worker 资源限额无效');
     const 源 = 动态资源.模块源码;
+    const 模块 = {};
+    for (const 名 of [主模块, ...附源码名]) {
+      if (typeof 源[名] !== 'string') throw Error('缺少动态 Worker 模块源码：' + 名);
+      模块[名] = {js: 源[名]};
+    }
+    模块['程序.wasm'] = {wasm: 程序字节.slice().buffer};
+    模块['值桥.wasm'] = {wasm: 动态资源.值桥字节.slice(0)};
     return {
       compatibilityDate: '2026-09-10',
-      mainModule: '隔离入口.mjs',
-      modules: {
-        '隔离入口.mjs': {js: 源['隔离入口.mjs']},
-        '宿主.mjs': {js: 源['宿主.mjs']},
-        '句柄.mjs': {js: 源['句柄.mjs']},
-        '值桥.mjs': {js: 源['值桥.mjs']},
-        '程序.wasm': {wasm: 程序字节.slice().buffer},
-        '值桥.wasm': {wasm: 动态资源.值桥字节.slice(0)}
-      },
+      mainModule: 主模块,
+      modules: 模块,
       globalOutbound: null,
       env: {},
       limits: {cpuMs: CPU, subRequests: 次数}
     };
   };
+  const 造隔离客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离入口.mjs', ['宿主.mjs', '句柄.mjs', '值桥.mjs'], 程序字节, cpuMs, subRequests);
+  // 文言：文件式客器载内存文件系之宿主与其入口，令用户程序读写虚籍而不触平台。汉语：文件式程序（读写内存文件系统、输出到标准输出）的隔离入口，模块为 隔离运行客.mjs 与浏览器编译器宿主 编译宿主.mjs。
+  const 造隔离运行客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离运行客.mjs', ['编译宿主.mjs'], 程序字节, cpuMs, subRequests);
   const 执行 = async (种类, 载荷, 环境, 上下文, 对象状态 = null, 工作流步 = null, 事务仓 = null) => {
       const 请求 = 种类 === 'fetch' || 种类 === 'durable-fetch' || 种类 === 'service-fetch' ? 载荷 : null;
       const 批次 = 种类 === 'queue' ? 载荷 : null;
@@ -80,6 +159,7 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
       const 需工作流输出 = 种类 === 'workflow' || 种类 === 'workflow-step';
       const 需流块输出 = 种类 === 'stream-pull';
       const 需事务输出 = 种类 === 'durable-transaction';
+      const 需独占输出 = 种类 === 'durable-block';
       const 是工作流 = 需工作流输出 || 种类 === 'workflow-rollback';
       let 工作流输出;
       let 已设工作流输出 = false;
@@ -87,6 +167,8 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
       let 已设流块输出 = false;
       let 事务输出;
       let 已设事务输出 = false;
+      let 独占输出;
+      let 已设独占输出 = false;
       const 响应已备 = 有响应 ? new Promise(完成 => { 通知响应 = 完成; }) : null;
       const 句柄 = 创建句柄表();
       const 可写流 = new Map();
@@ -766,6 +848,92 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           if (!事务仓) throw Error('当前事件不是持久对象事务');
           事务仓.rollback();
         },
+        // 文言：事务之败归于值，豫言可捕而复；平台已使诸写回滚。汉语：与 持久事务执行 相同，但把回调或平台的失败作为 [false, 名称: 消息] 返回，供适配转成可捕获的豫言异常。
+        豫言_云工_持久事务执行安全: async 名 => {
+          try { return [true, await 能力.豫言_云工_持久事务执行(名)]; }
+          catch (错) { return [false, 描述错误(错)]; }
+        },
+        // 文言：独占之区以 blockConcurrencyWhile 为界，区内复启豫言客器；区内之败归于值，不使异常穿平台之回调，免对象被重置。
+        // 汉语：暂停投递其他事件，直到重入的 durable-block 处理入口结束。区内失败不抛给平台回调（平台会因此重置整个对象），而是返回 [false, 名称: 消息]。名称、参数皆由豫言定；参数与结果均为有效 JSON 文字。
+        豫言_云工_持久独占执行安全: async (名, 参数文) => {
+          try {
+            if (!对象状态) throw Error('仅持久对象事件可启动独占区');
+            if (事务仓) throw Error('持久事务回调内不可启动独占区');
+            if (种类 === 'durable-block') throw Error('独占区内不可再启动独占区');
+            if (typeof 对象状态.blockConcurrencyWhile !== 'function') throw Error('持久对象不支持 blockConcurrencyWhile');
+            const 操作名 = 文字(名), 参数 = 文字(参数文);
+            if (!操作名 || 字节长(操作名) > 128) throw Error('独占区操作名须为 1 至 128 字节');
+            if (字节长(参数) > 8388608) throw Error('独占区参数超过 8 MiB');
+            try { JSON.parse(参数); } catch { throw Error('独占区参数不是有效 JSON'); }
+            const 果 = await 对象状态.blockConcurrencyWhile(async () => {
+              try { return {成功: true, 值: await 执行('durable-block', {名: 操作名, 参数}, 环境, 上下文, 对象状态, null, null)}; }
+              catch (错) { return {成功: false, 消息: 描述错误(错)}; }
+            });
+            return 果.成功 ? [true, 果.值] : [false, 果.消息];
+          } catch (错) { return [false, 描述错误(错)]; }
+        },
+        豫言_云工_持久独占名: () => {
+          if (!需独占输出) throw Error('当前事件不是持久对象独占区');
+          return 载荷.名;
+        },
+        豫言_云工_持久独占参数: () => {
+          if (!需独占输出) throw Error('当前事件不是持久对象独占区');
+          return 载荷.参数;
+        },
+        // 文言：果必为有效 JSON 且一次惟一；违者归阴与因，客可捕之。汉语：设置独占区的唯一结果；重复、非 JSON 或超过 8 MiB 时返回 [false, 原因]，不抛 JS 异常。
+        豫言_云工_持久独占输出安全: 结果 => {
+          try {
+            if (!需独占输出) throw Error('当前事件不是持久对象独占区');
+            if (已设独占输出) throw Error('独占区结果只能设置一次');
+            const 文 = 文字(结果);
+            if (字节长(文) > 8388608) throw Error('独占区结果超过 8 MiB');
+            try { JSON.parse(文); } catch { throw Error('独占区结果不是有效 JSON'); }
+            独占输出 = 文;
+            已设独占输出 = true;
+            return [true, ''];
+          } catch (错) { return [false, 描述错误(错)]; }
+        },
+        // 文言：直写之值先验于宿主原生 JSON、大小与保留形，败则归值；事务内外皆循当前之仓。
+        // 汉语：写入一个 JSON 值（键 1–2048 字节、值文字不超过 2 MiB、不含宿主保留单键对象）；失败返回 [false, 原因]，不抛 JS 异常。值以结构化值存入，与 持久写入值 的既有存取方式相同。
+        豫言_云工_持久写入值安全: async (键, 值文) => {
+          try {
+            const 名 = 文字(键), 文 = 文字(值文), 键长 = 字节长(名);
+            if (键长 < 1 || 键长 > 2048) throw Error('持久键须为 1 至 2048 字节');
+            if (字节长(文) > 2097152) throw Error('持久值超过 2 MiB');
+            let 值;
+            try { 值 = JSON.parse(文); } catch { throw Error('持久值不是有效 JSON'); }
+            const 保留 = 查保留形(值);
+            if (保留) throw Error('持久值' + 保留);
+            await 取键值仓().put(名, 值);
+            return [true, ''];
+          } catch (错) { return [false, 描述错误(错)]; }
+        },
+        // 文言：列举之选先规整，空串视同无；果逾八兆则败，令客分页。汉语：接受 {prefix,start,startAfter,end,limit,reverse}，空字符串等同未指定；未知字段、类型错误、start 与 startAfter 并存、结果超过 8 MiB 时返回 [false, 原因]。
+        豫言_云工_持久列举值安全: async 选项文 => {
+          try {
+            let 原;
+            try { 原 = JSON.parse(文字(选项文)); } catch { throw Error('列举选项不是有效 JSON'); }
+            if (!原 || typeof 原 !== 'object' || Array.isArray(原)) throw Error('列举选项须为 JSON 对象');
+            const 选项 = {};
+            for (const [名, 值] of Object.entries(原)) {
+              if (['prefix', 'start', 'startAfter', 'end'].includes(名)) {
+                if (typeof 值 !== 'string') throw Error('列举选项 ' + 名 + ' 须为字符串');
+                if (值 !== '') 选项[名] = 值;
+              } else if (名 === 'limit') {
+                if (!Number.isSafeInteger(值) || 值 < 1) throw Error('列举选项 limit 须为不小于 1 的整数');
+                选项.limit = 值;
+              } else if (名 === 'reverse') {
+                if (typeof 值 !== 'boolean') throw Error('列举选项 reverse 须为爻');
+                if (值) 选项.reverse = true;
+              } else throw Error('列举选项含未知字段：' + 名);
+            }
+            if (Object.hasOwn(选项, 'start') && Object.hasOwn(选项, 'startAfter')) throw Error('列举选项不能同时指定 start 与 startAfter');
+            const 结果 = await 取键值仓().list(选项);
+            const 文 = JSON.stringify(Array.from(结果, ([键, 值]) => [键, 句柄.出(值)]));
+            if (字节长(文) > 8388608) throw Error('列举结果超过 8 MiB，请用 limit 分页');
+            return [true, 文];
+          } catch (错) { return [false, 描述错误(错)]; }
+        },
         豫言_云工_持久读取文字: async 键 => {
           const 值 = await 取键值仓().get(文字(键));
           if (值 == null) return [false, ''];
@@ -1116,6 +1284,13 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           return 值;
         },
         豫言_云工_环境值文: 名 => JSON.stringify(句柄.出(取值绑定(环境, 许可, 名, 'ENV'))),
+        // 文言：绑定之在否，先核许可而后察 env 之真值；未授者败，已授而阙或空者归阴。
+        // 汉语：按种类与名称核对许可（未授权抛“未授权的<种类>绑定：<名>”），返回 Boolean(env[名])：已授权但缺失、空字符串、null 或 0 返回阴。供环境文字适配区分“空”与“有值”（环境文字适配所需的宿主原语）。
+        豫言_云工_授权绑定存在: (种类, 名) => {
+          const 类 = 文字(种类), 称 = 文字(名);
+          if (!许可[类]?.includes(称)) throw Error('未授权的' + 类 + '绑定：' + 称);
+          return Boolean(环境[称]);
+        },
         豫言_云工_秘密文字: 名 => {
           const 值 = 取值绑定(环境, 许可, 名, 'SECRET');
           if (typeof 值 !== 'string') throw Error('Secret 不是文字');
@@ -1163,6 +1338,8 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           句柄.登记(绑定(环境, 许可, 名, 'LOADER').load(造隔离客码(程序字节, cpuMs, subRequests))),
         豫言_云工_动态按号取: (名, 标识, 程序字节, cpuMs, subRequests) =>
           句柄.登记(绑定(环境, 许可, 名, 'LOADER').get(文字(标识), async () => 造隔离客码(程序字节, cpuMs, subRequests))),
+        豫言_云工_隔离运行客按号取: (名, 标识, 程序字节, cpuMs, subRequests) =>
+          句柄.登记(绑定(环境, 许可, 名, 'LOADER').get(文字(标识), async () => 造隔离运行客码(程序字节, cpuMs, subRequests))),
         豫言_云工_动态入口句柄: 号 => 句柄.登记(句柄.取得(文字(号)).getEntrypoint()),
         豫言_云工_全局句柄: 名 => {
           const 名称 = 句柄.允名(文字(名));
@@ -1182,6 +1359,14 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           const 方法 = 对象[句柄.允名(文字(名))];
           if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
           return JSON.stringify(句柄.出(await Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))));
+        },
+        豫言_云工_调用方法安全: async (号, 名, 参数文) => {
+          try {
+            const 对象 = 句柄.取得(文字(号));
+            const 方法 = 对象[句柄.允名(文字(名))];
+            if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
+            return [true, JSON.stringify(句柄.出(await Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))))];
+          } catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错)})]; }
         },
         豫言_云工_调用方法原始: (号, 名, 参数文) => {
           const 对象 = 句柄.取得(文字(号));
@@ -1356,6 +1541,15 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
         豫言_云工_表单解析正文: async 号 => 句柄.登记(await 句柄.取得(文字(号)).formData()),
         // 文言：文编解码归宿主标准器，客操其字与状态。汉语：豫言调用 Worker 的 TextEncoder、TextDecoder 和流式解码。
         豫言_云工_编码UTF8: 内容 => new 全局.TextEncoder().encode(文字(内容)),
+        // 文言：Base64 之解，宿主为之；败则返阴，不越桥而抛。汉语：用 atob 解码标准 Base64（宽容 ASCII 空白与缺省填充，同 JS 的 atob），成功返回（阳，字节），字符非法或长度不合返回（阴，空字节）。
+        豫言_云工_解Base64安全: 内容 => {
+          try {
+            const 二进制 = 全局.atob(文字(内容));
+            const 字节 = new Uint8Array(二进制.length);
+            for (let 位 = 0; 位 < 二进制.length; 位++) 字节[位] = 二进制.charCodeAt(位);
+            return [true, 字节];
+          } catch { return [false, new Uint8Array(0)]; }
+        },
         豫言_云工_解码文字: (标记, 严格, 略首, 内容) =>
           new 全局.TextDecoder(文字(标记), {fatal: Boolean(严格), ignoreBOM: Boolean(略首)}).decode(内容),
         豫言_云工_创建解码器: (标记, 严格, 略首) =>
@@ -1648,7 +1842,7 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           可写流.delete(文字(号));
         }
       };
-      const {运行} = 创建豫言实例(程序模块, 值桥模块, 能力, {输出});
+      const {运行} = 创建豫言实例(程序模块, 值桥模块, 能力, {输出, 时限毫秒: 取事件时限(种类)});
       const 运行毕 = 运行().then(() => {
         for (const 态 of 事件源.values()) 态.来源.close();
         事件源.clear();
@@ -1656,8 +1850,11 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
         if (需工作流输出 && !已设工作流输出) throw Error('豫言工作流未设置输出');
         if (需流块输出 && !已设流块输出) throw Error('豫言流拉取回调未供块');
         if (需事务输出 && !已设事务输出) throw Error('豫言事务回调未供结果');
-        return 需工作流输出 ? 工作流输出 : 需流块输出 ? 流块输出 : 需事务输出 ? 事务输出 : 响应;
+        if (需独占输出 && !已设独占输出) throw Error('豫言独占区未供结果');
+        return 需工作流输出 ? 工作流输出 : 需流块输出 ? 流块输出 : 需事务输出 ? 事务输出 : 需独占输出 ? 独占输出 : 响应;
       }).catch(错 => {
+        // 文言：响应既发，其后之败无人可告，当记于平台之志。汉语：响应已经交给调用方后 Wasm 才失败时，错误不会传给调用方，只能写入平台日志，避免静默丢失。
+        if (有响应 && 响应) 全局.console?.error?.('[豫言] 响应已交付后运行失败：' + 描述错误(错));
         for (const 态 of 事件源.values()) 态.来源.close();
         事件源.clear();
         for (const 态 of 可写流.values()) {
@@ -1676,7 +1873,7 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
         if (定时唤醒) { const 完成 = 定时唤醒; 定时唤醒 = null; 完成({种类: 'closed'}); }
       });
       if (上下文?.waitUntil) 上下文.waitUntil(运行毕.catch(() => {}));
-      return 有响应 ? Promise.race([响应已备, 运行毕]) : 需工作流输出 || 需流块输出 || 需事务输出 ? 运行毕 : 运行毕.then(() => undefined);
+      return 有响应 ? Promise.race([响应已备, 运行毕]) : 需工作流输出 || 需流块输出 || 需事务输出 || 需独占输出 ? 运行毕 : 运行毕.then(() => undefined);
   };
   return {
     fetch(请求, 环境, 上下文) { return 执行('fetch', 请求, 环境, 上下文); },
