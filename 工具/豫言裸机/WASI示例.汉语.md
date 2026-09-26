@@ -1,6 +1,6 @@
 # WASI 示例：在豫言操作系统里运行 C 程序
 
-`工具/豫言裸机/WASI示例/` 是一棵可以直接放进磁盘的目录树：`程序/` 下是六个用 wasi-sdk 编成的 `.wasm`（C 程序按 WASI preview1 约定导入 `wasi_snapshot_preview1`、导出 `_start`），`源码/` 下是它们的 C 源文件。壳测试 `WASI` 用符号链接把它当作预置树，所以每个程序都在两个架构的 QEMU 里逐字验证过输出与退出码。执行器实现了 WASI 的哪一部分，见 [客体二号](客体二号.汉语.md) 的“WASI preview1 子集”一节。
+`工具/豫言裸机/WASI示例/` 是一棵可以直接放进磁盘的目录树：`程序/` 下是十二个用 wasi-sdk 编成的 `.wasm`（C 程序按 WASI preview1 约定导入 `wasi_snapshot_preview1`、导出 `_start`），`源码/` 下是它们的 C 源文件。壳测试 `WASI` 与 `WASI文件` 用符号链接把它当作预置树，所以每个程序都在两个架构的 QEMU 里逐字验证过输出与退出码。执行器实现了 WASI 的哪一部分，见 [客体二号](客体二号.汉语.md) 的“WASI preview1 子集”一节。
 
 ## 运行
 
@@ -19,13 +19,22 @@ arg1=甲
 arg2=乙
 pi=3.141593 sqrt2=1.4142135624 sin1=0.8414709848
 退出码：3
+壳> 运行 /程序/文件测试.wasm
+mkdir /测试 成功
+mkdir 重复 失败：File exists
+读到：第一行
+……
+壳> 运行 /程序/猫.wasm /测试/甲.txt
+改一行
+第二行 42
+追加行
 壳> 运行 /程序/回声.wasm
 回声就绪
 hello
 1: HELLO
 ```
 
-最后一例里的 `hello` 是你敲的（由 `读行核` 回显），`1: HELLO` 是程序的输出；在行首按 Ctrl-D 结束输入，程序打印统计后退出。
+最后一例里的 `hello` 是你敲的（由 `读行核` 回显），`1: HELLO` 是程序的输出；在行首按 Ctrl-D 结束输入，程序打印统计后退出。程序里的路径相对预开的根目录 “/”，所以 `/测试/甲.txt` 就是磁盘上的同一个文件，壳的 `读`、`列` 也看得到。
 
 ## 程序
 
@@ -35,8 +44,14 @@ hello
 | `回声` | 逐行读标准输入，转大写并编号 | 标准输入（回显、行首 Ctrl-D 为文件结束） |
 | `计算` | 素数筛、qsort、二叉搜索树、八皇后、SHA-256、浮点与整数格式化 | 整数与浮点指令、`malloc` 与 `memory.grow`、64 位整数；输出确定，可与 Node 自带 WASI 逐字对照 |
 | `记时` | 单调时钟不倒退、分辨率为正、两次 `getentropy` 不同 | `clock_time_get`、`clock_res_get`、`random_get` |
+| `睡眠` | `usleep`、`nanosleep`、`sleep` 后用单调时钟核对睡够了 | `poll_oneoff` 的时钟订阅 |
 | `出入` | 标准输出与标准错误交替、`atexit`、逐个打印参数、以第一个参数为退出码 | `fd_write` 的两个流、退出码传回壳 |
 | `陷阱 [1–4]` | 1 `abort`、2 整数除零、3 线性内存越界、4 间接调用越界 | 陷阱只结束子任务，壳继续执行 |
+| `猫 文件…` | 把文件依次写到标准输出，打不开的报错到标准错误并以 1 退出 | 读文件（`path_open`、`fd_read`）、`fopen` 失败的错误信息 |
+| `目录转储 [路径]` | 递归列出目录树，文件显示长度与 FNV-1a 校验 | `opendir`／`readdir`、`stat` |
+| `文件测试` | 建目录、写读追加、二进制一万字节、`fseek`、目录列表、改名、删除、错误信息、没有 `fclose` 的文件 | 文件与目录综合，`_start` 返回时写回未关闭的文件 |
+| `文件边界` | `O_EXCL`、`O_APPEND`、`pread`／`pwrite`、`ftruncate`、稀疏文件、读写目录、路径里的 `..`、父路径是文件、`rename` 覆盖、`chdir` | 文件语义的边界与错误号（与 Linux 一致） |
+| `文件压力` | 写一个 100 KB 文件再整读 400 次 | 文件缓冲的垃圾回收（只在 Node 夹具里跑：子任务里文件走邮箱，搬 40 MB 太慢） |
 
 ## 自己编译
 
@@ -50,10 +65,11 @@ wasi-sdk/bin/clang --target=wasm32-wasip1 -Os -Wl,--strip-all -o 程序/你好.w
 
 ## 核对
 
-用 Node 自带的 WASI 运行同一份 `.wasm` 得到参照输出（`node:wasi` 的 `WASI({ version: 'preview1', args })`，标准流接到管道），与执行器的输出逐字比较：
+用 Node 自带的 WASI 运行同一份 `.wasm` 得到参照输出（`node:wasi` 的 `WASI({ version: 'preview1', args, preopens: { '/': 临时目录 } })`，标准流接到管道），与执行器的输出逐字比较；`工具/豫言裸机/客体二号/WASI对照.cjs` 做了不带磁盘的那一半（命令行、标准流、计算、时钟、陷阱），带磁盘的文件测试用 `虚拟块设备` 夹具在 Node 里运行，再用一个 `目录转储` 读同一块盘对照：
 
 - `计算` 在 `-O0`、`-O1`、`-O2`、`-Os`、`-O3` 下都相同；
 - `出入`、`你好` 的参数与退出码相同；
-- `陷阱` 的四种陷阱在 Node 里是 `RuntimeError`（unreachable、divide by zero、memory access out of bounds、table index is out of bounds），在执行器里是对应的退出码 128、125、127、124。
+- `陷阱` 的四种陷阱在 Node 里是 `RuntimeError`（unreachable、divide by zero、memory access out of bounds、table index is out of bounds），在执行器里是对应的退出码 128、125、127、124；
+- `文件测试`、`文件边界` 的输出与 Node 逐字相同，只有三处宿主特有的差异：Node 报告目录的大小（宿主文件系统的 128）、对目录 `read` 得 EBADF（执行器和 Linux 一样是 EISDIR）、`unlink` 目录得 EPERM（执行器是 EISDIR）。
 
-这样的对照发现过一个真实的问题：`计算` 里的二叉树在执行器里高度少算一层，原因是没有声明上限的内存不能 `memory.grow`（见“WASI preview1 子集”一节的“内存增长”）。
+这样的对照发现过两个真实的问题：`计算` 里的二叉树在执行器里高度少算一层，原因是没有声明上限的内存不能 `memory.grow`；文件测试在 QEMU 的子任务里偶发失败，原因是内核邮箱只容一条消息，紧接着的两次远程文件调用会撞上“邮箱满”（见“WASI preview1 子集”一节的“内存增长”与“邮箱发送的重试”）。

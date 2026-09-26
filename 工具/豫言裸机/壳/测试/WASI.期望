@@ -31,6 +31,10 @@ sha256(abc)=ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
 分辨率 正
 实时时钟 非负
 随机 0 0 两次不同
+壳> 运行 /程序/睡眠.wasm
+usleep 300 毫秒：足够
+nanosleep 120 毫秒：足够
+sleep 1 秒：足够
 壳> 运行 /程序/陷阱.wasm 1
 陷阱种类 1
 unreachable

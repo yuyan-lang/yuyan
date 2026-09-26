@@ -1,0 +1,95 @@
+壳就绪
+壳> 运行 /程序/猫.wasm /源码/你好.c
+// 文言：示之以命令行、浮点之出、退出码。
+// 汉语：打印参数个数与各参数，再打印几个浮点数（printf 的 %f 与 libm 的 sqrt、sin），最后以退出码 3 结束。
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+int main(int argc, char **argv) {
+  printf("hello wasi %d\n", argc);
+  for (int i = 0; i < argc; i++) printf("arg%d=%s\n", i, argv[i]);
+  printf("pi=%f sqrt2=%.10f sin1=%.10f\n", 3.14159265358979, sqrt(2.0), sin(1.0));
+  return 3;
+}
+壳> 运行 /程序/猫.wasm /源码/无此.c
+猫：无法打开 /源码/无此.c：No such file or directory
+退出码：1
+壳> 运行 /程序/文件测试.wasm
+mkdir /测试 成功
+mkdir 重复 失败：File exists
+读到：第一行
+读到：第二行 42
+stat /测试/甲.txt：文件 大小 33
+末尾 33
+首行：改一行
+写 10000
+读 10000 一致
+stat /测试/乙.bin：文件 大小 10000
+mkdir 子 成功
+/测试: 乙.bin 子 甲.txt
+/测试/子: 丙.txt
+rmdir 非空 失败：Directory not empty
+rename 成功
+rmdir 空 成功
+/测试: 丁.txt 乙.bin 甲.txt
+unlink 成功
+unlink 无 失败：No such file or directory
+fopen 无 失败：No such file or directory
+stat /测试：目录 大小 0
+stat /测试/无此 失败：No such file or directory
+结束
+壳> 运行 /程序/文件边界.wasm
+excl 建 成功
+excl 再建 失败：File exists
+内容 abcdefghi (9)
+pread cde
+到尾再读 0
+只读写 失败：Bad file descriptor
+截后 aZZde (5)
+加长后 8 末字节 0
+稀疏后大小 21
+空洞 4 0 0 0 0
+寻到负数 失败：Invalid argument
+截断后大小 0
+读目录 Is a directory
+写开目录 失败：Is a directory
+规范路径 成功
+多斜线 成功
+文件当目录 失败：Not a directory
+无父目录 失败：No such file or directory
+mkdir 无父 失败：No such file or directory
+mkdir 父是文件 失败：Not a directory
+rmdir 文件 失败：Not a directory
+unlink 目录 失败：Is a directory
+rename 覆盖 成功
+覆盖后 甲内容
+旧名 失败：No such file or directory
+rename 无 失败：No such file or directory
+rename 文件到目录 失败：Is a directory
+chdir 成功
+相对路径 /边界/多2.txt
+壳> 运行 /程序/目录转储.wasm /边界
+多0.txt 长16 校验1a1dc117
+多1.txt 长16 校验4ad51ab8
+多2.txt 长16 校验5be62e4d
+多3.txt 长16 校验20165b4e
+多4.txt 长16 校验db2a835b
+独.txt 长9 校验47c32dd4
+壳> 运行 /程序/目录转储.wasm /测试
+乙.bin 长10000 校验b6745a0d
+未关.txt 长22 校验1cc484ae
+甲.txt 长33 校验d1d690f3
+壳> 读 /测试/甲.txt
+改一行
+第二行 42
+追加行
+
+壳> 列 /测试
+甲.txt
+乙.bin
+未关.txt
+壳> 运行 /程序/猫.wasm /测试/未关.txt
+未关闭也应写回
+壳> 退出
+壳已退出
