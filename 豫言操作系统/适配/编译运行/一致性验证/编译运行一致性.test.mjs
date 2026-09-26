@@ -2,7 +2,7 @@
 // 汉语：编译运行接口的云工适配一致性验证。同一组场景在两种环境里各跑一遍：（一）Node 进程内：真实豫言 Wasm（试验应用）+ 真实宿主运行器（宿主/云工/编译运行.mjs）+ 真实编译器 Wasm 与标准库资料；
 // （二）本地 workerd（Miniflare）：把试验应用的构建产物与运行器一起装载，标准库资料经服务绑定替身供给。另有只在 Node 内可做的运行器级测试（等待者互斥、状态 1 超时、并发上限、无残留）。
 // 用法（在私有暂存目录里执行，其中有 dist/）：
-//   1. 建应用.sh <暂存目录> 云工 <本目录>/应用 编译运行一致性
+//   1. ./yy双宿主构建 --自动 云工 <本目录>/应用 dist/编译运行一致性
 //   2. node --test <本目录>/编译运行一致性.test.mjs
 // 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_CLOUD_ROOT 云仓根（默认相邻的 ../yuyan-cloud，取其中 工具/云端编译服务 的编译器 Wasm、值桥、Binaryen 胶水与标准库资料）；
 // YY_BINARYEN Node 用的 binaryen 入口（默认云仓 应用/豫言体验/node_modules/binaryen）；E2E_MINIFLARE miniflare 入口（默认云仓 工具/包管理服务/node_modules）。缺任何一项则报错并说明。
