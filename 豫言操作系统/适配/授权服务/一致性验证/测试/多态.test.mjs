@@ -64,3 +64,10 @@ test('读取函数的参数校验：块上限 1..65536、字节上限 1..8388608
   assert.match(段们[4], /授权服务响应标头名无效/);
   assert.match(段们[5], /授权服务响应标头名无效/);
 });
+
+test('读取授权服务癸象正文文：2xx 而正文不是 JSON 时抛可捕获的事故，事件不失败（路由代理修订）', async () => {
+  const s = new 服务桩(() => new Response('<html>不是 JSON</html>', {status: 200, headers: {'content-type': 'text/html'}}));
+  const 果 = await 跑({op: 'multi', mode: 'badjson'}, {SVC: s}, 造宿主({网络}));
+  assert.equal(果.状态, 200, 果.文);
+  assert.match(果.文, /授权服务 JSON 正文无效：SyntaxError: /);
+});
