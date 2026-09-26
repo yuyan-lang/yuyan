@@ -582,6 +582,30 @@ test('选择器与带属性的校验：语法错误、超限、重复、危险�
   assert.equal(页.宿主.状态().界面订阅数, 前);
 }));
 
+test('排除选择器：点击落在被排除区域之内则忽略（不投递、不阻止默认），之外才产生事件；可与选择器并用', 用页({
+  html: 页面('<details class="文件目录"><summary id="摘要">目录</summary><div><a id="内链" href="#x">内</a></div></details><p id="外" data-yy="外面">外</p><button id="钮" type="button">钮</button>')
+}, async 页 => {
+  await 页.调('订阅界面事件', '文档', 'click', JSON.stringify({排除选择器: '.文件目录', 阻止默认: true}));
+  const 摘要点 = 点(页.窗, 页.文.getElementById('摘要'));
+  assert.equal(摘要点.defaultPrevented, false, '被排除：不执行同步动作');
+  点(页.窗, 页.文.getElementById('内链'));
+  await 睡(20);
+  assert.equal(页.宿主.状态().各类积压.界面 ?? 0, 0, '区域内的点击没有事件');
+  const 外点 = 点(页.窗, 页.文.getElementById('外'));
+  assert.equal(外点.defaultPrevented, true);
+  const 事 = await 事件(页);
+  assert.deepEqual([事.标识, 事.操作键], ['外', '外面']);
+  // 与选择器并用：先排除，后选择器
+  await 页.调('订阅界面事件', '文档', 'mouseover', JSON.stringify({排除选择器: '.文件目录', 选择器: 'button'}));
+  点(页.窗, 页.文.getElementById('摘要'), 'mouseover');
+  点(页.窗, 页.文.getElementById('钮'), 'mouseover');
+  const 悬 = await 事件(页);
+  assert.deepEqual([悬.名称, 悬.标识], ['mouseover', '钮']);
+  // 校验
+  await 失败(页.调('订阅界面事件', '文档', 'click', '{"排除选择器":""}'), /排除选择器须为/);
+  await 失败(页.调('订阅界面事件', '文档', 'click', '{"排除选择器":"a["}'), /排除选择器无效/);
+}));
+
 test('带属性与带矩形在没有选择器时作用于原始目标；口令框的 value 属性不带出', 用页({
   html: 页面('<button id="钮" data-k="v">钮</button><input id="口令" type="password" value="秘密" data-k="w">')
 }, async 页 => {
@@ -661,6 +685,139 @@ test('设置节点位置与读取节点矩形：像素整数、范围、危险�
   assert.deepEqual(Object.keys(框).sort(), ['上', '下', '右', '左'].sort());
   assert.ok(Object.values(框).every(Number.isInteger));
   await 失败(页.调('读取节点矩形', '没有'), /不存在/);
+}));
+
+// ---------------------------------------------------------------------------
+// 八·六、网页文树 0.3.0：选择器查询、节点读回、树导出、替换、超文本
+// ---------------------------------------------------------------------------
+test('文树 0.3.0：选择器查询（含 template 内容、危险元素不入结果）与节点读回、父级、最近祖先、匹配', 用页({
+  html: 页面('<section id="外"><p id="段"><a class="引用" href="/x">甲</a><a class="引用" href="/y" title="题">乙</a></p></section><script id="脚" class="引用"></script>'
+    + '<template id="资料"><a data-qualified="甲.乙" href="/a">甲</a></template>')
+}, async 页 => {
+  const 柄们 = JSON.parse(await 页.调('查询页面节点', '', '.引用'));
+  assert.equal(柄们.length, 2, '危险元素 script 不入结果');
+  assert.equal(await 页.调('读取页面节点标签', 柄们[0]), 'a');
+  assert.deepEqual(存在文(await 页.调('读取页面节点属性', 柄们[1], 'title')), [true, '题']);
+  assert.deepEqual(存在文(await 页.调('读取页面节点属性', 柄们[0], 'title')), [false, '']);
+  assert.equal(await 页.调('读取页面节点文字', 柄们[0]), '甲');
+  const 父 = await 页.调('读取页面节点父级', 柄们[0]);
+  assert.equal(await 页.调('读取页面节点标签', 父), 'p');
+  const 祖 = await 页.调('查找最近页面祖先', 柄们[0], 'section');
+  assert.equal(await 页.调('读取页面节点标签', 祖), 'section');
+  assert.equal(await 页.调('查找最近页面祖先', 柄们[0], '.不存在'), '');
+  assert.equal(await 页.调('查找最近页面祖先', 柄们[0], 'a'), 柄们[0], 'closest 含自身，同一元素同一句柄');
+  assert.equal(await 页.调('页面节点匹配选择器', 柄们[0], 'a[href="/x"]'), 'true');
+  assert.equal(await 页.调('页面节点匹配选择器', 柄们[0], 'a[href="/y"]'), 'false');
+  assert.deepEqual(JSON.parse(await 页.调('查询页面节点', 父, 'a')), 柄们, '按文档顺序，同一元素同一句柄');
+  // 根为 template：在其 content 里查询；普通文档查询看不到
+  assert.deepEqual(JSON.parse(await 页.调('查询页面节点', '', 'a[data-qualified]')), []);
+  const 模板柄 = await 页.调('取得页面节点', '资料');
+  const 模板内 = JSON.parse(await 页.调('查询页面节点', 模板柄, 'a[data-qualified]'));
+  assert.equal(模板内.length, 1);
+  assert.deepEqual(存在文(await 页.调('读取页面节点属性', 模板内[0], 'data-qualified')), [true, '甲.乙']);
+  assert.equal(await 页.调('读取页面节点父级', 模板内[0]), '', '模板内容里的节点没有父元素');
+  // 错误
+  await 失败(页.调('查询页面节点', '', 'a['), /选择器无效/);
+  await 失败(页.调('查询页面节点', '', ''), /选择器须为/);
+  await 失败(页.调('查询页面节点', '', 'a'.repeat(513)), /选择器须为/);
+  await 失败(页.调('读取页面节点标签', '99999'), /句柄无效/);
+  await 失败(页.调('读取页面节点属性', 柄们[0], 'onclick'), /不受支持/);
+  await 失败(页.调('查找最近页面祖先', 柄们[0], '::'), /选择器无效/);
+  // 释放这些句柄，句柄数回到起点
+  const 起 = 页.宿主.状态().句柄数;
+  for (const 柄 of [...柄们, 父, 祖, 模板柄, ...模板内]) await 页.调('释放页面节点', 柄);
+  assert.ok(页.宿主.状态().句柄数 < 起);
+}));
+
+test('文树 0.3.0：读取页面节点树导出与构建页面节点树同形，白册外属性与危险子树被略去，重建等价', 用页({
+  html: 页面('<div id="根容器"></div><p class="源 宽" data-a="b" hidden onclick="x" style="color:red" data-yy-x="1">首<code class="c0">ab<b class="k">cd</b></code>末<script>1</script><template><i>甲</i></template></p>')
+}, async 页 => {
+  const 源 = JSON.parse(await 页.调('查询页面节点', '', 'p.源'))[0];
+  const 树 = JSON.parse(await 页.调('读取页面节点树', 源, 5));
+  assert.deepEqual(树, {标签: 'p', 类: '源 宽', 属性: {'data-a': 'b', hidden: ''},
+    子: ['首', {标签: 'code', 类: 'c0', 子: ['ab', {标签: 'b', 类: 'k', 子: ['cd']}]}, '末']});
+  // 原样交给构建页面节点树得到等价的新树
+  const 新 = await 页.调('构建页面节点树', JSON.stringify(树));
+  const 容器 = await 页.调('取得页面节点', '根容器');
+  await 页.调('添加页面子节点', 容器, 新);
+  const 副本 = 页.文.querySelector('#根容器 > p');
+  assert.equal(副本.className, '源 宽');
+  assert.equal(副本.getAttribute('data-a'), 'b');
+  assert.equal(副本.hasAttribute('onclick'), false);
+  assert.equal(副本.textContent, '首abcd末');
+  assert.equal(副本.querySelector('b.k').textContent, 'cd');
+  // 深度与节点数上限
+  await 失败(页.调('读取页面节点树', 源, 2), /深度超过所给上限/);
+  await 失败(页.调('读取页面节点树', 源, 0), /深度上限须为/);
+  await 失败(页.调('读取页面节点树', 源, 33), /深度上限须为/);
+  const 大 = 页.文.createElement('div');
+  for (let i = 0; i < 2000; i++) 大.appendChild(页.文.createElement('span'));
+  大.id = '大';
+  页.文.body.appendChild(大);
+  await 失败(页.调('读取页面节点树', await 页.调('取得页面节点', '大'), 3), /节点数超过 2000/);
+}));
+
+test('文树 0.3.0：替换页面节点不释放旧节点句柄，可再放进新节点（包一层）；无父与层级违规抛事故', 用页({
+  html: 页面('<div id="容器"><span id="旧">字</span><b id="后">后</b></div>')
+}, async 页 => {
+  const 旧 = await 页.调('取得页面节点', '旧');
+  const 链 = await 页.调('新建页面节点', 'a', '', '包');
+  await 页.调('设置页面节点属性', 链, 'href', '/x');
+  await 页.调('替换页面节点', 旧, 链);
+  assert.equal(页.文.getElementById('容器').innerHTML, '<a class="包" href="/x"></a><b id="后">后</b>');
+  await 页.调('添加页面子节点', 链, 旧);
+  assert.equal(页.文.getElementById('容器').innerHTML, '<a class="包" href="/x"><span id="旧">字</span></a><b id="后">后</b>');
+  await 页.调('设置页面节点文字', 旧, '改'); // 旧句柄仍有效
+  assert.equal(页.文.getElementById('旧').textContent, '改');
+  // 无父节点的旧节点
+  const 孤 = await 页.调('新建页面节点', 'span', '', '');
+  await 失败(页.调('替换页面节点', 孤, 链), /没有父节点/);
+  // 把祖先放进后代
+  const 后 = await 页.调('取得页面节点', '后');
+  const 容器 = await 页.调('取得页面节点', '容器');
+  await 失败(页.调('替换页面节点', 后, 容器), /层级无效/);
+  // 自己换自己：无事
+  await 页.调('替换页面节点', 后, 后);
+}));
+
+test('文树 0.3.0：移除页面节点属性与读取；设置页面节点超文本按白册清洗、不合规抛事故且内容不变、旧子树句柄同释', 用页({
+  html: 页面('<div id="盒" data-x="1" hidden><i id="旧子">旧</i></div><pre id="代码"></pre>')
+}, async 页 => {
+  const 盒 = await 页.调('取得页面节点', '盒');
+  await 页.调('移除页面节点属性', 盒, 'data-x');
+  await 页.调('移除页面节点属性', 盒, 'hidden');
+  await 页.调('移除页面节点属性', 盒, 'title'); // 本来没有：无事
+  assert.equal(页.文.getElementById('盒').hasAttribute('data-x') || 页.文.getElementById('盒').hidden, false);
+  await 失败(页.调('移除页面节点属性', 盒, 'style'), /不受支持/);
+  await 失败(页.调('移除页面节点属性', 盒, 'data-yy-内'), /不受支持|保留/);
+  const 代码 = await 页.调('取得页面节点', '代码');
+  const 旧子 = await 页.调('取得页面节点', '旧子');
+  void 旧子;
+  await 页.调('设置页面节点超文本', 代码, '<span class="tok-k">甲</span>乙<!--注释--><b>粗</b><em>强调</em><hr>');
+  assert.equal(页.文.getElementById('代码').innerHTML, '<span class="tok-k">甲</span>乙<b>粗</b><em>强调</em><hr>');
+  // 不合规：标签、属性、链接
+  const 前 = 页.文.getElementById('代码').innerHTML;
+  await 失败(页.调('设置页面节点超文本', 代码, '<script>alert(1)</script>'), /不受支持的标签：script（根\[0\]）/);
+  await 失败(页.调('设置页面节点超文本', 代码, '甲<span onclick="x">乙</span>'), /页面属性不受支持：onclick（根\[1\]）/);
+  await 失败(页.调('设置页面节点超文本', 代码, '<span style="color:red">乙</span>'), /页面属性不受支持：style/);
+  await 失败(页.调('设置页面节点超文本', 代码, '<a href="javascript:alert(1)">乙</a>'), /链接不受支持/);
+  await 失败(页.调('设置页面节点超文本', 代码, '<div><p><img src=x></p></div>'), /不受支持的标签：img（根\[0\]\.子\[0\]\.子\[0\]）/);
+  assert.equal(页.文.getElementById('代码').innerHTML, 前, '失败不改内容');
+  await 页.调('设置页面节点超文本', 代码, '');
+  assert.equal(页.文.getElementById('代码').innerHTML, '');
+  // 被替换子树的句柄同释
+  const 盒二 = await 页.调('取得页面节点', '盒');
+  await 页.调('设置页面节点超文本', 盒二, '新');
+  await 失败(页.调('读取页面节点标签', 旧子), /句柄无效/);
+}));
+
+test('文树 0.3.0：新增标签 em、i、kbd、sup、sub、blockquote、hr、dl、dt、dd 可建；hr 是空元素', 用页({html: 页面('<div id="根容器"></div>')}, async 页 => {
+  const 树 = {标签: 'blockquote', 子: [{标签: 'em', 文字: '强'}, {标签: 'i', 文字: '斜'}, {标签: 'kbd', 文字: 'Ctrl'}, {标签: 'sup', 文字: '2'}, {标签: 'sub', 文字: '1'},
+    {标签: 'hr'}, {标签: 'dl', 子: [{标签: 'dt', 文字: '词'}, {标签: 'dd', 文字: '义'}]}]};
+  const 柄 = await 页.调('构建页面节点树', JSON.stringify(树));
+  await 页.调('添加页面子节点', await 页.调('取得页面节点', '根容器'), 柄);
+  assert.equal(页.文.getElementById('根容器').innerHTML, '<blockquote><em>强</em><i>斜</i><kbd>Ctrl</kbd><sup>2</sup><sub>1</sub><hr><dl><dt>词</dt><dd>义</dd></dl></blockquote>');
+  await 失败(页.调('构建页面节点树', JSON.stringify({标签: 'hr', 文字: '不可'})), /空元素/);
 }));
 
 // ---------------------------------------------------------------------------

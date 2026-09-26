@@ -1037,3 +1037,48 @@ test('装入页面模板：取同源 HTML，按标识选一个元素，剔除脚
   assert.throws(() => 文树('设置文字', 旧号, 'x'), /页面节点句柄无效/, '被替换掉的旧子树句柄同时释放');
   assert.equal(表.数量(), 0);
 });
+
+// ---------------------------------------------------------------------------
+// 页面控制 0.3.0：大载荷与句柄表边界（不能经探针传递）
+// ---------------------------------------------------------------------------
+test('文树 0.3.0 限额：超文本 2 MiB / 5000 节点 / 深度 32；查询 1024 个匹配；句柄表剩余不足', () => {
+  const {文树, 文} = 造控制('<pre id="码"></pre><ul id="列"></ul>');
+  const 码 = 文树('取得', '码');
+  assert.throws(() => 文树('设超文本', 码, 'x'.repeat(2 * 1024 * 1024 + 1)), /2 MiB/);
+  assert.throws(() => 文树('设超文本', 码, '<i></i>'.repeat(5001)), /节点数超过 5000/);
+  assert.throws(() => 文树('设超文本', 码, '<b>'.repeat(33) + '甲' + '</b>'.repeat(33)), /深度超过 32/);
+  assert.equal(文.getElementById('码').innerHTML, '', '失败不改内容');
+  文树('设超文本', 码, '<b>'.repeat(30) + '甲');
+  assert.ok(文.getElementById('码').textContent === '甲');
+  // 查询匹配数上限
+  const 列 = 文.getElementById('列');
+  for (let i = 0; i < 1025; i++) 列.appendChild(文.createElement('li'));
+  assert.throws(() => 文树('查询', '', 'li'), /超过 1024 个元素/);
+  assert.equal(JSON.parse(文树('查询', '', '#列 > li:nth-child(-n+1000)')).length, 1000);
+});
+
+test('文树 0.3.0：句柄表剩余不足时查询整体失败而不留下半批句柄', () => {
+  const {文树, 文, 表} = 造控制('<ul id="列"></ul>');
+  const 列 = 文.getElementById('列');
+  for (let i = 0; i < 500; i++) 列.appendChild(文.createElement('li'));
+  // 先把句柄表占到只剩 100 个
+  const 占 = [];
+  for (let i = 0; i < 表.上限 - 100; i++) 占.push(文树('新建', 'span', '', ''));
+  const 前 = 表.数量();
+  assert.throws(() => 文树('查询', '', 'li'), /剩余不足/);
+  assert.equal(表.数量(), 前, '没有留下半批句柄');
+  assert.equal(JSON.parse(文树('查询', '', '#列 > li:nth-child(-n+50)')).length, 50);
+});
+
+test('文树 0.3.0：读回操作对非元素与危险元素的处理；替换与移除属性的错误消息', () => {
+  const {文树, 文, 界面} = 造控制('<div id="盒">字</div><iframe id="框" title="题"></iframe><script id="脚"></script>');
+  const 盒 = 文树('取得', '盒');
+  assert.equal(文树('读文字', 盒), '字');
+  assert.equal(文树('父级', 盒).length > 0, true);
+  assert.throws(() => 文树('标签', '999'), /句柄无效/);
+  assert.throws(() => 文树('读属性', 盒, 'style'), /不受支持/);
+  assert.throws(() => 界面('读取属性', '框', 'src'), /iframe/);
+  assert.equal(界面('读取属性', '框', 'title'), '1题');
+  assert.throws(() => 界面('读取属性', '脚', 'id'), /不允许操作/);
+  assert.throws(() => 文树('替换节点', 盒, '999'), /句柄无效/);
+});

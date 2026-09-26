@@ -246,7 +246,7 @@ const 高频事件 = new Set(['scroll', 'resize', 'mousemove', 'pointermove', 't
 const 无值事件 = new Set([...高频事件, 'mouseover', 'mouseout', 'mouseenter', 'mouseleave', 'pointerover', 'pointerout', 'pointerenter', 'pointerleave']);
 const 被动默认事件 = new Set(['scroll', 'wheel', 'touchstart', 'touchmove']);
 const 布尔属性名 = new Set(['hidden', 'disabled', 'readonly', 'checked', 'selected', 'open']);
-const 策略字段 = new Set(['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中', '键规则', '选择器', '带属性', '带矩形']);
+const 策略字段 = new Set(['阻止默认', '停止传播', '停止同处', '捕获', '被动', '合并', '一次', '仅命中', '键规则', '选择器', '排除选择器', '带属性', '带矩形']);
 const 键规则字段 = new Set(['键', '代码', 'ctrl', 'meta', 'alt', 'shift', '含组字', '仅选区为空', '仅目标标识', '仅当属性']);
 const 键事件名 = new Set(['keydown', 'keyup', 'keypress']);
 
@@ -285,6 +285,7 @@ export const 解析界面策略 = (文, 事件名) => {
   if (策.仅命中 && !律们.length) throw Error('仅命中 须配合非空的键规则');
   // 文言：选择器、带属性、带矩形，订时严验，笔误不默失。汉语：0.2.0 新增字段的静态校验；选择器的语法在订阅时用 DOM 再验一次。
   if (策.选择器 !== undefined && (typeof 策.选择器 !== 'string' || !策.选择器.trim() || 策.选择器.length > 512)) throw Error('选择器须为 1 至 512 个字符的文字');
+  if (策.排除选择器 !== undefined && (typeof 策.排除选择器 !== 'string' || !策.排除选择器.trim() || 策.排除选择器.length > 512)) throw Error('排除选择器须为 1 至 512 个字符的文字');
   if (策.带属性 !== undefined) {
     if (!Array.isArray(策.带属性) || 策.带属性.length > 8) throw Error('带属性须为不超过 8 个属性名的数组');
     for (const 名 of 策.带属性) {
@@ -299,7 +300,7 @@ export const 解析界面策略 = (文, 事件名) => {
     阻止默认: 会阻止, 停止传播: Boolean(策.停止传播), 停止同处: Boolean(策.停止同处),
     捕获: Boolean(策.捕获) || 不冒泡事件.has(事件名), 被动: 策.被动, 合并: 策.合并 ?? 高频事件.has(事件名),
     一次: Boolean(策.一次), 仅命中: Boolean(策.仅命中), 键规则: 律们,
-    选择器: 策.选择器, 带属性: 策.带属性 ?? [], 带矩形: Boolean(策.带矩形)
+    选择器: 策.选择器, 排除选择器: 策.排除选择器, 带属性: 策.带属性 ?? [], 带矩形: Boolean(策.带矩形)
   };
 };
 
@@ -443,9 +444,10 @@ export function 创建界面订阅器({根, 全局, 投递, 已关闭 = () => fa
     if (订阅表.size >= 256) throw Error('界面事件订阅数量达到上限');
     if (!/^[A-Za-z][A-Za-z0-9_.:-]{0,63}$/u.test(事件名)) throw Error('界面事件名无效：' + 事件名.slice(0, 64));
     const 策 = 解析界面策略(策略文, 事件名);
-    if (策.选择器 !== undefined) {
-      try { 根.createDocumentFragment().querySelector(策.选择器); }
-      catch { throw Error('选择器无效：' + 策.选择器.slice(0, 128)); }
+    for (const [名, 值] of [['选择器', 策.选择器], ['排除选择器', 策.排除选择器]]) {
+      if (值 === undefined) continue;
+      try { 根.createDocumentFragment().querySelector(值); }
+      catch { throw Error(名 + '无效：' + 值.slice(0, 128)); }
     }
     let 目标;
     let 边界 = null;
@@ -463,6 +465,12 @@ export function 创建界面订阅器({根, 全局, 投递, 已关闭 = () => fa
       if (已关闭()) return;
       try {
         let 匹配 = null;
+        if (策.排除选择器 !== undefined) {
+          const 起点 = 事件.target && 事件.target.nodeType === 3 ? 事件.target.parentElement : 事件.target;
+          let 在排除内 = false;
+          if (起点 && 起点.nodeType === 1 && typeof 起点.closest === 'function') { try { 在排除内 = Boolean(起点.closest(策.排除选择器)); } catch { 在排除内 = false; } }
+          if (在排除内) return;
+        }
         if (策.选择器 !== undefined) {
           匹配 = 找匹配(事件.target, 策.选择器, 项.边界);
           if (!匹配) return;
@@ -553,9 +561,11 @@ const 危险标签 = new Set(['script', 'style', 'iframe', 'object', 'embed', 'l
 export const 允许标签 = new Set([
   'a', 'span', 'small', 'h1', 'h2', 'h3', 'h4', 'h5', 'p', 'section', 'div', 'article', 'b', 'strong', 'br',
   'button', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'code', 'time', 'ul', 'ol', 'li', 'label',
-  'select', 'option', 'nav', 'form', 'input', 'textarea', 'details', 'summary'
+  'select', 'option', 'nav', 'form', 'input', 'textarea', 'details', 'summary',
+  // 零点三点零增：文字层之义签，皆无行为。汉语：0.3.0 新增的文字语义标签（强调、斜体、键名、上下标、引用块、分隔线、定义列表），都不带行为。
+  'em', 'i', 'kbd', 'sup', 'sub', 'blockquote', 'hr', 'dl', 'dt', 'dd'
 ]);
-const 空元素 = new Set(['br', 'input']);
+const 空元素 = new Set(['br', 'input', 'hr']);
 const 输入类型 = new Set(['button', 'submit', 'reset', 'checkbox', 'radio', 'text', 'search', 'number', 'email', 'url', 'tel', 'password', 'range', 'date', 'time', 'datetime-local']);
 const 按钮类型 = new Set(['button', 'submit', 'reset']);
 const 文字上限 = 8 * 1024 * 1024;
@@ -713,6 +723,24 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
     }
   };
 
+  // 文言：读回与去除属性之律，界面与文树共之。汉语：读取（返回“1”加值或“0”）与移除属性的规则，按 ID 的界面操作与按句柄的文树操作共用。
+  const 读元素属性 = (元, 名) => {
+    if (typeof 名 !== 'string' || !/^[a-z][a-z0-9:_-]{0,63}$/u.test(名) || 名.startsWith('on') || 名 === 'style' || 名 === 'srcdoc') throw Error('页面属性不受支持：' + String(名).slice(0, 64));
+    if (危险标签.has(标签名(元)) && 标签名(元) !== 'iframe') throw Error('网页元素类型不允许操作：' + 标签名(元));
+    if (标签名(元) === 'iframe' && !['class', 'title', 'hidden'].includes(名) && !/^(?:data|aria)-/u.test(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
+    if (!元.hasAttribute(名)) return '0';
+    const 值 = String(元.getAttribute(名));
+    if (值.length > 65536) throw Error('页面属性值过长：' + 名);
+    return '1' + 值;
+  };
+  const 移除元素属性 = (元, 名) => {
+    if (typeof 名 !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/u.test(名)) throw Error('页面属性不受支持：' + String(名).slice(0, 64));
+    if (名.startsWith('data-yy-')) throw Error('页面属性名为宿主保留：' + 名);
+    const 通配 = 名 === 'data-yy' || /^data-[a-z0-9-]+$/u.test(名) || /^aria-[a-z0-9-]+$/u.test(名);
+    if (!通配 && !布尔属性名.has(名) && !白册属性名.has(名)) throw Error('页面属性不受支持：' + 名);
+    if (标签名(元) === 'iframe' && !通配 && !['class', 'title', 'hidden'].includes(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
+    元.removeAttribute(名);
+  };
   // ---- 界面操作：以元素标识为址，不产生句柄 ----
   const 页面状态 = () => {
     const 隐 = Boolean(根.hidden ?? (根.visibilityState === 'hidden'));
@@ -815,22 +843,9 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
     读取属性: (标识, 名) => {
       const 元 = 标识 === '文档根' ? 根.documentElement : 标识 === '页体' ? 根.body : 找元素(标识, true);
       if (!元) throw Error('网页元素不存在：' + 标识);
-      if (typeof 名 !== 'string' || !/^[a-z][a-z0-9:_-]{0,63}$/u.test(名) || 名.startsWith('on') || 名 === 'style' || 名 === 'srcdoc') throw Error('页面属性不受支持：' + String(名).slice(0, 64));
-      if (标签名(元) === 'iframe' && !['class', 'title', 'hidden'].includes(名) && !/^(?:data|aria)-/u.test(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
-      if (!元.hasAttribute(名)) return '0';
-      const 值 = String(元.getAttribute(名));
-      if (值.length > 65536) throw Error('页面属性值过长：' + 名);
-      return '1' + 值;
+      return 读元素属性(元, 名);
     },
-    移除属性: (标识, 名) => {
-      const 元 = 找元素(标识, true);
-      if (typeof 名 !== 'string' || !/^[a-z][a-z0-9-]{0,63}$/u.test(名)) throw Error('页面属性不受支持：' + String(名).slice(0, 64));
-      if (名.startsWith('data-yy-')) throw Error('页面属性名为宿主保留：' + 名);
-      const 通配 = 名 === 'data-yy' || /^data-[a-z0-9-]+$/u.test(名) || /^aria-[a-z0-9-]+$/u.test(名);
-      if (!通配 && !布尔属性名.has(名) && !白册属性名.has(名)) throw Error('页面属性不受支持：' + 名);
-      if (标签名(元) === 'iframe' && !通配 && !['class', 'title', 'hidden'].includes(名)) throw Error('页面属性不受支持：iframe 的 ' + 名);
-      元.removeAttribute(名);
-    },
+    移除属性: (标识, 名) => { 移除元素属性(找元素(标识, true), 名); },
     读取文字: 标识 => {
       const 文 = String(找元素(标识).textContent ?? '');
       if (字节超限(文, 文字上限)) throw Error('网页元素文字超过八 MiB，不能读回');
@@ -873,6 +888,11 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
   const 取父元素 = 号 => {
     const 节 = 取节点(号);
     if (节.nodeType !== 1) throw Error('父节点须为元素：' + 号.slice(0, 32));
+    return 节;
+  };
+  const 取元素节点 = 号 => {
+    const 节 = 取节点(号);
+    if (节.nodeType !== 1) throw Error('页面节点不是元素：' + 号.slice(0, 32));
     return 节;
   };
   // 文言：节点既离文树，其身与其下诸柄同释，免柄表渐满。汉语：从文档里移除的子树，宿主同步释放子树内所有节点的句柄（含节点自身），防止句柄表被泄漏填满。
@@ -1035,7 +1055,116 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
     },
     构建树: 描述文 => 建树(描述文),
     设置框架地址: (标识, 网址) => { 设框架地址(标识, 网址); },
-    读取页面网址: () => String(全局.location?.href ?? 路径)
+    读取页面网址: () => String(全局.location?.href ?? 路径),
+    // ---- 0.3.0：选择器查询、节点读回、树导出、替换、超文本 ----
+    查询: (根号, 选择器) => {
+      if (typeof 选择器 !== 'string' || !选择器.trim() || 选择器.length > 512) throw Error('选择器须为 1 至 512 个字符的文字');
+      let 域 = 根;
+      if (根号 !== '') {
+        const 节 = 取节点(根号);
+        域 = 标签名(节) === 'template' && 节.content ? 节.content : 节;
+      }
+      if (!域 || typeof 域.querySelectorAll !== 'function') throw Error('页面节点不能作为查询范围');
+      let 命中;
+      try { 命中 = Array.from(域.querySelectorAll(选择器)); } catch { throw Error('选择器无效：' + 选择器.slice(0, 128)); }
+      命中 = 命中.filter(元 => !危险标签.has(标签名(元)));
+      if (命中.length > 1024) throw Error('选择器匹配了超过 1024 个元素，请收窄选择器');
+      if (句柄.数量() + 命中.length > 句柄.上限) throw Error('页面节点句柄表剩余不足（' + 句柄.上限 + '），请及时释放不再使用的节点');
+      return JSON.stringify(命中.map(登记节点));
+    },
+    标签: 号 => {
+      const 节 = 取节点(号);
+      if (节.nodeType !== 1) throw Error('页面节点不是元素：' + 号.slice(0, 32));
+      return 标签名(节);
+    },
+    读属性: (号, 名) => 读元素属性(取元素节点(号), 名),
+    读文字: 号 => {
+      const 文 = String(取节点(号).textContent ?? '');
+      if (字节超限(文, 文字上限)) throw Error('页面节点文字超过八 MiB，不能读回');
+      return 文;
+    },
+    父级: 号 => {
+      const 父 = 取节点(号).parentElement;
+      return !父 || 危险标签.has(标签名(父)) ? '' : 登记节点(父);
+    },
+    最近祖先: (号, 选择器) => {
+      const 节 = 取元素节点(号);
+      if (typeof 选择器 !== 'string' || !选择器.trim() || 选择器.length > 512) throw Error('选择器须为 1 至 512 个字符的文字');
+      let 合;
+      try { 合 = 节.closest(选择器); } catch { throw Error('选择器无效：' + 选择器.slice(0, 128)); }
+      return !合 || 危险标签.has(标签名(合)) ? '' : 登记节点(合);
+    },
+    匹配: (号, 选择器) => {
+      const 节 = 取元素节点(号);
+      if (typeof 选择器 !== 'string' || !选择器.trim() || 选择器.length > 512) throw Error('选择器须为 1 至 512 个字符的文字');
+      try { return 节.matches(选择器) ? 'true' : 'false'; } catch { throw Error('选择器无效：' + 选择器.slice(0, 128)); }
+    },
+    导出树: (号, 深串) => {
+      const 深限 = 整数参(深串, '深度上限');
+      if (深限 < 1 || 深限 > 32) throw Error('深度上限须为 1 至 32');
+      const 起 = 取元素节点(号);
+      const 计 = {节点: 0, 文字字节: 0};
+      const 可导属性 = 名 => 名 === 'data-yy' || (/^data-[a-z0-9-]+$/u.test(名) && !名.startsWith('data-yy-')) || /^aria-[a-z0-9-]+$/u.test(名) || 布尔属性名.has(名) || 白册属性名.has(名);
+      const 导 = (元, 深) => {
+        if (深 > 深限) throw Error('页面节点树深度超过所给上限（' + 深限 + '）');
+        if (++计.节点 > 2000) throw Error('页面节点树节点数超过 2000');
+        const 项 = {标签: 标签名(元)};
+        const 类 = 元.getAttribute('class');
+        if (类) 项.类 = 类;
+        const 属性 = {};
+        for (const 属 of Array.from(元.attributes)) {
+          if (属.name === 'class' || !可导属性(属.name) || 属.value.length > 65536) continue;
+          属性[属.name] = 属.value;
+        }
+        if (Object.keys(属性).length) 项.属性 = 属性;
+        const 子们 = [];
+        for (const 子 of Array.from(元.childNodes)) {
+          if (子.nodeType === 3) {
+            计.文字字节 += 字节数(子.data);
+            if (计.文字字节 > 1048576) throw Error('页面节点树文字总量超过 1 MiB');
+            子们.push(子.data);
+          } else if (子.nodeType === 1 && !危险标签.has(标签名(子)) && 标签名(子) !== 'template') 子们.push(导(子, 深 + 1));
+        }
+        if (子们.length) 项.子 = 子们;
+        return 项;
+      };
+      return JSON.stringify(导(起, 1));
+    },
+    替换节点: (旧号, 新号) => {
+      const 旧 = 取节点(旧号);
+      const 新 = 取节点(新号);
+      if (!旧.parentNode) throw Error('被替换的页面节点没有父节点');
+      if (旧 === 新) return;
+      try { 旧.replaceWith(新); } catch (错) { throw 翻译DOM错误(错); }
+    },
+    移除属性: (号, 名) => { 移除元素属性(取元素节点(号), 名); },
+    设超文本: (号, 超文本) => {
+      const 元 = 取元素节点(号);
+      if (空元素.has(标签名(元))) throw Error('空元素不能含子节点：' + 标签名(元));
+      if (typeof 超文本 !== 'string' || 超文本.length > 2 * 1024 * 1024) throw Error('页面超文本超过 2 MiB');
+      const 模板 = 根.createElement('template');
+      模板.innerHTML = 超文本;
+      const 计 = {节点: 0};
+      const 清 = (源, 深, 位置) => {
+        if (深 > 32) throw Error('页面超文本深度超过 32：' + 位置);
+        if (++计.节点 > 5000) throw Error('页面超文本节点数超过 5000');
+        if (源.nodeType === 3) return 根.createTextNode(源.data);
+        if (源.nodeType !== 1) return null;
+        const 签 = 标签名(源);
+        if (!允许标签.has(签)) throw Error('页面超文本含不受支持的标签：' + 签.slice(0, 32) + '（' + 位置 + '）');
+        const 新 = 根.createElement(签);
+        for (const 属 of Array.from(源.attributes)) {
+          try { 应用属性(新, 属.name, 属.value); }
+          catch (错) { throw Error(String(错.message ?? 错) + '（' + 位置 + '）'); }
+        }
+        Array.from(源.childNodes).forEach((子, 序) => { const 子新 = 清(子, 深 + 1, 位置 + '.子[' + 序 + ']'); if (子新) 新.appendChild(子新); });
+        return 新;
+      };
+      const 片 = 根.createDocumentFragment();
+      Array.from(模板.content.childNodes).forEach((节, 序) => { const 新 = 清(节, 1, '根[' + 序 + ']'); if (新) 片.appendChild(新); });
+      for (const 子 of Array.from(元.childNodes)) if (子.nodeType === 1) 释放子树句柄(子);
+      元.replaceChildren(片);
+    }
   };
   const 运行表 = (表, 名, 参) => {
     if (typeof 名 !== 'string' || !Object.hasOwn(表, 名)) throw Error('网页操作不受支持：' + String(名).slice(0, 64));
