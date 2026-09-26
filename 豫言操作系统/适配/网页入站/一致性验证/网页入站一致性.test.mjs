@@ -1,4 +1,4 @@
-// 网页入站 0.7.0 一致性测试：真实 Wasm + Node 宿主。
+// 网页入站 0.8.0 一致性测试：真实 Wasm + Node 宿主。
 // 复跑：在私有暂存目录（含 dist/）里 `node --test <本文件>`；产物位置可用环境变量 产物根 指定（默认 <当前目录>/dist）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -317,6 +317,50 @@ test('读取入站癸象正文文：2 MiB 上限与读取次序', async () => {
   assert.equal(乙.文本, '{"a":1}');
   const 重复 = 报(await 调('/body/twice?limit=10', {体: 'abc'}));
   assert.equal(重复.前缀, '0,3');
+});
+
+test('读取入站有限癸象正文文（0.8.0）：规范化文字；状态 1 至 5 以返值表示且不抛异常', async () => {
+  const 限 = (体, 限值 = 1000, 额外 = {}) => 调('/body/jsonlimit?limit=' + 限值, {体, ...额外});
+  const 正 = async (入, 出, 限值) => { const r = 报(await 限(入, 限值)); assert.equal(r.前缀, '0', JSON.stringify(入)); assert.equal(r.文本, 出, JSON.stringify(入)); };
+  await 正('{ "a" : 1 , "b" : [ 2 ] }', '{"a":1,"b":[2]}');
+  await 正('{"a":1,"b":2,"a":3}', '{"a":3,"b":2}');
+  await 正('{"b":1,"2":2,"1":3}', '{"1":3,"2":2,"b":1}');
+  await 正('{"a":"\\u4e2d\\/"}', '{"a":"中/"}');
+  await 正('{"a":"\\ud800"}', '{"a":"\\ud800"}');
+  await 正('{"a":1e21}', '{"a":1e+21}');
+  await 正('﻿{"bom":1}', '{"bom":1}');
+  await 正('null', 'null'); await 正('[1,2]', '[1,2]'); await 正('  "x"  ', '"x"');
+  await 正('{"名":"你好🙂"}', '{"名":"你好🙂"}');
+  // 多字节字符跨块
+  const 你 = Buffer.from('{"名":"你好🙂"}');
+  for (const 点 of [3, 6, 8, 12, 15]) { const r = 报(await 调('/body/jsonlimit?limit=1000', {体: 流([你.subarray(0, 点), 你.subarray(点)])})); assert.equal(r.前缀, '0', '断点 ' + 点); assert.equal(r.文本, '{"名":"你好🙂"}'); }
+  // 状态 5：任何 JSON 错误都不抛异常，也不使 Wasm 中止（畸形转义正是这一类）
+  for (const 入 of ['{bad', '[1,2', '{"a":"\\x"}', '{"a":"\\u12"}', '{"a":"\\', '{"a":1}garbage', 'undefined', '\u0000', '{"a":01}', '{"a":1,}']) {
+    const r = 报(await 限(入)); assert.equal(r.前缀, '5', JSON.stringify(入)); assert.ok(r.字节数 > 0, '应附原因：' + JSON.stringify(入));
+  }
+  assert.equal(报(await 限('['.repeat(34) + ']'.repeat(34))).前缀, '5', '嵌套过深');
+  // 空正文的 POST：Node 给空流（状态 5：空文不是 JSON），真实 workerd 可能报无正文（状态 2）
+  assert.ok(['2', '5'].includes(报(await 限('')).前缀));
+  // 状态 4、2、3
+  assert.equal(报(await 调('/body/jsonlimit?limit=100', {体: 流([[0xff]])})).前缀, '4');
+  assert.equal(报(await 调('/body/jsonlimit?limit=100', {体: 流([[0x7b, 0x22, 0x61, 0x22, 0x3a, 0x22, 0xe4, 0xbd], [0x22, 0x7d]])})).前缀, '4', '跨块残缺序列');
+  assert.equal(报(await 调('/body/jsonlimit?limit=100', {方法: 'GET'})).前缀, '2');
+  assert.equal(报(await 调('/body/jsonlimittwice?limit=100', {体: '{"a":1}'})).前缀, '0,3');
+  assert.equal(报(await 调('/body/textthenjsonlimit?limit=100', {体: '{"a":1}'})).前缀, '0+3');
+  // 状态 1：恰好等于上限通过，多一字节超限；声明的 Content-Length 超限则一字不读；取消读取流
+  assert.equal(报(await 限('{"a":1}', 7)).前缀, '0');
+  assert.equal(报(await 限('{"a":1}', 6)).前缀, '1');
+  const 记 = {};
+  assert.equal(报(await 调('/body/jsonlimit?limit=10', {体: 流([Buffer.alloc(10, 32), Buffer.alloc(1, 32), Buffer.alloc(1, 32)], 记)})).前缀, '1');
+  assert.equal(记.取消, '入站正文超过上限'); assert.equal(记.拉, 2, '读到越界块即停');
+  const 记二 = {};
+  assert.equal(报(await 调('/body/jsonlimit?limit=10', {体: 流([[49]], 记二), 头: {'content-length': '11'}})).前缀, '1');
+  assert.equal(记二.拉, 0, '声明超限则一个字节也不读');
+  // 上限范围：1 至 8388608
+  assert.match(错(await 限('1', 0)), /入站 JSON 正文字节上限须在 1 至 8388608/);
+  assert.match(错(await 限('1', 8388609)), /入站 JSON 正文字节上限须在 1 至 8388608/);
+  assert.equal(报(await 限(' '.repeat(8 * MiB - 1) + '1', 8388608)).文本, '1', '恰 8 MiB');
+  assert.equal(报(await 限(' '.repeat(8 * MiB) + '1', 8388608)).前缀, '1', '8 MiB 加一字节');
 });
 
 // 确定性伪随机（mulberry32），便于复现。
