@@ -19,7 +19,7 @@ const 存在 = 文 => (文.startsWith('1|') ? [true, 文.slice(2)] : [false, 文
 test('接口函数全部被探针覆盖', async () => {
   const 接口根 = (process.env.接口根 ?? fileURLToPath(new URL('../../../../../豫言操作系统接口/', import.meta.url))).replace(/\/?$/u, '/');
   const 探针源 = await readFile(process.env.探针源 ?? fileURLToPath(new URL('../应用/前端接口探针/入口。豫', import.meta.url)), 'utf8');
-  for (const 包 of ['网页定时', '网页储存', '网页导航', '网页环境', '网页请求', '网页事件源', '网页编译', '网页应用']) {
+  for (const 包 of ['网页定时', '网页储存', '网页导航', '网页环境', '网页请求', '网页事件源', '网页编译', '网页应用', '时间', '随机数', '网址定位', '网址查询', '日志', '文字规整']) {
     const 文件 = (await readdir(接口根 + 包)).find(名 => 名.endsWith('。接口。豫'));
     const 源 = await readFile(接口根 + 包 + '/' + 文件, 'utf8');
     const 名们 = [...源.matchAll(/^「([^」]+)」乃/gmu)].map(项 => 项[1]);
@@ -633,3 +633,111 @@ test('网页应用：路径不合规、模块缺少启动函数、启动失败�
     await 页.调('启动页面应用', '/可用/入口.mjs');
   } finally { await 页.关(); }
 });
+
+// ---------------------------------------------------------------------------
+// 九、既有通用接口的浏览器适配：时间、随机数、网址定位、网址查询、日志、文字规整
+// ---------------------------------------------------------------------------
+test('时间：毫秒与 ISO 文字转换、UTC 日与分钟取自同一刻；越界抛事故', 用页({}, async 页 => {
+  const 前 = Date.now();
+  const 毫秒 = Number(await 页.调('读取当前Unix毫秒'));
+  const 后 = Date.now();
+  assert.ok(毫秒 >= 前 && 毫秒 <= 后 + 5);
+  const [日, 分] = (await 页.调('读取当前UTC日与Unix分钟')).split('|');
+  assert.match(日, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(日, new Date(Number(分) * 60000).toISOString().slice(0, 10));
+  for (const 值 of [0, 1790000000123, -1, 8640000000000000, -8640000000000000]) assert.equal(await 页.调('Unix毫秒转ISO文字', 值), new Date(值).toISOString(), String(值));
+  assert.equal(await 页.调('Unix毫秒转ISO文字', 0), '1970-01-01T00:00:00.000Z');
+  await 失败(页.调('Unix毫秒转ISO文字', 8640000000000001), /超出可表示日期范围/);
+}));
+
+test('随机数：十六进制长度与字符集、UUID v4 形式与不重复；字节数越界抛事故', 用页({}, async 页 => {
+  for (const 字节数 of [1, 16, 1024]) assert.match(await 页.调('生成随机十六进制', 字节数), new RegExp(`^[0-9a-f]{${字节数 * 2}}$`));
+  await 失败(页.调('生成随机十六进制', 0), /1 至 1024/);
+  await 失败(页.调('生成随机十六进制', 1025), /1 至 1024/);
+  const 见 = new Set();
+  for (let i = 0; i < 50; i++) {
+    const 标识 = await 页.调('生成随机通用标识');
+    assert.match(标识, /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/);
+    见.add(标识);
+  }
+  assert.equal(见.size, 50);
+}));
+
+test('网址定位：规范里的一致性样例；失败消息与云工适配一致', 用页({}, async 页 => {
+  const 解 = async (...参) => JSON.parse(await 页.调(...参));
+  const 甲 = await 解('解析绝对网址部件', 'https://user:pw@Example.COM:8443/a/../b%20c?x=1#f');
+  assert.deepEqual(甲, {href: 'https://user:pw@example.com:8443/b%20c?x=1#f', origin: 'https://example.com:8443', pathname: '/b%20c', search: '?x=1', protocol: 'https:',
+    hostname: 'example.com', host: 'example.com:8443', port: '8443', username: 'user', password: 'pw', hash: '#f'});
+  assert.deepEqual(Object.keys(甲), ['href', 'origin', 'pathname', 'search', 'protocol', 'hostname', 'host', 'port', 'username', 'password', 'hash'], '字段顺序固定');
+  const 乙 = await 解('解析绝对网址部件', 'http://a.example:80/x');
+  assert.equal(乙.port, ''); assert.equal(乙.host, 'a.example');
+  assert.equal((await 解('根据根址解析网址部件', '../x?y=1#z', 'http://h.example:8080/a/b/c')).href, 'http://h.example:8080/a/x?y=1#z');
+  await 失败(页.调('解析绝对网址部件', 'ftp://a.example/'), /网址不是 HTTP\(S\)/);
+  await 失败(页.调('解析绝对网址部件', '/rel'), /网址不是有效的绝对网址/);
+  await 失败(页.调('解析绝对网址部件', 'http://'), /网址不是有效的绝对网址/);
+  await 失败(页.调('根据根址解析网址部件', 'x', '/相对根'), /根网址不是有效的绝对网址/);
+  await 失败(页.调('根据根址解析网址部件', 'x', 'ftp://h/'), /根网址不是 HTTP\(S\)/);
+  await 失败(页.调('根据根址解析网址部件', 'javascript:alert(1)', 'http://h.example/'), /网址不是 HTTP\(S\)/);
+  await 失败(页.调('根据根址解析网址部件', 'http://[', 'http://h.example/'), /网址无法按根网址解析/);
+}));
+
+test('网址查询：编码、解析表单键值、设置网址查询参数的规范样例', 用页({}, async 页 => {
+  assert.equal(await 页.调('编码查询串', [['a b', '1+2'], ['a b', "!'()~*-._"]]), 'a+b=1%2B2&a+b=%21%27%28%29%7E*-._');
+  assert.equal(await 页.调('编码查询串', [['名', '\u0001\n']]), '%E5%90%8D=%01%0A');
+  assert.equal(await 页.调('编码查询串', []), '');
+  assert.deepEqual(JSON.parse(await 页.调('解析表单键值', 'a=1&b=x+y%20z&a=%E4%BD%A0&c&d=%ff&=e')), [['a', '1'], ['b', 'x y z'], ['a', '你'], ['c', ''], ['d', '�'], ['', 'e']]);
+  assert.deepEqual(JSON.parse(await 页.调('解析表单键值', '?a=1')), [['a', '1']]);
+  assert.equal(await 页.调('解析表单键值', ''), '[]');
+  assert.equal(await 页.调('设置网址查询参数', '/p?a=1&b=2&a=3#h', 'a', '新 值'), '/p?a=%E6%96%B0+%E5%80%BC&b=2#h');
+  assert.equal(await 页.调('设置网址查询参数', 'https://h.example/p?a=1', 'b', '2'), 'https://h.example/p?a=1&b=2');
+  await 失败(页.调('设置网址查询参数', '//evil.example/x', 'a', '1'), /相对网址不得改变来源/);
+  await 失败(页.调('设置网址查询参数', 'javascript:alert(1)', 'a', '1'), /绝对网址不是 HTTP\(S\)/);
+  await 失败(页.调('设置网址查询参数', 'http://[', 'a', '1'), /网址无效/);
+  await 失败(页.调('编码查询串', Array.from({length: 1025}, (_, i) => [String(i), 'v'])), /超过 1024 项/);
+}));
+
+test('日志：三个级别各写一条到页面 console，长文字在字符边界截断并附标记', async () => {
+  const 收 = [];
+  const 页 = await 启动探针({窗扩展: 窗 => {
+    for (const 级 of ['error', 'warn', 'info']) 窗.console[级] = 文 => 收.push([级, 文]);
+  }});
+  try {
+    await 页.调('记录错误日志', '你好');
+    await 页.调('记录警告日志', '你好');
+    await 页.调('记录信息日志', '你好');
+    assert.deepEqual(收, [['error', '你好'], ['warn', '你好'], ['info', '你好']]);
+    收.length = 0;
+    await 页.调('记录信息日志', '');
+    assert.deepEqual(收, [['info', '']]);
+    收.length = 0;
+    await 页.调('记录信息日志', 'a'.repeat(8192));
+    assert.equal(收[0][1].length, 8192);
+    收.length = 0;
+    await 页.调('记录信息日志', 'a'.repeat(8193));
+    assert.equal(Buffer.byteLength(收[0][1]), 8192);
+    assert.ok(收[0][1].endsWith('…（已截断）'));
+    收.length = 0;
+    await 页.调('记录警告日志', '汉'.repeat(3000));
+    const 文 = 收[0][1];
+    assert.ok(Buffer.byteLength(文) <= 8192 && 文.endsWith('…（已截断）'));
+    assert.equal(文.replace('…（已截断）', '').replaceAll('汉', ''), '', '只保留整字');
+    收.length = 0;
+    await 页.调('记录错误日志', '含"引号"\n换行\t制表\\');
+    assert.equal(收[0][1], '含"引号"\n换行\t制表\\');
+  } finally { await 页.关(); }
+});
+
+test('文字规整：与 ECMAScript 同义的四个函数', 用页({}, async 页 => {
+  assert.equal(await 页.调('去首尾空白', '　 a b　'), 'a b');
+  assert.equal(await 页.调('去首尾空白', '﻿x﻿'), 'x');
+  assert.equal(await 页.调('去首尾空白', '​x'), '​x');
+  assert.equal(await 页.调('去首尾空白', ' \t\n '), '');
+  assert.equal(await 页.调('转小写', 'ABC ÜÏ'), 'abc üï');
+  assert.equal(await 页.调('转小写', 'İ'), 'i̇');
+  assert.deepEqual([await 页.调('转小写', 'ΑΣ'), await 页.调('转小写', 'ΑΣΑ'), await 页.调('转小写', 'Σ')], ['ας', 'ασα', 'σ']);
+  assert.equal(await 页.调('UTF16长度', 'a😀汉'), '4');
+  assert.equal(await 页.调('UTF16长度', ''), '0');
+  for (const [文, 期望] of [['abc123', 'true'], ['汉字あア', 'true'], ['ÜÏ', 'true'], ['Ⅷ', 'true'], ['１２', 'true'], ['a_b', 'false'], ['a-b', 'false'], ['a b', 'false'], ['', 'false'], ['😀', 'false'], ['é', 'false']]) {
+    assert.equal(await 页.调('全为字母或数字吗', 文), 期望, JSON.stringify(文));
+  }
+}));

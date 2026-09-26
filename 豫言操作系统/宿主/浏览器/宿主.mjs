@@ -1674,8 +1674,133 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
     return '';
   };
 
+  // ---- 既有通用接口的浏览器实现：时间、随机数、网址定位、网址查询、日志、文字规整 ----
+  // 文言：此六者，其义已定于云工之适配；浏览器之实，取同一 ECMAScript 之物，故其果逐字相同。
+  // 汉语：时间 0.2.0、随机数、网址定位 0.2.0、网址查询、日志、文字规整 0.2.0 六个既有接口的浏览器实现，语义与云工适配逐字相同（同样是 Date、crypto、URL、URLSearchParams、console 与 String）。
+  const 时钟 = () => 全局.Date ?? Date;
+  const 密码库 = () => {
+    const 库 = 全局.crypto ?? globalThis.crypto;
+    if (!库 || typeof 库.getRandomValues !== 'function') throw Error('宿主没有密码学随机源');
+    return 库;
+  };
+  const 时间操作 = {
+    当前毫秒: () => String(时钟().now()),
+    UTC日与分: () => {
+      const 毫 = 时钟().now();
+      return new (时钟())(毫).toISOString().slice(0, 10) + '|' + Math.floor(毫 / 60000);
+    },
+    转ISO: 毫串 => {
+      if (typeof 毫串 !== 'string' || !/^-?\d{1,16}$/u.test(毫串)) throw Error('Unix 毫秒须为整数');
+      const 毫 = Number(毫串);
+      if (!Number.isSafeInteger(毫) || Math.abs(毫) > 8640000000000000) throw Error('Unix 毫秒超出可表示日期范围');
+      return new (时钟())(毫).toISOString();
+    }
+  };
+  const 十六进制 = 字节 => Array.from(字节, 值 => 值.toString(16).padStart(2, '0')).join('');
+  const 随机操作 = {
+    十六进制: 数串 => {
+      if (typeof 数串 !== 'string' || !/^-?\d{1,6}$/u.test(数串) || Number(数串) < 1 || Number(数串) > 1024) throw Error('随机字节数须在 1 至 1024 之间');
+      const 字节 = new Uint8Array(Number(数串));
+      密码库().getRandomValues(字节);
+      return 十六进制(字节);
+    },
+    通用标识: () => {
+      const 库 = 密码库();
+      if (typeof 库.randomUUID === 'function') return 库.randomUUID();
+      // 文言：非安全上下文无 randomUUID，则依 RFC 4122 以随机字节自造第四版。汉语：http 非安全上下文没有 randomUUID 时，按 RFC 4122 用随机字节自己组装 UUID v4。
+      const 字 = new Uint8Array(16);
+      库.getRandomValues(字);
+      字[6] = (字[6] & 0x0f) | 0x40;
+      字[8] = (字[8] & 0x3f) | 0x80;
+      const 串 = 十六进制(字);
+      return 串.slice(0, 8) + '-' + 串.slice(8, 12) + '-' + 串.slice(12, 16) + '-' + 串.slice(16, 20) + '-' + 串.slice(20);
+    }
+  };
+  const 网址六万 = 65536;
+  const 尝试解析网址 = (文, 基) => {
+    if (typeof 文 !== 'string' || 字节超限(文, 网址六万)) return null;
+    try { return 基 === undefined ? new URL(文) : new URL(文, 基); } catch { return null; }
+  };
+  const 是网络协议 = 址 => 址.protocol === 'https:' || 址.protocol === 'http:';
+  const 网址部件文 = 址 => JSON.stringify({href: 址.href, origin: 址.origin, pathname: 址.pathname, search: 址.search, protocol: 址.protocol,
+    hostname: 址.hostname, host: 址.host, port: 址.port, username: 址.username, password: 址.password, hash: 址.hash});
+  const 定位操作 = {
+    绝对: 文 => {
+      const 址 = 尝试解析网址(文);
+      if (!址) throw Error('网址不是有效的绝对网址');
+      if (!是网络协议(址)) throw Error('网址不是 HTTP(S)');
+      return 网址部件文(址);
+    },
+    根: (文, 根文) => {
+      const 根 = 尝试解析网址(根文);
+      if (!根) throw Error('根网址不是有效的绝对网址');
+      if (!是网络协议(根)) throw Error('根网址不是 HTTP(S)');
+      const 址 = 尝试解析网址(文, 根.href);
+      if (!址) throw Error('网址无法按根网址解析');
+      if (!是网络协议(址)) throw Error('网址不是 HTTP(S)');
+      return 网址部件文(址);
+    }
+  };
+  const 查询内部基址 = 'https://yuyan-lang.org';
+  const 查询操作 = {
+    编码: 项列文 => {
+      let 项们;
+      try { 项们 = JSON.parse(项列文); } catch { throw Error('查询项列不是有效 JSON'); }
+      if (!Array.isArray(项们) || 项们.some(项 => !Array.isArray(项) || 项.length !== 2 || typeof 项[0] !== 'string' || typeof 项[1] !== 'string')) throw Error('查询项列须为 [名称,值] 数组');
+      if (项们.length > 1024) throw Error('查询项超过 1024 项');
+      let 总 = 0;
+      for (const [名, 值] of 项们) 总 += 字节数(名) + 字节数(值);
+      if (总 > 1048576) throw Error('查询项总长度超过 1 MiB');
+      return new URLSearchParams(项们).toString();
+    },
+    解析: 文 => {
+      if (typeof 文 !== 'string' || 字节超限(文, 1048576)) throw Error('表单文字超过 1 MiB');
+      const 参 = new URLSearchParams(文);
+      const 项们 = [...参];
+      if (项们.length > 1024) throw Error('表单项数超过 1024');
+      return JSON.stringify(项们);
+    },
+    设参: (网址, 键, 值) => {
+      if ([网址, 键, 值].some(项 => typeof 项 !== 'string' || 字节超限(项, 网址六万))) throw Error('网址、键或值超过 64 KiB');
+      const 绝对 = 尝试解析网址(网址);
+      if (绝对) {
+        if (!是网络协议(绝对)) throw Error('绝对网址不是 HTTP(S)');
+        绝对.searchParams.set(键, 值);
+        return 绝对.href;
+      }
+      const 址 = 尝试解析网址(网址, 查询内部基址);
+      if (!址) throw Error('网址无效');
+      if (址.origin !== 查询内部基址) throw Error('相对网址不得改变来源');
+      址.searchParams.set(键, 值);
+      return 址.pathname + 址.search + 址.hash;
+    }
+  };
+  const 日志截断标记 = '…（已截断）';
+  const 截断日志文字 = 文 => {
+    if (typeof 文 !== 'string') throw Error('日志文字须为字符串');
+    if (!字节超限(文, 8192)) return 文;
+    const 字节 = 编码器.encode(文);
+    if (字节.length <= 8192) return 文;
+    let 切 = 8192 - 字节数(日志截断标记);
+    while (切 > 0 && (字节[切] & 0xc0) === 0x80) 切--;
+    return new TextDecoder('utf-8', {ignoreBOM: true}).decode(字节.slice(0, 切)) + 日志截断标记;
+  };
+  const 写日志 = (级别, 文) => { (全局.console ?? console)[级别]?.(截断日志文字(文)); return ''; };
+  const 日志操作 = {错误: 文 => 写日志('error', 文), 警告: 文 => 写日志('warn', 文), 信息: 文 => 写日志('info', 文)};
+  const 验规整文字 = 文 => {
+    if (typeof 文 !== 'string') throw Error('文字须为字符串');
+    if (字节超限(文, 1048576)) throw Error('文字超过 1 MiB');
+    return 文;
+  };
+  const 规整操作 = {
+    去空白: 文 => 验规整文字(文).trim(),
+    转小写: 文 => 验规整文字(文).toLowerCase(),
+    UTF16长度: 文 => String(验规整文字(文).length),
+    全字母数字: 文 => String(/^[\p{L}\p{N}]+$/u.test(验规整文字(文)))
+  };
+
   // ---- 分派 ----
-  const 表们 = {定时: 定时操作, 储存: 储存操作, 导航: 导航操作, 环境: 环境操作, 请求: 请求操作, 事件源: 事件源操作, 编译: 编译操作};
+  const 表们 = {定时: 定时操作, 储存: 储存操作, 导航: 导航操作, 环境: 环境操作, 请求: 请求操作, 事件源: 事件源操作, 编译: 编译操作, 时间: 时间操作, 随机: 随机操作, 定位: 定位操作, 查询: 查询操作, 日志: 日志操作, 规整: 规整操作};
   const 找操作 = 名 => {
     const 点 = typeof 名 === 'string' ? 名.indexOf('.') : -1;
     const 表 = 点 > 0 ? 表们[名.slice(0, 点)] : undefined;
