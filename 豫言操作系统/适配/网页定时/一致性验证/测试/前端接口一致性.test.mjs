@@ -452,6 +452,44 @@ test('网页事件源：背压——应用不取事件时暂停读流，取走�
   } finally { await 页.关(); await 服.关(); }
 });
 
+test('网页事件源：连接被服务器硬断开报“网络中断”并自动重连；重连等待中关闭则不再重连', async () => {
+  let 次 = 0;
+  const 服 = await 起服务((请求, 响应) => {
+    次++;
+    响应.writeHead(200, 头SSE);
+    响应.write(帧({id: 次, data: '第' + 次 + '次'}));
+    if (次 === 1) setTimeout(() => 请求.socket.destroy(), 30); // 第一次硬断开
+  });
+  const 页 = await 启动探针({url: 服.源 + '/cloud/', 网络: (...参) => fetch(...参)});
+  try {
+    const 号 = Number(await 页.调('打开事件源', '/e', JSON.stringify({重连毫秒: 100})));
+    const 名们 = [];
+    while (!名们.includes('打开:true')) {
+      const 事 = await 取事件源事件(页, 号);
+      名们.push(事.名称 === '错误' ? '错误:' + 事.详情.状态 + ':' + 事.详情.原因 : 事.名称 === '打开' ? '打开:' + 事.详情.重连 : '消息');
+      if (名们.length > 10) throw Error('事件过多');
+    }
+    assert.deepEqual(名们.filter(名 => 名 !== '消息'), ['打开:false', '错误:重连中:网络中断', '打开:true']);
+    assert.equal(次, 2);
+    // 再次断开（服务器第三次不断开）——改用长重连间隔：关闭发生在等待期间
+    assert.equal(await 页.调('关闭事件源', 号), 'true');
+    await 睡(300);
+    assert.equal(次, 2, '关闭后不再重连');
+  } finally { await 页.关(); await 服.关(); }
+});
+
+test('网页事件源：重连等待期间关闭，等待被立即唤醒，宿主可正常结束', async () => {
+  const 服 = await 起服务((请求, 响应) => { 响应.writeHead(200, 头SSE); 响应.end(帧({data: '一'})); });
+  const 页 = await 启动探针({url: 服.源 + '/cloud/', 网络: (...参) => fetch(...参)});
+  try {
+    const 号 = Number(await 页.调('打开事件源', '/e', JSON.stringify({重连毫秒: 60000})));
+    let 见重连中 = false;
+    while (!见重连中) { const 事 = await 取事件源事件(页, 号); 见重连中 = 事.名称 === '错误' && 事.详情.状态 === '重连中'; }
+    assert.equal(await 页.调('关闭事件源', 号), 'true');
+    assert.equal(页.宿主.状态().事件源数, 0);
+  } finally { await 页.关(); await 服.关(); } // 关（）会等宿主完成；若睡眠计时器未清除，测试超时
+});
+
 test('网页事件源：违规调用抛事故；第九个事件源抛事故；关闭后保证不再收到该号事件', 用服务((请求, 响应) => {
   响应.writeHead(200, 头SSE);
   const 钟 = setInterval(() => { try { 响应.write(帧({data: 'x'})); } catch { /* 连接已断 */ } }, 20);

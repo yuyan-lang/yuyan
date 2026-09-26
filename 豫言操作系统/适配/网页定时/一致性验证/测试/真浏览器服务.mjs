@@ -1,7 +1,7 @@
 // 文言：真浏览器验收之小服务：静态供探针产物与测试页，另设 /api/* 供请求与事件源之验，及假编译客户端与假子应用。
 // 汉语：用法 node 真浏览器服务.mjs <探针产物目录> [端口]（环境变量 测试页目录 可指向另一个一致性验证目录，以便用它的测试页）；打开 http://127.0.0.1:端口/测试页.html。只监听 127.0.0.1，不访问外网。
 //       路由：/api/json、/api/echo（POST）、/api/slow?d=毫秒、/api/status/N、/api/badutf8、/api/big?n=字节、/api/redirect-out、
-//             /api/sse?n=事件数&gap=间隔毫秒&close=首连后关闭毫秒&retry=毫秒（SSE，带 Last-Event-ID 续发）、/编译/客户端.mjs（假客户端）、/子应用/入口.mjs（假子应用）、/api/cookie。
+//             /api/sse?n=事件数&gap=间隔毫秒&close=首连后关闭毫秒&retry=毫秒（SSE，带 Last-Event-ID 续发）、/编译/客户端.mjs（假客户端；设环境变量 编译目录 则改供真客户端与资源）、/子应用/入口.mjs（假子应用）、/api/cookie。
 import http from 'node:http';
 import {readFile, stat} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
@@ -74,7 +74,16 @@ const 服务 = http.createServer(async (请求, 响应) => {
       响应.on('error', () => {});
       return;
     }
-    if (路 === '/编译/客户端.mjs') { 头(200, 类型表['.mjs']); 响应.end(假编译客户端); return; }
+    if (路 === '/编译/客户端.mjs' && !process.env.编译目录) { 头(200, 类型表['.mjs']); 响应.end(假编译客户端); return; }
+    if (路.startsWith('/编译/') && process.env.编译目录) {
+      // 文言：用真编译客户端与编译资源（须先由构建工具生成，如云仓 应用/豫言体验/网页/编译）。汉语：环境变量 编译目录 指向含 客户端.mjs、工作线程.mjs、资源/ 的目录时，用它代替假客户端。
+      try {
+        const 文件 = path.join(path.resolve(process.env.编译目录), 路.slice('/编译/'.length));
+        头(200, 类型表[path.extname(文件)] ?? 'application/octet-stream');
+        响应.end(await readFile(文件));
+        return;
+      } catch { 头(404, 'text/plain'); 响应.end('没有 ' + 路); return; }
+    }
     if (路 === '/子应用/入口.mjs') { 头(200, 类型表['.mjs']); 响应.end(假子应用); return; }
     // 静态：先测试目录（测试页.html），再产物目录
     const 候选 = [path.join(页面目录, '..', 路 === '/' ? '测试页.html' : 路), path.join(产物目录, 路)];
