@@ -3,9 +3,9 @@ name: CI
 env:
   YY_GC_INITIAL_HEAP_SIZE_MB: 512
   YY_GC_MAX_HEAP_SIZE_MB: 6144
-  # 固定的双种子：由提交 2db3178f 导出（支持包描述的“编译模式”与“包含在／包含包”）。更换时须同时更新下面两项。
-  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-bootstrap/bootstrap-bundle-2db3178f36a0f092432586eef183abf10036533c.tar.gz
-  YY_BOOTSTRAP_SHA256: 84c1850d1f6ee35677205690f074d7f71208d793531fb1ff732cb12197db7e7f
+  # 固定的双种子：由提交 3d4432b8 导出（支持包描述的“编译模式”与“包含在／包含包”；运行时与 WAT 用 豫言操作系统/宿主/ 下的新路径）。更换时须同时更新下面两项。
+  YY_BOOTSTRAP_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-bootstrap/bootstrap-bundle-3d4432b8422f316316b89a7053dc36dd0967243b.tar.gz
+  YY_BOOTSTRAP_SHA256: bd7d51b127212f8db67cff31f14445cc6e1b0481c463b8fc43fa27f2db2fde2b
 
 on:
   push:
