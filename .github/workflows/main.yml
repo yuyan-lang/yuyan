@@ -28,7 +28,7 @@ jobs:
       - name: Install build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang llvm make curl ripgrep libsqlite3-dev
+          sudo apt-get install -y clang llvm make curl libsqlite3-dev
 
       - name: Build stable compiler from portable bootstrap release
         run: |
@@ -53,27 +53,26 @@ jobs:
       - name: Type-check compiler with stable bootstrap
         run: ./yy豫构_stable 类型检查 豫言编译器 --编译器 ./yy_bs_stable
 
-      - name: Build stage 2 compiler
-        run: make yy2_bs
+      # 文言：过渡：种包不携运行时之档，暂以 Make 造之一次；改用可执行程序之包（内含其档）后，此步与 Makefile 并除。
+      # 汉语：过渡：种子包不带运行时归档，暂用 Make 构建一次；改用可执行程序包（内含归档）后删除此步与 Makefile。
+      - name: 构建原生运行时（过渡）
+        run: make 运行时
 
-      - name: Build stage 3 compiler
-        run: make yy3_bs
+      # 文言：构建之事皆归构建程序，以豫构造之，诸目标并行而缓存。
+      # 汉语：构建统一交给构建程序（应用/仓库构建），由豫构构建；各目标由构建编排并行调度与缓存。
+      - name: 构建仓库构建程序
+        run: ./yy豫构_stable 构建 仓库构建 --编译器 ./yy_bs_stable --输出 yy仓库构建 -j "$(nproc)"
 
-      - name: Build stage 4 compiler
-        run: make yy4_bs
+      - name: 自举并核对定点
+        run: ./yy仓库构建 自举 -j "$(nproc)"
 
-      - name: Verify fixed point
-        run: cmp yy3_bs yy4_bs
+      - name: 类型检查、豫构测试与全树测试工具
+        run: ./yy仓库构建 类型检查 豫构测试 全树测试工具 -j "$(nproc)"
 
-      - name: 验证包构建与依赖边界
-        run: make 类型检查 豫构测试
-
-      # 文言：造全树测试之器，与编译器、豫构、运行时之档同封，供诸片取用。
-      # 汉语：构建全树测试工具，与编译器、豫构和原生运行时归档一起打包，供各分片作业下载。
-      - name: 构建并打包全树测试工具
+      # 文言：全树测试之器，与编译器、豫构、运行时之档同封，供诸片取用。
+      # 汉语：全树测试工具与编译器、豫构和原生运行时归档一起打包，供各分片作业下载。
+      - name: 打包全树测试工具
         run: |
-          set -euo pipefail
-          ./yy豫构 构建 全树测试 --输出 yy全树测试 -j "$(nproc)"
           tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" \
             yy4_bs yy豫构 yy全树测试 豫言操作系统/宿主/原生/运行时支持库
 
@@ -85,41 +84,43 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-      - name: Publish continuous and historical bootstrap releases
+      # 文言：不复发种包；发 Linux 可执行程序之包（稳定编译器、稳定豫构及运行时之档），按提交存史，连续版覆之。
+      # 汉语：不再发布种子包；改发布 Linux 可执行程序包（稳定编译器、稳定豫构与对应的运行时归档）：按提交号存历史版本，并覆盖更新连续版本。
+      - name: 发布 Linux 可执行程序
         if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          continuous_archive="$RUNNER_TEMP/yuyan-bootstrap-bundle.tar.gz"
-          historical_release="historical-bootstrap"
-          historical_asset="bootstrap-bundle-${GITHUB_SHA}.tar.gz"
-          historical_archive="$RUNNER_TEMP/${historical_asset}"
+          staging="$RUNNER_TEMP/yy-binaries"
+          runtime_dir="豫言操作系统/宿主/原生/运行时支持库"
+          mkdir -p "$staging/$runtime_dir"
+          install -m 755 yy4_bs "$staging/yy_bs_stable"
+          install -m 755 yy豫构 "$staging/yy豫构_stable"
+          cp "$runtime_dir"/lib豫言运行时*.a "$staging/$runtime_dir/"
+          archive="$RUNNER_TEMP/yuyan-linux-x86_64.tar.gz"
+          tar -czf "$archive" -C "$staging" .
+          historical_asset="yuyan-linux-x86_64-${GITHUB_SHA}.tar.gz"
+          cp "$archive" "$RUNNER_TEMP/$historical_asset"
 
-          ./yy豫构 自举包 --编译器 ./yy3_bs --输出 dist/yy-bootstrap
-          validation_root="$(mktemp -d "$RUNNER_TEMP/yy-seed-validation.XXXXXX")"
-          cp -R dist/yy-bootstrap "$validation_root/种子"
-          "$validation_root/种子/构建.sh"
-          find dist/yy-bootstrap -type f \( -name '._*' -o -name '.DS_Store' \) -delete
-          tar -czf "$continuous_archive" -C dist yy-bootstrap
-          cp "$continuous_archive" "$historical_archive"
+          for release in historical-binaries continuous-binaries; do
+            if ! gh release view "$release" >/dev/null 2>&1; then
+              gh release create "$release" \
+                --target "$GITHUB_SHA" \
+                --title "$release" \
+                --latest=false \
+                --notes "豫言 Linux x86-64 可执行程序包：yy_bs_stable、yy豫构_stable 与原生运行时归档。"
+            fi
+          done
 
-          if ! gh release view "$historical_release" >/dev/null 2>&1; then
-            gh release create "$historical_release" \
-              --target "$GITHUB_SHA" \
-              --title "Historical bootstrap bundles" \
-              --latest=false \
-              --notes "Immutable portable bootstrap bundles, indexed by their source commit."
-          fi
-
-          if gh release view "$historical_release" --json assets --jq '.assets[].name' \
+          if gh release view historical-binaries --json assets --jq '.assets[].name' \
             | grep -Fxq "$historical_asset"; then
-            echo "Historical bootstrap asset already exists: $historical_asset"
+            echo "历史版本已存在：$historical_asset"
           else
-            gh release upload "$historical_release" "$historical_archive"
+            gh release upload historical-binaries "$RUNNER_TEMP/$historical_asset"
           fi
 
-          gh release upload continuous-bootstrap "$continuous_archive" --clobber
+          gh release upload continuous-binaries "$archive" --clobber
 
   # 文言：全树之试，分二十片并行；每片取自举所成之器，但装所需，行其一段。
   # 汉语：全树测试按 20 个分片并行运行；各片复用自举作业产出的工具，只装必需依赖，运行自己那一段。
