@@ -20,7 +20,7 @@ const 本目录 = path.dirname(fileURLToPath(import.meta.url));
 const 语言仓根 = path.resolve(本目录, '../../../..');
 const 产物 = path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '隔离运行一致性');
 const miniflare路径 = process.env.E2E_MINIFLARE ?? path.resolve(语言仓根, '../yuyan-cloud/应用/包管理服务/node_modules/miniflare/dist/src/index.js');
-const 核心程序路径 = path.resolve(语言仓根, '../yuyan-cloud/应用/云端项目核心/产物/yy项目核心.wasm');
+const 核心程序路径 = path.resolve(语言仓根, '../yuyan-cloud/应用/豫言云工作台/云端项目核心/产物/yy项目核心.wasm');
 if (!existsSync(path.join(产物, '入口.mjs'))) throw new Error('缺少构建产物：' + 产物 + '（先构建 应用/，输出名 隔离运行一致性，见本目录说明）');
 if (!existsSync(miniflare路径)) throw new Error('找不到 miniflare：' + miniflare路径 + '（用环境变量 E2E_MINIFLARE 指定）');
 
