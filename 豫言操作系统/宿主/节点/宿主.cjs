@@ -5,6 +5,8 @@ const 子进程 = require('node:child_process');
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
 const {建立编译线程} = require('./编译线程.cjs');
+// 文言：值桥先求于今目录，无则取宿主之旁。汉语：值桥文件先在当前目录找，找不到再用宿主文件旁的那份，便于分发 Wasm 工具链包。
+const 桥文件路径=()=>文件.existsSync('yy节点值桥接.wasm')?'yy节点值桥接.wasm':路径.join(__dirname,'yy节点值桥接.wasm');
 const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
 if (isMainThread) {
   // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
@@ -43,7 +45,9 @@ if (isMainThread) {
 function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 开始=performance.now();
   const 模块路径=路径.resolve(参数[0]), 客参数=参数.slice(1);
-  const 桥=new WebAssembly.Instance(本工.桥模块??new WebAssembly.Module(文件.readFileSync('yy节点值桥接.wasm'))).exports;
+  // 文言：客自有今目录；工线程不能迁进程之目录，故宿主代记之，诸径与子进程皆依之。汉语：每个客实例有自己的当前目录；工作线程不能调用 process.chdir，所以由宿主记录，文件路径与子进程的工作目录都以它为准。
+  let 当前目录=本工.初始目录??process.cwd();
+  const 桥=new WebAssembly.Instance(本工.桥模块??new WebAssembly.Module(文件.readFileSync(桥文件路径()))).exports;
   const 模块=缓存??本工.模块??new WebAssembly.Module(文件.readFileSync(模块路径));
   const 编译毕=performance.now();
   function 留字节(数) { const 差=数-桥.memory.buffer.byteLength; if(差>0) 桥.memory.grow(Math.ceil(差/65536)); }
@@ -68,6 +72,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     throw Error('未知宿主值');
   }
   const 文=值=>Buffer.isBuffer(值)?值.toString('utf8'):String(值);
+  const 径=值=>路径.resolve(当前目录,文(值));
   const 数=值=>Number(值?.小数??值);
   const 列=诸值=>[诸值,诸值.length];
   const 可执行=名=>{try{文件.accessSync(名,文件.constants.X_OK);return 文件.statSync(名).isFile();}catch{return false;}};
@@ -76,21 +81,49 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   function 精确小数(值){const 数字=数(值);if(Object.is(数字,-0))return '-0';if(!Number.isFinite(数字))return String(数字).toLowerCase().replace('infinity','inf');const [尾,指数]=数字.toExponential(16).split('e');const 幂=Number(指数);if(幂 < -4 || 幂 >= 17)return 尾.replace(/\.?0+$/,'')+'e'+(幂>=0?'+':'-')+String(Math.abs(幂)).padStart(2,'0');return 数字.toFixed(Math.max(0,16-幂)).replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'');}
   // 文言：诸客同用引擎之制，不令调参独及调度者。汉语：传播显式 Wasm 与 V8 线程池选项；不传播调试端口或 CPU 剖析输出选项。
   const 引擎参数=本工.引擎参数??选引擎参数(process.execArgv);
-  function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文);const 客体=路径.resolve(程序)===模块路径 || 程序.endsWith('.wasm');if(客体){参数组=[...引擎参数,__filename,路径.resolve(程序),...参数组];程序=process.execPath;}return [程序,参数组,客体];}
-  function 运行子进程(名,参){const [程序,参数组,客体]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{maxBuffer:256*1024*1024,env:客体?{...process.env,YY_NODE_REPEAT:'1'}:process.env});if(果.error)throw 果.error;const 结果=[果.status===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=果.status??1;return 结果;}
+  function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文);const 客体=路径.resolve(当前目录,程序)===模块路径 || 程序.endsWith('.wasm');if(客体){参数组=[...引擎参数,__filename,路径.resolve(当前目录,程序),...参数组];程序=process.execPath;}return [程序,参数组,客体];}
+  function 运行子进程(名,参){const [程序,参数组,客体]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,maxBuffer:256*1024*1024,env:客体?{...process.env,YY_NODE_REPEAT:'1'}:process.env});if(果.error)throw 果.error;const 结果=[果.status===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=果.status??1;return 结果;}
   const 请求进程=客体请求(本工.端口,本工.信号);
+  // 文言：Node 无 flock，以独占新建之“占”文为锁，书进程号；持者已亡则除其陈锁，未得则稍候复试。汉语：Node 没有 flock，用独占创建“占用文件”加锁，文件内写进程号；持有者已退出就清除陈旧的锁，拿不到锁则短暂等待后重试。
+  const 小候=new Int32Array(new SharedArrayBuffer(4));
+  function 取占锁(占径){
+    for(;;){
+      try{const 号=文件.openSync(占径,'wx',0o600);文件.writeSync(号,String(process.pid));文件.closeSync(号);return;}
+      catch(错){if(错.code!=='EEXIST')throw 错;}
+      let 持者=0;try{持者=Number(文件.readFileSync(占径,'utf8'));}catch{}
+      if(持者&&持者!==process.pid){try{process.kill(持者,0);}catch{try{文件.unlinkSync(占径);}catch{}continue;}}
+      Atomics.wait(小候,0,0,20);
+    }
+  }
+  const 释占锁=占径=>{try{文件.unlinkSync(占径);}catch{}};
+  const 产物锁们=new Map();let 下锁号=1n;
   const 原语={
-    豫言_存放包上下文:内容=>{for(const 名 of 文件.readdirSync(".yybuild/豫构上下文")){if(!名.endsWith(".上下文"))continue;const 径=路径.resolve(".yybuild/豫构上下文",名);if(文件.readFileSync(径).equals(内容))return 径;}throw Error("请先用豫构准备相同包上下文");},
+    // 文言：同文用旧号，异文另立号，既存不改（同原生 包上下文.c）。汉语：与原生 包上下文.c 相同：在当前目录的 .yybuild/豫构上下文 里逐字比较，内容相同就复用已有编号，否则新建下一个编号；加锁防并发，返回真实路径。
+    豫言_存放包上下文:内容=>{
+      const 目录=路径.resolve(当前目录,'.yybuild/豫构上下文');文件.mkdirSync(目录,{recursive:true,mode:0o700});
+      const 占径=路径.join(目录,'锁.占');取占锁(占径);
+      try{
+        for(let 号=1;;号++){
+          const 文径=路径.join(目录,号+'.上下文');let 旧;
+          try{旧=文件.readFileSync(文径);}catch(错){if(错.code!=='ENOENT')throw 错;文件.writeFileSync(文径,内容,{flag:'wx',mode:0o600});return 文件.realpathSync(文径);}
+          if(旧.equals(内容))return 文件.realpathSync(文径);
+        }
+      }finally{释占锁(占径);}
+    },
+    // 文言：原生产物之锁：返一号，释时凭号去其占文。汉语：原生产物锁：加锁后返回一个句柄号，释放时凭句柄删除占用文件。
+    豫言_锁原生产物:名=>{const 占径=径(名)+'.占';取占锁(占径);const 号=下锁号++;产物锁们.set(号,占径);return 号;},
+    豫言_释原生产物锁:号=>{const 键=BigInt(号);const 占径=产物锁们.get(键);if(占径!==undefined){产物锁们.delete(键);释占锁(占径);}return null;},
     豫言_获取命令行程序名:()=>模块路径,
     豫言_获取命令行参数:()=>列(客参数),
-    豫言_获取当前工作目录:()=>process.cwd(),
-    豫言_获取文件修改时间:名=>BigInt(Math.floor(文件.statSync(文(名)).mtimeMs/1000)),
+    豫言_获取当前工作目录:()=>当前目录,
+    豫言_切换当前工作目录:名=>{const 目标=径(名);try{if(!文件.statSync(目标).isDirectory())return [20n,'不是目录：'+目标];当前目录=目标;return [0n,''];}catch(错){return [BigInt(Math.abs(系统.constants.errno[错.code]??2)),错.message];}},
+    豫言_获取文件修改时间:名=>BigInt(Math.floor(文件.statSync(径(名)).mtimeMs/1000)),
     豫言_获取环境变量:名=>[Object.hasOwn(process.env,文(名)),process.env[文(名)]??''],
     豫言_获取当前纳秒时间:()=>({小数:Number(process.hrtime.bigint())}),
     豫言_获取当前本地日期时间字符串:()=>{const 时=new Date();return `${时.getFullYear()}-${String(时.getMonth()+1).padStart(2,'0')}-${String(时.getDate()).padStart(2,'0')} ${String(时.getHours()).padStart(2,'0')}:${String(时.getMinutes()).padStart(2,'0')}:${String(时.getSeconds()).padStart(2,'0')}`;},
     豫言_格式化当前本地日期时间:格式=>{const 时=new Date(),补=数=>String(数).padStart(2,'0'),表={'%Y':String(时.getFullYear()),'%m':补(时.getMonth()+1),'%d':补(时.getDate()),'%H':补(时.getHours()),'%M':补(时.getMinutes()),'%S':补(时.getSeconds()),'%%':'%'};return 文(格式).replace(/%./g,项=>{if(!(项 in 表))throw Error('未支持日期格式 '+项);return 表[项];});},
-    豫言_同步读取文件:名=>文件.readFileSync(文(名)),
-    豫言_同步读取文件字节串:名=>文件.readFileSync(文(名)),
+    豫言_同步读取文件:名=>文件.readFileSync(径(名)),
+    豫言_同步读取文件字节串:名=>文件.readFileSync(径(名)),
     // 文言：字节串之术一依原生运行时：越界则止，截取以起点与长度。汉语：字节串原语与原生运行时（字节串.c）语义一致：越界即报错，截取按起点与长度。
     豫言_字节串_空:()=>Buffer.alloc(0),
     豫言_字节串_长度:值=>BigInt(值.length),
@@ -99,19 +132,19 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_字节串_单字节:值=>{if(值<0n||值>255n)throw Error('构造单字节串：字节必须在零至二百五十五之间');return Buffer.from([Number(值)]);},
     豫言_字节串_拼接:(甲,乙)=>Buffer.concat([甲,乙]),
     豫言_字节串_截取:(值,起,长)=>{if(起<0n||长<0n||起>BigInt(值.length)||长>BigInt(值.length)-起)throw Error('截取字节串：范围越界');return Buffer.from(值.subarray(Number(起),Number(起+长)));},
-    豫言_同步写入文件:(名,内容)=>{文件.mkdirSync(路径.dirname(文(名)),{recursive:true});文件.writeFileSync(文(名),内容);},
-    豫言_同步写入文件字节串:(名,内容)=>{文件.mkdirSync(路径.dirname(文(名)),{recursive:true});文件.writeFileSync(文(名),内容);},
-    豫言_同步删除文件:名=>文件.unlinkSync(文(名)),
-    豫言_同步列出文件夹:名=>列(['.','..',...文件.readdirSync(文(名))]),
-    豫言_路径存在:名=>文件.existsSync(文(名)),
-    豫言_路径是文件夹:名=>文件.statSync(文(名)).isDirectory(),
-    豫言_路径是普通文件:名=>文件.statSync(文(名)).isFile(),
-    豫言_路径为符号链接:名=>文件.lstatSync(文(名)).isSymbolicLink(),
-    豫言_取得真实路径:名=>文件.realpathSync(文(名)),
-    豫言_路径可执行:名=>可执行(文(名)),
-    豫言_查找可执行程序:名=>{const 候选=文(名).includes('/')?[文(名)]:(process.env.PATH??'').split(':').map(径=>路径.join(径,文(名)));const 找到=候选.find(可执行);return [!!找到,找到?路径.resolve(找到):''];},
+    豫言_同步写入文件:(名,内容)=>{文件.mkdirSync(路径.dirname(径(名)),{recursive:true});文件.writeFileSync(文(名),内容);},
+    豫言_同步写入文件字节串:(名,内容)=>{文件.mkdirSync(路径.dirname(径(名)),{recursive:true});文件.writeFileSync(文(名),内容);},
+    豫言_同步删除文件:名=>文件.unlinkSync(径(名)),
+    豫言_同步列出文件夹:名=>列(['.','..',...文件.readdirSync(径(名))]),
+    豫言_路径存在:名=>文件.existsSync(径(名)),
+    豫言_路径是文件夹:名=>文件.statSync(径(名)).isDirectory(),
+    豫言_路径是普通文件:名=>文件.statSync(径(名)).isFile(),
+    豫言_路径为符号链接:名=>文件.lstatSync(径(名)).isSymbolicLink(),
+    豫言_取得真实路径:名=>文件.realpathSync(径(名)),
+    豫言_路径可执行:名=>可执行(径(名)),
+    豫言_查找可执行程序:名=>{const 候选=文(名).includes('/')?[径(名)]:(process.env.PATH??'').split(':').map(径=>路径.join(径,文(名)));const 找到=候选.find(可执行);return [!!找到,找到?路径.resolve(找到):''];},
     豫言_在线处理器数量:()=>系统.availableParallelism(),
-    豫言_启动异步子进程:(名,参)=>请求进程('启动',...子进程参数(名,参)),
+    豫言_启动异步子进程:(名,参)=>请求进程('启动',...子进程参数(名,参),当前目录),
     豫言_尝试收取异步子进程:号=>请求进程('收取',号),
     // 文言：此桥唯候自身子进程。汉语：未知句柄返回错误事件，不冒充通用网络或文件描述符轮询。
     豫言_异步_输入输出多路等待:(关注,超时)=>请求进程('等待',关注[0],数(超时)),

@@ -34,8 +34,9 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
     const [术, ...参] = 请;
     if (术 === '启动') {
       if (记录们.size >= 4096) return -24;
-      const [程序, 参数, 客体] = 参;
-      const 工 = 编译线程?.(程序, 参数, 客体) ?? spawn(程序, 参数, {stdio: ['ignore', 'pipe', 'pipe'], shell: false,
+      const [程序, 参数, 客体, 目录] = 参;
+      // 文言：子进程启于客之今目录。汉语：子进程在客实例记录的当前目录里启动。
+      const 工 = 编译线程?.(程序, 参数, 客体, 目录) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false,
         env: 客体 ? {...process.env, YY_NODE_REPEAT: '1'} : process.env});
       const 记录 = {工, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false};
       function 收(块, 是错) {

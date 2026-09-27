@@ -6,6 +6,9 @@ const {Worker, MessageChannel} = require('node:worker_threads');
 const {接管进程} = require('./进程桥接.cjs');
 const {PassThrough} = require('node:stream');
 
+// 文言：值桥先求于今目录，无则取宿主之旁。汉语：值桥文件先在当前目录找，找不到再用宿主文件旁的那份。
+const 桥文件路径 = () => 文件.existsSync('yy节点值桥接.wasm') ? 'yy节点值桥接.wasm' : 路径.join(__dirname, 'yy节点值桥接.wasm');
+
 function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
   const 输入 = 路径.resolve(编译器路径), 模块们 = new Map();
   const 复用 = process.env.YY_NODE_COMPILER_REUSE !== '0', 空闲 = [], 诸工 = new Set();
@@ -88,7 +91,7 @@ function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
     模块们.set(径, {身份, 值});
     return 值;
   }
-  function 启动(程序, 参数, 客体) {
+  function 启动(程序, 参数, 客体, 目录) {
     const 位 = 参数.indexOf(宿主文件);
     // 文言：惟编译器自派之工入此途。汉语：只匹配同一编译器的内部 worker 命令；一般 Wasm 程序与原生子进程仍使用真实进程。
     if (!客体 || 程序 !== process.execPath || 位 < 0 ||
@@ -97,14 +100,14 @@ function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
     const {port1, port2} = new MessageChannel(), 信号 = new SharedArrayBuffer(4);
     const 清理 = 接管进程(port1, 信号, 启动);
     if (复用) {
-      try {return 复用启动({参数:参数.slice(位+1),端口:port2,信号,编译线程:true,模块:模块(输入),桥模块:模块('yy节点值桥接.wasm'),引擎参数},port2,清理);}
+      try {return 复用启动({参数:参数.slice(位+1),端口:port2,信号,编译线程:true,初始目录:目录,模块:模块(输入),桥模块:模块(桥文件路径()),引擎参数},port2,清理);}
       catch (错) {清理();port2.close();throw 错;}
     }
     let 工;
     try {
       工 = new Worker(宿主文件, {
-        workerData: {参数: 参数.slice(位 + 1), 端口: port2, 信号, 编译线程: true,
-          模块: 模块(输入), 桥模块: 模块('yy节点值桥接.wasm'), 引擎参数},
+        workerData: {参数: 参数.slice(位 + 1), 端口: port2, 信号, 编译线程: true, 初始目录: 目录,
+          模块: 模块(输入), 桥模块: 模块(桥文件路径()), 引擎参数},
         transferList: [port2], resourceLimits: {stackSizeMb: 128},
         stdout: true, stderr: true, execArgv: []
       });
