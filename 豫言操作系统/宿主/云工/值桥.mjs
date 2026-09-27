@@ -102,6 +102,11 @@ export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 =
       果.set(乙, 甲.length);
       return 果;
     },
+    // 文言：截取以起点与长度，越界则止，同原生运行时。汉语：按起点与长度截取，越界报错，语义同原生运行时（字节串.c）。
+    豫言_字节串_截取: (值, 起, 长) => {
+      if (起 < 0n || 长 < 0n || 起 > BigInt(值.length) || 长 > BigInt(值.length) - 起) throw Error('截取字节串：范围越界');
+      return 值.slice(Number(起), Number(起 + 长));
+    },
     豫言_整数转小数: 值 => ({小数: Number(值)}),
     豫言_小数转整数: 值 => BigInt(Math.trunc(Number(值))),
     豫言_整数加: (甲, 乙) => BigInt.asIntN(64, 甲 + 乙),
