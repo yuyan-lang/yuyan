@@ -7,7 +7,7 @@ import {pathToFileURL, fileURLToPath} from 'node:url';
 // 文言：路径皆可由环境变量易之；默认合于语言仓之布局。汉语：JSDOM 路径与探针产物目录都可用环境变量覆盖（变量名是中文，用 env 传）。
 const 环境 = process.env;
 const 本目录 = new URL('.', import.meta.url);
-export const JSDOM路径 = 环境.JSDOM路径 ?? fileURLToPath(new URL('../../../../../../yuyan-cloud/网站/node_modules/jsdom/lib/api.js', 本目录));
+export const JSDOM路径 = 环境.JSDOM路径 ?? fileURLToPath(new URL('../../../../../../yuyan-cloud/应用/网站/node_modules/jsdom/lib/api.js', 本目录));
 export const 产物目录 = (环境.前端探针产物目录 ?? fileURLToPath(new URL('../产物/', 本目录))).replace(/\/?$/u, '/');
 export const {JSDOM} = await import(pathToFileURL(JSDOM路径));
 export const 宿主模块 = await import(pathToFileURL(产物目录 + '宿主.mjs'));

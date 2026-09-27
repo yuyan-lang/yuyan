@@ -2,7 +2,7 @@
 import {readFileSync, readdirSync} from 'node:fs';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
-const 迷 = process.env.迷你路径 ?? '/Users/zc/repos/yuyan-worktrees/yuyan-cloud/工具/包管理服务/node_modules/miniflare/dist/src/index.js';
+const 迷 = process.env.迷你路径 ?? '/Users/zc/repos/yuyan-worktrees/yuyan-cloud/应用/包管理服务/node_modules/miniflare/dist/src/index.js';
 const {Miniflare, convertV4MiniflareOptions} = await import(pathToFileURL(迷).href);
 const 产物 = path.resolve(process.env.产物目录);
 const 全部 = readdirSync(产物).filter(f => /\.(mjs|wasm|json)$/.test(f));

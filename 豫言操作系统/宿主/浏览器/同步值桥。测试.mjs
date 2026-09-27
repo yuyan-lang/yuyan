@@ -7,7 +7,7 @@ import {resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {创建豫言实例} from './值桥.mjs';
 
-const 根=resolve(fileURLToPath(new URL('.',import.meta.url)),'../../../../yuyan-cloud/工具/云端项目核心/产物');
+const 根=resolve(fileURLToPath(new URL('.',import.meta.url)),'../../../../yuyan-cloud/应用/云端项目核心/产物');
 const 程序径=resolve(根,'yy项目核心.wasm'),值桥径=resolve(根,'yy值桥接.wasm');
 const 可运行=existsSync(程序径)&&existsSync(值桥径);
 

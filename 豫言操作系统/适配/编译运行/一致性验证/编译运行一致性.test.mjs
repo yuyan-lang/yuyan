@@ -4,8 +4,8 @@
 // 用法（在私有暂存目录里执行，其中有 dist/）：
 //   1. ./yy双宿主构建 --自动 云工 <本目录>/应用 dist/编译运行一致性
 //   2. node --test <本目录>/编译运行一致性.test.mjs
-// 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_CLOUD_ROOT 云仓根（默认相邻的 ../yuyan-cloud，取其中 工具/云端编译服务 的编译器 Wasm、值桥、Binaryen 胶水与标准库资料）；
-// YY_BINARYEN Node 用的 binaryen 入口（默认云仓 应用/豫言体验/node_modules/binaryen）；E2E_MINIFLARE miniflare 入口（默认云仓 工具/包管理服务/node_modules）。缺任何一项则报错并说明。
+// 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_CLOUD_ROOT 云仓根（默认相邻的 ../yuyan-cloud，取其中 应用/云端编译服务 的编译器 Wasm、值桥、Binaryen 胶水与标准库资料）；
+// YY_BINARYEN Node 用的 binaryen 入口（默认云仓 应用/豫言体验/node_modules/binaryen）；E2E_MINIFLARE miniflare 入口（默认云仓 应用/包管理服务/node_modules）。缺任何一项则报错并说明。
 import {after, before, describe, test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -19,11 +19,11 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 const 本目录 = path.dirname(fileURLToPath(import.meta.url));
 const 语言仓根 = path.resolve(本目录, '../../../..');
 const 云仓根 = path.resolve(process.env.YY_CLOUD_ROOT ?? path.resolve(语言仓根, '../yuyan-cloud'));
-const 服务目录 = path.join(云仓根, '工具/云端编译服务');
+const 服务目录 = path.join(云仓根, '应用/云端编译服务');
 const 资源目录 = path.join(服务目录, '资源');
 const 产物 = path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '编译运行一致性');
 const binaryen路径 = process.env.YY_BINARYEN ?? path.join(云仓根, '应用/豫言体验/node_modules/binaryen/index.js');
-const miniflare路径 = process.env.E2E_MINIFLARE ?? path.join(云仓根, '工具/包管理服务/node_modules/miniflare/dist/src/index.js');
+const miniflare路径 = process.env.E2E_MINIFLARE ?? path.join(云仓根, '应用/包管理服务/node_modules/miniflare/dist/src/index.js');
 for (const [说明, 路径] of [['试验应用产物（先构建，输出名 编译运行一致性）', path.join(产物, '入口.mjs')], ['编译器 Wasm', path.join(资源目录, '编译器.wasm')],
   ['值桥 Wasm', path.join(资源目录, '值桥接.wasm')], ['标准库资料', path.join(资源目录, '标准库.json.gz')], ['Binaryen 胶水', path.join(服务目录, '组装器.mjs')],
   ['binaryen（Node 版，环境变量 YY_BINARYEN）', binaryen路径], ['miniflare（环境变量 E2E_MINIFLARE）', miniflare路径]]) {

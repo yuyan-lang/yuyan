@@ -10,9 +10,9 @@ import test from 'node:test';
 const 根 = dirname(fileURLToPath(import.meta.url));
 const 云 = resolve(根, '../../../yuyan-cloud');
 const 产物 = resolve(云, 'dist/网站/资源/首页应用');
-const 网站包 = resolve(云, '网站/package.json');
+const 网站包 = resolve(云, '应用/网站/package.json');
 const 可运行 = existsSync(resolve(产物, '入口.mjs')) &&
-  existsSync(resolve(云, '网站/node_modules/jsdom/package.json'));
+  existsSync(resolve(云, '应用/网站/node_modules/jsdom/package.json'));
 
 test('浏览器通用入口先核接口再运行首页', {skip: !可运行}, async () => {
   const {JSDOM} = createRequire(网站包)('jsdom');

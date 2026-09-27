@@ -6,7 +6,7 @@
 //   1. ./yy双宿主构建 --自动 云工 <本目录>/应用 dist/隔离运行一致性
 //   2. node --test <本目录>/隔离运行.test.mjs
 // 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_PROBE_WASM 已编译好的探针 Wasm（缺省则用暂存里的 yy3_bs 现编）；E2E_MINIFLARE miniflare 入口路径
-// （缺省取相邻云仓 工具/包管理服务/node_modules）。注意：本地 workerd 不执行 CPU 限额，故不运行死循环程序。
+// （缺省取相邻云仓 应用/包管理服务/node_modules）。注意：本地 workerd 不执行 CPU 限额，故不运行死循环程序。
 import {after, before, test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -19,8 +19,8 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 const 本目录 = path.dirname(fileURLToPath(import.meta.url));
 const 语言仓根 = path.resolve(本目录, '../../../..');
 const 产物 = path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '隔离运行一致性');
-const miniflare路径 = process.env.E2E_MINIFLARE ?? path.resolve(语言仓根, '../yuyan-cloud/工具/包管理服务/node_modules/miniflare/dist/src/index.js');
-const 核心程序路径 = path.resolve(语言仓根, '../yuyan-cloud/工具/云端项目核心/产物/yy项目核心.wasm');
+const miniflare路径 = process.env.E2E_MINIFLARE ?? path.resolve(语言仓根, '../yuyan-cloud/应用/包管理服务/node_modules/miniflare/dist/src/index.js');
+const 核心程序路径 = path.resolve(语言仓根, '../yuyan-cloud/应用/云端项目核心/产物/yy项目核心.wasm');
 if (!existsSync(path.join(产物, '入口.mjs'))) throw new Error('缺少构建产物：' + 产物 + '（先构建 应用/，输出名 隔离运行一致性，见本目录说明）');
 if (!existsSync(miniflare路径)) throw new Error('找不到 miniflare：' + miniflare路径 + '（用环境变量 E2E_MINIFLARE 指定）');
 
