@@ -68,6 +68,23 @@ jobs:
       - name: 验证包构建与依赖边界
         run: make 类型检查 豫构测试
 
+      # 文言：造全树测试之器，与编译器、豫构、运行时之档同封，供诸片取用。
+      # 汉语：构建全树测试工具，与编译器、豫构和原生运行时归档一起打包，供各分片作业下载。
+      - name: 构建并打包全树测试工具
+        run: |
+          set -euo pipefail
+          ./yy豫构 构建 全树测试 --输出 yy全树测试 -j "$(nproc)"
+          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" \
+            yy4_bs yy豫构 yy全树测试 豫言操作系统/宿主/原生/运行时支持库
+
+      - name: 上传全树测试工具
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-test-tools
+          path: ${{ runner.temp }}/yy-test-tools.tar.gz
+          retention-days: 1
+          if-no-files-found: error
+
       - name: Publish continuous and historical bootstrap releases
         if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
         env:
@@ -103,3 +120,38 @@ jobs:
           fi
 
           gh release upload continuous-bootstrap "$continuous_archive" --clobber
+
+  # 文言：全树之试，分二十片并行；每片取自举所成之器，但装所需，行其一段。
+  # 汉语：全树测试按 20 个分片并行运行；各片复用自举作业产出的工具，只装必需依赖，运行自己那一段。
+  # 分片数改动时，须同时改 matrix.shard 列表与下面的 “/20”。
+  full-tree-tests:
+    name: 全树测试 ${{ matrix.shard }}/20
+    needs: bootstrap
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang llvm libsqlite3-dev
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-test-tools
+          path: ${{ runner.temp }}
+
+      - name: 解开全树测试工具
+        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+
+      - name: 运行本片测试
+        run: ./yy全树测试 --分片 ${{ matrix.shard }}/20
