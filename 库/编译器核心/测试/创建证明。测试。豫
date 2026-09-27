@@ -85,4 +85,4 @@
 「写引用」于「专整尾标」于『$sum_loop』。
 「打印行」于（「拼」于（「列」【『(module (func $nfusion (export "test") (param $i0 i64) (result i64) (local $acc i64)』，
  「拼」于（「态射」授以「整数」授以「字符串」于（「整数范围」于「一」于（「融合」中「四」））于（会「号」而『(local $i』附（「整数表示」于「号」）附『 i64)』）），
- 『(loop $sum_loop (result i64)』，「写专整段」于『fusion』于「阳」于（「融合」中「三」），『) local.get $acc i64.add))』】））。
+ 『(loop $sum_loop (result i64)』，「写专整段文」于『fusion』于「阳」于（「融合」中「三」），『) local.get $acc i64.add))』】））。
