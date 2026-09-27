@@ -1,5 +1,5 @@
-// 文言：只启既用之能，中文字先化字节。汉语：Binaryen 文本入口接收字节字符串；禁止 All 意外启用实验性描述符等浏览器未支持的扩展。
-// 文言：书者（值桥等手写之模块）读其文，编器所出读其二进制。汉语：输入可以是 WAT 文本（值桥等手写宿主模块），也可以是 Wasm 二进制（编译器直接写出的程序，以及编译器本身）。
+// 文言：只启既用之能。汉语：只启用用到的特性；禁止 All 意外启用实验性描述符等浏览器未支持的扩展。
+// 文言：所入皆编器所书之二进制。汉语：输入是编译器直接写出的 Wasm 二进制（用户程序，以及编译器本身）。
 export function 创建组装器(binaryen) {
   const 型 = binaryen.Features;
   const 特性 = 型.MutableGlobals | 型.NontrappingFPToInt | 型.BulkMemory | 型.SignExt |
@@ -36,17 +36,10 @@ export function 创建组装器(binaryen) {
   return function 组装(输入, 优化 = false) {
     let 模块, 阶段;
     try {
-      if (typeof 输入 === "string") {
-        阶段 = "WAT 文本解析";
-        const 字节 = new TextEncoder().encode(输入), 片段 = [];
-        for (let 位 = 0; 位 < 字节.length; 位 += 8192) 片段.push(String.fromCharCode(...字节.subarray(位, 位 + 8192)));
-        模块 = binaryen.parseText(片段.join(""), 特性);
-      } else {
-        阶段 = "Wasm 二进制读取";
-        // 文言：读时即启诸能，否则引用之型或误作 anyref。汉语：读入时就启用这些特性；否则 Binaryen 按默认特性读，会把 eqref 等引用类型误读成 anyref，写回后不合法。
-        模块 = binaryen.readBinary(输入, 特性);
-        if (是豫言客体(模块)) { 阶段 = "安装顶层异常处理器"; 装顶层承异(模块); }
-      }
+      阶段 = "Wasm 二进制读取";
+      // 文言：读时即启诸能，否则引用之型或误作 anyref。汉语：读入时就启用这些特性；否则 Binaryen 按默认特性读，会把 eqref 等引用类型误读成 anyref，写回后不合法。
+      模块 = binaryen.readBinary(输入, 特性);
+      if (是豫言客体(模块)) { 阶段 = "安装顶层异常处理器"; 装顶层承异(模块); }
       阶段 = "Binaryen 优化与函数枚举";
       if (优化) { binaryen.setOptimizeLevel(2); binaryen.setShrinkLevel(1); binaryen.setDebugInfo(true); 模块.optimize(); }
       const 函数们 = Array.from({ length: 模块.getNumFunctions() }, (_, 位) => 模块.getFunctionByIndex(位));

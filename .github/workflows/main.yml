@@ -60,21 +60,8 @@ jobs:
       - name: 自举并核对定点
         run: ./yy仓库构建 自举 -j "$(nproc)"
 
-      - name: 下载 Wasmtime C API
-        env:
-          YY_WASMTIME_C_API_URL: https://github.com/bytecodealliance/wasmtime/releases/download/v48.0.1/wasmtime-v48.0.1-x86_64-linux-c-api.tar.xz
-          YY_WASMTIME_C_API_SHA256: 67683d04b416a8b91f0e607e7b4c22bd32f18f947c10b5372eb8c277ae3b883a
-        run: |
-          set -euo pipefail
-          archive="$RUNNER_TEMP/wasmtime-c-api.tar.xz"
-          curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
-            --output "$archive" "$YY_WASMTIME_C_API_URL"
-          echo "$YY_WASMTIME_C_API_SHA256  $archive" | sha256sum --check -
-          mkdir -p yy_wasmtime_c_api
-          tar -xJf "$archive" -C yy_wasmtime_c_api --strip-components=1
-
-      # 文言：Wasm 工具链之包：以 Wasmtime 之 C 接口造 WAT 组装器，乃以 yy4_bs 编编译器、豫构与构建程序为 WasmGC。
-      # 汉语：Wasm 工具链包：用官方 Wasmtime C API 构建 WAT 组装器，再用 yy4_bs 把编译器、豫构与构建程序编成 WasmGC 模块。
+      # 文言：Wasm 工具链之包：以 yy4_bs 编编译器、豫构与构建程序为 WasmGC，编器径书二进制；值桥亦由今源所构之生成程序书之，不须 Wasmtime。
+      # 汉语：Wasm 工具链包：用 yy4_bs 把编译器、豫构与构建程序编成 WasmGC 模块（编译器直接写出二进制），节点值桥由当前源码构建的生成程序写出，不需要 Wasmtime。
       - name: 构建豫构、全树测试工具与 Wasm 工具链包
         run: ./yy仓库构建 豫构 全树测试工具 网页汇编工具链 -j "$(nproc)"
 
