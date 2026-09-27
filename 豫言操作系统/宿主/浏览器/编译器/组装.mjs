@@ -43,8 +43,8 @@ export function 创建组装器(binaryen) {
         模块 = binaryen.parseText(片段.join(""), 特性);
       } else {
         阶段 = "Wasm 二进制读取";
-        模块 = binaryen.readBinary(输入);
-        模块.setFeatures(特性);
+        // 文言：读时即启诸能，否则引用之型或误作 anyref。汉语：读入时就启用这些特性；否则 Binaryen 按默认特性读，会把 eqref 等引用类型误读成 anyref，写回后不合法。
+        模块 = binaryen.readBinary(输入, 特性);
         if (是豫言客体(模块)) { 阶段 = "安装顶层异常处理器"; 装顶层承异(模块); }
       }
       阶段 = "Binaryen 优化与函数枚举";
