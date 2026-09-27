@@ -1,10 +1,10 @@
-// 文言：直验网页汇编运行时之 $json_string，穷举 \uXXXX 与代理对，兼验畸形必止。
-// 汉语：把 豫言操作系统/宿主/网页汇编/运行时.wat 连同 运行时JSON字符串试验壳.wat 组装成一个模块，
+// 文言：直验客体运行时之 $json_string（编译器书其诸项为文），穷举 \uXXXX 与代理对，兼验畸形必止。
+// 汉语：把客体运行时（编译器内的 回收运行时，由 yy回收运行时生成 打印成 WAT 模块项）连同 运行时JSON字符串试验壳.wat 组装成一个模块，
 // 直接调用 $json_string：穷举全部 65536 个 \uXXXX（大小写两式）与全部 1048576 个高低代理对，
 // 再验孤立代理项、短转义、非零起点、畸形转义（必须触发 unreachable 陷阱）、随机 JSON.stringify 往返与超长串。
-// 复跑（在语言仓根目录或含 豫言操作系统 符号链接与 yy网页汇编宿主 的私有暂存目录）：
+// 复跑（在语言仓根目录或含 豫言操作系统 符号链接、yy网页汇编宿主 与 yy回收运行时生成 的私有暂存目录；后者用 ./yy豫构 构建 编译器核心 测试 回收运行时生成。豫 --输出 yy回收运行时生成 -j 24 生成）：
 //   node --test 豫言操作系统/宿主/网页汇编/一致性验证/运行时JSON字符串.test.mjs
-// 环境变量：YY_ROOT（仓根，默认当前目录）、YY_WASM_HOST（yy网页汇编宿主 路径，默认 <仓根>/yy网页汇编宿主）。
+// 环境变量：YY_ROOT（仓根，默认当前目录）、YY_WASM_HOST（yy网页汇编宿主 路径，默认 <仓根>/yy网页汇编宿主）、YY_RUNTIME_GEN（yy回收运行时生成 路径，默认 <仓根>/yy回收运行时生成）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {execFileSync} from 'node:child_process';
@@ -14,7 +14,8 @@ import path from 'node:path';
 
 const 仓根 = path.resolve(process.env.YY_ROOT ?? process.cwd());
 const 宿主程序 = process.env.YY_WASM_HOST ?? path.join(仓根, 'yy网页汇编宿主');
-const 运行时 = readFileSync(path.join(仓根, '豫言操作系统/宿主/网页汇编/运行时.wat'), 'utf8');
+const 运行时生成 = process.env.YY_RUNTIME_GEN ?? path.join(仓根, "yy回收运行时生成");
+const 运行时 = execFileSync(运行时生成, [], {cwd: 仓根, maxBuffer: 64 * 1024 * 1024}).toString("utf8");
 const 试验壳 = readFileSync(new URL('./运行时JSON字符串试验壳.wat', import.meta.url), 'utf8');
 const 临时 = mkdtempSync(path.join(tmpdir(), 'yy-json-'));
 let 二进制;

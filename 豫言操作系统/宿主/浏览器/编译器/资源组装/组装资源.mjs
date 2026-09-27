@@ -6,7 +6,7 @@ import { pathToFileURL } from "node:url";
 import { 创建组装器 } from "../组装.mjs";
 import { 创建编译器 } from "../编译核心.mjs";
 
-// 文言：只接组装之器，不代编译之术。汉语：由 yy浏览器编译资源 调用，固定参数位置；输入编译器 WAT 与标准库资料，输出发布资源和校验清单，所有发布二进制均由 WAT 重建。
+// 文言：只接组装之器，不代编译之术。汉语：由 yy浏览器编译资源 调用，固定参数位置；输入编译器 Wasm（编译器直接写出的二进制）与标准库资料，输出发布资源和校验清单；编译器经 Binaryen 装入浏览器处理并优化，值桥由 WAT 组装。
 const [输入, 资料路径, 组装器目录, 输出目录] = process.argv.slice(2);
 if (!输入 || !资料路径 || !组装器目录 || !输出目录) throw Error("请通过 yy浏览器编译资源 调用");
 const binaryen = (await import(pathToFileURL(resolve(组装器目录, "index.js")))).default;
@@ -14,7 +14,7 @@ const 目录 = pathToFileURL(resolve(输出目录) + "/");
 await mkdir(目录, { recursive: true });
 const 组装 = 创建组装器(binaryen);
 const 产物 = {
-  "编译器.wasm": 组装(await readFile(输入, "utf8"), true),
+  "编译器.wasm": 组装(await readFile(输入), true),
   "值桥接.wasm": 组装(await readFile(new URL("../../../节点/值桥接.wat", import.meta.url), "utf8")),
   "标准库.json.gz": gzipSync(await readFile(资料路径), { level: 9 }),
   "组装器.mjs": await readFile(resolve(组装器目录, "index.js")),

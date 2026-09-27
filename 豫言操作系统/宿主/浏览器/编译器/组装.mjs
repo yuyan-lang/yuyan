@@ -1,24 +1,52 @@
 // 文言：只启既用之能，中文字先化字节。汉语：Binaryen 文本入口接收字节字符串；禁止 All 意外启用实验性描述符等浏览器未支持的扩展。
+// 文言：书者（值桥等手写之模块）读其文，编器所出读其二进制。汉语：输入可以是 WAT 文本（值桥等手写宿主模块），也可以是 Wasm 二进制（编译器直接写出的程序，以及编译器本身）。
 export function 创建组装器(binaryen) {
   const 型 = binaryen.Features;
   const 特性 = 型.MutableGlobals | 型.NontrappingFPToInt | 型.BulkMemory | 型.SignExt |
     型.ExceptionHandling | 型.TailCall | 型.ReferenceTypes | 型.Multivalue | 型.GC | 型.BulkMemoryOpt;
-  return function 组装(文, 优化 = false) {
-    if (文.includes('(import "yuyan:gc-host/v1" "call"')) {
-      // 文言：未有承异者，则报其本辞。汉语：浏览器宿主安装顶层字符串异常处理器，避免默认空处理器触发 illegal cast、掩盖编译诊断。
-      const 表 = 文.match(/\(table (\d+) funcref\)/);
-      if (!表 || !文.includes('(func (export "_start")')) throw Error("不支持的编译器模块布局");
-      const 位 = Number(表[1]);
-      文 = 文.replace("(module", '(module\n(import "yuyan:browser/v1" "fail" (func $browser_failure (param (ref null eq))))')
-        .replace(表[0], `(table ${位 + 1} funcref)`)
-        .replace(/\(elem \(i32.const 0\) ([^)]*)\)/, '(elem (i32.const 0) $1 $browser_unhandled)')
-        .replace('(func (export "_start")', `(func $browser_unhandled (type $t2) (param (ref null eq)) (param (ref null eq)) (result (ref null eq)) local.get 1 call $browser_failure unreachable)\n(func (export "_start") i32.const ${位} ref.i31 array.new_fixed $tuple 1 global.set $exception`);
-    }
-    const 字节 = new TextEncoder().encode(文), 片段 = [];
-    for (let 位 = 0; 位 < 字节.length; 位 += 8192) 片段.push(String.fromCharCode(...字节.subarray(位, 位 + 8192)));
-    let 模块, 阶段 = "WAT 文本解析";
+  const 函数信息们 = 模块 => Array.from({ length: 模块.getNumFunctions() }, (_, 位) => binaryen.getFunctionInfo(模块.getFunctionByIndex(位)));
+  const 是豫言客体 = 模块 => 函数信息们(模块).some(信息 => 信息.module === "yuyan:gc-host/v1" && 信息.base === "call");
+  // 文言：未有承异者，则报其本辞。表增一格以容承异之函，起始先立之为当前承异者；其闭包为唯含表位之元组。
+  // 汉语：浏览器宿主安装顶层字符串异常处理器，避免默认空处理器触发 illegal cast、掩盖编译诊断。函数表加一格放处理器，
+  // _start 开头把它设为当前异常处理器（闭包是只含表位的 $tuple 元组）。依赖编译器写出的名字段找到 _start 与 $exception。
+  function 装顶层承异(模块) {
+    const 表 = 模块.getTableByIndex(0), 表息 = binaryen.getTableInfo(表), 位 = 表息.initial;
+    if (模块.getNumElementSegments() !== 1) throw Error("不支持的编译器模块布局：元素段数目");
+    const 段息 = binaryen.getElementSegmentInfo(模块.getElementSegmentByIndex(0));
+    const 始 = 模块.getFunction("_start");
+    if (段息.data.length !== 位 || !始 || !模块.getGlobal("exception")) throw Error("不支持的编译器模块布局：缺少函数表、_start 或 exception");
+    const 等 = binaryen.eqref;
+    binaryen.Table.setInitial(表, 位 + 1);
+    if (表息.max !== undefined) binaryen.Table.setMax(表, 位 + 1);
+    模块.addFunctionImport("browser_failure", "yuyan:browser/v1", "fail", binaryen.createType([等]), binaryen.none);
+    模块.addFunction("browser_unhandled", binaryen.createType([等, 等]), 等, [], 模块.block(null, [
+      模块.call("browser_failure", [模块.local.get(1, 等)], binaryen.none), 模块.unreachable()
+    ], binaryen.unreachable));
+    模块.removeElementSegment(段息.name);
+    模块.addActiveElementSegment(表息.name, 段息.name, [...段息.data, "browser_unhandled"], 模块.i32.const(0));
+    // 文言：同构之型即同型，故另造 (array (mut eqref)) 即 $tuple。汉语：同构的独立递归组类型相同，重新构造的数组类型就是运行时的 $tuple。
+    const 建 = new binaryen.TypeBuilder(1);
+    建.setArrayType(0, 等, binaryen.notPacked, true);
+    const 元组 = binaryen.getTypeFromHeapType(建.buildAndDispose()[0], false);
+    const 始息 = binaryen.getFunctionInfo(始);
+    binaryen.Function.setBody(始, 模块.block(null, [
+      模块.global.set("exception", 模块.array.new_fixed(元组, [模块.ref.i31(模块.i32.const(位))])), 始息.body
+    ], 始息.results));
+  }
+  return function 组装(输入, 优化 = false) {
+    let 模块, 阶段;
     try {
-      模块 = binaryen.parseText(片段.join(""), 特性);
+      if (typeof 输入 === "string") {
+        阶段 = "WAT 文本解析";
+        const 字节 = new TextEncoder().encode(输入), 片段 = [];
+        for (let 位 = 0; 位 < 字节.length; 位 += 8192) 片段.push(String.fromCharCode(...字节.subarray(位, 位 + 8192)));
+        模块 = binaryen.parseText(片段.join(""), 特性);
+      } else {
+        阶段 = "Wasm 二进制读取";
+        模块 = binaryen.readBinary(输入);
+        模块.setFeatures(特性);
+        if (是豫言客体(模块)) { 阶段 = "安装顶层异常处理器"; 装顶层承异(模块); }
+      }
       阶段 = "Binaryen 优化与函数枚举";
       if (优化) { binaryen.setOptimizeLevel(2); binaryen.setShrinkLevel(1); binaryen.setDebugInfo(true); 模块.optimize(); }
       const 函数们 = Array.from({ length: 模块.getNumFunctions() }, (_, 位) => 模块.getFunctionByIndex(位));

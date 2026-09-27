@@ -16,9 +16,15 @@ export function 创建编译器({ 编译模块, 桥模块, 资料, 组装, 收�
     报告({ type: "stage", phase: "compile", label: "正在浏览器内编译" });
     const compilation = await 执行模块(编译模块, 桥模块, 文件, [
       "/用户程序/入口。豫", "--package-context", "/包上下文", "--target=wasmgc", "-o", "/程序.wasm",
-      // 文言：验编亦须成器。汉语：compile_yuyan 执行完整代码生成和组装，只略过运行。
-    ], { 编译: true, 组装, 报告 });
+      // 文言：验编亦须成器。汉语：compile_yuyan 执行完整代码生成与浏览器处理，只略过运行。
+    ], { 编译: true, 报告 });
     if (!compilation.ok) return { ...compilation, phase: "compile" };
+    // 文言：编器直书二进制；浏览器之承异与时限检查，于此补入。汉语：编译器直接写出 Wasm 二进制；这里再装入浏览器的顶层异常处理器与时限检查。
+    try {
+      const 原 = 文件.读("/程序.wasm");
+      报告({ type: "stage", phase: "compile", label: "正在处理 Wasm（" + 原.length + " 字节）" });
+      文件.写("/程序.wasm", 组装(原));
+    } catch (错) { return { ok: false, phase: "compile", error: 错.message, compilation }; }
     // 文言：官书之缓存可复用，客稿与输出皆弃。汉语：只保留标准库派生文件及原时间戳，每个请求仍使用独立文件系统。
     标准缓存 = Object.fromEntries([...文件.文件].filter(([名]) => 名.startsWith("/.yybuild/") && 名.includes("/库/标准库/")));
     收取标准缓存(标准缓存);

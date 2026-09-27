@@ -5,6 +5,8 @@
 寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编栈数值生成」之书。
 寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编栈入口」之书。
 寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编线性栈基础」之书。
+寻观「编译器核心」之「网页汇编核心」之「回收模块」之书。
+寻观「编译器核心」之「网页汇编核心」之「回收文本」之书。
 「：文言：新数组取其一位，以验公门与后备。汉语：前导先算长度 n+1 和初值 v*3-2；稀疏 SSA 编号。私有体与包装自动生成，参考体手写，覆盖溢出、非法类型、数组边界及容量后备。：」
 「函」者（「正则函数」也（『根』与「阴」与（「列」【「零」，「一」，「二」，「三」】）与（「正则段」于（「列」【
  「正则运算」于「八」于「正则整数值」于（「正则原语」于『豫言_整数加』）于（「列」【「正则局部」于「一」，「正则整数」于「一」】），
@@ -17,8 +19,8 @@
 「查」者会「名」而（「罄」授以「整数」）与「零」也。
 「名」乃化「字符串」而「字符串」也。
 「名」者会「字」而『$private』也。
-「必有」乃化（「或可有」于「字符串」）而「字符串」也。
-「必有」者会「果」而鉴「果」而有（「可有」于「文」）则「文」或有「可无」则「发生事故」授以「字符串」于『入口夹具生成失败』也。
+「必有」乃化（「或可有」于「回收项串」）而「回收项串」也。
+「必有」者会「果」而鉴「果」而有（「可有」于「项」）则「项」或有「可无」则「发生事故」授以「回收项串」于『入口夹具生成失败』也。
 「检根」者若「等于」于（「栈根分配号」于「函」）于「一二」则「元」否则「发生事故」授以「有」于『前导根号错误』也。
 「检图」者鉴（「造栈模块索引」于（「列」【「函」】）于（会「子」而「签」））而有「可无」则「发生事故」授以「有」于『前导索引失败』或有（「可有」于「境」）则（鉴（「求栈调用图」于「境」于『根』）而有「可无」则「发生事故」授以「有」于『前导调用图失败』或有（「可有」于「诸号」）则「元」）也。
 「验拒」乃化「字符串」而「有」也。
@@ -31,9 +33,11 @@
 「验拒」于『豫言_读取引用数组』。
 「验拒」于『豫言_写入引用数组』。
 「验拒」于『未知原语』。
-「打印行」于（「栈接」于（「列」【『(module
+「：文言：公门以名引 $t4，故其型项与所生之项同书，打印器乃得书参之名；诸型先后不改。汉语：公开入口按名字引用 $t4，因此把 $t4 类型项与生成的项放进同一个项串打印，打印器才能写出带名参数；显式类型的先后顺序不变。：」
+「四参型」乃「回收模块项」也。
+「四参型」者「回收类型项」于『$t4』于（「回收函数型」于（「列」【「回收等引用」，「回收等引用」，「回收等引用」，「回收等引用」】）于（「列」【「回收等引用」】））也。
+「打印行」于（「间合」于『「：换行：」』于（「列」【『(module
 (type $ints (array (mut i64))) (type $big (struct (field i64)))
-(type $t4 (func (param (ref null eq) (ref null eq) (ref null eq) (ref null eq)) (result (ref null eq))))
 (func $box (param $n i64) (result (ref null eq))
  local.get $n i64.const -1073741824 i64.ge_s local.get $n i64.const 1073741823 i64.le_s i32.and
  if (result (ref null eq)) local.get $n i32.wrap_i64 ref.i31 else local.get $n struct.new $big end)
@@ -50,10 +54,10 @@
  local.get $i call $unbox call $index array.get $ints call $box)
 (func $old_unit (type $t4) (param $env (ref null eq)) (param $n (ref null eq)) (param $v (ref null eq)) (param $i (ref null eq)) (result (ref null eq))
  global.get $fallback i32.const 1 i32.add global.set $fallback
- local.get $v call $unbox i64.const 3 i64.mul i64.const 2 i64.sub local.get $n call $unbox i64.const 1 i64.add call $index array.new $ints drop ref.null eq)
-』，「线性栈基础」，
+ local.get $v call $unbox i64.const 3 i64.mul i64.const 2 i64.sub local.get $n call $unbox i64.const 1 i64.add call $index array.new $ints drop ref.null eq)』，
+ 「回收项串转文」于（「回收项并」于（「列」【「回收单项」于「四参型」，「线性栈基础」，
  「必有」于（「生成栈数值体」于「查」于「名」于「签」于「一二」于「函」），
- 「必有」于（「生成栈入口」于「查」于『$public』于『$old』于『$private』于「签」于「函」），
+ 「必有」于（「生成栈入口」于「查」于『$public』于『$old』于『$private』于「签」于「函」）】）），
  『(func (export "run") (param $n i64) (param $v i64) (param $i i64) (result i64)
  ref.null eq local.get $n call $box local.get $v call $box local.get $i call $box call $public call $unbox)
 (func (export "reference") (param $n i64) (param $v i64) (param $i i64) (result i64)
