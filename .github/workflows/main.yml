@@ -84,9 +84,37 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-      # 文言：不复发种包；发 Linux 可执行程序之包（稳定编译器、稳定豫构及运行时之档），按提交存史，连续版覆之。
-      # 汉语：不再发布种子包；改发布 Linux 可执行程序包（稳定编译器、稳定豫构与对应的运行时归档）：按提交号存历史版本，并覆盖更新连续版本。
-      - name: 发布 Linux 可执行程序
+      # 文言：Wasm 工具链之包：先以 Wasmtime 之 C 接口造 WAT 组装器，乃以 yy4_bs 编编译器、豫构与构建程序为 WasmGC；包解于仓根，凭 Node 与 clang 即可起步。
+      # 汉语：Wasm 工具链包：先用官方 Wasmtime C API 构建 WAT 组装器 yy网页汇编宿主，再用 yy4_bs 把编译器、豫构与构建程序编成 WasmGC 模块；包解压到仓库根目录后，任何平台只需 Node 与 clang 即可起步。
+      - name: 下载 Wasmtime C API
+        env:
+          YY_WASMTIME_C_API_URL: https://github.com/bytecodealliance/wasmtime/releases/download/v48.0.1/wasmtime-v48.0.1-x86_64-linux-c-api.tar.xz
+          YY_WASMTIME_C_API_SHA256: 67683d04b416a8b91f0e607e7b4c22bd32f18f947c10b5372eb8c277ae3b883a
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/wasmtime-c-api.tar.xz"
+          curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
+            --output "$archive" "$YY_WASMTIME_C_API_URL"
+          echo "$YY_WASMTIME_C_API_SHA256  $archive" | sha256sum --check -
+          mkdir -p yy_wasmtime_c_api
+          tar -xJf "$archive" -C yy_wasmtime_c_api --strip-components=1
+
+      - name: 构建 Wasm 工具链包
+        run: |
+          ./yy仓库构建 网页汇编工具链 -j "$(nproc)"
+          tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C yy网页汇编工具链 .
+
+      - name: 上传 Wasm 工具链包
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-wasm-toolchain
+          path: ${{ runner.temp }}/yuyan-wasm.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+      # 文言：不复发种包；发二包：Linux 可执行程序之包（稳定编译器、稳定豫构及运行时之档）与 Wasm 工具链之包。按提交存史，连续版覆之。
+      # 汉语：不再发布种子包；发布两个包：Linux 可执行程序包（稳定编译器、稳定豫构与对应的运行时归档）和跨平台的 Wasm 工具链包。按提交号存历史版本，并覆盖更新连续版本。
+      - name: 发布可执行程序包与 Wasm 工具链包
         if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -98,10 +126,8 @@ jobs:
           install -m 755 yy4_bs "$staging/yy_bs_stable"
           install -m 755 yy豫构 "$staging/yy豫构_stable"
           cp "$runtime_dir"/lib豫言运行时*.a "$staging/$runtime_dir/"
-          archive="$RUNNER_TEMP/yuyan-linux-x86_64.tar.gz"
-          tar -czf "$archive" -C "$staging" .
-          historical_asset="yuyan-linux-x86_64-${GITHUB_SHA}.tar.gz"
-          cp "$archive" "$RUNNER_TEMP/$historical_asset"
+          tar -czf "$RUNNER_TEMP/yuyan-linux-x86_64.tar.gz" -C "$staging" .
+          notes="豫言工具链包。yuyan-linux-x86_64：Linux x86-64 可执行程序（yy_bs_stable、yy豫构_stable 与原生运行时归档）。yuyan-wasm：跨平台 Wasm 工具链（编译器、豫构与构建程序的 WasmGC 模块及 Node 宿主），解压到仓库根目录后用 Node 运行。"
 
           for release in historical-binaries continuous-binaries; do
             if ! gh release view "$release" >/dev/null 2>&1; then
@@ -109,18 +135,23 @@ jobs:
                 --target "$GITHUB_SHA" \
                 --title "$release" \
                 --latest=false \
-                --notes "豫言 Linux x86-64 可执行程序包：yy_bs_stable、yy豫构_stable 与原生运行时归档。"
+                --notes "$notes"
+            else
+              gh release edit "$release" --notes "$notes"
             fi
           done
 
-          if gh release view historical-binaries --json assets --jq '.assets[].name' \
-            | grep -Fxq "$historical_asset"; then
-            echo "历史版本已存在：$historical_asset"
-          else
-            gh release upload historical-binaries "$RUNNER_TEMP/$historical_asset"
-          fi
-
-          gh release upload continuous-binaries "$archive" --clobber
+          existing="$(gh release view historical-binaries --json assets --jq '.assets[].name')"
+          for package in yuyan-linux-x86_64 yuyan-wasm; do
+            historical_asset="$package-${GITHUB_SHA}.tar.gz"
+            if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
+              echo "历史版本已存在：$historical_asset"
+            else
+              cp "$RUNNER_TEMP/$package.tar.gz" "$RUNNER_TEMP/$historical_asset"
+              gh release upload historical-binaries "$RUNNER_TEMP/$historical_asset"
+            fi
+            gh release upload continuous-binaries "$RUNNER_TEMP/$package.tar.gz" --clobber
+          done
 
   # 文言：全树之试，分二十片并行；每片取自举所成之器，但装所需，行其一段。
   # 汉语：全树测试按 20 个分片并行运行；各片复用自举作业产出的工具，只装必需依赖，运行自己那一段。
@@ -156,3 +187,56 @@ jobs:
 
       - name: 运行本片测试
         run: ./yy全树测试 --分片 ${{ matrix.shard }}/20
+
+  # 文言：验 Wasm 工具链之包可跨平台：于 Linux 与苹果系统，但凭 Node 与 clang，自包起步：以包中构建程序造运行时，以包中豫构与编译器造构建程序，乃自举而核定点。
+  # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux 与 macOS 上只用 Node 与 clang 从包起步——包中的构建程序构建运行时，包中的豫构与编译器构建本机构建程序，再完成自举并核对定点。
+  wasm-bootstrap:
+    name: Wasm 包起步（${{ matrix.os }}）
+    needs: bootstrap
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 安装依赖（Linux）
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang llvm libsqlite3-dev
+
+      # 文言：苹果系统用 Homebrew 之 LLVM，使 clang 与 llvm-ar 同版（优化运行时用 LTO）。
+      # 汉语：macOS 用 Homebrew 的 LLVM，使 clang 与 llvm-ar 版本一致（优化运行时归档含 LTO 位码）。
+      - name: 安装依赖（macOS）
+        if: runner.os == 'macOS'
+        run: |
+          brew install llvm
+          echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-wasm-toolchain
+          path: ${{ runner.temp }}
+
+      # 文言：包解于仓根：豫构以编译器所在之目为工具链之根。
+      # 汉语：包解压到仓库根目录：豫构以编译器所在目录为工具链根。
+      - name: 解开 Wasm 工具链包
+        run: tar -xzf "$RUNNER_TEMP/yuyan-wasm.tar.gz"
+
+      - name: 以包中构建程序构建运行时
+        run: node yy稳定节点宿主/宿主.cjs yy仓库构建_stable.wasm 运行时 -j "$(getconf _NPROCESSORS_ONLN)"
+
+      - name: 以包中豫构与编译器构建构建程序
+        run: >-
+          node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 仓库构建
+          --编译器 ./yy_bs_stable.wasm --输出 yy仓库构建 -j "$(getconf _NPROCESSORS_ONLN)"
+
+      - name: 自举并核对定点
+        run: ./yy仓库构建 自举 -j "$(getconf _NPROCESSORS_ONLN)"
