@@ -53,12 +53,12 @@ jobs:
       - name: 构建全树测试工具与 Wasm 工具链包
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 全树测试工具 打包 -j "$(nproc)"
 
-      # 文言：二包：诸片所用之试器、本轮之 Wasm 工具链包。
-      # 汉语：打两个包：各分片与检查作业用的测试工具、本轮的 Wasm 工具链包。
+      # 文言：二包：诸片所用之试器与同代值桥、本轮之 Wasm 工具链包。
+      # 汉语：打两个包：各分片与检查作业用的测试工具及同代值桥、本轮的 Wasm 工具链包。
       - name: 打包产物
         run: |
           set -euo pipefail
-          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy豫构.wasm yy全树测试.wasm
+          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy豫构.wasm yy全树测试.wasm 豫言操作系统/宿主/节点/yy节点值桥接.wasm
           tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C yy网页汇编工具链 .
 
       - name: 上传全树测试工具
