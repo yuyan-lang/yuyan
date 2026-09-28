@@ -43,7 +43,7 @@
 - 命令失败：去掉 `--parallel` 重跑以取诊断（缓存共享，可复用并行运行的成果）。
 - 缓存目录取决于编译器 `.wasm` 的路径与修改时间；要换缓存就 `touch` 对应的 `.wasm`。
 - 构建统一走豫构（仓内无 Makefile 与 shell 脚本）。仓库级目标写在 `应用/豫构/仓库目标。豫`：`节点 yy豫构.wasm 自举|测试|打包|清理|全部 [-j 24] [--强制] [--不连带] [--列出]`，或 `节点 yy豫构.wasm 目标 名…` 运行任意目标；目标按输入缓存，印记在 `.yybuild/构建编排`。新增构建步骤写进仓库目标，不另写脚本。
-- 新检出的仓库从 Wasm 工具链包起步：把包解压到仓库根目录（得 `yy_bs_stable.wasm`、`yy豫构_stable.wasm` 与 `yy稳定节点宿主/`），先用 `node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构 --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j 24 -- --target=wasmgc` 以当前源码造出 `yy豫构.wasm`，再运行 `节点 yy豫构.wasm 全部 -j 24`。
+- 新检出的仓库从 Wasm 工具链包起步：把包解压到仓库根目录（得 `yy_bs_stable.wasm`、`yy豫构_stable.wasm` 与 `yy稳定节点宿主/`），先用 `node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构 --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j 24` 以当前源码造出 `yy豫构.wasm`，再运行 `节点 yy豫构.wasm 全部 -j 24`。
 
 ## 提交
 

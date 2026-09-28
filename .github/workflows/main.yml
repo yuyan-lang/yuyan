@@ -1,9 +1,9 @@
 name: CI
 
 env:
-  # 固定的 Wasm 工具链包：由提交 b6522474 的 CI 构建并发布到 historical-binaries，已在 Linux 与 macOS 上验证可从包起步。其中的编译器默认目标仍是旧的原生后端，故起步时向它传 --target=wasmgc。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/yuyan-wasm-b652247448b803487f4141fff69df308174e3d55.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 762d1ab834ec5b75bf4bd3e6376f0b588aa7b559016d8f00f6b7b753096e03e7
+  # 固定的 Wasm 工具链包：由提交 8d69238b 的 CI 构建并发布到 historical-binaries，已在 Linux 与 macOS 上验证可从包起步。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/yuyan-wasm-8d69238bffd0a1281d39964fb6ae6f79ce0f8138.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: 87c92b71bdd2f0703a4ac31cd2a58fa836d343d5daf6af5f2f3535f7c654a103
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
       - name: 以包中豫构与编译器构建当前源码的豫构
         run: >-
           node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
-          --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(nproc)" -- --target=wasmgc
+          --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(nproc)"
 
       # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。
       # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。
