@@ -25,6 +25,7 @@ yarn-error.log*
 /dist/
 /yy*
 /*.wasm
+/豫言操作系统/宿主/节点/yy*
 /*.wat
 *.yyinfo.json
 *.抽象语法.json

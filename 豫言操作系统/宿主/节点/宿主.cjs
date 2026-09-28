@@ -1,12 +1,12 @@
 // 文言：豫言为入口，此层唯接 Node 与客值。汉语：Node 引擎及系统接口适配，不执行编译器算法。
 'use strict';
 const 文件 = require('node:fs'), 路径 = require('node:path'), 系统 = require('node:os');
-const 子进程 = require('node:child_process'), 终端 = require('node:tty'), 密码 = require('node:crypto');
+const 子进程 = require('node:child_process'), 终端 = require('node:tty'), 密码 = require('node:crypto'), 工具 = require('node:util');
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
 const {建立编译线程} = require('./编译线程.cjs');
-// 文言：值桥先从父宿主所传之径，次求于今目录，无则取宿主之旁；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件先用父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径，其次在当前目录找，再用宿主文件旁的那份；找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
-const 桥文件路径=()=>{const 传=process.env.YY_NODE_VALUE_BRIDGE;const 径=传&&文件.existsSync(传)?传:文件.existsSync('yy节点值桥接.wasm')?路径.resolve('yy节点值桥接.wasm'):路径.join(__dirname,'yy节点值桥接.wasm');process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
+// 文言：值桥先从父宿主所传之径，次取宿主之旁（仓库目标“豫构”书之），次求于今目录，末取解于仓根之工具链包者；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件依次找：父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径；宿主文件旁的那份（仓库目标“豫构”用当前编译器生成）；当前目录；最后是解压在仓库根目录的 Wasm 工具链包里的 yy稳定节点宿主/yy节点值桥接.wasm（新检出的仓库第一次构建时用）。找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
+const 桥文件路径=()=>{const 候选=[process.env.YY_NODE_VALUE_BRIDGE,路径.join(__dirname,'yy节点值桥接.wasm'),路径.resolve('yy节点值桥接.wasm'),路径.resolve('yy稳定节点宿主','yy节点值桥接.wasm')];const 径=候选.find(径=>径&&文件.existsSync(径))??候选[1];process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
 const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
 if (isMainThread) {
   桥文件路径();
@@ -188,6 +188,21 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_尝试收取异步子进程:号=>请求进程('收取',号),
     // 文言：此桥唯候自身子进程。汉语：未知句柄返回错误事件，不冒充通用网络或文件描述符轮询。
     豫言_异步_输入输出多路等待:(关注,超时)=>请求进程('等待',关注[0],数(超时)),
+    // 文言：传输控制协议之术，由主线程持套接字而行之，皆不塞，同原生。汉语：TCP 原语：套接字由主线程持有（进程桥接.cjs），语义与原生运行时相同，均不阻塞，返回（状态，值）。
+    豫言_传输控制协议_监听:(址,端口,队长)=>请求进程('网监听',文(址),数(端口),数(队长)),
+    豫言_传输控制协议_开始连接:(主机,端口)=>请求进程('网开始连接',文(主机),数(端口)),
+    豫言_传输控制协议_完成连接:号=>请求进程('网完成连接',数(号)),
+    豫言_传输控制协议_接受:号=>请求进程('网接受',数(号)),
+    豫言_传输控制协议_读取:(号,最大)=>请求进程('网读取',数(号),数(最大)),
+    豫言_传输控制协议_读取字节串:(号,最大)=>请求进程('网读取',数(号),数(最大)),
+    豫言_传输控制协议_从字节序数写入:(号,内容,起)=>请求进程('网写入',数(号),内容,数(起)),
+    豫言_传输控制协议_从字节序数写入字节串:(号,内容,起)=>请求进程('网写入',数(号),内容,数(起)),
+    豫言_传输控制协议_等待:(号,关注,超时)=>请求进程('网等待',数(号),数(关注),数(超时)),
+    豫言_传输控制协议_获取本地端口:号=>请求进程('网本地端口',数(号)),
+    豫言_传输控制协议_设置无延迟:(号,开)=>请求进程('网无延迟',数(号),数(开)),
+    豫言_传输控制协议_关闭写入:号=>请求进程('网关闭写入',数(号)),
+    豫言_传输控制协议_关闭:号=>请求进程('网关闭',数(号)),
+    豫言_传输控制协议_错误消息:状态=>{const 码=数(状态);if(码<=-19900&&码>=-20100)return '地址解析失败';try{return 工具.getSystemErrorMessage(码<0?码:-码);}catch{return '未知传输控制协议错误';}},
     豫言_运行于Windows:()=>process.platform==='win32',
     豫言_运行于MacOS:()=>process.platform==='darwin',
     豫言_运行于Linux:()=>process.platform==='linux',

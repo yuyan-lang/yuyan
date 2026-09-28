@@ -1,11 +1,9 @@
 name: CI
 
 env:
-  YY_GC_INITIAL_HEAP_SIZE_MB: 512
-  YY_GC_MAX_HEAP_SIZE_MB: 6144
-  # 固定的 Wasm 工具链包：由提交 f1b21948 的 CI 构建并发布到 historical-binaries，已在 Linux 上验证可从包起步自举（其中的豫构尚未修复 LLVM 23 编译中文路径 .i 的问题，故只用于本 CI 的 Linux 起步）。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/yuyan-wasm-f1b21948d5d4c4c27a1b2cd9a00f274179d03bf9.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 630dde2f1975e5a83891b44ca5b69a392fd67b553b692fa0bd8c8e7f4ff12e37
+  # 固定的 Wasm 工具链包：由提交 b6522474 的 CI 构建并发布到 historical-binaries，已在 Linux 与 macOS 上验证可从包起步。其中的编译器默认目标仍是旧的原生后端，故起步时向它传 --target=wasmgc。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/yuyan-wasm-b652247448b803487f4141fff69df308174e3d55.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: 762d1ab834ec5b75bf4bd3e6376f0b588aa7b559016d8f00f6b7b753096e03e7
 
 on:
   push:
@@ -18,19 +16,14 @@ permissions:
   contents: write
 
 jobs:
-  # 文言：自举之作：起于所定之 Wasm 工具链包，以构建程序自举，乃先成诸器而上传，使诸片与跨平台之验早起；核型与豫构之试另为一作，并行之。
-  # 汉语：自举作业：从固定的 Wasm 工具链包起步，由构建程序完成自举，然后先构建并上传各产物，让测试分片与跨平台验证尽早开始；类型检查与豫构测试在另一个作业里并行运行。
+  # 文言：自举之作：但用 Node。起于所定之 Wasm 工具链包，先以包中豫构与编译器造今源之豫构，乃以之自举而核定点，更造全树测试之器与本轮之工具链包，上传之，使诸片与跨平台之验早起。
+  # 汉语：自举作业：只用 Node。从固定的 Wasm 工具链包起步，先用包中的豫构与编译器把当前源码的豫构编成 yy豫构.wasm，再由它完成自举并核对定点、构建全树测试工具与本轮的 Wasm 工具链包，然后上传，让测试分片与跨平台验证尽早开始。
   bootstrap:
-    name: Linux bootstrap
+    name: 自举（Node）
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
-
-      - name: 安装构建依赖
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang llvm curl libsqlite3-dev
 
       - uses: actions/setup-node@v4
         with:
@@ -47,39 +40,26 @@ jobs:
           echo "$YY_WASM_TOOLCHAIN_SHA256  $archive" | sha256sum --check -
           tar -xzf "$archive"
 
-      - name: 以包中构建程序构建运行时
-        run: node yy稳定节点宿主/宿主.cjs yy仓库构建_stable.wasm 运行时 -j "$(nproc)"
-
-      # 文言：构建之事皆归构建程序（应用/仓库构建），以豫构造之，诸目标并行而缓存；仓无 Makefile。
-      # 汉语：构建统一交给构建程序（应用/仓库构建），由豫构构建；各目标由构建编排并行调度与缓存，仓库里没有 Makefile。
-      - name: 以包中豫构与编译器构建构建程序
+      - name: 以包中豫构与编译器构建当前源码的豫构
         run: >-
-          node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 仓库构建
-          --编译器 ./yy_bs_stable.wasm --输出 yy仓库构建 -j "$(nproc)"
+          node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
+          --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(nproc)" -- --target=wasmgc
 
-      - name: 自举并核对定点
-        run: ./yy仓库构建 自举 -j "$(nproc)"
+      # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。
+      # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。
+      - name: 自举并核对定点，以新编译器重建豫构
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(nproc)"
 
-      # 文言：Wasm 工具链之包：以 yy4_bs 编编译器、豫构与构建程序为 WasmGC，编器径书二进制；值桥亦由今源所构之生成程序书之，不须 Wasmtime。
-      # 汉语：Wasm 工具链包：用 yy4_bs 把编译器、豫构与构建程序编成 WasmGC 模块（编译器直接写出二进制），节点值桥由当前源码构建的生成程序写出，不需要 Wasmtime。
-      - name: 构建豫构、全树测试工具与 Wasm 工具链包
-        run: ./yy仓库构建 豫构 全树测试工具 网页汇编工具链 -j "$(nproc)"
+      - name: 构建全树测试工具与 Wasm 工具链包
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 全树测试工具 打包 -j "$(nproc)"
 
-      # 文言：三包：诸片所用之试器（含构建程序，供核型之作）、Wasm 工具链之包、Linux 可执行程序之包。
-      # 汉语：打三个包：各分片与检查作业用的测试工具（含构建程序）、Wasm 工具链包、Linux 可执行程序包（稳定编译器、稳定豫构与运行时归档）。
+      # 文言：二包：诸片所用之试器、本轮之 Wasm 工具链包。
+      # 汉语：打两个包：各分片与检查作业用的测试工具、本轮的 Wasm 工具链包。
       - name: 打包产物
         run: |
           set -euo pipefail
-          runtime_dir="豫言操作系统/宿主/原生/运行时支持库"
-          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" \
-            yy4_bs yy豫构 yy全树测试 yy仓库构建 "$runtime_dir"
+          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy豫构.wasm yy全树测试.wasm
           tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C yy网页汇编工具链 .
-          staging="$RUNNER_TEMP/yy-binaries"
-          mkdir -p "$staging/$runtime_dir"
-          install -m 755 yy4_bs "$staging/yy_bs_stable"
-          install -m 755 yy豫构 "$staging/yy豫构_stable"
-          cp "$runtime_dir"/lib豫言运行时*.a "$staging/$runtime_dir/"
-          tar -czf "$RUNNER_TEMP/yuyan-linux-x86_64.tar.gz" -C "$staging" .
 
       - name: 上传全树测试工具
         uses: actions/upload-artifact@v4
@@ -97,14 +77,6 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
-      - name: 上传 Linux 可执行程序包
-        uses: actions/upload-artifact@v4
-        with:
-          name: yy-linux-binaries
-          path: ${{ runner.temp }}/yuyan-linux-x86_64.tar.gz
-          retention-days: 7
-          if-no-files-found: error
-
   # 文言：核型与豫构之试，取自举所成之器，不连带重造。
   # 汉语：类型检查与豫构测试：取自举作业的产物运行，用 --不连带 不重建其依赖；与测试分片、跨平台验证并行。
   checks:
@@ -115,10 +87,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 安装依赖
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang llvm libsqlite3-dev
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
 
       - uses: actions/download-artifact@v4
         with:
@@ -129,10 +100,10 @@ jobs:
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
       - name: 类型检查与豫构测试
-        run: ./yy仓库构建 类型检查 豫构测试 --不连带 -j "$(nproc)"
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 类型检查 豫构测试 --不连带 -j "$(nproc)"
 
-  # 文言：全树之试，分二十片并行；每片取自举所成之器，但装所需，行其一段。
-  # 汉语：全树测试按 20 个分片并行运行；各片复用自举作业产出的工具，只装必需依赖，运行自己那一段。
+  # 文言：全树之试，分二十片并行；每片取自举所成之器，行其一段。
+  # 汉语：全树测试按 20 个分片并行运行；各片复用自举作业产出的工具，运行自己那一段。
   # 分片数改动时，须同时改 matrix.shard 列表与下面的 “/20”。
   full-tree-tests:
     name: 全树测试 ${{ matrix.shard }}/20
@@ -145,11 +116,6 @@ jobs:
         shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install test dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang llvm libsqlite3-dev
 
       - uses: actions/setup-node@v4
         with:
@@ -164,10 +130,10 @@ jobs:
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
       - name: 运行本片测试
-        run: ./yy全树测试 --分片 ${{ matrix.shard }}/20
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy全树测试.wasm --分片 ${{ matrix.shard }}/20
 
-  # 文言：验 Wasm 工具链之包可跨平台：于 Linux 与苹果系统，但凭 Node 与 clang，自包起步：以包中构建程序造运行时，以包中豫构与编译器造构建程序，乃自举而核定点。
-  # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux 与 macOS 上只用 Node 与 clang 从包起步——包中的构建程序构建运行时，包中的豫构与编译器构建本机构建程序，再完成自举并核对定点。
+  # 文言：验本轮之 Wasm 工具链包可跨平台：于 Linux 与苹果系统，但凭 Node，自包起步，以包中豫构自举而核定点。
+  # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux 与 macOS 上只用 Node 从包起步，由包中的豫构完成自举并核对定点。
   wasm-bootstrap:
     name: Wasm 包起步（${{ matrix.os }}）
     needs: bootstrap
@@ -179,20 +145,6 @@ jobs:
         os: [ubuntu-latest, macos-latest]
     steps:
       - uses: actions/checkout@v4
-
-      - name: 安装依赖（Linux）
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y clang llvm libsqlite3-dev
-
-      # 文言：苹果系统用 Homebrew 之 LLVM，使 clang 与 llvm-ar 同版（优化运行时用 LTO）。
-      # 汉语：macOS 用 Homebrew 的 LLVM，使 clang 与 llvm-ar 版本一致（优化运行时归档含 LTO 位码）。
-      - name: 安装依赖（macOS）
-        if: runner.os == 'macOS'
-        run: |
-          brew install llvm
-          echo "$(brew --prefix llvm)/bin" >> "$GITHUB_PATH"
 
       - uses: actions/setup-node@v4
         with:
@@ -208,19 +160,11 @@ jobs:
       - name: 解开 Wasm 工具链包
         run: tar -xzf "$RUNNER_TEMP/yuyan-wasm.tar.gz"
 
-      - name: 以包中构建程序构建运行时
-        run: node yy稳定节点宿主/宿主.cjs yy仓库构建_stable.wasm 运行时 -j "$(getconf _NPROCESSORS_ONLN)"
+      - name: 以包中豫构自举并核对定点
+        run: node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
 
-      - name: 以包中豫构与编译器构建构建程序
-        run: >-
-          node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 仓库构建
-          --编译器 ./yy_bs_stable.wasm --输出 yy仓库构建 -j "$(getconf _NPROCESSORS_ONLN)"
-
-      - name: 自举并核对定点
-        run: ./yy仓库构建 自举 -j "$(getconf _NPROCESSORS_ONLN)"
-
-  # 文言：不复发种包；检查与跨平台之验俱过，乃发二包：Linux 可执行程序之包与 Wasm 工具链之包。按提交存史，连续版覆之。
-  # 汉语：不再发布种子包；类型检查、豫构测试与跨平台验证都通过后，发布两个包：Linux 可执行程序包和 Wasm 工具链包。按提交号存历史版本，并覆盖更新连续版本。
+  # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，连续版覆之。
+  # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，并覆盖更新连续版本。
   publish:
     name: 发布工具链包
     needs: [bootstrap, checks, wasm-bootstrap]
@@ -236,15 +180,10 @@ jobs:
           name: yy-wasm-toolchain
           path: ${{ runner.temp }}
 
-      - uses: actions/download-artifact@v4
-        with:
-          name: yy-linux-binaries
-          path: ${{ runner.temp }}
-
-      - name: 发布可执行程序包与 Wasm 工具链包
+      - name: 发布 Wasm 工具链包
         run: |
           set -euo pipefail
-          notes="豫言工具链包。yuyan-linux-x86_64：Linux x86-64 可执行程序（yy_bs_stable、yy豫构_stable 与原生运行时归档）。yuyan-wasm：跨平台 Wasm 工具链（编译器、豫构与构建程序的 WasmGC 模块及 Node 宿主），解压到仓库根目录后用 Node 运行。"
+          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。"
 
           for release in historical-binaries continuous-binaries; do
             if ! gh release view "$release" >/dev/null 2>&1; then
@@ -259,13 +198,12 @@ jobs:
           done
 
           existing="$(gh release view historical-binaries --json assets --jq '.assets[].name')"
-          for package in yuyan-linux-x86_64 yuyan-wasm; do
-            historical_asset="$package-${GITHUB_SHA}.tar.gz"
-            if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
-              echo "历史版本已存在：$historical_asset"
-            else
-              cp "$RUNNER_TEMP/$package.tar.gz" "$RUNNER_TEMP/$historical_asset"
-              gh release upload historical-binaries "$RUNNER_TEMP/$historical_asset"
-            fi
-            gh release upload continuous-binaries "$RUNNER_TEMP/$package.tar.gz" --clobber
-          done
+          package=yuyan-wasm
+          historical_asset="$package-${GITHUB_SHA}.tar.gz"
+          if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
+            echo "历史版本已存在：$historical_asset"
+          else
+            cp "$RUNNER_TEMP/$package.tar.gz" "$RUNNER_TEMP/$historical_asset"
+            gh release upload historical-binaries "$RUNNER_TEMP/$historical_asset"
+          fi
+          gh release upload continuous-binaries "$RUNNER_TEMP/$package.tar.gz" --clobber

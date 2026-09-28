@@ -129,7 +129,7 @@ async function main() {
     ];
     const line = structureWords.concat(typeWords, expressionWords, [
       '《《内建类型：整数》》', '《《内建爻：阳》》', '《《内建函数：整数：相等》》',
-      '《《C调用》》名', '《标签》'
+      '《《C调用》》名', '《《外调》》名', '《标签》'
     ]).join(' ');
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));
 
@@ -146,6 +146,7 @@ async function main() {
     assert.ok(hasScope(findToken(tokens, '《《内建爻：阳》》'), 'constant.language.builtin.yuyan'));
     assert.ok(hasScope(findToken(tokens, '《《内建函数：整数：相等》》'), 'support.function.builtin.yuyan'));
     assert.ok(hasScope(findToken(tokens, '《《C调用》》名'), 'keyword.operator.word.yuyan'));
+    assert.ok(hasScope(findToken(tokens, '《《外调》》名'), 'keyword.operator.word.yuyan'));
     assert.ok(tokens.some(token => token.text === '标签' && hasScope(token, 'entity.name.label.yuyan')));
   });
 

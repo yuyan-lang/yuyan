@@ -243,7 +243,7 @@
         },
         {
           "name": "keyword.operator.word.yuyan",
-          "match": "《《C调用》》(?>函数名是|名)?"
+          "match": "《《(?:C调用|外调)》》(?>函数名是|名)?"
         },
         {
           "name": "constant.language.builtin.yuyan",
