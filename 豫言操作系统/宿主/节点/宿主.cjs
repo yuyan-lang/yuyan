@@ -114,6 +114,13 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
       if(数===0)入尽=true;else 入缓=Buffer.concat([入缓,块.subarray(0,数)]);
     }
   }
+  // 文言：安全外壳之密码诸术，与原生 OpenSSL 之实同义：原始之钥以 DER 前缀装之。汉语：安全外壳的密码原语，语义与原生 OpenSSL 实现相同：32 字节原始私种与公钥分别套上 PKCS8、SPKI 的 DER 前缀后交给 node:crypto；AES-256-GCM 加密输出为密文加 16 字节标签，解密结果首字节 1 表示成功、0 表示认证失败。
+  const 私钥前缀={X25519:'302e020100300506032b656e04220420',Ed25519:'302e020100300506032b657004220420'},公钥前缀={X25519:'302a300506032b656e032100',Ed25519:'302a300506032b6570032100'};
+  const 三十二=(值,错)=>{if(值.length!==32)throw Error(错);return 值;};
+  const 私钥对象=(种,算法)=>密码.createPrivateKey({key:Buffer.concat([Buffer.from(私钥前缀[算法],'hex'),三十二(种,算法+' 私钥长度必须为三十二字节')]),format:'der',type:'pkcs8'});
+  const 公钥对象=(公,算法)=>密码.createPublicKey({key:Buffer.concat([Buffer.from(公钥前缀[算法],'hex'),三十二(公,算法+' 公钥长度必须为三十二字节')]),format:'der',type:'spki'});
+  const 原始公钥=(种,算法)=>Buffer.from(密码.createPublicKey(私钥对象(种,算法)).export({format:'der',type:'spki'}).subarray(-32));
+  const 验GCM=(钥,随机数)=>{if(钥.length!==32||随机数.length!==12)throw Error('AES-256-GCM 密钥须为三十二字节，IV 须为十二字节');};
   // 文言：通值之示，唯供调试。汉语：打印通用值的文本表示（仅供调试）：字节串按 UTF-8 显示为带引号的串，元组显示为方括号列表。
   const 通用表示=值=>值==null?'()':Buffer.isBuffer(值)?JSON.stringify(值.toString('utf8')):Array.isArray(值)?'['+值.map(通用表示).join(', ')+']':Object.hasOwn(Object(值),'小数')?String(值.小数):String(值);
   function 取占锁(占径){
@@ -189,6 +196,15 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_获取随机整数:上界=>{const 界=Number(上界);if(!(界>0))throw Error('随机整数的上界须为正');return BigInt(Math.floor(Math.random()*界));},
     豫言_获取随机小数:()=>({小数:Math.random()}),
     豫言_安全随机_字节串:长=>{const 数值=Number(长);if(!Number.isInteger(数值)||数值<0||数值>1048576)throw Error('安全随机字节串：长度须在零至一兆之间');return 密码.randomBytes(数值);},
+    豫言_密码_SHA256:内容=>密码.createHash('sha256').update(内容).digest(),
+    豫言_密码_已知主机HMACSHA1:(盐,主机)=>{if(盐.length!==20)throw Error('已知主机 HMAC-SHA1 参数长度非法');return 密码.createHmac('sha1',盐).update(主机).digest();},
+    豫言_密码_X25519公钥:种=>原始公钥(种,'X25519'),
+    豫言_密码_X25519共密:(种,公)=>密码.diffieHellman({privateKey:私钥对象(种,'X25519'),publicKey:公钥对象(公,'X25519')}),
+    豫言_密码_Ed25519公钥:种=>原始公钥(种,'Ed25519'),
+    豫言_密码_Ed25519签:(种,正文)=>密码.sign(null,正文,私钥对象(种,'Ed25519')),
+    豫言_密码_Ed25519验:(公,正文,签名)=>{if(签名.length!==64)throw Error('Ed25519 签名长度必须为六十四字节');return 密码.verify(null,正文,公钥对象(公,'Ed25519'),签名);},
+    豫言_密码_AES256GCM加密:(钥,随机数,附加,明文)=>{验GCM(钥,随机数);const 器=密码.createCipheriv('aes-256-gcm',钥,随机数);if(附加.length)器.setAAD(附加);const 密=Buffer.concat([器.update(明文),器.final()]);return Buffer.concat([密,器.getAuthTag()]);},
+    豫言_密码_AES256GCM解密结果:(钥,随机数,附加,密签)=>{验GCM(钥,随机数);if(密签.length<16)return Buffer.from([0]);const 器=密码.createDecipheriv('aes-256-gcm',钥,随机数);if(附加.length)器.setAAD(附加);器.setAuthTag(密签.subarray(密签.length-16));try{const 明=Buffer.concat([器.update(密签.subarray(0,密签.length-16)),器.final()]);return Buffer.concat([Buffer.from([1]),明]);}catch{return Buffer.from([0]);}},
     豫言_打印通用值:(消息,对象)=>{写输出(2,Buffer.from('[豫言通用值打印] '+文(消息)+': '+通用表示(对象)+'\n'));},
     豫言_打印行:值=>{写输出(1,Buffer.concat([值,Buffer.from('\n')]));},
     豫言_标准错误打印行:值=>{写输出(2,Buffer.concat([值,Buffer.from('\n')]));},
