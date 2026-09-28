@@ -5,7 +5,7 @@ const 允名 = 名 => {
   return 名;
 };
 
-export function 创建句柄表({上限 = 4096} = {}) {
+export function 创建句柄表({上限 = 409600} = {}) {
   const 表 = new Map();
   const 反查 = new Map();
   let 下号 = 1;
