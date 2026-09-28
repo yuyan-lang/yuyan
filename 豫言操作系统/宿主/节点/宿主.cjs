@@ -5,10 +5,11 @@ const 子进程 = require('node:child_process'), 终端 = require('node:tty'), �
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
 const {建立编译线程} = require('./编译线程.cjs');
-// 文言：值桥先求于今目录，无则取宿主之旁。汉语：值桥文件先在当前目录找，找不到再用宿主文件旁的那份，便于分发 Wasm 工具链包。
-const 桥文件路径=()=>文件.existsSync('yy节点值桥接.wasm')?'yy节点值桥接.wasm':路径.join(__dirname,'yy节点值桥接.wasm');
+// 文言：值桥先从父宿主所传之径，次求于今目录，无则取宿主之旁；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件先用父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径，其次在当前目录找，再用宿主文件旁的那份；找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
+const 桥文件路径=()=>{const 传=process.env.YY_NODE_VALUE_BRIDGE;const 径=传&&文件.existsSync(传)?传:文件.existsSync('yy节点值桥接.wasm')?路径.resolve('yy节点值桥接.wasm'):路径.join(__dirname,'yy节点值桥接.wasm');process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
 const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
 if (isMainThread) {
+  桥文件路径();
   // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
   const {port1, port2} = new MessageChannel(), 信号 = new SharedArrayBuffer(4);
   const 模式=process.env.YY_NODE_COMPILER_WORKERS??'threads';
@@ -96,7 +97,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     }
     return {程序:余[0]??'',参数组:余.slice(1),环境,限时,宽限};
   }
-  function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文),环境=null,限时=0,宽限=0;const 拆=拆包装(程序,参数组);if(拆.程序.endsWith('.wasm')&&(拆.程序!==程序)){({程序,参数组}=拆);环境=拆.环境;限时=拆.限时;宽限=拆.宽限;}const 客体=路径.resolve(当前目录,程序)===模块路径 || 程序.endsWith('.wasm');if(客体){参数组=[...引擎参数,__filename,路径.resolve(当前目录,程序),...参数组];程序=process.execPath;}return [程序,参数组,客体,环境,限时,宽限];}
+  // 文言：网页汇编之模，以其首四字节 \0asm 识之，不拘其名之后缀。汉语：按文件开头 4 字节 \0asm 识别 Wasm 模块，不依赖 .wasm 后缀（豫构的 --输出 可以是任意名字）。
+  const 是网页汇编=名=>{if(名.endsWith('.wasm'))return true;try{const 号=文件.openSync(路径.resolve(当前目录,名),'r');const 头=Buffer.alloc(4);const 数=文件.readSync(号,头,0,4,0);文件.closeSync(号);return 数===4&&头.equals(Buffer.from([0,0x61,0x73,0x6d]));}catch{return false;}};
+  function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文),环境=null,限时=0,宽限=0;const 拆=拆包装(程序,参数组);if(拆.程序!==程序&&是网页汇编(拆.程序)){({程序,参数组}=拆);环境=拆.环境;限时=拆.限时;宽限=拆.宽限;}const 客体=路径.resolve(当前目录,程序)===模块路径 || 是网页汇编(程序);if(客体){参数组=[...引擎参数,__filename,路径.resolve(当前目录,程序),...参数组];程序=process.execPath;}return [程序,参数组,客体,环境,限时,宽限];}
   function 运行子进程(名,参){const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,maxBuffer:256*1024*1024,timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),YY_NODE_REPEAT:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(果.error&&!超时)throw 果.error;const 状态=超时?124:(果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1));const 结果=[状态===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=状态;return 结果;}
   const 请求进程=客体请求(本工.端口,本工.信号);
   // 文言：Node 无 flock，以独占新建之“占”文为锁，书进程号；持者已亡则除其陈锁，未得则稍候复试。汉语：Node 没有 flock，用独占创建“占用文件”加锁，文件内写进程号；持有者已退出就清除陈旧的锁，拿不到锁则短暂等待后重试。

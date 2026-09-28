@@ -6,8 +6,8 @@ const {Worker, MessageChannel} = require('node:worker_threads');
 const {接管进程} = require('./进程桥接.cjs');
 const {PassThrough} = require('node:stream');
 
-// 文言：值桥先求于今目录，无则取宿主之旁。汉语：值桥文件先在当前目录找，找不到再用宿主文件旁的那份。
-const 桥文件路径 = () => 文件.existsSync('yy节点值桥接.wasm') ? 'yy节点值桥接.wasm' : 路径.join(__dirname, 'yy节点值桥接.wasm');
+// 文言：值桥先从宿主所录之环境，次求于今目录，无则取宿主之旁。汉语：值桥文件先用宿主写入环境变量 YY_NODE_VALUE_BRIDGE 的绝对路径，其次在当前目录找，再用宿主文件旁的那份。
+const 桥文件路径 = () => {const 传 = process.env.YY_NODE_VALUE_BRIDGE; return 传 && 文件.existsSync(传) ? 传 : 文件.existsSync('yy节点值桥接.wasm') ? 路径.resolve('yy节点值桥接.wasm') : 路径.join(__dirname, 'yy节点值桥接.wasm');};
 
 function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
   const 输入 = 路径.resolve(编译器路径), 模块们 = new Map();
