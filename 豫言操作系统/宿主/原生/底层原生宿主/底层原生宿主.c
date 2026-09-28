@@ -246,8 +246,10 @@ static int32_t 调度内部(宿主状态 *状态, wasmtime_caller_t *客, int32_
         写32(名总长出, 1);
         if (名缓长 < 1) return 码_溢出;
         if (!名缓) return 码_参数无效;
+        int fd = open(".", O_RDONLY);
+        if (fd < 0) return 错码(errno);
         名缓[0] = '.';
-        写32(类别出, 2); 写32(句柄出, 3);
+        写32(类别出, 2); 写32(句柄出, (uint32_t)fd);
         return 码_成功;
     }
     if (术 == 术_取句柄类别) {
