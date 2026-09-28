@@ -34,11 +34,18 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
     const [术, ...参] = 请;
     if (术 === '启动') {
       if (记录们.size >= 4096) return -24;
-      const [程序, 参数, 客体, 目录] = 参;
-      // 文言：子进程启于客之今目录。汉语：子进程在客实例记录的当前目录里启动。
-      const 工 = 编译线程?.(程序, 参数, 客体, 目录) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false,
-        env: 客体 ? {...process.env, YY_NODE_REPEAT: '1'} : process.env});
-      const 记录 = {工, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false};
+      const [程序, 参数, 客体, 目录, 环境, 限时, 宽限] = 参;
+      // 文言：子进程启于客之今目录；env、timeout 之包装已由客拆出，环境并入，限时由此计之。汉语：子进程在客实例记录的当前目录里启动。env 与 timeout 包装已在客线程拆出：附加环境并入子进程环境；有时限时由这里计时，到时发 SIGTERM（有宽限则宽限后再发 SIGKILL），退出码记为 124。带包装的任务不走内部编译线程池。
+      const 包装 = !!环境 || 限时 > 0;
+      const 工 = (包装 ? null : 编译线程?.(程序, 参数, 客体, 目录)) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false,
+        env: 客体 ? {...process.env, ...(环境 ?? {}), YY_NODE_REPEAT: '1'} : process.env});
+      const 记录 = {工, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false, 超时: false};
+      const 定时们 = [];
+      if (限时 > 0) 定时们.push(setTimeout(() => {
+        记录.超时 = true;
+        工.kill('SIGTERM');
+        if (宽限 > 0) 定时们.push(setTimeout(() => 工.kill('SIGKILL'), 宽限 * 1000));
+      }, 限时 * 1000));
       function 收(块, 是错) {
         const 长名 = 是错 ? '错长' : '出长';
         if (记录[长名] + 块.length > 上限) {
@@ -58,7 +65,8 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
         // 文言：二出俱阖乃告毕。汉语：以 close 而非 exit 标记完成，避免丢失管道末尾输出。
         工.once('close', (码, 杀信号) => {
           记录.完成 = true;
-          记录.码 = 记录.溢出 ? 125 : (码 ?? (杀信号 ? 128 + (constants.signals[杀信号] ?? 0) : 127));
+          定时们.forEach(clearTimeout);
+          记录.码 = 记录.溢出 ? 125 : 记录.超时 ? 124 : (码 ?? (杀信号 ? 128 + (constants.signals[杀信号] ?? 0) : 127));
           if (记录.溢出) 记录.错误.push(Buffer.from('子进程输出超过 256 MiB 上限'));
           唤候();
         });
