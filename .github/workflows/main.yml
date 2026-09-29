@@ -193,12 +193,35 @@ jobs:
       - name: 解开本轮编译与构建工具
         run: tar -xzf yy-test-tools.tar.gz
 
-      - name: 构建节点发行工具
+      # 文言：诸具分步而造；败时以末段诊断书作业注记，使公开之验可知所由。
+      # 汉语：逐项构建，失败时把日志末段写成公开的 CI 错误注释，便于定位 Windows 兼容问题。
+      - name: 构建接口检查器
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统接口检查 --输出 yy豫言操作系统接口检查.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --输出 yy豫言操作系统绑定.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --输出 yy豫言操作系统装载包.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --输出 yy双宿主构建.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统接口检查 --输出 yy豫言操作系统接口检查.wasm -j 24 > yyWindows接口检查.log 2>&1 || {
+            printf '::error title=接口检查器构建失败::%s\n' "$(tail -c 1500 yyWindows接口检查.log | tr '\n' ' ')"
+            exit 1
+          }
+
+      - name: 构建接口绑定器
+        run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --输出 yy豫言操作系统绑定.wasm -j 24 > yyWindows接口绑定.log 2>&1 || {
+            printf '::error title=接口绑定器构建失败::%s\n' "$(tail -c 1500 yyWindows接口绑定.log | tr '\n' ' ')"
+            exit 1
+          }
+
+      - name: 构建装载清单工具
+        run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --输出 yy豫言操作系统装载包.wasm -j 24 > yyWindows装载清单.log 2>&1 || {
+            printf '::error title=装载清单工具构建失败::%s\n' "$(tail -c 1500 yyWindows装载清单.log | tr '\n' ' ')"
+            exit 1
+          }
+
+      - name: 构建双宿主发行工具
+        run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --输出 yy双宿主构建.wasm -j 24 > yyWindows双宿主构建.log 2>&1 || {
+            printf '::error title=双宿主工具构建失败::%s\n' "$(tail -c 1500 yyWindows双宿主构建.log | tr '\n' ' ')"
+            exit 1
+          }
 
       - name: 构建节点一致性发行包
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy双宿主构建.wasm --自动 节点 豫言操作系统/宿主/节点/一致性验证/应用 dist/节点一致性
