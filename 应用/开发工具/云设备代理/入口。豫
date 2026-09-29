@@ -1199,15 +1199,28 @@
             于「零」
 也。
 
+「：文言：本机之页，外壳同于本站之账户页：以绝对之址引本站之主题与界面样式；离线则退为素页。汉语：本机回调页的外壳与本站账户页一致：用绝对地址引用 yuyan-lang.org 的 /共用/主题.css 与 /界面.css，正文用 包页、眉 与 账户区；离线时退化为无样式的普通页面。：」
+「登录页外壳」乃化「字符串」而化「字符串」而化「字符串」而「字符串」也。
+「登录页外壳」者会「标题」而会「内容」而会「脚本」而
+  『<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>』
+    附
+    「标题」附
+    『 · 豫言</title><link rel="stylesheet" href="https://yuyan-lang.org/共用/主题.css"><link rel="stylesheet" href="https://yuyan-lang.org/界面.css"></head><body class="账户页"><main id="正文" class="包页"><p class="眉"><a href="https://yuyan-lang.org/">豫言平台</a> / 命令行登录</p><h1>』
+      附
+      「标题」附『</h1><section class="账户区">』附「内容」附『</section></main>』附「脚本」附『</body></html>』
+也。
+
 「：文言：成功之页，以 replaceState 去址中之令牌，免留于浏览之史。汉语：成功页用 history.replaceState 把地址栏里带令牌的回调网址换掉，免得令牌留在浏览器历史里。：」
 「登录成功页」者
-  『<!doctype html><html lang="zh-Hans"><head><meta charset="utf-8"><title>登录成功</title></head><body><h1>豫言云命令行登录成功</h1><p>凭据已交给本机命令行，可以关闭此页。</p><script>history.replaceState(null,"","/done")</script></body></html>』
+  「登录页外壳」
+    于『命令行登录成功』
+    于『<p>凭据已交给本机的豫言云命令行，可以关闭此页。</p>』
+    于『<script>history.replaceState(null,"","/done")</script>』
 也。
 
 「登录错误页」乃化「字符串」而「字符串」也。
 「登录错误页」者会「消息」而
-  『<!doctype html><html lang="zh-Hans"><head><meta charset="utf-8"><title>登录未完成</title></head><body><p>』附（「网页转义」
-    于「消息」）附『</p></body></html>』
+  「登录页外壳」于『命令行登录未完成』于（『<p>』附（「网页转义」于「消息」）附『</p>』）于『』
 也。
 
 「：文言：候本机之回调：状态码合而令牌形正，则答成功而还令牌；不合者答四百而续候；逾十分无回调则还空。汉语：等待回调：状态码一致且令牌形式正确时回成功页并返回令牌；其他请求（如 favicon、别的状态码）回 400 后继续等；十分钟内没有任何连接则返回空串。：」
