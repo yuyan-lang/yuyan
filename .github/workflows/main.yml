@@ -168,6 +168,43 @@ jobs:
       - name: 以当前豫构自举并核对定点
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
 
+  # 文言：节点发行包之验于 Windows 行：取同代编译器，造绑定、装载与发行之具，而以同一验客较八十八事。
+  # 汉语：Windows Node 发行包验收：复用本轮编译器，构建绑定、装载与发行工具，再运行现有 88 项一致性驱动。
+  node-host-windows:
+    name: 节点发行包一致性（Windows x64）
+    needs: bootstrap
+    runs-on: windows-latest
+    timeout-minutes: 90
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-test-tools
+          path: ${{ runner.temp }}
+
+      - name: 解开本轮编译与构建工具
+        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+
+      - name: 构建节点发行工具
+        run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --输出 yy豫言操作系统绑定.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --输出 yy豫言操作系统装载包.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --输出 yy双宿主构建.wasm -j 24
+
+      - name: 构建节点一致性发行包
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy双宿主构建.wasm --自动 节点 豫言操作系统/宿主/节点/一致性验证/应用 dist/节点一致性
+
+      - name: 验证发行包与装载拒绝情形
+        run: node 豫言操作系统/宿主/节点/一致性验证/运行.mjs dist/节点一致性
+
   # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，连续版覆之。
   # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，并覆盖更新连续版本。
   publish:
