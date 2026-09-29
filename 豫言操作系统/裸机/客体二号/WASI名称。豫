@@ -1,0 +1,60 @@
+寻观「底层库」之书。
+
+「：文言：WASI preview1 诸名之表，序从一始；未识之名为九十九。汉语：WASI preview1 函数名依表映射到编号 1–46；未知函数名返回 99，其他导入模块返回 0。：」
+「瓦名表」者
+  「静态串」
+    于
+    『args_get,args_sizes_get,clock_res_get,clock_time_get,environ_get,environ_sizes_get,fd_close,fd_fdstat_get,fd_read,fd_seek,fd_write,proc_exit,random_get,sched_yield,fd_prestat_get,fd_prestat_dir_name,fd_filestat_get,poll_oneoff,fd_advise,fd_allocate,fd_datasync,fd_fdstat_set_flags,fd_fdstat_set_rights,fd_filestat_set_size,fd_filestat_set_times,fd_pread,fd_pwrite,fd_readdir,fd_renumber,fd_sync,fd_tell,path_create_directory,path_filestat_get,path_filestat_set_times,path_link,path_open,path_readlink,path_remove_directory,path_rename,path_symlink,path_unlink_file,proc_raise,sock_accept,sock_recv,sock_send,sock_shutdown』
+也。
+
+「瓦同字节」乃化「整数」而化「整数」而化「整数」而「爻」也。
+「瓦同字节」者会「甲」而会「乙」而会「长」而
+  若「等零」于「长」则
+    「阳」
+  否则
+    若「不等于」于（「读一」于「甲」）于（「读一」于「乙」）则
+      「阴」
+    否则
+      「瓦同字节」
+        于（「加」于「甲」于「一」）
+        于（「加」于「乙」于「一」）
+        于（「减」于「长」于「一」）
+也。
+
+「瓦名段长」乃化「整数」而化「整数」而「整数」也。
+「瓦名段长」者会「游」而会「位」而
+  虑「字」者「读一」于（「加」于「游」于「位」）而
+  若「或者」于（「等零」于「字」）于（「等」于「字」于「四四」）则
+    「位」
+  否则
+    「瓦名段长」于「游」于（「加」于「位」于「一」）
+也。
+
+「瓦名逐项」乃化「整数」而化「整数」而化「整数」而化「整数」而「整数」也。
+「瓦名逐项」者会「游」而会「名址」而会「名长」而会「序」而
+  若「等零」于（「读一」于「游」）则
+    「九九」
+  否则
+    虑「长」者「瓦名段长」于「游」于「零」
+    而
+    若「且」于（「等」于「长」于「名长」）于（「瓦同字节」于「游」于「名址」于「长」）则
+      「序」
+    否则
+      若「等零」于（「读一」于（「加」于「游」于「长」））则
+        「九九」
+      否则
+        「瓦名逐项」
+          于（「加」于（「加」于「游」于「长」）于「一」）
+          于「名址」于「名长」
+          于（「加」于「序」于「一」）
+也。
+
+「瓦号」乃化「整数」而化「整数」而化「整数」而化「整数」而「整数」也。
+「瓦号」者会「宿址」而会「宿长」而会「名址」而会「名长」而
+  若「且」
+    于（「等」于「宿长」于「二二」）
+    于（「瓦同字节」于「宿址」于（「静态串」于『wasi_snapshot_preview1』）于「二二」）则
+      「瓦名逐项」于「瓦名表」于「名址」于「名长」于「一」
+  否则
+    「零」
+也。
