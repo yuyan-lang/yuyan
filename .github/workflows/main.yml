@@ -160,8 +160,13 @@ jobs:
       - name: 解开 Wasm 工具链包
         run: tar -xzf "$RUNNER_TEMP/yuyan-wasm.tar.gz"
 
-      - name: 以包中豫构自举并核对定点
-        run: node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
+      - name: 以包中豫构与编译器构建当前源码的豫构
+        run: >-
+          node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
+          --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+
+      - name: 以当前豫构自举并核对定点
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
 
   # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，连续版覆之。
   # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，并覆盖更新连续版本。
