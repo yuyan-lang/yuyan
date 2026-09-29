@@ -132,8 +132,8 @@ jobs:
       - name: 运行本片测试
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy全树测试.wasm --分片 ${{ matrix.shard }}/20
 
-  # 文言：验本轮之 Wasm 工具链包可跨平台：于 Linux 与苹果系统，但凭 Node，自包起步，以包中豫构自举而核定点。
-  # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux 与 macOS 上只用 Node 从包起步，由包中的豫构完成自举并核对定点。
+  # 文言：验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与苹果系统，但凭 Node，自包起步，以包中豫构自举而核定点。
+  # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上只用 Node 从包起步，由包中的豫构完成自举并核对定点。
   wasm-bootstrap:
     name: Wasm 包起步（${{ matrix.os }}）
     needs: bootstrap
@@ -142,7 +142,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
     steps:
       - uses: actions/checkout@v4
 
