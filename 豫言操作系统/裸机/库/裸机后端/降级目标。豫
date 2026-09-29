@@ -398,6 +398,19 @@
     『CloseHandle』与『kernel32.dll』与（「列」【「二」】）与「一」，
     『GetConsoleMode』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」，
     『MulDiv』与『kernel32.dll』与（「列」【「二」，「二」，「二」】）与「一」，
+    『GetFileType』与『kernel32.dll』与（「列」【「二」】）与「一」，
+    『GetActiveProcessorCount』与『kernel32.dll』与（「列」【「零」】）与「一」，
+    『CreateFileW』与『kernel32.dll』与（「列」【「一」，「零」，「零」，「零」，「零」，「零」，「零」】）与「一」，
+    『GetFileInformationByHandle』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」，
+    『GetFileAttributesExW』与『kernel32.dll』与（「列」【「一」，「零」，「一」】）与「一」，
+    『GetFileInformationByHandleEx』与『kernel32.dll』与（「列」【「二」，「零」，「一」，「零」】）与「一」，
+    『CreateDirectoryW』与『kernel32.dll』与（「列」【「一」，「零」】）与「一」，
+    『DeleteFileW』与『kernel32.dll』与（「列」【「一」】）与「一」，
+    『RemoveDirectoryW』与『kernel32.dll』与（「列」【「一」】）与「一」，
+    『MoveFileExW』与『kernel32.dll』与（「列」【「一」，「一」，「零」】）与「一」，
+    『SetFilePointerEx』与『kernel32.dll』与（「列」【「二」，「二」，「一」，「零」】）与「一」，
+    『FlushFileBuffers』与『kernel32.dll』与（「列」【「二」】）与「一」，
+    『SetEndOfFile』与『kernel32.dll』与（「列」【「二」】）与「一」，
     『BCryptGenRandom』与『bcrypt.dll』与（「列」【「零」，「一」，「零」，「零」】）与「一」
   】
 也。
@@ -442,10 +455,12 @@
       「发生事故」授以「有」于『Windows 导入签名与入口表不符』
 也。
 
-「：文言：视窗导入之槽：每导入十六字节（一槽与零终）。前二槽为入口所用之 ExitProcess、VirtualAlloc，模块之导入自第二槽起。AMD64 之槽在栈顶之上（定址 0x400000）；ARM64 之槽亦在栈顶之上而以锚相对取之。汉语：Windows 导入槽（IAT）：每个导入占 16 字节（一个槽加零终止）。前两个槽留给入口用的 ExitProcess 与 VirtualAlloc，模块自己的导入从第 2 个槽开始。AMD64 的槽从固定地址 0x400000（栈顶之上的导入节开头）起；ARM64 的槽在数据段里栈顶之上，按相对址式访问，由装载器写入。：」
+「：文言：视窗导入之槽：每导入十六字节（一槽与零终）。前二槽为入口所用之 ExitProcess、VirtualAlloc，模块之导入自第二槽起。AMD64 之槽在栈顶之上（定址 0x400000）；ARM64 之槽居传参暂存之区（名义之址 0x40380100 起），以锚相对取之，文件中亦书其初值。汉语：Windows 导入槽（IAT）：每个导入占 16 字节（一个槽加零终止）。前两个槽留给入口用的 ExitProcess 与 VirtualAlloc，模块自己的导入从第 2 个槽开始。AMD64 的槽从固定地址 0x400000（栈顶之上的导入节开头）起；ARM64 的槽在传参暂存区里（名义地址 0x40380100 起，前 256 字节留给第九个起的参数），按相对址式访问；它们在文件里带着初值（与 AMD64 一样预先写入名字项 RVA），由装载器改写。：」
 「视窗导入槽址」乃化「降级目标」而化「整数」而「整数」也。
 「视窗导入槽址」者会「标」而会「序」而
-  「加」于（「目标栈顶」于「标」）于（「乘」于「序」于「一六」）
+  「加」
+    于（若「目标臂」于「标」则「一零七七四一二零九六」否则「目标栈顶」于「标」）
+    于（「乘」于「序」于「一六」）
 也。
 
 「视窗保留槽数」乃「整数」也。

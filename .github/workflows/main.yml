@@ -314,6 +314,8 @@ jobs:
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy视窗你好.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 豫言操作系统/裸机/普通探针/打印。豫 --编译器 ./yy4_bs.wasm --输出 yy打印.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 豫言操作系统/裸机/普通探针/盘/文件-一。豫 --编译器 ./yy4_bs.wasm --输出 yy文件一.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 豫言操作系统/裸机/普通探针/盘/文件-二。豫 --编译器 ./yy4_bs.wasm --输出 yy文件二.wasm -j 24
 
       - name: 生成两种架构的 PE
         env:
@@ -325,6 +327,12 @@ jobs:
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 兼容六十四 yy客体二号.wasm yy-windows-exe/print-x64.exe yy打印.wasm
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 臂六十四 yy客体二号.wasm yy-windows-exe/print-arm64.exe yy打印.wasm
           cp 豫言操作系统/裸机/普通探针/打印.期望 yy-windows-exe/print.expected
+          for a in 兼容六十四:x64 臂六十四:arm64; do
+            node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 "${a%%:*}" yy客体二号.wasm "yy-windows-exe/file1-${a##*:}.exe" yy文件一.wasm
+            node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 "${a%%:*}" yy客体二号.wasm "yy-windows-exe/file2-${a##*:}.exe" yy文件二.wasm
+          done
+          cp 豫言操作系统/裸机/普通探针/盘/文件-一.期望 yy-windows-exe/file1.expected
+          cp 豫言操作系统/裸机/普通探针/盘/文件-二.期望 yy-windows-exe/file2.expected
 
       - uses: actions/upload-artifact@v4
         with:
@@ -343,9 +351,11 @@ jobs:
           - os: windows-latest
             exe: hello-x64.exe
             print: print-x64.exe
+            arch: x64
           - os: windows-11-arm
             exe: hello-arm64.exe
             print: print-arm64.exe
+            arch: arm64
     defaults:
       run:
         shell: bash
@@ -379,6 +389,17 @@ jobs:
           cat print.err
           diff print.out print.expected
           test "$code" = 0
+
+      - name: 执行器运行文件探针（两阶段）
+        if: always()
+        run: |
+          mkdir -p work && cd work
+          ../file1-${{ matrix.arch }}.exe > ../file1.out 2> ../file1.err; echo "文件一退出码 $?"
+          ../file2-${{ matrix.arch }}.exe > ../file2.out 2> ../file2.err; echo "文件二退出码 $?"
+          cd ..
+          cat file1.err file2.err
+          diff file1.out file1.expected
+          diff file2.out file2.expected
 
   # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，连续版覆之。
   # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，并覆盖更新连续版本。
