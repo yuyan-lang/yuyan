@@ -188,13 +188,14 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: yy-test-tools
-          path: ${{ runner.temp }}
+          path: .
 
       - name: 解开本轮编译与构建工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf yy-test-tools.tar.gz
 
       - name: 构建节点发行工具
         run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统接口检查 --输出 yy豫言操作系统接口检查.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --输出 yy豫言操作系统绑定.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --输出 yy豫言操作系统装载包.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --输出 yy双宿主构建.wasm -j 24
