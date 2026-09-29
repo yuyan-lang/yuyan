@@ -397,7 +397,8 @@ jobs:
           ../file1-${{ matrix.arch }}.exe > ../file1.out 2> ../file1.err; echo "文件一退出码 $?"
           ../file2-${{ matrix.arch }}.exe > ../file2.out 2> ../file2.err; echo "文件二退出码 $?"
           cd ..
-          cat file1.err file2.err
+          ls -laR work | head -40
+          head -c 4000 file1.err; head -c 4000 file2.err
           diff file1.out file1.expected
           diff file2.out file2.expected
 
