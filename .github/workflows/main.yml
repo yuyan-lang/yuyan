@@ -312,6 +312,7 @@ jobs:
         run: |
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言裸机 原生生成 --编译器 ./yy4_bs.wasm --输出 yy原生生成.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy视窗你好.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 苹果入口 --编译器 ./yy4_bs.wasm --输出 yy苹果你好.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号.wasm -j 24
           mkdir -p yy-probes
           for f in 豫言操作系统/裸机/普通探针/*。豫 豫言操作系统/裸机/普通探针/盘/文件-一。豫 豫言操作系统/裸机/普通探针/盘/文件-二。豫 豫言操作系统/裸机/原生探针/*。豫; do
@@ -335,11 +336,24 @@ jobs:
             done
             cp "yy-probes/$n.expected" "yy-windows-exe/组/$n.expected"
           done
+          # 汉语：同一批探针再生成 macOS x86-64 可执行文件（WP5），另存产物交给 Intel macOS 运行器。
+          mkdir -p yy-macos-x64/组
+          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 苹果 兼容六十四 yy苹果你好.wasm yy-macos-x64/hello-mac-x64
+          for w in yy-probes/*.wasm; do
+            n=$(basename "$w" .wasm)
+            node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 苹果 兼容六十四 yy客体二号.wasm "yy-macos-x64/组/$n" "$w"
+            cp "yy-probes/$n.expected" "yy-macos-x64/组/$n.expected"
+          done
 
       - uses: actions/upload-artifact@v4
         with:
           name: yy-windows-native
           path: yy-windows-exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yy-macos-x64-native
+          path: yy-macos-x64
 
   windows-native-run:
     name: 视窗原生样例运行（${{ matrix.os }}）
@@ -389,6 +403,56 @@ jobs:
             n=$(basename "$e" -${{ matrix.arch }}.exe)
             set +e
             (cd work && timeout 120 "../$e" > "../组/$n.out" 2> "../组/$n.err")
+            code=$?
+            set -e
+            if [ "$code" = 0 ] && cmp -s "组/$n.out" "组/$n.expected"; then
+              echo "通过：$n"
+            else
+              echo "不符：$n（退出码 $code）"
+              diff "组/$n.out" "组/$n.expected" | head -20 || true
+              head -c 1500 "组/$n.err"
+              fail=1
+            fi
+          done
+          exit $fail
+
+  # 文言：苹果 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与执行器之一致性组。
+  # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与嵌入执行器的一致性组。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
+  macos-x64-native-run:
+    name: 苹果 x86-64 原生样例运行
+    needs: windows-native-build
+    runs-on: macos-15-intel
+    timeout-minutes: 20
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-macos-x64-native
+          path: .
+
+      - name: 运行你好样例
+        run: |
+          chmod +x hello-mac-x64 组/* 2>/dev/null || true
+          chmod -x 组/*.expected
+          set +e
+          printf 'echo-line\n' | ./hello-mac-x64 > out.txt 2> err.txt
+          code=$?
+          set -e
+          od -c out.txt | head -8
+          cat err.txt
+          echo "退出码 $code"
+          test "$code" = 7
+          grep -q 'echo-line' out.txt
+
+      - name: 执行器一致性组
+        if: always()
+        run: |
+          mkdir -p work
+          fail=0
+          for e in 组/*; do
+            case "$e" in *.expected|*.out|*.err) continue;; esac
+            n=$(basename "$e")
+            set +e
+            (cd work && perl -e 'alarm 120; exec @ARGV' "../$e" > "../组/$n.out" 2> "../组/$n.err")
             code=$?
             set -e
             if [ "$code" = 0 ] && cmp -s "组/$n.out" "组/$n.expected"; then
