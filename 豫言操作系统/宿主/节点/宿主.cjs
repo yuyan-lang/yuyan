@@ -129,7 +129,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   function 取占锁(占径){
     for(;;){
       try{const 号=文件.openSync(占径,'wx',0o600);文件.writeSync(号,String(process.pid));文件.closeSync(号);return;}
-      catch(错){if(错.code!=='EEXIST')throw 错;}
+      // 文言：视窗上他进程方删其锁，开之则报 EPERM（删除挂起），亦视为占用而后再试。汉语：Windows 上另一个进程正在删除锁文件时，以 wx 打开会报 EPERM（删除挂起）或 EACCES、EBUSY，同样当作“被占用”，稍后重试。
+      catch(错){if(错.code!=='EEXIST'&&!(process.platform==='win32'&&['EPERM','EACCES','EBUSY'].includes(错.code)))throw 错;}
       let 持者=0;try{持者=Number(文件.readFileSync(占径,'utf8'));}catch{}
       if(持者&&持者!==process.pid){try{process.kill(持者,0);}catch{try{文件.unlinkSync(占径);}catch{}continue;}}
       Atomics.wait(小候,0,0,20);
