@@ -193,6 +193,13 @@ jobs:
       - name: 解开本轮编译与构建工具
         run: tar -xzf yy-test-tools.tar.gz
 
+      - name: 核对豫言源码换行
+        run: |
+          git ls-files --eol '库/云工宿主/云工宿主。包。豫' | grep -q 'w/lf' || {
+            printf '::error::Windows 检出的豫言包文件未保持 LF 换行\n'
+            exit 1
+          }
+
       # 文言：诸具分步而造；败时以末段诊断书作业注记，使公开之验可知所由。
       # 汉语：逐项构建，失败时把日志末段写成公开的 CI 错误注释，便于定位 Windows 兼容问题。
       - name: 构建接口检查器
