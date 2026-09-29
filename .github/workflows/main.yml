@@ -286,6 +286,81 @@ jobs:
           }
           tail -n 24 yyLinux预编一致性.log
 
+  # 文言：视窗原生之你好：于 Linux 生两构之 PE32+，传于视窗之运行器行之，验其出与退出码。
+  # 汉语：Windows 原生最小闭环（WP6）：在 Linux 上用 yy原生生成 生成 AMD64 与 ARM64 两个 PE32+ 可执行文件，交给 Windows 运行器直接执行，核对输出与退出码 7。
+  windows-native-build:
+    name: 视窗原生样例生成
+    needs: bootstrap
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-test-tools
+          path: ${{ runner.temp }}
+
+      - name: 解开本轮编译与构建工具
+        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+
+      - name: 构建原生生成工具与视窗你好
+        run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言裸机 原生生成 --编译器 ./yy4_bs.wasm --输出 yy原生生成.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy视窗你好.wasm -j 24
+
+      - name: 生成两种架构的 PE
+        env:
+          YY_GC_INITIAL_HEAP_SIZE_MB: 512
+        run: |
+          mkdir -p yy-windows-exe
+          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 兼容六十四 yy视窗你好.wasm yy-windows-exe/hello-x64.exe
+          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 臂六十四 yy视窗你好.wasm yy-windows-exe/hello-arm64.exe
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yy-windows-native
+          path: yy-windows-exe
+
+  windows-native-run:
+    name: 视窗原生样例运行（${{ matrix.os }}）
+    needs: windows-native-build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+            exe: hello-x64.exe
+          - os: windows-11-arm
+            exe: hello-arm64.exe
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-windows-native
+          path: .
+
+      - name: 运行并核对输出与退出码
+        run: |
+          set +e
+          printf 'echo-line\r\n' | ./${{ matrix.exe }} > out.txt 2> err.txt
+          code=$?
+          set -e
+          od -c out.txt | head -8
+          cat err.txt
+          echo "退出码 $code"
+          test "$code" = 7
+          grep -q 'echo-line' out.txt
+          test "$(head -c 6 out.txt | od -An -tx1 | tr -d ' \n')" = e4bda0e5a5bd
+
   # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，连续版覆之。
   # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，并覆盖更新连续版本。
   publish:
