@@ -313,9 +313,12 @@ jobs:
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言裸机 原生生成 --编译器 ./yy4_bs.wasm --输出 yy原生生成.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy视窗你好.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 豫言操作系统/裸机/普通探针/打印。豫 --编译器 ./yy4_bs.wasm --输出 yy打印.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 豫言操作系统/裸机/普通探针/盘/文件-一。豫 --编译器 ./yy4_bs.wasm --输出 yy文件一.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 豫言操作系统/裸机/普通探针/盘/文件-二。豫 --编译器 ./yy4_bs.wasm --输出 yy文件二.wasm -j 24
+          mkdir -p yy-probes
+          for f in 豫言操作系统/裸机/普通探针/*。豫 豫言操作系统/裸机/普通探针/盘/文件-一。豫 豫言操作系统/裸机/普通探针/盘/文件-二。豫 豫言操作系统/裸机/原生探针/*。豫; do
+            n=$(basename "$f"); n=${n%。豫}
+            node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 "$f" --编译器 ./yy4_bs.wasm --输出 "yy-probes/$n.wasm" -j 24
+            cp "${f%。豫}.期望" "yy-probes/$n.expected"
+          done
 
       - name: 生成两种架构的 PE
         env:
@@ -324,15 +327,14 @@ jobs:
           mkdir -p yy-windows-exe
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 兼容六十四 yy视窗你好.wasm yy-windows-exe/hello-x64.exe
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 臂六十四 yy视窗你好.wasm yy-windows-exe/hello-arm64.exe
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 兼容六十四 yy客体二号.wasm yy-windows-exe/print-x64.exe yy打印.wasm
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 臂六十四 yy客体二号.wasm yy-windows-exe/print-arm64.exe yy打印.wasm
-          cp 豫言操作系统/裸机/普通探针/打印.期望 yy-windows-exe/print.expected
-          for a in 兼容六十四:x64 臂六十四:arm64; do
-            node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 "${a%%:*}" yy客体二号.wasm "yy-windows-exe/file1-${a##*:}.exe" yy文件一.wasm
-            node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 "${a%%:*}" yy客体二号.wasm "yy-windows-exe/file2-${a##*:}.exe" yy文件二.wasm
+          mkdir -p yy-windows-exe/组
+          for w in yy-probes/*.wasm; do
+            n=$(basename "$w" .wasm)
+            for a in 兼容六十四:x64 臂六十四:arm64; do
+              node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 "${a%%:*}" yy客体二号.wasm "yy-windows-exe/组/$n-${a##*:}.exe" "$w"
+            done
+            cp "yy-probes/$n.expected" "yy-windows-exe/组/$n.expected"
           done
-          cp 豫言操作系统/裸机/普通探针/盘/文件-一.期望 yy-windows-exe/file1.expected
-          cp 豫言操作系统/裸机/普通探针/盘/文件-二.期望 yy-windows-exe/file2.expected
 
       - uses: actions/upload-artifact@v4
         with:
@@ -350,11 +352,9 @@ jobs:
         include:
           - os: windows-latest
             exe: hello-x64.exe
-            print: print-x64.exe
             arch: x64
           - os: windows-11-arm
             exe: hello-arm64.exe
-            print: print-arm64.exe
             arch: arm64
     defaults:
       run:
@@ -378,29 +378,29 @@ jobs:
           grep -q 'echo-line' out.txt
           test "$(head -c 6 out.txt | od -An -tx1 | tr -d ' \n')" = e4bda0e5a5bd
 
-      - name: 执行器运行打印探针（GC 程序）
+      # 文言：一致性之组：诸普通探针、盘之文件二阶、原生探针，各以执行器嵌之而行于同一工作目录，逐字较其常出。
+      # 汉语：一致性组：普通探针、盘文件两阶段与原生探针，各自嵌进执行器，在同一个工作目录里依次运行，标准输出与 .expected 逐字比较，并要求退出码为 0。
+      - name: 执行器一致性组
         if: always()
         run: |
-          set +e
-          ./${{ matrix.print }} > print.out 2> print.err
-          code=$?
-          set -e
-          echo "退出码 $code"
-          cat print.err
-          diff print.out print.expected
-          test "$code" = 0
-
-      - name: 执行器运行文件探针（两阶段）
-        if: always()
-        run: |
-          mkdir -p work && cd work
-          ../file1-${{ matrix.arch }}.exe > ../file1.out 2> ../file1.err; echo "文件一退出码 $?"
-          ../file2-${{ matrix.arch }}.exe > ../file2.out 2> ../file2.err; echo "文件二退出码 $?"
-          cd ..
-          ls -laR work | head -40
-          head -c 4000 file1.err; head -c 4000 file2.err
-          diff file1.out file1.expected
-          diff file2.out file2.expected
+          mkdir -p work
+          fail=0
+          for e in 组/*-${{ matrix.arch }}.exe; do
+            n=$(basename "$e" -${{ matrix.arch }}.exe)
+            set +e
+            (cd work && timeout 120 "../$e" > "../组/$n.out" 2> "../组/$n.err")
+            code=$?
+            set -e
+            if [ "$code" = 0 ] && cmp -s "组/$n.out" "组/$n.expected"; then
+              echo "通过：$n"
+            else
+              echo "不符：$n（退出码 $code）"
+              diff "组/$n.out" "组/$n.expected" | head -20 || true
+              head -c 1500 "组/$n.err"
+              fail=1
+            fi
+          done
+          exit $fail
 
   # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，连续版覆之。
   # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，并覆盖更新连续版本。
