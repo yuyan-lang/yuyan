@@ -15,7 +15,7 @@ export function 创建编译器({ 编译模块, 桥模块, 资料, 组装, 收�
     }else 文件.写('/用户程序/入口。豫',code);
     报告({ type: "stage", phase: "compile", label: "正在浏览器内编译" });
     const compilation = await 执行模块(编译模块, 桥模块, 文件, [
-      "/用户程序/入口。豫", "--package-context", "/包上下文", "--target=wasmgc", "-o", "/程序.wasm",
+      "/用户程序/入口。豫", "--package-context", "/包上下文", "-o", "/程序.wasm",
       // 文言：验编亦须成器。汉语：compile_yuyan 执行完整代码生成与浏览器处理，只略过运行。
     ], { 编译: true, 报告 });
     if (!compilation.ok) return { ...compilation, phase: "compile" };

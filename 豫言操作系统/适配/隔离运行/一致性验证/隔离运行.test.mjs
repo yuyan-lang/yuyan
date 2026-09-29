@@ -40,7 +40,7 @@ function 取探针字节() {
     const 上下文 = path.join(临时, '包上下文');
     writeFileSync(上下文, ['豫构包上下文二', `豫言\t标准库\t${库根}/标准库/标准库。包。豫`, `豫言\t隔离运行探针\t${包文件}\t豫言\t标准库`].join('\n') + '\n');
     const 输出 = path.join(临时, '探针.wasm');
-    execFileSync(编译器, [path.join(临时, '入口。豫'), '--package-context', 上下文, '--target=wasmgc', '-o', 输出], {stdio: ['ignore', 'pipe', 'pipe']});
+    execFileSync(编译器, [path.join(临时, '入口。豫'), '--package-context', 上下文, '-o', 输出], {stdio: ['ignore', 'pipe', 'pipe']});
     return readFileSync(输出);
   } finally { rmSync(临时, {recursive: true, force: true}); }
 }

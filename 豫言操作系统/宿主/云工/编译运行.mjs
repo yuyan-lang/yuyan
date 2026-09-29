@@ -119,7 +119,7 @@ export function 创建编译运行器工厂({binaryen, 编译模块, 桥模块, 
       文件.写('/包上下文', '豫构包上下文二\n豫言\t标准库\t/库/标准库/标准库。包。豫\n访客\t云项目\t/用户程序/云项目。包。豫\t豫言\t标准库');
       for (const [名, 内容] of Object.entries(运行.请求.files)) 文件.写('/用户程序/' + 名, 内容);
       发(运行, {type: 'stage', label: '正在执行豫言编译器'});
-      const 结果 = await 执行模块(编译模块, 桥模块, 文件, ['/用户程序/' + 运行.请求.entry, '--package-context', '/包上下文', '--target=wasmgc', '-o', '/程序.wasm'],
+      const 结果 = await 执行模块(编译模块, 桥模块, 文件, ['/用户程序/' + 运行.请求.entry, '--package-context', '/包上下文', '-o', '/程序.wasm'],
         {编译: true, 组装, 报告: 事 => 发(运行, 事)});
       if (!结果.ok) { 文件 = null; 收尾(运行, {type: 'finished', result: 结果}); return; }
       const 产物 = 文件.读('/程序.wasm');

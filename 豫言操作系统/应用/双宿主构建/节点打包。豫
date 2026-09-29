@@ -211,7 +211,6 @@
       「应用入口」，
       『--package-context』，
       「包上下文」，
-      『--target=wasmgc』，
       『--do-not-load-cache』，
       『--parallel』，
       『-j』，

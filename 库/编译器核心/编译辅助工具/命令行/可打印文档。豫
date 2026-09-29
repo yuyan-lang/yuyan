@@ -46,7 +46,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --do-not-optimize                    不执行优化
     -O0, -O[1,2,3,5,8,13,21]             执行0,1,2,3,5,8,13或21次优化
     --optimize                          执行优化（默认）
-    --target=wasmgc                      兼容选项；编译器只有 WasmGC 一个后端
     --frontend-tasks=[split,combined]    前端并行任务粒度，默认 split
     --mode=[regular,worker]              指定运行模式（用于多任务处理）
     --worker-task=TASK                   指定单一工作模式(worker)当前任务
