@@ -11,6 +11,16 @@ The extension uses the TextMate grammar in `yuyan.tmGrammar.json` for strings,
 numbers, builtins, identifiers, fixed operators, punctuation, and nested block
 comments. Highlighting does not require compiler-generated semantic token files.
 
+The compiler ignores spaces and line breaks, so the grammar does not depend on
+them either: statements are delimited by `。`, declarations are recognized only
+at the start of a statement, and field lists (`「典」`, `「组类」`, `「组值」`),
+parentheses, and brackets are tracked as nested scopes. `test/删空白核验.mjs`
+checks that deleting spaces and newlines does not change the color of any other
+character; `npm run test:grammar` runs it on a multi-line sample. Legacy bare
+identifiers (names written without `「」`) are the exception: keywords inside a
+bare identifier stay uncolored, so joining a bare identifier and a keyword
+changes the keyword's color.
+
 ## Inspecting Build Artifacts
 
 With a Yuyan source file active, run **Yuyan: Jump to Build Artifact 跳转到构建产物**
