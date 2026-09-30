@@ -26,10 +26,10 @@ const 显示检查层 = 文 => {
 };
 const 显示不支持 = 缺 => {
   const 层 = 显示检查层(
-    '<h2 data-yy-style="margin:0 0 .5em">您的浏览器版本过旧，无法运行本页面</h2>'
-    + '<p data-yy-style="margin:0 0 .5em">请将浏览器更新到 Safari 27、Chrome 137、Edge 137 或 Firefox 153 及以上版本后再访问。</p>'
-    + `<p data-yy-style="margin:0 0 1em;font-size:13px;opacity:.7">缺少：${缺}</p>`
-    + '<p data-yy-style="margin:0 0 .75em">您也可以继续访问，但部分功能将无法使用。</p>'
+    '<h2 data-yy-style="margin:0 0 .5em;font-size:24px;font-weight:700;line-height:1.7;color:inherit;letter-spacing:normal;text-transform:none">您的浏览器版本过旧，无法运行本页面</h2>'
+    + '<p data-yy-style="margin:0 0 .5em;font-size:16px;color:inherit">请将浏览器更新到 Safari 27、Chrome 137、Edge 137 或 Firefox 153 及以上版本后再访问。</p>'
+    + `<p data-yy-style="margin:0 0 1em;font-size:13px;opacity:.7;color:inherit">缺少：${缺}</p>`
+    + '<p data-yy-style="margin:0 0 .75em;font-size:16px;color:inherit">您也可以继续访问，但部分功能将无法使用。</p>'
     + '<button type="button" data-yy-style="font:inherit;padding:9px 24px;border:0;border-radius:3px;background:var(--豫朱,#a33c2c);color:#fff;cursor:pointer">我明白</button>');
   // 文言：钮依站之主钮（朱底白字）；不自移焦点，免站之焦点框环于钮外。汉语：按钮照站点主按钮样式（朱红底、白字）；不主动把焦点移到按钮上，免得站点的焦点框（朱红描边）套在按钮外面。
   层?.querySelector('button')?.addEventListener('click', () => 层.remove());
@@ -53,7 +53,7 @@ export async function 启动豫言浏览器应用(选项 = {}) {
   }
   // 文言：载编逾四百毫秒乃示“正在检查”，免常页一闪。汉语：下载与编译超过 400 毫秒才显示“正在检查浏览器”，避免正常页面闪烁。
   const 计时 = typeof document === 'undefined' ? null
-    : setTimeout(() => 显示检查层('<p data-yy-style="margin:0">正在检查浏览器…</p>'), 400);
+    : setTimeout(() => 显示检查层('<p data-yy-style="margin:0;font-size:16px;color:inherit">正在检查浏览器…</p>'), 400);
   const 撤层 = () => { clearTimeout(计时); if (typeof document !== 'undefined') document.getElementById(检查层标识)?.remove(); };
   try {
     const 结果 = await 启动实际(选项);
