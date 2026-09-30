@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>豫言图形探针</title>
+<style>canvas{display:inline-block;margin:4px;border:0;padding:0;background:#ddd}#结果{white-space:pre-wrap;font:14px/1.5 monospace}</style></head>
+<body>
+  <canvas data-yy-显示面="像素画面" style="width:64px;height:48px"></canvas>
+  <canvas data-yy-显示面="图形画面" style="width:64px;height:48px"></canvas>
+  <canvas data-yy-显示面="输入画面" style="width:64px;height:48px"></canvas>
+  <pre id="结果"></pre>
+  <script type="module">
+    // 文言：图形探针之页：授三显示面，以输出函数收探针之行；探针告“等待输入：开始”，则合成诸事于输入画面而后移之。
+    // 汉语：图形探针测试页。把图形探针应用的构建产物（入口.mjs、程序.wasm、图形.mjs……）放在本页同目录，用静态服务器打开。
+    //       页面授予三个显示面：像素画面、图形画面、输入画面；探针每项结果经输出函数写进 #结果。
+    //       探针打印“等待输入：开始”后，本页向输入画面合成指针、按键、文字与输入法事件，再移除该 canvas。
+    //       地址带 ?等待=毫秒 时插入一张由服务器延迟响应的图片（/api/slow），拖住 load 事件，供无头 Chrome 的 --dump-dom 在探针结束后导出页面。
+    import {启动豫言浏览器应用} from './入口.mjs';
+    const 结果 = document.getElementById('结果');
+    const 参 = new URL(location.href).searchParams;
+    if (参.has('等待')) {
+      const 图 = new Image();
+      图.alt = '';
+      图.src = '/api/slow?d=' + encodeURIComponent(参.get('等待'));
+      document.body.append(图);
+    }
+    // 文言：合成之事，与探针所期一一相应。汉语：合成的事件与探针期望的事件逐一对应；坐标按像素比换算，使物理像素坐标恰为整数。
+    const 合成输入 = () => {
+      const 画布 = document.querySelector('canvas[data-yy-显示面="输入画面"]');
+      const 框 = document.querySelector('[data-yy-显示面输入="输入画面"]');
+      const 矩 = 画布.getBoundingClientRect();
+      const 比 = devicePixelRatio || 1;
+      const 点 = (横, 纵) => ({clientX: 矩.left + (横 + 0.5) / 比, clientY: 矩.top + (纵 + 0.5) / 比});
+      const 指 = (类, 横, 纵, 钮) => 画布.dispatchEvent(new PointerEvent(类, {bubbles: true, cancelable: true, pointerId: 1, button: 钮, ...点(横, 纵)}));
+      const 键 = (类, 名) => 框.dispatchEvent(new KeyboardEvent(类, {key: 名, bubbles: true, cancelable: true}));
+      指('pointerdown', 10, 5, 0);
+      指('pointermove', 20, 6, -1);
+      指('pointermove', 21, 7, -1);
+      指('pointerup', 21, 7, 0);
+      键('keydown', 'ArrowLeft');
+      键('keyup', 'ArrowLeft');
+      键('keydown', 'a');
+      框.value = '中';
+      框.dispatchEvent(new InputEvent('input', {bubbles: true, data: '中', inputType: 'insertText'}));
+      框.dispatchEvent(new CompositionEvent('compositionstart', {bubbles: true, data: ''}));
+      框.value = '豫';
+      框.dispatchEvent(new InputEvent('input', {bubbles: true, data: '豫', inputType: 'insertCompositionText', isComposing: true}));
+      键('keydown', 'Process');
+      框.value = '豫言';
+      框.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: '豫言'}));
+      键('keydown', 'Shift');
+      画布.remove();
+    };
+    let 尾 = '';
+    const 输出 = 文 => {
+      结果.textContent += 文;
+      尾 = (尾 + 文).slice(-256);
+      if (尾.includes('等待输入：开始')) { 尾 = ''; setTimeout(合成输入, 0); }
+    };
+    // 文言：探针毕，页自取像素画面中心之色，以验提交确达画布。GPU 之画布呈现后其像不存，drawImage 但得不透明之黑，故以截图验之。
+    // 汉语：探针结束后，页面把像素画面画进临时 2d 画布取中心像素，核对像素提交确实到达画布（蓝色）。WebGPU 画布呈现后不保留图像，
+    //       drawImage 只得到不透明黑色，所以图形画面改用无头 Chrome 的 --screenshot 截图核对（最后一帧是蓝色），见验收清单。
+    const 中心色 = 画布 => {
+      const 临 = document.createElement('canvas');
+      临.width = 画布.width;
+      临.height = 画布.height;
+      const 境 = 临.getContext('2d');
+      境.drawImage(画布, 0, 0);
+      return Array.from(境.getImageData(画布.width >> 1, 画布.height >> 1, 1, 1).data).join(',');
+    };
+    const 页面核对 = (名, 画布) => {
+      const 色 = 中心色(画布);
+      结果.textContent += (色 === '0,0,255,255' ? '通过' : '失败') + '：页面核对' + 名 + '中心像素为蓝（' + 色 + '）\n';
+    };
+    try {
+      const 宿主 = await 启动豫言浏览器应用({输出});
+      window.__宿主 = 宿主;
+      await 宿主.完成;
+      页面核对('像素画面', document.querySelector('canvas[data-yy-显示面="像素画面"]'));
+      document.documentElement.dataset.探针 = '完成';
+    } catch (错) {
+      结果.textContent += '\n运行失败：' + String(错?.message ?? 错);
+      document.documentElement.dataset.探针 = '失败';
+    }
+  </script>
+</body>
+</html>
