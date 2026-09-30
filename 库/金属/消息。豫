@@ -29,18 +29,12 @@
   否则
     鉴「打开外部库」于「对象库路径」而
       有（「外部库已打开」于「库」）则（
-        虑「无」者「打开外部库」于「基础框架路径」
-        而
-        虑「发」者「外部符号地址」于「库」于『objc_msgSend』
-        而
-        虑「类」者「外部符号地址」于「库」于『objc_getClass』
-        而
-        虑「选」者「外部符号地址」于「库」于『sel_registerName』
-        而
-        虑「推」者「外部符号地址」于「库」于『objc_autoreleasePoolPush』
-        而
-        虑「弹」者「外部符号地址」于「库」于『objc_autoreleasePoolPop』
-        而
+        虑「无」者「打开外部库」于「基础框架路径」而
+        虑「发」者「外部符号地址」于「库」于『objc_msgSend』而
+        虑「类」者「外部符号地址」于「库」于『objc_getClass』而
+        虑「选」者「外部符号地址」于「库」于『sel_registerName』而
+        虑「推」者「外部符号地址」于「库」于『objc_autoreleasePoolPush』而
+        虑「弹」者「外部符号地址」于「库」于『objc_autoreleasePoolPop』而
         若「等于」于「发」于「零」则
           「可无」授以「对象运行时」
         否则
