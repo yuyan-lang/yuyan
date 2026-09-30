@@ -22,6 +22,7 @@ yarn-error.log*
 # 豫言编译产物与缓存
 /.yybuild/
 /.yybuild.*
+/.yy构建日志/
 /dist/
 /yy*
 /*.wasm

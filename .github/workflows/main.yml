@@ -79,6 +79,18 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      - name: 上传构建日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-build-logs-bootstrap
+          path: .yy构建日志/
+          include-hidden-files: true
+          retention-days: 90
+          if-no-files-found: ignore
+
   # 文言：核型与豫构之试，取自举所成之器，不连带重造。
   # 汉语：类型检查与豫构测试：取自举作业的产物运行，用 --不连带 不重建其依赖；与测试分片、跨平台验证并行。
   checks:
@@ -103,6 +115,18 @@ jobs:
 
       - name: 类型检查与豫构测试
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 类型检查 豫构测试 --不连带 -j "$(nproc)"
+
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      - name: 上传构建日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-build-logs-checks
+          path: .yy构建日志/
+          include-hidden-files: true
+          retention-days: 90
+          if-no-files-found: ignore
 
   # 文言：全树之试，分二十片并行；每片取自举所成之器，行其一段。
   # 汉语：全树测试按 20 个分片并行运行；各片复用自举作业产出的工具，运行自己那一段。
@@ -172,6 +196,18 @@ jobs:
 
       - name: 以当前豫构自举并核对定点
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
+
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      - name: 上传构建日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-build-logs-${{ matrix.os }}
+          path: .yy构建日志/
+          include-hidden-files: true
+          retention-days: 90
+          if-no-files-found: ignore
 
   # 文言：节点发行包之验于 Windows 行：取同代编译器，造绑定、装载与发行之具，而以同一验客较八十八事。
   # 汉语：Windows Node 发行包验收：复用本轮编译器，构建绑定、装载与发行工具，再运行现有 88 项一致性驱动。
@@ -247,6 +283,18 @@ jobs:
 
       - name: 验证发行包与装载拒绝情形
         run: node 豫言操作系统/宿主/节点/一致性验证/运行.mjs dist/节点一致性
+
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      - name: 上传构建日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-build-logs-windows
+          path: .yy构建日志/
+          include-hidden-files: true
+          retention-days: 90
+          if-no-files-found: ignore
 
   # 文言：预编之客于 Linux 二实机架构行全组，逐字校裸机之参，免以 Rosetta 之存储映射误作后端之败。
   # 汉语：在 Linux x86-64 与 arm64 运行器直接执行完整预编一致性组；macOS 上的 Rosetta 对大预编产物报 mmap 错误，不能代替实机验收。
