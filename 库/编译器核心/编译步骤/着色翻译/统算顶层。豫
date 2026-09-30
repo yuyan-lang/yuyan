@@ -149,6 +149,12 @@
     或有『local_invocation_id』则「三维」于『tid』
     或有『workgroup_id』则「三维」于『ctaid』
     或有『num_workgroups』则「三维」于『nctaid』
+    或有『subgroup_invocation_id』则
+      （虑「号」者「读特殊」于『%laneid』而（「号」中「零」）与（「列」【「号」中「一」】））
+    或有『subgroup_size』则（
+      虑「目」者「新寄存器」于『r』而
+      （「列」【「指令」于『mov.u32』于（「列」【「目」，『WARP_SZ』】）】）与（「列」【「目」】）
+    ）
     或有『local_invocation_index』则（
       虑「x」者「读特殊」于『%tid.x』而
       虑「y」者「读特殊」于『%tid.y』而

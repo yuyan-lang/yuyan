@@ -263,6 +263,10 @@
       「可有」于『workgroup_id』
     或有『工作组数』则
       「可有」于『num_workgroups』
+    或有『子组内序号』则
+      「可有」于『subgroup_invocation_id』
+    或有『子组大小』则
+      「可有」于『subgroup_size』
     或有『顶点序号』则
       「可有」于『vertex_index』
     或有『实例序号』则
@@ -323,6 +327,10 @@
       「可有」于『threadgroup_position_in_grid』
     或有『num_workgroups』则
       「可有」于『threadgroups_per_grid』
+    或有『subgroup_invocation_id』则
+      「可有」于『thread_index_in_simdgroup』
+    或有『subgroup_size』则
+      「可有」于『threads_per_simdgroup』
     或有「其他名」则
       「可无」授以「字符串」
 也。
@@ -402,6 +410,10 @@
       「可有」于（「向量型」于「三」于「无三二型」）
     或有『工作组数』则
       「可有」于（「向量型」于「三」于「无三二型」）
+    或有『子组内序号』则
+      「可有」于「无三二型」
+    或有『子组大小』则
+      「可有」于「无三二型」
     或有『顶点序号』则
       「可有」于「无三二型」
     或有『实例序号』则
