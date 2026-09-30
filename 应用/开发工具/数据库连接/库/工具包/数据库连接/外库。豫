@@ -9,15 +9,15 @@
 
 「造外库问参」乃化「字符串」而化「字符串」而（「列」于「字符串」）也。
 「造外库问参」者会「通辞」而会「问辞」而
-  「列」【
-    『--no-psqlrc』，
-    『--set=ON_ERROR_STOP=1』，
-    『--tuples-only』，
-    『--no-align』，
-    『--field-separator=』附（「字节转字符串」于「九」），
-    『--pset=null=NULL』，
-    『--dbname=』附「通辞」，
-    『--command=』附「问辞」
+  「列」
+  【『--no-psqlrc』
+  ，『--set=ON_ERROR_STOP=1』
+  ，『--tuples-only』
+  ，『--no-align』
+  ，『--field-separator=』附（「字节转字符串」于「九」）
+  ，『--pset=null=NULL』
+  ，『--dbname=』附「通辞」
+  ，『--command=』附「问辞」
   】
 也。
 

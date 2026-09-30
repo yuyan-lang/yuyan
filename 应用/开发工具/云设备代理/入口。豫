@@ -654,25 +654,25 @@
   虑「结果」者
     「获取输出」
       于『curl』
-      于（（「列」【
-        『--config』，
-        「鉴权文件」，
-        『--silent』，
-        『--show-error』，
-        『--fail』，
-        『--retry』，
-        『2』，
-        『--retry-all-errors』，
-        『--max-time』，
-        『15』，
-        『--header』，
-        『Content-Type: application/json』，
-        『--data-binary』，
-        『@』附「文件」，
-        『--output』，
-        『/dev/null』，
-        「原文」附『/api/ai/provider/chunk』
-      】）
+      于（（「列」
+              【『--config』
+              ，「鉴权文件」
+              ，『--silent』
+              ，『--show-error』
+              ，『--fail』
+              ，『--retry』
+              ，『2』
+              ，『--retry-all-errors』
+              ，『--max-time』
+              ，『15』
+              ，『--header』
+              ，『Content-Type: application/json』
+              ，『--data-binary』
+              ，『@』附「文件」
+              ，『--output』
+              ，『/dev/null』
+              ，「原文」附『/api/ai/provider/chunk』
+              】）
       ）
   而
   若「结果」中「零」则
@@ -865,21 +865,21 @@
         虑「任务」者
           「异步获取输出」
             于『curl』
-            于（（「列」【
-              『--silent』，
-              『--show-error』，
-              『--no-buffer』，
-              『--fail-with-body』，
-              『--max-time』，
-              『150』，
-              『--header』，
-              『Content-Type: application/json』，
-              『--data-binary』，
-              『@』附「请求文件」，
-              『--output』，
-              「输出文件」，
-              「地址」
-            】））
+            于（（「列」
+                    【『--silent』
+                    ，『--show-error』
+                    ，『--no-buffer』
+                    ，『--fail-with-body』
+                    ，『--max-time』
+                    ，『150』
+                    ，『--header』
+                    ，『Content-Type: application/json』
+                    ，『--data-binary』
+                    ，『@』附「请求文件」
+                    ，『--output』
+                    ，「输出文件」
+                    ，「地址」
+                    】））
         而
         虑「序号」者「新引用」授以「整数」于「零」而
         （「打印行」于（『处理云端请求：』附「请号」附『（』附「协议」附『）』）；
@@ -912,11 +912,11 @@
     虑「全文」者「已见」附「输出」而
     虑「退码」者「结果」中「一」而
     虑「记录」者
-      「癸象表示」于（「癸象对象」于（「列」【
-        『exitCode』与（「癸象整数」于「退码」），
-        『stdout』与（「癸象字符串」于「全文」），
-        『stderr』与（「癸象字符串」于（「结果」中「三」））
-      】））
+      「癸象表示」于（「癸象对象」于（「列」
+                                        【『exitCode』与（「癸象整数」于「退码」）
+                                        ，『stdout』与（「癸象字符串」于「全文」）
+                                        ，『stderr』与（「癸象字符串」于（「结果」中「三」））
+                                        】））
     而
     「供给长文」于「鉴权文件」于「请号」于（「平台地址」于「元」）于「序号引用」于「记录」于「阳」于「阴」
   否则
@@ -996,18 +996,18 @@
       「供给标头参数」于（「供给请求标头」于（「取键」于『headers』于「任务值」））
     而
     虑「参数」者（「列」于「字符串」）也（「附加」授以「字符串」
-      于（「列」【
-        『--silent』，
-        『--show-error』，
-        『--no-buffer』，
-        『--include』，
-        『--request』，
-        「方法」，
-        『--output』，
-        「输出文件」
-      】）于（「附加」授以「字符串」
-        于「标头参数」
-        于（「附加」授以「字符串」于「正文参数」于（「列」【『--』，「网址」】））））
+      于（「列」
+            【『--silent』
+            ，『--show-error』
+            ，『--no-buffer』
+            ，『--include』
+            ，『--request』
+            ，「方法」
+            ，『--output』
+            ，「输出文件」
+            】）于（「附加」授以「字符串」
+              于「标头参数」
+              于（「附加」授以「字符串」于「正文参数」于（「列」【『--』，「网址」】））））
     而
     虑「无」者「写文件」于「输出文件」于『』而
     虑「任务」者「异步获取输出」于『curl』于「参数」而
@@ -1086,23 +1086,23 @@
     虑「任务」者
       「异步获取输出」
         于『curl』
-        于（（「列」【
-          『--config』，
-          「鉴权文件」，
-          『--silent』，
-          『--show-error』，
-          『--fail』，
-          『--no-buffer』，
-          『--connect-timeout』，
-          『10』，
-          『--max-time』，
-          『300』，
-          『--header』，
-          『Accept: text/event-stream』，
-          『--output』，
-          「输出文件」，
-          「地址」
-        】）
+        于（（「列」
+                【『--config』
+                ，「鉴权文件」
+                ，『--silent』
+                ，『--show-error』
+                ，『--fail』
+                ，『--no-buffer』
+                ，『--connect-timeout』
+                ，『10』
+                ，『--max-time』
+                ，『300』
+                ，『--header』
+                ，『Accept: text/event-stream』
+                ，『--output』
+                ，「输出文件」
+                ，「地址」
+                】）
         ）而
         虑「无」者
           「供给控制轮询」
@@ -1296,10 +1296,10 @@
           于「文件」
           于（「癸象表示」
             于（「癸象对象」
-              于（「列」【
-                『服务』与（「癸象字符串」于『https://packages.yuyan-lang.org』），
-                『主访问令牌』与（「癸象字符串」于「令牌」）
-              】）））；
+              于（「列」
+                    【『服务』与（「癸象字符串」于『https://packages.yuyan-lang.org』）
+                    ，『主访问令牌』与（「癸象字符串」于「令牌」）
+                    】）））；
           「文件」）
       否则
         （「失误」于（『无法创建凭据文件：』附「文件」）；

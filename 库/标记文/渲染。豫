@@ -156,46 +156,46 @@
 文言：行内之标签，不作网文之块。：」
 「行内标签们」乃「列」于「字符串」也。
 「行内标签们」者
-  「列」【
-    『a』，
-    『abbr』，
-    『acronym』，
-    『b』，
-    『big』，
-    『bdo』，
-    『br』，
-    『button』，
-    『cite』，
-    『code』，
-    『del』，
-    『dfn』，
-    『em』，
-    『i』，
-    『img』，
-    『input』，
-    『ins』，
-    『kbd』，
-    『label』，
-    『mark』，
-    『option』，
-    『q』，
-    『rb』，
-    『rbc』，
-    『rp』，
-    『rt』，
-    『rtc』，
-    『ruby』，
-    『samp』，
-    『select』，
-    『small』，
-    『span』，
-    『strong』，
-    『sub』，
-    『sup』，
-    『textarea』，
-    『tt』，
-    『u』，
-    『var』
+  「列」
+  【『a』
+  ，『abbr』
+  ，『acronym』
+  ，『b』
+  ，『big』
+  ，『bdo』
+  ，『br』
+  ，『button』
+  ，『cite』
+  ，『code』
+  ，『del』
+  ，『dfn』
+  ，『em』
+  ，『i』
+  ，『img』
+  ，『input』
+  ，『ins』
+  ，『kbd』
+  ，『label』
+  ，『mark』
+  ，『option』
+  ，『q』
+  ，『rb』
+  ，『rbc』
+  ，『rp』
+  ，『rt』
+  ，『rtc』
+  ，『ruby』
+  ，『samp』
+  ，『select』
+  ，『small』
+  ，『span』
+  ，『strong』
+  ，『sub』
+  ，『sup』
+  ，『textarea』
+  ，『tt』
+  ，『u』
+  ，『var』
   】
 也。
 
@@ -203,21 +203,21 @@
 文言：无闭之元素。：」
 「空元素们」乃「列」于「字符串」也。
 「空元素们」者
-  「列」【
-    『area』，
-    『base』，
-    『br』，
-    『col』，
-    『embed』，
-    『hr』，
-    『img』，
-    『input』，
-    『link』，
-    『meta』，
-    『param』，
-    『source』，
-    『track』，
-    『wbr』
+  「列」
+  【『area』
+  ，『base』
+  ，『br』
+  ，『col』
+  ，『embed』
+  ，『hr』
+  ，『img』
+  ，『input』
+  ，『link』
+  ，『meta』
+  ，『param』
+  ，『source』
+  ，『track』
+  ，『wbr』
   】
 也。
 

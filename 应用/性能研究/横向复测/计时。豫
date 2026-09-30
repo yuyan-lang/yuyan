@@ -43,15 +43,14 @@
               「：汉语：WASI 仅适配 C 的系统接口；与豫言一样新建 Node 和 Worker，算法来自同一份 C 源码。
               文言：C 亦入同引擎，各起一工。：」
               若「串相等」于「法」于『C网页』则
-                「列」【
-                  『/opt/homebrew/bin/node』，
-                  『--no-warnings』，
-                  『-e』，
-                  『new (require("node:worker_threads").Worker)("const {workerData}=require('node:worker_threads');const {WASI}=require('node:wasi');const fs=require('node:fs');const w=new WASI({version:'preview1',args:workerData,returnOnExit:true});const m=new WebAssembly.Module(fs.readFileSync(workerData[0]));process.exitCode=w.start(new WebAssembly.Instance(m,w.getImportObject()));",{eval:true,workerData:process.argv.slice(1),resourceLimits:{stackSizeMb:128}}).on("error",e=>{console.error(e);process.exitCode=1;});』
-                  ，
-                  若「结构」则『yy横比结构C.wasm』否则『yy横比C.wasm』，
-                  「题」，
-                  「数」
+                「列」
+                【『/opt/homebrew/bin/node』
+                ，『--no-warnings』
+                ，『-e』
+                ，『new (require("node:worker_threads").Worker)("const {workerData}=require('node:worker_threads');const {WASI}=require('node:wasi');const fs=require('node:fs');const w=new WASI({version:'preview1',args:workerData,returnOnExit:true});const m=new WebAssembly.Module(fs.readFileSync(workerData[0]));process.exitCode=w.start(new WebAssembly.Instance(m,w.getImportObject()));",{eval:true,workerData:process.argv.slice(1),resourceLimits:{stackSizeMb:128}}).on("error",e=>{console.error(e);process.exitCode=1;});』
+                ，若「结构」则『yy横比结构C.wasm』否则『yy横比C.wasm』
+                ，「题」
+                ，「数」
                 】
               否则
                 「附加」授以「字符串」
@@ -59,10 +58,10 @@
                 若「串相等」于「法」于『豫言原生』则
                   「列」【『/usr/bin/env』，『YY_GC_INITIAL_HEAP_SIZE_MB=64』，『./yy横比』附「尾名」附『原生』】
                 否则
-                  「列」【
-                    『/opt/homebrew/bin/node』，
-                    『应用/网页汇编/节点网页汇编宿主/宿主.cjs』，
-                    『yy横比』附「尾名」附『.wasm』
+                  「列」
+                  【『/opt/homebrew/bin/node』
+                  ，『应用/网页汇编/节点网页汇编宿主/宿主.cjs』
+                  ，『yy横比』附「尾名」附『.wasm』
                   】）于（若「结构」则「列」【「题」，「数」】否则「列」【「数」】））
       而
       虑「始」者「操作系统」之「时间」之「获取当前纳秒时间」于「元」
@@ -80,13 +79,13 @@
             『.txt』）于（「果」中「二」）；
           「打印行」于（「间合」
             于『,』
-            于（「列」【
-              「题」，
-              「数」，
-              「整数表示」于「轮」，
-              「法」，
-              「操作系统」之「时间」之「用时秒数表示」于「始」于「终」
-            】）））
+            于（「列」
+                  【「题」
+                  ，「数」
+                  ，「整数表示」于「轮」
+                  ，「法」
+                  ，「操作系统」之「时间」之「用时秒数表示」于「始」于「终」
+                  】）））
       否则
         「发生事故」授以「有」于（「法」附『失败或输出不符：』附（「果」中「一」）附（「果」中「二」））
     ）

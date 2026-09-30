@@ -125,17 +125,17 @@
       文言：逐阶验名，毋徒计数。：」
       虑「无」者
         「态射」授以「字符串」授以「有」
-        于（「列」【
-          『dependency-analysis』，
-          『parse』，
-          『type-check-and-erase』，
-          『cross-module-optimize』，
-          『pre-closure-convert』，
-          『exec-gen』
-        】）于（会「阶段」而
-          「断言」
-            于（「等于」于（「标记数」于（「显示」中「二」）于（『[启动] 』附「阶段」附『：』））于「一」）
-            于（『阶段启动异常：』附「阶段」））
+        于（「列」
+              【『dependency-analysis』
+              ，『parse』
+              ，『type-check-and-erase』
+              ，『cross-module-optimize』
+              ，『pre-closure-convert』
+              ，『exec-gen』
+              】）于（会「阶段」而
+                「断言」
+                  于（「等于」于（「标记数」于（「显示」中「二」）于（『[启动] 』附「阶段」附『：』））于「一」）
+                  于（『阶段启动异常：』附「阶段」））
       而
       虑「无」者
         「断言」于（「是子字符串吗」于『| 运行 0/2 | 已完成 6』于（「显示」中「二」））于『进程计数不平衡』

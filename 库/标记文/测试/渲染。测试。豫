@@ -83,37 +83,37 @@
 「验」
   于（「合行」于（「列」【『| 程序 | 豫言 |』，『|---|---:|』，『| 甲 | 1 |』】））
   于（「合行」
-    于（「列」【
-      『<table>』，
-      『  <thead>』，
-      『    <tr>』，
-      『      <th>程序</th>』，
-      『      <th style="text-align: right">豫言</th>』，
-      『    </tr>』，
-      『  </thead>』，
-      『  <tbody>』，
-      『    <tr>』，
-      『      <td>甲</td>』，
-      『      <td style="text-align: right">1</td>』，
-      『    </tr>』，
-      『  </tbody>』，
-      『</table>』，
-      『』
-    】））。
+    于（「列」
+          【『<table>』
+          ，『  <thead>』
+          ，『    <tr>』
+          ，『      <th>程序</th>』
+          ，『      <th style="text-align: right">豫言</th>』
+          ，『    </tr>』
+          ，『  </thead>』
+          ，『  <tbody>』
+          ，『    <tr>』
+          ，『      <td>甲</td>』
+          ，『      <td style="text-align: right">1</td>』
+          ，『    </tr>』
+          ，『  </tbody>』
+          ，『</table>』
+          ，『』
+          】））。
 「验」
   于『| `a|b` | :c |』
   于（「合行」
-    于（「列」【
-      『<table>』，
-      『  <tbody>』，
-      『    <tr>』，
-      『      <td><code>a|b</code></td>』，
-      『      <td>:c</td>』，
-      『    </tr>』，
-      『  </tbody>』，
-      『</table>』，
-      『』
-    】））。
+    于（「列」
+          【『<table>』
+          ，『  <tbody>』
+          ，『    <tr>』
+          ，『      <td><code>a|b</code></td>』
+          ，『      <td>:c</td>』
+          ，『    </tr>』
+          ，『  </tbody>』
+          ，『</table>』
+          ，『』
+          】））。
 
 「：汉语：无序与有序列表。
 文言：列。：」
@@ -139,16 +139,16 @@
   于（「合行」
     于（「列」【『<section class="甲">』，『<pre><code>一』，『』，『三</code></pre>』，『</section>』，『段落』】））
     于（「合行」
-      于（「列」【
-        『<section class="甲">』，
-        『<pre><code>一』，
-        『』，
-        『三</code></pre>』，
-        『</section>』，
-        『』，
-        『<p>段落</p>』，
-        『』
-      】））。
+      于（「列」
+            【『<section class="甲">』
+            ，『<pre><code>一』
+            ，『』
+            ，『三</code></pre>』
+            ，『</section>』
+            ，『』
+            ，『<p>段落</p>』
+            ，『』
+            】））。
 「验」
   于（「合行」于（「列」【『<link rel="stylesheet" href="/a.css">』，『<script src="/b.mjs"></script>』】））
   于（「合行」

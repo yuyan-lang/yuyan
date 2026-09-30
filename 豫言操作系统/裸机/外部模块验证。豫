@@ -14,17 +14,17 @@
 鉴「命令行参数」之「获取参数」于「元」而
   有（「列」【「编译器」】）则（
     虑「共参」者
-      （（「列」于「字符串」）也（「列」【
-        『--target=wasm32-unknown-unknown』，
-        『-O1』，
-        『-fno-builtin』，
-        『-nostdlib』，
-        『-Wl,--no-entry』，
-        『-Wl,--strip-all』，
-        『-Wl,--initial-memory=131072』，
-        『-Wl,--max-memory=262144』，
-        『豫言操作系统/裸机/外部模块夹具.c』
-      】）
+      （（「列」于「字符串」）也（「列」
+                                    【『--target=wasm32-unknown-unknown』
+                                    ，『-O1』
+                                    ，『-fno-builtin』
+                                    ，『-nostdlib』
+                                    ，『-Wl,--no-entry』
+                                    ，『-Wl,--strip-all』
+                                    ，『-Wl,--initial-memory=131072』
+                                    ，『-Wl,--max-memory=262144』
+                                    ，『豫言操作系统/裸机/外部模块夹具.c』
+                                    】）
       ）而
       虑「正」者
         「执行」于「编译器」于（「附加」授以「字符串」于「共参」于（「列」【『-o』，『yy外部C模块.wasm』】））而
