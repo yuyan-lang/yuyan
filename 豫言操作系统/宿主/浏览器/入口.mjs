@@ -2,10 +2,8 @@
 import {创建浏览器宿主} from './宿主.mjs';
 import {核对接口装载} from './接口核对.mjs';
 
-// 文言：先验浏览器具客器所需之能（WasmGC、JSPI）；不具则蒙全页以示，页首之栏亦蒙焉。告末有“我明白”，按之则撤告而续览，功能不全；同一标签之后诸页不复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间显示“正在检查浏览器”，不支持则显示覆盖整页（含页首导航栏）的提示。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全），同一标签页之后的页面不再提示。
+// 文言：先验浏览器具客器所需之能（WasmGC、JSPI）；不具则蒙全页以示，页首之栏亦蒙焉。告末有“我明白”，按之则撤告而续览，功能不全；不记其按，每启一页皆复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间显示“正在检查浏览器”，不支持则显示覆盖整页（含页首导航栏）的提示。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全）；不记住关闭，每次打开或刷新页面都重新提示。
 const 检查层标识 = '豫言浏览器检查';
-const 知晓键 = '豫言浏览器检查已知晓';
-const 已知晓 = () => { try { return sessionStorage.getItem(知晓键) === '1'; } catch { return false; } };
 const 支持WasmGC = () => {
   try { return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 3, 1, 0x5f, 0])); } catch { return false; }
 };
@@ -25,8 +23,6 @@ const 显示检查层 = 文 => {
   return 层;
 };
 const 显示不支持 = 缺 => {
-  // 文言：既知之，则不复示，并撤“正在检查”之层。汉语：已点过“我明白”就不再提示，同时撤掉可能还在的“正在检查浏览器”层。
-  if (已知晓()) { if (typeof document !== 'undefined') document.getElementById(检查层标识)?.remove(); return null; }
   const 层 = 显示检查层(
     '<h2 style="margin:0 0 .5em">您的浏览器版本过旧，无法运行本页面</h2>'
     + '<p style="margin:0 0 .5em">请将浏览器更新到 Safari 27、Chrome 137、Edge 137 或 Firefox 153 及以上版本后再访问。</p>'
@@ -34,10 +30,7 @@ const 显示不支持 = 缺 => {
     + '<p style="margin:0 0 .75em">您也可以继续访问，但部分功能将无法使用。</p>'
     + '<button type="button" style="font:inherit;padding:.4em 2em;border:0;border-radius:6px;background:#1d1b18;color:#f5f2eb;cursor:pointer">我明白</button>');
   const 钮 = 层?.querySelector('button');
-  钮?.addEventListener('click', () => {
-    try { sessionStorage.setItem(知晓键, '1'); } catch { /* 文言：记之不成，则下页复示，无妨。汉语：存不下就在下一页再提示，不影响使用。 */ }
-    层.remove();
-  });
+  钮?.addEventListener('click', () => 层.remove());
   钮?.focus();
   return 层;
 };
