@@ -42,11 +42,11 @@
 
 「断言串相等」
   于（「测结果」中「零」）
-  于（『<div class="界竖"><div class="界文">a&lt;b</div>』
+  于（『<div class="界竖" data-yy="0"><div class="界文" data-yy="0/0">a&lt;b</div>』
     附『<button class="界钮" data-yy="0/1" type="button">确定</button>』
     附『<input class="界框" data-yy="0/2" type="text" value="x&quot;y" placeholder="名字">』
-    附『<hr class="界线">』
-    附『<p class="界段">前<a href="#" class="界链" data-yy="0/4/1">链</a><br></p></div>』）。
+    附『<hr class="界线" data-yy="0/键:k1">』
+    附『<p class="界段" data-yy="0/4">前<a href="#" class="界链" data-yy="0/4/1">链</a><br></p></div>』）。
 「断言串相等」于（「测结果」中「一」）于『』。
 
 「：汉语：可点元素带 role 与 tabindex；两处用到同一样式，规则只收一次。
@@ -72,7 +72,7 @@
     附『" data-yy="0" role="button" tabindex="0">』
     附『<div class="界白 』
     附「卡片类名」
-    附『"></div></div>』）。
+    附『" data-yy="0/0"></div></div>』）。
 「断言串相等」于（「可点结果」中「一」）于（『.』附「卡片类名」附『{padding:8px;}』）。
 
 「：汉语：禁用的按钮带 disabled；可点元素禁用时带 aria-disabled，不带 tabindex。
@@ -91,6 +91,6 @@
 
 「断言串相等」
   于（「禁用结果」中「零」）
-  于（『<div class="界竖"><button class="界钮" type="button" disabled title="不可用">停</button>』
+  于（『<div class="界竖" data-yy="0"><button class="界钮" data-yy="0/0" type="button" title="不可用" disabled>停</button>』
     附『<div class="界文" data-yy="0/1" role="button" aria-disabled="true">字</div></div>』）。
 「汇报结果」于「元」。
