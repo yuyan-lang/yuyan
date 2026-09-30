@@ -8,6 +8,11 @@ const {建立编译线程} = require('./编译线程.cjs');
 // 文言：值桥先从父宿主所传之径，次取宿主之旁（仓库目标“豫构”书之），次求于今目录，末取解于仓根之工具链包者；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件依次找：父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径；宿主文件旁的那份（仓库目标“豫构”用当前编译器生成）；当前目录；最后是解压在仓库根目录的 Wasm 工具链包里的 yy稳定节点宿主/yy节点值桥接.wasm（新检出的仓库第一次构建时用）。找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
 const 桥文件路径=()=>{const 候选=[process.env.YY_NODE_VALUE_BRIDGE,路径.join(__dirname,'yy节点值桥接.wasm'),路径.resolve('yy节点值桥接.wasm'),路径.resolve('yy稳定节点宿主','yy节点值桥接.wasm')];const 径=候选.find(径=>径&&文件.existsSync(径))??候选[1];process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
 const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
+// 文言：客之工作线程另带 --experimental-ffi，令系统库调用之原语可用；引擎之旗通于全进程，不可亦不必传于工作线程，先去之；诺节不识此旗、或余旗不容于工作线程，则照旧承父之旗。汉语：客体工作线程另带 --experimental-ffi，让系统库调用原语（外部库.mjs）可用，node:ffi 到第一次调用才载入。V8 引擎旗对整个进程生效，不能也不必传给工作线程，先滤掉；诺节不认此旗、或余下的旗不能用于工作线程时，照旧继承父线程的旗。
+const 外部库旗='--experimental-ffi';
+const 新客线程=选项=>{if(process.allowedNodeEnvironmentFlags.has(外部库旗)&&!process.execArgv.includes(外部库旗)){try{return new Worker(__filename,{...选项,execArgv:[...process.execArgv.filter(参=>!选引擎参数([参]).length&&!/^--stack-size=/.test(参)),外部库旗]});}catch(错){if(错?.code!=='ERR_WORKER_INVALID_EXEC_ARGV')throw 错;}}return new Worker(__filename,选项);};
+// 文言：系统库调用之原语，惟供适配与系统库；工具链包之宿主无此文则缺之。汉语：系统库调用原语（见 外部库.mjs，只供适配与系统库使用）；Wasm 工具链包里的宿主没带这个文件时就不提供。
+const 外部库原语=文字=>{try{return require('./外部库.mjs').创建外部库能力({文字});}catch(错){if(错?.code==='MODULE_NOT_FOUND'||错?.code==='ERR_MODULE_NOT_FOUND')return {};throw 错;}};
 if (isMainThread) {
   桥文件路径();
   // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
@@ -18,7 +23,7 @@ if (isMainThread) {
   const 清桥 = 接管进程(port1, 信号, 启动编译);
   const 清理 = () => {清桥(); 启动编译?.清理?.();};
   let 终止码 = null;
-  const 工 = new Worker(__filename, {workerData: {参数:process.argv.slice(2), 端口:port2, 信号}, transferList:[port2], resourceLimits:{stackSizeMb:128}});
+  const 工 = 新客线程({workerData: {参数:process.argv.slice(2), 端口:port2, 信号}, transferList:[port2], resourceLimits:{stackSizeMb:128}});
   工.on('error', 错 => {console.error(错); process.exitCode=1;});
   工.on('exit', 码 => {清理(); process.exitCode=终止码??码;});
   for (const 信 of ['SIGINT', 'SIGTERM']) process.once(信, () => {终止码=信==='SIGINT'?130:143; 清理(); 工.terminate();});
@@ -253,7 +258,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_同步运行子进程并传递输出:(名,参)=>{const 果=运行子进程(名,参);写输出(1,果[1]);写输出(2,果[2]);return 果.状态;},
     // 文言：承三常流而行，出不经宿主之缓；启败一二七，候败一。汉语：继承标准输入、输出与错误直接运行（输出不经宿主缓冲，交互程序可用）；启动失败返回 127，等待失败返回 1，超时返回 124。
     豫言_同步运行子进程并继承标准流:(名,参)=>{const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,stdio:'inherit',timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),YY_NODE_REPEAT:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(超时)return 124;if(果.error)return 果.error.code==='ENOENT'?127:1;return 果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1);},
-    豫言_退出进程:码=>{const 错=Error('客体退出');错.退出码=数(码);throw 错;}
+    豫言_退出进程:码=>{const 错=Error('客体退出');错.退出码=数(码);throw 错;},
+    ...外部库原语(文)
   };
   let 调用数=0;
   // 文言：外术之名为常字，同值毋重解。汉语：编译器以不可变字面量指定原语；按 GC 对象身份弱缓存名称，不保留参数或结果。
