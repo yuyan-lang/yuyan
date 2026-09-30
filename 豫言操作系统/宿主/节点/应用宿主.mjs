@@ -7,6 +7,7 @@ import 终端 from 'node:tty';
 import 系统 from 'node:os';
 import {createHash} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {Worker, MessageChannel, receiveMessageOnPort} from 'node:worker_threads';
 // 〔内联起〕
 import {创建值桥, 文字} from '../云工/值桥.mjs';
 import {创建句柄表} from '../云工/句柄.mjs';
@@ -32,10 +33,14 @@ class 客体退出 extends Error {
   constructor(码) { super('客体退出'); this.退出码 = 码; }
 }
 
+// 文言：张量计算之线程数（兼主线）：缺省取本机可并行之数，上限二百五十六；--张量线程数 可易之，一则不起工作线程。
+// 汉语：张量计算的线程数（含主线程）：缺省取 os.availableParallelism()，上限 256；宿主选项 --张量线程数 N 可调整（超过上限按上限计），取 1 时不创建工作线程。
+const 张量线程上限 = 256;
+
 // 文言：宿主诸选在前，-- 或首个非选项之后皆归应用。汉语：宿主选项写在前面；遇到 -- 或第一个不认识的参数，其后全部交给应用。
-const 取值选项 = new Set(['--程序', '--清单', '--值桥', '--授权目录', '--授权只读目录', '--允许源', '--允许环境', '--授权文件']);
+const 取值选项 = new Set(['--程序', '--清单', '--值桥', '--授权目录', '--授权只读目录', '--允许源', '--允许环境', '--授权文件', '--张量线程数']);
 export function 解析宿主参数(参数, 当前目录 = process.cwd()) {
-  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 源: new Set(), 环境: new Set()}, 应用参数: []};
+  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 源: new Set(), 环境: new Set()}, 应用参数: [], 张量线程数: null};
   const 授目录 = (文, 可写, 基准) => {
     const 位 = 文.indexOf('=');
     须(位 > 0 && 位 < 文.length - 1, '目录授权须写成 名=路径：' + 文);
@@ -75,7 +80,10 @@ export function 解析宿主参数(参数, 当前目录 = process.cwd()) {
     else if (项 === '--授权只读目录') 授目录(值, false, 当前目录);
     else if (项 === '--允许源') 允源(值);
     else if (项 === '--允许环境') 配置.授权.环境.add(值);
-    else 读授权文件(值);
+    else if (项 === '--张量线程数') {
+      须(/^[1-9][0-9]*$/u.test(值), '--张量线程数 须为正整数：' + 值);
+      配置.张量线程数 = Math.min(Number(值), 张量线程上限);
+    } else 读授权文件(值);
   }
   return 配置;
 }
@@ -225,7 +233,7 @@ const 在根内 = (根, 实) => {
 };
 
 // 文言：诸能之表：标准运行时之原语、云工同名之通用原语、节点独有之文件、网络与张量原语。汉语：能力表：标准库运行时原语、与云工同名同义的通用原语（供复用云工适配），以及 Node 独有的文件、网络与张量原语。
-export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写出}) {
+export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写出, 张量线程数 = null}) {
   const 句柄 = 创建句柄表({上限: 1 << 20});
   const 读行 = 创建行读者();
   const 资源 = new Map();
@@ -597,11 +605,13 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
       return [码.成功, 回应.status, JSON.stringify([...回应.headers]), 连字节(...块们), ''];
     }
   };
-  // 文言：张量之能：存储之限取本机物理内存；文件区段按位读，不动顺读之位。汉语：张量计算与张量文件原语（见 张量.mjs）：存储上限取本机物理内存；由文件载入张量按位置读取（pread），不改变文件柄的顺序读取位置。
+  // 文言：张量之能：存储之限取本机物理内存；文件区段按位读，不动顺读之位；并行之线程数见上。汉语：张量计算与张量文件原语（见 张量.mjs）：存储上限取本机物理内存；由文件载入张量按位置读取（pread），不改变文件柄的顺序读取位置；注入 worker_threads 能力与线程数（取法见 张量线程上限 处）。
   const 节点张量 = 创建张量能力({
     码, 资源, 登记资源, 取文件, 文字, 错文, 存储上限: 系统.totalmem(), 交换上限,
     读文件区段: (描述符, 视图, 位置) => 文件系统.readSync(描述符, 视图, 0, 视图.length, 位置),
-    文件字节数: 描述符 => 文件系统.fstatSync(描述符).size
+    文件字节数: 描述符 => 文件系统.fstatSync(描述符).size,
+    线程: {Worker, MessageChannel, receiveMessageOnPort},
+    线程数: 张量线程数 ?? Math.min(系统.availableParallelism(), 张量线程上限)
   });
   return Object.freeze({...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量});
 }
@@ -650,7 +660,7 @@ export async function 启动(参数 = process.argv.slice(2)) {
     try { 清单 = JSON.parse(文件系统.readFileSync(清单路径, 'utf8')); } catch (错) { 须(false, '无法读取发行清单：' + 错.message); }
     try { 程序模块 = new WebAssembly.Module(程序字节); } catch (错) { 须(false, '程序不是有效的 Wasm：' + 错.message); }
     核对节点装载({程序模块, 程序字节, 清单, 宿主支持: 读取宿主支持()});
-    const 能力 = 创建能力({授权: 配置.授权, 应用参数: 配置.应用参数, 程序路径});
+    const 能力 = 创建能力({授权: 配置.授权, 应用参数: 配置.应用参数, 程序路径, 张量线程数: 配置.张量线程数});
     return await 运行节点应用({程序模块, 值桥模块: 取值桥模块(配置, 程序路径), 能力});
   } catch (错) {
     if (错 instanceof 装载失败 || String(错?.message).startsWith('豫言操作系统装载失败')) {
