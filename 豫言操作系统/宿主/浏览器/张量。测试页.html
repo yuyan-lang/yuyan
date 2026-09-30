@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>豫言张量探针</title>
+<style>#结果{white-space:pre-wrap;font:14px/1.5 monospace}</style></head>
+<body>
+  <pre id="结果"></pre>
+  <script type="module">
+    // 文言：张量探针之页：探针之行以输出函数收之；毕则记跨源隔离否与所用之时，<html> 带 data-探针="完成"。
+    // 汉语：张量探针测试页。把张量探针应用的浏览器构建产物（入口.mjs、程序.wasm、中央张量.mjs、中央张量内核.wasm……）放在本页同目录，
+    //       用 张量。测试服务.mjs 提供（带 --隔离 时页面跨源隔离，适配走多线程）。探针每行经输出函数写进 #结果，结束后再写一行
+    //       “跨源隔离：是/否，工作线程……，用时……”，并给 <html> 加 data-探针="完成"。
+    //       地址带 ?等待=毫秒 时插入一张由服务器延迟响应的图片（/api/slow），拖住 load 事件，供无头 Chrome 的 --dump-dom 在探针结束后导出页面。
+    import {启动豫言浏览器应用} from './入口.mjs';
+    const 结果 = document.getElementById('结果');
+    const 参 = new URL(location.href).searchParams;
+    if (参.has('等待')) {
+      const 图 = new Image();
+      图.alt = '';
+      图.src = '/api/slow?d=' + encodeURIComponent(参.get('等待'));
+      document.body.append(图);
+    }
+    // 文言：计宿主所起之工作线程。汉语：数一数宿主创建了几个 Worker（多线程时中央张量宿主会起若干工作线程）。
+    let 工作线程数 = 0;
+    const 原工作线程 = globalThis.Worker;
+    if (typeof 原工作线程 === 'function') globalThis.Worker = class extends 原工作线程 { constructor(...参) { super(...参); 工作线程数++; } };
+    const 始 = performance.now();
+    try {
+      const 宿主 = await 启动豫言浏览器应用({输出: 文 => { 结果.textContent += 文; }});
+      await 宿主.完成;
+    } catch (错) {
+      结果.textContent += '失败：' + String(错?.stack ?? 错) + '\n';
+    }
+    结果.textContent += '跨源隔离：' + (globalThis.crossOriginIsolated ? '是' : '否') + '，工作线程 ' + 工作线程数 + ' 个，硬件线程 ' +
+      navigator.hardwareConcurrency + '，用时 ' + Math.round(performance.now() - 始) + ' 毫秒\n';
+    document.documentElement.dataset.探针 = '完成';
+  </script>
+</body>
+</html>

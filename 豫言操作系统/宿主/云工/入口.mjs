@@ -14,7 +14,9 @@ import {DurableObject, WorkerEntrypoint, WorkflowEntrypoint} from 'cloudflare:wo
 // 汉语：`执行配置` 只调整各事件种类的墙钟时限（见宿主说明），不含绑定授权；用命名空间导入读取，旧版构建器的产物没有该导出时得到 undefined，按默认时限运行。
 const {模块源码, 值桥字节} = 构建资源;
 const 执行配置 = 构建资源.执行配置 ?? null;
-const 造宿主 = () => 创建云工宿主({程序模块, 值桥模块, 许可, 动态资源: {模块源码, 值桥字节}, 执行配置});
+// 文言：用张量计算者，构建器书中央张量内核之模于 动态资源.mjs；无则无之。汉语：用了张量计算的应用，构建器在 动态资源.mjs 里导出中央张量内核模块（Workers 不能在运行时编译 Wasm 字节，须随产物导入）；没有时得到 undefined。
+const 中央张量内核模块 = 构建资源.中央张量内核模块 ?? null;
+const 造宿主 = () => 创建云工宿主({程序模块, 值桥模块, 许可, 动态资源: {模块源码, 值桥字节}, 执行配置, 中央张量内核模块});
 export default 造宿主();
 
 // 文言：命名服务之壳唯转请于 service-fetch；公域 default 仍自辨 fetch。汉语：通用命名入口只把服务绑定请求作为 service-fetch 交给豫言，供构建器导出应用别名。

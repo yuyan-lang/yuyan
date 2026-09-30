@@ -2372,7 +2372,25 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     图形 = 模块.创建图形能力({全局, 显示});
     字体 = 模块.创建字体能力({根, 全局});
   });
+  // 文言：中央张量之术在 中央张量.mjs，初用乃载之；页跨源隔离则共享其存而多线。汉语：张量计算（中央处理器后端，接口 豫言操作系统张量计算）的宿主部分在 中央张量.mjs，第一次调用时才动态导入并创建能力；页面跨源隔离（crossOriginIsolated）且有 SharedArrayBuffer、Worker、Atomics.waitAsync 时用共享内存与 Web Worker 多线程，否则单线程。内核模块（中央张量内核.wasm、中央张量内核多线程.wasm）与应用产物同目录。
+  let 中央张量 = null, 中央张量载入 = null;
+  const 载中央张量 = () => 中央张量载入 ??= import('./中央张量.mjs').then(模块 => {
+    const 可多线程 = 全局.crossOriginIsolated === true && typeof 全局.SharedArrayBuffer === 'function' &&
+      typeof 全局.Worker === 'function' && typeof 全局.Atomics?.waitAsync === 'function';
+    中央张量 = 模块.创建中央张量能力({
+      取内核模块: async 多 => {
+        const 回应 = await 网络(new URL(多 ? '中央张量内核多线程.wasm' : '中央张量内核.wasm', 路径));
+        if (!回应.ok) throw Error('取不到中央张量内核模块（' + 回应.status + '）');
+        return 全局.WebAssembly.compile(await 回应.arrayBuffer());
+      },
+      多线程: 可多线程, 工作线程网址: new URL('./中央张量工作线程.mjs', import.meta.url),
+      线程数: Math.min(15, Math.max(0, (Number(全局.navigator?.hardwareConcurrency) || 1) - 1)), 全局
+    });
+  });
+  const 中央张量原语 = 名 => (...参) => (中央张量 ? 中央张量[名](...参) : 载中央张量().then(() => 中央张量[名](...参)));
   const 能力 = {
+    ...Object.fromEntries(['启用', '新境', '释放境', '分配', '释放', '写字节', '读字节', '读单精', '写单精', '运行', '单精位型', '数学', '单精转', '跨步抄', '抽样']
+      .map(名 => ['豫言_中央张量_' + 名, 中央张量原语('豫言_中央张量_' + 名)])),
     豫言_浏览器_等待事件: () => 队列.等待(() => true, 原始事件文, () => JSON.stringify({名称: '关闭'}), false),
     // 文言：新法按类取事，不吞他类；界面、消息之旧术亦然。汉语：统一等待点与按类型等待：只取自己关心的类型，其余事件留在队列里。
     豫言_浏览器_等待网页事件: () => 队列.等待(() => true, 统一事件文, () => JSON.stringify({类型: '关闭', 订阅号: 0, 名称: '关闭'}), true),
