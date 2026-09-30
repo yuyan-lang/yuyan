@@ -13,6 +13,9 @@ const 外部库旗='--experimental-ffi';
 const 新客线程=选项=>{if(process.allowedNodeEnvironmentFlags.has(外部库旗)&&!process.execArgv.includes(外部库旗)){try{return new Worker(__filename,{...选项,execArgv:[...process.execArgv.filter(参=>!选引擎参数([参]).length&&!/^--stack-size=/.test(参)),外部库旗]});}catch(错){if(错?.code!=='ERR_WORKER_INVALID_EXEC_ARGV')throw 错;}}return new Worker(__filename,选项);};
 // 文言：系统库调用之原语，惟供适配与系统库；工具链包之宿主无此文则惟报不可用。汉语：系统库调用原语（见 外部库.mjs，只供适配与系统库使用）；Wasm 工具链包里的宿主没带这个文件时，只提供报告“不可用”的原语。
 const 外部库原语=文字=>{try{return require('./外部库.mjs').创建外部库能力({文字});}catch(错){if(错?.code==='MODULE_NOT_FOUND'||错?.code==='ERR_MODULE_NOT_FOUND')return {豫言_节点_外部库可用:()=>false};throw 错;}};
+// 文言：管或不阻，一书未必尽；余者续书，遇暂不可写则稍候，与应用宿主之写出同。汉语：标准流是非阻塞管道时，writeSync 可能只写入管道容得下的部分（常为 64KB）或报 EAGAIN；循环写完，写不进就短暂等待后重写（与 应用宿主.mjs 的「写出」相同），否则父进程经管道读取时输出被截断。
+const 小候=new Int32Array(new SharedArrayBuffer(4));
+const 写尽=(号,值)=>{const 字节=Buffer.isBuffer(值)?值:Buffer.from(值);for(let 位=0;位<字节.length;){try{位+=文件.writeSync(号,字节,位,字节.length-位);}catch(错){if(错?.code!=='EAGAIN')throw 错;Atomics.wait(小候,0,0,5);}}};
 if (isMainThread) {
   桥文件路径();
   // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
@@ -87,7 +90,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 列=诸值=>[诸值,诸值.length];
   const 可执行=名=>{try{文件.accessSync(名,文件.constants.X_OK);return 文件.statSync(名).isFile();}catch{return false;}};
   // 文言：线程之出各归其管。汉语：内部编译线程通过 Worker 标准流汇集输出，不能直接写共享进程的文件描述符。
-  const 写输出=(号,值)=>本工.复用线程?parentPort.postMessage({种:'出',号,值}):本工.编译线程?(号===1?process.stdout:process.stderr).write(值):文件.writeSync(号,值);
+  const 写输出=(号,值)=>本工.复用线程?parentPort.postMessage({种:'出',号,值}):本工.编译线程?(号===1?process.stdout:process.stderr).write(值):写尽(号,值);
   // 文言：底层之模导入内存、数学、诺节之函或出工作线程者，交底层宿主行之；工具链包之宿主无此文，则照旧行之。汉语：底层模块导入了内存或「数学」「诺节」的函数，或导出「工作线程」时，交 底层宿主.cjs 运行（建内存、起工作线程、调 _start）；Wasm 工具链包里的宿主不带这个文件，照旧运行。
   const 底层宿主=(()=>{try{return require('./底层宿主.cjs');}catch(错){if(错?.code==='MODULE_NOT_FOUND')return null;throw 错;}})();
   if(底层宿主?.是底层模块(模块))return 底层宿主.运行底层模块(模块,文件.readFileSync(模块路径),值=>写输出(1,值));
