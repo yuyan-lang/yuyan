@@ -1,0 +1,238 @@
+// 文言：路一节点宿主之显示、图形处理器与图形显示原语。显示面者，宿主之选项所授之名，初取乃开 SDL 之窗；图形处理器以 Dawn 行 WebGPU。
+//       显示面之表与图形之能共用浏览器宿主之 图形.mjs，此篇惟供窗之后端与呈现之器。此模无所引，发行时内联于启动文件，所需之能皆由 应用宿主.mjs 注入；
+//       原生之依赖（@kmamal/sdl、@kmamal/gpu）至初用乃载，不得则返资源暂不可用。
+// 汉语：路一 Node 宿主的显示、图形处理器与图形显示原语（豫言_节点_显示、豫言_节点_图形）。显示面由宿主选项 --授权显示面 名称=宽x高 授予，
+//       第一次取得时开一个 SDL 窗口（@kmamal/sdl）；图形处理器用 Dawn 的 WebGPU（@kmamal/gpu）。显示面表与图形能力共用浏览器宿主的
+//       图形.mjs（创建显示面表、创建图形能力），本模块只提供 SDL 窗口的显示面后端与呈现器。
+//       本模块不写 import：发行启动文件把它内联进来；共用工厂、状态码、原生依赖载入与标准错误输出都由 应用宿主.mjs 注入。
+//       原生依赖在第一次用到时才载入：找不到时 取得已授显示面、取得图形设备 返回资源暂不可用，并在标准错误提示一次。
+// 文言：后台之式（--显示面后台）：SDL 初始化前令为后台应用，窗皆隐而不激，自动之验用之，不夺前台。
+// 汉语：后台模式（宿主选项 --显示面后台 或环境变量 YY_NODE_DISPLAY_BACKGROUND=1）：载入 SDL 前设 SDL_MAC_BACKGROUND_APP=1（macOS 上成为后台应用，
+//       无 Dock 图标、不激活），窗口以 visible: false 创建（隐藏、不激活）。像素提交与 WebGPU 呈现在隐藏窗口上照常返回，自动验收用它，不抢前台焦点。
+
+const 解码器 = new TextDecoder('utf-8', {ignoreBOM: true});
+const 文字化 = 值 => (值 instanceof Uint8Array ? 解码器.decode(值) : String(值 ?? ''));
+const 消息 = 错 => String(错?.message ?? 错);
+
+// 文言：SDL 之键名译为语义键名：七者有定名，单一码点者原样，余皆不报。汉语：SDL 虚拟键名译成规范的语义键名：七个固定键名；单个 Unicode 标量值原样交付；
+//       其余键（shift、tab、f1……）不交付。SDL 的回车键名为 return，小键盘回车为 enter，两者都译为回车。
+const SDL键名表 = Object.freeze({left: '左', right: '右', up: '上', down: '下', return: '回车', enter: '回车', backspace: '退格', space: '空格'});
+export const 译SDL键 = 事 => {
+  const 键 = 事?.key;
+  if (typeof 键 !== 'string') return null;
+  if (Object.hasOwn(SDL键名表, 键)) return SDL键名表[键];
+  if ([...键].length !== 1) return null;
+  // 文言：SDL 字母之键名恒小写，依 Shift 与大写锁定定其大小。待办事项：他键随 Shift 而变者（如 Shift+1 为 !）当依键盘之布局求之。
+  // 汉语：SDL 的字母键名总是小写，按 Shift 与大写锁定决定大小写，与浏览器的 event.key 一致。待办事项：其他随 Shift 变化的键（如 Shift+1 为 !）按键盘布局求值。
+  const 大 = 键.toUpperCase();
+  return Boolean(事.shift) !== Boolean(事.capslock) && [...大].length === 1 ? 大 : 键;
+};
+
+// 文言：搬运之着色：全屏一三角，以帧纹理之素覆写窗之当前纹理。汉语：把离屏帧纹理逐像素画到窗口当前纹理的着色程序：一个盖满画面的三角形，片元按像素坐标 textureLoad。
+const 搬运着色 = `@group(0) @binding(0) var 帧: texture_2d<f32>;
+@vertex fn 顶点(@builtin(vertex_index) 序: u32) -> @builtin(position) vec4f {
+  var 点 = array<vec2f, 3>(vec2f(-1.0, -1.0), vec2f(3.0, -1.0), vec2f(-1.0, 3.0));
+  return vec4f(点[序], 0.0, 1.0);
+}
+@fragment fn 片元(@builtin(position) 位: vec4f) -> @location(0) vec4f {
+  return textureLoad(帧, vec2i(位.xy), 0);
+}
+`;
+
+// 文言：造节点之显示与图形之能。汉语：创建 Node 的显示与图形能力，返回 {原语, 清理}。参数：共用工厂（创建显示面表、创建图形能力）、状态码、事件种类，
+//       载入原生(名) → 模块（找不到时抛出），授权显示面（名称 → {宽, 高}，单位为 SDL 窗口的逻辑尺寸），后台，写错误(文)。
+export function 创建节点图形能力({创建显示面表, 创建图形能力, 状态码, 事件种类, 载入原生, 授权显示面 = new Map(), 后台 = false, 写错误 = () => {}}) {
+  const 码 = 状态码;
+  let 视频 = null;
+  let 图形模 = null;
+  let 实例 = null;
+  const 已报 = new Set();
+  // 文言：载原生之模；不得则于标准误一告而抛。汉语：载入原生依赖；找不到时在标准错误提示一次，再抛出给调用者转成资源暂不可用。
+  const 载 = 名 => {
+    try { return 载入原生(名); } catch (错误) {
+      if (!已报.has(名)) {
+        已报.add(名);
+        写错误('豫言节点宿主：' + 消息(错误));
+      }
+      throw 错误;
+    }
+  };
+  const 载SDL = () => {
+    if (!视频) {
+      // 文言：后台之式须于 SDL 初始化前设之。汉语：后台模式的提示须在 SDL 初始化（载入模块）之前设好。
+      if (后台) process.env.SDL_MAC_BACKGROUND_APP = '1';
+      视频 = 载('@kmamal/sdl');
+    }
+    return 视频;
+  };
+  const 载GPU = () => {
+    if (!实例) {
+      图形模 = 载('@kmamal/gpu');
+      实例 = 图形模.create([]);
+    }
+    return 实例;
+  };
+
+  // ---- 显示面后端：SDL 窗口 ----
+  // 文言：SDL 之坐标以点计，乘其素比为物理之素。汉语：SDL 事件坐标以窗口的点为单位，乘以像素宽与点宽之比，得到物理像素坐标。
+  const 坐标 = (窗, 事) => {
+    const 横比 = 窗.width > 0 ? 窗.pixelWidth / 窗.width : 1;
+    const 纵比 = 窗.height > 0 ? 窗.pixelHeight / 窗.height : 1;
+    return [Math.floor(Number(事.x) * 横比), Math.floor(Number(事.y) * 纵比)];
+  };
+  // 文言：SDL 之钮左一中二右三，规范为零一二。汉语：SDL 按钮左 1、中 2、右 3，规范为主 0、辅助 1、次要 2，所以减一。
+  const 钮 = 事 => Math.max(0, Number(事.button) - 1);
+  // 文言：开窗：图形之式须以 webgpu 建窗；易窗时新窗居旧窗之位，旧窗之闭不作面闭。
+  // 汉语：开窗：像素提交用普通 SDL 窗口，WebGPU 呈现须用 webgpu: true 建的窗口（两者不能互换）；显示面第一次用于 GPU 呈现时换成 WebGPU 窗口，
+  //       新窗口放在旧窗口的位置。先把 面.窗口 指向新窗口再销毁旧窗口，旧窗口的关闭事件因此不当作显示面关闭。
+  const 开窗 = (面, 图形乎) => {
+    const 旧 = 面.窗口 && !面.窗口.destroyed ? 面.窗口 : null;
+    const 选项 = {title: 面.名, width: 面.授.宽, height: 面.授.高, visible: !后台, webgpu: 图形乎};
+    if (旧 && Number.isInteger(旧.x) && Number.isInteger(旧.y)) Object.assign(选项, {x: 旧.x, y: 旧.y});
+    const 窗 = 载SDL().video.createWindow(选项);
+    面.窗口 = 窗;
+    const {推, 关闭} = 面.回调;
+    窗.on('close', () => { if (面.窗口 === 窗) 关闭(); });
+    const 按键 = 种 => 事 => {
+      const 键 = 译SDL键(事);
+      if (键 !== null) 推({种, 文: 键});
+    };
+    窗.on('keyDown', 按键(事件种类.按键按下));
+    窗.on('keyUp', 按键(事件种类.按键抬起));
+    // 文言：SDL 之文字输入即输入法所成之文。汉语：SDL 的 textInput 是已提交的文字（含输入法提交的文字）。待办事项：组字期间的按键仍会交付（@kmamal/sdl 不给组字事件）。
+    窗.on('textInput', 事 => { if (事.text) 推({种: 事件种类.文字输入, 文: String(事.text)}); });
+    窗.on('mouseMove', 事 => {
+      const [甲, 乙] = 坐标(窗, 事);
+      推({种: 事件种类.指针移动, 甲, 乙});
+    });
+    窗.on('mouseButtonDown', 事 => {
+      const [甲, 乙] = 坐标(窗, 事);
+      推({种: 事件种类.指针按下, 甲, 乙, 丙: 钮(事)});
+    });
+    窗.on('mouseButtonUp', 事 => {
+      const [甲, 乙] = 坐标(窗, 事);
+      推({种: 事件种类.指针抬起, 甲, 乙, 丙: 钮(事)});
+    });
+    if (旧) 旧.destroy();
+    return 窗;
+  };
+  const 窗口后端 = {
+    找: 名 => {
+      const 授 = 授权显示面.get(名);
+      if (!授) return {码: 码.未获授权, 文: '显示面「' + 名 + '」未获授权（宿主选项 --授权显示面 名称=宽x高）'};
+      try { 载SDL(); } catch (错误) { return {码: 码.暂不可用, 文: 消息(错误)}; }
+      return {值: {名, 宽: 授.宽, 高: 授.高}};
+    },
+    同源: (面, 值) => 面.名 === 值.名,
+    建: (面, 值, 回调) => {
+      面.授 = 值;
+      面.回调 = 回调;
+      面.窗口 = null;
+      try { 开窗(面, false); } catch (错误) { return {码: 码.暂不可用, 文: 'SDL 窗口创建失败：' + 消息(错误)}; }
+      面.清理.push(() => {
+        const 窗 = 面.窗口;
+        if (窗 && !窗.destroyed) 窗.destroy();
+      });
+      return null;
+    },
+    已断开: 面 => Boolean(面.窗口?.destroyed),
+    // 文言：尺以物理之素：取窗之 pixelWidth、pixelHeight，高分之屏为点之倍。汉语：尺寸按物理像素，取 SDL 窗口的 pixelWidth、pixelHeight（高分屏上是点数的倍数）。
+    尺寸值: 面 => (面.窗口 && !面.窗口.destroyed ? [面.窗口.pixelWidth, 面.窗口.pixelHeight] : [0, 0]),
+    // 文言：素以 SDL 之 rgba32 提交，于小端之机即红绿蓝透之序。汉语：像素用 SDL 的 rgba32 格式提交（小端机器上即内存中 R、G、B、A 的次序），不混合，原样覆盖。
+    画: (面, 宽, 高, 字节) => {
+      面.窗口.render(宽, 高, 宽 * 4, 'rgba32', Buffer.from(字节.buffer, 字节.byteOffset, 字节.length));
+      return null;
+    },
+    清理: () => {}
+  };
+
+  // ---- 呈现器：离屏帧纹理画到 SDL 窗口 ----
+  // 文言：未候之误域，清理之前必候其毕；设备已毁而其回调犹悬，则进程退时段错。汉语：呈现时没有等待的错误域弹出，清理前要等它们完成；
+  //       设备销毁时回调还挂着，进程退出时 Dawn 会段错误（2026-09-30 本机实测退出码 139）。
+  const 待弹 = new Set();
+  // 文言：呈现之器：初取帧纹理时易为 WebGPU 之窗，以 renderGPUDeviceToWindow 系之于设备；呈现则以搬运之管线画帧纹理于窗之当前纹理，swap 之。
+  // 汉语：Node 呈现器：第一次取帧纹理时把显示面换成 WebGPU 窗口，用 renderGPUDeviceToWindow（presentMode fifo）把设备接到窗口；
+  //       呈现时用一个搬运管线把离屏帧纹理画到窗口当前纹理（getCurrentTextureView），再 swap()。窗口纹理只有渲染目标用途，不能作复制目标，所以用画的；
+  //       也不用渲染器的 getCurrentTexture()：它每调用一次少计一次设备的引用，退出时 Dawn 断言失败（SIGTRAP）。
+  //       节奏：fifo 下窗口的交换链满了时 getCurrentTextureView 会等到下一次刷新，所以连续呈现按刷新节奏进行；swap 后再让出一次事件循环，好让 SDL 处理事件。
+  const 窗口呈现器 = {
+    首选格式: 面 => {
+      try { return 面?.渲染器?.getPreferredFormat?.() ?? 实例?.getPreferredCanvasFormat?.() ?? 'bgra8unorm'; } catch { return 'bgra8unorm'; }
+    },
+    绑定: async (面, 设备) => {
+      try {
+        if (!面.窗口?.webgpu) 开窗(面, true);
+        面.渲染器 = 图形模.renderGPUDeviceToWindow({device: 设备, window: 面.窗口, presentMode: 'fifo'});
+        面.呈现宽 = 面.窗口.pixelWidth;
+        面.呈现高 = 面.窗口.pixelHeight;
+        面.呈现格式 = 面.渲染器.getPreferredFormat() ?? 'bgra8unorm';
+      } catch (错误) { return {码: 码.暂不可用, 文: '显示面不能用于 WebGPU 呈现：' + 消息(错误)}; }
+      设备.pushErrorScope('validation');
+      let 异常 = null;
+      try {
+        const 模块 = 设备.createShaderModule({code: 搬运着色});
+        面.搬运管线 = 设备.createRenderPipeline({layout: 'auto', vertex: {module: 模块, entryPoint: '顶点'},
+          fragment: {module: 模块, entryPoint: '片元', targets: [{format: 面.呈现格式}]}, primitive: {topology: 'triangle-list'}});
+      } catch (错误) { 异常 = 错误; }
+      const 误 = await 设备.popErrorScope().catch(错误 => 错误);
+      if (异常 || 误) return {码: 码.宿主失败, 文: '显示面搬运管线建立失败：' + 消息(异常 ?? 误)};
+      return null;
+    },
+    交帧: async (面, 设备, 帧) => {
+      const 窗 = 面.窗口;
+      if (!窗 || 窗.destroyed) throw new Error('显示面窗口已关闭');
+      // 文言：窗之素数易（移至他屏）则重配其面。汉语：窗口像素尺寸变了（如移到像素比不同的屏幕）就重新配置窗口表面。
+      if (窗.pixelWidth !== 面.呈现宽 || 窗.pixelHeight !== 面.呈现高) {
+        面.渲染器.resize();
+        面.呈现宽 = 窗.pixelWidth;
+        面.呈现高 = 窗.pixelHeight;
+      }
+      // 文言：搬运之误乃宿主之咎，不候其误域，异步书于标准误；呈现之节由交换之链定之。
+      // 汉语：搬运出错只可能是宿主的缺陷，所以不等错误域（@kmamal/gpu 每约 100 毫秒才处理一次异步回调，等它会把呈现拖到每秒十帧以下），
+      //       错误异步写到标准错误；呈现节奏由交换链决定（fifo 下取窗口当前纹理时等下一次刷新）。
+      设备.pushErrorScope('validation');
+      let 异常 = null;
+      try {
+        if (面.搬运源 !== 帧.物) {
+          面.搬运组 = 设备.createBindGroup({layout: 面.搬运管线.getBindGroupLayout(0), entries: [{binding: 0, resource: 帧.物}]});
+          面.搬运源 = 帧.物;
+        }
+        const 编 = 设备.createCommandEncoder();
+        const 通 = 编.beginRenderPass({colorAttachments: [{view: 面.渲染器.getCurrentTextureView(), loadOp: 'clear',
+          clearValue: {r: 0, g: 0, b: 0, a: 1}, storeOp: 'store'}]});
+        通.setPipeline(面.搬运管线);
+        通.setBindGroup(0, 面.搬运组);
+        通.draw(3);
+        通.end();
+        设备.queue.submit([编.finish()]);
+        面.渲染器.swap();
+      } catch (错误) { 异常 = 错误; }
+      const 弹 = 设备.popErrorScope().then(误 => { if (误) 写错误('豫言节点宿主：显示面搬运失败：' + 消息(误)); }, () => {})
+        .finally(() => 待弹.delete(弹));
+      待弹.add(弹);
+      if (异常) throw 异常;
+      await new Promise(完成 => setImmediate(完成));
+    }
+  };
+
+  const 显示 = 创建显示面表({后端: 窗口后端});
+  // 文言：Dawn 之 createView 恒带 swizzle 而不过，故以纹理径代其视图。汉语：Dawn 的 JS createView() 总带 swizzle 而校验失败，渲染附件与纹理绑定直接传纹理。
+  const 图形 = 创建图形能力({全局: {}, 显示, 取图形: 载GPU, 呈现器: 窗口呈现器, 取视图: 纹 => 纹});
+  // 文言：二口：参皆经值桥，整数为 BigInt，文为字节。汉语：两个原语；值桥传来的整数是 BigInt、文字是字节，这里转成数与字符串。
+  const 原语 = Object.freeze({
+    豫言_节点_显示: (操作, 号, 甲, 乙, 字节) => 显示.调用(文字化(操作), Number(号), Number(甲), Number(乙), 字节),
+    豫言_节点_图形: (操作, 参数, 字节) => 图形.调用(文字化(操作), 文字化(参数), 字节)
+  });
+  // 文言：客毕则候未决之误域，乃闭诸窗、释诸设备、销 Dawn 之例，令进程得退。汉语：应用结束时先等未决的错误域弹出，再关闭全部窗口、释放全部设备并销毁 Dawn 实例；
+  //       否则 SDL 的事件轮询与 Dawn 的计时器会拖住进程。返回 Promise。
+  const 清理 = async () => {
+    await Promise.allSettled([...待弹]);
+    try { 显示.清理(); } catch { /* 忽略 */ }
+    try { 图形.清理(); } catch { /* 忽略 */ }
+    if (实例) {
+      try { 图形模.destroy(实例); } catch { /* 忽略 */ }
+      实例 = null;
+    }
+  };
+  return {原语, 清理, 显示, 图形};
+}

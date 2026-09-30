@@ -1,7 +1,10 @@
 // 文言：显示面与图形处理器之宿主术。显示面者，页中带 data-yy-显示面 之 canvas，以其属性之值为名而授之；图形处理器取 WebGPU 之要。二者皆纯工厂，凭注入之根与全局而行，可离 Wasm 而测。
+//       显示面之表与图形之能不系于文树，节点之宿主亦内联此篇而共用之：换以 SDL 之窗为面源，以 Dawn 为图形处理器，别供其呈现之器。
 // 汉语：显示、图形处理器、图形显示三个接口的浏览器宿主实现。显示面由页面授予：带 data-yy-显示面="名称" 属性的 <canvas> 即以该名称授予本次运行；
 //       图形处理器用 WebGPU 核心子集。两个工厂只依赖注入的 document 与全局对象，可以脱离 Wasm 单独测试；创建浏览器宿主把它们接到
 //       豫言_浏览器_显示 与 豫言_浏览器_图形 两个原语上。
+//       Node 宿主（路一）也内联本文件共用其中与 DOM 无关的部分：显示面表（创建显示面表）与图形能力（创建图形能力）；它换用 SDL 窗口作
+//       显示面的“后端”，用 Dawn（@kmamal/gpu）作 GPU，并提供自己的“呈现器”，见 豫言操作系统/宿主/节点/图形.mjs。本文件因此不写 import。
 
 // 文言：返客之码，适配依此转为公误。汉语：返回给适配的状态码：0 成功；1 未获授权、2 资源暂不可用、3 资源已失效、4 资源不存在、5 资源已存在、
 //       6 资源配额已尽、7 输入无效、8 宿主操作失败（附消息）；9 图形校验错误（附诊断文字）；10 非法资源使用（适配据此终止本次运行）。
@@ -32,13 +35,121 @@ export const 事件种类 = Object.freeze({按键按下: 1, 按键抬起: 2, 文
 // 文言：每面之事列，限额从大。汉语：每个显示面未取走事件的上限；满时丢弃最旧事件。待办事项：丢弃计数暂不报告。
 const 显示事件上限 = 65536;
 
-export function 创建显示能力({根, 全局, 已关闭 = () => false}) {
+// 文言：显示面之表，不系于宿主：取面之果、尺寸、提交之验、每面之事列与候者、面闭之序皆在此；面从何来、尺寸何量、素何以画、事何以入，由宿主之后端供之。
+// 汉语：显示面表，与宿主无关的部分：取得显示面的结果、尺寸、像素提交的校验、每个显示面的事件队列与等候者、关闭流程。
+//       显示面从哪里来、尺寸怎么量、像素怎么画、输入从哪里来，由宿主的“后端”对象提供（浏览器是 canvas，Node 是 SDL 窗口）：
+//       找(名) → {值} 或 {码, 文}；同源(面, 值) → 是否同一来源；建(面, 值, {推, 关闭}) → 失败时 {码, 文}，成功时把清理函数放进 面.清理；
+//       已断开(面)；尺寸值(面) → [宽, 高]（物理像素）；画(面, 宽, 高, 字节) → 失败时 {码, 文}；清理()。
+export function 创建显示面表({后端, 已关闭 = () => false}) {
   const 面表 = new Map();
   let 下号 = 1;
-  let 观察器 = null;
   const 结果 = (码值, 甲 = 0, 乙 = 0, 丙 = 0, 丁 = 0, 文 = '') => [码值, 甲, 乙, 丙, 丁, 文];
   const 错 = (码值, 文 = '') => 结果(码值, 0, 0, 0, 0, 文);
   const 事果 = 事 => 结果(码.成, 事.种, 事.甲 ?? 0, 事.乙 ?? 0, 事.丙 ?? 0, 事.文 ?? '');
+  const 推 = (面, 事) => {
+    if (面.已关闭) return;
+    if (面.等待者) {
+      const 完成 = 面.等待者;
+      面.等待者 = null;
+      完成(事果(事));
+      return;
+    }
+    // 文言：指针之移相接者，以新代旧。汉语：队尾也是指针移动时就地替换，只留最新位置。
+    const 尾 = 面.队列[面.队列.length - 1];
+    if (事.种 === 事件种类.指针移动 && 尾?.种 === 事件种类.指针移动) { 面.队列[面.队列.length - 1] = 事; return; }
+    if (面.队列.length >= 显示事件上限) 面.队列.shift();
+    面.队列.push(事);
+  };
+  const 关闭面 = 面 => {
+    if (面.已关闭) return;
+    面.已关闭 = true;
+    for (const 清理 of 面.清理.splice(0)) { try { 清理(); } catch { /* 忽略 */ } }
+    for (const 钩 of 面.关闭钩子.splice(0)) { try { 钩(); } catch { /* 忽略 */ } }
+    if (面.等待者) {
+      面.已报关闭 = true;
+      const 完成 = 面.等待者;
+      面.等待者 = null;
+      完成(事果({种: 事件种类.显示面已关闭}));
+    }
+  };
+  const 取得 = 名 => {
+    if (已关闭()) return 错(码.暂不可用, '宿主已关闭');
+    if (!名) return 错(码.未获授权, '显示面名称为空');
+    const 找果 = 后端.找(名);
+    if (找果.码) return 错(找果.码, 找果.文);
+    for (const 面 of 面表.values()) if (!面.已关闭 && 后端.同源(面, 找果.值)) return 结果(码.成, 面.号);
+    const 面 = {号: 下号++, 名, 队列: [], 等待者: null, 已关闭: false, 已报关闭: false, 模式: null, 清理: [], 关闭钩子: []};
+    const 败 = 后端.建(面, 找果.值, {推: 事 => 推(面, 事), 关闭: () => 关闭面(面)});
+    if (败) return 错(败.码, 败.文);
+    面表.set(面.号, 面);
+    return 结果(码.成, 面.号);
+  };
+  const 取开面 = 号 => {
+    const 面 = 面表.get(号);
+    if (!面) return null;
+    if (!面.已关闭 && 后端.已断开(面)) 关闭面(面);
+    return 面;
+  };
+  const 尺寸 = 号 => {
+    const 面 = 取开面(号);
+    if (!面 || 面.已关闭) return 错(码.已失效, '显示面已失效');
+    const [宽, 高] = 后端.尺寸值(面);
+    if (!(宽 > 0 && 高 > 0)) return 错(码.暂不可用, '显示面暂时没有正尺寸');
+    return 结果(码.成, 宽, 高);
+  };
+  const 提交 = (号, 宽, 高, 字节) => {
+    const 面 = 取开面(号);
+    if (!面 || 面.已关闭) return 错(码.已失效, '显示面已失效');
+    if (!Number.isSafeInteger(宽) || !Number.isSafeInteger(高) || 宽 <= 0 || 高 <= 0) return 错(码.输入无效, '画面宽高须为正整数');
+    const 应长 = 宽 * 高 * 4;
+    if (!Number.isSafeInteger(应长) || !(字节 instanceof Uint8Array) || 字节.length !== 应长) return 错(码.输入无效, '画面字节数须恰为宽×高×4');
+    if (面.模式 === '图形') return 错(码.暂不可用, '此显示面已用于图形处理器呈现');
+    const [现宽, 现高] = 后端.尺寸值(面);
+    if (现宽 !== 宽 || 现高 !== 高) return 错(码.暂不可用, '提交尺寸与显示面当前尺寸不同');
+    const 败 = 后端.画(面, 宽, 高, 字节);
+    if (败) return 错(败.码, 败.文);
+    面.模式 = '二维';
+    return 结果(码.成);
+  };
+  const 等待 = 号 => {
+    const 面 = 取开面(号);
+    if (!面 || 面.已报关闭) return 错(码.已失效, '显示面已关闭');
+    if (面.队列.length) return 事果(面.队列.shift());
+    if (面.已关闭) {
+      面.已报关闭 = true;
+      return 事果({种: 事件种类.显示面已关闭});
+    }
+    if (面.等待者) return 错(码.输入无效, '同一显示面已有等候者');
+    return new Promise(完成 => { 面.等待者 = 完成; });
+  };
+  // 文言：一口而分诸术；异常皆归码，不越桥。汉语：原语分派；同步异常都转成宿主操作失败，不让 JS 异常越过 Wasm。
+  const 调用 = (操作, 号, 甲, 乙, 字节) => {
+    try {
+      switch (操作) {
+        case '取得': return 取得(文字化(字节));
+        case '尺寸': return 尺寸(号);
+        case '提交': return 提交(号, 甲, 乙, 字节);
+        case '等待': return 等待(号);
+        default: return 错(码.宿主失败, '显示操作不受支持：' + String(操作).slice(0, 64));
+      }
+    } catch (错误) { return 错(码.宿主失败, 消息(错误)); }
+  };
+  const 清理 = () => {
+    for (const 面 of 面表.values()) 关闭面(面);
+    try { 后端.清理?.(); } catch { /* 忽略 */ }
+  };
+  const 状态 = () => ({
+    显示面数: [...面表.values()].filter(面 => !面.已关闭).length,
+    显示等待者数: [...面表.values()].filter(面 => 面.等待者).length
+  });
+  return {调用, 取面: 号 => 取开面(Number(号)), 尺寸值: 面 => 后端.尺寸值(面), 关闭面, 清理, 状态};
+}
+
+// 文言：浏览器之后端：面者页中之 canvas；旁置隐 input 以受键与文字；canvas 离文树则面闭。
+// 汉语：浏览器的显示面后端：显示面是页面里带 data-yy-显示面 属性的 canvas；宿主在它后面插入隐形输入框接收按键与输入法文字；canvas 离开文档即关闭。
+function 创建画布后端({根, 全局}) {
+  let 观察器 = null;
+  const 活面 = new Map();
   const 像素比 = () => {
     const 比 = Number(全局.devicePixelRatio);
     return Number.isFinite(比) && 比 > 0 ? 比 : 1;
@@ -67,42 +178,17 @@ export function 创建显示能力({根, 全局, 已关闭 = () => false}) {
       }
     } catch { /* 文言：定尺失败亦无妨。汉语：只是防止反馈，失败不影响功能。 */ }
   };
-  const 推 = (面, 事) => {
-    if (面.已关闭) return;
-    if (面.等待者) {
-      const 完成 = 面.等待者;
-      面.等待者 = null;
-      完成(事果(事));
-      return;
-    }
-    // 文言：指针之移相接者，以新代旧。汉语：队尾也是指针移动时就地替换，只留最新位置。
-    const 尾 = 面.队列[面.队列.length - 1];
-    if (事.种 === 事件种类.指针移动 && 尾?.种 === 事件种类.指针移动) { 面.队列[面.队列.length - 1] = 事; return; }
-    if (面.队列.length >= 显示事件上限) 面.队列.shift();
-    面.队列.push(事);
-  };
-  const 关闭面 = 面 => {
-    if (面.已关闭) return;
-    面.已关闭 = true;
-    for (const 清理 of 面.清理.splice(0)) { try { 清理(); } catch { /* 忽略 */ } }
-    try { 面.输入框?.remove(); } catch { /* 忽略 */ }
-    for (const 钩 of 面.关闭钩子.splice(0)) { try { 钩(); } catch { /* 忽略 */ } }
-    if (面.等待者) {
-      面.已报关闭 = true;
-      const 完成 = 面.等待者;
-      面.等待者 = null;
-      完成(事果({种: 事件种类.显示面已关闭}));
-    }
-  };
   // 文言：canvas 离文树则面闭。汉语：canvas 被移出文档即视为显示面关闭。
   const 查连接 = () => {
-    for (const 面 of 面表.values()) if (!面.已关闭 && 面.画布.isConnected === false) 关闭面(面);
+    for (const [面, 关闭] of 活面) if (!面.已关闭 && 面.画布.isConnected === false) 关闭();
   };
-  const 建面 = (名, 画布) => {
-    const 号 = 下号++;
-    const 面 = {号, 名, 画布, 输入框: null, 队列: [], 等待者: null, 已关闭: false, 已报关闭: false, 模式: null, 二维: null, 组字中: false,
-      清理: [], 关闭钩子: []};
-    面表.set(号, 面);
+  const 建 = (面, 画布, {推, 关闭}) => {
+    面.画布 = 画布;
+    面.输入框 = null;
+    面.二维 = null;
+    面.组字中 = false;
+    活面.set(面, 关闭);
+    面.清理.push(() => 活面.delete(面));
     定样式尺寸(画布);
     const 听 = (目标, 名称, 处理) => {
       目标.addEventListener(名称, 处理);
@@ -114,9 +200,9 @@ export function 创建显示能力({根, 全局, 已关闭 = () => false}) {
     const 文档 = 画布.ownerDocument ?? 根;
     const 输入框 = 文档.createElement('input');
     输入框.setAttribute('type', 'text');
-    输入框.setAttribute(显示面输入属性, 名);
+    输入框.setAttribute(显示面输入属性, 面.名);
     输入框.setAttribute('autocomplete', 'off');
-    输入框.setAttribute('aria-label', 名);
+    输入框.setAttribute('aria-label', 面.名);
     输入框.setAttribute('style', 'position:fixed;left:0;top:0;width:1px;height:1px;opacity:0;border:0;padding:0;pointer-events:none');
     if (typeof 画布.after === 'function') 画布.after(输入框);
     else 画布.parentNode?.insertBefore(输入框, 画布.nextSibling ?? null);
@@ -130,21 +216,21 @@ export function 创建显示能力({根, 全局, 已关闭 = () => false}) {
       const [甲, 乙] = 坐标(事件);
       try { 输入框.focus({preventScroll: true}); } catch { /* 忽略 */ }
       try { 画布.setPointerCapture?.(事件.pointerId); } catch { /* 文言：合成之事无活指针。汉语：合成事件没有活动指针，捕获失败无妨。 */ }
-      推(面, {种: 事件种类.指针按下, 甲, 乙, 丙: Number(事件.button) || 0});
+      推({种: 事件种类.指针按下, 甲, 乙, 丙: Number(事件.button) || 0});
     });
     听(画布, 'pointermove', 事件 => {
       const [甲, 乙] = 坐标(事件);
-      推(面, {种: 事件种类.指针移动, 甲, 乙});
+      推({种: 事件种类.指针移动, 甲, 乙});
     });
     听(画布, 'pointerup', 事件 => {
       const [甲, 乙] = 坐标(事件);
-      推(面, {种: 事件种类.指针抬起, 甲, 乙, 丙: Number(事件.button) || 0});
+      推({种: 事件种类.指针抬起, 甲, 乙, 丙: Number(事件.button) || 0});
     });
     听(画布, 'contextmenu', 事件 => 事件.preventDefault?.());
     const 按键 = 种 => 事件 => {
       if (事件.isComposing || 事件.keyCode === 229 || 面.组字中) return;
       const 键 = 译键(事件.key);
-      if (键 !== null) 推(面, {种, 文: 键});
+      if (键 !== null) 推({种, 文: 键});
     };
     听(输入框, 'keydown', 按键(事件种类.按键按下));
     听(输入框, 'keyup', 按键(事件种类.按键抬起));
@@ -152,91 +238,49 @@ export function 创建显示能力({根, 全局, 已关闭 = () => false}) {
     const 交文字 = 备用 => {
       const 文 = 输入框.value || 备用 || '';
       输入框.value = '';
-      if (文) 推(面, {种: 事件种类.文字输入, 文});
+      if (文) 推({种: 事件种类.文字输入, 文});
     };
     听(输入框, 'compositionstart', () => { 面.组字中 = true; });
     听(输入框, 'compositionend', 事件 => { 面.组字中 = false; 交文字(typeof 事件.data === 'string' ? 事件.data : ''); });
     听(输入框, 'input', 事件 => { if (!面.组字中 && !事件.isComposing) 交文字(''); });
+    // 文言：先撤诸听，后去输入框。汉语：关闭时先移除监听，再移除输入框。
+    面.清理.push(() => 输入框.remove());
     if (!观察器 && typeof 全局.MutationObserver === 'function') {
       观察器 = new 全局.MutationObserver(查连接);
       观察器.observe(根.documentElement ?? 根, {childList: true, subtree: true});
     }
-    return 面;
+    return null;
   };
-  const 取得 = 名 => {
-    if (已关闭()) return 错(码.暂不可用, '浏览器宿主已关闭');
-    if (!名) return 错(码.未获授权, '显示面名称为空');
-    const 画布 = 找画布(名);
-    if (!画布) return 错(码.未获授权, '页面没有授予名为「' + 名 + '」的显示面（需要带 ' + 显示面属性 + ' 属性的 canvas）');
-    for (const 面 of 面表.values()) if (面.画布 === 画布 && !面.已关闭) return 结果(码.成, 面.号);
-    return 结果(码.成, 建面(名, 画布).号);
-  };
-  const 取开面 = 号 => {
-    const 面 = 面表.get(号);
-    if (!面) return null;
-    if (!面.已关闭 && 面.画布.isConnected === false) 关闭面(面);
-    return 面;
-  };
-  const 尺寸 = 号 => {
-    const 面 = 取开面(号);
-    if (!面 || 面.已关闭) return 错(码.已失效, '显示面已失效');
-    const [宽, 高] = 尺寸值(面);
-    if (!(宽 > 0 && 高 > 0)) return 错(码.暂不可用, '显示面暂时没有正尺寸');
-    return 结果(码.成, 宽, 高);
-  };
-  const 提交 = (号, 宽, 高, 字节) => {
-    const 面 = 取开面(号);
-    if (!面 || 面.已关闭) return 错(码.已失效, '显示面已失效');
-    if (!Number.isSafeInteger(宽) || !Number.isSafeInteger(高) || 宽 <= 0 || 高 <= 0) return 错(码.输入无效, '画面宽高须为正整数');
-    const 应长 = 宽 * 高 * 4;
-    if (!Number.isSafeInteger(应长) || !(字节 instanceof Uint8Array) || 字节.length !== 应长) return 错(码.输入无效, '画面字节数须恰为宽×高×4');
-    if (面.模式 === '图形') return 错(码.暂不可用, '此显示面已用于图形处理器呈现');
-    const [现宽, 现高] = 尺寸值(面);
-    if (现宽 !== 宽 || 现高 !== 高) return 错(码.暂不可用, '提交尺寸与显示面当前尺寸不同');
+  const 画 = (面, 宽, 高, 字节) => {
     if (!面.二维) {
       const 境 = 面.画布.getContext('2d');
-      if (!境) return 错(码.暂不可用, '显示面不能取得 2d 绘图上下文');
+      if (!境) return {码: 码.暂不可用, 文: '显示面不能取得 2d 绘图上下文'};
       面.二维 = 境;
     }
-    面.模式 = '二维';
     if (面.画布.width !== 宽) 面.画布.width = 宽;
     if (面.画布.height !== 高) 面.画布.height = 高;
     面.二维.putImageData(new 全局.ImageData(new Uint8ClampedArray(字节.buffer, 字节.byteOffset, 字节.length), 宽, 高), 0, 0);
-    return 结果(码.成);
+    return null;
   };
-  const 等待 = 号 => {
-    const 面 = 取开面(号);
-    if (!面 || 面.已报关闭) return 错(码.已失效, '显示面已关闭');
-    if (面.队列.length) return 事果(面.队列.shift());
-    if (面.已关闭) {
-      面.已报关闭 = true;
-      return 事果({种: 事件种类.显示面已关闭});
+  return {
+    找: 名 => {
+      const 画布 = 找画布(名);
+      return 画布 ? {值: 画布} : {码: 码.未获授权, 文: '页面没有授予名为「' + 名 + '」的显示面（需要带 ' + 显示面属性 + ' 属性的 canvas）'};
+    },
+    同源: (面, 画布) => 面.画布 === 画布,
+    已断开: 面 => 面.画布.isConnected === false,
+    建,
+    尺寸值,
+    画,
+    清理: () => {
+      观察器?.disconnect();
+      观察器 = null;
     }
-    if (面.等待者) return 错(码.输入无效, '同一显示面已有等候者');
-    return new Promise(完成 => { 面.等待者 = 完成; });
   };
-  // 文言：一口而分诸术；异常皆归码，不越桥。汉语：原语分派；同步异常都转成宿主操作失败，不让 JS 异常越过 Wasm。
-  const 调用 = (操作, 号, 甲, 乙, 字节) => {
-    try {
-      switch (操作) {
-        case '取得': return 取得(文字化(字节));
-        case '尺寸': return 尺寸(号);
-        case '提交': return 提交(号, 甲, 乙, 字节);
-        case '等待': return 等待(号);
-        default: return 错(码.宿主失败, '显示操作不受支持：' + String(操作).slice(0, 64));
-      }
-    } catch (错误) { return 错(码.宿主失败, 消息(错误)); }
-  };
-  const 清理 = () => {
-    for (const 面 of 面表.values()) 关闭面(面);
-    观察器?.disconnect();
-    观察器 = null;
-  };
-  const 状态 = () => ({
-    显示面数: [...面表.values()].filter(面 => !面.已关闭).length,
-    显示等待者数: [...面表.values()].filter(面 => 面.等待者).length
-  });
-  return {调用, 取面: 号 => 取开面(Number(号)), 尺寸值, 关闭面, 清理, 状态};
+}
+
+export function 创建显示能力({根, 全局, 已关闭 = () => false}) {
+  return 创建显示面表({后端: 创建画布后端({根, 全局}), 已关闭});
 }
 
 // ---------------------------------------------------------------------------
@@ -266,7 +310,52 @@ const 申请限额名 = ['maxBufferSize', 'maxStorageBufferBindingSize', 'maxTex
 const 非负整 = 值 => Number.isSafeInteger(值) && 值 >= 0;
 const 正整 = 值 => Number.isSafeInteger(值) && 值 > 0;
 
-export function 创建图形能力({全局, 显示 = null}) {
+// 文言：浏览器之呈现器：帧纹理于呈现时复于 canvas 之当前纹理，候下一画帧而返。
+// 汉语：浏览器的呈现器（创建图形能力缺省用它）：第一次取帧时给 canvas 取 webgpu 上下文并以首选格式 configure；呈现时把帧纹理复制到
+//       canvas 当前纹理（getCurrentTexture）并提交，再等下一次 requestAnimationFrame 之后返回。
+//       呈现器的形状：首选格式(面)；绑定(面, 设备) → 失败时 {码, 文}，成功时把帧纹理格式记在 面.呈现格式；备帧(面, 宽, 高)；交帧(面, 设备, 帧) → Promise。
+function 创建画布呈现器({全局}) {
+  const 首选格式 = () => {
+    try { return 全局.navigator?.gpu?.getPreferredCanvasFormat?.() ?? 'bgra8unorm'; } catch { return 'bgra8unorm'; }
+  };
+  const 等下一帧 = () => new Promise(完成 => {
+    const 后 = () => 全局.setTimeout(完成, 0);
+    if (typeof 全局.requestAnimationFrame === 'function') 全局.requestAnimationFrame(后);
+    else 全局.setTimeout(完成, 16);
+  });
+  return {
+    首选格式,
+    绑定: (面, 设备) => {
+      if (!面.图形上下文) {
+        const 境 = 面.画布.getContext('webgpu');
+        if (!境) return {码: 码.暂不可用, 文: '显示面不能取得 webgpu 上下文'};
+        面.图形上下文 = 境;
+      }
+      面.呈现格式 = 首选格式();
+      面.图形上下文.configure({device: 设备, format: 面.呈现格式, usage: 纹理位.渲染 | 纹理位.复的, alphaMode: 'opaque'});
+      return null;
+    },
+    备帧: (面, 宽, 高) => {
+      if (面.画布.width !== 宽) 面.画布.width = 宽;
+      if (面.画布.height !== 高) 面.画布.height = 高;
+    },
+    交帧: async (面, 设备, 帧) => {
+      const 画纹理 = 面.图形上下文.getCurrentTexture();
+      const 编 = 设备.createCommandEncoder();
+      编.copyTextureToTexture({texture: 帧.物}, {texture: 画纹理},
+        [Math.min(帧.宽, 画纹理.width ?? 帧.宽), Math.min(帧.高, 画纹理.height ?? 帧.高)]);
+      设备.queue.submit([编.finish()]);
+      await 等下一帧();
+    }
+  };
+}
+
+// 文言：图形之能：取器之术由 取图形 注入（浏览器为 navigator.gpu，节点为 Dawn），呈现之器可换，取视图之法亦可换。
+// 汉语：图形处理器与图形显示桥。取图形() 返回 WebGPU 的 GPU 对象（浏览器缺省取 navigator.gpu；Node 注入 Dawn 的实例，取不到时抛出或返回空）；
+//       呈现器缺省为浏览器 canvas 的呈现器，Node 注入 SDL 窗口的呈现器。取视图(纹理) 给渲染附件与纹理绑定用，缺省为 createView()；
+//       Dawn（@kmamal/gpu 0.2.1）的 JS createView() 无论传什么描述都带上 swizzle 而校验失败，Node 改为直接传纹理（WebGPU 允许在要视图处传纹理）。
+export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全局.navigator?.gpu, 呈现器 = null, 取视图 = 纹 => 纹.createView()}) {
+  const 器 = 呈现器 ?? 创建画布呈现器({全局});
   const 物表 = new Map();
   let 下号 = 1;
   const 果 = (码值, 号 = 0, 文 = '', 字节 = 空字节) => [码值, 号, String(文), 字节];
@@ -294,14 +383,15 @@ export function 创建图形能力({全局, 显示 = null}) {
   };
   // 文言：以误域包一事：校验之误为图形校验错误，存储之误为配额已尽，同步之异常亦为校验之误。
   // 汉语：用 WebGPU 错误域包住一次创建或录制：校验错误返回图形校验错误，内存不足返回资源配额已尽，同步抛出的异常（描述字段非法等）也按校验错误处理。
+  //       Dawn（Node）把没被错误域接住的错误直接打印到标准输出，所以凡可能出错的调用都要包住。两个错误域同时弹出、一起等：
+  //       @kmamal/gpu 每约 100 毫秒才处理一次异步回调，分两次等要多花一倍时间。
   const 包校验 = async (设备, 函) => {
     设备.pushErrorScope('out-of-memory');
     设备.pushErrorScope('validation');
     let 值;
     let 异常 = null;
     try { 值 = await 函(); } catch (错误) { 异常 = 错误; }
-    const 校误 = await 设备.popErrorScope().catch(错误 => 错误);
-    const 存误 = await 设备.popErrorScope().catch(错误 => 错误);
+    const [校误, 存误] = await Promise.all([设备.popErrorScope().catch(错误 => 错误), 设备.popErrorScope().catch(错误 => 错误)]);
     if (异常) return {误: 异常归类(异常)};
     if (校误) return {误: {码: 码.校验错误, 文: 消息(校误)}};
     if (存误) return {误: {码: 码.配额已尽, 文: 消息(存误)}};
@@ -310,8 +400,9 @@ export function 创建图形能力({全局, 显示 = null}) {
   const 丢失后 = (设, 结果) => (设.丢失 !== null || 设.失效 ? 失(码.已失效, 设.失效 ? '设备已释放' : '设备已丢失：' + 设.丢失) : 结果);
 
   const 取得设备 = async () => {
-    const 图形 = 全局.navigator?.gpu;
-    if (!图形) return 失(码.暂不可用, '此浏览器不支持 WebGPU');
+    let 图形 = null;
+    try { 图形 = 取图形(); } catch (错误) { return 失(码.暂不可用, 消息(错误)); }
+    if (!图形) return 失(码.暂不可用, '此宿主没有 WebGPU');
     let 适配器 = null;
     try { 适配器 = await 图形.requestAdapter(); } catch (错误) { return 失(码.暂不可用, 消息(错误)); }
     if (!适配器) return 失(码.暂不可用, '没有可用的图形处理器');
@@ -400,17 +491,24 @@ export function 创建图形能力({全局, 显示 = null}) {
     查果.设.物.queue.writeBuffer(查果.项.物, 偏移, 字节);
     return 果(码.成);
   };
+  // 文言：读回：新建映读之暂存，录复制而交之，候映射乃取其字；录与交亦包于误域，不合则为校验之误。
+  // 汉语：读回：新建 MAP_READ | COPY_DST 暂存缓冲，录制复制并提交，映射后取出字节；录制与提交也用错误域包住，校验不通过（如纹理没有复制源用途）
+  //       返回 {误}，不再读出全零。
   const 暂存读 = async (设备, 录制, 长度) => {
-    const 暂 = 设备.createBuffer({size: 长度, usage: 缓冲位.映读 | 缓冲位.复的});
+    let 暂 = null;
     try {
-      const 编 = 设备.createCommandEncoder();
-      录制(编, 暂);
-      设备.queue.submit([编.finish()]);
+      const {误} = await 包校验(设备, () => {
+        暂 = 设备.createBuffer({size: 长度, usage: 缓冲位.映读 | 缓冲位.复的});
+        const 编 = 设备.createCommandEncoder();
+        录制(编, 暂);
+        设备.queue.submit([编.finish()]);
+      });
+      if (误) return {误};
       await 暂.mapAsync(映读);
       const 字节 = new Uint8Array(暂.getMappedRange().slice(0));
       暂.unmap();
-      return 字节;
-    } finally { try { 暂.destroy(); } catch { /* 忽略 */ } }
+      return {字节};
+    } finally { try { 暂?.destroy(); } catch { /* 忽略 */ } }
   };
   const 读回缓冲 = async 参 => {
     const 查果 = 查(参.缓冲, '缓冲');
@@ -422,7 +520,8 @@ export function 创建图形能力({全局, 显示 = null}) {
     if (长度 > 单次交换上限) return 失(码.校验错误, '读回长度超过单次交换上限 16 MiB');
     if (长度 === 0) return 果(码.成);
     try {
-      const 字节 = await 暂存读(查果.设.物, (编, 暂) => 编.copyBufferToBuffer(查果.项.物, 偏移, 暂, 0, 长度), 长度);
+      const {字节, 误} = await 暂存读(查果.设.物, (编, 暂) => 编.copyBufferToBuffer(查果.项.物, 偏移, 暂, 0, 长度), 长度);
+      if (误) return 丢失后(查果.设, 失(误.码, 误.文));
       return 果(码.成, 0, '', 字节);
     } catch (错误) { return 丢失后(查果.设, 失(码.宿主失败, 消息(错误))); }
   };
@@ -471,8 +570,9 @@ export function 创建图形能力({全局, 显示 = null}) {
     if (行 * 纹.高 > 单次交换上限) return 失(码.校验错误, '纹理读回超过单次交换上限 16 MiB');
     const 对齐 = Math.ceil(行 / 256) * 256;
     try {
-      const 原 = await 暂存读(查果.设.物, (编, 暂) => 编.copyTextureToBuffer({texture: 纹.物}, {buffer: 暂, bytesPerRow: 对齐, rowsPerImage: 纹.高},
+      const {字节: 原, 误} = await 暂存读(查果.设.物, (编, 暂) => 编.copyTextureToBuffer({texture: 纹.物}, {buffer: 暂, bytesPerRow: 对齐, rowsPerImage: 纹.高},
         [纹.宽, 纹.高]), 对齐 * 纹.高);
+      if (误) return 丢失后(查果.设, 失(误.码, 误.文));
       const 紧 = new Uint8Array(行 * 纹.高);
       for (let 序 = 0; 序 < 纹.高; 序++) 紧.set(原.subarray(序 * 对齐, 序 * 对齐 + 行), 序 * 行);
       return 果(码.成, 0, '', 紧);
@@ -560,7 +660,7 @@ export function 创建图形能力({全局, 显示 = null}) {
       const 物查 = 查(资.物, 种类);
       if (物查.码) return 失(物查.码, 物查.文);
       if (!同设备(物查, 设号)) return 失(码.校验错误, '绑定资源不属于此设备');
-      项们.push({binding: 资.号, resource: 种类 === '缓冲' ? {buffer: 物查.项.物} : 种类 === '纹理' ? 物查.项.物.createView() : 物查.项.物});
+      项们.push({binding: 资.号, resource: 种类 === '缓冲' ? {buffer: 物查.项.物} : 种类 === '纹理' ? 取视图(物查.项.物) : 物查.项.物});
     }
     const 设备 = 设查.项.物;
     const {值, 误} = await 包校验(设备, () => 设备.createBindGroup({layout: 管查.项.物.getBindGroupLayout(参.组), entries: 项们}));
@@ -604,7 +704,7 @@ export function 创建图形能力({全局, 显示 = null}) {
       通.end();
     } else if (令.种 === '通道') {
       const 清 = Array.isArray(令.清) ? 令.清 : null;
-      const 附件 = {view: 令.纹理.createView(), loadOp: 清 ? 'clear' : 'load', storeOp: 'store'};
+      const 附件 = {view: 取视图(令.纹理), loadOp: 清 ? 'clear' : 'load', storeOp: 'store'};
       if (清) 附件.clearValue = {r: 清[0], g: 清[1], b: 清[2], a: 清[3]};
       const 通 = 编.beginRenderPass({colorAttachments: [附件]});
       for (const 绘 of 令.绘) {
@@ -636,13 +736,14 @@ export function 创建图形能力({全局, 显示 = null}) {
   };
 
   // ---- 图形显示桥：显示面帧纹理与呈现 ----
-  const 首选格式 = () => {
-    try { return 全局.navigator?.gpu?.getPreferredCanvasFormat?.() ?? 'bgra8unorm'; } catch { return 'bgra8unorm'; }
+  const 呈现格式 = 参 => {
+    const 面 = 显示?.取面(参.显示面);
+    return 果(码.成, 0, 面?.呈现格式 ?? 器.首选格式(面));
   };
-  const 呈现格式 = () => 果(码.成, 0, 首选格式());
-  // 文言：帧纹理者，宿主之离屏纹理也；呈现时乃复制于 canvas 当前纹理。如此则 JSPI 挂起之间浏览器自呈 canvas，亦不使帧纹理失效。
-  // 汉语：显示面帧纹理是宿主持有的离屏纹理，呈现时才复制到 canvas 的当前纹理（getCurrentTexture）并提交。
-  //       canvas 的当前纹理在浏览器每次刷新画面时过期，而应用在两次呈现之间会因 JSPI 挂起多次让出事件循环，所以不直接交出它。
+  // 文言：帧纹理者，宿主之离屏纹理也；呈现时乃交于显示面。如此则 JSPI 挂起之间帧纹理不失效，且可读回。
+  // 汉语：显示面帧纹理是宿主持有的离屏纹理（首选格式，渲染目标、采样、复制源与目标用途），呈现时才由呈现器交给显示面：
+  //       浏览器复制到 canvas 当前纹理，Node 画到 SDL 窗口的当前纹理。canvas 的当前纹理在浏览器每次刷新画面时过期，而应用在两次呈现之间会因
+  //       JSPI 挂起多次让出事件循环，所以不直接交出它；离屏纹理也使帧纹理能像普通纹理一样读回。
   const 取帧纹理 = async 参 => {
     const 面 = 显示?.取面(参.显示面);
     if (!面 || 面.已关闭) return 失(码.已失效, '显示面已失效');
@@ -653,27 +754,25 @@ export function 创建图形能力({全局, 显示 = null}) {
     if (面.绑定设备号 && 面.绑定设备号 !== 设号) return 失(码.输入无效, '此显示面已与别的设备绑定');
     const 旧帧 = 面.帧号 ? 物表.get(面.帧号) : null;
     if (旧帧 && !旧帧.失效) return 果(码.成, 面.帧号);
-    const [宽, 高] = 显示.尺寸值(面);
+    let [宽, 高] = 显示.尺寸值(面);
     if (!(宽 > 0 && 高 > 0)) return 失(码.暂不可用, '显示面暂时没有正尺寸');
     const 设备 = 设查.项.物;
-    const 格式 = 首选格式();
-    if (!面.图形上下文) {
-      const 境 = 面.画布.getContext('webgpu');
-      if (!境) return 失(码.暂不可用, '显示面不能取得 webgpu 上下文');
-      面.图形上下文 = 境;
-    }
     if (!面.绑定设备号) {
-      面.图形上下文.configure({device: 设备, format: 格式, usage: 纹理位.渲染 | 纹理位.复的, alphaMode: 'opaque'});
+      const 败 = await 器.绑定(面, 设备);
+      if (败) return 失(败.码, 败.文);
       面.绑定设备号 = 设号;
       面.关闭钩子.push(() => {
         const 帧 = 面.帧号 ? 物表.get(面.帧号) : null;
         if (帧) 帧.失效 = true;
         try { 面.离屏?.destroy(); } catch { /* 忽略 */ }
       });
+      // 文言：绑定或易其面（节点易窗），尺寸再量之。汉语：绑定可能换了显示面的底层窗口（Node 换成 WebGPU 窗口），重新量一次尺寸。
+      [宽, 高] = 显示.尺寸值(面);
+      if (!(宽 > 0 && 高 > 0)) return 失(码.暂不可用, '显示面暂时没有正尺寸');
     }
     面.模式 = '图形';
-    if (面.画布.width !== 宽) 面.画布.width = 宽;
-    if (面.画布.height !== 高) 面.画布.height = 高;
+    器.备帧?.(面, 宽, 高);
+    const 格式 = 面.呈现格式;
     if (!面.离屏 || 面.离屏宽 !== 宽 || 面.离屏高 !== 高) {
       const {值, 误} = await 包校验(设备, () => 设备.createTexture({size: [宽, 高], format: 格式,
         usage: 纹理位.渲染 | 纹理位.采样 | 纹理位.复源 | 纹理位.复的}));
@@ -686,12 +785,7 @@ export function 创建图形能力({全局, 显示 = null}) {
     面.帧号 = 登记('纹理', 设号, 面.离屏, {宽, 高, 格式, 每像素: 4, 帧: true, 显示面: 面.号});
     return 丢失后(设查.项, 果(码.成, 面.帧号));
   };
-  const 等下一帧 = () => new Promise(完成 => {
-    const 后 = () => 全局.setTimeout(完成, 0);
-    if (typeof 全局.requestAnimationFrame === 'function') 全局.requestAnimationFrame(后);
-    else 全局.setTimeout(完成, 16);
-  });
-  // 文言：呈现：复帧于 canvas，交之，废帧号，候下一画帧而返。汉语：呈现：把帧纹理复制到 canvas 当前纹理并提交，作废本帧句柄，等下一次 requestAnimationFrame 之后返回。
+  // 文言：呈现：废帧号，交帧于呈现之器，候其可受下一帧而返。汉语：呈现：作废本帧句柄，由呈现器把帧纹理交给显示面，等可以接受下一帧时返回。
   const 呈现 = async 参 => {
     const 面 = 显示?.取面(参.显示面);
     if (!面 || 面.已关闭) return 失(码.已失效, '显示面已失效');
@@ -701,14 +795,7 @@ export function 创建图形能力({全局, 显示 = null}) {
     面.帧号 = 0;
     const 设 = 物表.get(面.绑定设备号);
     if (!设 || 设.失效 || 设.丢失 !== null) return 失(码.已失效, '显示面绑定的设备已失效');
-    try {
-      const 画纹理 = 面.图形上下文.getCurrentTexture();
-      const 编 = 设.物.createCommandEncoder();
-      编.copyTextureToTexture({texture: 面.离屏}, {texture: 画纹理},
-        [Math.min(帧.宽, 画纹理.width ?? 帧.宽), Math.min(帧.高, 画纹理.height ?? 帧.高)]);
-      设.物.queue.submit([编.finish()]);
-    } catch (错误) { return 失(码.宿主失败, 消息(错误)); }
-    await 等下一帧();
+    try { await 器.交帧(面, 设.物, 帧); } catch (错误) { return 失(码.宿主失败, 消息(错误)); }
     return 果(码.成);
   };
 
