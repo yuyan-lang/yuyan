@@ -2,7 +2,7 @@
 import {创建浏览器宿主} from './宿主.mjs';
 import {核对接口装载} from './接口核对.mjs';
 
-// 文言：先验浏览器具客器所需之能（WasmGC、JSPI）；不具则蒙全页以示，惟留页首之栏。告末有“我明白”，按之则撤告而强行续览，功能不全；同一标签之后诸页不复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间显示“正在检查浏览器”，不支持则显示全页提示，页首导航栏仍可点击。提示末尾有“我明白”按钮：点击后关闭提示、强行继续访问（功能不全），同一标签页之后的页面不再提示。
+// 文言：先验浏览器具客器所需之能（WasmGC、JSPI）；不具则蒙全页以示，惟留页首之栏。告末有“我明白”，按之则撤告而续览，功能不全；同一标签之后诸页不复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间显示“正在检查浏览器”，不支持则显示全页提示，页首导航栏仍可点击。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全），同一标签页之后的页面不再提示。
 const 检查层标识 = '豫言浏览器检查';
 const 知晓键 = '豫言浏览器检查已知晓';
 const 已知晓 = () => { try { return sessionStorage.getItem(知晓键) === '1'; } catch { return false; } };
@@ -34,7 +34,7 @@ const 显示不支持 = 缺 => {
     '<h2 style="margin:0 0 .5em">您的浏览器版本过旧，无法运行本页面</h2>'
     + '<p style="margin:0 0 .5em">请将浏览器更新到 Safari 27、Chrome 137、Edge 137 或 Firefox 153 及以上版本后再访问。</p>'
     + `<p style="margin:0 0 1em;font-size:13px;opacity:.7">缺少：${缺}</p>`
-    + '<p style="margin:0 0 .75em">您也可以强行继续访问，但部分功能将无法使用。</p>'
+    + '<p style="margin:0 0 .75em">您也可以继续访问，但部分功能将无法使用。</p>'
     + '<button type="button" style="font:inherit;padding:.4em 2em;border:0;border-radius:6px;background:#1d1b18;color:#f5f2eb;cursor:pointer">我明白</button>');
   const 钮 = 层?.querySelector('button');
   钮?.addEventListener('click', () => {
