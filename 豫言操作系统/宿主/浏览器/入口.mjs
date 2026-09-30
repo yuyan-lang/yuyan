@@ -2,7 +2,7 @@
 import {创建浏览器宿主} from './宿主.mjs';
 import {核对接口装载} from './接口核对.mjs';
 
-// 文言：先验浏览器具客器所需之能（WasmGC、JSPI）；不具则蒙全页以示，惟留页首之栏。告末有“我明白”，按之则撤告而续览，功能不全；同一标签之后诸页不复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间显示“正在检查浏览器”，不支持则显示全页提示，页首导航栏仍可点击。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全），同一标签页之后的页面不再提示。
+// 文言：先验浏览器具客器所需之能（WasmGC、JSPI）；不具则蒙全页以示，页首之栏亦蒙焉。告末有“我明白”，按之则撤告而续览，功能不全；同一标签之后诸页不复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间显示“正在检查浏览器”，不支持则显示覆盖整页（含页首导航栏）的提示。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全），同一标签页之后的页面不再提示。
 const 检查层标识 = '豫言浏览器检查';
 const 知晓键 = '豫言浏览器检查已知晓';
 const 已知晓 = () => { try { return sessionStorage.getItem(知晓键) === '1'; } catch { return false; } };
@@ -18,10 +18,7 @@ const 显示检查层 = 文 => {
     层.id = 检查层标识;
     层.setAttribute('role', 'alertdialog');
     层.setAttribute('aria-modal', 'true');
-    // 待办事项：文言：顶距惟初建时一量，视口后变（如转屏）则不随。汉语：顶边只在创建时量一次，之后视口变化（如手机转屏）不会跟着调整。
-    const 首 = document.querySelector('body > header');
-    const 顶 = 首 ? Math.max(0, 首.getBoundingClientRect().bottom) : 0;
-    层.style.cssText = `position:fixed;left:0;right:0;bottom:0;top:${顶}px;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(245,242,235,.97);color:#1d1b18;font:16px/1.7 system-ui,sans-serif;`;
+    层.style.cssText = 'position:fixed;top:0;right:0;bottom:0;left:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(245,242,235,.97);color:#1d1b18;font:16px/1.7 system-ui,sans-serif;';
     document.body.appendChild(层);
   }
   层.innerHTML = `<div style="max-width:32em;text-align:center">${文}</div>`;
