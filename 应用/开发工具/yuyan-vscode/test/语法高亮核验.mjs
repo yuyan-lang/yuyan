@@ -122,7 +122,7 @@ export function 对照文件(源码, 标记们, 语法, 文件名) {
 
 async function 主程序(根, 记录路径, 豫言程序) {
   const 语法 = await 读取TextMate语法();
-  const 超时毫秒 = Math.max(1000, Number(process.env.YY_GRAMMAR_TIMEOUT_MS) || 5000);
+  const 超时毫秒 = Math.max(1000, Number(process.env.YY_GRAMMAR_TIMEOUT_MS) || 500000);
   const 缓存目录 = path.join(根, '.yybuild', '语法高亮核验');
   fs.mkdirSync(缓存目录, {recursive: true});
   const 解析器身份 = createHash('sha256')
@@ -144,7 +144,12 @@ async function 主程序(根, 记录路径, 豫言程序) {
       输出 = fs.readFileSync(缓存文件, 'utf8');
       汇总.缓存命中++;
     } else {
-      const 解析 = spawnSync(豫言程序, ['文件', 根, 文件], {
+      // 文言：豫器为 .wasm 者，托节点宿主行之。
+      // 汉语：解析器是 .wasm 时经节点宿主运行；Wasm 文件不能直接执行。
+      const [命令, 参数] = 豫言程序.endsWith('.wasm')
+        ? [process.execPath, [path.join(根, '豫言操作系统/宿主/节点/宿主.cjs'), 豫言程序, '文件', 根, 文件]]
+        : [豫言程序, ['文件', 根, 文件]];
+      const 解析 = spawnSync(命令, 参数, {
         cwd: 根, encoding: 'utf8', timeout: 超时毫秒, maxBuffer: 32 * 1024 * 1024
       });
       if (解析.error?.code === 'ETIMEDOUT') {
