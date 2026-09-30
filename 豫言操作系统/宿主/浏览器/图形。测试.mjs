@@ -3,7 +3,7 @@
 //       用手写的伪文档、伪 canvas 与伪 WebGPU 运行，不需要 Wasm 与 JSDOM（CI 的全树测试可直接跑）；真实浏览器行为见图形显示浏览器适配的一致性验证。
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import {创建显示能力, 创建图形能力, 状态码, 译键, 事件种类, 单次交换上限} from './图形.mjs';
+import {创建显示能力, 创建图形能力, 创建字体能力, 状态码, 译键, 事件种类, 单次交换上限} from './图形.mjs';
 
 const 码 = 状态码;
 const 编码 = new TextEncoder();
@@ -431,4 +431,37 @@ test('图形显示：重复取得同一帧纹理；呈现复制到 canvas 当前
   画布.isConnected = false;
   assert.equal((await 调('呈现.取纹理', {显示面: 面, 设备: 设}))[0], 码.已失效);
   assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 纹理: 帧二, 清: [0, 0, 1, 1], 绘: []}]}))[0], 码.已失效, '显示面关闭后帧纹理失效');
+});
+
+// ---------------------------------------------------------------------------
+// 字体：页面声明的字体文件
+// ---------------------------------------------------------------------------
+test('字体：按 link[data-yy-字体] 取回并缓存；同族名同号；按偏移切片；越界为输入无效；未声明为资源不存在；取回失败为宿主操作失败', async () => {
+  const 链接 = (族名, 址, 序号 = null) => ({href: 址, getAttribute: 名 => (名 === 'data-yy-字体' ? 族名 : 名 === 'data-yy-字体序号' ? 序号 : 名 === 'href' ? 址 : null)});
+  const 根 = {querySelectorAll: 选 => (选 === 'link[data-yy-字体]' ? [链接('无衬线', 'https://例/甲.ttc', '1'), 链接('衬线', 'https://例/坏.ttf')] : [])};
+  let 取次 = 0;
+  const 全局 = {fetch: async 址 => {
+    取次++;
+    if (址.endsWith('坏.ttf')) return {ok: false, status: 404};
+    return {ok: true, status: 200, arrayBuffer: async () => Uint8Array.from([0x74, 0x74, 0x63, 0x66, 0, 2, 0, 0, 0, 0, 0, 2, 9]).buffer};
+  }};
+  const 能 = 创建字体能力({根, 全局, 单次上限: 8});
+  const 取 = await 能.调用('取得', '无衬线');
+  assert.equal(取[0], 码.成, 取[5]);
+  assert.equal(取[2], 13);
+  assert.equal(取[3], 1, '字体集序号取 data-yy-字体序号');
+  const 再取 = await 能.调用('取得', '无衬线');
+  assert.equal(再取[1], 取[1], '同族名同号');
+  assert.equal(取次, 1, '只取回一次');
+  const 读 = 能.调用('读取', '', 取[1], 0, 4);
+  assert.equal(读[0], 码.成);
+  assert.deepEqual([...读[4]], [0x74, 0x74, 0x63, 0x66]);
+  assert.equal(能.调用('读取', '', 取[1], 0, 0)[4].length, 0);
+  assert.equal(能.调用('读取', '', 取[1], 10, 4)[0], 码.输入无效);
+  assert.equal(能.调用('读取', '', 取[1], 0, 9)[0], 码.配额已尽, '超过单次上限');
+  assert.equal(能.调用('读取', '', 99, 0, 1)[0], 码.已失效);
+  assert.equal((await 能.调用('取得', '等宽'))[0], 码.不存在);
+  const 坏 = await 能.调用('取得', '衬线');
+  assert.equal(坏[0], 码.宿主失败);
+  assert.match(坏[5], /404/);
 });

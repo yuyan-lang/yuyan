@@ -828,3 +828,56 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
   const 状态 = () => ({图形对象数: [...物表.values()].filter(项 => !项.失效).length});
   return {调用, 清理, 状态};
 }
+
+// ---------------------------------------------------------------------------
+// 字体：页面声明的字体文件
+// ---------------------------------------------------------------------------
+// 文言：字体之能：页以 <link data-yy-字体="族名" href> 声明字体之文件；初取乃全取而存之，读则切之。族名未声明者返资源不存在。
+// 汉语：字体接口的浏览器宿主实现（原语 豫言_浏览器_字体(操作, 族名, 号, 偏移, 长度)，返回 [码, 号, 长度, 字体集序号, 字节, 文字]）。
+//       页面用 <link data-yy-字体="族名" href="…" data-yy-字体序号="0"> 声明字体文件（可兼作 rel="preload" as="font"）；取得 第一次按 href
+//       取回整个文件并缓存，之后同一族名得同一个号；读取 按偏移切片。没有声明的族名返回资源不存在。待办事项：大文件整取占内存，以后可改按 Range 分段取。
+export function 创建字体能力({根, 全局, 单次上限 = 单次交换上限}) {
+  const 空 = new Uint8Array(0);
+  const 果 = (码值, 号 = 0, 长度 = 0, 序号 = 0, 字节 = 空, 文 = '') => [码值, 号, 长度, 序号, 字节, 文];
+  const 表 = new Map();
+  const 族号 = new Map();
+  let 下号 = 1;
+  const 找声明 = 族名 => [...(根?.querySelectorAll?.('link[data-yy-字体]') ?? [])].find(元素 => 元素.getAttribute('data-yy-字体') === 族名);
+  const 取得 = async 族名 => {
+    const 旧 = 族号.get(族名);
+    if (旧) { const 项 = await 旧; return 项.码 ? 果(项.码, 0, 0, 0, 空, 项.文) : 果(码.成, 项.号, 项.字节.length, 项.序号); }
+    const 元素 = 找声明(族名);
+    if (!元素) return 果(码.不存在, 0, 0, 0, 空, '页面没有声明字体「' + 族名 + '」（<link data-yy-字体="' + 族名 + '" href="…">）');
+    const 序号 = Math.max(0, Math.trunc(Number(元素.getAttribute('data-yy-字体序号') ?? 0)) || 0);
+    const 址 = 元素.href || 元素.getAttribute('href') || '';
+    const 取 = (async () => {
+      try {
+        const 应 = await 全局.fetch(址);
+        if (!应.ok) return {码: 码.宿主失败, 文: '取字体文件失败：HTTP ' + 应.status + ' ' + 址};
+        const 字节 = new Uint8Array(await 应.arrayBuffer());
+        const 号 = 下号++;
+        表.set(号, 字节);
+        return {码: 码.成, 号, 字节, 序号};
+      } catch (错) { return {码: 码.宿主失败, 文: '取字体文件失败：' + 消息(错)}; }
+    })();
+    族号.set(族名, 取);
+    const 项 = await 取;
+    if (项.码) { 族号.delete(族名); return 果(项.码, 0, 0, 0, 空, 项.文); }
+    return 果(码.成, 项.号, 项.字节.length, 项.序号);
+  };
+  const 读取 = (号, 偏移, 长度) => {
+    const 字节 = 表.get(号);
+    if (!字节) return 果(码.已失效, 0, 0, 0, 空, '字体号无效');
+    if (!(Number.isSafeInteger(偏移) && Number.isSafeInteger(长度) && 偏移 >= 0 && 长度 >= 0 && 偏移 + 长度 <= 字节.length)) {
+      return 果(码.输入无效, 0, 0, 0, 空, '读取范围越出字体文件');
+    }
+    if (长度 > 单次上限) return 果(码.配额已尽, 0, 0, 0, 空, '单次读取超过上限');
+    return 果(码.成, 号, 长度, 0, 字节.slice(偏移, 偏移 + 长度));
+  };
+  const 调用 = (操作, 族名, 号, 偏移, 长度) => {
+    if (操作 === '取得') return 取得(族名);
+    if (操作 === '读取') return 读取(号, 偏移, 长度);
+    return 果(码.输入无效, 0, 0, 0, 空, '未知的字体操作：' + 操作);
+  };
+  return {调用};
+}

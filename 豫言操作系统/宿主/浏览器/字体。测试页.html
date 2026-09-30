@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>豫言字体探针</title>
+<link rel="preload" as="font" crossorigin href="字体/测试字体.ttf" data-yy-字体="无衬线">
+<link rel="preload" as="font" crossorigin href="字体/测试字体.ttf" data-yy-字体="衬线">
+<link rel="preload" as="font" crossorigin href="字体/测试字体.ttf" data-yy-字体="等宽">
+<style>#结果{white-space:pre-wrap;font:14px/1.5 monospace}</style></head>
+<body>
+  <pre id="结果"></pre>
+  <script type="module">
+    // 文言：字体探针之页：以 link 声明三标准族名之字体文件，以输出函数收探针之行。
+    // 汉语：字体探针测试页。把字体探针的浏览器构建产物（入口.mjs、程序.wasm、图形.mjs……）放在本页同目录，另把一份 TrueType 字体放到
+    //       字体/测试字体.ttf（测试字体不入库，见 豫言操作系统/适配/字体诺节/一致性验证/说明.汉语.md），用静态服务器打开。三个标准族名都声明成这一份字体；
+    //       探针每项结果经输出函数写进 #结果。地址带 ?等待=毫秒 时插入一张由服务器延迟响应的图片（/api/slow），拖住 load 事件，供无头 Chrome 的 --dump-dom 在探针结束后导出页面。
+    import {启动豫言浏览器应用} from './入口.mjs';
+    const 结果 = document.getElementById('结果');
+    const 参 = new URL(location.href).searchParams;
+    if (参.has('等待')) {
+      const 图 = new Image();
+      图.alt = '';
+      图.src = '/api/slow?d=' + encodeURIComponent(参.get('等待'));
+      document.body.append(图);
+    }
+    try {
+      const 宿主 = await 启动豫言浏览器应用({输出: 文 => { 结果.textContent += 文; }});
+      await 宿主.完成;
+      document.documentElement.dataset.探针 = '完成';
+    } catch (错) {
+      结果.textContent += '\n运行失败：' + String(错?.message ?? 错);
+      document.documentElement.dataset.探针 = '失败';
+    }
+  </script>
+</body>
+</html>
