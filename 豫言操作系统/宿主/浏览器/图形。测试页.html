@@ -47,6 +47,11 @@
       框.value = '豫言';
       框.dispatchEvent(new CompositionEvent('compositionend', {bubbles: true, data: '豫言'}));
       键('keydown', 'Shift');
+      键('keyup', 'Shift');
+      键('keydown', 'Tab');
+      键('keydown', 'Delete');
+      // 文言：滚轮纵量除以像素比，令物理之量恰为三十。汉语：滚轮纵向量按 CSS 像素给，除以像素比，使宿主换算后的物理像素恰为 30。
+      画布.dispatchEvent(new WheelEvent('wheel', {bubbles: true, cancelable: true, deltaMode: 0, deltaX: 0, deltaY: 30 / 比, ...点(12, 9)}));
       画布.remove();
     };
     let 尾 = '';

@@ -14,9 +14,16 @@ const 解码器 = new TextDecoder('utf-8', {ignoreBOM: true});
 const 文字化 = 值 => (值 instanceof Uint8Array ? 解码器.decode(值) : String(值 ?? ''));
 const 消息 = 错 => String(错?.message ?? 错);
 
-// 文言：SDL 之键名译为语义键名：七者有定名，单一码点者原样，余皆不报。汉语：SDL 虚拟键名译成规范的语义键名：七个固定键名；单个 Unicode 标量值原样交付；
-//       其余键（shift、tab、f1……）不交付。SDL 的回车键名为 return，小键盘回车为 enter，两者都译为回车。
-const SDL键名表 = Object.freeze({left: '左', right: '右', up: '上', down: '下', return: '回车', enter: '回车', backspace: '退格', space: '空格'});
+// 文言：SDL 之键名译为语义键名：首版七者，零点二版增编辑与修饰之键；单一码点者原样，余皆不报。
+// 汉语：SDL 虚拟键名译成规范的语义键名：0.1.0 的七个，0.2.0 增加 删除、起首、末尾、上翻页、下翻页、制表、退出 与修饰键 上档、控制、交替、命令；
+//       单个 Unicode 标量值原样交付；其余键（f1、capsLock……）不交付。SDL 的回车键名为 return，小键盘回车为 enter，两者都译为回车；
+//       左右两个修饰键同名（@kmamal/sdl 0.11 把右 GUI 键拼成 gUI，一并收下）。
+const SDL键名表 = Object.freeze({left: '左', right: '右', up: '上', down: '下', return: '回车', enter: '回车', backspace: '退格', space: '空格',
+  delete: '删除', home: '起首', end: '末尾', pageUp: '上翻页', pageDown: '下翻页', tab: '制表', escape: '退出',
+  shift: '上档', ctrl: '控制', alt: '交替', gui: '命令', gUI: '命令'});
+const 修饰键名 = new Set(['上档', '控制', '交替', '命令']);
+// 文言：滚一格当四十八逻辑像素。汉语：SDL 的滚轮量以格计，一格折成 48 个逻辑像素再乘像素比。
+const 滚动每格逻辑像素 = 48;
 export const 译SDL键 = 事 => {
   const 键 = 事?.key;
   if (typeof 键 !== 'string') return null;
@@ -96,12 +103,32 @@ export function 创建节点图形能力({创建显示面表, 创建图形能力
     面.窗口 = 窗;
     const {推, 关闭} = 面.回调;
     窗.on('close', () => { if (面.窗口 === 窗) 关闭(); });
+    // 文言：修饰之键记其按住者，窗失焦则补其抬起。汉语：记下按着的修饰键，窗口失去焦点时为它们补发按键抬起。
+    const 按住修饰 = new Set();
     const 按键 = 种 => 事 => {
       const 键 = 译SDL键(事);
-      if (键 !== null) 推({种, 文: 键});
+      if (键 === null) return;
+      if (修饰键名.has(键)) {
+        if (种 === 事件种类.按键按下) 按住修饰.add(键);
+        else 按住修饰.delete(键);
+      }
+      推({种, 文: 键});
     };
     窗.on('keyDown', 按键(事件种类.按键按下));
     窗.on('keyUp', 按键(事件种类.按键抬起));
+    窗.on('blur', () => {
+      for (const 键 of 按住修饰) 推({种: 事件种类.按键抬起, 文: 键});
+      按住修饰.clear();
+    });
+    // 文言：滚轮之格折为物理之素；SDL 纵量向上为正，规范向下为正，故反之；flipped 则再反。
+    // 汉语：滚轮：格数乘 48 个逻辑像素与像素比得物理像素；SDL 的纵向量向上为正，规范向下为正，所以取反；flipped（自然滚动）时方向再反。
+    窗.on('mouseWheel', 事 => {
+      const [甲, 乙] = 坐标(窗, 事);
+      const 比 = 窗.width > 0 ? 窗.pixelWidth / 窗.width : 1;
+      const 向 = 事.flipped ? -1 : 1;
+      推({种: 事件种类.滚轮, 甲, 乙, 丙: Math.round(Number(事.dx || 0) * 向 * 滚动每格逻辑像素 * 比) || 0,
+        丁: Math.round(-Number(事.dy || 0) * 向 * 滚动每格逻辑像素 * 比) || 0});
+    });
     // 文言：SDL 之文字输入即输入法所成之文。汉语：SDL 的 textInput 是已提交的文字（含输入法提交的文字）。待办事项：组字期间的按键仍会交付（@kmamal/sdl 不给组字事件）。
     窗.on('textInput', 事 => { if (事.text) 推({种: 事件种类.文字输入, 文: String(事.text)}); });
     窗.on('mouseMove', 事 => {
@@ -141,6 +168,9 @@ export function 创建节点图形能力({创建显示面表, 创建图形能力
     已断开: 面 => Boolean(面.窗口?.destroyed),
     // 文言：尺以物理之素：取窗之 pixelWidth、pixelHeight，高分之屏为点之倍。汉语：尺寸按物理像素，取 SDL 窗口的 pixelWidth、pixelHeight（高分屏上是点数的倍数）。
     尺寸值: 面 => (面.窗口 && !面.窗口.destroyed ? [面.窗口.pixelWidth, 面.窗口.pixelHeight] : [0, 0]),
+    // 文言：像素比为窗之物理宽与点宽之比。汉语：像素比 = 窗口像素宽 ÷ 点宽。待办事项：输入区域（设输入区域）无从设置——@kmamal/sdl 没有 SDL_SetTextInputRect，
+    //       候选框位置由系统定；以后可考虑经 node:ffi 调同一个 libSDL2。
+    像素比值: 面 => (面.窗口 && !面.窗口.destroyed ? [面.窗口.pixelWidth, 面.窗口.width] : [0, 0]),
     // 文言：素以 SDL 之 rgba32 提交，于小端之机即红绿蓝透之序。汉语：像素用 SDL 的 rgba32 格式提交（小端机器上即内存中 R、G、B、A 的次序），不混合，原样覆盖。
     画: (面, 宽, 高, 字节) => {
       面.窗口.render(宽, 高, 宽 * 4, 'rgba32', Buffer.from(字节.buffer, 字节.byteOffset, 字节.length));
@@ -289,7 +319,7 @@ export function 创建节点图形能力({创建显示面表, 创建图形能力
   const 图形 = 创建图形能力({全局: {}, 显示, 取图形: 载GPU, 呈现器: 窗口呈现器, 取视图: 纹 => 纹});
   // 文言：二口：参皆经值桥，整数为 BigInt，文为字节。汉语：两个原语；值桥传来的整数是 BigInt、文字是字节，这里转成数与字符串。
   const 原语 = Object.freeze({
-    豫言_节点_显示: (操作, 号, 甲, 乙, 字节) => 显示.调用(文字化(操作), Number(号), Number(甲), Number(乙), 字节),
+    豫言_节点_显示: (操作, 号, 甲, 乙, 字节, 丙 = 0, 丁 = 0) => 显示.调用(文字化(操作), Number(号), Number(甲), Number(乙), 字节, Number(丙), Number(丁)),
     豫言_节点_图形: (操作, 参数, 字节) => 图形.调用(文字化(操作), 文字化(参数), 字节),
     豫言_诺节_字体: 字体原语
   });

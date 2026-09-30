@@ -58,6 +58,7 @@ const 造文档 = () => {
 class 伪图像 { constructor(数据, 宽, 高) { this.data = 数据; this.width = 宽; this.height = 高; } }
 const 造全局 = (额外 = {}) => ({devicePixelRatio: 2, ImageData: 伪图像, setTimeout, ...额外});
 const 事件 = (类, 字段) => Object.assign(new Event(类), 字段);
+const 可取消事件 = (类, 字段) => Object.assign(new Event(类, {cancelable: true}), 字段);
 
 const 造显示 = ({关闭 = () => false} = {}) => {
   const 文档 = 造文档();
@@ -126,10 +127,12 @@ test('提交像素画面：宽高与字节数不合为输入无效，尺寸不�
   assert.deepEqual([图.width, 图.height, 图.data.length, 图.data[0], 横, 纵], [4, 2, 32, 7, 0, 0]);
 });
 
-test('键名译法：七个语义键、单个标量值原样，其余不交付', () => {
+test('键名译法：0.1.0 的七个语义键、0.2.0 的七个编辑键与四个修饰键、单个标量值原样，其余不交付', () => {
   assert.deepEqual(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', 'Backspace', ' '].map(译键), ['左', '右', '上', '下', '回车', '退格', '空格']);
+  assert.deepEqual(['Delete', 'Home', 'End', 'PageUp', 'PageDown', 'Tab', 'Escape'].map(译键), ['删除', '起首', '末尾', '上翻页', '下翻页', '制表', '退出']);
+  assert.deepEqual(['Shift', 'Control', 'Alt', 'Meta'].map(译键), ['上档', '控制', '交替', '命令']);
   assert.deepEqual(['a', 'Z', '中', '😀'].map(译键), ['a', 'Z', '中', '😀']);
-  assert.deepEqual(['Shift', 'Tab', 'F1', 'Process', 'Unidentified', ''].map(译键), [null, null, null, null, null, null]);
+  assert.deepEqual(['F1', 'CapsLock', 'Process', 'Unidentified', ''].map(译键), [null, null, null, null, null]);
 });
 
 test('输入事件：指针坐标按像素比取整、相邻移动合并、按键与输入法文字、组字中不交付、关闭后先报关闭再为资源已失效', async () => {
@@ -142,7 +145,7 @@ test('输入事件：指针坐标按像素比取整、相邻移动合并、按�
   assert.ok(等 instanceof Promise, '无事件时挂起');
   assert.equal(显示.调用('等待', 号)[0], 码.输入无效, '第二个并发等候者得输入无效');
   画布.dispatchEvent(事件('pointerdown', {clientX: 10 + 5.25, clientY: 20 + 2.5, button: 0, pointerId: 1}));
-  assert.deepEqual(await 等, [码.成, 事件种类.指针按下, 10, 5, 0, '']);
+  assert.deepEqual(await 等, [码.成, 事件种类.指针按下, 10, 5, 0, '', 0]);
   assert.equal(框.聚焦次数, 1, '点击 canvas 聚焦输入框');
   画布.dispatchEvent(事件('pointermove', {clientX: 10 + 1, clientY: 20 + 1}));
   画布.dispatchEvent(事件('pointermove', {clientX: 10 + 3, clientY: 20 + 4}));
@@ -162,18 +165,21 @@ test('输入事件：指针坐标按像素比取整、相邻移动合并、按�
   框.dispatchEvent(事件('compositionstart', {}));
   框.dispatchEvent(事件('compositionend', {data: '言'}));
   const 取 = () => 显示.调用('等待', 号);
-  assert.deepEqual(取(), [码.成, 事件种类.指针移动, 6, 8, 0, ''], '两次移动合并为最后一次');
-  assert.deepEqual(取(), [码.成, 事件种类.指针抬起, 6, 8, 2, '']);
-  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '左']);
-  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '回车']);
-  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '中']);
-  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '豫言'], '组字期间的 input 与按键不交付');
-  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '言'], '输入框为空时取 compositionend 的 data');
+  assert.deepEqual(取(), [码.成, 事件种类.指针移动, 6, 8, 0, '', 0], '两次移动合并为最后一次');
+  assert.deepEqual(取(), [码.成, 事件种类.指针抬起, 6, 8, 2, '', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '左', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '上档', 0], '0.2.0 交付修饰键');
+  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '回车', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '中', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '豫言', 0], '组字期间的 input 与按键不交付');
+  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '言', 0], '输入框为空时取 compositionend 的 data');
   assert.equal(框.value, '');
+  框.dispatchEvent(事件('blur', {}));
+  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '上档', 0], '失去焦点时为按着的修饰键补发抬起');
   const 再等 = 取();
   画布.isConnected = false;
   显示.关闭面(显示.取面(号));
-  assert.deepEqual(await 再等, [码.成, 事件种类.显示面已关闭, 0, 0, 0, '']);
+  assert.deepEqual(await 再等, [码.成, 事件种类.显示面已关闭, 0, 0, 0, '', 0]);
   assert.equal(取()[0], 码.已失效);
   assert.ok(!文档.元素们.includes(框), '关闭时移除输入框');
 });
@@ -464,4 +470,27 @@ test('字体：按 link[data-yy-字体] 取回并缓存；同族名同号；按�
   const 坏 = await 能.调用('取得', '衬线');
   assert.equal(坏[0], 码.宿主失败);
   assert.match(坏[5], /404/);
+});
+
+test('0.2.0：滚轮按 deltaMode 折成物理像素并合并相邻两次；制表键阻止默认动作；像素比；输入区域移动隐形输入框', () => {
+  const {显示, 加画布, 文档} = 造显示();
+  const 画布 = 加画布('甲');
+  const 号 = 显示.调用('取得', 0, 0, 0, 字('甲'))[1];
+  const 框 = 文档.元素们.find(元 => 元.getAttribute('data-yy-显示面输入') === '甲');
+  const 滚 = 可取消事件('wheel', {clientX: 10 + 5, clientY: 20 + 5, deltaMode: 0, deltaX: 0, deltaY: 30});
+  画布.dispatchEvent(滚);
+  assert.equal(滚.defaultPrevented, true, '滚轮阻止页面滚动');
+  画布.dispatchEvent(事件('wheel', {clientX: 10 + 6, clientY: 20 + 6, deltaMode: 1, deltaX: 1, deltaY: 2}));
+  assert.deepEqual(显示.调用('等待', 号), [码.成, 事件种类.滚轮, 12, 12, 96, '', 60 + 192], '像素式乘像素比二，行式每行 48 逻辑像素；相邻两次合并、位置取新');
+  const 制表 = 可取消事件('keydown', {key: 'Tab'});
+  框.dispatchEvent(制表);
+  assert.equal(制表.defaultPrevented, true, '制表键不让焦点离开');
+  assert.deepEqual(显示.调用('等待', 号), [码.成, 事件种类.按键按下, 0, 0, 0, '制表', 0]);
+  assert.deepEqual(显示.调用('像素比', 号).slice(0, 3), [码.成, 2000000, 1000000]);
+  assert.deepEqual(显示.调用('输入区域', 号, 40, 20, 字(''), 4, 30).slice(0, 1), [码.成]);
+  assert.equal(框.style.left, (10 + 20) + 'px');
+  assert.equal(框.style.top, (20 + 10) + 'px');
+  assert.equal(框.style.height, '15px');
+  assert.equal(显示.调用('输入区域', 号, 0, 0, 字(''), -1, 0)[0], 码.输入无效);
+  assert.equal(显示.调用('像素比', 999)[0], 码.已失效);
 });

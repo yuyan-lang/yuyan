@@ -147,7 +147,8 @@ const 造 = ({授权 = [['甲', {宽: 32, 高: 24}], ['乙', {宽: 8, 高: 4}]],
     throw Error('找不到原生依赖 ' + 名);
   };
   const 能 = 创建节点图形能力({创建显示面表, 创建图形能力, 状态码, 事件种类, 载入原生, 授权显示面: new Map(授权), 后台, 写错误: 文 => 误们.push(文)});
-  const 显 = (操作, 号 = 0, 甲 = 0, 乙 = 0, 字节 = new Uint8Array()) => 能.原语.豫言_节点_显示(字(操作), BigInt(号), BigInt(甲), BigInt(乙), 字节);
+  const 显 = (操作, 号 = 0, 甲 = 0, 乙 = 0, 字节 = new Uint8Array(), 丙 = 0, 丁 = 0) =>
+    能.原语.豫言_节点_显示(字(操作), BigInt(号), BigInt(甲), BigInt(乙), 字节, BigInt(丙), BigInt(丁));
   const 图 = (操作, 参 = {}, 字节 = new Uint8Array()) => 能.原语.豫言_节点_图形(字(操作), 字(JSON.stringify(参)), 字节);
   const 取面 = 名 => { const 果 = 显('取得', 0, 0, 0, 字(名)); assert.equal(果[0], 码.成, 果[5]); return 果[1]; };
   return {能, sdl, gpu, 误们, 显, 图, 取面};
@@ -214,12 +215,15 @@ test('尺寸按物理像素；提交像素：宽高与字节数不合为输入�
   assert.deepEqual([画.宽, 画.高, 画.跨, 画.格式, 画.缓.length, 画.缓[0]], [64, 48, 256, 'rgba32', 64 * 48 * 4, 9]);
 });
 
-test('SDL 键名译法：七个语义键、单个标量值原样，字母随 Shift 与大写锁定变大小写，其余不交付', () => {
+test('SDL 键名译法：七个语义键与 0.2.0 的编辑键、修饰键，单个标量值原样，字母随 Shift 与大写锁定变大小写，其余不交付', () => {
   assert.deepEqual(['left', 'right', 'up', 'down', 'return', 'enter', 'backspace', 'space'].map(键 => 译SDL键({key: 键})),
     ['左', '右', '上', '下', '回车', '回车', '退格', '空格']);
   assert.deepEqual([{key: 'a'}, {key: 'a', shift: true}, {key: 'a', capslock: true}, {key: 'a', shift: true, capslock: true}, {key: '1', shift: true}, {key: 'ö'}]
     .map(译SDL键), ['a', 'A', 'A', 'a', '1', 'ö']);
-  assert.deepEqual(['shift', 'tab', 'f1', 'escape', null, ''].map(键 => 译SDL键({key: 键})), [null, null, null, null, null, null]);
+  assert.deepEqual(['delete', 'home', 'end', 'pageUp', 'pageDown', 'tab', 'escape'].map(键 => 译SDL键({key: 键})),
+    ['删除', '起首', '末尾', '上翻页', '下翻页', '制表', '退出']);
+  assert.deepEqual(['shift', 'ctrl', 'alt', 'gui', 'gUI'].map(键 => 译SDL键({key: 键})), ['上档', '控制', '交替', '命令', '命令']);
+  assert.deepEqual(['f1', 'capsLock', null, ''].map(键 => 译SDL键({key: 键})), [null, null, null, null]);
 });
 
 test('输入事件：坐标乘像素比、按钮号减一、相邻移动合并、文字输入；关闭窗口后先报关闭再为资源已失效', async () => {
@@ -230,7 +234,7 @@ test('输入事件：坐标乘像素比、按钮号减一、相邻移动合并�
   assert.ok(等 instanceof Promise, '无事件时挂起');
   assert.equal(显('等待', 号)[0], 码.输入无效, '第二个并发等候者得输入无效');
   窗.emit('mouseButtonDown', {x: 5, y: 2.5, button: 1});
-  assert.deepEqual(await 等, [码.成, 事件种类.指针按下, 10, 5, 0, '']);
+  assert.deepEqual(await 等, [码.成, 事件种类.指针按下, 10, 5, 0, '', 0]);
   窗.emit('mouseMove', {x: 1, y: 1});
   窗.emit('mouseMove', {x: 10, y: 3});
   窗.emit('mouseButtonUp', {x: 10, y: 3, button: 3});
@@ -240,15 +244,25 @@ test('输入事件：坐标乘像素比、按钮号减一、相邻移动合并�
   窗.emit('keyDown', {key: 'a'});
   窗.emit('textInput', {text: '豫言'});
   const 取 = () => 显('等待', 号);
-  assert.deepEqual(取(), [码.成, 事件种类.指针移动, 20, 6, 0, ''], '两次移动合并为最后一次');
-  assert.deepEqual(取(), [码.成, 事件种类.指针抬起, 20, 6, 2, '']);
-  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '左']);
-  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '左']);
-  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, 'a']);
-  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '豫言']);
+  assert.deepEqual(取(), [码.成, 事件种类.指针移动, 20, 6, 0, '', 0], '两次移动合并为最后一次');
+  assert.deepEqual(取(), [码.成, 事件种类.指针抬起, 20, 6, 2, '', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '左', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '上档', 0], '0.2.0 交付修饰键');
+  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '左', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, 'a', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '豫言', 0]);
+  窗.emit('blur', {});
+  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '上档', 0], '窗口失焦时为按着的修饰键补发抬起');
+  窗.emit('mouseWheel', {x: 5, y: 5, dx: 0, dy: -1, flipped: false});
+  窗.emit('mouseWheel', {x: 6, y: 7, dx: 1, dy: 0, flipped: false});
+  assert.deepEqual(取(), [码.成, 事件种类.滚轮, 12, 14, 96, '', 96], '一格 48 逻辑像素乘像素比；SDL 向下为负故取反；相邻两次合并');
+  窗.emit('mouseWheel', {x: 1, y: 1, dx: 0, dy: 1, flipped: true});
+  assert.deepEqual(取(), [码.成, 事件种类.滚轮, 2, 2, 0, '', 96], 'flipped 时方向再反');
+  assert.deepEqual(显('像素比', 号).slice(0, 3), [码.成, 64, 32], '像素比为像素宽比点宽');
+  assert.equal(显('输入区域', 号, 1, 2, new Uint8Array(), 3, 4)[0], 码.成, 'SDL 没有输入区域，照常返回');
   const 再等 = 取();
   窗.destroy();
-  assert.deepEqual(await 再等, [码.成, 事件种类.显示面已关闭, 0, 0, 0, '']);
+  assert.deepEqual(await 再等, [码.成, 事件种类.显示面已关闭, 0, 0, 0, '', 0]);
   assert.equal(取()[0], 码.已失效);
   assert.equal(显('尺寸', 号)[0], 码.已失效);
   assert.equal(显('提交', 号, 64, 48, new Uint8Array(64 * 48 * 4))[0], 码.已失效);
