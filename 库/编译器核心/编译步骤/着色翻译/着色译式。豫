@@ -379,8 +379,8 @@
   「函名」附『(』附（「间合」于『, 』于（「非空值们」于「值们」））附『)』
 也。
 
-「：汉语：纹理函数的写法：MSL 用纹理对象的方法（sample、read、get_width/get_height）。
-文言：纹理之函之书法：MSL 用纹理对象之法（sample、read、get_width/get_height）。：」
+「：汉语：定型内建函数的写法：MSL 的纹理函数用纹理对象的方法（sample、read、get_width/get_height），半精度解包、打包用 as_type 在 uint 与 half2 之间转换。
+文言：定型内建之函之书法：MSL 之纹理之函用纹理对象之法（sample、read、get_width/get_height），半精之解包、打包以 as_type 转于 uint 与 half2 之间。：」
 「纹理调用文」乃化「字符串」而化（「列」于「字符串」）而「字符串」也。
 「纹理调用文」者会「函名文」而会「值们」而
   若「是金属目标」于「元」则（
@@ -393,6 +393,10 @@
         （「值」于「零」）附『.read(uint2(』附（「值」于「一」）附『), uint(』附（「值」于「二」）附『))』
       或有『textureDimensions』则
         『uint2(』附（「值」于「零」）附『.get_width(), 』附（「值」于「零」）附『.get_height())』
+      或有『unpack2x16float』则
+        『float2(as_type<half2>(』附（「值」于「零」）附『))』
+      或有『pack2x16float』则
+        『as_type<uint>(half2(』附（「值」于「零」）附『))』
       或有「其他名」则
         「调用文」于「其他名」于「值们」
   ）
@@ -595,6 +599,10 @@
       「可有」于（「定型函数」于『textureLoad』于「三」于（「向量型」于「四」于「浮三二型」））
     或有『纹理尺寸』则
       「可有」于（「定型函数」于『textureDimensions』于「一」于（「向量型」于「二」于「无三二型」））
+    或有『解包半精度』则
+      「可有」于（「定型函数」于『unpack2x16float』于「一」于（「向量型」于「二」于「浮三二型」））
+    或有『打包半精度』则
+      「可有」于（「定型函数」于『pack2x16float』于「一」于「无三二型」）
     或有『工作组屏障』则
       「可有」于（「语句规则」于『workgroupBarrier();』）
     或有『存储屏障』则
