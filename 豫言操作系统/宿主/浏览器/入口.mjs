@@ -2,7 +2,7 @@
 import {创建浏览器宿主} from './宿主.mjs';
 import {核对接口装载} from './接口核对.mjs';
 
-// 文言：先验浏览器具客器所需之能（WasmGC、JSPI）；不具则蒙全页以示，页首之栏亦蒙焉。告末有“我明白”，按之则撤告而续览，功能不全；不记其按，每启一页皆复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间显示“正在检查浏览器”，不支持则显示覆盖整页（含页首导航栏）的提示。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全）；不记住关闭，每次打开或刷新页面都重新提示。
+// 文言：先验浏览器具客器所需之能（WasmGC、JSPI），验时无所示；不具则蒙全页以示，页首之栏亦蒙焉。告末有“我明白”，按之则撤告而续览，功能不全；不记其按，每启一页皆复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间不显示任何提示，不支持时才显示覆盖整页（含页首导航栏）的提示。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全）；不记住关闭，每次打开或刷新页面都重新提示。
 const 检查层标识 = '豫言浏览器检查';
 const 支持WasmGC = () => {
   try { return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 3, 1, 0x5f, 0])); } catch { return false; }
@@ -51,20 +51,12 @@ export async function 启动豫言浏览器应用(选项 = {}) {
     显示不支持(缺.join('、'));
     throw Error('浏览器缺少豫言所需功能：' + 缺.join('、'));
   }
-  // 文言：载编逾四百毫秒乃示“正在检查”，免常页一闪。汉语：下载与编译超过 400 毫秒才显示“正在检查浏览器”，避免正常页面闪烁。
-  const 计时 = typeof document === 'undefined' ? null
-    : setTimeout(() => 显示检查层('<p data-yy-style="margin:0;font-size:16px;color:inherit">正在检查浏览器…</p>'), 400);
-  const 撤层 = () => { clearTimeout(计时); if (typeof document !== 'undefined') document.getElementById(检查层标识)?.remove(); };
   try {
-    const 结果 = await 启动实际(选项);
-    撤层();
-    return 结果;
+    return await 启动实际(选项);
   } catch (错) {
     // 文言：客器不能编，亦示过旧之告。汉语：编译失败（CompileError）也视为浏览器过旧。
-    clearTimeout(计时);
     if (错 instanceof WebAssembly.CompileError)
       显示不支持('WebAssembly 功能（' + String(错.message).slice(0, 120).replace(/[<>&"]/g, 字 => `&#${字.charCodeAt(0)};`) + '）');
-    else 撤层();
     throw 错;
   }
 }
