@@ -2,61 +2,27 @@
 import {创建浏览器宿主} from './宿主.mjs';
 import {核对接口装载} from './接口核对.mjs';
 
-// 文言：先验浏览器具客器所需之能（WasmGC、JSPI），验时无所示；不具则蒙全页以示，页首之栏亦蒙焉。告末有“我明白”，按之则撤告而续览，功能不全；不记其按，每启一页皆复示。汉语：启动前检查浏览器是否支持所需 WebAssembly 功能（WasmGC、JSPI）；检查期间不显示任何提示，不支持时才显示覆盖整页（含页首导航栏）的提示。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全）；不记住关闭，每次打开或刷新页面都重新提示。
-const 检查层标识 = '豫言浏览器检查';
-const 支持WasmGC = () => {
-  try { return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 3, 1, 0x5f, 0])); } catch { return false; }
+// 文言：验浏览器之能、示过旧之告，皆归官网所布之引导检查（全站同域共一篇），改之惟布官网；取之不得（本地测试、离线、非页面）则不验不示，径启之。
+// 汉语：浏览器能力检查与“版本过旧”提示由官网发布的引导检查完成（全站同域共用一份，见同目录 引导检查.mjs），改检查或提示只需发布官网；取不到时（本地测试、离线、非页面环境）不检查也不提示，直接启动。
+const 引导检查址 = '/豫言操作系统/浏览器/引导检查.mjs';
+const 取引导检查 = async () => {
+  if (typeof document === 'undefined') return null;
+  try { return await import(引导检查址); } catch { return null; }
 };
-const 支持JSPI = () => typeof WebAssembly?.Suspending === 'function' && typeof WebAssembly?.promising === 'function';
-const 显示检查层 = 文 => {
-  if (typeof document === 'undefined' || !document.body) return null;
-  let 层 = document.getElementById(检查层标识);
-  if (!层) {
-    层 = document.createElement('div');
-    层.id = 检查层标识;
-    层.setAttribute('role', 'alertdialog');
-    层.setAttribute('aria-modal', 'true');
-    层.style.cssText = 'position:fixed;top:0;right:0;bottom:0;left:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(245,242,235,.97);color:#1d1b18;font:16px/1.7 system-ui,sans-serif;';
-    document.body.appendChild(层);
-  }
-  层.innerHTML = `<div data-yy-style="max-width:32em;text-align:center">${文}</div>`;
-  // 文言：页或以 CSP 禁行内之式，故写入之后以 CSSOM 施之。汉语：页面的 CSP 可能禁止 style 属性（如试写间、云工作台的 style-src 'self'），所以写入后再用 CSSOM 逐个设置样式。
-  for (const 元 of 层.querySelectorAll('[data-yy-style]')) 元.style.cssText = 元.getAttribute('data-yy-style');
-  return 层;
-};
-const 显示不支持 = 缺 => {
-  const 层 = 显示检查层(
-    '<h2 data-yy-style="margin:0 0 .5em;font-size:24px;font-weight:700;line-height:1.7;color:inherit;letter-spacing:normal;text-transform:none">您的浏览器版本过旧，无法运行本页面</h2>'
-    + '<p data-yy-style="margin:0 0 .5em;font-size:16px;color:inherit">请将浏览器更新到 Safari 27、Chrome 137、Edge 137 或 Firefox 153 及以上版本后再访问。</p>'
-    + `<p data-yy-style="margin:0 0 1em;font-size:13px;opacity:.7;color:inherit">缺少：${缺}</p>`
-    + '<p data-yy-style="margin:0 0 .75em;font-size:16px;color:inherit">您也可以继续访问，但部分功能将无法使用。</p>'
-    + '<button type="button" data-yy-style="font:inherit;padding:9px 24px;border:0;border-radius:3px;background:var(--豫朱,#a33c2c);color:#fff;cursor:pointer">我明白</button>');
-  // 文言：钮依站之主钮（朱底白字）；不自移焦点，免站之焦点框环于钮外。汉语：按钮照站点主按钮样式（朱红底、白字）；不主动把焦点移到按钮上，免得站点的焦点框（朱红描边）套在按钮外面。
-  层?.querySelector('button')?.addEventListener('click', () => 层.remove());
-  return 层;
-};
-export function 检查浏览器支持() {
-  const 缺 = [];
-  if (typeof WebAssembly !== 'object') 缺.push('WebAssembly');
-  else {
-    if (!支持WasmGC()) 缺.push('WasmGC');
-    if (!支持JSPI()) 缺.push('JSPI');
-  }
-  return 缺;
-}
 
 export async function 启动豫言浏览器应用(选项 = {}) {
-  const 缺 = 检查浏览器支持();
+  const 引导 = await 取引导检查();
+  const 缺 = 引导 ? 引导.检查浏览器支持() : [];
   if (缺.length) {
-    显示不支持(缺.join('、'));
+    引导.显示不支持(缺.join('、'));
     throw Error('浏览器缺少豫言所需功能：' + 缺.join('、'));
   }
   try {
     return await 启动实际(选项);
   } catch (错) {
     // 文言：客器不能编，亦示过旧之告。汉语：编译失败（CompileError）也视为浏览器过旧。
-    if (错 instanceof WebAssembly.CompileError)
-      显示不支持('WebAssembly 功能（' + String(错.message).slice(0, 120).replace(/[<>&"]/g, 字 => `&#${字.charCodeAt(0)};`) + '）');
+    if (引导 && 错 instanceof WebAssembly.CompileError)
+      引导.显示不支持('WebAssembly 功能（' + String(错.message).slice(0, 120).replace(/[<>&"]/g, 字 => `&#${字.charCodeAt(0)};`) + '）');
     throw 错;
   }
 }
