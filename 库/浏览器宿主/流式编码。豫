@@ -1,6 +1,7 @@
 寻观「标准库」之「豫言标准内核」之书。
 
-「：文言：原生流文转 UTF-8 原字，或字转文；跨块状态留流内。汉语：创建 TextEncoderStream 或带编码标签、fatal、ignoreBOM 的 TextDecoderStream。：」
+「：汉语：创建 TextEncoderStream 或带编码标签、fatal、ignoreBOM 的 TextDecoderStream。
+文言：原生流文转 UTF-8 原字，或字转文；跨块状态留流内。：」
 「浏览器文字编码流新建」乃化「有」而「字符串」也。
 「浏览器文字编码流新建」者会「无」而
   《《外调》》名『豫言_浏览器_文字编码流新建』传「元」

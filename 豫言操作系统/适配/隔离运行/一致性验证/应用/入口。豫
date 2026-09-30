@@ -5,10 +5,8 @@
 寻观「豫言操作系统网页答复」之「响应」之书。
 寻观「豫言操作系统隔离运行」之「运行」之书。
 
-「：
-文言：于同一事中屡运隔离之程；成则续，败则依容错之令：容错者记其败而续，否则止而告其异；以验句柄不竭。
-汉语：在同一个事件里重复调用 运行隔离程序 共「次」次。每次成功就用它的结果文字继续；某次抛出异常时，若「容错」为真则记一次失败、保存异常消息并继续，否则立即返回 {ok:false,error,failures}。全部结束返回 {ok:true,result:最后一次成功的结果文字,failures:失败次数,lastError:最后一次异常消息}。
-：」
+「：汉语：在同一个事件里重复调用 运行隔离程序 共「次」次。每次成功就用它的结果文字继续；某次抛出异常时，若「容错」为真则记一次失败、保存异常消息并继续，否则立即返回 {ok:false,error,failures}。全部结束返回 {ok:true,result:最后一次成功的结果文字,failures:失败次数,lastError:最后一次异常消息}。
+文言：于同一事中屡运隔离之程；成则续，败则依容错之令：容错者记其败而续，否则止而告其异；以验句柄不竭。：」
 「重复运行」乃
   化「字符串」而
   化「字符串」而
@@ -82,10 +80,8 @@
       】）
 也。
 
-「：
-文言：请求之体乃 JSON：runner、scope、digest、program、input、repeat、tolerant；答亦 JSON。
-汉语：请求体是 JSON：{runner,scope,digest,program,input,repeat,tolerant}（前五项是字符串，repeat 是整数，tolerant 是爻；缺省 runner 为 LOADER、repeat 为 1、tolerant 为假）；把它们交给 重复运行 并以 JSON 回应结果。正文至多 16 MiB。
-：」
+「：汉语：请求体是 JSON：{runner,scope,digest,program,input,repeat,tolerant}（前五项是字符串，repeat 是整数，tolerant 是爻；缺省 runner 为 LOADER、repeat 为 1、tolerant 为假）；把它们交给 重复运行 并以 JSON 回应结果。正文至多 16 MiB。
+文言：请求之体乃 JSON：runner、scope、digest、program、input、repeat、tolerant；答亦 JSON。：」
 虑「读」者
   「读取入站有限正文文字」于「一六七七七二一六」而
   虑「体」者「癸象解析」于（「读」中「一」）而

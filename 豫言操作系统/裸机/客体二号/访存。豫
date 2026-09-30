@@ -7,7 +7,8 @@
 寻观「客体二号」之「浮点指令」之书。
 寻观「客体二号」之「表指令」之书。
 
-「：文言：客体线性内存之访与杂项前缀。汉语：客体线性内存访问（load/store 各宽度）、越界检查，以及 0xFC 前缀的批量内存与表指令（memory.init/copy/fill、data.drop、table.size；table.init/copy/grow/fill、elem.drop 交给 表指令）与浮点饱和截断（trunc_sat，交给 浮点指令）。：」
+「：汉语：客体线性内存访问（load/store 各宽度）、越界检查，以及 0xFC 前缀的批量内存与表指令（memory.init/copy/fill、data.drop、table.size；table.init/copy/grow/fill、elem.drop 交给 表指令）与浮点饱和截断（trunc_sat，交给 浮点指令）。
+文言：客体线性内存之访与杂项前缀。：」
 「客内存字节」乃化「有」而「整数」也。
 「客内存字节」者会「无」而
   「乘」于（「读四」于「状态_客页数」）于「页字节」
@@ -142,7 +143,8 @@
     ）
 也。
 
-「：文言：杂项前缀：批量内存与表。汉语：0xFC 前缀指令：memory.init（8）、data.drop（9）、memory.copy（10）、memory.fill（11）、table.size（16）；0–7 为浮点饱和转换，尚不支持。返回新栈针，新指令针写入 状态_新指令针。：」
+「：汉语：0xFC 前缀指令：memory.init（8）、data.drop（9）、memory.copy（10）、memory.fill（11）、table.size（16）；0–7 为浮点饱和转换，尚不支持。返回新栈针，新指令针写入 状态_新指令针。
+文言：杂项前缀：批量内存与表。：」
 「数据段条」乃化「整数」而「整数」也。
 「数据段条」者会「段」而
   「加」于（「读四」于「状态_数据段表」）于（「乘」于「段」于「数据段条长」）
