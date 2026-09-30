@@ -1,0 +1,23 @@
+#include <metal_stdlib>
+using namespace metal;
+
+[[max_total_threads_per_threadgroup(8)]]
+kernel void 读四试(uint 局部 [[thread_index_in_threadgroup]], const device float* 浮源 [[buffer(0)]], const device uint* 整源 [[buffer(1)]], device float* 出 [[buffer(2)]], device uint* 整出 [[buffer(3)]]) {
+  const auto 起 = 局部 * 4u;
+  const auto 浮四 = *(const device float4*)(&(浮源)[起]);
+  const auto 整四 = *(const device uint4*)(&(整源)[起]);
+  const auto 浮零 = 浮四.x;
+  const auto 浮一 = 浮四.y;
+  const auto 浮二 = 浮四.z;
+  const auto 浮三 = 浮四.w;
+  const auto 整零 = 整四.x;
+  const auto 整一 = 整四.y;
+  const auto 整二 = 整四.z;
+  const auto 整三 = 整四.w;
+  const auto 浮前 = 浮零 + 浮一;
+  const auto 浮后 = 浮二 + 浮三;
+  const auto 整前 = 整零 + 整一;
+  const auto 整后 = 整二 + 整三;
+  出[局部] = 浮前 + 浮后;
+  整出[局部] = 整前 + 整后;
+}
