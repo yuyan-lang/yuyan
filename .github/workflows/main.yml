@@ -15,6 +15,8 @@ on:
 permissions:
   contents: write
 
+# 文言：诸试之作各设并发之组：同分支或同拉取请求有新推，则罢旧轮未竟之试。自举、核型、Wasm 包起步与发布，工具链包之所由成而发也，不设其组：组中待行者亦为后至者所代，设之则旧轮之包不得发。组名须书作业之名（此处 github.job 为空）；矩阵之作并书矩阵之值，否则同轮诸片相罢。待办事项：组以候组之先后相罢，不以推之先后；旧提交之自举后于新者而成，则旧轮之试反罢新轮之试。
+# 汉语：各测试作业设作业级并发组：同一分支或同一拉取请求有新推送时，取消旧轮未完成的测试。自举、类型检查、Wasm 包起步与发布是工具链包的构建与发布链，不设并发组：同组中等待的作业也会被后来的作业顶替，设了组旧轮的工具链包就发布不出去。组名写死作业名（此处 github.job 为空）；矩阵作业须带矩阵值，否则同轮各片互相取消。待办事项：并发组按作业开始等待的先后取消，与推送先后无关；旧提交的自举若晚于新提交完成，旧轮测试会反过来取消新轮测试。
 jobs:
   # 文言：自举之作：但用 Node。起于所定之 Wasm 工具链包，先以包中豫构与编译器造今源之豫构，乃以之自举而核定点，更造全树测试之器与本轮之工具链包，上传之，使诸片与跨平台之验早起。
   # 汉语：自举作业：只用 Node。从固定的 Wasm 工具链包起步，先用包中的豫构与编译器把当前源码的豫构编成 yy豫构.wasm，再由它完成自举并核对定点、构建全树测试工具与本轮的 Wasm 工具链包，然后上传，让测试分片与跨平台验证尽早开始。
@@ -110,6 +112,9 @@ jobs:
     needs: bootstrap
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-full-tree-tests-${{ matrix.shard }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
@@ -175,6 +180,9 @@ jobs:
     needs: bootstrap
     runs-on: windows-latest
     timeout-minutes: 90
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-node-host-windows
+      cancel-in-progress: true
     defaults:
       run:
         shell: bash
@@ -247,6 +255,9 @@ jobs:
     needs: bootstrap
     runs-on: ${{ matrix.os }}
     timeout-minutes: 90
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-native-aot-linux-${{ matrix.os }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
@@ -293,6 +304,9 @@ jobs:
     needs: bootstrap
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-windows-native-build
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
 
@@ -360,6 +374,9 @@ jobs:
     needs: windows-native-build
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-windows-native-run-${{ matrix.os }}
+      cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
@@ -423,6 +440,9 @@ jobs:
     needs: windows-native-build
     runs-on: macos-15-intel
     timeout-minutes: 20
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-macos-x64-native-run
+      cancel-in-progress: true
     steps:
       - uses: actions/download-artifact@v4
         with:
