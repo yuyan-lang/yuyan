@@ -7,7 +7,7 @@
   .param .u64 p_g0_b0,
   .param .u64 p_g0_b1
 )
-.reqntid 64, 1, 1
+.reqntid 48, 1, 1
 {
   .reg .pred %p<21>;
   .reg .b16 %h<1>;

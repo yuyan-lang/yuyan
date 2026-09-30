@@ -1,0 +1,28 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct 输入 {
+  uint 局部;
+  uint 道;
+  uint 宽;
+};
+
+[[max_total_threads_per_threadgroup(48)]]
+kernel void 子组试(uint 入_局部 [[thread_index_in_threadgroup]], uint 入_道 [[thread_index_in_simdgroup]], uint 入_宽 [[threads_per_simdgroup]], device float* 出 [[buffer(0)]], device uint* 整出 [[buffer(1)]]) {
+  输入 入 = 输入{入_局部, 入_道, 入_宽};
+  const auto 局部 = 入.局部;
+  const auto 道 = 入.道;
+  const auto 宽 = 入.宽;
+  const auto 值 = float(局部);
+  const auto 和 = simd_sum(值);
+  const auto 大 = simd_max(值);
+  const auto 小 = simd_min(值);
+  const auto 首 = simd_shuffle(值, 0u);
+  const auto 邻 = simd_shuffle(值, (道 ^ 1u));
+  const auto 异 = simd_shuffle_xor(值, 3u);
+  const auto 整和 = simd_sum(局部);
+  const auto 一 = (和 + 大) + 小;
+  const auto 二 = (首 + 邻) + 异;
+  出[局部] = 一 + 二;
+  整出[局部] = 整和 + (道 + 宽);
+}
