@@ -1,0 +1,85 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct yy_矩阵片甲 { simdgroup_half8x8 块[4]; };
+struct yy_矩阵片乙 { simdgroup_half8x8 块[4]; };
+struct yy_矩阵片累 { simdgroup_float8x8 块[4]; };
+static inline yy_矩阵片甲 yy_载入矩阵片甲(threadgroup const half* 源, uint 起, uint 步) {
+  yy_矩阵片甲 片;
+  simdgroup_load(片.块[0], 源 + 起, 步);
+  simdgroup_load(片.块[1], 源 + 起 + 8, 步);
+  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);
+  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);
+  return 片;
+}
+static inline yy_矩阵片乙 yy_载入矩阵片乙(threadgroup const half* 源, uint 起, uint 步) {
+  yy_矩阵片乙 片;
+  simdgroup_load(片.块[0], 源 + 起, 步, ulong2(0, 0), true);
+  simdgroup_load(片.块[1], 源 + 起 + 8 * 步, 步, ulong2(0, 0), true);
+  simdgroup_load(片.块[2], 源 + 起 + 8, 步, ulong2(0, 0), true);
+  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步, ulong2(0, 0), true);
+  return 片;
+}
+static inline yy_矩阵片累 yy_零矩阵片累() {
+  yy_矩阵片累 片;
+  for (int 序 = 0; 序 < 4; 序++) 片.块[序] = make_filled_simdgroup_matrix<float, 8, 8>(0.0f);
+  return 片;
+}
+static inline yy_矩阵片累 yy_矩阵片乘加(yy_矩阵片累 累, yy_矩阵片甲 甲, yy_矩阵片乙 乙) {
+  for (int 行 = 0; 行 < 2; 行++) {
+    for (int 列 = 0; 列 < 2; 列++) {
+      for (int 深 = 0; 深 < 2; 深++) {
+        simdgroup_multiply_accumulate(累.块[行 * 2 + 列], 甲.块[行 * 2 + 深], 乙.块[深 * 2 + 列], 累.块[行 * 2 + 列]);
+      }
+    }
+  }
+  return 累;
+}
+static inline void yy_存矩阵片累(threadgroup float* 目, uint 起, uint 步, yy_矩阵片累 累) {
+  simdgroup_store(累.块[0], 目 + 起, 步);
+  simdgroup_store(累.块[1], 目 + 起 + 8, 步);
+  simdgroup_store(累.块[2], 目 + 起 + 8 * 步, 步);
+  simdgroup_store(累.块[3], 目 + 起 + 8 * 步 + 8, 步);
+}
+
+constant uint 步三十二 = 32u;
+
+[[max_total_threads_per_threadgroup(32)]]
+kernel void 矩阵片试(uint 局部 [[thread_index_in_threadgroup]], const device float* 甲源 [[buffer(0)]], const device float* 乙源 [[buffer(1)]], device float* 片出 [[buffer(2)]]) {
+  threadgroup array<half, 512> 甲半;
+  threadgroup array<half, 512> 乙半;
+  threadgroup array<float, 256> 累存;
+  uint 序 = 局部;
+  while (true) {
+    if (序 < 512u) {
+      const auto 甲值 = 甲源[序];
+      const auto 乙值 = 乙源[序];
+      甲半[序] = half(甲值);
+      乙半[序] = half(乙值);
+      序 = 序 + 步三十二;
+      continue;
+    } else {
+      break;
+    }
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  const auto 零累 = yy_零矩阵片累();
+  const auto 甲前 = yy_载入矩阵片甲(&(甲半)[0], 0u, 步三十二);
+  const auto 乙前 = yy_载入矩阵片乙(&(乙半)[0], 0u, 步三十二);
+  const auto 甲后 = yy_载入矩阵片甲(&(甲半)[0], 16u, 步三十二);
+  const auto 乙后 = yy_载入矩阵片乙(&(乙半)[0], 16u, 步三十二);
+  const auto 半累 = yy_矩阵片乘加(零累, 甲前, 乙前);
+  const auto 全累 = yy_矩阵片乘加(半累, 甲后, 乙后);
+  yy_存矩阵片累(&(累存)[0], 0u, 16u, 全累);
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  uint 序_2 = 局部;
+  while (true) {
+    if (序_2 < 256u) {
+      片出[序_2] = 累存[序_2];
+      序_2 = 序_2 + 步三十二;
+      continue;
+    } else {
+      return;
+    }
+  }
+}

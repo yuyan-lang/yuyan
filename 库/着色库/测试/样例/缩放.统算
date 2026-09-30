@@ -15,7 +15,7 @@
   .reg .b16 %h<1>;
   .reg .b32 %r<41>;
   .reg .b64 %rd<14>;
-  .shared .align 4 .b8 ys_e7_bb_84_e5_86_85_e4_b8_aa_e6_95_b0[4];
+  .shared .align 16 .b8 ys_e7_bb_84_e5_86_85_e4_b8_aa_e6_95_b0[4];
   ld.param.u64 %rd1, [p_g0_b0];
   cvta.to.global.u64 %rd2, %rd1;
   ld.param.u64 %rd3, [p_g0_b1];
