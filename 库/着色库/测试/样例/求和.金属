@@ -1,0 +1,35 @@
+#include <metal_stdlib>
+using namespace metal;
+
+uint 前缀和(uint 个数, const device uint* 输入) {
+  uint 次 = 0u;
+  uint 和 = 0u;
+  while (true) {
+    if (次 > 个数) {
+      return 和;
+    } else {
+      const auto 临时 = 次 + 1u;
+      const auto 临时_2 = 和 + 输入[次];
+      次 = 临时;
+      和 = 临时_2;
+      continue;
+    }
+  }
+}
+
+uint 较大(uint 甲, uint 乙) {
+  return (甲 > 乙) ? 甲 : 乙;
+}
+
+[[max_total_threads_per_threadgroup(64)]]
+kernel void 求和(uint3 号 [[thread_position_in_grid]], const device uint* 输入 [[buffer(0)]], device uint* 输出 [[buffer(1)]]) {
+  const auto 序 = 号.x;
+  uint 计数 = 0u;
+  if (序 > 0u) {
+    计数 = 前缀和(序, 输入);
+    输出[0u] = 1u;
+  } else {
+    计数 = 较大(输入[0u], 7u);
+  }
+  输出[序] = 计数;
+}

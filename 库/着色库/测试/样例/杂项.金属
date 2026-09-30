@@ -1,0 +1,32 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct 调色 {
+  array<float4, 4> 颜色们;
+};
+
+constant float4 第一列 = float4(1.0f, 0.0f, 0.0f, 0.0f);
+
+constant float4 第二列 = float4(0.0f, 1.0f, 0.0f, 0.0f);
+
+constant float4 第三列 = float4(0.0f, 0.0f, 1.0f, 0.0f);
+
+constant float4 第四列 = float4(0.0f, 0.0f, 0.0f, 1.0f);
+
+constant float4x4 变换 = float4x4(第一列, 第二列, 第三列, 第四列);
+
+// 待办事项：片元入口函数「着色」尚未译成金属着色语言，已略去。
+
+[[max_total_threads_per_threadgroup(64)]]
+kernel void 统计(uint 序 [[thread_index_in_threadgroup]], device atomic_uint* 计数 [[buffer(2)]], constant 调色& 调色板 [[buffer(3)]]) {
+  threadgroup uint 共享;
+  threadgroup array<uint, 64> 分组;
+  共享 = 序;
+  分组[序] = 序 * 2u;
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  const auto 旧 = atomic_fetch_add_explicit(&计数[0u], 共享, memory_order_relaxed);
+  const auto 颜色们 = 调色板.颜色们;
+  const auto 亮度 = 颜色们[1u].x;
+  const auto 位 = as_type<uint>((float(旧) + 亮度));
+  atomic_store_explicit(&计数[1u], (位 + 分组[0u]), memory_order_relaxed);
+}

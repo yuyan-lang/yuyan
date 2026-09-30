@@ -1,0 +1,46 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct 计算输入 {
+  uint3 全局;
+  uint 局部;
+};
+
+struct 参数 {
+  float 倍率;
+  float 上限;
+  uint 个数;
+};
+
+float 缩放一个(float 值, constant 参数& 设置) {
+  const auto 参 = 设置;
+  return min((值 * 参.倍率), 参.上限);
+}
+
+float 处理(float 值, constant 参数& 设置) {
+  const auto 缩 = 缩放一个(值, 设置);
+  return fmod(缩, 1.0f) + rint(缩);
+}
+
+uint 组内上限(threadgroup uint& 组内个数) {
+  return 组内个数;
+}
+
+[[max_total_threads_per_threadgroup(4)]]
+kernel void 缩放(uint3 入_全局 [[thread_position_in_grid]], uint 入_局部 [[thread_index_in_threadgroup]], constant 参数& 设置 [[buffer(0)]], device float* 输出 [[buffer(2)]], const device float* 输入 [[buffer(1)]], device atomic_uint* 计数 [[buffer(3)]]) {
+  threadgroup uint 组内个数;
+  计算输入 入 = 计算输入{入_全局, 入_局部};
+  const auto 序 = 入.全局.x;
+  const auto 局部序 = 入.局部;
+  const auto 参 = 设置;
+  if (局部序 == 0u) {
+    组内个数 = max(参.个数, 1u);
+  } else {
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  if (序 < 组内上限(组内个数)) {
+    输出[序] = 处理(输入[序], 设置);
+    (void)(atomic_fetch_add_explicit(&计数[0u], 1u, memory_order_relaxed));
+  } else {
+  }
+}
