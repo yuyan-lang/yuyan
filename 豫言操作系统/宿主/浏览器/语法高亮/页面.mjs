@@ -8,18 +8,20 @@ export function 启动页面高亮(文树 = document) {
   for (const 节点 of 文树.querySelectorAll('[data-yuyan-highlight], #首页示例')) {
     let 版本 = 0;
     let 已见 = 节点.textContent;
+    // 文言：记所呈之文；客器复书同文，色随之去，亦当重呈。汉语：记下本脚本写入的内容；应用写回同样的源码也会冲掉着色，这时同样要重新着色。
+    let 已呈 = null;
     const 更新 = async () => {
       const 本版 = ++版本;
       const 原文 = 节点.textContent;
       已见 = 原文;
       try {
         const 超文本 = await 高亮豫言源码(原文);
-        if (本版 === 版本 && 节点.textContent === 原文) 节点.innerHTML = 超文本;
-      } catch { if (本版 === 版本) 节点.innerHTML = 转义(原文); }
+        if (本版 === 版本 && 节点.textContent === 原文) { 节点.innerHTML = 超文本; 已呈 = 节点.innerHTML; }
+      } catch { if (本版 === 版本) { 节点.innerHTML = 转义(原文); 已呈 = 节点.innerHTML; } }
     };
     void 更新();
     if (节点.id === '首页示例') {
-      new MutationObserver(() => { if (节点.textContent !== 已见) { ++版本; queueMicrotask(() => void 更新()); } })
+      new MutationObserver(() => { if (节点.textContent !== 已见 || 节点.innerHTML !== 已呈) { ++版本; queueMicrotask(() => void 更新()); } })
         .observe(节点, {childList: true, characterData: true});
     }
   }
