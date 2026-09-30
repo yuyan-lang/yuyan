@@ -1,7 +1,7 @@
 // 文言：以真豫言 Wasm 对拍 JSON 串之解（\uXXXX、代理对、孤代理项）与编（控制字符）。
-// 汉语：真实 Wasm 对拍。构建“癸象转义验证应用”（见 说明.汉语.md），然后在构建根目录运行
-//   node --test 豫言操作系统/宿主/网页汇编/一致性验证/癸象转义验证.test.mjs
-// 产物目录默认为 <当前目录>/dist/癸象转义验证/，可用环境变量 YY_ESCAPE_DIST 指定；YY_ESCAPE_ROUNDS 调整随机轮数（默认 1200）。
+// 汉语：真实 Wasm 对拍。构建“结森转义验证应用”（见 说明.汉语.md），然后在构建根目录运行
+//   node --test 豫言操作系统/宿主/网页汇编/一致性验证/结森转义验证.test.mjs
+// 产物目录默认为 <当前目录>/dist/结森转义验证/，可用环境变量 YY_ESCAPE_DIST 指定；YY_ESCAPE_ROUNDS 调整随机轮数（默认 1200）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -10,7 +10,7 @@ import path from 'node:path';
 
 const 根 = process.env.YY_ESCAPE_DIST
   ? pathToFileURL(process.env.YY_ESCAPE_DIST.replace(/\/?$/, '/'))
-  : pathToFileURL(path.resolve(process.cwd(), 'dist/癸象转义验证') + '/');
+  : pathToFileURL(path.resolve(process.cwd(), 'dist/结森转义验证') + '/');
 const {创建云工宿主} = await import(new URL('宿主.mjs', 根));
 const 程序模块 = await WebAssembly.compile(await readFile(new URL('程序.wasm', 根)));
 const 值桥模块 = await WebAssembly.compile(await readFile(new URL('值桥.wasm', 根)));

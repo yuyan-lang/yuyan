@@ -1030,14 +1030,14 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
         豫言_云工_持久SQL执行: (语句, 参数文) => {
           const 仓 = 取SQL仓();
           const 参数 = JSON.parse(文字(参数文));
-          if (!Array.isArray(参数)) throw Error('SQL 参数须为癸象数组');
+          if (!Array.isArray(参数)) throw Error('SQL 参数须为结森数组');
           const 结果 = 仓.exec(文字(语句), ...参数.map(项 => 句柄.入(项))).toArray();
           return JSON.stringify(句柄.出(结果));
         },
         // 文言：游标之序由客掌，宿主每次直行 next/raw/one；越候之视依平台。汉语：暴露平台 SqlStorageCursor 的迭代、原始行、单行和统计，跨 await 的快照限制仍按平台语义。
         豫言_云工_持久SQL游标新建: (语句, 参数文) => {
           const 参数 = JSON.parse(文字(参数文));
-          if (!Array.isArray(参数)) throw Error('SQL 参数须为癸象数组');
+          if (!Array.isArray(参数)) throw Error('SQL 参数须为结森数组');
           return 句柄.登记(取SQL仓().exec(文字(语句), ...参数.map(项 => 句柄.入(项))));
         },
         豫言_云工_持久SQL游标下一行: (号, 原始) => {

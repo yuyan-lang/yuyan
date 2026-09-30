@@ -281,7 +281,7 @@ test('文字：大正文、整块分片与宽松解码膨胀上限', async () =>
   断言体(await 调('/body/strict?limit=16777216', {体: 流(切块(Buffer.alloc(6 * MiB, 0xff), 65536))}), 4, Buffer.alloc(0), '严格解码立即拒绝');
 });
 
-test('读取入站癸象正文文：合法输入规范化，失败均可捕获且含原因', async () => {
+test('读取入站结森正文文：合法输入规范化，失败均可捕获且含原因', async () => {
   const 正 = 体 => 调('/body/json', {体});
   for (const [入, 出] of [['{"a":1,"b":[true,null,"x"]}', '{"a":1,"b":[true,null,"x"]}'], ['  {"甲":"乙"}  ', '{"甲":"乙"}'], ['﻿{"bom":1}', '{"bom":1}'], ['"\\u4e2d文"', '"中文"'], ['null', 'null'], ['[1, 2 , 3]', '[1,2,3]'], ['{"a":{"b":{"c":[]}}}', '{"a":{"b":{"c":[]}}}']]) {
     const r = 报(await 正(入));
@@ -300,7 +300,7 @@ test('读取入站癸象正文文：合法输入规范化，失败均可捕获�
   assert.match(错(await 正('\u0000')), /入站 JSON 正文无效/);
 });
 
-test('读取入站癸象正文文：2 MiB 上限与读取次序', async () => {
+test('读取入站结森正文文：2 MiB 上限与读取次序', async () => {
   const 整 = ' '.repeat(2 * MiB - 1) + '1';
   assert.equal(整.length, 2 * MiB);
   assert.equal(报(await 调('/body/json', {体: 整})).文本, '1', '恰好 2 MiB');
@@ -319,7 +319,7 @@ test('读取入站癸象正文文：2 MiB 上限与读取次序', async () => {
   assert.equal(重复.前缀, '0,3');
 });
 
-test('读取入站有限癸象正文文（0.8.0）：规范化文字；状态 1 至 5 以返值表示且不抛异常', async () => {
+test('读取入站有限结森正文文（0.8.0）：规范化文字；状态 1 至 5 以返值表示且不抛异常', async () => {
   const 限 = (体, 限值 = 1000, 额外 = {}) => 调('/body/jsonlimit?limit=' + 限值, {体, ...额外});
   const 正 = async (入, 出, 限值) => { const r = 报(await 限(入, 限值)); assert.equal(r.前缀, '0', JSON.stringify(入)); assert.equal(r.文本, 出, JSON.stringify(入)); };
   await 正('{ "a" : 1 , "b" : [ 2 ] }', '{"a":1,"b":[2]}');

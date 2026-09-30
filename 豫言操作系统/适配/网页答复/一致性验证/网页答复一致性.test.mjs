@@ -43,7 +43,7 @@ test('带头文字：状态、内容类型、保序同名头、多个 Set-Cookie
   assert.equal(果.文, '第一行\n第二行\t缩进 🙂 \u0000尾');
 });
 
-test('不隐式添加任何标头（与旧癸象答复不同）', async () => {
+test('不隐式添加任何标头（与旧结森答复不同）', async () => {
   assert.deepEqual(名列(await 令(文([]))), ['content-type']);
   assert.deepEqual(名列(await 令({fn: 'json', status: 200, headers: [], body: '{"a":1}'})), ['content-type']);
   assert.deepEqual(名列(await 令({fn: 'empty', status: 200, headers: []})), []);
@@ -131,7 +131,7 @@ test('内容类型校验：type/subtype 后可缀分号参数，全文可见且�
   }
 });
 
-test('带头癸象文：规范化 JSON，内容类型固定，尺寸上限 2 MiB', async () => {
+test('带头结森文：规范化 JSON，内容类型固定，尺寸上限 2 MiB', async () => {
   const 果 = await 令({fn: 'json', status: 200, headers: [['Cache-Control', 'no-store'], ['Set-Cookie', 's=1']], body: ' { "b" : [1, 2 , 3], "a" : "x\\ny", "甲": {"c": null} } '});
   assert.equal(果.状态, 200);
   assert.equal(果.文, '{"b":[1,2,3],"a":"x\\ny","甲":{"c":null}}');
@@ -208,7 +208,7 @@ test('每次请求只有第一个最终响应生效', async () => {
   assert.deepEqual(果.头, [['x-first', 'yes']]);
 });
 
-test('旧函数回归：癸象文、空答、文字、同源改址、外址改址行为不变', async () => {
+test('旧函数回归：结森文、空答、文字、同源改址、外址改址行为不变', async () => {
   const j = await 令({fn: 'old-json', status: 201, body: '{ "a" : [1,2] }'});
   assert.equal(j.状态, 201);
   assert.equal(j.文, '{"a":[1,2]}');
@@ -308,7 +308,7 @@ test('差分模糊：随机内容类型的接受与拒绝与参考实现一致',
   assert.ok(接受 > 50 && 拒绝 > 50, `样本应两类都足够：接受 ${接受}，拒绝 ${拒绝}`);
 });
 
-// 文言：JSON 答复以宿主校验为准：坏文可捕、数值不失真、大数组不崩。汉语：无效 JSON（含未闭合字符串、坏转义）得到可捕获的失败；合法数值按宿主 JSON 规范化，不再被癸象往返回绕或截断。
+// 文言：JSON 答复以宿主校验为准：坏文可捕、数值不失真、大数组不崩。汉语：无效 JSON（含未闭合字符串、坏转义）得到可捕获的失败；合法数值按宿主 JSON 规范化，不再被结森往返回绕或截断。
 test('JSON 答复经宿主校验：坏文可捕获，数值不失真，大数组不崩', async () => {
   for (const 坏 of ['"abc', '{"a":"x', '"\\q"', '-', '[1e', '{"a"', '\u0000']) {
     assert.match(错(await 令({fn: 'json', status: 200, headers: [], body: 坏})), /JSON 响应正文无效/, JSON.stringify(坏));
