@@ -1052,18 +1052,18 @@
   否则
     「任一后缀」
       于「主机」
-      于（「列」【
-        『.localhost』，
-        『.local』，
-        『.internal』，
-        『.localdomain』，
-        『.arpa』，
-        『.lan』，
-        『.home』，
-        『.corp』，
-        『.intranet』，
-        『.private』
-      】）
+      于（「列」
+            【『.localhost』
+            ，『.local』
+            ，『.internal』
+            ，『.localdomain』
+            ，『.arpa』
+            ，『.lan』
+            ，『.home』
+            ，『.corp』
+            ，『.intranet』
+            ，『.private』
+            】）
 也。
 
 「：汉语：判断整数是否在列表中。

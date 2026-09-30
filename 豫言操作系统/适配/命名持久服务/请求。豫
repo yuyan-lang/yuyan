@@ -1003,11 +1003,11 @@
               「补响应头」于「回头」于『x-yuyan-revision』于「诸回头」
             而
             「癸象表示」于（「癸象对象」
-              于（「列」【
-                『status』与（「癸象整数」于「状态」），
-                『body』与（「癸象字符串」于「文」），
-                『headers』与（「癸象对象」于「诸回头」）
-              】））
+              于（「列」
+                    【『status』与（「癸象整数」于「状态」）
+                    ，『body』与（「癸象字符串」于「文」）
+                    ，『headers』与（「癸象对象」于「诸回头」）
+                    】））
 也。
 
 「：汉语：以指定方法请求命名持久对象但不整体读取响应：校验同文字版，另加超时毫秒（1 至 900000，覆盖发请和读取响应的整次交换）；失败或超时返回阴和原因，成功返回阳和仅本次事件有效的响应柄。
@@ -1077,18 +1077,20 @@
   「或者」
     于（「已用名」
       于「小名」
-      于（「列」【
-        『accept』，
-        『authorization』，
-        『content-type』，
-        『cookie』，
-        『cf-connecting-ip』，
-        『idempotency-key』，
-        『if-none-match』，
-        『last-event-id』，
-        『origin』，
-        『range』
-      】））于（「且」于（「串开头是它吗」于『x-yuyan-』于「小名」）于（「大于」于（「字节长度」于「小名」）于「八」））
+      于（「列」
+            【『accept』
+            ，『authorization』
+            ，『content-type』
+            ，『cookie』
+            ，『cf-connecting-ip』
+            ，『idempotency-key』
+            ，『if-none-match』
+            ，『last-event-id』
+            ，『origin』
+            ，『range』
+            】））于（「且」
+              于（「串开头是它吗」于『x-yuyan-』于「小名」）
+              于（「大于」于（「字节长度」于「小名」）于「八」））
 也。
 
 「：汉语：转发入站请求时固定标头名（已转小写）的白名单。

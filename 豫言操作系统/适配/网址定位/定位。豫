@@ -68,19 +68,19 @@
   若「非」于（「或者」于（「串相等」于「协议」于『https:』）于（「串相等」于「协议」于『http:』））则
     「发生事故」授以「字符串」于『网址不是 HTTP(S)』
   否则
-    「癸象表示」于（「癸象对象」于（「列」【
-      『href』与（「属性文」于「址柄」于『href』），
-      『origin』与（「属性文」于「址柄」于『origin』），
-      『pathname』与（「属性文」于「址柄」于『pathname』），
-      『search』与（「属性文」于「址柄」于『search』），
-      『protocol』与（「属性文」于「址柄」于『protocol』），
-      『hostname』与（「属性文」于「址柄」于『hostname』），
-      『host』与（「属性文」于「址柄」于『host』），
-      『port』与（「属性文」于「址柄」于『port』），
-      『username』与（「属性文」于「址柄」于『username』），
-      『password』与（「属性文」于「址柄」于『password』），
-      『hash』与（「属性文」于「址柄」于『hash』）
-    】））
+    「癸象表示」于（「癸象对象」于（「列」
+                                      【『href』与（「属性文」于「址柄」于『href』）
+                                      ，『origin』与（「属性文」于「址柄」于『origin』）
+                                      ，『pathname』与（「属性文」于「址柄」于『pathname』）
+                                      ，『search』与（「属性文」于「址柄」于『search』）
+                                      ，『protocol』与（「属性文」于「址柄」于『protocol』）
+                                      ，『hostname』与（「属性文」于「址柄」于『hostname』）
+                                      ，『host』与（「属性文」于「址柄」于『host』）
+                                      ，『port』与（「属性文」于「址柄」于『port』）
+                                      ，『username』与（「属性文」于「址柄」于『username』）
+                                      ，『password』与（「属性文」于「址柄」于『password』）
+                                      ，『hash』与（「属性文」于「址柄」于『hash』）
+                                      】））
 也。
 
 「解析绝对网址部件」乃化「字符串」而「字符串」也。

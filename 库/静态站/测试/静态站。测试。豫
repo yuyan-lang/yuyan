@@ -42,17 +42,17 @@
 「样文」乃「字符串」也。
 「样文」者
   「合行」
-    于（「列」【
-      『---』，
-      『layout: default』，
-      『title: "甲 \"乙\""』，
-      『wen: '性能比较：豫言''s'』，
-      『# 注释』，
-      『permalink: /十万个为什么/』，
-      『---』，
-      『』，
-      『# 正文』
-    】）
+    于（「列」
+          【『---』
+          ，『layout: default』
+          ，『title: "甲 \"乙\""』
+          ，『wen: '性能比较：豫言''s'』
+          ，『# 注释』
+          ，『permalink: /十万个为什么/』
+          ，『---』
+          ，『』
+          ，『# 正文』
+          】）
 也。
 
 「：汉语：前言解析。
@@ -87,20 +87,19 @@
 文言：站图与 robots.txt。：」
 「断言串相等」
   于（「合行」
-    于（「列」【
-      『<?xml version="1.0" encoding="UTF-8"?>』，
-      『<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">』
-      ，
-      『<url>』，
-      『<loc>https://example.org/</loc>』，
-      『</url>』，
-      『<url>』，
-      『<loc>https://example.org/教程/?a=1&amp;b=2</loc>』，
-      『</url>』，
-      『</urlset>』，
-      『』
-    】））
-    于（「站点地图」于『https://example.org』于（「列」【『/』，『/教程/?a=1&b=2』】））。
+    于（「列」
+          【『<?xml version="1.0" encoding="UTF-8"?>』
+          ，『<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">』
+          ，『<url>』
+          ，『<loc>https://example.org/</loc>』
+          ，『</url>』
+          ，『<url>』
+          ，『<loc>https://example.org/教程/?a=1&amp;b=2</loc>』
+          ，『</url>』
+          ，『</urlset>』
+          ，『』
+          】））
+          于（「站点地图」于『https://example.org』于（「列」【『/』，『/教程/?a=1&b=2』】））。
 「断言串相等」
   于（『Sitemap: https://example.org/sitemap.xml』附「换行字」）
   于（「机器人说明」于『https://example.org』）。
@@ -111,15 +110,15 @@
 「数据列」者
   「解析数据列」
     于（「合行」
-      于（「列」【
-        『# 目录』，
-        『- name: 总纲』，
-        『  group: 规范』，
-        『- name: 词法与语法』，
-        『  summary: 字符与令牌、操作符结合。』，
-        『』，
-        『- name: "附表"』
-      】））
+      于（「列」
+            【『# 目录』
+            ，『- name: 总纲』
+            ，『  group: 规范』
+            ，『- name: 词法与语法』
+            ，『  summary: 字符与令牌、操作符结合。』
+            ，『』
+            ，『- name: "附表"』
+            】））
 也。
 
 「断言串相等」于『3』于（「整数表示」于（「长度」授以「前言」于「数据列」））。

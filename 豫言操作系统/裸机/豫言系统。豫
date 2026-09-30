@@ -77,34 +77,34 @@
 「模拟参数」乃化「爻」而化「字符串」而化「字符串」而（「列」于「字符串」）也。
 「模拟参数」者会「臂」而会「镜像」而会「盘路径」而
   虑「共参」者
-    （（「列」于「字符串」）也（「列」【
-      『-accel』，
-      『tcg』，
-      『-m』，
-      『128M』，
-      『-smp』，
-      『1』，
-      『-display』，
-      『none』，
-      『-monitor』，
-      『none』，
-      『-chardev』，
-      『stdio,id=yy_serial,mux=on,signal=off』，
-      『-serial』，
-      『chardev:yy_serial』，
-      『-no-reboot』，
-      『-kernel』，
-      「镜像」
-    】）
+    （（「列」于「字符串」）也（「列」
+                                  【『-accel』
+                                  ，『tcg』
+                                  ，『-m』
+                                  ，『128M』
+                                  ，『-smp』
+                                  ，『1』
+                                  ，『-display』
+                                  ，『none』
+                                  ，『-monitor』
+                                  ，『none』
+                                  ，『-chardev』
+                                  ，『stdio,id=yy_serial,mux=on,signal=off』
+                                  ，『-serial』
+                                  ，『chardev:yy_serial』
+                                  ，『-no-reboot』
+                                  ，『-kernel』
+                                  ，「镜像」
+                                  】）
     ）而
     虑「机参」者「裸机模拟平台参数」于「臂」于「阳」于「阳」而
     虑「设备参」者
-      （（「列」于「字符串」）也（「列」【
-        『-drive』，
-        『file=』附「盘路径」附『,if=none,id=yy_disk,format=raw』，
-        『-device』，
-        「裸机磁盘设备参数」于「阳」
-      】）
+      （（「列」于「字符串」）也（「列」
+                                    【『-drive』
+                                    ，『file=』附「盘路径」附『,if=none,id=yy_disk,format=raw』
+                                    ，『-device』
+                                    ，「裸机磁盘设备参数」于「阳」
+                                    】）
       ）
     而
     「附加」授以「字符串」
