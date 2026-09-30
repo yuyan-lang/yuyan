@@ -1000,6 +1000,32 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
     for (const 子 of Array.from(目标.childNodes)) if (子.nodeType === 1) 释放子树句柄(子);
     目标.replaceChildren(副本);
   };
+  // ---- 0.4.0：运行时样式规则 ----
+  // 文言：装样式之规于此客所专之可构样式表；惟许样式之规，规文不得引外资；全段先验，皆合乃装。汉语：把 CSS 样式规则装进本应用专用的一张可构造样式表；只许样式规则（不许 at 规则与嵌套规则），规则文字里不许 url() 等引用外部资源的函数；整段先校验，全部合格才装入。
+  let 应用样式表 = null;
+  let 应用样式规则数 = 0;
+  const 外部资源式 = /(?:^|[^a-z0-9_-])(?:url|image|image-set|-webkit-image-set|cross-fade|element|src)\s*\(/iu;
+  const 添加样式规则 = 文 => {
+    if (typeof 文 !== 'string' || 文.length > 4 * 1024 * 1024) throw Error('样式规则文字超过 4 MiB');
+    const 表类 = 全局?.CSSStyleSheet;
+    if (typeof 表类 !== 'function' || !('adoptedStyleSheets' in 根)) throw Error('宿主不支持可构造样式表');
+    const 暂表 = new 表类();
+    try { 暂表.replaceSync(文); } catch { throw Error('样式规则无法解析'); }
+    const 规则们 = Array.from(暂表.cssRules);
+    for (const 规则 of 规则们) {
+      const 片 = String(规则.cssText ?? '').slice(0, 80);
+      if (typeof 全局.CSSStyleRule !== 'function' || !(规则 instanceof 全局.CSSStyleRule)) throw Error('只许样式规则，不许 at 规则：' + 片);
+      if (规则.cssRules && 规则.cssRules.length) throw Error('样式规则里不许嵌套规则：' + 片);
+      if (外部资源式.test(规则.cssText)) throw Error('样式规则不得引用外部资源：' + 片);
+    }
+    if (应用样式规则数 + 规则们.length > 100000) throw Error('样式规则累计超过 100000 条');
+    if (!应用样式表) {
+      应用样式表 = new 表类();
+      根.adoptedStyleSheets = [...根.adoptedStyleSheets, 应用样式表];
+    }
+    for (const 规则 of 规则们) 应用样式表.insertRule(规则.cssText, 应用样式表.cssRules.length);
+    应用样式规则数 += 规则们.length;
+  };
   const 文树操作表 = {
     取得: 标识 => 登记节点(找元素(标识)),
     新建: (签, 文, 类) => {
@@ -1167,7 +1193,9 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
       Array.from(模板.content.childNodes).forEach((节, 序) => { const 新 = 清(节, 1, '根[' + 序 + ']'); if (新) 片.appendChild(新); });
       for (const 子 of Array.from(元.childNodes)) if (子.nodeType === 1) 释放子树句柄(子);
       元.replaceChildren(片);
-    }
+    },
+    // ---- 0.4.0：运行时样式规则 ----
+    添加样式规则: 文 => { 添加样式规则(文); }
   };
   const 运行表 = (表, 名, 参) => {
     if (typeof 名 !== 'string' || !Object.hasOwn(表, 名)) throw Error('网页操作不受支持：' + String(名).slice(0, 64));
