@@ -11,8 +11,8 @@ const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.
 // 文言：客之工作线程另带 --experimental-ffi，令系统库调用之原语可用；引擎之旗通于全进程，不可亦不必传于工作线程，先去之；诺节不识此旗、或余旗不容于工作线程，则照旧承父之旗。汉语：客体工作线程另带 --experimental-ffi，让系统库调用原语（外部库.mjs）可用，node:ffi 到第一次调用才载入。V8 引擎旗对整个进程生效，不能也不必传给工作线程，先滤掉；诺节不认此旗、或余下的旗不能用于工作线程时，照旧继承父线程的旗。
 const 外部库旗='--experimental-ffi';
 const 新客线程=选项=>{if(process.allowedNodeEnvironmentFlags.has(外部库旗)&&!process.execArgv.includes(外部库旗)){try{return new Worker(__filename,{...选项,execArgv:[...process.execArgv.filter(参=>!选引擎参数([参]).length&&!/^--stack-size=/.test(参)),外部库旗]});}catch(错){if(错?.code!=='ERR_WORKER_INVALID_EXEC_ARGV')throw 错;}}return new Worker(__filename,选项);};
-// 文言：系统库调用之原语，惟供适配与系统库；工具链包之宿主无此文则缺之。汉语：系统库调用原语（见 外部库.mjs，只供适配与系统库使用）；Wasm 工具链包里的宿主没带这个文件时就不提供。
-const 外部库原语=文字=>{try{return require('./外部库.mjs').创建外部库能力({文字});}catch(错){if(错?.code==='MODULE_NOT_FOUND'||错?.code==='ERR_MODULE_NOT_FOUND')return {};throw 错;}};
+// 文言：系统库调用之原语，惟供适配与系统库；工具链包之宿主无此文则惟报不可用。汉语：系统库调用原语（见 外部库.mjs，只供适配与系统库使用）；Wasm 工具链包里的宿主没带这个文件时，只提供报告“不可用”的原语。
+const 外部库原语=文字=>{try{return require('./外部库.mjs').创建外部库能力({文字});}catch(错){if(错?.code==='MODULE_NOT_FOUND'||错?.code==='ERR_MODULE_NOT_FOUND')return {豫言_节点_外部库可用:()=>false};throw 错;}};
 if (isMainThread) {
   桥文件路径();
   // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
