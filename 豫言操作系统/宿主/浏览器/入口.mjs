@@ -28,10 +28,9 @@ const 显示不支持 = 缺 => {
     + '<p style="margin:0 0 .5em">请将浏览器更新到 Safari 27、Chrome 137、Edge 137 或 Firefox 153 及以上版本后再访问。</p>'
     + `<p style="margin:0 0 1em;font-size:13px;opacity:.7">缺少：${缺}</p>`
     + '<p style="margin:0 0 .75em">您也可以继续访问，但部分功能将无法使用。</p>'
-    + '<button type="button" style="font:inherit;padding:.4em 2em;border:0;border-radius:6px;background:#1d1b18;color:#f5f2eb;cursor:pointer">我明白</button>');
-  const 钮 = 层?.querySelector('button');
-  钮?.addEventListener('click', () => 层.remove());
-  钮?.focus();
+    + '<button type="button" style="font:inherit;padding:9px 24px;border:0;border-radius:3px;background:var(--豫朱,#a33c2c);color:#fff;cursor:pointer">我明白</button>');
+  // 文言：钮依站之主钮（朱底白字）；不自移焦点，免站之焦点框环于钮外。汉语：按钮照站点主按钮样式（朱红底、白字）；不主动把焦点移到按钮上，免得站点的焦点框（朱红描边）套在按钮外面。
+  层?.querySelector('button')?.addEventListener('click', () => 层.remove());
   return 层;
 };
 export function 检查浏览器支持() {
