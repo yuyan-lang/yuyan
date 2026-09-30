@@ -11,8 +11,8 @@ struct 顶点输入 {
 }
 
 fn 角坐标(序: u32) -> vec2<f32> {
-  let 横 = select((-1.0), 3.0, (序 == 1));
-  let 纵 = select((-1.0), 3.0, (序 == 2));
+  let 横 = select((-1.0f), 3.0f, (序 == 1u));
+  let 纵 = select((-1.0f), 3.0f, (序 == 2u));
   return vec2<f32>(横, 纵);
 }
 
@@ -23,23 +23,23 @@ fn 全屏顶点(入: 顶点输入) -> @builtin(position) vec4<f32> {
   let 偏移 = 参.偏移;
   let 角 = 角坐标(入.序号);
   let 位 = (角 * 缩放) + 偏移;
-  return vec4<f32>(位.x, 位.y, 0.0, 1.0);
+  return vec4<f32>(位.x, 位.y, 0.0f, 1.0f);
 }
 
 fn 分段(甲: f32) -> f32 {
   var 临时: f32;
-  if (甲 < 0.5) {
-    let 丙 = 甲 * 2.0;
+  if (甲 < 0.5f) {
+    let 丙 = 甲 * 2.0f;
     临时 = 丙 * 丙;
   } else {
-    临时 = 1.0;
+    临时 = 1.0f;
   }
   let 乙 = 临时;
-  return 乙 + 0.1;
+  return 乙 + 0.1f;
 }
 
 @fragment
 fn 着色片元(@builtin(position) 坐标: vec4<f32>) -> @location(0) vec4<f32> {
-  let 亮 = 分段(fract((坐标.x * 0.01)));
-  return vec4<f32>(亮, 亮, 亮, 1.0);
+  let 亮 = 分段(fract((坐标.x * 0.01f)));
+  return vec4<f32>(亮, 亮, 亮, 1.0f);
 }

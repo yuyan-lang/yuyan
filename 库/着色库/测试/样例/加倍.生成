@@ -1,4 +1,4 @@
 「着色源」乃「《《内建类型：字符串》》」也。
-「着色源」者『@group(0) @binding(0) var<storage, read_write> 数据: array<u32>;「：换行：」「：换行：」@compute @workgroup_size(4)「：换行：」fn 加倍(@builtin(global_invocation_id) 号: vec3<u32>) {「：换行：」  let 序 = 号.x;「：换行：」  数据[序] = 数据[序] * 2;「：换行：」}「：换行：」』也。
+「着色源」者『@group(0) @binding(0) var<storage, read_write> 数据: array<u32>;「：换行：」「：换行：」@compute @workgroup_size(4)「：换行：」fn 加倍(@builtin(global_invocation_id) 号: vec3<u32>) {「：换行：」  let 序 = 号.x;「：换行：」  数据[序] = 数据[序] * 2u;「：换行：」}「：换行：」』也。
 「加倍入口」乃「《《内建类型：字符串》》」也。
 「加倍入口」者『加倍』也。

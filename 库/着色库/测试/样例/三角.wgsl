@@ -6,7 +6,7 @@ struct 顶点输出 {
 
 @vertex
 fn 顶点主(@location(0) 坐标: vec2<f32>) -> 顶点输出 {
-  return 顶点输出(vec4<f32>(坐标.x, 坐标.y, 0.0, 1.0), vec4<f32>(0.0, 1.0, 0.0, 1.0), 0);
+  return 顶点输出(vec4<f32>(坐标.x, 坐标.y, 0.0f, 1.0f), vec4<f32>(0.0f, 1.0f, 0.0f, 1.0f), 0u);
 }
 
 @fragment
