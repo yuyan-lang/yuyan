@@ -88,6 +88,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 可执行=名=>{try{文件.accessSync(名,文件.constants.X_OK);return 文件.statSync(名).isFile();}catch{return false;}};
   // 文言：线程之出各归其管。汉语：内部编译线程通过 Worker 标准流汇集输出，不能直接写共享进程的文件描述符。
   const 写输出=(号,值)=>本工.复用线程?parentPort.postMessage({种:'出',号,值}):本工.编译线程?(号===1?process.stdout:process.stderr).write(值):文件.writeSync(号,值);
+  // 文言：底层之模导入内存、数学、诺节之函或出工作线程者，交底层宿主行之；工具链包之宿主无此文，则照旧行之。汉语：底层模块导入了内存或「数学」「诺节」的函数，或导出「工作线程」时，交 底层宿主.cjs 运行（建内存、起工作线程、调 _start）；Wasm 工具链包里的宿主不带这个文件，照旧运行。
+  const 底层宿主=(()=>{try{return require('./底层宿主.cjs');}catch(错){if(错?.code==='MODULE_NOT_FOUND')return null;throw 错;}})();
+  if(底层宿主?.是底层模块(模块))return 底层宿主.运行底层模块(模块,文件.readFileSync(模块路径),值=>写输出(1,值));
   function 精确小数(值){const 数字=数(值);if(Object.is(数字,-0))return '-0';if(!Number.isFinite(数字))return String(数字).toLowerCase().replace('infinity','inf');const [尾,指数]=数字.toExponential(16).split('e');const 幂=Number(指数);if(幂 < -4 || 幂 >= 17)return 尾.replace(/\.?0+$/,'')+'e'+(幂>=0?'+':'-')+String(Math.abs(幂)).padStart(2,'0');return 数字.toFixed(Math.max(0,16-幂)).replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'');}
   // 文言：诸客同用引擎之制，不令调参独及调度者。汉语：传播显式 Wasm 与 V8 线程池选项；不传播调试端口或 CPU 剖析输出选项。
   const 引擎参数=本工.引擎参数??选引擎参数(process.execArgv);
