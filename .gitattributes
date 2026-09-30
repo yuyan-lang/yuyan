@@ -1,5 +1,5 @@
 # Identify every Yuyan source suffix consistently for GitHub Linguist.
-# 「：文言：源码、规范与清单之行尾恒为 LF，使诸平台所读之文与摘要同。汉语：固定豫言源码、规范和清单的 LF 换行，避免 Windows 检出改写解析输入与内容摘要。：」
+# 「：汉语：固定豫言源码、规范和清单的 LF 换行，避免 Windows 检出改写解析输入。文言：源码、规范与清单之行尾恒为 LF，使诸平台所读之文同。：」
 *。豫 text eol=lf
 *.md text eol=lf
 *.json text eol=lf
