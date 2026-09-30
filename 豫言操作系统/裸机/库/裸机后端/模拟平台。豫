@@ -6,18 +6,18 @@
 「裸机模拟平台参数」者会「臂」而会「设备」而会「隔离」而
   若「臂」则
     「列」
-      【『-machine』
-      ，（
-          若「隔离」则
-            『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off』
-          否则若「设备」则『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off』否则
-            『virt,gic-version=2,virtualization=off,secure=off』
-        ）
-      ，『-cpu』
-      ，『cortex-a53』
-      ，『-semihosting-config』
-      ，『enable=on,target=native』
-      】
+    【『-machine』
+    ，（
+        若「隔离」则
+          『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off』
+        否则若「设备」则『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off』否则
+          『virt,gic-version=2,virtualization=off,secure=off』
+      ）
+    ，『-cpu』
+    ，『cortex-a53』
+    ，『-semihosting-config』
+    ，『enable=on,target=native』
+    】
   否则
     「附加」授以「字符串」
     于（「列」
