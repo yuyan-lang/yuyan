@@ -1,7 +1,9 @@
 寻观「标准库」之书。
 寻观「编译器核心」之「编译步骤」之「代码生成」之「网页汇编线性栈基础」之书。
 寻观「编译器核心」之「网页汇编核心」之「回收文本」之书。
-「：文言：独立夹具验栈，导出不入正式接口；栈基之项书为文，与手书之导出合为一模块。汉语：仅为运行时测试导出 init、reserve、get、set、pages；这些导出不会加入正式程序。线性栈运行时的模块项经「回收项串转文」打印，与手写的导出拼成一个模块。：」
+
+「：汉语：仅为运行时测试导出 init、reserve、get、set、pages；这些导出不会加入正式程序。线性栈运行时的模块项经「回收项串转文」打印，与手写的导出拼成一个模块。
+文言：独立夹具验栈，导出不入正式接口；栈基之项书为文，与手书之导出合为一模块。：」
 「打印行」于（『(module (type $ints (array (mut i64)))「：换行：」』附（「回收项串转文」于「线性栈基础」）附『
 (func (export "init") (param $sp i32) (param $n i64) (result i32) (local $top i32)
 local.get $sp local.get $n call $reserve local.tee $top i32.const -1 i32.eq if i32.const -1 return end

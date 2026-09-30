@@ -4,10 +4,8 @@
 寻观「豫言操作系统网页答复」之「响应」之书。
 寻观「豫言操作系统平台资料」之「资料」之书。
 
-「：
-文言：一路而已：op=list 列键，op=read 读文；成败皆以 JSON 告，败者带其辞。
-汉语：验证入口（fetch 事件），查询参数：op（list 或 read）、set（资料集名）、prefix（前缀）、key（键）。成功回 {ok:true,text} 或 {ok:true,found,text}；豫言异常回 {ok:false,error}（异常消息原样）。
-：」
+「：汉语：验证入口（fetch 事件），查询参数：op（list 或 read）、set（资料集名）、prefix（前缀）、key（键）。成功回 {ok:true,text} 或 {ok:true,found,text}；豫言异常回 {ok:false,error}（异常消息原样）。
+文言：一路而已：op=list 列键，op=read 读文；成败皆以 JSON 告，败者带其辞。：」
 「答」乃化（「爻」合「字符串」）而「有」也。
 「答」者会「甲」而
   「回应入站癸象文」
