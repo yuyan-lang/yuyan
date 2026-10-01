@@ -121,11 +121,12 @@ test('程序自身的失败是返回值：退出码、陷阱、标准错误、�
   assert.equal(败.ok, false);
   assert.equal(败.exitCode, 3);
   assert.equal(Object.hasOwn(败, 'error'), false);
+  // 未捕获的豫言异常：标准库默认处理写“未捕捉的豫言异常：消息”到标准错误，以退出码 1 结束，没有 error。
   const 陷 = await 运行('trap');
   assert.equal(陷.ok, false);
   assert.equal(陷.exitCode, 1);
-  assert.equal(typeof 陷.error, 'string');
-  assert.ok(陷.error.length > 0);
+  assert.equal(Object.hasOwn(陷, 'error'), false);
+  assert.equal(陷.stderr, '未捕捉的豫言异常：探针故意陷落\n');
   const 误 = await 运行('stderr');
   assert.equal(误.ok, true);
   assert.equal(误.stdout, '照常\n');

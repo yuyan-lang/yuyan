@@ -16,13 +16,17 @@ const 程序模块 = await WebAssembly.compile(await readFile(join(产物, '程�
 const 值桥模块 = await WebAssembly.compile(await readFile(join(产物, '值桥.wasm')));
 const 许可 = JSON.parse(await readFile(join(产物, '许可.json'), 'utf8'));
 
-// 文言：每案自造宿主、对象与慢网，互不相染。汉语：每个用例新建宿主、模拟持久对象和模拟网络；配置直接传给宿主。
+// 文言：每案自造宿主、对象与慢网，互不相染；误出收之以验。汉语：每个用例新建宿主、模拟持久对象和模拟网络；配置直接传给宿主；标准错误收进 误出 以便核对。
 const 新对象 = ({配置, 初始} = {}) => {
   const 网络 = 创建模拟慢网络();
-  const 宿主 = 创建云工宿主({程序模块, 值桥模块, 许可, 网络: 网络.fetch, 执行配置: 配置});
+  const 误出 = [];
+  const 宿主 = 创建云工宿主({程序模块, 值桥模块, 许可, 网络: 网络.fetch, 执行配置: 配置, 错误输出: 文 => { 误出.push(文); }});
   const 对象 = 创建模拟持久对象({宿主, 初始});
-  return {对象, 网络, 仓: 对象.storage, 状态: 对象.状态};
+  return {对象, 网络, 仓: 对象.storage, 状态: 对象.状态, 误出};
 };
+// 文言：客之异无承者，标准库书“未捕捉的豫言异常：”于误出，以退出码一终之，出壳为“豫言程序退出：1”。
+// 汉语：豫言异常没被接住时，标准库的默认处理把“未捕捉的豫言异常：消息”写到标准错误，并以退出码 1 结束，出壳时表现为“豫言程序退出：1”。
+const 未捕获 = 消息 => '未捕捉的豫言异常：' + 消息;
 const 请求体 = 体 => new Request('https://do.test/', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(体)});
 const 发 = async (对象, 体) => { const 回 = await 对象.fetch(请求体(体)); assert.equal(回.status, 200); return 回.text(); };
 const 睡 = 毫秒 => new Promise(完成 => setTimeout(完成, 毫秒));
@@ -214,12 +218,13 @@ test('持久事务：回滚之后再用本事务，平台报错使执行持久�
 });
 
 test('持久告警：告警事件的重试数、处理中告警视为未设、失败后重试', async () => {
-  const {对象, 仓} = 新对象();
+  const {对象, 仓, 误出} = 新对象();
   await 仓.put('alarm-mode', 'fail');
   await 发(对象, {op: 'alarm-set', t: Date.now() + 1000});
-  await assert.rejects(对象.触发告警({重试数: 0}), /告警故意失败|RuntimeError/);
+  await assert.rejects(对象.触发告警({重试数: 0}), /豫言程序退出：1/);
+  assert.ok(误出.includes(未捕获('告警故意失败')), '失败原因写到标准错误');
   assert.notEqual(await 仓.getAlarm(), null, '处理失败后平台保留告警以待重试');
-  await assert.rejects(对象.触发告警({重试数: 1}), /告警故意失败|RuntimeError/);
+  await assert.rejects(对象.触发告警({重试数: 1}), /豫言程序退出：1/);
   await 仓.put('alarm-mode', 'record');
   await 对象.触发告警({重试数: 2});
   assert.equal(await 仓.getAlarm(), null, '成功且未重设则不再有告警');
@@ -280,8 +285,9 @@ test('持久独占：名称与 JSON 参数往返、仓与事务可在区内使�
 });
 
 test('持久独占：区内失败、缺结果、重复结果、坏结果都不重置对象', async () => {
-  const {对象, 仓, 状态} = 新对象();
-  assert.match(await 发(对象, {op: 'block', name: 'fail', args: '{}'}), /^X\|持久独占失败：RuntimeError: illegal cast（多为豫言处理入口抛出了未捕获的异常/);
+  const {对象, 仓, 状态, 误出} = 新对象();
+  assert.equal(await 发(对象, {op: 'block', name: 'fail', args: '{}'}), 'X|持久独占失败：豫言程序退出：1');
+  assert.ok(误出.includes(未捕获('独占区内故意失败')), '区内失败的原因写到标准错误');
   assert.equal(await 发(对象, {op: 'block', name: 'no-result', args: '{}'}), 'X|持久独占失败：豫言独占区未供结果');
   assert.equal(await 发(对象, {op: 'block', name: 'bad-result', args: '{}'}), 'B|"X|持久独占结果无效：独占区结果不是有效 JSON"');
   assert.equal(await 发(对象, {op: 'block', name: 'double-result', args: '{}'}), 'B|1');
@@ -292,12 +298,13 @@ test('持久独占：区内失败、缺结果、重复结果、坏结果都不�
 });
 
 test('持久独占：入参校验与限额', async () => {
-  const {对象} = 新对象();
+  const {对象, 误出} = 新对象();
   assert.equal(await 发(对象, {op: 'block', name: 'echo', args: '不是JSON'}), 'X|持久独占失败：独占区参数不是有效 JSON');
   assert.equal(await 发(对象, {op: 'block', name: '', args: '{}'}), 'X|持久独占失败：独占区操作名须为 1 至 128 字节');
   assert.equal(await 发(对象, {op: 'block', name: '名'.repeat(43), args: '{}'}), 'X|持久独占失败：独占区操作名须为 1 至 128 字节', '129 字节');
   assert.doesNotMatch(await 发(对象, {op: 'block', name: '名'.repeat(42), args: '{}'}), /操作名须为/, '126 字节的名字通过宿主校验（处理入口不认识它，另行失败）');
-  assert.match(await 发(对象, {op: 'block', name: '名'.repeat(42), args: '{}'}), /^X\|持久独占失败：RuntimeError: illegal cast（多为豫言处理入口抛出了未捕获的异常/);
+  assert.equal(await 发(对象, {op: 'block', name: '名'.repeat(42), args: '{}'}), 'X|持久独占失败：豫言程序退出：1');
+  assert.ok(误出.includes(未捕获('未知独占操作：' + '名'.repeat(42))), '处理入口不认识的操作名，原因写到标准错误');
 });
 
 test('持久独占：大参数与大结果（请求体 2 MiB 上限之外，由应用内部自造）', async () => {
@@ -336,9 +343,9 @@ test('值桥与宿主：请求体经 Request.text() 可读至 15 MiB（网页入
   assert.equal(await (await 读体(5 * 1024 * 1024)).text(), 'N|' + 5 * 1024 * 1024, '站点发布请求（含 4 MiB base64）可读');
   assert.equal(await (await 读体(15 * 1024 * 1024)).text(), 'N|' + 15 * 1024 * 1024);
   await assert.rejects(读体(17 * 1024 * 1024), /宿主交换数据超过上限/);
-  // 对照：走网页入站的 JSON 正文读取，超过 2 MiB 则由适配报错（豫言异常未捕获，出壳为非法转型）
+  // 对照：走网页入站的 JSON 正文读取，超过 2 MiB 则由适配报错（豫言异常未捕获，标准库默认处理写标准错误并以退出码 1 结束，出壳为“豫言程序退出：1”）
   const 回 = 对象.fetch(请求体({op: 'put', k: 'k', text: JSON.stringify('y'.repeat(2 * 1024 * 1024 + 100))}));
-  await assert.rejects(回, /illegal cast/);
+  await assert.rejects(回, /豫言程序退出：1/);
 });
 
 test('持久独占：区内等待外部输入输出时，其他事件排队而不交错', async () => {
