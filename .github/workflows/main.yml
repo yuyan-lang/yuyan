@@ -1,9 +1,9 @@
 name: CI
 
 env:
-  # 固定的 Wasm 工具链包：由提交 42f03fa3 的 CI 构建并发布到 historical-binaries（该轮 Wasm 包起步在 Linux 与 macOS 上通过）；其中的编译器认第二批 39 个数值原语（整数取余、位运算、移位、计数、无符号运算，小数比较、取整、开方，饱和转换与按位重解释），标准库在原语模块里声明并改用这些原语（方案 B 第二步）要靠它起步。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/20261001T165804Z-yuyan-wasm-42f03fa3ed837d9450d2575b75209b65cbbeb32e.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 7f4575d8aaa418c3411c0c56ee96ead55f4bacf7a8aa378e41f0c6d09a19435b
+  # 固定的 Wasm 工具链包：由提交 501f8d8e3 的 CI 构建并发布到 historical-binaries（该轮 Wasm 包起步在 Linux 与 macOS 上通过）；其中的编译器认得内建原语「设置当前异常处理器」，标准库 异常。豫 改用它（取消外调第⑤步第三批）要靠它起步；也认第二批 39 个数值原语。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/20261001T231631Z-yuyan-wasm-501f8d8e325b3f116a8e28b7a915a74e98f89c6c.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: 14b8522f0f737a92aea17db755ffd8a9e74dcd64609ba64069e7f55f8d64e71b
 
 on:
   push:
