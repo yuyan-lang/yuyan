@@ -1,6 +1,6 @@
 // 文言：桥唯译值，业务在客；每求新器，无旧文相混。汉语：仅实现 WasmGC 值交换与参数、输出原语，每次请求创建独立实例。
 import { 创建值桥, 小数表示 } from '../../浏览器/编译器/宿主.mjs';
-import { 造边界导入 } from '../../网页汇编/边界.mjs';
+import { 造边界导入, 造边界导出, 启动导出名 } from '../../网页汇编/边界.mjs';
 const 解码 = new TextDecoder();
 // 文言：客之退出以异常穿栈，宿主捕之而取其码。汉语：应用调用退出时抛出此异常穿过 Wasm 栈，由宿主捕获并取得退出码；零表示成功。
 class 客体退出 extends Error {
@@ -54,7 +54,12 @@ export function 创建项目核心(模块, 桥模块) {
       } }
     });
     try {
-      try { 实例.exports._start(); }
+      try {
+        实例.exports._start();
+        // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 之后，应用若实现了「启动程序」（导出 豫言操作系统启动/启动程序）就调用它；旧产物没有这个导出。
+        const 启动导出 = 造边界导出(实例, 模块, 桥.原)[启动导出名];
+        if (启动导出) 启动导出();
+      }
       catch (错) { if (!(错 instanceof 客体退出) || 错.退出码 !== 0) throw 错; }
       if (new TextEncoder().encode(输出).length > 交换上限) throw Error('输出超过宿主交换上限');
       return JSON.parse(输出);

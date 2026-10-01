@@ -12,7 +12,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {Worker, MessageChannel, receiveMessageOnPort} from 'node:worker_threads';
 // 〔内联起〕
-import {造边界导入} from '../网页汇编/边界.mjs';
+import {造边界导入, 造边界导出, 启动导出名} from '../网页汇编/边界.mjs';
 import {创建值桥, 文字, 精确小数, 小数表示, 理解小数, 随机整数, 处理器数量, 旧式原语} from '../云工/值桥.mjs';
 import {创建句柄表} from '../云工/句柄.mjs';
 import {核对接口装载} from '../../装载/接口核对.mjs';
@@ -718,6 +718,9 @@ export async function 运行节点应用({程序模块, 值桥模块, 能力, �
   须(typeof 实例.exports._start === 'function', 'Wasm 缺少程序启动导出');
   try {
     await WebAssembly.promising(实例.exports._start)();
+    // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 之后，应用若实现了「启动程序」（导出 豫言操作系统启动/启动程序）就调用它；旧产物没有这个导出。
+    const 启动导出 = 造边界导出(实例, 程序模块, 桥.原, {异步: true})[启动导出名];
+    if (启动导出) await 启动导出();
     return 0;
   } catch (错) {
     if (错 instanceof 客体退出) return 错.退出码;

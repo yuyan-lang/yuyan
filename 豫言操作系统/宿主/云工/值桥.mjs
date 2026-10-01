@@ -1,7 +1,7 @@
 // 文言：桥唯传客值，毋决应用之事。汉语：值桥只转换 WasmGC 值，不承载业务规则。
 // 文言：带型之导入经边界胶水；本目之 边界.mjs 于仓中转出网页汇编之本体，构建时以本体代之。汉语：带类型的导入经共用边界胶水；本目录的 边界.mjs 在仓库里转出 ../网页汇编/边界.mjs，构建器把胶水本体复制成产物里的 边界.mjs。
 //   节点发行启动文件内联本文件时，先内联胶水，再去掉下面这行相对导入。
-import {造边界导入} from './边界.mjs';
+import {造边界导入, 造边界导出, 启动导出名} from './边界.mjs';
 const 编码 = new TextEncoder();
 const 解码 = new TextDecoder('utf-8', {ignoreBOM: true});
 export const 文字 = 值 => 值 instanceof Uint8Array ? 解码.decode(值) : String(值);
@@ -211,7 +211,12 @@ export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 =
   const 启动 = WebAssembly.promising(实例.exports._start);
   // 文言：退出码零为成，余为败。汉语：退出进程的码为 0 时正常结束本次运行，其余以“豫言程序退出：码”失败。
   const 运行 = async () => {
-    try { await 启动(); }
+    try {
+      await 启动();
+      // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 之后，应用若实现了「启动程序」（导出 豫言操作系统启动/启动程序）就调用它；旧产物没有这个导出。
+      const 启动导出 = 造边界导出(实例, 程序模块, 桥.原, {异步: true})[启动导出名];
+      if (启动导出) await 启动导出();
+    }
     catch (错) { if (!(错 instanceof 豫言退出) || 错.退出码 !== 0) throw 错; }
   };
   return {运行, 实例};

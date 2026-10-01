@@ -211,6 +211,10 @@ export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编
     // 文言：有独栈之能则用之。汉语：JSPI 在独立 Wasm 栈上执行，避免浏览器主栈较小导致编译器深调用溢出；无此 API 时保持同步引擎路径。
     if (typeof WebAssembly.promising === "function") await WebAssembly.promising(实例.exports._start)();
     else 实例.exports._start();
+    // 文言：_start 毕，有边界段而应用实现启动之术者，乃调其导出。汉语：_start 之后，带「豫言边界」段的模块若实现了「启动程序」（导出 豫言操作系统启动/启动程序）就调用它；旧产物没有这个导出。
+    const 胶水 = WebAssembly.Module.customSections(模块, "豫言边界").length > 0 ? await 取边界胶水() : null;
+    const 启动导出 = 胶水 ? 胶水.造边界导出(实例, 模块, 桥.原, { 异步: typeof WebAssembly.promising === "function" })[胶水.启动导出名] : undefined;
+    if (启动导出) await 启动导出();
     return { ok: true, stdout, stderr, exitCode: 0 };
   } catch (错) {
     if (错.退出码 !== 0) 报告({ type: "diagnostic", text: 最近读文件 + "\n" + (错.stack ?? 错.message) });

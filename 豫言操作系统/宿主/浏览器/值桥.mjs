@@ -238,7 +238,12 @@ export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 =
   const 启动 = 可悬 ? WebAssembly.promising(实例.exports._start) : async () => 实例.exports._start();
   // 文言：退出码零为成，余为败。汉语：退出进程的码为 0 时正常结束本次运行，其余以“豫言程序退出：码”失败。
   const 运行 = async () => {
-    try { await 启动(); }
+    try {
+      await 启动();
+      // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 之后，应用若实现了「启动程序」（导出 豫言操作系统启动/启动程序）就调用它；旧产物没有这个导出。
+      const 启动导出 = 边界胶水 ? 边界胶水.造边界导出(实例, 程序模块, 桥.原, {异步: 可悬})[边界胶水.启动导出名] : undefined;
+      if (启动导出) await 启动导出();
+    }
     catch (错) { if (!(错 instanceof 豫言退出) || 错.退出码 !== 0) throw 错; }
   };
   return {运行, 实例};
