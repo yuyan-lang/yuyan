@@ -1,9 +1,9 @@
 name: CI
 
 env:
-  # 固定的 Wasm 工具链包：由提交 c7350c3a 的 CI 构建并发布到 historical-binaries（该轮 Wasm 包起步在 Linux 与 macOS 上通过）；其中的编译器认无体声明，把「。内建。豫」编成内建原语、「。接口。豫」编成带类型的宿主导入，取消外调第②步的源码要靠它起步。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/20261001T032935Z-yuyan-wasm-c7350c3a315030a5439d78961b7991b32f6e4bec.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 2fb7a1908c8c7857ac74ec2096adbc507ec80190cb6dd269f57dad670dcfd7d0
+  # 固定的 Wasm 工具链包：由提交 925751c4 的 CI 构建并发布到 historical-binaries（该轮 Wasm 包起步在 Linux 与 macOS 上通过）；其中的编译器与豫构已改用标准库的原语内建声明与宿主接口声明，运行时只导入“标准库”“构建基础”两个模块的带类型导入（取消外调第②步）。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/20261001T081239Z-yuyan-wasm-925751c425673a6ddf870207ac0bcecf4c2652a3.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: 4e077f1b4fc2072e3bc4649e42fdf39a6572baa1cfb8310ea14c35bdd253e596
 
 on:
   push:
