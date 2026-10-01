@@ -15,6 +15,10 @@ const {创建云工宿主} = await import(pathToFileURL(join(产物, '宿主.mjs
 const 程序模块 = await WebAssembly.compile(await readFile(join(产物, '程序.wasm')));
 const 值桥模块 = await WebAssembly.compile(await readFile(join(产物, '值桥.wasm')));
 const 许可 = JSON.parse(await readFile(join(产物, '许可.json'), 'utf8'));
+// 文言：旧器之能经通调与值桥之交换缓冲，限十六兆；新器以带型导入取云工宿主，不经其缓冲，无此限。
+// 汉语：旧产物经旧 call 与值桥交换缓冲调用云工能力，字符串跨桥限 16 MiB；新产物以带类型导入调用「云工宿主」，不经交换缓冲，没有这一限制（受 Workers 内存约束）。
+const 旧通调 = !WebAssembly.Module.imports(程序模块).some(项 => 项.module === '云工宿主');
+const 十七兆 = 17 * 1024 * 1024;
 
 // 文言：每案自造宿主、对象与慢网，互不相染；误出收之以验。汉语：每个用例新建宿主、模拟持久对象和模拟网络；配置直接传给宿主；标准错误收进 误出 以便核对。
 const 新对象 = ({配置, 初始} = {}) => {
@@ -327,14 +331,15 @@ test('持久事务：4 MiB 的事务参数可往返（豫言 JSON 规范化对�
   assert.equal(performance.now() - 始 < 5000, true, '4 MiB 事务参数应在数秒内完成');
 });
 
-test('值桥：宿主到豫言的字符串可达 16 MiB，超过则中止本次事件', async () => {
+test('值桥：宿主到豫言的字符串可达 16 MiB；旧 call 超过则中止本次事件，带类型导入不受此限', async () => {
   const {对象, 仓} = 新对象();
   await 仓.put('k', 'z'.repeat(4 * 1024 * 1024));
   assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (4 * 1024 * 1024 + 2), '4 MiB 值可读入豫言（超过 2 MiB 响应体上限的只是网页答复适配）');
   await 仓.put('k', 'z'.repeat(15 * 1024 * 1024));
   assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (15 * 1024 * 1024 + 2));
-  await 仓.put('k', 'z'.repeat(17 * 1024 * 1024));
-  await assert.rejects(对象.fetch(请求体({op: 'getlen', k: 'k'})), /宿主交换数据超过上限/);
+  await 仓.put('k', 'z'.repeat(十七兆));
+  if (旧通调) await assert.rejects(对象.fetch(请求体({op: 'getlen', k: 'k'})), /宿主交换数据超过上限/);
+  else assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (十七兆 + 2), '带类型导入不经交换缓冲');
 });
 
 test('值桥与宿主：请求体经 Request.text() 可读至 15 MiB（网页入站的 2 MiB 是适配自设之限，不是宿主或桥之限）', async () => {
@@ -342,7 +347,8 @@ test('值桥与宿主：请求体经 Request.text() 可读至 15 MiB（网页入
   const 读体 = (字节数, 头 = {}) => 对象.fetch(new Request('https://do.test/', {method: 'POST', headers: {'x-op': 'body-len', ...头}, body: 'b'.repeat(字节数)}));
   assert.equal(await (await 读体(5 * 1024 * 1024)).text(), 'N|' + 5 * 1024 * 1024, '站点发布请求（含 4 MiB base64）可读');
   assert.equal(await (await 读体(15 * 1024 * 1024)).text(), 'N|' + 15 * 1024 * 1024);
-  await assert.rejects(读体(17 * 1024 * 1024), /宿主交换数据超过上限/);
+  if (旧通调) await assert.rejects(读体(十七兆), /宿主交换数据超过上限/);
+  else assert.equal(await (await 读体(十七兆)).text(), 'N|' + 十七兆, '带类型导入不经交换缓冲');
   // 对照：走网页入站的 JSON 正文读取，超过 2 MiB 则由适配报错（豫言异常未捕获，标准库默认处理写标准错误并以退出码 1 结束，出壳为“豫言程序退出：1”）
   const 回 = 对象.fetch(请求体({op: 'put', k: 'k', text: JSON.stringify('y'.repeat(2 * 1024 * 1024 + 100))}));
   await assert.rejects(回, /豫言程序退出：1/);
