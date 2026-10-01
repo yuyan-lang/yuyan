@@ -1,0 +1,139 @@
+寻观「底层库」之「基础」之书。
+
+「：汉语：Windows API 函数：这些无体声明编成导入模块“视窗”的导入，字段名就是 API 名。降级器只在 Windows 目标上把它们绑定到系统动态库（见 豫言操作系统/裸机/库/裸机后端/降级目标。豫 的 视窗入口表），其他目标上绑定为陷阱桩。
+文言：Windows API 之函：此无体之声，编为导入模块“视窗”之导入，字段名即 API 之名。降级者唯于 Windows 之目标绑之于系统之动态库（见 豫言操作系统/裸机/库/裸机后端/降级目标。豫 之 视窗入口表），余目标绑为陷阱。：」
+「GetStdHandle」乃化「整数」而「整数」也。
+「WriteFile」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「ReadFile」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「ExitProcess」乃化「整数」而「有」也。
+「GetModuleFileNameW」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「NtQueryInformationProcess」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「GetCurrentDirectoryW」乃化「整数」而化「整数」而「整数」也。
+「SetCurrentDirectoryW」乃化「整数」而「整数」也。
+「GetEnvironmentVariableW」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「QueryPerformanceCounter」乃化「整数」而「整数」也。
+「QueryPerformanceFrequency」乃化「整数」而「整数」也。
+「GetSystemTimePreciseAsFileTime」乃化「整数」而「有」也。
+「GetLastError」乃化「有」而「整数」也。
+「CloseHandle」乃化「整数」而「整数」也。
+「GetConsoleMode」乃化「整数」而化「整数」而「整数」也。
+「BCryptGenRandom」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「MulDiv」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「GetFileType」乃化「整数」而「整数」也。
+「GetActiveProcessorCount」乃化「整数」而「整数」也。
+「CreateFileW」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「GetFileInformationByHandle」乃化「整数」而化「整数」而「整数」也。
+「GetFileAttributesExW」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「GetFileInformationByHandleEx」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「CreateDirectoryW」乃化「整数」而化「整数」而「整数」也。
+「DeleteFileW」乃化「整数」而「整数」也。
+「RemoveDirectoryW」乃化「整数」而「整数」也。
+「MoveFileExW」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「SetFilePointerEx」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「FlushFileBuffers」乃化「整数」而「整数」也。
+「SetEndOfFile」乃化「整数」而「整数」也。
+「CreatePipe」乃化「整数」而化「整数」而化「整数」而化「整数」而「整数」也。
+「CreateProcessW」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「GetExitCodeProcess」乃化「整数」而化「整数」而「整数」也。
+「TerminateProcess」乃化「整数」而化「整数」而「整数」也。
+「WaitForSingleObject」乃化「整数」而化「整数」而「整数」也。
+「PeekNamedPipe」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「SetHandleInformation」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「Sleep」乃化「整数」而「有」也。
+「WSAStartup」乃化「整数」而化「整数」而「整数」也。
+「socket」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「ioctlsocket」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「setsockopt」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「getsockopt」乃
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  化「整数」而
+  「整数」
+也。
+「bind」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「listen」乃化「整数」而化「整数」而「整数」也。
+「accept」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「connect」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「getsockname」乃化「整数」而化「整数」而化「整数」而「整数」也。
+「shutdown」乃化「整数」而化「整数」而「整数」也。
+「closesocket」乃化「整数」而「整数」也。
+「recv」乃化「整数」而化「整数」而化「整数」而化「整数」而「整数」也。
+「send」乃化「整数」而化「整数」而化「整数」而化「整数」而「整数」也。
+「WSAPoll」乃化「整数」而化「整数」而化「整数」而「整数」也。
