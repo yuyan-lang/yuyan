@@ -331,7 +331,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     try{return 编(原语[名称](...参数组));}catch(错){错.message=名称+': '+错.message;throw 错;}
   }}});
   let 退出码=0;
-  try{实例.exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}
+  // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 初始化各模块之后，应用若实现了《豫言操作系统启动》的「启动程序」（导出 豫言操作系统启动/启动程序），就调用它；旧产物没有这个导出，照旧只跑 _start。
+  try{实例.exports._start();const 导出=边界胶水?边界胶水.造边界导出(实例,模块,桥):{};const 启动=边界胶水?导出[边界胶水.启动导出名]:undefined;if(启动)启动();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}
   // 文言：统计之行，唯请乃书，免乱诸器之标准错误。汉语：运行统计只在 YY_NODE_STATS=1 或 YY_NODE_PROFILE=1 时打印，避免干扰工具的标准错误输出。
   if(process.env.YY_NODE_STATS!=='1'&&!原语次数)return {模块,退出码};
   const 统计=JSON.stringify({轮次:轮,复用模块:!!缓存,引擎:process.versions.v8,进程:process.pid,线程:threadId,编译工作模式:process.env.YY_NODE_COMPILER_WORKERS??'threads',模块准备毫秒:编译毕-开始,执行毫秒:performance.now()-编译毕,宿主调用数:调用数,...(原语次数?{原语次数}:{})});

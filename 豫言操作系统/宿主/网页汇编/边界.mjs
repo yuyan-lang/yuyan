@@ -5,6 +5,7 @@
 //   组〔…〕、列〔…〕 ↔ 数组；变〔…〕 ↔ [支序, …载荷]，支序从零起。嵌在元组里的值经值桥模块读写。
 //   规范见 应用/豫言编译器/文档/语言技术规范/网页汇编接口 网五。
 // 用法：const 导入 = 造边界导入(模块, 桥, 实现表)；new WebAssembly.Instance(模块, {...导入, 'yuyan:gc-host/v1': {call}})。
+//   _start 之后：const 导出 = 造边界导出(实例, 模块, 桥, {异步})；有 导出[启动导出名] 就调用它（应用接口导出，见网五）。
 //   桥是值桥模块（yy节点值桥接.wasm）实例的 exports；实现表形如 {模块名: {字段名: 函数}}；缺的导入给桩，调用时报“接口函数未绑定”。
 //   实现函数带 异步=true 时（返回 Promise），套 WebAssembly.Suspending（JSPI）；没标异步却返回 Promise 时报错。
 
@@ -201,4 +202,45 @@ export function 造边界导入(模块, 桥, 实现表 = {}, 选项 = {}) {
   }
   Object.defineProperty(导入, '未绑定', {value: 未绑定, enumerable: false});
   return 导入;
+}
+
+// 文言：启动之导出名：宿主于 _start 之后调之。汉语：应用实现《豫言操作系统启动》的「启动程序」时编出的导出名；宿主在 _start 之后调用它（有则调）。
+export const 启动导出名 = '豫言操作系统启动/启动程序';
+
+// 文言：读模之边界段之导出行，得 导出名 → 签名 之表；无者返空表。汉语：读「豫言边界」段的导出行（导出⇥包名/函数名⇥签名，签名里已去掉“元”参数），得导出名到签名的表；没有时返回空表。
+const 导出缓存 = new WeakMap();
+export function 读边界导出(模块) {
+  let 表 = 导出缓存.get(模块);
+  if (表) return 表;
+  表 = new Map();
+  for (const 段 of WebAssembly.Module.customSections(模块, 边界段名)) {
+    for (const 行 of 解码器.decode(段).split('\n')) {
+      const 列 = 行.split('\t');
+      if (列[0] === '导出' && 列.length === 3) 表.set(列[1], 解析签名(列[2]));
+    }
+  }
+  导出缓存.set(模块, 表);
+  return 表;
+}
+
+// 文言：依签名包导出之函：JS 之参造为 Wasm 之值，Wasm 之果读为 JS 之值；异步者待其承诺而后读。汉语：按签名包装一个导出：JS 参数按形转成 Wasm 值（同导入的结果方向），Wasm 结果转回 JS 值（同导入的参数方向）；异步时等承诺兑现再转换。
+export function 包装导出(签名, 函, 桥, 异步 = false) {
+  const 字节 = 字节术(桥);
+  const 原 = 值 => 值;
+  const 造们 = 签名.参.map(形 => 果造器(形, 桥, 字节) ?? 原);
+  const 读 = 参读器(签名.果, 桥, 字节) ?? 原;
+  const 转参 = 参们 => 造们.map((造, 序) => 造(参们[序]));
+  if (异步) return async (...参们) => 读(await 函(...转参(参们)));
+  return (...参们) => 读(函(...转参(参们)));
+}
+
+// 文言：造导出之物：依段中导出行包实例之导出；异步者以 JSPI 之 promising 包之，导出之中乃可悬停。汉语：为模块的全部应用接口导出造 JS 函数表 {导出名: 函数}；异步时先用 WebAssembly.promising 包装（JSPI），导出运行中才能调用异步导入。段里登记了而实例没有的导出报错。
+export function 造边界导出(实例, 模块, 桥, 选项 = {}) {
+  const 导出 = {};
+  for (const [名, 签名] of 读边界导出(模块)) {
+    const 原函 = 实例.exports[名];
+    if (typeof 原函 !== 'function') throw Error(`「豫言边界」段登记了导出，模块却没有这个函数：${名}`);
+    导出[名] = 包装导出(签名, 选项.异步 ? WebAssembly.promising(原函) : 原函, 桥, !!选项.异步);
+  }
+  return 导出;
 }
