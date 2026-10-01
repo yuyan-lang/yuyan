@@ -103,7 +103,10 @@ export const 旧式原语 = 表 => Object.fromEntries(Object.entries(表).map(([
 
 // 文言：仅具名之术得入客器。汉语：每次实例只开放调用者传入的具名能力。原语 是旧 call 的具名能力；标准库 可覆盖或补充导入模块「标准库」的实现（键为字段名）。
 //   签名解析按模块缓存在胶水里。
-export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 = () => {}, 错误输出 = 文 => globalThis.console?.error?.(文), 参数 = [], 时限毫秒 = 30000, 标准库 = {}} = {}) {
+// 文言：平台者，平台接口包之带型导入，形如 {包名: {函名: 术}}；术标异步者，有悬栈则套之，无则同步而调，得承诺乃拒。
+// 汉语：平台 是平台接口包的带类型导入实现，形如 {模块名: {字段名: 函数}}，模块名即包名（如 浏览器宿主、中央张量宿主），字段名即接口文件里声明的函数名；
+//   标“异步”的函数有 JSPI 时套 Suspending，没有 JSPI 时改为同步调用，真的返回 Promise 才报“缺少 JSPI”，所以只调同步能力的程序照常运行。
+export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 = () => {}, 错误输出 = 文 => globalThis.console?.error?.(文), 参数 = [], 时限毫秒 = 30000, 标准库 = {}, 平台 = {}} = {}) {
   // 文言：无悬栈之客器可行纯同步豫言；遇异步能则明拒。汉语：没有 JSPI 时仍可运行只调用同步能力的豫言程序，异步调用会明确失败。
   const 可悬 = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function';
   const 桥 = 创建值桥(值桥模块);
@@ -206,8 +209,23 @@ export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 =
     if (performance.now() > 截止) throw Error('豫言执行超过时限');
     return 函(...参);
   }, {异步: 函.异步}) : 函 => 函;
+  // 文言：无悬栈者，异步之术改为同步而调：得承诺则明拒，同旧通调；毋使造导入之时即因无 Suspending 而败。
+  // 汉语：没有 JSPI 时，标“异步”的实现改为同步调用：返回 Promise 就报“缺少 JSPI”（与旧 call 相同），同步返回的照常使用；免得构造导入时因没有 Suspending 而整个程序起不来。
+  const 去悬 = (名, 函) => {
+    if (可悬 || !函.异步) return 函;
+    return (...参) => {
+      const 果 = 函(...参);
+      if (果 !== null && typeof 果 === 'object' && typeof 果.then === 'function') {
+        果.then(() => {}, () => {});
+        throw Error('此浏览器缺少 JSPI，程序调用了异步宿主能力：' + 名);
+      }
+      return 果;
+    };
+  };
+  const 备实现 = 表 => Object.fromEntries(Object.entries(表).map(([模, 字段们]) =>
+    [模, Object.fromEntries(Object.entries(字段们).map(([字段, 函]) => [字段, 限时(去悬(模 + '.' + 字段, 函))]))]));
   if (!边界胶水 && 有带型导入(程序模块)) throw Error('程序有带类型的宿主导入，但取不到边界胶水 边界.mjs（须与 值桥.mjs 同目录发布）');
-  const 带型导入 = 边界胶水 ? 边界胶水.造边界导入(程序模块, 桥.原, {标准库: Object.fromEntries(Object.entries(标准库实现).map(([名, 函]) => [名, 限时(函)]))}) : {};
+  const 带型导入 = 边界胶水 ? 边界胶水.造边界导入(程序模块, 桥.原, 备实现({...平台, 标准库: 标准库实现})) : {};
   const 实例 = new WebAssembly.Instance(程序模块, {
     ...带型导入,
     'yuyan:gc-host/v1': {call: 可悬 ? new WebAssembly.Suspending(调用) : 调用},
