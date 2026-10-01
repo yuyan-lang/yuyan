@@ -13,6 +13,10 @@ const 外部库旗='--experimental-ffi';
 const 新客线程=选项=>{if(process.allowedNodeEnvironmentFlags.has(外部库旗)&&!process.execArgv.includes(外部库旗)){try{return new Worker(__filename,{...选项,execArgv:[...process.execArgv.filter(参=>!选引擎参数([参]).length&&!/^--stack-size=/.test(参)),外部库旗]});}catch(错){if(错?.code!=='ERR_WORKER_INVALID_EXEC_ARGV')throw 错;}}return new Worker(__filename,选项);};
 // 文言：系统库调用之原语，惟供适配与系统库；工具链包之宿主无此文则惟报不可用。汉语：系统库调用原语（见 外部库.mjs，只供适配与系统库使用）；Wasm 工具链包里的宿主没带这个文件时，只提供报告“不可用”的原语。
 const 外部库原语=文字=>{try{return require('./外部库.mjs').创建外部库能力({文字});}catch(错){if(错?.code==='MODULE_NOT_FOUND'||错?.code==='ERR_MODULE_NOT_FOUND')return {豫言_节点_外部库可用:()=>false};throw 错;}};
+// 文言：边界之胶水，先求于宿主之旁（工具链之包），次求于仓中网页汇编之目；无之则不能行带型导入之模。汉语：共用的宿主边界胶水 边界.mjs：Wasm 工具链包里与宿主放在同一目录，仓库里在 ../网页汇编/；找不到时，带类型导入的模块无法运行。
+const 边界胶水=(()=>{for(const 径 of ['./边界.mjs','../网页汇编/边界.mjs']){try{return require(径);}catch(错){if(错?.code!=='MODULE_NOT_FOUND'&&错?.code!=='ERR_MODULE_NOT_FOUND')throw 错;}}return null;})();
+// 文言：边界回环之夹具，惟仓中有之，供测试。汉语：边界回环测试的夹具（导入模块「测试」的实现与对照用的旧原语），只在仓库里有，工具链包不带。
+const 边界回环=(()=>{try{return require('./边界回环.cjs');}catch(错){if(错?.code==='MODULE_NOT_FOUND')return null;throw 错;}})();
 // 文言：管或不阻，一书未必尽；余者续书，遇暂不可写则稍候，与应用宿主之写出同。汉语：标准流是非阻塞管道时，writeSync 可能只写入管道容得下的部分（常为 64KB）或报 EAGAIN；循环写完，写不进就短暂等待后重写（与 应用宿主.mjs 的「写出」相同），否则父进程经管道读取时输出被截断。
 const 小候=new Int32Array(new SharedArrayBuffer(4));
 const 写尽=(号,值)=>{const 字节=Buffer.isBuffer(值)?值:Buffer.from(值);for(let 位=0;位<字节.length;){try{位+=文件.writeSync(号,字节,位,字节.length-位);}catch(错){if(错?.code!=='EAGAIN')throw 错;Atomics.wait(小候,0,0,5);}}};
@@ -69,6 +73,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
       case 0:return null;
       case 1:case 4:return 桥.int(值);
       case 5:return {小数:桥.float(值)};
+      case 6:return 桥.ext_get(值);
       case 2:{const 长=桥.bytes_len(值);留字节(长);桥.bytes_out(值);return Buffer.from(new Uint8Array(桥.memory.buffer,0,长));}
       case 3:return Array.from({length:桥.tuple_len(值)},(_,序)=>解(桥.tuple_get(值,序)));
       default:throw Error('未知客值');
@@ -265,13 +270,19 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     // 文言：承三常流而行，出不经宿主之缓；启败一二七，候败一。汉语：继承标准输入、输出与错误直接运行（输出不经宿主缓冲，交互程序可用）；启动失败返回 127，等待失败返回 1，超时返回 124。
     豫言_同步运行子进程并继承标准流:(名,参)=>{const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,stdio:'inherit',timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),YY_NODE_REPEAT:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(超时)return 124;if(果.error)return 果.error.code==='ENOENT'?127:1;return 果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1);},
     豫言_退出进程:码=>{const 错=Error('客体退出');错.退出码=数(码);throw 错;},
-    ...外部库原语(文)
+    ...外部库原语(文),
+    ...(边界回环?.旧原语??{})
   };
   let 调用数=0;
   // 文言：外术之名为常字，同值毋重解。汉语：编译器以不可变字面量指定原语；按 GC 对象身份弱缓存名称，不保留参数或结果。
   const 名称缓存=new WeakMap();
   const 原语次数=process.env.YY_NODE_PROFILE==='1'?Object.create(null):null;
-  const 实例=new WebAssembly.Instance(模块,{'yuyan:gc-host/v1':{call:(名,参)=>{
+  // 文言：带型之导入，以边界胶水依签名包之；无实现者给桩。汉语：带类型的导入按「豫言边界」段里的签名由共用胶水包装；第①步宿主只为测试模块提供实现，其余给桩，调用时报“接口函数未绑定”。
+  // 文言：标准库之带型导入，今惟接探针所用之数者，实借旧原语；第二步乃全之。汉语：标准库的带类型导入，第①步只接了探针用到的几个，实现照搬旧原语（串参数转成 Buffer，列只返回数组）；待办事项：第②步按《导入形状定稿》补全 65 个，并补构建基础的 3 个。
+  const 缓=值=>Buffer.from(值.buffer,值.byteOffset,值.byteLength);
+  const 标准库实现={打印行:值=>原语.豫言_打印行(缓(值)),标准错误打印行:值=>原语.豫言_标准错误打印行(缓(值)),退出进程:码=>原语.豫言_退出进程(码),获取命令行参数:()=>客参数,同步读取文件:名=>原语.豫言_同步读取文件(缓(名))};
+  const 带型导入=边界胶水?边界胶水.造边界导入(模块,桥,{标准库:标准库实现,...(边界回环?.实现表??{})}):{};
+  const 实例=new WebAssembly.Instance(模块,{...带型导入,'yuyan:gc-host/v1':{call:(名,参)=>{
     let 名称=名称缓存.get(名);
     if(名称===undefined){名称=文(解(名));名称缓存.set(名,名称);}
     const 参数组=解(参);调用数++;
