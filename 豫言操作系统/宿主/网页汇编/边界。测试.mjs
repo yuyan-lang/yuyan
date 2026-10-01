@@ -1,6 +1,6 @@
 // 文言：边界胶水之单测：签名之解、边界段之读、标量之转、无实之桩、异步之断、导出之包。
 // 汉语：宿主边界胶水 边界.mjs 的单元测试：签名解析与报错、「豫言边界」段的读取、标量参数与结果的转换、
-//   缺实现时的桩、没标异步却返回 Promise 的报错、应用接口导出的读取与包装。嵌在元组里的值要经值桥，由黄金样例 边界回环 在 Node 工具宿主上端到端覆盖。
+//   缺实现时的桩、没标异步却返回 Promise 的报错、应用接口导出的读取与包装，以及结果“异”与 Suspending 的三种情况。嵌在元组里的值要经值桥，由黄金样例 边界回环 在 Node 工具宿主上端到端覆盖。
 // 运行：node --test 豫言操作系统/宿主/网页汇编/边界。测试.mjs
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -91,12 +91,39 @@ test('造边界导入：没标异步却返回 Promise 时报错', () => {
   assert.throws(() => 导入.测试.等(), /返回了 Promise/);
 });
 
-test('造边界导入：标了异步的实现套 WebAssembly.Suspending', {skip: typeof WebAssembly.Suspending !== 'function'}, () => {
-  const 模块 = 造模块([{模: '测试', 字: '等', 参: [], 果: [i64]}], '导入\t测试\t等\t→整\n');
+test('解析签名：异〔…〕只作结果最外层，解析后 果 为里层、异 为真', () => {
+  const 签 = 解析签名('串→异〔组〔爻，串〕〕');
+  assert.equal(签.异, true);
+  assert.deepEqual(签.果, {种: '组', 项: [{种: '爻'}, {种: '串'}]});
+  assert.equal(解析签名('→异〔元〕').异, true);
+  assert.equal(解析签名('整→整').异, false);
+  assert.throws(() => 解析签名('异〔整〕→元'), /“异”只能作结果的最外层/);
+  assert.throws(() => 解析签名('→组〔异〔整〕〕'), /“异”只能作结果的最外层/);
+  assert.throws(() => 解析签名('→异〔异〔整〕〕'), /“异”只能作结果的最外层/);
+});
+
+test('造边界导入：结果标“异”且实现是异步的，套 WebAssembly.Suspending', {skip: typeof WebAssembly.Suspending !== 'function'}, () => {
+  const 模块 = 造模块([{模: '测试', 字: '等', 参: [], 果: [i64]}], '导入\t测试\t等\t→异〔整〕\n');
   const 实 = async () => 1n;
   实.异步 = true;
   const 导入 = 造边界导入(模块, {}, {测试: {等: 实}});
   assert.ok(导入.测试.等 instanceof WebAssembly.Suspending);
+});
+
+test('造边界导入：结果标“异”而实现同步的，不套 Suspending，照常同步调用', () => {
+  const 模块 = 造模块([{模: '测试', 字: '等', 参: [i64], 果: [i64]}], '导入\t测试\t等\t整→异〔整〕\n');
+  const 导入 = 造边界导入(模块, {}, {测试: {等: 数 => 数 + 1n}});
+  assert.ok(typeof WebAssembly.Suspending !== 'function' || !(导入.测试.等 instanceof WebAssembly.Suspending));
+  assert.equal(导入.测试.等(41n), 42n);
+});
+
+test('造边界导入：结果没标“异”却返回 Promise 的，调用时报错（实现标了异步也一样）', () => {
+  const 模块 = 造模块([{模: '测试', 字: '等', 参: [], 果: [i64]}], '导入\t测试\t等\t→整\n');
+  const 实 = async () => 1n;
+  实.异步 = true;
+  const 导入 = 造边界导入(模块, {}, {测试: {等: 实}});
+  assert.ok(typeof WebAssembly.Suspending !== 'function' || !(导入.测试.等 instanceof WebAssembly.Suspending));
+  assert.throws(() => 导入.测试.等(), /返回了 Promise，但它的边界签名结果没有标“异”/);
 });
 
 // 文言：手造一模：导出若干函数，附边界段。汉语：手工拼一个模块：类型段、函数段、导出段、代码段（各函数一个体），再附「豫言边界」段。

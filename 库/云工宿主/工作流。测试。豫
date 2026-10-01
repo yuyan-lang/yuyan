@@ -20,11 +20,12 @@
 否则若「字符串相等吗」于「种类」于『workflow』
 则
   虑「事件」者「云工工作流事件文」于「元」而
-  虑「结果」者「云工工作流步做」于『豫言步骤』于『{}』于「事件」而
+  虑「结果」者
+    「同步等待」于（「云工工作流步做」于『豫言步骤』于『{}』于「事件」）而
   若「是子字符串吗」于『"等待":true』于「事件」
   则
     虑「来信」者
-      「云工工作流候事件」于『候信』于『{"type":"继续","timeout":"1 minute"}』
+      「同步等待」于（「云工工作流候事件」于『候信』于『{"type":"继续","timeout":"1 minute"}』）
     而
     「云工工作流设输出」于「来信」
   否则
@@ -40,12 +41,14 @@
   若「是子字符串吗」于『/status-wait』于「请求」
   则
     「设置云工响应」
-      于「二零零」于『application/json; charset=utf-8』
-      于（「云工工作流状态文」于『TEST_WORKFLOW』于「候实例号」）
+      于「二零零」
+      于『application/json; charset=utf-8』
+      于（「同步等待」于（「云工工作流状态文」于『TEST_WORKFLOW』于「候实例号」））
   否则若「是子字符串吗」于『/send』于「请求」
   则
     虑「无」者
-      「云工工作流送事件」于『TEST_WORKFLOW』于「候实例号」于『{"type":"继续","payload":{"答":"豫言事件"}}』
+      「同步等待」于（「云工工作流送事件」
+        于『TEST_WORKFLOW』于「候实例号」于『{"type":"继续","payload":{"答":"豫言事件"}}』）
     而
     「设置云工响应」于「二零零」于『text/plain; charset=utf-8』于『已送事件』
   否则若「是子字符串吗」于『/create-wait』于「请求」
@@ -53,16 +56,19 @@
     虑「选项」者
       『{"id":"』附「候实例号」附『","params":{"信息":"豫言载荷","等待":true}}』
     而
-    虑「实例号」者「云工工作流创建」于『TEST_WORKFLOW』于「选项」而
+    虑「实例号」者
+      「同步等待」于（「云工工作流创建」于『TEST_WORKFLOW』于「选项」）
+    而
     「设置云工响应」于「二零零」于『text/plain; charset=utf-8』于「实例号」
   否则若「是子字符串吗」于『/status』于「请求」
   则
     「设置云工响应」
       于「二零零」
       于『application/json; charset=utf-8』
-      于（「云工工作流状态文」于『TEST_WORKFLOW』于『yy-workflow-test-1』）
+      于（「同步等待」于（「云工工作流状态文」于『TEST_WORKFLOW』于『yy-workflow-test-1』））
   否则
     虑「实例号」者
-      「云工工作流创建」于『TEST_WORKFLOW』于『{"id":"yy-workflow-test-1","params":{"信息":"豫言载荷"}}』
+      「同步等待」于（「云工工作流创建」
+        于『TEST_WORKFLOW』于『{"id":"yy-workflow-test-1","params":{"信息":"豫言载荷"}}』）
     而
     「设置云工响应」于「二零零」于『text/plain; charset=utf-8』于「实例号」。

@@ -14,51 +14,68 @@
 否则若「字符串相等吗」于「种类」于『workflow』
 则
   虑「结果」者
-    「云工工作流步做」于『业务步骤』于『{}』于『{"输入":"豫言"}』而
+    「同步等待」于（「云工工作流步做」于『业务步骤』于『{}』于『{"输入":"豫言"}』）而
     虑「来信」者
-      「云工工作流候事件」于『候信』于『{"type":"继续","timeout":"5 minutes"}』
+      「同步等待」于（「云工工作流候事件」于『候信』于『{"type":"继续","timeout":"5 minutes"}』）
     而
     「云工工作流设输出」于「来信」
 否则
   虑「请求」者「读取云工请求」于「元」而
   若「是子字符串吗」于『/create2』于「请求」
   则
-    「设置云工响应」于「二零零」于『text/plain』于（「云工工作流创建」于『TEST_WORKFLOW』于『{"id":"yy-manage-2"}』）
+    「设置云工响应」
+      于「二零零」
+      于『text/plain』
+      于（「同步等待」于（「云工工作流创建」于『TEST_WORKFLOW』于『{"id":"yy-manage-2"}』））
   否则若「是子字符串吗」于『/create1』于「请求」
   则
-    「设置云工响应」于「二零零」于『text/plain』于（「云工工作流创建」于『TEST_WORKFLOW』于『{"id":"yy-manage-1"}』）
+    「设置云工响应」
+      于「二零零」
+      于『text/plain』
+      于（「同步等待」于（「云工工作流创建」于『TEST_WORKFLOW』于『{"id":"yy-manage-1"}』））
   否则若「是子字符串吗」于『/pause1』于「请求」
   则
-    虑「无」者「云工工作流暂停」于『TEST_WORKFLOW』于『yy-manage-1』而
+    虑「无」者
+      「同步等待」于（「云工工作流暂停」于『TEST_WORKFLOW』于『yy-manage-1』）
+    而
     「设置云工响应」于「二零零」于『text/plain』于『已暂停』
   否则若「是子字符串吗」于『/resume1』于「请求」
   则
-    虑「无」者「云工工作流恢复」于『TEST_WORKFLOW』于『yy-manage-1』而
+    虑「无」者
+      「同步等待」于（「云工工作流恢复」于『TEST_WORKFLOW』于『yy-manage-1』）
+    而
     「设置云工响应」于「二零零」于『text/plain』于『已恢复』
   否则若「是子字符串吗」于『/restart1』于「请求」
   则
     虑「无」者
-      「云工工作流重启」于『TEST_WORKFLOW』于『yy-manage-1』于『{"from":{"name":"业务步骤"}}』
+      「同步等待」于（「云工工作流重启」于『TEST_WORKFLOW』于『yy-manage-1』于『{"from":{"name":"业务步骤"}}』）
     而
     「设置云工响应」于「二零零」于『text/plain』于『已重启』
   否则若「是子字符串吗」于『/send1』于「请求」
   则
     虑「无」者
-      「云工工作流送事件」于『TEST_WORKFLOW』于『yy-manage-1』于『{"type":"继续","payload":{"值":"一次"}}』
+      「同步等待」于（「云工工作流送事件」
+        于『TEST_WORKFLOW』于『yy-manage-1』于『{"type":"继续","payload":{"值":"一次"}}』）
     而
     「设置云工响应」于「二零零」于『text/plain』于『已发送』
   否则若「是子字符串吗」于『/terminate2』于「请求」
   则
     虑「无」者
-      「云工工作流终止」于『TEST_WORKFLOW』于『yy-manage-2』于『{"rollback":false}』
+      「同步等待」于（「云工工作流终止」于『TEST_WORKFLOW』于『yy-manage-2』于『{"rollback":false}』）
     而
     「设置云工响应」于「二零零」于『text/plain』于『已终止』
   否则若「是子字符串吗」于『/delete2』于「请求」
   则
-    虑「无」者「云工工作流删除」于『TEST_WORKFLOW』于『yy-manage-2』而
+    虑「无」者
+      「同步等待」于（「云工工作流删除」于『TEST_WORKFLOW』于『yy-manage-2』）
+    而
     「设置云工响应」于「二零零」于『text/plain』于『已删除』
   否则若「是子字符串吗」于『/status2』于「请求」
   则
-    「设置云工响应」于「二零零」于『application/json』于（「云工工作流状态文」于『TEST_WORKFLOW』于『yy-manage-2』）
+    「设置云工响应」
+      于「二零零」于『application/json』
+      于（「同步等待」于（「云工工作流状态文」于『TEST_WORKFLOW』于『yy-manage-2』））
   否则
-    「设置云工响应」于「二零零」于『application/json』于（「云工工作流状态文」于『TEST_WORKFLOW』于『yy-manage-1』）。
+    「设置云工响应」
+      于「二零零」于『application/json』
+      于（「同步等待」于（「云工工作流状态文」于『TEST_WORKFLOW』于『yy-manage-1』））。
