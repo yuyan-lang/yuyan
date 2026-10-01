@@ -100,6 +100,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 底层宿主=(()=>{try{return require('./底层宿主.cjs');}catch(错){if(错?.code==='MODULE_NOT_FOUND')return null;throw 错;}})();
   if(底层宿主?.是底层模块(模块))return 底层宿主.运行底层模块(模块,文件.readFileSync(模块路径),值=>写输出(1,值));
   function 精确小数(值){const 数字=数(值);if(Object.is(数字,-0))return '-0';if(!Number.isFinite(数字))return String(数字).toLowerCase().replace('infinity','inf');const [尾,指数]=数字.toExponential(16).split('e');const 幂=Number(指数);if(幂 < -4 || 幂 >= 17)return 尾.replace(/\.?0+$/,'')+'e'+(幂>=0?'+':'-')+String(Math.abs(幂)).padStart(2,'0');return 数字.toFixed(Math.max(0,16-幂)).replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'');}
+  // 文言：小数表示依 C 之 %f，理解小数依 strtod，获取随机整数取六十四位之安全随机数而取余，皆与诸宿主同义。汉语：小数表示同 C 的 %f（-0 写 -0.000000，≥1e21 展开成整数，非有限写 nan、inf、-inf）；理解小数同 strtod（跳过开头空白取最长前缀，认 inf、infinity、nan，没有可转的得 0）；获取随机整数上界不大于零时中止，否则取 64 位安全随机数对上界取余。与其他 JS 宿主统一，见 ../标准库宿主.汉语.md。
+  function 小数表示(值){const 数字=数(值);if(!Number.isFinite(数字))return 精确小数(值);if(Object.is(数字,-0))return '-0.000000';return Math.abs(数字)>=1e21?BigInt(数字).toString()+'.000000':数字.toFixed(6);}
+  function 理解小数(值){const 串=文(值).trim(),数字=parseFloat(串);return /^[+-]?nan/i.test(串)?NaN:/^[+-]?inf/i.test(串)?(串.startsWith('-')?-Infinity:Infinity):Number.isNaN(数字)?0:数字;}
   // 文言：诸客同用引擎之制，不令调参独及调度者。汉语：传播显式 Wasm 与 V8 线程池选项；不传播调试端口或 CPU 剖析输出选项。
   const 引擎参数=本工.引擎参数??选引擎参数(process.execArgv);
   // 文言：env 与 timeout 之包装，其所行者为网页汇编模块时，由宿主径行之：环境并入，限时由宿主计之，逾时以一二四退（同 GNU timeout）。汉语：命令被 env（VAR=值…）或 timeout（[-k 宽限] [-s 信号] 秒数）包装、而最终程序是 .wasm 时，由宿主直接用 Node 运行该模块：环境变量并入子进程环境，时限由宿主计时，超时返回 124（与 GNU timeout 一致）；最终程序不是 .wasm 时原样执行包装命令。
@@ -228,7 +231,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_标准输入是终端:()=>终端.isatty(0),
     豫言_尝试读取标准输入行:()=>读标准输入行(),
     // 文言：常随机不求安全；安全随机取于系统之熵，一请至多一兆字节。汉语：普通随机数用 Math.random（不保证安全）；安全随机字节取自系统熵源，单次至多 1 MiB，与原生一致。
-    豫言_获取随机整数:上界=>{const 界=Number(上界);if(!(界>0))throw Error('随机整数的上界须为正');return BigInt(Math.floor(Math.random()*界));},
+    豫言_获取随机整数:上界=>{const 界=BigInt(上界);if(界<=0n)throw Error('随机整数上界须大于零');return 密码.randomBytes(8).readBigUInt64BE()%界;},
     豫言_获取随机小数:()=>({小数:Math.random()}),
     豫言_安全随机_字节串:长=>{const 数值=Number(长);if(!Number.isInteger(数值)||数值<0||数值>1048576)throw Error('安全随机字节串：长度须在零至一兆之间');return 密码.randomBytes(数值);},
     豫言_密码_SHA256:内容=>密码.createHash('sha256').update(内容).digest(),
@@ -257,9 +260,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_字符串按字节在前:(甲,乙)=>Buffer.compare(甲,乙)<0,
     豫言_整数转字符串:值=>String(值),
     豫言_字符串转整数:值=>BigInt(文(值)),
-    豫言_小数转字符串:值=>数(值).toFixed(6),
+    豫言_小数转字符串:值=>小数表示(值),
     豫言_小数精确表示:值=>精确小数(值),
-    豫言_字符串转小数:值=>({小数:Number(文(值))}),
+    豫言_字符串转小数:值=>({小数:理解小数(值)}),
     豫言_源码数字名:值=>/^[0-9-]+$/.test(文(值)),
     豫言_源码可用名:值=>!/^[0-9-]+$/.test(文(值))&&!文(值).startsWith('《《')&&!文(值).startsWith('：')&&!文(值).includes('」'),
     豫言_源码字符串表示:值=>'『'+文(值).replace(/「：|』/g,字=>字==='』'?'「：』：」':'「：「：：」')+'』',
