@@ -1,6 +1,8 @@
 // 文言：桥唯传客值，毋决应用之事。汉语：值桥只转换 WasmGC 值，不承载业务规则。
 // 文言：带型之导入经边界胶水；本目之 边界.mjs 于仓中转出网页汇编之本体，构建时以本体代之。汉语：带类型的导入经共用边界胶水；本目录的 边界.mjs 在仓库里转出 ../网页汇编/边界.mjs，构建器把胶水本体复制成产物里的 边界.mjs。
-import {造边界导入} from './边界.mjs';
+// 文言：取之不得（旧部署之静态白名单无此文）则为空，惟调旧通调之旧产物照行。汉语：用顶层 await 动态载入：取不到时（旧部署的静态白名单里还没有 边界.mjs）为空，只调旧 call 的旧产物照常运行，有带类型导入的程序明确报错。
+const 边界胶水 = await import('./边界.mjs').catch(() => null);
+const 有带型导入 = 模块 => WebAssembly.Module.imports(模块).some(项 => 项.kind === 'function' && 项.module !== 'yuyan:gc-host/v1' && 项.module !== 'yuyan:browser/v1');
 const 编码 = new TextEncoder();
 const 解码 = new TextDecoder('utf-8', {ignoreBOM: true});
 export const 文字 = 值 => 值 instanceof Uint8Array ? 解码.decode(值) : String(值);
@@ -204,7 +206,8 @@ export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 =
     if (performance.now() > 截止) throw Error('豫言执行超过时限');
     return 函(...参);
   }, {异步: 函.异步}) : 函 => 函;
-  const 带型导入 = 造边界导入(程序模块, 桥.原, {标准库: Object.fromEntries(Object.entries(标准库实现).map(([名, 函]) => [名, 限时(函)]))});
+  if (!边界胶水 && 有带型导入(程序模块)) throw Error('程序有带类型的宿主导入，但取不到边界胶水 边界.mjs（须与 值桥.mjs 同目录发布）');
+  const 带型导入 = 边界胶水 ? 边界胶水.造边界导入(程序模块, 桥.原, {标准库: Object.fromEntries(Object.entries(标准库实现).map(([名, 函]) => [名, 限时(函)]))}) : {};
   const 实例 = new WebAssembly.Instance(程序模块, {
     ...带型导入,
     'yuyan:gc-host/v1': {call: 可悬 ? new WebAssembly.Suspending(调用) : 调用},

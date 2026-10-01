@@ -1,6 +1,6 @@
 // 文言：以真 workerd 验宿主壳：独占区、事务、告警、先应、值之限、时限配置，并与模拟作差分比对。
 // 汉语：可选的本地 workerd 验证（Wrangler 4.129.0，兼容日期 2026-09-05，SQLite 存储）。前置：
-//   1. 把待验产物（dist/持久对象壳一致性应用）的下列文件复制到本目录 `产物/`：值桥.mjs 入口.mjs 动态资源.mjs 句柄.mjs
+//   1. 把待验产物（dist/持久对象壳一致性应用）的下列文件复制到本目录 `产物/`：值桥.mjs 边界.mjs 入口.mjs 动态资源.mjs 句柄.mjs
 //      宿主.mjs 宿主提供组.json 接口核对.mjs 接口要求组.json 程序.wasm 值桥.wasm 许可.json；并把 产物/许可.json 改为 {}（本地上游是 http）。
 //   2. 在本目录用云仓已装的 wrangler 起服务：
 //        wrangler dev --config wrangler.jsonc --port 8791 --inspector-port 9331 --persist-to .state --local
