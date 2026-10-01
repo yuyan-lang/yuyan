@@ -22,6 +22,27 @@ const 可用全局 = new Set([
   'Request', 'Promise', 'Error', 'caches', 'scheduler'
 ]);
 
+// 文言：公网 HTTPS 之动态上游。网页上游之约，以许可之 OUTBOUND_ORIGINS 含 https://* 为许动态公网 HTTPS；其适配以通用句柄桥之 调用全局('fetch') 发请。
+//   通用句柄桥于 fetch 惟开此一窄口：许可含 https://* 乃许，且当场验其址为 https、无用户名与口令，转址一律 manual；空许可之客（若隔离运行之程序）仍不得 fetch。
+// 汉语：动态公网 HTTPS 上游。网页上游规范以程序许可 OUTBOUND_ORIGINS 含 https://* 表示“允许动态公网 HTTPS”，适配用通用句柄桥的 调用全局('fetch', …) 发请求。
+//   通用句柄桥对 fetch 只开这一个窄口：许可含 https://* 时才放行，并当场核对网址是 https、不带用户名或密码，redirect 一律改为 manual（规范：不跟随重定向，3xx 作为成功响应返回）；
+//   空许可的程序（如隔离运行的用户程序）仍拿不到 fetch，其余全局照旧走“可用全局”白名单。
+//   待办事项：改为专用原语（如 云工公网请求发起），去掉通用句柄桥里这个例外，并入取消外调第⑤步清理句柄桥时做。
+export function 造公网取({许可 = {}, 全局 = globalThis} = {}) {
+  const 允许 = Array.isArray(许可.OUTBOUND_ORIGINS) && 许可.OUTBOUND_ORIGINS.includes('https://*');
+  return (网址, 选项 = {}) => {
+    if (!允许) throw Error('云工宿主不开放此全局：fetch');
+    const 是请求 = typeof 全局.Request === 'function' && 网址 instanceof 全局.Request;
+    let 目标;
+    try { 目标 = new URL(是请求 ? 网址.url : String(网址)); } catch { throw Error('公网 fetch 的网址无效'); }
+    if (目标.protocol !== 'https:') throw Error('公网 fetch 只许 https 网址：' + 目标.protocol);
+    if (目标.username || 目标.password) throw Error('公网 fetch 的网址不得带用户名或密码');
+    if (选项 === null || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('公网 fetch 的选项须为对象');
+    // 文言：仍取全局之 fetch，同通用句柄桥之旧法。汉语：仍调全局的 fetch（与通用句柄桥原来的做法相同，测试可注入假的 全局）。
+    return Reflect.apply(全局.fetch, 全局, [是请求 ? 网址 : 目标.href, {...选项, redirect: 'manual'}]);
+  };
+}
+
 const 限文 = async 回应 => {
   const 文 = await 回应.text();
   if (new TextEncoder().encode(文).length > 2 * 1024 * 1024) throw Error('宿主响应超过 2 MiB');
@@ -185,6 +206,8 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
   const 取平台资料 = () => 平台资料载入 ??= import('./平台资料.mjs').then(模块 => 模块.创建平台资料({全局}));
   // 文言：客器所导平台之术，宿主造时一算。汉语：本程序导入的平台接口函数，创建宿主时算一次（按模块缓存）。
   const 平台所需 = 求平台所需(程序模块);
+  // 文言：通用句柄桥之 fetch 窄口，见上 造公网取。汉语：通用句柄桥里 fetch 的窄口，见上文 造公网取。
+  const 公网取 = 造公网取({许可, 全局});
   const 执行 = async (种类, 载荷, 环境, 上下文, 对象状态 = null, 工作流步 = null, 事务仓 = null) => {
       // 文言：中央张量之术：每事一能，初用乃载 中央张量.mjs；云工单线，内核之模由入口壳自产物引入。汉语：张量计算（中央处理器后端，接口 豫言操作系统张量计算）：每个事件第一次调用时才动态导入 中央张量.mjs 并创建能力，事件结束即随之释放；云工单线程，内核模块由入口壳从构建产物导入（没用张量计算的构建没有它，启用时返回资源暂不可用）。待办事项：内存上限只取 64 MiB，未按 Workers 每个隔离环境 128 MB 的总限精算；隔离运行的子 Worker 没带 中央张量.mjs。
       let 中央张量 = null, 中央张量载入 = null;
@@ -1462,12 +1485,14 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           return JSON.stringify(句柄.出(Reflect.construct(构造, 句柄.参数(文字(参数文)))));
         },
         豫言_云工_调用全局: async (名, 参数文) => {
+          if (文字(名) === 'fetch') return JSON.stringify(句柄.出(await 公网取(...句柄.参数(文字(参数文)))));
           const 函数 = 全局[允全局(名)];
           if (typeof 函数 !== 'function') throw Error('云工全局函数不存在');
           return JSON.stringify(句柄.出(await Reflect.apply(函数, 全局, 句柄.参数(文字(参数文)))));
         },
         豫言_云工_调用全局安全: async (名, 参数文) => {
           try {
+            if (文字(名) === 'fetch') return [true, JSON.stringify(句柄.出(await 公网取(...句柄.参数(文字(参数文)))))];
             const 函数 = 全局[允全局(名)];
             if (typeof 函数 !== 'function') throw Error('云工全局函数不存在');
             return [true, JSON.stringify(句柄.出(await Reflect.apply(函数, 全局, 句柄.参数(文字(参数文)))))];
