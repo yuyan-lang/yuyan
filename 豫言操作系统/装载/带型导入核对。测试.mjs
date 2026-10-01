@@ -11,8 +11,8 @@ const 无号 = 数 => { const 字节 = []; do { let 字 = 数 & 127; 数 >>>= 7;
 const 名 = 文 => { const 字节 = [...编码器.encode(文)]; return [...无号(字节.length), ...字节]; };
 const 段 = (号, 体) => [号, ...无号(体.length), ...体];
 
-// 文言：造一模：诸导入（函或全局）、一 _start、可选之边界段。汉语：拼一个模块：导入若干函数（或一个全局），定义并导出 _start，可选附「豫言边界」段。
-function 造字节(导入们, 段文 = null) {
+// 文言：造一模：诸导入（函或全局）、一 _start、可选之边界段与他名之导出。汉语：拼一个模块：导入若干函数（或一个全局），定义并导出 _start，可选附「豫言边界」段；额外导出们 是同一函数的其他导出名。
+function 造字节(导入们, 段文 = null, 额外导出们 = []) {
   const 型们 = [[0x60, 0, 0], ...导入们.filter(项 => !项.全局).map(({参 = [], 果 = []}) => [0x60, ...无号(参.length), ...参, ...无号(果.length), ...果])];
   let 型号 = 1;
   const 导入体 = 导入们.flatMap(项 => 项.全局 ? [...名(项.模), ...名(项.字), 3, 0x7f, 0] : [...名(项.模), ...名(项.字), 0, ...无号(型号++)]);
@@ -21,7 +21,7 @@ function 造字节(导入们, 段文 = null) {
     ...段(1, [...无号(型们.length), ...型们.flat()]),
     ...段(2, [...无号(导入们.length), ...导入体]),
     ...段(3, [1, 0]),
-    ...段(7, [1, ...名('_start'), 0, ...无号(函数数)]),
+    ...段(7, [1 + 额外导出们.length, ...名('_start'), 0, ...无号(函数数), ...额外导出们.flatMap(出名 => [...名(出名), 0, ...无号(函数数)])]),
     ...段(10, [1, 2, 0, 0x0b]),
     ...(段文 === null ? [] : 段(0, [...名('豫言边界'), ...编码器.encode(段文)]))]);
 }
@@ -92,4 +92,23 @@ test('给了带型实现时，可移植接口的导入须全部由宿主实现�
   assert.throws(() => 带实现核对({}), /宿主没有实现可移植接口的这些函数：豫言操作系统时间\.读取当前Unix毫秒$/u);
   assert.equal(带实现核对({豫言操作系统时间: {读取当前Unix毫秒: () => 0n}}), true);
   assert.equal(带实现核对(undefined), true);
+});
+
+test('给了应用提供时，应用提供的接口函数须有导出 接口名称/函数名；模块表不可读时按字节核对同样成立', () => {
+  const 启动清单 = {接口名称: '豫言操作系统启动', 函数: [{模块: '程序入口', 函数: '启动程序', 方向: '应用', 签名: '→[「 有 」；「 有 」]'}]};
+  const 核 = (字节, 宿主 = '节点') => 核对接口装载({程序模块: new WebAssembly.Module(字节), 程序字节: 字节, 应用要求: [], 宿主提供: [], 宿主, 应用提供: [启动清单]});
+  assert.throws(() => 核(造字节([打印行], 签名文)), /Wasm 缺少应用提供的接口导出：豫言操作系统启动\/启动程序$/u);
+  assert.equal(核(造字节([打印行], 签名文, ['豫言操作系统启动/启动程序'])), true);
+  const 原导入 = WebAssembly.Module.imports, 原导出 = WebAssembly.Module.exports, 原段 = WebAssembly.Module.customSections;
+  try {
+    WebAssembly.Module.imports = () => { throw Error('模块表不可读'); };
+    WebAssembly.Module.exports = () => { throw Error('模块表不可读'); };
+    WebAssembly.Module.customSections = () => { throw Error('模块表不可读'); };
+    assert.throws(() => 核(造字节([打印行], 签名文), '浏览器'), /Wasm 缺少应用提供的接口导出/u);
+    assert.equal(核(造字节([打印行], 签名文, ['豫言操作系统启动/启动程序']), '浏览器'), true);
+  } finally {
+    WebAssembly.Module.imports = 原导入;
+    WebAssembly.Module.exports = 原导出;
+    WebAssembly.Module.customSections = 原段;
+  }
 });
