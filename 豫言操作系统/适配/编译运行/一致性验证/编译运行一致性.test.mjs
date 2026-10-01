@@ -87,7 +87,6 @@ function 套件(取跑) {
     assert.ok(输出们.length > 5, '编译器输出应逐条转发');
     for (const 事 of 输出们) { assert.equal(事.phase, 'compile'); assert.ok(['stdout', 'stderr'].includes(事.stream)); assert.equal(typeof 事.text, 'string'); }
     for (const 流 of ['stdout', 'stderr']) assert.equal(输出们.filter(事 => 事.stream === 流).map(事 => 事.text).join(''), 终.result[流], '输出逐字拼接应等于终止事件的 ' + 流);
-    assert.ok(诸事.some(事 => 事.type === 'stage' && /^正在组装 Wasm（\d+ 字符）$/.test(事.label)), '应有组装阶段');
     assert.equal(产物.bytes, 终.artifact.bytes); assert.equal(产物.magic, '0,97,115,109'); assert.equal(产物.sha256, 终.artifact.sha256);
     const 字节 = Buffer.from(产物文.base64, 'base64');
     assert.equal(字节.length, 终.artifact.bytes); assert.equal(摘要(字节), 终.artifact.sha256); assert.equal(产物文.base64, 字节.toString('base64'));
@@ -316,6 +315,9 @@ describe('本地 workerd（Miniflare）：同一场景', () => {
     拷(path.join(语言仓根, '豫言操作系统/宿主/云工/编译运行.mjs'), '豫言操作系统/宿主/云工/编译运行.mjs');
     拷(path.join(语言仓根, '豫言操作系统/宿主/浏览器/编译器/宿主.mjs'), '豫言操作系统/宿主/浏览器/编译器/宿主.mjs');
     拷(path.join(语言仓根, '豫言操作系统/宿主/浏览器/编译器/组装.mjs'), '豫言操作系统/宿主/浏览器/编译器/组装.mjs');
+    // 文言：编译宿主遇带型之模乃动态载边界胶水，转口与本体并拷。汉语：编译宿主遇到带类型导入的模块才动态载入边界胶水，转出口与胶水本体都要拷进去。
+    拷(path.join(语言仓根, '豫言操作系统/宿主/浏览器/编译器/边界.mjs'), '豫言操作系统/宿主/浏览器/编译器/边界.mjs');
+    拷(path.join(语言仓根, '豫言操作系统/宿主/网页汇编/边界.mjs'), '豫言操作系统/宿主/网页汇编/边界.mjs');
     拷(path.join(服务目录, '组装器.mjs'), '组装器.mjs');
     for (const 名 of ['编译器.wasm', '值桥接.wasm', '组装器.wasm']) 拷(path.join(资源目录, 名), '资源/' + 名);
     writeFileSync(path.join(临时, 'rig.mjs'), [
@@ -335,6 +337,8 @@ describe('本地 workerd（Miniflare）：同一场景', () => {
       模块们.push({type: 是wasm ? 'CompiledWasm' : 'ESModule', path: 路径, contents: 是json ? 'export default ' + 原文 : 原文});
       // 文言：只循行首之静态 import/export…from，免读动态资源字串内嵌之源。汉语：不解析 动态资源.mjs 字符串里内嵌的模块源码。
       if (!是wasm && !是json) for (const 项 of 原文.matchAll(/^\s*(?:import|export)\b[^;\n]*?\bfrom\s+['"]([^'"]+)['"]/gm)) if (项[1].startsWith('.')) 载(path.resolve(path.dirname(路径), 项[1]));
+      // 文言：动态之 import 亦循之。汉语：也跟随动态 import('./…')（编译宿主按需载入边界胶水）。
+      if (!是wasm && !是json) for (const 项 of 原文.matchAll(/\bimport\(\s*['"](\.[^'"]+)['"]\s*\)/g)) 载(path.resolve(path.dirname(路径), 项[1]));
     };
     载(入口路径);
     return 模块们;

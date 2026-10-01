@@ -34,11 +34,39 @@ function 正规化(值) {
   return 值;
 }
 
-// 文言：客器不得列模块之表时，直析 Wasm 导入导出节，仍核唯一通桥与启口。汉语：浏览器无法调用 Module.imports/exports 时，从同一模块字节核对导入和启动导出。
+// 文言：豫言之客，或有边界段，或导入旧通调；诸导入皆函，或为旧通调，或为工具模块与应用所需接口包之带型导入，且边界段录其签名。
+// 汉语：是豫言程序（带「豫言边界」段，或导入旧的 yuyan:gc-host/v1.call），且每个导入都是函数导入，要么是过渡期的旧 call，
+//   要么是「豫言边界」段里有签名的带类型导入、导入模块是工具模块（标准库、构建基础）或应用要求的接口包；宿主没有实现的给桩。
+//   返回全部不合之处（空表即合），一次列全。
+const 边界段名 = '豫言边界';
+const 工具模块们 = ['标准库', '构建基础'];
+function 导入问题(导入们, 边界文们, 可导入模块们) {
+  const 有签名 = new Set();
+  for (const 文 of 边界文们) {
+    for (const 行 of 文.split('\n')) {
+      const 列 = 行.split('\t');
+      if (列[0] === '导入' && 列.length === 4) 有签名.add(列[1] + '\t' + 列[2]);
+    }
+  }
+  const 是通调 = 项 => 项.module === 'yuyan:gc-host/v1' && 项.name === 'call' && 项.kind === 'function';
+  if (边界文们.length === 0 && !导入们.some(是通调)) return ['不是豫言程序（既没有「豫言边界」段，也不导入 yuyan:gc-host/v1.call）'];
+  const 问题 = [];
+  for (const 项 of 导入们) {
+    if (是通调(项)) continue;
+    const 名 = 项.module + '.' + 项.name;
+    if (项.kind !== 'function') 问题.push(名 + '（不是函数导入）');
+    else if (!有签名.has(项.module + '\t' + 项.name)) 问题.push(名 + '（「豫言边界」段里没有它的签名）');
+    else if (!可导入模块们.has(项.module)) 问题.push(名 + '（导入模块不是标准库、构建基础或应用要求的接口包）');
+  }
+  return 问题;
+}
+
+// 文言：客器不得列模块之表时，直析 Wasm 之导入、导出与边界段，以同法核之。汉语：浏览器无法调用 Module.imports/exports 时，从同一模块字节读出导入、导出与自定义段「豫言边界」，按同样的规则核对。
 function 核对Wasm字节形状(原字节) {
   const 字节 = 原字节 instanceof Uint8Array ? 原字节 : new Uint8Array(原字节);
   须(字节.length >= 8 && [0,97,115,109,1,0,0,0].every((值, 序) => 字节[序] === 值), 'Wasm 字节头无效');
   let 位 = 8, 导入 = null, 有启动 = false, 有导出节 = false;
+  const 边界文们 = [];
   const 整数 = 界 => {
     let 值 = 0;
     for (let 次 = 0; 次 < 5; 次++) {
@@ -62,14 +90,20 @@ function 核对Wasm字节形状(原字节) {
     须(界 <= 字节.length, 'Wasm 节长度无效');
     if (节 === 2) {
       须(导入 === null, 'Wasm 导入节重复');
+      导入 = [];
       const 数 = 整数(界);
-      须(数 === 1, 'Wasm 宿主导入形状不符');
-      const 模块名 = 名称(界), 函数名 = 名称(界);
-      须(位 < 界, 'Wasm 导入节不完整');
-      const 种类 = 字节[位++];
-      整数(界);
-      导入 = 模块名 === 'yuyan:gc-host/v1' && 函数名 === 'call' && 种类 === 0;
-      须(位 === 界, 'Wasm 导入节尾部无效');
+      for (let 序 = 0; 序 < 数; 序++) {
+        const 模块名 = 名称(界), 函数名 = 名称(界);
+        须(位 < 界, 'Wasm 导入节不完整');
+        const 种类 = 字节[位++];
+        导入.push({module: 模块名, name: 函数名, kind: 种类 === 0 ? 'function' : '其他'});
+        // 文言：非函之导入其述长短不一，遇之即止，核必不合。汉语：非函数导入的描述长短不一，遇到就停止读取（核对必然不通过）。
+        if (种类 !== 0) break;
+        整数(界);
+      }
+      须(导入.at(-1)?.kind === '其他' || 位 === 界, 'Wasm 导入节尾部无效');
+    } else if (节 === 0) {
+      if (名称(界) === 边界段名) 边界文们.push(new TextDecoder('utf-8', {fatal: true}).decode(字节.subarray(位, 界)));
     } else if (节 === 7) {
       须(!有导出节, 'Wasm 导出节重复');
       有导出节 = true;
@@ -85,7 +119,7 @@ function 核对Wasm字节形状(原字节) {
     }
     位 = 界;
   }
-  return {导入, 有启动};
+  return {导入们: 导入 ?? [], 边界文们, 有启动};
 }
 
 export function 核对接口装载({程序模块, 程序字节, 应用要求, 宿主提供, 宿主}) {
@@ -107,20 +141,21 @@ export function 核对接口装载({程序模块, 程序字节, 应用要求, �
     须(宿主项 !== undefined, `宿主不支持接口：${键}`);
     须(JSON.stringify(正规化(项)) === JSON.stringify(正规化(宿主项)), `接口规范或签名不一致：${键}`);
   }
-  // 文言：此时诸术皆投一通桥，故仅能验通桥之形；逐术施行另由运行验收证之。
-  // 汉语：当前编译器把源级宿主函数统一投影到一个导入；Wasm 表不能反推出各函数名。
-  let 导入正确, 有启动;
+  // 文言：导入或为旧通调，或为工具模块与应用所需接口包之带型导入；逐术施行另由运行验收证之。
+  // 汉语：导入只能是过渡期的旧 yuyan:gc-host/v1.call，或工具模块（标准库、构建基础）与应用要求的接口包的带类型导入；宿主没有实现的给桩，调用时才报错。
+  //   待办事项：第③步再核对接口包的导入是否全部由宿主实现（可移植接口不许给桩）、平台接口包是否另列。
+  let 导入们, 边界文们, 有启动;
   try {
-    const 导入 = WebAssembly.Module.imports(程序模块);
-    导入正确 = 导入.length === 1 && 导入[0].module === 'yuyan:gc-host/v1' &&
-      导入[0].name === 'call' && 导入[0].kind === 'function';
+    导入们 = WebAssembly.Module.imports(程序模块);
+    边界文们 = WebAssembly.Module.customSections(程序模块, 边界段名).map(段 => new TextDecoder('utf-8').decode(段));
     有启动 = WebAssembly.Module.exports(程序模块).some(项 => 项.name === '_start' && 项.kind === 'function');
   } catch (错) {
     须(宿主 === '浏览器' && (程序字节 instanceof ArrayBuffer || ArrayBuffer.isView(程序字节)),
       '浏览器不能读取 Wasm 导入导出且缺少原始字节');
-    ({导入: 导入正确, 有启动} = 核对Wasm字节形状(程序字节));
+    ({导入们, 边界文们, 有启动} = 核对Wasm字节形状(程序字节));
   }
-  须(导入正确, 'Wasm 宿主导入形状不符');
+  const 问题 = 导入问题(导入们, 边界文们, new Set([...工具模块们, ...应用要求.map(项 => 项.接口名称)]));
+  须(问题.length === 0, 'Wasm 宿主导入形状不符：' + 问题.join('；'));
   须(有启动, 'Wasm 缺少程序启动导出');
   return true;
 }

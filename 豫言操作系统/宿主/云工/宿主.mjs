@@ -9,6 +9,20 @@ const 控制台诸法 = new Set([
   'profileEnd', 'time', 'timeEnd', 'timeLog', 'timeStamp', 'createTask'
 ]);
 
+// 文言：客可见之全局唯此表所列，同诺节之宿；fetch、WebSocket、Function 之属皆不与，令通用句柄桥不越外发之授。
+// 汉语：通用句柄桥（全局句柄、构造对象、调用全局及其安全版）只能取得下表列出的全局对象与构造器：前一段与 Node 应用宿主的“可用全局”相同，
+//   后一段是云工库与适配用到的 Request、Promise、Error、caches、scheduler；fetch、WebSocket、EventSource、Function、WebAssembly、globalThis 等不在表内，
+//   应用无法借句柄桥绕过外发来源许可（OUTBOUND_ORIGINS）与绑定授权。
+const 可用全局 = new Set([
+  'Array', 'ArrayBuffer', 'BigInt', 'Blob', 'Boolean', 'CompressionStream', 'DataView', 'Date', 'DecompressionStream',
+  'File', 'FormData', 'Headers', 'Intl', 'JSON', 'Map', 'Math', 'Number', 'RegExp', 'ReadableStream', 'Response', 'Set',
+  'String', 'Symbol', 'TextDecoder', 'TextDecoderStream', 'TextEncoder', 'TextEncoderStream', 'TransformStream',
+  'URL', 'URLSearchParams', 'Uint8Array', 'WritableStream', 'AbortController', 'AbortSignal', 'atob', 'btoa',
+  'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'isFinite', 'isNaN', 'parseFloat', 'parseInt',
+  'structuredClone',
+  'Request', 'Promise', 'Error', 'caches', 'scheduler'
+]);
+
 const 限文 = async 回应 => {
   const 文 = await 回应.text();
   if (new TextEncoder().encode(文).length > 2 * 1024 * 1024) throw Error('宿主响应超过 2 MiB');
@@ -104,7 +118,7 @@ const 字节长 = 文 => new TextEncoder().encode(文).length;
 const 中央张量原语名们 = ['启用', '新境', '释放境', '分配', '释放', '写字节', '读字节', '读单精', '写单精', '运行', '单精位型', '数学', '单精转', '跨步抄', '抽样']
   .map(名 => '豫言_中央张量_' + 名);
 
-export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 网络 = fetch, 全局 = globalThis, 输出 = () => {}, 执行配置 = null, 中央张量内核模块 = null}) {
+export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 网络 = fetch, 全局 = globalThis, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 执行配置 = null, 中央张量内核模块 = null}) {
   // 文言：配置于创建之时即验，误则壳加载失败。汉语：执行配置在创建宿主时解析校验，非法配置使 Worker 加载失败而不是运行中静默失效。
   const 事件时限 = 解析执行配置(执行配置);
   const 取事件时限 = 种类 => 选事件时限(事件时限, 种类);
@@ -145,9 +159,9 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
       limits: {cpuMs: CPU, subRequests: 次数}
     };
   };
-  const 造隔离客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离入口.mjs', ['宿主.mjs', '句柄.mjs', '值桥.mjs'], 程序字节, cpuMs, subRequests);
+  const 造隔离客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离入口.mjs', ['宿主.mjs', '句柄.mjs', '值桥.mjs', '边界.mjs'], 程序字节, cpuMs, subRequests);
   // 文言：文件式客器载内存文件系之宿主与其入口，令用户程序读写虚籍而不触平台。汉语：文件式程序（读写内存文件系统、输出到标准输出）的隔离入口，模块为 隔离运行客.mjs 与浏览器编译器宿主 编译宿主.mjs。
-  const 造隔离运行客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离运行客.mjs', ['编译宿主.mjs'], 程序字节, cpuMs, subRequests);
+  const 造隔离运行客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离运行客.mjs', ['编译宿主.mjs', '边界.mjs'], 程序字节, cpuMs, subRequests);
   // 文言：平台资料之器，一宿主一器，缓存与之同寿。汉语：平台资料能力（接口 豫言操作系统平台资料）的宿主级实例，跨事件共享缓存。
   const 平台资料 = 创建平台资料({全局});
   const 执行 = async (种类, 载荷, 环境, 上下文, 对象状态 = null, 工作流步 = null, 事务仓 = null) => {
@@ -186,6 +200,12 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
       let 已设独占输出 = false;
       const 响应已备 = 有响应 ? new Promise(完成 => { 通知响应 = 完成; }) : null;
       const 句柄 = 创建句柄表();
+      // 文言：全局之名须在可用之表。汉语：通用句柄桥只认“可用全局”表里的名字，其余报“云工宿主不开放此全局”。
+      const 允全局 = 名 => {
+        const 名称 = 句柄.允名(文字(名));
+        if (!可用全局.has(名称)) throw Error('云工宿主不开放此全局：' + 名称);
+        return 名称;
+      };
       const 可写流 = new Map();
       const 消息端口 = new Map();
       const 事件源 = new Map();
@@ -1364,7 +1384,7 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
         },
         豫言_云工_动态入口句柄: 号 => 句柄.登记(句柄.取得(文字(号)).getEntrypoint()),
         豫言_云工_全局句柄: 名 => {
-          const 名称 = 句柄.允名(文字(名));
+          const 名称 = 允全局(名);
           if (!(名称 in 全局)) throw Error('云工全局能力不存在：' + 名称);
           return 句柄.登记(全局[名称]);
         },
@@ -1398,18 +1418,18 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
         },
         豫言_云工_等待句柄: async 号 => JSON.stringify(句柄.出(await 句柄.取得(文字(号)))),
         豫言_云工_构造对象: (名, 参数文) => {
-          const 构造 = 全局[句柄.允名(文字(名))];
+          const 构造 = 全局[允全局(名)];
           if (typeof 构造 !== 'function') throw Error('云工构造器不存在');
           return JSON.stringify(句柄.出(Reflect.construct(构造, 句柄.参数(文字(参数文)))));
         },
         豫言_云工_调用全局: async (名, 参数文) => {
-          const 函数 = 全局[句柄.允名(文字(名))];
+          const 函数 = 全局[允全局(名)];
           if (typeof 函数 !== 'function') throw Error('云工全局函数不存在');
           return JSON.stringify(句柄.出(await Reflect.apply(函数, 全局, 句柄.参数(文字(参数文)))));
         },
         豫言_云工_调用全局安全: async (名, 参数文) => {
           try {
-            const 函数 = 全局[句柄.允名(文字(名))];
+            const 函数 = 全局[允全局(名)];
             if (typeof 函数 !== 'function') throw Error('云工全局函数不存在');
             return [true, JSON.stringify(句柄.出(await Reflect.apply(函数, 全局, 句柄.参数(文字(参数文)))))];
           } catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错)})]; }
@@ -1865,7 +1885,7 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
         },
         ...Object.fromEntries(中央张量原语名们.map(名 => [名, 中央张量原语(名)]))
       };
-      const {运行} = 创建豫言实例(程序模块, 值桥模块, 能力, {输出, 时限毫秒: 取事件时限(种类)});
+      const {运行} = 创建豫言实例(程序模块, 值桥模块, 能力, {输出, 错误输出, 时限毫秒: 取事件时限(种类)});
       const 运行毕 = 运行().then(() => {
         for (const 态 of 事件源.values()) 态.来源.close();
         事件源.clear();

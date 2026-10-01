@@ -273,10 +273,11 @@ test('假加载器：同（范围，摘要）同标识，异范围异标识；�
     const 码 = 项.代码;
     assert.equal(码.mainModule, '隔离运行客.mjs');
     assert.equal(码.compatibilityDate, '2026-09-10');
-    assert.deepEqual(Object.keys(码.modules).sort(), ['程序.wasm', '值桥.wasm', '隔离运行客.mjs', '编译宿主.mjs'].sort());
+    assert.deepEqual(Object.keys(码.modules).sort(), ['程序.wasm', '值桥.wasm', '隔离运行客.mjs', '编译宿主.mjs', '边界.mjs'].sort());
     assert.equal(typeof 码.modules['隔离运行客.mjs'].js, 'string');
     assert.equal(码.modules['隔离运行客.mjs'].js, 资源.模块源码['隔离运行客.mjs']);
     assert.equal(码.modules['编译宿主.mjs'].js, 资源.模块源码['编译宿主.mjs']);
+    assert.equal(码.modules['边界.mjs'].js, 资源.模块源码['边界.mjs'], '编译宿主遇带类型导入时按需载入的边界胶水本体');
     assert.equal(摘要(new Uint8Array(码.modules['程序.wasm'].wasm)), 探针摘要, '子 Worker 载入的正是传入的程序字节');
     assert.equal(码.globalOutbound, null);
     assert.deepEqual(码.env, {});

@@ -2017,7 +2017,7 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
 // ---------------------------------------------------------------------------
 // 五、浏览器宿主：把上面的工厂接到豫言原语
 // ---------------------------------------------------------------------------
-export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 队列上限 = {}, 编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000}) {
+export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 队列上限 = {}, 编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000}) {
   let 网页能力 = null;
   const 定时器 = new Map();
   const 定时待处理 = new Set();
@@ -3386,7 +3386,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
       可写流.delete(文字(号));
     }
   };
-  const {运行} = 创建豫言实例(程序模块, 值桥模块, 能力, {输出, 时限毫秒: Number.POSITIVE_INFINITY});
+  const {运行} = 创建豫言实例(程序模块, 值桥模块, 能力, {输出, 错误输出, 时限毫秒: Number.POSITIVE_INFINITY});
   const 完成 = 运行();
   const 关闭宿主 = () => {
       if (关闭) return;

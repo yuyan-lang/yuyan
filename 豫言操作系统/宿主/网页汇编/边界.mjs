@@ -45,17 +45,29 @@ export function 解析签名(文) {
   return {参, 果, 文};
 }
 
+// 文言：一模之段与导入，析之一次而存，同模再造导入不复析。汉语：签名表与导入表按模块缓存（WeakMap，模块被回收即释放）：云工每个事件都为同一模块造一次导入，只有第一次解析。
+const 段缓存 = new WeakMap(), 导入缓存 = new WeakMap();
+const 模块导入 = 模块 => {
+  let 表 = 导入缓存.get(模块);
+  if (!表) { 表 = WebAssembly.Module.imports(模块); 导入缓存.set(模块, 表); }
+  return 表;
+};
+
 // 文言：读模之边界段，得 模\t字 → 签名 之表；无段者返空。汉语：读模块的「豫言边界」段，得“模块⇥字段”到签名的表；没有这一段时返回 null。
 export function 读边界段(模块) {
+  if (段缓存.has(模块)) return 段缓存.get(模块);
   const 段们 = WebAssembly.Module.customSections(模块, 边界段名);
-  if (段们.length === 0) return null;
-  const 表 = new Map();
-  for (const 段 of 段们) {
-    for (const 行 of 解码器.decode(段).split('\n')) {
-      const 列 = 行.split('\t');
-      if (列[0] === '导入' && 列.length === 4) 表.set(列[1] + '\t' + 列[2], 解析签名(列[3]));
+  let 表 = null;
+  if (段们.length > 0) {
+    表 = new Map();
+    for (const 段 of 段们) {
+      for (const 行 of 解码器.decode(段).split('\n')) {
+        const 列 = 行.split('\t');
+        if (列[0] === '导入' && 列.length === 4) 表.set(列[1] + '\t' + 列[2], 解析签名(列[3]));
+      }
     }
   }
+  段缓存.set(模块, 表);
   return 表;
 }
 
@@ -171,12 +183,12 @@ export function 包装实现(签名, 实, 桥, 名 = '') {
   }
 }
 
-// 文言：造带型导入之物：有实现者包之，无者给桩。汉语：为模块的全部带类型导入造导入对象：有实现的按签名包装，没有的给桩（调用时报“接口函数未绑定”）。旧的 yuyan:gc-host/v1 由宿主另行提供。
+// 文言：造带型导入之物：有实现者包之，无者给桩。汉语：为模块的全部带类型导入造导入对象：有实现的按签名包装，没有的给桩（调用时报“接口函数未绑定”）。旧的 yuyan:gc-host/v1 与浏览器组装时加的 yuyan:browser/v1（时限检查、顶层异常）由宿主另行提供。
 export function 造边界导入(模块, 桥, 实现表 = {}, 选项 = {}) {
   const 签名表 = 读边界段(模块) ?? new Map();
   const 导入 = {}, 未绑定 = [];
-  for (const {module: 模, name: 字段, kind: 种} of WebAssembly.Module.imports(模块)) {
-    if (种 !== 'function' || 模 === 旧宿主模块) continue;
+  for (const {module: 模, name: 字段, kind: 种} of 模块导入(模块)) {
+    if (种 !== 'function' || 模 === 旧宿主模块 || 模 === 'yuyan:browser/v1') continue;
     const 键 = 模 + '\t' + 字段, 签名 = 签名表.get(键), 实 = 实现表[模]?.[字段];
     if (!签名) throw Error(`导入缺少边界签名（模块没有「豫言边界」段中的这一行）：${模}.${字段}`);
     let 函;
