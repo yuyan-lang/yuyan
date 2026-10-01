@@ -89,7 +89,7 @@ function 嵌读器(形, 桥, 字节) {
     case '串': return 字节.读;
     case '元': return () => undefined;
     case '资': return 值 => 桥.ext_get(值);
-    case '组': { const 读们 = 形.项.map(项 => 嵌读器(项, 桥, 字节)); return 值 => 读们.map((读, 序) => 读(桥.tuple_get(值, 序))); }
+    case '组': { const 读们 = 形.项.map(项 => 嵌读器(项, 桥, 字节)), 数 = 读们.length; return 值 => { const 果 = new Array(数); for (let 序 = 0; 序 < 数; 序++) 果[序] = 读们[序](桥.tuple_get(值, 序)); return 果; }; }
     case '列': { const 读 = 嵌读器(形.元素, 桥, 字节); return 值 => { const 长 = 桥.tuple_len(值), 果 = new Array(长); for (let 序 = 0; 序 < 长; 序++) 果[序] = 读(桥.tuple_get(值, 序)); return 果; }; }
     case '变': {
       const 支读们 = 形.支.map(支 => 支.map(项 => 嵌读器(项, 桥, 字节)));
@@ -150,20 +150,25 @@ function 果造器(形, 桥, 字节) {
 
 const 是承诺 = 值 => 值 !== null && typeof 值 === 'object' && typeof 值.then === 'function';
 
-// 文言：依签名包实现之函。汉语：按签名包装一个实现函数；标量参数原样传，减少每次调用的开销。
+// 文言：依签名包实现之函。汉语：按签名包装一个实现函数。按参数个数（零至四）直接写出闭包，不用剩余参数与展开，标量参数不经转换；减少每次调用的开销。
 export function 包装实现(签名, 实, 桥, 名 = '') {
   const 字节 = 字节术(桥);
-  const 读们 = 签名.参.map(形 => 参读器(形, 桥, 字节));
-  const 造 = 果造器(签名.果, 桥, 字节);
-  const 全直 = 读们.every(读 => 读 === null);
-  const 转参 = 全直 ? null : 参们 => 读们.map((读, 序) => (读 === null ? 参们[序] : 读(参们[序])));
+  const 原 = 值 => 值;
+  const 读们 = 签名.参.map(形 => 参读器(形, 桥, 字节) ?? 原);
+  const 造 = 果造器(签名.果, 桥, 字节) ?? 原;
   if (实.异步) {
-    return new WebAssembly.Suspending(async (...参们) => { const 果 = await 实(...(转参 ? 转参(参们) : 参们)); return 造 ? 造(果) : 果; });
+    return new WebAssembly.Suspending(async (...参们) => 造(await 实(...参们.map((值, 序) => 读们[序](值)))));
   }
-  const 验 = 果 => { if (是承诺(果)) throw Error(`宿主函数 ${名} 返回了 Promise，却没有标“异步”`); return 果; };
-  if (全直 && 造 === null) return (...参们) => 验(实(...参们));
-  if (全直) return (...参们) => 造(验(实(...参们)));
-  return (...参们) => { const 果 = 验(实(...转参(参们))); return 造 ? 造(果) : 果; };
+  const 收 = 果 => { if (是承诺(果)) throw Error(`宿主函数 ${名} 返回了 Promise，却没有标“异步”`); return 造(果); };
+  const [甲, 乙, 丙, 丁] = 读们;
+  switch (读们.length) {
+    case 0: return () => 收(实());
+    case 1: return 子 => 收(实(甲(子)));
+    case 2: return (子, 丑) => 收(实(甲(子), 乙(丑)));
+    case 3: return (子, 丑, 寅) => 收(实(甲(子), 乙(丑), 丙(寅)));
+    case 4: return (子, 丑, 寅, 卯) => 收(实(甲(子), 乙(丑), 丙(寅), 丁(卯)));
+    default: return (...参们) => 收(实(...参们.map((值, 序) => 读们[序](值))));
+  }
 }
 
 // 文言：造带型导入之物：有实现者包之，无者给桩。汉语：为模块的全部带类型导入造导入对象：有实现的按签名包装，没有的给桩（调用时报“接口函数未绑定”）。旧的 yuyan:gc-host/v1 由宿主另行提供。
