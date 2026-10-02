@@ -19,10 +19,10 @@ test('无 JSPI 可运行同步豫言 Wasm，异步能力明确拒绝',{skip:!可
   try{
     WebAssembly.Suspending=undefined;WebAssembly.promising=undefined;
     let 输出='';
-    const 同步=创建豫言实例(程序,值桥,{}, {参数,输出:文=>{输出+=文;}});
+    const 同步=创建豫言实例(程序,值桥,{参数,输出:文=>{输出+=文;}});
     await 同步.运行();
     assert.deepEqual(JSON.parse(输出),{ok:true});
-    const 异步=创建豫言实例(程序,值桥,{豫言_打印行:async()=>null},{参数});
+    const 异步=创建豫言实例(程序,值桥,{参数,标准库:{打印行:Object.assign(async()=>{},{异步:true})}});
     await assert.rejects(异步.运行(),/缺少 JSPI，程序调用了异步宿主能力/u);
   }finally{
     WebAssembly.Suspending=原悬;WebAssembly.promising=原承;
@@ -32,7 +32,7 @@ test('现有 JSPI 路径仍运行真实豫言 Wasm',{skip:!可运行},async()=>{
   const 程序=await WebAssembly.compile(await readFile(程序径));
   const 值桥=await WebAssembly.compile(await readFile(值桥径));
   let 输出='';
-  const 客器=创建豫言实例(程序,值桥,{}, {参数:[JSON.stringify({操作:'校验路径',path:'入口。豫'})],输出:文=>{输出+=文;}});
+  const 客器=创建豫言实例(程序,值桥,{参数:[JSON.stringify({操作:'校验路径',path:'入口。豫'})],输出:文=>{输出+=文;}});
   await 客器.运行();
   assert.deepEqual(JSON.parse(输出),{ok:true});
 });

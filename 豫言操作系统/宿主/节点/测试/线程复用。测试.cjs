@@ -43,16 +43,16 @@ async function 主(){try{
   造(隔离);const 复=await 行('恢复',错池).毕;断言.equal(复.码,0);断言.equal(线程(先),线程(复));记('模块更新与异常恢复');
  } finally {错池.清理();}
  const 正文=Buffer.from('首😀\u0000尾'.repeat(60000)),错文=Buffer.from('错😀\u0000末'.repeat(30000));
- const 出名=字('outname','豫言_打印字符串'),错名=字('errname','豫言_标准错误打印行'),参名=字('argname','豫言_获取命令行参数'),出段=字('out',正文),错段=字('err',错文);
+ const 出段=字('out',正文),错段=字('err',错文);
  造(`(module (type $bytes (array (mut i8))) (type $tuple (array (mut (ref null eq))))
-  (import "yuyan:gc-host/v1" "call" (func $call (param (ref null eq) (ref null eq)) (result (ref null eq))))
-  ${[出名,错名,参名,出段,错段].map(段=>段.段).join('\n')}
-  (func (export "_start") ${出名.取} ${出段.取} array.new_fixed $tuple 1 call $call drop
-   ${错名.取} ${错段.取} array.new_fixed $tuple 1 call $call drop
-   ${出名.取} ${参名.取} array.new_fixed $tuple 0 call $call
-   ref.cast (ref $tuple) i32.const 0 array.get $tuple
-   ref.cast (ref $tuple) i32.const 1 array.get $tuple
-   array.new_fixed $tuple 1 call $call drop))`);
+  (import "标准库" "打印字符串" (func $出 (param (ref $bytes))))
+  (import "标准库" "标准错误打印行" (func $错 (param (ref $bytes))))
+  (import "标准库" "获取命令行参数" (func $参 (result (ref $tuple))))
+  (@custom "豫言边界" "导入\\t标准库\\t打印字符串\\t串→元\\n导入\\t标准库\\t标准错误打印行\\t串→元\\n导入\\t标准库\\t获取命令行参数\\t→列〔串〕\\n")
+  ${[出段,错段].map(段=>段.段).join('\n')}
+  (func (export "_start") ${出段.取} call $出
+   ${错段.取} call $错
+   call $参 i32.const 1 array.get $tuple ref.cast (ref $bytes) call $出))`);
  const 多=await Promise.all(Array.from({length:4},(_,序)=>行('输出'+序).毕));
  for(const [序,果] of 多.entries()){断言.equal(果.码,0);断言.deepEqual(果.出,Buffer.concat([正文,Buffer.from('输出'+序)]));断言.deepEqual(果.错.subarray(0,错文.length+1),Buffer.concat([错文,Buffer.from('\n')]));JSON.parse(果.错.subarray(错文.length+1).toString());断言.equal(果.始,1);}
  记('并发二出完整与参数隔离');

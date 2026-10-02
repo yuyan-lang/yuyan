@@ -1,4 +1,6 @@
 // 文言：客但执号，不见 JS 物；用毕释之。汉语：豫言只持有不透明编号，JS 对象留在宿主并可显式释放。
+// 文言：待办之事：宿主库百余原语仍以字符串句柄传物，先改为资源（边界之“资”形，客执 externref），乃可去此表。
+// 汉语：待办事项：宿主库还有一百多个原语用字符串句柄传对象，先把它们改成资源（边界的“资”形，客体直接持有 externref），才能删去这张句柄表。
 const 禁名 = new Set(['__proto__', 'prototype', 'constructor', 'eval', 'Function', 'AsyncFunction', 'GeneratorFunction']);
 const 允名 = 名 => {
   if (typeof 名 !== 'string' || !名 || 禁名.has(名)) throw Error('不允许访问宿主成员：' + String(名));

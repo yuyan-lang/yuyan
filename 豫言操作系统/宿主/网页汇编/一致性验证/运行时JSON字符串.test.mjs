@@ -24,7 +24,7 @@ try {
   execFileSync(宿主程序, ['--组装', path.join(临时, '模块.wat'), path.join(临时, '模块.wasm')], {cwd: 仓根, stdio: 'inherit'});
   二进制 = readFileSync(path.join(临时, '模块.wasm'));
 } finally { rmSync(临时, {recursive: true, force: true}); }
-const {instance} = await WebAssembly.instantiate(二进制, {'yuyan:gc-host/v1': {call: () => null}});
+const {instance} = await WebAssembly.instantiate(二进制, {});
 const {mem, decode, consumed} = instance.exports;
 const 字节 = new Uint8Array(mem.buffer);
 const 出偏 = 16 * 1024 * 1024;

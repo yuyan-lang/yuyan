@@ -28,30 +28,12 @@ export function 创建项目核心(模块, 桥模块) {
       小数转字符串: 小数表示,
       退出进程: 码 => { throw new 客体退出(Number(码)); }
     };
-    // 文言：旧通调之原语：标准库者由上表派生，余者编器已内联或将为内建。汉语：旧 call 的原语：上表九个照用（参数与结果的形相同）；其余是旧产物还会调用的旧名。
-    const 原语 = {
-      ...Object.fromEntries(Object.entries(标准库).map(([名, 函]) => ['豫言_' + 名, 函])),
-      豫言_获取命令行参数: () => [[输入], 1],
-      豫言_字符串转整数: 值 => BigInt(文(值)),
-      豫言_字节转字符串: 值 => Uint8Array.of(Number(值)),
-      豫言_整数加: (甲, 乙) => BigInt.asIntN(64, 甲 + 乙),
-      豫言_整数乘: (甲, 乙) => BigInt.asIntN(64, 甲 * 乙),
-      豫言_整数除: (甲, 乙) => 甲 / 乙,
-      豫言_整数转字符串: 值 => String(值)
-    };
     const 实例 = new WebAssembly.Instance(模块, {
       ...造边界导入(模块, 桥.原, { 标准库 }),
       'yuyan:browser/v1': {
         check() { if (performance.now() > 截止) throw Error('项目核心执行超时'); },
         fail(值) { throw Error(文(桥.解(值))); }
-      },
-      'yuyan:gc-host/v1': { call(名, 参数) {
-        const 名称 = 文(桥.解(名));
-        if (!Object.hasOwn(原语, 名称)) throw Error('项目核心未授权宿主原语：' + 名称);
-        const 结果 = 原语[名称](...桥.解(参数));
-        if (输出.length > 交换上限) throw Error('输出超过宿主交换上限');
-        return 桥.编(结果);
-      } }
+      }
     });
     try {
       try {

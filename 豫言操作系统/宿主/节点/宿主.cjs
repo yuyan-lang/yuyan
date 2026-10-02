@@ -15,7 +15,7 @@ const 新客线程=选项=>{if(process.allowedNodeEnvironmentFlags.has(外部库
 const 外部库原语=文字=>{try{return require('./外部库.mjs').创建外部库能力({文字});}catch(错){if(错?.code==='MODULE_NOT_FOUND'||错?.code==='ERR_MODULE_NOT_FOUND')return {豫言_节点_外部库可用:()=>false};throw 错;}};
 // 文言：边界之胶水，先求于宿主之旁（工具链之包），次求于仓中网页汇编之目；无之则不能行带型导入之模。汉语：共用的宿主边界胶水 边界.mjs：Wasm 工具链包里与宿主放在同一目录，仓库里在 ../网页汇编/；找不到时，带类型导入的模块无法运行。
 const 边界胶水=(()=>{for(const 径 of ['./边界.mjs','../网页汇编/边界.mjs']){try{return require(径);}catch(错){if(错?.code!=='MODULE_NOT_FOUND'&&错?.code!=='ERR_MODULE_NOT_FOUND')throw 错;}}return null;})();
-// 文言：边界回环之夹具，惟仓中有之，供测试。汉语：边界回环测试的夹具（导入模块「测试」的实现与对照用的旧原语），只在仓库里有，工具链包不带。
+// 文言：边界回环之夹具，惟仓中有之，供测试。汉语：边界回环测试的夹具（导入模块「测试」的实现），只在仓库里有，工具链包不带。
 const 边界回环=(()=>{try{return require('./边界回环.cjs');}catch(错){if(错?.code==='MODULE_NOT_FOUND')return null;throw 错;}})();
 // 文言：管或不阻，一书未必尽；余者续书，遇暂不可写则稍候，与应用宿主之写出同。汉语：标准流是非阻塞管道时，writeSync 可能只写入管道容得下的部分（常为 64KB）或报 EAGAIN；循环写完，写不进就短暂等待后重写（与 应用宿主.mjs 的「写出」相同），否则父进程经管道读取时输出被截断。
 const 小候=new Int32Array(new SharedArrayBuffer(4));
@@ -67,28 +67,6 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 桥=new WebAssembly.Instance(本工.桥模块??new WebAssembly.Module(文件.readFileSync(桥文件路径()))).exports;
   const 模块=缓存??本工.模块??new WebAssembly.Module(文件.readFileSync(模块路径));
   const 编译毕=performance.now();
-  function 留字节(数) { const 差=数-桥.memory.buffer.byteLength; if(差>0) 桥.memory.grow(Math.ceil(差/65536)); }
-  function 解(值) {
-    switch(桥.kind(值)) {
-      case 0:return null;
-      case 1:case 4:return 桥.int(值);
-      case 5:return {小数:桥.float(值)};
-      case 6:return 桥.ext_get(值);
-      case 2:{const 长=桥.bytes_len(值);留字节(长);桥.bytes_out(值);return Buffer.from(new Uint8Array(桥.memory.buffer,0,长));}
-      case 3:return Array.from({length:桥.tuple_len(值)},(_,序)=>解(桥.tuple_get(值,序)));
-      default:throw Error('未知客值');
-    }
-  }
-  function 编(值) {
-    if(值==null)return null;
-    if(typeof 值==='boolean')return 桥.new_int(值?1n:0n);
-    if(typeof 值==='bigint'||typeof 值==='number')return 桥.new_int(BigInt(值));
-    if(typeof 值==='string')值=Buffer.from(值);
-    if(Buffer.isBuffer(值)){留字节(值.length);new Uint8Array(桥.memory.buffer,0,值.length).set(值);return 桥.bytes_in(值.length);}
-    if(Array.isArray(值)){const 组=桥.new_tuple(值.length);值.forEach((项,序)=>桥.tuple_set(组,序,编(项)));return 组;}
-    if(Object.hasOwn(值,'小数'))return 桥.new_float(值.小数);
-    throw Error('未知宿主值');
-  }
   const 文=值=>Buffer.isBuffer(值)?值.toString('utf8'):String(值);
   const 径=值=>路径.resolve(当前目录,文(值));
   const 数=值=>Number(值?.小数??值);
@@ -143,8 +121,6 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 公钥对象=(公,算法)=>密码.createPublicKey({key:Buffer.concat([Buffer.from(公钥前缀[算法],'hex'),三十二(公,算法+' 公钥长度必须为三十二字节')]),format:'der',type:'spki'});
   const 原始公钥=(种,算法)=>Buffer.from(密码.createPublicKey(私钥对象(种,算法)).export({format:'der',type:'spki'}).subarray(-32));
   const 验GCM=(钥,随机数)=>{if(钥.length!==32||随机数.length!==12)throw Error('AES-256-GCM 密钥须为三十二字节，IV 须为十二字节');};
-  // 文言：通值之示，唯供调试。汉语：打印通用值的文本表示（仅供调试）：字节串按 UTF-8 显示为带引号的串，元组显示为方括号列表。
-  const 通用表示=值=>值==null?'()':Buffer.isBuffer(值)?JSON.stringify(值.toString('utf8')):Array.isArray(值)?'['+值.map(通用表示).join(', ')+']':Object.hasOwn(Object(值),'小数')?String(值.小数):String(值);
   function 取占锁(占径){
     for(;;){
       try{const 号=文件.openSync(占径,'wx',0o600);文件.writeSync(号,String(process.pid));文件.closeSync(号);return;}
@@ -156,7 +132,6 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     }
   }
   const 释占锁=占径=>{try{文件.unlinkSync(占径);}catch{}};
-  const 产物锁们=new Map();let 下锁号=1n;
   const 原语={
     // 文言：同文用旧号，异文另立号，既存不改（同原生 包上下文.c）。汉语：与原生 包上下文.c 相同：在当前目录的 .yybuild/豫构上下文 里逐字比较，内容相同就复用已有编号，否则新建下一个编号；加锁防并发，返回真实路径。
     豫言_存放包上下文:内容=>{
@@ -170,11 +145,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
         }
       }finally{释占锁(占径);}
     },
-    // 文言：原生产物之锁：返一号，释时凭号去其占文。汉语：原生产物锁：加锁后返回一个句柄号，释放时凭句柄删除占用文件。
-    豫言_锁原生产物:名=>{const 占径=径(名)+'.占';取占锁(占径);const 号=下锁号++;产物锁们.set(号,占径);return 号;},
-    豫言_释原生产物锁:号=>{const 键=BigInt(号);const 占径=产物锁们.get(键);if(占径!==undefined){产物锁们.delete(键);释占锁(占径);}return null;},
     豫言_获取命令行程序名:()=>模块路径,
-    豫言_获取命令行参数:()=>列(客参数),
     豫言_获取当前工作目录:()=>当前目录,
     豫言_切换当前工作目录:名=>{const 目标=径(名);try{if(!文件.statSync(目标).isDirectory())return [20n,'不是目录：'+目标];当前目录=目标;return [0n,''];}catch(错){return [BigInt(Math.abs(系统.constants.errno[错.code]??2)),错.message];}},
     豫言_获取文件修改时间:名=>BigInt(Math.floor(文件.statSync(径(名)).mtimeMs/1000)),
@@ -185,13 +156,6 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_同步读取文件:名=>文件.readFileSync(径(名)),
     豫言_同步读取文件字节串:名=>文件.readFileSync(径(名)),
     // 文言：字节串之术一依原生运行时：越界则止，截取以起点与长度。汉语：字节串原语与原生运行时（字节串.c）语义一致：越界即报错，截取按起点与长度。
-    豫言_字节串_空:()=>Buffer.alloc(0),
-    豫言_字节串_长度:值=>BigInt(值.length),
-    豫言_字节串_取字节:(值,序)=>{if(序<0n||序>=BigInt(值.length))throw Error('字节串取字节：序数越界');return BigInt(值[Number(序)]);},
-    豫言_字节串_从字符串:值=>值,
-    豫言_字节串_单字节:值=>{if(值<0n||值>255n)throw Error('构造单字节串：字节必须在零至二百五十五之间');return Buffer.from([Number(值)]);},
-    豫言_字节串_拼接:(甲,乙)=>Buffer.concat([甲,乙]),
-    豫言_字节串_截取:(值,起,长)=>{if(起<0n||长<0n||起>BigInt(值.length)||长>BigInt(值.length)-起)throw Error('截取字节串：范围越界');return Buffer.from(值.subarray(Number(起),Number(起+长)));},
     豫言_同步写入文件:(名,内容)=>{文件.mkdirSync(路径.dirname(径(名)),{recursive:true});文件.writeFileSync(径(名),内容);},
     豫言_同步写入文件字节串:(名,内容)=>{文件.mkdirSync(路径.dirname(径(名)),{recursive:true});文件.writeFileSync(径(名),内容);},
     豫言_同步删除文件:名=>文件.unlinkSync(径(名)),
@@ -243,29 +207,12 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_密码_Ed25519验:(公,正文,签名)=>{if(签名.length!==64)throw Error('Ed25519 签名长度必须为六十四字节');return 密码.verify(null,正文,公钥对象(公,'Ed25519'),签名);},
     豫言_密码_AES256GCM加密:(钥,随机数,附加,明文)=>{验GCM(钥,随机数);const 器=密码.createCipheriv('aes-256-gcm',钥,随机数);if(附加.length)器.setAAD(附加);const 密=Buffer.concat([器.update(明文),器.final()]);return Buffer.concat([密,器.getAuthTag()]);},
     豫言_密码_AES256GCM解密结果:(钥,随机数,附加,密签)=>{验GCM(钥,随机数);if(密签.length<16)return Buffer.from([0]);const 器=密码.createDecipheriv('aes-256-gcm',钥,随机数);if(附加.length)器.setAAD(附加);器.setAuthTag(密签.subarray(密签.length-16));try{const 明=Buffer.concat([器.update(密签.subarray(0,密签.length-16)),器.final()]);return Buffer.concat([Buffer.from([1]),明]);}catch{return Buffer.from([0]);}},
-    豫言_打印通用值:(消息,对象)=>{写输出(2,Buffer.from('[豫言通用值打印] '+文(消息)+': '+通用表示(对象)+'\n'));},
     豫言_打印行:值=>{写输出(1,Buffer.concat([值,Buffer.from('\n')]));},
     豫言_标准错误打印行:值=>{写输出(2,Buffer.concat([值,Buffer.from('\n')]));},
     豫言_打印字符串:值=>{写输出(1,值);},
-    豫言_字节转字符串:值=>Buffer.from([数(值)]),
-    豫言_整数转小数:值=>({小数:数(值)}),
-    豫言_小数转整数:值=>BigInt(Math.trunc(数(值))),
-    豫言_整数加:(甲,乙)=>BigInt.asIntN(64,甲+乙),
-    豫言_整数乘:(甲,乙)=>BigInt.asIntN(64,甲*乙),
-    豫言_整数除:(甲,乙)=>甲/乙,
-    豫言_小数加:(甲,乙)=>({小数:数(甲)+数(乙)}),
-    豫言_小数减:(甲,乙)=>({小数:数(甲)-数(乙)}),
-    豫言_小数乘:(甲,乙)=>({小数:数(甲)*数(乙)}),
-    豫言_小数除:(甲,乙)=>({小数:数(甲)/数(乙)}),
-    豫言_字符串按字节在前:(甲,乙)=>Buffer.compare(甲,乙)<0,
-    豫言_整数转字符串:值=>String(值),
-    豫言_字符串转整数:值=>BigInt(文(值)),
     豫言_小数转字符串:值=>小数表示(值),
     豫言_小数精确表示:值=>精确小数(值),
     豫言_字符串转小数:值=>({小数:理解小数(值)}),
-    豫言_源码数字名:值=>/^[0-9-]+$/.test(文(值)),
-    豫言_源码可用名:值=>!/^[0-9-]+$/.test(文(值))&&!文(值).startsWith('《《')&&!文(值).startsWith('：')&&!文(值).includes('」'),
-    豫言_源码字符串表示:值=>'『'+文(值).replace(/「：|』/g,字=>字==='』'?'「：』：」':'「：「：：」')+'』',
     豫言_同步运行子进程并获取输出:运行子进程,
     // 文言：同步行之，成则阳；同原生，返爻而非退码。汉语：与原生一致：只返回是否成功（退出码为零），不返回退出码。
     豫言_同步运行子进程:(名,参)=>运行子进程(名,参).状态===0,
@@ -273,13 +220,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     // 文言：承三常流而行，出不经宿主之缓；启败一二七，候败一。汉语：继承标准输入、输出与错误直接运行（输出不经宿主缓冲，交互程序可用）；启动失败返回 127，等待失败返回 1，超时返回 124。
     豫言_同步运行子进程并继承标准流:(名,参)=>{const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,stdio:'inherit',timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),YY_NODE_REPEAT:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(超时)return 124;if(果.error)return 果.error.code==='ENOENT'?127:1;return 果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1);},
     豫言_退出进程:码=>{const 错=Error('客体退出');错.退出码=数(码);throw 错;},
-    ...外部库原语(文),
-    ...(边界回环?.旧原语??{})
+    ...外部库原语(文)
   };
-  let 调用数=0;
-  // 文言：外术之名为常字，同值毋重解。汉语：编译器以不可变字面量指定原语；按 GC 对象身份弱缓存名称，不保留参数或结果。
-  const 名称缓存=new WeakMap();
-  const 原语次数=process.env.YY_NODE_PROFILE==='1'?Object.create(null):null;
   // 文言：带型之导入，以边界胶水依签名包之；无实现者给桩。汉语：带类型的导入按「豫言边界」段里的签名由共用胶水包装；没有实现的给桩，调用时报“接口函数未绑定”。
   // 文言：标准库与构建基础之带型导入，实借旧原语：串参先转为 Buffer，列果惟返数组，小数之果去其壳；旧表所无者（终端按键、原始输入模式、拼音、绘监视面板）不立，调之则报未绑定，与旧表同。汉语：标准库（65 个）与构建基础（3 个）的带类型导入，见《网页汇编接口》网五；实现照搬旧原语：串参数先转成 Buffer，列结果只返回数组，小数结果去掉 {小数} 外壳。旧表本来没有的（读取终端按键、进入与退出终端原始输入模式、两个拼音转换、绘监视面板）不提供，调用时报“接口函数未绑定”，与旧表报“未实现 Node 宿主原语”相同。
   const 缓=值=>Buffer.from(值.buffer,值.byteOffset,值.byteLength);
@@ -346,20 +288,13 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   });
   const 带型导入=边界胶水?边界胶水.造边界导入(模块,桥,{标准库:标准库实现,构建基础:构建基础实现,系统库调用:系统库调用实现,安全外壳密码:安全外壳密码实现,
     ...(边界回环?.实现表??{})}):{};
-  const 实例=new WebAssembly.Instance(模块,{...带型导入,'yuyan:gc-host/v1':{call:(名,参)=>{
-    let 名称=名称缓存.get(名);
-    if(名称===undefined){名称=文(解(名));名称缓存.set(名,名称);}
-    const 参数组=解(参);调用数++;
-    if(原语次数)原语次数[名称]=(原语次数[名称]??0)+1;
-    if(!原语[名称])throw Error('未实现 Node 宿主原语：'+名称);
-    try{return 编(原语[名称](...参数组));}catch(错){错.message=名称+': '+错.message;throw 错;}
-  }}});
+  const 实例=new WebAssembly.Instance(模块,{...带型导入});
   let 退出码=0;
   // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 初始化各模块之后，应用若实现了《豫言操作系统启动》的「启动程序」（导出 豫言操作系统启动/启动程序），就调用它；旧产物没有这个导出，照旧只跑 _start。
   try{实例.exports._start();const 导出=边界胶水?边界胶水.造边界导出(实例,模块,桥):{};const 启动=边界胶水?导出[边界胶水.启动导出名]:undefined;if(启动)启动();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}
-  // 文言：统计之行，唯请乃书，免乱诸器之标准错误。汉语：运行统计只在 YY_NODE_STATS=1 或 YY_NODE_PROFILE=1 时打印，避免干扰工具的标准错误输出。
-  if(process.env.YY_NODE_STATS!=='1'&&!原语次数)return {模块,退出码};
-  const 统计=JSON.stringify({轮次:轮,复用模块:!!缓存,引擎:process.versions.v8,进程:process.pid,线程:threadId,编译工作模式:process.env.YY_NODE_COMPILER_WORKERS??'threads',模块准备毫秒:编译毕-开始,执行毫秒:performance.now()-编译毕,宿主调用数:调用数,...(原语次数?{原语次数}:{})});
+  // 文言：统计之行，唯请乃书，免乱诸器之标准错误。汉语：运行统计只在 YY_NODE_STATS=1 时打印，避免干扰工具的标准错误输出。
+  if(process.env.YY_NODE_STATS!=='1')return {模块,退出码};
+  const 统计=JSON.stringify({轮次:轮,复用模块:!!缓存,引擎:process.versions.v8,进程:process.pid,线程:threadId,编译工作模式:process.env.YY_NODE_COMPILER_WORKERS??'threads',模块准备毫秒:编译毕-开始,执行毫秒:performance.now()-编译毕});
   if(本工.复用线程)写输出(2,Buffer.from(统计+'\n'));else console.error(统计);
   return {模块,退出码};
 }

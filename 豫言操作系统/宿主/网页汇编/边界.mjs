@@ -5,14 +5,13 @@
 //   组〔…〕、列〔…〕 ↔ 数组；变〔…〕 ↔ [支序, …载荷]，支序从零起。嵌在元组里的值经值桥模块读写。
 //   异〔T〕只作结果的最外层（结果类型是「异步返回」），值的转换同 T；解析后签名的 果 是 T，另记 异=true。
 //   规范见 应用/豫言编译器/文档/语言技术规范/网页汇编接口 网五。
-// 用法：const 导入 = 造边界导入(模块, 桥, 实现表)；new WebAssembly.Instance(模块, {...导入, 'yuyan:gc-host/v1': {call}})。
+// 用法：const 导入 = 造边界导入(模块, 桥, 实现表)；new WebAssembly.Instance(模块, 导入)（浏览器组装另加 yuyan:browser/v1）。
 //   _start 之后：const 导出 = 造边界导出(实例, 模块, 桥, {异步})；有 导出[启动导出名] 就调用它（应用接口导出，见网五）。
 //   桥是值桥模块（yy节点值桥接.wasm）实例的 exports；实现表形如 {模块名: {字段名: 函数}}；缺的导入给桩，调用时报“接口函数未绑定”。
 //   签名结果是 异〔…〕且实现函数带 异步=true（返回 Promise）时，套 WebAssembly.Suspending（JSPI）；签名有“异”而实现同步的不套；
 //   签名没有“异”却返回 Promise 时报错（实现标了异步也一样）。
 
 export const 边界段名 = '豫言边界';
-export const 旧宿主模块 = 'yuyan:gc-host/v1';
 
 const 编码器 = new TextEncoder(), 解码器 = new TextDecoder();
 
@@ -78,10 +77,9 @@ export function 读边界段(模块) {
   return 表;
 }
 
-// 文言：是豫言之 GC 模否：有边界段，或导入旧宿主调用。汉语：是否豫言 WasmGC 程序：带「豫言边界」段，或导入旧的 yuyan:gc-host/v1（①之前的产物）。
+// 文言：是豫言之 GC 模否：视其有边界段否。汉语：是否豫言 WasmGC 程序：看是否带「豫言边界」段。
 export function 是豫言模块(模块) {
-  return WebAssembly.Module.customSections(模块, 边界段名).length > 0 ||
-    WebAssembly.Module.imports(模块).some(项 => 项.module === 旧宿主模块);
+  return WebAssembly.Module.customSections(模块, 边界段名).length > 0;
 }
 
 // 文言：造值桥之字节读写。汉语：经值桥读写字节串：桥内存不够就加页。
@@ -194,12 +192,12 @@ export function 包装实现(签名, 实, 桥, 名 = '') {
   }
 }
 
-// 文言：造带型导入之物：有实现者包之，无者给桩。汉语：为模块的全部带类型导入造导入对象：有实现的按签名包装，没有的给桩（调用时报“接口函数未绑定”）。旧的 yuyan:gc-host/v1 与浏览器组装时加的 yuyan:browser/v1（时限检查、顶层异常）由宿主另行提供。
+// 文言：造带型导入之物：有实现者包之，无者给桩。汉语：为模块的全部带类型导入造导入对象：有实现的按签名包装，没有的给桩（调用时报“接口函数未绑定”）。浏览器组装时加的 yuyan:browser/v1（时限检查、顶层异常）由宿主另行提供。
 export function 造边界导入(模块, 桥, 实现表 = {}, 选项 = {}) {
   const 签名表 = 读边界段(模块) ?? new Map();
   const 导入 = {}, 未绑定 = [];
   for (const {module: 模, name: 字段, kind: 种} of 模块导入(模块)) {
-    if (种 !== 'function' || 模 === 旧宿主模块 || 模 === 'yuyan:browser/v1') continue;
+    if (种 !== 'function' || 模 === 'yuyan:browser/v1') continue;
     const 键 = 模 + '\t' + 字段, 签名 = 签名表.get(键), 实 = 实现表[模]?.[字段];
     if (!签名) throw Error(`导入缺少边界签名（模块没有「豫言边界」段中的这一行）：${模}.${字段}`);
     let 函;

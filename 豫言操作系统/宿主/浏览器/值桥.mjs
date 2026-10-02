@@ -1,9 +1,8 @@
 // 文言：桥唯传客值，毋决应用之事。汉语：值桥只转换 WasmGC 值，不承载业务规则。
 // 文言：带型之导入经边界胶水；本目之 边界.mjs 于仓中转出网页汇编之本体，构建时以本体代之。汉语：带类型的导入经共用边界胶水；本目录的 边界.mjs 在仓库里转出 ../网页汇编/边界.mjs，构建器把胶水本体复制成产物里的 边界.mjs。
-// 文言：取之不得（旧部署之静态白名单无此文）则为空，惟调旧通调之旧产物照行。汉语：用顶层 await 动态载入：取不到时（旧部署的静态白名单里还没有 边界.mjs）为空，只调旧 call 的旧产物照常运行，有带类型导入的程序明确报错。
+// 文言：取之不得（旧部署之静态白名单无此文）则为空，无带型导入之程照行。汉语：用顶层 await 动态载入：取不到时（旧部署的静态白名单里还没有 边界.mjs）为空，没有带类型导入的程序照常运行，有带类型导入的程序明确报错。
 const 边界胶水 = await import('./边界.mjs').catch(() => null);
-const 有带型导入 = 模块 => WebAssembly.Module.imports(模块).some(项 => 项.kind === 'function' && 项.module !== 'yuyan:gc-host/v1' && 项.module !== 'yuyan:browser/v1');
-const 编码 = new TextEncoder();
+const 有带型导入 = 模块 => WebAssembly.Module.imports(模块).some(项 => 项.kind === 'function' && 项.module !== 'yuyan:browser/v1');
 const 解码 = new TextDecoder('utf-8', {ignoreBOM: true});
 export const 文字 = 值 => 值 instanceof Uint8Array ? 解码.decode(值) : String(值);
 
@@ -65,48 +64,16 @@ export function 创建值桥(模块) {
       default: throw Error('未知豫言客值');
     }
   };
-  const 编 = (值, 深 = 0) => {
-    if (深 > 64) throw Error('宿主值嵌套过深');
-    if (值 == null) return null;
-    if (typeof 值 === 'boolean') return 桥.new_int(值 ? 1n : 0n);
-    if (typeof 值 === 'bigint' || Number.isSafeInteger(值)) return 桥.new_int(BigInt(值));
-    if (typeof 值 === 'string') 值 = 编码.encode(值);
-    if (值 instanceof Uint8Array) {
-      留(值.length);
-      new Uint8Array(桥.memory.buffer, 0, 值.length).set(值);
-      return 桥.bytes_in(值.length);
-    }
-    if (Array.isArray(值)) {
-      const 组 = 桥.new_tuple(值.length);
-      值.forEach((项, 序) => 桥.tuple_set(组, 序, 编(项, 深 + 1)));
-      return 组;
-    }
-    if (typeof 值 === 'object' && Object.hasOwn(值, '小数')) return 桥.new_float(值.小数);
-    throw Error('未知宿主值');
-  };
-  // 文言：异类值未必可由通用桥析；诊断仅尽力观之。汉语：模式失败时尝试读取打印参数，无法跨桥的代数值保留为占位说明。
-  const 诊断参数 = 值 => {
-    let 标签 = '未知诊断';
-    let 内容 = '<豫言值不可经宿主值桥解码>';
-    try { 标签 = 文字(解(桥.tuple_get(值, 0))); } catch { /* 保留标签占位。 */ }
-    try { 内容 = 解(桥.tuple_get(值, 1)); } catch { /* 保留值占位。 */ }
-    return [标签, 内容];
-  };
   // 文言：原者，桥之本出，供边界胶水用之。汉语：原 是值桥实例的 exports，交给边界胶水读写带类型导入的值。
-  return {编, 解, 诊断参数, 原: 桥};
+  return {解, 原: 桥};
 }
 
-// 文言：由新式之实派生旧通调之原语：小数之果包为 {小数}，列之果附其长。汉语：由新式实现派生旧 call 原语：小数结果包成 {小数}，列结果附上长度（旧形是“数组加长度”）。
-const 旧小数果 = new Set(['获取当前纳秒时间', '获取随机小数', '字符串转小数']), 旧列果 = new Set(['获取命令行参数', '同步列出文件夹']);
-export const 旧式原语 = 表 => Object.fromEntries(Object.entries(表).map(([名, 函]) => ['豫言_' + 名,
-  旧小数果.has(名) ? (...参) => ({小数: 函(...参)}) : 旧列果.has(名) ? (...参) => { const 列 = 函(...参); return [列, 列.length]; } : 函]));
-
-// 文言：仅具名之术得入客器。汉语：每次实例只开放调用者传入的具名能力。原语 是旧 call 的具名能力；标准库 可覆盖或补充导入模块「标准库」的实现（键为字段名）。
+// 文言：仅具名之术得入客器。汉语：每次实例只开放调用者传入的具名能力：标准库 可覆盖或补充导入模块「标准库」的实现（键为字段名）。
 //   签名解析按模块缓存在胶水里。
 // 文言：平台者，平台接口包之带型导入，形如 {包名: {函名: 术}}；术标异步者，有悬栈则套之，无则同步而调，得承诺乃拒。
 // 汉语：平台 是平台接口包的带类型导入实现，形如 {模块名: {字段名: 函数}}，模块名即包名（如 浏览器宿主、中央张量宿主），字段名即接口文件里声明的函数名；
 //   标“异步”的函数有 JSPI 时套 Suspending，没有 JSPI 时改为同步调用，真的返回 Promise 才报“缺少 JSPI”，所以只调同步能力的程序照常运行。
-export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 = () => {}, 错误输出 = 文 => globalThis.console?.error?.(文), 参数 = [], 时限毫秒 = 30000, 标准库 = {}, 平台 = {}} = {}) {
+export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {}, 错误输出 = 文 => globalThis.console?.error?.(文), 参数 = [], 时限毫秒 = 30000, 标准库 = {}, 平台 = {}} = {}) {
   // 文言：无悬栈之客器可行纯同步豫言；遇异步能则明拒。汉语：没有 JSPI 时仍可运行只调用同步能力的豫言程序，异步调用会明确失败。
   const 可悬 = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function';
   const 桥 = 创建值桥(值桥模块);
@@ -137,80 +104,13 @@ export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 =
     退出进程: 码 => { throw new 豫言退出(Number(码)); },
     ...标准库
   };
-  const 内建 = {
-    ...旧式原语(标准库实现),
-    // 文言：模式不配之诊须得书，免其本因被未授权之报蔽。汉语：编译器在模式匹配失败时调用此原语，输出诊断值。
-    豫言_打印通用值: (消息, 值) => {
-      输出('[豫言通用值打印] ' + 文字(消息) + ': ' + JSON.stringify(值, (_, 项) => typeof 项 === 'bigint' ? String(项) : 项) + '\n');
-      return null;
-    },
-    豫言_字节转字符串: 值 => { if (值 <= 0n || 值 > 255n) throw Error('字节值越界'); return Uint8Array.of(Number(值)); },
-    豫言_字节串_空: () => new Uint8Array(),
-    豫言_字节串_长度: 值 => BigInt(值.length),
-    豫言_字节串_取字节: (值, 序) => {
-      const 号 = Number(序);
-      if (!Number.isSafeInteger(号) || 号 < 0 || 号 >= 值.length) throw Error('字节串索引越界');
-      return BigInt(值[号]);
-    },
-    豫言_字节串_从字符串: 值 => 值.slice(),
-    豫言_字节串_单字节: 值 => {
-      if (值 < 0n || 值 > 255n) throw Error('字节值越界');
-      return Uint8Array.of(Number(值));
-    },
-    豫言_字节串_拼接: (甲, 乙) => {
-      const 果 = new Uint8Array(甲.length + 乙.length);
-      果.set(甲);
-      果.set(乙, 甲.length);
-      return 果;
-    },
-    // 文言：截取以起点与长度，越界则止，同原生运行时。汉语：按起点与长度截取，越界报错，语义同原生运行时（字节串.c）。
-    豫言_字节串_截取: (值, 起, 长) => {
-      if (起 < 0n || 长 < 0n || 起 > BigInt(值.length) || 长 > BigInt(值.length) - 起) throw Error('截取字节串：范围越界');
-      return 值.slice(Number(起), Number(起 + 长));
-    },
-    豫言_整数转小数: 值 => ({小数: Number(值)}),
-    豫言_小数转整数: 值 => BigInt(Math.trunc(Number(值))),
-    豫言_整数加: (甲, 乙) => BigInt.asIntN(64, 甲 + 乙),
-    豫言_整数乘: (甲, 乙) => BigInt.asIntN(64, 甲 * 乙),
-    豫言_整数除: (甲, 乙) => 甲 / 乙,
-    豫言_小数加: (甲, 乙) => ({小数: 甲 + 乙}),
-    豫言_小数减: (甲, 乙) => ({小数: 甲 - 乙}),
-    豫言_小数乘: (甲, 乙) => ({小数: 甲 * 乙}),
-    豫言_小数除: (甲, 乙) => ({小数: 甲 / 乙}),
-    豫言_整数转字符串: 值 => String(值),
-    豫言_字符串转整数: 值 => BigInt(文字(值).match(/^\s*[+-]?\d+/u)?.[0].trim() ?? '0'),
-    豫言_源码数字名: 值 => /^[0-9-]+$/u.test(文字(值)),
-    豫言_源码可用名: 值 => !/^[0-9-]+$/u.test(文字(值)) && !文字(值).startsWith('《《') && !文字(值).startsWith('：') && !文字(值).includes('」'),
-    豫言_源码字符串表示: 值 => '『' + 文字(值).replace(/「：|』/gu, 字 => 字 === '』' ? '「：』：」' : '「：「：：」') + '』'
-  };
-  const 能力 = Object.freeze({...内建, ...原语});
-  const 调用 = (名, 参) => {
-    if (performance.now() > 截止) throw Error('豫言执行超过时限');
-    const 名称 = 文字(桥.解(名));
-    if (!Object.hasOwn(能力, 名称)) throw Error('未授权宿主能力：' + 名称);
-    let 结果;
-    if (名称 === '豫言_打印通用值') {
-      const [消息, 值] = 桥.诊断参数(参);
-      if (消息 === '模式匹配失败式') throw Error('豫言模式匹配失败：' + String(值));
-      结果 = 能力[名称](消息, 值);
-    } else {
-      const 形参 = 桥.解(参);
-      if (!Array.isArray(形参)) throw Error('宿主参数格式错误');
-      结果 = 能力[名称](...形参);
-    }
-    if (结果 && typeof 结果.then === 'function') {
-      if (!可悬) throw Error('此浏览器缺少 JSPI，程序调用了异步宿主能力：' + 名称);
-      return Promise.resolve(结果).then(值 => 桥.编(值));
-    }
-    return 桥.编(结果);
-  };
-  // 文言：带型之导入亦于每调验其时限，同旧通调。汉语：带类型的导入同样在每次调用时检查墙钟时限（与旧 call 相同，见说明“每事件墙钟时限”）；时限无穷时不包。
+  // 文言：带型之导入每调验其时限。汉语：带类型的导入在每次调用时检查墙钟时限（见说明“每事件墙钟时限”）；时限无穷时不包。
   const 限时 = Number.isFinite(截止) ? 函 => Object.assign((...参) => {
     if (performance.now() > 截止) throw Error('豫言执行超过时限');
     return 函(...参);
   }, {异步: 函.异步}) : 函 => 函;
-  // 文言：无悬栈者，异步之术改为同步而调：得承诺则明拒，同旧通调；毋使造导入之时即因无 Suspending 而败。
-  // 汉语：没有 JSPI 时，标“异步”的实现改为同步调用：返回 Promise 就报“缺少 JSPI”（与旧 call 相同），同步返回的照常使用；免得构造导入时因没有 Suspending 而整个程序起不来。
+  // 文言：无悬栈者，异步之术改为同步而调：得承诺则明拒；毋使造导入之时即因无 Suspending 而败。
+  // 汉语：没有 JSPI 时，标“异步”的实现改为同步调用：返回 Promise 就报“缺少 JSPI”，同步返回的照常使用；免得构造导入时因没有 Suspending 而整个程序起不来。
   const 去悬 = (名, 函) => {
     if (可悬 || !函.异步) return 函;
     return (...参) => {
@@ -228,7 +128,6 @@ export function 创建豫言实例(程序模块, 值桥模块, 原语, {输出 =
   const 带型导入 = 边界胶水 ? 边界胶水.造边界导入(程序模块, 桥.原, 备实现({...平台, 标准库: 标准库实现})) : {};
   const 实例 = new WebAssembly.Instance(程序模块, {
     ...带型导入,
-    'yuyan:gc-host/v1': {call: 可悬 ? new WebAssembly.Suspending(调用) : 调用},
     'yuyan:browser/v1': {
       check() { if (performance.now() > 截止) throw Error('豫言执行超过时限'); },
       fail(值) { throw Error(文字(桥.解(值))); }

@@ -19,9 +19,8 @@ export function 创建组装器(binaryen) {
   const 型 = binaryen.Features;
   const 特性 = 型.MutableGlobals | 型.NontrappingFPToInt | 型.BulkMemory | 型.SignExt |
     型.ExceptionHandling | 型.TailCall | 型.ReferenceTypes | 型.Multivalue | 型.GC | 型.BulkMemoryOpt;
-  const 函数信息们 = 模块 => Array.from({ length: 模块.getNumFunctions() }, (_, 位) => binaryen.getFunctionInfo(模块.getFunctionByIndex(位)));
-  // 文言：豫言之客，或有边界段，或导入旧通调。汉语：认豫言程序：带自定义段「豫言边界」（编译器给每个 WasmGC 模块都写），或导入旧的 yuyan:gc-host/v1.call（①之前的产物）；第②步以后多数程序不再导入 call。
-  const 是豫言客体 = (字节, 模块) => 有边界段(字节) || 函数信息们(模块).some(信息 => 信息.module === "yuyan:gc-host/v1" && 信息.base === "call");
+  // 文言：豫言之客，有边界段者是。汉语：认豫言程序：看有没有自定义段「豫言边界」（编译器给每个 WasmGC 模块都写）。
+  const 是豫言客体 = 字节 => 有边界段(字节);
   // 文言：未有承异者，则报其本辞。表增一格以容承异之函，起始先立之为当前承异者；其闭包为唯含表位之元组。
   // 汉语：浏览器宿主安装顶层字符串异常处理器，避免默认空处理器触发 illegal cast、掩盖编译诊断。函数表加一格放处理器，
   // _start 开头把它设为当前异常处理器（闭包是只含表位的 $tuple 元组）。依赖编译器写出的名字段找到 _start 与 $exception。
@@ -55,7 +54,7 @@ export function 创建组装器(binaryen) {
       阶段 = "Wasm 二进制读取";
       // 文言：读时即启诸能，否则引用之型或误作 anyref。汉语：读入时就启用这些特性；否则 Binaryen 按默认特性读，会把 eqref 等引用类型误读成 anyref，写回后不合法。
       模块 = binaryen.readBinary(输入, 特性);
-      const 豫言客体 = 是豫言客体(输入, 模块);
+      const 豫言客体 = 是豫言客体(输入);
       if (豫言客体) { 阶段 = "安装顶层异常处理器"; 装顶层承异(模块); }
       阶段 = "Binaryen 优化与函数枚举";
       if (优化) { binaryen.setOptimizeLevel(2); binaryen.setShrinkLevel(1); binaryen.setDebugInfo(true); 模块.optimize(); }
