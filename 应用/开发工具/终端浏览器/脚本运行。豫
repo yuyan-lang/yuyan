@@ -2363,7 +2363,7 @@
           『』
 也。
 
-「：汉语：DOM 元素属性读取（textContent/innerText/id/href/rel/value/className/innerHTML/style）。
+「：汉语：DOM 元素属性读取（textContent/innerText/id/href/rel/value/className/innerHTML/outerHTML/style）。
 文言：域取。：」
 「域取」乃化「节点」而化「字符串」而「值」也。
 「域取」者会「节」而会「名」而
@@ -2469,6 +2469,12 @@
   否则若「字符串相等吗」于「名」于『innerHTML』
   则
     「值串」于（「网页脚本HTML节点累」于（「网页脚本HTML节点序列」于（「子们」于「节」））于『』）
+  否则若「字符串相等吗」于「名」于『outerHTML』
+  则
+    若「可无吗」授以「字符串」于（「节点标签」于「节」）则
+      「值未定义」
+    否则
+      「值串」于（「网页脚本HTML节点累」于（「网页脚本HTML节点序列」于（「列」【「节」】））于『』）
   否则若「字符串相等吗」于「名」于『style』
   则
     「域属」于「节」于『style』
