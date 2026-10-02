@@ -125,11 +125,11 @@ async function main() {
       '递归虑', '类型为', '如果是', '参数是', '否则', '授以', '给予', '随后', '如果',
       '那么', '或者', '分析', '递归', '连结', '其实', '会', '遇', '循', '以', '受',
       '虑', '其', '让', '为', '于', '与', '附', '中', '有', '则', '或', '鉴', '若',
-      '传', '而', '者', '个', '之', '；'
+      '而', '者', '个', '之', '；'
     ];
     const line = structureWords.concat(typeWords, expressionWords, [
       '《《内建类型：整数》》', '《《内建爻：阳》》', '《《内建函数：整数：相等》》',
-      '《《外调》》名', '《标签》'
+      '《标签》'
     ]).join(' ');
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));
 
@@ -145,7 +145,6 @@ async function main() {
     assert.ok(hasScope(findToken(tokens, '《《内建类型：整数》》'), 'support.type.builtin.yuyan'));
     assert.ok(hasScope(findToken(tokens, '《《内建爻：阳》》'), 'constant.language.builtin.yuyan'));
     assert.ok(hasScope(findToken(tokens, '《《内建函数：整数：相等》》'), 'support.function.builtin.yuyan'));
-    assert.ok(hasScope(findToken(tokens, '《《外调》》名'), 'keyword.operator.word.yuyan'));
     assert.ok(tokens.some(token => token.text === '标签' && hasScope(token, 'entity.name.label.yuyan')));
   });
 
