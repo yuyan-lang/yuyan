@@ -5,6 +5,9 @@ const 子进程 = require('node:child_process'), 终端 = require('node:tty'), �
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
 const {建立编译线程} = require('./编译线程.cjs');
+// 文言：同一宿主工序对同一 Wasm 只散列一次。汉语：同一 Node worker 对同一路径只计算一次内容 SHA-256。
+const 当前程序SHA256缓存=new Map();
+const 获取程序内容SHA256=名=>{const 全径=路径.resolve(名),旧=当前程序SHA256缓存.get(全径);if(旧!==undefined)return 旧;const 摘要=密码.createHash('sha256').update(文件.readFileSync(全径)).digest('hex');当前程序SHA256缓存.set(全径,摘要);return 摘要;};
 // 文言：值桥先从父宿主所传之径，次取宿主之旁（仓库目标“豫构”书之），次求于今目录，末取解于仓根之工具链包者；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件依次找：父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径；宿主文件旁的那份（仓库目标“豫构”用当前编译器生成）；当前目录；最后是解压在仓库根目录的 Wasm 工具链包里的 yy稳定节点宿主/yy节点值桥接.wasm（新检出的仓库第一次构建时用）。找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
 const 桥文件路径=()=>{const 候选=[process.env.YY_NODE_VALUE_BRIDGE,路径.join(__dirname,'yy节点值桥接.wasm'),路径.resolve('yy节点值桥接.wasm'),路径.resolve('yy稳定节点宿主','yy节点值桥接.wasm')];const 径=候选.find(径=>径&&文件.existsSync(径))??候选[1];process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
 const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
@@ -178,6 +181,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_获取当前工作目录:()=>当前目录,
     豫言_切换当前工作目录:名=>{const 目标=径(名);try{if(!文件.statSync(目标).isDirectory())return [20n,'不是目录：'+目标];当前目录=目标;return [0n,''];}catch(错){return [BigInt(Math.abs(系统.constants.errno[错.code]??2)),错.message];}},
     豫言_获取文件修改时间:名=>BigInt(Math.floor(文件.statSync(径(名)).mtimeMs/1000)),
+    豫言_获取当前程序SHA256:()=>获取程序内容SHA256(模块路径),
     豫言_获取环境变量:名=>[Object.hasOwn(process.env,文(名)),process.env[文(名)]??''],
     豫言_获取当前纳秒时间:()=>({小数:Number(process.hrtime.bigint())}),
     豫言_获取当前本地日期时间字符串:()=>{const 时=new Date();return `${时.getFullYear()}-${String(时.getMonth()+1).padStart(2,'0')}-${String(时.getDate()).padStart(2,'0')} ${String(时.getHours()).padStart(2,'0')}:${String(时.getMinutes()).padStart(2,'0')}:${String(时.getSeconds()).padStart(2,'0')}`;},
@@ -281,7 +285,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 名称缓存=new WeakMap();
   const 原语次数=process.env.YY_NODE_PROFILE==='1'?Object.create(null):null;
   // 文言：带型之导入，以边界胶水依签名包之；无实现者给桩。汉语：带类型的导入按「豫言边界」段里的签名由共用胶水包装；没有实现的给桩，调用时报“接口函数未绑定”。
-  // 文言：标准库与构建基础之带型导入，实借旧原语：串参先转为 Buffer，列果惟返数组，小数之果去其壳；旧表所无者（终端按键、原始输入模式、拼音、绘监视面板）不立，调之则报未绑定，与旧表同。汉语：标准库（65 个）与构建基础（3 个）的带类型导入，见《网页汇编接口》网五；实现照搬旧原语：串参数先转成 Buffer，列结果只返回数组，小数结果去掉 {小数} 外壳。旧表本来没有的（读取终端按键、进入与退出终端原始输入模式、两个拼音转换、绘监视面板）不提供，调用时报“接口函数未绑定”，与旧表报“未实现 Node 宿主原语”相同。
+  // 文言：标准库与构建基础之带型导入，实借旧原语：串参先转 Buffer，列果惟返数组，小数果去壳；构建基础供存上下文、可绘面板与今程序 SHA-256，绘面板仍为桩。汉语：标准库（65 个）与构建基础（4 个）的带类型导入，见《网页汇编接口》网五；构建基础提供包上下文存放、面板可用性和当前 Wasm SHA-256，绘制面板仍未绑定。旧表未有的终端按键、原始输入模式、拼音及绘制面板均报未绑定。
   const 缓=值=>Buffer.from(值.buffer,值.byteOffset,值.byteLength);
   const 去壳=值=>值?.小数??值;
   const 串参=名=>值=>原语[名](缓(值));
@@ -320,7 +324,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     传输控制协议_设置无延迟:(号,开)=>原语.豫言_传输控制协议_设置无延迟(号,开),传输控制协议_关闭写入:号=>原语.豫言_传输控制协议_关闭写入(号),
     传输控制协议_关闭:号=>原语.豫言_传输控制协议_关闭(号),传输控制协议_错误消息:状态=>原语.豫言_传输控制协议_错误消息(状态)
   };
-  const 构建基础实现={存放包上下文:串参('豫言_存放包上下文'),可绘监视面板:无参('豫言_可绘监视面板')};
+  const 构建基础实现={存放包上下文:串参('豫言_存放包上下文'),可绘监视面板:无参('豫言_可绘监视面板'),获取当前程序SHA256:无参('豫言_获取当前程序SHA256')};
   // 文言：平台接口包「系统库调用」「安全外壳密码」之带型导入，亦借旧原语：串参转 Buffer，小数之果去壳，外部值之列展为数列；旧表所无者不立，调之则报未绑定。
   // 汉语：平台接口包「系统库调用」（外部库.mjs，十八个）与「安全外壳密码」（九个）的带类型导入，同样照搬旧原语：串参数转成 Buffer，小数结果去掉 {小数} 外壳；
   //   三个调用原语的参数是外部值的列，过边界后是 [[支序, 值], …]，展成旧原语要的数值数组（支序 2 是无值，报错）。旧表没有的（工具链包里缺 外部库.mjs 时）不提供，调用时报“接口函数未绑定”。
