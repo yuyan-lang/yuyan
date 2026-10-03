@@ -1,4 +1,7 @@
-壳就绪
+正在启动豫言命令壳 / Starting Yuyan shell...
+内核与基本设备已就绪 / Kernel and base devices are ready.
+命令壳已就绪 / Shell ready.
+Welcome to Yuyan Operation system
 壳> 运行 /程序/你好.wasm 甲 乙
 程序：/程序/你好.wasm
 参数：甲，乙

@@ -1,4 +1,7 @@
-壳就绪
+正在启动豫言命令壳 / Starting Yuyan shell...
+内核与基本设备已就绪 / Kernel and base devices are ready.
+命令壳已就绪 / Shell ready.
+Welcome to Yuyan Operation system
 壳> 运行 /程序/猫.wasm /源码/你好.c
 // 文言：示之以命令行、浮点之出、退出码。
 // 汉语：打印参数个数与各参数，再打印几个浮点数（printf 的 %f 与 libm 的 sqrt、sin），最后以退出码 3 结束。
