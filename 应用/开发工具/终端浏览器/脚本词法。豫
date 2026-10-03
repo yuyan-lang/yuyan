@@ -100,7 +100,7 @@
 「是键吗」者会「名」而
   「是子字符串吗」
     于（「字符串拼接」于『 』于（「字符串拼接」于「名」于『 』））
-    于『 var let const if else while for function return break continue true false null this typeof 』
+    于『 var let const if else while for function return throw try catch break continue switch case default true false null this typeof 』
 也。
 
 「词成记号」乃化「字符串」而「记号」也。
