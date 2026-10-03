@@ -57,7 +57,8 @@ const 取值选项 = new Set(['--程序', '--清单', '--值桥', '--授权目�
 // 文言：环境之同义：YY_NODE_NATIVE_DIR 同 --原生依赖目录（选项优先），YY_NODE_DISPLAY_BACKGROUND=1 同 --显示面后台。
 // 汉语：同义环境变量：YY_NODE_NATIVE_DIR 等同 --原生依赖目录（两者都给时以选项为准），YY_NODE_DISPLAY_BACKGROUND=1 等同 --显示面后台。
 export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 = process.env) {
-  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 源: new Set(), 环境: new Set()}, 应用参数: [], 张量线程数: null, 张量后端: '',
+  // 文言：终端浏览器之发行包默认通诸 HTTP(S) 源；余应用仍循逐源之授。汉语：终端浏览器发行包默认允许全部 HTTP(S) 来源，其他应用仍按来源授权。
+  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 源: new Set(), 环境: new Set(), 全部来源: 内嵌?.允许全部来源 === true}, 应用参数: [], 张量线程数: null, 张量后端: '',
     显示面: new Map(), 原生依赖目录: 环境.YY_NODE_NATIVE_DIR ? 路径.resolve(当前目录, 环境.YY_NODE_NATIVE_DIR) : null,
     显示面后台: 环境.YY_NODE_DISPLAY_BACKGROUND === '1', 允许系统库调用: false};
   const 授目录 = (文, 可写, 基准) => {
@@ -628,7 +629,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
         }
       } catch (错) { return 网络败(码.输入无效, '标头无效：' + 错文(错)); }
       if ((方法名 === 'GET' || 方法名 === 'HEAD') && 正文.length > 0) return 网络败(码.输入无效, 'GET 与 HEAD 请求不能带正文');
-      if (!授权.源.has(目标.origin)) return 网络败(码.未获授权, '目标来源未获授权：' + 目标.origin);
+      if (!授权.全部来源 && !授权.源.has(目标.origin)) return 网络败(码.未获授权, '目标来源未获授权：' + 目标.origin);
       if (正文.length > 交换上限) return 网络败(码.配额已尽, '请求正文超过上限');
       let 回应;
       try {
