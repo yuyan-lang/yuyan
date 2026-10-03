@@ -1,0 +1,3 @@
+help
+echo ASCII hello
+exit

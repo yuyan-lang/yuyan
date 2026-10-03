@@ -38,6 +38,20 @@ const 遍 = 目录 => {
   }
 };
 遍('库');
+const 适配包述表 = new Map();
+const 遍适配包 = 目录 => {
+  for (const 项 of readdirSync(join(仓根, 目录), {withFileTypes: true})) {
+    if (!项.isDirectory()) continue;
+    const 子目录 = join(目录, 项.name);
+    const 包述 = readdirSync(join(仓根, 子目录)).find(名 => 名.endsWith('适配。包。豫'));
+    if (包述) {
+      const 名 = /「名称」者『([^』]+)』/u.exec(读(join(子目录, 包述)))?.[1];
+      if (名) 适配包述表.set(名, join(子目录, 包述));
+    }
+    遍适配包(子目录);
+  }
+};
+遍适配包('豫言操作系统/适配');
 const 依赖们 = 包述径 => [...(/「依赖」者\s*「列」【([^】]*)】/u.exec(读(包述径))?.[1] ?? '').matchAll(/『([^』]+)』/gu)].map(配 => 配[1]);
 // 文言：着色器之接口篇供着色之译，不成宿主之导入，不计。汉语：着色器接口文件（。着色器。接口。豫）给着色语言翻译用，不编成宿主导入，不算。
 const 接口文件们 = 目录 => (有(目录) ? readdirSync(join(仓根, 目录)).filter(名 => 名.endsWith('。接口。豫') && !名.endsWith('。着色器。接口。豫')) : []);
@@ -77,6 +91,7 @@ test('适配不用浏览器不提供的平台接口包，所依赖的接口也�
       const 名 = 待.pop();
       if (见.has(名)) continue;
       见.add(名);
+      if (适配包述表.has(名)) { 待.push(...依赖们(适配包述表.get(名))); continue; }
       if (名.startsWith('豫言操作系统')) {
         const 他接口 = 名.slice('豫言操作系统'.length);
         assert.ok(他接口 === 接口 || 清单接口们.has(他接口), `适配「${适配}」依赖的接口「${他接口}」不在浏览器宿主支持清单里`);

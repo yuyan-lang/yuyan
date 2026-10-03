@@ -1,0 +1,7 @@
+壳就绪
+壳> help
+help echo 文字 exit
+壳> echo ASCII hello
+ASCII hello
+壳> exit
+壳已退出

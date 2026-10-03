@@ -135,7 +135,7 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
     if (术 === '网关闭') {
       套接字们.delete(号);
       if (记录.种 === '听') {记录.服.close(); for (const 待 of 记录.待接) 待.套.destroy();}
-      else 记录.套.destroy();
+      else 记录.套.destroySoon();
       return [0, null];
     }
     throw Error('未知网络操作');

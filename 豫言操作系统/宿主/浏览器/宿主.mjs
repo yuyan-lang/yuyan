@@ -10,7 +10,9 @@ export async function 读取同源资源文字(路径文, 基址文, 网络) {
   const 网址 = new URL(路径文, 基址);
   if (!['http:', 'https:'].includes(网址.protocol) || 网址.origin !== 基址.origin)
     throw Error('页面资源不得跨站');
-  const 回应 = await 网络(网址.href, {method: 'GET', redirect: 'error', credentials: 'same-origin'});
+  let 回应;
+  try { 回应 = await 网络(网址.href, {method: 'GET', redirect: 'error', credentials: 'same-origin'}); }
+  catch (错) { throw Error('页面资源请求失败：' + String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)); }
   if (回应.status !== 200) throw Error('页面资源不可用');
   if (!回应.body) return '';
   const 读器 = 回应.body.getReader();
@@ -26,12 +28,63 @@ export async function 读取同源资源文字(路径文, 基址文, 网络) {
     }
   } catch (错误) {
     await 读器.cancel().catch(() => {});
-    throw 错误;
+    throw Error('页面资源正文读取失败：' + String(错误?.name ?? 'Error') + ': ' + String(错误?.message ?? 错误));
   } finally { 读器.releaseLock(); }
   const 合 = new Uint8Array(总数);
   let 位 = 0;
   for (const 块 of 诸块) { 合.set(块, 位); 位 += 块.byteLength; }
   return new TextDecoder('utf-8', {fatal: true}).decode(合);
+}
+
+// 文言：取同源文中所名之 JSON 列；负一还全列，余序还一项。宿主解读大文，勿使整册过桥。
+// 汉语：从同源网页里的命名 JSON 数组按索引取 JSON 片段。索引 -1 返回整个数组，其余索引返回单项，避免把大型源码库传入 Wasm。
+export async function 读取同源资源JSON数组项(路径文, 名称文, 序数, 基址文, 网络, 正文缓存, 数组缓存) {
+  if (typeof 名称文 !== 'string' || 名称文.length > 64 || !/^[$_\p{ID_Start}][$\u200c\u200d\p{ID_Continue}]*$/u.test(名称文)) throw Error('网页资源数组名无效');
+  if (!Number.isSafeInteger(序数) || 序数 < -1) throw Error('网页资源数组序数无效');
+  let 文待 = 正文缓存.get(路径文);
+  if (!文待) {
+    文待 = 读取同源资源文字(路径文, 基址文, 网络);
+    正文缓存.set(路径文, 文待);
+    文待.catch(() => { if (正文缓存.get(路径文) === 文待) 正文缓存.delete(路径文); });
+  }
+  const 缓存键 = 路径文 + '\u0000' + 名称文;
+  let 列待 = 数组缓存.get(缓存键);
+  if (!列待) {
+    列待 = 文待.then(全文 => {
+      const 标记 = 'const ' + 名称文 + '=';
+      const 标记位 = 全文.indexOf(标记);
+      if (标记位 < 0) throw Error('网页资源没有命名数组：' + 名称文);
+      let 起位 = 标记位 + 标记.length;
+      while (/\s/u.test(全文[起位] ?? '')) 起位++;
+      if (全文[起位] !== '[') throw Error('网页资源声明不是数组：' + 名称文);
+      let 深度 = 0, 串内 = false, 跳脱 = false, 止位 = -1;
+      for (let 位 = 起位; 位 < 全文.length; 位++) {
+        const 字 = 全文[位];
+        if (串内) {
+          if (跳脱) 跳脱 = false;
+          else if (字 === '\\') 跳脱 = true;
+          else if (字 === '"') 串内 = false;
+        } else if (字 === '"') 串内 = true;
+        else if (字 === '[') 深度++;
+        else if (字 === ']') {
+          深度--;
+          if (深度 === 0) { 止位 = 位; break; }
+        }
+      }
+      if (止位 < 0) throw Error('网页资源数组未闭合：' + 名称文);
+      const 值 = JSON.parse(全文.slice(起位, 止位 + 1));
+      if (!Array.isArray(值)) throw Error('网页资源声明不是 JSON 数组：' + 名称文);
+      return 值;
+    });
+    数组缓存.set(缓存键, 列待);
+    列待.catch(() => { if (数组缓存.get(缓存键) === 列待) 数组缓存.delete(缓存键); });
+  }
+  const 列 = await 列待;
+  if (序数 !== -1 && 序数 >= 列.length) throw Error('网页资源数组序数越界：' + 序数);
+  const 结果 = JSON.stringify(序数 === -1 ? 列 : 列[序数]);
+  const 上限 = 序数 === -1 ? 256 * 1024 : 2 * 1024 * 1024;
+  if (new TextEncoder().encode(结果).byteLength > 上限) throw Error('网页资源数组结果超过上限');
+  return 结果;
 }
 
 // ============================================================================
@@ -759,6 +812,106 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
     const 选 = typeof 根.getSelection === 'function' ? 根.getSelection() : typeof 全局.getSelection === 'function' ? 全局.getSelection() : null;
     return 选 ? String(选.toString()) : '';
   };
+  const 音频按钮表 = new WeakMap();
+  const 音频错误表 = new WeakMap();
+  const 屏录表 = new Map();
+  const 读音频 = 标识 => {
+    const 元 = 找元素(标识);
+    if (标签名(元) !== 'audio') throw Error('网页媒体元素不是 audio：' + 标识);
+    return 元;
+  };
+  const 取屏录配置 = 文 => {
+    let 值;
+    try { 值 = JSON.parse(文); } catch { throw Error('屏幕录制绑定参数不是有效 JSON'); }
+    if (!值 || typeof 值 !== 'object' || Array.isArray(值) || Object.keys(值).some(名 => !['停止', '下载', '配置'].includes(名))) throw Error('屏幕录制绑定参数含未知字段');
+    if (typeof 值.停止 !== 'string' || typeof 值.下载 !== 'string' || !值.配置 || typeof 值.配置 !== 'object' || Array.isArray(值.配置)) throw Error('屏幕录制绑定参数格式无效');
+    const 配置 = 值.配置;
+    if (Object.keys(配置).some(名 => !['宽', '高', '帧率', '码率', '文件名'].includes(名))) throw Error('屏幕录制配置含未知字段');
+    const 整数选项 = (名, 默认, 上限) => {
+      const 项 = 配置[名] ?? 默认;
+      if (!Number.isSafeInteger(项) || 项 < 1 || 项 > 上限) throw Error('屏幕录制配置无效：' + 名);
+      return 项;
+    };
+    const 文件名 = 配置.文件名 ?? '网页录制';
+    if (typeof 文件名 !== 'string' || 文件名.length < 1 || 文件名.length > 128 || /[\\/:*?"<>|\u0000-\u001f]/u.test(文件名)) throw Error('屏幕录制文件名无效');
+    return {停止: 值.停止, 下载: 值.下载, 宽: 整数选项('宽', 3840, 16384), 高: 整数选项('高', 2160, 16384), 帧率: 整数选项('帧率', 30, 120), 码率: 整数选项('码率', 20000000, 100000000), 文件名};
+  };
+  const 停媒体轨 = 状态 => { for (const 轨 of 状态.流?.getTracks?.() ?? []) { try { 轨.stop(); } catch {} } };
+  const 整理旧屏录 = 状态 => {
+    状态.开始钮?.removeEventListener?.('click', 状态.开始监听);
+    状态.停止钮?.removeEventListener?.('click', 状态.停止监听);
+    if (状态.录制器?.state && 状态.录制器.state !== 'inactive') { try { 状态.录制器.stop(); } catch {} }
+    停媒体轨(状态);
+    if (状态.对象网址) { try { (全局.URL ?? 根.defaultView?.URL)?.revokeObjectURL(状态.对象网址); } catch {} }
+  };
+  const 录制态文 = 状态 => JSON.stringify({
+    状态: 状态.状态, 宽: 状态.宽, 高: 状态.高, 帧率: 状态.帧率, 码率: 状态.码率,
+    类型: 状态.类型, 音轨数: 状态.音轨数, 错误: 状态.错误
+  });
+  const 启动屏录 = async 状态 => {
+    if (['请求中', '录制中', '停止中'].includes(状态.状态)) return;
+    整理旧屏录({...状态, 开始钮: null, 停止钮: null});
+    状态.下载链.hidden = true;
+    状态.下载链.removeAttribute('href');
+    状态.下载链.removeAttribute('download');
+    状态.状态 = '请求中'; 状态.错误 = ''; 状态.块们 = []; 状态.流 = null; 状态.录制器 = null; 状态.对象网址 = '';
+    const 窗 = 全局?.navigator ? 全局 : 根.defaultView;
+    const 显示捕获 = 窗?.navigator?.mediaDevices?.getDisplayMedia;
+    if (typeof 显示捕获 !== 'function') { 状态.状态 = '失败'; 状态.错误 = '浏览器不支持屏幕捕获或页面不是安全上下文'; return; }
+    try {
+      const 捕获请求 = 窗.navigator.mediaDevices.getDisplayMedia({
+        audio: true,
+        video: {displaySurface: 'browser', width: {ideal: 状态.配置.宽}, height: {ideal: 状态.配置.高}, frameRate: {ideal: 状态.配置.帧率, max: 状态.配置.帧率}},
+        preferCurrentTab: true,
+        selfBrowserSurface: 'include'
+      });
+      const 流 = await 捕获请求;
+      状态.流 = 流;
+      if (状态.取消中) { 停媒体轨(状态); 状态.流 = null; 状态.状态 = '已取消'; return; }
+      const 音轨 = 流.getAudioTracks();
+      if (!音轨.length) { 停媒体轨(状态); 状态.流 = null; 状态.状态 = '失败'; 状态.错误 = '捕获流没有标签页音轨，请在浏览器共享选择中启用音频'; return; }
+      const 视频轨 = 流.getVideoTracks()[0];
+      const 设定 = 视频轨?.getSettings?.() ?? {};
+      状态.宽 = Number(设定.width) || 0; 状态.高 = Number(设定.height) || 0;
+      状态.帧率 = Number(设定.frameRate) || 0; 状态.音轨数 = 音轨.length;
+      const 录制类 = 窗.MediaRecorder ?? 全局?.MediaRecorder;
+      if (typeof 录制类 !== 'function') throw Error('浏览器不支持 MediaRecorder');
+      const 支持 = ['video/webm;codecs=vp9,opus', 'video/webm;codecs=vp8,opus', 'video/mp4'].find(型 => typeof 录制类.isTypeSupported !== 'function' || 录制类.isTypeSupported(型));
+      状态.录制器 = 支持 ? new 录制类(流, {mimeType: 支持, videoBitsPerSecond: 状态.配置.码率}) : new 录制类(流, {videoBitsPerSecond: 状态.配置.码率});
+      状态.类型 = String(状态.录制器.mimeType ?? 支持 ?? '');
+      状态.码率 = Number(状态.录制器.videoBitsPerSecond) || 状态.配置.码率;
+      状态.录制器.addEventListener('dataavailable', 事件 => { if (事件.data && 事件.data.size) 状态.块们.push(事件.data); });
+      状态.录制器.addEventListener('error', 事件 => {
+        状态.状态 = '失败'; 状态.错误 = String(事件.error?.message ?? '录制媒体发生错误').slice(0, 512); 停媒体轨(状态);
+      });
+      状态.录制器.addEventListener('stop', () => {
+        停媒体轨(状态);
+        if (状态.状态 === '失败') return;
+        if (!状态.块们.length) { 状态.状态 = '失败'; 状态.错误 = '录制没有产生媒体数据'; return; }
+        try {
+          const URL类 = 窗.URL ?? 全局?.URL;
+          const Blob类 = 窗.Blob ?? 全局?.Blob;
+          if (!URL类?.createObjectURL || !Blob类) throw Error('浏览器不支持录制文件下载');
+          if (状态.对象网址) URL类.revokeObjectURL(状态.对象网址);
+          const 媒体 = new Blob类(状态.块们, {type: 状态.类型 || 状态.块们[0].type || 'application/octet-stream'});
+          状态.对象网址 = URL类.createObjectURL(媒体);
+          状态.下载链.href = 状态.对象网址;
+          const 后缀 = 状态.类型.includes('mp4') ? 'mp4' : 状态.类型.includes('webm') ? 'webm' : 'webm';
+          状态.下载链.download = 状态.配置.文件名 + '.' + 后缀;
+          状态.下载链.hidden = false;
+          状态.状态 = '可下载';
+        } catch (错) { 状态.状态 = '失败'; 状态.错误 = String(错?.message ?? 错).slice(0, 512); }
+      });
+      视频轨?.addEventListener?.('ended', () => { if (状态.录制器?.state === 'recording') { 状态.状态 = '停止中'; 状态.录制器.stop(); } });
+      状态.状态 = '录制中';
+      状态.录制器.start(1000);
+    } catch (错) {
+      停媒体轨(状态); 状态.流 = null;
+      const 名 = String(错?.name ?? '');
+      状态.状态 = 名 === 'NotAllowedError' || 名 === 'AbortError' ? '已取消' : '失败';
+      状态.错误 = String(错?.message ?? 错).slice(0, 512);
+    }
+  };
   const 界面操作表 = {
     // 文言：读逾八 MiB 则拒，免越值桥之界而客不能捕。汉语：读回的文字按 UTF-8 字节至多 8 MiB，超过则报错（值桥单次交换上限 16 MiB，越界会变成无法捕获的宿主异常）。
     读取值: 标识 => {
@@ -872,6 +1025,81 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
     读取矩形: 标识 => {
       const 框 = 找元素(标识).getBoundingClientRect();
       return JSON.stringify({左: Math.round(框.left), 上: Math.round(框.top), 右: Math.round(框.right), 下: Math.round(框.bottom)});
+    },
+    读取音频状态: 标识 => {
+      const 音频 = 读音频(标识);
+      const 时长 = Number(音频.duration);
+      return JSON.stringify({
+        时刻: Math.round(Math.max(0, Number(音频.currentTime) || 0) * 1000),
+        时长: Number.isFinite(时长) ? Math.round(时长 * 1000) : -1,
+        暂停: Boolean(音频.paused), 结束: Boolean(音频.ended), 静音: Boolean(音频.muted),
+        音量: Math.max(0, Math.min(1000, Math.round((Number(音频.volume) || 0) * 1000))),
+        错误: 音频错误表.get(音频) ?? ''
+      });
+    },
+    绑定音频按钮: (音频标识, 按钮标识) => {
+      const 音频 = 读音频(音频标识);
+      const 按钮 = 找元素(按钮标识);
+      if (标签名(按钮) !== 'button' && !(标签名(按钮) === 'input' && 按钮.type === 'button')) throw Error('音频播放控件须为 button 或 button 类型 input');
+      let 按钮们 = 音频按钮表.get(音频);
+      if (!按钮们) { 按钮们 = new WeakSet(); 音频按钮表.set(音频, 按钮们); }
+      if (按钮们.has(按钮)) return;
+      const 点播 = () => {
+        if (!音频.paused) { 音频.pause(); 音频错误表.delete(音频); return; }
+        try {
+          const 结果 = 音频.play();
+          if (结果 && typeof 结果.catch === 'function') 结果.catch(错 => 音频错误表.set(音频, String(错?.message ?? 错).slice(0, 512)));
+          音频错误表.delete(音频);
+        } catch (错) { 音频错误表.set(音频, String(错?.message ?? 错).slice(0, 512)); }
+      };
+      按钮.addEventListener('click', 点播);
+      按钮们.add(按钮);
+    },
+    设置音频时刻: (标识, 毫秒文) => {
+      const 音频 = 读音频(标识);
+      const 毫秒 = 整数参(毫秒文, '音频时刻');
+      if (毫秒 < 0) throw Error('音频时刻不可为负');
+      if (音频.readyState < 1) throw Error('音频元数据尚未载入');
+      if (Number.isFinite(音频.duration) && 毫秒 > 音频.duration * 1000) throw Error('音频时刻超过媒体时长');
+      try { 音频.currentTime = 毫秒 / 1000; } catch (错) { throw 翻译DOM错误(错); }
+    },
+    暂停音频: 标识 => { const 音频 = 读音频(标识); 音频.pause(); 音频错误表.delete(音频); },
+    绑定屏幕录制: (开始标识, 参数文) => {
+      const 参数 = 取屏录配置(参数文);
+      const 开始钮 = 找元素(开始标识);
+      const 停止钮 = 找元素(参数.停止);
+      const 下载链 = 找元素(参数.下载);
+      const 按钮吗 = 元 => 标签名(元) === 'button' && 元.type === 'button' || 标签名(元) === 'input' && 元.type === 'button';
+      if (!按钮吗(开始钮) || !按钮吗(停止钮) || 标签名(下载链) !== 'a') throw Error('屏幕录制须提供两个 button 控件与一个 a 下载链接');
+      if (开始钮 === 停止钮 || 开始钮 === 下载链 || 停止钮 === 下载链) throw Error('屏幕录制控件必须各不相同');
+      const 旧 = 屏录表.get(参数.下载);
+      if (旧) 整理旧屏录(旧);
+      下载链.removeAttribute('href'); 下载链.removeAttribute('download'); 下载链.hidden = true;
+      const 状态 = {
+        状态: '待命', 宽: 0, 高: 0, 帧率: 0, 码率: 0, 类型: '', 音轨数: 0, 错误: '',
+        配置: 参数, 开始钮, 停止钮, 下载链, 块们: [], 对象网址: '', 取消中: false, 流: null, 录制器: null
+      };
+      状态.开始监听 = () => { void 启动屏录(状态); };
+      状态.停止监听 = () => {
+        if (状态.状态 === '请求中') { 状态.取消中 = true; return; }
+        if (状态.录制器?.state === 'recording') {
+          状态.状态 = '停止中';
+          try { 状态.录制器.stop(); } catch (错) { 状态.状态 = '失败'; 状态.错误 = String(错?.message ?? 错).slice(0, 512); 停媒体轨(状态); }
+        }
+      };
+      开始钮.addEventListener('click', 状态.开始监听);
+      停止钮.addEventListener('click', 状态.停止监听);
+      屏录表.set(参数.下载, 状态);
+    },
+    读取录制状态: 标识 => {
+      const 状态 = 屏录表.get(标识);
+      if (!状态) throw Error('尚未绑定屏幕录制：' + 标识);
+      return 录制态文(状态);
+    },
+    停止录制: 标识 => {
+      const 状态 = 屏录表.get(标识);
+      if (!状态) throw Error('尚未绑定屏幕录制：' + 标识);
+      状态.停止监听();
     },
     设置文字: (标识, 文) => { 设文字(找元素(标识), 文); },
     设置属性: (标识, 名, 值) => { 应用属性(找元素(标识, true), 名, 值); }
@@ -1176,7 +1404,7 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
       const 计 = {节点: 0};
       const 清 = (源, 深, 位置) => {
         if (深 > 32) throw Error('页面超文本深度超过 32：' + 位置);
-        if (++计.节点 > 5000) throw Error('页面超文本节点数超过 5000');
+        if (++计.节点 > 500000) throw Error('页面超文本节点数超过 500000');
         if (源.nodeType === 3) return 根.createTextNode(源.data);
         if (源.nodeType !== 1) return null;
         const 签 = 标签名(源);
@@ -2144,6 +2372,7 @@ export const 浏览器平台导入 = Object.freeze({
     浏览器索引库比键: '豫言_浏览器_索引库比键',
     浏览器请求文字: '豫言_浏览器_请求文字',
     浏览器同源资源文字: '豫言_浏览器_同源资源文字',
+    浏览器同源资源JSON数组项: '豫言_浏览器_同源资源JSON数组项',
     浏览器请求发起可中断: '豫言_浏览器_请求发起可中断',
     浏览器请求候回应安全: '豫言_浏览器_请求候回应安全',
     浏览器回应文字安全: '豫言_浏览器_回应文字安全',
@@ -2284,11 +2513,13 @@ export const 中央张量原语名们 = Object.freeze(['启用', '新境', '释�
 // 汉语：没写成 async、却可能返回 Promise 的原语也标“异步”：等待事件队列、读同源资源文字、首次载入 图形.mjs（显示、图形、字体）、启用中央张量与多线程派发内核；
 //   写成 async 的自动认出；其余一律同步调用，不套 Suspending（胶水遇到它们返回 Promise 会报错）。
 const 条件异步原语 = new Set(['豫言_浏览器_等待事件', '豫言_浏览器_等待网页事件', '豫言_浏览器_等待界面事件', '豫言_浏览器_等待网页消息',
-  '豫言_浏览器_同源资源文字', '豫言_浏览器_显示', '豫言_浏览器_图形', '豫言_浏览器_字体', '豫言_中央张量_启用', '豫言_中央张量_运行']);
+  '豫言_浏览器_同源资源文字', '豫言_浏览器_同源资源JSON数组项', '豫言_浏览器_显示', '豫言_浏览器_图形', '豫言_浏览器_字体', '豫言_中央张量_启用', '豫言_中央张量_运行']);
 const 是异步函数 = 函 => 函?.constructor?.name === 'AsyncFunction';
 
 export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 队列上限 = {}, 编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000}) {
   let 网页能力 = null;
+  const 页面资源正文缓存 = new Map();
+  const 页面资源数组缓存 = new Map();
   const 定时器 = new Map();
   const 定时待处理 = new Set();
   // 文言：诸事归一列；事离列则销其定时待办之记。汉语：统一事件队列；事件离开队列（被取走、丢弃或直接交付）时清理定时器「待处理」标记，使周期定时器能继续投递。
@@ -2925,6 +3156,8 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
       return JSON.stringify({状态: 回应.status, 正文: await 回应.text()});
     },
     豫言_浏览器_同源资源文字: 路径文 => 读取同源资源文字(文字(路径文), 路径, 网络),
+    豫言_浏览器_同源资源JSON数组项: (路径文, 名称文, 序文) => 读取同源资源JSON数组项(
+      文字(路径文), 文字(名称文), Number(序文), 路径, 网络, 页面资源正文缓存, 页面资源数组缓存),
     // 文言：先发求而归待柄，客得以断信号，后候回应。汉语：豫言先取得在途 fetch Promise，随后可中止，再领取 Response 句柄或错误。
     豫言_浏览器_请求发起可中断: (网址, 选项文, 信号号) => {
       const 信号 = 句柄.取得(文字(信号号));
