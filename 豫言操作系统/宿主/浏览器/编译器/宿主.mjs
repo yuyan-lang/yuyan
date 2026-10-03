@@ -3,7 +3,6 @@ const 编码 = new TextEncoder(), 解码 = new TextDecoder();
 export const 字节 = 值 => typeof 值 === "string" ? 编码.encode(值) : 值;
 const 文 = 值 => 值 instanceof Uint8Array ? 解码.decode(值) : String(值);
 const 数 = 值 => Number(值?.小数 ?? 值);
-const 列 = 值 => [值, 值.length];
 export function 规范路径(值) {
   const 段 = [];
   for (const 项 of 文(值).split("/")) {
@@ -57,19 +56,8 @@ export function 创建值桥(模块) {
       default: throw Error("未知客体类型");
     }
   }
-  function 编(值, 深 = 0) {
-    if (深 > 256) throw Error("宿主数据嵌套过深");
-    if (值 == null) return null;
-    if (typeof 值 === "boolean") return 桥.new_int(值 ? 1n : 0n);
-    if (typeof 值 === "bigint" || typeof 值 === "number") return 桥.new_int(BigInt(值));
-    if (typeof 值 === "string") 值 = 字节(值);
-    if (值 instanceof Uint8Array) { 留(值.length); new Uint8Array(桥.memory.buffer, 0, 值.length).set(值); return 桥.bytes_in(值.length); }
-    if (Array.isArray(值)) { const 组 = 桥.new_tuple(值.length); 值.forEach((项, 序) => 桥.tuple_set(组, 序, 编(项, 深 + 1))); return 组; }
-    if (Object.hasOwn(值, "小数")) return 桥.new_float(值.小数);
-    throw Error("未知宿主类型");
-  }
   // 文言：原者，桥之本出，供边界胶水用之。汉语：原 是值桥实例的 exports，交给边界胶水读写带类型导入的值。
-  return { 编, 解, 原: 桥 };
+  return { 解, 原: 桥 };
 }
 // 文言：小数之文三术，诸宿主同义：精确者依 %.17g，表示者依 %f，理解者依 strtod。汉语：小数文字的三个函数，各宿主语义统一（见 ../../标准库宿主.汉语.md）：
 //   小数精确表示同 C 的 %.17g；小数表示同 C 的 %f（-0 写 -0.000000，≥1e21 展开整数，非有限写 nan、inf、-inf）；理解小数同 strtod（跳过空白取前缀，认 inf、infinity、nan，无可转得 0）。
@@ -91,20 +79,11 @@ export function 理解小数(值) {
   const 串 = 文(值).trim(), 数字 = parseFloat(串);
   return /^[+-]?nan/i.test(串) ? NaN : /^[+-]?inf/i.test(串) ? (串.startsWith("-") ? -Infinity : Infinity) : Number.isNaN(数字) ? 0 : 数字;
 }
-function 理解整数(值) {
-  const 串 = 文(值).match(/^\s*[+-]?\d+/)?.[0];
-  const 整 = 串 ? BigInt(串.trim()) : 0n;
-  return 整 > 9223372036854775807n ? 9223372036854775807n : 整 < -9223372036854775808n ? -9223372036854775808n : 整;
-}
-// 文言：带型之导入，惟模有之乃载胶水；旧器旧客无之，不载亦行。汉语：有带类型导入的模块才动态载入共用胶水（本目录的 边界.mjs：仓库里转出 ../../网页汇编/边界.mjs，发布时由构建换成胶水本体）；旧编译器与旧产物只有 call，不载胶水也能运行。
+// 文言：带型之导入，惟模有之乃载胶水；无之者不载亦行。汉语：有带类型导入的模块才动态载入共用胶水（本目录的 边界.mjs：仓库里转出 ../../网页汇编/边界.mjs，发布时由构建换成胶水本体）；没有带类型导入的模块不载胶水也能运行。
 let 边界胶水 = null;
 const 取边界胶水 = () => 边界胶水 ??= import("./边界.mjs");
-const 有带型导入 = 模块 => WebAssembly.Module.imports(模块).some(项 => 项.kind === "function" && 项.module !== "yuyan:gc-host/v1" && 项.module !== "yuyan:browser/v1");
-// 文言：旧通调之果，小数包为 {小数}，列附其长。汉语：由新式实现派生旧 call 原语：小数结果包成 {小数}，列结果附上长度（旧形是“数组加长度”）。
-const 旧小数果 = new Set(["获取当前纳秒时间", "获取随机小数", "字符串转小数"]), 旧列果 = new Set(["获取命令行参数", "同步列出文件夹"]);
-const 旧式原语 = 表 => Object.fromEntries(Object.entries(表).map(([名, 函]) => ["豫言_" + 名,
-  旧小数果.has(名) ? (...参) => ({ 小数: 函(...参) }) : 旧列果.has(名) ? (...参) => 列(函(...参)) : 函]));
-export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编译 = false, 报告 = () => {}, 原语扩展 = {}, 异步原语 = false, 时限 } = {}) {
+const 有带型导入 = 模块 => WebAssembly.Module.imports(模块).some(项 => 项.kind === "function" && 项.module !== "yuyan:browser/v1");
+export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编译 = false, 报告 = () => {}, 时限 } = {}) {
   const 桥 = 创建值桥(桥模块);
   const 截止 = performance.now() + (时限 ?? (编译 ? 90000 : 5000));
   let 输出长 = 0, stdout = "", stderr = "";
@@ -163,51 +142,12 @@ export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编
   // 文言：编器直书二进制，不假外器；客程亦不得行外部之进程。汉语：构建基础的宿主服务（导入模块「构建基础」）；编译器直接写出 Wasm 二进制，不需要外部组装进程，浏览器不提供任何通用进程执行能力。
   const 构建基础 = { 可绘监视面板: () => false };
   if (编译) 构建基础.存放包上下文 = 内容 => { 文件.写("/上下文/固定.上下文", 内容); return "/上下文/固定.上下文"; };
-  // 文言：旧通调诸原语：标准库与构建基础者由上表派生，余者编器已内联或将为内建。汉语：旧 call 的原语：标准库与构建基础的由上面两表派生（语义相同）；其余是编译器已内联或第②步改成内建的旧名，旧产物仍会调用。
-  const 原语 = {
-    ...旧式原语(标准库),
-    ...旧式原语(构建基础),
-    豫言_字节转字符串: 值 => { if (值 <= 0n || 值 > 255n) throw Error("字节转字符串只接受一至二百五十五之间的整数"); return Uint8Array.of(数(值)); },
-    // 文言：字节串之术一依原生运行时，越界则止，截取以起点与长度。汉语：字节串原语与原生运行时（字节串.c）语义一致：越界即报错，截取按起点与长度；编译器自身亦用之。
-    豫言_字节串_空: () => new Uint8Array(),
-    豫言_字节串_长度: 值 => BigInt(值.length),
-    豫言_字节串_取字节: (值, 序) => { if (序 < 0n || 序 >= BigInt(值.length)) throw Error("字节串取字节：序数越界"); return BigInt(值[Number(序)]); },
-    豫言_字节串_从字符串: 值 => 值,
-    豫言_字节串_单字节: 值 => { if (值 < 0n || 值 > 255n) throw Error("构造单字节串：字节必须在零至二百五十五之间"); return Uint8Array.of(Number(值)); },
-    豫言_字节串_拼接: (甲, 乙) => 拼接(甲, 乙),
-    豫言_字节串_截取: (值, 起, 长) => {
-      if (起 < 0n || 长 < 0n || 起 > BigInt(值.length) || 长 > BigInt(值.length) - 起) throw Error("截取字节串：范围越界");
-      return 值.slice(Number(起), Number(起 + 长));
-    },
-    豫言_整数转小数: 值 => ({ 小数: 数(值) }),
-    豫言_小数转整数: 值 => BigInt(Math.trunc(数(值))),
-    豫言_整数加: (甲, 乙) => BigInt.asIntN(64, 甲 + 乙),
-    豫言_整数乘: (甲, 乙) => BigInt.asIntN(64, 甲 * 乙),
-    豫言_整数除: (甲, 乙) => 甲 / 乙,
-    豫言_小数加: (甲, 乙) => ({ 小数: 数(甲) + 数(乙) }),
-    豫言_小数减: (甲, 乙) => ({ 小数: 数(甲) - 数(乙) }),
-    豫言_小数乘: (甲, 乙) => ({ 小数: 数(甲) * 数(乙) }),
-    豫言_小数除: (甲, 乙) => ({ 小数: 数(甲) / 数(乙) }),
-    豫言_整数转字符串: 值 => String(值),
-    豫言_字符串转整数: 理解整数,
-    豫言_源码数字名: 值 => /^[0-9-]+$/.test(文(值)),
-    豫言_源码可用名: 值 => !/^[0-9-]+$/.test(文(值)) && !文(值).startsWith("《《") && !文(值).startsWith("：") && !文(值).includes("」"),
-    豫言_源码字符串表示: 值 => "『" + 文(值).replace(/「：|』/g, 字 => 字 === "』" ? "「：』：」" : "「：「：：」") + "』"
-  };
-  // 文言：所授者可行，异步归桥续之。汉语：仅受信任宿主注入原语，JSPI 保持 D1/R2 调用期间的 Wasm 栈。
-  Object.assign(原语, 原语扩展);
-  const 调用 = (名, 参) => {
-    const 名称 = 文(桥.解(名));
-    if (!Object.hasOwn(原语, 名称)) throw Error("浏览器暂不支持此原语：" + 名称);
-    const 果 = 原语[名称](...桥.解(参));
-    return 果 instanceof Promise ? 果.then(值 => 桥.编(值)) : 桥.编(果);
-  };
   try {
     // 文言：带型之导入依签名包之，无实现者给桩，调之乃报。汉语：带类型的导入由共用胶水按签名包装；不在上面两表里的给桩，调用时报“接口函数未绑定”。
     const 带型导入 = 有带型导入(模块) ? (await 取边界胶水()).造边界导入(模块, 桥.原, { 标准库, 构建基础 }) : {};
     const 实例 = new WebAssembly.Instance(模块, { ...带型导入, "yuyan:browser/v1": { check: () => {
       if (performance.now() >= 截止) throw Error("Wasm 执行超过时限");
-    }, fail: 值 => { throw Error("未捕捉的豫言异常：\n" + 文(桥.解(值))); } }, "yuyan:gc-host/v1": { call: 异步原语 ? new WebAssembly.Suspending(调用) : 调用 } });
+    }, fail: 值 => { throw Error("未捕捉的豫言异常：\n" + 文(桥.解(值))); } } });
     // 文言：有独栈之能则用之。汉语：JSPI 在独立 Wasm 栈上执行，避免浏览器主栈较小导致编译器深调用溢出；无此 API 时保持同步引擎路径。
     if (typeof WebAssembly.promising === "function") await WebAssembly.promising(实例.exports._start)();
     else 实例.exports._start();

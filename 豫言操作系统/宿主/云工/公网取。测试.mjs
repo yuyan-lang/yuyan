@@ -1,5 +1,5 @@
-// 文言：验通用句柄桥之 fetch 窄口：许可含 https://* 乃许，验 https、无凭据，转址恒 manual；空许可、http、带凭据皆拒。
-// 汉语：通用句柄桥里 fetch 窄口（宿主.mjs 的 造公网取）的单元测试：许可 OUTBOUND_ORIGINS 含 https://* 才放行，
+// 文言：验公网请求专术（云工公网请求发起）所用之 fetch 窄口：许可含 https://* 乃许，验 https、无凭据，转址恒 manual；空许可、http、带凭据皆拒。
+// 汉语：公网请求专用原语（云工公网请求发起）所用 fetch 窄口（宿主.mjs 的 造公网取）的单元测试：许可 OUTBOUND_ORIGINS 含 https://* 才放行，
 //   网址须为 https、不带用户名或密码，redirect 一律改为 manual（网页上游规范：不跟随重定向，3xx 作为成功响应返回）；空许可、http、带凭据都拒绝。
 // 运行：node --test 豫言操作系统/宿主/云工/公网取。测试.mjs（全树测试自动发现）。
 import {test} from 'node:test';

@@ -115,11 +115,11 @@ function 模块内存(实例, 内存们) {
   return Object.values(实例.exports).find(值 => 值 instanceof WebAssembly.Memory);
 }
 
-// 文言：此模须由宿主之底层之法行之否：GC 之模（出元组之原型，或有边界之段）不在此列；余者导入非回收宿主之物，或出工作线程者是。汉语：判断模块是否要由本文件运行：WasmGC 程序（导出元组原型 yy_tuple，或带「豫言边界」段）不归这里，它们可以有带类型的导入；其余模块导入了 yuyan:gc-host/v1 以外的东西，或导出了「工作线程」，就是底层模块。
+// 文言：此模须由宿主之底层之法行之否：GC 之模（出元组之原型，或有边界之段）不在此列；余者有导入，或出工作线程者是。汉语：判断模块是否要由本文件运行：WasmGC 程序（导出元组原型 yy_tuple，或带「豫言边界」段）不归这里，它们可以有带类型的导入；其余模块有导入，或导出了「工作线程」，就是底层模块。
 function 是底层模块(模块) {
   const 导出们 = WebAssembly.Module.exports(模块);
   if (导出们.some(项 => 项.name === 'yy_tuple') || WebAssembly.Module.customSections(模块, '豫言边界').length > 0) return false;
-  return WebAssembly.Module.imports(模块).some(项 => 项.module !== 'yuyan:gc-host/v1') ||
+  return WebAssembly.Module.imports(模块).length > 0 ||
     导出们.some(项 => 项.name === '工作线程');
 }
 
