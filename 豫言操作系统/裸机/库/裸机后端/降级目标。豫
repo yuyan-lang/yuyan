@@ -346,6 +346,16 @@
   ，『dup2』与『_dup2』与（「列」【「零」，「零」】）与「一」与「阳」
   ，『fork』与『_fork』与（「罄」授以「整数」）与「一」与「阳」
   ，『execve』与『_execve』与（「列」【「一」，「一」，「一」】）与「一」与「阳」
+  ，『建立进程』与『_posix_spawn』与（「列」【「一」，「一」，「一」，「一」，「一」，「一」】）与「一」与「阴」
+  ，『初始化进程文件动作』与『_posix_spawn_file_actions_init』与（「列」【「一」】）与「一」与「阴」
+  ，『释放进程文件动作』与『_posix_spawn_file_actions_destroy』与（「列」【「一」】）与「一」与「阴」
+  ，『进程文件动作复制句柄』与『_posix_spawn_file_actions_adddup2』与（「列」【「一」，「零」，「零」】）与「一」
+    与「阴」
+  ，『进程文件动作切换目录』与『_posix_spawn_file_actions_addfchdir_np』与（「列」【「一」，「零」】）与「一」与「阴」
+  ，『初始化进程属性』与『_posix_spawnattr_init』与（「列」【「一」】）与「一」与「阴」
+  ，『释放进程属性』与『_posix_spawnattr_destroy』与（「列」【「一」】）与「一」与「阴」
+  ，『进程属性信号默认』与『_posix_spawnattr_setsigdefault』与（「列」【「一」，「一」】）与「一」与「阴」
+  ，『进程属性设置标志』与『_posix_spawnattr_setflags』与（「列」【「一」，「零」】）与「一」与「阴」
   ，『fchdir』与『_fchdir』与（「列」【「零」】）与「一」与「阳」
   ，『chdir』与『_chdir』与（「列」【「一」】）与「一」与「阳」
   ，『signal』与『_signal』与（「列」【「零」，「零」】）与「一」与「阴」
