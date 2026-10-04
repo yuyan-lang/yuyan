@@ -11,7 +11,8 @@ const [发行目录, 依赖目录, 资源目录, 图像路径] = 原参.slice(0,
 const 验引号 = 原参[4] === '引号';
 const 验拼音 = 原参[4] === '拼音';
 const 验模式 = 原参[4] === '模式';
-const 验命令行 = 原参[4] === '命令行' || 验引号 || 验拼音 || 验模式;
+const 验文件命令 = 原参[4] === '文件命令';
+const 验命令行 = 原参[4] === '命令行' || 验引号 || 验拼音 || 验模式 || 验文件命令;
 assert.ok(发行目录 && 依赖目录 && 资源目录 && 图像路径, '须给发行、原生依赖、资源目录及图像输出路径');
 const 启动文 = 文件系统.readFileSync(路径.join(发行目录, '启动.mjs'), 'utf8');
 const 桥文 = 启动文.match(/const 内嵌 = \{值桥: \[([\d,\s]+)\]/u);
@@ -80,7 +81,7 @@ try {
         await new Promise(成 => setTimeout(成, 100));
       }
     } else {
-      窗.emit('textInput', {text: '「加」于「12」于「3」'});
+      窗.emit('textInput', {text: 验文件命令 ? '「文件」之「读取」于「说明.txt」' : '「加」于「12」于「3」'});
     }
     窗.emit('keyDown', {key: 'return'});
     窗.emit('keyUp', {key: 'return'});
