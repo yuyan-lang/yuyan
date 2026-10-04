@@ -7,7 +7,7 @@
 //   node 表指令对照.cjs --造探针 输出目录 期望文件 [种子]：改为生成 12 个不越界的场景模块（表0.wasm…表11.wasm，各 14–21 条表指令）与期望文件（每行 “序号 返回值”，取自 V8），
 //   供 普通探针/盘/表-一。豫 在裸机上加载运行（实例总数至多 16，故只有 12 个）。
 const fs=require('fs');
-const {leb,sleb,节,造随机}=require('./浮点指令表.cjs');
+const {leb,sleb,节,造随机}=require('../../裸机/客体二号/浮点指令表.cjs');
 const 造探针=process.argv[2]==='--造探针';
 const exeFile=造探针?null:process.argv[2]; const 场景数=parseInt(process.argv[3]||'300'); const 种子=parseInt((造探针?process.argv[5]:process.argv[4])||'777')>>>0;
 const {随机}=造随机(种子);
@@ -25,13 +25,16 @@ function withMemoryExport(buf){
       const nm=Array.from(Buffer.from('memory'));
       const nb=[...enc(n+1),...rest,...enc(nm.length),...nm,2,0];
       out.push(7,...enc(nb.length),...nb);
-    } else out.push(id,...enc(sz),...body);
+    } else {
+      // 「：汉语：大模块逐字节追加，免触及宿主实参数量上限。文言：大模逐字附之，免逾宿主实参之限。：」
+      out.push(id,...enc(sz)); for (const 字节 of body) out.push(字节);
+    }
   }
   return Buffer.from(out);
 }
 const 执行器模块=造探针?null:withMemoryExport(exe);
 let 输出字节=[]; let 盘=null;
-const platform={写字节:x=>{输出字节.push(x&255);},退出任务:c=>{throw {退出:c}},块容量:()=>0,块读:()=>-1,块写:()=>-1,读字节:()=>-1,时钟滴答:()=>0,复制任务:()=>-1,等待任务:()=>-1,回收任务:()=>-1,发送消息:()=>-1,接收消息:()=>0,消息来源:()=>-1,等待消息:()=>0,任务状态:()=>-1,任务退出码:()=>-1,设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1};
+const platform={写字节:x=>{输出字节.push(x&255);},退出任务:c=>{throw {退出:c}},块容量:()=>0,块读:()=>-1,块写:()=>-1,读字节:()=>-1,时钟滴答:()=>0,复制任务:()=>-1,等待任务:()=>-1,回收任务:()=>-1,发送消息:()=>-1,接收消息:()=>0,消息来源:()=>-1,等待消息:()=>0,任务状态:()=>-1,任务退出码:()=>-1,设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1,持久块容量:()=>0,持久块读取:()=>-1,持久块写入:()=>-1,持久块同步:()=>-1};
 const 编译执行器=造探针?null:WebAssembly.compile(执行器模块);
 
 // ---- 指令编码
@@ -111,7 +114,7 @@ function 期望V8(模块){
   catch(e){ if(e instanceof WebAssembly.RuntimeError||e instanceof WebAssembly.CompileError) return {陷阱:String(e.message)}; throw e; }
 }
 async function 执行器运行(模块){
-  const instance=await WebAssembly.instantiate(await 编译执行器,{平台:platform});
+  const instance=await WebAssembly.instantiate(await 编译执行器,require('./导入夹具.cjs')(await 编译执行器,platform));
   const mem=instance.exports.memory; 输出字节=[];
   const need=Math.ceil((0x10000+模块.length)/65536);
   if(mem.buffer.byteLength/65536<need) mem.grow(need-mem.buffer.byteLength/65536);

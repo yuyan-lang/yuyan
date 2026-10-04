@@ -7,7 +7,7 @@
 // 文言：诸运算之栈置于 0x2030 起之测试栈；结果自 0x2590 读之（浮槽_果）；格式格在 0xE30。
 // 汉语：参数为（运算号，甲低，甲高，乙低，乙高）；结果读 浮槽_果（9616）；每次陷阱后要把 浮格_格式（3632）清零，否则下一次会沿用单精度格式。
 const fs=require('fs');
-const {T,表,leb,节,是非数64,是非数32,造随机}=require('./浮点指令表.cjs');
+const {T,表,leb,节,是非数64,是非数32,造随机}=require('../../裸机/客体二号/浮点指令表.cjs');
 const exeFile=process.argv[2]; const 轮数=parseInt(process.argv[3]||'20000'); const 种子=parseInt(process.argv[4]||'424242')>>>0;
 const {生成}=造随机(种子);
 const exe=fs.readFileSync(exeFile);
@@ -24,11 +24,14 @@ function withMemoryExport(buf){
       const nm=Array.from(Buffer.from('memory'));
       const nb=[...enc(n+1),...rest,...enc(nm.length),...nm,2,0];
       out.push(7,...enc(nb.length),...nb);
-    } else out.push(id,...enc(sz),...body);
+    } else {
+      // 「：汉语：大模块逐字节追加，免触及宿主实参数量上限。文言：大模逐字附之，免逾宿主实参之限。：」
+      out.push(id,...enc(sz)); for (const 字节 of body) out.push(字节);
+    }
   }
   return Buffer.from(out);
 }
-const platform={写字节:()=>{},退出任务:c=>{throw {退出:c}},块容量:()=>0,块读:()=>-1,块写:()=>-1,读字节:()=>-1,时钟滴答:()=>0,复制任务:()=>-1,等待任务:()=>-1,回收任务:()=>-1,发送消息:()=>-1,接收消息:()=>0,消息来源:()=>-1,等待消息:()=>0,任务状态:()=>-1,任务退出码:()=>-1,设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1};
+const platform={写字节:()=>{},退出任务:c=>{throw {退出:c}},块容量:()=>0,块读:()=>-1,块写:()=>-1,读字节:()=>-1,时钟滴答:()=>0,复制任务:()=>-1,等待任务:()=>-1,回收任务:()=>-1,发送消息:()=>-1,接收消息:()=>0,消息来源:()=>-1,等待消息:()=>0,任务状态:()=>-1,任务退出码:()=>-1,设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1,持久块容量:()=>0,持久块读取:()=>-1,持久块写入:()=>-1,持久块同步:()=>-1};
 
 // ---- V8 参考模块：参数一律用 i32/i64 位型，内部再按位重解释，避免 JS 边界改动非数载荷
 function 造参考(操作码,入,出){
@@ -52,7 +55,7 @@ function 规范(出,值,按位){
   if(出==='f64'){ if(!按位&&是非数64(值)) return 'NaN'; return 值.toString(16); }
   return 值.toString(16);
 }
-WebAssembly.instantiate(withMemoryExport(exe),{平台:platform}).then(({instance})=>{
+WebAssembly.instantiate(withMemoryExport(exe),require('./导入夹具.cjs')(withMemoryExport(exe),platform)).then(({instance})=>{
   const mem=instance.exports.memory; const 运算=instance.exports.浮点运算;
   const 内存=()=>new DataView(mem.buffer);
   const 甲低=v=>Number(v&0xFFFFFFFFn)|0, 甲高=v=>Number((v>>32n)&0xFFFFFFFFn)|0;

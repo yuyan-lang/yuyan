@@ -47,7 +47,10 @@ function 补内存导出(buf){
       const nm=Array.from(Buffer.from('memory'));
       const nb=[...enc(n+1),...rest,...enc(nm.length),...nm,2,0];
       out.push(7,...enc(nb.length),...nb);
-    } else out.push(id,...enc(sz),...body);
+    } else {
+      // 「：汉语：大模块逐字节追加，免触及宿主实参数量上限。文言：大模逐字附之，免逾宿主实参之限。：」
+      out.push(id,...enc(sz)); for (const 字节 of body) out.push(字节);
+    }
   }
   return Buffer.from(out);
 }
@@ -61,8 +64,8 @@ async function 执行器运行(){
     读字节:()=>{ if(输入位<输入.length){空轮询=0;return 输入[输入位++];} if(++空轮询>2000) throw {退出:201}; return -1; },
     时钟滴答:()=>{滴答+=3;return 滴答;},
     复制任务:()=>-1,等待任务:()=>-1,回收任务:()=>-1,发送消息:()=>-1,接收消息:()=>0,消息来源:()=>-1,等待消息:()=>0,任务状态:()=>-1,任务退出码:()=>-1,
-    设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1};
-  const {instance}=await WebAssembly.instantiate(补内存导出(fs.readFileSync(执行器文件)),{平台:platform});
+    设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1,持久块容量:()=>0,持久块读取:()=>-1,持久块写入:()=>-1,持久块同步:()=>-1};
+  const {instance}=await WebAssembly.instantiate(补内存导出(fs.readFileSync(执行器文件)),require('./导入夹具.cjs')(补内存导出(fs.readFileSync(执行器文件)),platform));
   const 客体=fs.readFileSync(程序文件);
   const mem=instance.exports.memory;
   const 需=Math.ceil((0x10000+客体.length)/65536);
