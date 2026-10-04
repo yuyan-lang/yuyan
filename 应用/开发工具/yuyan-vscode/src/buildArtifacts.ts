@@ -25,12 +25,12 @@ export function sourceRelativePathToArtifactStem(relativePath: string): string |
   return stem.length > 0 ? stem : undefined;
 }
 
-export function jsonArtifactStage(
+export function treeArtifactStage(
   artifactFileName: string,
   sourceBaseName: string
 ): string | undefined {
   const prefix = `${sourceBaseName}.`;
-  const suffix = '.json';
+  const suffix = '.树码';
   if (!artifactFileName.startsWith(prefix) || !artifactFileName.endsWith(suffix)) {
     return undefined;
   }

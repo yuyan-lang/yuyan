@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as child_process from 'child_process';
 import * as path from 'path';
 import {
-  jsonArtifactStage,
+  treeArtifactStage,
   sortBuildCachesNewestFirst,
   sourceRelativePathToArtifactStem
 } from './buildArtifacts';
@@ -177,8 +177,8 @@ async function getLanguageServiceDocument(
   }
 
   try {
-    const content = new TextDecoder().decode(await vscode.workspace.fs.readFile(artifact.uri));
-    const metadata = parseLanguageServiceDocument(content);
+    const content = await runTreeTool(projectRootUri, '读取编辑器资料', artifact.uri);
+    const metadata = parseLanguageServiceDocument(JSON.parse(content));
     if (!metadata) {
       log(`Invalid language service artifact: ${artifact.uri.fsPath}`);
       return undefined;
@@ -368,7 +368,7 @@ interface BuildCacheDirectory {
   uri: vscode.Uri;
 }
 
-async function findJsonBuildArtifacts(
+async function findTreeBuildArtifacts(
   projectRootUri: vscode.Uri,
   artifactStem: string
 ): Promise<BuildArtifactQuickPickItem[]> {
@@ -402,7 +402,7 @@ async function findJsonBuildArtifacts(
 
     const artifacts = entries
       .filter(([, fileType]) => (fileType & vscode.FileType.File) !== 0)
-      .map(([fileName]) => ({ fileName, stage: jsonArtifactStage(fileName, sourceBaseName) }))
+      .map(([fileName]) => ({ fileName, stage: treeArtifactStage(fileName, sourceBaseName) }))
       .filter((artifact): artifact is { fileName: string; stage: string } => artifact.stage !== undefined)
       .sort((left, right) => left.stage.localeCompare(right.stage, 'zh-CN'));
 
@@ -420,15 +420,22 @@ async function findJsonBuildArtifacts(
   return quickPickItems;
 }
 
-function prettyPrintBuildArtifact(
+function runTreeTool(
   projectRootUri: vscode.Uri,
+  command: string,
   artifactUri: vscode.Uri
 ): Promise<string> {
-  const compilerPath = vscode.Uri.joinPath(projectRootUri, 'yy_bs_stable').fsPath;
+  const hostPath = vscode.Uri.joinPath(projectRootUri, '豫言操作系统', '宿主', '节点', '宿主.cjs').fsPath;
+  const toolPath = vscode.Uri.joinPath(projectRootUri, 'yy树码.wasm').fsPath;
+  const args = [hostPath, toolPath, command, artifactUri.fsPath];
+  const context = artifactUri.fsPath.match(/[\\/]包上下文[\\/]([^\\/]+\.上下文)(?:\.|[\\/])/);
+  if (command === '显示' && context) {
+    args.push('--包上下文', vscode.Uri.joinPath(projectRootUri, '.yybuild', '豫构上下文', context[1]).fsPath);
+  }
   return new Promise((resolve, reject) => {
     child_process.execFile(
-      compilerPath,
-      ['debug', 'showtrees', artifactUri.fsPath],
+      'node',
+      args,
       {
         cwd: projectRootUri.fsPath,
         encoding: 'utf8',
@@ -479,7 +486,7 @@ async function jumpToBuildArtifact(
 
   let artifacts: BuildArtifactQuickPickItem[];
   try {
-    artifacts = await findJsonBuildArtifacts(projectRootUri, artifactStem);
+    artifacts = await findTreeBuildArtifacts(projectRootUri, artifactStem);
   } catch (error: any) {
     log(`Failed to inspect .yybuild: ${error.message || error}`);
     void vscode.window.showErrorMessage(
@@ -490,14 +497,14 @@ async function jumpToBuildArtifact(
 
   if (artifacts.length === 0) {
     void vscode.window.showInformationMessage(
-      `没有找到 ${artifactStem}.<阶段>.json 构建产物。 No matching JSON build artifacts were found.`
+      `没有找到 ${artifactStem}.<阶段>.树码 构建产物。`
     );
     return;
   }
 
   const selectedArtifact = await vscode.window.showQuickPick(artifacts, {
     title: 'Yuyan: Jump to Build Artifact 跳转到构建产物',
-    placeHolder: '选择要查看的 JSON 阶段产物（最新缓存优先）',
+    placeHolder: '选择要查看的树码阶段产物（最新缓存优先）',
     matchOnDescription: true,
     matchOnDetail: true
   });
@@ -511,11 +518,11 @@ async function jumpToBuildArtifact(
         location: vscode.ProgressLocation.Window,
         title: `Yuyan: 正在解码 ${path.basename(selectedArtifact.artifactUri.fsPath)}`
       },
-      () => prettyPrintBuildArtifact(projectRootUri, selectedArtifact.artifactUri)
+      () => runTreeTool(projectRootUri, '显示', selectedArtifact.artifactUri)
     );
     const artifactFileName = path.basename(selectedArtifact.artifactUri.fsPath);
-    const previewFileName = artifactFileName.endsWith('.json')
-      ? `${artifactFileName.slice(0, -'.json'.length)}.pretty.yuyan`
+    const previewFileName = artifactFileName.endsWith('.树码')
+      ? `${artifactFileName.slice(0, -'.树码'.length)}.pretty.yuyan`
       : `${artifactFileName}.pretty.yuyan`;
     const virtualUri = contentProvider.createDocumentUri(
       previewFileName,

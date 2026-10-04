@@ -25,11 +25,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
   『) 运行：yy [options] [files] [ -- [args]]
 其中 [options] 可以是
     stage 输入阶段 输出阶段 输入文件 输出前缀 源身份 [依赖三项…] [-- 选项…]
-                                        独立执行阶段，可读写结森、树码与豫言文本
-    --中间格式 结森|树码                 选择中间产物缓存格式，默认树码
-    --导出中间文本                      调试时导出可重解析的豫言中间文本，默认关闭
-    --read-intermediate-text            从豫言文本读取磁盘阶段缓存
-    --intermediate-json-only            关闭附加中间文本，供性能对照
+                                        独立执行阶段，输入树码或豫言文本，输出树码
+                                        缓存只写树码，用 yy树码 转换 按需生成豫言文本
     -h, --help                           显示本帮助信息
     -v                                   显示粗略的调试信息
     -vv                                  显示详细的调试信息
