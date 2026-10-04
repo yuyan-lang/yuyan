@@ -10,7 +10,8 @@ const 原参 = process.argv.slice(2);
 const [发行目录, 依赖目录, 资源目录, 图像路径] = 原参.slice(0, 4).map(项 => 路径.resolve(项));
 const 验引号 = 原参[4] === '引号';
 const 验拼音 = 原参[4] === '拼音';
-const 验模式 = 原参[4] === '模式';
+const 验模式键 = 原参[4] === '模式键';
+const 验模式 = 原参[4] === '模式' || 验模式键;
 const 验文件命令 = 原参[4] === '文件命令';
 const 验反复 = 原参[4] === '反复';
 const 验聚焦 = 原参[4] === '聚焦';
@@ -74,7 +75,11 @@ try {
     点按钮(240, 28);
     await new Promise(成 => setTimeout(成, 200));
     if (验模式) {
-      点按钮(300, 388);
+      if (验模式键) {
+        // 汉语：以实际SDL按键映射切换，保留按钮模式供原路径回归。文言：以实SDL之键易式，存钮式以验旧路。
+        窗.emit('keyDown', {key: 'f2'});
+        窗.emit('keyUp', {key: 'f2'});
+      } else 点按钮(300, 388);
       await new Promise(成 => setTimeout(成, 200));
     }
     if (!验聚焦) 点按钮(300, 450);
@@ -112,6 +117,19 @@ try {
     await new Promise(成 => setTimeout(成, 200));
   }
   退出按下 = true;
+  if (验模式键) {
+    // 汉语：再次按F2恢复中文，以逐字数字选词输出验模式往返。文言：复按F2归中文，逐字以数择词，验式之往返。
+    窗.emit('keyDown', {key: 'f2'});
+    窗.emit('keyUp', {key: 'f2'});
+    await new Promise(成 => setTimeout(成, 200));
+    for (const 字 of 'hx1ni1hao1') {
+      窗.emit('textInput', {text: 字});
+      await new Promise(成 => setTimeout(成, 100));
+    }
+    窗.emit('keyDown', {key: 'return'});
+    窗.emit('keyUp', {key: 'return'});
+    await new Promise(成 => setTimeout(成, 200));
+  }
   const 第二会帧 = 验反复 ? new Promise(成 => {
     下一会帧 = () => { if (!窗.destroyed) return false; 成(); return true; };
   }) : null;
