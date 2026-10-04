@@ -21,11 +21,14 @@ function withMemoryExport(buf){
       const nm=Array.from(Buffer.from('memory'));
       const nb=[...enc(n+1),...rest,...enc(nm.length),...nm,2,0];
       out.push(7,...enc(nb.length),...nb);
-    } else out.push(id,...enc(sz),...body);
+    } else {
+      // 「：汉语：大模块逐字节追加，免触及宿主实参数量上限。文言：大模逐字附之，免逾宿主实参之限。：」
+      out.push(id,...enc(sz)); for (const 字节 of body) out.push(字节);
+    }
   }
   return Buffer.from(out);
 }
-const platform={写字节:()=>{},退出任务:c=>{throw {退出:c}},块容量:()=>0,块读:()=>-1,块写:()=>-1,读字节:()=>-1,时钟滴答:()=>0,复制任务:()=>-1,等待任务:()=>-1,回收任务:()=>-1,发送消息:()=>-1,接收消息:()=>0,消息来源:()=>-1,等待消息:()=>0,任务状态:()=>-1,任务退出码:()=>-1,设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1};
+const platform={写字节:()=>{},退出任务:c=>{throw {退出:c}},块容量:()=>0,块读:()=>-1,块写:()=>-1,读字节:()=>-1,时钟滴答:()=>0,复制任务:()=>-1,等待任务:()=>-1,回收任务:()=>-1,发送消息:()=>-1,接收消息:()=>0,消息来源:()=>-1,等待消息:()=>0,任务状态:()=>-1,任务退出码:()=>-1,设备配置读:()=>-1,设备寄存器读:()=>-1,设备寄存器写:()=>-1,搬入静态:()=>-1,搬出静态:()=>-1,持久块容量:()=>0,持久块读取:()=>-1,持久块写入:()=>-1,持久块同步:()=>-1};
 function 随机(){ 种=(Math.imul(种,1664525)+1013904223)>>>0; return 种; }
 function 随机64(){ return (BigInt(随机())<<32n)|BigInt(随机()); }
 const buf8=new ArrayBuffer(8), dv=new DataView(buf8);
@@ -44,7 +47,7 @@ function 生成(){
   if(种类===8) return 数到位(Number(随机64()>>BigInt(11+随机()%40))/Math.pow(2,随机()%60));
   return 数到位((随机()/4294967296-0.5)*Math.pow(10,随机()%20-5));
 }
-WebAssembly.instantiate(withMemoryExport(exe),{平台:platform}).then(({instance})=>{
+WebAssembly.instantiate(withMemoryExport(exe),require('./导入夹具.cjs')(withMemoryExport(exe),platform)).then(({instance})=>{
   const mem=instance.exports.memory; const 运算=instance.exports.浮点运算;
   const 内存=()=>new DataView(mem.buffer);
   function 调(op,a,b){ 运算(op,Number(a&0xFFFFFFFFn)|0,Number(a>>32n)|0,Number(b&0xFFFFFFFFn)|0,Number(b>>32n)|0); return 内存().getBigUint64(9616,true); }
