@@ -155,6 +155,17 @@ const 求平台所需 = 模块 => {
 };
 
 export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 网络 = fetch, 全局 = globalThis, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 执行配置 = null, 中央张量内核模块 = null}) {
+  // 「：汉语：Workers 不支持 error 模式；以 manual 取回应，遇重定向即拒绝，保持既有外发约束。文言：Workers 不许 error；以 manual 得答，见转址则拒，外发之约不易。：」
+  const 原网络 = 网络;
+  网络 = async (网址, 选项) => {
+    if (选项?.redirect !== 'error') return 原网络(网址, 选项);
+    const 回应 = await 原网络(网址, {...选项, redirect: 'manual'});
+    if (回应.status >= 300 && 回应.status < 400) {
+      try { await 回应.body?.cancel(); } catch {}
+      throw new TypeError('上游重定向被拒绝');
+    }
+    return 回应;
+  };
   // 文言：配置于创建之时即验，误则壳加载失败。汉语：执行配置在创建宿主时解析校验，非法配置使 Worker 加载失败而不是运行中静默失效。
   const 事件时限 = 解析执行配置(执行配置);
   const 取事件时限 = 种类 => 选事件时限(事件时限, 种类);
