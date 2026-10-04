@@ -5,6 +5,7 @@
 import * as 文件系统 from 'node:fs';
 import 路径 from 'node:path';
 import 终端 from 'node:tty';
+import {StringDecoder as 字节解码器} from 'node:string_decoder';
 import 系统 from 'node:os';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
@@ -12,6 +13,7 @@ import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {Worker, MessageChannel, receiveMessageOnPort} from 'node:worker_threads';
 // 〔内联起〕
+import {创建终端输入} from './终端输入.mjs';
 import {造边界导入, 造边界导出, 启动导出名} from '../网页汇编/边界.mjs';
 import {创建值桥, 文字, 精确小数, 小数表示, 理解小数, 随机整数, 处理器数量, 平台导入旧名} from '../云工/值桥.mjs';
 import {创建句柄表} from '../云工/句柄.mjs';
@@ -355,7 +357,11 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   //   参数、结果是边界胶水的 JS 形（串为 Uint8Array，整为 BigInt，小为 Number，爻为布尔，列为数组）；语义见 ../标准库宿主.汉语.md。
   // 文言：今目录为实例所有；此宿主不许迁之，恒返启时之目。汉语：当前工作目录归实例所有；本宿主不支持切换，恒返回实例创建时的目录。
   const 当前目录 = process.cwd();
+  const 终端输入 = 创建终端输入();
   const 标准库 = {
+    进入终端原始输入模式: () => 终端输入.进入(),
+    退出终端原始输入模式: () => 终端输入.退出(),
+    读取终端按键: () => 终端输入.读取(),
     获取命令行程序名: () => 程序路径,
     获取命令行参数: () => 应用参数,
     获取当前工作目录: () => 当前目录,
@@ -713,7 +719,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   }});
   const 旧表 = {...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库};
   // 文言：平台接口包之带型导入，由旧名之能表派生。汉语：平台接口包的带类型导入由上面以旧名为键的能力表派生，见 派生平台实现；旧名只是内部的键，不对外。
-  return Object.freeze({[能力清理]: 节点图形.清理, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表)}});
+  return Object.freeze({[能力清理]: () => {终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表)}});
 }
 
 // 文言：以 JSPI 行客：诸能或同步或异步，客皆以常调用视之。汉语：用 JSPI 运行：能力可以同步返回，也可以返回 Promise（网络、摘要等），应用都按普通调用看待。

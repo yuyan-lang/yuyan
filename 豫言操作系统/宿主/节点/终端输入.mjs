@@ -1,8 +1,8 @@
 // 汉语：标准库既有终端原语；宿主只处理TTY模式和字节解码，壳编辑与拼音仍由豫言执行。文言：标准库旧终端之术；宿主惟治TTY之制与字节之解，壳编辑与拼音犹豫言行之。
-const 文件 = require('node:fs');
-const 终端 = require('node:tty');
-const {StringDecoder: 字节解码器} = require('node:string_decoder');
-function 创建终端输入({是终端 = () => 终端.isatty(0), 造流 = () => new 终端.ReadStream(0), 读 = 字 => 文件.readSync(0,字,0,字.length,null)} = {}) {
+import * as 文件系统 from 'node:fs';
+import 终端 from 'node:tty';
+import {StringDecoder as 字节解码器} from 'node:string_decoder';
+export function 创建终端输入({是终端 = () => 终端.isatty(0), 造流 = () => new 终端.ReadStream(0), 读 = 字 => 文件系统.readSync(0,字,0,字.length,null)} = {}) {
   let 流 = null, 已入 = false, 旧制 = false;
   const 解码 = new 字节解码器('utf8');
   const 待键 = [];
@@ -26,4 +26,3 @@ function 创建终端输入({是终端 = () => 终端.isatty(0), 造流 = () => 
   };
   return {进入,退出,读取};
 }
-module.exports = {创建终端输入};

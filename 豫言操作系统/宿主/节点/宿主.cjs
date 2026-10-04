@@ -5,7 +5,7 @@ const 子进程 = require('node:child_process'), 终端 = require('node:tty'), �
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
 const {建立编译线程} = require('./编译线程.cjs');
-const {创建终端输入} = require('./终端输入.cjs');
+const {创建终端输入} = require('./终端输入.mjs');
 // 文言：同一宿主工序对同一 Wasm 只散列一次。汉语：同一 Node worker 对同一路径只计算一次内容 SHA-256。
 const 当前程序SHA256缓存=new Map();
 const 获取程序内容SHA256=名=>{const 全径=路径.resolve(名),旧=当前程序SHA256缓存.get(全径);if(旧!==undefined)return 旧;const 摘要=密码.createHash('sha256').update(文件.readFileSync(全径)).digest('hex');当前程序SHA256缓存.set(全径,摘要);return 摘要;};
