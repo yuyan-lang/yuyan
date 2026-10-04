@@ -27,7 +27,7 @@ const 空字节 = new Uint8Array();
 // 汉语：规范的语义键名：0.1.0 的七个，0.2.0 增加 删除、起首、末尾、上翻页、下翻页、制表、退出 与修饰键 上档、控制、交替、命令；
 //       event.key 是单个 Unicode 标量值时原样交付，其他键（F1、CapsLock……）不交付。
 const 键名表 = Object.freeze({ArrowLeft: '左', ArrowRight: '右', ArrowUp: '上', ArrowDown: '下', Enter: '回车', Backspace: '退格', ' ': '空格',
-  Delete: '删除', Home: '起首', End: '末尾', PageUp: '上翻页', PageDown: '下翻页', Tab: '制表', Escape: '退出',
+  Delete: '删除', Home: '起首', End: '末尾', PageUp: '上翻页', PageDown: '下翻页', Tab: '制表', Escape: '退出', F2: '功能二',
   Shift: '上档', Control: '控制', Alt: '交替', Meta: '命令'});
 // 文言：修饰之键，面失焦时补其抬起。汉语：修饰键名；显示面失去焦点时宿主为仍按着的修饰键补发抬起。
 export const 修饰键名 = Object.freeze(new Set(['上档', '控制', '交替', '命令']));

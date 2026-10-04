@@ -149,6 +149,7 @@ test('键名译法：0.1.0 的七个语义键、0.2.0 的七个编辑键与四�
   assert.deepEqual(['Shift', 'Control', 'Alt', 'Meta'].map(译键), ['上档', '控制', '交替', '命令']);
   assert.deepEqual(['a', 'Z', '中', '😀'].map(译键), ['a', 'Z', '中', '😀']);
   assert.deepEqual(['F1', 'CapsLock', 'Process', 'Unidentified', ''].map(译键), [null, null, null, null, null]);
+  assert.equal(译键('F2'), '功能二');
 });
 
 test('输入事件：指针坐标按像素比取整、相邻移动合并、按键与输入法文字、组字中不交付、关闭后先报关闭再为资源已失效', async () => {

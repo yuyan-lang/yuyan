@@ -240,6 +240,7 @@ test('SDL 键名译法：七个语义键与 0.2.0 的编辑键、修饰键，单
     ['删除', '起首', '末尾', '上翻页', '下翻页', '制表', '退出']);
   assert.deepEqual(['shift', 'ctrl', 'alt', 'gui', 'gUI'].map(键 => 译SDL键({key: 键})), ['上档', '控制', '交替', '命令', '命令']);
   assert.deepEqual(['f1', 'capsLock', null, ''].map(键 => 译SDL键({key: 键})), [null, null, null, null]);
+  assert.equal(译SDL键({key: 'f2'}), '功能二');
 });
 
 test('输入事件：坐标乘像素比、按钮号减一、相邻移动合并、文字输入；关闭窗口后先报关闭再为资源已失效', async () => {
