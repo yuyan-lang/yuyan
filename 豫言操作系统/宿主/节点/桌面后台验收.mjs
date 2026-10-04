@@ -9,7 +9,8 @@ import {创建能力, 带型实现, 能力清理, 运行节点应用} from './�
 const 原参 = process.argv.slice(2);
 const [发行目录, 依赖目录, 资源目录, 图像路径] = 原参.slice(0, 4).map(项 => 路径.resolve(项));
 const 验引号 = 原参[4] === '引号';
-const 验命令行 = 原参[4] === '命令行' || 验引号;
+const 验拼音 = 原参[4] === '拼音';
+const 验命令行 = 原参[4] === '命令行' || 验引号 || 验拼音;
 assert.ok(发行目录 && 依赖目录 && 资源目录 && 图像路径, '须给发行、原生依赖、资源目录及图像输出路径');
 const 启动文 = 文件系统.readFileSync(路径.join(发行目录, '启动.mjs'), 'utf8');
 const 桥文 = 启动文.match(/const 内嵌 = \{值桥: \[([\d,\s]+)\]/u);
@@ -67,9 +68,9 @@ try {
     点按钮(240, 28);
     await new Promise(成 => setTimeout(成, 200));
     点按钮(300, 450);
-    if (验引号) {
+    if (验引号 || 验拼音) {
       // 汉语：逐字符经过真实输入控件，验嵌套转换；整段粘贴有意保持原文。文言：逐字经实输入控件，以验嵌套之化；整段粘贴意存原文。
-      for (const 字 of '{回显}于{{甲}乙}') {
+      for (const 字 of (验拼音 ? 'hx1ni1hao1' : '{回显}于{{甲}乙}')) {
         窗.emit('textInput', {text: 字});
         await new Promise(成 => setTimeout(成, 100));
       }
