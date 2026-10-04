@@ -13,7 +13,7 @@ int main(int argc, char **argv) {
     size_t n = strlen(缓); if (n && 缓[n - 1] == '\n') 缓[--n] = 0;
     if (有 && !strcmp(缓, 前)) { 数++; continue; }
     if (有) { if (计) printf("%7ld ", 数); puts(前); }
-    strcpy(前, 缓); 数 = 1; 有 = 1;
+    memcpy(前, 缓, n + 1); 数 = 1; 有 = 1;
   }
   if (有) { if (计) printf("%7ld ", 数); puts(前); }
   return 0;
