@@ -6,7 +6,9 @@ import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {创建能力, 带型实现, 能力清理, 运行节点应用} from './应用宿主.mjs';
 
-const [发行目录, 依赖目录, 资源目录, 图像路径] = process.argv.slice(2).map(项 => 路径.resolve(项));
+const 原参 = process.argv.slice(2);
+const [发行目录, 依赖目录, 资源目录, 图像路径] = 原参.slice(0, 4).map(项 => 路径.resolve(项));
+const 验命令行 = 原参[4] === '命令行';
 assert.ok(发行目录 && 依赖目录 && 资源目录 && 图像路径, '须给发行、原生依赖、资源目录及图像输出路径');
 const 启动文 = 文件系统.readFileSync(路径.join(发行目录, '启动.mjs'), 'utf8');
 const 桥文 = 启动文.match(/const 内嵌 = \{值桥: \[([\d,\s]+)\]/u);
@@ -60,6 +62,22 @@ try {
   };
   点按钮(295, 250);
   await 预览帧;
+  if (验命令行) {
+    点按钮(240, 28);
+    await new Promise(成 => setTimeout(成, 200));
+    点按钮(300, 450);
+    窗.emit('textInput', {text: '「加」于「12」于「3」'});
+    窗.emit('keyDown', {key: 'return'});
+    窗.emit('keyUp', {key: 'return'});
+    await new Promise(成 => setTimeout(成, 200));
+    窗.emit('keyDown', {key: 'up'});
+    窗.emit('keyUp', {key: 'up'});
+    窗.emit('keyDown', {key: 'return'});
+    窗.emit('keyUp', {key: 'return'});
+    await new Promise(成 => setTimeout(成, 200));
+    窗.emit('mouseWheel', {x: 450, y: 300, dx: 0, dy: -8});
+    await new Promise(成 => setTimeout(成, 200));
+  }
   退出按下 = true;
   点按钮(440, 28);
   const 退出码 = await 运行任务;
@@ -68,7 +86,8 @@ try {
   assert.ok(帧数 > 0, '桌面未成功提交画面');
   assert.ok(读文件数 > 0, '文件按钮未调用实际文件服务');
   assert.ok(退出按下 && !超时, '返回按钮未使主循环结束');
-  console.log('真实SDL后台绘制、文件按钮预览与返回按钮通过；帧数：' + 帧数);
+  console.log('真实SDL后台绘制、文件按钮预览' + (验命令行 ? '、命令事件注入流程' : '') + '与返回按钮通过；帧数：' + 帧数);
+  if (验命令行) console.log('命令执行结果须复核实际绘制记录，帧数本身不证明命令执行。');
 } finally {
   await 能力[能力清理]?.();
 }
