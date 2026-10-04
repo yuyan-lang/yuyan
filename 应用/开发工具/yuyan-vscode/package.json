@@ -35,7 +35,7 @@
           "default": [
             {
               "fileEnding": "。豫",
-              "command": "./yy_bs_stable \"<filepath>\" --type-check-only"
+              "command": "node 豫言操作系统/宿主/节点/宿主.cjs yy4_bs.wasm \"<filepath>\" --type-check-only"
             }
           ],
           "description": "Compiler commands to execute on file save. Each item should have 'fileEnding' and 'command' properties. Use <filepath> as placeholder for the actual file path.",

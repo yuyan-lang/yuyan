@@ -1,6 +1,6 @@
 const assert = require('assert');
 const {
-  jsonArtifactStage,
+  treeArtifactStage,
   sortBuildCachesNewestFirst,
   sourceRelativePathToArtifactStem
 } = require('../out/buildArtifacts.js');
@@ -22,17 +22,17 @@ runTest('maps supported source paths to artifact stems', () => {
 });
 
 runTest('rejects unsupported or outside-workspace source paths', () => {
-  assert.strictEqual(sourceRelativePathToArtifactStem('src/example.json'), undefined);
+  assert.strictEqual(sourceRelativePathToArtifactStem('src/example.树码'), undefined);
   assert.strictEqual(sourceRelativePathToArtifactStem('../example。豫'), undefined);
   assert.strictEqual(sourceRelativePathToArtifactStem('/src/example。豫'), undefined);
 });
 
-runTest('extracts only matching JSON artifact stages', () => {
-  assert.strictEqual(jsonArtifactStage('多态列.抽象语法.json', '多态列'), '抽象语法');
-  assert.strictEqual(jsonArtifactStage('多态列.文件依赖.json', '多态列'), '文件依赖');
-  assert.strictEqual(jsonArtifactStage('别的文件.抽象语法.json', '多态列'), undefined);
-  assert.strictEqual(jsonArtifactStage('多态列.opt.bc', '多态列'), undefined);
-  assert.strictEqual(jsonArtifactStage('多态列.json', '多态列'), undefined);
+runTest('extracts only matching tree artifact stages', () => {
+  assert.strictEqual(treeArtifactStage('多态列.抽象语法.树码', '多态列'), '抽象语法');
+  assert.strictEqual(treeArtifactStage('多态列.文件依赖.树码', '多态列'), '文件依赖');
+  assert.strictEqual(treeArtifactStage('别的文件.抽象语法.树码', '多态列'), undefined);
+  assert.strictEqual(treeArtifactStage('多态列.opt.bc', '多态列'), undefined);
+  assert.strictEqual(treeArtifactStage('多态列.树码', '多态列'), undefined);
 });
 
 runTest('sorts build caches newest first without mutating the input', () => {

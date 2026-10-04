@@ -90,14 +90,7 @@ function parseInfo(value: unknown): LanguageServiceInfo | undefined {
   return undefined;
 }
 
-export function parseLanguageServiceDocument(text: string): LanguageServiceDocument | undefined {
-  let value: unknown;
-  try {
-    value = JSON.parse(text);
-  } catch {
-    return undefined;
-  }
-
+export function parseLanguageServiceDocument(value: unknown): LanguageServiceDocument | undefined {
   if (
     !isRecord(value) ||
     value.版本 !== 1 ||
@@ -121,7 +114,7 @@ export function parseLanguageServiceDocument(text: string): LanguageServiceDocum
 
 export function languageServiceArtifactPath(relativeSourcePath: string): string | undefined {
   const stem = sourceRelativePathToArtifactStem(relativeSourcePath);
-  return stem ? `${stem}.语言服务.json` : undefined;
+  return stem ? `${stem}.语言服务.树码` : undefined;
 }
 
 export function positionIsInRange(
