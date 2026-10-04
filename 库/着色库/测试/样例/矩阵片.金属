@@ -41,6 +41,12 @@ static inline void yy_存矩阵片累(threadgroup float* 目, uint 起, uint 步
   simdgroup_store(累.块[2], 目 + 起 + 8 * 步, 步);
   simdgroup_store(累.块[3], 目 + 起 + 8 * 步 + 8, 步);
 }
+static inline void yy_存储存矩阵片累(device float* 目, uint 起, uint 步, yy_矩阵片累 累) {
+  simdgroup_store(累.块[0], 目 + 起, 步);
+  simdgroup_store(累.块[1], 目 + 起 + 8, 步);
+  simdgroup_store(累.块[2], 目 + 起 + 8 * 步, 步);
+  simdgroup_store(累.块[3], 目 + 起 + 8 * 步 + 8, 步);
+}
 
 constant uint 步三十二 = 32u;
 
