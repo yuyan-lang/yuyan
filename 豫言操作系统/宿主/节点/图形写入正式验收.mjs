@@ -32,10 +32,12 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
   SDL.video.createWindow = (...参) => {
     const 窗 = 原建(...参); 窗口 = 窗;
     const 点 = (x, y) => { 窗.emit('mouseMove', {x, y}); 窗.emit('mouseButtonDown', {x, y, button: 1}); 窗.emit('mouseButtonUp', {x, y, button: 1}); };
-    const 命令 = 文 => { 点(300, 450); 窗.emit('textInput', {text: 文}); 窗.emit('keyDown', {key: 'return'}); 窗.emit('keyUp', {key: 'return'}); };
-    const 原画 = 窗.render.bind(窗); let 已始 = false, 最近像素 = null;
+    let 输入纵 = 450;
+    const 命令 = 文 => { 点(300, 输入纵); 窗.emit('textInput', {text: 文}); 窗.emit('keyDown', {key: 'return'}); 窗.emit('keyUp', {key: 'return'}); };
+    const 原画 = 窗.render.bind(窗); let 已始 = false, 最近像素 = null, 最近画 = null;
     窗.render = (...画参) => {
       const 果 = 原画(...画参);
+      最近画 = {宽:画参[0], 高:画参[1], 素:Buffer.from(画参[4])};
       if (process.env.豫言图形只读验收 === '1') {
         const [宽, 高, 步长, 格式, 像素] = 画参;
         assert.equal(格式, 'rgba32');
@@ -54,7 +56,18 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
             assert.ok(最近像素); 文件系统.writeFileSync(process.env.豫言图形只读像素, 最近像素);
             已验 = true; 点(440, 28); return;
           }
-          命令('「文件」之「写入」于「图形.txt」于「中文甲」'); await 等();
+          // 汉语：先留命令草稿，再真实缩放；绘制范围扩展且缩放后仍可执行原草稿。文言：先存命令稿而实伸缩；绘域广而伸缩后犹可行旧稿。
+          点(300, 输入纵); 窗.emit('textInput', {text:'「文件」之「写入」于「图形.txt」于「中文甲」'}); await 等();
+          const 点色 = () => {
+            const 横 = Math.floor(740 * 最近画.宽 / 900), 纵 = Math.floor(300 * 最近画.高 / 640);
+            return [...最近画.素.subarray((纵 * 最近画.宽 + 横) * 4, (纵 * 最近画.宽 + 横) * 4 + 3)];
+          };
+          assert.notDeepEqual(点色(), [255,255,255]);
+          窗.emit('mouseButtonDown', {x:646,y:463,button:1});
+          窗.emit('mouseMove', {x:726,y:503});
+          窗.emit('mouseButtonUp', {x:726,y:503,button:1}); await 等();
+          assert.deepEqual(点色(), [255,255,255]);
+          输入纵 = 490; 点(300, 输入纵); 窗.emit('keyDown', {key:'return'}); 窗.emit('keyUp', {key:'return'}); await 等();
           const 文路 = 路径.join(process.env.豫言图形写入根, '图形.txt');
           assert.equal(文件系统.readFileSync(文路, 'utf8'), '中文甲');
           命令('「文件」之「追加」于「图形.txt」于「乙」'); await 等();
