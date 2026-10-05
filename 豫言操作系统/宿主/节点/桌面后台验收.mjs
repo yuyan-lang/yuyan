@@ -14,7 +14,8 @@ const 验模式键 = 原参[4] === '模式键';
 const 验模式 = 原参[4] === '模式' || 验模式键;
 const 验文件命令 = 原参[4] === '文件命令';
 const 验反复 = 原参[4] === '反复';
-const 验聚焦 = 原参[4] === '聚焦';
+const 验重开 = 原参[4] === '重开';
+const 验聚焦 = 原参[4] === '聚焦' || 验重开;
 const 验命令行 = 原参[4] === '命令行' || 验引号 || 验拼音 || 验模式 || 验文件命令 || 验聚焦;
 assert.ok(发行目录 && 依赖目录 && 资源目录 && 图像路径, '须给发行、原生依赖、资源目录及图像输出路径');
 const 启动文 = 文件系统.readFileSync(路径.join(发行目录, '启动.mjs'), 'utf8');
@@ -99,8 +100,10 @@ try {
         窗.emit('keyDown', {key: 'left'});
         窗.emit('keyUp', {key: 'left'});
       }
-      点按钮(135, 28);
+      if (验重开) 点按钮(650, 196);
+      else 点按钮(135, 28);
       await new Promise(成 => setTimeout(成, 200));
+      if (验重开) 文件系统.copyFileSync(图像路径, 图像路径 + '.闭窗.ppm');
       点按钮(240, 28);
       await new Promise(成 => setTimeout(成, 200));
       窗.emit('textInput', {text: '丙'});
