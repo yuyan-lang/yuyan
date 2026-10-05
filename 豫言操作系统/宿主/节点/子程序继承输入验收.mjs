@@ -4,7 +4,7 @@ import 路径 from 'node:path';
 import assert from 'node:assert/strict';
 const [父, 子] = process.argv.slice(2).map(目录 => 路径.resolve(目录, '启动.mjs'));
 assert.ok(父 && 子, '须给父与子发行目录');
-const 果 = 同步启动(process.execPath, [父, '--授权子程序', '子验收=' + 子, '--允许环境', '豫言验收'], {input: '中文输入\n', encoding: 'utf8', timeout: 120000});
+const 果 = 同步启动(process.execPath, [父, '--授权子程序', '子验收=' + 子, '--允许环境', '豫言验收'], {input: '运行子验收\n中文输入\n父续行\n', encoding: 'utf8', timeout: 120000});
 assert.equal(果.status, 0, 果.stderr);
 assert.ok(果.stdout.includes('公共继承输入接口实际调用通过'), 果.stdout);
 process.stdout.write(果.stdout);

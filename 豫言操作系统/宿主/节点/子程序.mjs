@@ -4,7 +4,7 @@ import {spawnSync as 同步启动} from 'node:child_process';
 const 解码 = new TextDecoder('utf-8', {fatal: true});
 const 空字节 = () => new Uint8Array();
 const 失败 = (码, 文) => [码, -1, 空字节(), 空字节(), 文];
-export function 创建子程序能力({程序 = new Map(), 环境 = new Set(), 上限 = 16 * 1024 * 1024} = {}) {
+export function 创建子程序能力({程序 = new Map(), 环境 = new Set(), 上限 = 16 * 1024 * 1024, 暂停输入 = () => () => {}} = {}) {
   return {
     运行: (名, 参数, 输入, 环境项们, 继承输入 = false) => {
       if (!程序.has(名)) return 失败(1, '子程序未获授权：' + 名);
@@ -22,16 +22,19 @@ export function 创建子程序能力({程序 = new Map(), 环境 = new Set(), �
       if (Object.hasOwn(环境值, 'NODE_OPTIONS') || Object.hasOwn(环境值, 'NODE_PATH')) return 失败(7, '子程序环境不得改变节点装载选项');
       const 授 = 程序.get(名);
       try {
-        const 环境授权参数 = Object.keys(环境值).flatMap(名 => ['--允许环境', 名]);
-        const 果 = 同步启动(process.execPath, [授.入口, ...(授.宿主参数 ?? []), ...环境授权参数, '--', ...参数], {
-          cwd: 授.目录, env: 环境值, input: 继承输入 ? undefined : 输入, maxBuffer: 上限,
-          stdio: [继承输入 ? 'inherit' : 'pipe', 'pipe', 'pipe'],
-          // 汉语：当前执行顺序与原壳一致；待办事项：异步启动与取消。文言：今循原壳顺次之行；待办事项：异步启与取消。
-          timeout: 授.时限 ?? 120000, windowsHide: true,
-        });
-        if (果.error) return 失败(果.error.code === 'ENOBUFS' ? 6 : 8, String(果.error.message));
-        if (果.signal || 果.status === null) return 失败(8, '子程序被信号终止：' + 果.signal);
-        return [0, 果.status, new Uint8Array(果.stdout), new Uint8Array(果.stderr), ''];
+        const 恢复输入 = 继承输入 ? 暂停输入() : () => {};
+        try {
+          const 环境授权参数 = Object.keys(环境值).flatMap(名 => ['--允许环境', 名]);
+          const 果 = 同步启动(process.execPath, [授.入口, ...(授.宿主参数 ?? []), ...环境授权参数, '--', ...参数], {
+            cwd: 授.目录, env: 环境值, input: 继承输入 ? undefined : 输入, maxBuffer: 上限,
+            stdio: [继承输入 ? 'inherit' : 'pipe', 'pipe', 'pipe'],
+            // 汉语：当前执行顺序与原壳一致；待办事项：异步启动与取消。文言：今循原壳顺次之行；待办事项：异步启与取消。
+            timeout: 授.时限 ?? 120000, windowsHide: true,
+          });
+          if (果.error) return 失败(果.error.code === 'ENOBUFS' ? 6 : 8, String(果.error.message));
+          if (果.signal || 果.status === null) return 失败(8, '子程序被信号终止：' + 果.signal);
+          return [0, 果.status, new Uint8Array(果.stdout), new Uint8Array(果.stderr), ''];
+        } finally { 恢复输入(); }
       } catch (错) { return 失败(8, String(错?.message ?? 错)); }
     },
     // 汉语：文本输入适配须明确解码失败，不能静默替换字节。文言：文本输入之适配须明报解码之败，不暗易字节。
