@@ -52,4 +52,7 @@ test('未授目录、越界路径、不存在与只读失败有明确状态', as
   assert.equal((await 能力.打开(根, '缺失', false))[0], 4);
   assert.equal((await 能力.打开(根, '说明.txt', true))[0], 1);
   assert.equal((await 能力.写入('伪号', new Uint8Array()))[0], 1);
+  assert.equal((await 能力.创建目录(根, '新目录'))[0], 1);
+  assert.equal((await 能力.创建目录(根, '../越界'))[0], 7);
+  assert.equal((await 能力.创建目录('伪号', '目录'))[0], 3);
 });
