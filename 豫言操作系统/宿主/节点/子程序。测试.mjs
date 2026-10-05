@@ -66,3 +66,12 @@ test('继承输入读取真实父进程输入，仍传具名参数与授权环�
     assert.equal(录[3], '中文错误');
   } finally { 文件系统.rmSync(根, {recursive: true, force: true}); }
 });
+
+test('继承输入启动失败仍恢复父输入，未授权调用不暂停', () => {
+  const 记录 = [];
+  const 能力 = 创建子程序能力({程序: new Map([['失败', {入口: '/不存在/入口.mjs', 目录: '/不存在'}]]), 暂停输入: () => {记录.push('暂停'); return () => 记录.push('恢复');}});
+  assert.equal(能力.运行('未授', [], new Uint8Array(), [], true)[0], 1);
+  assert.deepEqual(记录, []);
+  assert.equal(能力.运行('失败', [], new Uint8Array(), [], true)[0], 8);
+  assert.deepEqual(记录, ['暂停', '恢复']);
+});
