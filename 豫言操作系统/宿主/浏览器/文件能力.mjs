@@ -27,27 +27,35 @@ export function 创建文件能力({目录 = new Map()} = {}) {
   const 执行 = async (术, 误果) => {
     try { return await 术(); } catch (错) { return 误果(错码(错), String(错?.message ?? 错)); }
   };
+  const 取可写父 = async (号, 路) => {
+    const 目录柄 = 取柄(号, '目录');
+    const 段们 = 路径段(路);
+    if (!段们.length) 失败(7, '文件路径为空');
+    if (!目录柄.可写) 失败(1, '当前浏览器目录仅授只读');
+    return [await 取目录(号, 段们.slice(0, -1)), 段们.at(-1)];
+  };
   return {
     取得目录: 名 => 执行(async () => {
       if (!目录.has(名)) 失败(1, '目录未获授权');
-      const 值 = await 目录.get(名);
+      const 授 = await 目录.get(名), 值 = 授?.目录 ?? 授;
       if (值?.kind !== 'directory') 失败(2, '宿主未提供目录能力');
-      if (!目录号们.has(名)) 目录号们.set(名, 柄表.登记({种: '目录', 值}));
+      if (!目录号们.has(名)) 目录号们.set(名, 柄表.登记({种: '目录', 值, 可写: 授?.可写 === true}));
       return [0, 目录号们.get(名)];
     }, (码, 文) => [码, 文]),
     打开: (号, 路, 可写) => 执行(async () => {
       const 段们 = 路径段(路);
       if (!段们.length) 失败(7, '文件路径为空');
       const 父 = await 取目录(号, 段们.slice(0, -1));
-      if (可写) 失败(1, '当前浏览器目录仅授只读');
-      const 文件 = await (await 父.getFileHandle(段们.at(-1), {create: false})).getFile();
-      return [0, 柄表.登记({种: '文件', 值: 文件, 偏移: 0})];
+      if (可写 && !取柄(号, '目录').可写) 失败(1, '当前浏览器目录仅授只读');
+      const 文件句柄 = await 父.getFileHandle(段们.at(-1), {create: false});
+      return [0, 柄表.登记({种: '文件', 值: await 文件句柄.getFile(), 文件句柄, 可写, 偏移: 0})];
     }, (码, 文) => [码, 文]),
     读取: (号, 上限) => 执行(async () => {
       const 柄 = 取柄(号, '文件');
+      const 文件 = 柄.文件句柄 ? await 柄.文件句柄.getFile() : 柄.值;
       if (!Number.isSafeInteger(上限) || 上限 < 1) 失败(7, '读取上限无效');
-      if (柄.偏移 >= 柄.值.size) return [9, new Uint8Array(), ''];
-      const 字节 = new Uint8Array(await 柄.值.slice(柄.偏移, 柄.偏移 + 上限).arrayBuffer());
+      if (柄.偏移 >= 文件.size) return [9, new Uint8Array(), ''];
+      const 字节 = new Uint8Array(await 文件.slice(柄.偏移, 柄.偏移 + 上限).arrayBuffer());
       柄.偏移 += 字节.length;
       return [0, 字节, ''];
     }, (码, 文) => [码, new Uint8Array(), 文]),
@@ -74,22 +82,39 @@ export function 创建文件能力({目录 = new Map()} = {}) {
         return [0, 1, 0, ''];
       }
     }, (码, 文) => [码, 2, 0, 文]),
-    // 汉语：待办事项：公共写入能力与可写授权另接；当前桌面只读。文言：待办事项：公写之能与可写之授后接；今桌面惟读。
-    写入: () => [1, 0, '当前浏览器目录仅授只读'],
-    开启写入: (号, 路) => 执行(async () => {
-      取柄(号, '目录');
-      if (!路径段(路).length) 失败(7, '文件路径为空');
-      失败(1, '当前浏览器目录仅授只读');
+    // 汉语：每次写入关闭原生写流后才成功，使其他文件柄立即可见；待办事项：并发写入协调。文言：每写闭原生写流乃还成，使余柄即见；待办事项：并写之调。
+    写入: (号, 字节) => 执行(async () => {
+      const 柄 = 取柄(号, '文件');
+      if (!柄.可写) 失败(1, '文件未授写权限');
+      const 位置 = 柄.追加 ? (await 柄.文件句柄.getFile()).size : 柄.偏移;
+      const 流 = await 柄.文件句柄.createWritable({keepExistingData: true});
+      try {
+        await 流.write({type: 'write', position: 位置, data: 字节});
+        await 流.close();
+      } catch (错) { await 流.abort().catch(() => {}); throw 错; }
+      柄.偏移 = 位置 + 字节.length;
+      return [0, 字节.length, ''];
+    }, (码, 文) => [码, 0, 文]),
+    开启写入: (号, 路, 追加) => 执行(async () => {
+      const [父, 名] = await 取可写父(号, 路);
+      const 文件句柄 = await 父.getFileHandle(名, {create: true});
+      if (!追加) {
+        const 流 = await 文件句柄.createWritable({keepExistingData: false});
+        try { await 流.close(); } catch (错) { await 流.abort().catch(() => {}); throw 错; }
+      }
+      return [0, 柄表.登记({种: '文件', 文件句柄, 可写: true, 追加, 偏移: 0})];
     }, (码, 文) => [码, 文]),
     创建目录: (号, 路) => 执行(async () => {
-      取柄(号, '目录');
-      if (!路径段(路).length) 失败(7, '目录路径为空');
-      失败(1, '当前浏览器目录仅授只读');
+      const [父, 名] = await 取可写父(号, 路);
+      try { await 父.getDirectoryHandle(名, {create: false}); 失败(5, '目录已存在'); }
+      catch (错) { if (错?.name !== 'NotFoundError') throw 错; }
+      await 父.getDirectoryHandle(名, {create: true});
+      return [0, ''];
     }, (码, 文) => [码, 文]),
     删除: (号, 路) => 执行(async () => {
-      取柄(号, '目录');
-      if (!路径段(路).length) 失败(7, '删除路径为空');
-      失败(1, '当前浏览器目录仅授只读');
+      const [父, 名] = await 取可写父(号, 路);
+      await 父.removeEntry(名, {recursive: false});
+      return [0, ''];
     }, (码, 文) => [码, 文]),
     清理: () => { for (const [号] of 柄表.条目()) 柄表.释放(号); 目录号们.clear(); },
   };
