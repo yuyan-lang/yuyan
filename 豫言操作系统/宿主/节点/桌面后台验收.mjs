@@ -9,6 +9,8 @@ import {创建能力, 带型实现, 能力清理, 运行节点应用} from './�
 const 原参 = process.argv.slice(2);
 const [发行目录, 依赖目录, 资源目录, 图像路径] = 原参.slice(0, 4).map(项 => 路径.resolve(项));
 const 验引号 = 原参[4] === '引号';
+const 验字体 = 原参[4] === '字体';
+const 验任务 = 原参[4] === '任务';
 const 验拼音 = 原参[4] === '拼音';
 const 验模式键 = 原参[4] === '模式键';
 const 验模式 = 原参[4] === '模式' || 验模式键;
@@ -28,6 +30,28 @@ const 程序模块 = new WebAssembly.Module(文件系统.readFileSync(路径.joi
 const 子入口 = 验子程序 ? 路径.resolve(原参[5]) : '';
 const 能力 = 创建能力({授权: {目录: new Map([['桌面', {路径: 资源目录, 可写: false}]]), 子程序: 验子程序 ? new Map([['子验收', {入口: 子入口, 目录: 路径.dirname(子入口)}]]) : new Map(), 源: new Set(), 环境: new Set(验子环境 ? ['豫言验收'] : [])}, 应用参数: [], 程序路径: 路径.join(发行目录, '程序.wasm'), 显示面: new Map([['主窗口', {宽: 900, 高: 640}]]), 原生依赖目录: 依赖目录, 显示面后台: true, 输出: (号, 字节) => process[号 === 2 ? 'stderr' : 'stdout'].write(字节), 张量线程数: 1});
 let 子程序次数 = 0;
+const 字体打开们 = new Set();
+const 任务采样们 = [];
+if (验任务) {
+  const 原任务 = 能力[带型实现].诺节宿主.诺节查询运行任务;
+  能力[带型实现].诺节宿主.诺节查询运行任务 = (...参) => {
+    const 果 = 原任务(...参);
+    assert.ok(果.length > 0);
+    assert.equal(果[0][0], String(process.pid));
+    assert.equal(果[0][2], '宿主进程');
+    assert.ok(果[0][5] > 0 && 果[0][6] > 0);
+    任务采样们.push(果[0]);
+    return 果;
+  };
+}
+if (验字体) {
+  const 原字体 = 能力[带型实现].诺节宿主.诺节字体操作;
+  能力[带型实现].诺节宿主.诺节字体操作 = (...参) => {
+    const 果 = 原字体(...参);
+    if (new TextDecoder().decode(参[0]) === '打开' && 果[0] === 0) 字体打开们.add(new TextDecoder().decode(参[1]));
+    return 果;
+  };
+}
 if (验子程序) {
   const 原运行 = 能力[带型实现].诺节宿主.诺节运行子程序;
   能力[带型实现].诺节宿主.诺节运行子程序 = (...参) => {
@@ -87,6 +111,41 @@ try {
   };
   点按钮(295, 250);
   await 预览帧;
+  if (验任务) {
+    点按钮(670, 28);
+    await new Promise(成 => setTimeout(成, 200));
+    文件系统.copyFileSync(图像路径, 图像路径 + '.初采.ppm');
+    点按钮(570, 494);
+    await new Promise(成 => setTimeout(成, 200));
+    const 手动采样数 = 任务采样们.length;
+    await new Promise(成 => setTimeout(成, 2500));
+    assert.ok(任务采样们.length >= 手动采样数 + 2, '无输入时未按秒自动刷新任务');
+    const 连续输入前 = 任务采样们.length;
+    const 输入计时 = setInterval(() => 窗.emit('mouseMove', {x: 450, y: 300}), 50);
+    try { await new Promise(成 => setTimeout(成, 2500)); }
+    finally { clearInterval(输入计时); }
+    assert.ok(任务采样们.length >= 连续输入前 + 2, '持续输入推迟了任务采样');
+    文件系统.copyFileSync(图像路径, 图像路径 + '.实时.ppm');
+    点按钮(810, 235);
+    await new Promise(成 => setTimeout(成, 200));
+    const 关闭采样数 = 任务采样们.length;
+    await new Promise(成 => setTimeout(成, 1500));
+    assert.equal(任务采样们.length, 关闭采样数, '关闭任务窗口后仍在采样');
+    点按钮(670, 28);
+    await new Promise(成 => setTimeout(成, 200));
+  }
+  if (验字体) {
+    文件系统.copyFileSync(图像路径, 图像路径 + '.默认字体.ppm');
+    点按钮(550, 28);
+    await new Promise(成 => setTimeout(成, 200));
+    点按钮(400, 270);
+    await new Promise(成 => setTimeout(成, 200));
+    文件系统.copyFileSync(图像路径, 图像路径 + '.切换字体.ppm');
+    点按钮(730, 155);
+    await new Promise(成 => setTimeout(成, 200));
+    点按钮(550, 28);
+    await new Promise(成 => setTimeout(成, 200));
+  }
   if (验命令行) {
     点按钮(240, 28);
     await new Promise(成 => setTimeout(成, 200));
@@ -147,6 +206,14 @@ try {
       窗.emit('keyUp', {key: 'return'});
       await new Promise(成 => setTimeout(成, 200));
     }
+    // 汉语：长输出后滚到末尾，点击固定输入区继续写入草稿；实际绘录复核裁剪和输入可见。文言：长输出后卷至末，点定输入区续写稿；实绘录核裁剪与输入之可见。
+    文件系统.copyFileSync(图像路径, 图像路径 + '.滚动前.ppm');
+    窗.emit('mouseMove', {x: 450, y: 300});
+    窗.emit('mouseWheel', {x: 450, y: 300, dx: 0, dy: -100});
+    await new Promise(成 => setTimeout(成, 200));
+    点按钮(300, 450);
+    窗.emit('textInput', {text: '「回显」于「输入仍可用」'});
+    await new Promise(成 => setTimeout(成, 200));
   }
   退出按下 = true;
   if (验模式键) {
@@ -187,6 +254,15 @@ try {
   assert.ok(退出按下 && !超时, '返回按钮未使主循环结束');
   if (验子程序) assert.ok(子程序次数 > 0, '图形命令行没有调用真实子程序');
   if (验子环境) assert.equal(子程序次数, 3, '须验证设置后的执行、历史重放及取消后的执行');
+  if (验字体) {
+    assert.ok([...字体打开们].some(名 => /Songti|Serif|simsun|times/u.test(名)), '没有加载实际衬线字体资源');
+    console.log('实际字体打开：' + [...字体打开们].join('、'));
+  }
+  if (验任务) {
+    assert.ok(任务采样们.length >= 2, '任务窗口没有执行打开采样和刷新采样');
+    assert.ok(任务采样们[1][3] > 任务采样们[0][3], '任务刷新没有取得更新的采样时间');
+    console.log('真实任务采样次数：' + 任务采样们.length);
+  }
   console.log('真实SDL后台绘制、文件按钮预览' + (验命令行 ? '、命令事件注入流程' : '') + '与返回按钮通过；帧数：' + 帧数);
   if (验命令行) console.log('命令执行结果须复核实际绘制记录，帧数本身不证明命令执行。');
 } finally {
