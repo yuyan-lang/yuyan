@@ -572,6 +572,32 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   };
   const 信息种类 = 信息 => 信息.isFile() ? 0 : 信息.isDirectory() ? 1 : 2;
   const 节点文件 = {
+    // 汉语：覆盖与追加共用可写目录权；先核父与已有目标，再打开，防止检查前截断外部文件。待办事项：父路径查询与打开之间的竞态。文言：覆盖与追加共写权；先核父与已有之目，而后开，毋未核而截外文。待办事项：查父与开之间之竞态。
+    豫言_节点_文件开启写入: (目录号, 相对, 追加) => {
+      const 目录 = 取目录(目录号);
+      if (!目录) return [码.已失效, '目录权无效或已失效'];
+      if (!目录.可写) return [码.未获授权, '目录只授读取'];
+      let 径;
+      try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
+      if (!合法相对路径(径)) return [码.输入无效, '文件路径无效'];
+      const 段们 = 径.split('/'), 名 = 段们.pop();
+      const [状态, 父] = 查询目录路径(目录号, new TextEncoder().encode(段们.join('/')));
+      if (状态 !== 码.成功) return [状态, 父];
+      let 目 = 路径.join(父, 名), 描述符;
+      try {
+        if (!文件系统.statSync(父).isDirectory()) return [码.输入无效, '父路径不是目录'];
+        let 已存 = true;
+        try { 文件系统.lstatSync(目); } catch (错) { if (错.code === 'ENOENT') 已存 = false; else throw 错; }
+        if (已存) {
+          目 = 文件系统.realpathSync(目);
+          if (!在根内(目录.根, 目)) return [码.输入无效, '路径越出授权目录'];
+          if (!文件系统.statSync(目).isFile()) return [码.输入无效, '路径不是普通文件'];
+        }
+        const 旗 = 文件系统.constants;
+        描述符 = 文件系统.openSync(目, 旗.O_WRONLY | 旗.O_CREAT | (追加 ? 旗.O_APPEND : 旗.O_TRUNC) | (旗.O_NOFOLLOW ?? 0));
+        return [码.成功, 登记资源({种: '文件', 描述符, 可写: true})];
+      } catch (错) { return [系统错码(错), 错文(错)]; }
+    },
     // 文言：造目录先核写权及父之真径，不递造。汉语：创建单层目录，复用授权根检查，父目录必须存在。
     豫言_节点_文件创建目录: (目录号, 相对) => {
       const 目录 = 取目录(目录号);
