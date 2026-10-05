@@ -1,6 +1,7 @@
 // 文言：客裁界面，宿主但施文树、待事与网求。汉语：浏览器宿主只执行 DOM、事件和网络原语。
 import {创建豫言实例, 文字} from './值桥.mjs';
 import {创建句柄表} from './句柄.mjs';
+import {创建控制台能力} from './控制台.mjs';
 
 // 文言：同源径不得逸境，改址与巨文俱拒。汉语：静态资源只从当前 origin 读取，禁止重定向并逐块限制正文大小。
 export async function 读取同源资源文字(路径文, 基址文, 网络) {
@@ -2331,6 +2332,7 @@ export const 浏览器平台导入 = Object.freeze({
     浏览器文件列表数量: '豫言_浏览器_文件列表数量',
     浏览器文件列表取项安全: '豫言_浏览器_文件列表取项安全',
     浏览器显示操作: '豫言_浏览器_显示',
+    浏览器控制台操作: '豫言_浏览器_控制台',
     浏览器文件取得目录: '豫言_浏览器_文件取得目录',
     浏览器文件打开: '豫言_浏览器_文件打开',
     浏览器文件读取: '豫言_浏览器_文件读取',
@@ -2525,7 +2527,8 @@ const 条件异步原语 = new Set(['豫言_浏览器_等待事件', '豫言_浏
   '豫言_浏览器_同源资源文字', '豫言_浏览器_同源资源JSON数组项', '豫言_浏览器_显示', '豫言_浏览器_图形', '豫言_浏览器_字体', '豫言_中央张量_启用', '豫言_中央张量_运行']);
 const 是异步函数 = 函 => 函?.constructor?.name === 'AsyncFunction';
 
-export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 队列上限 = {}, 编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000, 授权目录 = new Map()}) {
+export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 队列上限 = {}, 编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000, 授权目录 = new Map(), 授权控制台 = new Map()}) {
+  const 控制台 = 创建控制台能力(授权控制台);
   let 网页能力 = null;
   const 页面资源正文缓存 = new Map();
   const 页面资源数组缓存 = new Map();
@@ -2955,6 +2958,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
       catch (错) { return [false, String(错?.message ?? 错)]; }
     },
     // 文言：显示与图形各一口：返（码，诸数，文）与（码，号，文，字节）。汉语：显示与图形处理器各一个原语；返回元组，状态码见 图形.mjs。
+    豫言_浏览器_控制台: async (操作, 名, 文) => 文字(操作) === '读取' ? 控制台.读取(文字(名)) : 文字(操作) === '写入' ? 控制台.写入(文字(名), 文字(文)) : [7, '', '控制台操作无效'],
     豫言_浏览器_显示: (操作, 号, 甲, 乙, 字节, 丙 = 0, 丁 = 0) => {
       const 行 = () => 显示.调用(文字(操作), Number(号), Number(甲), Number(乙), 字节, Number(丙), Number(丁));
       return 显示 ? 行() : 载图形().then(行);
@@ -3942,6 +3946,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
   const 关闭宿主 = () => {
       if (关闭) return;
       关闭 = true;
+      控制台.关闭();
       for (const 名 of ['click', 'input', 'change', 'submit']) 根.removeEventListener(名, 监听);
       for (const 项 of 订阅.values()) 项.清理();
       订阅.clear();
