@@ -58,4 +58,9 @@ test('未授目录、越界路径、不存在与只读失败有明确状态', as
   assert.equal((await 能力.开启写入(根, '新文件', false))[0], 1);
   assert.equal((await 能力.开启写入(根, '../越界', true))[0], 7);
   assert.equal((await 能力.开启写入('伪号', '文件', false))[0], 3);
+  assert.equal((await 能力.删除(根, '说明.txt'))[0], 1);
+  assert.equal((await 能力.删除(根, ''))[0], 7);
+  assert.equal((await 能力.删除(根, '../越界'))[0], 7);
+  assert.equal((await 能力.删除('伪号', '文件'))[0], 3);
+  assert.equal((await 能力.查询信息(根, '说明.txt'))[0], 0);
 });
