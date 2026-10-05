@@ -147,6 +147,14 @@ try {
       窗.emit('keyUp', {key: 'return'});
       await new Promise(成 => setTimeout(成, 200));
     }
+    // 汉语：长输出后滚到末尾，点击固定输入区继续写入草稿；实际绘录复核裁剪和输入可见。文言：长输出后卷至末，点定输入区续写稿；实绘录核裁剪与输入之可见。
+    文件系统.copyFileSync(图像路径, 图像路径 + '.滚动前.ppm');
+    窗.emit('mouseMove', {x: 450, y: 300});
+    窗.emit('mouseWheel', {x: 450, y: 300, dx: 0, dy: -100});
+    await new Promise(成 => setTimeout(成, 200));
+    点按钮(300, 450);
+    窗.emit('textInput', {text: '「回显」于「输入仍可用」'});
+    await new Promise(成 => setTimeout(成, 200));
   }
   退出按下 = true;
   if (验模式键) {
