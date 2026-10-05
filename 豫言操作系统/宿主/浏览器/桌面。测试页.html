@@ -1,0 +1,39 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>用户态桌面浏览器验收</title>
+<link data-yy-字体="无衬线" href="/yy验收字体.ttf">
+<style>body{margin:0;background:#eef2f6}canvas{width:900px;height:640px;display:block}pre{margin:8px}</style>
+<canvas width="900" height="640" data-yy-显示面="主窗口"></canvas>
+<pre id="结果">正在准备实际浏览器目录</pre>
+<button id="保存">保存验收画面</button>
+<script type="module">
+// 汉语：测试夹具只写本页专用的站点私有目录，再授给实际豫言桌面；不访问用户本地文件。文言：试具惟写此页专用站点私有目录，乃授实豫言桌面；不取用户本地文件。
+import {启动豫言浏览器应用} from '/入口.mjs';
+const 结果 = document.getElementById('结果');
+// 汉语：只导出本测试桌面的画布像素，供验收记录。文言：惟导此试桌面画布之素，供验录。
+document.getElementById('保存').onclick = async () => {
+  const 图 = document.getElementById('验收图') ?? document.createElement('img');
+  图.id = '验收图';
+  图.alt = '真实豫言桌面验收像素';
+  图.src = document.querySelector('canvas').toDataURL('image/png');
+  document.body.append(图);
+  const 字 = await new Promise(成 => document.querySelector('canvas').toBlob(成,'image/png'));
+  const 回应 = await fetch('/yy验收画面',{method:'POST',body:字});
+  if (!回应.ok) throw Error('验收画面保存失败');
+  document.getElementById('保存').textContent = await 回应.text();
+};
+try {
+  const 根 = await navigator.storage.getDirectory();
+  const 目录 = await 根.getDirectoryHandle('yy桌面验收', {create:true});
+  const 子目录 = await 目录.getDirectoryHandle('子目录', {create:true});
+  for (const [父, 名, 文] of [[目录, '说明.txt', '浏览器豫言文件预览验证'], [子目录, '子.txt', '浏览器子目录读取验证']]) {
+    const 文件 = await 父.getFileHandle(名, {create:true});
+    const 写器 = await 文件.createWritable();
+    await 写器.write(文);
+    await 写器.close();
+  }
+  const 宿主 = await 启动豫言浏览器应用({授权目录:new Map([['桌面',目录]])});
+  结果.textContent = '实际站点目录已授予；请验目录导航、文本预览、图形命令行与返回。';
+  宿主.完成.then(() => {结果.textContent='桌面已返回调用方';}, 错 => {结果.textContent='运行失败：'+String(错);});
+} catch (错) {结果.textContent='启动失败：'+String(错);console.error(错);}
+</script>

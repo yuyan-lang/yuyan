@@ -19,7 +19,7 @@ const 消息 = 错 => String(错?.message ?? 错);
 //       单个 Unicode 标量值原样交付；其余键（f1、capsLock……）不交付。SDL 的回车键名为 return，小键盘回车为 enter，两者都译为回车；
 //       左右两个修饰键同名（@kmamal/sdl 0.11 把右 GUI 键拼成 gUI，一并收下）。
 const SDL键名表 = Object.freeze({left: '左', right: '右', up: '上', down: '下', return: '回车', enter: '回车', backspace: '退格', space: '空格',
-  delete: '删除', home: '起首', end: '末尾', pageUp: '上翻页', pageDown: '下翻页', tab: '制表', escape: '退出',
+  delete: '删除', home: '起首', end: '末尾', pageUp: '上翻页', pageDown: '下翻页', tab: '制表', escape: '退出', f2: '功能二',
   shift: '上档', ctrl: '控制', alt: '交替', gui: '命令', gUI: '命令'});
 const 修饰键名 = new Set(['上档', '控制', '交替', '命令']);
 // 文言：滚一格当四十八逻辑像素。汉语：SDL 的滚轮量以格计，一格折成 48 个逻辑像素再乘像素比。

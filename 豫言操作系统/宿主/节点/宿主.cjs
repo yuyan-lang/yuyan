@@ -5,6 +5,7 @@ const 子进程 = require('node:child_process'), 终端 = require('node:tty'), �
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
 const {建立编译线程} = require('./编译线程.cjs');
+const {创建终端输入} = require('./终端输入.mjs');
 // 文言：同一宿主工序对同一 Wasm 只散列一次。汉语：同一 Node worker 对同一路径只计算一次内容 SHA-256。
 const 当前程序SHA256缓存=new Map();
 const 获取程序内容SHA256=名=>{const 全径=路径.resolve(名),旧=当前程序SHA256缓存.get(全径);if(旧!==undefined)return 旧;const 摘要=密码.createHash('sha256').update(文件.readFileSync(全径)).digest('hex');当前程序SHA256缓存.set(全径,摘要);return 摘要;};
@@ -228,13 +229,15 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     ...外部库原语(文)
   };
   // 文言：带型之导入，以边界胶水依签名包之；无实现者给桩。汉语：带类型的导入按「豫言边界」段里的签名由共用胶水包装；没有实现的给桩，调用时报“接口函数未绑定”。
-  // 文言：标准库与构建基础之带型导入，实借旧原语：串参先转 Buffer，列果惟返数组，小数果去壳；构建基础供存上下文、可绘面板、今程序及文件 SHA-256，绘面板仍为桩。汉语：标准库（65 个）与构建基础（5 个）的带类型导入，见《网页汇编接口》网五；构建基础提供包上下文存放、面板可用性、当前 Wasm 和指定文件 SHA-256，绘制面板仍未绑定。旧表未有的终端按键、原始输入模式、拼音及绘制面板均报未绑定。
+  // 文言：标准库与构建基础之带型导入借旧原语，终端键与原始制另由终端输入模块供之；拼音与绘面板仍未绑定。汉语：标准库与构建基础的带类型导入复用旧原语，终端按键与原始模式由终端输入模块提供；拼音与绘制面板仍未绑定。
   const 缓=值=>Buffer.from(值.buffer,值.byteOffset,值.byteLength);
   const 去壳=值=>值?.小数??值;
   const 串参=名=>值=>原语[名](缓(值));
   const 无参=名=>()=>原语[名]();
   const 子参=参=>[参.map(缓)];
+  const 终端输入 = 创建终端输入();
   const 标准库实现={
+    进入终端原始输入模式:()=>终端输入.进入(),退出终端原始输入模式:()=>终端输入.退出(),读取终端按键:()=>终端输入.读取(),
     打印行:串参('豫言_打印行'),打印字符串:串参('豫言_打印字符串'),标准错误打印行:串参('豫言_标准错误打印行'),
     尝试读取标准输入行:无参('豫言_尝试读取标准输入行'),标准输出是终端:无参('豫言_标准输出是终端'),标准输入是终端:无参('豫言_标准输入是终端'),
     同步读取文件:串参('豫言_同步读取文件'),同步读取文件字节串:串参('豫言_同步读取文件字节串'),
@@ -296,7 +299,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 实例=new WebAssembly.Instance(模块,{...带型导入});
   let 退出码=0;
   // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 初始化各模块之后，应用若实现了《豫言操作系统启动》的「启动程序」（导出 豫言操作系统启动/启动程序），就调用它；旧产物没有这个导出，照旧只跑 _start。
-  try{实例.exports._start();const 导出=边界胶水?边界胶水.造边界导出(实例,模块,桥):{};const 启动=边界胶水?导出[边界胶水.启动导出名]:undefined;if(启动)启动();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}
+  try{实例.exports._start();const 导出=边界胶水?边界胶水.造边界导出(实例,模块,桥):{};const 启动=边界胶水?导出[边界胶水.启动导出名]:undefined;if(启动)启动();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{终端输入.退出();}
   // 文言：承构志之工务，书定标行；显设 YY_NODE_STATS 者，仍书旧详数。旧通调已删，其调用数为零。汉语：仅继承构建日志的 worker 写 marker 行；显式 YY_NODE_STATS 仍保留详细 JSON；宿主调用数字段计旧通用调用，删除后为零。
   const 工务任务=本工.编译线程||本工.参数?.includes('--mode=worker');
   const 工务统计=工务任务&&!!process.env.YY_BUILD_LOG_RUN;

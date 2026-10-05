@@ -3,7 +3,7 @@
 //       带 --隔离 时每个响应都带 Cross-Origin-Opener-Policy: same-origin 与 Cross-Origin-Embedder-Policy: require-corp，页面因而跨源隔离，
 //       中央张量宿主可用共享内存与 Web Worker 多线程。/api/slow?d=毫秒 延迟响应，供无头 Chrome 的 --dump-dom 等探针跑完。只监听 127.0.0.1，不访问外网。
 import http from 'node:http';
-import {readFile, stat} from 'node:fs/promises';
+import {readFile, stat, writeFile} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 
@@ -20,6 +20,15 @@ const 服务 = http.createServer(async (请求, 响应) => {
   const 址 = new URL(请求.url, 'http://x');
   const 路 = decodeURIComponent(址.pathname);
   const 头 = (状态, 类型) => 响应.writeHead(状态, {'Content-Type': 类型, 'Cache-Control': 'no-store', ...隔离头});
+  // 汉语：桌面验收显式开启时，仅保存本测试画布的PNG；固定产物名，不接受路径。文言：明启桌面之验，惟存此试画布之PNG；产物名恒定，不受路径。
+  if (process.argv.includes('--桌面验收') && 路 === '/yy验收画面' && 请求.method === 'POST') {
+    const 块们 = []; let 字数 = 0;
+    for await (const 块 of 请求) { 字数 += 块.length; if (字数 > 8388608) { 头(413,'text/plain'); 响应.end('图像过大'); return; } 块们.push(块); }
+    const 字 = Buffer.concat(块们);
+    if (!字.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))) { 头(400,'text/plain'); 响应.end('须为PNG'); return; }
+    await writeFile(path.join(产物目录,'yy浏览器桌面实际.png'),字);
+    头(200,'text/plain; charset=utf-8'); 响应.end('验收画面已保存'); return;
+  }
   if (路.includes('..')) { 头(400, 'text/plain; charset=utf-8'); 响应.end('路径不合规'); return; }
   if (路 === '/api/slow') {
     setTimeout(() => { 头(200, 'text/plain; charset=utf-8'); 响应.end('慢'); }, Number(址.searchParams.get('d') ?? 200));
