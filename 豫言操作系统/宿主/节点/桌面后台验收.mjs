@@ -13,7 +13,8 @@ const 验拼音 = 原参[4] === '拼音';
 const 验模式键 = 原参[4] === '模式键';
 const 验模式 = 原参[4] === '模式' || 验模式键;
 const 验文件命令 = 原参[4] === '文件命令';
-const 验子程序 = 原参[4] === '子程序';
+const 验子环境 = 原参[4] === '子程序环境';
+const 验子程序 = 原参[4] === '子程序' || 验子环境;
 const 验反复 = 原参[4] === '反复';
 const 验重开 = 原参[4] === '重开';
 const 验聚焦 = 原参[4] === '聚焦' || 验重开;
@@ -25,7 +26,7 @@ assert.ok(桥文, '发行启动文件缺少内嵌值桥');
 const 桥模块 = new WebAssembly.Module(Uint8Array.from(桥文[1].split(',').map(数 => Number(数))));
 const 程序模块 = new WebAssembly.Module(文件系统.readFileSync(路径.join(发行目录, '程序.wasm')));
 const 子入口 = 验子程序 ? 路径.resolve(原参[5]) : '';
-const 能力 = 创建能力({授权: {目录: new Map([['桌面', {路径: 资源目录, 可写: false}]]), 子程序: 验子程序 ? new Map([['子验收', {入口: 子入口, 目录: 路径.dirname(子入口)}]]) : new Map(), 源: new Set(), 环境: new Set()}, 应用参数: [], 程序路径: 路径.join(发行目录, '程序.wasm'), 显示面: new Map([['主窗口', {宽: 900, 高: 640}]]), 原生依赖目录: 依赖目录, 显示面后台: true, 输出: (号, 字节) => process[号 === 2 ? 'stderr' : 'stdout'].write(字节), 张量线程数: 1});
+const 能力 = 创建能力({授权: {目录: new Map([['桌面', {路径: 资源目录, 可写: false}]]), 子程序: 验子程序 ? new Map([['子验收', {入口: 子入口, 目录: 路径.dirname(子入口)}]]) : new Map(), 源: new Set(), 环境: new Set(验子环境 ? ['豫言验收'] : [])}, 应用参数: [], 程序路径: 路径.join(发行目录, '程序.wasm'), 显示面: new Map([['主窗口', {宽: 900, 高: 640}]]), 原生依赖目录: 依赖目录, 显示面后台: true, 输出: (号, 字节) => process[号 === 2 ? 'stderr' : 'stdout'].write(字节), 张量线程数: 1});
 let 子程序次数 = 0;
 if (验子程序) {
   const 原运行 = 能力[带型实现].诺节宿主.诺节运行子程序;
@@ -33,6 +34,7 @@ if (验子程序) {
     const 果 = 原运行(...参);
     assert.deepEqual(果.slice(0, 2), [0, 0]);
     assert.ok(new TextDecoder().decode(果[2]).includes('甲 乙，丙'));
+    if (验子环境) assert.equal(new TextDecoder().decode(果[2]).includes('环境甲'), 子程序次数 < 2);
     子程序次数 += 1;
     return 果;
   };
@@ -97,6 +99,12 @@ try {
       await new Promise(成 => setTimeout(成, 200));
     }
     if (!验聚焦) 点按钮(300, 450);
+    if (验子环境) {
+      窗.emit('textInput', {text: '「设」于「豫言验收」于「环境甲」'});
+      窗.emit('keyDown', {key: 'return'});
+      窗.emit('keyUp', {key: 'return'});
+      await new Promise(成 => setTimeout(成, 200));
+    }
     if (验引号 || 验拼音 || 验模式) {
       // 汉语：逐字符经过真实输入控件，验嵌套转换；整段粘贴有意保持原文。文言：逐字经实输入控件，以验嵌套之化；整段粘贴意存原文。
       for (const 字 of (验模式 ? '「回显」于「hx1{}」' : 验拼音 ? 'hx1ni1hao1' : '{回显}于{{甲}乙}')) {
@@ -131,6 +139,14 @@ try {
     await new Promise(成 => setTimeout(成, 200));
     窗.emit('mouseWheel', {x: 450, y: 300, dx: 0, dy: -8});
     await new Promise(成 => setTimeout(成, 200));
+  }
+  if (验子环境) {
+    for (const 命令 of ['「取消」于「豫言验收」', '「运行」于「子验收」于「甲 乙」于「丙」']) {
+      窗.emit('textInput', {text: 命令});
+      窗.emit('keyDown', {key: 'return'});
+      窗.emit('keyUp', {key: 'return'});
+      await new Promise(成 => setTimeout(成, 200));
+    }
   }
   退出按下 = true;
   if (验模式键) {
@@ -170,6 +186,7 @@ try {
   assert.ok(读文件数 > 0, '文件按钮未调用实际文件服务');
   assert.ok(退出按下 && !超时, '返回按钮未使主循环结束');
   if (验子程序) assert.ok(子程序次数 > 0, '图形命令行没有调用真实子程序');
+  if (验子环境) assert.equal(子程序次数, 3, '须验证设置后的执行、历史重放及取消后的执行');
   console.log('真实SDL后台绘制、文件按钮预览' + (验命令行 ? '、命令事件注入流程' : '') + '与返回按钮通过；帧数：' + 帧数);
   if (验命令行) console.log('命令执行结果须复核实际绘制记录，帧数本身不证明命令执行。');
 } finally {
