@@ -1,0 +1,35 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>豫言操作系统 · 网页体验</title>
+<link data-yy-字体="无衬线" href="./字体.ttf">
+<style>body{margin:8px;background:#eef2f6}pre{white-space:pre-wrap}input{width:600px}canvas{width:900px;height:640px;display:none}body:has(input[data-yy-显示面输入]) canvas{display:block}</style>
+<nav><a href="/">豫言首页</a> · <a href="./字体许可证.txt">字体许可证</a></nav>
+<h1>豫言操作系统 · 网页体验</h1>
+<p>默认进入命令行。输入「图形」打开桌面；桌面可返回同一命令行。浏览器当前只读文件，任务占用指标暂不可用。</p>
+<pre id="输出"></pre>
+<form id="命令表单"><label>命令<input id="命令" disabled autocomplete="off"></label><button id="执行" disabled>执行</button></form>
+<p id="状态">正在启动原壳</p>
+<canvas width="900" height="640" data-yy-显示面="主窗口"></canvas>
+<script type="module">
+// 汉语：页面只承接公共控制台和显示面，命令解释、图形启动与返回均由同一豫言程序处理；本地目录由浏览器存储提供。文言：页惟承公控制台与显示面，命令之释、图形之启归皆由同一豫言程序治；本地目录由浏览器之存供之。
+import {启动豫言浏览器应用} from './入口.mjs';
+const 输出 = document.getElementById('输出'), 输入 = document.getElementById('命令'), 执行 = document.getElementById('执行'), 状态 = document.getElementById('状态');
+let 候者 = null;
+document.getElementById('命令表单').onsubmit = 事 => {
+  事.preventDefault(); if (!候者) return;
+  const 成 = 候者; 候者 = null;
+  const 文 = 输入.value; 输入.value = ''; 输入.disabled = true; 执行.disabled = true;
+  输出.textContent += 文 + '\n'; 状态.textContent = '原壳正在处理'; 成([true, 文]);
+};
+try {
+  const 根 = await navigator.storage.getDirectory();
+  const 目录 = await 根.getDirectoryHandle('豫言桌面', {create:true});
+  const 文 = await 目录.getFileHandle('说明.txt', {create:true});
+  if ((await 文.getFile()).size === 0) {
+    const 写 = await 文.createWritable(); await 写.write('欢迎使用豫言操作系统网页体验。\n输入「图形」进入桌面，可打开文件浏览器、命令行、系统设置和任务管理器。'); await 写.close();
+  }
+  const 台 = {读取行: () => new Promise(成 => {候者 = 成; 输入.disabled = false; 执行.disabled = false; 状态.textContent = '原壳等待命令'; 输入.focus();}), 写文本: 文 => {输出.textContent += 文;}, 关闭: () => {候者?.([false,'']); 候者=null; 输入.disabled=true; 执行.disabled=true;}};
+  const 宿主 = await 启动豫言浏览器应用({授权目录:new Map([['桌面',目录]]), 授权控制台:new Map([['主控制台',台]]), 输出: 文 => {输出.textContent += 文;}});
+  宿主.完成.then(() => {状态.textContent='原壳已退出'; 输入.disabled=true; 执行.disabled=true;}, 错 => {状态.textContent='运行失败：'+String(错); console.error(错);});
+} catch (错) {状态.textContent='启动失败：'+String(错); console.error(错);}
+</script>
