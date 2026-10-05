@@ -1263,7 +1263,15 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
           const 选项 = 句柄.入(JSON.parse(文字(选项文)));
           if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('请求选项须为对象');
           let 待;
-          try { 待 = Promise.resolve(网络(目标文, {...选项, redirect: Array.isArray(许可.OUTBOUND_ORIGINS) ? 'error' : 选项.redirect, signal: 信号})); }
+          // 汉语：云工只支持 manual 与 follow；以 manual 取回应后显式拒绝重定向。
+          // 文言：云工惟许 manual、follow；取 manual 之应，见转址则拒之。
+          const 拒绝转址 = Array.isArray(许可.OUTBOUND_ORIGINS) || 选项.redirect === 'error';
+          try {
+            待 = Promise.resolve(网络(目标文, {...选项, redirect: 拒绝转址 ? 'manual' : 选项.redirect, signal: 信号})).then(回应 => {
+              if (拒绝转址 && [301, 302, 303, 307, 308].includes(回应.status)) throw Error('上游请求禁止重定向');
+              return 回应;
+            });
+          }
           catch (错) { 待 = Promise.reject(错); }
           待.catch(() => {});
           return 句柄.登记(待);
