@@ -120,6 +120,11 @@ try {
     const 手动采样数 = 任务采样们.length;
     await new Promise(成 => setTimeout(成, 2500));
     assert.ok(任务采样们.length >= 手动采样数 + 2, '无输入时未按秒自动刷新任务');
+    const 连续输入前 = 任务采样们.length;
+    const 输入计时 = setInterval(() => 窗.emit('mouseMove', {x: 450, y: 300}), 50);
+    try { await new Promise(成 => setTimeout(成, 2500)); }
+    finally { clearInterval(输入计时); }
+    assert.ok(任务采样们.length >= 连续输入前 + 2, '持续输入推迟了任务采样');
     文件系统.copyFileSync(图像路径, 图像路径 + '.实时.ppm');
     点按钮(810, 235);
     await new Promise(成 => setTimeout(成, 200));
