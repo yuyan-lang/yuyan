@@ -5,13 +5,16 @@
 import * as 文件系统 from 'node:fs';
 import 路径 from 'node:path';
 import 终端 from 'node:tty';
+import {StringDecoder as 字节解码器} from 'node:string_decoder';
 import 系统 from 'node:os';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
-import {spawnSync} from 'node:child_process';
+import {spawnSync, spawnSync as 同步启动} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {Worker, MessageChannel, receiveMessageOnPort} from 'node:worker_threads';
 // 〔内联起〕
+import {创建子程序能力} from './子程序.mjs';
+import {创建终端输入} from './终端输入.mjs';
 import {造边界导入, 造边界导出, 启动导出名} from '../网页汇编/边界.mjs';
 import {创建值桥, 文字, 精确小数, 小数表示, 理解小数, 随机整数, 处理器数量, 平台导入旧名} from '../云工/值桥.mjs';
 import {创建句柄表} from '../云工/句柄.mjs';
@@ -53,12 +56,12 @@ const 显示面尺寸上限 = 65536;
 
 // 文言：宿主诸选在前，-- 或首个非选项之后皆归应用。汉语：宿主选项写在前面；遇到 -- 或第一个不认识的参数，其后全部交给应用。
 const 取值选项 = new Set(['--程序', '--清单', '--值桥', '--授权目录', '--授权只读目录', '--允许源', '--允许环境', '--授权文件', '--张量线程数',
-  '--张量后端', '--授权显示面', '--原生依赖目录']);
+  '--张量后端', '--授权显示面', '--原生依赖目录', '--授权子程序']);
 // 文言：环境之同义：YY_NODE_NATIVE_DIR 同 --原生依赖目录（选项优先），YY_NODE_DISPLAY_BACKGROUND=1 同 --显示面后台。
 // 汉语：同义环境变量：YY_NODE_NATIVE_DIR 等同 --原生依赖目录（两者都给时以选项为准），YY_NODE_DISPLAY_BACKGROUND=1 等同 --显示面后台。
 export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 = process.env) {
   // 文言：终端浏览器之发行包默认通诸 HTTP(S) 源；余应用仍循逐源之授。汉语：终端浏览器发行包默认允许全部 HTTP(S) 来源，其他应用仍按来源授权。
-  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 源: new Set(), 环境: new Set(), 全部来源: 内嵌?.允许全部来源 === true}, 应用参数: [], 张量线程数: null, 张量后端: '',
+  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 子程序: new Map(), 源: new Set(), 环境: new Set(), 全部来源: 内嵌?.允许全部来源 === true}, 应用参数: [], 张量线程数: null, 张量后端: '',
     显示面: new Map(), 原生依赖目录: 环境.YY_NODE_NATIVE_DIR ? 路径.resolve(当前目录, 环境.YY_NODE_NATIVE_DIR) : null,
     显示面后台: 环境.YY_NODE_DISPLAY_BACKGROUND === '1', 允许系统库调用: false};
   const 授目录 = (文, 可写, 基准) => {
@@ -111,6 +114,12 @@ export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 
     else if (项 === '--授权只读目录') 授目录(值, false, 当前目录);
     else if (项 === '--允许源') 允源(值);
     else if (项 === '--允许环境') 配置.授权.环境.add(值);
+    else if (项 === '--授权子程序') {
+      const 位 = 值.indexOf('=');
+      须(位 > 0 && 位 < 值.length - 1, '子程序授权须写成 名=启动文件路径');
+      const 入口 = 路径.resolve(当前目录, 值.slice(位 + 1));
+      配置.授权.子程序.set(值.slice(0, 位), {入口, 目录: 路径.dirname(入口)});
+    }
     else if (项 === '--张量线程数') {
       须(/^[1-9][0-9]*$/u.test(值), '--张量线程数 须为正整数：' + 值);
       配置.张量线程数 = Math.min(Number(值), 张量线程上限);
@@ -355,7 +364,12 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   //   参数、结果是边界胶水的 JS 形（串为 Uint8Array，整为 BigInt，小为 Number，爻为布尔，列为数组）；语义见 ../标准库宿主.汉语.md。
   // 文言：今目录为实例所有；此宿主不许迁之，恒返启时之目。汉语：当前工作目录归实例所有；本宿主不支持切换，恒返回实例创建时的目录。
   const 当前目录 = process.cwd();
+  const 终端输入 = 创建终端输入();
+  const 子程序 = 创建子程序能力({程序: 授权.子程序, 环境: 授权.环境});
   const 标准库 = {
+    进入终端原始输入模式: () => 终端输入.进入(),
+    退出终端原始输入模式: () => 终端输入.退出(),
+    读取终端按键: () => 终端输入.读取(),
     获取命令行程序名: () => 程序路径,
     获取命令行参数: () => 应用参数,
     获取当前工作目录: () => 当前目录,
@@ -544,7 +558,55 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
 
   // 文言：文件之能：目录由宿主预授，路径不得越其界；柄号为不可推之随机数，宿主核其类与存亡。
   // 汉语：Node 文件原语：目录权来自 --授权目录；路径先按规范校验，再求真实路径并确认仍在授权目录内（防符号链接逃逸）；句柄号是不可猜测的随机数，宿主核对种类与有效期。
+  // 文言：新查惟许空径为授权根，余循旧法；真径必在根内。汉语：目录查询允许空路径表示授权根，其他路径沿用旧校验，真实路径必须留在授权根内。
+  const 查询目录路径 = (目录号, 相对) => {
+    const 目录 = 取目录(目录号);
+    if (!目录) return [码.已失效, '目录权无效或已失效'];
+    let 径;
+    try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
+    if (径 !== '' && !合法相对路径(径)) return [码.输入无效, '路径无效：' + 径];
+    try {
+      const 实 = 文件系统.realpathSync(路径.join(目录.根, ...径.split('/')));
+      return 在根内(目录.根, 实) ? [码.成功, 实] : [码.输入无效, '路径越出授权目录'];
+    } catch (错) { return [系统错码(错), 错文(错)]; }
+  };
+  const 信息种类 = 信息 => 信息.isFile() ? 0 : 信息.isDirectory() ? 1 : 2;
   const 节点文件 = {
+    // 文言：造目录先核写权及父之真径，不递造。汉语：创建单层目录，复用授权根检查，父目录必须存在。
+    豫言_节点_文件创建目录: (目录号, 相对) => {
+      const 目录 = 取目录(目录号);
+      if (!目录) return [码.已失效, '目录权无效或已失效'];
+      if (!目录.可写) return [码.未获授权, '目录只授读取'];
+      let 径;
+      try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
+      if (!合法相对路径(径)) return [码.输入无效, '目录路径无效'];
+      const 段们 = 径.split('/');
+      const 名 = 段们.pop();
+      const [状态, 父] = 查询目录路径(目录号, new TextEncoder().encode(段们.join('/')));
+      if (状态 !== 码.成功) return [状态, 父];
+      try {
+        文件系统.mkdirSync(路径.join(父, 名));
+        return [码.成功, ''];
+      } catch (错) { return [系统错码(错), 错文(错)]; }
+    },
+    豫言_节点_文件列目录: (目录号, 相对) => {
+      const [状态, 实] = 查询目录路径(目录号, 相对);
+      if (状态 !== 码.成功) return [状态, [], 实];
+      try {
+        if (!文件系统.statSync(实).isDirectory()) return [码.输入无效, [], '路径不是目录'];
+        // 文言：链不随而记其他，开链仍核边界；待办事项：查询与使用间之竞态。汉语：目录中的符号链接列为其他，打开时仍核授权边界；待办事项：查询与使用之间的竞态。
+        const 项们 = 文件系统.readdirSync(实, {withFileTypes: true}).map(项 => [项.name, 信息种类(项)]);
+        return [码.成功, 项们, ''];
+      } catch (错) { return [系统错码(错), [], 错文(错)]; }
+    },
+    豫言_节点_文件查询信息: (目录号, 相对) => {
+      const [状态, 实] = 查询目录路径(目录号, 相对);
+      if (状态 !== 码.成功) return [状态, 2, 0, 实];
+      try {
+        const 信息 = 文件系统.statSync(实);
+        return [码.成功, 信息种类(信息), 信息.isFile() ? 信息.size : 0, ''];
+      } catch (错) { return [系统错码(错), 2, 0, 错文(错)]; }
+    },
     豫言_节点_文件取得目录: 名 => {
       const 名称 = 文字(名);
       const 授 = 授权.目录.get(名称);
@@ -680,9 +742,10 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
     const 项 = 资源.get(文字(号));
     return 项?.种 === '张量' ? 项 : null;
   }});
-  const 旧表 = {...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库};
+  const 旧表 = {...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库,
+    豫言_节点_运行子程序: (名, 参数, 输入, 环境项们) => 子程序.运行(文字(名), 参数.map(文字), 输入, 环境项们.map(项 => 项.map(文字)))};
   // 文言：平台接口包之带型导入，由旧名之能表派生。汉语：平台接口包的带类型导入由上面以旧名为键的能力表派生，见 派生平台实现；旧名只是内部的键，不对外。
-  return Object.freeze({[能力清理]: 节点图形.清理, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表)}});
+  return Object.freeze({[能力清理]: () => {终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表)}});
 }
 
 // 文言：以 JSPI 行客：诸能或同步或异步，客皆以常调用视之。汉语：用 JSPI 运行：能力可以同步返回，也可以返回 Promise（网络、摘要等），应用都按普通调用看待。

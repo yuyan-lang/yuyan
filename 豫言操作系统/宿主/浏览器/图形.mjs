@@ -27,7 +27,7 @@ const 空字节 = new Uint8Array();
 // 汉语：规范的语义键名：0.1.0 的七个，0.2.0 增加 删除、起首、末尾、上翻页、下翻页、制表、退出 与修饰键 上档、控制、交替、命令；
 //       event.key 是单个 Unicode 标量值时原样交付，其他键（F1、CapsLock……）不交付。
 const 键名表 = Object.freeze({ArrowLeft: '左', ArrowRight: '右', ArrowUp: '上', ArrowDown: '下', Enter: '回车', Backspace: '退格', ' ': '空格',
-  Delete: '删除', Home: '起首', End: '末尾', PageUp: '上翻页', PageDown: '下翻页', Tab: '制表', Escape: '退出',
+  Delete: '删除', Home: '起首', End: '末尾', PageUp: '上翻页', PageDown: '下翻页', Tab: '制表', Escape: '退出', F2: '功能二',
   Shift: '上档', Control: '控制', Alt: '交替', Meta: '命令'});
 // 文言：修饰之键，面失焦时补其抬起。汉语：修饰键名；显示面失去焦点时宿主为仍按着的修饰键补发抬起。
 export const 修饰键名 = Object.freeze(new Set(['上档', '控制', '交替', '命令']));
@@ -105,6 +105,16 @@ export function 创建显示面表({后端, 已关闭 = () => false}) {
     if (!面.已关闭 && 后端.已断开(面)) 关闭面(面);
     return 面;
   };
+  // 汉语：归还当前显示会话，复用关闭清理；授权仍由宿主持有，同名再取会得到新的面号。文言：归当显示之会，共用关闭之清；授权犹属宿主，同名复取则得新号。
+  const 归还 = 号 => {
+    const 面 = 取开面(号);
+    if (!面 || 面.已关闭) return 错(码.已失效, '显示面已失效');
+    关闭面(面);
+    面.队列.length = 0;
+    面.已报关闭 = true;
+    面表.delete(号);
+    return 结果(码.成);
+  };
   const 尺寸 = 号 => {
     const 面 = 取开面(号);
     if (!面 || 面.已关闭) return 错(码.已失效, '显示面已失效');
@@ -159,6 +169,7 @@ export function 创建显示面表({后端, 已关闭 = () => false}) {
     try {
       switch (操作) {
         case '取得': return 取得(文字化(字节));
+        case '归还': return 归还(号);
         case '尺寸': return 尺寸(号);
         case '提交': return 提交(号, 甲, 乙, 字节);
         case '等待': return 等待(号);
