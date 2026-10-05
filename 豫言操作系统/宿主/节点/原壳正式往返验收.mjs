@@ -16,14 +16,14 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
   try {
     const 启动 = 路径.join(发行, '启动.mjs');
     const 命令们 = ['「回显」于「进入前」', '「文件」之「建目录」于「新目录」', '「设」于「豫言验收」于「环境甲」', '「运行」于「子验收」于「甲 乙」于「丙」', '中文输入', '「回显」于「返回后」', '「取消」于「豫言验收」', '「退出」'];
-    const 果 = 同步启动(process.execPath, [启动, '--授权目录', '桌面=' + 资源, '--授权子程序', '子验收=' + 路径.join(子发行, '启动.mjs'), '--允许环境', '豫言验收'], {input: 命令们.join('\n') + '\n', encoding: 'utf8', timeout: 120000});
+    const 果 = 同步启动(process.execPath, [启动, '--授权控制台', '主控制台', '--授权目录', '桌面=' + 资源, '--授权子程序', '子验收=' + 路径.join(子发行, '启动.mjs'), '--允许环境', '豫言验收'], {input: 命令们.join('\n') + '\n', encoding: 'utf8', timeout: 120000});
     assert.equal(果.status, 0, 果.stderr);
     assert.ok(果.stdout.includes('中文输入\n甲 乙，丙\n环境甲\n'), 果.stdout);
     assert.ok(果.stdout.includes('返回后') && 果.stdout.includes('壳已退出'), 果.stdout);
     assert.ok(文件系统.statSync(路径.join(资源, '新目录')).isDirectory());
     assert.equal(文件系统.readFileSync(路径.join(资源, '.环境'), 'utf8'), '');
     console.log('正式原壳目录创建、环境保存取消、子输入参数环境及继续会话通过');
-    const 图果 = 同步启动(process.execPath, ['--import', import.meta.filename, 启动, '--授权只读目录', '桌面=' + 图资源, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {
+    const 图果 = 同步启动(process.execPath, ['--import', import.meta.filename, 启动, '--授权控制台', '主控制台', '--授权只读目录', '桌面=' + 图资源, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {
       input: '「回显」于「进入前」\n「图形」\n「回显」于「返回后」\n「退出」\n', encoding: 'utf8', timeout: 120000,
       env: {...process.env, 豫言验收依赖: 依赖, 豫言验收资源: 图资源, 豫言验收图像: 图像},
     });

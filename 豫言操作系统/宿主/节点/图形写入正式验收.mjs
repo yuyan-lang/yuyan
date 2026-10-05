@@ -10,7 +10,7 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
   const [发行, 依赖] = process.argv.slice(2).map(项 => 路径.resolve(项));
   const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy图形写入-'));
   try {
-    const 果 = 启动(process.execPath, ['--import', import.meta.filename, 路径.join(发行, '启动.mjs'), '--授权目录', '桌面=' + 根, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {input: '「图形」\n「退出」\n', encoding: 'utf8', timeout: 120000, env: {...process.env, 豫言图形写入根: 根, 豫言图形写入依赖: 依赖}});
+    const 果 = 启动(process.execPath, ['--import', import.meta.filename, 路径.join(发行, '启动.mjs'), '--授权控制台', '主控制台', '--授权目录', '桌面=' + 根, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {input: '「图形」\n「退出」\n', encoding: 'utf8', timeout: 120000, env: {...process.env, 豫言图形写入根: 根, 豫言图形写入依赖: 依赖}});
     assert.equal(果.status, 0, 果.stderr);
     assert.ok(果.stdout.includes('图形共享写入磁盘核对通过'), 果.stdout);
     assert.equal(文件系统.readFileSync(路径.join(根, '图形.txt'), 'utf8'), '短');
