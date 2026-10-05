@@ -9,10 +9,11 @@ import {StringDecoder as 字节解码器} from 'node:string_decoder';
 import 系统 from 'node:os';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
-import {spawnSync} from 'node:child_process';
+import {spawnSync, spawnSync as 同步启动} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {Worker, MessageChannel, receiveMessageOnPort} from 'node:worker_threads';
 // 〔内联起〕
+import {创建子程序能力} from './子程序.mjs';
 import {创建终端输入} from './终端输入.mjs';
 import {造边界导入, 造边界导出, 启动导出名} from '../网页汇编/边界.mjs';
 import {创建值桥, 文字, 精确小数, 小数表示, 理解小数, 随机整数, 处理器数量, 平台导入旧名} from '../云工/值桥.mjs';
@@ -55,12 +56,12 @@ const 显示面尺寸上限 = 65536;
 
 // 文言：宿主诸选在前，-- 或首个非选项之后皆归应用。汉语：宿主选项写在前面；遇到 -- 或第一个不认识的参数，其后全部交给应用。
 const 取值选项 = new Set(['--程序', '--清单', '--值桥', '--授权目录', '--授权只读目录', '--允许源', '--允许环境', '--授权文件', '--张量线程数',
-  '--张量后端', '--授权显示面', '--原生依赖目录']);
+  '--张量后端', '--授权显示面', '--原生依赖目录', '--授权子程序']);
 // 文言：环境之同义：YY_NODE_NATIVE_DIR 同 --原生依赖目录（选项优先），YY_NODE_DISPLAY_BACKGROUND=1 同 --显示面后台。
 // 汉语：同义环境变量：YY_NODE_NATIVE_DIR 等同 --原生依赖目录（两者都给时以选项为准），YY_NODE_DISPLAY_BACKGROUND=1 等同 --显示面后台。
 export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 = process.env) {
   // 文言：终端浏览器之发行包默认通诸 HTTP(S) 源；余应用仍循逐源之授。汉语：终端浏览器发行包默认允许全部 HTTP(S) 来源，其他应用仍按来源授权。
-  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 源: new Set(), 环境: new Set(), 全部来源: 内嵌?.允许全部来源 === true}, 应用参数: [], 张量线程数: null, 张量后端: '',
+  const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 子程序: new Map(), 源: new Set(), 环境: new Set(), 全部来源: 内嵌?.允许全部来源 === true}, 应用参数: [], 张量线程数: null, 张量后端: '',
     显示面: new Map(), 原生依赖目录: 环境.YY_NODE_NATIVE_DIR ? 路径.resolve(当前目录, 环境.YY_NODE_NATIVE_DIR) : null,
     显示面后台: 环境.YY_NODE_DISPLAY_BACKGROUND === '1', 允许系统库调用: false};
   const 授目录 = (文, 可写, 基准) => {
@@ -113,6 +114,12 @@ export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 
     else if (项 === '--授权只读目录') 授目录(值, false, 当前目录);
     else if (项 === '--允许源') 允源(值);
     else if (项 === '--允许环境') 配置.授权.环境.add(值);
+    else if (项 === '--授权子程序') {
+      const 位 = 值.indexOf('=');
+      须(位 > 0 && 位 < 值.length - 1, '子程序授权须写成 名=启动文件路径');
+      const 入口 = 路径.resolve(当前目录, 值.slice(位 + 1));
+      配置.授权.子程序.set(值.slice(0, 位), {入口, 目录: 路径.dirname(入口)});
+    }
     else if (项 === '--张量线程数') {
       须(/^[1-9][0-9]*$/u.test(值), '--张量线程数 须为正整数：' + 值);
       配置.张量线程数 = Math.min(Number(值), 张量线程上限);
@@ -358,6 +365,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   // 文言：今目录为实例所有；此宿主不许迁之，恒返启时之目。汉语：当前工作目录归实例所有；本宿主不支持切换，恒返回实例创建时的目录。
   const 当前目录 = process.cwd();
   const 终端输入 = 创建终端输入();
+  const 子程序 = 创建子程序能力({程序: 授权.子程序, 环境: 授权.环境});
   const 标准库 = {
     进入终端原始输入模式: () => 终端输入.进入(),
     退出终端原始输入模式: () => 终端输入.退出(),
@@ -734,7 +742,8 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
     const 项 = 资源.get(文字(号));
     return 项?.种 === '张量' ? 项 : null;
   }});
-  const 旧表 = {...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库};
+  const 旧表 = {...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库,
+    豫言_节点_运行子程序: (名, 参数, 输入, 环境项们) => 子程序.运行(文字(名), 参数.map(文字), 输入, 环境项们.map(项 => 项.map(文字)))};
   // 文言：平台接口包之带型导入，由旧名之能表派生。汉语：平台接口包的带类型导入由上面以旧名为键的能力表派生，见 派生平台实现；旧名只是内部的键，不对外。
   return Object.freeze({[能力清理]: () => {终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表)}});
 }

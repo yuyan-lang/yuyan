@@ -5,11 +5,20 @@ import * as 文件系统 from 'node:fs';
 import 路径 from 'node:path';
 import 系统 from 'node:os';
 import {创建子程序能力} from './子程序.mjs';
+import {解析宿主参数} from './应用宿主.mjs';
+
+test('子程序具名授权解析及应用参数边界', () => {
+  const 配 = 解析宿主参数(['--授权子程序', '程序=发行/启动.mjs', '--允许环境', '豫言验收', '--', '--授权子程序', '不应解析'], '/private/tmp');
+  assert.deepEqual(配.授权.子程序.get('程序'), {入口: '/private/tmp/发行/启动.mjs', 目录: '/private/tmp/发行'});
+  assert.deepEqual(配.应用参数, ['--授权子程序', '不应解析']);
+  assert.ok(配.授权.环境.has('豫言验收'));
+  assert.throws(() => 解析宿主参数(['--授权子程序', '坏值']), /子程序授权/);
+});
 
 test('具名子程序传输入、参数与环境，调用间不留环境', () => {
   const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy子程序-'));
   const 入口 = 路径.join(根, '入口.mjs');
-  文件系统.writeFileSync(入口, "import * as 文件系统 from 'node:fs'; process.stdout.write(JSON.stringify([process.argv.slice(3), process.env.豫言验收 ?? '', 文件系统.readFileSync(0, 'utf8')])); process.stderr.write('中文错误流');");
+  文件系统.writeFileSync(入口, "import * as 文件系统 from 'node:fs'; process.stdout.write(JSON.stringify([process.argv.slice(process.argv.indexOf('--') + 1), process.env.豫言验收 ?? '', 文件系统.readFileSync(0, 'utf8')])); process.stderr.write('中文错误流');");
   const 能力 = 创建子程序能力({程序: new Map([['验收', {入口, 目录: 根}]]), 环境: new Set(['豫言验收'])});
   const 字 = new TextEncoder().encode('中文输入');
   try {

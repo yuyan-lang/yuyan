@@ -22,7 +22,8 @@ export function 创建子程序能力({程序 = new Map(), 环境 = new Set(), �
       if (Object.hasOwn(环境值, 'NODE_OPTIONS') || Object.hasOwn(环境值, 'NODE_PATH')) return 失败(7, '子程序环境不得改变节点装载选项');
       const 授 = 程序.get(名);
       try {
-        const 果 = 同步启动(process.execPath, [授.入口, ...(授.宿主参数 ?? []), '--', ...参数], {
+        const 环境授权参数 = Object.keys(环境值).flatMap(名 => ['--允许环境', 名]);
+        const 果 = 同步启动(process.execPath, [授.入口, ...(授.宿主参数 ?? []), ...环境授权参数, '--', ...参数], {
           cwd: 授.目录, env: 环境值, input: 输入, maxBuffer: 上限,
           // 汉语：当前执行顺序与原壳一致；待办事项：异步启动与取消。文言：今循原壳顺次之行；待办事项：异步启与取消。
           timeout: 授.时限 ?? 120000, windowsHide: true,
