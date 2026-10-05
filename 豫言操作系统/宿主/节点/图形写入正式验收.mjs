@@ -9,12 +9,18 @@ import assert from 'node:assert/strict';
 if (路径.resolve(process.argv[1]) === import.meta.filename) {
   const [发行, 依赖] = process.argv.slice(2).map(项 => 路径.resolve(项));
   const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy图形写入-'));
+  const 只读 = process.argv[4] === '只读';
+  const 图路 = 路径.resolve('yy图形只读建目录.ppm');
   try {
-    const 果 = 启动(process.execPath, ['--import', import.meta.filename, 路径.join(发行, '启动.mjs'), '--授权控制台', '主控制台', '--授权目录', '桌面=' + 根, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {input: '「图形」\n「退出」\n', encoding: 'utf8', timeout: 120000, env: {...process.env, 豫言图形写入根: 根, 豫言图形写入依赖: 依赖}});
+    const 果 = 启动(process.execPath, ['--import', import.meta.filename, 路径.join(发行, '启动.mjs'), '--授权控制台', '主控制台', 只读 ? '--授权只读目录' : '--授权目录', '桌面=' + 根, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {input: '「图形」\n「退出」\n', encoding: 'utf8', timeout: 120000, env: {...process.env, 豫言图形写入根: 根, 豫言图形写入依赖: 依赖, 豫言图形只读验收: 只读 ? '1' : '', 豫言图形只读像素: 图路}});
     assert.equal(果.status, 0, 果.stderr);
     assert.ok(果.stdout.includes('图形共享写入磁盘核对通过'), 果.stdout);
-    assert.equal(文件系统.readFileSync(路径.join(根, '图形.txt'), 'utf8'), '短');
-    console.log('正式原壳进入GUI执行中文覆盖、追加与截断并返回通过');
+    if (只读) assert.ok(!文件系统.existsSync(路径.join(根, '图形目录')));
+    else {
+      assert.equal(文件系统.readFileSync(路径.join(根, '图形.txt'), 'utf8'), '短');
+      assert.equal(文件系统.readFileSync(路径.join(根, '图形目录', '内文.txt'), 'utf8'), '目录内中文');
+    }
+    console.log(只读 ? '正式GUI只读建目录拒绝与返回通过' : '正式GUI中文覆盖追加、目录创建导航、相对写入与返回通过');
   } finally { 文件系统.rmSync(根, {recursive: true, force: true}); }
 } else {
   process.env.SDL_MAC_BACKGROUND_APP = '1';
@@ -25,14 +31,27 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
     const 窗 = 原建(...参); 窗口 = 窗;
     const 点 = (x, y) => { 窗.emit('mouseMove', {x, y}); 窗.emit('mouseButtonDown', {x, y, button: 1}); 窗.emit('mouseButtonUp', {x, y, button: 1}); };
     const 命令 = 文 => { 点(300, 450); 窗.emit('textInput', {text: 文}); 窗.emit('keyDown', {key: 'return'}); 窗.emit('keyUp', {key: 'return'}); };
-    const 原画 = 窗.render.bind(窗); let 已始 = false;
+    const 原画 = 窗.render.bind(窗); let 已始 = false, 最近像素 = null;
     窗.render = (...画参) => {
       const 果 = 原画(...画参);
+      if (process.env.豫言图形只读验收 === '1') {
+        const [宽, 高, 步长, 格式, 像素] = 画参;
+        assert.equal(格式, 'rgba32');
+        const 彩 = Buffer.alloc(宽 * 高 * 3);
+        for (let 序 = 0; 序 < 宽 * 高; 序++) { 彩[序 * 3] = 像素[序 * 4]; 彩[序 * 3 + 1] = 像素[序 * 4 + 1]; 彩[序 * 3 + 2] = 像素[序 * 4 + 2]; }
+        最近像素 = Buffer.concat([Buffer.from(`P6\n${宽} ${高}\n255\n`), 彩]);
+      }
       if (!已始) {
         已始 = true;
         setTimeout(async () => {
           const 等 = () => new Promise(成 => setTimeout(成, 200));
           点(240, 28); await 等();
+          if (process.env.豫言图形只读验收 === '1') {
+            命令('「文件」之「建目录」于「图形目录」'); await 等();
+            assert.ok(!文件系统.existsSync(路径.join(process.env.豫言图形写入根, '图形目录')));
+            assert.ok(最近像素); 文件系统.writeFileSync(process.env.豫言图形只读像素, 最近像素);
+            已验 = true; 点(440, 28); return;
+          }
           命令('「文件」之「写入」于「图形.txt」于「中文甲」'); await 等();
           const 文路 = 路径.join(process.env.豫言图形写入根, '图形.txt');
           assert.equal(文件系统.readFileSync(文路, 'utf8'), '中文甲');
@@ -40,6 +59,11 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
           assert.equal(文件系统.readFileSync(文路, 'utf8'), '中文甲乙');
           命令('「文件」之「写入」于「图形.txt」于「短」'); await 等();
           assert.equal(文件系统.readFileSync(文路, 'utf8'), '短');
+          命令('「文件」之「建目录」于「图形目录」'); await 等();
+          assert.ok(文件系统.statSync(路径.join(process.env.豫言图形写入根, '图形目录')).isDirectory());
+          命令('「文件」之「切换」于「图形目录」'); await 等();
+          命令('「文件」之「写入」于「内文.txt」于「目录内中文」'); await 等();
+          assert.equal(文件系统.readFileSync(路径.join(process.env.豫言图形写入根, '图形目录', '内文.txt'), 'utf8'), '目录内中文');
           已验 = true; 点(440, 28);
         }, 0);
       }
