@@ -661,6 +661,46 @@
 
 「：汉语：由全部声明写出 MSL：开头引入 metal_stdlib，其后结构、常量、函数依源码次序，声明之间空一行；资源不单独写出（作为函数参数传递）；用到子组矩阵片时（查找“yy_矩阵片”或直接存储调用）在开头加「金属矩阵片序幕」。待办事项：结构与缓冲的内存布局（如 float3 占 16 字节）与 WGSL 不尽相同，未处理。
 文言：由诸声书 MSL：首引 metal_stdlib，次结构、常量、函依源之序，声间空一行；资源不另书（为函之参而传）；用子组矩阵片者（寻“yy_矩阵片”或直存之召）首加「金属矩阵片序幕」。待办事项：结构与缓冲之存布（如 float3 占十六字节）与 WGSL 不尽同，未处之。：」
+「：汉语：存储直读仅在调用新内建时追加，保留旧矩阵片序幕的输出。半精度元素直接由设备缓冲载入，不另设共享副本。
+文言：存储直读惟召新内建乃附，保旧矩阵片序幕之出。半精元径自设备缓载之，毋另置共享副本。：」
+「金属存储载片序幕」乃「字符串」也。
+「金属存储载片序幕」者
+  「间合」
+    于『「：换行：」』
+    于（「列」
+          【『static inline yy_矩阵片甲 yy_存储载入矩阵片甲(device const uint* 字源, uint 起, uint 步) {』
+          ，『  device const half* 源 = (device const half*)字源;』
+          ，『  yy_矩阵片甲 片;』
+          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+          ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
+          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
+          ，『  return 片;』
+          ，『}』
+          ，『static inline yy_矩阵片甲 yy_载矩阵片甲前八行(threadgroup const half* 源, uint 起, uint 步) {』
+          ，『  yy_矩阵片甲 片;』
+          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+          ，『  片.块[2] = make_filled_simdgroup_matrix<half, 8, 8>(0.0h);』
+          ，『  片.块[3] = make_filled_simdgroup_matrix<half, 8, 8>(0.0h);』
+          ，『  return 片;』
+          ，『}』
+          ，『static inline void yy_存矩阵片累前八行(threadgroup float* 目, uint 起, uint 步, yy_矩阵片累 累) {』
+          ，『  simdgroup_store(累.块[0], 目 + 起, 步);』
+          ，『  simdgroup_store(累.块[1], 目 + 起 + 8, 步);』
+          ，『}』
+          ，『static inline yy_矩阵片乙 yy_存储载入矩阵片乙(device const uint* 字源, uint 起, uint 步) {』
+          ，『  device const half* 源 = (device const half*)字源;』
+          ，『  yy_矩阵片乙 片;』
+          ，『  simdgroup_load(片.块[0], 源 + 起, 步, ulong2(0, 0), true);』
+          ，『  simdgroup_load(片.块[1], 源 + 起 + 8 * 步, 步, ulong2(0, 0), true);』
+          ，『  simdgroup_load(片.块[2], 源 + 起 + 8, 步, ulong2(0, 0), true);』
+          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步, ulong2(0, 0), true);』
+          ，『  return 片;』
+          ，『}』
+          】）
+也。
+
 「生成金属源」乃化（「列」于「着色声明」）而「字符串」也。
 「生成金属源」者会「声明们」而
   虑「块们」者
@@ -685,13 +725,28 @@
     「存在吗」授以「字符串」
     于（会「块」而「或者」
       于（「是子字符串吗」于『yy_矩阵片』于「块」）
-      于（「是子字符串吗」于『yy_存储存矩阵片累』于「块」））
-      于「块们」
+      于（「或者」
+        于（「是子字符串吗」于『yy_存储存矩阵片累』于「块」）
+        于（「是子字符串吗」于『矩阵片甲前八行』于「块」）））
+        于「块们」
   而
   虑「开头们」者
     （「列」于「字符串」）也（
       若「用矩阵片」则
-        「列」【『#include <metal_stdlib>「：换行：」using namespace metal;』，「金属矩阵片序幕」】
+        若「存在吗」授以「字符串」
+        于（会「块」而「或者」
+          于（「是子字符串吗」于『yy_存储载入矩阵片』于「块」）
+          于（「或者」
+            于（「是子字符串吗」于『矩阵片甲前八行』于「块」）
+            于（「是子字符串吗」于『矩阵片累前八行』于「块」）））
+            于「块们」则
+              「列」
+              【『#include <metal_stdlib>「：换行：」using namespace metal;』
+              ，「金属矩阵片序幕」
+              ，「金属存储载片序幕」
+              】
+        否则
+          「列」【『#include <metal_stdlib>「：换行：」using namespace metal;』，「金属矩阵片序幕」】
       否则
         「列」【『#include <metal_stdlib>「：换行：」using namespace metal;』】
     ）
