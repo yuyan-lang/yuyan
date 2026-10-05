@@ -19,8 +19,9 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
     else {
       assert.equal(文件系统.readFileSync(路径.join(根, '图形.txt'), 'utf8'), '短');
       assert.equal(文件系统.readFileSync(路径.join(根, '图形目录', '内文.txt'), 'utf8'), '目录内中文');
+      assert.equal(文件系统.readFileSync(路径.join(根, '图形目录', '副本.txt'), 'utf8'), '目录内中文');
     }
-    console.log(只读 ? '正式GUI只读建目录拒绝与返回通过' : '正式GUI中文覆盖追加、目录创建导航、相对写入与返回通过');
+    console.log(只读 ? '正式GUI只读建目录拒绝与返回通过' : '正式GUI中文覆盖追加、目录创建导航、相对写入复制与返回通过');
   } finally { 文件系统.rmSync(根, {recursive: true, force: true}); }
 } else {
   process.env.SDL_MAC_BACKGROUND_APP = '1';
@@ -64,6 +65,8 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
           命令('「文件」之「切换」于「图形目录」'); await 等();
           命令('「文件」之「写入」于「内文.txt」于「目录内中文」'); await 等();
           assert.equal(文件系统.readFileSync(路径.join(process.env.豫言图形写入根, '图形目录', '内文.txt'), 'utf8'), '目录内中文');
+          命令('「文件」之「复制」于「内文.txt」于「副本.txt」'); await 等();
+          assert.equal(文件系统.readFileSync(路径.join(process.env.豫言图形写入根, '图形目录', '副本.txt'), 'utf8'), '目录内中文');
           已验 = true; 点(440, 28);
         }, 0);
       }
