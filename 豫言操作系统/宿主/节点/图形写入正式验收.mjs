@@ -2,7 +2,8 @@
 import 文件系统 from 'node:fs';
 import 路径 from 'node:path';
 import 系统 from 'node:os';
-import {createRequire} from 'node:module';
+import {createRequire,syncBuiltinESMExports} from 'node:module';
+import {createHash} from 'node:crypto';
 import {spawnSync as 启动} from 'node:child_process';
 import assert from 'node:assert/strict';
 
@@ -11,10 +12,15 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
   const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy图形写入-'));
   const 只读 = process.argv[4] === '只读';
   const 图路 = 路径.resolve('yy图形只读建目录.ppm');
+  const 文楷图路 = 路径.resolve('yy同源文楷原生.ppm');
   try {
-    const 果 = 启动(process.execPath, ['--import', import.meta.filename, 路径.join(发行, '启动.mjs'), '--授权控制台', '主控制台', 只读 ? '--授权只读目录' : '--授权目录', '桌面=' + 根, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {input: '「图形」\n「退出」\n', encoding: 'utf8', timeout: 120000, env: {...process.env, 豫言图形写入根: 根, 豫言图形写入依赖: 依赖, 豫言图形只读验收: 只读 ? '1' : '', 豫言图形只读像素: 图路}});
+    const 字体径 = 路径.join(发行,'字体.ttf');
+    const 摘要 = 径 => createHash('sha256').update(文件系统.readFileSync(径)).digest('hex');
+    assert.equal(摘要(字体径),摘要(路径.join(import.meta.dirname,'../../裸机/字模生成/字体/原始字体.ttf')));
+    const 果 = 启动(process.execPath, ['--import', import.meta.filename, 路径.join(发行, '启动.mjs'), '--授权控制台', '主控制台', 只读 ? '--授权只读目录' : '--授权目录', '桌面=' + 根, '--授权显示面', '主窗口=900x640', '--显示面后台', '--原生依赖目录', 依赖], {cwd:根,input: '「图形」\n「退出」\n', encoding: 'utf8', timeout: 120000, env: {...process.env, 豫言图形写入根: 根, 豫言图形写入依赖: 依赖, 豫言图形只读验收: 只读 ? '1' : '', 豫言图形只读像素: 图路,豫言共用字体文件:字体径,豫言共用字体像素:文楷图路}});
     assert.equal(果.status, 0, 果.stderr);
     assert.ok(果.stdout.includes('图形共享写入磁盘核对通过'), 果.stdout);
+    assert.ok(果.stdout.includes('同源文楷字体实际读取通过'),果.stdout);
     if (只读) assert.ok(!文件系统.existsSync(路径.join(根, '图形目录')));
     else {
       assert.equal(文件系统.readFileSync(路径.join(根, '图形.txt'), 'utf8'), '短');
@@ -25,6 +31,16 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
     console.log(只读 ? '正式GUI只读建目录拒绝与返回通过' : '正式GUI中文覆盖追加、目录创建导航、相对写入复制删除与返回通过');
   } finally { 文件系统.rmSync(根, {recursive: true, force: true}); }
 } else {
+  // 汉语：只记录正式宿主实际打开的字体资产，保留原文件调用和装载流程。文言：惟记正式宿主实开之字体资，存旧文件之调与装载之序。
+  let 已读文楷 = false;
+  const 原开文件 = 文件系统.openSync;
+  文件系统.openSync = (名,...参) => {
+    const 号 = 原开文件(名,...参);
+    if (typeof 名 === 'string' && 路径.resolve(名) === process.env.豫言共用字体文件) 已读文楷 = true;
+    return 号;
+  };
+  syncBuiltinESMExports();
+  process.on('exit',码=>{if(码===0){assert.ok(已读文楷,'正式桌面未读取随附文楷');console.log('同源文楷字体实际读取通过');}});
   process.env.SDL_MAC_BACKGROUND_APP = '1';
   const SDL = createRequire(路径.join(process.env.豫言图形写入依赖, '豫言原生依赖.cjs'))('@kmamal/sdl');
   const 原建 = SDL.video.createWindow.bind(SDL.video);
@@ -60,6 +76,9 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
           窗.setSize(1000,650); await 等(); await 等();
           assert.equal(最近画.宽,窗.pixelWidth); assert.equal(最近画.高,窗.pixelHeight);
           assert.equal(窗.width,1000); assert.equal(窗.height,650);
+          const 彩 = Buffer.alloc(最近画.宽 * 最近画.高 * 3);
+          for (let 序=0;序<最近画.宽*最近画.高;序++) 彩.set(最近画.素.subarray(序*4,序*4+3),序*3);
+          文件系统.writeFileSync(process.env.豫言共用字体像素,Buffer.concat([Buffer.from(`P6\n${最近画.宽} ${最近画.高}\n255\n`),彩]));
           // 汉语：先留命令草稿，再真实缩放；绘制范围扩展且缩放后仍可执行原草稿。文言：先存命令稿而实伸缩；绘域广而伸缩后犹可行旧稿。
           点(300, 输入纵); 窗.emit('textInput', {text:'「文件」之「写入」于「图形.txt」于「中文甲」'}); await 等();
           const 点色 = () => {
