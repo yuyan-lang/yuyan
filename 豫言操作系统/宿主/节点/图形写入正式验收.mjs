@@ -56,10 +56,14 @@ if (路径.resolve(process.argv[1]) === import.meta.filename) {
             assert.ok(最近像素); 文件系统.writeFileSync(process.env.豫言图形只读像素, 最近像素);
             已验 = true; 点(440, 28); return;
           }
+          // 汉语：只改变真实SDL窗口尺寸，不注入任何输入，尺寸事件须独自触发新帧。文言：惟易实SDL窗尺，毋注输入，尺变之事须独发新帧。
+          窗.setSize(1000,650); await 等(); await 等();
+          assert.equal(最近画.宽,窗.pixelWidth); assert.equal(最近画.高,窗.pixelHeight);
+          assert.equal(窗.width,1000); assert.equal(窗.height,650);
           // 汉语：先留命令草稿，再真实缩放；绘制范围扩展且缩放后仍可执行原草稿。文言：先存命令稿而实伸缩；绘域广而伸缩后犹可行旧稿。
           点(300, 输入纵); 窗.emit('textInput', {text:'「文件」之「写入」于「图形.txt」于「中文甲」'}); await 等();
           const 点色 = () => {
-            const 横 = Math.floor(740 * 最近画.宽 / 900), 纵 = Math.floor(300 * 最近画.高 / 640);
+            const 横 = Math.floor(740 * 最近画.宽 / 窗.width), 纵 = Math.floor(300 * 最近画.高 / 窗.height);
             return [...最近画.素.subarray((纵 * 最近画.宽 + 横) * 4, (纵 * 最近画.宽 + 横) * 4 + 3)];
           };
           assert.notDeepEqual(点色(), [255,255,255]);

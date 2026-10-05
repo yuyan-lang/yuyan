@@ -104,6 +104,32 @@ test('归还显示会话结束等待并清理输入，同名再取新面号，�
   显示.清理();
 });
 
+test('显示尺寸变化唤醒无限等待，合并相邻通知且归还撤销观察', async () => {
+  const 文档 = 造文档();
+  const 画布 = new 伪画布(文档, '甲'); 文档.元素们.push(画布);
+  let 观察, 已撤 = false;
+  const 全局 = Object.assign(new EventTarget(), 造全局({ResizeObserver:class {
+    constructor(回调) {观察 = 回调;}
+    observe(元) {assert.equal(元, 画布);}
+    disconnect() {已撤 = true;}
+  }}));
+  const 显示 = 创建显示能力({根:文档,全局});
+  const 号 = 显示.调用('取得',0,0,0,字('甲'))[1];
+  观察(); assert.equal(显示.取面(号).队列.length,0);
+  const 候 = 显示.调用('等待',号);
+  画布.矩.width = 40; 观察();
+  assert.equal((await 候)[1],事件种类.显示尺寸变化);
+  画布.矩.width = 41; 观察(); 画布.矩.height = 30; 观察();
+  assert.equal(显示.取面(号).队列.length,1);
+  assert.equal((await 显示.调用('等待',号))[1],事件种类.显示尺寸变化);
+  const 比候 = 显示.调用('等待',号);
+  全局.devicePixelRatio = 3; 全局.dispatchEvent(new Event('resize'));
+  assert.equal((await 比候)[1],事件种类.显示尺寸变化);
+  assert.deepEqual(显示.调用('尺寸',号).slice(1,3),[123,90]);
+  assert.equal(显示.调用('归还',号)[0],码.成); assert.ok(已撤);
+  全局.dispatchEvent(new Event('resize')); assert.equal(显示.调用('等待',号)[0],码.已失效);
+});
+
 test('显示面按 data-yy-显示面 名称授予：无此名为未获授权，同一 canvas 取得同一显示面，宿主关闭后为资源暂不可用', () => {
   let 关 = false;
   const {显示, 加画布} = 造显示({关闭: () => 关});
