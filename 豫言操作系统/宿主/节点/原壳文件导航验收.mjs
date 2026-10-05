@@ -17,11 +17,22 @@ try {
   assert.equal((果.stdout.match(/壳> \/子目录/g) || []).length, 2, 果.stdout);
   assert.ok(果.stdout.includes('子目录') && 果.stdout.includes('错误：') && 果.stdout.includes('壳已退出'), 果.stdout);
   assert.ok(文件系统.statSync(路径.join(根, '子目录', '新目录')).isDirectory());
+  const 写命令 = ['「文件」之「切换」于「子目录」', '「文件」之「写入」于「写入.txt」于「原中文正文」', '「文件」之「追加」于「写入.txt」于「追加乙」', '「文件」之「读取」于「写入.txt」', '「文件」之「写入」于「写入.txt」于「短」', '「文件」之「追加」于「新追加.txt」于「新中文」', '「退出」'];
+  const 写果 = 启动(process.execPath, [路径.join(发行, '启动.mjs'), '--授权目录', '桌面=' + 根], {input: 写命令.join('\n') + '\n', encoding: 'utf8', timeout: 120000});
+  assert.equal(写果.status, 0, 写果.stderr);
+  assert.ok(写果.stdout.includes('原中文正文追加乙'), 写果.stdout);
+  assert.equal(文件系统.readFileSync(路径.join(根, '子目录', '写入.txt'), 'utf8'), '短');
+  assert.equal(文件系统.readFileSync(路径.join(根, '子目录', '新追加.txt'), 'utf8'), '新中文');
   const 只读 = 启动(process.execPath, [路径.join(发行, '启动.mjs'), '--授权只读目录', '桌面=' + 根], {input: '「文件」之「读取」于「子目录/正文.txt」\n「文件」之「建目录」于「拒绝目录」\n「退出」\n', encoding: 'utf8', timeout: 120000});
   assert.equal(只读.status, 0, 只读.stderr);
   assert.ok(只读.stdout.includes('中文导航正文') && 只读.stdout.includes('错误'), 只读.stdout);
   assert.ok(!文件系统.existsSync(路径.join(根, '拒绝目录')));
+  const 拒写 = 启动(process.execPath, [路径.join(发行, '启动.mjs'), '--授权只读目录', '桌面=' + 根], {input: '「文件」之「写入」于「子目录/写入.txt」于「坏」\n「文件」之「追加」于「子目录/写入.txt」于「坏」\n「退出」\n', encoding: 'utf8', timeout: 120000});
+  assert.equal(拒写.status, 0, 拒写.stderr);
+  assert.ok(拒写.stdout.includes('错误：'), 拒写.stdout);
+  assert.equal(文件系统.readFileSync(路径.join(根, '子目录', '写入.txt'), 'utf8'), '短');
   console.log('正式原壳授权目录列表、导航、读取、失败保路径、相对建目录与只读拒写通过');
+  console.log('正式原壳相对覆盖写入、追加、短文截断、追加创建与只读保内容通过');
 } finally {
   文件系统.rmSync(根, {recursive: true, force: true});
 }
