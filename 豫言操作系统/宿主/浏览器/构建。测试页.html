@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>浏览器构建测试页</title>
+<!-- 文言：试浏览器之构建：取址参之快照、工具链与令，行之，书其果于 #结果，毕则 html 标 data-构建。
+     汉语：浏览器构建客户端的测试页：从网址参数取快照、工具链与命令（JSON），运行后把每条命令的退出码与输出写进 #结果，
+     结束时 <html> 带 data-构建="完成"（全部成功为“成功”属性值另记于 data-成）。须由跨源隔离的服务提供（见 构建。测试服务.mjs）。 -->
+</head>
+<body>
+<pre id="结果"></pre>
+<script type="module">
+import {浏览器构建, 构建可用} from './构建/客户端.mjs';
+const 参 = new URL(location.href).searchParams;
+const 结果 = document.getElementById('结果');
+const 记 = 文字 => { 结果.textContent += 文字; };
+const 作业 = {
+  快照: {网址: 参.get('快照'), 剥离层数: Number(参.get('剥离') ?? 1)},
+  工具链: {网址: 参.get('工具链')},
+  命令: JSON.parse(参.get('命令') ?? '[]'),
+  改动: 参.get('改动') ? await (await fetch(参.get('改动'))).json() : {},
+  继续: 参.get('继续') === '1',
+};
+记('构建可用：' + 构建可用() + '，处理器：' + navigator.hardwareConcurrency + '\n');
+const 果 = await 浏览器构建(作业, 事件 => {
+  if (事件.type === 'output') 记(事件.text);
+  else if (事件.type === 'stage') 记('【阶段】' + 事件.label + '\n');
+  else if (事件.type === 'command') 记('【命令】' + 事件.argv.join(' ') + '\n');
+  else if (事件.type === 'command-done') 记('【退出码】' + 事件.exitCode + '（' + 事件.ms + ' 毫秒）\n');
+});
+记('【结果】' + JSON.stringify(果) + '\n');
+document.documentElement.dataset.成 = String(果.ok);
+document.documentElement.dataset.构建 = '完成';
+</script>
+</body>
+</html>
