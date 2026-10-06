@@ -620,12 +620,12 @@ jobs:
       - name: 解开本轮编译与构建工具
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
-      # 文言：造盘须 xorriso；控制台之字模生于构时，须 FreeType（libfreetype.so.6）。
-      # 汉语：造盘要 xorriso；构建时生成控制台字模要 FreeType（libfreetype.so.6）。
-      - name: 安装 xorriso 与 FreeType
+      # 文言：造盘须 xorriso；控制台之字模生于构时，须 FreeType（libfreetype.so.6）；冒烟之试须 QEMU 与 OVMF。
+      # 汉语：造盘要 xorriso；构建时生成控制台字模要 FreeType（libfreetype.so.6）；冒烟测试要 QEMU 与 OVMF。
+      - name: 安装 xorriso、FreeType、QEMU 与 OVMF
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends xorriso libfreetype6
+          sudo apt-get install -y --no-install-recommends xorriso libfreetype6 qemu-system-x86 ovmf
 
       # 文言：取 Limine 之官方二进制发布，核其 SHA-256 乃解之；编其命令行之器，以 LIMINE_DATADIR 指同目之启载文件，使「启动盘」所呼之 limine --print-datadir 可用，乃加于 PATH。
       # 汉语：下载 Limine 官方二进制发布，核对 SHA-256 后解压；编出 limine 命令行工具，用 LIMINE_DATADIR 指向同目录的启动文件，让「启动盘」调用的 limine --print-datadir 可用，再加入 PATH。
@@ -673,7 +673,19 @@ jobs:
       - name: 造混合启动 ISO
         env:
           YY_GC_INITIAL_HEAP_SIZE_MB: 1024
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --输出 yy启动介质 --预置 无
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --输出 yy启动介质 --预置 无 --预编二
+
+      # 文言：冒烟之试：QEMU 纯模拟无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色，复键而验画有变；SeaBIOS 与 OVMF 各一。不过则不发。
+      # 汉语：冒烟测试：QEMU 纯模拟无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色，再按键核对画面有变化；SeaBIOS 与 OVMF 各跑一次，不过就不发布。
+      - name: 冒烟测试（SeaBIOS 与 OVMF）
+        env:
+          YY_GC_INITIAL_HEAP_SIZE_MB: 1024
+        run: |
+          set -euo pipefail
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 冒烟 yy启动介质/yy豫言启动.iso
+          code=$(ls /usr/share/OVMF/OVMF_CODE_4M.fd /usr/share/OVMF/OVMF_CODE.fd 2>/dev/null | head -n 1)
+          vars=$(ls /usr/share/OVMF/OVMF_VARS_4M.fd /usr/share/OVMF/OVMF_VARS.fd 2>/dev/null | head -n 1)
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 冒烟 yy启动介质/yy豫言启动.iso --固件 "$code" --固件变量 "$vars"
 
       # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
       # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
