@@ -175,6 +175,15 @@ export function 创建节点图形能力({创建显示面表, 创建图形能力
     // 文言：像素比为窗之物理宽与点宽之比。汉语：像素比 = 窗口像素宽 ÷ 点宽。待办事项：输入区域（设输入区域）无从设置——@kmamal/sdl 没有 SDL_SetTextInputRect，
     //       候选框位置由系统定；以后可考虑经 node:ffi 调同一个 libSDL2。
     像素比值: 面 => (面.窗口 && !面.窗口.destroyed ? [面.窗口.pixelWidth, 面.窗口.width] : [0, 0]),
+    // 文言：指之形以 SDL 之系统光标设之，SDL 之光标通于诸窗。汉语：（0.7.0）指针形状用 SDL 系统光标（arrow、ibeam、hand）；SDL 光标是全局的，所有窗口共用。待办事项：多个显示面各设不同形状时以最后一次为准。
+    设指针形状: (面, 形) => { 载SDL().mouse.setCursor(['arrow', 'ibeam', 'hand'][形] ?? 'arrow'); },
+    // 文言：剪贴之读写以 SDL 之剪贴为之。汉语：（剪贴板 0.2.0）剪贴板读写用 SDL 的 clipboard（macOS 上即 NSPasteboard）。
+    读剪贴板: () => {
+      try { return {文: String(载SDL().clipboard.text ?? '')}; } catch (错误) { return {码: 码.暂不可用, 文: 消息(错误)}; }
+    },
+    写剪贴板: 文 => {
+      try { 载SDL().clipboard.setText(文); return null; } catch (错误) { return {码: 码.暂不可用, 文: 消息(错误)}; }
+    },
     // 文言：素以 SDL 之 rgba32 提交，于小端之机即红绿蓝透之序。汉语：像素用 SDL 的 rgba32 格式提交（小端机器上即内存中 R、G、B、A 的次序），不混合，原样覆盖。
     画: (面, 宽, 高, 字节) => {
       面.窗口.render(宽, 高, 宽 * 4, 'rgba32', Buffer.from(字节.buffer, 字节.byteOffset, 字节.length));
