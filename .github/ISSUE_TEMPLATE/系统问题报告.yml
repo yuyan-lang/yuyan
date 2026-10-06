@@ -1,0 +1,79 @@
+# 文言：豫言操作系统之问题报告（GitHub issue 之表）：问其版、启之法、虚拟之机、固件、内存、现象、截图与串口之出，以便复现。表项不设 id，GitHub 之 id 惟许 ASCII 也。
+# 汉语：豫言操作系统问题报告（GitHub issue 表单）：问清版本、启动方式、虚拟机、固件、内存、现象、截图与串口输出，便于复现。表单项不设 id，因为 GitHub 的 id 只许 ASCII。
+name: 系统问题报告
+description: 报告豫言操作系统（ISO、虚拟机或实机）上的问题。
+title: "系统问题："
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢试用豫言操作系统。请尽量填全以下各项，并附截图与串口输出，便于复现。已知限制见发行说明，先看一眼能省去往返。
+
+  - type: input
+    attributes:
+      label: 系统版本
+      description: ISO 文件名或发行页标题；自己构建的请写提交号。
+      placeholder: yuyan-os-0.1.0-beta.1-x86_64.iso
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: 启动方式
+      options:
+        - ISO 挂作 USB 存储（照发行说明里的 QEMU 命令）
+        - ISO 挂作光驱
+        - 写进 U 盘，在实体电脑上启动
+        - 其他（请在“启动命令或虚拟机设置”里说明）
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: 固件
+      options:
+        - 传统 BIOS（例如 QEMU 自带的 SeaBIOS）
+        - UEFI（例如 OVMF），已关闭 Secure Boot
+        - UEFI，开着 Secure Boot
+        - 不清楚
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: 虚拟机或实机
+      description: 虚拟机名称与版本，以及宿主系统与处理器；实体电脑请写品牌型号。
+      placeholder: QEMU 11.1.1，macOS，Apple M 系列处理器，-accel tcg
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: 内存大小
+      placeholder: 512M
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 启动命令或虚拟机设置
+      description: 用 QEMU 请贴完整命令；其他虚拟机请写机型、显卡、USB 控制器、键盘鼠标等设置。
+      render: sh
+
+  - type: textarea
+    attributes:
+      label: 现象
+      description: 做了哪些操作、期望看到什么、实际发生了什么；能否稳定复现。
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: 截图
+      description: 把屏幕截图拖进这里。
+
+  - type: textarea
+    attributes:
+      label: 串口输出
+      description: 发行说明里的 QEMU 命令会把串口输出打印在终端，请贴出相关部分（从「豫言核心启动」起最好）。
+      render: text
