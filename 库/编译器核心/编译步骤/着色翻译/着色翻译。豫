@@ -718,6 +718,33 @@
           】）
 也。
 
+「：汉语：张量片在 MSL 里的写法（Metal 4 张量运算）：累加块是 MPP matmul2d（64 × 64 × 32，4 个子组，宽松精度，乘加模式）的目标协作张量；甲按单精度设备张量直接读（行数之外当作零），乙按半精度线程组张量读，存回时按行数、列数截断。用到张量片的源码才在开头加这段（含两个头文件）。
+文言：张量片于 MSL 之书（Metal 4 之张量之算）：累块为 MPP matmul2d（六十四 × 六十四 × 三十二，四子组，宽之精，乘加之式）之的协作张量；甲依单精之设备张量径读（行数之外视为零），乙依半精之线组张量读，存回依行数、列数截之。惟用张量片之源首加此段（含二头文件）。：」
+「金属张量片序幕」乃「字符串」也。
+「金属张量片序幕」者
+  「间合」
+    于『「：换行：」』
+    于（「列」
+          【『#include <metal_tensor>』
+          ，『#include <MetalPerformancePrimitives/MetalPerformancePrimitives.h>』
+          ，『typedef tensor<device float, dextents<int32_t, 2>, tensor_inline> yy_张量单存;』
+          ，『typedef tensor<threadgroup half, dextents<int32_t, 2>, tensor_inline> yy_张量半享;』
+          ，『typedef mpp::tensor_ops::matmul2d<mpp::tensor_ops::matmul2d_descriptor(64, 64, 32, false, true, true, mpp::tensor_ops::matmul2d_descriptor::mode::multiply_accumulate), execution_simdgroups<4>> yy_张量乘;』
+          ，『typedef decltype(yy_张量乘().get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>()) yy_张量片累;』
+          ，『static inline yy_张量片累 yy_零张量片累() { yy_张量乘 乘; return 乘.get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>(); }』
+          ，『static inline yy_张量片累 yy_张量片乘加(yy_张量片累 累, const device float* 甲, uint 甲起, uint 甲步, uint 甲行数, threadgroup const half* 乙, uint 乙起, uint 乙步) {』
+          ，『  yy_张量乘 乘;』
+          ，『  yy_张量单存 甲张((device float*)(甲 + 甲起), dextents<int32_t, 2>(32, int(甲行数)), array<int, 2>({1, int(甲步)}));』
+          ，『  yy_张量半享 乙张((threadgroup half*)(乙 + 乙起), dextents<int32_t, 2>(32, 64), array<int, 2>({1, int(乙步)}));』
+          ，『  乘.run(甲张, 乙张, 累);』
+          ，『  return 累;』
+          ，『}』
+          ，『static inline void yy_存张量片累(device float* 出, uint 起, uint 步, uint 行数, uint 列数, yy_张量片累 累) {』
+          ，『  累.store(yy_张量单存(出 + 起, dextents<int32_t, 2>(int(列数), int(行数)), array<int, 2>({1, int(步)})));』
+          ，『}』
+          】）
+也。
+
 「金属八行累片序幕」乃「字符串」也。
 「金属八行累片序幕」者
   「间合」
@@ -796,7 +823,15 @@
     否则
       「开头们」
   而
-  （「间合」于『「：换行：」「：换行：」』于（「附加」授以「字符串」于「扩头」于「块们」））附『「：换行：」』
+  虑「再扩」者
+    若「存在吗」授以「字符串」
+    于（会「块」而「是子字符串吗」于『张量片』于「块」）
+    于「块们」则
+      「附加」授以「字符串」于「扩头」于（「列」【「金属张量片序幕」】）
+    否则
+      「扩头」
+  而
+  （「间合」于『「：换行：」「：换行：」』于（「附加」授以「字符串」于「再扩」于「块们」））附『「：换行：」』
 也。
 
 「：汉语：按翻译目标（『网页图算』『金属』或『统算』）翻译已分析的着色模块：依次翻译各着色源（着色内建声明只提供名字），写出 WGSL、MSL 或 PTX，并取出最后一个（即被翻译的）着色源的入口表。统算目标在网页图算写法的声明之上另由语法树生成 PTX（见统算顶层），入口表里是改写成 ASCII 的入口名。

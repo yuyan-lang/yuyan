@@ -1,0 +1,39 @@
+#include <metal_stdlib>
+using namespace metal;
+
+#include <metal_tensor>
+#include <MetalPerformancePrimitives/MetalPerformancePrimitives.h>
+typedef tensor<device float, dextents<int32_t, 2>, tensor_inline> yy_张量单存;
+typedef tensor<threadgroup half, dextents<int32_t, 2>, tensor_inline> yy_张量半享;
+typedef mpp::tensor_ops::matmul2d<mpp::tensor_ops::matmul2d_descriptor(64, 64, 32, false, true, true, mpp::tensor_ops::matmul2d_descriptor::mode::multiply_accumulate), execution_simdgroups<4>> yy_张量乘;
+typedef decltype(yy_张量乘().get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>()) yy_张量片累;
+static inline yy_张量片累 yy_零张量片累() { yy_张量乘 乘; return 乘.get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>(); }
+static inline yy_张量片累 yy_张量片乘加(yy_张量片累 累, const device float* 甲, uint 甲起, uint 甲步, uint 甲行数, threadgroup const half* 乙, uint 乙起, uint 乙步) {
+  yy_张量乘 乘;
+  yy_张量单存 甲张((device float*)(甲 + 甲起), dextents<int32_t, 2>(32, int(甲行数)), array<int, 2>({1, int(甲步)}));
+  yy_张量半享 乙张((threadgroup half*)(乙 + 乙起), dextents<int32_t, 2>(32, 64), array<int, 2>({1, int(乙步)}));
+  乘.run(甲张, 乙张, 累);
+  return 累;
+}
+static inline void yy_存张量片累(device float* 出, uint 起, uint 步, uint 行数, uint 列数, yy_张量片累 累) {
+  累.store(yy_张量单存(出 + 起, dextents<int32_t, 2>(int(列数), int(行数)), array<int, 2>({1, int(步)})));
+}
+
+[[max_total_threads_per_threadgroup(128)]]
+kernel void 张量片试(uint 局部 [[thread_index_in_threadgroup]], const device float* 乙源 [[buffer(1)]], const device float* 甲源 [[buffer(0)]], device float* 片出 [[buffer(2)]]) {
+  threadgroup array<half, 2048> 乙半;
+  uint 序 = 局部;
+  while (true) {
+    if (序 < 2048u) {
+      const auto 乙值 = 乙源[序];
+      乙半[序] = half(乙值);
+      序 = 序 + 128u;
+      continue;
+    } else {
+      break;
+    }
+  }
+  threadgroup_barrier(mem_flags::mem_threadgroup);
+  const auto 累 = yy_张量片乘加(yy_零张量片累(), &(甲源)[0], 0u, 32u, 64u, &(乙半)[0], 0u, 32u);
+  yy_存张量片累(&(片出)[0], 0u, 64u, 64u, 64u, 累);
+}
