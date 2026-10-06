@@ -1,25 +1,47 @@
 <!doctype html>
 <meta charset="utf-8">
-<title>豫言操作系统 · 网页体验</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>豫言操作系统 · 网页体验 · 豫言</title>
+<link rel="stylesheet" href="/共用/主题.css">
 <link data-yy-字体="无衬线" href="./字体.ttf">
 <link data-yy-字体="文楷" href="./字体.ttf">
 <style>
-body{margin:8px;background:#eef2f6}pre{white-space:pre-wrap}input{width:600px}canvas{display:none}
+/* 文言：页套主站之主题（/共用/主题.css 之页头、页脚与色）；入桌面则惟留 canvas。汉语：页面套主站主题（/共用/主题.css 的页头、页脚与配色）；进入桌面后只留 canvas。 */
+main{max-width:960px;margin:0 auto;padding:28px clamp(20px,4vw,72px) 48px}
+main h1{font:500 clamp(26px,3.4vw,38px)/1.4 var(--豫题);margin:0 0 8px}
+.说明{color:var(--豫次);margin:0 0 16px}
+.工具{display:flex;gap:16px;align-items:center;font-size:13px;margin-bottom:12px}
+#输出{white-space:pre-wrap;margin:0;background:var(--豫浅);border:1px solid var(--豫线);border-radius:6px;padding:12px 14px;font:13px/1.6 var(--豫码);min-height:8em;max-height:50vh;overflow:auto}
+#命令表单{display:flex;gap:8px;align-items:center;margin-top:12px}
+#命令表单 label{display:flex;gap:8px;align-items:center;flex:1}
+#命令{flex:1;min-width:0;font:14px var(--豫码);padding:6px 8px;border:1px solid var(--豫线);border-radius:4px;background:#fff;color:var(--豫墨)}
+#执行,#全屏{font:inherit;font-size:13px;padding:5px 14px;border:1px solid var(--豫线);border-radius:4px;background:var(--豫纸);color:var(--豫墨);cursor:pointer}
+#状态{color:var(--豫次);font-size:13px}
+#载入{position:fixed;inset:0;z-index:2;display:flex;align-items:center;justify-content:center;background:var(--豫纸);color:var(--豫次);font:18px var(--豫字体)}
+canvas{display:none}
 body:has(input[data-yy-显示面输入]){margin:0;overflow:hidden}
-body:has(input[data-yy-显示面输入])> :not(canvas):not(input[data-yy-显示面输入]){display:none}
+body:has(input[data-yy-显示面输入])> :not(canvas):not(input[data-yy-显示面输入]):not(#载入){display:none}
 body:has(input[data-yy-显示面输入]) canvas{display:block;position:fixed;inset:0;touch-action:none}
 </style>
-<nav><a href="/">豫言首页</a> · <a href="./字体许可证.txt">字体许可证</a> · <button id="全屏">全屏</button></nav>
+<header class="豫导航"><a class="豫标志" href="/" aria-label="豫言首页">豫<b>言</b></a><a class="豫站名" href="/豫言操作系统.汉语.html">豫言操作系统</a><nav class="豫导航内" aria-label="全站导航"><a href="/">首页</a><a href="/豫言操作系统.汉语.html">愿景</a><a href="/文档/">文档</a><a href="https://github.com/yuyan-lang/yuyan">GitHub ↗</a></nav></header>
+<main id="正文">
 <h1>豫言操作系统 · 网页体验</h1>
-<p>默认进入命令行。输入「图形」打开桌面；桌面可返回同一命令行。文件保存在本站的浏览器存储中，可读写；任务占用指标暂不可用。</p>
+<p class="说明">打开页面即进入桌面。桌面顶栏的“返回命令行”回到这里的命令行，输入「图形」再进桌面。文件保存在本站的浏览器存储中，可读可写。</p>
+<div class="工具"><button id="全屏">全屏</button><a href="./字体许可证.txt">字体许可证</a></div>
 <pre id="输出"></pre>
 <form id="命令表单"><label>命令<input id="命令" disabled autocomplete="off"></label><button id="执行" disabled>执行</button></form>
 <p id="状态">正在启动原壳</p>
+</main>
+<footer class="豫页脚"><span>豫言 · 以中文写程序，以函数组织计算。</span><nav><a href="https://github.com/yuyan-lang/yuyan">源码</a><a href="https://github.com/yuyan-lang/yuyan/issues">问题反馈</a></nav></footer>
+<div id="载入">正在载入桌面……</div>
 <canvas width="900" height="640" style="width:100vw;height:100dvh" data-yy-显示面="主窗口"></canvas>
 <script type="module">
 // 汉语：页面只承接公共控制台和显示面，命令解释、图形启动与返回均由同一豫言程序处理；本地目录由浏览器存储提供。文言：页惟承公控制台与显示面，命令之释、图形之启归皆由同一豫言程序治；本地目录由浏览器之存供之。
 import {启动豫言浏览器应用} from './入口.mjs';
 const 输出 = document.getElementById('输出'), 输入 = document.getElementById('命令'), 执行 = document.getElementById('执行'), 状态 = document.getElementById('状态');
+const 载入 = document.getElementById('载入'), 画布 = document.querySelector('canvas[data-yy-显示面]');
+// 汉语：桌面画出第一帧（宿主给 canvas 加上 data-yy-已画）就撤下“正在载入桌面”。文言：桌面首帧既绘（宿主加 data-yy-已画 于 canvas），乃撤载入之示。
+new MutationObserver(() => { if (画布.hasAttribute('data-yy-已画')) 载入.hidden = true; }).observe(画布, {attributes: true, attributeFilter: ['data-yy-已画']});
 // 汉语：全屏只改变宿主显示区域，桌面与应用仍由同一豫言界面框架绘制。文言：全屏惟易宿主显示之域，桌面与诸客仍由同一豫言界面绘之。
 document.getElementById('全屏').onclick = async () => {
   try {
@@ -28,10 +50,13 @@ document.getElementById('全屏').onclick = async () => {
   } catch (错) {状态.textContent='全屏暂不可用：'+String(错);}
 };
 let 候者 = null;
+// 汉语：第一次读行直接交「图形」，打开页面即进桌面；之后照常等用户输入。文言：初读行径交「图形」，开页即入桌面；其后如常候人输入。
+let 自动图形 = true;
 document.getElementById('命令表单').onsubmit = 事 => {
   事.preventDefault(); if (!候者) return;
   const 成 = 候者; 候者 = null;
   const 文 = 输入.value; 输入.value = ''; 输入.disabled = true; 执行.disabled = true;
+  if (文.includes('图形')) 载入.hidden = false;
   输出.textContent += 文 + '\n'; 状态.textContent = '原壳正在处理'; 成([true, 文]);
 };
 try {
@@ -42,10 +67,13 @@ try {
   catch (错) {
     if (错?.name !== 'NotFoundError') throw 错;
     const 文 = await 目录.getFileHandle('说明.txt', {create:true});
-    const 写 = await 文.createWritable(); await 写.write('欢迎使用豫言操作系统网页体验。\n输入「图形」进入桌面，可打开文件浏览器、命令行、系统设置和任务管理器。'); await 写.close();
+    const 写 = await 文.createWritable(); await 写.write('欢迎使用豫言操作系统网页体验。\n桌面有文件浏览器、命令行、系统设置和任务管理器四个窗口；顶栏的“返回命令行”回到命令行，在那里输入「图形」再进桌面。'); await 写.close();
   }
-  const 台 = {读取行: () => new Promise(成 => {候者 = 成; 输入.disabled = false; 执行.disabled = false; 状态.textContent = '原壳等待命令'; 输入.focus();}), 写文本: 文 => {输出.textContent += 文;}, 关闭: () => {候者?.([false,'']); 候者=null; 输入.disabled=true; 执行.disabled=true;}};
+  const 台 = {读取行: () => new Promise(成 => {
+    if (自动图形) { 自动图形 = false; 输出.textContent += '「图形」\n'; 状态.textContent = '正在载入桌面'; 成([true, '「图形」']); return; }
+    载入.hidden = true; 候者 = 成; 输入.disabled = false; 执行.disabled = false; 状态.textContent = '原壳等待命令'; 输入.focus();
+  }), 写文本: 文 => {输出.textContent += 文;}, 关闭: () => {候者?.([false,'']); 候者=null; 输入.disabled=true; 执行.disabled=true;}};
   const 宿主 = await 启动豫言浏览器应用({授权目录:new Map([['桌面',{目录,可写:true}]]), 授权控制台:new Map([['主控制台',台]]), 输出: 文 => {输出.textContent += 文;}});
-  宿主.完成.then(() => {状态.textContent='原壳已退出'; 输入.disabled=true; 执行.disabled=true;}, 错 => {状态.textContent='运行失败：'+String(错); console.error(错);});
-} catch (错) {状态.textContent='启动失败：'+String(错); console.error(错);}
+  宿主.完成.then(() => {载入.hidden = true; 状态.textContent='原壳已退出'; 输入.disabled=true; 执行.disabled=true;}, 错 => {载入.hidden = true; 状态.textContent='运行失败：'+String(错); console.error(错);});
+} catch (错) {载入.hidden = true; 状态.textContent='启动失败：'+String(错); console.error(错);}
 </script>
