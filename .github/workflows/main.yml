@@ -586,3 +586,165 @@ jobs:
             gh release upload historical-binaries "$RUNNER_TEMP/$historical_asset"
           fi
           gh release upload continuous-binaries "$RUNNER_TEMP/$package.tar.gz" --clobber
+
+  # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，备 xorriso、FreeType 与定版之 Limine，造豫言系统之器而成 BIOS/UEFI 混合之 ISO；以 豫言操作系统/裸机/发行/系统版本.tsv 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
+  # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的编译器与豫构，装 xorriso、FreeType 与固定版本的 Limine，构建 yy豫言系统.wasm 并造 BIOS/UEFI 混合 ISO；按 豫言操作系统/裸机/发行/系统版本.tsv 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
+  os-release:
+    name: 系统公测发行（x86-64 ISO）
+    needs: bootstrap
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/yybs')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    # 文言：同枝之发行不并行：行中者不罢，候者为后至者所代；草稿惟一，免二轮并改之。
+    # 汉语：同一分支的发行作业不并行：正在运行的不取消，排队中的由更新的一轮顶替；草稿只有一份，避免两轮同时改它。
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-os-release
+      cancel-in-progress: false
+    env:
+      # 文言：定版之 Limine 官方二进制发布（GitHub 发行之资产 limine-binary.tar.gz）及其 SHA-256；更版则二者同改。
+      # 汉语：固定版本的 Limine 官方二进制发布（GitHub 发行资产 limine-binary.tar.gz）及其 SHA-256；换版本时两项同改。
+      YY_LIMINE_VERSION: 12.9.1
+      YY_LIMINE_SHA256: 5cdebc518daa3af30b22c2322ba0dba2e0e2046fa8b087b9e13071b8dbcdcff4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-test-tools
+          path: ${{ runner.temp }}
+
+      - name: 解开本轮编译与构建工具
+        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+
+      # 文言：造盘须 xorriso；控制台之字模生于构时，须 FreeType（libfreetype.so.6）。
+      # 汉语：造盘要 xorriso；构建时生成控制台字模要 FreeType（libfreetype.so.6）。
+      - name: 安装 xorriso 与 FreeType
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends xorriso libfreetype6
+
+      # 文言：取 Limine 之官方二进制发布，核其 SHA-256 乃解之；编其命令行之器，以 LIMINE_DATADIR 指同目之启载文件，使「启动盘」所呼之 limine --print-datadir 可用，乃加于 PATH。
+      # 汉语：下载 Limine 官方二进制发布，核对 SHA-256 后解压；编出 limine 命令行工具，用 LIMINE_DATADIR 指向同目录的启动文件，让「启动盘」调用的 limine --print-datadir 可用，再加入 PATH。
+      - name: 下载并核对固定版本的 Limine，编出命令行工具
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/limine-binary.tar.gz"
+          curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
+            --output "$archive" \
+            "https://github.com/Limine-Bootloader/Limine/releases/download/v$YY_LIMINE_VERSION/limine-binary.tar.gz"
+          echo "$YY_LIMINE_SHA256  $archive" | sha256sum --check -
+          tar -xzf "$archive" -C "$RUNNER_TEMP"
+          dir="$RUNNER_TEMP/limine-binary"
+          make -C "$dir" CPPFLAGS="-DLIMINE_DATADIR=\\\"$dir\\\""
+          test "$("$dir/limine" --version --version-only)" = "$YY_LIMINE_VERSION"
+          test "$("$dir/limine" --print-datadir)" = "$dir"
+          echo "$dir" >> "$GITHUB_PATH"
+
+      # 文言：版之所出惟 豫言操作系统/裸机/发行/系统版本.tsv；文件名之版惟许 ASCII。
+      # 汉语：版本号的唯一出处是 豫言操作系统/裸机/发行/系统版本.tsv；文件名版本只许 ASCII 字符。
+      - name: 读取系统版本号
+        run: |
+          set -euo pipefail
+          table=豫言操作系统/裸机/发行/系统版本.tsv
+          version="$(awk -F '\t' '$1 == "版本" { print $2 }' "$table")"
+          file_version="$(awk -F '\t' '$1 == "文件名版本" { print $2 }' "$table")"
+          if [[ -z "$version" || ! "$file_version" =~ ^[0-9A-Za-z.+-]+$ ]]; then
+            echo "::error::$table 缺「版本」，或「文件名版本」含 ASCII 以外的字符"
+            exit 1
+          fi
+          {
+            echo "YY_OS_VERSION=$version"
+            echo "YY_OS_FILE_VERSION=$file_version"
+            echo "YY_OS_TAG=os-v$file_version"
+            echo "YY_OS_ISO=yuyan-os-$file_version-x86_64.iso"
+          } >> "$GITHUB_ENV"
+
+      - name: 构建豫言系统工具
+        run: >-
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 豫言操作系统/裸机/豫言系统。豫
+          --编译器 ./yy4_bs.wasm --输出 yy豫言系统.wasm -j "$(nproc)"
+
+      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 yy豫言系统 定之。
+      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 yy豫言系统 决定。
+      - name: 造混合启动 ISO
+        env:
+          YY_GC_INITIAL_HEAP_SIZE_MB: 1024
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --输出 yy启动介质 --预置 无
+
+      # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
+      # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
+      - name: 命名 ISO，算 SHA-256，生成发行说明
+        run: |
+          set -euo pipefail
+          out=yy发行
+          mkdir -p "$out"
+          cp yy启动介质/yy豫言启动.iso "$out/$YY_OS_ISO"
+          (cd "$out" && sha256sum "$YY_OS_ISO" > "$YY_OS_ISO.sha256")
+          sha256="$(cut -d ' ' -f 1 "$out/$YY_OS_ISO.sha256")"
+          repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          fill() {
+            sed -e "s|{{版本}}|$YY_OS_VERSION|g" \
+              -e "s|{{文件名版本}}|$YY_OS_FILE_VERSION|g" \
+              -e "s|{{ISO文件}}|$YY_OS_ISO|g" \
+              -e "s|{{SHA256}}|$sha256|g" \
+              -e "s|{{提交}}|$GITHUB_SHA|g" \
+              -e "s|{{仓库}}|$repo_url|g" \
+              "$1"
+          }
+          {
+            fill 豫言操作系统/裸机/发行/发行说明模板.汉语.md
+            printf '\n<details>\n<summary>文言</summary>\n\n'
+            fill 豫言操作系统/裸机/发行/发行说明模板.文言.md
+            printf '\n</details>\n'
+          } > "$out/发行说明.md"
+          if grep -n '{{' "$out/发行说明.md"; then
+            echo "::error::发行说明里还有未替换的占位符"
+            exit 1
+          fi
+          ls -l "$out"
+
+      - name: 上传 ISO 构件
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-os-iso
+          path: yy发行/
+          retention-days: 30
+          if-no-files-found: error
+
+      # 文言：惟 yybs 之轮乃动草稿预发行（他枝手发者但存构件）：无则建之；有同名之草稿，则更其说明与所指之提交，去旧资产而传新者；其标签已正式发行者不动，但示警。恒为草稿，终不发之。
+      # 汉语：只有 yybs 上的运行才动草稿预发行（其他分支手动触发的只留构件）：没有就新建；已有同名草稿，就更新说明与目标提交，删掉旧资产再上传新的；该标签已正式发布的不动，只给警告。始终保持草稿，绝不发布。
+      - name: 建立或更新草稿预发行
+        if: github.ref == 'refs/heads/yybs'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          title="豫言操作系统 $YY_OS_VERSION"
+          notes=yy发行/发行说明.md
+          iso="yy发行/$YY_OS_ISO"
+          sum="yy发行/$YY_OS_ISO.sha256"
+          err="$RUNNER_TEMP/gh-release-view.err"
+          if draft="$(gh release view "$YY_OS_TAG" --json isDraft --jq .isDraft 2>"$err")"; then
+            if [ "$draft" != true ]; then
+              echo "::warning::$YY_OS_TAG 已正式发布，本轮不改动；发下一版前先改 豫言操作系统/裸机/发行/系统版本.tsv。"
+              exit 0
+            fi
+            gh release edit "$YY_OS_TAG" --draft=true --prerelease=true \
+              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes"
+            gh release view "$YY_OS_TAG" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/old-assets.txt"
+            while IFS= read -r name; do
+              gh release delete-asset "$YY_OS_TAG" "$name" --yes < /dev/null
+            done < "$RUNNER_TEMP/old-assets.txt"
+            gh release upload "$YY_OS_TAG" "$iso" "$sum" --clobber
+          elif grep -q 'release not found' "$err"; then
+            gh release create "$YY_OS_TAG" --draft --prerelease \
+              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes" "$iso" "$sum"
+          else
+            cat "$err" >&2
+            exit 1
+          fi
