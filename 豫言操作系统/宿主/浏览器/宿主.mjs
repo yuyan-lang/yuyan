@@ -142,7 +142,7 @@ const 码元转码点 = (串, 码元位) => {
 // 文言：诸源之事同入一列，各类自有其限；溢则去其最旧而记其数，「宿主」类独拒新事，免失待答之请。
 // 汉语：所有事件来源共用一个先进先出队列，事件带类型；每个类型独立上限（默认 1024），超限丢弃该类型最旧事件并计数。
 //       「宿主」类（低层宿主库的原始事件，如公开操作）保持旧行为：满则报错，因为丢弃其中的调用会让页面侧 Promise 永不返回。
-export const 网页事件类型 = Object.freeze(['界面', '消息', '定时', '事件流', '请求', '编译', '可见性', '联机', '历史', '关闭', '宿主']);
+export const 网页事件类型 = Object.freeze(['界面', '消息', '定时', '事件流', '请求', '编译', '构建', '可见性', '联机', '历史', '关闭', '宿主']);
 const 默认事件队列上限 = 1024;
 
 // 文言：旧式原始事件依其名而归类；已带类型之新式事件从其所标。汉语：给尚未带类型的旧式原始事件分类；新式事件（含合法「类型」字段）保持自己的类型。
@@ -1539,7 +1539,7 @@ const 十六兆 = 16 * 1024 * 1024;
 const 背压阈值 = 8;
 
 export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 队列, 已关闭 = () => false, 定时 = null,
-  编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000}) {
+  编译客户端 = null, 构建客户端 = null, 导入模块 = null, 页面应用超时 = 30000}) {
   const 导入 = 导入模块 ?? (地址 => import(地址));
   const 基址 = () => {
     try { return new URL(String(全局.location?.href ?? 路径)); } catch { return new URL(String(路径)); }
@@ -2028,6 +2028,97 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
     }
   };
 
+  // ---- 构建 ----
+  // 文言：本地构建：取源码快照与工具链，于工作线程行豫构诸令；客户端可换，缺省取页之基址下 构建/客户端.mjs；同时惟一构建。
+  // 汉语：本地构建（网页编译接口 0.2）：构建客户端按作业取源码快照与工具链，在工作线程里运行豫构等命令（参考实现 构建/客户端.mjs）；
+  //       客户端可在创建宿主时以 构建客户端 换成对象或地址，缺省从页面基址目录下的 构建/客户端.mjs 加载。同一时刻只有一个构建；
+  //       进度 50 毫秒合批，经背压管线投递为类型“构建”的“进度”事件，最后投递“完成”。
+  let 下构建号 = 1;
+  let 当前构建 = null;
+  const 构建可用 = () => 编译可用() && typeof 全局.SharedArrayBuffer === 'function' && 全局.crossOriginIsolated === true;
+  const 检构建作业 = 文 => {
+    if (typeof 文 !== 'string') throw Error('本地构建作业须为 JSON 文字');
+    if (字节数(文) > 64 * 1024 * 1024) throw Error('本地构建作业至多 64 MiB');
+    let 作业;
+    try { 作业 = JSON.parse(文); } catch { throw Error('本地构建作业不是有效 JSON'); }
+    if (!作业 || typeof 作业 !== 'object' || Array.isArray(作业)) throw Error('本地构建作业须为 JSON 对象');
+    if (typeof 作业.快照?.网址 !== 'string' || typeof 作业.工具链?.网址 !== 'string') throw Error('本地构建作业须有 快照.网址 与 工具链.网址');
+    解析同源网址(作业.快照.网址, '源码快照');
+    解析同源网址(作业.工具链.网址, '工具链');
+    const 命令们 = 作业.命令;
+    if (!Array.isArray(命令们) || 命令们.length === 0 || 命令们.length > 256 ||
+      命令们.some(命令 => !Array.isArray(命令) || 命令.length === 0 || 命令.length > 256 || 命令.some(项 => typeof 项 !== 'string'))) throw Error('本地构建命令须为 1 至 256 条字符串数组');
+    if (作业.改动 !== undefined && (!作业.改动 || typeof 作业.改动 !== 'object' || Array.isArray(作业.改动) ||
+      Object.values(作业.改动).some(值 => 值 !== null && typeof 值 !== 'string'))) throw Error('本地构建改动须为 {"路径":"内容"或null} 对象');
+    return 作业;
+  };
+  const 取构建客户端 = async () => {
+    if (构建客户端 && typeof 构建客户端 === 'object') return 构建客户端;
+    const 地址 = typeof 构建客户端 === 'string' ? new URL(构建客户端, 基址()).href : new URL('构建/客户端.mjs', 基址()).href;
+    const 模块 = await 导入(地址);
+    if (typeof 模块?.浏览器构建 !== 'function' || typeof 模块?.停止构建 !== 'function') throw Error('缺少导出 浏览器构建 或 停止构建');
+    return 模块;
+  };
+  const 映射构建事件 = 事 => {
+    if (事?.type === 'stage') return {类: '阶段', 阶段: String(事.phase ?? ''), 标签: String(事.label ?? '')};
+    if (事?.type === 'output') return {类: '输出', 流: 事.stream === 'stdout' ? 'stdout' : 'stderr', 文字: String(事.text ?? '')};
+    if (事?.type === 'command') return {类: '命令', 序: Number(事.index ?? 0), 参数: Array.isArray(事.argv) ? 事.argv.map(String) : []};
+    if (事?.type === 'command-done') return {类: '命令完成', 序: Number(事.index ?? 0), 退出码: Number(事.exitCode ?? 1), 毫秒: Number(事.ms ?? 0)};
+    return null;
+  };
+  const 运行构建 = async (项, 作业) => {
+    let 待批 = [];
+    let 批计时 = null;
+    const 冲 = () => {
+      if (批计时 !== null) { 全局.clearTimeout(批计时); 批计时 = null; }
+      if (!待批.length) return;
+      for (const 批 of 拆批(待批, 事 => 字节数(事.文字 ?? '') + 字节数(事.标签 ?? '') + 字节数(JSON.stringify(事.参数 ?? [])) + 64)) 项.管.推('进度', {批});
+      待批 = [];
+    };
+    const 报告 = 事 => {
+      const 映 = 映射构建事件(事);
+      if (!映) return;
+      待批.push(映);
+      if (待批.length >= 64) 冲();
+      else if (批计时 === null) 批计时 = 全局.setTimeout(冲, 50);
+    };
+    let 结果;
+    try {
+      项.客户端 = await 取构建客户端();
+      if (项.请求停止) 结果 = {ok: false, error: '已停止'};
+      else 结果 = await 项.客户端.浏览器构建(作业, 报告);
+    } catch (错) {
+      结果 = {ok: false, error: '构建客户端不可用：' + String(错?.message ?? 错).slice(0, 300)};
+    }
+    冲();
+    if (当前构建 === 项) 当前构建 = null;
+    项.管.推('完成', {
+      成: 结果?.ok === true, 错误: String(结果?.error ?? ''), 阶段: String(结果?.phase ?? ''), 毫秒: Number(结果?.ms ?? 0),
+      结果: (Array.isArray(结果?.results) ? 结果.results : []).map(项 => ({参数: Array.isArray(项?.argv) ? 项.argv.map(String) : [], 退出码: Number(项?.exitCode ?? 1), 毫秒: Number(项?.ms ?? 0)}))
+    });
+  };
+  const 构建操作 = {
+    可用: () => String(构建可用()),
+    启动: 文 => {
+      检开着();
+      const 作业 = 检构建作业(文);
+      if (当前构建) throw Error('已有本地构建在运行');
+      const 号 = 下构建号++;
+      const 键 = '构建:' + 号;
+      const 项 = {号, 键, 管: 造管线(键, '构建', 号), 客户端: null, 请求停止: false};
+      当前构建 = 项;
+      运行构建(项, 作业).catch(错 => { 全局.console?.error?.(错); });
+      return String(号);
+    },
+    停止: () => {
+      const 项 = 当前构建;
+      if (!项) return 'false';
+      项.请求停止 = true;
+      try { 项.客户端?.停止构建(); } catch { /* 文言：客户端自败则以完成事报之。汉语：客户端停止时抛错则忽略，构建最终仍以“完成”事件收尾。 */ }
+      return 'true';
+    }
+  };
+
   // ---- 应用 ----
   const 已启应用 = new Map();
   const 检应用路径 = 串 => {
@@ -2189,7 +2280,7 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
   };
 
   // ---- 分派 ----
-  const 表们 = {定时: 定时操作, 储存: 储存操作, 导航: 导航操作, 环境: 环境操作, 请求: 请求操作, 事件源: 事件源操作, 编译: 编译操作, 时间: 时间操作, 随机: 随机操作, 定位: 定位操作, 查询: 查询操作, 日志: 日志操作, 规整: 规整操作};
+  const 表们 = {定时: 定时操作, 储存: 储存操作, 导航: 导航操作, 环境: 环境操作, 请求: 请求操作, 事件源: 事件源操作, 编译: 编译操作, 构建: 构建操作, 时间: 时间操作, 随机: 随机操作, 定位: 定位操作, 查询: 查询操作, 日志: 日志操作, 规整: 规整操作};
   const 找操作 = 名 => {
     const 点 = typeof 名 === 'string' ? 名.indexOf('.') : -1;
     const 表 = 点 > 0 ? 表们[名.slice(0, 点)] : undefined;
@@ -2233,12 +2324,18 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
       当前编译.管.停();
       当前编译 = null;
     }
+    if (当前构建) {
+      当前构建.请求停止 = true;
+      try { 当前构建.客户端?.停止构建(); } catch { /* 忽略 */ }
+      当前构建.管.停();
+      当前构建 = null;
+    }
     for (const 管 of 管线表.values()) 管.停();
     管线表.clear();
     for (const 实例 of 已启应用.values()) { try { 实例?.关闭?.(); } catch { /* 忽略 */ } }
     已启应用.clear();
   };
-  const 状态 = () => ({请求数: 请求表.size, 事件源数: 事件源表.size, 编译中: 当前编译 !== null, 页面应用数: 已启应用.size, 管线数: 管线表.size});
+  const 状态 = () => ({请求数: 请求表.size, 事件源数: 事件源表.size, 编译中: 当前编译 !== null, 构建中: 当前构建 !== null, 页面应用数: 已启应用.size, 管线数: 管线表.size});
   return {运行, 异步运行, 离队, 清理, 状态};
 }
 
@@ -2528,7 +2625,7 @@ const 条件异步原语 = new Set(['豫言_浏览器_等待事件', '豫言_浏
   '豫言_浏览器_同源资源文字', '豫言_浏览器_同源资源JSON数组项', '豫言_浏览器_显示', '豫言_浏览器_图形', '豫言_浏览器_字体', '豫言_中央张量_启用', '豫言_中央张量_运行']);
 const 是异步函数 = 函 => 函?.constructor?.name === 'AsyncFunction';
 
-export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 队列上限 = {}, 编译客户端 = null, 导入模块 = null, 页面应用超时 = 30000, 授权目录 = new Map(), 授权控制台 = new Map()}) {
+export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalThis.document ?? globalThis, 网络 = fetch, 储存 = null, 全局 = globalThis, 路径 = 全局.document?.baseURI ?? 全局.location?.href ?? import.meta.url, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 队列上限 = {}, 编译客户端 = null, 构建客户端 = null, 导入模块 = null, 页面应用超时 = 30000, 授权目录 = new Map(), 授权控制台 = new Map()}) {
   const 控制台 = 创建控制台能力(授权控制台);
   let 网页能力 = null;
   const 页面资源正文缓存 = new Map();
@@ -2662,7 +2759,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
   };
   // 文言：网页定时等八包之行术，一处成之。汉语：网页定时、储存、导航、环境、请求、事件源、编译、应用的宿主实现（见 创建网页能力）。
   网页能力 = 创建网页能力({
-    根, 全局, 网络, 路径, 储存, 队列, 已关闭: () => 关闭, 编译客户端, 导入模块, 页面应用超时,
+    根, 全局, 网络, 路径, 储存, 队列, 已关闭: () => 关闭, 编译客户端, 构建客户端, 导入模块, 页面应用超时,
     定时: {造: 造定时, 取消: 取消定时全}
   });
   // 文言：帧时由浏览器原生驱动，客唯候事件而裁绘。汉语：原生动画帧回调只投递时间戳和标记，绘制逻辑留在豫言。

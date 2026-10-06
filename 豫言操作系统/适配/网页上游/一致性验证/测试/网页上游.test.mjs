@@ -28,14 +28,14 @@ const 造网络 = () => { const 调用们 = []; const 网络 = async (url, init)
 const 造全局 = () => { const 调用们 = []; const 全局 = Object.create(globalThis, {fetch: {value: async (url, init) => { const 记 = {url: String(url), init}; 调用们.push(记); return 行为(new URL(url).pathname, init, 记); }}}); return {全局, 调用们}; };
 
 // —— 静态来源（OUTBOUND_ORIGINS）——
-test('静态上游：增量读取 SSE，并遵守 redirect:error、超时信号与新的请求编号标头', async () => {
+test('静态上游：增量读取 SSE，并遵守 manual 禁止跟随、超时信号与新的请求编号标头', async () => {
   const 网络 = 造网络();
   const 果 = await 跑({op: 'up', url: 'https://api.example.com/sse', method: 'POST', body: '{"model":"m"}', headers: [['Content-Type', 'application/json'], ['Accept', 'text/event-stream'], ['X-Yuyan-Request-ID', '0123abcd-0123-4abc-8def-0123456789ab']], read: 'sse', timeout: 5000}, {}, 造宿主({网络}));
   assert.equal(果.状态, 200, 果.文);
   assert.match(果.文, /^状态码=200‖头=text\/event-stream‖文=你好世界‖完成‖读次=\d+‖字节=\d+$/);
   assert.equal(Number(果.文.match(/字节=(\d+)/)[1]), 编.encode(sse).length);
   const 记 = 网络.调用们[0];
-  assert.equal(记.init.redirect, 'error'); assert.equal(记.init.method, 'POST'); assert.ok(记.init.signal instanceof AbortSignal);
+  assert.equal(记.init.redirect, 'manual'); assert.equal(记.init.method, 'POST'); assert.ok(记.init.signal instanceof AbortSignal);
   assert.equal(记.init.body, '{"model":"m"}');
   assert.deepEqual(头对象(记.init.headers), {'content-type': 'application/json', accept: 'text/event-stream', 'x-yuyan-request-id': '0123abcd-0123-4abc-8def-0123456789ab'});
 });
