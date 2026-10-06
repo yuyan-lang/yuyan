@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import * as 文件系统 from 'node:fs';
 import 路径 from 'node:path';
 import 系统 from 'node:os';
+import {spawnSync as 同步启动} from 'node:child_process';
 import {创建子程序能力} from './子程序.mjs';
 import {解析宿主参数} from './应用宿主.mjs';
 
@@ -45,4 +46,32 @@ test('非零退出保留输出，启动失败有独立错误', () => {
     assert.equal(能力.解码输出(果[2]), '失败输出');
     assert.equal(能力.运行('坏路径', [], new Uint8Array(), [])[0], 8);
   } finally { 文件系统.rmSync(根, {recursive: true, force: true}); }
+});
+
+test('继承输入读取真实父进程输入，仍传具名参数与授权环境并捕获错误流', () => {
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy继承输入-'));
+  const 子入口 = 路径.join(根, '子.mjs');
+  const 父入口 = 路径.join(根, '父.mjs');
+  文件系统.writeFileSync(子入口, "import * as 文件系统 from 'node:fs'; process.stdout.write(JSON.stringify([process.argv.slice(process.argv.indexOf('--') + 1), process.env.豫言验收, 文件系统.readFileSync(0, 'utf8')])); process.stderr.write('中文错误'); process.exit(17);");
+  文件系统.writeFileSync(父入口, `import {创建子程序能力} from ${JSON.stringify(new URL('./子程序.mjs', import.meta.url).href)};
+    const 能力 = 创建子程序能力({程序: new Map([['验收', {入口: ${JSON.stringify(子入口)}, 目录: ${JSON.stringify(根)}}]]), 环境: new Set(['豫言验收'])});
+    const 果 = 能力.运行('验收', ['甲 乙'], new Uint8Array(), [['豫言验收', '环境甲']], true);
+    process.stdout.write(JSON.stringify([果[0], 果[1], 能力.解码输出(果[2]), 能力.解码输出(果[3])]));`);
+  try {
+    const 果 = 同步启动(process.execPath, [父入口], {input: '继承中文输入', encoding: 'utf8'});
+    assert.equal(果.status, 0, 果.stderr);
+    const 录 = JSON.parse(果.stdout);
+    assert.deepEqual(录.slice(0, 2), [0, 17]);
+    assert.deepEqual(JSON.parse(录[2]), [['甲 乙'], '环境甲', '继承中文输入']);
+    assert.equal(录[3], '中文错误');
+  } finally { 文件系统.rmSync(根, {recursive: true, force: true}); }
+});
+
+test('继承输入启动失败仍恢复父输入，未授权调用不暂停', () => {
+  const 记录 = [];
+  const 能力 = 创建子程序能力({程序: new Map([['失败', {入口: '/不存在/入口.mjs', 目录: '/不存在'}]]), 暂停输入: () => {记录.push('暂停'); return () => 记录.push('恢复');}});
+  assert.equal(能力.运行('未授', [], new Uint8Array(), [], true)[0], 1);
+  assert.deepEqual(记录, []);
+  assert.equal(能力.运行('失败', [], new Uint8Array(), [], true)[0], 8);
+  assert.deepEqual(记录, ['暂停', '恢复']);
 });
