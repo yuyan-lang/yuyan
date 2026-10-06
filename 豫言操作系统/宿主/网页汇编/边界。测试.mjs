@@ -85,6 +85,21 @@ test('造边界导入：缺签名的导入报错，浏览器组装的 yuyan:brow
   assert.deepEqual(Object.keys(造边界导入(模块乙, {}, {})), []);
 });
 
+test('造边界导入：Module.imports 抛错（Safari 遇 WasmGC 引用类型）时，按边界段的导入行造导入', () => {
+  const 模块 = 造模块([{模: '测试', 字: '加', 参: [i64, i64], 果: [i64]}, {模: '标准库', 字: '打印行', 参: [], 果: []}],
+    '导入\t测试\t加\t整，整→整\n导入\t标准库\t打印行\t→元\n');
+  const 原导入 = WebAssembly.Module.imports;
+  WebAssembly.Module.imports = () => { throw TypeError('WebAssembly.Module.imports unable to produce import descriptors for the given module'); };
+  try {
+    const 导入 = 造边界导入(模块, {}, {测试: {加: (甲, 乙) => 甲 + 乙}});
+    assert.equal(导入.测试.加(2n, 3n), 5n);
+    assert.deepEqual(导入.未绑定, ['标准库.打印行']);
+    new WebAssembly.Instance(模块, 导入);
+  } finally {
+    WebAssembly.Module.imports = 原导入;
+  }
+});
+
 test('造边界导入：没标异步却返回 Promise 时报错', () => {
   const 模块 = 造模块([{模: '测试', 字: '等', 参: [], 果: [i64]}], '导入\t测试\t等\t→整\n');
   const 导入 = 造边界导入(模块, {}, {测试: {等: () => Promise.resolve(1n)}});
