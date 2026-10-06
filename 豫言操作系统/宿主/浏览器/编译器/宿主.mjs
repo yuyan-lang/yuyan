@@ -82,7 +82,11 @@ export function 理解小数(值) {
 // 文言：带型之导入，惟模有之乃载胶水；无之者不载亦行。汉语：有带类型导入的模块才动态载入共用胶水（本目录的 边界.mjs：仓库里转出 ../../网页汇编/边界.mjs，发布时由构建换成胶水本体）；没有带类型导入的模块不载胶水也能运行。
 let 边界胶水 = null;
 const 取边界胶水 = () => 边界胶水 ??= import("./边界.mjs");
-const 有带型导入 = 模块 => WebAssembly.Module.imports(模块).some(项 => 项.kind === "function" && 项.module !== "yuyan:browser/v1");
+// 文言：Safari 不得列导入（见 边界.mjs），则视边界段之有无。汉语：Safari 列不出导入表时（见 边界.mjs 的 模块导入），改看模块有没有「豫言边界」段。
+const 有带型导入 = 模块 => {
+  try { return WebAssembly.Module.imports(模块).some(项 => 项.kind === "function" && 项.module !== "yuyan:browser/v1"); }
+  catch { return WebAssembly.Module.customSections(模块, "豫言边界").length > 0; }
+};
 export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编译 = false, 报告 = () => {}, 时限 } = {}) {
   const 桥 = 创建值桥(桥模块);
   const 截止 = performance.now() + (时限 ?? (编译 ? 90000 : 5000));

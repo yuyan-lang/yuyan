@@ -52,10 +52,17 @@ export function 解析签名(文) {
 }
 
 // 文言：一模之段与导入，析之一次而存，同模再造导入不复析。汉语：签名表与导入表按模块缓存（WeakMap，模块被回收即释放）：云工每个事件都为同一模块造一次导入，只有第一次解析。
+// 文言：Safari 之客器列导入，每项必附其型之述；模有 GC 引用之型，则全表不得出。乃以边界段之导入行代之：编译器以同一登记书导入之项与段之行，一一相应。
+// 汉语：Safari（JavaScriptCore）列导入时给每项附类型描述，模块里有 WasmGC 引用类型（anyref、(ref $结构) 等）就整张表报错；
+//   这时改用「豫言边界」段的导入行列出带类型导入：编译器按同一张登记表写出导入项与段行，二者一一对应。
 const 段缓存 = new WeakMap(), 导入缓存 = new WeakMap();
 const 模块导入 = 模块 => {
   let 表 = 导入缓存.get(模块);
-  if (!表) { 表 = WebAssembly.Module.imports(模块); 导入缓存.set(模块, 表); }
+  if (!表) {
+    try { 表 = WebAssembly.Module.imports(模块); }
+    catch { 表 = [...(读边界段(模块)?.keys() ?? [])].map(键 => { const [module, name] = 键.split('\t'); return {module, name, kind: 'function'}; }); }
+    导入缓存.set(模块, 表);
+  }
   return 表;
 };
 
