@@ -310,6 +310,8 @@ test('旧函数回归：转发入站请求、并加标头、重定向入站请�
   const 加 = await 简({op: 'oldhdr', svc: 'API', path: '', hdrs: [['Content-Security-Policy', "default-src 'none'"], ['X-Content-Type-Options', 'nosniff']]}, {方法: 'GET', 环境: {API: 丙}});
   assert.deepEqual(加.头.filter(项 => ['content-security-policy', 'x-content-type-options', 'set-cookie', 'x-keep'].includes(项[0])).sort(), [['content-security-policy', "default-src 'none'"], ['set-cookie', 'x=1'], ['x-content-type-options', 'nosniff'], ['x-keep', '1']]);
   assert.match(错(await 简({op: 'oldhdr', svc: 'API', path: '', hdrs: [['Set-Cookie', 'x=2']]}, {方法: 'GET', 环境: {API: 丙}})), /响应标头名称不允许覆盖/);
+  const 隔 = await 简({op: 'oldhdr', svc: 'API', path: '', hdrs: [['Cross-Origin-Opener-Policy', 'same-origin'], ['Cross-Origin-Embedder-Policy', 'require-corp'], ['Cross-Origin-Resource-Policy', 'same-origin']]}, {方法: 'GET', 环境: {API: 丙}});
+  assert.deepEqual(隔.头.filter(项 => 项[0].startsWith('cross-origin-')).sort(), [['cross-origin-embedder-policy', 'require-corp'], ['cross-origin-opener-policy', 'same-origin'], ['cross-origin-resource-policy', 'same-origin']], '跨源隔离三头可加');
   const 跳 = await 简({op: 'redir', path: '/to'}, {方法: 'GET', 环境: {}});
   assert.equal(跳.状态, 308);
   assert.deepEqual(跳.头.filter(项 => 项[0] === 'location'), [['location', 'https://x.test/to?z=1&op=redir&path=%2Fto']]);
