@@ -683,8 +683,10 @@ jobs:
         run: |
           set -euo pipefail
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 冒烟 yy启动介质/yy豫言启动.iso
-          code=$(ls /usr/share/OVMF/OVMF_CODE_4M.fd /usr/share/OVMF/OVMF_CODE.fd 2>/dev/null | head -n 1)
-          vars=$(ls /usr/share/OVMF/OVMF_VARS_4M.fd /usr/share/OVMF/OVMF_VARS.fd 2>/dev/null | head -n 1)
+          code=""; vars=""
+          for f in /usr/share/OVMF/OVMF_CODE.fd /usr/share/OVMF/OVMF_CODE_4M.fd; do if [ -f "$f" ]; then code=$f; fi; done
+          for f in /usr/share/OVMF/OVMF_VARS.fd /usr/share/OVMF/OVMF_VARS_4M.fd; do if [ -f "$f" ]; then vars=$f; fi; done
+          echo "OVMF：$code $vars"
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 冒烟 yy启动介质/yy豫言启动.iso --固件 "$code" --固件变量 "$vars"
 
       # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
