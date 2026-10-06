@@ -698,6 +698,23 @@
           ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步, ulong2(0, 0), true);』
           ，『  return 片;』
           ，『}』
+          ，『static inline yy_矩阵片累 yy_载入矩阵片累(threadgroup const float* 源, uint 起, uint 步) {』
+          ，『  yy_矩阵片累 片;』
+          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+          ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
+          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
+          ，『  return 片;』
+          ，『}』
+          ，『static inline yy_矩阵片乙 yy_存储载入转置矩阵片乙(device const uint* 字源, uint 起, uint 步) {』
+          ，『  device const half* 源 = (device const half*)字源;』
+          ，『  yy_矩阵片乙 片;』
+          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+          ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
+          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
+          ，『  return 片;』
+          ，『}』
           】）
 也。
 
@@ -735,16 +752,18 @@
       若「用矩阵片」则
         若「存在吗」授以「字符串」
         于（会「块」而「或者」
-          于（「是子字符串吗」于『yy_存储载入矩阵片』于「块」）
           于（「或者」
-            于（「是子字符串吗」于『矩阵片甲前八行』于「块」）
-            于（「是子字符串吗」于『矩阵片累前八行』于「块」）））
-            于「块们」则
-              「列」
-              【『#include <metal_stdlib>「：换行：」using namespace metal;』
-              ，「金属矩阵片序幕」
-              ，「金属存储载片序幕」
-              】
+            于（「是子字符串吗」于『yy_存储载入』于「块」）
+            于（「是子字符串吗」于『yy_载入矩阵片累』于「块」））
+            于（「或者」
+              于（「是子字符串吗」于『矩阵片甲前八行』于「块」）
+              于（「是子字符串吗」于『矩阵片累前八行』于「块」）））
+              于「块们」则
+                「列」
+                【『#include <metal_stdlib>「：换行：」using namespace metal;』
+                ，「金属矩阵片序幕」
+                ，「金属存储载片序幕」
+                】
         否则
           「列」【『#include <metal_stdlib>「：换行：」using namespace metal;』，「金属矩阵片序幕」】
       否则

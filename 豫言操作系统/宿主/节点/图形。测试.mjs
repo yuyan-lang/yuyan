@@ -155,6 +155,18 @@ const 造 = ({授权 = [['甲', {宽: 32, 高: 24}], ['乙', {宽: 8, 高: 4}]],
 };
 const 取号 = async 承诺 => { const 果 = await 承诺; assert.equal(果[0], 码.成, 果[2]); return 果[1]; };
 
+test('SDL尺寸及显示器变化唤醒等待，输入顺序保留而相邻尺寸通知合并', async () => {
+  const {显,sdl,取面} = 造(); const 号 = 取面('甲'), 窗 = sdl.窗们[0];
+  const 候 = 显('等待',号); 窗.emit('resize',{});
+  assert.equal((await 候)[1],事件种类.显示尺寸变化);
+  窗.emit('resize',{}); 窗.emit('displayChange',{});
+  窗.emit('textInput',{text:'保留输入'}); 窗.emit('resize',{});
+  assert.equal((await 显('等待',号))[1],事件种类.显示尺寸变化);
+  const 文 = await 显('等待',号); assert.equal(文[1],事件种类.文字输入); assert.equal(文[5],'保留输入');
+  assert.equal((await 显('等待',号))[1],事件种类.显示尺寸变化);
+  显('归还',号); 窗.emit('resize',{}); assert.equal((await 显('等待',号))[0],码.已失效);
+});
+
 // ---------------------------------------------------------------------------
 // 一、宿主选项与原生依赖
 // ---------------------------------------------------------------------------
@@ -363,6 +375,23 @@ test('图形显示：取纹理时换成 WebGPU 窗口；离屏帧可读回；呈
 // ---------------------------------------------------------------------------
 // 字体：只读字体目录下的文件
 // ---------------------------------------------------------------------------
+test('内建字体只授发行指定文件，不授旁文件且拒绝符号链接', async () => {
+  const 文件系统 = await import('node:fs'), 系统 = await import('node:os');
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(),'yy内建字体-'));
+  try {
+    const 字体径 = 路径.join(根,'字体.ttf'), 旁径 = 路径.join(根,'旁文件.txt');
+    文件系统.writeFileSync(字体径,Uint8Array.from([0,1,0,0,9])); 文件系统.writeFileSync(旁径,'私有正文');
+    const 能 = 创建节点图形能力({创建显示面表,创建图形能力,状态码,事件种类,载入原生:()=>{throw Error('无须原生');},文件系统,路径分隔:路径.sep,内建字体文件:字体径});
+    const 调 = (作,径='',号=0,长=0) => 能.原语.豫言_诺节_字体(字(作),字(径),BigInt(号),0n,BigInt(长));
+    const 开 = 调('打开','字体.ttf'); assert.equal(开[0],码.成); assert.equal(开[2],5);
+    assert.deepEqual([...调('读取','',开[1],5)[3]],[0,1,0,0,9]);
+    assert.equal(调('打开',旁径)[0],码.未获授权);
+    await 能.清理();
+    文件系统.unlinkSync(字体径); 文件系统.symlinkSync(旁径,字体径);
+    assert.equal(调('打开','字体.ttf')[0],码.未获授权);
+  } finally {文件系统.rmSync(根,{recursive:true,force:true});}
+});
+
 test('字体：只开字体目录下的文件；同一文件同一个号；按偏移读取；越界为输入无效；目录外为未获授权；不存在为资源不存在；清理后号失效', async () => {
   const 文件系统 = await import('node:fs');
   const 系统 = await import('node:os');
