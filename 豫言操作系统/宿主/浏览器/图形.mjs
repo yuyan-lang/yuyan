@@ -14,6 +14,9 @@ const 码 = 状态码;
 export const 单次交换上限 = 16 * 1024 * 1024;
 export const 显示面属性 = 'data-yy-显示面';
 export const 显示面输入属性 = 'data-yy-显示面输入';
+// 文言：首帧既绘，宿主加此属于 canvas；面闭则撤之。页可据以撤“载入中”之示。
+// 汉语：显示面画出第一帧时宿主给 canvas 加上这个属性，显示面关闭（归还）时去掉；页面据此撤下“正在载入”的提示。
+export const 已画属性 = 'data-yy-已画';
 
 const 解码器 = new TextDecoder('utf-8', {ignoreBOM: true});
 const 文字化 = 值 => (值 instanceof Uint8Array ? 解码器.decode(值) : String(值 ?? ''));
@@ -374,6 +377,7 @@ function 创建画布后端({根, 全局}) {
     听(输入框, 'input', 事件 => { if (!面.组字中 && !事件.isComposing) 交文字(''); else 交组字(); });
     // 文言：先撤诸听，后去输入框。汉语：关闭时先移除监听，再移除输入框。
     面.清理.push(() => 输入框.remove());
+    面.清理.push(() => 画布.removeAttribute?.(已画属性));
     // 汉语：布局及宿主视口变化唤醒同一豫言主循环，普通输入和计时语义保持。文言：布局与宿主视口易则唤同豫言主循环，输入与计时之义皆存。
     let 上尺 = 尺寸值(面), 上比 = 像素比();
     const 查尺 = () => {
@@ -415,6 +419,7 @@ function 创建画布后端({根, 全局}) {
     if (面.画布.width !== 宽) 面.画布.width = 宽;
     if (面.画布.height !== 高) 面.画布.height = 高;
     面.二维.putImageData(new 全局.ImageData(new Uint8ClampedArray(字节.buffer, 字节.byteOffset, 字节.length), 宽, 高), 0, 0);
+    if (面.画布.hasAttribute?.(已画属性) === false) 面.画布.setAttribute(已画属性, '');
     return null;
   };
   return {
