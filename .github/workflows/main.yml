@@ -47,10 +47,10 @@ jobs:
           node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
           --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(nproc)"
 
-      # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。
-      # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。
+      # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。此作诸作之所待，故不生原生工具链（全部之余），原生之验在 Wasm 包起步。
+      # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。本作业是其他作业的前置，所以只跑自举、豫构与值桥，不生成原生工具链（「全部」的其余部分）；原生工具链在「Wasm 包起步」作业里生成与验证。
       - name: 自举并核对定点，以新编译器重建豫构
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(nproc)"
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 自举 豫构 值桥 -j "$(nproc)"
 
       - name: 构建全树测试工具与 Wasm 工具链包
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 全树测试工具 打包 -j "$(nproc)"
@@ -161,8 +161,8 @@ jobs:
       - name: 运行本片测试
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy全树测试.wasm --分片 ${{ matrix.shard }}/20
 
-  # 文言：验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与苹果系统，但凭 Node，自包起步，以包中豫构自举而核定点。
-  # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上只用 Node 从包起步，由包中的豫构完成自举并核对定点。
+  # 文言：验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与苹果系统，但凭 Node，自包起步，以包中豫构自举而核定点；全部又生本机之原生工具链，乃以原生豫构与原生编译器构建编译器，须与 yy4_bs.wasm 逐字相同；终较原生与 Node 之速，原生慢则书警。
+  # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上只用 Node 从包起步，由包中的豫构完成自举并核对定点；「全部」还生成本机的原生工具链（yy4_bs.exe、yy豫构.exe），接着用原生豫构与原生编译器构建编译器，须与 yy4_bs.wasm 逐字节相同；最后比较原生与 Node 的构建耗时（原生对比），原生较慢时发出警告。
   wasm-bootstrap:
     name: Wasm 包起步（${{ matrix.os }}）
     needs: bootstrap
@@ -194,8 +194,25 @@ jobs:
           node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
           --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
-      - name: 以当前豫构自举并核对定点
+      - name: 以当前豫构自举并核对定点，生成本机原生工具链
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
+
+      # 文言：原生豫构默用原生编译器 yy4_bs.exe；所构之编译器须与 Node 自举之 yy4_bs.wasm 逐字相同。
+      # 汉语：原生豫构默认使用原生编译器 yy4_bs.exe；构建出的编译器须与 Node 自举的 yy4_bs.wasm 逐字节相同。
+      - name: 原生工具链自举核对
+        run: |
+          ./yy豫构.exe 构建 豫言编译器 --输出 yy原生自举.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          cmp yy原生自举.wasm yy4_bs.wasm || {
+            printf '::error title=原生工具链自举不一致::原生豫构与原生编译器构建的编译器与 yy4_bs.wasm 不同\n'
+            exit 1
+          }
+
+      # 文言：原生对比：冷编之探与全构，原生与 Node 交替而行，较其中位；原生慢则书警而不败，二者产物不同则败。
+      # 汉语：原生对比：冷编探针与完整构建，Node 与原生交替运行若干轮，比较中位数；原生较慢只发警告、不让作业失败，两边产物不同才失败。表写进作业摘要。
+      - name: 原生与 Node 性能对比
+        run: |
+          ./yy豫构.exe 构建 原生对比 --输出 yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
       # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
       # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
