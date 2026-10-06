@@ -104,13 +104,18 @@
 
 「可覆头」乃化「字符串」而「爻」也。
 「可覆头」者会「名」而
-  「或者」
-    于（「串相等」于「名」于『Content-Security-Policy』）
-    于（「或者」
-      于（「串相等」于「名」于『X-Content-Type-Options』）
-      于（「或者」
-        于（「串相等」于「名」于『Referrer-Policy』）
-        于（「或者」于（「串相等」于「名」于『Content-Type』）于（「串相等」于「名」于『Content-Disposition』））））
+  「存在吗」授以「字符串」
+    于（会「甲」而「串相等」于「甲」于「名」）
+    于（「列」
+          【『Content-Security-Policy』
+          ，『X-Content-Type-Options』
+          ，『Referrer-Policy』
+          ，『Content-Type』
+          ，『Content-Disposition』
+          ，『Cross-Origin-Opener-Policy』
+          ，『Cross-Origin-Embedder-Policy』
+          ，『Cross-Origin-Resource-Policy』
+          】）
 也。
 
 「已用头」乃化「字符串」而化（「列」于「字符串」）而「爻」也。
