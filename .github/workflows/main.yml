@@ -689,6 +689,23 @@ jobs:
           echo "OVMF：$code $vars"
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 冒烟 yy启动介质/yy豫言启动.iso --固件 "$code" --固件变量 "$vars"
 
+      # 文言：GitHub 之 Ubuntu 运行器有 /dev/kvm；开其权，以 KVM 加速复冒烟一次，记加速时按键至画变之时。此步惟记数，败不止发。
+      # 汉语：GitHub 的 Ubuntu 运行器有 /dev/kvm；放开权限后用 KVM 加速再跑一次冒烟，记下加速时按键到画面的用时。这一步只为记数，失败不挡发布。
+      - name: 冒烟测试（KVM 加速，只记数）
+        continue-on-error: true
+        env:
+          YY_GC_INITIAL_HEAP_SIZE_MB: 1024
+        run: |
+          set -euo pipefail
+          if [ -e /dev/kvm ]; then
+            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+            sudo udevadm control --reload-rules
+            sudo udevadm trigger --name-match=kvm
+            node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 冒烟 yy启动介质/yy豫言启动.iso --加速 kvm
+          else
+            echo "没有 /dev/kvm，跳过加速冒烟"
+          fi
+
       # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
       # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
       - name: 命名 ISO，算 SHA-256，生成发行说明
