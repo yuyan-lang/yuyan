@@ -17,7 +17,7 @@ test('诺节宿主与系统库调用全部实现，云工宿主实现四十六�
       assert.deepEqual(缺, [], 包 + ' 缺实现');
     }
     assert.equal(Object.keys(平台导入旧名.诺节宿主).length, 78);
-    assert.equal(Object.keys(平台导入旧名.系统库调用).length, 18);
+    assert.equal(Object.keys(平台导入旧名.系统库调用).length, 26);
     assert.equal(Object.keys(实.云工宿主).length, 46);
     assert.deepEqual(Object.keys(实.安全外壳密码), ['求SHA256']);
     assert.equal(实.中央张量宿主, undefined);
