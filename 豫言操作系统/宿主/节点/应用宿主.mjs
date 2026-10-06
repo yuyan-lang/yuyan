@@ -344,11 +344,15 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   const 读行 = 创建行读者();
   const 控制台 = 创建控制台能力(new Map(Array.from(授权.控制台 ?? [], 名 => [名, {读取行: () => {const 果 = 读行(); return [果[0], 文字(果[1])];}, 写文本: 文 => 输出(1, Buffer.from(文, 'utf8'))}])));
   const 资源 = new Map();
+  // 文言：密码学之随机数成批取之，每号取二，免每号一召 getRandomValues（约六百纳秒）。汉语：密码学随机数成批取（每批 8192 个），每个号用两个；免得每个号都调一次 getRandomValues（约 600 纳秒）。
+  let 随机池 = new Uint32Array(0), 随机位 = 0;
+  const 取随机 = () => {
+    if (随机位 >= 随机池.length) { 随机池 = new Uint32Array(8192); crypto.getRandomValues(随机池); 随机位 = 0; }
+    return 随机池[随机位++];
+  };
   const 登记资源 = 值 => {
     for (;;) {
-      const 缓 = new Uint32Array(2);
-      crypto.getRandomValues(缓);
-      const 号 = String((缓[0] & 0x1fffff) * 4294967296 + 缓[1]);
+      const 号 = String((取随机() & 0x1fffff) * 4294967296 + 取随机());
       if (!资源.has(号) && Number(号) > 2 ** 40) { 资源.set(号, 值); return 号; }
     }
   };
