@@ -231,7 +231,9 @@ test('输入事件：指针坐标按像素比取整、相邻移动合并、按�
   assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '上档', 0], '0.2.0 交付修饰键');
   assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '回车', 0]);
   assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '中', 0]);
-  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '豫言', 0], '组字期间的 input 与按键不交付');
+  assert.deepEqual(取(), [码.成, 事件种类.组字更新, 0, 0, 0, '', 0], '0.7.0 组字期间的 input 交组字更新；相邻的组字更新只留最新一次（结束时的空文字）');
+  assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '豫言', 0], '组字期间的按键不交付，组字结束交提交的文字');
+  assert.deepEqual(取(), [码.成, 事件种类.组字更新, 0, 0, 0, '', 0], '每次组字结束都先交空文字的组字更新');
   assert.deepEqual(取(), [码.成, 事件种类.文字输入, 0, 0, 0, '言', 0], '输入框为空时取 compositionend 的 data');
   assert.equal(框.value, '');
   框.dispatchEvent(事件('blur', {}));
@@ -553,4 +555,36 @@ test('0.2.0：滚轮按 deltaMode 折成物理像素并合并相邻两次；制�
   assert.equal(框.style.height, '15px');
   assert.equal(显示.调用('输入区域', 号, 0, 0, 字(''), -1, 0)[0], 码.输入无效);
   assert.equal(显示.调用('像素比', 999)[0], 码.已失效);
+});
+
+test('0.7.0 指针形状改 canvas 的 CSS cursor，组字更新带光标码点位置，剪贴板操作无后端时报暂不可用', async () => {
+  const {显示, 加画布, 文档} = 造显示();
+  const 画布 = 加画布('甲');
+  const 号 = 显示.调用('取得', 0, 0, 0, 字('甲'))[1];
+  assert.equal(显示.调用('指针形状', 号, 1)[0], 码.成);
+  assert.equal(画布.style.cursor, 'text');
+  assert.equal(显示.调用('指针形状', 号, 2)[0], 码.成);
+  assert.equal(画布.style.cursor, 'pointer');
+  assert.equal(显示.调用('指针形状', 号, 0)[0], 码.成);
+  assert.equal(画布.style.cursor, 'default');
+  assert.equal(显示.调用('指针形状', 号, 3)[0], 码.输入无效, '只认 0、1、2');
+  assert.equal(显示.调用('指针形状', 号 + 99, 1)[0], 码.已失效);
+  const 框 = 文档.元素们.find(元 => 元.getAttribute('data-yy-显示面输入') === '甲');
+  框.dispatchEvent(事件('compositionstart', {}));
+  框.value = '\u{20000}言好';
+  框.selectionStart = 3;
+  框.dispatchEvent(事件('input', {isComposing: true}));
+  assert.deepEqual(显示.调用('等待', 号), [码.成, 事件种类.组字更新, 2, 0, 0, '\u{20000}言好', 0], '光标按 UTF-16 下标折成码点数（扩展区汉字占两个下标）');
+  assert.equal(显示.调用('剪贴板读', 0, 0, 0, new Uint8Array())[0], 码.暂不可用, '浏览器后端不经显示原语读剪贴板');
+  assert.equal(显示.调用('剪贴板写', 0, 0, 0, 字('甲'))[0], 码.暂不可用);
+  框.dispatchEvent(事件('compositionend', {data: ''}));
+  assert.deepEqual(显示.调用('等待', 号), [码.成, 事件种类.组字更新, 0, 0, 0, '', 0], '组字结束先交空文字的组字更新');
+  assert.deepEqual(显示.调用('等待', 号), [码.成, 事件种类.文字输入, 0, 0, 0, '\u{20000}言好', 0], '再交输入框里提交的文字');
+  框.dispatchEvent(事件('keydown', {key: 'a', metaKey: true, ctrlKey: false, shiftKey: false, altKey: false}));
+  框.dispatchEvent(事件('keyup', {key: 'a', metaKey: false, ctrlKey: false, shiftKey: false, altKey: false}));
+  const 取 = () => 显示.调用('等待', 号);
+  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, '命令', 0], '只带修饰标志的组合键先补发修饰键按下');
+  assert.deepEqual(取(), [码.成, 事件种类.按键按下, 0, 0, 0, 'a', 0]);
+  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, '命令', 0], '标志消失时补发抬起');
+  assert.deepEqual(取(), [码.成, 事件种类.按键抬起, 0, 0, 0, 'a', 0]);
 });
