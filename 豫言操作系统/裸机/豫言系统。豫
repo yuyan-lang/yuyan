@@ -80,35 +80,33 @@
 「模拟参数」者会「臂」而会「镜像」而会「盘路径」而
   虑「共参」者
     （（「列」于「字符串」）也（「列」
-        【
-  『-accel』，
-  『tcg』，
-  『-m』，
-  『128M』，
-  『-smp』，
-  『1』，
-  『-display』，
-  『none』，
-  『-monitor』，
-  『none』，
-  『-chardev』，
-  『stdio,id=yy_serial,mux=on,signal=off』，
-  『-serial』，
-  『chardev:yy_serial』，
-  『-no-reboot』，
-  『-kernel』，
-  「镜像」
-】）
+                                  【『-accel』
+                                  ，『tcg』
+                                  ，『-m』
+                                  ，『128M』
+                                  ，『-smp』
+                                  ，『1』
+                                  ，『-display』
+                                  ，『none』
+                                  ，『-monitor』
+                                  ，『none』
+                                  ，『-chardev』
+                                  ，『stdio,id=yy_serial,mux=on,signal=off』
+                                  ，『-serial』
+                                  ，『chardev:yy_serial』
+                                  ，『-no-reboot』
+                                  ，『-kernel』
+                                  ，「镜像」
+                                  】）
     ）而
     虑「机参」者「裸机模拟平台参数」于「臂」于「阳」于「阳」而
     虑「设备参」者
       （（「列」于「字符串」）也（「列」
-          【
-  『-drive』，
-  『file=』附「盘路径」附『,if=none,id=yy_disk,format=raw』，
-  『-device』，
-  「裸机磁盘设备参数」于「阳」
-】）
+                                    【『-drive』
+                                    ，『file=』附「盘路径」附『,if=none,id=yy_disk,format=raw』
+                                    ，『-device』
+                                    ，「裸机磁盘设备参数」于「阳」
+                                    】）
       ）
     而
     「附加」授以「字符串」
@@ -218,43 +216,55 @@
                         虑「创建启动目录」者
                           「运行工具」
                             于『mkdir』
-                            于（「列」【
-                              『-p』，
-                              「工作目录」附『/boot/limine』，
-                              「工作目录」附『/EFI/BOOT』，
-                              「工作目录」附『/boot/字体』
-                            】）而
-                            虑「复制默认字模」者
-                              「文件系统」之「写文件字节串」
-                                于（「工作目录」附『/boot/字体/yy默认字模.bin』）
-                                于（「文件系统」之「读文件字节串」于『yy控制台字模.bin』）而
-                                虑「复制思源字模」者
-                                  「文件系统」之「写文件字节串」
-                                    于（「工作目录」附『/boot/字体/yy思源字模.bin』）
-                                    于（「文件系统」之「读文件字节串」于『yy思源控制台字模.bin』）而
-                                    虑「复制默认许可」者
-                                      「文件系统」之「写文件字节串」
-                                        于（「工作目录」附『/boot/字体/Noto许可证.txt』）
-                                        于（「文件系统」之「读文件字节串」
-                                          于『豫言操作系统/裸机/字模生成/字体/Noto许可证.txt』）而
-                                          虑「复制思源许可」者
+                            于（「列」
+                                  【『-p』
+                                  ，「工作目录」附『/boot/limine』
+                                  ，「工作目录」附『/EFI/BOOT』
+                                  ，「工作目录」附『/boot/字体』
+                                  】）而
+                                  虑「复制默认字模」者
+                                    「文件系统」之「写文件字节串」
+                                      于（「工作目录」附『/boot/字体/yy默认字模.bin』）
+                                      于（「文件系统」之「读文件字节串」于『yy控制台字模.bin』）而
+                                      虑「复制思源字模」者
+                                        「文件系统」之「写文件字节串」
+                                          于（「工作目录」附『/boot/字体/yy思源字模.bin』）
+                                          于（「文件系统」之「读文件字节串」于『yy思源控制台字模.bin』）而
+                                          虑「复制默认许可」者
                                             「文件系统」之「写文件字节串」
-                                              于（「工作目录」附『/boot/字体/思源许可证.txt』）
+                                              于（「工作目录」附『/boot/字体/Noto许可证.txt』）
                                               于（「文件系统」之「读文件字节串」
-                                              于『豫言操作系统/裸机/字模生成/字体/思源许可证.txt』）而
-                                              虑「复制拼音许可」者
+                                              于『豫言操作系统/裸机/字模生成/字体/Noto许可证.txt』）而
+                                              虑「复制思源许可」者
                                                 「文件系统」之「写文件字节串」
-                                                  于（「工作目录」附『/boot/字体/拼音数据许可证.txt』）
+                                                  于（「工作目录」附『/boot/字体/思源许可证.txt』）
                                                   于（「文件系统」之「读文件字节串」
-                                                  于『豫言操作系统/裸机/壳/输入法数据/拼音数据许可证.txt』）而
-                                                  虑「内核路径」者
-                                                    「输出」附『/豫言系统-兼容六十四.镜像』而
-                                                    虑「复制内核」者
+                                                  于『豫言操作系统/裸机/字模生成/字体/思源许可证.txt』）而
+                                                  虑「复制拼音许可」者
+                                                    「文件系统」之「写文件字节串」
+                                                      于（「工作目录」附『/boot/字体/拼音数据许可证.txt』）
+                                                      于（「文件系统」之「读文件字节串」
+                                                      于『豫言操作系统/裸机/壳/输入法数据/拼音数据许可证.txt』）而
+                                                    「：汉语：桌面用的文楷（TrueType）作第二个 Limine 模块随盘，内核映射后经服务 34、35 交给执行器读取；许可随附。
+                                                    文言：桌面所用文楷为 Limine 第二模块随盘，内核映之，以服务三十四、三十五授执行器读之；许可随附。：」
+                                                    虑「复制文楷」者
                                                       「文件系统」之「写文件字节串」
-                                                        于（「工作目录」附『/boot/yyos.img』）
-                                                        于（「文件系统」之「读文件字节串」于「内核路径」）而
-                                                        虑「复制传统阶段」者
+                                                        于（「工作目录」附『/boot/字体/文楷.ttf』）
+                                                        于（「文件系统」之「读文件字节串」
+                                                        于『豫言操作系统/裸机/字模生成/字体/原始字体.ttf』）而
+                                                        虑「复制文楷许可」者
                                                           「文件系统」之「写文件字节串」
+                                                            于（「工作目录」附『/boot/字体/文楷许可证.txt』）
+                                                            于（「文件系统」之「读文件字节串」
+                                                            于『豫言操作系统/裸机/字模生成/字体/许可证.txt』）而
+                                                            虑「内核路径」者
+                                                            「输出」附『/豫言系统-兼容六十四.镜像』而
+                                                            虑「复制内核」者
+                                                            「文件系统」之「写文件字节串」
+                                                            于（「工作目录」附『/boot/yyos.img』）
+                                                            于（「文件系统」之「读文件字节串」于「内核路径」）而
+                                                            虑「复制传统阶段」者
+                                                            「文件系统」之「写文件字节串」
                                                             于（「工作目录」附『/boot/limine/limine-bios.sys』）
                                                             于「传统固件阶段」而
                                                             虑「复制传统入口」者
@@ -271,7 +281,7 @@
                                                             于「新式启动程序」
                                                             而
                                                             虑「配置」者
-                                                            『timeout: 0「：换行：」default_entry: 1「：换行：」「：换行：」/豫言裸机「：换行：」    protocol: multiboot1「：换行：」    kernel_path: boot():/boot/yyos.img「：换行：」    module_path: boot():/boot/字体/yy默认字模.bin「：换行：」    module_string: yuyan-console-font「：换行：」』
+                                                            『timeout: 0「：换行：」default_entry: 1「：换行：」「：换行：」/豫言裸机「：换行：」    protocol: multiboot1「：换行：」    kernel_path: boot():/boot/yyos.img「：换行：」    module_path: boot():/boot/字体/yy默认字模.bin「：换行：」    module_string: yuyan-console-font「：换行：」    module_path: boot():/boot/字体/文楷.ttf「：换行：」    module_string: yuyan-desktop-font「：换行：」』
                                                             而
                                                             虑「写配置」者
                                                             「文件系统」之「写文件字节串」
@@ -283,29 +293,29 @@
                                                             虑「生成混合镜像」者
                                                             「运行工具」
                                                             于『xorriso』
-                                                            于（「列」【
-                                                            『-as』，
-                                                            『mkisofs』，
-                                                            『-R』，
-                                                            『-r』，
-                                                            『-J』，
-                                                            『-b』，
-                                                            『boot/limine/limine-bios-cd.bin』，
-                                                            『-no-emul-boot』，
-                                                            『-boot-load-size』，
-                                                            『4』，
-                                                            『-boot-info-table』，
-                                                            『-hfsplus』，
-                                                            『-apm-block-size』，
-                                                            『2048』，
-                                                            『--efi-boot』，
-                                                            『boot/limine/limine-uefi-cd.bin』，
-                                                            『-efi-boot-part』，
-                                                            『--efi-boot-image』，
-                                                            『--protective-msdos-label』，
-                                                            「工作目录」，
-                                                            『-o』，
-                                                            「镜像路径」
+                                                            于（「列」
+                                                            【『-as』
+                                                            ，『mkisofs』
+                                                            ，『-R』
+                                                            ，『-r』
+                                                            ，『-J』
+                                                            ，『-b』
+                                                            ，『boot/limine/limine-bios-cd.bin』
+                                                            ，『-no-emul-boot』
+                                                            ，『-boot-load-size』
+                                                            ，『4』
+                                                            ，『-boot-info-table』
+                                                            ，『-hfsplus』
+                                                            ，『-apm-block-size』
+                                                            ，『2048』
+                                                            ，『--efi-boot』
+                                                            ，『boot/limine/limine-uefi-cd.bin』
+                                                            ，『-efi-boot-part』
+                                                            ，『--efi-boot-image』
+                                                            ，『--protective-msdos-label』
+                                                            ，「工作目录」
+                                                            ，『-o』
+                                                            ，「镜像路径」
                                                             】）
                                                             而
                                                             虑「安装传统启动」者
