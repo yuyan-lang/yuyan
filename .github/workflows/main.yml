@@ -1,9 +1,9 @@
 name: CI
 
 env:
-  # 固定的 Wasm 工具链包：由提交 501f8d8e3 的 CI 构建并发布到 historical-binaries（该轮 Wasm 包起步在 Linux 与 macOS 上通过）；其中的编译器认得内建原语「设置当前异常处理器」，标准库 异常。豫 改用它（取消外调第⑤步第三批）要靠它起步；也认第二批 39 个数值原语。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/20261001T231631Z-yuyan-wasm-501f8d8e325b3f116a8e28b7a915a74e98f89c6c.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 14b8522f0f737a92aea17db755ffd8a9e74dcd64609ba64069e7f55f8d64e71b
+  # 固定的 Wasm 工具链包：由提交 d883137fe 的 CI 构建并发布到 historical-binaries；其中的编译器认得提案 00002 第一阶段的内建列身份（《《内建类型：列》》、《《内建列：罄》》、《《内建列：缀》》）与广义代数类型，标准库「多态列」改为内建列的别名（提案第四步第二段）要靠它起步。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/20261006T162103Z-yuyan-wasm-d883137fe8fd898e91283f6e0c3d92665573ec0d.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: 1e679308d4df093462159a58d9eb938fe00822e9abb65d30c6958cb587bff7cc
 
 on:
   push:
