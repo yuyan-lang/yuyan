@@ -143,9 +143,12 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
       const 占径=路径.join(目录,'锁.占');取占锁(占径);
       try{
         for(let 号=1;;号++){
-          const 文径=路径.join(目录,号+'.上下文');let 旧;
-          try{旧=文件.readFileSync(文径);}catch(错){if(错.code!=='ENOENT')throw 错;文件.writeFileSync(文径,内容,{flag:'wx',mode:0o600});return 文件.realpathSync(文径);}
-          if(旧.equals(内容))return 文件.realpathSync(文径);
+          const 文径=路径.join(目录,号+'.上下文');
+          // 文言：长异者不读其文，径试次号。汉语：长度不同就不读内容，直接试下一个号（目录里常有上百个旧上下文，每个任务都要从 1 号找起）。
+          const 状=文件.statSync(文径,{throwIfNoEntry:false});
+          if(!状){文件.writeFileSync(文径,内容,{flag:'wx',mode:0o600});return 文件.realpathSync(文径);}
+          if(状.size!==内容.length)continue;
+          if(文件.readFileSync(文径).equals(内容))return 文件.realpathSync(文径);
         }
       }finally{释占锁(占径);}
     },
