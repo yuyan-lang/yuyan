@@ -201,12 +201,17 @@ test('输入事件：指针坐标按像素比取整、相邻移动合并、按�
   const 号 = 显示.调用('取得', 0, 0, 0, 字('甲'))[1];
   const 框 = 文档.元素们.find(元 => 元.getAttribute('data-yy-显示面输入') === '甲');
   assert.ok(框, '宿主在 canvas 后插入隐形输入框');
+  assert.equal(框.聚焦次数, 1, '取得时页面上没有可编辑元素占着焦点，聚焦输入框');
   const 等 = 显示.调用('等待', 号);
   assert.ok(等 instanceof Promise, '无事件时挂起');
   assert.equal(显示.调用('等待', 号)[0], 码.输入无效, '第二个并发等候者得输入无效');
   画布.dispatchEvent(事件('pointerdown', {clientX: 10 + 5.25, clientY: 20 + 2.5, button: 0, pointerId: 1}));
   assert.deepEqual(await 等, [码.成, 事件种类.指针按下, 10, 5, 0, '', 0]);
-  assert.equal(框.聚焦次数, 1, '点击 canvas 聚焦输入框');
+  assert.equal(框.聚焦次数, 2, '点击 canvas 聚焦输入框');
+  const 鼠按 = 可取消事件('mousedown', {clientX: 10 + 5.25, clientY: 20 + 2.5, button: 0});
+  画布.dispatchEvent(鼠按);
+  assert.equal(鼠按.defaultPrevented, true, '鼠标按下阻止默认动作，免得浏览器把焦点移回 body');
+  assert.equal(框.聚焦次数, 3, '鼠标按下再次聚焦输入框');
   画布.dispatchEvent(事件('pointermove', {clientX: 10 + 1, clientY: 20 + 1}));
   画布.dispatchEvent(事件('pointermove', {clientX: 10 + 3, clientY: 20 + 4}));
   画布.dispatchEvent(事件('pointerup', {clientX: 10 + 3, clientY: 20 + 4, button: 2}));

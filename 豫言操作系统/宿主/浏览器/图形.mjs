@@ -292,6 +292,12 @@ function 创建画布后端({根, 全局}) {
     if (typeof 画布.after === 'function') 画布.after(输入框);
     else 画布.parentNode?.insertBefore(输入框, 画布.nextSibling ?? null);
     面.输入框 = 输入框;
+    // 文言：取面之时，页无可编之物持焦，则聚焦输入框，入面即可打字。
+    // 汉语：取得显示面时，页面上若没有可编辑的元素占着焦点，就聚焦输入框，进入显示面不必先点击就能打字。
+    const 活 = 文档.activeElement;
+    if (!(活 && 活 !== 文档.body && !活.disabled && (活.isContentEditable || 活.tagName === 'INPUT' || 活.tagName === 'TEXTAREA'))) {
+      try { 输入框.focus({preventScroll: true}); } catch { /* 忽略 */ }
+    }
     const 坐标 = 事件 => {
       const 矩 = 画布.getBoundingClientRect();
       const 比 = 像素比();
@@ -303,6 +309,12 @@ function 创建画布后端({根, 全局}) {
       try { 画布.setPointerCapture?.(事件.pointerId); } catch { /* 文言：合成之事无活指针。汉语：合成事件没有活动指针，捕获失败无妨。 */ }
       面.同步修饰?.(事件);
       推({种: 事件种类.指针按下, 甲, 乙, 丙: Number(事件.button) || 0});
+    });
+    // 文言：鼠按则止其默认而复聚焦输入框：点不可聚焦之 canvas，浏览器之默认或移焦于 body（WebKit 如此），pointerdown 所予之焦随之而失。
+    // 汉语：鼠标按下时阻止默认动作并再次聚焦输入框：点击不可聚焦的 canvas，浏览器的默认处理可能把焦点移回 body（WebKit 如此），pointerdown 里给输入框的焦点就丢了。
+    听(画布, 'mousedown', 事件 => {
+      事件.preventDefault?.();
+      try { 输入框.focus({preventScroll: true}); } catch { /* 忽略 */ }
     });
     听(画布, 'pointermove', 事件 => {
       const [甲, 乙] = 坐标(事件);
