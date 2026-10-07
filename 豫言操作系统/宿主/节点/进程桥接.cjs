@@ -183,6 +183,14 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
         });
       });
     }
+    // 汉语：仅终止本实例登记的子进程，记录保留至收取；结束的进程幂等成功。文言：惟止今实例所录之子程，记留至收之；既毕者复请亦成。
+    if (术 === '终止') {
+      const 号 = Number(参[0]), 记录 = 记录们.get(号);
+      if (!记录) return 8;
+      if (记录.完成) return 0;
+      try { return 记录.工.kill('SIGKILL') ? 0 : 29; }
+      catch { return 29; }
+    }
     if (术 === '收取') {
       const 号 = Number(参[0]), 记录 = 记录们.get(号);
       if (!记录) throw Error('无效的异步子进程句柄');
