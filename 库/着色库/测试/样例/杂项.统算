@@ -6,6 +6,8 @@
 // skipped: fragment entry yy_e7_9d_80_e8_89_b2 (only compute entries are translated to PTX)
 
 .visible .entry yy_e7_bb_9f_e8_ae_a1(
+  .param .u64 p_g0_b0,
+  .param .u64 p_g0_b1,
   .param .u64 p_g0_b2,
   .param .u64 p_g0_b3
 )
