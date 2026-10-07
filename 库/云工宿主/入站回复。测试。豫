@@ -12,18 +12,18 @@
   虑「信标」者「云工标头取」于「标头号」于『message-id』而
   虑「无」者
     若「信标」中「零」则「元」否则「发生事故」于『入站邮件缺少 Message-ID』而
-    虑「原文」者
-      『From: inbox@example.test』附「回车换行」附
-        『To: sender@example.test』附「回车换行」附
-        『Subject: Re: Test』附「回车换行」附
-        『In-Reply-To: 』附（「信标」中「一」）附「回车换行」附
-          『References: 』附（「信标」中「一」）附「回车换行」附
-            『MIME-Version: 1.0』附「回车换行」附
-            『Content-Type: text/plain; charset=utf-8』附「回车换行」附
-            「回车换行」附『收到』附「回车换行」
-    而
-    虑「结果」者「同步等待」于（「云工入站回复原文」于「原文」）而
-    「元」
+  虑「原文」者
+    『From: inbox@example.test』附「回车换行」附
+      『To: sender@example.test』附「回车换行」附
+      『Subject: Re: Test』附「回车换行」附
+      『In-Reply-To: 』附（「信标」中「一」）附「回车换行」附
+        『References: 』附（「信标」中「一」）附「回车换行」附
+          『MIME-Version: 1.0』附「回车换行」附
+          『Content-Type: text/plain; charset=utf-8』附「回车换行」附
+          「回车换行」附『收到』附「回车换行」
+  而
+  虑「结果」者「同步等待」于（「云工入站回复原文」于「原文」）而
+  「元」
 ）
 否则
   「设置云工响应」于「二零零」于『text/plain』于『fetch事件』。

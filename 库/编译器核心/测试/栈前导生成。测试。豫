@@ -13,32 +13,32 @@
 「函」者（「正则函数」也（『根』与「阴」与（「列」【「零」，「一」，「二」，「三」】）
   与（「正则段」
     于（「列」
-          【「正则运算」
-            于「八」
-            于「正则整数值」
-            于（「正则原语」于『豫言_整数加』）
-            于（「列」【「正则局部」于「一」，「正则整数」于「一」】）
-          ，「正则运算」
-            于「一零」
-            于「正则整数值」
-            于（「正则原语」于『豫言_整数乘』）
-            于（「列」【「正则局部」于「二」，「正则整数」于「三」】）
-          ，「正则运算」
-            于「一一」
-            于「正则整数值」
-            于（「正则原语」于『豫言_整数减』）
-            于（「列」【「正则局部」于「一零」，「正则整数」于「二」】）
-          ，「正则运算」
-            于「一二」
-            于「正则通用值」
-            于（「正则原语」于『豫言_新建引用数组』）
-            于（「列」【「正则局部」于「一一」，「正则局部」于「八」】）
-          ，「正则运算」
-            于「一三」
-            于「正则整数值」
-            于（「正则原语」于『豫言_读取引用数组』）
-            于（「列」【「正则局部」于「一二」，「正则局部」于「三」】）
-          】）于（「正则产出」于（「正则局部」于「一三」）））与「一四」））
+      【「正则运算」
+        于「八」
+        于「正则整数值」
+        于（「正则原语」于『豫言_整数加』）
+        于（「列」【「正则局部」于「一」，「正则整数」于「一」】）
+      ，「正则运算」
+        于「一零」
+        于「正则整数值」
+        于（「正则原语」于『豫言_整数乘』）
+        于（「列」【「正则局部」于「二」，「正则整数」于「三」】）
+      ，「正则运算」
+        于「一一」
+        于「正则整数值」
+        于（「正则原语」于『豫言_整数减』）
+        于（「列」【「正则局部」于「一零」，「正则整数」于「二」】）
+      ，「正则运算」
+        于「一二」
+        于「正则通用值」
+        于（「正则原语」于『豫言_新建引用数组』）
+        于（「列」【「正则局部」于「一一」，「正则局部」于「八」】）
+      ，「正则运算」
+        于「一三」
+        于「正则整数值」
+        于（「正则原语」于『豫言_读取引用数组』）
+        于（「列」【「正则局部」于「一二」，「正则局部」于「三」】）
+      】）于（「正则产出」于（「正则局部」于「一三」）））与「一四」））
 也。
 
 「签」者（「栈表示签」也（（「列」【「一」，「一」，「一」，「一」】）与「一」））也。
@@ -120,7 +120,7 @@
 「打印行」于（「间合」
   于『「：换行：」』
   于（「列」
-        【『(module
+    【『(module
 (type $ints (array (mut i64))) (type $big (struct (field i64)))
 (func $box (param $n i64) (result (ref null eq))
  local.get $n i64.const -1073741824 i64.ge_s local.get $n i64.const 1073741823 i64.le_s i32.and
@@ -139,14 +139,14 @@
 (func $old_unit (type $t4) (param $env (ref null eq)) (param $n (ref null eq)) (param $v (ref null eq)) (param $i (ref null eq)) (result (ref null eq))
  global.get $fallback i32.const 1 i32.add global.set $fallback
  local.get $v call $unbox i64.const 3 i64.mul i64.const 2 i64.sub local.get $n call $unbox i64.const 1 i64.add call $index array.new $ints drop ref.null eq)』
-        ，「回收项串转文」于（「回收项并」
-          于（「列」
-                【「回收单项」于「四参型」
-                ，「线性栈基础」
-                ，「必有」于（「生成栈数值体」于「查」于「名」于「签」于「一二」于「函」）
-                ，「必有」于（「生成栈入口」于「查」于『$public』于『$old』于『$private』于「签」于「函」）
-                】））
-        ，『(func (export "run") (param $n i64) (param $v i64) (param $i i64) (result i64)
+    ，「回收项串转文」于（「回收项并」
+      于（「列」
+        【「回收单项」于「四参型」
+        ，「线性栈基础」
+        ，「必有」于（「生成栈数值体」于「查」于「名」于「签」于「一二」于「函」）
+        ，「必有」于（「生成栈入口」于「查」于『$public』于『$old』于『$private』于「签」于「函」）
+        】））
+    ，『(func (export "run") (param $n i64) (param $v i64) (param $i i64) (result i64)
  ref.null eq local.get $n call $box local.get $v call $box local.get $i call $box call $public call $unbox)
 (func (export "reference") (param $n i64) (param $v i64) (param $i i64) (result i64)
  ref.null eq local.get $n call $box local.get $v call $box local.get $i call $box call $old call $unbox)
@@ -159,4 +159,4 @@
 (func (export "fallbacks") (result i32) global.get $fallback)
 (func (export "pages") (result i32) memory.size)
 )』
-        】））。
+    】））。
