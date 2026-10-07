@@ -17,13 +17,13 @@
     虑「流号」者「云工广播新流」于『进度』而
     虑「无」者
       「云工广播发字节」于『进度』于（「云工编码UTF8」于（『: connected』附「新行」附「新行」））而
-      虑「响应文」者
-        「云工构造对象」
-          于『Response』
-          于（『[』附（「云工句柄引用文」于「流号」）附
-            『,{"headers":{"content-type":"text/event-stream; charset=utf-8","cache-control":"no-store"}}]』）
-      而
-      「云工设置响应句柄」于（「取云工句柄」于「响应文」）
+    虑「响应文」者
+      「云工构造对象」
+        于『Response』
+        于（『[』附（「云工句柄引用文」于「流号」）附
+          『,{"headers":{"content-type":"text/event-stream; charset=utf-8","cache-control":"no-store"}}]』）
+    而
+    「云工设置响应句柄」于（「取云工句柄」于「响应文」）
   ）
   否则若「是子字符串吗」于『/publish』于「请求文」则（
     虑「已送」者

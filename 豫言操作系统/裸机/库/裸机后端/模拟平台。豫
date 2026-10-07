@@ -21,11 +21,11 @@
   否则
     「附加」授以「字符串」
     于（「列」
-          【『-machine』
-          ，（若「隔离」则『q35』否则『pc』）
-          ，『-device』
-          ，『isa-debug-exit,iobase=0xf4,iosize=0x04』
-          】）于（
+      【『-machine』
+      ，（若「隔离」则『q35』否则『pc』）
+      ，『-device』
+      ，『isa-debug-exit,iobase=0xf4,iosize=0x04』
+      】）于（
       若「隔离」则「列」【『-device』，『intel-iommu,intremap=off,caching-mode=on,dma-translation=on』】否则「罄」
     ）
 也。

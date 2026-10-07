@@ -119,36 +119,37 @@
 「结构文字」者会「结构项」而会「角色们」而
   虑「有角色」者
     「非」于（「等于」于（「长度」授以「字符串」于「角色们」）于「零」）而
-    虑「须平」者
-      「存在吗」授以「字符串」
-      于（会「角色」而「或者」于（「串相等」于「角色」于『顶点输出』）于（「串相等」于「角色」于『片元输入』））
-      于「角色们」
-    而
-    递归虑「字段行们」其化「整数」而化（「列」于「着色字段」）而（「列」于「字符串」）者会「位置」而会「余字段们」而
-      鉴「余字段们」而
-        有「罄」则「罄」授以「字符串」
-        或有（「缀」于「字段」于「后字段们」）则（
-          虑「属性与后位」者
-            若「有角色」则（
-              鉴（（「取字段内建」于「字段」））而
-                有（「可有」于「内建名」）则（『@builtin(』附「内建名」附『) 』）与「位置」
-                或有「可无」则（「位置属性」于「位置」于「须平」于（（「取字段型」于「字段」）））
-                  与（「加」于「位置」于「一」）
-            ）
-            否则
-              『』与「位置」
-          而
-          「缀」
-            于（『  』附（「属性与后位」中「零」）附（「着色标识符」于（（「取字段名」于「字段」）））附『: 』附
-              （「着色型文字」于（（「取字段型」于「字段」）））附『,』）
-              于（「字段行们」于（「属性与后位」中「一」）于「后字段们」）
+  虑「须平」者
+    「存在吗」授以「字符串」
+    于（会「角色」而「或者」于（「串相等」于「角色」于『顶点输出』）于（「串相等」于「角色」于『片元输入』））
+    于「角色们」
+  而
+  递归虑「字段行们」其化「整数」而化（「列」于「着色字段」）而（「列」于「字符串」）者会「位置」而
+  会「余字段们」而
+  鉴「余字段们」而
+    有「罄」则「罄」授以「字符串」
+    或有（「缀」于「字段」于「后字段们」）则（
+      虑「属性与后位」者
+        若「有角色」则（
+          鉴（（「取字段内建」于「字段」））而
+            有（「可有」于「内建名」）则（『@builtin(』附「内建名」附『) 』）与「位置」
+            或有「可无」则（「位置属性」于「位置」于「须平」于（（「取字段型」于「字段」）））
+              与（「加」于「位置」于「一」）
         ）
-    而
-    「间合」
-      于『「：换行：」』
-      于（「缀」
-        于（『struct 』附（「着色标识符」于（（「取结构名」于「结构项」）））附『 {』）
-        于（「结尾多」授以「字符串」于（「字段行们」于「零」于（（「取字段们」于「结构项」）））于『}』））
+        否则
+          『』与「位置」
+      而
+      「缀」
+        于（『  』附（「属性与后位」中「零」）附（「着色标识符」于（（「取字段名」于「字段」）））附『: 』附
+          （「着色型文字」于（（「取字段型」于「字段」）））附『,』）
+          于（「字段行们」于（「属性与后位」中「一」）于「后字段们」）
+    ）
+  而
+  「间合」
+    于『「：换行：」』
+    于（「缀」
+      于（『struct 』附（「着色标识符」于（（「取结构名」于「结构项」）））附『 {』）
+      于（「结尾多」授以「字符串」于（「字段行们」于「零」于（（「取字段们」于「结构项」）））于『}』））
 也。
 
 「函数文字」乃
@@ -320,16 +321,16 @@
   而
   虑「源」者
     （「间合」于『「：换行：」「：换行：」』于「块们」）附『「：换行：」』而
-    虑「开子组」者
-      若「是子字符串吗」于『subgroup』于「源」则『enable subgroups;「：换行：」』否则『』
-    而
-    虑「开半精度」者
-      若「是子字符串吗」于『f16』于「源」则『enable f16;「：换行：」』否则『』
-    而
-    若「串相等」于（「开半精度」附「开子组」）于『』则
-      「源」
-    否则
-      「开半精度」附「开子组」附『「：换行：」』附「源」
+  虑「开子组」者
+    若「是子字符串吗」于『subgroup』于「源」则『enable subgroups;「：换行：」』否则『』
+  而
+  虑「开半精度」者
+    若「是子字符串吗」于『f16』于「源」则『enable f16;「：换行：」』否则『』
+  而
+  若「串相等」于（「开半精度」附「开子组」）于『』则
+    「源」
+  否则
+    「开半精度」附「开子组」附『「：换行：」』附「源」
 也。
 
 「：汉语：MSL 的缓冲序号：组号×16＋绑定号；纹理、采样器各有自己的序号空间，规则相同。待办事项：Metal 一个函数最多 31 个缓冲，组号大于一时会超出，未检查。
@@ -478,10 +479,10 @@
       而
       「函数体文」
         于（「列」
-              【（若「是单位型」于「返型」则『void』否则「着色型文字」于「返型」）附『 』附「着色名」附『(』附（「间合」
-                于『, 』于「参数文们」）附『) {』
-              】）
-              于（「罄」授以「字符串」）
+          【（若「是单位型」于「返型」则『void』否则「着色型文字」于「返型」）附『 』附「着色名」附『(』附（「间合」
+            于『, 』于「参数文们」）附『) {』
+          】）
+          于（「罄」授以「字符串」）
     ）
     或有（「可有」于「入口对」）则（
       若「串相等」于（「入口对」中「零」）于『计算』则（
@@ -530,9 +531,9 @@
                     于（「取字段内建」于（「对」中「零」））））
   与
               （「列」
-                  【（「着色标识符」于「结构名」）附『 』附「参名」附『 = 』附（「着色标识符」于「结构名」）附『{』附
-                    （「间合」于『, 』于「字段参名们」）附『};』
-                  】）
+                【（「着色标识符」于「结构名」）附『 』附「参名」附『 = 』附（「着色标识符」于「结构名」）附『{』附
+                  （「间合」于『, 』于「字段参名们」）附『};』
+                】）
             ）
             或有「可无」则
               「发生事故」授以（（「列」于「字符串」）合（「列」于「字符串」））
@@ -591,12 +592,12 @@
         而
         「函数体文」
           于（「列」
-                【『[[max_total_threads_per_threadgroup(』附（「整数表示」于（「入口对」中「一」））附『)]]』
-                ，『kernel void 』附「着色名」附『(』附（「间合」
-                  于『, 』
-                  于（「附加」授以「字符串」于「内建参数文们」于「资源参数文们」））附『) {』
-                】）
-                于（「附加」授以「字符串」于「共享声明们」于「结构前置句们」）
+            【『[[max_total_threads_per_threadgroup(』附（「整数表示」于（「入口对」中「一」））附『)]]』
+            ，『kernel void 』附「着色名」附『(』附（「间合」
+              于『, 』
+              于（「附加」授以「字符串」于「内建参数文们」于「资源参数文们」））附『) {』
+            】）
+            于（「附加」授以「字符串」于「共享声明们」于「结构前置句们」）
       ）
       否则
         『// 待办事项：』附（「入口对」中「零」）附『入口函数「』附「着色名」附『」尚未译成金属着色语言，已略去。』
@@ -610,53 +611,53 @@
   「间合」
     于『「：换行：」』
     于（「列」
-          【『struct yy_矩阵片甲 { simdgroup_half8x8 块[4]; };』
-          ，『struct yy_矩阵片乙 { simdgroup_half8x8 块[4]; };』
-          ，『struct yy_矩阵片累 { simdgroup_float8x8 块[4]; };』
-          ，『static inline yy_矩阵片甲 yy_载入矩阵片甲(threadgroup const half* 源, uint 起, uint 步) {』
-          ，『  yy_矩阵片甲 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
-          ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
-          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
-          ，『  return 片;』
-          ，『}』
-          ，『static inline yy_矩阵片乙 yy_载入矩阵片乙(threadgroup const half* 源, uint 起, uint 步) {』
-          ，『  yy_矩阵片乙 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步, ulong2(0, 0), true);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8 * 步, 步, ulong2(0, 0), true);』
-          ，『  simdgroup_load(片.块[2], 源 + 起 + 8, 步, ulong2(0, 0), true);』
-          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步, ulong2(0, 0), true);』
-          ，『  return 片;』
-          ，『}』
-          ，『static inline yy_矩阵片累 yy_零矩阵片累() {』
-          ，『  yy_矩阵片累 片;』
-          ，『  for (int 序 = 0; 序 < 4; 序++) 片.块[序] = make_filled_simdgroup_matrix<float, 8, 8>(0.0f);』
-          ，『  return 片;』
-          ，『}』
-          ，『static inline yy_矩阵片累 yy_矩阵片乘加(yy_矩阵片累 累, yy_矩阵片甲 甲, yy_矩阵片乙 乙) {』
-          ，『  for (int 行 = 0; 行 < 2; 行++) {』
-          ，『    for (int 列 = 0; 列 < 2; 列++) {』
-          ，『      for (int 深 = 0; 深 < 2; 深++) {』
-          ，『        simdgroup_multiply_accumulate(累.块[行 * 2 + 列], 甲.块[行 * 2 + 深], 乙.块[深 * 2 + 列], 累.块[行 * 2 + 列]);』
-          ，『      }』
-          ，『    }』
-          ，『  }』
-          ，『  return 累;』
-          ，『}』
-          ，『static inline void yy_存矩阵片累(threadgroup float* 目, uint 起, uint 步, yy_矩阵片累 累) {』
-          ，『  simdgroup_store(累.块[0], 目 + 起, 步);』
-          ，『  simdgroup_store(累.块[1], 目 + 起 + 8, 步);』
-          ，『  simdgroup_store(累.块[2], 目 + 起 + 8 * 步, 步);』
-          ，『  simdgroup_store(累.块[3], 目 + 起 + 8 * 步 + 8, 步);』
-          ，『}』
-          ，『static inline void yy_存储存矩阵片累(device float* 目, uint 起, uint 步, yy_矩阵片累 累) {』
-          ，『  simdgroup_store(累.块[0], 目 + 起, 步);』
-          ，『  simdgroup_store(累.块[1], 目 + 起 + 8, 步);』
-          ，『  simdgroup_store(累.块[2], 目 + 起 + 8 * 步, 步);』
-          ，『  simdgroup_store(累.块[3], 目 + 起 + 8 * 步 + 8, 步);』
-          ，『}』
-          】）
+      【『struct yy_矩阵片甲 { simdgroup_half8x8 块[4]; };』
+      ，『struct yy_矩阵片乙 { simdgroup_half8x8 块[4]; };』
+      ，『struct yy_矩阵片累 { simdgroup_float8x8 块[4]; };』
+      ，『static inline yy_矩阵片甲 yy_载入矩阵片甲(threadgroup const half* 源, uint 起, uint 步) {』
+      ，『  yy_矩阵片甲 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+      ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
+      ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
+      ，『  return 片;』
+      ，『}』
+      ，『static inline yy_矩阵片乙 yy_载入矩阵片乙(threadgroup const half* 源, uint 起, uint 步) {』
+      ，『  yy_矩阵片乙 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步, ulong2(0, 0), true);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8 * 步, 步, ulong2(0, 0), true);』
+      ，『  simdgroup_load(片.块[2], 源 + 起 + 8, 步, ulong2(0, 0), true);』
+      ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步, ulong2(0, 0), true);』
+      ，『  return 片;』
+      ，『}』
+      ，『static inline yy_矩阵片累 yy_零矩阵片累() {』
+      ，『  yy_矩阵片累 片;』
+      ，『  for (int 序 = 0; 序 < 4; 序++) 片.块[序] = make_filled_simdgroup_matrix<float, 8, 8>(0.0f);』
+      ，『  return 片;』
+      ，『}』
+      ，『static inline yy_矩阵片累 yy_矩阵片乘加(yy_矩阵片累 累, yy_矩阵片甲 甲, yy_矩阵片乙 乙) {』
+      ，『  for (int 行 = 0; 行 < 2; 行++) {』
+      ，『    for (int 列 = 0; 列 < 2; 列++) {』
+      ，『      for (int 深 = 0; 深 < 2; 深++) {』
+      ，『        simdgroup_multiply_accumulate(累.块[行 * 2 + 列], 甲.块[行 * 2 + 深], 乙.块[深 * 2 + 列], 累.块[行 * 2 + 列]);』
+      ，『      }』
+      ，『    }』
+      ，『  }』
+      ，『  return 累;』
+      ，『}』
+      ，『static inline void yy_存矩阵片累(threadgroup float* 目, uint 起, uint 步, yy_矩阵片累 累) {』
+      ，『  simdgroup_store(累.块[0], 目 + 起, 步);』
+      ，『  simdgroup_store(累.块[1], 目 + 起 + 8, 步);』
+      ，『  simdgroup_store(累.块[2], 目 + 起 + 8 * 步, 步);』
+      ，『  simdgroup_store(累.块[3], 目 + 起 + 8 * 步 + 8, 步);』
+      ，『}』
+      ，『static inline void yy_存储存矩阵片累(device float* 目, uint 起, uint 步, yy_矩阵片累 累) {』
+      ，『  simdgroup_store(累.块[0], 目 + 起, 步);』
+      ，『  simdgroup_store(累.块[1], 目 + 起 + 8, 步);』
+      ，『  simdgroup_store(累.块[2], 目 + 起 + 8 * 步, 步);』
+      ，『  simdgroup_store(累.块[3], 目 + 起 + 8 * 步 + 8, 步);』
+      ，『}』
+      】）
 也。
 
 「：汉语：由全部声明写出 MSL：开头引入 metal_stdlib，其后结构、常量、函数依源码次序，声明之间空一行；资源不单独写出（作为函数参数传递）；用到子组矩阵片时（查找“yy_矩阵片”或直接存储调用）在开头加「金属矩阵片序幕」。待办事项：结构与缓冲的内存布局（如 float3 占 16 字节）与 WGSL 不尽相同，未处理。
@@ -668,54 +669,54 @@
   「间合」
     于『「：换行：」』
     于（「列」
-          【『static inline yy_矩阵片甲 yy_存储载入矩阵片甲(device const uint* 字源, uint 起, uint 步) {』
-          ，『  device const half* 源 = (device const half*)字源;』
-          ，『  yy_矩阵片甲 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
-          ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
-          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
-          ，『  return 片;』
-          ，『}』
-          ，『static inline yy_矩阵片甲 yy_载矩阵片甲前八行(threadgroup const half* 源, uint 起, uint 步) {』
-          ，『  yy_矩阵片甲 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
-          ，『  片.块[2] = make_filled_simdgroup_matrix<half, 8, 8>(0.0h);』
-          ，『  片.块[3] = make_filled_simdgroup_matrix<half, 8, 8>(0.0h);』
-          ，『  return 片;』
-          ，『}』
-          ，『static inline void yy_存矩阵片累前八行(threadgroup float* 目, uint 起, uint 步, yy_矩阵片累 累) {』
-          ，『  simdgroup_store(累.块[0], 目 + 起, 步);』
-          ，『  simdgroup_store(累.块[1], 目 + 起 + 8, 步);』
-          ，『}』
-          ，『static inline yy_矩阵片乙 yy_存储载入矩阵片乙(device const uint* 字源, uint 起, uint 步) {』
-          ，『  device const half* 源 = (device const half*)字源;』
-          ，『  yy_矩阵片乙 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步, ulong2(0, 0), true);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8 * 步, 步, ulong2(0, 0), true);』
-          ，『  simdgroup_load(片.块[2], 源 + 起 + 8, 步, ulong2(0, 0), true);』
-          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步, ulong2(0, 0), true);』
-          ，『  return 片;』
-          ，『}』
-          ，『static inline yy_矩阵片累 yy_载入矩阵片累(threadgroup const float* 源, uint 起, uint 步) {』
-          ，『  yy_矩阵片累 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
-          ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
-          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
-          ，『  return 片;』
-          ，『}』
-          ，『static inline yy_矩阵片乙 yy_存储载入转置矩阵片乙(device const uint* 字源, uint 起, uint 步) {』
-          ，『  device const half* 源 = (device const half*)字源;』
-          ，『  yy_矩阵片乙 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
-          ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
-          ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
-          ，『  return 片;』
-          ，『}』
-          】）
+      【『static inline yy_矩阵片甲 yy_存储载入矩阵片甲(device const uint* 字源, uint 起, uint 步) {』
+      ，『  device const half* 源 = (device const half*)字源;』
+      ，『  yy_矩阵片甲 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+      ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
+      ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
+      ，『  return 片;』
+      ，『}』
+      ，『static inline yy_矩阵片甲 yy_载矩阵片甲前八行(threadgroup const half* 源, uint 起, uint 步) {』
+      ，『  yy_矩阵片甲 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+      ，『  片.块[2] = make_filled_simdgroup_matrix<half, 8, 8>(0.0h);』
+      ，『  片.块[3] = make_filled_simdgroup_matrix<half, 8, 8>(0.0h);』
+      ，『  return 片;』
+      ，『}』
+      ，『static inline void yy_存矩阵片累前八行(threadgroup float* 目, uint 起, uint 步, yy_矩阵片累 累) {』
+      ，『  simdgroup_store(累.块[0], 目 + 起, 步);』
+      ，『  simdgroup_store(累.块[1], 目 + 起 + 8, 步);』
+      ，『}』
+      ，『static inline yy_矩阵片乙 yy_存储载入矩阵片乙(device const uint* 字源, uint 起, uint 步) {』
+      ，『  device const half* 源 = (device const half*)字源;』
+      ，『  yy_矩阵片乙 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步, ulong2(0, 0), true);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8 * 步, 步, ulong2(0, 0), true);』
+      ，『  simdgroup_load(片.块[2], 源 + 起 + 8, 步, ulong2(0, 0), true);』
+      ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步, ulong2(0, 0), true);』
+      ，『  return 片;』
+      ，『}』
+      ，『static inline yy_矩阵片累 yy_载入矩阵片累(threadgroup const float* 源, uint 起, uint 步) {』
+      ，『  yy_矩阵片累 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+      ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
+      ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
+      ，『  return 片;』
+      ，『}』
+      ，『static inline yy_矩阵片乙 yy_存储载入转置矩阵片乙(device const uint* 字源, uint 起, uint 步) {』
+      ，『  device const half* 源 = (device const half*)字源;』
+      ，『  yy_矩阵片乙 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+      ，『  simdgroup_load(片.块[2], 源 + 起 + 8 * 步, 步);』
+      ，『  simdgroup_load(片.块[3], 源 + 起 + 8 * 步 + 8, 步);』
+      ，『  return 片;』
+      ，『}』
+      】）
 也。
 
 「：汉语：张量片在 MSL 里的写法（Metal 4 张量运算）：累加块是 MPP matmul2d（64 × 64 × 32，4 个子组，宽松精度，乘加模式）的目标协作张量；甲按单精度设备张量直接读（行数之外当作零），乙按半精度线程组张量读，存回时按行数、列数截断。用到张量片的源码才在开头加这段（含两个头文件）。
@@ -725,24 +726,24 @@
   「间合」
     于『「：换行：」』
     于（「列」
-          【『#include <metal_tensor>』
-          ，『#include <MetalPerformancePrimitives/MetalPerformancePrimitives.h>』
-          ，『typedef tensor<device float, dextents<int32_t, 2>, tensor_inline> yy_张量单存;』
-          ，『typedef tensor<threadgroup half, dextents<int32_t, 2>, tensor_inline> yy_张量半享;』
-          ，『typedef mpp::tensor_ops::matmul2d<mpp::tensor_ops::matmul2d_descriptor(64, 64, 32, false, true, true, mpp::tensor_ops::matmul2d_descriptor::mode::multiply_accumulate), execution_simdgroups<4>> yy_张量乘;』
-          ，『typedef decltype(yy_张量乘().get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>()) yy_张量片累;』
-          ，『static inline yy_张量片累 yy_零张量片累() { yy_张量乘 乘; return 乘.get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>(); }』
-          ，『static inline yy_张量片累 yy_张量片乘加(yy_张量片累 累, const device float* 甲, uint 甲起, uint 甲步, uint 甲行数, threadgroup const half* 乙, uint 乙起, uint 乙步) {』
-          ，『  yy_张量乘 乘;』
-          ，『  yy_张量单存 甲张((device float*)(甲 + 甲起), dextents<int32_t, 2>(32, int(甲行数)), array<int, 2>({1, int(甲步)}));』
-          ，『  yy_张量半享 乙张((threadgroup half*)(乙 + 乙起), dextents<int32_t, 2>(32, 64), array<int, 2>({1, int(乙步)}));』
-          ，『  乘.run(甲张, 乙张, 累);』
-          ，『  return 累;』
-          ，『}』
-          ，『static inline void yy_存张量片累(device float* 出, uint 起, uint 步, uint 行数, uint 列数, yy_张量片累 累) {』
-          ，『  累.store(yy_张量单存(出 + 起, dextents<int32_t, 2>(int(列数), int(行数)), array<int, 2>({1, int(步)})));』
-          ，『}』
-          】）
+      【『#include <metal_tensor>』
+      ，『#include <MetalPerformancePrimitives/MetalPerformancePrimitives.h>』
+      ，『typedef tensor<device float, dextents<int32_t, 2>, tensor_inline> yy_张量单存;』
+      ，『typedef tensor<threadgroup half, dextents<int32_t, 2>, tensor_inline> yy_张量半享;』
+      ，『typedef mpp::tensor_ops::matmul2d<mpp::tensor_ops::matmul2d_descriptor(64, 64, 32, false, true, true, mpp::tensor_ops::matmul2d_descriptor::mode::multiply_accumulate), execution_simdgroups<4>> yy_张量乘;』
+      ，『typedef decltype(yy_张量乘().get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>()) yy_张量片累;』
+      ，『static inline yy_张量片累 yy_零张量片累() { yy_张量乘 乘; return 乘.get_destination_cooperative_tensor<yy_张量单存, yy_张量半享, float>(); }』
+      ，『static inline yy_张量片累 yy_张量片乘加(yy_张量片累 累, const device float* 甲, uint 甲起, uint 甲步, uint 甲行数, threadgroup const half* 乙, uint 乙起, uint 乙步) {』
+      ，『  yy_张量乘 乘;』
+      ，『  yy_张量单存 甲张((device float*)(甲 + 甲起), dextents<int32_t, 2>(32, int(甲行数)), array<int, 2>({1, int(甲步)}));』
+      ，『  yy_张量半享 乙张((threadgroup half*)(乙 + 乙起), dextents<int32_t, 2>(32, 64), array<int, 2>({1, int(乙步)}));』
+      ，『  乘.run(甲张, 乙张, 累);』
+      ，『  return 累;』
+      ，『}』
+      ，『static inline void yy_存张量片累(device float* 出, uint 起, uint 步, uint 行数, uint 列数, yy_张量片累 累) {』
+      ，『  累.store(yy_张量单存(出 + 起, dextents<int32_t, 2>(int(列数), int(行数)), array<int, 2>({1, int(步)})));』
+      ，『}』
+      】）
 也。
 
 「金属八行累片序幕」乃「字符串」也。
@@ -750,15 +751,15 @@
   「间合」
     于『「：换行：」』
     于（「列」
-          【『static inline yy_矩阵片累 yy_载入矩阵片累前八行(threadgroup const float* 源, uint 起, uint 步) {』
-          ，『  yy_矩阵片累 片;』
-          ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
-          ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
-          ，『  片.块[2] = make_filled_simdgroup_matrix<float, 8, 8>(0.0f);』
-          ，『  片.块[3] = make_filled_simdgroup_matrix<float, 8, 8>(0.0f);』
-          ，『  return 片;』
-          ，『}』
-          】）
+      【『static inline yy_矩阵片累 yy_载入矩阵片累前八行(threadgroup const float* 源, uint 起, uint 步) {』
+      ，『  yy_矩阵片累 片;』
+      ，『  simdgroup_load(片.块[0], 源 + 起, 步);』
+      ，『  simdgroup_load(片.块[1], 源 + 起 + 8, 步);』
+      ，『  片.块[2] = make_filled_simdgroup_matrix<float, 8, 8>(0.0f);』
+      ，『  片.块[3] = make_filled_simdgroup_matrix<float, 8, 8>(0.0f);』
+      ，『  return 片;』
+      ，『}』
+      】）
 也。
 
 「生成金属源」乃化（「列」于「着色声明」）而「字符串」也。
@@ -849,19 +850,19 @@
     于（会「模块」而会「累」而
     虑「模块境」者
       「着色环境换文件」于（「累」中「零」）于（「模块」中「零」）而
-      虑「模块结果」者
-        「从左折叠」授以（「字符串」合「表达式」）授以（「着色环境」合（「列」于「着色声明」））
-        于（会「定义项」而会「内累」而
-        虑「一步」者「翻译顶层定义」于（「内累」中「零」）于「定义项」而
-        （「一步」中「零」）与（「附加」授以「着色声明」于（「内累」中「一」）于（「一步」中「一」）））
-        于（「模块境」与（「罄」授以「着色声明」））
-        于（「模块」中「一」）
-      而
-      （「模块结果」中「零」）
-        与（「附加」授以「着色声明」于（「累」中「一」）于（「模块结果」中「一」））
-          与（「模块结果」中「一」））
-          于（（「新着色环境」于『』）与（「罄」授以「着色声明」）与（「罄」授以「着色声明」））
-          于「源模块们」
+    虑「模块结果」者
+      「从左折叠」授以（「字符串」合「表达式」）授以（「着色环境」合（「列」于「着色声明」））
+      于（会「定义项」而会「内累」而
+      虑「一步」者「翻译顶层定义」于（「内累」中「零」）于「定义项」而
+      （「一步」中「零」）与（「附加」授以「着色声明」于（「内累」中「一」）于（「一步」中「一」）））
+      于（「模块境」与（「罄」授以「着色声明」））
+      于（「模块」中「一」）
+    而
+    （「模块结果」中「零」）
+      与（「附加」授以「着色声明」于（「累」中「一」）于（「模块结果」中「一」））
+        与（「模块结果」中「一」））
+        于（（「新着色环境」于『』）与（「罄」授以「着色声明」）与（「罄」授以「着色声明」））
+        于「源模块们」
   而
   虑「全部声明们」者「终」中「一」而
   虑「入口们」者
@@ -940,16 +941,16 @@
 「豫言字符串字面量」者会「文」而
   虑「甲」者
     「串查找替换」于「文」于「转义起」于（「转义起」附「转义起」附「转义止」）而
-    虑「乙」者
-      「串查找替换」于「甲」于『「：』：」』于（「转义起」附『「：』：」』附「转义止」）而
-      虑「丙」者
-        「串查找替换」于「乙」于『「：换行：」』于（「转义起」附『换行』附「转义止」）而
-        虑「丁」者
-          「串查找替换」
-            于「丙」于『「：制表：」』
-            于（「转义起」附『制表』附「转义止」）
-        而
-        『『』附「丁」附『「：』：」』
+  虑「乙」者
+    「串查找替换」于「甲」于『「：』：」』于（「转义起」附『「：』：」』附「转义止」）而
+  虑「丙」者
+    「串查找替换」于「乙」于『「：换行：」』于（「转义起」附『换行』附「转义止」）而
+  虑「丁」者
+    「串查找替换」
+      于「丙」于『「：制表：」』
+      于（「转义起」附『制表』附「转义止」）
+  而
+  『『』附「丁」附『「：』：」』
 也。
 
 「：汉语：高级代码导入着色源时构建所得模块的豫言源码：导出「着色源」（WGSL 文字）、「金属源」（MSL 文字）与「PTX源」（统算的 PTX 文字），并为每个入口项导出同名字符串常量（其函数名，WGSL 与 MSL 相同）与“入口项名PTX名”常量（PTX 里改写成 ASCII 的入口名）。MSL 或 PTX 翻译失败（如用到该目标尚不支持的写法）时「金属源」或「PTX源」是一行说明原因的注释，WGSL 照常可用。WGSL 翻译失败而 MSL 成功时（如用到子组矩阵片），「着色源」是一行说明原因的注释，入口表取自 MSL；两者都失败时照常报 WGSL 的错。
@@ -997,27 +998,28 @@
   虑「行们」者
     「附加」授以「字符串」
     于（「列」
-          【『「着色源」乃』附「串型」附『也。』
-          ，『「着色源」者』附（「豫言字符串字面量」于（（「取着色源文」于「结果」）））附『也。』
-          ，『「金属源」乃』附「串型」附『也。』
-          ，『「金属源」者』附（「豫言字符串字面量」于「金属文」）附『也。』
-          ，『「PTX源」乃』附「串型」附『也。』
-          ，『「PTX源」者』附（「豫言字符串字面量」于「统算文」）附『也。』
-          】）
-          于（「串联」授以「字符串」
-            于（「态射」授以「着色入口」授以（「列」于「字符串」）
-            于（（「取入口们」于「结果」））
-            于（会「入口」而
-              「列」
-              【『「』附（（「取入口项名」于「入口」））附『」乃』附「串型」附『也。』
-              ，『「』附（（「取入口项名」于「入口」））附『」者』附（「豫言字符串字面量」
-                于（（「取入口函数」于「入口」）））附
-                  『也。』
-              ，『「』附（（「取入口项名」于「入口」））附『PTX名」乃』附「串型」附『也。』
-              ，『「』附（（「取入口项名」于「入口」））附『PTX名」者』附（「豫言字符串字面量」
-                于（「统算入口名」于（「取入口函数」于「入口」）））附
-                  『也。』
-              】）））
+      【『「着色源」乃』附「串型」附『也。』
+      ，『「着色源」者』附（「豫言字符串字面量」于（（「取着色源文」于「结果」）））附『也。』
+      ，『「金属源」乃』附「串型」附『也。』
+      ，『「金属源」者』附（「豫言字符串字面量」于「金属文」）附『也。』
+      ，『「PTX源」乃』附「串型」附『也。』
+      ，『「PTX源」者』附（「豫言字符串字面量」于「统算文」）附『也。』
+      】）
+      于（「串联」授以「字符串」
+        于（「态射」授以「着色入口」授以（「列」于「字符串」）
+        于（（「取入口们」于「结果」））
+        于（会「入口」而
+          「列」
+          【『「』附（（「取入口项名」于「入口」））附『」乃』附「串型」附『也。』
+          ，『「』附（（「取入口项名」于「入口」））附『」者』附（「豫言字符串字面量」
+            于（（「取入口函数」于「入口」）））附
+              『也。』
+          ，『「』附（（「取入口项名」于「入口」））附『PTX名」乃』附「串型」附『也。』
+          ，『「』附（（「取入口项名」于「入口」））附『PTX名」者』附（「豫言字符串字面量」
+            于（「统算入口名」于（「取入口函数」于「入口」）））附
+              『也。』
+          】
+        ）））
   而
   （「间合」于『「：换行：」』于「行们」）附『「：换行：」』
 也。

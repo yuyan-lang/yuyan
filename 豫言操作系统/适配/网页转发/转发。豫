@@ -107,15 +107,15 @@
   「存在吗」授以「字符串」
     于（会「甲」而「串相等」于「甲」于「名」）
     于（「列」
-          【『Content-Security-Policy』
-          ，『X-Content-Type-Options』
-          ，『Referrer-Policy』
-          ，『Content-Type』
-          ，『Content-Disposition』
-          ，『Cross-Origin-Opener-Policy』
-          ，『Cross-Origin-Embedder-Policy』
-          ，『Cross-Origin-Resource-Policy』
-          】）
+      【『Content-Security-Policy』
+      ，『X-Content-Type-Options』
+      ，『Referrer-Policy』
+      ，『Content-Type』
+      ，『Content-Disposition』
+      ，『Cross-Origin-Opener-Policy』
+      ，『Cross-Origin-Embedder-Policy』
+      ，『Cross-Origin-Resource-Policy』
+      】）
 也。
 
 「已用头」乃化「字符串」而化（「列」于「字符串」）而「爻」也。
@@ -213,22 +213,22 @@
         于（「存在吗」授以「整数」
           于（会「甲」而「等于」于「甲」于「码」）
           于（「列」
-                【「三三」
-                ，「三五」
-                ，「三六」
-                ，「三七」
-                ，「三八」
-                ，「三九」
-                ，「四二」
-                ，「四三」
-                ，「四五」
-                ，「四六」
-                ，「九四」
-                ，「九五」
-                ，「九六」
-                ，「一二四」
-                ，「一二六」
-                】））））
+            【「三三」
+            ，「三五」
+            ，「三六」
+            ，「三七」
+            ，「三八」
+            ，「三九」
+            ，「四二」
+            ，「四三」
+            ，「四五」
+            ，「四六」
+            ，「九四」
+            ，「九五」
+            ，「九六」
+            ，「一二四」
+            ，「一二六」
+            】））））
 也。
 
 「转发值字节」乃化「整数」而「爻」也。
@@ -286,17 +286,17 @@
   「存在吗」授以「字符串」
     于（会「甲」而「串相等」于「甲」于「小写名」）
     于（「列」
-          【『host』
-          ，『connection』
-          ，『keep-alive』
-          ，『proxy-connection』
-          ，『proxy-authorization』
-          ，『te』
-          ，『trailer』
-          ，『transfer-encoding』
-          ，『upgrade』
-          ，『expect』
-          】）
+      【『host』
+      ，『connection』
+      ，『keep-alive』
+      ，『proxy-connection』
+      ，『proxy-authorization』
+      ，『te』
+      ，『trailer』
+      ，『transfer-encoding』
+      ，『upgrade』
+      ，『expect』
+      】）
 也。
 
 「转发禁用固定头」乃化「字符串」而「爻」也。
@@ -369,19 +369,19 @@
 文言：路径含「.」「..」之段（含百分号编码之点，大小写不辨）者拒，以防出前缀。：」
 「转发点段变体」乃（「列」于「字符串」）也。
 「转发点段变体」者（「列」
-                      【『.』
-                      ，『..』
-                      ，『%2e』
-                      ，『%2E』
-                      ，『.%2e』
-                      ，『.%2E』
-                      ，『%2e.』
-                      ，『%2E.』
-                      ，『%2e%2e』
-                      ，『%2E%2E』
-                      ，『%2e%2E』
-                      ，『%2E%2e』
-                      】）
+  【『.』
+  ，『..』
+  ，『%2e』
+  ，『%2E』
+  ，『.%2e』
+  ，『.%2E』
+  ，『%2e.』
+  ，『%2E.』
+  ，『%2e%2e』
+  ，『%2E%2E』
+  ，『%2e%2E』
+  ，『%2E%2e』
+  】）
 也。
 
 「转发含点段」乃化「字符串」而「爻」也。
@@ -555,16 +555,16 @@
   「存在吗」授以「字符串」
     于（会「甲」而「串相等」于「甲」于「小写名」）
     于（「列」
-          【『content-length』
-          ，『transfer-encoding』
-          ，『connection』
-          ，『keep-alive』
-          ，『upgrade』
-          ，『te』
-          ，『trailer』
-          ，『content-type』
-          ，『content-encoding』
-          】）
+      【『content-length』
+      ，『transfer-encoding』
+      ，『connection』
+      ，『keep-alive』
+      ，『upgrade』
+      ，『te』
+      ，『trailer』
+      ，『content-type』
+      ，『content-encoding』
+      】）
 也。
 
 「转发校验答复项」乃化（「字符串」合「字符串」）而「有」也。
@@ -617,14 +617,14 @@
       虑「小」者「转发小写」于（「项」中「零」）而
       虑「首见」者
         「非」于（「存在吗」授以「字符串」于（会「甲」而「串相等」于「甲」于「小」）于「已覆」）而
-        虑「无」者
-          若「首见」则「云工标头删除」于「头」于（「项」中「零」）否则「元」
-        而
-        虑「无」者
-          「云工标头追加」于「头」于（「项」中「零」）于（「项」中「一」）
-        而
-        「转发应用附加头」于「头」于「余」于（
-          若「首见」则（「缀」授以「字符串」于「小」于「已覆」）否则「已覆」）
+      虑「无」者
+        若「首见」则「云工标头删除」于「头」于（「项」中「零」）否则「元」
+      而
+      虑「无」者
+        「云工标头追加」于「头」于（「项」中「零」）于（「项」中「一」）
+      而
+      「转发应用附加头」于「头」于「余」于（
+        若「首见」则（「缀」授以「字符串」于「小」于「已覆」）否则「已覆」）
     ）
 也。
 

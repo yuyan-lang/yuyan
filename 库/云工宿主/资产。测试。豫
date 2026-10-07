@@ -4,7 +4,7 @@
 
 虑「原请」者
   「云工请求句柄」于「元」而
-  虑「改请」者
-    「云工请求改址」于「原请」于『https://assets.local/products/index.html?service=files』而
-    虑「答」者「云工资产请求句柄」于『ASSETS』于「改请」而
-    「云工设置响应句柄」于「答」。
+虑「改请」者
+  「云工请求改址」于「原请」于『https://assets.local/products/index.html?service=files』而
+虑「答」者「云工资产请求句柄」于『ASSETS』于「改请」而
+「云工设置响应句柄」于「答」。
