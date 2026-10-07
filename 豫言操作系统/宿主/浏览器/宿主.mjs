@@ -2046,8 +2046,8 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
     解析同源网址(作业.快照.网址, '源码快照');
     解析同源网址(作业.工具链.网址, '工具链');
     const 命令们 = 作业.命令;
-    if (!Array.isArray(命令们) || 命令们.length === 0 || 命令们.length > 256 ||
-      命令们.some(命令 => !Array.isArray(命令) || 命令.length === 0 || 命令.length > 256 || 命令.some(项 => typeof 项 !== 'string'))) throw Error('本地构建命令须为 1 至 256 条字符串数组');
+    if (!Array.isArray(命令们) || 命令们.length === 0 || 命令们.length > 25600 ||
+      命令们.some(命令 => !Array.isArray(命令) || 命令.length === 0 || 命令.length > 25600 || 命令.some(项 => typeof 项 !== 'string'))) throw Error('本地构建命令须为 1 至 25600 条字符串数组，每条至多 25600 项');
     if (作业.改动 !== undefined && (!作业.改动 || typeof 作业.改动 !== 'object' || Array.isArray(作业.改动) ||
       Object.values(作业.改动).some(值 => 值 !== null && typeof 值 !== 'string'))) throw Error('本地构建改动须为 {"路径":"内容"或null} 对象');
     return 作业;
