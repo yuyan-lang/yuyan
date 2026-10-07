@@ -1782,6 +1782,7 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
   };
   // 文言：成败皆归一结森，网败不发事故；取消与宿主闭则无果。汉语：执行一个请求，返回响应对象（成为真或假）；因取消或宿主关闭而中止时返回 null（不产生任何结果）。
   const 执行请求 = async (规, 项) => {
+    const 请求开始 = performance.now();
     const 计时 = 全局.setTimeout(() => { 项.原因 ??= '超时'; 项.控制器.abort(); }, 规.超时毫秒);
     try {
       const 初 = {method: 规.方法, headers: 规.标头, credentials: 'same-origin', mode: 'same-origin', redirect: 'follow', signal: 项.控制器.signal};
@@ -1794,7 +1795,7 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
       catch { return {成: false, 原因: '正文不是有效UTF-8', 说明: '响应正文不是有效的 UTF-8 文字', 标记: 规.标记}; }
       const 标头 = {};
       for (const [名, 值] of 响应.headers ?? []) 标头[String(名).toLowerCase()] = String(值);
-      return {成: true, 状态: 响应.status, 状态文: String(响应.statusText ?? ''), 网址: String(响应.url || 规.址.href), 标头, 正文, 字节数: 字节.byteLength, 标记: 规.标记};
+      return {成: true, 状态: 响应.status, 状态文: String(响应.statusText ?? ''), 网址: String(响应.url || 规.址.href), 标头, 正文, 字节数: 字节.byteLength, 上传字节: new TextEncoder().encode(规.正文 ?? '').byteLength, 经过毫秒: Math.max(1, Math.round(performance.now() - 请求开始)), 标记: 规.标记};
     } catch (错) {
       if (项.原因 === '取消' || 项.原因 === '关闭') return null;
       if (项.原因 === '超时') return {成: false, 原因: '超时', 说明: '请求超过 ' + 规.超时毫秒 + ' 毫秒未完成', 标记: 规.标记};
@@ -1970,7 +1971,7 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
     return 模块;
   };
   const 映射编译事件 = 事 => {
-    if (事?.type === 'stage') return {类: '阶段', 阶段: String(事.phase ?? ''), 标签: String(事.label ?? '')};
+    if (事?.type === 'stage') return {类: '阶段', 阶段: String(事.phase ?? ''), 标签: String(事.label ?? ''), ...(事.transfer ? {传输: 事.transfer} : {})};
     if (事?.type === 'output') return {类: '输出', 流: 事.stream === 'stdout' ? 'stdout' : 'stderr', 文字: String(事.text ?? '')};
     if (事?.type === 'diagnostic') return {类: '诊断', 文字: String(事.text ?? '')};
     return null;
@@ -2046,8 +2047,8 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
     解析同源网址(作业.快照.网址, '源码快照');
     解析同源网址(作业.工具链.网址, '工具链');
     const 命令们 = 作业.命令;
-    if (!Array.isArray(命令们) || 命令们.length === 0 || 命令们.length > 256 ||
-      命令们.some(命令 => !Array.isArray(命令) || 命令.length === 0 || 命令.length > 256 || 命令.some(项 => typeof 项 !== 'string'))) throw Error('本地构建命令须为 1 至 256 条字符串数组');
+    if (!Array.isArray(命令们) || 命令们.length === 0 || 命令们.length > 25600 ||
+      命令们.some(命令 => !Array.isArray(命令) || 命令.length === 0 || 命令.length > 25600 || 命令.some(项 => typeof 项 !== 'string'))) throw Error('本地构建命令须为 1 至 25600 条字符串数组，每条至多 25600 项');
     if (作业.改动 !== undefined && (!作业.改动 || typeof 作业.改动 !== 'object' || Array.isArray(作业.改动) ||
       Object.values(作业.改动).some(值 => 值 !== null && typeof 值 !== 'string'))) throw Error('本地构建改动须为 {"路径":"内容"或null} 对象');
     return 作业;
@@ -2060,7 +2061,7 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
     return 模块;
   };
   const 映射构建事件 = 事 => {
-    if (事?.type === 'stage') return {类: '阶段', 阶段: String(事.phase ?? ''), 标签: String(事.label ?? '')};
+    if (事?.type === 'stage') return {类: '阶段', 阶段: String(事.phase ?? ''), 标签: String(事.label ?? ''), ...(事.transfer ? {传输: 事.transfer} : {})};
     if (事?.type === 'output') return {类: '输出', 流: 事.stream === 'stdout' ? 'stdout' : 'stderr', 文字: String(事.text ?? '')};
     if (事?.type === 'command') return {类: '命令', 序: Number(事.index ?? 0), 参数: Array.isArray(事.argv) ? 事.argv.map(String) : []};
     if (事?.type === 'command-done') return {类: '命令完成', 序: Number(事.index ?? 0), 退出码: Number(事.exitCode ?? 1), 毫秒: Number(事.ms ?? 0)};
