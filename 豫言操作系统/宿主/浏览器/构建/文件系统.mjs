@@ -158,15 +158,25 @@ export function 展开归档(文件系统, 归档, {目录 = '/', 剥离层数 =
 
 // 文言：取网址之 gzip 之 tar 而展之；可传缓存之名，同址再取则用浏览器之存。
 // 汉语：取来 gzip 压缩的 tar 并解压成字节：用浏览器的 DecompressionStream；给了缓存名时先查 Cache Storage（网址里带提交号等不变标识时才缓存），没有再取并存入。
-export async function 取压缩归档(网址, {缓存名 = '', 信号} = {}) {
+export async function 取压缩归档(网址, {缓存名 = '', 信号, 报传输 = () => {}} = {}) {
   let 回答 = null;
+  const 起 = performance.now();
+  let 下载字节 = 0;
   const 缓存 = 缓存名 && typeof caches !== 'undefined' ? await caches.open(缓存名).catch(() => null) : null;
   if (缓存) 回答 = await 缓存.match(网址).catch(() => null);
+  const 来自缓存 = Boolean(回答);
+  const 报 = 连接状态 => 报传输({下载字节: 来自缓存 ? 0 : 下载字节, 经过毫秒: Math.max(1, Math.round(performance.now() - 起)), 连接状态, 来自缓存});
+  报('连接中');
   if (!回答) {
     回答 = await fetch(网址, {credentials: 'same-origin', signal: 信号});
     if (!回答.ok) throw Error('取归档失败：' + 回答.status + ' ' + 网址);
-    if (缓存) await 缓存.put(网址, 回答.clone()).catch(() => {});
+    // 汉语：缓存与正文读取并行，下载进度随网络流到达报告。文言：缓存与正文并读，进度随流至而报之。
+    if (缓存) 缓存.put(网址, 回答.clone()).catch(() => {});
   }
-  const 流 = 回答.body.pipeThrough(new DecompressionStream('gzip'));
+  const 计量 = new TransformStream({
+    transform(块, 管) { 下载字节 += 块.byteLength; 报(来自缓存 ? '读取缓存' : '下载中'); 管.enqueue(块); },
+    flush() { 报('下载完成'); }
+  });
+  const 流 = 回答.body.pipeThrough(计量).pipeThrough(new DecompressionStream('gzip'));
   return new Uint8Array(await new Response(流).arrayBuffer());
 }
