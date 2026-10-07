@@ -71,12 +71,13 @@ export class 进程表 {
     if (!线) {
       const 工 = new Worker(this.工作线程网址, {type: 'module'});
       const 控制 = new SharedArrayBuffer(16), 数据 = new SharedArrayBuffer(块长);
-      线 = {工, 控制: new Int32Array(控制), 数据: new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null};
+      线 = {工, 控制: new Int32Array(控制), 数据: new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null, 次数: 0, 闲时: null};
       工.postMessage({种: '初始', 控制, 数据, 桥模块: this.桥模块});
       工.onmessage = ({data}) => this.收消息(线, data);
       工.onerror = 事件 => this.线程出错(线, 事件);
       this.线程们.push(线);
     }
+    clearTimeout(线.闲时);
     线.忙 = true;
     return 线;
   }
@@ -145,23 +146,35 @@ export class 进程表 {
     记录.完成 = true;
     记录.码 = 记录.溢出 ? 125 : 码;
     clearTimeout(记录.定时);
-    if (记录.线) { 记录.线.忙 = false; 记录.线.号 = 0; 记录.线 = null; }
+    if (记录.线) {
+      const 线 = 记录.线;
+      记录.线 = null;
+      线.忙 = false; 线.号 = 0; 线.次数++;
+      // 文言：如诺节之工，四事而换，闲四分之一秒亦释之，毋积旧堆。汉语：与诺节编译线程一样，每四次任务回收线程；空闲250毫秒也释放，避免跨任务保留Wasm堆高水位。
+      if (线.次数 >= 4) this.回收线程(线);
+      else 线.闲时 = setTimeout(() => { if (!线.忙) this.回收线程(线); }, 250);
+    }
     for (const 回调 of 记录.回调们.splice(0)) 回调(记录);
     this.唤候();
   }
 
   // 文言：强止一程：毁其线程（同步之客不能自止），以码结之。汉语：强行结束一个进程：销毁它的工作线程（同步执行的客体收不到消息，只能销毁），按给定退出码结束。
+  回收线程(线) {
+    clearTimeout(线.闲时);
+    线.工.terminate();
+    this.线程们 = this.线程们.filter(项 => 项 !== 线);
+  }
+
   终止(记录, 码) {
     const 线 = 记录.线;
-    if (线) { 线.工.terminate(); this.线程们 = this.线程们.filter(项 => 项 !== 线); 记录.线 = null; }
+    if (线) { this.回收线程(线); 记录.线 = null; }
     this.结束(记录, 码);
   }
 
   线程出错(线, 事件) {
     事件.preventDefault?.();
     const 记录 = this.记录们.get(线.号);
-    线.工.terminate();
-    this.线程们 = this.线程们.filter(项 => 项 !== 线);
+    this.回收线程(线);
     if (记录) { 记录.线 = null; this.收输出(记录, 2, 编码器.encode('构建宿主：工作线程出错：' + (事件.message ?? 事件) + '\n')); this.结束(记录, 1); }
   }
 
@@ -298,7 +311,7 @@ export class 进程表 {
 
   停止() {
     this.已停 = true;
-    for (const 线 of this.线程们) { 线.工.terminate(); if (线.待候) clearTimeout(线.待候.定时); }
+    for (const 线 of this.线程们) { this.回收线程(线); if (线.待候) clearTimeout(线.待候.定时); }
     this.线程们 = [];
     for (const 记录 of this.记录们.values()) { 记录.线 = null; this.结束(记录, 143); }
   }
