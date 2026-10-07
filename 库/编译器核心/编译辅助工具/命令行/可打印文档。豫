@@ -40,6 +40,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     -c, --compile-only                   兼容选项；编译器只生成模块，不运行
     -o PATH                              指定 Wasm 模块的输出路径
     --no-link                           只生成各文件的模块产物，不生成最终模块
+    --六十四位地址                       底层模式：内存声明改为六十四位地址（64 TiB），默认关
     编译输入须由 yy豫构 提供包上下文，不再提供特殊标准库搜索路径。
     --whole-program-opt                  使用全局编译优化
     --do-not-optimize                    不执行优化
