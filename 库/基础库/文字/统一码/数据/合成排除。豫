@@ -1,0 +1,264 @@
+寻观「标准库」之书。
+
+「合成排除表0」乃化「整数」而「字符串」也。
+「合成排除表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3」））于（「小于」于「桶」于「4」）则
+    『0340..0341;Full_Composition_Exclusion
+0343..0344;Full_Composition_Exclusion
+0374;Full_Composition_Exclusion
+037E;Full_Composition_Exclusion
+0387;Full_Composition_Exclusion
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「9」））于（「小于」于「桶」于「10」）则
+      『0958..095F;Full_Composition_Exclusion
+09DC..09DD;Full_Composition_Exclusion
+09DF;Full_Composition_Exclusion
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「10」））于（「小于」于「桶」于「11」）则
+        『0A33;Full_Composition_Exclusion
+0A36;Full_Composition_Exclusion
+0A59..0A5B;Full_Composition_Exclusion
+0A5E;Full_Composition_Exclusion
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「11」））于（「小于」于「桶」于「12」）则
+          『0B5C..0B5D;Full_Composition_Exclusion
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「15」））
+            于（「小于」于「桶」于「16」）则
+              『0F43;Full_Composition_Exclusion
+0F4D;Full_Composition_Exclusion
+0F52;Full_Composition_Exclusion
+0F57;Full_Composition_Exclusion
+0F5C;Full_Composition_Exclusion
+0F69;Full_Composition_Exclusion
+0F73;Full_Composition_Exclusion
+0F75..0F76;Full_Composition_Exclusion
+0F78;Full_Composition_Exclusion
+0F81;Full_Composition_Exclusion
+0F93;Full_Composition_Exclusion
+0F9D;Full_Composition_Exclusion
+0FA2;Full_Composition_Exclusion
+0FA7;Full_Composition_Exclusion
+0FAC;Full_Composition_Exclusion
+0FB9;Full_Composition_Exclusion
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「31」））
+              于（「小于」于「桶」于「32」）则
+                『1F71;Full_Composition_Exclusion
+1F73;Full_Composition_Exclusion
+1F75;Full_Composition_Exclusion
+1F77;Full_Composition_Exclusion
+1F79;Full_Composition_Exclusion
+1F7B;Full_Composition_Exclusion
+1F7D;Full_Composition_Exclusion
+1FBB;Full_Composition_Exclusion
+1FBE;Full_Composition_Exclusion
+1FC9;Full_Composition_Exclusion
+1FCB;Full_Composition_Exclusion
+1FD3;Full_Composition_Exclusion
+1FDB;Full_Composition_Exclusion
+1FE3;Full_Composition_Exclusion
+1FEB;Full_Composition_Exclusion
+1FEE..1FEF;Full_Composition_Exclusion
+1FF9;Full_Composition_Exclusion
+1FFB;Full_Composition_Exclusion
+1FFD;Full_Composition_Exclusion
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「32」））
+                于（「小于」于「桶」于「33」）则
+                  『2000..2001;Full_Composition_Exclusion
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「33」））
+                  于（「小于」于「桶」于「34」）则
+                    『2126;Full_Composition_Exclusion
+212A..212B;Full_Composition_Exclusion
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「35」））
+                    于（「小于」于「桶」于「36」）则
+                      『2329;Full_Composition_Exclusion
+232A;Full_Composition_Exclusion
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「42」））
+                      于（「小于」于「桶」于「43」）则
+                        『2ADC;Full_Composition_Exclusion
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「249」））
+                        于（「小于」于「桶」于「250」）则
+                          『F900..FA0D;Full_Composition_Exclusion
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「250」））
+                          于（「小于」于「桶」于「251」）则
+                            『F900..FA0D;Full_Composition_Exclusion
+FA10;Full_Composition_Exclusion
+FA12;Full_Composition_Exclusion
+FA15..FA1E;Full_Composition_Exclusion
+FA20;Full_Composition_Exclusion
+FA22;Full_Composition_Exclusion
+FA25..FA26;Full_Composition_Exclusion
+FA2A..FA6D;Full_Composition_Exclusion
+FA70..FAD9;Full_Composition_Exclusion
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「251」））
+                            于（「小于」于「桶」于「252」）则
+                              『FB1D;Full_Composition_Exclusion
+FB1F;Full_Composition_Exclusion
+FB2A..FB36;Full_Composition_Exclusion
+FB38..FB3C;Full_Composition_Exclusion
+FB3E;Full_Composition_Exclusion
+FB40..FB41;Full_Composition_Exclusion
+FB43..FB44;Full_Composition_Exclusion
+FB46..FB4E;Full_Composition_Exclusion
+』
+                          否则
+                            『』
+也。
+
+「合成排除表1」乃化「整数」而「字符串」也。
+「合成排除表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「465」））于（「小于」于「桶」于「466」）则
+    『1D15E..1D164;Full_Composition_Exclusion
+1D1BB..1D1C0;Full_Composition_Exclusion
+』
+  否则
+    『』
+也。
+
+「合成排除表2」乃化「整数」而「字符串」也。
+「合成排除表2」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「760」））于（「小于」于「桶」于「763」）则
+    『2F800..2FA1D;Full_Composition_Exclusion
+』
+  否则
+    『』
+也。
+
+「合成排除表3」乃化「整数」而「字符串」也。
+「合成排除表3」者会「桶」而
+  『』
+也。
+
+「合成排除表4」乃化「整数」而「字符串」也。
+「合成排除表4」者会「桶」而
+  『』
+也。
+
+「合成排除表5」乃化「整数」而「字符串」也。
+「合成排除表5」者会「桶」而
+  『』
+也。
+
+「合成排除表6」乃化「整数」而「字符串」也。
+「合成排除表6」者会「桶」而
+  『』
+也。
+
+「合成排除表7」乃化「整数」而「字符串」也。
+「合成排除表7」者会「桶」而
+  『』
+也。
+
+「合成排除表8」乃化「整数」而「字符串」也。
+「合成排除表8」者会「桶」而
+  『』
+也。
+
+「合成排除表9」乃化「整数」而「字符串」也。
+「合成排除表9」者会「桶」而
+  『』
+也。
+
+「合成排除表10」乃化「整数」而「字符串」也。
+「合成排除表10」者会「桶」而
+  『』
+也。
+
+「合成排除表11」乃化「整数」而「字符串」也。
+「合成排除表11」者会「桶」而
+  『』
+也。
+
+「合成排除表12」乃化「整数」而「字符串」也。
+「合成排除表12」者会「桶」而
+  『』
+也。
+
+「合成排除表13」乃化「整数」而「字符串」也。
+「合成排除表13」者会「桶」而
+  『』
+也。
+
+「合成排除表14」乃化「整数」而「字符串」也。
+「合成排除表14」者会「桶」而
+  『』
+也。
+
+「合成排除表15」乃化「整数」而「字符串」也。
+「合成排除表15」者会「桶」而
+  『』
+也。
+
+「合成排除表16」乃化「整数」而「字符串」也。
+「合成排除表16」者会「桶」而
+  『』
+也。
+
+「合成排除表」乃化「整数」而「字符串」也。
+「合成排除表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「合成排除表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「合成排除表1」于「桶」否则
+      若「小于」于「桶」于「768」则「合成排除表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「合成排除表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「合成排除表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「合成排除表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「合成排除表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「合成排除表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「合成排除表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「合成排除表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「合成排除表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「合成排除表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「合成排除表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「合成排除表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「合成排除表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「合成排除表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「合成排除表16」于「桶」
+                                  否则
+                                    『』
+也。

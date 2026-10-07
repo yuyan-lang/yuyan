@@ -1,0 +1,686 @@
+寻观「标准库」之书。
+
+「表情表0」乃化「整数」而「字符串」也。
+「表情表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『00A9;Extended_Pictographic
+00AE;Extended_Pictographic
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「32」））于（「小于」于「桶」于「33」）则
+      『203C;Extended_Pictographic
+2049;Extended_Pictographic
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「33」））于（「小于」于「桶」于「34」）则
+        『2122;Extended_Pictographic
+2139;Extended_Pictographic
+2194..2199;Extended_Pictographic
+21A9..21AA;Extended_Pictographic
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「35」））于（「小于」于「桶」于「36」）则
+          『231A..231B;Extended_Pictographic
+2328;Extended_Pictographic
+23CF;Extended_Pictographic
+23E9..23EC;Extended_Pictographic
+23ED..23EE;Extended_Pictographic
+23EF;Extended_Pictographic
+23F0;Extended_Pictographic
+23F1..23F2;Extended_Pictographic
+23F3;Extended_Pictographic
+23F8..23FA;Extended_Pictographic
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「36」））
+            于（「小于」于「桶」于「37」）则
+              『24C2;Extended_Pictographic
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「37」））
+              于（「小于」于「桶」于「38」）则
+                『25AA..25AB;Extended_Pictographic
+25B6;Extended_Pictographic
+25C0;Extended_Pictographic
+25FB..25FE;Extended_Pictographic
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「38」））
+                于（「小于」于「桶」于「39」）则
+                  『2600..2601;Extended_Pictographic
+2602..2603;Extended_Pictographic
+2604;Extended_Pictographic
+260E;Extended_Pictographic
+2611;Extended_Pictographic
+2614..2615;Extended_Pictographic
+2618;Extended_Pictographic
+261D;Extended_Pictographic
+2620;Extended_Pictographic
+2622..2623;Extended_Pictographic
+2626;Extended_Pictographic
+262A;Extended_Pictographic
+262E;Extended_Pictographic
+262F;Extended_Pictographic
+2638..2639;Extended_Pictographic
+263A;Extended_Pictographic
+2640;Extended_Pictographic
+2642;Extended_Pictographic
+2648..2653;Extended_Pictographic
+265F;Extended_Pictographic
+2660;Extended_Pictographic
+2663;Extended_Pictographic
+2665..2666;Extended_Pictographic
+2668;Extended_Pictographic
+267B;Extended_Pictographic
+267E;Extended_Pictographic
+267F;Extended_Pictographic
+2692;Extended_Pictographic
+2693;Extended_Pictographic
+2694;Extended_Pictographic
+2695;Extended_Pictographic
+2696..2697;Extended_Pictographic
+2699;Extended_Pictographic
+269B..269C;Extended_Pictographic
+26A0..26A1;Extended_Pictographic
+26A7;Extended_Pictographic
+26AA..26AB;Extended_Pictographic
+26B0..26B1;Extended_Pictographic
+26BD..26BE;Extended_Pictographic
+26C4..26C5;Extended_Pictographic
+26C8;Extended_Pictographic
+26CE;Extended_Pictographic
+26CF;Extended_Pictographic
+26D1;Extended_Pictographic
+26D3;Extended_Pictographic
+26D4;Extended_Pictographic
+26E9;Extended_Pictographic
+26EA;Extended_Pictographic
+26F0..26F1;Extended_Pictographic
+26F2..26F3;Extended_Pictographic
+26F4;Extended_Pictographic
+26F5;Extended_Pictographic
+26F7..26F9;Extended_Pictographic
+26FA;Extended_Pictographic
+26FD;Extended_Pictographic
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「39」））
+                  于（「小于」于「桶」于「40」）则
+                    『2702;Extended_Pictographic
+2705;Extended_Pictographic
+2708..270C;Extended_Pictographic
+270D;Extended_Pictographic
+270F;Extended_Pictographic
+2712;Extended_Pictographic
+2714;Extended_Pictographic
+2716;Extended_Pictographic
+271D;Extended_Pictographic
+2721;Extended_Pictographic
+2728;Extended_Pictographic
+2733..2734;Extended_Pictographic
+2744;Extended_Pictographic
+2747;Extended_Pictographic
+274C;Extended_Pictographic
+274E;Extended_Pictographic
+2753..2755;Extended_Pictographic
+2757;Extended_Pictographic
+2763;Extended_Pictographic
+2764;Extended_Pictographic
+2795..2797;Extended_Pictographic
+27A1;Extended_Pictographic
+27B0;Extended_Pictographic
+27BF;Extended_Pictographic
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「41」））
+                    于（「小于」于「桶」于「42」）则
+                      『2934..2935;Extended_Pictographic
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「43」））
+                      于（「小于」于「桶」于「44」）则
+                        『2B05..2B07;Extended_Pictographic
+2B1B..2B1C;Extended_Pictographic
+2B50;Extended_Pictographic
+2B55;Extended_Pictographic
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「48」））
+                        于（「小于」于「桶」于「49」）则
+                          『3030;Extended_Pictographic
+303D;Extended_Pictographic
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「50」））
+                          于（「小于」于「桶」于「51」）则
+                            『3297;Extended_Pictographic
+3299;Extended_Pictographic
+』
+                        否则
+                          『』
+也。
+
+「表情表1」乃化「整数」而「字符串」也。
+「表情表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「496」））于（「小于」于「桶」于「497」）则
+    『1F004;Extended_Pictographic
+1F02C..1F02F;Extended_Pictographic
+1F094..1F09F;Extended_Pictographic
+1F0AF..1F0B0;Extended_Pictographic
+1F0C0;Extended_Pictographic
+1F0CF;Extended_Pictographic
+1F0D0;Extended_Pictographic
+1F0F6..1F0FF;Extended_Pictographic
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「497」））于（「小于」于「桶」于「498」）则
+      『1F170..1F171;Extended_Pictographic
+1F17E..1F17F;Extended_Pictographic
+1F18E;Extended_Pictographic
+1F191..1F19A;Extended_Pictographic
+1F1AF..1F1E5;Extended_Pictographic
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「498」））于（「小于」于「桶」于「499」）则
+        『1F201..1F202;Extended_Pictographic
+1F203..1F20F;Extended_Pictographic
+1F21A;Extended_Pictographic
+1F22F;Extended_Pictographic
+1F232..1F23A;Extended_Pictographic
+1F23C..1F23F;Extended_Pictographic
+1F249..1F24F;Extended_Pictographic
+1F250..1F251;Extended_Pictographic
+1F252..1F25F;Extended_Pictographic
+1F266..1F2FF;Extended_Pictographic
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「499」））于（「小于」于「桶」于「500」）则
+          『1F300..1F30C;Extended_Pictographic
+1F30D..1F30E;Extended_Pictographic
+1F30F;Extended_Pictographic
+1F310;Extended_Pictographic
+1F311;Extended_Pictographic
+1F312;Extended_Pictographic
+1F313..1F315;Extended_Pictographic
+1F316..1F318;Extended_Pictographic
+1F319;Extended_Pictographic
+1F31A;Extended_Pictographic
+1F31B;Extended_Pictographic
+1F31C;Extended_Pictographic
+1F31D..1F31E;Extended_Pictographic
+1F31F..1F320;Extended_Pictographic
+1F321;Extended_Pictographic
+1F324..1F32C;Extended_Pictographic
+1F32D..1F32F;Extended_Pictographic
+1F330..1F331;Extended_Pictographic
+1F332..1F333;Extended_Pictographic
+1F334..1F335;Extended_Pictographic
+1F336;Extended_Pictographic
+1F337..1F34A;Extended_Pictographic
+1F34B;Extended_Pictographic
+1F34C..1F34F;Extended_Pictographic
+1F350;Extended_Pictographic
+1F351..1F37B;Extended_Pictographic
+1F37C;Extended_Pictographic
+1F37D;Extended_Pictographic
+1F37E..1F37F;Extended_Pictographic
+1F380..1F393;Extended_Pictographic
+1F396..1F397;Extended_Pictographic
+1F399..1F39B;Extended_Pictographic
+1F39E..1F39F;Extended_Pictographic
+1F3A0..1F3C4;Extended_Pictographic
+1F3C5;Extended_Pictographic
+1F3C6;Extended_Pictographic
+1F3C7;Extended_Pictographic
+1F3C8;Extended_Pictographic
+1F3C9;Extended_Pictographic
+1F3CA;Extended_Pictographic
+1F3CB..1F3CE;Extended_Pictographic
+1F3CF..1F3D3;Extended_Pictographic
+1F3D4..1F3DF;Extended_Pictographic
+1F3E0..1F3E3;Extended_Pictographic
+1F3E4;Extended_Pictographic
+1F3E5..1F3F0;Extended_Pictographic
+1F3F3;Extended_Pictographic
+1F3F4;Extended_Pictographic
+1F3F5;Extended_Pictographic
+1F3F7;Extended_Pictographic
+1F3F8..1F3FA;Extended_Pictographic
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「500」））
+            于（「小于」于「桶」于「501」）则
+              『1F400..1F407;Extended_Pictographic
+1F408;Extended_Pictographic
+1F409..1F40B;Extended_Pictographic
+1F40C..1F40E;Extended_Pictographic
+1F40F..1F410;Extended_Pictographic
+1F411..1F412;Extended_Pictographic
+1F413;Extended_Pictographic
+1F414;Extended_Pictographic
+1F415;Extended_Pictographic
+1F416;Extended_Pictographic
+1F417..1F429;Extended_Pictographic
+1F42A;Extended_Pictographic
+1F42B..1F43E;Extended_Pictographic
+1F43F;Extended_Pictographic
+1F440;Extended_Pictographic
+1F441;Extended_Pictographic
+1F442..1F464;Extended_Pictographic
+1F465;Extended_Pictographic
+1F466..1F46B;Extended_Pictographic
+1F46C..1F46D;Extended_Pictographic
+1F46E..1F4AC;Extended_Pictographic
+1F4AD;Extended_Pictographic
+1F4AE..1F4B5;Extended_Pictographic
+1F4B6..1F4B7;Extended_Pictographic
+1F4B8..1F4EB;Extended_Pictographic
+1F4EC..1F4ED;Extended_Pictographic
+1F4EE;Extended_Pictographic
+1F4EF;Extended_Pictographic
+1F4F0..1F4F4;Extended_Pictographic
+1F4F5;Extended_Pictographic
+1F4F6..1F4F7;Extended_Pictographic
+1F4F8;Extended_Pictographic
+1F4F9..1F4FC;Extended_Pictographic
+1F4FD;Extended_Pictographic
+1F4FF..1F502;Extended_Pictographic
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「501」））
+              于（「小于」于「桶」于「502」）则
+                『1F4FF..1F502;Extended_Pictographic
+1F503;Extended_Pictographic
+1F504..1F507;Extended_Pictographic
+1F508;Extended_Pictographic
+1F509;Extended_Pictographic
+1F50A..1F514;Extended_Pictographic
+1F515;Extended_Pictographic
+1F516..1F52B;Extended_Pictographic
+1F52C..1F52D;Extended_Pictographic
+1F52E..1F53D;Extended_Pictographic
+1F549..1F54A;Extended_Pictographic
+1F54B..1F54E;Extended_Pictographic
+1F550..1F55B;Extended_Pictographic
+1F55C..1F567;Extended_Pictographic
+1F56F..1F570;Extended_Pictographic
+1F573..1F579;Extended_Pictographic
+1F57A;Extended_Pictographic
+1F587;Extended_Pictographic
+1F58A..1F58D;Extended_Pictographic
+1F590;Extended_Pictographic
+1F595..1F596;Extended_Pictographic
+1F5A4;Extended_Pictographic
+1F5A5;Extended_Pictographic
+1F5A8;Extended_Pictographic
+1F5B1..1F5B2;Extended_Pictographic
+1F5BC;Extended_Pictographic
+1F5C2..1F5C4;Extended_Pictographic
+1F5D1..1F5D3;Extended_Pictographic
+1F5DC..1F5DE;Extended_Pictographic
+1F5E1;Extended_Pictographic
+1F5E3;Extended_Pictographic
+1F5E8;Extended_Pictographic
+1F5EF;Extended_Pictographic
+1F5F3;Extended_Pictographic
+1F5FA;Extended_Pictographic
+1F5FB..1F5FF;Extended_Pictographic
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「502」））
+                于（「小于」于「桶」于「503」）则
+                  『1F600;Extended_Pictographic
+1F601..1F606;Extended_Pictographic
+1F607..1F608;Extended_Pictographic
+1F609..1F60D;Extended_Pictographic
+1F60E;Extended_Pictographic
+1F60F;Extended_Pictographic
+1F610;Extended_Pictographic
+1F611;Extended_Pictographic
+1F612..1F614;Extended_Pictographic
+1F615;Extended_Pictographic
+1F616;Extended_Pictographic
+1F617;Extended_Pictographic
+1F618;Extended_Pictographic
+1F619;Extended_Pictographic
+1F61A;Extended_Pictographic
+1F61B;Extended_Pictographic
+1F61C..1F61E;Extended_Pictographic
+1F61F;Extended_Pictographic
+1F620..1F625;Extended_Pictographic
+1F626..1F627;Extended_Pictographic
+1F628..1F62B;Extended_Pictographic
+1F62C;Extended_Pictographic
+1F62D;Extended_Pictographic
+1F62E..1F62F;Extended_Pictographic
+1F630..1F633;Extended_Pictographic
+1F634;Extended_Pictographic
+1F635;Extended_Pictographic
+1F636;Extended_Pictographic
+1F637..1F640;Extended_Pictographic
+1F641..1F644;Extended_Pictographic
+1F645..1F64F;Extended_Pictographic
+1F680;Extended_Pictographic
+1F681..1F682;Extended_Pictographic
+1F683..1F685;Extended_Pictographic
+1F686;Extended_Pictographic
+1F687;Extended_Pictographic
+1F688;Extended_Pictographic
+1F689;Extended_Pictographic
+1F68A..1F68B;Extended_Pictographic
+1F68C;Extended_Pictographic
+1F68D;Extended_Pictographic
+1F68E;Extended_Pictographic
+1F68F;Extended_Pictographic
+1F690;Extended_Pictographic
+1F691..1F693;Extended_Pictographic
+1F694;Extended_Pictographic
+1F695;Extended_Pictographic
+1F696;Extended_Pictographic
+1F697;Extended_Pictographic
+1F698;Extended_Pictographic
+1F699..1F69A;Extended_Pictographic
+1F69B..1F6A1;Extended_Pictographic
+1F6A2;Extended_Pictographic
+1F6A3;Extended_Pictographic
+1F6A4..1F6A5;Extended_Pictographic
+1F6A6;Extended_Pictographic
+1F6A7..1F6AD;Extended_Pictographic
+1F6AE..1F6B1;Extended_Pictographic
+1F6B2;Extended_Pictographic
+1F6B3..1F6B5;Extended_Pictographic
+1F6B6;Extended_Pictographic
+1F6B7..1F6B8;Extended_Pictographic
+1F6B9..1F6BE;Extended_Pictographic
+1F6BF;Extended_Pictographic
+1F6C0;Extended_Pictographic
+1F6C1..1F6C5;Extended_Pictographic
+1F6CB;Extended_Pictographic
+1F6CC;Extended_Pictographic
+1F6CD..1F6CF;Extended_Pictographic
+1F6D0;Extended_Pictographic
+1F6D1..1F6D2;Extended_Pictographic
+1F6D5;Extended_Pictographic
+1F6D6..1F6D7;Extended_Pictographic
+1F6D8;Extended_Pictographic
+1F6D9;Extended_Pictographic
+1F6DA..1F6DB;Extended_Pictographic
+1F6DC;Extended_Pictographic
+1F6DD..1F6DF;Extended_Pictographic
+1F6E0..1F6E5;Extended_Pictographic
+1F6E9;Extended_Pictographic
+1F6EB..1F6EC;Extended_Pictographic
+1F6ED..1F6EF;Extended_Pictographic
+1F6F0;Extended_Pictographic
+1F6F3;Extended_Pictographic
+1F6F4..1F6F6;Extended_Pictographic
+1F6F7..1F6F8;Extended_Pictographic
+1F6F9;Extended_Pictographic
+1F6FA;Extended_Pictographic
+1F6FB..1F6FC;Extended_Pictographic
+1F6FD..1F6FF;Extended_Pictographic
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「503」））
+                  于（「小于」于「桶」于「504」）则
+                    『1F7DC..1F7DF;Extended_Pictographic
+1F7E0..1F7EB;Extended_Pictographic
+1F7EC..1F7EF;Extended_Pictographic
+1F7F0;Extended_Pictographic
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「504」））
+                    于（「小于」于「桶」于「505」）则
+                      『1F80C..1F80F;Extended_Pictographic
+1F848..1F84F;Extended_Pictographic
+1F85A..1F85F;Extended_Pictographic
+1F888..1F88F;Extended_Pictographic
+1F8AE..1F8AF;Extended_Pictographic
+1F8BC..1F8BF;Extended_Pictographic
+1F8C2..1F8CF;Extended_Pictographic
+1F8D9..1F8FF;Extended_Pictographic
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「505」））
+                      于（「小于」于「桶」于「506」）则
+                        『1F90C;Extended_Pictographic
+1F90D..1F90F;Extended_Pictographic
+1F910..1F918;Extended_Pictographic
+1F919..1F91E;Extended_Pictographic
+1F91F;Extended_Pictographic
+1F920..1F927;Extended_Pictographic
+1F928..1F92F;Extended_Pictographic
+1F930;Extended_Pictographic
+1F931..1F932;Extended_Pictographic
+1F933..1F93A;Extended_Pictographic
+1F93C..1F93E;Extended_Pictographic
+1F93F;Extended_Pictographic
+1F940..1F945;Extended_Pictographic
+1F947..1F94B;Extended_Pictographic
+1F94C;Extended_Pictographic
+1F94D..1F94F;Extended_Pictographic
+1F950..1F95E;Extended_Pictographic
+1F95F..1F96B;Extended_Pictographic
+1F96C..1F970;Extended_Pictographic
+1F971;Extended_Pictographic
+1F972;Extended_Pictographic
+1F973..1F976;Extended_Pictographic
+1F977..1F978;Extended_Pictographic
+1F979;Extended_Pictographic
+1F97A;Extended_Pictographic
+1F97B;Extended_Pictographic
+1F97C..1F97F;Extended_Pictographic
+1F980..1F984;Extended_Pictographic
+1F985..1F991;Extended_Pictographic
+1F992..1F997;Extended_Pictographic
+1F998..1F9A2;Extended_Pictographic
+1F9A3..1F9A4;Extended_Pictographic
+1F9A5..1F9AA;Extended_Pictographic
+1F9AB..1F9AD;Extended_Pictographic
+1F9AE..1F9AF;Extended_Pictographic
+1F9B0..1F9B9;Extended_Pictographic
+1F9BA..1F9BF;Extended_Pictographic
+1F9C0;Extended_Pictographic
+1F9C1..1F9C2;Extended_Pictographic
+1F9C3..1F9CA;Extended_Pictographic
+1F9CB;Extended_Pictographic
+1F9CC;Extended_Pictographic
+1F9CD..1F9CF;Extended_Pictographic
+1F9D0..1F9E6;Extended_Pictographic
+1F9E7..1F9FF;Extended_Pictographic
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「506」））
+                        于（「小于」于「桶」于「507」）则
+                          『1FA58..1FA5F;Extended_Pictographic
+1FA6E..1FA6F;Extended_Pictographic
+1FA70..1FA73;Extended_Pictographic
+1FA74;Extended_Pictographic
+1FA75..1FA77;Extended_Pictographic
+1FA78..1FA7A;Extended_Pictographic
+1FA7B..1FA7C;Extended_Pictographic
+1FA7D..1FA7F;Extended_Pictographic
+1FA80..1FA82;Extended_Pictographic
+1FA83..1FA86;Extended_Pictographic
+1FA87..1FA88;Extended_Pictographic
+1FA89;Extended_Pictographic
+1FA8A;Extended_Pictographic
+1FA8B..1FA8D;Extended_Pictographic
+1FA8E;Extended_Pictographic
+1FA8F;Extended_Pictographic
+1FA90..1FA95;Extended_Pictographic
+1FA96..1FAA8;Extended_Pictographic
+1FAA9..1FAAC;Extended_Pictographic
+1FAAD..1FAAF;Extended_Pictographic
+1FAB0..1FAB6;Extended_Pictographic
+1FAB7..1FABA;Extended_Pictographic
+1FABB..1FABD;Extended_Pictographic
+1FABE;Extended_Pictographic
+1FABF;Extended_Pictographic
+1FAC0..1FAC2;Extended_Pictographic
+1FAC3..1FAC5;Extended_Pictographic
+1FAC6;Extended_Pictographic
+1FAC7;Extended_Pictographic
+1FAC8;Extended_Pictographic
+1FAC9..1FACB;Extended_Pictographic
+1FACC;Extended_Pictographic
+1FACD;Extended_Pictographic
+1FACE..1FACF;Extended_Pictographic
+1FAD0..1FAD6;Extended_Pictographic
+1FAD7..1FAD9;Extended_Pictographic
+1FADA..1FADB;Extended_Pictographic
+1FADC;Extended_Pictographic
+1FADD;Extended_Pictographic
+1FADE;Extended_Pictographic
+1FADF;Extended_Pictographic
+1FAE0..1FAE7;Extended_Pictographic
+1FAE8;Extended_Pictographic
+1FAE9;Extended_Pictographic
+1FAEA;Extended_Pictographic
+1FAEB;Extended_Pictographic
+1FAEC..1FAEE;Extended_Pictographic
+1FAEF;Extended_Pictographic
+1FAF0..1FAF6;Extended_Pictographic
+1FAF7..1FAF8;Extended_Pictographic
+1FAF9..1FAFA;Extended_Pictographic
+1FAFB..1FAFF;Extended_Pictographic
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「508」））
+                          于（「小于」于「桶」于「512」）则
+                            『1FC00..1FFFD;Extended_Pictographic
+』
+                        否则
+                          『』
+也。
+
+「表情表2」乃化「整数」而「字符串」也。
+「表情表2」者会「桶」而
+  『』
+也。
+
+「表情表3」乃化「整数」而「字符串」也。
+「表情表3」者会「桶」而
+  『』
+也。
+
+「表情表4」乃化「整数」而「字符串」也。
+「表情表4」者会「桶」而
+  『』
+也。
+
+「表情表5」乃化「整数」而「字符串」也。
+「表情表5」者会「桶」而
+  『』
+也。
+
+「表情表6」乃化「整数」而「字符串」也。
+「表情表6」者会「桶」而
+  『』
+也。
+
+「表情表7」乃化「整数」而「字符串」也。
+「表情表7」者会「桶」而
+  『』
+也。
+
+「表情表8」乃化「整数」而「字符串」也。
+「表情表8」者会「桶」而
+  『』
+也。
+
+「表情表9」乃化「整数」而「字符串」也。
+「表情表9」者会「桶」而
+  『』
+也。
+
+「表情表10」乃化「整数」而「字符串」也。
+「表情表10」者会「桶」而
+  『』
+也。
+
+「表情表11」乃化「整数」而「字符串」也。
+「表情表11」者会「桶」而
+  『』
+也。
+
+「表情表12」乃化「整数」而「字符串」也。
+「表情表12」者会「桶」而
+  『』
+也。
+
+「表情表13」乃化「整数」而「字符串」也。
+「表情表13」者会「桶」而
+  『』
+也。
+
+「表情表14」乃化「整数」而「字符串」也。
+「表情表14」者会「桶」而
+  『』
+也。
+
+「表情表15」乃化「整数」而「字符串」也。
+「表情表15」者会「桶」而
+  『』
+也。
+
+「表情表16」乃化「整数」而「字符串」也。
+「表情表16」者会「桶」而
+  『』
+也。
+
+「表情表」乃化「整数」而「字符串」也。
+「表情表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「表情表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「表情表1」于「桶」否则
+      若「小于」于「桶」于「768」则「表情表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「表情表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「表情表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「表情表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「表情表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「表情表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「表情表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「表情表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「表情表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「表情表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「表情表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「表情表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「表情表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「表情表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「表情表16」于「桶」
+                                  否则
+                                    『』
+也。
