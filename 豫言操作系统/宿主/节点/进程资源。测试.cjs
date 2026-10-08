@@ -8,8 +8,7 @@ const 模块 = new WebAssembly.Module(文件.readFileSync(路径.join(宿主目�
 console.log('共享导出', WebAssembly.Module.exports(模块));
 console.log('共享导入', WebAssembly.Module.imports(模块));
 断言.ok(WebAssembly.Module.exports(模块).some(项 => 项.name === '内存' && 项.kind === 'memory'));
-process.env.YY_NODE_PROCESS_RESOURCE = 路径.join(宿主目录, 'yy进程资源共享.wasm');
-process.env.YY进程资源共享 = process.env.YY_NODE_PROCESS_RESOURCE;
+process.env.YY进程资源共享 = 路径.join(宿主目录, 'yy进程资源共享.wasm');
 const {查询进程资源} = require(路径.join(宿主目录, '进程资源.cjs'));
 const 果 = 查询进程资源(process.pid);
 console.log('真实进程资源', 果);
