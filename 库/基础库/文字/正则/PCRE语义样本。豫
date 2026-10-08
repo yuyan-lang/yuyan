@@ -1,0 +1,54 @@
+寻观「标准库」之书。
+
+「：汉语：固定5ebb40cc9e32132d829487c3a5fa945090de6a13实际ASCII相容主题。样本为模式、旗、原主题、解码主题、命中、捕获总数、捕获列、输入行号、输出行号、输出原行；捕获为编号、参与爻、文本、打印正文。文言：取固定5ebb40cc9e32132d829487c3a5fa945090de6a13之实ASCII相容文。样本次为式、旗、原主题、解文、命中、获总数、获列、入行序、出行序、出原行；获次为序、与爻、文、印辞。：」
+「PCRE语义捕获」即
+  「整数」
+  合「爻」
+  合「字符串」
+  合「字符串」
+也。
+
+「PCRE语义样本」即
+  「字符串」
+  合「字符串」
+  合「字符串」
+  合「字符串」
+  合「爻」
+  合「整数」
+  合（「列」于「PCRE语义捕获」）
+  合「整数」
+  合「整数」
+  合（「列」于「字符串」）
+也。
+
+「PCRE语义样本列」者（（「列」于「PCRE语义样本」）也（「列」【
+  『the quick brown fox』与『』与『    the quick brown fox』与『the quick brown fox』与「阳」与「一」
+    与（「列」【「零」与「阳」与『the quick brown fox』与『the quick brown fox』】）与「14」与「15」
+      与（「列」【『 0: the quick brown fox』】），
+      『the quick brown fox』与『』与『    The quick brown FOX』与『The quick brown FOX』与「阴」与「一」
+        与（「罄」授以「PCRE语义捕获」）与「17」与「20」与（「列」【『No match』】），
+        『The quick brown fox』与『i』与『    The quick brown FOX』与『The quick brown FOX』与「阳」与「一」
+          与（「列」【「零」与「阳」与『The quick brown FOX』与『The quick brown FOX』】）与「22」与「28」
+            与（「列」【『 0: The quick brown FOX』】），
+            『^(abc){1,2}zz』与『』与『    abcabczz』与『abcabczz』与「阳」与「二」
+              与（「列」【「零」与「阳」与『abcabczz』与『abcabczz』，「一」与「阳」与『abc』与『abc』】）与「74」
+                与「122」与（「列」【『 0: abcabczz』，『 1: abc』】），
+                『^(?!(ab)de|x)(abd)(f)』与『』与『    abdf』与『abdf』与「阳」与「四」
+                  与（「列」【
+                    「零」与「阳」与『abdf』与『abdf』，
+                    「一」与「阴」与『』与『<unset>』，
+                    「二」与「阳」与『abd』与『abd』，
+                    「三」与「阳」与『f』与『f』
+                  】）与「279」与「515」与（「列」【『 0: abdf』，『 1: <unset>』，『 2: abd』，『 3: f』】），
+                  『^\".*\"\s*(;.*)?$』与『』与『    \"1234\"』与『"1234"』与「阳」与「二」
+                    与（「列」【「零」与「阳」与『"1234"』与『"1234"』，「一」与「阴」与『』与『』】）与「290」与「540」
+                      与（「列」【『 0: "1234"』】），
+                      『^$』与『』与『    \』与『』与「阳」与「一」与（「列」【「零」与「阳」与『』与『』】）与「297」
+                        与「553」与（「列」【『 0: 』】），
+                        『^$』与『』与『    A non-empty line』与『A non-empty line』与「阴」与「一」
+                          与（「罄」授以「PCRE语义捕获」）与「299」与「556」与（「列」【『No match』】）
+】）
+）也。
+
+「PCRE原控制样本」者（（「列」于「字符串」）也（「列」【『\= Expect no match』，『\= Expect no match     』，『    』】）
+）也。
