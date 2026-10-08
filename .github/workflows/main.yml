@@ -630,8 +630,8 @@ jobs:
           fi
           gh release upload continuous-binaries "$RUNNER_TEMP/$package.tar.gz" --clobber
 
-  # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，备 FreeType，造豫言系统之器而成 BIOS/UEFI 混合之 ISO（引导与 ISO 之构皆豫言生之，不须 Limine 与 xorriso）；以 豫言操作系统/裸机/发行/系统版本.tsv 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
-  # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的编译器与豫构，装 FreeType，构建 yy豫言系统.wasm 并造 BIOS/UEFI 混合 ISO（引导程序与 ISO 结构都由豫言生成，不需要 Limine 与 xorriso）；按 豫言操作系统/裸机/发行/系统版本.tsv 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
+  # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成 BIOS/UEFI 混合之 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType）；以 豫言操作系统/裸机/发行/系统版本.tsv 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
+  # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的编译器与豫构，构建 yy豫言系统.wasm 并造 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType）；按 豫言操作系统/裸机/发行/系统版本.tsv 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
   os-release:
     name: 系统公测发行（x86-64 ISO）
     needs: bootstrap
@@ -658,12 +658,12 @@ jobs:
       - name: 解开本轮编译与构建工具
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
-      # 文言：控制台之字模生于构时，须 FreeType（libfreetype.so.6）；冒烟之试须 QEMU 与 OVMF。
-      # 汉语：构建时生成控制台字模要 FreeType（libfreetype.so.6）；冒烟测试要 QEMU 与 OVMF。
-      - name: 安装 FreeType、QEMU 与 OVMF
+      # 文言：冒烟之试须 QEMU 与 OVMF。
+      # 汉语：冒烟测试要 QEMU 与 OVMF。
+      - name: 安装 QEMU 与 OVMF
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends libfreetype6 qemu-system-x86 ovmf
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf
 
       # 文言：版之所出惟 豫言操作系统/裸机/发行/系统版本.tsv；文件名之版惟许 ASCII。
       # 汉语：版本号的唯一出处是 豫言操作系统/裸机/发行/系统版本.tsv；文件名版本只许 ASCII 字符。
