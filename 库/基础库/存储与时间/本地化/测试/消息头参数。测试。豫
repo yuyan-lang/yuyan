@@ -1,0 +1,71 @@
+寻观「标准库」之书。
+寻观「单元测试」之书。
+寻观「标准库」之「数据结构」之「特殊字符」之书。
+寻观「本地化」之「消息」之书。
+
+「：汉语：从公开PO读取与数量查询入口验证目录头完整参数名及内部词法边界，畸形复数头沿既有地区规则回退。
+文言：循公PO读口与数量查口验目录头全参数名及内词界，坏复数头循旧地区法退之。：」
+「头参数目录」乃化「字符串」而「消息目录」也。
+「头参数目录」者会「头」而
+  「读取便携消息」于（「串组合并」
+    于「列」
+      【『msgid ""
+msgstr "Plural-Forms: 』
+      ，「头」
+      ，『\n"
+msgid "apple"
+msgid_plural "apples"
+msgstr[0] "fruit"
+msgstr[1] "fruits"
+』
+      】）
+也。
+
+「断言串相等」
+  于『fruits』
+  于（「查数量复数消息」
+    于（「头参数目录」于『nplurals=1 0; plural=0;』）于『en』于『』于『apple』于『apples』于「二」）。
+「断言串相等」
+  于『fruits』
+  于（「查数量复数消息」
+    于（「头参数目录」于『nplurals=2; plural=0 0;』）于『en』于『』于『apple』于『apples』于「二」）。
+「断言串相等」
+  于『fruit』
+  于（「查数量复数消息」
+    于（「头参数目录」于『nplurals=2; plural=n < = 2;』）于『en』于『』于『apple』于『apples』于「一」）。
+「断言串相等」
+  于『fruits』
+  于（「查数量复数消息」
+    于（「头参数目录」于『xnplurals=1; nplurals=2; xplural=0; plural=1;』）于『en』于『』于『apple』于『apples』于「二」）。
+「断言串相等」
+  于『fruit』
+  于（「查数量复数消息」
+    于（「头参数目录」于『n plurals=2; plural=1;』）于『en』于『』于『apple』于『apples』于「一」）。
+「断言串相等」
+  于『fruits』
+  于（「查数量复数消息」
+    于（「头参数目录」于『 nplurals = 2 ; plural = n != 1 ; 』）于『en』于『』于『apple』于『apples』于「二」）。
+
+「空白头」者
+  「头参数目录」于（「串组合并」
+    于「列」
+      【『nplurals=2; plural=n』
+      ，（「字节转字符串」于「13」）
+      ，『!=』
+      ，（「字节转字符串」于「11」）
+      ，『1』
+      ，（「字节转字符串」于「12」）
+      ，『;』
+      】）
+也。
+
+「断言串相等」于『fruits』于（「查数量复数消息」于「空白头」于『en』于『』于『apple』于『apples』于「二」）。
+
+「编码子串头」者
+  「读取便携消息」
+    于『msgid ""
+msgstr "Content-Type: text/plain; xcharset=unknown; charset=UTF-8\n"
+msgid "apple" msgstr "fruit"
+』也。
+
+「断言串相等」于『fruit』于（「查消息」于「编码子串头」于『apple』）。
