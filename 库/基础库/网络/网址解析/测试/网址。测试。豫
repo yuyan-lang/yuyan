@@ -44,6 +44,7 @@
 「验绝对」于『http://[2001:0db8:0:0:0:0:0:1]/』于『http://[2001:db8::1]/』。
 「验绝对」于『http://[::ffff:192.0.2.1]/』于『http://[::ffff:c000:201]/』。
 「验绝对」于『https://example.org/a b?x y#z z』于『https://example.org/a%20b?x%20y#z%20z』。
+「验绝对」于『https://例子.测试/』于『https://xn--fsqu00a.xn--0zwm56d/』。
 「验绝对」于『https://example.org/a/./b/../c?x#y』于『https://example.org/a/c?x#y』。
 「验绝对」于『data:text/plain,hello#world』于『data:text/plain,hello#world』。
 「验相对」于『../c』于『https://example.org/c』。
@@ -79,5 +80,44 @@
 「验串」
   于『a=1&b=2』
   于（「查询序列化」于（「查询删除」于（「解析查询」于『a=1&b=2&a=3』）于『a』于（「可有」于『3』）））。
-「打印」于『网址阶段向量通过』。
 「验串」于『a=1&a=3&b=2』于（「查询序列化」于（「查询排序」于（「解析查询」于『b=2&a=1&a=3』）））。
+「验串」于『a%2Bb%20%E4%B8%AD』于（「编码网址成分」于『a+b 中』）。
+「验串」于『a+b 中』于（「解码网址成分」于『a+b%20%E4%B8%AD』）。
+「验串」于『[["a","one two"],["a","+"],["empty",""]]』于（「解析表单键值」于『a=one+two&a=%2B&empty』）。
+「验串」
+  于『https://example.org/a?k=new+value#fragment』
+  于（「设置网址查询参数」于『https://example.org/a?k=old&k=older#fragment』于『k』于『new value』）。
+「验串」于『/a?k=new+value#fragment』
+于（「设置网址查询参数」于『/a?k=old#fragment』于『k』于『new value』）。
+「验设置」乃化「字符串」而化「字符串」而化「字符串」而化「字符串」而「有」也。
+「验设置」者会「文」而会「名」而会「值」而会「期」而
+  鉴（「解析绝对」于「文」）而
+    有「可无」则
+      「发生事故」授以「有」于『属性设置根网址无效』
+    或有（「可有」于「址」）则
+      「验串」于「期」于（「网址序列化」于（「设置网址属性」于「址」于「名」于「值」））
+也。
+
+「验设置」于『foo://somehost/some/path』于『路径』于『』于『foo://somehost』。
+「验设置」于『foo:///some/path』于『路径』于『』于『foo://』。
+「验设置」于『foo:/some/path』于『路径』于『』于『foo:/』。
+「验设置」于『file:///some/path』于『路径』于『』于『file:///』。
+「验设置」于『https://example.org/old』于『路径』于『\new\path』于『https://example.org/new/path』。
+「验设置」于『foo://host/old』于『路径』于『\new\path』于『foo://host/\new\path』。
+「验任意根相对」乃化「字符串」而化「字符串」而化「字符串」而「有」也。
+「验任意根相对」者会「根文」而会「文」而会「期」而
+  鉴（「解析绝对」于「根文」）而
+    有「可无」则
+      「发生事故」授以「有」于『任意根网址无效』
+    或有（「可有」于「根」）则（
+      鉴（「解析相对」于「文」于「根」）而
+        有「可无」则
+          「发生事故」授以「有」于『任意根相对解析失败』
+        或有（「可有」于「址」）则
+          「验串」于「期」于（「网址序列化」于「址」）
+    ）
+也。
+
+「验任意根相对」于『foo://host』于『child』于『foo://host/child』。
+「验任意根相对」于『foo://』于『child』于『foo:///child』。
+「打印」于『网址阶段向量通过』。
