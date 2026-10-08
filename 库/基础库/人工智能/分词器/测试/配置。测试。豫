@@ -26,6 +26,21 @@
 也。
 
 「核验」
+  于『你|ab|é』
+  于（「段文」
+    于（「应用预分词器」
+      于（「结森解析」于『{"type":"Split","pattern":{"Regex":"😀|[0-9]+"},"behavior":"Removed"}』）
+      于『你😀ab12é』））。
+「核验」
+  于『你$1ab$1é』
+  于（「应用规范化器」
+    于（「结森解析」于『{"type":"Replace","pattern":{"Regex":"😀|[0-9]+"},"content":"$1"}』）
+    于『你😀ab12é』）。
+「核验」
+  于『|甲|😀|乙|』
+  于（「应用规范化器」于（「结森解析」于『{"type":"Replace","pattern":{"Regex":""},"content":"|"}』）于『甲😀乙』）。
+
+「核验」
   于『ab』
   于（「应用规范化器」
     于（「结森解析」于『{"type":"Sequence","normalizers":[{"type":"NFKC"},{"type":"Lowercase"},{"type":"Strip"}]}』）
