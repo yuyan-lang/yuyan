@@ -16,8 +16,9 @@ function 载入() {
     库 = new 外部.DynamicLibrary(process.platform === 'darwin' ? '/usr/lib/libSystem.B.dylib' : 'libc.so.6');
     const 调 = 库.getFunction('pread', {arguments: ['int32', 'pointer', 'uint64', 'int64'], return: 'int64'});
     let 实例;
-    const 接读 = (柄, 址, 长, 偏移) => Number(调(柄, 外部.getRawPointer(new Uint8Array(实例.exports.memory.buffer, 址, 长)), BigInt(长), 偏移));
+    const 接读 = (柄, 址, 长, 偏移) => Number(调(柄, 外部.getRawPointer(new Uint8Array(实例.exports.内存.buffer, 址, 长)), BigInt(长), 偏移));
     实例 = new WebAssembly.Instance(new WebAssembly.Module(文件系统.readFileSync(径)), {苹果: {pread: 接读}, 林纳克斯: {pread64: 接读}});
+    if (!(实例.exports.内存 instanceof WebAssembly.Memory)) throw Error('定位共享核心须导出内存');
     核 = 实例.exports;
   } catch { 核 = null; }
   return 核;
@@ -28,6 +29,6 @@ export function 共享文件定位读取(描述符, 偏移, 长度) {
   try {
     const 数 = 共核.定位读取(process.platform === 'darwin' ? 3 : 2, 描述符, 1024, 长度, Number(BigInt.asUintN(32, 偏移)), Number(偏移 >> 32n));
     if (数 < 0) return [8, new Uint8Array(), '文件定位读取失败'];
-    return 数 === 0 ? [9, new Uint8Array(), ''] : [0, new Uint8Array(共核.memory.buffer, 1024, 数).slice(), ''];
+    return 数 === 0 ? [9, new Uint8Array(), ''] : [0, new Uint8Array(共核.内存.buffer, 1024, 数).slice(), ''];
   } catch (错) { return [8, new Uint8Array(), String(错.message ?? 错)]; }
 }
