@@ -41,4 +41,27 @@
 「验异」于『{% macro f() %}{{ "varargs" }}{% endmacro %}{{ f(1) }}』于『宏位置参数过多』。
 「验异」于『{% macro f(a) %}{{ a.kwargs }}{% endmacro %}{{ f({"kwargs":1},2) }}』于『宏位置参数过多』。
 「验异」于『{% macro f(a) %}{{ a }}{% endmacro %}{{ f(1,a=2) }}』于『宏有未声明的具名参数』。
+「验」
+  于『{% macro f() %}{% set kwargs = {"x":2} %}{{ kwargs.x }}{% endmacro %}{{ f.catch_kwargs }}|{{ f() }}』于
+  『False|2』。
+「验」
+  于
+  『{% macro f() %}{{ kwargs.x }}{% set kwargs = {"x":2} %}{{ kwargs.x }}{% endmacro %}{{ f.catch_kwargs }}|{{ f(x=1) }}』
+    于『True|12』。
+「验」
+  于『{% macro f() %}{% for varargs in [1,2] %}{{ varargs }}{% endfor %}{% endmacro %}{{ f.catch_varargs }}|{{ f() }}』
+  于『False|12』。
+「验异」于『{% macro f() %}{% set kwargs = {} %}{{ kwargs }}{% endmacro %}{{ f(x=1) }}』于『宏有未声明的具名参数』。
+「验」于『{% macro f() %}{% block b %}{{ kwargs }}{% endblock %}{% endmacro %}{{ f.catch_kwargs }}』于『False』。
+「验异」于『{% macro f(a=1,b) %}{{ b }}{% endmacro %}』于『宏默认参数之后需要默认值』。
+「验异」于『{% macro f(caller) %}{{ caller() }}{% endmacro %}』于『宏显式caller参数需要默认值』。
+「验」于『{% macro f(caller=none) %}{{ caller() }}{% endmacro %}{% call f() %}甲{% endcall %}』于『甲』。
+「验」
+  于
+  『{% macro f() %}{{ caller }}|{{ caller.name }}|{{ caller.arguments }}|{{ caller.catch_kwargs }}|{{ caller.catch_varargs }}|{{ caller.caller }}|{{ caller() }}{% endmacro %}{% call f() %}甲{% endcall %}』
+    于『<Macro anonymous>|None|()|False|False|False|甲』。
+「验」
+  于
+  『{% macro f() %}{{ caller.arguments }}|{{ caller(1,x=2) }}{% endmacro %}{% call(a) f() %}{{ a }}{{ kwargs.x }}{% endcall %}』
+    于『('a',)|12』。
 「汇报结果」于「元」。
