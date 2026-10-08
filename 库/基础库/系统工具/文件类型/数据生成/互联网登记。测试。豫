@@ -1,0 +1,112 @@
+寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「特殊字符」之书。
+寻观「文件类型数据生成」之「互联网登记」之书。
+
+「核互联网规则」乃化「字符串」而化「字符串」而「有」也。
+「核互联网规则」者会「实」而会「期」而
+  若「串相等」于「实」于「期」则
+    「元」
+  否则
+    「发生事故」于（『IANA模板扩展向量不符，预期：』附「期」附『实值：』附「实」）
+也。
+
+「核互联网规则」
+  于（「互联网模板规则」于『application/json』于『File extension(s): .json』）
+  于（『0:application/json:*.json』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/test』
+    于（『File Extensions: .a, .tar.gz』附「新行」附『Macintosh file type: TEXT』））
+    于（『0:application/test:*.a』附「新行」附『0:application/test:*.tar.gz』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」于『text/test』于（『Magic number(s): .notextension』附「新行」附『File extension(s): none』））
+  于『』。
+「核互联网规则」
+  于（「互联网模板规则」于『image/jpeg』于『3. File extension(s): jpg, jpeg』）
+  于（『0:image/jpeg:*.jpg』附「新行」附『0:image/jpeg:*.jpeg』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『image/svg+xml』
+    于（『File extension(s):』附「新行」附『svg』附「新行」附『Note that svgz is an alias.』））
+    于（『0:image/svg+xml:*.svg』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」于『message/global』于『File extension(s): The extension ".u8msg" is suggested.』）
+  于（『0:message/global:*.u8msg』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」于『haptics/ivs』于『File extension(s): Haptic file extensions used for IVS files: .ivs』）
+  于（『0:haptics/ivs:*.ivs』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『video/vnd.nokia.mp4vr』
+    于『1. Deprecated alias names for this type: None 2. Magic number(s): N/A 3. File extension(s): mp4 4. Macintosh file type code: N/A 5. Object Identifiers: N/A』）
+    于（『0:video/vnd.nokia.mp4vr:*.mp4』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『multipart/vnd.bint.med-plus』于『3. File extension(s): bmed 4. Macintosh file type code: N/A 5. Object』）
+    于（『0:multipart/vnd.bint.med-plus:*.bmed』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『message/ohttp-req』
+    于（『File extension(s): N/A』附「回车换行」附「回车换行」附『(file created 2007-04-27)』））
+    于『』。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/test』
+    于（『File extension(s): .valid』附「回车换行」附『   』附「回车换行」附
+      『File extension history: created 2007-04-27』））
+      于（『0:application/test:*.valid』附「新行」）。
+「核互联网规则」于（「互联网模板规则」于『audio/vnd.dlna.adts』于『File extension(s): Undefined』）于『』。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/linkset』
+    于（『File extension(s): This media type does not propose a specific』附「新行」附『extension.』））于『』。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/linkset+json』
+    于（『File extension(s): JSON documents often use ".json" as the file』附「新行」附
+      『extension, and this media type does not propose a specific』附「新行」附
+      『extension other than this generic one.』））于（『0:application/linkset+json:*.json』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/vnd.lotus-notes』
+    于（『File extension(s): nsf (database)』附「新行」附『ntf (template)』附「新行」附『ns4 (database older form)』））
+    于（『0:application/vnd.lotus-notes:*.nsf』附「新行」附『0:application/vnd.lotus-notes:*.ntf』附「新行」附
+      『0:application/vnd.lotus-notes:*.ns4』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『image/jpx』
+    于（『File extension(s): jpf is declared at http://www.nist.gov/nics/.』附「新行」附
+      『jpx is also an acceptable file extension, although it is not』附「新行」附
+      『recommended for files on a desktop computer that are not directly』附「新行」附
+      『associated with a MIME media type』））于（『0:image/jpx:*.jpf』附「新行」附『0:image/jpx:*.jpx』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/vnd.koan』
+    于（『File extension(s): .skd - SSEYO Koan Design file, authored using SSEYO Koan Pro.』附「新行」附
+      『.skp - SSEYO Koan Play file - an encrypted version of an .skd file,』附「新行」附
+      『created from SSEYO Koan Pro, which can be played through the』附「新行」附
+      『Koan Web and Koan Plugins. SKP files cannot be loaded by Koan』））
+      于（『0:application/vnd.koan:*.skd』附「新行」附『0:application/vnd.koan:*.skp』附「新行」附
+        『0:application/vnd.koan:*.skd』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『text/troff』
+    于（『File extension(s): Files do not require any specific "extension".』附「新行」附
+      『Many are in use as a convenience for mechanized processing of』附「新行」附
+        『files, some associated with specific macro packages or』附「新行」附
+        『of indicating subtleties such as proportion of textual (as』附「新行」附
+        『specified in [I17.RFC2183] as amended by [N5.RFC2231] and』））
+        于『』。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/vnd.veryant.thin』
+    于（『File extension(s): istc, isws:』附「新行」附
+      『istc is the configuration file for isclient.exe and isws is the』
+        附「新行」附『configuration file for isupdater.exe. Both are ASCII files like』附「新行」附
+        『java property that contains configuration settings useful to』附「新行」附
+        『execute isclient.exe and isupdater.exe respectively.』））
+        于（『0:application/vnd.veryant.thin:*.istc』附「新行」附『0:application/vnd.veryant.thin:*.isws』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」于『application/pkcs7-mime』于『File extension(s): See Section 3.2.1 of RFC 8551』）于『』。
+「核互联网规则」于（「互联网模板规则」于『application/httphone』于『File extension(s): do not apply』）于『』。
+「打印行」于『IANA注册模板独立向量通过』。
