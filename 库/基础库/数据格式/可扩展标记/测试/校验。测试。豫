@@ -1,0 +1,56 @@
+寻观「标准库」之书。
+寻观「可扩展标记」之书。
+寻观「标准库」之「语言核心」之「异常」之书。
+
+「验拒」乃化「字符串」而「有」也。
+「验拒」者会「文」而
+  虑「拒」者
+    「尝试运行」授以「爻」
+    于（会「无」而虑「根」者「校验文档」于「文」而
+      「阴」）于（会「错」而「阳」）而
+        若「拒」则「元」否则「发生事故」于（『DTD应拒绝：』附「文」）
+也。
+
+「验过」乃化「字符串」而「有」也。
+「验过」者会「文」而
+  虑「根」者「校验文档」于「文」而
+  「元」
+也。
+
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 (子+)><!ELEMENT 子 EMPTY>]><根><子/><子/></根>』。
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 (#PCDATA|子)*><!ELEMENT 子 EMPTY>]><根>甲<子/>乙</根>』。
+「验过」
+  于
+  『<!DOCTYPE 根 [<!ELEMENT 根 (子*)><!ELEMENT 子 EMPTY><!ATTLIST 子 号 ID #REQUIRED 引 IDREF #IMPLIED>]><根><子 号="甲"/><子 号="乙" 引="甲"/></根>』。
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 属 (甲|乙) "甲">]><根/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY>]><根> </根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 (子)><!ELEMENT 子 EMPTY>]><根/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 (子)><!ELEMENT 子 EMPTY>]><根>甲<子/></根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 属 CDATA #REQUIRED>]><根/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 属 CDATA #FIXED "甲">]><根 属="乙"/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY>]><根 属="值"/>』。
+「验拒」
+  于
+  『<!DOCTYPE 根 [<!ELEMENT 根 (子*)><!ELEMENT 子 EMPTY><!ATTLIST 子 号 ID #REQUIRED>]><根><子 号="甲"/><子 号="甲"/></根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 引 IDREF #IMPLIED>]><根 引="甲"/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 属 (甲|乙) #IMPLIED>]><根 属="丙"/>』。
+「验拒」于『<!DOCTYPE 甲 [<!ELEMENT 根 EMPTY>]><根/>』。
+「打印行」于『内部DTD校验向量通过』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 (子|子)><!ELEMENT 子 EMPTY>]><根><子/></根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 (子*,子)><!ELEMENT 子 EMPTY>]><根><子/></根>』。
+「验拒」
+  于
+  『<!DOCTYPE 根 [<!ELEMENT 根 ((甲,乙)|(甲,丙))><!ELEMENT 甲 EMPTY><!ELEMENT 乙 EMPTY><!ELEMENT 丙 EMPTY>]><根><甲/><乙/></根>』。
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 (甲,乙,甲)><!ELEMENT 甲 EMPTY><!ELEMENT 乙 EMPTY>]><根><甲/><乙/><甲/></根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 甲 ID #IMPLIED 乙 ID #IMPLIED>]><根/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 号 ID "甲">]><根/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 属 (甲|乙) "丙">]><根/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY>]><根><![CDATA[]]></根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ENTITY 节 "<![CDATA[]]>">]><根>&节;</根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY>]><根><!--注--><?令?></根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ENTITY 空 "">]><根>&空;</根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 (子*)><!ELEMENT 子 EMPTY>]><根><![CDATA[ ]]></根>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 (子*)><!ELEMENT 子 EMPTY>]><根>&#x20;</根>』。
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 (子*)><!ELEMENT 子 EMPTY><!ENTITY 空白 "&#x20;">]><根>&空白;</根>』。
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 号 ID #IMPLIED><!ATTLIST 根 号 ID #IMPLIED>]><根 号="甲"/>』。
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 属 CDATA "甲"><!ATTLIST 根 属 CDATA #FIXED "乙">]><根/>』。
