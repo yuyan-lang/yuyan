@@ -48,7 +48,7 @@
 「验」于『{{ items|first }}{{ items|last }}』于『甲乙』。
 「验」于『{{ -2|abs }}』于『2』。
 「验」于『{{ yes|string }}』于『True』。
-「验」于『{{ name|tojson }}』于『"豫言"』。
+「验」于『{{ name|tojson }}』于『"\u8c6b\u8a00"』。
 「验」
   于
   『<|im_start|>user「：换行：」{{ name }}<|im_end|>「：换行：」<|im_start|>assistant「：换行：」{% if no %}<think>{% endif %}』
