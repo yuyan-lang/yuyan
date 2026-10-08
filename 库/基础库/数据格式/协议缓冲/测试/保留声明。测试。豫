@@ -1,0 +1,16 @@
+寻观「标准库」之书。
+寻观「协议缓冲」之书。
+
+「正常」者
+  「解析协议文件」
+    于
+    『syntax="proto3"; message M { reserved 2 to 5; reserved "old"; int32 value=1; } enum E { reserved -5 to -1; reserved "OLD"; ZERO=0; }』
+也。
+
+若「等零」于（「正常」中「零」）则「元」否则「发生事故」授以「有」
+  于『有效保留名字与号段须接受』。
+「错误」者「解析协议文件」于『syntax="proto3"; message M { reserved 2 to 5; int32 value=3; }』也。
+
+若「非」于（「等零」于（「错误」中「零」））则「元」否则「发生事故」授以「有」
+  于『字段占用保留号段须拒绝』。
+「打印行」于『保留声明基本正常与错误两项成功』。
