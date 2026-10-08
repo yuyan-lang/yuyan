@@ -25,13 +25,15 @@ function 载入() {
     if (!径) return 核;
     库 = new 外部.DynamicLibrary('/usr/lib/libSystem.B.dylib');
     const 调 = 库.getFunction('proc_pid_rusage', {arguments: ['int32', 'int32', 'pointer'], return: 'int32'});
-    let 实例;
+    let 实例, 内存;
     实例 = new WebAssembly.Instance(new WebAssembly.Module(文件.readFileSync(径)), {苹果: {
       proc_pid_rusage: (号, 类, 址) => {
-        const 缓 = new Uint8Array(实例.exports.memory.buffer, 址, 96);
+        const 缓 = new Uint8Array(内存.buffer, 址, 96);
         return 调(号, 类, 外部.getRawPointer(缓)) === 0 ? 0 : -1;
       }
     }});
+    内存 = 实例.exports.内存;
+    if (!(内存 instanceof WebAssembly.Memory)) return 核;
     核 = 实例.exports;
     process.env.YY进程资源共享 = 径;
   } catch { 核 = null; }
