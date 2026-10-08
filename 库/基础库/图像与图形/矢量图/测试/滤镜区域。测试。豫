@@ -1,0 +1,94 @@
+寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「字节串」之书。
+寻观「可扩展标记」之书。
+寻观「矢量图」之「文档」之书。
+寻观「矢量图」之「滤镜区域」之书。
+寻「图像编解码」之书。
+
+「源」者「渲染矢量图」于『<svg><rect width="4" height="1" fill="red"/></svg>』于「4」于「1」也。
+
+「定义」者
+  「解析」
+    于
+    『<filter x="0" y="0" width="0.5" height="1" primitiveUnits="objectBoundingBox" color-interpolation-filters="sRGB"><feOffset dx="0.25"/></filter>』
+也。
+
+「图」者
+  「运行区域滤镜」于「定义」于「源」于（「0.0」与「0.0」与「4.0」与「1.0」）
+  于（「0.0」与「0.0」与「4.0」与「1.0」）
+也。
+
+「像素」者「图像编解码」之「图像像素」于「图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「像素」于「3」）于「0」）
+  于（「且」
+    于（「等于」于（「字节串取字节」于「像素」于「7」）于「255」）
+    于（「等于」于（「字节串取字节」于「像素」于「11」）于「0」））则「元」
+否则
+  「发生事故」于『滤镜包围框偏移或区域裁剪错误』。
+「打印行」于『滤镜区域与包围框单位测试通过』。
+
+「主图」者
+  「渲染矢量图」
+    于
+    『<svg><defs><filter id="滤" filterUnits="userSpaceOnUse" x="0" y="0" width="4" height="1" color-interpolation-filters="sRGB"><feOffset dx="1"/></filter></defs><rect width="1" height="1" fill="red" filter="url(#滤)"/></svg>』
+      于「4」于「1」
+也。
+
+「主像素」者「图像编解码」之「图像像素」于「主图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「主像素」于「3」）于「0」）
+  于（「等于」于（「字节串取字节」于「主像素」于「7」）于「255」）则「元」
+否则
+  「发生事故」于『主SVG滤镜属性绑定错误』。
+
+「子域定义」者
+  「解析」
+    于
+    『<filter filterUnits="userSpaceOnUse" x="0" y="0" width="4" height="1" color-interpolation-filters="sRGB"><feOffset x="0" y="0" width="1" height="1" result="截"/><feOffset in="截" dx="1"/></filter>』
+也。
+
+「子域图」者
+  「运行区域滤镜」于「子域定义」于「源」于（「0.0」与「0.0」与「4.0」与「1.0」）
+  于（「0.0」与「0.0」与「4.0」与「1.0」）
+也。
+
+「子域像素」者「图像编解码」之「图像像素」于「子域图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「子域像素」于「7」）于「255」）
+  于（「等于」于（「字节串取字节」于「子域像素」于「11」）于「0」）则
+    「元」
+否则
+  「发生事故」于『滤镜原语子区域必须裁剪后存命名结果』。
+
+「缩图」者
+  「渲染矢量图」
+    于
+    『<svg><defs><filter id="滤" filterUnits="userSpaceOnUse" x="0" y="0" width="2" height="1" color-interpolation-filters="sRGB"><feOffset dx="1"/></filter></defs><g transform="scale(2)"><rect width="1" height="1" fill="red" filter="url(#滤)"/></g></svg>』
+      于「4」于「2」
+也。
+
+「缩像素」者「图像编解码」之「图像像素」于「缩图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「缩像素」于「7」）于「0」）
+  于（「等于」于（「字节串取字节」于「缩像素」于「11」）于「255」）则「元」
+否则
+  「发生事故」于『滤镜用户偏移应乘元素缩放』。
+「旋图」者
+  「渲染矢量图」
+    于
+    『<svg><defs><filter id="滤" filterUnits="userSpaceOnUse" x="0" y="0" width="2" height="1" color-interpolation-filters="sRGB"><feOffset dx="1"/></filter></defs><g transform="translate(3 0) rotate(90)"><rect width="1" height="1" fill="red" filter="url(#滤)"/></g></svg>』
+      于「4」于「4」
+也。
+
+「旋像素」者「图像编解码」之「图像像素」于「旋图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「旋像素」于「11」）于「0」）
+  于（「等于」于（「字节串取字节」于「旋像素」于「27」）于「255」）则「元」
+否则
+  「发生事故」于『滤镜用户偏移与区域应随元素旋转』。

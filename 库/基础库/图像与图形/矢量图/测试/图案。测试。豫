@@ -1,0 +1,63 @@
+寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「字节串」之书。
+寻观「矢量图」之「文档」之书。
+寻「图像编解码」之书。
+
+「图」者
+  「渲染矢量图」
+    于
+    『<svg><defs><pattern id="纹" width="0.5" height="1"><rect width="1" height="2" fill="green"/></pattern></defs><rect width="4" height="2" fill="url(#纹)"/></svg>』
+      于「4」于「2」
+也。
+
+「像素」者「图像编解码」之「图像像素」于「图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「像素」于「3」）于「255」）
+  于（「且」
+    于（「等于」于（「字节串取字节」于「像素」于「7」）于「0」）
+    于（「且」
+      于（「等于」于（「字节串取字节」于「像素」于「11」）于「255」）
+      于（「等于」于（「字节串取字节」于「像素」于「15」）于「0」）））则「元」
+否则
+  「发生事故」于『主SVG包围框图案瓦片重复错误』。
+「变图」者
+  「渲染矢量图」
+    于
+    『<svg><defs><pattern id="纹" patternUnits="userSpaceOnUse" width="2" height="2" patternTransform="translate(1 0)"><rect width="1" height="2" fill="green"/></pattern></defs><rect width="4" height="2" fill="url(#纹)"/></svg>』
+      于「4」于「2」
+也。
+
+「变像素」者「图像编解码」之「图像像素」于「变图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「变像素」于「3」）于「0」）
+  于（「等于」于（「字节串取字节」于「变像素」于「7」）于「255」）则「元」
+否则
+  「发生事故」于『主SVG图案变换采样相位错误』。
+「打印行」于『基本图案瓦片与变换测试通过』。
+
+「承图」者
+  「渲染矢量图」
+    于
+    『<svg><defs><pattern id="原" patternUnits="userSpaceOnUse" width="2" height="2" viewBox="0 0 4 4"><rect width="2" height="4" fill="green"/></pattern><pattern id="承" href="#原" patternTransform="translate(1 0)"/></defs><rect width="4" height="2" fill="url(#承)"/></svg>』
+      于「4」于「2」
+也。
+
+「承像素」者「图像编解码」之「图像像素」于「承图」也。
+
+若「且」
+  于（「等于」于（「字节串取字节」于「承像素」于「3」）于「0」）
+  于（「等于」于（「字节串取字节」于「承像素」于「7」）于「255」）则「元」
+否则
+  「发生事故」于『图案模板视框与本属性覆盖错误』。
+「环图」者
+  「渲染矢量图」
+    于
+    『<svg><defs><pattern id="纹" patternUnits="userSpaceOnUse" width="2" height="2"><rect width="2" height="2" fill="url(#纹)"/></pattern></defs><rect width="4" height="2" fill="url(#纹)"/></svg>』
+      于「4」于「2」
+也。
+
+「环像素」者「图像编解码」之「图像像素」于「环图」也。
+
+若「等于」于（「字节串取字节」于「环像素」于「3」）于「0」则「元」否则「发生事故」于『图案内容自引用须终止并呈透明』。
