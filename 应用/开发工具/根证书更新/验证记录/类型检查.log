@@ -1,0 +1,348 @@
+[2026-10-08 13:56:54] 当前路径：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/yy根更新链
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | 运行 1/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 1
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 1/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 2/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 3/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 2
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 3/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 4/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 5/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 6/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 7/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 8/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 9/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 10/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 3
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 10/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 11/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 12/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 13/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 14/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 15/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 16/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 48769 | 退出 0 | 运行 15/24 | 已完成 4
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 16/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 17/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 18/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 19/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 20/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 21/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 22/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 48769 | 退出 0 | 运行 21/24 | 已完成 5
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 22/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 23/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 6
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 7
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 8
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 9
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 10
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 11
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 12
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 13
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 14
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 15
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 16
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 17
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 18
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 19
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 20
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 21
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 22
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 23
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 25
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 26
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 27
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 28
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 29
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 30
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 31
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 32
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 33
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 34
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 35
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 48769 | 退出 0 | 运行 23/24 | 已完成 36
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 48769 | 退出 0 | 运行 22/24 | 已完成 37
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 48769 | 退出 0 | 运行 21/24 | 已完成 38
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 48769 | 退出 0 | 运行 20/24 | 已完成 39
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 48769 | 退出 0 | 运行 19/24 | 已完成 40
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 48769 | 退出 0 | 运行 18/24 | 已完成 41
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 48769 | 退出 0 | 运行 17/24 | 已完成 42
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 18/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 48769 | 退出 0 | 运行 17/24 | 已完成 43
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 18/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 48769 | 退出 0 | 运行 17/24 | 已完成 44
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 48769 | 退出 0 | 运行 16/24 | 已完成 45
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 48769 | 退出 0 | 运行 15/24 | 已完成 46
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 48769 | 退出 0 | 运行 14/24 | 已完成 47
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 48769 | 退出 0 | 运行 13/24 | 已完成 48
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 48769 | 退出 0 | 运行 12/24 | 已完成 49
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 48769 | 退出 0 | 运行 11/24 | 已完成 50
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 48769 | 退出 0 | 运行 10/24 | 已完成 51
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 52
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 10/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 53
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 54
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 55
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 8/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 9/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 10/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 11/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 12/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 48769 | 退出 0 | 运行 11/24 | 已完成 56
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 48769 | 退出 0 | 运行 10/24 | 已完成 57
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 58
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 59
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 60
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 61
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 62
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 63
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 5/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 6/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 7/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 8/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 9/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 10/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 64
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 10/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 65
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 66
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 67
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 68
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 69
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 6/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 7/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 70
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 9/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 10/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 71
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 72
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 73
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 74
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 75
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 76
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 77
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 78
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 3/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 4/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 5/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 6/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 7/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 8/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 9/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 79
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 9/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 80
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 9/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 10/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 11/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 12/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 13/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 14/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 15/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 48769 | 退出 0 | 运行 14/24 | 已完成 81
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 15/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 48769 | 退出 0 | 运行 14/24 | 已完成 82
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 15/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 48769 | 退出 0 | 运行 14/24 | 已完成 83
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 48769 | 退出 0 | 运行 13/24 | 已完成 84
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 48769 | 退出 0 | 运行 12/24 | 已完成 85
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 48769 | 退出 0 | 运行 11/24 | 已完成 86
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 48769 | 退出 0 | 运行 10/24 | 已完成 87
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 88
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 10/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 11/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 48769 | 退出 0 | 运行 10/24 | 已完成 89
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 90
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 10/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 11/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 48769 | 退出 0 | 运行 10/24 | 已完成 91
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 92
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 93
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 94
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 95
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 96
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 97
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 9/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 98
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 9/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 99
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 9/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 10/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 100
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 10/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 101
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 102
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 9/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 10/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 103
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 104
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 105
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 9/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 106
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 107
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 8/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 108
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 8/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 9/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 10/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 11/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 48769 | 退出 0 | 运行 10/24 | 已完成 109
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 48769 | 退出 0 | 运行 9/24 | 已完成 110
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 111
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 112
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 9/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 48769 | 退出 0 | 运行 8/24 | 已完成 113
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 114
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 115
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 116
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 6/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 7/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 8/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 117
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 118
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 119
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 120
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 6/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 121
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 6/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 8/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 122
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 123
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 8/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 124
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 125
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 126
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 127
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 5/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 6/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 128
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 8/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 48769 | 退出 0 | 运行 7/24 | 已完成 129
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 130
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 131
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 7/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 48769 | 退出 0 | 运行 6/24 | 已完成 132
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 133
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 134
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 135
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 4/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 5/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 6/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 48769 | 退出 0 | 运行 5/24 | 已完成 136
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 137
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 138
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 4/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 139
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 4/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 5/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 140
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 5/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 141
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 5/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 142
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 143
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 4/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 144
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 4/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 5/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 48769 | 退出 0 | 运行 4/24 | 已完成 145
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 146
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 4/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 147
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 148
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 48769 | 退出 0 | 运行 1/24 | 已完成 149
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 2/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 48769 | 退出 0 | 运行 1/24 | 已完成 150
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 2/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 48769 | 退出 0 | 运行 1/24 | 已完成 151
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 2/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 3/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 4/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 152
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 4/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 153
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 4/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 154
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 4/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 155
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 4/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 48769 | 退出 0 | 运行 3/24 | 已完成 156
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 157
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 3/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 158
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 3/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 159
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | 运行 3/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 160
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 48769 | 退出 0 | 运行 1/24 | 已完成 161
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 2/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 48769 | 退出 0 | 运行 1/24 | 已完成 162
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 2/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 3/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 48769 | 退出 0 | 运行 2/24 | 已完成 163
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 48769 | 退出 0 | 运行 1/24 | 已完成 164
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 165
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 1/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 166
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 1/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 167
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 1/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 168
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 1/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 169
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 1/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 170
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | 运行 1/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 171
+[启动] exec-gen：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | 运行 1/24
+[完成] 最终链接：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/入口。豫 | PID 48769 | 退出 0 | 运行 0/24 | 已完成 172
+[2026-10-08 13:56:55] 当前路径：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/yy根更新链
+YY_BUILD_TASK_STATS	{"模块准备毫秒":0,"执行毫秒":5,"宿主调用数":0}
+
