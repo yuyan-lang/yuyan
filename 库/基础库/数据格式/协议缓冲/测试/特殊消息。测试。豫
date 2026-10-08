@@ -1,0 +1,93 @@
+寻观「标准库」之书。
+寻观「标准库」之「操作系统」之「文件系统」之书。
+寻观「协议缓冲」之「协议文件」之书。
+寻观「协议缓冲」之「结森映射」之书。
+寻观「结森工具」之「结森数据结构」之书。
+寻观「结森工具」之「结森解析」之书。
+
+「根路径」者『库/基础库/数据格式/协议缓冲/测试/样例/』也。
+
+「读模式」乃化「字符串」而「字符串」也。
+「读模式」者会「名」而
+  「读文件」于（「字符串拼接」于「根路径」于「名」）
+也。
+
+「模式果」者
+  「解析协议文件组」
+    于『根.proto』
+    于（「列」
+          【『根.proto』
+  与
+            『syntax="proto3"; import "wrappers.proto"; import "struct.proto"; import "any.proto"; import "timestamp.proto"; import "duration.proto"; import "field_mask.proto"; message Root { google.protobuf.Value value = 1; repeated google.protobuf.Value values = 2; google.protobuf.ListValue list = 3; google.protobuf.Any any = 4; }』
+          ，『wrappers.proto』与（「读模式」于『特殊包装模式.proto』）
+          ，『struct.proto』与（「读模式」于『特殊结构模式.proto』）
+          ，『any.proto』与（「读模式」于『特殊任意模式.proto』）
+          ，『timestamp.proto』与（「读模式」于『特殊时间模式.proto』）
+          ，『duration.proto』与（「读模式」于『特殊时长模式.proto』）
+          ，『field_mask.proto』与（「读模式」于『特殊路径模式.proto』）
+          】）
+也。
+
+若「等零」于（「模式果」中「零」）则
+  「打印行」于『官方WKT六模式导入成功』
+否则
+  「发生事故」授以「有」于『官方WKT模式组解析失败』。
+「文件」者「模式果」中「一」也。
+
+「验往返」乃化「字符串」而化「字符串」而化「字符串」而「有」也。
+「验往返」者会「型」而会「输入文」而会「期望文」而
+  虑「值」者「结森解析」于「输入文」而
+  虑「果」者「结森转消息」于「文件」于「型」于「值」而
+  若「非」于（「等零」于（「果」中「零」））则
+    「发生事故」授以「有」于（「字符串拼接」于『WKT编码失败：』于「型」）
+  否则
+    虑「再果」者「消息转结森」于「文件」于「型」于（「果」中「一」）而
+    若「且」
+      于（「等零」于（「再果」中「零」））
+      于（「字符串相等吗」于（「结森表示」于（「再果」中「一」））于（「结森表示」于（「结森解析」于「期望文」）））则
+        「打印行」于（「字符串拼接」于『WKT往返成功：』于「型」）
+    否则
+      「发生事故」授以「有」于（「字符串拼接」于『WKT投影不合：』于「型」）
+也。
+
+「验往返」于『google.protobuf.Int64Value』于『"9223372036854775807"』于『"9223372036854775807"』。
+「验往返」于『google.protobuf.UInt64Value』于『"18446744073709551615"』于『"18446744073709551615"』。
+「验往返」于『google.protobuf.Int32Value』于『-2147483648』于『-2147483648』。
+「验往返」于『google.protobuf.UInt32Value』于『4294967295』于『4294967295』。
+「验往返」于『google.protobuf.BoolValue』于『true』于『true』。
+「验往返」于『google.protobuf.StringValue』于『"文字😀"』于『"文字😀"』。
+「验往返」于『google.protobuf.BytesValue』于『"AP8="』于『"AP8="』。
+「验往返」于『google.protobuf.DoubleValue』于『"NaN"』于『"NaN"』。
+「验往返」于『google.protobuf.FloatValue』于『1.5』于『1.5』。
+「验往返」
+  于『google.protobuf.Struct』
+  于『{"a":null,"b":[true,"x",3.5],"c":{"d":false}}』于『{"a":null,"b":[true,"x",3.5],"c":{"d":false}}』。
+「验往返」于『google.protobuf.Value』于『null』于『null』。
+「验往返」于『google.protobuf.ListValue』于『[null,[1,2],{"x":"y"}]』于『[null,[1,2],{"x":"y"}]』。
+「验往返」
+  于『google.protobuf.Timestamp』于『"2000-02-29T12:34:56.123456789+08:00"』于『"2000-02-29T04:34:56.123456789Z"』。
+「验往返」于『google.protobuf.Duration』于『"-1.000001s"』于『"-1.000001s"』。
+「验往返」于『google.protobuf.FieldMask』于『"fooBar,baz.quxQuux"』于『"fooBar,baz.quxQuux"』。
+「验往返」
+  于『google.protobuf.Any』
+  于『{"@type":"type.googleapis.com/google.protobuf.Timestamp","value":"1970-01-01T00:00:00Z"}』
+  于『{"@type":"type.googleapis.com/google.protobuf.Timestamp","value":"1970-01-01T00:00:00Z"}』。
+「验往返」
+  于『Root』
+  于『{"value":null,"values":[null,[1,2]],"list":[[1],[2,3]]}』
+  于『{"value":null,"values":[null,[1,2]],"list":[[1],[2,3]]}』。
+
+「验官方编码」乃化「字符串」而化「字符串」而化「字符串」而「有」也。
+「验官方编码」者会「型」而会「样例名」而会「期望文」而
+  虑「串」者「读文件字节串」于（「字符串拼接」于「根路径」于「样例名」）而
+  虑「果」者「消息转结森」于「文件」于「型」于「串」而
+  若「且」
+    于（「等零」于（「果」中「零」））
+    于（「字符串相等吗」于（「结森表示」于（「果」中「一」））于（「结森表示」于（「结森解析」于「期望文」）））则
+      「打印行」于（「字符串拼接」于『WKT官方原编码成功：』于「型」）
+  否则
+    「发生事故」授以「有」于（「字符串拼接」于『WKT官方原编码不合：』于「型」）
+也。
+
+「验官方编码」于『google.protobuf.Timestamp』于『特殊时间编码.bin』于『"1970-01-01T00:00:00.123456789Z"』。
+「验官方编码」于『google.protobuf.Duration』于『特殊时长编码.bin』于『"-1.000001s"』。
