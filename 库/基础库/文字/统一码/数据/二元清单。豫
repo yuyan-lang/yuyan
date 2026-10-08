@@ -1,0 +1,2655 @@
+寻观「标准库」之书。
+
+「二元清单表0」乃化「整数」而「字符串」也。
+「二元清单表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『0009..000D;White_Space
+0020;White_Space
+0085;White_Space
+00A0;White_Space
+002D;Dash
+002D;Hyphen
+00AD;Hyphen
+0022;Quotation_Mark
+0027;Quotation_Mark
+00AB;Quotation_Mark
+00BB;Quotation_Mark
+0021;Terminal_Punctuation
+002C;Terminal_Punctuation
+002E;Terminal_Punctuation
+003A..003B;Terminal_Punctuation
+003F;Terminal_Punctuation
+005E;Other_Math
+0030..0039;Hex_Digit
+0041..0046;Hex_Digit
+0061..0066;Hex_Digit
+0030..0039;ASCII_Hex_Digit
+0041..0046;ASCII_Hex_Digit
+0061..0066;ASCII_Hex_Digit
+005E;Diacritic
+0060;Diacritic
+00A8;Diacritic
+00AF;Diacritic
+00B4;Diacritic
+00B7;Diacritic
+00B8;Diacritic
+00B7;Extender
+00AA;Other_Lowercase
+00BA;Other_Lowercase
+0069..006A;Soft_Dotted
+00B7;Other_ID_Continue
+00B2..00B3;ID_Compat_Math_Continue
+00B9;ID_Compat_Math_Continue
+0021;Sentence_Terminal
+002E;Sentence_Terminal
+003F;Sentence_Terminal
+0009..000D;Pattern_White_Space
+0020;Pattern_White_Space
+0085;Pattern_White_Space
+0021..0023;Pattern_Syntax
+0024;Pattern_Syntax
+0025..0027;Pattern_Syntax
+0028;Pattern_Syntax
+0029;Pattern_Syntax
+002A;Pattern_Syntax
+002B;Pattern_Syntax
+002C;Pattern_Syntax
+002D;Pattern_Syntax
+002E..002F;Pattern_Syntax
+003A..003B;Pattern_Syntax
+003C..003E;Pattern_Syntax
+003F..0040;Pattern_Syntax
+005B;Pattern_Syntax
+005C;Pattern_Syntax
+005D;Pattern_Syntax
+005E;Pattern_Syntax
+0060;Pattern_Syntax
+007B;Pattern_Syntax
+007C;Pattern_Syntax
+007D;Pattern_Syntax
+007E;Pattern_Syntax
+00A1;Pattern_Syntax
+00A2..00A5;Pattern_Syntax
+00A6;Pattern_Syntax
+00A7;Pattern_Syntax
+00A9;Pattern_Syntax
+00AB;Pattern_Syntax
+00AC;Pattern_Syntax
+00AE;Pattern_Syntax
+00B0;Pattern_Syntax
+00B1;Pattern_Syntax
+00B6;Pattern_Syntax
+00BB;Pattern_Syntax
+00BF;Pattern_Syntax
+00D7;Pattern_Syntax
+00F7;Pattern_Syntax
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「1」））于（「小于」于「桶」于「2」）则
+      『0149;Deprecated
+012F;Soft_Dotted
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「2」））于（「小于」于「桶」于「3」）则
+        『02B0..02C1;Diacritic
+02C2..02C5;Diacritic
+02C6..02D1;Diacritic
+02D2..02DF;Diacritic
+02E0..02E4;Diacritic
+02E5..02EB;Diacritic
+02EC;Diacritic
+02ED;Diacritic
+02EE;Diacritic
+02EF..02FF;Diacritic
+02D0..02D1;Extender
+02B0..02B8;Other_Lowercase
+02C0..02C1;Other_Lowercase
+02E0..02E4;Other_Lowercase
+0249;Soft_Dotted
+0268;Soft_Dotted
+029D;Soft_Dotted
+02B2;Soft_Dotted
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「3」））于（「小于」于「桶」于「4」）则
+          『037E;Terminal_Punctuation
+0387;Terminal_Punctuation
+03D0..03D2;Other_Math
+03D5;Other_Math
+03F0..03F1;Other_Math
+03F4..03F5;Other_Math
+0345;Other_Alphabetic
+0363..036F;Other_Alphabetic
+0300..034E;Diacritic
+0350..0357;Diacritic
+035D..0362;Diacritic
+0374;Diacritic
+0375;Diacritic
+037A;Diacritic
+0384..0385;Diacritic
+0345;Other_Lowercase
+037A;Other_Lowercase
+034F;Other_Default_Ignorable_Code_Point
+03F3;Soft_Dotted
+0387;Other_ID_Continue
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「4」））
+            于（「小于」于「桶」于「5」）则
+              『0483..0487;Diacritic
+0456;Soft_Dotted
+0458;Soft_Dotted
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「5」））
+              于（「小于」于「桶」于「6」）则
+                『058A;Dash
+05BE;Dash
+058A;Hyphen
+0589;Terminal_Punctuation
+05C3;Terminal_Punctuation
+05B0..05BD;Other_Alphabetic
+05BF;Other_Alphabetic
+05C1..05C2;Other_Alphabetic
+05C4..05C5;Other_Alphabetic
+05C7..05C9;Other_Alphabetic
+0558..0559;Diacritic
+058B..058C;Diacritic
+0591..05BD;Diacritic
+05BF;Diacritic
+05C1..05C2;Diacritic
+05C4..05C5;Diacritic
+05C7..05C9;Diacritic
+0558;Other_Lowercase
+058B..058C;Other_Lowercase
+0589;Sentence_Terminal
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「6」））
+                于（「小于」于「桶」于「7」）则
+                  『061C;Bidi_Control
+060C;Terminal_Punctuation
+061B;Terminal_Punctuation
+061D..061F;Terminal_Punctuation
+06D4;Terminal_Punctuation
+0610..061A;Other_Alphabetic
+064B..0657;Other_Alphabetic
+0659..065F;Other_Alphabetic
+0670;Other_Alphabetic
+06D6..06DC;Other_Alphabetic
+06E1..06E4;Other_Alphabetic
+06E7..06E8;Other_Alphabetic
+06ED;Other_Alphabetic
+064B..0652;Diacritic
+0656..0658;Diacritic
+06DF..06E0;Diacritic
+06E2;Diacritic
+06E5..06E6;Diacritic
+06EA..06EC;Diacritic
+0640;Extender
+0673;Deprecated
+061D..061F;Sentence_Terminal
+06D4;Sentence_Terminal
+0600..0605;Prepended_Concatenation_Mark
+06DD;Prepended_Concatenation_Mark
+0654..0655;Modifier_Combining_Mark
+0658;Modifier_Combining_Mark
+06DC;Modifier_Combining_Mark
+06E3;Modifier_Combining_Mark
+06E7..06E8;Modifier_Combining_Mark
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「7」））
+                  于（「小于」于「桶」于「8」）则
+                    『0700..070A;Terminal_Punctuation
+070C;Terminal_Punctuation
+07F8..07F9;Terminal_Punctuation
+0711;Other_Alphabetic
+0730..073F;Other_Alphabetic
+07A6..07B0;Other_Alphabetic
+0730..074A;Diacritic
+07A6..07B0;Diacritic
+07EB..07F3;Diacritic
+07F4..07F5;Diacritic
+07FA;Extender
+0700..0702;Sentence_Terminal
+07F9;Sentence_Terminal
+070F;Prepended_Concatenation_Mark
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「8」））
+                    于（「小于」于「桶」于「9」）则
+                      『0830..0835;Terminal_Punctuation
+0837..083E;Terminal_Punctuation
+085E;Terminal_Punctuation
+0816..0817;Other_Alphabetic
+081B..0823;Other_Alphabetic
+0825..0827;Other_Alphabetic
+0829..082C;Other_Alphabetic
+0897;Other_Alphabetic
+08D4..08DF;Other_Alphabetic
+08E3..08E9;Other_Alphabetic
+08F0..0902;Other_Alphabetic
+0818..0819;Diacritic
+0898..089F;Diacritic
+08C9;Diacritic
+08CA..08D3;Diacritic
+08E3..08FE;Diacritic
+0837;Sentence_Terminal
+0839;Sentence_Terminal
+083D..083E;Sentence_Terminal
+0890..0891;Prepended_Concatenation_Mark
+08E2;Prepended_Concatenation_Mark
+08CA..08CB;Modifier_Combining_Mark
+08CD..08CF;Modifier_Combining_Mark
+08D3;Modifier_Combining_Mark
+08F3;Modifier_Combining_Mark
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「9」））
+                      于（「小于」于「桶」于「10」）则
+                        『0964..0965;Terminal_Punctuation
+08F0..0902;Other_Alphabetic
+0903;Other_Alphabetic
+093A;Other_Alphabetic
+093B;Other_Alphabetic
+093E..0940;Other_Alphabetic
+0941..0948;Other_Alphabetic
+0949..094C;Other_Alphabetic
+094E..094F;Other_Alphabetic
+0955..0957;Other_Alphabetic
+0962..0963;Other_Alphabetic
+0981;Other_Alphabetic
+0982..0983;Other_Alphabetic
+09BE..09C0;Other_Alphabetic
+09C1..09C4;Other_Alphabetic
+09C7..09C8;Other_Alphabetic
+09CB..09CC;Other_Alphabetic
+09D7;Other_Alphabetic
+09E2..09E3;Other_Alphabetic
+093C;Diacritic
+094D;Diacritic
+0951..0954;Diacritic
+0971;Diacritic
+09BC;Diacritic
+09CD;Diacritic
+09BE;Other_Grapheme_Extend
+09D7;Other_Grapheme_Extend
+0964..0965;Sentence_Terminal
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「10」））
+                        于（「小于」于「桶」于「11」）则
+                          『0A01..0A02;Other_Alphabetic
+0A03;Other_Alphabetic
+0A3E..0A40;Other_Alphabetic
+0A41..0A42;Other_Alphabetic
+0A47..0A48;Other_Alphabetic
+0A4B..0A4C;Other_Alphabetic
+0A51;Other_Alphabetic
+0A70..0A71;Other_Alphabetic
+0A75;Other_Alphabetic
+0A81..0A82;Other_Alphabetic
+0A83;Other_Alphabetic
+0ABE..0AC0;Other_Alphabetic
+0AC1..0AC5;Other_Alphabetic
+0AC7..0AC8;Other_Alphabetic
+0AC9;Other_Alphabetic
+0ACB..0ACC;Other_Alphabetic
+0AE2..0AE3;Other_Alphabetic
+0AFA..0AFC;Other_Alphabetic
+0A3C;Diacritic
+0A4D;Diacritic
+0ABC;Diacritic
+0ACD;Diacritic
+0AFD..0AFF;Diacritic
+0A71;Extender
+0AFB;Extender
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「11」））
+                          于（「小于」于「桶」于「12」）则
+                            『0B01;Other_Alphabetic
+0B02..0B03;Other_Alphabetic
+0B3E;Other_Alphabetic
+0B3F;Other_Alphabetic
+0B40;Other_Alphabetic
+0B41..0B44;Other_Alphabetic
+0B47..0B48;Other_Alphabetic
+0B4B..0B4C;Other_Alphabetic
+0B56;Other_Alphabetic
+0B57;Other_Alphabetic
+0B62..0B63;Other_Alphabetic
+0B82;Other_Alphabetic
+0BBE..0BBF;Other_Alphabetic
+0BC0;Other_Alphabetic
+0BC1..0BC2;Other_Alphabetic
+0BC6..0BC8;Other_Alphabetic
+0BCA..0BCC;Other_Alphabetic
+0BD7;Other_Alphabetic
+0B3C;Diacritic
+0B4D;Diacritic
+0B53..0B55;Diacritic
+0BCD;Diacritic
+0B54..0B55;Extender
+0B3E;Other_Grapheme_Extend
+0B57;Other_Grapheme_Extend
+0BBE;Other_Grapheme_Extend
+0BD7;Other_Grapheme_Extend
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「12」））
+                            于（「小于」于「桶」于「13」）则
+                              『0C00;Other_Alphabetic
+0C01..0C03;Other_Alphabetic
+0C04;Other_Alphabetic
+0C3E..0C40;Other_Alphabetic
+0C41..0C44;Other_Alphabetic
+0C46..0C48;Other_Alphabetic
+0C4A..0C4C;Other_Alphabetic
+0C55..0C56;Other_Alphabetic
+0C62..0C63;Other_Alphabetic
+0C81;Other_Alphabetic
+0C82..0C83;Other_Alphabetic
+0CBE;Other_Alphabetic
+0CBF;Other_Alphabetic
+0CC0..0CC4;Other_Alphabetic
+0CC6;Other_Alphabetic
+0CC7..0CC8;Other_Alphabetic
+0CCA..0CCB;Other_Alphabetic
+0CCC;Other_Alphabetic
+0CD5..0CD6;Other_Alphabetic
+0CE2..0CE3;Other_Alphabetic
+0CF3;Other_Alphabetic
+0C3C;Diacritic
+0C4D;Diacritic
+0CBC;Diacritic
+0CCD;Diacritic
+0CC0;Other_Grapheme_Extend
+0CC2;Other_Grapheme_Extend
+0CC7..0CC8;Other_Grapheme_Extend
+0CCA..0CCB;Other_Grapheme_Extend
+0CD5..0CD6;Other_Grapheme_Extend
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「13」））
+                              于（「小于」于「桶」于「14」）则
+                                『0D00..0D01;Other_Alphabetic
+0D02..0D03;Other_Alphabetic
+0D3E..0D40;Other_Alphabetic
+0D41..0D44;Other_Alphabetic
+0D46..0D48;Other_Alphabetic
+0D4A..0D4C;Other_Alphabetic
+0D57;Other_Alphabetic
+0D62..0D63;Other_Alphabetic
+0D81;Other_Alphabetic
+0D82..0D83;Other_Alphabetic
+0DCF..0DD1;Other_Alphabetic
+0DD2..0DD4;Other_Alphabetic
+0DD6;Other_Alphabetic
+0DD8..0DDF;Other_Alphabetic
+0DF2..0DF3;Other_Alphabetic
+0D3B..0D3C;Diacritic
+0D4D;Diacritic
+0DCA;Diacritic
+0D3E;Other_Grapheme_Extend
+0D57;Other_Grapheme_Extend
+0DCF;Other_Grapheme_Extend
+0DDF;Other_Grapheme_Extend
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「14」））
+                                于（「小于」于「桶」于「15」）则
+                                  『0E5A..0E5B;Terminal_Punctuation
+0E31;Other_Alphabetic
+0E34..0E3A;Other_Alphabetic
+0E4D;Other_Alphabetic
+0EB1;Other_Alphabetic
+0EB4..0EB9;Other_Alphabetic
+0EBB..0EBC;Other_Alphabetic
+0ECD;Other_Alphabetic
+0E3A;Diacritic
+0E47..0E4C;Diacritic
+0E4E;Diacritic
+0EBA;Diacritic
+0EC8..0ECC;Diacritic
+0E46;Extender
+0EC6;Extender
+0E40..0E44;Logical_Order_Exception
+0EC0..0EC4;Logical_Order_Exception
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「15」））
+                                  于（「小于」于「桶」于「16」）则
+                                    『0F08;Terminal_Punctuation
+0F0D..0F12;Terminal_Punctuation
+0F71..0F7E;Other_Alphabetic
+0F7F;Other_Alphabetic
+0F80..0F83;Other_Alphabetic
+0F8D..0F97;Other_Alphabetic
+0F99..0FBC;Other_Alphabetic
+0F18..0F19;Diacritic
+0F35;Diacritic
+0F37;Diacritic
+0F39;Diacritic
+0F3E..0F3F;Diacritic
+0F82..0F84;Diacritic
+0F86..0F87;Diacritic
+0FC6;Diacritic
+0F77;Deprecated
+0F79;Deprecated
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「16」））
+                                    于（「小于」于「桶」于「17」）则
+                                      『104A..104B;Terminal_Punctuation
+102B..102C;Other_Alphabetic
+102D..1030;Other_Alphabetic
+1031;Other_Alphabetic
+1032..1036;Other_Alphabetic
+1038;Other_Alphabetic
+103B..103C;Other_Alphabetic
+103D..103E;Other_Alphabetic
+1056..1057;Other_Alphabetic
+1058..1059;Other_Alphabetic
+105E..1060;Other_Alphabetic
+1062..1064;Other_Alphabetic
+1067..106D;Other_Alphabetic
+1071..1074;Other_Alphabetic
+1082;Other_Alphabetic
+1083..1084;Other_Alphabetic
+1085..1086;Other_Alphabetic
+1087..108C;Other_Alphabetic
+108D;Other_Alphabetic
+108F;Other_Alphabetic
+109A..109C;Other_Alphabetic
+109D;Other_Alphabetic
+1037;Diacritic
+1039..103A;Diacritic
+1063..1064;Diacritic
+1069..106D;Diacritic
+1087..108C;Diacritic
+108D;Diacritic
+108F;Diacritic
+109A..109B;Diacritic
+10FC;Other_Lowercase
+104A..104B;Sentence_Terminal
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「17」））
+                                      于（「小于」于「桶」于「18」）则
+                                        『115F..1160;Other_Default_Ignorable_Code_Point
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「19」））
+                                        于（「小于」于「桶」于「20」）则
+                                          『1361..1368;Terminal_Punctuation
+135D..135F;Diacritic
+1369..1371;Other_ID_Continue
+1362;Sentence_Terminal
+1367..1368;Sentence_Terminal
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「20」））
+                                          于（「小于」于「桶」于「21」）则
+                                            『1400;Dash
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「22」））
+                                            于（「小于」于「桶」于「23」）则
+                                              『1680;White_Space
+166E;Terminal_Punctuation
+16EB..16ED;Terminal_Punctuation
+166E;Sentence_Terminal
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「23」））
+                                              于（「小于」于「桶」于「24」）则
+                                                『1735..1736;Terminal_Punctuation
+17D4..17D6;Terminal_Punctuation
+17DA;Terminal_Punctuation
+1712..1713;Other_Alphabetic
+1732..1733;Other_Alphabetic
+1752..1753;Other_Alphabetic
+1772..1773;Other_Alphabetic
+17B6;Other_Alphabetic
+17B7..17BD;Other_Alphabetic
+17BE..17C5;Other_Alphabetic
+17C6;Other_Alphabetic
+17C7..17C8;Other_Alphabetic
+1714;Diacritic
+1715;Diacritic
+1734;Diacritic
+17C9..17D3;Diacritic
+17DD;Diacritic
+1715;Other_Grapheme_Extend
+1734;Other_Grapheme_Extend
+17B4..17B5;Other_Default_Ignorable_Code_Point
+17A3..17A4;Deprecated
+1735..1736;Sentence_Terminal
+17D4..17D5;Sentence_Terminal
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「24」））
+                                                于（「小于」于「桶」于「25」）则
+                                                  『1806;Dash
+1806;Hyphen
+1802..1805;Terminal_Punctuation
+1808..1809;Terminal_Punctuation
+1885..1886;Other_Alphabetic
+18A9;Other_Alphabetic
+180A;Extender
+1843;Extender
+1885..1886;Other_ID_Start
+1803;Sentence_Terminal
+1809;Sentence_Terminal
+180B..180D;Variation_Selector
+180F;Variation_Selector
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「25」））
+                                                  于（「小于」于「桶」于「26」）则
+                                                    『1944..1945;Terminal_Punctuation
+1920..1922;Other_Alphabetic
+1923..1926;Other_Alphabetic
+1927..1928;Other_Alphabetic
+1929..192B;Other_Alphabetic
+1930..1931;Other_Alphabetic
+1932;Other_Alphabetic
+1933..1938;Other_Alphabetic
+1939..193B;Diacritic
+19B5..19B7;Logical_Order_Exception
+19BA;Logical_Order_Exception
+19DA;Other_ID_Continue
+1944..1945;Sentence_Terminal
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「26」））
+                                                    于（「小于」于「桶」于「27」）则
+                                                      『1AA8..1AAB;Terminal_Punctuation
+1A17..1A18;Other_Alphabetic
+1A19..1A1A;Other_Alphabetic
+1A1B;Other_Alphabetic
+1A55;Other_Alphabetic
+1A56;Other_Alphabetic
+1A57;Other_Alphabetic
+1A58..1A5E;Other_Alphabetic
+1A61;Other_Alphabetic
+1A62;Other_Alphabetic
+1A63..1A64;Other_Alphabetic
+1A65..1A6C;Other_Alphabetic
+1A6D..1A72;Other_Alphabetic
+1A73..1A74;Other_Alphabetic
+1ABF..1AC0;Other_Alphabetic
+1ACC..1ACE;Other_Alphabetic
+1A60;Diacritic
+1A75..1A7C;Diacritic
+1A7F;Diacritic
+1AB0..1ABD;Diacritic
+1ABE;Diacritic
+1AC1..1ACB;Diacritic
+1ACF..1AF0;Diacritic
+1AA7;Extender
+1AA8..1AAB;Sentence_Terminal
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「27」））
+                                                      于（「小于」于「桶」于「28」）则
+                                                        『1B4E..1B4F;Terminal_Punctuation
+1B5A..1B5B;Terminal_Punctuation
+1B5D..1B5F;Terminal_Punctuation
+1B7D..1B7F;Terminal_Punctuation
+1B00..1B03;Other_Alphabetic
+1B04;Other_Alphabetic
+1B35;Other_Alphabetic
+1B36..1B3A;Other_Alphabetic
+1B3B;Other_Alphabetic
+1B3C;Other_Alphabetic
+1B3D..1B41;Other_Alphabetic
+1B42;Other_Alphabetic
+1B43;Other_Alphabetic
+1B80..1B81;Other_Alphabetic
+1B82;Other_Alphabetic
+1BA1;Other_Alphabetic
+1BA2..1BA5;Other_Alphabetic
+1BA6..1BA7;Other_Alphabetic
+1BA8..1BA9;Other_Alphabetic
+1BAC..1BAD;Other_Alphabetic
+1BE7;Other_Alphabetic
+1BE8..1BE9;Other_Alphabetic
+1BEA..1BEC;Other_Alphabetic
+1BED;Other_Alphabetic
+1BEE;Other_Alphabetic
+1BEF..1BF1;Other_Alphabetic
+1B34;Diacritic
+1B44;Diacritic
+1B6B..1B73;Diacritic
+1BAA;Diacritic
+1BAB;Diacritic
+1BE6;Diacritic
+1BF2..1BF3;Diacritic
+1B35;Other_Grapheme_Extend
+1B3B;Other_Grapheme_Extend
+1B3D;Other_Grapheme_Extend
+1B43..1B44;Other_Grapheme_Extend
+1BAA;Other_Grapheme_Extend
+1BF2..1BF3;Other_Grapheme_Extend
+1B4E..1B4F;Sentence_Terminal
+1B5A..1B5B;Sentence_Terminal
+1B5E..1B5F;Sentence_Terminal
+1B7D..1B7F;Sentence_Terminal
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「28」））
+                                                        于（「小于」于「桶」于「29」）则
+                                                          『1C3B..1C3F;Terminal_Punctuation
+1C7E..1C7F;Terminal_Punctuation
+1C24..1C2B;Other_Alphabetic
+1C2C..1C33;Other_Alphabetic
+1C34..1C35;Other_Alphabetic
+1C36;Other_Alphabetic
+1C36..1C37;Diacritic
+1C78..1C7D;Diacritic
+1CD0..1CD2;Diacritic
+1CD3;Diacritic
+1CD4..1CE0;Diacritic
+1CE1;Diacritic
+1CE2..1CE8;Diacritic
+1CED;Diacritic
+1CF4;Diacritic
+1CF7;Diacritic
+1CF8..1CF9;Diacritic
+1C36;Extender
+1C7B;Extender
+1C3B..1C3C;Sentence_Terminal
+1C7E..1C7F;Sentence_Terminal
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「29」））
+                                                          于（「小于」于「桶」于「30」）则
+                                                            『1DD3..1DF4;Other_Alphabetic
+1D2C..1D6A;Diacritic
+1D9B..1DBE;Diacritic
+1DC4..1DCF;Diacritic
+1DF5..1DFF;Diacritic
+1D2C..1D6A;Other_Lowercase
+1D78;Other_Lowercase
+1D9B..1DBF;Other_Lowercase
+1D62;Soft_Dotted
+1D96;Soft_Dotted
+1DA4;Soft_Dotted
+1DA8;Soft_Dotted
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「30」））
+                                                            于（「小于」于「桶」于「31」）则
+                                                            『1E2D;Soft_Dotted
+1ECB;Soft_Dotted
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「31」））
+                                                            于（「小于」于「桶」于「32」）则
+                                                            『1FBD;Diacritic
+1FBF..1FC1;Diacritic
+1FCD..1FCF;Diacritic
+1FDD..1FDF;Diacritic
+1FED..1FEF;Diacritic
+1FFD..1FFE;Diacritic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「32」））
+                                                            于（「小于」于「桶」于「33」）则
+                                                            『2000..200A;White_Space
+2028;White_Space
+2029;White_Space
+202F;White_Space
+205F;White_Space
+200E..200F;Bidi_Control
+202A..202E;Bidi_Control
+2066..2069;Bidi_Control
+200C..200D;Join_Control
+2010..2015;Dash
+2053;Dash
+207B;Dash
+208B;Dash
+2010..2011;Hyphen
+2018;Quotation_Mark
+2019;Quotation_Mark
+201A;Quotation_Mark
+201B..201C;Quotation_Mark
+201D;Quotation_Mark
+201E;Quotation_Mark
+201F;Quotation_Mark
+2039;Quotation_Mark
+203A;Quotation_Mark
+2024;Terminal_Punctuation
+203C..203D;Terminal_Punctuation
+2047..2049;Terminal_Punctuation
+2016;Other_Math
+2032..2034;Other_Math
+2040;Other_Math
+2061..2064;Other_Math
+207D;Other_Math
+207E;Other_Math
+208D;Other_Math
+208E;Other_Math
+20D0..20DC;Other_Math
+20E1;Other_Math
+20E5..20E6;Other_Math
+20EB..20EF;Other_Math
+208F;Diacritic
+2071;Other_Lowercase
+207F;Other_Lowercase
+2090..209F;Other_Lowercase
+200C;Other_Grapheme_Extend
+2065;Other_Default_Ignorable_Code_Point
+206A..206F;Deprecated
+2071;Soft_Dotted
+200C..200D;Other_ID_Continue
+2070;ID_Compat_Math_Continue
+2074..2079;ID_Compat_Math_Continue
+207A..207C;ID_Compat_Math_Continue
+207D;ID_Compat_Math_Continue
+207E;ID_Compat_Math_Continue
+2080..2089;ID_Compat_Math_Continue
+208A..208C;ID_Compat_Math_Continue
+208D;ID_Compat_Math_Continue
+208E;ID_Compat_Math_Continue
+2024;Sentence_Terminal
+203C..203D;Sentence_Terminal
+2047..2049;Sentence_Terminal
+200E..200F;Pattern_White_Space
+2028;Pattern_White_Space
+2029;Pattern_White_Space
+2010..2015;Pattern_Syntax
+2016..2017;Pattern_Syntax
+2018;Pattern_Syntax
+2019;Pattern_Syntax
+201A;Pattern_Syntax
+201B..201C;Pattern_Syntax
+201D;Pattern_Syntax
+201E;Pattern_Syntax
+201F;Pattern_Syntax
+2020..2027;Pattern_Syntax
+2030..2038;Pattern_Syntax
+2039;Pattern_Syntax
+203A;Pattern_Syntax
+203B..203E;Pattern_Syntax
+2041..2043;Pattern_Syntax
+2044;Pattern_Syntax
+2045;Pattern_Syntax
+2046;Pattern_Syntax
+2047..2051;Pattern_Syntax
+2052;Pattern_Syntax
+2053;Pattern_Syntax
+2055..205E;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「33」））
+                                                            于（「小于」于「桶」于「34」）则
+                                                            『2102;Other_Math
+2107;Other_Math
+210A..2113;Other_Math
+2115;Other_Math
+2119..211D;Other_Math
+2124;Other_Math
+2128;Other_Math
+2129;Other_Math
+212C..212D;Other_Math
+212F..2131;Other_Math
+2133..2134;Other_Math
+2135..2138;Other_Math
+213C..213F;Other_Math
+2145..2149;Other_Math
+2195..2199;Other_Math
+219C..219F;Other_Math
+21A1..21A2;Other_Math
+21A4..21A5;Other_Math
+21A7;Other_Math
+21A9..21AD;Other_Math
+21B0..21B1;Other_Math
+21B6..21B7;Other_Math
+21BC..21CD;Other_Math
+21D0..21D1;Other_Math
+21D3;Other_Math
+21D5..21DB;Other_Math
+21DD;Other_Math
+21E4..21E5;Other_Math
+2170..217F;Other_Lowercase
+2160..216F;Other_Uppercase
+2148..2149;Soft_Dotted
+2118;Other_ID_Start
+212E;Other_ID_Start
+2190..2194;Pattern_Syntax
+2195..2199;Pattern_Syntax
+219A..219B;Pattern_Syntax
+219C..219F;Pattern_Syntax
+21A0;Pattern_Syntax
+21A1..21A2;Pattern_Syntax
+21A3;Pattern_Syntax
+21A4..21A5;Pattern_Syntax
+21A6;Pattern_Syntax
+21A7..21AD;Pattern_Syntax
+21AE;Pattern_Syntax
+21AF..21CD;Pattern_Syntax
+21CE..21CF;Pattern_Syntax
+21D0..21D1;Pattern_Syntax
+21D2;Pattern_Syntax
+21D3;Pattern_Syntax
+21D4;Pattern_Syntax
+21D5..21F3;Pattern_Syntax
+21F4..22FF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「34」））
+                                                            于（「小于」于「桶」于「35」）则
+                                                            『2212;Dash
+2202;ID_Compat_Math_Continue
+2207;ID_Compat_Math_Continue
+221E;ID_Compat_Math_Continue
+2202;ID_Compat_Math_Start
+2207;ID_Compat_Math_Start
+221E;ID_Compat_Math_Start
+21F4..22FF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「35」））
+                                                            于（「小于」于「桶」于「36」）则
+                                                            『2308;Other_Math
+2309;Other_Math
+230A;Other_Math
+230B;Other_Math
+23B4..23B5;Other_Math
+23B7;Other_Math
+23D0;Other_Math
+23E2;Other_Math
+2329;Deprecated
+232A;Deprecated
+2300..2307;Pattern_Syntax
+2308;Pattern_Syntax
+2309;Pattern_Syntax
+230A;Pattern_Syntax
+230B;Pattern_Syntax
+230C..231F;Pattern_Syntax
+2320..2321;Pattern_Syntax
+2322..2328;Pattern_Syntax
+2329;Pattern_Syntax
+232A;Pattern_Syntax
+232B..237B;Pattern_Syntax
+237C;Pattern_Syntax
+237D..239A;Pattern_Syntax
+239B..23B3;Pattern_Syntax
+23B4..23DB;Pattern_Syntax
+23DC..23E1;Pattern_Syntax
+23E2..2429;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「36」））
+                                                            于（「小于」于「桶」于「37」）则
+                                                            『24B6..24E9;Other_Alphabetic
+24D0..24E9;Other_Lowercase
+24B6..24CF;Other_Uppercase
+23E2..2429;Pattern_Syntax
+242A..243F;Pattern_Syntax
+2440..244A;Pattern_Syntax
+244B..245F;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「37」））
+                                                            于（「小于」于「桶」于「38」）则
+                                                            『25A0..25A1;Other_Math
+25AE..25B6;Other_Math
+25BC..25C0;Other_Math
+25C6..25C7;Other_Math
+25CA..25CB;Other_Math
+25CF..25D3;Other_Math
+25E2;Other_Math
+25E4;Other_Math
+25E7..25EC;Other_Math
+2500..25B6;Pattern_Syntax
+25B7;Pattern_Syntax
+25B8..25C0;Pattern_Syntax
+25C1;Pattern_Syntax
+25C2..25F7;Pattern_Syntax
+25F8..25FF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「38」））
+                                                            于（「小于」于「桶」于「39」）则
+                                                            『2605..2606;Other_Math
+2640;Other_Math
+2642;Other_Math
+2660..2663;Other_Math
+266D..266E;Other_Math
+2600..266E;Pattern_Syntax
+266F;Pattern_Syntax
+2670..2767;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「39」））
+                                                            于（「小于」于「桶」于「40」）则
+                                                            『27C5;Other_Math
+27C6;Other_Math
+27E6;Other_Math
+27E7;Other_Math
+27E8;Other_Math
+27E9;Other_Math
+27EA;Other_Math
+27EB;Other_Math
+27EC;Other_Math
+27ED;Other_Math
+27EE;Other_Math
+27EF;Other_Math
+2670..2767;Pattern_Syntax
+2768;Pattern_Syntax
+2769;Pattern_Syntax
+276A;Pattern_Syntax
+276B;Pattern_Syntax
+276C;Pattern_Syntax
+276D;Pattern_Syntax
+276E;Pattern_Syntax
+276F;Pattern_Syntax
+2770;Pattern_Syntax
+2771;Pattern_Syntax
+2772;Pattern_Syntax
+2773;Pattern_Syntax
+2774;Pattern_Syntax
+2775;Pattern_Syntax
+2794..27BF;Pattern_Syntax
+27C0..27C4;Pattern_Syntax
+27C5;Pattern_Syntax
+27C6;Pattern_Syntax
+27C7..27E5;Pattern_Syntax
+27E6;Pattern_Syntax
+27E7;Pattern_Syntax
+27E8;Pattern_Syntax
+27E9;Pattern_Syntax
+27EA;Pattern_Syntax
+27EB;Pattern_Syntax
+27EC;Pattern_Syntax
+27ED;Pattern_Syntax
+27EE;Pattern_Syntax
+27EF;Pattern_Syntax
+27F0..27FF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「40」））
+                                                            于（「小于」于「桶」于「41」）则
+                                                            『2800..28FF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「41」））
+                                                            于（「小于」于「桶」于「42」）则
+                                                            『2983;Other_Math
+2984;Other_Math
+2985;Other_Math
+2986;Other_Math
+2987;Other_Math
+2988;Other_Math
+2989;Other_Math
+298A;Other_Math
+298B;Other_Math
+298C;Other_Math
+298D;Other_Math
+298E;Other_Math
+298F;Other_Math
+2990;Other_Math
+2991;Other_Math
+2992;Other_Math
+2993;Other_Math
+2994;Other_Math
+2995;Other_Math
+2996;Other_Math
+2997;Other_Math
+2998;Other_Math
+29D8;Other_Math
+29D9;Other_Math
+29DA;Other_Math
+29DB;Other_Math
+29FC;Other_Math
+29FD;Other_Math
+2900..2982;Pattern_Syntax
+2983;Pattern_Syntax
+2984;Pattern_Syntax
+2985;Pattern_Syntax
+2986;Pattern_Syntax
+2987;Pattern_Syntax
+2988;Pattern_Syntax
+2989;Pattern_Syntax
+298A;Pattern_Syntax
+298B;Pattern_Syntax
+298C;Pattern_Syntax
+298D;Pattern_Syntax
+298E;Pattern_Syntax
+298F;Pattern_Syntax
+2990;Pattern_Syntax
+2991;Pattern_Syntax
+2992;Pattern_Syntax
+2993;Pattern_Syntax
+2994;Pattern_Syntax
+2995;Pattern_Syntax
+2996;Pattern_Syntax
+2997;Pattern_Syntax
+2998;Pattern_Syntax
+2999..29D7;Pattern_Syntax
+29D8;Pattern_Syntax
+29D9;Pattern_Syntax
+29DA;Pattern_Syntax
+29DB;Pattern_Syntax
+29DC..29FB;Pattern_Syntax
+29FC;Pattern_Syntax
+29FD;Pattern_Syntax
+29FE..2AFF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「42」））
+                                                            于（「小于」于「桶」于「43」）则
+                                                            『29FE..2AFF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「43」））
+                                                            于（「小于」于「桶」于「44」）则
+                                                            『2B00..2B2F;Pattern_Syntax
+2B30..2B44;Pattern_Syntax
+2B45..2B46;Pattern_Syntax
+2B47..2B4C;Pattern_Syntax
+2B4D..2B73;Pattern_Syntax
+2B74..2B75;Pattern_Syntax
+2B76..2BFF;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「44」））
+                                                            于（「小于」于「桶」于「45」）则
+                                                            『2CF9..2CFB;Terminal_Punctuation
+2CEF..2CF1;Diacritic
+2C7C..2C7D;Other_Lowercase
+2C7C;Soft_Dotted
+2CF9..2CFB;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「45」））
+                                                            于（「小于」于「桶」于「46」）则
+                                                            『2DE0..2DFF;Other_Alphabetic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「46」））
+                                                            于（「小于」于「桶」于「47」）则
+                                                            『2E17;Dash
+2E1A;Dash
+2E3A..2E3B;Dash
+2E40;Dash
+2E5D;Dash
+2E17;Hyphen
+2E42;Quotation_Mark
+2E2E;Terminal_Punctuation
+2E3C;Terminal_Punctuation
+2E41;Terminal_Punctuation
+2E4C;Terminal_Punctuation
+2E4E..2E4F;Terminal_Punctuation
+2E53..2E54;Terminal_Punctuation
+2E60..2E61;Terminal_Punctuation
+2E2F;Diacritic
+2E80..2E99;Radical
+2E9B..2EF3;Radical
+2E2E;Sentence_Terminal
+2E3C;Sentence_Terminal
+2E53..2E54;Sentence_Terminal
+2E60..2E61;Sentence_Terminal
+2E00..2E01;Pattern_Syntax
+2E02;Pattern_Syntax
+2E03;Pattern_Syntax
+2E04;Pattern_Syntax
+2E05;Pattern_Syntax
+2E06..2E08;Pattern_Syntax
+2E09;Pattern_Syntax
+2E0A;Pattern_Syntax
+2E0B;Pattern_Syntax
+2E0C;Pattern_Syntax
+2E0D;Pattern_Syntax
+2E0E..2E16;Pattern_Syntax
+2E17;Pattern_Syntax
+2E18..2E19;Pattern_Syntax
+2E1A;Pattern_Syntax
+2E1B;Pattern_Syntax
+2E1C;Pattern_Syntax
+2E1D;Pattern_Syntax
+2E1E..2E1F;Pattern_Syntax
+2E20;Pattern_Syntax
+2E21;Pattern_Syntax
+2E22;Pattern_Syntax
+2E23;Pattern_Syntax
+2E24;Pattern_Syntax
+2E25;Pattern_Syntax
+2E26;Pattern_Syntax
+2E27;Pattern_Syntax
+2E28;Pattern_Syntax
+2E29;Pattern_Syntax
+2E2A..2E2E;Pattern_Syntax
+2E2F;Pattern_Syntax
+2E30..2E39;Pattern_Syntax
+2E3A..2E3B;Pattern_Syntax
+2E3C..2E3F;Pattern_Syntax
+2E40;Pattern_Syntax
+2E41;Pattern_Syntax
+2E42;Pattern_Syntax
+2E43..2E4F;Pattern_Syntax
+2E50..2E51;Pattern_Syntax
+2E52..2E54;Pattern_Syntax
+2E55;Pattern_Syntax
+2E56;Pattern_Syntax
+2E57;Pattern_Syntax
+2E58;Pattern_Syntax
+2E59;Pattern_Syntax
+2E5A;Pattern_Syntax
+2E5B;Pattern_Syntax
+2E5C;Pattern_Syntax
+2E5D;Pattern_Syntax
+2E5E..2E5F;Pattern_Syntax
+2E60..2E61;Pattern_Syntax
+2E62;Pattern_Syntax
+2E63;Pattern_Syntax
+2E64..2E7F;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「47」））
+                                                            于（「小于」于「桶」于「48」）则
+                                                            『2FF0..2FF1;IDS_Binary_Operator
+2FF4..2FFD;IDS_Binary_Operator
+2FF2..2FF3;IDS_Trinary_Operator
+2FFE..2FFF;IDS_Unary_Operator
+2F00..2FD5;Radical
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「48」））
+                                                            于（「小于」于「桶」于「49」）则
+                                                            『3000;White_Space
+301C;Dash
+3030;Dash
+30A0;Dash
+30FB;Hyphen
+300C;Quotation_Mark
+300D;Quotation_Mark
+300E;Quotation_Mark
+300F;Quotation_Mark
+301D;Quotation_Mark
+301E..301F;Quotation_Mark
+3001..3002;Terminal_Punctuation
+3006;Ideographic
+3007;Ideographic
+3021..3029;Ideographic
+3038..303A;Ideographic
+302A..302D;Diacritic
+302E..302F;Diacritic
+3099..309A;Diacritic
+309B..309C;Diacritic
+30FC;Diacritic
+3005;Extender
+3031..3035;Extender
+309D..309E;Extender
+30FC..30FE;Extender
+302E..302F;Other_Grapheme_Extend
+309B..309C;Other_ID_Start
+30FB;Other_ID_Continue
+3002;Sentence_Terminal
+3001..3003;Pattern_Syntax
+3008;Pattern_Syntax
+3009;Pattern_Syntax
+300A;Pattern_Syntax
+300B;Pattern_Syntax
+300C;Pattern_Syntax
+300D;Pattern_Syntax
+300E;Pattern_Syntax
+300F;Pattern_Syntax
+3010;Pattern_Syntax
+3011;Pattern_Syntax
+3012..3013;Pattern_Syntax
+3014;Pattern_Syntax
+3015;Pattern_Syntax
+3016;Pattern_Syntax
+3017;Pattern_Syntax
+3018;Pattern_Syntax
+3019;Pattern_Syntax
+301A;Pattern_Syntax
+301B;Pattern_Syntax
+301C;Pattern_Syntax
+301D;Pattern_Syntax
+301E..301F;Pattern_Syntax
+3020;Pattern_Syntax
+3030;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「49」））
+                                                            于（「小于」于「桶」于「50」）则
+                                                            『31EF;IDS_Binary_Operator
+3164;Other_Default_Ignorable_Code_Point
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「52」））
+                                                            于（「小于」于「桶」于「78」）则
+                                                            『3400..4DBF;Ideographic
+3400..4DBF;Unified_Ideograph
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「78」））
+                                                            于（「小于」于「桶」于「160」）则
+                                                            『4E00..9FFF;Ideographic
+4E00..9FFF;Unified_Ideograph
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「160」））
+                                                            于（「小于」于「桶」于「161」）则
+                                                            『A015;Extender
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「164」））
+                                                            于（「小于」于「桶」于「165」）则
+                                                            『A4FE..A4FF;Terminal_Punctuation
+A4FF;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「166」））
+                                                            于（「小于」于「桶」于「167」）则
+                                                            『A60D..A60F;Terminal_Punctuation
+A6F3..A6F7;Terminal_Punctuation
+A674..A67B;Other_Alphabetic
+A69E..A69F;Other_Alphabetic
+A66F;Diacritic
+A67C..A67D;Diacritic
+A67F;Diacritic
+A69C..A69D;Diacritic
+A6F0..A6F1;Diacritic
+A60C;Extender
+A69C..A69D;Other_Lowercase
+A60E..A60F;Sentence_Terminal
+A6F3;Sentence_Terminal
+A6F7;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「167」））
+                                                            于（「小于」于「桶」于「168」）则
+                                                            『A700..A716;Diacritic
+A717..A71F;Diacritic
+A720..A721;Diacritic
+A788;Diacritic
+A789..A78A;Diacritic
+A7F1;Diacritic
+A7F8..A7F9;Diacritic
+A770;Other_Lowercase
+A7F1..A7F4;Other_Lowercase
+A7F8..A7F9;Other_Lowercase
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「168」））
+                                                            于（「小于」于「桶」于「169」）则
+                                                            『A876..A877;Terminal_Punctuation
+A8CE..A8CF;Terminal_Punctuation
+A802;Other_Alphabetic
+A80B;Other_Alphabetic
+A823..A824;Other_Alphabetic
+A825..A826;Other_Alphabetic
+A827;Other_Alphabetic
+A880..A881;Other_Alphabetic
+A8B4..A8C3;Other_Alphabetic
+A8C5;Other_Alphabetic
+A8FF;Other_Alphabetic
+A806;Diacritic
+A82C;Diacritic
+A8C4;Diacritic
+A8E0..A8F1;Diacritic
+A876..A877;Sentence_Terminal
+A8CE..A8CF;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「169」））
+                                                            于（「小于」于「桶」于「170」）则
+                                                            『A92F;Terminal_Punctuation
+A9C7..A9C9;Terminal_Punctuation
+A926..A92A;Other_Alphabetic
+A947..A951;Other_Alphabetic
+A952;Other_Alphabetic
+A980..A982;Other_Alphabetic
+A983;Other_Alphabetic
+A9B4..A9B5;Other_Alphabetic
+A9B6..A9B9;Other_Alphabetic
+A9BA..A9BB;Other_Alphabetic
+A9BC..A9BD;Other_Alphabetic
+A9BE..A9BF;Other_Alphabetic
+A9E5;Other_Alphabetic
+A92B..A92D;Diacritic
+A92E;Diacritic
+A953;Diacritic
+A9B3;Diacritic
+A9C0;Diacritic
+A9E5;Diacritic
+A9CF;Extender
+A9E6;Extender
+A953;Other_Grapheme_Extend
+A9C0;Other_Grapheme_Extend
+A92F;Sentence_Terminal
+A9C8..A9C9;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「170」））
+                                                            于（「小于」于「桶」于「171」）则
+                                                            『AA5D..AA5F;Terminal_Punctuation
+AADF;Terminal_Punctuation
+AAF0..AAF1;Terminal_Punctuation
+AA29..AA2E;Other_Alphabetic
+AA2F..AA30;Other_Alphabetic
+AA31..AA32;Other_Alphabetic
+AA33..AA34;Other_Alphabetic
+AA35..AA36;Other_Alphabetic
+AA43;Other_Alphabetic
+AA4C;Other_Alphabetic
+AA4D;Other_Alphabetic
+AA7B;Other_Alphabetic
+AA7C;Other_Alphabetic
+AA7D;Other_Alphabetic
+AAB0;Other_Alphabetic
+AAB2..AAB4;Other_Alphabetic
+AAB7..AAB8;Other_Alphabetic
+AABE;Other_Alphabetic
+AAEB;Other_Alphabetic
+AAEC..AAED;Other_Alphabetic
+AAEE..AAEF;Other_Alphabetic
+AAF5;Other_Alphabetic
+AA7B;Diacritic
+AA7C;Diacritic
+AA7D;Diacritic
+AABF;Diacritic
+AAC0;Diacritic
+AAC1;Diacritic
+AAC2;Diacritic
+AAF6;Diacritic
+AA70;Extender
+AADD;Extender
+AAF3..AAF4;Extender
+AAB5..AAB6;Logical_Order_Exception
+AAB9;Logical_Order_Exception
+AABB..AABC;Logical_Order_Exception
+AA5D..AA5F;Sentence_Terminal
+AAF0..AAF1;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「171」））
+                                                            于（「小于」于「桶」于「172」）则
+                                                            『ABEB;Terminal_Punctuation
+ABE3..ABE4;Other_Alphabetic
+ABE5;Other_Alphabetic
+ABE6..ABE7;Other_Alphabetic
+ABE8;Other_Alphabetic
+ABE9..ABEA;Other_Alphabetic
+AB5B;Diacritic
+AB5C..AB5F;Diacritic
+AB69;Diacritic
+AB6A..AB6B;Diacritic
+ABEC;Diacritic
+ABED;Diacritic
+AB5C..AB5F;Other_Lowercase
+AB69;Other_Lowercase
+ABEB;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「249」））
+                                                            于（「小于」于「桶」于「250」）则
+                                                            『F900..FA6D;Ideographic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「250」））
+                                                            于（「小于」于「桶」于「251」）则
+                                                            『F900..FA6D;Ideographic
+FA70..FAD9;Ideographic
+FA0E..FA0F;Unified_Ideograph
+FA11;Unified_Ideograph
+FA13..FA14;Unified_Ideograph
+FA1F;Unified_Ideograph
+FA21;Unified_Ideograph
+FA23..FA24;Unified_Ideograph
+FA27..FA29;Unified_Ideograph
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「251」））
+                                                            于（「小于」于「桶」于「252」）则
+                                                            『FB1E;Other_Alphabetic
+FB1E;Diacritic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「253」））
+                                                            于（「小于」于「桶」于「254」）则
+                                                            『FDD0..FDEF;Noncharacter_Code_Point
+FD3E;Pattern_Syntax
+FD3F;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「254」））
+                                                            于（「小于」于「桶」于「255」）则
+                                                            『FE31..FE32;Dash
+FE58;Dash
+FE63;Dash
+FE63;Hyphen
+FE41;Quotation_Mark
+FE42;Quotation_Mark
+FE43;Quotation_Mark
+FE44;Quotation_Mark
+FE12;Terminal_Punctuation
+FE15..FE16;Terminal_Punctuation
+FE50..FE52;Terminal_Punctuation
+FE54..FE57;Terminal_Punctuation
+FE61;Other_Math
+FE63;Other_Math
+FE68;Other_Math
+FE20..FE2F;Diacritic
+FE12;Sentence_Terminal
+FE15..FE16;Sentence_Terminal
+FE52;Sentence_Terminal
+FE56..FE57;Sentence_Terminal
+FE00..FE0F;Variation_Selector
+FE45..FE46;Pattern_Syntax
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「255」））
+                                                            于（「小于」于「桶」于「256」）则
+                                                            『FF0D;Dash
+FF0D;Hyphen
+FF65;Hyphen
+FF02;Quotation_Mark
+FF07;Quotation_Mark
+FF62;Quotation_Mark
+FF63;Quotation_Mark
+FF01;Terminal_Punctuation
+FF0C;Terminal_Punctuation
+FF0E;Terminal_Punctuation
+FF1A..FF1B;Terminal_Punctuation
+FF1F;Terminal_Punctuation
+FF61;Terminal_Punctuation
+FF64;Terminal_Punctuation
+FF3C;Other_Math
+FF3E;Other_Math
+FF10..FF19;Hex_Digit
+FF21..FF26;Hex_Digit
+FF41..FF46;Hex_Digit
+FF3E;Diacritic
+FF40;Diacritic
+FF70;Diacritic
+FF9E..FF9F;Diacritic
+FFE3;Diacritic
+FF70;Extender
+FFFE..FFFF;Noncharacter_Code_Point
+FF9E..FF9F;Other_Grapheme_Extend
+FFA0;Other_Default_Ignorable_Code_Point
+FFF0..FFF8;Other_Default_Ignorable_Code_Point
+FF65;Other_ID_Continue
+FF01;Sentence_Terminal
+FF0E;Sentence_Terminal
+FF1F;Sentence_Terminal
+FF61;Sentence_Terminal
+』
+                                                            否则
+                                                            『』
+也。
+
+「二元清单表1」乃化「整数」而「字符串」也。
+「二元清单表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「258」））于（「小于」于「桶」于「259」）则
+    『102E0;Diacritic
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「259」））于（「小于」于「桶」于「260」）则
+      『1039F;Terminal_Punctuation
+103D0;Terminal_Punctuation
+10376..1037A;Other_Alphabetic
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「263」））于（「小于」于「桶」于「264」）则
+        『10780..10785;Diacritic
+10787..107B0;Diacritic
+107B2..107BA;Diacritic
+10781..10782;Extender
+10780;Other_Lowercase
+10783..10785;Other_Lowercase
+10787..107B0;Other_Lowercase
+107B2..107BF;Other_Lowercase
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「264」））于（「小于」于「桶」于「265」）则
+          『10857;Terminal_Punctuation
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「265」））
+            于（「小于」于「桶」于「266」）则
+              『1091F;Terminal_Punctuation
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「266」））
+              于（「小于」于「桶」于「267」）则
+                『10A56..10A57;Terminal_Punctuation
+10AF0..10AF5;Terminal_Punctuation
+10A01..10A03;Other_Alphabetic
+10A05..10A06;Other_Alphabetic
+10A0C..10A0F;Other_Alphabetic
+10A38..10A3A;Diacritic
+10A3F;Diacritic
+10AE5..10AE6;Diacritic
+10A56..10A57;Sentence_Terminal
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「267」））
+                于（「小于」于「桶」于「268」）则
+                  『10B3A..10B3F;Terminal_Punctuation
+10B99..10B9C;Terminal_Punctuation
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「269」））
+                  于（「小于」于「桶」于「270」）则
+                    『10D6E;Dash
+10D24..10D27;Other_Alphabetic
+10D69;Other_Alphabetic
+10D22..10D23;Diacritic
+10D24..10D27;Diacritic
+10D4E;Diacritic
+10D69..10D6D;Diacritic
+10D4E;Extender
+10D6A;Extender
+10D6F;Extender
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「270」））
+                    于（「小于」于「桶」于「271」）则
+                      『10EAD;Dash
+10EAB..10EAC;Other_Alphabetic
+10ECB..10ECD;Other_Alphabetic
+10EF3;Other_Alphabetic
+10EF5;Other_Alphabetic
+10EF7..10EF8;Other_Alphabetic
+10EFA..10EFC;Other_Alphabetic
+10ECB..10ECF;Diacritic
+10EF0..10EF7;Diacritic
+10EF9..10EFA;Diacritic
+10EFD..10EFF;Diacritic
+10EF4;Modifier_Combining_Mark
+10EF6;Modifier_Combining_Mark
+10EF9;Modifier_Combining_Mark
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「271」））
+                      于（「小于」于「桶」于「272」）则
+                        『10F55..10F59;Terminal_Punctuation
+10F86..10F89;Terminal_Punctuation
+10F46..10F50;Diacritic
+10F82..10F85;Diacritic
+10F55..10F59;Sentence_Terminal
+10F86..10F89;Sentence_Terminal
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「272」））
+                        于（「小于」于「桶」于「273」）则
+                          『11047..1104D;Terminal_Punctuation
+110BE..110C1;Terminal_Punctuation
+11000;Other_Alphabetic
+11001;Other_Alphabetic
+11002;Other_Alphabetic
+11038..11045;Other_Alphabetic
+11073..11074;Other_Alphabetic
+11080..11081;Other_Alphabetic
+11082;Other_Alphabetic
+110B0..110B2;Other_Alphabetic
+110B3..110B6;Other_Alphabetic
+110B7..110B8;Other_Alphabetic
+110C2;Other_Alphabetic
+11046;Diacritic
+11070;Diacritic
+110B9..110BA;Diacritic
+11047..11048;Sentence_Terminal
+110BE..110C1;Sentence_Terminal
+110BD;Prepended_Concatenation_Mark
+110CD;Prepended_Concatenation_Mark
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「273」））
+                          于（「小于」于「桶」于「274」）则
+                            『11141..11143;Terminal_Punctuation
+111C5..111C6;Terminal_Punctuation
+111CD;Terminal_Punctuation
+111DE..111DF;Terminal_Punctuation
+11100..11102;Other_Alphabetic
+11127..1112B;Other_Alphabetic
+1112C;Other_Alphabetic
+1112D..11132;Other_Alphabetic
+11145..11146;Other_Alphabetic
+11180..11181;Other_Alphabetic
+11182;Other_Alphabetic
+111B3..111B5;Other_Alphabetic
+111B6..111BE;Other_Alphabetic
+111BF;Other_Alphabetic
+111CE;Other_Alphabetic
+111CF;Other_Alphabetic
+11133..11134;Diacritic
+11173;Diacritic
+111C0;Diacritic
+111CA..111CC;Diacritic
+111C0;Other_Grapheme_Extend
+11141..11143;Sentence_Terminal
+111C5..111C6;Sentence_Terminal
+111CD;Sentence_Terminal
+111DE..111DF;Sentence_Terminal
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「274」））
+                            于（「小于」于「桶」于「275」）则
+                              『11238..1123C;Terminal_Punctuation
+112A9;Terminal_Punctuation
+1122C..1122E;Other_Alphabetic
+1122F..11231;Other_Alphabetic
+11232..11233;Other_Alphabetic
+11234;Other_Alphabetic
+11237;Other_Alphabetic
+1123E;Other_Alphabetic
+11241;Other_Alphabetic
+112DF;Other_Alphabetic
+112E0..112E2;Other_Alphabetic
+112E3..112E8;Other_Alphabetic
+11235;Diacritic
+11236;Diacritic
+112E9..112EA;Diacritic
+11237;Extender
+11235;Other_Grapheme_Extend
+11238..11239;Sentence_Terminal
+1123B..1123C;Sentence_Terminal
+112A9;Sentence_Terminal
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「275」））
+                              于（「小于」于「桶」于「276」）则
+                                『113D4..113D5;Terminal_Punctuation
+11300..11301;Other_Alphabetic
+11302..11303;Other_Alphabetic
+1133E..1133F;Other_Alphabetic
+11340;Other_Alphabetic
+11341..11344;Other_Alphabetic
+11347..11348;Other_Alphabetic
+1134B..1134C;Other_Alphabetic
+11357;Other_Alphabetic
+11362..11363;Other_Alphabetic
+113B8..113BA;Other_Alphabetic
+113BB..113C0;Other_Alphabetic
+113C2;Other_Alphabetic
+113C5;Other_Alphabetic
+113C7..113CA;Other_Alphabetic
+113CC..113CD;Other_Alphabetic
+1133B..1133C;Diacritic
+1134D;Diacritic
+11366..1136C;Diacritic
+11370..11374;Diacritic
+113CE;Diacritic
+113CF;Diacritic
+113D0;Diacritic
+113D2;Diacritic
+113D3;Diacritic
+113E1..113E2;Diacritic
+1135D;Extender
+113D2;Extender
+113D3;Extender
+1133E;Other_Grapheme_Extend
+1134D;Other_Grapheme_Extend
+11357;Other_Grapheme_Extend
+113B8;Other_Grapheme_Extend
+113C2;Other_Grapheme_Extend
+113C5;Other_Grapheme_Extend
+113C7..113C9;Other_Grapheme_Extend
+113CF;Other_Grapheme_Extend
+113D4..113D5;Sentence_Terminal
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「276」））
+                                于（「小于」于「桶」于「277」）则
+                                  『1144B..1144D;Terminal_Punctuation
+1145A..1145B;Terminal_Punctuation
+11435..11437;Other_Alphabetic
+11438..1143F;Other_Alphabetic
+11440..11441;Other_Alphabetic
+11443..11444;Other_Alphabetic
+11445;Other_Alphabetic
+114B0..114B2;Other_Alphabetic
+114B3..114B8;Other_Alphabetic
+114B9;Other_Alphabetic
+114BA;Other_Alphabetic
+114BB..114BE;Other_Alphabetic
+114BF..114C0;Other_Alphabetic
+114C1;Other_Alphabetic
+11442;Diacritic
+11446;Diacritic
+114C2..114C3;Diacritic
+114B0;Other_Grapheme_Extend
+114BD;Other_Grapheme_Extend
+1144B..1144C;Sentence_Terminal
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「277」））
+                                  于（「小于」于「桶」于「278」）则
+                                    『115C2..115C5;Terminal_Punctuation
+115C9..115D7;Terminal_Punctuation
+115AF..115B1;Other_Alphabetic
+115B2..115B5;Other_Alphabetic
+115B8..115BB;Other_Alphabetic
+115BC..115BD;Other_Alphabetic
+115BE;Other_Alphabetic
+115DC..115DD;Other_Alphabetic
+115BF..115C0;Diacritic
+115C6..115C8;Extender
+115AF;Other_Grapheme_Extend
+115C2..115C3;Sentence_Terminal
+115C9..115D7;Sentence_Terminal
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「278」））
+                                    于（「小于」于「桶」于「279」）则
+                                      『11641..11642;Terminal_Punctuation
+11630..11632;Other_Alphabetic
+11633..1163A;Other_Alphabetic
+1163B..1163C;Other_Alphabetic
+1163D;Other_Alphabetic
+1163E;Other_Alphabetic
+11640;Other_Alphabetic
+116AB;Other_Alphabetic
+116AC;Other_Alphabetic
+116AD;Other_Alphabetic
+116AE..116AF;Other_Alphabetic
+116B0..116B5;Other_Alphabetic
+1163F;Diacritic
+116B6;Diacritic
+116B7;Diacritic
+116B6;Other_Grapheme_Extend
+11641..11642;Sentence_Terminal
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「279」））
+                                      于（「小于」于「桶」于「280」）则
+                                        『1173C..1173E;Terminal_Punctuation
+1171D;Other_Alphabetic
+1171E;Other_Alphabetic
+1171F;Other_Alphabetic
+11720..11721;Other_Alphabetic
+11722..11725;Other_Alphabetic
+11726;Other_Alphabetic
+11727..1172A;Other_Alphabetic
+1172B;Diacritic
+1173C..1173E;Sentence_Terminal
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「280」））
+                                        于（「小于」于「桶」于「281」）则
+                                          『1182C..1182E;Other_Alphabetic
+1182F..11837;Other_Alphabetic
+11838;Other_Alphabetic
+11839..1183A;Diacritic
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「281」））
+                                          于（「小于」于「桶」于「282」）则
+                                            『11944;Terminal_Punctuation
+11946;Terminal_Punctuation
+11930..11935;Other_Alphabetic
+11937..11938;Other_Alphabetic
+1193B..1193C;Other_Alphabetic
+11940;Other_Alphabetic
+11942;Other_Alphabetic
+119D1..119D3;Other_Alphabetic
+119D4..119D7;Other_Alphabetic
+119DA..119DB;Other_Alphabetic
+119DC..119DF;Other_Alphabetic
+119E4;Other_Alphabetic
+1193D;Diacritic
+1193E;Diacritic
+11943;Diacritic
+119E0;Diacritic
+11930;Other_Grapheme_Extend
+1193D;Other_Grapheme_Extend
+11944;Sentence_Terminal
+11946;Sentence_Terminal
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「282」））
+                                            于（「小于」于「桶」于「283」）则
+                                              『11A42..11A43;Terminal_Punctuation
+11A9B..11A9C;Terminal_Punctuation
+11AA1..11AA2;Terminal_Punctuation
+11A01..11A0A;Other_Alphabetic
+11A35..11A38;Other_Alphabetic
+11A39;Other_Alphabetic
+11A3B..11A3E;Other_Alphabetic
+11A51..11A56;Other_Alphabetic
+11A57..11A58;Other_Alphabetic
+11A59..11A5B;Other_Alphabetic
+11A8A..11A96;Other_Alphabetic
+11A97;Other_Alphabetic
+11A34;Diacritic
+11A47;Diacritic
+11A99;Diacritic
+11A98;Extender
+11A42..11A43;Sentence_Terminal
+11A9B..11A9C;Sentence_Terminal
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「283」））
+                                              于（「小于」于「桶」于「284」）则
+                                                『11B60;Other_Alphabetic
+11B61;Other_Alphabetic
+11B62..11B64;Other_Alphabetic
+11B65;Other_Alphabetic
+11B66;Other_Alphabetic
+11B67;Other_Alphabetic
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「284」））
+                                                于（「小于」于「桶」于「285」）则
+                                                  『11C41..11C43;Terminal_Punctuation
+11C71;Terminal_Punctuation
+11C2F;Other_Alphabetic
+11C30..11C36;Other_Alphabetic
+11C38..11C3D;Other_Alphabetic
+11C3E;Other_Alphabetic
+11C92..11CA7;Other_Alphabetic
+11CA9;Other_Alphabetic
+11CAA..11CB0;Other_Alphabetic
+11CB1;Other_Alphabetic
+11CB2..11CB3;Other_Alphabetic
+11CB4;Other_Alphabetic
+11CB5..11CB6;Other_Alphabetic
+11C3F;Diacritic
+11C41..11C42;Sentence_Terminal
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「285」））
+                                                  于（「小于」于「桶」于「286」）则
+                                                    『11D31..11D36;Other_Alphabetic
+11D3A;Other_Alphabetic
+11D3C..11D3D;Other_Alphabetic
+11D3F..11D41;Other_Alphabetic
+11D43;Other_Alphabetic
+11D47;Other_Alphabetic
+11D8A..11D8E;Other_Alphabetic
+11D90..11D91;Other_Alphabetic
+11D93..11D94;Other_Alphabetic
+11D95;Other_Alphabetic
+11D96;Other_Alphabetic
+11DF0;Other_Alphabetic
+11D42;Diacritic
+11D44..11D45;Diacritic
+11D97;Diacritic
+11DD9;Diacritic
+11DD9;Extender
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「286」））
+                                                    于（「小于」于「桶」于「287」）则
+                                                      『11EF7..11EF8;Terminal_Punctuation
+11EF3..11EF4;Other_Alphabetic
+11EF5..11EF6;Other_Alphabetic
+11EF7..11EF8;Sentence_Terminal
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「287」））
+                                                      于（「小于」于「桶」于「288」）则
+                                                        『11F43..11F44;Terminal_Punctuation
+11F00..11F01;Other_Alphabetic
+11F03;Other_Alphabetic
+11F34..11F35;Other_Alphabetic
+11F36..11F3A;Other_Alphabetic
+11F3E..11F3F;Other_Alphabetic
+11F40;Other_Alphabetic
+11F41;Diacritic
+11F42;Diacritic
+11F5A;Diacritic
+11F41;Other_Grapheme_Extend
+11F43..11F44;Sentence_Terminal
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「292」））
+                                                        于（「小于」于「桶」于「293」）则
+                                                          『12470..12474;Terminal_Punctuation
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「308」））
+                                                          于（「小于」于「桶」于「309」）则
+                                                            『13447..13455;Diacritic
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「353」））
+                                                            于（「小于」于「桶」于「354」）则
+                                                            『1611E..16129;Other_Alphabetic
+1612A..1612C;Other_Alphabetic
+1612D..1612E;Other_Alphabetic
+1612F;Diacritic
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「362」））
+                                                            于（「小于」于「桶」于「363」）则
+                                                            『16A6E..16A6F;Terminal_Punctuation
+16AF5;Terminal_Punctuation
+16AF0..16AF4;Diacritic
+16A6E..16A6F;Sentence_Terminal
+16AF5;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「363」））
+                                                            于（「小于」于「桶」于「364」）则
+                                                            『16B37..16B39;Terminal_Punctuation
+16B44;Terminal_Punctuation
+16B30..16B36;Diacritic
+16B42..16B43;Extender
+16B37..16B38;Sentence_Terminal
+16B44;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「365」））
+                                                            于（「小于」于「桶」于「366」）则
+                                                            『16D6E..16D6F;Terminal_Punctuation
+16D6B..16D6C;Diacritic
+16D6E..16D6F;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「366」））
+                                                            于（「小于」于「桶」于「367」）则
+                                                            『16E97..16E98;Terminal_Punctuation
+16E98;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「367」））
+                                                            于（「小于」于「桶」于「368」）则
+                                                            『16F4F;Other_Alphabetic
+16F51..16F87;Other_Alphabetic
+16F8F..16F92;Other_Alphabetic
+16FF0..16FF1;Other_Alphabetic
+16FE4;Ideographic
+16FF2..16FF3;Ideographic
+16FF4..16FF6;Ideographic
+16F8F..16F92;Diacritic
+16F93..16F9F;Diacritic
+16FF0..16FF1;Diacritic
+16FE0..16FE1;Extender
+16FE3;Extender
+16FF2..16FF3;Extender
+16FF0..16FF1;Other_Grapheme_Extend
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「368」））
+                                                            于（「小于」于「桶」于「396」）则
+                                                            『17000..18CDA;Ideographic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「396」））
+                                                            于（「小于」于「桶」于「397」）则
+                                                            『17000..18CDA;Ideographic
+18CFF..18D20;Ideographic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「397」））
+                                                            于（「小于」于「桶」于「398」）则
+                                                            『18CFF..18D20;Ideographic
+18D80..18DF2;Ideographic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「398」））
+                                                            于（「小于」于「桶」于「401」）则
+                                                            『18E00..19191;Ideographic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「401」））
+                                                            于（「小于」于「桶」于「402」）则
+                                                            『18E00..19191;Ideographic
+191A0..191D2;Ideographic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「431」））
+                                                            于（「小于」于「桶」于「432」）则
+                                                            『1AFF0..1AFF3;Diacritic
+1AFF5..1AFFB;Diacritic
+1AFFD..1AFFE;Diacritic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「433」））
+                                                            于（「小于」于「桶」于「435」）则
+                                                            『1B170..1B2FB;Ideographic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「444」））
+                                                            于（「小于」于「桶」于「445」）则
+                                                            『1BC9F;Terminal_Punctuation
+1BC9E;Other_Alphabetic
+1BC9F;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「463」））
+                                                            于（「小于」于「桶」于「464」）则
+                                                            『1CF00..1CF2D;Diacritic
+1CF30..1CF46;Diacritic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「465」））
+                                                            于（「小于」于「桶」于「466」）则
+                                                            『1D167..1D169;Diacritic
+1D16D..1D172;Diacritic
+1D17B..1D182;Diacritic
+1D185..1D18B;Diacritic
+1D1AA..1D1AD;Diacritic
+1D165..1D166;Other_Grapheme_Extend
+1D16D..1D172;Other_Grapheme_Extend
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「466」））
+                                                            于（「小于」于「桶」于「467」）则
+                                                            『1D250..1D252;Diacritic
+1D25B..1D25C;Diacritic
+1D250..1D252;Other_Grapheme_Extend
+1D25F;Other_Grapheme_Extend
+1D280..1D281;Other_Grapheme_Extend
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「468」））
+                                                            于（「小于」于「桶」于「469」）则
+                                                            『1D400..1D454;Other_Math
+1D456..1D49C;Other_Math
+1D49E..1D49F;Other_Math
+1D4A2;Other_Math
+1D4A5..1D4A6;Other_Math
+1D4A9..1D4AC;Other_Math
+1D4AE..1D4B9;Other_Math
+1D4BB;Other_Math
+1D4BD..1D4C3;Other_Math
+1D4C5..1D505;Other_Math
+1D422..1D423;Soft_Dotted
+1D456..1D457;Soft_Dotted
+1D48A..1D48B;Soft_Dotted
+1D4BE..1D4BF;Soft_Dotted
+1D4F2..1D4F3;Soft_Dotted
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「469」））
+                                                            于（「小于」于「桶」于「470」）则
+                                                            『1D4C5..1D505;Other_Math
+1D507..1D50A;Other_Math
+1D50D..1D514;Other_Math
+1D516..1D51C;Other_Math
+1D51E..1D539;Other_Math
+1D53B..1D53E;Other_Math
+1D540..1D544;Other_Math
+1D546;Other_Math
+1D54A..1D550;Other_Math
+1D552..1D6A6;Other_Math
+1D526..1D527;Soft_Dotted
+1D55A..1D55B;Soft_Dotted
+1D58E..1D58F;Soft_Dotted
+1D5C2..1D5C3;Soft_Dotted
+1D5F6..1D5F7;Soft_Dotted
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「470」））
+                                                            于（「小于」于「桶」于「471」）则
+                                                            『1D552..1D6A6;Other_Math
+1D6A8..1D6C0;Other_Math
+1D6C2..1D6DA;Other_Math
+1D6DC..1D6FA;Other_Math
+1D6FC..1D714;Other_Math
+1D62A..1D62B;Soft_Dotted
+1D65E..1D65F;Soft_Dotted
+1D692..1D693;Soft_Dotted
+1D6C1;ID_Compat_Math_Continue
+1D6DB;ID_Compat_Math_Continue
+1D6FB;ID_Compat_Math_Continue
+1D6C1;ID_Compat_Math_Start
+1D6DB;ID_Compat_Math_Start
+1D6FB;ID_Compat_Math_Start
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「471」））
+                                                            于（「小于」于「桶」于「472」）则
+                                                            『1D6FC..1D714;Other_Math
+1D716..1D734;Other_Math
+1D736..1D74E;Other_Math
+1D750..1D76E;Other_Math
+1D770..1D788;Other_Math
+1D78A..1D7A8;Other_Math
+1D7AA..1D7C2;Other_Math
+1D7C4..1D7CB;Other_Math
+1D7CE..1D7FF;Other_Math
+1D715;ID_Compat_Math_Continue
+1D735;ID_Compat_Math_Continue
+1D74F;ID_Compat_Math_Continue
+1D76F;ID_Compat_Math_Continue
+1D789;ID_Compat_Math_Continue
+1D7A9;ID_Compat_Math_Continue
+1D7C3;ID_Compat_Math_Continue
+1D715;ID_Compat_Math_Start
+1D735;ID_Compat_Math_Start
+1D74F;ID_Compat_Math_Start
+1D76F;ID_Compat_Math_Start
+1D789;ID_Compat_Math_Start
+1D7A9;ID_Compat_Math_Start
+1D7C3;ID_Compat_Math_Start
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「474」））
+                                                            于（「小于」于「桶」于「475」）则
+                                                            『1DA87..1DA8A;Terminal_Punctuation
+1DA88;Sentence_Terminal
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「479」））
+                                                            于（「小于」于「桶」于「480」）则
+                                                            『1DFCD..1DFCF;Diacritic
+1DFD1..1DFFF;Diacritic
+1DFCD..1DFFF;Other_Lowercase
+1DF1A;Soft_Dotted
+1DF6F..1DF71;Soft_Dotted
+1DFD9;Soft_Dotted
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「480」））
+                                                            于（「小于」于「桶」于「481」）则
+                                                            『1E000..1E006;Other_Alphabetic
+1E008..1E018;Other_Alphabetic
+1E01B..1E021;Other_Alphabetic
+1E023..1E024;Other_Alphabetic
+1E026..1E02A;Other_Alphabetic
+1E08F;Other_Alphabetic
+1E030..1E06D;Diacritic
+1E030..1E06D;Other_Lowercase
+1E04C..1E04D;Soft_Dotted
+1E068;Soft_Dotted
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「481」））
+                                                            于（「小于」于「桶」于「482」）则
+                                                            『1E130..1E136;Diacritic
+1E13C..1E13D;Extender
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「482」））
+                                                            于（「小于」于「桶」于「483」）则
+                                                            『1E2AE;Diacritic
+1E2EC..1E2EF;Diacritic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「485」））
+                                                            于（「小于」于「桶」于「486」）则
+                                                            『1E5EE..1E5EF;Diacritic
+1E5EF;Extender
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「486」））
+                                                            于（「小于」于「桶」于「487」）则
+                                                            『1E6E3;Other_Alphabetic
+1E6E6;Other_Alphabetic
+1E6EE..1E6EF;Other_Alphabetic
+1E6F5;Other_Alphabetic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「488」））
+                                                            于（「小于」于「桶」于「489」）则
+                                                            『1E8D0..1E8D6;Diacritic
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「489」））
+                                                            于（「小于」于「桶」于「490」）则
+                                                            『1E947;Other_Alphabetic
+1E944..1E946;Diacritic
+1E948..1E94A;Diacritic
+1E944..1E946;Extender
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「494」））
+                                                            于（「小于」于「桶」于「495」）则
+                                                            『1EE00..1EE03;Other_Math
+1EE05..1EE1F;Other_Math
+1EE21..1EE22;Other_Math
+1EE24;Other_Math
+1EE27;Other_Math
+1EE29..1EE32;Other_Math
+1EE34..1EE37;Other_Math
+1EE39;Other_Math
+1EE3B;Other_Math
+1EE42;Other_Math
+1EE47;Other_Math
+1EE49;Other_Math
+1EE4B;Other_Math
+1EE4D..1EE4F;Other_Math
+1EE51..1EE52;Other_Math
+1EE54;Other_Math
+1EE57;Other_Math
+1EE59;Other_Math
+1EE5B;Other_Math
+1EE5D;Other_Math
+1EE5F;Other_Math
+1EE61..1EE62;Other_Math
+1EE64;Other_Math
+1EE67..1EE6A;Other_Math
+1EE6C..1EE72;Other_Math
+1EE74..1EE77;Other_Math
+1EE79..1EE7C;Other_Math
+1EE7E;Other_Math
+1EE80..1EE89;Other_Math
+1EE8B..1EE9B;Other_Math
+1EEA1..1EEA3;Other_Math
+1EEA5..1EEA9;Other_Math
+1EEAB..1EEBB;Other_Math
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「497」））
+                                                            于（「小于」于「桶」于「498」）则
+                                                            『1F130..1F149;Other_Alphabetic
+1F150..1F169;Other_Alphabetic
+1F170..1F189;Other_Alphabetic
+1F130..1F149;Other_Uppercase
+1F150..1F169;Other_Uppercase
+1F170..1F189;Other_Uppercase
+1F1E6..1F1FF;Regional_Indicator
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「503」））
+                                                            于（「小于」于「桶」于「504」）则
+                                                            『1F7DB;Other_Math
+1F7F1..1F7FF;Other_Math
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「511」））
+                                                            于（「小于」于「桶」于「512」）则
+                                                            『1FFFE..1FFFF;Noncharacter_Code_Point
+』
+                                                            否则
+                                                            『』
+也。
+
+「二元清单表2」乃化「整数」而「字符串」也。
+「二元清单表2」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「512」））于（「小于」于「桶」于「679」）则
+    『20000..2A6DF;Ideographic
+20000..2A6DF;Unified_Ideograph
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「679」））于（「小于」于「桶」于「696」）则
+      『2A700..2B81E;Ideographic
+2A700..2B81E;Unified_Ideograph
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「696」））于（「小于」于「桶」于「697」）则
+        『2A700..2B81E;Ideographic
+2B820..2CEAD;Ideographic
+2A700..2B81E;Unified_Ideograph
+2B820..2CEAD;Unified_Ideograph
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「697」））于（「小于」于「桶」于「718」）则
+          『2B820..2CEAD;Ideographic
+2B820..2CEAD;Unified_Ideograph
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「718」））
+            于（「小于」于「桶」于「719」）则
+              『2B820..2CEAD;Ideographic
+2CEB0..2EBE0;Ideographic
+2B820..2CEAD;Unified_Ideograph
+2CEB0..2EBE0;Unified_Ideograph
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「719」））
+              于（「小于」于「桶」于「747」）则
+                『2CEB0..2EBE0;Ideographic
+2CEB0..2EBE0;Unified_Ideograph
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「747」））
+                于（「小于」于「桶」于「748」）则
+                  『2CEB0..2EBE0;Ideographic
+2EBF0..2EE5D;Ideographic
+2CEB0..2EBE0;Unified_Ideograph
+2EBF0..2EE5D;Unified_Ideograph
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「748」））
+                  于（「小于」于「桶」于「751」）则
+                    『2EBF0..2EE5D;Ideographic
+2EBF0..2EE5D;Unified_Ideograph
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「760」））
+                    于（「小于」于「桶」于「763」）则
+                      『2F800..2FA1D;Ideographic
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「767」））
+                      于（「小于」于「桶」于「768」）则
+                        『2FFFE..2FFFF;Noncharacter_Code_Point
+』
+                    否则
+                      『』
+也。
+
+「二元清单表3」乃化「整数」而「字符串」也。
+「二元清单表3」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「768」））于（「小于」于「桶」于「787」）则
+    『30000..3134A;Ideographic
+30000..3134A;Unified_Ideograph
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「787」））于（「小于」于「桶」于「788」）则
+      『30000..3134A;Ideographic
+31350..33479;Ideographic
+30000..3134A;Unified_Ideograph
+31350..33479;Unified_Ideograph
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「788」））于（「小于」于「桶」于「821」）则
+        『31350..33479;Ideographic
+31350..33479;Unified_Ideograph
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「976」））于（「小于」于「桶」于「1021」）则
+          『3D000..3FC3F;Ideographic
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「1023」））
+            于（「小于」于「桶」于「1024」）则
+            『3FFFE..3FFFF;Noncharacter_Code_Point
+』
+          否则
+            『』
+也。
+
+「二元清单表4」乃化「整数」而「字符串」也。
+「二元清单表4」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「1279」））于（「小于」于「桶」于「1280」）则
+    『4FFFE..4FFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表5」乃化「整数」而「字符串」也。
+「二元清单表5」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「1535」））于（「小于」于「桶」于「1536」）则
+    『5FFFE..5FFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表6」乃化「整数」而「字符串」也。
+「二元清单表6」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「1791」））于（「小于」于「桶」于「1792」）则
+    『6FFFE..6FFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表7」乃化「整数」而「字符串」也。
+「二元清单表7」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「2047」））于（「小于」于「桶」于「2048」）则
+    『7FFFE..7FFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表8」乃化「整数」而「字符串」也。
+「二元清单表8」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「2303」））于（「小于」于「桶」于「2304」）则
+    『8FFFE..8FFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表9」乃化「整数」而「字符串」也。
+「二元清单表9」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「2559」））于（「小于」于「桶」于「2560」）则
+    『9FFFE..9FFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表10」乃化「整数」而「字符串」也。
+「二元清单表10」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「2815」））于（「小于」于「桶」于「2816」）则
+    『AFFFE..AFFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表11」乃化「整数」而「字符串」也。
+「二元清单表11」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3071」））于（「小于」于「桶」于「3072」）则
+    『BFFFE..BFFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表12」乃化「整数」而「字符串」也。
+「二元清单表12」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3327」））于（「小于」于「桶」于「3328」）则
+    『CFFFE..CFFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表13」乃化「整数」而「字符串」也。
+「二元清单表13」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3583」））于（「小于」于「桶」于「3584」）则
+    『DFFFE..DFFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表14」乃化「整数」而「字符串」也。
+「二元清单表14」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3584」））于（「小于」于「桶」于「3585」）则
+    『E0020..E007F;Other_Grapheme_Extend
+E0000;Other_Default_Ignorable_Code_Point
+E0002..E001F;Other_Default_Ignorable_Code_Point
+E0080..E00FF;Other_Default_Ignorable_Code_Point
+E0001;Deprecated
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「3585」））于（「小于」于「桶」于「3586」）则
+      『E01F0..E0FFF;Other_Default_Ignorable_Code_Point
+E0100..E01EF;Variation_Selector
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「3586」））于（「小于」于「桶」于「3600」）则
+        『E01F0..E0FFF;Other_Default_Ignorable_Code_Point
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「3839」））于（「小于」于「桶」于「3840」）则
+          『EFFFE..EFFFF;Noncharacter_Code_Point
+』
+        否则
+          『』
+也。
+
+「二元清单表15」乃化「整数」而「字符串」也。
+「二元清单表15」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「4095」））于（「小于」于「桶」于「4096」）则
+    『FFFFE..FFFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表16」乃化「整数」而「字符串」也。
+「二元清单表16」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「4351」））于（「小于」于「桶」于「4352」）则
+    『10FFFE..10FFFF;Noncharacter_Code_Point
+』
+  否则
+    『』
+也。
+
+「二元清单表」乃化「整数」而「字符串」也。
+「二元清单表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「二元清单表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「二元清单表1」于「桶」否则
+      若「小于」于「桶」于「768」则「二元清单表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「二元清单表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「二元清单表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「二元清单表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「二元清单表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「二元清单表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「二元清单表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「二元清单表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「二元清单表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「二元清单表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「二元清单表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「二元清单表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「二元清单表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「二元清单表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「二元清单表16」于「桶」
+                                  否则
+                                    『』
+也。

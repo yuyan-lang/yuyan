@@ -1,0 +1,135 @@
+寻观「标准库」之书。
+寻观「统一码」之「属性」之书。
+寻观「统一码」之「属性解析」之书。
+寻观「统一码数据」之「二元核心」之书。
+寻观「统一码数据」之「二元清单」之书。
+寻观「统一码数据」之「二元表情」之书。
+寻观「统一码数据」之「二元导出」之书。
+寻观「统一码数据」之「二元规范」之书。
+
+「：汉语：名称取 ECMAScript 2025 的五十三项二元属性，区间取 Unicode 18.0.0 官方数据。
+文言：名取二〇二五版 ECMAScript 五十三二元之性，码界取十八版统一码官数。：」
+「二元属性名列」者
+  （（「列」于「字符串」）也（「列」
+                                【『ASCII』
+                                ，『ASCII_Hex_Digit』
+                                ，『Alphabetic』
+                                ，『Any』
+                                ，『Assigned』
+                                ，『Bidi_Control』
+                                ，『Bidi_Mirrored』
+                                ，『Case_Ignorable』
+                                ，『Cased』
+                                ，『Changes_When_Casefolded』
+                                ，『Changes_When_Casemapped』
+                                ，『Changes_When_Lowercased』
+                                ，『Changes_When_NFKC_Casefolded』
+                                ，『Changes_When_Titlecased』
+                                ，『Changes_When_Uppercased』
+                                ，『Dash』
+                                ，『Default_Ignorable_Code_Point』
+                                ，『Deprecated』
+                                ，『Diacritic』
+                                ，『Emoji』
+                                ，『Emoji_Component』
+                                ，『Emoji_Modifier』
+                                ，『Emoji_Modifier_Base』
+                                ，『Emoji_Presentation』
+                                ，『Extended_Pictographic』
+                                ，『Extender』
+                                ，『Grapheme_Base』
+                                ，『Grapheme_Extend』
+                                ，『Hex_Digit』
+                                ，『IDS_Binary_Operator』
+                                ，『IDS_Trinary_Operator』
+                                ，『ID_Continue』
+                                ，『ID_Start』
+                                ，『Ideographic』
+                                ，『Join_Control』
+                                ，『Logical_Order_Exception』
+                                ，『Lowercase』
+                                ，『Math』
+                                ，『Noncharacter_Code_Point』
+                                ，『Pattern_Syntax』
+                                ，『Pattern_White_Space』
+                                ，『Quotation_Mark』
+                                ，『Radical』
+                                ，『Regional_Indicator』
+                                ，『Sentence_Terminal』
+                                ，『Soft_Dotted』
+                                ，『Terminal_Punctuation』
+                                ，『Unified_Ideograph』
+                                ，『Uppercase』
+                                ，『Variation_Selector』
+                                ，『White_Space』
+                                ，『XID_Continue』
+                                ，『XID_Start』
+                                】）
+  ）
+也。
+
+「二元名列含」乃化（「列」于「字符串」）而化「字符串」而「爻」也。
+「二元名列含」者会「余」而会「名」而
+  鉴「余」而
+    有「罄」则「阴」
+    或有（「缀」于「首」于「尾」）则
+      若「串相等」于「首」于「名」则「阳」否则「二元名列含」于「尾」于「名」
+也。
+
+「统一码二元属性有效」乃化「字符串」而「爻」也。
+「统一码二元属性有效」者会「名」而
+  「二元名列含」于「二元属性名列」于「名」
+也。
+
+「二元属性查行」乃化「字符串」而化「整数」而化「字符串」而化「整数」而「爻」也。
+「二元属性查行」者会「文」而会「位」而会「名」而会「码」而
+  若「小于」于「位」于（「字节长度」于「文」）则
+    虑「末」者「属性寻字」于「文」于「位」于「10」而
+    虑「行」者「串字节截」于「文」于「位」于「末」而
+    虑「界」者「属性范围」于「行」而
+    若「且」
+      于（「串相等」于（「属性字段」于「行」于「一」于「零」）于「名」）
+      于（「且」
+        于（「非」于（「小于」于「码」于（「界」中「零」）））
+        于（「非」于（「大于」于「码」于（「界」中「一」））））则
+          「阳」
+    否则
+      「二元属性查行」于「文」于（「加」于「末」于「一」）于「名」于「码」
+  否则
+    「阴」
+也。
+
+「统一码二元属性」乃化「字符串」而化「整数」而「爻」也。
+「统一码二元属性」者会「名」而会「码」而
+  若「或者」于（「小于」于「码」于「零」）于（「大于」于「码」于「1114111」）则
+    「阴」
+  否则
+    若「非」于（「统一码二元属性有效」于「名」）则「阴」否则
+      若「串相等」于「名」于『Any』则「阳」否则
+        若「串相等」于「名」于『ASCII』则「小于」于「码」于「128」否则
+          若「串相等」于「名」于『Assigned』则
+            「非」于（「串相等」于（「一般类别」于「码」）于『Cn』）
+          否则
+            虑「桶」者「除以」于「码」于「256」而
+            若「二元属性查行」
+              于（「二元核心表」于「桶」）于「零」于「名」于「码」则
+                「阳」
+            否则
+              若「二元属性查行」
+                于（「二元清单表」于「桶」）于「零」于「名」于「码」则
+                  「阳」
+              否则
+                若「二元属性查行」
+                  于（「二元表情表」于「桶」）
+                  于「零」于「名」于「码」则
+                  「阳」
+                否则
+                  若「二元属性查行」
+                    于（「二元导出表」于「桶」）
+                    于「零」于「名」于「码」则
+                    「阳」
+                  否则
+                    「二元属性查行」
+                      于（「二元规范表」于「桶」）
+                      于「零」于「名」于「码」
+也。
