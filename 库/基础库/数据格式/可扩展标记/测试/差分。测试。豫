@@ -173,3 +173,16 @@
 「差分非法」于『<!DOCTYPE 根 [<!ENTITY 空 "">]><根/>&空;』。
 「差分非法」于『<!DOCTYPE 根 [<!ENTITY 属 "甲='乙'">]><根 &属;/>』。
 「差分有效」于『<!DOCTYPE 根 [<!ENTITY gt ">">]><根>]]&gt;与]]&#62;与单引号'及双引号"</根>』。
+「差分非法」于『<!DOCTYPE 根 [<!ENTITY 令 "<?甲:乙 文?>">]><根>&令;</根>』。
+「差分非法」于『<!DOCTYPE 根 [<!ENTITY % 组 '<!ENTITY 甲:乙 "文">'>%组;]><根/>』。
+「差分非法」于『<!DOCTYPE 根 [<!ENTITY % 组 '<?甲:乙 文?>'>%组;]><根/>』。
+「差分非法」于『<!DOCTYPE 根 [<!ELEMENT 未:用:元 EMPTY>]><根/>』。
+「差分非法」于『<!DOCTYPE 根 [<!ELEMENT 根 (甲:乙:丙*)>]><根/>』。
+「差分非法」于『<!DOCTYPE 根 [<!ATTLIST 未用 甲:乙:丙 CDATA #IMPLIED>]><根/>』。
+「差分有效」于『<!DOCTYPE 根 [<!ENTITY 令 "<?令 文?>">]><根>&令;</根>』。
+「差分有效」于『<!DOCTYPE 根 [<!ENTITY % 组 '<?令 文?>'>%组;]><根/>』。
+「差分有效」于『<!DOCTYPE 根 [<!ELEMENT 根 (p:子*)><!ATTLIST p:未用 p:属 CDATA #IMPLIED>]><根/>』。
+「差分非法」于『<!DOCTYPE 根 [<!ENTITY 图 SYSTEM "图" NDATA p:图>]><根/>』。
+「差分非法」于『<!DOCTYPE 根 [<!ATTLIST 未用 图 NOTATION (p:图) #IMPLIED>]><根/>』。
+「差分有效」于『<!DOCTYPE 根 [<!ENTITY 图 SYSTEM "NDATA p:图" NDATA 图>]><根/>』。
+「差分有效」于『<!DOCTYPE 根 [<!ATTLIST 未用 类 (p:图) #IMPLIED>]><根/>』。
