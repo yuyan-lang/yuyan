@@ -7,7 +7,7 @@
 「模式果」者
   「解析协议文件」
     于
-    『syntax="proto3"; message N { int32 i=1; uint32 u=2; int64 l=3; uint64 ul=4; fixed32 f=5; sfixed32 sf=6; fixed64 fl=7; sint32 si=8; sint64 sl=9; bytes b=10; float f32=11; double f64=12; }』
+    『syntax="proto3"; message N { int32 i=1; uint32 u=2; int64 l=3; uint64 ul=4; fixed32 f=5; sfixed32 sf=6; fixed64 fl=7; sint32 si=8; sint64 sl=9; bytes b=10; float f32=11; double f64=12; map<bool,int32> flags=13; }』
 也。
 
 若「等零」于（「模式果」中「零」）则「元」否则「发生事故」授以「有」
@@ -69,4 +69,8 @@
 「验数值成」于『{"b":"_w"}』于『{"b":"/w=="}』。
 「验数值成」于『{"b":"/w"}』于『{"b":"/w=="}』。
 「验数值成」于『{"f32":"Infinity","f64":"NaN"}』于『{"f32":"Infinity","f64":"NaN"}』。
-「打印行」于『ProtoJSON整数二十项与浮点字节九项成功』。
+「验数值拒」于『{"flags":{"yes":1}}』。
+「验数值拒」于『{"flags":{"False":1}}』。
+「验数值拒」于『{"flags":{"":1}}』。
+「验数值成」于『{"flags":{"true":1,"false":2}}』于『{"flags":{"true":1,"false":2}}』。
+「打印行」于『ProtoJSON整数二十项与浮点字节九项及布尔映射四项成功』。
