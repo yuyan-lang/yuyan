@@ -9,11 +9,11 @@ import {StringDecoder as 字节解码器} from 'node:string_decoder';
 import 系统 from 'node:os';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
-import {spawnSync, spawnSync as 同步启动} from 'node:child_process';
+import {spawnSync, spawnSync as 同步启动, spawn as 原生服务启动} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {Worker, MessageChannel, receiveMessageOnPort} from 'node:worker_threads';
 // 〔内联起〕
-import {创建子程序能力} from './子程序.mjs';
+import {创建子程序能力, 创建原生子程序桥} from './子程序.mjs';
 import {创建任务采样} from './任务采样.mjs';
 import {创建控制台能力} from '../浏览器/控制台.mjs';
 import {创建终端输入} from './终端输入.mjs';
@@ -376,6 +376,8 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   const 终端输入 = 创建终端输入();
   const 任务采样 = 创建任务采样({名称: 路径.basename(程序路径)});
   const 子程序 = 创建子程序能力({程序: 授权.子程序, 环境: 授权.环境, 暂停输入: () => 终端输入.暂停()});
+  const 服务候选 = [原生依赖目录, 路径.dirname(程序路径), 当前目录].filter(Boolean).map(目 => 路径.join(目, 'yy原生子程序服务.exe'));
+  const 原生子程序 = 创建原生子程序桥({服务路径: 服务候选.find(径 => 文件系统.existsSync(径)), 程序: 授权.子程序, 环境: 授权.环境, 当前目录});
   const 标准库 = {
     // 汉语：本应用宿主的异步子进程启动留待后续版本，终止明确返回不支持。文言：此客宿主之异步子程启留待后版，止明还未支持。
     终止异步子进程: () => 58,
@@ -803,13 +805,16 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   const 旧表 = {...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库,
     豫言_节点_控制台: async (操作, 名, 文) => 文字(操作) === '读取' ? 控制台.读取(文字(名)) : 文字(操作) === '写入' ? 控制台.写入(文字(名), 文字(文)) : [7, '', '控制台操作无效'],
     豫言_节点_运行子程序: (名, 参数, 输入, 环境项们) => 子程序.运行(文字(名), 参数.map(文字), 输入, 环境项们.map(项 => 项.map(文字))),
+    豫言_节点_启动子程序: async (名, 参数, 输入, 环境项们) => 原生子程序.启动(文字(名), 参数.map(文字), 输入, 环境项们.map(项 => 项.map(文字))),
+    豫言_节点_收取子程序: async 柄 => 原生子程序.收取(柄),
+    豫言_节点_终止具名子程序: async 柄 => 原生子程序.终止(柄),
     豫言_节点_运行继承输入子程序: (名, 参数, 环境项们) => 子程序.运行(文字(名), 参数.map(文字), new Uint8Array(), 环境项们.map(项 => 项.map(文字)), true),
     豫言_节点_查询运行任务: () => {
       const 项 = 任务采样.采样();
       return [[项.标识, 项.名称, 项.范围, 项.采样微秒, 项.处理器万分比, 项.常驻字节, 项.堆已用字节]];
     }};
   // 文言：平台接口包之带型导入，由旧名之能表派生。汉语：平台接口包的带类型导入由上面以旧名为键的能力表派生，见 派生平台实现；旧名只是内部的键，不对外。
-  return Object.freeze({[能力清理]: () => {控制台.关闭(); 终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表)}});
+  return Object.freeze({[能力清理]: () => {原生子程序.关闭(); 控制台.关闭(); 终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表)}});
 }
 
 // 文言：以 JSPI 行客：诸能或同步或异步，客皆以常调用视之。汉语：用 JSPI 运行：能力可以同步返回，也可以返回 Promise（网络、摘要等），应用都按普通调用看待。

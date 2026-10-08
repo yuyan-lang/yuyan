@@ -1,5 +1,5 @@
 // 汉语：用户态子程序只运行宿主具名授权的节点发行入口；输入、环境随调用传入，不保留跨调用状态。文言：用户态子程序惟行宿主具名所授之节点发行入口；输入、环境随调而入，不留跨调之态。
-import {spawnSync as 同步启动} from 'node:child_process';
+import {spawnSync as 同步启动, spawn as 原生服务启动} from 'node:child_process';
 
 const 解码 = new TextDecoder('utf-8', {fatal: true});
 const 空字节 = () => new Uint8Array();
@@ -39,5 +39,71 @@ export function 创建子程序能力({程序 = new Map(), 环境 = new Set(), �
     },
     // 汉语：文本输入适配须明确解码失败，不能静默替换字节。文言：文本输入之适配须明报解码之败，不暗易字节。
     解码输出: 字节 => 解码.decode(字节),
+  };
+}
+
+// 汉语：节点只转发标准 JSON，请求在豫言原生服务中完成授权检查与进程操作。文言：节点惟转标准 JSON，其授之验与进程之事皆成于豫言原生服务。
+export function 创建原生子程序桥({服务路径, 程序 = new Map(), 环境 = new Set(), 当前目录 = process.cwd()} = {}) {
+  let 服务 = null, 待答 = [], 行缓 = '', 已闭 = false;
+  const 失败果 = () => ({状态: '失败', 错误码: 服务路径 ? 29 : 58});
+  function 断开() {
+    已闭 = true;
+    for (const 答 of 待答.splice(0)) 答(失败果());
+  }
+  function 开启() {
+    if (服务) return true;
+    if (!服务路径 || 已闭) return false;
+    const 参数 = [];
+    for (const [名, 项] of 程序) {
+      const 入口 = typeof 项 === 'string' ? 项 : 项.入口;
+      参数.push('--授权子程序', 名 + '=' + (/\.mjs$/i.test(入口) ? process.execPath : 入口));
+    }
+    for (const 名 of 环境) 参数.push('--允许环境', 名);
+    try {
+      服务 = 原生服务启动(服务路径, 参数, {cwd: 当前目录, stdio: ['pipe', 'pipe', 'pipe']});
+      服务.stdout.setEncoding('utf8');
+      服务.stdout.on('data', 块 => {
+        行缓 += 块;
+        let 位;
+        while ((位 = 行缓.indexOf('\n')) >= 0) {
+          const 行 = 行缓.slice(0, 位); 行缓 = 行缓.slice(位 + 1);
+          const 答 = 待答.shift();
+          if (!答) continue;
+          try { 答(JSON.parse(行)); } catch { 答(失败果()); }
+        }
+      });
+      服务.stderr.resume();
+      服务.on('error', 断开);
+      服务.on('close', 断开);
+      服务.stdin.on('error', 断开);
+      return true;
+    } catch { 断开(); return false; }
+  }
+  function 请求(请) {
+    if (!开启()) return Promise.resolve(失败果());
+    return new Promise(答 => {
+      待答.push(答);
+      服务.stdin.write(JSON.stringify(请) + '\n');
+    });
+  }
+  return {
+    async 启动(名, 参数, 输入, 环境项们) {
+      const 项 = 程序.get(名);
+      const 入口 = typeof 项 === 'string' ? 项 : 项?.入口;
+      const 参数们 = 入口 && /\.mjs$/i.test(入口) ? [入口, '--', ...参数] : 参数;
+      const 果 = await 请求({动作: '启动', 名称: 名, 参数: 参数们, 输入: Array.from(输入), 环境: 环境项们});
+      return 果.状态 === '已启动' ? [0, 果.句柄] : [Number(果.错误码 ?? 29), -1];
+    },
+    async 收取(柄) {
+      const 果 = await 请求({动作: '收取', 句柄: Number(柄)});
+      if (果.状态 === '运行中') return [0, 0, new Uint8Array(), new Uint8Array()];
+      if (果.状态 === '完成') return [1, 果.退出码, Uint8Array.from(果.输出), Uint8Array.from(果.错误)];
+      return [-Number(果.错误码 ?? 29), 0, new Uint8Array(), new Uint8Array()];
+    },
+    async 终止(柄) {
+      const 果 = await 请求({动作: '终止', 句柄: Number(柄)});
+      return Number(果.错误码 ?? 29);
+    },
+    关闭() { if (服务 && !已闭) 服务.stdin.end(); }
   };
 }
