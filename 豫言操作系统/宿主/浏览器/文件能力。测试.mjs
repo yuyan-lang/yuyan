@@ -94,6 +94,22 @@ test('字节分块、读尽、关闭与清理失效', async () => {
   能力.清理();
   assert.equal((await 能力.列目录(根, ''))[0], 3);
 });
+test('定位读取保留顺序游标并覆盖零长、末尾、宽偏移和失效', async () => {
+  const 能力 = 新能力();
+  const [, 根] = await 能力.取得目录('桌面');
+  const [, 柄] = await 能力.打开(根, '子目录/子.txt', false);
+  assert.deepEqual(await 能力.定位读取(柄, 3n, 20), [0, new TextEncoder().encode('乙'), '']);
+  assert.deepEqual(await 能力.读取(柄, 3), [0, new TextEncoder().encode('甲'), '']);
+  assert.deepEqual(await 能力.定位读取(柄, 6n, 0), [0, new Uint8Array(), '']);
+  assert.equal((await 能力.定位读取(柄, 6n, 1))[0], 9);
+  assert.equal((await 能力.定位读取(柄, 9223372036854775807n, 1))[0], 9);
+  assert.equal((await 能力.定位读取(柄, -1n, 1))[0], 7);
+  assert.equal((await 能力.定位读取(柄, 0n, -1))[0], 7);
+  assert.deepEqual(await 能力.读取(柄, 3), [0, new TextEncoder().encode('乙'), '']);
+  await 能力.关闭(柄);
+  assert.equal((await 能力.定位读取(柄, 0n, 0))[0], 3);
+  能力.清理();
+});
 test('未授目录、越界路径、不存在与只读失败有明确状态', async () => {
   const 能力 = 新能力();
   assert.equal((await 能力.取得目录('未授'))[0], 1);
