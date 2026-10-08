@@ -1,0 +1,8 @@
+pieces { piece: "<unk>" score: 0.0 type: UNKNOWN }
+pieces { piece: "<s>" score: 0.0 type: CONTROL }
+pieces { piece: "</s>" score: 0.0 type: CONTROL }
+pieces { piece: "▁" score: -1.0 type: NORMAL }
+pieces { piece: "a" score: -2.0 type: NORMAL }
+pieces { piece: "b" score: -2.0 type: NORMAL }
+trainer_spec { model_type: UNIGRAM vocab_size: 6 unk_id: 0 bos_id: 1 eos_id: 2 }
+normalizer_spec { name: "identity" add_dummy_prefix: false remove_extra_whitespaces: false escape_whitespaces: false }

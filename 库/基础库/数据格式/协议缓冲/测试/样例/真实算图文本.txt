@@ -1,0 +1,110 @@
+ir_version: 3
+producer_name: "pytorch"
+producer_version: "0.3"
+graph {
+  node {
+    input: "0"
+    input: "1"
+    input: "2"
+    output: "3"
+    op_type: "Gemm"
+    attribute {
+      name: "alpha"
+      f: 1
+      type: FLOAT
+    }
+    attribute {
+      name: "beta"
+      f: 1
+      type: FLOAT
+    }
+    attribute {
+      name: "broadcast"
+      i: 1
+      type: INT
+    }
+    attribute {
+      name: "transB"
+      i: 1
+      type: INT
+    }
+  }
+  name: "torch-jit-export"
+  initializer {
+    dims: 8
+    dims: 10
+    data_type: 1
+    name: "1"
+    raw_data: "t\275\304=P\036\006>\213\007\224\276N\352g>h\316\231=\245\245\230>\266\267&\2768\211 \276\317f\220>!\332\240\276K\\B\276z\212_>&8\005>\267\200k\276\004\255>\276\n\247l>\334\034\363=b\371\227\275\226R\202\276\372\204\221\2766\375u>\210\3042=t\377)>`q\007=\005<\233>|\371\321=\\\271\232=\226\3007>i.-\276}n\241\276~\316`>p8\247=\300$\324<`\310\035=\350\251|\275\276\212\260\275\000\267u\276@\370h=0\220\350\274Z\222s>\341\2079\276\220I\370=or\234\276\"\266\226\276\256j1>ByN>\200U\213;H\035W=\027D\232>\364X\202\276L)\214\275\004\231s\276\254\274\202\275i\025\035\276|\343\353=\320 \365= :c<(@\002= G\211\2740}\316\274\240.\301=\317W\216>b`\">p\300N=\030&\n\276\356~b>H\217[\276A:\226>\257\2665\276\300\372(>\356\363\">6I(>\267U\221\276z\035\322\275\220\233\255\275@\2160=Y\354\237>\210\333\237\275\310Pk\2750<\231\274"
+  }
+  initializer {
+    dims: 8
+    data_type: 1
+    name: "2"
+    raw_data: "\023)\223>p\267\341<\006\023\002>rd\r>\363l\222>\2366X>9\246\232>%.\230>"
+  }
+  input {
+    name: "0"
+    type {
+      tensor_type {
+        elem_type: 1
+        shape {
+          dim {
+            dim_value: 4
+          }
+          dim {
+            dim_value: 10
+          }
+        }
+      }
+    }
+  }
+  input {
+    name: "1"
+    type {
+      tensor_type {
+        elem_type: 1
+        shape {
+          dim {
+            dim_value: 8
+          }
+          dim {
+            dim_value: 10
+          }
+        }
+      }
+    }
+  }
+  input {
+    name: "2"
+    type {
+      tensor_type {
+        elem_type: 1
+        shape {
+          dim {
+            dim_value: 8
+          }
+        }
+      }
+    }
+  }
+  output {
+    name: "3"
+    type {
+      tensor_type {
+        elem_type: 1
+        shape {
+          dim {
+            dim_value: 4
+          }
+          dim {
+            dim_value: 8
+          }
+        }
+      }
+    }
+  }
+}
+opset_import {
+  version: 6
+}
