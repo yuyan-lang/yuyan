@@ -16,13 +16,17 @@
 
 「包含在」者『共用库』也。
 
-「：汉语：经金属库打开 Metal.framework、Foundation.framework 与 libobjc.A.dylib，所以只用于诺节之苹果。
-文言：由金属之库开 Metal.framework、Foundation.framework 与 libobjc.A.dylib，故唯用于诺节之苹果。：」
+「：汉语：诺节与苹果原生共用同一金属设备实现，经金属库打开系统框架。
+文言：诺节与苹果原生共用同一金属之器，经金属库开系统框架。：」
 「平台」者
   「列」
-  【「典」
-      【「名称」者『诺节之苹果』也
-      ，「系统库」者「列」【『Metal.framework』，『Foundation.framework』，『libobjc.A.dylib』】也
-      】
+  【
+  「典」【
+    「名称」者『苹果』也，「系统库」者「列」【『Metal.framework』，『Foundation.framework』，『libobjc.A.dylib』】也
+  】，
+  「典」【
+    「名称」者『诺节之苹果』也，「系统库」者「列」【『Metal.framework』，『Foundation.framework』，『libobjc.A.dylib』】
+    也
   】
+】
 也。
