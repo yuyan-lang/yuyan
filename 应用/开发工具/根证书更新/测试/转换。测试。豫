@@ -31,6 +31,19 @@
 「根更新拒坏」于『CKA_LABEL UTF8 "甲根"「：换行：」CKA_VALUE MULTILINE_OCTAL「：换行：」\999「：换行：」END』。
 「根更新拒坏」于『CKA_LABEL UTF8 "甲根"「：换行：」CKA_VALUE MULTILINE_OCTAL「：换行：」\000』。
 「根更新拒坏」于（「根短源」附「根短源」）。
+「根更新拒坏」于（「根短源」附
+  『CKA_CLASS CK_OBJECT_CLASS CKO_CERTIFICATE「：换行：」CKA_VALUE MULTILINE_OCTAL「：换行：」\000「：换行：」END』）。
+「根更新拒坏」于（「根短源」附
+  『CKA_CLASS CK_OBJECT_CLASS CKO_NSS_TRUST「：换行：」CKA_TRUST_SERVER_AUTH CK_TRUST CKT_NSS_TRUSTED_DELEGATOR』）。
+「根更新拒坏」于（「根短源」附『CKA_NSS_SERVER_DISTRUST_AFTER MULTILINE_OCTAL「：换行：」\000「：换行：」END』）。
+
+「根实际日期源」乃「字符串」也。
+「根实际日期源」者
+  『CKA_CLASS CK_OBJECT_CLASS CKO_CERTIFICATE「：换行：」CKA_LABEL UTF8 "日期根"「：换行：」CKA_VALUE MULTILINE_OCTAL「：换行：」\060\000「：换行：」END「：换行：」CKA_NSS_SERVER_DISTRUST_AFTER MULTILINE_OCTAL「：换行：」\062\064\061\061\063\060\062\063\065\071\065\071\132「：换行：」END「：换行：」CKA_CLASS CK_OBJECT_CLASS CKO_NSS_TRUST「：换行：」CKA_LABEL UTF8 "日期根"「：换行：」CKA_TRUST_SERVER_AUTH CK_TRUST CKT_NSS_TRUSTED_DELEGATOR「：换行：」』
+也。
+
+「根更新断言」于（「串相等」
+  于（「根源转表」于「根实际日期源」）于『日期根「：制表：」1「：制表：」241130235959Z「：制表：」MAA=「：换行：」』）。
 「写文件」于『yy根更新短源.txt』于「根短源」。
 「根工具入口」于（「列」【『yy根更新短源.txt』，『yy根更新短表。豫』】）。
 「根更新断言」于（「串相等」
