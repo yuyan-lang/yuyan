@@ -223,14 +223,14 @@
 文言：站图之文。：」
 「站点地图」乃化「字符串」而化（「列」于「字符串」）而「字符串」也。
 「站点地图」者会「站址」而会「网址们」而
-  『<?xml version="1.0" encoding="UTF-8"?>』附「换行字」
-  附『<urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">』
-  附「换行字」
-  附（「串组合并」
-    于（（「态射」授以「字符串」授以「字符串」）
+  虑「声明」者「处理节点」于『xml』于『version="1.0" encoding="UTF-8"』而
+  虑「网址节点们」者
+    「串联」授以「标记节点」
+    于（（「态射」授以「字符串」授以（「列」于「标记节点」））
     于「网址们」
     于（会「址」而
-      （「写出」于（「元素节点」
+    虑「网址节点」者
+      「元素节点」
         于『url』
         于（「罄」授以（「字符串」合「字符串」））
         于（「列」【
@@ -240,10 +240,23 @@
             于（「罄」授以（「字符串」合「字符串」））
             于（「列」【（「文本节点」于（「站址」附「址」））】）），
             （「文本节点」于「换行字」）
-        】）））附「换行字」
+        】）
+    而
+    「列」【「网址节点」，（「文本节点」于「换行字」）】
     ）
-    ））
-    附『</urlset>』附「换行字」
+    ）而
+    虑「根」者
+      「元素节点」
+        于『urlset』
+        于（「列」【
+          『xmlns:xsi』与『http://www.w3.org/2001/XMLSchema-instance』，
+          『xsi:schemaLocation』
+            与『http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd』，
+            『xmlns』与『http://www.sitemaps.org/schemas/sitemap/0.9』
+        】）
+        于（「缀」于（「文本节点」于「换行字」）于「网址节点们」）
+    而
+    （「写出」于「声明」）附「换行字」附（「写出」于「根」）附「换行字」
 也。
 
 「：汉语：robots.txt 的内容：指明站点地图的位置。
