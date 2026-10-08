@@ -1,0 +1,27 @@
+寻观「标准库」之书。
+寻观「协议缓冲」之「协议文件」之书。
+
+「验模式态」乃化「字符串」而化「爻」而「有」也。
+「验模式态」者会「源」而会「应成」而
+  虑「果」者「解析协议文件」于「源」而
+  若「等于」于（若「等零」于（「果」中「零」）则「一」否则「零」）
+  于（若「应成」则「一」否则「零」）则
+    「元」
+  否则
+    「发生事故」授以「有」于『模式语义接受拒绝不合』
+也。
+
+「验模式态」于『syntax="proto3"; message M { int32 v=1; }』于「阳」。
+「验模式态」于『syntax="proto2"; message M { optional int32 v=1; }』于「阳」。
+「验模式态」于『nonsense syntax="proto2"; message M { optional int32 v=1; }』于「阴」。
+「验模式态」于『syntax "proto2"; message M { optional int32 v=1; }』于「阴」。
+「验模式态」于『message M { optional int32 v=1; } junk;』于「阴」。
+「验模式态」于『syntax="proto3"; enum E { ONE=1; }』于「阴」。
+「验模式态」于『syntax="proto3"; enum E { ZERO=0; NEG=-1; }』于「阳」。
+「验模式态」于『syntax="proto2"; enum E { FIRST=7; }』于「阳」。
+「验模式态」于『syntax="proto2"; enum E {}』于「阴」。
+「验模式态」于『syntax="proto2"; enum E { A=0; A=1; }』于「阴」。
+「验模式态」于『syntax="proto2"; enum E { A=2147483648; }』于「阴」。
+「验模式态」于『syntax="proto2"; enum E { A=-2147483649; }』于「阴」。
+「验模式态」于『syntax="proto2"; enum E { A=-2147483648; B=2147483647; }』于「阳」。
+「打印行」于『顶层声明与proto2/proto3枚举十三项语义成功』。
