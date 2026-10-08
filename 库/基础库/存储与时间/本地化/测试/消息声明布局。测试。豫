@@ -82,3 +82,45 @@ msgid "next" msgstr "good"
 
 「断言串相等」于『』于（「查消息」于「缺引文」于『』）。
 「断言串相等」于『good』于（「查消息」于「缺引文」于『next』）。
+
+「跨行壳」者
+  「读取便携消息」
+    于『msgid "apple"
+msgid_plural "apples"
+msgstr [ # shell
+0 # index
+] # closing
+"fruit"
+msgstr[
+1
+]
+"fruits"
+』也。
+
+「断言串相等」于『fruit』于（「查复数形消息」于「跨行壳」于『』于『apple』于『apples』于「零」）。
+「断言串相等」于『fruits』于（「查复数形消息」于「跨行壳」于『』于『apple』于『apples』于「一」）。
+
+「跨行拆数」者
+  「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr[
+1
+0]
+"wrong"
+msgid "next" msgstr "good"
+』也。
+
+「断言串相等」于『apples』于（「查复数形消息」于「跨行拆数」于『』于『apple』于『apples』于「10」）。
+「断言串相等」于『good』于（「查消息」于「跨行拆数」于『next』）。
+
+「空跨行壳」者
+  「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr[
+]
+"wrong"
+msgid "next" msgstr "good"
+』也。
+
+「断言串相等」于『apple』于（「查消息」于「空跨行壳」于『apple』）。
+「断言串相等」于『good』于（「查消息」于「空跨行壳」于『next』）。
