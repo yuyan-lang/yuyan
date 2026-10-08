@@ -1,6 +1,7 @@
 寻观「标准库」之书。
 寻观「单元测试」之书。
 寻观「标准库」之「数据结构」之「字节串」之书。
+寻「标准库」之「语言核心」之「原语」之书。
 寻观「本地化」之「消息」之书。
 
 「：汉语：公开便携入口验证完整复数引文与语法错误后的合法条目恢复，兼顾零字节/转义失败及未完成声明。
@@ -178,3 +179,158 @@ msgid "apple" msgstr "fruit"
 也。
 
 「断言串相等」于『apple』于（「查消息」于「旗尾空白」于『apple』）。
+
+「引文续行」者
+  「读取便携消息」于（「串组合并」
+    于「列」
+      【『msgid "app』
+      ，『\』
+      ，（「字节转字符串」于「10」）
+      ，『le"
+msgstr "fru』
+      ，『\』
+      ，（「字节转字符串」于「10」）
+      ，『it"
+』
+      】）
+也。
+
+「断言串相等」于『fruit』于（「查消息」于「引文续行」于『apple』）。
+「关键字续行」者
+  「读取便携消息」于（「串组合并」
+    于「列」
+      【『msg』
+      ，『\』
+      ，（「字节转字符串」于「10」）
+      ，『id "apple" msgstr "fruit"
+』
+      】）
+也。
+
+「断言串相等」于『fruit』于（「查消息」于「关键字续行」于『apple』）。
+「注释物理续行」者
+  「读取便携消息」于（「串组合并」
+    于「列」
+      【『# comment』
+      ，『\』
+      ，（「字节转字符串」于「10」）
+      ，『msgid "hidden" msgstr "wrong"
+msgid "apple" msgstr "fruit"
+』
+      】）
+也。
+
+「断言串相等」于『hidden』于（「查消息」于「注释物理续行」于『hidden』）。
+「续行回车换行」者
+  「读取便携消息」于（「串组合并」
+    于「列」
+      【『msgid "apple"
+msgstr "fru』
+      ，『\』
+      ，（「字节转字符串」于「13」）
+      ，（「字节转字符串」于「10」）
+      ，『it"
+』
+      】）
+也。
+
+「断言串相等」于『fruit』于（「查消息」于「续行回车换行」于『apple』）。
+「跨行编码头」者
+  「字符串转字节串」于（「串组合并」
+    于「列」
+      【『msgid ""
+msgstr "Content-Type: text/plain; char』
+      ，『\』
+      ，（「字节转字符串」于「10」）
+      ，『set=ISO-8859-1\n"
+msgid "apple" msgstr "caf』
+      】）
+也。
+
+「跨行西文种」者
+  「拼接字节串」于「跨行编码头」于（「拼接字节串」于（「单字节串」于「233」）于（「字符串转字节串」于『"
+』））也。
+
+「跨行西文」者「读取便携消息」于（「原语」之「不安全转换」授以「字节串」授以「字符串」于「跨行西文种」）也。
+
+「断言串相等」于『café』于（「查消息」于「跨行西文」于『apple』）。
+「国标续行头」者
+  「字符串转字节串」于『msgid ""
+msgstr "Content-Type: text/plain; charset=GBK\n"
+msgid "apple" msgstr "』也。
+
+「国标续行种」者
+  「拼接字节串」
+    于「国标续行头」
+    于（「拼接字节串」
+      于（「单字节串」于「129」）
+      于（「拼接字节串」
+        于（「单字节串」于「92」）
+        于（「拼接字节串」
+          于（「单字节串」于「92」）
+          于（「拼接字节串」于（「单字节串」于「10」）于（「字符串转字节串」于『x"
+』）））））也。
+
+「国标续行」者「读取便携消息」于（「原语」之「不安全转换」授以「字节串」授以「字符串」于「国标续行种」）也。
+
+「断言串相等」于『乗x』于（「查消息」于「国标续行」于『apple』）。
+
+「坏单数前缀」者「读取便携消息」于『msgid junk "apple"
+msgstr "wrong"
+msgid "next" msgstr "good"
+』也。
+
+「断言串相等」于『apple』于（「查消息」于「坏单数前缀」于『apple』）。
+「断言串相等」于『good』于（「查消息」于「坏单数前缀」于『next』）。
+「坏复数前缀」者「读取便携消息」于『msgid "apple"
+msgid_plural junk "apples"
+msgstr[0] "wrong"
+』也。
+
+「断言串相等」于『apple』于（「查消息」于「坏复数前缀」于『apple』）。
+「坏译文前缀」者「读取便携消息」于『msgid "apple"
+msgstr junk "wrong"
+』也。
+
+「断言串相等」于『apple』于（「查消息」于「坏译文前缀」于『apple』）。
+「坏序壳」者「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr[0]junk "wrong"
+』也。
+
+「断言串相等」于『apple』于（「查消息」于「坏序壳」于『apple』）。
+「中文序」者「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr[一] "wrong"
+』也。
+
+「断言串相等」于『apple』于（「查消息」于「中文序」于『apple』）。
+「空序壳」者「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr[] "wrong"
+』也。
+
+「断言串相等」于『apple』于（「查消息」于「空序壳」于『apple』）。
+
+「坏上下文前缀」者「读取便携消息」于『msgctxt junk "menu"
+msgid "apple" msgstr "wrong"
+msgid "next" msgstr "good"
+』也。
+
+「断言串相等」于『apple』于（「查上下文消息」于「坏上下文前缀」于『menu』于『apple』）。
+「断言串相等」于『good』于（「查消息」于「坏上下文前缀」于『next』）。
+
+「拆开的序」者「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr[1 0] "wrong"
+』也。
+
+「断言串相等」于『apples』于（「查复数形消息」于「拆开的序」于『』于『apple』于『apples』于「10」）。
+「空白壳合法」者
+  「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr [ 0 ] "fruit"
+msgstr [ 1 ] "fruits"
+』也。
+
+「断言串相等」于『fruits』于（「查复数形消息」于「空白壳合法」于『』于『apple』于『apples』于「一」）。
