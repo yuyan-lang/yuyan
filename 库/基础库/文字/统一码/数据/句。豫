@@ -1,0 +1,3909 @@
+寻观「标准库」之书。
+
+「句表0」乃化「整数」而「字符串」也。
+「句表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『000D;CR
+000A;LF
+0085;Sep
+00AD;Format
+0009;Sp
+000B..000C;Sp
+0020;Sp
+00A0;Sp
+0061..007A;Lower
+00AA;Lower
+00B5;Lower
+00BA;Lower
+00DF..00F6;Lower
+00F8..00FF;Lower
+0041..005A;Upper
+00C0..00D6;Upper
+00D8..00DE;Upper
+0030..0039;Numeric
+002E;ATerm
+0021;STerm
+003F;STerm
+0022;Close
+0027;Close
+0028;Close
+0029;Close
+005B;Close
+005D;Close
+007B;Close
+007D;Close
+00AB;Close
+00BB;Close
+002C;SContinue
+002D;SContinue
+003A..003B;SContinue
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「1」））于（「小于」于「桶」于「2」）则
+      『0101;Lower
+0103;Lower
+0105;Lower
+0107;Lower
+0109;Lower
+010B;Lower
+010D;Lower
+010F;Lower
+0111;Lower
+0113;Lower
+0115;Lower
+0117;Lower
+0119;Lower
+011B;Lower
+011D;Lower
+011F;Lower
+0121;Lower
+0123;Lower
+0125;Lower
+0127;Lower
+0129;Lower
+012B;Lower
+012D;Lower
+012F;Lower
+0131;Lower
+0133;Lower
+0135;Lower
+0137..0138;Lower
+013A;Lower
+013C;Lower
+013E;Lower
+0140;Lower
+0142;Lower
+0144;Lower
+0146;Lower
+0148..0149;Lower
+014B;Lower
+014D;Lower
+014F;Lower
+0151;Lower
+0153;Lower
+0155;Lower
+0157;Lower
+0159;Lower
+015B;Lower
+015D;Lower
+015F;Lower
+0161;Lower
+0163;Lower
+0165;Lower
+0167;Lower
+0169;Lower
+016B;Lower
+016D;Lower
+016F;Lower
+0171;Lower
+0173;Lower
+0175;Lower
+0177;Lower
+017A;Lower
+017C;Lower
+017E..0180;Lower
+0183;Lower
+0185;Lower
+0188;Lower
+018C..018D;Lower
+0192;Lower
+0195;Lower
+0199..019B;Lower
+019E;Lower
+01A1;Lower
+01A3;Lower
+01A5;Lower
+01A8;Lower
+01AA..01AB;Lower
+01AD;Lower
+01B0;Lower
+01B4;Lower
+01B6;Lower
+01B9..01BA;Lower
+01BD..01BF;Lower
+01C6;Lower
+01C9;Lower
+01CC;Lower
+01CE;Lower
+01D0;Lower
+01D2;Lower
+01D4;Lower
+01D6;Lower
+01D8;Lower
+01DA;Lower
+01DC..01DD;Lower
+01DF;Lower
+01E1;Lower
+01E3;Lower
+01E5;Lower
+01E7;Lower
+01E9;Lower
+01EB;Lower
+01ED;Lower
+01EF..01F0;Lower
+01F3;Lower
+01F5;Lower
+01F9;Lower
+01FB;Lower
+01FD;Lower
+01FF;Lower
+0100;Upper
+0102;Upper
+0104;Upper
+0106;Upper
+0108;Upper
+010A;Upper
+010C;Upper
+010E;Upper
+0110;Upper
+0112;Upper
+0114;Upper
+0116;Upper
+0118;Upper
+011A;Upper
+011C;Upper
+011E;Upper
+0120;Upper
+0122;Upper
+0124;Upper
+0126;Upper
+0128;Upper
+012A;Upper
+012C;Upper
+012E;Upper
+0130;Upper
+0132;Upper
+0134;Upper
+0136;Upper
+0139;Upper
+013B;Upper
+013D;Upper
+013F;Upper
+0141;Upper
+0143;Upper
+0145;Upper
+0147;Upper
+014A;Upper
+014C;Upper
+014E;Upper
+0150;Upper
+0152;Upper
+0154;Upper
+0156;Upper
+0158;Upper
+015A;Upper
+015C;Upper
+015E;Upper
+0160;Upper
+0162;Upper
+0164;Upper
+0166;Upper
+0168;Upper
+016A;Upper
+016C;Upper
+016E;Upper
+0170;Upper
+0172;Upper
+0174;Upper
+0176;Upper
+0178..0179;Upper
+017B;Upper
+017D;Upper
+0181..0182;Upper
+0184;Upper
+0186..0187;Upper
+0189..018B;Upper
+018E..0191;Upper
+0193..0194;Upper
+0196..0198;Upper
+019C..019D;Upper
+019F..01A0;Upper
+01A2;Upper
+01A4;Upper
+01A6..01A7;Upper
+01A9;Upper
+01AC;Upper
+01AE..01AF;Upper
+01B1..01B3;Upper
+01B5;Upper
+01B7..01B8;Upper
+01BC;Upper
+01C4..01C5;Upper
+01C7..01C8;Upper
+01CA..01CB;Upper
+01CD;Upper
+01CF;Upper
+01D1;Upper
+01D3;Upper
+01D5;Upper
+01D7;Upper
+01D9;Upper
+01DB;Upper
+01DE;Upper
+01E0;Upper
+01E2;Upper
+01E4;Upper
+01E6;Upper
+01E8;Upper
+01EA;Upper
+01EC;Upper
+01EE;Upper
+01F1..01F2;Upper
+01F4;Upper
+01F6..01F8;Upper
+01FA;Upper
+01FC;Upper
+01FE;Upper
+01BB;OLetter
+01C0..01C3;OLetter
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「2」））于（「小于」于「桶」于「3」）则
+        『0201;Lower
+0203;Lower
+0205;Lower
+0207;Lower
+0209;Lower
+020B;Lower
+020D;Lower
+020F;Lower
+0211;Lower
+0213;Lower
+0215;Lower
+0217;Lower
+0219;Lower
+021B;Lower
+021D;Lower
+021F;Lower
+0221;Lower
+0223;Lower
+0225;Lower
+0227;Lower
+0229;Lower
+022B;Lower
+022D;Lower
+022F;Lower
+0231;Lower
+0233..0239;Lower
+023C;Lower
+023F..0240;Lower
+0242;Lower
+0247;Lower
+0249;Lower
+024B;Lower
+024D;Lower
+024F..0293;Lower
+0296..02AF;Lower
+02B0..02B8;Lower
+02C0..02C1;Lower
+02E0..02E4;Lower
+0200;Upper
+0202;Upper
+0204;Upper
+0206;Upper
+0208;Upper
+020A;Upper
+020C;Upper
+020E;Upper
+0210;Upper
+0212;Upper
+0214;Upper
+0216;Upper
+0218;Upper
+021A;Upper
+021C;Upper
+021E;Upper
+0220;Upper
+0222;Upper
+0224;Upper
+0226;Upper
+0228;Upper
+022A;Upper
+022C;Upper
+022E;Upper
+0230;Upper
+0232;Upper
+023A..023B;Upper
+023D..023E;Upper
+0241;Upper
+0243..0246;Upper
+0248;Upper
+024A;Upper
+024C;Upper
+024E;Upper
+0294..0295;OLetter
+02B9..02BF;OLetter
+02C6..02D1;OLetter
+02EC;OLetter
+02EE;OLetter
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「3」））于（「小于」于「桶」于「4」）则
+          『0300..036F;Extend
+0371;Lower
+0373;Lower
+0377;Lower
+037A;Lower
+037B..037D;Lower
+0390;Lower
+03AC..03CE;Lower
+03D0..03D1;Lower
+03D5..03D7;Lower
+03D9;Lower
+03DB;Lower
+03DD;Lower
+03DF;Lower
+03E1;Lower
+03E3;Lower
+03E5;Lower
+03E7;Lower
+03E9;Lower
+03EB;Lower
+03ED;Lower
+03EF..03F3;Lower
+03F5;Lower
+03F8;Lower
+03FB..03FC;Lower
+0370;Upper
+0372;Upper
+0376;Upper
+037F;Upper
+0386;Upper
+0388..038A;Upper
+038C;Upper
+038E..038F;Upper
+0391..03A1;Upper
+03A3..03AB;Upper
+03CF;Upper
+03D2..03D4;Upper
+03D8;Upper
+03DA;Upper
+03DC;Upper
+03DE;Upper
+03E0;Upper
+03E2;Upper
+03E4;Upper
+03E6;Upper
+03E8;Upper
+03EA;Upper
+03EC;Upper
+03EE;Upper
+03F4;Upper
+03F7;Upper
+03F9..03FA;Upper
+03FD..042F;Upper
+0374;OLetter
+037E;SContinue
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「4」））
+            于（「小于」于「桶」于「5」）则
+              『0483..0487;Extend
+0488..0489;Extend
+0430..045F;Lower
+0461;Lower
+0463;Lower
+0465;Lower
+0467;Lower
+0469;Lower
+046B;Lower
+046D;Lower
+046F;Lower
+0471;Lower
+0473;Lower
+0475;Lower
+0477;Lower
+0479;Lower
+047B;Lower
+047D;Lower
+047F;Lower
+0481;Lower
+048B;Lower
+048D;Lower
+048F;Lower
+0491;Lower
+0493;Lower
+0495;Lower
+0497;Lower
+0499;Lower
+049B;Lower
+049D;Lower
+049F;Lower
+04A1;Lower
+04A3;Lower
+04A5;Lower
+04A7;Lower
+04A9;Lower
+04AB;Lower
+04AD;Lower
+04AF;Lower
+04B1;Lower
+04B3;Lower
+04B5;Lower
+04B7;Lower
+04B9;Lower
+04BB;Lower
+04BD;Lower
+04BF;Lower
+04C2;Lower
+04C4;Lower
+04C6;Lower
+04C8;Lower
+04CA;Lower
+04CC;Lower
+04CE..04CF;Lower
+04D1;Lower
+04D3;Lower
+04D5;Lower
+04D7;Lower
+04D9;Lower
+04DB;Lower
+04DD;Lower
+04DF;Lower
+04E1;Lower
+04E3;Lower
+04E5;Lower
+04E7;Lower
+04E9;Lower
+04EB;Lower
+04ED;Lower
+04EF;Lower
+04F1;Lower
+04F3;Lower
+04F5;Lower
+04F7;Lower
+04F9;Lower
+04FB;Lower
+04FD;Lower
+04FF;Lower
+03FD..042F;Upper
+0460;Upper
+0462;Upper
+0464;Upper
+0466;Upper
+0468;Upper
+046A;Upper
+046C;Upper
+046E;Upper
+0470;Upper
+0472;Upper
+0474;Upper
+0476;Upper
+0478;Upper
+047A;Upper
+047C;Upper
+047E;Upper
+0480;Upper
+048A;Upper
+048C;Upper
+048E;Upper
+0490;Upper
+0492;Upper
+0494;Upper
+0496;Upper
+0498;Upper
+049A;Upper
+049C;Upper
+049E;Upper
+04A0;Upper
+04A2;Upper
+04A4;Upper
+04A6;Upper
+04A8;Upper
+04AA;Upper
+04AC;Upper
+04AE;Upper
+04B0;Upper
+04B2;Upper
+04B4;Upper
+04B6;Upper
+04B8;Upper
+04BA;Upper
+04BC;Upper
+04BE;Upper
+04C0..04C1;Upper
+04C3;Upper
+04C5;Upper
+04C7;Upper
+04C9;Upper
+04CB;Upper
+04CD;Upper
+04D0;Upper
+04D2;Upper
+04D4;Upper
+04D6;Upper
+04D8;Upper
+04DA;Upper
+04DC;Upper
+04DE;Upper
+04E0;Upper
+04E2;Upper
+04E4;Upper
+04E6;Upper
+04E8;Upper
+04EA;Upper
+04EC;Upper
+04EE;Upper
+04F0;Upper
+04F2;Upper
+04F4;Upper
+04F6;Upper
+04F8;Upper
+04FA;Upper
+04FC;Upper
+04FE;Upper
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「5」））
+              于（「小于」于「桶」于「6」）则
+                『0591..05BD;Extend
+05BF;Extend
+05C1..05C2;Extend
+05C4..05C5;Extend
+05C7..05C9;Extend
+0501;Lower
+0503;Lower
+0505;Lower
+0507;Lower
+0509;Lower
+050B;Lower
+050D;Lower
+050F;Lower
+0511;Lower
+0513;Lower
+0515;Lower
+0517;Lower
+0519;Lower
+051B;Lower
+051D;Lower
+051F;Lower
+0521;Lower
+0523;Lower
+0525;Lower
+0527;Lower
+0529;Lower
+052B;Lower
+052D;Lower
+052F;Lower
+0558;Lower
+0560..0588;Lower
+058B..058C;Lower
+0500;Upper
+0502;Upper
+0504;Upper
+0506;Upper
+0508;Upper
+050A;Upper
+050C;Upper
+050E;Upper
+0510;Upper
+0512;Upper
+0514;Upper
+0516;Upper
+0518;Upper
+051A;Upper
+051C;Upper
+051E;Upper
+0520;Upper
+0522;Upper
+0524;Upper
+0526;Upper
+0528;Upper
+052A;Upper
+052C;Upper
+052E;Upper
+0531..0556;Upper
+0559;OLetter
+05D0..05EA;OLetter
+05EF..05F2;OLetter
+05F3;OLetter
+0589;STerm
+055D;SContinue
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「6」））
+                于（「小于」于「桶」于「7」）则
+                  『0610..061A;Extend
+064B..065F;Extend
+0670;Extend
+06D6..06DC;Extend
+06DF..06E4;Extend
+06E7..06E8;Extend
+06EA..06ED;Extend
+061C;Format
+0620..063F;OLetter
+0640;OLetter
+0641..064A;OLetter
+066E..066F;OLetter
+0671..06D3;OLetter
+06D5;OLetter
+06E5..06E6;OLetter
+06EE..06EF;OLetter
+06FA..06FC;OLetter
+06FF;OLetter
+0600..0605;Numeric
+0660..0669;Numeric
+066B..066C;Numeric
+06DD;Numeric
+06F0..06F9;Numeric
+061D..061F;STerm
+06D4;STerm
+060C..060D;SContinue
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「7」））
+                  于（「小于」于「桶」于「8」）则
+                    『0711;Extend
+0730..074A;Extend
+07A6..07B0;Extend
+07EB..07F3;Extend
+07FD;Extend
+070F;Format
+0710;OLetter
+0712..072F;OLetter
+074D..07A5;OLetter
+07B1;OLetter
+07CA..07EA;OLetter
+07F4..07F5;OLetter
+07FA;OLetter
+07C0..07C9;Numeric
+0700..0702;STerm
+07F9;STerm
+07F8;SContinue
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「8」））
+                    于（「小于」于「桶」于「9」）则
+                      『0816..0819;Extend
+081B..0823;Extend
+0825..0827;Extend
+0829..082D;Extend
+0859..085B;Extend
+0897..089F;Extend
+08CA..08E1;Extend
+08E3..0902;Extend
+0800..0815;OLetter
+081A;OLetter
+0824;OLetter
+0828;OLetter
+0840..0858;OLetter
+0860..086A;OLetter
+0870..0887;OLetter
+0889..088F;OLetter
+08A0..08C8;OLetter
+08C9;OLetter
+0890..0891;Numeric
+08E2;Numeric
+0837;STerm
+0839;STerm
+083D..083E;STerm
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「9」））
+                      于（「小于」于「桶」于「10」）则
+                        『08E3..0902;Extend
+0903;Extend
+093A;Extend
+093B;Extend
+093C;Extend
+093E..0940;Extend
+0941..0948;Extend
+0949..094C;Extend
+094D;Extend
+094E..094F;Extend
+0951..0957;Extend
+0962..0963;Extend
+0981;Extend
+0982..0983;Extend
+09BC;Extend
+09BE..09C0;Extend
+09C1..09C4;Extend
+09C7..09C8;Extend
+09CB..09CC;Extend
+09CD;Extend
+09D7;Extend
+09E2..09E3;Extend
+09FE;Extend
+0904..0939;OLetter
+093D;OLetter
+0950;OLetter
+0958..0961;OLetter
+0971;OLetter
+0972..0980;OLetter
+0985..098C;OLetter
+098F..0990;OLetter
+0993..09A8;OLetter
+09AA..09B0;OLetter
+09B2;OLetter
+09B6..09B9;OLetter
+09BD;OLetter
+09CE;OLetter
+09DC..09DD;OLetter
+09DF..09E1;OLetter
+09F0..09F1;OLetter
+09FC;OLetter
+0966..096F;Numeric
+09E6..09EF;Numeric
+0964..0965;STerm
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「10」））
+                        于（「小于」于「桶」于「11」）则
+                          『0A01..0A02;Extend
+0A03;Extend
+0A3C;Extend
+0A3E..0A40;Extend
+0A41..0A42;Extend
+0A47..0A48;Extend
+0A4B..0A4D;Extend
+0A51;Extend
+0A70..0A71;Extend
+0A75;Extend
+0A81..0A82;Extend
+0A83;Extend
+0ABC;Extend
+0ABE..0AC0;Extend
+0AC1..0AC5;Extend
+0AC7..0AC8;Extend
+0AC9;Extend
+0ACB..0ACC;Extend
+0ACD;Extend
+0AE2..0AE3;Extend
+0AFA..0AFF;Extend
+0A05..0A0A;OLetter
+0A0F..0A10;OLetter
+0A13..0A28;OLetter
+0A2A..0A30;OLetter
+0A32..0A33;OLetter
+0A35..0A36;OLetter
+0A38..0A39;OLetter
+0A59..0A5C;OLetter
+0A5E;OLetter
+0A72..0A74;OLetter
+0A85..0A8D;OLetter
+0A8F..0A91;OLetter
+0A93..0AA8;OLetter
+0AAA..0AB0;OLetter
+0AB2..0AB3;OLetter
+0AB5..0AB9;OLetter
+0ABD;OLetter
+0AD0;OLetter
+0AE0..0AE1;OLetter
+0AF9;OLetter
+0A66..0A6F;Numeric
+0AE6..0AEF;Numeric
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「11」））
+                          于（「小于」于「桶」于「12」）则
+                            『0B01;Extend
+0B02..0B03;Extend
+0B3C;Extend
+0B3E;Extend
+0B3F;Extend
+0B40;Extend
+0B41..0B44;Extend
+0B47..0B48;Extend
+0B4B..0B4C;Extend
+0B4D;Extend
+0B53..0B56;Extend
+0B57;Extend
+0B62..0B63;Extend
+0B82;Extend
+0BBE..0BBF;Extend
+0BC0;Extend
+0BC1..0BC2;Extend
+0BC6..0BC8;Extend
+0BCA..0BCC;Extend
+0BCD;Extend
+0BD7;Extend
+0B05..0B0C;OLetter
+0B0F..0B10;OLetter
+0B13..0B28;OLetter
+0B2A..0B30;OLetter
+0B32..0B33;OLetter
+0B35..0B39;OLetter
+0B3D;OLetter
+0B5C..0B5D;OLetter
+0B5F..0B61;OLetter
+0B71;OLetter
+0B83;OLetter
+0B85..0B8A;OLetter
+0B8E..0B90;OLetter
+0B92..0B95;OLetter
+0B99..0B9A;OLetter
+0B9C;OLetter
+0B9E..0B9F;OLetter
+0BA3..0BA4;OLetter
+0BA8..0BAA;OLetter
+0BAE..0BB9;OLetter
+0BD0;OLetter
+0B66..0B6F;Numeric
+0BE6..0BEF;Numeric
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「12」））
+                            于（「小于」于「桶」于「13」）则
+                              『0C00;Extend
+0C01..0C03;Extend
+0C04;Extend
+0C3C;Extend
+0C3E..0C40;Extend
+0C41..0C44;Extend
+0C46..0C48;Extend
+0C4A..0C4D;Extend
+0C55..0C56;Extend
+0C62..0C63;Extend
+0C81;Extend
+0C82..0C83;Extend
+0CBC;Extend
+0CBE;Extend
+0CBF;Extend
+0CC0..0CC4;Extend
+0CC6;Extend
+0CC7..0CC8;Extend
+0CCA..0CCB;Extend
+0CCC..0CCD;Extend
+0CD5..0CD6;Extend
+0CE2..0CE3;Extend
+0CF3;Extend
+0C05..0C0C;OLetter
+0C0E..0C10;OLetter
+0C12..0C28;OLetter
+0C2A..0C39;OLetter
+0C3D;OLetter
+0C58..0C5A;OLetter
+0C5C..0C5D;OLetter
+0C60..0C61;OLetter
+0C80;OLetter
+0C85..0C8C;OLetter
+0C8E..0C90;OLetter
+0C92..0CA8;OLetter
+0CAA..0CB3;OLetter
+0CB5..0CB9;OLetter
+0CBD;OLetter
+0CDC..0CDE;OLetter
+0CE0..0CE1;OLetter
+0CF1..0CF2;OLetter
+0C66..0C6F;Numeric
+0CE6..0CEF;Numeric
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「13」））
+                              于（「小于」于「桶」于「14」）则
+                                『0D00..0D01;Extend
+0D02..0D03;Extend
+0D3B..0D3C;Extend
+0D3E..0D40;Extend
+0D41..0D44;Extend
+0D46..0D48;Extend
+0D4A..0D4C;Extend
+0D4D;Extend
+0D57;Extend
+0D62..0D63;Extend
+0D81;Extend
+0D82..0D83;Extend
+0DCA;Extend
+0DCF..0DD1;Extend
+0DD2..0DD4;Extend
+0DD6;Extend
+0DD8..0DDF;Extend
+0DF2..0DF3;Extend
+0D04..0D0C;OLetter
+0D0E..0D10;OLetter
+0D12..0D3A;OLetter
+0D3D;OLetter
+0D4E;OLetter
+0D54..0D56;OLetter
+0D5F..0D61;OLetter
+0D7A..0D7F;OLetter
+0D85..0D96;OLetter
+0D9A..0DB1;OLetter
+0DB3..0DBB;OLetter
+0DBD;OLetter
+0DC0..0DC6;OLetter
+0D66..0D6F;Numeric
+0DE6..0DEF;Numeric
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「14」））
+                                于（「小于」于「桶」于「15」）则
+                                  『0E31;Extend
+0E34..0E3A;Extend
+0E47..0E4E;Extend
+0EB1;Extend
+0EB4..0EBC;Extend
+0EC8..0ECE;Extend
+0E01..0E30;OLetter
+0E32..0E33;OLetter
+0E40..0E45;OLetter
+0E46;OLetter
+0E81..0E82;OLetter
+0E84;OLetter
+0E86..0E8A;OLetter
+0E8C..0EA3;OLetter
+0EA5;OLetter
+0EA7..0EB0;OLetter
+0EB2..0EB3;OLetter
+0EBD;OLetter
+0EC0..0EC4;OLetter
+0EC6;OLetter
+0EDC..0EDF;OLetter
+0E50..0E59;Numeric
+0ED0..0ED9;Numeric
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「15」））
+                                  于（「小于」于「桶」于「16」）则
+                                    『0F18..0F19;Extend
+0F35;Extend
+0F37;Extend
+0F39;Extend
+0F3E..0F3F;Extend
+0F71..0F7E;Extend
+0F7F;Extend
+0F80..0F84;Extend
+0F86..0F87;Extend
+0F8D..0F97;Extend
+0F99..0FBC;Extend
+0FC6;Extend
+0F00;OLetter
+0F40..0F47;OLetter
+0F49..0F6C;OLetter
+0F88..0F8C;OLetter
+0F20..0F29;Numeric
+0F3A;Close
+0F3B;Close
+0F3C;Close
+0F3D;Close
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「16」））
+                                    于（「小于」于「桶」于「17」）则
+                                      『102B..102C;Extend
+102D..1030;Extend
+1031;Extend
+1032..1037;Extend
+1038;Extend
+1039..103A;Extend
+103B..103C;Extend
+103D..103E;Extend
+1056..1057;Extend
+1058..1059;Extend
+105E..1060;Extend
+1062..1064;Extend
+1067..106D;Extend
+1071..1074;Extend
+1082;Extend
+1083..1084;Extend
+1085..1086;Extend
+1087..108C;Extend
+108D;Extend
+108F;Extend
+109A..109C;Extend
+109D;Extend
+10FC;Lower
+10A0..10C5;Upper
+10C7;Upper
+10CD;Upper
+1000..102A;OLetter
+103F;OLetter
+1050..1055;OLetter
+105A..105D;OLetter
+1061;OLetter
+1065..1066;OLetter
+106E..1070;OLetter
+1075..1081;OLetter
+108E;OLetter
+10D0..10FA;OLetter
+10FD..10FF;OLetter
+1040..1049;Numeric
+1090..1099;Numeric
+104A..104B;STerm
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「17」））
+                                      于（「小于」于「桶」于「18」）则
+                                        『1100..1248;OLetter
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「18」））
+                                        于（「小于」于「桶」于「19」）则
+                                          『1100..1248;OLetter
+124A..124D;OLetter
+1250..1256;OLetter
+1258;OLetter
+125A..125D;OLetter
+1260..1288;OLetter
+128A..128D;OLetter
+1290..12B0;OLetter
+12B2..12B5;OLetter
+12B8..12BE;OLetter
+12C0;OLetter
+12C2..12C5;OLetter
+12C8..12D6;OLetter
+12D8..1310;OLetter
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「19」））
+                                          于（「小于」于「桶」于「20」）则
+                                            『135D..135F;Extend
+13F8..13FD;Lower
+13A0..13F5;Upper
+12D8..1310;OLetter
+1312..1315;OLetter
+1318..135A;OLetter
+1380..138F;OLetter
+1362;STerm
+1367..1368;STerm
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「20」））
+                                            于（「小于」于「桶」于「22」）则
+                                              『1401..166C;OLetter
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「22」））
+                                              于（「小于」于「桶」于「23」）则
+                                                『1680;Sp
+1401..166C;OLetter
+166F..167F;OLetter
+1681..169A;OLetter
+16A0..16EA;OLetter
+16EE..16F0;OLetter
+16F1..16F8;OLetter
+166E;STerm
+169B;Close
+169C;Close
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「23」））
+                                                于（「小于」于「桶」于「24」）则
+                                                  『1712..1714;Extend
+1715;Extend
+1732..1733;Extend
+1734;Extend
+1752..1753;Extend
+1772..1773;Extend
+17B4..17B5;Extend
+17B6;Extend
+17B7..17BD;Extend
+17BE..17C5;Extend
+17C6;Extend
+17C7..17C8;Extend
+17C9..17D3;Extend
+17DD;Extend
+1700..1711;OLetter
+171F..1731;OLetter
+1740..1751;OLetter
+1760..176C;OLetter
+176E..1770;OLetter
+1780..17B3;OLetter
+17D7;OLetter
+17DC;OLetter
+17E0..17E9;Numeric
+1735..1736;STerm
+17D4..17D5;STerm
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「24」））
+                                                  于（「小于」于「桶」于「25」）则
+                                                    『180B..180D;Extend
+180F;Extend
+1885..1886;Extend
+18A9;Extend
+180E;Format
+1820..1842;OLetter
+1843;OLetter
+1844..1878;OLetter
+1880..1884;OLetter
+1887..18A8;OLetter
+18AA;OLetter
+18B0..18F5;OLetter
+1810..1819;Numeric
+1803;STerm
+1809;STerm
+1802;SContinue
+1808;SContinue
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「25」））
+                                                    于（「小于」于「桶」于「26」）则
+                                                      『1920..1922;Extend
+1923..1926;Extend
+1927..1928;Extend
+1929..192B;Extend
+1930..1931;Extend
+1932;Extend
+1933..1938;Extend
+1939..193B;Extend
+1900..191E;OLetter
+1950..196D;OLetter
+1970..1974;OLetter
+1980..19AB;OLetter
+19B0..19C9;OLetter
+1946..194F;Numeric
+19D0..19D9;Numeric
+19DA;Numeric
+1944..1945;STerm
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「26」））
+                                                      于（「小于」于「桶」于「27」）则
+                                                        『1A17..1A18;Extend
+1A19..1A1A;Extend
+1A1B;Extend
+1A55;Extend
+1A56;Extend
+1A57;Extend
+1A58..1A5E;Extend
+1A60;Extend
+1A61;Extend
+1A62;Extend
+1A63..1A64;Extend
+1A65..1A6C;Extend
+1A6D..1A72;Extend
+1A73..1A7C;Extend
+1A7F;Extend
+1AB0..1ABD;Extend
+1ABE;Extend
+1ABF..1AF0;Extend
+1A00..1A16;OLetter
+1A20..1A54;OLetter
+1AA7;OLetter
+1A80..1A89;Numeric
+1A90..1A99;Numeric
+1AA8..1AAB;STerm
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「27」））
+                                                        于（「小于」于「桶」于「28」）则
+                                                          『1B00..1B03;Extend
+1B04;Extend
+1B34;Extend
+1B35;Extend
+1B36..1B3A;Extend
+1B3B;Extend
+1B3C;Extend
+1B3D..1B41;Extend
+1B42;Extend
+1B43..1B44;Extend
+1B6B..1B73;Extend
+1B80..1B81;Extend
+1B82;Extend
+1BA1;Extend
+1BA2..1BA5;Extend
+1BA6..1BA7;Extend
+1BA8..1BA9;Extend
+1BAA;Extend
+1BAB..1BAD;Extend
+1BE6;Extend
+1BE7;Extend
+1BE8..1BE9;Extend
+1BEA..1BEC;Extend
+1BED;Extend
+1BEE;Extend
+1BEF..1BF1;Extend
+1BF2..1BF3;Extend
+1B05..1B33;OLetter
+1B45..1B4C;OLetter
+1B83..1BA0;OLetter
+1BAE..1BAF;OLetter
+1BBA..1BE5;OLetter
+1B50..1B59;Numeric
+1BB0..1BB9;Numeric
+1B4E..1B4F;STerm
+1B5A..1B5B;STerm
+1B5E..1B5F;STerm
+1B7D..1B7F;STerm
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「28」））
+                                                          于（「小于」于「桶」于「29」）则
+                                                            『1C24..1C2B;Extend
+1C2C..1C33;Extend
+1C34..1C35;Extend
+1C36..1C37;Extend
+1CD0..1CD2;Extend
+1CD4..1CE0;Extend
+1CE1;Extend
+1CE2..1CE8;Extend
+1CED;Extend
+1CF4;Extend
+1CF7;Extend
+1CF8..1CF9;Extend
+1C80..1C88;Lower
+1C8A;Lower
+1C89;Upper
+1C00..1C23;OLetter
+1C4D..1C4F;OLetter
+1C5A..1C77;OLetter
+1C78..1C7D;OLetter
+1C90..1CBA;OLetter
+1CBD..1CBF;OLetter
+1CE9..1CEC;OLetter
+1CEE..1CF3;OLetter
+1CF5..1CF6;OLetter
+1CFA;OLetter
+1C40..1C49;Numeric
+1C50..1C59;Numeric
+1C3B..1C3C;STerm
+1C7E..1C7F;STerm
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「29」））
+                                                            于（「小于」于「桶」于「30」）则
+                                                            『1DC0..1DFF;Extend
+1D00..1D2B;Lower
+1D2C..1D6A;Lower
+1D6B..1D77;Lower
+1D78;Lower
+1D79..1D9A;Lower
+1D9B..1DBF;Lower
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「30」））
+                                                            于（「小于」于「桶」于「31」）则
+                                                            『1E01;Lower
+1E03;Lower
+1E05;Lower
+1E07;Lower
+1E09;Lower
+1E0B;Lower
+1E0D;Lower
+1E0F;Lower
+1E11;Lower
+1E13;Lower
+1E15;Lower
+1E17;Lower
+1E19;Lower
+1E1B;Lower
+1E1D;Lower
+1E1F;Lower
+1E21;Lower
+1E23;Lower
+1E25;Lower
+1E27;Lower
+1E29;Lower
+1E2B;Lower
+1E2D;Lower
+1E2F;Lower
+1E31;Lower
+1E33;Lower
+1E35;Lower
+1E37;Lower
+1E39;Lower
+1E3B;Lower
+1E3D;Lower
+1E3F;Lower
+1E41;Lower
+1E43;Lower
+1E45;Lower
+1E47;Lower
+1E49;Lower
+1E4B;Lower
+1E4D;Lower
+1E4F;Lower
+1E51;Lower
+1E53;Lower
+1E55;Lower
+1E57;Lower
+1E59;Lower
+1E5B;Lower
+1E5D;Lower
+1E5F;Lower
+1E61;Lower
+1E63;Lower
+1E65;Lower
+1E67;Lower
+1E69;Lower
+1E6B;Lower
+1E6D;Lower
+1E6F;Lower
+1E71;Lower
+1E73;Lower
+1E75;Lower
+1E77;Lower
+1E79;Lower
+1E7B;Lower
+1E7D;Lower
+1E7F;Lower
+1E81;Lower
+1E83;Lower
+1E85;Lower
+1E87;Lower
+1E89;Lower
+1E8B;Lower
+1E8D;Lower
+1E8F;Lower
+1E91;Lower
+1E93;Lower
+1E95..1E9D;Lower
+1E9F;Lower
+1EA1;Lower
+1EA3;Lower
+1EA5;Lower
+1EA7;Lower
+1EA9;Lower
+1EAB;Lower
+1EAD;Lower
+1EAF;Lower
+1EB1;Lower
+1EB3;Lower
+1EB5;Lower
+1EB7;Lower
+1EB9;Lower
+1EBB;Lower
+1EBD;Lower
+1EBF;Lower
+1EC1;Lower
+1EC3;Lower
+1EC5;Lower
+1EC7;Lower
+1EC9;Lower
+1ECB;Lower
+1ECD;Lower
+1ECF;Lower
+1ED1;Lower
+1ED3;Lower
+1ED5;Lower
+1ED7;Lower
+1ED9;Lower
+1EDB;Lower
+1EDD;Lower
+1EDF;Lower
+1EE1;Lower
+1EE3;Lower
+1EE5;Lower
+1EE7;Lower
+1EE9;Lower
+1EEB;Lower
+1EED;Lower
+1EEF;Lower
+1EF1;Lower
+1EF3;Lower
+1EF5;Lower
+1EF7;Lower
+1EF9;Lower
+1EFB;Lower
+1EFD;Lower
+1EFF..1F07;Lower
+1E00;Upper
+1E02;Upper
+1E04;Upper
+1E06;Upper
+1E08;Upper
+1E0A;Upper
+1E0C;Upper
+1E0E;Upper
+1E10;Upper
+1E12;Upper
+1E14;Upper
+1E16;Upper
+1E18;Upper
+1E1A;Upper
+1E1C;Upper
+1E1E;Upper
+1E20;Upper
+1E22;Upper
+1E24;Upper
+1E26;Upper
+1E28;Upper
+1E2A;Upper
+1E2C;Upper
+1E2E;Upper
+1E30;Upper
+1E32;Upper
+1E34;Upper
+1E36;Upper
+1E38;Upper
+1E3A;Upper
+1E3C;Upper
+1E3E;Upper
+1E40;Upper
+1E42;Upper
+1E44;Upper
+1E46;Upper
+1E48;Upper
+1E4A;Upper
+1E4C;Upper
+1E4E;Upper
+1E50;Upper
+1E52;Upper
+1E54;Upper
+1E56;Upper
+1E58;Upper
+1E5A;Upper
+1E5C;Upper
+1E5E;Upper
+1E60;Upper
+1E62;Upper
+1E64;Upper
+1E66;Upper
+1E68;Upper
+1E6A;Upper
+1E6C;Upper
+1E6E;Upper
+1E70;Upper
+1E72;Upper
+1E74;Upper
+1E76;Upper
+1E78;Upper
+1E7A;Upper
+1E7C;Upper
+1E7E;Upper
+1E80;Upper
+1E82;Upper
+1E84;Upper
+1E86;Upper
+1E88;Upper
+1E8A;Upper
+1E8C;Upper
+1E8E;Upper
+1E90;Upper
+1E92;Upper
+1E94;Upper
+1E9E;Upper
+1EA0;Upper
+1EA2;Upper
+1EA4;Upper
+1EA6;Upper
+1EA8;Upper
+1EAA;Upper
+1EAC;Upper
+1EAE;Upper
+1EB0;Upper
+1EB2;Upper
+1EB4;Upper
+1EB6;Upper
+1EB8;Upper
+1EBA;Upper
+1EBC;Upper
+1EBE;Upper
+1EC0;Upper
+1EC2;Upper
+1EC4;Upper
+1EC6;Upper
+1EC8;Upper
+1ECA;Upper
+1ECC;Upper
+1ECE;Upper
+1ED0;Upper
+1ED2;Upper
+1ED4;Upper
+1ED6;Upper
+1ED8;Upper
+1EDA;Upper
+1EDC;Upper
+1EDE;Upper
+1EE0;Upper
+1EE2;Upper
+1EE4;Upper
+1EE6;Upper
+1EE8;Upper
+1EEA;Upper
+1EEC;Upper
+1EEE;Upper
+1EF0;Upper
+1EF2;Upper
+1EF4;Upper
+1EF6;Upper
+1EF8;Upper
+1EFA;Upper
+1EFC;Upper
+1EFE;Upper
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「31」））
+                                                            于（「小于」于「桶」于「32」）则
+                                                            『1EFF..1F07;Lower
+1F10..1F15;Lower
+1F20..1F27;Lower
+1F30..1F37;Lower
+1F40..1F45;Lower
+1F50..1F57;Lower
+1F60..1F67;Lower
+1F70..1F7D;Lower
+1F80..1F87;Lower
+1F90..1F97;Lower
+1FA0..1FA7;Lower
+1FB0..1FB4;Lower
+1FB6..1FB7;Lower
+1FBE;Lower
+1FC2..1FC4;Lower
+1FC6..1FC7;Lower
+1FD0..1FD3;Lower
+1FD6..1FD7;Lower
+1FE0..1FE7;Lower
+1FF2..1FF4;Lower
+1FF6..1FF7;Lower
+1F08..1F0F;Upper
+1F18..1F1D;Upper
+1F28..1F2F;Upper
+1F38..1F3F;Upper
+1F48..1F4D;Upper
+1F59;Upper
+1F5B;Upper
+1F5D;Upper
+1F5F;Upper
+1F68..1F6F;Upper
+1F88..1F8F;Upper
+1F98..1F9F;Upper
+1FA8..1FAF;Upper
+1FB8..1FBC;Upper
+1FC8..1FCC;Upper
+1FD8..1FDB;Upper
+1FE8..1FEC;Upper
+1FF8..1FFC;Upper
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「32」））
+                                                            于（「小于」于「桶」于「33」）则
+                                                            『200C..200D;Extend
+20D0..20DC;Extend
+20DD..20E0;Extend
+20E1;Extend
+20E2..20E4;Extend
+20E5..20F0;Extend
+2028;Sep
+2029;Sep
+200B;Format
+200E..200F;Format
+202A..202E;Format
+2060..2064;Format
+2066..206F;Format
+2000..200A;Sp
+202F;Sp
+205F;Sp
+2071;Lower
+207F;Lower
+2090..209F;Lower
+208F;OLetter
+2024;ATerm
+203C..203D;STerm
+2047..2049;STerm
+2018;Close
+2019;Close
+201A;Close
+201B..201C;Close
+201D;Close
+201E;Close
+201F;Close
+2039;Close
+203A;Close
+2045;Close
+2046;Close
+207D;Close
+207E;Close
+208D;Close
+208E;Close
+2013..2014;SContinue
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「33」））
+                                                            于（「小于」于「桶」于「34」）则
+                                                            『210A;Lower
+210E..210F;Lower
+2113;Lower
+212F;Lower
+2134;Lower
+2139;Lower
+213C..213D;Lower
+2146..2149;Lower
+214E;Lower
+2170..217F;Lower
+2184;Lower
+2102;Upper
+2107;Upper
+210B..210D;Upper
+2110..2112;Upper
+2115;Upper
+2119..211D;Upper
+2124;Upper
+2126;Upper
+2128;Upper
+212A..212D;Upper
+2130..2133;Upper
+213E..213F;Upper
+2145;Upper
+2160..216F;Upper
+2183;Upper
+2135..2138;OLetter
+2180..2182;OLetter
+2185..2188;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「35」））
+                                                            于（「小于」于「桶」于「36」）则
+                                                            『2308;Close
+2309;Close
+230A;Close
+230B;Close
+2329;Close
+232A;Close
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「36」））
+                                                            于（「小于」于「桶」于「37」）则
+                                                            『24D0..24E9;Lower
+24B6..24CF;Upper
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「39」））
+                                                            于（「小于」于「桶」于「40」）则
+                                                            『275B..2760;Close
+2768;Close
+2769;Close
+276A;Close
+276B;Close
+276C;Close
+276D;Close
+276E;Close
+276F;Close
+2770;Close
+2771;Close
+2772;Close
+2773;Close
+2774;Close
+2775;Close
+27C5;Close
+27C6;Close
+27E6;Close
+27E7;Close
+27E8;Close
+27E9;Close
+27EA;Close
+27EB;Close
+27EC;Close
+27ED;Close
+27EE;Close
+27EF;Close
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「41」））
+                                                            于（「小于」于「桶」于「42」）则
+                                                            『2983;Close
+2984;Close
+2985;Close
+2986;Close
+2987;Close
+2988;Close
+2989;Close
+298A;Close
+298B;Close
+298C;Close
+298D;Close
+298E;Close
+298F;Close
+2990;Close
+2991;Close
+2992;Close
+2993;Close
+2994;Close
+2995;Close
+2996;Close
+2997;Close
+2998;Close
+29D8;Close
+29D9;Close
+29DA;Close
+29DB;Close
+29FC;Close
+29FD;Close
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「44」））
+                                                            于（「小于」于「桶」于「45」）则
+                                                            『2CEF..2CF1;Extend
+2C30..2C5F;Lower
+2C61;Lower
+2C65..2C66;Lower
+2C68;Lower
+2C6A;Lower
+2C6C;Lower
+2C71;Lower
+2C73..2C74;Lower
+2C76..2C7B;Lower
+2C7C..2C7D;Lower
+2C81;Lower
+2C83;Lower
+2C85;Lower
+2C87;Lower
+2C89;Lower
+2C8B;Lower
+2C8D;Lower
+2C8F;Lower
+2C91;Lower
+2C93;Lower
+2C95;Lower
+2C97;Lower
+2C99;Lower
+2C9B;Lower
+2C9D;Lower
+2C9F;Lower
+2CA1;Lower
+2CA3;Lower
+2CA5;Lower
+2CA7;Lower
+2CA9;Lower
+2CAB;Lower
+2CAD;Lower
+2CAF;Lower
+2CB1;Lower
+2CB3;Lower
+2CB5;Lower
+2CB7;Lower
+2CB9;Lower
+2CBB;Lower
+2CBD;Lower
+2CBF;Lower
+2CC1;Lower
+2CC3;Lower
+2CC5;Lower
+2CC7;Lower
+2CC9;Lower
+2CCB;Lower
+2CCD;Lower
+2CCF;Lower
+2CD1;Lower
+2CD3;Lower
+2CD5;Lower
+2CD7;Lower
+2CD9;Lower
+2CDB;Lower
+2CDD;Lower
+2CDF;Lower
+2CE1;Lower
+2CE3..2CE4;Lower
+2CEC;Lower
+2CEE;Lower
+2CF3;Lower
+2C00..2C2F;Upper
+2C60;Upper
+2C62..2C64;Upper
+2C67;Upper
+2C69;Upper
+2C6B;Upper
+2C6D..2C70;Upper
+2C72;Upper
+2C75;Upper
+2C7E..2C80;Upper
+2C82;Upper
+2C84;Upper
+2C86;Upper
+2C88;Upper
+2C8A;Upper
+2C8C;Upper
+2C8E;Upper
+2C90;Upper
+2C92;Upper
+2C94;Upper
+2C96;Upper
+2C98;Upper
+2C9A;Upper
+2C9C;Upper
+2C9E;Upper
+2CA0;Upper
+2CA2;Upper
+2CA4;Upper
+2CA6;Upper
+2CA8;Upper
+2CAA;Upper
+2CAC;Upper
+2CAE;Upper
+2CB0;Upper
+2CB2;Upper
+2CB4;Upper
+2CB6;Upper
+2CB8;Upper
+2CBA;Upper
+2CBC;Upper
+2CBE;Upper
+2CC0;Upper
+2CC2;Upper
+2CC4;Upper
+2CC6;Upper
+2CC8;Upper
+2CCA;Upper
+2CCC;Upper
+2CCE;Upper
+2CD0;Upper
+2CD2;Upper
+2CD4;Upper
+2CD6;Upper
+2CD8;Upper
+2CDA;Upper
+2CDC;Upper
+2CDE;Upper
+2CE0;Upper
+2CE2;Upper
+2CEB;Upper
+2CED;Upper
+2CF2;Upper
+2CF9..2CFB;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「45」））
+                                                            于（「小于」于「桶」于「46」）则
+                                                            『2D7F;Extend
+2DE0..2DFF;Extend
+2D00..2D25;Lower
+2D27;Lower
+2D2D;Lower
+2D30..2D67;OLetter
+2D6F;OLetter
+2D80..2D96;OLetter
+2DA0..2DA6;OLetter
+2DA8..2DAE;OLetter
+2DB0..2DB6;OLetter
+2DB8..2DBE;OLetter
+2DC0..2DC6;OLetter
+2DC8..2DCE;OLetter
+2DD0..2DD6;OLetter
+2DD8..2DDE;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「46」））
+                                                            于（「小于」于「桶」于「47」）则
+                                                            『2E2F;OLetter
+2E2E;STerm
+2E3C;STerm
+2E53..2E54;STerm
+2E60..2E61;STerm
+2E00..2E01;Close
+2E02;Close
+2E03;Close
+2E04;Close
+2E05;Close
+2E06..2E08;Close
+2E09;Close
+2E0A;Close
+2E0B;Close
+2E0C;Close
+2E0D;Close
+2E1C;Close
+2E1D;Close
+2E20;Close
+2E21;Close
+2E22;Close
+2E23;Close
+2E24;Close
+2E25;Close
+2E26;Close
+2E27;Close
+2E28;Close
+2E29;Close
+2E42;Close
+2E55;Close
+2E56;Close
+2E57;Close
+2E58;Close
+2E59;Close
+2E5A;Close
+2E5B;Close
+2E5C;Close
+2E62;Close
+2E63;Close
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「48」））
+                                                            于（「小于」于「桶」于「49」）则
+                                                            『302A..302D;Extend
+302E..302F;Extend
+3099..309A;Extend
+3000;Sp
+3005;OLetter
+3006;OLetter
+3007;OLetter
+3021..3029;OLetter
+3031..3035;OLetter
+3038..303A;OLetter
+303B;OLetter
+303C;OLetter
+3041..3096;OLetter
+309D..309E;OLetter
+309F;OLetter
+30A1..30FA;OLetter
+30FC..30FE;OLetter
+30FF;OLetter
+3002;STerm
+3008;Close
+3009;Close
+300A;Close
+300B;Close
+300C;Close
+300D;Close
+300E;Close
+300F;Close
+3010;Close
+3011;Close
+3014;Close
+3015;Close
+3016;Close
+3017;Close
+3018;Close
+3019;Close
+301A;Close
+301B;Close
+301D;Close
+301E..301F;Close
+3001;SContinue
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「49」））
+                                                            于（「小于」于「桶」于「50」）则
+                                                            『3105..312F;OLetter
+3131..318E;OLetter
+31A0..31BF;OLetter
+31F0..31FF;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「52」））
+                                                            于（「小于」于「桶」于「78」）则
+                                                            『3400..4DBF;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「78」））
+                                                            于（「小于」于「桶」于「160」）则
+                                                            『4E00..A014;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「160」））
+                                                            于（「小于」于「桶」于「161」）则
+                                                            『4E00..A014;OLetter
+A015;OLetter
+A016..A48C;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「161」））
+                                                            于（「小于」于「桶」于「164」）则
+                                                            『A016..A48C;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「164」））
+                                                            于（「小于」于「桶」于「165」）则
+                                                            『A016..A48C;OLetter
+A4D0..A4F7;OLetter
+A4F8..A4FD;OLetter
+A4FF;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「165」））
+                                                            于（「小于」于「桶」于「166」）则
+                                                            『A500..A60B;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「166」））
+                                                            于（「小于」于「桶」于「167」）则
+                                                            『A66F;Extend
+A670..A672;Extend
+A674..A67D;Extend
+A69E..A69F;Extend
+A6F0..A6F1;Extend
+A641;Lower
+A643;Lower
+A645;Lower
+A647;Lower
+A649;Lower
+A64B;Lower
+A64D;Lower
+A64F;Lower
+A651;Lower
+A653;Lower
+A655;Lower
+A657;Lower
+A659;Lower
+A65B;Lower
+A65D;Lower
+A65F;Lower
+A661;Lower
+A663;Lower
+A665;Lower
+A667;Lower
+A669;Lower
+A66B;Lower
+A66D;Lower
+A681;Lower
+A683;Lower
+A685;Lower
+A687;Lower
+A689;Lower
+A68B;Lower
+A68D;Lower
+A68F;Lower
+A691;Lower
+A693;Lower
+A695;Lower
+A697;Lower
+A699;Lower
+A69B;Lower
+A69C..A69D;Lower
+A640;Upper
+A642;Upper
+A644;Upper
+A646;Upper
+A648;Upper
+A64A;Upper
+A64C;Upper
+A64E;Upper
+A650;Upper
+A652;Upper
+A654;Upper
+A656;Upper
+A658;Upper
+A65A;Upper
+A65C;Upper
+A65E;Upper
+A660;Upper
+A662;Upper
+A664;Upper
+A666;Upper
+A668;Upper
+A66A;Upper
+A66C;Upper
+A680;Upper
+A682;Upper
+A684;Upper
+A686;Upper
+A688;Upper
+A68A;Upper
+A68C;Upper
+A68E;Upper
+A690;Upper
+A692;Upper
+A694;Upper
+A696;Upper
+A698;Upper
+A69A;Upper
+A500..A60B;OLetter
+A60C;OLetter
+A610..A61F;OLetter
+A62A..A62B;OLetter
+A66E;OLetter
+A67F;OLetter
+A6A0..A6E5;OLetter
+A6E6..A6EF;OLetter
+A620..A629;Numeric
+A60E..A60F;STerm
+A6F3;STerm
+A6F7;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「167」））
+                                                            于（「小于」于「桶」于「168」）则
+                                                            『A723;Lower
+A725;Lower
+A727;Lower
+A729;Lower
+A72B;Lower
+A72D;Lower
+A72F..A731;Lower
+A733;Lower
+A735;Lower
+A737;Lower
+A739;Lower
+A73B;Lower
+A73D;Lower
+A73F;Lower
+A741;Lower
+A743;Lower
+A745;Lower
+A747;Lower
+A749;Lower
+A74B;Lower
+A74D;Lower
+A74F;Lower
+A751;Lower
+A753;Lower
+A755;Lower
+A757;Lower
+A759;Lower
+A75B;Lower
+A75D;Lower
+A75F;Lower
+A761;Lower
+A763;Lower
+A765;Lower
+A767;Lower
+A769;Lower
+A76B;Lower
+A76D;Lower
+A76F;Lower
+A770;Lower
+A771..A778;Lower
+A77A;Lower
+A77C;Lower
+A77F;Lower
+A781;Lower
+A783;Lower
+A785;Lower
+A787;Lower
+A78C;Lower
+A78E;Lower
+A791;Lower
+A793..A795;Lower
+A797;Lower
+A799;Lower
+A79B;Lower
+A79D;Lower
+A79F;Lower
+A7A1;Lower
+A7A3;Lower
+A7A5;Lower
+A7A7;Lower
+A7A9;Lower
+A7AF;Lower
+A7B5;Lower
+A7B7;Lower
+A7B9;Lower
+A7BB;Lower
+A7BD;Lower
+A7BF;Lower
+A7C1;Lower
+A7C3;Lower
+A7C8;Lower
+A7CA;Lower
+A7CD;Lower
+A7CF;Lower
+A7D1;Lower
+A7D3;Lower
+A7D5;Lower
+A7D7;Lower
+A7D9;Lower
+A7DB;Lower
+A7F1..A7F4;Lower
+A7F6;Lower
+A7F8..A7F9;Lower
+A7FA;Lower
+A722;Upper
+A724;Upper
+A726;Upper
+A728;Upper
+A72A;Upper
+A72C;Upper
+A72E;Upper
+A732;Upper
+A734;Upper
+A736;Upper
+A738;Upper
+A73A;Upper
+A73C;Upper
+A73E;Upper
+A740;Upper
+A742;Upper
+A744;Upper
+A746;Upper
+A748;Upper
+A74A;Upper
+A74C;Upper
+A74E;Upper
+A750;Upper
+A752;Upper
+A754;Upper
+A756;Upper
+A758;Upper
+A75A;Upper
+A75C;Upper
+A75E;Upper
+A760;Upper
+A762;Upper
+A764;Upper
+A766;Upper
+A768;Upper
+A76A;Upper
+A76C;Upper
+A76E;Upper
+A779;Upper
+A77B;Upper
+A77D..A77E;Upper
+A780;Upper
+A782;Upper
+A784;Upper
+A786;Upper
+A78B;Upper
+A78D;Upper
+A790;Upper
+A792;Upper
+A796;Upper
+A798;Upper
+A79A;Upper
+A79C;Upper
+A79E;Upper
+A7A0;Upper
+A7A2;Upper
+A7A4;Upper
+A7A6;Upper
+A7A8;Upper
+A7AA..A7AE;Upper
+A7B0..A7B4;Upper
+A7B6;Upper
+A7B8;Upper
+A7BA;Upper
+A7BC;Upper
+A7BE;Upper
+A7C0;Upper
+A7C2;Upper
+A7C4..A7C7;Upper
+A7C9;Upper
+A7CB..A7CC;Upper
+A7CE;Upper
+A7D0;Upper
+A7D2;Upper
+A7D4;Upper
+A7D6;Upper
+A7D8;Upper
+A7DA;Upper
+A7DC..A7DD;Upper
+A7E2;Upper
+A7F5;Upper
+A717..A71F;OLetter
+A788;OLetter
+A78F;OLetter
+A7F7;OLetter
+A7FB..A801;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「168」））
+                                                            于（「小于」于「桶」于「169」）则
+                                                            『A802;Extend
+A806;Extend
+A80B;Extend
+A823..A824;Extend
+A825..A826;Extend
+A827;Extend
+A82C;Extend
+A880..A881;Extend
+A8B4..A8C3;Extend
+A8C4..A8C5;Extend
+A8E0..A8F1;Extend
+A8FF;Extend
+A7FB..A801;OLetter
+A803..A805;OLetter
+A807..A80A;OLetter
+A80C..A822;OLetter
+A840..A873;OLetter
+A882..A8B3;OLetter
+A8F2..A8F7;OLetter
+A8FB;OLetter
+A8FD..A8FE;OLetter
+A8D0..A8D9;Numeric
+A876..A877;STerm
+A8CE..A8CF;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「169」））
+                                                            于（「小于」于「桶」于「170」）则
+                                                            『A926..A92D;Extend
+A947..A951;Extend
+A952..A953;Extend
+A980..A982;Extend
+A983;Extend
+A9B3;Extend
+A9B4..A9B5;Extend
+A9B6..A9B9;Extend
+A9BA..A9BB;Extend
+A9BC..A9BD;Extend
+A9BE..A9C0;Extend
+A9E5;Extend
+A90A..A925;OLetter
+A930..A946;OLetter
+A960..A97C;OLetter
+A984..A9B2;OLetter
+A9CF;OLetter
+A9E0..A9E4;OLetter
+A9E6;OLetter
+A9E7..A9EF;OLetter
+A9FA..A9FE;OLetter
+A900..A909;Numeric
+A9D0..A9D9;Numeric
+A9F0..A9F9;Numeric
+A92F;STerm
+A9C8..A9C9;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「170」））
+                                                            于（「小于」于「桶」于「171」）则
+                                                            『AA29..AA2E;Extend
+AA2F..AA30;Extend
+AA31..AA32;Extend
+AA33..AA34;Extend
+AA35..AA36;Extend
+AA43;Extend
+AA4C;Extend
+AA4D;Extend
+AA7B;Extend
+AA7C;Extend
+AA7D;Extend
+AAB0;Extend
+AAB2..AAB4;Extend
+AAB7..AAB8;Extend
+AABE..AABF;Extend
+AAC1;Extend
+AAEB;Extend
+AAEC..AAED;Extend
+AAEE..AAEF;Extend
+AAF5;Extend
+AAF6;Extend
+AA00..AA28;OLetter
+AA40..AA42;OLetter
+AA44..AA4B;OLetter
+AA60..AA6F;OLetter
+AA70;OLetter
+AA71..AA76;OLetter
+AA7A;OLetter
+AA7E..AAAF;OLetter
+AAB1;OLetter
+AAB5..AAB6;OLetter
+AAB9..AABD;OLetter
+AAC0;OLetter
+AAC2;OLetter
+AADB..AADC;OLetter
+AADD;OLetter
+AAE0..AAEA;OLetter
+AAF2;OLetter
+AAF3..AAF4;OLetter
+AA50..AA59;Numeric
+AA5D..AA5F;STerm
+AAF0..AAF1;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「171」））
+                                                            于（「小于」于「桶」于「172」）则
+                                                            『ABE3..ABE4;Extend
+ABE5;Extend
+ABE6..ABE7;Extend
+ABE8;Extend
+ABE9..ABEA;Extend
+ABEC;Extend
+ABED;Extend
+AB30..AB5A;Lower
+AB5C..AB5F;Lower
+AB60..AB68;Lower
+AB69;Lower
+AB70..ABBF;Lower
+AB6C..AB6D;Upper
+AB01..AB06;OLetter
+AB09..AB0E;OLetter
+AB11..AB16;OLetter
+AB20..AB26;OLetter
+AB28..AB2E;OLetter
+ABC0..ABE2;OLetter
+ABF0..ABF9;Numeric
+ABEB;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「172」））
+                                                            于（「小于」于「桶」于「215」）则
+                                                            『AC00..D7A3;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「215」））
+                                                            于（「小于」于「桶」于「216」）则
+                                                            『AC00..D7A3;OLetter
+D7B0..D7C6;OLetter
+D7CB..D7FB;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「249」））
+                                                            于（「小于」于「桶」于「250」）则
+                                                            『F900..FA6D;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「250」））
+                                                            于（「小于」于「桶」于「251」）则
+                                                            『F900..FA6D;OLetter
+FA70..FAD9;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「251」））
+                                                            于（「小于」于「桶」于「252」）则
+                                                            『FB1E;Extend
+FB00..FB06;Lower
+FB13..FB17;Lower
+FB1D;OLetter
+FB1F..FB28;OLetter
+FB2A..FB36;OLetter
+FB38..FB3C;OLetter
+FB3E;OLetter
+FB40..FB41;OLetter
+FB43..FB44;OLetter
+FB46..FBB1;OLetter
+FBD3..FD3D;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「252」））
+                                                            于（「小于」于「桶」于「253」）则
+                                                            『FBD3..FD3D;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「253」））
+                                                            于（「小于」于「桶」于「254」）则
+                                                            『FBD3..FD3D;OLetter
+FD50..FD8F;OLetter
+FD92..FDC7;OLetter
+FDF0..FDFB;OLetter
+FD3E;Close
+FD3F;Close
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「254」））
+                                                            于（「小于」于「桶」于「255」）则
+                                                            『FE00..FE0F;Extend
+FE20..FE2F;Extend
+FEFF;Format
+FE70..FE74;OLetter
+FE76..FEFC;OLetter
+FE52;ATerm
+FE12;STerm
+FE15..FE16;STerm
+FE56..FE57;STerm
+FE17;Close
+FE18;Close
+FE35;Close
+FE36;Close
+FE37;Close
+FE38;Close
+FE39;Close
+FE3A;Close
+FE3B;Close
+FE3C;Close
+FE3D;Close
+FE3E;Close
+FE3F;Close
+FE40;Close
+FE41;Close
+FE42;Close
+FE43;Close
+FE44;Close
+FE47;Close
+FE48;Close
+FE59;Close
+FE5A;Close
+FE5B;Close
+FE5C;Close
+FE5D;Close
+FE5E;Close
+FE10..FE11;SContinue
+FE13..FE14;SContinue
+FE31..FE32;SContinue
+FE50..FE51;SContinue
+FE54..FE55;SContinue
+FE58;SContinue
+FE63;SContinue
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「255」））
+                                                            于（「小于」于「桶」于「256」）则
+                                                            『FF9E..FF9F;Extend
+FFF9..FFFB;Format
+FF41..FF5A;Lower
+FF21..FF3A;Upper
+FF66..FF6F;OLetter
+FF70;OLetter
+FF71..FF9D;OLetter
+FFA0..FFBE;OLetter
+FFC2..FFC7;OLetter
+FFCA..FFCF;OLetter
+FFD2..FFD7;OLetter
+FFDA..FFDC;OLetter
+FF10..FF19;Numeric
+FF0E;ATerm
+FF01;STerm
+FF1F;STerm
+FF61;STerm
+FF08;Close
+FF09;Close
+FF3B;Close
+FF3D;Close
+FF5B;Close
+FF5D;Close
+FF5F;Close
+FF60;Close
+FF62;Close
+FF63;Close
+FF0C;SContinue
+FF0D;SContinue
+FF1A..FF1B;SContinue
+FF64;SContinue
+』
+                                                            否则
+                                                            『』
+也。
+
+「句表1」乃化「整数」而「字符串」也。
+「句表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「256」））于（「小于」于「桶」于「257」）则
+    『10000..1000B;OLetter
+1000D..10026;OLetter
+10028..1003A;OLetter
+1003C..1003D;OLetter
+1003F..1004D;OLetter
+10050..1005D;OLetter
+10080..100FA;OLetter
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「257」））于（「小于」于「桶」于「258」）则
+      『101FD;Extend
+10140..10174;OLetter
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「258」））于（「小于」于「桶」于「259」）则
+        『102E0;Extend
+10280..1029C;OLetter
+102A0..102D0;OLetter
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「259」））于（「小于」于「桶」于「260」）则
+          『10376..1037A;Extend
+10300..1031F;OLetter
+1032D..10340;OLetter
+10341;OLetter
+10342..10349;OLetter
+1034A;OLetter
+10350..10375;OLetter
+10380..1039D;OLetter
+103A0..103C3;OLetter
+103C8..103CF;OLetter
+103D1..103D5;OLetter
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「260」））
+            于（「小于」于「桶」于「261」）则
+              『10428..1044F;Lower
+104D8..104FB;Lower
+10400..10427;Upper
+104B0..104D3;Upper
+10450..1049D;OLetter
+104A0..104A9;Numeric
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「261」））
+              于（「小于」于「桶」于「262」）则
+                『10597..105A1;Lower
+105A3..105B1;Lower
+105B3..105B9;Lower
+105BB..105BC;Lower
+10570..1057A;Upper
+1057C..1058A;Upper
+1058C..10592;Upper
+10594..10595;Upper
+10500..10527;OLetter
+10530..10563;OLetter
+105C0..105F3;OLetter
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「262」））
+                于（「小于」于「桶」于「263」）则
+                  『10600..10736;OLetter
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「263」））
+                  于（「小于」于「桶」于「264」）则
+                    『10780;Lower
+10783..10785;Lower
+10787..107B0;Lower
+107B2..107BF;Lower
+10600..10736;OLetter
+10740..10755;OLetter
+10760..10767;OLetter
+10781..10782;OLetter
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「264」））
+                    于（「小于」于「桶」于「265」）则
+                      『10800..10805;OLetter
+10808;OLetter
+1080A..10835;OLetter
+10837..10838;OLetter
+1083C;OLetter
+1083F..10855;OLetter
+10860..10876;OLetter
+10880..1089E;OLetter
+108E0..108F2;OLetter
+108F4..108F5;OLetter
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「265」））
+                      于（「小于」于「桶」于「266」）则
+                        『10900..10915;OLetter
+10920..10939;OLetter
+10940..10959;OLetter
+10980..109B7;OLetter
+109BE..109BF;OLetter
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「266」））
+                        于（「小于」于「桶」于「267」）则
+                          『10A01..10A03;Extend
+10A05..10A06;Extend
+10A0C..10A0F;Extend
+10A38..10A3A;Extend
+10A3F;Extend
+10AE5..10AE6;Extend
+10A00;OLetter
+10A10..10A13;OLetter
+10A15..10A17;OLetter
+10A19..10A35;OLetter
+10A60..10A7C;OLetter
+10A80..10A9C;OLetter
+10AC0..10AC7;OLetter
+10AC9..10AE4;OLetter
+10A56..10A57;STerm
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「267」））
+                          于（「小于」于「桶」于「268」）则
+                            『10B00..10B35;OLetter
+10B40..10B55;OLetter
+10B60..10B72;OLetter
+10B80..10B91;OLetter
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「268」））
+                            于（「小于」于「桶」于「269」）则
+                              『10CC0..10CF2;Lower
+10C80..10CB2;Upper
+10C00..10C48;OLetter
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「269」））
+                              于（「小于」于「桶」于「270」）则
+                                『10D24..10D27;Extend
+10D69..10D6D;Extend
+10D70..10D85;Lower
+10D50..10D65;Upper
+10D00..10D23;OLetter
+10D4A..10D4D;OLetter
+10D4E;OLetter
+10D4F;OLetter
+10D6F;OLetter
+10D30..10D39;Numeric
+10D40..10D49;Numeric
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「270」））
+                                于（「小于」于「桶」于「271」）则
+                                  『10EAB..10EAC;Extend
+10ECB..10ECF;Extend
+10EF0..10EFF;Extend
+10E80..10EA9;OLetter
+10EB0..10EB1;OLetter
+10EC2..10EC4;OLetter
+10EC5;OLetter
+10EC6..10EC7;OLetter
+10ED9..10EEE;OLetter
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「271」））
+                                  于（「小于」于「桶」于「272」）则
+                                    『10F46..10F50;Extend
+10F82..10F85;Extend
+10F00..10F1C;OLetter
+10F27;OLetter
+10F30..10F45;OLetter
+10F70..10F81;OLetter
+10FB0..10FC4;OLetter
+10FE0..10FF6;OLetter
+10F55..10F59;STerm
+10F86..10F89;STerm
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「272」））
+                                    于（「小于」于「桶」于「273」）则
+                                      『11000;Extend
+11001;Extend
+11002;Extend
+11038..11046;Extend
+11070;Extend
+11073..11074;Extend
+1107F..11081;Extend
+11082;Extend
+110B0..110B2;Extend
+110B3..110B6;Extend
+110B7..110B8;Extend
+110B9..110BA;Extend
+110C2;Extend
+11003..11037;OLetter
+11071..11072;OLetter
+11075;OLetter
+11083..110AF;OLetter
+110D0..110E8;OLetter
+11066..1106F;Numeric
+110BD;Numeric
+110CD;Numeric
+110F0..110F9;Numeric
+11047..11048;STerm
+110BE..110C1;STerm
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「273」））
+                                      于（「小于」于「桶」于「274」）则
+                                        『11100..11102;Extend
+11127..1112B;Extend
+1112C;Extend
+1112D..11134;Extend
+11145..11146;Extend
+11173;Extend
+11180..11181;Extend
+11182;Extend
+111B3..111B5;Extend
+111B6..111BE;Extend
+111BF..111C0;Extend
+111C9..111CC;Extend
+111CE;Extend
+111CF;Extend
+11103..11126;OLetter
+11144;OLetter
+11147;OLetter
+11150..11172;OLetter
+11176;OLetter
+11183..111B2;OLetter
+111C1..111C4;OLetter
+111DA;OLetter
+111DC;OLetter
+11136..1113F;Numeric
+111D0..111D9;Numeric
+11141..11143;STerm
+111C5..111C6;STerm
+111CD;STerm
+111DE..111DF;STerm
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「274」））
+                                        于（「小于」于「桶」于「275」）则
+                                          『1122C..1122E;Extend
+1122F..11231;Extend
+11232..11233;Extend
+11234;Extend
+11235;Extend
+11236..11237;Extend
+1123E;Extend
+11241;Extend
+112DF;Extend
+112E0..112E2;Extend
+112E3..112EA;Extend
+11200..11211;OLetter
+11213..1122B;OLetter
+1123F..11240;OLetter
+11280..11286;OLetter
+11288;OLetter
+1128A..1128D;OLetter
+1128F..1129D;OLetter
+1129F..112A8;OLetter
+112B0..112DE;OLetter
+112F0..112F9;Numeric
+11238..11239;STerm
+1123B..1123C;STerm
+112A9;STerm
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「275」））
+                                          于（「小于」于「桶」于「276」）则
+                                            『11300..11301;Extend
+11302..11303;Extend
+1133B..1133C;Extend
+1133E..1133F;Extend
+11340;Extend
+11341..11344;Extend
+11347..11348;Extend
+1134B..1134D;Extend
+11357;Extend
+11362..11363;Extend
+11366..1136C;Extend
+11370..11374;Extend
+113B8..113BA;Extend
+113BB..113C0;Extend
+113C2;Extend
+113C5;Extend
+113C7..113CA;Extend
+113CC..113CD;Extend
+113CE;Extend
+113CF;Extend
+113D0;Extend
+113D2;Extend
+113E1..113E2;Extend
+11305..1130C;OLetter
+1130F..11310;OLetter
+11313..11328;OLetter
+1132A..11330;OLetter
+11332..11333;OLetter
+11335..11339;OLetter
+1133D;OLetter
+11350;OLetter
+1135D..11361;OLetter
+11380..11389;OLetter
+1138B;OLetter
+1138E;OLetter
+11390..113B5;OLetter
+113B7;OLetter
+113D1;OLetter
+113D3;OLetter
+113D4..113D5;STerm
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「276」））
+                                            于（「小于」于「桶」于「277」）则
+                                              『11435..11437;Extend
+11438..1143F;Extend
+11440..11441;Extend
+11442..11444;Extend
+11445;Extend
+11446;Extend
+1145E;Extend
+114B0..114B2;Extend
+114B3..114B8;Extend
+114B9;Extend
+114BA;Extend
+114BB..114BE;Extend
+114BF..114C0;Extend
+114C1;Extend
+114C2..114C3;Extend
+11400..11434;OLetter
+11447..1144A;OLetter
+1145F..11461;OLetter
+11480..114AF;OLetter
+114C4..114C5;OLetter
+114C7;OLetter
+11450..11459;Numeric
+114D0..114D9;Numeric
+1144B..1144C;STerm
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「277」））
+                                              于（「小于」于「桶」于「278」）则
+                                                『115AF..115B1;Extend
+115B2..115B5;Extend
+115B8..115BB;Extend
+115BC..115BD;Extend
+115BE;Extend
+115BF..115C0;Extend
+115DC..115DD;Extend
+11580..115AE;OLetter
+115D8..115DB;OLetter
+115C2..115C3;STerm
+115C9..115D7;STerm
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「278」））
+                                                于（「小于」于「桶」于「279」）则
+                                                  『11630..11632;Extend
+11633..1163A;Extend
+1163B..1163C;Extend
+1163D;Extend
+1163E;Extend
+1163F..11640;Extend
+116AB;Extend
+116AC;Extend
+116AD;Extend
+116AE..116AF;Extend
+116B0..116B5;Extend
+116B6;Extend
+116B7;Extend
+11600..1162F;OLetter
+11644;OLetter
+11680..116AA;OLetter
+116B8;OLetter
+11650..11659;Numeric
+116C0..116C9;Numeric
+116D0..116E3;Numeric
+11641..11642;STerm
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「279」））
+                                                  于（「小于」于「桶」于「280」）则
+                                                    『1171D;Extend
+1171E;Extend
+1171F;Extend
+11720..11721;Extend
+11722..11725;Extend
+11726;Extend
+11727..1172B;Extend
+11700..1171A;OLetter
+11740..11746;OLetter
+11730..11739;Numeric
+1173C..1173E;STerm
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「280」））
+                                                    于（「小于」于「桶」于「281」）则
+                                                      『1182C..1182E;Extend
+1182F..11837;Extend
+11838;Extend
+11839..1183A;Extend
+118C0..118DF;Lower
+118A0..118BF;Upper
+11800..1182B;OLetter
+118FF..11906;OLetter
+118E0..118E9;Numeric
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「281」））
+                                                      于（「小于」于「桶」于「282」）则
+                                                        『11930..11935;Extend
+11937..11938;Extend
+1193B..1193C;Extend
+1193D;Extend
+1193E;Extend
+11940;Extend
+11942;Extend
+11943;Extend
+119D1..119D3;Extend
+119D4..119D7;Extend
+119DA..119DB;Extend
+119DC..119DF;Extend
+119E0;Extend
+119E4;Extend
+118FF..11906;OLetter
+11909;OLetter
+1190C..11913;OLetter
+11915..11916;OLetter
+11918..1192F;OLetter
+1193F;OLetter
+11941;OLetter
+119A0..119A7;OLetter
+119AA..119D0;OLetter
+119E1;OLetter
+119E3;OLetter
+11950..11959;Numeric
+11944;STerm
+11946;STerm
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「282」））
+                                                        于（「小于」于「桶」于「283」）则
+                                                          『11A01..11A0A;Extend
+11A33..11A38;Extend
+11A39;Extend
+11A3B..11A3E;Extend
+11A47;Extend
+11A51..11A56;Extend
+11A57..11A58;Extend
+11A59..11A5B;Extend
+11A8A..11A96;Extend
+11A97;Extend
+11A98..11A99;Extend
+11A00;OLetter
+11A0B..11A32;OLetter
+11A3A;OLetter
+11A50;OLetter
+11A5C..11A89;OLetter
+11A9D;OLetter
+11AB0..11AF8;OLetter
+11A42..11A43;STerm
+11A9B..11A9C;STerm
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「283」））
+                                                          于（「小于」于「桶」于「284」）则
+                                                            『11B60;Extend
+11B61;Extend
+11B62..11B64;Extend
+11B65;Extend
+11B66;Extend
+11B67;Extend
+11B0A;OLetter
+11BC0..11BE0;OLetter
+11BF0..11BF9;Numeric
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「284」））
+                                                            于（「小于」于「桶」于「285」）则
+                                                            『11C2F;Extend
+11C30..11C36;Extend
+11C38..11C3D;Extend
+11C3E;Extend
+11C3F;Extend
+11C92..11CA7;Extend
+11CA9;Extend
+11CAA..11CB0;Extend
+11CB1;Extend
+11CB2..11CB3;Extend
+11CB4;Extend
+11CB5..11CB6;Extend
+11C00..11C08;OLetter
+11C0A..11C2E;OLetter
+11C40;OLetter
+11C72..11C8F;OLetter
+11C50..11C59;Numeric
+11C41..11C42;STerm
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「285」））
+                                                            于（「小于」于「桶」于「286」）则
+                                                            『11D31..11D36;Extend
+11D3A;Extend
+11D3C..11D3D;Extend
+11D3F..11D45;Extend
+11D47;Extend
+11D8A..11D8E;Extend
+11D90..11D91;Extend
+11D93..11D94;Extend
+11D95;Extend
+11D96;Extend
+11D97;Extend
+11DF0;Extend
+11D00..11D06;OLetter
+11D08..11D09;OLetter
+11D0B..11D30;OLetter
+11D46;OLetter
+11D60..11D65;OLetter
+11D67..11D68;OLetter
+11D6A..11D89;OLetter
+11D98;OLetter
+11DB0..11DD8;OLetter
+11DD9;OLetter
+11DDA..11DDB;OLetter
+11DF1;OLetter
+11D50..11D59;Numeric
+11DA0..11DA9;Numeric
+11DE0..11DE9;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「286」））
+                                                            于（「小于」于「桶」于「287」）则
+                                                            『11EF3..11EF4;Extend
+11EF5..11EF6;Extend
+11EE0..11EF2;OLetter
+11EF7..11EF8;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「287」））
+                                                            于（「小于」于「桶」于「288」）则
+                                                            『11F00..11F01;Extend
+11F03;Extend
+11F34..11F35;Extend
+11F36..11F3A;Extend
+11F3E..11F3F;Extend
+11F40;Extend
+11F41;Extend
+11F42;Extend
+11F5A;Extend
+11F02;OLetter
+11F04..11F10;OLetter
+11F12..11F33;OLetter
+11FB0;OLetter
+11F50..11F59;Numeric
+11F43..11F44;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「288」））
+                                                            于（「小于」于「桶」于「292」）则
+                                                            『12000..12399;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「292」））
+                                                            于（「小于」于「桶」于「293」）则
+                                                            『12400..1246F;OLetter
+12475..1247F;OLetter
+12480..12543;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「293」））
+                                                            于（「小于」于「桶」于「294」）则
+                                                            『12480..12543;OLetter
+12550..12686;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「294」））
+                                                            于（「小于」于「桶」于「295」）则
+                                                            『12550..12686;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「303」））
+                                                            于（「小于」于「桶」于「304」）则
+                                                            『12F90..12FF0;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「304」））
+                                                            于（「小于」于「桶」于「308」）则
+                                                            『13000..1342F;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「308」））
+                                                            于（「小于」于「桶」于「309」）则
+                                                            『13440;Extend
+13447..13455;Extend
+13430..1343F;Format
+13000..1342F;OLetter
+13441..13446;OLetter
+13460..143FA;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「309」））
+                                                            于（「小于」于「桶」于「324」）则
+                                                            『13460..143FA;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「324」））
+                                                            于（「小于」于「桶」于「327」）则
+                                                            『14400..14646;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「353」））
+                                                            于（「小于」于「桶」于「354」）则
+                                                            『1611E..16129;Extend
+1612A..1612C;Extend
+1612D..1612F;Extend
+16100..1611D;OLetter
+16130..16139;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「360」））
+                                                            于（「小于」于「桶」于「362」）则
+                                                            『16800..16A38;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「362」））
+                                                            于（「小于」于「桶」于「363」）则
+                                                            『16AF0..16AF4;Extend
+16800..16A38;OLetter
+16A40..16A5E;OLetter
+16A70..16ABE;OLetter
+16AD0..16AED;OLetter
+16A60..16A69;Numeric
+16AC0..16AC9;Numeric
+16A6E..16A6F;STerm
+16AF5;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「363」））
+                                                            于（「小于」于「桶」于「364」）则
+                                                            『16B30..16B36;Extend
+16B00..16B2F;OLetter
+16B40..16B43;OLetter
+16B63..16B77;OLetter
+16B7D..16B8F;OLetter
+16B50..16B59;Numeric
+16B37..16B38;STerm
+16B44;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「365」））
+                                                            于（「小于」于「桶」于「366」）则
+                                                            『16D40..16D42;OLetter
+16D43..16D6A;OLetter
+16D6B..16D6C;OLetter
+16D70..16D79;Numeric
+16D6E..16D6F;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「366」））
+                                                            于（「小于」于「桶」于「367」）则
+                                                            『16E60..16E7F;Lower
+16EBB..16ED3;Lower
+16E40..16E5F;Upper
+16EA0..16EB8;Upper
+16E98;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「367」））
+                                                            于（「小于」于「桶」于「368」）则
+                                                            『16F4F;Extend
+16F51..16F87;Extend
+16F8F..16F92;Extend
+16FE4;Extend
+16FF0..16FF1;Extend
+16F00..16F4A;OLetter
+16F50;OLetter
+16F93..16F9F;OLetter
+16FE0..16FE1;OLetter
+16FE3;OLetter
+16FF2..16FF3;OLetter
+16FF4..16FF6;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「368」））
+                                                            于（「小于」于「桶」于「396」）则
+                                                            『17000..18CDA;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「396」））
+                                                            于（「小于」于「桶」于「397」）则
+                                                            『17000..18CDA;OLetter
+18CFF..18D20;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「397」））
+                                                            于（「小于」于「桶」于「398」）则
+                                                            『18CFF..18D20;OLetter
+18D80..18DF2;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「398」））
+                                                            于（「小于」于「桶」于「401」）则
+                                                            『18E00..19191;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「401」））
+                                                            于（「小于」于「桶」于「402」）则
+                                                            『18E00..19191;OLetter
+191A0..191D2;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「431」））
+                                                            于（「小于」于「桶」于「432」）则
+                                                            『1AFF0..1AFF3;OLetter
+1AFF5..1AFFB;OLetter
+1AFFD..1AFFE;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「432」））
+                                                            于（「小于」于「桶」于「433」）则
+                                                            『1B000..1B128;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「433」））
+                                                            于（「小于」于「桶」于「434」）则
+                                                            『1B000..1B128;OLetter
+1B132;OLetter
+1B150..1B152;OLetter
+1B155;OLetter
+1B164..1B168;OLetter
+1B170..1B2FB;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「434」））
+                                                            于（「小于」于「桶」于「435」）则
+                                                            『1B170..1B2FB;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「444」））
+                                                            于（「小于」于「桶」于「445」）则
+                                                            『1BC9D..1BC9E;Extend
+1BCA0..1BCA3;Format
+1BC00..1BC6A;OLetter
+1BC70..1BC7C;OLetter
+1BC80..1BC88;OLetter
+1BC90..1BC99;OLetter
+1BC9F;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「460」））
+                                                            于（「小于」于「桶」于「461」）则
+                                                            『1CCF0..1CCF9;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「463」））
+                                                            于（「小于」于「桶」于「464」）则
+                                                            『1CF00..1CF2D;Extend
+1CF30..1CF46;Extend
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「465」））
+                                                            于（「小于」于「桶」于「466」）则
+                                                            『1D127..1D128;Extend
+1D165..1D166;Extend
+1D167..1D169;Extend
+1D16D..1D172;Extend
+1D17B..1D182;Extend
+1D185..1D18B;Extend
+1D1AA..1D1AD;Extend
+1D173..1D17A;Format
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「466」））
+                                                            于（「小于」于「桶」于「467」）则
+                                                            『1D242..1D244;Extend
+1D250..1D252;Extend
+1D25B..1D25C;Extend
+1D25F;Extend
+1D280..1D281;Extend
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「468」））
+                                                            于（「小于」于「桶」于「469」）则
+                                                            『1D41A..1D433;Lower
+1D44E..1D454;Lower
+1D456..1D467;Lower
+1D482..1D49B;Lower
+1D4B6..1D4B9;Lower
+1D4BB;Lower
+1D4BD..1D4C3;Lower
+1D4C5..1D4CF;Lower
+1D4EA..1D503;Lower
+1D400..1D419;Upper
+1D434..1D44D;Upper
+1D468..1D481;Upper
+1D49C;Upper
+1D49E..1D49F;Upper
+1D4A2;Upper
+1D4A5..1D4A6;Upper
+1D4A9..1D4AC;Upper
+1D4AE..1D4B5;Upper
+1D4D0..1D4E9;Upper
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「469」））
+                                                            于（「小于」于「桶」于「470」）则
+                                                            『1D4EA..1D503;Lower
+1D51E..1D537;Lower
+1D552..1D56B;Lower
+1D586..1D59F;Lower
+1D5BA..1D5D3;Lower
+1D5EE..1D607;Lower
+1D504..1D505;Upper
+1D507..1D50A;Upper
+1D50D..1D514;Upper
+1D516..1D51C;Upper
+1D538..1D539;Upper
+1D53B..1D53E;Upper
+1D540..1D544;Upper
+1D546;Upper
+1D54A..1D550;Upper
+1D56C..1D585;Upper
+1D5A0..1D5B9;Upper
+1D5D4..1D5ED;Upper
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「470」））
+                                                            于（「小于」于「桶」于「471」）则
+                                                            『1D5EE..1D607;Lower
+1D622..1D63B;Lower
+1D656..1D66F;Lower
+1D68A..1D6A6;Lower
+1D6C2..1D6DA;Lower
+1D6DC..1D6E1;Lower
+1D6FC..1D714;Lower
+1D608..1D621;Upper
+1D63C..1D655;Upper
+1D670..1D689;Upper
+1D6A8..1D6C0;Upper
+1D6E2..1D6FA;Upper
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「471」））
+                                                            于（「小于」于「桶」于「472」）则
+                                                            『1D6FC..1D714;Lower
+1D716..1D71B;Lower
+1D736..1D74E;Lower
+1D750..1D755;Lower
+1D770..1D788;Lower
+1D78A..1D78F;Lower
+1D7AA..1D7C2;Lower
+1D7C4..1D7C9;Lower
+1D7CB;Lower
+1D71C..1D734;Upper
+1D756..1D76E;Upper
+1D790..1D7A8;Upper
+1D7CA;Upper
+1D7CE..1D7FF;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「474」））
+                                                            于（「小于」于「桶」于「475」）则
+                                                            『1DA00..1DA36;Extend
+1DA3B..1DA6C;Extend
+1DA75;Extend
+1DA84;Extend
+1DA9B..1DA9F;Extend
+1DAA1..1DAAF;Extend
+1DA88;STerm
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「479」））
+                                                            于（「小于」于「桶」于「480」）则
+                                                            『1DF00..1DF09;Lower
+1DF0B..1DF3F;Lower
+1DF41..1DF47;Lower
+1DF49;Lower
+1DF4B..1DF4C;Lower
+1DF4E..1DF50;Lower
+1DF52..1DF67;Lower
+1DF69;Lower
+1DF6B;Lower
+1DF6D;Lower
+1DF6F..1DF71;Lower
+1DF73;Lower
+1DF75;Lower
+1DF77;Lower
+1DF79;Lower
+1DF7B;Lower
+1DF7D;Lower
+1DF7F;Lower
+1DF90..1DF96;Lower
+1DFCD..1DFFF;Lower
+1DF40;Upper
+1DF48;Upper
+1DF4A;Upper
+1DF4D;Upper
+1DF51;Upper
+1DF68;Upper
+1DF6A;Upper
+1DF6C;Upper
+1DF6E;Upper
+1DF72;Upper
+1DF74;Upper
+1DF76;Upper
+1DF78;Upper
+1DF7A;Upper
+1DF7C;Upper
+1DF7E;Upper
+1DF0A;OLetter
+1DF80..1DF81;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「480」））
+                                                            于（「小于」于「桶」于「481」）则
+                                                            『1E000..1E006;Extend
+1E008..1E018;Extend
+1E01B..1E021;Extend
+1E023..1E024;Extend
+1E026..1E02A;Extend
+1E08F;Extend
+1E030..1E06D;Lower
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「481」））
+                                                            于（「小于」于「桶」于「482」）则
+                                                            『1E130..1E136;Extend
+1E100..1E12C;OLetter
+1E137..1E13D;OLetter
+1E14E;OLetter
+1E140..1E149;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「482」））
+                                                            于（「小于」于「桶」于「483」）则
+                                                            『1E2AE;Extend
+1E2EC..1E2EF;Extend
+1E290..1E2AD;OLetter
+1E2C0..1E2EB;OLetter
+1E2F0..1E2F9;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「484」））
+                                                            于（「小于」于「桶」于「485」）则
+                                                            『1E4EC..1E4EF;Extend
+1E4D0..1E4EA;OLetter
+1E4EB;OLetter
+1E4F0..1E4F9;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「485」））
+                                                            于（「小于」于「桶」于「486」）则
+                                                            『1E5EE..1E5EF;Extend
+1E5D0..1E5ED;OLetter
+1E5F0;OLetter
+1E5F1..1E5FA;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「486」））
+                                                            于（「小于」于「桶」于「487」）则
+                                                            『1E6E3;Extend
+1E6E6;Extend
+1E6EE..1E6EF;Extend
+1E6F5;Extend
+1E6C0..1E6DE;OLetter
+1E6E0..1E6E2;OLetter
+1E6E4..1E6E5;OLetter
+1E6E7..1E6ED;OLetter
+1E6F0..1E6F4;OLetter
+1E6FE;OLetter
+1E6FF;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「487」））
+                                                            于（「小于」于「桶」于「488」）则
+                                                            『1E7E0..1E7E6;OLetter
+1E7E8..1E7EB;OLetter
+1E7ED..1E7EE;OLetter
+1E7F0..1E7FE;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「488」））
+                                                            于（「小于」于「桶」于「489」）则
+                                                            『1E8D0..1E8D6;Extend
+1E800..1E8C4;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「489」））
+                                                            于（「小于」于「桶」于「490」）则
+                                                            『1E944..1E94A;Extend
+1E922..1E943;Lower
+1E900..1E921;Upper
+1E94B;OLetter
+1E950..1E959;Numeric
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「494」））
+                                                            于（「小于」于「桶」于「495」）则
+                                                            『1EE00..1EE03;OLetter
+1EE05..1EE1F;OLetter
+1EE21..1EE22;OLetter
+1EE24;OLetter
+1EE27;OLetter
+1EE29..1EE32;OLetter
+1EE34..1EE37;OLetter
+1EE39;OLetter
+1EE3B;OLetter
+1EE42;OLetter
+1EE47;OLetter
+1EE49;OLetter
+1EE4B;OLetter
+1EE4D..1EE4F;OLetter
+1EE51..1EE52;OLetter
+1EE54;OLetter
+1EE57;OLetter
+1EE59;OLetter
+1EE5B;OLetter
+1EE5D;OLetter
+1EE5F;OLetter
+1EE61..1EE62;OLetter
+1EE64;OLetter
+1EE67..1EE6A;OLetter
+1EE6C..1EE72;OLetter
+1EE74..1EE77;OLetter
+1EE79..1EE7C;OLetter
+1EE7E;OLetter
+1EE80..1EE89;OLetter
+1EE8B..1EE9B;OLetter
+1EEA1..1EEA3;OLetter
+1EEA5..1EEA9;OLetter
+1EEAB..1EEBB;OLetter
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「497」））
+                                                            于（「小于」于「桶」于「498」）则
+                                                            『1F130..1F149;Upper
+1F150..1F169;Upper
+1F170..1F189;Upper
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「502」））
+                                                            于（「小于」于「桶」于「503」）则
+                                                            『1F676..1F678;Close
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「507」））
+                                                            于（「小于」于「桶」于「508」）则
+                                                            『1FBF0..1FBF9;Numeric
+』
+                                                            否则
+                                                            『』
+也。
+
+「句表2」乃化「整数」而「字符串」也。
+「句表2」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「512」））于（「小于」于「桶」于「679」）则
+    『20000..2A6DF;OLetter
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「679」））于（「小于」于「桶」于「696」）则
+      『2A700..2B81E;OLetter
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「696」））于（「小于」于「桶」于「697」）则
+        『2A700..2B81E;OLetter
+2B820..2CEAD;OLetter
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「697」））于（「小于」于「桶」于「718」）则
+          『2B820..2CEAD;OLetter
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「718」））
+            于（「小于」于「桶」于「719」）则
+              『2B820..2CEAD;OLetter
+2CEB0..2EBE0;OLetter
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「719」））
+              于（「小于」于「桶」于「747」）则
+                『2CEB0..2EBE0;OLetter
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「747」））
+                于（「小于」于「桶」于「748」）则
+                  『2CEB0..2EBE0;OLetter
+2EBF0..2EE5D;OLetter
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「748」））
+                  于（「小于」于「桶」于「751」）则
+                    『2EBF0..2EE5D;OLetter
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「760」））
+                    于（「小于」于「桶」于「763」）则
+                    『2F800..2FA1D;OLetter
+』
+                  否则
+                    『』
+也。
+
+「句表3」乃化「整数」而「字符串」也。
+「句表3」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「768」））于（「小于」于「桶」于「787」）则
+    『30000..3134A;OLetter
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「787」））于（「小于」于「桶」于「788」）则
+      『30000..3134A;OLetter
+31350..33479;OLetter
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「788」））于（「小于」于「桶」于「821」）则
+        『31350..33479;OLetter
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「976」））于（「小于」于「桶」于「1021」）则
+          『3D000..3FC3F;OLetter
+』
+        否则
+          『』
+也。
+
+「句表4」乃化「整数」而「字符串」也。
+「句表4」者会「桶」而
+  『』
+也。
+
+「句表5」乃化「整数」而「字符串」也。
+「句表5」者会「桶」而
+  『』
+也。
+
+「句表6」乃化「整数」而「字符串」也。
+「句表6」者会「桶」而
+  『』
+也。
+
+「句表7」乃化「整数」而「字符串」也。
+「句表7」者会「桶」而
+  『』
+也。
+
+「句表8」乃化「整数」而「字符串」也。
+「句表8」者会「桶」而
+  『』
+也。
+
+「句表9」乃化「整数」而「字符串」也。
+「句表9」者会「桶」而
+  『』
+也。
+
+「句表10」乃化「整数」而「字符串」也。
+「句表10」者会「桶」而
+  『』
+也。
+
+「句表11」乃化「整数」而「字符串」也。
+「句表11」者会「桶」而
+  『』
+也。
+
+「句表12」乃化「整数」而「字符串」也。
+「句表12」者会「桶」而
+  『』
+也。
+
+「句表13」乃化「整数」而「字符串」也。
+「句表13」者会「桶」而
+  『』
+也。
+
+「句表14」乃化「整数」而「字符串」也。
+「句表14」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3584」））于（「小于」于「桶」于「3585」）则
+    『E0020..E007F;Extend
+E0001;Format
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「3585」））于（「小于」于「桶」于「3586」）则
+      『E0100..E01EF;Extend
+』
+    否则
+      『』
+也。
+
+「句表15」乃化「整数」而「字符串」也。
+「句表15」者会「桶」而
+  『』
+也。
+
+「句表16」乃化「整数」而「字符串」也。
+「句表16」者会「桶」而
+  『』
+也。
+
+「句表」乃化「整数」而「字符串」也。
+「句表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「句表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「句表1」于「桶」否则
+      若「小于」于「桶」于「768」则「句表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「句表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「句表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「句表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「句表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「句表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「句表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「句表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「句表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「句表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「句表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「句表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「句表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「句表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「句表16」于「桶」
+                                  否则
+                                    『』
+也。

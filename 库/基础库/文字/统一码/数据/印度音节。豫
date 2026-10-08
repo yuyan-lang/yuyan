@@ -1,0 +1,1279 @@
+寻观「标准库」之书。
+
+「印度音节表0」乃化「整数」而「字符串」也。
+「印度音节表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『002D;Consonant_Placeholder
+00A0;Consonant_Placeholder
+00D7;Consonant_Placeholder
+00B2..00B3;Syllable_Modifier
+0030..0039;Number
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「9」））于（「小于」于「桶」于「10」）则
+      『0900..0902;Bindu
+0981;Bindu
+0982;Bindu
+09FC;Bindu
+0903;Visarga
+0983;Visarga
+093D;Avagraha
+09BD;Avagraha
+093C;Nukta
+09BC;Nukta
+094D;Virama
+09CD;Virama
+0904..0914;Vowel_Independent
+0960..0961;Vowel_Independent
+0972..0977;Vowel_Independent
+0985..098C;Vowel_Independent
+098F..0990;Vowel_Independent
+0993..0994;Vowel_Independent
+09E0..09E1;Vowel_Independent
+093A;Vowel_Dependent
+093B;Vowel_Dependent
+093E..0940;Vowel_Dependent
+0941..0948;Vowel_Dependent
+0949..094C;Vowel_Dependent
+094E..094F;Vowel_Dependent
+0955..0957;Vowel_Dependent
+0962..0963;Vowel_Dependent
+09BE..09C0;Vowel_Dependent
+09C1..09C4;Vowel_Dependent
+09C7..09C8;Vowel_Dependent
+09CB..09CC;Vowel_Dependent
+09D7;Vowel_Dependent
+09E2..09E3;Vowel_Dependent
+0980;Consonant_Placeholder
+0915..0939;Consonant
+0958..095F;Consonant
+0978..097F;Consonant
+0995..09A8;Consonant
+09AA..09B0;Consonant
+09B2;Consonant
+09B6..09B9;Consonant
+09DC..09DD;Consonant
+09DF;Consonant
+09F0..09F1;Consonant
+09CE;Consonant_Dead
+0951..0952;Cantillation_Mark
+09FE;Syllable_Modifier
+0966..096F;Number
+09E6..09EF;Number
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「10」））于（「小于」于「桶」于「11」）则
+        『0A01..0A02;Bindu
+0A70;Bindu
+0A81..0A82;Bindu
+0A03;Visarga
+0A83;Visarga
+0ABD;Avagraha
+0A3C;Nukta
+0ABC;Nukta
+0AFD..0AFF;Nukta
+0A4D;Virama
+0ACD;Virama
+0A05..0A0A;Vowel_Independent
+0A0F..0A10;Vowel_Independent
+0A13..0A14;Vowel_Independent
+0A85..0A8D;Vowel_Independent
+0A8F..0A91;Vowel_Independent
+0A93..0A94;Vowel_Independent
+0AE0..0AE1;Vowel_Independent
+0A3E..0A40;Vowel_Dependent
+0A41..0A42;Vowel_Dependent
+0A47..0A48;Vowel_Dependent
+0A4B..0A4C;Vowel_Dependent
+0ABE..0AC0;Vowel_Dependent
+0AC1..0AC5;Vowel_Dependent
+0AC7..0AC8;Vowel_Dependent
+0AC9;Vowel_Dependent
+0ACB..0ACC;Vowel_Dependent
+0AE2..0AE3;Vowel_Dependent
+0A72..0A73;Consonant_Placeholder
+0A15..0A28;Consonant
+0A2A..0A30;Consonant
+0A32..0A33;Consonant
+0A35..0A36;Consonant
+0A38..0A39;Consonant
+0A59..0A5C;Consonant
+0A5E;Consonant
+0A95..0AA8;Consonant
+0AAA..0AB0;Consonant
+0AB2..0AB3;Consonant
+0AB5..0AB9;Consonant
+0AF9;Consonant
+0A75;Consonant_Medial
+0A71;Gemination_Mark
+0AFB;Gemination_Mark
+0A51;Cantillation_Mark
+0AFA;Cantillation_Mark
+0AFC;Cantillation_Mark
+0A66..0A6F;Number
+0AE6..0AEF;Number
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「11」））于（「小于」于「桶」于「12」）则
+          『0B01;Bindu
+0B02;Bindu
+0B82;Bindu
+0B03;Visarga
+0B3D;Avagraha
+0B3C;Nukta
+0B4D;Virama
+0BCD;Virama
+0B05..0B0C;Vowel_Independent
+0B0F..0B10;Vowel_Independent
+0B13..0B14;Vowel_Independent
+0B60..0B61;Vowel_Independent
+0B85..0B8A;Vowel_Independent
+0B8E..0B90;Vowel_Independent
+0B92..0B94;Vowel_Independent
+0B3E;Vowel_Dependent
+0B3F;Vowel_Dependent
+0B40;Vowel_Dependent
+0B41..0B44;Vowel_Dependent
+0B47..0B48;Vowel_Dependent
+0B4B..0B4C;Vowel_Dependent
+0B53..0B56;Vowel_Dependent
+0B57;Vowel_Dependent
+0B62..0B63;Vowel_Dependent
+0BBE..0BBF;Vowel_Dependent
+0BC0;Vowel_Dependent
+0BC1..0BC2;Vowel_Dependent
+0BC6..0BC8;Vowel_Dependent
+0BCA..0BCC;Vowel_Dependent
+0BD7;Vowel_Dependent
+0B15..0B28;Consonant
+0B2A..0B30;Consonant
+0B32..0B33;Consonant
+0B35..0B39;Consonant
+0B5C..0B5D;Consonant
+0B5F;Consonant
+0B71;Consonant
+0B95;Consonant
+0B99..0B9A;Consonant
+0B9C;Consonant
+0B9E..0B9F;Consonant
+0BA3..0BA4;Consonant
+0BA8..0BAA;Consonant
+0BAE..0BB9;Consonant
+0B83;Modifying_Letter
+0B66..0B6F;Number
+0BE6..0BEF;Number
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「12」））
+            于（「小于」于「桶」于「13」）则
+              『0C00;Bindu
+0C01..0C02;Bindu
+0C04;Bindu
+0C80;Bindu
+0C81;Bindu
+0C82;Bindu
+0CF3;Bindu
+0C03;Visarga
+0C83;Visarga
+0C3D;Avagraha
+0CBD;Avagraha
+0C3C;Nukta
+0CBC;Nukta
+0C4D;Virama
+0CCD;Virama
+0C05..0C0C;Vowel_Independent
+0C0E..0C10;Vowel_Independent
+0C12..0C14;Vowel_Independent
+0C60..0C61;Vowel_Independent
+0C85..0C8C;Vowel_Independent
+0C8E..0C90;Vowel_Independent
+0C92..0C94;Vowel_Independent
+0CE0..0CE1;Vowel_Independent
+0C3E..0C40;Vowel_Dependent
+0C41..0C44;Vowel_Dependent
+0C46..0C48;Vowel_Dependent
+0C4A..0C4C;Vowel_Dependent
+0C55..0C56;Vowel_Dependent
+0C62..0C63;Vowel_Dependent
+0CBE;Vowel_Dependent
+0CBF;Vowel_Dependent
+0CC0..0CC4;Vowel_Dependent
+0CC6;Vowel_Dependent
+0CC7..0CC8;Vowel_Dependent
+0CCA..0CCB;Vowel_Dependent
+0CCC;Vowel_Dependent
+0CD5..0CD6;Vowel_Dependent
+0CE2..0CE3;Vowel_Dependent
+0C15..0C28;Consonant
+0C2A..0C39;Consonant
+0C58..0C5A;Consonant
+0C95..0CA8;Consonant
+0CAA..0CB3;Consonant
+0CB5..0CB9;Consonant
+0CDE;Consonant
+0C5D;Consonant_Dead
+0CDD;Consonant_Dead
+0CF1..0CF2;Consonant_With_Stacker
+0C66..0C6F;Number
+0CE6..0CEF;Number
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「13」））
+              于（「小于」于「桶」于「14」）则
+                『0D00..0D01;Bindu
+0D02;Bindu
+0D04;Bindu
+0D81;Bindu
+0D82;Bindu
+0D03;Visarga
+0D83;Visarga
+0D3D;Avagraha
+0D4D;Virama
+0DCA;Virama
+0D3B..0D3C;Pure_Killer
+0D05..0D0C;Vowel_Independent
+0D0E..0D10;Vowel_Independent
+0D12..0D14;Vowel_Independent
+0D5F..0D61;Vowel_Independent
+0D85..0D96;Vowel_Independent
+0D3E..0D40;Vowel_Dependent
+0D41..0D44;Vowel_Dependent
+0D46..0D48;Vowel_Dependent
+0D4A..0D4C;Vowel_Dependent
+0D57;Vowel_Dependent
+0D62..0D63;Vowel_Dependent
+0DCF..0DD1;Vowel_Dependent
+0DD2..0DD4;Vowel_Dependent
+0DD6;Vowel_Dependent
+0DD8..0DDF;Vowel_Dependent
+0DF2..0DF3;Vowel_Dependent
+0D15..0D3A;Consonant
+0D9A..0DB1;Consonant
+0DB3..0DBB;Consonant
+0DBD;Consonant
+0DC0..0DC6;Consonant
+0D54..0D56;Consonant_Dead
+0D7A..0D7F;Consonant_Dead
+0D4E;Consonant_Preceding_Repha
+0D66..0D6F;Number
+0DE6..0DEF;Number
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「14」））
+                于（「小于」于「桶」于「15」）则
+                  『0E4D;Bindu
+0ECD;Bindu
+0E3A;Pure_Killer
+0E4E;Pure_Killer
+0EBA;Pure_Killer
+0E30;Vowel_Dependent
+0E31;Vowel_Dependent
+0E32..0E33;Vowel_Dependent
+0E34..0E39;Vowel_Dependent
+0E40..0E45;Vowel_Dependent
+0E47;Vowel_Dependent
+0EB0;Vowel_Dependent
+0EB1;Vowel_Dependent
+0EB2..0EB3;Vowel_Dependent
+0EB4..0EB9;Vowel_Dependent
+0EBB;Vowel_Dependent
+0EC0..0EC4;Vowel_Dependent
+0E01..0E2E;Consonant
+0E81..0E82;Consonant
+0E84;Consonant
+0E86..0E8A;Consonant
+0E8C..0EA3;Consonant
+0EA5;Consonant
+0EA7..0EAE;Consonant
+0EDC..0EDF;Consonant
+0EBC;Consonant_Medial
+0EBD;Consonant_Medial
+0E48..0E4B;Tone_Mark
+0EC8..0ECB;Tone_Mark
+0ECE;Syllable_Modifier
+0E4C;Consonant_Killer
+0E50..0E59;Number
+0ED0..0ED9;Number
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「15」））
+                  于（「小于」于「桶」于「16」）则
+                    『0F7E;Bindu
+0F82..0F83;Bindu
+0F7F;Visarga
+0F85;Avagraha
+0F39;Nukta
+0F84;Pure_Killer
+0F71..0F7D;Vowel_Dependent
+0F80..0F81;Vowel_Dependent
+0F40..0F47;Consonant
+0F49..0F6C;Consonant
+0F8D..0F97;Consonant_Subjoined
+0F99..0FBC;Consonant_Subjoined
+0F88..0F8C;Consonant_Head_Letter
+0F35;Syllable_Modifier
+0F37;Syllable_Modifier
+0FC6;Syllable_Modifier
+0F20..0F29;Number
+0F2A..0F33;Number
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「16」））
+                    于（「小于」于「桶」于「17」）则
+                      『1036;Bindu
+1038;Visarga
+103A;Pure_Killer
+1039;Invisible_Stacker
+1021..102A;Vowel_Independent
+1052..1055;Vowel_Independent
+102B..102C;Vowel_Dependent
+102D..1030;Vowel_Dependent
+1031;Vowel_Dependent
+1032..1035;Vowel_Dependent
+1056..1057;Vowel_Dependent
+1058..1059;Vowel_Dependent
+1062;Vowel_Dependent
+1067..1068;Vowel_Dependent
+1071..1074;Vowel_Dependent
+1083..1084;Vowel_Dependent
+1085..1086;Vowel_Dependent
+109C;Vowel_Dependent
+109D;Vowel_Dependent
+104B;Consonant_Placeholder
+104E;Consonant_Placeholder
+1000..1020;Consonant
+103F;Consonant
+1050..1051;Consonant
+105A..105D;Consonant
+1061;Consonant
+1065..1066;Consonant
+106E..1070;Consonant
+1075..1081;Consonant
+108E;Consonant
+103B..103C;Consonant_Medial
+103D..103E;Consonant_Medial
+105E..1060;Consonant_Medial
+1082;Consonant_Medial
+1037;Tone_Mark
+1063..1064;Tone_Mark
+1069..106D;Tone_Mark
+1087..108C;Tone_Mark
+108D;Tone_Mark
+108F;Tone_Mark
+109A..109B;Tone_Mark
+1040..1049;Number
+1090..1099;Number
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「23」））
+                      于（「小于」于「桶」于「24」）则
+                        『17C6;Bindu
+17C7;Visarga
+17DC;Avagraha
+1714;Pure_Killer
+1715;Pure_Killer
+1734;Pure_Killer
+17D1;Pure_Killer
+17D2;Invisible_Stacker
+1700..1702;Vowel_Independent
+1720..1722;Vowel_Independent
+1740..1742;Vowel_Independent
+1760..1762;Vowel_Independent
+17A3..17B3;Vowel_Independent
+1712..1713;Vowel_Dependent
+1732..1733;Vowel_Dependent
+1752..1753;Vowel_Dependent
+1772..1773;Vowel_Dependent
+17B6;Vowel_Dependent
+17B7..17BD;Vowel_Dependent
+17BE..17C5;Vowel_Dependent
+17C8;Vowel_Dependent
+1703..1711;Consonant
+171F;Consonant
+1723..1731;Consonant
+1743..1751;Consonant
+1763..176C;Consonant
+176E..1770;Consonant
+1780..17A2;Consonant
+17CC;Consonant_Succeeding_Repha
+17C9..17CA;Register_Shifter
+17CB;Syllable_Modifier
+17CE..17D0;Syllable_Modifier
+17D3;Syllable_Modifier
+17DD;Syllable_Modifier
+17CD;Consonant_Killer
+17E0..17E9;Number
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「25」））
+                        于（「小于」于「桶」于「26」）则
+                          『1932;Bindu
+1920..1922;Vowel_Dependent
+1923..1926;Vowel_Dependent
+1927..1928;Vowel_Dependent
+193A;Vowel_Dependent
+19B0..19C0;Vowel_Dependent
+1963..196D;Vowel
+1900..191E;Consonant
+1950..1962;Consonant
+1980..19AB;Consonant
+1929..192B;Consonant_Subjoined
+1930..1931;Consonant_Final
+1933..1938;Consonant_Final
+1939;Consonant_Final
+19C1..19C7;Consonant_Final
+1970..1974;Tone_Letter
+19C8..19C9;Tone_Mark
+193B;Syllable_Modifier
+1946..194F;Number
+19D0..19D9;Number
+19DA;Number
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「26」））
+                          于（「小于」于「桶」于「27」）则
+                            『1A74;Bindu
+1A7A;Pure_Killer
+1A60;Invisible_Stacker
+1A4D..1A52;Vowel_Independent
+1A17..1A18;Vowel_Dependent
+1A19..1A1A;Vowel_Dependent
+1A1B;Vowel_Dependent
+1A61;Vowel_Dependent
+1A62;Vowel_Dependent
+1A63..1A64;Vowel_Dependent
+1A65..1A6C;Vowel_Dependent
+1A6D..1A72;Vowel_Dependent
+1A73;Vowel_Dependent
+1A00..1A16;Consonant
+1A20..1A4C;Consonant
+1A53..1A54;Consonant
+1A5A;Consonant_Initial_Postfixed
+1A57;Consonant_Subjoined
+1A5B..1A5E;Consonant_Subjoined
+1A55;Consonant_Medial
+1A56;Consonant_Medial
+1A58..1A59;Consonant_Final
+1A75..1A79;Tone_Mark
+1A7B..1A7C;Syllable_Modifier
+1A7F;Syllable_Modifier
+1A80..1A89;Number
+1A90..1A99;Number
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「27」））
+                            于（「小于」于「桶」于「28」）则
+                              『1B00..1B02;Bindu
+1B80;Bindu
+1B04;Visarga
+1B82;Visarga
+1BBA;Avagraha
+1B34;Nukta
+1BE6;Nukta
+1B44;Virama
+1BAA;Pure_Killer
+1BF2..1BF3;Reordering_Killer
+1BAB;Invisible_Stacker
+1B05..1B12;Vowel_Independent
+1B83..1B89;Vowel_Independent
+1BE4..1BE5;Vowel_Independent
+1B35;Vowel_Dependent
+1B36..1B3A;Vowel_Dependent
+1B3B;Vowel_Dependent
+1B3C;Vowel_Dependent
+1B3D..1B41;Vowel_Dependent
+1B42;Vowel_Dependent
+1B43;Vowel_Dependent
+1BA4..1BA5;Vowel_Dependent
+1BA6..1BA7;Vowel_Dependent
+1BA8..1BA9;Vowel_Dependent
+1BE7;Vowel_Dependent
+1BE8..1BE9;Vowel_Dependent
+1BEA..1BEC;Vowel_Dependent
+1BED;Vowel_Dependent
+1BEE;Vowel_Dependent
+1BEF;Vowel_Dependent
+1B13..1B33;Consonant
+1B45..1B4C;Consonant
+1B8A..1BA0;Consonant
+1BAE..1BAF;Consonant
+1BBB..1BBD;Consonant
+1BC0..1BE3;Consonant
+1BA1;Consonant_Subjoined
+1BA2..1BA3;Consonant_Subjoined
+1BAC..1BAD;Consonant_Subjoined
+1B03;Consonant_Final
+1B81;Consonant_Final
+1BBE..1BBF;Consonant_Final
+1BF0..1BF1;Consonant_Final
+1B50..1B59;Number
+1BB0..1BB9;Number
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「28」））
+                              于（「小于」于「桶」于「29」）则
+                                『1C34..1C35;Bindu
+1C37;Nukta
+1C26..1C2B;Vowel_Dependent
+1C2C;Vowel_Dependent
+1CFA;Consonant_Placeholder
+1C00..1C23;Consonant
+1C4D..1C4F;Consonant
+1CF2..1CF3;Consonant_Dead
+1CF5..1CF6;Consonant_With_Stacker
+1C24..1C25;Consonant_Subjoined
+1C2D..1C33;Consonant_Final
+1CD0..1CD2;Cantillation_Mark
+1CD4..1CE0;Cantillation_Mark
+1CE1;Cantillation_Mark
+1CF4;Cantillation_Mark
+1CF7;Cantillation_Mark
+1CF8..1CF9;Cantillation_Mark
+1C36;Syllable_Modifier
+1C40..1C49;Number
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「29」））
+                                于（「小于」于「桶」于「30」）则
+                                  『1DFB;Syllable_Modifier
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「32」））
+                                  于（「小于」于「桶」于「33」）则
+                                    『2010..2014;Consonant_Placeholder
+20F0;Cantillation_Mark
+2074;Syllable_Modifier
+2082..2084;Syllable_Modifier
+200C;Non_Joiner
+200D;Joiner
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「37」））
+                                    于（「小于」于「桶」于「38」）则
+                                      『25CC;Consonant_Placeholder
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「168」））
+                                      于（「小于」于「桶」于「169」）则
+                                        『A80B;Bindu
+A873;Bindu
+A880;Bindu
+A8C5;Bindu
+A8F2..A8F3;Bindu
+A881;Visarga
+A806;Virama
+A8C4;Virama
+A82C;Pure_Killer
+A800..A801;Vowel_Independent
+A803..A805;Vowel_Independent
+A882..A891;Vowel_Independent
+A8FE;Vowel_Independent
+A802;Vowel_Dependent
+A823..A824;Vowel_Dependent
+A825..A826;Vowel_Dependent
+A827;Vowel_Dependent
+A8B5..A8C3;Vowel_Dependent
+A8FF;Vowel_Dependent
+A85E..A861;Vowel
+A866;Vowel
+A807..A80A;Consonant
+A80C..A822;Consonant
+A840..A85D;Consonant
+A862..A865;Consonant
+A869..A870;Consonant
+A872;Consonant
+A892..A8B3;Consonant
+A867..A868;Consonant_Subjoined
+A871;Consonant_Subjoined
+A8B4;Consonant_Medial
+A8E0..A8F1;Cantillation_Mark
+A8D0..A8D9;Number
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「169」））
+                                        于（「小于」于「桶」于「170」）则
+                                          『A980..A981;Bindu
+A983;Visarga
+A9B3;Nukta
+A9C0;Virama
+A953;Pure_Killer
+A984..A988;Vowel_Independent
+A98C..A98E;Vowel_Independent
+A947..A94E;Vowel_Dependent
+A9B4..A9B5;Vowel_Dependent
+A9B6..A9B9;Vowel_Dependent
+A9BA..A9BB;Vowel_Dependent
+A9BC;Vowel_Dependent
+A9E5;Vowel_Dependent
+A922..A925;Vowel
+A926..A92A;Vowel
+A90A..A921;Consonant
+A930..A946;Consonant
+A989..A98B;Consonant
+A98F..A9B2;Consonant
+A9E0..A9E4;Consonant
+A9E7..A9EF;Consonant
+A9FA..A9FE;Consonant
+A9BD;Consonant_Medial
+A9BE..A9BF;Consonant_Medial
+A94F..A951;Consonant_Final
+A952;Consonant_Final
+A982;Consonant_Final
+A92B..A92D;Tone_Mark
+A900..A909;Number
+A9D0..A9D9;Number
+A9F0..A9F9;Number
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「170」））
+                                          于（「小于」于「桶」于「171」）则
+                                            『AAF5;Visarga
+AAF6;Invisible_Stacker
+AA00..AA05;Vowel_Independent
+AAE0..AAE1;Vowel_Independent
+AA29..AA2E;Vowel_Dependent
+AA2F..AA30;Vowel_Dependent
+AA31..AA32;Vowel_Dependent
+AAB0;Vowel_Dependent
+AAB1;Vowel_Dependent
+AAB2..AAB4;Vowel_Dependent
+AAB5..AAB6;Vowel_Dependent
+AAB7..AAB8;Vowel_Dependent
+AAB9..AABD;Vowel_Dependent
+AABE;Vowel_Dependent
+AAEB;Vowel_Dependent
+AAEC..AAED;Vowel_Dependent
+AAEE..AAEF;Vowel_Dependent
+AA74..AA76;Consonant_Placeholder
+AA06..AA28;Consonant
+AA60..AA6F;Consonant
+AA71..AA73;Consonant
+AA7A;Consonant
+AA7E..AA7F;Consonant
+AA80..AAAF;Consonant
+AAE2..AAEA;Consonant
+AA33..AA34;Consonant_Medial
+AA35..AA36;Consonant_Medial
+AA40..AA42;Consonant_Final
+AA43;Consonant_Final
+AA44..AA4B;Consonant_Final
+AA4C;Consonant_Final
+AA4D;Consonant_Final
+AAC0;Tone_Letter
+AAC2;Tone_Letter
+AA7B;Tone_Mark
+AA7C;Tone_Mark
+AA7D;Tone_Mark
+AABF;Tone_Mark
+AAC1;Tone_Mark
+AA50..AA59;Number
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「171」））
+                                            于（「小于」于「桶」于「172」）则
+                                              『ABED;Pure_Killer
+ABCE..ABCF;Vowel_Independent
+ABD1;Vowel_Independent
+ABE3..ABE4;Vowel_Dependent
+ABE5;Vowel_Dependent
+ABE6..ABE7;Vowel_Dependent
+ABE8;Vowel_Dependent
+ABE9..ABEA;Vowel_Dependent
+ABC0..ABCD;Consonant
+ABD0;Consonant
+ABD2..ABDA;Consonant
+ABDB..ABE2;Consonant_Final
+ABEC;Tone_Mark
+ABF0..ABF9;Number
+』
+                                          否则
+                                            『』
+也。
+
+「印度音节表1」乃化「整数」而「字符串」也。
+「印度音节表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「266」））于（「小于」于「桶」于「267」）则
+    『10A0E;Bindu
+10A0F;Visarga
+10A38..10A3A;Nukta
+10A3F;Invisible_Stacker
+10A01..10A03;Vowel_Dependent
+10A05..10A06;Vowel_Dependent
+10A0C..10A0D;Vowel_Dependent
+10A00;Consonant
+10A10..10A13;Consonant
+10A15..10A17;Consonant
+10A19..10A35;Consonant
+10A40..10A48;Number
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「272」））于（「小于」于「桶」于「273」）则
+      『11000;Bindu
+11001;Bindu
+11080..11081;Bindu
+11002;Visarga
+11082;Visarga
+110BA;Nukta
+11046;Virama
+110B9;Virama
+11070;Pure_Killer
+11005..11012;Vowel_Independent
+11071..11072;Vowel_Independent
+11083..1108C;Vowel_Independent
+11038..11045;Vowel_Dependent
+11073..11074;Vowel_Dependent
+110B0..110B2;Vowel_Dependent
+110B3..110B6;Vowel_Dependent
+110B7..110B8;Vowel_Dependent
+110C2;Vowel_Dependent
+11013..11037;Consonant
+11075;Consonant
+1108D..110AF;Consonant
+11003..11004;Consonant_With_Stacker
+1107F;Number_Joiner
+11066..1106F;Number
+11052..11065;Brahmi_Joining_Number
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「273」））于（「小于」于「桶」于「274」）则
+        『11100..11101;Bindu
+11180..11181;Bindu
+111CF;Bindu
+11102;Visarga
+11182;Visarga
+111C1;Avagraha
+11173;Nukta
+111CA;Nukta
+111C0;Virama
+11134;Pure_Killer
+11133;Invisible_Stacker
+11103..11106;Vowel_Independent
+11183..11190;Vowel_Independent
+11127..1112B;Vowel_Dependent
+1112C;Vowel_Dependent
+1112D..11132;Vowel_Dependent
+11145..11146;Vowel_Dependent
+111B3..111B5;Vowel_Dependent
+111B6..111BE;Vowel_Dependent
+111BF;Vowel_Dependent
+111CB..111CC;Vowel_Dependent
+111CE;Vowel_Dependent
+11150..11154;Vowel
+11107..11126;Consonant
+11144;Consonant
+11147;Consonant
+11155..11172;Consonant
+11191..111B2;Consonant
+111C2..111C3;Consonant_Prefixed
+111C9;Syllable_Modifier
+11136..1113F;Number
+111D0..111D9;Number
+111E1..111F4;Number
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「274」））于（「小于」于「桶」于「275」）则
+          『11234;Bindu
+112DF;Bindu
+11236;Nukta
+112E9;Nukta
+11235;Virama
+112EA;Pure_Killer
+11200..11207;Vowel_Independent
+11240;Vowel_Independent
+11280..11283;Vowel_Independent
+112B0..112B9;Vowel_Independent
+1122C..1122E;Vowel_Dependent
+1122F..11231;Vowel_Dependent
+11232..11233;Vowel_Dependent
+11241;Vowel_Dependent
+112E0..112E2;Vowel_Dependent
+112E3..112E8;Vowel_Dependent
+11208..11211;Consonant
+11213..1122B;Consonant
+1123F;Consonant
+11284..11286;Consonant
+11288;Consonant
+1128A..1128D;Consonant
+1128F..1129D;Consonant
+1129F..112A8;Consonant
+112BA..112DE;Consonant
+11237;Gemination_Mark
+1123E;Cantillation_Mark
+112F0..112F9;Number
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「275」））
+            于（「小于」于「桶」于「276」）则
+              『11300..11301;Bindu
+11302;Bindu
+1135E..1135F;Bindu
+113CA;Bindu
+113CC;Bindu
+11303;Visarga
+113CD;Visarga
+1133D;Avagraha
+113B7;Avagraha
+1133B..1133C;Nukta
+1134D;Virama
+113CE;Pure_Killer
+113CF;Pure_Killer
+113D0;Invisible_Stacker
+11305..1130C;Vowel_Independent
+1130F..11310;Vowel_Independent
+11313..11314;Vowel_Independent
+11360..11361;Vowel_Independent
+11380..11389;Vowel_Independent
+1138B;Vowel_Independent
+1138E;Vowel_Independent
+11390..11391;Vowel_Independent
+1133E..1133F;Vowel_Dependent
+11340;Vowel_Dependent
+11341..11344;Vowel_Dependent
+11347..11348;Vowel_Dependent
+1134B..1134C;Vowel_Dependent
+11357;Vowel_Dependent
+11362..11363;Vowel_Dependent
+113B8..113BA;Vowel_Dependent
+113BB..113C0;Vowel_Dependent
+113C2;Vowel_Dependent
+113C5;Vowel_Dependent
+113C7..113C9;Vowel_Dependent
+11315..11328;Consonant
+1132A..11330;Consonant
+11332..11333;Consonant
+11335..11339;Consonant
+11392..113B5;Consonant
+113D1;Consonant_Preceding_Repha
+113D2;Gemination_Mark
+11366..1136C;Cantillation_Mark
+11370..11374;Cantillation_Mark
+113E1..113E2;Cantillation_Mark
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「276」））
+              于（「小于」于「桶」于「277」）则
+                『11443..11444;Bindu
+1145F;Bindu
+114BF..114C0;Bindu
+11445;Visarga
+114C1;Visarga
+11447;Avagraha
+114C4;Avagraha
+11446;Nukta
+114C3;Nukta
+11442;Virama
+114C2;Virama
+11400..1140D;Vowel_Independent
+11481..1148E;Vowel_Independent
+11435..11437;Vowel_Dependent
+11438..1143F;Vowel_Dependent
+11440..11441;Vowel_Dependent
+114B0..114B2;Vowel_Dependent
+114B3..114B8;Vowel_Dependent
+114B9;Vowel_Dependent
+114BA;Vowel_Dependent
+114BB..114BE;Vowel_Dependent
+1140E..11434;Consonant
+1148F..114AF;Consonant
+11460..11461;Consonant_With_Stacker
+1145E;Syllable_Modifier
+11450..11459;Number
+114D0..114D9;Number
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「277」））
+                于（「小于」于「桶」于「278」）则
+                  『115BC..115BD;Bindu
+115BE;Visarga
+115C0;Nukta
+115BF;Virama
+11580..1158D;Vowel_Independent
+115D8..115DB;Vowel_Independent
+115AF..115B1;Vowel_Dependent
+115B2..115B5;Vowel_Dependent
+115B8..115BB;Vowel_Dependent
+115DC..115DD;Vowel_Dependent
+1158E..115AE;Consonant
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「278」））
+                  于（「小于」于「桶」于「279」）则
+                    『1163D;Bindu
+116AB;Bindu
+1163E;Visarga
+116AC;Visarga
+116B7;Nukta
+1163F;Virama
+116B6;Virama
+11600..1160D;Vowel_Independent
+11680..11689;Vowel_Independent
+11630..11632;Vowel_Dependent
+11633..1163A;Vowel_Dependent
+1163B..1163C;Vowel_Dependent
+11640;Vowel_Dependent
+116AD;Vowel_Dependent
+116AE..116AF;Vowel_Dependent
+116B0..116B5;Vowel_Dependent
+1160E..1162F;Consonant
+1168A..116AA;Consonant
+116B8;Consonant
+11650..11659;Number
+116C0..116C9;Number
+116D0..116E3;Number
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「279」））
+                    于（「小于」于「桶」于「280」）则
+                      『1172B;Pure_Killer
+11720..11721;Vowel_Dependent
+11722..11725;Vowel_Dependent
+11726;Vowel_Dependent
+11727..1172A;Vowel_Dependent
+11700..1171A;Consonant
+11740..11746;Consonant
+1171D;Consonant_Medial
+1171E;Consonant_Medial
+1171F;Consonant_Medial
+11730..11739;Number
+1173A..1173B;Number
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「280」））
+                      于（「小于」于「桶」于「281」）则
+                        『11837;Bindu
+11838;Visarga
+1183A;Nukta
+11839;Virama
+11800..11809;Vowel_Independent
+1182C..1182E;Vowel_Dependent
+1182F..11836;Vowel_Dependent
+1180A..1182B;Consonant
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「281」））
+                        于（「小于」于「桶」于「282」）则
+                          『1193B..1193C;Bindu
+119DE;Bindu
+119DF;Visarga
+119E1;Avagraha
+11943;Nukta
+119E0;Virama
+1193D;Pure_Killer
+1193E;Invisible_Stacker
+11900..11906;Vowel_Independent
+11909;Vowel_Independent
+119A0..119A7;Vowel_Independent
+119AA..119AD;Vowel_Independent
+11930..11935;Vowel_Dependent
+11937..11938;Vowel_Dependent
+119D1..119D3;Vowel_Dependent
+119D4..119D7;Vowel_Dependent
+119DA..119DB;Vowel_Dependent
+119DC..119DD;Vowel_Dependent
+119E4;Vowel_Dependent
+1190C..11913;Consonant
+11915..11916;Consonant
+11918..1192F;Consonant
+119AE..119D0;Consonant
+1193F;Consonant_Prefixed
+11941;Consonant_Preceding_Repha
+11940;Consonant_Medial
+11942;Consonant_Medial
+11950..11959;Number
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「282」））
+                          于（「小于」于「桶」于「283」）则
+                            『11A35..11A38;Bindu
+11A96;Bindu
+11A39;Visarga
+11A97;Visarga
+11A9D;Avagraha
+11A34;Pure_Killer
+11A47;Invisible_Stacker
+11A99;Invisible_Stacker
+11A01..11A0A;Vowel_Dependent
+11A51..11A56;Vowel_Dependent
+11A57..11A58;Vowel_Dependent
+11A59..11A5B;Vowel_Dependent
+11A3F;Consonant_Placeholder
+11A45;Consonant_Placeholder
+11A00;Consonant
+11A0B..11A32;Consonant
+11A50;Consonant
+11A5C..11A83;Consonant
+11A3A;Consonant_With_Stacker
+11A84..11A85;Consonant_Prefixed
+11A87..11A89;Consonant_Prefixed
+11A86;Consonant_Preceding_Repha
+11A3B..11A3E;Consonant_Medial
+11A8A..11A95;Consonant_Final
+11A98;Gemination_Mark
+11A33;Syllable_Modifier
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「283」））
+                            于（「小于」于「桶」于「284」）则
+                              『11B60;Vowel_Dependent
+11B61;Vowel_Dependent
+11B62..11B64;Vowel_Dependent
+11B65;Vowel_Dependent
+11B66;Vowel_Dependent
+11B67;Vowel_Dependent
+11B0A;Consonant
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「284」））
+                              于（「小于」于「桶」于「285」）则
+                                『11C3C..11C3D;Bindu
+11CB5..11CB6;Bindu
+11C3E;Visarga
+11C40;Avagraha
+11C3F;Virama
+11C00..11C08;Vowel_Independent
+11C0A..11C0D;Vowel_Independent
+11C2F;Vowel_Dependent
+11C30..11C36;Vowel_Dependent
+11C38..11C3B;Vowel_Dependent
+11CB0;Vowel_Dependent
+11CB1;Vowel_Dependent
+11CB2..11CB3;Vowel_Dependent
+11CB4;Vowel_Dependent
+11C0E..11C2E;Consonant
+11C72..11C8F;Consonant
+11C92..11CA7;Consonant_Subjoined
+11CA9;Consonant_Subjoined
+11CAA..11CAF;Consonant_Subjoined
+11C50..11C59;Number
+11C5A..11C6C;Number
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「285」））
+                                于（「小于」于「桶」于「286」）则
+                                  『11D40;Bindu
+11D95;Bindu
+11DF0;Bindu
+11D41;Visarga
+11D96;Visarga
+11D42;Nukta
+11D44;Pure_Killer
+11D45;Invisible_Stacker
+11D97;Invisible_Stacker
+11D00..11D06;Vowel_Independent
+11D08..11D09;Vowel_Independent
+11D0B;Vowel_Independent
+11D60..11D65;Vowel_Independent
+11D67..11D68;Vowel_Independent
+11D6A..11D6B;Vowel_Independent
+11D31..11D36;Vowel_Dependent
+11D3A;Vowel_Dependent
+11D3C..11D3D;Vowel_Dependent
+11D3F;Vowel_Dependent
+11D43;Vowel_Dependent
+11D8A..11D8E;Vowel_Dependent
+11D90..11D91;Vowel_Dependent
+11D93..11D94;Vowel_Dependent
+11D0C..11D30;Consonant
+11D6C..11D89;Consonant
+11DF1;Consonant
+11D46;Consonant_Preceding_Repha
+11D47;Consonant_Medial
+11D50..11D59;Number
+11DA0..11DA9;Number
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「286」））
+                                  于（「小于」于「桶」于「287」）则
+                                    『11EF3..11EF4;Vowel_Dependent
+11EF5..11EF6;Vowel_Dependent
+11EF2;Consonant_Placeholder
+11EE0..11EF1;Consonant
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「287」））
+                                    于（「小于」于「桶」于「288」）则
+                                      『11F00..11F01;Bindu
+11F03;Visarga
+11F5A;Nukta
+11F41;Pure_Killer
+11F42;Invisible_Stacker
+11F04..11F10;Vowel_Independent
+11F34..11F35;Vowel_Dependent
+11F36..11F3A;Vowel_Dependent
+11F3E..11F3F;Vowel_Dependent
+11F40;Vowel_Dependent
+11F12..11F33;Consonant
+11F02;Consonant_Preceding_Repha
+11F50..11F59;Number
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「353」））
+                                      于（「小于」于「桶」于「354」）则
+                                        『1612D;Bindu
+1612F;Pure_Killer
+1611E..16129;Vowel_Dependent
+16100..1611D;Consonant
+1612A..1612C;Consonant_Medial
+1612E;Consonant_Medial
+16130..16139;Number
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「365」））
+                                        于（「小于」于「桶」于「366」）则
+                                          『16D40..16D41;Bindu
+16D42;Visarga
+16D6B..16D6C;Pure_Killer
+16D63..16D6A;Vowel_Dependent
+16D43..16D62;Consonant
+16D70..16D79;Number
+』
+                                      否则
+                                        『』
+也。
+
+「印度音节表2」乃化「整数」而「字符串」也。
+「印度音节表2」者会「桶」而
+  『』
+也。
+
+「印度音节表3」乃化「整数」而「字符串」也。
+「印度音节表3」者会「桶」而
+  『』
+也。
+
+「印度音节表4」乃化「整数」而「字符串」也。
+「印度音节表4」者会「桶」而
+  『』
+也。
+
+「印度音节表5」乃化「整数」而「字符串」也。
+「印度音节表5」者会「桶」而
+  『』
+也。
+
+「印度音节表6」乃化「整数」而「字符串」也。
+「印度音节表6」者会「桶」而
+  『』
+也。
+
+「印度音节表7」乃化「整数」而「字符串」也。
+「印度音节表7」者会「桶」而
+  『』
+也。
+
+「印度音节表8」乃化「整数」而「字符串」也。
+「印度音节表8」者会「桶」而
+  『』
+也。
+
+「印度音节表9」乃化「整数」而「字符串」也。
+「印度音节表9」者会「桶」而
+  『』
+也。
+
+「印度音节表10」乃化「整数」而「字符串」也。
+「印度音节表10」者会「桶」而
+  『』
+也。
+
+「印度音节表11」乃化「整数」而「字符串」也。
+「印度音节表11」者会「桶」而
+  『』
+也。
+
+「印度音节表12」乃化「整数」而「字符串」也。
+「印度音节表12」者会「桶」而
+  『』
+也。
+
+「印度音节表13」乃化「整数」而「字符串」也。
+「印度音节表13」者会「桶」而
+  『』
+也。
+
+「印度音节表14」乃化「整数」而「字符串」也。
+「印度音节表14」者会「桶」而
+  『』
+也。
+
+「印度音节表15」乃化「整数」而「字符串」也。
+「印度音节表15」者会「桶」而
+  『』
+也。
+
+「印度音节表16」乃化「整数」而「字符串」也。
+「印度音节表16」者会「桶」而
+  『』
+也。
+
+「印度音节表」乃化「整数」而「字符串」也。
+「印度音节表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「印度音节表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「印度音节表1」于「桶」否则
+      若「小于」于「桶」于「768」则「印度音节表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「印度音节表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「印度音节表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「印度音节表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「印度音节表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「印度音节表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「印度音节表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「印度音节表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「印度音节表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「印度音节表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「印度音节表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「印度音节表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「印度音节表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「印度音节表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「印度音节表16」于「桶」
+                                  否则
+                                    『』
+也。

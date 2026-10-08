@@ -1,0 +1,954 @@
+寻观「标准库」之书。
+
+「印度位置表0」乃化「整数」而「字符串」也。
+「印度位置表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「9」））于（「小于」于「桶」于「10」）则
+    『0903;Right
+093B;Right
+093E;Right
+0940;Right
+0949..094C;Right
+094F;Right
+0982..0983;Right
+09BE;Right
+09C0;Right
+09D7;Right
+093F;Left
+094E;Left
+09BF;Left
+09C7..09C8;Left
+09CB..09CC;Left_And_Right
+0900..0902;Top
+093A;Top
+0945..0948;Top
+0951;Top
+0955;Top
+0981;Top
+09FE;Top
+093C;Bottom
+0941..0944;Bottom
+094D;Bottom
+0952;Bottom
+0956..0957;Bottom
+0962..0963;Bottom
+09BC;Bottom
+09C1..09C4;Bottom
+09CD;Bottom
+09E2..09E3;Bottom
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「10」））于（「小于」于「桶」于「11」）则
+      『0A03;Right
+0A3E;Right
+0A40;Right
+0A83;Right
+0ABE;Right
+0AC0;Right
+0ACB..0ACC;Right
+0A3F;Left
+0ABF;Left
+0A01..0A02;Top
+0A47..0A48;Top
+0A4B..0A4C;Top
+0A70..0A71;Top
+0A81..0A82;Top
+0AC5;Top
+0AC7..0AC8;Top
+0AFA..0AFF;Top
+0A3C;Bottom
+0A41..0A42;Bottom
+0A4D;Bottom
+0A51;Bottom
+0A75;Bottom
+0ABC;Bottom
+0AC1..0AC4;Bottom
+0ACD;Bottom
+0AE2..0AE3;Bottom
+0AC9;Top_And_Right
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「11」））于（「小于」于「桶」于「12」）则
+        『0B02..0B03;Right
+0B3E;Right
+0B40;Right
+0BBE..0BBF;Right
+0BC1..0BC2;Right
+0BD7;Right
+0B47;Left
+0BC6..0BC8;Left
+0B4B;Left_And_Right
+0BCA..0BCC;Left_And_Right
+0B01;Top
+0B3F;Top
+0B53..0B56;Top
+0B82;Top
+0BC0;Top
+0BCD;Top
+0B3C;Bottom
+0B41..0B44;Bottom
+0B4D;Bottom
+0B62..0B63;Bottom
+0B57;Top_And_Right
+0B48;Top_And_Left
+0B4C;Top_And_Left_And_Right
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「12」））于（「小于」于「桶」于「13」）则
+          『0C01..0C03;Right
+0C41..0C44;Right
+0C82..0C83;Right
+0CBE;Right
+0CC1..0CC4;Right
+0CD5..0CD6;Right
+0CF3;Right
+0C00;Top
+0C04;Top
+0C3E..0C40;Top
+0C46..0C47;Top
+0C4A..0C4D;Top
+0C55;Top
+0C81;Top
+0CBF;Top
+0CC6;Top
+0CCC..0CCD;Top
+0C3C;Bottom
+0C56;Bottom
+0C62..0C63;Bottom
+0CBC;Bottom
+0CE2..0CE3;Bottom
+0C48;Top_And_Bottom
+0CC0;Top_And_Right
+0CC7..0CC8;Top_And_Right
+0CCA..0CCB;Top_And_Right
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「13」））
+            于（「小于」于「桶」于「14」）则
+              『0D02..0D03;Right
+0D3E..0D40;Right
+0D57;Right
+0D82..0D83;Right
+0DCF..0DD1;Right
+0DD8;Right
+0DDF;Right
+0DF2..0DF3;Right
+0D46..0D48;Left
+0DD9;Left
+0DDB;Left
+0D4A..0D4C;Left_And_Right
+0DDC;Left_And_Right
+0DDE;Left_And_Right
+0D00..0D01;Top
+0D3B..0D3C;Top
+0D4D;Top
+0D4E;Top
+0D81;Top
+0DCA;Top
+0DD2..0DD3;Top
+0D41..0D44;Bottom
+0D62..0D63;Bottom
+0DD4;Bottom
+0DD6;Bottom
+0DDA;Top_And_Left
+0DDD;Top_And_Left_And_Right
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「14」））
+              于（「小于」于「桶」于「15」）则
+                『0E30;Right
+0E32..0E33;Right
+0E45;Right
+0EB0;Right
+0EB2..0EB3;Right
+0E40..0E44;Visual_Order_Left
+0EC0..0EC4;Visual_Order_Left
+0E31;Top
+0E34..0E37;Top
+0E47..0E4E;Top
+0EB1;Top
+0EB4..0EB7;Top
+0EBB;Top
+0EC8..0ECE;Top
+0E38..0E3A;Bottom
+0EB8..0EBA;Bottom
+0EBC;Bottom
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「15」））
+                于（「小于」于「桶」于「16」）则
+                  『0F3E;Right
+0F7F;Right
+0F3F;Left
+0F39;Top
+0F72;Top
+0F7A..0F7E;Top
+0F80;Top
+0F82..0F83;Top
+0F86..0F87;Top
+0F18..0F19;Bottom
+0F35;Bottom
+0F37;Bottom
+0F71;Bottom
+0F74..0F75;Bottom
+0F84;Bottom
+0F8D..0F97;Bottom
+0F99..0FBC;Bottom
+0FC6;Bottom
+0F73;Top_And_Bottom
+0F76..0F79;Top_And_Bottom
+0F81;Top_And_Bottom
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「16」））
+                  于（「小于」于「桶」于「17」）则
+                    『102B..102C;Right
+1038;Right
+103B;Right
+1056..1057;Right
+1062..1064;Right
+1067..106D;Right
+1083;Right
+1087..108C;Right
+108F;Right
+109A..109C;Right
+1031;Left
+1084;Left
+102D..102E;Top
+1032..1036;Top
+103A;Top
+1071..1074;Top
+1085..1086;Top
+109D;Top
+102F..1030;Bottom
+1037;Bottom
+103D..103E;Bottom
+1058..1059;Bottom
+105E..1060;Bottom
+1082;Bottom
+108D;Bottom
+103C;Top_And_Bottom_And_Left
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「23」））
+                    于（「小于」于「桶」于「24」）则
+                      『1715;Right
+1734;Right
+17B6;Right
+17C7..17C8;Right
+17C1..17C3;Left
+17C0;Left_And_Right
+17C4..17C5;Left_And_Right
+1712;Top
+1732;Top
+1752;Top
+1772;Top
+17B7..17BA;Top
+17C6;Top
+17C9..17D1;Top
+17D3;Top
+17DD;Top
+1713..1714;Bottom
+1733;Bottom
+1753;Bottom
+1773;Bottom
+17BB..17BD;Bottom
+17BE;Top_And_Left
+17BF;Top_And_Left_And_Right
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「25」））
+                      于（「小于」于「桶」于「26」）则
+                        『1923..1924;Right
+1929..192B;Right
+1930..1931;Right
+1933..1938;Right
+19B0..19B4;Right
+19B8..19B9;Right
+19BB..19C0;Right
+19C8..19C9;Right
+19B5..19B7;Visual_Order_Left
+19BA;Visual_Order_Left
+1920..1921;Top
+1927..1928;Top
+193A;Top
+1922;Bottom
+1932;Bottom
+1939;Bottom
+193B;Bottom
+1925..1926;Top_And_Right
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「26」））
+                        于（「小于」于「桶」于「27」）则
+                          『1A1A;Right
+1A57;Right
+1A61;Right
+1A63..1A64;Right
+1A6D;Right
+1A19;Left
+1A55;Left
+1A6E..1A72;Left
+1A17;Top
+1A1B;Top
+1A58..1A5A;Top
+1A62;Top
+1A65..1A68;Top
+1A6B;Top
+1A73..1A7C;Top
+1A18;Bottom
+1A56;Bottom
+1A5B..1A5E;Bottom
+1A69..1A6A;Bottom
+1A6C;Bottom
+1A7F;Bottom
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「27」））
+                          于（「小于」于「桶」于「28」）则
+                            『1B04;Right
+1B35;Right
+1B44;Right
+1B82;Right
+1BA1;Right
+1BA7;Right
+1BAA;Right
+1BE7;Right
+1BEA..1BEC;Right
+1BEE;Right
+1BF2..1BF3;Right
+1B3E..1B3F;Left
+1BA6;Left
+1B40..1B41;Left_And_Right
+1B00..1B03;Top
+1B34;Top
+1B36..1B37;Top
+1B42;Top
+1B6B;Top
+1B6D..1B73;Top
+1B80..1B81;Top
+1BA4;Top
+1BA8..1BA9;Top
+1BE6;Top
+1BE8..1BE9;Top
+1BED;Top
+1BEF..1BF1;Top
+1B38..1B3A;Bottom
+1B6C;Bottom
+1BA2..1BA3;Bottom
+1BA5;Bottom
+1BAC..1BAD;Bottom
+1B3C;Top_And_Bottom
+1B43;Top_And_Right
+1B3B;Bottom_And_Right
+1B3D;Top_And_Bottom_And_Right
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「28」））
+                            于（「小于」于「桶」于「29」）则
+                              『1C24..1C26;Right
+1C2A..1C2B;Right
+1CE1;Right
+1CF7;Right
+1C27..1C28;Left
+1C34..1C35;Left
+1C2D..1C33;Top
+1C36;Top
+1CD0..1CD2;Top
+1CDA..1CDB;Top
+1CE0;Top
+1CF4;Top
+1C2C;Bottom
+1C37;Bottom
+1CD5..1CD9;Bottom
+1CDC..1CDF;Bottom
+1CED;Bottom
+1C29;Top_And_Left
+1CD4;Overstruck
+1CE2..1CE8;Overstruck
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「29」））
+                              于（「小于」于「桶」于「30」）则
+                                『1DFB;Top
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「32」））
+                                于（「小于」于「桶」于「33」）则
+                                  『20F0;Top
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「168」））
+                                  于（「小于」于「桶」于「169」）则
+                                    『A823..A824;Right
+A827;Right
+A880..A881;Right
+A8B4..A8C3;Right
+A802;Top
+A806;Top
+A80B;Top
+A826;Top
+A8C5;Top
+A8E0..A8F1;Top
+A8FF;Top
+A825;Bottom
+A82C;Bottom
+A8C4;Bottom
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「169」））
+                                    于（「小于」于「桶」于「170」）则
+                                      『A952..A953;Right
+A983;Right
+A9B4..A9B5;Right
+A9BA..A9BB;Left
+A926..A92A;Top
+A94A;Top
+A94F..A951;Top
+A980..A982;Top
+A9B3;Top
+A9B6..A9B7;Top
+A9BC;Top
+A9E5;Top
+A92B..A92D;Bottom
+A947..A949;Bottom
+A94B..A94E;Bottom
+A9B8..A9B9;Bottom
+A9BD;Bottom
+A9BE;Bottom_And_Right
+A9C0;Bottom_And_Right
+A9BF;Bottom_And_Left
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「170」））
+                                      于（「小于」于「桶」于「171」）则
+                                        『AA33;Right
+AA4D;Right
+AA7B;Right
+AA7D;Right
+AAB1;Right
+AABA;Right
+AABD;Right
+AAEF;Right
+AAF5;Right
+AA2F..AA30;Left
+AA34;Left
+AAEB;Left
+AAEE;Left
+AAB5..AAB6;Visual_Order_Left
+AAB9;Visual_Order_Left
+AABB..AABC;Visual_Order_Left
+AA29..AA2C;Top
+AA2E;Top
+AA31;Top
+AA43;Top
+AA4C;Top
+AA7C;Top
+AAB0;Top
+AAB2..AAB3;Top
+AAB7..AAB8;Top
+AABE..AABF;Top
+AAC1;Top
+AAED;Top
+AA2D;Bottom
+AA32;Bottom
+AA35..AA36;Bottom
+AAB4;Bottom
+AAEC;Bottom
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「171」））
+                                        于（「小于」于「桶」于「172」）则
+                                          『ABE3..ABE4;Right
+ABE6..ABE7;Right
+ABE9..ABEA;Right
+ABEC;Right
+ABE5;Top
+ABE8;Bottom
+ABED;Bottom
+』
+                                      否则
+                                        『』
+也。
+
+「印度位置表1」乃化「整数」而「字符串」也。
+「印度位置表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「266」））于（「小于」于「桶」于「267」）则
+    『10A05;Top
+10A0F;Top
+10A38;Top
+10A02..10A03;Bottom
+10A0C..10A0E;Bottom
+10A39..10A3A;Bottom
+10A01;Overstruck
+10A06;Overstruck
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「272」））于（「小于」于「桶」于「273」）则
+      『11000;Right
+11002;Right
+11082;Right
+110B0;Right
+110B2;Right
+110B7..110B8;Right
+110B1;Left
+11001;Top
+11038..1103B;Top
+11042..11046;Top
+11070;Top
+11073..11074;Top
+11080..11081;Top
+110B5..110B6;Top
+1103C..11041;Bottom
+110B3..110B4;Bottom
+110B9..110BA;Bottom
+110C2;Bottom
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「273」））于（「小于」于「桶」于「274」）则
+        『11145..11146;Right
+11182;Right
+111B3;Right
+111B5;Right
+111C0;Right
+1112C;Left
+111B4;Left
+111CE;Left
+11100..11102;Top
+11127..11129;Top
+1112D;Top
+11130;Top
+11134;Top
+11180..11181;Top
+111BC..111BE;Top
+111C2..111C3;Top
+111CB;Top
+111CF;Top
+1112A..1112B;Bottom
+11131..11132;Bottom
+11173;Bottom
+111B6..111BB;Bottom
+111C9..111CA;Bottom
+111CC;Bottom
+1112E..1112F;Top_And_Bottom
+111BF;Top_And_Right
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「274」））于（「小于」于「桶」于「275」）则
+          『1122C..1122E;Right
+11235;Right
+112E0;Right
+112E2;Right
+112E1;Left
+11230..11231;Top
+11234;Top
+11236..11237;Top
+1123E;Top
+112DF;Top
+112E5..112E8;Top
+1122F;Bottom
+11241;Bottom
+112E3..112E4;Bottom
+112E9..112EA;Bottom
+11232..11233;Top_And_Right
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「275」））
+            于（「小于」于「桶」于「276」）则
+              『11302..11303;Right
+1133E..1133F;Right
+11341..11344;Right
+1134D;Right
+11357;Right
+11362..11363;Right
+113B8;Right
+113C9..113CA;Right
+113CC..113CD;Right
+113CF;Right
+11347..11348;Left
+113C2;Left
+113C5;Left
+1134B..1134C;Left_And_Right
+113C7..113C8;Left_And_Right
+11300..11301;Top
+11340;Top
+11366..1136C;Top
+11370..11374;Top
+113CE;Top
+113D1;Top
+113E1;Top
+1133B..1133C;Bottom
+113BB..113C0;Bottom
+113D2;Bottom
+113E2;Bottom
+113B9..113BA;Top_And_Right
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「276」））
+              于（「小于」于「桶」于「277」）则
+                『11435;Right
+11437;Right
+11440..11441;Right
+11445;Right
+114B0;Right
+114B2;Right
+114BD;Right
+114C1;Right
+11436;Left
+114B1;Left
+114B9;Left
+114BC;Left_And_Right
+114BE;Left_And_Right
+1143E..1143F;Top
+11443..11444;Top
+1145E;Top
+114BA;Top
+114BF..114C0;Top
+11438..1143D;Bottom
+11442;Bottom
+11446;Bottom
+114B3..114B8;Bottom
+114C2..114C3;Bottom
+114BB;Top_And_Left
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「277」））
+                于（「小于」于「桶」于「278」）则
+                  『115AF;Right
+115B1;Right
+115BE;Right
+115B0;Left
+115B8;Left
+115BA;Left_And_Right
+115BC..115BD;Top
+115B2..115B5;Bottom
+115BF..115C0;Bottom
+115DC..115DD;Bottom
+115B9;Top_And_Left
+115BB;Top_And_Left_And_Right
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「278」））
+                  于（「小于」于「桶」于「279」）则
+                    『11630..11632;Right
+1163B..1163C;Right
+1163E;Right
+116AC;Right
+116AF;Right
+116B6;Right
+116AE;Left
+11639..1163A;Top
+1163D;Top
+11640;Top
+116AB;Top
+116AD;Top
+116B2..116B5;Top
+11633..11638;Bottom
+1163F;Bottom
+116B0..116B1;Bottom
+116B7;Bottom
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「279」））
+                    于（「小于」于「桶」于「280」）则
+                      『11720..11721;Right
+11726;Left
+1171F;Top
+11722..11723;Top
+11727;Top
+11729..1172B;Top
+1171D;Bottom
+11724..11725;Bottom
+11728;Bottom
+1171E;Top_And_Bottom_And_Left
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「280」））
+                      于（「小于」于「桶」于「281」）则
+                        『1182C;Right
+1182E;Right
+11838;Right
+1182D;Left
+11833..11837;Top
+1182F..11832;Bottom
+11839..1183A;Bottom
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「281」））
+                        于（「小于」于「桶」于「282」）则
+                          『11930..11934;Right
+1193D;Right
+11940;Right
+119D1;Right
+119D3;Right
+119DC..119DF;Right
+11935;Left
+11937;Left
+119D2;Left
+119E4;Left
+11938;Left_And_Right
+1193B..1193C;Top
+1193F;Top
+11941;Top
+119DA..119DB;Top
+11943;Bottom
+119D4..119D7;Bottom
+119E0;Bottom
+11942;Bottom_And_Right
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「282」））
+                          于（「小于」于「桶」于「283」）则
+                            『11A39;Right
+11A57..11A58;Right
+11A97;Right
+11A01;Top
+11A04..11A09;Top
+11A35..11A38;Top
+11A51;Top
+11A54..11A56;Top
+11A84..11A89;Top
+11A96;Top
+11A98;Top
+11A02..11A03;Bottom
+11A0A;Bottom
+11A33..11A34;Bottom
+11A3B..11A3E;Bottom
+11A52..11A53;Bottom
+11A59..11A5B;Bottom
+11A8A..11A95;Bottom
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「283」））
+                            于（「小于」于「桶」于「284」）则
+                              『11B61;Right
+11B65;Right
+11B67;Right
+11B60;Top
+11B64;Top
+11B66;Top
+11B62..11B63;Bottom
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「284」））
+                              于（「小于」于「桶」于「285」）则
+                                『11C2F;Right
+11C3E;Right
+11CA9;Right
+11CB4;Right
+11CB1;Left
+11C30..11C31;Top
+11C38..11C3D;Top
+11CB3;Top
+11CB5..11CB6;Top
+11C32..11C36;Bottom
+11C3F;Bottom
+11C92..11CA7;Bottom
+11CAA..11CB0;Bottom
+11CB2;Bottom
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「285」））
+                                于（「小于」于「桶」于「286」）则
+                                  『11D46;Right
+11D8A..11D8E;Right
+11D93..11D94;Right
+11D96;Right
+11D31..11D35;Top
+11D3A;Top
+11D3C..11D3D;Top
+11D3F..11D41;Top
+11D43;Top
+11D90..11D91;Top
+11D95;Top
+11DF0;Top
+11D36;Bottom
+11D42;Bottom
+11D44;Bottom
+11D47;Bottom
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「286」））
+                                  于（「小于」于「桶」于「287」）则
+                                    『11EF6;Right
+11EF5;Left
+11EF3;Top
+11EF4;Bottom
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「287」））
+                                    于（「小于」于「桶」于「288」）则
+                                      『11F03;Right
+11F34..11F35;Right
+11F41;Right
+11F3E..11F3F;Left
+11F00..11F01;Top
+11F02;Top
+11F36..11F37;Top
+11F40;Top
+11F5A;Top
+11F38..11F3A;Bottom
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「353」））
+                                      于（「小于」于「桶」于「354」）则
+                                        『1612C;Right
+1612A..1612B;Left
+1611E..16129;Top
+1612D;Top
+1612E..1612F;Bottom
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「365」））
+                                        于（「小于」于「桶」于「366」）则
+                                          『16D40..16D42;Right
+16D63..16D6A;Right
+16D6B..16D6C;Right
+』
+                                      否则
+                                        『』
+也。
+
+「印度位置表2」乃化「整数」而「字符串」也。
+「印度位置表2」者会「桶」而
+  『』
+也。
+
+「印度位置表3」乃化「整数」而「字符串」也。
+「印度位置表3」者会「桶」而
+  『』
+也。
+
+「印度位置表4」乃化「整数」而「字符串」也。
+「印度位置表4」者会「桶」而
+  『』
+也。
+
+「印度位置表5」乃化「整数」而「字符串」也。
+「印度位置表5」者会「桶」而
+  『』
+也。
+
+「印度位置表6」乃化「整数」而「字符串」也。
+「印度位置表6」者会「桶」而
+  『』
+也。
+
+「印度位置表7」乃化「整数」而「字符串」也。
+「印度位置表7」者会「桶」而
+  『』
+也。
+
+「印度位置表8」乃化「整数」而「字符串」也。
+「印度位置表8」者会「桶」而
+  『』
+也。
+
+「印度位置表9」乃化「整数」而「字符串」也。
+「印度位置表9」者会「桶」而
+  『』
+也。
+
+「印度位置表10」乃化「整数」而「字符串」也。
+「印度位置表10」者会「桶」而
+  『』
+也。
+
+「印度位置表11」乃化「整数」而「字符串」也。
+「印度位置表11」者会「桶」而
+  『』
+也。
+
+「印度位置表12」乃化「整数」而「字符串」也。
+「印度位置表12」者会「桶」而
+  『』
+也。
+
+「印度位置表13」乃化「整数」而「字符串」也。
+「印度位置表13」者会「桶」而
+  『』
+也。
+
+「印度位置表14」乃化「整数」而「字符串」也。
+「印度位置表14」者会「桶」而
+  『』
+也。
+
+「印度位置表15」乃化「整数」而「字符串」也。
+「印度位置表15」者会「桶」而
+  『』
+也。
+
+「印度位置表16」乃化「整数」而「字符串」也。
+「印度位置表16」者会「桶」而
+  『』
+也。
+
+「印度位置表」乃化「整数」而「字符串」也。
+「印度位置表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「印度位置表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「印度位置表1」于「桶」否则
+      若「小于」于「桶」于「768」则「印度位置表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「印度位置表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「印度位置表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「印度位置表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「印度位置表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「印度位置表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「印度位置表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「印度位置表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「印度位置表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「印度位置表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「印度位置表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「印度位置表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「印度位置表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「印度位置表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「印度位置表16」于「桶」
+                                  否则
+                                    『』
+也。
