@@ -4,6 +4,7 @@ const {spawn} = require('node:child_process');
 const {receiveMessageOnPort} = require('node:worker_threads');
 const {constants} = require('node:os');
 const 网 = require('node:net');
+const {查询进程资源} = require('./进程资源.cjs');
 
 function 接管进程(端口, 信号缓冲, 编译线程 = null) {
   const 信号 = new Int32Array(信号缓冲), 记录们 = new Map(), 套接字们 = new Map();
@@ -150,7 +151,7 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
       const 包装 = !!环境 || 限时 > 0;
       const 工 = (包装 ? null : 编译线程?.(程序, 参数, 客体, 目录)) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false,
         env: 客体 ? {...process.env, ...(环境 ?? {}), YY_NODE_REPEAT: '1'} : process.env});
-      const 记录 = {工, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false, 超时: false};
+      const 记录 = {工, 进程号: 工.pid, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false, 超时: false};
       const 定时们 = [];
       if (限时 > 0) 定时们.push(setTimeout(() => {
         记录.超时 = true;
@@ -171,7 +172,7 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
       工.stderr.on('data', 块 => 收(块, true));
       const 号 = 下号++;
       return await new Promise(成 => {
-        工.once('spawn', () => {记录们.set(号, 记录); 成(号);});
+        工.once('spawn', () => {记录.进程号 = 工.pid; 记录们.set(号, 记录); 成(号);});
         工.once('error', 错 => {记录.码 = 127; 记录.错误.push(Buffer.from(错.message)); 成(错误码(错));});
         // 文言：二出俱阖乃告毕。汉语：以 close 而非 exit 标记完成，避免丢失管道末尾输出。
         工.once('close', (码, 杀信号) => {
@@ -190,6 +191,14 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
       if (记录.完成) return 0;
       try { return 记录.工.kill('SIGKILL') ? 0 : 29; }
       catch { return 29; }
+    }
+    // 汉语：资源采样只查已登记且运行中的系统进程，常驻字节由共享豫言核心解释。文言：采其资源，惟查所录而方行之系统进程；常驻之数，共用豫言之核释之。
+    if (术 === '资源') {
+      const 记录 = 记录们.get(Number(参[0]));
+      if (!记录) return [8, false, 0n, false, 0n];
+      if (记录.完成) return [0, false, 0n, false, 0n];
+      if (!Number.isInteger(记录.进程号) || 记录.进程号 <= 0) return [58, false, 0n, false, 0n];
+      return 查询进程资源(记录.进程号);
     }
     if (术 === '收取') {
       const 号 = Number(参[0]), 记录 = 记录们.get(号);

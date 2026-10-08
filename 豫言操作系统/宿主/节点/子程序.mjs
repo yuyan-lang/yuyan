@@ -104,6 +104,11 @@ export function 创建原生子程序桥({服务路径, 程序 = new Map(), 环�
       const 果 = await 请求({动作: '终止', 句柄: Number(柄)});
       return Number(果.错误码 ?? 29);
     },
+    // 汉语：资源查询由同一个豫言原生服务执行，节点只传五字段。文言：资源之查询，同一豫言原生之服行之；节点惟传五项。
+    async 资源(柄) {
+      const 果 = await 请求({动作: '资源', 句柄: Number(柄)});
+      return [Number(typeof 果.状态 === 'number' ? 果.状态 : 果.错误码 ?? 29), 果.当前可用 === true, BigInt(果.当前字节 ?? 0), 果.峰值可用 === true, BigInt(果.峰值字节 ?? 0)];
+    },
     关闭() { if (服务 && !已闭) 服务.stdin.end(); }
   };
 }
