@@ -1,7 +1,7 @@
 寻观「标准库」之书。
 
-「：汉语：隔离平台采用 ARM SMMUv3 与 AMD64 Q35/VT-d；这只选择模拟硬件，不表示客体已配置地址转换。驱动必须接受平台 DMA 翻译，不能靠清除特性位绕过。
-文言：两机各立其隔离硬件，不以旁路冒映射。：」
+「：汉语：隔离平台采用 ARM SMMUv3 与 AMD64 Q35/VT-d；这只选择模拟硬件，不表示客体已配置地址转换。驱动必须接受平台 DMA 翻译，不能靠清除特性位绕过。ARM64 用第三版中断控制器（硬件虚拟化只支持这一版）；QEMU 在物理地址 0x40000000 预写八字节内存大小（2 GiB，与调用方的 -m 2G 一致），内核开机读它定内存池。
+文言：两机各立其隔离硬件，不以旁路冒映射。臂用第三版断控（硬虚惟支此版）；QEMU 于物理址 0x40000000 预书八字节之内存大小（二吉，同呼者之 -m 2G），核启读之以定内存池。：」
 「裸机模拟平台参数」乃化「爻」而化「爻」而化「爻」而（「列」于「字符串」）也。
 「裸机模拟平台参数」者会「臂」而会「设备」而会「隔离」而
   若「臂」则
@@ -9,14 +9,16 @@
     【『-machine』
     ，（
         若「隔离」则
-          『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off』
-        否则若「设备」则『virt,gic-version=2,virtualization=off,secure=off,highmem-ecam=off』否则
-          『virt,gic-version=2,virtualization=off,secure=off』
+          『virt,gic-version=3,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off』
+        否则若「设备」则『virt,gic-version=3,virtualization=off,secure=off,highmem-ecam=off』否则
+          『virt,gic-version=3,virtualization=off,secure=off』
       ）
     ，『-cpu』
     ，『cortex-a53』
     ，『-semihosting-config』
     ，『enable=on,target=native』
+    ，『-device』
+    ，『loader,addr=0x40000000,data=2147483648,data-len=8』
     】
   否则
     「附加」授以「字符串」
