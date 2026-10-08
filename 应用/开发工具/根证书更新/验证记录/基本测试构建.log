@@ -1,0 +1,576 @@
+[2026-10-08 13:58:29] 当前路径：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/yy根更新链
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | 运行 1/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | PID 54918 | 退出 0 | 运行 0/24 | 已完成 1
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 1/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 2/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 3/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 2
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 3/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 4/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 5/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 6/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 7/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 8/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 9/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 10/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 3
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 10/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 11/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 12/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 13/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 14/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 15/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 16/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 4
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 16/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 17/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 18/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 19/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 20/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 21/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 22/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 54918 | 退出 0 | 运行 21/24 | 已完成 5
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 22/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 54918 | 退出 0 | 运行 21/24 | 已完成 6
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 22/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 54918 | 退出 0 | 运行 21/24 | 已完成 7
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 22/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 23/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 8
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 54918 | 退出 0 | 运行 21/24 | 已完成 9
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 22/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 23/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 10
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 11
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 23/24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 12
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 13
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 14
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 15
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 16
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 17
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 18
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 19
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 20
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 21
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 22
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 23
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 24
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 25
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 26
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 27
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 28
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 29
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 30
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 31
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 32
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 33
+[启动] dependency-analysis：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 34
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 35
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 36
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 54918 | 退出 0 | 运行 21/24 | 已完成 37
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 54918 | 退出 0 | 运行 20/24 | 已完成 38
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 21/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 54918 | 退出 0 | 运行 20/24 | 已完成 39
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 21/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 54918 | 退出 0 | 运行 20/24 | 已完成 40
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 54918 | 退出 0 | 运行 19/24 | 已完成 41
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 54918 | 退出 0 | 运行 18/24 | 已完成 42
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 43
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 18/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 44
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 54918 | 退出 0 | 运行 16/24 | 已完成 45
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 46
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 16/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 17/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 18/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 19/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 20/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 54918 | 退出 0 | 运行 19/24 | 已完成 47
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 54918 | 退出 0 | 运行 18/24 | 已完成 48
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 49
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 18/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 50
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 54918 | 退出 0 | 运行 16/24 | 已完成 51
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 52
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 53
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 54
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 55
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 56
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 12/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 57
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 58
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 59
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 10/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 11/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 12/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 13/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 60
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 13/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 61
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 13/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 62
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 13/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 63
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 13/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 14/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 15/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 64
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 65
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 66
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | 运行 13/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 67
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 68
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 12/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | 运行 13/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 69
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | 运行 13/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/续延。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 70
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/函数操作。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 71
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 72
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 11/24
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 73
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 74
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 10/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 11/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 75
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 11/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 12/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 76
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 12/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 13/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 14/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 15/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 16/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 17/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 18/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 77
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 18/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 78
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | 运行 18/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 79
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 54918 | 退出 0 | 运行 16/24 | 已完成 80
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 81
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 82
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/大小。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 83
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 84
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 85
+[完成] 依赖分析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 86
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/内建类型。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 87
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 88
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 9/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 89
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 90
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 91
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 7/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 92
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | 运行 7/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 93
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/惰性求值。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 94
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/爻术。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 95
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 96
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 9/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 10/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 97
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 10/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 98
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 99
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 9/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 10/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 11/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 100
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 101
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 102
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 103
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 104
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 105
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 6/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 7/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 106
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 7/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 8/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 107
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 9/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 108
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 109
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 8/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 9/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 10/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 11/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 12/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | 运行 13/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 110
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 13/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 14/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 15/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 16/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 111
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | 运行 16/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 112
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 16/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 17/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 18/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 19/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 20/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 21/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 22/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 23/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 113
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 23/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 24/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 114
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 24/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 115
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 24/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 116
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 24/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 117
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 24/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 118
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 24/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 119
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | 运行 24/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 54918 | 退出 0 | 运行 23/24 | 已完成 120
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 121
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | 运行 23/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 122
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | 运行 23/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 123
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | 运行 23/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异步原语。豫 | PID 54918 | 退出 0 | 运行 22/24 | 已完成 124
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 54918 | 退出 0 | 运行 21/24 | 已完成 125
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/引用。豫 | PID 54918 | 退出 0 | 运行 20/24 | 已完成 126
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数术。豫 | PID 54918 | 退出 0 | 运行 19/24 | 已完成 127
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/转换。豫 | PID 54918 | 退出 0 | 运行 18/24 | 已完成 128
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节串。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 129
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 54918 | 退出 0 | 运行 16/24 | 已完成 130
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 131
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 16/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 132
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 16/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 133
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 16/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 134
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/原语。内建。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 135
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 136
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 14/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 15/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 16/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 137
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 16/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 138
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | 运行 16/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 139
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | 运行 16/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 140
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 16/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 17/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 54918 | 退出 0 | 运行 16/24 | 已完成 141
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 17/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 54918 | 退出 0 | 运行 16/24 | 已完成 142
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 17/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 18/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 54918 | 退出 0 | 运行 17/24 | 已完成 143
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 54918 | 退出 0 | 运行 16/24 | 已完成 144
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 145
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 146
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 15/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 147
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 148
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 14/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 149
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 14/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 150
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 151
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 152
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 12/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 13/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 14/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 15/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | 运行 16/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 153
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 16/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 154
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 16/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 155
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 156
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | 运行 15/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 157
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | 运行 15/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 158
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 15/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | 运行 16/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/进程。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 159
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 160
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 15/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字节缓冲。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 161
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 162
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 14/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 15/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 16/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/环境变量。豫 | PID 54918 | 退出 0 | 运行 15/24 | 已完成 163
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/不安全。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 164
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/整数操作。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 165
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 166
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | 运行 13/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 167
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | 运行 13/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 168
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 13/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | 运行 14/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 169
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 14/24
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 15/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主。接口。豫 | PID 54918 | 退出 0 | 运行 14/24 | 已完成 170
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 54918 | 退出 0 | 运行 13/24 | 已完成 171
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/随机。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 172
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心/异常。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 173
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 174
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 11/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | 运行 12/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 175
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 12/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 176
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | 运行 12/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 177
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/可选值。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 178
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 179
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 10/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | 运行 11/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 180
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 11/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 181
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 11/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/传输控制协议。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 182
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 183
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 10/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 184
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | 运行 10/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 185
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | 运行 10/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 186
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 187
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 9/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 188
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 9/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 189
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | 运行 9/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 190
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 9/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 10/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 11/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 12/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 13/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/小数操作。豫 | PID 54918 | 退出 0 | 运行 12/24 | 已完成 191
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/校验与编码/字节编码/基码。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 192
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 193
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | 运行 11/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 194
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/语言核心。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 195
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/时间。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 196
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/输入输出/笔。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 197
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 198
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 7/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 199
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | 运行 7/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 200
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 201
+[启动] parse：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | 运行 6/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/系统名称。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 202
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 203
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 7/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 204
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 8/24
+[完成] 语法解析：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 205
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 206
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 7/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 8/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | 运行 9/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 207
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 208
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 209
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | 运行 7/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 210
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/具体列。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 211
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 212
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 6/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 7/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 213
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 214
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 6/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 7/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 8/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | 运行 9/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 215
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | 运行 9/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 216
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 9/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 10/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 217
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 10/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 11/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | 运行 12/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/文件系统。豫 | PID 54918 | 退出 0 | 运行 11/24 | 已完成 218
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 219
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | 运行 11/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 220
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 221
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 10/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 222
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | 运行 10/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算/数组转换。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 223
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/宿主带列。接口。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 224
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 225
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | 运行 8/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 226
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | 运行 8/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 227
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 9/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 10/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 11/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 228
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | 运行 11/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制。豫 | PID 54918 | 退出 0 | 运行 10/24 | 已完成 229
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 230
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | 运行 10/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 231
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 10/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/异步传输控制协议。豫 | PID 54918 | 退出 0 | 运行 9/24 | 已完成 232
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符流术。豫 | PID 54918 | 退出 0 | 运行 8/24 | 已完成 233
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 234
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 8/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 235
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 8/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/控制/异步。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 236
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 237
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | 运行 7/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 238
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数学运算。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 239
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 240
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 6/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 7/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | 运行 8/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 241
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 8/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/命令行参数。豫 | PID 54918 | 退出 0 | 运行 7/24 | 已完成 242
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 243
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 244
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | 运行 6/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 245
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 6/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/对子术。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 246
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/特殊字符。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 247
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 248
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 5/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 6/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/多态列工具。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 249
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 250
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 5/24
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | 运行 6/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 251
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | 运行 6/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络/超文本传输协议。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 252
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 253
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 6/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字符串术。豫 | PID 54918 | 退出 0 | 运行 6/24 | 已完成 254
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/列表搜索。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 255
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 256
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | 运行 5/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 257
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 5/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 6/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 258
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | 运行 6/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构/字典术。豫 | PID 54918 | 退出 0 | 运行 5/24 | 已完成 259
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 260
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | 运行 5/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 261
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 5/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 262
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | 运行 5/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/网络。豫 | PID 54918 | 退出 0 | 运行 4/24 | 已完成 263
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/子进程。豫 | PID 54918 | 退出 0 | 运行 3/24 | 已完成 264
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/豫言标准内核。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 265
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 266
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 2/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 3/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 267
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | 运行 3/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 268
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | 运行 3/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/数据结构。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 269
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 270
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 2/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 3/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统/路径。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 271
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 272
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | 运行 2/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 273
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 2/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 3/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 274
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | 运行 3/24
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 275
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 3/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 4/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/总集。豫 | PID 54918 | 退出 0 | 运行 3/24 | 已完成 276
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/标准库/操作系统。豫 | PID 54918 | 退出 0 | 运行 2/24 | 已完成 277
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 278
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | 运行 2/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/库/基础库/密码与安全/证书/文本封套。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 279
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 54918 | 退出 0 | 运行 0/24 | 已完成 280
+[启动] type-check-and-erase：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | 运行 1/24
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 2/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 281
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | 运行 2/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/转换。豫 | PID 54918 | 退出 0 | 运行 1/24 | 已完成 282
+[完成] 类型检查：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | PID 54918 | 退出 0 | 运行 0/24 | 已完成 283
+[启动] cross-module-optimize：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | 运行 1/24
+[完成] 跨模块优化：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | PID 54918 | 退出 0 | 运行 0/24 | 已完成 284
+[启动] pre-closure-convert：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | 运行 1/24
+[完成] 闭包转换：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | PID 54918 | 退出 0 | 运行 0/24 | 已完成 285
+[启动] exec-gen：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | 运行 1/24
+[完成] 最终链接：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/应用/开发工具/根证书更新/测试/转换。测试。豫 | PID 54918 | 退出 0 | 运行 0/24 | 已完成 286
+[2026-10-08 13:58:30] 当前路径：/Users/zc/repos/yuyan-worktrees/基础库-根证书更新/yy根更新链
+YY_BUILD_TASK_STATS	{"模块准备毫秒":0,"执行毫秒":188,"宿主调用数":0}
+
