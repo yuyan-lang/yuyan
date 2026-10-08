@@ -1,0 +1,41 @@
+寻观「标准库」之书。
+
+「类别别名表」者『gc ; C                                ; Other                            
+gc ; Cc                               ; Control                          ; cntrl
+gc ; Cf                               ; Format
+gc ; Cn                               ; Unassigned
+gc ; Co                               ; Private_Use
+gc ; Cs                               ; Surrogate
+gc ; L                                ; Letter                           
+gc ; LC                               ; Cased_Letter                     
+gc ; Ll                               ; Lowercase_Letter
+gc ; Lm                               ; Modifier_Letter
+gc ; Lo                               ; Other_Letter
+gc ; Lt                               ; Titlecase_Letter
+gc ; Lu                               ; Uppercase_Letter
+gc ; M                                ; Mark                             ; Combining_Mark                   
+gc ; Mc                               ; Spacing_Mark
+gc ; Me                               ; Enclosing_Mark
+gc ; Mn                               ; Nonspacing_Mark
+gc ; N                                ; Number                           
+gc ; Nd                               ; Decimal_Number                   ; digit
+gc ; Nl                               ; Letter_Number
+gc ; No                               ; Other_Number
+gc ; P                                ; Punctuation                      ; punct                            
+gc ; Pc                               ; Connector_Punctuation
+gc ; Pd                               ; Dash_Punctuation
+gc ; Pe                               ; Close_Punctuation
+gc ; Pf                               ; Final_Punctuation
+gc ; Pi                               ; Initial_Punctuation
+gc ; Po                               ; Other_Punctuation
+gc ; Ps                               ; Open_Punctuation
+gc ; S                                ; Symbol                           
+gc ; Sc                               ; Currency_Symbol
+gc ; Sk                               ; Modifier_Symbol
+gc ; Sm                               ; Math_Symbol
+gc ; So                               ; Other_Symbol
+gc ; Z                                ; Separator                        
+gc ; Zl                               ; Line_Separator
+gc ; Zp                               ; Paragraph_Separator
+gc ; Zs                               ; Space_Separator
+』也。

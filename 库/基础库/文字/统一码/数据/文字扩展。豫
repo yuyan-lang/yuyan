@@ -1,0 +1,515 @@
+寻观「标准库」之书。
+
+「文字扩展表0」乃化「整数」而「字符串」也。
+「文字扩展表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『00B7;Avst Cari Copt Dupl Elba Geor Glag Gong Goth Grek Hani Latn Lydi Mahj Perm Shaw
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「2」））于（「小于」于「桶」于「3」）则
+      『02BC;Beng Cyrl Deva Latn Lisu Thai Toto
+02C7;Bopo Latn
+02C9..02CB;Bopo Latn
+02CD;Latn Lisu
+02D7;Latn Thai
+02D9;Bopo Latn
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「3」））于（「小于」于「桶」于「4」）则
+        『0300;Cher Copt Cyrl Grek Latn Perm Sunu Tale
+0301;Cher Cyrl Grek Latn Osge Sunu Tale Todr
+0302;Cher Cyrl Latn Tfng
+0303;Glag Latn Sunu Syrc Thai
+0304;Aghb Cher Copt Cyrl Goth Grek Latn Osge Syrc Tfng Todr
+0305;Copt Elba Glag Goth Kana Latn
+0306;Cyrl Grek Latn Perm Tfng
+0307;Copt Dupl Hebr Latn Perm Syrc Tale Tfng Todr
+0308;Armn Cyrl Dupl Goth Grek Hebr Latn Perm Syrc Tale Tfng
+0309;Latn Tfng
+030A;Dupl Latn Syrc
+030B;Cher Cyrl Latn Osge
+030C;Cher Latn Tale
+030D;Latn Sunu
+030E;Ethi Latn
+0310;Latn Sunu
+0311;Cyrl Latn Todr
+0313;Grek Latn Perm Todr
+0323;Cher Dupl Kana Latn Syrc Tfng
+0324;Cher Dupl Latn Syrc
+0325;Latn Syrc
+032D;Latn Sunu Syrc
+032E;Latn Syrc
+0330;Cher Latn Syrc
+0331;Aghb Cher Goth Latn Sunu Syrc Thai
+0342;Grek
+0345;Grek
+0358;Latn Osge
+035E;Aghb Latn Todr
+0363..036F;Latn
+0374;Copt Grek
+0375;Copt Grek
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「4」））于（「小于」于「桶」于「5」）则
+          『0483;Cyrl Perm
+0484;Cyrl Glag
+0485..0486;Cyrl Latn
+0487;Cyrl Glag
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「5」））
+            于（「小于」于「桶」于「6」）则
+              『0589;Armn Geor Glag
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「6」））
+              于（「小于」于「桶」于「7」）则
+                『060C;Arab Gara Nkoo Rohg Syrc Thaa Yezi
+061B;Arab Gara Nkoo Rohg Syrc Thaa Yezi
+061C;Arab Syrc Thaa
+061F;Adlm Arab Gara Nkoo Rohg Syrc Thaa Yezi
+0640;Adlm Arab Mand Mani Ougr Phlp Rohg Sogd Syrc
+064B..0655;Arab Syrc
+0660..0669;Arab Thaa Yezi
+0670;Arab Syrc
+06D4;Arab Rohg
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「9」））
+                于（「小于」于「桶」于「10」）则
+                  『0951;Beng Deva Gran Gujr Guru Knda Latn Mlym Nand Newa Orya Shrd Taml Telu Tirh
+0952;Beng Deva Gran Gujr Guru Knda Latn Mlym Newa Orya Taml Telu Tirh
+0964;Beng Deva Dogr Gong Gonm Gran Gujr Guru Knda Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh
+0965;Beng Deva Dogr Gong Gonm Gran Gujr Gukh Guru Knda Limb Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh
+0966..096F;Deva Dogr Kthi Mahj
+09E6..09EF;Beng Cakm Sylo
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「10」））
+                  于（「小于」于「桶」于「11」）则
+                    『0A66..0A6F;Guru Mult
+0AE6..0AEF;Gujr Khoj
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「11」））
+                    于（「小于」于「桶」于「12」）则
+                      『0B83;Knda Mlym Taml Telu
+0BE6..0BEF;Gran Taml
+0BF0..0BF2;Gran Taml
+0BF3;Gran Taml
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「12」））
+                      于（「小于」于「桶」于「13」）则
+                        『0CE6..0CEF;Knda Nand Tutg
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「16」））
+                        于（「小于」于「桶」于「17」）则
+                          『1040..1049;Cakm Mymr Tale
+10FB;Geor Glag Latn
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「22」））
+                          于（「小于」于「桶」于「23」）则
+                            『16EB..16ED;Runr
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「23」））
+                            于（「小于」于「桶」于「24」）则
+                              『1735..1736;Buhd Hano Tagb Tglg
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「24」））
+                              于（「小于」于「桶」于「25」）则
+                                『1802..1803;Mong Phag
+1805;Mong Phag
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「28」））
+                                于（「小于」于「桶」于「29」）则
+                                  『1CD0;Beng Deva Gran Knda
+1CD1;Deva
+1CD2;Beng Deva Gran Knda
+1CD3;Deva Gran Knda
+1CD4;Deva
+1CD5;Beng Deva Newa Telu Tirh
+1CD6;Beng Deva Telu
+1CD7;Deva Newa Shrd
+1CD8;Beng Deva Newa Telu
+1CD9;Deva Shrd
+1CDA;Deva Knda Mlym Orya Taml Telu
+1CDB;Deva
+1CDC..1CDD;Deva Shrd
+1CDE..1CDF;Deva
+1CE0;Deva Shrd
+1CE1;Beng Deva
+1CE2;Deva Newa Tirh
+1CE3..1CE8;Deva
+1CE9;Deva Nand Newa
+1CEA;Beng Deva Shrd
+1CEB;Deva Newa
+1CEC;Deva
+1CED;Beng Deva Newa Shrd
+1CEE..1CF1;Deva
+1CF2;Beng Deva Gran Knda Mlym Nand Orya Sinh Telu Tirh Tutg
+1CF3;Deva Gran
+1CF4;Deva Gran Knda Tutg
+1CF5..1CF6;Beng
+1CF7;Beng
+1CF8..1CF9;Deva Gran
+1CFA;Nand
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「29」））
+                                  于（「小于」于「桶」于「30」）则
+                                    『1DC0..1DC1;Grek
+1DF8;Cyrl Latn Syrc
+1DFA;Syrc
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「32」））
+                                    于（「小于」于「桶」于「33」）则
+                                      『202F;Latn Mong Phag
+204F;Adlm Arab
+205A;Cari Geor Glag Hung Lyci Orkh
+205D;Cari Grek Hung Mero
+20F0;Deva Gran Latn
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「46」））
+                                      于（「小于」于「桶」于「47」）则
+                                        『2E17;Copt Latn
+2E30;Avst Orkh
+2E31;Avst Cari Geor Hung Kthi Lydi Samr
+2E3C;Dupl
+2E41;Adlm Arab Hung
+2E43;Cyrl Glag
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「47」））
+                                        于（「小于」于「桶」于「48」）则
+                                          『2FF0..2FFF;Hani Tang
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「48」））
+                                          于（「小于」于「桶」于「49」）则
+                                            『3001;Bopo Hang Hani Hira Kana Mong Yiii
+3002;Bopo Hang Hani Hira Kana Mong Phag Yiii
+3003;Bopo Hang Hani Hira Kana
+3006;Hani
+3008;Bopo Hang Hani Hira Kana Mong Tibt Yiii
+3009;Bopo Hang Hani Hira Kana Mong Tibt Yiii
+300A;Bopo Hang Hani Hira Kana Lisu Mong Tibt Yiii
+300B;Bopo Hang Hani Hira Kana Lisu Mong Tibt Yiii
+300C;Bopo Hang Hani Hira Kana Yiii
+300D;Bopo Hang Hani Hira Kana Yiii
+300E;Bopo Hang Hani Hira Kana Yiii
+300F;Bopo Hang Hani Hira Kana Yiii
+3010;Bopo Hang Hani Hira Kana Yiii
+3011;Bopo Hang Hani Hira Kana Yiii
+3013;Bopo Hang Hani Hira Kana
+3014;Bopo Hang Hani Hira Kana Yiii
+3015;Bopo Hang Hani Hira Kana Yiii
+3016;Bopo Hang Hani Hira Kana Yiii
+3017;Bopo Hang Hani Hira Kana Yiii
+3018;Bopo Hang Hani Hira Kana Yiii
+3019;Bopo Hang Hani Hira Kana Yiii
+301A;Bopo Hang Hani Hira Kana Yiii
+301B;Bopo Hang Hani Hira Kana Yiii
+301C;Bopo Hang Hani Hira Kana
+301D;Bopo Hang Hani Hira Kana
+301E..301F;Bopo Hang Hani Hira Kana
+302A..302D;Bopo Hani
+3030;Bopo Hang Hani Hira Kana
+3031..3035;Hira Kana
+3037;Bopo Hang Hani Hira Kana
+303C;Hani Hira Kana
+303D;Hani Hira Kana
+303E..303F;Hani
+3099..309A;Hira Kana
+309B..309C;Hira Kana
+30A0;Hira Kana
+30FB;Bopo Hang Hani Hira Kana Yiii
+30FC;Hira Kana
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「49」））
+                                            于（「小于」于「桶」于「50」）则
+                                              『3190..3191;Hani
+3192..3195;Hani
+3196..319F;Hani
+31C0..31E5;Hani
+31EF;Hani Tang
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「50」））
+                                              于（「小于」于「桶」于「51」）则
+                                                『3220..3229;Hani
+322A..3247;Hani
+3280..3289;Hani
+328A..32B0;Hani
+32C0..32CB;Hani
+32FF;Hani
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「51」））
+                                                于（「小于」于「桶」于「52」）则
+                                                  『3358..3370;Hani
+337B..337F;Hani
+33E0..33FE;Hani
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「166」））
+                                                  于（「小于」于「桶」于「167」）则
+                                                    『A66F;Cyrl Glag
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「167」））
+                                                    于（「小于」于「桶」于「168」）则
+                                                      『A700..A707;Hani Latn
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「168」））
+                                                      于（「小于」于「桶」于「169」）则
+                                                        『A830..A832;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Mlym Modi Nand Shrd Sind Takr Tirh Tutg
+A833..A835;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Modi Nand Shrd Sind Takr Tirh Tutg
+A836..A837;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh
+A838;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Shrd Sind Takr Tirh
+A839;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh
+A8F1;Beng Deva Tutg
+A8F3;Deva Taml
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「169」））
+                                                        于（「小于」于「桶」于「170」）则
+                                                          『A92E;Kali Latn Mymr
+A9CF;Bugi Java
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「253」））
+                                                          于（「小于」于「桶」于「254」）则
+                                                            『FD3E;Arab Nkoo
+FD3F;Arab Nkoo
+FDF2;Arab Thaa
+FDFD;Arab Thaa
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「254」））
+                                                            于（「小于」于「桶」于「255」）则
+                                                            『FE45..FE46;Bopo Hang Hani Hira Kana
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「255」））
+                                                            于（「小于」于「桶」于「256」）则
+                                                            『FF61;Bopo Hang Hani Hira Kana Yiii
+FF62;Bopo Hang Hani Hira Kana Yiii
+FF63;Bopo Hang Hani Hira Kana Yiii
+FF64..FF65;Bopo Hang Hani Hira Kana Yiii
+FF70;Hira Kana
+FF9E..FF9F;Hira Kana
+』
+                                                            否则
+                                                            『』
+也。
+
+「文字扩展表1」乃化「整数」而「字符串」也。
+「文字扩展表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「257」））于（「小于」于「桶」于「258」）则
+    『10100..10101;Cpmn Cprt Linb
+10102;Cprt Linb
+10107..10133;Cprt Lina Linb
+10137..1013F;Cprt Linb
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「258」））于（「小于」于「桶」于「259」）则
+      『102E0;Arab Copt
+102E1..102FB;Arab Copt
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「266」））于（「小于」于「桶」于「267」）则
+        『10AF2;Mani Ougr
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「275」））于（「小于」于「桶」于「276」）则
+          『11301;Gran Taml
+11303;Gran Taml
+1133B..1133C;Gran Taml
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「287」））
+            于（「小于」于「桶」于「288」）则
+              『11FD0..11FD1;Gran Taml
+11FD3;Gran Taml
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「293」））
+              于（「小于」于「桶」于「294」）则
+                『12550..12586;Pcun Xsux
+1258C..1258D;Pcun Xsux
+1259A..125A7;Pcun Xsux
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「444」））
+                于（「小于」于「桶」于「445」）则
+                  『1BCA0..1BCA3;Dupl
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「467」））
+                  于（「小于」于「桶」于「468」）则
+                    『1D360..1D371;Hani
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「498」））
+                    于（「小于」于「桶」于「499」）则
+                    『1F250..1F251;Hani
+』
+                  否则
+                    『』
+也。
+
+「文字扩展表2」乃化「整数」而「字符串」也。
+「文字扩展表2」者会「桶」而
+  『』
+也。
+
+「文字扩展表3」乃化「整数」而「字符串」也。
+「文字扩展表3」者会「桶」而
+  『』
+也。
+
+「文字扩展表4」乃化「整数」而「字符串」也。
+「文字扩展表4」者会「桶」而
+  『』
+也。
+
+「文字扩展表5」乃化「整数」而「字符串」也。
+「文字扩展表5」者会「桶」而
+  『』
+也。
+
+「文字扩展表6」乃化「整数」而「字符串」也。
+「文字扩展表6」者会「桶」而
+  『』
+也。
+
+「文字扩展表7」乃化「整数」而「字符串」也。
+「文字扩展表7」者会「桶」而
+  『』
+也。
+
+「文字扩展表8」乃化「整数」而「字符串」也。
+「文字扩展表8」者会「桶」而
+  『』
+也。
+
+「文字扩展表9」乃化「整数」而「字符串」也。
+「文字扩展表9」者会「桶」而
+  『』
+也。
+
+「文字扩展表10」乃化「整数」而「字符串」也。
+「文字扩展表10」者会「桶」而
+  『』
+也。
+
+「文字扩展表11」乃化「整数」而「字符串」也。
+「文字扩展表11」者会「桶」而
+  『』
+也。
+
+「文字扩展表12」乃化「整数」而「字符串」也。
+「文字扩展表12」者会「桶」而
+  『』
+也。
+
+「文字扩展表13」乃化「整数」而「字符串」也。
+「文字扩展表13」者会「桶」而
+  『』
+也。
+
+「文字扩展表14」乃化「整数」而「字符串」也。
+「文字扩展表14」者会「桶」而
+  『』
+也。
+
+「文字扩展表15」乃化「整数」而「字符串」也。
+「文字扩展表15」者会「桶」而
+  『』
+也。
+
+「文字扩展表16」乃化「整数」而「字符串」也。
+「文字扩展表16」者会「桶」而
+  『』
+也。
+
+「文字扩展表」乃化「整数」而「字符串」也。
+「文字扩展表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「文字扩展表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「文字扩展表1」于「桶」否则
+      若「小于」于「桶」于「768」则「文字扩展表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「文字扩展表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「文字扩展表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「文字扩展表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「文字扩展表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「文字扩展表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「文字扩展表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「文字扩展表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「文字扩展表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「文字扩展表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「文字扩展表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「文字扩展表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「文字扩展表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「文字扩展表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「文字扩展表16」于「桶」
+                                  否则
+                                    『』
+也。
