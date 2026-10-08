@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>四压缩库同源浏览器验收</title></head>
+<body><pre id="结果">运行中
+</pre>
+<script type="module">
+// 汉语：复用正则测试页的既有值桥与运行路线，压缩运算及硬断言全在冻结的豫言客体内。
+// 文言：取正则试页既有之值桥与运行之路，压缩之算及硬断言皆行于冻结豫言客体。
+import {创建豫言实例} from './值桥.mjs';
+const 结果 = document.getElementById('结果');
+const 样本 = [
+  ['迅压', 'yy迅压周期固定.wasm', ['迅压测试通过']],
+  ['比压2', 'yy表短域.wasm', ['普通通过', '旧随机短块通过', '拼接通过', '任意填充位通过', '垃圾后完整成员终止通过',
+    '垃圾后截断成员终止通过', '块校验错误通过', '流校验错误通过', '截断通过', '累计限额通过', '截断后续头通过', '比压2短域十一项硬断言完成']],
+  ['莱齐4', 'yy莱齐4复制优化固定.wasm', []],
+  ['泽标', 'yy泽标裸机边界.wasm', ['泽标边界向量完成']]
+];
+try {
+  const 桥 = await WebAssembly.compile(await (await fetch('./值桥.wasm')).arrayBuffer());
+  let 已完 = 0;
+  for (const [名称, 路径, 预期们] of 样本) {
+    let 输出 = '';
+    const 程序 = await WebAssembly.compile(await (await fetch('./' + 路径)).arrayBuffer());
+    const 实例 = 创建豫言实例(程序, 桥, {输出: 文 => {输出 += 文;}, 时限毫秒: 600000});
+    await 实例.运行();
+    for (const 预期 of 预期们) {
+      if (!输出.includes(预期)) throw Error('缺预期输出：' + 路径 + '；' + 预期 + '；' + 输出);
+    }
+    if (预期们.length === 0 && 输出.length !== 0) throw Error('静默客体输出与冻结结果不符：' + 路径 + '；' + 输出);
+    结果.textContent += 输出 + 名称 + '完整固定客体正常返回，无异常\n';
+    已完++;
+  }
+  结果.textContent += '实际完成浏览器客体：' + 已完 + '\n';
+  document.documentElement.dataset.压缩验收 = '通过';
+} catch (错误) {
+  结果.textContent += '失败：' + String(错误?.stack ?? 错误) + '\n';
+  document.documentElement.dataset.压缩验收 = '失败';
+}
+</script></body></html>
