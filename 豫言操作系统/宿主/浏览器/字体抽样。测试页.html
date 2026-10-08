@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>字体同源浏览器抽样验收</title></head>
+<body><pre id="结果">运行中
+</pre>
+<script type="module">
+// 汉语：此页仅连接既有浏览器值桥与已编译的豫言测试客体；字体计算和固定向量断言均在豫言客体中执行。
+// 文言：此页惟接既有浏览器值桥与既编之豫言试客；字体之算与定向量之验皆行于豫言客中。
+import {创建豫言实例} from './值桥.mjs';
+const 结果 = document.getElementById('结果');
+const 样本 = [
+  ['yy字体紧凑抽样.wasm', 54],
+  ['yy字体网页抽样.wasm', 44],
+  ['yy字体可变抽样.wasm', 29]
+];
+try {
+  const 桥 = await WebAssembly.compile(await (await fetch('./值桥.wasm')).arrayBuffer());
+  let 已完 = 0;
+  for (const [路径, 预期成功数] of 样本) {
+    let 输出 = '';
+    const 程序 = await WebAssembly.compile(await (await fetch('./' + 路径)).arrayBuffer());
+    const 实例 = 创建豫言实例(程序, 桥, {输出: 文 => {输出 += 文;}, 时限毫秒: 600000});
+    await 实例.运行();
+    结果.textContent += 输出;
+    const 计数 = [...输出.matchAll(/当前成功数：\s*(\d+)\s+当前失败数：\s*(\d+)/g)];
+    const 最后 = 计数.at(-1);
+    if (!最后 || Number(最后[1]) !== 预期成功数 || 计数.some(项 => Number(项[2]) !== 0)) {
+      throw Error('断言计数不符：' + 路径 + '；预期成功数：' + 预期成功数 + '；' + 输出);
+    }
+    已完++;
+  }
+  结果.textContent += '实际完成浏览器客体：' + 已完 + '\n';
+  document.documentElement.dataset.字体验收 = '通过';
+} catch (错误) {
+  结果.textContent += '失败：' + String(错误?.stack ?? 错误) + '\n';
+  document.documentElement.dataset.字体验收 = '失败';
+}
+</script></body></html>
