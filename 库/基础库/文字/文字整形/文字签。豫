@@ -120,12 +120,121 @@
     ）
 也。
 
+「：汉语：通用脚本的四字节签取自微软 OpenType Script Tags 官表，保留签中的空格；古印度二代签由既有入口优先选取。
+文言：通用脚签取微软官表之四字节，存其空白；古印度二代之签仍由旧口先择。：」
+「通用整形脚本签表」乃「列」于（「字符串」合「字符串」）也。
+「通用整形脚本签表」者
+  「列」
+  【
+  『Tibetan』与『tibt』，
+  『Mongolian』与『mong』，
+  『Sinhala』与『sinh』，
+  『Buhid』与『buhd』，
+  『Hanunoo』与『hano』，
+  『Tagalog』与『tglg』，
+  『Tagbanwa』与『tagb』，
+  『Limbu』与『limb』，
+  『Tai_Le』与『tale』，
+  『Buginese』与『bugi』，
+  『Kharoshthi』与『khar』，
+  『Syloti_Nagri』与『sylo』，
+  『Tifinagh』与『tfng』，
+  『Balinese』与『bali』，
+  『Nko』与『nko 』，
+  『Phags_Pa』与『phag』，
+  『Cham』与『cham』，
+  『Kayah_Li』与『kali』，
+  『Lepcha』与『lepc』，
+  『Rejang』与『rjng』，
+  『Saurashtra』与『saur』，
+  『Sundanese』与『sund』，
+  『Egyptian_Hieroglyphs』与『egyp』，
+  『Javanese』与『java』，
+  『Kaithi』与『kthi』，
+  『Meetei_Mayek』与『mtei』，
+  『Tai_Tham』与『lana』，
+  『Tai_Viet』与『tavt』，
+  『Batak』与『batk』，
+  『Brahmi』与『brah』，
+  『Mandaic』与『mand』，
+  『Chakma』与『cakm』，
+  『Miao』与『plrd』，
+  『Sharada』与『shrd』，
+  『Takri』与『takr』，
+  『Duployan』与『dupl』，
+  『Grantha』与『gran』，
+  『Khojki』与『khoj』，
+  『Khudawadi』与『sind』，
+  『Mahajani』与『mahj』，
+  『Manichaean』与『mani』，
+  『Modi』与『modi』，
+  『Pahawh_Hmong』与『hmng』，
+  『Psalter_Pahlavi』与『phlp』，
+  『Siddham』与『sidd』，
+  『Tirhuta』与『tirh』，
+  『Ahom』与『ahom』，
+  『Multani』与『mult』，
+  『Adlam』与『adlm』，
+  『Bhaiksuki』与『bhks』，
+  『Marchen』与『marc』，
+  『Newa』与『newa』，
+  『Masaram_Gondi』与『gonm』，
+  『Soyombo』与『soyo』，
+  『Zanabazar_Square』与『zanb』，
+  『Dogra』与『dogr』，
+  『Gunjala_Gondi』与『gong』，
+  『Hanifi_Rohingya』与『rohg』，
+  『Makasar』与『maka』，
+  『Medefaidrin』与『medf』，
+  『Old_Sogdian』与『sogo』，
+  『Sogdian』与『sogd』，
+  『Elymaic』与『elym』，
+  『Nandinagari』与『nand』，
+  『Nyiakeng_Puachue_Hmong』与『hmnp』，
+  『Wancho』与『wcho』，
+  『Chorasmian』与『chrs』，
+  『Dives_Akuru』与『diak』，
+  『Khitan_Small_Script』与『kits』，
+  『Yezidi』与『yezi』，
+  『Cypro_Minoan』与『cpmn』，
+  『Old_Uyghur』与『ougr』，
+  『Tangsa』与『tnsa』，
+  『Toto』与『toto』，
+  『Vithkuqi』与『vith』，
+  『Kawi』与『kawi』，
+  『Nag_Mundari』与『nagm』，
+  『Garay』与『gara』，
+  『Gurung_Khema』与『gukh』，
+  『Kirat_Rai』与『krai』，
+  『Ol_Onal』与『onao』，
+  『Sunuwar』与『sunu』，
+  『Todhri』与『todr』，
+  『Tulu_Tigalari』与『tutg』，
+  『Beria_Erfe』与『berf』，
+  『Sidetic』与『sidt』，
+  『Tai_Yo』与『tayo』，
+  『Tolong_Siki』与『tols』，
+  『Jurchen』与『jurc』，
+  『Proto_Cuneiform』与『pcun』，
+  『Seal』与『seal』
+】也。
+
+「通用整形脚本标签」乃化「字符串」而「字符串」也。
+「通用整形脚本标签」者会「名」而
+  递归虑「查」其化（「列」于（「字符串」合「字符串」））而「字符串」者会「签表」而
+    鉴「签表」而
+      有「罄」则『DFLT』
+      或有「缀」于「项」于「尾」则
+        若「串相等」于（「项」中「零」）于「名」则（「项」中「一」）否则「查」于「尾」而
+  「查」于「通用整形脚本签表」
+也。
+
 「整形文字标签」乃化（「列」于「整数」）而「字符串」也。
 「整形文字标签」者会「码们」而
   递归虑「查」其化（「列」于（「字符串」合「字符串」））而化「字符串」而「字符串」者会「余签」而
   会「文字名」而
   鉴「余签」而
-    有「罄」则『DFLT』
+    有「罄」则「通用整形脚本标签」于「文字名」
     或有（「缀」于「项」于「后」）则
       若「串相等」于（「项」中「零」）于「文字名」则（「项」中「一」）否则「查」于「后」于「文字名」而
   递归虑「签们」其「列」于（「字符串」合「字符串」）者「列」
