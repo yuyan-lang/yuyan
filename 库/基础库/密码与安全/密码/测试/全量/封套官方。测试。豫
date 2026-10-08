@@ -206,7 +206,7 @@
     于『73616c74』
     于「8」
     于「48」
-    于『e1367ec5151a33faac4cc1c144cd23fa15d5548493ecc99b9b5d9c0d3b27bec76227ea66088b849b20ab7aa478010246e』
+    于『e1367ec5151a33faac4cc1c144cd23fa15d5548493ecc99b9b5d9c0d3b27bec76227ea66088b849b20ab7aa478010246』
 否则
   「元」。
 若「或者」
@@ -249,8 +249,8 @@
       于『0db3ac94b3ee53284f4a22893b3c24ae』
       于『3a62f0f0dbcef823cfcc854856ea1028』于「8」于「16」于『204438175eee7ce136c91b49a67923ff』。
 
-「：汉语：官方原件第九项为256字节大钥；完整模式包含全部九项，大钥模式单独重放此项。原件SHA见全量核验记录。
-文言：官件第九例取二百五十六字节大钥；全验含九例，大钥之式别行此例。原件之指纹见全验录。：」
+「：汉语：官方原件另有256字节大钥；完整模式包含十一项，大钥模式单独重放此项。原件SHA见全量核验记录。
+文言：官件另取二百五十六字节大钥；全验含十一例，大钥之式别行此例。原件之指纹见全验录。：」
 若「或者」于（「字符串相等吗」于「封套测试模式」于『完整』）于（「字符串相等吗」于「封套测试模式」于『大钥』）则
   「封套测试向量」
     于『0db3ac94b3ee53284f4a22893b3c24ae』
@@ -273,6 +273,46 @@
       『68f46a4ce256185b4badc2685fbe78e1』附
       『c7657b59f83ab9ab80cf9318d6add1f5』附
       『933f12d6f36182c8e8115f68030a1244』）
+否则
+  「元」。
+
+「封套官方正文十六」乃
+  化「字符串」而
+  化「整数」而
+  化「整数」而
+  化「字符串」而
+  「字符串」
+也。
+「封套官方正文十六」者会「正文」而会「长度」而会「位置」而会「累计」而
+  若「等于」于「位置」于「长度」则
+    「累计」
+  否则
+    「封套官方正文十六」
+      于「正文」
+      于「长度」
+      于（「加」于「位置」于「1」）
+      于（「累计」附（「封套测试十六字节」于（「字符转整数」于「正文」于「位置」）））
+也。
+
+「封套官方长口令」者
+  『Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do 』附
+  『eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut 』附
+  『enim ad minim veniam, quis nostrud exercitation ullamco laboris 』附
+  『nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor 』附
+  『in reprehenderit in voluptate velit esse cillum dolore eu fugiat 』附
+  『nulla pariatur. Excepteur sint occaecat cupidatat non proident, 』附
+  『sunt in culpa qui officia deserunt mollit anim id est laborum.』
+也。
+
+「封套测试断言」于（「等于」于（「串长度」于「封套官方长口令」）于「445」）于『官方长口令长度抄录错误』。
+若「或者」于（「字符串相等吗」于「封套测试模式」于『完整』）于（「字符串相等吗」于「封套测试模式」于『多轮』）则
+  「封套测试向量」于『70617373776f7264』于『73616c74』于「42」于「16」于『833cf0dcf56db65608e8f0dc0ce882bd』
+否则
+  「元」。
+若「或者」于（「字符串相等吗」于「封套测试模式」于『完整』）于（「字符串相等吗」于「封套测试模式」于『长口令』）则
+  「封套测试向量」
+    于（（「封套官方正文十六」于「封套官方长口令」于「445」于「0」于『』）附『00』）
+    于『73616c697300』于「8」于「16」于『10978b07253df57f71a162eb0e8ad30a』
 否则
   「元」。
 「打印行」于『封套派生已选官方全量向量通过』。
