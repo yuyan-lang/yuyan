@@ -1,0 +1,23 @@
+寻观「标准库」之书。
+寻观「结森工具」之书。
+寻观「模板」之书。
+
+「境」者
+  「结森解析」于『{"messages":[{"role":"user","content":"甲"}],"add_generation_prompt":true,"enable_thinking":false}』
+也。
+
+「验」乃化「字符串」而化「字符串」而「有」也。
+「验」者会「配置文」而会「期文」而
+  若「串相等」于「期文」于（「渲染分词器配置」于（「结森解析」于「配置文」）于「境」）则
+    「打印行」于『配置回归通过』
+  否则
+    「发生事故」于『配置回归不符』
+也。
+
+「验」
+  于
+  『{"chat_template":"{{ bos_token }}{{ messages[0].content }}{{ eos_token }}","bos_token":{"content":"<s>"},"eos_token":"</s>"}』
+    于『<s>甲</s>』。
+「验」于『{"chat_template":{"default":"{{ messages[0].content }}"}}』于『甲』。
+「验」于『{"chat_template":[{"name":"default","template":"{{ messages[0].content }}"}]}』于『甲』。
+「验」于『{"chat_template":"{{ add_generation_prompt }}|{{ enable_thinking }}"}』于『True|False』。
