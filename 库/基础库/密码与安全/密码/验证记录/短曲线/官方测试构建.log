@@ -1,0 +1,635 @@
+[2026-10-08 07:29:39] 当前路径：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/yy短曲线配套链
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | 运行 1/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | PID 54443 | 退出 0 | 运行 0/24 | 已完成 1
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | 运行 1/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | 运行 2/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | 运行 3/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | 运行 4/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | 运行 5/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | 运行 6/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | 运行 7/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | 运行 8/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | 运行 9/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 2
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | 运行 9/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | 运行 10/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | 运行 11/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | 运行 12/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | 运行 13/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | 运行 14/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | 运行 15/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | 运行 16/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 3
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 4
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 5
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | 运行 14/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | 运行 15/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | 运行 16/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 6
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | 运行 16/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | 运行 17/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | 运行 18/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | 运行 19/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | 运行 20/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | 运行 21/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | 运行 22/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | 运行 23/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 7
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 8
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 9
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 10
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 11
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 12
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | PID 54443 | 退出 0 | 运行 22/24 | 已完成 13
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | 运行 23/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | PID 54443 | 退出 0 | 运行 22/24 | 已完成 14
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | 运行 23/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 15
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 16
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 17
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 18
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 19
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 20
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 21
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 22
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 23
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 25
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 26
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 27
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 28
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 29
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 30
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 31
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 32
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 33
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 34
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 35
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | PID 54443 | 退出 0 | 运行 22/24 | 已完成 36
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | 运行 23/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 37
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 38
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 39
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | 运行 24/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | PID 54443 | 退出 0 | 运行 23/24 | 已完成 40
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | PID 54443 | 退出 0 | 运行 22/24 | 已完成 41
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | PID 54443 | 退出 0 | 运行 21/24 | 已完成 42
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | PID 54443 | 退出 0 | 运行 20/24 | 已完成 43
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | PID 54443 | 退出 0 | 运行 19/24 | 已完成 44
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | PID 54443 | 退出 0 | 运行 18/24 | 已完成 45
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | 运行 19/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | 运行 20/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | 运行 21/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | 运行 22/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | PID 54443 | 退出 0 | 运行 21/24 | 已完成 46
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | 运行 22/24
+[启动] dependency-analysis：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | 运行 23/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | PID 54443 | 退出 0 | 运行 22/24 | 已完成 47
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | PID 54443 | 退出 0 | 运行 21/24 | 已完成 48
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | PID 54443 | 退出 0 | 运行 20/24 | 已完成 49
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | PID 54443 | 退出 0 | 运行 19/24 | 已完成 50
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | PID 54443 | 退出 0 | 运行 18/24 | 已完成 51
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 52
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 53
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 54
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 55
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | 运行 15/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 56
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 57
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | 运行 14/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 58
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 59
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | 运行 13/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 60
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | 运行 13/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 61
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 62
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 63
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | 运行 11/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | 运行 12/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 64
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | 运行 12/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 65
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 66
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | 运行 11/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | 运行 12/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | 运行 13/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | 运行 14/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | 运行 15/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | 运行 16/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | 运行 17/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | 运行 18/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 67
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 68
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | 运行 17/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | 运行 18/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 69
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 70
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 71
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | 运行 16/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 72
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | 运行 16/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 73
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 74
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | 运行 15/24
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 75
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 76
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 77
+[完成] 依赖分析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 78
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 79
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | 运行 11/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 80
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | 运行 11/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 81
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/内建类型。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 82
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/续延。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 83
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 84
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/爻术。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 85
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 86
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 87
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | 运行 5/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 88
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | 运行 5/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/函数操作。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 89
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 90
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | 运行 4/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 91
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | 运行 4/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 92
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | 运行 4/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/大小。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 93
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | PID 54443 | 退出 0 | 运行 2/24 | 已完成 94
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | 运行 3/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | 运行 4/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | 运行 8/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | 运行 9/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/惰性求值。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 95
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 96
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | 运行 8/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | 运行 9/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | 运行 10/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 97
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 98
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 99
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | 运行 8/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | 运行 9/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | 运行 10/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 100
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | 运行 10/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | 运行 11/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | 运行 12/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | 运行 13/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | 运行 14/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | 运行 15/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | 运行 16/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | 运行 17/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 101
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | 运行 17/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 102
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | 运行 17/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | 运行 18/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 103
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 104
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | 运行 17/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 105
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | 运行 17/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | 运行 18/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 106
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | 运行 18/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 107
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | 运行 18/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 108
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | 运行 18/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 109
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | 运行 18/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 110
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 111
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | 运行 17/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 112
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 113
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 114
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/原语。内建。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 115
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节串。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 116
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/不安全。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 117
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 118
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 119
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | 运行 10/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 120
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | 运行 10/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | 运行 11/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/转换。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 121
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 122
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | 运行 10/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 123
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 124
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 125
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 126
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数术。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 127
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 128
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | 运行 6/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 129
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | 运行 6/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 130
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | 运行 9/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | 运行 10/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | 运行 11/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | 运行 12/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | 运行 13/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | 运行 14/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 131
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 132
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | 运行 13/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | 运行 14/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 133
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | 运行 14/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 134
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | 运行 14/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | 运行 15/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | 运行 16/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | 运行 17/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 135
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | 运行 17/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 136
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | 运行 17/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | 运行 18/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | 运行 19/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | PID 54443 | 退出 0 | 运行 18/24 | 已完成 137
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 138
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 139
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 140
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | 运行 16/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/整数操作。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 141
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 142
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 143
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 144
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | 运行 13/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 145
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | 运行 13/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | 运行 14/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | 运行 15/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | 运行 16/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | 运行 17/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | 运行 18/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 146
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | 运行 18/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | 运行 19/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | PID 54443 | 退出 0 | 运行 18/24 | 已完成 147
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | 运行 19/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | 运行 20/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | PID 54443 | 退出 0 | 运行 19/24 | 已完成 148
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异步原语。豫 | PID 54443 | 退出 0 | 运行 18/24 | 已完成 149
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字节缓冲。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 150
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 151
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | 运行 17/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 152
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | 运行 17/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 153
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | 运行 17/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 154
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | 运行 17/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 155
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | 运行 17/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | 运行 18/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | 运行 19/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | PID 54443 | 退出 0 | 运行 18/24 | 已完成 156
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 157
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 158
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 159
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | 运行 16/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 160
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | 运行 16/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 161
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | 运行 16/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 162
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | 运行 16/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 163
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/进程。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 164
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 165
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | 运行 14/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | 运行 15/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | 运行 16/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 166
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | 运行 16/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | 运行 17/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/可选值。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 167
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 168
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | 运行 16/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 169
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | 运行 16/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/系统名称。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 170
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 171
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | 运行 15/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | 运行 16/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | 运行 17/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 172
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | 运行 17/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 173
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | 运行 17/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | 运行 18/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | 运行 19/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | 运行 20/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | PID 54443 | 退出 0 | 运行 19/24 | 已完成 174
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/传输控制协议。豫 | PID 54443 | 退出 0 | 运行 18/24 | 已完成 175
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | PID 54443 | 退出 0 | 运行 17/24 | 已完成 176
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 177
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/异常。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 178
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 179
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 180
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | 运行 14/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出/笔。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 181
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 182
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | 运行 13/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | 运行 14/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | 运行 15/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/输入输出。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 183
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 184
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | 运行 14/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | 运行 15/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | 运行 16/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 185
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 186
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 187
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 188
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | 运行 13/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 189
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | 运行 13/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/小数操作。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 190
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 191
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | 运行 12/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | 运行 13/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/环境变量。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 192
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 193
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | 运行 12/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 194
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | 运行 12/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | 运行 13/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | 运行 14/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | 运行 15/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/时间。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 195
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 196
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | 运行 14/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | 运行 15/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | 运行 16/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 197
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 198
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 199
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | 运行 14/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | 运行 15/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | 运行 16/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | 运行 17/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | PID 54443 | 退出 0 | 运行 16/24 | 已完成 200
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | PID 54443 | 退出 0 | 运行 15/24 | 已完成 201
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 202
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | 运行 15/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/随机。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 203
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主。接口。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 204
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 205
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | 运行 13/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 206
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | 运行 13/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 207
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | 运行 13/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | 运行 14/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | 运行 15/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 208
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | 运行 15/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列工具。豫 | PID 54443 | 退出 0 | 运行 14/24 | 已完成 209
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/多态列。豫 | PID 54443 | 退出 0 | 运行 13/24 | 已完成 210
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 211
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | 运行 13/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/命令行参数。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 212
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 213
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | 运行 12/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | 运行 13/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 214
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | 运行 13/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/具体列。豫 | PID 54443 | 退出 0 | 运行 12/24 | 已完成 215
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/语言核心/引用。豫 | PID 54443 | 退出 0 | 运行 11/24 | 已完成 216
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 217
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | 运行 11/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 218
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | 运行 11/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/文件系统。豫 | PID 54443 | 退出 0 | 运行 10/24 | 已完成 219
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/宿主带列。接口。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 220
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 221
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | 运行 9/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 222
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | 运行 9/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 223
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算/数组转换。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 224
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 225
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | 运行 9/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | 运行 10/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数学运算。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 226
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 227
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | 运行 9/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/控制/异步。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 228
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 229
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | 运行 8/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | 运行 9/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 230
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 231
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | 运行 8/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 232
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | 运行 8/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 233
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 234
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | 运行 7/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 235
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | 运行 7/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | 运行 8/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | 运行 9/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | 运行 10/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 236
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | 运行 10/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | PID 54443 | 退出 0 | 运行 9/24 | 已完成 237
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 238
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | 运行 9/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/异步传输控制协议。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 239
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符流术。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 240
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 241
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | 运行 7/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 242
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | 运行 7/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 243
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | 运行 7/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | 运行 8/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 244
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | 运行 8/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | 运行 9/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/特殊字符。豫 | PID 54443 | 退出 0 | 运行 8/24 | 已完成 245
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/子进程。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 246
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字符串术。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 247
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 248
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | 运行 6/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 249
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | 运行 6/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 250
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | 运行 6/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | 运行 7/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 251
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/对子术。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 252
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 253
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | 运行 5/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 254
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | 运行 5/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络/超文本传输协议。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 255
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 256
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | 运行 4/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 257
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | 运行 4/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | 运行 5/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 258
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | 运行 5/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 259
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 260
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | 运行 4/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | 运行 5/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | 运行 6/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/网络。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 261
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 262
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | 运行 5/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | 运行 6/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/字典术。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 263
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 264
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | 运行 5/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | 运行 6/24
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | 运行 7/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | 运行 8/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构/列表搜索。豫 | PID 54443 | 退出 0 | 运行 7/24 | 已完成 265
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/豫言标准内核。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 266
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 267
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | 运行 6/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 268
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | 运行 6/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | 运行 7/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 269
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 270
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | 运行 6/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 271
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | 运行 6/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | 运行 7/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 272
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统/路径。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 273
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 274
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 275
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | 运行 4/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 276
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | PID 54443 | 退出 0 | 运行 2/24 | 已完成 277
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | 运行 3/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | 运行 4/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 278
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | 运行 4/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | 运行 5/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/数据结构。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 279
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 280
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | 运行 4/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 281
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | 运行 4/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 282
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | 运行 4/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | 运行 5/24
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | 运行 6/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | 运行 7/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 283
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | 运行 7/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 284
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | 运行 7/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 285
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | 运行 7/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 286
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/操作系统。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 287
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 288
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | 运行 6/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | 运行 7/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 289
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | 运行 7/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 290
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线参数。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 291
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 292
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | 运行 6/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 293
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | 运行 6/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | 运行 7/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/定宽RSA。豫 | PID 54443 | 退出 0 | 运行 6/24 | 已完成 294
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/标准库/总集。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 295
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 296
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 297
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | 运行 4/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 298
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | 运行 4/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | 运行 5/24
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 299
+[启动] parse：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | 运行 5/24
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | 运行 6/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/宽字散列。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 300
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 301
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | 运行 5/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | 运行 6/24
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | PID 54443 | 退出 0 | 运行 5/24 | 已完成 302
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线点。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 303
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 304
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | 运行 4/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | 运行 5/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/散列。豫 | PID 54443 | 退出 0 | 运行 4/24 | 已完成 305
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线域。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 306
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | PID 54443 | 退出 0 | 运行 2/24 | 已完成 307
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | 运行 3/24
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | 运行 4/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线签名。豫 | PID 54443 | 退出 0 | 运行 3/24 | 已完成 308
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | PID 54443 | 退出 0 | 运行 2/24 | 已完成 309
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | 运行 3/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线。豫 | PID 54443 | 退出 0 | 运行 2/24 | 已完成 310
+[完成] 语法解析：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | PID 54443 | 退出 0 | 运行 1/24 | 已完成 311
+[启动] type-check-and-erase：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | 运行 2/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/短曲线确定签名。豫 | PID 54443 | 退出 0 | 运行 1/24 | 已完成 312
+[完成] 类型检查：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | PID 54443 | 退出 0 | 运行 0/24 | 已完成 313
+[启动] cross-module-optimize：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | 运行 1/24
+[完成] 跨模块优化：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | PID 54443 | 退出 0 | 运行 0/24 | 已完成 314
+[启动] pre-closure-convert：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | 运行 1/24
+[完成] 闭包转换：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | PID 54443 | 退出 0 | 运行 0/24 | 已完成 315
+[启动] exec-gen：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | 运行 1/24
+[完成] 最终链接：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/库/基础库/密码与安全/密码/测试/短曲线。测试。豫 | PID 54443 | 退出 0 | 运行 0/24 | 已完成 316
+[2026-10-08 07:29:41] 当前路径：/Users/zhiboc/repos/yuyan-worktrees/基础库-密码短曲线核验/yy短曲线配套链
+
