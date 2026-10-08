@@ -1,0 +1,5 @@
+参考	输入边长	输出边长	左上四分之一十六进制灰度
+Pillow-11.0.0-BOX	8	4	e1 e1 e1 e1
+Pillow-11.0.0-BILINEAR	8	4	e1 c9 c9 b7
+Pillow-11.0.0-BICUBIC	12	6	e1 e3 d4 e3 e5 d6 d4 d6 c9
+Pillow-11.0.0-LANCZOS	16	8	e1 e0 e4 d7 e0 df e3 d6 e4 e3 e7 da d7 d6 d9 ce
