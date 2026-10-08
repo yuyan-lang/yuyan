@@ -1,0 +1,7 @@
+scrypt OpenSSL双块双流向量通过
+scrypt RFC7914向量通过
+RFC7914 Salsa20/8通过
+RFC7914 BlockMix通过
+RFC7914 ROMix通过
+RFC7914 PBKDF2一轮通过
+RFC7914 N1024r8p16通过
