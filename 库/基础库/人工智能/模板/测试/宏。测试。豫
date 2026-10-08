@@ -64,4 +64,5 @@
   于
   『{% macro f() %}{{ caller.arguments }}|{{ caller(1,x=2) }}{% endmacro %}{% call(a) f() %}{{ a }}{{ kwargs.x }}{% endcall %}』
     于『('a',)|12』。
+「验」于『{% macro f(a=1,) %}{{ a }}{% endmacro %}{{ f() }}|{{ f.arguments }}』于『1|('a',)』。
 「汇报结果」于「元」。
