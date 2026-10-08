@@ -1,0 +1,6 @@
+= erfc tonearest binary32 0x4p+0 : 0x4.237748p-28 : inexact-ok
+= erfc tonearest binary64 0x4p+0 : 0x4.237744ef4d79cp-28 : inexact-ok
+= erfc tonearest binary32 0x8p+0 : 0xe.3a7e2p-100 : inexact-ok
+= erfc tonearest binary64 0x8p+0 : 0xe.3a7e2090befd8p-100 : inexact-ok
+= erfc tonearest binary64 0x1.ap+4 : 0x9.425ff0e6f512p-984 : inexact-ok
+= erfc tonearest binary64 0x1.bp+4 : 0x6.783cp-1060 : inexact-ok underflow errno-erange-ok
