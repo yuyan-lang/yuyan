@@ -1,4 +1,5 @@
 寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「字符串术」之书。
 寻观「统一码」之「属性」之书。
 寻观「统一码」之「切分」之书。
 寻观「统一码」之「二元属性」之书。
@@ -783,31 +784,271 @@
       若「串相等」于「值」于「首」则「阳」否则「通用整形属于」于「值」于「尾」
 也。
 
+「通用整形十六数」乃化「字符串」而「整数」也。
+「通用整形十六数」者会「词」而
+  递归虑「扫」其化「整数」而化「整数」而「整数」者会「位」而会「值」而
+    若「大等」于「位」于（「字节长度」于「词」）则「值」否则
+      虑「字」者「字符转整数」于「词」于「位」而
+      「扫」
+        于（「加」于「位」于「一」）
+        于（「加」
+          于（「乘」于「值」于「16」）
+          于（若「小等」于「字」于「57」则「减」于「字」于「48」否则「减」于「字」于「55」））
+  而
+  「扫」于「零」于「零」
+也。
+
+「通用整形覆表」乃
+  化（「列」于（「字符串」合「字符串」合「字符串」））而
+  （「列」于（「整数」合「整数」合「字符串」））
+也。
+「通用整形覆表」者会「表」而
+  「态射」授以（「字符串」合「字符串」合「字符串」）授以（「整数」合「整数」合「字符串」）
+  于「表」
+  于（会「项」而
+  （「通用整形十六数」于（「项」中「零」））与（「通用整形十六数」于（「项」中「一」））
+    与（「项」中「二」））
+也。
+
+「通用整形覆值」乃
+  化「整数」而
+  化（「列」于（「整数」合「整数」合「字符串」））而
+  「字符串」
+也。
+「通用整形覆值」者会「码」而会「表」而
+  鉴「表」而
+    有「罄」则『』
+    或有「缀」于「项」于「尾」则
+      若「文字码段」于「码」于（「项」中「零」）于（「项」中「一」）则「项」中「二」否则「通用整形覆值」于「码」于「尾」
+也。
+
+「：汉语：以下覆盖取自 HarfBuzz 的 Microsoft USE 附加音节类别表，十六进制端点逐项保留，普通统一码属性为后备。文言：此覆表取微软 USE 附音节类别，十六进端点各存，常统一码属性备其余。：」
+「通用整形音节覆表」者
+  「通用整形覆表」于（「列」【
+    『193A』与『193A』与『Bindu』，
+    『AA29』与『AA29』与『Bindu』，
+    『10A0D』与『10A0D』与『Bindu』，
+    『113CE』与『113CE』与『Bindu』，
+    『19C1』与『19C7』与『Consonant』，
+    『25CC』与『25CC』与『Consonant』，
+    『0F7F』与『0F7F』与『Consonant_Dead』，
+    『11A3B』与『11A3E』与『Consonant_Subjoined』，
+    『1C36』与『1C36』与『Syllable_Modifier』，
+    『11134』与『11134』与『Gemination_Mark』，
+    『0F71』与『0F71』与『Nukta』，
+    『113CF』与『113CF』与『Nukta』，
+    『1A7B』与『1A7C』与『Tone_Mark』，
+    『1A7F』与『1A7F』与『Tone_Mark』，
+    『AAB1』与『AAB1』与『Vowel_Independent』，
+    『AABA』与『AABA』与『Vowel_Independent』，
+    『AABD』与『AABD』与『Vowel_Independent』，
+    『0800』与『0815』与『Consonant』，
+    『0840』与『0858』与『Consonant』，
+    『0F00』与『0F01』与『Consonant』，
+    『0F04』与『0F06』与『Consonant』，
+    『1800』与『1800』与『Consonant』，
+    『1807』与『1807』与『Consonant』，
+    『180A』与『180A』与『Consonant』，
+    『1820』与『1878』与『Consonant』，
+    『2D30』与『2D67』与『Consonant』，
+    『2D6F』与『2D6F』与『Consonant』，
+    『10570』与『1057A』与『Consonant』，
+    『1057C』与『1058A』与『Consonant』，
+    『1058C』与『10592』与『Consonant』，
+    『10594』与『10595』与『Consonant』，
+    『10597』与『105A1』与『Consonant』，
+    『105A3』与『105B1』与『Consonant』，
+    『105B3』与『105B9』与『Consonant』，
+    『105BB』与『105BC』与『Consonant』，
+    『10AC0』与『10AC7』与『Consonant』，
+    『10AC9』与『10AE4』与『Consonant』，
+    『10D00』与『10D23』与『Consonant』，
+    『10D4A』与『10D65』与『Consonant』，
+    『10D70』与『10D85』与『Consonant』，
+    『10D6F』与『10D6F』与『Consonant』，
+    『10E80』与『10EA9』与『Consonant』，
+    『10EB0』与『10EB1』与『Consonant』，
+    『10F30』与『10F45』与『Consonant』，
+    『10F70』与『10F81』与『Consonant』，
+    『111DA』与『111DA』与『Consonant』，
+    『16B00』与『16B2F』与『Consonant』，
+    『16F00』与『16F4A』与『Consonant』，
+    『16FE4』与『16FE4』与『Consonant』，
+    『18B00』与『18CD5』与『Consonant』，
+    『18CFF』与『18CFF』与『Consonant』，
+    『1BC00』与『1BC6A』与『Consonant』，
+    『1BC70』与『1BC7C』与『Consonant』，
+    『1BC80』与『1BC88』与『Consonant』，
+    『1BC90』与『1BC99』与『Consonant』，
+    『1E100』与『1E12C』与『Consonant』，
+    『1E137』与『1E13D』与『Consonant』，
+    『1E14E』与『1E14F』与『Consonant』，
+    『1E290』与『1E2AD』与『Consonant』，
+    『1E2C0』与『1E2EB』与『Consonant』，
+    『1E4D0』与『1E4EB』与『Consonant』，
+    『1E5D0』与『1E5ED』与『Consonant』，
+    『1E5F0』与『1E5F0』与『Consonant』，
+    『1E900』与『1E943』与『Consonant』，
+    『1E94B』与『1E94B』与『Consonant』，
+    『1880』与『1884』与『Consonant_Placeholder』，
+    『10D27』与『10D27』与『Gemination_Mark』，
+    『FE00』与『FE0F』与『Modifying_Letter』，
+    『16F50』与『16F50』与『Modifying_Letter』，
+    『0859』与『085B』与『Nukta』，
+    『0F39』与『0F39』与『Nukta』，
+    『1885』与『1886』与『Nukta』，
+    『18A9』与『18A9』与『Nukta』，
+    『10AE5』与『10AE6』与『Nukta』，
+    『16F4F』与『16F4F』与『Nukta』，
+    『1BC9D』与『1BC9E』与『Nukta』，
+    『1E944』与『1E94A』与『Nukta』，
+    『10F82』与『10F85』与『Nukta』，
+    『10D30』与『10D39』与『Number』，
+    『10F51』与『10F54』与『Number』，
+    『16AC0』与『16AC9』与『Number』，
+    『1E140』与『1E149』与『Number』，
+    『1E2F0』与『1E2F9』与『Number』，
+    『1E4F0』与『1E4F9』与『Number』，
+    『1E5F1』与『1E5FA』与『Number』，
+    『1E950』与『1E959』与『Number』，
+    『07EB』与『07F3』与『Tone_Mark』，
+    『07FD』与『07FD』与『Tone_Mark』，
+    『0F86』与『0F87』与『Tone_Mark』，
+    『17CF』与『17CF』与『Tone_Mark』，
+    『10D24』与『10D26』与『Tone_Mark』，
+    『10F46』与『10F50』与『Tone_Mark』，
+    『16B30』与『16B36』与『Tone_Mark』，
+    『16F8F』与『16F92』与『Tone_Mark』，
+    『1E130』与『1E136』与『Tone_Mark』，
+    『1E2AE』与『1E2AE』与『Tone_Mark』，
+    『1E2EC』与『1E2EF』与『Tone_Mark』，
+    『2D7F』与『2D7F』与『Virama』，
+    『0B55』与『0B55』与『Vowel_Dependent』，
+    『10D69』与『10D6D』与『Vowel_Dependent』，
+    『10EAB』与『10EAC』与『Vowel_Dependent』，
+    『16F51』与『16F87』与『Vowel_Dependent』，
+    『1E4EC』与『1E4EF』与『Vowel_Dependent』，
+    『1E5EE』与『1E5EF』与『Vowel_Dependent』，
+    『1CF8』与『1CF9』与『Cantillation_Mark』，
+    『1B6B』与『1B73』与『Symbol_Modifier』，
+    『13000』与『1342F』与『Hieroglyph』，
+    『1343C』与『1343F』与『Hieroglyph』，
+    『13441』与『13446』与『Hieroglyph』，
+    『13460』与『143FA』与『Hieroglyph』，
+    『13430』与『13436』与『Hieroglyph_Joiner』，
+    『13439』与『1343B』与『Hieroglyph_Joiner』，
+    『005B』与『005B』与『Hieroglyph_Mark_Begin』，
+    『007B』与『007B』与『Hieroglyph_Mark_Begin』，
+    『27E6』与『27E6』与『Hieroglyph_Mark_Begin』，
+    『27E8』与『27E8』与『Hieroglyph_Mark_Begin』，
+    『2E22』与『2E22』与『Hieroglyph_Mark_Begin』，
+    『2E24』与『2E24』与『Hieroglyph_Mark_Begin』，
+    『005D』与『005D』与『Hieroglyph_Mark_End』，
+    『007D』与『007D』与『Hieroglyph_Mark_End』，
+    『27E7』与『27E7』与『Hieroglyph_Mark_End』，
+    『27E9』与『27E9』与『Hieroglyph_Mark_End』，
+    『2E23』与『2E23』与『Hieroglyph_Mark_End』，
+    『2E25』与『2E25』与『Hieroglyph_Mark_End』，
+    『13437』与『13437』与『Hieroglyph_Segment_Begin』，
+    『13438』与『13438』与『Hieroglyph_Segment_End』，
+    『13440』与『13440』与『Hieroglyph_Mirror』，
+    『13447』与『13455』与『Hieroglyph_Modifier』
+  】）
+也。
+
 「通用整形音节属性」乃化「整数」而「字符串」也。
 「通用整形音节属性」者会「码」而
-  若「等于」于「码」于「9676」则
-    『Consonant』
+  虑「覆值」者「通用整形覆值」于「码」于「通用整形音节覆表」而
+  若「非」于（「串相等」于「覆值」于『』）则
+    「覆值」
   否则
-    若「文字码段」于「码」于「7394」于「7400」则
-      『Cantillation_Mark』
+    若「等于」于「码」于「9676」则
+      『Consonant』
     否则
-      若「等于」于「码」于「7405」则
-        『Tone_Mark』
+      若「文字码段」于「码」于「7394」于「7400」则
+        『Cantillation_Mark』
       否则
-        若「或」
-          于（「文字码段」于「码」于「3864」于「3865」）
-          于（「文字码段」于「码」于「3902」于「3903」）则『Vowel_Dependent』
+        若「等于」于「码」于「7405」则
+          『Tone_Mark』
         否则
-          「印度音节类别」于「码」
+          若「或」
+            于（「文字码段」于「码」于「3864」于「3865」）
+            于（「文字码段」于「码」于「3902」于「3903」）则『Vowel_Dependent』
+          否则
+            「印度音节类别」于「码」
+也。
+
+「：汉语：位置覆盖取自 Microsoft USE 附加位置类别表，NA 归统一码 Not_Applicable。文言：位置覆表取微软 USE 附位置类别，NA 归统一码无适位。：」
+「通用整形位置覆表」者
+  「通用整形覆表」于（「列」【
+    『0F72』与『0F72』与『Bottom』，
+    『0F7A』与『0F7D』与『Bottom』，
+    『0F80』与『0F80』与『Bottom』，
+    『A9BF』与『A9BF』与『Bottom』，
+    『10A38』与『10A38』与『Bottom』，
+    『11127』与『11129』与『Bottom』，
+    『1112D』与『1112D』与『Bottom』，
+    『11130』与『11130』与『Bottom』，
+    『1BF2』与『1BF3』与『Bottom』，
+    『AAB0』与『AAB0』与『Bottom』，
+    『AAB2』与『AAB3』与『Bottom』，
+    『AAB7』与『AAB8』与『Bottom』，
+    『AABE』与『AABE』与『Bottom』，
+    『1C29』与『1C29』与『Left』，
+    『A9BE』与『A9BE』与『Right』，
+    『10A0C』与『10A0C』与『Right』，
+    『11942』与『11942』与『Right』，
+    『0F74』与『0F74』与『Top』，
+    『1A18』与『1A18』与『Top』，
+    『AA35』与『AA35』与『Top』，
+    『AAB4』与『AAB4』与『Top』，
+    『1112A』与『1112B』与『Top』，
+    『11131』与『11132』与『Top』，
+    『1E4EC』与『1E4EF』与『Top』，
+    『0E33』与『0E33』与『Top_And_Right』，
+    『0EB3』与『0EB3』与『Top_And_Right』，
+    『0859』与『085B』与『Bottom』，
+    『18A9』与『18A9』与『Bottom』，
+    『10AE5』与『10AE6』与『Bottom』，
+    『10F46』与『10F50』与『Bottom』，
+    『10F82』与『10F85』与『Bottom』，
+    『113CF』与『113CF』与『Bottom』，
+    『16F4F』与『16F4F』与『Bottom』，
+    『16F51』与『16F87』与『Bottom』，
+    『16F8F』与『16F92』与『Bottom』，
+    『1E5EE』与『1E5EF』与『Bottom』，
+    『103C』与『103C』与『Left』，
+    『07EB』与『07F3』与『Top』，
+    『07FD』与『07FD』与『Top』，
+    『1885』与『1886』与『Top』，
+    『1B6C』与『1B6C』与『Top』，
+    『1CF8』与『1CF9』与『Top』，
+    『10D24』与『10D27』与『Top』，
+    『10EAB』与『10EAC』与『Top』，
+    『10D69』与『10D6D』与『Top』，
+    『16B30』与『16B36』与『Top』，
+    『1E130』与『1E136』与『Top』，
+    『1E2AE』与『1E2AE』与『Top』，
+    『1E2EC』与『1E2EF』与『Top』，
+    『1E944』与『1E94A』与『Top』，
+    『1BC9D』与『1BC9E』与『Overstruck』，
+    『180B』与『180D』与『Not_Applicable』，
+    『180F』与『180F』与『Not_Applicable』，
+    『2D7F』与『2D7F』与『Not_Applicable』
+  】）
 也。
 
 「通用整形位置属性」乃化「整数」而「字符串」也。
 「通用整形位置属性」者会「码」而
-  若「或」
-    于（「等于」于「码」于「70402」）
-    于（「或」于（「等于」于「码」于「70403」）于（「等于」于「码」于「70849」））则『Top』
+  虑「覆值」者「通用整形覆值」于「码」于「通用整形位置覆表」而
+  若「非」于（「串相等」于「覆值」于『』）则
+    「覆值」
   否则
-    「印度位置类别」于「码」
+    若「或」
+      于（「等于」于「码」于「70402」）
+      于（「或」于（「等于」于「码」于「70403」）于（「等于」于「码」于「70849」））则『Top』
+    否则
+      「印度位置类别」于「码」
 也。
 
 「通用整形位置分类」乃化「字符串」而化「字符串」而「字符串」也。
