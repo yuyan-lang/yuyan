@@ -1,6 +1,7 @@
 寻观「标准库」之书。
 寻观「结森工具」之书。
 寻观「模板」之书。
+寻「本地推理」之「入口」之书。
 
 「境」者
   「结森解析」于『{"messages":[{"role":"user","content":"甲"}],"add_generation_prompt":true,"enable_thinking":false}』
@@ -21,3 +22,11 @@
 「验」于『{"chat_template":{"default":"{{ messages[0].content }}"}}』于『甲』。
 「验」于『{"chat_template":[{"name":"default","template":"{{ messages[0].content }}"}]}』于『甲』。
 「验」于『{"chat_template":"{{ add_generation_prompt }}|{{ enable_thinking }}"}』于『True|False』。
+若「串相等」于（「入口」之「分词器配置路径」于『模型.gguf』）于『tokenizer_config.json』则
+  「打印行」于『根目录配置路径通过』
+否则
+  「发生事故」于『根目录配置路径有误』。
+若「串相等」于（「入口」之「分词器配置路径」于『子目录/模型.gguf』）于『子目录/tokenizer_config.json』则
+  「打印行」于『子目录配置路径通过』
+否则
+  「发生事故」于『子目录配置路径有误』。
