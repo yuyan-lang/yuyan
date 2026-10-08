@@ -1,6 +1,125 @@
 寻观「标准库」之书。
 寻观「统一码」之「属性」之书。
 
+「通用整形脚本文字」乃「列」于「字符串」也。
+「通用整形脚本文字」者
+  「列」
+  【
+  『Tibetan』，
+  『Mongolian』，
+  『Sinhala』，
+  『Buhid』，
+  『Hanunoo』，
+  『Tagalog』，
+  『Tagbanwa』，
+  『Limbu』，
+  『Tai_Le』，
+  『Buginese』，
+  『Kharoshthi』，
+  『Syloti_Nagri』，
+  『Tifinagh』，
+  『Balinese』，
+  『Nko』，
+  『Phags_Pa』，
+  『Cham』，
+  『Kayah_Li』，
+  『Lepcha』，
+  『Rejang』，
+  『Saurashtra』，
+  『Sundanese』，
+  『Egyptian_Hieroglyphs』，
+  『Javanese』，
+  『Kaithi』，
+  『Meetei_Mayek』，
+  『Tai_Tham』，
+  『Tai_Viet』，
+  『Batak』，
+  『Brahmi』，
+  『Mandaic』，
+  『Chakma』，
+  『Miao』，
+  『Sharada』，
+  『Takri』，
+  『Duployan』，
+  『Grantha』，
+  『Khojki』，
+  『Khudawadi』，
+  『Mahajani』，
+  『Manichaean』，
+  『Modi』，
+  『Pahawh_Hmong』，
+  『Psalter_Pahlavi』，
+  『Siddham』，
+  『Tirhuta』，
+  『Ahom』，
+  『Multani』，
+  『Adlam』，
+  『Bhaiksuki』，
+  『Marchen』，
+  『Newa』，
+  『Masaram_Gondi』，
+  『Soyombo』，
+  『Zanabazar_Square』，
+  『Dogra』，
+  『Gunjala_Gondi』，
+  『Hanifi_Rohingya』，
+  『Makasar』，
+  『Medefaidrin』，
+  『Old_Sogdian』，
+  『Sogdian』，
+  『Elymaic』，
+  『Nandinagari』，
+  『Nyiakeng_Puachue_Hmong』，
+  『Wancho』，
+  『Chorasmian』，
+  『Dives_Akuru』，
+  『Khitan_Small_Script』，
+  『Yezidi』，
+  『Cypro_Minoan』，
+  『Old_Uyghur』，
+  『Tangsa』，
+  『Toto』，
+  『Vithkuqi』，
+  『Kawi』，
+  『Nag_Mundari』，
+  『Garay』，
+  『Gurung_Khema』，
+  『Kirat_Rai』，
+  『Ol_Onal』，
+  『Sunuwar』，
+  『Todhri』，
+  『Tulu_Tigalari』，
+  『Beria_Erfe』，
+  『Sidetic』，
+  『Tai_Yo』，
+  『Tolong_Siki』，
+  『Jurchen』，
+  『Proto_Cuneiform』，
+  『Seal』
+】也。
+
+「通用整形脚本适用」乃化「字符串」而「爻」也。
+「通用整形脚本适用」者会「名」而
+  「存在吗」授以「字符串」
+    于（会「项」而「串相等」于「项」于「名」）
+    于「通用整形脚本文字」
+也。
+
+「：汉语：从文字段的首个独立脚本判断通用引擎候选，实际字体采用的脚本签由整形主流程决定。
+文言：依段首有本脚之字择通用引擎候者，字体所用脚签由主程定之。：」
+「通用整形适用」乃化（「列」于「整数」）而「爻」也。
+「通用整形适用」者会「码列」而
+  鉴「码列」而
+    有「罄」则「阴」
+    或有「缀」于「码」于「尾」则（
+      虑「名」者「文字类别」于「码」而
+      若「或者」于（「串相等」于「名」于『Common』）于（「串相等」于「名」于『Inherited』）则
+        「通用整形适用」于「尾」
+      否则
+        「通用整形脚本适用」于「名」
+    ）
+也。
+
 「整形文字标签」乃化（「列」于「整数」）而「字符串」也。
 「整形文字标签」者会「码们」而
   递归虑「查」其化（「列」于（「字符串」合「字符串」））而化「字符串」而「字符串」者会「余签」而
@@ -10,36 +129,38 @@
     或有（「缀」于「项」于「后」）则
       若「串相等」于（「项」中「零」）于「文字名」则（「项」中「一」）否则「查」于「后」于「文字名」而
   递归虑「签们」其「列」于（「字符串」合「字符串」）者「列」
-    【『Latin』与『latn』
-    ，『Arabic』与『arab』
-    ，『Hebrew』与『hebr』
-    ，『Han』与『hani』
-    ，『Hiragana』与『kana』
-    ，『Katakana』与『kana』
-    ，『Hangul』与『hang』
-    ，『Devanagari』与『dev2』
-    ，『Bengali』与『bng2』
-    ，『Gurmukhi』与『gur2』
-    ，『Gujarati』与『gjr2』
-    ，『Oriya』与『ory2』
-    ，『Tamil』与『tml2』
-    ，『Telugu』与『tel2』
-    ，『Kannada』与『knd2』
-    ，『Malayalam』与『mlm2』
-    ，『Sinhala』与『sinh』
-    ，『Myanmar』与『mym2』
-    ，『Khmer』与『khmr』
-    ，『Thai』与『thai』
-    ，『Lao』与『lao 』
-    ，『Tibetan』与『tibt』
-    ，『Grantha』与『gran』
-    ，『Greek』与『grek』
-    ，『Cyrillic』与『cyrl』
-    】而
+    【
+  『Latin』与『latn』，
+  『Arabic』与『arab』，
+  『Hebrew』与『hebr』，
+  『Han』与『hani』，
+  『Hiragana』与『kana』，
+  『Katakana』与『kana』，
+  『Hangul』与『hang』，
+  『Devanagari』与『dev2』，
+  『Bengali』与『bng2』，
+  『Gurmukhi』与『gur2』，
+  『Gujarati』与『gjr2』，
+  『Oriya』与『ory2』，
+  『Tamil』与『tml2』，
+  『Telugu』与『tel2』，
+  『Kannada』与『knd2』，
+  『Malayalam』与『mlm2』，
+  『Sinhala』与『sinh』，
+  『Myanmar』与『mym2』，
+  『Khmer』与『khmr』，
+  『Thai』与『thai』，
+  『Lao』与『lao 』，
+  『Tibetan』与『tibt』，
+  『Grantha』与『gran』，
+  『Greek』与『grek』，
+  『Cyrillic』与『cyrl』
+】而
   鉴「码们」而
     有「罄」则『DFLT』
     或有（「缀」于「码」于「余」）则（
-      虑「名」者「文字类别」于「码」而
+      虑「名」者「文字类别」于「码」
+      而
       若「且」于（「非」于（「串相等」于「名」于『Common』））
       于（「非」于（「串相等」于「名」于『Inherited』））则「查」于「签们」于「名」
       否则
