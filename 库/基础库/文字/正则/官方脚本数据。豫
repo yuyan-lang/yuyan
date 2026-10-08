@@ -1,0 +1,122 @@
+寻观「标准库」之书。
+
+「：汉语：本表摘选官方断言的模式、输入与命中、捕获预期；ASCII 输入的码点区间由人工换算。题、式、旗、文、坏式、命中、起、止、捕获、源址、版权、许可依次排列。本表是 test262 的选定子集。文言：表择官验之式、文、命中及获，ASCII 入文之码点界以人换之。题、式、旗、文、坏式、命中、起、止、获、源址、版权、许可次第列之。此为 test262 所择之一隅。：」
+「官方脚本向量」即
+  「字符串」
+  合「字符串」
+  合「字符串」
+  合「字符串」
+  合「爻」
+  合「爻」
+  合「整数」
+  合「整数」
+  合（「列」于（「整数」合「整数」））
+  合「字符串」
+  合「字符串」
+  合「字符串」
+也。
+
+「官方脚本许可」者『BSD-3-Clause；https://github.com/tc39/test262/blob/main/LICENSE』也。
+
+「官方脚本生成版权」者『Copyright 2025 Mathias Bynens. All rights reserved.』也。
+
+「官方脚本命名版权」者『Copyright 2017 the V8 project authors. All rights reserved.』也。
+
+「官方脚本重复版权」者『Copyright 2022 Igalia S.L. All rights reserved.』也。
+
+「官方脚本界限版权」者『Copyright (c) 2012 Ecma International. All rights reserved.』也。
+
+「官方脚本坏式版权」者『Copyright 2009 the Sputnik authors. All rights reserved.』也。
+
+「官方脚本未参与」者「减」于「零」于「一」也。
+
+「官方脚本数据」者（（「列」于「官方脚本向量」）也（「列」【
+  『数类同类差集』与『^[[0-9]--[0-9]]+$』与『v』与『0』与「阴」与「阴」与「官方脚本未参与」与「官方脚本未参与」
+    与（「罄」授以（「整数」合「整数」））
+      与
+      『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/unicodeSets/generated/character-class-difference-character-class.js』
+        与「官方脚本生成版权」与「官方脚本许可」，
+        『数类减单字』与『^[[0-9]--_]+$』与『v』与『5』与「阴」与「阳」与「零」与「一」与（「列」【「零」与「一」】）
+          与
+          『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/unicodeSets/generated/character-class-difference-character.js』
+            与「官方脚本生成版权」与「官方脚本许可」，
+            『字符串并单字』与『^[\q{0|2|4|9\uFE0F\u20E3}_]+$』与『v』与『_』与「阴」与「阳」与「零」与「一」
+              与（「列」【「零」与「一」】）
+                与
+                『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/unicodeSets/generated/string-literal-union-character.js』
+                  与「官方脚本生成版权」与「官方脚本许可」，
+                  『字符串并字符串』与『^[\q{0|2|4|9\uFE0F\u20E3}\q{0|2|4|9\uFE0F\u20E3}]+$』与『v』与『2』与「阴」
+                    与「阳」与「零」与「一」与（「列」【「零」与「一」】）
+                      与
+                      『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/unicodeSets/generated/string-literal-union-string-literal.js』
+                        与「官方脚本生成版权」与「官方脚本许可」，
+                        『字符串并数类』与『^[\q{0|2|4|9\uFE0F\u20E3}[0-9]]+$』与『v』与『7』与「阴」与「阳」与「零」
+                          与「一」与（「列」【「零」与「一」】）
+                            与
+                            『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/unicodeSets/generated/string-literal-union-character-class.js』
+                              与「官方脚本生成版权」与「官方脚本许可」，
+                              『数类减数转义』与『^[[0-9]--\d]+$』与『v』与『0』与「阴」与「阴」与「官方脚本未参与」
+                                与「官方脚本未参与」与（「罄」授以（「整数」合「整数」））
+                                  与
+                                  『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/unicodeSets/generated/character-class-difference-character-class-escape.js』
+                                    与「官方脚本生成版权」与「官方脚本许可」，
+                                    『命名与普通捕获』与『.(?<a>a)(.)』与『u』与『bab』与「阴」与「阳」与「零」与「三」
+                                      与（「列」【「零」与「三」，「一」与「二」，「二」与「三」】）
+                                        与
+                                        『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/named-groups/unicode-match.js』
+                                          与「官方脚本命名版权」与「官方脚本许可」，
+                                          『命名反引命中』与『(?<b>.).\k<b>』与『u』与『bab』与「阴」与「阳」与「零」
+                                            与「三」与（「列」【「零」与「三」，「零」与「一」】）
+                                              与
+                                              『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/named-groups/unicode-references.js』
+                                                与「官方脚本命名版权」与「官方脚本许可」，
+                                                『命名反引失败』与『(?<b>.).\k<b>』与『u』与『baa』与「阴」与「阴」
+                                                  与「官方脚本未参与」与「官方脚本未参与」
+                                                    与（「罄」授以（「整数」合「整数」））
+                                                      与
+                                                      『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/named-groups/unicode-references.js』
+                                                        与「官方脚本命名版权」与「官方脚本许可」，
+                                                        『重复名选右组』与『(?<x>a)|(?<x>b)』与『』与『bab』与「阴」
+                                                          与「阳」与「零」与「一」
+                                                            与（「列」【
+                                                            「零」与「一」，
+                                                            「官方脚本未参与」与「官方脚本未参与」，
+                                                            「零」与「一」
+                                                            】）
+                                                            与
+                                                            『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/named-groups/duplicate-names-exec.js』
+                                                            与「官方脚本重复版权」与「官方脚本许可」，
+                                                            『重复名反引』与『(?:(?<x>a)|(?<x>b))\k<x>』与『』与『bb』
+                                                            与「阴」与「阳」与「零」与「二」
+                                                            与（「列」【
+                                                            「零」与「二」，
+                                                            「官方脚本未参与」与「官方脚本未参与」，
+                                                            「零」与「一」
+                                                            】）
+                                                            与
+                                                            『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/named-groups/duplicate-names-exec.js』
+                                                            与「官方脚本重复版权」与「官方脚本许可」，
+                                                            『未参与命名捕获』与『(?<a>a).|(?<x>x)』与『』与『ab』
+                                                            与「阴」与「阳」与「零」与「二」
+                                                            与（「列」【
+                                                            「零」与「二」，
+                                                            「零」与「一」，
+                                                            「官方脚本未参与」与「官方脚本未参与」
+                                                            】）
+                                                            与
+                                                            『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/named-groups/groups-object-unmatched.js』
+                                                            与「官方脚本命名版权」与「官方脚本许可」，
+                                                            『重复界限倒置』与『0{2,1}』与『』与『』与「阳」与「阴」
+                                                            与「官方脚本未参与」与「官方脚本未参与」
+                                                            与（「罄」授以（「整数」合「整数」））
+                                                            与
+                                                            『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/15.10.2.5-3-1.js』
+                                                            与「官方脚本界限版权」与「官方脚本许可」，
+                                                            『重复重复符』与『a**』与『』与『』与「阳」与「阴」
+                                                            与「官方脚本未参与」与「官方脚本未参与」
+                                                            与（「罄」授以（「整数」合「整数」））
+                                                            与
+                                                            『https://github.com/tc39/test262/blob/main/test/built-ins/RegExp/S15.10.1_A1_T1.js』
+                                                            与「官方脚本坏式版权」与「官方脚本许可」
+】）
+）也。

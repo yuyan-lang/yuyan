@@ -1,0 +1,18 @@
+syntax = "proto2";
+package reference;
+message Child { optional int32 value = 1; }
+enum Kind { ZERO = 0; ONE = 1; }
+message Vector {
+  optional int32 v = 1;
+  optional sint64 zig = 2;
+  optional fixed32 fixed = 3;
+  optional double floating = 4;
+  optional string text = 5;
+  optional bytes raw = 6;
+  repeated int32 packed = 7 [packed = true];
+  optional Child child = 8;
+  optional Kind kind = 9;
+  oneof choice { int32 left = 10; string right = 11; }
+  optional group Legacy = 12 { optional int32 value = 1; }
+  map<string, int64> labels = 13;
+}

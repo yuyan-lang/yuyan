@@ -185,7 +185,9 @@
     「构建日志命令输出」于『git』于（「列」【『status』，『--porcelain』，『--untracked-files=no』】）
   而
   虑「分支」者
-    「构建日志命令输出」于『git』于（「列」【『rev-parse』，『--abbrev-ref』，『HEAD』】）
+    「：汉语：直接读取当前分支全名；缩略引用在部分 Git 版本会截断中文名的 UTF-8 字节。分离头指针时分支为空。
+    文言：径取今支全名；或版 Git 缩引用，截汉字之字节。头离支者，支名为空。：」
+    「构建日志命令输出」于『git』于（「列」【『branch』，『--show-current』】）
   而
   虑「提交」者
     「构建日志命令输出」于『git』于（「列」【『rev-parse』，『--short』，『HEAD』】）
