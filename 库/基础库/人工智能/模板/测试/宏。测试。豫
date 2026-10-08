@@ -65,4 +65,16 @@
   『{% macro f() %}{{ caller.arguments }}|{{ caller(1,x=2) }}{% endmacro %}{% call(a) f() %}{{ a }}{{ kwargs.x }}{% endcall %}』
     于『('a',)|12』。
 「验」于『{% macro f(a=1,) %}{{ a }}{% endmacro %}{{ f() }}|{{ f.arguments }}』于『1|('a',)』。
+「验」于『{% macro f(a=b,b=2) %}{{ a|default("空") }}|{{ b }}{% endmacro %}{{ f(b=3) }}/{{ f() }}』于『3|3/空|2』。
+「验」于『{% set a=9 %}{% macro f(a=a) %}{{ a|default("空") }}{% endmacro %}{{ f() }}』于『空』。
+「验」于『{% macro f(a=1,b=a) %}{{ a }}|{{ b }}{% endmacro %}{{ f() }}』于『1|1』。
+「验」
+  于
+  『{% macro f() %}{% macro g() %}{{ caller is undefined }}{% endmacro %}{{ g() }}{% endmacro %}{% call f() %}甲{% endcall %}』
+    于『True』。
+「验」
+  于
+  『{% macro a() %}甲{% endmacro %}{% macro b() %}乙{% endmacro %}{% macro f(caller=none) %}{{ caller() }}|{{ kwargs.caller() }}{% endmacro %}{{ f(a,caller=b) }}』
+    于『甲|乙』。
+「验」于『{% macro f() %}{{ caller(b=3) }}{% endmacro %}{% call(a=b,b=2) f() %}{{ a }}|{{ b }}{% endcall %}』于『3|3』。
 「汇报结果」于「元」。
