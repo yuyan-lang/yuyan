@@ -53,4 +53,7 @@
   于『False|12』。
 「验异」于『{% macro f() %}{% set kwargs = {} %}{{ kwargs }}{% endmacro %}{{ f(x=1) }}』于『宏有未声明的具名参数』。
 「验」于『{% macro f() %}{% block b %}{{ kwargs }}{% endblock %}{% endmacro %}{{ f.catch_kwargs }}』于『False』。
+「验异」于『{% macro f(a=1,b) %}{{ b }}{% endmacro %}』于『宏默认参数之后需要默认值』。
+「验异」于『{% macro f(caller) %}{{ caller() }}{% endmacro %}』于『宏显式caller参数需要默认值』。
+「验」于『{% macro f(caller=none) %}{{ caller() }}{% endmacro %}{% call f() %}甲{% endcall %}』于『甲』。
 「汇报结果」于「元」。
