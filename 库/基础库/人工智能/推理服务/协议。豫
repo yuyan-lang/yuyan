@@ -299,6 +299,7 @@
         若「聊天」则『chat.completion.chunk』否则『text_completion』））
       ，『model』与（「结森字符串」于「模型」）
       ，『choices』与（「结森数组」于（「列」【「载荷」】））
+      ，『created』与（「结森整数」于「零」）
       】）
   而
   『data: 』附（「结森表示」于「片」）附『「：换行：」「：换行：」』
@@ -336,6 +337,7 @@
         ，『object』与（「结森字符串」于『chat.completion.chunk』）
         ，『model』与（「结森字符串」于「模型」）
         ，『choices』与（「结森数组」于（「列」【「选择」】））
+        ，『created』与（「结森整数」于「零」）
         】）
     而
     『data: 』附（「结森表示」于「片」）附『「：换行：」「：换行：」』
@@ -370,6 +372,7 @@
         若「聊天」则『chat.completion.chunk』否则『text_completion』））
       ，『model』与（「结森字符串」于「模型」）
       ，『choices』与（「结森数组」于（「列」【「选择」】））
+      ，『created』与（「结森整数」于「零」）
       ，『usage』与（「服务用量」于「果」）
       】）
   而
