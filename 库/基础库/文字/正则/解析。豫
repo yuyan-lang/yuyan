@@ -54,6 +54,84 @@
       若「串相等」于「首」于「名」则「阳」否则「正则属性名列含」于「余」于「名」
 也。
 
+「正则二元属性名有效」乃化「字符串」而「爻」也。
+「正则二元属性名有效」者会「名」而
+  虑「名列」者
+    （（「列」于「字符串」）也（「列」【
+      『ASCII』，
+      『ASCII_Hex_Digit』，
+      『Alphabetic』，
+      『Any』，
+      『Assigned』，
+      『Bidi_Control』，
+      『Bidi_Mirrored』，
+      『Case_Ignorable』，
+      『Cased』，
+      『Changes_When_Casefolded』，
+      『Changes_When_Casemapped』，
+      『Changes_When_Lowercased』，
+      『Changes_When_NFKC_Casefolded』，
+      『Changes_When_Titlecased』，
+      『Changes_When_Uppercased』，
+      『Dash』，
+      『Default_Ignorable_Code_Point』，
+      『Deprecated』，
+      『Diacritic』，
+      『Emoji』，
+      『Emoji_Component』，
+      『Emoji_Modifier』，
+      『Emoji_Modifier_Base』，
+      『Emoji_Presentation』，
+      『Extended_Pictographic』，
+      『Extender』，
+      『Grapheme_Base』，
+      『Grapheme_Extend』，
+      『Hex_Digit』，
+      『IDS_Binary_Operator』，
+      『IDS_Trinary_Operator』，
+      『ID_Continue』，
+      『ID_Start』，
+      『Ideographic』，
+      『Join_Control』，
+      『Logical_Order_Exception』，
+      『Lowercase』，
+      『Math』，
+      『Noncharacter_Code_Point』，
+      『Pattern_Syntax』，
+      『Pattern_White_Space』，
+      『Quotation_Mark』，
+      『Radical』，
+      『Regional_Indicator』，
+      『Sentence_Terminal』，
+      『Soft_Dotted』，
+      『Terminal_Punctuation』，
+      『Unified_Ideograph』，
+      『Uppercase』，
+      『Variation_Selector』，
+      『White_Space』，
+      『XID_Continue』，
+      『XID_Start』
+    】）
+    ）
+  而
+  「正则属性名列含」于「名列」于「名」
+也。
+
+「正则字符串属性名有效」乃化「字符串」而「爻」也。
+「正则字符串属性名有效」者会「名」而
+  「正则属性名列含」
+    于（（「列」于「字符串」）也（「列」【
+      『Basic_Emoji』，
+      『Emoji_Keycap_Sequence』，
+      『RGI_Emoji_Modifier_Sequence』，
+      『RGI_Emoji_Flag_Sequence』，
+      『RGI_Emoji_Tag_Sequence』，
+      『RGI_Emoji_ZWJ_Sequence』，
+      『RGI_Emoji』
+    】）
+    ）于「名」
+也。
+
 「正则文字别名」乃化「字符串」而「字符串」也。
 「正则文字别名」者会「名」而
   虑「别名」者
@@ -144,7 +222,12 @@
         『Unknown』
       】）
       ）而
-    若「串相等」于「名」于『Alphabetic』则
+    若「正则字符串属性名有效」于「名」则
+      若「统一码字符串属性有效」于「名」则
+        「名」
+      否则
+        「发生事故」于（「字符串拼接」于『正则：字符串属性缺少数据 』于「名」）
+    否则若「串相等」于「名」于『Alphabetic』则
       『Alphabetic』
     否则若「正则标志含」于「名」于『=』则
       递归虑「寻等」其化「整数」而「整数」者会「位」而
@@ -206,15 +289,11 @@
       而
       若「非」于（「串相等」于「类名」于『』）则
         「类名」
-      否则若「正则属性名列含」
-        于（（「列」于「字符串」）也（「列」【
-          『Alphabetic』，
-          『White_Space』，
-          『ID_Start』，
-          『ID_Continue』，
-          『Extended_Pictographic』
-        】）
-        ）于「属名」则「属名」
+      否则若「正则二元属性名有效」于「属名」则
+        若「统一码二元属性有效」于「属名」则
+          「属名」
+        否则
+          「发生事故」于（「字符串拼接」于『正则：二元属性缺少数据 』于「属名」）
       否则若「非」于（「串相等」于「全名」于『』）则
         「全名」
       否则
@@ -229,6 +308,7 @@
   否则若「串相等」于「名」于『ASCII』则「小于」于「码」于「128」
   否则若「串相等」于「名」于『Assigned』则
     「非」于（「串相等」于「类」于『Cn』）
+  否则若「正则二元属性名有效」于「名」则「统一码二元属性」于「名」于「码」
   否则若「串相等」于「名」于『Alphabetic』则「码点字母性」于「码」
   否则若「串相等」于「名」于『Letter』则
     「正则属性含」于『L』于「码」
@@ -598,8 +678,16 @@
     虑「名」者「正则属性规化」于（「读至」于『}』于『』）
     而
     虑「否」者「串相等」于「字」于『P』而
-    「正则类」于（会「码」而虑「中」者「正则属性含」于「名」于「码」而
-      若「否」则「非」于「中」否则「中」）
+    若「正则字符串属性名有效」于「名」则
+      若「否」则「发生事故」于『正则：字符串属性不接受反向属性转义』
+      否则若「非」于（「正则标志含」于（「读引用」于「旗」）于『v』）则
+        「发生事故」于『正则：字符串属性须用 v 标志』
+      否则
+        「正则串集」于（「正则串列排序」于（「统一码字符串属性」于「名」））
+        于（会「码」而「阴」）
+    否则
+      「正则类」于（会「码」而虑「中」者「正则属性含」于「名」于「码」而
+        若「否」则「非」于「中」否则「中」）
   否则若「或者」于（「串相等」于「字」于『d』）于（「串相等」于「字」于『D』）则
     「正则类」于（会「码」
       而
@@ -617,7 +705,11 @@
   否则若「或者」于（「串相等」于「字」于『s』）于（「串相等」于「字」于『S』）则
     「正则类」于（会「码」
       而
-  虑「中」者「正则属性含」于『White_Space』于「码」而
+  虑「中」者
+    「或者」
+      于（「等于」于「码」于「65279」）
+      于（「且」于（「非」于（「等于」于「码」于「133」））于（「正则属性含」于『White_Space』于「码」））
+  而
   若「串相等」于「字」于『S』则「非」于「中」否则「中」
     ）
   否则若「串相等」于「字」于『b』则
@@ -796,8 +888,10 @@
       而
       （「引串」于（「罄」授以「整数」））与（会「码」而「阴」）
     否则
-      虑「判」者「判结」于（「逸」于「阳」）而
-      （「罄」授以（「列」于「整数」））与「判」
+      虑「结」者「逸」于「阳」而
+      鉴「结」而
+        有（「正则串集」于「串」于「判」）则（「串」与「判」）
+        或有「其余」则（（「罄」授以（「列」于「整数」））与（「判结」于「其余」））
   否则若「串相等」于「字」于『』则「发生事故」于『正则：字符集合未闭合』
   否则
     虑「下」者「正则码」于「字」而
