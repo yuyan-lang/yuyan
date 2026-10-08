@@ -266,6 +266,19 @@ jobs:
           ./yy豫构.exe 构建 原生对比 --输出 yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
+      # 文言：苹果臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
+      # 汉语：苹果 ARM64 系统库调用：同一客体在诺节和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
+      - name: 苹果原生系统库调用
+        if: matrix.os == 'macos-latest'
+        run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 系统库调用测试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy系统库原生测试.wasm > yy系统库诺节.log
+          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 本机 本机 yy执行器.wasm yy系统库原生测试.exe yy系统库原生测试.wasm --预编二
+          chmod +x yy系统库原生测试.exe
+          ./yy系统库原生测试.exe > yy系统库原生.log
+          cmp yy系统库诺节.log yy系统库原生.log
+          grep -F '系统库调用全部断言通过' yy系统库原生.log
+
       # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
       # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
