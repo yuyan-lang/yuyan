@@ -20,7 +20,7 @@ function 载入() {
   finally { process.emitWarning = 原发; }
   if (!外部) return 核;
   try {
-    const 候选 = [process.env.YY_NODE_PROCESS_RESOURCE, 路径.join(__dirname, 'yy进程资源共享.wasm'), 路径.resolve('yy稳定节点宿主', 'yy进程资源共享.wasm')];
+    const 候选 = [process.env.YY进程资源共享, 路径.join(__dirname, 'yy进程资源共享.wasm'), 路径.resolve('yy稳定节点宿主', 'yy进程资源共享.wasm')];
     const 径 = 候选.find(项 => 项 && 文件.existsSync(项));
     if (!径) return 核;
     库 = new 外部.DynamicLibrary('/usr/lib/libSystem.B.dylib');
@@ -33,7 +33,7 @@ function 载入() {
       }
     }});
     核 = 实例.exports;
-    process.env.YY_NODE_PROCESS_RESOURCE = 径;
+    process.env.YY进程资源共享 = 径;
   } catch { 核 = null; }
   return 核;
 }
