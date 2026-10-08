@@ -1,0 +1,32 @@
+寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「特殊字符」之书。
+寻观「文件类型数据生成」之「互联网登记」之书。
+
+「核互联网规则」乃化「字符串」而化「字符串」而「有」也。
+「核互联网规则」者会「实」而会「期」而
+  若「串相等」于「实」于「期」则
+    「元」
+  否则
+    「发生事故」于『IANA模板扩展向量不符』
+也。
+
+「核互联网规则」
+  于（「互联网模板规则」于『application/json』于『File extension(s): .json』）
+  于（『0:application/json:*.json』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『application/test』
+    于（『File Extensions: .a, .tar.gz』附「新行」附『Macintosh file type: TEXT』））
+    于（『0:application/test:*.a』附「新行」附『0:application/test:*.tar.gz』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」于『text/test』于（『Magic number(s): .notextension』附「新行」附『File extension(s): none』））
+  于『』。
+「核互联网规则」
+  于（「互联网模板规则」于『image/jpeg』于『3. File extension(s): jpg, jpeg』）
+  于（『0:image/jpeg:*.jpg』附「新行」附『0:image/jpeg:*.jpeg』附「新行」）。
+「核互联网规则」
+  于（「互联网模板规则」
+    于『image/svg+xml』
+    于（『File extension(s):』附「新行」附『svg』附「新行」附『Note that svgz is an alias.』））
+    于（『0:image/svg+xml:*.svg』附「新行」）。
+「打印行」于『IANA注册模板独立向量通过』。
