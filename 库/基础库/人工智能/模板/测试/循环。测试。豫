@@ -1,0 +1,29 @@
+寻观「标准库」之书。
+寻观「结森工具」之书。
+寻观「模板」之书。
+寻观「单元测试」之书。
+
+「境」者「结森对象」于「罄」也。
+
+「验」乃化「字符串」而化「字符串」而「有」也。
+「验」者会「模」而会「期文」而
+  「尝试运行」授以「有」
+    于（遇「有」者「无」而「断言串相等」于「期文」于（「渲染模板」于「模」于「境」））
+    于（遇「字符串」者「消息」而「发生事故」于（「模」附『：』附「消息」））
+也。
+
+「验」
+  于『{% for n in [{"v":"甲","children":[{"v":"乙","children":[{"v":"丙","children":[]}]}]}] recursive %}{{ loop.depth }}:{{ n.v }};{% if n.children %}{{ loop(n.children) }}{% endif %}{% endfor %}』
+  于『1:甲;2:乙;3:丙;』。
+「验」
+  于『{% for n in [{"v":"甲","children":[{"v":"隐","children":[]},{"v":"乙","children":[]}]}] if n.v!="隐" recursive %}{{ loop.depth0 }}:{{ loop.length }}:{{ n.v }};{% if n.children %}{{ loop(n.children) }}{% endif %}{% endfor %}』
+  于『0:1:甲;1:1:乙;』。
+「验」于『{% for n in [1] recursive %}{{ n }}{{ loop([]) }}{% else %}空{% endfor %}』于『1空』。
+「验」
+  于『{% autoescape true %}{% for n in [{"v":"<甲>","children":[{"v":"<乙>","children":[]}]}] recursive %}{{ n.v }}{% if n.children %}{{ loop(iterable=n.children) }}{% endif %}{% endfor %}{% endautoescape %}』
+  于『&lt;甲&gt;&lt;乙&gt;』。
+「断言为阳」于（「尝试运行」授以「爻」
+  于（遇「有」者「无」而虑「文」者「渲染模板」于『{% for n in [1] %}{{ loop([]) }}{% endfor %}』于「境」而「阴」）
+  于（遇「字符串」者「消息」而「是子字符串吗」于『recursive』于「消息」））。
+
+「汇报结果」于「元」。
