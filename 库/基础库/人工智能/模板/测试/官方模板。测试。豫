@@ -1,0 +1,42 @@
+寻观「标准库」之书。
+寻观「结森工具」之书。
+寻观「模板」之书。
+寻观「单元测试」之书。
+
+「：汉语：模板取自 HuggingFaceH4/zephyr-7b-beta 的 tokenizer_config.json；固定输入与期望取自 Transformers 聊天模板文档的训练示例。此例记为一个模型的官方现成向量。
+文言：模取 HuggingFaceH4/zephyr-7b-beta 分词之配置；定入与期文取 Transformers 聊天模板文档之训练例。此例计一模型之官方既成向量。：」
+「官方配置」者
+  「结森对象」于（「列」
+    【『bos_token』与（「结森字符串」于『<s>』）
+    ，『eos_token』与（「结森字符串」于『</s>』）
+    ，『chat_template』
+  与（「结森字符串」
+    于『{% for message in messages %}「：换行：」{% if message['role'] == 'user' %}「：换行：」{{ '<|user|>「：换行：」' + message['content'] + eos_token }}「：换行：」{% elif message['role'] == 'system' %}「：换行：」{{ '<|system|>「：换行：」' + message['content'] + eos_token }}「：换行：」{% elif message['role'] == 'assistant' %}「：换行：」{{ '<|assistant|>「：换行：」'  + message['content'] + eos_token }}「：换行：」{% endif %}「：换行：」{% if loop.last and add_generation_prompt %}「：换行：」{{ '<|assistant|>' }}「：换行：」{% endif %}「：换行：」{% endfor %}』）
+    】）
+也。
+
+「官方问题」者『Which is bigger, the moon or the sun?』也。
+
+「官方答复」者『The sun.』也。
+
+「官方对话」者
+  「结森对象」于（「列」
+    【『messages』
+  与（「结森数组」于（「列」
+    【「结森对象」于（「列」【『role』与（「结森字符串」于『user』），『content』与（「结森字符串」于「官方问题」）】）
+    ，「结森对象」于（「列」
+        【『role』与（「结森字符串」于『assistant』）
+        ，『content』与（「结森字符串」于「官方答复」）
+        】）
+    】））
+    ，『add_generation_prompt』与（「结森爻」于「阴」）
+    】）
+也。
+
+「官方期文」者
+  『<|user|>「：换行：」』附「官方问题」附『</s>「：换行：」<|assistant|>「：换行：」』附「官方答复」附
+    『</s>「：换行：」』
+也。
+
+「断言串相等」于「官方期文」于（「渲染分词器配置」于「官方配置」于「官方对话」）。
+「汇报结果」于「元」。
