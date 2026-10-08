@@ -1,0 +1,1 @@
+{"文本":"This is a test 😊\nI was born in 92000, and this is falsé.\n生活的真谛是\nHi  Hello\nHi   Hello\n\n \n  \n Hello\n<s>\nhi<s>there\nThe following string should be properly encoded: Hello.\nBut ird and ปี   ird   ด\nHey how are you doing","添加特殊词元":false,"来源版本":"huggingface/transformers@bd3f926f52b55a0a59e812376e7624ca9d471ac2","来源路径":"tests/test_tokenization_common.py:324"}
