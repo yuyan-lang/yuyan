@@ -18,6 +18,7 @@ function 载入() {
     let 实例;
     const 接读 = (柄, 址, 长, 偏移) => Number(调(柄, 外部.getRawPointer(new Uint8Array(实例.exports.内存.buffer, 址, 长)), BigInt(长), 偏移));
     实例 = new WebAssembly.Instance(new WebAssembly.Module(文件系统.readFileSync(径)), {苹果: {pread: 接读}, 林纳克斯: {pread64: 接读}});
+    if (!(实例.exports.内存 instanceof WebAssembly.Memory)) throw Error('定位共享核心须导出内存');
     核 = 实例.exports;
   } catch { 核 = null; }
   return 核;

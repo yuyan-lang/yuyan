@@ -6,6 +6,8 @@ import 系统 from 'node:os';
 import {spawnSync} from 'node:child_process';
 import {创建能力, 带型实现, 能力清理} from './应用宿主.mjs';
 const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy定位-'));
+const 共核模块 = new WebAssembly.Module(文件系统.readFileSync(process.env.YY文件定位共享 ?? 'yy文件定位共享.wasm'));
+assert.ok(WebAssembly.Module.exports(共核模块).some(项 => 项.name === '内存' && 项.kind === 'memory'), '共核须导出中文内存');
 const 远偏 = 4294967301;
 const 描述符 = 文件系统.openSync(路径.join(根, '疏文'), 'w');
 文件系统.writeSync(描述符, Buffer.from('甲乙'), 0, 6, 0);
