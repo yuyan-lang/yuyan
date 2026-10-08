@@ -1,0 +1,21 @@
+寻观「标准库」之书。
+寻观「终端浏览器」之「网址处理」之书。
+
+「：汉语：这些断言调用首使用者实际链接入口，覆盖共享算法接入后的规范化与相对引用。
+文言：此断召首用者实链之口，验共术接后之规整及相对所引。：」
+「验链接」乃化「字符串」而化「字符串」而化「字符串」而「有」也。
+「验链接」者会「根」而会「文」而会「期」而
+  若「串相等」于（「选网址」于「根」于「文」）于「期」则
+    「元」
+  否则
+    「发生事故」授以「有」于『浏览器共享网址迁移差异』
+也。
+
+「验链接」于『https://example.org/a/b?old#old』于『../c』于『https://example.org/c』。
+「验链接」于『https://example.org/a/b?old#old』于『#new』于『https://example.org/a/b?old#new』。
+「验链接」于『https://example.org/a/b?old#old』于『?new』于『https://example.org/a/b?new』。
+「验链接」于『https://example.org/a/b』于『/x/%2e%2e/y』于『https://example.org/y』。
+「验链接」于『https://example.org/a/b』于『HTTP://EXAMPLE.NET:80/a b』于『http://example.net/a%20b』。
+「验链接」于『file://host/dir/file』于『C|/child』于『file://host/C:/child』。
+「验链接」于『』于『https://EXAMPLE.ORG』于『https://example.org/』。
+「打印行」于『浏览器共享网址迁移七条通过』。

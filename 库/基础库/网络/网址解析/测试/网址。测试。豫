@@ -2,8 +2,8 @@
 寻观「标准库」之「数据结构」之「字节串」之书。
 寻观「网址解析」之书。
 
-「：汉语：这些向量验证当前解析阶段的路径、查询与相对继承，完整一致性测试待主机与编码算法接齐。
-文言：此例验今析址之径询及相对所承；全验待主机编码诸术备。：」
+「：汉语：短回归覆盖网址解析、部件设置、查询与载荷；完整官方数据由全量调查入口独立核对。
+文言：短复验覆析址、设部、查询与载荷；官全例由全量察口别核。：」
 「验串」乃化「字符串」而化「字符串」而「有」也。
 「验串」者会「期」而会「得」而
   若「串相等」于「期」于「得」则
@@ -102,6 +102,7 @@
 「验设置」于『foo:///some/path』于『路径』于『』于『foo://』。
 「验设置」于『foo:/some/path』于『路径』于『』于『foo:/』。
 「验设置」于『file:///some/path』于『路径』于『』于『file:///』。
+「验设置」于『https://domain.com:3000』于『端口』于『「：换行：」』于『https://domain.com:3000/』。
 「验设置」于『https://example.org/old』于『路径』于『\new\path』于『https://example.org/new/path』。
 「验设置」于『foo://host/old』于『路径』于『\new\path』于『foo://host/\new\path』。
 「验任意根相对」乃化「字符串」而化「字符串」而化「字符串」而「有」也。
@@ -120,4 +121,14 @@
 
 「验任意根相对」于『foo://host』于『child』于『foo://host/child』。
 「验任意根相对」于『foo://』于『child』于『foo:///child』。
+「验绝对」于『http://é@é』于『http://%C3%A9@xn--9ca/』。
+「验绝对」于『http://foo:💩@example.com/bar』于『http://foo:%F0%9F%92%A9@example.com/bar』。
+「验任意根相对」于『file://host/dir/file』于『C|』于『file://host/C:』。
+「验任意根相对」于『file://host/』于『file:C:/』于『file://host/C:/』。
+「验任意根相对」于『file://host/dir/file』于『C:/child』于『c:/child』。
+「验任意根相对」于『https://example.org/dir/file』于『foo:\child』于『foo:\child』。
+鉴（「解析绝对」于『http://foo.0XFfFfFfFfFfFfFfFfFfAcE123』）而
+  有「可无」则「元」
+  或有（「可有」于「址」）则
+    「发生事故」授以「有」于『超大十六进制末段应拒绝』。
 「打印」于『网址阶段向量通过』。

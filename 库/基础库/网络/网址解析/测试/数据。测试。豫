@@ -1,0 +1,61 @@
+寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「字节串」之书。
+寻观「网址解析」之书。
+
+「：汉语：独立向量核对抓取数据网址的媒体默认、引号参数、参数首值、大小写、空白与二阶段载荷解码。
+文言：别例核抓取数据址之默认媒体、引参、参首值、大小写、空白及载荷两段解码。：」
+「同载荷」乃化「字节串」而化「字节串」而化「整数」而「爻」也。
+「同载荷」者会「甲」而会「乙」而会「位」而
+  若「非」于（「等于」于（「字节串长度」于「甲」）于（「字节串长度」于「乙」））则
+    「阴」
+  否则若「等于」于「位」于（「字节串长度」于「甲」）则
+    「阳」
+  否则若「等于」于（「字节串取字节」于「甲」于「位」）于（「字节串取字节」于「乙」于「位」）则
+    「同载荷」于「甲」于「乙」于（「加」于「位」于「一」）
+  否则
+    「阴」
+也。
+
+「验数据文」乃化「字符串」而化「字符串」而化「字符串」而「有」也。
+「验数据文」者会「文」而会「型」而会「体」而
+  鉴（「解析数据网址」于「文」）而
+    有「可无」则
+      「发生事故」授以「有」于『有效数据网址拒绝』
+    或有（「可有」于「果」）则
+      若「且」
+        于（「串相等」于（「果」中「媒体类型」）于「型」）
+        于（「同载荷」于（「果」中「载荷」）于（「字符串转字节串」于「体」）于「零」）则
+          「元」
+      否则
+        「发生事故」授以「有」于（『数据媒体或载荷差异：』附「文」附『 型=』附（「果」中「媒体类型」））
+也。
+
+「验数据拒」乃化「字符串」而「有」也。
+「验数据拒」者会「文」而
+  鉴（「解析数据网址」于「文」）而
+    有「可无」则「元」
+    或有（「可有」于「果」）则
+      「发生事故」授以「有」于『无效数据网址应拒绝』
+也。
+
+「验数据文」于『data:,hello』于『text/plain;charset=US-ASCII』于『hello』。
+「验数据文」于『data:not-a-type,hello』于『text/plain;charset=US-ASCII』于『hello』。
+「验数据文」于『data:text/,hello』于『text/plain;charset=US-ASCII』于『hello』。
+「验数据文」于『data: TEXT/PLAIN ; Charset="utf-8" ,hello』于『text/plain;charset=utf-8』于『hello』。
+「验数据文」于『data:;charset=utf-8,中』于『text/plain;charset=utf-8』于『中』。
+「验数据文」于『data:text/plain;charset=utf-8;CHARSET=ascii,hello』于『text/plain;charset=utf-8』于『hello』。
+「验数据文」于『data:text/plain;name="a;b",hello』于『text/plain;name="a;b"』于『hello』。
+「验数据文」于『data:text/plain;charset="utf-8"ignored,hello』于『text/plain;charset=utf-8』于『hello』。
+「验数据文」于『data:text/plain;name="",hello』于『text/plain;name=""』于『hello』。
+「验数据文」于『data:text/html;garbage,hello』于『text/html』于『hello』。
+「验数据文」于『data:text/plain;name="a\"b",hello』于『text/plain;name="a\"b"』于『hello』。
+「验数据文」于『data:; Base64,SGVsbG8=』于『text/plain;charset=US-ASCII』于『Hello』。
+「验数据文」于『DATA:text/plain;BASE64,SGVsbG8=』于『text/plain』于『Hello』。
+「验数据文」于『data:text/plain;base64=1,hello』于『text/plain;base64=1』于『hello』。
+「验数据文」于『 data:,hello 』于『text/plain;charset=US-ASCII』于『hello』。
+「验数据文」于『data:,hello%20』于『text/plain;charset=US-ASCII』于『hello 』。
+「验数据文」于『data:,hello#fragment』于『text/plain;charset=US-ASCII』于『hello』。
+「验数据文」于『data:,hello?query』于『text/plain;charset=US-ASCII』于『hello?query』。
+「验数据拒」于『data:text/plain』。
+「验数据拒」于『data:;base64,%%%』。
+「打印行」于『数据网址二十条独立向量通过』。
