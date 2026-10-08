@@ -1,0 +1,44 @@
+寻观「标准库」之书。
+寻观「结森工具」之书。
+寻观「模板」之书。
+寻观「单元测试」之书。
+
+「境」者「结森对象」于「罄」也。
+
+「验」乃化「字符串」而化「字符串」而「有」也。
+「验」者会「模」而会「期文」而
+  「尝试运行」授以「有」
+    于（遇「有」者「无」而「断言串相等」于「期文」于（「渲染模板」于「模」于「境」））
+    于（遇「字符串」者「消息」而「发生事故」于（「模」附『：』附「消息」））
+也。
+
+「验异」乃化「字符串」而化「字符串」而「有」也。
+「验异」者会「模」而会「期消息」而
+  「断言为阳」于（「尝试运行」授以「爻」
+    于（遇「有」者「无」而虑「成文」者「渲染模板」于「模」于「境」而「阴」）
+    于（遇「字符串」者「消息」而「是子字符串吗」于「期消息」于「消息」））
+也。
+
+「验」
+  于『{% macro f(a) %}{{ a }}|{{ varargs }}|{{ kwargs }}{% endmacro %}{{ f(1,2,3,x=4,y=5) }}』
+  于『1|(2, 3)|{'x': 4, 'y': 5}』。
+「验」于『{% macro f(a=1) %}{{ a }}|{{ kwargs.z }}{% endmacro %}{{ f(a=5,z=7) }}』于『5|7』。
+「验」于『{% macro f() %}{{ varargs|length }}|{{ kwargs|length }}{% endmacro %}{{ f() }}』于『0|0』。
+「验」于『{% macro f(varargs,kwargs) %}{{ varargs }}|{{ kwargs }}{% endmacro %}{{ f("甲","乙") }}』于『甲|乙』。
+「验」于『{% macro f(a="默认") %}{{ a }}{% endmacro %}[{{ f() }}][{{ f(未有) }}][{{ f(a=未有) }}]』于『[默认][][]』。
+「验」于『{% macro f(a) %}{{ a }}|{{ kwargs.a }}{% endmacro %}{{ f(1,a=2) }}』于『1|2』。
+「验」
+  于
+  『{% macro f(a,b=2) %}{{ a }}{% endmacro %}{{ f.name }}|{{ f.arguments }}|{{ f.catch_kwargs }}|{{ f.catch_varargs }}|{{ f.caller }}|{{ f }}』
+    于『f|('a', 'b')|False|False|False|<Macro 'f'>』。
+「验」
+  于
+  『{% macro f() %}{{ kwargs.x }}{{ varargs[0] }}{{ caller() }}{% endmacro %}{{ f.catch_kwargs }}|{{ f.catch_varargs }}|{{ f.caller }}{% call f("乙",x="甲") %}丙{% endcall %}』
+    于『True|True|True甲乙丙』。
+「验」于『{% macro f(a) %}{{ a }}{{ kwargs.x }}{% endmacro %}{{ f("甲",x="乙") }}{{ f("丙",x="丁") }}』于『甲乙丙丁』。
+「验异」于『{% macro f(a) %}{{ a }}{% endmacro %}{{ f(1,2) }}』于『宏位置参数过多』。
+「验异」于『{% macro f(a) %}{{ a }}{% endmacro %}{{ f(a=1,x=2) }}』于『宏有未声明的具名参数』。
+「验异」于『{% macro f() %}{{ "varargs" }}{% endmacro %}{{ f(1) }}』于『宏位置参数过多』。
+「验异」于『{% macro f(a) %}{{ a.kwargs }}{% endmacro %}{{ f({"kwargs":1},2) }}』于『宏位置参数过多』。
+「验异」于『{% macro f(a) %}{{ a }}{% endmacro %}{{ f(1,a=2) }}』于『宏有未声明的具名参数』。
+「汇报结果」于「元」。
