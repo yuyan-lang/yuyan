@@ -7,7 +7,7 @@ import 路径 from 'node:path';
 import 终端 from 'node:tty';
 import {StringDecoder as 字节解码器} from 'node:string_decoder';
 import 系统 from 'node:os';
-import {createHash} from 'node:crypto';
+import {createHash, randomFillSync} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {spawnSync, spawnSync as 同步启动, spawn as 原生服务启动} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
@@ -18,7 +18,7 @@ import {创建任务采样} from './任务采样.mjs';
 import {创建控制台能力} from '../浏览器/控制台.mjs';
 import {创建终端输入} from './终端输入.mjs';
 import {读取标准终端尺寸} from './终端尺寸.mjs';
-import {共享文件定位读取} from './文件定位.mjs';
+import {创建文件能力, 登记目录授权} from './文件能力.mjs';
 import {造边界导入, 造边界导出, 启动导出名} from '../网页汇编/边界.mjs';
 import {创建值桥, 文字, 精确小数, 小数表示, 理解小数, 随机整数, 处理器数量, 平台导入旧名} from '../云工/值桥.mjs';
 import {创建句柄表} from '../云工/句柄.mjs';
@@ -69,9 +69,7 @@ export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 
     显示面: new Map(), 原生依赖目录: 环境.YY_NODE_NATIVE_DIR ? 路径.resolve(当前目录, 环境.YY_NODE_NATIVE_DIR) : null,
     显示面后台: 环境.YY_NODE_DISPLAY_BACKGROUND === '1', 允许系统库调用: false};
   const 授目录 = (文, 可写, 基准) => {
-    const 位 = 文.indexOf('=');
-    须(位 > 0 && 位 < 文.length - 1, '目录授权须写成 名=路径：' + 文);
-    配置.授权.目录.set(文.slice(0, 位), {路径: 路径.resolve(基准, 文.slice(位 + 1)), 可写});
+    登记目录授权(配置.授权.目录, 文, 可写, 基准);
   };
   const 允源 = 文 => {
     let 源;
@@ -327,16 +325,6 @@ const 可用全局 = new Set([
 ]);
 
 // 文言：路径惟相对目录权；空、首斜、空段、点、点点、零字节皆无效。汉语：文件路径只能是相对于目录权的 / 分隔路径；空串、以 / 开头、空段、.、..、零字节都算输入无效。
-function 合法相对路径(径) {
-  if (!径 || 径.startsWith('/') || 径.includes('\u0000')) return false;
-  // 文言：Windows 以反斜与冒号为界，恐越权，并拒之。汉语：Windows 会把反斜杠和冒号当作路径或流分隔，段内出现即拒绝。待办事项：其他平台是否也应拒绝，以求三平台完全一致。
-  if (process.platform === 'win32' && /[\\:]/u.test(径)) return false;
-  return 径.split('/').every(段 => 段 !== '' && 段 !== '.' && 段 !== '..');
-}
-const 在根内 = (根, 实) => {
-  const 相对 = 路径.relative(根, 实);
-  return 相对 === '' || (!路径.isAbsolute(相对) && 相对 !== '..' && !相对.startsWith('..' + 路径.sep));
-};
 
 // 文言：诸能之表：标准运行时之原语、云工同名之通用原语、节点独有之文件、网络、张量、显示图形与系统库调用原语。汉语：能力表：标准库运行时原语、与云工同名同义的通用原语（供复用云工适配），
 //       以及 Node 独有的文件、网络、张量、显示图形与系统库调用原语。显示与图形只在应用用到时才载入原生依赖；能力表的 能力清理 键在应用结束后关闭窗口与设备。
@@ -368,7 +356,6 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
     if (ArrayBuffer.isView(值)) return new Uint8Array(值.buffer, 值.byteOffset, 值.byteLength).slice();
     throw Error('可读流块不是字节');
   };
-  const 取目录 = 号 => { const 项 = 资源.get(文字(号)); return 项?.种 === '目录' ? 项 : null; };
   const 取文件 = 号 => { const 项 = 资源.get(文字(号)); return 项?.种 === '文件' ? 项 : null; };
 
   // 文言：标准库之宿主服务，以导入模块「标准库」之字段名为键；无者为桩。汉语：标准库宿主服务（导入模块「标准库」，键为字段名），本宿主提供这二十四个，其余给桩（调用时报“接口函数未绑定”）；
@@ -574,171 +561,8 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   };
 
   // 文言：文件之能：目录由宿主预授，路径不得越其界；柄号为不可推之随机数，宿主核其类与存亡。
-  // 汉语：Node 文件原语：目录权来自 --授权目录；路径先按规范校验，再求真实路径并确认仍在授权目录内（防符号链接逃逸）；句柄号是不可猜测的随机数，宿主核对种类与有效期。
-  // 文言：新查惟许空径为授权根，余循旧法；真径必在根内。汉语：目录查询允许空路径表示授权根，其他路径沿用旧校验，真实路径必须留在授权根内。
-  const 查询目录路径 = (目录号, 相对) => {
-    const 目录 = 取目录(目录号);
-    if (!目录) return [码.已失效, '目录权无效或已失效'];
-    let 径;
-    try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
-    if (径 !== '' && !合法相对路径(径)) return [码.输入无效, '路径无效：' + 径];
-    try {
-      const 实 = 文件系统.realpathSync(路径.join(目录.根, ...径.split('/')));
-      return 在根内(目录.根, 实) ? [码.成功, 实] : [码.输入无效, '路径越出授权目录'];
-    } catch (错) { return [系统错码(错), 错文(错)]; }
-  };
-  const 信息种类 = 信息 => 信息.isFile() ? 0 : 信息.isDirectory() ? 1 : 2;
-  const 节点文件 = {
-    // 汉语：只删文件或空目录，拒绝授权根与符号链接；待办事项：查父与删除之间的竞态。文言：惟删文或空目录，拒授根与链；待办事项：查父与删之间之竞态。
-    豫言_节点_文件删除: (目录号, 相对) => {
-      const 目录 = 取目录(目录号);
-      if (!目录) return [码.已失效, '目录权无效或已失效'];
-      if (!目录.可写) return [码.未获授权, '目录只授读取'];
-      let 径;
-      try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
-      if (!合法相对路径(径)) return [码.输入无效, '删除路径无效'];
-      const 段们 = 径.split('/'), 名 = 段们.pop();
-      const [状态, 父] = 查询目录路径(目录号, new TextEncoder().encode(段们.join('/')));
-      if (状态 !== 码.成功) return [状态, 父];
-      try {
-        const 目 = 路径.join(父, 名), 信息 = 文件系统.lstatSync(目);
-        if (信息.isFile()) 文件系统.unlinkSync(目);
-        else if (信息.isDirectory()) 文件系统.rmdirSync(目);
-        else return [码.输入无效, '路径不是普通文件或目录'];
-        return [码.成功, ''];
-      } catch (错) { return [系统错码(错), 错文(错)]; }
-    },
-    // 汉语：覆盖与追加共用可写目录权；先核父与已有目标，再打开，防止检查前截断外部文件。待办事项：父路径查询与打开之间的竞态。文言：覆盖与追加共写权；先核父与已有之目，而后开，毋未核而截外文。待办事项：查父与开之间之竞态。
-    豫言_节点_文件开启写入: (目录号, 相对, 追加) => {
-      const 目录 = 取目录(目录号);
-      if (!目录) return [码.已失效, '目录权无效或已失效'];
-      if (!目录.可写) return [码.未获授权, '目录只授读取'];
-      let 径;
-      try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
-      if (!合法相对路径(径)) return [码.输入无效, '文件路径无效'];
-      const 段们 = 径.split('/'), 名 = 段们.pop();
-      const [状态, 父] = 查询目录路径(目录号, new TextEncoder().encode(段们.join('/')));
-      if (状态 !== 码.成功) return [状态, 父];
-      let 目 = 路径.join(父, 名), 描述符;
-      try {
-        if (!文件系统.statSync(父).isDirectory()) return [码.输入无效, '父路径不是目录'];
-        let 已存 = true;
-        try { 文件系统.lstatSync(目); } catch (错) { if (错.code === 'ENOENT') 已存 = false; else throw 错; }
-        if (已存) {
-          目 = 文件系统.realpathSync(目);
-          if (!在根内(目录.根, 目)) return [码.输入无效, '路径越出授权目录'];
-          if (!文件系统.statSync(目).isFile()) return [码.输入无效, '路径不是普通文件'];
-        }
-        const 旗 = 文件系统.constants;
-        描述符 = 文件系统.openSync(目, 旗.O_WRONLY | 旗.O_CREAT | (追加 ? 旗.O_APPEND : 旗.O_TRUNC) | (旗.O_NOFOLLOW ?? 0));
-        return [码.成功, 登记资源({种: '文件', 描述符, 可写: true})];
-      } catch (错) { return [系统错码(错), 错文(错)]; }
-    },
-    // 文言：造目录先核写权及父之真径，不递造。汉语：创建单层目录，复用授权根检查，父目录必须存在。
-    豫言_节点_文件创建目录: (目录号, 相对) => {
-      const 目录 = 取目录(目录号);
-      if (!目录) return [码.已失效, '目录权无效或已失效'];
-      if (!目录.可写) return [码.未获授权, '目录只授读取'];
-      let 径;
-      try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
-      if (!合法相对路径(径)) return [码.输入无效, '目录路径无效'];
-      const 段们 = 径.split('/');
-      const 名 = 段们.pop();
-      const [状态, 父] = 查询目录路径(目录号, new TextEncoder().encode(段们.join('/')));
-      if (状态 !== 码.成功) return [状态, 父];
-      try {
-        文件系统.mkdirSync(路径.join(父, 名));
-        return [码.成功, ''];
-      } catch (错) { return [系统错码(错), 错文(错)]; }
-    },
-    豫言_节点_文件列目录: (目录号, 相对) => {
-      const [状态, 实] = 查询目录路径(目录号, 相对);
-      if (状态 !== 码.成功) return [状态, [], 实];
-      try {
-        if (!文件系统.statSync(实).isDirectory()) return [码.输入无效, [], '路径不是目录'];
-        // 文言：链不随而记其他，开链仍核边界；待办事项：查询与使用间之竞态。汉语：目录中的符号链接列为其他，打开时仍核授权边界；待办事项：查询与使用之间的竞态。
-        const 项们 = 文件系统.readdirSync(实, {withFileTypes: true}).map(项 => [项.name, 信息种类(项)]);
-        return [码.成功, 项们, ''];
-      } catch (错) { return [系统错码(错), [], 错文(错)]; }
-    },
-    豫言_节点_文件查询信息: (目录号, 相对) => {
-      const [状态, 实] = 查询目录路径(目录号, 相对);
-      if (状态 !== 码.成功) return [状态, 2, 0, 实];
-      try {
-        const 信息 = 文件系统.statSync(实);
-        return [码.成功, 信息种类(信息), 信息.isFile() ? 信息.size : 0, ''];
-      } catch (错) { return [系统错码(错), 2, 0, 错文(错)]; }
-    },
-    豫言_节点_文件取得目录: 名 => {
-      const 名称 = 文字(名);
-      const 授 = 授权.目录.get(名称);
-      if (!授) return [码.未获授权, '目录未获授权：' + 名称];
-      let 根;
-      try {
-        根 = 文件系统.realpathSync(授.路径);
-        if (!文件系统.statSync(根).isDirectory()) return [码.不存在, '授权路径不是目录：' + 名称];
-      } catch (错) { return [系统错码(错), 错文(错)]; }
-      return [码.成功, 登记资源({种: '目录', 根, 可写: 授.可写})];
-    },
-    豫言_节点_文件打开: (目录号, 相对, 要写) => {
-      const 目录 = 取目录(目录号);
-      if (!目录) return [码.已失效, '目录权无效或已失效'];
-      let 径;
-      try { 径 = 严格解码.decode(相对); } catch { return [码.输入无效, '路径不是有效的 UTF-8']; }
-      if (!合法相对路径(径)) return [码.输入无效, '路径无效：' + 径];
-      const 可写 = Boolean(要写);
-      if (可写 && !目录.可写) return [码.未获授权, '目录只授读取'];
-      let 实, 描述符;
-      try { 实 = 文件系统.realpathSync(路径.join(目录.根, ...径.split('/'))); } catch (错) { return [系统错码(错), 错文(错)]; }
-      // 文言：先求真径而后开之，其间可换链；待办事项：逐段 O_NOFOLLOW 以绝其隙。汉语：先求真实路径再打开，两步之间符号链接仍可能被替换；待办事项：逐段用 O_NOFOLLOW 打开以消除竞态。
-      if (!在根内(目录.根, 实)) return [码.输入无效, '路径越出授权目录'];
-      try { 描述符 = 文件系统.openSync(实, 可写 ? 文件系统.constants.O_WRONLY : 文件系统.constants.O_RDONLY); }
-      catch (错) { return [系统错码(错), 错文(错)]; }
-      try {
-        if (!文件系统.fstatSync(描述符).isFile()) { 文件系统.closeSync(描述符); return [码.输入无效, '路径不是普通文件']; }
-      } catch (错) { 文件系统.closeSync(描述符); return [系统错码(错), 错文(错)]; }
-      return [码.成功, 登记资源({种: '文件', 描述符, 可写})];
-    },
-    豫言_节点_文件读取: (文件号, 上限) => {
-      const 文件 = 取文件(文件号);
-      if (!文件) return [码.已失效, 空字节(), '文件柄无效或已失效'];
-      if (文件.可写) return [码.未获授权, 空字节(), '可写文件柄不可读'];
-      const 限 = Number(上限);
-      if (!(限 >= 0)) return [码.输入无效, 空字节(), '读取上限须非负'];
-      if (限 === 0) return [码.成功, 空字节(), ''];
-      const 缓 = new Uint8Array(Math.min(限, 交换上限));
-      let 读数;
-      try { 读数 = 文件系统.readSync(文件.描述符, 缓, 0, 缓.length, null); }
-      catch (错) { return [系统错码(错), 空字节(), 错文(错)]; }
-      return 读数 === 0 ? [码.读尽, 空字节(), ''] : [码.成功, 缓.slice(0, 读数), ''];
-    },
-    豫言_节点_文件定位读取: (文件号, 偏移, 上限) => {
-      const 文件 = 取文件(文件号);
-      if (!文件) return [码.已失效, 空字节(), '文件柄无效或已失效'];
-      if (文件.可写) return [码.未获授权, 空字节(), '可写文件柄不可读'];
-      const 偏 = BigInt(偏移), 限 = Number(上限);
-      if (偏 < 0n || !(限 >= 0)) return [码.输入无效, 空字节(), '偏移与读取上限须非负'];
-      if (限 === 0) return [码.成功, 空字节(), ''];
-      return 共享文件定位读取(文件.描述符, 偏, Math.min(限, 交换上限));
-    },
-    豫言_节点_文件写入: (文件号, 内容) => {
-      const 文件 = 取文件(文件号);
-      if (!文件) return [码.已失效, 0, '文件柄无效或已失效'];
-      if (!文件.可写) return [码.未获授权, 0, '只读文件柄不可写'];
-      if (内容.length === 0) return [码.成功, 0, ''];
-      try {
-        const 写数 = 文件系统.writeSync(文件.描述符, 内容);
-        return 写数 > 0 ? [码.成功, 写数, ''] : [码.暂不可用, 0, '暂时不能写入'];
-      } catch (错) { return [系统错码(错), 0, 错文(错)]; }
-    },
-    豫言_节点_文件关闭: 文件号 => {
-      const 名 = 文字(文件号), 文件 = 取文件(名);
-      if (!文件) return [码.已失效, '文件柄无效或已失效'];
-      资源.delete(名);
-      try { 文件系统.closeSync(文件.描述符); return [码.成功, '']; }
-      catch (错) { return [码.操作失败, 错文(错)]; }
-    }
-  };
+  const 文件能力 = 创建文件能力({授权, 资源, 登记资源, 文字, 交换上限});
+  const 节点文件 = 文件能力.原语;
 
   // 文言：出站之求：先核法、址、标头，次核授权之源，不随重定向；正文逾限则止。
   // 汉语：Node 网络原语：先核方法、绝对 http(s) 网址与标头（不合为输入无效），再核目标来源是否在 --允许源 里（否则未获授权）；不跟随重定向（3xx 跳转为宿主操作失败）；请求与响应正文各以 16 MiB 为上限，超出为资源配额已尽。
@@ -827,7 +651,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
       return [[项.标识, 项.名称, 项.范围, 项.采样微秒, 项.处理器万分比, 项.常驻字节, 项.堆已用字节]];
     }};
   // 文言：平台接口包之带型导入，由旧名之能表派生。汉语：平台接口包的带类型导入由上面以旧名为键的能力表派生，见 派生平台实现；旧名只是内部的键，不对外。
-  return Object.freeze({[能力清理]: () => {原生子程序.关闭(); 控制台.关闭(); 终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表), 豫言操作系统控制台:{读取标准终端尺寸}}});
+  return Object.freeze({[能力清理]: () => {文件能力.清理(); 原生子程序.关闭(); 控制台.关闭(); 终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表), 豫言操作系统控制台:{读取标准终端尺寸}}});
 }
 
 // 文言：以 JSPI 行客：诸能或同步或异步，客皆以常调用视之。汉语：用 JSPI 运行：能力可以同步返回，也可以返回 Promise（网络、摘要等），应用都按普通调用看待。
