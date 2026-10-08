@@ -1,0 +1,208 @@
+寻观「标准库」之书。
+寻观「文件类型」之「官方扩展表」之书。
+
+「：汉语：以常见扩展名查媒体类型，扩展名比较忽略阿斯基大小写。文言：以常用尾名求媒体之类，阿斯基大小同视。：」
+「扩展名尾段」乃化（「列」于「字符串」）而化「字符串」而「字符串」也。
+「扩展名尾段」者会「余字」而会「尾段」而
+  鉴「余字」而
+    有「罄」则「尾段」
+    或有（「缀」于「首字」于「后字」）则
+      若「或者」
+        于（「串相等」于「首字」于『.』）
+        于（「或者」于（「串相等」于「首字」于『/』）于（「串相等」于「首字」于『\\』））则
+          「扩展名尾段」于「后字」于『』
+      否则
+        虑「码」者「字符转整数」于「首字」于「零」
+        而
+        虑「小写字」者
+          若「且」
+            于（「非」于（「小于」于「码」于「65」））
+            于（「小于」于「码」于「91」）则
+            「字节转字符串」于（「加」于「码」于「32」）
+          否则
+            「首字」
+        而
+        「扩展名尾段」于「后字」于（「字符串拼接」于「尾段」于「小写字」）
+也。
+
+「扩展类型表」乃「列」于（「字符串」合「字符串」）也。
+「扩展类型表」者
+  「列」【
+    『txt』与『text/plain』，
+    『text』与『text/plain』，
+    『log』与『text/plain』，
+    『html』与『text/html』，
+    『htm』与『text/html』，
+    『css』与『text/css』，
+    『csv』与『text/csv』，
+    『tsv』与『text/tab-separated-values』，
+    『md』与『text/markdown』，
+    『ics』与『text/calendar』，
+    『vcs』与『text/calendar』，
+    『vcf』与『text/vcard』，
+    『xml』与『application/xml』，
+    『xsl』与『application/xml』，
+    『xsd』与『application/xml』，
+    『json』与『application/json』，
+    『map』与『application/json』，
+    『jsonld』与『application/ld+json』，
+    『js』与『text/javascript』，
+    『mjs』与『text/javascript』，
+    『cjs』与『text/javascript』，
+    『pdf』与『application/pdf』，
+    『epub』与『application/epub+zip』，
+    『rtf』与『application/rtf』，
+    『doc』与『application/msword』，
+    『dot』与『application/msword』，
+    『docx』与『application/vnd.openxmlformats-officedocument.wordprocessingml.document』，
+    『dotx』与『application/vnd.openxmlformats-officedocument.wordprocessingml.template』，
+    『xls』与『application/vnd.ms-excel』，
+    『xlt』与『application/vnd.ms-excel』，
+    『xlsx』与『application/vnd.openxmlformats-officedocument.spreadsheetml.sheet』，
+    『xltx』与『application/vnd.openxmlformats-officedocument.spreadsheetml.template』，
+    『ppt』与『application/vnd.ms-powerpoint』，
+    『pps』与『application/vnd.ms-powerpoint』，
+    『pptx』与『application/vnd.openxmlformats-officedocument.presentationml.presentation』，
+    『ppsx』与『application/vnd.openxmlformats-officedocument.presentationml.slideshow』，
+    『odt』与『application/vnd.oasis.opendocument.text』，
+    『ods』与『application/vnd.oasis.opendocument.spreadsheet』，
+    『odp』与『application/vnd.oasis.opendocument.presentation』，
+    『odg』与『application/vnd.oasis.opendocument.graphics』，
+    『zip』与『application/zip』，
+    『gz』与『application/gzip』，
+    『tgz』与『application/gzip』，
+    『bz2』与『application/x-bzip2』，
+    『bz』与『application/x-bzip』，
+    『xz』与『application/x-xz』，
+    『7z』与『application/x-7z-compressed』，
+    『rar』与『application/vnd.rar』，
+    『tar』与『application/x-tar』，
+    『zst』与『application/zstd』，
+    『jar』与『application/java-archive』，
+    『war』与『application/java-archive』，
+    『wasm』与『application/wasm』，
+    『bin』与『application/octet-stream』，
+    『exe』与『application/vnd.microsoft.portable-executable』，
+    『dll』与『application/vnd.microsoft.portable-executable』，
+    『msi』与『application/octet-stream』，
+    『png』与『image/png』，
+    『jpg』与『image/jpeg』，
+    『jpeg』与『image/jpeg』，
+    『jpe』与『image/jpeg』，
+    『gif』与『image/gif』，
+    『webp』与『image/webp』，
+    『avif』与『image/avif』，
+    『bmp』与『image/bmp』，
+    『svg』与『image/svg+xml』，
+    『svgz』与『image/svg+xml』，
+    『ico』与『image/vnd.microsoft.icon』，
+    『tif』与『image/tiff』，
+    『tiff』与『image/tiff』，
+    『heic』与『image/heic』，
+    『heif』与『image/heif』，
+    『jxl』与『image/jxl』，
+    『mp3』与『audio/mpeg』，
+    『mp2』与『audio/mpeg』，
+    『wav』与『audio/wav』，
+    『ogg』与『audio/ogg』，
+    『oga』与『audio/ogg』，
+    『opus』与『audio/ogg』，
+    『flac』与『audio/flac』，
+    『aac』与『audio/aac』，
+    『m4a』与『audio/mp4』，
+    『mid』与『audio/midi』，
+    『midi』与『audio/midi』，
+    『aif』与『audio/aiff』，
+    『aiff』与『audio/aiff』，
+    『mp4』与『video/mp4』，
+    『m4v』与『video/mp4』，
+    『mpeg』与『video/mpeg』，
+    『mpg』与『video/mpeg』，
+    『webm』与『video/webm』，
+    『ogv』与『video/ogg』，
+    『mov』与『video/quicktime』，
+    『avi』与『video/x-msvideo』，
+    『mkv』与『video/x-matroska』，
+    『ts』与『video/mp2t』，
+    『3gp』与『video/3gpp』，
+    『3g2』与『video/3gpp2』，
+    『woff』与『font/woff』，
+    『woff2』与『font/woff2』，
+    『ttf』与『font/ttf』，
+    『otf』与『font/otf』，
+    『sfnt』与『font/sfnt』，
+    『eot』与『application/vnd.ms-fontobject』，
+    『pem』与『application/pem-certificate-chain』，
+    『cer』与『application/pkix-cert』，
+    『crt』与『application/x-x509-ca-cert』，
+    『der』与『application/pkix-cert』，
+    『p12』与『application/pkcs12』，
+    『pfx』与『application/pkcs12』，
+    『ps』与『application/postscript』，
+    『eps』与『application/postscript』，
+    『ai』与『application/postscript』，
+    『sql』与『application/sql』，
+    『yaml』与『application/yaml』，
+    『yml』与『application/yaml』，
+    『sh』与『application/x-sh』，
+    『swf』与『application/vnd.adobe.flash.movie』，
+    『abw』与『application/x-abiword』，
+    『azw』与『application/vnd.amazon.ebook』，
+    『kml』与『application/vnd.google-earth.kml+xml』，
+    『kmz』与『application/vnd.google-earth.kmz』，
+    『xhtml』与『application/xhtml+xml』，
+    『xht』与『application/xhtml+xml』，
+    『豫』与『text/plain』
+  】
+也。
+
+「查扩展类型」乃
+  化「字符串」而
+  化（「列」于（「字符串」合「字符串」））而
+  「字符串」
+也。
+「查扩展类型」者会「扩展」而会「余项」而
+  鉴「余项」而
+    有「罄」则『application/octet-stream』
+    或有（「缀」于「项」于「后项」）则
+      若「串相等」于「扩展」于（「项」中「零」）则（「项」中「一」）否则「查扩展类型」于「扩展」于「后项」
+也。
+
+「扩展媒体类型」乃化「字符串」而「字符串」也。
+「扩展媒体类型」者会「文件名」而
+  虑「扩展」者「扩展名尾段」于（「获取字符」于「文件名」）于『』而
+  虑「常用型」者「查扩展类型」于「扩展」于「扩展类型表」而
+  若「串相等」于「常用型」于『application/octet-stream』则
+    「查扩展类型」于「扩展」于「官方扩展表」
+  否则
+    「常用型」
+也。
+
+「：汉语：按媒体类型返回 freedesktop 图标名称。文言：循媒体之类还 freedesktop 图标之名。：」
+「媒体图标」乃化「字符串」而「字符串」也。
+「媒体图标」者会「媒体类型」而
+  若「串开头是它吗」于『image/』于「媒体类型」则
+    『image-x-generic』
+  否则
+    若「串开头是它吗」于『audio/』于「媒体类型」则『audio-x-generic』否则
+      若「串开头是它吗」于『video/』于「媒体类型」则『video-x-generic』否则
+        若「串开头是它吗」于『font/』于「媒体类型」则『font-x-generic』否则
+          若「串开头是它吗」于『text/』于「媒体类型」则
+            『text-x-generic』
+          否则
+            若「串相等」于「媒体类型」于『application/pdf』则
+              『application-pdf』
+            否则
+              若「或者」
+                于（「串相等」于「媒体类型」于『application/zip』）
+                于（「或者」
+                  于（「串相等」于「媒体类型」于『application/gzip』）
+                  于（「串相等」于「媒体类型」于『application/x-tar』））则
+                    『package-x-generic』
+              否则
+                若「或者」
+                  于（「串相等」于「媒体类型」于『application/vnd.microsoft.portable-executable』）
+                  于（「串相等」于「媒体类型」于『application/x-executable』）则『application-x-executable』
+                否则
+                  『application-octet-stream』
+也。

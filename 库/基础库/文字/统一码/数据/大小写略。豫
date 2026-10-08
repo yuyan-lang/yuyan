@@ -1,0 +1,1076 @@
+寻观「标准库」之书。
+
+「大小写略表0」乃化「整数」而「字符串」也。
+「大小写略表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『0027;Case_Ignorable
+002E;Case_Ignorable
+003A;Case_Ignorable
+005E;Case_Ignorable
+0060;Case_Ignorable
+00A8;Case_Ignorable
+00AD;Case_Ignorable
+00AF;Case_Ignorable
+00B4;Case_Ignorable
+00B7;Case_Ignorable
+00B8;Case_Ignorable
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「2」））于（「小于」于「桶」于「3」）则
+      『02B0..02C1;Case_Ignorable
+02C2..02C5;Case_Ignorable
+02C6..02D1;Case_Ignorable
+02D2..02DF;Case_Ignorable
+02E0..02E4;Case_Ignorable
+02E5..02EB;Case_Ignorable
+02EC;Case_Ignorable
+02ED;Case_Ignorable
+02EE;Case_Ignorable
+02EF..02FF;Case_Ignorable
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「3」））于（「小于」于「桶」于「4」）则
+        『0300..036F;Case_Ignorable
+0374;Case_Ignorable
+0375;Case_Ignorable
+037A;Case_Ignorable
+0384..0385;Case_Ignorable
+0387;Case_Ignorable
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「4」））于（「小于」于「桶」于「5」）则
+          『0483..0487;Case_Ignorable
+0488..0489;Case_Ignorable
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「5」））
+            于（「小于」于「桶」于「6」）则
+              『0558..0559;Case_Ignorable
+055F;Case_Ignorable
+058B..058C;Case_Ignorable
+0591..05BD;Case_Ignorable
+05BF;Case_Ignorable
+05C1..05C2;Case_Ignorable
+05C4..05C5;Case_Ignorable
+05C7..05C9;Case_Ignorable
+05F4;Case_Ignorable
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「6」））
+              于（「小于」于「桶」于「7」）则
+                『0600..0605;Case_Ignorable
+0610..061A;Case_Ignorable
+061C;Case_Ignorable
+0640;Case_Ignorable
+064B..065F;Case_Ignorable
+0670;Case_Ignorable
+06D6..06DC;Case_Ignorable
+06DD;Case_Ignorable
+06DF..06E4;Case_Ignorable
+06E5..06E6;Case_Ignorable
+06E7..06E8;Case_Ignorable
+06EA..06ED;Case_Ignorable
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「7」））
+                于（「小于」于「桶」于「8」）则
+                  『070F;Case_Ignorable
+0711;Case_Ignorable
+0730..074A;Case_Ignorable
+07A6..07B0;Case_Ignorable
+07EB..07F3;Case_Ignorable
+07F4..07F5;Case_Ignorable
+07FA;Case_Ignorable
+07FD;Case_Ignorable
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「8」））
+                  于（「小于」于「桶」于「9」）则
+                    『0816..0819;Case_Ignorable
+081A;Case_Ignorable
+081B..0823;Case_Ignorable
+0824;Case_Ignorable
+0825..0827;Case_Ignorable
+0828;Case_Ignorable
+0829..082D;Case_Ignorable
+0859..085B;Case_Ignorable
+0888;Case_Ignorable
+0890..0891;Case_Ignorable
+0897..089F;Case_Ignorable
+08C9;Case_Ignorable
+08CA..08E1;Case_Ignorable
+08E2;Case_Ignorable
+08E3..0902;Case_Ignorable
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「9」））
+                    于（「小于」于「桶」于「10」）则
+                      『08E3..0902;Case_Ignorable
+093A;Case_Ignorable
+093C;Case_Ignorable
+0941..0948;Case_Ignorable
+094D;Case_Ignorable
+0951..0957;Case_Ignorable
+0962..0963;Case_Ignorable
+0971;Case_Ignorable
+0981;Case_Ignorable
+09BC;Case_Ignorable
+09C1..09C4;Case_Ignorable
+09CD;Case_Ignorable
+09E2..09E3;Case_Ignorable
+09FE;Case_Ignorable
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「10」））
+                      于（「小于」于「桶」于「11」）则
+                        『0A01..0A02;Case_Ignorable
+0A3C;Case_Ignorable
+0A41..0A42;Case_Ignorable
+0A47..0A48;Case_Ignorable
+0A4B..0A4D;Case_Ignorable
+0A51;Case_Ignorable
+0A70..0A71;Case_Ignorable
+0A75;Case_Ignorable
+0A81..0A82;Case_Ignorable
+0ABC;Case_Ignorable
+0AC1..0AC5;Case_Ignorable
+0AC7..0AC8;Case_Ignorable
+0ACD;Case_Ignorable
+0AE2..0AE3;Case_Ignorable
+0AFA..0AFF;Case_Ignorable
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「11」））
+                        于（「小于」于「桶」于「12」）则
+                          『0B01;Case_Ignorable
+0B3C;Case_Ignorable
+0B3F;Case_Ignorable
+0B41..0B44;Case_Ignorable
+0B4D;Case_Ignorable
+0B53..0B56;Case_Ignorable
+0B62..0B63;Case_Ignorable
+0B82;Case_Ignorable
+0BC0;Case_Ignorable
+0BCD;Case_Ignorable
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「12」））
+                          于（「小于」于「桶」于「13」）则
+                            『0C00;Case_Ignorable
+0C04;Case_Ignorable
+0C3C;Case_Ignorable
+0C3E..0C40;Case_Ignorable
+0C46..0C48;Case_Ignorable
+0C4A..0C4D;Case_Ignorable
+0C55..0C56;Case_Ignorable
+0C62..0C63;Case_Ignorable
+0C81;Case_Ignorable
+0CBC;Case_Ignorable
+0CBF;Case_Ignorable
+0CC6;Case_Ignorable
+0CCC..0CCD;Case_Ignorable
+0CE2..0CE3;Case_Ignorable
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「13」））
+                            于（「小于」于「桶」于「14」）则
+                              『0D00..0D01;Case_Ignorable
+0D3B..0D3C;Case_Ignorable
+0D41..0D44;Case_Ignorable
+0D4D;Case_Ignorable
+0D62..0D63;Case_Ignorable
+0D81;Case_Ignorable
+0DCA;Case_Ignorable
+0DD2..0DD4;Case_Ignorable
+0DD6;Case_Ignorable
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「14」））
+                              于（「小于」于「桶」于「15」）则
+                                『0E31;Case_Ignorable
+0E34..0E3A;Case_Ignorable
+0E46;Case_Ignorable
+0E47..0E4E;Case_Ignorable
+0EB1;Case_Ignorable
+0EB4..0EBC;Case_Ignorable
+0EC6;Case_Ignorable
+0EC8..0ECE;Case_Ignorable
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「15」））
+                                于（「小于」于「桶」于「16」）则
+                                  『0F18..0F19;Case_Ignorable
+0F35;Case_Ignorable
+0F37;Case_Ignorable
+0F39;Case_Ignorable
+0F71..0F7E;Case_Ignorable
+0F80..0F84;Case_Ignorable
+0F86..0F87;Case_Ignorable
+0F8D..0F97;Case_Ignorable
+0F99..0FBC;Case_Ignorable
+0FC6;Case_Ignorable
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「16」））
+                                  于（「小于」于「桶」于「17」）则
+                                    『102D..1030;Case_Ignorable
+1032..1037;Case_Ignorable
+1039..103A;Case_Ignorable
+103D..103E;Case_Ignorable
+1058..1059;Case_Ignorable
+105E..1060;Case_Ignorable
+1071..1074;Case_Ignorable
+1082;Case_Ignorable
+1085..1086;Case_Ignorable
+108D;Case_Ignorable
+109D;Case_Ignorable
+10FC;Case_Ignorable
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「19」））
+                                    于（「小于」于「桶」于「20」）则
+                                      『135D..135F;Case_Ignorable
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「23」））
+                                      于（「小于」于「桶」于「24」）则
+                                        『1712..1714;Case_Ignorable
+1732..1733;Case_Ignorable
+1752..1753;Case_Ignorable
+1772..1773;Case_Ignorable
+17B4..17B5;Case_Ignorable
+17B7..17BD;Case_Ignorable
+17C6;Case_Ignorable
+17C9..17D3;Case_Ignorable
+17D7;Case_Ignorable
+17DD;Case_Ignorable
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「24」））
+                                        于（「小于」于「桶」于「25」）则
+                                          『180B..180D;Case_Ignorable
+180E;Case_Ignorable
+180F;Case_Ignorable
+1843;Case_Ignorable
+1885..1886;Case_Ignorable
+18A9;Case_Ignorable
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「25」））
+                                          于（「小于」于「桶」于「26」）则
+                                            『1920..1922;Case_Ignorable
+1927..1928;Case_Ignorable
+1932;Case_Ignorable
+1939..193B;Case_Ignorable
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「26」））
+                                            于（「小于」于「桶」于「27」）则
+                                              『1A17..1A18;Case_Ignorable
+1A1B;Case_Ignorable
+1A56;Case_Ignorable
+1A58..1A5E;Case_Ignorable
+1A60;Case_Ignorable
+1A62;Case_Ignorable
+1A65..1A6C;Case_Ignorable
+1A73..1A7C;Case_Ignorable
+1A7F;Case_Ignorable
+1AA7;Case_Ignorable
+1AB0..1ABD;Case_Ignorable
+1ABE;Case_Ignorable
+1ABF..1AF0;Case_Ignorable
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「27」））
+                                              于（「小于」于「桶」于「28」）则
+                                                『1B00..1B03;Case_Ignorable
+1B34;Case_Ignorable
+1B36..1B3A;Case_Ignorable
+1B3C;Case_Ignorable
+1B42;Case_Ignorable
+1B6B..1B73;Case_Ignorable
+1B80..1B81;Case_Ignorable
+1BA2..1BA5;Case_Ignorable
+1BA8..1BA9;Case_Ignorable
+1BAB..1BAD;Case_Ignorable
+1BE6;Case_Ignorable
+1BE8..1BE9;Case_Ignorable
+1BED;Case_Ignorable
+1BEF..1BF1;Case_Ignorable
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「28」））
+                                                于（「小于」于「桶」于「29」）则
+                                                  『1C2C..1C33;Case_Ignorable
+1C36..1C37;Case_Ignorable
+1C78..1C7D;Case_Ignorable
+1CD0..1CD2;Case_Ignorable
+1CD4..1CE0;Case_Ignorable
+1CE2..1CE8;Case_Ignorable
+1CED;Case_Ignorable
+1CF4;Case_Ignorable
+1CF8..1CF9;Case_Ignorable
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「29」））
+                                                  于（「小于」于「桶」于「30」）则
+                                                    『1D2C..1D6A;Case_Ignorable
+1D78;Case_Ignorable
+1D9B..1DBF;Case_Ignorable
+1DC0..1DFF;Case_Ignorable
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「31」））
+                                                    于（「小于」于「桶」于「32」）则
+                                                      『1FBD;Case_Ignorable
+1FBF..1FC1;Case_Ignorable
+1FCD..1FCF;Case_Ignorable
+1FDD..1FDF;Case_Ignorable
+1FED..1FEF;Case_Ignorable
+1FFD..1FFE;Case_Ignorable
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「32」））
+                                                      于（「小于」于「桶」于「33」）则
+                                                        『200B..200F;Case_Ignorable
+2018;Case_Ignorable
+2019;Case_Ignorable
+2024;Case_Ignorable
+2027;Case_Ignorable
+202A..202E;Case_Ignorable
+2060..2064;Case_Ignorable
+2066..206F;Case_Ignorable
+2071;Case_Ignorable
+207F;Case_Ignorable
+208F..209F;Case_Ignorable
+20D0..20DC;Case_Ignorable
+20DD..20E0;Case_Ignorable
+20E1;Case_Ignorable
+20E2..20E4;Case_Ignorable
+20E5..20F0;Case_Ignorable
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「44」））
+                                                        于（「小于」于「桶」于「45」）则
+                                                          『2C7C..2C7D;Case_Ignorable
+2CEF..2CF1;Case_Ignorable
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「45」））
+                                                          于（「小于」于「桶」于「46」）则
+                                                            『2D6F;Case_Ignorable
+2D7F;Case_Ignorable
+2DE0..2DFF;Case_Ignorable
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「46」））
+                                                            于（「小于」于「桶」于「47」）则
+                                                            『2E2F;Case_Ignorable
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「48」））
+                                                            于（「小于」于「桶」于「49」）则
+                                                            『3005;Case_Ignorable
+302A..302D;Case_Ignorable
+3031..3035;Case_Ignorable
+303B;Case_Ignorable
+3099..309A;Case_Ignorable
+309B..309C;Case_Ignorable
+309D..309E;Case_Ignorable
+30FC..30FE;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「160」））
+                                                            于（「小于」于「桶」于「161」）则
+                                                            『A015;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「164」））
+                                                            于（「小于」于「桶」于「165」）则
+                                                            『A4F8..A4FD;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「166」））
+                                                            于（「小于」于「桶」于「167」）则
+                                                            『A60C;Case_Ignorable
+A66F;Case_Ignorable
+A670..A672;Case_Ignorable
+A674..A67D;Case_Ignorable
+A67F;Case_Ignorable
+A69C..A69D;Case_Ignorable
+A69E..A69F;Case_Ignorable
+A6F0..A6F1;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「167」））
+                                                            于（「小于」于「桶」于「168」）则
+                                                            『A700..A716;Case_Ignorable
+A717..A71F;Case_Ignorable
+A720..A721;Case_Ignorable
+A770;Case_Ignorable
+A788;Case_Ignorable
+A789..A78A;Case_Ignorable
+A7F1..A7F4;Case_Ignorable
+A7F8..A7F9;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「168」））
+                                                            于（「小于」于「桶」于「169」）则
+                                                            『A802;Case_Ignorable
+A806;Case_Ignorable
+A80B;Case_Ignorable
+A825..A826;Case_Ignorable
+A82C;Case_Ignorable
+A8C4..A8C5;Case_Ignorable
+A8E0..A8F1;Case_Ignorable
+A8FF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「169」））
+                                                            于（「小于」于「桶」于「170」）则
+                                                            『A926..A92D;Case_Ignorable
+A947..A951;Case_Ignorable
+A980..A982;Case_Ignorable
+A9B3;Case_Ignorable
+A9B6..A9B9;Case_Ignorable
+A9BC..A9BD;Case_Ignorable
+A9CF;Case_Ignorable
+A9E5;Case_Ignorable
+A9E6;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「170」））
+                                                            于（「小于」于「桶」于「171」）则
+                                                            『AA29..AA2E;Case_Ignorable
+AA31..AA32;Case_Ignorable
+AA35..AA36;Case_Ignorable
+AA43;Case_Ignorable
+AA4C;Case_Ignorable
+AA70;Case_Ignorable
+AA7C;Case_Ignorable
+AAB0;Case_Ignorable
+AAB2..AAB4;Case_Ignorable
+AAB7..AAB8;Case_Ignorable
+AABE..AABF;Case_Ignorable
+AAC1;Case_Ignorable
+AADD;Case_Ignorable
+AAEC..AAED;Case_Ignorable
+AAF3..AAF4;Case_Ignorable
+AAF6;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「171」））
+                                                            于（「小于」于「桶」于「172」）则
+                                                            『AB5B;Case_Ignorable
+AB5C..AB5F;Case_Ignorable
+AB69;Case_Ignorable
+AB6A..AB6B;Case_Ignorable
+ABE5;Case_Ignorable
+ABE8;Case_Ignorable
+ABED;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「251」））
+                                                            于（「小于」于「桶」于「252」）则
+                                                            『FB1E;Case_Ignorable
+FBB2..FBC2;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「254」））
+                                                            于（「小于」于「桶」于「255」）则
+                                                            『FE00..FE0F;Case_Ignorable
+FE13;Case_Ignorable
+FE20..FE2F;Case_Ignorable
+FE52;Case_Ignorable
+FE55;Case_Ignorable
+FEFF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「255」））
+                                                            于（「小于」于「桶」于「256」）则
+                                                            『FF07;Case_Ignorable
+FF0E;Case_Ignorable
+FF1A;Case_Ignorable
+FF3E;Case_Ignorable
+FF40;Case_Ignorable
+FF70;Case_Ignorable
+FF9E..FF9F;Case_Ignorable
+FFE3;Case_Ignorable
+FFF9..FFFB;Case_Ignorable
+』
+                                                            否则
+                                                            『』
+也。
+
+「大小写略表1」乃化「整数」而「字符串」也。
+「大小写略表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「257」））于（「小于」于「桶」于「258」）则
+    『101FD;Case_Ignorable
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「258」））于（「小于」于「桶」于「259」）则
+      『102E0;Case_Ignorable
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「259」））于（「小于」于「桶」于「260」）则
+        『10376..1037A;Case_Ignorable
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「263」））于（「小于」于「桶」于「264」）则
+          『10780..10785;Case_Ignorable
+10787..107B0;Case_Ignorable
+107B2..107BF;Case_Ignorable
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「266」））
+            于（「小于」于「桶」于「267」）则
+              『10A01..10A03;Case_Ignorable
+10A05..10A06;Case_Ignorable
+10A0C..10A0F;Case_Ignorable
+10A38..10A3A;Case_Ignorable
+10A3F;Case_Ignorable
+10AE5..10AE6;Case_Ignorable
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「269」））
+              于（「小于」于「桶」于「270」）则
+                『10D24..10D27;Case_Ignorable
+10D4E;Case_Ignorable
+10D69..10D6D;Case_Ignorable
+10D6F;Case_Ignorable
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「270」））
+                于（「小于」于「桶」于「271」）则
+                  『10EAB..10EAC;Case_Ignorable
+10EC5;Case_Ignorable
+10EC9..10ECA;Case_Ignorable
+10ECB..10ECF;Case_Ignorable
+10EF0..10EFF;Case_Ignorable
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「271」））
+                  于（「小于」于「桶」于「272」）则
+                    『10F46..10F50;Case_Ignorable
+10F82..10F85;Case_Ignorable
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「272」））
+                    于（「小于」于「桶」于「273」）则
+                      『11001;Case_Ignorable
+11038..11046;Case_Ignorable
+11070;Case_Ignorable
+11073..11074;Case_Ignorable
+1107F..11081;Case_Ignorable
+110B3..110B6;Case_Ignorable
+110B9..110BA;Case_Ignorable
+110BD;Case_Ignorable
+110C2;Case_Ignorable
+110CD;Case_Ignorable
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「273」））
+                      于（「小于」于「桶」于「274」）则
+                        『11100..11102;Case_Ignorable
+11127..1112B;Case_Ignorable
+1112D..11134;Case_Ignorable
+11173;Case_Ignorable
+11180..11181;Case_Ignorable
+111B6..111BE;Case_Ignorable
+111C9..111CC;Case_Ignorable
+111CF;Case_Ignorable
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「274」））
+                        于（「小于」于「桶」于「275」）则
+                          『1122F..11231;Case_Ignorable
+11234;Case_Ignorable
+11236..11237;Case_Ignorable
+1123E;Case_Ignorable
+11241;Case_Ignorable
+112DF;Case_Ignorable
+112E3..112EA;Case_Ignorable
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「275」））
+                          于（「小于」于「桶」于「276」）则
+                            『11300..11301;Case_Ignorable
+1133B..1133C;Case_Ignorable
+11340;Case_Ignorable
+11366..1136C;Case_Ignorable
+11370..11374;Case_Ignorable
+113BB..113C0;Case_Ignorable
+113CE;Case_Ignorable
+113D0;Case_Ignorable
+113D2;Case_Ignorable
+113E1..113E2;Case_Ignorable
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「276」））
+                            于（「小于」于「桶」于「277」）则
+                              『11438..1143F;Case_Ignorable
+11442..11444;Case_Ignorable
+11446;Case_Ignorable
+1145E;Case_Ignorable
+114B3..114B8;Case_Ignorable
+114BA;Case_Ignorable
+114BF..114C0;Case_Ignorable
+114C2..114C3;Case_Ignorable
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「277」））
+                              于（「小于」于「桶」于「278」）则
+                                『115B2..115B5;Case_Ignorable
+115BC..115BD;Case_Ignorable
+115BF..115C0;Case_Ignorable
+115DC..115DD;Case_Ignorable
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「278」））
+                                于（「小于」于「桶」于「279」）则
+                                  『11633..1163A;Case_Ignorable
+1163D;Case_Ignorable
+1163F..11640;Case_Ignorable
+116AB;Case_Ignorable
+116AD;Case_Ignorable
+116B0..116B5;Case_Ignorable
+116B7;Case_Ignorable
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「279」））
+                                  于（「小于」于「桶」于「280」）则
+                                    『1171D;Case_Ignorable
+1171F;Case_Ignorable
+11722..11725;Case_Ignorable
+11727..1172B;Case_Ignorable
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「280」））
+                                    于（「小于」于「桶」于「281」）则
+                                      『1182F..11837;Case_Ignorable
+11839..1183A;Case_Ignorable
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「281」））
+                                      于（「小于」于「桶」于「282」）则
+                                        『1193B..1193C;Case_Ignorable
+1193E;Case_Ignorable
+11943;Case_Ignorable
+119D4..119D7;Case_Ignorable
+119DA..119DB;Case_Ignorable
+119E0;Case_Ignorable
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「282」））
+                                        于（「小于」于「桶」于「283」）则
+                                          『11A01..11A0A;Case_Ignorable
+11A33..11A38;Case_Ignorable
+11A3B..11A3E;Case_Ignorable
+11A47;Case_Ignorable
+11A51..11A56;Case_Ignorable
+11A59..11A5B;Case_Ignorable
+11A8A..11A96;Case_Ignorable
+11A98..11A99;Case_Ignorable
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「283」））
+                                          于（「小于」于「桶」于「284」）则
+                                            『11B60;Case_Ignorable
+11B62..11B64;Case_Ignorable
+11B66;Case_Ignorable
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「284」））
+                                            于（「小于」于「桶」于「285」）则
+                                              『11C30..11C36;Case_Ignorable
+11C38..11C3D;Case_Ignorable
+11C3F;Case_Ignorable
+11C92..11CA7;Case_Ignorable
+11CAA..11CB0;Case_Ignorable
+11CB2..11CB3;Case_Ignorable
+11CB5..11CB6;Case_Ignorable
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「285」））
+                                              于（「小于」于「桶」于「286」）则
+                                                『11D31..11D36;Case_Ignorable
+11D3A;Case_Ignorable
+11D3C..11D3D;Case_Ignorable
+11D3F..11D45;Case_Ignorable
+11D47;Case_Ignorable
+11D90..11D91;Case_Ignorable
+11D95;Case_Ignorable
+11D97;Case_Ignorable
+11DD9;Case_Ignorable
+11DF0;Case_Ignorable
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「286」））
+                                                于（「小于」于「桶」于「287」）则
+                                                  『11EF3..11EF4;Case_Ignorable
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「287」））
+                                                  于（「小于」于「桶」于「288」）则
+                                                    『11F00..11F01;Case_Ignorable
+11F36..11F3A;Case_Ignorable
+11F40;Case_Ignorable
+11F42;Case_Ignorable
+11F5A;Case_Ignorable
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「308」））
+                                                    于（「小于」于「桶」于「309」）则
+                                                      『13430..1343F;Case_Ignorable
+13440;Case_Ignorable
+13447..13455;Case_Ignorable
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「353」））
+                                                      于（「小于」于「桶」于「354」）则
+                                                        『1611E..16129;Case_Ignorable
+1612D..1612F;Case_Ignorable
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「362」））
+                                                        于（「小于」于「桶」于「363」）则
+                                                          『16AF0..16AF4;Case_Ignorable
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「363」））
+                                                          于（「小于」于「桶」于「364」）则
+                                                            『16B30..16B36;Case_Ignorable
+16B40..16B43;Case_Ignorable
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「365」））
+                                                            于（「小于」于「桶」于「366」）则
+                                                            『16D40..16D42;Case_Ignorable
+16D6B..16D6C;Case_Ignorable
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「367」））
+                                                            于（「小于」于「桶」于「368」）则
+                                                            『16F4F;Case_Ignorable
+16F8F..16F92;Case_Ignorable
+16F93..16F9F;Case_Ignorable
+16FE0..16FE1;Case_Ignorable
+16FE3;Case_Ignorable
+16FE4;Case_Ignorable
+16FF2..16FF3;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「431」））
+                                                            于（「小于」于「桶」于「432」）则
+                                                            『1AFF0..1AFF3;Case_Ignorable
+1AFF5..1AFFB;Case_Ignorable
+1AFFD..1AFFE;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「444」））
+                                                            于（「小于」于「桶」于「445」）则
+                                                            『1BC9D..1BC9E;Case_Ignorable
+1BCA0..1BCA3;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「463」））
+                                                            于（「小于」于「桶」于「464」）则
+                                                            『1CF00..1CF2D;Case_Ignorable
+1CF30..1CF46;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「465」））
+                                                            于（「小于」于「桶」于「466」）则
+                                                            『1D127..1D128;Case_Ignorable
+1D167..1D169;Case_Ignorable
+1D173..1D17A;Case_Ignorable
+1D17B..1D182;Case_Ignorable
+1D185..1D18B;Case_Ignorable
+1D1AA..1D1AD;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「466」））
+                                                            于（「小于」于「桶」于「467」）则
+                                                            『1D242..1D244;Case_Ignorable
+1D25B..1D25C;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「474」））
+                                                            于（「小于」于「桶」于「475」）则
+                                                            『1DA00..1DA36;Case_Ignorable
+1DA3B..1DA6C;Case_Ignorable
+1DA75;Case_Ignorable
+1DA84;Case_Ignorable
+1DA9B..1DA9F;Case_Ignorable
+1DAA1..1DAAF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「479」））
+                                                            于（「小于」于「桶」于「480」）则
+                                                            『1DFCD..1DFFF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「480」））
+                                                            于（「小于」于「桶」于「481」）则
+                                                            『1E000..1E006;Case_Ignorable
+1E008..1E018;Case_Ignorable
+1E01B..1E021;Case_Ignorable
+1E023..1E024;Case_Ignorable
+1E026..1E02A;Case_Ignorable
+1E030..1E06D;Case_Ignorable
+1E08F;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「481」））
+                                                            于（「小于」于「桶」于「482」）则
+                                                            『1E130..1E136;Case_Ignorable
+1E137..1E13D;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「482」））
+                                                            于（「小于」于「桶」于「483」）则
+                                                            『1E2AE;Case_Ignorable
+1E2EC..1E2EF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「484」））
+                                                            于（「小于」于「桶」于「485」）则
+                                                            『1E4EB;Case_Ignorable
+1E4EC..1E4EF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「485」））
+                                                            于（「小于」于「桶」于「486」）则
+                                                            『1E5EE..1E5EF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「486」））
+                                                            于（「小于」于「桶」于「487」）则
+                                                            『1E6E3;Case_Ignorable
+1E6E6;Case_Ignorable
+1E6EE..1E6EF;Case_Ignorable
+1E6F5;Case_Ignorable
+1E6FF;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「488」））
+                                                            于（「小于」于「桶」于「489」）则
+                                                            『1E8D0..1E8D6;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「489」））
+                                                            于（「小于」于「桶」于「490」）则
+                                                            『1E944..1E94A;Case_Ignorable
+1E94B;Case_Ignorable
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「499」））
+                                                            于（「小于」于「桶」于「500」）则
+                                                            『1F3FB..1F3FF;Case_Ignorable
+』
+                                                            否则
+                                                            『』
+也。
+
+「大小写略表2」乃化「整数」而「字符串」也。
+「大小写略表2」者会「桶」而
+  『』
+也。
+
+「大小写略表3」乃化「整数」而「字符串」也。
+「大小写略表3」者会「桶」而
+  『』
+也。
+
+「大小写略表4」乃化「整数」而「字符串」也。
+「大小写略表4」者会「桶」而
+  『』
+也。
+
+「大小写略表5」乃化「整数」而「字符串」也。
+「大小写略表5」者会「桶」而
+  『』
+也。
+
+「大小写略表6」乃化「整数」而「字符串」也。
+「大小写略表6」者会「桶」而
+  『』
+也。
+
+「大小写略表7」乃化「整数」而「字符串」也。
+「大小写略表7」者会「桶」而
+  『』
+也。
+
+「大小写略表8」乃化「整数」而「字符串」也。
+「大小写略表8」者会「桶」而
+  『』
+也。
+
+「大小写略表9」乃化「整数」而「字符串」也。
+「大小写略表9」者会「桶」而
+  『』
+也。
+
+「大小写略表10」乃化「整数」而「字符串」也。
+「大小写略表10」者会「桶」而
+  『』
+也。
+
+「大小写略表11」乃化「整数」而「字符串」也。
+「大小写略表11」者会「桶」而
+  『』
+也。
+
+「大小写略表12」乃化「整数」而「字符串」也。
+「大小写略表12」者会「桶」而
+  『』
+也。
+
+「大小写略表13」乃化「整数」而「字符串」也。
+「大小写略表13」者会「桶」而
+  『』
+也。
+
+「大小写略表14」乃化「整数」而「字符串」也。
+「大小写略表14」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3584」））于（「小于」于「桶」于「3585」）则
+    『E0001;Case_Ignorable
+E0020..E007F;Case_Ignorable
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「3585」））于（「小于」于「桶」于「3586」）则
+      『E0100..E01EF;Case_Ignorable
+』
+    否则
+      『』
+也。
+
+「大小写略表15」乃化「整数」而「字符串」也。
+「大小写略表15」者会「桶」而
+  『』
+也。
+
+「大小写略表16」乃化「整数」而「字符串」也。
+「大小写略表16」者会「桶」而
+  『』
+也。
+
+「大小写略表」乃化「整数」而「字符串」也。
+「大小写略表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「大小写略表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「大小写略表1」于「桶」否则
+      若「小于」于「桶」于「768」则「大小写略表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「大小写略表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「大小写略表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「大小写略表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「大小写略表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「大小写略表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「大小写略表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「大小写略表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「大小写略表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「大小写略表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「大小写略表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「大小写略表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「大小写略表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「大小写略表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「大小写略表16」于「桶」
+                                  否则
+                                    『』
+也。
