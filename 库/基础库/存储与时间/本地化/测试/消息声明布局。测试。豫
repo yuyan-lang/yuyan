@@ -1,0 +1,84 @@
+寻观「标准库」之书。
+寻观「单元测试」之书。
+寻观「标准库」之「数据结构」之「字节串」之书。
+寻「标准库」之「语言核心」之「原语」之书。
+寻观「本地化」之「消息」之书。
+
+「：汉语：公开入口验证GNU声明词与引用之间的物理换行、注释及目录头引导。
+文言：循公口验GNU声明词引文之间换行、注释及目录头之引。：」
+「换行声明」者「读取便携消息」于『msgid
+"apple"
+msgstr
+"fruit"
+』也。
+
+「断言串相等」于『fruit』于（「查消息」于「换行声明」于『apple』）。
+
+「注释声明」者「读取便携消息」于『msgid # comment "ignored"
+# another comment
+"apple"
+msgstr # translated
+"fruit"
+』也。
+
+「断言串相等」于『fruit』于（「查消息」于「注释声明」于『apple』）。
+
+「上下文声明」者「读取便携消息」于『msgctxt
+"menu"
+msgid
+"apple"
+msgstr
+"fruit"
+』也。
+
+「断言串相等」于『fruit』于（「查上下文消息」于「上下文声明」于『menu』于『apple』）。
+
+「复数声明」者
+  「读取便携消息」于『msgid
+"apple"
+msgid_plural # plural
+"apples"
+msgstr[0]
+"fruit"
+msgstr [ 1 ] # form
+"fruits"
+』也。
+
+「断言串相等」于『fruits』于（「查复数形消息」于「复数声明」于『』于『apple』于『apples』于「一」）。
+
+「西文头」者
+  「字符串转字节串」
+    于『msgid # header
+""
+msgstr
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+msgid
+"apple"
+msgstr # real Latin1 byte
+"caf』也。
+
+「西文源」者
+  「拼接字节串」于「西文头」于（「拼接字节串」于（「单字节串」于「233」）于（「字符串转字节串」于『"
+』））也。
+
+「西文声明」者「读取便携消息」于（「原语」之「不安全转换」授以「字节串」授以「字符串」于「西文源」）也。
+
+「断言串相等」于『café』于（「查消息」于「西文声明」于『apple』）。
+
+「拆序」者「读取便携消息」于『msgid "apple"
+msgid_plural "apples"
+msgstr[1 0]
+"wrong"
+msgid "next" msgstr "good"
+』也。
+
+「断言串相等」于『apples』于（「查复数形消息」于「拆序」于『』于『apple』于『apples』于「10」）。
+「断言串相等」于『good』于（「查消息」于「拆序」于『next』）。
+
+「缺引文」者「读取便携消息」于『msgid
+msgstr "wrong"
+msgid "next" msgstr "good"
+』也。
+
+「断言串相等」于『』于（「查消息」于「缺引文」于『』）。
+「断言串相等」于『good』于（「查消息」于「缺引文」于『next』）。
