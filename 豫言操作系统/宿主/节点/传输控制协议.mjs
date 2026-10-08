@@ -116,6 +116,15 @@ export function 创建传输控制协议能力({模块字节} = {}) {
     return 整果(号, 柄, 字节.length, 起);
   }
   const 能力 = {
+    数据报_交换: (服务器, 端口, 超时, 查询) => {
+      if (!核) return [-58, new Uint8Array()];
+      const 字节 = typeof 服务器 === 'string' ? 编码.encode(服务器) : 服务器;
+      if (字节.length > 65536 || 查询.length > 65535) return [-7, new Uint8Array()];
+      new Uint8Array(核.内存.buffer, 核.主机缓冲(), 字节.length).set(字节);
+      new Uint8Array(核.内存.buffer, 核.字节缓冲(), 查询.length).set(查询);
+      const 状态 = Number(核.数据报交换(字节.length, Number(端口), Number(超时), 查询.length));
+      return [状态, 状态 === 0 ? new Uint8Array(核.内存.buffer, 核.字节缓冲(), 核.结果值()).slice() : new Uint8Array()];
+    },
     传输控制协议_监听: (主机, 端口, 队长) => 主机果(77, 主机, 端口, 队长),
     传输控制协议_开始连接: (主机, 端口) => 主机果(78, 主机, 端口),
     传输控制协议_完成连接: 柄 => 整果(79, 柄),
@@ -135,5 +144,10 @@ export function 创建传输控制协议能力({模块字节} = {}) {
       return 解码.decode(new Uint8Array(核.内存.buffer, 核.字节缓冲(), 核.结果值()));
     },
   };
-  return {可用: 核 !== null, 能力, 关闭: () => 系统.关闭()};
+  return {可用: 核 !== null, 能力, 读取当前Unix毫秒() {
+    if (!核) throw Error('墙钟系统资源暂不可用');
+    const 值 = 核.当前Unix毫秒();
+    if (值 === -9223372036854775808n) throw Error('墙钟系统读取失败');
+    return 值;
+  }, 关闭: () => 系统.关闭()};
 }

@@ -8,6 +8,16 @@ const {建立编译线程} = require('./编译线程.cjs');
 const {创建终端输入} = require('./终端输入.mjs');
 const {读取标准终端尺寸} = require('./终端尺寸.mjs');
 const {创建文件能力, 提取文件授权} = require('./文件能力.mjs');
+const {创建传输控制协议能力} = require('./传输控制协议.mjs');
+let 共享时钟;
+// 汉语：公共墙钟复用原生共享核心，首次调用时载入，保留全六十四位Unix毫秒。文言：公墙钟复原生共核，初调乃载，存全六十四位Unix毫秒。
+const 读取共享Unix毫秒=()=>{
+  if(!共享时钟){
+    const 径=[process.env.YY传输控制共享,路径.join(__dirname,'yy传输控制共享.wasm'),路径.resolve('yy传输控制共享.wasm')].find(名=>名&&文件.existsSync(名));
+    共享时钟=创建传输控制协议能力({模块字节:径?文件.readFileSync(径):null});
+  }
+  return 共享时钟.读取当前Unix毫秒();
+};
 // 文言：同一宿主工序对同一 Wasm 只散列一次。汉语：同一 Node worker 对同一路径只计算一次内容 SHA-256。
 const 当前程序SHA256缓存=new Map();
 const 获取程序内容SHA256=名=>{const 全径=路径.resolve(名),旧=当前程序SHA256缓存.get(全径);if(旧!==undefined)return 旧;const 摘要=密码.createHash('sha256').update(文件.readFileSync(全径)).digest('hex');当前程序SHA256缓存.set(全径,摘要);return 摘要;};
@@ -310,7 +320,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     验Ed25519:['豫言_密码_Ed25519验',串三],加密AES256GCM:['豫言_密码_AES256GCM加密',串四],解密AES256GCM结果:['豫言_密码_AES256GCM解密结果',串四]
   });
   const 带型导入=边界胶水?边界胶水.造边界导入(模块,桥,{标准库:标准库实现,构建基础:构建基础实现,系统库调用:系统库调用实现,安全外壳密码:安全外壳密码实现,诺节宿主:文件能力.实现,
-    豫言操作系统控制台:{读取标准终端尺寸},...(边界回环?.实现表??{})}):{};
+    豫言操作系统控制台:{读取标准终端尺寸},豫言操作系统时间:{读取当前Unix毫秒:读取共享Unix毫秒},...(边界回环?.实现表??{})}):{};
   const 实例=new WebAssembly.Instance(模块,{...带型导入});
   let 退出码=0;
   // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 初始化各模块之后，应用若实现了《豫言操作系统启动》的「启动程序」（导出 豫言操作系统启动/启动程序），就调用它；旧产物没有这个导出，照旧只跑 _start。

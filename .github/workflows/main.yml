@@ -223,6 +223,22 @@ jobs:
       - name: 以当前豫构自举并核对定点，生成本机原生工具链
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
 
+      - name: 构建共用传输控制内核
+        run: >-
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 传输控制共享入口
+          --编译器 ./yy4_bs.wasm --输出 yy传输控制共享.wasm -j 24
+
+      - name: 核验网络端点授权与应用绑定
+        run: |
+          node 豫言操作系统/宿主/节点/传输控制协议授权。测试.mjs
+          node --experimental-ffi 豫言操作系统/宿主/节点/传输控制应用绑定。测试.mjs
+
+      - name: 苹果共享传输控制回环及系统调用
+        if: runner.os == 'macOS'
+        run: |
+          node --experimental-ffi 豫言操作系统/宿主/节点/传输控制协议系统调用。测试.mjs
+          node --experimental-ffi 豫言操作系统/宿主/节点/传输控制协议共享。测试.mjs yy传输控制共享.wasm
+
       - name: 构建定位读取共用豫核
         run: >-
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 文件定位共享入口
