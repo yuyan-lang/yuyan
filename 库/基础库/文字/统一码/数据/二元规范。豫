@@ -1,0 +1,1502 @@
+寻观「标准库」之书。
+
+「二元规范表0」乃化「整数」而「字符串」也。
+「二元规范表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『0041..005A;Changes_When_NFKC_Casefolded
+00A0;Changes_When_NFKC_Casefolded
+00A8;Changes_When_NFKC_Casefolded
+00AA;Changes_When_NFKC_Casefolded
+00AD;Changes_When_NFKC_Casefolded
+00AF;Changes_When_NFKC_Casefolded
+00B2..00B3;Changes_When_NFKC_Casefolded
+00B4;Changes_When_NFKC_Casefolded
+00B5;Changes_When_NFKC_Casefolded
+00B8;Changes_When_NFKC_Casefolded
+00B9;Changes_When_NFKC_Casefolded
+00BA;Changes_When_NFKC_Casefolded
+00BC..00BE;Changes_When_NFKC_Casefolded
+00C0..00D6;Changes_When_NFKC_Casefolded
+00D8..00DF;Changes_When_NFKC_Casefolded
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「1」））于（「小于」于「桶」于「2」）则
+      『0100;Changes_When_NFKC_Casefolded
+0102;Changes_When_NFKC_Casefolded
+0104;Changes_When_NFKC_Casefolded
+0106;Changes_When_NFKC_Casefolded
+0108;Changes_When_NFKC_Casefolded
+010A;Changes_When_NFKC_Casefolded
+010C;Changes_When_NFKC_Casefolded
+010E;Changes_When_NFKC_Casefolded
+0110;Changes_When_NFKC_Casefolded
+0112;Changes_When_NFKC_Casefolded
+0114;Changes_When_NFKC_Casefolded
+0116;Changes_When_NFKC_Casefolded
+0118;Changes_When_NFKC_Casefolded
+011A;Changes_When_NFKC_Casefolded
+011C;Changes_When_NFKC_Casefolded
+011E;Changes_When_NFKC_Casefolded
+0120;Changes_When_NFKC_Casefolded
+0122;Changes_When_NFKC_Casefolded
+0124;Changes_When_NFKC_Casefolded
+0126;Changes_When_NFKC_Casefolded
+0128;Changes_When_NFKC_Casefolded
+012A;Changes_When_NFKC_Casefolded
+012C;Changes_When_NFKC_Casefolded
+012E;Changes_When_NFKC_Casefolded
+0130;Changes_When_NFKC_Casefolded
+0132..0134;Changes_When_NFKC_Casefolded
+0136;Changes_When_NFKC_Casefolded
+0139;Changes_When_NFKC_Casefolded
+013B;Changes_When_NFKC_Casefolded
+013D;Changes_When_NFKC_Casefolded
+013F..0141;Changes_When_NFKC_Casefolded
+0143;Changes_When_NFKC_Casefolded
+0145;Changes_When_NFKC_Casefolded
+0147;Changes_When_NFKC_Casefolded
+0149..014A;Changes_When_NFKC_Casefolded
+014C;Changes_When_NFKC_Casefolded
+014E;Changes_When_NFKC_Casefolded
+0150;Changes_When_NFKC_Casefolded
+0152;Changes_When_NFKC_Casefolded
+0154;Changes_When_NFKC_Casefolded
+0156;Changes_When_NFKC_Casefolded
+0158;Changes_When_NFKC_Casefolded
+015A;Changes_When_NFKC_Casefolded
+015C;Changes_When_NFKC_Casefolded
+015E;Changes_When_NFKC_Casefolded
+0160;Changes_When_NFKC_Casefolded
+0162;Changes_When_NFKC_Casefolded
+0164;Changes_When_NFKC_Casefolded
+0166;Changes_When_NFKC_Casefolded
+0168;Changes_When_NFKC_Casefolded
+016A;Changes_When_NFKC_Casefolded
+016C;Changes_When_NFKC_Casefolded
+016E;Changes_When_NFKC_Casefolded
+0170;Changes_When_NFKC_Casefolded
+0172;Changes_When_NFKC_Casefolded
+0174;Changes_When_NFKC_Casefolded
+0176;Changes_When_NFKC_Casefolded
+0178..0179;Changes_When_NFKC_Casefolded
+017B;Changes_When_NFKC_Casefolded
+017D;Changes_When_NFKC_Casefolded
+017F;Changes_When_NFKC_Casefolded
+0181..0182;Changes_When_NFKC_Casefolded
+0184;Changes_When_NFKC_Casefolded
+0186..0187;Changes_When_NFKC_Casefolded
+0189..018B;Changes_When_NFKC_Casefolded
+018E..0191;Changes_When_NFKC_Casefolded
+0193..0194;Changes_When_NFKC_Casefolded
+0196..0198;Changes_When_NFKC_Casefolded
+019C..019D;Changes_When_NFKC_Casefolded
+019F..01A0;Changes_When_NFKC_Casefolded
+01A2;Changes_When_NFKC_Casefolded
+01A4;Changes_When_NFKC_Casefolded
+01A6..01A7;Changes_When_NFKC_Casefolded
+01A9;Changes_When_NFKC_Casefolded
+01AC;Changes_When_NFKC_Casefolded
+01AE..01AF;Changes_When_NFKC_Casefolded
+01B1..01B3;Changes_When_NFKC_Casefolded
+01B5;Changes_When_NFKC_Casefolded
+01B7..01B8;Changes_When_NFKC_Casefolded
+01BC;Changes_When_NFKC_Casefolded
+01C4..01CD;Changes_When_NFKC_Casefolded
+01CF;Changes_When_NFKC_Casefolded
+01D1;Changes_When_NFKC_Casefolded
+01D3;Changes_When_NFKC_Casefolded
+01D5;Changes_When_NFKC_Casefolded
+01D7;Changes_When_NFKC_Casefolded
+01D9;Changes_When_NFKC_Casefolded
+01DB;Changes_When_NFKC_Casefolded
+01DE;Changes_When_NFKC_Casefolded
+01E0;Changes_When_NFKC_Casefolded
+01E2;Changes_When_NFKC_Casefolded
+01E4;Changes_When_NFKC_Casefolded
+01E6;Changes_When_NFKC_Casefolded
+01E8;Changes_When_NFKC_Casefolded
+01EA;Changes_When_NFKC_Casefolded
+01EC;Changes_When_NFKC_Casefolded
+01EE;Changes_When_NFKC_Casefolded
+01F1..01F4;Changes_When_NFKC_Casefolded
+01F6..01F8;Changes_When_NFKC_Casefolded
+01FA;Changes_When_NFKC_Casefolded
+01FC;Changes_When_NFKC_Casefolded
+01FE;Changes_When_NFKC_Casefolded
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「2」））于（「小于」于「桶」于「3」）则
+        『0200;Changes_When_NFKC_Casefolded
+0202;Changes_When_NFKC_Casefolded
+0204;Changes_When_NFKC_Casefolded
+0206;Changes_When_NFKC_Casefolded
+0208;Changes_When_NFKC_Casefolded
+020A;Changes_When_NFKC_Casefolded
+020C;Changes_When_NFKC_Casefolded
+020E;Changes_When_NFKC_Casefolded
+0210;Changes_When_NFKC_Casefolded
+0212;Changes_When_NFKC_Casefolded
+0214;Changes_When_NFKC_Casefolded
+0216;Changes_When_NFKC_Casefolded
+0218;Changes_When_NFKC_Casefolded
+021A;Changes_When_NFKC_Casefolded
+021C;Changes_When_NFKC_Casefolded
+021E;Changes_When_NFKC_Casefolded
+0220;Changes_When_NFKC_Casefolded
+0222;Changes_When_NFKC_Casefolded
+0224;Changes_When_NFKC_Casefolded
+0226;Changes_When_NFKC_Casefolded
+0228;Changes_When_NFKC_Casefolded
+022A;Changes_When_NFKC_Casefolded
+022C;Changes_When_NFKC_Casefolded
+022E;Changes_When_NFKC_Casefolded
+0230;Changes_When_NFKC_Casefolded
+0232;Changes_When_NFKC_Casefolded
+023A..023B;Changes_When_NFKC_Casefolded
+023D..023E;Changes_When_NFKC_Casefolded
+0241;Changes_When_NFKC_Casefolded
+0243..0246;Changes_When_NFKC_Casefolded
+0248;Changes_When_NFKC_Casefolded
+024A;Changes_When_NFKC_Casefolded
+024C;Changes_When_NFKC_Casefolded
+024E;Changes_When_NFKC_Casefolded
+02B0..02B8;Changes_When_NFKC_Casefolded
+02D8..02DD;Changes_When_NFKC_Casefolded
+02E0..02E4;Changes_When_NFKC_Casefolded
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「3」））于（「小于」于「桶」于「4」）则
+          『0340..0341;Changes_When_NFKC_Casefolded
+0343..0345;Changes_When_NFKC_Casefolded
+034F;Changes_When_NFKC_Casefolded
+0370;Changes_When_NFKC_Casefolded
+0372;Changes_When_NFKC_Casefolded
+0374;Changes_When_NFKC_Casefolded
+0376;Changes_When_NFKC_Casefolded
+037A;Changes_When_NFKC_Casefolded
+037E;Changes_When_NFKC_Casefolded
+037F;Changes_When_NFKC_Casefolded
+0384..0385;Changes_When_NFKC_Casefolded
+0386;Changes_When_NFKC_Casefolded
+0387;Changes_When_NFKC_Casefolded
+0388..038A;Changes_When_NFKC_Casefolded
+038C;Changes_When_NFKC_Casefolded
+038E..038F;Changes_When_NFKC_Casefolded
+0391..03A1;Changes_When_NFKC_Casefolded
+03A3..03AB;Changes_When_NFKC_Casefolded
+03C2;Changes_When_NFKC_Casefolded
+03CF..03D6;Changes_When_NFKC_Casefolded
+03D8;Changes_When_NFKC_Casefolded
+03DA;Changes_When_NFKC_Casefolded
+03DC;Changes_When_NFKC_Casefolded
+03DE;Changes_When_NFKC_Casefolded
+03E0;Changes_When_NFKC_Casefolded
+03E2;Changes_When_NFKC_Casefolded
+03E4;Changes_When_NFKC_Casefolded
+03E6;Changes_When_NFKC_Casefolded
+03E8;Changes_When_NFKC_Casefolded
+03EA;Changes_When_NFKC_Casefolded
+03EC;Changes_When_NFKC_Casefolded
+03EE;Changes_When_NFKC_Casefolded
+03F0..03F2;Changes_When_NFKC_Casefolded
+03F4..03F5;Changes_When_NFKC_Casefolded
+03F7;Changes_When_NFKC_Casefolded
+03F9..03FA;Changes_When_NFKC_Casefolded
+03FD..042F;Changes_When_NFKC_Casefolded
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「4」））
+            于（「小于」于「桶」于「5」）则
+              『03FD..042F;Changes_When_NFKC_Casefolded
+0460;Changes_When_NFKC_Casefolded
+0462;Changes_When_NFKC_Casefolded
+0464;Changes_When_NFKC_Casefolded
+0466;Changes_When_NFKC_Casefolded
+0468;Changes_When_NFKC_Casefolded
+046A;Changes_When_NFKC_Casefolded
+046C;Changes_When_NFKC_Casefolded
+046E;Changes_When_NFKC_Casefolded
+0470;Changes_When_NFKC_Casefolded
+0472;Changes_When_NFKC_Casefolded
+0474;Changes_When_NFKC_Casefolded
+0476;Changes_When_NFKC_Casefolded
+0478;Changes_When_NFKC_Casefolded
+047A;Changes_When_NFKC_Casefolded
+047C;Changes_When_NFKC_Casefolded
+047E;Changes_When_NFKC_Casefolded
+0480;Changes_When_NFKC_Casefolded
+048A;Changes_When_NFKC_Casefolded
+048C;Changes_When_NFKC_Casefolded
+048E;Changes_When_NFKC_Casefolded
+0490;Changes_When_NFKC_Casefolded
+0492;Changes_When_NFKC_Casefolded
+0494;Changes_When_NFKC_Casefolded
+0496;Changes_When_NFKC_Casefolded
+0498;Changes_When_NFKC_Casefolded
+049A;Changes_When_NFKC_Casefolded
+049C;Changes_When_NFKC_Casefolded
+049E;Changes_When_NFKC_Casefolded
+04A0;Changes_When_NFKC_Casefolded
+04A2;Changes_When_NFKC_Casefolded
+04A4;Changes_When_NFKC_Casefolded
+04A6;Changes_When_NFKC_Casefolded
+04A8;Changes_When_NFKC_Casefolded
+04AA;Changes_When_NFKC_Casefolded
+04AC;Changes_When_NFKC_Casefolded
+04AE;Changes_When_NFKC_Casefolded
+04B0;Changes_When_NFKC_Casefolded
+04B2;Changes_When_NFKC_Casefolded
+04B4;Changes_When_NFKC_Casefolded
+04B6;Changes_When_NFKC_Casefolded
+04B8;Changes_When_NFKC_Casefolded
+04BA;Changes_When_NFKC_Casefolded
+04BC;Changes_When_NFKC_Casefolded
+04BE;Changes_When_NFKC_Casefolded
+04C0..04C1;Changes_When_NFKC_Casefolded
+04C3;Changes_When_NFKC_Casefolded
+04C5;Changes_When_NFKC_Casefolded
+04C7;Changes_When_NFKC_Casefolded
+04C9;Changes_When_NFKC_Casefolded
+04CB;Changes_When_NFKC_Casefolded
+04CD;Changes_When_NFKC_Casefolded
+04D0;Changes_When_NFKC_Casefolded
+04D2;Changes_When_NFKC_Casefolded
+04D4;Changes_When_NFKC_Casefolded
+04D6;Changes_When_NFKC_Casefolded
+04D8;Changes_When_NFKC_Casefolded
+04DA;Changes_When_NFKC_Casefolded
+04DC;Changes_When_NFKC_Casefolded
+04DE;Changes_When_NFKC_Casefolded
+04E0;Changes_When_NFKC_Casefolded
+04E2;Changes_When_NFKC_Casefolded
+04E4;Changes_When_NFKC_Casefolded
+04E6;Changes_When_NFKC_Casefolded
+04E8;Changes_When_NFKC_Casefolded
+04EA;Changes_When_NFKC_Casefolded
+04EC;Changes_When_NFKC_Casefolded
+04EE;Changes_When_NFKC_Casefolded
+04F0;Changes_When_NFKC_Casefolded
+04F2;Changes_When_NFKC_Casefolded
+04F4;Changes_When_NFKC_Casefolded
+04F6;Changes_When_NFKC_Casefolded
+04F8;Changes_When_NFKC_Casefolded
+04FA;Changes_When_NFKC_Casefolded
+04FC;Changes_When_NFKC_Casefolded
+04FE;Changes_When_NFKC_Casefolded
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「5」））
+              于（「小于」于「桶」于「6」）则
+                『0500;Changes_When_NFKC_Casefolded
+0502;Changes_When_NFKC_Casefolded
+0504;Changes_When_NFKC_Casefolded
+0506;Changes_When_NFKC_Casefolded
+0508;Changes_When_NFKC_Casefolded
+050A;Changes_When_NFKC_Casefolded
+050C;Changes_When_NFKC_Casefolded
+050E;Changes_When_NFKC_Casefolded
+0510;Changes_When_NFKC_Casefolded
+0512;Changes_When_NFKC_Casefolded
+0514;Changes_When_NFKC_Casefolded
+0516;Changes_When_NFKC_Casefolded
+0518;Changes_When_NFKC_Casefolded
+051A;Changes_When_NFKC_Casefolded
+051C;Changes_When_NFKC_Casefolded
+051E;Changes_When_NFKC_Casefolded
+0520;Changes_When_NFKC_Casefolded
+0522;Changes_When_NFKC_Casefolded
+0524;Changes_When_NFKC_Casefolded
+0526;Changes_When_NFKC_Casefolded
+0528;Changes_When_NFKC_Casefolded
+052A;Changes_When_NFKC_Casefolded
+052C;Changes_When_NFKC_Casefolded
+052E;Changes_When_NFKC_Casefolded
+0531..0556;Changes_When_NFKC_Casefolded
+0558;Changes_When_NFKC_Casefolded
+0587;Changes_When_NFKC_Casefolded
+058B..058C;Changes_When_NFKC_Casefolded
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「6」））
+                于（「小于」于「桶」于「7」）则
+                  『061C;Changes_When_NFKC_Casefolded
+0675..0678;Changes_When_NFKC_Casefolded
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「9」））
+                  于（「小于」于「桶」于「10」）则
+                    『0958..095F;Changes_When_NFKC_Casefolded
+09DC..09DD;Changes_When_NFKC_Casefolded
+09DF;Changes_When_NFKC_Casefolded
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「10」））
+                    于（「小于」于「桶」于「11」）则
+                      『0A33;Changes_When_NFKC_Casefolded
+0A36;Changes_When_NFKC_Casefolded
+0A59..0A5B;Changes_When_NFKC_Casefolded
+0A5E;Changes_When_NFKC_Casefolded
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「11」））
+                      于（「小于」于「桶」于「12」）则
+                        『0B5C..0B5D;Changes_When_NFKC_Casefolded
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「14」））
+                        于（「小于」于「桶」于「15」）则
+                          『0E33;Changes_When_NFKC_Casefolded
+0EB3;Changes_When_NFKC_Casefolded
+0EDC..0EDD;Changes_When_NFKC_Casefolded
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「15」））
+                          于（「小于」于「桶」于「16」）则
+                            『0F0C;Changes_When_NFKC_Casefolded
+0F43;Changes_When_NFKC_Casefolded
+0F4D;Changes_When_NFKC_Casefolded
+0F52;Changes_When_NFKC_Casefolded
+0F57;Changes_When_NFKC_Casefolded
+0F5C;Changes_When_NFKC_Casefolded
+0F69;Changes_When_NFKC_Casefolded
+0F73;Changes_When_NFKC_Casefolded
+0F75..0F79;Changes_When_NFKC_Casefolded
+0F81;Changes_When_NFKC_Casefolded
+0F93;Changes_When_NFKC_Casefolded
+0F9D;Changes_When_NFKC_Casefolded
+0FA2;Changes_When_NFKC_Casefolded
+0FA7;Changes_When_NFKC_Casefolded
+0FAC;Changes_When_NFKC_Casefolded
+0FB9;Changes_When_NFKC_Casefolded
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「16」））
+                            于（「小于」于「桶」于「17」）则
+                              『10A0..10C5;Changes_When_NFKC_Casefolded
+10C7;Changes_When_NFKC_Casefolded
+10CD;Changes_When_NFKC_Casefolded
+10FC;Changes_When_NFKC_Casefolded
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「17」））
+                              于（「小于」于「桶」于「18」）则
+                                『115F..1160;Changes_When_NFKC_Casefolded
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「19」））
+                                于（「小于」于「桶」于「20」）则
+                                  『13F8..13FD;Changes_When_NFKC_Casefolded
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「23」））
+                                  于（「小于」于「桶」于「24」）则
+                                    『17B4..17B5;Changes_When_NFKC_Casefolded
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「24」））
+                                    于（「小于」于「桶」于「25」）则
+                                      『180B..180D;Changes_When_NFKC_Casefolded
+180E;Changes_When_NFKC_Casefolded
+180F;Changes_When_NFKC_Casefolded
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「28」））
+                                      于（「小于」于「桶」于「29」）则
+                                        『1C80..1C89;Changes_When_NFKC_Casefolded
+1C90..1CBA;Changes_When_NFKC_Casefolded
+1CBD..1CBF;Changes_When_NFKC_Casefolded
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「29」））
+                                        于（「小于」于「桶」于「30」）则
+                                          『1D2C..1D2E;Changes_When_NFKC_Casefolded
+1D30..1D3A;Changes_When_NFKC_Casefolded
+1D3C..1D4D;Changes_When_NFKC_Casefolded
+1D4F..1D6A;Changes_When_NFKC_Casefolded
+1D78;Changes_When_NFKC_Casefolded
+1D9B..1DBF;Changes_When_NFKC_Casefolded
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「30」））
+                                          于（「小于」于「桶」于「31」）则
+                                            『1E00;Changes_When_NFKC_Casefolded
+1E02;Changes_When_NFKC_Casefolded
+1E04;Changes_When_NFKC_Casefolded
+1E06;Changes_When_NFKC_Casefolded
+1E08;Changes_When_NFKC_Casefolded
+1E0A;Changes_When_NFKC_Casefolded
+1E0C;Changes_When_NFKC_Casefolded
+1E0E;Changes_When_NFKC_Casefolded
+1E10;Changes_When_NFKC_Casefolded
+1E12;Changes_When_NFKC_Casefolded
+1E14;Changes_When_NFKC_Casefolded
+1E16;Changes_When_NFKC_Casefolded
+1E18;Changes_When_NFKC_Casefolded
+1E1A;Changes_When_NFKC_Casefolded
+1E1C;Changes_When_NFKC_Casefolded
+1E1E;Changes_When_NFKC_Casefolded
+1E20;Changes_When_NFKC_Casefolded
+1E22;Changes_When_NFKC_Casefolded
+1E24;Changes_When_NFKC_Casefolded
+1E26;Changes_When_NFKC_Casefolded
+1E28;Changes_When_NFKC_Casefolded
+1E2A;Changes_When_NFKC_Casefolded
+1E2C;Changes_When_NFKC_Casefolded
+1E2E;Changes_When_NFKC_Casefolded
+1E30;Changes_When_NFKC_Casefolded
+1E32;Changes_When_NFKC_Casefolded
+1E34;Changes_When_NFKC_Casefolded
+1E36;Changes_When_NFKC_Casefolded
+1E38;Changes_When_NFKC_Casefolded
+1E3A;Changes_When_NFKC_Casefolded
+1E3C;Changes_When_NFKC_Casefolded
+1E3E;Changes_When_NFKC_Casefolded
+1E40;Changes_When_NFKC_Casefolded
+1E42;Changes_When_NFKC_Casefolded
+1E44;Changes_When_NFKC_Casefolded
+1E46;Changes_When_NFKC_Casefolded
+1E48;Changes_When_NFKC_Casefolded
+1E4A;Changes_When_NFKC_Casefolded
+1E4C;Changes_When_NFKC_Casefolded
+1E4E;Changes_When_NFKC_Casefolded
+1E50;Changes_When_NFKC_Casefolded
+1E52;Changes_When_NFKC_Casefolded
+1E54;Changes_When_NFKC_Casefolded
+1E56;Changes_When_NFKC_Casefolded
+1E58;Changes_When_NFKC_Casefolded
+1E5A;Changes_When_NFKC_Casefolded
+1E5C;Changes_When_NFKC_Casefolded
+1E5E;Changes_When_NFKC_Casefolded
+1E60;Changes_When_NFKC_Casefolded
+1E62;Changes_When_NFKC_Casefolded
+1E64;Changes_When_NFKC_Casefolded
+1E66;Changes_When_NFKC_Casefolded
+1E68;Changes_When_NFKC_Casefolded
+1E6A;Changes_When_NFKC_Casefolded
+1E6C;Changes_When_NFKC_Casefolded
+1E6E;Changes_When_NFKC_Casefolded
+1E70;Changes_When_NFKC_Casefolded
+1E72;Changes_When_NFKC_Casefolded
+1E74;Changes_When_NFKC_Casefolded
+1E76;Changes_When_NFKC_Casefolded
+1E78;Changes_When_NFKC_Casefolded
+1E7A;Changes_When_NFKC_Casefolded
+1E7C;Changes_When_NFKC_Casefolded
+1E7E;Changes_When_NFKC_Casefolded
+1E80;Changes_When_NFKC_Casefolded
+1E82;Changes_When_NFKC_Casefolded
+1E84;Changes_When_NFKC_Casefolded
+1E86;Changes_When_NFKC_Casefolded
+1E88;Changes_When_NFKC_Casefolded
+1E8A;Changes_When_NFKC_Casefolded
+1E8C;Changes_When_NFKC_Casefolded
+1E8E;Changes_When_NFKC_Casefolded
+1E90;Changes_When_NFKC_Casefolded
+1E92;Changes_When_NFKC_Casefolded
+1E94;Changes_When_NFKC_Casefolded
+1E9A..1E9B;Changes_When_NFKC_Casefolded
+1E9E;Changes_When_NFKC_Casefolded
+1EA0;Changes_When_NFKC_Casefolded
+1EA2;Changes_When_NFKC_Casefolded
+1EA4;Changes_When_NFKC_Casefolded
+1EA6;Changes_When_NFKC_Casefolded
+1EA8;Changes_When_NFKC_Casefolded
+1EAA;Changes_When_NFKC_Casefolded
+1EAC;Changes_When_NFKC_Casefolded
+1EAE;Changes_When_NFKC_Casefolded
+1EB0;Changes_When_NFKC_Casefolded
+1EB2;Changes_When_NFKC_Casefolded
+1EB4;Changes_When_NFKC_Casefolded
+1EB6;Changes_When_NFKC_Casefolded
+1EB8;Changes_When_NFKC_Casefolded
+1EBA;Changes_When_NFKC_Casefolded
+1EBC;Changes_When_NFKC_Casefolded
+1EBE;Changes_When_NFKC_Casefolded
+1EC0;Changes_When_NFKC_Casefolded
+1EC2;Changes_When_NFKC_Casefolded
+1EC4;Changes_When_NFKC_Casefolded
+1EC6;Changes_When_NFKC_Casefolded
+1EC8;Changes_When_NFKC_Casefolded
+1ECA;Changes_When_NFKC_Casefolded
+1ECC;Changes_When_NFKC_Casefolded
+1ECE;Changes_When_NFKC_Casefolded
+1ED0;Changes_When_NFKC_Casefolded
+1ED2;Changes_When_NFKC_Casefolded
+1ED4;Changes_When_NFKC_Casefolded
+1ED6;Changes_When_NFKC_Casefolded
+1ED8;Changes_When_NFKC_Casefolded
+1EDA;Changes_When_NFKC_Casefolded
+1EDC;Changes_When_NFKC_Casefolded
+1EDE;Changes_When_NFKC_Casefolded
+1EE0;Changes_When_NFKC_Casefolded
+1EE2;Changes_When_NFKC_Casefolded
+1EE4;Changes_When_NFKC_Casefolded
+1EE6;Changes_When_NFKC_Casefolded
+1EE8;Changes_When_NFKC_Casefolded
+1EEA;Changes_When_NFKC_Casefolded
+1EEC;Changes_When_NFKC_Casefolded
+1EEE;Changes_When_NFKC_Casefolded
+1EF0;Changes_When_NFKC_Casefolded
+1EF2;Changes_When_NFKC_Casefolded
+1EF4;Changes_When_NFKC_Casefolded
+1EF6;Changes_When_NFKC_Casefolded
+1EF8;Changes_When_NFKC_Casefolded
+1EFA;Changes_When_NFKC_Casefolded
+1EFC;Changes_When_NFKC_Casefolded
+1EFE;Changes_When_NFKC_Casefolded
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「31」））
+                                            于（「小于」于「桶」于「32」）则
+                                              『1F08..1F0F;Changes_When_NFKC_Casefolded
+1F18..1F1D;Changes_When_NFKC_Casefolded
+1F28..1F2F;Changes_When_NFKC_Casefolded
+1F38..1F3F;Changes_When_NFKC_Casefolded
+1F48..1F4D;Changes_When_NFKC_Casefolded
+1F59;Changes_When_NFKC_Casefolded
+1F5B;Changes_When_NFKC_Casefolded
+1F5D;Changes_When_NFKC_Casefolded
+1F5F;Changes_When_NFKC_Casefolded
+1F68..1F6F;Changes_When_NFKC_Casefolded
+1F71;Changes_When_NFKC_Casefolded
+1F73;Changes_When_NFKC_Casefolded
+1F75;Changes_When_NFKC_Casefolded
+1F77;Changes_When_NFKC_Casefolded
+1F79;Changes_When_NFKC_Casefolded
+1F7B;Changes_When_NFKC_Casefolded
+1F7D;Changes_When_NFKC_Casefolded
+1F80..1FAF;Changes_When_NFKC_Casefolded
+1FB2..1FB4;Changes_When_NFKC_Casefolded
+1FB7..1FBC;Changes_When_NFKC_Casefolded
+1FBD;Changes_When_NFKC_Casefolded
+1FBE;Changes_When_NFKC_Casefolded
+1FBF..1FC1;Changes_When_NFKC_Casefolded
+1FC2..1FC4;Changes_When_NFKC_Casefolded
+1FC7..1FCC;Changes_When_NFKC_Casefolded
+1FCD..1FCF;Changes_When_NFKC_Casefolded
+1FD3;Changes_When_NFKC_Casefolded
+1FD8..1FDB;Changes_When_NFKC_Casefolded
+1FDD..1FDF;Changes_When_NFKC_Casefolded
+1FE3;Changes_When_NFKC_Casefolded
+1FE8..1FEC;Changes_When_NFKC_Casefolded
+1FED..1FEF;Changes_When_NFKC_Casefolded
+1FF2..1FF4;Changes_When_NFKC_Casefolded
+1FF7..1FFC;Changes_When_NFKC_Casefolded
+1FFD..1FFE;Changes_When_NFKC_Casefolded
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「32」））
+                                              于（「小于」于「桶」于「33」）则
+                                                『2000..200A;Changes_When_NFKC_Casefolded
+200B..200F;Changes_When_NFKC_Casefolded
+2011;Changes_When_NFKC_Casefolded
+2017;Changes_When_NFKC_Casefolded
+2024..2026;Changes_When_NFKC_Casefolded
+202A..202E;Changes_When_NFKC_Casefolded
+202F;Changes_When_NFKC_Casefolded
+2033..2034;Changes_When_NFKC_Casefolded
+2036..2037;Changes_When_NFKC_Casefolded
+203C;Changes_When_NFKC_Casefolded
+203E;Changes_When_NFKC_Casefolded
+2047..2049;Changes_When_NFKC_Casefolded
+2057;Changes_When_NFKC_Casefolded
+205F;Changes_When_NFKC_Casefolded
+2060..2064;Changes_When_NFKC_Casefolded
+2065;Changes_When_NFKC_Casefolded
+2066..206F;Changes_When_NFKC_Casefolded
+2070;Changes_When_NFKC_Casefolded
+2071;Changes_When_NFKC_Casefolded
+2074..2079;Changes_When_NFKC_Casefolded
+207A..207C;Changes_When_NFKC_Casefolded
+207D;Changes_When_NFKC_Casefolded
+207E;Changes_When_NFKC_Casefolded
+207F;Changes_When_NFKC_Casefolded
+2080..2089;Changes_When_NFKC_Casefolded
+208A..208C;Changes_When_NFKC_Casefolded
+208D;Changes_When_NFKC_Casefolded
+208E;Changes_When_NFKC_Casefolded
+2090..209F;Changes_When_NFKC_Casefolded
+20A8;Changes_When_NFKC_Casefolded
+』
+                                            否则
+                                              若「且」
+                                                于（「非」于（「小于」于「桶」于「33」））
+                                                于（「小于」于「桶」于「34」）则
+                                                  『2100..2101;Changes_When_NFKC_Casefolded
+2102;Changes_When_NFKC_Casefolded
+2103;Changes_When_NFKC_Casefolded
+2105..2106;Changes_When_NFKC_Casefolded
+2107;Changes_When_NFKC_Casefolded
+2109;Changes_When_NFKC_Casefolded
+210A..2113;Changes_When_NFKC_Casefolded
+2115;Changes_When_NFKC_Casefolded
+2116;Changes_When_NFKC_Casefolded
+2119..211D;Changes_When_NFKC_Casefolded
+2120..2122;Changes_When_NFKC_Casefolded
+2124;Changes_When_NFKC_Casefolded
+2126;Changes_When_NFKC_Casefolded
+2128;Changes_When_NFKC_Casefolded
+212A..212D;Changes_When_NFKC_Casefolded
+212F..2134;Changes_When_NFKC_Casefolded
+2135..2138;Changes_When_NFKC_Casefolded
+2139;Changes_When_NFKC_Casefolded
+213B;Changes_When_NFKC_Casefolded
+213C..213F;Changes_When_NFKC_Casefolded
+2140;Changes_When_NFKC_Casefolded
+2145..2149;Changes_When_NFKC_Casefolded
+2150..215F;Changes_When_NFKC_Casefolded
+2160..217F;Changes_When_NFKC_Casefolded
+2183;Changes_When_NFKC_Casefolded
+2189;Changes_When_NFKC_Casefolded
+』
+                                              否则
+                                                若「且」
+                                                  于（「非」于（「小于」于「桶」于「34」））
+                                                  于（「小于」于「桶」于「35」）则
+                                                    『222C..222D;Changes_When_NFKC_Casefolded
+222F..2230;Changes_When_NFKC_Casefolded
+』
+                                                否则
+                                                  若「且」
+                                                    于（「非」于（「小于」于「桶」于「35」））
+                                                    于（「小于」于「桶」于「36」）则
+                                                      『2329;Changes_When_NFKC_Casefolded
+232A;Changes_When_NFKC_Casefolded
+』
+                                                  否则
+                                                    若「且」
+                                                      于（「非」于（「小于」于「桶」于「36」））
+                                                      于（「小于」于「桶」于「37」）则
+                                                        『2460..249B;Changes_When_NFKC_Casefolded
+249C..24E9;Changes_When_NFKC_Casefolded
+24EA;Changes_When_NFKC_Casefolded
+』
+                                                    否则
+                                                      若「且」
+                                                        于（「非」于（「小于」于「桶」于「42」））
+                                                        于（「小于」于「桶」于「43」）则
+                                                          『2A0C;Changes_When_NFKC_Casefolded
+2A74..2A76;Changes_When_NFKC_Casefolded
+2ADC;Changes_When_NFKC_Casefolded
+』
+                                                      否则
+                                                        若「且」
+                                                          于（「非」于（「小于」于「桶」于「44」））
+                                                          于（「小于」于「桶」于「45」）则
+                                                            『2C00..2C2F;Changes_When_NFKC_Casefolded
+2C60;Changes_When_NFKC_Casefolded
+2C62..2C64;Changes_When_NFKC_Casefolded
+2C67;Changes_When_NFKC_Casefolded
+2C69;Changes_When_NFKC_Casefolded
+2C6B;Changes_When_NFKC_Casefolded
+2C6D..2C70;Changes_When_NFKC_Casefolded
+2C72;Changes_When_NFKC_Casefolded
+2C75;Changes_When_NFKC_Casefolded
+2C7C..2C7D;Changes_When_NFKC_Casefolded
+2C7E..2C80;Changes_When_NFKC_Casefolded
+2C82;Changes_When_NFKC_Casefolded
+2C84;Changes_When_NFKC_Casefolded
+2C86;Changes_When_NFKC_Casefolded
+2C88;Changes_When_NFKC_Casefolded
+2C8A;Changes_When_NFKC_Casefolded
+2C8C;Changes_When_NFKC_Casefolded
+2C8E;Changes_When_NFKC_Casefolded
+2C90;Changes_When_NFKC_Casefolded
+2C92;Changes_When_NFKC_Casefolded
+2C94;Changes_When_NFKC_Casefolded
+2C96;Changes_When_NFKC_Casefolded
+2C98;Changes_When_NFKC_Casefolded
+2C9A;Changes_When_NFKC_Casefolded
+2C9C;Changes_When_NFKC_Casefolded
+2C9E;Changes_When_NFKC_Casefolded
+2CA0;Changes_When_NFKC_Casefolded
+2CA2;Changes_When_NFKC_Casefolded
+2CA4;Changes_When_NFKC_Casefolded
+2CA6;Changes_When_NFKC_Casefolded
+2CA8;Changes_When_NFKC_Casefolded
+2CAA;Changes_When_NFKC_Casefolded
+2CAC;Changes_When_NFKC_Casefolded
+2CAE;Changes_When_NFKC_Casefolded
+2CB0;Changes_When_NFKC_Casefolded
+2CB2;Changes_When_NFKC_Casefolded
+2CB4;Changes_When_NFKC_Casefolded
+2CB6;Changes_When_NFKC_Casefolded
+2CB8;Changes_When_NFKC_Casefolded
+2CBA;Changes_When_NFKC_Casefolded
+2CBC;Changes_When_NFKC_Casefolded
+2CBE;Changes_When_NFKC_Casefolded
+2CC0;Changes_When_NFKC_Casefolded
+2CC2;Changes_When_NFKC_Casefolded
+2CC4;Changes_When_NFKC_Casefolded
+2CC6;Changes_When_NFKC_Casefolded
+2CC8;Changes_When_NFKC_Casefolded
+2CCA;Changes_When_NFKC_Casefolded
+2CCC;Changes_When_NFKC_Casefolded
+2CCE;Changes_When_NFKC_Casefolded
+2CD0;Changes_When_NFKC_Casefolded
+2CD2;Changes_When_NFKC_Casefolded
+2CD4;Changes_When_NFKC_Casefolded
+2CD6;Changes_When_NFKC_Casefolded
+2CD8;Changes_When_NFKC_Casefolded
+2CDA;Changes_When_NFKC_Casefolded
+2CDC;Changes_When_NFKC_Casefolded
+2CDE;Changes_When_NFKC_Casefolded
+2CE0;Changes_When_NFKC_Casefolded
+2CE2;Changes_When_NFKC_Casefolded
+2CEB;Changes_When_NFKC_Casefolded
+2CED;Changes_When_NFKC_Casefolded
+2CF2;Changes_When_NFKC_Casefolded
+』
+                                                        否则
+                                                          若「且」
+                                                            于（「非」于（「小于」于「桶」于「45」））
+                                                            于（「小于」于「桶」于「46」）则
+                                                            『2D6F;Changes_When_NFKC_Casefolded
+』
+                                                          否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「46」））
+                                                            于（「小于」于「桶」于「47」）则
+                                                            『2E9F;Changes_When_NFKC_Casefolded
+2EF3;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「47」））
+                                                            于（「小于」于「桶」于「48」）则
+                                                            『2F00..2FD5;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「48」））
+                                                            于（「小于」于「桶」于「49」）则
+                                                            『3000;Changes_When_NFKC_Casefolded
+3036;Changes_When_NFKC_Casefolded
+3038..303A;Changes_When_NFKC_Casefolded
+309B..309C;Changes_When_NFKC_Casefolded
+309F;Changes_When_NFKC_Casefolded
+30FF;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「49」））
+                                                            于（「小于」于「桶」于「50」）则
+                                                            『3131..318E;Changes_When_NFKC_Casefolded
+3192..3195;Changes_When_NFKC_Casefolded
+3196..319F;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「50」））
+                                                            于（「小于」于「桶」于「51」）则
+                                                            『3200..321E;Changes_When_NFKC_Casefolded
+3220..3229;Changes_When_NFKC_Casefolded
+322A..3247;Changes_When_NFKC_Casefolded
+3250;Changes_When_NFKC_Casefolded
+3251..325F;Changes_When_NFKC_Casefolded
+3260..327E;Changes_When_NFKC_Casefolded
+3280..3289;Changes_When_NFKC_Casefolded
+328A..32B0;Changes_When_NFKC_Casefolded
+32B1..32BF;Changes_When_NFKC_Casefolded
+32C0..33FF;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「51」））
+                                                            于（「小于」于「桶」于「52」）则
+                                                            『32C0..33FF;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「166」））
+                                                            于（「小于」于「桶」于「167」）则
+                                                            『A640;Changes_When_NFKC_Casefolded
+A642;Changes_When_NFKC_Casefolded
+A644;Changes_When_NFKC_Casefolded
+A646;Changes_When_NFKC_Casefolded
+A648;Changes_When_NFKC_Casefolded
+A64A;Changes_When_NFKC_Casefolded
+A64C;Changes_When_NFKC_Casefolded
+A64E;Changes_When_NFKC_Casefolded
+A650;Changes_When_NFKC_Casefolded
+A652;Changes_When_NFKC_Casefolded
+A654;Changes_When_NFKC_Casefolded
+A656;Changes_When_NFKC_Casefolded
+A658;Changes_When_NFKC_Casefolded
+A65A;Changes_When_NFKC_Casefolded
+A65C;Changes_When_NFKC_Casefolded
+A65E;Changes_When_NFKC_Casefolded
+A660;Changes_When_NFKC_Casefolded
+A662;Changes_When_NFKC_Casefolded
+A664;Changes_When_NFKC_Casefolded
+A666;Changes_When_NFKC_Casefolded
+A668;Changes_When_NFKC_Casefolded
+A66A;Changes_When_NFKC_Casefolded
+A66C;Changes_When_NFKC_Casefolded
+A680;Changes_When_NFKC_Casefolded
+A682;Changes_When_NFKC_Casefolded
+A684;Changes_When_NFKC_Casefolded
+A686;Changes_When_NFKC_Casefolded
+A688;Changes_When_NFKC_Casefolded
+A68A;Changes_When_NFKC_Casefolded
+A68C;Changes_When_NFKC_Casefolded
+A68E;Changes_When_NFKC_Casefolded
+A690;Changes_When_NFKC_Casefolded
+A692;Changes_When_NFKC_Casefolded
+A694;Changes_When_NFKC_Casefolded
+A696;Changes_When_NFKC_Casefolded
+A698;Changes_When_NFKC_Casefolded
+A69A;Changes_When_NFKC_Casefolded
+A69C..A69D;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「167」））
+                                                            于（「小于」于「桶」于「168」）则
+                                                            『A722;Changes_When_NFKC_Casefolded
+A724;Changes_When_NFKC_Casefolded
+A726;Changes_When_NFKC_Casefolded
+A728;Changes_When_NFKC_Casefolded
+A72A;Changes_When_NFKC_Casefolded
+A72C;Changes_When_NFKC_Casefolded
+A72E;Changes_When_NFKC_Casefolded
+A732;Changes_When_NFKC_Casefolded
+A734;Changes_When_NFKC_Casefolded
+A736;Changes_When_NFKC_Casefolded
+A738;Changes_When_NFKC_Casefolded
+A73A;Changes_When_NFKC_Casefolded
+A73C;Changes_When_NFKC_Casefolded
+A73E;Changes_When_NFKC_Casefolded
+A740;Changes_When_NFKC_Casefolded
+A742;Changes_When_NFKC_Casefolded
+A744;Changes_When_NFKC_Casefolded
+A746;Changes_When_NFKC_Casefolded
+A748;Changes_When_NFKC_Casefolded
+A74A;Changes_When_NFKC_Casefolded
+A74C;Changes_When_NFKC_Casefolded
+A74E;Changes_When_NFKC_Casefolded
+A750;Changes_When_NFKC_Casefolded
+A752;Changes_When_NFKC_Casefolded
+A754;Changes_When_NFKC_Casefolded
+A756;Changes_When_NFKC_Casefolded
+A758;Changes_When_NFKC_Casefolded
+A75A;Changes_When_NFKC_Casefolded
+A75C;Changes_When_NFKC_Casefolded
+A75E;Changes_When_NFKC_Casefolded
+A760;Changes_When_NFKC_Casefolded
+A762;Changes_When_NFKC_Casefolded
+A764;Changes_When_NFKC_Casefolded
+A766;Changes_When_NFKC_Casefolded
+A768;Changes_When_NFKC_Casefolded
+A76A;Changes_When_NFKC_Casefolded
+A76C;Changes_When_NFKC_Casefolded
+A76E;Changes_When_NFKC_Casefolded
+A770;Changes_When_NFKC_Casefolded
+A779;Changes_When_NFKC_Casefolded
+A77B;Changes_When_NFKC_Casefolded
+A77D..A77E;Changes_When_NFKC_Casefolded
+A780;Changes_When_NFKC_Casefolded
+A782;Changes_When_NFKC_Casefolded
+A784;Changes_When_NFKC_Casefolded
+A786;Changes_When_NFKC_Casefolded
+A78B;Changes_When_NFKC_Casefolded
+A78D;Changes_When_NFKC_Casefolded
+A790;Changes_When_NFKC_Casefolded
+A792;Changes_When_NFKC_Casefolded
+A796;Changes_When_NFKC_Casefolded
+A798;Changes_When_NFKC_Casefolded
+A79A;Changes_When_NFKC_Casefolded
+A79C;Changes_When_NFKC_Casefolded
+A79E;Changes_When_NFKC_Casefolded
+A7A0;Changes_When_NFKC_Casefolded
+A7A2;Changes_When_NFKC_Casefolded
+A7A4;Changes_When_NFKC_Casefolded
+A7A6;Changes_When_NFKC_Casefolded
+A7A8;Changes_When_NFKC_Casefolded
+A7AA..A7AE;Changes_When_NFKC_Casefolded
+A7B0..A7B4;Changes_When_NFKC_Casefolded
+A7B6;Changes_When_NFKC_Casefolded
+A7B8;Changes_When_NFKC_Casefolded
+A7BA;Changes_When_NFKC_Casefolded
+A7BC;Changes_When_NFKC_Casefolded
+A7BE;Changes_When_NFKC_Casefolded
+A7C0;Changes_When_NFKC_Casefolded
+A7C2;Changes_When_NFKC_Casefolded
+A7C4..A7C7;Changes_When_NFKC_Casefolded
+A7C9;Changes_When_NFKC_Casefolded
+A7CB..A7CC;Changes_When_NFKC_Casefolded
+A7CE;Changes_When_NFKC_Casefolded
+A7D0;Changes_When_NFKC_Casefolded
+A7D2;Changes_When_NFKC_Casefolded
+A7D4;Changes_When_NFKC_Casefolded
+A7D6;Changes_When_NFKC_Casefolded
+A7D8;Changes_When_NFKC_Casefolded
+A7DA;Changes_When_NFKC_Casefolded
+A7DC..A7DD;Changes_When_NFKC_Casefolded
+A7E2;Changes_When_NFKC_Casefolded
+A7F1..A7F4;Changes_When_NFKC_Casefolded
+A7F5;Changes_When_NFKC_Casefolded
+A7F8..A7F9;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「171」））
+                                                            于（「小于」于「桶」于「172」）则
+                                                            『AB5C..AB5F;Changes_When_NFKC_Casefolded
+AB69;Changes_When_NFKC_Casefolded
+AB6C..AB6D;Changes_When_NFKC_Casefolded
+AB70..ABBF;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「249」））
+                                                            于（「小于」于「桶」于「250」）则
+                                                            『F900..FA0D;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「250」））
+                                                            于（「小于」于「桶」于「251」）则
+                                                            『F900..FA0D;Changes_When_NFKC_Casefolded
+FA10;Changes_When_NFKC_Casefolded
+FA12;Changes_When_NFKC_Casefolded
+FA15..FA1E;Changes_When_NFKC_Casefolded
+FA20;Changes_When_NFKC_Casefolded
+FA22;Changes_When_NFKC_Casefolded
+FA25..FA26;Changes_When_NFKC_Casefolded
+FA2A..FA6D;Changes_When_NFKC_Casefolded
+FA70..FAD9;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「251」））
+                                                            于（「小于」于「桶」于「252」）则
+                                                            『FB00..FB06;Changes_When_NFKC_Casefolded
+FB13..FB17;Changes_When_NFKC_Casefolded
+FB1D;Changes_When_NFKC_Casefolded
+FB1F..FB28;Changes_When_NFKC_Casefolded
+FB29;Changes_When_NFKC_Casefolded
+FB2A..FB36;Changes_When_NFKC_Casefolded
+FB38..FB3C;Changes_When_NFKC_Casefolded
+FB3E;Changes_When_NFKC_Casefolded
+FB40..FB41;Changes_When_NFKC_Casefolded
+FB43..FB44;Changes_When_NFKC_Casefolded
+FB46..FBB1;Changes_When_NFKC_Casefolded
+FBD3..FD3D;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「252」））
+                                                            于（「小于」于「桶」于「253」）则
+                                                            『FBD3..FD3D;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「253」））
+                                                            于（「小于」于「桶」于「254」）则
+                                                            『FBD3..FD3D;Changes_When_NFKC_Casefolded
+FD50..FD8F;Changes_When_NFKC_Casefolded
+FD92..FDC7;Changes_When_NFKC_Casefolded
+FDF0..FDFB;Changes_When_NFKC_Casefolded
+FDFC;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「254」））
+                                                            于（「小于」于「桶」于「255」）则
+                                                            『FE00..FE0F;Changes_When_NFKC_Casefolded
+FE10..FE16;Changes_When_NFKC_Casefolded
+FE17;Changes_When_NFKC_Casefolded
+FE18;Changes_When_NFKC_Casefolded
+FE19;Changes_When_NFKC_Casefolded
+FE30;Changes_When_NFKC_Casefolded
+FE31..FE32;Changes_When_NFKC_Casefolded
+FE33..FE34;Changes_When_NFKC_Casefolded
+FE35;Changes_When_NFKC_Casefolded
+FE36;Changes_When_NFKC_Casefolded
+FE37;Changes_When_NFKC_Casefolded
+FE38;Changes_When_NFKC_Casefolded
+FE39;Changes_When_NFKC_Casefolded
+FE3A;Changes_When_NFKC_Casefolded
+FE3B;Changes_When_NFKC_Casefolded
+FE3C;Changes_When_NFKC_Casefolded
+FE3D;Changes_When_NFKC_Casefolded
+FE3E;Changes_When_NFKC_Casefolded
+FE3F;Changes_When_NFKC_Casefolded
+FE40;Changes_When_NFKC_Casefolded
+FE41;Changes_When_NFKC_Casefolded
+FE42;Changes_When_NFKC_Casefolded
+FE43;Changes_When_NFKC_Casefolded
+FE44;Changes_When_NFKC_Casefolded
+FE47;Changes_When_NFKC_Casefolded
+FE48;Changes_When_NFKC_Casefolded
+FE49..FE4C;Changes_When_NFKC_Casefolded
+FE4D..FE4F;Changes_When_NFKC_Casefolded
+FE50..FE52;Changes_When_NFKC_Casefolded
+FE54..FE57;Changes_When_NFKC_Casefolded
+FE58;Changes_When_NFKC_Casefolded
+FE59;Changes_When_NFKC_Casefolded
+FE5A;Changes_When_NFKC_Casefolded
+FE5B;Changes_When_NFKC_Casefolded
+FE5C;Changes_When_NFKC_Casefolded
+FE5D;Changes_When_NFKC_Casefolded
+FE5E;Changes_When_NFKC_Casefolded
+FE5F..FE61;Changes_When_NFKC_Casefolded
+FE62;Changes_When_NFKC_Casefolded
+FE63;Changes_When_NFKC_Casefolded
+FE64..FE66;Changes_When_NFKC_Casefolded
+FE68;Changes_When_NFKC_Casefolded
+FE69;Changes_When_NFKC_Casefolded
+FE6A..FE6B;Changes_When_NFKC_Casefolded
+FE70..FE72;Changes_When_NFKC_Casefolded
+FE74;Changes_When_NFKC_Casefolded
+FE76..FEFC;Changes_When_NFKC_Casefolded
+FEFF;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            若「且」
+                                                            于（「非」于（「小于」于「桶」于「255」））
+                                                            于（「小于」于「桶」于「256」）则
+                                                            『FF01..FF03;Changes_When_NFKC_Casefolded
+FF04;Changes_When_NFKC_Casefolded
+FF05..FF07;Changes_When_NFKC_Casefolded
+FF08;Changes_When_NFKC_Casefolded
+FF09;Changes_When_NFKC_Casefolded
+FF0A;Changes_When_NFKC_Casefolded
+FF0B;Changes_When_NFKC_Casefolded
+FF0C;Changes_When_NFKC_Casefolded
+FF0D;Changes_When_NFKC_Casefolded
+FF0E..FF0F;Changes_When_NFKC_Casefolded
+FF10..FF19;Changes_When_NFKC_Casefolded
+FF1A..FF1B;Changes_When_NFKC_Casefolded
+FF1C..FF1E;Changes_When_NFKC_Casefolded
+FF1F..FF20;Changes_When_NFKC_Casefolded
+FF21..FF3A;Changes_When_NFKC_Casefolded
+FF3B;Changes_When_NFKC_Casefolded
+FF3C;Changes_When_NFKC_Casefolded
+FF3D;Changes_When_NFKC_Casefolded
+FF3E;Changes_When_NFKC_Casefolded
+FF3F;Changes_When_NFKC_Casefolded
+FF40;Changes_When_NFKC_Casefolded
+FF41..FF5A;Changes_When_NFKC_Casefolded
+FF5B;Changes_When_NFKC_Casefolded
+FF5C;Changes_When_NFKC_Casefolded
+FF5D;Changes_When_NFKC_Casefolded
+FF5E;Changes_When_NFKC_Casefolded
+FF5F;Changes_When_NFKC_Casefolded
+FF60;Changes_When_NFKC_Casefolded
+FF61;Changes_When_NFKC_Casefolded
+FF62;Changes_When_NFKC_Casefolded
+FF63;Changes_When_NFKC_Casefolded
+FF64..FF65;Changes_When_NFKC_Casefolded
+FF66..FF6F;Changes_When_NFKC_Casefolded
+FF70;Changes_When_NFKC_Casefolded
+FF71..FF9D;Changes_When_NFKC_Casefolded
+FF9E..FF9F;Changes_When_NFKC_Casefolded
+FFA0..FFBE;Changes_When_NFKC_Casefolded
+FFC2..FFC7;Changes_When_NFKC_Casefolded
+FFCA..FFCF;Changes_When_NFKC_Casefolded
+FFD2..FFD7;Changes_When_NFKC_Casefolded
+FFDA..FFDC;Changes_When_NFKC_Casefolded
+FFE0..FFE1;Changes_When_NFKC_Casefolded
+FFE2;Changes_When_NFKC_Casefolded
+FFE3;Changes_When_NFKC_Casefolded
+FFE4;Changes_When_NFKC_Casefolded
+FFE5..FFE6;Changes_When_NFKC_Casefolded
+FFE8;Changes_When_NFKC_Casefolded
+FFE9..FFEC;Changes_When_NFKC_Casefolded
+FFED..FFEE;Changes_When_NFKC_Casefolded
+FFF0..FFF8;Changes_When_NFKC_Casefolded
+』
+                                                            否则
+                                                            『』
+也。
+
+「二元规范表1」乃化「整数」而「字符串」也。
+「二元规范表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「260」））于（「小于」于「桶」于「261」）则
+    『10400..10427;Changes_When_NFKC_Casefolded
+104B0..104D3;Changes_When_NFKC_Casefolded
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「261」））于（「小于」于「桶」于「262」）则
+      『10570..1057A;Changes_When_NFKC_Casefolded
+1057C..1058A;Changes_When_NFKC_Casefolded
+1058C..10592;Changes_When_NFKC_Casefolded
+10594..10595;Changes_When_NFKC_Casefolded
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「263」））于（「小于」于「桶」于「264」）则
+        『10781..10785;Changes_When_NFKC_Casefolded
+10787..107B0;Changes_When_NFKC_Casefolded
+107B2..107BF;Changes_When_NFKC_Casefolded
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「268」））于（「小于」于「桶」于「269」）则
+          『10C80..10CB2;Changes_When_NFKC_Casefolded
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「269」））
+            于（「小于」于「桶」于「270」）则
+              『10D50..10D65;Changes_When_NFKC_Casefolded
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「280」））
+              于（「小于」于「桶」于「281」）则
+                『118A0..118BF;Changes_When_NFKC_Casefolded
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「366」））
+                于（「小于」于「桶」于「367」）则
+                  『16E40..16E5F;Changes_When_NFKC_Casefolded
+16EA0..16EB8;Changes_When_NFKC_Casefolded
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「433」））
+                  于（「小于」于「桶」于「434」）则
+                    『1B123..1B126;Changes_When_NFKC_Casefolded
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「444」））
+                    于（「小于」于「桶」于「445」）则
+                      『1BCA0..1BCA3;Changes_When_NFKC_Casefolded
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「460」））
+                      于（「小于」于「桶」于「461」）则
+                        『1CCD6..1CCEF;Changes_When_NFKC_Casefolded
+1CCF0..1CCF9;Changes_When_NFKC_Casefolded
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「465」））
+                        于（「小于」于「桶」于「466」）则
+                          『1D15E..1D164;Changes_When_NFKC_Casefolded
+1D173..1D17A;Changes_When_NFKC_Casefolded
+1D1BB..1D1C0;Changes_When_NFKC_Casefolded
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「468」））
+                          于（「小于」于「桶」于「469」）则
+                            『1D400..1D454;Changes_When_NFKC_Casefolded
+1D456..1D49C;Changes_When_NFKC_Casefolded
+1D49E..1D49F;Changes_When_NFKC_Casefolded
+1D4A2;Changes_When_NFKC_Casefolded
+1D4A5..1D4A6;Changes_When_NFKC_Casefolded
+1D4A9..1D4AC;Changes_When_NFKC_Casefolded
+1D4AE..1D4B9;Changes_When_NFKC_Casefolded
+1D4BB;Changes_When_NFKC_Casefolded
+1D4BD..1D4C3;Changes_When_NFKC_Casefolded
+1D4C5..1D505;Changes_When_NFKC_Casefolded
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「469」））
+                            于（「小于」于「桶」于「470」）则
+                              『1D4C5..1D505;Changes_When_NFKC_Casefolded
+1D507..1D50A;Changes_When_NFKC_Casefolded
+1D50D..1D514;Changes_When_NFKC_Casefolded
+1D516..1D51C;Changes_When_NFKC_Casefolded
+1D51E..1D539;Changes_When_NFKC_Casefolded
+1D53B..1D53E;Changes_When_NFKC_Casefolded
+1D540..1D544;Changes_When_NFKC_Casefolded
+1D546;Changes_When_NFKC_Casefolded
+1D54A..1D550;Changes_When_NFKC_Casefolded
+1D552..1D6A6;Changes_When_NFKC_Casefolded
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「470」））
+                              于（「小于」于「桶」于「471」）则
+                                『1D552..1D6A6;Changes_When_NFKC_Casefolded
+1D6A8..1D6C0;Changes_When_NFKC_Casefolded
+1D6C1;Changes_When_NFKC_Casefolded
+1D6C2..1D6DA;Changes_When_NFKC_Casefolded
+1D6DB;Changes_When_NFKC_Casefolded
+1D6DC..1D6FA;Changes_When_NFKC_Casefolded
+1D6FB;Changes_When_NFKC_Casefolded
+1D6FC..1D714;Changes_When_NFKC_Casefolded
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「471」））
+                                于（「小于」于「桶」于「472」）则
+                                  『1D6FC..1D714;Changes_When_NFKC_Casefolded
+1D715;Changes_When_NFKC_Casefolded
+1D716..1D734;Changes_When_NFKC_Casefolded
+1D735;Changes_When_NFKC_Casefolded
+1D736..1D74E;Changes_When_NFKC_Casefolded
+1D74F;Changes_When_NFKC_Casefolded
+1D750..1D76E;Changes_When_NFKC_Casefolded
+1D76F;Changes_When_NFKC_Casefolded
+1D770..1D788;Changes_When_NFKC_Casefolded
+1D789;Changes_When_NFKC_Casefolded
+1D78A..1D7A8;Changes_When_NFKC_Casefolded
+1D7A9;Changes_When_NFKC_Casefolded
+1D7AA..1D7C2;Changes_When_NFKC_Casefolded
+1D7C3;Changes_When_NFKC_Casefolded
+1D7C4..1D7CB;Changes_When_NFKC_Casefolded
+1D7CE..1D7FF;Changes_When_NFKC_Casefolded
+』
+                              否则
+                                若「且」
+                                  于（「非」于（「小于」于「桶」于「479」））
+                                  于（「小于」于「桶」于「480」）则
+                                    『1DF40;Changes_When_NFKC_Casefolded
+1DF48;Changes_When_NFKC_Casefolded
+1DF4A;Changes_When_NFKC_Casefolded
+1DF4D;Changes_When_NFKC_Casefolded
+1DF51;Changes_When_NFKC_Casefolded
+1DF68;Changes_When_NFKC_Casefolded
+1DF6A;Changes_When_NFKC_Casefolded
+1DF6C;Changes_When_NFKC_Casefolded
+1DF6E;Changes_When_NFKC_Casefolded
+1DF72;Changes_When_NFKC_Casefolded
+1DF74;Changes_When_NFKC_Casefolded
+1DF76;Changes_When_NFKC_Casefolded
+1DF78;Changes_When_NFKC_Casefolded
+1DF7A;Changes_When_NFKC_Casefolded
+1DF7C;Changes_When_NFKC_Casefolded
+1DF7E;Changes_When_NFKC_Casefolded
+1DF95;Changes_When_NFKC_Casefolded
+1DFCD..1DFFF;Changes_When_NFKC_Casefolded
+』
+                                否则
+                                  若「且」
+                                    于（「非」于（「小于」于「桶」于「480」））
+                                    于（「小于」于「桶」于「481」）则
+                                      『1E030..1E06D;Changes_When_NFKC_Casefolded
+』
+                                  否则
+                                    若「且」
+                                      于（「非」于（「小于」于「桶」于「489」））
+                                      于（「小于」于「桶」于「490」）则
+                                        『1E900..1E921;Changes_When_NFKC_Casefolded
+』
+                                    否则
+                                      若「且」
+                                        于（「非」于（「小于」于「桶」于「494」））
+                                        于（「小于」于「桶」于「495」）则
+                                          『1EE00..1EE03;Changes_When_NFKC_Casefolded
+1EE05..1EE1F;Changes_When_NFKC_Casefolded
+1EE21..1EE22;Changes_When_NFKC_Casefolded
+1EE24;Changes_When_NFKC_Casefolded
+1EE27;Changes_When_NFKC_Casefolded
+1EE29..1EE32;Changes_When_NFKC_Casefolded
+1EE34..1EE37;Changes_When_NFKC_Casefolded
+1EE39;Changes_When_NFKC_Casefolded
+1EE3B;Changes_When_NFKC_Casefolded
+1EE42;Changes_When_NFKC_Casefolded
+1EE47;Changes_When_NFKC_Casefolded
+1EE49;Changes_When_NFKC_Casefolded
+1EE4B;Changes_When_NFKC_Casefolded
+1EE4D..1EE4F;Changes_When_NFKC_Casefolded
+1EE51..1EE52;Changes_When_NFKC_Casefolded
+1EE54;Changes_When_NFKC_Casefolded
+1EE57;Changes_When_NFKC_Casefolded
+1EE59;Changes_When_NFKC_Casefolded
+1EE5B;Changes_When_NFKC_Casefolded
+1EE5D;Changes_When_NFKC_Casefolded
+1EE5F;Changes_When_NFKC_Casefolded
+1EE61..1EE62;Changes_When_NFKC_Casefolded
+1EE64;Changes_When_NFKC_Casefolded
+1EE67..1EE6A;Changes_When_NFKC_Casefolded
+1EE6C..1EE72;Changes_When_NFKC_Casefolded
+1EE74..1EE77;Changes_When_NFKC_Casefolded
+1EE79..1EE7C;Changes_When_NFKC_Casefolded
+1EE7E;Changes_When_NFKC_Casefolded
+1EE80..1EE89;Changes_When_NFKC_Casefolded
+1EE8B..1EE9B;Changes_When_NFKC_Casefolded
+1EEA1..1EEA3;Changes_When_NFKC_Casefolded
+1EEA5..1EEA9;Changes_When_NFKC_Casefolded
+1EEAB..1EEBB;Changes_When_NFKC_Casefolded
+』
+                                      否则
+                                        若「且」
+                                          于（「非」于（「小于」于「桶」于「497」））
+                                          于（「小于」于「桶」于「498」）则
+                                            『1F100..1F10A;Changes_When_NFKC_Casefolded
+1F110..1F12E;Changes_When_NFKC_Casefolded
+1F130..1F14F;Changes_When_NFKC_Casefolded
+1F16A..1F16C;Changes_When_NFKC_Casefolded
+1F190;Changes_When_NFKC_Casefolded
+』
+                                        否则
+                                          若「且」
+                                            于（「非」于（「小于」于「桶」于「498」））
+                                            于（「小于」于「桶」于「499」）则
+                                              『1F200..1F202;Changes_When_NFKC_Casefolded
+1F210..1F23B;Changes_When_NFKC_Casefolded
+1F240..1F248;Changes_When_NFKC_Casefolded
+1F250..1F251;Changes_When_NFKC_Casefolded
+』
+                                          否则
+                                            若「且」
+                                              于（「非」于（「小于」于「桶」于「507」））
+                                              于（「小于」于「桶」于「508」）则
+                                                『1FBF0..1FBF9;Changes_When_NFKC_Casefolded
+』
+                                            否则
+                                              『』
+也。
+
+「二元规范表2」乃化「整数」而「字符串」也。
+「二元规范表2」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「760」））于（「小于」于「桶」于「763」）则
+    『2F800..2FA1D;Changes_When_NFKC_Casefolded
+』
+  否则
+    『』
+也。
+
+「二元规范表3」乃化「整数」而「字符串」也。
+「二元规范表3」者会「桶」而
+  『』
+也。
+
+「二元规范表4」乃化「整数」而「字符串」也。
+「二元规范表4」者会「桶」而
+  『』
+也。
+
+「二元规范表5」乃化「整数」而「字符串」也。
+「二元规范表5」者会「桶」而
+  『』
+也。
+
+「二元规范表6」乃化「整数」而「字符串」也。
+「二元规范表6」者会「桶」而
+  『』
+也。
+
+「二元规范表7」乃化「整数」而「字符串」也。
+「二元规范表7」者会「桶」而
+  『』
+也。
+
+「二元规范表8」乃化「整数」而「字符串」也。
+「二元规范表8」者会「桶」而
+  『』
+也。
+
+「二元规范表9」乃化「整数」而「字符串」也。
+「二元规范表9」者会「桶」而
+  『』
+也。
+
+「二元规范表10」乃化「整数」而「字符串」也。
+「二元规范表10」者会「桶」而
+  『』
+也。
+
+「二元规范表11」乃化「整数」而「字符串」也。
+「二元规范表11」者会「桶」而
+  『』
+也。
+
+「二元规范表12」乃化「整数」而「字符串」也。
+「二元规范表12」者会「桶」而
+  『』
+也。
+
+「二元规范表13」乃化「整数」而「字符串」也。
+「二元规范表13」者会「桶」而
+  『』
+也。
+
+「二元规范表14」乃化「整数」而「字符串」也。
+「二元规范表14」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「3584」））于（「小于」于「桶」于「3585」）则
+    『E0000;Changes_When_NFKC_Casefolded
+E0001;Changes_When_NFKC_Casefolded
+E0002..E001F;Changes_When_NFKC_Casefolded
+E0020..E007F;Changes_When_NFKC_Casefolded
+E0080..E00FF;Changes_When_NFKC_Casefolded
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「3585」））于（「小于」于「桶」于「3586」）则
+      『E0100..E01EF;Changes_When_NFKC_Casefolded
+E01F0..E0FFF;Changes_When_NFKC_Casefolded
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「3586」））于（「小于」于「桶」于「3600」）则
+        『E01F0..E0FFF;Changes_When_NFKC_Casefolded
+』
+      否则
+        『』
+也。
+
+「二元规范表15」乃化「整数」而「字符串」也。
+「二元规范表15」者会「桶」而
+  『』
+也。
+
+「二元规范表16」乃化「整数」而「字符串」也。
+「二元规范表16」者会「桶」而
+  『』
+也。
+
+「二元规范表」乃化「整数」而「字符串」也。
+「二元规范表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「二元规范表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「二元规范表1」于「桶」否则
+      若「小于」于「桶」于「768」则「二元规范表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「二元规范表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「二元规范表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「二元规范表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「二元规范表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「二元规范表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「二元规范表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「二元规范表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「二元规范表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「二元规范表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「二元规范表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「二元规范表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「二元规范表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「二元规范表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「二元规范表16」于「桶」
+                                  否则
+                                    『』
+也。

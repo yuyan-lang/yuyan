@@ -1,0 +1,436 @@
+寻观「标准库」之书。
+
+「二元导出表0」乃化「整数」而「字符串」也。
+「二元导出表0」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「0」））于（「小于」于「桶」于「1」）则
+    『0028;Bidi_Mirrored
+0029;Bidi_Mirrored
+003C;Bidi_Mirrored
+003E;Bidi_Mirrored
+005B;Bidi_Mirrored
+005D;Bidi_Mirrored
+007B;Bidi_Mirrored
+007D;Bidi_Mirrored
+00AB;Bidi_Mirrored
+00BB;Bidi_Mirrored
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「15」））于（「小于」于「桶」于「16」）则
+      『0F3A;Bidi_Mirrored
+0F3B;Bidi_Mirrored
+0F3C;Bidi_Mirrored
+0F3D;Bidi_Mirrored
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「22」））于（「小于」于「桶」于「23」）则
+        『169B;Bidi_Mirrored
+169C;Bidi_Mirrored
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「32」））于（「小于」于「桶」于「33」）则
+          『2039;Bidi_Mirrored
+203A;Bidi_Mirrored
+2045;Bidi_Mirrored
+2046;Bidi_Mirrored
+207D;Bidi_Mirrored
+207E;Bidi_Mirrored
+208D;Bidi_Mirrored
+208E;Bidi_Mirrored
+』
+        否则
+          若「且」
+            于（「非」于（「小于」于「桶」于「33」））
+            于（「小于」于「桶」于「34」）则
+              『2140;Bidi_Mirrored
+』
+          否则
+            若「且」
+              于（「非」于（「小于」于「桶」于「34」））
+              于（「小于」于「桶」于「35」）则
+                『2201..2204;Bidi_Mirrored
+2208..220D;Bidi_Mirrored
+2211;Bidi_Mirrored
+2215..2216;Bidi_Mirrored
+221A..221D;Bidi_Mirrored
+221F..2222;Bidi_Mirrored
+2224;Bidi_Mirrored
+2226;Bidi_Mirrored
+222B..2233;Bidi_Mirrored
+2239;Bidi_Mirrored
+223B..224C;Bidi_Mirrored
+2252..2255;Bidi_Mirrored
+225F..2260;Bidi_Mirrored
+2262;Bidi_Mirrored
+2264..226B;Bidi_Mirrored
+226D..228C;Bidi_Mirrored
+228F..2292;Bidi_Mirrored
+2298;Bidi_Mirrored
+22A2..22A3;Bidi_Mirrored
+22A6..22B8;Bidi_Mirrored
+22BE..22BF;Bidi_Mirrored
+22C9..22CD;Bidi_Mirrored
+22D0..22D1;Bidi_Mirrored
+22D6..22ED;Bidi_Mirrored
+22F0..22FF;Bidi_Mirrored
+』
+            否则
+              若「且」
+                于（「非」于（「小于」于「桶」于「35」））
+                于（「小于」于「桶」于「36」）则
+                  『2308;Bidi_Mirrored
+2309;Bidi_Mirrored
+230A;Bidi_Mirrored
+230B;Bidi_Mirrored
+2320..2321;Bidi_Mirrored
+2329;Bidi_Mirrored
+232A;Bidi_Mirrored
+』
+              否则
+                若「且」
+                  于（「非」于（「小于」于「桶」于「39」））
+                  于（「小于」于「桶」于「40」）则
+                    『2768;Bidi_Mirrored
+2769;Bidi_Mirrored
+276A;Bidi_Mirrored
+276B;Bidi_Mirrored
+276C;Bidi_Mirrored
+276D;Bidi_Mirrored
+276E;Bidi_Mirrored
+276F;Bidi_Mirrored
+2770;Bidi_Mirrored
+2771;Bidi_Mirrored
+2772;Bidi_Mirrored
+2773;Bidi_Mirrored
+2774;Bidi_Mirrored
+2775;Bidi_Mirrored
+27C0;Bidi_Mirrored
+27C3..27C4;Bidi_Mirrored
+27C5;Bidi_Mirrored
+27C6;Bidi_Mirrored
+27C8..27C9;Bidi_Mirrored
+27CB..27CD;Bidi_Mirrored
+27D3..27D6;Bidi_Mirrored
+27DC..27DE;Bidi_Mirrored
+27E2..27E5;Bidi_Mirrored
+27E6;Bidi_Mirrored
+27E7;Bidi_Mirrored
+27E8;Bidi_Mirrored
+27E9;Bidi_Mirrored
+27EA;Bidi_Mirrored
+27EB;Bidi_Mirrored
+27EC;Bidi_Mirrored
+27ED;Bidi_Mirrored
+27EE;Bidi_Mirrored
+27EF;Bidi_Mirrored
+』
+                否则
+                  若「且」
+                    于（「非」于（「小于」于「桶」于「41」））
+                    于（「小于」于「桶」于「42」）则
+                      『2983;Bidi_Mirrored
+2984;Bidi_Mirrored
+2985;Bidi_Mirrored
+2986;Bidi_Mirrored
+2987;Bidi_Mirrored
+2988;Bidi_Mirrored
+2989;Bidi_Mirrored
+298A;Bidi_Mirrored
+298B;Bidi_Mirrored
+298C;Bidi_Mirrored
+298D;Bidi_Mirrored
+298E;Bidi_Mirrored
+298F;Bidi_Mirrored
+2990;Bidi_Mirrored
+2991;Bidi_Mirrored
+2992;Bidi_Mirrored
+2993;Bidi_Mirrored
+2994;Bidi_Mirrored
+2995;Bidi_Mirrored
+2996;Bidi_Mirrored
+2997;Bidi_Mirrored
+2998;Bidi_Mirrored
+299B..29A0;Bidi_Mirrored
+29A2..29AF;Bidi_Mirrored
+29B8;Bidi_Mirrored
+29C0..29C5;Bidi_Mirrored
+29C9;Bidi_Mirrored
+29CE..29D2;Bidi_Mirrored
+29D4..29D5;Bidi_Mirrored
+29D8;Bidi_Mirrored
+29D9;Bidi_Mirrored
+29DA;Bidi_Mirrored
+29DB;Bidi_Mirrored
+29DC;Bidi_Mirrored
+29E1;Bidi_Mirrored
+29E3..29E5;Bidi_Mirrored
+29E8..29E9;Bidi_Mirrored
+29F4..29F9;Bidi_Mirrored
+29FC;Bidi_Mirrored
+29FD;Bidi_Mirrored
+』
+                  否则
+                    若「且」
+                      于（「非」于（「小于」于「桶」于「42」））
+                      于（「小于」于「桶」于「43」）则
+                        『2A0A..2A1C;Bidi_Mirrored
+2A1E..2A21;Bidi_Mirrored
+2A24;Bidi_Mirrored
+2A26;Bidi_Mirrored
+2A29;Bidi_Mirrored
+2A2B..2A2E;Bidi_Mirrored
+2A34..2A35;Bidi_Mirrored
+2A3C..2A3E;Bidi_Mirrored
+2A57..2A58;Bidi_Mirrored
+2A64..2A65;Bidi_Mirrored
+2A6A..2A6D;Bidi_Mirrored
+2A6F..2A70;Bidi_Mirrored
+2A73..2A74;Bidi_Mirrored
+2A79..2AA3;Bidi_Mirrored
+2AA6..2AAD;Bidi_Mirrored
+2AAF..2AD6;Bidi_Mirrored
+2ADC;Bidi_Mirrored
+2ADE;Bidi_Mirrored
+2AE2..2AE6;Bidi_Mirrored
+2AEC..2AEE;Bidi_Mirrored
+2AF3;Bidi_Mirrored
+2AF7..2AFB;Bidi_Mirrored
+2AFD;Bidi_Mirrored
+』
+                    否则
+                      若「且」
+                        于（「非」于（「小于」于「桶」于「43」））
+                        于（「小于」于「桶」于「44」）则
+                          『2BFE;Bidi_Mirrored
+』
+                      否则
+                        若「且」
+                          于（「非」于（「小于」于「桶」于「46」））
+                          于（「小于」于「桶」于「47」）则
+                            『2E02;Bidi_Mirrored
+2E03;Bidi_Mirrored
+2E04;Bidi_Mirrored
+2E05;Bidi_Mirrored
+2E09;Bidi_Mirrored
+2E0A;Bidi_Mirrored
+2E0C;Bidi_Mirrored
+2E0D;Bidi_Mirrored
+2E1C;Bidi_Mirrored
+2E1D;Bidi_Mirrored
+2E20;Bidi_Mirrored
+2E21;Bidi_Mirrored
+2E22;Bidi_Mirrored
+2E23;Bidi_Mirrored
+2E24;Bidi_Mirrored
+2E25;Bidi_Mirrored
+2E26;Bidi_Mirrored
+2E27;Bidi_Mirrored
+2E28;Bidi_Mirrored
+2E29;Bidi_Mirrored
+2E55;Bidi_Mirrored
+2E56;Bidi_Mirrored
+2E57;Bidi_Mirrored
+2E58;Bidi_Mirrored
+2E59;Bidi_Mirrored
+2E5A;Bidi_Mirrored
+2E5B;Bidi_Mirrored
+2E5C;Bidi_Mirrored
+2E62;Bidi_Mirrored
+2E63;Bidi_Mirrored
+』
+                        否则
+                          若「且」
+                            于（「非」于（「小于」于「桶」于「48」））
+                            于（「小于」于「桶」于「49」）则
+                              『3008;Bidi_Mirrored
+3009;Bidi_Mirrored
+300A;Bidi_Mirrored
+300B;Bidi_Mirrored
+300C;Bidi_Mirrored
+300D;Bidi_Mirrored
+300E;Bidi_Mirrored
+300F;Bidi_Mirrored
+3010;Bidi_Mirrored
+3011;Bidi_Mirrored
+3014;Bidi_Mirrored
+3015;Bidi_Mirrored
+3016;Bidi_Mirrored
+3017;Bidi_Mirrored
+3018;Bidi_Mirrored
+3019;Bidi_Mirrored
+301A;Bidi_Mirrored
+301B;Bidi_Mirrored
+』
+                          否则
+                            若「且」
+                              于（「非」于（「小于」于「桶」于「254」））
+                              于（「小于」于「桶」于「255」）则
+                                『FE59;Bidi_Mirrored
+FE5A;Bidi_Mirrored
+FE5B;Bidi_Mirrored
+FE5C;Bidi_Mirrored
+FE5D;Bidi_Mirrored
+FE5E;Bidi_Mirrored
+FE64..FE65;Bidi_Mirrored
+』
+                            否则
+                              若「且」
+                                于（「非」于（「小于」于「桶」于「255」））
+                                于（「小于」于「桶」于「256」）则
+                                  『FF08;Bidi_Mirrored
+FF09;Bidi_Mirrored
+FF1C;Bidi_Mirrored
+FF1E;Bidi_Mirrored
+FF3B;Bidi_Mirrored
+FF3D;Bidi_Mirrored
+FF5B;Bidi_Mirrored
+FF5D;Bidi_Mirrored
+FF5F;Bidi_Mirrored
+FF60;Bidi_Mirrored
+FF62;Bidi_Mirrored
+FF63;Bidi_Mirrored
+』
+                              否则
+                                『』
+也。
+
+「二元导出表1」乃化「整数」而「字符串」也。
+「二元导出表1」者会「桶」而
+  若「且」于（「非」于（「小于」于「桶」于「462」））于（「小于」于「桶」于「463」）则
+    『1CEDD..1CEDF;Bidi_Mirrored
+』
+  否则
+    若「且」于（「非」于（「小于」于「桶」于「470」））于（「小于」于「桶」于「471」）则
+      『1D6DB;Bidi_Mirrored
+』
+    否则
+      若「且」于（「非」于（「小于」于「桶」于「471」））于（「小于」于「桶」于「472」）则
+        『1D715;Bidi_Mirrored
+1D74F;Bidi_Mirrored
+1D789;Bidi_Mirrored
+1D7C3;Bidi_Mirrored
+』
+      否则
+        若「且」于（「非」于（「小于」于「桶」于「475」））于（「小于」于「桶」于「476」）则
+          『1DB03..1DB09;Bidi_Mirrored
+1DB10;Bidi_Mirrored
+1DB17..1DB18;Bidi_Mirrored
+1DB1B;Bidi_Mirrored
+』
+        否则
+          『』
+也。
+
+「二元导出表2」乃化「整数」而「字符串」也。
+「二元导出表2」者会「桶」而
+  『』
+也。
+
+「二元导出表3」乃化「整数」而「字符串」也。
+「二元导出表3」者会「桶」而
+  『』
+也。
+
+「二元导出表4」乃化「整数」而「字符串」也。
+「二元导出表4」者会「桶」而
+  『』
+也。
+
+「二元导出表5」乃化「整数」而「字符串」也。
+「二元导出表5」者会「桶」而
+  『』
+也。
+
+「二元导出表6」乃化「整数」而「字符串」也。
+「二元导出表6」者会「桶」而
+  『』
+也。
+
+「二元导出表7」乃化「整数」而「字符串」也。
+「二元导出表7」者会「桶」而
+  『』
+也。
+
+「二元导出表8」乃化「整数」而「字符串」也。
+「二元导出表8」者会「桶」而
+  『』
+也。
+
+「二元导出表9」乃化「整数」而「字符串」也。
+「二元导出表9」者会「桶」而
+  『』
+也。
+
+「二元导出表10」乃化「整数」而「字符串」也。
+「二元导出表10」者会「桶」而
+  『』
+也。
+
+「二元导出表11」乃化「整数」而「字符串」也。
+「二元导出表11」者会「桶」而
+  『』
+也。
+
+「二元导出表12」乃化「整数」而「字符串」也。
+「二元导出表12」者会「桶」而
+  『』
+也。
+
+「二元导出表13」乃化「整数」而「字符串」也。
+「二元导出表13」者会「桶」而
+  『』
+也。
+
+「二元导出表14」乃化「整数」而「字符串」也。
+「二元导出表14」者会「桶」而
+  『』
+也。
+
+「二元导出表15」乃化「整数」而「字符串」也。
+「二元导出表15」者会「桶」而
+  『』
+也。
+
+「二元导出表16」乃化「整数」而「字符串」也。
+「二元导出表16」者会「桶」而
+  『』
+也。
+
+「二元导出表」乃化「整数」而「字符串」也。
+「二元导出表」者会「桶」而
+  若「小于」于「桶」于「256」则
+    「二元导出表0」于「桶」
+  否则
+    若「小于」于「桶」于「512」则「二元导出表1」于「桶」否则
+      若「小于」于「桶」于「768」则「二元导出表2」于「桶」否则
+        若「小于」于「桶」于「1024」则「二元导出表3」于「桶」否则
+          若「小于」于「桶」于「1280」则「二元导出表4」于「桶」否则
+            若「小于」于「桶」于「1536」则「二元导出表5」于「桶」否则
+              若「小于」于「桶」于「1792」则「二元导出表6」于「桶」否则
+                若「小于」于「桶」于「2048」则「二元导出表7」于「桶」否则
+                  若「小于」于「桶」于「2304」则「二元导出表8」于「桶」否则
+                    若「小于」于「桶」于「2560」则
+                      「二元导出表9」于「桶」
+                    否则
+                      若「小于」于「桶」于「2816」则
+                        「二元导出表10」于「桶」
+                      否则
+                        若「小于」于「桶」于「3072」则
+                          「二元导出表11」于「桶」
+                        否则
+                          若「小于」于「桶」于「3328」则
+                            「二元导出表12」于「桶」
+                          否则
+                            若「小于」于「桶」于「3584」则
+                              「二元导出表13」于「桶」
+                            否则
+                              若「小于」于「桶」于「3840」则
+                                「二元导出表14」于「桶」
+                              否则
+                                若「小于」于「桶」于「4096」则
+                                  「二元导出表15」于「桶」
+                                否则
+                                  若「小于」于「桶」于「4352」则
+                                    「二元导出表16」于「桶」
+                                  否则
+                                    『』
+也。
