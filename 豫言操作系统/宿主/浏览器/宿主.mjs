@@ -4041,6 +4041,7 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     if (typeof 函 !== 'function') throw Error(`浏览器宿主缺少平台导入的实现：${模}.${字段}（${旧名}）`);
     return [字段, 是异步函数(函) || 条件异步原语.has(旧名) ? Object.assign((...参) => 函(...参), {异步: true}) : 函];
   }))]));
+  平台实现.豫言操作系统控制台 = {读取标准终端尺寸: () => [false, 0n, 0n]};
   const {运行} = 创建豫言实例(程序模块, 值桥模块, {输出, 错误输出, 时限毫秒: Number.POSITIVE_INFINITY, 平台: 平台实现});
   const 完成 = 运行();
   const 关闭宿主 = () => {
