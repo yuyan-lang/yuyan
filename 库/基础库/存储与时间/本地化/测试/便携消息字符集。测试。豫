@@ -1,0 +1,176 @@
+寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「字节串」之书。
+寻「标准库」之「语言核心」之「原语」之书。
+寻观「单元测试」之书。
+寻观「本地化」之「消息」之书。
+
+「：汉语：按 GNU gettext 官方 msgfmt-1 的最小消息一向量独立写成豫言断言，出处与许可见消息说明。
+文言：据 GNU gettext 官方 msgfmt-1 之最小消息一向量，自书豫言断言；出处许可见消息说明。：」
+「官方消息一」者
+  「读取便携消息」于（「串组合并」
+    于「列」
+      【『msgid』
+      ，（「字节转字符串」于「九」）
+      ，『"msg 1"
+msgstr』
+      ，（「字节转字符串」于「九」）
+      ，『"msg 1 translation"
+』
+      】）
+也。
+
+「断言串相等」于『msg 1 translation』于（「查消息」于「官方消息一」于『msg 1』）。
+
+「模糊头目录」者
+  「读取便携消息」
+    于『#, fuzzy
+msgid ""
+msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"
+
+msgid "caf\351"
+msgstr "th\351"
+』也。
+
+「断言串相等」于『thé』于（「查消息」于「模糊头目录」于『café』）。
+
+「空白序目录」者
+  「读取便携消息」于『msgid "item" msgid_plural "items" msgstr [ 0 ] "one item" msgstr [ 1 ] "many items"
+』也。
+
+「断言串相等」于『many items』于（「查复数形消息」于「空白序目录」于『』于『item』于『items』于「一」）。
+
+「同行目录」者
+  「读取便携消息」于『msgctxt"菜单" msgid"apple" msgid_plural"apples" msgstr[0]"苹果" msgstr[1]"诸苹果"
+』也。
+
+「断言串相等」于『苹果』于（「查上下文消息」于「同行目录」于『菜单』于『apple』）。
+「断言串相等」于『诸苹果』于（「查复数形消息」于「同行目录」于『菜单』于『apple』于『apples』于「一」）。
+「同行头目录」者
+  「读取便携消息」
+    于『msgid"" msgstr"Content-Type: text/plain; charset=ISO-8859-1\n"
+msgid"caf\351" msgstr"th\351" # msgid "ignored"
+』也。
+
+「断言串相等」于『thé』于（「查消息」于「同行头目录」于『café』）。
+
+「八进目录」者「读取便携消息」于『msgid "caf\303\251"
+msgstr "th\303\251"
+』也。
+
+「断言串相等」于『thé』于（「查消息」于「八进目录」于『café』）。
+「跨行目录」者「读取便携消息」于『msgid "caf\303"
+"\251"
+msgstr "th\xC3"
+"\xA9"
+』也。
+
+「断言串相等」于『thé』于（「查消息」于「跨行目录」于『café』）。
+「相邻目录」者「读取便携消息」于『msgid "caf\303" "\251"
+msgstr "th\303" "\251" # comment "ignored"
+』也。
+
+「断言串相等」于『thé』于（「查消息」于「相邻目录」于『café』）。
+「西文目录」者
+  「读取便携消息」
+    于『msgid ""
+msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"
+
+msgctxt "caf\351"
+msgid "th\351"
+msgstr "r\351ponse"
+』也。
+
+「断言串相等」于『réponse』于（「查上下文消息」于「西文目录」于『café』于『thé』）。
+「西文源码字节」者
+  「拼接字节串」
+    于（「字符串转字节串」
+      于『msgid ""
+msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"
+
+msgid "literal"
+msgstr "caf』）于（「拼接字节串」于（「单字节串」于「233」）于（「字符串转字节串」于『"
+』））也。
+
+「西文源码」者「原语」之「不安全转换」授以「字节串」授以「字符串」
+  于「西文源码字节」
+也。
+
+「断言串相等」于『café』于（「查消息」于（「读取便携消息」于「西文源码」）于『literal』）。
+
+「：汉语：WHATWG 国标索引第28项为 U+4E57 乗，对应 GBK 字节81 5C，尾字节正是反斜线。
+文言：WHATWG 国标索引二十八为 U+4E57 乗，GBK 之字节为八一五C，尾即反斜线。：」
+「国标源码字节」者
+  「拼接字节串」
+    于（「字符串转字节串」于『msgid ""
+msgstr "Content-Type: text/plain; charset=GBK\n"
+
+msgid "ride"
+msgstr "』）于（「拼接字节串」
+  于（「单字节串」于「129」）
+  于（「拼接字节串」于（「单字节串」于「92」）于（「字符串转字节串」于『"
+』）））也。
+
+「国标源码」者「原语」之「不安全转换」授以「字节串」授以「字符串」
+  于「国标源码字节」
+也。
+
+「断言串相等」于『乗』于（「查消息」于（「读取便携消息」于「国标源码」）于『ride』）。
+「国标转义」者
+  「读取便携消息」于『msgid ""
+msgstr "Content-Type: text/plain; charset=GBK\n"
+
+msgid "ride"
+msgstr "\x81"
+"\x5c"
+』也。
+
+「断言串相等」于『乗』于（「查消息」于「国标转义」于『ride』）。
+「零字节目录」者「读取便携消息」于『msgid "zero"
+msgstr "\000bad"
+』也。
+
+「断言串相等」于『zero』于（「查消息」于「零字节目录」于『zero』）。
+「坏转义目录」者「读取便携消息」于『msgid "bad"
+msgstr "\q"
+』也。
+
+「断言串相等」于『bad』于（「查消息」于「坏转义目录」于『bad』）。
+「缺十六位目录」者「读取便携消息」于『msgid "bad"
+msgstr "\x"
+』也。
+
+「断言串相等」于『bad』于（「查消息」于「缺十六位目录」于『bad』）。
+「上下文目录」者「读取便携消息」于『msgid "same"
+msgstr "plain"
+
+msgctxt ""
+msgid "same"
+msgstr "empty-context"
+』也。
+
+「断言串相等」于『plain』于（「查消息」于「上下文目录」于『same』）。
+「断言串相等」于『empty-context』于（「查上下文消息」于「上下文目录」于『』于『same』）。
+「复数头目录」者
+  「读取便携消息」
+    于『msgid ""
+msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+
+msgid "caf\351"
+msgid_plural "caf\351s"
+msgstr[0] "th\351"
+msgstr[1] "th\351s"
+』也。
+
+「断言串相等」于『thés』于（「查数量复数消息」于「复数头目录」于『en』于『』于『café』于『cafés』于「二」）。
+「非模糊目录」者「读取便携消息」于『#, no-fuzzy, c-format
+msgid "flag"
+msgstr "translated"
+』也。
+
+「断言串相等」于『translated』于（「查消息」于「非模糊目录」于『flag』）。
+「注入目录」者「读取便携消息」于『msgid "bad\004context"
+msgstr "injected"
+』也。
+
+「断言串相等」于『context』于（「查上下文消息」于「注入目录」于『bad』于『context』）。

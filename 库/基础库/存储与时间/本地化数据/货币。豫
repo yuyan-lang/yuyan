@@ -1,0 +1,19 @@
+寻观「标准库」之书。
+
+「：汉语：默认小数位取 CLDR 48 货币补充数据的 fractions._digits，按非默认位数列出全部币种；其他币种采用 DEFAULT 的二位。金额以对应的最小单位计。
+文言：位数取 CLDR 四十八之货币补充数据，尽列异于常数者；余从常数二位。金额以所对应之最小单位计。：」
+「货币默认小数位」乃化「字符串」而「整数」也。
+「货币默认小数位」者会「币种」而
+  虑「标记」者「串组合并」于「列」【『|』，「币种」，『|』】而
+  若「是子字符串吗」
+    于「标记」
+    于
+    『|ADP|AFN|ALL|BIF|BYR|CLP|COP|DJF|ESP|GNF|HUF|IDR|IQD|IRR|ISK|ITL|JPY|KMF|KPW|KRW|LAK|LBP|LUF|MGA|MGF|MMK|MRO|PKR|PYG|RSD|RWF|SLL|SOS|STD|SYP|TMM|TRL|UGX|UYI|VND|VUV|XAF|XOF|XPF|YER|ZMK|ZWD|』
+  则
+    「零」
+  否则
+    若「是子字符串吗」于「标记」于『|BHD|JOD|KWD|LYD|OMR|TND|』则
+      「三」
+    否则
+      若「是子字符串吗」于「标记」于『|CLF|UYW|』则「四」否则「二」
+也。
