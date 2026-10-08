@@ -23,3 +23,23 @@ test('只取当前按键，子程序继承期间恢复模式，返回后继续�
   assert.deepEqual(术.读取(),[true,'乙']);术.退出();
   assert.deepEqual(模式,[true,false,true,false]);
 });
+
+test('首键阻塞，Escape尾部暂时非阻塞后恢复，零字节读取才是EOF',()=>{
+  const 阻塞=[];let 次数=0;
+  const 流={isRaw:false,setRawMode:值=>{流.isRaw=值;},_handle:{setBlocking:值=>阻塞.push(值)}};
+  const 术=创建终端输入({是终端:()=>true,造流:()=>流,读:字=>{
+    次数++;
+    if(次数===1){字[0]=27;return 1;}
+    if(次数===2)throw Object.assign(new Error('尚无尾字'),{code:'EAGAIN'});
+    return 0;
+  }});
+  assert.equal(术.进入(),true);
+  assert.deepEqual(术.读取(),[true,'\x1b']);
+  assert.deepEqual(阻塞,[true,false,true]);
+  assert.deepEqual(术.读取(),[false,'']);术.退出();assert.equal(流.isRaw,false);
+});
+
+test('首键的非阻塞错误不可冒充EOF',()=>{
+  const 术=创建终端输入({是终端:()=>true,造流:()=>({isRaw:false,setRawMode:()=>{},_handle:{setBlocking:()=>{}}}),读:()=>{throw Object.assign(new Error('错误句柄'),{code:'EAGAIN'});}});
+  assert.equal(术.进入(),true);assert.throws(()=>术.读取(),{code:'EAGAIN'});术.退出();
+});
