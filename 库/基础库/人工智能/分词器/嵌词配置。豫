@@ -168,10 +168,17 @@
       】）
 也。
 
-「：汉语：SentencePiece BPE按单精度评分建立合并优先级，并保留原词元号与类型。
-文言：句片字对依单精度之分立并之次，保原词号与类。
-汉语：待办事项：正评分的自定义模型留待后续版本。
-文言：待办事项：自定正分之模，留后续之版。：」
+「嵌词分名次」乃化「模型头」而化「整数」而「整数」也。
+「嵌词分名次」者会「头」而会「号」而
+  虑「位」者「嵌词分位」于「头」于「号」而
+  若「大等」于「位」于「2147483648」则
+    「位」
+  否则
+    「减」于「2147483647」于「位」
+也。
+
+「：汉语：SentencePiece BPE按单精度评分建立合并优先级，正负评分均按数值递减处理，并保留原词元号与类型。
+文言：句片字对依单精度之分立并之次，正负皆循数递减，保原词号与类。：」
 「嵌词句片合并」乃化「模型头」而化「分词器」而「分词器」也。
 「嵌词句片合并」者会「头」而会「器」而
   虑「表」者「新整数键表」于（「字节串长度」于（「器」中「零」））而
@@ -197,7 +204,7 @@
               「整数键表记」
                 于「表」
                 于（「加」于（「乘」于「左」于「合并基数」）于「右」）
-                于（「加」于（「乘」于（「嵌词分位」于「头」于「号」）于「合并基数」）于「号」）
+                于（「加」于（「乘」于（「嵌词分名次」于「头」于「号」）于「合并基数」）于「号」）
             否则
               「元」
           而
@@ -215,6 +222,92 @@
   虑「无」者「登」于「零」而
   （「器」中「零」）与（「器」中「一」）与（「器」中「二」）与（「器」中「三」）与（「器」中「四」）与（「器」中「五」）
     与「表」与（「器」中「七」）与（「器」中「八」）与（「器」中「九」）
+也。
+
+「嵌词规整配置」乃化「模型头」而化「字符串」而「结森」也。
+「嵌词规整配置」者会「头」而会「种」而
+  若「串相等」于「种」于『WordPiece』则
+    「一元置字段」
+      于（「结森解析」于『{"type":"BertNormalizer","clean_text":true,"handle_chinese_chars":true,"lowercase":true}』）
+      于『lowercase』
+      于（「结森爻」
+        于（「非」于（「等」于（「元整数值」于「头」于『tokenizer.ggml.do_lower_case』于「一」）于「零」）））
+  否则
+    虑「一元」者「串相等」于「种」于『Unigram』而
+    虑「去多白」者
+      「非」于（「等」
+        于（「元整数值」于「头」于『tokenizer.ggml.remove_extra_whitespaces』于（
+          若「一元」则「一」否则「零」））于「零」）
+    而
+    虑「件们」者
+      若「去多白」则
+        「结森取数组」于（「结森解析」
+          于『[{"type":"Replace","pattern":{"Regex":"\\s+"},"content":" "},{"type":"Strip","strip_left":true,"strip_right":true}]』）
+      否则
+        「罄」授以「结森」
+    而
+    「结森对象」于（「列」【
+      『type』与（「结森字符串」于『Sequence』），
+      『normalizers』
+        与（「结森数组」于（若「一元」则「缀」于（「结森解析」于『{"type":"NFKC"}』）于「件们」否则「件们」））
+    】）
+也。
+
+「嵌词预分配置」乃化「模型头」而化「字符串」而化「字符串」而「结森」也。
+「嵌词预分配置」者会「头」而会「名」而会「种」而
+  若「串相等」于「名」于『gpt2』则
+    「结森解析」于『{"type":"ByteLevel","add_prefix_space":false,"use_regex":true}』
+  否则若「串相等」于「种」于『WordPiece』则
+    「结森解析」于『{"type":"BertPreTokenizer"}』
+  否则若「等」于（「元整数值」于「头」于『tokenizer.ggml.escape_whitespaces』于「一」）于「零」则
+    「结森空」
+  否则
+    「一元置字段」
+      于（「结森解析」于『{"type":"Metaspace","replacement":"▁","prepend_scheme":"always","split":false}』）
+      于『prepend_scheme』
+      于（「结森字符串」
+        于（
+          若「等」
+            于（「元整数值」于「头」于『tokenizer.ggml.add_space_prefix』于「一」）
+            于「零」则『never』
+          否则
+            『always』
+        ））
+也。
+
+「嵌词解码配置」乃化「模型头」而化「字符串」而化「字符串」而「结森」也。
+「嵌词解码配置」者会「头」而会「名」而会「种」而
+  若「串相等」于「名」于『gpt2』则
+    「结森解析」于『{"type":"ByteLevel"}』
+  否则若「串相等」于「种」于『WordPiece』则
+    「结森解析」于『{"type":"WordPiece","prefix":"##","cleanup":true}』
+  否则
+    虑「件们」者
+      「结森取数组」于（「结森解析」于『[{"type":"ByteFallback"},{"type":"Fuse"}]』）
+    而
+    虑「换们」者
+      若「等」于（「元整数值」于「头」于『tokenizer.ggml.escape_whitespaces』于「一」）于「零」则
+        「罄」授以「结森」
+      否则
+        「列」【
+          「结森解析」
+            于『{"type":"Replace","pattern":{"String":"▁"},"content":" "}』，
+            「一元置字段」
+              于（「结森解析」于『{"type":"Strip","content":" ","start":1,"stop":0}』）
+              于『start』
+              于（「结森整数」
+                于（
+                若「等」
+                  于（「元整数值」于「头」于『tokenizer.ggml.add_space_prefix』于「一」）
+                  于「零」则「零」
+                否则
+                  「一」））
+        】
+    而
+    「结森对象」于（「列」【
+      『type』与（「结森字符串」于『Sequence』），
+      『decoders』与（「结森数组」于（「附加」授以「结森」于「件们」于「换们」））
+    】）
 也。
 
 「读取GGUF分词配置」乃化「模型头」而「分词配置读取结果」也。
@@ -259,25 +352,9 @@
                   「罄」授以「结森」））
         】）
       而
-      虑「预」者
-        若「串相等」于「名」于『gpt2』则
-          「结森解析」
-            于『{"type":"ByteLevel","add_prefix_space":false,"use_regex":true}』
-        否则若「串相等」于「种」于『WordPiece』则
-          「结森解析」于『{"type":"BertPreTokenizer"}』
-        否则
-          「结森解析」
-            于『{"type":"Metaspace","replacement":"▁","prepend_scheme":"always","split":false}』
+      虑「预」者「嵌词预分配置」于「头」于「名」于「种」
       而
-      虑「解」者
-        若「串相等」于「名」于『gpt2』则「结森解析」于『{"type":"ByteLevel"}』
-        否则
-          若「串相等」于「种」于『WordPiece』则
-            「结森解析」于『{"type":"WordPiece","prefix":"##","cleanup":true}』
-          否则
-            「结森解析」
-              于
-              『{"type":"Sequence","decoders":[{"type":"ByteFallback"},{"type":"Fuse"},{"type":"Replace","pattern":{"String":"▁"},"content":" "},{"type":"Strip","content":" ","start":1,"stop":0}]}』
+      虑「解」者「嵌词解码配置」于「头」于「名」于「种」
       而
       虑「根」者
         「结森对象」于（「列」【
@@ -286,14 +363,7 @@
           『pre_tokenizer』与「预」，
           『decoder』与「解」，
           『post_processor』与（「嵌词后处理」于「头」于「词们」），
-          『normalizer』
-            与（
-            若「串相等」于「种」于『WordPiece』则
-              「结森解析」
-                于『{"type":"BertNormalizer","clean_text":true,"handle_chinese_chars":true,"lowercase":true}』
-            否则
-              「结森空」
-          ）
+          『normalizer』与（「嵌词规整配置」于「头」于「种」）
         】）而
       鉴「由结森根建分词配置」于「根」而
         有（「分词配置有误」于「误」）则
