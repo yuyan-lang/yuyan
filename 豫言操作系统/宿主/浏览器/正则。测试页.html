@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>正则同源浏览器验收</title></head>
+<body><pre id="结果">运行中
+</pre>
+<script type="module">
+// 汉语：此页仅连接既有浏览器值桥与已编译的豫言测试客体；正则计算和断言均在豫言客体中执行。
+// 文言：此页惟接既有浏览器值桥与既编之豫言试客；正则之算与验皆行于豫言客中。
+import {创建豫言实例} from './值桥.mjs';
+const 结果 = document.getElementById('结果');
+const 样本 = [
+  ['yy正则浏览器核心.wasm', '正则线性与增量测试通过'],
+  ['yy正则浏览器字节.wasm', '正则字节测试通过'],
+  ['yy正则浏览器差分.wasm', '线性与回溯六百三十例差分通过']
+];
+try {
+  const 桥 = await WebAssembly.compile(await (await fetch('./值桥.wasm')).arrayBuffer());
+  let 已完 = 0;
+  for (const [路径, 预期] of 样本) {
+    let 输出 = '';
+    const 程序 = await WebAssembly.compile(await (await fetch('./' + 路径)).arrayBuffer());
+    const 实例 = 创建豫言实例(程序, 桥, {输出: 文 => {输出 += 文;}, 时限毫秒: 600000});
+    await 实例.运行();
+    if (!输出.includes(预期)) throw Error('缺预期输出：' + 路径 + '；' + 输出);
+    结果.textContent += 输出;
+    已完++;
+  }
+  结果.textContent += '实际完成浏览器客体：' + 已完 + '\n';
+  document.documentElement.dataset.正则验收 = '通过';
+} catch (错误) {
+  结果.textContent += '失败：' + String(错误?.stack ?? 错误) + '\n';
+  document.documentElement.dataset.正则验收 = '失败';
+}
+</script></body></html>
