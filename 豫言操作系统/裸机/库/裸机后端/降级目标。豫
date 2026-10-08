@@ -456,6 +456,15 @@
 「苹果原生表」者
   「列」
   【『dlopen』与『dlopen』与（「列」【「一」，「零」】）与「一」与「零」与「阴」
+  ，『dlsym』与『dlsym』与（「列」【「四」，「一」】）与「一」与「零」与「阴」
+  ，『原生动态调用块』与『豫言动态调用块』与（「列」【「一」】）与「五」与「零」与「阳」
+  ，『原生取字节』与『memcpy』与（「列」【「一」，「四」，「零」】）与「五」与「零」与「阴」
+  ，『原生放字节』与『memcpy』与（「列」【「四」，「一」，「零」】）与「五」与「零」与「阴」
+  ，『原生分配』与『malloc』与（「列」【「零」】）与「一」与「零」与「阴」
+  ，『原生释放』与『free』与（「列」【「四」】）与「五」与「零」与「阴」
+  ，『原生对齐分配』与『posix_memalign』与（「列」【「一」，「零」，「零」】）与「零」与「零」与「阴」
+  ，『原生系统库可用』与『getpid』与（「罄」授以「整数」）与「零」与「零」与「阴」
+  ，『原生清零』与『memset』与（「列」【「四」，「零」，「零」】）与「五」与「零」与「阴」
   ，『objc_getClass』与『objc_getClass』与（「列」【「一」】）与「一」与「零」与「阳」
   ，『sel_registerName』与『sel_registerName』与（「列」【「一」】）与「一」与「零」与「阳」
   ，『objc_autoreleasePoolPush』与『objc_autoreleasePoolPush』与（「罄」授以「整数」）与「一」与「零」与「阳」
@@ -617,62 +626,63 @@
 也。
 「视窗入口表」者
   「列」
-  【『ExitProcess』与『kernel32.dll』与（「列」【「零」】）与「零」
-  ，『VirtualAlloc』与『kernel32.dll』与（「列」【「零」，「零」，「零」，「零」】）与「一」
-  ，『GetStdHandle』与『kernel32.dll』与（「列」【「二」】）与「一」
-  ，『WriteFile』与『kernel32.dll』与（「列」【「二」，「一」，「零」，「一」，「零」】）与「一」
-  ，『ReadFile』与『kernel32.dll』与（「列」【「二」，「一」，「零」，「一」，「零」】）与「一」
-  ，『GetModuleFileNameW』与『kernel32.dll』与（「列」【「零」，「一」，「零」】）与「一」
-  ，『NtQueryInformationProcess』与『ntdll.dll』与（「列」【「二」，「零」，「一」，「零」，「一」】）与「一」
-  ，『GetCurrentDirectoryW』与『kernel32.dll』与（「列」【「零」，「一」】）与「一」
-  ，『SetCurrentDirectoryW』与『kernel32.dll』与（「列」【「一」】）与「一」
-  ，『GetEnvironmentVariableW』与『kernel32.dll』与（「列」【「一」，「一」，「零」】）与「一」
-  ，『QueryPerformanceCounter』与『kernel32.dll』与（「列」【「一」】）与「一」
-  ，『QueryPerformanceFrequency』与『kernel32.dll』与（「列」【「一」】）与「一」
-  ，『GetSystemTimePreciseAsFileTime』与『kernel32.dll』与（「列」【「一」】）与「零」
-  ，『GetLastError』与『kernel32.dll』与（「罄」授以「整数」）与「一」
-  ，『CloseHandle』与『kernel32.dll』与（「列」【「二」】）与「一」
-  ，『GetConsoleMode』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
-  ，『MulDiv』与『kernel32.dll』与（「列」【「二」，「二」，「二」】）与「一」
-  ，『GetFileType』与『kernel32.dll』与（「列」【「二」】）与「一」
-  ，『GetActiveProcessorCount』与『kernel32.dll』与（「列」【「零」】）与「一」
-  ，『CreateFileW』与『kernel32.dll』与（「列」【「一」，「零」，「零」，「零」，「零」，「零」，「零」】）与「一」
-  ，『GetFileInformationByHandle』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
-  ，『GetFileAttributesExW』与『kernel32.dll』与（「列」【「一」，「零」，「一」】）与「一」
-  ，『GetFileInformationByHandleEx』与『kernel32.dll』与（「列」【「二」，「零」，「一」，「零」】）与「一」
-  ，『CreateDirectoryW』与『kernel32.dll』与（「列」【「一」，「零」】）与「一」
-  ，『DeleteFileW』与『kernel32.dll』与（「列」【「一」】）与「一」
-  ，『RemoveDirectoryW』与『kernel32.dll』与（「列」【「一」】）与「一」
-  ，『MoveFileExW』与『kernel32.dll』与（「列」【「一」，「一」，「零」】）与「一」
-  ，『SetFilePointerEx』与『kernel32.dll』与（「列」【「二」，「二」，「一」，「零」】）与「一」
-  ，『FlushFileBuffers』与『kernel32.dll』与（「列」【「二」】）与「一」
-  ，『SetEndOfFile』与『kernel32.dll』与（「列」【「二」】）与「一」
-  ，『BCryptGenRandom』与『bcrypt.dll』与（「列」【「零」，「一」，「零」，「零」】）与「一」
-  ，『CreatePipe』与『kernel32.dll』与（「列」【「一」，「一」，「零」，「零」】）与「一」
-  ，『CreateProcessW』与『kernel32.dll』
-    与（「列」【「五」，「五」，「零」，「零」，「零」，「零」，「五」，「五」，「一」，「一」】）与「一」
-  ，『GetExitCodeProcess』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
-  ，『TerminateProcess』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
-  ，『WaitForSingleObject』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
-  ，『PeekNamedPipe』与『kernel32.dll』与（「列」【「二」，「五」，「零」，「五」，「五」，「五」】）与「一」
-  ，『SetHandleInformation』与『kernel32.dll』与（「列」【「二」，「零」，「零」】）与「一」
-  ，『Sleep』与『kernel32.dll』与（「列」【「零」】）与「零」
-  ，『WSAStartup』与『ws2_32.dll』与（「列」【「零」，「一」】）与「一」
-  ，『socket』与『ws2_32.dll』与（「列」【「零」，「零」，「零」】）与「一」
-  ，『ioctlsocket』与『ws2_32.dll』与（「列」【「二」，「零」，「一」】）与「一」
-  ，『setsockopt』与『ws2_32.dll』与（「列」【「二」，「零」，「零」，「一」，「零」】）与「一」
-  ，『getsockopt』与『ws2_32.dll』与（「列」【「二」，「零」，「零」，「一」，「一」】）与「一」
-  ，『bind』与『ws2_32.dll』与（「列」【「二」，「一」，「零」】）与「一」
-  ，『listen』与『ws2_32.dll』与（「列」【「二」，「零」】）与「一」
-  ，『accept』与『ws2_32.dll』与（「列」【「二」，「五」，「五」】）与「一」
-  ，『connect』与『ws2_32.dll』与（「列」【「二」，「一」，「零」】）与「一」
-  ，『getsockname』与『ws2_32.dll』与（「列」【「二」，「一」，「一」】）与「一」
-  ，『shutdown』与『ws2_32.dll』与（「列」【「二」，「零」】）与「一」
-  ，『closesocket』与『ws2_32.dll』与（「列」【「二」】）与「一」
-  ，『recv』与『ws2_32.dll』与（「列」【「二」，「一」，「零」，「零」】）与「一」
-  ，『send』与『ws2_32.dll』与（「列」【「二」，「一」，「零」，「零」】）与「一」
-  ，『WSAPoll』与『ws2_32.dll』与（「列」【「一」，「零」，「二」】）与「一」
-  】
+  【
+  『ExitProcess』与『kernel32.dll』与（「列」【「零」】）与「零」，
+  『VirtualAlloc』与『kernel32.dll』与（「列」【「零」，「零」，「零」，「零」】）与「一」，
+  『GetStdHandle』与『kernel32.dll』与（「列」【「二」】）与「一」，
+  『WriteFile』与『kernel32.dll』与（「列」【「二」，「一」，「零」，「一」，「零」】）与「一」，
+  『ReadFile』与『kernel32.dll』与（「列」【「二」，「一」，「零」，「一」，「零」】）与「一」，
+  『GetModuleFileNameW』与『kernel32.dll』与（「列」【「零」，「一」，「零」】）与「一」，
+  『NtQueryInformationProcess』与『ntdll.dll』与（「列」【「二」，「零」，「一」，「零」，「一」】）与「一」，
+  『GetCurrentDirectoryW』与『kernel32.dll』与（「列」【「零」，「一」】）与「一」，
+  『SetCurrentDirectoryW』与『kernel32.dll』与（「列」【「一」】）与「一」，
+  『GetEnvironmentVariableW』与『kernel32.dll』与（「列」【「一」，「一」，「零」】）与「一」，
+  『QueryPerformanceCounter』与『kernel32.dll』与（「列」【「一」】）与「一」，
+  『QueryPerformanceFrequency』与『kernel32.dll』与（「列」【「一」】）与「一」，
+  『GetSystemTimePreciseAsFileTime』与『kernel32.dll』与（「列」【「一」】）与「零」，
+  『GetLastError』与『kernel32.dll』与（「罄」授以「整数」）与「一」，
+  『CloseHandle』与『kernel32.dll』与（「列」【「二」】）与「一」，
+  『GetConsoleMode』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」，
+  『MulDiv』与『kernel32.dll』与（「列」【「二」，「二」，「二」】）与「一」，
+  『GetFileType』与『kernel32.dll』与（「列」【「二」】）与「一」，
+  『GetActiveProcessorCount』与『kernel32.dll』与（「列」【「零」】）与「一」，
+  『CreateFileW』与『kernel32.dll』与（「列」【「一」，「零」，「零」，「零」，「零」，「零」，「零」】）与「一」，
+  『GetFileInformationByHandle』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」，
+  『GetFileAttributesExW』与『kernel32.dll』与（「列」【「一」，「零」，「一」】）与「一」，
+  『GetFileInformationByHandleEx』与『kernel32.dll』与（「列」【「二」，「零」，「一」，「零」】）与「一」，
+  『CreateDirectoryW』与『kernel32.dll』与（「列」【「一」，「零」】）与「一」，
+  『DeleteFileW』与『kernel32.dll』与（「列」【「一」】）与「一」，
+  『RemoveDirectoryW』与『kernel32.dll』与（「列」【「一」】）与「一」，
+  『MoveFileExW』与『kernel32.dll』与（「列」【「一」，「一」，「零」】）与「一」，
+  『SetFilePointerEx』与『kernel32.dll』与（「列」【「二」，「二」，「一」，「零」】）与「一」，
+  『FlushFileBuffers』与『kernel32.dll』与（「列」【「二」】）与「一」，
+  『SetEndOfFile』与『kernel32.dll』与（「列」【「二」】）与「一」，
+  『BCryptGenRandom』与『bcrypt.dll』与（「列」【「零」，「一」，「零」，「零」】）与「一」，
+  『CreatePipe』与『kernel32.dll』与（「列」【「一」，「一」，「零」，「零」】）与「一」，
+  『CreateProcessW』与『kernel32.dll』
+    与（「列」【「五」，「五」，「零」，「零」，「零」，「零」，「五」，「五」，「一」，「一」】）与「一」，
+    『GetExitCodeProcess』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」，
+    『TerminateProcess』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」，
+    『WaitForSingleObject』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」，
+    『PeekNamedPipe』与『kernel32.dll』与（「列」【「二」，「五」，「零」，「五」，「五」，「五」】）与「一」，
+    『SetHandleInformation』与『kernel32.dll』与（「列」【「二」，「零」，「零」】）与「一」，
+    『Sleep』与『kernel32.dll』与（「列」【「零」】）与「零」，
+    『WSAStartup』与『ws2_32.dll』与（「列」【「零」，「一」】）与「一」，
+    『socket』与『ws2_32.dll』与（「列」【「零」，「零」，「零」】）与「一」，
+    『ioctlsocket』与『ws2_32.dll』与（「列」【「二」，「零」，「一」】）与「一」，
+    『setsockopt』与『ws2_32.dll』与（「列」【「二」，「零」，「零」，「一」，「零」】）与「一」，
+    『getsockopt』与『ws2_32.dll』与（「列」【「二」，「零」，「零」，「一」，「一」】）与「一」，
+    『bind』与『ws2_32.dll』与（「列」【「二」，「一」，「零」】）与「一」，
+    『listen』与『ws2_32.dll』与（「列」【「二」，「零」】）与「一」，
+    『accept』与『ws2_32.dll』与（「列」【「二」，「五」，「五」】）与「一」，
+    『connect』与『ws2_32.dll』与（「列」【「二」，「一」，「零」】）与「一」，
+    『getsockname』与『ws2_32.dll』与（「列」【「二」，「一」，「一」】）与「一」，
+    『shutdown』与『ws2_32.dll』与（「列」【「二」，「零」】）与「一」，
+    『closesocket』与『ws2_32.dll』与（「列」【「二」】）与「一」，
+    『recv』与『ws2_32.dll』与（「列」【「二」，「一」，「零」，「零」】）与「一」，
+    『send』与『ws2_32.dll』与（「列」【「二」，「一」，「零」，「零」】）与「一」，
+    『WSAPoll』与『ws2_32.dll』与（「列」【「一」，「零」，「二」】）与「一」
+】
 也。
 
 「视窗入口」乃
@@ -848,15 +858,18 @@
     于（「模」中「一」）
     于（会「项」而
       若「非」于（「是本目标导入」于「标」于「项」）则「元」否则
-        虑「绑」者「目标导入绑定」于「标」于「项」而
-        虑「行」者「Linux入口」于（「项」中「一」）而
+        虑「绑」者「目标导入绑定」于「标」于「项」
+        而
+        虑「行」者「Linux入口」于（「项」中「一」）
+        而
         虑「型」者
           「网页取项」授以「网页签名」
           于『平台类型』
           于（「项」中「二」）
           于（「模」中「零」）
         而
-        虑「参数数」者「长度」授以「整数」于（「行」中「三」）而
+        虑「参数数」者「长度」授以「整数」于（「行」中「三」）
+        而
         若「大于」于「参数数」于（
           若「目标臂」于「标」则「六」否则「六」）则
             「发生事故」于『Linux 导入参数过多』
