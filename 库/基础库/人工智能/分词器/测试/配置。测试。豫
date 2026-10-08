@@ -1,0 +1,129 @@
+寻观「标准库」之书。
+寻观「结森工具」之书。
+寻观「分词器」之书。
+寻观「分词器」之「规范化配置」之书。
+寻观「分词器」之「预分词配置」之书。
+寻观「分词器」之「解码配置」之书。
+寻观「分词器」之「后处理配置」之书。
+寻观「分词器」之「字面切分」之书。
+
+「核验」乃化「字符串」而化「字符串」而「有」也。
+「核验」者会「期」而会「实」而
+  若「串相等」于「期」于「实」则
+    「元」
+  否则
+    「发生事故」授以「有」于（『预期：』附「期」附『，实得：』附「实」）
+也。
+
+「号文」乃化（「列」于「整数」）而「字符串」也。
+「号文」者会「号们」而
+  「间合」于『,』于（「态射」授以「整数」授以「字符串」于「号们」于「整数表示」）
+也。
+
+「段文」乃化（「列」于「字符串」）而「字符串」也。
+「段文」者会「段们」而
+  「间合」于『|』于「段们」
+也。
+
+「核验」
+  于『ab』
+  于（「应用规范化器」
+    于（「结森解析」于『{"type":"Sequence","normalizers":[{"type":"NFKC"},{"type":"Lowercase"},{"type":"Strip"}]}』）
+    于『　ＡＢ　』）。
+「核验」于『x  』于（「应用规范化器」于（「结森解析」于『{"type":"Strip","left":true,"right":false}』）于『  x  』）。
+「核验」
+  于『Hello|,|世界|!』
+  于（「段文」于（「应用预分词器」于（「结森解析」于『{"type":"Whitespace"}』）于『Hello, 世界!』））。
+「核验」
+  于『a|12|b|３４』
+  于（「段文」
+    于（「应用预分词器」于（「结森解析」于『{"type":"Digits","individual_digits":false}』）于『a12b３４』））。
+「核验」
+  于『a|1|2|b』
+  于（「段文」于（「应用预分词器」于（「结森解析」于『{"type":"Digits","individual_digits":true}』）于『a12b』））。
+「核验」
+  于『a|!?|b』
+  于（「段文」于（「应用预分词器」于（「结森解析」于『{"type":"Punctuation","behavior":"Contiguous"}』）于『a!?b』））。
+「核验」
+  于『▁Hello|▁world』
+  于（「段文」
+    于（「应用预分词器」
+      于（「结森解析」于『{"type":"Metaspace","replacement":"▁","prepend_scheme":"always","split":true}』）
+      于『Hello world』））。
+「核验」于『a|,b』于（「段文」于（「应用切分行为」于（「字面切分段」于『a,b』于『,』）于『MergedWithNext』））。
+「核验」于『a,|b』于（「段文」于（「应用切分行为」于（「字面切分段」于『a,b』于『,』）于『MergedWithPrevious』））。
+「核验」于『a|,|,b』于（「段文」于（「应用切分行为」于（「字面切分段」于『a,,b』于『,』）于『MergedWithNext』））。
+「核验」于『a,|,|b』于（「段文」于（「应用切分行为」于（「字面切分段」于『a,,b』于『,』）于『MergedWithPrevious』））。
+「核验」
+  于『a|$|b|+|c』
+  于（「段文」于（「应用预分词器」于（「结森解析」于『{"type":"Punctuation","behavior":"Isolated"}』）于『a$b+c』））。
+「核验」
+  于『▁a|▁|▁|▁b』
+  于（「段文」
+    于（「应用预分词器」
+      于（「结森解析」于『{"type":"Metaspace","replacement":"▁","prepend_scheme":"always","split":true}』）于『a   b』））。
+「核验」于『你😀』于（「字节层解码」于（「列」【「字节层映文」于『你😀』】））。
+「核验」于『叫』于（「段文」于（「字节回退解码」于（「列」【『<0xE5>』，『<0x8f>』，『<0xab>』】）））。
+「核验」于『�|�|a』于（「段文」于（「字节回退解码」于（「列」【『<0xE5>』，『<0x8f>』，『a』】）））。
+「核验」
+  于『Hello world』
+  于（「串组合并」
+    于（「应用解码器」
+      于（「结森解析」于『{"type":"Metaspace","replacement":"▁","prepend_scheme":"always"}』）
+      于（「列」【『▁Hello』，『▁world』】）））。
+
+「核验」
+  于『abc』
+  于（「段文」
+    于（「应用预分词器首位」于（「结森解析」于『{"type":"Metaspace","prepend_scheme":"first"}』）于『abc』于「阴」））。
+「核验」
+  于『▁abc』
+  于（「段文」
+    于（「应用预分词器首位」于（「结森解析」于『{"type":"Metaspace","prepend_scheme":"first"}』）于『abc』于「阳」））。
+
+「核验」于『cafe  中   文  !』于（「应用规范化器」于（「结森解析」于『{"type":"BertNormalizer"}』）于『CAFÉ 中 文 !』）。
+「核验」于『Cafe』于（「应用规范化器」于（「结森解析」于『{"type":"StripAccents"}』）于『Café』）。
+「核验」
+  于『Hello|,|世界|!|$』
+  于（「段文」于（「应用预分词器」于（「结森解析」于『{"type":"BertPreTokenizer"}』）于『Hello, 世界!$』））。
+
+「核验」
+  于『a|b』
+  于（「段文」
+    于（「应用预分词器」
+      于（「结森解析」于『{"type":"Split","pattern":{"Regex":"[0-9]+"},"behavior":"Removed"}』）于『a12b』））。
+「核验」
+  于『ab$1cd$1』
+  于（「应用规范化器」
+    于（「结森解析」于『{"type":"Replace","pattern":{"Regex":"[0-9]+"},"content":"$1"}』）于『ab12cd34』）。
+
+「配置」乃「分词配置」也。
+「配置」者鉴「读取分词配置」
+  于
+  『{"model":{"type":"BPE","vocab":{"a":0,"b":1,"ab":2,"<s>":3,"</s>":4,"<unk>":5,"[mask]":6},"merges":["a b"],"unk_token":"<unk>","fuse_unk":true},"normalizer":{"type":"Sequence","normalizers":[{"type":"NFKC"},{"type":"Lowercase"},{"type":"Strip"}]},"pre_tokenizer":{"type":"Whitespace"},"post_processor":{"type":"TemplateProcessing","single":"<s> $A </s>","pair":"<s> $A </s> $B:1 </s>:1","special_tokens":{"<s>":{"ids":[3]},"</s>":{"ids":[4]}}},"decoder":{"type":"Fuse"},"added_tokens":[{"id":3,"content":"<s>","special":true,"normalized":false},{"id":4,"content":"</s>","special":true,"normalized":false},{"id":6,"content":"[mask]","special":false,"normalized":true,"single_word":true,"lstrip":true,"rstrip":true}]}』
+  而
+  有（「分词配置已读」于「成」）则「成」
+  或有（「分词配置有误」于「误」）则
+    「发生事故」授以「分词配置」于「误」
+也。
+
+「单」乃「后处理结果」也。
+「单」者「按配置分词」于「配置」于『ＡＢ』于「阳」也。
+
+「核验」于『3,2,4』于（「号文」于（「单」中「零」））。
+「核验」于『0,0,0』于（「号文」于（「单」中「一」））。
+「对」乃「后处理结果」也。
+「对」者「按配置成对分词」于「配置」于『ab』于『a』于「阳」也。
+
+「核验」于『3,2,4,0,4』于（「号文」于（「对」中「零」））。
+「核验」于『0,0,0,1,1』于（「号文」于（「对」中「一」））。
+「核验」于『ab』于（「按配置解码」于「配置」于（「单」中「零」）于「阳」）。
+「无特殊」乃「后处理结果」也。
+「无特殊」者「按配置分词」于「配置」于『ab』于「阴」也。
+
+「核验」于『2』于（「号文」于（「无特殊」中「零」））。
+「掩码」乃「后处理结果」也。
+「掩码」者「按配置分词」于「配置」于『xx [MASK] yy』于「阴」也。
+
+「核验」于『5,6,5』于（「号文」于（「掩码」中「零」））。
+「打印行」于『分词配置测试通过』。
