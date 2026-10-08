@@ -9,7 +9,7 @@
   「列」
   【「解析」
     于
-    『<svg><style>*{fill:red}rect{fill:blue}.a{fill:#0f0}#i{fill:#00f}</style><rect id="i" class="a" style="fill:red;fill:white"/><rect id="j" class="a"/><g color="#f00"><rect id="k" fill="currentColor"/></g></svg>』
+    『<svg><style>*{fill:red}rect{fill:blue}.a{fill:#0f0}#i{fill:#00f}</style><rect id="i" class="a" style="fill:red;fill:white"/><rect id="j" class="a"/><g color="#f00"><rect id="k" style="fill:currentColor"/><rect id="l" fill="currentColor"/></g></svg>』
   】
 也。
 
@@ -35,4 +35,5 @@
 若「串相等」于（「查填色」于『i』）于『white』则「元」否则「发生事故」于『行内样式或重复声明优先级错误』。
 若「串相等」于（「查填色」于『j』）于『#0f0』则「元」否则「发生事故」于『类选择器优先级错误』。
 若「串相等」于（「查填色」于『k』）于『#f00』则「元」否则「发生事故」于『currentColor继承错误』。
+若「串相等」于（「查填色」于『l』）于『blue』则「元」否则「发生事故」于『标签规则与展示属性优先级错误』。
 「打印行」于『样式测试通过』。
