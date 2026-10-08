@@ -7,7 +7,7 @@ import 路径 from 'node:path';
 import 终端 from 'node:tty';
 import {StringDecoder as 字节解码器} from 'node:string_decoder';
 import 系统 from 'node:os';
-import {createHash} from 'node:crypto';
+import {createHash, randomFillSync} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {spawnSync, spawnSync as 同步启动, spawn as 原生服务启动} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
