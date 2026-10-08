@@ -1,0 +1,158 @@
+{
+  "context" : {
+    "font" : "serif 12",
+    "language" : "c",
+    "base-gravity" : "south",
+    "gravity-hint" : "natural",
+    "base-dir" : "ltr",
+    "round-glyph-positions" : false,
+    "transform" : [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0
+    ]
+  },
+  "text" : "AאבB",
+  "font" : "Verdana 10",
+  "wrap" : "word-char",
+  "output" : {
+    "is-wrapped" : false,
+    "is-ellipsized" : false,
+    "unknown-glyphs" : 0,
+    "width" : 26390,
+    "height" : 12455,
+    "log-attrs" : [
+      {
+        "char-break" : true,
+        "cursor-position" : true,
+        "word-start" : true,
+        "sentence-boundary" : true,
+        "sentence-start" : true,
+        "backspace-deletes-character" : true,
+        "word-boundary" : true
+      },
+      {
+        "char-break" : true,
+        "cursor-position" : true,
+        "break-inserts-hyphen" : true
+      },
+      {
+        "char-break" : true,
+        "cursor-position" : true,
+        "backspace-deletes-character" : true,
+        "break-inserts-hyphen" : true
+      },
+      {
+        "char-break" : true,
+        "cursor-position" : true,
+        "backspace-deletes-character" : true,
+        "break-inserts-hyphen" : true
+      },
+      {
+        "line-break" : true,
+        "mandatory-break" : true,
+        "char-break" : true,
+        "white" : true,
+        "cursor-position" : true,
+        "word-end" : true,
+        "sentence-boundary" : true,
+        "sentence-end" : true,
+        "word-boundary" : true
+      }
+    ],
+    "lines" : [
+      {
+        "start-index" : 0,
+        "length" : 6,
+        "paragraph-start" : true,
+        "direction" : "ltr",
+        "runs" : [
+          {
+            "offset" : 0,
+            "length" : 1,
+            "text" : "A",
+            "bidi-level" : 0,
+            "gravity" : "south",
+            "language" : "c",
+            "script" : "latin",
+            "font" : {
+              "description" : "Verdana 7.5",
+              "checksum" : "238c1624bec6462cc2dcd7faf87bbf320eb148e49dc3b4418a49cb490403026c"
+            },
+            "flags" : 0,
+            "y-offset" : 0,
+            "start-x-offset" : 0,
+            "end-x-offset" : 0,
+            "glyphs" : [
+              {
+                "glyph" : 36,
+                "width" : 7000,
+                "is-cluster-start" : true,
+                "log-cluster" : 0
+              }
+            ]
+          },
+          {
+            "offset" : 1,
+            "length" : 4,
+            "text" : "אב",
+            "bidi-level" : 1,
+            "gravity" : "south",
+            "language" : "c",
+            "script" : "hebrew",
+            "font" : {
+              "description" : "Lucida Grande 7.5",
+              "checksum" : "4ff52a8998f7f21953c560d3b208880355577012471fc34de48f7df44430bf9a"
+            },
+            "flags" : 0,
+            "y-offset" : 0,
+            "start-x-offset" : 0,
+            "end-x-offset" : 0,
+            "glyphs" : [
+              {
+                "glyph" : 609,
+                "width" : 5765,
+                "is-cluster-start" : true,
+                "log-cluster" : 2
+              },
+              {
+                "glyph" : 608,
+                "width" : 6605,
+                "is-cluster-start" : true,
+                "log-cluster" : 0
+              }
+            ]
+          },
+          {
+            "offset" : 5,
+            "length" : 1,
+            "text" : "B",
+            "bidi-level" : 0,
+            "gravity" : "south",
+            "language" : "c",
+            "script" : "latin",
+            "font" : {
+              "description" : "Verdana 7.5",
+              "checksum" : "238c1624bec6462cc2dcd7faf87bbf320eb148e49dc3b4418a49cb490403026c"
+            },
+            "flags" : 0,
+            "y-offset" : 0,
+            "start-x-offset" : 0,
+            "end-x-offset" : 0,
+            "glyphs" : [
+              {
+                "glyph" : 37,
+                "width" : 7020,
+                "is-cluster-start" : true,
+                "log-cluster" : 0
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
