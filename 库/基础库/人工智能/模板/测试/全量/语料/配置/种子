@@ -1,0 +1,1 @@
+{"chat_template":"{% macro f(a=1) %}{{ a }}{{ kwargs.x }}{% endmacro %}{{ f(x='sample') }}","bos_token":"<s>","eos_token":{"content":"</s>"}}
