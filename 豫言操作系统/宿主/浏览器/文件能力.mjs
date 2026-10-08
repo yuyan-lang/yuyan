@@ -59,6 +59,16 @@ export function 创建文件能力({目录 = new Map()} = {}) {
       柄.偏移 += 字节.length;
       return [0, 字节, ''];
     }, (码, 文) => [码, new Uint8Array(), 文]),
+    // 汉语：绝对偏移保留整数精度，超过文件长度直接读尽；切片保持顺序游标。文言：绝对偏存其精，逾文长则读尽；切片存顺读之位。
+    定位读取: (号, 偏移, 上限) => 执行(async () => {
+      const 柄 = 取柄(号, '文件');
+      if ((typeof 偏移 !== 'bigint' && !Number.isSafeInteger(偏移)) || 偏移 < 0 || !Number.isSafeInteger(上限) || 上限 < 0) 失败(7, '定位读取参数无效');
+      if (上限 === 0) return [0, new Uint8Array(), ''];
+      const 文件 = 柄.文件句柄 ? await 柄.文件句柄.getFile() : 柄.值;
+      if (BigInt(偏移) >= BigInt(文件.size)) return [9, new Uint8Array(), ''];
+      const 位置 = Number(偏移);
+      return [0, new Uint8Array(await 文件.slice(位置, 位置 + Math.min(上限, 文件.size - 位置)).arrayBuffer()), ''];
+    }, (码, 文) => [码, new Uint8Array(), 文]),
     关闭: 号 => 执行(async () => {
       取柄(号, '文件'); 柄表.释放(号); return [0, ''];
     }, (码, 文) => [码, 文]),
