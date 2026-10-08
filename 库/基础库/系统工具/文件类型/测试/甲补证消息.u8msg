@@ -1,0 +1,8 @@
+From: sender@example.test
+To: recipient@example.test
+Subject: 文件类型甲补证
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+汉语：网页消费者应保留此文件正文，并返回 message/global。
+文言：网页之器，存此卷之文，还 message/global 之类。
