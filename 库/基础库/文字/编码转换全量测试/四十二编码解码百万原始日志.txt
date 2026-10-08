@@ -1,0 +1,60 @@
+UTF-8 精确隔离通过，输入数=1000000
+UTF-16LE 精确隔离通过，输入数=1000000
+UTF-16BE 精确隔离通过，输入数=1000000
+UTF-32LE 精确隔离通过，输入数=1000000
+UTF-32BE 精确隔离通过，输入数=1000000
+GBK 精确隔离通过，输入数=1000000
+gb18030 精确隔离通过，输入数=1000000
+Big5 精确隔离通过，输入数=1000000
+EUC-JP 精确隔离通过，输入数=1000000
+ISO-2022-JP 精确隔离通过，输入数=1000000
+Shift_JIS 精确隔离通过，输入数=1000000
+EUC-KR 精确隔离通过，输入数=1000000
+IBM866 精确隔离通过，输入数=1000000
+ISO-8859-2 精确隔离通过，输入数=1000000
+ISO-8859-3 精确隔离通过，输入数=1000000
+ISO-8859-4 精确隔离通过，输入数=1000000
+ISO-8859-5 精确隔离通过，输入数=1000000
+ISO-8859-6 精确隔离通过，输入数=1000000
+ISO-8859-7 精确隔离通过，输入数=1000000
+ISO-8859-8 精确隔离通过，输入数=1000000
+ISO-8859-8-I 精确隔离通过，输入数=1000000
+ISO-8859-10 精确隔离通过，输入数=1000000
+ISO-8859-13 精确隔离通过，输入数=1000000
+ISO-8859-14 精确隔离通过，输入数=1000000
+ISO-8859-15 精确隔离通过，输入数=1000000
+ISO-8859-16 精确隔离通过，输入数=1000000
+KOI8-R 精确隔离通过，输入数=1000000
+KOI8-U 精确隔离通过，输入数=1000000
+macintosh 精确隔离通过，输入数=1000000
+windows-874 精确隔离通过，输入数=1000000
+windows-1250 精确隔离通过，输入数=1000000
+windows-1251 精确隔离通过，输入数=1000000
+windows-1252 精确隔离通过，输入数=1000000
+windows-1253 精确隔离通过，输入数=1000000
+windows-1254 精确隔离通过，输入数=1000000
+windows-1255 精确隔离通过，输入数=1000000
+windows-1256 精确隔离通过，输入数=1000000
+windows-1257 精确隔离通过，输入数=1000000
+windows-1258 精确隔离通过，输入数=1000000
+x-mac-cyrillic 精确隔离通过，输入数=1000000
+x-user-defined 精确隔离通过，输入数=1000000
+replacement 精确隔离通过，输入数=1000000
+     8660.69 real      2237.72 user      4744.16 sys
+           101466112  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+            26785878  page reclaims
+              364149  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+             5628319  voluntary context switches
+            51664296  involuntary context switches
+         20319163553  instructions retired
+         25821508577  cycles elapsed
+            59541432  peak memory footprint
