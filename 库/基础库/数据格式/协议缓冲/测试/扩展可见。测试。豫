@@ -1,0 +1,34 @@
+寻观「标准库」之书。
+寻观「协议缓冲」之书。
+
+「根文」者
+  『syntax="proto2"; import weak "absent.proto"; import "bridge.proto"; extend Target { optional int32 extra=100; }』
+也。
+
+「目标文」者『syntax="proto2"; message Target { extensions 100 to 200; }』也。
+
+「正常」者
+  「解析协议文件组」
+    于『root.proto』
+    于（「列」
+          【『root.proto』与「根文」
+          ，『bridge.proto』与『syntax="proto2"; import public "target.proto";』
+          ，『target.proto』与「目标文」
+          】）
+也。
+
+若「等零」于（「正常」中「零」）则「元」否则「发生事故」授以「有」
+  于『缺失weak与public扩展目标须可解析』。
+「错误」者
+  「解析协议文件组」
+    于『root.proto』
+    于（「列」
+          【『root.proto』与「根文」
+          ，『bridge.proto』与『syntax="proto2"; import "target.proto";』
+          ，『target.proto』与「目标文」
+          】）
+也。
+
+若「非」于（「等零」于（「错误」中「零」））则「元」否则「发生事故」授以「有」
+  于『跨private导入的扩展目标须拒绝』。
+「打印行」于『扩展可见基本正常与错误两项成功』。
