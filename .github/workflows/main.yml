@@ -383,6 +383,27 @@ jobs:
           豫言操作系统/裸机/原生一致性。豫 --编译器 ./yy4_bs.wasm
           --输出 yy原生一致性.wasm -j 24
 
+      # 汉语：远程文件内部协议先构建底层烟验，再以两种 Linux 架构实际运行。
+      # 文言：远程文内约先造底层之验，复于 Linux 二构实运行之。
+      - name: 构建远程文件协议烟验
+        run: >-
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件
+          豫言操作系统/裸机/客体二号/远程文件。底层。测试。豫
+          --编译器 ./yy4_bs.wasm --输出 yy远程文件协议.wasm -j 24
+
+      - name: 构建远程文件协议原生生成工具
+        run: >-
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建
+          豫言裸机 原生生成 --编译器 ./yy4_bs.wasm --输出 yy原生生成.wasm -j 24
+
+      - name: 生成远程文件协议原生烟验
+        run: >-
+          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm
+          Linux '${{ matrix.arch }}' yy远程文件协议.wasm yy远程文件协议.exe
+
+      - name: 运行远程文件协议原生烟验
+        run: ./yy远程文件协议.exe
+
       - name: 运行完整预编一致性组
         env:
           YY_GC_INITIAL_HEAP_SIZE_MB: 1024
