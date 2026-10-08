@@ -14,6 +14,10 @@ const 签名们 = {
   read: {arguments: ['int32', 'pointer', 'uint64'], return: 'int64'},
   write: {arguments: ['int32', 'pointer', 'uint64'], return: 'int64'},
   clock_gettime: {arguments: ['int32', 'pointer'], return: 'int32'},
+  getentropy: {arguments: ['pointer', 'uint64'], return: 'int32'},
+  fcntl: {符号: '__fcntl', arguments: ['int32', 'int32', 'int64'], return: 'int32'},
+  openat: {符号: '__openat', arguments: ['int32', 'pointer', 'int32', 'uint16'], return: 'int32'},
+  signal: {arguments: ['int32', 'pointer'], return: 'pointer', 原址: [1]},
 };
 
 export function 创建传输控制协议系统调用({取内存} = {}) {
@@ -34,19 +38,21 @@ export function 创建传输控制协议系统调用({取内存} = {}) {
     const 取误址 = 库.getFunction('__error', {arguments: [], return: 'pointer'});
     const 函们 = {};
     for (const [名, 签名] of Object.entries(签名们)) {
-      const 函 = 库.getFunction(名, 签名);
+      const 函 = 库.getFunction(签名.符号 ?? 名, {arguments: 签名.arguments, return: 签名.return});
       函们[名] = (...参) => {
         const 参与 = 参.map((值, 位) => {
           const 型 = 签名.arguments[位];
           if (型 === 'pointer') {
+            if (签名.原址?.includes(位)) return BigInt(值);
             if (值 === 0) return 0n;
             return 外部.getRawPointer(new Uint8Array(取内存().buffer, 值));
           }
-          return 型 === 'uint64' ? BigInt(值 >>> 0) : Number(值);
+          if (型 === 'uint64') return BigInt(值 >>> 0);
+          return 型 === 'int64' ? BigInt(值) : Number(值);
         });
         // 汉语：失败后立即读取同线程 errno，与原生导入桩保持负误码约定。文言：败则即取同线 errno，与原生导入桩同返负误码。
         const 果 = 函(...参与);
-        if (果 === -1 || 果 === -1n) return -外部.getInt32(取误址(), 0);
+        if (果 === -1 || (typeof 果 === 'bigint' && BigInt.asIntN(64, 果) === -1n)) return -外部.getInt32(取误址(), 0);
         return Number(果);
       };
     }
@@ -99,7 +105,7 @@ export function 创建传输控制协议能力({模块字节} = {}) {
     传输控制协议_开始连接: (主机, 端口) => 主机果(78, 主机, 端口),
     传输控制协议_完成连接: 柄 => 整果(79, 柄),
     传输控制协议_接受: 柄 => 整果(80, 柄),
-    传输控制协议_读取: (柄, 最大) => {const 果 = 读果(81, 柄, 最大); return [果[0], 解码.decode(果[1])];},
+    传输控制协议_读取: (柄, 最大) => 读果(81, 柄, 最大),
     传输控制协议_读取字节串: (柄, 最大) => 读果(82, 柄, 最大),
     传输控制协议_从字节序数写入: (柄, 内容, 起) => 写果(83, 柄, 内容, 起),
     传输控制协议_从字节序数写入字节串: (柄, 内容, 起) => 写果(84, 柄, 内容, 起),

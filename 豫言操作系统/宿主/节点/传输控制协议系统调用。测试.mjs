@@ -9,6 +9,17 @@ if (process.platform === 'darwin') {
   const 柄 = 苹.socket(2, 1, 0);
   断言.ok(柄 >= 0);
   try {
+    const 旧标 = 苹.fcntl(柄, 3, 0);
+    断言.ok(旧标 >= 0);
+    断言.equal(苹.fcntl(柄, 4, 旧标 | 4), 0);
+    断言.equal(苹.fcntl(柄, 3, 0) & 4, 4);
+    const 路径 = new TextEncoder().encode('/etc/hosts\0');
+    new Uint8Array(内存.buffer, 2048, 路径.length).set(路径);
+    const 文件柄 = 苹.openat(-2, 2048, 0, 0);
+    断言.ok(文件柄 >= 0);
+    try {断言.ok(苹.read(文件柄, 4096, 16) > 0);}
+    finally {断言.equal(苹.close(文件柄), 0);}
+    断言.ok(苹.signal(13, 1) >= 0);
     断言.equal(苹.read(-1, 1024, 1), -9);
     断言.equal(苹.write(-1, 1024, 1), -9);
     断言.equal(苹.poll(1024, 0, 0), 0);
