@@ -14,29 +14,29 @@
   虑「降维」者「串相等」于「名字」于『encoder.blocks.0.mlp.2.weight』而
   虑「长偏」者「串相等」于「名字」于『encoder.blocks.0.mlp.0.bias』而
   虑「归权」者
-    「或」
+    「或者」
       于（「串相等」于「名字」于『encoder.blocks.0.attn_ln.weight』）
-      于（「或」
+      于（「或者」
         于（「串相等」于「名字」于『encoder.blocks.0.mlp_ln.weight』）
         于（「串相等」于「名字」于『encoder.ln_post.weight』））而
   虑「偏置」者
-    「或」
+    「或者」
       于「长偏」
-      于（「或」
+      于（「或者」
         于（「串相等」于「名字」于『encoder.conv1.bias』）
-        于（「或」
+        于（「或者」
           于（「串相等」于「名字」于『encoder.conv2.bias』）
-          于（「或」
+          于（「或者」
             于（「串相等」于「名字」于『encoder.blocks.0.attn.query.bias』）
-            于（「或」
+            于（「或者」
               于（「串相等」于「名字」于『encoder.blocks.0.attn.value.bias』）
-              于（「或」
+              于（「或者」
                 于（「串相等」于「名字」于『encoder.blocks.0.attn.out.bias』）
-                于（「或」
+                于（「或者」
                   于（「串相等」于「名字」于『encoder.blocks.0.mlp.2.bias』）
-                  于（「或」
+                  于（「或者」
                     于（「串相等」于「名字」于『encoder.blocks.0.attn_ln.bias』）
-                    于（「或」
+                    于（「或者」
                       于（「串相等」于「名字」于『encoder.blocks.0.mlp_ln.bias』）
                       于（「串相等」于「名字」于『encoder.ln_post.bias』）））））））））而
   虑「数」者
@@ -44,11 +44,11 @@
     否则
       若「卷二」则「48」
       否则
-        若「或」于「升维」于「降维」则「64」
+        若「或者」于「升维」于「降维」则「64」
         否则
           若「长偏」则「16」
           否则
-            若「或」于「归权」于「偏置」则「四」否则「16」
+            若「或者」于「归权」于「偏置」则「四」否则「16」
   而
   虑「出」者「新数组引用」授以「小数」于「0.0」于「数」而
   虑「无」者
