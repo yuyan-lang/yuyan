@@ -18,11 +18,14 @@ const 签名们 = {
   fcntl: {符号: '__fcntl', arguments: ['int32', 'int32', 'int64'], return: 'int32'},
   openat: {符号: '__openat', arguments: ['int32', 'pointer', 'int32', 'uint16'], return: 'int32'},
   signal: {arguments: ['int32', 'pointer'], return: 'pointer', 原址: [1]},
+  wait4: {arguments: ['int32', 'pointer', 'int32', 'pointer'], return: 'int32'},
+  waitpid: {arguments: ['int32', 'pointer', 'int32'], return: 'int32'},
+  clock_getres: {arguments: ['int32', 'pointer'], return: 'int32'},
 };
 
 export function 创建传输控制协议系统调用({取内存} = {}) {
   if (process.platform !== 'darwin') return {可用: false, 状态: 58, 导入: {苹果: {}}, 关闭() {}};
-  let 外部, 库;
+  let 外部, 库, 正在符号 = '';
   const 原发 = process.emitWarning;
   try {
     process.emitWarning = function (警告, ...余) {
@@ -35,10 +38,12 @@ export function 创建传输控制协议系统调用({取内存} = {}) {
   if (!外部) return {可用: false, 状态: 58, 导入: {苹果: {}}, 关闭() {}};
   try {
     库 = new 外部.DynamicLibrary('/usr/lib/libSystem.B.dylib');
+    正在符号 = '__error';
     const 取误址 = 库.getFunction('__error', {arguments: [], return: 'pointer'});
     const 函们 = {};
     for (const [名, 签名] of Object.entries(签名们)) {
-      const 函 = 库.getFunction(签名.符号 ?? 名, {arguments: 签名.arguments, return: 签名.return});
+      正在符号 = 签名.符号 ?? 名;
+      const 函 = 库.getFunction(正在符号, {arguments: 签名.arguments, return: 签名.return});
       函们[名] = (...参) => {
         const 参与 = 参.map((值, 位) => {
           const 型 = 签名.arguments[位];
@@ -57,8 +62,9 @@ export function 创建传输控制协议系统调用({取内存} = {}) {
       };
     }
     return {可用: true, 状态: 0, 导入: {苹果: 函们}, 关闭() {库.close();}};
-  } catch {
+  } catch (错) {
     库?.close();
+    if (正在符号) throw Error('共享传输控制协议系统符号载入失败：苹果.' + 正在符号, {cause: 错});
     return {可用: false, 状态: 58, 导入: {苹果: {}}, 关闭() {}};
   }
 }
@@ -68,9 +74,18 @@ export function 创建传输控制协议能力({模块字节} = {}) {
   const 系统 = 创建传输控制协议系统调用({取内存: () => 核.内存});
   if (系统.可用 && 模块字节) {
     try {
-      核 = new WebAssembly.Instance(new WebAssembly.Module(模块字节), 系统.导入).exports;
+      const 模块 = new WebAssembly.Module(模块字节);
+      const 导入 = {...系统.导入, 目标: {平台号: () => 3}};
+      for (const 项 of WebAssembly.Module.imports(模块)) {
+        if (typeof 导入[项.module]?.[项.name] === 'function') continue;
+        if (项.module === '苹果' || 项.module === '目标') throw Error('共享传输控制协议缺少系统绑定：' + 项.module + '.' + 项.name);
+        if (项.kind !== 'function') throw Error('共享传输控制协议未提供导入：' + 项.module + '.' + 项.name + '（' + 项.kind + '）');
+        导入[项.module] ??= {};
+        导入[项.module][项.name] = () => {throw Error('共享传输控制协议未提供平台入口：' + 项.module + '.' + 项.name);};
+      }
+      核 = new WebAssembly.Instance(模块, 导入).exports;
       if (!(核.内存 instanceof WebAssembly.Memory) || 核.初始化() !== 0) 核 = null;
-    } catch {核 = null;}
+    } catch (错) {系统.关闭(); throw 错;}
   }
   const 编码 = new TextEncoder(), 解码 = new TextDecoder();
   function 运行(号, 甲 = 0, 乙 = 0, 丙 = 0) {
