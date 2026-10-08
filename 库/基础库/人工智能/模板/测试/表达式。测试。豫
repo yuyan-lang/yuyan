@@ -194,4 +194,11 @@
   于（「渲染聊天模板」
     于『A「：换行：」    {% if true %}「：换行：」B「：换行：」    {% endif %}「：换行：」C「：换行：」』于「境」）。
 「断言串相等」于『True|False』于（「渲染模板」于『{{ not(false) }}|{{ not(true) }}』于「境」）。
+「断言串相等」
+  于『True|False|True|False|True|False|False|True』
+  于（「渲染模板」
+    于『{{ not[] }}|{{ not[1] }}|{{ not{} }}|{{ not{"a":1} }}|{{ not"" }}|{{ not"a" }}|{{ not-1 }}|{{ not+0 }}』于「境」）。
+「断言串相等」
+  于『默认|默认』
+  于（「渲染模板」于『{{ not_false|default("默认") }}|{{ notFalse|default("默认") }}』于「境」）。
 「汇报结果」于「元」。
