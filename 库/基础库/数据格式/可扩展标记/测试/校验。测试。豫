@@ -54,3 +54,14 @@
 「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 (子*)><!ELEMENT 子 EMPTY><!ENTITY 空白 "&#x20;">]><根>&空白;</根>』。
 「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 号 ID #IMPLIED><!ATTLIST 根 号 ID #IMPLIED>]><根 号="甲"/>』。
 「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 根 属 CDATA "甲"><!ATTLIST 根 属 CDATA #FIXED "乙">]><根/>』。
+「验过」于『<!DOCTYPE 根 [<!ELEMENT 根 EMPTY><!ATTLIST 未用 属 CDATA #IMPLIED>]><根/>』。
+「验过」
+  于
+  『<!DOCTYPE 根 [<!ELEMENT 根 ANY><!NOTATION 图 SYSTEM "图"><!ENTITY 实 SYSTEM "实" NDATA 图><!ATTLIST 根 属 ENTITY "未宣">]><根 属="实"/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 ANY><!ATTLIST 根 属 ENTITY "未宣">]><根/>』。
+「验拒」
+  于
+  『<!DOCTYPE 根 [<!ELEMENT 根 ANY><!NOTATION 图 SYSTEM "图"><!ENTITY 实 SYSTEM "实" NDATA 图><!ATTLIST 根 属 ENTITY "1bad">]><根 属="实"/>』。
+「验拒」于
+  『<!DOCTYPE 根 [<!ELEMENT 根 ANY><!ATTLIST 根 号 ID #IMPLIED 引 IDREF #IMPLIED>]><根 号="甲:乙" 引="甲:乙"/>』。
+「验拒」于『<!DOCTYPE 根 [<!ELEMENT 根 ANY><!NOTATION 图 SYSTEM "图"><!ATTLIST 根 属 NOTATION(图) #IMPLIED>]><根/>』。
