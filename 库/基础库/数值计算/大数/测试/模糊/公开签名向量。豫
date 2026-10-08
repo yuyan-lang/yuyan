@@ -1,0 +1,59 @@
+寻观「标准库」之书。
+寻观「标准库」之「数据结构」之「字节串」之书。
+寻观「标准库」之「操作系统」之「文件系统」之书。
+寻观「大数」之书。
+寻观「字节编码」之「基码」之书。
+
+「：汉语：公钥和签名取自RFC7515附录A.2公开RSA2048示例，来源https://www.rfc-editor.org/rfc/rfc7515。签名输入的SHA256参考由系统openssl独立生成，编码块按PKCS#1 v1.5的固定SHA256前缀组成。此测试验证公开数据的模幂，不执行秘密数运算。文言：公钥与署名取RFC7515附录A.2公开RSA2048之例，出处https://www.rfc-editor.org/rfc/rfc7515。署名输入之SHA256参考由系统openssl别求，编码块循PKCS#1 v1.5之定SHA256前缀。唯验公开数之模幂，不行秘密数之算。：」
+「公钥模数码」者
+  『ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ』
+也。
+
+「署名码」者
+  『cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw』
+也。
+
+「署名输入」者
+  『eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ』
+也。
+
+「公开码转大数」乃化「字符串」而「大整数」也。
+「公开码转大数」者会「编码」而
+  虑「字节」者
+    「获取可有内容」授以「字节串」于（「六十四进制解码」
+      于（「字符串转字节串」于（「字符串拼接」于「编码」于『==』））于「阳」于「阴」）而
+  若「等于」于（「字节串长度」于「字节」）于「256」则
+    「大端转大数」于「字节」
+  否则
+    「发生事故」于『RFC2048样本长度不符』
+也。
+
+「样本重复」乃化「字符串」而化「整数」而「字符串」也。
+「样本重复」者会「文本」而会「次数」而
+  若「等于」于「次数」于「零」则
+    『』
+  否则
+    「字符串拼接」于「文本」于（「样本重复」于「文本」于（「减」于「次数」于「一」））
+也。
+
+「参考摘要」者『c88a34847b4ffb12a9326e540f144b3dcc4d5515f18701e7d6e0ee7866c9c705』也。
+
+「编码前文」者
+  「字符串拼接」
+    于『1』
+    于（「字符串拼接」于（「样本重复」于『ff』于「202」）于『003031300d060960864801650304020105000420』）
+也。
+
+「期望文」者「字符串拼接」于「编码前文」于「参考摘要」也。
+
+「期望」者「大数解析」于「期望文」于「16」也。
+
+「核验结果」者
+  「大数模幂」于（「公开码转大数」于「署名码」）于（「整数转大数」于「65537」）
+  于（「公开码转大数」于「公钥模数码」）
+也。
+
+若「等于」于（「大数比较」于「核验结果」于「期望」）于「零」则
+  「打印行」于『RFC7515 RSA2048公开模幂向量通过』
+否则
+  「发生事故」于『RFC7515 RSA2048公开模幂不符』。
