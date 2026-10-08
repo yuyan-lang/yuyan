@@ -56,4 +56,12 @@
 「验异」于『{% macro f(a=1,b) %}{{ b }}{% endmacro %}』于『宏默认参数之后需要默认值』。
 「验异」于『{% macro f(caller) %}{{ caller() }}{% endmacro %}』于『宏显式caller参数需要默认值』。
 「验」于『{% macro f(caller=none) %}{{ caller() }}{% endmacro %}{% call f() %}甲{% endcall %}』于『甲』。
+「验」
+  于
+  『{% macro f() %}{{ caller }}|{{ caller.name }}|{{ caller.arguments }}|{{ caller.catch_kwargs }}|{{ caller.catch_varargs }}|{{ caller.caller }}|{{ caller() }}{% endmacro %}{% call f() %}甲{% endcall %}』
+    于『<Macro anonymous>|None|()|False|False|False|甲』。
+「验」
+  于
+  『{% macro f() %}{{ caller.arguments }}|{{ caller(1,x=2) }}{% endmacro %}{% call(a) f() %}{{ a }}{{ kwargs.x }}{% endcall %}』
+    于『('a',)|12』。
 「汇报结果」于「元」。
