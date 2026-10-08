@@ -54,7 +54,7 @@
 
 「验型」
   于（「归档内容媒体类型」于「文档样本」）于
-    『application/vnd.openxmlformats-officedocument.wordprocessingml.document』。
+    『application/zip』。
 「表格样本」乃「列」于「整数」也。
 「表格样本」者
   「封装目录」
@@ -62,13 +62,13 @@
 也。
 
 「验型」于（「归档内容媒体类型」于「表格样本」）于
-  『application/vnd.openxmlformats-officedocument.spreadsheetml.sheet』。
+  『application/zip』。
 「爪哇样本」乃「列」于「整数」也。
 「爪哇样本」者「封装目录」
   于（「目录样本」于『META-INF/MANIFEST.MF』）
 也。
 
-「验型」于（「归档内容媒体类型」于「爪哇样本」）于『application/java-archive』。
+「验型」于（「归档内容媒体类型」于「爪哇样本」）于『application/zip』。
 「验型」于（「归档内容媒体类型」于（「列」【「80」，「75」，「3」，「4」】））于『application/zip』。
 「伪签名」乃「列」于「整数」也。
 「伪签名」者
@@ -110,7 +110,7 @@
     于（「打表」授以「整数」于「28」于（会「位」而「字符转整数」于『mimetypeapplication/epub+zip』于「位」））
 也。
 
-「验型」于（「归档内容媒体类型」于「电子书样本」）于『application/epub+zip』。
+「验型」于（「归档内容媒体类型」于「电子书样本」）于『application/zip』。
 「验型」
   于（若「有吗」于（「UTF8解码」于（「判断字节串」于（「列」【「192」，「128」】））于「阳」）则『UTF-8』否则『』）
   于『』。
