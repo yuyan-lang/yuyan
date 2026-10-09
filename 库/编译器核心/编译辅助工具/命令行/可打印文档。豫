@@ -38,7 +38,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --package-context PATH              使用豫构生成的严格包上下文
     -j N, --num-cpu N                    并发工作进程上限（正整数）
     -c, --compile-only                   兼容选项；编译器只生成模块，不运行
-    -o PATH                              指定 Wasm 模块的输出路径
+    -o PATH                              指定输出路径（Wasm 模块，或 --目标 本机 时的原生可执行文件）
+    --目标 本机                          最终链接直出本机原生可执行文件（不经 .wasm），须同给 --执行器
+    --执行器 PATH                        原生产物所用的执行器 yy执行器.wasm
+    --降级缓存 PATH                      原生产物的降级缓存文件，执行器函数第二次起直接取缓存
     --no-link                           只生成各文件的模块产物，不生成最终模块
     --六十四位地址                       底层模式：内存声明改为六十四位地址（堆可到 64 TiB 以上），默认关
     编译输入须由 yy豫构 提供包上下文，不再提供特殊标准库搜索路径。
