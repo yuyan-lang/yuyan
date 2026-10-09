@@ -1,4 +1,4 @@
-寻观「标准库」之「豫言标准内核」之书。
+寻观「标准库」之书。
 
 「：汉语：创建 TextEncoderStream 或带编码标签、fatal、ignoreBOM 的 TextDecoderStream。
 文言：原生流文转 UTF-8 原字，或字转文；跨块状态留流内。：」
