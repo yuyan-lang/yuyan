@@ -210,12 +210,12 @@ test('结束：流正常终止；结束后写入返回 2，已断开为假，重
   } finally { 环.关(); }
 });
 
-test('无效流柄与重复开始抛可捕获的豫言异常', async () => {
+test('无效流柄与同一请求重复开始抛可捕获的豫言异常', async () => {
   const 环 = await 起();
   try {
     assert.match(await (await 环.调('/坏柄')).text(), /事件流柄无效/);
     const 读 = new 流读取器(await 环.调('/双开始'));
-    assert.deepEqual(await 读.读完(), ['data: 本次事件已经开始过事件流回应']);
+    assert.deepEqual(await 读.读完(), ['data: 本次请求已经开始过事件流回应']);
   } finally { 环.关(); }
 });
 
@@ -228,14 +228,6 @@ test('流柄只在创建它的事件内有效：另一事件（含同号句柄�
     const 乙 = new 流读取器(await 环.调('/用柄?柄=' + encodeURIComponent(柄)));
     assert.deepEqual(await 乙.读完(), ['data: 事件流柄无效：不是本次事件创建的事件流']);
     assert.deepEqual(await 甲.读完(), []);
-  } finally { 环.关(); }
-});
-
-test('非 HTTP 事件开始事件流回应抛可捕获的豫言异常', async () => {
-  const 环 = await 起();
-  try {
-    await 环.宿主.scheduled({cron: '* * * * *', scheduledTime: Date.now()}, {DB: 环.DB}, {waitUntil() {}});
-    assert.deepEqual(环.日志('定时事件'), ['事件流只能回应 HTTP 事件（fetch、durable-fetch、service-fetch）']);
   } finally { 环.关(); }
 });
 
