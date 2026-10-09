@@ -233,11 +233,11 @@ test('频道名规则：1 至 64 字节，限 A-Z a-z 0-9 . _ : -', async () => 
   } finally { 环.关(); }
 });
 
-test('只能在持久对象事件内使用：普通 fetch 事件得到可捕获的豫言异常', async () => {
+test('不按事件种类拒绝（提案 C0001）：普通 fetch 事件里照常核对频道名', async () => {
   const 环 = await 起();
   try {
     const 回 = await 环.宿主.fetch(请求('/普通事件'), {DB: 环.DB});
-    assert.equal(await 回.text(), '持久频道只能在持久对象事件内使用');
+    assert.equal(await 回.text(), '持久频道名只许 A-Z a-z 0-9 . _ : -', '路由用的频道名“普通”不合规，得到的是频道名的核对结果');
   } finally { 环.关(); }
 });
 
