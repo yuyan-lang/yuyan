@@ -1,9 +1,9 @@
 name: CI
 
 env:
-  # 固定的 Wasm 工具链包：由提交 d883137fe 的 CI 构建并发布到 historical-binaries；其中的编译器认得提案 00002 第一阶段的内建列身份（《《内建类型：列》》、《《内建列：罄》》、《《内建列：缀》》）与广义代数类型，标准库「多态列」改为内建列的别名（提案第四步第二段）要靠它起步。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries/20261006T162103Z-yuyan-wasm-d883137fe8fd898e91283f6e0c3d92665573ec0d.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 1e679308d4df093462159a58d9eb938fe00822e9abb65d30c6958cb587bff7cc
+  # 固定的 Wasm 工具链包：由提交 2a7389c36 的 CI 构建并发布到 historical-binaries-2；其中的编译器认得提案 00006 预备的写法（「负」数字面、入口函数「入口」、包字段「入口函数」、。脚本。豫 作入口），00006 切换后编译器与豫构的入口函数要靠它起步。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261009T142015Z-yuyan-wasm-2a7389c36e71064da8b3f99794052c5c8c490040.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: db4829f2574aac939553d49506c8d9de8006ed05c39f439ec98e6f96a0af6ede
 
 on:
   push:
