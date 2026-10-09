@@ -16,6 +16,8 @@ const 签名们 = {
   clock_gettime: {arguments: ['int32', 'pointer'], return: 'int32'},
   getentropy: {arguments: ['pointer', 'uint64'], return: 'int32'},
   fcntl: {符号: '__fcntl', arguments: ['int32', 'int32', 'int64'], return: 'int32'},
+  // 汉语：等待路径以 FIONREAD 取可读字节数；ioctl 是变参函数，苹果 ARM64 变参走栈，故同 fcntl 取定参桩 __ioctl。文言：候之径以 FIONREAD 取可读之数；ioctl 变参，苹果 ARM64 变参行于栈，故如 fcntl 取定参之桩 __ioctl。
+  ioctl: {符号: '__ioctl', arguments: ['int32', 'uint64', 'pointer'], return: 'int32'},
   openat: {符号: '__openat', arguments: ['int32', 'pointer', 'int32', 'uint16'], return: 'int32'},
   signal: {arguments: ['int32', 'pointer'], return: 'pointer', 原址: [1]},
   wait4: {arguments: ['int32', 'pointer', 'int32', 'pointer'], return: 'int32'},
