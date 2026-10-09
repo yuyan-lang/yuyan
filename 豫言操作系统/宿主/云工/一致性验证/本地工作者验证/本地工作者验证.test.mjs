@@ -1,4 +1,4 @@
-// 文言：以真 workerd 验宿主壳：独占区、事务、告警、先应、值之限、时限配置，并与模拟作差分比对。
+// 文言：以真 workerd 验宿主壳：独占区、事务、告警、值之限、时限配置，并与模拟作差分比对；试应用以类型化之入口受诸事（提案 C0001）。
 // 汉语：可选的本地 workerd 验证（Wrangler 4.129.0，兼容日期 2026-09-05，SQLite 存储）。前置：
 //   1. 把待验产物（dist/持久对象壳一致性应用）的下列文件复制到本目录 `产物/`：值桥.mjs 边界.mjs 入口.mjs 动态资源.mjs 句柄.mjs
 //      宿主.mjs 宿主提供组.json 接口核对.mjs 接口要求组.json 程序.wasm 值桥.wasm 许可.json；并把 产物/许可.json 改为 {}（本地上游是 http）。
@@ -84,7 +84,7 @@ test('独占区：区内失败不重置对象；平台原生回调抛错则重�
   const 名 = 新名('e3');
   const 前 = await 探针(名, '/__instance');
   assert.match((await 发(名, {op: 'block', name: 'fail', args: '{}'})).文, /^X\|持久独占失败：/);
-  assert.equal((await 发(名, {op: 'block', name: 'no-result', args: '{}'})).文, 'X|持久独占失败：豫言独占区未供结果');
+  assert.equal((await 发(名, {op: 'block', name: 'bad-result', args: '{}'})).文, 'X|持久独占失败：独占区结果不是有效 JSON');
   assert.equal((await 探针(名, '/__instance')).实例号, 前.实例号, '豫言独占区失败不重置对象');
   const 名2 = 新名('e3raw');
   const 前2 = await 探针(名2, '/__instance');
@@ -150,15 +150,9 @@ test('清空持久仓连告警一并清除（兼容日期 2026-09-05，SQLite）
   assert.equal((await 发(名, {op: 'list', opts: '{}'})).文, 'L|[]');
 });
 
-test('响应先返：Wasm 继续运行；原生代码无论是否 waitUntil 均存活；客户端断开不取消运行', 选项, async () => {
-  const 名 = 新名('e8');
-  await 设上游(名);
-  const 回 = await 发(名, {op: 'early', ms: 800});
-  assert.equal(回.文, 'early');
-  assert.equal(回.耗 < 500, true, '响应先于后续工作返回');
-  assert.equal(await 读(名, 'after'), 'M|', '返回时后续写入尚未发生');
-  await 睡(1800);
-  assert.equal(await 读(名, 'after'), 'E|"done"');
+// 文言：待办之事：豫言之响应先返，待网页事件流之“先行交付响应”接于类型化之入口后补验。
+// 汉语：待办事项：豫言程序“响应先返、Wasm 继续运行”的验证，待网页事件流的 先行交付响应 接入类型化入口后补回。
+test('原生代码在响应返回后无论是否 waitUntil 均存活；客户端断开不取消豫言运行', 选项, async () => {
   for (const 模式 of ['none', 'waituntil']) {
     const 原名 = 新名('e8raw-' + 模式);
     await fetch(基址 + '/__raw-bg?mode=' + 模式 + '&ms=800&do=' + 原名).then(回 => 回.text());
@@ -239,14 +233,13 @@ test('差分：模拟持久对象与本地 workerd 对同一组操作输出完�
     {op: 'tx', args: '{"name":"throw"}'}, {op: 'get', k: 'x'},
     {op: 'tx', args: '{"name":"after-rollback"}'}, {op: 'get', k: 'x'}, {op: 'get', k: 'y'},
     {op: 'tx', args: JSON.stringify({name: 'alarm-commit', t: 1900000000456})}, {op: 'alarm-get'}, {op: 'tx', args: '{"name":"alarm-del-rollback"}'}, {op: 'alarm-get'}, {op: 'alarm-del'},
-    {op: 'tx', args: '{"name":"misuse"}'}, {op: 'tx', args: '{"name":"nest-block"}'}, {op: 'tx', args: '{"name":"no-result"}'},
+    {op: 'tx', args: '{"name":"direct"}'}, {op: 'get', k: 'p:y'}, {op: 'tx', args: '{"name":"nest-block"}'}, {op: 'tx', args: '{"name":"bad-result"}'},
     {op: 'tx', args: JSON.stringify({name: 'list', opts: '{"prefix":"p:","limit":1}'})}, {op: 'tx', args: JSON.stringify({name: 'list', opts: '{"prefix":1}'})},
-    {op: 'tx-outside', which: 'put'}, {op: 'tx-outside', which: 'finish'},
-    {op: 'alarm-get'}, {op: 'alarm-set', t: 1900000000000}, {op: 'alarm-get'}, {op: 'alarm-del'}, {op: 'alarm-get'}, {op: 'alarm-set', t: -1}, {op: 'alarm-set', t: 8640000000000001}, {op: 'retry'},
+    {op: 'alarm-get'}, {op: 'alarm-set', t: 1900000000000}, {op: 'alarm-get'}, {op: 'alarm-del'}, {op: 'alarm-get'}, {op: 'alarm-set', t: -1}, {op: 'alarm-set', t: 8640000000000001},
     {op: 'tx', args: JSON.stringify({name: 'alarm', t: 1900000000123})}, {op: 'alarm-get'}, {op: 'alarm-del'},
     {op: 'block', name: 'echo', args: '{"a": [1, 2],"中":"文"}'}, {op: 'block', name: 'kind', args: '{}'}, {op: 'block', name: 'store', args: '{}'}, {op: 'block', name: 'tx-inside', args: '{}'},
-    {op: 'block', name: 'fail', args: '{}'}, {op: 'block', name: 'bad-result', args: '{}'}, {op: 'block', name: 'double-result', args: '{}'}, {op: 'get', k: 'double-msg'},
-    {op: 'block', name: 'no-result', args: '{}'}, {op: 'block', name: 'nested', args: '{}'}, {op: 'block', name: 'echo', args: 'notjson'}, {op: 'block', name: '', args: '{}'},
+    {op: 'block', name: 'fail', args: '{}'}, {op: 'block', name: 'bad-result', args: '{}'},
+    {op: 'block', name: 'nested', args: '{}'}, {op: 'block', name: 'echo', args: 'notjson'}, {op: 'block', name: '', args: '{}'},
     {op: 'put', k: 'k', text: '{'}, {op: 'put', k: 'k', text: '{"$句柄":"1"}'}, {op: 'put', k: '', text: '1'}, {op: 'put-big', k: 'k', exp: 21}, {op: 'put-big', k: '大', exp: 20}, {op: 'getlen', k: '大'},
     {op: 'clear'}, {op: 'list', opts: '{}'}, {op: 'alarm-get'}
   ];

@@ -1,6 +1,7 @@
-// 文言：以真实豫言 Wasm 与持久对象模拟，验持久事务二版、持久告警、持久独占、事时之限与响应先返之义。
+// 文言：以真实豫言 Wasm 与持久对象模拟，验类型化入口（提案 C0001）下之持久事务、持久告警、持久独占、事时之限与实例之池。
 // 汉语：运行前先用私有暂存构建“持久对象壳一致性应用”（见同目录 说明.汉语.md），并设置环境变量
 // 持久对象壳产物=<dist/持久对象壳一致性应用 的绝对路径>，再执行 node --test 持久对象壳.test.mjs。
+// 试验应用实现四个类型化入口（网页请求、事务回调、独占区回调、告警），宿主用实例池调用它们。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -19,6 +20,10 @@ const 许可 = JSON.parse(await readFile(join(产物, '许可.json'), 'utf8'));
 // 汉语：旧产物经旧 call 与值桥交换缓冲调用云工能力，字符串跨桥限 16 MiB；新产物以带类型导入调用「云工宿主」，不经交换缓冲，没有这一限制（受 Workers 内存约束）。
 const 旧通调 = !WebAssembly.Module.imports(程序模块).some(项 => 项.module === '云工宿主');
 const 十七兆 = 17 * 1024 * 1024;
+// 文言：计程序模之实例数，以验池之复用与回调另取实例。汉语：数程序模块被实例化的次数，验证实例复用、事务与独占区回调在池里另取实例（宿主调用时才查 WebAssembly.Instance，故可在此包一层）。
+const 原实例 = WebAssembly.Instance;
+let 程序实例数 = 0;
+WebAssembly.Instance = new Proxy(原实例, {construct(目标, 参数, 新目标) { if (参数[0] === 程序模块) 程序实例数++; return Reflect.construct(目标, 参数, 新目标); }});
 
 // 文言：每案自造宿主、对象与慢网，互不相染；误出收之以验。汉语：每个用例新建宿主、模拟持久对象和模拟网络；配置直接传给宿主；标准错误收进 误出 以便核对。
 const 新对象 = ({配置, 初始} = {}) => {
@@ -144,12 +149,12 @@ test('持久事务：回滚持久事务弃本事务诸写', async () => {
   assert.deepEqual(仓值(仓), {'p:a': 1, 'p:b': 2, 'p:c': 3});
 });
 
-test('持久事务：处理入口异常、缺结果都使执行持久事务抛可捕获异常且不提交', async () => {
+test('持久事务：回调异常、结果不是 JSON 都使执行持久事务抛可捕获异常且不提交', async () => {
   const {对象, 仓} = 新对象();
   await 预置(对象);
   assert.match(await 发(对象, {op: 'tx', args: '{"name":"throw"}'}), /^X\|持久事务失败：/);
   assert.equal(仓.数据.has('x'), false);
-  assert.equal(await 发(对象, {op: 'tx', args: '{"name":"no-result"}'}), 'X|持久事务失败：豫言事务回调未供结果');
+  assert.equal(await 发(对象, {op: 'tx', args: '{"name":"bad-result"}'}), 'X|持久事务失败：事务结果不是有效 JSON');
   assert.deepEqual(仓值(仓), {'p:a': 1, 'p:b': 2, 'p:c': 3});
 });
 
@@ -160,12 +165,12 @@ test('持久事务：事务内列举选项与错误', async () => {
   assert.equal(await 发(对象, {op: 'tx', args: JSON.stringify({name: 'list', opts: '{"prefix":1}'})}), 'T|"X|持久列举失败：列举选项 prefix 须为字符串"');
 });
 
-test('持久事务：事务函数只在事务入口内可用，直接仓函数在事务入口内失败', async () => {
-  const {对象} = 新对象();
-  for (const 名 of ['put', 'get', 'delete', 'list', 'rollback', 'params', 'finish']) {
-    assert.equal(await 发(对象, {op: 'tx-outside', which: 名}), 'X|当前事件没有持久事务', 名);
-  }
-  assert.equal(await 发(对象, {op: 'tx', args: '{"name":"misuse"}'}), 'T|"X|持久事务处理入口内须用持久事务函数，不可直接访问持久仓"');
+test('持久事务：事务回调里直接访问持久仓，读写同样属于本事务，随回滚撤销', async () => {
+  const {对象, 仓} = 新对象();
+  await 预置(对象);
+  assert.equal(await 发(对象, {op: 'tx', args: '{"name":"direct"}'}), 'T|7', '回调内直接写入后可读回');
+  assert.equal(仓.数据.has('p:y'), false, '回滚撤销了直接写入');
+  assert.deepEqual(仓值(仓), {'p:a': 1, 'p:b': 2, 'p:c': 3});
 });
 
 test('持久告警：读、设、替换、删除与非法时刻', async () => {
@@ -182,7 +187,6 @@ test('持久告警：读、设、替换、删除与非法时刻', async () => {
   assert.equal(await 发(对象, {op: 'alarm-get'}), 'A|0|0');
   assert.equal(await 发(对象, {op: 'alarm-del'}), 'OK', '无告警时删除无事');
   for (const 时 of [-1, 8640000000000001]) assert.equal(await 发(对象, {op: 'alarm-set', t: 时}), 'X|持久告警时刻须在 0 至 8640000000000000 之间');
-  assert.equal(await 发(对象, {op: 'retry'}), 'R|0', '非告警事件重试数恒零');
 });
 
 test('持久告警：事务内的告警变更与本事务同命运（本地 workerd 4.129.0 实测；云端待验）', async () => {
@@ -258,22 +262,19 @@ test('持久告警：告警处理入口内可开独占区与事务', async () =>
   assert.equal(对象.状态.重置次数, 0);
 });
 
-test('非持久对象事件：告警、仓、独占函数抛可捕获异常，重试数为零', async () => {
+test('非持久对象事件：告警与直接仓属于持久对象，宿主中止本次调用（写入、列举经安全原语，得可捕获异常）；独占区与事务抛可捕获异常', async () => {
   const 网络 = 创建模拟慢网络();
   const 宿主 = 创建云工宿主({程序模块, 值桥模块, 许可, 网络: 网络.fetch});
   const 发W = async 体 => (await 宿主.fetch(请求体(体), {})).text();
   assert.equal(await 发W({op: 'kind'}), 'K|fetch');
-  assert.equal(await 发W({op: 'alarm-get'}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'alarm-set', t: 1}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'alarm-del'}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'retry'}), 'R|0');
-  assert.equal(await 发W({op: 'get', k: 'a'}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'put', k: 'a', text: '1'}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'del', k: 'a'}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'list', opts: '{}'}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'clear'}), 'X|当前事件不属于持久对象');
-  assert.equal(await 发W({op: 'block', name: 'echo', args: '{}'}), 'X|当前事件不属于持久对象');
+  for (const 体 of [{op: 'alarm-get'}, {op: 'alarm-set', t: 1}, {op: 'alarm-del'}, {op: 'get', k: 'a'}, {op: 'del', k: 'a'}, {op: 'clear'}]) {
+    await assert.rejects(宿主.fetch(请求体(体), {}), /当前事件不属于持久对象/, 体.op);
+  }
+  assert.equal(await 发W({op: 'put', k: 'a', text: '1'}), 'X|持久仓写入失败：当前事件不属于持久对象');
+  assert.equal(await 发W({op: 'list', opts: '{}'}), 'X|持久列举失败：当前事件不属于持久对象');
+  assert.equal(await 发W({op: 'block', name: 'echo', args: '{}'}), 'X|持久独占失败：仅持久对象事件可启动独占区');
   assert.equal(await 发W({op: 'tx', args: '{"name":"basic"}'}), 'X|持久事务失败：仅持久对象事件可启动事务');
+  assert.equal(await 发W({op: 'kind'}), 'K|fetch', '中止之后宿主照常服务');
 });
 
 test('持久独占：名称与 JSON 参数往返、仓与事务可在区内使用', async () => {
@@ -288,15 +289,13 @@ test('持久独占：名称与 JSON 参数往返、仓与事务可在区内使�
   assert.equal(对象.状态.重置次数, 0);
 });
 
-test('持久独占：区内失败、缺结果、重复结果、坏结果都不重置对象', async () => {
-  const {对象, 仓, 状态, 误出} = 新对象();
+test('持久独占：区内失败、坏结果、嵌套都不重置对象', async () => {
+  const {对象, 状态, 误出} = 新对象();
   assert.equal(await 发(对象, {op: 'block', name: 'fail', args: '{}'}), 'X|持久独占失败：豫言程序退出：1');
   assert.ok(误出.includes(未捕获('独占区内故意失败')), '区内失败的原因写到标准错误');
-  assert.equal(await 发(对象, {op: 'block', name: 'no-result', args: '{}'}), 'X|持久独占失败：豫言独占区未供结果');
-  assert.equal(await 发(对象, {op: 'block', name: 'bad-result', args: '{}'}), 'B|"X|持久独占结果无效：独占区结果不是有效 JSON"');
-  assert.equal(await 发(对象, {op: 'block', name: 'double-result', args: '{}'}), 'B|1');
-  assert.equal(仓.数据.get('double-msg'), 'X|持久独占结果无效：独占区结果只能设置一次');
-  assert.equal(await 发(对象, {op: 'block', name: 'nested', args: '{}'}), 'B|"X|独占区内不可再启动独占区"');
+  assert.equal(await 发(对象, {op: 'block', name: 'bad-result', args: '{}'}), 'X|持久独占失败：独占区结果不是有效 JSON');
+  assert.equal(await 发(对象, {op: 'block', name: 'nested', args: '{}'}), 'B|"X|持久独占失败：独占区内不可再启动独占区"');
+  assert.equal(await 发(对象, {op: 'tx', args: '{"name":"nest-block"}'}), 'T|"X|持久独占失败：持久事务回调内不可启动独占区"');
   assert.equal(状态.重置次数, 0, '区内失败不抛给平台回调，故对象不被重置');
   assert.equal(await 发(对象, {op: 'kind'}), 'K|durable-fetch', '失败后对象仍正常服务');
 });
@@ -319,9 +318,9 @@ test('持久独占：大参数与大结果（请求体 2 MiB 上限之外，由�
   assert.equal(await 发(对象, {op: 'block-big', name: 'echo', exp: 21}), 'B|' + (22 + 6 + 2 ** 21 + 2 + 1));
   // 8 MiB 加封装超过参数上限
   assert.equal(await 发(对象, {op: 'block-big', name: 'echo', exp: 23}), 'X|持久独占失败：独占区参数超过 8 MiB');
-  // 结果：4 MiB 可通；2^23 字节加引号超过 8 MiB，完成持久独占失败但可捕获
+  // 结果：4 MiB 可通；2^23 字节加引号超过 8 MiB，宿主使独占区失败，执行持久独占抛可捕获异常
   assert.equal(await 发(对象, {op: 'block-len', name: 'big-result', args: '{"exp":22}'}), 'B|' + (2 ** 22 + 2));
-  assert.equal(await 发(对象, {op: 'block', name: 'big-result', args: '{"exp":23}'}), 'B|"X|持久独占结果无效：独占区结果超过 8 MiB"');
+  assert.equal(await 发(对象, {op: 'block', name: 'big-result', args: '{"exp":23}'}), 'X|持久独占失败：独占区结果超过 8 MiB');
 });
 
 test('持久事务：4 MiB 的事务参数可往返（豫言 JSON 规范化对大参数不构成瓶颈）', async () => {
@@ -342,16 +341,15 @@ test('值桥：宿主到豫言的字符串可达 16 MiB；旧 call 超过则中�
   else assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (十七兆 + 2), '带类型导入不经交换缓冲');
 });
 
-test('值桥与宿主：请求体经 Request.text() 可读至 15 MiB（网页入站的 2 MiB 是适配自设之限，不是宿主或桥之限）', async () => {
+test('值桥与宿主：请求体经 Request.text() 可读至 15 MiB（2 MiB 是持久值之限，不是宿主或桥之限）', async () => {
   const {对象} = 新对象();
   const 读体 = (字节数, 头 = {}) => 对象.fetch(new Request('https://do.test/', {method: 'POST', headers: {'x-op': 'body-len', ...头}, body: 'b'.repeat(字节数)}));
   assert.equal(await (await 读体(5 * 1024 * 1024)).text(), 'N|' + 5 * 1024 * 1024, '站点发布请求（含 4 MiB base64）可读');
   assert.equal(await (await 读体(15 * 1024 * 1024)).text(), 'N|' + 15 * 1024 * 1024);
   if (旧通调) await assert.rejects(读体(十七兆), /宿主交换数据超过上限/);
   else assert.equal(await (await 读体(十七兆)).text(), 'N|' + 十七兆, '带类型导入不经交换缓冲');
-  // 对照：走网页入站的 JSON 正文读取，超过 2 MiB 则由适配报错（豫言异常未捕获，标准库默认处理写标准错误并以退出码 1 结束，出壳为“豫言程序退出：1”）
-  const 回 = 对象.fetch(请求体({op: 'put', k: 'k', text: JSON.stringify('y'.repeat(2 * 1024 * 1024 + 100))}));
-  await assert.rejects(回, /豫言程序退出：1/);
+  // 对照：网页服务读取 2 MiB 有余的 JSON 正文无碍，超过 2 MiB 的是持久值，写入时报可捕获异常
+  assert.equal(await 发(对象, {op: 'put', k: 'k', text: JSON.stringify('y'.repeat(2 * 1024 * 1024 + 100))}), 'X|持久仓写入失败：持久值超过 2 MiB');
 });
 
 test('持久独占：区内等待外部输入输出时，其他事件排队而不交错', async () => {
@@ -477,31 +475,25 @@ test('事时之限：独占区有自己的时限，区内超限只失败该区',
   assert.equal(await 发(对象, {op: 'sleep', n: 3, ms: 100}), 'S|done');
 });
 
-test('durableFetch：响应先返，Wasm 继续运行，ctx.waitUntil 记录其存续', async () => {
-  const {对象, 仓, 状态} = 新对象();
-  const 始 = performance.now();
-  const 回 = await 对象.fetch(请求体({op: 'early', ms: 150}));
-  const 耗 = performance.now() - 始;
-  assert.equal(await 回.text(), 'early');
-  assert.equal(耗 < 120, true, `响应应在等待外部之前返回，实耗 ${耗} 毫秒`);
-  assert.equal(仓.数据.has('after'), false, '响应返回时后续写入尚未发生');
-  assert.equal(状态.保活.length >= 1, true, '宿主把运行承诺交给 ctx.waitUntil');
-  await 状态.等待保活();
-  assert.equal(仓.数据.get('after'), 'done', '保活承诺完成后后续写入已落库');
-});
+// 文言：待办之事：响应先返、Wasm 续行之二验，待网页事件流之“先行交付响应”接于类型化之入口后补之。
+// 汉语：待办事项：“响应先返、Wasm 继续运行”与“响应之后失败只写日志”两项验证，待网页事件流的 先行交付响应 接入类型化入口后补回。
 
-test('durableFetch：响应之后 Wasm 失败只写日志，不影响已交付的响应', async () => {
-  const {对象, 状态} = 新对象();
-  const 日志 = [];
-  const 原 = console.error;
-  console.error = (...参) => 日志.push(参.join(' '));
-  try {
-    const 回 = await 对象.fetch(请求体({op: 'early-fail', ms: 30}));
-    assert.equal(回.status, 200);
-    assert.equal(await 回.text(), 'early');
-    await 状态.等待保活();
-  } finally { console.error = 原; }
-  assert.equal(日志.some(文 => 文.includes('[豫言] 响应已交付后运行失败')), true, 日志.join('|'));
+test('实例池：顺序请求复用一个实例；事务与独占区回调在外层调用挂起时进入，从池里另取实例，之后复用', async () => {
+  const {对象} = 新对象();
+  const 起 = 程序实例数;
+  await 预置(对象);
+  assert.equal(await 发(对象, {op: 'kind'}), 'K|durable-fetch');
+  assert.equal(程序实例数 - 起, 1, '顺序请求只用一个实例');
+  const 基本 = 'T|[["p:b",2],["p:c",3],["p:d",4]]';
+  assert.equal(await 发(对象, {op: 'tx', args: '{"name":"basic"}'}), 基本);
+  assert.equal(程序实例数 - 起, 2, '事务回调在另一个实例上运行');
+  assert.equal(await 发(对象, {op: 'block', name: 'kind', args: '{}'}), 'B|"durable-block"', '回调实例取到的是本次回调的能力表');
+  assert.equal(程序实例数 - 起, 2, '独占区回调复用池中实例');
+  assert.equal(await 发(对象, {op: 'block', name: 'tx-inside', args: '{}'}), 'B|' + 基本.slice(2));
+  assert.equal(程序实例数 - 起, 3, '独占区里再开事务：外层请求、独占区回调、事务回调各占一个实例');
+  for (let 次 = 0; 次 < 3; 次++) assert.equal(await 发(对象, {op: 'block', name: 'tx-inside', args: '{}'}), 'B|' + 基本.slice(2));
+  assert.equal(await 发(对象, {op: 'kind'}), 'K|durable-fetch');
+  assert.equal(程序实例数 - 起, 3, '之后都复用池中实例');
 });
 
 test('durableFetch：响应之前失败则 fetch 拒绝', async () => {

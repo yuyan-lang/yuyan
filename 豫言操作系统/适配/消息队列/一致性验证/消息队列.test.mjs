@@ -1,4 +1,4 @@
-// 文言：以真 Wasm 与模拟队列、模拟批次验消息队列适配。汉语：加载已构建的“消息队列一致性”产物；生产者用类实例模拟 Queue.send/sendBatch，消费者用类实例模拟 MessageBatch 与 Message，逐条记录 ack/retry。
+// 文言：以真 Wasm 与模拟队列、模拟批次验消息队列适配。汉语：加载已构建的“消息队列一致性”产物；生产者经网页入口，用类实例模拟 Queue.send/sendBatch；消费者经类型化入口 处理队列批次，用类实例模拟 MessageBatch 与 Message，逐条记录 ack/retry。
 // 用法见同目录说明：在私有暂存根目录执行 `node --test <本文件>`，产物根目录由环境变量 YY_DIST_ROOT 指定（默认 ./dist）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -18,8 +18,8 @@ const 应用要求 = JSON.parse(await readFile(new URL('接口要求组.json', �
 const 宿主提供 = JSON.parse(await readFile(new URL('宿主提供组.json', 产物), 'utf8'));
 test('装载前的接口核对通过，且应用要求含本接口', () => {
   核对接口装载({程序模块, 应用要求, 宿主提供, 宿主: '云工'});
-  assert.ok(应用要求.some(项 => 项.接口名称 === '豫言操作系统消息队列' && 项.接口版本 === '0.1.0'), '应用要求里应有本接口 0.1.0');
-  assert.ok(宿主提供.some(项 => 项.接口名称 === '豫言操作系统消息队列' && 项.接口版本 === '0.1.0'), '宿主支持清单里应有本接口 0.1.0');
+  assert.ok(应用要求.some(项 => 项.接口名称 === '豫言操作系统消息队列' && 项.接口版本 === '0.2.0'), '应用要求里应有本接口 0.2.0');
+  assert.ok(宿主提供.some(项 => 项.接口名称 === '豫言操作系统消息队列' && 项.接口版本 === '0.2.0'), '宿主支持清单里应有本接口 0.2.0');
 });
 
 // ───────────────────────────── 生产者 ─────────────────────────────
@@ -292,7 +292,7 @@ const 消费 = async 批次 => {
   return 行们;
 };
 
-test('读取队列批次：queue、id、attempts、timestamp（毫秒）、body 的形状与值', async () => {
+test('读取队列批次文：queue、id、attempts、timestamp（毫秒）、body 的形状与值', async () => {
   const 诸信 = [
     new 模拟消息('m1', {kind: 'page', url: '/release/x?lang=han', version: 'v8', refresh: true}, 1, new Date(1758801600123)),
     new 模拟消息('m2', [1, 'a', null, {b: false}], 4, new Date(0)),
@@ -315,7 +315,7 @@ test('读取队列批次：queue、id、attempts、timestamp（毫秒）、body 
   assert.ok(诸信.every(信 => 信.调用.length === 0), '读取批次不得确认或重试任何消息');
 });
 
-test('读取队列批次：空批次、队列名与消息标识里的特殊字符', async () => {
+test('读取队列批次文：空批次、队列名与消息标识里的特殊字符', async () => {
   assert.deepEqual(JSON.parse((await 消费(new 模拟批次('log', [])))[0]), {queue: 'log', messages: []});
   const 标识们 = ['', 'a"b', 'a\\b', '中文😀', 'a\nb\tc', 'a\u0001\u001f\u007f', '\u2028\u2029', '{"$句柄":"1"}', 'x'.repeat(2000)];
   const 行 = await 消费(new 模拟批次('log', 标识们.map(标识 => new 模拟消息(标识, 1))));
@@ -326,7 +326,7 @@ test('读取队列批次：空批次、队列名与消息标识里的特殊字�
   }
 });
 
-test('读取队列批次：大消息体（约 128 KB）与一百条消息', async () => {
+test('读取队列批次文：大消息体（约 128 KB）与一百条消息', async () => {
   const 大 = 'x'.repeat(131000);
   const 行 = await 消费(new 模拟批次('log', [new 模拟消息('big', {大})]));
   assert.equal(JSON.parse(行[0]).messages[0].body.大.length, 131000);
@@ -336,7 +336,7 @@ test('读取队列批次：大消息体（约 128 KB）与一百条消息', asyn
   批.messages.forEach((信, 序) => assert.deepEqual(信, {id: 'id-' + 序, attempts: 序 + 1, timestamp: 1758801600000 + 序, body: {序, 文: '中文'.repeat(序)}}));
 });
 
-test('读取队列批次：一千条消息也不耗尽宿主句柄', async () => {
+test('读取队列批次文：一千条消息也不耗尽宿主句柄', async () => {
   const 诸信 = Array.from({length: 1000}, (_, 序) => new 模拟消息('m' + 序, 序));
   const 批 = JSON.parse((await 消费(new 模拟批次('log', 诸信)))[0]);
   assert.equal(批.messages.length, 1000);
@@ -398,14 +398,6 @@ test('程序在队列事件里抛出未捕获异常：宿主把失败交还平�
   await 上下文.承诺[0];
 });
 
-test('非队列事件里调用消费函数得到可捕获的豫言异常', async () => {
-  for (const 径 of ['/consume', '/ack', '/retry']) {
-    const 回 = await 宿主.fetch(new Request('https://x.test' + 径), {});
-    assert.equal(回.status, 200, 径);
-    assert.equal(await 回.text(), '捕获：当前事件不是队列事件', 径);
-  }
-});
-
 test('复现包管理服务的页面任务消费者：版本不符确认、失败按 min(300, 15×2^min(尝试,4)) 秒退避重试、成功确认，并与日志接口组合', async () => {
   const 任务 = (体, 尝试 = 1) => new 模拟消息('t' + Math.random().toString(16).slice(2, 8), {version: 'persistent-reader-8', ...体}, 尝试);
   const 诸信 = [
@@ -435,7 +427,7 @@ test('复现包管理服务的页面任务消费者：版本不符确认、失�
   assert.equal(记.error[6], '持久页面生成失败：未知任务');
 });
 
-test('生产投递之后立即消费：两类事件各用各的 Wasm 实例，互不影响', async () => {
+test('生产投递之后立即消费：两类事件依次复用池中实例，互不影响', async () => {
   const 队列 = new 模拟队列();
   const 投结果 = await 单('{"kind":"page","n":1}', {队列});
   assert.equal(投结果.文, '成功');
