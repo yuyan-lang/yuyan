@@ -695,8 +695,8 @@ jobs:
           cd work
           lldb --batch -o run -k 'thread backtrace' -k 'register read' -k 'disassemble --pc --count 16' -k 'image list -o' -- ../组/打印 2>&1 | head -120 || true
 
-  # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，史版之名冠以提交之时（UTC），连续版覆之。
-  # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，文件名前加提交时间（UTC），并覆盖更新连续版本。
+  # 文言：检查与跨平台之验俱过，乃发 Wasm 工具链之包。按提交存史，史版之名冠以提交之时（UTC），连续版覆之。GitHub 一发行至多千资产：historical-binaries 满则次用 historical-binaries-2、-3……，取首未满者，无则建之。
+  # 汉语：类型检查、豫构测试与跨平台验证都通过后，发布 Wasm 工具链包：按提交号存历史版本，文件名前加提交时间（UTC），并覆盖更新连续版本。GitHub 每个发行至多 1000 个资产：historical-binaries 满了就依次用 historical-binaries-2、-3……，取第一个未满的，没有就新建。
   publish:
     name: 发布工具链包
     needs: [bootstrap, checks, wasm-bootstrap]
@@ -717,28 +717,42 @@ jobs:
           set -euo pipefail
           notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。"
 
-          for release in historical-binaries continuous-binaries; do
-            if ! gh release view "$release" >/dev/null 2>&1; then
-              gh release create "$release" \
+          release_ready() {
+            if ! gh release view "$1" >/dev/null 2>&1; then
+              gh release create "$1" \
                 --target "$GITHUB_SHA" \
-                --title "$release" \
+                --title "$1" \
                 --latest=false \
                 --notes "$notes"
             else
-              gh release edit "$release" --notes "$notes"
+              gh release edit "$1" --notes "$notes"
             fi
-          done
+          }
+          release_ready continuous-binaries
 
-          existing="$(gh release view historical-binaries --json assets --jq '.assets[].name')"
           package=yuyan-wasm
           commit_time="$(gh api "repos/$GH_REPO/commits/$GITHUB_SHA" --jq '.commit.committer.date | fromdateiso8601 | strftime("%Y%m%dT%H%M%SZ")')"
           historical_asset="$commit_time-$package-${GITHUB_SHA}.tar.gz"
-          if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
-            echo "历史版本已存在：$historical_asset"
-          else
-            cp "$RUNNER_TEMP/$package.tar.gz" "$RUNNER_TEMP/$historical_asset"
-            gh release upload historical-binaries "$RUNNER_TEMP/$historical_asset"
-          fi
+          # 文言：待办事项：二轮同发而俱见九百九十九资产者，后传者逾限而败。
+          # 汉语：待办事项：两轮同时发布、都看到 999 个资产时，后上传的一轮会超限失败。
+          historical=historical-binaries
+          n=1
+          while true; do
+            release_ready "$historical"
+            existing="$(gh release view "$historical" --json assets --jq '.assets[].name')"
+            if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
+              echo "历史版本已存在：$historical/$historical_asset"
+              break
+            fi
+            if [ "$(printf '%s\n' "$existing" | grep -c .)" -lt 1000 ]; then
+              cp "$RUNNER_TEMP/$package.tar.gz" "$RUNNER_TEMP/$historical_asset"
+              gh release upload "$historical" "$RUNNER_TEMP/$historical_asset"
+              echo "历史版本：https://github.com/$GH_REPO/releases/download/$historical/$historical_asset"
+              break
+            fi
+            n=$((n + 1))
+            historical="historical-binaries-$n"
+          done
           gh release upload continuous-binaries "$RUNNER_TEMP/$package.tar.gz" --clobber
 
   # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成 BIOS/UEFI 混合之 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType）；以 豫言操作系统/裸机/发行/系统版本.tsv 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
