@@ -311,17 +311,19 @@ jobs:
 
       # 文言：原生张量真登、负步视与解后失效必验；得金属器则验共享矩阵之链。
       # 汉语：原生张量真实登记、负步长及解除失效必验；取得金属设备时验证共享矩阵链。
+      # 文言：苹果运行器唯三核七吉，并发二十四则工作线程堆尽，故依核数。
+      # 汉语：苹果运行器只有三核、约 7 GB 内存，二十四路并发会让工作线程堆内存耗尽，并发数按处理器数。
       - name: 苹果原生张量基本回归
         if: matrix.os == 'macos-latest'
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统张量原生测试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统张量原生测试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 本机 本机 yy执行器.wasm yy张量登记.exe yy张量登记.wasm --预编二
           chmod +x yy张量登记.exe
           ./yy张量登记.exe
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统接口检查 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统接口检查.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统绑定.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统装载包.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --编译器 ./yy4_bs.wasm --输出 yy双宿主构建.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统接口检查 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统接口检查.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统绑定.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统装载包.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --编译器 ./yy4_bs.wasm --输出 yy双宿主构建.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫言操作系统接口检查.wasm --核对清单 豫言操作系统接口/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
           node 豫言操作系统/宿主/节点/宿主.cjs yy双宿主构建.wasm --自动 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./yy4_bs.wasm
           ./yy原生公共张量/程序.exe
@@ -483,7 +485,9 @@ jobs:
           Linux '${{ matrix.arch }}' yy远程文件协议.wasm yy远程文件协议.exe
 
       - name: 运行远程文件协议原生烟验
-        run: ./yy远程文件协议.exe
+        run: |
+          chmod +x yy远程文件协议.exe
+          ./yy远程文件协议.exe
 
       - name: 运行完整预编一致性组
         env:

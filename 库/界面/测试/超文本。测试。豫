@@ -44,7 +44,7 @@
   于（「测结果」中「零」）
   于（『<div class="界竖" data-yy="0"><div class="界文" data-yy="0/0">a&lt;b</div>』
     附『<button class="界钮" data-yy="0/1" type="button">确定</button>』
-    附『<input class="界框" data-yy="0/2" type="text" value="x&quot;y" placeholder="名字">』
+    附『<input class="界框" data-yy="0/2" id="yy输入-0/2" type="text" value="x&quot;y" placeholder="名字">』
     附『<hr class="界线" data-yy="0/键:k1">』
     附『<p class="界段" data-yy="0/4">前<a href="#" class="界链" data-yy="0/4/1">链</a><br></p></div>』）。
 「断言串相等」于（「测结果」中「一」）于『』。
