@@ -531,10 +531,10 @@ jobs:
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 苹果入口 --编译器 ./yy4_bs.wasm --输出 yy苹果你好.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号.wasm -j 24
           mkdir -p yy-probes
-          for f in 豫言操作系统/裸机/普通探针/*。豫 豫言操作系统/裸机/普通探针/盘/文件-一。豫 豫言操作系统/裸机/普通探针/盘/文件-二。豫 豫言操作系统/裸机/原生探针/*。豫; do
-            n=$(basename "$f"); n=${n%。豫}
+          for f in 豫言操作系统/裸机/普通探针/*。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-一。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-二。脚本。豫 豫言操作系统/裸机/原生探针/*。脚本。豫; do
+            n=$(basename "$f"); n=${n%。脚本。豫}
             node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 "$f" --编译器 ./yy4_bs.wasm --输出 "yy-probes/$n.wasm" -j 24
-            cp "${f%。豫}.期望" "yy-probes/$n.expected"
+            cp "${f%。脚本。豫}.期望" "yy-probes/$n.expected"
           done
 
       - name: 生成两种架构的 PE

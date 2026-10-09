@@ -438,7 +438,8 @@
   『<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8">』
     附『<meta name="viewport" content="width=device-width,initial-scale=1">』
     附『<title>』附（「超文本转义」于「标题」）附『</title>』
-      附『<style>html,body{margin:0;height:100%;}.界根{height:100%;}』附「基础样式表」附（「结果」中「一」）附
+      附『<style>html,body{margin:0;height:100%;}.界根{height:100%;}』附（「基础样式表」于「元」）附（「结果」中「一」）
+      附
         『</style>』
           附『</head><body><div class="界根">』附（「结果」中「零」）附『</div></body></html>』
 也。

@@ -4,7 +4,7 @@
 // 运行：node --test 豫言操作系统/宿主/网页汇编/边界。测试.mjs
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {解析签名, 读边界段, 是豫言模块, 造边界导入, 读边界导出, 造边界导出, 启动导出名} from './边界.mjs';
+import {解析签名, 读边界段, 是豫言模块, 造边界导入, 读边界导出, 造边界导出} from './边界.mjs';
 
 const 编码器 = new TextEncoder();
 const 无号 = 数 => { const 字节 = []; do { let 字 = 数 & 127; 数 >>>= 7; if (数) 字 |= 128; 字节.push(字); } while (数); return 字节; };
@@ -161,7 +161,6 @@ test('读边界导出：按导出名取签名；只认导出行', () => {
   const 表 = 读边界导出(模块);
   assert.deepEqual([...表.keys()], ['测试/空']);
   assert.equal(表.get('测试/空').文, '→元');
-  assert.equal(启动导出名, '豫言操作系统启动/启动程序');
 });
 
 test('造边界导出：参数按形转成 Wasm 值，结果按形转回', () => {
