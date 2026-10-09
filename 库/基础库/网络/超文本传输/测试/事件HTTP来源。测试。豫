@@ -16,7 +16,7 @@
 虑「块文」者
   『9』附「回车换行」附「体文」附「回车换行」附『0』附「回车换行」附「回车换行」而
 虑「头」者
-  「列」【『Content-Type』与『text/event-stream』，『Transfer-Encoding』与『chunked』】而
+  （（「列」于「字段」）也（「列」【『Content-Type』与『text/event-stream』，『Transfer-Encoding』与『chunked』】））而
 虑「源」者
   「包装事件HTTP正文」
     于「200」于「头」
