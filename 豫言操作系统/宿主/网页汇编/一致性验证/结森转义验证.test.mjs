@@ -155,7 +155,7 @@ test('随机语料：解码字节、编码字符串、宿主往返（/raw /enc /
     const 解 = await 原(JSON.stringify(串));
     assert.deepEqual(解.字节, Buffer.from(期, 'utf8'), '解码 轮 ' + 轮);
     // 编码：请求正文（UTF-8）原样进入豫言后再编码
-    // 请求正文经 text() 读取时，标准会剥去开头的 U+FEFF（BOM），故编码用例统一加一个前缀字符
+    // 请求正文按宽松 UTF-8 读取时（同 text()）会剥去开头的 U+FEFF（BOM），故编码用例统一加一个前缀字符
     const 编果 = await 编('x' + 期);
     assert.equal(编果.文, JSON.stringify('x' + 期), '编码 轮 ' + 轮);
     // 宿主 request.json() → JSON.stringify → 豫言解析 → 豫言编码：生产路径
@@ -226,20 +226,22 @@ test('宿主路径：查询参数与标头带控制字符（宿主 JSON.stringif
   assert.deepEqual(JSON.parse(宿.文), 消息);
 });
 
-test('畸形转义一律使请求失败（Wasm 中止），且不影响后续请求', async () => {
+// 文言：结森解析先严校其文，畸形之转义抛可捕之事故，应用答四百。汉语：结森解析先做严格语法校验，畸形转义抛出可捕获的异常“结森语法不合规”，应用答 400。
+test('畸形转义一律使请求失败（结森解析严格校验，应用答 400），且不影响后续请求', async () => {
   const 坏 = [
     '"\\u"', '"\\u1"', '"\\u12"', '"\\u123"', '"\\uZZZZ"', '"\\u12G4"', '"\\u00e"', '"\\u 123"', '"\\u-123"', '"\\u+123"', '"\\u0x12"',
     '"\\x41"', '"\\0"', '"\\a"', '"\\ "', '"\\v"', '"\\U0041"', '"\\N"', '"abc', '"abc\\"',
     '"\\ud83d\\u12"', '"\\ud83d\\uZZZZ"', '"\\u12\\"34"',
   ];
+  const 应败 = (果, 文) => { assert.equal(果.状态, 400, 文); assert.equal(果.文, '错误：结森语法不合规', 文); };
   for (const 文 of 坏) {
-    await assert.rejects(原(文), 错 => 错 instanceof WebAssembly.RuntimeError || /unreachable|RuntimeError|out of bounds/i.test(String(错)), 文);
-    await assert.rejects(圆(文), undefined, 文);
+    应败(await 原(文), 文);
+    应败(await 圆(文), 文);
   }
-  // 数组、对象中的畸形转义同样中止
-  await assert.rejects(圆('["ok","\\uZZZZ"]'));
-  await assert.rejects(圆('{"k\\u12":1}'));
-  // 一次中止不污染下一次请求（每个事件新建 Wasm 实例）
+  // 数组、对象中的畸形转义同样失败
+  应败(await 圆('["ok","\\uZZZZ"]'));
+  应败(await 圆('{"k\\u12":1}'));
+  // 失败不污染下一次请求
   assert.equal((await 圆('"\\u4e2d"')).文, '"中"');
   assert.equal((await 编('a\u001bb')).文, '"a\\u001bb"');
 });

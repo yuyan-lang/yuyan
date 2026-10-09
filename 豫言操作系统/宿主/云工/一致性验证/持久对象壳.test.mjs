@@ -1,4 +1,4 @@
-// 文言：以真实豫言 Wasm 与持久对象模拟，验持久事务二版、持久告警、持久独占、事时之限与响应先返之义。
+// 文言：以真实豫言 Wasm 与持久对象模拟，验持久事务二版、持久告警、持久独占、事时之限与答为入口返值之义。
 // 汉语：运行前先用私有暂存构建“持久对象壳一致性应用”（见同目录 说明.汉语.md），并设置环境变量
 // 持久对象壳产物=<dist/持久对象壳一致性应用 的绝对路径>，再执行 node --test 持久对象壳.test.mjs。
 import {test} from 'node:test';
@@ -57,7 +57,7 @@ test('直接仓：读写删、null 与缺键、结构化存取', async () => {
 test('直接仓：非法写入抛可捕获异常且不写仓', async () => {
   const {对象, 仓} = 新对象();
   assert.equal(await 发(对象, {op: 'put', k: 'k', text: '{'}), 'X|持久仓写入失败：持久值不是有效 JSON');
-  // 请求体与响应体各限 2 MiB（网页入站/网页答复适配），故大值由应用内部自倍而成：2^21 字节加引号超过 2 MiB
+  // 请求体与响应体各限 2 MiB（网页服务适配），故大值由应用内部自倍而成：2^21 字节加引号超过 2 MiB
   assert.equal(await 发(对象, {op: 'put-big', k: 'k', exp: 21}), 'X|持久仓写入失败：持久值超过 2 MiB');
   assert.equal(await 发(对象, {op: 'put', k: '', text: '1'}), 'X|持久键须为 1 至 2048 字节');
   assert.equal(await 发(对象, {op: 'put', k: 'k'.repeat(2049), text: '1'}), 'X|持久键须为 1 至 2048 字节');
@@ -334,7 +334,7 @@ test('持久事务：4 MiB 的事务参数可往返（豫言 JSON 规范化对�
 test('值桥：宿主到豫言的字符串可达 16 MiB；旧 call 超过则中止本次事件，带类型导入不受此限', async () => {
   const {对象, 仓} = 新对象();
   await 仓.put('k', 'z'.repeat(4 * 1024 * 1024));
-  assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (4 * 1024 * 1024 + 2), '4 MiB 值可读入豫言（超过 2 MiB 响应体上限的只是网页答复适配）');
+  assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (4 * 1024 * 1024 + 2), '4 MiB 值可读入豫言（超过 2 MiB 响应体上限的只是网页服务适配）');
   await 仓.put('k', 'z'.repeat(15 * 1024 * 1024));
   assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (15 * 1024 * 1024 + 2));
   await 仓.put('k', 'z'.repeat(十七兆));
@@ -342,14 +342,14 @@ test('值桥：宿主到豫言的字符串可达 16 MiB；旧 call 超过则中�
   else assert.equal(await 发(对象, {op: 'getlen', k: 'k'}), 'N|' + (十七兆 + 2), '带类型导入不经交换缓冲');
 });
 
-test('值桥与宿主：请求体经 Request.text() 可读至 15 MiB（网页入站的 2 MiB 是适配自设之限，不是宿主或桥之限）', async () => {
+test('值桥与宿主：请求体经 Request.text() 可读至 15 MiB（网页服务的 2 MiB 是适配自设之限，不是宿主或桥之限）', async () => {
   const {对象} = 新对象();
   const 读体 = (字节数, 头 = {}) => 对象.fetch(new Request('https://do.test/', {method: 'POST', headers: {'x-op': 'body-len', ...头}, body: 'b'.repeat(字节数)}));
   assert.equal(await (await 读体(5 * 1024 * 1024)).text(), 'N|' + 5 * 1024 * 1024, '站点发布请求（含 4 MiB base64）可读');
   assert.equal(await (await 读体(15 * 1024 * 1024)).text(), 'N|' + 15 * 1024 * 1024);
   if (旧通调) await assert.rejects(读体(十七兆), /宿主交换数据超过上限/);
   else assert.equal(await (await 读体(十七兆)).text(), 'N|' + 十七兆, '带类型导入不经交换缓冲');
-  // 对照：走网页入站的 JSON 正文读取，超过 2 MiB 则由适配报错（豫言异常未捕获，标准库默认处理写标准错误并以退出码 1 结束，出壳为“豫言程序退出：1”）
+  // 对照：走网页服务的 JSON 正文读取，超过 2 MiB 则由适配报错（豫言异常未捕获，标准库默认处理写标准错误并以退出码 1 结束，出壳为“豫言程序退出：1”）
   const 回 = 对象.fetch(请求体({op: 'put', k: 'k', text: JSON.stringify('y'.repeat(2 * 1024 * 1024 + 100))}));
   await assert.rejects(回, /豫言程序退出：1/);
 });
@@ -477,31 +477,25 @@ test('事时之限：独占区有自己的时限，区内超限只失败该区',
   assert.equal(await 发(对象, {op: 'sleep', n: 3, ms: 100}), 'S|done');
 });
 
-test('durableFetch：响应先返，Wasm 继续运行，ctx.waitUntil 记录其存续', async () => {
+// 文言：自提案 C0001，答为处理入口之返值：先造之答不先交，入口返乃交；故旧“先应而后续”之义不复存，此二案依新义改之。
+// 汉语：提案 C0001 起响应是处理入口的返回值：先造出的响应不会提前送出，入口返回后才交付。原来“响应先返、Wasm 继续运行”的两个用例按新语义改写。
+test('durableFetch：响应是处理入口的返回值，入口返回后才交付，ctx.waitUntil 仍记录运行承诺', async () => {
   const {对象, 仓, 状态} = 新对象();
   const 始 = performance.now();
   const 回 = await 对象.fetch(请求体({op: 'early', ms: 150}));
   const 耗 = performance.now() - 始;
   assert.equal(await 回.text(), 'early');
-  assert.equal(耗 < 120, true, `响应应在等待外部之前返回，实耗 ${耗} 毫秒`);
-  assert.equal(仓.数据.has('after'), false, '响应返回时后续写入尚未发生');
+  assert.equal(耗 >= 140, true, `先造的响应不提前送出，入口等待外部之后才返回，实耗 ${耗} 毫秒`);
+  assert.equal(仓.数据.get('after'), 'done', '响应交付时入口里的后续写入已落库');
   assert.equal(状态.保活.length >= 1, true, '宿主把运行承诺交给 ctx.waitUntil');
   await 状态.等待保活();
-  assert.equal(仓.数据.get('after'), 'done', '保活承诺完成后后续写入已落库');
 });
 
-test('durableFetch：响应之后 Wasm 失败只写日志，不影响已交付的响应', async () => {
-  const {对象, 状态} = 新对象();
-  const 日志 = [];
-  const 原 = console.error;
-  console.error = (...参) => 日志.push(参.join(' '));
-  try {
-    const 回 = await 对象.fetch(请求体({op: 'early-fail', ms: 30}));
-    assert.equal(回.status, 200);
-    assert.equal(await 回.text(), 'early');
-    await 状态.等待保活();
-  } finally { console.error = 原; }
-  assert.equal(日志.some(文 => 文.includes('[豫言] 响应已交付后运行失败')), true, 日志.join('|'));
+test('durableFetch：造出响应之后、返回之前失败，响应不交付，fetch 拒绝', async () => {
+  const {对象, 状态, 误出} = 新对象();
+  await assert.rejects(对象.fetch(请求体({op: 'early-fail', ms: 30})), /豫言程序退出：1/);
+  assert.ok(误出.includes(未捕获('造响应之后故意失败')), '失败原因写到标准错误');
+  await 状态.等待保活();
 });
 
 test('durableFetch：响应之前失败则 fetch 拒绝', async () => {

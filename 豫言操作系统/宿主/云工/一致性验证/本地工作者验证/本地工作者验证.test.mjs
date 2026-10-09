@@ -1,7 +1,8 @@
-// 文言：以真 workerd 验宿主壳：独占区、事务、告警、先应、值之限、时限配置，并与模拟作差分比对。
+// 文言：以真 workerd 验宿主壳：独占区、事务、告警、答为入口返值、值之限、时限配置，并与模拟作差分比对。
 // 汉语：可选的本地 workerd 验证（Wrangler 4.129.0，兼容日期 2026-09-05，SQLite 存储）。前置：
 //   1. 把待验产物（dist/持久对象壳一致性应用）的下列文件复制到本目录 `产物/`：值桥.mjs 边界.mjs 入口.mjs 动态资源.mjs 句柄.mjs
-//      宿主.mjs 宿主提供组.json 接口核对.mjs 接口要求组.json 程序.wasm 值桥.wasm 许可.json；并把 产物/许可.json 改为 {}（本地上游是 http）。
+//      宿主.mjs 宿主提供组.json 接口核对.mjs 接口要求组.json 程序.wasm 值桥.wasm 许可.json，以及宿主按需载入的 中央张量.mjs 平台资料.mjs
+//      （wrangler 打包时要解析它们）；并把 产物/许可.json 改为 {}（本地上游是 http）。
 //   2. 在本目录用云仓已装的 wrangler 起服务：
 //        wrangler dev --config wrangler.jsonc --port 8791 --inspector-port 9331 --persist-to .state --local
 //   3. 运行：env "持久对象壳产物=<dist/持久对象壳一致性应用>" node --test 本地工作者验证.test.mjs
@@ -150,15 +151,15 @@ test('清空持久仓连告警一并清除（兼容日期 2026-09-05，SQLite）
   assert.equal((await 发(名, {op: 'list', opts: '{}'})).文, 'L|[]');
 });
 
-test('响应先返：Wasm 继续运行；原生代码无论是否 waitUntil 均存活；客户端断开不取消运行', 选项, async () => {
+// 文言：自提案 C0001，答为处理入口之返值，先造之答不先交；旧“先应而后续”之案依新义改之。
+// 汉语：提案 C0001 起响应是处理入口的返回值，先造出的响应不会提前送出；原来“响应先返”的断言按新语义改写。
+test('响应是处理入口的返回值：入口返回后才交付；原生代码无论是否 waitUntil 均存活；客户端断开不取消运行', 选项, async () => {
   const 名 = 新名('e8');
   await 设上游(名);
   const 回 = await 发(名, {op: 'early', ms: 800});
   assert.equal(回.文, 'early');
-  assert.equal(回.耗 < 500, true, '响应先于后续工作返回');
-  assert.equal(await 读(名, 'after'), 'M|', '返回时后续写入尚未发生');
-  await 睡(1800);
-  assert.equal(await 读(名, 'after'), 'E|"done"');
+  assert.equal(回.耗 >= 750, true, `先造的响应不提前送出，入口等待外部之后才返回，实耗 ${回.耗} 毫秒`);
+  assert.equal(await 读(名, 'after'), 'E|"done"', '响应交付时入口里的后续写入已完成');
   for (const 模式 of ['none', 'waituntil']) {
     const 原名 = 新名('e8raw-' + 模式);
     await fetch(基址 + '/__raw-bg?mode=' + 模式 + '&ms=800&do=' + 原名).then(回 => 回.text());
