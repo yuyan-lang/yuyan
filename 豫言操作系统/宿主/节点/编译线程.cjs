@@ -6,6 +6,9 @@ const {Worker, MessageChannel} = require('node:worker_threads');
 const {接管进程} = require('./进程桥接.cjs');
 const {PassThrough} = require('node:stream');
 
+// 汉语：线程堆上限至少 4096 MB：小内存机器（如 CI 的约 7 GB macOS 运行器）上 V8 默认只给约四分之一物理内存，解析生成的大模块（子组融合。着色生成 约需 3～4 GB）会耗尽；大内存机器沿用更大的默认值。文言：线程之堆上限至少四千零九十六兆：小存之机，V8 默认唯给物理内存四之一，析生成之大模则堆尽；大存之机仍用其默认。
+const 线程资源限额 = {stackSizeMb: 128, maxOldGenerationSizeMb: Math.max(4096, Math.floor(require('node:v8').getHeapStatistics().heap_size_limit / 1048576))};
+
 // 文言：值桥先从宿主所录之环境，次求于今目录，无则取宿主之旁。汉语：值桥文件先用宿主写入环境变量 YY_NODE_VALUE_BRIDGE 的绝对路径，其次在当前目录找，再用宿主文件旁的那份。
 const 桥文件路径 = () => {const 传 = process.env.YY_NODE_VALUE_BRIDGE; return 传 && 文件.existsSync(传) ? 传 : 文件.existsSync('yy节点值桥接.wasm') ? 路径.resolve('yy节点值桥接.wasm') : 路径.join(__dirname, 'yy节点值桥接.wasm');};
 
@@ -15,7 +18,7 @@ function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
   const 空闲上限 = require('node:os').availableParallelism();
   let 已关 = false;
   function 新池工() {
-    const 工 = new Worker(宿主文件, {workerData:{复用线程:true}, execArgv:[], resourceLimits:{stackSizeMb:128}, stdout:true, stderr:true});
+    const 工 = new Worker(宿主文件, {workerData:{复用线程:true}, execArgv:[], resourceLimits:线程资源限额, stdout:true, stderr:true});
     const 项 = {工, 当前:null, 退事:null, 已退:false, 次数:0, 闲时:null};
     诸工.add(项);
     工.on('message', 消息 => {
@@ -108,7 +111,7 @@ function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
       工 = new Worker(宿主文件, {
         workerData: {参数: 参数.slice(位 + 1), 端口: port2, 信号, 编译线程: true, 初始目录: 目录,
           模块: 模块(输入), 桥模块: 模块(桥文件路径()), 引擎参数},
-        transferList: [port2], resourceLimits: {stackSizeMb: 128},
+        transferList: [port2], resourceLimits: 线程资源限额,
         stdout: true, stderr: true, execArgv: []
       });
     } catch (错) {清理(); port2.close(); throw 错;}
@@ -132,4 +135,4 @@ function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
   启动.清理 = () => {已关 = true; 空闲.length = 0; for (const 项 of 诸工) {clearTimeout(项.闲时);项.工.terminate().catch(() => {});}};
   return 启动;
 }
-module.exports = {建立编译线程};
+module.exports = {建立编译线程, 线程资源限额};
