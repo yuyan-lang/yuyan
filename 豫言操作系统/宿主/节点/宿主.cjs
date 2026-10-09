@@ -4,7 +4,7 @@ const 文件 = require('node:fs'), 路径 = require('node:path'), 系统 = requi
 const 子进程 = require('node:child_process'), 终端 = require('node:tty'), 密码 = require('node:crypto'), 工具 = require('node:util');
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
-const {建立编译线程} = require('./编译线程.cjs');
+const {建立编译线程, 线程资源限额} = require('./编译线程.cjs');
 const {创建终端输入} = require('./终端输入.mjs');
 const {读取标准终端尺寸} = require('./终端尺寸.mjs');
 const {创建文件能力, 提取文件授权} = require('./文件能力.mjs');
@@ -46,7 +46,7 @@ if (isMainThread) {
   const 清桥 = 接管进程(port1, 信号, 启动编译);
   const 清理 = () => {清桥(); 启动编译?.清理?.();};
   let 终止码 = null;
-  const 工 = 新客线程({workerData: {参数:process.argv.slice(2), 端口:port2, 信号}, transferList:[port2], resourceLimits:{stackSizeMb:128}});
+  const 工 = 新客线程({workerData: {参数:process.argv.slice(2), 端口:port2, 信号}, transferList:[port2], resourceLimits:线程资源限额});
   工.on('error', 错 => {console.error(错); process.exitCode=1;});
   工.on('exit', 码 => {清理(); process.exitCode=终止码??码;});
   for (const 信 of ['SIGINT', 'SIGTERM']) process.once(信, () => {终止码=信==='SIGINT'?130:143; 清理(); 工.terminate();});
