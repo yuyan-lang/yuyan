@@ -296,6 +296,18 @@ jobs:
           ./yy豫构.exe 构建 原生对比 --输出 yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
+      # 文言：基础库性能验证：依登记（应用/开发工具/性能验证/性能目标.tsv）行诸性能入口，诺节与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
+      # 汉语：基础库性能验证：按登记表（应用/开发工具/性能验证/性能目标.tsv）运行基础库的性能入口，诺节与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
+      - name: 基础库性能验证
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          YY_PERF_BASE: ${{ github.event.before }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$YY_PERF_BASE" || true
+          ./yy豫构.exe 构建 性能验证 --输出 yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+
       # 文言：苹果臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
       # 汉语：苹果 ARM64 系统库调用：同一客体在诺节和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
       - name: 苹果原生系统库调用
