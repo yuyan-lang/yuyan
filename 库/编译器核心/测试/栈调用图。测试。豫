@@ -171,7 +171,8 @@
 (func $old (type $t1) (param $n (ref null eq)) (result (ref null eq)) (local $len i64)
  local.get $n call $unbox local.tee $len i64.const 4294967295 i64.gt_u if unreachable end
  i64.const 7 local.get $len i32.wrap_i64 array.new $ints i32.const 0 array.get $ints call $box)
-』附（「回收项串转文」于（「回收项并」于（「列」【「回收单项」于「一参型」，「线性栈基础」，「包」】）））附『
+』附（「回收项串转文」于（「回收项并」于（「列」【「回收单项」于「一参型」，（「线性栈基础」于「元」），「包」】）））附
+  『
 (func (export "run") (param $n i64) (result i64) local.get $n call $box call $entry call $unbox)
 (func (export "reference") (param $n i64) (result i64) local.get $n call $box call $old call $unbox)
 )』）。

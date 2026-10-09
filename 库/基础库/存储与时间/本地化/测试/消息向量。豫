@@ -90,10 +90,26 @@ Language: ru
           于（「拼接字节串」于（「字符串转字节串」于「消息目录头向量」）于（「单字节串」于「零」）））
 也。
 
-「便携带头向量」者「字符串拼接」于『msgid ""
+「：汉语：头部加上「便携消息向量」（提案 00006：顶层只放数据，合成一个字面）。
+文言：首加「便携消息向量」（提案 00006：顶层惟置数据，合为一字面）。：」
+「便携带头向量」者『msgid ""
 msgstr "Plural-Forms: nplurals=2; plural=n!=1;\n"
 
-』于「便携消息向量」也。
+msgctxt "menu"
+msgid "apple"
+msgid_plural "apples"
+msgstr[0] "fruit"
+msgstr[1] "fruits"
+
+#, fuzzy
+msgid "old"
+msgstr "discard"
+
+msgid "multi"
+"line"
+msgstr "A\tB\nC\\n"
+"D"
+』也。
 
 「编译字符集向量」乃
   化「字符串」而
