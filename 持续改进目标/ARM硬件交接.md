@@ -9,7 +9,7 @@
 - 第 1–6 步完成：内核任务、调度、内存管理在豫言内核（`豫言操作系统/裸机/内核/`），两种架构共用；ARM64 有动态任务、多核与工具映像；ARM64 在 HVF 下的系统内造盘与宿主逐字节相同。
 - x86 在 KVM 下的系统内造盘：修好 xHCI 存储等待预算与工具映像原生栈后，在 pit-mbp13 上造出的 ISO 也与宿主逐字节相同（见 `ARM硬件.md` 进度）。
 - 最近一次复验在 yybs d2748d90c（提案 00005 让 AMD64 在系统里改用豫行工具之后）：ARM64 HVF 752 秒、x86 KVM 6062 秒，两处造出的 ISO 与三个豫行工具都与宿主逐字节相同。
-- 剩第 7 步：ARM64 启动盘（UEFI `BOOTAA64.EFI`）与实机，实机请用户测试（暂缓）。
+- 第 7 步的 QEMU 部分完成：`启动盘 --架构 臂六十四` 造出 ARM64 UEFI 启动光盘 `yy豫言启动臂.iso`，在 QEMU 的 ARM64 UEFI 固件下以光盘与 U 盘两种接法进命令壳。剩实机（暂缓，需用户；苹果芯片的 Mac 不走 UEFI）。ARM64 启动盘还没有数据区（缺 ARM64 USB 存储驱动）。
 
 ## 测试方法（在 `~/repos/yuyan-worktrees/ARM硬件` 运行，`节点` 指 `node 豫言操作系统/宿主/节点/宿主.cjs`）
 
@@ -21,6 +21,7 @@
   - `「运行」于「/工具/yy豫言系统」于「启动盘」于「--输出」于「/输出」于「--预置」于「无」于「--预编二」于「--工具链」于「--六十四位地址」于「--工具目录」于「/工具」于「--构」于「/工具/yy豫构」于「--编译器」于「/工具/yy4_bs」于「--盘容量」于「2097152」于「--并行」于「4」于「--只出光盘」`（10-09 提案 00005 起 AMD64 的工具是 `/工具/` 下不带后缀的豫行文件）
   - `「文件」之「切换」于「/输出」`、`「文件」之「列出」`、`「退出」`
 - ARM64：`yy豫言系统.wasm 构建 --架构 臂六十四 --输出 目录` 得内核镜像；`yy豫言系统.wasm 臂工具映像 --输出 目录 --六十四位地址` 得 `yy臂工具1..3.bin`（工具 wasm 须与盘上 `/工具/` 里的同一批，否则认不出映像）；数据盘取 x86 合成镜像里光盘之后第一个 64 MiB 整数倍处起的数据区（光盘约 108 MB 时是 128 MiB：`dd bs=1m skip=128`，再 `truncate -s 8G`；第 1 扇区是超级块魔数 `YYFS`）。ARM64 的输入同上，但三个工具写成 `/工具/yy豫言系统.wasm`、`/工具/yy豫构.wasm`、`/工具/yy4_bs.wasm`（ARM64 按 wasm 匹配工具映像）。QEMU：`qemu-system-aarch64 -machine virt,gic-version=3,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off -cpu host -accel hvf -m 24G -smp 4 -device loader,addr=0x40000000,data=<内存字节数>,data-len=8 -device loader,addr=0x40000008,data=<映像区字节数>,data-len=8`，每个映像 `-device loader,file=映像,addr=<地址>,force-raw=on`（按 2 MiB 对齐依次装在内存末尾），virtio 盘 `-device virtio-blk-pci,disable-legacy=on,addr=4,drive=yy_disk,iommu_platform=on,ats=off`，`-kernel 镜像`。
+- ARM64 启动盘：`YY_GC_INITIAL_HEAP_SIZE_MB=1024 node --max-old-space-size=24000 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --架构 臂六十四 --输出 目录 --预置 无` 得 `yy豫言启动臂.iso`；QEMU：`qemu-system-aarch64 -machine virt,gic-version=3,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off -cpu host -accel hvf -m 2G -bios /opt/homebrew/share/qemu/edk2-aarch64-code.fd -display none -serial stdio -no-reboot`，光盘加 `-device virtio-scsi-pci -drive if=none,id=yy_cd,format=raw,media=cdrom,readonly=on,file=光盘 -device scsi-cd,drive=yy_cd`，U 盘加 `-device qemu-xhci -drive if=none,id=yy_usb,format=raw,file=光盘 -device usb-storage,drive=yy_usb`。固件是调试版，串口上先有一堆固件日志，引导程序印“Yuyan ARM64 UEFI boot”“Yuyan boot: starting kernel”后进内核。
 - 从盘里取文件：按 512 字节对齐找记录头（魔数 `YYR1`，+12 类型、+16 路径长、+20 数据长、+36 路径），取路径相符、类型 2 的最后一条，数据在头后 512 字节起。按块（如 64 MiB）顺序读、只看每 512 字节的开头，8 GiB 的盘几秒扫完；`grep -b` 在大段零字节上极慢（十分钟扫不完）。
 
 ## 坑
@@ -31,3 +32,4 @@
 - 8 GiB 稀疏盘用 `cp -c`（APFS 克隆）复制；普通 `cp` 会写满零，很慢。
 - pit-mbp13 只有 8 GB 内存，24G 的客体跑起来会大量换页；KVM 下设备与宿主一卡顿，内核里按轮询次数计的超时就会提早到期。
 - 动态任务陷阱时内核会打印“任务陷阱 槽 码 址 栈 回”，按址对照降级产物即可定位。
+- UEFI 下的坑：edk2 不肯按地址整段要下跨内存表多项的区间；固件的栈与页表里不映射的页都可能落在内核目标区间里，所以引导程序读进缓冲、自备栈、关 MMU 后才拷。引导程序出异常时 edk2 只印异常地址，用 `-monitor tcp:…` 加 `info registers` 看 x5（ESR）、x6（FAR）可定位。
