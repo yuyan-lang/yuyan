@@ -47,12 +47,12 @@
 「核互联网规则」
   于（「互联网模板规则」
     于『message/ohttp-req』
-    于（『File extension(s): N/A』附「回车换行」附「回车换行」附『(file created 2007-04-27)』））
+    于（『File extension(s): N/A』附（「回车换行」于「元」）附（「回车换行」于「元」）附『(file created 2007-04-27)』））
     于『』。
 「核互联网规则」
   于（「互联网模板规则」
     于『application/test』
-    于（『File extension(s): .valid』附「回车换行」附『   』附「回车换行」附
+    于（『File extension(s): .valid』附（「回车换行」于「元」）附『   』附（「回车换行」于「元」）附
       『File extension history: created 2007-04-27』））
       于（『0:application/test:*.valid』附「新行」）。
 「核互联网规则」于（「互联网模板规则」于『audio/vnd.dlna.adts』于『File extension(s): Undefined』）于『』。

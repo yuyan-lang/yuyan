@@ -151,7 +151,7 @@
     【『(module (type $ints (array (mut i64)))』
     ，「回收项串转文」于（「回收项并」
       于（「缀」授以「回收项串」
-        于「线性栈基础」
+        于（「线性栈基础」于「元」）
         于（「态射」授以「整数」授以「回收项串」于（「整数范围」于「零」于「七」）于「生」）））
     ，『(func (export "frame") (param $p i32) (param $n i64) (result i32) (local $end i32)
  local.get $p local.get $n call $reserve local.tee $end i32.const -1 i32.eq if i32.const -1 return end

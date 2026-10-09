@@ -32,6 +32,7 @@
 「验官方编码字」于『=?ISO-8859-1?Q?Keld_J=F8rn_Simonsen?=』于『Keld Jørn Simonsen』。
 「验官方编码字」于『=?ISO-8859-1?Q?Andr=E9?= Pirard』于『André Pirard』。
 「验官方字段」于（「解析邮件」于（「字符串转字节串」
-  于（『From  : a@example.org』附「邮件换行」附『Date  : Fri, 21 Nov 1997 09:55:06 -0600』附「邮件换行」附「邮件换行」附
-    『test』）））。
+  于（『From  : a@example.org』附（「邮件换行」于「元」）附『Date  : Fri, 21 Nov 1997 09:55:06 -0600』附（「邮件换行」
+    于「元」）附（「邮件换行」于「元」）附
+      『test』）））。
 「打印当前成功失败数」于「元」。
