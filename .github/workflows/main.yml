@@ -1,9 +1,9 @@
 name: CI
 
 env:
-  # 固定的 Wasm 工具链包：由提交 2a7389c36 的 CI 构建并发布到 historical-binaries-2；其中的编译器认得提案 00006 预备的写法（「负」数字面、入口函数「入口」、包字段「入口函数」、。脚本。豫 作入口），00006 切换后编译器与豫构的入口函数要靠它起步。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261009T142015Z-yuyan-wasm-2a7389c36e71064da8b3f99794052c5c8c490040.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: db4829f2574aac939553d49506c8d9de8006ed05c39f439ec98e6f96a0af6ede
+  # 固定的 Wasm 工具链包：由提交 d933267d1 的 CI 构建并发布到 historical-binaries-2；其中的编译器与豫构认得库包「类型」里的「默认导入」字段与包上下文第五版（默认导入预备改动），也保留提案 00006 预备的写法（「负」数字面、入口函数「入口」、包字段「入口函数」、。脚本。豫 作入口）。钉到这一包（或更新的）之后，包文件才能写「默认导入」。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261009T190929Z-yuyan-wasm-d933267d1f7b049dd248b0a88601c11376664623.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: aec0b5472157e9c98cbb35369827fba9050577e4d44553e4260b989da38ad909
 
 on:
   push:
@@ -295,6 +295,18 @@ jobs:
         run: |
           ./yy豫构.exe 构建 原生对比 --输出 yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+
+      # 文言：基础库性能验证：依登记（应用/开发工具/性能验证/性能目标.tsv）行诸性能入口，诺节与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
+      # 汉语：基础库性能验证：按登记表（应用/开发工具/性能验证/性能目标.tsv）运行基础库的性能入口，诺节与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
+      - name: 基础库性能验证
+        if: github.event_name != 'pull_request'
+        continue-on-error: true
+        env:
+          YY_PERF_BASE: ${{ github.event.before }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$YY_PERF_BASE" || true
+          ./yy豫构.exe 构建 性能验证 --输出 yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
       # 文言：苹果臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
       # 汉语：苹果 ARM64 系统库调用：同一客体在诺节和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
