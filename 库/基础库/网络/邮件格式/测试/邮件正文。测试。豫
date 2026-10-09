@@ -45,9 +45,13 @@
 「原多部」者
   「拼接字节串」
     于（「字符串转字节串」
-      于（『Subject: 中文』附「邮件换行」附『Content-Type: multipart/mixed; boundary=b』附「邮件换行」附「邮件换行」附
-        『--b』附「邮件换行」附『Content-Type: application/octet-stream』附「邮件换行」附「邮件换行」））
-        于（「拼接字节串」于「原附件」于（「字符串转字节串」于（「邮件换行」附『--b--』附「邮件换行」）））
+      于（『Subject: 中文』附（「邮件换行」于「元」）附『Content-Type: multipart/mixed; boundary=b』附（「邮件换行」
+        于「元」）附（「邮件换行」于「元」）附
+          『--b』附（「邮件换行」于「元」）附『Content-Type: application/octet-stream』附（「邮件换行」于「元」）附（「邮件换行」
+            于「元」）））
+            于（「拼接字节串」
+              于「原附件」
+              于（「字符串转字节串」于（（「邮件换行」于「元」）附『--b--』附（「邮件换行」于「元」））））
 也。
 
 「验正文文本」
