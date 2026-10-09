@@ -2,7 +2,7 @@
 // 汉语：构建宿主的客体工作线程：每个线程同一时刻运行一个豫言程序（一个“进程”）。客体要的文件、子进程、摘要都向主线程提问，
 //   用 Atomics.wait 在共享内存上阻塞等答复，所以对客体来说这些宿主服务都是同步的（与 Node 工具宿主的进程桥接同一做法）。
 //   页面须跨源隔离（crossOriginIsolated），才有 SharedArrayBuffer。标准库与构建基础的带类型导入经共用胶水 边界.mjs 接入。
-import {造边界导入, 造边界导出, 启动导出名} from './边界.mjs';
+import {造边界导入} from './边界.mjs';
 import {解码值} from './编码.mjs';
 
 const 编码器 = new TextEncoder(), 解码器 = new TextDecoder();
@@ -147,13 +147,10 @@ function 运行(任务) {
   const 桥 = new WebAssembly.Instance(桥模块).exports;
   const 模块 = 任务.模块;
   const 实例 = new WebAssembly.Instance(模块, 造边界导入(模块, 桥, {标准库, 构建基础}));
-  // 文言：有独栈之能则用之，免深调之溢；_start 毕，应用实现启动之术者乃调之。汉语：有 JSPI 时在独立的 Wasm 栈上执行，避免工作线程的栈太小、编译器深递归溢出；
-  //   _start 之后，应用若实现了「启动程序」（导出 豫言操作系统启动/启动程序）就调用它。
+  // 文言：有独栈之能则用之，免深调之溢。汉语：有 JSPI 时在独立的 Wasm 栈上执行，避免工作线程的栈太小、编译器深递归溢出。
   const 异步 = typeof WebAssembly.promising === 'function';
   return async () => {
     if (异步) await WebAssembly.promising(实例.exports._start)(); else 实例.exports._start();
-    const 导出 = 造边界导出(实例, 模块, 桥, {异步});
-    if (导出[启动导出名]) await 导出[启动导出名]();
   };
 }
 

@@ -95,17 +95,17 @@ test('给了带型实现时，可移植接口的导入须全部由宿主实现�
 });
 
 test('给了应用提供时，应用提供的接口函数须有导出 接口名称/函数名；模块表不可读时按字节核对同样成立', () => {
-  const 启动清单 = {接口名称: '豫言操作系统启动', 函数: [{模块: '程序入口', 函数: '启动程序', 方向: '应用', 签名: '→[「 有 」；「 有 」]'}]};
-  const 核 = (字节, 宿主 = '节点') => 核对接口装载({程序模块: new WebAssembly.Module(字节), 程序字节: 字节, 应用要求: [], 宿主提供: [], 宿主, 应用提供: [启动清单]});
-  assert.throws(() => 核(造字节([打印行], 签名文)), /Wasm 缺少应用提供的接口导出：豫言操作系统启动\/启动程序$/u);
-  assert.equal(核(造字节([打印行], 签名文, ['豫言操作系统启动/启动程序'])), true);
+  const 网页服务清单 = {接口名称: '豫言操作系统网页服务', 函数: [{模块: '网页处理', 函数: '处理入站网页请求', 方向: '应用', 签名: '→[「 入站网页请求 」；「 出站网页响应 」]'}]};
+  const 核 = (字节, 宿主 = '节点') => 核对接口装载({程序模块: new WebAssembly.Module(字节), 程序字节: 字节, 应用要求: [], 宿主提供: [], 宿主, 应用提供: [网页服务清单]});
+  assert.throws(() => 核(造字节([打印行], 签名文)), /Wasm 缺少应用提供的接口导出：豫言操作系统网页服务\/处理入站网页请求$/u);
+  assert.equal(核(造字节([打印行], 签名文, ['豫言操作系统网页服务/处理入站网页请求'])), true);
   const 原导入 = WebAssembly.Module.imports, 原导出 = WebAssembly.Module.exports, 原段 = WebAssembly.Module.customSections;
   try {
     WebAssembly.Module.imports = () => { throw Error('模块表不可读'); };
     WebAssembly.Module.exports = () => { throw Error('模块表不可读'); };
     WebAssembly.Module.customSections = () => { throw Error('模块表不可读'); };
     assert.throws(() => 核(造字节([打印行], 签名文), '浏览器'), /Wasm 缺少应用提供的接口导出/u);
-    assert.equal(核(造字节([打印行], 签名文, ['豫言操作系统启动/启动程序']), '浏览器'), true);
+    assert.equal(核(造字节([打印行], 签名文, ['豫言操作系统网页服务/处理入站网页请求']), '浏览器'), true);
   } finally {
     WebAssembly.Module.imports = 原导入;
     WebAssembly.Module.exports = 原导出;

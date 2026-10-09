@@ -323,8 +323,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言操作系统控制台:{读取标准终端尺寸},豫言操作系统时间:{读取当前Unix毫秒:读取共享Unix毫秒},...(边界回环?.实现表??{})}):{};
   const 实例=new WebAssembly.Instance(模块,{...带型导入});
   let 退出码=0;
-  // 文言：_start 毕，应用实现启动之术者，乃调其导出。汉语：_start 初始化各模块之后，应用若实现了《豫言操作系统启动》的「启动程序」（导出 豫言操作系统启动/启动程序），就调用它；旧产物没有这个导出，照旧只跑 _start。
-  try{实例.exports._start();const 导出=边界胶水?边界胶水.造边界导出(实例,模块,桥):{};const 启动=边界胶水?导出[边界胶水.启动导出名]:undefined;if(启动)启动();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}
+  // 文言：_start 先行静态之初置，乃召入口之函。汉语：_start 先做静态初始化，再调用入口函数「入口」（提案 00006）。
+  try{实例.exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}
   // 文言：承构志之工务，书定标行；显设 YY_NODE_STATS 者，仍书旧详数。旧通调已删，其调用数为零。汉语：仅继承构建日志的 worker 写 marker 行；显式 YY_NODE_STATS 仍保留详细 JSON；宿主调用数字段计旧通用调用，删除后为零。
   const 工务任务=本工.编译线程||本工.参数?.includes('--mode=worker');
   const 工务统计=工务任务&&!!process.env.YY_BUILD_LOG_RUN;

@@ -12,7 +12,6 @@ const 值桥模块 = new WebAssembly.Module(readFileSync(目录 + '值桥.wasm')
   程序模块,
   应用要求: 读清单('应用要求.json'),
   宿主提供: 读清单('宿主提供.json'),
-  应用入口: 读清单('启动接口.json'),
   投影: 读清单('投影.json')
 });
 const {运行} = 创建豫言实例(程序模块, 值桥模块, {

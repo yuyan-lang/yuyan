@@ -89,9 +89,9 @@
 
 「：汉语：基础样式表含结构样式与按钮的默认样式。
 文言：基础样式表含结构之式与钮之默认。：」
-「断言为阳」于（「是子字符串吗」于『.界竖{display:flex;flex-direction:column;}』于「基础样式表」）。
+「断言为阳」于（「是子字符串吗」于『.界竖{display:flex;flex-direction:column;}』于（「基础样式表」于「元」））。
 「断言为阳」
   于（「是子字符串吗」
     于『.界钮{padding:6px 12px;background-color:#e5e7eb;border-radius:4px;justify-content:center;align-items:center;}』
-    于「基础样式表」）。
+    于（「基础样式表」于「元」））。
 「汇报结果」于「元」。
