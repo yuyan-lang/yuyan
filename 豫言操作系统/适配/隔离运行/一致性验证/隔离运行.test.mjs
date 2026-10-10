@@ -1,6 +1,6 @@
 // 文言：以真本地 workerd（Miniflare 之 Worker Loader）与真豫言 Wasm 验隔离运行之约；另以假加载器验隔离体之标识、模块与限额。
 // 汉语：隔离运行接口的云工适配一致性验证。共两部分：（一）真实 workerd：Miniflare 装载试验应用的构建产物，Worker Loader 绑定 LOADER 真实加载子 Worker，
-// 用一个由豫言编译的文件式探针程序（./探针）逐项验证规范里的返回、限额、失败情形、句柄不泄漏；（二）Node 假加载器：核对同（范围，摘要）取得同一标识、
+// 用一个由豫言编译的文件式探针程序（./探针）逐项验证规范里的返回、限额、失败情形、同一事件内连续运行；（二）Node 假加载器：核对同（范围，摘要）取得同一标识、
 // 异范围异标识、子 Worker 的模块集合、CPU 与子请求限额、请求体逐字节等于输入。
 // 用法（在私有暂存目录里执行，其中有 yy3_bs、库/、dist/）：
 //   1. ./yy双宿主构建 --自动 云工 <本目录>/应用 dist/隔离运行一致性
@@ -198,7 +198,7 @@ test('Base64 宽容 ASCII 空白与缺省填充（同 atob）', async () => {
   assert.equal(JSON.parse(答.result).stdout, '你好，隔离\n');
 });
 
-test('同一事件里连续运行一千次（成功与各种失败）不耗尽宿主句柄', async () => {
+test('同一事件里连续运行一千次（成功与各种失败）', async () => {
   const 成 = await 提交({scope: '范围甲', digest: 探针摘要, program: 探针文, input: 探针输入('echo'), repeat: 1000});
   assert.equal(成.ok, true, JSON.stringify(成).slice(0, 300));
   assert.equal(成.failures, 0);
