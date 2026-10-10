@@ -27,7 +27,7 @@ function 载入() {
     const 调 = 库.getFunction('proc_pid_rusage', {arguments: ['int32', 'int32', 'pointer'], return: 'int32'});
     let 实例, 内存;
     实例 = new WebAssembly.Instance(new WebAssembly.Module(文件.readFileSync(径)), {苹果: {
-      proc_pid_rusage: (号, 类, 址) => {
+      进程资源用量: (号, 类, 址) => {
         const 缓 = new Uint8Array(内存.buffer, 址, 96);
         return 调(号, 类, 外部.getRawPointer(缓)) === 0 ? 0 : -1;
       }
