@@ -9,7 +9,7 @@ api.KeyboardEvent.key、api.KeyboardEvent.code	浏览器事件订阅选项	部�
 api.KeyboardEvent.ctrlKey、api.KeyboardEvent.metaKey、api.KeyboardEvent.altKey、api.KeyboardEvent.shiftKey	浏览器事件订阅选项	部分实测	按键快照和预声明匹配规则已接入；真实 Chrome 已验无 Ctrl/Meta 的 Tab，其他修饰键组合待验
 api.Event.preventDefault	键盘阻止默认规则	已实测	真实 Chrome 的原生 Tab keydown 同步阻止默认，焦点仍留在输入框，豫言随后收到已阻止默认为真
 api.DedicatedWorkerGlobalScope.postMessage	浏览器工作线程向主线程发值	已实测	真实 Chrome 的 Dedicated Worker 内豫言 Wasm 发 ready 和结果，页面豫言 Wasm 接收；反向转移列表待验
-api.DedicatedWorkerGlobalScope.message_event	浏览器工作线程自身句柄、浏览器事件订阅选项、等待浏览器事件	已实测	Worker 豫言 Wasm 先订阅 self 的 message，再收到页面消息和 data 快照；自动启动外壳已由双宿主构建器复制
+api.DedicatedWorkerGlobalScope.message_event	浏览器工作线程自身句柄、浏览器事件订阅选项、等待浏览器事件	已实测	Worker 豫言 Wasm 先订阅 self 的 message，再收到页面消息和 data 快照；自动启动外壳已由豫构发行复制
 api.DedicatedWorkerGlobalScope.name	浏览器工作线程自身名称	已实测	页面设置豫言验收，Worker 豫言 Wasm 读取并确认相同名称
 api.DedicatedWorkerGlobalScope.close	浏览器工作线程自行关闭	部分实测	Worker 豫言 Wasm 发完 MessagePort 回信后调用 close，页面收到回信；关闭后的队列丢弃及竞态待验
 api.Worker.Worker.ecmascript_modules	浏览器工作线程新建	已实测	默认 type 为 module，真实 Chrome 加载构建器复制的 module 外壳及豫言 Wasm
