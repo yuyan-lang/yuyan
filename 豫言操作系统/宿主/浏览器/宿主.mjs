@@ -617,7 +617,9 @@ export const 允许标签 = new Set([
   'button', 'table', 'thead', 'tbody', 'tr', 'th', 'td', 'pre', 'code', 'time', 'ul', 'ol', 'li', 'label',
   'select', 'option', 'nav', 'form', 'input', 'textarea', 'details', 'summary',
   // 零点三点零增：文字层之义签，皆无行为。汉语：0.3.0 新增的文字语义标签（强调、斜体、键名、上下标、引用块、分隔线、定义列表），都不带行为。
-  'em', 'i', 'kbd', 'sup', 'sub', 'blockquote', 'hr', 'dl', 'dt', 'dd'
+  'em', 'i', 'kbd', 'sup', 'sub', 'blockquote', 'hr', 'dl', 'dt', 'dd',
+  // 零点六点零增：画布，惟以画像素之术写其素，不行脚本。汉语：网页文树 0.6.0 新增 canvas（界面库的像素图），只经“画像素”操作写入像素，不执行脚本。
+  'canvas'
 ]);
 const 空元素 = new Set(['br', 'input', 'hr']);
 const 输入类型 = new Set(['button', 'submit', 'reset', 'checkbox', 'radio', 'text', 'search', 'number', 'email', 'url', 'tel', 'password', 'range', 'date', 'time', 'datetime-local']);
@@ -1424,7 +1426,20 @@ export function 创建页面控制({根, 全局, 路径, 网络, 句柄, 释放�
       元.replaceChildren(片);
     },
     // ---- 0.4.0：运行时样式规则 ----
-    添加样式规则: 文 => { 添加样式规则(文); }
+    添加样式规则: 文 => { 添加样式规则(文); },
+    // ---- 0.6.0：canvas 像素 ----
+    // 文言：以全块 RGBA8 之素画于 canvas：宽高异于其属性则先改之。汉语：把整块 RGBA8 像素（非预乘，行距为宽乘四）画进 canvas；宽高与 canvas 的 width、height 不同时先改属性。
+    画像素: (号, 宽, 高, 字节) => {
+      const 元 = 取元素节点(号);
+      if (标签名(元) !== 'canvas') throw Error('只有 canvas 节点能画像素：' + 标签名(元));
+      if (!(Number.isSafeInteger(宽) && Number.isSafeInteger(高) && 宽 > 0 && 高 > 0 && 宽 * 高 <= 2 ** 28)) throw Error('像素宽高无效');
+      if (!字节 || 字节.length !== 宽 * 高 * 4) throw Error('像素字节数须为宽乘高乘四');
+      if (元.width !== 宽) 元.width = 宽;
+      if (元.height !== 高) 元.height = 高;
+      const 境 = 元.getContext('2d');
+      if (!境) throw Error('canvas 不能取得 2d 绘图上下文');
+      境.putImageData(new 全局.ImageData(new Uint8ClampedArray(字节.buffer, 字节.byteOffset, 字节.length), 宽, 高), 0, 0);
+    }
   };
   const 运行表 = (表, 名, 参) => {
     if (typeof 名 !== 'string' || !Object.hasOwn(表, 名)) throw Error('网页操作不受支持：' + String(名).slice(0, 64));
@@ -2498,6 +2513,7 @@ export const 浏览器平台导入 = Object.freeze({
     浏览器等待界面事件: '豫言_浏览器_等待界面事件',
     浏览器文树操作: '豫言_浏览器_文树操作',
     浏览器文树装入模板: '豫言_浏览器_文树装入模板',
+    浏览器文树画像素: '豫言_浏览器_文树画像素',
     浏览器订阅网页消息: '豫言_浏览器_订阅网页消息',
     浏览器取消订阅网页消息: '豫言_浏览器_取消订阅网页消息',
     浏览器等待网页消息: '豫言_浏览器_等待网页消息',
@@ -3045,6 +3061,8 @@ export function 创建浏览器宿主({程序模块, 值桥模块, 根 = globalT
     // 文言：界面与文树诸术，失败归阴与因，不使异常越桥。汉语：界面操作（按元素标识）与文树操作（按句柄）：返回（成功, 结果或错误文）。
     豫言_浏览器_界面操作: (操作, 标识, 一, 二) => 安全结果(() => 页面.运行表(页面.界面操作表, 文字(操作), [文字(标识), 文字(一), 文字(二)])),
     豫言_浏览器_文树操作: (操作, 一, 二, 三) => 安全结果(() => 页面.运行表(页面.文树操作表, 文字(操作), [文字(一), 文字(二), 文字(三)])),
+    // 文言：（网页文树零点六）素带字节串，不经尽为文之入口。汉语：（网页文树 0.6.0）像素要带字节串，不走全是文字的文树操作入口。
+    豫言_浏览器_文树画像素: (号, 宽, 高, 字节) => 安全结果(() => 页面.运行表(页面.文树操作表, '画像素', [文字(号), Number(宽), Number(高), 字节])),
     豫言_浏览器_文树装入模板: async (资源路径, 选择标识, 目标标识) => {
       try { await 页面.装入模板(文字(资源路径), 文字(选择标识), 文字(目标标识)); return [true, '']; }
       catch (错) { return [false, String(错?.message ?? 错)]; }

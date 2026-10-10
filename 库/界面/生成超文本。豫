@@ -116,8 +116,8 @@
           「属性文字」于「取占位」于「余项」
 也。
 
-「：汉语：元素上可随状态改变的 HTML 属性，次序固定为 title、disabled、placeholder、role、tabindex、aria-disabled；值为空文字表示没有该属性，disabled 有时值为 true。生成 HTML 与差分共用这一份。
-文言：元素上随态而易之 HTML 属性，其序恒为 title、disabled、placeholder、role、tabindex、aria-disabled；值空文则无此属性，disabled 有则值为 true。生成 HTML 与差分共此一份。：」
+「：汉语：元素上可随状态改变的 HTML 属性，次序固定为 title、disabled、placeholder、role、tabindex、aria-disabled；值为空文字表示没有该属性，disabled 有时值为 true。可点元素与带「原样输入时」的像素图可以取得焦点（tabindex 为 0）。生成 HTML 与差分共用这一份。
+文言：元素上随态而易之 HTML 属性，其序恒为 title、disabled、placeholder、role、tabindex、aria-disabled；值空文则无此属性，disabled 有则值为 true。可点之元素与带「原样输入时」之像素图可得焦（tabindex 为零）。生成 HTML 与差分共此一份。：」
 「元素属性对们」乃
   承「消」而
   化（「界面」于「消」）而
@@ -128,6 +128,11 @@
   虑「属性们」者「取元素属性」于「元素」而
   虑「禁否」者「属性禁用」于「属性们」而
   虑「可点否」者「属性可点」于「属性们」而
+  虑「原样否」者
+    （鉴「种类像素图」于「种」而
+    有（「可有」于「图资料」）则「属性有原样输入」于「属性们」
+    或有「可无」则「阴」）
+  而
   虑「表单控件」者
     （
       鉴「种」而
@@ -151,7 +156,7 @@
   ，『disabled』与（若「且」于「表单控件」于「禁否」则『true』否则『』）
   ，『placeholder』与「占位值」
   ，『role』与（若「可点否」则『button』否则『』）
-  ，『tabindex』与（若「且」于「可点否」于（「非」于「禁否」）则『0』否则『』）
+  ，『tabindex』与（若「且」于（「或者」于「可点否」于「原样否」）于（「非」于「禁否」）则『0』否则『』）
   ，『aria-disabled』与（若「且」于「可点否」于「禁否」则『true』否则『』）
   】
 也。
@@ -240,6 +245,7 @@
     或有「复选框种类」则『input』
     或有「分隔线种类」则『hr』
     或有「空元素种类」则『』
+    或有（「像素图种类」于「图资料」）则『canvas』
     或有「其他种类」则『div』
 也。
 
