@@ -118,12 +118,16 @@ test('旧函数回归：方法、路径、标头、查询、来源、主机名�
   }
 });
 
-// 提案 C0001：读取入站事件种类 已删；三种 HTTP 事件都由宿主调用应用导出的 处理入站网页请求，请求作参数传入。
-test('处理入站网页请求：fetch、service-fetch、durable-fetch 都进同一入口', async () => {
+// 提案 C0001：三种 HTTP 事件都由宿主调用应用导出的 处理入站网页请求，请求作参数传入；读取入站事件种类 以请求为参数分辨三者。
+test('处理入站网页请求：fetch、service-fetch、durable-fetch 都进同一入口，读取入站事件种类 分辨三者', async () => {
   const 造 = () => new Request('https://x.test/method', {method: 'PUT'});
   assert.equal(await (await 宿主.fetch(造(), {}, 上下文)).text(), 'PUT');
   assert.equal(await (await 宿主.serviceFetch(造(), {}, 上下文)).text(), 'PUT');
   assert.equal(await (await 宿主.durableFetch(造(), {}, {})).text(), 'PUT');
+  const 种 = () => new Request('https://x.test/kind');
+  assert.equal(await (await 宿主.fetch(种(), {}, 上下文)).text(), 'fetch');
+  assert.equal(await (await 宿主.serviceFetch(种(), {}, 上下文)).text(), 'service-fetch');
+  assert.equal(await (await 宿主.durableFetch(种(), {}, {})).text(), 'durable-fetch');
 });
 
 for (const [名, 路径] of [['字节', '/body/bytes'], ['宽松文字', '/body/text'], ['严格文字', '/body/strict']]) {
