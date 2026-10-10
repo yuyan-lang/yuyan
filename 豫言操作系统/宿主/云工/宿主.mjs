@@ -18,9 +18,9 @@ export const 类型化入口 = Object.freeze({
 // 文言：JS 回呼豫言之唯一入口，云工宿主库供之。汉语：JS 回调豫言的唯一入口，由云工宿主库提供（库/云工宿主/回调。豫）。
 export const 回调入口 = '云工宿主/执行云工回调';
 
-// 文言：客可见之全局唯此表所列；fetch、WebSocket、Function 之属皆不与，外发须经许可。
+// 文言：客可见之全局唯此表所列；fetch、WebSocket、Function 之属皆不与，外发须经许可（豫言公网取、豫言授权取与平台之绑）。
 // 汉语：豫言用「云工全局」只能取得下表列出的全局对象与构造器；fetch、WebSocket、EventSource、Function、WebAssembly、globalThis 等不在表内，
-//   外发请求只能走宿主对象 豫言公网取（核对 OUTBOUND_ORIGINS）或平台绑定（核对许可清单）。
+//   外发请求只能走宿主对象 豫言公网取、豫言授权取（都核对 OUTBOUND_ORIGINS）或平台绑定（核对许可清单）。
 export const 可用全局 = new Set([
   'Array', 'ArrayBuffer', 'BigInt', 'Blob', 'Boolean', 'CompressionStream', 'DataView', 'Date', 'DecompressionStream',
   'File', 'FormData', 'Headers', 'Intl', 'JSON', 'Map', 'Math', 'Number', 'Object', 'RegExp', 'ReadableStream', 'Response', 'Set',
@@ -47,6 +47,30 @@ export function 造公网取({许可 = {}, 全局 = globalThis} = {}) {
   };
 }
 
+// 文言：许可来源之外发：址须 https、无用户名与口令，其源（方案、主机、端口）须列于许可 OUTBOUND_ORIGINS，转址一律 manual；通配之 https://* 不许任何真源。
+//   其 已授权(址) 惟验不发，网页上游之适配先验其源，乃验余参。
+// 汉语：许可来源的外发请求（宿主对象 豫言授权取，网页上游适配的静态来源请求用）：网址须是 https、不带用户名或密码，
+//   来源（方案、主机、端口）须在程序许可 OUTBOUND_ORIGINS 里，redirect 一律改为 manual；通配来源 https://* 不放行任何真实来源。
+//   函数属性 已授权(网址) 只核对不发请求：适配先核对来源，再校验其余参数（已授权('https://*') 即“许可是否声明了通配来源”）。
+export function 造授权取({许可 = {}, 全局 = globalThis} = {}) {
+  const 来源们 = Array.isArray(许可.OUTBOUND_ORIGINS) ? 许可.OUTBOUND_ORIGINS : [];
+  const 来源 = 网址 => {
+    let 目标;
+    try { 目标 = new URL(String(网址)); } catch { return ''; }
+    return 目标.protocol === 'https:' && !目标.username && !目标.password ? 目标.origin : '';
+  };
+  const 已授权 = 网址 => { const 源 = 来源(网址); return 源 !== '' && 来源们.includes(源); };
+  const 取 = (网址, 选项 = {}) => {
+    const 是请求 = typeof 全局.Request === 'function' && 网址 instanceof 全局.Request;
+    const 源 = 来源(是请求 ? 网址.url : 网址);
+    if (源 === '' || 源 === 'https://*' || !来源们.includes(源)) throw Error('上游网址未获授权');
+    if (选项 === null || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('授权 fetch 的选项须为对象');
+    return Reflect.apply(全局.fetch, 全局, [网址, {...选项, redirect: 'manual'}]);
+  };
+  取.已授权 = 已授权;
+  return 取;
+}
+
 // 文言：云工所供之平台接口包。汉语：云工宿主实现的平台接口包（导入模块名即包名）。
 export const 云工平台包 = Object.freeze(['云工宿主', '中央张量宿主']);
 const 异步函数 = (async () => {}).constructor;
@@ -65,6 +89,7 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
   // 文言：宿主之物：惟 JS 能为之组件，挂于全局之名下。汉语：宿主对象：只能用 JS 写的组件，以「豫言」开头的名字挂在「云工全局」下。
   const 宿主对象 = new Map([
     ['豫言公网取', 造公网取({许可, 全局})],
+    ['豫言授权取', 造授权取({许可, 全局})],
     ['豫言子工', 造子工({取绑定, 动态资源})],
     ['豫言平台资料', {取: () => import('./平台资料.mjs').then(模块 => 模块.创建平台资料({全局}))}]
   ]);
