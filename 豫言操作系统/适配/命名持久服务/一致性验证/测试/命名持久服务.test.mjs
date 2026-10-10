@@ -93,8 +93,11 @@ test('流：参数违规抛事故且不发请求', async () => {
   const 重复 = await 跑({op: 'do', url: 'https://internal/x', read: 'none', headers: 对({Origin: 'a'})}, {DOS: 空间}); assert.equal(重复.状态, 200);
 });
 
-test('流：未授权的持久对象绑定报部署错误', async () => {
-  await assert.rejects(跑({op: 'do', binding: 'OTHER', url: 'https://internal/events', read: 'none'}, {DOS: 造()}), /未授权的DO绑定：OTHER/);
+// 文言：薄宿主之绑定败为可承之豫言异常（试验之客承之而答四百）；客不承则事亦败。
+// 汉语：薄宿主下绑定失败成为可捕获的豫言异常（试验应用接住，答 400）；应用不捕获时事件照样失败。
+test('流：未授权的持久对象绑定抛可捕获的豫言异常', async () => {
+  const 果 = await 跑({op: 'do', binding: 'OTHER', url: 'https://internal/events', read: 'none'}, {DOS: 造()});
+  assert.equal(果.状态, 400, 果.文); assert.match(果.文, /未授权的DO绑定：OTHER/);
 });
 
 test('流：超时（读停滞、等响应头）、错误、取消、有限读取', async () => {

@@ -4,7 +4,7 @@
 // 运行：node --test 豫言操作系统/宿主/云工/公网取。测试.mjs（全树测试自动发现）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {造公网取} from './宿主.mjs';
+import {造公网取, 造授权取} from './宿主.mjs';
 
 // 文言：伪全局，其 fetch 录其所受。汉语：假的 全局：fetch 记下收到的网址与选项，返回固定响应；其余取真实全局。
 const 造伪全局 = () => {
@@ -67,4 +67,46 @@ test('Request 对象按其网址核对，选项不是对象时拒绝', async () 
   assert.equal(记录[0].选项.redirect, 'manual');
   assert.throws(() => 取(new Request('http://上游.例子/甲')), /只许 https/);
   assert.throws(() => 取('https://上游.例子/', '不是对象'), /选项须为对象/);
+});
+
+// 文言：验许可来源之外发窄口（造授权取，宿主之物 豫言授权取）：源列于 OUTBOUND_ORIGINS 乃许，转址恒 manual；通配不许真源；已授权 惟验不发。
+// 汉语：许可来源外发窄口（宿主.mjs 的 造授权取，宿主对象 豫言授权取）：来源列在 OUTBOUND_ORIGINS 才放行，redirect 一律改为 manual；
+//   通配来源 https://* 不放行任何真实来源；函数属性 已授权 只核对不发请求。
+test('授权取：许可来源放行，redirect 改为 manual，其余选项照传；已授权只核对', async () => {
+  const {记录, 全局} = 造伪全局();
+  const 取 = 造授权取({许可: {OUTBOUND_ORIGINS: ['https://api.example.com']}, 全局});
+  assert.equal(取.已授权('https://api.example.com/甲'), true);
+  assert.equal(记录.length, 0);
+  const 回 = await 取('https://api.example.com/接口', {method: 'POST', body: '{}', redirect: 'follow'});
+  assert.equal(await 回.text(), '好');
+  assert.equal(记录.length, 1);
+  assert.equal(记录[0].网址, 'https://api.example.com/接口');
+  assert.equal(记录[0].选项.redirect, 'manual');
+  assert.equal(记录[0].选项.method, 'POST');
+});
+
+test('授权取：他源、http、带凭据、非法网址都拒绝，不发请求', () => {
+  const {记录, 全局} = 造伪全局();
+  const 取 = 造授权取({许可: {OUTBOUND_ORIGINS: ['https://api.example.com']}, 全局});
+  for (const 址 of ['https://evil.example.com/', 'http://api.example.com/', 'https://u:p@api.example.com/', 'https://api.example.com:8443/', '不是网址']) {
+    assert.equal(取.已授权(址), false, 址);
+    assert.throws(() => 取(址), /上游网址未获授权/, 址);
+  }
+  assert.throws(() => 取('https://api.example.com/', '不是对象'), /选项须为对象/);
+  assert.equal(记录.length, 0);
+});
+
+test('授权取：通配来源只表示“允许动态公网”，不放行任何真实来源；空许可一律拒绝', () => {
+  const {记录, 全局} = 造伪全局();
+  const 通配 = 造授权取({许可: {OUTBOUND_ORIGINS: ['https://*']}, 全局});
+  assert.equal(通配.已授权('https://*'), true);
+  assert.equal(通配.已授权('https://api.example.com/'), false);
+  assert.throws(() => 通配('https://api.example.com/'), /上游网址未获授权/);
+  assert.throws(() => 通配('https://*'), /上游网址未获授权/);
+  for (const 许可 of [{}, {OUTBOUND_ORIGINS: []}, {OUTBOUND_ORIGINS: 'https://api.example.com'}]) {
+    const 取 = 造授权取({许可, 全局});
+    assert.equal(取.已授权('https://*'), false);
+    assert.throws(() => 取('https://api.example.com/'), /上游网址未获授权/);
+  }
+  assert.equal(记录.length, 0);
 });
