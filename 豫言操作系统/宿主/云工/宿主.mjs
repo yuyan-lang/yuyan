@@ -154,11 +154,34 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
     try { return await 函(...参数们); }
     catch (错) { if (实例承诺 === 承诺) 实例承诺 = null; throw 错; }
   };
-  // 文言：网页之事：入站请求为〔0, 请求, 上下文, 事类〕，答为〔0, Response 或其 Promise〕。
-  // 汉语：网页事件：入口参数 入站网页请求 =〔0, 请求物, 上下文物, 种类〕，返回 出站网页响应 =〔0, Response 或 Promise<Response>〕。
+  // 文言：网页之事：入站请求为〔0, 请求, 上下文, 事类, 先交〕，答为〔0, Response 或其 Promise〕。先交者，此调所造之函：入口未返而以 Response 呼之，
+  //   宿主即以之答，入口续行而其返值弃之；惟认首交，返入口运行毕之 Promise（正返为 true，抛则 false）。诸态皆此调之局部，宿主不存按事之态。
+  // 汉语：网页事件：入口参数 入站网页请求 =〔0, 请求物, 上下文物, 种类, 先交〕，返回 出站网页响应 =〔0, Response 或 Promise<Response>〕。
+  //   先交是每次调用新造的函数 先交(响应) → Promise（网页事件流用）：入口返回之前以 Response 调用它，宿主立即以它作答，入口继续运行
+  //   （有 waitUntil 的上下文等它跑完），入口的返回值随之忽略，此后入口抛出只写错误输出；只认第一次，返回入口运行毕的 Promise
+  //   （入口正常返回得 true，抛出得 false），适配据此在事件结束时收尾。这些状态都是本次调用的局部变量，宿主不保存按事件的状态。
   const 网页 = async (种类, 请求, 环境参, 上下文) => {
     if (环境参) 环境 = 环境参;
-    const 果 = await 调入口(类型化入口[种类], [[0, 请求, 上下文 ?? {}, 种类]]);
+    let 交付, 可交 = true, 已先交 = false, 运行毕;
+    const 已交 = new Promise(解 => { 交付 = 解; });
+    const 先交 = 响应 => {
+      if (!可交) throw Error('先行交付须在入口返回之前，且每个请求只能交付一次');
+      if (!(响应 instanceof 全局.Response)) throw Error('先行交付的不是 Response');
+      可交 = false;
+      已先交 = true;
+      交付(响应);
+      上下文?.waitUntil?.(运行毕);
+      return 运行毕;
+    };
+    const 运行 = 调入口(类型化入口[种类], [[0, 请求, 上下文 ?? {}, 种类, 先交]]);
+    运行毕 = 运行.then(() => { 可交 = false; return true; }, 错 => {
+      可交 = false;
+      if (已先交) 错误输出('[豫言] 响应已先行交付后运行失败：' + String(错?.stack ?? 错));
+      return false;
+    });
+    const 已交回 = await Promise.race([运行.then(() => null), 已交]);
+    if (已交回) return 已交回;
+    const 果 = await 运行;
     let 回 = 果?.[1];
     if (回 && typeof 回.then === 'function') 回 = await 回;
     if (!(回 instanceof 全局.Response)) throw Error('入口返回的不是 Response');

@@ -21,14 +21,15 @@ test('云端：响应头与帧序（真实 HTTP，chunked）', async () => {
   assert.deepEqual(await new 流读取器(回).读完(), ['data: 0 豫言', 'data: 1 豫言', 'data: 2 豫言', 'data: 3 豫言', 'data: 4 豫言']);
 });
 
-test('云端：响应头先于程序结束；程序返回后未结束的流不会自行结束', async () => {
+test('云端：响应头先于程序结束；程序返回后未结束的流由适配收尾结束', async () => {
   const 增 = await 增量('不结束');
   const 回 = await 取(路('/不结束'));
   assert.equal(回.status, 200);
   const 读 = new 流读取器(回);
   assert.equal(await 读.下一帧(), 'data: 只有一帧');
   await 等到(async () => (await 增('不结束')).length === 1, {说明: '程序返回'});
-  assert.equal((await 读.下一块(1500)).类型, '超时');
+  const 再 = await 读.下一块(1500);
+  assert.ok(再.类型 === '终' || 再.类型 === '错', '入口运行完毕后流应结束，实得：' + 再.类型);
   await 读.取消('测试结束');
 });
 
