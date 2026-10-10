@@ -260,8 +260,8 @@ test('静态资源：HEAD 不带正文并取消资源正文流；正文原样流
 test('静态资源：状态与正文的兼容性，继承的无正文状态', async () => {
   const 乙 = new 资产({'/a.html': {体: 'x', 头: {'Content-Type': 'text/html'}}, '/nm': {状态: 304, 头: {ETag: '"1"'}}, '/moved': {状态: 307, 头: {Location: '/a.html'}}});
   for (const 状态 of [204, 205, 304]) {
-    // 入口不等资源：资源到达后才发现状态与正文冲突，本次请求失败（应用捕获不到）。
-    await assert.rejects(简(静('ASSETS', '/a.html', 状态, []), {方法: 'GET', 环境: {ASSETS: 乙}}), /该 HTTP 状态不得带静态资源正文/, String(状态));
+    // 入口等到资源后才发现状态与正文冲突，抛出可捕获的豫言异常。
+    assert.match(错(await 简(静('ASSETS', '/a.html', 状态, []), {方法: 'GET', 环境: {ASSETS: 乙}})), /该 HTTP 状态不得带静态资源正文/, String(状态));
     const 头 = await 简(静('ASSETS', '/a.html', 状态, []), {方法: 'HEAD', 环境: {ASSETS: 乙}});
     assert.equal(头.状态, 状态, 'HEAD 不带体，故允许');
   }
@@ -291,11 +291,11 @@ test('静态资源：路径、绑定名与附加标头校验；资源自带的�
 
 test('静态资源：绑定授权与上游失败', async () => {
   const 乙 = new 资产({'/a.html': {体: 'x'}});
-  // 薄宿主：未授权的绑定与没有配置的必需绑定都由宿主中止本次事件；资源请求被拒发生在入口返回之后，本次请求同样失败。
+  // 薄宿主：未授权的绑定与没有配置的必需绑定都由宿主中止本次事件；资源请求被拒在入口里等到，是可捕获的豫言异常。
   await assert.rejects(简(静('NOPE', '/a.html', 0, []), {方法: 'GET', 环境: {NOPE: 乙}}), /未授权的ASSETS绑定：NOPE/);
   await assert.rejects(简(静('ASSETS', '/a.html', 0, []), {方法: 'GET', 环境: {}}), /绑定不存在：ASSETS/);
   class 坏资产 { async fetch() { throw new Error('资源读取炸了'); } }
-  await assert.rejects(简(静('ASSETS', '/a.html', 0, []), {方法: 'GET', 环境: {ASSETS: new 坏资产()}}), /读取静态资源失败：Error: 资源读取炸了/);
+  assert.match(错(await 简(静('ASSETS', '/a.html', 0, []), {方法: 'GET', 环境: {ASSETS: new 坏资产()}})), /读取静态资源失败：Error: 资源读取炸了/);
 });
 
 test('旧函数回归：转发入站请求、并加标头、重定向入站请求', async () => {

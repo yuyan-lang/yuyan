@@ -33,7 +33,7 @@ export const 可用全局 = new Set([
 
 // 文言：公网 HTTPS 之动态上游，惟许可 OUTBOUND_ORIGINS 含 https://* 乃许，址须 https、无用户名与口令，转址一律 manual。
 // 汉语：动态公网 HTTPS 上游（宿主对象 豫言公网取）：程序许可 OUTBOUND_ORIGINS 含 https://* 才放行，网址须是 https、不带用户名或密码，redirect 一律改为 manual。
-export function 造公网取({许可 = {}, 全局 = globalThis} = {}) {
+export function 造公网取({许可 = {}, 全局 = globalThis, 网络 = null} = {}) {
   const 允许 = Array.isArray(许可.OUTBOUND_ORIGINS) && 许可.OUTBOUND_ORIGINS.includes('https://*');
   return (网址, 选项 = {}) => {
     if (!允许) throw Error('云工宿主不开放此全局：fetch');
@@ -43,7 +43,7 @@ export function 造公网取({许可 = {}, 全局 = globalThis} = {}) {
     if (目标.protocol !== 'https:') throw Error('公网 fetch 只许 https 网址：' + 目标.protocol);
     if (目标.username || 目标.password) throw Error('公网 fetch 的网址不得带用户名或密码');
     if (选项 === null || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('公网 fetch 的选项须为对象');
-    return Reflect.apply(全局.fetch, 全局, [是请求 ? 网址 : 目标.href, {...选项, redirect: 'manual'}]);
+    return Reflect.apply(网络 ?? 全局.fetch, 全局, [是请求 ? 网址 : 目标.href, {...选项, redirect: 'manual'}]);
   };
 }
 
@@ -52,7 +52,7 @@ export function 造公网取({许可 = {}, 全局 = globalThis} = {}) {
 // 汉语：许可来源的外发请求（宿主对象 豫言授权取，网页上游适配的静态来源请求用）：网址须是 https、不带用户名或密码，
 //   来源（方案、主机、端口）须在程序许可 OUTBOUND_ORIGINS 里，redirect 一律改为 manual；通配来源 https://* 不放行任何真实来源。
 //   函数属性 已授权(网址) 只核对不发请求：适配先核对来源，再校验其余参数（已授权('https://*') 即“许可是否声明了通配来源”）。
-export function 造授权取({许可 = {}, 全局 = globalThis} = {}) {
+export function 造授权取({许可 = {}, 全局 = globalThis, 网络 = null} = {}) {
   const 来源们 = Array.isArray(许可.OUTBOUND_ORIGINS) ? 许可.OUTBOUND_ORIGINS : [];
   const 来源 = 网址 => {
     let 目标;
@@ -65,7 +65,7 @@ export function 造授权取({许可 = {}, 全局 = globalThis} = {}) {
     const 源 = 来源(是请求 ? 网址.url : 网址);
     if (源 === '' || 源 === 'https://*' || !来源们.includes(源)) throw Error('上游网址未获授权');
     if (选项 === null || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('授权 fetch 的选项须为对象');
-    return Reflect.apply(全局.fetch, 全局, [网址, {...选项, redirect: 'manual'}]);
+    return Reflect.apply(网络 ?? 全局.fetch, 全局, [网址, {...选项, redirect: 'manual'}]);
   };
   取.已授权 = 已授权;
   return 取;
@@ -76,9 +76,9 @@ export const 云工平台包 = Object.freeze(['云工宿主', '中央张量宿�
 const 异步函数 = (async () => {}).constructor;
 
 // 文言：造云工宿主。汉语：创建云工宿主，得各平台事件的处理器。
-//   动态资源 {模块源码, 值桥字节} 供隔离运行造子 Worker；中央张量内核模块 供张量计算。
+//   动态资源 {模块源码, 值桥字节} 供隔离运行造子 Worker；中央张量内核模块 供张量计算；网络 替换外发请求所用的 fetch（测试用，缺省为 全局.fetch）。
 //   待办事项：原来按事件种类的墙钟时限（执行配置）已不再使用，由平台的 CPU 限额兜底。
-export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 全局 = globalThis, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 中央张量内核模块 = null}) {
+export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 全局 = globalThis, 网络 = null, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 中央张量内核模块 = null}) {
   // 文言：平台之 env，同一隔离体恒为一物；事至则记之。汉语：平台的 env 在同一个隔离体里是同一个对象，每个事件到来时记下它，供「云工绑定」查。
   let 环境 = {};
   // 文言：未授者部署之误，径抛；已授而阙者归未定义，由适配定之（必需之绑以「云工中止」止之）。
@@ -89,8 +89,8 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
   };
   // 文言：宿主之物：惟 JS 能为之组件，挂于全局之名下。汉语：宿主对象：只能用 JS 写的组件，以「豫言」开头的名字挂在「云工全局」下。
   const 宿主对象 = new Map([
-    ['豫言公网取', 造公网取({许可, 全局})],
-    ['豫言授权取', 造授权取({许可, 全局})],
+    ['豫言公网取', 造公网取({许可, 全局, 网络})],
+    ['豫言授权取', 造授权取({许可, 全局, 网络})],
     ['豫言子工', 造子工({取绑定, 动态资源})],
     ['豫言平台资料', {取: () => import('./平台资料.mjs').then(模块 => 模块.创建平台资料({全局}))}]
   ]);
