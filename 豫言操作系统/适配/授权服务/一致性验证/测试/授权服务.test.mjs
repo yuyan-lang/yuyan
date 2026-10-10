@@ -269,21 +269,16 @@ test('参数违规抛事故且不发请求', async () => {
   assert.equal(s.请求们.length, 0, '违规一律不得发出请求');
 });
 
-test('未授权或不存在的服务绑定：宿主报部署错误', async () => {
+// 文言：绑定未授为部署之误，宿主径止此事，客不能承。
+// 汉语：绑定未授权是部署错误，宿主直接中止本次事件，应用接不住。
+test('未授权或不存在的服务绑定：宿主报部署错误，不发请求', async () => {
   const s = 造();
   await assert.rejects(运行({url: 'https://svc/echo', binding: 'OTHER', read: 'none'}, s), /未授权的SERVICE绑定：OTHER/);
+  assert.equal(s.请求们.length, 0);
 });
 
-test('无效响应柄：新读取函数一律抛事故，不接受伪造或他处的柄', async () => {
-  const s = 造();
-  const 果 = await 跑({op: 'badhandle', handle: '999999'}, {SVC: s});
-  assert.equal(果.状态, 200);
-  const 段们 = 果.文.split('‖');
-  assert.match(段们[0], /授权服务响应柄无效/); assert.match(段们[1], /授权服务响应柄无效/);
-  assert.match(段们[2], /网页上游响应柄无效/); assert.match(段们[3], /命名持久服务响应柄无效/);
-  const 果二 = await 跑({op: 'badhandle', handle: '1'}, {SVC: s});
-  assert.match(果二.文, /授权服务响应柄无效/, '别处的句柄号（如入站请求）同样被拒');
-});
+// 文言：答已为名义之资，伪柄不能成型，故旧之“无效柄”之试删之。
+// 汉语：响应已是名义资源类型（授权服务响应等），伪造或别处的柄在类型检查时就过不去，原来的“无效响应柄”用例删去。
 
 test('原流直通：请求授权服务转正文，再把原答转为出站响应作处理入口的返回值', async () => {
   const s = new 服务桩(async (路径, 请求) => new Response('回声:' + 解.decode(new Uint8Array(await 请求.arrayBuffer())), {status: 201, headers: {'x-yuyan-model': 'p'}}));

@@ -2,10 +2,9 @@
 // 汉语：云工宿主支持清单与实现表的一致性单测：
 //   一、宿主支持清单.tsv 每行三列、接口名不重复；适配目录与清单文件存在，清单的接口名称是“豫言操作系统”加接口名；
 //   二、所列适配只依赖云工能提供的平台接口包，所依赖的豫言操作系统接口也都在清单里；
-//   三、云工实现的平台接口包（云工宿主、中央张量宿主）在 。接口。豫 里声明的函数与 值桥.mjs 的对照表逐一对应；
-//   四、对照表里的旧名在宿主能力表里都有实现：用一个导入全部这些函数的小 Wasm 跑一个事件，宿主缺实现时事件失败；
-//   五、带类型路径接通：标量结果的导入能调，中央张量未启用时同步报错；
-//   六、写“宿主”的接口（现在没有），其接口文件里的每个函数宿主都直接实现。
+//   三、云工宿主包的声明都由物桥按字段实现，中央张量宿主的声明与 值桥.mjs 的对照表逐一对应；
+//   四、物桥的值转换与成败结果；
+//   五、程序没有类型化入口时，事件报错。
 // 运行：node --test 豫言操作系统/宿主/云工/宿主支持清单。测试.mjs（Node 26，需 JSPI；全树测试自动发现）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -14,6 +13,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {平台导入旧名} from './值桥.mjs';
 import {创建云工宿主, 云工平台包} from './宿主.mjs';
+import {创建物桥} from './物桥.mjs';
 
 const 本目录 = path.dirname(fileURLToPath(import.meta.url));
 const 仓根 = path.resolve(本目录, '../../..');
@@ -83,55 +83,38 @@ test('二、适配只依赖云工提供的平台接口包，所依赖的操作�
   }
 });
 
-test('三、平台接口包的声明与对照表逐一对应', () => {
-  for (const 包 of 云工平台包) {
-    const 表 = 平台导入旧名[包];
-    assert.ok(表 && Object.keys(表).length > 0, '对照表缺包：' + 包);
-    const 声明 = 接口声明(平台包目录[包]);
-    assert.ok(声明.size > 0, '平台接口包没有接口文件声明：' + 包);
-    assert.deepEqual([...声明].filter(名 => !Object.hasOwn(表, 名)), [], `「${包}」接口文件里有、对照表里没有的函数`);
-    assert.deepEqual(Object.keys(表).filter(名 => !声明.has(名)), [], `对照表里有、「${包}」接口文件里没有的函数`);
-  }
+// 文言：物桥之表，以字段为键。汉语：物桥的实现表（键为 物宿主。接口。豫 的函数名），用桩参数造一份只为取键与做单测。
+const 物桥表 = 创建物桥({取全局: 名 => globalThis[名], 取绑定: () => { throw Error('无绑定'); }, 回调: async () => [0, [1]]});
+
+test('三、平台接口包的声明都有实现：云工宿主由物桥按字段实现，中央张量宿主按对照表', () => {
+  const 云工声明 = 接口声明(平台包目录.云工宿主);
+  assert.ok(云工声明.size >= 17, '云工宿主接口文件的声明太少：' + 云工声明.size);
+  assert.deepEqual([...云工声明].filter(名 => typeof 物桥表[名] !== 'function'), [], '云工宿主接口文件里有、物桥没有实现的函数');
+  assert.deepEqual(Object.keys(物桥表).filter(名 => !云工声明.has(名)), [], '物桥里有、云工宿主接口文件里没有的函数');
+  const 张量声明 = 接口声明(平台包目录.中央张量宿主), 表 = 平台导入旧名.中央张量宿主;
+  assert.deepEqual([...张量声明].filter(名 => !Object.hasOwn(表, 名)), [], '中央张量宿主接口文件里有、对照表里没有的函数');
+  assert.deepEqual(Object.keys(表).filter(名 => !张量声明.has(名)), [], '对照表里有、中央张量宿主接口文件里没有的函数');
 });
 
-// 文言：手造一模：导入诸函，_start 依次调之而弃其果，附边界段。汉语：手工拼一个模块：导入给定函数，_start 依次调用（有结果的丢弃），并附「豫言边界」段。
-const 编码器 = new TextEncoder();
-const 无号 = 数 => { const 字节 = []; do { let 字 = 数 & 127; 数 >>>= 7; if (数) 字 |= 128; 字节.push(字); } while (数); return 字节; };
-const 名 = 文 => { const 字节 = [...编码器.encode(文)]; return [...无号(字节.length), ...字节]; };
-const 段 = (号, 体) => [号, ...无号(体.length), ...体];
-const 造模块 = (导入们, 调用们 = []) => {
-  // 导入们：[{模, 字, 签, 果}]，果为结果的 Wasm 值类型字节（无结果则省）；调用们：要在 _start 里依次调用的导入序号。
-  const 型们 = [[0x60, 0, 0], ...导入们.map(({果}) => [0x60, 0, ...(果 === undefined ? [0] : [1, 果])])];
-  const 型段 = 段(1, [...无号(型们.length), ...型们.flat()]);
-  const 导段 = 段(2, [...无号(导入们.length), ...导入们.flatMap(({模, 字}, 序) => [...名(模), ...名(字), 0, ...无号(序 + 1)])]);
-  const 函段 = 段(3, [1, 0]);
-  const 出段 = 段(7, [1, ...名('_start'), 0, ...无号(导入们.length)]);
-  const 体 = [0, ...调用们.flatMap(序 => [0x10, ...无号(序), ...(导入们[序].果 === undefined ? [] : [0x1a])]), 0x0b];
-  const 码段 = 段(10, [1, ...无号(体.length), ...体]);
-  const 边界 = 导入们.map(({模, 字, 签}) => `导入\t${模}\t${字}\t${签}\n`).join('');
-  const 自段 = 段(0, [...名('豫言边界'), ...编码器.encode(边界)]);
-  return new WebAssembly.Module(new Uint8Array([0, 0x61, 0x73, 0x6d, 1, 0, 0, 0, ...型段, ...导段, ...函段, ...出段, ...码段, ...自段]));
-};
-// 文言：空模充值桥：标量之转不经值桥。汉语：用空模块充当值桥：本测只用标量与“元”，胶水不经值桥。
-const 空值桥 = new WebAssembly.Module(new Uint8Array([0, 0x61, 0x73, 0x6d, 1, 0, 0, 0]));
-const 跑定时事件 = 程序模块 => 创建云工宿主({程序模块, 值桥模块: 空值桥, 许可: {}, 输出: () => {}, 错误输出: () => {}}).scheduled({}, {}, null);
-const i64 = 0x7e;
-
-test('四、对照表里的旧名在宿主能力表里都有实现', async () => {
-  const 导入们 = 云工平台包.flatMap(包 => Object.keys(平台导入旧名[包]).map(字 => ({模: 包, 字, 签: '→元'})));
-  assert.ok(导入们.length >= 354, '云工宿主与中央张量宿主合计应不少于 354 个函数，实得 ' + 导入们.length);
-  await 跑定时事件(造模块(导入们));
+test('四、物桥的值转换与结果：成功、失败、类型标签、新数组与新对象', async () => {
+  const 文 = 串 => new TextEncoder().encode(串);
+  assert.deepEqual(物桥表.云工取({甲: 3}, 文('甲')), [0, [3, 3n]]);
+  assert.deepEqual(物桥表.云工取({甲: 1.5}, 文('甲')), [0, [4, 1.5]]);
+  assert.deepEqual(物桥表.云工取({甲: '乙'}, 文('甲')), [0, [6, '乙']]);
+  assert.deepEqual(物桥表.云工取({甲: null}, 文('甲')), [0, [0]]);
+  const 败 = 物桥表.云工调({}, 文('无此法'), []);
+  assert.equal(败[0], 1);
+  assert.equal(败[1], 'TypeError');
+  assert.equal(物桥表.云工类型([8, new Uint8Array(1)]), 'Uint8Array');
+  assert.equal(物桥表.云工类型([0]), 'Null');
+  assert.deepEqual(物桥表.云工新数组([[3, 1n], [6, 文('二')]]), [1, '二']);
+  assert.deepEqual(物桥表.云工新对象([[文('键'), [2, true]]]), {键: true});
+  assert.deepEqual(await 物桥表.云工候([8, Promise.resolve(7)]), [0, [3, 7n]]);
+  assert.deepEqual(物桥表.云工取({}, 文('__proto__'))[0], 1);
 });
 
-test('五、带类型路径接通：标量结果可调，中央张量未启用时同步报错', async () => {
-  await 跑定时事件(造模块([{模: '云工宿主', 字: '云工当前Unix毫秒', 签: '→整', 果: i64}], [0]));
-  await assert.rejects(跑定时事件(造模块([{模: '中央张量宿主', 字: '中央张量新境', 签: '→整', 果: i64}], [0])), /中央张量：尚未启用/);
-});
-
-test('六、写“宿主”的接口，其函数宿主都直接实现', () => {
-  for (const [接口, 适配] of 清单行们) {
-    if (适配 !== '宿主') continue;
-    const 包名 = '豫言操作系统' + 接口, 表 = 平台导入旧名[包名] ?? {};
-    assert.deepEqual([...接口声明('豫言操作系统接口/' + 接口)].filter(名 => !Object.hasOwn(表, 名)), [], `接口「${接口}」写了宿主，却有函数没有宿主实现`);
-  }
+test('五、程序没有类型化入口时，事件报“程序没有导出入口”', async () => {
+  const 空值桥 = new WebAssembly.Module(new Uint8Array([0, 0x61, 0x73, 0x6d, 1, 0, 0, 0]));
+  const 程序模块 = new WebAssembly.Module(new Uint8Array([0, 0x61, 0x73, 0x6d, 1, 0, 0, 0, 1, 4, 1, 0x60, 0, 0, 3, 2, 1, 0, 7, 10, 1, 6, ...new TextEncoder().encode('_start'), 0, 0, 10, 4, 1, 2, 0, 0x0b]));
+  await assert.rejects(创建云工宿主({程序模块, 值桥模块: 空值桥}).scheduled({}, {}, {}), /程序没有导出入口/);
 });

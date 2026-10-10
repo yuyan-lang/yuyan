@@ -158,7 +158,7 @@ test('平台拒绝：异常消息保留平台原文，含引号、反斜线、�
   }
 });
 
-test('绑定名：空名由适配拒绝；未授权与未配置是部署错误，宿主中止请求', async () => {
+test('绑定名：空名由适配拒绝；未授权与未配置的绑定是部署错误，宿主中止请求，不投递', async () => {
   await 应单败('{"a":1}', '队列绑定名不得为空', {绑定: ''});
   await 应批败('[{"body":1}]', '队列绑定名不得为空', {绑定: ''});
   await assert.rejects(单('{"a":1}', {绑定: 'NOT_LISTED'}), /未授权的QUEUE绑定：NOT_LISTED/);
@@ -257,13 +257,17 @@ test('批量投递失败：平台拒绝时异常带原文；不是 JSON 值的�
   assert.equal(r.文, '失败：队列批量发送失败：batch too large: "x"\n中文');
 });
 
+// 文言：平台之 env 一隔离体恒为一物，故并发之事共一队列，各验其所投。
+// 汉语：平台的 env 在同一隔离体里是同一个对象（薄宿主只记最近一次事件的 env），所以并发的生产者事件共用一个模拟队列，再逐个核对各自投递的消息。
 test('并发的生产者事件互不干扰', async () => {
-  const 队列们 = Array.from({length: 20}, () => new 模拟队列());
-  await Promise.all(队列们.map((队列, 序) => 序 % 2 ? 单(JSON.stringify({序}), {队列}) : 批(JSON.stringify([{body: {序}}, {body: 序, delaySeconds: 序}]), {队列})));
-  队列们.forEach((队列, 序) => {
-    if (序 % 2) assert.deepEqual(队列.单发, [{体: {序}, 选项: {contentType: 'json'}}]);
-    else assert.deepEqual(队列.批发[0].诸信, [{body: {序}, contentType: 'json'}, ...(序 ? [{body: 序, contentType: 'json', delaySeconds: 序}] : [{body: 序, contentType: 'json'}])]);
-  });
+  const 队列 = new 模拟队列();
+  await Promise.all(Array.from({length: 20}, (_, 序) => 序 % 2 ? 单(JSON.stringify({序}), {队列}) : 批(JSON.stringify([{body: {序}}, {body: 序, delaySeconds: 序}]), {队列})));
+  assert.equal(队列.单发.length, 10);
+  assert.equal(队列.批发.length, 10);
+  for (let 序 = 0; 序 < 20; 序++) {
+    if (序 % 2) assert.deepEqual(队列.单发.filter(项 => 项.体.序 === 序), [{体: {序}, 选项: {contentType: 'json'}}]);
+    else assert.deepEqual(队列.批发.filter(项 => 项.诸信[0].body.序 === 序).map(项 => 项.诸信), [[{body: {序}, contentType: 'json'}, ...(序 ? [{body: 序, contentType: 'json', delaySeconds: 序}] : [{body: 序, contentType: 'json'}])]]);
+  }
 });
 
 // ───────────────────────────── 消费者 ─────────────────────────────
@@ -336,7 +340,7 @@ test('读取队列批次文：大消息体（约 128 KB）与一百条消息', a
   批.messages.forEach((信, 序) => assert.deepEqual(信, {id: 'id-' + 序, attempts: 序 + 1, timestamp: 1758801600000 + 序, body: {序, 文: '中文'.repeat(序)}}));
 });
 
-test('读取队列批次文：一千条消息也不耗尽宿主句柄', async () => {
+test('读取队列批次文：一千条消息', async () => {
   const 诸信 = Array.from({length: 1000}, (_, 序) => new 模拟消息('m' + 序, 序));
   const 批 = JSON.parse((await 消费(new 模拟批次('log', 诸信)))[0]);
   assert.equal(批.messages.length, 1000);
@@ -352,11 +356,12 @@ test('消息体不是 JSON 值时读取批次失败（Date、Map、Set、二进�
   }
 });
 
-test('消息体嵌套超过宿主桥限制（32 层）时宿主中止本次事件，32 层以内可读', async () => {
+test('消息体深嵌套也能读取（薄宿主不再有宿主桥的 32 层限制）', async () => {
   const 嵌 = 层 => { let 值 = 1; for (let i = 0; i < 层; i++) 值 = [值]; return 值; };
   const 行 = await 消费(new 模拟批次('log', [new 模拟消息('ok', 嵌(30))]));
   assert.deepEqual(JSON.parse(行[0]).messages[0].body, 嵌(30));
-  await assert.rejects(消费(new 模拟批次('log', [new 模拟消息('deep', 嵌(40))])), /宿主结果嵌套过深/);
+  const 深行 = await 消费(new 模拟批次('log', [new 模拟消息('deep', 嵌(40))]));
+  assert.deepEqual(JSON.parse(深行[0]).messages[0].body, 嵌(40));
 });
 
 test('确认与重试：逐条动作，延迟选项，序号越界与延迟越界抛出可捕获异常', async () => {
@@ -394,8 +399,6 @@ test('程序在队列事件里抛出未捕获异常：宿主把失败交还平�
   await assert.rejects(宿主.queue(批次, {}, 上下文));
   assert.deepEqual(诸信.map(信 => 信.调用), [[['ack']], [], []]);
   assert.deepEqual(批次.批调用, [], '适配不代平台整批重试，由平台按异常处理');
-  assert.equal(上下文.承诺.length, 1);
-  await 上下文.承诺[0];
 });
 
 test('复现包管理服务的页面任务消费者：版本不符确认、失败按 min(300, 15×2^min(尝试,4)) 秒退避重试、成功确认，并与日志接口组合', async () => {
@@ -427,7 +430,7 @@ test('复现包管理服务的页面任务消费者：版本不符确认、失�
   assert.equal(记.error[6], '持久页面生成失败：未知任务');
 });
 
-test('生产投递之后立即消费：两类事件依次复用池中实例，互不影响', async () => {
+test('生产投递之后立即消费：两类事件在同一实例里依次处理，互不影响', async () => {
   const 队列 = new 模拟队列();
   const 投结果 = await 单('{"kind":"page","n":1}', {队列});
   assert.equal(投结果.文, '成功');

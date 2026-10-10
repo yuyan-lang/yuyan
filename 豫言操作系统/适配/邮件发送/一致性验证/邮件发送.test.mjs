@@ -1,6 +1,6 @@
 // 文言：以真 Wasm 与模拟邮件绑定验邮件发送适配。汉语：加载已构建的“邮件发送一致性”产物；邮件绑定是类实例，记录每次 send 的参数，并可按需同步抛出、异步拒绝。
 // 用法见同目录说明：在私有暂存根目录执行 `node --test <本文件>`，产物根目录由环境变量 YY_DIST_ROOT 指定（默认 ./dist）。
-// 注意：适配依赖宿主原语 豫言_云工_授权绑定存在（现由 宿主.mjs 提供，见适配说明）；产物里的 宿主.mjs 缺少它时本文件直接失败。
+// 注意：适配经薄宿主的通用原语「云工绑定」于 EMAIL 取绑定（已授权而缺失时宿主报“绑定不存在”），不再需要专用原语。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
@@ -8,14 +8,12 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
 const 产物 = pathToFileURL(path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '邮件发送一致性') + '/');
-const 宿主源码 = await readFile(new URL('宿主.mjs', 产物), 'utf8');
-if (!宿主源码.includes('豫言_云工_授权绑定存在')) {
-  throw new Error('宿主.mjs 缺少原语 豫言_云工_授权绑定存在：请按 适配/邮件发送/说明.汉语.md 的“宿主原语”一节补到 豫言操作系统/宿主/云工/宿主.mjs 后重新构建');
-}
 const {创建云工宿主} = await import(new URL('宿主.mjs', 产物));
 const 程序模块 = await WebAssembly.compile(await readFile(new URL('程序.wasm', 产物)));
 const 值桥模块 = await WebAssembly.compile(await readFile(new URL('值桥.wasm', 产物)));
-const 宿主 = 创建云工宿主({程序模块, 值桥模块, 许可: {EMAIL: ['EMAIL']}});
+// 文言：记宿主之误流，以验未接之豫言异常。汉语：记录宿主的错误输出（未被接住的豫言异常由标准库的默认处理写到这里，再以退出码 1 中止本次事件）。
+const 错误输出记录 = [];
+const 宿主 = 创建云工宿主({程序模块, 值桥模块, 许可: {EMAIL: ['EMAIL']}, 错误输出: 文 => 错误输出记录.push(文)});
 
 // 文言：平台外壳于启动之前核对应用之要求与宿主之所供；此测同其所核。汉语：与生成的 入口.mjs 启动时相同，用 接口核对.mjs 核对应用要求与宿主支持清单。
 const {核对接口装载} = await import(new URL('接口核对.mjs', 产物));
@@ -232,16 +230,26 @@ test('绑定缺失：已授权名称在环境里不存在，或绑定没有 send
   }
 });
 
+// 文言：薄宿主之败皆为值，适配抛豫言之异；应用不接，则标准库默认之处书其辞于误流而终此事。
+// 汉语：薄宿主的失败都是值，适配把未授权转成豫言异常；试验应用不接住它，标准库的默认处理把消息写到错误输出并以退出码 1 中止本次事件（宿主随后作废这个实例）。
 test('未授权的绑定名是部署错误，宿主中止请求', async () => {
-  await assert.rejects(发({绑定: 'OTHER', 环境: {EMAIL: new 模拟邮件(), OTHER: new 模拟邮件()}}), /未授权的EMAIL绑定：OTHER/);
-  await assert.rejects(发({绑定: '', 环境: {EMAIL: new 模拟邮件()}}), /未授权的EMAIL绑定/);
+  错误输出记录.length = 0;
+  await assert.rejects(发({绑定: 'OTHER', 环境: {EMAIL: new 模拟邮件(), OTHER: new 模拟邮件()}}), /豫言程序退出/);
+  assert.ok(错误输出记录.some(文 => /未授权的EMAIL绑定：OTHER/.test(文)), 错误输出记录.join('\n'));
+  错误输出记录.length = 0;
+  await assert.rejects(发({绑定: '', 环境: {EMAIL: new 模拟邮件()}}), /豫言程序退出/);
+  assert.ok(错误输出记录.some(文 => /未授权的EMAIL绑定/.test(文)), 错误输出记录.join('\n'));
 });
 
+// 文言：一隔离体之 env 恒为一物，诸事交错于挂起之点；同绑之上并发诸事，各投其信，参不相乱。
+// 汉语：薄宿主里同一个隔离体的 env 是同一个对象，多个事件在挂起点交错执行；在同一个邮件绑定上并发 24 个事件，每封信的字段都不串。
 test('并发事件互不干扰，每个事件只发自己的邮件', async () => {
-  const 邮件们 = Array.from({length: 24}, () => new 模拟邮件());
-  await Promise.all(邮件们.map((邮件, 序) => 发({收件: `u${序}@example.com`, 主题: `第 ${序} 封`, 正文: `内容 ${序}\n` + '行\n'.repeat(序), 环境: {EMAIL: 邮件}})));
-  邮件们.forEach((邮件, 序) => {
-    assert.equal(邮件.已发.length, 1);
-    assert.deepEqual(邮件.已发[0], {from: 发件正常, to: `u${序}@example.com`, subject: `第 ${序} 封`, text: `内容 ${序}\n` + '行\n'.repeat(序)});
-  });
+  const 邮件 = new 模拟邮件(), 环境 = {EMAIL: 邮件};
+  await Promise.all(Array.from({length: 24}, (_, 序) => 发({收件: `u${序}@example.com`, 主题: `第 ${序} 封`, 正文: `内容 ${序}\n` + '行\n'.repeat(序), 环境})));
+  assert.equal(邮件.已发.length, 24);
+  for (let 序 = 0; 序 < 24; 序++) {
+    const 信们 = 邮件.已发.filter(信 => 信.to === `u${序}@example.com`);
+    assert.equal(信们.length, 1);
+    assert.deepEqual(信们[0], {from: 发件正常, to: `u${序}@example.com`, subject: `第 ${序} 封`, text: `内容 ${序}\n` + '行\n'.repeat(序)});
+  }
 });

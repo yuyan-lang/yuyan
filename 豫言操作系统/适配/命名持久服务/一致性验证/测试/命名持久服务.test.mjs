@@ -93,7 +93,9 @@ test('流：参数违规抛事故且不发请求', async () => {
   const 重复 = await 跑({op: 'do', url: 'https://internal/x', read: 'none', headers: 对({Origin: 'a'})}, {DOS: 空间}); assert.equal(重复.状态, 200);
 });
 
-test('流：未授权的持久对象绑定报部署错误', async () => {
+// 文言：绑定未授为部署之误，宿主径止此事，客不能承。
+// 汉语：绑定未授权是部署错误，宿主直接中止本次事件，应用接不住。
+test('流：未授权的持久对象绑定，宿主报部署错误', async () => {
   await assert.rejects(跑({op: 'do', binding: 'OTHER', url: 'https://internal/events', read: 'none'}, {DOS: 造()}), /未授权的DO绑定：OTHER/);
 });
 

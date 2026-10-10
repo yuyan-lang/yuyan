@@ -1,10 +1,9 @@
 // 文言：以真本地 workerd（wrangler dev）综验消息队列、定时事件、邮件发送、文字规整、日志五约，验平台之真义，补 Node 模拟之不及。
 // 汉语：把已构建的“平台综合一致性”产物复制到临时目录，配上队列、定时、邮件、KV 绑定，用 wrangler dev --local 启动，再逐场景发请求、读 workerd 日志断言。约需 1 分钟。
-//   试验应用实现网页、队列、定时三个类型化入口（提案 C0001），宿主用实例池调用。
+//   试验应用实现网页、队列、定时三个类型化入口（提案 C0001），薄宿主每个隔离体一个实例，事件在其中交错执行。
 // 用法：在私有暂存根目录执行 `node <本文件>`；环境变量：
 //   YY_DIST_ROOT     产物根目录，默认 ./dist（其下应有 平台综合一致性/）
 //   E2E_WRANGLER     wrangler.js 的路径，默认取相邻云仓 应用/包管理服务/node_modules 里的 wrangler
-//   E2E_PATCH_HOST=1 产物 宿主.mjs 缺少原语 豫言_云工_授权绑定存在 时（旧宿主），在临时副本里补上（仅验证用；正式部署须用含该原语的宿主）
 //   E2E_FILTER       只运行名称含此文字的场景
 //   E2E_SAVE_LOG     把 wrangler 输出保存到此路径
 //   E2E_KEEP=1       结束后保留临时 Worker 目录以便排查
@@ -30,19 +29,6 @@ const 取空闲端口 = () => new Promise((成, 败) => { const 服 = createServ
 // ---------- 准备临时 Worker ----------
 const 工作 = mkdtempSync(path.join(process.env.TMPDIR ?? tmpdir(), 'yy-真实工作者-'));
 cpSync(产物, 工作, {recursive: true});
-const 宿主路径 = path.join(工作, '宿主.mjs');
-let 宿主源码 = readFileSync(宿主路径, 'utf8');
-if (!宿主源码.includes('豫言_云工_授权绑定存在')) {
-  if (process.env.E2E_PATCH_HOST !== '1') throw new Error('产物 宿主.mjs 缺少原语 豫言_云工_授权绑定存在（见 适配/邮件发送/说明.汉语.md；请用含该原语的宿主）；仅验证旧宿主时可设 E2E_PATCH_HOST=1 在临时副本里补上');
-  const 锚 = '        豫言_云工_绑定句柄: (种类, 名) => 句柄.登记(绑定(环境, 许可, 名, 文字(种类))),\n';
-  assert.ok(宿主源码.includes(锚), '找不到补丁锚点');
-  宿主源码 = 宿主源码.replace(锚, 锚 + `        豫言_云工_授权绑定存在: (种类, 名) => {
-          const 类别 = 文字(种类), 名称 = 文字(名);
-          if (!许可[类别]?.includes(名称)) throw Error('未授权的' + 类别 + '绑定：' + 名称);
-          return Object.hasOwn(环境, 名称) && 环境[名称] != null;
-        },\n`);
-  writeFileSync(宿主路径, 宿主源码);
-}
 writeFileSync(path.join(工作, 'wrangler.jsonc'), JSON.stringify({
   name: 'yuyan-e2e', main: '入口.mjs', compatibility_date: '2026-09-10',
   queues: {producers: [{binding: 'E2E_QUEUE', queue: 'yuyan-e2e-q'}], consumers: [{queue: 'yuyan-e2e-q', max_batch_size: 5, max_batch_timeout: 1, max_retries: 3}]},

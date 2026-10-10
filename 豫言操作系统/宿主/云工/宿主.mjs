@@ -1,51 +1,39 @@
-// 文言：云工之桥但行受授诸能；路由、权限与事序皆归豫言。汉语：Worker 桥只执行授权的平台调用，业务决策由豫言程序完成。
-import {创建豫言实例, 文字, 平台导入旧名} from './值桥.mjs';
-import {创建句柄表} from './句柄.mjs';
-import {造边界导出, 读边界导出} from './边界.mjs';
+// 文言：云工薄宿主：惟译名与值，平台之义皆在豫言；一程序一实例，诸事交错于 JSPI 挂起之点。
+// 汉语：云工薄宿主：只翻译名字和值，平台语义都在豫言里（库/云工宿主 与 豫言操作系统/适配）。
+//   每个程序在一个隔离体里（持久对象则每个对象）只建一个 Wasm 实例，多个事件在 JSPI 挂起点交错执行；宿主不保存任何按事件的状态，
+//   请求、上下文都作入口参数显式传入，JS 对象以资源（externref）交给豫言，生命周期交给引擎的垃圾回收。
+import {创建豫言实例, 平台导入旧名} from './值桥.mjs';
+import {造边界导出} from './边界.mjs';
+import {创建物桥} from './物桥.mjs';
 
-// 文言：类型化之入口（提案 C0001）：事类所对之应用导出；客导出之，则实例常存而复用，每事惟调其入口。
-// 汉语：类型化入口（提案 C0001）：事件种类对应的应用接口导出。程序导出了对应入口时，实例建一次、反复使用，每个事件只调用一次入口；
-//   没有导出的程序（如云工宿主库的测试）照旧每个事件新建实例、跑 _start。
-//   事务与独占区的回调在外层调用挂起时进入，外层的实例尚未归还，故从池里另取（或新建）一个实例来调。
+// 文言：类型化之入口：事类所对之应用导出。汉语：类型化入口：平台事件对应的应用接口导出（应用实现，宿主调用）。
 export const 类型化入口 = Object.freeze({
   'fetch': '豫言操作系统网页服务/处理入站网页请求',
   'service-fetch': '豫言操作系统网页服务/处理入站网页请求',
   'durable-fetch': '豫言操作系统网页服务/处理入站网页请求',
   'queue': '豫言操作系统消息队列/处理队列批次',
   'scheduled': '豫言操作系统定时事件/处理定时事件',
-  'durable-alarm': '豫言操作系统持久告警/处理持久告警',
-  'durable-transaction': '豫言操作系统持久事务/执行持久事务回调',
-  'durable-block': '豫言操作系统持久独占/执行持久独占回调'
+  'durable-alarm': '豫言操作系统持久告警/处理持久告警'
 });
-// 文言：池之上限。汉语：每个程序的空闲实例上限。待办事项：按内存定上限、处理若干事件后换新实例。
-const 实例池上限 = 64;
+// 文言：JS 回呼豫言之唯一入口，云工宿主库供之。汉语：JS 回调豫言的唯一入口，由云工宿主库提供（库/云工宿主/回调。豫）。
+export const 回调入口 = '云工宿主/执行云工回调';
 
-const 控制台诸法 = new Set([
-  'debug', 'error', 'info', 'log', 'warn', 'clear', 'count', 'group', 'table', 'trace',
-  'assert', 'countReset', 'dir', 'dirxml', 'groupCollapsed', 'groupEnd', 'profile',
-  'profileEnd', 'time', 'timeEnd', 'timeLog', 'timeStamp', 'createTask'
-]);
-
-// 文言：客可见之全局唯此表所列，同诺节之宿；fetch、WebSocket、Function 之属皆不与，令通用句柄桥不越外发之授。
-// 汉语：通用句柄桥（全局句柄、构造对象、调用全局及其安全版）只能取得下表列出的全局对象与构造器：前一段与 Node 应用宿主的“可用全局”相同，
-//   后一段是云工库与适配用到的 Request、Promise、Error、caches、scheduler；fetch、WebSocket、EventSource、Function、WebAssembly、globalThis 等不在表内，
-//   应用无法借句柄桥绕过外发来源许可（OUTBOUND_ORIGINS）与绑定授权。
-const 可用全局 = new Set([
+// 文言：客可见之全局唯此表所列；fetch、WebSocket、Function 之属皆不与，外发须经许可（豫言公网取、豫言授权取与平台之绑）。
+// 汉语：豫言用「云工全局」只能取得下表列出的全局对象与构造器；fetch、WebSocket、EventSource、Function、WebAssembly、globalThis 等不在表内，
+//   外发请求只能走宿主对象 豫言公网取、豫言授权取（都核对 OUTBOUND_ORIGINS）或平台绑定（核对许可清单）。
+export const 可用全局 = new Set([
   'Array', 'ArrayBuffer', 'BigInt', 'Blob', 'Boolean', 'CompressionStream', 'DataView', 'Date', 'DecompressionStream',
-  'File', 'FormData', 'Headers', 'Intl', 'JSON', 'Map', 'Math', 'Number', 'RegExp', 'ReadableStream', 'Response', 'Set',
+  'File', 'FormData', 'Headers', 'Intl', 'JSON', 'Map', 'Math', 'Number', 'Object', 'RegExp', 'ReadableStream', 'Response', 'Set',
   'String', 'Symbol', 'TextDecoder', 'TextDecoderStream', 'TextEncoder', 'TextEncoderStream', 'TransformStream',
   'URL', 'URLSearchParams', 'Uint8Array', 'WritableStream', 'AbortController', 'AbortSignal', 'atob', 'btoa',
   'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'isFinite', 'isNaN', 'parseFloat', 'parseInt',
-  'structuredClone',
-  'Request', 'Promise', 'Error', 'caches', 'scheduler'
+  'structuredClone', 'Request', 'Promise', 'Error', 'TypeError', 'RangeError', 'caches', 'scheduler', 'console', 'crypto',
+  'performance', 'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'queueMicrotask'
 ]);
 
-// 文言：公网 HTTPS 之动态上游。网页上游之约，以许可之 OUTBOUND_ORIGINS 含 https://* 为许动态公网 HTTPS；其适配以专术 云工公网请求发起 发请。
-//   此术惟许可含 https://* 乃许，且当场验其址为 https、无用户名与口令，转址一律 manual；空许可之客（若隔离运行之程序）不得用之。通用句柄桥不开 fetch。
-// 汉语：动态公网 HTTPS 上游。网页上游规范以程序许可 OUTBOUND_ORIGINS 含 https://* 表示“允许动态公网 HTTPS”，适配用专用原语 云工公网请求发起 发请求。
-//   它只在许可含 https://* 时放行，并当场核对网址是 https、不带用户名或密码，redirect 一律改为 manual（规范：不跟随重定向，3xx 作为成功响应返回）；
-//   空许可的程序（如隔离运行的用户程序）拿不到它。通用句柄桥不开放 fetch，全局只走“可用全局”白名单。
-export function 造公网取({许可 = {}, 全局 = globalThis} = {}) {
+// 文言：公网 HTTPS 之动态上游，惟许可 OUTBOUND_ORIGINS 含 https://* 乃许，址须 https、无用户名与口令，转址一律 manual。
+// 汉语：动态公网 HTTPS 上游（宿主对象 豫言公网取）：程序许可 OUTBOUND_ORIGINS 含 https://* 才放行，网址须是 https、不带用户名或密码，redirect 一律改为 manual。
+export function 造公网取({许可 = {}, 全局 = globalThis, 网络 = null} = {}) {
   const 允许 = Array.isArray(许可.OUTBOUND_ORIGINS) && 许可.OUTBOUND_ORIGINS.includes('https://*');
   return (网址, 选项 = {}) => {
     if (!允许) throw Error('云工宿主不开放此全局：fetch');
@@ -55,2067 +43,192 @@ export function 造公网取({许可 = {}, 全局 = globalThis} = {}) {
     if (目标.protocol !== 'https:') throw Error('公网 fetch 只许 https 网址：' + 目标.protocol);
     if (目标.username || 目标.password) throw Error('公网 fetch 的网址不得带用户名或密码');
     if (选项 === null || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('公网 fetch 的选项须为对象');
-    // 文言：仍取全局之 fetch，同通用句柄桥之旧法。汉语：仍调全局的 fetch（与通用句柄桥原来的做法相同，测试可注入假的 全局）。
-    return Reflect.apply(全局.fetch, 全局, [是请求 ? 网址 : 目标.href, {...选项, redirect: 'manual'}]);
+    return Reflect.apply(网络 ?? 全局.fetch, 全局, [是请求 ? 网址 : 目标.href, {...选项, redirect: 'manual'}]);
   };
 }
 
-const 限文 = async 回应 => {
-  const 文 = await 回应.text();
-  if (new TextEncoder().encode(文).length > 2 * 1024 * 1024) throw Error('宿主响应超过 2 MiB');
-  return 文;
-};
-const 绑定 = (环境, 许可, 名, 种类) => {
-  const 名称 = 文字(名);
-  if (!许可[种类]?.includes(名称)) throw Error('未授权的' + 种类 + '绑定：' + 名称);
-  const 资源 = 环境[名称];
-  if (!资源) throw Error('绑定不存在：' + 名称);
-  return 资源;
-};
-const 取值绑定 = (环境, 许可, 名, 种类) => {
-  const 名称 = 文字(名);
-  if (!许可[种类]?.includes(名称)) throw Error('未授权的' + 种类 + '绑定：' + 名称);
-  if (!Object.hasOwn(环境, 名称)) throw Error('绑定不存在：' + 名称);
-  return 环境[名称];
-};
-
-// 文言：事有多类，各有墙钟之限；未另定者三十秒，客器可于产物之执行配置中改之，然不得逾十五分。
-// 汉语：每个事件的豫言执行墙钟时限默认 30 秒；应用目录的 `执行配置.json`（结构 `{"事件时限毫秒":{"默认":n,"<事件种类>":n}}`，由构建器写入产物 动态资源.mjs 的导出 `执行配置`）可按事件种类改写，上限 15 分钟（平台后台事件的墙钟上限）。
-export const 默认事件时限毫秒 = 30000;
-export const 事件时限上限毫秒 = 900000;
-// 文言：独占之区与事务之回调，平台逾三十秒则重置对象；故其默认限二十五秒，且不得逾三十秒，令败于豫言而不败于平台。
-// 汉语：durable-block 与 durable-transaction 的回调实际运行在平台的 blockConcurrencyWhile/transaction 里，超过 30 秒平台会重置整个对象（本地 workerd 已验）；
-// 这两类事件的默认时限为 25 秒，不受 `默认` 影响，显式配置也不得超过 30 秒，使超时表现为可捕获的“豫言执行超过时限”而不是对象被重置。
-export const 独占类事件种类 = Object.freeze(['durable-block', 'durable-transaction']);
-export const 独占类事件默认时限毫秒 = 25000;
-export const 独占类事件时限上限毫秒 = 30000;
-// 文言：此表列宿主所发之诸事类；增新类须并入此表，配置之误拼方可当场见拒。
-// 汉语：可配置时限的事件种类全集；新增事件种类时必须同步加入，以便拼写错误的配置在加载时立即失败。
-export const 可配时限事件种类 = Object.freeze([
-  'fetch', 'service-fetch', 'queue', 'scheduled', 'email',
-  'durable-fetch', 'durable-alarm', 'durable-transaction', 'durable-block',
-  'durable-websocket-message', 'durable-websocket-close', 'durable-websocket-error',
-  'websocket-open', 'websocket-message', 'websocket-close', 'websocket-error',
-  'workflow', 'workflow-step', 'workflow-rollback', 'stream-pull', 'stream-cancel',
-  'html-element', 'html-text', 'html-comments', 'html-doctype', 'html-document-text',
-  'html-document-comments', 'html-end', 'html-end-tag'
-]);
-// 文言：配置缺、空对象，皆守默认；有误则加载即败，不待事发。
-// 汉语：null、undefined 或 `{}` 表示全部使用默认值；结构、事件种类、数值任一不合法都抛错，避免运行期才发现限额没有生效。
-export function 解析执行配置(配置) {
-  const 时限 = new Map();
-  if (配置 === null || 配置 === undefined) return 时限;
-  if (typeof 配置 !== 'object' || Array.isArray(配置)) throw Error('执行配置须为对象');
-  for (const 键 of Object.keys(配置)) if (键 !== '事件时限毫秒') throw Error('执行配置含未知字段：' + 键);
-  const 表 = 配置.事件时限毫秒;
-  if (表 === undefined) return 时限;
-  if (!表 || typeof 表 !== 'object' || Array.isArray(表)) throw Error('执行配置的事件时限毫秒须为对象');
-  for (const [种类, 毫秒] of Object.entries(表)) {
-    if (种类 !== '默认' && !可配时限事件种类.includes(种类)) throw Error('执行配置含未知事件种类：' + 种类);
-    if (!Number.isSafeInteger(毫秒) || 毫秒 < 1 || 毫秒 > 事件时限上限毫秒) {
-      throw Error('执行配置的事件时限须为 1 至 ' + 事件时限上限毫秒 + ' 之间的整数毫秒：' + 种类);
-    }
-    if (独占类事件种类.includes(种类) && 毫秒 > 独占类事件时限上限毫秒) {
-      throw Error('执行配置的 ' + 种类 + ' 时限不得超过 ' + 独占类事件时限上限毫秒 + ' 毫秒（平台在回调超过 30 秒时重置对象）');
-    }
-    时限.set(种类, 毫秒);
-  }
-  return 时限;
-}
-// 文言：先取本类之专限，独占类次取二十五秒，余取默认项，终守三十秒。
-// 汉语：某事件种类的墙钟时限：显式配置的该种类 > （独占类事件）25 秒 > 配置的“默认” > 30 秒。
-export const 选事件时限 = (时限表, 种类) => 时限表.get(种类) ??
-  (独占类事件种类.includes(种类) ? 独占类事件默认时限毫秒 : 时限表.get('默认') ?? 默认事件时限毫秒);
-// 文言：普通之错唯书其辞，异名之错并书其名；Wasm 异常等异类亦得其形。汉语：把 JS 错误整理成可读文字：普通 Error 只给消息，其他错误类型给“名称: 消息”，Wasm 异常或非 Error 值退化为 String(错)。
-const 描述错误 = 错 => {
-  const 名 = (typeof 错?.name === 'string' && 错.name) || (错 && typeof 错 === 'object' && 错.constructor?.name) || 'Error';
-  const 消息 = typeof 错?.message === 'string' && 错.message ? 错.message : String(错);
-  const 文 = 名 === 'Error' ? 消息 : 名 + ': ' + 消息;
-  // 文言：豫言异常无人捕，出壳则为非法转型；释其意，免客惑。汉语：未被捕获的豫言异常穿出 Wasm 边界时表现为 RuntimeError: illegal cast，附上说明。
-  return 名 === 'RuntimeError' && 消息 === 'illegal cast' ? 文 + '（多为豫言处理入口抛出了未捕获的异常，请在入口内用「尝试运行」捕获并自行报告原因）' : 文;
-};
-// 文言：宿主保留之四形，不得为数据之键，免暗被解为柄或数。汉语：写入持久仓的值里不能出现只含 `$句柄`、`$未定义`、`$大整数` 或 `$数字` 之一的单键对象。
-const 保留单键 = new Set(['$句柄', '$未定义', '$大整数', '$数字']);
-// 文言：层者，数组或对象之嵌套；顶层容器为一层，逾三十二层则拒，故所写之值必可读回。
-// 汉语：容器（数组或对象）嵌套层数，最外层容器算一层；超过 32 层拒绝写入，保证写入的值都能被宿主读回（句柄桥最多 32 层）。
-const 查保留形 = (值, 层 = 0) => {
-  if (Array.isArray(值)) {
-    if (层 + 1 > 32) return '嵌套超过 32 层';
-    for (const 项 of 值) { const 果 = 查保留形(项, 层 + 1); if (果) return 果; }
-  } else if (值 && typeof 值 === 'object') {
-    if (层 + 1 > 32) return '嵌套超过 32 层';
-    const 诸键 = Object.keys(值);
-    if (诸键.length === 1 && 保留单键.has(诸键[0])) return '含宿主保留键 ' + 诸键[0];
-    for (const 键 of 诸键) { const 果 = 查保留形(值[键], 层 + 1); if (果) return 果; }
-  }
-  return '';
-};
-const 字节长 = 文 => new TextEncoder().encode(文).length;
-// 文言：中央张量之原语名，与 中央张量.mjs 所出同。汉语：中央张量能力的原语名（与 浏览器/中央张量.mjs 返回的函数表一致）。
-const 中央张量原语名们 = ['启用', '新境', '释放境', '分配', '释放', '写字节', '读字节', '读单精', '写单精', '运行', '单精位型', '数学', '单精转', '跨步抄', '抽样']
-  .map(名 => '豫言_中央张量_' + 名);
-// 文言：异步之函，其构造器异于常函。汉语：async 函数的构造器，用来认出需要 JSPI 的实现。
-const 异步函数 = (async () => {}).constructor;
-// 文言：云工所供之平台接口包。汉语：云工宿主实现的平台接口包（导入模块名即包名），见同目录 宿主支持清单.tsv 的说明。
-export const 云工平台包 = Object.freeze(['云工宿主', '中央张量宿主']);
-// 文言：客器所导平台之术，一模一算：（模，字段，旧名）；不在对照表者，胶水给桩。
-// 汉语：程序导入的、云工实现的平台接口函数，按程序模块缓存：[模块, 字段, 旧原语名]，旧名取自 值桥.mjs 的对照表；其余导入由胶水给桩（调用时报“接口函数未绑定”）。
-const 平台所需缓存 = new WeakMap();
-const 求平台所需 = 模块 => {
-  let 所需 = 平台所需缓存.get(模块);
-  if (!所需) {
-    所需 = WebAssembly.Module.imports(模块)
-      .filter(项 => 项.kind === 'function' && 云工平台包.includes(项.module) && Object.hasOwn(平台导入旧名[项.module], 项.name))
-      .map(项 => [项.module, 项.name, 平台导入旧名[项.module][项.name]]);
-    平台所需缓存.set(模块, 所需);
-  }
-  return 所需;
-};
-
-export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 网络 = fetch, 全局 = globalThis, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 执行配置 = null, 中央张量内核模块 = null}) {
-  // 「：汉语：Workers 不支持 error 模式；以 manual 取回应，遇重定向即拒绝，保持既有外发约束。文言：Workers 不许 error；以 manual 得答，见转址则拒，外发之约不易。：」
-  const 原网络 = 网络;
-  网络 = async (网址, 选项) => {
-    if (选项?.redirect !== 'error') return 原网络(网址, 选项);
-    const 回应 = await 原网络(网址, {...选项, redirect: 'manual'});
-    if (回应.status >= 300 && 回应.status < 400) {
-      try { await 回应.body?.cancel(); } catch {}
-      throw new TypeError('上游重定向被拒绝');
-    }
-    return 回应;
-  };
-  // 文言：配置于创建之时即验，误则壳加载失败。汉语：执行配置在创建宿主时解析校验，非法配置使 Worker 加载失败而不是运行中静默失效。
-  const 事件时限 = 解析执行配置(执行配置);
-  const 取事件时限 = 种类 => 选事件时限(事件时限, 种类);
-  const 已授外发网址 = 原文 => {
+// 文言：许可来源之外发：址须 https、无用户名与口令，其源（方案、主机、端口）须列于许可 OUTBOUND_ORIGINS，转址一律 manual；通配之 https://* 不许任何真源。
+//   其 已授权(址) 惟验不发，网页上游之适配先验其源，乃验余参。
+// 汉语：许可来源的外发请求（宿主对象 豫言授权取，网页上游适配的静态来源请求用）：网址须是 https、不带用户名或密码，
+//   来源（方案、主机、端口）须在程序许可 OUTBOUND_ORIGINS 里，redirect 一律改为 manual；通配来源 https://* 不放行任何真实来源。
+//   函数属性 已授权(网址) 只核对不发请求：适配先核对来源，再校验其余参数（已授权('https://*') 即“许可是否声明了通配来源”）。
+export function 造授权取({许可 = {}, 全局 = globalThis, 网络 = null} = {}) {
+  const 来源们 = Array.isArray(许可.OUTBOUND_ORIGINS) ? 许可.OUTBOUND_ORIGINS : [];
+  const 来源 = 网址 => {
     let 目标;
-    try { 目标 = new URL(原文); } catch { return false; }
-    return 目标.protocol === 'https:' && !目标.username && !目标.password &&
-      Array.isArray(许可.OUTBOUND_ORIGINS) && 许可.OUTBOUND_ORIGINS.includes(目标.origin);
+    try { 目标 = new URL(String(网址)); } catch { return ''; }
+    return 目标.protocol === 'https:' && !目标.username && !目标.password ? 目标.origin : '';
   };
-  // 文言：同一持久对象之诸调用共持频道，所发皆原字，报文之义全由客定。汉语：同一 Durable Object 实例共享原始字节广播；业务事件和 SSE 编码由豫言负责。
-  const 广播频道 = new Map();
-  const 广播名 = 值 => {
-    const 名 = 文字(值);
-    if (!名 || 名.length > 128) throw Error('云工广播频道名无效');
-    return 名;
+  const 已授权 = 网址 => { const 源 = 来源(网址); return 源 !== '' && 来源们.includes(源); };
+  const 取 = (网址, 选项 = {}) => {
+    const 是请求 = typeof 全局.Request === 'function' && 网址 instanceof 全局.Request;
+    const 源 = 来源(是请求 ? 网址.url : 网址);
+    if (源 === '' || 源 === 'https://*' || !来源们.includes(源)) throw Error('上游网址未获授权');
+    if (选项 === null || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('授权 fetch 的选项须为对象');
+    return Reflect.apply(网络 ?? 全局.fetch, 全局, [网址, {...选项, redirect: 'manual'}]);
   };
-  // 文言：隔离客器只受程序字节及空许可；二式客器同一造法，惟主模块与所附源码有别。汉语：子 Worker 只能运行传入的 Wasm，不继承父 Worker 的绑定；豫言客器（云工宿主）与文件式客器（内存文件系统）共用本函数，只是主模块与附带的源码不同。
-  const 造子工码 = (主模块, 附源码名, 程序字节, cpuMs, subRequests) => {
-    if (!动态资源) throw Error('缺少动态 Worker 资源');
-    if (!(程序字节 instanceof Uint8Array) || !WebAssembly.validate(程序字节)) throw Error('动态 Worker 程序不是有效 Wasm');
-    const CPU = Number(cpuMs);
-    const 次数 = Number(subRequests);
-    if (!Number.isSafeInteger(CPU) || CPU < 1 || !Number.isSafeInteger(次数) || 次数 < 0) throw Error('动态 Worker 资源限额无效');
-    const 源 = 动态资源.模块源码;
-    const 模块 = {};
-    for (const 名 of [主模块, ...附源码名]) {
-      if (typeof 源[名] !== 'string') throw Error('缺少动态 Worker 模块源码：' + 名);
-      模块[名] = {js: 源[名]};
-    }
-    模块['程序.wasm'] = {wasm: 程序字节.slice().buffer};
-    模块['值桥.wasm'] = {wasm: 动态资源.值桥字节.slice(0)};
-    return {
-      compatibilityDate: '2026-09-10',
-      mainModule: 主模块,
-      modules: 模块,
-      globalOutbound: null,
-      env: {},
-      limits: {cpuMs: CPU, subRequests: 次数}
-    };
+  取.已授权 = 已授权;
+  return 取;
+}
+
+// 文言：云工所供之平台接口包。汉语：云工宿主实现的平台接口包（导入模块名即包名）。
+export const 云工平台包 = Object.freeze(['云工宿主', '中央张量宿主']);
+const 异步函数 = (async () => {}).constructor;
+
+// 文言：造云工宿主。汉语：创建云工宿主，得各平台事件的处理器。
+//   动态资源 {模块源码, 值桥字节} 供隔离运行造子 Worker；中央张量内核模块 供张量计算；网络 替换外发请求所用的 fetch（测试用，缺省为 全局.fetch）。
+//   待办事项：原来按事件种类的墙钟时限（执行配置）已不再使用，由平台的 CPU 限额兜底。
+export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动态资源 = null, 全局 = globalThis, 网络 = null, 输出 = () => {}, 错误输出 = 文 => 全局.console?.error?.(文), 中央张量内核模块 = null}) {
+  // 文言：平台之 env，同一隔离体恒为一物；事至则记之。汉语：平台的 env 在同一个隔离体里是同一个对象，每个事件到来时记下它，供「云工绑定」查。
+  let 环境 = {};
+  // 文言：未授者部署之误，径抛；已授而阙者归未定义，由适配定之（必需之绑以「云工中止」止之）。
+  // 汉语：未授权是部署错误，直接抛出（中止本次事件）；已授权而环境里没有时得 undefined，由适配决定：可选的绑定当作“没有配置”，必需的绑定用「云工中止」中止本次事件。
+  const 取绑定 = (类, 名) => {
+    if (!许可[类]?.includes(名)) throw Error('未授权的' + 类 + '绑定：' + 名);
+    return 名 in 环境 ? 环境[名] : undefined;
   };
-  const 造隔离客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离入口.mjs', ['宿主.mjs', '句柄.mjs', '值桥.mjs', '边界.mjs'], 程序字节, cpuMs, subRequests);
-  // 文言：文件式客器载内存文件系之宿主与其入口，令用户程序读写虚籍而不触平台。汉语：文件式程序（读写内存文件系统、输出到标准输出）的隔离入口，模块为 隔离运行客.mjs 与浏览器编译器宿主 编译宿主.mjs。
-  const 造隔离运行客码 = (程序字节, cpuMs, subRequests) => 造子工码('隔离运行客.mjs', ['编译宿主.mjs', '边界.mjs'], 程序字节, cpuMs, subRequests);
-  // 文言：平台资料之器，一宿主一器，缓存与之同寿；初用乃载其篇，隔离客器之模表无此篇，静导则子工不起。
-  // 汉语：平台资料能力（接口 豫言操作系统平台资料）的宿主级实例，跨事件共享缓存。第一次调用时才动态导入 平台资料.mjs：动态子 Worker（豫言客器）的模块表没有这个文件，
-  //   静态导入会使子 Worker 装载失败（No such module "平台资料.mjs"）；子 Worker 是空许可，本来也用不到平台资料。
-  let 平台资料载入 = null;
-  const 取平台资料 = () => 平台资料载入 ??= import('./平台资料.mjs').then(模块 => 模块.创建平台资料({全局}));
-  // 文言：客器所导平台之术，宿主造时一算。汉语：本程序导入的平台接口函数，创建宿主时算一次（按模块缓存）。
-  const 平台所需 = 求平台所需(程序模块);
-  // 文言：公网请求之专术，见上 造公网取。汉语：公网请求专用原语的实现，见上文 造公网取。
-  const 公网取 = 造公网取({许可, 全局});
-  // 文言：实例之池（提案 C0001）：导出类型化入口之程序，实例建时一接导入，导入为跳板，转于实例之“当前调用”；_start 只行一次；每事取闲实例而调其入口，毕则还池，败则弃之。
-  // 汉语：实例池（提案 C0001）：导出了类型化入口的程序，建实例时一次接好导入，导入是跳板，转到该实例“当前调用”的能力表；_start（静态初始化）只跑一次；
-  //   每个事件取一个空闲实例调用入口，成功后归还，失败（陷阱、未接住的异常、退出、超时）就丢弃。一个实例同一时刻只跑一个调用（执行契约）。
-  const 类型化导出名们 = new Set(读边界导出(程序模块).keys());
-  const 空闲实例 = [];
-  const 造池实例 = async 调用 => {
-    const 槽 = {调用};
-    const 平台 = {};
-    for (const [模, 字段, 旧名] of 平台所需) {
-      const 函 = 调用.取(旧名);
-      if (typeof 函 !== 'function') throw Error('云工宿主缺少原语实现：' + 旧名);
-      const 跳 = (...参) => 槽.调用.取(旧名)(...参);
-      if (函 instanceof 异步函数) 跳.异步 = true;
-      (平台[模] ??= {})[字段] = 跳;
-    }
-    const {运行, 实例, 桥} = 创建豫言实例(程序模块, 值桥模块, {输出, 错误输出, 截止源: 槽, 平台});
-    await 运行();
-    return {槽, 导出: 造边界导出(实例, 程序模块, 桥.原, {异步: true})};
+  // 文言：宿主之物：惟 JS 能为之组件，挂于全局之名下。汉语：宿主对象：只能用 JS 写的组件，以「豫言」开头的名字挂在「云工全局」下。
+  const 宿主对象 = new Map([
+    ['豫言公网取', 造公网取({许可, 全局, 网络})],
+    ['豫言授权取', 造授权取({许可, 全局, 网络})],
+    ['豫言子工', 造子工({取绑定, 动态资源})],
+    ['豫言平台资料', {取: () => import('./平台资料.mjs').then(模块 => 模块.创建平台资料({全局}))}]
+  ]);
+  const 取全局 = 名 => {
+    if (宿主对象.has(名)) return 宿主对象.get(名);
+    if (!可用全局.has(名)) throw Error('云工宿主不开放此全局：' + 名);
+    if (!(名 in 全局)) throw Error('云工全局能力不存在：' + 名);
+    return 全局[名];
   };
-  // 文言：以池中实例调入口；Wasm 既返即还其实例，然后乃收其果。汉语：用池中实例调用入口；Wasm 返回后立即归还实例，再处理结果（如等待响应的 Promise）。
-  const 类型化运行 = async (调用, 入口名, 参数们) => {
-    const 实 = 空闲实例.pop() ?? await 造池实例(调用);
-    实.槽.调用 = 调用;
-    let 果, 好 = false;
-    try {
-      果 = await 实.导出[入口名](...参数们);
-      好 = true;
-    } finally {
-      实.槽.调用 = null;
-      if (好 && 空闲实例.length < 实例池上限) 空闲实例.push(实);
-    }
-    return 果;
-  };
-  const 执行 = async (种类, 载荷, 环境, 上下文, 对象状态 = null, 工作流步 = null, 事务仓 = null) => {
-      // 文言：中央张量之术：每事一能，初用乃载 中央张量.mjs；云工单线，内核之模由入口壳自产物引入。汉语：张量计算（中央处理器后端，接口 豫言操作系统张量计算）：每个事件第一次调用时才动态导入 中央张量.mjs 并创建能力，事件结束即随之释放；云工单线程，内核模块由入口壳从构建产物导入（没用张量计算的构建没有它，启用时返回资源暂不可用）。待办事项：内存上限只取 64 MiB，未按 Workers 每个隔离环境 128 MB 的总限精算；隔离运行的子 Worker 没带 中央张量.mjs。
-      let 中央张量 = null, 中央张量载入 = null;
-      const 载中央张量 = () => 中央张量载入 ??= import('./中央张量.mjs').then(模块 => {
-        中央张量 = 模块.创建中央张量能力({
-          取内核模块: async () => { if (!中央张量内核模块) throw Error('构建产物没有中央张量内核模块'); return 中央张量内核模块; },
-          多线程: false, 最大页: 1024, 全局
-        });
-      });
-      // 文言：中央张量之带型术：启用候载而异步，余皆同步，未启则报；Workers 单线，运行恒同步；读单精、数学之旧果 {小数} 取其裸数。
-      // 汉语：中央张量的带类型实现：启用首次动态导入 中央张量.mjs、载入内核，标异步；其余同步，内核没启用时报“中央张量：尚未启用”（适配总是先启用）。
-      //   运行在 Workers 上恒走单线程的同步分支，不标异步（浏览器多线程时要等工作线程，浏览器宿主把它标成异步）；读单精、数学的旧形结果 {小数} 取成裸数。
-      const 须中央张量 = () => { if (!中央张量) throw Error('中央张量：尚未启用'); return 中央张量; };
-      const 裸数 = 值 => (值 !== null && typeof 值 === 'object' && Object.hasOwn(值, '小数') ? 值.小数 : 值);
-      const 带型中央张量 = 名 => !名.startsWith('豫言_中央张量_') ? undefined
-        : 名 === '豫言_中央张量_启用' ? async () => { await 载中央张量(); return 中央张量[名](); }
-        : 名 === '豫言_中央张量_读单精' || 名 === '豫言_中央张量_数学' ? (...参) => 裸数(须中央张量()[名](...参))
-        : (...参) => 须中央张量()[名](...参);
-      const 请求 = 种类 === 'fetch' || 种类 === 'durable-fetch' || 种类 === 'service-fetch' ? 载荷 : null;
-      const 批次 = 种类 === 'queue' ? 载荷 : null;
-      const 定时 = 种类 === 'scheduled' ? 载荷 : null;
-      const 邮件 = 种类 === 'email' ? 载荷 : null;
-      const 告警 = 种类 === 'durable-alarm' ? 载荷 : null;
-      const HTML事件 = 种类.startsWith('html-') ? 载荷 : null;
-      const 套接字事件 = 种类.startsWith('websocket-') || 种类.startsWith('durable-websocket-') ? 载荷 : null;
-      const 流回调 = 种类 === 'stream-pull' || 种类 === 'stream-cancel' ? 载荷 : null;
-      let 响应;
-      let 通知响应;
-      const 有响应 = 种类 === 'fetch' || 种类 === 'durable-fetch' || 种类 === 'service-fetch';
-      const 需工作流输出 = 种类 === 'workflow' || 种类 === 'workflow-step';
-      const 需流块输出 = 种类 === 'stream-pull';
-      const 需事务输出 = 种类 === 'durable-transaction';
-      const 需独占输出 = 种类 === 'durable-block';
-      const 是工作流 = 需工作流输出 || 种类 === 'workflow-rollback';
-      let 工作流输出;
-      let 已设工作流输出 = false;
-      let 流块输出;
-      let 已设流块输出 = false;
-      let 事务输出;
-      let 已设事务输出 = false;
-      let 独占输出;
-      let 已设独占输出 = false;
-      const 响应已备 = 有响应 ? new Promise(完成 => { 通知响应 = 完成; }) : null;
-      const 句柄 = 创建句柄表();
-      // 文言：全局之名须在可用之表。汉语：通用句柄桥只认“可用全局”表里的名字，其余报“云工宿主不开放此全局”。
-      const 允全局 = 名 => {
-        const 名称 = 句柄.允名(文字(名));
-        if (!可用全局.has(名称)) throw Error('云工宿主不开放此全局：' + 名称);
-        return 名称;
-      };
-      const 可写流 = new Map();
-      const 消息端口 = new Map();
-      const 事件源 = new Map();
-      const 定时器 = new Map();
-      const 定时队列 = [];
-      const 定时待交 = new Set();
-      let 下定时号 = 1;
-      let 定时唤醒 = null;
-      const 取定时事 = () => {
-        const 事 = 定时队列.shift();
-        if (事) 定时待交.delete(事.定时号);
-        return 事;
-      };
-      const 推定时事 = 事 => {
-        if (定时唤醒) {
-          const 完成 = 定时唤醒;
-          定时唤醒 = null;
-          定时待交.delete(事.定时号);
-          完成(事);
-        } else if (定时队列.length < 1024) 定时队列.push(事);
-        else throw Error('云工定时事件队列已满');
-      };
-      const 造定时 = (延时, 标记, 重复) => {
-        const 毫秒 = Number(延时);
-        if (!Number.isSafeInteger(毫秒) || 毫秒 < 0 || 毫秒 > 2147483647) throw Error('云工定时毫秒无效');
-        if (定时器.size >= 64) throw Error('云工定时器达到上限');
-        const 号 = String(下定时号++);
-        const 标记文 = 文字(标记);
-        const 项 = {原号: null, 重复};
-        const 触发 = () => {
-          if (!定时器.has(号)) return;
-          if (!重复) 定时器.delete(号);
-          if (定时待交.has(号)) return;
-          定时待交.add(号);
-          try { 推定时事({种类: 重复 ? '重复' : '一次', 定时号: 号, 标记: 标记文, 时刻: 全局.Date.now()}); }
-          catch (错) {
-            定时待交.delete(号);
-            if (重复) { 全局.clearInterval(项.原号); 定时器.delete(号); }
-            全局.console?.error?.(错);
-          }
-        };
-        项.原号 = 重复 ? 全局.setInterval(触发, 毫秒) : 全局.setTimeout(触发, 毫秒);
-        定时器.set(号, 项);
-        return 号;
-      };
-      const 撤定时 = 号 => {
-        const 名 = 文字(号), 项 = 定时器.get(名);
-        if (!项) return false;
-        if (项.重复) 全局.clearInterval(项.原号);
-        else 全局.clearTimeout(项.原号);
-        定时器.delete(名);
-        定时待交.delete(名);
-        for (let 序 = 定时队列.length - 1; 序 >= 0; 序--)
-          if (定时队列[序].定时号 === 名) 定时队列.splice(序, 1);
-        return true;
-      };
-      const 等定时事 = 时限 => {
-        if (定时队列.length) return Promise.resolve(取定时事());
-        if (定时唤醒) throw Error('当前调用已有定时事件等待者');
-        const 毫秒 = Number(时限);
-        if (!Number.isSafeInteger(毫秒) || 毫秒 < 1 || 毫秒 > 30000) throw Error('云工定时等待时限无效');
-        return new Promise(完成 => {
-          const 计时 = 全局.setTimeout(() => { 定时唤醒 = null; 完成({种类: 'timeout'}); }, 毫秒);
-          定时唤醒 = 事 => { 全局.clearTimeout(计时); 完成(事); };
-        });
-      };
-      const 登记事件源 = 来源 => {
-        const 号 = 句柄.登记(来源);
-        const 态 = {来源, 队列: [], 唤醒: null, 已订阅: new Set()};
-        const 推送 = 事 => {
-          if (态.唤醒) { const 完成 = 态.唤醒; 态.唤醒 = null; 完成(事); }
-          else if (态.队列.length < 1024) 态.队列.push(事);
-          else { 来源.close(); throw Error('事件源队列已满'); }
-        };
-        const 订阅 = 名 => {
-          if (态.已订阅.has(名)) return;
-          来源.addEventListener(名, 事 => 推送({种类: 名, 数据: String(事.data ?? ''), 事件号: String(事.lastEventId ?? ''), 来源: String(事.origin ?? '')}));
-          态.已订阅.add(名);
-        };
-        for (const 名 of ['open', 'message', 'error']) 订阅(名);
-        态.订阅 = 订阅;
-        事件源.set(号, 态);
-        return 号;
-      };
-      const 等事件源事 = (号, 时限) => {
-        const 态 = 事件源.get(文字(号));
-        if (!态) throw Error('事件源句柄无效');
-        if (态.队列.length) return Promise.resolve(态.队列.shift());
-        if (态.唤醒) throw Error('同一事件源已有等待者');
-        const 毫秒 = Number(时限);
-        if (!Number.isSafeInteger(毫秒) || 毫秒 < 1 || 毫秒 > 30000) throw Error('事件源等待时限无效');
-        return new Promise(完成 => {
-          const 计时 = setTimeout(() => { 态.唤醒 = null; 完成({种类: 'timeout'}); }, 毫秒);
-          态.唤醒 = 事 => { clearTimeout(计时); 完成(事); };
-        });
-      };
-      const 端口监听 = 号 => {
-        const 名 = 文字(号);
-        const 端口 = 句柄.取得(名);
-        if (!(端口 instanceof 全局.MessagePort)) throw Error('句柄不是消息端口');
-        const 旧态 = 消息端口.get(名);
-        if (旧态) return 旧态;
-        const 态 = {队列: [], 唤醒: null};
-        const 推送 = 事 => {
-          if (态.唤醒) { const 完成 = 态.唤醒; 态.唤醒 = null; 完成(事); }
-          else if (态.队列.length < 1024) 态.队列.push(事);
-          else throw Error('消息端口事件队列已满');
-        };
-        端口.addEventListener('message', 事 => 推送({种类: 'message', 数据: 事.data}));
-        端口.addEventListener('messageerror', 事 => 推送({种类: 'messageerror', 错误: String(事?.message ?? '')}));
-        端口.addEventListener('close', () => 推送({种类: 'close'}));
-        端口.start();
-        消息端口.set(名, 态);
-        return 态;
-      };
-      const 等端口事 = (号, 时限) => {
-        const 态 = 端口监听(号);
-        if (态.队列.length) return Promise.resolve(态.队列.shift());
-        if (态.唤醒) throw Error('同一消息端口已有等待者');
-        const 毫秒 = Number(时限);
-        if (!Number.isSafeInteger(毫秒) || 毫秒 < 1 || 毫秒 > 30000) throw Error('消息端口等待时限无效');
-        return new Promise(完成 => {
-          const 计时 = setTimeout(() => { 态.唤醒 = null; 完成({种类: 'timeout'}); }, 毫秒);
-          态.唤醒 = 事 => { clearTimeout(计时); 完成(事); };
-        });
-      };
-      const 取流字节 = 值 => {
-        if (值 instanceof ArrayBuffer) return new Uint8Array(值).slice();
-        if (ArrayBuffer.isView(值)) return new Uint8Array(值.buffer, 值.byteOffset, 值.byteLength).slice();
-        throw Error('可读流块不是字节');
-      };
-      const 转换压缩字节 = async (种类, 格式, 内容) => {
-        const 构造 = 种类 === '压缩' ? 全局.CompressionStream : 全局.DecompressionStream;
-        if (typeof 构造 !== 'function') throw Error('宿主不支持' + 种类 + '流');
-        const 输入 = new 全局.ReadableStream({start(控制器) { 控制器.enqueue(内容.slice()); 控制器.close(); }});
-        const 转换 = new 构造(文字(格式));
-        const 写入 = 输入.pipeTo(转换.writable);
-        const 读取 = new 全局.Response(转换.readable).arrayBuffer();
-        const [写果, 读果] = await Promise.allSettled([写入, 读取]);
-        if (写果.status === 'rejected') throw 写果.reason;
-        if (读果.status === 'rejected') throw 读果.reason;
-        return new Uint8Array(读果.value);
-      };
-      let 已登记HTML尾签 = false;
-      const 设响应 = 值 => {
-        if (!有响应) throw Error('仅 HTTP 事件可设置响应');
-        if (响应) throw Error('响应只能设置一次');
-        响应 = 值;
-        通知响应(值);
-      };
-      const 取回应对象 = 号 => {
-        const 回应 = 句柄.取得(文字(号));
-        if (!(回应 instanceof 全局.Response)) throw Error('宿主句柄不是 Response');
-        return 回应;
-      };
-      const 输入 = async () => {
-        if (!请求) throw Error('当前事件没有 HTTP 请求');
-        return JSON.stringify({方法: 请求.method, 网址: 请求.url, 标头: Object.fromEntries(请求.headers), 正文: await 限文(请求.clone())});
-      };
-      const 取批次 = () => {
-        if (!批次) throw Error('当前事件没有队列批次');
-        return 批次;
-      };
-      const 取定时 = () => {
-        if (!定时) throw Error('当前事件没有定时控制器');
-        return 定时;
-      };
-      const 取邮件 = () => {
-        if (!邮件) throw Error('当前事件没有入站邮件');
-        return 邮件;
-      };
-      const 取持久状态 = () => {
-        if (!对象状态) throw Error('当前事件不属于持久对象');
-        return 对象状态;
-      };
-      const 取持久仓 = () => 取持久状态().storage;
-      const 取键值仓 = () => 事务仓 ?? 取持久仓();
-      const 取SQL仓 = () => {
-        const 仓 = 取持久仓().sql;
-        if (!仓 || typeof 仓.exec !== 'function') throw Error('持久对象没有 SQLite 存储');
-        return 仓;
-      };
-      const 取恢复仓 = () => {
-        if (事务仓) throw Error('持久事务回调内不可操作恢复书签');
-        const 仓 = 取持久仓();
-        if (!仓.sql || typeof 仓.sql.exec !== 'function') throw Error('持久对象没有 SQLite 存储');
-        return 仓;
-      };
-      const 取SQL游标 = 号 => {
-        const 游标 = 句柄.取得(文字(号));
-        if (!游标 || typeof 游标.next !== 'function' || typeof 游标.toArray !== 'function' || typeof 游标.raw !== 'function') throw Error('SQL 游标句柄无效');
-        return 游标;
-      };
-      const 取同步键值仓 = () => {
-        const 仓 = 取持久仓().kv;
-        if (!仓 || typeof 仓.get !== 'function') throw Error('持久对象没有 SQLite 同步 KV');
-        return 仓;
-      };
-      const 取告警信息 = () => {
-        if (种类 !== 'durable-alarm') throw Error('当前事件不是持久对象告警');
-        return 告警 ?? {};
-      };
-      const 验套接字协议 = 名 => {
-        const 协议 = 文字(名);
-        if (协议 && !(请求?.headers.get('Sec-WebSocket-Protocol') ?? '').split(',').map(项 => 项.trim()).includes(协议)) {
-          throw Error('选定的 WebSocket 协议不在请求列表');
-        }
-        return 协议;
-      };
-      const 取消息 = 序 => {
-        const 项 = Number(序);
-        const 诸消息 = 取批次().messages;
-        if (!Number.isSafeInteger(项) || 项 < 0 || 项 >= 诸消息.length) throw Error('队列消息序号无效');
-        return 诸消息[项];
-      };
-      const 登记出站套接字 = (连接, 已接纳 = false) => {
-        连接.binaryType = 'arraybuffer';
-        let 完成存续;
-        const 存续 = new Promise(完成 => { 完成存续 = 完成; });
-        if (上下文?.waitUntil) 上下文.waitUntil(存续);
-        const 投递 = (名, 值 = {}) => 执行('websocket-' + 名, {套接字: 连接, 来源: '出站', ...值}, 环境, null)
-          .catch(错 => { 全局.console?.error?.(错); if (连接.readyState === 1) 连接.close(1011, '豫言回调失败'); 输出(String(错)); });
-        let 已报开 = false;
-        const 报开 = () => { if (!已报开) { 已报开 = true; void 投递('open'); } };
-        连接.addEventListener('open', 报开);
-        连接.addEventListener('message', 事件 => { void 投递('message', {数据: 事件.data}); });
-        连接.addEventListener('close', 事件 => { void 投递('close', {代码: 事件.code, 原因: 事件.reason, 正常: 事件.wasClean}).finally(完成存续); });
-        连接.addEventListener('error', 事件 => { void 投递('error', {错误: String(事件?.message ?? 'WebSocket error')}); });
-        if (已接纳) void Promise.resolve().then(报开);
-        return 句柄.登记(连接);
-      };
-      const 能力 = {
-        豫言_云工_事件种类: () => 种类,
-        // 文言：客定记志之法与参数，宿主只循平台之 Console；无为之法仍依平台。汉语：豫言选择标准 Console 方法及参数，保留 Workers 对部分方法的 no-op 语义。
-        豫言_云工_控制台文字: (方法, 内容) => {
-          const 名 = 文字(方法);
-          if (!['debug', 'error', 'info', 'log', 'warn'].includes(名)) throw Error('控制台文字级别无效');
-          全局.console[名](文字(内容));
-        },
-        豫言_云工_控制台调用: (方法, 参数文) => {
-          const 名 = 文字(方法);
-          if (!控制台诸法.has(名)) throw Error('控制台方法不在标准清单');
-          const 函数 = 全局.console?.[名];
-          if (typeof 函数 !== 'function') throw Error('控制台方法在当前运行时不可用：' + 名);
-          return JSON.stringify(句柄.出(Reflect.apply(函数, 全局.console, 句柄.参数(文字(参数文)))));
-        },
-        // 文言：两端同器通信，客以候事复得消息；转移诸物之法云工今未许。汉语：Workers MessageChannel 在同一事件内以 JSPI 等待，平台不支持 transfer list。
-        豫言_云工_消息通道新建: () => {
-          const 通道 = new 全局.MessageChannel();
-          const 左 = 句柄.登记(通道.port1), 右 = 句柄.登记(通道.port2);
-          端口监听(左);
-          端口监听(右);
-          return [左, 右];
-        },
-        豫言_云工_消息端口发值: (号, 值文) => { 句柄.取得(文字(号)).postMessage(句柄.入(JSON.parse(文字(值文)))); },
-        豫言_云工_消息端口发字节: (号, 内容) => { 句柄.取得(文字(号)).postMessage(内容.slice()); },
-        豫言_云工_消息端口启动: 号 => { 端口监听(号); 句柄.取得(文字(号)).start(); },
-        豫言_云工_消息端口关闭: 号 => { 句柄.取得(文字(号)).close(); },
-        豫言_云工_消息端口等事文: async (号, 时限) => {
-          const 事 = await 等端口事(号, 时限);
-          return JSON.stringify(事.种类 === 'message' ? {种类: 'message', 数据: 句柄.出(事.数据)} : 事);
-        },
-        豫言_云工_消息端口等字节: async (号, 时限) => {
-          const 事 = await 等端口事(号, 时限);
-          if (事.种类 !== 'message') return [false, new Uint8Array()];
-          return [true, 取流字节(事.数据)];
-        },
-        // 文言：事源之网联或流联由客择之，诸事件悉以文归客。汉语：EventSource 可连 URL、授权服务绑定或既有流，事件由 JSPI 等待交给豫言。
-        豫言_云工_事件源连接: (网址, 凭据) => 登记事件源(new 全局.EventSource(文字(网址), {withCredentials: Boolean(凭据)})),
-        豫言_云工_事件源连接服务: (网址, 名) => 登记事件源(new 全局.EventSource(文字(网址), {fetcher: 绑定(环境, 许可, 名, 'SERVICE')})),
-        豫言_云工_事件源接流: 流号 => 登记事件源(全局.EventSource.from(句柄.取得(文字(流号)))),
-        豫言_云工_事件源订阅: (号, 名) => {
-          const 态 = 事件源.get(文字(号));
-          if (!态) throw Error('事件源句柄无效');
-          const 事件名 = 文字(名);
-          if (!事件名 || 事件名.length > 256) throw Error('事件源事件名无效');
-          态.订阅(事件名);
-        },
-        豫言_云工_事件源等事文: async (号, 时限) => JSON.stringify(await 等事件源事(号, 时限)),
-        豫言_云工_事件源状态文: 号 => {
-          const 来源 = 事件源.get(文字(号))?.来源;
-          if (!来源) throw Error('事件源句柄无效');
-          return JSON.stringify({网址: 来源.url, 状态: 来源.readyState, 含凭据: 来源.withCredentials});
-        },
-        豫言_云工_事件源关闭: 号 => {
-          const 名 = 文字(号);
-          const 态 = 事件源.get(名);
-          if (!态) throw Error('事件源句柄无效');
-          态.来源.close();
-          if (态.唤醒) { const 完成 = 态.唤醒; 态.唤醒 = null; 完成({种类: 'closed'}); }
-          事件源.delete(名);
-          句柄.释放(名);
-        },
-        // 文言：升级、收信、断联皆归客器裁；宿主只持原生套接字。汉语：WebSocketPair 及事件回调由宿主适配，响应和消息处理都交给豫言 Wasm。
-        豫言_云工_WebSocket请求协议文: () => {
-          if (!请求) throw Error('当前事件没有 HTTP 请求');
-          return 请求.headers.get('Sec-WebSocket-Protocol') ?? '';
-        },
-        豫言_云工_WebSocket建对并应答协议: 协议名 => {
-          if (!有响应 || !请求 || 请求.headers.get('Upgrade')?.toLowerCase() !== 'websocket') throw Error('当前请求不是 WebSocket 升级');
-          if (typeof 全局.WebSocketPair !== 'function') throw Error('宿主不支持 WebSocketPair');
-          const 协议 = 验套接字协议(协议名);
-          const [客户, 服务] = Object.values(new 全局.WebSocketPair());
-          const 投递 = (名, 值) => 执行('websocket-' + 名, {套接字: 服务, ...值}, 环境, null)
-            .catch(错 => { 全局.console?.error?.(错); if (服务.readyState === 1) 服务.close(1011, '豫言回调失败'); 输出(String(错)); });
-          服务.addEventListener('message', 事件 => { void 投递('message', {数据: 事件.data}); });
-          服务.addEventListener('close', 事件 => { void 投递('close', {代码: 事件.code, 原因: 事件.reason, 正常: 事件.wasClean}); });
-          服务.addEventListener('error', 事件 => { void 投递('error', {错误: String(事件?.message ?? 'WebSocket error')}); });
-          服务.accept();
-          设响应(new Response(null, {status: 101, webSocket: 客户, headers: 协议 ? {'Sec-WebSocket-Protocol': 协议} : {}}));
-          return 句柄.登记(服务);
-        },
-        豫言_云工_WebSocket建对并应答: () => 能力.豫言_云工_WebSocket建对并应答协议(''),
-        豫言_云工_WebSocket出站连接: (网址, 协议文) => {
-          const 协议 = JSON.parse(文字(协议文));
-          if (!Array.isArray(协议) || 协议.some(项 => typeof 项 !== 'string')) throw Error('WebSocket 协议须为字符串数组');
-          const 连接 = new 全局.WebSocket(文字(网址), 协议.length ? 协议 : undefined);
-          return 登记出站套接字(连接);
-        },
-        豫言_云工_WebSocket请求出站: async (网址, 半开) => {
-          const 回应 = await 网络(文字(网址), {headers: {Upgrade: 'websocket'}});
-          if (!回应.webSocket) throw Error('出站 WebSocket 升级未获接受：HTTP ' + 回应.status);
-          const 连接 = 回应.webSocket;
-          连接.accept({allowHalfOpen: Boolean(半开)});
-          return 登记出站套接字(连接, true);
-        },
-        // 文言：持久客器以态接长联，事后可休而重启；附件附于联本身。汉语：Durable Object 通过 ctx.acceptWebSocket 接纳连接，消息由类回调重入豫言 Wasm。
-        豫言_云工_持久套接字建对并应答协议: (标签文, 附件文, 协议名) => {
-          if (种类 !== 'durable-fetch' || !请求 || 请求.headers.get('Upgrade')?.toLowerCase() !== 'websocket') throw Error('当前事件不是持久对象 WebSocket 升级');
-          const 标签 = JSON.parse(文字(标签文));
-          if (!Array.isArray(标签) || 标签.length > 10 || 标签.some(项 => typeof 项 !== 'string' || 项.length > 256)) throw Error('持久套接字标签无效');
-          const 协议 = 验套接字协议(协议名);
-          const [客户, 服务] = Object.values(new 全局.WebSocketPair());
-          取持久状态().acceptWebSocket(服务, 标签);
-          服务.serializeAttachment(句柄.入(JSON.parse(文字(附件文))));
-          设响应(new Response(null, {status: 101, webSocket: 客户, headers: 协议 ? {'Sec-WebSocket-Protocol': 协议} : {}}));
-          return 句柄.登记(服务);
-        },
-        豫言_云工_持久套接字建对并应答: (标签文, 附件文) =>
-          能力.豫言_云工_持久套接字建对并应答协议(标签文, 附件文, ''),
-        豫言_云工_持久套接字诸柄文: 标签 => {
-          const 名 = 文字(标签);
-          return JSON.stringify(取持久状态().getWebSockets(名 || undefined).map(项 => 句柄.登记(项)));
-        },
-        豫言_云工_持久套接字标签文: 号 => JSON.stringify(取持久状态().getTags(句柄.取得(文字(号)))),
-        豫言_云工_持久套接字附件文: 号 => JSON.stringify(句柄.出(句柄.取得(文字(号)).deserializeAttachment())),
-        豫言_云工_持久套接字设附件: (号, 附件文) => {
-          句柄.取得(文字(号)).serializeAttachment(句柄.入(JSON.parse(文字(附件文))));
-        },
-        豫言_云工_持久套接字设自动回复: (请求文, 回应文) => {
-          const 请 = 文字(请求文), 答 = 文字(回应文);
-          if (请.length > 2048 || 答.length > 2048) throw Error('持久套接字自动回复超过 2048 字符');
-          取持久状态().setWebSocketAutoResponse(new 全局.WebSocketRequestResponsePair(请, 答));
-        },
-        豫言_云工_持久套接字清自动回复: () => { 取持久状态().setWebSocketAutoResponse(); },
-        豫言_云工_持久套接字自动回复文: () => {
-          const 配对 = 取持久状态().getWebSocketAutoResponse();
-          if (配对 == null) return [false, ''];
-          const 请求 = typeof 配对.getRequest === 'function' ? 配对.getRequest() : 配对.request;
-          const 回应 = typeof 配对.getResponse === 'function' ? 配对.getResponse() : 配对.response;
-          if (typeof 请求 !== 'string' || typeof 回应 !== 'string') throw Error('自动回复配对接口无效');
-          return [true, JSON.stringify({请求, 回应})];
-        },
-        豫言_云工_持久套接字自动回复时刻: 号 => {
-          const 时刻 = 取持久状态().getWebSocketAutoResponseTimestamp(句柄.取得(文字(号)));
-          return 时刻 == null ? [false, ''] : [true, 时刻.toISOString()];
-        },
-        豫言_云工_持久套接字设事件时限: 毫秒 => {
-          const 时 = Number(文字(毫秒));
-          if (!Number.isSafeInteger(时) || 时 < 0 || 时 > 604800000) throw Error('持久套接字事件时限无效');
-          取持久状态().setHibernatableWebSocketEventTimeout(时);
-        },
-        豫言_云工_持久套接字事件时限文: () => {
-          const 时 = 取持久状态().getHibernatableWebSocketEventTimeout();
-          return 时 == null ? [false, ''] : [true, String(时)];
-        },
-        豫言_云工_WebSocket当前句柄: () => {
-          if (!套接字事件) throw Error('当前事件不是 WebSocket');
-          return 句柄.登记(套接字事件.套接字);
-        },
-        豫言_云工_WebSocket事件文: () => {
-          if (!套接字事件) throw Error('当前事件不是 WebSocket');
-          return JSON.stringify({种类, 来源: 套接字事件.来源 ?? '入站', 代码: 套接字事件.代码 ?? null, 原因: 套接字事件.原因 ?? '', 正常: 套接字事件.正常 ?? null, 错误: 套接字事件.错误 ?? ''});
-        },
-        豫言_云工_WebSocket消息文字: () => {
-          if (!套接字事件 || !种类.endsWith('websocket-message') || typeof 套接字事件.数据 !== 'string') throw Error('当前消息不是 WebSocket 文字');
-          return 套接字事件.数据;
-        },
-        豫言_云工_WebSocket消息种类: () => {
-          if (!套接字事件 || !种类.endsWith('websocket-message')) throw Error('当前事件不是 WebSocket 消息');
-          return typeof 套接字事件.数据 === 'string' ? '文字' : '字节';
-        },
-        豫言_云工_WebSocket消息字节: () => {
-          if (!套接字事件 || !种类.endsWith('websocket-message')) throw Error('当前事件不是 WebSocket 消息');
-          const 值 = 套接字事件.数据;
-          if (值 instanceof ArrayBuffer) return new Uint8Array(值).slice();
-          if (ArrayBuffer.isView(值)) return new Uint8Array(值.buffer, 值.byteOffset, 值.byteLength).slice();
-          throw Error('当前消息不是 WebSocket 字节');
-        },
-        豫言_云工_WebSocket发送文字: (号, 内容) => { 句柄.取得(文字(号)).send(文字(内容)); },
-        豫言_云工_WebSocket发送字节: (号, 内容) => { 句柄.取得(文字(号)).send(内容.slice()); },
-        豫言_云工_WebSocket状态: 号 => Number(句柄.取得(文字(号)).readyState),
-        豫言_云工_WebSocket协议: 号 => String(句柄.取得(文字(号)).protocol ?? ''),
-        豫言_云工_WebSocket关闭: (号, 代码, 原因) => { 句柄.取得(文字(号)).close(Number(代码), 文字(原因)); },
-        // 文言：下游索块则复启客器；客还字、后态与终否。汉语：ReadableStream 每次 pull 重启豫言 Wasm，状态和数据块由豫言决定。
-        豫言_云工_流回调状态文: () => {
-          if (!流回调) throw Error('当前事件不是流回调');
-          return 流回调.状态;
-        },
-        豫言_云工_流回调取消原因文: () => {
-          if (种类 !== 'stream-cancel') throw Error('当前事件不是流取消');
-          return 流回调.原因;
-        },
-        豫言_云工_流回调供块: (内容, 后态, 已终) => {
-          if (!需流块输出 || 已设流块输出) throw Error('流拉取回调只能供块一次');
-          if (!(内容 instanceof Uint8Array) || 内容.length > 2 * 1024 * 1024) throw Error('流块须为不超过 2 MiB 的字节串');
-          const 状态 = 文字(后态);
-          if (状态.length > 65536) throw Error('流回调状态过长');
-          流块输出 = {内容: 内容.slice(), 状态, 已终: Boolean(已终)};
-          已设流块输出 = true;
-        },
-        豫言_云工_创建回调可读流: 初态 => {
-          const 初 = 文字(初态);
-          if (初.length > 65536) throw Error('流回调初始状态过长');
-          let 状态 = 初;
-          let 已终 = false;
-          const 流 = new ReadableStream({
-            async pull(控制器) {
-              if (已终) return;
-              try {
-                const 结果 = await 执行('stream-pull', {状态}, 环境, null);
-                状态 = 结果.状态;
-                if (结果.内容.length) 控制器.enqueue(结果.内容);
-                if (结果.已终) { 已终 = true; 控制器.close(); }
-              } catch (错) { 已终 = true; 控制器.error(错); }
-            },
-            async cancel(原因) {
-              if (已终) return;
-              已终 = true;
-              await 执行('stream-cancel', {状态, 原因: String(原因 ?? '')}, 环境, null);
-            }
-          }, {highWaterMark: 0});
-          return 句柄.登记(流);
-        },
-        // 文言：每中一元，复启豫言客器；客执元素柄自定更易。汉语：HTMLRewriter 的异步元素回调逐次运行豫言 Wasm，所有修改由豫言发起。
-        豫言_云工_HTML选择器: () => {
-          if (!HTML事件) throw Error('当前事件不是 HTML 改写');
-          return HTML事件.选择器;
-        },
-        豫言_云工_HTML元素句柄: () => {
-          if (种类 !== 'html-element') throw Error('当前事件不是 HTML 元素');
-          return 句柄.登记(HTML事件.值);
-        },
-        豫言_云工_HTML当前句柄: () => {
-          if (!HTML事件) throw Error('当前事件不是 HTML 改写');
-          return 句柄.登记(HTML事件.值);
-        },
-        豫言_云工_HTML属性列文: () => {
-          if (种类 !== 'html-element') throw Error('仅 HTML 元素回调可枚举属性');
-          return JSON.stringify(Array.from(HTML事件.值.attributes, ([名, 值]) => [名, 值]));
-        },
-        豫言_云工_HTML登记尾签: () => {
-          if (种类 !== 'html-element') throw Error('仅 HTML 元素回调可登记尾标签');
-          if (已登记HTML尾签) throw Error('同一元素尾标签只能登记一次');
-          已登记HTML尾签 = true;
-          HTML事件.值.onEndTag(尾签 => 执行('html-end-tag', {选择器: HTML事件.选择器, 值: 尾签}, 环境, null));
-        },
-        豫言_云工_HTML改写响应规则: (回应号, 规则文, 篇事件文) => {
-          if (!有响应) throw Error('HTML 改写须在 HTTP 事件中登记');
-          const 原回应 = 句柄.取得(文字(回应号));
-          if (!(原回应 instanceof Response)) throw Error('HTML 改写源须为 Response');
-          if (typeof 全局.HTMLRewriter !== 'function') throw Error('宿主不支持 HTMLRewriter');
-          const 规则 = JSON.parse(文字(规则文));
-          const 篇事件 = JSON.parse(文字(篇事件文));
-          const 合法事件 = (诸, 允许) => Array.isArray(诸) && 诸.length <= 允许.size &&
-            诸.every(项 => 允许.has(项)) && new Set(诸).size === 诸.length;
-          const 元允许 = new Set(['element', 'text', 'comments']);
-          const 篇允许 = new Set(['doctype', 'text', 'comments', 'end']);
-          if (!Array.isArray(规则) || 规则.length > 32 || !合法事件(篇事件, 篇允许) ||
-              !规则.length && !篇事件.length || 规则.some(项 =>
-                !项 || typeof 项 !== 'object' || Array.isArray(项) ||
-                typeof 项.selector !== 'string' || !项.selector || 项.selector.length > 4096 ||
-                !合法事件(项.events, 元允许) || !项.events.length)) throw Error('HTML 改写规则无效');
-          const 应 = (种, 值, 选择) => 执行('html-' + 种, {选择器: 选择, 值}, 环境, null);
-          let 改写器 = new 全局.HTMLRewriter();
-          for (const 项 of 规则) {
-            const 元处理 = {};
-            if (项.events.includes('element')) 元处理.element = 值 => 应('element', 值, 项.selector);
-            if (项.events.includes('text')) 元处理.text = 值 => 应('text', 值, 项.selector);
-            if (项.events.includes('comments')) 元处理.comments = 值 => 应('comments', 值, 项.selector);
-            改写器 = 改写器.on(项.selector, 元处理);
-          }
-          const 篇处理 = {};
-          if (篇事件.includes('doctype')) 篇处理.doctype = 值 => 应('doctype', 值, '');
-          if (篇事件.includes('text')) 篇处理.text = 值 => 应('document-text', 值, '');
-          if (篇事件.includes('comments')) 篇处理.comments = 值 => 应('document-comments', 值, '');
-          if (篇事件.includes('end')) 篇处理.end = 值 => 应('end', 值, '');
-          if (Object.keys(篇处理).length) 改写器 = 改写器.onDocument(篇处理);
-          return 句柄.登记(改写器.transform(原回应));
-        },
-        豫言_云工_HTML改写响应全: (回应号, 选择器, 事件文) => {
-          const 诸事件 = JSON.parse(文字(事件文));
-          const 元事件 = Array.isArray(诸事件) ? 诸事件.filter(项 => ['element', 'text', 'comments'].includes(项)) : null;
-          const 篇事件 = Array.isArray(诸事件) ? 诸事件.filter(项 => ['doctype', 'document-text', 'document-comments', 'end'].includes(项)) : null;
-          if (!Array.isArray(诸事件) || 诸事件.length !== (元事件.length + 篇事件.length) ||
-              new Set(诸事件).size !== 诸事件.length) throw Error('HTML 回调事件无效');
-          return 能力.豫言_云工_HTML改写响应规则(回应号,
-            JSON.stringify(元事件.length ? [{selector: 文字(选择器), events: 元事件}] : []),
-            JSON.stringify(篇事件.map(项 => 项.replace('document-', ''))));
-        },
-        豫言_云工_HTML改写响应: (回应号, 选择器) =>
-          能力.豫言_云工_HTML改写响应全(回应号, 选择器, '["element"]'),
-        // 文言：取云工当时之纪元毫秒，云上无 I/O 时其钟可止。汉语：Date.now 供豫言计算绝对期限，遵循 Workers 的计时限制。
-        豫言_云工_当前Unix毫秒: () => 全局.Date.now(),
-        // 文言：性能时与原点循云工原生数而归文，客可明察精度。汉语：保留 performance 原始数值的文本表示，避免桥接时截断小数。
-        豫言_云工_性能时刻文: () => String(全局.performance.now()),
-        豫言_云工_性能原点文: () => String(全局.performance.timeOrigin),
-        // 文言：诸定时事仅在本次调用之界内候，客执标与号自裁所行。汉语：定时器只投递事件，事件逻辑和取消由豫言控制；调用结束清理余项。
-        豫言_云工_定时一次: (毫秒, 标记) => 造定时(毫秒, 标记, false),
-        豫言_云工_定时重复: (毫秒, 标记) => 造定时(毫秒, 标记, true),
-        豫言_云工_取消定时: 撤定时,
-        豫言_云工_等待定时事件文: async 时限 => JSON.stringify(await 等定时事(时限)),
-        // 文言：每步复入客器；客定步骤与输出，云工唯持久缓存步骤之果。汉语：Workflows 步骤回调重启豫言 Wasm，控制流及值由豫言决定。
-        豫言_云工_工作流事件文: () => {
-          if (!是工作流) throw Error('当前事件不是工作流');
-          const 事 = 种类 === 'workflow' ? 载荷 : 载荷.事件;
-          return JSON.stringify({载荷: 事.payload, 实例号: 事.instanceId, 工作流名: 事.workflowName,
-            时刻: 事.timestamp?.toISOString?.() ?? null, 定时: 事.schedule ?? null});
-        },
-        豫言_云工_工作流步骤名: () => {
-          if (种类 !== 'workflow-step') throw Error('当前事件不是工作流步骤');
-          return 载荷.步骤名;
-        },
-        豫言_云工_工作流步骤输入文: () => {
-          if (种类 !== 'workflow-step') throw Error('当前事件不是工作流步骤');
-          return JSON.stringify(载荷.输入);
-        },
-        豫言_云工_工作流步骤上下文文: () => {
-          if (种类 !== 'workflow-step') throw Error('当前事件不是工作流步骤');
-          const 值 = 载荷.步骤上下文;
-          return JSON.stringify({名称: 值.step.name, 次数: 值.step.count, 尝试: 值.attempt, 配置: 值.config});
-        },
-        豫言_云工_工作流回滚信息文: () => {
-          if (种类 !== 'workflow-rollback') throw Error('当前事件不是工作流回滚');
-          const 值 = 载荷.步骤上下文;
-          return JSON.stringify({步骤名: 载荷.步骤名, 输入: 载荷.输入,
-            上下文: {名称: 值.step.name, 次数: 值.step.count, 尝试: 值.attempt, 配置: 值.config},
-            输出: 载荷.步骤输出, 错误: {名称: 载荷.错误?.name ?? 'Error', 消息: 载荷.错误?.message ?? ''}});
-        },
-        豫言_云工_工作流设输出: 结果文 => {
-          if (!需工作流输出 || 已设工作流输出) throw Error('工作流输出只能设置一次');
-          工作流输出 = JSON.parse(文字(结果文));
-          已设工作流输出 = true;
-        },
-        豫言_云工_工作流步做: async (步骤名, 配置文, 输入文) => {
-          if (种类 !== 'workflow' || !工作流步) throw Error('当前事件不能执行工作流步骤');
-          const 名 = 文字(步骤名);
-          const 配置 = JSON.parse(文字(配置文));
-          const 输入 = JSON.parse(文字(输入文));
-          if (!配置 || typeof 配置 !== 'object' || Array.isArray(配置)) throw Error('工作流步骤配置须为对象');
-          const 回调 = 步骤上下文 => 执行('workflow-step', {事件: 载荷, 步骤名: 名, 输入, 步骤上下文}, 环境, null);
-          const 结果 = Object.keys(配置).length ? await 工作流步.do(名, 配置, 回调) : await 工作流步.do(名, 回调);
-          return JSON.stringify(结果);
-        },
-        豫言_云工_工作流步做可回滚: async (步骤名, 配置文, 输入文, 回滚配置文) => {
-          if (种类 !== 'workflow' || !工作流步) throw Error('当前事件不能执行可回滚步骤');
-          const 名 = 文字(步骤名);
-          const 配置 = JSON.parse(文字(配置文));
-          const 输入 = JSON.parse(文字(输入文));
-          const 回滚配置 = JSON.parse(文字(回滚配置文));
-          if (!配置 || typeof 配置 !== 'object' || Array.isArray(配置) ||
-              !回滚配置 || typeof 回滚配置 !== 'object' || Array.isArray(回滚配置)) throw Error('工作流步骤配置须为对象');
-          const 回调 = 步骤上下文 => 执行('workflow-step', {事件: 载荷, 步骤名: 名, 输入, 步骤上下文}, 环境, null);
-          const 回滚 = async ({ctx, output, error}) => {
-            await 执行('workflow-rollback', {事件: 载荷, 步骤名: 名, 输入, 步骤上下文: ctx, 步骤输出: output, 错误: error}, 环境, null);
-          };
-          const 选项 = {rollback: 回滚};
-          if (Object.keys(回滚配置).length) 选项.rollbackConfig = 回滚配置;
-          const 结果 = Object.keys(配置).length ? await 工作流步.do(名, 配置, 回调, 选项) : await 工作流步.do(名, 回调, 选项);
-          return JSON.stringify(结果);
-        },
-        豫言_云工_工作流休眠: async (步骤名, 时长文) => {
-          if (种类 !== 'workflow' || !工作流步) throw Error('当前事件不能休眠工作流');
-          const 时长 = JSON.parse(文字(时长文));
-          if (typeof 时长 !== 'string' && !(typeof 时长 === 'number' && Number.isFinite(时长))) throw Error('工作流休眠时长无效');
-          await 工作流步.sleep(文字(步骤名), 时长);
-        },
-        豫言_云工_工作流休眠至: async (步骤名, 时刻文) => {
-          if (种类 !== 'workflow' || !工作流步) throw Error('当前事件不能定时唤醒工作流');
-          const 时刻 = Number(文字(时刻文));
-          if (!Number.isSafeInteger(时刻) || 时刻 < 0) throw Error('工作流绝对时刻无效');
-          await 工作流步.sleepUntil(文字(步骤名), 时刻);
-        },
-        豫言_云工_工作流候事件: async (步骤名, 选项文) => {
-          if (种类 !== 'workflow' || !工作流步) throw Error('当前事件不能等待工作流事件');
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) || typeof 选项.type !== 'string') throw Error('工作流等待选项无效');
-          return JSON.stringify(await 工作流步.waitForEvent(文字(步骤名), 选项));
-        },
-        豫言_云工_工作流创建: async (名, 选项文) => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('工作流创建选项须为对象');
-          return (await 绑定(环境, 许可, 名, 'WORKFLOW').create(选项)).id;
-        },
-        豫言_云工_工作流批量创建文: async (名, 批文) => {
-          const 批次 = JSON.parse(文字(批文));
-          if (!Array.isArray(批次) || 批次.length < 1 || 批次.length > 100 ||
-              批次.some(项 => !项 || typeof 项 !== 'object' || Array.isArray(项) || typeof 项.id !== 'string' || !Object.hasOwn(项, 'params'))) {
-            throw Error('工作流批量创建选项无效');
-          }
-          const 实例 = await 绑定(环境, 许可, 名, 'WORKFLOW').createBatch(批次);
-          return JSON.stringify(实例.map(项 => 项.id));
-        },
-        豫言_云工_工作流批量删除文: async (名, 批文) => {
-          const 诸号 = JSON.parse(文字(批文));
-          if (!Array.isArray(诸号) || 诸号.length < 1 || 诸号.length > 100 || 诸号.some(项 => typeof 项 !== 'string')) {
-            throw Error('工作流批量删除实例号无效');
-          }
-          return JSON.stringify(await 绑定(环境, 许可, 名, 'WORKFLOW').deleteBatch(诸号));
-        },
-        豫言_云工_工作流状态文: async (名, 实例号) => {
-          const 实例 = await 绑定(环境, 许可, 名, 'WORKFLOW').get(文字(实例号));
-          return JSON.stringify(await 实例.status());
-        },
-        豫言_云工_工作流送事件: async (名, 实例号, 选项文) => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) || typeof 选项.type !== 'string') throw Error('工作流事件选项无效');
-          const 实例 = await 绑定(环境, 许可, 名, 'WORKFLOW').get(文字(实例号));
-          await 实例.sendEvent(选项);
-        },
-        // 文言：实例之停、复、重起、终与删，皆须逐名受授。汉语：实例管理只经 WORKFLOW 绑定许可访问指定实例。
-        豫言_云工_工作流暂停: async (名, 实例号) => {
-          await (await 绑定(环境, 许可, 名, 'WORKFLOW').get(文字(实例号))).pause();
-        },
-        豫言_云工_工作流恢复: async (名, 实例号) => {
-          await (await 绑定(环境, 许可, 名, 'WORKFLOW').get(文字(实例号))).resume();
-        },
-        豫言_云工_工作流重启: async (名, 实例号, 选项文) => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('工作流重启选项须为对象');
-          await (await 绑定(环境, 许可, 名, 'WORKFLOW').get(文字(实例号))).restart(选项);
-        },
-        豫言_云工_工作流终止: async (名, 实例号, 选项文) => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('工作流终止选项须为对象');
-          await (await 绑定(环境, 许可, 名, 'WORKFLOW').get(文字(实例号))).terminate(选项);
-        },
-        豫言_云工_工作流删除: async (名, 实例号) => {
-          await (await 绑定(环境, 许可, 名, 'WORKFLOW').get(文字(实例号))).delete();
-        },
-        豫言_云工_持久状态句柄: () => 句柄.登记(取持久状态()),
-        豫言_云工_持久仓句柄: () => 句柄.登记(取持久仓()),
-        豫言_云工_持久对象标识: () => String(取持久状态().id),
-        豫言_云工_持久对象标识信息文: () => {
-          const ID = 取持久状态().id;
-          return JSON.stringify({字符串: ID.toString(), 名称: ID.name ?? null, 辖区: ID.jurisdiction ?? null});
-        },
-        // 文言：事务回调别启豫言客器，所读写皆循 txn。汉语：在独立的豫言调用中运行事务回调，KV 操作绑定到平台 txn。
-        豫言_云工_持久事务执行: async 名 => {
-          if (!对象状态 || 事务仓) throw Error('仅持久对象事件可启动事务');
-          const 仓 = 取持久仓();
-          if (typeof 仓.transaction !== 'function') throw Error('持久对象不支持异步事务');
-          return await 仓.transaction(事务 => 执行('durable-transaction', 文字(名), 环境, 上下文, 对象状态, null, 事务));
-        },
-        豫言_云工_持久事务名: () => {
-          if (!事务仓) throw Error('当前事件不是持久对象事务');
-          return 文字(载荷);
-        },
-        豫言_云工_持久事务输出: 结果 => {
-          if (!事务仓 || 已设事务输出) throw Error('事务结果只能设置一次');
-          事务输出 = 文字(结果);
-          已设事务输出 = true;
-        },
-        豫言_云工_持久事务回滚: () => {
-          if (!事务仓) throw Error('当前事件不是持久对象事务');
-          事务仓.rollback();
-        },
-        // 文言：事务之败归于值，豫言可捕而复；平台已使诸写回滚。汉语：与 持久事务执行 相同，但把回调或平台的失败作为 [false, 名称: 消息] 返回，供适配转成可捕获的豫言异常。
-        豫言_云工_持久事务执行安全: async 名 => {
-          try { return [true, await 能力.豫言_云工_持久事务执行(名)]; }
-          catch (错) { return [false, 描述错误(错)]; }
-        },
-        // 文言：独占之区以 blockConcurrencyWhile 为界，区内复启豫言客器；区内之败归于值，不使异常穿平台之回调，免对象被重置。
-        // 汉语：暂停投递其他事件，直到重入的 durable-block 处理入口结束。区内失败不抛给平台回调（平台会因此重置整个对象），而是返回 [false, 名称: 消息]。名称、参数皆由豫言定；参数与结果均为有效 JSON 文字。
-        豫言_云工_持久独占执行安全: async (名, 参数文) => {
-          try {
-            if (!对象状态) throw Error('仅持久对象事件可启动独占区');
-            if (事务仓) throw Error('持久事务回调内不可启动独占区');
-            if (种类 === 'durable-block') throw Error('独占区内不可再启动独占区');
-            if (typeof 对象状态.blockConcurrencyWhile !== 'function') throw Error('持久对象不支持 blockConcurrencyWhile');
-            const 操作名 = 文字(名), 参数 = 文字(参数文);
-            if (!操作名 || 字节长(操作名) > 128) throw Error('独占区操作名须为 1 至 128 字节');
-            if (字节长(参数) > 8388608) throw Error('独占区参数超过 8 MiB');
-            try { JSON.parse(参数); } catch { throw Error('独占区参数不是有效 JSON'); }
-            const 果 = await 对象状态.blockConcurrencyWhile(async () => {
-              try { return {成功: true, 值: await 执行('durable-block', {名: 操作名, 参数}, 环境, 上下文, 对象状态, null, null)}; }
-              catch (错) { return {成功: false, 消息: 描述错误(错)}; }
-            });
-            return 果.成功 ? [true, 果.值] : [false, 果.消息];
-          } catch (错) { return [false, 描述错误(错)]; }
-        },
-        豫言_云工_持久独占名: () => {
-          if (!需独占输出) throw Error('当前事件不是持久对象独占区');
-          return 载荷.名;
-        },
-        豫言_云工_持久独占参数: () => {
-          if (!需独占输出) throw Error('当前事件不是持久对象独占区');
-          return 载荷.参数;
-        },
-        // 文言：果必为有效 JSON 且一次惟一；违者归阴与因，客可捕之。汉语：设置独占区的唯一结果；重复、非 JSON 或超过 8 MiB 时返回 [false, 原因]，不抛 JS 异常。
-        豫言_云工_持久独占输出安全: 结果 => {
-          try {
-            if (!需独占输出) throw Error('当前事件不是持久对象独占区');
-            if (已设独占输出) throw Error('独占区结果只能设置一次');
-            const 文 = 文字(结果);
-            if (字节长(文) > 8388608) throw Error('独占区结果超过 8 MiB');
-            try { JSON.parse(文); } catch { throw Error('独占区结果不是有效 JSON'); }
-            独占输出 = 文;
-            已设独占输出 = true;
-            return [true, ''];
-          } catch (错) { return [false, 描述错误(错)]; }
-        },
-        // 文言：直写之值先验于宿主原生 JSON、大小与保留形，败则归值；事务内外皆循当前之仓。
-        // 汉语：写入一个 JSON 值（键 1–2048 字节、值文字不超过 2 MiB、不含宿主保留单键对象）；失败返回 [false, 原因]，不抛 JS 异常。值以结构化值存入，与 持久写入值 的既有存取方式相同。
-        豫言_云工_持久写入值安全: async (键, 值文) => {
-          try {
-            const 名 = 文字(键), 文 = 文字(值文), 键长 = 字节长(名);
-            if (键长 < 1 || 键长 > 2048) throw Error('持久键须为 1 至 2048 字节');
-            if (字节长(文) > 2097152) throw Error('持久值超过 2 MiB');
-            let 值;
-            try { 值 = JSON.parse(文); } catch { throw Error('持久值不是有效 JSON'); }
-            const 保留 = 查保留形(值);
-            if (保留) throw Error('持久值' + 保留);
-            await 取键值仓().put(名, 值);
-            return [true, ''];
-          } catch (错) { return [false, 描述错误(错)]; }
-        },
-        // 文言：列举之选先规整，空串视同无；果逾八兆则败，令客分页。汉语：接受 {prefix,start,startAfter,end,limit,reverse}，空字符串等同未指定；未知字段、类型错误、start 与 startAfter 并存、结果超过 8 MiB 时返回 [false, 原因]。
-        豫言_云工_持久列举值安全: async 选项文 => {
-          try {
-            let 原;
-            try { 原 = JSON.parse(文字(选项文)); } catch { throw Error('列举选项不是有效 JSON'); }
-            if (!原 || typeof 原 !== 'object' || Array.isArray(原)) throw Error('列举选项须为 JSON 对象');
-            const 选项 = {};
-            for (const [名, 值] of Object.entries(原)) {
-              if (['prefix', 'start', 'startAfter', 'end'].includes(名)) {
-                if (typeof 值 !== 'string') throw Error('列举选项 ' + 名 + ' 须为字符串');
-                if (值 !== '') 选项[名] = 值;
-              } else if (名 === 'limit') {
-                if (!Number.isSafeInteger(值) || 值 < 1) throw Error('列举选项 limit 须为不小于 1 的整数');
-                选项.limit = 值;
-              } else if (名 === 'reverse') {
-                if (typeof 值 !== 'boolean') throw Error('列举选项 reverse 须为爻');
-                if (值) 选项.reverse = true;
-              } else throw Error('列举选项含未知字段：' + 名);
-            }
-            if (Object.hasOwn(选项, 'start') && Object.hasOwn(选项, 'startAfter')) throw Error('列举选项不能同时指定 start 与 startAfter');
-            const 结果 = await 取键值仓().list(选项);
-            const 文 = JSON.stringify(Array.from(结果, ([键, 值]) => [键, 句柄.出(值)]));
-            if (字节长(文) > 8388608) throw Error('列举结果超过 8 MiB，请用 limit 分页');
-            return [true, 文];
-          } catch (错) { return [false, 描述错误(错)]; }
-        },
-        豫言_云工_持久读取文字: async 键 => {
-          const 值 = await 取键值仓().get(文字(键));
-          if (值 == null) return [false, ''];
-          if (typeof 值 !== 'string') throw Error('持久对象存储值不是字符串');
-          return [true, 值];
-        },
-        豫言_云工_持久写入文字: async (键, 值) => { await 取键值仓().put(文字(键), 文字(值)); },
-        豫言_云工_持久读取值: async 键 => {
-          const 值 = await 取键值仓().get(文字(键));
-          return 值 === undefined ? [false, ''] : [true, JSON.stringify(句柄.出(值))];
-        },
-        // 文言：缺键之果以单文还，免二元组于事复入时多型转渡。汉语：以单个 JSON 字符串返回存在标记和值，便于事务回调可靠处理缺失键。
-        豫言_云工_持久读取值安全文: async 键 => {
-          const 值 = await 取键值仓().get(文字(键));
-          return 值 === undefined ? '{"存在":false}' : JSON.stringify({存在: true, 值: 句柄.出(值)});
-        },
-        豫言_云工_持久写入值: async (键, 值文) => {
-          await 取键值仓().put(文字(键), 句柄.入(JSON.parse(文字(值文))));
-        },
-        豫言_云工_持久删除: async 键 => Boolean(await 取键值仓().delete(文字(键))),
-        // 文言：批读还平台 Map 之有序双元列，缺键不列；批写删皆循当前事务仓。汉语：多键操作保留 Map 排序、缺失键省略和事务上下文。
-        豫言_云工_持久批读值: async (键文, 选项文) => {
-          const 键列 = JSON.parse(文字(键文));
-          const 选项 = JSON.parse(文字(选项文));
-          if (!Array.isArray(键列) || 键列.length > 128 || !键列.every(键 => typeof 键 === 'string')) throw Error('持久批读键须为至多 128 个字符串');
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) || Object.entries(选项).some(([名, 值]) => !['allowConcurrency', 'noCache'].includes(名) || typeof 值 !== 'boolean')) throw Error('持久批读选项无效');
-          const 结果 = await 取键值仓().get(键列, 选项);
-          return JSON.stringify(Array.from(结果, ([键, 值]) => [键, 句柄.出(值)]));
-        },
-        豫言_云工_持久批写值: async (各值文, 选项文) => {
-          const 各值 = JSON.parse(文字(各值文));
-          const 选项 = JSON.parse(文字(选项文));
-          if (!各值 || typeof 各值 !== 'object' || Array.isArray(各值) || Object.keys(各值).length > 128) throw Error('持久批写值须为至多 128 项对象');
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) || Object.entries(选项).some(([名, 值]) => !['allowUnconfirmed', 'noCache'].includes(名) || typeof 值 !== 'boolean')) throw Error('持久批写选项无效');
-          await 取键值仓().put(句柄.入(各值), 选项);
-        },
-        豫言_云工_持久批删: async (键文, 选项文) => {
-          const 键列 = JSON.parse(文字(键文));
-          const 选项 = JSON.parse(文字(选项文));
-          if (!Array.isArray(键列) || 键列.length > 128 || !键列.every(键 => typeof 键 === 'string')) throw Error('持久批删键须为至多 128 个字符串');
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) || Object.entries(选项).some(([名, 值]) => !['allowUnconfirmed', 'noCache'].includes(名) || typeof 值 !== 'boolean')) throw Error('持久批删选项无效');
-          return Number(await 取键值仓().delete(键列, 选项));
-        },
-        豫言_云工_持久列举值: async 选项文 => {
-          const 原选项 = JSON.parse(文字(选项文));
-          if (!原选项 || typeof 原选项 !== 'object' || Array.isArray(原选项)) throw Error('持久列举选项须为对象');
-          const 允许 = new Set(['start', 'startAfter', 'end', 'prefix', 'reverse', 'limit', 'allowConcurrency', 'noCache']);
-          for (const [名, 值] of Object.entries(原选项)) {
-            if (!允许.has(名)) throw Error('持久列举选项无效：' + 名);
-            if (['start', 'startAfter', 'end', 'prefix'].includes(名) && typeof 值 !== 'string') throw Error('持久列举键边界须为字符串');
-            if (['reverse', 'allowConcurrency', 'noCache'].includes(名) && typeof 值 !== 'boolean') throw Error('持久列举开关须为爻');
-            if (名 === 'limit' && (!Number.isSafeInteger(值) || 值 < 1)) throw Error('持久列举数量须为正整数');
-          }
-          if (Object.hasOwn(原选项, 'start') && Object.hasOwn(原选项, 'startAfter')) throw Error('持久列举不能同时指定 start 与 startAfter');
-          const 结果 = await 取键值仓().list(原选项);
-          return JSON.stringify(Array.from(结果, ([键, 值]) => [键, 句柄.出(值)]));
-        },
-        // 文言：清仓动 SQL、KV 与告警；确认既写之术各从平台。汉语：deleteAll 和 sync 直接转发 DurableObjectStorage，不在 KV 事务回调内调用。
-        豫言_云工_持久清仓: async 选项文 => {
-          if (事务仓) throw Error('事务回调内不可清空持久仓');
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) || Object.entries(选项).some(([名, 值]) => !['allowUnconfirmed', 'noCache'].includes(名) || typeof 值 !== 'boolean')) throw Error('持久清仓选项无效');
-          await 取持久仓().deleteAll(选项);
-        },
-        豫言_云工_持久同步: async () => {
-          if (事务仓) throw Error('事务回调内不可单独同步持久仓');
-          await 取持久仓().sync();
-        },
-        // 文言：SQLite 同步 KV 与异步 KV 同表；列举于本次宿主调用取尽。汉语：同步 KV 操作直接访问 SQLite 后端，list 在同一次调用中消费迭代器。
-        豫言_云工_同步键值读取: 键 => {
-          const 值 = 取同步键值仓().get(文字(键));
-          return 值 === undefined ? [false, ''] : [true, JSON.stringify(句柄.出(值))];
-        },
-        豫言_云工_同步键值写入: (键, 值文) => {
-          取同步键值仓().put(文字(键), 句柄.入(JSON.parse(文字(值文))));
-        },
-        豫言_云工_同步键值删除: 键 => Boolean(取同步键值仓().delete(文字(键))),
-        豫言_云工_同步键值列举: 选项文 => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('同步 KV 列举选项须为对象');
-          const 允许 = new Set(['start', 'startAfter', 'end', 'prefix', 'reverse', 'limit']);
-          for (const [名, 值] of Object.entries(选项)) {
-            if (!允许.has(名)) throw Error('同步 KV 列举选项无效：' + 名);
-            if (['start', 'startAfter', 'end', 'prefix'].includes(名) && typeof 值 !== 'string') throw Error('同步 KV 键边界须为字符串');
-            if (名 === 'reverse' && typeof 值 !== 'boolean') throw Error('同步 KV 逆序须为爻');
-            if (名 === 'limit' && (!Number.isSafeInteger(值) || 值 < 1)) throw Error('同步 KV 数量须为正整数');
-          }
-          if (Object.hasOwn(选项, 'start') && Object.hasOwn(选项, 'startAfter')) throw Error('同步 KV 列举不能同时指定 start 与 startAfter');
-          return JSON.stringify(Array.from(取同步键值仓().list(选项), ([键, 值]) => [键, 句柄.出(值)]));
-        },
-        豫言_云工_持久SQL执行: (语句, 参数文) => {
-          const 仓 = 取SQL仓();
-          const 参数 = JSON.parse(文字(参数文));
-          if (!Array.isArray(参数)) throw Error('SQL 参数须为结森数组');
-          const 结果 = 仓.exec(文字(语句), ...参数.map(项 => 句柄.入(项))).toArray();
-          return JSON.stringify(句柄.出(结果));
-        },
-        // 文言：游标之序由客掌，宿主每次直行 next/raw/one；越候之视依平台。汉语：暴露平台 SqlStorageCursor 的迭代、原始行、单行和统计，跨 await 的快照限制仍按平台语义。
-        豫言_云工_持久SQL游标新建: (语句, 参数文) => {
-          const 参数 = JSON.parse(文字(参数文));
-          if (!Array.isArray(参数)) throw Error('SQL 参数须为结森数组');
-          return 句柄.登记(取SQL仓().exec(文字(语句), ...参数.map(项 => 句柄.入(项))));
-        },
-        豫言_云工_持久SQL游标下一行: (号, 原始) => {
-          const 游标 = 取SQL游标(号);
-          const 结果 = (原始 ? 游标.raw() : 游标).next();
-          return JSON.stringify(结果.done ? {已终: true} : {已终: false, 值: 句柄.出(结果.value)});
-        },
-        豫言_云工_持久SQL游标余行: (号, 原始) => {
-          const 游标 = 取SQL游标(号);
-          return JSON.stringify(句柄.出((原始 ? 游标.raw() : 游标).toArray()));
-        },
-        豫言_云工_持久SQL游标单行安全: 号 => {
-          try { return JSON.stringify({成功: true, 值: 句柄.出(取SQL游标(号).one())}); }
-          catch (错) { return JSON.stringify({成功: false, 错误: String(错?.message ?? 错)}); }
-        },
-        豫言_云工_持久SQL游标属性: 号 => {
-          const 游标 = 取SQL游标(号);
-          return JSON.stringify({列名: Array.from(游标.columnNames), 已读行: 游标.rowsRead, 已写行: 游标.rowsWritten});
-        },
-        豫言_云工_持久SQL游标释放: 号 => { 取SQL游标(号); 句柄.释放(文字(号)); },
-        豫言_云工_持久SQL数据库大小: () => String(取SQL仓().databaseSize),
-        // 文言：复时之签惟 SQLite 云上可得；本地不行则归阴与原误。汉语：PITR 方法原样调用平台，安全入口将本地未支持或参数错误返回豫言。
-        豫言_云工_持久当前书签安全: async () => {
-          try { return [true, String(await 取恢复仓().getCurrentBookmark())]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_持久时刻书签安全: async 时文 => {
-          try {
-            const 时 = Number(文字(时文));
-            if (!Number.isSafeInteger(时) || 时 < 0) throw Error('恢复书签时刻无效');
-            return [true, String(await 取恢复仓().getBookmarkForTime(时))];
-          } catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_持久下次会话恢复书签安全: async 书签 => {
-          try {
-            const 文 = 文字(书签);
-            if (!文) throw Error('恢复书签不可为空');
-            return [true, String(await 取恢复仓().onNextSessionRestoreBookmark(文))];
-          } catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        // 文言：客既备复时之签，方可命对象重启；宿主不代客决断。汉语：豫言显式决定是否调用 ctx.abort 以完成预定恢复；本地不实际执行此操作。
-        豫言_云工_持久重启对象: (原因, 重试告警) => {
-          if (事务仓) throw Error('持久事务回调内不可重启对象');
-          取持久状态().abort(文字(原因), {retryAlarm: Boolean(重试告警)});
-        },
-        豫言_云工_持久SQL事务: 步骤文 => {
-          const 仓 = 取持久仓();
-          if (!仓.sql || typeof 仓.transactionSync !== 'function') throw Error('持久对象没有 SQLite 同步事务');
-          const 步骤 = JSON.parse(文字(步骤文));
-          if (!Array.isArray(步骤) || 步骤.length > 256) throw Error('SQL 事务步骤无效');
-          const 结果 = 仓.transactionSync(() => 步骤.map(项 => {
-            if (!Array.isArray(项) || 项.length !== 2 || typeof 项[0] !== 'string' || !Array.isArray(项[1])) {
-              throw Error('SQL 事务步骤须为语句与参数数组');
-            }
-            return 仓.sql.exec(项[0], ...项[1].map(值 => 句柄.入(值))).toArray();
-          }));
-          return JSON.stringify(句柄.出(结果));
-        },
-        豫言_云工_持久取告警: async () => {
-          const 时 = await 取持久仓().getAlarm();
-          return 时 == null ? [false, ''] : [true, String(时)];
-        },
-        豫言_云工_持久设告警: async 时文 => {
-          const 时 = Number(文字(时文));
-          if (!Number.isSafeInteger(时) || 时 < 0) throw Error('持久对象告警时刻无效');
-          await 取持久仓().setAlarm(时);
-        },
-        豫言_云工_持久延后告警: async 毫秒 => {
-          const 延时 = Number(毫秒);
-          if (!Number.isSafeInteger(延时) || 延时 < 0) throw Error('持久对象告警延时无效');
-          const 时 = Date.now() + 延时;
-          if (!Number.isSafeInteger(时)) throw Error('持久对象告警时刻溢出');
-          await 取持久仓().setAlarm(时);
-        },
-        豫言_云工_持久删告警: async () => { await 取持久仓().deleteAlarm(); },
-        豫言_云工_持久告警重试数: () => Number(取告警信息().retryCount ?? 0),
-        豫言_云工_持久告警为重试: () => Boolean(取告警信息().isRetry),
-        豫言_云工_定时控制器句柄: () => 句柄.登记(取定时()),
-        豫言_云工_定时表达式: () => 取定时().cron,
-        豫言_云工_定时时刻: () => String(取定时().scheduledTime),
-        豫言_云工_定时不重试: () => {
-          const 控制 = 取定时();
-          if (typeof 控制.noRetry !== 'function') throw Error('定时控制器不支持 noRetry');
-          控制.noRetry();
-        },
-        豫言_云工_邮件句柄: () => 句柄.登记(取邮件()),
-        豫言_云工_邮件发件: () => 取邮件().from,
-        豫言_云工_邮件收件: () => 取邮件().to,
-        豫言_云工_邮件大小: () => 取邮件().rawSize,
-        豫言_云工_邮件可转发: () => Boolean(取邮件().canBeForwarded),
-        豫言_云工_邮件标头句柄: () => 句柄.登记(取邮件().headers),
-        豫言_云工_邮件原文流句柄: () => 句柄.登记(取邮件().raw),
-        豫言_云工_邮件拒绝: 原因 => { 取邮件().setReject(文字(原因)); },
-        豫言_云工_邮件转发: async 收件 => JSON.stringify(句柄.出(await 取邮件().forward(文字(收件)))),
-        豫言_云工_邮件带标头转发: async (收件, 标头号) => {
-          const 标头 = 句柄.取得(文字(标头号));
-          if (!(标头 instanceof Headers)) throw Error('邮件转发标头句柄不是 Headers');
-          return JSON.stringify(句柄.出(await 取邮件().forward(文字(收件), 标头)));
-        },
-        豫言_云工_邮件回复原文: async 原文 => {
-          const 构造 = 全局.EmailMessage ?? (await import('cloudflare:email')).EmailMessage;
-          if (typeof 构造 !== 'function') throw Error('云工 EmailMessage 构造器不存在');
-          const 信 = 取邮件();
-          return JSON.stringify(句柄.出(await 信.reply(new 构造(信.to, 信.from, 文字(原文)))));
-        },
-        豫言_云工_队列批次句柄: () => 句柄.登记(取批次()),
-        豫言_云工_队列名称: () => 取批次().queue,
-        豫言_云工_队列消息数: () => 取批次().messages.length,
-        豫言_云工_队列消息句柄: 序 => 句柄.登记(取消息(序)),
-        豫言_云工_队列消息正文: 序 => JSON.stringify(句柄.出(取消息(序).body)),
-        豫言_云工_队列消息标识: 序 => 取消息(序).id,
-        豫言_云工_队列消息尝试数: 序 => 取消息(序).attempts,
-        豫言_云工_队列消息时间: 序 => 取消息(序).timestamp.toISOString(),
-        豫言_云工_队列消息确认: 序 => { 取消息(序).ack(); },
-        豫言_云工_队列消息重试: 序 => { 取消息(序).retry(); },
-        豫言_云工_队列消息延后重试: (序, 秒) => { 取消息(序).retry({delaySeconds: Number(秒)}); },
-        豫言_云工_队列全数确认: () => { 取批次().ackAll(); },
-        豫言_云工_队列全数重试: () => { 取批次().retryAll(); },
-        豫言_云工_队列全数延后重试: 秒 => { 取批次().retryAll({delaySeconds: Number(秒)}); },
-        豫言_云工_读取请求: 输入,
-        豫言_云工_设置响应: (状态, 种类, 内容) => {
-          const 码 = Number(状态);
-          if (!Number.isInteger(码) || 码 < 200 || 码 > 599) throw Error('响应状态无效');
-          设响应(new Response(文字(内容), {status: 码, headers: {'content-type': 文字(种类)}}));
-        },
-        豫言_云工_请求文字: async (方法, 网址, 内容) => {
-          const 目标文 = 文字(网址);
-          if (Array.isArray(许可.OUTBOUND_ORIGINS) && !已授外发网址(目标文)) throw Error('上游网址未获授权');
-          const 回应 = await 网络(目标文, {method: 文字(方法), body: 文字(方法) === 'GET' ? undefined : 文字(内容), redirect: Array.isArray(许可.OUTBOUND_ORIGINS) ? 'error' : undefined});
-          return JSON.stringify({状态: 回应.status, 正文: await 限文(回应)});
-        },
-        // 文言：外发惟许列明之 HTTPS 来源，拒凭据与异源转址。汉语：上游请求按程序许可核对 HTTPS 来源，适配器还须使用 redirect:error。
-        豫言_云工_外发网址已授权: 网址 => 已授外发网址(文字(网址)),
-        // 文言：先发求而归待柄，客得以断信号，后候回应。汉语：豫言先取得在途 fetch Promise，随后可中止，再领取 Response 句柄或错误。
-        豫言_云工_请求发起可中断: (网址, 选项文, 信号号) => {
-          const 信号 = 句柄.取得(文字(信号号));
-          if (!(信号 instanceof 全局.AbortSignal)) throw Error('请求中断信号句柄无效');
-          const 目标文 = 文字(网址);
-          if (Array.isArray(许可.OUTBOUND_ORIGINS) && !已授外发网址(目标文)) throw Error('上游网址未获授权');
-          const 选项 = 句柄.入(JSON.parse(文字(选项文)));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项)) throw Error('请求选项须为对象');
-          let 待;
-          // 汉语：云工只支持 manual 与 follow；以 manual 取回应后显式拒绝重定向。
-          // 文言：云工惟许 manual、follow；取 manual 之应，见转址则拒之。
-          const 拒绝转址 = Array.isArray(许可.OUTBOUND_ORIGINS) || 选项.redirect === 'error';
-          try {
-            待 = Promise.resolve(网络(目标文, {...选项, redirect: 拒绝转址 ? 'manual' : 选项.redirect, signal: 信号})).then(回应 => {
-              if (拒绝转址 && [301, 302, 303, 307, 308].includes(回应.status)) throw Error('上游请求禁止重定向');
-              return 回应;
-            });
-          }
-          catch (错) { 待 = Promise.reject(错); }
-          待.catch(() => {});
-          return 句柄.登记(待);
-        },
-        豫言_云工_请求候回应安全: async 等号 => {
-          const 名 = 文字(等号);
-          let 已取 = false;
-          try { const 待 = 句柄.取得(名); 已取 = true; return [true, 句柄.登记(await 待)]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-          finally { if (已取) 句柄.释放(名); }
-        },
-        // 文言：回应之体若空，则返阴；有流则授原生柄，客可逐块续解。汉语：把 fetch Response.body 显式交给豫言流接口，保留 null 与错误状态。
-        豫言_云工_回应状态: 号 => Number(取回应对象(号).status),
-        豫言_云工_回应标头句柄: 号 => 句柄.登记(取回应对象(号).headers),
-        豫言_云工_回应正文流句柄: 号 => {
-          const 体 = 取回应对象(号).body;
-          return 体 === null ? [false, ''] : [true, 句柄.登记(体)];
-        },
-        豫言_云工_回应文字安全: async 号 => {
-          try { return [true, await 限文(句柄.取得(文字(号)))]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_键值读取: async (名, 键) => (await 绑定(环境, 许可, 名, 'KV').get(文字(键))) ?? '',
-        豫言_云工_键值写入: async (名, 键, 值) => { await 绑定(环境, 许可, 名, 'KV').put(文字(键), 文字(值)); },
-        豫言_云工_对象读取: async (名, 键) => {
-          const 对象 = await 绑定(环境, 许可, 名, 'R2').get(文字(键));
-          return 对象 ? await 限文(对象) : '';
-        },
-        豫言_云工_对象写入: async (名, 键, 值) => { await 绑定(环境, 许可, 名, 'R2').put(文字(键), 文字(值)); },
-        豫言_云工_数据库查询: async (名, 语句) => {
-          const 结果 = await 绑定(环境, 许可, 名, 'D1').prepare(文字(语句)).all();
-          return JSON.stringify(结果);
-        },
-        // 文言：篇载不得，亦作值而返，同安全之义。汉语：平台资料.mjs 载入失败也作为失败值返回，保持“安全”变体不抛异常的约定。
-        豫言_云工_平台资料列键安全: async (集, 前缀) => {
-          let 器;
-          try { 器 = await 取平台资料(); } catch (错) { return [false, String(错?.message ?? 错)]; }
-          return 器.列键安全(环境, 许可, 文字(集), 文字(前缀));
-        },
-        豫言_云工_平台资料读文字安全: async (集, 键) => {
-          let 器;
-          try { 器 = await 取平台资料(); } catch (错) { return [2, String(错?.message ?? 错)]; }
-          return 器.读文字安全(环境, 许可, 文字(集), 文字(键));
-        },
-        豫言_云工_服务请求文字: async (名, 方法, 网址, 内容) => {
-          const 请求 = new Request(文字(网址), {method: 文字(方法), body: 文字(方法) === 'GET' ? undefined : 文字(内容)});
-          const 回应 = await 绑定(环境, 许可, 名, 'SERVICE').fetch(请求);
-          return JSON.stringify({状态: 回应.status, 正文: await 限文(回应)});
-        },
-        豫言_云工_持久对象请求文字: async (名, 对象名, 方法, 网址, 内容) => {
-          const 空间 = 绑定(环境, 许可, 名, 'DO');
-          const 桩 = 空间.get(空间.idFromName(文字(对象名)));
-          const 请求 = new Request(文字(网址), {method: 文字(方法), body: 文字(方法) === 'GET' ? undefined : 文字(内容)});
-          const 回应 = await 桩.fetch(请求);
-          return JSON.stringify({状态: 回应.status, 正文: await 限文(回应)});
-        },
-        // 文言：对象空间、标识与桩留宿主；客以柄裁命名、辖区及定位。汉语：豫言持有命名空间、DurableObjectId 和 Stub 句柄，选项直接遵循平台规则。
-        豫言_云工_持久空间句柄: 名 => 句柄.登记(绑定(环境, 许可, 名, 'DO')),
-        豫言_云工_持久空间命名ID: (空间号, 名) =>
-          句柄.登记(句柄.取得(文字(空间号)).idFromName(文字(名))),
-        豫言_云工_持久空间唯一ID: (空间号, 选项文) => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) ||
-              Object.entries(选项).some(([名, 值]) => 名 !== 'jurisdiction' || typeof 值 !== 'string' || !值))
-            throw Error('持久对象唯一 ID 选项无效');
-          return 句柄.登记(句柄.取得(文字(空间号)).newUniqueId(选项));
-        },
-        豫言_云工_持久空间唯一ID安全: (空间号, 选项文) => {
-          try { return [true, 能力.豫言_云工_持久空间唯一ID(空间号, 选项文)]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_持久空间还原ID安全: (空间号, ID文) => {
-          try { return [true, 句柄.登记(句柄.取得(文字(空间号)).idFromString(文字(ID文)))]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_持久ID字符串: 号 => 句柄.取得(文字(号)).toString(),
-        豫言_云工_持久ID信息文: 号 => {
-          const ID = 句柄.取得(文字(号));
-          return JSON.stringify({字符串: ID.toString(), 名称: ID.name ?? null, 辖区: ID.jurisdiction ?? null});
-        },
-        豫言_云工_持久ID相等: (甲, 乙) => Boolean(句柄.取得(文字(甲)).equals(句柄.取得(文字(乙)))),
-        豫言_云工_持久空间按ID取桩: (空间号, ID号, 选项文) => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) ||
-              Object.entries(选项).some(([名, 值]) => 名 !== 'locationHint' || typeof 值 !== 'string' || !值))
-            throw Error('持久对象取桩选项无效');
-          return 句柄.登记(句柄.取得(文字(空间号)).get(句柄.取得(文字(ID号)), 选项));
-        },
-        豫言_云工_持久空间按名取桩: (空间号, 名, 选项文) => {
-          const 选项 = JSON.parse(文字(选项文));
-          if (!选项 || typeof 选项 !== 'object' || Array.isArray(选项) ||
-              Object.entries(选项).some(([键, 值]) => 键 !== 'locationHint' || typeof 值 !== 'string' || !值))
-            throw Error('持久对象按名取桩选项无效');
-          return 句柄.登记(句柄.取得(文字(空间号)).getByName(文字(名), 选项));
-        },
-        豫言_云工_持久空间辖区: (空间号, 辖区) =>
-          句柄.登记(句柄.取得(文字(空间号)).jurisdiction(文字(辖区))),
-        豫言_云工_持久空间辖区安全: (空间号, 辖区) => {
-          try { return [true, 句柄.登记(句柄.取得(文字(空间号)).jurisdiction(文字(辖区)))]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_请求句柄: () => {
-          if (!请求) throw Error('当前事件没有 HTTP 请求');
-          return 句柄.登记(请求);
-        },
-        豫言_云工_上下文句柄: () => {
-          if (!上下文) throw Error('云工上下文不存在');
-          return 句柄.登记(上下文);
-        },
-        豫言_云工_绑定句柄: (种类, 名) => 句柄.登记(绑定(环境, 许可, 名, 文字(种类))),
-        // 文言：文值、密值各按名授；空串亦为实值。汉语：文本环境变量与 Secret 分别授权，空字符串也可读取。
-        豫言_云工_环境文字: 名 => {
-          const 值 = 取值绑定(环境, 许可, 名, 'ENV');
-          if (typeof 值 !== 'string') throw Error('环境变量不是文字');
-          return 值;
-        },
-        豫言_云工_环境值文: 名 => JSON.stringify(句柄.出(取值绑定(环境, 许可, 名, 'ENV'))),
-        // 文言：绑定之在否，先核许可而后察 env 之真值；未授者败，已授而阙或空者归阴。
-        // 汉语：按种类与名称核对许可（未授权抛“未授权的<种类>绑定：<名>”），返回 Boolean(env[名])：已授权但缺失、空字符串、null 或 0 返回阴。供环境文字适配区分“空”与“有值”（环境文字适配所需的宿主原语）。
-        豫言_云工_授权绑定存在: (种类, 名) => {
-          const 类 = 文字(种类), 称 = 文字(名);
-          if (!许可[类]?.includes(称)) throw Error('未授权的' + 类 + '绑定：' + 称);
-          return Boolean(环境[称]);
-        },
-        豫言_云工_秘密文字: 名 => {
-          const 值 = 取值绑定(环境, 许可, 名, 'SECRET');
-          if (typeof 值 !== 'string') throw Error('Secret 不是文字');
-          return 值;
-        },
-        // 文言：许可仍严；缺密与空文分明，密值不书日志。汉语：可选 Secret 仍按名称授权；缺失与空字符串分开返回，不记录密钥。
-        豫言_云工_秘密文字安全文: 名 => {
-          const 名称 = 文字(名);
-          if (!许可.SECRET?.includes(名称)) throw Error('未授权的 SECRET 绑定：' + 名称);
-          if (!Object.hasOwn(环境, 名称)) return '{"存在":false}';
-          const 值 = 环境[名称];
-          if (值 == null) return '{"存在":false}';
-          if (typeof 值 !== 'string') throw Error('Secret 不是文字');
-          return JSON.stringify({存在: true, 文字: 值});
-        },
-        // 文言：账号密仓异步取值，未有与空文有别。汉语：Secrets Store 绑定调用 get()，缺失值与空字符串分开返回。
-        豫言_云工_密仓读取: async 名 => {
-          const 值 = await 绑定(环境, 许可, 名, 'SECRETS_STORE').get();
-          if (值 == null) return [false, ''];
-          if (typeof 值 !== 'string') throw Error('Secrets Store 返回值不是文字');
-          return [true, 值];
-        },
-        豫言_云工_版本元数据文: 名 => {
-          const 值 = 绑定(环境, 许可, 名, 'VERSION');
-          return JSON.stringify(句柄.出({id: 值.id, tag: 值.tag, timestamp: 值.timestamp}));
-        },
-        豫言_云工_分析写点: (名, 点文) => {
-          const 点 = JSON.parse(文字(点文));
-          if (!点 || typeof 点 !== 'object' || Array.isArray(点)) throw Error('分析数据点必须是对象');
-          const blobs = 点.blobs ?? [], doubles = 点.doubles ?? [], indexes = 点.indexes ?? [];
-          if (!Array.isArray(blobs) || blobs.length > 20 || blobs.some(项 => typeof 项 !== 'string') ||
-              !Array.isArray(doubles) || doubles.length > 20 || doubles.some(项 => typeof 项 !== 'number' || !Number.isFinite(项)) ||
-              !Array.isArray(indexes) || indexes.length > 1 || indexes.some(项 => typeof 项 !== 'string')) {
-            throw Error('分析数据点字段无效');
-          }
-          绑定(环境, 许可, 名, 'ANALYTICS').writeDataPoint({blobs, doubles, indexes});
-        },
-        // 文言：限流之键由客定，配额与计数归云工。汉语：豫言决定限流键，宿主只调用获授权绑定的 limit 方法。
-        豫言_云工_限流尝试: async (名, 键) => {
-          const 结果 = await 绑定(环境, 许可, 名, 'RATE_LIMIT').limit({key: 文字(键)});
-          if (!结果 || typeof 结果.success !== 'boolean') throw Error('限流绑定返回值无效');
-          return 结果.success;
-        },
-        豫言_云工_动态加载: (名, 程序字节, cpuMs, subRequests) =>
-          句柄.登记(绑定(环境, 许可, 名, 'LOADER').load(造隔离客码(程序字节, cpuMs, subRequests))),
-        豫言_云工_动态按号取: (名, 标识, 程序字节, cpuMs, subRequests) =>
-          句柄.登记(绑定(环境, 许可, 名, 'LOADER').get(文字(标识), async () => 造隔离客码(程序字节, cpuMs, subRequests))),
-        豫言_云工_隔离运行客按号取: (名, 标识, 程序字节, cpuMs, subRequests) =>
-          句柄.登记(绑定(环境, 许可, 名, 'LOADER').get(文字(标识), async () => 造隔离运行客码(程序字节, cpuMs, subRequests))),
-        // 文言：取器之败（未授权、无此绑定、限额无效）归于值，不使异常越 Wasm 之界；败则返阴与「名称: 消息」。汉语：与 隔离运行客按号取 相同，但把宿主失败作为 [false, 消息] 返回，供隔离运行适配转成可捕获的豫言异常；成功返回 [true, 句柄号]。
-        豫言_云工_隔离运行客按号取安全: (名, 标识, 程序字节, cpuMs, subRequests) => {
-          try { return [true, 能力.豫言_云工_隔离运行客按号取(名, 标识, 程序字节, cpuMs, subRequests)]; }
-          catch (错) { return [false, 描述错误(错)]; }
-        },
-        豫言_云工_动态入口句柄: 号 => 句柄.登记(句柄.取得(文字(号)).getEntrypoint()),
-        豫言_云工_全局句柄: 名 => {
-          const 名称 = 允全局(名);
-          if (!(名称 in 全局)) throw Error('云工全局能力不存在：' + 名称);
-          return 句柄.登记(全局[名称]);
-        },
-        豫言_云工_读取属性: (号, 名) => {
-          const 对象 = 句柄.取得(文字(号));
-          return JSON.stringify(句柄.出(对象[句柄.允名(文字(名))]));
-        },
-        豫言_云工_设置对象属性: (号, 名, 值文) => {
-          const 对象 = 句柄.取得(文字(号));
-          对象[句柄.允名(文字(名))] = 句柄.入(JSON.parse(文字(值文)));
-        },
-        豫言_云工_调用方法: async (号, 名, 参数文) => {
-          const 对象 = 句柄.取得(文字(号));
-          const 方法 = 对象[句柄.允名(文字(名))];
-          if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
-          return JSON.stringify(句柄.出(await Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))));
-        },
-        豫言_云工_调用方法安全: async (号, 名, 参数文) => {
-          try {
-            const 对象 = 句柄.取得(文字(号));
-            const 方法 = 对象[句柄.允名(文字(名))];
-            if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
-            return [true, JSON.stringify(句柄.出(await Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))))];
-          } catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错)})]; }
-        },
-        豫言_云工_调用方法原始: (号, 名, 参数文) => {
-          const 对象 = 句柄.取得(文字(号));
-          const 方法 = 对象[句柄.允名(文字(名))];
-          if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
-          return JSON.stringify(句柄.出(Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))));
-        },
-        豫言_云工_等待句柄: async 号 => JSON.stringify(句柄.出(await 句柄.取得(文字(号)))),
-        豫言_云工_构造对象: (名, 参数文) => {
-          const 构造 = 全局[允全局(名)];
-          if (typeof 构造 !== 'function') throw Error('云工构造器不存在');
-          return JSON.stringify(句柄.出(Reflect.construct(构造, 句柄.参数(文字(参数文)))));
-        },
-        豫言_云工_调用全局: async (名, 参数文) => {
-          const 函数 = 全局[允全局(名)];
-          if (typeof 函数 !== 'function') throw Error('云工全局函数不存在');
-          return JSON.stringify(句柄.出(await Reflect.apply(函数, 全局, 句柄.参数(文字(参数文)))));
-        },
-        // 文言：公网 HTTPS 之专术，网页上游适配用之，见上 造公网取。汉语：动态公网 HTTPS 请求的专用原语（网页上游适配用），放行与核对见上文 造公网取；错误不越桥抛出，返回（阴，错误 JSON）。
-        豫言_云工_公网请求发起: async 参数文 => {
-          try { return [true, JSON.stringify(句柄.出(await 公网取(...句柄.参数(文字(参数文)))))]; }
-          catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错)})]; }
-        },
-        豫言_云工_调用全局安全: async (名, 参数文) => {
-          try {
-            const 函数 = 全局[允全局(名)];
-            if (typeof 函数 !== 'function') throw Error('云工全局函数不存在');
-            return [true, JSON.stringify(句柄.出(await Reflect.apply(函数, 全局, 句柄.参数(文字(参数文)))))];
-          } catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错)})]; }
-        },
-        豫言_云工_网址编解码安全: (方法, 内容) => {
-          const 名 = 文字(方法);
-          if (!['encodeURI', 'encodeURIComponent', 'decodeURI', 'decodeURIComponent'].includes(名)) return [false, '方法不受支持'];
-          try { return [true, 全局[名](文字(内容))]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_设置响应句柄: 号 => {
-          const 结果 = 句柄.取得(文字(号));
-          if (!(结果 instanceof Response)) throw Error('宿主句柄不是 Response');
-          设响应(结果);
-        },
-        // 文言：频道仅属持久对象；慢客逾限即断，使其可循客法重取。汉语：广播仅供同一 Durable Object 的事件共享，每订阅读者有 1 MiB 队列上限。
-        豫言_云工_广播新流: 名值 => {
-          if (!对象状态) throw Error('广播须在持久对象内使用');
-          const 名 = 广播名(名值);
-          let 诸听 = 广播频道.get(名);
-          if (!诸听) {
-            if (广播频道.size >= 64) throw Error('云工广播频道达到上限');
-            诸听 = new Set();
-            广播频道.set(名, 诸听);
-          }
-          if (诸听.size >= 256) throw Error('云工广播订阅达到上限');
-          const 态 = {控制: null, 队列: [], 待字: 0, 已闭: false};
-          const 清理 = () => {
-            诸听.delete(态);
-            if (诸听.size === 0 && 广播频道.get(名) === 诸听) 广播频道.delete(名);
-          };
-          const 排送 = () => {
-            while (态.队列.length && 态.控制.desiredSize > 0) {
-              const 块 = 态.队列.shift();
-              态.待字 -= 块.byteLength;
-              态.控制.enqueue(块);
-            }
-            if (态.已闭 && 态.队列.length === 0) { 态.控制.close(); 清理(); }
-          };
-          const 流 = new 全局.ReadableStream({
-            start(控制) { 态.控制 = 控制; 诸听.add(态); },
-            pull() { 排送(); },
-            cancel() { 态.已闭 = true; 态.队列.length = 0; 态.待字 = 0; 清理(); }
-          });
-          try { return 句柄.登记(流); }
-          catch (错) { void 流.cancel(); throw 错; }
-        },
-        豫言_云工_广播发字节: (名值, 内容) => {
-          if (!对象状态) throw Error('广播须在持久对象内使用');
-          const 名 = 广播名(名值), 诸听 = 广播频道.get(名);
-          if (!诸听) return 0;
-          const 字 = 内容.slice();
-          if (字.byteLength > 65536) throw Error('云工广播单块超过 64 KiB');
-          let 已送 = 0;
-          for (const 态 of Array.from(诸听)) {
-            if (态.已闭) continue;
-            if (态.待字 + 字.byteLength > 1048576) {
-              态.已闭 = true;
-              态.队列.length = 0;
-              态.控制.error(Error('云工广播读者积压超过上限'));
-              诸听.delete(态);
-              continue;
-            }
-            态.队列.push(字.slice());
-            态.待字 += 字.byteLength;
-            while (态.队列.length && 态.控制.desiredSize > 0) {
-              const 块 = 态.队列.shift();
-              态.待字 -= 块.byteLength;
-              态.控制.enqueue(块);
-            }
-            已送++;
-          }
-          if (诸听.size === 0) 广播频道.delete(名);
-          return 已送;
-        },
-        豫言_云工_广播关闭: 名值 => {
-          if (!对象状态) throw Error('广播须在持久对象内使用');
-          const 名 = 广播名(名值), 诸听 = 广播频道.get(名);
-          if (!诸听) return 0;
-          广播频道.delete(名);
-          for (const 态 of 诸听) {
-            态.已闭 = true;
-            while (态.队列.length && 态.控制.desiredSize > 0) {
-              const 块 = 态.队列.shift();
-              态.待字 -= 块.byteLength;
-              态.控制.enqueue(块);
-            }
-            if (态.队列.length === 0) 态.控制.close();
-          }
-          return 诸听.size;
-        },
-        豫言_云工_释放句柄: 号 => { 句柄.释放(文字(号)); },
-        豫言_云工_句柄取字节: async 号 => {
-          const 值 = 句柄.取得(文字(号));
-          if (值 instanceof ArrayBuffer) return new Uint8Array(值).slice();
-          if (ArrayBuffer.isView(值)) return new Uint8Array(值.buffer, 值.byteOffset, 值.byteLength).slice();
-          if (typeof Blob !== 'undefined' && 值 instanceof Blob) return new Uint8Array(await 值.arrayBuffer());
-          throw Error('句柄不是二进制对象');
-        },
-        豫言_云工_字节成句柄: 内容 => 句柄.登记(内容.slice()),
-        // 文言：物字之部件及名类皆由客定，宿主但造 Blob、File 并归原字。汉语：豫言控制 Blob/File 组成，宿主保留原生类型、MIME 和流语义。
-        豫言_云工_物字造字节: (内容, 类别) => 句柄.登记(new 全局.Blob([内容.slice()], {type: 文字(类别)})),
-        豫言_云工_物字造组合: (部件文, 选项文) => 句柄.登记(new 全局.Blob(句柄.参数(文字(部件文)), 句柄.入(JSON.parse(文字(选项文))))),
-        豫言_云工_文件造字节: (内容, 名称, 类别, 修改时) => 句柄.登记(new 全局.File([内容.slice()], 文字(名称), {type: 文字(类别), lastModified: Number(修改时)})),
-        豫言_云工_文件造组合: (部件文, 名称, 选项文) => 句柄.登记(new 全局.File(句柄.参数(文字(部件文)), 文字(名称), 句柄.入(JSON.parse(文字(选项文))))),
-        豫言_云工_物字信息文: 号 => {
-          const 值 = 句柄.取得(文字(号));
-          if (!(值 instanceof 全局.Blob)) throw Error('句柄不是 Blob 或 File');
-          const 是文件 = typeof 全局.File === 'function' && 值 instanceof 全局.File;
-          return JSON.stringify({字节数: 值.size, 类别: 值.type, 文件名: 是文件 ? 值.name : null,
-            修改毫秒: 是文件 ? 值.lastModified : null, 相对路径: 是文件 ? String(值.webkitRelativePath ?? '') : null});
-        },
-        豫言_云工_物字切片: (号, 起, 止, 类别) => 句柄.登记(句柄.取得(文字(号)).slice(Number(起), Number(止), 文字(类别))),
-        豫言_云工_物字切片至尾: (号, 起, 类别) => 句柄.登记(句柄.取得(文字(号)).slice(Number(起), undefined, 文字(类别))),
-        豫言_云工_物字原字: async 号 => new Uint8Array(await 句柄.取得(文字(号)).arrayBuffer()),
-        豫言_云工_物字原生字节安全: async 号 => {
-          try { return [true, await 句柄.取得(文字(号)).bytes()]; }
-          catch (错) { return [false, new TextEncoder().encode(String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错))]; }
-        },
-        豫言_云工_物字文字: async 号 => await 句柄.取得(文字(号)).text(),
-        豫言_云工_物字流: 号 => 句柄.登记(句柄.取得(文字(号)).stream()),
-        豫言_云工_物字文字流安全: 号 => {
-          try { return [true, 句柄.登记(句柄.取得(文字(号)).textStream())]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        // 文言：表单诸值按原序归客；文件留柄，毋以象文伤原字。汉语：保留 FormData 重名项顺序，文件通过句柄交给豫言。
-        豫言_云工_表单新建: () => 句柄.登记(new 全局.FormData()),
-        豫言_云工_表单追加文字: (号, 名, 值) => 句柄.取得(文字(号)).append(文字(名), 文字(值)),
-        豫言_云工_表单追加文件: (号, 名, 文件号, 文件名) => 句柄.取得(文字(号)).append(文字(名), 句柄.取得(文字(文件号)), 文字(文件名)),
-        豫言_云工_表单追加原文件: (号, 名, 文件号) => 句柄.取得(文字(号)).append(文字(名), 句柄.取得(文字(文件号))),
-        豫言_云工_表单设置文字: (号, 名, 值) => 句柄.取得(文字(号)).set(文字(名), 文字(值)),
-        豫言_云工_表单设置文件: (号, 名, 文件号, 文件名) => 句柄.取得(文字(号)).set(文字(名), 句柄.取得(文字(文件号)), 文字(文件名)),
-        豫言_云工_表单设置原文件: (号, 名, 文件号) => 句柄.取得(文字(号)).set(文字(名), 句柄.取得(文字(文件号))),
-        豫言_云工_表单删除: (号, 名) => 句柄.取得(文字(号)).delete(文字(名)),
-        豫言_云工_表单含名: (号, 名) => 句柄.取得(文字(号)).has(文字(名)),
-        豫言_云工_表单首项文: (号, 名) => {
-          const 值 = 句柄.取得(文字(号)).get(文字(名));
-          return JSON.stringify(值 === null ? null : typeof 值 === 'string' ? {种类: '文字', 值} : {种类: '文件', 句柄: 句柄.登记(值)});
-        },
-        豫言_云工_表单首文件安全: (号, 名) => {
-          const 值 = 句柄.取得(文字(号)).get(文字(名));
-          return 值 instanceof 全局.File ? [true, 句柄.登记(值)] : [false, ''];
-        },
-        豫言_云工_表单同名诸项文: (号, 名) => JSON.stringify(句柄.取得(文字(号)).getAll(文字(名)).map(值 =>
-          typeof 值 === 'string' ? {种类: '文字', 值} : {种类: '文件', 句柄: 句柄.登记(值)})),
-        豫言_云工_表单诸项文: 号 => JSON.stringify(Array.from(句柄.取得(文字(号)).entries(), ([名, 值]) =>
-          [名, typeof 值 === 'string' ? {种类: '文字', 值} : {种类: '文件', 句柄: 句柄.登记(值)}])),
-        豫言_云工_表单键列文: 号 => JSON.stringify(Array.from(句柄.取得(文字(号)).keys())),
-        豫言_云工_表单值列文: 号 => JSON.stringify(Array.from(句柄.取得(文字(号)).values(), 值 =>
-          typeof 值 === 'string' ? {种类: '文字', 值} : {种类: '文件', 句柄: 句柄.登记(值)})),
-        豫言_云工_表单解析正文: async 号 => 句柄.登记(await 句柄.取得(文字(号)).formData()),
-        // 文言：文编解码归宿主标准器，客操其字与状态。汉语：豫言调用 Worker 的 TextEncoder、TextDecoder 和流式解码。
-        豫言_云工_编码UTF8: 内容 => new 全局.TextEncoder().encode(文字(内容)),
-        // 文言：Base64 之解，宿主为之；败则返阴，不越桥而抛。汉语：用 atob 解码标准 Base64（宽容 ASCII 空白与缺省填充，同 JS 的 atob），成功返回（阳，字节），字符非法或长度不合返回（阴，空字节）。
-        豫言_云工_解Base64安全: 内容 => {
-          try {
-            const 二进制 = 全局.atob(文字(内容));
-            const 字节 = new Uint8Array(二进制.length);
-            for (let 位 = 0; 位 < 二进制.length; 位++) 字节[位] = 二进制.charCodeAt(位);
-            return [true, 字节];
-          } catch { return [false, new Uint8Array(0)]; }
-        },
-        豫言_云工_解码文字: (标记, 严格, 略首, 内容) =>
-          new 全局.TextDecoder(文字(标记), {fatal: Boolean(严格), ignoreBOM: Boolean(略首)}).decode(内容),
-        豫言_云工_创建解码器: (标记, 严格, 略首) =>
-          句柄.登记(new 全局.TextDecoder(文字(标记), {fatal: Boolean(严格), ignoreBOM: Boolean(略首)})),
-        豫言_云工_续解码: (号, 内容) => 句柄.取得(文字(号)).decode(内容, {stream: true}),
-        豫言_云工_终解码: 号 => 句柄.取得(文字(号)).decode(),
-        豫言_云工_编码入容量: (内容, 容量) => {
-          const 长度 = Number(容量);
-          if (!Number.isSafeInteger(长度) || 长度 < 0 || 长度 > 2 * 1024 * 1024) throw Error('编码目标容量无效');
-          const 目标 = new Uint8Array(长度);
-          const 结果 = new 全局.TextEncoder().encodeInto(文字(内容), 目标);
-          return [结果.read, 目标.subarray(0, 结果.written)];
-        },
-        // 文言：候时之约可受中断；拒则归状，不遗悬约。汉语：可取消等待立即附上拒绝处理，避免未处理的 Promise 拒绝。
-        豫言_云工_调度等待: async 毫秒 => {
-          const 时 = Number(文字(毫秒));
-          if (!Number.isFinite(时) || 时 < 0) throw Error('等待时长无效');
-          await 全局.scheduler.wait(时);
-        },
-        豫言_云工_调度控制器: () => 句柄.登记(new 全局.AbortController()),
-        // 文言：中断理由与原生信号留柄，客可察其态而联诸信号。汉语：AbortSignal 对象和 reason 留在宿主，豫言只持句柄并查询状态。
-        豫言_云工_中断控制器新建: () => 句柄.登记(new 全局.AbortController()),
-        豫言_云工_中断控制器信号: 号 => 句柄.登记(句柄.取得(文字(号)).signal),
-        豫言_云工_中断控制器中断: 号 => 句柄.取得(文字(号)).abort(),
-        豫言_云工_中断控制器带理由: (号, 理由文) => 句柄.取得(文字(号)).abort(句柄.入(JSON.parse(文字(理由文)))),
-        豫言_云工_中断信号已中断: 号 => Boolean(句柄.取得(文字(号)).aborted),
-        豫言_云工_中断信号状态文: 号 => {
-          const 信号 = 句柄.取得(文字(号));
-          if (!(信号 instanceof 全局.AbortSignal)) throw Error('句柄不是 AbortSignal');
-          const 理由 = 信号.reason;
-          return JSON.stringify({已中断: 信号.aborted, 理由: 句柄.出(理由), 理由名: String(理由?.name ?? ''), 理由消息: String(理由?.message ?? '')});
-        },
-        豫言_云工_中断信号检查安全: 号 => {
-          try { 句柄.取得(文字(号)).throwIfAborted(); return [true, '']; }
-          catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错), 值: 句柄.出(错)})]; }
-        },
-        豫言_云工_中断信号立断: 理由文 => 句柄.登记(全局.AbortSignal.abort(句柄.入(JSON.parse(文字(理由文))))),
-        豫言_云工_中断信号立断无理由: () => 句柄.登记(全局.AbortSignal.abort()),
-        豫言_云工_中断信号限时安全: 毫秒 => {
-          try { return [true, 句柄.登记(全局.AbortSignal.timeout(Number(毫秒)))]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_中断信号合一安全: 诸号文 => {
-          try { return [true, 句柄.登记(全局.AbortSignal.any(句柄.参数(文字(诸号文))))]; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_中断信号等事文: async (号, 时限) => {
-          const 信号 = 句柄.取得(文字(号)), 毫秒 = Number(时限);
-          if (!(信号 instanceof 全局.AbortSignal)) throw Error('句柄不是 AbortSignal');
-          if (!Number.isSafeInteger(毫秒) || 毫秒 < 1 || 毫秒 > 30000) throw Error('中断事件等待时限无效');
-          const 种类 = 信号.aborted ? 'abort' : await new Promise(完成 => {
-            let 计时;
-            const 处理 = () => { clearTimeout(计时); 信号.removeEventListener('abort', 处理); 完成('abort'); };
-            信号.addEventListener('abort', 处理, {once: true});
-            计时 = setTimeout(() => { 信号.removeEventListener('abort', 处理); 完成('timeout'); }, 毫秒);
-            if (信号.aborted) 处理();
-          });
-          return JSON.stringify({种类, 已中断: 信号.aborted,
-            理由名: String(信号.reason?.name ?? ''), 理由消息: String(信号.reason?.message ?? '')});
-        },
-        豫言_云工_调度可取消等待: (毫秒, 控制号) => {
-          const 时 = Number(文字(毫秒));
-          if (!Number.isFinite(时) || 时 < 0) throw Error('等待时长无效');
-          const 控制器 = 句柄.取得(文字(控制号));
-          if (!(控制器 instanceof 全局.AbortController)) throw Error('等待控制器句柄无效');
-          return 句柄.登记(全局.scheduler.wait(时, {signal: 控制器.signal}).then(
-            () => [true, ''], 错 => [false, String(错?.name ?? 错)]));
-        },
-        豫言_云工_调度中断: 控制号 => {
-          const 控制器 = 句柄.取得(文字(控制号));
-          if (!(控制器 instanceof 全局.AbortController)) throw Error('等待控制器句柄无效');
-          控制器.abort();
-        },
-        豫言_云工_调度等结果: async 等号 => await 句柄.取得(文字(等号)),
-        // 文言：密钥留宿主，惟以柄用之。汉语：CryptoKey 不出宿主，豫言只持不透明句柄。
-        豫言_云工_密码随机识别: () => 全局.crypto.randomUUID(),
-        豫言_云工_密码随机字节: 长度 => {
-          const 数 = Number(长度);
-          if (!Number.isSafeInteger(数) || 数 < 0 || 数 > 65536) throw Error('随机字节长度无效');
-          return 全局.crypto.getRandomValues(new Uint8Array(数));
-        },
-        豫言_云工_密码摘要: async (算法, 内容) => new Uint8Array(await 全局.crypto.subtle.digest(文字(算法), 内容)),
-        豫言_云工_密码导入AES: async 钥字节 => 句柄.登记(await 全局.crypto.subtle.importKey('raw', 钥字节, 'AES-GCM', false, ['encrypt', 'decrypt'])),
-        豫言_云工_密码生成AES: async (位数, 可导) =>
-          句柄.登记(await 全局.crypto.subtle.generateKey({name: 'AES-GCM', length: Number(位数)}, Boolean(可导), ['encrypt', 'decrypt'])),
-        豫言_云工_密码导出AES: async 钥号 =>
-          new Uint8Array(await 全局.crypto.subtle.exportKey('raw', 句柄.取得(文字(钥号)))),
-        豫言_云工_密码AES加密: async (钥号, 随机数, 附加文, 明文) =>
-          new Uint8Array(await 全局.crypto.subtle.encrypt({name: 'AES-GCM', iv: 随机数, additionalData: 附加文}, 句柄.取得(文字(钥号)), 明文)),
-        豫言_云工_密码AES解密: async (钥号, 随机数, 附加文, 密文) =>
-          new Uint8Array(await 全局.crypto.subtle.decrypt({name: 'AES-GCM', iv: 随机数, additionalData: 附加文}, 句柄.取得(文字(钥号)), 密文)),
-        豫言_云工_密码导入HMAC: async (散列, 钥字节) =>
-          句柄.登记(await 全局.crypto.subtle.importKey('raw', 钥字节, {name: 'HMAC', hash: 文字(散列)}, false, ['sign', 'verify'])),
-        豫言_云工_密码HMAC签: async (钥号, 内容) =>
-          new Uint8Array(await 全局.crypto.subtle.sign('HMAC', 句柄.取得(文字(钥号)), 内容)),
-        豫言_云工_密码HMAC验: async (钥号, 签文, 内容) =>
-          全局.crypto.subtle.verify('HMAC', 句柄.取得(文字(钥号)), 签文, 内容),
-        豫言_云工_密码PBKDF2派生字节: async (口令, 盐, 轮数, 散列, 位数) => {
-          const 基钥 = await 全局.crypto.subtle.importKey('raw', 口令, 'PBKDF2', false, ['deriveBits']);
-          return new Uint8Array(await 全局.crypto.subtle.deriveBits({name: 'PBKDF2', salt: 盐, iterations: Number(轮数), hash: 文字(散列)}, 基钥, Number(位数)));
-        },
-        豫言_云工_密码HKDF派生字节: async (原钥, 盐, 用途, 散列, 位数) => {
-          const 基钥 = await 全局.crypto.subtle.importKey('raw', 原钥, 'HKDF', false, ['deriveBits']);
-          return new Uint8Array(await 全局.crypto.subtle.deriveBits({name: 'HKDF', salt: 盐, info: 用途, hash: 文字(散列)}, 基钥, Number(位数)));
-        },
-        豫言_云工_密码PBKDF2派生AES: async (口令, 盐, 轮数, 散列, 位数) => {
-          const 基钥 = await 全局.crypto.subtle.importKey('raw', 口令, 'PBKDF2', false, ['deriveKey']);
-          return 句柄.登记(await 全局.crypto.subtle.deriveKey({name: 'PBKDF2', salt: 盐, iterations: Number(轮数), hash: 文字(散列)}, 基钥, {name: 'AES-GCM', length: Number(位数)}, false, ['encrypt', 'decrypt']));
-        },
-        豫言_云工_密码HKDF派生AES: async (原钥, 盐, 用途, 散列, 位数) => {
-          const 基钥 = await 全局.crypto.subtle.importKey('raw', 原钥, 'HKDF', false, ['deriveKey']);
-          return 句柄.登记(await 全局.crypto.subtle.deriveKey({name: 'HKDF', salt: 盐, info: 用途, hash: 文字(散列)}, 基钥, {name: 'AES-GCM', length: Number(位数)}, false, ['encrypt', 'decrypt']));
-        },
-        豫言_云工_打开可读流: 号 => 句柄.登记(句柄.取得(文字(号)).getReader()),
-        豫言_云工_读取流块: async 号 => {
-          const 结果 = await 句柄.取得(文字(号)).read();
-          if (结果.done) return [true, new Uint8Array()];
-          return [false, 取流字节(结果.value)];
-        },
-        豫言_云工_读取文字流块: async 号 => {
-          const 结果 = await 句柄.取得(文字(号)).read();
-          if (结果.done) return [true, ''];
-          if (typeof 结果.value !== 'string') throw Error('可读流块不是文字');
-          return [false, 结果.value];
-        },
-        // 文言：严解有失则归阴与错文，毋使 JSPI 异常越桥。汉语：安全读取文字流，将流错误变成豫言可检查的结果。
-        豫言_云工_读取文字流块安全: async 号 => {
-          try {
-            const 结果 = await 句柄.取得(文字(号)).read();
-            if (结果.done) return [true, '{"已终":true}'];
-            if (typeof 结果.value !== 'string') throw Error('可读流块不是文字');
-            return [true, JSON.stringify({已终: false, 文字: 结果.value})];
-          } catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        // 文言：流败归阴与事故文，不令客器之请事俱败。汉语：安全读取将 Promise 拒绝转为显式错误，成功时以句柄保留原始字节。
-        豫言_云工_读取流块安全: async 号 => {
-          try {
-            const 结果 = await 句柄.取得(文字(号)).read();
-            if (结果.done) return [true, '{"已终":true}'];
-            const 字节号 = 句柄.登记(取流字节(结果.value));
-            return [true, JSON.stringify({已终: false, 字节句柄: 字节号})];
-          } catch (错) {
-            return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)];
-          }
-        },
-        豫言_云工_释放流读取器: 号 => {
-          句柄.取得(文字(号)).releaseLock();
-          句柄.释放(文字(号));
-        },
-        豫言_云工_取消流读取器: async (号, 原因) => {
-          const 名 = 文字(号);
-          await 句柄.取得(名).cancel(文字(原因));
-          句柄.释放(名);
-        },
-        // 文言：写器之待与读器可并行；异步写闭皆归柄，客可后候其果。汉语：写入与读取可并发，豫言取得 Promise 句柄后自行决定等待时机。
-        豫言_云工_打开可写流: 号 => 句柄.登记(句柄.取得(文字(号)).getWriter()),
-        豫言_云工_可写流已锁: 号 => Boolean(句柄.取得(文字(号)).locked),
-        豫言_云工_写器容量文: 号 => JSON.stringify(句柄.取得(文字(号)).desiredSize),
-        豫言_云工_写器就绪安全: async 号 => {
-          try { await 句柄.取得(文字(号)).ready; return [true, '']; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_写器已闭安全: async 号 => {
-          try { await 句柄.取得(文字(号)).closed; return [true, '']; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_写器发字节: (号, 内容) => {
-          const 待 = 句柄.取得(文字(号)).write(内容.slice());
-          待.catch(() => {});
-          return 句柄.登记(待);
-        },
-        豫言_云工_写器发文字: (号, 内容) => {
-          const 待 = 句柄.取得(文字(号)).write(文字(内容));
-          待.catch(() => {});
-          return 句柄.登记(待);
-        },
-        豫言_云工_写器发关闭: 号 => {
-          const 待 = 句柄.取得(文字(号)).close();
-          待.catch(() => {});
-          return 句柄.登记(待);
-        },
-        豫言_云工_写器候操作安全: async 号 => {
-          const 名 = 文字(号);
-          let 已取 = false;
-          try { const 待 = 句柄.取得(名); 已取 = true; await 待; return [true, '']; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-          finally { if (已取) 句柄.释放(名); }
-        },
-        豫言_云工_写器中断安全: async (号, 原因) => {
-          const 名 = 文字(号);
-          let 写器;
-          try {
-            写器 = 句柄.取得(名);
-            if (typeof 写器.abort !== 'function' || typeof 写器.releaseLock !== 'function') throw Error('句柄不是流写器');
-            await 写器.abort(文字(原因));
-            return [true, ''];
-          }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-          finally { if (写器) { if (typeof 写器.releaseLock === 'function') 写器.releaseLock(); 句柄.释放(名); } }
-        },
-        豫言_云工_释放流写器: 号 => {
-          const 名 = 文字(号);
-          句柄.取得(名).releaseLock();
-          句柄.释放(名);
-        },
-        // 文言：压缩流两端俱留宿主，客以柄逐块行之；短字亦可一次往还。汉语：暴露原生压缩流读写端，并提供短字节安全转换。
-        豫言_云工_压缩流创建: 格式 => 句柄.登记(new 全局.CompressionStream(文字(格式))),
-        豫言_云工_解压流创建: 格式 => 句柄.登记(new 全局.DecompressionStream(文字(格式))),
-        豫言_云工_压缩流读端: 号 => 句柄.登记(句柄.取得(文字(号)).readable),
-        豫言_云工_压缩流写端: 号 => 句柄.登记(句柄.取得(文字(号)).writable),
-        // 文言：文转字与字转文皆守原生流义；豫言执端柄而逐块读写。汉语：TextEncoderStream/TextDecoderStream 保持跨块状态和原生背压。
-        豫言_云工_文字编码流新建: () => 句柄.登记(new 全局.TextEncoderStream()),
-        豫言_云工_文字解码流新建: (标记, 严格, 略首) =>
-          句柄.登记(new 全局.TextDecoderStream(文字(标记), {fatal: Boolean(严格), ignoreBOM: Boolean(略首)})),
-        豫言_云工_文字转换流信息文: 号 => {
-          const 流 = 句柄.取得(文字(号));
-          return JSON.stringify({编码: 流.encoding, 严格: 'fatal' in 流 ? 流.fatal : null, 略首: 'ignoreBOM' in 流 ? 流.ignoreBOM : null});
-        },
-        豫言_云工_文字转换流读端: 号 => 句柄.登记(句柄.取得(文字(号)).readable),
-        豫言_云工_文字转换流写端: 号 => 句柄.登记(句柄.取得(文字(号)).writable),
-        豫言_云工_压缩字节安全: async (格式, 内容) => {
-          try { return [true, await 转换压缩字节('压缩', 格式, 内容)]; }
-          catch (错) { return [false, new TextEncoder().encode(String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错))]; }
-        },
-        豫言_云工_解压字节安全: async (格式, 内容) => {
-          try { return [true, await 转换压缩字节('解压', 格式, 内容)]; }
-          catch (错) { return [false, new TextEncoder().encode(String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错))]; }
-        },
-        // 文言：外联 TCP 惟于事中开之，宿主守平台禁址；客执流柄自决读写。汉语：连接只在事件内创建，地址限制交给 Workers；豫言控制读写流。
-        豫言_云工_TCP连接安全: async (主机, 端口, 安全传输, 半开) => {
-          try {
-            const {connect} = await import('cloudflare:sockets');
-            const 埠 = Number(端口);
-            const 传输 = 文字(安全传输);
-            if (!Number.isSafeInteger(埠) || 埠 < 1 || 埠 > 65535) throw Error('TCP 端口无效');
-            if (!['off', 'on', 'starttls'].includes(传输)) throw Error('TCP 安全传输选项无效');
-            const 连接 = connect({hostname: 文字(主机), port: 埠}, {secureTransport: 传输, allowHalfOpen: Boolean(半开)});
-            return [true, 句柄.登记(连接)];
-          } catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_TCP已连安全: async 号 => {
-          try {
-            const 信息 = await 句柄.取得(文字(号)).opened;
-            return [true, JSON.stringify({远端地址: 信息.remoteAddress, 本地地址: 信息.localAddress})];
-          } catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_TCP读流: 号 => 句柄.登记(句柄.取得(文字(号)).readable),
-        豫言_云工_TCP写流: 号 => 句柄.登记(句柄.取得(文字(号)).writable),
-        豫言_云工_TCP取写器: 号 => 句柄.登记(句柄.取得(文字(号)).getWriter()),
-        豫言_云工_TCP写字节: async (号, 内容) => { await 句柄.取得(文字(号)).write(内容.slice()); },
-        豫言_云工_TCP终写: async 号 => {
-          const 名 = 文字(号);
-          await 句柄.取得(名).close();
-          句柄.取得(名).releaseLock();
-          句柄.释放(名);
-        },
-        豫言_云工_TCP释写器: 号 => {
-          const 名 = 文字(号);
-          句柄.取得(名).releaseLock();
-          句柄.释放(名);
-        },
-        豫言_云工_TCP升级TLS: 号 => 句柄.登记(句柄.取得(文字(号)).startTls()),
-        豫言_云工_TCP关闭: async 号 => { await 句柄.取得(文字(号)).close(); },
-        豫言_云工_TCP已关闭安全: async 号 => {
-          try { await 句柄.取得(文字(号)).closed; return [true, '']; }
-          catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-        },
-        豫言_云工_创建可读流: () => {
-          const 态 = {控制器: null, 唤醒: null, 已关闭: false};
-          const 流 = new ReadableStream({
-            start(控制器) { 态.控制器 = 控制器; },
-            pull() { if (态.唤醒) { const 完成 = 态.唤醒; 态.唤醒 = null; 完成(); } },
-            cancel() { 态.已关闭 = true; if (态.唤醒) { const 完成 = 态.唤醒; 态.唤醒 = null; 完成(); } }
-          }, {highWaterMark: 1});
-          const 号 = 句柄.登记(流);
-          可写流.set(号, 态);
-          return 号;
-        },
-        豫言_云工_写入流块: async (号, 内容) => {
-          const 态 = 可写流.get(文字(号));
-          if (!态) throw Error('可写流句柄无效');
-          while (!态.已关闭 && 态.控制器.desiredSize <= 0) await new Promise(完成 => { 态.唤醒 = 完成; });
-          if (态.已关闭) throw Error('可写流已关闭');
-          态.控制器.enqueue(内容.slice());
-        },
-        豫言_云工_关闭可读流: 号 => {
-          const 态 = 可写流.get(文字(号));
-          if (!态) throw Error('可写流句柄无效');
-          if (!态.已关闭) { 态.已关闭 = true; 态.控制器.close(); }
-          可写流.delete(文字(号));
-        }
-      };
-      // 文言：带型之导入，每事一套：依对照表接旧名之能于（模，字段）；异步之函标之，胶水惟为之套 JSPI，余皆直调。
-      // 汉语：带类型导入的实现表，每个事件一套闭包：按对照表把旧名能力接到（模块，字段）上；async 函数标“异步”，胶水只给它们套 JSPI，其余直接调用。
-      //   参数与结果是胶水的 JS 形（串为 Uint8Array，整为 BigInt，爻为布尔），旧能力本就兼收（文字() 解串，Boolean() 判爻）。对照表里有、能力表里没有的旧名是宿主缺陷，本事件即失败。
-      // 文言：类型化之入口（提案 C0001）：以池中实例调之；事之物登于本调之柄表，以〔0, 柄〕授之。请之答亦〔0, 柄〕，取柄所指为此事之答；
-      //   事务、独占之回调另授参文（独占并授操作名），所返之文即其果。
-      // 汉语：类型化入口（提案 C0001）：用池中实例调用；本次事件的对象登记进本次句柄表，以〔0, 句柄〕传入：请求（Request）、队列批次（MessageBatch）、
-      //   定时控制器（ScheduledController）、告警信息（alarm() 的参数，平台没给时为空对象）、事务对象（txn）、独占区记录（{名, 参数}）。
-      //   HTTP 入口返回同形的响应，取句柄所指的 Response（或 Promise）作本次响应；事务回调另传参数文，独占区回调另传操作名与参数文，
-      //   二者返回的结果文就是 事务输出、独占输出（核对是有效 JSON，独占区结果另限 8 MiB）。队列、定时、告警入口无返回值。
-      const 入口名 = 类型化入口[种类];
-      let 运行;
-      if (入口名 && 类型化导出名们.has(入口名)) {
-        const 调用 = {取: 旧名 => 带型中央张量(旧名) ?? 能力[旧名], 截止: performance.now() + 取事件时限(种类)};
-        const 参数们 = 有响应 ? [[0, 句柄.登记(请求)]]
-          : 种类 === 'queue' ? [[0, 句柄.登记(批次)]]
-          : 种类 === 'scheduled' ? [[0, 句柄.登记(定时)]]
-          : 种类 === 'durable-alarm' ? [[0, 句柄.登记(告警 ?? {})]]
-          : 需事务输出 ? [[0, 句柄.登记(事务仓)], 载荷]
-          : [[0, 句柄.登记(载荷)], 载荷.名, 载荷.参数];
-        const 验结果文 = (文, 名, 上限) => {
-          if (上限 < Infinity && 字节长(文) > 上限) throw Error(名 + '超过 ' + 上限 / 1048576 + ' MiB');
-          try { JSON.parse(文); } catch { throw Error(名 + '不是有效 JSON'); }
-          return 文;
-        };
-        运行 = async () => {
-          const 果 = await 类型化运行(调用, 入口名, 参数们);
-          if (有响应) {
-            let 回 = 句柄.取得(文字(果[1]));
-            if (回 && typeof 回.then === 'function') 回 = await 回;
-            if (!(回 instanceof 全局.Response)) throw Error('入口返回的响应句柄不是 Response');
-            if (!响应) 设响应(回);
-          } else if (需事务输出) {
-            // 文言：事务之果无专限，惟验其为 JSON。汉语：事务结果只核对是有效 JSON（不另设大小上限，同改前）。
-            事务输出 = 验结果文(文字(果), '事务结果', Infinity);
-            已设事务输出 = true;
-          } else if (需独占输出) {
-            独占输出 = 验结果文(文字(果), '独占区结果', 8388608);
-            已设独占输出 = true;
-          }
-        };
-      } else if (类型化导出名们.size) {
-        // 文言：客既以类型化之入口受事，而此事无其入口，则败之，免队列之批默然为成。
-        // 汉语：导出了类型化入口的程序收到没有对应入口的事件，按失败处理（提案 C0001），免得队列批次等事件被静默当作成功。
-        运行 = async () => { throw Error('程序没有处理 ' + 种类 + ' 事件的入口'); };
-      } else {
-        const 平台 = {};
-        for (const [模, 字段, 旧名] of 平台所需) {
-          const 函 = 带型中央张量(旧名) ?? 能力[旧名];
-          if (typeof 函 !== 'function') throw Error('云工宿主缺少原语实现：' + 旧名);
-          if (函 instanceof 异步函数) 函.异步 = true;
-          (平台[模] ??= {})[字段] = 函;
-        }
-        ({运行} = 创建豫言实例(程序模块, 值桥模块, {输出, 错误输出, 时限毫秒: 取事件时限(种类), 平台}));
+  // 文言：中央张量之能，一宿主一份，初用乃载。汉语：中央张量（导入模块 中央张量宿主）：每个宿主一份，第一次「启用」时动态导入 中央张量.mjs 并载入内核。
+  let 中央张量 = null, 中央张量载入 = null;
+  const 载中央张量 = () => 中央张量载入 ??= import('./中央张量.mjs').then(模块 => {
+    中央张量 = 模块.创建中央张量能力({
+      取内核模块: async () => { if (!中央张量内核模块) throw Error('构建产物没有中央张量内核模块'); return 中央张量内核模块; },
+      多线程: false, 最大页: 1024, 全局
+    });
+  });
+  const 须中央张量 = () => { if (!中央张量) throw Error('中央张量：尚未启用'); return 中央张量; };
+  const 裸数 = 值 => (值 !== null && typeof 值 === 'object' && Object.hasOwn(值, '小数') ? 值.小数 : 值);
+  const 中央张量函 = 旧名 => 旧名 === '豫言_中央张量_启用' ? async () => { await 载中央张量(); return 中央张量[旧名](); }
+    : 旧名 === '豫言_中央张量_读单精' || 旧名 === '豫言_中央张量_数学' ? (...参) => 裸数(须中央张量()[旧名](...参))
+    : (...参) => 须中央张量()[旧名](...参);
+
+  // 文言：造实例：接导入，行 _start，取导出。汉语：建实例：接好导入（云工宿主 用物桥，中央张量宿主 用张量能力），跑一次 _start（静态初始化），取应用接口导出。
+  const 造实例 = async () => {
+    let 导出 = null;
+    // 文言：豫言应用导出：本实例之应用接口导出，适配得以物调候呼应用所定之入口（如 执行持久事务回调）。
+    // 汉语：宿主对象 豫言应用导出 是本实例的应用接口导出表（键为“包名/函数名”），适配可以用「物调候」调用应用定义的入口（如持久事务里调 执行持久事务回调）。
+    const 物桥 = 创建物桥({
+      取全局: 名 => 名 === '豫言应用导出' ? 导出 : 取全局(名), 取绑定,
+      回调: (号, 参们) => {
+        const 函 = 导出?.[回调入口];
+        if (!函) throw Error('程序没有回调入口 ' + 回调入口);
+        return 函(BigInt(号), 参们);
       }
-      const 运行毕 = 运行().then(() => {
-        for (const 态 of 事件源.values()) 态.来源.close();
-        事件源.clear();
-        if (有响应 && !响应) throw Error('豫言程序未设置响应');
-        if (需工作流输出 && !已设工作流输出) throw Error('豫言工作流未设置输出');
-        if (需流块输出 && !已设流块输出) throw Error('豫言流拉取回调未供块');
-        if (需事务输出 && !已设事务输出) throw Error('豫言事务回调未供结果');
-        if (需独占输出 && !已设独占输出) throw Error('豫言独占区未供结果');
-        return 需工作流输出 ? 工作流输出 : 需流块输出 ? 流块输出 : 需事务输出 ? 事务输出 : 需独占输出 ? 独占输出 : 响应;
-      }).catch(错 => {
-        // 文言：响应既发，其后之败无人可告，当记于平台之志。汉语：响应已经交给调用方后 Wasm 才失败时，错误不会传给调用方，只能写入平台日志，避免静默丢失。
-        if (有响应 && 响应) 全局.console?.error?.('[豫言] 响应已交付后运行失败：' + 描述错误(错));
-        for (const 态 of 事件源.values()) 态.来源.close();
-        事件源.clear();
-        for (const 态 of 可写流.values()) {
-          if (!态.已关闭) { 态.已关闭 = true; 态.控制器.error(错); }
-          if (态.唤醒) { const 完成 = 态.唤醒; 态.唤醒 = null; 完成(); }
-        }
-        throw 错;
-      }).finally(() => {
-        for (const 项 of 定时器.values()) {
-          if (项.重复) 全局.clearInterval(项.原号);
-          else 全局.clearTimeout(项.原号);
-        }
-        定时器.clear();
-        定时队列.length = 0;
-        定时待交.clear();
-        if (定时唤醒) { const 完成 = 定时唤醒; 定时唤醒 = null; 完成({种类: 'closed'}); }
-      });
-      if (上下文?.waitUntil) 上下文.waitUntil(运行毕.catch(() => {}));
-      return 有响应 ? Promise.race([响应已备, 运行毕]) : 需工作流输出 || 需流块输出 || 需事务输出 || 需独占输出 ? 运行毕 : 运行毕.then(() => undefined);
+    });
+    const 平台 = {};
+    for (const 项 of WebAssembly.Module.imports(程序模块)) {
+      if (项.kind !== 'function') continue;
+      let 函;
+      if (项.module === '云工宿主') 函 = 物桥[项.name];
+      else if (项.module === '中央张量宿主' && Object.hasOwn(平台导入旧名.中央张量宿主, 项.name)) 函 = 中央张量函(平台导入旧名.中央张量宿主[项.name]);
+      if (typeof 函 !== 'function') continue;
+      if (函 instanceof 异步函数) 函.异步 = true;
+      (平台[项.module] ??= {})[项.name] = 函;
+    }
+    const {运行, 实例, 桥} = 创建豫言实例(程序模块, 值桥模块, {输出, 错误输出, 时限毫秒: Infinity, 平台});
+    await 运行();
+    导出 = 造边界导出(实例, 程序模块, 桥.原, {异步: true});
+    return 导出;
+  };
+  // 文言：一宿主一实例；入口抛异常则弃之，后事另建。汉语：每个宿主一个实例，第一个事件到来时建；入口把异常抛出 Wasm 时（程序缺陷），作废这个实例，后来的事件另建新实例，在途的事件照常跑完。
+  let 实例承诺 = null;
+  const 调入口 = async (入口名, 参数们) => {
+    const 承诺 = 实例承诺 ??= 造实例();
+    let 导出;
+    try { 导出 = await 承诺; }
+    catch (错) { if (实例承诺 === 承诺) 实例承诺 = null; throw 错; }
+    const 函 = 导出[入口名];
+    if (typeof 函 !== 'function') throw Error('程序没有导出入口 ' + 入口名);
+    try { return await 函(...参数们); }
+    catch (错) { if (实例承诺 === 承诺) 实例承诺 = null; throw 错; }
+  };
+  // 文言：网页之事：入站请求为〔0, 请求, 上下文, 事类, 先交〕，答为〔0, Response 或其 Promise〕。先交者，此调所造之函：入口未返而以 Response 呼之，
+  //   宿主即以之答，入口续行而其返值弃之；惟认首交，返入口运行毕之 Promise（正返为 true，抛则 false）。诸态皆此调之局部，宿主不存按事之态。
+  // 汉语：网页事件：入口参数 入站网页请求 =〔0, 请求物, 上下文物, 种类, 先交〕，返回 出站网页响应 =〔0, Response 或 Promise<Response>〕。
+  //   先交是每次调用新造的函数 先交(响应) → Promise（网页事件流用）：入口返回之前以 Response 调用它，宿主立即以它作答，入口继续运行
+  //   （有 waitUntil 的上下文等它跑完），入口的返回值随之忽略，此后入口抛出只写错误输出；只认第一次，返回入口运行毕的 Promise
+  //   （入口正常返回得 true，抛出得 false），适配据此在事件结束时收尾。这些状态都是本次调用的局部变量，宿主不保存按事件的状态。
+  const 网页 = async (种类, 请求, 环境参, 上下文) => {
+    if (环境参) 环境 = 环境参;
+    let 交付, 可交 = true, 已先交 = false, 运行毕;
+    const 已交 = new Promise(解 => { 交付 = 解; });
+    const 先交 = 响应 => {
+      if (!可交) throw Error('先行交付须在入口返回之前，且每个请求只能交付一次');
+      if (!(响应 instanceof 全局.Response)) throw Error('先行交付的不是 Response');
+      可交 = false;
+      已先交 = true;
+      交付(响应);
+      上下文?.waitUntil?.(运行毕);
+      return 运行毕;
+    };
+    const 运行 = 调入口(类型化入口[种类], [[0, 请求, 上下文 ?? {}, 种类, 先交]]);
+    运行毕 = 运行.then(() => { 可交 = false; return true; }, 错 => {
+      可交 = false;
+      if (已先交) 错误输出('[豫言] 响应已先行交付后运行失败：' + String(错?.stack ?? 错));
+      return false;
+    });
+    const 已交回 = await Promise.race([运行.then(() => null), 已交]);
+    if (已交回) return 已交回;
+    const 果 = await 运行;
+    let 回 = 果?.[1];
+    if (回 && typeof 回.then === 'function') 回 = await 回;
+    if (!(回 instanceof 全局.Response)) throw Error('入口返回的不是 Response');
+    return 回;
+  };
+  // 文言：余事：参数为〔0, 事物, 上下文〕，无答。汉语：其余事件：入口参数为〔0, 事件物, 上下文物〕，没有返回值。
+  const 其事 = async (种类, 事物, 环境参, 上下文) => {
+    if (环境参) 环境 = 环境参;
+    await 调入口(类型化入口[种类], [[0, 事物, 上下文 ?? {}]]);
   };
   return {
-    fetch(请求, 环境, 上下文) { return 执行('fetch', 请求, 环境, 上下文); },
-    serviceFetch(请求, 环境, 上下文) { return 执行('service-fetch', 请求, 环境, 上下文); },
-    queue(批次, 环境, 上下文) { return 执行('queue', 批次, 环境, 上下文); },
-    scheduled(控制, 环境, 上下文) { return 执行('scheduled', 控制, 环境, 上下文); },
-    email(邮件, 环境, 上下文) { return 执行('email', 邮件, 环境, 上下文); },
-    durableFetch(请求, 环境, 状态) { return 执行('durable-fetch', 请求, 环境, 状态, 状态); },
-    durableAlarm(告警, 环境, 状态) { return 执行('durable-alarm', 告警, 环境, 状态, 状态); },
-    durableWebSocketMessage(套接字, 数据, 环境, 状态) { return 执行('durable-websocket-message', {套接字, 数据}, 环境, 状态, 状态); },
-    durableWebSocketClose(套接字, 代码, 原因, 正常, 环境, 状态) { return 执行('durable-websocket-close', {套接字, 代码, 原因, 正常}, 环境, 状态, 状态); },
-    durableWebSocketError(套接字, 错误, 环境, 状态) { return 执行('durable-websocket-error', {套接字, 错误: String(错误?.message ?? 错误)}, 环境, 状态, 状态); },
-    workflow(事件, 步骤, 环境) { return 执行('workflow', 事件, 环境, null, null, 步骤); }
+    fetch(请求, 环境参, 上下文) { return 网页('fetch', 请求, 环境参, 上下文); },
+    serviceFetch(请求, 环境参, 上下文) { return 网页('service-fetch', 请求, 环境参, 上下文); },
+    durableFetch(请求, 环境参, 状态) { return 网页('durable-fetch', 请求, 环境参, 状态); },
+    queue(批次, 环境参, 上下文) { return 其事('queue', 批次, 环境参, 上下文); },
+    scheduled(控制, 环境参, 上下文) { return 其事('scheduled', 控制, 环境参, 上下文); },
+    durableAlarm(告警, 环境参, 状态) { return 其事('durable-alarm', 告警 ?? {}, 环境参, 状态); }
+  };
+}
+
+// 文言：子工之物：以 LOADER 之绑定载豫言客器，env 空、外发禁。汉语：宿主对象 豫言子工：按 LOADER 许可的绑定加载子 Worker，子 Worker 只运行传入的 Wasm，env 为空、globalOutbound 为 null。
+//   按号取(绑定名, 标识, 主模块, 程序字节, cpuMs, subRequests) 得子 Worker 的默认入口；主模块是 隔离入口.mjs（豫言客器）或 隔离运行客.mjs（文件式客器）。
+//   相同标识必须始终对应相同的程序字节、限额与主模块（平台按标识缓存子 Worker）。
+function 造子工({取绑定, 动态资源}) {
+  const 附源码 = {'隔离入口.mjs': ['宿主.mjs', '物桥.mjs', '值桥.mjs', '边界.mjs'], '隔离运行客.mjs': ['编译宿主.mjs', '边界.mjs']};
+  const 造码 = (主模块, 程序字节, cpuMs, subRequests) => {
+    if (!动态资源) throw Error('缺少动态 Worker 资源');
+    if (!Object.hasOwn(附源码, 主模块)) throw Error('子 Worker 主模块无效：' + 主模块);
+    const 字节 = 程序字节 instanceof Uint8Array ? 程序字节 : new Uint8Array(程序字节);
+    if (!WebAssembly.validate(字节)) throw Error('动态 Worker 程序不是有效 Wasm');
+    const CPU = Number(cpuMs), 次数 = Number(subRequests);
+    if (!Number.isSafeInteger(CPU) || CPU < 1 || !Number.isSafeInteger(次数) || 次数 < 0) throw Error('动态 Worker 资源限额无效');
+    const 模块 = {};
+    for (const 名 of [主模块, ...附源码[主模块]]) {
+      if (typeof 动态资源.模块源码[名] !== 'string') throw Error('缺少动态 Worker 模块源码：' + 名);
+      模块[名] = {js: 动态资源.模块源码[名]};
+    }
+    模块['程序.wasm'] = {wasm: 字节.slice().buffer};
+    模块['值桥.wasm'] = {wasm: 动态资源.值桥字节.slice(0)};
+    return {compatibilityDate: '2026-09-10', mainModule: 主模块, modules: 模块, globalOutbound: null, env: {}, limits: {cpuMs: CPU, subRequests: 次数}};
+  };
+  return {
+    按号取(绑定名, 标识, 主模块, 程序字节, cpuMs, subRequests) {
+      const 加载器 = 取绑定('LOADER', String(绑定名));
+      if (加载器 == null) throw Error('绑定不存在：' + String(绑定名));
+      // 文言：码惟于平台未存此标识之时乃造（验 Wasm、集模块），既存则不复为。汉语：子 Worker 代码只在平台没有缓存这个标识时才由回调造出（校验 Wasm、组模块表），命中缓存时不再重做。
+      return 加载器.get(String(标识), () => 造码(String(主模块), 程序字节, cpuMs, subRequests)).getEntrypoint();
+    }
   };
 }

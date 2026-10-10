@@ -21,9 +21,9 @@ import {创建控制台能力} from '../浏览器/控制台.mjs';
 import {创建终端输入} from './终端输入.mjs';
 import {读取标准终端尺寸} from './终端尺寸.mjs';
 import {创建文件能力, 登记目录授权} from './文件能力.mjs';
-import {造边界导入} from '../网页汇编/边界.mjs';
+import {造边界导入, 造边界导出} from '../网页汇编/边界.mjs';
 import {创建值桥, 文字, 精确小数, 小数表示, 理解小数, 随机整数, 处理器数量, 平台导入旧名} from '../云工/值桥.mjs';
-import {创建句柄表} from '../云工/句柄.mjs';
+import {创建物桥} from '../云工/物桥.mjs';
 import {核对接口装载} from '../../装载/接口核对.mjs';
 import {创建张量能力} from './张量.mjs';
 import {创建显示面表, 创建图形能力, 状态码, 事件种类} from '../浏览器/图形.mjs';
@@ -164,6 +164,8 @@ export function 创建原生载入器(原生依赖目录 = null, 当前目录 = 
 export const 能力清理 = Symbol('能力清理');
 // 文言：带型导入之实，以符号为键。汉语：带类型导入的实现表（导入模块「标准库」「构建基础」与下面的平台接口包，键为字段名）用符号作键，挂在能力表上。
 export const 带型实现 = Symbol('带型实现');
+// 文言：接回调入口之键。汉语：接上回调入口（云工宿主/执行云工回调）的函数，用符号作键，运行节点应用在实例建好后调用。
+export const 接回调 = Symbol('接回调');
 
 // 文言：平台接口包之带型导入，由旧名之实派生：小数之果去其壳，外部值之列展为数列；异步者标之。
 // 汉语：平台接口包（云工宿主、诺节宿主、系统库调用、安全外壳密码）的带类型导入，由以旧原语名为键的实现派生，对照取 值桥.mjs 的 平台导入旧名。
@@ -323,7 +325,8 @@ const 可用全局 = new Set([
   'String', 'Symbol', 'TextDecoder', 'TextDecoderStream', 'TextEncoder', 'TextEncoderStream', 'TransformStream',
   'URL', 'URLSearchParams', 'Uint8Array', 'WritableStream', 'AbortController', 'AbortSignal', 'atob', 'btoa',
   'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'isFinite', 'isNaN', 'parseFloat', 'parseInt',
-  'structuredClone'
+  'structuredClone', 'Object', 'Promise', 'Error', 'TypeError', 'RangeError', 'console', 'crypto', 'performance',
+  'setTimeout', 'clearTimeout', 'setInterval', 'clearInterval', 'queueMicrotask'
 ]);
 
 // 文言：路径惟相对目录权；空、首斜、空段、点、点点、零字节皆无效。汉语：文件路径只能是相对于目录权的 / 分隔路径；空串、以 / 开头、空段、.、..、零字节都算输入无效。
@@ -332,7 +335,6 @@ const 可用全局 = new Set([
 //       以及 Node 独有的文件、网络、张量、显示图形与系统库调用原语。显示与图形只在应用用到时才载入原生依赖；能力表的 能力清理 键在应用结束后关闭窗口与设备。
 export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写出, 张量线程数 = null, 张量后端 = '', 显示面 = new Map(), 原生依赖目录 = null, 显示面后台 = false,
   允许系统库调用 = false}) {
-  const 句柄 = 创建句柄表({上限: 1 << 20});
   const 读行 = 创建行读者();
   const 控制台 = 创建控制台能力(new Map(Array.from(授权.控制台 ?? [], 名 => [名, {读取行: () => {const 果 = 读行(); return [果[0], 文字(果[1])];}, 写文本: 文 => 输出(1, Buffer.from(文, 'utf8'))}])));
   const 资源 = new Map();
@@ -348,8 +350,14 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
       if (!资源.has(号) && Number(号) > 2 ** 40) { 资源.set(号, 值); return 号; }
     }
   };
+  // 文言：节点之 console 皆书于标准误而冠其级，同旧；标准出留与程序之文。
+  // 汉语：诺节上「云工全局」取到的 console 一律写标准错误并冠级别（[调试] [错误] [信息] [日志] [警告]），与原来相同；标准输出留给程序自己的输出。
+  const 级冠 = {debug: '[调试] ', error: '[错误] ', info: '[信息] ', log: '[日志] ', warn: '[警告] '};
+  const 错误台 = Object.fromEntries(Object.entries(级冠).map(([级, 冠]) =>
+    [级, (...参) => 输出(2, 编码器.encode(冠 + 参.map(项 => String(项)).join(' ') + '\n'))]));
   const 取全局 = 名 => {
-    const 名称 = 句柄.允名(文字(名));
+    const 名称 = 文字(名);
+    if (名称 === 'console') return 错误台;
     if (!可用全局.has(名称) || !(名称 in globalThis)) throw Error('节点宿主不开放此全局：' + 名称);
     return globalThis[名称];
   };
@@ -429,146 +437,26 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
   // 文言：构建基础之宿主服务，惟可绘监视面板，恒阴。汉语：构建基础的宿主服务（导入模块「构建基础」）只给“可绘监视面板”（恒为阴），其余给桩。
   const 构建基础 = {可绘监视面板: () => false};
 
+  // 文言：云工之通用原语以物桥行之，与云工宿主同一实现；绑定惟认 ENV，回调之入口行时乃接。
+  // 汉语：云工宿主的通用原语（库/云工宿主/物宿主）用与云工宿主同一份物桥实现，云工适配（时间、随机数、日志、摘要、网址、规整、压缩、环境文字等）因此可在 Node 上运行；
+  //   「云工绑定」只认 ENV（--允许环境 授权的环境变量），回调入口在实例建好后由 运行节点应用 接上。
+  let 回调入口函 = null;
+  const 云工物桥 = 创建物桥({
+    取全局,
+    取绑定: (类, 名) => {
+      if (类 !== 'ENV' || !授权.环境.has(名)) throw Error('未授权的' + 类 + '绑定：' + 名);
+      return Object.hasOwn(process.env, 名) ? process.env[名] : undefined;
+    },
+    回调: (号, 参们) => {
+      if (!回调入口函) throw Error('程序没有回调入口 云工宿主/执行云工回调');
+      return 回调入口函(BigInt(号), 参们);
+    }
+  });
+  for (const 函 of Object.values(云工物桥)) if (函.constructor?.name === 'AsyncFunction') 函.异步 = true;
+
   // 文言：安全外壳密码之求SHA256，以旧名入能表。汉语：平台接口包「安全外壳密码」只实现求SHA256，按旧名放进能力表，由 派生平台实现 接上。
   const 标准 = {豫言_密码_SHA256: 内容 => new Uint8Array(createHash('sha256').update(内容).digest())};
 
-  // 文言：与云工同名同义之通用原语，令云工诸适配无改而行于节点。汉语：以下原语与云工宿主同名、同语义（实现照录 豫言操作系统/宿主/云工/宿主.mjs），使时间、随机数、日志、摘要、网址、规整、压缩等云工适配不改一字即可在 Node 上运行；全局只开放“可用全局”表。
-  const 云工通用 = {
-    豫言_云工_当前Unix毫秒: () => Date.now(),
-    豫言_云工_性能时刻文: () => String(performance.now()),
-    豫言_云工_性能原点文: () => String(performance.timeOrigin),
-    // 文言：三级之记皆入标准误，冠其级名；文字原样。汉语：日志写到标准错误，每条一行，冠以级别；文字本身原样输出。
-    豫言_云工_控制台文字: (方法, 内容) => {
-      const 名 = 文字(方法);
-      const 冠 = {debug: '[调试] ', error: '[错误] ', info: '[信息] ', log: '[日志] ', warn: '[警告] '}[名];
-      if (!冠) throw Error('控制台文字级别无效');
-      输出(2, 连字节(编码器.encode(冠), 内容, 换行));
-    },
-    豫言_云工_全局句柄: 名 => 句柄.登记(取全局(名)),
-    豫言_云工_读取属性: (号, 名) => JSON.stringify(句柄.出(句柄.取得(文字(号))[句柄.允名(文字(名))])),
-    豫言_云工_设置对象属性: (号, 名, 值文) => {
-      句柄.取得(文字(号))[句柄.允名(文字(名))] = 句柄.入(JSON.parse(文字(值文)));
-    },
-    豫言_云工_调用方法: async (号, 名, 参数文) => {
-      const 对象 = 句柄.取得(文字(号));
-      const 方法 = 对象[句柄.允名(文字(名))];
-      if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
-      return JSON.stringify(句柄.出(await Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))));
-    },
-    豫言_云工_调用方法安全: async (号, 名, 参数文) => {
-      try {
-        const 对象 = 句柄.取得(文字(号));
-        const 方法 = 对象[句柄.允名(文字(名))];
-        if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
-        return [true, JSON.stringify(句柄.出(await Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))))];
-      } catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错)})]; }
-    },
-    豫言_云工_调用方法原始: (号, 名, 参数文) => {
-      const 对象 = 句柄.取得(文字(号));
-      const 方法 = 对象[句柄.允名(文字(名))];
-      if (typeof 方法 !== 'function') throw Error('宿主成员不是方法');
-      return JSON.stringify(句柄.出(Reflect.apply(方法, 对象, 句柄.参数(文字(参数文)))));
-    },
-    豫言_云工_等待句柄: async 号 => JSON.stringify(句柄.出(await 句柄.取得(文字(号)))),
-    豫言_云工_构造对象: (名, 参数文) => {
-      const 构造 = 取全局(名);
-      if (typeof 构造 !== 'function') throw Error('构造器不存在');
-      return JSON.stringify(句柄.出(Reflect.construct(构造, 句柄.参数(文字(参数文)))));
-    },
-    豫言_云工_调用全局: async (名, 参数文) => {
-      const 函数 = 取全局(名);
-      if (typeof 函数 !== 'function') throw Error('全局函数不存在');
-      return JSON.stringify(句柄.出(await Reflect.apply(函数, globalThis, 句柄.参数(文字(参数文)))));
-    },
-    豫言_云工_调用全局安全: async (名, 参数文) => {
-      try {
-        const 函数 = 取全局(名);
-        if (typeof 函数 !== 'function') throw Error('全局函数不存在');
-        return [true, JSON.stringify(句柄.出(await Reflect.apply(函数, globalThis, 句柄.参数(文字(参数文)))))];
-      } catch (错) { return [false, JSON.stringify({名称: String(错?.name ?? 'Error'), 消息: String(错?.message ?? 错)})]; }
-    },
-    豫言_云工_网址编解码安全: (方法, 内容) => {
-      const 名 = 文字(方法);
-      if (!['encodeURI', 'encodeURIComponent', 'decodeURI', 'decodeURIComponent'].includes(名)) return [false, '方法不受支持'];
-      try { return [true, globalThis[名](文字(内容))]; }
-      catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-    },
-    豫言_云工_释放句柄: 号 => { 句柄.释放(文字(号)); },
-    豫言_云工_句柄取字节: async 号 => {
-      const 值 = 句柄.取得(文字(号));
-      if (值 instanceof ArrayBuffer) return new Uint8Array(值).slice();
-      if (ArrayBuffer.isView(值)) return new Uint8Array(值.buffer, 值.byteOffset, 值.byteLength).slice();
-      if (值 instanceof Blob) return new Uint8Array(await 值.arrayBuffer());
-      throw Error('句柄不是二进制对象');
-    },
-    豫言_云工_字节成句柄: 内容 => 句柄.登记(内容.slice()),
-    豫言_云工_编码UTF8: 内容 => 编码器.encode(文字(内容)),
-    豫言_云工_解码文字: (标记, 严格, 略首, 内容) =>
-      new TextDecoder(文字(标记), {fatal: Boolean(严格), ignoreBOM: Boolean(略首)}).decode(内容),
-    豫言_云工_创建解码器: (标记, 严格, 略首) =>
-      句柄.登记(new TextDecoder(文字(标记), {fatal: Boolean(严格), ignoreBOM: Boolean(略首)})),
-    豫言_云工_续解码: (号, 内容) => 句柄.取得(文字(号)).decode(内容, {stream: true}),
-    豫言_云工_终解码: 号 => 句柄.取得(文字(号)).decode(),
-    豫言_云工_解Base64安全: 内容 => {
-      try { return [true, Uint8Array.from(atob(文字(内容)), 字 => 字.charCodeAt(0))]; }
-      catch { return [false, new Uint8Array(0)]; }
-    },
-    豫言_云工_物字造字节: (内容, 类别) => 句柄.登记(new Blob([内容.slice()], {type: 文字(类别)})),
-    豫言_云工_物字造组合: (部件文, 选项文) => 句柄.登记(new Blob(句柄.参数(文字(部件文)), 句柄.入(JSON.parse(文字(选项文))))),
-    豫言_云工_物字切片: (号, 起, 止, 类别) => 句柄.登记(句柄.取得(文字(号)).slice(Number(起), Number(止), 文字(类别))),
-    豫言_云工_物字切片至尾: (号, 起, 类别) => 句柄.登记(句柄.取得(文字(号)).slice(Number(起), undefined, 文字(类别))),
-    豫言_云工_物字原字: async 号 => new Uint8Array(await 句柄.取得(文字(号)).arrayBuffer()),
-    豫言_云工_物字文字: async 号 => await 句柄.取得(文字(号)).text(),
-    豫言_云工_物字流: 号 => 句柄.登记(句柄.取得(文字(号)).stream()),
-    豫言_云工_压缩流创建: 格式 => 句柄.登记(new CompressionStream(文字(格式))),
-    豫言_云工_解压流创建: 格式 => 句柄.登记(new DecompressionStream(文字(格式))),
-    豫言_云工_压缩流读端: 号 => 句柄.登记(句柄.取得(文字(号)).readable),
-    豫言_云工_压缩流写端: 号 => 句柄.登记(句柄.取得(文字(号)).writable),
-    豫言_云工_打开可读流: 号 => 句柄.登记(句柄.取得(文字(号)).getReader()),
-    豫言_云工_读取流块: async 号 => {
-      const 结果 = await 句柄.取得(文字(号)).read();
-      if (结果.done) return [true, new Uint8Array()];
-      return [false, 取流字节(结果.value)];
-    },
-    豫言_云工_读取流块安全: async 号 => {
-      try {
-        const 结果 = await 句柄.取得(文字(号)).read();
-        if (结果.done) return [true, '{"已终":true}'];
-        return [true, JSON.stringify({已终: false, 字节句柄: 句柄.登记(取流字节(结果.value))})];
-      } catch (错) { return [false, String(错?.name ?? 'Error') + ': ' + String(错?.message ?? 错)]; }
-    },
-    豫言_云工_释放流读取器: 号 => {
-      句柄.取得(文字(号)).releaseLock();
-      句柄.释放(文字(号));
-    },
-    豫言_云工_密码随机识别: () => crypto.randomUUID(),
-    豫言_云工_密码随机字节: 长度 => {
-      const 数值 = Number(长度);
-      if (!Number.isSafeInteger(数值) || 数值 < 0 || 数值 > 65536) throw Error('随机字节长度无效');
-      return crypto.getRandomValues(new Uint8Array(数值));
-    },
-    豫言_云工_密码摘要: async (算法, 内容) => new Uint8Array(await crypto.subtle.digest(文字(算法), 内容)),
-    豫言_云工_密码PBKDF2派生字节: async (口令, 盐, 轮数, 散列, 位数) => {
-      const 基钥 = await crypto.subtle.importKey('raw', 口令, 'PBKDF2', false, ['deriveBits']);
-      return new Uint8Array(await crypto.subtle.deriveBits({name: 'PBKDF2', salt: 盐, iterations: Number(轮数), hash: 文字(散列)}, 基钥, Number(位数)));
-    },
-    豫言_云工_密码HKDF派生字节: async (原钥, 盐, 用途, 散列, 位数) => {
-      const 基钥 = await crypto.subtle.importKey('raw', 原钥, 'HKDF', false, ['deriveBits']);
-      return new Uint8Array(await crypto.subtle.deriveBits({name: 'HKDF', salt: 盐, info: 用途, hash: 文字(散列)}, 基钥, Number(位数)));
-    },
-    // 文言：环境之授以 --允许环境 为准；未授者败，已授而阙或空者归阴。汉语：环境变量以 --允许环境 授权：只认种类 ENV；未授权的种类或名称抛出部署错误；已授权而缺失或为空时返回阴、读出空串。
-    豫言_云工_授权绑定存在: (种类, 名) => {
-      const 类 = 文字(种类), 称 = 文字(名);
-      if (类 !== 'ENV' || !授权.环境.has(称)) throw Error('未授权的' + 类 + '绑定：' + 称);
-      return Boolean(process.env[称]);
-    },
-    豫言_云工_环境文字: 名 => {
-      const 称 = 文字(名);
-      if (!授权.环境.has(称)) throw Error('未授权的ENV绑定：' + 称);
-      if (!Object.hasOwn(process.env, 称)) throw Error('绑定不存在：' + 称);
-      return process.env[称];
-    }
-  };
 
   // 文言：文件之能：目录由宿主预授，路径不得越其界；柄号为不可推之随机数，宿主核其类与存亡。
   const 文件能力 = 创建文件能力({授权, 资源, 登记资源, 文字, 交换上限});
@@ -648,7 +536,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
     const 项 = 资源.get(文字(号));
     return 项?.种 === '张量' ? 项 : null;
   }});
-  const 旧表 = {...标准, ...云工通用, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库,
+  const 旧表 = {...标准, ...节点文件, ...节点网络, ...节点张量, ...节点图形.原语, ...节点外部库,
     豫言_节点_控制台: async (操作, 名, 文) => 文字(操作) === '读取' ? 控制台.读取(文字(名)) : 文字(操作) === '写入' ? 控制台.写入(文字(名), 文字(文)) : [7, '', '控制台操作无效'],
     豫言_节点_运行子程序: (名, 参数, 输入, 环境项们) => 子程序.运行(文字(名), 参数.map(文字), 输入, 环境项们.map(项 => 项.map(文字))),
     豫言_节点_启动子程序: async (名, 参数, 输入, 环境项们) => 原生子程序.启动(文字(名), 参数.map(文字), 输入, 环境项们.map(项 => 项.map(文字))),
@@ -661,7 +549,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
       return [[项.标识, 项.名称, 项.范围, 项.采样微秒, 项.处理器万分比, 项.常驻字节, 项.堆已用字节]];
     }};
   // 文言：平台接口包之带型导入，由旧名之能表派生。汉语：平台接口包的带类型导入由上面以旧名为键的能力表派生，见 派生平台实现；旧名只是内部的键，不对外。
-  return Object.freeze({[能力清理]: () => {网络授权.关闭(); 传输控制.关闭(); 文件能力.清理(); 原生子程序.关闭(); 控制台.关闭(); 终端输入.退出(); return 节点图形.清理();}, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表), 豫言操作系统控制台:{读取标准终端尺寸}, 豫言操作系统时间:{读取当前Unix毫秒: () => 传输控制.读取当前Unix毫秒()}}});
+  return Object.freeze({[能力清理]: () => {网络授权.关闭(); 传输控制.关闭(); 文件能力.清理(); 原生子程序.关闭(); 控制台.关闭(); 终端输入.退出(); return 节点图形.清理();}, [接回调]: 函 => { 回调入口函 = 函; }, [带型实现]: {标准库, 构建基础, ...派生平台实现(旧表), 云工宿主: 云工物桥, 豫言操作系统控制台:{读取标准终端尺寸}, 豫言操作系统时间:{读取当前Unix毫秒: () => 传输控制.读取当前Unix毫秒()}}});
 }
 
 // 文言：以 JSPI 行客：诸能或同步或异步，客皆以常调用视之。汉语：用 JSPI 运行：能力可以同步返回，也可以返回 Promise（网络、摘要等），应用都按普通调用看待。
@@ -671,6 +559,8 @@ export async function 运行节点应用({程序模块, 值桥模块, 能力, �
   // 文言：带型之导入依签名包之，同步者不套悬栈；无实现者给桩。汉语：带类型的导入由共用胶水按签名包装：同步实现直接调用，只有标了“异步”的才套 JSPI（标准库这些原语都是同步的）；没有实现的给桩。
   const 实例 = new WebAssembly.Instance(程序模块, 造边界导入(程序模块, 桥.原, 能力[带型实现] ?? {}));
   须(typeof 实例.exports._start === 'function', 'Wasm 缺少程序启动导出');
+  // 文言：先接回调之入口，客于 _start 中亦得用之。汉语：先接上回调入口（应用接口导出 云工宿主/执行云工回调），程序在 _start 里登记的回调也能被调用。
+  能力[接回调]?.(造边界导出(实例, 程序模块, 桥.原, {异步: true})['云工宿主/执行云工回调'] ?? null);
   try {
     // 文言：_start 先行静态之初置，乃召入口之函。汉语：_start 先做静态初始化，再调用入口函数「入口」（提案 00006）。
     await WebAssembly.promising(实例.exports._start)();

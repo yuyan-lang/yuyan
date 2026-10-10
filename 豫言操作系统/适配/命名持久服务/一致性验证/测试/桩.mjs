@@ -14,7 +14,10 @@ const 程序模块 = await WebAssembly.compile(await readFile(产物 + '程序.w
 const 值桥模块 = await WebAssembly.compile(await readFile(产物 + '值桥.wasm'));
 
 export const 默认许可 = {SERVICE: ['SVC'], DO: ['DOS'], OUTBOUND_ORIGINS: ['https://api.example.com', 'https://*']};
-export const 造宿主 = (额外 = {}) => 创建云工宿主({程序模块, 值桥模块, 许可: 默认许可, 时限毫秒: 60000, ...额外});
+// 文言：薄宿主不受 网络 之参；静源之请经宿主之物 豫言授权取 行于 全局.fetch，故以假 fetch 之全局代之。
+// 汉语：薄宿主不再接受 网络 参数：静态来源请求经宿主对象 豫言授权取 走 全局.fetch，所以测试传入的 网络 换成带假 fetch 的 全局。
+export const 造宿主 = ({网络, 全局, ...额外} = {}) => 创建云工宿主({程序模块, 值桥模块, 许可: 默认许可, ...额外,
+  全局: 全局 ?? (网络 ? Object.create(globalThis, {fetch: {value: 网络}}) : globalThis)});
 
 // 慢速流：每块前等待 间隔 毫秒；末尾可为 close、error、hang；观察记录拉取、取消原因与已送字节。
 export function 造流(块们, {间隔 = 5, 末尾 = 'close', 观察 = {}} = {}) {
