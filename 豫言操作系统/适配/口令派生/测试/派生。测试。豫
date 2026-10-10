@@ -8,10 +8,10 @@
 
 「派生迁移断言」
   于（「串相等」
-    于（「派生PBKDF2SHA256十六进制」于『password』于『salt』于「一」）
+    于（「口令派生2沙256十六进制」于『password』于『salt』于「一」）
     于『120fb6cffcf8b32c43e7225256c4f837a86548c92ccc35480805987cb70be17b』）于『PBKDF2一轮向量错误』。
 「派生迁移断言」
   于（「串相等」
-    于（「派生PBKDF2SHA256十六进制」于『password』于『salt』于「二」）
+    于（「口令派生2沙256十六进制」于『password』于『salt』于「二」）
     于『ae4d0c95af6b46d32d0adff928f06dd02a303f8ef3c251dfd6e2d85a95474c43』）于『PBKDF2二轮向量错误』。
 「打印」于『口令派生纯实现基本测试通过』。
