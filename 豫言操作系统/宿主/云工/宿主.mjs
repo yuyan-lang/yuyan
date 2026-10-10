@@ -154,11 +154,41 @@ export function 创建云工宿主({程序模块, 值桥模块, 许可 = {}, 动
     try { return await 函(...参数们); }
     catch (错) { if (实例承诺 === 承诺) 实例承诺 = null; throw 错; }
   };
-  // 文言：网页之事：入站请求为〔0, 请求, 上下文, 事类〕，答为〔0, Response 或其 Promise〕。
+  // 文言：先交之答：网页之事，入口未返而豫言可先交其答，宿主即以之答，入口续行而其返值弃之；待交者以请求之物为键，存于弱表，随请而收。
+  // 汉语：先行交付响应（网页事件流用）：网页事件里，豫言可在入口返回之前用宿主对象 豫言先交响应(请求, 响应) 把 Response 交给本请求，
+  //   宿主立即以它作答，入口继续运行，入口的返回值随之忽略；得到入口运行毕的 Promise（正常返回得 true，抛出得 false），适配据此在事件结束时收尾。
+  //   待交付的请求以 Request 对象为键记在 WeakMap 里，随请求回收，每个请求只能交付一次。
+  const 待先交 = new WeakMap();
+  宿主对象.set('豫言先交响应', (请求, 响应) => {
+    const 交 = 待先交.get(请求);
+    if (!交) throw Error('先行交付响应须在本请求的网页事件里，且只能交付一次');
+    if (!(响应 instanceof 全局.Response)) throw Error('先行交付的不是 Response');
+    待先交.delete(请求);
+    return 交(响应);
+  });
+  // 文言：网页之事：入站请求为〔0, 请求, 上下文, 事类〕，答为〔0, Response 或其 Promise〕；入口未返而先交其答者，即以所先交者答之。
   // 汉语：网页事件：入口参数 入站网页请求 =〔0, 请求物, 上下文物, 种类〕，返回 出站网页响应 =〔0, Response 或 Promise<Response>〕。
+  //   入口返回之前用 豫言先交响应 先行交付了响应的，立即以它作答，入口继续运行（有 waitUntil 的上下文等它跑完）；此后入口抛出只写错误输出。
   const 网页 = async (种类, 请求, 环境参, 上下文) => {
     if (环境参) 环境 = 环境参;
-    const 果 = await 调入口(类型化入口[种类], [[0, 请求, 上下文 ?? {}, 种类]]);
+    let 交付, 已先交 = false;
+    const 先交 = new Promise(解 => { 交付 = 解; });
+    待先交.set(请求, 回 => {
+      已先交 = true;
+      交付(回);
+      上下文?.waitUntil?.(运行毕);
+      return 运行毕;
+    });
+    const 运行 = 调入口(类型化入口[种类], [[0, 请求, 上下文 ?? {}, 种类]]);
+    const 运行毕 = 运行.then(() => true, 错 => {
+      if (已先交) 错误输出('[豫言] 响应已先行交付后运行失败：' + String(错?.stack ?? 错));
+      return false;
+    });
+    try {
+      const 已交回 = await Promise.race([运行.then(() => null), 先交]);
+      if (已交回) return 已交回;
+    } finally { 待先交.delete(请求); }
+    const 果 = await 运行;
     let 回 = 果?.[1];
     if (回 && typeof 回.then === 'function') 回 = await 回;
     if (!(回 instanceof 全局.Response)) throw Error('入口返回的不是 Response');
