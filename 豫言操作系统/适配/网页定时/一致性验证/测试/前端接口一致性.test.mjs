@@ -677,15 +677,15 @@ test('网页应用：路径不合规、模块缺少启动函数、启动失败�
 // ---------------------------------------------------------------------------
 test('时间：毫秒与 ISO 文字转换、UTC 日与分钟取自同一刻；越界抛事故', 用页({}, async 页 => {
   const 前 = Date.now();
-  const 毫秒 = Number(await 页.调('读取当前Unix毫秒'));
+  const 毫秒 = Number(await 页.调('读取当前纪元毫秒'));
   const 后 = Date.now();
   assert.ok(毫秒 >= 前 && 毫秒 <= 后 + 5);
-  const [日, 分] = (await 页.调('读取当前UTC日与Unix分钟')).split('|');
+  const [日, 分] = (await 页.调('读取当前协调世界时日与纪元分钟')).split('|');
   assert.match(日, /^\d{4}-\d{2}-\d{2}$/);
   assert.equal(日, new Date(Number(分) * 60000).toISOString().slice(0, 10));
-  for (const 值 of [0, 1790000000123, -1, 8640000000000000, -8640000000000000]) assert.equal(await 页.调('Unix毫秒转ISO文字', 值), new Date(值).toISOString(), String(值));
-  assert.equal(await 页.调('Unix毫秒转ISO文字', 0), '1970-01-01T00:00:00.000Z');
-  await 失败(页.调('Unix毫秒转ISO文字', 8640000000000001), /超出可表示日期范围/);
+  for (const 值 of [0, 1790000000123, -1, 8640000000000000, -8640000000000000]) assert.equal(await 页.调('纪元毫秒转国际标准文字', 值), new Date(值).toISOString(), String(值));
+  assert.equal(await 页.调('纪元毫秒转国际标准文字', 0), '1970-01-01T00:00:00.000Z');
+  await 失败(页.调('纪元毫秒转国际标准文字', 8640000000000001), /超出可表示日期范围/);
 }));
 
 test('随机数：十六进制长度与字符集、UUID v4 形式与不重复；字节数越界抛事故', 用页({}, async 页 => {
@@ -773,8 +773,8 @@ test('文字规整：与 ECMAScript 同义的四个函数', 用页({}, async 页
   assert.equal(await 页.调('转小写', 'ABC ÜÏ'), 'abc üï');
   assert.equal(await 页.调('转小写', 'İ'), 'i̇');
   assert.deepEqual([await 页.调('转小写', 'ΑΣ'), await 页.调('转小写', 'ΑΣΑ'), await 页.调('转小写', 'Σ')], ['ας', 'ασα', 'σ']);
-  assert.equal(await 页.调('UTF16长度', 'a😀汉'), '4');
-  assert.equal(await 页.调('UTF16长度', ''), '0');
+  assert.equal(await 页.调('十六位统一码长度', 'a😀汉'), '4');
+  assert.equal(await 页.调('十六位统一码长度', ''), '0');
   for (const [文, 期望] of [['abc123', 'true'], ['汉字あア', 'true'], ['ÜÏ', 'true'], ['Ⅷ', 'true'], ['１２', 'true'], ['a_b', 'false'], ['a-b', 'false'], ['a b', 'false'], ['', 'false'], ['😀', 'false'], ['é', 'false']]) {
     assert.equal(await 页.调('全为字母或数字吗', 文), 期望, JSON.stringify(文));
   }
