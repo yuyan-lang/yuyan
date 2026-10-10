@@ -332,12 +332,8 @@ jobs:
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 本机 本机 yy执行器.wasm yy张量登记.exe yy张量登记.wasm --预编二
           chmod +x yy张量登记.exe
           ./yy张量登记.exe
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统接口检查 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统接口检查.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统绑定.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --编译器 ./yy4_bs.wasm --输出 yy豫言操作系统装载包.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --编译器 ./yy4_bs.wasm --输出 yy双宿主构建.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫言操作系统接口检查.wasm --核对清单 豫言操作系统接口/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
-          node 豫言操作系统/宿主/节点/宿主.cjs yy双宿主构建.wasm --自动 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./yy4_bs.wasm
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 接口检查 --核对清单 豫言操作系统接口/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./yy4_bs.wasm
           ./yy原生公共张量/程序.exe
 
       # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
@@ -352,8 +348,8 @@ jobs:
           retention-days: 90
           if-no-files-found: ignore
 
-  # 文言：节点发行包之验于 Windows 行：取同代编译器，造绑定、装载与发行之具，而以同一验客较八十八事。
-  # 汉语：Windows Node 发行包验收：复用本轮编译器，构建绑定、装载与发行工具，再运行现有 88 项一致性驱动。
+  # 文言：节点发行包之验于 Windows 行：取同代豫构，以其发行之令造发行包，而以同一验客较八十八事。
+  # 汉语：Windows Node 发行包验收：复用本轮豫构，用它的发行命令构建发行包，再运行现有 88 项一致性驱动。
   node-host-windows:
     name: 节点发行包一致性（Windows x64）
     needs: bootstrap
@@ -387,42 +383,15 @@ jobs:
             exit 1
           }
 
-      # 文言：诸具分步而造；败时以末段诊断书作业注记，并录诸子进程之出，使公开之验可知所由。
-      # 汉语：逐项构建，失败时把日志末段写成公开的 CI 错误注释，并打印各子进程的输出（yy_parallel_log.txt），便于定位 Windows 兼容问题。
-      - name: 构建接口检查器
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统接口检查 --输出 yy豫言操作系统接口检查.wasm -j 24 > yyWindows接口检查.log 2>&1 || {
-            printf '::error title=接口检查器构建失败::%s\n' "$(tail -c 1500 yyWindows接口检查.log | tr '\n' ' ')"
-            tail -c 6000 yy_parallel_log.txt 2>/dev/null || true
-            exit 1
-          }
-
-      - name: 构建接口绑定器
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统绑定 --输出 yy豫言操作系统绑定.wasm -j 24 > yyWindows接口绑定.log 2>&1 || {
-            printf '::error title=接口绑定器构建失败::%s\n' "$(tail -c 1500 yyWindows接口绑定.log | tr '\n' ' ')"
-            tail -c 6000 yy_parallel_log.txt 2>/dev/null || true
-            exit 1
-          }
-
-      - name: 构建装载清单工具
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统装载包 --输出 yy豫言操作系统装载包.wasm -j 24 > yyWindows装载清单.log 2>&1 || {
-            printf '::error title=装载清单工具构建失败::%s\n' "$(tail -c 1500 yyWindows装载清单.log | tr '\n' ' ')"
-            tail -c 6000 yy_parallel_log.txt 2>/dev/null || true
-            exit 1
-          }
-
-      - name: 构建双宿主发行工具
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 双宿主构建 --输出 yy双宿主构建.wasm -j 24 > yyWindows双宿主构建.log 2>&1 || {
-            printf '::error title=双宿主工具构建失败::%s\n' "$(tail -c 1500 yyWindows双宿主构建.log | tr '\n' ' ')"
-            tail -c 6000 yy_parallel_log.txt 2>/dev/null || true
-            exit 1
-          }
-
+      # 文言：败时以末段诊断书作业注记，并录诸子进程之出，使公开之验可知所由。
+      # 汉语：失败时把日志末段写成公开的 CI 错误注释，并打印各子进程的输出（yy_parallel_log.txt），便于定位 Windows 兼容问题。
       - name: 构建节点一致性发行包
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy双宿主构建.wasm --自动 节点 豫言操作系统/宿主/节点/一致性验证/应用 dist/节点一致性
+        run: |
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 发行 节点 豫言操作系统/宿主/节点/一致性验证/应用 dist/节点一致性 > yyWindows发行.log 2>&1 || {
+            printf '::error title=节点发行包构建失败::%s\n' "$(tail -c 1500 yyWindows发行.log | tr '\n' ' ')"
+            tail -c 6000 yy_parallel_log.txt 2>/dev/null || true
+            exit 1
+          }
 
       - name: 验证发行包与装载拒绝情形
         run: node 豫言操作系统/宿主/节点/一致性验证/运行.mjs dist/节点一致性
