@@ -114,7 +114,7 @@ test('超长文字（1 MiB）也截断到上限之内', async () => {
   assert.ok(原.startsWith(出.slice(0, -标记.length)));
 });
 
-test('大输入：1、8、15 MiB 走宿主截取快路径，超过 16 MiB 的巨串在豫言内生成并走逐字节路径，结果一致', async () => {
+test('大输入：1、8、15 MiB 与超过 16 MiB 的巨串（在豫言内生成）都只截取前缀，结果一致', async () => {
   for (const [兆, 字] of [[1, 'x'], [8, '豫'], [15, '😀']]) {
     const 原 = 字.repeat(Math.ceil(兆 * 1048576 / Buffer.byteLength(字)));
     const 始 = performance.now();

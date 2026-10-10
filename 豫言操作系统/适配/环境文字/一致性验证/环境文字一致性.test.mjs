@@ -1,5 +1,5 @@
 // 环境文字 0.2.0 一致性测试：真实 Wasm + Node 宿主。
-// 需要宿主原语 豫言_云工_授权绑定存在（见交付报告中的宿主补丁）；缺少时本测试直接报错说明。
+// 适配经薄宿主的通用原语「云工绑定」读取绑定：已授权而缺失时宿主报“绑定不存在”，未授权与非文字值由适配抛出豫言异常（薄宿主的失败都是值，应用可以捕获，规范只说应用不能依赖捕获它）。
 // 复跑：在私有暂存目录（含 dist/）里 `node --test <本文件>`；产物位置可用环境变量 产物根 指定（默认 <当前目录>/dist）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -8,8 +8,6 @@ import {pathToFileURL} from 'node:url';
 import path from 'node:path';
 
 const 产物 = path.resolve(process.env.产物根 ?? path.join(process.cwd(), 'dist'), '环境文字一致性');
-const 宿主源码 = await readFile(path.join(产物, '宿主.mjs'), 'utf8');
-if (!宿主源码.includes('豫言_云工_授权绑定存在')) throw new Error('宿主缺少原语 豫言_云工_授权绑定存在：请先按报告落实宿主补丁');
 const {创建云工宿主} = await import(pathToFileURL(path.join(产物, '宿主.mjs')).href);
 const 程序模块 = await WebAssembly.compile(await readFile(path.join(产物, '程序.wasm')));
 const 值桥模块 = await WebAssembly.compile(await readFile(path.join(产物, '值桥.wasm')));
@@ -35,14 +33,14 @@ test('读取授权环境文字：已授权且存在返回原文，已授权但�
   assert.equal(文本(await 调('/env?name=PRESENT', {})), '', 'env 全空');
 });
 
-test('读取授权环境文字：未授权名与非文字值仍失败（部署错误，宿主异常）', async () => {
-  await assert.rejects(调('/env?name=OTHER'), /未授权的ENV绑定：OTHER/);
-  await assert.rejects(调('/env?name=NOT_LISTED'), /未授权的ENV绑定：NOT_LISTED/);
-  await assert.rejects(调('/env?name=OBJ'), /环境变量不是文字/);
-  await assert.rejects(调('/env?name=NUM'), /环境变量不是文字/);
+test('读取授权环境文字：未授权名与非文字值失败（部署错误；薄宿主下是豫言异常）', async () => {
+  assert.match(错(await 调('/env?name=OTHER')), /未授权的ENV绑定：OTHER/);
+  assert.match(错(await 调('/env?name=NOT_LISTED')), /未授权的ENV绑定：NOT_LISTED/);
+  assert.match(错(await 调('/env?name=OBJ')), /环境变量不是文字/);
+  assert.match(错(await 调('/env?name=NUM')), /环境变量不是文字/);
 });
 
-test('授权绑定存在：已授权且真值为阳，已授权但缺失为阴，未授权抛错', async () => {
+test('授权绑定存在：已授权且真值为阳，已授权但缺失为阴，未授权失败', async () => {
   const 问 = (种类, 名, 环境对象) => 调('/bind?kind=' + encodeURIComponent(种类) + '&name=' + encodeURIComponent(名), 环境对象);
   assert.equal((await 问('D1', 'DB')).文, '阳');
   assert.equal((await 问('D1', 'NODB')).文, '阴');
@@ -55,9 +53,9 @@ test('授权绑定存在：已授权且真值为阳，已授权但缺失为阴�
   assert.equal((await 问('ENV', 'MISSING')).文, '阴');
   assert.equal((await 问('ENV', 'OBJ')).文, '阳');
   assert.equal((await 问('D1', 'DB', {})).文, '阴');
-  await assert.rejects(问('D1', 'UNLISTED'), /未授权的D1绑定：UNLISTED/);
-  await assert.rejects(问('KV', 'DB'), /未授权的KV绑定：DB/);
-  await assert.rejects(问('QUEUE', 'Q'), /未授权的QUEUE绑定：Q/);
+  assert.match(错(await 问('D1', 'UNLISTED')), /未授权的D1绑定：UNLISTED/);
+  assert.match(错(await 问('KV', 'DB')), /未授权的KV绑定：DB/);
+  assert.match(错(await 问('QUEUE', 'Q')), /未授权的QUEUE绑定：Q/);
   assert.match(错(await 问('', 'DB')), /绑定种类为空/);
   assert.match(错(await 问('D1', '')), /绑定名称为空/);
 });

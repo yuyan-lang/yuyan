@@ -170,7 +170,7 @@ test('超大输入的语义：一百万个增补字符', async () => {
   assert.equal(await 小写(大写希腊), 大写希腊.toLowerCase());
 });
 
-test('同一事件内重复调用六千次不耗尽宿主句柄', async () => {
+test('同一事件内重复调用六千次', async () => {
   for (const 操作 of ['trim', 'lower', 'len', 'alnum']) {
     const r = await 调(操作, '  ÀB  ', 6000);
     assert.equal(r.状态, 200, r.文);
