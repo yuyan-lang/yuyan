@@ -269,12 +269,11 @@ test('参数违规抛事故且不发请求', async () => {
   assert.equal(s.请求们.length, 0, '违规一律不得发出请求');
 });
 
-// 文言：薄宿主之绑定败为可承之豫言异常（试验之客以「尝试运行」承之而答四百）；客不承则事亦败。
-// 汉语：薄宿主下绑定失败成为可捕获的豫言异常（试验应用用「尝试运行」接住，答 400）；应用不捕获时事件照样失败。
-test('未授权或不存在的服务绑定：抛可捕获的豫言异常，不发请求', async () => {
+// 文言：绑定未授为部署之误，宿主径止此事，客不能承。
+// 汉语：绑定未授权是部署错误，宿主直接中止本次事件，应用接不住。
+test('未授权或不存在的服务绑定：宿主报部署错误，不发请求', async () => {
   const s = 造();
-  const 果 = await 运行({url: 'https://svc/echo', binding: 'OTHER', read: 'none'}, s);
-  assert.equal(果.状态, 400, 果.文); assert.match(果.文, /未授权的SERVICE绑定：OTHER/);
+  await assert.rejects(运行({url: 'https://svc/echo', binding: 'OTHER', read: 'none'}, s), /未授权的SERVICE绑定：OTHER/);
   assert.equal(s.请求们.length, 0);
 });
 
