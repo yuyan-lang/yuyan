@@ -158,14 +158,12 @@ test('平台拒绝：异常消息保留平台原文，含引号、反斜线、�
   }
 });
 
-test('绑定名：空名由适配拒绝；未授权与未配置的绑定抛出可捕获的豫言异常，不投递', async () => {
+test('绑定名：空名由适配拒绝；未授权与未配置的绑定是部署错误，宿主中止请求，不投递', async () => {
   await 应单败('{"a":1}', '队列绑定名不得为空', {绑定: ''});
   await 应批败('[{"body":1}]', '队列绑定名不得为空', {绑定: ''});
-  await 应单败('{"a":1}', '未授权的QUEUE绑定：NOT_LISTED', {绑定: 'NOT_LISTED'});
-  await 应批败('[{"body":1}]', '未授权的QUEUE绑定：NOT_LISTED', {绑定: 'NOT_LISTED'});
-  const 无绑定 = await 单('{"a":1}', {环境: {}});
-  assert.equal(无绑定.状态, 400);
-  assert.equal(无绑定.文, '失败：绑定不存在：PAGE_QUEUE');
+  await assert.rejects(单('{"a":1}', {绑定: 'NOT_LISTED'}), /未授权的QUEUE绑定：NOT_LISTED/);
+  await assert.rejects(批('[{"body":1}]', {绑定: 'NOT_LISTED'}), /未授权的QUEUE绑定：NOT_LISTED/);
+  await assert.rejects(单('{"a":1}', {环境: {}}), /绑定不存在：PAGE_QUEUE/);
   const 他队列 = new 模拟队列(), 主队列 = new 模拟队列();
   await 单('{"to":"other"}', {绑定: 'OTHER_QUEUE', 环境: {PAGE_QUEUE: 主队列, OTHER_QUEUE: 他队列}});
   assert.equal(他队列.单发.length, 1);
