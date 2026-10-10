@@ -9,7 +9,7 @@
 寻观「数值类型」之「智量化编码」之书。
 寻观「数值类型」之「智量化私助」之书。
 寻观「数值类型」之「智量化参考编码」之书。
-寻观「张量格式」之「GGUF写出」之书。
+寻观「张量格式」之「吉统量写出」之书。
 寻观「张量格式」之「模型格式」之书。
 
 「：汉语：纯豫言构造规范GGUF固定向量，用外部现成llama-quantize的实际载荷作逐字节oracle；数值库入口和宿主能力沿用当前定义。文言：以纯豫言造规范GGUF固定向量，取外存llama-quantize之实载荷，逐字节为对校；数值库入口、宿主之能，循今所定。：」
@@ -37,7 +37,7 @@
       「填」于（「加」于「序」于「一」）
   而
   虑「无」者「填」于「零」而
-  「GGUF拼字」于（「列」【
+  「吉统量拼字」于（「列」【
     「参考四字整数」于「一」，
     「参考四字整数」于（「字节串长度」于「名」），
     「名」，
@@ -76,19 +76,19 @@
     「写数值位型」于「浮缓」于「零」于「四」于（「小数转单精度位」于「0.00001」）而
     虑「元们」者
       「列」【
-        「GGUF文字元项」于『general.architecture』于『llama』，
-        「GGUF整数元项」于『llama.context_length』于「四」于「32」，
-        「GGUF整数元项」于『llama.embedding_length』于「四」于「256」，
-        「GGUF整数元项」于『llama.block_count』于「四」于「一」，
-        「GGUF整数元项」于『llama.feed_forward_length』于「四」于「256」，
-        「GGUF整数元项」于『llama.attention.head_count』于「四」于「一」，
-        「GGUF整数元项」于『llama.attention.head_count_kv』于「四」于「一」，
-        「GGUF整数元项」于『llama.rope.dimension_count』于「四」于「256」，
-        「GGUF整数元项」于『llama.vocab_size』于「四」于「32」，
+        「吉统量文字元项」于『general.architecture』于『llama』，
+        「吉统量整数元项」于『llama.context_length』于「四」于「32」，
+        「吉统量整数元项」于『llama.embedding_length』于「四」于「256」，
+        「吉统量整数元项」于『llama.block_count』于「四」于「一」，
+        「吉统量整数元项」于『llama.feed_forward_length』于「四」于「256」，
+        「吉统量整数元项」于『llama.attention.head_count』于「四」于「一」，
+        「吉统量整数元项」于『llama.attention.head_count_kv』于「四」于「一」，
+        「吉统量整数元项」于『llama.rope.dimension_count』于「四」于「256」，
+        「吉统量整数元项」于『llama.vocab_size』于「四」于「32」，
         『llama.attention.layer_norm_rms_epsilon』与「六」与（「字节缓冲转字节串」于「浮缓」于「零」于「四」）
       】
     而
-    「编码GGUF」
+    「编码吉统量」
       于「32」
       于「元们」
       于（「列」【『blk.0.attn_q.weight』与（「列」【「二」，「256」】）与「零」与（「造参考源」于「种」）】）
@@ -135,7 +135,7 @@
           若「不等于」于「实际类」于「类」则
             「发生事故」授以「有」于『官方量化器输出类型不符』
           否则
-            虑「长」者「GGUF张量字节数」于「类」于（「张」中「二」）
+            虑「长」者「吉统量张量字节数」于「类」于（「张」中「二」）
             而
             虑「载」者
               「截取字节串」
