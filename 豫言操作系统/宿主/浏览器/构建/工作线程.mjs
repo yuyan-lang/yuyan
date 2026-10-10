@@ -115,6 +115,7 @@ function 运行(任务) {
     运行于Windows: () => false,
     运行于MacOS: () => false,
     运行于Linux: () => false,
+    运行于豫言操作系统: () => false,
     在线处理器数量: () => BigInt(任务.处理器数 ?? navigator.hardwareConcurrency ?? 1),
     获取当前纳秒时间: () => (performance.timeOrigin + performance.now()) * 1e6,
     获取当前本地日期时间字符串: () => 格式化时间('%Y-%m-%d %H:%M:%S'),

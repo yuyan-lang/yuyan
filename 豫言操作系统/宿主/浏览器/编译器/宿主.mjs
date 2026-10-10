@@ -132,6 +132,7 @@ export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编
     运行于Windows: () => false,
     运行于MacOS: () => false,
     运行于Linux: () => false,
+    运行于豫言操作系统: () => false,
     标准输出是终端: () => false,
     标准输入是终端: () => false,
     尝试读取标准输入行: () => [false, ""],
