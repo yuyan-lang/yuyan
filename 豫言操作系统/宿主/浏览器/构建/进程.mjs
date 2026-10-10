@@ -278,6 +278,7 @@ export class 进程表 {
       case '读': return 系统.读(参[0]);
       case '写': 系统.写(参[0], 参[1]); return undefined;
       case '删': 系统.删文件(参[0]); return undefined;
+      case '改名': 系统.改名(参[0], 参[1]); return undefined;
       case '列': return 系统.列(参[0]);
       case '存在': return 系统.存在(参[0]);
       case '是目录': return 系统.是目录(参[0]);
