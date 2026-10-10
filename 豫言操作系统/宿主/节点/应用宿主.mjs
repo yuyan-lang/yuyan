@@ -350,8 +350,14 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
       if (!资源.has(号) && Number(号) > 2 ** 40) { 资源.set(号, 值); return 号; }
     }
   };
+  // 文言：节点之 console 皆书于标准误而冠其级，同旧；标准出留与程序之文。
+  // 汉语：诺节上「云工全局」取到的 console 一律写标准错误并冠级别（[调试] [错误] [信息] [日志] [警告]），与原来相同；标准输出留给程序自己的输出。
+  const 级冠 = {debug: '[调试] ', error: '[错误] ', info: '[信息] ', log: '[日志] ', warn: '[警告] '};
+  const 错误台 = Object.fromEntries(Object.entries(级冠).map(([级, 冠]) =>
+    [级, (...参) => 输出(2, 编码器.encode(冠 + 参.map(项 => String(项)).join(' ') + '\n'))]));
   const 取全局 = 名 => {
     const 名称 = 文字(名);
+    if (名称 === 'console') return 错误台;
     if (!可用全局.has(名称) || !(名称 in globalThis)) throw Error('节点宿主不开放此全局：' + 名称);
     return globalThis[名称];
   };
@@ -438,8 +444,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
     取全局,
     取绑定: (类, 名) => {
       if (类 !== 'ENV' || !授权.环境.has(名)) throw Error('未授权的' + 类 + '绑定：' + 名);
-      if (!Object.hasOwn(process.env, 名)) throw Error('绑定不存在：' + 名);
-      return process.env[名];
+      return Object.hasOwn(process.env, 名) ? process.env[名] : undefined;
     },
     回调: (号, 参们) => {
       if (!回调入口函) throw Error('程序没有回调入口 云工宿主/执行云工回调');
