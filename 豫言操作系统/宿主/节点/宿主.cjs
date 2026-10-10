@@ -157,8 +157,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
       const 目录=路径.resolve(当前目录,'.yybuild/豫构上下文');文件.mkdirSync(目录,{recursive:true,mode:0o700});
       const 占径=路径.join(目录,'锁.占');取占锁(占径);
       try{
-        for(let 号=1;;号++){
+        for(let 号=1000+(()=>{let 散=5381;for(let 位=0;位<内容.length;位++)散=(Math.imul(散,33)+内容[位])>>>0;return 散%1000000;})();;号++){
           const 文径=路径.join(目录,号+'.上下文');
+          // 文言：起号依其文之 djb2 散（三十二位）取一千加散除百万之余，与原生执行器同法。汉语：起始号按内容的 djb2 散列（三十二位，h×33+字节，初值 5381）取 1000 加散列除以一百万的余数，与原生执行器相同，同内容两边得同号，多数一次就中。
           // 文言：长异者不读其文，径试次号。汉语：长度不同就不读内容，直接试下一个号（目录里常有上百个旧上下文，每个任务都要从 1 号找起）。
           const 状=文件.statSync(文径,{throwIfNoEntry:false});
           if(!状){文件.writeFileSync(文径,内容,{flag:'wx',mode:0o600});return 文件.realpathSync(文径);}
