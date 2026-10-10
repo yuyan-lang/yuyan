@@ -24,12 +24,12 @@ export function 创建组装器(binaryen) {
   // 文言：未有承异者，则报其本辞。表增一格以容承异之函，起始先立之为当前承异者；其闭包为唯含表位之元组。
   // 汉语：浏览器宿主安装顶层字符串异常处理器，避免默认空处理器触发 illegal cast、掩盖编译诊断。函数表加一格放处理器，
   // _start 开头把它设为当前异常处理器（闭包是只含表位的 $tuple 元组）。依赖编译器写出的名字段找到 _start 与 $exception。
+  // 文言：提案 00006 以来静初之函不入模，表或有空位，故承异之函另立一段，置于旧表之末。
+  // 汉语：提案 00006 起「豫言静态初始化」不进模块，函数表可能留空位（表长大于元素段），所以处理器另立一个元素段，放在原表末尾。
   function 装顶层承异(模块) {
     const 表 = 模块.getTableByIndex(0), 表息 = binaryen.getTableInfo(表), 位 = 表息.initial;
-    if (模块.getNumElementSegments() !== 1) throw Error("不支持的编译器模块布局：元素段数目");
-    const 段息 = binaryen.getElementSegmentInfo(模块.getElementSegmentByIndex(0));
     const 始 = 模块.getFunction("_start");
-    if (段息.data.length !== 位 || !始 || !模块.getGlobal("exception")) throw Error("不支持的编译器模块布局：缺少函数表、_start 或 exception");
+    if (!始 || !模块.getGlobal("exception")) throw Error("不支持的编译器模块布局：缺少 _start 或 exception");
     const 等 = binaryen.eqref;
     binaryen.Table.setInitial(表, 位 + 1);
     if (表息.max !== undefined) binaryen.Table.setMax(表, 位 + 1);
@@ -37,8 +37,7 @@ export function 创建组装器(binaryen) {
     模块.addFunction("browser_unhandled", binaryen.createType([等, 等]), 等, [], 模块.block(null, [
       模块.call("browser_failure", [模块.local.get(1, 等)], binaryen.none), 模块.unreachable()
     ], binaryen.unreachable));
-    模块.removeElementSegment(段息.name);
-    模块.addActiveElementSegment(表息.name, 段息.name, [...段息.data, "browser_unhandled"], 模块.i32.const(0));
+    模块.addActiveElementSegment(表息.name, "browser_unhandled_segment", ["browser_unhandled"], 模块.i32.const(位));
     // 文言：同构之型即同型，故另造 (array (mut eqref)) 即 $tuple。汉语：同构的独立递归组类型相同，重新构造的数组类型就是运行时的 $tuple。
     const 建 = new binaryen.TypeBuilder(1);
     建.setArrayType(0, 等, binaryen.notPacked, true);

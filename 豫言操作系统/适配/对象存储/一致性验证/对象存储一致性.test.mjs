@@ -1,4 +1,4 @@
-// 文言：以真 Wasm 验对象存储一版；汉语：对象存储 0.2.0 的真实 Wasm 一致性测试。
+// 文言：以真 Wasm 验对象存储 0.3.0；汉语：对象存储 0.3.0 的真实 Wasm 一致性测试。
 // 两种运行方式：
 //   缺省      在 Node 中装载真实 Wasm，R2 为 模拟R2.mjs 的类实例（形状取自真实 workerd 的探测）；
 //   远端地址  设置环境变量 远端地址（如 http://localhost:8793）则经 HTTP 调用同一应用的本地 workerd，桶为真实 R2；
@@ -53,8 +53,9 @@ function 新场景() {
     写文: (键名, 文, 选项 = '', 桶 = 'PACKAGES') => 调('/put-text?' + 查({b: 桶, k: 键名, opts: typeof 选项 === 'string' ? 选项 : JSON.stringify(选项)}), {体: 文}),
     删: (键们, 桶 = 'PACKAGES') => 调('/delete?' + 查({b: 桶}), {体: JSON.stringify(键们)}),
     列: (选项 = {}, 桶 = 'PACKAGES') => 调('/list?' + 查({b: 桶, opts: typeof 选项 === 'string' ? 选项 : JSON.stringify(选项)})),
-    直通: (键名, {状态 = 200, 头们 = [], 方法 = 'GET', 桶 = 'PACKAGES'} = {}) =>
-      调('/serve?' + 查({b: 桶, k: 键名, status: 状态, hdrs: JSON.stringify(头们)}), {方法}),
+    // 原样：对象不存在时应用直接返回适配给的 404 空响应（raw=1），否则应用另造 404 文字响应“缺”。
+    直通: (键名, {状态 = 200, 头们 = [], 方法 = 'GET', 桶 = 'PACKAGES', 原样 = false} = {}) =>
+      调('/serve?' + 查({b: 桶, k: 键名, status: 状态, hdrs: JSON.stringify(头们), ...(原样 ? {raw: '1'} : {})}), {方法}),
     清理: async 诸 => { if (远端 && 诸.length) await 调('/delete?' + 查({b: 'PACKAGES'}), {体: JSON.stringify(诸)}); },
   };
   return 场景;
@@ -532,7 +533,7 @@ test('句柄释放：同一事件内反复取元数据与列举，不触及事�
   await 场.清理([键, ...诸键]);
 });
 
-test('回应入站以对象存储对象：GET 直通正文流，自带 Content-Length 与 ETag，叠加附加标头', async () => {
+test('对象存储对象转为出站响应：GET 直通正文流，自带 Content-Length 与 ETag，叠加附加标头', async () => {
   const 场 = 新场景(), 键 = 场.键('直/文.txt');
   const 体 = 字节们('直通的正文 with 中文\n第二行');
   await 场.写(键, 体);
@@ -556,7 +557,7 @@ test('回应入站以对象存储对象：GET 直通正文流，自带 Content-L
   await 场.清理([键, 空]);
 });
 
-test('回应入站以对象存储对象：HEAD 只带头不带体；对象不存在返回阴且不占用最终响应', async () => {
+test('对象存储对象转为出站响应：HEAD 只带头不带体；对象不存在返回阴与 404 空响应，应用可另造响应', async () => {
   const 场 = 新场景(), 键 = 场.键('直/头.bin');
   const 体 = Uint8Array.from({length: 1000}, (_, 序) => 序 % 256);
   await 场.写(键, 体);
@@ -569,16 +570,18 @@ test('回应入站以对象存储对象：HEAD 只带头不带体；对象不存
     assert.equal(桶.记录.filter(项 => 项.方法 === 'body.pull').length, 0, 'HEAD 不得拉取正文');
     assert.ok(桶.记录.some(项 => 项.方法 === 'head'), 'HEAD 请求使用 head()');
   }
-  // 不存在：应用得到阴，自行回 404（证明最终响应未被占用）
+  // 不存在：适配返回阴与 404 空响应（原样作答时可见）；应用也可另造响应（默认回 404 文字“缺”）
   for (const 方法 of ['GET', 'HEAD']) {
     const 无 = await 场.直通(场.键('直/无'), {方法});
     assert.equal(无.状态码, 404, 方法);
     if (方法 === 'GET') assert.equal(无.文, '缺');
+    const 原 = await 场.直通(场.键('直/无'), {方法, 原样: true});
+    assert.equal(原.状态码, 404, 方法); assert.equal(原.字节.length, 0, 方法);
   }
   await 场.清理([键]);
 });
 
-仅模拟('回应入站以对象存储对象：64 MiB 大对象流式直通，正文不经 Wasm 内存，也不整读', async () => {
+仅模拟('对象存储对象转为出站响应：64 MiB 大对象流式直通，正文不经 Wasm 内存，也不整读', async () => {
   const 场 = 新场景(), 桶 = 场.桶();
   const 大 = Buffer.alloc(64 * MiB);
   for (let 序 = 0; 序 < 大.length; 序 += 4096) 大[序] = 序 / 4096 & 255;
@@ -595,7 +598,7 @@ test('回应入站以对象存储对象：HEAD 只带头不带体；对象不存
   console.log(`64 MiB 直通用时 ${耗时.toFixed(0)}ms`);
 });
 
-test('回应入站以对象存储对象：状态与附加标头的严格校验', async () => {
+test('对象存储对象转为出站响应：状态与附加标头的严格校验', async () => {
   const 场 = 新场景(), 键 = 场.键('直/校');
   await 场.写(键, 字节们('x'));
   for (const 状态 of [199, 100, 204, 205, 206, 300, 301, 304, 400, 404, 500, 0, -1, 600]) 应失败(await 场.直通(键, {状态}), /直通对象的响应状态须在 200 至 299 之间，且不能是无正文的 204、205 或须按范围交付的 206/, String(状态));
@@ -633,7 +636,7 @@ test('多个桶互相隔离：同名键在 PACKAGES 与 SPARE 中各是各的', 
   await 场.清理([键]);
 });
 
-test('回应入站以对象存储对象：16 MiB 对象流式直通（Content-Length、ETag 与正文逐字节一致）', async () => {
+test('对象存储对象转为出站响应：16 MiB 对象流式直通（Content-Length、ETag 与正文逐字节一致）', async () => {
   const 场 = 新场景(), 键 = 场.键('直/十六兆');
   const 写 = await 场.调('/put-zero?' + new URLSearchParams({b: 'PACKAGES', k: 键, opts: '', n: 16 * MiB}));
   assert.equal(写.状态码, 200, 写.文.slice(0, 200));

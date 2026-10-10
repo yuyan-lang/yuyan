@@ -285,7 +285,7 @@ test('无效响应柄：新读取函数一律抛事故，不接受伪造或他�
   assert.match(果二.文, /授权服务响应柄无效/, '别处的句柄号（如入站请求）同样被拒');
 });
 
-test('旧的原流直通仍可用：请求授权服务转正文并回应入站以原答', async () => {
+test('原流直通：请求授权服务转正文，再把原答转为出站响应作处理入口的返回值', async () => {
   const s = new 服务桩(async (路径, 请求) => new Response('回声:' + 解.decode(new Uint8Array(await 请求.arrayBuffer())), {status: 201, headers: {'x-yuyan-model': 'p'}}));
   const 回 = await 造宿主().fetch(new Request('https://x.test/svcpass', {method: 'POST', headers: {'content-type': 'text/plain'}, body: '直通的正文'}), {SVC: s});
   assert.equal(回.status, 201); assert.equal(回.headers.get('x-yuyan-model'), 'p');

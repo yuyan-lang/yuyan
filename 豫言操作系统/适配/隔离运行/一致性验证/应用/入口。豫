@@ -1,8 +1,8 @@
 寻观「标准库」之书。
 寻观「结森工具」之「总集」之书。
 寻观「结森工具」之「结森访问」之书。
-寻观「豫言操作系统网页入站」之「请求」之书。
-寻观「豫言操作系统网页答复」之「响应」之书。
+寻观「豫言操作系统网页服务」之「入站网页」之书。
+寻观「豫言操作系统网页服务」之「网页处理」之书。
 寻观「豫言操作系统隔离运行」之「运行」之书。
 
 「：汉语：在同一个事件里重复调用 运行隔离程序 共「次」次。每次成功就用它的结果文字继续；某次抛出异常时，若「容错」为真则记一次失败、保存异常消息并继续，否则立即返回 {ok:false,error,failures}。全部结束返回 {ok:true,result:最后一次成功的结果文字,failures:失败次数,lastError:最后一次异常消息}。
@@ -80,12 +80,12 @@
         】）
 也。
 
-「：汉语：请求体是 JSON：{runner,scope,digest,program,input,repeat,tolerant}（前五项是字符串，repeat 是整数，tolerant 是爻；缺省 runner 为 LOADER、repeat 为 1、tolerant 为假）；把它们交给 重复运行 并以 JSON 回应结果。正文至多 16 MiB。
-文言：请求之体乃 JSON：runner、scope、digest、program、input、repeat、tolerant；答亦 JSON。：」
-「入口」乃化「有」而「有」也。
-「入口」者会「无」而
+「：汉语：网页服务的处理入口（提案 C0001）。请求体是 JSON：{runner,scope,digest,program,input,repeat,tolerant}（前五项是字符串，repeat 是整数，tolerant 是爻；缺省 runner 为 LOADER、repeat 为 1、tolerant 为假）；把它们交给 重复运行 并以 JSON 回应结果。正文至多 16 MiB。
+文言：网页服务之处理入口（提案 C0001）。请求之体乃 JSON：runner、scope、digest、program、input、repeat、tolerant；答亦 JSON。：」
+「处理入站网页请求」乃化「入站网页请求」而「出站网页响应」也。
+「处理入站网页请求」者会「请求」而
   虑「读」者
-    「读取入站有限正文文字」于「一六七七七二一六」而
+    「读取入站有限正文文字」于「请求」于「上限」为「一六七七七二一六」而
   虑「体」者
     「结森解析」于（「读」中「一」）而
   虑「果」者
@@ -99,9 +99,9 @@
       于（「结森字段爻」于「体」于『tolerant』于「阴」）
       于「零」于『』于『』
   而
-  「回应入站带头文字」
-    于「二零零」
-    于『application/json; charset=utf-8』
-    于（「罄」授以（「字符串」合「字符串」））
-    于（「结森表示」于「果」）
+  「造带头文字响应」
+    于「状态」为「二零零」
+    于「类型」为『application/json; charset=utf-8』
+    于「标头」为（「罄」授以（「字符串」合「字符串」））
+    于「正文」为（「结森表示」于「果」）
 也。

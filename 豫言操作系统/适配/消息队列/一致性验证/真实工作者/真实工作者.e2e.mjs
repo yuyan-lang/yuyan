@@ -1,5 +1,6 @@
 // 文言：以真本地 workerd（wrangler dev）综验消息队列、定时事件、邮件发送、文字规整、日志五约，验平台之真义，补 Node 模拟之不及。
 // 汉语：把已构建的“平台综合一致性”产物复制到临时目录，配上队列、定时、邮件、KV 绑定，用 wrangler dev --local 启动，再逐场景发请求、读 workerd 日志断言。约需 1 分钟。
+//   试验应用实现网页、队列、定时三个类型化入口（提案 C0001），宿主用实例池调用。
 // 用法：在私有暂存根目录执行 `node <本文件>`；环境变量：
 //   YY_DIST_ROOT     产物根目录，默认 ./dist（其下应有 平台综合一致性/）
 //   E2E_WRANGLER     wrangler.js 的路径，默认取相邻云仓 应用/包管理服务/node_modules 里的 wrangler
@@ -91,8 +92,6 @@ const 场景 = async (名, 函数) => {
 };
 
 // ---------- 场景 ----------
-await 场景('事件种类：fetch', async () => { assert.deepEqual(await 请('/kind', {方法: 'GET'}), {状态: 200, 文: 'fetch'}); });
-
 await 场景('文字规整：workerd 里的 JS 语义与规范样例一致', async () => {
   for (const [径, 入, 期] of [['/norm/trim', '\u3000 a b\u3000', 'a b'], ['/norm/lower', 'ABC İ ΑΣ', 'abc i̇ ας'], ['/norm/len', 'a😀豫', '4'], ['/norm/trim', '\uFEFFx\uFEFF', 'x'], ['/norm/lower', 'ÀÉÎ', 'àéî']]) {
     const r = await 请(径, {体: 入});
@@ -206,11 +205,6 @@ await 场景('定时：不带 time 参数时 scheduledTime 为当前毫秒', asy
   const 事件 = JSON.parse(行[0].slice('E2E定时 '.length));
   assert.equal(事件.cron, '0 * * * *');
   assert.ok(Math.abs(事件.scheduledTime - Date.now()) < 60000, String(事件.scheduledTime));
-});
-
-await 场景('非队列、非定时事件里调用对应函数是可捕获异常', async () => {
-  assert.deepEqual(await 请('/sched', {方法: 'GET'}), {状态: 400, 文: '失败：当前事件不是定时事件'});
-  assert.deepEqual(await 请('/consume', {方法: 'GET'}), {状态: 400, 文: '失败：当前事件不是队列事件'});
 });
 
 await 场景('邮件：本地 send_email 收到的 From/To/Subject/Text 与输入逐字相同；平台拒绝时原因不含地址与令牌；注入不到达平台', async () => {

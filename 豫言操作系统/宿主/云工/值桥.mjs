@@ -562,12 +562,15 @@ export const 平台导入旧名 = Object.freeze({
 // 文言：仅具名之术得入客器。汉语：每次实例只开放调用者传入的具名能力：标准库 可覆盖或补充导入模块「标准库」的实现（键为字段名）；
 //   平台 是平台接口包的带类型导入实现，按导入模块分组：{模块名: {字段名: 函数}}，函数带 异步=true 时套 JSPI。
 //   每次调用都新建一套闭包（云工每个事件一套，不共用“当前事件”状态）；签名解析按模块缓存在胶水里。
-export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {}, 错误输出 = 文 => globalThis.console?.error?.(文), 参数 = [], 时限毫秒 = 30000, 标准库 = {}, 平台 = {}} = {}) {
+//   截止源：复用的实例（提案 C0001）每次调用的截止时刻不同，传入 {调用: {截止}}，限时与 check 在调用时读它；不传则按建实例时刻加 时限毫秒。
+export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {}, 错误输出 = 文 => globalThis.console?.error?.(文), 参数 = [], 时限毫秒 = 30000, 截止源 = null, 标准库 = {}, 平台 = {}} = {}) {
   if (typeof WebAssembly.Suspending !== 'function' || typeof WebAssembly.promising !== 'function') {
     throw Error('宿主缺少 WebAssembly JSPI');
   }
   const 桥 = 创建值桥(值桥模块);
-  const 截止 = performance.now() + 时限毫秒;
+  const 固定截止 = performance.now() + 时限毫秒;
+  const 取截止 = 截止源 ? () => 截止源.调用?.截止 ?? Infinity : () => 固定截止;
+  const 截止 = 截止源 ? 0 : 固定截止;
   // 文言：标准库之宿主服务，以导入模块「标准库」之字段名为键；无者为桩。汉语：标准库宿主服务（导入模块「标准库」，键为字段名），云工与浏览器提供这二十个，其余给桩；语义见 ../标准库宿主.汉语.md。
   const 标准库实现 = {
     获取命令行程序名: () => '/程序.wasm',
@@ -595,8 +598,8 @@ export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {
     ...标准库
   };
   // 文言：带型之导入每调验其时限。汉语：带类型的导入在每次调用时检查墙钟时限（见说明“每事件墙钟时限”）；时限无穷时不包。
-  const 限时 = Number.isFinite(截止) ? 函 => Object.assign((...参) => {
-    if (performance.now() > 截止) throw Error('豫言执行超过时限');
+  const 限时 = 截止源 || Number.isFinite(截止) ? 函 => Object.assign((...参) => {
+    if (performance.now() > 取截止()) throw Error('豫言执行超过时限');
     return 函(...参);
   }, {异步: 函.异步}) : 函 => 函;
   const 表限时 = 表 => Object.fromEntries(Object.entries(表).map(([名, 函]) => [名, 限时(函)]));
@@ -607,7 +610,7 @@ export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {
   const 实例 = new WebAssembly.Instance(程序模块, {
     ...带型导入,
     'yuyan:browser/v1': {
-      check() { if (performance.now() > 截止) throw Error('豫言执行超过时限'); },
+      check() { if (performance.now() > 取截止()) throw Error('豫言执行超过时限'); },
       fail(值) { throw Error(文字(桥.解(值))); }
     }
   });
@@ -620,5 +623,5 @@ export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {
     }
     catch (错) { if (!(错 instanceof 豫言退出) || 错.退出码 !== 0) throw 错; }
   };
-  return {运行, 实例};
+  return {运行, 实例, 桥};
 }

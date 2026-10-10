@@ -216,7 +216,7 @@ test('公网上游：超时与读取错误、取消、有限读取', async () =>
   assert.match(己.文, /‖有限状态0:字节\d+:\{"ok":true,"名":"豫言"\}$/);
 });
 
-test('旧的原流回应仍可用：请求授权网页上游后以上游流回应当前入站请求（只覆盖允许的头）', async () => {
+test('上游流转为出站响应：请求授权网页上游后把上游流作为处理入口返回的响应（只覆盖允许的头）', async () => {
   const 网络 = 造网络();
   const 回 = await 造宿主({网络}).fetch(new Request('https://x.test/uppass'), {});
   assert.equal(回.status, 200); assert.equal(回.headers.get('content-type'), 'text/event-stream; charset=utf-8'); assert.equal(回.headers.get('x-yuyan-model'), 'm9');

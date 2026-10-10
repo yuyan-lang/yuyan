@@ -17,12 +17,14 @@ const 执行配置 = 构建资源.执行配置 ?? null;
 // 文言：用张量计算者，构建器书中央张量内核之模于 动态资源.mjs；无则无之。汉语：用了张量计算的应用，构建器在 动态资源.mjs 里导出中央张量内核模块（Workers 不能在运行时编译 Wasm 字节，须随产物导入）；没有时得到 undefined。
 const 中央张量内核模块 = 构建资源.中央张量内核模块 ?? null;
 const 造宿主 = () => 创建云工宿主({程序模块, 值桥模块, 许可, 动态资源: {模块源码, 值桥字节}, 执行配置, 中央张量内核模块});
-export default 造宿主();
+// 文言：隔离体共一宿主，其实例之池随之常存（提案 C0001）。汉语：整个隔离体共用一个宿主，实例池随它常驻（提案 C0001）；持久对象各对象一个。
+const 宿主 = 造宿主();
+export default 宿主;
 
 // 文言：命名服务之壳唯转请于 service-fetch；公域 default 仍自辨 fetch。汉语：通用命名入口只把服务绑定请求作为 service-fetch 交给豫言，供构建器导出应用别名。
 export class 豫言服务入口 extends WorkerEntrypoint {
   fetch(request) {
-    return 造宿主().serviceFetch(request, this.env, this.ctx);
+    return 宿主.serviceFetch(request, this.env, this.ctx);
   }
 }
 
@@ -44,6 +46,6 @@ export class 豫言持久对象 extends DurableObject {
 // 文言：工作流之宿唯依平台步骤调用豫言；步骤名、先后与值悉由客定。汉语：通用 Workflow 类把 run 和持久步骤交给豫言 Wasm，外壳不写业务流程。
 export class 豫言工作流 extends WorkflowEntrypoint {
   run(event, step) {
-    return 造宿主().workflow(event, step, this.env);
+    return 宿主.workflow(event, step, this.env);
   }
 }
