@@ -13,7 +13,7 @@
 
 ## 测试方法（在 `~/repos/yuyan-worktrees/ARM硬件` 运行，`节点` 指 `node 豫言操作系统/宿主/节点/宿主.cjs`）
 
-- 380 项裸机验证：`节点 yy豫构.wasm 文件 豫言操作系统/裸机/验证。豫 --输出 yy裸机验证.wasm -j 24`，再 `节点 yy裸机验证.wasm`（约 70 秒）。改裸机后端（降级器、手写内核）要先重建它；只改豫言内核不必（工具运行时现编内核）。
+- 342 项裸机验证：`节点 yy豫构.wasm 文件 豫言操作系统/裸机/验证。豫 --输出 yy裸机验证.wasm -j 24`，再 `节点 yy裸机验证.wasm`（约 70 秒）。改裸机后端（降级器、手写内核）要先重建它；只改豫言内核不必（工具运行时现编内核）。
 - x86 造盘：`YY_GC_INITIAL_HEAP_SIZE_MB=1024 node --max-old-space-size=24000 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --输出 目录 --预置 无 --预编二 --工具链 --六十四位地址 --盘容量 2097152`（约 3–5 分钟，得 `yy豫言启动.iso` 即宿主参照与 `yy豫言启动盘.img`），之后 `git checkout -- 库/壳核心/yy拼音字库。豫`。数据盘是标准 ext4（2026-10-10 起），块数在造盘时按 `--盘容量` 定下，之后把盘文件扩大不会放大文件系统（挂载取超级块与设备容量中较小者）；要在系统里放下编译缓存，就在造盘时把 `--盘容量` 给到想要的大小。
 - x86 系统内造盘：盘复制一份并稀疏扩到 8 GiB，`qemu-system-x86_64 -machine q35 -accel kvm -cpu host -m 24G -smp 4 -display none -monitor tcp:127.0.0.1:端口,server,nowait -serial pipe:前缀 -no-reboot -drive if=none,id=yy_boot,format=raw,file=盘 -device qemu-xhci,id=xhci -device usb-storage,bus=xhci.0,drive=yy_boot,bootindex=1 -boot order=c`；串口出现“命令壳已就绪”后一次写入下面的输入（首字节 0x12 切英文）：
   - `「设」于「YY_BUILD_LOG」于「0」`
