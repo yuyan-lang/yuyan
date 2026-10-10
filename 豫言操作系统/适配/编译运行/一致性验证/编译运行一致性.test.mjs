@@ -221,14 +221,12 @@ describe('Node 进程内：真实豫言 Wasm 与真实运行器', () => {
   const 底层 = 体 => 宿主.fetch(new Request('https://编译运行.test/脚本', {method: 'POST', body: JSON.stringify(体)}), {COMPILER_RUNTIME: 运行器}, {waitUntil() {}});
   套件(() => 造调用(底层));
 
-  // 文言：薄宿主之败皆为值，适配抛豫言之异；试验应用逐步接之，故见于该步之果。
-  // 汉语：薄宿主的失败都是值，未授权或不存在的绑定由适配抛出豫言异常；试验应用逐步接住异常，所以出现在该步的结果里（不接住时由标准库默认处理中止本事件）。
-  test('未授权或不存在的绑定名：启动抛出豫言异常', async () => {
+  // 文言：绑定未授为部署之误，宿主径止此事；已授而阙者，「绑定」以「云工中止」止之。二者客皆不能承，此事败（合规范“使本事件失败”）。
+  // 汉语：未授权的绑定是部署错误，宿主直接中止本次事件；已授权而没有配置时「绑定」用「云工中止」中止本次事件。两者豫言都接不住，本次事件失败（即规范所说“使本事件失败”）。
+  test('未授权或不存在的绑定名：本次事件失败', async () => {
     const 请 = 体 => new Request('https://编译运行.test/脚本', {method: 'POST', body: JSON.stringify({steps: [体]})});
-    const 甲 = await (await 宿主.fetch(请({op: '启动', name: '未授权名', request: 请求文(你好)}), {COMPILER_RUNTIME: 运行器, 未授权名: 运行器}, {waitUntil() {}})).json();
-    assert.match(甲.results[0].error ?? '', /未授权的COMPILE绑定：未授权名/, JSON.stringify(甲));
-    const 乙 = await (await 宿主.fetch(请({op: '启动', request: 请求文(你好)}), {}, {waitUntil() {}})).json();
-    assert.match(乙.results[0].error ?? '', /绑定不存在：COMPILER_RUNTIME/, JSON.stringify(乙));
+    await assert.rejects(宿主.fetch(请({op: '启动', name: '未授权名', request: 请求文(你好)}), {COMPILER_RUNTIME: 运行器, 未授权名: 运行器}, {waitUntil() {}}), /未授权的COMPILE绑定：未授权名/);
+    await assert.rejects(宿主.fetch(请({op: '启动', request: 请求文(你好)}), {}, {waitUntil() {}}), /绑定不存在：COMPILER_RUNTIME/);
   });
 
   test('运行器：全部结束后无残留运行', () => { assert.equal(运行器.运行数(), 0); });

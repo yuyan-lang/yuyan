@@ -226,8 +226,9 @@ function 造子工({取绑定, 动态资源}) {
   return {
     按号取(绑定名, 标识, 主模块, 程序字节, cpuMs, subRequests) {
       const 加载器 = 取绑定('LOADER', String(绑定名));
-      const 码 = 造码(String(主模块), 程序字节, cpuMs, subRequests);
-      return 加载器.get(String(标识), () => 码).getEntrypoint();
+      if (加载器 == null) throw Error('绑定不存在：' + String(绑定名));
+      // 文言：码惟于平台未存此标识之时乃造（验 Wasm、集模块），既存则不复为。汉语：子 Worker 代码只在平台没有缓存这个标识时才由回调造出（校验 Wasm、组模块表），命中缓存时不再重做。
+      return 加载器.get(String(标识), () => 造码(String(主模块), 程序字节, cpuMs, subRequests)).getEntrypoint();
     }
   };
 }
