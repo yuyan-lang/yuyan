@@ -77,7 +77,8 @@ const 打开原 = 能力[带型实现].诺节宿主.诺节文件打开;
 const 文 = 字节 => new TextDecoder().decode(字节);
 const 记录显示 = async (...参) => {
   const 果 = await 显示原(...参);
-  if (文(参[0]) === '提交' && Number(果[0]) === 0) {
+  // 文言：交区（零点八版）亦携全画布，同录之。汉语：区域提交（显示 0.8.0）也带整块画布，照样记下。
+  if (['提交', '提交区域'].includes(文(参[0])) && Number(果[0]) === 0) {
     帧数 += 1;
     const 宽 = Number(参[2]), 高 = Number(参[3]), 像素 = 参[4];
     const 彩 = Buffer.alloc(宽 * 高 * 3);
