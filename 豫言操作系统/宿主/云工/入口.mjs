@@ -7,17 +7,14 @@ import 宿主提供 from './宿主提供组.json';
 import * as 构建资源 from './动态资源.mjs';
 import {创建云工宿主} from './宿主.mjs';
 import {核对接口装载} from './接口核对.mjs';
-import {DurableObject, WorkerEntrypoint, WorkflowEntrypoint} from 'cloudflare:workers';
+import {DurableObject, WorkerEntrypoint} from 'cloudflare:workers';
 
 核对接口装载({程序模块, 应用要求, 宿主提供, 宿主: '云工'});
-// 文言：执行配置由构建器自应用目录之 执行配置.json 书入 动态资源.mjs；旧器不出此项则无配置而守默认，故壳与器可不同时更新。
-// 汉语：`执行配置` 只调整各事件种类的墙钟时限（见宿主说明），不含绑定授权；用命名空间导入读取，旧版构建器的产物没有该导出时得到 undefined，按默认时限运行。
 const {模块源码, 值桥字节} = 构建资源;
-const 执行配置 = 构建资源.执行配置 ?? null;
 // 文言：用张量计算者，构建器书中央张量内核之模于 动态资源.mjs；无则无之。汉语：用了张量计算的应用，构建器在 动态资源.mjs 里导出中央张量内核模块（Workers 不能在运行时编译 Wasm 字节，须随产物导入）；没有时得到 undefined。
 const 中央张量内核模块 = 构建资源.中央张量内核模块 ?? null;
-const 造宿主 = () => 创建云工宿主({程序模块, 值桥模块, 许可, 动态资源: {模块源码, 值桥字节}, 执行配置, 中央张量内核模块});
-// 文言：隔离体共一宿主，其实例之池随之常存（提案 C0001）。汉语：整个隔离体共用一个宿主，实例池随它常驻（提案 C0001）；持久对象各对象一个。
+const 造宿主 = () => 创建云工宿主({程序模块, 值桥模块, 许可, 动态资源: {模块源码, 值桥字节}, 中央张量内核模块});
+// 文言：隔离体共一宿主，一程序一实例常存。汉语：整个隔离体共用一个宿主，程序实例随它常驻；持久对象各对象一个。
 const 宿主 = 造宿主();
 export default 宿主;
 
@@ -28,7 +25,7 @@ export class 豫言服务入口 extends WorkerEntrypoint {
   }
 }
 
-// 文言：持久对象外壳唯分派事，所藏之态由豫言经 ctx.storage 管之。汉语：通用 Durable Object 类只把 fetch 与 alarm 交给豫言，持久状态由豫言使用原生存储维护；独占区与事务由豫言在事件内重入 Wasm 启动。
+// 文言：持久对象外壳唯分派事，所藏之态由豫言经 ctx.storage 管之。汉语：通用 Durable Object 类只把 fetch 与 alarm 交给豫言，持久状态由豫言经对象状态（ctx）使用原生存储维护；事务与独占区由豫言用回调调用。
 export class 豫言持久对象 extends DurableObject {
   constructor(ctx, env) {
     super(ctx, env);
@@ -38,14 +35,4 @@ export class 豫言持久对象 extends DurableObject {
   }
   fetch(request) { return this.宿主.durableFetch(request, this.env, this.ctx); }
   alarm(info) { return this.宿主.durableAlarm(info, this.env, this.ctx); }
-  webSocketMessage(ws, message) { return this.宿主.durableWebSocketMessage(ws, message, this.env, this.ctx); }
-  webSocketClose(ws, code, reason, wasClean) { return this.宿主.durableWebSocketClose(ws, code, reason, wasClean, this.env, this.ctx); }
-  webSocketError(ws, error) { return this.宿主.durableWebSocketError(ws, error, this.env, this.ctx); }
-}
-
-// 文言：工作流之宿唯依平台步骤调用豫言；步骤名、先后与值悉由客定。汉语：通用 Workflow 类把 run 和持久步骤交给豫言 Wasm，外壳不写业务流程。
-export class 豫言工作流 extends WorkflowEntrypoint {
-  run(event, step) {
-    return 宿主.workflow(event, step, this.env);
-  }
 }
