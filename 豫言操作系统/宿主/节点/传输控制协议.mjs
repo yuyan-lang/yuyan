@@ -148,7 +148,7 @@ export function 创建传输控制协议能力({模块字节} = {}) {
   };
   return {可用: 核 !== null, 能力, 读取当前Unix毫秒() {
     if (!核) throw Error('墙钟系统资源暂不可用');
-    const 值 = 核.当前Unix毫秒();
+    const 值 = 核.当前纪元毫秒();
     if (值 === -9223372036854775808n) throw Error('墙钟系统读取失败');
     return 值;
   }, 关闭: () => 系统.关闭()};
