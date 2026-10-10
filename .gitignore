@@ -45,6 +45,7 @@ yarn-error.log*
 *.gch
 *.dSYM/
 *.exe
+*.链接印
 *.cmi
 *.cmo
 perf.data

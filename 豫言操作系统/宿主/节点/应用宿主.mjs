@@ -413,6 +413,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
     运行于Windows: () => process.platform === 'win32',
     运行于MacOS: () => process.platform === 'darwin',
     运行于Linux: () => process.platform === 'linux',
+    运行于豫言操作系统: () => false,
     标准输出是终端: () => 终端.isatty(1),
     标准输入是终端: () => 终端.isatty(0),
     尝试读取标准输入行: () => 读行(),
