@@ -1,1 +1,1 @@
-{"OUTBOUND_ORIGINS":["https://slow.test"]}
+{"OUTBOUND_ORIGINS":["https://*"]}

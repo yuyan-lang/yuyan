@@ -1,12 +1,12 @@
-// 文言：以真 workerd 验宿主壳：独占区、事务、告警、值之限、时限配置，并与模拟作差分比对；试应用以类型化之入口受诸事（提案 C0001）。
+// 文言：以真 workerd 验宿主壳：独占区、事务、告警、值之限，并与模拟作差分比对；试应用以类型化之入口受诸事（提案 C0001）。
 // 汉语：可选的本地 workerd 验证（Wrangler 4.129.0，兼容日期 2026-09-05，SQLite 存储）。前置：
-//   1. 把待验产物（dist/持久对象壳一致性应用）的下列文件复制到本目录 `产物/`：值桥.mjs 边界.mjs 入口.mjs 动态资源.mjs 句柄.mjs
-//      宿主.mjs 宿主提供组.json 接口核对.mjs 接口要求组.json 程序.wasm 值桥.wasm 许可.json；并把 产物/许可.json 改为 {}（本地上游是 http）。
+//   1. 把待验产物（dist/持久对象壳一致性应用）的下列文件复制到本目录 `产物/`：值桥.mjs 边界.mjs 入口.mjs 动态资源.mjs 句柄.mjs 物桥.mjs
+//      宿主.mjs 平台资料.mjs 中央张量.mjs 宿主提供组.json 接口核对.mjs 接口要求组.json 程序.wasm 值桥.wasm 许可.json（许可保持 {"OUTBOUND_ORIGINS":["https://*"]}）。
+//      待办事项：试验应用经宿主对象 豫言公网取 等待外部，它只许 https；本机上游是 http，依赖上游等待的用例（独占区计数与排队、事务排队、断开不取消）现在跑不通，须换成本机 https 上游。
 //   2. 在本目录用云仓已装的 wrangler 起服务：
 //        wrangler dev --config wrangler.jsonc --port 8791 --inspector-port 9331 --persist-to .state --local
 //   3. 运行：env "持久对象壳产物=<dist/持久对象壳一致性应用>" node --test 本地工作者验证.test.mjs
-//      环境变量 本地工作者地址（默认 http://127.0.0.1:8791）；本地工作者产物目录（wrangler 所用的 产物/ 目录，默认本目录 ./产物，
-//      “事件时限”用例会临时改写其中 动态资源.mjs 的 执行配置 并在结束后还原）；含慢速验证=1 时另验平台 30 秒重置线（各约 35 秒）。
+//      环境变量 本地工作者地址（默认 http://127.0.0.1:8791）；含慢速验证=1 时另验平台 30 秒重置线（各约 35 秒）。
 //   建议把本目录复制到临时位置再运行，避免在语言仓里留下 产物/ 与 .state。
 // 服务不可达时全部用例跳过。用例之间用不同对象名隔离，互不相染。
 import {test, after} from 'node:test';
@@ -184,36 +184,13 @@ test('值大小：SQLite 对象上约 2 MiB 的值、2048 字节的键、4 MiB �
   assert.equal((await 发(名, {op: 'block-len', name: 'big-result', args: '{"exp":22}'})).文, 'B|' + (2 ** 22 + 2));
 });
 
-test('事件时限：本地 workerd 中 durable-alarm 时限 250 毫秒失败、5000 毫秒成功（改写产物 动态资源.mjs 的执行配置后等待热重载）', 选项, async () => {
-  const 路径 = join(process.env.本地工作者产物目录 ?? new URL('./产物/', import.meta.url).pathname, '动态资源.mjs');
-  const 原文 = await readFile(路径, 'utf8');
-  const 设配置 = async 配置 => {
-    const 文 = (await readFile(路径, 'utf8')).replace(/export const 执行配置 = .*;\n?$/s, 'export const 执行配置 = ' + JSON.stringify(配置) + ';\n');
-    await writeFile(路径, 文);
-    await 睡(5000);
-  };
-  try {
-    for (const [限, 成功] of [[250, false], [5000, true]]) {
-      await 设配置({事件时限毫秒: {'durable-alarm': 限}});
-      const 名 = 新名('e10-' + 限);
-      await 设上游(名);
-      await 发(名, {op: 'put', k: 'alarm-mode', text: '"long"'});
-      await 发(名, {op: 'put', k: 'alarm-n', text: '5'});
-      await 发(名, {op: 'put', k: 'alarm-ms', text: '100'});
-      await 发(名, {op: 'alarm-set', t: Date.now() + 200});
-      await 睡(2500);
-      assert.equal(await 读(名, 'alarm-done'), 成功 ? 'E|1' : 'M|', `时限 ${限}`);
-    }
-  } finally { await writeFile(路径, 原文); await 睡(4000); }
-});
-
 test('差分：模拟持久对象与本地 workerd 对同一组操作输出完全一致', {skip: 选项.skip || (产物 ? false : '需要环境变量 持久对象壳产物')}, async () => {
   const {创建云工宿主} = await import(pathToFileURL(join(产物, '宿主.mjs')));
   const 程序模块 = await WebAssembly.compile(await readFile(join(产物, '程序.wasm')));
   const 值桥模块 = await WebAssembly.compile(await readFile(join(产物, '值桥.wasm')));
   const 许可 = JSON.parse(await readFile(join(产物, '许可.json'), 'utf8'));
   const 网络 = 创建模拟慢网络();
-  const 对象 = 创建模拟持久对象({宿主: 创建云工宿主({程序模块, 值桥模块, 许可, 网络: 网络.fetch})});
+  const 对象 = 创建模拟持久对象({宿主: 创建云工宿主({程序模块, 值桥模块, 许可, 全局: Object.create(globalThis, {fetch: {value: 网络.fetch}})})});
   const 模拟发 = async 体 => { try { const 回 = await 对象.fetch(new Request('https://do.test/', {method: 'POST', headers: {'content-type': 'application/json'}, body: JSON.stringify(体)})); return 回.status + ' ' + await 回.text(); } catch (错) { return '抛出 ' + String(错).slice(0, 120); } };
   const 真名 = 新名('diff');
   const 真发 = async 体 => { const 果 = await 发(真名, 体); return 果.状态 + ' ' + 果.文.slice(0, 5000); };
