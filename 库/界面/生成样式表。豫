@@ -283,8 +283,8 @@
   「规则段」于「选择器」于（「按状态取声明」于「零」于（「展开声明」于「零」于「样式们」））
 也。
 
-「：汉语：基础样式表：结构样式、根的默认文字样式、各元素的默认样式。页面先放它，再放应用样式的规则。提案 00006：顶层不计算，所以是函数。
-文言：基础样式表：结构之式、根之默认文式、诸元素之默认。页先置之，后置客之样式之规。提案 00006：顶层不算，故为函。：」
+「：汉语：基础样式表：结构样式、根的默认文字样式、各元素的默认样式，以及带文本着色的多行文本框的三层结构（外框滚动，着色层与透明文字的 textarea 叠在同一网格格里）。页面先放它，再放应用样式的规则。提案 00006：顶层不计算，所以是函数。
+文言：基础样式表：结构之式、根之默认文式、诸元素之默认，及带文本着色之多行文框之三层（外框司滚，着色层与透明文之 textarea 叠于网格之一格）。页先置之，后置客之样式之规。提案 00006：顶层不算，故为函。：」
 「基础样式表」乃化「有」而「字符串」也。
 「基础样式表」者会「无」而
   （「结构样式表」于「元」）
@@ -293,6 +293,14 @@
   附（「默认规则」于『.界框』于（「元素默认样式」于「文本框种类」））
   附（「默认规则」于『.界多行框』于（「元素默认样式」于「多行文本框种类」））
   附『.界多行框{resize:none;white-space:pre;overflow:auto;font:inherit;color:inherit;box-sizing:border-box;}』
+  附『div.界多行框{display:block;}.界着色格{display:grid;width:max-content;min-width:100%;min-height:100%;}』
+  附『.界着色格>*{grid-area:1/1;margin:0;padding:0;border:0;font:inherit;line-height:inherit;』
+  附『letter-spacing:inherit;word-spacing:inherit;tab-size:inherit;color:inherit;』
+  附『white-space:pre;overflow-wrap:normal;}.界着色层{pointer-events:none;}』
+  附『.界着色文{display:block;resize:none;overflow:hidden;background:transparent;』
+  附『-webkit-text-fill-color:transparent;caret-color:currentColor;}』
+  附『.界着色文::placeholder{-webkit-text-fill-color:#9ca3af;}』
+  附『.界着色文::selection{background:rgba(37,99,235,.25);}』
   附（「默认规则」于『.界选』于（「元素默认样式」于「复选框种类」））
   附（「默认规则」于『.界线』于（「元素默认样式」于「分隔线种类」））
   附（「默认规则」于『.界链』于「链接默认样式」）
