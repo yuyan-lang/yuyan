@@ -1,4 +1,0 @@
-hello world
-第二行 foo bar
-
-last line
