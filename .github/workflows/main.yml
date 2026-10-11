@@ -253,18 +253,12 @@ jobs:
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 文件定位共享入口
           --编译器 ./yy4_bs.wasm --输出 yy文件定位共享.wasm -j 24
 
+      # 文言：底层之探针由编译器径出本机原生之程（--目标 本机，不经 .wasm）。
+      # 汉语：底层探针由编译器直接出本机原生程序（--目标 本机，不经 .wasm）。
       - name: 构建定位读取原生机械探针
         run: >-
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 文件定位原生探针
-          --编译器 ./yy4_bs.wasm --输出 yy文件定位原生.wasm -j 24
-
-      - name: 生成定位读取本机机器码
-        run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 本机 本机
-          yy文件定位原生.wasm yy文件定位原生.exe
-
-      - name: 开放定位探针执行权限
-        run: chmod +x yy文件定位原生.exe
+          --编译器 ./yy4_bs.wasm --输出 yy文件定位原生.exe -j 24 -- --目标 本机
 
       - name: 诺节与原生共享定位读取远偏与顺读验收
         run: node --experimental-ffi 豫言操作系统/宿主/节点/文件定位。测试.mjs ./yy文件定位原生.exe
@@ -324,8 +318,7 @@ jobs:
         run: |
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 系统库调用测试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy系统库原生测试.wasm > yy系统库诺节.log
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 本机 本机 yy执行器.wasm yy系统库原生测试.exe yy系统库原生测试.wasm --预编二
-          chmod +x yy系统库原生测试.exe
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 系统库调用测试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.exe -j 24
           ./yy系统库原生测试.exe > yy系统库原生.log
           cmp yy系统库诺节.log yy系统库原生.log
           grep -F '系统库调用全部断言通过' yy系统库原生.log
@@ -337,9 +330,7 @@ jobs:
       - name: 苹果原生张量基本回归
         if: matrix.os == 'macos-latest'
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统张量原生测试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 本机 本机 yy执行器.wasm yy张量登记.exe yy张量登记.wasm --预编二
-          chmod +x yy张量登记.exe
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统张量原生测试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
           ./yy张量登记.exe
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 接口检查 --核对清单 豫言操作系统接口/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./yy4_bs.wasm
@@ -462,35 +453,24 @@ jobs:
         run: >-
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件
           豫言操作系统/裸机/客体二号/远程文件。底层。测试。豫
-          --编译器 ./yy4_bs.wasm --输出 yy远程文件协议.wasm -j 24
-
-      - name: 构建远程文件协议原生生成工具
-        run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建
-          豫言裸机 原生生成 --编译器 ./yy4_bs.wasm --输出 yy原生生成.wasm -j 24
-
-      - name: 生成远程文件协议原生烟验
-        run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm
-          Linux '${{ matrix.arch }}' yy远程文件协议.wasm yy远程文件协议.exe
+          --编译器 ./yy4_bs.wasm --输出 yy远程文件协议.exe -j 24
+          -- --目标 本机 --目标系统 林纳克斯 --目标架构 '${{ matrix.arch }}'
 
       - name: 运行远程文件协议原生烟验
-        run: |
-          chmod +x yy远程文件协议.exe
-          ./yy远程文件协议.exe
+        run: ./yy远程文件协议.exe
 
       - name: 运行完整预编一致性组
         env:
           YY_GC_INITIAL_HEAP_SIZE_MB: 1024
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生一致性.wasm --系统 Linux --架构 '${{ matrix.arch }}' --经 直接 --预编 > yyLinux预编一致性.log 2>&1 || {
+          node 豫言操作系统/宿主/节点/宿主.cjs yy原生一致性.wasm --系统 林纳克斯 --架构 '${{ matrix.arch }}' --经 直接 > yyLinux预编一致性.log 2>&1 || {
             printf '::error title=Linux 预编一致性失败::%s\n' "$(tail -c 2000 yyLinux预编一致性.log | tr '\n' ' ')"
             exit 1
           }
           tail -n 24 yyLinux预编一致性.log
 
-  # 文言：视窗原生之你好：于 Linux 生两构之 PE32+，传于视窗之运行器行之，验其出与退出码。
-  # 汉语：Windows 原生最小闭环（WP6）：在 Linux 上用 yy原生生成 生成 AMD64 与 ARM64 两个 PE32+ 可执行文件，交给 Windows 运行器直接执行，核对输出与退出码 7。
+  # 文言：视窗原生之你好：于 Linux 由编译器径出两构之 PE32+（及苹果 x86-64 之程），传于视窗之运行器行之，验其出与退出码。探针皆预编二为机器码（提案 00007 收尾，不经 .wasm）。
+  # 汉语：Windows 原生最小闭环（WP6）：在 Linux 上由编译器直接出 AMD64 与 ARM64 两种 PE32+ 可执行文件（以及 macOS x86-64 程序），交给 Windows 运行器直接执行，核对输出与退出码 7。探针都预编二成机器码（提案 00007 收尾：编译器 --目标 本机 --目标系统 --目标架构，不经 .wasm）。
   windows-native-build:
     name: 视窗原生样例生成
     needs: bootstrap
@@ -514,41 +494,28 @@ jobs:
       - name: 解开本轮编译与构建工具
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
-      - name: 构建原生生成工具与视窗你好
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言裸机 原生生成 --编译器 ./yy4_bs.wasm --输出 yy原生生成.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy视窗你好.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 原生你好 苹果入口 --编译器 ./yy4_bs.wasm --输出 yy苹果你好.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号.wasm -j 24
-          mkdir -p yy-probes
-          for f in 豫言操作系统/裸机/普通探针/*。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-一。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-二。脚本。豫 豫言操作系统/裸机/原生探针/*。脚本。豫; do
-            n=$(basename "$f"); n=${n%。脚本。豫}
-            node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件 "$f" --编译器 ./yy4_bs.wasm --输出 "yy-probes/$n.wasm" -j 24
-            cp "${f%。脚本。豫}.期望" "yy-probes/$n.expected"
-          done
+      - name: 构建执行器
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号.树码 -j 24
 
-      - name: 生成两种架构的 PE
+      - name: 编译器直出两种架构的 PE 与 macOS x86-64 程序
         env:
           YY_GC_INITIAL_HEAP_SIZE_MB: 512
         run: |
-          mkdir -p yy-windows-exe
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 兼容六十四 yy视窗你好.wasm yy-windows-exe/hello-x64.exe
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 臂六十四 yy视窗你好.wasm yy-windows-exe/hello-arm64.exe
-          mkdir -p yy-windows-exe/组
-          for w in yy-probes/*.wasm; do
-            n=$(basename "$w" .wasm)
-            for a in 兼容六十四:x64 臂六十四:arm64; do
-              node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 视窗 "${a%%:*}" yy客体二号.wasm "yy-windows-exe/组/$n-${a##*:}.exe" "$w"
-            done
-            cp "yy-probes/$n.expected" "yy-windows-exe/组/$n.expected"
-          done
-          # 汉语：同一批探针再生成 macOS x86-64 可执行文件（WP5），另存产物交给 Intel macOS 运行器。
-          mkdir -p yy-macos-x64/组
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 苹果 兼容六十四 yy苹果你好.wasm yy-macos-x64/hello-mac-x64
-          for w in yy-probes/*.wasm; do
-            n=$(basename "$w" .wasm)
-            node 豫言操作系统/宿主/节点/宿主.cjs yy原生生成.wasm 苹果 兼容六十四 yy客体二号.wasm "yy-macos-x64/组/$n" "$w"
-            cp "yy-probes/$n.expected" "yy-macos-x64/组/$n.expected"
+          set -e
+          Y() { node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm "$@"; }
+          mkdir -p yy-windows-exe/组 yy-macos-x64/组
+          Y 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy-windows-exe/hello-x64.exe -j 24 -- --目标 本机 --目标系统 视窗 --目标架构 兼容六十四
+          Y 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy-windows-exe/hello-arm64.exe -j 24 -- --目标 本机 --目标系统 视窗 --目标架构 臂六十四
+          Y 构建 原生你好 苹果入口 --编译器 ./yy4_bs.wasm --输出 yy-macos-x64/hello-mac-x64 -j 24 -- --目标 本机 --目标系统 苹果 --目标架构 兼容六十四
+          exe="$PWD/yy客体二号.树码"
+          cache="$PWD/.yybuild/降级缓存"
+          for f in 豫言操作系统/裸机/普通探针/*。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-一。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-二。脚本。豫 豫言操作系统/裸机/原生探针/*。脚本。豫; do
+            n=$(basename "$f"); n=${n%。脚本。豫}
+            Y 文件 "$f" --编译器 ./yy4_bs.wasm --输出 "yy-windows-exe/组/$n-x64.exe" -j 24 -- --目标 本机 --目标系统 视窗 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/视窗兼容.机器片"
+            Y 文件 "$f" --编译器 ./yy4_bs.wasm --输出 "yy-windows-exe/组/$n-arm64.exe" -j 24 -- --目标 本机 --目标系统 视窗 --目标架构 臂六十四 --执行器 "$exe" --降级缓存 "$cache/视窗臂.机器片"
+            Y 文件 "$f" --编译器 ./yy4_bs.wasm --输出 "yy-macos-x64/组/$n" -j 24 -- --目标 本机 --目标系统 苹果 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/苹果兼容.机器片"
+            cp "${f%。脚本。豫}.期望" "yy-windows-exe/组/$n.expected"
+            cp "${f%。脚本。豫}.期望" "yy-macos-x64/组/$n.expected"
           done
 
       - uses: actions/upload-artifact@v4
@@ -601,8 +568,8 @@ jobs:
           grep -q 'echo-line' out.txt
           test "$(head -c 6 out.txt | od -An -tx1 | tr -d ' \n')" = e4bda0e5a5bd
 
-      # 文言：一致性之组：诸普通探针、盘之文件二阶、原生探针，各以执行器嵌之而行于同一工作目录，逐字较其常出。
-      # 汉语：一致性组：普通探针、盘文件两阶段与原生探针，各自嵌进执行器，在同一个工作目录里依次运行，标准输出与 .expected 逐字比较，并要求退出码为 0。
+      # 文言：一致性之组：诸普通探针、盘之文件二阶、原生探针，各由编译器预编二为原生之程（连执行器），行于同一工作目录，逐字较其常出。
+      # 汉语：一致性组：普通探针、盘文件两阶段与原生探针，各自由编译器预编二成带执行器的原生程序，在同一个工作目录里依次运行，标准输出与 .expected 逐字比较，并要求退出码为 0。
       - name: 执行器一致性组
         if: always()
         run: |
@@ -625,8 +592,8 @@ jobs:
           done
           exit $fail
 
-  # 文言：苹果 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与执行器之一致性组。
-  # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与嵌入执行器的一致性组。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
+  # 文言：苹果 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
+  # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与预编二的一致性组（编译器直出）。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
   macos-x64-native-run:
     name: 苹果 x86-64 原生样例运行
     needs: windows-native-build
