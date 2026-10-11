@@ -302,6 +302,19 @@ async function main() {
     assert.ok(markers.slice(1).every(token => hasScope(token, 'meta.dictionary.yuyan')));
   });
 
+  await runTest('highlights the final dictionary field terminator without a trailing comma', () => {
+    const line = '「说明」者「典」【「汉语」者『包说明.汉语.md』也，「文言」者『包说明.文言.md』也】也。';
+    const tokens = tokensWithText(line, grammar.tokenizeLine(line));
+    const terminators = tokens.filter(token => token.text === '也');
+
+    assert.strictEqual(terminators.length, 3);
+    assert.ok(
+      hasScope(terminators[1], 'markup.bold.structure.yuyan'),
+      `Second 也 should be a structure keyword: ${JSON.stringify(terminators[1])}`
+    );
+    assert.ok(terminators.every(token => hasScope(token, 'markup.bold.structure.yuyan')));
+  });
+
   await runTest('keeps dictionary fields scoped across lines and nested brackets', () => {
     const lines = [
       '「典」【',
