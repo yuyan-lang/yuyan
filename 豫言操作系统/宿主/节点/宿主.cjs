@@ -86,7 +86,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   // 文言：客自有今目录；工线程不能迁进程之目录，故宿主代记之，诸径与子进程皆依之。汉语：每个客实例有自己的当前目录；工作线程不能调用 process.chdir，所以由宿主记录，文件路径与子进程的工作目录都以它为准。
   let 当前目录=本工.初始目录??process.cwd();
   const 桥=new WebAssembly.Instance(本工.桥模块??new WebAssembly.Module(文件.readFileSync(桥文件路径()))).exports;
-  const 模块=缓存??本工.模块??new WebAssembly.Module(文件.readFileSync(模块路径));
+  // 文言：客为装载单元之目（有“顺序.txt”）者，不读单模，后依序装诸单元（提案〇〇〇〇三）。汉语：程序是装载单元目录（里面有“顺序.txt”）时不读单个模块，稍后按顺序装入各单元（提案 00003）。
+  const 单元目录=!缓存&&!本工.模块&&文件.existsSync(路径.join(模块路径,'顺序.txt'))?模块路径:null;
+  const 模块=单元目录?null:缓存??本工.模块??new WebAssembly.Module(文件.readFileSync(模块路径));
   const 编译毕=performance.now();
   const 文=值=>Buffer.isBuffer(值)?值.toString('utf8'):String(值);
   const 径=值=>路径.resolve(当前目录,文(值));
@@ -97,7 +99,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 写输出=(号,值)=>本工.复用线程?parentPort.postMessage({种:'出',号,值}):本工.编译线程?(号===1?process.stdout:process.stderr).write(值):写尽(号,值);
   // 文言：底层之模导入内存、数学、诺节之函或出工作线程者，交底层宿主行之；工具链包之宿主无此文，则照旧行之。汉语：底层模块导入了内存或「数学」「诺节」的函数，或导出「工作线程」时，交 底层宿主.cjs 运行（建内存、起工作线程、调 _start）；Wasm 工具链包里的宿主不带这个文件，照旧运行。
   const 底层宿主=(()=>{try{return require('./底层宿主.cjs');}catch(错){if(错?.code==='MODULE_NOT_FOUND')return null;throw 错;}})();
-  if(底层宿主?.是底层模块(模块))return 底层宿主.运行底层模块(模块,文件.readFileSync(模块路径),值=>写输出(1,值));
+  if(模块&&底层宿主?.是底层模块(模块))return 底层宿主.运行底层模块(模块,文件.readFileSync(模块路径),值=>写输出(1,值));
   function 精确小数(值){const 数字=数(值);if(Object.is(数字,-0))return '-0';if(!Number.isFinite(数字))return String(数字).toLowerCase().replace('infinity','inf');const [尾,指数]=数字.toExponential(16).split('e');const 幂=Number(指数);if(幂 < -4 || 幂 >= 17)return 尾.replace(/\.?0+$/,'')+'e'+(幂>=0?'+':'-')+String(Math.abs(幂)).padStart(2,'0');return 数字.toFixed(Math.max(0,16-幂)).replace(/(\.\d*?)0+$/,'$1').replace(/\.$/,'');}
   // 文言：小数表示依 C 之 %f，理解小数依 strtod，获取随机整数取六十四位之安全随机数而取余，皆与诸宿主同义。汉语：小数表示同 C 的 %f（-0 写 -0.000000，≥1e21 展开成整数，非有限写 nan、inf、-inf）；理解小数同 strtod（跳过开头空白取最长前缀，认 inf、infinity、nan，没有可转的得 0）；获取随机整数上界不大于零时中止，否则取 64 位安全随机数对上界取余。与其他 JS 宿主统一，见 ../标准库宿主.汉语.md。
   function 小数表示(值){const 数字=数(值);if(!Number.isFinite(数字))return 精确小数(值);if(Object.is(数字,-0))return '-0.000000';return Math.abs(数字)>=1e21?BigInt(数字).toString()+'.000000':数字.toFixed(6);}
@@ -324,12 +326,33 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     求交换25519共密:['豫言_密码_X25519共密',串二],求爱德25519公钥:['豫言_密码_Ed25519公钥',串一],签爱德25519:['豫言_密码_Ed25519签',串二],
     验爱德25519:['豫言_密码_Ed25519验',串三],加密高级加密256伽罗瓦计数:['豫言_密码_AES256GCM加密',串四],解密高级加密256伽罗瓦计数结果:['豫言_密码_AES256GCM解密结果',串四]
   });
-  const 带型导入=边界胶水?边界胶水.造边界导入(模块,桥,{标准库:标准库实现,构建基础:构建基础实现,系统库调用:系统库调用实现,安全外壳密码:安全外壳密码实现,诺节宿主:文件能力.实现,
+  const 造导入=模=>边界胶水?边界胶水.造边界导入(模,桥,{标准库:标准库实现,构建基础:构建基础实现,系统库调用:系统库调用实现,安全外壳密码:安全外壳密码实现,诺节宿主:文件能力.实现,
     豫言操作系统控制台:{读取标准终端尺寸},豫言操作系统时间:{读取当前纪元毫秒:读取共享纪元毫秒},...(边界回环?.实现表??{})}):{};
-  const 实例=new WebAssembly.Instance(模块,{...带型导入});
+  // 文言：装载单元（提案〇〇〇〇三）：依“顺序.txt”逐单元建实例，共一零号表与二异常之标，本单元之函置于表基；导入之“单元”者取先装单元之出。汉语：装载单元（提案 00003）：按“顺序.txt”逐个实例化单元，各单元共用一张零号表与两个异常标签，本单元的函数放在表基处（表先按元素段长度增长）；“单元”导入取先装入单元的同名导出。
+  function 元素数(字){
+    let 位=8;const 读=()=>{let 值=0,移=0,字节;do{字节=字[位++];值+=(字节&127)*2**移;移+=7;}while(字节&128);return 值;};
+    while(位<字.length){const 节=字[位++],长=读(),止=位+长;if(节===9){读();if(读()!==0)throw Error('单元元素段须为标志 0');while(字[位]!==0x0b)位++;位++;return 读();}位=止;}
+    return 0;
+  }
+  function 装入单元们(目录){
+    const 行们=文件.readFileSync(路径.join(目录,'顺序.txt'),'utf8').split('\n').filter(行=>行.length).map(行=>行.split('\t'));
+    const 表=new WebAssembly.Table({element:'anyfunc',initial:0});
+    const 标签={escape:new WebAssembly.Tag({parameters:['eqref','eqref']}),error:new WebAssembly.Tag({parameters:['eqref']})};
+    const 导出们=new Map(),实例们=[];
+    for(const [名] of 行们){
+      const 字=文件.readFileSync(路径.join(目录,名)),模=new WebAssembly.Module(字),基=表.length;
+      表.grow(元素数(字));
+      const 单元={};
+      for(const 导 of WebAssembly.Module.imports(模))if(导.module==='单元'){if(!导出们.has(导.name))throw Error('单元导入未找到：'+导.name+'（'+名+'）');单元[导.name]=导出们.get(导.name);}
+      const 实例=new WebAssembly.Instance(模,{...造导入(模),运行时:{表:表,表基:new WebAssembly.Global({value:'i32',mutable:false},基),escape:标签.escape,error:标签.error},单元});
+      for(const [出名,值] of Object.entries(实例.exports))导出们.set(出名,值);
+      // 文言：装一单元即行其 _start（初置顶层数据，试与脚本并行程序之体），后装者乃得读之。汉语：每装入一个单元就运行它的 _start（初始化顶层数据，测试与脚本还运行程序体），后装的单元才能读到它的顶层数据。
+      实例.exports._start();
+    }
+  }
   let 退出码=0;
   // 文言：_start 先行静态之初置，乃召入口之函。汉语：_start 先做静态初始化，再调用入口函数「入口」（提案 00006）。
-  try{实例.exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}
+  try{if(单元目录)装入单元们(单元目录);else new WebAssembly.Instance(模块,{...造导入(模块)}).exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}
   // 文言：承构志之工务，书定标行；显设 YY_NODE_STATS 者，仍书旧详数。旧通调已删，其调用数为零。汉语：仅继承构建日志的 worker 写 marker 行；显式 YY_NODE_STATS 仍保留详细 JSON；宿主调用数字段计旧通用调用，删除后为零。
   const 工务任务=本工.编译线程||本工.参数?.includes('--mode=worker');
   const 工务统计=工务任务&&!!process.env.YY_BUILD_LOG_RUN;
