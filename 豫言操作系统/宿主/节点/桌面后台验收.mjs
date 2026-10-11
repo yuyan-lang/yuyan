@@ -12,15 +12,13 @@ const 验引号 = 原参[4] === '引号';
 const 验字体 = 原参[4] === '字体';
 const 验任务 = 原参[4] === '任务';
 const 验拼音 = 原参[4] === '拼音';
-const 验模式键 = 原参[4] === '模式键';
-const 验模式 = 原参[4] === '模式' || 验模式键;
 const 验文件命令 = 原参[4] === '文件命令';
 const 验子环境 = 原参[4] === '子程序环境';
 const 验子程序 = 原参[4] === '子程序' || 验子环境;
 const 验反复 = 原参[4] === '反复';
 const 验重开 = 原参[4] === '重开';
 const 验聚焦 = 原参[4] === '聚焦' || 验重开;
-const 验命令行 = 原参[4] === '命令行' || 验引号 || 验拼音 || 验模式 || 验文件命令 || 验聚焦 || 验子程序;
+const 验命令行 = 原参[4] === '命令行' || 验引号 || 验拼音 || 验文件命令 || 验聚焦 || 验子程序;
 assert.ok(发行目录 && 依赖目录 && 资源目录 && 图像路径, '须给发行、原生依赖、资源目录及图像输出路径');
 const 启动文 = 文件系统.readFileSync(路径.join(发行目录, '启动.mjs'), 'utf8');
 const 桥文 = 启动文.match(/const 内嵌 = \{值桥: \[([\d,\s]+)\]/u);
@@ -150,14 +148,6 @@ try {
   if (验命令行) {
     点按钮(240, 28);
     await new Promise(成 => setTimeout(成, 200));
-    if (验模式) {
-      if (验模式键) {
-        // 汉语：以实际SDL按键映射切换，保留按钮模式供原路径回归。文言：以实SDL之键易式，存钮式以验旧路。
-        窗.emit('keyDown', {key: 'f2'});
-        窗.emit('keyUp', {key: 'f2'});
-      } else 点按钮(300, 388);
-      await new Promise(成 => setTimeout(成, 200));
-    }
     if (!验聚焦) 点按钮(300, 450);
     if (验子环境) {
       窗.emit('textInput', {text: '「设」于「豫言验收」于「环境甲」'});
@@ -165,9 +155,9 @@ try {
       窗.emit('keyUp', {key: 'return'});
       await new Promise(成 => setTimeout(成, 200));
     }
-    if (验引号 || 验拼音 || 验模式) {
+    if (验引号 || 验拼音) {
       // 汉语：逐字符经过真实输入控件，验嵌套转换；整段粘贴有意保持原文。文言：逐字经实输入控件，以验嵌套之化；整段粘贴意存原文。
-      for (const 字 of (验模式 ? '「回显」于「hx1{}」' : 验拼音 ? 'hx1ni1hao1' : '{回显}于{{甲}乙}')) {
+      for (const 字 of (验拼音 ? 'hx1ni1hao1' : '{回显}于{{甲}乙}')) {
         窗.emit('textInput', {text: 字});
         await new Promise(成 => setTimeout(成, 100));
       }
@@ -217,19 +207,6 @@ try {
     await new Promise(成 => setTimeout(成, 200));
   }
   退出按下 = true;
-  if (验模式键) {
-    // 汉语：再次按F2恢复中文，以逐字数字选词输出验模式往返。文言：复按F2归中文，逐字以数择词，验式之往返。
-    窗.emit('keyDown', {key: 'f2'});
-    窗.emit('keyUp', {key: 'f2'});
-    await new Promise(成 => setTimeout(成, 200));
-    for (const 字 of 'hx1ni1hao1') {
-      窗.emit('textInput', {text: 字});
-      await new Promise(成 => setTimeout(成, 100));
-    }
-    窗.emit('keyDown', {key: 'return'});
-    窗.emit('keyUp', {key: 'return'});
-    await new Promise(成 => setTimeout(成, 200));
-  }
   const 第二会帧 = 验反复 ? new Promise(成 => {
     下一会帧 = () => { if (!窗.destroyed) return false; 成(); return true; };
   }) : null;
