@@ -45,6 +45,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --降级缓存 PATH                      原生产物的降级缓存文件，执行器函数第二次起直接取缓存
     --no-link                           只生成各文件的模块产物，不生成最终模块
     --六十四位地址                       底层模式：内存声明改为六十四位地址（堆可到 64 TiB 以上），默认关
+    --浏览器检查点                       最终模块装入浏览器宿主的顶层异常处理器与时限检查点（导入 yuyan:browser/v1 的 fail、check），默认关
     编译输入须由 yy豫构 提供包上下文，不再提供特殊标准库搜索路径。
     --whole-program-opt                  使用全局编译优化
     --do-not-optimize                    不执行优化
