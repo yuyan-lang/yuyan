@@ -129,22 +129,25 @@ export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {
     [模, Object.fromEntries(Object.entries(字段们).map(([字段, 函]) => [字段, 限时(去悬(模 + '.' + 字段, 函))]))]));
   if (!边界胶水 && 有带型导入(程序模块)) throw Error('程序有带类型的宿主导入，但取不到边界胶水 边界.mjs（须与 值桥.mjs 同目录发布）');
   const 带型导入 = 边界胶水 ? 边界胶水.造边界导入(程序模块, 桥.原, 备实现({...平台, 标准库: 标准库实现})) : {};
-  const 实例 = new WebAssembly.Instance(程序模块, {
+  const 导入 = {
     ...带型导入,
     'yuyan:browser/v1': {
       check() { if (performance.now() > 截止) throw Error('豫言执行超过时限'); },
       fail(值) { throw Error(文字(桥.解(值))); }
     }
-  });
-  if (typeof 实例.exports._start !== 'function') throw Error('Wasm 缺少程序启动导出');
-  const 启动 = 可悬 ? WebAssembly.promising(实例.exports._start) : async () => 实例.exports._start();
+  };
   // 文言：退出码零为成，余为败。汉语：退出进程的码为 0 时正常结束本次运行，其余以“豫言程序退出：码”失败。
   const 运行 = async () => {
+    // 文言：Chrome 禁主线程同步实例逾八兆之模，故于此异步实例之。
+    // 汉语：Chrome 不许主线程同步实例化大于 8MB 的模块（原壳程序约 20MB），所以在这里异步实例化。
+    const 实例 = await WebAssembly.instantiate(程序模块, 导入);
+    if (typeof 实例.exports._start !== 'function') throw Error('Wasm 缺少程序启动导出');
+    const 启动 = 可悬 ? WebAssembly.promising(实例.exports._start) : async () => 实例.exports._start();
     try {
       // 文言：_start 先行静态之初置，乃召入口之函。汉语：_start 先做静态初始化，再调用入口函数「入口」（提案 00006）。
       await 启动();
     }
     catch (错) { if (!(错 instanceof 豫言退出) || 错.退出码 !== 0) throw 错; }
   };
-  return {运行, 实例};
+  return {运行};
 }
