@@ -776,7 +776,7 @@ jobs:
       - name: 造混合启动 ISO
         env:
           YY_GC_INITIAL_HEAP_SIZE_MB: 1024
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --输出 yy启动介质 --预置 无 --预编二
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --输出 yy启动介质 --预置 无
 
       # 文言：冒烟之试：QEMU 纯模拟无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色，复键而验画有变；SeaBIOS 与 OVMF 各一。不过则不发。
       # 汉语：冒烟测试：QEMU 纯模拟无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色，再按键核对画面有变化；SeaBIOS 与 OVMF 各跑一次，不过就不发布。
