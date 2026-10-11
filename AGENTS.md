@@ -9,6 +9,7 @@
 - 秉持“能凑合着用就行”：只做不会立刻出错的最小修改，不顺手加功能、不追求完备；超出平台限制之类的边角情形不必现在处理、不必保证正确，在代码里留“待办事项”注释说明即可。
 - 忽略 `*_v0` 目录，除非用户明确提及。
 - 文言：各独立之事，必有专属工作树，置于 `~/repos/yuyan-worktrees/<task-name>`，诸事毋共一树。汉语：每个独立任务必须使用自己的 Git 工作树，统一放在 `~/repos/yuyan-worktrees/<task-name>`；不同任务不得共用工作树。
+- 文言：枝既合入 `yybs`（云仓则 `main`）而推送，即以 `git worktree remove <路径>` 删其工作树，其中构建之缓存随之而去；`yybs`、`main` 所在之主树存之。树有未录之改而拒删者，毋加 `--force`，察而告之。汉语：分支合入 `yybs`（云仓为 `main`）并推送后，立即用 `git worktree remove <路径>` 删除该任务的工作树，其中的构建缓存一并删去；`yybs`、`main` 所在的主工作树保留。工作树有未提交改动、删除被拒时不加 `--force`，查明后报告。
 
 ## 语言与文件
 
@@ -86,4 +87,4 @@
 
 ## `sync [branch_name] with yybs`
 
-省略分支则取当前分支；先确认该分支与 `yybs` 的 worktree 都干净，否则停下报告。先在目标分支的 worktree 执行 `git rebase yybs` 并解决全部冲突，无冲突时不跑耗时验证，有冲突才验证；再在 `yybs` 的 worktree 执行 `git merge --no-ff --no-edit <目标分支>`。只推送 `yybs`，不推送 worktree 分支。
+省略分支则取当前分支；先确认该分支与 `yybs` 的 worktree 都干净，否则停下报告。先在目标分支的 worktree 执行 `git rebase yybs` 并解决全部冲突，无冲突时不跑耗时验证，有冲突才验证；再在 `yybs` 的 worktree 执行 `git merge --no-ff --no-edit <目标分支>`。只推送 `yybs`，不推送 worktree 分支；推送后删除目标分支的工作树（见上文）。
