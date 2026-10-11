@@ -89,6 +89,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   // 文言：客为装载单元之目（有“顺序.txt”）者，不读单模，后依序装诸单元（提案〇〇〇〇三）。汉语：程序是装载单元目录（里面有“顺序.txt”）时不读单个模块，稍后按顺序装入各单元（提案 00003）。
   const 单元目录=!缓存&&!本工.模块&&文件.existsSync(路径.join(模块路径,'顺序.txt'))?模块路径:null;
   const 模块=单元目录?null:缓存??本工.模块??new WebAssembly.Module(文件.readFileSync(模块路径));
+  // 文言：单元之目中有“程序名.txt”者（豫构「运行」所书，即脚本之径），客所见之程名取之。汉语：单元目录里有“程序名.txt”时（豫构「运行」写的脚本路径），客体看到的程序名取它。
+  const 程序名=单元目录&&文件.existsSync(路径.join(单元目录,'程序名.txt'))?文件.readFileSync(路径.join(单元目录,'程序名.txt'),'utf8'):模块路径;
   const 编译毕=performance.now();
   const 文=值=>Buffer.isBuffer(值)?值.toString('utf8'):String(值);
   const 径=值=>路径.resolve(当前目录,文(值));
@@ -118,7 +120,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     return {程序:余[0]??'',参数组:余.slice(1),环境,限时,宽限};
   }
   // 文言：网页汇编之模，以其首四字节 \0asm 识之，不拘其名之后缀。汉语：按文件开头 4 字节 \0asm 识别 Wasm 模块，不依赖 .wasm 后缀（豫构的 --输出 可以是任意名字）。
-  const 是网页汇编=名=>{if(名.endsWith('.wasm'))return true;try{const 号=文件.openSync(路径.resolve(当前目录,名),'r');const 头=Buffer.alloc(4);const 数=文件.readSync(号,头,0,4,0);文件.closeSync(号);return 数===4&&头.equals(Buffer.from([0,0x61,0x73,0x6d]));}catch{return false;}};
+  // 文言：装载单元之目（有“顺序.txt”）亦视为客，以本宿主行之（提案〇〇〇〇三第六步）。汉语：装载单元目录（里面有“顺序.txt”）也当作客体程序，由本宿主运行（提案 00003 第 6 步）。
+  const 是网页汇编=名=>{if(名.endsWith('.wasm'))return true;try{if(文件.existsSync(路径.join(路径.resolve(当前目录,名),'顺序.txt')))return true;}catch{}try{const 号=文件.openSync(路径.resolve(当前目录,名),'r');const 头=Buffer.alloc(4);const 数=文件.readSync(号,头,0,4,0);文件.closeSync(号);return 数===4&&头.equals(Buffer.from([0,0x61,0x73,0x6d]));}catch{return false;}};
   function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文),环境=null,限时=0,宽限=0;const 拆=拆包装(程序,参数组);if(拆.程序!==程序&&是网页汇编(拆.程序)){({程序,参数组}=拆);环境=拆.环境;限时=拆.限时;宽限=拆.宽限;}const 客体=路径.resolve(当前目录,程序)===模块路径 || 是网页汇编(程序);if(客体){参数组=[...引擎参数,__filename,路径.resolve(当前目录,程序),...参数组];程序=process.execPath;}return [程序,参数组,客体,环境,限时,宽限];}
   function 运行子进程(名,参){const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,maxBuffer:256*1024*1024,timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),YY_NODE_REPEAT:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(果.error&&!超时)throw 果.error;const 状态=超时?124:(果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1));const 结果=[状态===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=状态;return 结果;}
   const 请求进程=客体请求(本工.端口,本工.信号);
@@ -172,7 +175,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
         }
       }finally{释占锁(占径);}
     },
-    豫言_获取命令行程序名:()=>模块路径,
+    豫言_获取命令行程序名:()=>程序名,
     豫言_获取文件沙256:名=>获取程序内容SHA256(径(名)),
     豫言_获取当前工作目录:()=>当前目录,
     豫言_切换当前工作目录:名=>{const 目标=径(名);try{if(!文件.statSync(目标).isDirectory())return [20n,'不是目录：'+目标];当前目录=目标;return [0n,''];}catch(错){return [BigInt(Math.abs(系统.constants.errno[错.code]??2)),错.message];}},
