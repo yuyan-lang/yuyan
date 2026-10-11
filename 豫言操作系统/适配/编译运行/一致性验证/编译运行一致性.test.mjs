@@ -4,8 +4,8 @@
 // 用法（在私有暂存目录里执行，其中有 dist/）：
 //   1. 豫构 发行 云工 <本目录>/应用 dist/编译运行一致性
 //   2. node --test <本目录>/编译运行一致性.test.mjs
-// 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_CLOUD_ROOT 云仓根（默认相邻的 ../yuyan-cloud，取其中 应用/云端编译服务 的编译器 Wasm、值桥、Binaryen 胶水与标准库资料）；
-// YY_BINARYEN Node 用的 binaryen 入口（默认云仓 应用/豫言体验/node_modules/binaryen）；E2E_MINIFLARE miniflare 入口（默认云仓 应用/包管理服务/node_modules）。缺任何一项则报错并说明。
+// 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_CLOUD_ROOT 云仓根（默认相邻的 ../yuyan-cloud，取其中 应用/云端编译服务 的编译器 Wasm、值桥与标准库资料）；
+// E2E_MINIFLARE miniflare 入口（默认云仓 应用/包管理服务/node_modules）。缺任何一项则报错并说明。
 import {after, before, describe, test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
@@ -22,11 +22,10 @@ const 云仓根 = path.resolve(process.env.YY_CLOUD_ROOT ?? path.resolve(语言�
 const 服务目录 = path.join(云仓根, '应用/云端编译服务');
 const 资源目录 = path.join(服务目录, '资源');
 const 产物 = path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '编译运行一致性');
-const binaryen路径 = process.env.YY_BINARYEN ?? path.join(云仓根, '应用/豫言体验/node_modules/binaryen/index.js');
 const miniflare路径 = process.env.E2E_MINIFLARE ?? path.join(云仓根, '应用/包管理服务/node_modules/miniflare/dist/src/index.js');
 for (const [说明, 路径] of [['试验应用产物（先构建，输出名 编译运行一致性）', path.join(产物, '入口.mjs')], ['编译器 Wasm', path.join(资源目录, '编译器.wasm')],
-  ['值桥 Wasm', path.join(资源目录, '值桥接.wasm')], ['标准库资料', path.join(资源目录, '标准库.json.gz')], ['Binaryen 胶水', path.join(服务目录, '组装器.mjs')],
-  ['binaryen（Node 版，环境变量 YY_BINARYEN）', binaryen路径], ['miniflare（环境变量 E2E_MINIFLARE）', miniflare路径]]) {
+  ['值桥 Wasm', path.join(资源目录, '值桥接.wasm')], ['标准库资料', path.join(资源目录, '标准库.json.gz')],
+  ['miniflare（环境变量 E2E_MINIFLARE）', miniflare路径]]) {
   if (!existsSync(路径)) throw new Error('缺少' + 说明 + '：' + 路径);
 }
 
@@ -43,7 +42,6 @@ const 请求文 = (files, 额外 = {}) => JSON.stringify({files, ...额外});
 const 编译模块 = await WebAssembly.compile(readFileSync(path.join(资源目录, '编译器.wasm')));
 const 桥模块 = await WebAssembly.compile(readFileSync(path.join(资源目录, '值桥接.wasm')));
 const 标准资料 = JSON.parse(gunzipSync(readFileSync(path.join(资源目录, '标准库.json.gz'))));
-const binaryen = (await import(pathToFileURL(binaryen路径).href)).default;
 const {创建编译运行器工厂} = await import(pathToFileURL(path.join(语言仓根, '豫言操作系统/宿主/云工/编译运行.mjs')).href);
 
 const 应用模块 = await import(pathToFileURL(path.join(产物, '宿主.mjs')).href);
@@ -215,7 +213,7 @@ function 套件(取跑) {
 
 // ---------- （一）Node 进程内：真 Wasm + 真运行器 ----------
 describe('Node 进程内：真实豫言 Wasm 与真实运行器', () => {
-  const 造运行器 = 创建编译运行器工厂({binaryen, 编译模块, 桥模块, 取标准库资料: async () => 标准资料});
+  const 造运行器 = 创建编译运行器工厂({编译模块, 桥模块, 取标准库资料: async () => 标准资料});
   const 运行器 = 造运行器();
   const 宿主 = 应用模块.创建云工宿主({程序模块, 值桥模块, 许可, 执行配置});
   const 底层 = 体 => 宿主.fetch(new Request('https://编译运行.test/脚本', {method: 'POST', body: JSON.stringify(体)}), {COMPILER_RUNTIME: 运行器}, {waitUntil() {}});
@@ -234,7 +232,7 @@ describe('Node 进程内：真实豫言 Wasm 与真实运行器', () => {
 
 // ---------- （二）运行器级：等待者互斥、状态 1、并发上限、回收（只在 Node 内做） ----------
 describe('运行器级行为（Node 内）', () => {
-  const 慢运行器 = (毫秒) => 创建编译运行器工厂({binaryen, 编译模块, 桥模块, 取标准库资料: async () => { await 睡(毫秒); return 标准资料; }})();
+  const 慢运行器 = (毫秒) => 创建编译运行器工厂({编译模块, 桥模块, 取标准库资料: async () => { await 睡(毫秒); return 标准资料; }})();
   const 读尽 = async (器, 号) => { const 们 = []; for (;;) { const 答 = await 器.读事件(号, 5000); if (答.状态 === 2) return 们; if (答.状态 === 0) 们.push(JSON.parse(答.事件)); } };
 
   test('同一运行同一时刻至多一个等待者；结束使等待者得状态 2', async () => {
@@ -273,7 +271,7 @@ describe('运行器级行为（Node 内）', () => {
 
   test('尚未开始编译的运行被结束后不再编译；运行号不可猜测且互异', async () => {
     let 调用数 = 0;
-    const 器 = 创建编译运行器工厂({binaryen, 编译模块, 桥模块, 取标准库资料: async () => { 调用数++; return 标准资料; }})();
+    const 器 = 创建编译运行器工厂({编译模块, 桥模块, 取标准库资料: async () => { 调用数++; return 标准资料; }})();
     const 号们 = new Set(Array.from({length: 5}, () => 器.启动(请求文(你好))));
     assert.equal(号们.size, 5); for (const 号 of 号们) assert.match(号, /^[0-9a-f-]{36}$/);
     for (const 号 of 号们) 器.结束(号);
@@ -283,7 +281,7 @@ describe('运行器级行为（Node 内）', () => {
   });
 
   test('已终止而未结束的运行不占并发额度，且至多保留 32 个（丢弃最旧的）', async () => {
-    const 器 = 创建编译运行器工厂({binaryen, 编译模块, 桥模块, 取标准库资料: async () => { throw Error('标准库资源不可用'); }})();
+    const 器 = 创建编译运行器工厂({编译模块, 桥模块, 取标准库资料: async () => { throw Error('标准库资源不可用'); }})();
     const 号们 = [];
     for (let 序 = 0; 序 < 40; 序++) {
       const 号 = 器.启动(请求文(你好));
@@ -298,7 +296,7 @@ describe('运行器级行为（Node 内）', () => {
   });
 
   test('宿主故障是 failed 事件而不是异常（标准库资料不可用）', async () => {
-    const 器 = 创建编译运行器工厂({binaryen, 编译模块, 桥模块, 取标准库资料: async () => { throw Error('标准库资源不可用'); }})();
+    const 器 = 创建编译运行器工厂({编译模块, 桥模块, 取标准库资料: async () => { throw Error('标准库资源不可用'); }})();
     const 号 = 器.启动(请求文(你好));
     const 事们 = await 读尽(器, 号);
     assert.deepEqual(事们.at(-1), {type: 'failed', error: '标准库资源不可用'});
@@ -311,23 +309,21 @@ describe('运行器级行为（Node 内）', () => {
 // ---------- （三）本地 workerd：真实 Worker 运行时（Miniflare） ----------
 describe('本地 workerd（Miniflare）：同一场景', () => {
   let mf, 临时;
-  // 文言：外壳与云仓之编译外壳同构：静态导入器、桥、组装与运行器，放运行器于 env。汉语：装配一个与云端编译服务外壳同构的 rig，把试验应用产物、编译运行宿主模块与编译资源放进临时目录树（保持相对位置）。
+  // 文言：外壳与云仓之编译外壳同构：静态导入器、桥与运行器，放运行器于 env。汉语：装配一个与云端编译服务外壳同构的 rig，把试验应用产物、编译运行宿主模块与编译资源放进临时目录树（保持相对位置）。
   const 装配 = () => {
     临时 = realpathSync(mkdtempSync(path.join(process.env.TMPDIR ?? tmpdir(), 'yy-编译运行-')));
     const 拷 = (来源, 目标) => { mkdirSync(path.dirname(path.join(临时, 目标)), {recursive: true}); cpSync(来源, path.join(临时, 目标)); };
     for (const 名 of readdirSync(产物)) if (!名.endsWith('.wat')) 拷(path.join(产物, 名), '产物/' + 名);
     拷(path.join(语言仓根, '豫言操作系统/宿主/云工/编译运行.mjs'), '豫言操作系统/宿主/云工/编译运行.mjs');
     拷(path.join(语言仓根, '豫言操作系统/宿主/浏览器/编译器/宿主.mjs'), '豫言操作系统/宿主/浏览器/编译器/宿主.mjs');
-    拷(path.join(语言仓根, '豫言操作系统/宿主/浏览器/编译器/组装.mjs'), '豫言操作系统/宿主/浏览器/编译器/组装.mjs');
     // 文言：编译宿主遇带型之模乃动态载边界胶水，转口与本体并拷。汉语：编译宿主遇到带类型导入的模块才动态载入边界胶水，转出口与胶水本体都要拷进去。
     拷(path.join(语言仓根, '豫言操作系统/宿主/浏览器/编译器/边界.mjs'), '豫言操作系统/宿主/浏览器/编译器/边界.mjs');
     拷(path.join(语言仓根, '豫言操作系统/宿主/网页汇编/边界.mjs'), '豫言操作系统/宿主/网页汇编/边界.mjs');
-    拷(path.join(服务目录, '组装器.mjs'), '组装器.mjs');
-    for (const 名 of ['编译器.wasm', '值桥接.wasm', '组装器.wasm']) 拷(path.join(资源目录, 名), '资源/' + 名);
+    for (const 名 of ['编译器.wasm', '值桥接.wasm']) 拷(path.join(资源目录, 名), '资源/' + 名);
     writeFileSync(path.join(临时, 'rig.mjs'), [
-      "import 应用 from './产物/入口.mjs';", "import binaryen from './组装器.mjs';", "import 编译模块 from './资源/编译器.wasm';", "import 桥模块 from './资源/值桥接.wasm';",
+      "import 应用 from './产物/入口.mjs';", "import 编译模块 from './资源/编译器.wasm';", "import 桥模块 from './资源/值桥接.wasm';",
       "import {创建编译运行器工厂} from './豫言操作系统/宿主/云工/编译运行.mjs';",
-      'const 造运行器 = 创建编译运行器工厂({binaryen, 编译模块, 桥模块});',
+      'const 造运行器 = 创建编译运行器工厂({编译模块, 桥模块});',
       'export default {fetch: (请求, 环境, 上下文) => 应用.fetch(请求, {...环境, COMPILER_RUNTIME: 造运行器(环境.ASSETS)}, 上下文)};', ''].join('\n'));
     return path.join(临时, 'rig.mjs');
   };

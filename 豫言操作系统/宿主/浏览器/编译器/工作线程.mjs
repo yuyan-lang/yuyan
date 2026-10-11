@@ -1,4 +1,3 @@
-import { 创建组装器 } from "./组装.mjs";
 import { 创建编译器 } from "./编译核心.mjs";
 
 // 文言：器常驻，客稿各编；主窗可随时止工。汉语：复用引擎模块；主线程负责超时终止，避免同步 Wasm 阻塞时无法响应停止消息。
@@ -9,9 +8,6 @@ async function 读取(名) {
 }
 const 就绪 = (async () => {
   if (typeof WebAssembly.promising !== "function") throw Error("此浏览器缺少 WebAssembly JSPI，请更新浏览器后重试");
-  // 文言：先受客信，后候器成。汉语：Binaryen 含顶层 await，静态导入会延迟消息监听器安装并丢失浏览器发来的首个任务；改为动态加载。
-  const { default: binaryen } = await import("./资源/组装器.mjs");
-  const 组装 = 创建组装器(binaryen);
   const 清单 = await (await 读取("清单.json")).json();
   async function 取资源(名) {
     const 内容 = await (await 读取(名)).arrayBuffer();
@@ -25,7 +21,7 @@ const 就绪 = (async () => {
     取资源("值桥接.wasm").then(字节 => WebAssembly.compile(字节)),
     取资源("标准库.json.gz").then(字节 => new Response(new Response(字节).body.pipeThrough(new DecompressionStream("gzip"))).json())
   ]);
-  return 创建编译器({ 编译模块, 桥模块, 资料, 组装 });
+  return 创建编译器({ 编译模块, 桥模块, 资料 });
 })();
 // 文言：先记其败，待客来乃报。汉语：初始化可在任务到达前失败，先接住拒绝，实际请求仍能收到原始错误。
 就绪.catch(() => {});

@@ -1,7 +1,8 @@
 import { 内存文件系统, 执行模块 } from "./宿主.mjs";
 
 // 文言：编与行各有其室，旧稿不入新室。汉语：每次请求创建编译文件系统；运行程序只能访问自己的空文件系统。
-export function 创建编译器({ 编译模块, 桥模块, 资料, 组装, 收取标准缓存 = () => {} }) {
+// 文言：旧调者或犹传组装之器，今不复用，置之。汉语：旧调用方可能还传入组装器（组装），现已不用，忽略即可。
+export function 创建编译器({ 编译模块, 桥模块, 资料, 收取标准缓存 = () => {} }) {
   let 标准缓存 = {};
   return async function 编译运行(code, 仅编译 = false, 报告 = () => {}) {
     const 项目=code&&typeof code==='object'?code.files:null;
@@ -16,17 +17,14 @@ export function 创建编译器({ 编译模块, 桥模块, 资料, 组装, 收�
     // 文言：单文之稿为脚本，其顶层即程序之体（提案 00006）；云项目之入口须定「入口」。待办事项：旧存之云项目若有顶层之语，须迁移。汉语：单文件试写按脚本编译，顶层就是程序体（提案 00006）；云项目的 入口。豫 须定义入口函数「入口」。待办事项：已保存的云项目若有顶层语句，须迁移。
     const 入口路径=项目?'/用户程序/入口。豫':'/用户程序/入口。脚本。豫';
     报告({ type: "stage", phase: "compile", label: "正在浏览器内编译" });
+    // 文言：编器径书浏览器之承异与时限之检点（--浏览器检查点），不复组装。汉语：编译器按 --浏览器检查点 直接写出浏览器的顶层异常处理器与时限检查点（见编译器核心的 网页汇编浏览器检查点），不再另行组装。
     const compilation = await 执行模块(编译模块, 桥模块, 文件, [
-      入口路径, "--package-context", "/包上下文", "-o", "/程序.wasm",
+      入口路径, "--package-context", "/包上下文", "-o", "/程序.wasm", "--浏览器检查点",
       // 文言：验编亦须成器。汉语：compile_yuyan 执行完整代码生成与浏览器处理，只略过运行。
     ], { 编译: true, 报告 });
     if (!compilation.ok) return { ...compilation, phase: "compile" };
-    // 文言：编器直书二进制；浏览器之承异与时限检查，于此补入。汉语：编译器直接写出 Wasm 二进制；这里再装入浏览器的顶层异常处理器与时限检查。
-    try {
-      const 原 = 文件.读("/程序.wasm");
-      报告({ type: "stage", phase: "compile", label: "正在处理 Wasm（" + 原.length + " 字节）" });
-      文件.写("/程序.wasm", 组装(原));
-    } catch (错) { return { ok: false, phase: "compile", error: 错.message, compilation }; }
+    // 文言：此浏览器不能编其产物者，先报之。汉语：仅编译时也核对当前浏览器能否编译产物。
+    if (!WebAssembly.validate(文件.读("/程序.wasm"))) return { ok: false, phase: "compile", error: "当前浏览器不支持生成程序使用的 WasmGC、尾调用或异常指令", compilation };
     // 文言：官书之缓存可复用，客稿与输出皆弃。汉语：只保留标准库派生文件及原时间戳，每个请求仍使用独立文件系统。
     标准缓存 = Object.fromEntries([...文件.文件].filter(([名]) => 名.startsWith("/.yybuild/") && 名.includes("/库/标准库/")));
     收取标准缓存(标准缓存);
