@@ -22,7 +22,8 @@
 　　　　「可有」于（「组值」
 　　　　　【「地址」者『https://example.test/skin/theme.css』也
 　　　　　，「主体」者「字符串转字节串」
-　　　　　　于『body{margin:0}div{width:2px;height:2px;background:red url(../images/paint.svg)}』也
+　　　　　　于『body{margin:0}div{width:2px;height:2px;background:red url(../images/paint.svg)}@media(min-width:2px){@font-face{font-family:Test;src:url(../fonts/test.ttf)}}@media(min-width:3px){@font-face{font-family:Skipped;src:url(skip.ttf)}}』
+　　　　　　　也
 　　　　　，「编码」者『UTF-8』也
 　　　　　】）
 　　　否则若「串相等」于「址」于『https://example.test/images/paint.svg』则
@@ -48,6 +49,25 @@
 　　有「可无」则
 　　　「发生事故」授以「有」于『静态页面载入失败』
 　　或有（「可有」于「页」）则
+　　　虑「字面们」者
+　　　　「读引用」授以（「列」于「网页字面」）
+　　　　于（（「页」中「字体集」）中「字面」）
+　　　而
+　　　虑「无」者鉴「字面们」而
+　　　　有（「列」【「面」】）则（
+　　　　　鉴「面」中「来源」而
+　　　　　　有（「列」【「源」】）则
+　　　　　　　若「串相等」
+　　　　　　　　于（「源」中「地址」）于『https://example.test/fonts/test.ttf』则
+　　　　　　　　　「元」
+　　　　　　　否则
+　　　　　　　　「发生事故」授以「有」于『网页字体来源地址错误』
+　　　　　　或有「其他源」则
+　　　　　　　「发生事故」授以「有」于『网页字体来源未注册』
+　　　　）
+　　　　或有「其他面」则
+　　　　　「发生事故」授以「有」于『网页字体媒体条件或字面注册错误』
+　　　而
 　　　虑「像素」者「图像像素」于（（「页」中「页面图」）中「图像」）而
 　　　若「且」
 　　　　于（「等于」于（「字节串取字节」于「像素」于「零」）于「零」）
