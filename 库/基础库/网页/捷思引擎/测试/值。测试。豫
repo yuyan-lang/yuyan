@@ -122,4 +122,9 @@
 　　于（「捷思执行脚本」
 　　　于『let hits=0;let o={x:2};function key(){hits++;return "x";}let a=o[key()]++;let b=++o.x;let c=o.x--;let d=delete o.x;let xs=[1,2];delete xs[0];a+b+c+o.x===NaN?99:a+b+c+hits+(d?1:0)+xs.length+(xs[0]===undefined?1:0);』）
 　　　于（「捷思数值」于「一五点零」））于『捷思成员更新与属性删除组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let hits=0;function next(){hits++;return 7;}let a=0??next();let b=false??next();let c=null??next();let d=undefined??next();a+c+d+hits+(b===false?0:100);』）
+　　　于（「捷思数值」于「一六点零」））于『捷思空值合并惰性求值组合』。
 「打印行」于『捷思值冒烟通过』。
