@@ -54,7 +54,7 @@
 　虑「定位页」者
 　　「解析片段」
 　　　于
-　　　『<div style="position:relative;left:5px;top:7px;width:100px;height:80px"><div id="绝" style="position:absolute;left:10px;top:20px;width:30px;height:40px"></div><div id="流" style="height:10px"></div></div><div id="固" style="position:fixed;right:10px;bottom:20px;width:30px;height:40px"></div>』
+　　　『<div style="position:relative;left:5px;top:7px;width:100px;height:80px"><div id="绝" style="position:absolute;left:10px;top:20px;bottom:20px;width:30px"></div><div id="流" style="height:10px"></div></div><div id="固" style="position:fixed;right:10px;bottom:20px;width:30px;height:40px"></div>』
 　而
 　虑「定位树」者「生成网页盒树」于「文档求样式」于「定位页」而
 　虑「无」者
@@ -69,6 +69,10 @@
 　而
 　虑「绝矩」者
 　　「网页节点包围矩形」于「定位树」于（「头一个」于（「查询选择器全部」于「定位页」于『#绝』））而
+　虑「无」者
+　　若「小数等」于（「绝矩」中「高」）于「40.0」则「元」否则「发生事故」授以「有」
+　　　于『绝对定位自动高度错误』
+　而
 　虑「流矩」者
 　　「网页节点包围矩形」于「定位树」于（「头一个」于（「查询选择器全部」于「定位页」于『#流』））而
 　虑「固矩」者
