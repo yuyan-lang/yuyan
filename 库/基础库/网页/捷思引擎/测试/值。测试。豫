@@ -102,4 +102,9 @@
 　　于（「捷思执行脚本」
 　　　于『let out=0;for(let [a,b] of [[1,2],[3,4]]){if(a===3)continue;out+=a+b;}let o={x:2,y:3};for(let k in o){out+=o[k];}function f(){for(let x of [7,8])return x;}for(let x of [1,2]){out+=f()+x;if(x===2)break;}let fs=[];for(let x of [1,2]){fs[x-1]=()=>x;}for(let i=0;i<2;i++){fs[i+2]=()=>i;}out+fs[0]()+fs[1]()+fs[2]()+fs[3]();』）
 　　　于（「捷思数值」于「二九点零」））于『捷思遍历解构与逐次闭包组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let v=f(3);let kept=f;function f(n){return g(n)+1;function g(x){return x*2;}}let before=x===undefined?0:100;if(false){var x=99;}var x=2;var x;{var x=x+1;let hidden=8;}let check=NaN===NaN?100:0;v+x+before+check+(kept===f?0:100);』）
+　　　于（「捷思数值」于「一零点零」））于『捷思声明提升与变量重声明组合』。
 「打印行」于『捷思值冒烟通过』。
