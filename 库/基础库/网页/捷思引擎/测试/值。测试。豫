@@ -147,4 +147,9 @@
 　　于（「捷思执行脚本」
 　　　于『let s="a𐀀\uD800";let a=[...s];let count=0;for(let c of s){count+=c.length;}function f(...xs){return xs.length;}a.length===3&&a[1]==="𐀀"&&a[2]==="\uD800"&&count===4&&f(...s)===3;』）
 　　　于（「捷思布尔」于「阳」））于『捷思字符串迭代代理对与孤立项组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let a=[1,2,3,4];a.note=7;a.length=2;let ok=!(2 in a)&&!(3 in a)&&a.note===7;a.length=5;ok=ok&&!(4 in a);a[4]=9;a.length=0;ok&&a.length===0&&!(0 in a)&&!(4 in a)&&a.note===7;』）
+　　　于（「捷思布尔」于「阳」））于『捷思数组长度收缩扩张与属性保留组合』。
 「打印行」于『捷思值冒烟通过』。
