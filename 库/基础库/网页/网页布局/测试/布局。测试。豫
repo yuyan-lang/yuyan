@@ -54,7 +54,7 @@
 　虑「定位页」者
 　　「解析片段」
 　　　于
-　　　『<div style="position:relative;left:5px;top:7px;width:100px;height:80px"><div id="绝" style="--位置:20px 0 20px 99px;position:absolute;inset:var(--位置);left:10px;width:30px"></div><div id="流" style="height:10px"></div></div><div id="固" style="position:fixed;right:10px;bottom:20px;width:30px;height:40px"></div>』
+　　　『<div style="position:relative;left:5px;top:7px;width:100px;height:80px;padding:10px;border:2px solid"><div id="绝" style="--位置:20px 0 20px 99px;position:absolute;inset:var(--位置);left:10px;width:50%"></div><div id="流" style="height:10px"></div></div><div id="固" style="position:fixed;right:10px;bottom:20px;width:30px;height:40px"></div>』
 　而
 　虑「定位树」者「生成网页盒树」于「文档求样式」于「定位页」而
 　虑「无」者
@@ -70,7 +70,10 @@
 　虑「绝矩」者
 　　「网页节点包围矩形」于「定位树」于（「头一个」于（「查询选择器全部」于「定位页」于『#绝』））而
 　虑「无」者
-　　若「小数等」于（「绝矩」中「高」）于「40.0」则「元」否则「发生事故」授以「有」
+　　若「且」于（「小数等」于（「绝矩」中「高」）于「60.0」）
+　　于（「小数等」于（「绝矩」中「宽」）于「60.0」）则「元」
+　　否则
+　　　「发生事故」授以「有」
 　　　于『绝对定位自动高度错误』
 　而
 　虑「流矩」者
@@ -79,11 +82,11 @@
 　　「网页节点包围矩形」于「定位树」于（「头一个」于（「查询选择器全部」于「定位页」于『#固』））而
 　虑「无」者
 　　若「且」
-　　　于（「小数等」于（「绝矩」中「横」）于「15.0」）
+　　　于（「小数等」于（「绝矩」中「横」）于「17.0」）
 　　　于（「且」
-　　　　于（「小数等」于（「绝矩」中「纵」）于「27.0」）
+　　　　于（「小数等」于（「绝矩」中「纵」）于「29.0」）
 　　　　于（「且」
-　　　　　于（「小数等」于（「流矩」中「纵」）于「7.0」）
+　　　　　于（「小数等」于（「流矩」中「纵」）于「19.0」）
 　　　　　于（「且」于（「小数等」于（「固矩」中「横」）于「260.0」）于（「小数等」于（「固矩」中「纵」）于「140.0」））））
 　　则
 　　　「元」
