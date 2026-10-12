@@ -50,6 +50,11 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "$YY_LABEL_BASE" || true
           node 豫言操作系统/宿主/节点/宿主.cjs yy格式检查.wasm --标签 "$YY_LABEL_BASE"
+      # 文言：篇名后缀之检：Git 所录之篇与目录，名除半角点外皆汉字者，依 AGENTS.md 其缀当以全角句号「。」隔之；列其名而书一警，此步纵败亦不败作业。
+      # 汉语：文件名后缀检查：Git 受控的文件与目录名除半角点外全是汉字时，按 AGENTS.md 后缀应以全角句号「。」分隔；列出这些名字并发一条警告，这一步自己失败也不让作业失败（continue-on-error）。
+      - name: 文件名后缀检查（只警告）
+        continue-on-error: true
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy格式检查.wasm --文件名
       - name: 检查排版与标识符（标识符违规即失败，排版只警告）
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy格式检查.wasm
 
