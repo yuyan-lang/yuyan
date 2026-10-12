@@ -1,4 +1,4 @@
-# ARM 硬件目标交接（2026-10-11 更新）
+# ARM 硬件目标交接（2026-10-12 更新）
 
 ARM64 系统内造盘由《[ARM64 系统内造盘](ARM64系统内造盘.md)》负责。两架构开机程序与四个工具由编译器直出豫行，执行器以汇编树码入盘；共用实现已合入 yybs `689feed79`。旧工具映像机制与解释开机路径已经删除。
 
@@ -6,14 +6,14 @@ ARM64 系统内造盘由《[ARM64 系统内造盘](ARM64系统内造盘.md)》�
 
 原 ARM 硬件目标是把内核任务、调度与内存管理迁为两架构共用底层豫言，支持 ARM64 多任务、多核、系统内造盘与 UEFI 启动。逐日历史结果保留在 `ARM硬件.md`。
 
-当前 ARM64 全工具盘在 HVF、edk2、四核十二吉与 xHCI USB 合成盘上进入开机豫构并挂载数据区；完整句 `「加」于「1」于「2」` 返回 `「3」`。当前源码盘在本任务自建 Fusion 探针里也进入豫构并挂载 USB 数据区，截图与串口取证后探针关闭。系统内逐字节、交叉与不动点验收继续按 ARM64 目标的六条进行。
+冻结源码 `74573a93e` 的 ARM64 全工具盘在 HVF、edk2、四核十二吉与 xHCI USB 合成盘上进入开机豫构并挂载数据区；完整句 `「加」于「1」于「2」` 返回 `「3」`。默认内造十六分六秒、交叉 AMD64 八分三十八秒，两轮光盘与合成镜像均与宿主同源参照逐字节相同。系统内自产 ARM64 盘再开机再造十四分三十六秒，双产物保持相同，不动点通过。最终盘在本任务自建 Fusion 探针里进入豫构并挂载 USB 数据区，截图与串口取证后探针关闭。去魔数、最终 AMD64 SeaBIOS 与 OVMF 冒烟通过；最新共享实现的 AMD64 实际内造复验继续协调。
 
 ## 测试方法
 
 在 `~/repos/yuyan-worktrees/ARM64系统内造盘` 工作树运行。先按 AGENTS.md 起步与完整自举，再执行 `./yy豫构.exe 目标 原生工具链六四 -j 24`，得到 `yy豫构六四.exe` 与 `yy4_bs六四.exe`，供完整工具盘的大内存构建使用。
 
-- 构建造盘工具：`./yy豫构六四.exe 文件 豫言操作系统/裸机/豫言系统。豫 --输出 yy豫言系统.wasm -j 24`。
-- ARM64 宿主盘：`YY_GC_INITIAL_HEAP_SIZE_MB=1024 node --max-old-space-size=24000 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --架构 臂六十四 --输出 目录 --预置 无 --工具链 --六十四位地址 --盘容量 2097152 --构 ./yy豫构六四.exe --编译器 ./yy4_bs六四.exe`。输出 `yy豫言启动臂.iso` 与 `yy豫言启动盘.img`。AMD64 对照盘将架构改为 `兼容六十四`，输出 `yy豫言启动.iso`。比较时使用相同提交与容量参数。
+- 构建原生造盘工具：`./yy豫构六四.exe 构建 豫言裸机 豫言系统 --编译器 ./yy4_bs六四.exe --输出 yy豫言系统.exe -j 24 -- --目标 本机 --执行器 ./yy执行器六四.树码`。
+- ARM64 宿主盘：`./yy豫言系统.exe 启动盘 --架构 臂六十四 --输出 目录 --工具链 --六十四位地址 --盘容量 2097152 --构 ./yy豫构六四.exe --编译器 ./yy4_bs六四.exe --并行 24`。输出 `yy豫言启动臂.iso` 与 `yy豫言启动盘.img`。AMD64 对照盘将架构改为 `兼容六十四`，输出 `yy豫言启动.iso`。比较时使用相同提交与容量参数。
 - 数据盘 `/工具` 存放目标架构豫行的豫构、编译器、豫言系统、源码格式化和 `yy执行器.树码`，`/源` 存放仓库源码。生成拼音字库的内容依用户决定保留并按当前排版核对；本任务生成器已经复用源码排版库直接写规范源码。
 - ARM64 QEMU：`qemu-system-aarch64 -machine virt,gic-version=3,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off -cpu host -accel hvf -m 12G -smp 4 -bios /opt/homebrew/share/qemu/edk2-aarch64-code.fd -display none -no-reboot -monitor tcp:127.0.0.1:监视端口,server,nowait -serial tcp:127.0.0.1:串口端口,server -device qemu-xhci -drive if=none,id=yy_usb,format=raw,file=独立运行盘 -device usb-storage,drive=yy_usb`。串口连接后开机，可完整保存固件与系统日志。
 - 数据区位于 ISO 之后第一个六十四兆字节整数倍处。保留原始参照盘，用 `cp -c` 制作独立运行副本，扩文件至九吉；取出数据区，经 e2fsprogs 的 `e2fsck` 核验和 `resize2fs` 扩文件系统至八吉，再写回运行副本。这样系统内编译缓存使用扩容副本，原始验收参数产物保持留存。
