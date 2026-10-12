@@ -147,5 +147,7 @@
 　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
+　，『flex』与（「列」【『flex-grow』，『flex-shrink』，『flex-basis』】）
+　，『flex-flow』与（「列」【『flex-direction』，『flex-wrap』】）
 　】
 也。
