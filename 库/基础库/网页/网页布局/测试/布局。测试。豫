@@ -292,7 +292,7 @@
 　虑「表页」者
 　　「解析片段」
 　　　于
-　　　『<table id="表" style="border-spacing:0"><caption style="height:10px"></caption><caption id="下题" style="caption-side:bottom;height:15px"></caption><colgroup style="width:110px"><col style="width:80px"><col span="2"></colgroup><tbody id="行组"><tr><td id="跨格" rowspan="2" style="width:100px;height:40px;padding:0"></td><td id="横格" colspan="2" style="width:200px;height:20px;padding:0"></td></tr><tr><td id="后格" style="height:20px;padding:0"></td><td style="height:20px;padding:0"></td></tr></tbody></table>』
+　　　『<table id="表" style="border-spacing:0"><caption style="height:10px"></caption><caption id="下题" style="caption-side:bottom;height:15px"></caption><colgroup style="width:110px"><col style="width:80px"><col span="2"></colgroup><tbody id="行组"><tr><td id="跨格" rowspan="2" style="width:100px;height:40px;padding:0"></td><td id="横格" colspan="2" style="width:200px;height:20px;padding:0;vertical-align:middle"><div id="格中" style="height:5px"></div></td></tr><tr><td id="后格" style="height:20px;padding:0;vertical-align:bottom"><div id="格底" style="height:5px"></div></td><td style="height:20px;padding:0"></td></tr></tbody></table>』
 　而
 　虑「表树」者「生成网页盒树」于「文档求样式」于「表页」而
 　虑「无」者
@@ -328,6 +328,16 @@
 　　　　「元」
 　　否则
 　　　「发生事故」授以「有」于『表格标题或自动宽度错误』
+　而
+　虑「格中矩」者
+　　「网页节点包围矩形」于「表树」于（「头一个」于（「查询选择器全部」于「表页」于『#格中』））而
+　虑「格底矩」者
+　　「网页节点包围矩形」于「表树」于（「头一个」于（「查询选择器全部」于「表页」于『#格底』））而
+　虑「无」者
+　　若「且」于（「小数等」于（「格中矩」中「纵」）于「17.5」）
+　　于（「小数等」于（「格底矩」中「纵」）于「45.0」）则「元」
+　　否则
+　　　「发生事故」授以「有」于『单元格竖向对齐错误』
 　而
 　若「等于」于（「长度」于（「网页子盒」于「片段盒」））于「二」则
 　　「打印行」于『网页布局集成冒烟通过』
