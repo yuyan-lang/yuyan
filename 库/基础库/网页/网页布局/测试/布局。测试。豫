@@ -367,6 +367,34 @@
 　　否则
 　　　「发生事故」授以「有」于『左右浮动或清除错误』
 　而
+　虑「浮文页」者
+　　「解析片段」
+　　　于
+　　　『<div style="width:60px;display:flow-root"><div style="float:left;width:20px;height:10px"></div><span id="绕字"><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i></span></div>』
+　而
+　虑「浮文树」者「生成网页盒树」于「文档求样式」于「浮文页」而
+　虑「无」者
+　　「布局网页」
+　　　于（会「样」而会「文」而会「宽值」而「新网页矩形」
+　　　　于「横」为「0.0」于「纵」为「0.0」于「宽」为「10.0」于「高」为「10.0」
+　　　）
+　　　于（「默认数值环境」于「元」）
+　　　于「浮文树」
+　　　于「宽」为「60.0」
+　　　于「高」为「200.0」
+　而
+　虑「无」者
+　　鉴「网页节点客户矩形」于「浮文树」于（「头一个」于（「查询选择器全部」于「浮文页」于『#绕字』））而
+　　　有（「缀」于「首行」于（「缀」于「次行」于「罄」））则
+　　　　若「且」
+　　　　　于（「且」于（「小数等」于（「首行」中「横」）于「20.0」）于（「小数等」于（「首行」中「宽」）于「40.0」））
+　　　　　于（「且」于（「小数等」于（「次行」中「横」）于「0.0」）于（「小数等」于（「次行」中「宽」）于「60.0」））则
+　　　　　　「元」
+　　　　否则
+　　　　　「发生事故」授以「有」于『逐行浮动排除错误』
+　　　或有「其他」则
+　　　　「发生事故」授以「有」于『绕浮行内项目行数错误』
+　而
 　若「等于」于（「长度」于（「网页子盒」于「片段盒」））于「二」则
 　　「打印行」于『网页布局集成冒烟通过』
 　否则
