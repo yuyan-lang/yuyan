@@ -93,7 +93,7 @@
 　虑「弹性页」者
 　　「解析片段」
 　　　于
-　　　『<div style="display:flex;width:300px;gap:30px"><div id="弹甲" style="flex:1;order:1;height:20px;max-width:60px"></div><div id="弹乙" style="flex:2;height:30px"></div></div>』
+　　　『<div style="display:flex;width:300px;gap:30px"><div id="弹甲" style="flex:1;order:1;height:20px;max-width:60px;margin-left:10px;margin-right:20px"></div><div id="弹乙" style="flex:2;height:30px"></div></div>』
 　而
 　虑「弹性树」者「生成网页盒树」于「文档求样式」于「弹性页」而
 　虑「无」者
@@ -108,7 +108,7 @@
 　虑「无」者
 　　若「且」
 　　　于（「小数等」于（「弹甲矩」中「宽」）于「60.0」）
-　　　于（「且」于（「小数等」于（「弹乙矩」中「宽」）于「210.0」）于（「小数等」于（「弹甲矩」中「横」）于「240.0」））
+　　　于（「且」于（「小数等」于（「弹乙矩」中「宽」）于「180.0」）于（「小数等」于（「弹甲矩」中「横」）于「220.0」））
 　　则
 　　　「元」
 　　否则
