@@ -82,6 +82,7 @@
 - 本目标的验收就是系统内造盘全程，这是任务本身，不算 AGENTS.md 说的合入前冒烟：修复照常快速合入（合入前只跑便宜检查），长跑放在合入后，期间做别的，不空等。
 - 与 ARM64 目标并行：两边都改执行器、豫言内核与 `豫言系统。豫` 的造盘流程。合入共享代码后用 ListAgents／SendMessage 告诉对方。ARM64 会话要把 AMD64 开机装载「兼容豫行模块初置」迁成两架构共用的 `。底层。豫`，它合入后由你复验 AMD64 系统内造盘。
 - 机器：纯模拟在 pit-mac 或本机（看负载），KVM 在 pit-mbp13（用前看负载；远端找 QEMU 进程用 `pidof`，别用 `pgrep -f`）。
+- pit-pc-ubuntu（32 核、123 GB、有 /dev/kvm、QEMU 10.2）可用于 AMD64，KVM 与重活首选它。用户 2026-10-12 定：AMD64 相关工作在该机合计最多用 16 核，QEMU 与构建一律在 `taskset -c 0-15` 下运行（`-smp` 不超过 16；该机上构建用 `-j 16`，此处以 16 核上限为准），几个会话同时用也只占这 16 个核。连接一律带超时（`ssh -o ConnectTimeout=10 -o ServerAliveInterval=15 -o ServerAliveCountMax=4 pit-pc-ubuntu`），连不上就改用 pit-mbp13 或本机。工作克隆放远端 `~/repos/yuyan-worktrees/<任务名>`；勿动远端 `~/yuyan`、Ollama 与 `llm_training` 进程；Node 用 `/home/zc/.nvm/versions/node/v26.10.0/bin/node`；磁盘只剩约 390 GB，盘镜像用完即删。
 - 测试从简、能凑合着用就行；超出平台限制的边角写“待办事项”注释。
 - 每做完一项在「进度」追加一行（日期、提交、验证、实测数），并更新「现状」。
 
