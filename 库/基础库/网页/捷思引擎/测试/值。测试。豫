@@ -110,7 +110,7 @@
 「断言」
 　于（「捷思严格等」
 　　于（「捷思执行脚本」
-　　　于『let s="x"+2+true+null+undefined;let ok="10"<"2"&&"ab">="aa"&&typeof 1==="number"&&typeof (()=>0)==="function"&&typeof null==="object"&&typeof missing==="undefined"&&typeof s==="string";ok?s:"bad";』）
+　　　于『let s="x"+2+true+null+undefined;let bad=+"1_0";let ok="10"<"2"&&"ab">="aa"&&typeof 1==="number"&&typeof (()=>0)==="function"&&typeof null==="object"&&typeof missing==="undefined"&&typeof s==="string"&&+"  12.5e1 "===125&&+""===0&&+"0x10"===16&&+"0o10"===8&&+"0b10"===2&&+".5"===0.5&&+"1."===1&&+"+Infinity"===Infinity&&bad!==bad&&"3"*2===6&&"7"-2===5&&("5"|2)===7;ok?s:"bad";』）
 　　　于（「捷思字符串值」于（「捷思文字自串」于『x2truenullundefined』）））于『捷思类型查询与字符串运算组合』。
 「断言」
 　于（「捷思严格等」
