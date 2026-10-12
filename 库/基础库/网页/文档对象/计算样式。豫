@@ -273,6 +273,11 @@
 　　『html,body,article,aside,blockquote,div,dl,dt,dd,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,main,nav,ol,p,pre,section,ul { display: block }
 head,title,base,link,meta,style,script,template,[hidden] { display: none }
 body { margin: 8px }
+input,textarea,select,button { display: inline-block; color: black; background: white; border: 1px solid gray; padding: 2px; font-size: 16px }
+input,select { width: 200px; height: 24px }
+textarea { width: 200px; height: 80px; white-space: pre-wrap }
+input[type=checkbox],input[type=radio] { width: 16px; height: 16px; padding: 0 }
+input[type=hidden] { display: none }
 p,blockquote,figure,dl,ol,ul,pre { margin-top: 1em; margin-bottom: 1em }
 blockquote,figure { margin-left: 40px; margin-right: 40px }
 dd { margin-left: 40px }
