@@ -2,8 +2,8 @@ name: CI
 
 env:
   # 固定的 Wasm 工具链包：由提交 5784ed045 的 CI 构建并发布到 historical-binaries-2；其中的编译器认得提案 00013 的内建原语新名（「字节串长度」「字节缓冲取字节」「字符串获取结森字符串」等），也认库包「类型」里的「默认导入」字段、包上下文第五版与提案 00006 的写法（「负」数字面、入口函数「入口」、包字段「入口函数」、。脚本。豫 作入口）。钉到这一包（或更新的）之后，标准库才能写原语新名。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261010T192559Z-yuyan-wasm-5784ed045579d942807f68985a9b53e981168c06.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 4ca9cf8a15b42e77338e2f7dca37e4b64cf9607ba35180f1e7cc35e43c517c04
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261011T192057Z-yuyan-wasm-d4cc7747b44a74436f9eea02e8b4ff51bda8a0ee.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: 0cb2c85843c4d6994305a2371fb60259f69f3957de18b912ef0e8e651b0d182f
 
 on:
   push:
