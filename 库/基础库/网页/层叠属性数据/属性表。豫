@@ -62,6 +62,23 @@
 　，『padding-right』与『0』与「阴」
 　，『padding-bottom』与『0』与「阴」
 　，『padding-left』与『0』与「阴」
+　，『border-top-width』与『medium』与「阴」
+　，『border-right-width』与『medium』与「阴」
+　，『border-bottom-width』与『medium』与「阴」
+　，『border-left-width』与『medium』与「阴」
+　，『border-top-style』与『none』与「阴」
+　，『border-right-style』与『none』与「阴」
+　，『border-bottom-style』与『none』与「阴」
+　，『border-left-style』与『none』与「阴」
+　，『border-top-color』与『currentcolor』与「阴」
+　，『border-right-color』与『currentcolor』与「阴」
+　，『border-bottom-color』与『currentcolor』与「阴」
+　，『border-left-color』与『currentcolor』与「阴」
+　，『border-image-source』与『none』与「阴」
+　，『border-image-slice』与『100%』与「阴」
+　，『border-image-width』与『1』与「阴」
+　，『border-image-outset』与『0』与「阴」
+　，『border-image-repeat』与『stretch』与「阴」
 　，『box-sizing』与『content-box』与「阴」
 　，『background-color』与『transparent』与「阴」
 　，『background-image』与『none』与「阴」
@@ -97,6 +114,36 @@
 　「列」
 　【『margin』与（「列」【『margin-top』，『margin-right』，『margin-bottom』，『margin-left』】）
 　，『padding』与（「列」【『padding-top』，『padding-right』，『padding-bottom』，『padding-left』】）
+　，『border』
+　与（「列」
+　　【『border-top-width』
+　　，『border-right-width』
+　　，『border-bottom-width』
+　　，『border-left-width』
+　　，『border-top-style』
+　　，『border-right-style』
+　　，『border-bottom-style』
+　　，『border-left-style』
+　　，『border-top-color』
+　　，『border-right-color』
+　　，『border-bottom-color』
+　　，『border-left-color』
+　　，『border-image-source』
+　　，『border-image-slice』
+　　，『border-image-width』
+　　，『border-image-outset』
+　　，『border-image-repeat』
+　　】）
+　，『border-top』与（「列」【『border-top-width』，『border-top-style』，『border-top-color』】）
+　，『border-right』与（「列」【『border-right-width』，『border-right-style』，『border-right-color』】）
+　，『border-bottom』与（「列」【『border-bottom-width』，『border-bottom-style』，『border-bottom-color』】）
+　，『border-left』与（「列」【『border-left-width』，『border-left-style』，『border-left-color』】）
+　，『border-width』
+　　与（「列」【『border-top-width』，『border-right-width』，『border-bottom-width』，『border-left-width』】）
+　，『border-style』
+　　与（「列」【『border-top-style』，『border-right-style』，『border-bottom-style』，『border-left-style』】）
+　，『border-color』
+　　与（「列」【『border-top-color』，『border-right-color』，『border-bottom-color』，『border-left-color』】）
 　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
