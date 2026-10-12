@@ -15,6 +15,17 @@
 　，『font-style』与『normal』与「阳」
 　，『font-weight』与『normal』与「阳」
 　，『font-stretch』与『normal』与「阳」
+　，『font-kerning』与『auto』与「阳」
+　，『font-variant』与『normal』与「阳」
+　，『font-variant-caps』与『normal』与「阳」
+　，『font-variant-position』与『normal』与「阳」
+　，『font-variant-numeric』与『normal』与「阳」
+　，『font-variant-ligatures』与『normal』与「阳」
+　，『font-variant-east-asian』与『normal』与「阳」
+　，『font-variant-alternates』与『normal』与「阳」
+　，『font-feature-settings』与『normal』与「阳」
+　，『font-variation-settings』与『normal』与「阳」
+　，『font-optical-sizing』与『auto』与「阳」
 　，『line-height』与『normal』与「阳」
 　，『letter-spacing』与『normal』与「阳」
 　，『word-spacing』与『normal』与「阳」
