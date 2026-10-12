@@ -92,6 +92,10 @@
 　，『background-attachment』与『scroll』与「阴」
 　，『background-origin』与『padding-box』与「阴」
 　，『background-clip』与『border-box』与「阴」
+　，『border-top-left-radius』与『0』与「阴」
+　，『border-top-right-radius』与『0』与「阴」
+　，『border-bottom-right-radius』与『0』与「阴」
+　，『border-bottom-left-radius』与『0』与「阴」
 　，『opacity』与『1』与「阴」
 　，『mix-blend-mode』与『normal』与「阴」
 　，『z-index』与『auto』与「阴」
@@ -171,7 +175,7 @@
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
 　，『background』
-　与（「列」
+　与「列」
 　　【『background-image』
 　　，『background-position』
 　　，『background-size』
@@ -180,6 +184,13 @@
 　　，『background-origin』
 　　，『background-clip』
 　　，『background-color』
+　　】
+　，『border-radius』
+　与（「列」
+　　【『border-top-left-radius』
+　　，『border-top-right-radius』
+　　，『border-bottom-right-radius』
+　　，『border-bottom-left-radius』
 　　】）
 　，『flex』与（「列」【『flex-grow』，『flex-shrink』，『flex-basis』】）
 　，『flex-flow』与（「列」【『flex-direction』，『flex-wrap』】）
