@@ -102,6 +102,24 @@
 　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「函树」于『委托生成』）
 　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「函树」于『异步循环』））））））
 　　　　　　　　　　　　　　　　　　　　　于『捷思函数箭头与异步组合』；
+　　　　　　　　　　　　　　　　　　　　　虑「类树」者
+　　　　　　　　　　　　　　　　　　　　　　「捷思解析脚本」
+　　　　　　　　　　　　　　　　　　　　　　　于
+　　　　　　　　　　　　　　　　　　　　　　　『class A extends Base { #x=1; static count=0; static { this.count++; } constructor(v){this.#x=v;} get value(){return this.#x;} set value(v){this.#x=v;} async *items(){yield this.#x;} [key](a=1,...xs){return a;} static(){return 1;} } const B=class { field; method(){return super.value;} };』
+　　　　　　　　　　　　　　　　　　　　　而
+　　　　　　　　　　　　　　　　　　　　　「断言」
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『类声明』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『类表达式』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『私有键』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『静态块』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『取值器』）
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『异步生成方法』））））））
+　　　　　　　　　　　　　　　　　　　　　　于『捷思类与成员组合』；
 　　　　　　　　　　　　　　　　　　　　　「打印行」于『捷思语法综合冒烟通过』
 也。
 
