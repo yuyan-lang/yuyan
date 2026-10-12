@@ -137,4 +137,9 @@
 　　于（「捷思执行脚本」
 　　　于『let o={x:undefined};let a=[1,,3];let ok="x" in o && !("y" in o) && 0 in a && !(1 in a) && "length" in a;delete o.x;ok&&!("x" in o);』）
 　　　于（「捷思布尔」于「阳」））于『捷思属性存在与数组孔位组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let s="a"+"𐀀";let {length:n,0:first}=s;let ok=n===3&&first==="a"&&s[1]==="\uD800"&&s[2]==="\uDC00"&&s[3]===undefined&&s["01"]===undefined;ok;』）
+　　　于（「捷思布尔」于「阳」））于『捷思字符串长度下标与码元组合』。
 「打印行」于『捷思值冒烟通过』。
