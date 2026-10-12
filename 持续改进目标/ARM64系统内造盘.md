@@ -53,7 +53,7 @@
 
 ## 测试方法
 
-- 宿主造盘（仓库根，先照 AGENTS.md 起步得到原生工具链）：先 `./yy豫构.exe 文件 豫言操作系统/裸机/豫言系统。豫 --输出 yy豫言系统.wasm -j 24`，再 `YY_GC_INITIAL_HEAP_SIZE_MB=1024 node --max-old-space-size=24000 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --架构 臂六十四 --输出 目录 --预置 无 --工具链 --六十四位地址 --盘容量 2097152 --构 ./yy豫构.exe --编译器 ./yy4_bs.exe`；造完 `git checkout -- 库/壳核心/拼音字库。豫`（造盘会改写它）。
+- 宿主造盘（仓库根，先照 AGENTS.md 起步得到原生工具链）：先 `./yy豫构.exe 文件 豫言操作系统/裸机/豫言系统。豫 --输出 yy豫言系统.wasm -j 24`，再 `YY_GC_INITIAL_HEAP_SIZE_MB=1024 node --max-old-space-size=24000 豫言操作系统/宿主/节点/宿主.cjs yy豫言系统.wasm 启动盘 --架构 臂六十四 --输出 目录 --预置 无 --工具链 --六十四位地址 --盘容量 2097152 --构 ./yy豫构.exe --编译器 ./yy4_bs.exe`。造盘会重新生成 `库/壳核心/拼音字库。豫`；依用户决定保留生成差异，按当前格式工具排版并核对，源码冻结与产物比较须使用同一份生成内容。
 - QEMU：`qemu-system-aarch64 -machine virt,gic-version=3,virtualization=off,secure=off,highmem-ecam=off,iommu=smmuv3,default-bus-bypass-iommu=off -cpu host -accel hvf -m 12G -smp 4 -bios /opt/homebrew/share/qemu/edk2-aarch64-code.fd -display none -no-reboot -monitor tcp:127.0.0.1:端口,server,nowait`，串口接文件或套接字，U 盘 `-device qemu-xhci -drive if=none,id=yy_usb,format=raw,file=盘 -device usb-storage,drive=yy_usb`。盘用 `cp -c` 复制后 `truncate -s 9G`。串口出现“命令壳已就绪”后写入 `「构建启动盘」` 加回车（`\r`）。固件是调试版，串口上先有一堆固件日志。
 - 取产物：数据区从合成镜像里光盘之后第一个 64 MiB 整数倍处起，`dd` 出来后用 e2fsprogs 的 `debugfs`（`brew install e2fsprogs`）`dump`，或用 `持久盘读取。豫` 写个临时程序；`shasum -a 256` 比对。
 - 便宜检查：`./yy豫构.exe 类型检查 豫言内核 -j 24`（几秒）、`./yy豫构.exe 类型检查 客体二号 -j 24`；`yy裸机验证`（342 项，约 70 秒，命令见 `ARM硬件交接.md`）；AMD64 冒烟 `yy豫言系统 冒烟 x.iso`，加 `--固件 /opt/homebrew/share/qemu/edk2-x86_64-code.fd --固件变量 /opt/homebrew/share/qemu/edk2-i386-vars.fd` 为 OVMF。
@@ -67,6 +67,10 @@
 - 每做完一步在「进度」追加一行（日期、提交、验证、实测数），并更新「现状」。
 
 ## 进度
+
+- 2026-10-11：新树获取最新发布工具链后完整自举成功，用时一百一十四秒；四级自举逐字节一致。真实系统内交叉树码在苹果 ARM64 同宽原生编译器上以单片降级生成 AMD64 开机豫行成功，与四片生成结果逐字节一致，系统内一百三十九继续隔离。拼音字库生成器改用既有源码排版库直接写规范源码，类型检查与造盘工具构建通过；实际宿主造盘生成四百零二组后，字库与已提交保留版本逐字节相同。当前规范化完整工具盘正在重造，逐字节与不动点验收继续进行。
+
+- 2026-10-11：共用实现 `ee64b4fe8` 合入并推送 yybs `689feed79`。变基后内核与客体类型检查通过，两架构 342 项裸机验证全部通过、用时八秒。用户决定保留的拼音字库生成差异随实现提交。已向 AMD64 会话发送合入结果并协调复验；本任务验收盘、日志与隔离工具留存于 `/private/tmp/yy臂造盘验收留存`，旧工作树与分支按规定删除，再从最新 yybs 新建同名工作树继续交叉、逐字节与不动点验收。六条保持进行中。
 
 - 2026-10-11：共享实现先提交 `e48ac52ed` 并变基最新 yybs。解决显示接口与本次动态代码接口撞号：上游显示模式保留服务五十七至五十九，本次代码块映射改服务六十，双语规范与内核分派同步。保留上游显示模式分派、像素比十二字节应答及参数区扩容。系统内容量按运行机器缺省选择 ARM64 一吉、AMD64 八吉，`--盘容量` 可显式指定，同一共用流程生成光盘与合成盘。同宽苹果 ARM64 原生编译器以真实交叉树码和准确开机参数生成 AMD64 豫行成功、退出零，系统内子进程一百三十九继续查内核及资源条件。六条验收未完成。
 
