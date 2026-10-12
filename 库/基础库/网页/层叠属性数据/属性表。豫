@@ -102,6 +102,7 @@
 　，『overflow-x』与『visible』与「阴」
 　，『overflow-y』与『visible』与「阴」
 　，『transform』与『none』与「阴」
+　，『transform-origin』与『50% 50%』与「阴」
 　，『filter』与『none』与「阴」
 　，『content』与『normal』与「阴」
 　，『flex-grow』与『0』与「阴」
