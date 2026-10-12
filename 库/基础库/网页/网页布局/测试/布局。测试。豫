@@ -199,7 +199,7 @@
 　虑「网格页」者
 　　「解析片段」
 　　　于
-　　　『<div id="网" style="display:grid;width:300px;grid-template-columns:50px repeat(2,minmax(0,1fr));gap:10px"><div style="height:20px"></div><div id="网乙" style="height:30px"></div><div style="height:10px"></div><div id="次行" style="height:20px"></div></div>』
+　　　『<div id="网" style="display:grid;width:300px;grid-template-columns:50px repeat(2,minmax(0,1fr));gap:10px"><div id="伸"></div><div id="网乙" style="height:30px"></div><div id="齐" style="width:20px;height:10px;justify-self:center;align-self:end"></div><div id="次行" style="height:20px"></div></div>』
 　而
 　虑「网格树」者「生成网页盒树」于「文档求样式」于「网格页」而
 　虑「无」者
@@ -219,6 +219,18 @@
 　　　「元」
 　　否则
 　　　「发生事故」授以「有」于『网格轨道或自动放置错误』
+　而
+　虑「伸矩」者
+　　「网页节点包围矩形」于「网格树」于（「头一个」于（「查询选择器全部」于「网格页」于『#伸』））而
+　虑「齐矩」者
+　　「网页节点包围矩形」于「网格树」于（「头一个」于（「查询选择器全部」于「网格页」于『#齐』））而
+　虑「无」者
+　　若「且」
+　　　于（「小数等」于（「伸矩」中「高」）于「30.0」）
+　　　于（「且」于（「小数等」于（「齐矩」中「横」）于「232.5」）于（「小数等」于（「齐矩」中「纵」）于「20.0」））则
+　　　　「元」
+　　否则
+　　　「发生事故」授以「有」于『网格项目对齐或拉伸错误』
 　而
 　若「等于」于（「长度」于（「网页子盒」于「片段盒」））于「二」则
 　　「打印行」于『网页布局集成冒烟通过』
