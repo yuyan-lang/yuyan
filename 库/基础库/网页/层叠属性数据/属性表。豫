@@ -80,6 +80,9 @@
 　，『border-image-outset』与『0』与「阴」
 　，『border-image-repeat』与『stretch』与「阴」
 　，『box-sizing』与『content-box』与「阴」
+　，『aspect-ratio』与『auto』与「阴」
+　，『object-fit』与『fill』与「阴」
+　，『object-position』与『50% 50%』与「阴」
 　，『background-color』与『transparent』与「阴」
 　，『background-image』与『none』与「阴」
 　，『background-repeat』与『repeat』与「阴」
