@@ -90,7 +90,7 @@
 「断言」
 　于（「捷思严格等」
 　　于（「捷思执行脚本」
-　　　于『function sum(a=2,b=a+1,...rest){let f=()=>arguments.length;return a+b+rest[0]+rest.length+f()-4+(arguments[0]===undefined?0:100);}let a=[4,5];let b=[1,...a];let o={x:sum(void 0,void 0,...a),...{y:b[2]}};o.x+o.y;』）
+　　　于『function sum(a=2,b=a+1,...rest){let f=()=>arguments.length;return a+b+rest[0]+rest.length+f()-4+(arguments[0]===undefined?0:100);}let a=[4,5];let b=[1,...a];let o={x:sum(void 0,void 0,...a),...{y:b[2]}};let named=function arguments(){return arguments.length;};function shadow(arguments){return arguments;}o.x+o.y+named(1,2)-2+shadow(3)-3;』）
 　　　于（「捷思数值」于「一六点零」））于『捷思默认剩余参数与展开组合』。
 「断言」
 　于（「捷思严格等」
