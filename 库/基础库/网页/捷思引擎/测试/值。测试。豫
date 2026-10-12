@@ -152,4 +152,9 @@
 　　于（「捷思执行脚本」
 　　　于『let a=[1,2,3,4];a.note=7;a.length=2;let ok=!(2 in a)&&!(3 in a)&&a.note===7;a.length=5;ok=ok&&!(4 in a);a[4]=9;a.length=0;ok&&a.length===0&&!(0 in a)&&!(4 in a)&&a.note===7;』）
 　　　于（「捷思布尔」于「阳」））于『捷思数组长度收缩扩张与属性保留组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let o={..."a𐀀",...3,...false};let {0:first,...rest}="abc";let count=0;for(let k in "a𐀀"){count++;}o[0]==="a"&&o[1]==="\uD800"&&o[2]==="\uDC00"&&!("length" in o)&&first==="a"&&rest[1]==="b"&&!(0 in rest)&&count===3;』）
+　　　于（「捷思布尔」于「阳」））于『捷思基础值展开剩余解构与枚举组合』。
 「打印行」于『捷思值冒烟通过』。
