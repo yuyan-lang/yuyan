@@ -32,6 +32,7 @@
 　，『text-align』与『start』与「阳」
 　，『text-indent』与『0』与「阳」
 　，『text-transform』与『none』与「阳」
+　，『text-shadow』与『none』与「阳」
 　，『text-decoration-line』与『none』与「阴」
 　，『text-decoration-style』与『solid』与「阴」
 　，『text-decoration-color』与『currentcolor』与「阴」
