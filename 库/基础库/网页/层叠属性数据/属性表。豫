@@ -90,6 +90,7 @@
 　，『background-position』与『0% 0%』与「阴」
 　，『background-size』与『auto auto』与「阴」
 　，『opacity』与『1』与「阴」
+　，『mix-blend-mode』与『normal』与「阴」
 　，『z-index』与『auto』与「阴」
 　，『overflow-x』与『visible』与「阴」
 　，『overflow-y』与『visible』与「阴」
