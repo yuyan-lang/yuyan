@@ -116,6 +116,11 @@
 　，『grid-row-end』与『auto』与「阴」
 　，『grid-template-areas』与『none』与「阴」
 　，『grid-auto-flow』与『row』与「阴」
+　，『table-layout』与『auto』与「阴」
+　，『border-collapse』与『separate』与「阳」
+　，『border-spacing』与『0』与「阳」
+　，『caption-side』与『top』与「阳」
+　，『vertical-align』与『baseline』与「阴」
 　】
 也。
 
