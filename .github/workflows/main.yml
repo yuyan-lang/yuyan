@@ -100,7 +100,7 @@ jobs:
       - name: 打包产物
         run: |
           set -euo pipefail
-          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy豫构.wasm yy豫构.exe yy执行器.树码 yy全树测试.exe 豫言操作系统/宿主/节点/yy节点值桥接.wasm
+          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy豫构.wasm yy豫构.exe yy豫构六四.exe yy执行器.树码 yy全树测试.exe 豫言操作系统/宿主/节点/yy节点值桥接.wasm
           tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C yy网页汇编工具链 .
 
       - name: 上传全树测试工具
