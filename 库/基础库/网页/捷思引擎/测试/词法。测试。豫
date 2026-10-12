@@ -120,6 +120,22 @@
 　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『取值器』）
 　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「类树」于『异步生成方法』））））））
 　　　　　　　　　　　　　　　　　　　　　　于『捷思类与成员组合』；
+　　　　　　　　　　　　　　　　　　　　　虑「模块树」者
+　　　　　　　　　　　　　　　　　　　　　　「捷思解析模块」
+　　　　　　　　　　　　　　　　　　　　　　　于
+　　　　　　　　　　　　　　　　　　　　　　　『import "side"; import main,{x as y,"str" as z} from "one" with {type:"json"};import * as ns from "two";export {y as x};export {z as other} from "one";export * as all from "two";export const count=1;export const run=async (x)=>await ns.run(x); await import("more"); import.meta.url;export default function(){} export const B=class {};』
+　　　　　　　　　　　　　　　　　　　　　而
+　　　　　　　　　　　　　　　　　　　　　「断言」
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「串相等」于（「捷思语法种类」于「模块树」）于『模块』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「模块树」于『默认导入』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「模块树」于『命名空间导入』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「模块树」于『全体导出』）
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「模块树」于『默认导出』）））））
+　　　　　　　　　　　　　　　　　　　　　　于『捷思模块导入导出组合』；
 　　　　　　　　　　　　　　　　　　　　　「打印行」于『捷思语法综合冒烟通过』
 也。
 
