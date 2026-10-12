@@ -75,7 +75,7 @@
 「断言」
 　于（「捷思严格等」
 　　于（「捷思执行脚本」
-　　　于『let sum=0;for(let i=0;i<6;i++){if(i===2)continue;if(i===5)break;sum+=i;}let n=0;while(n<3){++n;sum+=n;}do{sum--;n--;}while(n>0);sum;』）
+　　　于『debugger;let sum=0;for(let i=0;i<6;i++){debugger;if(i===2)continue;if(i===5)break;sum+=i;}let n=0;while(n<3){++n;sum+=n;}do{sum--;n--;}while(n>0);debugger;sum;』）
 　　　于（「捷思数值」于「一一点零」））于『捷思循环与中断续行组合』。
 「断言」
 　于（「捷思严格等」
