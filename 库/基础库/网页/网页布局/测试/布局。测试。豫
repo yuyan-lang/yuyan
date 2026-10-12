@@ -199,7 +199,7 @@
 　虑「网格页」者
 　　「解析片段」
 　　　于
-　　　『<div id="网" style="display:grid;width:320px;height:100px;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));grid-template-rows:30px 20px 10px;align-content:center;gap:10px"><div id="伸" style="grid-column:2 / span 2;grid-row:1 / span 2"></div><div id="网乙" style="height:30px"></div><div id="齐" style="width:20px;height:10px;justify-self:center;align-self:end"></div><div id="次行" style="display:grid;height:20px;grid-template-columns:repeat(auto-fit,minmax(20px,1fr));grid-auto-rows:35px;gap:10px"><div id="适"></div></div></div>』
+　　　『<div id="网" style="display:grid;width:320px;height:100px;grid-template-columns:repeat(3,[列] minmax(80px,1fr));grid-template-rows:30px 20px 10px;grid-template-areas:'. 域 域' '. 域 域' '. . .';align-content:center;gap:10px"><div id="伸" style="grid-area:域"></div><div id="网乙" style="height:30px"></div><div id="齐" style="width:20px;height:10px;justify-self:center;align-self:end"></div><div id="次行" style="grid-column:列 1 / 列 2;grid-row:3;display:grid;height:20px;grid-template-columns:repeat(auto-fit,minmax(20px,1fr));grid-auto-rows:35px;gap:10px"><div id="适"></div></div></div>』
 　而
 　虑「网格树」者「生成网页盒树」于「文档求样式」于「网格页」而
 　虑「无」者
