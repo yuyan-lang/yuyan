@@ -75,7 +75,7 @@
 「断言」
 　于（「捷思严格等」
 　　于（「捷思执行脚本」
-　　　于『debugger;let sum=0;for(let i=0;i<6;i++){debugger;if(i===2)continue;if(i===5)break;sum+=i;}let n=0;while(n<3){++n;sum+=n;}do{sum--;n--;}while(n>0);let t=0;switch(2){case 1:t=100;break;default:t=20;case 2:t+=3;case 3:t+=4;break;case 4:t=100;}for(let i=0;i<3;i++){switch(i){case 1:continue;default:t++;}}switch(9){default:t+=2;case 0:t+=3;}switch(9){case 0:t=100;}let probes=0;switch(2){case ++probes:t=100;break;case ++probes:break;case ++probes:t=100;}debugger;sum+t-14+probes-2;』）
+　　　于『debugger;let sum=0;for(let i=0;i<6;i++){debugger;if(i===2)continue;if(i===5)break;sum+=i;}let n=0;while(n<3){++n;sum+=n;}do{sum--;n--;}while(n>0);let t=0;switch(2){case 1:t=100;break;default:t=20;case 2:t+=3;case 3:t+=4;break;case 4:t=100;}for(let i=0;i<3;i++){switch(i){case 1:continue;default:t++;}}switch(9){default:t+=2;case 0:t+=3;}switch(9){case 0:t=100;}let probes=0;switch(2){case ++probes:t=100;break;case ++probes:break;case ++probes:t=100;}let outer=2;let hits=0;switch(outer++){case 2:let outer=9;hits=outer;break;default:hits=100;}debugger;sum+t-14+probes-2+outer-3+hits-9;』）
 　　　于（「捷思数值」于「一一点零」））于『捷思循环与中断续行组合』。
 「断言」
 　于（「捷思严格等」
