@@ -110,6 +110,11 @@
 　，『grid-template-rows』与『none』与「阴」
 　，『grid-auto-columns』与『auto』与「阴」
 　，『grid-auto-rows』与『auto』与「阴」
+　，『grid-column-start』与『auto』与「阴」
+　，『grid-column-end』与『auto』与「阴」
+　，『grid-row-start』与『auto』与「阴」
+　，『grid-row-end』与『auto』与「阴」
+　，『grid-template-areas』与『none』与「阴」
 　，『grid-auto-flow』与『row』与「阴」
 　】
 也。
@@ -154,5 +159,8 @@
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
 　，『flex』与（「列」【『flex-grow』，『flex-shrink』，『flex-basis』】）
 　，『flex-flow』与（「列」【『flex-direction』，『flex-wrap』】）
+　，『grid-column』与（「列」【『grid-column-start』，『grid-column-end』】）
+　，『grid-row』与（「列」【『grid-row-start』，『grid-row-end』】）
+　，『grid-area』与（「列」【『grid-row-start』，『grid-column-start』，『grid-row-end』，『grid-column-end』】）
 　】
 也。
