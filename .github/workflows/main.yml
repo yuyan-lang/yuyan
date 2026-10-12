@@ -87,8 +87,8 @@ jobs:
           node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
           --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(nproc)"
 
-      # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。此作诸作之所待，故不生原生工具链（全部之余），原生之验在 Wasm 包起步。
-      # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。本作业是其他作业的前置，所以只跑自举、豫构与值桥，不生成原生工具链（「全部」的其余部分）；原生工具链在「Wasm 包起步」作业里生成与验证。
+      # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。此作诸作之所待；全树测试之器连带生本机原生工具链（原生豫构编测试为本机之程），余之原生之验在 Wasm 包起步。
+      # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。本作业是其他作业的前置：跑自举、豫构与值桥；全树测试工具连带生成本机原生工具链（原生豫构把测试编成本机程序运行），其余原生验证在「Wasm 包起步」作业里做。
       - name: 自举并核对定点，以新编译器重建豫构
         run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 自举 豫构 值桥 -j "$(nproc)"
 
@@ -100,7 +100,7 @@ jobs:
       - name: 打包产物
         run: |
           set -euo pipefail
-          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy豫构.wasm yy全树测试.wasm 豫言操作系统/宿主/节点/yy节点值桥接.wasm
+          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy豫构.wasm yy豫构.exe yy执行器.树码 yy全树测试.exe 豫言操作系统/宿主/节点/yy节点值桥接.wasm
           tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C yy网页汇编工具链 .
 
       - name: 上传全树测试工具
@@ -199,7 +199,7 @@ jobs:
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
       - name: 运行本片测试
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy全树测试.wasm --分片 ${{ matrix.shard }}/20
+        run: ./yy全树测试.exe --分片 ${{ matrix.shard }}/20
 
   # 文言：验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与苹果系统，但凭 Node，自包起步，以包中豫构自举而核定点；全部又生本机之原生工具链，乃以原生豫构与原生编译器构建编译器，须与 yy4_bs.wasm 逐字相同；终较原生与 Node 之速，原生慢则书警。
   # 汉语：验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上只用 Node 从包起步，由包中的豫构完成自举并核对定点；「全部」还生成本机的原生工具链（yy4_bs.exe、yy豫构.exe），接着用原生豫构与原生编译器构建编译器，须与 yy4_bs.wasm 逐字节相同；最后比较原生与 Node 的构建耗时（原生对比），原生较慢时发出警告。
