@@ -136,6 +136,22 @@
 　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「模块树」于『全体导出』）
 　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「模块树」于『默认导出』）））））
 　　　　　　　　　　　　　　　　　　　　　　于『捷思模块导入导出组合』；
+　　　　　　　　　　　　　　　　　　　　　虑「对象树」者
+　　　　　　　　　　　　　　　　　　　　　　「捷思解析脚本」
+　　　　　　　　　　　　　　　　　　　　　　　于
+　　　　　　　　　　　　　　　　　　　　　　　『const obj={value:1,get x(){return this.value;},set x(v){this.value=v;},*items(){yield 1;},async run(a=1){return await a;},async *stream(){yield 2;},[key](...xs){return xs;},async(){return 3;}};const {a=1,nested:{b},...rest}=source;let [head,,...tail]=items;({a=2,nested:{b}}=source);[head,...tail]=items;function f({a=1},[b,...xs]){return a+b;}』
+　　　　　　　　　　　　　　　　　　　　　而
+　　　　　　　　　　　　　　　　　　　　　「断言」
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「对象树」于『取值器』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「对象树」于『设值器』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「对象树」于『异步生成方法』）
+　　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「对象树」于『默认属性』）
+　　　　　　　　　　　　　　　　　　　　　　于（「语法含」于「对象树」于『赋值』）））））
+　　　　　　　　　　　　　　　　　　　　　　于『捷思对象方法与解构组合』；
 　　　　　　　　　　　　　　　　　　　　　「打印行」于『捷思语法综合冒烟通过』
 也。
 
