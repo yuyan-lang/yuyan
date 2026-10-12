@@ -532,7 +532,7 @@
 　否则若「边框含词」于（「列」【『flex』，『flex-flow』】）于（「声明」中「名称」）则
 　　「展开弹性声明」于「声明」
 　否则若「边框含词」
-　　于（「列」【『border』，『border-top』，『border-right』，『border-bottom』，『border-left』】）
+　　于（「列」【『border』，『border-top』，『border-right』，『border-bottom』，『border-left』，『outline』】）
 　　于（「声明」中「名称」）则
 　　　「展开边框声明」于「声明」
 　否则

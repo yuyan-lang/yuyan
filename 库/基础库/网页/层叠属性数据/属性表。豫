@@ -80,6 +80,11 @@
 　，『border-image-width』与『1』与「阴」
 　，『border-image-outset』与『0』与「阴」
 　，『border-image-repeat』与『stretch』与「阴」
+　，『outline-width』与『medium』与「阴」
+　，『outline-style』与『none』与「阴」
+　，『outline-color』与『currentcolor』与「阴」
+　，『outline-offset』与『0』与「阴」
+　，『box-shadow』与『none』与「阴」
 　，『box-sizing』与『content-box』与「阴」
 　，『aspect-ratio』与『auto』与「阴」
 　，『object-fit』与『fill』与「阴」
@@ -174,6 +179,7 @@
 　　与（「列」【『border-top-color』，『border-right-color』，『border-bottom-color』，『border-left-color』】）
 　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
+　，『outline』与（「列」【『outline-width』，『outline-style』，『outline-color』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
 　，『background』
 　与「列」
