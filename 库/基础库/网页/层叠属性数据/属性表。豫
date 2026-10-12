@@ -101,6 +101,8 @@
 　，『align-items』与『normal』与「阴」
 　，『align-content』与『normal』与「阴」
 　，『align-self』与『auto』与「阴」
+　，『justify-items』与『normal』与「阴」
+　，『justify-self』与『auto』与「阴」
 　，『order』与『0』与「阴」
 　，『row-gap』与『normal』与「阴」
 　，『column-gap』与『normal』与「阴」
