@@ -26,7 +26,22 @@
 　「文件系统」之「写文件字节串」于（「出」附『/.config』）于（「文件系统」之「读文件字节串」于「配」）；
 　「执行」
 　　于（「源」附『/scripts/config』）
-　　于（「列」【『--file』，「出」附『/.config』，『-e』，『DEVMEM』，『-d』，『STRICT_DEVMEM』，『-e』，『PACKET』】）；
+　　于（「列」
+　　　【『--file』
+　　　，「出」附『/.config』
+　　　，『-e』
+　　　，『DEVMEM』
+　　　，『-d』
+　　　，『STRICT_DEVMEM』
+　　　，『-e』
+　　　，『PACKET』
+　　　，『-e』
+　　　，『FB』
+　　　，『-e』
+　　　，『FB_VESA』
+　　　，『-d』
+　　　，『FRAMEBUFFER_CONSOLE』
+　　　】）；
 　　虑「前参」者
 　　　（（「列」于「字符串」）也「列」
 　　　　【『PATH=』附「根」附『/usr/bin:/usr/bin:/bin』
