@@ -199,7 +199,7 @@
 　虑「网格页」者
 　　「解析片段」
 　　　于
-　　　『<div id="网" style="display:grid;width:320px;height:100px;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));grid-template-rows:30px 20px 10px;align-content:center;gap:10px"><div id="伸"></div><div id="网乙" style="height:30px"></div><div id="齐" style="width:20px;height:10px;justify-self:center;align-self:end"></div><div id="次行" style="display:grid;height:20px;grid-template-columns:repeat(auto-fit,minmax(20px,1fr));grid-auto-rows:35px;gap:10px"><div id="适"></div></div></div>』
+　　　『<div id="网" style="display:grid;width:320px;height:100px;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));grid-template-rows:30px 20px 10px;align-content:center;gap:10px"><div id="伸" style="grid-column:2 / span 2"></div><div id="网乙" style="height:30px"></div><div id="齐" style="width:20px;height:10px;justify-self:center;align-self:end"></div><div id="次行" style="display:grid;height:20px;grid-template-columns:repeat(auto-fit,minmax(20px,1fr));grid-auto-rows:35px;gap:10px"><div id="适"></div></div></div>』
 　而
 　虑「网格树」者「生成网页盒树」于「文档求样式」于「网格页」而
 　虑「无」者
@@ -213,8 +213,8 @@
 　　「网页节点包围矩形」于「网格树」于（「头一个」于（「查询选择器全部」于「网格页」于『#次行』））而
 　虑「无」者
 　　若「且」
-　　　于（「小数等」于（「网乙矩」中「横」）于「110.0」）
-　　　于（「且」于（「小数等」于（「网乙矩」中「宽」）于「100.0」）于（「小数等」于（「次行矩」中「纵」）于「50.0」））
+　　　于（「小数等」于（「网乙矩」中「横」）于「0.0」）
+　　　于（「且」于（「小数等」于（「网乙矩」中「宽」）于「100.0」）于（「小数等」于（「次行矩」中「纵」）于「45.0」））
 　　则
 　　　「元」
 　　否则
@@ -226,9 +226,11 @@
 　　「网页节点包围矩形」于「网格树」于（「头一个」于（「查询选择器全部」于「网格页」于『#齐』））而
 　虑「无」者
 　　若「且」
-　　　于（「小数等」于（「伸矩」中「高」）于「30.0」）
-　　　于（「且」于（「小数等」于（「齐矩」中「横」）于「260.0」）于（「小数等」于（「齐矩」中「纵」）于「30.0」））则
-　　　　「元」
+　　　于（「且」
+　　　　于（「小数等」于（「伸矩」中「高」）于「30.0」）
+　　　　于（「且」于（「小数等」于（「伸矩」中「横」）于「110.0」）于（「小数等」于（「伸矩」中「宽」）于「210.0」）））
+　　　　于（「且」于（「小数等」于（「齐矩」中「横」）于「150.0」）于（「小数等」于（「齐矩」中「纵」）于「65.0」））则
+　　　　　「元」
 　　否则
 　　　「发生事故」授以「有」于『网格项目对齐或拉伸错误』
 　而
