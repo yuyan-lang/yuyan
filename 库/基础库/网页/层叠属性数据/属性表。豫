@@ -108,6 +108,8 @@
 　，『column-gap』与『normal』与「阴」
 　，『grid-template-columns』与『none』与「阴」
 　，『grid-template-rows』与『none』与「阴」
+　，『grid-auto-columns』与『auto』与「阴」
+　，『grid-auto-rows』与『auto』与「阴」
 　，『grid-auto-flow』与『row』与「阴」
 　】
 也。
