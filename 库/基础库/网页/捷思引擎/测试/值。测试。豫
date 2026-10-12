@@ -79,9 +79,18 @@
 　　　于（「捷思数值」于「一一点零」））于『捷思循环与中断续行组合』。
 「断言」
 　于（「捷思严格等」
-　　于（「捷思执行脚本」
-　　　于『function make(n){return step=>{n+=step;return n;};}let f=make(3);let a=f(2);function sum(n){if(n<=0)return 0;return n+sum(n-1);}a+f(4)+sum(4);』）
-　　　于（「捷思数值」于「二四点零」））于『捷思函数闭包与递归调用组合』。
+　　于（
+　　　虑「境」者「捷思新全局环境」于「元」而
+　　　虑「初值」者
+　　　　「捷思在环境执行脚本」
+　　　　　于「境」
+　　　　　于
+　　　　　『function make(n){return step=>{n+=step;return n;};}let f=make(3);let a=f(2);function sum(n){if(n<=0)return 0;return n+sum(n-1);}var shared=2;』
+　　　而
+　　　「捷思在环境执行脚本」于「境」于『var shared;shared+=3;a+f(4)+sum(4)+shared-5;』
+　　）
+　　于（「捷思数值」于「二四点零」））于『捷思函数闭包与递归调用组合』。
+
 「断言」
 　于（「捷思严格等」
 　　于（「捷思执行脚本」
