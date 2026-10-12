@@ -117,7 +117,7 @@
 　虑「对齐页」者
 　　「解析片段」
 　　　于
-　　　『<div style="display:flex;width:300px;justify-content:center"><div id="中" style="width:100px;height:20px"></div></div>』
+　　　『<div style="display:flex;width:300px;height:100px;justify-content:center;align-items:center"><div id="中" style="width:100px;height:20px"></div></div>』
 　而
 　虑「对齐树」者「生成网页盒树」于「文档求样式」于「对齐页」而
 　虑「无」者
@@ -128,7 +128,10 @@
 　虑「中矩」者
 　　「网页节点包围矩形」于「对齐树」于（「头一个」于（「查询选择器全部」于「对齐页」于『#中』））而
 　虑「无」者
-　　若「小数等」于（「中矩」中「横」）于「100.0」则「元」否则「发生事故」授以「有」
+　　若「且」于（「小数等」于（「中矩」中「横」）于「100.0」）
+　　于（「小数等」于（「中矩」中「纵」）于「40.0」）则「元」
+　　否则
+　　　「发生事故」授以「有」
 　　　于『弹性主轴对齐错误』
 　而
 　虑「片段盒」者「头一个」于（「网页子盒」于「树」）而
