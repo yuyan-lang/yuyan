@@ -275,6 +275,7 @@ head,title,base,link,meta,style,script,template,[hidden] { display: none }
 body { margin: 8px }
 input,textarea,select,button { display: inline-block; color: black; background: white; border: 1px solid gray; padding: 2px; font-size: 16px }
 input,select { width: 200px; height: 24px }
+select[multiple] { height: 80px; white-space: pre-wrap }
 textarea { width: 200px; height: 80px; white-space: pre-wrap }
 input[type=checkbox],input[type=radio] { width: 16px; height: 16px; padding: 0 }
 input[type=hidden] { display: none }
