@@ -92,4 +92,9 @@
 　　于（「捷思执行脚本」
 　　　于『function sum(a=2,b=a+1,...rest){return a+b+rest[0]+rest.length;}let a=[4,5];let b=[1,...a];let o={x:sum(void 0,void 0,...a),...{y:b[2]}};o.x+o.y;』）
 　　　于（「捷思数值」于「一六点零」））于『捷思默认剩余参数与展开组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let key="x";let {[key]:a=2,...rest}={y:4};let [b,,...tail]=[3,0,5,6];function f({y},[n=7]=[]){return y+n;}let z=0;({y:z}=rest);[rest.y]=[8];a+b+tail.length+f(rest)+z;』）
+　　　于（「捷思数值」于「二六点零」））于『捷思声明参数与赋值解构组合』。
 「打印行」于『捷思值冒烟通过』。
