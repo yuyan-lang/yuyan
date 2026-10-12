@@ -1,0 +1,93 @@
+寻观「标准库」之书。
+
+「属性资料」即
+　「字符串」
+　合「字符串」
+　合「爻」
+也。
+
+「层叠属性表」乃化「有」而（「列」于「属性资料」）也。
+「层叠属性表」者会「无」而
+　「列」
+　【『color』与『canvastext』与「阳」
+　，『font-family』与『serif』与「阳」
+　，『font-size』与『medium』与「阳」
+　，『font-style』与『normal』与「阳」
+　，『font-weight』与『normal』与「阳」
+　，『font-stretch』与『normal』与「阳」
+　，『line-height』与『normal』与「阳」
+　，『letter-spacing』与『normal』与「阳」
+　，『word-spacing』与『normal』与「阳」
+　，『text-align』与『start』与「阳」
+　，『text-indent』与『0』与「阳」
+　，『text-transform』与『none』与「阳」
+　，『white-space』与『normal』与「阳」
+　，『direction』与『ltr』与「阳」
+　，『writing-mode』与『horizontal-tb』与「阳」
+　，『visibility』与『visible』与「阳」
+　，『cursor』与『auto』与「阳」
+　，『list-style-type』与『disc』与「阳」
+　，『list-style-position』与『outside』与「阳」
+　，『list-style-image』与『none』与「阳」
+　，『display』与『inline』与「阴」
+　，『position』与『static』与「阴」
+　，『float』与『none』与「阴」
+　，『clear』与『none』与「阴」
+　，『width』与『auto』与「阴」
+　，『height』与『auto』与「阴」
+　，『min-width』与『auto』与「阴」
+　，『min-height』与『auto』与「阴」
+　，『max-width』与『none』与「阴」
+　，『max-height』与『none』与「阴」
+　，『top』与『auto』与「阴」
+　，『right』与『auto』与「阴」
+　，『bottom』与『auto』与「阴」
+　，『left』与『auto』与「阴」
+　，『margin-top』与『0』与「阴」
+　，『margin-right』与『0』与「阴」
+　，『margin-bottom』与『0』与「阴」
+　，『margin-left』与『0』与「阴」
+　，『padding-top』与『0』与「阴」
+　，『padding-right』与『0』与「阴」
+　，『padding-bottom』与『0』与「阴」
+　，『padding-left』与『0』与「阴」
+　，『box-sizing』与『content-box』与「阴」
+　，『background-color』与『transparent』与「阴」
+　，『background-image』与『none』与「阴」
+　，『background-repeat』与『repeat』与「阴」
+　，『background-position』与『0% 0%』与「阴」
+　，『background-size』与『auto auto』与「阴」
+　，『opacity』与『1』与「阴」
+　，『z-index』与『auto』与「阴」
+　，『overflow-x』与『visible』与「阴」
+　，『overflow-y』与『visible』与「阴」
+　，『transform』与『none』与「阴」
+　，『filter』与『none』与「阴」
+　，『content』与『normal』与「阴」
+　，『flex-grow』与『0』与「阴」
+　，『flex-shrink』与『1』与「阴」
+　，『flex-basis』与『auto』与「阴」
+　，『flex-direction』与『row』与「阴」
+　，『flex-wrap』与『nowrap』与「阴」
+　，『justify-content』与『normal』与「阴」
+　，『align-items』与『normal』与「阴」
+　，『align-self』与『auto』与「阴」
+　，『order』与『0』与「阴」
+　，『row-gap』与『normal』与「阴」
+　，『column-gap』与『normal』与「阴」
+　，『grid-template-columns』与『none』与「阴」
+　，『grid-template-rows』与『none』与「阴」
+　，『grid-auto-flow』与『row』与「阴」
+　】
+也。
+
+「层叠简写表」乃化「有」而（「列」于（「字符串」合（「列」于「字符串」）））也。
+「层叠简写表」者会「无」而
+　「列」
+　【『margin』与（「列」【『margin-top』，『margin-right』，『margin-bottom』，『margin-left』】）
+　，『padding』与（「列」【『padding-top』，『padding-right』，『padding-bottom』，『padding-left』】）
+　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
+　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
+　，『gap』与（「列」【『row-gap』，『column-gap』】）
+　】
+也。
