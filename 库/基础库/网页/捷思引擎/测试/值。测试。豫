@@ -97,4 +97,9 @@
 　　于（「捷思执行脚本」
 　　　于『let key="x";let {[key]:a=2,...rest}={y:4};let [b,,...tail]=[3,0,5,6];function f({y},[n=7]=[]){return y+n;}let z=0;({y:z}=rest);[rest.y]=[8];a+b+tail.length+f(rest)+z;』）
 　　　于（「捷思数值」于「二六点零」））于『捷思声明参数与赋值解构组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let out=0;for(let [a,b] of [[1,2],[3,4]]){if(a===3)continue;out+=a+b;}let o={x:2,y:3};for(let k in o){out+=o[k];}function f(){for(let x of [7,8])return x;}for(let x of [1,2]){out+=f()+x;if(x===2)break;}let fs=[];for(let x of [1,2]){fs[x-1]=()=>x;}for(let i=0;i<2;i++){fs[i+2]=()=>i;}out+fs[0]()+fs[1]()+fs[2]()+fs[3]();』）
+　　　于（「捷思数值」于「二九点零」））于『捷思遍历解构与逐次闭包组合』。
 「打印行」于『捷思值冒烟通过』。
