@@ -82,4 +82,9 @@
 　　于（「捷思执行脚本」
 　　　于『function make(n){return step=>{n+=step;return n;};}let f=make(3);let a=f(2);function sum(n){if(n<=0)return 0;return n+sum(n-1);}a+f(4)+sum(4);』）
 　　　于（「捷思数值」于「二四点零」））于『捷思函数闭包与递归调用组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let n=3;let a=[n,,5];let key="x";let o={n,[key]:a};o.x[1]=7;a[4]=2;o.n+=a[1];let z=(x=>x===void 0?0:1)();o.n+a.length+a[4]+z;』）
+　　　于（「捷思数值」于「一七点零」））于『捷思数组对象与成员赋值组合』。
 「打印行」于『捷思值冒烟通过』。
