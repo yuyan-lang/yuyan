@@ -107,4 +107,9 @@
 　　于（「捷思执行脚本」
 　　　于『let v=f(3);let kept=f;function f(n){return g(n)+1;function g(x){return x*2;}}let before=x===undefined?0:100;if(false){var x=99;}var x=2;var x;{var x=x+1;let hidden=8;}let check=NaN===NaN?100:0;v+x+before+check+(kept===f?0:100);』）
 　　　于（「捷思数值」于「一零点零」））于『捷思声明提升与变量重声明组合』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let s="x"+2+true+null+undefined;let ok="10"<"2"&&"ab">="aa"&&typeof 1==="number"&&typeof (()=>0)==="function"&&typeof null==="object";ok?s:"bad";』）
+　　　于（「捷思字符串值」于（「捷思文字自串」于『x2truenullundefined』）））于『捷思类型查询与字符串运算组合』。
 「打印行」于『捷思值冒烟通过』。
