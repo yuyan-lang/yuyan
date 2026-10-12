@@ -32,6 +32,12 @@
 　，『text-align』与『start』与「阳」
 　，『text-indent』与『0』与「阳」
 　，『text-transform』与『none』与「阳」
+　，『text-decoration-line』与『none』与「阴」
+　，『text-decoration-style』与『solid』与「阴」
+　，『text-decoration-color』与『currentcolor』与「阴」
+　，『text-decoration-thickness』与『auto』与「阴」
+　，『text-underline-offset』与『auto』与「阳」
+　，『text-decoration-skip-ink』与『auto』与「阳」
 　，『white-space』与『normal』与「阳」
 　，『direction』与『ltr』与「阳」
 　，『writing-mode』与『horizontal-tb』与「阳」
@@ -181,6 +187,13 @@
 　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
 　，『outline』与（「列」【『outline-width』，『outline-style』，『outline-color』】）
+　，『text-decoration』
+　与（「列」
+　　【『text-decoration-line』
+　　，『text-decoration-style』
+　　，『text-decoration-color』
+　　，『text-decoration-thickness』
+　　】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
 　，『background』
 　与「列」
