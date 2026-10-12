@@ -5,9 +5,25 @@
 
 「验计算样式」乃化「有」而「有」也。
 「验计算样式」者会「无」而
+　虑「默认页」者
+　　「解析片段」
+　　　于
+　　　『<style>div { display:inline } p { display:flex }</style><div></div><p></p><span hidden></span><table><tr><td></td></tr></table>』
+　而
+　虑「显示串」者
+　　「串组合并」于（「态射」
+　　　于（「查询选择器全部」于「默认页」于『style,div,p,span,table,tr,td』）
+　　　于（会「节」而（「样式取值」于（「文档求样式」于「节」）于『display』）附『|』））而
+　虑「无」者
+　　若「串相等」于「显示串」于『none|inline|flex|none|table|table-row|table-cell|』则
+　　　「元」
+　　否则
+　　　「发生事故」授以「有」于（『用户代理显示级联错误：』附「显示串」）
+　而
 　虑「根」者
 　　「解析片段」
-　　　于『<section><p id="末" class="段" style="color:green; margin-left:3px; width:var(--失,8px)">文</p></section>』而
+　　　于『<section><p id="末" class="段" style="color:green; margin-left:3px; width:var(--失,8px)">文</p></section>』
+　而
 　虑「节」者「第几个」于「零」于（「查询选择器全部」于「根」于『p』）而
 　虑「诸源」者
 　　「列」
@@ -26,7 +42,8 @@
 　　　　　于「来源」为「一」
 　　　　　于「层」为「零」
 　　　　　于『@layer 基础,主题;@layer 主题{p{height:20px;color:yellow!important}}@layer 基础{p{height:10px;color:orange!important}}@layer 主题{p{height:30px}}』
-　　　　】）而
+　　　　】）
+　而
 　虑「无」者
 　　若「且」
 　　　于（「串相等」于（「样式取值」于「层样」于『height』）于『30px』）
