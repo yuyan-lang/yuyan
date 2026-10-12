@@ -32,6 +32,21 @@
 　　否则
 　　　「发生事故」授以「有」于『网格放置简写展开错误』
 　而
+　虑「背景」者
+　　「展开简写声明」于（「头一个」于（「解析样式声明」
+　　　于『background:url(图) center bottom / 2px 1px no-repeat fixed padding-box content-box, blue !important』））
+　而
+　虑「无」者
+　　若「且」
+　　　于（「且」
+　　　　于（「串相等」于（「声明值文」于（「第几个」于「二」于「背景」））于『2px 1px, auto auto』）
+　　　　于（「串相等」于（「声明值文」于（「第几个」于「六」于「背景」））于『content-box, border-box』））
+　　　　于（「且」
+　　　　　于（「串相等」于（「声明值文」于（「第几个」于「七」于「背景」））于『blue』）
+　　　　　于（（「头一个」于「背景」）中「重要」））则「元」
+　　否则
+　　　「发生事故」授以「有」于『背景简写尺寸盒域颜色或重要标志错误』
+　而
 　虑「规则」者
 　　「解析样式表」于『/*前*/@import "甲.css"; @media (width > 10px) {p{color:red}} .页 {padding:calc(1em + 2px);}』而
 　虑「无」者

@@ -89,6 +89,9 @@
 　，『background-repeat』与『repeat』与「阴」
 　，『background-position』与『0% 0%』与「阴」
 　，『background-size』与『auto auto』与「阴」
+　，『background-attachment』与『scroll』与「阴」
+　，『background-origin』与『padding-box』与「阴」
+　，『background-clip』与『border-box』与「阴」
 　，『opacity』与『1』与「阴」
 　，『mix-blend-mode』与『normal』与「阴」
 　，『z-index』与『auto』与「阴」
@@ -167,6 +170,17 @@
 　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
+　，『background』
+　与（「列」
+　　【『background-image』
+　　，『background-position』
+　　，『background-size』
+　　，『background-repeat』
+　　，『background-attachment』
+　　，『background-origin』
+　　，『background-clip』
+　　，『background-color』
+　　】）
 　，『flex』与（「列」【『flex-grow』，『flex-shrink』，『flex-basis』】）
 　，『flex-flow』与（「列」【『flex-direction』，『flex-wrap』】）
 　，『grid-column』与（「列」【『grid-column-start』，『grid-column-end』】）
