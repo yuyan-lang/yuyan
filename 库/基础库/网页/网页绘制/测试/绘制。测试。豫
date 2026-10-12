@@ -231,7 +231,7 @@
 　虑「背页」者
 　　「解析片段」
 　　　于
-　　　　『<div style="width:4px;height:2px;background-image:url(图);background-size:2px 1px;background-position:center bottom;background-repeat:repeat-x"></div><div style="width:2px;height:1px;padding:1px;background-color:blue;background-clip:content-box"></div>』
+　　　　『<div style="width:4px;height:2px;background:url(图) center bottom / 2px 1px repeat-x"></div><div style="width:2px;height:1px;padding:1px;background-color:blue;background-clip:content-box"></div>』
 　而
 　虑「背树」者「生成网页图像盒树」于「读图」于「文档求样式」于「背页」而
 　虑「无」者
