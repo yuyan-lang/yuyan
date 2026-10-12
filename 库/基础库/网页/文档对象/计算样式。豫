@@ -264,9 +264,61 @@
 　「带条件计算节点样式」于（「默认样式条件」于「元」）于「节」于「诸源」
 也。
 
+「文档用户代理样式」乃化「有」而「样式来源」也。
+「文档用户代理样式」者会「无」而
+　「新样式来源」
+　　于「来源」为「零」
+　　于「层」为「零」
+　　于
+　　『html,body,article,aside,blockquote,div,dl,dt,dd,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,main,nav,ol,p,pre,section,ul { display: block }
+head,title,base,link,meta,style,script,template,[hidden] { display: none }
+body { margin: 8px }
+p,blockquote,figure,dl,ol,ul,pre { margin-top: 1em; margin-bottom: 1em }
+blockquote,figure { margin-left: 40px; margin-right: 40px }
+dd { margin-left: 40px }
+ol,ul { padding-left: 40px }
+ol { list-style-type: decimal }
+ul { list-style-type: disc }
+li { display: list-item }
+table { display: table; border-spacing: 2px; border-collapse: separate }
+caption { display: table-caption; text-align: center }
+colgroup { display: table-column-group }
+col { display: table-column }
+thead { display: table-header-group }
+tbody { display: table-row-group }
+tfoot { display: table-footer-group }
+tr { display: table-row }
+td,th { display: table-cell; padding: 1px }
+th { font-weight: bold; text-align: center }
+b,strong { font-weight: bolder }
+i,em,cite,dfn,var,address { font-style: italic }
+pre,code,kbd,samp { font-family: monospace }
+pre { white-space: pre }
+h1 { font-size: 2em; margin-top: .67em; margin-bottom: .67em }
+h2 { font-size: 1.5em; margin-top: .83em; margin-bottom: .83em }
+h3 { font-size: 1.17em; margin-top: 1em; margin-bottom: 1em }
+h4 { margin-top: 1.33em; margin-bottom: 1.33em }
+h5 { font-size: .83em; margin-top: 1.67em; margin-bottom: 1.67em }
+h6 { font-size: .67em; margin-top: 2.33em; margin-bottom: 2.33em }
+h1,h2,h3,h4,h5,h6 { font-weight: bold }
+small { font-size: smaller }
+sub,sup { font-size: smaller; line-height: normal }
+sub { vertical-align: sub }
+sup { vertical-align: super }
+summary { display: list-item }
+details:not([open]) > :not(summary:first-of-type) { display: none }』
+也。
+
 「文档求样式」乃化「文档节点」而「计算样式」也。
 「文档求样式」者会「节」而
 　「文档计算节点样式」
 　　于「节」
-　　于（「列」【「组值」【「来源」者「一」也，「层」者「零」也，「规则」者「文档样式规则」于（「根节点」于「节」）也】】）
+　　于（「列」
+　　　【「文档用户代理样式」于「元」
+　　　，「组值」
+　　　　　【「来源」者「一」也
+　　　　　，「层」者「零」也
+　　　　　，「规则」者「文档样式规则」于（「根节点」于「节」）也
+　　　　　】
+　　　】）
 也。
