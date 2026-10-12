@@ -36,6 +36,7 @@
 　，『direction』与『ltr』与「阳」
 　，『writing-mode』与『horizontal-tb』与「阳」
 　，『visibility』与『visible』与「阳」
+　，『pointer-events』与『auto』与「阳」
 　，『cursor』与『auto』与「阳」
 　，『list-style-type』与『disc』与「阳」
 　，『list-style-position』与『outside』与「阳」
