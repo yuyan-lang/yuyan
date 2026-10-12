@@ -35,6 +35,7 @@
 　，『image-rendering』与『auto』与「阳」
 　，『scrollbar-width』与『auto』与「阴」
 　，『text-shadow』与『none』与「阳」
+　，『caret-color』与『auto』与「阳」
 　，『text-decoration-line』与『none』与「阴」
 　，『text-decoration-style』与『solid』与「阴」
 　，『text-decoration-color』与『currentcolor』与「阴」
