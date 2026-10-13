@@ -497,4 +497,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let array=[1,2];let iterator=Iterator.from(array);let first=iterator.next();array.push(3);let rest=iterator.toArray();let count=0;let source={next:function(){count++;return {done:count>2,value:count};}};let wrapped=Iterator.from(source);let values=wrapped.toArray();let done=wrapped.next();let again=wrapped.next();let chars=Iterator.from("字𠀀").toArray();let map=Iterator.from(new Map([["x",7]])).toArray();let bad=false;try{Iterator.from({next:function(){return 1;}}).next();}catch(e){bad=e instanceof TypeError;}first.value===1&&!first.done&&rest.join(",")==="2,3"&&iterator instanceof Iterator&&values.join(",")==="1,2"&&done.done&&again.done&&count===3&&chars.length===2&&chars[1]==="𠀀"&&map[0][0]==="x"&&map[0][1]===7&&bad&&Iterator.from.length===1&&Iterator.prototype.toArray.length===0;』）
 　　　于（「捷思布尔」于「阳」））于『捷思迭代器包装按需数组容器直接次步与数组收集』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let array=[1,2];let iterator=Iterator.from(array);let seen=[];let returned=iterator.forEach(function(v,i){seen.push(v+i);if(i===0)array.push(3);});let indices=[];let sum=Iterator.from([2,3,4]).reduce(function(a,v,i){indices.push(i);return a+v;});let initial=Iterator.from([2,3]).reduce(function(a,v,i){return a+v+i;},10);let empty=Iterator.from([]).reduce(function(a,v){return v;},7);let bad=false;try{Iterator.from([]).reduce(function(a,v){return v;});}catch(e){bad=e instanceof TypeError;}let callback=false;try{Iterator.from([]).forEach(1);}catch(e){callback=e instanceof TypeError;}returned===undefined&&seen.join(",")==="1,3,5"&&iterator.next().done&&sum===9&&indices.join(",")==="1,2"&&initial===16&&empty===7&&bad&&callback&&Iterator.prototype.reduce.length===1&&Iterator.prototype.forEach.length===1;』）
+　　　于（「捷思布尔」于「阳」））于『捷思迭代逐项折叠初值下标实时追加与参数拒绝』。
 「打印行」于『捷思值冒烟通过』。
