@@ -417,4 +417,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let called=0;let parent={};Object.defineProperty(parent,"x",{set:function(v){called++;}});let receiver=Object.create(parent);let target={x:1};let set=Reflect.set(target,"x",2,receiver);let missingReceiver=Object.create(parent);let missing=Reflect.set({},"x",3,missingReceiver);let desc=Reflect.getOwnPropertyDescriptor(receiver,"x");let own={};Object.defineProperty(own,"x",{set:function(v){called++;}});let blocked=Reflect.set(target,"x",4,own);let fixed={};Object.defineProperty(fixed,"x",{value:5,writable:true});let update=Reflect.set(target,"x",6,fixed);let fixedDesc=Reflect.getOwnPropertyDescriptor(fixed,"x");set&&missing&&receiver.x===2&&missingReceiver.x===3&&target.x===1&&called===0&&desc.writable&&desc.enumerable&&desc.configurable&&!blocked&&update&&fixed.x===6&&fixedDesc.writable&&!fixedDesc.enumerable&&!fixedDesc.configurable;』）
 　　　于（「捷思布尔」于「阳」））于『捷思反射数据定义绕过继承访问器并保留自有标志』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let array=[];let added=Reflect.set(array,"3",7);let receiver=[];let separate=Reflect.set({x:1},"2",8,receiver);let length=Reflect.set(array,"length",2);let shortened=array.length===2&&array[3]===undefined;Object.freeze(receiver);let frozen=Reflect.set(receiver,"4",9);added&&separate&&length&&shortened&&receiver.length===3&&receiver[2]===8&&!frozen&&receiver[4]===undefined;』）
+　　　于（「捷思布尔」于「阳」））于『捷思反射数组下标长度接收者与冻结写入』。
 「打印行」于『捷思值冒烟通过』。
