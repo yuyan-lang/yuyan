@@ -482,4 +482,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let percent=false;try{decodeURIComponent("%x");}catch(e){percent=e instanceof URIError;}let truncated=false;try{decodeURIComponent("%E5%AD");}catch(e){truncated=e instanceof URIError;}let surrogate=false;try{decodeURIComponent("%ED%A0%80");}catch(e){surrogate=e instanceof URIError;}decodeURIComponent("%E5%AD%97%20%2f%3f")==="字 /?"&&decodeURI("%E5%AD%97%20%2f%3F")==="字 %2f%3F"&&decodeURIComponent("a+b")==="a+b"&&decodeURI("%252f")==="%2f"&&decodeURIComponent("%00").charCodeAt(0)===0&&decodeURIComponent(undefined)==="undefined"&&percent&&truncated&&surrogate&&decodeURI.length===1&&decodeURIComponent.length===1;』）
 　　　于（「捷思布尔」于「阳」））于『捷思地址解码分隔符原转义严格编码与参数转换』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let locale={};let options={};let correct=true;let count=0;let first={toLocaleString:function(l,o){correct=correct&&this===first&&l===locale&&o===options;count++;return "A";}};let second={toLocaleString:function(l,o){correct=correct&&this===second&&l===locale&&o===options;count++;return 7;}};let text=[first,null,,second].toLocaleString(locale,options);let generic=Array.prototype.toLocaleString.call({0:first,length:1},locale,options);let bad=false;try{[{toLocaleString:1}].toLocaleString();}catch(e){bad=e instanceof TypeError;}let object={toString:function(){return "own";}};text==="A,,,7"&&generic==="A"&&correct&&count===3&&[1,"x",true].toLocaleString()==="1,x,true"&&object.toLocaleString()==="own"&&bad&&Array.prototype.toLocaleString.length===0&&Object.prototype.toLocaleString.length===0;』）
+　　　于（「捷思布尔」于「阳」））于『捷思数组本地化逐项参数接收者空项与对象当前方法』。
 「打印行」于『捷思值冒烟通过』。
