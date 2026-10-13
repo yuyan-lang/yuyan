@@ -20,8 +20,7 @@
 　　　于
 　　　『let part=document.createDocumentFragment();part.appendChild(document.createTextNode("甲"));part.appendChild(document.createTextNode(""));part.appendChild(document.createTextNode("乙"));part.normalize();part.appendChild(document.createComment("注"));a.appendChild(part);!a.contains(part);』
 　而
-　虑「诸子」者
-　　「子节点」于（「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『a;』））而
+　虑「诸子」者「子节点」于（「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『a;』））而
 　虑「实时值」者
 　　「捷思在环境执行脚本」
 　　　于「境」
@@ -100,10 +99,8 @@
 　　　于
 　　　『let defaults=document.createElement("select");defaults.innerHTML="<option disabled value=\"甲\">首</option><optgroup disabled><option value=\"乙\">次</option></optgroup><option value=\"丙\">末</option>";let defaultSelection=defaults.selectedIndex===2&&defaults.value==="丙";defaults.selectedIndex=-1;let explicitEmpty=defaults.selectedIndex===-1&&defaults.value==="";let multi=document.createElement("select");multi.setAttribute("multiple","");multi.innerHTML="<option>多</option>";defaultSelection&&explicitEmpty&&multi.selectedIndex===-1;』
 　而
-　虑「无」者
-　　「复原表单控件」于（「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『defaults;』））而
-　虑「复原控件果」者
-　　「捷思在环境执行脚本」于「境」于『defaults.selectedIndex===2&&defaults.value==="丙";』而
+　虑「无」者「复原表单控件」于（「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『defaults;』））而
+　虑「复原控件果」者「捷思在环境执行脚本」于「境」于『defaults.selectedIndex===2&&defaults.value==="丙";』而
 　虑「布尔属性果」者
 　　「捷思在环境执行脚本」
 　　　于「境」
@@ -148,12 +145,10 @@
 　　　于
 　　　『let calls=0;let onceCalls=0;let captureCalls=0;let capturedEvent;let sameEvent=false;function listener(ev){if(this===a&&ev.type==="试")calls++;sameEvent=ev===capturedEvent;}function onceListener(ev){onceCalls++;sameEvent=sameEvent&&ev===capturedEvent;}function captureListener(ev){captureCalls++;capturedEvent=ev;}a.addEventListener("试",listener,false);a.addEventListener("试",listener,{});a.addEventListener("试",onceListener,{once:true,passive:true});a.addEventListener("试",captureListener,{capture:true});』
 　而
-　虑「监听节」者
-　　「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『a;』）而
+　虑「监听节」者「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『a;』）而
 　虑「派发果」者
 　　「派发事件」于「监听节」于（「新事件」于『试』于「冒泡」为「阳」于「可取消」为「阳」于「可越界」为「阴」）而
-　虑「一次果」者
-　　「捷思在环境执行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1&&sameEvent;』而
+　虑「一次果」者「捷思在环境执行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1&&sameEvent;』而
 　虑「监听移除」者
 　　「捷思在环境执行脚本」
 　　　于「境」

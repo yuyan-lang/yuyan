@@ -39,9 +39,7 @@
 　　　　　于
 　　　　　『<div id="x"></div><script>var n=3;var tick=0;function f(){return n;}document.getElementById("x").setAttribute("title","改");queueMicrotask(()=>{tick=1;queueMicrotask(()=>{tick=2;});});queueMicrotask(()=>{missingTask;});</script><script>if(tick===2)n+=4;</script><script>missing;</script><script>f();</script>』
 　　　而
-　　　虑「上下文」者
-　　　　「执行网页文档脚本」于「脚本读取」于『https://example.test/page』于「脚本文档」
-　　　而
+　　　虑「上下文」者「执行网页文档脚本」于「脚本读取」于『https://example.test/page』于「脚本文档」而
 　　　虑「境」者「上下文」中「环境」而
 　　　虑「运行列」者「上下文」中「结果列」而
 　　　虑「文档已改」者鉴「按标识查询」于「脚本文档」于『x』而
@@ -67,8 +65,7 @@
 　　或有「其他脚本」则
 　　　「发生事故」授以「有」于『脚本资源类型筛选错误』
 　而
-　虑「旧文」者
-　　『<meta http-equiv="content-type" content="text/html; charset=GBK"><p>中文</p>』而
+　虑「旧文」者『<meta http-equiv="content-type" content="text/html; charset=GBK"><p>中文</p>』而
 　虑「无」者鉴「编码文本」于『GBK』于「旧文」而
 　　有「可无」则
 　　　「发生事故」授以「有」于『冒烟国标编码失败』
@@ -142,10 +139,7 @@
 　　有「可无」则
 　　　「发生事故」授以「有」于『静态页面载入失败』
 　　或有（「可有」于「页」）则
-　　　虑「字面们」者
-　　　　「读引用」授以（「列」于「网页字面」）
-　　　　于（（「页」中「字体集」）中「字面」）
-　　　而
+　　　虑「字面们」者「读引用」授以（「列」于「网页字面」）于（（「页」中「字体集」）中「字面」）而
 　　　虑「无」者鉴「字面们」而
 　　　　有（「列」【「面」】）则（
 　　　　　鉴「面」中「来源」而

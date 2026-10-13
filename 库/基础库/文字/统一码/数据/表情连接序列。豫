@@ -1,7 +1,7 @@
 寻观「标准库」之书。
 
 「表情连接序列表」者
-  『1F468 200D 2764 FE0F 200D 1F468             ; RGI_Emoji_ZWJ_Sequence  ; couple with heart: man, man
+　『1F468 200D 2764 FE0F 200D 1F468             ; RGI_Emoji_ZWJ_Sequence  ; couple with heart: man, man
 1F468 200D 2764 FE0F 200D 1F48B 200D 1F468  ; RGI_Emoji_ZWJ_Sequence  ; kiss: man, man
 1F468 200D 1F466                            ; RGI_Emoji_ZWJ_Sequence  ; family: man, boy
 1F468 200D 1F466 200D 1F466                 ; RGI_Emoji_ZWJ_Sequence  ; family: man, boy, boy
