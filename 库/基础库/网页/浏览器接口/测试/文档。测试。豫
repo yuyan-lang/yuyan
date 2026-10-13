@@ -1,0 +1,23 @@
+寻观「标准库」之书。
+寻观「文档对象」之书。
+寻观「捷思引擎」之书。
+寻观「浏览器接口」之书。
+
+「入口」乃化「有」而「有」也。
+「入口」者会「无」而
+　虑「文档」者「解析文档」于『<div id="a"></div>』而
+　虑「境」者「捷思新全局环境」于「元」而
+　虑「绑定」者「绑定浏览器文档」于「境」于「文档」而
+　虑「值」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『let a=document.getElementById("a");a.setAttribute("title","中文😀");let e=document.createElement("span");e.setAttribute("id","b");a.appendChild(e);e.appendChild(document.createTextNode("正文"));a.removeAttribute("id");a===document.querySelector("div")&&document.getElementById("a")===null&&e===document.getElementById("b")&&a.getAttribute("title")==="中文😀";』
+　而
+　若「捷思严格等」于「值」于（「捷思布尔」于「阳」）则
+　　「打印行」于『浏览器文档方法冒烟通过』
+　否则
+　　「发生事故」于『浏览器文档方法绑定错误』
+也。
+
+「入口」于「元」。
