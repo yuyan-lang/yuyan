@@ -5,16 +5,30 @@
 <pre id="结果">正在验收……
 </pre>
 <script type="module">
-// 汉语：执行同源设计验收产物，以页面文字收集画面和声音散列。文言：行同源设计之验收之产，以页文收画与声之散。
+// 汉语：执行同源设计验收产物，逐字符比较原生实际生成的完整字节表示基线。文言：行同源设计之验收之产，逐字较原生实生之全字节表示基准。
 import {启动豫言浏览器应用} from './入口.mjs';
 const 结果 = document.getElementById('结果');
+let 偏移 = 0, 差数 = 0, 首差 = -1;
 try {
-  结果.textContent = '';
-  const 宿主 = await 启动豫言浏览器应用({输出: 文 => { 结果.textContent += 文; }});
+  const 响应 = await fetch('./yy原生基线.txt');
+  if (!响应.ok) throw new Error('原生基线读取失败');
+  const 基线 = await 响应.text();
+  结果.textContent = '原生基线已读，正在逐字节比较……';
+  const 宿主 = await 启动豫言浏览器应用({输出: 文 => {
+    for (let 序 = 0; 序 < 文.length; 序++) {
+      if (文[序] !== 基线[偏移 + 序]) {
+        差数++;
+        if (首差 < 0) 首差 = 偏移 + 序;
+      }
+    }
+    偏移 += 文.length;
+  }});
   await 宿主.完成;
-  document.documentElement.dataset.验收 = '完成';
+  差数 += Math.max(0, 基线.length - 偏移);
+  结果.textContent = `基线字符：${基线.length}\n实际字符：${偏移}\n差异字符：${差数}\n首差位置：${首差}\n901 帧完整场景、十帧完整像素、全部波形字节比较：${差数 === 0 ? '通过' : '失败'}\n`;
+  document.documentElement.dataset.验收 = 差数 === 0 ? '完成' : '失败';
 } catch (错) {
-  结果.textContent += '\n运行失败：' + String(错?.message ?? 错);
+  结果.textContent += `\n已比较字符：${偏移}\n运行失败：` + String(错?.stack ?? 错);
   document.documentElement.dataset.验收 = '失败';
 }
 </script>
