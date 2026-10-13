@@ -1,5 +1,6 @@
 // 汉语：用户态子程序只运行宿主具名授权的节点发行入口；输入、环境随调用传入，不保留跨调用状态。文言：用户态子程序惟行宿主具名所授之节点发行入口；输入、环境随调而入，不留跨调之态。
 import {spawnSync as 同步启动, spawn as 原生服务启动} from 'node:child_process';
+import * as 文件系统 from 'node:fs';
 
 const 解码 = new TextDecoder('utf-8', {fatal: true});
 const 空字节 = () => new Uint8Array();
@@ -110,5 +111,59 @@ export function 创建原生子程序桥({服务路径, 程序 = new Map(), 环�
       return [Number(typeof 果.状态 === 'number' ? 果.状态 : 果.错误码 ?? 29), 果.当前可用 === true, BigInt(果.当前字节 ?? 0), 果.峰值可用 === true, BigInt(果.峰值字节 ?? 0)];
     },
     关闭() { if (服务 && !已闭) 服务.stdin.end(); }
+  };
+}
+
+// 汉语：声音接口同步转递到豫言原生服务，服务持有声音流并调用共用原生声音实现。节点只传消息和不透明句柄。文言：声音之接口同步递于豫言原生之服，服持声流而调共用原生之实。节点惟传消息与不透明之柄。
+export function 创建原生声音桥({服务路径, 当前目录 = process.cwd()} = {}) {
+  let 服务 = null, 缓 = '', 已闭 = false;
+  const 候 = new Int32Array(new SharedArrayBuffer(4));
+  const 失败 = () => ({错误码: 58});
+  function 请求(请) {
+    if (!服务路径 || 已闭) return 失败();
+    try {
+      if (!服务) {
+        服务 = 原生服务启动(服务路径, [], {cwd: 当前目录, stdio: ['pipe', 'pipe', 'ignore']});
+        服务.stdin.on('error', () => {已闭 = true;});
+        服务.on('error', () => {已闭 = true;});
+        服务.on('close', () => {已闭 = true;});
+        服务.stdout.pause();
+      }
+      const 入号 = 服务.stdin?._handle?.fd, 出号 = 服务.stdout?._handle?.fd;
+      if (!Number.isInteger(入号) || !Number.isInteger(出号)) return 失败();
+      const 字 = new TextEncoder().encode(JSON.stringify(请) + '\n'), 限 = Date.now() + 30000;
+      let 位 = 0;
+      while (位 < 字.length) {
+        try {位 += 文件系统.writeSync(入号, 字, 位, 字.length - 位);}
+        catch (错) {if (错.code !== 'EAGAIN' || Date.now() > 限) throw 错; Atomics.wait(候, 0, 0, 1);}
+      }
+      for (;;) {
+        const 止 = 缓.indexOf('\n');
+        if (止 >= 0) {const 行 = 缓.slice(0, 止); 缓 = 缓.slice(止 + 1); return JSON.parse(行);}
+        const 块 = new Uint8Array(65536);
+        try {
+          const 数 = 文件系统.readSync(出号, 块, 0, 块.length, null);
+          if (数 === 0) {已闭 = true; return 失败();}
+          缓 += new TextDecoder().decode(块.subarray(0, 数));
+        } catch (错) {if (错.code !== 'EAGAIN' || Date.now() > 限) throw 错; Atomics.wait(候, 0, 0, 1);}
+      }
+    } catch {已闭 = true; return 失败();}
+  }
+  const 错误 = 码 => 码 === 29 ? [7, '原生声音服务操作失败'] : [({1:0, 58:1, 8:2, 44:3, 20:4, 6:5, 7:6})[码] ?? 1];
+  const 流们 = new WeakSet();
+  const 操作 = (动作, 流, 添 = {}) => 流们.has(流) ? 请求({动作, 句柄: 流.句柄, ...添}) : {错误码: 8};
+  return {
+    实现: {
+      打开声音输出(率, 道, 块) {
+        const 果 = 请求({动作:'声音打开', 采样率:Number(率), 声道:Number(道), 块大小:Number(块)});
+        if (果.错误码 !== 0) return [1, 错误(果.错误码)];
+        const 流 = Object.freeze({句柄:果.句柄}); 流们.add(流); return [0, 流];
+      },
+      写入声音样本(流, 字) {const 果 = 操作('声音写入', 流, {输入:Array.from(字)}); return 果.错误码 === 0 ? [0] : [1, 错误(果.错误码)];},
+      已播放帧数(流) {const 果 = 操作('声音已播', 流); return 果.错误码 === 0 ? BigInt(果.帧数) : -1n;},
+      声音输出延迟(流) {const 果 = 操作('声音延迟', 流); return 果.错误码 === 0 ? BigInt(果.帧数) : -1n;},
+      关闭声音输出(流) {const 果 = 操作('声音关闭', 流); if (果.错误码 === 0) {流们.delete(流); return [0];} return [1, 错误(果.错误码)];}
+    },
+    关闭() {if (服务) 服务.stdin.end(); 已闭 = true;}
   };
 }
