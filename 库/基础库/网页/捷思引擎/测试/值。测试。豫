@@ -532,4 +532,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let closed=0;let pulls=0;let source={next:function(){pulls++;return {done:false,value:pulls};},return:function(){closed++;return {done:true};}};let wrapped=Iterator.from(source);let some=wrapped.some(function(v){return v===2;});let done=wrapped.next();let every=Iterator.from([1,2]).every(function(v){return v<2;});let bad=false;let direct={next:function(){return {done:false,value:1};},return:function(){return 1;}};try{Iterator.prototype.find.call(direct,function(){return true;});}catch(e){bad=e instanceof TypeError;}some&&closed===1&&pulls===2&&done.done&&!every&&bad;』）
 　　　于（「捷思布尔」于「阳」））于『捷思迭代短路关闭来源停止拉取与关闭结果检查』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let closed=0;let calls=0;let source={next:function(){return {done:false,value:1};},return:function(){closed++;return {done:true};}};let mapped=Iterator.from(source).map(function(v){calls++;return v+1;});let filtered=mapped.filter(function(v){return true;});let some=filtered.some(function(v){return v===2;});let done=mapped.next();let repeated=filtered.return();let raw=Iterator.from([1,2]).map(function(v){calls++;return v;});let returned=raw.return(9);some&&closed===1&&calls===1&&done.done&&repeated.done&&returned.done&&returned.value===undefined&&raw.next().done&&raw.return.length===0;』）
+　　　于（「捷思布尔」于「阳」））于『捷思映射筛选助手链短路关闭停止回调与完成状态』。
 「打印行」于『捷思值冒烟通过』。
