@@ -24,13 +24,13 @@ changes the keyword's color.
 ## Inspecting Build Artifacts
 
 With a Yuyan source file active, run **Yuyan: Jump to Build Artifact 跳转到构建产物**
-from the command palette. The picker finds matching `.树码` files under `.yybuild`,
+from the command palette. The picker finds matching `。树码` files under `.yybuild`,
 puts the newest cache first, and calls the Yuyan Wasm tool `yy树码 显示` to decode
 the selected tree. The result opens as a read-only Yuyan preview.
 
 ## Hover and Jump to Definition
 
-The compiler writes `<source stem>.语言服务.树码` alongside the other artifacts
+The compiler writes `<source stem>。语言服务。树码` alongside the other artifacts
 under `.yybuild`. The extension reads the newest matching artifact when VS Code
 requests hover help or a definition location. The metadata protocol uses Chinese
 field names and Chinese kind values throughout. Decoding runs in `yy树码.wasm`;

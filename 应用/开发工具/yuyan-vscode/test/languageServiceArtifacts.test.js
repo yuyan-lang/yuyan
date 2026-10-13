@@ -64,7 +64,7 @@ runTest('rejects the removed English token schema', () => {
 runTest('maps source paths to the Chinese artifact stage', () => {
   assert.strictEqual(
     languageServiceArtifactPath('库/标准库/例子。豫'),
-    '库/标准库/例子.语言服务.树码'
+    '库/标准库/例子。语言服务。树码'
   );
   assert.strictEqual(languageServiceArtifactPath('../例子。豫'), undefined);
 });
@@ -86,7 +86,7 @@ if (process.env.YY_EDITOR_WASM_ROOT) {
       path.join(root, '豫言操作系统/宿主/节点/宿主.cjs'),
       path.join(root, 'yy树码.wasm'),
       '读取编辑器资料',
-      path.join(root, `yy编辑器.${kind}.树码`)
+      path.join(root, `yy编辑器。${kind}。树码`)
     ], { cwd: root, encoding: 'utf8', maxBuffer: 128 * 1024 * 1024 }));
     const language = read('语言服务');
     const document = parseLanguageServiceDocument(language);
