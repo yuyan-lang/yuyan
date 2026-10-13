@@ -487,4 +487,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let locale={};let options={};let correct=true;let count=0;let first={toLocaleString:function(l,o){correct=correct&&this===first&&l===locale&&o===options;count++;return "A";}};let second={toLocaleString:function(l,o){correct=correct&&this===second&&l===locale&&o===options;count++;return 7;}};let text=[first,null,,second].toLocaleString(locale,options);let generic=Array.prototype.toLocaleString.call({0:first,length:1},locale,options);let bad=false;try{[{toLocaleString:1}].toLocaleString();}catch(e){bad=e instanceof TypeError;}let object={toString:function(){return "own";}};text==="A,,,7"&&generic==="A"&&correct&&count===3&&[1,"x",true].toLocaleString()==="1,x,true"&&object.toLocaleString()==="own"&&bad&&Array.prototype.toLocaleString.length===0&&Object.prototype.toLocaleString.length===0;』）
 　　　于（「捷思布尔」于「阳」））于『捷思数组本地化逐项参数接收者空项与对象当前方法』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let array=[1,2];let received=false;array.join=function(){received=this===array&&arguments.length===0;return 7;};let overridden=array.toString();let fallback=[1];fallback.join=1;let generic={join:function(){return "custom";}};Object.defineProperty(generic,"length",{get:function(){throw 1;}});let custom=Array.prototype.toString.call(generic);let plain=Array.prototype.toString.call({join:1});overridden===7&&received&&fallback.toString()==="[object Array]"&&custom==="custom"&&plain==="[object Object]"&&[1,null,3].toString()==="1,,3"&&String([1,2])==="1,2";』）
+　　　于（「捷思布尔」于「阳」））于『捷思数组文字转换当前合并方法接收者回退与长度顺序』。
 「打印行」于『捷思值冒烟通过』。
