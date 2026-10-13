@@ -146,18 +146,24 @@
 　　「捷思在环境执行脚本」
 　　　于「境」
 　　　于
-　　　『let calls=0;function listener(ev){if(this===a&&ev.type==="试")calls++;}a.addEventListener("试",listener,false);a.addEventListener("试",listener,false);』
+　　　『let calls=0;let onceCalls=0;let captureCalls=0;function listener(ev){if(this===a&&ev.type==="试")calls++;}function onceListener(ev){onceCalls++;}function captureListener(ev){captureCalls++;}a.addEventListener("试",listener,false);a.addEventListener("试",listener,{});a.addEventListener("试",onceListener,{once:true,passive:true});a.addEventListener("试",captureListener,{capture:true});』
 　而
 　虑「监听节」者
 　　「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『a;』）而
 　虑「派发果」者
 　　「派发事件」于「监听节」于（「新事件」于『试』于「冒泡」为「阳」于「可取消」为「阳」于「可越界」为「阴」）而
-　虑「一次果」者「捷思在环境执行脚本」于「境」于『calls===1;』而
+　虑「一次果」者
+　　「捷思在环境执行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1;』而
 　虑「监听移除」者
-　　「捷思在环境执行脚本」于「境」于『a.removeEventListener("试",listener,false);』而
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『a.removeEventListener("试",listener,{capture:false});a.removeEventListener("试",captureListener,{capture:true});』
+　而
 　虑「再派发果」者
 　　「派发事件」于「监听节」于（「新事件」于『试』于「冒泡」为「阳」于「可取消」为「阳」于「可越界」为「阴」）而
-　虑「移除果」者「捷思在环境执行脚本」于「境」于『calls===1;』而
+　虑「移除果」者
+　　「捷思在环境执行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1;』而
 　若「且」
 　　于（「且」
 　　　于（「捷思严格等」于「一次果」于（「捷思布尔」于「阳」））
