@@ -28,16 +28,24 @@
 　　　于
 　　　『let live=document.createElement("p");live.textContent="新😀";a.appendChild(live);let first=live.textContent;live.appendChild(document.createTextNode("续"));first==="新😀"&&live.textContent==="新😀续";』
 　而
+　虑「属性值」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『live.id="实时";live.className="甲 乙";let reflected=document.getElementById("实时")===live&&live.getAttribute("class")==="甲 乙";live.setAttribute("id","改名");live.removeAttribute("class");reflected&&live.id==="改名"&&live.className===""&&document.getElementById("实时")===null;』
+　而
 　若「且」
-　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
+　　于（「捷思严格等」于「属性值」于（「捷思布尔」于「阳」））
 　　于（「且」
-　　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
+　　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
 　　　于（「且」
-　　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
+　　　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
 　　　　于（「且」
-　　　　　于（「等」于（「长度」于「诸子」）于「二」）
-　　　　　于（「串相等」于（「节点内容」于（「第几个」于「零」于「诸子」））于『甲乙』））））则
-　　　　　　「打印行」于『浏览器文档方法冒烟通过』
+　　　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
+　　　　　于（「且」
+　　　　　　于（「等」于（「长度」于「诸子」）于「二」）
+　　　　　　于（「串相等」于（「节点内容」于（「第几个」于「零」于「诸子」））于『甲乙』）））））则
+　　　　　　　「打印行」于『浏览器文档方法冒烟通过』
 　否则
 　　「发生事故」于『浏览器文档方法绑定错误』
 也。
