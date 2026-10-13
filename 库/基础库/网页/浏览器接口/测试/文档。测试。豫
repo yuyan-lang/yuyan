@@ -136,45 +136,53 @@
 　　　于
 　　　『let chars=document.createTextNode("😀");let comment=document.createComment("注");let names=document.nodeName==="#document"&&document.ownerDocument===null&&a.nodeName==="DIV"&&a.tagName==="DIV"&&a.localName==="div"&&a.namespaceURI==="http://www.w3.org/1999/xhtml"&&a.ownerDocument===document&&chars.nodeName==="#text"&&chars.ownerDocument===document&&comment.nodeName==="#comment"&&part.nodeName==="#document-fragment"&&part.ownerDocument===document&&e.cloneNode(true).ownerDocument===document;let initialChars=chars.length===2&&chars.data==="😀"&&comment.textContent==="注";chars.nodeValue="新";comment.data="改";let updated=chars.textContent==="新"&&comment.nodeValue==="改";comment.textContent="再";chars.nodeValue=null;names&&initialChars&&updated&&comment.data==="再"&&chars.data===""&&chars.length===0&&a.nodeValue===null&&document.textContent===null;』
 　而
+　虑「字符操作果」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『chars.data="甲😀乙";let sub=chars.substringData(1,2)==="😀"&&chars.substringData(3,99)==="乙";chars.insertData(1,"中");chars.deleteData(2,2);chars.replaceData(1,1,"新");chars.appendData("尾");comment.replaceData(0,99,"注");sub&&chars.data==="甲新乙尾"&&comment.data==="注"&&chars.substringData(4,3)==="";』
+　而
 　若「且」
-　　于（「捷思严格等」于「字符节点果」于（「捷思布尔」于「阳」））
 　　于（「且」
-　　　于（「捷思严格等」于「根节点果」于（「捷思布尔」于「阳」））
+　　　于（「捷思严格等」于「字符节点果」于（「捷思布尔」于「阳」））
+　　　于（「捷思严格等」于「字符操作果」于（「捷思布尔」于「阳」）））
 　　　于（「且」
+　　　　于（「捷思严格等」于「根节点果」于（「捷思布尔」于「阳」））
 　　　　于（「且」
-　　　　　于（「捷思严格等」于「默认属性果」于（「捷思布尔」于「阳」））
-　　　　　于（「捷思严格等」于「默认复原果」于（「捷思布尔」于「阳」）））
 　　　　　于（「且」
-　　　　　　于（「捷思严格等」于「布尔属性果」于（「捷思布尔」于「阳」））
+　　　　　　于（「捷思严格等」于「默认属性果」于（「捷思布尔」于「阳」））
+　　　　　　于（「捷思严格等」于「默认复原果」于（「捷思布尔」于「阳」）））
 　　　　　　于（「且」
+　　　　　　　于（「捷思严格等」于「布尔属性果」于（「捷思布尔」于「阳」））
 　　　　　　　于（「且」
-　　　　　　　　于（「捷思严格等」于「默认控件果」于（「捷思布尔」于「阳」））
-　　　　　　　　于（「捷思严格等」于「复原控件果」于（「捷思布尔」于「阳」）））
 　　　　　　　　于（「且」
-　　　　　　　　　于（「捷思严格等」于「选择控件果」于（「捷思布尔」于「阳」））
+　　　　　　　　　于（「捷思严格等」于「默认控件果」于（「捷思布尔」于「阳」））
+　　　　　　　　　于（「捷思严格等」于「复原控件果」于（「捷思布尔」于「阳」）））
 　　　　　　　　　于（「且」
-　　　　　　　　　　于（「捷思严格等」于「控件值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　于（「捷思严格等」于「选择控件果」于（「捷思布尔」于「阳」））
 　　　　　　　　　　于（「且」
-　　　　　　　　　　　于（「捷思严格等」于「批量值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　于（「捷思严格等」于「控件值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　于（「捷思严格等」于「操作值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　于（「捷思严格等」于「批量值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　于（「捷思严格等」于「类名值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　于（「捷思严格等」于「操作值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　于（「捷思严格等」于「元素值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　于（「捷思严格等」于「类名值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　于（「捷思严格等」于「选择值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　于（「捷思严格等」于「元素值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　于（「捷思严格等」于「入口值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　于（「捷思严格等」于「选择值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　于（「捷思严格等」于「标记值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　于（「捷思严格等」于「入口值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「树值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「标记值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「属性值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「树值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「属性值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　　　于（「且」
 　　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　　　　于（「且」
 　　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
