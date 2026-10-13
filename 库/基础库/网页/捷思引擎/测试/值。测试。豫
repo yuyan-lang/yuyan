@@ -422,4 +422,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let array=[];let added=Reflect.set(array,"3",7);let receiver=[];let separate=Reflect.set({x:1},"2",8,receiver);let length=Reflect.set(array,"length",2);let shortened=array.length===2&&array[3]===undefined;Object.freeze(receiver);let frozen=Reflect.set(receiver,"4",9);added&&separate&&length&&shortened&&receiver.length===3&&receiver[2]===8&&!frozen&&receiver[4]===undefined;』）
 　　　于（「捷思布尔」于「阳」））于『捷思反射数组下标长度接收者与冻结写入』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『function Target(a,b){this.sum=a+b;}function Other(){}let direct=Reflect.construct(Target,{0:2,1:3,length:2});let alternate=Reflect.construct(Target,[4,5],Other);let Bound=Target.bind(null,6);let bound=Reflect.construct(Bound,[7]);function Return(){return {returned:1};}let returned=Reflect.construct(Return,[]);let map=Reflect.construct(Map,[[["x",2]]]);let bad=false;try{Reflect.construct(Math.max,[]);}catch(e){bad=e instanceof TypeError;}let newBad=false;try{Reflect.construct(Target,[],1);}catch(e){newBad=e instanceof TypeError;}direct.sum===5&&direct instanceof Target&&alternate.sum===9&&alternate instanceof Other&&!(alternate instanceof Target)&&bound.sum===13&&bound instanceof Target&&returned.returned===1&&map.get("x")===2&&map instanceof Map&&bad&&newBad&&Reflect.construct.length===2;』）
+　　　于（「捷思布尔」于「阳」））于『捷思反射构造类数组绑定新目标宿主与对象返回』。
 「打印行」于『捷思值冒烟通过』。
