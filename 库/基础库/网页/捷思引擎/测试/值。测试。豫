@@ -597,4 +597,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let date=new Date(Date.UTC(2000,0,1,2,3,4));let text=date.toUTCString();Date.parse(text)===date.getTime()&&new Date(text).getTime()===date.getTime()&&Date.parse("Thu, 01 Jan 1970 01:00:00 +0100")===0&&Number.isNaN(Date.parse("invalid date"));』）
 　　　于（「捷思布尔」于「阳」））于『捷思英文日期文字解析往返与显式时区偏移』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let date=new Date(0);let order="";date.toString=function(){order+="s";return "date";};date.valueOf=function(){order+="v";return 7;};let added=date+1;let same=date=="date";let numeric=Number(date);let relational=date<8;added==="date1"&&same&&numeric===7&&relational&&order==="ssvv"&&new Date(0)+1===String(new Date(0))+"1";』）
+　　　于（「捷思布尔」于「阳」））于『捷思日期默认文字提示与显式数值关系提示分离』。
 「打印行」于『捷思值冒烟通过』。
