@@ -232,4 +232,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　于（「捷思严格等」
 　　于（「捷思执行脚本」于『let o={z:1,10:1,2:1,a:1,"01":1,"4294967295":1};let s="";for(let k in o){s+=k+",";}s;』）
 　　于（「捷思字符串值」于（「捷思文字自串」于『2,10,z,a,01,4294967295,』）））于『捷思枚举数字下标与字符串插入顺序』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let thrown={n:7};let seen;let trace="";function fail(){let hidden=1;throw thrown;}try{try{fail();}catch(e){seen=e;trace+="c";throw e;}finally{trace+="f";}}catch(e){trace+=e===thrown?"o":"x";}try{throw undefined;}catch{trace+="u";}try{missingName;}catch(e){trace+=e.name==="Error"&&e.message.length>0?"h":"x";}try{trace+="n";}finally{trace+="z";}function caught(){try{throw 3;}catch(e){return e+1;}}let value=caught();let after=0;try{throw 2;}catch(e){after=e;}seen===thrown&&trace==="cfouhnz"&&value===4&&after===2;』）
+　　　于（「捷思布尔」于「阳」））于『捷思抛出身份捕获环境与终结路径组合』。
 「打印行」于『捷思值冒烟通过』。

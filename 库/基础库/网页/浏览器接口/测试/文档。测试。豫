@@ -194,6 +194,12 @@
 　　　于
 　　　『function propertyCarrier(n){return n+1;}propertyCarrier.tag=2;let functionCopy={...propertyCarrier};let functionKeys="";for(let key in propertyCarrier)functionKeys+=key;let functionHas="tag" in propertyCarrier;delete propertyCarrier.tag;let functionState=functionCopy.tag===2&&functionKeys==="tag"&&functionHas&&propertyCarrier.tag===undefined&&propertyCarrier(4)===5;let staticReason={source:1};let stoppedSignal=AbortSignal.abort(staticReason);let stopA=new AbortController();let stopB=new AbortController();let combined=AbortSignal.any([stopA.signal,stopB.signal,stopB.signal]);let combinedCalls=0;combined.addEventListener("abort",function(ev){if(this===combined&&ev.target===combined&&combined.reason===staticReason)combinedCalls++;});let waiting=!combined.aborted;stopB.abort(staticReason);stopA.abort("后来的理由");let preset=AbortSignal.any([stopB.signal,stopA.signal]);functionState&&typeof AbortSignal==="function"&&typeof AbortSignal.abort==="function"&&stoppedSignal.aborted&&stoppedSignal.reason===staticReason&&AbortSignal.abort().reason.name==="AbortError"&&AbortSignal.abort(null).reason===null&&waiting&&combined.aborted&&combined.reason===staticReason&&combinedCalls===1&&preset.reason===staticReason&&!AbortSignal.any([]).aborted;』
 　而
+　虑「抛出理由果」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『let pendingController=new AbortController();let checked=pendingController.signal.throwIfAborted()===undefined;let caughtReason;try{stopB.signal.throwIfAborted();}catch(e){caughtReason=e;}checked&&caughtReason===staticReason;』
+　而
 　虑「移除果」者
 　　「捷思在环境执行脚本」
 　　　于「境」
@@ -208,37 +214,39 @@
 　　　　　　于（「捷思严格等」于「中止监听果」于（「捷思布尔」于「阳」））
 　　　　　　于（「且」
 　　　　　　　于（「捷思严格等」于「信号事件果」于（「捷思布尔」于「阳」））
-　　　　　　　于（「捷思严格等」于「静态信号果」于（「捷思布尔」于「阳」））））
-　　　　　　　于（「捷思严格等」于「对象监听果」于（「捷思布尔」于「阳」）））
-　　　　　　　于（「捷思严格等」于「一次果」于（「捷思布尔」于「阳」）））
-　　　　　　　于（「捷思严格等」于「移除果」于（「捷思布尔」于「阳」）））
 　　　　　　　于（「且」
+　　　　　　　　于（「捷思严格等」于「静态信号果」于（「捷思布尔」于「阳」））
+　　　　　　　　于（「捷思严格等」于「抛出理由果」于（「捷思布尔」于「阳」）））））
+　　　　　　　　于（「捷思严格等」于「对象监听果」于（「捷思布尔」于「阳」）））
+　　　　　　　　于（「捷思严格等」于「一次果」于（「捷思布尔」于「阳」）））
+　　　　　　　　于（「捷思严格等」于「移除果」于（「捷思布尔」于「阳」）））
 　　　　　　　　于（「且」
-　　　　　　　　　于（「捷思严格等」于「字符节点果」于（「捷思布尔」于「阳」））
-　　　　　　　　　于（「捷思严格等」于「字符操作果」于（「捷思布尔」于「阳」）））
 　　　　　　　　　于（「且」
-　　　　　　　　　　于（「捷思严格等」于「根节点果」于（「捷思布尔」于「阳」））
+　　　　　　　　　　于（「捷思严格等」于「字符节点果」于（「捷思布尔」于「阳」））
+　　　　　　　　　　于（「捷思严格等」于「字符操作果」于（「捷思布尔」于「阳」）））
 　　　　　　　　　　于（「且」
+　　　　　　　　　　　于（「捷思严格等」于「根节点果」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　于（「捷思严格等」于「默认属性果」于（「捷思布尔」于「阳」））
-　　　　　　　　　　　　于（「捷思严格等」于「默认复原果」于（「捷思布尔」于「阳」）））
 　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　于（「捷思严格等」于「布尔属性果」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　于（「捷思严格等」于「默认属性果」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　于（「捷思严格等」于「默认复原果」于（「捷思布尔」于「阳」）））
 　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　于（「捷思严格等」于「布尔属性果」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　于（「捷思严格等」于「默认控件果」于（「捷思布尔」于「阳」））
-　　　　　　　　　　　　　　　于（「捷思严格等」于「复原控件果」于（「捷思布尔」于「阳」）））
 　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　于（「捷思严格等」于「选择控件果」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　于（「捷思严格等」于「默认控件果」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　于（「捷思严格等」于「复原控件果」于（「捷思布尔」于「阳」）））
 　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　于（「捷思严格等」于「控件值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　于（「捷思严格等」于「选择控件果」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「批量值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「控件值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「操作值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「批量值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「类名值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「操作值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「类名值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　　　于（「且」
 　　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「元素值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　　　　　　　　　于（「且」
 　　　　　　　　　　　　　　　　　　　　　于（「捷思严格等」于「选择值」于（「捷思布尔」于「阳」））
