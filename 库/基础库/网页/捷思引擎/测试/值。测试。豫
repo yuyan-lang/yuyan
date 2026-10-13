@@ -392,4 +392,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let calls="";let left={valueOf:function(){calls+="l";return "20";}};let right={valueOf:function(){calls+="r";return "3";}};let lexical=left<right;let order=calls;let numeric=left<3;let same={valueOf:function(){throw 1;}};let fn=function(){};fn.valueOf=function(){return 4;};let bad=false;try{({valueOf:function(){return {};},toString:function(){return {};}})<1;}catch(e){bad=e instanceof TypeError;}lexical&&order==="lr"&&!numeric&&left==20&&20==left&&left=="20"&&new Boolean(false)==0&&[]==false&&same==same&&!(same==null)&&!(same==undefined)&&!(same=={})&&fn==4&&!(left===20)&&!(NaN<=left)&&!(left>=NaN)&&bad;』）
 　　　于（「捷思布尔」于「阳」））于『捷思对象宽松相等关系比较转换顺序字符串与数值』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let parent={p:3};let obj=Object.create(parent);obj.a=2;Object.defineProperty(obj,"hidden",{value:4});Object.defineProperty(obj,"read",{get:function(){return this.x;},configurable:true});let receiver={x:8};let keys=Reflect.ownKeys(obj);let desc=Reflect.getOwnPropertyDescriptor(obj,"hidden");let value=Reflect.apply(function(a,b){return this.x+a+b;},receiver,{0:1,1:2,length:2});let removed=Reflect.deleteProperty(obj,"a");let blocked=Reflect.deleteProperty(obj,"hidden");let prevented=Reflect.preventExtensions(obj);let bad=false;try{Reflect.get(1,"x");}catch(e){bad=e instanceof TypeError;}Reflect.get(obj,"read",receiver)===8&&Reflect.get(obj,"p")===3&&Reflect.has(obj,"p")&&keys.join(",")==="a,hidden,read"&&desc.value===4&&!desc.writable&&value===11&&removed&&!blocked&&!Reflect.has(obj,"a")&&prevented&&!Reflect.isExtensible(obj)&&Reflect.getPrototypeOf(obj)===parent&&bad&&Reflect.apply.length===3&&Reflect.get.length===2&&Reflect.ownKeys.length===1;』）
+　　　于（「捷思布尔」于「阳」））于『捷思反射读取接收者属性原型描述符与调用』。
 「打印行」于『捷思值冒烟通过』。
