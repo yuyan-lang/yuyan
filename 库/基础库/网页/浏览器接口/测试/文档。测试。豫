@@ -174,7 +174,7 @@
 　　「捷思在环境执行脚本」
 　　　于「境」
 　　　于
-　　　『let beforeDispatch=savedEvent;let result=a.dispatchEvent(savedEvent);calls===1&&onceCalls===1&&captureCalls===1&&cancelled&&skipped===0&&result===false&&savedEvent===beforeDispatch&&savedEvent.target===a&&savedEvent.currentTarget===null&&savedEvent.eventPhase===0&&savedEvent.composedPath().length===0;』
+　　　『let beforeDispatch=savedEvent;let result=a.dispatchEvent(savedEvent);let fresh=new Event("消",{bubbles:true,cancelable:true,composed:false});let initial=fresh.target===null&&fresh.currentTarget===null&&fresh.eventPhase===0&&!fresh.defaultPrevented&&fresh.composedPath().length===0;let freshResult=a.dispatchEvent(fresh);let plain=new Event("空");let plainResult=a.dispatchEvent(plain);calls===1&&onceCalls===1&&captureCalls===1&&cancelled&&skipped===0&&result===false&&beforeDispatch.target===a&&initial&&freshResult===false&&savedEvent===fresh&&fresh.defaultPrevented&&fresh.currentTarget===null&&plainResult===true&&!plain.bubbles&&!plain.cancelable&&!plain.composed&&plain.target===a;』
 　而
 　若「且」
 　　于（「且」
