@@ -642,6 +642,9 @@ jobs:
             cp "${f%。脚本。豫}.期望" "yy-windows-exe/组/$n.expected"
             cp "${f%。脚本。豫}.期望" "yy-macos-x64/组/$n.expected"
           done
+          # 文言：编译器于产物旁书链接之印（产物.链接印），非程序也；去之，免运行之作误行之。
+          # 汉语：编译器在产物旁写链接印记（产物.链接印），不是程序；删掉，免得运行作业把它当程序执行。
+          rm -f yy-windows-exe/*.链接印 yy-windows-exe/组/*.链接印 yy-macos-x64/*.链接印 yy-macos-x64/组/*.链接印
 
       - uses: actions/upload-artifact@v4
         with:
