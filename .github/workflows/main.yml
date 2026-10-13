@@ -739,8 +739,10 @@ jobs:
           name: yy-cross-toolchain-windows-x64
           path: ${{ runner.temp }}
 
+      # 文言：Git Bash 之 tar 视 `D:\…` 为远主之名，故加 --force-local。
+      # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
       - name: 放入原生豫构与执行器
-        run: tar -xzf "$RUNNER_TEMP/yy-cross-windows-x64.tar.gz"
+        run: tar --force-local -xzf "$RUNNER_TEMP/yy-cross-windows-x64.tar.gz"
 
       - name: 帮助与发现
         if: always()
