@@ -1,7 +1,9 @@
 \documentclass[UTF8,a4paper,11pt,fontset=fandol]{ctexart}
 \usepackage[left=72pt,right=72pt,top=78pt,bottom=78pt]{geometry}
 \usepackage{amsmath,amsthm,booktabs,fancyhdr}
-\linespread{1.55}
+\setCJKmainfont[BoldFont=FandolHei-Bold.otf,ItalicFont=FandolKai-Regular.otf]{FandolHei-Regular.otf}
+\renewcommand{\normalsize}{\fontsize{11pt}{17.05pt}\selectfont}
+\ctexset{section={format=\fontsize{14pt}{20pt}\selectfont,beforeskip=12pt,afterskip=6pt}}
 \pagestyle{fancy}
 \fancyhf{}
 \fancyhead[L]{设计语言论文样例}
@@ -13,12 +15,15 @@
 \author{豫言设计引擎}
 \date{}
 \begin{document}
-\maketitle
-\begin{abstract}
+\begin{center}
+{\fontsize{18pt}{24pt}\selectfont 设计作品中的结构化排版}\par
+\vspace{4pt}
+豫言设计引擎
+\end{center}
+\noindent 摘要\par
 本文讨论结构化文档与统一显示表的联系。文档先完成编号与引用求值，再按版心断行分页，最后由设计引擎统一输出。
 
 \textbf{关键词：}设计语言；分页；结构化文档
-\end{abstract}
 \tableofcontents
 \section{引言}\label{引言}
 文章、界面与动画共享设计引擎。文档的引用关系在排版前求定，例如定理\ref{恒等}及公式\eqref{能量}。编号方法参见\cite{排版}。\footnote{本样例以点作为版式单位。}
