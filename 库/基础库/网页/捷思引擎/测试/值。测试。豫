@@ -457,4 +457,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let text=JSON.stringify({a:[1,2],b:{}},null,2);let expected="{\n  \"a\": [\n    1,\n    2\n  ],\n  \"b\": {}\n}";let string=JSON.stringify([1],null,"abcdefghijk");let boxed=JSON.stringify({a:1},null,new Number(2));text===expected&&string==="[\nabcdefghij1\n]"&&boxed==="{\n  \"a\": 1\n}"&&JSON.stringify([],null,2)==="[]"&&JSON.stringify({},null,2)==="{}"&&JSON.stringify([1],null,-2)==="[1]"&&JSON.stringify([1],null,NaN)==="[1]"&&JSON.stringify([1],null,Infinity)==="[\n          1\n]";』）
 　　　于（「捷思布尔」于「阳」））于『捷思结森缩进嵌套数字字符串截断装箱与空容器』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let order="";let gap=new Number(2);gap.valueOf=function(){order+="g";return 2;};let object={toJSON:function(){order+="j";gap.valueOf=function(){return 8;};return {a:1};}};let text=JSON.stringify(object,function(k,v){order+="r";return v;},gap);let string=new String("x");string.toString=function(){return " ";};let second=JSON.stringify([1],null,string);order==="gjrr"&&text==="{\n  \"a\": 1\n}"&&second==="[\n 1\n]";』）
+　　　于（「捷思布尔」于「阳」））于『捷思结森缩进参数先行装箱方法与回调顺序』。
 「打印行」于『捷思值冒烟通过』。
