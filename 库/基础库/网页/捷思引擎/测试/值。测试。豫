@@ -447,4 +447,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let keys=[];let receiver=true;let object={a:1,b:2,list:[3,4],custom:{toJSON:function(){return 5;}}};let text=JSON.stringify(object,function(k,v){keys.push(k);if(k===""){receiver=receiver&&this[""]===object;return v;}if(k==="a"){receiver=receiver&&this===object;return v+10;}if(k==="b"||k==="0")return undefined;if(k==="custom")return v+1;return v;});let result=JSON.parse(text);let root=JSON.stringify(1,function(k,v){return v+1;});let omitted=JSON.stringify(1,function(){return undefined;});let thrown={};let identical=false;try{JSON.stringify(1,function(){throw thrown;});}catch(e){identical=e===thrown;}receiver&&keys.join(",")===",a,b,list,0,1,custom"&&result.a===11&&result.b===undefined&&result.list[0]===null&&result.list[1]===4&&result.custom===6&&root==="2"&&omitted===undefined&&identical;』）
 　　　于（「捷思布尔」于「阳」））于『捷思结森替换回调顺序持有者转换省略与异常』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let parent={inherited:7};let object=Object.create(parent);object.a=1;object.b=2;object[3]=4;Object.defineProperty(object,"hidden",{value:5});let text=JSON.stringify(object,["b","a","b",new String("hidden"),new Number(3),"inherited",true,{},null]);let value=JSON.parse(text);let nested=JSON.parse(JSON.stringify({a:{a:1,b:2},b:3},["a"]));let array=JSON.parse(JSON.stringify([1,{a:2,b:3}],["a"]));Object.keys(value).join(",")==="3,b,a,hidden,inherited"&&value.b===2&&value.a===1&&value.hidden===5&&value[3]===4&&value.inherited===7&&Object.keys(nested).join(",")==="a"&&nested.a.a===1&&nested.a.b===undefined&&array.length===2&&array[0]===1&&array[1].a===2&&array[1].b===undefined&&JSON.stringify(object,[])==="{}";』）
+　　　于（「捷思布尔」于「阳」））于『捷思结森属性列表去重装箱继承隐藏与嵌套数组』。
 「打印行」于『捷思值冒烟通过』。
