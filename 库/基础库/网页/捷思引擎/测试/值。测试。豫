@@ -512,4 +512,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let calls=[];let array=[1,2,3];let mapped=Iterator.from(array).map(function(v,i){calls.push(i);return v*2;});let lazy=calls.length===0;let first=mapped.next();array.push(4);let filtered=mapped.filter(function(v,i){return i>0;});let rest=filtered.toArray();let object={};let identity=Iterator.from([1,object]).filter(function(v){return v===object;}).next().value===object;let bad=false;try{Iterator.from([]).map(1);}catch(e){bad=e instanceof TypeError;}lazy&&first.value===2&&calls.join(",")==="0,1,2,3"&&rest.join(",")==="6,8"&&mapped.next().done&&identity&&bad&&Iterator.prototype.map.length===1&&Iterator.prototype.filter.length===1;』）
 　　　于（「捷思布尔」于「阳」））于『捷思惰性迭代映射筛选链下标实时来源与原值身份』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let source=Iterator.from([1,2,3,4]);let taken=source.take(2.9);let values=taken.toArray();let count=0;let skipped=Iterator.from([1,2,3,4]).map(function(v){count++;return v;}).drop(2);let lazy=count===0;let first=skipped.next();let rest=skipped.toArray();let bad=false;try{Iterator.from([]).take(-1);}catch(e){bad=e instanceof RangeError;}let nan=false;try{Iterator.from([]).drop(NaN);}catch(e){nan=e instanceof RangeError;}values.join(",")==="1,2"&&lazy&&first.value===3&&rest.join(",")==="4"&&count===4&&Iterator.from([1]).take(0).toArray().length===0&&Iterator.from([1]).take(Infinity).toArray()[0]===1&&Iterator.from([1]).drop(Infinity).toArray().length===0&&bad&&nan&&Iterator.prototype.take.length===1&&Iterator.prototype.drop.length===1;』）
+　　　于（「捷思布尔」于「阳」））于『捷思迭代惰性截取跳过数量截断无穷与范围拒绝』。
 「打印行」于『捷思值冒烟通过』。
