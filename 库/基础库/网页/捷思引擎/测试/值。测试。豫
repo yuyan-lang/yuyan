@@ -682,4 +682,10 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 而
 「捷思设置日期时区」于「可无」。
 
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let regex=new RegExp("a+","gi");let invalid=false;try{new RegExp("[");}catch(error){invalid=error instanceof SyntaxError;}regex.source==="a+"&&regex.flags==="gi"&&regex.lastIndex===0&&Object.getPrototypeOf(regex)===RegExp.prototype&&RegExp().source==="(?:)"&&RegExp.length===2&&invalid;』）
+　　　于（「捷思布尔」于「阳」））于『捷思正则构造与模式校验』。
+
 「打印行」于『捷思值冒烟通过』。
