@@ -472,4 +472,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let order="";let list=[];let first=new String("a");first.toString=function(){order+="c";list[1]="b";return "a";};list[0]=first;list[1]="old";let text=JSON.stringify({a:1,b:2,old:3},list);let value=JSON.parse(text);order==="c"&&value.a===1&&value.b===2&&value.old===undefined;』）
 　　　于（「捷思布尔」于「阳」））于『捷思结森属性列表逐项转换与后项实时读取』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let bad=false;try{encodeURIComponent(String.fromCharCode(55296));}catch(e){bad=e instanceof URIError;}encodeURIComponent("字 /?") ==="%E5%AD%97%20%2F%3F"&&encodeURI("https://x/a?b=字#c")==="https://x/a?b=%E5%AD%97#c"&&encodeURIComponent("!~*()")==="!~*()"&&encodeURI("%3B")==="%253B"&&encodeURIComponent(undefined)==="undefined"&&bad&&encodeURI.length===1&&encodeURIComponent.length===1;』）
+　　　于（「捷思布尔」于「阳」））于『捷思地址编码文字组件分隔符与孤立代理项』。
 「打印行」于『捷思值冒烟通过』。
