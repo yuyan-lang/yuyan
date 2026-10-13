@@ -579,6 +579,23 @@ jobs:
           grep -q 'echo-line' out.txt
           test "$(head -c 6 out.txt | od -An -tx1 | tr -d ' \n')" = e4bda0e5a5bd
 
+      # 文言：取崩之现场：以视窗 SDK 之 cdb 行印之例，遇异常则书其事、寄存器、错令前后之反汇编与调用之栈（无 cdb 则略之）。
+      # 汉语：抓崩溃现场：用 Windows SDK 的 cdb 运行打印样例，出异常时打出异常记录、寄存器、出错指令附近的反汇编与调用栈（找不到 cdb 就跳过）。
+      - name: 抓崩溃现场
+        if: always()
+        run: |
+          set +e
+          mkdir -p work
+          CDB=
+          for d in x64 arm64; do
+            c="/c/Program Files (x86)/Windows Kits/10/Debuggers/$d/cdb.exe"
+            if [ -x "$c" ]; then CDB="$c"; break; fi
+          done
+          echo "cdb：$CDB"
+          if [ -n "$CDB" ]; then
+            (cd work && "$CDB" -g -G -o -c ".lastevent;.exr -1;r;u @\$ip-0x40 L40;kn 20;!address @\$ip;dq 0x3800f0 L2;q" "../组/打印-${{ matrix.arch }}.exe") 2>&1 | tail -200
+          fi
+
       # 文言：一致性之组：诸普通探针、盘之文件二阶、原生探针，各由编译器预编二为原生之程（连执行器），行于同一工作目录，逐字较其常出。
       # 汉语：一致性组：普通探针、盘文件两阶段与原生探针，各自由编译器预编二成带执行器的原生程序，在同一个工作目录里依次运行，标准输出与 .expected 逐字比较，并要求退出码为 0。
       - name: 执行器一致性组
