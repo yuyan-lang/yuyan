@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>豫言设计三端验收</title>
+<pre id="结果">正在验收……
+</pre>
+<script type="module">
+// 汉语：执行同源设计验收产物，以页面文字收集画面和声音散列。文言：行同源设计之验收之产，以页文收画与声之散。
+import {启动豫言浏览器应用} from './入口.mjs';
+const 结果 = document.getElementById('结果');
+try {
+  结果.textContent = '';
+  const 宿主 = await 启动豫言浏览器应用({输出: 文 => { 结果.textContent += 文; }});
+  await 宿主.完成;
+  document.documentElement.dataset.验收 = '完成';
+} catch (错) {
+  结果.textContent += '\n运行失败：' + String(错?.message ?? 错);
+  document.documentElement.dataset.验收 = '失败';
+}
+</script>
+</html>
