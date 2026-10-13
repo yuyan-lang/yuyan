@@ -542,4 +542,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let closed=0;let pulls=0;let source={next:function(){pulls++;return {done:false,value:pulls};},return:function(){closed++;return {done:true};}};let take=Iterator.from(source).take(2);let first=take.next();let second=take.next();let before=closed;let done=take.next();let repeated=take.next();let drop=Iterator.from(source).drop(1);let returned=drop.return();let stopped=drop.next();first.value===1&&second.value===2&&before===0&&done.done&&repeated.done&&closed===2&&pulls===2&&returned.done&&stopped.done&&take.return.length===0&&drop.return.length===0;』）
 　　　于（「捷思布尔」于「阳」））于『捷思迭代截取限额关闭跳过显式关闭与停止拉取』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let order="";let outer={next:function(){return {done:false,value:1};},return:function(){order+="o";return {done:true};}};let inner={next:function(){return {done:false,value:7};},return:function(){order+="i";return {done:true};}};let flat=Iterator.from(outer).flatMap(function(){return inner;});let first=flat.next();let returned=flat.return();let done=flat.next();let again=flat.return();let before="";let untouched=Iterator.from({next:function(){return {done:false,value:1};},return:function(){before+="o";return {done:true};}}).flatMap(function(){before+="m";return inner;});untouched.return();first.value===7&&order==="io"&&returned.done&&done.done&&again.done&&before==="o"&&flat.return.length===0;』）
+　　　于（「捷思布尔」于「阳」））于『捷思迭代展开内部先关闭外部后关闭与未拉取关闭』。
 「打印行」于『捷思值冒烟通过』。
