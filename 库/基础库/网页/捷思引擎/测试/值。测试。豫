@@ -397,4 +397,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let parent={p:3};let obj=Object.create(parent);obj.a=2;Object.defineProperty(obj,"hidden",{value:4});Object.defineProperty(obj,"read",{get:function(){return this.x;},configurable:true});let receiver={x:8};let keys=Reflect.ownKeys(obj);let desc=Reflect.getOwnPropertyDescriptor(obj,"hidden");let value=Reflect.apply(function(a,b){return this.x+a+b;},receiver,{0:1,1:2,length:2});let removed=Reflect.deleteProperty(obj,"a");let blocked=Reflect.deleteProperty(obj,"hidden");let prevented=Reflect.preventExtensions(obj);let bad=false;try{Reflect.get(1,"x");}catch(e){bad=e instanceof TypeError;}Reflect.get(obj,"read",receiver)===8&&Reflect.get(obj,"p")===3&&Reflect.has(obj,"p")&&keys.join(",")==="a,hidden,read"&&desc.value===4&&!desc.writable&&value===11&&removed&&!blocked&&!Reflect.has(obj,"a")&&prevented&&!Reflect.isExtensible(obj)&&Reflect.getPrototypeOf(obj)===parent&&bad&&Reflect.apply.length===3&&Reflect.get.length===2&&Reflect.ownKeys.length===1;』）
 　　　于（「捷思布尔」于「阳」））于『捷思反射读取接收者属性原型描述符与调用』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let object={};let parent={p:1};let changed=Reflect.setPrototypeOf(object,parent);let inherited=object.p===1;let cycle=Reflect.setPrototypeOf(parent,object);let self=Reflect.setPrototypeOf(object,object);Reflect.preventExtensions(object);let same=Reflect.setPrototypeOf(object,parent);let blocked=Reflect.setPrototypeOf(object,null);let clear={};let cleared=Reflect.setPrototypeOf(clear,null);let bad=false;try{Reflect.setPrototypeOf({},1);}catch(e){bad=e instanceof TypeError;}let targetBad=false;try{Reflect.setPrototypeOf(1,null);}catch(e){targetBad=e instanceof TypeError;}changed&&inherited&&!cycle&&!self&&same&&!blocked&&Reflect.getPrototypeOf(object)===parent&&cleared&&Reflect.getPrototypeOf(clear)===null&&bad&&targetBad&&Reflect.setPrototypeOf.length===2;』）
+　　　于（「捷思布尔」于「阳」））于『捷思反射原型设置循环拒绝不可扩展与空原型』。
 「打印行」于『捷思值冒烟通过』。
