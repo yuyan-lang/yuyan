@@ -1,9 +1,9 @@
 name: CI
 
 env:
-  # 固定的 Wasm 工具链包：由提交 5784ed045 的 CI 构建并发布到 historical-binaries-2；其中的编译器认得提案 00013 的内建原语新名（「字节串长度」「字节缓冲取字节」「字符串获取结森字符串」等），也认库包「类型」里的「默认导入」字段、包上下文第五版与提案 00006 的写法（「负」数字面、入口函数「入口」、包字段「入口函数」、。脚本。豫 作入口）。钉到这一包（或更新的）之后，标准库才能写原语新名。更换时须同时更新下面两项。
-  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261011T192057Z-yuyan-wasm-d4cc7747b44a74436f9eea02e8b4ff51bda8a0ee.tar.gz
-  YY_WASM_TOOLCHAIN_SHA256: 0cb2c85843c4d6994305a2371fb60259f69f3957de18b912ef0e8e651b0d182f
+  # 固定的 Wasm 工具链包：由提交 2cc89f4fe 的 CI 构建并发布到 historical-binaries-2；其中的编译器认得提案 00013 的内建原语新名（「字节串长度」「字节缓冲取字节」「字符串获取结森字符串」等），也认库包「类型」里的「默认导入」字段、包上下文第五版与提案 00006 的写法（「负」数字面、入口函数「入口」、包字段「入口函数」、。脚本。豫 作入口），还认行首的全角空格（U+3000）缩进，编译器等工具链自身的源码可以照 yy格式化 排版。钉到这一包（或更新的）之后，标准库才能写原语新名。更换时须同时更新下面两项。
+  YY_WASM_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261012T231607Z-yuyan-wasm-2cc89f4fe17e15e7a39fc2b28949cc7d1af7ed58.tar.gz
+  YY_WASM_TOOLCHAIN_SHA256: 16ba9403e5fa8cdfe5b951b098f5c4cee4dd8e9775c3a4d4153f19bb871a93d6
 
 on:
   push:
