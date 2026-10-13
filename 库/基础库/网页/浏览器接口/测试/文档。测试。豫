@@ -12,7 +12,7 @@
 　　「捷思在环境执行脚本」
 　　　于「境」
 　　　于
-　　　『let a=document.getElementById("a");a.setAttribute("title","中文😀");let e=document.createElement("span");e.setAttribute("id","b");a.appendChild(e);e.appendChild(document.createTextNode("正文"));a.removeAttribute("id");a===document.querySelector("div")&&document.getElementById("a")===null&&e===document.getElementById("b")&&a.getAttribute("title")==="中文😀";』
+　　　『let a=document.getElementById("a");a.setAttribute("title","中文😀");let e=document.createElement("span");e.setAttribute("id","b");a.appendChild(e);e.appendChild(document.createTextNode("正文"));a.removeAttribute("id");let nodes=document.querySelectorAll("span");let removed=a.removeChild(e);let empty=document.querySelectorAll("span");a.appendChild(e);e.remove();a===document.querySelector("div")&&document.getElementById("a")===null&&nodes.length===1&&nodes[0]===e&&removed===e&&empty.length===0&&document.getElementById("b")===null&&a.getAttribute("title")==="中文😀";』
 　而
 　若「捷思严格等」于「值」于（「捷思布尔」于「阳」）则
 　　「打印行」于『浏览器文档方法冒烟通过』
