@@ -531,6 +531,15 @@ jobs:
             cp "${f%。脚本。豫}.期望" "yy-macos-x64/组/$n.expected"
           done
 
+      # 文言：视窗原生之工具链：交叉径出视窗兼容六十四之豫构（自带编译器），与执行器之树码同传。
+      # 汉语：Windows 原生工具链：交叉直出 Windows 兼容六十四位的原生豫构（自带编译器），连同执行器汇编树码一起交给 Windows 作业。
+      - name: 交叉直出 Windows 原生豫构
+        run: |
+          set -e
+          mkdir -p yy-windows-exe/豫构
+          ./yy豫构六四.exe 构建 豫构 --输出 yy-windows-exe/豫构/yy豫构.exe -j 4 -- --目标 本机 --目标系统 视窗 --目标架构 兼容六十四 --执行器 "$PWD/yy客体二号。树码" --降级缓存 "$PWD/.yybuild/降级缓存/yy豫构视窗.机器片"
+          cp yy客体二号。树码 yy-windows-exe/豫构/yy执行器。树码
+
       - uses: actions/upload-artifact@v4
         with:
           name: yy-windows-native
@@ -604,6 +613,57 @@ jobs:
             fi
           done
           exit $fail
+
+  # 文言：视窗原生之工具链：于视窗运行器以原生豫构发现诸包、核标准库之型、构你好与全树测试之器而行之；开发之时不阻 CI。
+  # 汉语：Windows 原生工具链冒烟：在 Windows 运行器上用原生豫构发现包、类型检查标准库、构建并运行你好与全树测试工具（只跑一小组）；开发阶段不挡 CI。
+  windows-native-toolchain:
+    name: 视窗原生工具链
+    needs: windows-native-build
+    runs-on: windows-latest
+    timeout-minutes: 40
+    continue-on-error: true
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-windows-native-toolchain
+      cancel-in-progress: true
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-windows-native
+          path: ${{ runner.temp }}/yy-windows-native
+
+      - name: 放入原生豫构与执行器
+        run: cp "$RUNNER_TEMP/yy-windows-native/豫构/yy豫构.exe" "$RUNNER_TEMP/yy-windows-native/豫构/yy执行器。树码" .
+
+      - name: 帮助与发现
+        if: always()
+        run: |
+          ./yy豫构.exe --help | head -5
+          ./yy豫构.exe 发现 | head -5
+
+      - name: 检查与类型检查标准库
+        if: always()
+        run: |
+          ./yy豫构.exe 检查 标准库
+          ./yy豫构.exe 类型检查 标准库 -j 4
+
+      - name: 构建并运行你好
+        if: always()
+        run: |
+          ./yy豫构.exe 构建 原生你好 视窗入口 --输出 yy你好.exe -j 4
+          set +e
+          printf 'echo-line\r\n' | ./yy你好.exe
+          echo "退出码 $?"
+
+      - name: 全树测试一小组
+        if: always()
+        run: |
+          ./yy豫构.exe 构建 全树测试 --输出 yy全树测试.exe -j 4
+          ./yy全树测试.exe --只 库/标准库/测试/数据结构/
 
   # 文言：苹果 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
   # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与预编二的一致性组（编译器直出）。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
