@@ -61,7 +61,7 @@ jobs:
   # 文言：自举之作：但用 Node。起于所定之 Wasm 工具链包，先以包中豫构与编译器造今源之豫构，乃以之自举而核定点，更造全树测试之器与本轮之工具链包，上传之，使诸片与跨平台之验早起。
   # 汉语：自举作业：只用 Node。从固定的 Wasm 工具链包起步，先用包中的豫构与编译器把当前源码的豫构编成 yy豫构.wasm，再由它完成自举并核对定点、构建全树测试工具与本轮的 Wasm 工具链包，然后上传，让测试分片与跨平台验证尽早开始。
   bootstrap:
-    name: 自举（Node）
+    name: 自举
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
@@ -87,13 +87,13 @@ jobs:
           node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
           --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(nproc)"
 
-      # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。此作诸作之所待；全树测试之器连带生本机原生工具链（原生豫构编测试为本机之程），余之原生之验在 Wasm 包起步。
-      # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。本作业是其他作业的前置：跑自举、豫构与值桥；全树测试工具连带生成本机原生工具链（原生豫构把测试编成本机程序运行），其余原生验证在「Wasm 包起步」作业里做。
-      - name: 自举并核对定点，以新编译器重建豫构
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 自举 豫构 值桥 -j "$(nproc)"
+      # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。此作诸作之所待。「全部」先原生起步（Node 上之豫构以包中 Wasm 编译器编一级原生豫构），再原生自举而核定点，装原生工具链，乃以原生豫构构网页后端之 Wasm 编译器、豫构与值桥；全树测试之器用原生工具链。余之原生之验在 Wasm 包起步。
+      # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。本作业是其他作业的前置。「全部」先原生起步（Node 上的豫构以包里的 Wasm 编译器编出一级原生豫构），再原生自举并核对定点、装上原生工具链，然后由原生豫构构建网页后端用的 Wasm 编译器、豫构与值桥；全树测试工具用原生工具链。其余原生验证在「Wasm 包起步」作业里做。
+      - name: 原生自举并核对定点，装上原生工具链，构建 Wasm 编译器、豫构与值桥
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(nproc)"
 
       - name: 构建全树测试工具与 Wasm 工具链包
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 全树测试工具 打包 -j "$(nproc)"
+        run: ./yy豫构.exe 目标 全树测试工具 打包 -j "$(nproc)"
 
       # 文言：二包：诸片所用之试器与同代值桥、本轮之 Wasm 工具链包。
       # 汉语：打两个包：各分片与检查作业用的测试工具及同代值桥、本轮的 Wasm 工具链包。
@@ -154,7 +154,7 @@ jobs:
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
       - name: 类型检查与豫构测试
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 目标 类型检查 豫构测试 --不连带 -j "$(nproc)"
+        run: ./yy豫构.exe 目标 类型检查 豫构测试 --不连带 -j "$(nproc)"
 
       # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
       # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
@@ -287,15 +287,23 @@ jobs:
       - name: 真实终端尺寸与窗口调整
         run: node 豫言操作系统/宿主/节点/终端尺寸。测试.mjs 验收 ./yy终端尺寸查询.exe
 
-      # 文言：原生豫构默用原生编译器 yy4_bs.exe；所构之编译器须与 Node 自举之 yy4_bs.wasm 逐字相同。
-      # 汉语：原生豫构默认使用原生编译器 yy4_bs.exe；构建出的编译器须与 Node 自举的 yy4_bs.wasm 逐字节相同。
-      - name: 原生工具链自举核对
+      # 文言：原生工具链之包：原生豫构与执行器之汇编树码（名同稳定之具），解于仓根即可原生起步，不用 Node；交发布之作。定点之核在「全部」之原生自举。
+      # 汉语：原生工具链包：原生豫构与执行器汇编树码（稳定工具名），解压到仓库根目录即可原生起步、不用 Node，交给发布作业。定点核对在「全部」的原生自举里。
+      - name: 打原生工具链包
         run: |
-          ./yy豫构.exe 构建 豫言编译器 --输出 yy原生自举.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          cmp yy原生自举.wasm yy4_bs.wasm || {
-            printf '::error title=原生工具链自举不一致::原生豫构与原生编译器构建的编译器与 yy4_bs.wasm 不同\n'
-            exit 1
-          }
+          set -euo pipefail
+          ./yy豫构.exe 目标 原生打包 -j "$(getconf _NPROCESSORS_ONLN)"
+          plat="$(printf '%s-%s' "$RUNNER_OS" "$RUNNER_ARCH" | tr 'A-Z' 'a-z')"
+          tar -czf "$RUNNER_TEMP/yuyan-native-$plat.tar.gz" -C yy原生工具链 .
+          echo "YY_NATIVE_PLAT=$plat" >> "$GITHUB_ENV"
+
+      - name: 上传原生工具链包
+        uses: actions/upload-artifact@v4
+        with:
+          name: yy-native-toolchain-${{ env.YY_NATIVE_PLAT }}
+          path: ${{ runner.temp }}/yuyan-native-${{ env.YY_NATIVE_PLAT }}.tar.gz
+          retention-days: 7
+          if-no-files-found: error
 
       # 文言：原生对比：冷编之探与全构，原生与 Node 交替而行，较其中位；原生慢则书警而不败，二者产物不同则败。
       # 汉语：原生对比：冷编探针与完整构建，Node 与原生交替运行若干轮，比较中位数；原生较慢只发警告、不让作业失败，两边产物不同才失败。表写进作业摘要。
@@ -674,10 +682,16 @@ jobs:
           name: yy-wasm-toolchain
           path: ${{ runner.temp }}
 
-      - name: 发布 Wasm 工具链包
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: yy-native-toolchain-*
+          path: ${{ runner.temp }}/原生包
+          merge-multiple: true
+
+      - name: 发布 Wasm 与原生工具链包
         run: |
           set -euo pipefail
-          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。"
+          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器 yy执行器.树码），解压到仓库根目录即可原生起步，不用 Node。"
 
           release_ready() {
             if ! gh release view "$1" >/dev/null 2>&1; then
@@ -692,30 +706,39 @@ jobs:
           }
           release_ready continuous-binaries
 
-          package=yuyan-wasm
           commit_time="$(gh api "repos/$GH_REPO/commits/$GITHUB_SHA" --jq '.commit.committer.date | fromdateiso8601 | strftime("%Y%m%dT%H%M%SZ")')"
-          historical_asset="$commit_time-$package-${GITHUB_SHA}.tar.gz"
-          # 文言：待办事项：二轮同发而俱见九百九十九资产者，后传者逾限而败。
-          # 汉语：待办事项：两轮同时发布、都看到 999 个资产时，后上传的一轮会超限失败。
-          historical=historical-binaries
-          n=1
-          while true; do
-            release_ready "$historical"
-            existing="$(gh release view "$historical" --json assets --jq '.assets[].name')"
-            if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
-              echo "历史版本已存在：$historical/$historical_asset"
-              break
-            fi
-            if [ "$(printf '%s\n' "$existing" | grep -c .)" -lt 1000 ]; then
-              cp "$RUNNER_TEMP/$package.tar.gz" "$RUNNER_TEMP/$historical_asset"
-              gh release upload "$historical" "$RUNNER_TEMP/$historical_asset"
-              echo "历史版本：https://github.com/$GH_REPO/releases/download/$historical/$historical_asset"
-              break
-            fi
-            n=$((n + 1))
-            historical="historical-binaries-$n"
+          # 文言：发一包：存史版（文件名冠以提交之时），复覆连续版。
+          # 汉语：发布一个包：存历史版本（文件名前加提交时间），再覆盖连续版本。
+          publish() {
+            package="$1"
+            file="$2"
+            historical_asset="$commit_time-$package-${GITHUB_SHA}.tar.gz"
+            # 文言：待办事项：二轮同发而俱见九百九十九资产者，后传者逾限而败。
+            # 汉语：待办事项：两轮同时发布、都看到 999 个资产时，后上传的一轮会超限失败。
+            historical=historical-binaries
+            n=1
+            while true; do
+              release_ready "$historical"
+              existing="$(gh release view "$historical" --json assets --jq '.assets[].name')"
+              if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
+                echo "历史版本已存在：$historical/$historical_asset"
+                break
+              fi
+              if [ "$(printf '%s\n' "$existing" | grep -c .)" -lt 1000 ]; then
+                cp "$file" "$RUNNER_TEMP/$historical_asset"
+                gh release upload "$historical" "$RUNNER_TEMP/$historical_asset"
+                echo "历史版本：https://github.com/$GH_REPO/releases/download/$historical/$historical_asset"
+                break
+              fi
+              n=$((n + 1))
+              historical="historical-binaries-$n"
+            done
+            gh release upload continuous-binaries "$file" --clobber
+          }
+          publish yuyan-wasm "$RUNNER_TEMP/yuyan-wasm.tar.gz"
+          for file in "$RUNNER_TEMP"/原生包/yuyan-native-*.tar.gz; do
+            publish "$(basename "$file" .tar.gz)" "$file"
           done
-          gh release upload continuous-binaries "$RUNNER_TEMP/$package.tar.gz" --clobber
 
   # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成 BIOS/UEFI 混合之 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType）；以 豫言操作系统/裸机/发行/系统版本.tsv 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
   # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的编译器与豫构，构建 yy豫言系统.wasm 并造 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType）；按 豫言操作系统/裸机/发行/系统版本.tsv 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
