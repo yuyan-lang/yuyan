@@ -162,8 +162,16 @@
 　而
 　虑「再派发果」者
 　　「派发事件」于「监听节」于（「新事件」于『试』于「冒泡」为「阳」于「可取消」为「阳」于「可越界」为「阴」）而
+　虑「控制设置」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『let cancelled=false;let skipped=0;function cancelListener(ev){ev.preventDefault();ev.stopPropagation();cancelled=ev.defaultPrevented&&ev.cancelBubble&&ev.bubbles&&ev.cancelable&&!ev.composed&&ev.eventPhase===2;ev.stopImmediatePropagation();}a.addEventListener("消",cancelListener);a.addEventListener("消",function(ev){skipped++;});』
+　而
+　虑「取消果」者
+　　「派发事件」于「监听节」于（「新事件」于『消』于「冒泡」为「阳」于「可取消」为「阳」于「可越界」为「阴」）而
 　虑「移除果」者
-　　「捷思在环境执行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1;』而
+　　「捷思在环境执行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1&&cancelled&&skipped===0;』而
 　若「且」
 　　于（「且」
 　　　于（「捷思严格等」于「一次果」于（「捷思布尔」于「阳」））
