@@ -552,4 +552,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let entered=false;let helper;helper=Iterator.from([1]).map(function(v){try{helper.next();}catch(e){entered=e instanceof TypeError;}return v;});let first=helper.next();let thrown={};let closed=0;let source={next:function(){return {done:false,value:1};},return:function(){closed++;throw 9;}};let failing=Iterator.from(source).map(function(){throw thrown;});let identical=false;try{failing.next();}catch(e){identical=e===thrown;}entered&&first.value===1&&helper.next().done&&identical&&closed===1&&failing.next().done;』）
 　　　于（「捷思布尔」于「阳」））于『捷思助手重入拒绝异常关闭原值身份与完成状态』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let order="";let error={};let outer={next:function(){return {done:false,value:1};},return:function(){order+="o";throw 9;}};let inner={next:function(){return {done:false,value:2};},return:function(){order+="i";throw error;}};let flat=Iterator.from(outer).flatMap(function(){return inner;});flat.next();let same=false;try{flat.return();}catch(e){same=e===error;}let done=flat.next();let again=flat.return();same&&order==="io"&&done.done&&again.done;』）
+　　　于（「捷思布尔」于「阳」））于『捷思展开内部关闭异常仍收尾外部并保留原异常』。
 「打印行」于『捷思值冒烟通过』。
