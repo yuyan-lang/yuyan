@@ -12,10 +12,6 @@ on:
   pull_request:
     branches: [yybs]
   workflow_dispatch:
-  # 文言：每日一轮（UTC 十八时，北京时间晨二时）：核心之作之外，更行诺节与网页后端之验、自 Wasm 包起步之验与原生诺节之较；推送之轮不行之。
-  # 汉语：每天定时一轮（UTC 18:00，北京时间凌晨两点）：除核心作业外，再跑诺节与网页后端的验证、从 Wasm 包起步的验证和原生与诺节的对比；推送触发的轮次不跑这些。
-  schedule:
-    - cron: '0 18 * * *'
 
 permissions:
   contents: write
@@ -106,8 +102,8 @@ jobs:
       - name: 构建全树测试工具、Wasm 工具链包与原生工具链包
         run: ./yy豫构.exe 目标 全树测试工具 打包 原生打包 -j "$(nproc)"
 
-      # 文言：三包：诸片所用之原生试器（并同代之 Wasm 编译器、豫构与值桥，供每日诺节之验）、本轮之 Wasm 工具链包、本轮之原生工具链包（Linux x64）。
-      # 汉语：打三个包：各分片与检查作业用的原生测试工具（附同代的 Wasm 编译器、豫构与值桥，供每日的诺节验证用）、本轮的 Wasm 工具链包、本轮的原生工具链包（Linux x64）。
+      # 文言：三包：诸片所用之原生试器（并同代之 Wasm 编译器、豫构与值桥，供抽样之诺节之验）、本轮之 Wasm 工具链包、本轮之原生工具链包（Linux x64）。
+      # 汉语：打三个包：各分片与检查作业用的原生测试工具（附同代的 Wasm 编译器、豫构与值桥，供抽样的诺节验证用）、本轮的 Wasm 工具链包、本轮的原生工具链包（Linux x64）。
       - name: 打包产物
         run: |
           set -euo pipefail
@@ -346,12 +342,12 @@ jobs:
           retention-days: 90
           if-no-files-found: ignore
 
-  # 文言：每日之轮验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与苹果系统，凭 Node 自包起步，以包中豫构自举而核定点；更行诺节宿主之验、原生与 Node 之速之较（原生慢则书警）。推送之轮不行，原生工具链包由核心之作出。
-  # 汉语：每日定时一轮验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上用 Node 从包起步，由包中的豫构完成自举并核对定点；再跑诺节宿主的验证、原生与 Node 的构建耗时对比（原生较慢时发出警告）。推送触发的轮次不跑；原生工具链包由核心作业产出。
+  # 文言：抽样之轮验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与苹果系统，凭 Node 自包起步，以包中豫构自举而核定点；更行诺节宿主之验、原生与 Node 之速之较（原生慢则书警）。依提交号抽样：末位为 0 至 3 者行之（约四之一），手发者必行；余轮不行，原生工具链包由核心之作出。欲改其率，增减下 if 之末位。
+  # 汉语：抽样轮次验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上用 Node 从包起步，由包中的豫构完成自举并核对定点；再跑诺节宿主的验证、原生与 Node 的构建耗时对比（原生较慢时发出警告）。按提交号抽样：末位是 0–3 的轮次运行（约四分之一），手动触发时必跑；其余轮次不跑，原生工具链包由核心作业产出。改抽样率就增减下面 if 里的末位。
   wasm-bootstrap:
-    name: 每日 Wasm 包起步与诺节验证（${{ matrix.os }}）
+    name: 抽样 Wasm 包起步与诺节验证（${{ matrix.os }}）
     needs: bootstrap
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
     strategy:
@@ -489,12 +485,12 @@ jobs:
           retention-days: 90
           if-no-files-found: ignore
 
-  # 文言：节点发行包之验于 Windows 行（每日之轮）：取同代豫构，以其发行之令造发行包，而以同一验客较八十八事。
-  # 汉语：Windows Node 发行包验收（每日定时一轮）：复用本轮豫构，用它的发行命令构建发行包，再运行现有 88 项一致性驱动。
+  # 文言：节点发行包之验于 Windows 行（抽样之轮，同上）：取同代豫构，以其发行之令造发行包，而以同一验客较八十八事。
+  # 汉语：Windows Node 发行包验收（抽样轮次，同上）：复用本轮豫构，用它的发行命令构建发行包，再运行现有 88 项一致性驱动。
   node-host-windows:
     name: 节点发行包一致性（Windows x64）
     needs: bootstrap
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
     runs-on: windows-latest
     timeout-minutes: 90
     concurrency:
