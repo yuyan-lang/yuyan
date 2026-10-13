@@ -452,4 +452,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let parent={inherited:7};let object=Object.create(parent);object.a=1;object.b=2;object[3]=4;Object.defineProperty(object,"hidden",{value:5});let text=JSON.stringify(object,["b","a","b",new String("hidden"),new Number(3),"inherited",true,{},null]);let value=JSON.parse(text);let nested=JSON.parse(JSON.stringify({a:{a:1,b:2},b:3},["a"]));let array=JSON.parse(JSON.stringify([1,{a:2,b:3}],["a"]));Object.keys(value).join(",")==="3,b,a,hidden,inherited"&&value.b===2&&value.a===1&&value.hidden===5&&value[3]===4&&value.inherited===7&&Object.keys(nested).join(",")==="a"&&nested.a.a===1&&nested.a.b===undefined&&array.length===2&&array[0]===1&&array[1].a===2&&array[1].b===undefined&&JSON.stringify(object,[])==="{}";』）
 　　　于（「捷思布尔」于「阳」））于『捷思结森属性列表去重装箱继承隐藏与嵌套数组』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let text=JSON.stringify({a:[1,2],b:{}},null,2);let expected="{\n  \"a\": [\n    1,\n    2\n  ],\n  \"b\": {}\n}";let string=JSON.stringify([1],null,"abcdefghijk");let boxed=JSON.stringify({a:1},null,new Number(2));text===expected&&string==="[\nabcdefghij1\n]"&&boxed==="{\n  \"a\": 1\n}"&&JSON.stringify([],null,2)==="[]"&&JSON.stringify({},null,2)==="{}"&&JSON.stringify([1],null,-2)==="[1]"&&JSON.stringify([1],null,NaN)==="[1]"&&JSON.stringify([1],null,Infinity)==="[\n          1\n]";』）
+　　　于（「捷思布尔」于「阳」））于『捷思结森缩进嵌套数字字符串截断装箱与空容器』。
 「打印行」于『捷思值冒烟通过』。
