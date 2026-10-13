@@ -142,18 +142,14 @@
 　　　　　　）于「右」为（「头一个」于「实参」）））
 　　　而
 　　　虑「无」者「捷思声明名」于「境」于『host』于「阴」而
-　　　虑「无」者
-　　　　「捷思初始化名」于「境」于『host』于（「捷思新宿主函数」于「回调」）
-　　　而
+　　　虑「无」者「捷思初始化名」于「境」于『host』于（「捷思新宿主函数」于「回调」）而
 　　　虑「脚本果」者
 　　　　「捷思在环境执行脚本」
 　　　　　于「境」
 　　　　　于
 　　　　　　『let o={n:2,add(x){this.n+=x;return ()=>this.n;},read:function(){return this.n;},host:host};let f=o.add(3);let a=o.read();let p={n:7,read:o.read};function Ctor(x){this.n=x;return 7;}function ObjCtor(){return {n:9};}function EmptyCtor(){this.n=1;}let built=new Ctor(...[4]);let replaced=new ObjCtor();let empty=new EmptyCtor;let nativeBuilt=new host(3);typeof nativeBuilt==="object"&&built.n===4&&replaced.n===9&&empty.n===1&&typeof host==="function"&&host===o.host&&host?a+p.read()+f()+host(2)+o.host(...[3])-10:0;』
 　　　而
-　　　虑「闭包」者
-　　　　「捷思在环境执行脚本」于「境」于『function cb(x){o.n+=x;return o.read();}cb;』
-　　　而
+　　　虑「闭包」者「捷思在环境执行脚本」于「境」于『function cb(x){o.n+=x;return o.read();}cb;』而
 　　　虑「调用果」者
 　　　　「捷思宿主调用函数」于「函数」为「闭包」于「接收者」为「捷思未定义」
 　　　　于（「列」【「捷思数值」于「三点零」】）
@@ -671,8 +667,7 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　　，「八八」
 　　　，「零」
 　　　】））而
-虑「无」者
-　「捷思设置日期时区」于「表」而
+虑「无」者「捷思设置日期时区」于「表」而
 虑「无」者
 　「断言」
 　　于（「捷思严格等」
