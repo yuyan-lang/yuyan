@@ -677,7 +677,7 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　「断言」
 　　于（「捷思严格等」
 　　　于（「捷思执行脚本」
-　　　　于『let date=new Date(-1);date.getFullYear()===1970&&date.getMonth()===0&&date.getDate()===1&&date.getDay()===4&&date.getHours()===0&&date.getMinutes()===59&&date.getSeconds()===59&&date.getMilliseconds()===999&&date.getTimezoneOffset()===-60&&date.getUTCFullYear()===1969&&new Date(0).getHours()===1&&Number.isNaN(new Date(NaN).getHours());』）
+　　　　于『let date=new Date(-1);date.getFullYear()===1970&&date.getMonth()===0&&date.getDate()===1&&date.getDay()===4&&date.getHours()===0&&date.getMinutes()===59&&date.getSeconds()===59&&date.getMilliseconds()===999&&date.getTimezoneOffset()===-60&&date.getUTCFullYear()===1969&&new Date(0).getHours()===1&&Number.isNaN(new Date(NaN).getHours())&&new Date(1970,0,1).getTime()===-3600000&&new Date(2000,12,0,25).toISOString()==="2001-01-01T00:00:00.000Z"&&new Date(1970,0,1,1,0,0,7).getTime()===7;』）
 　　　　于（「捷思布尔」于「阳」））于『捷思配置日历时区本地字段跨日与偏移分钟』
 而
 「捷思设置日期时区」于「可无」。
