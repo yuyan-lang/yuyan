@@ -387,4 +387,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let order="";let object={valueOf:function(){order+="v";return 7;},toString:function(){order+="s";return "key";}};let numeric=Number(object);let text=String(object);let sum=object+2;let target={};target[object]=3;let fallback={valueOf:function(){return {};},toString:function(){return "4";}};let box=new Number(3);box.valueOf=function(){return 9;};let bad=false;try{Number({valueOf:function(){return {};},toString:function(){return {};}});}catch(e){bad=e instanceof TypeError;}let primitive={valueOf:function(){return "x";}};numeric===7&&text==="key"&&sum===9&&target.key===3&&order==="vsvs"&&Number(fallback)===4&&Number(box)===9&&primitive+2==="x2"&&Number([4])===4&&String([1,2])==="1,2"&&bad;』）
 　　　于（「捷思布尔」于「阳」））于『捷思对象基础值转换方法顺序接收者装箱与加法』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let calls="";let left={valueOf:function(){calls+="l";return "20";}};let right={valueOf:function(){calls+="r";return "3";}};let lexical=left<right;let order=calls;let numeric=left<3;let same={valueOf:function(){throw 1;}};let fn=function(){};fn.valueOf=function(){return 4;};let bad=false;try{({valueOf:function(){return {};},toString:function(){return {};}})<1;}catch(e){bad=e instanceof TypeError;}lexical&&order==="lr"&&!numeric&&left==20&&20==left&&left=="20"&&new Boolean(false)==0&&[]==false&&same==same&&!(same==null)&&!(same==undefined)&&!(same=={})&&fn==4&&!(left===20)&&!(NaN<=left)&&!(left>=NaN)&&bad;』）
+　　　于（「捷思布尔」于「阳」））于『捷思对象宽松相等关系比较转换顺序字符串与数值』。
 「打印行」于『捷思值冒烟通过』。
