@@ -11,7 +11,8 @@ permissions:
   contents: read
   actions: read
 jobs:
-  抓崩:
+  crash-capture:
+    name: 抓崩溃现场
     runs-on: windows-latest
     timeout-minutes: 15
     defaults:
