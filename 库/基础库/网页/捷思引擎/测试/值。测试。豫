@@ -582,4 +582,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let source=new Date(1234);source.valueOf=function(){throw 1;};let copy=new Date(source);let order="";let generic={valueOf:function(){order+="v";return 1;},toISOString:function(){order+="i";return this.result;},result:7};let result=Date.prototype.toJSON.call(generic);let invalid={valueOf:function(){return Infinity;},toISOString:function(){throw 1;}};let date=new Date(0);date.toISOString=function(){return "own";};let bad=false;try{Date.prototype.toJSON.call(null);}catch(e){bad=e instanceof TypeError;}copy!==source&&copy.getTime()===1234&&result===7&&order==="vi"&&Date.prototype.toJSON.call(invalid)===null&&date.toJSON()==="own"&&bad;』）
 　　　于（「捷思布尔」于「阳」））于『捷思日期复制内部时间值与通用结森当前方法转换顺序』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let date=new Date(Date.UTC(2000,0,1,2,3,4,5));date.setUTCMilliseconds(999);date.setUTCSeconds(60);let seconds=date.toISOString();date.setUTCMinutes(61,2,3);let minutes=date.toISOString();date.setUTCHours(25,2,3,4);let hours=date.toISOString();date.setUTCDate(0);let day=date.toISOString();date.setUTCMonth(12,1);let month=date.toISOString();date.setUTCFullYear(0,0,1);let year=date.getUTCFullYear();let invalid=new Date(NaN);invalid.setUTCFullYear(2000);let recovered=invalid.toISOString();seconds==="2000-01-01T02:04:00.999Z"&&minutes==="2000-01-01T03:01:02.003Z"&&hours==="2000-01-02T01:02:03.004Z"&&day==="1999-12-31T01:02:03.004Z"&&month==="2000-01-01T01:02:03.004Z"&&year===0&&recovered==="2000-01-01T00:00:00.000Z"&&Date.prototype.setUTCHours.length===4&&Date.prototype.setUTCFullYear.length===3;』）
+　　　于（「捷思布尔」于「阳」））于『捷思日期协调世界时字段更新可选值溢出归一与无效恢复』。
 「打印行」于『捷思值冒烟通过』。
