@@ -174,7 +174,7 @@
 　　「捷思在环境执行脚本」
 　　　于「境」
 　　　于
-　　　『calls===1&&onceCalls===1&&captureCalls===1&&cancelled&&skipped===0&&savedEvent.target===a&&savedEvent.currentTarget===null&&savedEvent.eventPhase===0&&savedEvent.composedPath().length===0;』
+　　　『let beforeDispatch=savedEvent;let result=a.dispatchEvent(savedEvent);calls===1&&onceCalls===1&&captureCalls===1&&cancelled&&skipped===0&&result===false&&savedEvent===beforeDispatch&&savedEvent.target===a&&savedEvent.currentTarget===null&&savedEvent.eventPhase===0&&savedEvent.composedPath().length===0;』
 　而
 　若「且」
 　　于（「且」
