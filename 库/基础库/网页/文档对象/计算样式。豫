@@ -261,8 +261,8 @@
 　　于「来源」为「零」
 　　于「层」为「零」
 　　于
-　　『html,body,article,aside,blockquote,div,dl,dt,dd,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,main,nav,ol,p,pre,section,ul { display: block }
-head,title,base,link,meta,style,script,template,[hidden] { display: none }
+　　『html,body,address,article,aside,blockquote,center,details,div,dl,dt,dd,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,legend,main,menu,nav,ol,p,pre,section,ul { display: block }
+head,title,base,link,meta,style,script,template,noscript,[hidden] { display: none }
 body { margin: 8px }
 input,textarea,select,button { display: inline-block; color: black; background: white; border: 1px solid gray; padding: 2px; font-size: 16px }
 input,select { width: 200px; height: 24px }
