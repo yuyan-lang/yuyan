@@ -442,4 +442,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let shared={n:1};let text=JSON.stringify({a:undefined,b:function(){},c:[,undefined,NaN,Infinity],d:shared,e:shared});let parsed=JSON.parse(text);let key="";let special={toJSON:function(k){key=k;return 7;}};let converted=JSON.stringify({x:special});let cycle={};cycle.self=cycle;let bad=false;try{JSON.stringify(cycle);}catch(e){bad=e instanceof TypeError;}JSON.stringify(undefined)===undefined&&JSON.stringify(function(){})===undefined&&JSON.stringify(new Number(3))==="3"&&JSON.stringify(-0)==="0"&&JSON.stringify(NaN)==="null"&&parsed.a===undefined&&parsed.b===undefined&&parsed.c.length===4&&parsed.c[0]===null&&parsed.c[3]===null&&parsed.d.n===1&&parsed.e.n===1&&JSON.parse(converted).x===7&&key==="x"&&bad&&JSON.stringify.length===3;』）
 　　　于（「捷思布尔」于「阳」））于『捷思结森序列化省略数组空值装箱转换循环与共享对象』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let keys=[];let receiver=true;let object={a:1,b:2,list:[3,4],custom:{toJSON:function(){return 5;}}};let text=JSON.stringify(object,function(k,v){keys.push(k);if(k===""){receiver=receiver&&this[""]===object;return v;}if(k==="a"){receiver=receiver&&this===object;return v+10;}if(k==="b"||k==="0")return undefined;if(k==="custom")return v+1;return v;});let result=JSON.parse(text);let root=JSON.stringify(1,function(k,v){return v+1;});let omitted=JSON.stringify(1,function(){return undefined;});let thrown={};let identical=false;try{JSON.stringify(1,function(){throw thrown;});}catch(e){identical=e===thrown;}receiver&&keys.join(",")===",a,b,list,0,1,custom"&&result.a===11&&result.b===undefined&&result.list[0]===null&&result.list[1]===4&&result.custom===6&&root==="2"&&omitted===undefined&&identical;』）
+　　　于（「捷思布尔」于「阳」））于『捷思结森替换回调顺序持有者转换省略与异常』。
 「打印行」于『捷思值冒烟通过』。
