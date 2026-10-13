@@ -14,8 +14,22 @@
 　　　于
 　　　『let a=document.getElementById("a");a.setAttribute("title","中文😀");let e=document.createElement("span");e.setAttribute("id","b");a.appendChild(e);e.appendChild(document.createTextNode("正文"));a.removeAttribute("id");let nodes=document.querySelectorAll("span");let removed=a.removeChild(e);let empty=document.querySelectorAll("span");a.appendChild(e);e.remove();let copy=e.cloneNode(true);a.insertBefore(copy,null);let before=document.querySelectorAll("span");let old=a.replaceChild(e,copy);let ok=a.contains(e)&&!a.contains(copy)&&e.isSameNode(e)&&!e.isSameNode(copy)&&!e.isSameNode(null)&&copy.hasAttribute("id");e.remove();ok&&before[0]===copy&&old===copy&&a===document.querySelector("div")&&document.getElementById("a")===null&&nodes.length===1&&nodes[0]===e&&removed===e&&empty.length===0&&document.getElementById("b")===null&&a.getAttribute("title")==="中文😀";』
 　而
-　若「捷思严格等」于「值」于（「捷思布尔」于「阳」）则
-　　「打印行」于『浏览器文档方法冒烟通过』
+　虑「片段值」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『let part=document.createDocumentFragment();part.appendChild(document.createTextNode("甲"));part.appendChild(document.createTextNode(""));part.appendChild(document.createTextNode("乙"));part.normalize();part.appendChild(document.createComment("注"));a.appendChild(part);!a.contains(part);』
+　而
+　虑「诸子」者
+　　「子节点」于（「解包浏览器节点」于「绑定」于（「捷思在环境执行脚本」于「境」于『a;』））而
+　若「且」
+　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
+　　于（「且」
+　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
+　　　于（「且」
+　　　　于（「等」于（「长度」于「诸子」）于「二」）
+　　　　于（「串相等」于（「节点内容」于（「第几个」于「零」于「诸子」））于『甲乙』）））则
+　　　　　「打印行」于『浏览器文档方法冒烟通过』
 　否则
 　　「发生事故」于『浏览器文档方法绑定错误』
 也。
