@@ -412,4 +412,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let object={};let made=Reflect.defineProperty(object,"x",{value:2});let same=Reflect.defineProperty(object,"x",{value:2});let blocked=Reflect.defineProperty(object,"x",{value:3});let access=Reflect.defineProperty(object,"read",{get:function(){return this.x;},configurable:true});let bad=false;try{Reflect.defineProperty(object,"bad",{get:1});}catch(e){bad=e instanceof TypeError;}let mixed=false;try{Reflect.defineProperty(object,"bad",{value:1,get:function(){return 2;}});}catch(e){mixed=e instanceof TypeError;}Object.preventExtensions(object);let extra=Reflect.defineProperty(object,"new",{value:1});let ordinary=false;try{Object.defineProperty(object,"x",{value:3});}catch(e){ordinary=e instanceof TypeError;}made&&same&&!blocked&&object.x===2&&access&&object.read===2&&bad&&mixed&&!extra&&ordinary&&Reflect.defineProperty.length===3;』）
 　　　于（「捷思布尔」于「阳」））于『捷思反射定义返回值访问器描述检查与对象接口兼容』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let called=0;let parent={};Object.defineProperty(parent,"x",{set:function(v){called++;}});let receiver=Object.create(parent);let target={x:1};let set=Reflect.set(target,"x",2,receiver);let missingReceiver=Object.create(parent);let missing=Reflect.set({},"x",3,missingReceiver);let desc=Reflect.getOwnPropertyDescriptor(receiver,"x");let own={};Object.defineProperty(own,"x",{set:function(v){called++;}});let blocked=Reflect.set(target,"x",4,own);let fixed={};Object.defineProperty(fixed,"x",{value:5,writable:true});let update=Reflect.set(target,"x",6,fixed);let fixedDesc=Reflect.getOwnPropertyDescriptor(fixed,"x");set&&missing&&receiver.x===2&&missingReceiver.x===3&&target.x===1&&called===0&&desc.writable&&desc.enumerable&&desc.configurable&&!blocked&&update&&fixed.x===6&&fixedDesc.writable&&!fixedDesc.enumerable&&!fixedDesc.configurable;』）
+　　　于（「捷思布尔」于「阳」））于『捷思反射数据定义绕过继承访问器并保留自有标志』。
 「打印行」于『捷思值冒烟通过』。
