@@ -467,4 +467,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let order="";let number=new Number(2);number.valueOf=function(){order+="n";return 7;};let string=new String("old");string.toString=function(){order+="s";return "new";};let bool=new Boolean(false);bool.valueOf=function(){throw 1;};let text=JSON.stringify([number,string,bool]);let root=JSON.stringify(1,function(){return number;});let bad=new Number(1);bad.valueOf=function(){return {};};bad.toString=function(){return {};};let rejected=false;try{JSON.stringify(bad);}catch(e){rejected=e instanceof TypeError;}let parsed=JSON.parse(text);parsed[0]===7&&parsed[1]==="new"&&parsed[2]===false&&root==="7"&&order==="nsn"&&rejected;』）
 　　　于（「捷思布尔」于「阳」））于『捷思结森数值文字装箱当前转换布尔原值与替换结果』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let order="";let list=[];let first=new String("a");first.toString=function(){order+="c";list[1]="b";return "a";};list[0]=first;list[1]="old";let text=JSON.stringify({a:1,b:2,old:3},list);let value=JSON.parse(text);order==="c"&&value.a===1&&value.b===2&&value.old===undefined;』）
+　　　于（「捷思布尔」于「阳」））于『捷思结森属性列表逐项转换与后项实时读取』。
 「打印行」于『捷思值冒烟通过』。
