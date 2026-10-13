@@ -2295,8 +2295,72 @@ export function 创建网页能力({根, 全局, 网络, 路径, 储存 = null, 
     全字母数字: 文 => String(/^[\p{L}\p{N}]+$/u.test(验规整文字(文)))
   };
 
+  // ---- 声音输出 ----
+  // 文言：声之输出：依书之先后排每块于前块之后而播，以 Web Audio 之时钟计已播之帧。汉语：声音输出接口（豫言操作系统声音输出 0.1.0）：每块样本按写入先后排在上一块之后播放，已播放帧数按 Web Audio 的时钟算。样本以逗号分隔的十六位整数文字传入。浏览器的自动播放规定要求用户先与页面交互，否则播放时间不前进。
+  const 声流表 = new Map();
+  let 下个声流号 = 1;
+  const 取声流 = 号串 => {
+    const 流 = 声流表.get(检整数串(号串, '声音流号', 1, 1e9));
+    if (!流) throw Error('资源已失效：声音流已关闭');
+    return 流;
+  };
+  const 声流已播 = 流 => {
+    if (流.起 === null) return 0;
+    const 播 = Math.floor((流.境.currentTime - 流.起) * 流.率);
+    return Math.max(0, Math.min(播, 流.已写));
+  };
+  const 声音操作 = {
+    打开: (率串, 道串) => {
+      const 率 = 检整数串(率串, '采样率', 8000, 192000);
+      const 道 = 检整数串(道串, '声道数', 1, 8);
+      const 类 = 全局.AudioContext ?? 全局.webkitAudioContext;
+      if (typeof 类 !== 'function') throw Error('资源暂不可用：浏览器不支持 Web Audio');
+      const 境 = new 类({sampleRate: 率});
+      if (typeof 境.resume === 'function') 境.resume().catch(() => {});
+      const 号 = 下个声流号++;
+      声流表.set(号, {境, 率, 道, 起: null, 下刻: 0, 已写: 0});
+      return String(号);
+    },
+    写入: (号串, 文) => {
+      const 流 = 取声流(号串);
+      const 数们 = 文 ? String(文).split(',').map(Number) : [];
+      const 帧 = Math.floor(数们.length / 流.道);
+      if (帧 * 流.道 !== 数们.length) throw Error('输入无效：样本数不是声道数的整倍');
+      if (帧 === 0) return '';
+      const 缓 = 流.境.createBuffer(流.道, 帧, 流.率);
+      for (let 道 = 0; 道 < 流.道; 道++) {
+        const 道数据 = 缓.getChannelData(道);
+        for (let 序 = 0; 序 < 帧; 序++) 道数据[序] = 数们[序 * 流.道 + 道] / 32768;
+      }
+      const 源 = 流.境.createBufferSource();
+      源.buffer = 缓;
+      源.connect(流.境.destination);
+      const 现 = 流.境.currentTime;
+      if (流.起 === null) { 流.起 = 现; 流.下刻 = 现; }
+      const 始 = Math.max(流.下刻, 现);
+      源.start(始);
+      流.下刻 = 始 + 帧 / 流.率;
+      流.已写 += 帧;
+      return '';
+    },
+    已播放: 号串 => String(声流已播(取声流(号串))),
+    延迟: 号串 => {
+      const 流 = 取声流(号串);
+      const 设备 = Number(流.境.outputLatency ?? 流.境.baseLatency ?? 0) || 0;
+      return String(流.已写 - 声流已播(流) + Math.round(设备 * 流.率));
+    },
+    关闭: 号串 => {
+      const 号 = 检整数串(号串, '声音流号', 1, 1e9);
+      const 流 = 声流表.get(号);
+      if (!流) throw Error('资源已失效：声音流已关闭');
+      声流表.delete(号);
+      if (typeof 流.境.close === 'function') 流.境.close().catch(() => {});
+      return '';
+    }
+  };
+
   // ---- 分派 ----
-  const 表们 = {定时: 定时操作, 储存: 储存操作, 导航: 导航操作, 环境: 环境操作, 请求: 请求操作, 事件源: 事件源操作, 编译: 编译操作, 构建: 构建操作, 时间: 时间操作, 随机: 随机操作, 定位: 定位操作, 查询: 查询操作, 日志: 日志操作, 规整: 规整操作};
+  const 表们 = {声音: 声音操作, 定时: 定时操作, 储存: 储存操作, 导航: 导航操作, 环境: 环境操作, 请求: 请求操作, 事件源: 事件源操作, 编译: 编译操作, 构建: 构建操作, 时间: 时间操作, 随机: 随机操作, 定位: 定位操作, 查询: 查询操作, 日志: 日志操作, 规整: 规整操作};
   const 找操作 = 名 => {
     const 点 = typeof 名 === 'string' ? 名.indexOf('.') : -1;
     const 表 = 点 > 0 ? 表们[名.slice(0, 点)] : undefined;
