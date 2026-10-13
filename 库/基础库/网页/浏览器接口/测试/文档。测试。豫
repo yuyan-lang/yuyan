@@ -140,7 +140,7 @@
 　　「捷思在环境执行脚本」
 　　　于「境」
 　　　于
-　　　『chars.data="甲😀乙";let sub=chars.substringData(1,2)==="😀"&&chars.substringData(3,99)==="乙";chars.insertData(1,"中");chars.deleteData(2,2);chars.replaceData(1,1,"新");chars.appendData("尾");comment.replaceData(0,99,"注");sub&&chars.data==="甲新乙尾"&&comment.data==="注"&&chars.substringData(4,3)==="";』
+　　　『chars.data="甲😀乙";let sub=chars.substringData(1,2)==="😀"&&chars.substringData(3,99)==="乙";chars.insertData(1,"中");chars.deleteData(2,2);chars.replaceData(1,1,"新");chars.appendData("尾");comment.replaceData(0,99,"注");let edited=chars.data==="甲新乙尾"&&comment.data==="注"&&chars.substringData(4,3)==="";let detachedTail=chars.splitText(2);let splitDetached=chars.data==="甲新"&&detachedTail.data==="乙尾"&&detachedTail.parentNode===null&&detachedTail.ownerDocument===document;let splitParent=document.createElement("p");chars.data="甲😀乙";splitParent.append(chars,comment);let splitTail=chars.splitText(1);let splitAttached=chars.data==="甲"&&splitTail.data==="😀乙"&&chars.nextSibling===splitTail&&splitTail.nextSibling===comment&&splitTail.parentNode===splitParent;let emptyTail=splitTail.splitText(3);sub&&edited&&splitDetached&&splitAttached&&emptyTail.data===""&&emptyTail.nextSibling===comment;』
 　而
 　若「且」
 　　于（「且」
