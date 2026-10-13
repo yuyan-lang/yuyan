@@ -572,4 +572,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let date=new Date(-1);let invalid=new Date(NaN);date.getUTCFullYear()===1969&&date.getUTCMonth()===11&&date.getUTCDate()===31&&date.getUTCDay()===3&&date.getUTCHours()===23&&date.getUTCMinutes()===59&&date.getUTCSeconds()===59&&date.getUTCMilliseconds()===999&&date.toUTCString()==="Wed, 31 Dec 1969 23:59:59 GMT"&&new Date(0).getUTCDay()===4&&new Date(0).toUTCString()==="Thu, 01 Jan 1970 00:00:00 GMT"&&Number.isNaN(invalid.getUTCDate())&&invalid.toUTCString()==="Invalid Date"&&Date.prototype.getUTCFullYear.length===0;』）
 　　　于（「捷思布尔」于「阳」））于『捷思日期协调世界时字段负纪元毫秒星期与英文文字』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let full=new Date(Date.UTC(2000,0,1,2,3,4,5));let overflow=new Date(Date.UTC(2000,12,0,25));let negative=new Date(Date.UTC(2000,-1,1));Date.UTC(1970)===0&&Date.UTC(70,0,1)===0&&full.toISOString()==="2000-01-01T02:03:04.005Z"&&overflow.toISOString()==="2001-01-01T01:00:00.000Z"&&negative.toISOString()==="1999-12-01T00:00:00.000Z"&&Number.isNaN(Date.UTC())&&Number.isNaN(Date.UTC(2000,undefined))&&Date.UTC(2000,0,1.9)===946684800000&&Date.UTC.length===2;』）
+　　　于（「捷思布尔」于「阳」））于『捷思日期协调世界时合成年月日归一两位年份与默认值』。
 「打印行」于『捷思值冒烟通过』。
