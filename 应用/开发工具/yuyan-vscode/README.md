@@ -39,7 +39,7 @@ the extension connects the resulting data to VS Code's hover and definition APIs
 Build the Wasm reader in the project root:
 
 ```text
-node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 树码 --输出 yy树码.wasm -j 24
+./yy豫构.exe 构建 树码 --输出 yy树码.wasm -j 24
 ```
 
 See [中文说明](说明.汉语.md) and [文言说明](说明.文言.md).

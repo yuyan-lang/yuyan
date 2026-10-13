@@ -48,8 +48,8 @@
 ## 验证与环境记录
 
 - 源文件「性能计时。测试。豫」SHA-256：`bb413df18948f83c1234b4f5f7a88a350a14b64b21d29a5a4e8869e3c4c6a3f6`。
-- 显式上下文类型检查通过：`node 豫言操作系统/宿主/节点/宿主.cjs yy4_bs.wasm 库/张量内核/测试/性能计时。测试。豫 --package-context /private/tmp/yy张量内核上下文-520.tmp --type-check-only --parallel`。
-- 定向 Wasm 构建通过：`node 豫言操作系统/宿主/节点/宿主.cjs yy4_bs.wasm 库/张量内核/测试/性能计时。测试。豫 --package-context /private/tmp/yy张量内核上下文-520.tmp -o /private/tmp/yyQ4性能计时.wasm`。Wasm SHA-256：`393c1aa5c9b05e707ef40bc8412922fec5be7903bbe5dbbadc98ff7b23e3dfa7`。
+- 显式上下文类型检查通过：`./yy4_bs.exe 库/张量内核/测试/性能计时。测试。豫 --package-context /private/tmp/yy张量内核上下文-520.tmp --type-check-only --parallel`。
+- 定向 Wasm 构建通过：`./yy4_bs.exe 库/张量内核/测试/性能计时。测试。豫 --package-context /private/tmp/yy张量内核上下文-520.tmp -o /private/tmp/yyQ4性能计时.wasm`。Wasm SHA-256：`393c1aa5c9b05e707ef40bc8412922fec5be7903bbe5dbbadc98ff7b23e3dfa7`。
 - pit-mac 运行命令：`/opt/homebrew/bin/node /private/tmp/yuyan-build-c1a66871/豫言操作系统/宿主/节点/宿主.cjs /private/tmp/yy-local-inference-Q4-20261002/yyQ4性能计时.wasm Q4_K子组`。
 - 输出为「当前成功数：1 当前失败数：0」；测试程序退出码为 0，SSH 外层命令也正常返回 0。
 - 测量开始：2026-10-02 11:20:35 UTC；uptime 为运行 3 天 13:51、4 个用户，负载均值 1.65、1.69、1.72。测量结束：2026-10-02 11:20:43 UTC；uptime 同为运行 3 天 13:51、4 个用户，负载均值 1.52、1.67、1.71。
