@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<title>豫言声音设备验收</title>
+<button id="启动">启动声音验收</button>
+<pre id="结果">等待启动</pre>
+<script type="module">
+// 汉语：点击仅授予浏览器播放权限，验收逻辑由豫言程序经公共声音接口完成。文言：点击惟授浏览器播放之权，验收之法由豫言程序循公共声音接口成之。
+import {启动豫言浏览器应用} from '/资料/入口.mjs';
+const 结果 = document.getElementById('结果');
+document.getElementById('启动').onclick = async () => {
+  结果.textContent = '正在验收……\n';
+  try {
+    const 宿主 = await 启动豫言浏览器应用({路径: new URL('/资料/', location.href), 输出: 文 => {结果.textContent += 文;}});
+    await 宿主.完成;
+    document.documentElement.dataset.验收 = 结果.textContent.includes('验收通过') ? '完成' : '失败';
+  } catch (错) {
+    结果.textContent += String(错?.stack ?? 错);
+    document.documentElement.dataset.验收 = '失败';
+  }
+};
+</script>
+</html>
