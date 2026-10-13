@@ -114,7 +114,7 @@ export function parseLanguageServiceDocument(value: unknown): LanguageServiceDoc
 
 export function languageServiceArtifactPath(relativeSourcePath: string): string | undefined {
   const stem = sourceRelativePathToArtifactStem(relativeSourcePath);
-  return stem ? `${stem}.语言服务.树码` : undefined;
+  return stem ? `${stem}。语言服务。树码` : undefined;
 }
 
 export function positionIsInRange(

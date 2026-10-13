@@ -497,7 +497,7 @@ async function jumpToBuildArtifact(
 
   if (artifacts.length === 0) {
     void vscode.window.showInformationMessage(
-      `没有找到 ${artifactStem}.<阶段>.树码 构建产物。`
+      `没有找到 ${artifactStem}。<阶段>。树码 构建产物。`
     );
     return;
   }
@@ -521,8 +521,9 @@ async function jumpToBuildArtifact(
       () => runTreeTool(projectRootUri, '显示', selectedArtifact.artifactUri)
     );
     const artifactFileName = path.basename(selectedArtifact.artifactUri.fsPath);
-    const previewFileName = artifactFileName.endsWith('.树码')
-      ? `${artifactFileName.slice(0, -'.树码'.length)}.pretty.yuyan`
+    const treeSuffix = ['。树码', '.树码'].find(suffix => artifactFileName.endsWith(suffix));
+    const previewFileName = treeSuffix
+      ? `${artifactFileName.slice(0, -treeSuffix.length)}.pretty.yuyan`
       : `${artifactFileName}.pretty.yuyan`;
     const virtualUri = contentProvider.createDocumentUri(
       previewFileName,

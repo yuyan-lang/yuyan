@@ -100,7 +100,7 @@ jobs:
       - name: 打包产物
         run: |
           set -euo pipefail
-          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy4_bs.exe yy豫构.wasm yy豫构.exe yy豫构六四.exe yy执行器.树码 yy全树测试.exe 豫言操作系统/宿主/节点/yy节点值桥接.wasm
+          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.wasm yy4_bs.exe yy豫构.wasm yy豫构.exe yy豫构六四.exe yy执行器。树码 yy全树测试.exe 豫言操作系统/宿主/节点/yy节点值桥接.wasm
           tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C yy网页汇编工具链 .
 
       - name: 上传全树测试工具
@@ -508,7 +508,7 @@ jobs:
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
       - name: 构建执行器
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号.树码 -j 24
+        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 --编译器 ./yy4_bs.wasm --输出 yy客体二号。树码 -j 24
 
       - name: 编译器直出两种架构的 PE 与 macOS x86-64 程序
         env:
@@ -520,7 +520,7 @@ jobs:
           Y 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy-windows-exe/hello-x64.exe -j 24 -- --目标 本机 --目标系统 视窗 --目标架构 兼容六十四
           Y 构建 原生你好 视窗入口 --编译器 ./yy4_bs.wasm --输出 yy-windows-exe/hello-arm64.exe -j 24 -- --目标 本机 --目标系统 视窗 --目标架构 臂六十四
           Y 构建 原生你好 苹果入口 --编译器 ./yy4_bs.wasm --输出 yy-macos-x64/hello-mac-x64 -j 24 -- --目标 本机 --目标系统 苹果 --目标架构 兼容六十四
-          exe="$PWD/yy客体二号.树码"
+          exe="$PWD/yy客体二号。树码"
           cache="$PWD/.yybuild/降级缓存"
           for f in 豫言操作系统/裸机/普通探针/*。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-一。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-二。脚本。豫 豫言操作系统/裸机/原生探针/*。脚本。豫; do
             n=$(basename "$f"); n=${n%。脚本。豫}
@@ -691,7 +691,7 @@ jobs:
       - name: 发布 Wasm 与原生工具链包
         run: |
           set -euo pipefail
-          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器 yy执行器.树码），解压到仓库根目录即可原生起步，不用 Node。"
+          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器 yy执行器。树码），解压到仓库根目录即可原生起步，不用 Node。"
 
           release_ready() {
             if ! gh release view "$1" >/dev/null 2>&1; then

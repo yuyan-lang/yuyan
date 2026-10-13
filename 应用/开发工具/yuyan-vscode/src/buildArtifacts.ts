@@ -29,14 +29,16 @@ export function treeArtifactStage(
   artifactFileName: string,
   sourceBaseName: string
 ): string | undefined {
-  const prefix = `${sourceBaseName}.`;
-  const suffix = '.树码';
-  if (!artifactFileName.startsWith(prefix) || !artifactFileName.endsWith(suffix)) {
-    return undefined;
+  // 新名用全角句号（名。阶段。树码），旧缓存目录里还有半角的（名.阶段.树码）。
+  for (const dot of ['。', '.']) {
+    const prefix = `${sourceBaseName}${dot}`;
+    const suffix = `${dot}树码`;
+    if (artifactFileName.startsWith(prefix) && artifactFileName.endsWith(suffix)) {
+      const stage = artifactFileName.slice(prefix.length, -suffix.length);
+      return stage.length > 0 ? stage : undefined;
+    }
   }
-
-  const stage = artifactFileName.slice(prefix.length, -suffix.length);
-  return stage.length > 0 ? stage : undefined;
+  return undefined;
 }
 
 export function sortBuildCachesNewestFirst<T extends BuildCacheInfo>(caches: T[]): T[] {
