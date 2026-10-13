@@ -462,4 +462,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let order="";let gap=new Number(2);gap.valueOf=function(){order+="g";return 2;};let object={toJSON:function(){order+="j";gap.valueOf=function(){return 8;};return {a:1};}};let text=JSON.stringify(object,function(k,v){order+="r";return v;},gap);let string=new String("x");string.toString=function(){return " ";};let second=JSON.stringify([1],null,string);order==="gjrr"&&text==="{\n  \"a\": 1\n}"&&second==="[\n 1\n]";』）
 　　　于（「捷思布尔」于「阳」））于『捷思结森缩进参数先行装箱方法与回调顺序』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let order="";let number=new Number(2);number.valueOf=function(){order+="n";return 7;};let string=new String("old");string.toString=function(){order+="s";return "new";};let bool=new Boolean(false);bool.valueOf=function(){throw 1;};let text=JSON.stringify([number,string,bool]);let root=JSON.stringify(1,function(){return number;});let bad=new Number(1);bad.valueOf=function(){return {};};bad.toString=function(){return {};};let rejected=false;try{JSON.stringify(bad);}catch(e){rejected=e instanceof TypeError;}let parsed=JSON.parse(text);parsed[0]===7&&parsed[1]==="new"&&parsed[2]===false&&root==="7"&&order==="nsn"&&rejected;』）
+　　　于（「捷思布尔」于「阳」））于『捷思结森数值文字装箱当前转换布尔原值与替换结果』。
 「打印行」于『捷思值冒烟通过』。
