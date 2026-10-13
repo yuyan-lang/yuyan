@@ -61,8 +61,15 @@ jobs:
       - name: 文件名后缀检查（只警告）
         continue-on-error: true
         run: ./yy格式检查.exe --文件名
-      - name: 检查排版与标识符（标识符违规即失败，排版只警告）
-        run: ./yy格式检查.exe
+      # 文言：排版之核：取所检之篇（同无参之核：.豫 与 。豫，略 yuyan-vscode 与 *_v0），按处理器之数并行（一程一篇：大篇数则相邻，合批则拖慢全程），惟告警。
+      # 汉语：排版检查：取与无参检查相同的文件（.豫 与 。豫，跳过 yuyan-vscode 与 *_v0），按处理器数并行（每个进程查一个文件：几个最慢的大文件在目录里挨着，合成一批会拖慢全程），只发警告。
+      - name: 检查排版（只警告，按核数并行）
+        run: |
+          set -euo pipefail
+          git -c core.quotepath=false ls-files | grep -E '(。|\.)豫$' | grep -v -e 'yuyan-vscode/' -e '_v0/' \
+            | tr '\n' '\0' | xargs -0 -P "$(nproc)" -n 1 ./yy格式检查.exe --只查排版
+      - name: 检查标识符（违规即失败）
+        run: ./yy格式检查.exe --只查标识符
 
   # 文言：自举之作：原生起步，不用 Node 与 Wasm。起于所定之原生工具链包：包中豫构配包中执行器，先构今源之六十四位原生豫构（一级驱动，今源之码行于旧执行器），乃以之原生自举而核定点，装原生工具链，更构全树测试之器、网页后端之 Wasm 编译器与豫构（可发之产）、本轮之 Wasm 与原生工具链包，上传之，使诸片与跨平台之验早起。
   # 汉语：自举作业：原生起步，不用 Node 与 Wasm。从固定的原生工具链包起步：包里的豫构配包里的执行器，先把当前源码编成六十四位原生豫构（一级驱动：当前源码的代码跑在旧执行器上），再由它原生自举并核对定点、装上原生工具链，接着构建全树测试工具、网页后端用的 Wasm 编译器与豫构（可发布的产物）以及本轮的 Wasm 与原生工具链包，然后上传，让测试分片与跨平台验证尽早开始。
@@ -254,6 +261,7 @@ jobs:
           mkdir -p "$out"
           ./yy豫构六四.exe 构建 豫构 --输出 "$out/${{ matrix.out }}" -j "$(nproc)" -- --目标 本机 --目标系统 ${{ matrix.system }} --目标架构 ${{ matrix.arch }} --执行器 "$PWD/${{ matrix.executor }}" --降级缓存 "$PWD/.yybuild/降级缓存/yy豫构${{ matrix.plat }}.机器片"
           cp yy执行器。树码 yy执行器六四。树码 "$out/"
+          rm -f "$out"/*.链接印
           tar -czf "$RUNNER_TEMP/yy-cross-${{ matrix.plat }}.tar.gz" -C "$out" .
 
       - uses: actions/upload-artifact@v4
