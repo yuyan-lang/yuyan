@@ -142,10 +142,30 @@
 　　　虑「无」者
 　　　　「捷思初始化名」于「境」于『host』于（「捷思新宿主函数」于「回调」）
 　　　而
-　　　「捷思在环境执行脚本」
-　　　　于「境」
-　　　　于
-　　　　『let o={n:2,add(x){this.n+=x;return ()=>this.n;},read:function(){return this.n;},host:host};let f=o.add(3);let a=o.read();let p={n:7,read:o.read};typeof host==="function"&&host===o.host&&host?a+p.read()+f()+host(2)+o.host(...[3])-10:0;』
+　　　虑「脚本果」者
+　　　　「捷思在环境执行脚本」
+　　　　　于「境」
+　　　　　于
+　　　　　　『let o={n:2,add(x){this.n+=x;return ()=>this.n;},read:function(){return this.n;},host:host};let f=o.add(3);let a=o.read();let p={n:7,read:o.read};typeof host==="function"&&host===o.host&&host?a+p.read()+f()+host(2)+o.host(...[3])-10:0;』
+　　　而
+　　　虑「闭包」者
+　　　　「捷思在环境执行脚本」于「境」于『function cb(x){o.n+=x;return o.read();}cb;』
+　　　而
+　　　虑「调用果」者
+　　　　「捷思宿主调用函数」于「函数」为「闭包」于「接收者」为「捷思未定义」
+　　　　于（「列」【「捷思数值」于「三点零」】）
+　　　而
+　　　虑「宿主果」者
+　　　　「捷思宿主调用函数」
+　　　　　于「函数」为（「捷思新宿主函数」于「回调」）
+　　　　　于「接收者」为（「捷思在环境执行脚本」于「境」于『o;』）
+　　　　　于（「列」【「捷思数值」于「二点零」】）
+　　　而
+　　　若「且」
+　　　　于（「捷思严格等」于「调用果」于（「捷思数值」于「八点零」））
+　　　　于（「捷思严格等」于「宿主果」于（「捷思数值」于「一零点零」））则「脚本果」
+　　　否则
+　　　　「捷思数值」于「零点零」
 　　）
 　　于（「捷思数值」于「一七点零」））于『捷思成员接收者与箭头捕获组合』。
 
