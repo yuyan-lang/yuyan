@@ -1,0 +1,51 @@
+\documentclass[UTF8,a4paper,11pt,fontset=fandol]{ctexart}
+\usepackage[left=72pt,right=72pt,top=78pt,bottom=78pt]{geometry}
+\usepackage{amsmath,amsthm,booktabs,fancyhdr}
+\linespread{1.55}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{设计语言论文样例}
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14pt}
+\newtheorem{定理}{定理}[section]
+\numberwithin{equation}{section}
+\title{设计作品中的结构化排版}
+\author{豫言设计引擎}
+\date{}
+\begin{document}
+\maketitle
+\begin{abstract}
+本文讨论结构化文档与统一显示表的联系。文档先完成编号与引用求值，再按版心断行分页，最后由设计引擎统一输出。
+
+\textbf{关键词：}设计语言；分页；结构化文档
+\end{abstract}
+\tableofcontents
+\section{引言}\label{引言}
+文章、界面与动画共享设计引擎。文档的引用关系在排版前求定，例如定理\ref{恒等}及公式\eqref{能量}。编号方法参见\cite{排版}。\footnote{本样例以点作为版式单位。}
+\begin{定理}[恒等式]\label{恒等}
+对于任意实数，恒等式成立。
+\end{定理}
+\begin{equation}\label{能量}
+E=mc^2
+\end{equation}
+\begin{proof}
+由符号定义直接得到所述等式。
+\end{proof}
+\clearpage
+\section{分页与连续版面}\label{分页节}
+分页版面按纸张高度转入下一页；连续版面重新流排，正文与编号保持同一来源。
+\begin{table}[ht]
+\centering
+\caption{版面模式}\label{模式表}
+\begin{tabular}{ll}\toprule
+模式 & 用途 \\\midrule
+分页 & 论文与印刷 \\
+连续 & 网页与小屏 \\\bottomrule
+\end{tabular}
+\end{table}
+\section*{索引}
+分页\dotfill 2
+\begin{thebibliography}{1}
+\bibitem{排版} 高德纳. 泰赫书. 专著. 排版技术资料, 1984.
+\end{thebibliography}
+\end{document}
