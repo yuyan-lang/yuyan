@@ -1,0 +1,41 @@
+# 文言：临时之流：取前轮所生之视窗原生样例，以 cdb 行打印之例而取其崩之现场。合入前删之。
+# 汉语：临时工作流：下载前一轮生成的 Windows 原生样例，用 cdb 运行打印样例并抓崩溃现场。合入前删除。
+name: 视窗抓崩
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: 产物所在的运行号
+        required: true
+permissions:
+  contents: read
+  actions: read
+jobs:
+  抓崩:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-windows-native
+          path: .
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: 抓崩溃现场
+        run: |
+          set +e
+          mkdir -p work
+          CDB=
+          for d in x64 arm64; do
+            c="/c/Program Files (x86)/Windows Kits/10/Debuggers/$d/cdb.exe"
+            if [ -x "$c" ]; then CDB="$c"; break; fi
+          done
+          echo "cdb：$CDB"
+          ls 组 | head -5
+          for n in 打印 时间; do
+            echo "===== $n"
+            (cd work && "$CDB" -g -G -o -c ".lastevent;.exr -1;r;u @\$ip-0x40 L40;kn 20;!address @\$ip;dq 0x3800f0 L2;dq @rsp L8;q" "../组/$n-x64.exe") 2>&1 | tail -160
+          done
