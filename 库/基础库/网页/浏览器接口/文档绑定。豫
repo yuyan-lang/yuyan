@@ -757,6 +757,7 @@
 　　　，『isSameNode』
 　　　，『cloneNode』
 　　　，『normalize』
+　　　，『dispatchEvent』
 　　　，『substringData』
 　　　，『splitText』
 　　　，『appendData』
@@ -942,6 +943,15 @@
 　　　而
 　　　「捷思未定义」
 　）
+　否则若「串相等」于「名」于『dispatchEvent』则（
+　　虑「事件值」者「浏览器实参」于「诸参」于「零」而
+　　鉴「滤」授以（「字符串」合「捷思值」合「事件对象」）
+　　于（会「项」而「捷思严格等」于（「项」中「一」）于「事件值」）
+　　于（「读引用」于「浏览器事件包装表」）而
+　　　有「罄」则「发生事故」于『TypeError：需要浏览器事件对象。』
+　　　或有（「缀」于「项」于「余」）则
+　　　　「捷思布尔」于（「派发事件」于「目标」于（「项」中「二」））
+　）
 　否则若「串相等」于「名」于『splitText』则（
 　　「：汉语：先构造两段，再写回并插在原节点之后；待办事项：拆开代理对的存储与范围位置同步。
     　　文言：先成两段，乃写回而插于原节点之后；待办事项：拆代理对之存储及范围位置之同改。：」
@@ -1108,6 +1118,7 @@
 　　　　　，『isSameNode』
 　　　　　，『cloneNode』
 　　　　　，『normalize』
+　　　　　，『dispatchEvent』
 　　　　　，『substringData』
 　　　　　，『splitText』
 　　　　　，『appendData』
