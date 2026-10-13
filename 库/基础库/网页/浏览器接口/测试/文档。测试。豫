@@ -58,26 +58,34 @@
 　　　于
 　　　『live.className="命中";let selector=live.matches("p.命中")&&!live.matches("span")&&live.closest("p")===live&&live.closest("div")===a&&live.closest("aside")===null;live.remove();selector&&live.closest("div")===null&&live.closest(".命中")===live;』
 　而
+　虑「元素值」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『live.innerHTML="文字<b></b><!--注--><i></i>尾";let firstElement=live.firstElementChild;let lastElement=live.lastElementChild;let elements=live.childElementCount===2&&firstElement.parentElement===live&&firstElement.nextElementSibling===lastElement&&lastElement.previousElementSibling===firstElement&&firstElement.previousElementSibling===null&&lastElement.nextElementSibling===null;lastElement.remove();elements&&live.childElementCount===1&&live.lastElementChild===firstElement&&lastElement.parentElement===null&&document.documentElement.parentElement===null;』
+　而
 　若「且」
-　　于（「捷思严格等」于「选择值」于（「捷思布尔」于「阳」））
+　　于（「捷思严格等」于「元素值」于（「捷思布尔」于「阳」））
 　　于（「且」
-　　　于（「捷思严格等」于「入口值」于（「捷思布尔」于「阳」））
+　　　于（「捷思严格等」于「选择值」于（「捷思布尔」于「阳」））
 　　　于（「且」
-　　　　于（「捷思严格等」于「标记值」于（「捷思布尔」于「阳」））
+　　　　于（「捷思严格等」于「入口值」于（「捷思布尔」于「阳」））
 　　　　于（「且」
-　　　　　于（「捷思严格等」于「树值」于（「捷思布尔」于「阳」））
+　　　　　于（「捷思严格等」于「标记值」于（「捷思布尔」于「阳」））
 　　　　　于（「且」
-　　　　　　于（「捷思严格等」于「属性值」于（「捷思布尔」于「阳」））
+　　　　　　于（「捷思严格等」于「树值」于（「捷思布尔」于「阳」））
 　　　　　　于（「且」
-　　　　　　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
+　　　　　　　于（「捷思严格等」于「属性值」于（「捷思布尔」于「阳」））
 　　　　　　　于（「且」
-　　　　　　　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
+　　　　　　　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
 　　　　　　　　于（「且」
-　　　　　　　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
+　　　　　　　　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
 　　　　　　　　　于（「且」
-　　　　　　　　　　于（「等」于（「长度」于「诸子」）于「二」）
-　　　　　　　　　　于（「串相等」于（「节点内容」于（「第几个」于「零」于「诸子」））于『甲乙』）））））））））则
-　　　　　　　　　　　「打印行」于『浏览器文档方法冒烟通过』
+　　　　　　　　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　于（「且」
+　　　　　　　　　　　于（「等」于（「长度」于「诸子」）于「二」）
+　　　　　　　　　　　于（「串相等」于（「节点内容」于（「第几个」于「零」于「诸子」））于『甲乙』））））））））））则
+　　　　　　　　　　　　「打印行」于『浏览器文档方法冒烟通过』
 　否则
 　　「发生事故」于『浏览器文档方法绑定错误』
 也。
