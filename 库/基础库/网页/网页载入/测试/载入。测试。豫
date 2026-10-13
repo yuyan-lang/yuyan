@@ -37,7 +37,7 @@
 　　　虑「脚本文档」者
 　　　　「解析文档」
 　　　　　于
-　　　　　『<div id="x"></div><script>var n=3;function f(){return n;}document.getElementById("x").setAttribute("title","改");</script><script>n+=4;</script><script>missing;</script><script>f();</script>』
+　　　　　『<div id="x"></div><script>var n=3;var tick=0;function f(){return n;}document.getElementById("x").setAttribute("title","改");queueMicrotask(()=>{tick=1;queueMicrotask(()=>{tick=2;});});queueMicrotask(()=>{missingTask;});</script><script>if(tick===2)n+=4;</script><script>missing;</script><script>f();</script>』
 　　　而
 　　　虑「上下文」者
 　　　　「执行网页文档脚本」于「脚本读取」于『https://example.test/page』于「脚本文档」
