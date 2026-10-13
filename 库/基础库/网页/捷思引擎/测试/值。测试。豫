@@ -562,4 +562,9 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let closed=0;let error={};function source(){return Iterator.from({next:function(){return {done:false,value:1};},return:function(){closed++;throw 9;}});}let first=source();let same=false;try{first.forEach(function(){throw error;});}catch(e){same=e===error;}let second=source();let reduced=false;try{second.reduce(function(){throw error;},0);}catch(e){reduced=e===error;}let third=source();let found=false;try{third.find(function(){throw error;});}catch(e){found=e===error;}same&&reduced&&found&&closed===3&&first.next().done&&second.next().done&&third.next().done;』）
 　　　于（「捷思布尔」于「阳」））于『捷思终结助手回调异常关闭上游并保留原异常身份』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」
+　　　于『let date=new Date(0);let iso=date.toISOString();let changed=date.setTime(1234.9);let parsed=new Date("2000-01-01T00:00:00Z");let invalid=new Date(NaN);let bad=false;try{invalid.toISOString();}catch(e){bad=e instanceof RangeError;}let receiver=false;try{Date.prototype.getTime.call({});}catch(e){receiver=e instanceof TypeError;}date instanceof Date&&date instanceof Object&&iso==="1970-01-01T00:00:00.000Z"&&changed===1234&&date.valueOf()===1234&&date.toISOString()==="1970-01-01T00:00:01.234Z"&&parsed.getTime()===946684800000&&Date.parse("2000-01-01T00:00:00Z")===946684800000&&invalid.toJSON()===null&&invalid.toString()==="Invalid Date"&&bad&&receiver&&Date.now()>0&&new Date().getTime()>0&&JSON.parse(JSON.stringify(new Date(0)))==="1970-01-01T00:00:00.000Z"&&Date.length===7&&Date.prototype.setTime.length===1;』）
+　　　于（「捷思布尔」于「阳」））于『捷思日期基础构造毫秒更新解析标准文字品牌与结森』。
 「打印行」于『捷思值冒烟通过』。
