@@ -82,33 +82,41 @@
 　　　于
 　　　『let batch=document.createElement("section");let node=document.createElement("b");node.textContent="中";batch.append("尾",node);batch.prepend("首",node);let order=batch.textContent==="首中尾"&&batch.firstElementChild===node;batch.replaceChildren(node,"新",7);let replaced=batch.textContent==="中新7"&&node.parentElement===batch;batch.replaceChildren();order&&replaced&&batch.firstChild===null&&node.parentNode===null;』
 　而
+　虑「控件值」者
+　　「捷思在环境执行脚本」
+　　　于「境」
+　　　于
+　　　『let input=document.createElement("input");input.setAttribute("value","初");input.setAttribute("checked","");let original=input.value==="初"&&input.checked;input.value="新😀";input.checked=false;let area=document.createElement("textarea");area.textContent="原";let initialArea=area.value==="原";area.value="现";let option=document.createElement("option");option.textContent="选项";option.selected=true;original&&initialArea&&input.value==="新😀"&&!input.checked&&input.getAttribute("value")==="初"&&input.hasAttribute("checked")&&area.value==="现"&&area.textContent==="原"&&option.selected&&option.value==="选项";』
+　而
 　若「且」
-　　于（「捷思严格等」于「批量值」于（「捷思布尔」于「阳」））
+　　于（「捷思严格等」于「控件值」于（「捷思布尔」于「阳」））
 　　于（「且」
-　　　于（「捷思严格等」于「操作值」于（「捷思布尔」于「阳」））
+　　　于（「捷思严格等」于「批量值」于（「捷思布尔」于「阳」））
 　　　于（「且」
-　　　　于（「捷思严格等」于「类名值」于（「捷思布尔」于「阳」））
+　　　　于（「捷思严格等」于「操作值」于（「捷思布尔」于「阳」））
 　　　　于（「且」
-　　　　　于（「捷思严格等」于「元素值」于（「捷思布尔」于「阳」））
+　　　　　于（「捷思严格等」于「类名值」于（「捷思布尔」于「阳」））
 　　　　　于（「且」
-　　　　　　于（「捷思严格等」于「选择值」于（「捷思布尔」于「阳」））
+　　　　　　于（「捷思严格等」于「元素值」于（「捷思布尔」于「阳」））
 　　　　　　于（「且」
-　　　　　　　于（「捷思严格等」于「入口值」于（「捷思布尔」于「阳」））
+　　　　　　　于（「捷思严格等」于「选择值」于（「捷思布尔」于「阳」））
 　　　　　　　于（「且」
-　　　　　　　　于（「捷思严格等」于「标记值」于（「捷思布尔」于「阳」））
+　　　　　　　　于（「捷思严格等」于「入口值」于（「捷思布尔」于「阳」））
 　　　　　　　　于（「且」
-　　　　　　　　　于（「捷思严格等」于「树值」于（「捷思布尔」于「阳」））
+　　　　　　　　　于（「捷思严格等」于「标记值」于（「捷思布尔」于「阳」））
 　　　　　　　　　于（「且」
-　　　　　　　　　　于（「捷思严格等」于「属性值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　于（「捷思严格等」于「树值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　于（「且」
-　　　　　　　　　　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　于（「捷思严格等」于「属性值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　于（「捷思严格等」于「实时值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　于（「捷思严格等」于「值」于（「捷思布尔」于「阳」））
 　　　　　　　　　　　　　于（「且」
-　　　　　　　　　　　　　　于（「等」于（「长度」于「诸子」）于「二」）
-　　　　　　　　　　　　　　于（「串相等」于（「节点内容」于（「第几个」于「零」于「诸子」））于『甲乙』）））））））））））））
+　　　　　　　　　　　　　　于（「捷思严格等」于「片段值」于（「捷思布尔」于「阳」））
+　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　于（「等」于（「长度」于「诸子」）于「二」）
+　　　　　　　　　　　　　　　于（「串相等」于（「节点内容」于（「第几个」于「零」于「诸子」））于『甲乙』））））））））））））））
 　则
 　　「打印行」于『浏览器文档方法冒烟通过』
 　否则
