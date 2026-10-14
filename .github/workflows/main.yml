@@ -233,9 +233,6 @@ jobs:
     needs: bootstrap
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # 文言：视窗之一路败不阻后之诸作（待办事项同上）。
-    # 汉语：Windows 这一路失败时不挡后面的作业（待办事项同上）。
-    continue-on-error: ${{ matrix.plat == 'windows-x64' }}
     strategy:
       fail-fast: false
       matrix:
@@ -828,11 +825,8 @@ jobs:
 
       # 文言：一致性之组：诸普通探针、盘之文件二阶、原生探针，各由编译器预编二为原生之程（连执行器），行于同一工作目录，逐字较其常出。
       # 汉语：一致性组：普通探针、盘文件两阶段与原生探针，各自由编译器预编二成带执行器的原生程序，在同一个工作目录里依次运行，标准输出与 .expected 逐字比较，并要求退出码为 0。
-      # 文言：待办事项：执行器唯六十四位址一构，视窗与苹果兼容六十四之降级未有六十四位址之内存，故此组暂不阻 CI。
-      # 汉语：待办事项：执行器只有六十四位地址一种构建（10-13 删去三十二位），Windows 与 macOS x86-64 的降级还没有六十四位地址内存，这一组暂不挡 CI。
       - name: 执行器一致性组
         if: always()
-        continue-on-error: true
         run: |
           mkdir -p work
           fail=0
@@ -936,11 +930,8 @@ jobs:
           test "$code" = 7
           grep -q 'echo-line' out.txt
 
-      # 文言：待办事项：执行器唯六十四位址一构，视窗与苹果兼容六十四之降级未有六十四位址之内存，故此组暂不阻 CI。
-      # 汉语：待办事项：执行器只有六十四位地址一种构建（10-13 删去三十二位），Windows 与 macOS x86-64 的降级还没有六十四位地址内存，这一组暂不挡 CI。
       - name: 执行器一致性组
         if: always()
-        continue-on-error: true
         run: |
           mkdir -p work
           fail=0
