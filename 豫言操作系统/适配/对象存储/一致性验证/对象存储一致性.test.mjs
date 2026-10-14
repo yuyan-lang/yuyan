@@ -1,4 +1,4 @@
-// 文言：以真 Wasm 验对象存储 0.3.0；汉语：对象存储 0.3.0 的真实 Wasm 一致性测试。
+// 文言：以真 Wasm 验对象存储 0.4.0；汉语：对象存储 0.4.0 的真实 Wasm 一致性测试。
 // 两种运行方式：
 //   缺省      在 Node 中装载真实 Wasm，R2 为 模拟R2.mjs 的类实例（形状取自真实 workerd 的探测）；
 //   远端地址  设置环境变量 远端地址（如 http://localhost:8793）则经 HTTP 调用同一应用的本地 workerd，桶为真实 R2；
@@ -56,6 +56,7 @@ function 新场景() {
     // 原样：对象不存在时应用直接返回适配给的 404 空响应（raw=1），否则应用另造 404 文字响应“缺”。
     直通: (键名, {状态 = 200, 头们 = [], 方法 = 'GET', 桶 = 'PACKAGES', 原样 = false} = {}) =>
       调('/serve?' + 查({b: 桶, k: 键名, status: 状态, hdrs: JSON.stringify(头们), ...(原样 ? {raw: '1'} : {})}), {方法}),
+    写流: (键名, 字节, 选项 = '', 桶 = 'PACKAGES', 方法 = 'POST') => 调('/put-stream?' + 查({b: 桶, k: 键名, opts: typeof 选项 === 'string' ? 选项 : JSON.stringify(选项)}), {体: 字节, 方法}),
     清理: async 诸 => { if (远端 && 诸.length) await 调('/delete?' + 查({b: 'PACKAGES'}), {体: JSON.stringify(诸)}); },
   };
   return 场景;
@@ -704,4 +705,27 @@ test('参数中的引号、反斜杠、汉字与非 BMP 字符经 JSON 传给平
   assert.equal((await 场.读(诸键[0], 10)).数据().text, 'x');
   assert.equal(new TextDecoder().decode((await 场.直通(诸键[1])).字节), 'x');
   await 场.清理(诸键);
+});
+
+test('入站正文写入对象（0.4.0）：正文流直接写入，大于 16 MiB 也可，sha256 相符则写、不符则抛异常且不留对象，无正文抛异常', async () => {
+  const 场 = 新场景(), 键 = 场.键('流/一'), 大键 = 场.键('流/大');
+  const 体 = 字节们('流式正文 abc');
+  let 果 = await 场.写流(键, 体, {sha256: sha256(体), contentType: 'application/octet-stream', customMetadata: {上传者: '测试CI'}});
+  assert.equal(果.状态码, 200, 果.文);
+  assert.equal(果.数据().written, true);
+  assert.equal(果.数据().size, 体.length);
+  const 元 = (await 场.头(键)).数据();
+  assert.equal(元.size, 体.length);
+  assert.equal(元.customMetadata.上传者, '测试CI');
+  assert.deepEqual(Buffer.from((await 场.读字节(键, 1024)).字节), Buffer.from(体));
+  const 大 = new Uint8Array(17 * MiB).fill(7);
+  果 = await 场.写流(大键, 大, {sha256: sha256(大)});
+  assert.equal(果.状态码, 200, 果.文.slice(0, 200));
+  assert.equal((await 场.头(大键)).数据().size, 大.length);
+  const 错键 = 场.键('流/错');
+  果 = await 场.写流(错键, 字节们('abd'), {sha256: sha256(体)});
+  应失败(果, /did not match what we received/);
+  assert.equal((await 场.头(错键)).文, 'null');
+  应失败(await 场.写流(错键, undefined, '', 'PACKAGES', 'GET'), /入站请求没有正文/);
+  await 场.清理([键, 大键]);
 });
