@@ -40,4 +40,11 @@
 　　　于『out.sort().join(",");』）
 　　于『alltrue,anytrue,racetrue,settledtrue』）
 　于『捷思期约组合方法遇到不可迭代的输入时返回被拒绝的期约』。
+「断言」
+　于（「串相等」
+　　于（「异步结果」
+　　　于『var out=[];Promise.try(function(a,b){return a+b;},1,2).then(function(v){out.push("ok"+v);});Promise.try(function(){throw new Error("boom");}).catch(function(e){out.push("err"+e.message);});Promise.try(function(){return Promise.resolve(7);}).then(function(v){out.push("p"+v);});』
+　　　于『out.sort().join(",");』）
+　　于『errboom,ok3,p7』）
+　于『捷思Promise点try』。
 「打印行」于『捷思期约与异步冒烟通过』。
