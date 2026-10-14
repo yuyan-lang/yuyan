@@ -35,4 +35,18 @@
 　『var log=[];function* g(){try{yield 1;yield 2;}finally{log.push("fin");}}for(const x of g()){break;}var [a]=g();function f(){for(const x of g()){return x;}}f();try{for(const x of g()){throw 1;}}catch(e){}for(const x of g()){}var it={[Symbol.iterator](){return {next(){return {value:1,done:false};},return(){log.push("ret");return {};}};}};for(const x of it)break;var [p,q]=it;var thrower={[Symbol.iterator](){return {next(){throw new Error("n");},return(){log.push("bad");return {};}};}};try{for(const x of thrower){}}catch(e){log.push("c"+e.message);}outer:for(const x of g()){for(const y of g()){break outer;}}for(const z of g()){break;}log.join();』
 　　于「期望」为『fin,fin,fin,fin,fin,ret,ret,cn,fin,fin,fin』
 　　于「说明」为『捷思迭代器关闭』。
+「：汉语：带标签的模板：标签函数得到冻结的字符串数组（带冻结的 raw），同一处源码每次求值得同一个数组、不同处互异；无效转义的熟值为未定义而生值保留；成员标签带接收者；无标签的模板遇无效转义是语法错误。
+　　文言：带标签之模板：标签函数得冻结之串列（附冻结之 raw），同一处源码每次求值得同一列、异处则异；转义无效者熟值为未定义而生值存之；成员标签带接收者；无标签之模板遇无效转义为语法错误。：」
+「脚本得文」
+　于「脚本」为
+　『var r=[];function id(s){return s;}function site(){return id`a${1}b`;}var s1=site(),s2=site();r.push(s1===s2);r.push(Object.isFrozen(s1)&&Object.isFrozen(s1.raw)&&s1.length===2&&s1.raw.length===2);r.push(id`x`===id`x`);var t=(s,...v)=>s.raw.join("|")+"#"+v.join(",");r.push(t`a\n${1}bA${2}`);var bad=(s)=>String(s[0])+"/"+s.raw[0];r.push(bad`\unicode`);var o={k:7,m(s){return this.k;}};r.push(o.m`x`);r.push(String.raw`a\n${1}b`);r.push(`a${1}b`);var e="n";try{eval("`\\u`");}catch(x){e=x instanceof SyntaxError?"S":"E";}r.push(e);r.join("|");』
+　　于「期望」为『true|true|false|a\n|bA|#1,2|undefined/\unicode|7|a\n1b|a1b|S』
+　　于「说明」为『捷思带标签的模板』。
+「：汉语：with 语句：对象的属性遮住外层同名绑定，读写都落到对象上，调用其中的函数时接收者是该对象，闭包会带走对象环境，Symbol.unscopables 屏蔽的属性不遮住，delete 名字删掉对象的属性，原始值先转成对象，null 与 undefined 抛 TypeError。
+　　文言：with 之句：物之性蔽外层同名之绑，读写皆落于物，呼其中之函数时接收者即其物，闭包携对象环境而去，Symbol.unscopables 所蔽之性不蔽之，delete 名则删物之性，原始之值先化为物，null 与 undefined 抛 TypeError。：」
+「脚本得文」
+　于「脚本」为
+　『var r=[];var o={a:1,b:2,f(){return this===o;}};with(o){r.push(a+b);a=5;r.push(o.a);r.push(f());var c=3;r.push(typeof zz);r.push(typeof a);}r.push(c);function g(){with({x:1}){return function(){return x;};}}r.push(g()());var u={x:1,[Symbol.unscopables]:{x:true}};var x="outer";with(u){r.push(x);}r.push((function(){var p={q:1};with(p){delete q;}return "q" in p;})());with("ab"){r.push(length);}try{with(null){}}catch(e){r.push(e instanceof TypeError);}r.join("|");』
+　　于「期望」为『3|5|true|undefined|number|3|1|outer|false|2|true』
+　　于「说明」为『捷思with语句』。
 「打印行」于『捷思类与解构补遗冒烟通过』。
