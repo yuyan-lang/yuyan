@@ -16,8 +16,8 @@ on:
 permissions:
   contents: write
 
-# 文言：工作流之并发组：同分支同时至多一轮行、一轮候；新推至则代其候者，行者照常竟之，工具链之包亦发。故推送虽频，待行者至多一轮，每轮皆全竟。拉取请求有新推则罢旧轮。
-# 汉语：工作流级并发组：同一分支同时至多一轮在跑、一轮在等；新推送进来就替换正在等的那轮，正在跑的照常跑完（含发布工具链包）。推送再频繁，排队的也至多一轮，每轮都完整跑完。拉取请求有新推送时取消旧轮。
+# 文言：工作流之并发组：同分支同时至多一轮行、一轮候；新推至则代其候者，行者照常竟之，诸平台之包亦发。故推送虽频，待行者至多一轮，每轮皆全竟。拉取请求有新推则罢旧轮。
+# 汉语：工作流级并发组：同一分支同时至多一轮在跑、一轮在等；新推送进来就替换正在等的那轮，正在跑的照常跑完（含各平台的发布）。推送再频繁，排队的也至多一轮，每轮都完整跑完。拉取请求有新推送时取消旧轮。
 concurrency:
   group: CI-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -139,6 +139,20 @@ jobs:
           path: ${{ runner.temp }}/yuyan-native-linux-x64.tar.gz
           retention-days: 7
           if-no-files-found: error
+
+      # 文言：本平台自举既过，即覆连续版之 Wasm 与 Linux x64 原生之包，不待他作；史版待诸平台俱过，归发布历史版本之作。
+      # 汉语：本平台自举通过就覆盖连续版本里的 Wasm 包与 Linux x64 原生包，不等别的作业；历史版本要等各平台都自举通过，由“发布历史版本”作业统一发。
+      - name: 发布本平台连续版本
+        if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          if ! gh release view continuous-binaries >/dev/null 2>&1; then
+            gh release create continuous-binaries --target "$GITHUB_SHA" --title continuous-binaries --latest=false --notes "豫言工具链包（连续版本）"
+          fi
+          gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" --clobber
 
       # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
       # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
@@ -374,13 +388,13 @@ jobs:
         run: |
           set -euo pipefail
           if ! gh release view continuous-binaries >/dev/null 2>&1; then
-            echo "连续版本还不存在，等发布工具链包作业先建" >&2
+            echo "连续版本还不存在，等自举作业先建" >&2
             exit 1
           fi
           gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" --clobber
 
-  # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，交发布之作；苹果另验系统库之调与张量。不用 Node 与 Wasm。苹果运行器唯三核七吉，并发依核数。
-  # 汉语：其他平台原生自举：用交叉工具链里的原生豫构作一级驱动，在本平台原生自举并核对定点、装上原生工具链，打本平台的原生工具链包交给发布作业；macOS 另外验证系统库调用与张量。不用 Node 与 Wasm。macOS 运行器只有三核、约 7 GB 内存，并发数按处理器数。
+  # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，即覆连续版之本平台包，并交发布历史版本之作；苹果另验系统库之调与张量，其验在发布之后，败不阻包之发。不用 Node 与 Wasm。苹果运行器唯三核七吉，并发依核数。
+  # 汉语：其他平台原生自举：用交叉工具链里的原生豫构作一级驱动，在本平台原生自举并核对定点、装上原生工具链，打本平台的原生工具链包，随即覆盖连续版本里的本平台包，并交给“发布历史版本”作业；macOS 另外验证系统库调用与张量，这两步排在发布之后，失败不挡发包。不用 Node 与 Wasm。macOS 运行器只有三核、约 7 GB 内存，并发数按处理器数。
   native-platforms:
     name: 原生自举（${{ matrix.plat }}）
     needs: cross-toolchains
@@ -421,6 +435,15 @@ jobs:
           path: ${{ runner.temp }}/yuyan-native-${{ matrix.plat }}.tar.gz
           retention-days: 7
           if-no-files-found: error
+
+      # 文言：本平台自举既过，即覆连续版之本平台包；连续版由自举之作先建。
+      # 汉语：本平台自举通过就覆盖连续版本里的本平台包；连续版本由自举作业先建好。
+      - name: 发布本平台连续版本
+        if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-native-${{ matrix.plat }}.tar.gz" --clobber
 
       # 文言：苹果臂之系统库调用：验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
       # 汉语：苹果 ARM64 系统库调用：验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
@@ -952,12 +975,12 @@ jobs:
           cd work
           lldb --batch -o run -k 'thread backtrace' -k 'register read' -k 'disassemble --pc --count 16' -k 'image list -o' -- ../组/打印 2>&1 | head -120 || true
 
-  # 文言：检查与诸平台之原生自举俱过，乃发 Wasm 与原生工具链之包。按提交存史，史版之名冠以提交之时（UTC），连续版覆之。GitHub 一发行至多千资产：historical-binaries 满则次用 historical-binaries-2、-3……，取首未满者，无则建之。
-  # 汉语：类型检查、豫构测试与各平台原生自举都通过后，发布 Wasm 与原生工具链包：按提交号存历史版本，文件名前加提交时间（UTC），并覆盖更新连续版本。GitHub 每个发行至多 1000 个资产：historical-binaries 满了就依次用 historical-binaries-2、-3……，取第一个未满的，没有就新建。
+  # 文言：诸平台（Linux x64、Linux arm64、苹果 arm64）俱自举而成包，乃发 Wasm 与原生工具链之史版：按提交存之，名冠以提交之时（UTC）。连续版由各平台自举之作自覆，此惟更其说明。类型检查、全树与苹果之试败皆不阻；缺一平台之包者不发。GitHub 一发行至多千资产：historical-binaries 满则次用 historical-binaries-2、-3……，取首未满者，无则建之。
+  # 汉语：各平台（Linux x64、Linux arm64、macOS arm64）都自举通过并打好包后，发布 Wasm 与原生工具链包的历史版本：按提交号存档，文件名前加提交时间（UTC）。连续版本由各平台的自举作业各自覆盖，这里只更新发行说明。类型检查、全树测试与 macOS 测试失败都不挡；缺任何一个平台的包就不发。GitHub 每个发行至多 1000 个资产：historical-binaries 满了就依次用 historical-binaries-2、-3……，取第一个未满的，没有就新建。
   publish:
-    name: 发布工具链包
-    needs: [bootstrap, checks, native-platforms]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
+    name: 发布历史版本
+    needs: [bootstrap, native-platforms]
+    if: ${{ !cancelled() && needs.bootstrap.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/yybs' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -975,9 +998,17 @@ jobs:
           path: ${{ runner.temp }}/原生包
           merge-multiple: true
 
-      - name: 发布 Wasm 与原生工具链包
+      - name: 发布 Wasm 与原生工具链包的历史版本
         run: |
           set -euo pipefail
+          # 文言：某平台本轮自举未过则无其包，不发史版。
+          # 汉语：某平台本轮没有自举通过就没有它的包，不发历史版本。
+          for file in "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP"/原生包/yuyan-native-{linux-x64,linux-arm64,macos-arm64}.tar.gz; do
+            if [ ! -f "$file" ]; then
+              echo "::notice::缺 $(basename "$file")：该平台本轮没有自举通过，不发历史版本"
+              exit 0
+            fi
+          done
           notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器汇编树码 yy执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 yy豫构臂。豫行、yy豫构兼。豫行，三个宿主的豫行启动器 yy豫行启动器苹果臂、yy豫行启动器林臂、yy豫行启动器林兼，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。"
 
           release_ready() {
@@ -994,8 +1025,8 @@ jobs:
           release_ready continuous-binaries
 
           commit_time="$(gh api "repos/$GH_REPO/commits/$GITHUB_SHA" --jq '.commit.committer.date | fromdateiso8601 | strftime("%Y%m%dT%H%M%SZ")')"
-          # 文言：发一包：存史版（文件名冠以提交之时），复覆连续版。
-          # 汉语：发布一个包：存历史版本（文件名前加提交时间），再覆盖连续版本。
+          # 文言：发一包之史版（文件名冠以提交之时）；连续版已由各平台之作覆之。
+          # 汉语：发布一个包的历史版本（文件名前加提交时间）；连续版本已由各平台的作业覆盖过。
           publish() {
             package="$1"
             file="$2"
@@ -1020,7 +1051,6 @@ jobs:
               n=$((n + 1))
               historical="historical-binaries-$n"
             done
-            gh release upload continuous-binaries "$file" --clobber
           }
           publish yuyan-wasm "$RUNNER_TEMP/yuyan-wasm.tar.gz"
           for file in "$RUNNER_TEMP"/原生包/yuyan-native-*.tar.gz; do
