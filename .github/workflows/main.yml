@@ -269,6 +269,116 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
+  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与三宿主之豫行启动器，打包而传。
+  # 汉语：豫行工具链（提案 00021）：用本轮的原生豫构编出两架构的豫构豫行与三个宿主的豫行启动器，打包上传。
+  yuxing-toolchain:
+    name: 豫行工具链
+    needs: bootstrap
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-test-tools
+          path: ${{ runner.temp }}
+
+      - name: 解开本轮工具
+        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+
+      - name: 打豫行工具链包
+        run: |
+          set -euo pipefail
+          ./yy豫构.exe 目标 豫行打包 --不连带 -j "$(nproc)"
+          tar -czf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" -C yy豫行工具链 .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yy-yuxing-toolchain
+          path: ${{ runner.temp }}/yuyan-yuxing-toolchain.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+  # 文言：豫行于诸宿主（提案〇〇〇二一）：于 Linux 二构与苹果之运行器，以包中之启动器行豫构豫行：发现诸包，构原生你好之豫行版，复以启动器行之（印你好，以七退）。
+  # 汉语：豫行跨宿主运行（提案 00021）：在 Linux 两架构与 macOS 运行器上，用包里的启动器运行豫构豫行：发现包、构建原生你好的豫行版，再用启动器运行它（打印你好，退出码 7）。
+  yuxing-hosts:
+    name: 豫行跨宿主（${{ matrix.plat }}）
+    needs: yuxing-toolchain
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            plat: linux-x64
+            launcher: yy豫行启动器林兼
+            yuxing: yy豫构兼。豫行
+            arch: 兼容六十四
+          - os: ubuntu-24.04-arm
+            plat: linux-arm64
+            launcher: yy豫行启动器林臂
+            yuxing: yy豫构臂。豫行
+            arch: 臂六十四
+          - os: macos-latest
+            plat: macos-arm64
+            launcher: yy豫行启动器苹果臂
+            yuxing: yy豫构臂。豫行
+            arch: 臂六十四
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-yuxing-toolchain
+          path: ${{ runner.temp }}
+
+      - name: 解开豫行工具链包
+        run: |
+          set -euo pipefail
+          tar -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"
+          chmod +x "${{ matrix.launcher }}"
+
+      - name: 发现包并构建运行原生你好的豫行版
+        run: |
+          set -euo pipefail
+          ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 发现 --树 > yy豫行发现.txt
+          grep -F '标准库（库/标准库）' yy豫行发现.txt
+          ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 构建 原生你好 豫行入口 --输出 yy编你好 -j "$(getconf _NPROCESSORS_ONLN)" -- --目标 本机 --目标系统 豫言 --目标架构 ${{ matrix.arch }}
+          set +e
+          ./"${{ matrix.launcher }}" yy编你好 > yy你好.txt
+          code=$?
+          set -e
+          grep -F '你好' yy你好.txt
+          test "$code" = 7
+
+  # 文言：发豫行工具链包（提案〇〇〇二一）：跨宿主之验皆过，乃覆连续版之 yuyan-yuxing-toolchain.tar.gz；独为一作，败不阻他包之发，不入史版（免耗资产之额）。
+  # 汉语：发布豫行工具链包（提案 00021）：跨宿主验证都通过后，覆盖连续版本里的 yuyan-yuxing-toolchain.tar.gz；单独一个作业，失败不挡其他包的发布，也不进历史版本（免得多占资产额度）。
+  publish-yuxing:
+    name: 发布豫行工具链包
+    needs: [yuxing-toolchain, yuxing-hosts]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-yuxing-toolchain
+          path: ${{ runner.temp }}
+
+      - name: 上传到连续版本
+        run: |
+          set -euo pipefail
+          if ! gh release view continuous-binaries >/dev/null 2>&1; then
+            echo "连续版本还不存在，等发布工具链包作业先建" >&2
+            exit 1
+          fi
+          gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" --clobber
+
   # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，交发布之作；苹果另验系统库之调与张量。不用 Node 与 Wasm。苹果运行器唯三核七吉，并发依核数。
   # 汉语：其他平台原生自举：用交叉工具链里的原生豫构作一级驱动，在本平台原生自举并核对定点、装上原生工具链，打本平台的原生工具链包交给发布作业；macOS 另外验证系统库调用与张量。不用 Node 与 Wasm。macOS 运行器只有三核、约 7 GB 内存，并发数按处理器数。
   native-platforms:
@@ -868,7 +978,7 @@ jobs:
       - name: 发布 Wasm 与原生工具链包
         run: |
           set -euo pipefail
-          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器汇编树码 yy执行器。树码），解压到仓库根目录即可原生起步，不用 Node。"
+          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器汇编树码 yy执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 yy豫构臂。豫行、yy豫构兼。豫行，三个宿主的豫行启动器 yy豫行启动器苹果臂、yy豫行启动器林臂、yy豫行启动器林兼，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。"
 
           release_ready() {
             if ! gh release view "$1" >/dev/null 2>&1; then
