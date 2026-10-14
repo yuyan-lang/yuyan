@@ -1170,6 +1170,109 @@ jobs:
             publish "$(basename "$file" .tar.gz)" "$file"
           done
 
+  # 文言：抄于社区包仓库：史版既发，以本轮之原生豫构构社区包工具，抄清单「社区复制包们」诸包于社区包仓库（yuyan-lang/yuyan-community-packages）之 包/豫言/<包名>/（许可 AGPL-3.0-only），易其工具链钉为本轮之 Linux x64 原生工具链包，以 DCO 之签录之，推一枝而开拉取请求，由彼仓之检与合入之机合之。跨仓之写用机密 YUYAN_COMMUNITY_TOKEN（细粒度之个人令牌，惟授彼仓 Contents 与 Pull requests 之写）；无之则演练：照抄照录，印其差而存为构件，不推。本轮史版未发（某平台未过）则不抄。
+  # 汉语：复制到社区包仓库：历史版本发布后，用本轮的原生豫构构建社区包工具，把清单「社区复制包们」（应用/开发工具/社区包工具/复制。豫）里的包复制到社区包仓库（yuyan-lang/yuyan-community-packages）的 包/豫言/<包名>/（许可 AGPL-3.0-only），工具链钉改成本轮的 Linux x64 原生工具链包，带 DCO 签名提交，推一个分支并开拉取请求，由社区仓库的检查与合入机器人合入。跨仓写入用机密 YUYAN_COMMUNITY_TOKEN（细粒度个人令牌，只授社区仓库的 Contents 与 Pull requests 写权限）；没有令牌时演练：照样复制、提交，打印差异并存为构件，不推送。本轮历史版本没发（某个平台没过）时不复制。
+  community-copy:
+    name: 复制到社区包仓库
+    needs: [bootstrap, publish]
+    if: ${{ !cancelled() && needs.publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/yybs' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-test-tools
+          path: ${{ runner.temp }}
+
+      - name: 解开本轮工具并构建社区包工具
+        run: |
+          set -euo pipefail
+          tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+          ./yy豫构.exe 构建 社区包工具 --输出 yy社区包工具.exe -j "$(nproc)"
+
+      # 文言：于诸 historical-binaries 发行中求本轮之 Linux x64 原生包，下而算其沙256。
+      # 汉语：在各个 historical-binaries 发行里找本轮的 Linux x64 原生工具链包，下载后算沙256。
+      - name: 找本轮发布的原生工具链包
+        id: pkg
+        run: |
+          set -euo pipefail
+          url=""
+          for tag in $(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("historical-binaries"))'); do
+            name="$(gh release view "$tag" --json assets --jq ".assets[].name | select(endswith(\"-yuyan-native-linux-x64-$GITHUB_SHA.tar.gz\"))" | head -n 1)"
+            if [ -n "$name" ]; then
+              url="https://github.com/$GH_REPO/releases/download/$tag/$name"
+              break
+            fi
+          done
+          if [ -z "$url" ]; then
+            echo "::notice::本轮的原生工具链包没有发布，不复制到社区包仓库"
+            echo "url=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          curl --fail --location --retry 3 --retry-all-errors --output "$RUNNER_TEMP/本轮原生包.tar.gz" "$url"
+          sha="$(sha256sum "$RUNNER_TEMP/本轮原生包.tar.gz" | cut -d' ' -f1)"
+          echo "原生工具链包：$url（沙256 $sha）"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: 检出社区包仓库
+        if: steps.pkg.outputs.url != ''
+        uses: actions/checkout@v4
+        with:
+          repository: yuyan-lang/yuyan-community-packages
+          path: 社区包仓库
+          persist-credentials: false
+
+      - name: 复制包并改工具链钉
+        if: steps.pkg.outputs.url != ''
+        env:
+          YY_PKG_URL: ${{ steps.pkg.outputs.url }}
+          YY_PKG_SHA: ${{ steps.pkg.outputs.sha }}
+        run: ./yy社区包工具.exe 复制 --语言仓 "$GITHUB_WORKSPACE" --社区 "$GITHUB_WORKSPACE/社区包仓库" --钉网址 "$YY_PKG_URL" --钉沙256 "$YY_PKG_SHA" --钉提交 "$GITHUB_SHA"
+
+      - name: 提交并开拉取请求（没有令牌时演练）
+        id: pr
+        if: steps.pkg.outputs.url != ''
+        env:
+          YY_COMMUNITY_TOKEN: ${{ secrets.YUYAN_COMMUNITY_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd 社区包仓库
+          git config user.name "豫言 CI"
+          git config user.email "ci@yuyan-lang.org"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "社区包仓库没有改动"
+            exit 0
+          fi
+          short="${GITHUB_SHA:0:9}"
+          branch="语言仓/$short"
+          git commit -q -s -m "复制：语言仓 $short 的包与工具链钉" -m "由语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）。"
+          git show --stat --format='%H%n%an <%ae>%n%B' HEAD
+          git format-patch -1 --stdout HEAD > "$RUNNER_TEMP/社区复制.patch"
+          if [ -z "$YY_COMMUNITY_TOKEN" ]; then
+            echo "::notice::演练：没有机密 YUYAN_COMMUNITY_TOKEN，不推送。将要执行：推送分支 $branch 到 yuyan-lang/yuyan-community-packages，开拉取请求“复制：语言仓 $short 的包与工具链钉”到 main，由社区仓库的合入机器人核对后合入。补丁存为构件 社区复制补丁。"
+            exit 0
+          fi
+          git push "https://x-access-token:$YY_COMMUNITY_TOKEN@github.com/yuyan-lang/yuyan-community-packages.git" "HEAD:refs/heads/$branch"
+          GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr create -R yuyan-lang/yuyan-community-packages --base main --head "$branch" \
+            --title "复制：语言仓 $short 的包与工具链钉" \
+            --body "语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）：清单里的包复制到 包/豫言/，工具链钉改成本轮的原生工具链包。合入机器人核对检查与作者后自动合入。"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.pkg.outputs.url != ''
+        with:
+          name: 社区复制补丁
+          path: ${{ runner.temp }}/社区复制.patch
+          retention-days: 7
+          if-no-files-found: ignore
+
+
   # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成 BIOS/UEFI 混合之 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType）；以 豫言操作系统/裸机/发行/系统版本.tsv 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
   # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的原生豫构，构建造盘工具 yy豫言系统.exe 并造 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType）；按 豫言操作系统/裸机/发行/系统版本.tsv 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
   os-release:
