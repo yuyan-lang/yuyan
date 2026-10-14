@@ -618,6 +618,27 @@
 　　）
 　　于『表单控件派发 focus、input、change、blur』；
 　「浏览器控件取焦点」于「可无」；
+　虑「指页模」者
+　　「入口」之「浏览器导航」
+　　　于「勾模」
+　　　于
+　　　『data:text/html,<body style="margin:0"><div style="height:50px"></div><script>var log=[];function rec(x){log.push(x);document.body.setAttribute("title",log.join(","));}document.body.addEventListener("mousedown",function(e){rec("下"+e.button+","+e.clientX);});document.body.addEventListener("mouseup",function(e){rec("上");});</script></body>』
+　而
+　虑「指页」者
+　　鉴「指页模」中「页面」而
+　　　有「可无」则「发生事故」授以「网页静态页面」于『指针事件页载入失败』
+　　　或有（「可有」于「载页」）则
+　　　　「载页」
+　而
+　虑「下模」者「入口」之「浏览器派发指针事件」于「指页模」于「类型」为『mousedown』于「横」为「一零」于「纵」为「一零」而
+　虑「上模」者「入口」之「浏览器派发指针事件」于「下模」于「类型」为『mouseup』于「横」为「一零」于「纵」为「一零」而
+　「断言」
+　　于（
+　　　鉴「取属性」于（「头一个」于（「查询选择器全部」于（「指页」中「文档」）于『body』））于『title』而
+　　　　有（「可有」于「题」）则「串相等」于「题」于『下0,10,上』
+　　　　或有「可无」则「阴」
+　　）
+　　于『指针按下抬起派发给页面监听』；
 　「浏览器记窗口尺寸」于「宽」为（「乘」于「八零零」于「六四」）于「高」为（「乘」于「六四零」于「六四」）；
 　「断言」于（「入口」之「浏览器需重排」于「图模」）于『窗口尺寸变了待重排』；
 　虑「排模」者「入口」之「浏览器计时更新」于「图模」而
