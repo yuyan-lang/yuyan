@@ -157,9 +157,18 @@
 　　　于「名」为『document』
 　　　于「值」为（「桩对象」于（「列」【『getElementById』，『querySelector』，『querySelectorAll』，『createElement』，『addEventListener』】））
 　而
-　虑「无」者「设对象属性」于「物」为「全局」于「名」为『localStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
-　虑「无」者「设对象属性」于「物」为「全局」于「名」为『sessionStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
-　虑「无」者「设对象属性」于「物」为「全局」于「名」为『history』于「值」为（「桩对象」于（「列」【『pushState』，『replaceState』，『back』，『forward』】））而
+　虑「无」者
+　　「设对象属性」于「物」为「全局」于「名」为『localStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
+　虑「无」者
+　　「设对象属性」于「物」为「全局」于「名」为『sessionStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
+　虑「无」者
+　　「设对象属性」于「物」为「全局」于「名」为『history』于「值」为（「桩对象」于（「列」【『pushState』，『replaceState』，『back』，『forward』】））而
+　虑「无」者
+　　「设对象属性」
+　　　于「物」为「全局」
+　　　于「名」为『process』
+　　　于「值」为（「桩对象」于（「列」【『exit』，『cwd』，『on』，『once』，『nextTick』，『hrtime』，『uptime』，『memoryUsage』，『emitWarning』】））
+　而
 　虑「无」者「设对象属性」于「物」为「全局」于「名」为『crypto』于「值」为（「桩对象」于（「列」【『getRandomValues』，『randomUUID』】））而
 　虑「无」者「设对象属性」于「物」为「全局」于「名」为『indexedDB』于「值」为（「桩对象」于（「列」【『open』，『deleteDatabase』】））而
 　虑「无」者
@@ -181,7 +190,11 @@
 　　　　】））
 　而
 　虑「无」者
-　　「从左折叠」授以「字符串」授以「有」于（会「名」而会「无」而「设对象属性」于「物」为「全局」于「名」为「名」于「值」为（「桩函数」于「元」））于「元」于（「桩名列」于「元」）而
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而「设对象属性」于「物」为「全局」于「名」为「名」于「值」为（「桩函数」于「元」））
+　　　于「元」
+　　　于（「桩名列」于「元」）
+　而
 　「全局」
 也。
 
