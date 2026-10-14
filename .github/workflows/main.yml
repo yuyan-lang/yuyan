@@ -277,8 +277,8 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与三宿主之豫行启动器，打包而传。
-  # 汉语：豫行工具链（提案 00021）：用本轮的原生豫构编出两架构的豫构豫行与三个宿主的豫行启动器，打包上传。
+  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与四宿主之豫行启动器（视窗兼者亦在其中），打包而传；复以原生豫构出视窗之验所较之参照（发现之出、原生你好之兼豫行）。
+  # 汉语：豫行工具链（提案 00021）：用本轮的原生豫构编出两架构的豫构豫行与四个宿主的豫行启动器（含 Windows x86-64），打包上传；另用原生豫构出 Windows 验证要对照的参照（发现的输出、原生你好的 AMD64 豫行版）。
   yuxing-toolchain:
     name: 豫行工具链
     needs: bootstrap
@@ -306,6 +306,23 @@ jobs:
           name: yy-yuxing-toolchain
           path: ${{ runner.temp }}/yuyan-yuxing-toolchain.tar.gz
           retention-days: 7
+          if-no-files-found: error
+
+      # 文言：视窗之验所较之参照：原生豫构发现之出，与以原生豫构编原生你好之兼豫行（名同视窗所编，附录之程名乃同）。
+      # 汉语：Windows 验证要对照的参照：原生豫构的发现输出，与原生豫构编出的原生你好 AMD64 豫行版（输出名与 Windows 上编的相同，附录里的程序名因而相同）。
+      - name: 出 Windows 对照用的参照
+        run: |
+          set -euo pipefail
+          mkdir -p yy豫行参照
+          ./yy豫构.exe 发现 --树 > yy豫行参照/发现.txt
+          ./yy豫构.exe 构建 原生你好 豫行入口 --输出 yy豫行参照/yy编你好 -j "$(nproc)" -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
+          tar -czf "$RUNNER_TEMP/yy-yuxing-reference.tar.gz" -C yy豫行参照 发现.txt yy编你好
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: yy-yuxing-reference
+          path: ${{ runner.temp }}/yy-yuxing-reference.tar.gz
+          retention-days: 3
           if-no-files-found: error
 
   # 文言：豫行于诸宿主（提案〇〇〇二一）：于 Linux 二构与苹果之运行器，以包中之启动器行豫构豫行：发现诸包，构原生你好之豫行版，复以启动器行之（印你好，以七退）。
@@ -358,6 +375,81 @@ jobs:
           ./"${{ matrix.launcher }}" yy编你好 > yy你好.txt
           code=$?
           set -e
+          grep -F '你好' yy你好.txt
+          test "$code" = 7
+
+  # 文言：豫行于视窗（提案〇〇〇二一第五、六步）：于视窗运行器，以包中之视窗兼启动器行原生你好之兼豫行（参照）；复以启动器合豫构兼豫行为单文件 yy豫构.exe，发现诸包，构原生你好之豫行版，皆与 Linux 之原生豫构所出者较（发现之出逐字同，豫行逐字节同），复以启动器行之（印你好，以七退）。先书宿主之存与页文件，以察提交之限。
+  # 汉语：豫行在 Windows 上运行（提案 00021 第 5、6 步）：在 Windows 运行器上用包里的 Windows x86-64 启动器运行原生你好的 AMD64 豫行版（参照）；再用启动器把 AMD64 豫构豫行合成单文件 yy豫构.exe，发现包、构建原生你好的豫行版，都与 Linux 上原生豫构的结果对照（发现输出逐字相同，豫行逐字节相同），再用启动器运行它（打印你好，退出码 7）。先打印宿主内存与页面文件，便于查提交上限。
+  yuxing-windows:
+    name: 豫行跨宿主（windows-x64）
+    needs: yuxing-toolchain
+    runs-on: windows-latest
+    timeout-minutes: 40
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-yuxing-toolchain
+          path: ${{ runner.temp }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-yuxing-reference
+          path: ${{ runner.temp }}
+
+      # 文言：Git Bash 之 tar 视 `D:\…` 为远主之名，故加 --force-local。
+      # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
+      - name: 解开豫行工具链包与参照
+        run: |
+          set -euo pipefail
+          tar --force-local -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"
+          mkdir -p yy豫行参照
+          tar --force-local -xzf "$RUNNER_TEMP/yy-yuxing-reference.tar.gz" -C yy豫行参照
+          ls -la yy豫行启动器视窗兼.exe yy豫构兼。豫行 yy豫行参照
+
+      - name: 宿主内存与页面文件
+        shell: pwsh
+        run: |
+          Get-CimInstance Win32_ComputerSystem | Select-Object AutomaticManagedPagefile, TotalPhysicalMemory | Format-List
+          Get-CimInstance Win32_PageFileUsage | Select-Object Name, AllocatedBaseSize, CurrentUsage, PeakUsage | Format-List
+          Get-CimInstance Win32_OperatingSystem | Select-Object TotalVisibleMemorySize, FreePhysicalMemory, TotalVirtualMemorySize, FreeVirtualMemory | Format-List
+
+      - name: 启动器运行原生你好的豫行版
+        run: |
+          set +e
+          ./yy豫行启动器视窗兼.exe yy豫行参照/yy编你好 > yy你好参照.txt
+          code=$?
+          set -e
+          cat yy你好参照.txt
+          echo "退出码 $code"
+          grep -F '你好' yy你好参照.txt
+          test "$code" = 7
+
+      - name: 合成单文件豫构并发现包
+        run: |
+          set -euo pipefail
+          ./yy豫行启动器视窗兼.exe --合成 yy豫构兼。豫行 yy豫构.exe
+          ls -la yy豫构.exe
+          ./yy豫构.exe 发现 --树 > yy豫行发现.txt
+          grep -F '标准库（库/标准库）' yy豫行发现.txt
+          diff yy豫行发现.txt yy豫行参照/发现.txt
+          echo "发现的输出与 Linux 原生豫构相同"
+
+      - name: 构建原生你好的豫行版并与 Linux 对照
+        run: |
+          set -euo pipefail
+          ./yy豫构.exe 构建 原生你好 豫行入口 --输出 yy编你好 -j 2 -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
+          cmp yy编你好 yy豫行参照/yy编你好
+          echo "产物与 Linux 原生豫构编出的逐字节相同"
+          set +e
+          ./yy豫行启动器视窗兼.exe yy编你好 > yy你好.txt
+          code=$?
+          set -e
+          cat yy你好.txt
           grep -F '你好' yy你好.txt
           test "$code" = 7
 
@@ -894,8 +986,12 @@ jobs:
             Y 文件 "$f" --输出 "yy-windows-exe/组/$n-x64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 视窗 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/视窗兼容.机器片"
             Y 文件 "$f" --输出 "yy-windows-exe/组/$n-arm64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 视窗 --目标架构 臂六十四 --执行器 "$exe" --降级缓存 "$cache/视窗臂.机器片"
             Y 文件 "$f" --输出 "yy-macos-x64/组/$n" -j "$(nproc)" -- --目标 本机 --目标系统 苹果 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/苹果兼容.机器片"
-            cp "${f%。脚本。豫}.期望" "yy-windows-exe/组/$n.expected"
-            cp "${f%。脚本。豫}.期望" "yy-macos-x64/组/$n.expected"
+            # 文言：期望之文新名以全角句号为后缀（名。期望），旧名以半角点；先取新名，无则取旧名。
+            # 汉语：期望文件的新名用全角句号后缀（名。期望），旧名用半角点；先取新名，没有再取旧名。
+            e="${f%。脚本。豫}。期望"
+            [ -f "$e" ] || e="${f%。脚本。豫}.期望"
+            cp "$e" "yy-windows-exe/组/$n.expected"
+            cp "$e" "yy-macos-x64/组/$n.expected"
           done
           # 文言：编译器于产物旁书链接之印（产物.链接印），非程序也；去之，免运行之作误行之。
           # 汉语：编译器在产物旁写链接印记（产物.链接印），不是程序；删掉，免得运行作业把它当程序执行。
