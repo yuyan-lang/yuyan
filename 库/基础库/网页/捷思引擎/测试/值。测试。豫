@@ -688,4 +688,12 @@ truenullundefined』）））于『捷思模板嵌套转换与求值次序组合
 　　于（「捷思执行脚本」
 　　　于『let r="";try{null.x;}catch(e){r+=e instanceof TypeError?"t":"x";}try{let f=1;f();}catch(e){r+=e instanceof TypeError?"c":"x";}try{const k=1;k=2;}catch(e){r+=e instanceof TypeError?"k":"x";}r;』）
 　　　于（「捷思字符串值」于（「捷思文字自串」于『tck』）））于『捷思引擎自抛的类型错误归到标准错误』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」于『let f=(0,function(){});let g;g=(1,2,3);[g,f.name,(1,2)+1,typeof (0,function(){})].join("|");』）
+　　于（「捷思字符串值」于（「捷思文字自串」于『3||3|function』）））于『捷思括号内的逗号表达式』。
+「断言」
+　于（「捷思严格等」
+　　于（「捷思执行脚本」于『let r=[typeof globalThis,globalThis===this,globalThis.Promise===Promise,typeof globalThis.Array,eval("1+2"),(0,eval)("var zq=5;zq*2"),typeof zq];globalThis.gg=7;r.push(gg);try{eval("var =")}catch(e){r.push(e instanceof SyntaxError);}r.push(eval(5),eval("(function(){return 1})")());r.join("|");』）
+　　于（「捷思字符串值」于（「捷思文字自串」于『object|true|true|function|3|10|number|7|true|5|1』）））于『捷思全局对象顶层 this 与 eval』。
 「打印行」于『捷思值冒烟通过』。

@@ -1,0 +1,38 @@
+寻观「标准库」之书。
+寻观「捷思引擎」之书。
+
+「脚本得串」乃化「字符串」而「字符串」也。
+「脚本得串」者会「脚本」而
+　鉴「捷思执行脚本」于「脚本」而
+　　有（「捷思字符串值」于「文」）则「捷思文字转串」于「文」
+　　或有「余值」则『非字符串』
+也。
+
+「脚本得文」乃化「脚本」为「字符串」而化「期望」为「字符串」而化「说明」为「字符串」而「有」也。
+「脚本得文」者会「脚本」为「脚本」而会「期望」为「期望」而会「说明」为「说明」而
+　虑「实际」者「脚本得串」于「脚本」而
+　若「串相等」于「实际」于「期望」则「元」否则「发生事故」于（「说明」附『：实际 』附「实际」）
+也。
+
+「：汉语：私有名每次求值类都得到新的私有符号：in 检查、读写缺失时的品牌检查（TypeError）、类工厂两次求值互不相通、私有成员不出现在各种键枚举里。
+　　文言：私有名每次求值类皆得新私有符号：in 之检、读写缺失时品牌之检（TypeError）、类工厂两次求值互不相通、私有成员不现于诸键之枚举。：」
+「脚本得文」
+　于「脚本」为
+　『function t(f){try{return String(f());}catch(e){return e instanceof TypeError?"T":"E:"+e;}}var r=[];class P{#x=1;static #s=2;#m(){return 3}get #g(){return 4}static has(o){return #x in o}static rd(o){return o.#x}static wr(o){o.#x=5;return o.#x}m(){return this.#m()+this.#g}static s(){return P.#s}}r.push(P.has(new P),P.has({}),t(function(){return P.rd({})}),t(function(){return P.wr({})}),new P().m(),P.s());function mk(){return class{static #m(){return 1}static a(){return this.#m()}}}var C1=mk(),C2=mk();r.push(C1.a(),t(function(){return C1.a.call(C2)}));var p=new P;r.push(Object.getOwnPropertySymbols(p).length,Reflect.ownKeys(p).length,Object.keys(p).length);r.push(t(function(){var g=function*(a=(function(){throw new TypeError("e")})()){};g();return "no"}));r.push((function(){var {cover=(function(){})}={};return cover.name})());r.push(t(function(){({}=null)}));r.push(t(function(){var [{}]=[undefined]}));r.join("|");』
+　　于「期望」为『true|false|T|T|7|2|1|T|0|0|0|T|cover|T|T』
+　　于「说明」为『捷思私有符号品牌检查生成器参数提前求值与解构要求可强制』。
+「：汉语：new.target：构造调用得到被构造的函数，普通调用得未定义；箭头函数取外层；super() 把派生类传给父类构造方法；Reflect.construct 的第三个参数就是新目标。
+　　文言：new.target：构造之呼得所构之函数，寻常之呼得未定义；箭头取外层；super() 以派生类授父类之构造方法；Reflect.construct 之第三参即新目标。：」
+「脚本得文」
+　于「脚本」为
+　『function F(){return new.target;}class A{constructor(){this.nt=new.target===A;}}class B extends A{constructor(){super();this.b=new.target===B;}}var a=new A(),b=new B();function G(){return (()=>new.target)();}[F()===undefined,new F()===F,Reflect.construct(F,[],Object)===Object,a.nt,b.nt,b.b,new G()===G,G()===undefined].join("|");』
+　　于「期望」为『true|true|true|true|false|true|true|true』
+　　于「说明」为『捷思new点target』。
+「：汉语：迭代器关闭：break、return、抛出和数组解构只取前几项时，调用迭代器的 return（生成器里即运行 finally）；取尽的不关闭；next 抛出时也不关闭。
+　　文言：迭代器之闭：break、return、抛出及数组解构惟取前数项时，呼迭代器之 return（于生成器即行 finally）；取尽者不闭；next 抛亦不闭。：」
+「脚本得文」
+　于「脚本」为
+　『var log=[];function* g(){try{yield 1;yield 2;}finally{log.push("fin");}}for(const x of g()){break;}var [a]=g();function f(){for(const x of g()){return x;}}f();try{for(const x of g()){throw 1;}}catch(e){}for(const x of g()){}var it={[Symbol.iterator](){return {next(){return {value:1,done:false};},return(){log.push("ret");return {};}};}};for(const x of it)break;var [p,q]=it;var thrower={[Symbol.iterator](){return {next(){throw new Error("n");},return(){log.push("bad");return {};}};}};try{for(const x of thrower){}}catch(e){log.push("c"+e.message);}outer:for(const x of g()){for(const y of g()){break outer;}}for(const z of g()){break;}log.join();』
+　　于「期望」为『fin,fin,fin,fin,fin,ret,ret,cn,fin,fin,fin』
+　　于「说明」为『捷思迭代器关闭』。
+「打印行」于『捷思类与解构补遗冒烟通过』。

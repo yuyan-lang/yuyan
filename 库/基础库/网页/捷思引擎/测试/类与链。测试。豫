@@ -34,4 +34,9 @@
 　　于（『("a』附（「捷思文字转串」于（「捷思文字自码元」于（「列」【「八二三二」】）））附『b".length)+"";』）
 　　于『3』）
 　于『捷思字符串字面量可含行分隔符』。
+「断言」
+　于（「脚本得文」
+　　于『var f=function(){};let g=()=>{};const h=class{};var o={a:function(){},b:()=>1,["c"+"d"]:function(){},e(){}};let k;k=function(){};var [p=function(){}]=[];var {q=()=>0}={};var sy=Symbol("s");var o2={[sy]:function(){}};[f.name,g.name,h.name,o.a.name,o.b.name,o.cd.name,o.e.name,k.name,p.name,q.name,o2[sy].name,(function(){}).name===""].join("|");』
+　　于『f|g|h|a|b|cd|e|k|p|q|[s]|true』）
+　于『捷思匿名函数按绑定位置取名』。
 「打印行」于『捷思类与链冒烟通过』。

@@ -1,0 +1,29 @@
+寻观「标准库」之书。
+寻观「捷思引擎」之书。
+
+「断言」乃化「爻」而化「字符串」而「有」也。
+「断言」者会「成」而会「说明」而
+　若「成」则「元」否则「发生事故」于「说明」
+也。
+
+「脚本得串」乃化「字符串」而「字符串」也。
+「脚本得串」者会「脚本」而
+　鉴「捷思执行脚本」于「脚本」而
+　　有（「捷思字符串值」于「文」）则「捷思文字转串」于「文」
+　　或有「余值」则『非字符串』
+也。
+
+「脚本得文」乃化「脚本」为「字符串」而化「期望」为「字符串」而化「说明」为「字符串」而「有」也。
+「脚本得文」者会「脚本」为「脚本」而会「期望」为「期望」而会「说明」为「说明」而
+　虑「实际」者「脚本得串」于「脚本」而
+　若「串相等」于「实际」于「期望」则「元」否则「发生事故」于（「说明」附『：实际 』附「实际」）
+也。
+
+「：汉语：每个坏脚本经 eval 运行应得到 SyntaxError（记作 S），好脚本应正常运行（记作 ok）。
+　　文言：每坏脚本经 eval 而行，当得 SyntaxError（记作 S），好脚本当如常而行（记作 ok）。：」
+「脚本得文」
+　于「脚本」为
+　『function bad(src){try{eval(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{eval(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("class A{constructor(){} constructor(){}}"),bad("class A{get constructor(){}}"),bad("class A{*constructor(){}}"),bad("class A{async constructor(){}}"),bad("class A{constructor=1}"),bad("class A{static prototype(){}}"),bad("class A{#a;#a;}"),bad("class A{#constructor;}"),bad("class A{m(){this.#x}}"),bad("class A{#x;m(){delete this.#x}}"),bad("class A{#x;m(){delete (this.#x)}}"),bad("class A{m(){super()}}"),bad("class A{constructor(){super()}}"),bad("class A{x=arguments}"),bad("class A{#x;m(){super.#x}}"),bad("function f([...a,b]){}"),bad("function f([...a=1]){}"),bad("var [...a,b]=[]"),bad("[...a,b]=[]"),bad("({...a,b}=x)"),bad("new.target"),bad("()=>new.target"),bad("function f(){++new.target}"),bad("++1"),bad("--(1)"),good("class G1{#x;get #y(){return 1}set #y(v){}static #z;m(){return this.#x+this.#y}}"),good("class G2 extends Object{constructor(){super();()=>super();}}"),good("class G3{#x;m(){class H{n(o){return o.#x}}}}"),good("var a,d,e,f;[...a]=[1];var [b,...c]=[1,2];({a,...d}=({a:1}));[...[e,f]]=[1,2];"),good("class G5{static constructor(){}static async *m(){}}"),good("function f9(){return new.target}"),good("var o9={m(){return ()=>new.target}}")].join("|");』
+　　于「期望」为『S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok』
+　　于「说明」为『捷思早期错误检查类体解构目标与超调用』。
+「打印行」于『捷思早期错误冒烟通过』。

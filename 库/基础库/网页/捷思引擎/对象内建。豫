@@ -304,6 +304,9 @@
 　　　　　　有「可无」则「捷思布尔」于「阴」
 　　　　　　或有（「可有」于「自有项」）则「捷思布尔」于「阳」
 　　　　）否则
+　　　　　若「串相等」于「方法名」于『getOwnPropertySymbols』则
+　　　　　　「捷思数组自值列」于（「捷思自有符号键列」于「对象值」）
+　　　　　否则
 　　　　　若「串相等」于「方法名」于『assign』则
 　　　　　　虑「无」者
 　　　　　　　「从左折叠」授以「捷思值」授以「有」
@@ -398,6 +401,7 @@
 　　　，『values』
 　　　，『entries』
 　　　，『getOwnPropertyNames』
+　　　，『getOwnPropertySymbols』
 　　　，『assign』
 　　　，『preventExtensions』
 　　　，『isExtensible』
