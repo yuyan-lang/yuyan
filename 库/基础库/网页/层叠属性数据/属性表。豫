@@ -199,6 +199,10 @@
 　　，『text-decoration-thickness』
 　　】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
+　，『font』
+　　与（「列」
+　　　【『font-style』，『font-variant』，『font-weight』，『font-stretch』，『font-size』，『line-height』，『font-family』】）
+　，『list-style』与（「列」【『list-style-type』，『list-style-position』，『list-style-image』】）
 　，『background』
 　与「列」
 　　【『background-image』

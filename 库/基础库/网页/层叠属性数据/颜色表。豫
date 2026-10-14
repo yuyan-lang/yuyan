@@ -1,7 +1,7 @@
 寻观「标准库」之书。
 
-「：汉语：依据颜色四规范的全部不透明命名颜色，值为六位红绿蓝十六进制。
-　　文言：据颜色四之全不透明命名色，值为六位红绿蓝十六进数。：」
+「：汉语：依据颜色四规范的全部不透明命名颜色，另加浅色方案的系统颜色（canvas、canvastext、linktext 等），值为六位红绿蓝十六进制。
+　　文言：据颜色四之全不透明命名色，复加浅色之系统色（canvas、canvastext、linktext 等），值为六位红绿蓝十六进数。：」
 「层叠颜色表」乃化「有」而（「串典」于「字符串」）也。
 「层叠颜色表」者会「无」而
 　「构造串典」于（「列」
@@ -153,5 +153,19 @@
 　　，『whitesmoke』与『f5f5f5』
 　　，『yellow』与『ffff00』
 　　，『yellowgreen』与『9acd32』
+　　，『canvas』与『ffffff』
+　　，『canvastext』与『000000』
+　　，『linktext』与『0000ee』
+　　，『visitedtext』与『551a8b』
+　　，『activetext』与『ff0000』
+　　，『buttonface』与『efefef』
+　　，『buttontext』与『000000』
+　　，『field』与『ffffff』
+　　，『fieldtext』与『000000』
+　　，『highlight』与『3390ff』
+　　，『highlighttext』与『ffffff』
+　　，『graytext』与『808080』
+　　，『mark』与『ffff00』
+　　，『marktext』与『000000』
 　　】）
 也。

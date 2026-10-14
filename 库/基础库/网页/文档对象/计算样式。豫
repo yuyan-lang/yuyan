@@ -265,7 +265,7 @@
 head,title,base,link,meta,style,script,template,noscript,[hidden] { display: none }
 body { margin: 8px }
 input,textarea,select,button { display: inline-block; color: black; background: white; border: 1px solid gray; padding: 2px; font-size: 16px }
-input,select { width: 200px; height: 24px }
+input,select { width: 200px }
 select[multiple] { height: 80px; white-space: pre-wrap }
 textarea { width: 200px; height: 80px; white-space: pre-wrap }
 input[type=checkbox],input[type=radio] { width: 16px; height: 16px; padding: 0 }
@@ -302,7 +302,9 @@ small { font-size: smaller }
 sub,sup { font-size: smaller; line-height: normal }
 sub { vertical-align: sub }
 sup { vertical-align: super }
-summary { display: list-item }
+summary { display: list-item; list-style-type: disclosure-closed; list-style-position: inside }
+details[open] > summary { list-style-type: disclosure-open }
+a[href] { color: #0000ee; text-decoration: underline }
 details:not([open]) > :not(summary:first-of-type) { display: none }』
 也。
 
