@@ -594,6 +594,30 @@
 　　　　或有「可无」则「阴」
 　　）
 　　于『按键派发给页面监听并带键值与键码』；
+　虑「表页模」者
+　　「入口」之「浏览器导航」
+　　　于「键后模」
+　　　于
+　　　『data:text/html,<body style="margin:0"><input id=t style="display:block;width:100px;height:20px"><input type=checkbox id=c style="display:block;width:20px;height:20px"><div style="height:50px"></div><script>var log=[];function rec(x){log.push(x);document.body.setAttribute("title",log.join(","));}var t=document.getElementById("t");t.addEventListener("focus",function(){rec("聚");});t.addEventListener("input",function(){rec("入");});t.addEventListener("change",function(){rec("变");});t.addEventListener("blur",function(){rec("离");});document.getElementById("c").onchange=function(){rec("勾");};</script></body>』
+　而
+　虑「表页」者
+　　鉴「表页模」中「页面」而
+　　　有「可无」则「发生事故」授以「网页静态页面」于『表单事件页载入失败』
+　　　或有（「可有」于「载页」）则
+　　　　「载页」
+　而
+　虑「聚模」者「入口」之「浏览器点击」于「表页模」于「横」为「一零」于「纵」为「一零」而
+　虑「入模」者「入口」之「浏览器输入文字」于『甲』于「聚模」而
+　虑「离模」者「入口」之「浏览器点击」于「入模」于「横」为「一零」于「纵」为「六零」而
+　虑「勾模」者「入口」之「浏览器点击」于「离模」于「横」为「一零」于「纵」为「三零」而
+　「断言」
+　　于（
+　　　鉴「取属性」于（「头一个」于（「查询选择器全部」于（「表页」中「文档」）于『body』））于『title』而
+　　　　有（「可有」于「题」）则「串相等」于「题」于『聚,入,变,离,勾』
+　　　　或有「可无」则「阴」
+　　）
+　　于『表单控件派发 focus、input、change、blur』；
+　「浏览器控件取焦点」于「可无」；
 　「浏览器记窗口尺寸」于「宽」为（「乘」于「八零零」于「六四」）于「高」为（「乘」于「六四零」于「六四」）；
 　「断言」于（「入口」之「浏览器需重排」于「图模」）于『窗口尺寸变了待重排』；
 　虑「排模」者「入口」之「浏览器计时更新」于「图模」而
