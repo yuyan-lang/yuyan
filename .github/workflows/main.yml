@@ -470,10 +470,10 @@ jobs:
             echo "::warning title=合成慢于直出（${{ matrix.plat }}）::合成豫构冷构建编译器 $c 秒，直出 $n 秒，为 $r 倍，超过 1.1 倍"
           fi
 
-  # 文言：豫言系统之软件：以本轮之原生豫构编所选之应用为兼容六十四之豫行（与造盘置于 /工具 者同式），并其索引 software-index-amd64.tsv（仓库目标「豫言系统软件」）；以豫行工具链包之林兼启动器行你好之豫行以冒烟（印你好，以七退）；惟推于 yybs 时传于发行版 yuyan-os-software（无则建之），每轮覆之，供系统之“安装软件”下载。
-  # 汉语：豫言系统软件：用本轮的原生豫构把选定的应用编成 AMD64 豫行（与造盘放进 /工具 的工具同一种格式），连同索引 software-index-amd64.tsv（仓库目标「豫言系统软件」）；用豫行工具链包里的林兼启动器运行你好的豫行版作冒烟（打印你好，退出码 7）；只在推送到 yybs 时上传到发行版 yuyan-os-software（没有就新建），每轮覆盖，供系统里的“安装软件”下载。
+  # 文言：可执行包之程（云仓提案 C00004）：以本轮之原生豫构编清单诸应用为兼容六十四之豫行（与造盘置于 /工具 者同式），并其清单（仓库目标「可执行包程序」，缺省惟编 豫言-兼容六十四）；以豫行工具链包之林兼启动器行你好之豫行以冒烟（印你好，以七退）。发布归云仓 CI：云仓每自布，编诸目标而布于包仓库 yuyan-lang.org，豫言系统之“安装软件”自彼下之；语言仓不复传于 GitHub 之发行版。
+  # 汉语：可执行包程序（云仓提案 C00004）：用本轮的原生豫构把清单里的应用编成 AMD64 豫行（与造盘放进 /工具 的工具同一种格式），连同清单（仓库目标「可执行包程序」，缺省只编 豫言-兼容六十四）；用豫行工具链包里的林兼启动器运行你好的豫行版作冒烟（打印你好，退出码 7）。发布由云仓 CI 负责：云仓每次自动发布时编全部目标，发布进包仓库 yuyan-lang.org，豫言系统的“安装软件”从那里下载；语言仓不再上传 GitHub 发行版。
   os-software:
-    name: 发布豫言系统软件
+    name: 可执行包程序冒烟
     needs: [bootstrap, yuxing-toolchain]
     runs-on: ubuntu-latest
     timeout-minutes: 60
@@ -488,44 +488,29 @@ jobs:
       - name: 解开本轮工具
         run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
 
-      - name: 编豫言系统软件与索引
-        run: ./yy豫构.exe 目标 豫言系统软件 --不连带 -j "$(nproc)"
+      - name: 编可执行包程序与清单
+        run: ./yy豫构.exe 目标 可执行包程序 --不连带 -j "$(nproc)"
 
       - uses: actions/download-artifact@v4
         with:
           name: yy-yuxing-toolchain
           path: ${{ runner.temp }}
 
-      # 文言：软件既编，乃解豫行工具链之包于仓根（其执行器之树码同代，覆之无害），以林兼启动器行你好之豫行。
-      # 汉语：软件编好后再把豫行工具链包解到仓库根目录（包里的执行器树码与本轮同代，覆盖无妨），用林兼启动器运行你好的豫行版。
+      # 文言：程既编，乃解豫行工具链之包于仓根（其执行器之树码同代，覆之无害），以林兼启动器行你好之豫行。
+      # 汉语：程序编好后再把豫行工具链包解到仓库根目录（包里的执行器树码与本轮同代，覆盖无妨），用林兼启动器运行你好的豫行版。
       - name: 冒烟：用林兼启动器运行你好
         run: |
           set -euo pipefail
-          cat yy豫言系统软件/software-index-amd64.tsv
+          cat yy可执行包程序/清单.tsv
           tar -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"
           chmod +x yy豫行启动器林兼
           set +e
-          ./yy豫行启动器林兼 yy豫言系统软件/yy-hello-amd64 > yy你好.txt
+          ./yy豫行启动器林兼 yy可执行包程序/豫言-兼容六十四/你好 > yy你好.txt
           code=$?
           set -e
           cat yy你好.txt
           grep -F '你好' yy你好.txt
           test "$code" = 7
-
-      # 文言：先传诸程序，后传索引，免索引先指未至之文。
-      # 汉语：先传各程序，最后传索引，免得索引先指向还没传上的文件。
-      - name: 上传到发行版 yuyan-os-software
-        if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          if ! gh release view yuyan-os-software >/dev/null 2>&1; then
-            gh release create yuyan-os-software --target "$GITHUB_SHA" --title yuyan-os-software --latest=false --notes "豫言操作系统软件（AMD64 豫行）"
-          fi
-          gh release upload yuyan-os-software yy豫言系统软件/yy-* --clobber
-          gh release upload yuyan-os-software yy豫言系统软件/software-index-amd64.tsv --clobber
 
   # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，即覆连续版之本平台包，并交发布历史版本之作；苹果另验系统库之调与张量，其验在发布之后，败不阻包之发。不用 Node 与 Wasm。苹果运行器唯三核七吉，并发依核数。
   # 汉语：其他平台原生自举：用交叉工具链里的原生豫构作一级驱动，在本平台原生自举并核对定点、装上原生工具链，打本平台的原生工具链包，随即覆盖连续版本里的本平台包，并交给“发布历史版本”作业；macOS 另外验证系统库调用与张量，这两步排在发布之后，失败不挡发包。不用 Node 与 Wasm。macOS 运行器只有三核、约 7 GB 内存，并发数按处理器数。
