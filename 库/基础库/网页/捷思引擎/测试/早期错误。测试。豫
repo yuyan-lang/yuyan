@@ -33,4 +33,18 @@
 　『function bad(src){try{eval(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{eval(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("import()"),bad("import(1,2,3)"),bad("import(...[1])"),bad("new import(\"x\")"),bad("typeof import"),bad("import.UNKNOWN(\"x\")"),bad("import(\"x\")++"),bad("import.meta"),bad("import.meta = 1"),bad("[import.meta] = []"),bad("import.source()"),bad("new import.source(\"x\")"),good("var p=import(\"./nope.js\");p.catch(function(){});1"),good("import(\"x\",).catch(function(){})"),good("import(\"x\",{}).catch(function(){})"),good("import(\"x\",{},).catch(function(){})"),good("import.defer(\"x\").catch(function(){})"),good("var q=(import(\"x\"));q.catch(function(){})"),good("var f=()=>import(\"x\")")].join("|");』
 　　于「期望」为『S|S|S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok』
 　　于「说明」为『捷思导入调用的早期错误与脚本里的动态导入』。
+「：汉语：函数、标识符与声明的早期错误：yield 与 await 在生成器、异步函数、严格代码与模块里是保留字，严格代码里还有 let、static 等；参数名重复（箭头、方法、非简单参数与严格代码）、带 use strict 的非简单参数、剩余参数的位置与初值、取值器与设值器的参数个数；块、脚本、选择语句与函数体里词法声明的重复和与变量重名；catch 参数、循环头与循环体的冲突；语句位置里的声明；严格模式下的 with。反面的写法照常通过。
+　　文言：函数、标识符及声明之早期误：yield 与 await 于生成器、异步函数、严格之码及模块为保留之字，严格之码复有 let、static 等；参名重复（箭头、方法、非简单之参及严格之码）、带 use strict 之非简单参、余参之位与初值、取值器与设值器之参数；块、脚本、选择之句及函数体中词法声明之重复及与变量同名；catch 之参、循环头与循环体之冲突；句位中之声明；严格之式下之 with。反面之写法如常而通。：」
+「脚本得文」
+　于「脚本」为
+　『function bad(src){try{eval(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{eval(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("function* g(){ void yield; }"),bad("function* g(){ var yield; }"),bad("'use strict'; var yield;"),bad("class C { m(){ var let; } }"),bad("async function f(){ var await; }"),bad("function f(a, a){ 'use strict'; }"),bad("function f(a = 1){ 'use strict'; }"),bad("(a, a) => 1"),bad("({ m(a, a){} })"),bad("function f(...a, b){}"),bad("function f(...a = []){}"),bad("({ get x(a){} })"),bad("({ set x(){} })"),bad("{ let a; var a; }"),bad("let a; let a;"),bad("let a; var a;"),bad("{ function f(){} let f; }"),bad("function f(a){ let a; }"),bad("switch(0){ case 1: let a; case 2: let a; }"),bad("try{}catch(e){ let e; }"),bad("for (let i;;) { var i; }"),bad("if (1) class C {}"),bad("if (1) let x = 1;"),bad("while (1) function f(){}"),bad("lbl: function* g(){}"),bad("'use strict'; with ({}) {}"),good("var yield = 1; var await = 2; yield + await"),good("function* g(){ yield 1; }"),good("async function f(){ await 1; }"),good("{ function f(){} function f(){} }"),good("function f(a, a){}"),good("var a; var a; function a(){}"),good("try{}catch(e){ var e; }"),good("if (1) function f(){}"),good("let\nx = 1"),good("class C { static m(){ return 1; } }"),good("(function await(await){})")].join("|");』
+　　于「期望」为『S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok』
+　　于「说明」为『捷思函数标识符与声明的早期错误』。
+「：汉语：正则表达式字面量在解析时就校验：非法的模式或标志是早期的 SyntaxError，合法的照常通过，整段脚本因某个没执行到的非法字面量而整体失败。
+　　文言：正则表达式之字面量于析时即验：非法之模式或标是早期之 SyntaxError，合法者如常而通，整篇脚本因某未行至之非法字面量而全败。：」
+「脚本得文」
+　于「脚本」为
+　『function bad(src){try{eval(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{eval(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("/[b-a]/"),bad("/a**/"),bad("/(?<n>a)(?<n>b)/"),bad("/\\p{Foo}/u"),bad("/a/gg"),bad("if (false) { /(/; }"),good("/a(b)*/.test(\"ab\")"),good("/(?<year>\\d{4})/u.test(\"2026\")"),good("var re = /[a-z]+/gi; re.flags")].join("|");』
+　　于「期望」为『S|S|S|S|S|S|ok|ok|ok』
+　　于「说明」为『捷思正则字面量的早期校验』。
 「打印行」于『捷思早期错误冒烟通过』。
