@@ -939,10 +939,14 @@ jobs:
           --输出 yy远程文件协议.exe -j "$(nproc)"
           -- --目标 本机 --目标系统 林纳克斯 --目标架构 '${{ matrix.arch }}'
 
+      # 汉语：待办事项：Linux 原生目标的陷阱仍照裸机用户态降级（ARM64 是 svc #7，AMD64 是 mov eax,7; int 0x80），Linux 只回一个错误码就接着往下执行，进程不退出：检查一失败，ARM64 空转、AMD64 乱跑到段错误（10-14 烟验过期时 ARM 版因此每轮挂满 90 分钟）。后端给宿主目标改出 brk #0 / ud2 之前，两个运行步骤各设超时（平时烟验 0 秒、完整组约 2 分钟）。
+      # 文言：待办：Linux 原生之陷犹循裸机客态之降（臂 svc 七，兼 int 0x80），Linux 唯返误码而续行，程不退：一验不合，臂则空转，兼则乱行至段错（十月十四日烟验过时，臂者每轮因之挂满九十分）。后端未为宿主之标改出 brk 零或 ud2 之前，二运行之步各设时限。
       - name: 运行远程文件协议原生烟验
+        timeout-minutes: 5
         run: ./yy远程文件协议.exe
 
       - name: 运行完整预编一致性组
+        timeout-minutes: 20
         run: |
           ./yy原生一致性.exe --系统 林纳克斯 --架构 '${{ matrix.arch }}' --经 直接 > yyLinux预编一致性.log 2>&1 || {
             printf '::error title=Linux 预编一致性失败::%s\n' "$(tail -c 2000 yyLinux预编一致性.log | tr '\n' ' ')"
