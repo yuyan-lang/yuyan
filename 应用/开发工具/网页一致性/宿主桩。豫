@@ -1,0 +1,206 @@
+寻观「标准库」之书。
+寻观「标准库」之「输入输出」之「笔」之书。
+寻观「捷思引擎」之书。
+
+「：汉语：验收脚本运行用的最小宿主桩：全局对象（globalThis、window、self 三名同一物）、控制台，以及浏览器常见的构造器与函数桩。桩只保证脚本顶层求值不因缺名而抛错，不模拟行为。待办事项：桩逐步换成浏览器接口包的真实绑定。
+　　文言：验收脚本所用最小宿主桩：全局之物（globalThis、window、self 三名同一物）、控制台，及浏览器常见之构造器与函数之桩。桩惟使脚本顶层求值不因缺名而抛错，不仿其行。待办事项：桩渐易为浏览器接口包之真绑定。：」
+
+「桩函数」乃化「有」而「捷思值」也。
+「桩函数」者会「无」而
+　「捷思新宿主函数」于（「捷思宿主回调」也（会「接收者」而会「诸参」而「捷思未定义」））
+也。
+
+「：汉语：造一个对象，给出的每个名字都是桩函数。
+　　文言：造一物，所授诸名皆为桩函数。：」
+「桩对象」乃化（「列」于「字符串」）而「捷思值」也。
+「桩对象」者会「诸名」而
+　虑「物」者「捷思新对象」于「可无」而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而
+　　　　虑「成」者「捷思定义属性」于「物」于（（「捷思文字自串」于「名」）与（「桩函数」于「元」）与「阳」与「阳」与「阳」）而
+　　　　「元」
+　　　）
+　　　于「元」
+　　　于「诸名」
+　而
+　「物」
+也。
+
+「设对象属性」乃化「物」为「捷思值」而化「名」为「字符串」而化「值」为「捷思值」而「有」也。
+「设对象属性」者会「物」为「物」而会「名」为「名」而会「值」为「值」而
+　虑「成」者「捷思定义属性」于「物」于（（「捷思文字自串」于「名」）与「值」与「阳」与「阳」与「阳」）而
+　「元」
+也。
+
+「：汉语：控制台输出：打印各实参的字符串形式。
+　　文言：控制台之出：印诸实参之文。：」
+「控制台输出」乃化「捷思值」而化（「列」于「捷思值」）而「捷思值」也。
+「控制台输出」者会「接收者」而会「诸参」而
+　虑「诸文」者「态射」授以「捷思值」授以「字符串」于「诸参」于（会「值」而
+　　「捷思文字转串」于（「捷思取键」于「值」））而
+　虑「无」者「打印行」于（「间合」于『 』于「诸文」）而
+　「捷思未定义」
+也。
+
+「新控制台」乃化「有」而「捷思值」也。
+「新控制台」者会「无」而
+　虑「物」者「捷思新对象」于「可无」而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而「设对象属性」于「物」为「物」于「名」为「名」于「值」为（「捷思新宿主函数」于「控制台输出」））
+　　　于「元」
+　　　于（「列」【『log』，『info』，『warn』，『error』，『debug』】）
+　而
+　「物」
+也。
+
+「：汉语：作构造器和函数用的桩名字。
+　　文言：充构造器及函数之桩名。：」
+「桩名列」乃化「有」而（「列」于「字符串」）也。
+「桩名列」者会「无」而
+　「列」
+　【『TextEncoder』
+　，『TextDecoder』
+　，『URL』
+　，『URLSearchParams』
+　，『Uint8Array』
+　，『Int8Array』
+　，『Uint8ClampedArray』
+　，『Uint16Array』
+　，『Int16Array』
+　，『Uint32Array』
+　，『Int32Array』
+　，『Float32Array』
+　，『Float64Array』
+　，『BigInt64Array』
+　，『BigUint64Array』
+　，『ArrayBuffer』
+　，『SharedArrayBuffer』
+　，『DataView』
+　，『Blob』
+　，『File』
+　，『FileReader』
+　，『FormData』
+　，『Headers』
+　，『Request』
+　，『Response』
+　，『Worker』
+　，『SharedWorker』
+　，『MessageChannel』
+　，『BroadcastChannel』
+　，『MutationObserver』
+　，『ResizeObserver』
+　，『IntersectionObserver』
+　，『WebSocket』
+　，『EventSource』
+　，『XMLHttpRequest』
+　，『ReadableStream』
+　，『WritableStream』
+　，『TransformStream』
+　，『CompressionStream』
+　，『DecompressionStream』
+　，『TextDecoderStream』
+　，『TextEncoderStream』
+　，『Event』
+　，『CustomEvent』
+　，『EventTarget』
+　，『AbortController』
+　，『AbortSignal』
+　，『DOMException』
+　，『Image』
+　，『Audio』
+　，『OffscreenCanvas』
+　，『Atomics』
+　，『Intl』
+　，『Proxy』
+　，『fetch』
+　，『setTimeout』
+　，『setInterval』
+　，『clearTimeout』
+　，『clearInterval』
+　，『requestAnimationFrame』
+　，『cancelAnimationFrame』
+　，『requestIdleCallback』
+　，『queueMicrotask』
+　，『structuredClone』
+　，『atob』
+　，『btoa』
+　，『postMessage』
+　，『addEventListener』
+　，『removeEventListener』
+　，『dispatchEvent』
+　，『alert』
+　，『getComputedStyle』
+　，『matchMedia』
+　，『importScripts』
+　，『close』
+　，『open』
+　】
+也。
+
+「：汉语：新建全局对象：同时装好 console、对象桩与名字桩。
+　　文言：新建全局之物：并装 console、诸对象之桩及名字之桩。：」
+「新全局对象」乃化「有」而「捷思值」也。
+「新全局对象」者会「无」而
+　虑「全局」者「捷思新对象」于「可无」而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『console』于「值」为（「新控制台」于「元」）而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『globalThis』于「值」为「全局」而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『window』于「值」为「全局」而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『self』于「值」为「全局」而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『navigator』于「值」为（「桩对象」于（「列」【『sendBeacon』，『vibrate』】））而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『performance』于「值」为（「桩对象」于（「列」【『now』，『mark』，『measure』】））而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『location』于「值」为（「桩对象」于（「列」【『assign』，『replace』，『reload』】））而
+　虑「无」者
+　　「设对象属性」
+　　　于「物」为「全局」
+　　　于「名」为『document』
+　　　于「值」为（「桩对象」于（「列」【『getElementById』，『querySelector』，『querySelectorAll』，『createElement』，『addEventListener』】））
+　而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『localStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『sessionStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『history』于「值」为（「桩对象」于（「列」【『pushState』，『replaceState』，『back』，『forward』】））而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『crypto』于「值」为（「桩对象」于（「列」【『getRandomValues』，『randomUUID』】））而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『indexedDB』于「值」为（「桩对象」于（「列」【『open』，『deleteDatabase』】））而
+　虑「无」者
+　　「设对象属性」
+　　　于「物」为「全局」
+　　　于「名」为『WebAssembly』
+　　　于「值」为（「桩对象」于（「列」
+　　　　【『compile』
+　　　　，『instantiate』
+　　　　，『validate』
+　　　　，『Module』
+　　　　，『Instance』
+　　　　，『Memory』
+　　　　，『Table』
+　　　　，『Global』
+　　　　，『CompileError』
+　　　　，『LinkError』
+　　　　，『RuntimeError』
+　　　　】））
+　而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」于（会「名」而会「无」而「设对象属性」于「物」为「全局」于「名」为「名」于「值」为（「桩函数」于「元」））于「元」于（「桩名列」于「元」）而
+　「全局」
+也。
+
+「：汉语：全局回退钩子：到全局对象上找同名属性。
+　　文言：全局回退之钩：于全局之物求同名之性。：」
+「全局回退」乃化「捷思值」而化「字符串」而（「或可有」于「捷思值」）也。
+「全局回退」者会「全局」而会「名」而
+　鉴「捷思有属性」于「全局」于（「捷思文字自串」于「名」）而
+　　有「阳」则「可有」于（「捷思取属性」于「全局」于（「捷思文字自串」于「名」））
+　　或有「阴」则「可无」授以「捷思值」
+也。
+
+「：汉语：新建验收用运行环境：全局环境加全局对象回退。
+　　文言：新建验收所用之运行环境：全局之环境加全局之物之回退。：」
+「新捷思运行环境」乃化「有」而「捷思环境」也。
+「新捷思运行环境」者会「无」而
+　虑「境」者「捷思新全局环境」于「元」而
+　虑「全局」者「新全局对象」于「元」而
+　虑「无」者「捷思设全局回退」于（会「名」而
+　　「全局回退」于「全局」于「名」）而
+　「境」
+也。
