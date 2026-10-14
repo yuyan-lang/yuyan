@@ -2,6 +2,7 @@
 寻观「捷思引擎」之书。
 寻观「捷思引擎」之「模块执行」之书。
 寻观「捷思引擎」之「错误对象」之书。
+寻观「捷思引擎」之「语句」之书。
 
 「断言」乃化「爻」而化「字符串」而「有」也。
 「断言」者会「成」而会「说明」而
@@ -99,4 +100,39 @@
 　　于（「读导出」于（「捷思在环境执行模块」于「模块根境」于「内存加载器」于「键」为『z』于「源码」为（「内存源」于『z』））于『t』）
 　　于（「捷思数值」于「九点零」））
 　于『模块顶层等待由空闲钩子推进』。
+「：汉语：解析模块时就能发现的早期错误是否按预期抛出（坏的抛 SyntaxError，好的不抛）。
+　　文言：析模块时即可察之早期误，是否依期而抛（坏者抛 SyntaxError，好者不抛）。：」
+「坏模块吗」乃化「字符串」而「爻」也。
+「坏模块吗」者会「源」而
+　「尝试运行」授以「爻」
+　　于（会「无」而
+　　　虑「无」者「捷思解析模块」于「源」而
+　　　「阴」）
+　　于（会「故」而「阳」）
+也。
+
+「断言」
+　于（「且」
+　　　于（「且」
+　　　　于（「且」
+　　　　　于（「坏模块吗」于『var x; export {x}; export {x};』）
+　　　　　于（「坏模块吗」于『var y; export default 1; export {y as default};』））
+　　　　于（「且」
+　　　　　于（「坏模块吗」于『export {nothing};』）
+　　　　　于（「坏模块吗」于『import {a as eval} from "m";』）））
+　　　于（「且」
+　　　　于（「且」
+　　　　　于（「坏模块吗」于『import {a, b as a} from "m";』）
+　　　　　于（「坏模块吗」于『class F {} export default function F() {}』））
+　　　　于（「且」
+　　　　　于（「坏模块吗」于『export function f() {} export function *f() {}』）
+　　　　　于（「且」
+　　　　　　于（「坏模块吗」于『import "m" with { type: "json", type: "x" };』）
+　　　　　　于（「坏模块吗」于『export default function() {}();』）））））
+　于『捷思模块的早期错误』。
+「断言」
+　于（「且」
+　　　于（「非」于（「坏模块吗」于『import {a} from "m"; export {a}; var b; export {b as c}; export default function d() {} export {d as e};』））
+　　　于（「非」于（「坏模块吗」于『export * as ns from "m"; export * from "m"; export {z} from "m"; export let q = 1; export class K {}』）））
+　于『捷思模块的好写法不受早期错误影响』。
 「打印行」于『捷思模块冒烟通过』。

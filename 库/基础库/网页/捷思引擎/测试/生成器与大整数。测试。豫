@@ -48,4 +48,9 @@
 　　于『var m="";try{1n+1;}catch(e){m+=(e instanceof TypeError)+",";}try{1n/0n;}catch(e){m+=(e instanceof RangeError)+",";}try{+1n;}catch(e){m+=(e instanceof TypeError);}m;』
 　　于『true,true,true』）
 　于『捷思大整数的错误类型』。
+「断言」
+　于（「脚本得文」
+　　于『var r=[];r.push(({valueOf:function(){return 2n;}})-1n);r.push(3n*({[Symbol.toPrimitive]:function(){return 2n;}}));r.push(({valueOf:function(){return 2n;}})+1n);r.push(({valueOf:function(){return 1;}})+1);r.push(({valueOf:function(){return 5n;}})>3n);r.push(typeof (({valueOf:function(){return 6n;}})&3n));r.join("|");』
+　　于『1|6|3|2|true|bigint』）
+　于『捷思二元运算先把对象转成基础值再判断大整数』。
 「打印行」于『捷思生成器与大整数冒烟通过』。
