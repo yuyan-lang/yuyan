@@ -28,6 +28,11 @@
 　「物」
 也。
 
+「字符串值」乃化「字符串」而「捷思值」也。
+「字符串值」者会「文」而
+　「捷思字符串值」于（「捷思文字自串」于「文」）
+也。
+
 「设对象属性」乃化「物」为「捷思值」而化「名」为「字符串」而化「值」为「捷思值」而「有」也。
 「设对象属性」者会「物」为「物」而会「名」为「名」而会「值」为「值」而
 　虑「成」者「捷思定义属性」于「物」于（（「捷思文字自串」于「名」）与「值」与「阳」与「阳」与「阳」）而
@@ -76,6 +81,12 @@
 　　虑「无」者
 　　　「设对象属性」
 　　　　于「物」为「接收者」
+　　　　于「名」为『toString』
+　　　　于「值」为（「捷思新宿主函数」于（「捷思宿主回调」也（会「本」而会「参」而「捷思取属性」于「本」于（「捷思文字自串」于『href』））））
+　　而
+　　虑「无」者
+　　　「设对象属性」
+　　　　于「物」为「接收者」
 　　　　于「名」为『searchParams』
 　　　　于「值」为（「桩对象」于（「列」【『set』，『append』，『delete』，『has』，『toString』】））
 　　而
@@ -87,6 +98,142 @@
 　　而
 　　「捷思未定义」
 　　））
+也。
+
+「：汉语：构造器桩的方法表：返回该全局名的实例要带的什么都不做的方法名；没有登记的名字返回空。
+　　文言：构造器桩之法表：返该全局名之实例当带之无所为之法名；无录者返无。：」
+「构造桩方法表」乃化「字符串」而（「列」于「字符串」）也。
+「构造桩方法表」者会「名」而
+　若「串相等」于「名」于『TextEncoder』则
+　　「列」【『encode』，『encodeInto』】
+　否则若「串相等」于「名」于『TextDecoder』则
+　　「列」【『decode』】
+　否则若「串相等」于「名」于『URLSearchParams』则
+　　「列」【『get』，『getAll』，『has』，『set』，『append』，『delete』，『toString』，『forEach』，『entries』，『keys』，『values』】
+　否则若「串相等」于「名」于『Blob』则
+　　「列」【『text』，『arrayBuffer』，『slice』，『stream』】
+　否则若「串相等」于「名」于『File』则
+　　「列」【『text』，『arrayBuffer』，『slice』，『stream』】
+　否则若「串相等」于「名」于『Headers』则
+　　「列」【『get』，『set』，『has』，『append』，『delete』，『forEach』】
+　否则若「或者」于（「串相等」于「名」于『Request』）于（「串相等」于「名」于『Response』）则
+　　「列」【『json』，『text』，『arrayBuffer』，『blob』，『clone』】
+　否则若「或者」于（「串相等」于「名」于『Event』）于（「串相等」于「名」于『CustomEvent』）则
+　　「列」【『preventDefault』，『stopPropagation』，『stopImmediatePropagation』】
+　否则若「串相等」于「名」于『EventTarget』则
+　　「列」【『addEventListener』，『removeEventListener』，『dispatchEvent』】
+　否则若「串相等」于「名」于『AbortController』则
+　　「列」【『abort』】
+　否则若「或者」于（「串相等」于「名」于『Worker』）于（「串相等」于「名」于『SharedWorker』）则
+　　「列」【『postMessage』，『terminate』，『addEventListener』，『removeEventListener』】
+　否则若「串相等」于「名」于『BroadcastChannel』则
+　　「列」【『postMessage』，『close』，『addEventListener』】
+　否则若「或者」
+　　于（「串相等」于「名」于『MutationObserver』）
+　　于（「或者」于（「串相等」于「名」于『ResizeObserver』）于（「串相等」于「名」于『IntersectionObserver』））则
+　　　「列」【『observe』，『unobserve』，『disconnect』，『takeRecords』】
+　否则若「串相等」于「名」于『WebSocket』则
+　　「列」【『send』，『close』，『addEventListener』】
+　否则若「串相等」于「名」于『XMLHttpRequest』则
+　　「列」【『open』，『send』，『setRequestHeader』，『abort』，『addEventListener』】
+　否则若「串相等」于「名」于『FileReader』则
+　　「列」【『readAsText』，『readAsArrayBuffer』，『readAsDataURL』，『abort』】
+　否则若「串相等」于「名」于『ReadableStream』则
+　　「列」【『getReader』，『pipeThrough』，『pipeTo』，『cancel』，『tee』】
+　否则若「串相等」于「名」于『WritableStream』则
+　　「列」【『getWriter』，『abort』，『close』】
+　否则若「或者」
+　　于（「串相等」于「名」于『Uint8Array』）
+　　于（「或者」于（「串相等」于「名」于『Int32Array』）于（「或者」于（「串相等」于「名」于『Float32Array』）于（「串相等」于「名」于『Float64Array』）））则
+　　　「列」【『set』，『subarray』，『slice』，『fill』，『forEach』，『map』，『indexOf』，『join』】
+　否则
+　　「罄」授以「字符串」
+也。
+
+「：汉语：带方法的构造器桩：方法都挂在原型上，实例化得到的对象也就带着这些方法；instanceof 可用（总是假）。
+　　文言：带法之构造器桩：诸法皆挂于原型，故实例所得之物亦带此诸法；instanceof 可用（恒为假）。：」
+「新构造桩」乃化（「列」于「字符串」）而「捷思值」也。
+「新构造桩」者会「方法名们」而
+　虑「原型物」者「捷思新对象」于「可无」而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而「设对象属性」于「物」为「原型物」于「名」为「名」于「值」为（「桩函数」于「元」））
+　　　于「元」
+　　　于「方法名们」
+　而
+　虑「函数值」者「捷思新宿主函数」于（「捷思宿主回调」也（会「接收者」而会「诸参」而
+　　「捷思未定义」））而
+　虑「成」者「捷思定义属性」于「函数值」于（（「捷思文字自串」于『prototype』）与「原型物」与「阳」与「阴」与「阴」）而
+　「函数值」
+也。
+
+「：汉语：元素的桩：常见方法什么都不做，查询方法返回新的元素桩或空数组，文本、值等属性取空值。
+　　文言：元素之桩：常法皆无所为，查询之法返新元素桩或空数组，文本、值等属性取空值。：」
+「桩返回函数」乃化（化「有」而「捷思值」）而「捷思值」也。
+「桩返回函数」者会「造」而
+　「捷思新宿主函数」于（「捷思宿主回调」也（会「接收者」而会「诸参」而「造」于「元」））
+也。
+
+「新元素桩」乃化「有」而「捷思值」也。
+「新元素桩」者会「无」而
+　虑「物」者
+　　「桩对象」于（「列」
+　　　【『addEventListener』
+　　　，『removeEventListener』
+　　　，『setAttribute』
+　　　，『removeAttribute』
+　　　，『getAttribute』
+　　　，『hasAttribute』
+　　　，『appendChild』
+　　　，『append』
+　　　，『prepend』
+　　　，『remove』
+　　　，『focus』
+　　　，『blur』
+　　　，『click』
+　　　，『dispatchEvent』
+　　　，『scrollIntoView』
+　　　，『insertBefore』
+　　　，『replaceWith』
+　　　，『replaceChildren』
+　　　，『closest』
+　　　，『matches』
+　　　，『contains』
+　　　，『getBoundingClientRect』
+　　　，『cloneNode』
+　　　，『select』
+　　　，『setSelectionRange』
+　　　，『showModal』
+　　　，『close』
+　　　，『play』
+　　　，『pause』
+　　　】）
+　而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而「设对象属性」于「物」为「物」于「名」为「名」于「值」为（「捷思数组自值列」于（「罄」授以「捷思值」）））
+　　　于「元」
+　　　于（「列」【『children』，『childNodes』，『classList』，『style』，『dataset』】）
+　而
+　虑「无」者
+　　「设对象属性」于「物」为「物」于「名」为『classList』于「值」为（「桩对象」于（「列」【『add』，『remove』，『toggle』，『contains』，『replace』】））而
+　虑「无」者「设对象属性」于「物」为「物」于「名」为『style』于「值」为（「捷思新对象」于「可无」）而
+　虑「无」者「设对象属性」于「物」为「物」于「名」为『dataset』于「值」为（「捷思新对象」于「可无」）而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而「设对象属性」于「物」为「物」于「名」为「名」于「值」为（「字符串值」于『』））
+　　　于「元」
+　　　于（「列」【『textContent』，『innerHTML』，『value』，『id』，『className』，『innerText』，『outerHTML』】）
+　而
+　虑「无」者「设对象属性」于「物」为「物」于「名」为『querySelector』于「值」为（「桩返回函数」于「新元素桩」）而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而
+　　　　「设对象属性」于「物」为「物」于「名」为「名」于「值」为（「桩返回函数」于（会「无参」而「捷思数组自值列」于（「罄」授以「捷思值」））））
+　　　于「元」
+　　　于（「列」【『querySelectorAll』，『getElementsByTagName』，『getElementsByClassName』】）
+　而
+　「物」
 也。
 
 「：汉语：作构造器和函数用的桩名字。
@@ -184,24 +331,51 @@
 　虑「无」者「设对象属性」于「物」为「全局」于「名」为『navigator』于「值」为（「桩对象」于（「列」【『sendBeacon』，『vibrate』】））而
 　虑「无」者「设对象属性」于「物」为「全局」于「名」为『performance』于「值」为（「桩对象」于（「列」【『now』，『mark』，『measure』】））而
 　虑「无」者「设对象属性」于「物」为「全局」于「名」为『location』于「值」为（「桩对象」于（「列」【『assign』，『replace』，『reload』】））而
-　虑「无」者
-　　「设对象属性」
-　　　于「物」为「全局」
-　　　于「名」为『document』
-　　　于「值」为（「桩对象」于（「列」【『getElementById』，『querySelector』，『querySelectorAll』，『createElement』，『addEventListener』】））
+　虑「文档」者
+　　「桩对象」于（「列」
+　　　【『addEventListener』
+　　　，『removeEventListener』
+　　　，『dispatchEvent』
+　　　，『createTextNode』
+　　　，『createEvent』
+　　　，『execCommand』
+　　　，『hasFocus』
+　　　】）
 　而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而「设对象属性」于「物」为「文档」于「名」为「名」于「值」为（「桩返回函数」于「新元素桩」））
+　　　于「元」
+　　　于（「列」【『getElementById』，『querySelector』，『createElement』，『createDocumentFragment』】）
+　而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而
+　　　　「设对象属性」于「物」为「文档」于「名」为「名」于「值」为（「桩返回函数」于（会「无参」而「捷思数组自值列」于（「罄」授以「捷思值」））））
+　　　于「元」
+　　　于（「列」【『querySelectorAll』，『getElementsByTagName』，『getElementsByClassName』，『getElementsByName』】）
+　而
+　虑「无」者
+　　「从左折叠」授以「字符串」授以「有」
+　　　于（会「名」而会「无」而「设对象属性」于「物」为「文档」于「名」为「名」于「值」为（「新元素桩」于「元」））
+　　　于「元」
+　　　于（「列」【『body』，『head』，『documentElement』，『activeElement』】）
+　而
+　虑「无」者「设对象属性」于「物」为「文档」于「名」为『readyState』于「值」为（「字符串值」于『complete』）而
+　虑「无」者「设对象属性」于「物」为「文档」于「名」为『title』于「值」为（「字符串值」于『』）而
+　虑「无」者「设对象属性」于「物」为「文档」于「名」为『cookie』于「值」为（「字符串值」于『』）而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『document』于「值」为「文档」而
 　虑「无」者
 　　「设对象属性」于「物」为「全局」于「名」为『localStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
 　虑「无」者
 　　「设对象属性」于「物」为「全局」于「名」为『sessionStorage』于「值」为（「桩对象」于（「列」【『getItem』，『setItem』，『removeItem』，『clear』】））而
 　虑「无」者
 　　「设对象属性」于「物」为「全局」于「名」为『history』于「值」为（「桩对象」于（「列」【『pushState』，『replaceState』，『back』，『forward』】））而
-　虑「无」者
-　　「设对象属性」
-　　　于「物」为「全局」
-　　　于「名」为『process』
-　　　于「值」为（「桩对象」于（「列」【『exit』，『cwd』，『on』，『once』，『nextTick』，『hrtime』，『uptime』，『memoryUsage』，『emitWarning』】））
-　而
+　虑「进程」者「桩对象」于（「列」【『exit』，『cwd』，『on』，『once』，『nextTick』，『hrtime』，『uptime』，『memoryUsage』，『emitWarning』】）而
+　虑「无」者「设对象属性」于「物」为「进程」于「名」为『argv』于「值」为（「捷思数组自值列」于（「列」【「字符串值」于『node』，「字符串值」于『脚本』】））而
+　虑「无」者「设对象属性」于「物」为「进程」于「名」为『env』于「值」为（「捷思新对象」于「可无」）而
+　虑「无」者「设对象属性」于「物」为「进程」于「名」为『platform』于「值」为（「字符串值」于『linux』）而
+　虑「无」者「设对象属性」于「物」为「全局」于「名」为『process』于「值」为「进程」而
 　虑「无」者「设对象属性」于「物」为「全局」于「名」为『crypto』于「值」为（「桩对象」于（「列」【『getRandomValues』，『randomUUID』】））而
 　虑「无」者「设对象属性」于「物」为「全局」于「名」为『indexedDB』于「值」为（「桩对象」于（「列」【『open』，『deleteDatabase』】））而
 　虑「无」者
@@ -224,7 +398,11 @@
 　而
 　虑「无」者
 　　「从左折叠」授以「字符串」授以「有」
-　　　于（会「名」而会「无」而「设对象属性」于「物」为「全局」于「名」为「名」于「值」为（「桩函数」于「元」））
+　　　于（会「名」而会「无」而
+　　　　「设对象属性」
+　　　　　于「物」为「全局」
+　　　　　于「名」为「名」
+　　　　　于「值」为（若「等于」于（「长度」于（「构造桩方法表」于「名」））于「零」则「桩函数」于「元」否则「新构造桩」于（「构造桩方法表」于「名」）））
 　　　于「元」
 　　　于（「桩名列」于「元」）
 　而
