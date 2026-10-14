@@ -96,6 +96,45 @@
 　　否则
 　　　「发生事故」授以「有」于『定位偏移或脱流错误』
 　而
+　虑「静态页」者
+　　「解析片段」
+　　　于
+　　　『<div style="height:20px;margin-bottom:8px"></div><div id="静甲" style="position:absolute;width:30px;height:10px"></div><div style="position:relative;width:200px;height:100px"><div id="居中" style="position:absolute;left:10px;right:10px;width:100px;height:20px;margin:auto"></div><div id="竖中" style="position:absolute;top:10px;bottom:10px;left:0;width:20px;height:20px;margin:auto"></div><div id="右锚" style="position:absolute;right:10px;bottom:0;width:50px;height:10px;margin-right:5px"></div></div><div style="direction:rtl;position:relative;width:200px;height:50px"><div id="反向" style="position:absolute;width:40px;height:10px"></div></div>』
+　而
+　虑「静态树」者「生成网页盒树」于「文档求样式」于「静态页」而
+　虑「无」者
+　　「布局网页」
+　　　于（会「样」而会「文」而会「宽值」而「新网页矩形」
+　　　　于「横」为「零点零」于「纵」为「零点零」于「宽」为「零点零」于「高」为「零点零」
+　　　）
+　　　于（「默认数值环境」于「元」）
+　　　于「静态树」
+　　　于「宽」为「三零零点零」
+　　　于「高」为「二零零点零」
+　而
+　虑「静矩」者
+　　（（化「字符串」而「网页矩形」）也（会「名」而「网页节点包围矩形」于「静态树」于（「头一个」于（「查询选择器全部」于「静态页」于「名」））））
+　而
+　虑「矩甲」者「静矩」于『#静甲』而
+　虑「矩乙」者「静矩」于『#居中』而
+　虑「矩丙」者「静矩」于『#竖中』而
+　虑「矩丁」者「静矩」于『#右锚』而
+　虑「矩戊」者「静矩」于『#反向』而
+　虑「无」者
+　　若「且」
+　　　于（「且」于（「小数等」于（「矩甲」中「横」）于「零点零」）于（「小数等」于（「矩甲」中「纵」）于「二八点零」））
+　　　于（「且」
+　　　　于（「且」于（「小数等」于（「矩乙」中「横」）于「五零点零」）于（「小数等」于（「矩乙」中「纵」）于「二八点零」））
+　　　　于（「且」
+　　　　　于（「且」于（「小数等」于（「矩丙」中「横」）于「零点零」）于（「小数等」于（「矩丙」中「纵」）于「六八点零」））
+　　　　　于（「且」
+　　　　　　于（「且」于（「小数等」于（「矩丁」中「横」）于「一三五点零」）于（「小数等」于（「矩丁」中「纵」）于「一一八点零」））
+　　　　　　于（「且」于（「小数等」于（「矩戊」中「横」）于「一六零点零」）于（「小数等」于（「矩戊」中「纵」）于「一二八点零」）））））
+　　则
+　　　「元」
+　　否则
+　　　「发生事故」授以「有」于『绝对定位静态位置或约束方程错误』
+　而
 　虑「弹性页」者
 　　「解析片段」
 　　　于
