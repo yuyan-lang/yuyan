@@ -51,8 +51,8 @@
 　　「宿主操作失败」于「消息」
 也。
 
-「：汉语：族名到候选字体文件（路径、字体集序号）的对照表，依次尝试，第一个能打开的即用；三个系统的路径写在一起，不存在的自然跳过。只收 TrueType 轮廓（glyf）的字体：苹方、冬青黑体、思源黑体与 Noto CJK 的中文字形是 CFF 轮廓，字体库暂不支持（待办事项）。视窗路径用正斜线，诺节照样能开。
-　　文言：族名对候选之表（径与集序），依次试之，先开者用之；三系统之径同列，无者自略。惟收 glyf 轮廓者；苹方、冬青、思源、Noto CJK 之中文为 CFF，字体库未支（待办事项）。视窗之径用正斜线，诺节亦能开之。：」
+「：汉语：族名到候选字体文件（路径、字体集序号）的对照表，依次尝试，第一个能打开的即用；三个系统的路径写在一起，不存在的自然跳过。「无衬线粗体」「衬线粗体」「等宽粗体」是对应常规族的粗体字面（可选，没有就不提供，应用回到常规面并仿粗）。只收 TrueType 轮廓（glyf）的字体：苹方、冬青黑体、思源黑体与 Noto CJK 的中文字形是 CFF 轮廓，字体库暂不支持（待办事项）。视窗路径用正斜线，诺节照样能开。
+　　文言：族名对候选之表（径与集序），依次试之，先开者用之；三系统之径同列，无者自略。「无衬线粗体」「衬线粗体」「等宽粗体」者，对应常规族之粗面（可选，无则不供，应用返常规面而仿粗）。惟收 glyf 轮廓者；苹方、冬青、思源、Noto CJK 之中文为 CFF，字体库未支（待办事项）。视窗之径用正斜线，诺节亦能开之。：」
 「字体候选」乃化「字符串」而（「列」于（「字符串」合「整数」））也。
 「字体候选」者会「族名」而
 　若「串相等」于「族名」于『文楷』则
@@ -89,6 +89,28 @@
 　　，（『/usr/share/fonts/TTF/DejaVuSansMono.ttf』与「零」）
 　　，（『C:/Windows/Fonts/consola.ttf』与「零」）
 　　，（『C:/Windows/Fonts/cour.ttf』与「零」）
+　　】
+　否则若「串相等」于「族名」于『无衬线粗体』则
+　　「列」
+　　【（『/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf』与「零」）
+　　，（『/usr/share/fonts/TTF/DejaVuSans-Bold.ttf』与「零」）
+　　，（『C:/Windows/Fonts/msyhbd.ttc』与「零」）
+　　，（『C:/Windows/Fonts/arialbd.ttf』与「零」）
+　　】
+　否则若「串相等」于「族名」于『衬线粗体』则
+　　「列」
+　　【（『/System/Library/Fonts/Supplemental/Songti.ttc』与「一」）
+　　，（『/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf』与「零」）
+　　，（『/usr/share/fonts/TTF/DejaVuSerif-Bold.ttf』与「零」）
+　　，（『C:/Windows/Fonts/timesbd.ttf』与「零」）
+　　】
+　否则若「串相等」于「族名」于『等宽粗体』则
+　　「列」
+　　【（『/System/Library/Fonts/Menlo.ttc』与「一」）
+　　，（『/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf』与「零」）
+　　，（『/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf』与「零」）
+　　，（『C:/Windows/Fonts/consolab.ttf』与「零」）
+　　，（『C:/Windows/Fonts/courbd.ttf』与「零」）
 　　】
 　否则
 　　（「罄」授以（「字符串」合「整数」））
