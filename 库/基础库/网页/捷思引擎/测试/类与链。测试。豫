@@ -29,4 +29,9 @@
 「断言」
 　于（「脚本得文」于『class P{static make(){return new this();}who(){return "P";}}class Q extends P{who(){return "Q"+super.who();}}Q.make().who();』于『QP』）
 　于『捷思静态继承与超类方法』。
+「断言」
+　于（「脚本得文」
+　　于（『("a』附（「捷思文字转串」于（「捷思文字自码元」于（「列」【「八二三二」】）））附『b".length)+"";』）
+　　于『3』）
+　于『捷思字符串字面量可含行分隔符』。
 「打印行」于『捷思类与链冒烟通过』。
