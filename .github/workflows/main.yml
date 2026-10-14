@@ -384,6 +384,89 @@ jobs:
           fi
           gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" --clobber
 
+  # 文言：抽样之轮较合成与直出（提案〇〇〇二一议九之条件一）：于 Linux 二构与苹果之运行器，以本轮本平台之原生豫构与合成之单文件豫构（包中之启动器加豫构豫行）各冷构豫言编译器为豫行二次，交替而行，降级之缓存与出目各别；书其时与比，合成逾直出一点一倍则书警，不败。
+  # 汉语：抽样轮次比较合成与直出（提案 00021 议九的条件①）：在 Linux 两架构与 macOS 运行器上，用本轮本平台的原生豫构与合成的单文件豫构（包里的启动器加豫构豫行）各冷构建两次豫言编译器（编成豫行），交替进行，降级缓存与输出目录各用各的；打印耗时与比值，合成慢过直出 1.1 倍时只发警告。
+  yuxing-compare:
+    name: 抽样 合成与直出对比（${{ matrix.plat }}）
+    needs: [bootstrap, cross-toolchains, yuxing-toolchain]
+    if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            plat: linux-x64
+            native-artifact: yy-test-tools
+            native-tar: yy-test-tools.tar.gz
+            launcher: yy豫行启动器林兼
+            yuxing: yy豫构兼。豫行
+            arch: 兼容六十四
+          - os: ubuntu-24.04-arm
+            plat: linux-arm64
+            native-artifact: yy-cross-toolchain-linux-arm64
+            native-tar: yy-cross-linux-arm64.tar.gz
+            launcher: yy豫行启动器林臂
+            yuxing: yy豫构臂。豫行
+            arch: 臂六十四
+          - os: macos-latest
+            plat: macos-arm64
+            native-artifact: yy-cross-toolchain-macos-arm64
+            native-tar: yy-cross-macos-arm64.tar.gz
+            launcher: yy豫行启动器苹果臂
+            yuxing: yy豫构臂。豫行
+            arch: 臂六十四
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.native-artifact }}
+          path: ${{ runner.temp }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: yy-yuxing-toolchain
+          path: ${{ runner.temp }}
+
+      # 文言：原生之包解于仓根（得 yy豫构.exe 与执行器之树码）；豫行之包解于别目，以启动器合成单文件之豫构于仓根。
+      # 汉语：原生包解到仓库根目录（得 yy豫构.exe 与执行器汇编树码）；豫行包解到另一个目录，用其中的启动器在仓库根目录合成单文件豫构。
+      - name: 解包并合成单文件豫构
+        run: |
+          set -euo pipefail
+          tar -xzf "$RUNNER_TEMP/${{ matrix.native-tar }}"
+          mkdir -p yy豫行包
+          tar -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" -C yy豫行包
+          chmod +x yy豫构.exe "yy豫行包/${{ matrix.launcher }}"
+          "./yy豫行包/${{ matrix.launcher }}" --合成 "yy豫行包/${{ matrix.yuxing }}" yy豫构合成.exe
+          chmod +x yy豫构合成.exe
+
+      - name: 冷构建编译器各两次并比较耗时
+        run: |
+          set -euo pipefail
+          j="$(getconf _NPROCESSORS_ONLN)"
+          for i in 1 2 3 4; do
+            case "$i" in 1|4) p=yy豫构.exe ;; *) p=yy豫构合成.exe ;; esac
+            d="$RUNNER_TEMP/对比$i"
+            mkdir -p "$d"
+            s="$(date +%s)"
+            if ! "./$p" 构建 豫言编译器 --输出 "$d/yy编译器" -j "$j" -- --目标 本机 --目标系统 豫言 --目标架构 ${{ matrix.arch }} --执行器 "$PWD/yy执行器。树码" --降级缓存 "$d/降级.机器片" --do-not-load-cache > "$d/构建.txt" 2>&1; then
+              tail -n 60 "$d/构建.txt"
+              exit 1
+            fi
+            e="$(date +%s)"
+            echo "第 $i 次（$p）：$((e - s)) 秒"
+            eval "t$i=$((e - s))"
+          done
+          n=$((t1 + t4))
+          c=$((t2 + t3))
+          r="$(awk -v c="$c" -v n="$n" 'BEGIN { printf "%.2f", c / n }')"
+          echo "直出 $n 秒，合成 $c 秒，合成为直出的 $r 倍"
+          if awk -v c="$c" -v n="$n" 'BEGIN { exit !(c > 1.1 * n) }'; then
+            echo "::warning title=合成慢于直出（${{ matrix.plat }}）::合成豫构冷构建编译器 $c 秒，直出 $n 秒，为 $r 倍，超过 1.1 倍"
+          fi
+
   # 文言：豫言系统之软件：以本轮之原生豫构编所选之应用为兼容六十四之豫行（与造盘置于 /工具 者同式），并其索引 software-index-amd64.tsv（仓库目标「豫言系统软件」）；以豫行工具链包之林兼启动器行你好之豫行以冒烟（印你好，以七退）；惟推于 yybs 时传于发行版 yuyan-os-software（无则建之），每轮覆之，供系统之“安装软件”下载。
   # 汉语：豫言系统软件：用本轮的原生豫构把选定的应用编成 AMD64 豫行（与造盘放进 /工具 的工具同一种格式），连同索引 software-index-amd64.tsv（仓库目标「豫言系统软件」）；用豫行工具链包里的林兼启动器运行你好的豫行版作冒烟（打印你好，退出码 7）；只在推送到 yybs 时上传到发行版 yuyan-os-software（没有就新建），每轮覆盖，供系统里的“安装软件”下载。
   os-software:
