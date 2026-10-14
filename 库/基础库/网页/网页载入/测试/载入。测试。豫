@@ -19,7 +19,7 @@
 　　　　　【「地址」者「址」也
 　　　　　，「主体」者「字符串转字节串」
 　　　　　　于
-　　　　　　『<body><p></p><script>document.body.insertAdjacentHTML("beforeend","<p id=新></p>");document.body.children[0].lang=navigator.languages[1];</script></body>』
+　　　　　　『<body><p></p><script>document.body.insertAdjacentHTML("beforeend","<p id=新></p>");document.body.children[0].lang=navigator.languages[1];Promise.resolve().then(function(){document.getElementById("新").setAttribute("title","期约");});</script></body>』
 　　　　　　也
 　　　　　，「编码」者『UTF-8』也
 　　　　　】）
@@ -44,7 +44,11 @@
 　　　　　（
 　　　　　　鉴「按标识查询」于（「脚本页」中「文档」）于『新』而
 　　　　　　　有「可无」则「阴」
-　　　　　　　或有（「可有」于「节」）则「阳」
+　　　　　　　或有（「可有」于「节」）则（
+　　　　　　　　鉴「取属性」于「节」于『title』而
+　　　　　　　　　有「可无」则「阴」
+　　　　　　　　　或有（「可有」于「题」）则「串相等」于「题」于『期约』
+　　　　　　　）
 　　　　　）
 　　　　而
 　　　　虑「语言对」者
