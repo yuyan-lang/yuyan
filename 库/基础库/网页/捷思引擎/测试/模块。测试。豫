@@ -21,6 +21,10 @@
 　　『import {fq} from "q"; export function fp() { return 1; } export const rp = fq();』
 　否则若「串相等」于「键」于『q』则
 　　『import {fp} from "p"; export function fq() { return fp() + 1; }』
+　否则若「串相等」于「键」于『x』则
+　　『export const v = await Promise.resolve(5); const ns = await import("c"); export const d = ns.y;』
+　否则若「串相等」于「键」于『y』则
+　　『import {v, d} from "x"; export const r = v + d + import.meta.url.length;』
 　否则
 　　「发生事故」于（『测试：无此模块：』附「键」）
 也。
@@ -54,6 +58,11 @@
 「丙空间」者「捷思在环境执行模块」于「模块根境」于「内存加载器」于「键」为『p』于「源码」为（「内存源」于『p』）也。
 
 「断言」于（「捷思严格等」于（「读导出」于「丙空间」于『rp』）于（「捷思数值」于「二点零」））于『模块循环依赖与函数提升』。
+「断言」
+　于（「捷思严格等」
+　　于（「读导出」于（「捷思在环境执行模块」于「模块根境」于「内存加载器」于「键」为『y』于「源码」为（「内存源」于『y』））于『r』）
+　　于（「捷思数值」于「一一点零」））
+　于『模块顶层等待动态导入与元信息』。
 「断言」
 　于（「捷思严格等」
 　　于（「读导出」于（「捷思在环境执行模块」于「模块根境」于「内存加载器」于「键」为『b』于「源码」为（「内存源」于『b』））于『why』）
