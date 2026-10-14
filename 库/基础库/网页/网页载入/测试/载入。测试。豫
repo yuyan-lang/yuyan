@@ -65,6 +65,56 @@
 　　　　若「且」于「新段在」于「语言对」则「元」否则「发生事故」授以「有」于『页面脚本没有改动文档（insertAdjacentHTML、children、lang 或 navigator）』
 　　　）
 　而
+　「：汉语：窗口与载入事件：window、self 就是全局对象，带着 document 与定时器；脚本跑完后派发 DOMContentLoaded 与 load，window 的监听与 body 的 onload 都收到。
+　　　文言：窗与载之事：window、self 即全局之物，带 document 与定时器；脚本既毕则派 DOMContentLoaded 与 load，window 之听与 body 之 onload 皆受之。：」
+　虑「窗口页读取」者
+　　（「网页资源读取器」也（会「址」而
+　　　若「串相等」于「址」于『https://example.test/窗口页』则
+　　　　「可有」于（「组值」
+　　　　　【「地址」者「址」也
+　　　　　，「主体」者「字符串转字节串」
+　　　　　　于
+　　　　　　『<body onload="document.body.setAttribute('title','载')"><script>var ok=window===globalThis&&self===window&&window.document===document&&typeof window.setTimeout==="function";window.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("lang",ok?"窗":"错");});</script></body>』
+　　　　　　也
+　　　　　，「编码」者『UTF-8』也
+　　　　　】）
+　　　否则
+　　　　「可无」
+　　　））
+　而
+　虑「无」者
+　　鉴「载入网页」
+　　　于「窗口页读取」
+　　　于（「新网页字体集合」于（「组值」【「本地」者（会「族」而
+　　　　「可无」）也，「远程」者（会「址」而
+　　　　　「可无」）也】））
+　　　于（「默认数值环境」于「元」）
+　　　于「语言」为『zh』
+　　　于「地址」为『https://example.test/窗口页』
+　　　于「宽」为「二」
+　　　于「高」为「二」而
+　　　有「可无」则「发生事故」授以「有」于『窗口页载入失败』
+　　　或有（「可有」于「窗口页」）则（
+　　　　鉴「查询选择器」于（「窗口页」中「文档」）于『body』而
+　　　　　有「可无」则「发生事故」授以「有」于『窗口页没有 body』
+　　　　　或有（「可有」于「体」）则（
+　　　　　　虑「题」者「取属性」于「体」于『title』而
+　　　　　　虑「语」者「取属性」于「体」于『lang』而
+　　　　　　鉴「题」而
+　　　　　　　有（「可有」于「题文」）则（
+　　　　　　　　鉴「语」而
+　　　　　　　　　有（「可有」于「语文」）则（
+　　　　　　　　　　若「且」于（「串相等」于「题文」于『载』）于（「串相等」于「语文」于『窗』）则
+　　　　　　　　　　　「元」
+　　　　　　　　　　否则
+　　　　　　　　　　　「发生事故」授以「有」于（『窗口页结果不对：』附「题文」附「语文」）
+　　　　　　　　　）
+　　　　　　　　　或有「可无」则「发生事故」授以「有」于『DOMContentLoaded 监听没有执行』
+　　　　　　　）
+　　　　　　　或有「可无」则「发生事故」授以「有」于『body 的 onload 没有执行』
+　　　　　）
+　　　）
+　而
 　「：汉语：模块脚本：内嵌模块从相对地址导入外部模块的导出，在后面的普通脚本之后执行。
 　　　文言：模块脚本：内嵌之模块自相对之址导入外部模块之所出，于其后之常脚本之后行之。：」
 　虑「模块页读取」者
