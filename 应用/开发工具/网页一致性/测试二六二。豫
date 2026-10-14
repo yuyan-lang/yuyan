@@ -135,6 +135,7 @@
 　，『import-text』
 　，『import-bytes』
 　，『await-dictionary』
+　，『tail-call-optimization』
 　】
 也。
 

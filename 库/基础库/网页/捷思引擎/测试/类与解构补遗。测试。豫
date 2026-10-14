@@ -70,4 +70,25 @@
 　『var r=[];class A{}class B extends A{constructor(){super();return null;}}try{new B();r.push("no");}catch(e){r.push(e instanceof TypeError?"T":"E");}class C extends A{constructor(){super();this.k=1;return undefined;}}r.push(new C().k);class D extends A{constructor(){super();return {z:2};}}r.push(new D().z);class E extends A{constructor(){super();return 5;}}try{new E();r.push("no");}catch(e){r.push("T");}class F{constructor(){this.q=1;return 5;}}r.push(new F().q);class H extends A{constructor(){var f=()=>{return 7;};super();this.h=f();}}r.push(new H().h);r.join("|");』
 　　于「期望」为『T|1|2|T|1|7』
 　　于「说明」为『捷思派生类构造方法的返回值』。
+「：汉语：with 里对名字的赋值与复合赋值：先解析出绑定（命中对象环境就记下那个对象），再求右边，右边求值之后仍写回那个绑定——右边里把属性删掉，对象上的属性会被重新写出，外层同名变量不受影响。
+　　文言：with 中于名之赋值及复合赋值：先解其绑（命中于对象环境则记其物），再求右，右求毕仍写回其绑——右中删其性，则物上之性复写而出，外层同名之变量不受影响。：」
+「脚本得文」
+　于「脚本」为
+　『var r=[];var scope={x:1};var x=3;with(scope){x*=(delete scope.x,2);}r.push(scope.x,x);var s2={y:1};var y=9;with(s2){y=(delete s2.y,2);}r.push(s2.y,y);function g(){var z=5;var o={z:1};with(o){z+=(delete o.z,10);}return o.z+","+z;}r.push(g());function h(){var w=5;var o={w:1};with(o){return function(){w+=(delete o.w,10);return o.w+","+w;};}}r.push(h()());r.join("|");』
+　　于「期望」为『2|3|2|9|11,5|11,11』
+　　于「说明」为『捷思with里的赋值先解析绑定』。
+「：汉语：对象解构的剩余项：逐个取自有的可枚举属性（经读取，所以取值器会被调用一次），结果是普通对象（原型为 Object.prototype），字符串源取各下标，数字与符号源得空对象；数组迭代方法被删掉时数组解构抛 TypeError。
+　　文言：对象解构之余项：逐取自有之可枚举性（经读取，故取值器恰被呼一次），其果为寻常之物（原型为 Object.prototype），字符串之源取诸下标，数与符号之源得空物；数组之迭代法既删则数组解构抛 TypeError。：」
+「脚本得文」
+　于「脚本」为
+　『var r=[];var calls=0;var src={get v(){calls++;return 2;},w:3};var {w:pw,...rest}=src;r.push(calls,rest.v,pw,"w" in rest,Object.getPrototypeOf(rest)===Object.prototype);var {...q}="ab";r.push(q[0]+q[1]);var {...n}=5;r.push(n instanceof Object);var {...sy}=Symbol();r.push(Object.keys(sy).length);var order=[];var o={get z(){order.push("z");},get a(){order.push("a");}};Object.defineProperty(o,1,{get:function(){order.push(1);},enumerable:true});var {...cp}=o;r.push(order.join(""));var it=Array.prototype[Symbol.iterator];delete Array.prototype[Symbol.iterator];try{var [aa]=[1];r.push("no");}catch(e){r.push(e instanceof TypeError?"T":"E");}Array.prototype[Symbol.iterator]=it;var [bb]=[7];r.push(bb);r.join("|");』
+　　于「期望」为『1|2|3|false|true|ab|true|0|1za|T|7』
+　　于「说明」为『捷思对象解构的剩余项与被删的数组迭代方法』。
+「：汉语：对象字面量里的方法、取值器与设值器有 home 对象，方法里的 super 属性从该对象的原型取。
+　　文言：对象字面量中之方法、取值器与设值器有 home 之物，方法中之 super 之性自该物之原型取之。：」
+「脚本得文」
+　于「脚本」为
+　『var base={m:function(){return "base";},get g(){return this.v;}};var o={m(){return "o+"+super.m();},v:5,get g2(){return super.g;},arrow(){return (()=>super.m())();}};Object.setPrototypeOf(o,base);[o.m(),o.g2,o.arrow()].join("|");』
+　　于「期望」为『o+base|5|base』
+　　于「说明」为『捷思对象字面量方法里的super属性』。
 「打印行」于『捷思类与解构补遗冒烟通过』。
