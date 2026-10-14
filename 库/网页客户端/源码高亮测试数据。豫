@@ -173,8 +173,7 @@
 　　，『）』与『punctuation』
 　　，『则』与『keyword』
 　　，『「数」』与『identifier』
-　　，『或』与『keyword』
-　　，『有』与『keyword』
+　　，『或有』与『keyword』
 　　，『「可无」』与『identifier』
 　　，『则』与『keyword』
 　　，『「零」』与『number』

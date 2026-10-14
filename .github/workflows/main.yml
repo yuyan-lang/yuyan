@@ -1,10 +1,10 @@
 name: CI
 
 env:
-  # 文言：所定之原生工具链包（Linux x64）：自举之作由此起步，不用 Node 与 Wasm。包中豫构（新包 yy豫构_stable.exe，十月十三日前之旧包 yy豫构六四_stable.exe）配包中执行器，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟 CI 发新包，乃同易下二项。
-  # 汉语：固定的原生工具链包（Linux x64）：自举作业从它起步，不用 Node 与 Wasm。包里的豫构（新包是 yy豫构_stable.exe，10-13 删去三十二位之前的旧包是 yy豫构六四_stable.exe）配包里的执行器，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等 CI 发布新包，再同时改下面两项。
-  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261013T163036Z-yuyan-native-linux-x64-192d266ab2cbc26d3d9aba03cbc4e27a4351de9e.tar.gz
-  YY_NATIVE_TOOLCHAIN_SHA256: 96d329bdd39a65ed1b6408e4f3d66ac76b471942d2b0aaa634560f293b23063c
+  # 文言：所定之原生工具链包（Linux x64）：自举之作由此起步，不用 Node 与 Wasm。包中豫构 yy豫构_stable.exe 配包中执行器 yy执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟 CI 发新包，乃同易下二项。
+  # 汉语：固定的原生工具链包（Linux x64）：自举作业从它起步，不用 Node 与 Wasm。包里的豫构 yy豫构_stable.exe 配包里的执行器 yy执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等 CI 发布新包，再同时改下面两项。
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261014T012902Z-yuyan-native-linux-x64-5c517a9c89a4d9cf287d1fc059af50403ce08725.tar.gz
+  YY_NATIVE_TOOLCHAIN_SHA256: cf028d07d3f6daf4ee1a6ded5313b113fb4a7923b2f440f96bc8452307b37746
 
 on:
   push:
@@ -87,17 +87,11 @@ jobs:
           echo "$YY_NATIVE_TOOLCHAIN_SHA256  $archive" | sha256sum --check -
           tar -xzf "$archive"
 
-      # 文言：一级驱动以今源之码生，故二三级所出者同（定点）；包中之执行器与包中豫构同代，侧表之式相合。旧包（十月十三日去三十二位之前所发）之豫构与六十四位执行器名带“六四”，新包无之。待办事项：钉点易为新包，乃去旧名之支。
-      # 汉语：一级驱动由当前源码生成，二、三级的代码生成就一致（定点）；配包里的执行器，是因为它与包里的豫构同代、侧表格式相合。旧包（10-13 删去三十二位之前发布）里豫构与六十四位执行器带“六四”，新包没有。待办事项：钉点换成新包后删去旧名分支。
+      # 文言：一级驱动以今源之码生，故二三级所出者同（定点）；包中之执行器与包中豫构同代，侧表之式相合。
+      # 汉语：一级驱动由当前源码生成，二、三级的代码生成就一致（定点）；配包里的执行器，是因为它与包里的豫构同代、侧表格式相合。
       - name: 以包中豫构构建当前源码的一级原生豫构
         run: |
-          set -euo pipefail
-          if [ -f yy豫构_stable.exe ]; then
-            stable=yy豫构_stable.exe; executor=yy执行器。树码
-          else
-            stable=yy豫构六四_stable.exe; executor=yy执行器六四。树码
-          fi
-          ./"$stable" 构建 豫构 --输出 yy豫构.exe -j "$(nproc)" -- --目标 本机 --执行器 "$executor" --降级缓存 .yybuild/降级缓存/yy豫构一级.exe.机器片
+          ./yy豫构_stable.exe 构建 豫构 --输出 yy豫构.exe -j "$(nproc)" -- --目标 本机 --执行器 yy执行器。树码 --降级缓存 .yybuild/降级缓存/yy豫构一级.exe.机器片
 
       # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。此作诸作之所待。「全部」原生自举而核定点，装原生工具链，乃以原生豫构构网页后端之 Wasm 编译器、豫构与值桥。
       # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。本作业是其他作业的前置。「全部」原生自举并核对定点、装上原生工具链，然后由原生豫构构建网页后端用的 Wasm 编译器、豫构与值桥。
