@@ -1,6 +1,6 @@
 「：汉语：层叠属性的初值、继承标志与简写目标表，供层叠计算、变量延迟展开和布局读取。
-文言：录诸属性之本，辨承袭之制，列简写所统，以授层叠诸算。
-赋曰：众式分名，各藏初本；承袭有别，长短有群。简写统属，逐项列陈；迟解有据，层叠循文。字体诸术，同归重置；后章有改，先后相因。表立于此，诸用乃均。：」
+　　文言：录诸属性之本，辨承袭之制，列简写所统，以授层叠诸算。
+　　赋曰：众式分名，各藏初本；承袭有别，长短有群。简写统属，逐项列陈；迟解有据，层叠循文。字体诸术，同归重置；后章有改，先后相因。表立于此，诸用乃均。：」
 寻观「标准库」之书。
 
 「属性资料」即
@@ -43,6 +43,8 @@
 　，『column-width』与『auto』与「阴」
 　，『column-count』与『auto』与「阴」
 　，『content-visibility』与『visible』与「阴」
+　，『shape-outside』与『none』与「阴」
+　，『shape-margin』与『0』与「阴」
 　，『contain』与『none』与「阴」
 　，『text-wrap-mode』与『wrap』与「阳」
 　，『text-wrap-style』与『auto』与「阳」
@@ -200,45 +202,36 @@
 　【『margin』与（「列」【『margin-top』，『margin-right』，『margin-bottom』，『margin-left』】）
 　，『padding』与（「列」【『padding-top』，『padding-right』，『padding-bottom』，『padding-left』】）
 　，『border』
-　与（「列」
-　　【『border-top-width』
-　　，『border-right-width』
-　　，『border-bottom-width』
-　　，『border-left-width』
-　　，『border-top-style』
-　　，『border-right-style』
-　　，『border-bottom-style』
-　　，『border-left-style』
-　　，『border-top-color』
-　　，『border-right-color』
-　　，『border-bottom-color』
-　　，『border-left-color』
-　　，『border-image-source』
-　　，『border-image-slice』
-　　，『border-image-width』
-　　，『border-image-outset』
-　　，『border-image-repeat』
-　　】）
+　　与（「列」
+　　　【『border-top-width』
+　　　，『border-right-width』
+　　　，『border-bottom-width』
+　　　，『border-left-width』
+　　　，『border-top-style』
+　　　，『border-right-style』
+　　　，『border-bottom-style』
+　　　，『border-left-style』
+　　　，『border-top-color』
+　　　，『border-right-color』
+　　　，『border-bottom-color』
+　　　，『border-left-color』
+　　　，『border-image-source』
+　　　，『border-image-slice』
+　　　，『border-image-width』
+　　　，『border-image-outset』
+　　　，『border-image-repeat』
+　　　】）
 　，『border-top』与（「列」【『border-top-width』，『border-top-style』，『border-top-color』】）
 　，『border-right』与（「列」【『border-right-width』，『border-right-style』，『border-right-color』】）
 　，『border-bottom』与（「列」【『border-bottom-width』，『border-bottom-style』，『border-bottom-color』】）
 　，『border-left』与（「列」【『border-left-width』，『border-left-style』，『border-left-color』】）
-　，『border-width』
-　　与（「列」【『border-top-width』，『border-right-width』，『border-bottom-width』，『border-left-width』】）
-　，『border-style』
-　　与（「列」【『border-top-style』，『border-right-style』，『border-bottom-style』，『border-left-style』】）
-　，『border-color』
-　　与（「列」【『border-top-color』，『border-right-color』，『border-bottom-color』，『border-left-color』】）
+　，『border-width』与（「列」【『border-top-width』，『border-right-width』，『border-bottom-width』，『border-left-width』】）
+　，『border-style』与（「列」【『border-top-style』，『border-right-style』，『border-bottom-style』，『border-left-style』】）
+　，『border-color』与（「列」【『border-top-color』，『border-right-color』，『border-bottom-color』，『border-left-color』】）
 　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
 　，『outline』与（「列」【『outline-width』，『outline-style』，『outline-color』】）
-　，『text-decoration』
-　与（「列」
-　　【『text-decoration-line』
-　　，『text-decoration-style』
-　　，『text-decoration-color』
-　　，『text-decoration-thickness』
-　　】）
+　，『text-decoration』与（「列」【『text-decoration-line』，『text-decoration-style』，『text-decoration-color』，『text-decoration-thickness』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
 　，『columns』与（「列」【『column-width』，『column-count』】）
 　，『text-wrap』与（「列」【『text-wrap-mode』，『text-wrap-style』】）
@@ -246,32 +239,54 @@
 　，『scroll-padding』与（「列」【『scroll-padding-top』，『scroll-padding-right』，『scroll-padding-bottom』，『scroll-padding-left』】）
 　，『scroll-margin』与（「列」【『scroll-margin-top』，『scroll-margin-right』，『scroll-margin-bottom』，『scroll-margin-left』】）
 　，『place-items』与（「列」【『align-items』，『justify-items』】）
-　，『animation』与（「列」【『animation-name』，『animation-duration』，『animation-timing-function』，『animation-delay』，『animation-iteration-count』，『animation-direction』，『animation-fill-mode』，『animation-play-state』】）
-　，『transition』与（「列」【『transition-property』，『transition-duration』，『transition-timing-function』，『transition-delay』，『transition-behavior』】）
+　，『animation』
+　　与（「列」
+　　　【『animation-name』
+　　　，『animation-duration』
+　　　，『animation-timing-function』
+　　　，『animation-delay』
+　　　，『animation-iteration-count』
+　　　，『animation-direction』
+　　　，『animation-fill-mode』
+　　　，『animation-play-state』
+　　　】）
+　，『transition』
+　　与（「列」【『transition-property』，『transition-duration』，『transition-timing-function』，『transition-delay』，『transition-behavior』】）
 　，『font』
 　　与（「列」
-　　　【『font-style』，『font-variant』，『font-weight』，『font-stretch』，『font-size』，『line-height』，『font-family』
-　　　，『font-kerning』，『font-size-adjust』，『font-feature-settings』，『font-language-override』，『font-optical-sizing』，『font-variation-settings』
-　　　，『font-variant-ligatures』，『font-variant-caps』，『font-variant-numeric』，『font-variant-east-asian』，『font-variant-position』，『font-variant-alternates』】）
+　　　【『font-style』
+　　　，『font-variant』
+　　　，『font-weight』
+　　　，『font-stretch』
+　　　，『font-size』
+　　　，『line-height』
+　　　，『font-family』
+　　　，『font-kerning』
+　　　，『font-size-adjust』
+　　　，『font-feature-settings』
+　　　，『font-language-override』
+　　　，『font-optical-sizing』
+　　　，『font-variation-settings』
+　　　，『font-variant-ligatures』
+　　　，『font-variant-caps』
+　　　，『font-variant-numeric』
+　　　，『font-variant-east-asian』
+　　　，『font-variant-position』
+　　　，『font-variant-alternates』
+　　　】）
 　，『list-style』与（「列」【『list-style-type』，『list-style-position』，『list-style-image』】）
 　，『background』
-　与「列」
-　　【『background-image』
-　　，『background-position』
-　　，『background-size』
-　　，『background-repeat』
-　　，『background-attachment』
-　　，『background-origin』
-　　，『background-clip』
-　　，『background-color』
-　　】
-　，『border-radius』
-　与（「列」
-　　【『border-top-left-radius』
-　　，『border-top-right-radius』
-　　，『border-bottom-right-radius』
-　　，『border-bottom-left-radius』
-　　】）
+　　与「列」
+　　　【『background-image』
+　　　，『background-position』
+　　　，『background-size』
+　　　，『background-repeat』
+　　　，『background-attachment』
+　　　，『background-origin』
+　　　，『background-clip』
+　　　，『background-color』
+　　　】
+　，『border-radius』与（「列」【『border-top-left-radius』，『border-top-right-radius』，『border-bottom-right-radius』，『border-bottom-left-radius』】）
 　，『flex』与（「列」【『flex-grow』，『flex-shrink』，『flex-basis』】）
 　，『flex-flow』与（「列」【『flex-direction』，『flex-wrap』】）
 　，『grid-column』与（「列」【『grid-column-start』，『grid-column-end』】）
