@@ -47,6 +47,8 @@
 　　　　　　　　　，『ease-in』
 　　　　　　　　　，『ease-out』
 　　　　　　　　　，『ease-in-out』
+　　　　　　　　　，『step-start』
+　　　　　　　　　，『step-end』
 　　　　　　　　　，『infinite』
 　　　　　　　　　，『normal』
 　　　　　　　　　，『reverse』
