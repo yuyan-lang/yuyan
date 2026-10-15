@@ -35,6 +35,26 @@
 　，『letter-spacing』与『normal』与「阳」
 　，『word-spacing』与『normal』与「阳」
 　，『text-align』与『start』与「阳」
+　，『text-align-last』与『auto』与「阳」
+　，『counter-reset』与『none』与「阴」
+　，『counter-set』与『none』与「阴」
+　，『counter-increment』与『none』与「阴」
+　，『user-select』与『auto』与「阴」
+　，『column-width』与『auto』与「阴」
+　，『column-count』与『auto』与「阴」
+　，『animation-name』与『none』与「阴」
+　，『animation-duration』与『0s』与「阴」
+　，『animation-timing-function』与『ease』与「阴」
+　，『animation-delay』与『0s』与「阴」
+　，『animation-iteration-count』与『1』与「阴」
+　，『animation-direction』与『normal』与「阴」
+　，『animation-fill-mode』与『none』与「阴」
+　，『animation-play-state』与『running』与「阴」
+　，『transition-property』与『all』与「阴」
+　，『transition-duration』与『0s』与「阴」
+　，『transition-timing-function』与『ease』与「阴」
+　，『transition-delay』与『0s』与「阴」
+　，『transition-behavior』与『normal』与「阴」
 　，『text-indent』与『0』与「阳」
 　，『text-transform』与『none』与「阳」
 　，『image-rendering』与『auto』与「阳」
@@ -204,6 +224,10 @@
 　　，『text-decoration-thickness』
 　　】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
+　，『columns』与（「列」【『column-width』，『column-count』】）
+　，『place-items』与（「列」【『align-items』，『justify-items』】）
+　，『animation』与（「列」【『animation-name』，『animation-duration』，『animation-timing-function』，『animation-delay』，『animation-iteration-count』，『animation-direction』，『animation-fill-mode』，『animation-play-state』】）
+　，『transition』与（「列」【『transition-property』，『transition-duration』，『transition-timing-function』，『transition-delay』，『transition-behavior』】）
 　，『font』
 　　与（「列」
 　　　【『font-style』，『font-variant』，『font-weight』，『font-stretch』，『font-size』，『line-height』，『font-family』
