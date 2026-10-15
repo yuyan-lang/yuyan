@@ -19,6 +19,9 @@
 　　，『animation-direction』与『normal』
 　　，『animation-fill-mode』与『none』
 　　，『animation-play-state』与『running』
+　　，『animation-timeline』与『auto』
+　　，『animation-range-start』与『normal』
+　　，『animation-range-end』与『normal』
 　　】
 　否则
 　　「列」
