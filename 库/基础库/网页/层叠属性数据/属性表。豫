@@ -1,3 +1,6 @@
+「：汉语：层叠属性的初值、继承标志与简写目标表，供层叠计算、变量延迟展开和布局读取。
+文言：录诸属性之本，辨承袭之制，列简写所统，以授层叠诸算。
+赋曰：众式分名，各藏初本；承袭有别，长短有群。简写统属，逐项列陈；迟解有据，层叠循文。字体诸术，同归重置；后章有改，先后相因。表立于此，诸用乃均。：」
 寻观「标准库」之书。
 
 「属性资料」即
@@ -26,6 +29,8 @@
 　，『font-feature-settings』与『normal』与「阳」
 　，『font-variation-settings』与『normal』与「阳」
 　，『font-optical-sizing』与『auto』与「阳」
+　，『font-size-adjust』与『none』与「阳」
+　，『font-language-override』与『normal』与「阳」
 　，『line-height』与『normal』与「阳」
 　，『letter-spacing』与『normal』与「阳」
 　，『word-spacing』与『normal』与「阳」
@@ -201,7 +206,9 @@
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
 　，『font』
 　　与（「列」
-　　　【『font-style』，『font-variant』，『font-weight』，『font-stretch』，『font-size』，『line-height』，『font-family』】）
+　　　【『font-style』，『font-variant』，『font-weight』，『font-stretch』，『font-size』，『line-height』，『font-family』
+　　　，『font-kerning』，『font-size-adjust』，『font-feature-settings』，『font-language-override』，『font-optical-sizing』，『font-variation-settings』
+　　　，『font-variant-ligatures』，『font-variant-caps』，『font-variant-numeric』，『font-variant-east-asian』，『font-variant-position』，『font-variant-alternates』】）
 　，『list-style』与（「列」【『list-style-type』，『list-style-position』，『list-style-image』】）
 　，『background』
 　与「列」
