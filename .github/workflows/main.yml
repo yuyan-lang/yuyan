@@ -1342,12 +1342,17 @@ jobs:
           path: 社区包仓库
           persist-credentials: false
 
+      # 文言：社区之仓检出于语言仓之工作区中，发现语言仓之包时并扫其 包/豫言/ 而名冲（十月十四日后每轮皆败）；故先移之出工作区。
+      # 汉语：社区包仓库检出在语言仓工作区里，发现语言仓的包时会连带扫到它的 包/豫言/ 而报包名冲突（10-14 以后每轮都败）；先把它挪出工作区。
       - name: 复制包并改工具链钉
         if: steps.pkg.outputs.url != ''
         env:
           YY_PKG_URL: ${{ steps.pkg.outputs.url }}
           YY_PKG_SHA: ${{ steps.pkg.outputs.sha }}
-        run: ./yy社区包工具.exe 复制 --语言仓 "$GITHUB_WORKSPACE" --社区 "$GITHUB_WORKSPACE/社区包仓库" --钉网址 "$YY_PKG_URL" --钉沙256 "$YY_PKG_SHA" --钉提交 "$GITHUB_SHA"
+        run: |
+          set -euo pipefail
+          mv 社区包仓库 "$RUNNER_TEMP/社区包仓库"
+          ./yy社区包工具.exe 复制 --语言仓 "$GITHUB_WORKSPACE" --社区 "$RUNNER_TEMP/社区包仓库" --钉网址 "$YY_PKG_URL" --钉沙256 "$YY_PKG_SHA" --钉提交 "$GITHUB_SHA"
 
       - name: 提交并开拉取请求（没有令牌时演练）
         id: pr
@@ -1356,7 +1361,7 @@ jobs:
           YY_COMMUNITY_TOKEN: ${{ secrets.YUYAN_COMMUNITY_TOKEN }}
         run: |
           set -euo pipefail
-          cd 社区包仓库
+          cd "$RUNNER_TEMP/社区包仓库"
           git config user.name "豫言 CI"
           git config user.email "ci@yuyan-lang.org"
           git add -A
