@@ -1381,9 +1381,24 @@ jobs:
             exit 0
           fi
           git push "https://x-access-token:$YY_COMMUNITY_TOKEN@github.com/yuyan-lang/yuyan-community-packages.git" "HEAD:refs/heads/$branch"
-          GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr create -R yuyan-lang/yuyan-community-packages --base main --head "$branch" \
+          url="$(GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr create -R yuyan-lang/yuyan-community-packages --base main --head "$branch" \
             --title "复制：语言仓 $short 的包与工具链钉" \
-            --body "语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）：清单里的包复制到 包/豫言/，工具链钉改成本轮的原生工具链包。合入机器人核对检查与作者后自动合入。"
+            --body "语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）：清单里的包复制到 包/豫言/，工具链钉改成本轮的原生工具链包。合入机器人核对检查与作者后自动合入。")"
+          echo "开了拉取请求 $url"
+          # 文言：新请既开，前此语言仓所抄之请，检有败者，皆闭之，评以新请之址，并去其枝；检犹未竟者姑存之。闭之不成，惟警而不败此作。
+          # 汉语：新拉取请求开好后，关掉此前由语言仓复制、检查失败的拉取请求（评论指向新的，并删除其分支）；检查还没跑完的先留着。关不掉只发警告，不让本作业失败。
+          # 待办事项：留着的那些之后才失败的，要等下一次开新拉取请求时才关。
+          GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr list -R yuyan-lang/yuyan-community-packages --state open --limit 200 \
+            --json number,headRefName,statusCheckRollup \
+            --jq '.[] | select(.headRefName | startswith("语言仓/"))
+              | select(any(.statusCheckRollup[]?; (.conclusion // .state) as $s | $s == "FAILURE" or $s == "ERROR" or $s == "TIMED_OUT"))
+              | "\(.number) \(.headRefName)"' |
+          while read -r old oldbranch; do
+            if [ "$oldbranch" != "$branch" ]; then
+              GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr close -R yuyan-lang/yuyan-community-packages "$old" --delete-branch \
+                --comment "检查失败，已由 $url 取代，自动关闭。" || echo "::warning::关闭拉取请求 #$old 失败"
+            fi
+          done || echo "::warning::查找此前检查失败的复制拉取请求失败"
 
       - uses: actions/upload-artifact@v4
         if: steps.pkg.outputs.url != ''
