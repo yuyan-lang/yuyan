@@ -1362,8 +1362,10 @@ jobs:
         run: |
           set -euo pipefail
           cd "$RUNNER_TEMP/社区包仓库"
-          git config user.name "豫言 CI"
-          git config user.email "ci@yuyan-lang.org"
+          # 文言：以 github-actions[bot] 之名录之：GitHub 识其户，cla-bot 乃以其名问官网之旧放行名录；邮箱无所联之户者，cla-bot 不问而径报错。
+          # 汉语：以 github-actions[bot] 的身份提交：GitHub 认得这个账户，cla-bot 才会拿用户名去查官网的旧放行名单；邮箱没关联账户时，cla-bot 不查就直接报错。
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           if git diff --cached --quiet; then
             echo "社区包仓库没有改动"
