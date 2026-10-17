@@ -1,7 +1,6 @@
-「：汉语：CSS 样式模块。支持逗号分隔的选择器列表、通配、标签、#id、.class、[attr]、[attr=value]、[attr^=value]、[attr$=value]、[attr*=value]、[attr~=word]、[attr|=prefix]、:first-child、:last-child、:only-child、:nth-child(odd)、:nth-child(even)、整数及 An+B 参数的 :nth-child()（如 `2n+1`、`-n+3`、`4n`、`-2n-1`）、:empty、:checked、:disabled、:required、:optional、同一元素上的复合简单选择器、空白分隔的后代选择器及空格分隔的直接子代组合符；:required 与 :optional 只匹配 input、select、textarea 中可使用 required 属性的控件，input 的 hidden、button、submit、reset、image、range、color 类型不参与；在这些控件中按 required 属性是否存在区分 required 与 optional，不计算值有效性。类名按空白分隔后精确匹配。声明支持大小写不敏感的 `!important`，重要声明优先于普通声明，其间仍按 specificity 与源码顺序层叠。按当前选择器语法计算 specificity，并以原文顺序打破相同 specificity 的平局。属性选择器大小写标志与其他伪类尚未实现。路径匹配接收显式祖先列；图形页块级与行内遍历均传递祖先，select 选项专用路径尚未传递。另解析元素 style 内联声明。
-　　文言：CSS 样式之模块。选子列可逗号分组；亦有通配、标签、#id、.class、[attr]、[attr=value]、[attr^=value]、[attr$=value]、[attr*=value]、[attr~=word]、[attr|=prefix]、:first-child、:last-child、:only-child、:nth-child(odd)、:nth-child(even)、整数及 An+B 文式之 :nth-child()（如 `2n+1`、`-n+3`、`4n`、`-2n-1`）、:empty、:checked、:disabled、:required、:optional、同元复合之简单选子、空白间之后代选子与以空格分隔之直接子代符；:required、:optional 惟用于可设 required 属之 input、select、textarea；input 之 hidden、button、submit、reset、image、range、color 型不与焉，且据 required 属存否以别之，不校值之有效。类名依空白分词而精确相合。声明受大小写不敏之 `!important`；重要声明先于普通声明，其间仍循 specificity 与本序而层叠。依今有选子文算 specificity，同等则循文序。属性选择之大小写标志与余伪类尚未备。合式函数须受显式祖先列；图形页块与行内遍历皆传祖，惟 select 选项专径尚未传之。亦析元素 style 之内声明。：」
-「：汉语：`:hover` 规则只用于图形界面的悬停状态级联；脚本选择器没有当前悬停目标上下文，因此不会匹配。
-　　文言：`:hover` 规惟用于图形悬停态之级联；脚本选子无今悬停目标上下文，故不合。：」
+「：汉语：通称层叠样式表选择器与层叠（CSS selectors and cascade）。解析逗号分隔的选择器列表与声明，支持通配、标签、#id、.class、属性运算符、结构伪类与 An+B 形式的「:nth-child」、表单伪类、复合与后代/子代组合符；按选择器计算 specificity，并依 specificity 与源码顺序层叠，处理大小写不敏感的「!important」。另解析元素「style」内联声明，并按祖先路径匹配；「:hover」只在图形界面的悬停级联中匹配。
+　　文言：装帧之选子，所以择元而施样式也。其法：逗号分组，通配、标签、标识、类名、方括之属，皆可复合；伪类考其序，An+B 辨其数；空白为后代，大于为子代。层叠先较等第，同第则循文序；!important 标其重，虽后至而先登。祖先之列自近及远，沿途合者入其选；内联之声明亦解析而并之。悬停之态，惟图页可判。
+　　赋曰：观夫装帧有法，选子有纲；通配无算，标签计筹。标识居首，类名居次；逗号分组，各成其列。空白为裔，大于为子；括有引号，闭者不终。序子计数，奇偶可辨；诸件复合，件件皆验。层叠先较其第，同第则循其序；重者先登，后者亦前。内联有括，选亦纳之；祖先列近，远者居后。沿途有合，其选乃纳；图页判悬，脚本不预。必填可辨，控件是问；类名分词，精确乃合。：」
 寻观「豫章」之书。
 寻观「豫章」之「形制」之「行款」之书。
 寻观「终端浏览器」之「文档」之书。
