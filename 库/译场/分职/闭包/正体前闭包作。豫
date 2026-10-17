@@ -1,9 +1,6 @@
-「：This is untyped closure conversion. 
-I have prepared groundwork for typed closure conversion, but I 
-have not yet studied it.
-Part of the reason is that type annotation and typed ANF conversion take 
-too long to execute.
-：」
+「：汉语：通称闭包转换（closure conversion）。在正则化之前把每个拉姆达做成闭包：闭包是元组，第零项是多一个参数（闭包自身）的拉姆达，其余各项是捕获的自由变量；函数体里对自由变量的引用改为从闭包自身取对应项。这是无类型的闭包转换；有类型的闭包转换已有铺垫，但类型标注与有类型 ANF 转换执行太慢，尚未采用。
+　　文言：闭者，阖门也；包者，裹也。术之所引外名，裹之于组：首为术，余为所捕；体中引外名者，改取诸组。
+　　赋曰：伊闭包之作也，术带外名，裹而成组。首项为术，增一参以自顾；余项为捕，外名皆入其户。体中引之，改取其组；无类而行，速而不阻。有类之法，基已先铺；待其速也，乃将其步。：」
 寻观「豫章」之书。
 寻观「译场」之「译料」之「系树」之「章句树」之「本常量数据」之书。
 寻观「译场」之「译料」之「系树」之「章句树」之「本常量述法」之书。
