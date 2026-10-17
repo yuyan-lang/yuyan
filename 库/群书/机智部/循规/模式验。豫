@@ -1,3 +1,6 @@
+「：汉语：通称结绳模式校验（JSON Schema validation）。支持 type、properties、required、items、enum、const、anyOf、oneOf、pattern、minimum、maximum；正则匹配由调用方传入；枚举与常量按结绳值结构比较，对象的字段顺序不影响相等；另有有限模式编译：只接受 const、enum、boolean、null，其余留给通用文法编译器。
+　　文言：结绳模式之验：受 type、properties、required、items、enum、const、anyOf、oneOf、pattern、minimum、maximum；格律之配由调者传入；枚举与常量依结绳值之构而比，物栏之序不碍其等；又有有限模式之编：惟纳 const、enum、boolean、null，余留通用文法之编器。
+　　赋曰：伊模式验也，类型属性，必填诸项，枚常任一，格律界限，诸约以审；正则之配，调者以禀；值构相较，栏序不论；有限之模，常枚爻空，四者可准；其余之模，通法以引。：」
 寻观「豫章」之书。
 寻「豫章」之「形制」之「分厘」之书。
 寻观「豫章」之「算术」之「变通」之书。

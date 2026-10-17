@@ -1,3 +1,6 @@
+「：汉语：通称规范化器配置执行（normalizers）。按 tokenizer.json 的 normalizer 配置执行：Sequence、NFC、NFD、NFKC、NFKD、Lowercase、StripAccents、Strip、Replace（字符串或正则）、Prepend、BertNormalizer 与 Precompiled（预编译字符映射，复用句片规整表）。
+　　文言：规整器之设之行：依 tokenizer.json 之 normalizer 行之：序列、四式同文规范、小写、去重音、去空白、替换（串或格律）、前置、伯特规整与预编之映（复用句片规整表）。
+　　赋曰：伊规范化设也，配置为纲，序列相承；四式规范，小写去音，空白以清；替换之法，串律皆成；前置之加，伯特之整，预编之映，句片以行。：」
 寻观「豫章」之书。
 寻观「结绳」之书。
 寻观「结绳」之「结绳取」之书。
