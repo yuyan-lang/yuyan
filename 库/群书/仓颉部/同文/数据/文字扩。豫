@@ -1,0 +1,341 @@
+寻观「豫章」之书。
+
+「文字扩表零」乃化「数」为「文」者也。
+「文字扩表零」者得「桶」而
+　若「且」于（非（「桶」小于「零」））于（「桶」小于「一」）则
+　　『00B7;Avst Cari Copt Dupl Elba Geor Glag Gong Goth Grek Hani Latn Lydi Mahj Perm Shaw「：换行：」』
+　否则若「且」于（非（「桶」小于「二」））于（「桶」小于「三」）则
+　　『02BC;Beng Cyrl Deva Latn Lisu Thai Toto
+02C7;Bopo Latn
+02C9..02CB;Bopo Latn
+02CD;Latn Lisu
+02D7;Latn Thai
+02D9;Bopo Latn
+』
+　否则若「且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
+　　『0300;Cher Copt Cyrl Grek Latn Perm Sunu Tale
+0301;Cher Cyrl Grek Latn Osge Sunu Tale Todr
+0302;Cher Cyrl Latn Tfng
+0303;Glag Latn Sunu Syrc Thai
+0304;Aghb Cher Copt Cyrl Goth Grek Latn Osge Syrc Tfng Todr
+0305;Copt Elba Glag Goth Kana Latn
+0306;Cyrl Grek Latn Perm Tfng
+0307;Copt Dupl Hebr Latn Perm Syrc Tale Tfng Todr
+0308;Armn Cyrl Dupl Goth Grek Hebr Latn Perm Syrc Tale Tfng
+0309;Latn Tfng
+030A;Dupl Latn Syrc
+030B;Cher Cyrl Latn Osge
+030C;Cher Latn Tale
+030D;Latn Sunu
+030E;Ethi Latn
+0310;Latn Sunu
+0311;Cyrl Latn Todr
+0313;Grek Latn Perm Todr
+0323;Cher Dupl Kana Latn Syrc Tfng
+0324;Cher Dupl Latn Syrc
+0325;Latn Syrc
+032D;Latn Sunu Syrc
+032E;Latn Syrc
+0330;Cher Latn Syrc
+0331;Aghb Cher Goth Latn Sunu Syrc Thai
+0342;Grek
+0345;Grek
+0358;Latn Osge
+035E;Aghb Latn Todr
+0363..036F;Latn
+0374;Copt Grek
+0375;Copt Grek
+』
+　否则若「且」于（非（「桶」小于「四」））于（「桶」小于「五」）则
+　　『0483;Cyrl Perm「：换行：」0484;Cyrl Glag「：换行：」0485..0486;Cyrl Latn「：换行：」0487;Cyrl Glag「：换行：」』
+　否则若「且」于（非（「桶」小于「五」））于（「桶」小于「六」）则
+　　『0589;Armn Geor Glag「：换行：」』
+　否则若「且」于（非（「桶」小于「六」））于（「桶」小于「七」）则
+　　『060C;Arab Gara Nkoo Rohg Syrc Thaa Yezi
+061B;Arab Gara Nkoo Rohg Syrc Thaa Yezi
+061C;Arab Syrc Thaa
+061F;Adlm Arab Gara Nkoo Rohg Syrc Thaa Yezi
+0640;Adlm Arab Mand Mani Ougr Phlp Rohg Sogd Syrc
+064B..0655;Arab Syrc
+0660..0669;Arab Thaa Yezi
+0670;Arab Syrc
+06D4;Arab Rohg
+』
+　否则若「且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
+　　『0951;Beng Deva Gran Gujr Guru Knda Latn Mlym Nand Newa Orya Shrd Taml Telu Tirh
+0952;Beng Deva Gran Gujr Guru Knda Latn Mlym Newa Orya Taml Telu Tirh
+0964;Beng Deva Dogr Gong Gonm Gran Gujr Guru Knda Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh
+0965;Beng Deva Dogr Gong Gonm Gran Gujr Gukh Guru Knda Limb Mahj Mlym Nand Onao Orya Sind Sinh Sylo Takr Taml Telu Tirh
+0966..096F;Deva Dogr Kthi Mahj
+09E6..09EF;Beng Cakm Sylo
+』
+　否则若「且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
+　　『0A66..0A6F;Guru Mult「：换行：」0AE6..0AEF;Gujr Khoj「：换行：」』
+　否则若「且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
+　　『0B83;Knda Mlym Taml Telu「：换行：」0BE6..0BEF;Gran Taml「：换行：」0BF0..0BF2;Gran Taml「：换行：」0BF3;Gran Taml「：换行：」』
+　否则若「且」于（非（「桶」小于「一二」））于（「桶」小于「一三」）则
+　　『0CE6..0CEF;Knda Nand Tutg「：换行：」』
+　否则若「且」于（非（「桶」小于「一六」））于（「桶」小于「一七」）则
+　　『1040..1049;Cakm Mymr Tale「：换行：」10FB;Geor Glag Latn「：换行：」』
+　否则若「且」于（非（「桶」小于「二二」））于（「桶」小于「二三」）则
+　　『16EB..16ED;Runr「：换行：」』
+　否则若「且」于（非（「桶」小于「二三」））于（「桶」小于「二四」）则
+　　『1735..1736;Buhd Hano Tagb Tglg「：换行：」』
+　否则若「且」于（非（「桶」小于「二四」））于（「桶」小于「二五」）则
+　　『1802..1803;Mong Phag「：换行：」1805;Mong Phag「：换行：」』
+　否则若「且」于（非（「桶」小于「二八」））于（「桶」小于「二九」）则
+　　『1CD0;Beng Deva Gran Knda
+1CD1;Deva
+1CD2;Beng Deva Gran Knda
+1CD3;Deva Gran Knda
+1CD4;Deva
+1CD5;Beng Deva Newa Telu Tirh
+1CD6;Beng Deva Telu
+1CD7;Deva Newa Shrd
+1CD8;Beng Deva Newa Telu
+1CD9;Deva Shrd
+1CDA;Deva Knda Mlym Orya Taml Telu
+1CDB;Deva
+1CDC..1CDD;Deva Shrd
+1CDE..1CDF;Deva
+1CE0;Deva Shrd
+1CE1;Beng Deva
+1CE2;Deva Newa Tirh
+1CE3..1CE8;Deva
+1CE9;Deva Nand Newa
+1CEA;Beng Deva Shrd
+1CEB;Deva Newa
+1CEC;Deva
+1CED;Beng Deva Newa Shrd
+1CEE..1CF1;Deva
+1CF2;Beng Deva Gran Knda Mlym Nand Orya Sinh Telu Tirh Tutg
+1CF3;Deva Gran
+1CF4;Deva Gran Knda Tutg
+1CF5..1CF6;Beng
+1CF7;Beng
+1CF8..1CF9;Deva Gran
+1CFA;Nand
+』
+　否则若「且」于（非（「桶」小于「二九」））于（「桶」小于「三零」）则
+　　『1DC0..1DC1;Grek「：换行：」1DF8;Cyrl Latn Syrc「：换行：」1DFA;Syrc「：换行：」』
+　否则若「且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
+　　『202F;Latn Mong Phag「：换行：」204F;Adlm Arab「：换行：」205A;Cari Geor Glag Hung Lyci Orkh「：换行：」205D;Cari Grek Hung Mero「：换行：」20F0;Deva Gran Latn「：换行：」』
+　否则若「且」于（非（「桶」小于「四六」））于（「桶」小于「四七」）则
+　　『2E17;Copt Latn「：换行：」2E30;Avst Orkh「：换行：」2E31;Avst Cari Geor Hung Kthi Lydi Samr「：换行：」2E3C;Dupl「：换行：」2E41;Adlm Arab Hung「：换行：」2E43;Cyrl Glag「：换行：」』
+　否则若「且」于（非（「桶」小于「四七」））于（「桶」小于「四八」）则
+　　『2FF0..2FFF;Hani Tang「：换行：」』
+　否则若「且」于（非（「桶」小于「四八」））于（「桶」小于「四九」）则
+　　『3001;Bopo Hang Hani Hira Kana Mong Yiii
+3002;Bopo Hang Hani Hira Kana Mong Phag Yiii
+3003;Bopo Hang Hani Hira Kana
+3006;Hani
+3008;Bopo Hang Hani Hira Kana Mong Tibt Yiii
+3009;Bopo Hang Hani Hira Kana Mong Tibt Yiii
+300A;Bopo Hang Hani Hira Kana Lisu Mong Tibt Yiii
+300B;Bopo Hang Hani Hira Kana Lisu Mong Tibt Yiii
+300C;Bopo Hang Hani Hira Kana Yiii
+300D;Bopo Hang Hani Hira Kana Yiii
+300E;Bopo Hang Hani Hira Kana Yiii
+300F;Bopo Hang Hani Hira Kana Yiii
+3010;Bopo Hang Hani Hira Kana Yiii
+3011;Bopo Hang Hani Hira Kana Yiii
+3013;Bopo Hang Hani Hira Kana
+3014;Bopo Hang Hani Hira Kana Yiii
+3015;Bopo Hang Hani Hira Kana Yiii
+3016;Bopo Hang Hani Hira Kana Yiii
+3017;Bopo Hang Hani Hira Kana Yiii
+3018;Bopo Hang Hani Hira Kana Yiii
+3019;Bopo Hang Hani Hira Kana Yiii
+301A;Bopo Hang Hani Hira Kana Yiii
+301B;Bopo Hang Hani Hira Kana Yiii
+301C;Bopo Hang Hani Hira Kana
+301D;Bopo Hang Hani Hira Kana
+301E..301F;Bopo Hang Hani Hira Kana
+302A..302D;Bopo Hani
+3030;Bopo Hang Hani Hira Kana
+3031..3035;Hira Kana
+3037;Bopo Hang Hani Hira Kana
+303C;Hani Hira Kana
+303D;Hani Hira Kana
+303E..303F;Hani
+3099..309A;Hira Kana
+309B..309C;Hira Kana
+30A0;Hira Kana
+30FB;Bopo Hang Hani Hira Kana Yiii
+30FC;Hira Kana
+』
+　否则若「且」于（非（「桶」小于「四九」））于（「桶」小于「五零」）则
+　　『3190..3191;Hani「：换行：」3192..3195;Hani「：换行：」3196..319F;Hani「：换行：」31C0..31E5;Hani「：换行：」31EF;Hani Tang「：换行：」』
+　否则若「且」于（非（「桶」小于「五零」））于（「桶」小于「五一」）则
+　　『3220..3229;Hani「：换行：」322A..3247;Hani「：换行：」3280..3289;Hani「：换行：」328A..32B0;Hani「：换行：」32C0..32CB;Hani「：换行：」32FF;Hani「：换行：」』
+　否则若「且」于（非（「桶」小于「五一」））于（「桶」小于「五二」）则
+　　『3358..3370;Hani「：换行：」337B..337F;Hani「：换行：」33E0..33FE;Hani「：换行：」』
+　否则若「且」于（非（「桶」小于「一六六」））于（「桶」小于「一六七」）则
+　　『A66F;Cyrl Glag「：换行：」』
+　否则若「且」于（非（「桶」小于「一六七」））于（「桶」小于「一六八」）则
+　　『A700..A707;Hani Latn「：换行：」』
+　否则若「且」于（非（「桶」小于「一六八」））于（「桶」小于「一六九」）则
+　　『A830..A832;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Mlym Modi Nand Shrd Sind Takr Tirh Tutg
+A833..A835;Deva Dogr Gujr Guru Khoj Knda Kthi Mahj Modi Nand Shrd Sind Takr Tirh Tutg
+A836..A837;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh
+A838;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Shrd Sind Takr Tirh
+A839;Deva Dogr Gujr Guru Khoj Kthi Mahj Modi Sind Takr Tirh
+A8F1;Beng Deva Tutg
+A8F3;Deva Taml
+』
+　否则若「且」于（非（「桶」小于「一六九」））于（「桶」小于「一七零」）则
+　　『A92E;Kali Latn Mymr「：换行：」A9CF;Bugi Java「：换行：」』
+　否则若「且」于（非（「桶」小于「二五三」））于（「桶」小于「二五四」）则
+　　『FD3E;Arab Nkoo「：换行：」FD3F;Arab Nkoo「：换行：」FDF2;Arab Thaa「：换行：」FDFD;Arab Thaa「：换行：」』
+　否则若「且」于（非（「桶」小于「二五四」））于（「桶」小于「二五五」）则
+　　『FE45..FE46;Bopo Hang Hani Hira Kana「：换行：」』
+　否则若「且」于（非（「桶」小于「二五五」））于（「桶」小于「二五六」）则
+　　『FF61;Bopo Hang Hani Hira Kana Yiii
+FF62;Bopo Hang Hani Hira Kana Yiii
+FF63;Bopo Hang Hani Hira Kana Yiii
+FF64..FF65;Bopo Hang Hani Hira Kana Yiii
+FF70;Hira Kana
+FF9E..FF9F;Hira Kana
+』
+　否则
+　　『』
+也。
+
+「文字扩表一」乃化「数」为「文」者也。
+「文字扩表一」者得「桶」而
+　若「且」于（非（「桶」小于「二五七」））于（「桶」小于「二五八」）则
+　　『10100..10101;Cpmn Cprt Linb「：换行：」10102;Cprt Linb「：换行：」10107..10133;Cprt Lina Linb「：换行：」10137..1013F;Cprt Linb「：换行：」』
+　否则若「且」于（非（「桶」小于「二五八」））于（「桶」小于「二五九」）则
+　　『102E0;Arab Copt「：换行：」102E1..102FB;Arab Copt「：换行：」』
+　否则若「且」于（非（「桶」小于「二六六」））于（「桶」小于「二六七」）则
+　　『10AF2;Mani Ougr「：换行：」』
+　否则若「且」于（非（「桶」小于「二七五」））于（「桶」小于「二七六」）则
+　　『11301;Gran Taml「：换行：」11303;Gran Taml「：换行：」1133B..1133C;Gran Taml「：换行：」』
+　否则若「且」于（非（「桶」小于「二八七」））于（「桶」小于「二八八」）则
+　　『11FD0..11FD1;Gran Taml「：换行：」11FD3;Gran Taml「：换行：」』
+　否则若「且」于（非（「桶」小于「二九三」））于（「桶」小于「二九四」）则
+　　『12550..12586;Pcun Xsux「：换行：」1258C..1258D;Pcun Xsux「：换行：」1259A..125A7;Pcun Xsux「：换行：」』
+　否则若「且」于（非（「桶」小于「四四四」））于（「桶」小于「四四五」）则
+　　『1BCA0..1BCA3;Dupl「：换行：」』
+　否则若「且」于（非（「桶」小于「四六七」））于（「桶」小于「四六八」）则
+　　『1D360..1D371;Hani「：换行：」』
+　否则若「且」于（非（「桶」小于「四九八」））于（「桶」小于「四九九」）则
+　　『1F250..1F251;Hani「：换行：」』
+　否则
+　　『』
+也。
+
+「文字扩表二」乃化「数」为「文」者也。
+「文字扩表二」者得「桶」而
+　『』
+也。
+
+「文字扩表三」乃化「数」为「文」者也。
+「文字扩表三」者得「桶」而
+　『』
+也。
+
+「文字扩表四」乃化「数」为「文」者也。
+「文字扩表四」者得「桶」而
+　『』
+也。
+
+「文字扩表五」乃化「数」为「文」者也。
+「文字扩表五」者得「桶」而
+　『』
+也。
+
+「文字扩表六」乃化「数」为「文」者也。
+「文字扩表六」者得「桶」而
+　『』
+也。
+
+「文字扩表七」乃化「数」为「文」者也。
+「文字扩表七」者得「桶」而
+　『』
+也。
+
+「文字扩表八」乃化「数」为「文」者也。
+「文字扩表八」者得「桶」而
+　『』
+也。
+
+「文字扩表九」乃化「数」为「文」者也。
+「文字扩表九」者得「桶」而
+　『』
+也。
+
+「文字扩表一零」乃化「数」为「文」者也。
+「文字扩表一零」者得「桶」而
+　『』
+也。
+
+「文字扩表一一」乃化「数」为「文」者也。
+「文字扩表一一」者得「桶」而
+　『』
+也。
+
+「文字扩表一二」乃化「数」为「文」者也。
+「文字扩表一二」者得「桶」而
+　『』
+也。
+
+「文字扩表一三」乃化「数」为「文」者也。
+「文字扩表一三」者得「桶」而
+　『』
+也。
+
+「文字扩表一四」乃化「数」为「文」者也。
+「文字扩表一四」者得「桶」而
+　『』
+也。
+
+「文字扩表一五」乃化「数」为「文」者也。
+「文字扩表一五」者得「桶」而
+　『』
+也。
+
+「文字扩表一六」乃化「数」为「文」者也。
+「文字扩表一六」者得「桶」而
+　『』
+也。
+
+「文字扩表」乃化「数」为「文」者也。
+「文字扩表」者得「桶」而
+　若「桶」小于「二五六」则
+　　「文字扩表零」于「桶」
+　否则若「桶」小于「五一二」则
+　　「文字扩表一」于「桶」
+　否则若「桶」小于「七六八」则
+　　「文字扩表二」于「桶」
+　否则若「桶」小于「一零二四」则
+　　「文字扩表三」于「桶」
+　否则若「桶」小于「一二八零」则
+　　「文字扩表四」于「桶」
+　否则若「桶」小于「一五三六」则
+　　「文字扩表五」于「桶」
+　否则若「桶」小于「一七九二」则
+　　「文字扩表六」于「桶」
+　否则若「桶」小于「二零四八」则
+　　「文字扩表七」于「桶」
+　否则若「桶」小于「二三零四」则
+　　「文字扩表八」于「桶」
+　否则若「桶」小于「二五六零」则
+　　「文字扩表九」于「桶」
+　否则若「桶」小于「二八一六」则
+　　「文字扩表一零」于「桶」
+　否则若「桶」小于「三零七二」则
+　　「文字扩表一一」于「桶」
+　否则若「桶」小于「三三二八」则
+　　「文字扩表一二」于「桶」
+　否则若「桶」小于「三五八四」则
+　　「文字扩表一三」于「桶」
+　否则若「桶」小于「三八四零」则
+　　「文字扩表一四」于「桶」
+　否则若「桶」小于「四零九六」则
+　　「文字扩表一五」于「桶」
+　否则若「桶」小于「四三五二」则
+　　「文字扩表一六」于「桶」
+　否则
+　　『』
+也。

@@ -1,0 +1,40 @@
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「豫章」之「寓所」之「藏书」之书。
+寻观「大衍」之书。
+寻观「卦文」之「基码」之书。
+
+「：汉语：公钥和签名取自RFC7515附录A.2公开RSA2048示例，来源https://www.rfc-editor.org/rfc/rfc7515。签名输入的SHA256参考由系统openssl独立生成，编码块按PKCS#1 v1.5的固定SHA256前缀组成。此测试验证公开数据的模幂，不执行秘密数运算。
+　　文言：公钥与署名取RFC7515附录A.2公开RSA2048之例，出处https://www.rfc-editor.org/rfc/rfc7515。署名输入之SHA256参考由系统openssl别求，编码块循PKCS#1 v1.5之定SHA256前缀。唯验公开数之模幂，不行秘密数之算。：」
+「公钥模数码」者
+　『ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ』
+也。
+
+「署名码」者
+　『cC4hiUPoj9Eetdgtv3hF80EGrhuB__dzERat0XF9g2VtQgr9PJbu3XOiZj5RZmh7AAuHIm4Bh-0Qc_lF5YKt_O8W2Fp5jujGbds9uJdbF9CUAr7t1dnZcAcQjbKBYNX4BAynRFdiuB--f_nZLgrnbyTyWzO75vRK5h6xBArLIARNPvkSjtQBMHlb1L07Qe7K0GarZRmB_eSN9383LcOLn6_dO--xi12jzDwusC-eOkHWEsqtFZESc6BfI7noOPqvhJ1phCnvWh6IeYI2w9QOYEUipUTI8np6LbgGY9Fs98rqVt5AXLIhWkWywlVmtVrBp0igcN_IoypGlUPQGe77Rw』
+也。
+
+「署名输入」者『eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ』也。
+
+「公开码转大数」乃化「文」为「大整数」者也。
+「公开码转大数」者得「编码」而
+　令「字节」为「取之」以「帛」于（「卦文解」于（「作帛」于（「接」于「编码」于『==』））于「阳」于「阴」）而
+　若（「计帛」于「字节」）等于「二五六」则「大端作大数」于「字节」否则「告祸」于『RFC2048样本长度不符』
+也。
+
+「样本重复」乃化「文」又化「数」为「文」者也。
+「样本重复」者得「文本」又得「次数」而
+　若「次数」等于「零」则『』否则「接」于「文本」于（「样本重复」于「文本」于（「次数」减「一」））
+也。
+
+「参考摘要」者『c88a34847b4ffb12a9326e540f144b3dcc4d5515f18701e7d6e0ee7866c9c705』也。
+
+「编码前文」者「接」于『1』于（「接」于（「样本重复」于『ff』于「二零二」）于『003031300d060960864801650304020105000420』）也。
+
+「期望文」者「接」于「编码前文」于「参考摘要」也。
+
+「期望」者「大数析」于「期望文」于「一六」也。
+
+「核验结果」者「大数模幂」于（「公开码转大数」于「署名码」）于（「数作大数」于「六五五三七」）于（「公开码转大数」于「公钥模数码」）也。
+
+若（「大数较」于「核验结果」于「期望」）等于「零」则「书」于『RFC7515 RSA2048公开模幂向量通过』否则「告祸」于『RFC7515 RSA2048公开模幂不符』。

@@ -1,56 +1,36 @@
-寻观「标准库」之书。
-寻观「豫言操作系统网址定位适配」之「定位」之书。
+寻观「豫章」之书。
+寻观「豫寓驿址定榫」之「定位」之书。
 
-「验同」乃化「字符串」而化「字符串」而「有」也。
-「验同」者会「期」而会「得」而
-　若「串相等」于「期」于「得」则
-　　「元」
-　否则
-　　「发生事故」授以「有」于『公共网址纯实现差异』
+「验同」乃化「文」又化「文」为「有」者也。
+「验同」者得「期」又得「得」而
+　若「文同」于「期」于「得」则「元」否则「告祸」以「有」于『公共网址纯实现差异』
 也。
 
 「验同」
-　于
-　『{"href":"https://u:p@example.org/x?y#z","origin":"https://example.org","pathname":"/x","search":"?y","protocol":"https:","hostname":"example.org","host":"example.org","port":"","username":"u","password":"p","hash":"#z"}』
-　　于（「解析绝对网址部件」于『https://u:p@EXAMPLE.ORG:443/a/../x?y#z』）。
+　于『{"href":"https://u:p@example.org/x?y#z","origin":"https://example.org","pathname":"/x","search":"?y","protocol":"https:","hostname":"example.org","host":"example.org","port":"","username":"u","password":"p","hash":"#z"}』
+　于（「析绝对驿址部件」于『https://u:p@EXAMPLE.ORG:443/a/../x?y#z』）。
+「验同」于『网址不是 HTTP(S)』于（「姑试」以「文」于（得「无」而「析绝对驿址部件」于『ftp://example.org/』）于（得「错」而「错」））。
+「验同」于『根网址不是有效的绝对网址』于（「姑试」以「文」于（得「无」而「根据根址析驿址部件」于『x』于『bad』）于（得「错」而「错」））。
+「：汉语：以下期望取自 WHATWG URL 标准实现，固定在此。
+　　文言：以下之期取自 WHATWG URL 标准之实现，定书于此。：」
 「验同」
-　于『网址不是 HTTP(S)』
-　于（「尝试运行」授以「字符串」于（会「无」而「解析绝对网址部件」于『ftp://example.org/』）于（会「错」而「错」））。
+　于『{"href":"http://xn--r8jz45g.jp/%E3%83%91%E3%82%B9?q=%E5%80%A4#%E7%89%87","origin":"http://xn--r8jz45g.jp","pathname":"/%E3%83%91%E3%82%B9","search":"?q=%E5%80%A4","protocol":"http:","hostname":"xn--r8jz45g.jp","host":"xn--r8jz45g.jp","port":"","username":"","password":"","hash":"#%E7%89%87"}』
+　于（「析绝对驿址部件」于『http://例え.jp/パス?q=値#片』）。
 「验同」
-　于『根网址不是有效的绝对网址』
-　于（「尝试运行」授以「字符串」于（会「无」而「根据根址解析网址部件」于『x』于『bad』）于（会「错」而「错」））。
-　　「：汉语：以下期望取自 WHATWG URL 标准实现，固定在此。
-　　　　文言：以下之期取自 WHATWG URL 标准之实现，定书于此。：」
+　于『{"href":"https://a.example:8443/x/z?q=1&q=2#h","origin":"https://a.example:8443","pathname":"/x/z","search":"?q=1&q=2","protocol":"https:","hostname":"a.example","host":"a.example:8443","port":"8443","username":"","password":"","hash":"#h"}』
+　于（「析绝对驿址部件」于『https://a.example:8443/x/./y/../z?q=1&q=2#h』）。
 「验同」
-　于
-　『{"href":"http://xn--r8jz45g.jp/%E3%83%91%E3%82%B9?q=%E5%80%A4#%E7%89%87","origin":"http://xn--r8jz45g.jp","pathname":"/%E3%83%91%E3%82%B9","search":"?q=%E5%80%A4","protocol":"http:","hostname":"xn--r8jz45g.jp","host":"xn--r8jz45g.jp","port":"","username":"","password":"","hash":"#%E7%89%87"}』
-　　于（「解析绝对网址部件」于『http://例え.jp/パス?q=値#片』）。
+　于『{"href":"https://h.example/a/x","origin":"https://h.example","pathname":"/a/x","search":"","protocol":"https:","hostname":"h.example","host":"h.example","port":"","username":"","password":"","hash":""}』
+　于（「根据根址析驿址部件」于『x』于『https://h.example/a/b』）。
 「验同」
-　于
-　『{"href":"https://a.example:8443/x/z?q=1&q=2#h","origin":"https://a.example:8443","pathname":"/x/z","search":"?q=1&q=2","protocol":"https:","hostname":"a.example","host":"a.example:8443","port":"8443","username":"","password":"","hash":"#h"}』
-　　于（「解析绝对网址部件」于『https://a.example:8443/x/./y/../z?q=1&q=2#h』）。
+　于『{"href":"https://h.example/a/c","origin":"https://h.example","pathname":"/a/c","search":"","protocol":"https:","hostname":"h.example","host":"h.example","port":"","username":"","password":"","hash":""}』
+　于（「根据根址析驿址部件」于『../c』于『https://h.example/a/b/』）。
 「验同」
-　于
-　『{"href":"https://h.example/a/x","origin":"https://h.example","pathname":"/a/x","search":"","protocol":"https:","hostname":"h.example","host":"h.example","port":"","username":"","password":"","hash":""}』
-　　于（「根据根址解析网址部件」于『x』于『https://h.example/a/b』）。
+　于『{"href":"https://o.example/p?q","origin":"https://o.example","pathname":"/p","search":"?q","protocol":"https:","hostname":"o.example","host":"o.example","port":"","username":"","password":"","hash":""}』
+　于（「根据根址析驿址部件」于『//o.example/p?q』于『https://h.example/a』）。
 「验同」
-　于
-　『{"href":"https://h.example/a/c","origin":"https://h.example","pathname":"/a/c","search":"","protocol":"https:","hostname":"h.example","host":"h.example","port":"","username":"","password":"","hash":""}』
-　　于（「根据根址解析网址部件」于『../c』于『https://h.example/a/b/』）。
-「验同」
-　于
-　『{"href":"https://o.example/p?q","origin":"https://o.example","pathname":"/p","search":"?q","protocol":"https:","hostname":"o.example","host":"o.example","port":"","username":"","password":"","hash":""}』
-　　于（「根据根址解析网址部件」于『//o.example/p?q』于『https://h.example/a』）。
-「验同」
-　于
-　『{"href":"https://h.example/a?q=1#g","origin":"https://h.example","pathname":"/a","search":"?q=1","protocol":"https:","hostname":"h.example","host":"h.example","port":"","username":"","password":"","hash":"#g"}』
-　　于（「根据根址解析网址部件」于『#g』于『https://h.example/a?q=1』）。
-「验同」
-　于『网址不是有效的绝对网址』
-　于（「尝试运行」授以「字符串」于（会「无」而「解析绝对网址部件」于『/rel』）于（会「错」而「错」））。
-「验同」
-　于『根网址不是 HTTP(S)』
-　于（「尝试运行」授以「字符串」
-　　于（会「无」而「根据根址解析网址部件」于『x』于『ftp://h.example/』）
-　　于（会「错」而「错」））。
-「打印行」于『网址定位共享适配通过』。
+　于『{"href":"https://h.example/a?q=1#g","origin":"https://h.example","pathname":"/a","search":"?q=1","protocol":"https:","hostname":"h.example","host":"h.example","port":"","username":"","password":"","hash":"#g"}』
+　于（「根据根址析驿址部件」于『#g』于『https://h.example/a?q=1』）。
+「验同」于『网址不是有效的绝对网址』于（「姑试」以「文」于（得「无」而「析绝对驿址部件」于『/rel』）于（得「错」而「错」））。
+「验同」于『根网址不是 HTTP(S)』于（「姑试」以「文」于（得「无」而「根据根址析驿址部件」于『x』于『ftp://h.example/』）于（得「错」而「错」））。
+「书」于『网址定位共享适配通过』。

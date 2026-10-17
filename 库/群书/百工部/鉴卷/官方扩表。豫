@@ -1,0 +1,3178 @@
+寻观「豫章」之书。
+
+「官方扩数据」乃「文」也。
+「官方扩数据」者『*.a26	application/x-atari-2600-rom	50	
+*.a78	application/x-atari-7800-rom	50	
+*.lnx	application/x-atari-lynx-rom	50	
+*.ez	application/andrew-inset	50	
+*.epub	application/epub+zip	50	
+*.azw3	application/vnd.amazon.mobi8-ebook	50	
+*.kfx	application/vnd.amazon.mobi8-ebook	50	
+*.ai	application/illustrator	50	
+*.hqx	application/mac-binhex40	50	
+*.nb	application/mathematica	50	
+*.mml	application/mathml+xml	50	
+*.mbox	application/mbox	50	
+*.metalink	application/metalink+xml	50	
+*.meta4	application/metalink4+xml	50	
+*.wkdownload	application/x-partial-download	50	
+*.crdownload	application/x-partial-download	50	
+*.part	application/x-partial-download	50	
+*.oda	application/oda	50	
+*.wwf	application/x-wwf	50	
+*.pdf	application/pdf	50	
+*.xspf	application/xspf+xml	50	
+*.themepack	application/x-windows-themepack	50	
+*.amz	audio/x-amzxml	50	
+*.gsm	audio/x-gsm	50	
+*.pla	audio/x-iriver-pla	50	
+*.pgp	application/pgp-encrypted	50	
+*.gpg	application/pgp-encrypted	50	
+*.asc	application/pgp-encrypted	10	
+*.skr	application/pgp-keys	50	
+*.pkr	application/pgp-keys	50	
+*.asc	application/pgp-keys	10	
+*.pgp	application/pgp-keys	50	
+*.gpg	application/pgp-keys	50	
+*.key	application/pgp-keys	50	
+*.asc	application/pgp-signature	10	
+*.sig	application/pgp-signature	50	
+*.pgp	application/pgp-signature	50	
+*.gpg	application/pgp-signature	50	
+*.p7c	application/pkcs7-mime	50	
+*.p7m	application/pkcs7-mime	50	
+*.p7s	application/pkcs7-signature	50	
+*.p8	application/pkcs8	50	
+*.p8e	application/pkcs8-encrypted	50	
+*.p10	application/pkcs10	50	
+*.cer	application/pkix-cert	50	
+*.crl	application/pkix-crl	50	
+*.pkipath	application/pkix-pkipath	50	
+*.ps	application/postscript	50	
+*.raml	application/raml+yaml	50	
+*.rnc	application/relax-ng-compact-syntax	50	
+*.rtf	application/rtf	50	
+*.siv	application/sieve	50	
+*.sieve	application/sieve	50	
+*.smil	application/smil+xml	50	
+*.smi	application/smil+xml	50	
+*.sml	application/smil+xml	50	
+*.kino	application/smil+xml	50	
+*.wpl	application/vnd.ms-wpl	50	
+*.sqlite2	application/x-sqlite2	50	
+*.sqlite3	application/vnd.sqlite3	50	
+*.spx	application/x-apple-systemprofiler+xml	40	
+*.ged	text/vnd.familysearch.gedcom	50	
+*.gedcom	text/vnd.familysearch.gedcom	50	
+*.flv	video/x-flv	50	
+*.fxm	video/x-javafx	50	
+*.sgf	application/x-go-sgf	50	
+project.godot	application/x-godot-project	50	
+*.res	application/x-godot-resource	50	
+*.tres	application/x-godot-resource	50	
+*.scn	application/x-godot-scene	50	
+*.tscn	application/x-godot-scene	50	
+*.escn	application/x-godot-scene	50	
+*.gdshader	application/x-godot-shader	50	
+*.gd	application/x-gdscript	50	
+*.its	application/its+xml	50	
+*.xlf	application/xliff+xml	50	
+*.xliff	application/xliff+xml	50	
+*.toml	application/toml	50	
+*.yaml	application/yaml	50	
+*.yml	application/yaml	50	
+*.cdr	application/vnd.corel-draw	50	
+*.hpgl	application/vnd.hp-hpgl	50	
+*.pcl	application/vnd.hp-pcl	50	
+*.ppd	application/vnd.cups-ppd	50	
+*.123	application/vnd.lotus-1-2-3	50	
+*.wk1	application/vnd.lotus-1-2-3	50	
+*.wk3	application/vnd.lotus-1-2-3	50	
+*.wk4	application/vnd.lotus-1-2-3	50	
+*.wks	application/vnd.lotus-1-2-3	50	
+*.lwp	application/vnd.lotus-wordpro	50	
+*.mdb	application/x-lmdb	50	
+*.lmdb	application/x-lmdb	50	
+*.mdb	application/vnd.ms-access	60	
+*.cab	application/vnd.ms-cab-compressed	50	
+*.xls	application/vnd.ms-excel	50	
+*.xlc	application/vnd.ms-excel	50	
+*.xll	application/vnd.ms-excel	50	
+*.xlm	application/vnd.ms-excel	50	
+*.xlw	application/vnd.ms-excel	50	
+*.xla	application/vnd.ms-excel	50	
+*.xlt	application/vnd.ms-excel	50	
+*.xld	application/vnd.ms-excel	50	
+*.xlam	application/vnd.ms-excel.addin.macroEnabled.12	50	
+*.xlsb	application/vnd.ms-excel.sheet.binary.macroEnabled.12	50	
+*.xlsm	application/vnd.ms-excel.sheet.macroEnabled.12	50	
+*.xltm	application/vnd.ms-excel.template.macroEnabled.12	50	
+*.ppz	application/vnd.ms-powerpoint	50	
+*.ppt	application/vnd.ms-powerpoint	50	
+*.pps	application/vnd.ms-powerpoint	50	
+*.pot	application/vnd.ms-powerpoint	50	
+*.ppam	application/vnd.ms-powerpoint.addin.macroEnabled.12	50	
+*.pptm	application/vnd.ms-powerpoint.presentation.macroEnabled.12	50	
+*.sldm	application/vnd.ms-powerpoint.slide.macroEnabled.12	50	
+*.ppsm	application/vnd.ms-powerpoint.slideshow.macroEnabled.12	50	
+*.potm	application/vnd.ms-powerpoint.template.macroEnabled.12	50	
+*.vsdx	application/vnd.ms-visio.drawing.main+xml	50	
+*.vstx	application/vnd.ms-visio.template.main+xml	50	
+*.vssx	application/vnd.ms-visio.stencil.main+xml	50	
+*.vsdm	application/vnd.ms-visio.drawing.macroEnabled.main+xml	50	
+*.vstm	application/vnd.ms-visio.template.macroEnabled.main+xml	50	
+*.vssm	application/vnd.ms-visio.stencil.macroEnabled.main+xml	50	
+*.docm	application/vnd.ms-word.document.macroEnabled.12	50	
+*.dotm	application/vnd.ms-word.template.macroEnabled.12	50	
+*.oxps	application/oxps	50	
+*.xps	application/vnd.ms-xpsdocument	50	
+*.wcm	application/vnd.ms-works	50	
+*.wdb	application/vnd.ms-works	50	
+*.wks	application/vnd.ms-works	50	
+*.wps	application/vnd.ms-works	50	
+*.xlr	application/vnd.ms-works	50	
+*.vsd	application/vnd.visio	50	
+*.vst	application/vnd.visio	50	
+*.vsw	application/vnd.visio	50	
+*.vss	application/vnd.visio	50	
+*.doc	application/msword	50	
+*.dot	application/msword-template	50	
+*.gml	application/gml+xml	50	
+*.gnd	application/gnunet-directory	50	
+*.tnef	application/vnd.ms-tnef	50	
+*.tnf	application/vnd.ms-tnef	50	
+winmail.dat	application/vnd.ms-tnef	50	
+*.sdc	application/vnd.stardivision.calc	50	
+*.sds	application/vnd.stardivision.chart	50	
+*.sda	application/vnd.stardivision.draw	50	
+*.sdd	application/vnd.stardivision.impress	50	
+*.sdp	application/vnd.stardivision.impress	50	
+*.smd	application/vnd.stardivision.mail	50	
+*.smf	application/vnd.stardivision.math	50	
+*.sdw	application/vnd.stardivision.writer	50	
+*.vor	application/vnd.stardivision.writer	50	
+*.sgl	application/vnd.stardivision.writer	50	
+*.sxc	application/vnd.sun.xml.calc	50	
+*.stc	application/vnd.sun.xml.calc.template	50	
+*.sxd	application/vnd.sun.xml.draw	50	
+*.std	application/vnd.sun.xml.draw.template	50	
+*.sxi	application/vnd.sun.xml.impress	50	
+*.sti	application/vnd.sun.xml.impress.template	50	
+*.sxm	application/vnd.sun.xml.math	50	
+*.sxw	application/vnd.sun.xml.writer	50	
+*.sxg	application/vnd.sun.xml.writer.global	50	
+*.stw	application/vnd.sun.xml.writer.template	50	
+*.odt	application/vnd.oasis.opendocument.text	50	
+*.fodt	application/vnd.oasis.opendocument.text-flat-xml	50	
+*.ott	application/vnd.oasis.opendocument.text-template	50	
+*.oth	application/vnd.oasis.opendocument.text-web	50	
+*.odm	application/vnd.oasis.opendocument.text-master	50	
+*.odg	application/vnd.oasis.opendocument.graphics	50	
+*.fodg	application/vnd.oasis.opendocument.graphics-flat-xml	50	
+*.otg	application/vnd.oasis.opendocument.graphics-template	50	
+*.odp	application/vnd.oasis.opendocument.presentation	50	
+*.fodp	application/vnd.oasis.opendocument.presentation-flat-xml	50	
+*.otp	application/vnd.oasis.opendocument.presentation-template	50	
+*.ods	application/vnd.oasis.opendocument.spreadsheet	50	
+*.fods	application/vnd.oasis.opendocument.spreadsheet-flat-xml	50	
+*.ots	application/vnd.oasis.opendocument.spreadsheet-template	50	
+*.odc	application/vnd.oasis.opendocument.chart	50	
+*.otc	application/vnd.oasis.opendocument.chart-template	50	
+*.odf	application/vnd.oasis.opendocument.formula	50	
+*.otf	application/vnd.oasis.opendocument.formula-template	50	
+*.odb	application/vnd.oasis.opendocument.database	50	
+*.odi	application/vnd.oasis.opendocument.image	50	
+*.oxt	application/vnd.openofficeorg.extension	50	
+*.apk	application/vnd.android.package-archive	50	
+*.sis	application/vnd.symbian.install	50	
+*.sisx	x-epoc/x-sisx-app	50	
+*.pcap	application/vnd.tcpdump.pcap	50	
+*.cap	application/vnd.tcpdump.pcap	50	
+*.dmp	application/vnd.tcpdump.pcap	50	
+*.wp	application/vnd.wordperfect	50	
+*.wp4	application/vnd.wordperfect	50	
+*.wp5	application/vnd.wordperfect	50	
+*.wp6	application/vnd.wordperfect	50	
+*.wpd	application/vnd.wordperfect	50	
+*.wpp	application/vnd.wordperfect	50	
+*.yt	video/vnd.youtube.yt	50	
+*.por	application/x-spss-por	50	
+*.sav	application/x-spss-sav	50	
+*.zsav	application/x-spss-sav	50	
+*.xbel	application/x-xbel	50	
+*.7z	application/x-7z-compressed	50	
+*.7z.001	application/x-7z-compressed	50	
+*.abw	application/x-abiword	50	
+*.abw.CRASHED	application/x-abiword	50	
+*.abw.gz	application/x-abiword	50	
+*.zabw	application/x-abiword	50	
+*.cue	application/x-cue	50	
+*.sam	application/x-amipro	50	
+*.pdb	application/x-aportisdoc	30	
+*.pdc	application/x-aportisdoc	50	
+*.pdb	chemical/x-pdb	50	
+*.brk	chemical/x-pdb	50	
+*.as	application/x-applix-spreadsheet	50	
+*.aw	application/x-applix-word	50	
+*.a	application/x-archive	50	
+*.ar	application/x-archive	50	
+*.arj	application/x-arj	50	
+*.asar	application/x-asar	50	
+*.asp	application/x-asp	50	
+*.awk	application/x-awk	50	
+*.bcpio	application/x-bcpio	50	
+*.torrent	application/x-bittorrent	50	
+*.blend	application/x-blender	50	
+*.BLEND	application/x-blender	50	
+*.blender	application/x-blender	50	
+*.dvi.bz2	application/x-bzdvi	50	
+*.bz	application/x-bzip1	50	
+*.tar.bz	application/x-bzip1-compressed-tar	50	
+*.tbz	application/x-bzip1-compressed-tar	50	
+*.bz2	application/x-bzip2	50	
+*.tar.bz2	application/x-bzip2-compressed-tar	50	
+*.tbz2	application/x-bzip2-compressed-tar	50	
+*.tb2	application/x-bzip2-compressed-tar	50	
+*.bz3	application/x-bzip3	50	
+*.tar.bz3	application/x-bzip3-compressed-tar	50	
+*.tbz3	application/x-bzip3-compressed-tar	50	
+*.pdf.bz2	application/x-bzpdf	50	
+*.ps.bz2	application/x-bzpostscript	50	
+*.cbr	application/vnd.comicbook-rar	50	
+*.cb7	application/x-cb7	50	
+*.cbt	application/x-cbt	50	
+*.cbz	application/vnd.comicbook+zip	50	
+*.lrz	application/x-lrzip	50	
+*.tar.lrz	application/x-lrzip-compressed-tar	50	
+*.tlrz	application/x-lrzip-compressed-tar	50	
+*.dmg	application/x-apple-diskimage	50	
+*.raw-disk-image	application/vnd.efi.img	50	
+*.img	application/vnd.efi.img	50	
+*.fd	application/x-raw-floppy-disk-image	50	
+*.qd	application/x-raw-floppy-disk-image	50	
+*.raw-disk-image.xz	application/x-raw-disk-image-xz-compressed	50	
+*.img.xz	application/x-raw-disk-image-xz-compressed	50	
+*.iso	application/vnd.efi.iso	80	
+*.iso9660	application/vnd.efi.iso	50	
+*.cso	application/x-compressed-iso	50	
+*.appimage	application/x-iso9660-appimage	50	
+*.toc	application/x-cdrdao-toc	50	
+*.gdi	application/x-gd-rom-cue	50	
+*.cdi	application/x-discjuggler-cd-image	50	
+*.pgn	application/vnd.chess-pgn	50	
+*.chm	application/vnd.ms-htmlhelp	50	
+*.Z	application/x-compress	50	
+*.tar.gz	application/x-compressed-tar	50	
+*.tgz	application/x-compressed-tar	50	
+core	application/x-core	50	true
+*.cpio	application/x-cpio	50	
+*.cpio.gz	application/x-cpio-compressed	50	
+perf.data	application/x-perf-data	50	true
+*.csh	application/x-csh	50	
+*.dbf	application/vnd.dbf	50	
+*.es	application/ecmascript	50	
+*.chd	application/x-mame-chd	50	
+*.iso	application/x-sega-cd-rom	50	
+*.iso	application/x-sega-pico-rom	50	
+*.iso	application/x-saturn-rom	50	
+*.iso	application/x-dreamcast-rom	50	
+*.nds	application/x-nintendo-ds-rom	50	
+*.3ds	application/x-nintendo-3ds-rom	50	
+*.cci	application/x-nintendo-3ds-rom	50	
+*.3dsx	application/x-nintendo-3ds-executable	50	
+*.pce	application/x-pc-engine-rom	50	
+*.iso	application/x-wii-rom	50	
+*.wad	application/x-wii-wad	50	
+*.iso	application/x-gamecube-rom	50	
+*.m7	application/x-thomson-cartridge-memo7	50	
+*.k7	application/x-thomson-cassette	50	
+*.hfe	application/x-hfe-floppy-image	50	
+*.sap	application/x-thomson-sap-image	50	
+*.deb	application/vnd.debian.binary-package	50	
+*.udeb	application/vnd.debian.binary-package	50	
+*.ui	application/x-designer	50	
+*.ksy	text/x-kaitai-struct	50	
+*.qml	text/x-qml	50	
+*.qmltypes	text/x-qml	50	
+*.qmlproject	text/x-qml	50	
+*.desktop	application/x-desktop	50	
+*.kdelnk	application/x-desktop	50	
+*.fb2	application/x-fictionbook+xml	50	
+*.fb2.zip	application/x-zip-compressed-fb2	50	
+*.dia	application/x-dia-diagram	50	
+*.shape	application/x-dia-shape	50	
+*.dvi	application/x-dvi	50	
+*.etheme	application/x-e-theme	50	
+*.egon	application/x-egon	50	
+*.fl	application/x-fluid	50	
+*.woff	font/woff	50	
+*.woff2	font/woff2	50	
+*.pfa	application/x-font-type1	50	
+*.pfb	application/x-font-type1	50	
+*.gsf	application/x-font-type1	50	
+*.afm	application/x-font-afm	50	
+*.bdf	application/x-font-bdf	50	
+*.psf	application/x-font-linux-psf	50	
+*.psf.gz	application/x-gz-font-linux-psf	50	
+*.pcf	application/x-font-pcf	50	
+*.pcf.Z	application/x-font-pcf	50	
+*.pcf.gz	application/x-font-pcf	50	
+*.otf	font/otf	50	
+*.spd	application/x-font-speedo	50	
+*.pfr	application/font-tdpfr	50	
+*.ttf	font/ttf	50	
+*.ttc	font/collection	50	
+*.ttx	application/x-font-ttx	50	
+*.fm	application/vnd.framemaker	50	
+*.gb	application/x-gameboy-rom	50	
+*.sgb	application/x-gameboy-rom	50	
+*.gbc	application/x-gameboy-color-rom	50	
+*.cgb	application/x-gameboy-color-rom	50	
+*.gba	application/x-gba-rom	50	
+*.agb	application/x-gba-rom	50	
+*.vb	application/x-virtual-boy-rom	50	
+*.gen	application/x-genesis-rom	50	
+*.smd	application/x-genesis-rom	50	
+*.sgd	application/x-genesis-rom	50	
+*.32x	application/x-genesis-32x-rom	50	
+*.mdx	application/x-genesis-32x-rom	50	
+*.gmo	application/x-gettext-translation	50	
+*.mo	application/x-gettext-translation	50	
+*.ui	application/x-gtk-builder	50	
+*.glade	application/x-glade	50	
+*.gnucash	application/x-gnucash	50	
+*.gnc	application/x-gnucash	50	
+*.xac	application/x-gnucash	50	
+*.gnumeric	application/x-gnumeric	50	
+*.gp	application/x-gnuplot	50	
+*.gplt	application/x-gnuplot	50	
+*.gnuplot	application/x-gnuplot	50	
+*.gra	application/x-graphite	50	
+*.dvi.gz	application/x-gzdvi	50	
+*.gz	application/gzip	50	
+*.pdf.gz	application/x-gzpdf	50	
+*.ps.gz	application/x-gzpostscript	50	
+*.hdf	application/x-hdf	50	
+*.hdf4	application/x-hdf	50	
+*.h4	application/x-hdf	50	
+*.hdf5	application/x-hdf	50	
+*.h5	application/x-hdf	50	
+*.jar	application/java-archive	50	
+*.class	application/x-java	50	
+*.groovy	text/x-groovy	50	
+*.gvy	text/x-groovy	50	
+*.gy	text/x-groovy	50	
+*.gsh	text/x-groovy	50	
+*.gradle	text/x-gradle	50	
+*.jnlp	application/x-java-jnlp-file	50	
+*.jks	application/x-java-keystore	50	
+*.ks	application/x-java-keystore	50	
+cacerts	application/x-java-keystore	50	
+*.jceks	application/x-java-jce-keystore	50	
+*.pack	application/x-java-pack200	50	
+*.js	text/javascript	50	
+*.jsm	text/javascript	50	
+*.mjs	text/javascript	50	
+*.jse	text/jscript.encode	50	
+*.json	application/json	50	
+*.json5	application/json5	50	
+*.jrd	application/jrd+json	50	
+*.json-patch	application/json-patch+json	50	
+*.jsonld	application/ld+json	50	
+*.json	application/schema+json	50	
+*.ipynb	application/x-ipynb+json	50	
+*.coffee	application/vnd.coffeescript	50	
+*.jpr	application/x-jbuilder-project	50	
+*.jpx	application/x-jbuilder-project	50	
+*.karbon	application/x-karbon	50	
+*.chrt	application/x-kchart	50	
+*.kexic	application/x-kexi-connectiondata	50	
+*.kexis	application/x-kexiproject-shortcut	50	
+*.kexi	application/x-kexiproject-sqlite2	50	
+*.kexi	application/x-kexiproject-sqlite3	50	
+*.kfo	application/x-kformula	50	
+*.kil	application/x-killustrator	50	
+*.flw	application/x-kivio	50	
+*.kon	application/x-kontour	50	
+*.kpm	application/x-kpovmodeler	50	
+*.kpr	application/x-kpresenter	50	
+*.kpt	application/x-kpresenter	50	
+*.kra	application/x-krita	50	
+*.krz	application/x-krita	50	
+*.ksp	application/x-kspread	50	
+*.kud	application/x-kugar	50	
+*.kwd	application/x-kword	50	
+*.kwt	application/x-kword	50	
+*.lha	application/x-lha	50	
+*.lzh	application/x-lha	50	
+*.lhz	application/x-lhz	50	
+*.ts	text/vnd.trolltech.linguist	50	
+*.lyx	application/x-lyx	50	
+*.lz4	application/x-lz4	50	
+*.tar.lz4	application/x-lz4-compressed-tar	50	
+*.lz	application/x-lzip	50	
+*.tar.lz	application/x-lzip-compressed-tar	50	
+*.pdf.lz	application/x-lzpdf	50	
+*.lzma	application/x-lzma	50	
+*.tar.lzma	application/x-lzma-compressed-tar	50	
+*.tlz	application/x-lzma-compressed-tar	50	
+*.lzo	application/x-lzop	50	
+*.qp	application/x-qpress	50	
+*.xar	application/x-xar	50	
+*.pkg	application/x-xar	50	
+*.zz	application/zlib	50	
+*.mgp	application/x-magicpoint	50	
+*.mkv	video/x-matroska	50	
+*.mk3d	video/x-matroska-3d	50	
+*.mka	audio/x-matroska	50	
+*.webm	video/webm	50	
+*.mhtml	application/x-mimearchive	50	
+*.mht	application/x-mimearchive	50	
+*.mxf	application/mxf	50	
+*.ocl	text/x-ocl	50	
+*.cbl	text/x-cobol	50	
+*.cob	text/x-cobol	50	
+*.mobi	application/x-mobipocket-ebook	50	
+*.prc	application/x-mobipocket-ebook	50	
+*.mif	application/x-mif	50	
+*.exe	application/x-msdownload	50	
+*.dll	application/x-msdownload	50	
+*.cpl	application/x-msdownload	50	
+*.drv	application/x-msdownload	50	
+*.scr	application/x-msdownload	50	
+*.exe	application/x-dosexec	30	
+*.exe	application/x-ms-ne-executable	20	
+*.dll	application/x-ms-ne-executable	20	
+*.cpl	application/x-ms-ne-executable	20	
+*.drv	application/x-ms-ne-executable	20	
+*.scr	application/x-ms-ne-executable	20	
+*.exe	application/vnd.microsoft.portable-executable	40	
+*.dll	application/vnd.microsoft.portable-executable	40	
+*.cpl	application/vnd.microsoft.portable-executable	40	
+*.drv	application/vnd.microsoft.portable-executable	40	
+*.scr	application/vnd.microsoft.portable-executable	40	
+*.efi	application/vnd.microsoft.portable-executable	50	
+*.ocx	application/vnd.microsoft.portable-executable	50	
+*.sys	application/vnd.microsoft.portable-executable	50	
+*.lib	application/vnd.microsoft.portable-executable	50	
+*.pdb	application/x-ms-pdb	50	
+*.bat	application/x-bat	50	
+*.ps1	application/x-powershell	50	
+*.lnk	application/x-ms-shortcut	50	
+*.url	application/x-mswinurl	50	
+*.wri	application/x-mswrite	50	
+*.msx	application/x-msx-rom	50	
+*.m4	application/x-m4	50	
+*.n64	application/x-n64-rom	50	
+*.z64	application/x-n64-rom	50	
+*.v64	application/x-n64-rom	50	
+*.ngp	application/x-neo-geo-pocket-rom	50	
+*.ngc	application/x-neo-geo-pocket-color-rom	50	
+*.nes	application/x-nes-rom	50	
+*.nez	application/x-nes-rom	50	
+*.unf	application/x-nes-rom	50	
+*.unif	application/x-nes-rom	50	
+*.cdf	application/x-netcdf	50	
+*.nc	application/x-netcdf	50	
+*.nzb	application/x-nzb	50	
+*.o	application/x-object	50	
+*.mod	application/x-object	40	
+*.anx	application/annodex	50	
+*.axv	video/annodex	50	
+*.axa	audio/annodex	50	
+*.ogx	application/ogg	50	
+*.oga	audio/ogg	50	
+*.ogg	audio/ogg	50	
+*.opus	audio/ogg	50	
+*.ogv	video/ogg	50	
+*.ogg	video/ogg	50	
+*.oga	audio/x-vorbis+ogg	50	
+*.ogg	audio/x-vorbis+ogg	50	
+*.oga	audio/x-flac+ogg	50	
+*.ogg	audio/x-flac+ogg	50	
+*.opus	audio/x-opus+ogg	50	
+*.oga	audio/x-speex+ogg	50	
+*.ogg	audio/x-speex+ogg	50	
+*.spx	audio/x-speex+ogg	50	
+*.spx	audio/x-speex	50	
+*.ogg	video/x-theora+ogg	50	
+*.ogm	video/x-ogm+ogg	50	
+ehthumbs.db	application/vnd.microsoft.windows.thumbnail-cache	50	
+ehthumbs_vista.db	application/vnd.microsoft.windows.thumbnail-cache	50	
+image.db	application/vnd.microsoft.windows.thumbnail-cache	50	
+musicthumbs.db	application/vnd.microsoft.windows.thumbnail-cache	50	
+thumbs.db	application/vnd.microsoft.windows.thumbnail-cache	50	
+tvthumb.db	application/vnd.microsoft.windows.thumbnail-cache	50	
+video.db	application/vnd.microsoft.windows.thumbnail-cache	50	
+*.pub	application/vnd.ms-publisher	50	
+*.msi	application/x-msi	50	
+*.appx	application/appx	50	
+*.msix	application/msix	50	
+*.appxbundle	application/appxbundle	50	
+*.msixbundle	application/msixbundle	50	
+*.appinstaller	application/appinstaller	50	
+*.oleo	application/x-oleo	50	
+*.pak	application/x-pak	50	
+*.prc	application/vnd.palm	50	
+*.pdb	application/vnd.palm	40	
+*.pqa	application/vnd.palm	50	
+*.oprc	application/vnd.palm	50	
+*.PAR2	application/x-par2	50	
+*.par2	application/x-par2	50	
+*.pl	application/x-perl	50	
+*.PL	application/x-perl	50	
+*.pm	application/x-perl	50	
+*.al	application/x-perl	50	
+*.perl	application/x-perl	50	
+*.pod	application/x-perl	50	
+*.t	application/x-perl	10	
+*.php	application/x-php	50	
+*.php3	application/x-php	50	
+*.php4	application/x-php	50	
+*.php5	application/x-php	50	
+*.phps	application/x-php	50	
+*.p7b	application/x-pkcs7-certificates	50	
+*.spc	application/x-pkcs7-certificates	50	
+*.p12	application/pkcs12	50	
+*.pfx	application/pkcs12	50	
+*.pln	application/x-planperfect	50	
+*.psw	application/x-pocket-word	50	
+gmon.out	application/x-profile	50	
+*.pw	application/x-pw	50	
+*.pyc	application/x-python-bytecode	50	
+*.pyo	application/x-python-bytecode	50	
+*.qti	application/x-qtiplot	50	
+*.qti.gz	application/x-qtiplot	50	
+*.wb1	application/x-quattropro	50	
+*.wb2	application/x-quattropro	50	
+*.wb3	application/x-quattropro	50	
+*.qtl	application/x-quicktime-media-link	50	
+*.qif	application/x-qw	50	
+*.rar	application/vnd.rar	50	
+*.dar	application/x-dar	50	
+*.alz	application/x-alz	50	
+*.rej	text/x-reject	50	
+*.rpm	application/x-rpm	50	
+*.src.rpm	application/x-source-rpm	50	
+*.spm	application/x-source-rpm	50	
+*.rb	application/x-ruby	50	
+*.mab	application/x-markaby	50	
+*.cr	text/x-crystal	50	
+*.jl	text/julia	50	
+*.rs	text/rust	50	
+*.shar	application/x-shar	50	
+*.la	application/x-shared-library-la	50	
+*.so	application/x-sharedlib	50	
+*.so.[0-9]*	application/x-sharedlib	60	
+*.sh	application/x-shellscript	50	
+*.fish	application/x-fishscript	50	
+*.nu	application/x-nuscript	50	
+*.swf	application/vnd.adobe.flash.movie	50	
+*.spl	application/vnd.adobe.flash.movie	50	
+*.shn	application/x-shorten	50	
+*.siag	application/x-siag	50	
+*.sk	image/x-skencil	50	
+*.sk1	image/x-skencil	50	
+*.sg	application/x-sg1000-rom	50	
+*.sms	application/x-sms-rom	50	
+*.gg	application/x-gamegear-rom	50	
+*.sfc	application/vnd.nintendo.snes.rom	50	
+*.smc	application/vnd.nintendo.snes.rom	50	
+*.sit	application/x-stuffit	50	
+*.sitx	application/x-stuffitx	50	
+*.srt	application/x-subrip	50	
+*.vtt	text/vtt	50	
+*.smi	application/x-sami	50	
+*.sami	application/x-sami	50	
+*.sub	text/x-microdvd	50	
+*.mpl	text/x-mpl2	50	
+*.sub	text/x-mpsub	50	
+*.ssa	text/x-ssa	50	
+*.ass	text/x-ssa	50	
+*.sub	text/x-subviewer	50	
+*.imy	text/x-iMelody	50	
+*.ime	text/x-iMelody	50	
+*.mmf	application/vnd.smaf	50	
+*.smaf	application/vnd.smaf	50	
+*.mrml	text/x-mrml	50	
+*.mrl	text/x-mrml	50	
+*.xmf	audio/x-xmf	50	
+*.mxmf	audio/mobile-xmf	50	
+*.sv4cpio	application/x-sv4cpio	50	
+*.sv4crc	application/x-sv4crc	50	
+*.tar	application/x-tar	50	
+*.gtar	application/x-tar	50	
+*.gem	application/x-tar	50	
+*.tar.Z	application/x-tarz	50	
+*.taz	application/x-tarz	50	
+*.gf	application/x-tex-gf	50	
+*.pk	application/x-tex-pk	50	
+*.obj	application/x-tgif	50	
+*.theme	application/x-theme	50	
+*~	application/x-trash	50	
+*%	application/x-trash	50	
+*.bak	application/x-trash	50	
+*.old	application/x-trash	50	
+*.sik	application/x-trash	50	
+*.tr	text/troff	50	
+*.roff	text/troff	50	
+*.t	text/troff	10	
+*.man	application/x-troff-man	50	
+*.[1-9]	application/x-troff-man	50	
+*.tar.lzo	application/x-tzo	50	
+*.tzo	application/x-tzo	50	
+*.xz	application/x-xz	50	
+*.tar.xz	application/x-xz-compressed-tar	50	
+*.txz	application/x-xz-compressed-tar	50	
+*.zpaq	application/x-zpaq	50	
+*.zst	application/zstd	50	
+*.tar.zst	application/x-zstd-compressed-tar	50	
+*.tzst	application/x-zstd-compressed-tar	50	
+*.pdf.xz	application/x-xzpdf	50	
+*.ustar	application/x-ustar	50	
+*.src	application/x-wais-source	50	
+*.wpg	application/x-wpg	50	
+*.ws	application/x-wonderswan-rom	50	
+*.wsc	application/x-wonderswan-color-rom	50	
+*.der	application/x-x509-ca-cert	50	
+*.crt	application/x-x509-ca-cert	50	
+*.cert	application/x-x509-ca-cert	50	
+*.pem	application/x-x509-ca-cert	50	
+*.zoo	application/x-zoo	50	
+*.xhtml	application/xhtml+xml	50	
+*.xht	application/xhtml+xml	50	
+*.html	application/xhtml+xml	50	
+*.htm	application/xhtml+xml	50	
+*.zip	application/zip	50	
+*.zipx	application/zip	50	
+*.wim	application/x-ms-wim	50	
+*.swm	application/x-ms-wim	50	
+*.ac3	audio/ac3	50	
+*.dts	audio/vnd.dts	50	
+*.dtshd	audio/vnd.dts.hd	50	
+*.amr	audio/AMR	50	
+*.awb	audio/AMR-WB	50	
+*.au	audio/basic	50	
+*.snd	audio/basic	50	
+*.sid	audio/prs.sid	50	
+*.psid	audio/prs.sid	50	
+*.aifc	audio/x-aifc	50	
+*.aiffc	audio/x-aifc	50	
+*.aiff	audio/x-aiff	50	
+*.aif	audio/x-aiff	50	
+*.ape	audio/x-ape	50	
+*.aa	audio/x-pn-audibleaudio	50	
+*.aax	audio/vnd.audible.aax	50	
+*.aaxc	audio/vnd.audible.aaxc	50	
+*.dff	audio/x-dff	50	
+*.dsf	audio/x-dsf	50	
+*.it	audio/x-it	50	
+*.flac	audio/flac	50	
+*.tak	audio/x-tak	50	
+*.wv	audio/x-wavpack	50	
+*.wvp	audio/x-wavpack	50	
+*.wvc	audio/x-wavpack-correction	50	
+*.mid	audio/midi	50	
+*.midi	audio/midi	50	
+*.kar	audio/midi	50	
+*.mo3	audio/x-mo3	50	
+*.aac	audio/aac	50	
+*.adts	audio/aac	50	
+*.ass	audio/aac	10	
+*.loas	audio/usac	50	
+*.xhe	audio/usac	50	
+*.m4a	audio/mp4	50	
+*.f4a	audio/mp4	50	
+*.m4r	audio/x-m4r	50	
+*.mp4	video/mp4	50	
+*.m4v	video/mp4	50	
+*.f4v	video/mp4	50	
+*.lrv	video/mp4	50	
+*.m4b	audio/x-m4b	50	
+*.f4b	audio/x-m4b	50	
+*.3gp	video/3gpp	50	
+*.3gpp	video/3gpp	50	
+*.3ga	video/3gpp	50	
+*.3g2	video/3gpp2	50	
+*.3gp2	video/3gpp2	50	
+*.3gpp2	video/3gpp2	50	
+*.mod	audio/x-mod	50	
+*.ult	audio/x-mod	50	
+*.uni	audio/x-mod	50	
+*.m15	audio/x-mod	50	
+*.mtm	audio/x-mod	50	
+*.669	audio/x-mod	50	
+*.med	audio/x-mod	50	
+*.mp2	audio/mp2	50	
+*.mp3	audio/mpeg	50	
+*.mpga	audio/mpeg	50	
+*.m3u	audio/x-mpegurl	50	
+*.m3u8	audio/x-mpegurl	50	
+*.vlc	audio/x-mpegurl	50	
+*.m3u	application/vnd.apple.mpegurl	50	
+*.m3u8	application/vnd.apple.mpegurl	50	
+*.asx	audio/x-ms-asx	50	
+*.wax	audio/x-ms-asx	50	
+*.wvx	audio/x-ms-asx	50	
+*.wmx	audio/x-ms-asx	50	
+*.psf	audio/x-psf	50	
+*.minipsf	audio/x-minipsf	50	
+*.psflib	audio/x-psflib	50	
+*.wma	audio/x-ms-wma	50	
+*.mpc	audio/x-musepack	50	
+*.mpp	audio/x-musepack	50	
+*.mp+	audio/x-musepack	50	
+*.ra	audio/vnd.rn-realaudio	50	
+*.rax	audio/vnd.rn-realaudio	50	
+*.ram	application/ram	50	
+*.rv	video/vnd.rn-realvideo	50	
+*.rvx	video/vnd.rn-realvideo	50	
+*.rm	application/vnd.rn-realmedia	50	
+*.rmj	application/vnd.rn-realmedia	50	
+*.rmm	application/vnd.rn-realmedia	50	
+*.rms	application/vnd.rn-realmedia	50	
+*.rmx	application/vnd.rn-realmedia	50	
+*.rmvb	application/vnd.rn-realmedia	50	
+*.rp	image/vnd.rn-realpix	50	
+*.rt	text/vnd.rn-realtext	50	
+*.s3m	audio/x-s3m	50	
+*.pls	audio/x-scpls	50	
+*.stm	audio/x-stm	50	
+*.voc	audio/x-voc	50	
+*.wav	audio/vnd.wave	50	
+*.xi	audio/x-xi	50	
+*.xm	audio/x-xm	50	
+*.tta	audio/x-tta	50	
+*.bmp	image/bmp	50	
+*.dib	image/bmp	50	
+*.wbmp	image/vnd.wap.wbmp	50	
+*.cgm	image/cgm	50	
+*.g3	image/g3fax	50	
+*.gif	image/gif	50	
+*.heic	image/heif	50	
+*.heif	image/heif	50	
+*.hif	image/heif	50	
+*.ief	image/ief	50	
+*.jpg	image/jpeg	50	
+*.jpeg	image/jpeg	50	
+*.jpe	image/jpeg	50	
+*.jfif	image/jpeg	50	
+*.mjpeg	video/x-mjpeg	50	
+*.mjpg	video/x-mjpeg	50	
+*.j2c	image/x-jp2-codestream	50	
+*.j2k	image/x-jp2-codestream	50	
+*.jpc	image/x-jp2-codestream	50	
+*.jp2	image/jp2	50	
+*.jpg2	image/jp2	50	
+*.jpf	image/jpx	50	
+*.jpx	image/jpx	50	
+*.jpm	image/jpm	50	
+*.jpgm	image/jpm	50	
+*.mj2	video/mj2	50	
+*.mjp2	video/mj2	50	
+*.jxl	image/jxl	50	
+*.ora	image/openraster	50	
+*.dds	image/x-dds	50	
+*.exr	image/x-exr	50	
+*.pct	image/x-pict	50	
+*.pict	image/x-pict	50	
+*.pict1	image/x-pict	50	
+*.pict2	image/x-pict	50	
+*.ufraw	application/x-ufraw	50	
+*.dng	image/x-adobe-dng	50	
+*.crw	image/x-canon-crw	50	
+*.cr2	image/x-canon-cr2	50	
+*.cr3	image/x-canon-cr3	50	
+*.raf	image/x-fuji-raf	50	
+*.dcr	image/x-kodak-dcr	50	
+*.k25	image/x-kodak-k25	50	
+*.kdc	image/x-kodak-kdc	50	
+*.mrw	image/x-minolta-mrw	50	
+*.nef	image/x-nikon-nef	50	
+*.nrw	image/x-nikon-nrw	50	
+*.orf	image/x-olympus-orf	50	
+*.raw	image/x-panasonic-rw	50	
+*.rw2	image/x-panasonic-rw2	50	
+*.pef	image/x-pentax-pef	50	
+*.x3f	image/x-sigma-x3f	50	
+*.srf	image/x-sony-srf	50	
+*.sr2	image/x-sony-sr2	50	
+*.arw	image/x-sony-arw	50	
+*.png	image/png	50	
+*.apng	image/apng	50	
+*.png	image/apng	40	
+*.rle	image/rle	50	
+*.svg	image/svg+xml	50	
+*.svgz	image/svg+xml-compressed	50	
+*.svg.gz	image/svg+xml-compressed	50	
+*.tif	image/tiff	50	
+*.tiff	image/tiff	50	
+*.dwg	image/vnd.dwg	50	
+*.dxf	image/vnd.dxf	50	
+*.mdi	image/vnd.ms-modi	50	
+*.jxr	image/jxr	50	
+*.hdp	image/jxr	50	
+*.wdp	image/jxr	50	
+*.webp	image/webp	50	
+*.3ds	image/x-3ds	50	
+*.ag	image/x-applix-graphics	50	
+*.eps.bz2	image/x-bzeps	50	
+*.epsi.bz2	image/x-bzeps	50	
+*.epsf.bz2	image/x-bzeps	50	
+*.ras	image/x-cmu-raster	50	
+*.xcf.gz	image/x-compressed-xcf	50	
+*.xcf.bz2	image/x-compressed-xcf	50	
+dicomdir	application/dicom	50	
+*.dcm	application/dicom	50	
+*.dbk	application/x-docbook+xml	50	
+*.docbook	application/x-docbook+xml	50	
+*.djvu	image/vnd.djvu	50	
+*.djv	image/vnd.djvu	50	
+*.djvu	image/vnd.djvu+multipage	50	
+*.djv	image/vnd.djvu+multipage	50	
+*.eps	image/x-eps	50	
+*.epsi	image/x-eps	50	
+*.epsf	image/x-eps	50	
+*.fits	application/fits	50	
+*.fit	application/fits	50	
+*.fts	application/fits	50	
+*.eps.gz	image/x-gzeps	50	
+*.epsi.gz	image/x-gzeps	50	
+*.epsf.gz	image/x-gzeps	50	
+*.ico	image/vnd.microsoft.icon	50	
+*.icns	image/x-icns	50	
+*.iff	image/x-ilbm	50	
+*.ilbm	image/x-ilbm	50	
+*.lbm	image/x-ilbm	50	
+*.jng	image/x-jng	50	
+*.lwo	image/x-lwo	50	
+*.lwob	image/x-lwo	50	
+*.lws	image/x-lws	50	
+*.pntg	image/x-macpaint	50	
+*.msod	image/x-msod	50	
+*.pcx	image/vnd.zbrush.pcx	50	
+*.pcd	image/x-photo-cd	50	
+*.pnm	image/x-portable-anymap	50	
+*.pbm	image/x-portable-bitmap	50	
+*.pgm	image/x-portable-graymap	50	
+*.ppm	image/x-portable-pixmap	50	
+*.psd	image/vnd.adobe.photoshop	50	
+*.rgb	image/x-rgb	50	
+*.sgi	image/x-sgi	50	
+*.sun	image/x-sun-raster	50	
+*.tga	image/x-tga	50	
+*.icb	image/x-tga	50	
+*.tpic	image/x-tga	50	
+*.vda	image/x-tga	50	
+*.vst	image/x-tga	50	
+*.cur	image/x-win-bitmap	50	
+*.ani	application/x-navi-animation	50	
+*.emf	image/emf	50	
+*.wmf	image/wmf	50	
+*.xbm	image/x-xbitmap	50	
+*.xcf	image/x-xcf	50	
+*.gbr	image/x-gimp-gbr	50	
+*.gih	image/x-gimp-gih	50	
+*.pat	image/x-gimp-pat	50	
+*.fig	image/x-xfig	50	
+*.xpm	image/x-xpixmap	50	
+*.xwd	image/x-xwindowdump	50	
+*.eml	message/rfc822	50	
+RMAIL	message/x-gnu-rmail	50	
+*.igs	model/iges	50	
+*.iges	model/iges	50	
+*.glb	model/gltf-binary	50	
+*.gltf	model/gltf+json	50	
+*.vrm	model/vrml	50	
+*.vrml	model/vrml	50	
+*.wrl	model/vrml	50	
+*.obj	model/obj	50	
+*.mtl	model/mtl	50	
+*.vcs	text/calendar	50	
+*.ics	text/calendar	50	
+*.css	text/css	50	
+*.vcard	text/vcard	50	
+*.vcf	text/vcard	50	
+*.vct	text/vcard	50	
+*.gcrd	text/vcard	50	
+*.ttl	text/turtle	50	
+*.t2t	text/x-txt2tags	50	
+*.v	text/x-verilog	50	
+*.svh	text/x-svhdr	50	
+*.sv	text/x-svsrc	50	
+*.vhd	text/x-vhdl	50	
+*.vhdl	text/x-vhdl	50	
+*.txt	text/plain	50	
+*.asc	text/plain	50	
+*,v	text/plain	50	
+*.rdf	application/rdf+xml	50	
+*.rdfs	application/rdf+xml	50	
+*.owl	application/rdf+xml	50	
+*.rst	text/x-rst	50	
+*.owx	application/owl+xml	50	
+*.rtx	text/richtext	50	
+*.rss	application/rss+xml	50	
+*.atom	application/atom+xml	50	
+*.opml	text/x-opml+xml	50	
+*.sgml	text/sgml	50	
+*.sgm	text/sgml	50	
+*.sylk	text/spreadsheet	50	
+*.slk	text/spreadsheet	50	
+*.tsv	text/tab-separated-values	50	
+*.gv	text/vnd.graphviz	50	
+*.dot	text/vnd.graphviz	50	
+*.jad	text/vnd.sun.j2me.app-descriptor	50	
+*.wml	text/vnd.wap.wml	50	
+*.wmls	text/vnd.wap.wmlscript	50	
+*.mc2	text/vnd.senx.warpscript	50	
+*.ace	application/x-ace	50	
+*.adb	text/x-adasrc	50	
+*.ads	text/x-adasrc	50	
+AUTHORS	text/x-authors	50	
+*.bib	text/x-bibtex	50	
+*.blp	text/x-blueprint	50	
+*.hh	text/x-c++hdr	50	
+*.hp	text/x-c++hdr	50	
+*.hpp	text/x-c++hdr	50	
+*.h++	text/x-c++hdr	50	
+*.hxx	text/x-c++hdr	50	
+*.cpp	text/x-c++src	50	
+*.cxx	text/x-c++src	50	
+*.cc	text/x-c++src	50	
+*.C	text/x-c++src	50	true
+*.c++	text/x-c++src	50	
+ChangeLog	text/x-changelog	50	
+*.h	text/x-chdr	50	
+*.cmake	text/x-cmake	50	
+CMakeLists.txt	text/x-cmake	50	
+*.asd	text/x-common-lisp	50	
+*.fasl	text/x-common-lisp	50	
+*.lisp	text/x-common-lisp	50	
+*.ros	text/x-common-lisp	50	
+*.csv	text/csv	50	
+*.csvs	text/csv-schema	50	
+COPYING	text/x-copying	50	
+CREDITS	text/x-credits	50	
+*.c	text/x-csrc	50	true
+*.cs	text/x-csharp	50	
+*.vala	text/x-vala	50	
+*.vapi	text/x-vala	50	
+*.ooc	text/x-ooc	50	
+*.dcl	text/x-dcl	50	
+*.dsl	text/x-dsl	50	
+*.d	text/x-dsrc	50	
+*.di	text/x-dsrc	50	
+*.dtd	application/xml-dtd	50	
+*.e	text/x-eiffel	50	
+*.eif	text/x-eiffel	50	
+*.el	text/x-emacs-lisp	50	
+*.ex	text/x-elixir	50	
+*.exs	text/x-elixir	50	
+*.erl	text/x-erlang	50	
+*.f	text/x-fortran	50	
+*.f90	text/x-fortran	50	
+*.f95	text/x-fortran	50	
+*.for	text/x-fortran	50	
+*.gs	text/x-genie	50	true
+*.po	text/x-gettext-translation	50	
+*.pot	text/x-gettext-translation-template	50	
+*.feature	text/x-gherkin	50	
+*.html	text/html	80	
+*.htm	text/html	80	
+*.htc	text/x-component	50	
+*.manifest	text/cache-manifest	50	
+*.gvp	text/x-google-video-pointer	50	
+*.hs	text/x-haskell	50	
+*.idl	text/x-idl	50	
+INSTALL	text/x-install	50	
+*.java	text/x-java	50	
+*.ldif	text/x-ldif	50	
+*.ly	text/x-lilypond	50	
+*.lhs	text/x-literate-haskell	50	
+*.log	text/x-log	50	
+makefile	text/x-makefile	50	
+GNUmakefile	text/x-makefile	50	
+*.mk	text/x-makefile	50	
+*.mak	text/x-makefile	50	
+Makefile.*	text/x-makefile	10	
+*.md	text/markdown	50	
+*.mkd	text/markdown	50	
+*.markdown	text/markdown	50	
+*.moc	text/x-moc	50	
+*.reg	text/x-ms-regedit	50	
+*.mof	text/x-mof	50	
+*.mup	text/x-mup	50	
+*.not	text/x-mup	50	
+*.m	text/x-objcsrc	50	
+*.mm	text/x-objc++src	50	
+*.ml	text/x-ocaml	50	
+*.mli	text/x-ocaml	50	
+*.cl	text/x-opencl-src	50	
+*.m	text/x-matlab	50	
+meson.build	text/x-meson	50	
+meson_options.txt	text/x-meson	50	
+*.mo	text/x-modelica	50	
+*.p	text/x-pascal	50	
+*.pas	text/x-pascal	50	
+*.diff	text/x-patch	50	
+*.patch	text/x-patch	50	
+*.dart	application/vnd.dart	50	
+*.nim	text/x-nim	50	
+*.nims	text/x-nimscript	50	
+*.nimble	text/x-nimscript	50	
+*.go	text/x-go	50	
+SConstruct	text/x-scons	50	
+SConscript	text/x-scons	50	
+SConscript.*	text/x-scons	50	
+*.py	text/x-python3	50	
+*.py3	text/x-python3	60	
+*.py3x	text/x-python3	60	
+*.pyi	text/x-python3	60	
+*.py	text/x-python	60	
+*.pyx	text/x-python	60	
+*.wsgi	text/x-python	60	
+*.sage	text/x-sagemath	60	
+*.lua	text/x-lua	50	
+README*	text/x-readme	10	
+*.nfo	text/x-nfo	50	
+todo.txt	text/x-todo-txt	10	
+*.spec	text/x-rpm-spec	50	
+*.sass	text/x-sass	50	
+*.scala	text/x-scala	50	
+*.sc	text/x-scala	50	
+*.scm	text/x-scheme	50	
+*.ss	text/x-scheme	50	
+*.scss	text/x-scss	50	
+*.etx	text/x-setext	50	
+*.sql	application/sql	50	
+*.tcl	text/tcl	50	
+*.tk	text/tcl	50	
+*.tex	text/x-tex	50	
+*.ltx	text/x-tex	50	
+*.sty	text/x-tex	50	
+*.cls	text/x-tex	50	
+*.dtx	text/x-tex	50	
+*.ins	text/x-tex	50	
+*.latex	text/x-tex	50	
+*.texi	text/x-texinfo	50	
+*.texinfo	text/x-texinfo	50	
+*.typ	text/x-typst	50	
+*.me	text/x-troff-me	50	
+*.mm	text/x-troff-mm	50	
+*.ms	text/x-troff-ms	50	
+*.twig	text/x-twig	50	
+*.uil	text/x-uil	50	
+*.uue	text/x-uuencode	50	
+*.bas	text/x-basic	50	
+*.vb	text/x-vb	50	
+*.vbs	text/vbscript	50	
+*.vbe	text/vbscript.encode	50	
+*.xmi	text/x-xmi	50	
+*.fo	text/x-xslfo	50	
+*.xslfo	text/x-xslfo	50	
+*.iptables	text/x-iptables	50	
+*.service	text/x-dbus-service	50	
+*.automount	text/x-systemd-unit	50	
+*.device	text/x-systemd-unit	50	
+*.mount	text/x-systemd-unit	50	
+*.path	text/x-systemd-unit	50	
+*.scope	text/x-systemd-unit	50	
+*.service	text/x-systemd-unit	50	
+*.slice	text/x-systemd-unit	50	
+*.socket	text/x-systemd-unit	50	
+*.swap	text/x-systemd-unit	50	
+*.target	text/x-systemd-unit	50	
+*.timer	text/x-systemd-unit	50	
+*.xsl	application/xslt+xml	50	
+*.xslt	application/xslt+xml	50	
+pom.xml	text/x-maven+xml	50	
+settings.xml	text/x-maven+xml	50	
+*.xml	application/xml	50	
+*.xbl	application/xml	50	
+*.xsd	application/xml	50	
+*.rng	application/xml	50	
+*.ent	application/xml-external-parsed-entity	50	
+*.dv	video/dv	50	
+*.m2t	video/mp2t	50	
+*.m2ts	video/mp2t	50	
+*.ts	video/mp2t	50	
+*.mts	video/mp2t	50	
+*.cpi	video/mp2t	50	
+*.clpi	video/mp2t	50	
+*.mpl	video/mp2t	50	
+*.mpls	video/mp2t	50	
+*.bdm	video/mp2t	50	
+*.bdmv	video/mp2t	50	
+*.mpeg	video/mpeg	50	
+*.mpg	video/mpeg	50	
+*.mp2	video/mpeg	50	
+*.mpe	video/mpeg	50	
+*.vob	video/mpeg	50	
+[0-9][0-9][0-9].vdr	video/mpeg	50	
+*.m1u	video/vnd.mpegurl	50	
+*.m4u	video/vnd.mpegurl	50	
+*.mxu	video/vnd.mpegurl	50	
+*.qt	video/quicktime	50	
+*.mov	video/quicktime	50	
+*.moov	video/quicktime	50	
+*.qtvr	video/quicktime	50	
+*.qtif	image/x-quicktime	50	
+*.qif	image/x-quicktime	50	
+*.ktx	image/ktx	50	
+*.ktx2	image/ktx2	50	
+*.astc	image/astc	50	
+*.viv	video/vnd.vivo	50	
+*.vivo	video/vnd.vivo	50	
+*.anim[1-9j]	video/x-anim	50	
+*.fli	video/x-flic	50	
+*.flc	video/x-flic	50	
+*.hwp	application/x-hwp	50	
+*.hwt	application/x-hwt	50	
+*.mng	video/x-mng	50	
+*.asf	application/vnd.ms-asf	50	
+*.nsc	application/x-netshow-channel	50	
+*.wmv	video/x-ms-wmv	50	
+*.avi	video/vnd.avi	50	
+*.avf	video/vnd.avi	50	
+*.divx	video/vnd.avi	50	
+*.nsv	video/x-nsv	50	
+*.sdp	application/sdp	50	
+*.movie	video/x-sgi-movie	50	
+*.emp	application/vnd.emusic-emusic_package	50	
+*.kml	application/vnd.google-earth.kml+xml	50	
+*.kmz	application/vnd.google-earth.kmz	50	
+*.geojson	application/geo+json	50	
+*.geo.json	application/geo+json	50	
+*.gpx	application/gpx+xml	50	
+*.ica	application/x-ica	50	
+*.xul	application/vnd.mozilla.xul+xml	50	
+*.xpi	application/x-xpinstall	50	
+*.docx	application/vnd.openxmlformats-officedocument.wordprocessingml.document	50	
+*.dotx	application/vnd.openxmlformats-officedocument.wordprocessingml.template	50	
+*.pptx	application/vnd.openxmlformats-officedocument.presentationml.presentation	50	
+*.sldx	application/vnd.openxmlformats-officedocument.presentationml.slide	50	
+*.ppsx	application/vnd.openxmlformats-officedocument.presentationml.slideshow	50	
+*.potx	application/vnd.openxmlformats-officedocument.presentationml.template	50	
+*.xlsx	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet	50	
+*.xltx	application/vnd.openxmlformats-officedocument.spreadsheetml.template	50	
+*.thmx	application/vnd.ms-officetheme	50	
+*.602	application/x-t602	50	
+*.pcf	application/x-cisco-vpn-settings	50	
+*.icc	application/vnd.iccprofile	50	
+*.icm	application/vnd.iccprofile	50	
+*.it87	application/x-it87	50	
+*.ccmx	application/x-ccmx	50	
+*.hlp	application/winhlp	50	
+*.bsdiff	application/x-bsdiff	50	
+*.trig	application/trig	50	
+*.key	application/vnd.apple.keynote	80	
+*.numbers	application/vnd.apple.numbers	50	
+*.pages	application/vnd.apple.pages	50	
+*.pkpass	application/vnd.apple.pkpass	50	
+*.p65	application/x-pagemaker	50	
+*.pm	application/x-pagemaker	50	
+*.pm6	application/x-pagemaker	50	
+*.pmd	application/x-pagemaker	50	
+*.wad	application/x-doom-wad	80	
+*.adf	application/x-amiga-disk-format	50	
+*.flatpak	application/vnd.flatpak	50	
+*.xdgapp	application/vnd.flatpak	50	
+*.flatpakrepo	application/vnd.flatpak.repo	50	
+*.flatpakref	application/vnd.flatpak.ref	50	
+*.sqsh	application/vnd.squashfs	50	
+*.appimage	application/vnd.appimage	60	
+*.snap	application/vnd.snap	50	
+*.3mf	model/3mf	50	
+*.stl	model/stl	50	
+*.gcode	text/x.gcode	50	
+*.gx	text/x-gcode-gx	50	
+*.fds	application/x-fds-disk	50	
+*.ova	application/ovf	50	
+*.qed	application/x-qed-disk	50	
+*.qcow2	application/x-qemu-disk	50	
+*.qcow	application/x-qemu-disk	50	
+*.vhd	application/x-vhd-disk	50	
+*.vpc	application/x-vhd-disk	50	
+*.vhdx	application/x-vhdx-disk	50	
+*.vmdk	application/x-vmdk-disk	50	
+*.vdi	application/x-vdi-disk	50	
+*.cwk	application/x-appleworks-document	50	
+*.bps	application/x-bps-patch	50	
+*.ips	application/x-ips-patch	50	
+*.pysu	application/x-pyspread-spreadsheet	50	
+*.pys	application/x-pyspread-bz-spreadsheet	50	
+*.kt	text/x-kotlin	50	
+*.dts	text/x-devicetree-source	50	
+*.dtsi	text/x-devicetree-source	50	
+*.dtb	text/x-devicetree-binary	50	
+*.avif	image/avif	50	
+*.avifs	image/avif	50	
+*.qoi	image/qoi	50	
+*.bik	video/vnd.radgamettools.bink	50	
+*.bk2	video/vnd.radgamettools.bink	50	
+*.smk	video/vnd.radgamettools.smacker	50	
+*.org	text/org	50	
+*.zim	application/x-openzim	50	
+*.qs	application/sparql-query	50	
+*.srx	application/sparql-results+xml	50	
+*.wasm	application/wasm	50	
+*.openvpn	application/x-openvpn-profile	50	
+*.ovpn	application/x-openvpn-profile	50	
+*.mrpack	application/x-modrinth-modpack+zip	50	
+*.cbor	application/cbor	50	
+*.eris	application/x-eris-link+cbor	50	
+*.gbr	application/vnd.gerber	50	
+*.gbrjob	application/x-gerber-job	50	
+*.drl	application/x-excellon	50	
+*.tmx	application/x-tiled-tmx	50	
+*.tsx	application/x-tiled-tsx	50	
+*.json	application/3gpp-mbs-object-manifest+json	0	false
+*.json	application/3gpp-mbs-user-service-descriptions+json	0	false
+*.json	application/3gpp-media-delivery-metrics-report+json	0	false
+*.aasx	application/aas+zip	0	false
+*.a2l	application/A2L	0	false
+*.RFC7285	application/alto-costmap+json	0	false
+*.uses	application/alto-costmap+json	0	false
+*.protocol	application/alto-costmap+json	0	false
+*.messages	application/alto-costmap+json	0	false
+*.thus	application/alto-costmap+json	0	false
+*.RFC7285	application/alto-costmapfilter+json	0	false
+*.uses	application/alto-costmapfilter+json	0	false
+*.protocol	application/alto-costmapfilter+json	0	false
+*.messages	application/alto-costmapfilter+json	0	false
+*.thus	application/alto-costmapfilter+json	0	false
+*.RFC7285	application/alto-directory+json	0	false
+*.uses	application/alto-directory+json	0	false
+*.protocol	application/alto-directory+json	0	false
+*.messages	application/alto-directory+json	0	false
+*.thus	application/alto-directory+json	0	false
+*.RFC7285	application/alto-endpointprop+json	0	false
+*.uses	application/alto-endpointprop+json	0	false
+*.protocol	application/alto-endpointprop+json	0	false
+*.messages	application/alto-endpointprop+json	0	false
+*.thus	application/alto-endpointprop+json	0	false
+*.RFC7285	application/alto-endpointpropparams+json	0	false
+*.uses	application/alto-endpointpropparams+json	0	false
+*.protocol	application/alto-endpointpropparams+json	0	false
+*.messages	application/alto-endpointpropparams+json	0	false
+*.thus	application/alto-endpointpropparams+json	0	false
+*.RFC7285	application/alto-endpointcost+json	0	false
+*.uses	application/alto-endpointcost+json	0	false
+*.protocol	application/alto-endpointcost+json	0	false
+*.messages	application/alto-endpointcost+json	0	false
+*.thus	application/alto-endpointcost+json	0	false
+*.RFC7285	application/alto-endpointcostparams+json	0	false
+*.uses	application/alto-endpointcostparams+json	0	false
+*.protocol	application/alto-endpointcostparams+json	0	false
+*.messages	application/alto-endpointcostparams+json	0	false
+*.thus	application/alto-endpointcostparams+json	0	false
+*.RFC7285	application/alto-error+json	0	false
+*.uses	application/alto-error+json	0	false
+*.protocol	application/alto-error+json	0	false
+*.messages	application/alto-error+json	0	false
+*.thus	application/alto-error+json	0	false
+*.RFC7285	application/alto-networkmapfilter+json	0	false
+*.uses	application/alto-networkmapfilter+json	0	false
+*.protocol	application/alto-networkmapfilter+json	0	false
+*.messages	application/alto-networkmapfilter+json	0	false
+*.thus	application/alto-networkmapfilter+json	0	false
+*.RFC7285	application/alto-networkmap+json	0	false
+*.uses	application/alto-networkmap+json	0	false
+*.protocol	application/alto-networkmap+json	0	false
+*.messages	application/alto-networkmap+json	0	false
+*.thus	application/alto-networkmap+json	0	false
+*.RFC8895	application/alto-updatestreamcontrol+json	0	false
+*.uses	application/alto-updatestreamcontrol+json	0	false
+*.protocol	application/alto-updatestreamcontrol+json	0	false
+*.messages	application/alto-updatestreamcontrol+json	0	false
+*.thus	application/alto-updatestreamcontrol+json	0	false
+*.RFC8895	application/alto-updatestreamparams+json	0	false
+*.uses	application/alto-updatestreamparams+json	0	false
+*.protocol	application/alto-updatestreamparams+json	0	false
+*.messages	application/alto-updatestreamparams+json	0	false
+*.thus	application/alto-updatestreamparams+json	0	false
+*.aml	application/AML	0	false
+*.json	application/asyncapi+json	0	false
+*.yaml	application/asyncapi+json	0	false
+*.json	application/asyncapi+yaml	0	false
+*.yaml	application/asyncapi+yaml	0	false
+*.atf	application/ATF	0	false
+*.atfx	application/ATFX	0	false
+*.atom	application/atom+xml	0	false
+*.atomcat	application/atomcat+xml	0	false
+*.atomdeleted	application/atomdeleted+xml	0	false
+*.atomsvc	application/atomsvc+xml	0	false
+*.dwd	application/atsc-dwd+xml	0	false
+*.held	application/atsc-held+xml	0	false
+*.rsat	application/atsc-rsat+xml	0	false
+*.atxml	application/ATXML	0	false
+*.apxml	application/auth-policy+xml	0	false
+*.aml	application/automationml-aml+xml	0	false
+*.amlx	application/automationml-amlx+zip	0	false
+*.xdd	application/bacnet-xdd+zip	0	false
+*.c2pa	application/c2pa	0	false
+*.xcs	application/calendar+xml	0	false
+*.cbor	application/cbor	0	false
+*.c3ex	application/cccex	0	false
+*.ccmp	application/ccmp+xml	0	false
+*.cdfx	application/CDFX+XML	0	false
+*.cdmia	application/cdmi-capability	0	false
+*.cdmic	application/cdmi-container	0	false
+*.cdmid	application/cdmi-domain	0	false
+*.cdmio	application/cdmi-object	0	false
+*.cdmiq	application/cdmi-queue	0	false
+*.cea	application/CEA	0	false
+*.xml	application/cea-2018+xml	0	false
+*.json	application/city+json	0	false
+*.json	application/cloudevents-batch+json	0	false
+*.json	application/cloudevents+json	0	false
+*.1clr	application/clr	0	false
+*.clue	application/clue_info+xml	0	false
+*.xml	application/clue+xml	0	false
+*.cmcd	application/cmcd	0	false
+*.cmsc	application/cms	0	false
+*.json	application/coap-group+json	0	false
+*.xml	application/conference-info+xml	0	false
+*.cpl	application/cpl+xml	0	false
+*.xml	application/cpl+xml	0	false
+*.cbor	application/cose	0	false
+*.c509	application/cose-c509+cbor	0	false
+*.c509	application/cose-c509-cert+cbor	0	false
+*.c509	application/cose-c509-crtemplate+cbor	0	false
+*.c509	application/cose-c509-pem+cbor	0	false
+*.c509	application/cose-c509-pkcs10+cbor	0	false
+*.c509	application/cose-c509-privkey+cbor	0	false
+*.cbor	application/cose-key	0	false
+*.cbor	application/cose-key-set	0	false
+*.csrattrs	application/csrattrs	0	false
+*.json	application/csvm+json	0	false
+*.cwl	application/cwl	0	false
+*.cwl.json	application/cwl+json	0	false
+*.cwl.yaml	application/cwl+yaml	0	false
+*.cxtf	application/vnd.cxtf	0	false
+*.cxzip	application/vnd.cxzip	0	false
+*.mpd	application/dash+xml	0	false
+*.mpp	application/dash-patch+xml	0	false
+*.mpdd	application/dashdelta	0	false
+*.dcd	application/DCD	0	false
+*.xml	application/dialog-info+xml	0	false
+*.dcm	application/dicom	0	false
+*.disk	application/dicom	0	false
+*.json	application/dicom+json	0	false
+*.xml	application/dicom+xml	0	false
+*.did	application/did	0	false
+*.dii	application/DII	0	false
+*.dit	application/DIT	0	false
+*.Unknown.	application/dns	0	false
+*.xmls	application/dskpp+xml	0	false
+*.dssc	application/dssc+der	0	false
+*.xdssc	application/dssc+xml	0	false
+*.dvc	application/dvcs	0	false
+*.es	application/ecmascript	0	false
+*.efi	application/efi	0	false
+*.xml	application/EmergencyCallData.Comment+xml	0	false
+*.xml	application/EmergencyCallData.Control+xml	0	false
+*.xml	application/EmergencyCallData.DeviceInfo+xml	0	false
+*.json	application/EmergencyCallData.LegacyESN+json	0	false
+*.xml	application/EmergencyCallData.ProviderInfo+xml	0	false
+*.xml	application/EmergencyCallData.ServiceInfo+xml	0	false
+*.xml	application/EmergencyCallData.SubscriberInfo+xml	0	false
+*.xml	application/EmergencyCallData.VEDS+xml	0	false
+*.emma	application/emma+xml	0	false
+*.emotionml	application/emotionml+xml	0	false
+*.xml	application/epp+xml	0	false
+*.OCF	application/epub+zip	0	false
+*.ZIP	application/epub+zip	0	false
+*.container	application/epub+zip	0	false
+*.epub.	application/epub+zip	0	false
+*.exi	application/exi	0	false
+*.exp	application/express	0	false
+*.finf	application/fastinfoset	0	false
+*.ASN.1	application/fastsoap	0	false
+*.SOAP	application/fastsoap	0	false
+*.messages	application/fastsoap	0	false
+*.fdf	application/fdf	0	false
+*.fdt	application/fdt+xml	0	false
+*.FDT	application/fdt+xml	0	false
+*.Instance	application/fdt+xml	0	false
+*.as	application/fdt+xml	0	false
+*.fits	application/fits	0	false
+*.ttf	application/font-sfnt	0	false
+*.otf	application/font-sfnt	0	false
+*.ttf	application/font-sfnt	0	false
+*.otf	application/font-sfnt	0	false
+*.either	application/font-sfnt	0	false
+*.PFR	application/font-tdpfr	0	false
+*.woff	application/font-woff	0	false
+*.json	application/geo+json	0	false
+*.geojson	application/geo+json	0	false
+*.gpkg	application/geopackage+sqlite3	0	false
+*.bin	application/gltf-buffer	0	false
+*.xml	application/gml+xml	0	false
+*.gml	application/gml+xml	0	false
+*.gz	application/gzip	0	false
+*.heldxml	application/held+xml	0	false
+*.ipfix	application/ipfix	0	false
+*.its	application/its+xml	0	false
+*.jar	application/java-archive	0	false
+*.js	application/javascript	0	false
+*.json	application/jf2feed+json	0	false
+*.jrd	application/jrd+json	0	false
+*.json	application/json	0	false
+*.json-patch	application/json-patch+json	0	false
+*.jumbf	application/jumbf	0	false
+*.kbl	application/kbl+xml	0	false
+*.jsonld	application/ld+json	0	false
+*.lgr	application/lgr+xml	0	false
+*.wlnk	application/link-format	0	false
+*.json	application/linkset+json	0	false
+*.xml	application/load-control+xml	0	false
+*.lostxml	application/lost+xml	0	false
+*.lostsyncxml	application/lostsync+xml	0	false
+*.LPF	application/lpf+zip	0	false
+*.lpf.	application/lpf+zip	0	false
+*.lxf	application/LXF	0	false
+*.mads	application/mads+xml	0	false
+*.webmanifest	application/manifest+json	0	false
+*.mrc	application/marc	0	false
+*.mrcx	application/marcxml+xml	0	false
+*.nb	application/mathematica	0	false
+*.ma	application/mathematica	0	false
+*.mb	application/mathematica	0	false
+*.mml	application/mathml+xml	0	false
+*.mbox	application/mbox	0	false
+*.None.	application/media_control+xml	0	false
+*.mpf	application/media-policy-dataset+xml	0	false
+*.xml	application/media-policy-dataset+xml	0	false
+*.meta4	application/metalink4+xml	0	false
+*.mets	application/mets+xml	0	false
+*.mf4	application/MF4	0	false
+*.h5	application/mipc	0	false
+*.maei	application/mmt-aei+xml	0	false
+*.musd	application/mmt-usd+xml	0	false
+*.mods	application/mods+xml	0	false
+*.m21	application/mp21	0	false
+*.mp21	application/mp21	0	false
+*.mp4	application/mp4	0	false
+*.mpg4	application/mp4	0	false
+*.mp4	application/mpeg4-generic	0	false
+*.MPEG-4	application/mpeg4-generic	0	false
+*.content	application/mpeg4-generic	0	false
+*.but	application/mpeg4-generic	0	false
+*.mp4	application/mpeg4-iod-xmt	0	false
+*.mpg4	application/mpeg4-iod-xmt	0	false
+*.xdf	application/mrb-consumer+xml	0	false
+*.xdf	application/mrb-publish+xml	0	false
+*.mxf	application/mxf	0	false
+*.nq	application/n-quads	0	false
+*.nt	application/n-triples	0	false
+*.js	application/node	0	false
+*.cjs	application/node	0	false
+*.ORQ	application/ocsp-request	0	false
+*.ORS	application/ocsp-response	0	false
+*.xml	application/odm+xml	0	false
+*.odx	application/ODX	0	false
+*.opf	application/oebps-package+xml	0	false
+*.ogx	application/ogg	0	false
+*.oxps	application/oxps	0	false
+*.p21	application/p21	0	false
+*.stp	application/p21	0	false
+*.step	application/p21	0	false
+*.stpnc	application/p21	0	false
+*.210	application/p21	0	false
+*.ifc	application/p21	0	false
+*.stpz	application/p21+zip	0	false
+*.relo	application/p2p-overlay+xml	0	false
+*.xer	application/patch-ops-error+xml	0	false
+*.pdf	application/pdf	0	false
+*.pdx	application/PDX	0	false
+*.pem	application/pem-certificate-chain	0	false
+*.asc	application/pgp-keys	0	false
+*.asc	application/pgp-signature	0	false
+*.sig	application/pgp-signature	0	false
+*.xml	application/pidf-diff+xml	0	false
+*.p10	application/pkcs10	0	false
+*.p8	application/pkcs8	0	false
+*.p8e	application/pkcs8-encrypted	0	false
+*.p12	application/pkcs12	0	false
+*.pfx	application/pkcs12	0	false
+*.ac	application/pkix-attr-cert	0	false
+*.CER	application/pkix-cert	0	false
+*.CRL	application/pkix-crl	0	false
+*.pkipath	application/pkix-pkipath	0	false
+*.PKI	application/pkixcmp	0	false
+*.provx	application/provenance+xml	0	false
+*.3.	application/prs.alvestrand.titrax-sheet	0	false
+*.mdz	application/prs.archive-markdown-format	0	false
+*.B3K	application/prs.bwtc32key	0	false
+*.cw	application/prs.cww	0	false
+*.cww	application/prs.cww	0	false
+*.HPUB	application/prs.hpub+zip	0	false
+*.mayf	application/prs.mayfile	0	false
+*.rnd	application/prs.nprend	0	false
+*.rct	application/prs.nprend	0	false
+*.rdf-crypt	application/prs.rdf-xml-crypt	0	false
+*.sclt	application/prs.sclt	0	false
+*.vcf.bz2	application/prs.vcfbzip2	0	false
+*.vcfbzip2	application/prs.vcfbzip2	0	false
+*.xsf	application/prs.xsf+xml	0	false
+*.xml	application/prs.xsf+xml	0	false
+*.pskcxml	application/pskc+xml	0	false
+*.rdf	application/rdf+xml	0	false
+*.rapd	application/route-apd+xml	0	false
+*.sls	application/route-s-tsid+xml	0	false
+*.rusd	application/route-usd+xml	0	false
+*.ccr	application/rpki-ccr	0	false
+*.ccr.gz	application/rpki-ccr+gzip	0	false
+*.rif	application/reginfo+xml	0	false
+*.xml	application/reginfo+xml	0	false
+*.rnc	application/relax-ng-compact-syntax	0	false
+*.rld	application/resource-lists-diff+xml	0	false
+*.rl	application/resource-lists+xml	0	false
+*.xml	application/rfc+xml	0	false
+*.rfcxml	application/rfc+xml	0	false
+*.XML	application/rfc+xml	0	false
+*.None.	application/rlmi+xml	0	false
+*.rs	application/rls-services+xml	0	false
+*.sig	application/rpki-checklist	0	false
+*.gbr	application/rpki-ghostbusters	0	false
+*.mft	application/rpki-manifest	0	false
+*.roa	application/rpki-roa	0	false
+*.tak	application/rpki-signed-tal	0	false
+*.rtf	application/rtf	0	false
+*.sarif-external-properties	application/sarif-external-properties+json	0	false
+*.sarif-external-properties.json	application/sarif-external-properties+json	0	false
+*.sarif	application/sarif+json	0	false
+*.sarif.json	application/sarif+json	0	false
+*.scim	application/scim+json	0	false
+*.scm	application/scim+json	0	false
+*.receipt	application/scitt-receipt+cose	0	false
+*.scitt	application/scitt-statement+cose	0	false
+*.SCQ	application/scvp-cv-request	0	false
+*.SCS	application/scvp-cv-response	0	false
+*.SPQ	application/scvp-vp-request	0	false
+*.SPP	application/scvp-vp-response	0	false
+*.sdf.json	application/sdf+json	0	false
+*.sdp	application/sdp	0	false
+*.senml-etchc	application/senml-etch+cbor	0	false
+*.senml-etchj	application/senml-etch+json	0	false
+*.senmle	application/senml-exi	0	false
+*.senmlc	application/senml+cbor	0	false
+*.senml	application/senml+json	0	false
+*.senmlx	application/senml+xml	0	false
+*.sensmle	application/sensml-exi	0	false
+*.sensmlc	application/sensml+cbor	0	false
+*.sensml	application/sensml+json	0	false
+*.sensmlx	application/sensml+xml	0	false
+*.shf	application/shf+xml	0	false
+*.siv	application/sieve	0	false
+*.sieve	application/sieve	0	false
+*.cl	application/simple-filter+xml	0	false
+*.xml	application/simple-filter+xml	0	false
+*.h5	application/sipc	0	false
+*.smil	application/smil	0	false
+*.smi	application/smil	0	false
+*.sml	application/smil	0	false
+*.W3C	application/soap+fastinfoset	0	false
+*.SOAP	application/soap+fastinfoset	0	false
+*.message	application/soap+fastinfoset	0	false
+*.infosets	application/soap+fastinfoset	0	false
+*.serialized	application/soap+fastinfoset	0	false
+*.as	application/soap+fastinfoset	0	false
+*.fast	application/soap+fastinfoset	0	false
+*.infoset	application/soap+fastinfoset	0	false
+*.documents	application/soap+fastinfoset	0	false
+*.required	application/soap+fastinfoset	0	false
+*.expected	application/soap+fastinfoset	0	false
+*.to	application/soap+fastinfoset	0	false
+*.SOAP	application/soap+xml	0	false
+*.messages	application/soap+xml	0	false
+*.stored	application/soap+xml	0	false
+*.as	application/soap+xml	0	false
+*.files.	application/soap+xml	0	false
+*.rq	application/sparql-query	0	false
+*.spdx.json	application/spdx+json	0	false
+*.spdx3.json	application/spdx3+json	0	false
+*.srx	application/sparql-results+xml	0	false
+*.none.	application/spirits-event+xml	0	false
+*.sql	application/sql	0	false
+*.sru	application/sru+xml	0	false
+*.stix	application/stix+json	0	false
+*.cbor	application/suit-envelope+cose	0	false
+*.suit	application/suit-envelope+cose	0	false
+*.coswid	application/swid+cbor	0	false
+*.swidtag	application/swid+xml	0	false
+*.tau	application/tamp-apex-update	0	false
+*.auc	application/tamp-apex-update-confirm	0	false
+*.tcu	application/tamp-community-update	0	false
+*.cuc	application/tamp-community-update-confirm	0	false
+*.ter	application/tamp-error	0	false
+*.tsa	application/tamp-sequence-adjust	0	false
+*.sac	application/tamp-sequence-adjust-confirm	0	false
+*.tsq	application/tamp-status-query	0	false
+*.tsr	application/tamp-status-response	0	false
+*.tur	application/tamp-update	0	false
+*.tuc	application/tamp-update-confirm	0	false
+*.jsontd	application/td+json	0	false
+*.texi	application/texinfo	0	false
+*.texinfo	application/texinfo	0	false
+*.tfi	application/thraud+xml	0	false
+*.tsd	application/timestamped-data	0	false
+*.gz	application/tlsrpt+gzip	0	false
+*.json	application/tlsrpt+json	0	false
+*.jsontm	application/tm+json	0	false
+*.tm.json	application/tm+json	0	false
+*.tm.jsonld	application/tm+json	0	false
+*.toml	application/toml	0	false
+*.trig	application/trig	0	false
+*.ttml	application/ttml+xml	0	false
+*.uccs	application/uccs+cbor	0	false
+*.ujcs	application/ujcs+json	0	false
+*.gsheet	application/urc-grpsheet+xml	0	false
+*.rsheet	application/urc-ressheet+xml	0	false
+*.td	application/urc-targetdesc+xml	0	false
+*.uis	application/urc-uisocketdesc+xml	0	false
+*.vc	application/vc	0	false
+*.xml	application/vcard+xml	0	false
+*.vec	application/vec+xml	0	false
+*.vecpkg.gz	application/vec-package+gzip	0	false
+*.vecpkg.zip	application/vec-package+zip	0	false
+*.1km	application/vnd.1000minds.decision-model+xml	0	false
+*.ob	application/vnd.1ob	0	false
+*.plb	application/vnd.3gpp.pic-bw-large	0	false
+*.psb	application/vnd.3gpp.pic-bw-small	0	false
+*.pvb	application/vnd.3gpp.pic-bw-var	0	false
+*.sms	application/vnd.3gpp.sms	0	false
+*.sms	application/vnd.3gpp2.sms	0	false
+*.tcap	application/vnd.3gpp2.tcap	0	false
+*.imgcal	application/vnd.3lightssoftware.imagescal	0	false
+*.pwn	application/vnd.3M.Post-it-Notes	0	false
+*.aso	application/vnd.accpac.simply.aso	0	false
+*.imp	application/vnd.accpac.simply.imp	0	false
+*.acu	application/vnd.acucobol	0	false
+*.atc	application/vnd.acucorp	0	false
+*.acutc	application/vnd.acucorp	0	false
+*.swf	application/vnd.adobe.flash.movie	0	false
+*.fcdt	application/vnd.adobe.formscentral.fcdt	0	false
+*.fxp	application/vnd.adobe.fxp	0	false
+*.xdp	application/vnd.adobe.xdp+xml	0	false
+*.aep	application/vnd.aep+zip	0	false
+*.aethel	application/vnd.aethel.package	0	false
+*.list3820	application/vnd.afpc.modca	0	false
+*.listafp	application/vnd.afpc.modca	0	false
+*.afp	application/vnd.afpc.modca	0	false
+*.pseg3820	application/vnd.afpc.modca	0	false
+*.ovl	application/vnd.afpc.modca-overlay	0	false
+*.psg	application/vnd.afpc.modca-pagesegment	0	false
+*.age	application/vnd.age	0	false
+*.agent	application/vnd.agentmug.agent+json	0	false
+*.agent.json	application/vnd.agtp.identity+json	0	false
+*.agent.yaml	application/vnd.agtp.identity+yaml	0	false
+*.agent.yml	application/vnd.agtp.identity+yaml	0	false
+*.ahead	application/vnd.ahead.space	0	false
+*.aia	application/vnd.aia	0	false
+*.azf	application/vnd.airzip.filesecure.azf	0	false
+*.azs	application/vnd.airzip.filesecure.azs	0	false
+*.json	application/vnd.amadeus+json	0	false
+*.azw3	application/vnd.amazon.mobi8-ebook	0	false
+*.acc	application/vnd.americandynamics.acc	0	false
+*.ami	application/vnd.amiga.ami	0	false
+*.xml	application/vnd.amundsen.maze+xml	0	false
+*.ota	application/vnd.android.ota	0	false
+*.apkg	application/vnd.anki	0	false
+*.cii	application/vnd.anser-web-certificate-issue-initiation	0	false
+*.atx	application/vnd.antix.game-component	0	false
+*.arrow	application/vnd.apache.arrow.file	0	false
+*.arrows	application/vnd.apache.arrow.stream	0	false
+*.parquet	application/vnd.apache.parquet	0	false
+*.apexlang	application/vnd.apexlang	0	false
+*.apex	application/vnd.apexlang	0	false
+*.axdl	application/vnd.apexlang	0	false
+*.json	application/vnd.api+json	0	false
+*.json	application/vnd.aplextor.warrp+json	0	false
+*.json	application/vnd.apothekende.reservation+json	0	false
+*.dist	application/vnd.apple.installer+xml	0	false
+*.distz	application/vnd.apple.installer+xml	0	false
+*.pkg	application/vnd.apple.installer+xml	0	false
+*.mpkg	application/vnd.apple.installer+xml	0	false
+*.3.	application/vnd.apple.installer+xml	0	false
+*.key	application/vnd.apple.keynote	0	false
+*.m3u8	application/vnd.apple.mpegurl	0	false
+*.m3u	application/vnd.apple.mpegurl	0	false
+*.numbers	application/vnd.apple.numbers	0	false
+*.pages	application/vnd.apple.pages	0	false
+*.json	application/vnd.apple.steering-list	0	false
+*.swi	application/vnd.arastra.swi	0	false
+*.swi	application/vnd.aristanetworks.swi	0	false
+*.artisan	application/vnd.artisan+json	0	false
+*.iota	application/vnd.astraea-software.iota	0	false
+*.aep	application/vnd.audiograph	0	false
+*.aum	application/vnd.aumtrix.aum	0	false
+*.package	application/vnd.autopackage	0	false
+*.json	application/vnd.avalon+json	0	false
+*.xml	application/vnd.avistar+xml	0	false
+*.bmml	application/vnd.balsamiq.bmml+xml	0	false
+*.ac2	application/vnd.banana-accounting	0	false
+*.bmpr	application/vnd.balsamiq.bmpr	0	false
+*.json	application/vnd.bekitzur-stech+json	0	false
+*.lhzd	application/vnd.belightsoft.lhzd+zip	0	false
+*.lhzl	application/vnd.belightsoft.lhzl+zip	0	false
+*.owl	application/vnd.biopax.rdf+xml	0	false
+*.rdf	application/vnd.biopax.rdf+xml	0	false
+*.facts	application/vnd.blockfact.facts	0	false
+*.mpm	application/vnd.blueice.multipass	0	false
+*.EP	application/vnd.bluetooth.ep.oob	0	false
+*.LE	application/vnd.bluetooth.le.oob	0	false
+*.BMI	application/vnd.bmi	0	false
+*.bpf	application/vnd.bpf	0	false
+*.bpf	application/vnd.bpf3	0	false
+*.rep	application/vnd.businessobjects	0	false
+*.json	application/vnd.byu.uapi+json	0	false
+*.bz3	application/vnd.bzip3	0	false
+*.xml	application/vnd.c3voc.schedule+xml	0	false
+*.json	application/vnd.capasystems-pg+json	0	false
+*.cel	application/vnd.cel	0	false
+*.tlclient	application/vnd.cendio.thinlinc.clientconf	0	false
+*.cdxml	application/vnd.chemdraw+xml	0	false
+*.pgn	application/vnd.chess-pgn	0	false
+*.mmd	application/vnd.chipnuts.karaoke-mmd	0	false
+*.cdy	application/vnd.cinderella	0	false
+*.csl	application/vnd.citationstyles.style+xml	0	false
+*.cla	application/vnd.claymore	0	false
+*.rp9	application/vnd.cloanto.rp9	0	false
+*.c4g	application/vnd.clonk.c4group	0	false
+*.c4d	application/vnd.clonk.c4group	0	false
+*.c4f	application/vnd.clonk.c4group	0	false
+*.c4p	application/vnd.clonk.c4group	0	false
+*.c4u	application/vnd.clonk.c4group	0	false
+*.c11amc	application/vnd.cluetrust.cartomobile-config	0	false
+*.c11amz	application/vnd.cluetrust.cartomobile-config-pkg	0	false
+*.json	application/vnd.cmmf-configuration-information+json	0	false
+*.efd	application/vnd.cmmf-efd+xml	0	false
+*.json	application/vnd.cmmf-encoder-configuration+json	0	false
+*.Text	application/vnd.cncf.helm.chart.provenance.v1.prov	0	false
+*.json	application/vnd.cncf.helm.config.v1+json	0	false
+*.coffee	application/vnd.coffeescript	0	false
+*.xodt	application/vnd.collabio.xodocuments.document	0	false
+*.xott	application/vnd.collabio.xodocuments.document-template	0	false
+*.xodp	application/vnd.collabio.xodocuments.presentation	0	false
+*.xotp	application/vnd.collabio.xodocuments.presentation-template	0	false
+*.xods	application/vnd.collabio.xodocuments.spreadsheet	0	false
+*.xots	application/vnd.collabio.xodocuments.spreadsheet-template	0	false
+*.json	application/vnd.collection.doc+json	0	false
+*.json	application/vnd.collection+json	0	false
+*.json	application/vnd.collection.next+json	0	false
+*.cbr	application/vnd.comicbook-rar	0	false
+*.cbz	application/vnd.comicbook+zip	0	false
+*.ica	application/vnd.commerce-battelle	0	false
+*.icf	application/vnd.commerce-battelle	0	false
+*.icd	application/vnd.commerce-battelle	0	false
+*.icc	application/vnd.commerce-battelle	0	false
+*.ic	application/vnd.commerce-battelle	0	false
+*.-1	application/vnd.commerce-battelle	0	false
+*.9.	application/vnd.commerce-battelle	0	false
+*.csp	application/vnd.commonspace	0	false
+*.cst	application/vnd.commonspace	0	false
+*.ign	application/vnd.coreos.ignition+json	0	false
+*.ignition	application/vnd.coreos.ignition+json	0	false
+*.cmc	application/vnd.cosmocaller	0	false
+*.cdbcmsg	application/vnd.contact.cmsg	0	false
+*.clkx	application/vnd.crick.clicker	0	false
+*.clkk	application/vnd.crick.clicker.keyboard	0	false
+*.clkp	application/vnd.crick.clicker.palette	0	false
+*.clkt	application/vnd.crick.clicker.template	0	false
+*.clkw	application/vnd.crick.clicker.wordbank	0	false
+*.wbs	application/vnd.criticaltools.wbs+xml	0	false
+*.json	application/vnd.cryptii.pipe+json	0	false
+*.ssv	application/vnd.crypto-shade-file	0	false
+*.ssvc	application/vnd.crypto-shade-file	0	false
+*.c9r	application/vnd.cryptomator.encrypted	0	false
+*.c9s	application/vnd.cryptomator.encrypted	0	false
+*.cryptomator	application/vnd.cryptomator.vault	0	false
+*.pml	application/vnd.ctc-posml	0	false
+*.ppd	application/vnd.cups-ppd	0	false
+*.PPD	application/vnd.cups-ppd	0	false
+*.ppd.gz	application/vnd.cups-ppd	0	false
+*.curl	application/vnd.curl	0	false
+*.xml	application/vnd.cyan.dean.root+xml	0	false
+*.json	application/vnd.cyclonedx+json	0	false
+*.xml	application/vnd.cyclonedx+xml	0	false
+*.json	application/vnd.d3m-dataset	0	false
+*.json	application/vnd.d3m-problem	0	false
+*.dai	application/vnd.dai	0	false
+*.dart	application/vnd.dart	0	false
+*.rdz	application/vnd.data-vision.rdz	0	false
+*.dl	application/vnd.datalog	0	false
+*.json	application/vnd.datapackage+json	0	false
+*.json	application/vnd.dataresource+json	0	false
+*.dbf	application/vnd.dbf	0	false
+*.dcmp	application/vnd.dcmp+xml	0	false
+*.deb	application/vnd.debian.binary-package	0	false
+*.udeb	application/vnd.debian.binary-package	0	false
+*.uvf	application/vnd.dece.data	0	false
+*.uvvf	application/vnd.dece.data	0	false
+*.uvd	application/vnd.dece.data	0	false
+*.uvvd	application/vnd.dece.data	0	false
+*.uvt	application/vnd.dece.ttml+xml	0	false
+*.uvvt	application/vnd.dece.ttml+xml	0	false
+*.uvx	application/vnd.dece.unspecified	0	false
+*.uvvx	application/vnd.dece.unspecified	0	false
+*.uvz	application/vnd.dece.zip	0	false
+*.uvvz	application/vnd.dece.zip	0	false
+*.deck	application/vnd.deckyard.deck	0	false
+*.fe_launch	application/vnd.denovo.fcselayout-link	0	false
+*.dsm	application/vnd.desmume.movie	0	false
+*.deut	application/vnd.deut+json	0	false
+*.dgl	application/vnd.dgl	0	false
+*.dstack	application/vnd.digitalstack.document+zip	0	false
+*.dsdoc	application/vnd.digitalstack.document+zip	0	false
+*.dna	application/vnd.dna	0	false
+*.docjson	application/vnd.document+json	0	false
+*.scld	application/vnd.doremir.scorecloud-binary-document	0	false
+*.dpg	application/vnd.dpgraph	0	false
+*.mwc	application/vnd.dpgraph	0	false
+*.dpgraph	application/vnd.dpgraph	0	false
+*.drawo	application/vnd.drawoble.drawing+zip	0	false
+*.dfac	application/vnd.dreamfactory	0	false
+*.json	application/vnd.drive+json	0	false
+*.fla	application/vnd.dtg.local.flash	0	false
+*.html	application/vnd.dtg.local.html	0	false
+*.AIT	application/vnd.dvb.ait	0	false
+*.class	application/vnd.dvb.dvbj	0	false
+*.pfr	application/vnd.dvb.pfr	0	false
+*.svc	application/vnd.dvb.service	0	false
+*.dxr	application/vnd.dxr	0	false
+*.geo	application/vnd.dynageo	0	false
+*.dzr	application/vnd.dzr	0	false
+*.zip	application/vnd.easykaraoke.cdgdownload	0	false
+*.edux	application/vnd.edulith.edux+json	0	false
+*.-none-	application/vnd.ecdis-update	0	false
+*.json	application/vnd.eclipse.ditto+json	0	false
+*.mag	application/vnd.ecowin.chart	0	false
+*.img	application/vnd.efi.img	0	false
+*.iso	application/vnd.efi.iso	0	false
+*.eln	application/vnd.eln+zip	0	false
+*.nml	application/vnd.enliven	0	false
+*.xml	application/vnd.eprints.data+xml	0	false
+*.esf	application/vnd.epson.esf	0	false
+*.msf	application/vnd.epson.msf	0	false
+*.qam	application/vnd.epson.quickanime	0	false
+*.slt	application/vnd.epson.salt	0	false
+*.ssf	application/vnd.epson.ssf	0	false
+*.qcall	application/vnd.ericsson.quickcall	0	false
+*.qca	application/vnd.ericsson.quickcall	0	false
+*.erofs	application/vnd.erofs	0	false
+*.0fs	application/vnd.erofs	0	false
+*.espass	application/vnd.espass-espass+zip	0	false
+*.es3	application/vnd.eszigno3+xml	0	false
+*.et3	application/vnd.eszigno3+xml	0	false
+*.asics	application/vnd.etsi.asic-s+zip	0	false
+*.scs	application/vnd.etsi.asic-s+zip	0	false
+*.asice	application/vnd.etsi.asic-e+zip	0	false
+*.sce	application/vnd.etsi.asic-e+zip	0	false
+*.xml	application/vnd.etsi.pstn+xml	0	false
+*.tst	application/vnd.etsi.timestamp-token	0	false
+*.carjson	application/vnd.eu.kasparian.car+json	0	false
+*.ecigprofile	application/vnd.evolv.ecig.profile	0	false
+*.ecig	application/vnd.evolv.ecig.settings	0	false
+*.ecigtheme	application/vnd.evolv.ecig.theme	0	false
+*.slpc	application/vnd.excelano.slipcase+zip	0	false
+*.mpw	application/vnd.exstream-empower+zip	0	false
+*.pub	application/vnd.exstream-package	0	false
+*.pkg	application/vnd.exstream-package	0	false
+*.ez2	application/vnd.ezpix-album	0	false
+*.ez3	application/vnd.ezpix-package	0	false
+*.None.	application/vnd.f-secure.mobile	0	false
+*.fab	application/vnd.fabylon.book	0	false
+*.faf	application/vnd.faf+yaml	0	false
+*.fafa	application/vnd.fafa+yaml	0	false
+*.fafm	application/vnd.fafm+yaml	0	false
+*.dim	application/vnd.fastcopy-disk-image	0	false
+*.gdz	application/vnd.familysearch.gedcom+zip	0	false
+*.mseed	application/vnd.fdsn.mseed	0	false
+*.mseed3	application/vnd.fdsn.mseed	0	false
+*.seed	application/vnd.fdsn.seed	0	false
+*.dataless	application/vnd.fdsn.seed	0	false
+*.xml	application/vnd.fdsn.stationxml+xml	0	false
+*.fgb	application/vnd.fgb	0	false
+*.flb	application/vnd.ficlab.flb+zip	0	false
+*.fidusbook	application/vnd.fiduswriter.book+zip	0	false
+*.fidustemplate	application/vnd.fiduswriter.template+zip	0	false
+*.fidus	application/vnd.fiduswriter+zip	0	false
+*.zfc	application/vnd.filmit.zfc	0	false
+*.hbci	application/vnd.fints	0	false
+*.hbc	application/vnd.fints	0	false
+*.kom	application/vnd.fints	0	false
+*.upa	application/vnd.fints	0	false
+*.pkd	application/vnd.fints	0	false
+*.bpd	application/vnd.fints	0	false
+*.gph	application/vnd.FloGraphIt	0	false
+*.FTC	application/vnd.fluxtime.clip	0	false
+*.sfd	application/vnd.font-fontforge-sfd	0	false
+*.ftech	application/vnd.foritech.container	0	false
+*.FNC	application/vnd.frogans.fnc	0	false
+*.LTF	application/vnd.frogans.ltf	0	false
+*.fsc	application/vnd.fsc.weblaunch	0	false
+*.xdw	application/vnd.fujifilm.fb.docuworks	0	false
+*.xbd	application/vnd.fujifilm.fb.docuworks.binder	0	false
+*.xct	application/vnd.fujifilm.fb.docuworks.container	0	false
+*.xml	application/vnd.fujifilm.fb.jfi+xml	0	false
+*.oas	application/vnd.fujitsu.oasys	0	false
+*.oa2	application/vnd.fujitsu.oasys2	0	false
+*.oa3	application/vnd.fujitsu.oasys3	0	false
+*.fg5	application/vnd.fujitsu.oasysgp	0	false
+*.bh2	application/vnd.fujitsu.oasysprs	0	false
+*.ddd	application/vnd.fujixerox.ddd	0	false
+*.xdw	application/vnd.fujixerox.docuworks	0	false
+*.xbd	application/vnd.fujixerox.docuworks.binder	0	false
+*.xct	application/vnd.fujixerox.docuworks.container	0	false
+*.fzs	application/vnd.fuzzysheet	0	false
+*.g3fc	application/vnd.g3pix.g3fc	0	false
+*.g3fc	application/vnd.g3pix.g3fc	0	false
+*.txd	application/vnd.genomatix.tuxedo	0	false
+*.genozip	application/vnd.genozip	0	false
+*.grd	application/vnd.gentics.grd+json	0	false
+*.xml	application/vnd.gentoo.catmetadata+xml	0	false
+*.metadata.xml	application/vnd.gentoo.catmetadata+xml	0	false
+*.ebuild	application/vnd.gentoo.ebuild	0	false
+*.eclass	application/vnd.gentoo.eclass	0	false
+*.gpkg.tar	application/vnd.gentoo.gpkg	0	false
+*.tbz2	application/vnd.gentoo.xpak	0	false
+*.xpak	application/vnd.gentoo.xpak	0	false
+*.xml	application/vnd.gentoo.pkgmetadata+xml	0	false
+*.metadata.xml	application/vnd.gentoo.pkgmetadata+xml	0	false
+*.json	application/vnd.geo+json	0	false
+*.geojson	application/vnd.geo+json	0	false
+*.g3	application/vnd.geocube+xml	0	false
+*.ggb	application/vnd.geogebra.file	0	false
+*.ggp	application/vnd.geogebra.pinboard	0	false
+*.ggs	application/vnd.geogebra.slides	0	false
+*.ggt	application/vnd.geogebra.tool	0	false
+*.gex	application/vnd.geometry-explorer	0	false
+*.gre	application/vnd.geometry-explorer	0	false
+*.gxt	application/vnd.geonext	0	false
+*.g2w	application/vnd.geoplan	0	false
+*.g3w	application/vnd.geospace	0	false
+*.gbr	application/vnd.gerber	0	false
+*.gmx	application/vnd.gmx	0	false
+*.project.binary	application/vnd.godot.project.binary	0	false
+*.project.godot	application/vnd.godot.project.text	0	false
+*.res	application/vnd.godot.resource.binary	0	false
+*.tres	application/vnd.godot.resource.text	0	false
+*.kml	application/vnd.google-earth.kml+xml	0	false
+*.kmz	application/vnd.google-earth.kmz	0	false
+*.xml	application/vnd.gov.sk.e-form+xml	0	false
+*.zip	application/vnd.gov.sk.e-form+zip	0	false
+*.xdcf	application/vnd.gov.sk.xmldatacontainer+xml	0	false
+*.xml	application/vnd.gov.sk.xmldatacontainer+xml	0	false
+*.gp3	application/vnd.gp3	0	false
+*.xml	application/vnd.gpxsee.map+xml	0	false
+*.gqf	application/vnd.grafeq	0	false
+*.gqs	application/vnd.grafeq	0	false
+*.gac	application/vnd.groove-account	0	false
+*.ghf	application/vnd.groove-help	0	false
+*.gim	application/vnd.groove-identity-message	0	false
+*.grv	application/vnd.groove-injector	0	false
+*.gtm	application/vnd.groove-tool-message	0	false
+*.tpl	application/vnd.groove-tool-template	0	false
+*.vcg	application/vnd.groove-vcard	0	false
+*.json	application/vnd.hal+json	0	false
+*.hal	application/vnd.hal+xml	0	false
+*.ZMM	application/vnd.HandHeld-Entertainment+xml	0	false
+*.hbci	application/vnd.hbci	0	false
+*.hbc	application/vnd.hbci	0	false
+*.kom	application/vnd.hbci	0	false
+*.upa	application/vnd.hbci	0	false
+*.pkd	application/vnd.hbci	0	false
+*.bpd	application/vnd.hbci	0	false
+*.json	application/vnd.hc+json	0	false
+*.rep	application/vnd.hcl-bireports	0	false
+*.hdf	application/vnd.hdfgroup.hdf4	0	false
+*.h4	application/vnd.hdfgroup.hdf4	0	false
+*.hdf4	application/vnd.hdfgroup.hdf4	0	false
+*.h5	application/vnd.hdfgroup.hdf5	0	false
+*.hdf5	application/vnd.hdfgroup.hdf5	0	false
+*.hdt	application/vnd.hdt	0	false
+*.json	application/vnd.heroku+json	0	false
+*.les	application/vnd.hhe.lesson-player	0	false
+*.hpi	application/vnd.hp-hpid	0	false
+*.hpid	application/vnd.hp-hpid	0	false
+*.hps	application/vnd.hp-hps	0	false
+*.jlt	application/vnd.hp-jlyt	0	false
+*.hsl	application/vnd.hsl	0	false
+*.sfd-hdstx	application/vnd.hydrostatix.sof-data	0	false
+*.json	application/vnd.hyper-item+json	0	false
+*.json	application/vnd.hyper+json	0	false
+*.json	application/vnd.hyperdrive+json	0	false
+*.x3d	application/vnd.hzn-3d-crossword	0	false
+*.emm	application/vnd.ibm.electronic-media	0	false
+*.mpy	application/vnd.ibm.MiniPay	0	false
+*.list3820	application/vnd.ibm.modcap	0	false
+*.listafp	application/vnd.ibm.modcap	0	false
+*.afp	application/vnd.ibm.modcap	0	false
+*.pseg3820	application/vnd.ibm.modcap	0	false
+*.irm	application/vnd.ibm.rights-management	0	false
+*.sc	application/vnd.ibm.secure-container	0	false
+*.icc	application/vnd.iccprofile	0	false
+*.icm	application/vnd.iccprofile	0	false
+*.1905.1	application/vnd.ieee.1905	0	false
+*.igl	application/vnd.igloader	0	false
+*.imf	application/vnd.imagemeter.folder+zip	0	false
+*.imi	application/vnd.imagemeter.image+zip	0	false
+*.ivp	application/vnd.immervision-ivp	0	false
+*.ivu	application/vnd.immervision-ivu	0	false
+*.imscc	application/vnd.ims.imsccv1p1	0	false
+*.imscc	application/vnd.ims.imsccv1p2	0	false
+*.imscc	application/vnd.ims.imsccv1p3	0	false
+*.jsonld	application/vnd.ims.lis.v2.result+json	0	false
+*.json	application/vnd.ims.lis.v2.result+json	0	false
+*.jsonld	application/vnd.ims.lti.v2.toolconsumerprofile+json	0	false
+*.json	application/vnd.ims.lti.v2.toolconsumerprofile+json	0	false
+*.jsonld	application/vnd.ims.lti.v2.toolproxy.id+json	0	false
+*.json	application/vnd.ims.lti.v2.toolproxy.id+json	0	false
+*.jsonld	application/vnd.ims.lti.v2.toolproxy+json	0	false
+*.json	application/vnd.ims.lti.v2.toolproxy+json	0	false
+*.jsonld	application/vnd.ims.lti.v2.toolsettings+json	0	false
+*.json	application/vnd.ims.lti.v2.toolsettings+json	0	false
+*.jsonld	application/vnd.ims.lti.v2.toolsettings.simple+json	0	false
+*.json	application/vnd.ims.lti.v2.toolsettings.simple+json	0	false
+*.xml	application/vnd.informedcontrol.rms+xml	0	false
+*.json	application/vnd.infotech.project	0	false
+*.XML	application/vnd.infotech.project+xml	0	false
+*.vis	application/vnd.informix-visionary	0	false
+*.igm	application/vnd.insors.igm	0	false
+*.XPW	application/vnd.intercon.formnet	0	false
+*.XPX	application/vnd.intercon.formnet	0	false
+*.i2g	application/vnd.intergeo	0	false
+*.QBO	application/vnd.intu.qbo	0	false
+*.QFX	application/vnd.intu.qfx	0	false
+*.ipns-record	application/vnd.ipfs.ipns-record	0	false
+*.car	application/vnd.ipld.car	0	false
+*.cbor	application/vnd.ipld.dag-cbor	0	false
+*.json	application/vnd.ipld.dag-json	0	false
+*.xml	application/vnd.iptc.g2.catalogitem+xml	0	false
+*.xml	application/vnd.iptc.g2.conceptitem+xml	0	false
+*.xml	application/vnd.iptc.g2.knowledgeitem+xml	0	false
+*.xml	application/vnd.iptc.g2.newsitem+xml	0	false
+*.xml	application/vnd.iptc.g2.newsmessage+xml	0	false
+*.xml	application/vnd.iptc.g2.packageitem+xml	0	false
+*.xml	application/vnd.iptc.g2.planningitem+xml	0	false
+*.rcprofile	application/vnd.ipunplugged.rcprofile	0	false
+*.irp	application/vnd.irepository.package+xml	0	false
+*.XPR	application/vnd.is-xpr	0	false
+*.fcs	application/vnd.isac.fcs	0	false
+*.jam	application/vnd.jam	0	false
+*.zip	application/vnd.iso11783-10+zip	0	false
+*.rms	application/vnd.jcp.javame.midlet-rms	0	false
+*.jisp	application/vnd.jisp	0	false
+*.joda	application/vnd.joost.joda-archive	0	false
+*.ipynb	application/vnd.jupyter	0	false
+*.ktz	application/vnd.kahootz	0	false
+*.ktr	application/vnd.kahootz	0	false
+*.KARBON	application/vnd.kde.karbon	0	false
+*.CHRT	application/vnd.kde.kchart	0	false
+*.KFO	application/vnd.kde.kformula	0	false
+*.FLW	application/vnd.kde.kivio	0	false
+*.KON	application/vnd.kde.kontour	0	false
+*.KPR	application/vnd.kde.kpresenter	0	false
+*.KPT	application/vnd.kde.kpresenter	0	false
+*.KSP	application/vnd.kde.kspread	0	false
+*.KWT	application/vnd.kde.kword	0	false
+*.KWD	application/vnd.kde.kword	0	false
+*.kdl	application/vnd.kdl	0	false
+*.htke	application/vnd.kenameaapp	0	false
+*.kmp	application/vnd.keyman.kmp+zip	0	false
+*.kmx	application/vnd.keyman.kmx	0	false
+*.kia	application/vnd.kidspiration	0	false
+*.kne	application/vnd.Kinar	0	false
+*.knp	application/vnd.Kinar	0	false
+*.sdf	application/vnd.Kinar	0	false
+*.klypix	application/vnd.klypix+zip	0	false
+*.skd	application/vnd.koan	0	false
+*.skp	application/vnd.koan	0	false
+*.skd	application/vnd.koan	0	false
+*.SSE	application/vnd.kodak-descriptor	0	false
+*.las	application/vnd.las	0	false
+*.lasjson	application/vnd.las.las+json	0	false
+*.lasxml	application/vnd.las.las+xml	0	false
+*.laz	application/vnd.laszip	0	false
+*.json	application/vnd.leap+json	0	false
+*.lbd	application/vnd.llamagraphics.life-balance.desktop	0	false
+*.lbe	application/vnd.llamagraphics.life-balance.exchange+xml	0	false
+*.lcs	application/vnd.logipipe.circuit+zip	0	false
+*.lca	application/vnd.logipipe.circuit+zip	0	false
+*.loom	application/vnd.loom	0	false
+*.123	application/vnd.lotus-1-2-3	0	false
+*.wk4	application/vnd.lotus-1-2-3	0	false
+*.wk3	application/vnd.lotus-1-2-3	0	false
+*.wk1	application/vnd.lotus-1-2-3	0	false
+*.apr	application/vnd.lotus-approach	0	false
+*.vew	application/vnd.lotus-approach	0	false
+*.prz	application/vnd.lotus-freelance	0	false
+*.pre	application/vnd.lotus-freelance	0	false
+*.nsf	application/vnd.lotus-notes	0	false
+*.ntf	application/vnd.lotus-notes	0	false
+*.ndl	application/vnd.lotus-notes	0	false
+*.ns4	application/vnd.lotus-notes	0	false
+*.ns3	application/vnd.lotus-notes	0	false
+*.ns2	application/vnd.lotus-notes	0	false
+*.nsh	application/vnd.lotus-notes	0	false
+*.nsg	application/vnd.lotus-notes	0	false
+*.or3	application/vnd.lotus-organizer	0	false
+*.or2	application/vnd.lotus-organizer	0	false
+*.org	application/vnd.lotus-organizer	0	false
+*.scm	application/vnd.lotus-screencam	0	false
+*.lwp	application/vnd.lotus-wordpro	0	false
+*.sam	application/vnd.lotus-wordpro	0	false
+*.luku	application/vnd.lukuid.package+zip	0	false
+*.portpkg	application/vnd.macports.portpkg	0	false
+*.mjkb	application/vnd.majikah.bundle	0	false
+*.mjksig	application/vnd.majikah.mjksig	0	false
+*.MJKSMAP	application/vnd.majikah.mjksmap	0	false
+*.maml	application/vnd.maml	0	false
+*.mvt	application/vnd.mapbox-vector-tile	0	false
+*.None.	application/vnd.marlin.drm.actiontoken+xml	0	false
+*.None.	application/vnd.marlin.drm.conftoken+xml	0	false
+*.mdc	application/vnd.marlin.drm.mdcf	0	false
+*.json	application/vnd.mason+json	0	false
+*.3tz	application/vnd.maxar.archive.3tz+zip	0	false
+*.3dtiles.zip	application/vnd.maxar.archive.3tz+zip	0	false
+*.mmdb	application/vnd.maxmind.maxmind-db	0	false
+*.MCD	application/vnd.mcd	0	false
+*.mdl	application/vnd.mdl	0	false
+*.mbsdf	application/vnd.mdl-mbsdf	0	false
+*.MC1	application/vnd.medcalcdata	0	false
+*.cdkey	application/vnd.mediastation.cdkey	0	false
+*.rxr	application/vnd.medicalholodeck.recordxr	0	false
+*.mmd	application/vnd.mermaid	0	false
+*.mermaid	application/vnd.mermaid	0	false
+*.mwf	application/vnd.MFER	0	false
+*.mfm	application/vnd.mfmp	0	false
+*.json	application/vnd.micro+json	0	false
+*.flo	application/vnd.micrografx.flo	0	false
+*.igx	application/vnd.micrografx.igx	0	false
+*.exe	application/vnd.microsoft.portable-executable	0	false
+*.dll	application/vnd.microsoft.portable-executable	0	false
+*.json	application/vnd.miele+json	0	false
+*.any	application/vnd.mitsubishi.misty-guard.trustweb	0	false
+*.DAF	application/vnd.Mobius.DAF	0	false
+*.DIS	application/vnd.Mobius.DIS	0	false
+*.MBK	application/vnd.Mobius.MBK	0	false
+*.MQY	application/vnd.Mobius.MQY	0	false
+*.MSL	application/vnd.Mobius.MSL	0	false
+*.PLC	application/vnd.Mobius.PLC	0	false
+*.TXF	application/vnd.Mobius.TXF	0	false
+*.modl	application/vnd.modl	0	false
+*.mohnetic	application/vnd.mohnetic	0	false
+*.mpn	application/vnd.mophun.application	0	false
+*.mpc	application/vnd.mophun.certificate	0	false
+*.xul	application/vnd.mozilla.xul+xml	0	false
+*.asf	application/vnd.ms-asf	0	false
+*.cab	application/vnd.ms-cab-compressed	0	false
+*.3MF	application/vnd.ms-3mfdocument	0	false
+*.xlam	application/vnd.ms-excel.addin.macroEnabled.12	0	false
+*.xlsb	application/vnd.ms-excel.sheet.binary.macroEnabled.12	0	false
+*.xlsm	application/vnd.ms-excel.sheet.macroEnabled.12	0	false
+*.xltm	application/vnd.ms-excel.template.macroEnabled.12	0	false
+*.eot	application/vnd.ms-fontobject	0	false
+*.chm	application/vnd.ms-htmlhelp	0	false
+*.ims	application/vnd.ms-ims	0	false
+*.thmx	application/vnd.ms-officetheme	0	false
+*.ppam	application/vnd.ms-powerpoint.addin.macroEnabled.12	0	false
+*.pptm	application/vnd.ms-powerpoint.presentation.macroEnabled.12	0	false
+*.sldm	application/vnd.ms-powerpoint.slide.macroEnabled.12	0	false
+*.ppsm	application/vnd.ms-powerpoint.slideshow.macroEnabled.12	0	false
+*.potm	application/vnd.ms-powerpoint.template.macroEnabled.12	0	false
+*.docm	application/vnd.ms-word.document.macroEnabled.12	0	false
+*.dotm	application/vnd.ms-word.template.macroEnabled.12	0	false
+*.wpl	application/vnd.ms-wpl	0	false
+*.xps	application/vnd.ms-xpsdocument	0	false
+*.msa	application/vnd.msa-disk-image	0	false
+*.mseq	application/vnd.mseq	0	false
+*.crtr	application/vnd.multiad.creator	0	false
+*.cif	application/vnd.multiad.creator.cif	0	false
+*.msty	application/vnd.muvee.style	0	false
+*.taglet	application/vnd.mynfc	0	false
+*.json	application/vnd.nacamar.ybrid+json	0	false
+*.json	application/vnd.nanorix.auditproof+json	0	false
+*.bdob	application/vnd.nato.bindingdataobject+cbor	0	false
+*.bdoj	application/vnd.nato.bindingdataobject+json	0	false
+*.bdo	application/vnd.nato.bindingdataobject+xml	0	false
+*.iepd	application/vnd.nato.openxmlformats-package.iepd+zip	0	false
+*.None.	application/vnd.ncd.control	0	false
+*.PDUs	application/vnd.ncd.control	0	false
+*.that	application/vnd.ncd.control	0	false
+*.None.	application/vnd.ncd.reference	0	false
+*.json	application/vnd.nearst.inv+json	0	false
+*.nebul	application/vnd.nebumind.line	0	false
+*.line	application/vnd.nebumind.line	0	false
+*.ent	application/vnd.nervana	0	false
+*.entity	application/vnd.nervana	0	false
+*.req	application/vnd.nervana	0	false
+*.request	application/vnd.nervana	0	false
+*.bkm	application/vnd.nervana	0	false
+*.kcm	application/vnd.nervana	0	false
+*.fpx	application/vnd.netfpx	0	false
+*.nlu	application/vnd.neurolanguage.nlu	0	false
+*.nila	application/vnd.nila.protobuf-bundle+zip	0	false
+*.nimn	application/vnd.nimn	0	false
+*.sfc	application/vnd.nintendo.snes.rom	0	false
+*.smc	application/vnd.nintendo.snes.rom	0	false
+*.nds	application/vnd.nintendo.nitro.rom	0	false
+*.ntf	application/vnd.nitf	0	false
+*.nitf	application/vnd.nitf	0	false
+*.NND	application/vnd.noblenet-directory	0	false
+*.NNS	application/vnd.noblenet-sealer	0	false
+*.NNW	application/vnd.noblenet-web	0	false
+*.ac	application/vnd.nokia.n-gage.ac+xml	0	false
+*.ngdat	application/vnd.nokia.n-gage.data	0	false
+*.n-gage	application/vnd.nokia.n-gage.symbian.install	0	false
+*.rpst	application/vnd.nokia.radio-preset	0	false
+*.rpss	application/vnd.nokia.radio-presets	0	false
+*.EDM	application/vnd.novadigm.EDM	0	false
+*.EDX	application/vnd.novadigm.EDX	0	false
+*.EXT	application/vnd.novadigm.EXT	0	false
+*.ndkg	application/vnd.nubaltec.nudoku-game	0	false
+*.json	application/vnd.oai.workflows	0	false
+*.yaml	application/vnd.oai.workflows	0	false
+*.json	application/vnd.oai.workflows+json	0	false
+*.yaml	application/vnd.oai.workflows+yaml	0	false
+*.yml	application/vnd.oai.workflows+yaml	0	false
+*.odb	application/vnd.oasis.opendocument.base	0	false
+*.odc	application/vnd.oasis.opendocument.chart	0	false
+*.otc	application/vnd.oasis.opendocument.chart-template	0	false
+*.odb	application/vnd.oasis.opendocument.database	0	false
+*.odf	application/vnd.oasis.opendocument.formula	0	false
+*.otf	application/vnd.oasis.opendocument.formula-template	0	false
+*.odg	application/vnd.oasis.opendocument.graphics	0	false
+*.otg	application/vnd.oasis.opendocument.graphics-template	0	false
+*.odi	application/vnd.oasis.opendocument.image	0	false
+*.oti	application/vnd.oasis.opendocument.image-template	0	false
+*.odp	application/vnd.oasis.opendocument.presentation	0	false
+*.otp	application/vnd.oasis.opendocument.presentation-template	0	false
+*.ods	application/vnd.oasis.opendocument.spreadsheet	0	false
+*.ots	application/vnd.oasis.opendocument.spreadsheet-template	0	false
+*.odt	application/vnd.oasis.opendocument.text	0	false
+*.odm	application/vnd.oasis.opendocument.text-master	0	false
+*.otm	application/vnd.oasis.opendocument.text-master-template	0	false
+*.ott	application/vnd.oasis.opendocument.text-template	0	false
+*.oth	application/vnd.oasis.opendocument.text-web	0	false
+*.json	application/vnd.oftn.l10n+json	0	false
+*.xo	application/vnd.olpc-sugar	0	false
+*.xml	application/vnd.oma.dd2+xml	0	false
+*.dd2	application/vnd.oma.dd2+xml	0	false
+*.tam	application/vnd.onepager	0	false
+*.tamp	application/vnd.onepagertamp	0	false
+*.tamx	application/vnd.onepagertamx	0	false
+*.tat	application/vnd.onepagertat	0	false
+*.tatp	application/vnd.onepagertatp	0	false
+*.tatx	application/vnd.onepagertatx	0	false
+*.ootmm	application/vnd.ootmm.patch+zip	0	false
+*.obg	application/vnd.openblox.game-binary	0	false
+*.obgx	application/vnd.openblox.game+xml	0	false
+*.oeb	application/vnd.openeye.oeb	0	false
+*.osm	application/vnd.openstreetmap.data+xml	0	false
+*.ots	application/vnd.opentimestamps.ots	0	false
+*.dspx	application/vnd.openvpi.dspx+json	0	false
+*.xml	application/vnd.openxmlformats-officedocument.custom-properties+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.customXmlProperties+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.drawing+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.drawingml.chart+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.drawingml.chartshapes+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.drawingml.diagramColors+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.drawingml.diagramData+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.drawingml.diagramLayout+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.drawingml.diagramStyle+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.extended-properties+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.commentAuthors+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.comments+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.handoutMaster+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml	0	false
+*.pptx	application/vnd.openxmlformats-officedocument.presentationml.presentation	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.presProps+xml	0	false
+*.sldx	application/vnd.openxmlformats-officedocument.presentationml.slide	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.slide+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml	0	false
+*.ppsx	application/vnd.openxmlformats-officedocument.presentationml.slideshow	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.slideshow.main+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.slideUpdateInfo+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.tags+xml	0	false
+*.potx	application/vnd.openxmlformats-officedocument.presentationml.template	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.template.main+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.calcChain+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.chartsheet+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.comments+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.connections+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.dialogsheet+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.externalLink+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheDefinition+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.pivotCacheRecords+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.pivotTable+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.queryTable+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.revisionHeaders+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.revisionLog+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml	0	false
+*.xlsx	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.sheetMetadata+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.tableSingleCells+xml	0	false
+*.xltx	application/vnd.openxmlformats-officedocument.spreadsheetml.template	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.template.main+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.userNames+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.volatileDependencies+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.theme+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.themeOverride+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.comments+xml	0	false
+*.docx	application/vnd.openxmlformats-officedocument.wordprocessingml.document	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.document.glossary+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.endnotes+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.fontTable+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.footnotes+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml	0	false
+*.dotx	application/vnd.openxmlformats-officedocument.wordprocessingml.template	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.template.main+xml	0	false
+*.xml	application/vnd.openxmlformats-officedocument.wordprocessingml.webSettings+xml	0	false
+*.xml	application/vnd.openxmlformats-package.core-properties+xml	0	false
+*.xml	application/vnd.openxmlformats-package.digital-signature-xmlsignature+xml	0	false
+*.xml	application/vnd.openxmlformats-package.relationships+xml	0	false
+*.json	application/vnd.oracle.resource+json	0	false
+*.mgp	application/vnd.osgeo.mapguide.package	0	false
+*.jar	application/vnd.osgi.bundle	0	false
+*.dp	application/vnd.osgi.dp	0	false
+*.esa	application/vnd.osgi.subsystem	0	false
+*.oxlicg	application/vnd.oxli.countgraph	0	false
+*.prc	application/vnd.palm	0	false
+*.pdb	application/vnd.palm	0	false
+*.pqa	application/vnd.palm	0	false
+*.oprc	application/vnd.palm	0	false
+*.plp	application/vnd.panoply	0	false
+*.stx	application/vnd.pasti-stx-disk-image	0	false
+*.dive	application/vnd.patentdive	0	false
+*.paw	application/vnd.pawaafile	0	false
+*.-	application/vnd.pcos	0	false
+*.str	application/vnd.pg.format	0	false
+*.ei6	application/vnd.pg.osasli	0	false
+*.phbk	application/vnd.phbk+xml	0	false
+*.pil	application/vnd.piaccess.application-licence	0	false
+*.eFIF	application/vnd.picsel	0	false
+*.wg	application/vnd.pmi.widget	0	false
+*.pmtiles	application/vnd.pmtiles	0	false
+*.plf	application/vnd.pocketlearn	0	false
+*.pweb	application/vnd.portableweb+zip	0	false
+*.pbd	application/vnd.powerbuilder6	0	false
+*.pbd	application/vnd.powerbuilder6-s	0	false
+*.pbd	application/vnd.powerbuilder7	0	false
+*.pbd	application/vnd.powerbuilder75	0	false
+*.pbd	application/vnd.powerbuilder75-s	0	false
+*.pbd	application/vnd.powerbuilder7-s	0	false
+*.systemverify	application/vnd.pp.systemverify+xml	0	false
+*.preminet	application/vnd.preminet	0	false
+*.BOX	application/vnd.previewsystems.box	0	false
+*.VBOX	application/vnd.previewsystems.box	0	false
+*.prsm	application/vnd.prismatic	0	false
+*.prml	application/vnd.prml+yaml	0	false
+*.prml.yaml	application/vnd.prml+yaml	0	false
+*.prg	application/vnd.project-graph	0	false
+*.mgz	application/vnd.proteus.magazine	0	false
+*.psfs	application/vnd.psfs	0	false
+*.qps	application/vnd.publishare-delta-tree	0	false
+*.pti	application/vnd.pvi.ptid1	0	false
+*.ptid	application/vnd.pvi.ptid1	0	false
+*.xhtml	application/vnd.pwg-xhtml-print+xml	0	false
+*.xhtm	application/vnd.pwg-xhtml-print+xml	0	false
+*.pyon	application/vnd.pyon+json	0	false
+*.bar	application/vnd.qualcomm.brew-app-res	0	false
+*.qxd	application/vnd.Quark.QuarkXPress	0	false
+*.qxt	application/vnd.Quark.QuarkXPress	0	false
+*.qwd	application/vnd.Quark.QuarkXPress	0	false
+*.qwt	application/vnd.Quark.QuarkXPress	0	false
+*.qxl	application/vnd.Quark.QuarkXPress	0	false
+*.qxb	application/vnd.Quark.QuarkXPress	0	false
+*.quox	application/vnd.quobject-quoxdocument	0	false
+*.quiz	application/vnd.quobject-quoxdocument	0	false
+*.quox	application/vnd.quobject-quoxdocument	0	false
+*.should	application/vnd.quobject-quoxdocument	0	false
+*.sbxls	application/vnd.R74n.sandboxels+json	0	false
+*.tree	application/vnd.rainstor.data	0	false
+*.rar	application/vnd.rar	0	false
+*.BED	application/vnd.realvnc.bed	0	false
+*.mxl	application/vnd.recordare.musicxml	0	false
+*.xml	application/vnd.recordare.musicxml+xml	0	false
+*.rego	application/vnd.rego	0	false
+*.rp	application/vnd.relpipe	0	false
+*.rlm	application/vnd.resilient.logic	0	false
+*.reload	application/vnd.resilient.logic	0	false
+*.json	application/vnd.restful+json	0	false
+*.cryptonote	application/vnd.rig.cryptonote	0	false
+*.link66	application/vnd.route66.link66+xml	0	false
+*.gbr	application/vnd.rs-274x	0	false
+*.st	application/vnd.sailingtracker.track	0	false
+*.sal	application/vnd.salvanote.sal	0	false
+*.SAR	application/vnd.sar	0	false
+*.scd	application/vnd.scribus	0	false
+*.scd.gz	application/vnd.scribus	0	false
+*.sla	application/vnd.scribus	0	false
+*.sla.gz	application/vnd.scribus	0	false
+*.slaz	application/vnd.scribus	0	false
+*.s3df	application/vnd.sealed.3df	0	false
+*.scsf	application/vnd.sealed.csf	0	false
+*.sdoc	application/vnd.sealed.doc	0	false
+*.sdo	application/vnd.sealed.doc	0	false
+*.s1w	application/vnd.sealed.doc	0	false
+*.seml	application/vnd.sealed.eml	0	false
+*.sem	application/vnd.sealed.eml	0	false
+*.smht	application/vnd.sealed.mht	0	false
+*.smh	application/vnd.sealed.mht	0	false
+*.sppt	application/vnd.sealed.ppt	0	false
+*.spp	application/vnd.sealed.ppt	0	false
+*.s1p	application/vnd.sealed.ppt	0	false
+*.stif	application/vnd.sealed.tiff	0	false
+*.sxls	application/vnd.sealed.xls	0	false
+*.sxl	application/vnd.sealed.xls	0	false
+*.s1e	application/vnd.sealed.xls	0	false
+*.stml	application/vnd.sealedmedia.softseal.html	0	false
+*.stm	application/vnd.sealedmedia.softseal.html	0	false
+*.s1h	application/vnd.sealedmedia.softseal.html	0	false
+*.spdf	application/vnd.sealedmedia.softseal.pdf	0	false
+*.spd	application/vnd.sealedmedia.softseal.pdf	0	false
+*.s1a	application/vnd.sealedmedia.softseal.pdf	0	false
+*.json	application/vnd.seis+json	0	false
+*.semd	application/vnd.semd	0	false
+*.semf	application/vnd.semf	0	false
+*.ssv	application/vnd.shade-save-file	0	false
+*.IFM	application/vnd.shana.informed.formdata	0	false
+*.ITP	application/vnd.shana.informed.formtemplate	0	false
+*.IIF	application/vnd.shana.informed.interchange	0	false
+*.IPK	application/vnd.shana.informed.package	0	false
+*.json	application/vnd.shootproof+json	0	false
+*.shp	application/vnd.shp	0	false
+*.shx	application/vnd.shx	0	false
+*.sr	application/vnd.sigrok.session	0	false
+*.twd	application/vnd.SimTech-MindMapper	0	false
+*.twds	application/vnd.SimTech-MindMapper	0	false
+*.json	application/vnd.siren+json	0	false
+*.vmv0	application/vnd.sirtx.vmv0	0	false
+*.sketcho	application/vnd.sketchometry	0	false
+*.sketch	application/vnd.sketchometry	0	false
+*.mmf	application/vnd.smaf	0	false
+*.notebook	application/vnd.smart.notebook	0	false
+*.teacher	application/vnd.smart.teacher	0	false
+*.sipa	application/vnd.smintio.portals.archive	0	false
+*.ptrom	application/vnd.snesdev-page-table	0	false
+*.pt	application/vnd.snesdev-page-table	0	false
+*.ipf	application/vnd.softpres-ipf-disk-image	0	false
+*.FO	application/vnd.software602.filler.form+xml	0	false
+*.ZFO	application/vnd.software602.filler.form-xml-zip	0	false
+*.sdkm	application/vnd.solent.sdkm+xml	0	false
+*.sdkd	application/vnd.solent.sdkm+xml	0	false
+*.dxp	application/vnd.spotfire.dxp	0	false
+*.sfs	application/vnd.spotfire.sfs	0	false
+*.vire	application/vnd.sri	0	false
+*.sri	application/vnd.sri	0	false
+*.virx	application/vnd.sri	0	false
+*.virc	application/vnd.sri	0	false
+*.viax	application/vnd.sri	0	false
+*.viax	application/vnd.sri	0	false
+*.viu3	application/vnd.sri	0	false
+*.vio	application/vnd.sri	0	false
+*.viup	application/vnd.sri	0	false
+*.smzip	application/vnd.stepmania.package	0	false
+*.sm	application/vnd.stepmania.stepchart	0	false
+*.wadl	application/vnd.sun.wadl+xml	0	false
+*.scp	application/vnd.supercard-pro-disk-image	0	false
+*.super	application/vnd.superfile.super	0	false
+*.sus	application/vnd.sus-calendar	0	false
+*.susp	application/vnd.sus-calendar	0	false
+*.svr.json	application/vnd.svr.receipt+json	0	false
+*.ml2	application/vnd.sybyl.mol2	0	false
+*.mol2	application/vnd.sybyl.mol2	0	false
+*.sy2	application/vnd.sybyl.mol2	0	false
+*.scl	application/vnd.sycle+xml	0	false
+*.syft.json	application/vnd.syft+json	0	false
+*.ddf	application/vnd.syncml.dmddf+xml	0	false
+*.ddf	application/vnd.syncml.dmddf+wbxml	0	false
+*.BDM	application/vnd.syncml.dm+wbxml	0	false
+*.XDM	application/vnd.syncml.dm+xml	0	false
+*.XSM	application/vnd.syncml+xml	0	false
+*.tabla	application/vnd.tablafocus.notation	0	false
+*.json	application/vnd.tableschema+json	0	false
+*.tao	application/vnd.tao.intent-module-archive	0	false
+*.pcap	application/vnd.tcpdump.pcap	0	false
+*.cap	application/vnd.tcpdump.pcap	0	false
+*.dmp	application/vnd.tcpdump.pcap	0	false
+*.ppttc	application/vnd.think-cell.ppttc+json	0	false
+*.vfr	application/vnd.tml	0	false
+*.viaframe	application/vnd.tml	0	false
+*.xml	application/vnd.tmd.mediaflex.api+xml	0	false
+*.tmo	application/vnd.tmobile-livetv	0	false
+*.tpt	application/vnd.trid.tpt	0	false
+*.mxs	application/vnd.triscape.mxs	0	false
+*.tra	application/vnd.trueapp	0	false
+*.CAB	application/vnd.ubisoft.webplayer	0	false
+*.ufdl	application/vnd.ufdl	0	false
+*.ufd	application/vnd.ufdl	0	false
+*.frm	application/vnd.ufdl	0	false
+*.UTZ	application/vnd.uiq.theme	0	false
+*.umj	application/vnd.umajin	0	false
+*.unityweb	application/vnd.unity	0	false
+*.uoml	application/vnd.uoml+xml	0	false
+*.uo	application/vnd.uoml+xml	0	false
+*.urim	application/vnd.uri-map	0	false
+*.urimap	application/vnd.uri-map	0	false
+*.vmt	application/vnd.valve.source.material	0	false
+*.vcx	application/vnd.vcx	0	false
+*.sxi	application/vnd.vd-study	0	false
+*.mxi	application/vnd.vd-study	0	false
+*.study-inter	application/vnd.vd-study	0	false
+*.model-inter	application/vnd.vd-study	0	false
+*.MCD	application/vnd.vectorworks	0	false
+*.VWX	application/vnd.vectorworks	0	false
+*.json	application/vnd.vel+json	0	false
+*.json	application/vnd.veritone.aion+json	0	false
+*.aion	application/vnd.veritone.aion+json	0	false
+*.vtnstd	application/vnd.veritone.aion+json	0	false
+*.istc	application/vnd.veryant.thin	0	false
+*.isws	application/vnd.veryant.thin	0	false
+*.VES	application/vnd.ves.encrypted	0	false
+*.vsc	application/vnd.vidsoft.vidconference	0	false
+*.vma	application/vnd.vimina.vma	0	false
+*.vsd	application/vnd.visio	0	false
+*.vst	application/vnd.visio	0	false
+*.vsw	application/vnd.visio	0	false
+*.vss	application/vnd.visio	0	false
+*.vis	application/vnd.visionary	0	false
+*.vsc	application/vnd.vividence.scriptfile	0	false
+*.vsp4	application/vnd.vocalshaper.vsp4	0	false
+*.vsf	application/vnd.vsf	0	false
+*.vuq	application/vnd.vuq	0	false
+*.wv	application/vnd.wantverse	0	false
+*.sic	application/vnd.wap.sic	0	false
+*.wbxml	application/vnd.wap.sic	0	false
+*.slc	application/vnd.wap.slc	0	false
+*.wbxml	application/vnd.wap.slc	0	false
+*.wbxml	application/vnd.wap.wbxml	0	false
+*.wmlc	application/vnd.wap.wmlc	0	false
+*.wbxml	application/vnd.wap.wmlc	0	false
+*.wmlsc	application/vnd.wap.wmlscriptc	0	false
+*.wafl	application/vnd.wasmflow.wafl	0	false
+*.NA	application/vnd.wfa.dpp	0	false
+*.P2P	application/vnd.wfa.p2p	0	false
+*.WSC	application/vnd.wfa.wsc	0	false
+*.None.	application/vnd.windows.devicepairing	0	false
+*.wmap	application/vnd.wmap	0	false
+*.wmc	application/vnd.wmc	0	false
+*.nb	application/vnd.wolfram.mathematica	0	false
+*.m	application/vnd.wolfram.mathematica.package	0	false
+*.nbp	application/vnd.wolfram.player	0	false
+*.wpd	application/vnd.wordperfect	0	false
+*.wqd	application/vnd.wqd	0	false
+*.stf	application/vnd.wt.stf	0	false
+*.wv	application/vnd.wv.csp+wbxml	0	false
+*.json	application/vnd.xacml+json	0	false
+*.XAR	application/vnd.xara	0	false
+*.cpj	application/vnd.xarin.cpj	0	false
+*.xcdn	application/vnd.xcdn	0	false
+*.axx	application/vnd.xecrets-encrypted	0	false
+*.xfdl	application/vnd.xfdl	0	false
+*.xfd	application/vnd.xfdl	0	false
+*.frm	application/vnd.xfdl	0	false
+*.XMI	application/vnd.xmi+xml	0	false
+*.documents	application/vnd.xmi+xml	0	false
+*.cpkg	application/vnd.xmpie.cpkg	0	false
+*.dpkg	application/vnd.xmpie.dpkg	0	false
+*.dpkg	application/vnd.xmpie.plan	0	false
+*.ppkg	application/vnd.xmpie.ppkg	0	false
+*.xlim	application/vnd.xmpie.xlim	0	false
+*.hvd	application/vnd.yamaha.hv-dic	0	false
+*.hvs	application/vnd.yamaha.hv-script	0	false
+*.hvp	application/vnd.yamaha.hv-voice	0	false
+*.xml	application/vnd.yamaha.openscoreformat.osfpvg+xml	0	false
+*.osf	application/vnd.yamaha.openscoreformat	0	false
+*.saf	application/vnd.yamaha.smaf-audio	0	false
+*.spf	application/vnd.yamaha.smaf-phrase	0	false
+*.yme	application/vnd.yaoweme	0	false
+*.cmp	application/vnd.yellowriver-custom-menu	0	false
+*.yt	application/vnd.youtube.yt	0	false
+*.zdoc	application/vnd.zoho-document.writer	0	false
+*.zshow	application/vnd.zoho-presentation.show	0	false
+*.zsheet	application/vnd.zoho.spreadsheetml.sheet	0	false
+*.zir	application/vnd.zul	0	false
+*.zirz	application/vnd.zul	0	false
+*.zaz	application/vnd.zzazz.deck+xml	0	false
+*.vcj	application/voucher-cms+json	0	false
+*.vjj	application/voucher-jws+json	0	false
+*.vp	application/vp	0	false
+*.wasm	application/wasm	0	false
+*.wif	application/watcherinfo+xml	0	false
+*.xml	application/watcherinfo+xml	0	false
+*.json	application/webpush-options+json	0	false
+*.wgt	application/widget	0	false
+*.wsdl	application/wsdl+xml	0	false
+*.wspolicy	application/wspolicy+xml	0	false
+*.xav	application/xcap-att+xml	0	false
+*.xca	application/xcap-caps+xml	0	false
+*.xdf	application/xcap-diff+xml	0	false
+*.xel	application/xcap-el+xml	0	false
+*.xer	application/xcap-error+xml	0	false
+*.xns	application/xcap-ns+xml	0	false
+*.xml	application/xcon-conference-info-diff+xml	0	false
+*.xml	application/xcon-conference-info+xml	0	false
+*.xml	application/xenc+xml	0	false
+*.xfdf	application/xfdf	0	false
+*.xhtml	application/xhtml+xml	0	false
+*.xht	application/xhtml+xml	0	false
+*.xlf	application/xliff+xml	0	false
+*.xml	application/xml	0	false
+*.dtd	application/xml-dtd	0	false
+*.mod	application/xml-dtd	0	false
+*.xml	application/xml-external-parsed-entity	0	false
+*.ent	application/xml-external-parsed-entity	0	false
+*.xml	application/xml-patch+xml	0	false
+*.XOP	application/xop+xml	0	false
+*.xsl	application/xslt+xml	0	false
+*.xslt	application/xslt+xml	0	false
+*.mxml	application/xv+xml	0	false
+*.xhvml	application/xv+xml	0	false
+*.xvml	application/xv+xml	0	false
+*.xvm	application/xv+xml	0	false
+*.yaml	application/yaml	0	false
+*.yml	application/yaml	0	false
+*.yang	application/yang	0	false
+*.sid	application/yang-sid+json	0	false
+*.yin	application/yin+xml	0	false
+*.zst	application/zstd	0	false
+*.726	audio/32kadpcm	0	false
+*.3gp	audio/3gpp	0	false
+*.3gpp	audio/3gpp	0	false
+*.adts	audio/aac	0	false
+*.aac	audio/aac	0	false
+*.loas	audio/aac	0	false
+*.ass	audio/aac	0	false
+*.amr	audio/AMR	0	false
+*.AMR	audio/AMR	0	false
+*.awb	audio/AMR-WB	0	false
+*.AWB	audio/AMR-WB	0	false
+*.aal	audio/ATRAC-ADVANCED-LOSSLESS	0	false
+*.aa3	audio/ATRAC-ADVANCED-LOSSLESS	0	false
+*.omg	audio/ATRAC-ADVANCED-LOSSLESS	0	false
+*.atx	audio/ATRAC-X	0	false
+*.aa3	audio/ATRAC-X	0	false
+*.omg	audio/ATRAC-X	0	false
+*.at3	audio/ATRAC3	0	false
+*.aa3	audio/ATRAC3	0	false
+*.omg	audio/ATRAC3	0	false
+*.dls	audio/dls	0	false
+*.evc	audio/EVRC	0	false
+*.EVC	audio/EVRC	0	false
+*.qcp	audio/EVRC-QCP	0	false
+*.QCP	audio/EVRC-QCP	0	false
+*.evb	audio/EVRCB	0	false
+*.EVB	audio/EVRCB	0	false
+*.enw	audio/EVRCNW	0	false
+*.ENW	audio/EVRCNW	0	false
+*.evw	audio/EVRCWB	0	false
+*.EVW	audio/EVRCWB	0	false
+*.3gp	audio/EVS	0	false
+*.3gpp	audio/EVS	0	false
+*.flac	audio/flac	0	false
+*.lbc	audio/iLBC	0	false
+*.LBC	audio/iLBC	0	false
+*.WAV	audio/L16	0	false
+*.L16	audio/L16	0	false
+*.mka	audio/matroska	0	false
+*.mhas	audio/mhas	0	false
+*.midi2	audio/midi-clip	0	false
+*.mxmf	audio/mobile-xmf	0	false
+*.mp4	audio/mp4	0	false
+*.mpg4	audio/mp4	0	false
+*.mp1	audio/mpeg	0	false
+*.mp2	audio/mpeg	0	false
+*.mp3	audio/mpeg	0	false
+*.oga	audio/ogg	0	false
+*.ogg	audio/ogg	0	false
+*.spx	audio/ogg	0	false
+*.opus	audio/ogg	0	false
+*.aaud	audio/prs.aaud	0	false
+*.sid	audio/prs.sid	0	false
+*.psid	audio/prs.sid	0	false
+*.smv	audio/SMV	0	false
+*.SMV	audio/SMV	0	false
+*.qcp	audio/SMV-QCP	0	false
+*.QCP	audio/SMV-QCP	0	false
+*.sofa	audio/sofa	0	false
+*.sf2	audio/soundfont	0	false
+*.mid	audio/sp-midi	0	false
+*.loas	audio/usac	0	false
+*.xhe	audio/usac	0	false
+*.-	audio/vnd.4SB	0	false
+*.koz	audio/vnd.audiokoz	0	false
+*.facta	audio/vnd.blockfact.facta	0	false
+*.-	audio/vnd.CELP	0	false
+*.uva	audio/vnd.dece.audio	0	false
+*.uvva	audio/vnd.dece.audio	0	false
+*.eol	audio/vnd.digital-winds	0	false
+*.mlp	audio/vnd.dolby.mlp	0	false
+*.wav	audio/vnd.dts	0	false
+*.cpt	audio/vnd.dts	0	false
+*.dts	audio/vnd.dts	0	false
+*.dtshd	audio/vnd.dts.hd	0	false
+*.mp4	audio/vnd.dts.uhd	0	false
+*.mov	audio/vnd.dts.uhd	0	false
+*.mkv	audio/vnd.dts.uhd	0	false
+*.dvb	audio/vnd.dvb.file	0	false
+*.plj	audio/vnd.everad.plj	0	false
+*.rm	audio/vnd.hns.audio	0	false
+*.lvp	audio/vnd.lucent.voice	0	false
+*.pya	audio/vnd.ms-playready.media.pya	0	false
+*.mxmf	audio/vnd.nokia.mobile-xmf	0	false
+*.vbk	audio/vnd.nortel.vbk	0	false
+*.ecelp4800	audio/vnd.nuera.ecelp4800	0	false
+*.ecelp7470	audio/vnd.nuera.ecelp7470	0	false
+*.ecelp9600	audio/vnd.nuera.ecelp9600	0	false
+*.nbs	audio/vnd.opennbs.nbs	0	false
+*.multitrack	audio/vnd.presonus.multitrack	0	false
+*.rip	audio/vnd.rip	0	false
+*.smp3	audio/vnd.sealedmedia.softseal.mpeg	0	false
+*.smp	audio/vnd.sealedmedia.softseal.mpeg	0	false
+*.s1m	audio/vnd.sealedmedia.softseal.mpeg	0	false
+*.woff	font/woff	0	false
+*.woff2	font/woff2	0	false
+*.ivs	haptics/ivs	0	false
+*.hjif	haptics/hjif	0	false
+*.hmpg	haptics/hmpg	0	false
+*.exr	image/aces	0	false
+*.apng	image/apng	0	false
+*.avci	image/avci	0	false
+*.avcs	image/avcs	0	false
+*.avif	image/avif	0	false
+*.heif	image/avif	0	false
+*.heifs	image/avif	0	false
+*.hif	image/avif	0	false
+*.bmp	image/bmp	0	false
+*.dib	image/bmp	0	false
+*.drle	image/dicom-rle	0	false
+*.dpx	image/dpx	0	false
+*.emf	image/emf	0	false
+*.fits	image/fits	0	false
+*.heif	image/heic	0	false
+*.heic	image/heic	0	false
+*.heic	image/heic	0	false
+*.hif	image/heic	0	false
+*.heifs	image/heic-sequence	0	false
+*.heics	image/heic-sequence	0	false
+*.subtype	image/heic-sequence	0	false
+*.heic-sequence	image/heic-sequence	0	false
+*.hif	image/heic-sequence	0	false
+*.heic-sequence	image/heic-sequence	0	false
+*.heif	image/heif	0	false
+*.heic	image/heif	0	false
+*.heic	image/heif	0	false
+*.hif	image/heif	0	false
+*.heifs	image/heif-sequence	0	false
+*.heics	image/heif-sequence	0	false
+*.subtype	image/heif-sequence	0	false
+*.heic-sequence	image/heif-sequence	0	false
+*.hif	image/heif-sequence	0	false
+*.heic-sequence	image/heif-sequence	0	false
+*.hej2	image/hej2k	0	false
+*.hsj2	image/hsj2	0	false
+*.j2c	image/j2c	0	false
+*.J2C	image/j2c	0	false
+*.j2k	image/j2c	0	false
+*.J2K	image/j2c	0	false
+*.jaii	image/jaii	0	false
+*.jais	image/jais	0	false
+*.jls	image/jls	0	false
+*.jp2	image/jp2	0	false
+*.jpg2	image/jp2	0	false
+*.jpg	image/jpeg	0	false
+*.jpeg	image/jpeg	0	false
+*.jph	image/jph	0	false
+*.jhc	image/jphc	0	false
+*.jpm	image/jpm	0	false
+*.jpgm	image/jpm	0	false
+*.jpf	image/jpx	0	false
+*.jpx	image/jpx	0	false
+*.jxl	image/jxl	0	false
+*.jxr	image/jxr	0	false
+*.jxra	image/jxrA	0	false
+*.jxrs	image/jxrS	0	false
+*.jxs	image/jxs	0	false
+*.jxsc	image/jxsc	0	false
+*.jxsi	image/jxsi	0	false
+*.jxss	image/jxss	0	false
+*.ktx	image/ktx	0	false
+*.ktx2	image/ktx2	0	false
+*.png	image/png	0	false
+*.aimg	image/prs.aimg	0	false
+*.btif	image/prs.btif	0	false
+*.btf	image/prs.btif	0	false
+*.pti	image/prs.pti	0	false
+*.svg	image/svg+xml	0	false
+*.T38	image/t38	0	false
+*.TIF	image/tiff	0	false
+*.TFX	image/tiff-fx	0	false
+*.psd	image/vnd.adobe.photoshop	0	false
+*.azv	image/vnd.airzip.accelerator.azv	0	false
+*.facti	image/vnd.blockfact.facti	0	false
+*.clip	image/vnd.clip	0	false
+*.uvi	image/vnd.dece.graphic	0	false
+*.uvvi	image/vnd.dece.graphic	0	false
+*.uvg	image/vnd.dece.graphic	0	false
+*.uvvg	image/vnd.dece.graphic	0	false
+*.djvu	image/vnd.djvu	0	false
+*.djv	image/vnd.djvu	0	false
+*.sub	image/vnd.dvb.subtitle	0	false
+*.fbs	image/vnd.fastbidsheet	0	false
+*.fpx	image/vnd.fpx	0	false
+*.fst	image/vnd.fst	0	false
+*.mmr	image/vnd.fujixerox.edmics-mmr	0	false
+*.rlc	image/vnd.fujixerox.edmics-rlc	0	false
+*.PGB	image/vnd.globalgraphics.pgb	0	false
+*.pgb	image/vnd.globalgraphics.pgb	0	false
+*.ico	image/vnd.microsoft.icon	0	false
+*.mdi	image/vnd.ms-modi	0	false
+*.apng	image/vnd.mozilla.apng	0	false
+*.png	image/vnd.mozilla.apng	0	false
+*.b16	image/vnd.pco.b16	0	false
+*.pic	image/vnd.radiance	0	false
+*.hdr	image/vnd.radiance	0	false
+*.rgbe	image/vnd.radiance	0	false
+*.xyze	image/vnd.radiance	0	false
+*.spng	image/vnd.sealed.png	0	false
+*.spn	image/vnd.sealed.png	0	false
+*.s1n	image/vnd.sealed.png	0	false
+*.sgif	image/vnd.sealedmedia.softseal.gif	0	false
+*.sgi	image/vnd.sealedmedia.softseal.gif	0	false
+*.s1g	image/vnd.sealedmedia.softseal.gif	0	false
+*.sld	image/vnd.sld	0	false
+*.sjpg	image/vnd.sealedmedia.softseal.jpg	0	false
+*.sjp	image/vnd.sealedmedia.softseal.jpg	0	false
+*.s1j	image/vnd.sealedmedia.softseal.jpg	0	false
+*.tap	image/vnd.tencent.tap	0	false
+*.vtf	image/vnd.valve.source.texture	0	false
+*.wbmp	image/vnd.wap.wbmp	0	false
+*.xif	image/vnd.xiff	0	false
+*.pcx	image/vnd.zbrush.pcx	0	false
+*.webp	image/webp	0	false
+*.wmf	image/wmf	0	false
+*.disposition-notification	message/disposition-notification	0	false
+*.u8msg	message/global	0	false
+*.u8dsn	message/global-delivery-status	0	false
+*.u8mdn	message/global-disposition-notification	0	false
+*.cl	message/imdn+xml	0	false
+*.xml	message/imdn+xml	0	false
+*.WSC	message/vnd.wfa.wsc	0	false
+*.3mf	model/3mf	0	false
+*.glb	model/gltf-binary	0	false
+*.gltf	model/gltf+json	0	false
+*.jt	model/JT	0	false
+*.mtl	model/mtl	0	false
+*.obj	model/obj	0	false
+*.prc	model/prc	0	false
+*.p21	model/step	0	false
+*.stp	model/step	0	false
+*.step	model/step	0	false
+*.stpnc	model/step	0	false
+*.210	model/step	0	false
+*.stpx	model/step+xml	0	false
+*.stpz	model/step+zip	0	false
+*.stpxz	model/step-xml+zip	0	false
+*.stl	model/stl	0	false
+*.u3d	model/u3d	0	false
+*.bary	model/vnd.bary	0	false
+*.cld	model/vnd.cld	0	false
+*.dae	model/vnd.collada+xml	0	false
+*.dwf	model/vnd.dwf	0	false
+*.3dml	model/vnd.flatland.3dml	0	false
+*.3dm	model/vnd.flatland.3dml	0	false
+*.gdl	model/vnd.gdl	0	false
+*.gsm	model/vnd.gdl	0	false
+*.win	model/vnd.gdl	0	false
+*.dor	model/vnd.gdl	0	false
+*.lmp	model/vnd.gdl	0	false
+*.rsm	model/vnd.gdl	0	false
+*.msm	model/vnd.gdl	0	false
+*.ism	model/vnd.gdl	0	false
+*.scn	model/vnd.godot.scene.binary	0	false
+*.escn	model/vnd.godot.scene.binary	0	false
+*.tscn	model/vnd.godot.scene.text	0	false
+*.gdl	model/vnd.gs-gdl	0	false
+*.gsm	model/vnd.gs-gdl	0	false
+*.win	model/vnd.gs-gdl	0	false
+*.dor	model/vnd.gs-gdl	0	false
+*.lmp	model/vnd.gs-gdl	0	false
+*.rsm	model/vnd.gs-gdl	0	false
+*.msm	model/vnd.gs-gdl	0	false
+*.ism	model/vnd.gs-gdl	0	false
+*.gtw	model/vnd.gtw	0	false
+*.xml	model/vnd.moml+xml	0	false
+*.moml	model/vnd.moml+xml	0	false
+*.mts	model/vnd.mts	0	false
+*.ogex	model/vnd.opengex	0	false
+*.X_B	model/vnd.parasolid.transmit.binary	0	false
+*.xmt_bin	model/vnd.parasolid.transmit.binary	0	false
+*.X_T	model/vnd.parasolid.transmit.text	0	false
+*.xmt_txt	model/vnd.parasolid.transmit.text	0	false
+*.pyo	model/vnd.pytha.pyox	0	false
+*.pyox	model/vnd.pytha.pyox	0	false
+*.vds	model/vnd.sap.vds	0	false
+*.s3d	model/vnd.sdf3d.s3d	0	false
+*.usda	model/vnd.usda	0	false
+*.usdz	model/vnd.usdz+zip	0	false
+*.bsp	model/vnd.valve.source.compiled-map	0	false
+*.vtu	model/vnd.vtu	0	false
+*.x3dv	model/x3d-vrml	0	false
+*.x3db	model/x3d+fastinfoset	0	false
+*.x3d	model/x3d+xml	0	false
+*.bmed	multipart/vnd.bint.med-plus	0	false
+*.VPM	multipart/voice-message	0	false
+*.appcache	text/cache-manifest	0	false
+*.manifest	text/cache-manifest	0	false
+*.CQL	text/cql	0	false
+*.css	text/css	0	false
+*.CSV	text/csv	0	false
+*.csvs	text/csv-schema	0	false
+*.soa	text/dns	0	false
+*.zone	text/dns	0	false
+*.es	text/ecmascript	0	false
+*.mjs	text/ecmascript	0	false
+*.gff3	text/gff3	0	false
+*.html	text/html	0	false
+*.htm	text/html	0	false
+*.js	text/javascript	0	false
+*.mjs	text/javascript	0	false
+*.cnd	text/jcr-cnd	0	false
+*.md	text/markdown	0	false
+*.markdown	text/markdown	0	false
+*.miz	text/mizar	0	false
+*.n3	text/n3	0	false
+*.org	text/org	0	false
+*.provn	text/provenance-notation	0	false
+*.txt	text/prs.fallenstein.rst	0	false
+*.rst	text/prs.fallenstein.rst	0	false
+*.tag	text/prs.lines.tag	0	false
+*.dsc	text/prs.lines.tag	0	false
+*.txt	text/prs.prop.logic	0	false
+*.texi	text/prs.texi	0	false
+*.qml	text/qml	0	false
+*.shaclc	text/shaclc	0	false
+*.shc	text/shaclc	0	false
+*.shex	text/shex	0	false
+*.spdx	text/spdx	0	false
+*.ttl	text/turtle	0	false
+*.uris	text/uri-list	0	false
+*.uri	text/uri-list	0	false
+*.vcf	text/vcard	0	false
+*.vcard	text/vcard	0	false
+*.abc	text/vnd.abc	0	false
+*.It	text/vnd.abc	0	false
+*.ascii	text/vnd.ascii-art	0	false
+*.bvnr	text/vnd.bovnar	0	false
+*.bovnar	text/vnd.bovnar	0	false
+*.curl	text/vnd.curl	0	false
+*.dms	text/vnd.DMClientScript	0	false
+*.sub	text/vnd.dvb.subtitle	0	false
+*.jtd	text/vnd.esmertec.theme-descriptor	0	false
+*.VFK	text/vnd.exchangeable	0	false
+*.ged	text/vnd.familysearch.gedcom	0	false
+*.flt	text/vnd.ficlab.flt	0	false
+*.fly	text/vnd.fly	0	false
+*.Generally	text/vnd.fmi.flexstor	0	false
+*.flx	text/vnd.fmi.flexstor	0	false
+*.but	text/vnd.fmi.flexstor	0	false
+*.documents	text/vnd.fmi.flexstor	0	false
+*.describing	text/vnd.fmi.flexstor	0	false
+*.certain	text/vnd.fmi.flexstor	0	false
+*.symbol	text/vnd.fmi.flexstor	0	false
+*.table	text/vnd.fmi.flexstor	0	false
+*.may	text/vnd.fmi.flexstor	0	false
+*.allocate	text/vnd.fmi.flexstor	0	false
+*.their	text/vnd.fmi.flexstor	0	false
+*.own	text/vnd.fmi.flexstor	0	false
+*.set	text/vnd.fmi.flexstor	0	false
+*.mx	text/vnd.gist.mx	0	false
+*.gml	text/vnd.gml	0	false
+*.gd	text/vnd.godot.gdscript	0	false
+*.gdshader	text/vnd.godot.gdshader	0	false
+*.gv	text/vnd.graphviz	0	false
+*.dot	text/vnd.graphviz	0	false
+*.hans	text/vnd.hans	0	false
+*.hekaya	text/vnd.hekaya	0	false
+*.hgl	text/vnd.hgl	0	false
+*.3dml	text/vnd.in3d.3dml	0	false
+*.3dm	text/vnd.in3d.3dml	0	false
+*.spot	text/vnd.in3d.spot	0	false
+*.spo	text/vnd.in3d.spot	0	false
+*.xml	text/vnd.IPTC.NewsML	0	false
+*.xml	text/vnd.IPTC.NITF	0	false
+*.lf	text/vnd.longform	0	false
+*.longform	text/vnd.longform	0	false
+*.mpf	text/vnd.ms-mediapackage	0	false
+*.ccc	text/vnd.net2phone.commcenter.command	0	false
+*.mc2	text/vnd.senx.warpscript	0	false
+*.uric	text/vnd.si.uricatalogue	0	false
+*.jad	text/vnd.sun.j2me.app-descriptor	0	false
+*.sos	text/vnd.sosi	0	false
+*.tps	text/vnd.tps	0	false
+*.tps.md	text/vnd.tps	0	false
+*.md.tps	text/vnd.tps	0	false
+*.typ	text/vnd.typst	0	false
+*.ts	text/vnd.trolltech.linguist	0	false
+*.vcf	text/vnd.vcf	0	false
+*.vri	text/vnd.vri	0	false
+*.sci	text/vnd.vri	0	false
+*.svi	text/vnd.vri	0	false
+*.vsib	text/vnd.vri	0	false
+*.si	text/vnd.wap.si	0	false
+*.xml	text/vnd.wap.si	0	false
+*.sl	text/vnd.wap.sl	0	false
+*.xml	text/vnd.wap.sl	0	false
+*.wml	text/vnd.wap.wml	0	false
+*.xml	text/vnd.wap.wml	0	false
+*.wmls	text/vnd.wap.wmlscript	0	false
+*.kcl	text/vnd.zoo.kcl	0	false
+*.vtt	text/vtt	0	false
+*.wgsl	text/wgsl	0	false
+*.xml	text/xml	0	false
+*.xml	text/xml-external-parsed-entity	0	false
+*.ent	text/xml-external-parsed-entity	0	false
+*.3gp	video/3gpp	0	false
+*.3gpp	video/3gpp	0	false
+*.None.	video/3gpp-tt	0	false
+*.m4s	video/iso.segment	0	false
+*.lot	video/lottie+json	0	false
+*.mkv	video/matroska	0	false
+*.mk3d	video/matroska-3d	0	false
+*.mj2	video/mj2	0	false
+*.mjp2	video/mj2	0	false
+*.mp4	video/mp4	0	false
+*.mpg4	video/mp4	0	false
+*.mp4	video/mpeg4-generic	0	false
+*.MPEG-4	video/mpeg4-generic	0	false
+*.content	video/mpeg4-generic	0	false
+*.but	video/mpeg4-generic	0	false
+*.ogv	video/ogg	0	false
+*.avid	video/prs.avid	0	false
+*.factv	video/vnd.blockfact.factv	0	false
+*.uvh	video/vnd.dece.hd	0	false
+*.uvvh	video/vnd.dece.hd	0	false
+*.uvm	video/vnd.dece.mobile	0	false
+*.uvvm	video/vnd.dece.mobile	0	false
+*.uvu	video/vnd.dece.mp4	0	false
+*.uvvu	video/vnd.dece.mp4	0	false
+*.uvp	video/vnd.dece.pd	0	false
+*.uvvp	video/vnd.dece.pd	0	false
+*.uvs	video/vnd.dece.sd	0	false
+*.uvvs	video/vnd.dece.sd	0	false
+*.uvv	video/vnd.dece.video	0	false
+*.uvvv	video/vnd.dece.video	0	false
+*.dvb	video/vnd.dvb.file	0	false
+*.fvt	video/vnd.fvt	0	false
+*.rm	video/vnd.hns.video	0	false
+*.mxu	video/vnd.mpegurl	0	false
+*.m4u	video/vnd.mpegurl	0	false
+*.pyv	video/vnd.ms-playready.media.pyv	0	false
+*.nim	video/vnd.nokia.interleaved-multimedia	0	false
+*.mp4	video/vnd.nokia.mp4vr	0	false
+*.mp4	video/vnd.objectvideo	0	false
+*.yuv	video/vnd.planar	0	false
+*.bik	video/vnd.radgamettools.bink	0	false
+*.bk2	video/vnd.radgamettools.bink	0	false
+*.smk	video/vnd.radgamettools.smacker	0	false
+*.smpg	video/vnd.sealed.mpeg1	0	false
+*.s11	video/vnd.sealed.mpeg1	0	false
+*.smpg	video/vnd.sealed.mpeg4	0	false
+*.s14	video/vnd.sealed.mpeg4	0	false
+*.sswf	video/vnd.sealed.swf	0	false
+*.ssw	video/vnd.sealed.swf	0	false
+*.smov	video/vnd.sealedmedia.softseal.mov	0	false
+*.smo	video/vnd.sealedmedia.softseal.mov	0	false
+*.s1q	video/vnd.sealedmedia.softseal.mov	0	false
+*.uvu	video/vnd.uvvu.mp4	0	false
+*.uvvu	video/vnd.uvvu.mp4	0	false
+*.yt	video/vnd.youtube.yt	0	false
+』也。
+
+「述阳」者『true』也。
+
+「扩前缀」者『*.』也。
+
+「星号」者『*』也。
+
+「问号」者『?』也。
+
+「方括号」者『[』也。
+
+「数据切分」乃化「文」又化「文」为（「列」于「文」）者也。
+「数据切分」者得「隔」又得「其文」而
+　鉴（「文寻」于「隔」于「其文」）而
+　　或有「可无」则「列」【「其文」】
+　　或有（「可有」于「位」）则（
+　　　令「首」为「截文」于「零」于「位」于「其文」而
+　　　令「尾」为「截文」于（「位」加（「计字」于「隔」））于（「计字」于「其文」）于「其文」而
+　　　「缀」于「首」于（「数据切分」于「隔」于「尾」）
+　　）
+也。
+
+「读合行」乃化「文」为「文」合「文」合「数」合「爻」者也。
+「读合行」者得「其文」而
+　鉴（「数据切分」于（「作字」于「九」）于「其文」）而
+　　或有（「缀」于「模式」于（「缀」于「媒体」于（「缀」于「权」于（「缀」于「大小写」于「余」））））则
+　　　「模式」与「媒体」与（「识数」于「权」）与（「文同」于「大小写」于「述阳」）
+　　或有「其他」则「其文」与「其文」与「五零」与「阴」
+也。
+
+「读合诸行」乃化（「列」于「文」）为「列」于（「文」合「文」合「数」合「爻」）者也。
+「读合诸行」者得「诸行」而
+　鉴「诸行」而
+　　或有「罄」则「罄」
+　　或有（「缀」于「首」于「尾」）则
+　　　若「文同」于「首」于（「截文」于「零」于「零」于「首」）则「读合诸行」于「尾」否则「缀」于（「读合行」于「首」）于（「读合诸行」于「尾」）
+也。
+
+「派生扩表」乃化（「列」于（「文」合「文」合「数」合「爻」））为「列」于（「文」合「文」）者也。
+「派生扩表」者得「规则」而
+　鉴「规则」而
+　　或有「罄」则「罄」
+　　或有（「缀」于「首」于「尾」）则（
+　　　令「模式」为「首」中「零」而
+　　　令「媒体」为「首」中「一」而
+　　　若「首同」于「扩前缀」于「模式」则（
+　　　　令「扩展」为「截文」于「二」于（「计字」于「模式」）于「模式」而
+　　　　若「或」于（「文含」于「星号」于「扩展」）于（「或」于（「文含」于「问号」于「扩展」）于（「文含」于「方括号」于「扩展」））则
+　　　　　「派生扩表」于「尾」
+　　　　否则
+　　　　　「缀」于（「扩展」与「媒体」）于（「派生扩表」于「尾」）
+　　　）否则
+　　　　「派生扩表」于「尾」
+　　）
+也。
+
+「官方合规则格」乃「匣」于（「或可有」于（「列」于（「文」合「文」合「数」合「爻」）））也。
+「官方合规则格」者「置匣」以（「或可有」于（「列」于（「文」合「文」合「数」合「爻」）））于（「可无」以（「列」于（「文」合「文」合「数」合「爻」）））也。
+
+「官方合规则」乃化「有」为（「列」于（「文」合「文」合「数」合「爻」））者也。
+「官方合规则」者得「无」而
+　「一算」于「官方合规则格」于（得「无」而「读合诸行」于（「数据切分」于（「作字」于「一零」）于「官方扩数据」））
+也。
+
+「官方扩表格」乃「匣」于（「或可有」于（「列」于（「文」合「文」）））也。
+「官方扩表格」者「置匣」以（「或可有」于（「列」于（「文」合「文」）））于（「可无」以（「列」于（「文」合「文」）））也。
+
+「官方扩表」乃化「有」为（「列」于（「文」合「文」））者也。
+「官方扩表」者得「无」而
+　「一算」于「官方扩表格」于（得「无」而「缀」于（『』与『application/octet-stream』）于（「派生扩表」于（「官方合规则」于「元」）））
+也。

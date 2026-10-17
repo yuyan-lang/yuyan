@@ -1,0 +1,197 @@
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let a=document.getElementById("a");a.setAttribute("title","中文😀");let e=document.createElement("span");e.setAttribute("id","b");a.appendChild(e);e.appendChild(document.createTextNode("正文"));a.removeAttribute("id");let nodes=document.querySelectorAll("span");let removed=a.removeChild(e);let empty=document.querySelectorAll("span");a.appendChild(e);e.remove();let copy=e.cloneNode(true);a.insertBefore(copy,null);let before=document.querySelectorAll("span");let old=a.replaceChild(e,copy);let ok=a.contains(e)&&!a.contains(copy)&&e.isSameNode(e)&&!e.isSameNode(copy)&&!e.isSameNode(null)&&copy.hasAttribute("id");e.remove();ok&&before[0]===copy&&old===copy&&a===document.querySelector("div")&&document.getElementById("a")===null&&nodes.length===1&&nodes[0]===e&&removed===e&&empty.length===0&&document.getElementById("b")===null&&a.getAttribute("title")==="中文😀";』而
+　令「片段值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let part=document.createDocumentFragment();part.appendChild(document.createTextNode("甲"));part.appendChild(document.createTextNode(""));part.appendChild(document.createTextNode("乙"));part.normalize();part.appendChild(document.createComment("注"));a.appendChild(part);!a.contains(part);』而
+　令「诸子」为「子节」于（「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于『a;』））而
+　令「实时值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let live=document.createElement("p");live.textContent="新😀";a.appendChild(live);let first=live.textContent;live.appendChild(document.createTextNode("续"));first==="新😀"&&live.textContent==="新😀续";』而
+　令「属性值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『live.id="实时";live.className="甲 乙";let reflected=document.getElementById("实时")===live&&live.getAttribute("class")==="甲 乙";live.setAttribute("id","改名");live.removeAttribute("class");reflected&&live.id==="改名"&&live.className===""&&document.getElementById("实时")===null;』而
+　令「树值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let lead=live.firstChild;let tail=live.lastChild;let tree=lead.parentNode===live&&lead.nextSibling===tail&&tail.previousSibling===lead&&lead.previousSibling===null&&tail.nextSibling===null;tail.remove();tree&&live.lastChild===lead&&lead.nextSibling===null&&tail.parentNode===null;』而
+　令「标记值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『live.innerHTML="<b id=\"内\">甲&amp;乙</b><!--注-->";let child=live.firstChild;let markup=child===document.getElementById("内")&&child.parentNode===live&&live.textContent==="甲&乙"&&live.innerHTML==="<b id=\"内\">甲&amp;乙</b><!--注-->";live.innerHTML="";markup&&live.firstChild===null&&child.parentNode===null&&document.getElementById("内")===null;』而
+　令「入口值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『document.nodeType===9&&a.nodeType===1&&document.createTextNode("x").nodeType===3&&document.createComment("x").nodeType===8&&document.createDocumentFragment().nodeType===11&&document.documentElement===document.querySelector("html")&&document.head===document.querySelector("head")&&document.body===document.querySelector("body")&&document.body.contains(a);』而
+　令「选择值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『live.className="命中";let selector=live.matches("p.命中")&&!live.matches("span")&&live.closest("p")===live&&live.closest("div")===a&&live.closest("aside")===null;live.remove();selector&&live.closest("div")===null&&live.closest(".命中")===live;』而
+　令「元素值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『live.innerHTML="文字<b></b><!--注--><i></i>尾";let firstElement=live.firstElementChild;let lastElement=live.lastElementChild;let elements=live.childElementCount===2&&firstElement.parentElement===live&&firstElement.nextElementSibling===lastElement&&lastElement.previousElementSibling===firstElement&&firstElement.previousElementSibling===null&&lastElement.nextElementSibling===null;lastElement.remove();elements&&live.childElementCount===1&&live.lastElementChild===firstElement&&lastElement.parentElement===null&&document.documentElement.parentElement===null;』而
+　令「类名值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let classes=live.classList;live.className="甲 甲 乙";let cls=classes===live.classList&&classes.length===2&&classes.contains("甲");classes.add("丙","乙");classes.remove("甲");let forced=classes.toggle("丁",true)&&!classes.toggle("丙",false);let toggled=classes.toggle("戊")&&!classes.toggle("戊");cls&&forced&&toggled&&live.className==="乙 丁"&&classes.value==="乙 丁"&&classes.length===2;』而
+　令「操作值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『classes.value="甲 乙 丙";let replacement=classes.replace("甲","丙")&&!classes.replace("缺","丁")&&classes.replace("乙","乙");replacement&&classes.item(0)==="丙"&&classes.item(1)==="乙"&&classes.item(2)===null&&classes.toString()==="丙 乙"&&live.className==="丙 乙";』而
+　令「批量值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let batch=document.createElement("section");let node=document.createElement("b");node.textContent="中";batch.append("尾",node);batch.prepend("首",node);let order=batch.textContent==="首中尾"&&batch.firstElementChild===node;batch.replaceChildren(node,"新",7);let replaced=batch.textContent==="中新7"&&node.parentElement===batch;batch.replaceChildren();order&&replaced&&batch.firstChild===null&&node.parentNode===null;』而
+　令「控件值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let input=document.createElement("input");input.setAttribute("value","初");input.setAttribute("checked","");let original=input.value==="初"&&input.checked;input.value="新😀";input.checked=false;let area=document.createElement("textarea");area.textContent="原";let initialArea=area.value==="原";area.value="现";let option=document.createElement("option");option.textContent="选项";option.selected=true;original&&initialArea&&input.value==="新😀"&&!input.checked&&input.getAttribute("value")==="初"&&input.hasAttribute("checked")&&area.value==="现"&&area.textContent==="原"&&option.selected&&option.value==="选项";』而
+　令「选择控件果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let select=document.createElement("select");select.innerHTML="<option value=\"甲\" selected>首</option><option value=\"乙\">次</option><option value=\"乙\">末</option>";let options=select.querySelectorAll("option");let initialSelect=select.value==="甲"&&select.selectedIndex===0;select.value="乙";let picked=select.selectedIndex===1&&!options[0].selected&&options[1].selected&&!options[2].selected;select.selectedIndex=2;let indexed=select.value==="乙"&&!options[1].selected&&options[2].selected;select.value="缺";initialSelect&&picked&&indexed&&select.selectedIndex===-1&&select.value===""&&options[0].hasAttribute("selected");』而
+　令「默认控件果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let defaults=document.createElement("select");defaults.innerHTML="<option disabled value=\"甲\">首</option><optgroup disabled><option value=\"乙\">次</option></optgroup><option value=\"丙\">末</option>";let defaultSelection=defaults.selectedIndex===2&&defaults.value==="丙";defaults.selectedIndex=-1;let explicitEmpty=defaults.selectedIndex===-1&&defaults.value==="";let multi=document.createElement("select");multi.setAttribute("multiple","");multi.innerHTML="<option>多</option>";defaultSelection&&explicitEmpty&&multi.selectedIndex===-1;』而
+　令「无」为「复原表单控件」于（「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于『defaults;』））而
+　令「复原控件果」为「急就在境行脚本」于「境」于『defaults.selectedIndex===2&&defaults.value==="丙";』而
+　令「布尔属性果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『input.disabled=true;input.required=1;area.readOnly="是";select.multiple=true;let flags=input.disabled&&input.hasAttribute("disabled")&&input.required&&input.matches(":required")&&area.readOnly&&area.hasAttribute("readonly")&&select.multiple;input.disabled=false;input.removeAttribute("required");area.readOnly="";select.multiple=0;flags&&!input.disabled&&!input.required&&!area.readOnly&&!select.multiple&&!area.hasAttribute("readonly");』而
+　令「默认属性果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『input.defaultValue="复";input.defaultChecked=true;area.defaultValue="基";option.defaultSelected=false;input.defaultValue==="复"&&input.value==="新😀"&&input.defaultChecked&&!input.checked&&area.defaultValue==="基"&&area.value==="现"&&!option.defaultSelected&&option.selected;』而
+　令「无」为
+　　「叠」以「文」又以「有」
+　　　于（得「名」又得「无」而「复原表单控件」于（「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于「名」）））
+　　　于「元」
+　　　于（「列」【『input;』，『area;』，『option;』】）而
+　令「默认复原果」为「急就在境行脚本」于「境」于『input.value==="复"&&input.checked&&area.value==="基"&&!option.selected;』而
+　令「根节点果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let treeRoot=document.createElement("section");let leaf=document.createElement("b");treeRoot.append(leaf);let detached=leaf.getRootNode()===treeRoot&&!leaf.isConnected&&treeRoot.hasChildNodes()&&!leaf.hasChildNodes();document.body.append(treeRoot);let attached=leaf.getRootNode()===document&&leaf.isConnected&&document.isConnected;treeRoot.remove();detached&&attached&&leaf.getRootNode()===treeRoot&&!treeRoot.isConnected&&!leaf.isConnected;』而
+　令「字符节点果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let chars=document.createTextNode("😀");let comment=document.createComment("注");let names=document.nodeName==="#document"&&document.ownerDocument===null&&a.nodeName==="DIV"&&a.tagName==="DIV"&&a.localName==="div"&&a.namespaceURI==="http://www.w3.org/1999/xhtml"&&a.ownerDocument===document&&chars.nodeName==="#text"&&chars.ownerDocument===document&&comment.nodeName==="#comment"&&part.nodeName==="#document-fragment"&&part.ownerDocument===document&&e.cloneNode(true).ownerDocument===document;let initialChars=chars.length===2&&chars.data==="😀"&&comment.textContent==="注";chars.nodeValue="新";comment.data="改";let updated=chars.textContent==="新"&&comment.nodeValue==="改";comment.textContent="再";chars.nodeValue=null;names&&initialChars&&updated&&comment.data==="再"&&chars.data===""&&chars.length===0&&a.nodeValue===null&&document.textContent===null;』而
+　令「字符操作果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『chars.data="甲😀乙";let sub=chars.substringData(1,2)==="😀"&&chars.substringData(3,99)==="乙";chars.insertData(1,"中");chars.deleteData(2,2);chars.replaceData(1,1,"新");chars.appendData("尾");comment.replaceData(0,99,"注");let edited=chars.data==="甲新乙尾"&&comment.data==="注"&&chars.substringData(4,3)==="";let detachedTail=chars.splitText(2);let splitDetached=chars.data==="甲新"&&detachedTail.data==="乙尾"&&detachedTail.parentNode===null&&detachedTail.ownerDocument===document;let splitParent=document.createElement("p");chars.data="甲😀乙";splitParent.append(chars,comment);let splitTail=chars.splitText(1);let splitAttached=chars.data==="甲"&&splitTail.data==="😀乙"&&chars.nextSibling===splitTail&&splitTail.nextSibling===comment&&splitTail.parentNode===splitParent;let emptyTail=splitTail.splitText(3);sub&&edited&&splitDetached&&splitAttached&&emptyTail.data===""&&emptyTail.nextSibling===comment;』而
+　令「监听设置」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let calls=0;let onceCalls=0;let captureCalls=0;let capturedEvent;let sameEvent=false;function listener(ev){if(this===a&&ev.type==="试")calls++;sameEvent=ev===capturedEvent;}function onceListener(ev){onceCalls++;sameEvent=sameEvent&&ev===capturedEvent;}function captureListener(ev){captureCalls++;capturedEvent=ev;}a.addEventListener("试",listener,false);a.addEventListener("试",listener,{});a.addEventListener("试",onceListener,{once:true,passive:true});a.addEventListener("试",captureListener,{capture:true});』而
+　令「监听节」为「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于『a;』）而
+　令「派发果」为「派发事」于「监听节」于（「新事」于『试』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
+　令「一次果」为「急就在境行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1&&sameEvent;』而
+　令「监听移除」为
+　　「急就在境行脚本」于「境」于『a.removeEventListener("试",listener,{capture:false});a.removeEventListener("试",captureListener,{capture:true});』而
+　令「再派发果」为「派发事」于「监听节」于（「新事」于『试』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
+　令「控制设置」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let cancelled=false;let skipped=0;let savedEvent;function cancelListener(ev){savedEvent=ev;ev.preventDefault();ev.stopPropagation();let path=ev.composedPath();cancelled=path[0]===a&&path[path.length-1]===document&&ev.target===a&&ev.currentTarget===this&&ev.defaultPrevented&&ev.cancelBubble&&ev.bubbles&&ev.cancelable&&!ev.composed&&ev.eventPhase===2;ev.stopImmediatePropagation();}a.addEventListener("消",cancelListener);a.addEventListener("消",function(ev){skipped++;});』而
+　令「取消果」为「派发事」于「监听节」于（「新事」于『消』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
+　令「对象监听果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let objectCalls=0;let listenerObject={handleEvent(ev){if(this===listenerObject&&ev.type==="对象")objectCalls++;}};a.addEventListener("对象",listenerObject);a.addEventListener("对象",listenerObject);a.dispatchEvent(new Event("对象"));listenerObject.handleEvent=function(ev){objectCalls+=2;};a.dispatchEvent(new Event("对象"));a.removeEventListener("对象",listenerObject);a.dispatchEvent(new Event("对象"));objectCalls===3;』而
+　令「中止监听果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let controller=new AbortController();let signal=controller.signal;let abortCalls=0;function abortedListener(ev){abortCalls++;}let pending=!signal.aborted&&signal.reason===undefined&&signal===controller.signal;a.addEventListener("中止",abortedListener,{signal:signal});a.dispatchEvent(new Event("中止"));let reason={why:1};controller.abort(reason);controller.abort("重复");a.dispatchEvent(new Event("中止"));a.addEventListener("中止",abortedListener,{signal:signal});a.dispatchEvent(new Event("中止"));let defaultController=new AbortController();defaultController.abort();let defaultReason=defaultController.signal.reason;defaultController.abort();let timeoutReason=new DOMException("超时","TimeoutError");let unnamedReason=new DOMException();let nullController=new AbortController();nullController.abort(null);pending&&signal.aborted&&signal.reason===reason&&abortCalls===1&&defaultReason===defaultController.signal.reason&&defaultReason.name==="AbortError"&&defaultReason.code===20&&defaultReason.message.length>0&&timeoutReason.name==="TimeoutError"&&timeoutReason.message==="超时"&&timeoutReason.code===23&&unnamedReason.name==="Error"&&unnamedReason.message===""&&unnamedReason.code===0&&nullController.signal.reason===null;』而
+　令「信号事件果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let eventController=new AbortController();let eventSignal=eventController.signal;let abortOrder="";let seenAbort;let eventState=false;function abortOnce(ev){seenAbort=ev;eventState=this===eventSignal&&ev.target===eventSignal&&ev.currentTarget===eventSignal&&ev.eventPhase===2&&ev.composedPath()[0]===eventSignal&&!ev.bubbles&&!ev.cancelable&&!ev.composed&&eventSignal.aborted;ev.preventDefault();abortOrder+="a";}eventSignal.addEventListener("abort",abortOnce,{once:true});eventSignal.addEventListener("abort",abortOnce);eventSignal.onabort=function(ev){abortOrder+="b";};eventSignal.addEventListener("abort",function(ev){abortOrder+="c";});eventSignal.onabort=function(ev){if(this===eventSignal&&ev===seenAbort)abortOrder+="d";};function removeAbort(ev){abortOrder+="x";}eventSignal.addEventListener("abort",removeAbort);eventSignal.removeEventListener("abort",removeAbort);eventController.abort();eventController.abort();let firstOrder=abortOrder==="adc";eventSignal.onabort=7;let manualEvent=new Event("abort");let manualResult=eventSignal.dispatchEvent(manualEvent);eventState&&firstOrder&&abortOrder==="adcc"&&eventSignal.onabort===null&&manualResult&&manualEvent.target===eventSignal&&!seenAbort.defaultPrevented&&seenAbort.currentTarget===null&&seenAbort.eventPhase===0&&seenAbort.composedPath().length===0;』而
+　令「静态信号果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『function propertyCarrier(n){return n+1;}propertyCarrier.tag=2;let functionCopy={...propertyCarrier};let functionKeys="";for(let key in propertyCarrier)functionKeys+=key;let functionHas="tag" in propertyCarrier;delete propertyCarrier.tag;let functionState=functionCopy.tag===2&&functionKeys==="tag"&&functionHas&&propertyCarrier.tag===undefined&&propertyCarrier(4)===5;let staticReason={source:1};let stoppedSignal=AbortSignal.abort(staticReason);let stopA=new AbortController();let stopB=new AbortController();let combined=AbortSignal.any([stopA.signal,stopB.signal,stopB.signal]);let combinedCalls=0;combined.addEventListener("abort",function(ev){if(this===combined&&ev.target===combined&&combined.reason===staticReason)combinedCalls++;});let waiting=!combined.aborted;stopB.abort(staticReason);stopA.abort("后来的理由");let preset=AbortSignal.any([stopB.signal,stopA.signal]);functionState&&typeof AbortSignal==="function"&&typeof AbortSignal.abort==="function"&&stoppedSignal.aborted&&stoppedSignal.reason===staticReason&&AbortSignal.abort().reason.name==="AbortError"&&AbortSignal.abort(null).reason===null&&waiting&&combined.aborted&&combined.reason===staticReason&&combinedCalls===1&&preset.reason===staticReason&&!AbortSignal.any([]).aborted;』而
+　令「抛出理由果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let pendingController=new AbortController();let checked=pendingController.signal.throwIfAborted()===undefined;let caughtReason;try{stopB.signal.throwIfAborted();}catch(e){caughtReason=e;}checked&&caughtReason===staticReason;』而
+　令「移除果」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let beforeDispatch=savedEvent;let result=a.dispatchEvent(savedEvent);let fresh=new Event("消",{bubbles:true,cancelable:true,composed:false});let initial=fresh.target===null&&fresh.currentTarget===null&&fresh.eventPhase===0&&!fresh.defaultPrevented&&fresh.composedPath().length===0;let freshResult=a.dispatchEvent(fresh);let plain=new Event("空");let plainResult=a.dispatchEvent(plain);let payload={value:3};let custom=new CustomEvent("自",{detail:payload,bubbles:true});let customSeen=false;a.addEventListener("自",function(ev){customSeen=ev===custom&&ev.detail===payload&&ev.target===a;ev.detail.value++;});let customResult=a.dispatchEvent(custom);calls===1&&onceCalls===1&&captureCalls===1&&cancelled&&skipped===0&&result===false&&beforeDispatch.target===a&&initial&&freshResult===false&&savedEvent===fresh&&fresh.defaultPrevented&&fresh.currentTarget===null&&plainResult===true&&!plain.bubbles&&!plain.cancelable&&!plain.composed&&plain.target===a&&customResult&&customSeen&&payload.value===4&&custom.detail===payload&&new CustomEvent("缺").detail===null;』而
+　若「且」
+　　于（「且」
+　　　于（「且」
+　　　　于（「且」
+　　　　　于（「且」
+　　　　　　于（「急就严格等」于「中止监听果」于（「急就布尔」于「阳」））
+　　　　　　于（「且」
+　　　　　　　于（「急就严格等」于「信号事件果」于（「急就布尔」于「阳」））
+　　　　　　　于（「且」于（「急就严格等」于「静态信号果」于（「急就布尔」于「阳」））于（「急就严格等」于「抛出理由果」于（「急就布尔」于「阳」）））））
+　　　　　于（「急就严格等」于「对象监听果」于（「急就布尔」于「阳」）））
+　　　　于（「急就严格等」于「一次果」于（「急就布尔」于「阳」）））
+　　　于（「急就严格等」于「移除果」于（「急就布尔」于「阳」）））
+　　于（「且」
+　　　于（「且」于（「急就严格等」于「字符节点果」于（「急就布尔」于「阳」））于（「急就严格等」于「字符操作果」于（「急就布尔」于「阳」）））
+　　　于（「且」
+　　　　于（「急就严格等」于「根节点果」于（「急就布尔」于「阳」））
+　　　　于（「且」
+　　　　　于（「且」于（「急就严格等」于「默认属性果」于（「急就布尔」于「阳」））于（「急就严格等」于「默认复原果」于（「急就布尔」于「阳」）））
+　　　　　于（「且」
+　　　　　　于（「急就严格等」于「布尔属性果」于（「急就布尔」于「阳」））
+　　　　　　于（「且」
+　　　　　　　于（「且」于（「急就严格等」于「默认控件果」于（「急就布尔」于「阳」））于（「急就严格等」于「复原控件果」于（「急就布尔」于「阳」）））
+　　　　　　　于（「且」
+　　　　　　　　于（「急就严格等」于「选择控件果」于（「急就布尔」于「阳」））
+　　　　　　　　于（「且」
+　　　　　　　　　于（「急就严格等」于「控件值」于（「急就布尔」于「阳」））
+　　　　　　　　　于（「且」
+　　　　　　　　　　于（「急就严格等」于「批量值」于（「急就布尔」于「阳」））
+　　　　　　　　　　于（「且」
+　　　　　　　　　　　于（「急就严格等」于「操作值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　于（「急就严格等」于「类名值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　于（「急就严格等」于「元素值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　于（「急就严格等」于「选择值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　于（「急就严格等」于「入口值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　于（「急就严格等」于「标记值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　于（「急就严格等」于「树值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　于（「急就严格等」于「属性值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　于（「急就严格等」于「实时值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　于（「急就严格等」于「值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　于（「急就严格等」于「片段值」于（「急就布尔」于「阳」））
+　　　　　　　　　　　　　　　　　　　　　于（「且」
+　　　　　　　　　　　　　　　　　　　　　　于（（「计」于「诸子」）等于「二」）
+　　　　　　　　　　　　　　　　　　　　　　于（「文同」于（「节内容」于（「第」于「零」于「诸子」））于『甲乙』）））））））））））））））））））））则
+　　　　　　　　　　　　　　　　　　　　　　　「书」于『浏览器文档方法冒烟通过』
+　否则
+　　「告祸」于『浏览器文档方法绑定错误』
+也。
+
+「入口」于「元」。

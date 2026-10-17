@@ -1,0 +1,61 @@
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「：汉语：窗口位置测试：location 的各部件与 document.location 同一，改 hash 与 assign 记下导航请求，pushState 改页面地址、加历史长度并记下改地址请求，innerWidth 读视口尺寸，scrollTo 记下滚动请求，history.back 记下走历史请求。
+　　文言：窗位之试：location 之诸部与 document.location 为一，改 hash 与 assign 则记导航之请，pushState 改页址、增史长而记改址之请，innerWidth 读视口之尺，scrollTo 记滚之请，history.back 记行史之请。：」
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「无」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test:8080/a/b?x=1#h』而
+　令「无」为「写匣」于「网页视口尺寸」于（「八零零」与「六零零」）而
+　令「验」为（（得「码」而「急就严格等」于（「急就在境行脚本」于「境」于「码」）于（「急就布尔」于「阳」））属（化「文」为「爻」））而
+　「检查」
+　　于「名」曰『地址部件』
+　　于「真」曰（「验」于『location.href==="https://example.test:8080/a/b?x=1#h"&&location.protocol==="https:"&&location.host==="example.test:8080"&&location.hostname==="example.test"&&location.port==="8080"&&location.pathname==="/a/b"&&location.search==="?x=1"&&location.hash==="#h"&&location.origin==="https://example.test:8080"&&document.location===location&&window.location===location&&String(location)===location.href;』）而后
+　「检查」于「名」曰『视口尺寸』于「真」曰（「验」于『innerWidth===800&&innerHeight===600&&window.devicePixelRatio===1&&scrollY===0;』）而后
+　令「无」为「急就在境行脚本」于「境」于『location.hash="k";location.assign("../c");』而
+　「检查」
+　　于「名」曰『导航请求』
+　　于「真」曰（
+　　　鉴「取网页页索」于「元」而
+　　　　或有（「缀」于（「页面导航请求」于「甲」于「甲替」）于（「缀」于（「页面导航请求」于「乙」于「乙替」）于「罄」））则
+　　　　　「且」
+　　　　　　于（「且」于（「文同」于「甲」于『https://example.test:8080/a/b?x=1#k』）于（「文同」于「乙」于『https://example.test:8080/c』））
+　　　　　　于（「且」于（非「甲替」）于（非「乙替」））
+　　　　或有「其他」则「阴」
+　　）而后
+　「检查」
+　　于「名」曰『改地址』
+　　于「真」曰（「验」于『history.pushState({n:1},"","d?y=2");history.length===2&&history.state.n===1&&location.href==="https://example.test:8080/a/d?y=2";』）而后
+　「检查」
+　　于「名」曰『改地址请求』
+　　于「真」曰（
+　　　鉴「取网页页索」于「元」而
+　　　　或有（「缀」于（「页面改址请求」于「址」于「新」）于「罄」）则「且」于（「文同」于「址」于『https://example.test:8080/a/d?y=2』）于「新」
+　　　　或有「其他」则「阴」
+　　）而后
+　令「无」为「急就在境行脚本」于「境」于『scrollTo(0,120);history.back();』而
+　「检查」
+　　于「名」曰『滚动与走历史请求』
+　　于「真」曰（
+　　　鉴「取网页页索」于「元」而
+　　　　或有（「缀」于（「页面滚动请求」于「位」于「相对」）于（「缀」于（「页面历史请求」于「步」）于「罄」））则
+　　　　　「且」
+　　　　　　于（「且」于（「小数等于」于（「位」中「零」）于「零点零」）于（「小数等于」于（「位」中「一」）于「一二零点零」））
+　　　　　　于（「且」于（非「相对」）于（「步」等于「负一」））
+　　　　或有「其他」则「阴」
+　　）而后
+　「检查」于「名」曰『请求已取走』于「真」曰（非（「网页有请」于「元」））而后
+　「书」于『窗口位置测试通过』
+也。
+
+「入口」于「元」。

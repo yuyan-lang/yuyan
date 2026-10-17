@@ -1,0 +1,107 @@
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「豫章」之「寓所」之「藏书」之书。
+寻观「典藏」之「压档」之书。
+寻观「典藏」之「便用」之书。
+寻观「鉴卷」之「归档识别」之书。
+
+「核归档」乃化「帛」又化「文」为「有」者也。
+「核归档」者得「源」又得「应」而
+　令「数据」为「生列」以「数」于（「计帛」于「源」）于（得「位」而「读帛」于「源」于「位」）而
+　令「实」为「归档内容品类」于「数据」而
+　若「文同」于「应」于「实」则「元」否则「告祸」于（『归档内容类型不符；期：』接「应」接『；实：』接「实」）
+也。
+
+「造归档」乃化（「列」于「压档条目」）又化「数」为「帛」者也。
+「造归档」者得「条们」又得「等级」而
+　令「果」为「压档写」于「条们」于「等级」而
+　若（「果」中「零」）等于「零」则（「果」中「一」）否则「告祸」于『生成归档失败』
+也。
+
+「办公声明」乃化「文」又化「文」为「文」者也。
+「办公声明」者得「部件」又得「主类型」而
+　『<t:Types xmlns:t="http://schemas.openxmlformats.org/package/2006/content-types"><t:Override PartName="/』接「部件」接『" ContentType="』接「主类型」
+　接『"/></t:Types>』
+也。
+
+「造办公」乃化「文」又化「文」又化「数」为「帛」者也。
+「造办公」者得「部件」又得「主类型」又得「等级」而
+　令「声明」为「办公声明」于「部件」于「主类型」而
+　「造归档」于（「列」【『[Content_Types].xml』与（「作帛」于「声明」），「部件」与（「作帛」于『<主/>』）】）于「等级」
+也。
+
+「文档」乃「帛」也。
+「文档」者「造办公」于『word/document.xml』于『application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml』于「六」也。
+
+「核归档」于「文档」于『application/vnd.openxmlformats-officedocument.wordprocessingml.document』。
+「核归档」
+　于（「造办公」于『xl/workbook.xml』于『application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml』于「零」）
+　于『application/vnd.openxmlformats-officedocument.spreadsheetml.sheet』。
+「核归档」
+　于（「造办公」于『ppt/presentation.xml』于『application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml』于「六」）
+　于『application/vnd.openxmlformats-officedocument.presentationml.presentation』。
+「核归档」于（「造归档」于（「列」【『mimetype』与（「作帛」于『application/epub+zip』）】）于「六」）于『application/epub+zip』。
+「核归档」于（「造归档」于（「列」【『mimetype』与（「作帛」于『application/epub+zip假的』）】）于「零」）于『application/zip』。
+「核归档」于（「造归档」于（「列」【『META-INF/MANIFEST.MF』与（「作帛」于『Manifest-Version: 1.0』）】）于「六」）于『application/java-archive』。
+「核归档」
+　于（「造归档」
+　　于（「列」
+　　　【『[Content_Types].xml』
+　　　　　与（「作帛」于（「办公声明」于『word/document.xml』于『application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml』））
+　　　】）
+　　于「六」）
+　于『application/zip』。
+「核归档」
+　于（「造归档」于（「列」【『[Content_Types].xml』与（「作帛」于『<Types/>』），『word/document.xml』与（「作帛」于『<主/>』）】）于「六」）
+　于『application/zip』。
+「核归档」
+　于（「造归档」于（「列」【『[Content_Types].xml』与（「作帛」于『<Types>破碎』），『word/document.xml』与（「作帛」于『<主/>』）】）于「六」）
+　于『application/zip』。
+「：汉语：按原档是否已有 ZIP64 读取真实目录值，再重建末记录；条目压缩与 CRC 沿用原档。
+　　文言：辨原档之有无六四之记，取实目录值而复成末记；目之压缩与 CRC 仍原档。：」
+「造六四」乃化「帛」为「帛」者也。
+「造六四」者得「档」而
+　令「尾位」为（「计帛」于「档」）减「二二」而
+　令「原数」为「压档读数」于「档」于（「尾位」加「一零」）于「二」而
+　令「原目录长」为「压档读数」于「档」于（「尾位」加「一二」）于「四」而
+　令「原目录位」为「压档读数」于「档」于（「尾位」加「一六」）于「四」而
+　令「已有六四」为「或」于（「原数」等于「六五五三五」）于（「原目录位」等于「四二九四九六七二九五」）而
+　令「扩位」为若「已有六四」则「压档读数」于「档」于（「尾位」减「一二」）于「八」否则「尾位」而
+　令「其数」为若「已有六四」则「压档读数」于「档」于（「扩位」加「三二」）于「八」否则「原数」而
+　令「目录长」为若「已有六四」则「压档读数」于「档」于（「扩位」加「四零」）于「八」否则「原目录长」而
+　令「目录位」为若「已有六四」则「压档读数」于「档」于（「扩位」加「四八」）于「八」否则「原目录位」而
+　令「扩尾」为
+　　「压档造头」于（「列」
+　　　【「四」与「一零一零七五七九二」
+　　　，「八」与「四四」
+　　　，「二」与「四五」
+　　　，「二」与「四五」
+　　　，「四」与「零」
+　　　，「四」与「零」
+　　　，「八」与「其数」
+　　　，「八」与「其数」
+　　　，「八」与「目录长」
+　　　，「八」与「目录位」
+　　　】）而
+　令「定位」为「压档造头」于（「列」【「四」与「一一七八五三零零八」，「四」与「零」，「八」与「扩位」，「四」与「一」】）而
+　令「末尾」为
+　　「压档造头」于（「列」
+　　　【「四」与「一零一零一零二五六」
+　　　，「二」与「零」
+　　　，「二」与「零」
+　　　，「二」与「六五五三五」
+　　　，「二」与「六五五三五」
+　　　，「四」与「四二九四九六七二九五」
+　　　，「四」与「四二九四九六七二九五」
+　　　，「二」与「零」
+　　　】）而
+　「接帛」于（「截帛」于「档」于「零」于「扩位」）于（「接帛」于「扩尾」于（「接帛」于「定位」于「末尾」））
+也。
+
+「六四文档」乃「帛」也。
+「六四文档」者「造六四」于「文档」也。
+
+「著帛」于『yy六四办公.zip』于「六四文档」。
+「核归档」于「六四文档」于『application/vnd.openxmlformats-officedocument.wordprocessingml.document』。
+「核归档」于（「截帛」于「文档」于「零」于（（「计帛」于「文档」）减「一」））于『application/zip』。
+「书」于『ZIP内容、ZIP64、OOXML XML与EPUB/JAR生成向量通过』。

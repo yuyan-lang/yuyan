@@ -1,0 +1,669 @@
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「急就」之「日历时区」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻「授时」之「时区」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「窄文」者「急就文字自串」于『ab』也。
+
+「宽文」者「急就文字自串」于『😀』也。
+
+「孤文」者「急就文字自码元」于（「列」【「五五二九六」】）也。
+
+「拼文」者「急就拼文」于「窄文」于（「急就拼文」于「宽文」于「孤文」）也。
+
+「断言」
+　于（「且」
+　　于（「且」于（（「急就文字长」于「拼文」）等于「五」）于（「文同」于（「急就文字作串」于「拼文」）于『ab😀�』））
+　　于（「且」
+　　　于（「急就文字等」于「拼文」于（「急就文字自码元」于（「列」【「九七」，「九八」，「五五三五七」，「五六八三二」，「五五二九六」】）））
+　　　于（「且」于（「急就真值」于（「急就字符串值」于「拼文」））于（「急就严格等」于（「急就数值」于「零点零」）于（「急就数值」于「负零点零」）））））
+　于『捷思值与码元绳组合』。
+「父物」者「急就新物」于「可无」也。
+
+「子物」者「急就新物」于（「可有」于「父物」）也。
+
+「属性键」者「急就文字自串」于『x』也。
+
+「定义成」者「急就定义属」于「父物」于（「属性键」与（「急就数值」于「七点零」）与「阳」与「阳」与「阳」）也。
+
+「继承值」者「急就取属」于「子物」于「属性键」也。
+
+「删除成」者「急就删属」于「父物」于「属性键」也。
+
+「急就阻扩」于「子物」。
+「阻扩成」者非（「急就定义属」于「子物」于（「属性键」与「急就未定义」与「阳」与「阳」与「阳」））也。
+
+「断言」
+　于（「且」
+　　于「定义成」
+　　于（「且」
+　　　于「删除成」
+　　　于（「且」
+　　　　于「阻扩成」
+　　　　于（「且」
+　　　　　于（「急就严格等」于「继承值」于（「急就数值」于「七点零」））
+　　　　　于（「且」于（非（「急就严格等」于「父物」于「子物」））于（「急就严格等」于（「急就取属」于「子物」于「属性键」）于「急就未定义」））））））
+　于『捷思普通对象与原型组合』。
+「执行帧」者「急就新帧」于（「急就编表达」于（「急就析式」于『(1+2*3===7 && true) ? -(8/2)+10 : 0』））于「一零零零零」也。
+
+「一步成」者「急就步进」于「执行帧」也。
+
+「运行值」者「急就行帧」于「执行帧」也。
+
+「断言」
+　于（「且」
+　　于「一步成」
+　　于（「且」
+　　　于（「急就严格等」于「运行值」于（「急就数值」于「六点零」））
+　　　于（「急就严格等」于（「急就行式」于『false && (1/0)』）于（「急就布尔」于「阴」））））
+　于『捷思表达式字节码与帧恢复组合』。
+「断言」
+　于（「急就严格等」于（「急就行脚本」于『let n=2;const step=3;{let n=99;n+=1;}if(n<4){n+=step;}else n=0;n*2;』）于（「急就数值」于「一零点零」））
+　于『捷思脚本声明与块作用域组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『debugger;let sum=0;for(let i=0;i<6;i++){debugger;if(i===2)continue;if(i===5)break;sum+=i;}let n=0;while(n<3){++n;sum+=n;}do{sum--;n--;}while(n>0);let t=0;switch(2){case 1:t=100;break;default:t=20;case 2:t+=3;case 3:t+=4;break;case 4:t=100;}for(let i=0;i<3;i++){switch(i){case 1:continue;default:t++;}}switch(9){default:t+=2;case 0:t+=3;}switch(9){case 0:t=100;}let probes=0;switch(2){case ++probes:t=100;break;case ++probes:break;case ++probes:t=100;}let outer=2;let hits=0;switch(outer++){case 2:let outer=9;hits=outer;break;default:hits=100;}debugger;sum+t-14+probes-2+outer-3+hits-9;』）
+　　于（「急就数值」于「一一点零」））
+　于『捷思循环与中断续行组合』。
+「断言」
+　于（「急就严格等」
+　　于（
+　　　令「境」为「急就新全局境」于「元」而
+　　　令「初值」为
+　　　　「急就在境行脚本」
+　　　　　于「境」
+　　　　　于『function make(n){return step=>{n+=step;return n;};}let f=make(3);let a=f(2);function sum(n){if(n<=0)return 0;return n+sum(n-1);}var shared=2;』而
+　　　「急就在境行脚本」于「境」于『var shared;shared+=3;a+f(4)+sum(4)+shared-5;』
+　　）
+　　于（「急就数值」于「二四点零」））
+　于『捷思函数闭包与递归调用组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let n=3;let a=[n,,5];let key="x";let o={n,[key]:a};o.x[1]=7;a[4]=2;o.n+=a[1];let z=(x=>x===void 0?0:1)();o.n+a.length+a[4]+z;』）
+　　于（「急就数值」于「一七点零」））
+　于『捷思数组对象与成员赋值组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『function sum(a=2,b=a+1,...rest){let f=()=>arguments.length;return a+b+rest[0]+rest.length+f()-4+(arguments[0]===undefined?0:100);}let a=[4,5];let b=[1,...a];let o={x:sum(void 0,void 0,...a),...{y:b[2]}};let named=function arguments(){return arguments.length;};function shadow(arguments){return arguments;}o.x+o.y+named(1,2)-2+shadow(3)-3;』）
+　　于（「急就数值」于「一六点零」））
+　于『捷思默认剩余参数与展开组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let key="x";let {[key]:a=2,...rest}={y:4};let [b,,...tail]=[3,0,5,6];function f({y},[n=7]=[]){return y+n;}let z=0;({y:z}=rest);[rest.y]=[8];a+b+tail.length+f(rest)+z;』）
+　　于（「急就数值」于「二六点零」））
+　于『捷思声明参数与赋值解构组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let out=0;for(let [a,b] of [[1,2],[3,4]]){if(a===3)continue;out+=a+b;}let o={x:2,y:3};for(let k in o){out+=o[k];}function f(){for(let x of [7,8])return x;}for(let x of [1,2]){out+=f()+x;if(x===2)break;}let fs=[];for(let x of [1,2]){fs[x-1]=()=>x;}for(let i=0;i<2;i++){fs[i+2]=()=>i;}out+fs[0]()+fs[1]()+fs[2]()+fs[3]();』）
+　　于（「急就数值」于「二九点零」））
+　于『捷思遍历解构与逐次闭包组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let v=f(3);let kept=f;function f(n){return g(n)+1;function g(x){return x*2;}}let before=x===undefined?0:100;if(false){var x=99;}var x=2;var x;{var x=x+1;let hidden=8;}let check=NaN===NaN?100:0;v+x+before+check+(kept===f?0:100);』）
+　　于（「急就数值」于「一零点零」））
+　于『捷思声明提升与变量重声明组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let s="x"+2+true+null+undefined;let bad=+"1_0";let ok="10"<"2"&&"ab">="aa"&&typeof 1==="number"&&typeof (()=>0)==="function"&&typeof null==="object"&&typeof missing==="undefined"&&typeof s==="string"&&+"  12.5e1 "===125&&+""===0&&+"0x10"===16&&+"0o10"===8&&+"0b10"===2&&+".5"===0.5&&+"1."===1&&+"+Infinity"===Infinity&&bad!==bad&&"3"*2===6&&"7"-2===5&&("5"|2)===7;let o={};let same="2"==2&&2=="2"&&false==""&&true=="1"&&null==undefined&&undefined==null&&null!=0&&undefined!=false&&"x"!=0&&NaN!=NaN&&"2"!="02"&&o==o&&o!={};ok&&same?s:"bad";』）
+　　于（「急就字符串值」于（「急就文字自串」于『x2truenullundefined』）））
+　于『捷思类型查询与字符串运算组合』。
+「断言」
+　于（「急就严格等」
+　　于（
+　　　令「境」为「急就新全局境」于「元」而
+　　　令「回调」为
+　　　　（（得「接收者」又得「实参」而
+　　　　　「急就二元算」
+　　　　　　于『+』
+　　　　　　于「左」曰（若「急就严格等」于「接收者」于「急就未定义」则「急就数值」于「零点零」否则「急就取属」于「接收者」于（「急就文字自串」于『n』））
+　　　　　　于「右」曰（「冠」于「实参」）
+　　　　）
+　　　　　属「急就宿主回调」
+　　　　）而
+　　　令「无」为「急就声明名」于「境」于『host』于「阴」而
+　　　令「无」为「急就初置名」于「境」于『host』于（「急就新东道术」于「回调」）而
+　　　令「脚本果」为
+　　　　「急就在境行脚本」
+　　　　　于「境」
+　　　　　于『let o={n:2,add(x){this.n+=x;return ()=>this.n;},read:function(){return this.n;},host:host};let f=o.add(3);let a=o.read();let p={n:7,read:o.read};function Ctor(x){this.n=x;return 7;}function ObjCtor(){return {n:9};}function EmptyCtor(){this.n=1;}let built=new Ctor(...[4]);let replaced=new ObjCtor();let empty=new EmptyCtor;let nativeBuilt=new host(3);typeof nativeBuilt==="object"&&built.n===4&&replaced.n===9&&empty.n===1&&typeof host==="function"&&host===o.host&&host?a+p.read()+f()+host(2)+o.host(...[3])-10:0;』而
+　　　令「闭包」为「急就在境行脚本」于「境」于『function cb(x){o.n+=x;return o.read();}cb;』而
+　　　令「调用果」为「急就东道召术」于「函数」曰「闭包」于「接收者」曰「急就未定义」于（「列」【「急就数值」于「三点零」】）而
+　　　令「宿主果」为
+　　　　「急就东道召术」于「函数」曰（「急就新东道术」于「回调」）于「接收者」曰（「急就在境行脚本」于「境」于『o;』）于（「列」【「急就数值」于「二点零」】）而
+　　　若「且」于（「急就严格等」于「调用果」于（「急就数值」于「八点零」））于（「急就严格等」于「宿主果」于（「急就数值」于「一零点零」））则
+　　　　「脚本果」
+　　　否则
+　　　　「急就数值」于「零点零」
+　　）
+　　于（「急就数值」于「一七点零」））
+　于『捷思成员接收者与箭头捕获组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let hits=0;let o={x:2};function key(){hits++;return "x";}let a=o[key()]++;let b=++o.x;let c=o.x--;let d=delete o.x;let xs=[1,2];delete xs[0];a+b+c+o.x===NaN?99:a+b+c+hits+(d?1:0)+xs.length+(xs[0]===undefined?1:0);』）
+　　于（「急就数值」于「一五点零」））
+　于『捷思成员更新与属性删除组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let hits=0;function next(){hits++;return 7;}let a=0??next();let b=false??next();let c=null??next();let d=undefined??next();a+c+d+hits+(b===false?0:100);』）
+　　于（「急就数值」于「一六点零」））
+　于『捷思空值合并惰性求值组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let hits=0;function next(){hits++;return 3;}let a=0;a&&=next();a||=next();a??=next();let o={x:null,y:false};o.x??=next();o.x||=next();o.y&&=next();let keys=0;function key(){keys++;return "y";}let r=o[key()]||=next();a+o.x+r+hits+keys;』）
+　　于（「急就数值」于「一三点零」））
+　于『捷思名称成员逻辑赋值组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let o={x:undefined};let a=[1,,3];let ok="x" in o && !("y" in o) && 0 in a && !(1 in a) && "length" in a;delete o.x;ok&&!("x" in o);』）
+　　于（「急就布尔」于「阳」））
+　于『捷思属性存在与数组孔位组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let s="a"+"𐀀";let {length:n,0:first}=s;let ok=n===3&&first==="a"&&s[1]==="\uD800"&&s[2]==="\uDC00"&&s[3]===undefined&&s["01"]===undefined;ok;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思字符串长度下标与码元组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let s="a𐀀\uD800";let a=[...s];let count=0;for(let c of s){count+=c.length;}function f(...xs){return xs.length;}a.length===3&&a[1]==="𐀀"&&a[2]==="\uD800"&&count===4&&f(...s)===3;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思字符串迭代代理对与孤立项组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let a=[1,2,3,4];a.note=7;a.length=2;let ok=!(2 in a)&&!(3 in a)&&a.note===7;a.length=5;ok=ok&&!(4 in a);a[4]=9;a.length=0;ok&&a.length===0&&!(0 in a)&&!(4 in a)&&a.note===7;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组长度收缩扩张与属性保留组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let o={..."a𐀀",...3,...false};let {0:first,...rest}="abc";let count=0;for(let k in "a𐀀"){count++;}o[0]==="a"&&o[1]==="\uD800"&&o[2]==="\uDC00"&&!("length" in o)&&first==="a"&&rest[1]==="b"&&!(0 in rest)&&count===3;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思基础值展开剩余解构与枚举组合』。
+「断言」
+　于（「急就严格等」于（「急就行脚本」于『0xFF+0Xf+0o10+0O7+0b101+0B11+1_000+1.2_5e2;』）于（「急就数值」于「一四一八点零」））
+　于『捷思进制与数字分隔符组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let n=0;function f(){return ++n;}let s=`a${f()}-${`b${f()}`}\n${true}${null}${undefined}`;s;』）
+　　于（「急就字符串值」于（「急就文字自串」于『a1-b2「：换行：」truenullundefined』）））
+　于『捷思模板嵌套转换与求值次序组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let a=17;a%=5;let o={x:9};o.x%=4;let b=3;b&=1;b|=4;b^=1;b<<=33;b>>=1;b>>>=1;let z=4%0;let inf=Infinity%2;let nan=NaN%2;let tiny=1e300%1e-300;let ok=z!==z&&inf!==inf&&nan!==nan&&5%Infinity===5&&1/(-4%2)===-Infinity&&1/(-0%2)===-Infinity&&tiny>=0&&tiny<1e-300;ok?(5.5%2)+(-5%2)+(5%-2)+a+o.x+(5&3)+(5|3)+(5^1)+~0+(1<<31)+(-2>>1)+(-2>>>1)-9+b-2+(NaN|0)+(Infinity|0)+(4294967297|0)+(-4294967297|0):0;』）
+　　于（「急就数值」于「四点五」））
+　于『捷思余数符号与复合赋值组合』。
+「断言」
+　于（「急就严格等」于（「急就行脚本」于『let x=2;function f(a=3,g=()=>a,h=()=>x){var a=9;var x=7;return g()+h()+a+x;}f();』）于（「急就数值」于「二一点零」））
+　于『捷思默认参数闭包与函数体变量隔离』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let o={z:1,10:1,2:1,a:1,"01":1,"4294967295":1};let s="";for(let k in o){s+=k+",";}s;』）
+　　于（「急就字符串值」于（「急就文字自串」于『2,10,z,a,01,4294967295,』）））
+　于『捷思枚举数字下标与字符串插入顺序』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let thrown={n:7};let seen;let trace="";function fail(){let hidden=1;throw thrown;}try{try{fail();}catch(e){seen=e;trace+="c";throw e;}finally{trace+="f";}}catch(e){trace+=e===thrown?"o":"x";}try{throw undefined;}catch{trace+="u";}try{missingName;}catch(e){trace+=e.name==="ReferenceError"&&e instanceof ReferenceError&&e.message.length>0?"h":"x";}try{trace+="n";}finally{trace+="z";}function caught(){try{throw 3;}catch(e){return e+1;}}let value=caught();let after=0;try{throw 2;}catch(e){after=e;}seen===thrown&&trace==="cfouhnz"&&value===4&&after===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思抛出身份捕获环境与终结路径组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let trace="";function plain(){try{return 2;}finally{trace+="a";}}function replace(){try{return 1;}finally{return 3;}}function nested(){try{return 4;}finally{try{return 5;}finally{trace+="b";}}}let reason={n:1};function throwing(){try{return 6;}finally{throw reason;}}function caught(){try{throw 2;}catch(e){return e+2;}finally{trace+="c";}}function innerCatch(){try{return 8;}finally{try{throw 1;}catch{trace+="d";}}}let a=plain();let b=replace();let c=nested();let seen;try{throwing();}catch(e){seen=e;}let d=caught();let e=innerCatch();let n=0;while(n<3){try{n++;if(n<3)continue;break;}finally{trace+=n;}}let inside=0;try{while(inside<2){inside++;if(inside<2)continue;break;}}finally{trace+="z";}function finalLoop(){try{return 9;}finally{let i=0;while(i<2){i++;continue;}trace+="q";}}let f=finalLoop();a===2&&b===3&&c===5&&seen===reason&&d===4&&e===8&&n===3&&inside===2&&f===9&&trace==="abcd123zq";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思终结返回覆盖与循环跳转组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let cause={why:1};let err=new TypeError("bad",{cause:cause});let shown=err.toString()==="TypeError: bad";let prototypeState=err.constructor===TypeError&&err instanceof TypeError&&err instanceof Error&&!(err instanceof RangeError)&&!(7 instanceof Error);let keys=0;for(let key in err)keys++;let empty=Error();let withUndefined=Error(undefined,{cause:undefined});let input=[err,cause];let aggregate=new AggregateError(input,"list",{cause:null});input[0]=0;let aggregateState=aggregate instanceof AggregateError&&aggregate instanceof Error&&aggregate.constructor===AggregateError&&aggregate.errors.length===2&&aggregate.errors[0]===err&&aggregate.errors[1]===cause&&aggregate.cause===null&&aggregate.toString()==="AggregateError: list";let thrown;try{throw aggregate;}catch(e){thrown=e;}let hostError;try{missingErrorName;}catch(e){hostError=e;}err.name="";let messageOnly=err.toString()==="bad";err.message="";shown&&prototypeState&&keys===0&&empty.name==="Error"&&empty.message===""&&empty.toString()==="Error"&&("cause" in withUndefined)&&withUndefined.cause===undefined&&new URIError(7).message==="7"&&TypeError.name==="TypeError"&&TypeError.length===1&&AggregateError.length===2&&aggregateState&&thrown===aggregate&&hostError instanceof Error&&hostError.message.length>0&&hostError.toString().length>0&&messageOnly&&err.toString()==="";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思错误原型消息原因与聚合组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『function Ctor(a,b=2,...rest){this.n=a;}Ctor.prototype.read=function(){return this.n;};let originalPrototype=Ctor.prototype;let first=new Ctor(4);let initial=first instanceof Ctor&&first.constructor===Ctor&&first.read()===4&&originalPrototype.constructor===Ctor;Ctor.prototype={mark:3};let second=new Ctor(5);let replaced=second instanceof Ctor&&!(first instanceof Ctor)&&second.mark===3;function Count(a,b,...rest){}let named=function Inner(a,b,c){};let arrow=(a,b=3)=>a;let methods={read(a,b){return a;}};let deniedArrow=false;let deniedMethod=false;try{new arrow(2);}catch(e){deniedArrow=e instanceof TypeError&&e.name==="TypeError";}try{new methods.read(2);}catch(e){deniedMethod=e instanceof TypeError;}let keys=0;for(let key in Ctor)keys++;initial&&replaced&&Ctor.name==="Ctor"&&Ctor.length===1&&Count.length===2&&named.name==="Inner"&&named.length===3&&arrow.length===1&&methods.read.name==="read"&&methods.read.length===2&&!("prototype" in arrow)&&!("prototype" in methods.read)&&deniedArrow&&deniedMethod&&keys===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思函数元数据原型与构造限制组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let base={n:10};function sum(a,b){return this.n+a+b;}let callResult=sum.call(base,1,2);let applyResult=sum.apply(base,{0:3,1:4,length:2});let borrowed=Function.prototype.call.call(sum,base,1,2);let bound=sum.bind(base,2);let rebound=bound.bind({n:99},3);let boundResult=bound.call({n:99},3);function Ctor(a,b){this.n=a+b;}let BoundCtor=Ctor.bind({n:99},4);let built=new BoundCtor(5);let ctorState=built.n===9&&built instanceof Ctor&&built instanceof BoundCtor&&built.constructor===Ctor&&BoundCtor.prototype===undefined;let denied=false;try{new Function.prototype();}catch(e){denied=e instanceof TypeError;}let dynamicBase=7;function factory(){let dynamicBase=100;return new Function("a","b","return dynamicBase+a+b;");}let dynamic=factory();function count(){return arguments.length;}callResult===13&&applyResult===17&&borrowed===13&&boundResult===15&&rebound()===15&&bound.name==="bound sum"&&bound.length===1&&rebound.length===0&&bound instanceof Function&&sum.constructor===Function&&ctorState&&denied&&dynamic(1,2)===10&&dynamic.name==="anonymous"&&dynamic.length===2&&dynamic instanceof Function&&Function()()===undefined&&Function.prototype()===undefined&&count.apply(null,null)===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思公共调用绑定构造与动态全局环境组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let parent={inherited:9};let o=Object.create(parent);o.z=3;o[2]=2;o.a=4;let keys=Object.keys(o);let values=Object.values(o);let entries=Object.entries(o);let own=Object.hasOwn(o,"a")&&o.hasOwnProperty("z")&&!o.hasOwnProperty("inherited")&&o.propertyIsEnumerable("a");let merged=Object.assign({},null,o,{a:7});let changed=Object.setPrototypeOf(o,{next:8})===o&&o.next===8;let empty=Object.create(null);let prevented=Object.preventExtensions(merged)===merged&&!Object.isExtensible(merged);let cyclic=false;try{Object.setPrototypeOf(parent,parent);}catch(e){cyclic=e instanceof TypeError;}let box=Object("xy");let names=Object.getOwnPropertyNames(box);keys.length===3&&keys[0]==="2"&&keys[1]==="z"&&keys[2]==="a"&&values[0]===2&&values[1]===3&&entries[2][0]==="a"&&entries[2][1]===4&&own&&merged.a===7&&merged.z===3&&!Object.hasOwn(merged,"inherited")&&changed&&Object.getPrototypeOf(empty)===null&&Object.getPrototypeOf(parent)===Object.prototype&&Object.prototype.isPrototypeOf(parent)&&Object.prototype.isPrototypeOf(Function)&&new Error() instanceof Object&&o instanceof Object&&Object(o)===o&&new Object() instanceof Object&&box[0]==="x"&&names[0]==="0"&&names[2]==="length"&&Object.prototype.toString.call(box)==="[object String]"&&Object().toString()==="[object Object]"&&prevented&&cyclic;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思对象自有枚举合并装箱与原型组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let o={};Object.defineProperty(o,"x",{value:1,writable:true,enumerable:true});Object.defineProperty(o,"x",{value:2});let d=Object.getOwnPropertyDescriptor(o,"x");Object.defineProperty(o,"x",{writable:false});let denied=false;try{Object.defineProperty(o,"x",{value:3});}catch(e){denied=e instanceof TypeError;}let getter=function(){return this.n+1;};let setter=function(v){this.n=v;};let parent={};Object.defineProperty(parent,"computed",{get:getter,set:setter,enumerable:true,configurable:true});let child=Object.create(parent,{n:{value:3,writable:true}});child.computed=8;let access=Object.getOwnPropertyDescriptor(parent,"computed");let inherited=child.n===8&&child.computed===9&&access.get===getter&&access.set===setter&&!("value" in access)&&!Object.hasOwn(child,"computed");delete parent.computed;parent.computed=10;let replaced=Object.getOwnPropertyDescriptor(parent,"computed");Object.defineProperties(o,{hidden:{value:7},other:{value:4,enumerable:true}});let all=Object.getOwnPropertyDescriptors(o);d.value===2&&d.writable&&d.enumerable&&!d.configurable&&o.x===2&&denied&&inherited&&replaced.value===10&&!("get" in replaced)&&all.hidden.value===7&&!all.hidden.enumerable&&Object.keys(o).length===2&&Object.is(NaN,NaN)&&!Object.is(0,-0)&&Object.is(-0,-0)&&Object.defineProperty.length===3;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思属性描述数据访问器继承与标志组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『"use strict";let sealed={x:1};let sealIdentity=Object.seal(sealed)===sealed;sealed.x=2;let sealState=Object.isSealed(sealed)&&!Object.isFrozen(sealed)&&!Object.isExtensible(sealed)&&sealed.x===2;let frozen={n:3};let freezeIdentity=Object.freeze(frozen)===frozen;let writeDenied=false;try{frozen.n=4;}catch(e){writeDenied=true;}let descriptor=Object.getOwnPropertyDescriptor(frozen,"n");let state={n:1};let access={};Object.defineProperty(access,"n",{get:function(){return state.n;},set:function(v){state.n=v;},configurable:true});Object.freeze(access);access.n=7;let array=[1,2];Object.freeze(array);let empty=Object.preventExtensions({});let redefineDenied=false;try{Object.defineProperty(sealed,"x",{configurable:true});}catch(e){redefineDenied=e instanceof TypeError;}sealIdentity&&sealState&&freezeIdentity&&Object.isFrozen(frozen)&&Object.isSealed(frozen)&&writeDenied&&frozen.n===3&&!descriptor.writable&&!descriptor.configurable&&Object.isFrozen(access)&&access.n===7&&state.n===7&&Object.isFrozen(array)&&!Object.getOwnPropertyDescriptor(array,"length").writable&&Object.isFrozen(empty)&&Object.isSealed(empty)&&Object.freeze(3)===3&&Object.seal(null)===null&&Object.isFrozen(undefined)&&Object.isSealed("x")&&redefineDenied;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思封印冻结数据访问器与数组组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let holes=new Array(3);let a=Array.of(1,2);let pushed=a.push(3,4);let popped=a.pop();let shifted=a.shift();let unshifted=a.unshift(8,9);let cut=a.slice(1,-1);let sparse=holes.slice(1);let mapped=Array.from({0:2,1:3,length:2},function(v,i){return this.n+v+i;},{n:4});let letters=Array.from("ab");let generic={0:"x",length:1};let genericLength=Array.prototype.push.call(generic,"y");let invalid=false;try{new Array(1.5);}catch(e){invalid=e instanceof RangeError;}let frozen=Object.freeze([1]);let denied=false;try{frozen.push(2);}catch(e){denied=e instanceof TypeError;}Array.isArray(holes)&&holes.length===3&&!(0 in holes)&&Array.isArray(Array.prototype)&&a instanceof Array&&a instanceof Object&&a.constructor===Array&&Object.getPrototypeOf(a)===Array.prototype&&pushed===4&&popped===4&&shifted===1&&unshifted===4&&a.join("-")==="8-9-2-3"&&a.toString()==="8,9,2,3"&&cut.join()==="9,2"&&sparse.length===2&&!(0 in sparse)&&holes.indexOf(undefined)===-1&&holes.includes(undefined)&&[0/0].includes(0/0)&&[0/0].indexOf(0/0)===-1&&a.indexOf(2,-2)===2&&mapped.join()==="6,8"&&letters.join()==="a,b"&&genericLength===2&&generic[1]==="y"&&generic.length===2&&Array.of.length===0&&Array.from.length===1&&Array.name==="Array"&&invalid&&denied&&frozen.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组构造孔位变更截取搜索与转换组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let source=[1,,3];let seen="";let mapped=source.map(function(v,i,a){seen+=i;return this.n+v;},{n:2});let filtered=source.filter(function(v){return v>1;});let visited=0;let each=source.forEach(function(v,i,a){visited+=v;});let everyCalls=0;let all=source.every(function(v){everyCalls++;return v<2;});let someCalls=0;let any=source.some(function(v){someCalls++;return v===1;});let hole=source.findIndex(function(v){return v===undefined;});let first=source.find(function(v){return v>1;});let last=source.findLast(function(v){return v>0;});let lastIndex=source.findLastIndex(function(v){return v>0;});let folded=source.reduce(function(a,v,i,o){return a+v;},5);let right=[1,2,3].reduceRight(function(a,v){return a-v;});let emptyError=false;try{[].reduce(function(a,v){return a+v;});}catch(e){emptyError=e instanceof TypeError;}let badCallback=false;try{[].map(null);}catch(e){badCallback=e instanceof TypeError;}let changed=[1,2,3];let mutation=changed.map(function(v,i){if(i===0){delete changed[1];changed[2]=8;changed.push(9);}return v;});let inherited=Object.create({1:5});inherited[0]=2;inherited.length=2;let borrowed=Array.prototype.map.call(inherited,function(v){return v*2;});seen==="02"&&mapped.length===3&&mapped[0]===3&&!(1 in mapped)&&mapped[2]===5&&filtered.join()==="3"&&visited===4&&each===undefined&&!all&&everyCalls===2&&any&&someCalls===1&&hole===1&&first===3&&last===3&&lastIndex===2&&folded===9&&right===0&&emptyError&&badCallback&&[].every(function(){return false;})&&!([].some(function(){return true;}))&&[].reduce(function(a,v){return a+v;},undefined)===undefined&&mutation.length===3&&!(1 in mutation)&&mutation[2]===8&&borrowed.join()==="4,10"&&source.findIndex(function(){return false;})===-1&&source.findLast(function(){return false;})===undefined&&Array.prototype.map.length===1&&Array.prototype.reduceRight.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组回调孔位短路变更与双向归并组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let a=[1,,3,4];let removed=a.splice(1,2,8,9,10);let grown=a.join()==="1,8,9,10,4"&&removed.length===2&&!(0 in removed)&&removed[1]===3;let removedTail=a.splice(-2);let shrunk=a.join()==="1,8,9"&&removedTail.join()==="10,4";let unchanged=a.splice();let reversed=[1,,3,,];let reverseIdentity=reversed.reverse()===reversed;let joined=[1,,].concat([3,,4],5,{n:6});let filled=new Array(4);let fillIdentity=filled.fill(7,1,-1)===filled;let copied=[1,2,3,4,5];let copyIdentity=copied.copyWithin(1,0,4)===copied;let holeCopy=[1,,3,4];holeCopy.copyWithin(2,0,2);let generic={0:1,1:2,2:3,length:3};let genericRemoved=Array.prototype.splice.call(generic,1,1,7,8);let denied=false;try{Object.freeze([1,2]).reverse();}catch(e){denied=e instanceof TypeError;}grown&&shrunk&&unchanged.length===0&&reverseIdentity&&reversed.length===4&&!(0 in reversed)&&reversed[1]===3&&!(2 in reversed)&&reversed[3]===1&&joined.length===7&&!(1 in joined)&&!(3 in joined)&&joined[4]===4&&joined[5]===5&&joined[6].n===6&&fillIdentity&&filled.length===4&&!(0 in filled)&&filled[1]===7&&filled[2]===7&&!(3 in filled)&&copyIdentity&&copied.join()==="1,1,2,3,4"&&holeCopy[2]===1&&!(3 in holeCopy)&&a.at(-1)===9&&a.at(-4)===undefined&&a.at(3)===undefined&&generic.length===4&&generic[1]===7&&generic[2]===8&&generic[3]===3&&genericRemoved[0]===2&&denied&&Array.prototype.reverse.length===0&&Array.prototype.splice.length===2&&Array.prototype.copyWithin.length===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组区间插删反转组合填充与重叠复制』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let a=[3,,undefined,20,1];let identity=a.sort()===a;let numeric=[3,20,1].sort(function(a,b){return a-b;});let stable=[{k:1,n:"a"},{k:0,n:"b"},{k:1,n:"c"},{k:0,n:"d"}];stable.sort(function(a,b){return a.k-b.k;});let noNumber=[3,1,2].sort(function(){return 0/0;});let bad=false;try{[].sort(2);}catch(e){bad=e instanceof TypeError;}let nested=[1,,[2,,[3]],4];let flat=nested.flat();let deep=nested.flat(2);let zero=nested.flat(0);let seen="";let mapped=[1,,3].flatMap(function(v,i,o){seen+=i;return [this.n+v,,v];},{n:2});let generic=Object.create({1:2});generic[0]=3;generic.length=3;Array.prototype.sort.call(generic,function(a,b){return a-b;});let thrown={n:4};let caught;try{[2,1].sort(function(){throw thrown;});}catch(e){caught=e;}identity&&a.length===5&&a[0]===1&&a[1]===20&&a[2]===3&&a[3]===undefined&&(3 in a)&&!(4 in a)&&numeric.join()==="1,3,20"&&stable.map(function(v){return v.n;}).join()==="b,d,a,c"&&noNumber.join()==="3,1,2"&&bad&&flat.length===4&&flat[0]===1&&flat[1]===2&&Array.isArray(flat[2])&&flat[3]===4&&deep.join()==="1,2,3,4"&&zero.length===3&&zero[1]===nested[2]&&seen==="02"&&mapped.join()==="3,1,5,3"&&generic[0]===2&&generic[1]===3&&!Object.hasOwn(generic,"2")&&caught===thrown&&[1,2,1].lastIndexOf(1)===2&&[1,2,1].lastIndexOf(1,-2)===0&&[1].lastIndexOf(1,-2)===-1&&[,undefined].lastIndexOf()===1&&[,].lastIndexOf(undefined)===-1&&[0/0].lastIndexOf(0/0)===-1&&Array.prototype.flat.length===0&&Array.prototype.flatMap.length===1&&Array.prototype.lastIndexOf.length===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组稳定排序扁平化映射与反向搜索组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let source=Object.freeze([3,,1]);let sorted=source.toSorted(function(a,b){return a-b;});let reversed=source.toReversed();let spliced=source.toSpliced(1,1,7,8);let replaced=source.with(-1,9);let unchanged=source.toSpliced();let removed=source.toSpliced(1);let explicit=source.toSpliced(1,undefined,4);let invalid=false;try{source.with(3,1);}catch(e){invalid=e instanceof RangeError;}let emptyInvalid=false;try{[].with(0,1);}catch(e){emptyInvalid=e instanceof RangeError;}let trace="";let generic={length:3};Object.defineProperty(generic,"0",{get:function(){trace+="0";return 1;}});Object.defineProperty(generic,"1",{get:function(){trace+="1";return 2;}});Object.defineProperty(generic,"2",{get:function(){trace+="2";return 3;}});let genericReverse=Array.prototype.toReversed.call(generic);let reverseOrder=trace==="210";let skipped={1:3,length:2};Object.defineProperty(skipped,"0",{get:function(){throw 8;}});let skippedWith=Array.prototype.with.call(skipped,0,7);let skippedSplice=Array.prototype.toSpliced.call(skipped,0,1,6);let comparatorFirst=false;try{Array.prototype.toSorted.call(skipped,1);}catch(e){comparatorFirst=e instanceof TypeError;}source.length===3&&source[0]===3&&!(1 in source)&&source[2]===1&&sorted!==source&&sorted.join()==="1,3,"&&(2 in sorted)&&reversed.join()==="1,,3"&&(1 in reversed)&&spliced.join()==="3,7,8,1"&&replaced.join()==="3,,9"&&(1 in replaced)&&unchanged.join()==="3,,1"&&(1 in unchanged)&&removed.join()==="3"&&explicit.join()==="3,4,,1"&&(2 in explicit)&&invalid&&emptyInvalid&&reverseOrder&&genericReverse.join()==="3,2,1"&&skippedWith.join()==="7,3"&&skippedSplice.join()==="6,3"&&comparatorFirst&&sorted instanceof Array&&Array.prototype.toSorted.length===1&&Array.prototype.toReversed.length===0&&Array.prototype.toSpliced.length===2&&Array.prototype.with.length===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组副本修改密集孔位读取顺序与跳过区间』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let a=[1,,3];let it=a.values();let first=it.next();a[1]=8;a.push(4);let second=it.next();let tail=Array.from(it);let ended=it.next();a.push(5);let staysDone=it.next().done;let entry=[6,,].entries();let e0=entry.next();let e1=entry.next();let keysSource={length:2};Object.defineProperty(keysSource,"0",{get:function(){throw 7;}});let keys=Array.prototype.keys.call(keysSource);let keyList=[...keys];let values=Array.prototype.values.call({0:7,length:2});let valueList=[...values];let direct=[1,2];let seen="";for(let v of direct){seen+=v;if(v===1){direct[1]=8;direct.push(3);}}let iterable=[1,2,3].values();let breakValue=0;for(let v of iterable){breakValue=v;break;}let afterBreak=iterable.next();function echo(v){let n=0;for(let x of [v])n+=x;return n;}let nested=0;for(let v of [2,3].values())nested+=echo(v);let sum=0;for(let pair of [4,5].entries())sum+=pair[0]+pair[1];let invalid=false;try{it.next.call({});}catch(e){invalid=e instanceof TypeError;}let nextResult=it.next();first.value===1&&!first.done&&second.value===8&&!second.done&&tail.join()==="3,4"&&ended.done&&ended.value===undefined&&staysDone&&e0.value[0]===0&&e0.value[1]===6&&!e0.done&&e1.value[0]===1&&e1.value[1]===undefined&&!e1.done&&entry.next().done&&keyList.join()==="0,1"&&valueList.length===2&&valueList[0]===7&&(1 in valueList)&&valueList[1]===undefined&&seen==="183"&&breakValue===1&&afterBreak.value===2&&!afterBreak.done&&nested===5&&sum===10&&invalid&&Object.keys(nextResult).join()==="value,done"&&Array.prototype.keys.length===0&&Array.prototype.values.length===0&&Array.prototype.entries.length===0&&it.next.name==="next"&&it.next.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组实时迭代次步展开借用与循环按需拉取』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let source=[1,2];let live=Array.from(source,function(v,i){if(i===0){source[1]=8;source.push(3);}return this.n+v;},{n:3});let trace="";let state={n:2};let generic={};Object.defineProperty(generic,"length",{get:function(){trace+="l";return 2;}});Object.defineProperty(generic,"0",{get:function(){trace+="g0";return 1;}});Object.defineProperty(generic,"1",{get:function(){trace+="g1";return state.n;}});let fixed=Array.from(generic,function(v,i){trace+="m"+i;if(i===0)state.n=7;return v;});let order=trace==="lg0m0g1m1";let untouched={};Object.defineProperty(untouched,"length",{get:function(){throw 7;}});let validated=false;try{Array.from(untouched,1);}catch(e){validated=e instanceof TypeError;}let reason={n:9};let iterator=[1,2,3].values();let caught;try{Array.from(iterator,function(v){throw reason;});}catch(e){caught=e;}let after=iterator.next();let pulled="";let faultSource={length:2};Object.defineProperty(faultSource,"0",{get:function(){pulled+="0";return 1;}});Object.defineProperty(faultSource,"1",{get:function(){pulled+="1";return 2;}});try{Array.from(faultSource,function(){throw reason;});}catch(e){}let missing=Array.from({length:2});let noSource=false;try{Array.from(null);}catch(e){noSource=e instanceof TypeError;}live.join()==="4,11,6"&&source.join()==="1,8,3"&&fixed.join()==="1,7"&&order&&validated&&caught===reason&&after.value===2&&!after.done&&pulled==="0"&&missing.length===2&&(0 in missing)&&(1 in missing)&&missing[0]===undefined&&Array.from(3).length===0&&Array.from("𠀀x").length===2&&noSource;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组转换逐步映射长度取值次序与异常停止』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let names=["abs","ceil","floor","trunc","round","sign","sqrt","fround","clz32","imul","pow","atan2","min","max","hypot","random","sin","cos","tan","asin","acos","atan","sinh","cosh","tanh","asinh","acosh","atanh","cbrt","exp","expm1","log","log1p","log2","log10"];let methods=names.every(function(n){return typeof Math[n]==="function";});let descriptor=Object.getOwnPropertyDescriptor(Math,"PI");let denied=false;try{new Math.sqrt(4);}catch(e){denied=e instanceof TypeError;}let random=Math.random();methods&&Math instanceof Object&&Object.keys(Math).length===0&&Math.PI>3.14&&Math.PI<3.15&&Math.E>2.71&&Math.E<2.72&&Math.LN2>0.69&&Math.SQRT2>1.41&&!descriptor.writable&&!descriptor.enumerable&&!descriptor.configurable&&Math.sqrt(9)===3&&Math.abs("-3")===3&&Math.ceil(1.2)===2&&Math.floor(-1.2)===-2&&Math.trunc(-1.2)===-1&&Math.round(1.5)===2&&Math.round(-1.5)===-1&&Object.is(Math.round(-0.1),-0)&&Object.is(Math.sign(-0),-0)&&Math.sign(-3)===-1&&Math.sign(3)===1&&Math.min()===Infinity&&Math.max()===-Infinity&&Object.is(Math.min(0,-0),-0)&&Object.is(Math.max(-0,0),0)&&Math.min(3,1,2)===1&&Math.max(3,1,2)===3&&Math.min(1,NaN)!==Math.min(1,NaN)&&Math.clz32(0)===32&&Math.clz32(1)===31&&Math.clz32(-1)===0&&Math.imul(-1,5)===-5&&Math.imul(0xffffffff,0xffffffff)===1&&Math.fround(16777217)===16777216&&Math.pow(2,3)===8&&Math.pow(NaN,0)===1&&Math.pow(1,NaN)!==Math.pow(1,NaN)&&Math.pow(-1,Infinity)!==Math.pow(-1,Infinity)&&Math.abs(Math.hypot(3,4)-5)<0.00000001&&Math.hypot()===0&&Math.hypot(NaN,Infinity)===Infinity&&Math.sin(0)===0&&Math.cos(0)===1&&Object.is(Math.tan(-0),-0)&&Math.acos(1)===0&&Math.asin(0)===0&&Math.atan(0)===0&&Math.sinh(0)===0&&Math.cosh(0)===1&&Math.tanh(0)===0&&Math.asinh(0)===0&&Math.acosh(1)===0&&Math.atanh(0)===0&&Math.abs(Math.cbrt(8)-2)<0.00000001&&Math.exp(0)===1&&Math.expm1(0)===0&&Math.log(1)===0&&Math.log1p(0)===0&&Math.abs(Math.log2(8)-3)<0.00000001&&Math.abs(Math.log10(100)-2)<0.00000001&&random>=0&&random<1&&Math.sqrt.name==="sqrt"&&Math.sqrt.length===1&&Math.max.length===2&&Math.random.length===0&&denied;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数学内建常量方法取整特殊值与调用组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let box=new String("ab");let boxed=Object("xy");let Bound=String.bind(null,"bc");let boundBox=new Bound();let denied=false;try{String.prototype.valueOf.call(3);}catch(e){denied=e instanceof TypeError;}let nullDenied=false;try{String.prototype.slice.call(null,0);}catch(e){nullDenied=e instanceof TypeError;}let methodDenied=false;try{new String.prototype.charAt();}catch(e){methodDenied=e instanceof TypeError;}let text="𠀀x";String()===""&&String(undefined)==="undefined"&&String(null)==="null"&&String(3)==="3"&&String(box)==="ab"&&box instanceof String&&box instanceof Object&&box.length===2&&box[0]==="a"&&box.valueOf()==="ab"&&box.toString()==="ab"&&box.slice(1)==="b"&&boxed instanceof String&&boxed.valueOf()==="xy"&&boundBox instanceof String&&boundBox instanceof Bound&&boundBox.valueOf()==="bc"&&String.prototype.valueOf()===""&&text.length===3&&text.charCodeAt(0)===55360&&text.charCodeAt(1)===56320&&text.codePointAt(0)===131072&&text.codePointAt(1)===56320&&text.at(-1)==="x"&&text.at(-4)===undefined&&text.charAt(3)===""&&text.charCodeAt(3)!==text.charCodeAt(3)&&text.codePointAt(3)===undefined&&text.slice(0,2)==="𠀀"&&"abcd".slice(-3,-1)==="bc"&&"abcd".slice(3,1)===""&&"abcd".substring(3,1)==="bc"&&"abcd".substring(-2,2)==="ab"&&"a".concat(1,null,undefined)==="a1nullundefined"&&"ababa".indexOf("ba")===1&&"ababa".indexOf("ba",2)===3&&"ababa".lastIndexOf("ba")===3&&"ababa".lastIndexOf("ba",2)===1&&"abc".indexOf("",9)===3&&"abc".lastIndexOf("",NaN)===3&&"abc".includes("b")&&!"abc".includes("z")&&"abc".startsWith("b",1)&&"abc".endsWith("b",2)&&"abc".endsWith("")&&String.prototype.charAt.call(123,1)==="2"&&denied&&nullDenied&&methodDenied&&String.name==="String"&&String.length===1&&String.prototype.slice.length===2&&Object.keys(String.prototype).length===0&&Object.getPrototypeOf(box)===String.prototype;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思字符串构造装箱码元截取搜索与借用组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let made=String.fromCodePoint(65,131072,66);let units=String.fromCharCode(65,55360,56320,66);let wrapped=String.fromCharCode(-1,65536,65537,NaN);let high=String.fromCharCode(55360);let low=String.fromCharCode(56320);let broken=high+"x"+low;let fixed=broken.toWellFormed();let invalid=false;try{String.fromCodePoint(1.5);}catch(e){invalid=e instanceof RangeError;}let invalidHigh=false;try{String.fromCodePoint(1114112);}catch(e){invalidHigh=e instanceof RangeError;}let negative=false;try{"x".repeat(-1);}catch(e){negative=e instanceof RangeError;}let infinite=false;try{"x".repeat(Infinity);}catch(e){infinite=e instanceof RangeError;}let padded="x".padStart(2,String.fromCodePoint(131072));let spaces=String.fromCharCode(160,65279,8192)+"ab"+String.fromCharCode(8232,12288);let trimValue=spaces.trim();let nel=String.fromCharCode(133);made==="A𠀀B"&&units===made&&String.fromCodePoint()===""&&String.fromCharCode()===""&&wrapped.length===4&&wrapped.charCodeAt(0)===65535&&wrapped.charCodeAt(1)===0&&wrapped.charCodeAt(2)===1&&wrapped.charCodeAt(3)===0&&invalid&&invalidHigh&&"ab".repeat(3)==="ababab"&&"ab".repeat(2.9)==="abab"&&"ab".repeat(NaN)===""&&"ab".repeat(-0.1)===""&&negative&&infinite&&"x".padStart(5,"ab")==="ababx"&&"x".padEnd(4,"ab")==="xaba"&&"x".padStart(3)==="  x"&&"x".padEnd(3,"")==="x"&&"abcd".padStart(2,"q")==="abcd"&&"x".padEnd(5,null)==="xnull"&&padded.length===2&&padded.charCodeAt(0)===55360&&!padded.isWellFormed()&&trimValue==="ab"&&spaces.trimStart()==="ab"+String.fromCharCode(8232,12288)&&spaces.trimEnd()===String.fromCharCode(160,65279,8192)+"ab"&&" \t\n".trim()===""&&(nel+"x"+nel).trim()===nel+"x"+nel&&made.isWellFormed()&&!broken.isWellFormed()&&fixed.charCodeAt(0)===65533&&fixed.charAt(1)==="x"&&fixed.charCodeAt(2)===65533&&fixed.isWellFormed()&&made.toWellFormed()===made&&String.prototype.repeat.call(12,2)==="1212"&&String.fromCodePoint.length===1&&String.fromCharCode.length===1&&String.prototype.trim.length===0&&String.prototype.padStart.length===1&&String.prototype.toWellFormed.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思字符串造字重复填充空白裁剪与代理项修复』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let acute=String.fromCodePoint(101,769);let high=String.fromCharCode(55360);let low=String.fromCharCode(56320);let malformed=high+acute+low;let normalized=malformed.normalize();let caseText=high+"Aß"+low;let upper=caseText.toUpperCase();let invalid=false;try{"".normalize("wrong");}catch(e){invalid=e instanceof RangeError;}let denied=false;try{String.prototype.toUpperCase.call(undefined);}catch(e){denied=e instanceof TypeError;}"Ab中文".toLowerCase()==="ab中文"&&"straße".toUpperCase()==="STRASSE"&&"ΟΣ".toLowerCase()==="ος"&&"ΟΣΑ".toLowerCase()==="οσα"&&String.fromCodePoint(66560).toLowerCase().codePointAt(0)===66600&&acute.normalize()==="é"&&"é".normalize("NFD")===acute&&"ﬃ".normalize("NFKC")==="ffi"&&"éﬃ".normalize("NFKD")===acute+"ffi"&&String.fromCodePoint(4352,4449).normalize()==="가"&&normalized.length===3&&normalized.charCodeAt(0)===55360&&normalized.charAt(1)==="é"&&normalized.charCodeAt(2)===56320&&!normalized.isWellFormed()&&upper.length===5&&upper.charCodeAt(0)===55360&&upper.slice(1,4)==="ASS"&&upper.charCodeAt(4)===56320&&String.prototype.toLowerCase.call(123)==="123"&&String.prototype.normalize.call(12)==="12"&&invalid&&denied&&String.prototype.normalize.length===0&&String.prototype.toUpperCase.length===0&&String.prototype.toLowerCase.name==="toLowerCase";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思字符串完整大小写规范化与孤立代理项保留』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let parts="a--b--".split("--");let empties="::".split(":");let units=String.fromCodePoint(131072).split("");let once="aba".replace("a","x");let all="aba".replaceAll("a","x");let marks="abc".replace("b","$$|$&|$`|$\u0027");let offsets="";let callback="aba".replaceAll("a",function(m,i,s){offsets+=i;return 1;});let firstCallback="baaa".replace("aa",function(m,i,s){return "["+m+":"+i+":"+s+"]";});let unitOffset=0;String.fromCodePoint(131072).concat("x").replace("x",function(m,i){unitOffset=i;return m;});let reason={n:2};let caught;try{"aa".replaceAll("a",function(){throw reason;});}catch(e){caught=e;}let raw=String.raw({raw:["a","b","c"]},1,undefined);let missing=String.raw({raw:["a","b","c"]},1);let escape=String.fromCharCode(92,110);let trace="";let rawParts={length:2};Object.defineProperty(rawParts,"0",{get:function(){trace+="0";return "a";}});Object.defineProperty(rawParts,"1",{get:function(){trace+="1";return "b";}});let ordered=String.raw({raw:rawParts},2);let invalid=false;try{String.raw({});}catch(e){invalid=e instanceof TypeError;}parts.join("|")==="a|b|"&&empties.length===3&&empties.join("|")==="||"&&"a,b,c".split(",",2).join()==="a,b"&&"a,b".split(",",0).length===0&&"".split().length===1&&"".split("").length===0&&"anullb".split(null).join()==="a,b"&&units.length===2&&units[0].charCodeAt(0)===55360&&units[1].charCodeAt(0)===56320&&once==="xba"&&all==="xbx"&&"ab".replaceAll("","_")==="_a_b_"&&"".replaceAll("","x")==="x"&&"ab".replace("","_")==="_ab"&&marks==="a$|b|a|cc"&&"a".replace("a","$1")==="$1"&&offsets==="02"&&callback==="1b1"&&firstCallback==="b[aa:1:baaa]a"&&unitOffset===2&&caught===reason&&raw==="a1bundefinedc"&&missing==="a1bc"&&String.raw({raw:[escape]})===escape&&String.raw({raw:"ab"},2)==="a2b"&&String.raw({raw:[]})===""&&ordered==="a2b"&&trace==="01"&&invalid&&String.prototype.replace.call(123,2,4)==="143"&&String.prototype.split.length===2&&String.prototype.replaceAll.length===2&&String.raw.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思文字分割替换标记回调与原始段拼接组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let n=new Number("3");let b=new Boolean(0);let boxed=Object(4);let booleanBox=Object(false);let Bound=Number.bind(null,5);let built=new Bound();let denied=false;try{Number.prototype.valueOf.call(true);}catch(e){denied=e instanceof TypeError;}let booleanDenied=false;try{Boolean.prototype.toString.call(1);}catch(e){booleanDenied=e instanceof TypeError;}let badRadix=false;try{n.toString(1);}catch(e){badRadix=e instanceof RangeError;}let badDigits=false;try{n.toFixed(101);}catch(e){badDigits=e instanceof RangeError;}let descriptor=Object.getOwnPropertyDescriptor(Number,"MAX_VALUE");Number()===0&&Number(undefined)!==Number(undefined)&&Number(null)===0&&Number(true)===1&&Number(Object("2"))===2&&Number(n)===3&&n instanceof Number&&n instanceof Object&&n.valueOf()===3&&n.toString()==="3"&&n.toFixed(2)==="3.00"&&n-1===2&&Math.abs(n)===3&&boxed instanceof Number&&boxed.valueOf()===4&&booleanBox instanceof Boolean&&!booleanBox.valueOf()&&b instanceof Boolean&&b instanceof Object&&!b.valueOf()&&b.toString()==="false"&&!Boolean()&&!Boolean(0)&&Boolean("x")&&Boolean(b)&&true.toString()==="true"&&(5).toString(2)==="101"&&(255).toString(16)==="ff"&&(-10).toString(2)==="-1010"&&(0.5).toString(2)==="0.1"&&(-0).toString()==="0"&&(-0).toFixed(2)==="0.00"&&Number.prototype.valueOf()===0&&!Boolean.prototype.valueOf()&&built instanceof Number&&built instanceof Bound&&built.valueOf()===5&&Number.isNaN(NaN)&&!Number.isNaN("x")&&!Number.isNaN(new Number(NaN))&&Number.isFinite(3)&&!Number.isFinite("3")&&!Number.isFinite(Infinity)&&Number.isInteger(3)&&!Number.isInteger(3.1)&&Number.isSafeInteger(Number.MAX_SAFE_INTEGER)&&!Number.isSafeInteger(Number.MAX_SAFE_INTEGER+1)&&isNaN("x")&&!isNaN("3")&&isFinite("3")&&!isFinite(Infinity)&&Number.POSITIVE_INFINITY===Infinity&&Number.NEGATIVE_INFINITY===-Infinity&&Number.NaN!==Number.NaN&&Number.MAX_VALUE*2===Infinity&&Number.MIN_VALUE>0&&Number.MIN_VALUE/2===0&&1+Number.EPSILON>1&&1+Number.EPSILON/2===1&&Number.MIN_SAFE_INTEGER===-Number.MAX_SAFE_INTEGER&&!descriptor.writable&&!descriptor.enumerable&&!descriptor.configurable&&Object.keys(Number).length===0&&Number.name==="Number"&&Number.length===1&&Boolean.name==="Boolean"&&Boolean.length===1&&Number.prototype.toFixed.length===1&&Boolean.prototype.toString.length===0&&denied&&booleanDenied&&badRadix&&badDigits;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数值布尔构造装箱静态查询常量与基础格式』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let white=String.fromCharCode(160,65279);let denied=false;try{new parseInt("3");}catch(e){denied=e instanceof TypeError;}Number.parseInt===parseInt&&Number.parseFloat===parseFloat&&parseInt("12tail")===12&&parseInt(white+"-0x10rest")===-16&&parseInt("+ff",16)===255&&parseInt("0x10",10)===0&&parseInt("0x10",36)===42804&&parseInt("0b11")===0&&parseInt("010")===10&&parseInt("111",2)===7&&parseInt("z",36)===35&&parseInt("ff",4294967312)===255&&isNaN(parseInt("1",1))&&isNaN(parseInt("0x"))&&isNaN(parseInt("- 1"))&&isNaN(parseInt(""))&&isNaN(parseInt())&&Object.is(parseInt("-0"),-0)&&parseInt(new Number(123))===123&&parseFloat(white+"-1.25e2tail")===-125&&parseFloat(".5x")===0.5&&parseFloat("1.")===1&&parseFloat("1.e2")===100&&parseFloat("1e+")===1&&parseFloat("1e-2tail")===0.01&&parseFloat("0x10")===0&&parseFloat("Infinitytail")===Infinity&&parseFloat("-Infinity!")===-Infinity&&isNaN(parseFloat(".e2"))&&isNaN(parseFloat("x1"))&&isNaN(parseFloat())&&Object.is(parseFloat("-0tail"),-0)&&Object.is(parseFloat(-0),0)&&String(-0)==="0"&&String(new Number(-0))==="0"&&parseFloat(Object("2.5x"))===2.5&&parseInt.name==="parseInt"&&parseInt.length===2&&parseFloat.length===1&&!Object.getOwnPropertyDescriptor(Number,"parseInt").enumerable&&denied;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数值前缀解析进制指数零符号与入口身份』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let boxed=new Number(1230);let precisionDenied=false;try{(1).toPrecision(0);}catch(e){precisionDenied=e instanceof RangeError;}let exponentDenied=false;try{(1).toExponential(101);}catch(e){exponentDenied=e instanceof RangeError;}let typeDenied=false;try{Number.prototype.toPrecision.call("3",2);}catch(e){typeDenied=e instanceof TypeError;}(1230).toExponential()==="1.23e+3"&&boxed.toExponential(4)==="1.2300e+3"&&(0.00123).toExponential()==="1.23e-3"&&(1000).toExponential()==="1e+3"&&(1.002).toExponential()==="1.002e+0"&&(2.34).toExponential(1)==="2.3e+0"&&(-0).toExponential()==="0e+0"&&(-0).toExponential(2)==="0.00e+0"&&(12.3).toPrecision(5)==="12.300"&&(12345).toPrecision(3)==="1.23e+4"&&(-123).toPrecision(2)==="-1.2e+2"&&(0.00000123).toPrecision(4)==="0.000001230"&&(0.000000123).toPrecision(3)==="1.23e-7"&&(0).toPrecision(3)==="0.00"&&(-0).toPrecision(3)==="0.00"&&(1.25).toPrecision()==="1.25"&&(1).toPrecision(3.9)==="1.00"&&(Infinity).toPrecision(0)==="Infinity"&&(NaN).toPrecision(0)==="NaN"&&(Infinity).toExponential(-2)==="Infinity"&&(NaN).toExponential(101)==="NaN"&&precisionDenied&&exponentDenied&&typeDenied&&Number.prototype.toExponential.length===1&&Number.prototype.toPrecision.length===1&&Number.prototype.toPrecision.name==="toPrecision";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数值指数有效位格式尾零阈值与参数组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let key={n:1};let map=new Map([["a",1],["b",2]]);let chain=map.set(key,3)===map;map.set(NaN,4);map.set(0/0,5);map.set(-0,6);let before=map.size===5&&map.get(key)===3&&map.get(NaN)===5&&map.get(0)===6&&map.has(-0)&&map.get({n:1})===undefined;let deleted=map.delete("b");map.set("b",8);map.set("a",9);let keys=[...map.keys()];let order=keys[0]==="a"&&keys[1]===key&&Number.isNaN(keys[2])&&Object.is(keys[3],0)&&keys[4]==="b";let iteratorMap=new Map([["a",1],["b",2]]);let iterator=iteratorMap.keys();let first=iterator.next();iteratorMap.delete("b");iteratorMap.set("c",3);let second=iterator.next();let ended=iterator.next();iteratorMap.set("d",4);let stays=iterator.next().done;let copy=new Map(iteratorMap);iteratorMap.set("a",7);let copyState=copy.get("a")===1&&copy.size===3;let source=[...copy];let repeated=Array.from(copy);let seen="";for(let pair of copy){seen+=pair[0];if(pair[0]==="a")copy.set("e",5);}let eachMap=new Map([["a",1],["b",2]]);let state={sum:0,trace:""};let eachResult=eachMap.forEach(function(v,k,m){this.sum+=v;this.trace+=k;if(k==="a"){m.delete("b");m.set("c",3);}},{sum:0,trace:""});eachMap=new Map([["a",1],["b",2]]);eachMap.forEach(function(v,k,m){this.sum+=v;this.trace+=k;if(k==="a"){m.delete("b");m.set("c",3);}},state);let clearMap=new Map([[1,1],[2,2]]);let clearIterator=clearMap.keys();clearIterator.next();let clearResult=clearMap.clear();clearMap.set(3,3);let clearNext=clearIterator.next();let plainDenied=false;try{Map();}catch(e){plainDenied=e instanceof TypeError;}let pairDenied=false;try{new Map([1]);}catch(e){pairDenied=e instanceof TypeError;}let brandDenied=false;try{Map.prototype.get.call({},"a");}catch(e){brandDenied=e instanceof TypeError;}let original=Map.prototype.set;let adderTrace="";Map.prototype.set=function(k,v){adderTrace+=k;return original.call(this,k,v+1);};let overridden=new Map([["u",1]]);Map.prototype.set=original;Object.freeze(overridden);overridden.set("v",3);chain&&before&&deleted&&!map.delete("missing")&&order&&map instanceof Map&&map instanceof Object&&map.constructor===Map&&first.value==="a"&&!first.done&&second.value==="c"&&!second.done&&ended.done&&stays&&copyState&&source.length===3&&source[0][0]==="a"&&source[0][1]===1&&repeated.length===3&&seen==="acde"&&copy.size===4&&eachResult===undefined&&state.sum===4&&state.trace==="ac"&&clearResult===undefined&&clearMap.size===1&&clearNext.value===3&&!clearNext.done&&plainDenied&&pairDenied&&brandDenied&&adderTrace==="u"&&overridden.get("u")===2&&overridden.get("v")===3&&new Map(null).size===0&&Object.keys(map).length===0&&Map.name==="Map"&&Map.length===0&&Map.prototype.set.length===2&&Map.prototype.forEach.length===1&&Map.prototype.keys.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思映射顺序同值键实时迭代回调与构造组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let key={n:1};let set=new Set([1,1,NaN,0/0,-0,0,key,key]);let initial=set.size===4&&set.has(NaN)&&set.has(0)&&set.has(key)&&!set.has({n:1});let values=[...set];let chain=set.add(2)===set;let removed=set.delete(1);set.add(1);let order=Array.from(set);let entry=set.entries().next();let source=new Set([1,2]);let iterator=source.values();let first=iterator.next();source.delete(2);source.add(3);let second=iterator.next();let ended=iterator.next();source.add(4);let stays=iterator.next().done;let copy=new Set(source);let repeated=[...copy];let seen="";for(let v of copy){seen+=v;if(v===1)copy.add(5);}let state={sum:0,trace:"",equal:true};let each=new Set([1,2]);let eachResult=each.forEach(function(v,k,s){this.sum+=v;this.trace+=v;this.equal=this.equal&&v===k;if(v===1){s.delete(2);s.add(3);}},state);let clear=new Set([1,2]);let clearIterator=clear.values();clearIterator.next();clear.clear();clear.add(3);let afterClear=clearIterator.next();let mapDenied=false;try{Map.prototype.has.call(set,1);}catch(e){mapDenied=e instanceof TypeError;}let setDenied=false;try{Set.prototype.has.call(new Map(),1);}catch(e){setDenied=e instanceof TypeError;}let plainDenied=false;try{Set();}catch(e){plainDenied=e instanceof TypeError;}let inputDenied=false;try{new Set(1);}catch(e){inputDenied=e instanceof TypeError;}let original=Set.prototype.add;let adderTrace="";Set.prototype.add=function(v){adderTrace+=v;return original.call(this,v+1);};let overridden=new Set([1,2]);Set.prototype.add=original;Object.freeze(overridden);overridden.add(4);initial&&values.length===4&&values[0]===1&&Number.isNaN(values[1])&&Object.is(values[2],0)&&values[3]===key&&chain&&removed&&!set.delete("missing")&&order.length===5&&Number.isNaN(order[0])&&Object.is(order[1],0)&&order[2]===key&&order[3]===2&&order[4]===1&&Number.isNaN(entry.value[0])&&Number.isNaN(entry.value[1])&&!entry.done&&set instanceof Set&&set instanceof Object&&set.constructor===Set&&Set.prototype.keys===Set.prototype.values&&Set.prototype.keys.name==="values"&&first.value===1&&!first.done&&second.value===3&&!second.done&&ended.done&&stays&&repeated.join()==="1,3,4"&&seen==="1345"&&copy.size===4&&eachResult===undefined&&state.sum===4&&state.trace==="13"&&state.equal&&clear.size===1&&afterClear.value===3&&!afterClear.done&&mapDenied&&setDenied&&plainDenied&&inputDenied&&adderTrace==="12"&&overridden.size===3&&overridden.has(2)&&overridden.has(3)&&overridden.has(4)&&new Set("𠀀𠀀x").size===2&&new Set(null).size===0&&Object.keys(set).length===0&&Set.name==="Set"&&Set.length===0&&Set.prototype.add.length===1&&Set.prototype.forEach.length===1&&Set.prototype.values.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思集合同值零去重顺序实时迭代与接收者组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let key={n:1};let input=[{n:1},{n:2},{n:3}];let map=Map.groupBy(input,function(v,i){return i===1?NaN:key;});let order=[...map.keys()];let identity=map.get(key)[0]===input[0]&&map.get(key)[1]===input[2]&&map.get(NaN)[0]===input[1];let zero=Map.groupBy([1,2],function(v,i){return i===0?-0:0;});let object=Object.groupBy([1,2,3],function(v){return v===2?"__proto__":"a";});let descriptor=Object.getOwnPropertyDescriptor(object,"a");let indexed=Object.groupBy([,4],function(v,i){return i;});let source=[1,2];let trace="";let grown=Map.groupBy(source,function(v,i){trace+=i;if(i===0)source.push(3);return "all";});let setGrouped=Object.groupBy(new Set([1,2,3]),function(v){return v%2;});let original=Map.prototype.set;Map.prototype.set=function(){throw 7;};let direct=Map.groupBy([4],function(){return "x";});Map.prototype.set=original;let reason={n:4};let caught;try{Map.groupBy([1],function(){throw reason;});}catch(e){caught=e;}let bad=false;try{Object.groupBy([],1);}catch(e){bad=e instanceof TypeError;}let invalid=false;try{Map.groupBy(null,function(){return 1;});}catch(e){invalid=e instanceof TypeError;}let empty=Object.groupBy([],function(){return "x";});map instanceof Map&&map.size===2&&order[0]===key&&Number.isNaN(order[1])&&identity&&zero.size===1&&Object.is(zero.keys().next().value,0)&&zero.get(0).join()==="1,2"&&Object.getPrototypeOf(object)===null&&object.a.join()==="1,3"&&object["__proto__"].join()==="2"&&descriptor.writable&&descriptor.enumerable&&descriptor.configurable&&Object.keys(object).join()==="a,__proto__"&&indexed[0].length===1&&indexed[0][0]===undefined&&(0 in indexed[0])&&indexed[1][0]===4&&trace==="012"&&grown.get("all").join()==="1,2,3"&&setGrouped[1].join()==="1,3"&&setGrouped[0][0]===2&&direct.get("x")[0]===4&&caught===reason&&bad&&invalid&&Object.getPrototypeOf(empty)===null&&Object.keys(empty).length===0&&Map.groupBy.length===2&&Object.groupBy.length===2&&Object.groupBy.name==="groupBy";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思静态分组键身份空原型动态拉取与回调组合』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let a=new Set([3,1,2]);let b=new Set([2,4]);let union=a.union(b);let intersection=a.intersection(b);let difference=a.difference(b);let symmetric=a.symmetricDifference(b);let larger={size:10,has:function(v){return v===1||v===3;},keys:function(){throw 7;}};let ordered=a.intersection(larger);let duplicate={size:4,has:function(v){return v===2||v===4;},keys:function(){return [4,4,2,2].values();}};let duplicated=a.symmetricDifference(duplicate);let map=new Map([[2,"x"],[9,"y"]]);let closed=0;let custom={size:1,has:function(v){return v===9;},keys:function(){let used=false;return {next:function(){if(used)return {done:true};used=true;return {value:9,done:false};},"return":function(){closed++;return {done:true};}};}};let short=a.isSupersetOf(custom);let sequence="";let protocol={};Object.defineProperty(protocol,"size",{get:function(){sequence+="s";return 0;}});Object.defineProperty(protocol,"has",{get:function(){sequence+="h";return function(){return false;};}});Object.defineProperty(protocol,"keys",{get:function(){sequence+="k";return function(){return [].values();};}});let protocolUnion=a.union(protocol);let nanDenied=false;try{a.union({size:NaN,has:function(){return false;},keys:function(){return [].values();}});}catch(e){nanDenied=e instanceof TypeError;}let negativeDenied=false;try{a.union({size:-1,has:function(){return false;},keys:function(){return [].values();}});}catch(e){negativeDenied=e instanceof RangeError;}let brandDenied=false;try{Set.prototype.union.call({},b);}catch(e){brandDenied=e instanceof TypeError;}let original=Set.prototype.add;Set.prototype.add=function(){throw 8;};let intrinsic=a.union(b);Set.prototype.add=original;let zeros=new Set([NaN,-0]).union(new Set([0,NaN]));let zeroValues=[...zeros];[...union].join()==="3,1,2,4"&&[...intersection].join()==="2"&&[...difference].join()==="3,1"&&[...symmetric].join()==="3,1,4"&&[...ordered].join()==="3,1"&&[...duplicated].join()==="3,1,4"&&[...a.union(map)].join()==="3,1,2,9"&&a.isSubsetOf(new Set([1,2,3,4]))&&!b.isSubsetOf(a)&&a.isSupersetOf(new Set([1,2]))&&!a.isSupersetOf(b)&&a.isDisjointFrom(new Set([4,5]))&&!a.isDisjointFrom(b)&&!short&&closed===1&&sequence==="shk"&&[...protocolUnion].join()==="3,1,2"&&nanDenied&&negativeDenied&&brandDenied&&[...intrinsic].join()==="3,1,2,4"&&union instanceof Set&&union!==a&&a.size===3&&b.size===2&&zeros.size===2&&Number.isNaN(zeroValues[0])&&Object.is(zeroValues[1],0)&&Set.prototype.union.length===1&&Set.prototype.isDisjointFrom.name==="isDisjointFrom";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思集合组合关系顺序集合类协议与短路关闭』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let key={n:1};let other={n:1};function fn(){}let array=[];let weak=new WeakMap([[key,1],[key,2],[fn,3]]);let chain=weak.set(array,4)===weak;let initial=weak.get(key)===2&&weak.get(fn)===3&&weak.get(array)===4&&!weak.has(other);let deleted=weak.delete(key);let gone=!weak.has(key)&&weak.get(key)===undefined;weak.set(key,5);Object.freeze(weak);weak.set(key,6);let set=new WeakSet([key,key,array,fn]);let added=set.add(other)===set;let removed=set.delete(array);let badMap=false;try{weak.set(1,2);}catch(e){badMap=e instanceof TypeError;}let badSet=false;try{set.add("x");}catch(e){badSet=e instanceof TypeError;}let badInput=false;try{new WeakMap([[1,2]]);}catch(e){badInput=e instanceof TypeError;}let wrongMap=false;try{WeakMap.prototype.get.call(set,key);}catch(e){wrongMap=e instanceof TypeError;}let wrongSet=false;try{WeakSet.prototype.has.call(weak,key);}catch(e){wrongSet=e instanceof TypeError;}let plain=false;try{WeakMap();}catch(e){plain=e instanceof TypeError;}let original=WeakMap.prototype.set;let count=0;WeakMap.prototype.set=function(k,v){count++;return original.call(this,k,v+1);};let overridden=new WeakMap([[key,3]]);WeakMap.prototype.set=original;let Bound=WeakSet.bind(null,[key]);let built=new Bound();chain&&initial&&deleted&&gone&&weak.get(key)===6&&!weak.delete({})&&weak.get(1)===undefined&&!weak.has(1)&&!weak.delete(1)&&weak instanceof WeakMap&&weak instanceof Object&&weak.constructor===WeakMap&&added&&removed&&set.has(key)&&set.has(fn)&&set.has(other)&&!set.has(array)&&!set.has(1)&&!set.delete(1)&&set instanceof WeakSet&&set instanceof Object&&badMap&&badSet&&badInput&&wrongMap&&wrongSet&&plain&&count===1&&overridden.get(key)===4&&built instanceof WeakSet&&built instanceof Bound&&built.has(key)&&new WeakMap(null).get(key)===undefined&&!new WeakSet(null).has(key)&&weak.size===undefined&&set.size===undefined&&Object.keys(weak).length===0&&WeakMap.name==="WeakMap"&&WeakSet.name==="WeakSet"&&WeakMap.length===0&&WeakSet.length===0&&WeakMap.prototype.set.length===2&&WeakSet.prototype.add.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思弱映射弱集合键身份构造类型检查与更新』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let target={n:1};let ref=new WeakRef(target);let Bound=WeakRef.bind(null,target);let bound=new Bound();let refBad=false;try{new WeakRef(1);}catch(e){refBad=e instanceof TypeError;}let refPlain=false;try{WeakRef(target);}catch(e){refPlain=e instanceof TypeError;}let refBrand=false;try{WeakRef.prototype.deref.call({});}catch(e){refBrand=e instanceof TypeError;}let registry=new FinalizationRegistry(function(v){});let token={};let other={};let first=registry.register(target,"a",token);registry.register({},"b",token);registry.register({},"c",other);registry.register({},"d");let cancelled=registry.unregister(token);let repeated=registry.unregister(token);let kept=registry.unregister(other);let same=false;try{registry.register(target,target);}catch(e){same=e instanceof TypeError;}let tokenBad=false;try{registry.register(target,1,null);}catch(e){tokenBad=e instanceof TypeError;}let targetBad=false;try{registry.register(1,"x");}catch(e){targetBad=e instanceof TypeError;}let callbackBad=false;try{new FinalizationRegistry(1);}catch(e){callbackBad=e instanceof TypeError;}let unregisterBad=false;try{registry.unregister(1);}catch(e){unregisterBad=e instanceof TypeError;}let registryBrand=false;try{FinalizationRegistry.prototype.register.call({},target,1);}catch(e){registryBrand=e instanceof TypeError;}let registryPlain=false;try{FinalizationRegistry(function(){});}catch(e){registryPlain=e instanceof TypeError;}Object.freeze(ref);Object.freeze(registry);let frozenRegistration=registry.register({},"x",token);let frozenCancel=registry.unregister(token);ref.deref()===target&&bound.deref()===target&&ref instanceof WeakRef&&ref instanceof Object&&bound instanceof Bound&&ref.constructor===WeakRef&&refBad&&refPlain&&refBrand&&registry instanceof FinalizationRegistry&&registry instanceof Object&&registry.constructor===FinalizationRegistry&&first===undefined&&cancelled&&!repeated&&kept&&same&&tokenBad&&targetBad&&callbackBad&&unregisterBad&&registryBrand&&registryPlain&&frozenRegistration===undefined&&frozenCancel&&Object.keys(ref).length===0&&Object.keys(registry).length===0&&WeakRef.length===1&&WeakRef.prototype.deref.length===0&&FinalizationRegistry.length===1&&FinalizationRegistry.prototype.register.length===2&&FinalizationRegistry.prototype.unregister.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思弱引用原值身份与终结登记取消类型检查』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let value={};let result=Object.fromEntries([["a",1],["a",2],["__proto__",value],[3,value]]);let descriptor=Object.getOwnPropertyDescriptor(result,"a");let mapped=Object.fromEntries(new Map([["x",value]]));let bad=false;try{Object.fromEntries([1]);}catch(e){bad=e instanceof TypeError;}let missing=false;try{Object.fromEntries(null);}catch(e){missing=e instanceof TypeError;}result.a===2&&result[3]===value&&result.__proto__===value&&Object.getPrototypeOf(result)===Object.prototype&&descriptor.writable&&descriptor.enumerable&&descriptor.configurable&&mapped.x===value&&Object.keys(Object.fromEntries([])).length===0&&bad&&missing&&Object.fromEntries.length===1&&Object.fromEntries.name==="fromEntries";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思条目造对象覆盖键原型描述符与映射迭代』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let order="";let object={valueOf:function(){order+="v";return 7;},toString:function(){order+="s";return "key";}};let numeric=Number(object);let text=String(object);let sum=object+2;let target={};target[object]=3;let fallback={valueOf:function(){return {};},toString:function(){return "4";}};let box=new Number(3);box.valueOf=function(){return 9;};let bad=false;try{Number({valueOf:function(){return {};},toString:function(){return {};}});}catch(e){bad=e instanceof TypeError;}let primitive={valueOf:function(){return "x";}};numeric===7&&text==="key"&&sum===9&&target.key===3&&order==="vsvs"&&Number(fallback)===4&&Number(box)===9&&primitive+2==="x2"&&Number([4])===4&&String([1,2])==="1,2"&&bad;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思对象基础值转换方法顺序接收者装箱与加法』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let calls="";let left={valueOf:function(){calls+="l";return "20";}};let right={valueOf:function(){calls+="r";return "3";}};let lexical=left<right;let order=calls;let numeric=left<3;let same={valueOf:function(){throw 1;}};let fn=function(){};fn.valueOf=function(){return 4;};let bad=false;try{({valueOf:function(){return {};},toString:function(){return {};}})<1;}catch(e){bad=e instanceof TypeError;}lexical&&order==="lr"&&!numeric&&left==20&&20==left&&left=="20"&&new Boolean(false)==0&&[]==false&&same==same&&!(same==null)&&!(same==undefined)&&!(same=={})&&fn==4&&!(left===20)&&!(NaN<=left)&&!(left>=NaN)&&bad;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思对象宽松相等关系比较转换顺序字符串与数值』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let parent={p:3};let obj=Object.create(parent);obj.a=2;Object.defineProperty(obj,"hidden",{value:4});Object.defineProperty(obj,"read",{get:function(){return this.x;},configurable:true});let receiver={x:8};let keys=Reflect.ownKeys(obj);let desc=Reflect.getOwnPropertyDescriptor(obj,"hidden");let value=Reflect.apply(function(a,b){return this.x+a+b;},receiver,{0:1,1:2,length:2});let removed=Reflect.deleteProperty(obj,"a");let blocked=Reflect.deleteProperty(obj,"hidden");let prevented=Reflect.preventExtensions(obj);let bad=false;try{Reflect.get(1,"x");}catch(e){bad=e instanceof TypeError;}Reflect.get(obj,"read",receiver)===8&&Reflect.get(obj,"p")===3&&Reflect.has(obj,"p")&&keys.join(",")==="a,hidden,read"&&desc.value===4&&!desc.writable&&value===11&&removed&&!blocked&&!Reflect.has(obj,"a")&&prevented&&!Reflect.isExtensible(obj)&&Reflect.getPrototypeOf(obj)===parent&&bad&&Reflect.apply.length===3&&Reflect.get.length===2&&Reflect.ownKeys.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思反射读取接收者属性原型描述符与调用』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let object={};let parent={p:1};let changed=Reflect.setPrototypeOf(object,parent);let inherited=object.p===1;let cycle=Reflect.setPrototypeOf(parent,object);let self=Reflect.setPrototypeOf(object,object);Reflect.preventExtensions(object);let same=Reflect.setPrototypeOf(object,parent);let blocked=Reflect.setPrototypeOf(object,null);let clear={};let cleared=Reflect.setPrototypeOf(clear,null);let bad=false;try{Reflect.setPrototypeOf({},1);}catch(e){bad=e instanceof TypeError;}let targetBad=false;try{Reflect.setPrototypeOf(1,null);}catch(e){targetBad=e instanceof TypeError;}changed&&inherited&&!cycle&&!self&&same&&!blocked&&Reflect.getPrototypeOf(object)===parent&&cleared&&Reflect.getPrototypeOf(clear)===null&&bad&&targetBad&&Reflect.setPrototypeOf.length===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思反射原型设置循环拒绝不可扩展与空原型』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let target={a:1};let receiver={};let wrote=Reflect.set(target,"a",3,receiver);Object.defineProperty(target,"fixed",{value:2,writable:false});let blocked=Reflect.set(target,"fixed",4,receiver);Object.defineProperty(target,"only",{get:function(){return 1;}});let getter=Reflect.set(target,"only",2);Object.defineProperty(target,"sink",{set:function(v){this.saved=v;}});let accessor=Reflect.set(target,"sink",7,receiver);let missing=Reflect.set(target,"new",9,receiver);let primitive=Reflect.set(target,"a",4,1);let child=Object.create(target);let inherited=Reflect.set(child,"fixed",5);Object.preventExtensions(receiver);let sealed=Reflect.set(target,"other",8,receiver);wrote&&target.a===1&&receiver.a===3&&!blocked&&!getter&&accessor&&receiver.saved===7&&missing&&receiver.new===9&&!primitive&&!inherited&&!sealed&&Reflect.set.length===3;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思反射写入接收者继承只读与访问器』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let object={};let made=Reflect.defineProperty(object,"x",{value:2});let same=Reflect.defineProperty(object,"x",{value:2});let blocked=Reflect.defineProperty(object,"x",{value:3});let access=Reflect.defineProperty(object,"read",{get:function(){return this.x;},configurable:true});let bad=false;try{Reflect.defineProperty(object,"bad",{get:1});}catch(e){bad=e instanceof TypeError;}let mixed=false;try{Reflect.defineProperty(object,"bad",{value:1,get:function(){return 2;}});}catch(e){mixed=e instanceof TypeError;}Object.preventExtensions(object);let extra=Reflect.defineProperty(object,"new",{value:1});let ordinary=false;try{Object.defineProperty(object,"x",{value:3});}catch(e){ordinary=e instanceof TypeError;}made&&same&&!blocked&&object.x===2&&access&&object.read===2&&bad&&mixed&&!extra&&ordinary&&Reflect.defineProperty.length===3;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思反射定义返回值访问器描述检查与对象接口兼容』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let called=0;let parent={};Object.defineProperty(parent,"x",{set:function(v){called++;}});let receiver=Object.create(parent);let target={x:1};let set=Reflect.set(target,"x",2,receiver);let missingReceiver=Object.create(parent);let missing=Reflect.set({},"x",3,missingReceiver);let desc=Reflect.getOwnPropertyDescriptor(receiver,"x");let own={};Object.defineProperty(own,"x",{set:function(v){called++;}});let blocked=Reflect.set(target,"x",4,own);let fixed={};Object.defineProperty(fixed,"x",{value:5,writable:true});let update=Reflect.set(target,"x",6,fixed);let fixedDesc=Reflect.getOwnPropertyDescriptor(fixed,"x");set&&missing&&receiver.x===2&&missingReceiver.x===3&&target.x===1&&called===0&&desc.writable&&desc.enumerable&&desc.configurable&&!blocked&&update&&fixed.x===6&&fixedDesc.writable&&!fixedDesc.enumerable&&!fixedDesc.configurable;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思反射数据定义绕过继承访问器并保留自有标志』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let array=[];let added=Reflect.set(array,"3",7);let receiver=[];let separate=Reflect.set({x:1},"2",8,receiver);let length=Reflect.set(array,"length",2);let shortened=array.length===2&&array[3]===undefined;Object.freeze(receiver);let frozen=Reflect.set(receiver,"4",9);added&&separate&&length&&shortened&&receiver.length===3&&receiver[2]===8&&!frozen&&receiver[4]===undefined;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思反射数组下标长度接收者与冻结写入』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『function Target(a,b){this.sum=a+b;}function Other(){}let direct=Reflect.construct(Target,{0:2,1:3,length:2});let alternate=Reflect.construct(Target,[4,5],Other);let Bound=Target.bind(null,6);let bound=Reflect.construct(Bound,[7]);function Return(){return {returned:1};}let returned=Reflect.construct(Return,[]);let map=Reflect.construct(Map,[[["x",2]]]);let bad=false;try{Reflect.construct(Math.max,[]);}catch(e){bad=e instanceof TypeError;}let newBad=false;try{Reflect.construct(Target,[],1);}catch(e){newBad=e instanceof TypeError;}direct.sum===5&&direct instanceof Target&&alternate.sum===9&&alternate instanceof Other&&!(alternate instanceof Target)&&bound.sum===13&&bound instanceof Target&&returned.returned===1&&map.get("x")===2&&map instanceof Map&&bad&&newBad&&Reflect.construct.length===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思反射构造类数组绑定新目标宿主与对象返回』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let value=JSON.parse("{\"a\":[1,true,null,\"字\"],\"__proto__\":{\"x\":2},\"dup\":1,\"dup\":3}");let bad=false;try{JSON.parse("{bad}");}catch(e){bad=e instanceof SyntaxError;}let desc=Object.getOwnPropertyDescriptor(value,"a");value.a.length===4&&value.a[0]===1&&value.a[1]===true&&value.a[2]===null&&value.a[3]==="字"&&value.__proto__.x===2&&Object.getPrototypeOf(value)===Object.prototype&&value.dup===3&&desc.writable&&desc.enumerable&&desc.configurable&&JSON.parse(3)===3&&JSON.parse("1e2")===100&&bad&&JSON.parse.length===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森解析基础值嵌套重复键原型与语法错误』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let keys=[];let holders=true;let parsed=JSON.parse("{\"a\":1,\"list\":[2,3]}",function(k,v){keys.push(k);if(k==="a"){holders=holders&&this.a===1;return v+10;}if(k==="0"){holders=holders&&Array.isArray(this);return undefined;}if(k==="1")return v*2;return v;});let root=JSON.parse("3",function(k,v){return k===""?v+1:v;});let removed=JSON.parse("3",function(){return undefined;});let thrown={};let identical=false;try{JSON.parse("1",function(){throw thrown;});}catch(e){identical=e===thrown;}holders&&keys.join(",")==="a,0,1,list,"&&parsed.a===11&&parsed.list.length===2&&!(0 in parsed.list)&&parsed.list[1]===6&&root===4&&removed===undefined&&JSON.parse("true",1)===true&&identical;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森复苏顺序接收者删除替换根与异常身份』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let shared={n:1};let text=JSON.stringify({a:undefined,b:function(){},c:[,undefined,NaN,Infinity],d:shared,e:shared});let parsed=JSON.parse(text);let key="";let special={toJSON:function(k){key=k;return 7;}};let converted=JSON.stringify({x:special});let cycle={};cycle.self=cycle;let bad=false;try{JSON.stringify(cycle);}catch(e){bad=e instanceof TypeError;}JSON.stringify(undefined)===undefined&&JSON.stringify(function(){})===undefined&&JSON.stringify(new Number(3))==="3"&&JSON.stringify(-0)==="0"&&JSON.stringify(NaN)==="null"&&parsed.a===undefined&&parsed.b===undefined&&parsed.c.length===4&&parsed.c[0]===null&&parsed.c[3]===null&&parsed.d.n===1&&parsed.e.n===1&&JSON.parse(converted).x===7&&key==="x"&&bad&&JSON.stringify.length===3;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森序列化省略数组空值装箱转换循环与共享对象』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let keys=[];let receiver=true;let object={a:1,b:2,list:[3,4],custom:{toJSON:function(){return 5;}}};let text=JSON.stringify(object,function(k,v){keys.push(k);if(k===""){receiver=receiver&&this[""]===object;return v;}if(k==="a"){receiver=receiver&&this===object;return v+10;}if(k==="b"||k==="0")return undefined;if(k==="custom")return v+1;return v;});let result=JSON.parse(text);let root=JSON.stringify(1,function(k,v){return v+1;});let omitted=JSON.stringify(1,function(){return undefined;});let thrown={};let identical=false;try{JSON.stringify(1,function(){throw thrown;});}catch(e){identical=e===thrown;}receiver&&keys.join(",")===",a,b,list,0,1,custom"&&result.a===11&&result.b===undefined&&result.list[0]===null&&result.list[1]===4&&result.custom===6&&root==="2"&&omitted===undefined&&identical;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森替换回调顺序持有者转换省略与异常』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let parent={inherited:7};let object=Object.create(parent);object.a=1;object.b=2;object[3]=4;Object.defineProperty(object,"hidden",{value:5});let text=JSON.stringify(object,["b","a","b",new String("hidden"),new Number(3),"inherited",true,{},null]);let value=JSON.parse(text);let nested=JSON.parse(JSON.stringify({a:{a:1,b:2},b:3},["a"]));let array=JSON.parse(JSON.stringify([1,{a:2,b:3}],["a"]));Object.keys(value).join(",")==="3,b,a,hidden,inherited"&&value.b===2&&value.a===1&&value.hidden===5&&value[3]===4&&value.inherited===7&&Object.keys(nested).join(",")==="a"&&nested.a.a===1&&nested.a.b===undefined&&array.length===2&&array[0]===1&&array[1].a===2&&array[1].b===undefined&&JSON.stringify(object,[])==="{}";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森属性列表去重装箱继承隐藏与嵌套数组』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let text=JSON.stringify({a:[1,2],b:{}},null,2);let expected="{\n  \"a\": [\n    1,\n    2\n  ],\n  \"b\": {}\n}";let string=JSON.stringify([1],null,"abcdefghijk");let boxed=JSON.stringify({a:1},null,new Number(2));text===expected&&string==="[\nabcdefghij1\n]"&&boxed==="{\n  \"a\": 1\n}"&&JSON.stringify([],null,2)==="[]"&&JSON.stringify({},null,2)==="{}"&&JSON.stringify([1],null,-2)==="[1]"&&JSON.stringify([1],null,NaN)==="[1]"&&JSON.stringify([1],null,Infinity)==="[\n          1\n]";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森缩进嵌套数字字符串截断装箱与空容器』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let order="";let gap=new Number(2);gap.valueOf=function(){order+="g";return 2;};let object={toJSON:function(){order+="j";gap.valueOf=function(){return 8;};return {a:1};}};let text=JSON.stringify(object,function(k,v){order+="r";return v;},gap);let string=new String("x");string.toString=function(){return " ";};let second=JSON.stringify([1],null,string);order==="gjrr"&&text==="{\n  \"a\": 1\n}"&&second==="[\n 1\n]";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森缩进参数先行装箱方法与回调顺序』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let order="";let number=new Number(2);number.valueOf=function(){order+="n";return 7;};let string=new String("old");string.toString=function(){order+="s";return "new";};let bool=new Boolean(false);bool.valueOf=function(){throw 1;};let text=JSON.stringify([number,string,bool]);let root=JSON.stringify(1,function(){return number;});let bad=new Number(1);bad.valueOf=function(){return {};};bad.toString=function(){return {};};let rejected=false;try{JSON.stringify(bad);}catch(e){rejected=e instanceof TypeError;}let parsed=JSON.parse(text);parsed[0]===7&&parsed[1]==="new"&&parsed[2]===false&&root==="7"&&order==="nsn"&&rejected;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森数值文字装箱当前转换布尔原值与替换结果』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let order="";let list=[];let first=new String("a");first.toString=function(){order+="c";list[1]="b";return "a";};list[0]=first;list[1]="old";let text=JSON.stringify({a:1,b:2,old:3},list);let value=JSON.parse(text);order==="c"&&value.a===1&&value.b===2&&value.old===undefined;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思结森属性列表逐项转换与后项实时读取』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let bad=false;try{encodeURIComponent(String.fromCharCode(55296));}catch(e){bad=e instanceof URIError;}encodeURIComponent("字 /?") ==="%E5%AD%97%20%2F%3F"&&encodeURI("https://x/a?b=字#c")==="https://x/a?b=%E5%AD%97#c"&&encodeURIComponent("!~*()")==="!~*()"&&encodeURI("%3B")==="%253B"&&encodeURIComponent(undefined)==="undefined"&&bad&&encodeURI.length===1&&encodeURIComponent.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思地址编码文字组件分隔符与孤立代理项』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let percent=false;try{decodeURIComponent("%x");}catch(e){percent=e instanceof URIError;}let truncated=false;try{decodeURIComponent("%E5%AD");}catch(e){truncated=e instanceof URIError;}let surrogate=false;try{decodeURIComponent("%ED%A0%80");}catch(e){surrogate=e instanceof URIError;}decodeURIComponent("%E5%AD%97%20%2f%3f")==="字 /?"&&decodeURI("%E5%AD%97%20%2f%3F")==="字 %2f%3F"&&decodeURIComponent("a+b")==="a+b"&&decodeURI("%252f")==="%2f"&&decodeURIComponent("%00").charCodeAt(0)===0&&decodeURIComponent(undefined)==="undefined"&&percent&&truncated&&surrogate&&decodeURI.length===1&&decodeURIComponent.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思地址解码分隔符原转义严格编码与参数转换』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let locale={};let options={};let correct=true;let count=0;let first={toLocaleString:function(l,o){correct=correct&&this===first&&l===locale&&o===options;count++;return "A";}};let second={toLocaleString:function(l,o){correct=correct&&this===second&&l===locale&&o===options;count++;return 7;}};let text=[first,null,,second].toLocaleString(locale,options);let generic=Array.prototype.toLocaleString.call({0:first,length:1},locale,options);let bad=false;try{[{toLocaleString:1}].toLocaleString();}catch(e){bad=e instanceof TypeError;}let object={toString:function(){return "own";}};text==="A,,,7"&&generic==="A"&&correct&&count===3&&[1,"x",true].toLocaleString()==="1,x,true"&&object.toLocaleString()==="own"&&bad&&Array.prototype.toLocaleString.length===0&&Object.prototype.toLocaleString.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组本地化逐项参数接收者空项与对象当前方法』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let array=[1,2];let received=false;array.join=function(){received=this===array&&arguments.length===0;return 7;};let overridden=array.toString();let fallback=[1];fallback.join=1;let generic={join:function(){return "custom";}};Object.defineProperty(generic,"length",{get:function(){throw 1;}});let custom=Array.prototype.toString.call(generic);let plain=Array.prototype.toString.call({join:1});overridden===7&&received&&fallback.toString()==="[object Array]"&&custom==="custom"&&plain==="[object Object]"&&[1,null,3].toString()==="1,,3"&&String([1,2])==="1,2";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思数组文字转换当前合并方法接收者回退与长度顺序』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let array=[1,2];let iterator=Iterator.from(array);let first=iterator.next();array.push(3);let rest=iterator.toArray();let count=0;let source={next:function(){count++;return {done:count>2,value:count};}};let wrapped=Iterator.from(source);let values=wrapped.toArray();let done=wrapped.next();let again=wrapped.next();let chars=Iterator.from("字𠀀").toArray();let map=Iterator.from(new Map([["x",7]])).toArray();let bad=false;try{Iterator.from({next:function(){return 1;}}).next();}catch(e){bad=e instanceof TypeError;}first.value===1&&!first.done&&rest.join(",")==="2,3"&&iterator instanceof Iterator&&values.join(",")==="1,2"&&done.done&&again.done&&count===3&&chars.length===2&&chars[1]==="𠀀"&&map[0][0]==="x"&&map[0][1]===7&&bad&&Iterator.from.length===1&&Iterator.prototype.toArray.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代器包装按需数组容器直接次步与数组收集』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let array=[1,2];let iterator=Iterator.from(array);let seen=[];let returned=iterator.forEach(function(v,i){seen.push(v+i);if(i===0)array.push(3);});let indices=[];let sum=Iterator.from([2,3,4]).reduce(function(a,v,i){indices.push(i);return a+v;});let initial=Iterator.from([2,3]).reduce(function(a,v,i){return a+v+i;},10);let empty=Iterator.from([]).reduce(function(a,v){return v;},7);let bad=false;try{Iterator.from([]).reduce(function(a,v){return v;});}catch(e){bad=e instanceof TypeError;}let callback=false;try{Iterator.from([]).forEach(1);}catch(e){callback=e instanceof TypeError;}returned===undefined&&seen.join(",")==="1,3,5"&&iterator.next().done&&sum===9&&indices.join(",")==="1,2"&&initial===16&&empty===7&&bad&&callback&&Iterator.prototype.reduce.length===1&&Iterator.prototype.forEach.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代逐项折叠初值下标实时追加与参数拒绝』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let count=0;let some=Iterator.from([1,2,3]).some(function(v,i){count++;return i===1;});let allCount=0;let every=Iterator.from([1,2,3]).every(function(v,i){allCount++;return v<2;});let object={};let found=Iterator.from([1,object,3]).find(function(v,i){return i===1;});let none=Iterator.from([1]).find(function(){return false;});some&&count===2&&!every&&allCount===2&&found===object&&none===undefined&&!Iterator.from([]).some(function(){return true;})&&Iterator.from([]).every(function(){return false;})&&Iterator.prototype.some.length===1&&Iterator.prototype.every.length===1&&Iterator.prototype.find.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代短路判定下标空来源与原值查找』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let calls=[];let array=[1,2,3];let mapped=Iterator.from(array).map(function(v,i){calls.push(i);return v*2;});let lazy=calls.length===0;let first=mapped.next();array.push(4);let filtered=mapped.filter(function(v,i){return i>0;});let rest=filtered.toArray();let object={};let identity=Iterator.from([1,object]).filter(function(v){return v===object;}).next().value===object;let bad=false;try{Iterator.from([]).map(1);}catch(e){bad=e instanceof TypeError;}lazy&&first.value===2&&calls.join(",")==="0,1,2,3"&&rest.join(",")==="6,8"&&mapped.next().done&&identity&&bad&&Iterator.prototype.map.length===1&&Iterator.prototype.filter.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思惰性迭代映射筛选链下标实时来源与原值身份』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let source=Iterator.from([1,2,3,4]);let taken=source.take(2.9);let values=taken.toArray();let count=0;let skipped=Iterator.from([1,2,3,4]).map(function(v){count++;return v;}).drop(2);let lazy=count===0;let first=skipped.next();let rest=skipped.toArray();let bad=false;try{Iterator.from([]).take(-1);}catch(e){bad=e instanceof RangeError;}let nan=false;try{Iterator.from([]).drop(NaN);}catch(e){nan=e instanceof RangeError;}values.join(",")==="1,2"&&lazy&&first.value===3&&rest.join(",")==="4"&&count===4&&Iterator.from([1]).take(0).toArray().length===0&&Iterator.from([1]).take(Infinity).toArray()[0]===1&&Iterator.from([1]).drop(Infinity).toArray().length===0&&bad&&nan&&Iterator.prototype.take.length===1&&Iterator.prototype.drop.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代惰性截取跳过数量截断无穷与范围拒绝』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let calls=[];let source=Iterator.from([1,2,3]).flatMap(function(v,i){calls.push(i);return v===2?[]:[v,v+10];});let lazy=calls.length===0;let first=source.next();let before=calls.join(",");let rest=source.toArray();let direct=Iterator.from([1]).flatMap(function(){let n=0;return {next:function(){n++;return {done:n>2,value:n};}};}).toArray();let bad=false;try{Iterator.from([1]).flatMap(function(){return "x";}).next();}catch(e){bad=e instanceof TypeError;}lazy&&first.value===1&&before==="0"&&calls.join(",")==="0,1,2"&&rest.join(",")==="11,3,13"&&direct.join(",")==="1,2"&&bad&&Iterator.prototype.flatMap.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代惰性展开空来源直接次步与回调下标』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let pulls=0;let closes=0;let source={next:function(){pulls++;return {done:false,value:pulls};},return:function(v){closes++;return {done:true,value:v};}};let wrapped=Iterator.from(source);let first=wrapped.next();let returned=wrapped.return(7);let done=wrapped.next();let again=wrapped.return(8);let array=Iterator.from([1,2]);let absent=array.return(3);let stopped=array.next();let bad=false;let invalid=Iterator.from({next:function(){return {done:false,value:1};},return:function(){return 1;}});try{invalid.return();}catch(e){bad=e instanceof TypeError;}first.value===1&&returned.value===7&&returned.done&&done.done&&again.value===8&&closes===1&&pulls===1&&absent.value===3&&absent.done&&stopped.done&&bad&&invalid.next().done&&wrapped.return.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思包装迭代关闭来源调用返回值与停止拉取』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let closed=0;let pulls=0;let source={next:function(){pulls++;return {done:false,value:pulls};},return:function(){closed++;return {done:true};}};let wrapped=Iterator.from(source);let some=wrapped.some(function(v){return v===2;});let done=wrapped.next();let every=Iterator.from([1,2]).every(function(v){return v<2;});let bad=false;let direct={next:function(){return {done:false,value:1};},return:function(){return 1;}};try{Iterator.prototype.find.call(direct,function(){return true;});}catch(e){bad=e instanceof TypeError;}some&&closed===1&&pulls===2&&done.done&&!every&&bad;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代短路关闭来源停止拉取与关闭结果检查』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let closed=0;let calls=0;let source={next:function(){return {done:false,value:1};},return:function(){closed++;return {done:true};}};let mapped=Iterator.from(source).map(function(v){calls++;return v+1;});let filtered=mapped.filter(function(v){return true;});let some=filtered.some(function(v){return v===2;});let done=mapped.next();let repeated=filtered.return();let raw=Iterator.from([1,2]).map(function(v){calls++;return v;});let returned=raw.return(9);some&&closed===1&&calls===1&&done.done&&repeated.done&&returned.done&&returned.value===undefined&&raw.next().done&&raw.return.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思映射筛选助手链短路关闭停止回调与完成状态』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let closed=0;let pulls=0;let source={next:function(){pulls++;return {done:false,value:pulls};},return:function(){closed++;return {done:true};}};let take=Iterator.from(source).take(2);let first=take.next();let second=take.next();let before=closed;let done=take.next();let repeated=take.next();let drop=Iterator.from(source).drop(1);let returned=drop.return();let stopped=drop.next();first.value===1&&second.value===2&&before===0&&done.done&&repeated.done&&closed===2&&pulls===2&&returned.done&&stopped.done&&take.return.length===0&&drop.return.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代截取限额关闭跳过显式关闭与停止拉取』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let order="";let outer={next:function(){return {done:false,value:1};},return:function(){order+="o";return {done:true};}};let inner={next:function(){return {done:false,value:7};},return:function(){order+="i";return {done:true};}};let flat=Iterator.from(outer).flatMap(function(){return inner;});let first=flat.next();let returned=flat.return();let done=flat.next();let again=flat.return();let before="";let untouched=Iterator.from({next:function(){return {done:false,value:1};},return:function(){before+="o";return {done:true};}}).flatMap(function(){before+="m";return inner;});untouched.return();first.value===7&&order==="io"&&returned.done&&done.done&&again.done&&before==="o"&&flat.return.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思迭代展开内部先关闭外部后关闭与未拉取关闭』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let entered=false;let helper;helper=Iterator.from([1]).map(function(v){try{helper.next();}catch(e){entered=e instanceof TypeError;}return v;});let first=helper.next();let thrown={};let closed=0;let source={next:function(){return {done:false,value:1};},return:function(){closed++;throw 9;}};let failing=Iterator.from(source).map(function(){throw thrown;});let identical=false;try{failing.next();}catch(e){identical=e===thrown;}entered&&first.value===1&&helper.next().done&&identical&&closed===1&&failing.next().done;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思助手重入拒绝异常关闭原值身份与完成状态』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let order="";let error={};let outer={next:function(){return {done:false,value:1};},return:function(){order+="o";throw 9;}};let inner={next:function(){return {done:false,value:2};},return:function(){order+="i";throw error;}};let flat=Iterator.from(outer).flatMap(function(){return inner;});flat.next();let same=false;try{flat.return();}catch(e){same=e===error;}let done=flat.next();let again=flat.return();same&&order==="io"&&done.done&&again.done;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思展开内部关闭异常仍收尾外部并保留原异常』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let closed=0;let error={};function source(){return Iterator.from({next:function(){return {done:false,value:1};},return:function(){closed++;throw 9;}});}let first=source();let same=false;try{first.forEach(function(){throw error;});}catch(e){same=e===error;}let second=source();let reduced=false;try{second.reduce(function(){throw error;},0);}catch(e){reduced=e===error;}let third=source();let found=false;try{third.find(function(){throw error;});}catch(e){found=e===error;}same&&reduced&&found&&closed===3&&first.next().done&&second.next().done&&third.next().done;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思终结助手回调异常关闭上游并保留原异常身份』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let date=new Date(0);let iso=date.toISOString();let changed=date.setTime(1234.9);let parsed=new Date("2000-01-01T00:00:00Z");let invalid=new Date(NaN);let bad=false;try{invalid.toISOString();}catch(e){bad=e instanceof RangeError;}let receiver=false;try{Date.prototype.getTime.call({});}catch(e){receiver=e instanceof TypeError;}date instanceof Date&&date instanceof Object&&iso==="1970-01-01T00:00:00.000Z"&&changed===1234&&date.valueOf()===1234&&date.toISOString()==="1970-01-01T00:00:01.234Z"&&parsed.getTime()===946684800000&&Date.parse("2000-01-01T00:00:00Z")===946684800000&&invalid.toJSON()===null&&invalid.toString()==="Invalid Date"&&bad&&receiver&&Date.now()>0&&new Date().getTime()>0&&JSON.parse(JSON.stringify(new Date(0)))==="1970-01-01T00:00:00.000Z"&&Date.length===7&&Date.prototype.setTime.length===1;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思日期基础构造毫秒更新解析标准文字品牌与结森』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let date=new Date(-1);let invalid=new Date(NaN);date.getUTCFullYear()===1969&&date.getUTCMonth()===11&&date.getUTCDate()===31&&date.getUTCDay()===3&&date.getUTCHours()===23&&date.getUTCMinutes()===59&&date.getUTCSeconds()===59&&date.getUTCMilliseconds()===999&&date.toUTCString()==="Wed, 31 Dec 1969 23:59:59 GMT"&&new Date(0).getUTCDay()===4&&new Date(0).toUTCString()==="Thu, 01 Jan 1970 00:00:00 GMT"&&Number.isNaN(invalid.getUTCDate())&&invalid.toUTCString()==="Invalid Date"&&Date.prototype.getUTCFullYear.length===0;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思日期协调世界时字段负纪元毫秒星期与英文文字』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let full=new Date(Date.UTC(2000,0,1,2,3,4,5));let overflow=new Date(Date.UTC(2000,12,0,25));let negative=new Date(Date.UTC(2000,-1,1));Date.UTC(1970)===0&&Date.UTC(70,0,1)===0&&full.toISOString()==="2000-01-01T02:03:04.005Z"&&overflow.toISOString()==="2001-01-01T01:00:00.000Z"&&negative.toISOString()==="1999-12-01T00:00:00.000Z"&&Number.isNaN(Date.UTC())&&Number.isNaN(Date.UTC(2000,undefined))&&Date.UTC(2000,0,1.9)===946684800000&&Date.UTC.length===2;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思日期协调世界时合成年月日归一两位年份与默认值』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let source=new Date(1234);source.valueOf=function(){throw 1;};let copy=new Date(source);let order="";let generic={valueOf:function(){order+="v";return 1;},toISOString:function(){order+="i";return this.result;},result:7};let result=Date.prototype.toJSON.call(generic);let invalid={valueOf:function(){return Infinity;},toISOString:function(){throw 1;}};let date=new Date(0);date.toISOString=function(){return "own";};let bad=false;try{Date.prototype.toJSON.call(null);}catch(e){bad=e instanceof TypeError;}copy!==source&&copy.getTime()===1234&&result===7&&order==="vi"&&Date.prototype.toJSON.call(invalid)===null&&date.toJSON()==="own"&&bad;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思日期复制内部时间值与通用结森当前方法转换顺序』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let date=new Date(Date.UTC(2000,0,1,2,3,4,5));date.setUTCMilliseconds(999);date.setUTCSeconds(60);let seconds=date.toISOString();date.setUTCMinutes(61,2,3);let minutes=date.toISOString();date.setUTCHours(25,2,3,4);let hours=date.toISOString();date.setUTCDate(0);let day=date.toISOString();date.setUTCMonth(12,1);let month=date.toISOString();date.setUTCFullYear(0,0,1);let year=date.getUTCFullYear();let invalid=new Date(NaN);invalid.setUTCFullYear(2000);let recovered=invalid.toISOString();seconds==="2000-01-01T02:04:00.999Z"&&minutes==="2000-01-01T03:01:02.003Z"&&hours==="2000-01-02T01:02:03.004Z"&&day==="1999-12-31T01:02:03.004Z"&&month==="2000-01-01T01:02:03.004Z"&&year===0&&recovered==="2000-01-01T00:00:00.000Z"&&Date.prototype.setUTCHours.length===4&&Date.prototype.setUTCFullYear.length===3;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思日期协调世界时字段更新可选值溢出归一与无效恢复』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『Date.parse("1970-01-01T00:00:00.001Z")===1&&Date.parse("1970-01-01T00:00:00.1Z")===100&&Date.parse("1970-01-01T00:00:00.12Z")===120&&Date.parse("1970-01-01T00:00:00.1234Z")===123&&Date.parse("1969-12-31T23:59:59.999Z")===-1&&Date.parse("1970-01-01T01:00:00.025+01:00")===25&&new Date("2000-01-01T00:00:00.789Z").getUTCMilliseconds()===789;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思日期解析毫秒补位截断负纪元与时区偏移』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let date=new Date(Date.UTC(2000,0,1,2,3,4));let text=date.toUTCString();Date.parse(text)===date.getTime()&&new Date(text).getTime()===date.getTime()&&Date.parse("Thu, 01 Jan 1970 01:00:00 +0100")===0&&Number.isNaN(Date.parse("invalid date"));』）
+　　于（「急就布尔」于「阳」））
+　于『捷思英文日期文字解析往返与显式时区偏移』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let date=new Date(0);let order="";date.toString=function(){order+="s";return "date";};date.valueOf=function(){order+="v";return 7;};let added=date+1;let same=date=="date";let numeric=Number(date);let relational=date<8;added==="date1"&&same&&numeric===7&&relational&&order==="ssvv"&&new Date(0)+1===String(new Date(0))+"1";』）
+　　于（「急就布尔」于「阳」））
+　于『捷思日期默认文字提示与显式数值关系提示分离』。
+「日期测试造字节」乃化（「列」于「数」）为「帛」者也。
+「日期测试造字节」者得「诸码」而
+　鉴「诸码」而
+　　或有「罄」则「空帛」于「元」
+　　或有（「缀」于「码」于「余码」）则「接帛」于（「单帛」于「码」）于（「日期测试造字节」于「余码」）
+也。
+
+令「表」为
+　「时区」之「析时宪档」于（「日期测试造字节」于（「列」
+　　【「八四」
+　　，「九零」
+　　，「一零五」
+　　，「一零二」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「一」
+　　，「零」
+　　，「零」
+　　，「零」
+　　，「四」
+　　，「零」
+　　，「零」
+　　，「一四」
+　　，「一六」
+　　，「零」
+　　，「零」
+　　，「七零」
+　　，「七三」
+　　，「八八」
+　　，「零」
+　　】））而
+令「无」为「急就设日历时区」于「表」而
+令「无」为
+　「断言」
+　　于（「急就严格等」
+　　　于（「急就行脚本」于『let update=new Date(0);update.setFullYear(2000,0,1);update.setMonth(1,2);update.setDate(3);update.setHours(4,5,6,7);update.setMinutes(8,9,10);update.setSeconds(11,12);update.setMilliseconds(13);let recover=new Date(NaN);recover.setFullYear(1970);let early=new Date(0);early.setFullYear(0,1,29);let negative=new Date(0);negative.setFullYear(-1,0,2);let legacy=new Date(NaN);legacy.setYear(70);let date=new Date(-1);Date.prototype.toGMTString===Date.prototype.toUTCString&&date.toGMTString()===date.toUTCString()&&legacy.getTime()===-3600000&&legacy.getYear()===70&&early.getYear()===-1900&&Date.prototype.setYear.length===1&&Date.parse(early.toString())===early.getTime()&&Date.parse(negative.toString())===negative.getTime()&&Date.parse(new Date(0).toString())===0&&new Date(new Date(2000,0,2,3,4,5).toString()).getTime()===new Date(2000,0,2,3,4,5).getTime()&&Date.parse("1970-01-01T00:00:00.007")===-3599993&&new Date("1970-01-01T01:00:00").getTime()===0&&Date.parse("1970-01-01")===0&&Date.parse("1970-01-01T00:00:00Z")===0&&date.toDateString()==="Thu Jan 01 1970"&&date.toTimeString()==="00:59:59 GMT+0100"&&date.toString()==="Thu Jan 01 1970 00:59:59 GMT+0100"&&new Date(NaN).toTimeString()==="Invalid Date"&&update.toISOString()==="2000-02-03T03:08:11.013Z"&&recover.getTime()===-3600000&&Date.prototype.setFullYear.length===3&&Date.prototype.setHours.length===4&&date.getFullYear()===1970&&date.getMonth()===0&&date.getDate()===1&&date.getDay()===4&&date.getHours()===0&&date.getMinutes()===59&&date.getSeconds()===59&&date.getMilliseconds()===999&&date.getTimezoneOffset()===-60&&date.getUTCFullYear()===1969&&new Date(0).getHours()===1&&Number.isNaN(new Date(NaN).getHours())&&new Date(1970,0,1).getTime()===-3600000&&new Date(2000,12,0,25).toISOString()==="2001-01-01T00:00:00.000Z"&&new Date(1970,0,1,1,0,0,7).getTime()===7;』）
+　　　于（「急就布尔」于「阳」））
+　　于『捷思配置日历时区本地字段跨日与偏移分钟』而
+「急就设日历时区」于「可无」。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let regex=new RegExp("a+","gi");let invalid=false;try{new RegExp("[");}catch(error){invalid=error instanceof SyntaxError;}let match=regex.exec("bAAa!");let found=match[0]==="AAa"&&match.index===1&&match.input==="bAAa!"&&regex.lastIndex===4;let missed=regex.test("bAAa!")===false&&regex.lastIndex===0;let named=new RegExp("(?<first>a)(?<second>b)?").exec("a");let indexed=new RegExp("(?<first>a)(b)?","d").exec("xa");let calls=0;let custom={exec:function(value){calls++;return value==="7"?{}:null;}};let generic=RegExp.prototype.test.call(custom,7)&&!RegExp.prototype.test.call(custom,"no")&&calls===2;let bad=false;try{RegExp.prototype.test.call({exec:function(){return 3;}},"x");}catch(error){bad=error instanceof TypeError;}let order="";let borrowed={source:{toString:function(){order+="s";return "x";}},flags:{toString:function(){order+="f";return "g";}}};let slash=String.fromCharCode(92);let escaped=new RegExp("a/b"+String.fromCharCode(10,13,8232,8233));let source="a"+slash+"/b"+slash+"n"+slash+"r"+slash+"u2028"+slash+"u2029";let original=new RegExp("a","g");original.lastIndex=3;original.toString=function(){throw 1;};let copied=new RegExp(original);let changed=new RegExp(original,"i");let same=RegExp(original)===original&&RegExp(original,undefined)===original&&RegExp(original,"g")!==original;original.constructor=function(){};let different=RegExp(original)!==original;let internal=new RegExp("a");Object.defineProperty(internal,"source",{value:"b"});let internalCopy=new RegExp(internal,"i");let sourceCopied=internalCopy.source==="a"&&internalCopy.test("A");let overriden=new RegExp("x");Object.defineProperty(overriden,"global",{value:true});Object.defineProperty(overriden,"ignoreCase",{value:1});let descriptor=Object.getOwnPropertyDescriptor(RegExp.prototype,"flags");let sourceDescriptor=Object.getOwnPropertyDescriptor(RegExp.prototype,"source");let searched=new RegExp("a","g");searched.lastIndex=7;let searchGood="ba".search(searched)===1&&searched.lastIndex===7&&"ba".search("a")===1&&"ba".search("x")===-1&&"ba".search()===0;let frozen=new RegExp("a");Object.defineProperty(frozen,"lastIndex",{writable:false});let all=new RegExp("a","g");all.lastIndex=8;let matchGood="baac".match(all).join(",")==="a,a"&&all.lastIndex===0&&"ba".match("(a)")[1]==="a"&&"ba".match("x")===null&&"a".match(new RegExp("","g")).length===2&&String.fromCodePoint(128512).match(new RegExp("","gu")).length===2;let errors=0;["x","gg","uv","z"].forEach(function(flag){try{new RegExp("a",flag);}catch(error){if(error instanceof SyntaxError)errors++;}});let each=new RegExp("(a)","g");each.lastIndex=2;let iterator="abaa".matchAll(each);let first=iterator.next();let second=iterator.next();let fullGood=first.value.index===2&&first.value[1]==="a"&&second.value.index===3&&iterator.next().done&&iterator.next().done&&each.lastIndex===2&&Array.from("a".matchAll("a")).length===1;let astral=String.fromCodePoint(128512);let replaceCalls=0;let replaced="aba".replace(new RegExp("(?<letter>a)","g"),function(whole,capture,index,input,groups){replaceCalls++;return groups.letter+index;});"a".replace(new RegExp("(?<first>a)(?<second>b)?"),"$<second>-$<first>-$<missing>")==="-a-"&&"a".replace(new RegExp("(a)"),"$<first>")==="$<first>"&&"ab".replace(new RegExp("(a)(b)"),"$2$1")==="ba"&&"a".replace(new RegExp("(a)(b)?"),"$2-$1-$01-$12-$99")==="-a-a-a2-$99"&&"a".replace(new RegExp("(a)"),"$$1-$&")==="$1-a"&&replaced==="a0ba2"&&replaceCalls===2&&"aba".replace(new RegExp("a"),"x")==="xba"&&"aba".replaceAll(new RegExp("a","g"),"x")==="xbx"&&Array.from(astral.matchAll(new RegExp("","gu"))).length===2&&Array.from(astral.matchAll(new RegExp("","g"))).length===3&&fullGood&&errors===4&&matchGood&&searchGood&&"ba".search(frozen)===1&&"bx".search(frozen)===-1&&descriptor.get.call({global:true,sticky:1})==="gy"&&descriptor.set===undefined&&descriptor.enumerable===false&&descriptor.configurable===true&&descriptor.get.name==="get flags"&&descriptor.get.length===0&&sourceDescriptor.get.call(regex)==="a+"&&sourceCopied&&RegExp.prototype.source==="(?:)"&&!Object.prototype.hasOwnProperty.call(regex,"source")&&overriden.flags==="gi"&&overriden.toString()==="/x/gi"&&RegExp.prototype.flags===""&&!Object.prototype.hasOwnProperty.call(regex,"flags")&&regex.global===true&&regex.ignoreCase===true&&regex.multiline===false&&regex.dotAll===false&&regex.unicode===false&&regex.unicodeSets===false&&regex.sticky===false&&new RegExp("x","dsy").hasIndices===true&&new RegExp("x","dsy").dotAll===true&&new RegExp("x","dsy").sticky===true&&RegExp.prototype.global===undefined&&same&&different&&copied!==original&&copied.source==="a"&&copied.flags==="g"&&copied.lastIndex===0&&changed.flags==="i"&&changed.test("A")&&original.lastIndex===3&&new RegExp("x","ysmigd").flags==="dgimsy"&&new RegExp("x","ig").toString()==="/x/gi"&&escaped.source===source&&new RegExp(slash+"/").source===slash+"/"&&escaped.test("a/b"+String.fromCharCode(10,13,8232,8233))&&regex.toString()==="/a+/gi"&&RegExp.prototype.toString.call(borrowed)==="/x/g"&&order==="sf"&&RegExp.prototype.toString.length===0&&generic&&bad&&indexed.indices[0][0]===1&&indexed.indices[0][1]===2&&indexed.indices[1][0]===1&&indexed.indices[2]===undefined&&indexed.indices.groups.first===indexed.indices[1]&&Object.getPrototypeOf(indexed.indices.groups)===null&&match.indices===undefined&&found&&missed&&named.groups.first==="a"&&named.groups.second===undefined&&Object.getPrototypeOf(named.groups)===null&&Object.keys(named.groups).join(",")==="first,second"&&match.groups===undefined&&new RegExp("(a)(b)?").exec("a")[1]==="a"&&new RegExp("x").exec("a")===null&&regex.source==="a+"&&regex.flags==="gi"&&regex.lastIndex===0&&Object.getPrototypeOf(regex)===RegExp.prototype&&RegExp().source==="(?:)"&&RegExp.length===2&&invalid;』）
+　　于（「急就布尔」于「阳」））
+　于『捷思正则构造与模式校验』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let r="";try{null.x;}catch(e){r+=e instanceof TypeError?"t":"x";}try{let f=1;f();}catch(e){r+=e instanceof TypeError?"c":"x";}try{const k=1;k=2;}catch(e){r+=e instanceof TypeError?"k":"x";}r;』）
+　　于（「急就字符串值」于（「急就文字自串」于『tck』）））
+　于『捷思引擎自抛的类型错误归到标准错误』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let f=(0,function(){});let g;g=(1,2,3);[g,f.name,(1,2)+1,typeof (0,function(){})].join("|");』）
+　　于（「急就字符串值」于（「急就文字自串」于『3||3|function』）））
+　于『捷思括号内的逗号表达式』。
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let r=[typeof globalThis,globalThis===this,globalThis.Promise===Promise,typeof globalThis.Array,eval("1+2"),(0,eval)("var zq=5;zq*2"),typeof zq];globalThis.gg=7;r.push(gg);try{eval("var =")}catch(e){r.push(e instanceof SyntaxError);}r.push(eval(5),eval("(function(){return 1})")());r.join("|");』）
+　　于（「急就字符串值」于（「急就文字自串」于『object|true|true|function|3|10|number|7|true|5|1』）））
+　于『捷思全局对象顶层 this 与 eval』。
+「书」于『捷思值冒烟通过』。

@@ -1,0 +1,40 @@
+寻观「豫章」之书。
+寻观「急就」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「脚本得文」乃化「文」又化「文」为「爻」者也。
+「脚本得文」者得「脚本」又得「期望」而
+　「急就严格等」于（「急就行脚本」于「脚本」）于（「急就字符串值」于（「急就文字自串」于「期望」））
+也。
+
+「断言」
+　于（「脚本得文」
+　　于『class A{x=1;static s=5;#p=7;constructor(a){this.a=a;}get twice(){return this.a*2;}set twice(v){this.a=v/2;}m(){return "A"+this.a;}static sm(){return A.s;}priv(){return this.#p;}}class B extends A{y=2;constructor(a,b){super(a);this.b=b;}m(){return "B>"+super.m();}}let b=new B(3,4);b.twice=20;b.m()+","+b.x+b.y+b.priv()+","+b.twice+","+A.sm()+B.sm()+","+(b instanceof A)+","+Object.keys(b).join("");』
+　　于『B>A10,127,20,55,true,xayb』）
+　于『捷思类的字段访问器静态私有与继承』。
+「断言」
+　于（「脚本得文」
+　　于『class E extends Error{constructor(m){super(m);this.name="E";}}let e=new E("boom");class C{static z;static{C.z=9;}}let F=class Foo{static n=3;};e.message+(e instanceof E)+(e instanceof Error)+e.name+C.z+F.n+F.name;』
+　　于『boomtruetrueE93Foo』）
+　于『捷思类继承内建错误静态块与类表达式』。
+「断言」
+　于（「脚本得文」
+　　于『let o={get g(){return 4;},set g(v){},m(){return 5;}};let n=null;[o.g,o.m(),o?.m?.(),o?.zz?.(),n?.a.b.c,o.nope?.a.b.c,n?.[0],(n?.a)?.b].join("|");』
+　　于『4|5|5|||||』）
+　于『捷思对象访问器与可选链』。
+「断言」
+　于（「脚本得文」于『class P{static make(){return new this();}who(){return "P";}}class Q extends P{who(){return "Q"+super.who();}}Q.make().who();』于『QP』）
+　于『捷思静态继承与超类方法』。
+「断言」
+　于（「脚本得文」于（『("a』接（「急就文字作串」于（「急就文字自码元」于（「列」【「八二三二」】）））接『b".length)+"";』）于『3』）
+　于『捷思字符串字面量可含行分隔符』。
+「断言」
+　于（「脚本得文」
+　　于『var f=function(){};let g=()=>{};const h=class{};var o={a:function(){},b:()=>1,["c"+"d"]:function(){},e(){}};let k;k=function(){};var [p=function(){}]=[];var {q=()=>0}={};var sy=Symbol("s");var o2={[sy]:function(){}};[f.name,g.name,h.name,o.a.name,o.b.name,o.cd.name,o.e.name,k.name,p.name,q.name,o2[sy].name,(function(){}).name===""].join("|");』
+　　于『f|g|h|a|b|cd|e|k|p|q|[s]|true』）
+　于『捷思匿名函数按绑定位置取名』。
+「书」于『捷思类与链冒烟通过』。

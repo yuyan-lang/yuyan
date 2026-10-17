@@ -1,0 +1,74 @@
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「装帧」之书。
+
+「：汉语：样式引擎对照测试：同一份文档里每个元素，「篇求样式」（旧，逐节点）与「篇常样式读者」（新，批量）算出的计算样式，每个属性的有效值（含 ::before 等伪元素键）必须相同。
+　　文言：样式引擎之对照验：同一文档中每元素，「篇求样式」（旧，逐节点）与「篇常样式读者」（新，批量）所算之计算样式，每性之效值（含 ::before 诸伪元素之键）须相同。：」
+「取值或缺」乃化「计算样式」又化「文」为「文」者也。
+「取值或缺」者得「样」又得「键」而
+　鉴「簿寻」于「样」于「键」而
+　　或有（「可有」于「值」）则『值：』接「值」
+　　或有「可无」则『缺』
+也。
+
+「找样式差异」乃化「旧」曰「计算样式」又化「新」曰「计算样式」又化（「列」于「文」）为（「或可有」于「文」）者也。
+「找样式差异」者得「旧」曰「旧样」又得「新」曰「新样」又得「键们」而
+　鉴「键们」而
+　　或有「罄」则「可无」以「文」
+　　或有（「缀」于「键」于「余键」）则
+　　　令「甲」为「取值或缺」于「旧样」于「键」而
+　　　令「乙」为「取值或缺」于「新样」于「键」而
+　　　若「文同」于「甲」于「乙」则「找样式差异」于「旧」曰「旧样」于「新」曰「新样」于「余键」否则「可有」于（「键」接『：旧 』接「甲」接『，新 』接「乙」）
+也。
+
+「：汉语：自检：人为造出的差异必须被对照函数发现，免得对照函数本身失灵而让测试白白通过。
+　　文言：自验：人造之异必为对照之函所见，免对照之函自失其用而验徒过。：」
+「自检对照」乃化「有」为「有」者也。
+「自检对照」者得「无」而
+　鉴「找样式差异」于「旧」曰（「簿入」于（「空簿」以「文」）于『甲』于『一』）于「新」曰（「空簿」以「文」）于（「缀」以「文」于『甲』于（「罄」以「文」））而
+　　或有（「可有」于「差异」）则「元」
+　　或有「可无」则「告祸」以「有」于『对照函数没有发现人为造出的差异』
+也。
+
+「验页」乃化「名」曰「文」又化「页」曰「文」为「数」者也。
+「验页」者得「名」曰「名文」又得「页」曰「页文」而
+　令「文档」为「析篇」于「页文」而
+　令「读记」为「篇常样式读者」于「文档」而
+　令「元素们」为「择」以「篇节」于（得「节」而（「节种类」于「节」）等于「一」）于（「前序节」于「文档」）而
+　令「无」为
+　　「叠」以「篇节」又以「有」
+　　　于（得「节」又得「无」而
+　　　　令「旧样」为「篇求样式」于「节」而
+　　　　令「新样」为（「读记」中「读取」）于「节」而
+　　　　令「键们」为「接列」以「文」于（「簿诸键」以「文」于「旧样」）于（「簿诸键」以「文」于「新样」）而
+　　　　鉴「找样式差异」于「旧」曰「旧样」于「新」曰「新样」于「键们」而
+　　　　　或有（「可有」于「差异」）则「告祸」以「有」于（「名文」接『：元素 』接（「节名」于「节」）接『，』接「差异」）
+　　　　　或有「可无」则「元」
+　　　）
+　　　于「元」
+　　　于「元素们」而
+　「计」以「篇节」于「元素们」
+也。
+
+「综合页」乃化「有」为「文」者也。
+「综合页」者得「无」而
+　『<style>*{box-sizing:border-box}div{margin:1px 2px;color:blue}.a{color:red}#x{color:green!important}.a.b{font-size:20px}div>p{padding:3px}div p.c{padding:4px}h1+p{margin-top:5px}h1~span{margin-left:6px}a[href]{text-decoration:underline}input[type=text]{border:1px solid red}li:first-child{font-weight:bold}li:last-child{color:orange}li:nth-child(2n+1){background-color:silver}p:not(.c){margin-bottom:7px}:is(h1,h2){font-style:italic}:root{--主色:purple}p{color:var(--主色,black)}li::marker{color:blue}p::before{content:"前"}p::after{content:"后";color:red}h1,h2,.q{line-height:2}.q{line-height:3}span:has(> b){display:flex}@media (min-width:100px){div{width:10px}}@media (min-width:99999px){div{width:20px}}@supports (display:flex){span{display:inline-flex}}@layer base{p{color:teal}}.a\:b{color:pink}div{font:12px serif}</style><div id="x" class="a b" style="color:navy;margin:9px"><h1>标题</h1><p class="c">甲</p><span><b>乙</b></span><span>丙</span><ul><li>1</li><li class="a">2</li><li>3</li></ul><a href="#">链接</a><a>无址</a><input type="text"><input type="radio"><p class="a  c b">多空格类</p><p class="a:b">转义</p></div><h2>二级</h2><p>外段</p><span class="q">q</span>』
+也。
+
+「继承页」乃化「有」为「文」者也。
+「继承页」者得「无」而
+　『<style>body{color:red;font-size:20px;--大小:3px}.外{background-color:yellow;margin:5px;--局部:var(--大小)}.外 .内{color:inherit;margin:inherit;padding:initial;width:unset;font-size:unset;--内:var(--局部,0px)}.空{--空值:;color:var(--空值,gray)}.坏{width:var(--不存在);height:var(--不存在,7px)}.环{--甲:var(--乙);--乙:var(--甲);margin:var(--甲,2px)}b{font-weight:bolder}i{font-style:italic;font-weight:600}.简{border:2px dashed #123;margin:1px 2px 3px 4px;padding:var(--大小) 1px;font:italic bold 14px/1.5 sans-serif}</style><div class="外"><p class="内">内段<b>粗</b><i>斜</i></p><p class="空">空</p><p class="坏">坏</p><p class="环">环</p><p class="简">简</p></div>』
+也。
+
+「层页」乃化「有」为「文」者也。
+「层页」者得「无」而
+　『<style>@layer 底,面;@layer 面{p{color:red}}@layer 底{p{color:blue}p.a{margin:1px!important}}p{margin:2px;color:green}.a{margin:3px}@media screen and (min-width:10px){p{padding:1px}}@import url("无.css");.父{color:black;& .子{color:white}&:hover{color:gray}}@font-face{font-family:甲;src:url(a.woff)}@keyframes k{from{width:1px}to{width:2px}}div:empty{display:none}p:first-of-type{text-indent:1em}p:nth-last-child(2){text-align:center}:where(.父) .子{margin:8px}</style><div class="父"><p class="a">一</p><p>二<span class="子">子</span></p><p>三</p></div><div></div>』
+也。
+
+「主」者
+　令「无」为「自检对照」于「元」而
+　令「综合数」为「验页」于「名」曰『综合选择器』于「页」曰（「综合页」于「元」）而
+　令「继承数」为「验页」于「名」曰『继承与变量』于「页」曰（「继承页」于「元」）而
+　令「层数」为「验页」于「名」曰『层与嵌套』于「页」曰（「层页」于「元」）而
+　「书」于（『样式引擎对照测试通过：元素 』接（「述数」于「综合数」）接『、』接（「述数」于「继承数」）接『、』接（「述数」于「层数」））
+也。

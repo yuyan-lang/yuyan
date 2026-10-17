@@ -1,0 +1,15 @@
+寻观「豫章」之书。
+寻观「译场」之「分职」之「笔受」之「网汇线性栈基」之书。
+寻观「译场」之「网汇」之「洒扫文」之书。
+
+「：汉语：仅为运行时测试导出 init、reserve、get、set、pages；这些导出不会加入正式程序。线性栈运行时的模块项经「洒扫项串作文」打印，与手写的导出拼成一个模块。
+　　文言：独立夹具验栈，导出不入正式接口；栈基之项书为文，与手书之导出合为一模块。：」
+「书」于（『(module (type $ints (array (mut i64)))「：换行：」』接（「洒扫项串作文」于（「线性栈基」于「元」））接『
+(func (export "init") (param $sp i32) (param $n i64) (result i32) (local $top i32)
+local.get $sp local.get $n call $reserve local.tee $top i32.const -1 i32.eq if i32.const -1 return end
+local.get $sp local.get $n i32.wrap_i64 i32.store
+local.get $sp i32.const 8 i32.add i32.const 0 local.get $n i32.wrap_i64 i32.const 3 i32.shl memory.fill
+local.get $top)
+(export "reserve" (func $reserve)) (export "get" (func $lin_get)) (export "set" (func $lin_set))
+(func (export "pages") (result i32) memory.size)
+)』）。
