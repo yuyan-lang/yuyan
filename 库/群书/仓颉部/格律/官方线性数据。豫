@@ -1,9 +1,10 @@
+「：汉语：通称正则官方线性样本数据。此表为阶段选编子集，共 PCRE2 十四例、Rust regex 四例、RE2 四例。PCRE2 预期来自官方输出，Rust 原 UTF-8 字节区间换成码点区间，RE2 预期由模式及输入人工推导。各行保留具体来源与适配说明。
+　　文言：此表为阶段所选之子集，凡 PCRE2 十四例、Rust regex 四例、RE2 四例。PCRE2 之期取官方输出，Rust 之 UTF-8 字节界易为码点界，RE2 之期据式与入人工推衍。诸行存其源及适配之说。
+　　赋曰：伊官方线性数据也，阶段选编，三家相集；珠玑十四，锈四以入；格律二四，人工以立；原字区间，码点以易；样本之列，次第以辑；许可版权，来源以记；预期之果，官方以执；线性之例，于此以集。：」
 寻观「豫章」之书。
 
-「：汉语：此表为阶段选编子集，共 PCRE2 十四例、Rust regex 四例、RE2 四例。PCRE2 预期来自官方输出，Rust 原 UTF-8 字节区间换成码点区间，RE2 预期由模式及输入人工推导。各行保留具体来源与适配说明。
-　　文言：此表为阶段所选之子集，凡 PCRE2 十四例、Rust regex 四例、RE2 四例。PCRE2 之期取官方输出，Rust 之 UTF-8 字节界易为码点界，RE2 之期据式与入人工推衍。诸行存其源及适配之说。：」
-「：汉语：PCRE2 测试数据按许可文件列为公共领域：https://github.com/PCRE2Project/pcre2/blob/main/LICENCE.md 。Rust regex 采用 MIT：Copyright (c) 2014 The Rust Project Developers，许可：https://github.com/rust-lang/regex/blob/master/LICENSE-MIT 。RE2 测试文件注明 Copyright 2006-2007 The RE2 Authors，许可文件注明 Copyright (c) 2009 The RE2 Authors，BSD 三条款：https://github.com/google/re2/blob/main/LICENSE 。完整许可随基础库来源文档保存。
-　　文言：PCRE2 试材依许可篇属公共领域，篇见 https://github.com/PCRE2Project/pcre2/blob/main/LICENCE.md 。Rust regex 用 MIT，版权人为二〇一四年 Rust Project Developers，篇见 https://github.com/rust-lang/regex/blob/master/LICENSE-MIT 。RE2 试篇记二〇〇六至二〇〇七年 RE2 Authors，许可篇记二〇〇九年 RE2 Authors，用 BSD 三条款，见 https://github.com/google/re2/blob/main/LICENSE 。许可全文随基础库来源篇存之。：」
+「：汉语：官方线性样本记录：来源、模式、标志、输入、预期捕获区间与说明等。
+　　文言：官方线性之样之记：源、模、旗、入、所期捕之区间与说等。：」
 「官方线性样本」即「文」合「文」合「文」合「文」合（「或可有」于（「列」于（「数」合「数」）））合「文」也。
 
 「官方区间列」即「列」于（「数」合「数」）也。
