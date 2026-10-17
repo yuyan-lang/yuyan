@@ -1,13 +1,14 @@
+「：汉语：通称系统字体对照器（macOS 系统对照，测试专用）。经系统库调用打开 CoreFoundation、CoreText、CoreGraphics，从字体文件的首个描述符构造系统字体，在五百一十二方形的八位灰度画布上以白字黑底画字形，求系统的覆盖总和，与字体库的结果对照。ABI 以 Apple 官方 SDK 头文件核对：CFIndex 与 size_t 为六十四位，CGFloat 为 double，CGGlyph 为 UInt16，CGPoint 为两个 double，CGBitmapInfo 为 UInt32；所有结构都经指针传递。官方资料：https://developer.apple.com/documentation/coretext/ctfontmanagercreatefontdescriptorsfromurl(_:) https://developer.apple.com/documentation/coretext/ctfontcreatewithfontdescriptor(_:_:_:) https://developer.apple.com/documentation/coregraphics/cgcontext/init(data:width:height:bitspercomponent:bytesperrow:space:bitmapinfo:) https://developer.apple.com/documentation/coregraphics/cgcontext/showglyphs(_:at:)
+　　文言：此乃试验专用之 macOS 系统对照：开系统之库，以字体之文造系统字体，于五百一十二方之八位灰布白字黑底画形，求系统之覆和，以较字体库。ABI 据 Apple 官方 SDK 头文核之：CFIndex、size_t 六十四位，CGFloat 为 double，CGGlyph 为 UInt16，CGPoint 为二 double，CGBitmapInfo 为 UInt32。诸结构皆以指授之。官方之资料见前列网址。
+　　赋曰：伊系统对照之器也，三库开之，函以名取；文径为源，首述成体。五百十二之方，八位之灰，白字黑底；字形位置，指针以递。覆和既得，与自研比；整数混合，调用有例。：」
 寻观「豫章」之书。
 寻观「豫章」之「形制」之「帛书」之书。
 寻观「豫章」之「形制」之「简牍」之书。
 寻观「豫章」之「算术」之「变通」之书。
 寻观「借道」之书。
 
-「：汉语：测试专用 macOS 系统对照。ABI 以 Apple 官方 CoreFoundation、CoreText、CoreGraphics SDK 头文件核对：CFIndex 与 size_t 为六十四位，CGFloat 为 double，CGGlyph 为 UInt16，CGPoint 为两个 double，CGBitmapInfo 为 UInt32。所有结构都经指针传递。
-　　汉语：官方资料：https://developer.apple.com/documentation/coretext/ctfontmanagercreatefontdescriptorsfromurl(_:) https://developer.apple.com/documentation/coretext/ctfontcreatewithfontdescriptor(_:_:_:) https://developer.apple.com/documentation/coregraphics/cgcontext/init(data:width:height:bitspercomponent:bytesperrow:space:bitmapinfo:) https://developer.apple.com/documentation/coregraphics/cgcontext/showglyphs(_:at:)
-　　文言：此乃试验专用之 macOS 系统对照。ABI 据 Apple 官方 SDK 头文核之：CFIndex、size_t 六十四位，CGFloat 为 double，CGGlyph 为 UInt16，CGPoint 为二 double，CGBitmapInfo 为 UInt32。诸结构皆以指授之。
-　　文言：官方之资料见前列网址。：」
+「：汉语：系统字体对照器：所开的系统库（基础库、字型库、图形库等）。
+　　文言：系统字体对照之器：所开之系统诸库。：」
 「系统字体对照器」即「组类」【「基础库」乃「外库」也，「字型库」乃「外库」也，「图形库」乃「外库」也】也。
 
 「对照必开库」乃化「文」为「外库」者也。
