@@ -43,7 +43,7 @@
 「写篇便携卷」于「表排」于『泰赫表格.pdf』。
 「图稿」者「引梓篇」于『\begin{figure}
 \centering
-\includegraphics[width=0.5\textwidth]{库/基础库/图像与图形/图像编解码/测试/捷图公开样本/四色直通公开.jpg}
+\includegraphics[width=0.5\textwidth]{库/群书/丹青部/画谱/测试/捷图公开样本/四色直通公开.jpg}
 \caption{公开样本}\label{公开图}
 \end{figure}』也。
 
