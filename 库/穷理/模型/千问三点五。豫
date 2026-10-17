@@ -1,5 +1,6 @@
-「：汉语：Qwen3.5（general.architecture = qwen35）：线性注意力与门控全注意力混合。第 i 层当 (i + 1) 是 full_attention_interval 的倍数时为门控全注意力，其余为门控 DeltaNet 线性注意力；两种层之后都是 SwiGLU 前馈（前置归一 post_attention_norm）。数学照 llama.cpp 的 qwen35：线性层的 qkv 经因果卷积与 SiLU，问、键二范数归一后平铺到值头，写入强度 β = 反曲(h × ssm_beta)，对数衰减 g = 软加(h × ssm_alpha + ssm_dt) × ssm_a，门控递推后按头均方根归一（ssm_norm）再乘 SiLU(h × attn_gate)，经 ssm_out 投影；全注意力层的 attn_q 每头输出（问，门）两段，问、键按头均方根归一后在前 rope.dimension_count 维做旋转位置编码（前后半成对），注意力输出乘反曲(门)再经 attn_output。纯文字时分段旋转位置编码各段位置相同，等同普通旋转位置编码。多词元预测层（nextn）不载入。
-　　文言：Qwen3.5（general.architecture 为 qwen35）：线性之注意与门控之全注意相杂。第 i 层，(i + 1) 为 full_attention_interval 之倍者为门控全注意，余为门控 DeltaNet 线性注意；二者之后皆 SwiGLU 之馈。其算从 llama.cpp 之 qwen35。纯文之时分段旋转编码诸段同位，同常之旋转编码。多词预测之层不载。：」
+「：汉语：通称Qwen3.5 模型载入（线性注意力与门控全注意力混合）。Qwen3.5（general.architecture = qwen35）：线性注意力与门控全注意力混合。第 i 层当 (i + 1) 是 full_attention_interval 的倍数时为门控全注意力，其余为门控 DeltaNet 线性注意力；两种层之后都是 SwiGLU 前馈（前置归一 post_attention_norm）。数学照 llama.cpp 的 qwen35：线性层的 qkv 经因果卷积与 SiLU，问、键二范数归一后平铺到值头，写入强度 β = 反曲(h × ssm_beta)，对数衰减 g = 软加(h × ssm_alpha + ssm_dt) × ssm_a，门控递推后按头均方根归一（ssm_norm）再乘 SiLU(h × attn_gate)，经 ssm_out 投影；全注意力层的 attn_q 每头输出（问，门）两段，问、键按头均方根归一后在前 rope.dimension_count 维做旋转位置编码（前后半成对），注意力输出乘反曲(门)再经 attn_output。纯文字时分段旋转位置编码各段位置相同，等同普通旋转位置编码。多词元预测层（nextn）不载入。
+　　文言：Qwen3.5（general.architecture 为 qwen35）：线性之注意与门控之全注意相杂。第 i 层，(i + 1) 为 full_attention_interval 之倍者为门控全注意，余为门控 DeltaNet 线性注意；二者之后皆 SwiGLU 之馈。其算从 llama.cpp 之 qwen35。纯文之时分段旋转编码诸段同位，同常之旋转编码。多词预测之层不载。
+　　赋曰：伊千问三点五之载也，线性全注，相间成层；每隔几层，门控全注以承；余为增量之网，线性以行。卷积因果，二范归一，平铺值头；写强反曲，衰减软加，门控递推，按头归一，乘门以投。全注之层，问门两段，归一旋转，缓存以留；前馈门升降，一以贯之。：」
 寻观「豫章」之书。
 寻观「豫寓算阵」之「算阵」之书。
 寻观「庖丁」之「字节具」之书。
