@@ -1,9 +1,6 @@
-「：This is untyped closure conversion. 
-I have prepared groundwork for typed closure conversion, but I 
-have not yet studied it.
-Part of the reason is that type annotation and typed ANF conversion take 
-too long to execute.
-：」
+「：汉语：通称函数提升（lambda lifting）。闭包转换之后把闭包体提升为顶层函数：提升时把“取首参（闭包自身）的第零项再调用”改成直接调用本函数；提升出的函数名以包身份与包内路径生成的模块名作前缀，再接定义名与序数，同名文件不相撞。这是无类型的闭包转换；有类型的闭包转换已有铺垫，但类型标注与有类型 ANF 转换执行太慢，尚未采用。
+　　文言：提者，挈也。闭包之体，挈而升之于顶；自呼者直呼其名；名冠以篇，后接义名与序，不相乱也。
+　　赋曰：伊术之提升也，闭体升顶，自呼直名。篇名冠首，序数随行；同名之文，各有其程。：」
 寻观「豫章」之书。
 寻观「译场」之「译料」之「系树」之「章句树」之「本常量数据」之书。
 寻观「译场」之「译料」之「系树」之「章句树」之「本常量述法」之书。
