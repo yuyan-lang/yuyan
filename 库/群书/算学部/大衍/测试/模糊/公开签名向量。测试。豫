@@ -1,11 +1,12 @@
+「：汉语：通称公开签名模幂向量测试。公钥和签名取自RFC7515附录A.2公开RSA2048示例，来源https://www.rfc-editor.org/rfc/rfc7515。签名输入的SHA256参考由系统openssl独立生成，编码块按PKCS#1 v1.5的固定SHA256前缀组成。此测试验证公开数据的模幂，不执行秘密数运算。
+　　文言：公钥与署名取RFC7515附录A.2公开RSA2048之例，出处https://www.rfc-editor.org/rfc/rfc7515。署名输入之SHA256参考由系统openssl别求，编码块循PKCS#1 v1.5之定SHA256前缀。唯验公开数之模幂，不行秘密数之算。
+　　赋曰：就正七五一五之例，公钥与署名皆公开；公钥典一点五之前缀，编码以成块。署名之幂，模以公钥，与块相符；只验其公，不涉其私。：」
 寻观「豫章」之书。
 寻观「豫章」之「形制」之「帛书」之书。
 寻观「豫章」之「寓所」之「藏书」之书。
 寻观「大衍」之书。
 寻观「卦文」之「基码」之书。
 
-「：汉语：公钥和签名取自RFC7515附录A.2公开RSA2048示例，来源https://www.rfc-editor.org/rfc/rfc7515。签名输入的SHA256参考由系统openssl独立生成，编码块按PKCS#1 v1.5的固定SHA256前缀组成。此测试验证公开数据的模幂，不执行秘密数运算。
-　　文言：公钥与署名取RFC7515附录A.2公开RSA2048之例，出处https://www.rfc-editor.org/rfc/rfc7515。署名输入之SHA256参考由系统openssl别求，编码块循PKCS#1 v1.5之定SHA256前缀。唯验公开数之模幂，不行秘密数之算。：」
 「公钥模数码」者
 　『ofgWCuLjybRlzo0tZWJjNiuSfb4p4fAkd_wWJcyQoTbji9k0l8W26mPddxHmfHQp-Vaw-4qPCJrcS2mJPMEzP1Pt0Bm4d4QlL-yRT-SFd2lZS-pCgNMsD1W_YpRPEwOWvG6b32690r2jZ47soMZo9wGzjb_7OMg0LOL-bSf63kpaSHSXndS5z5rexMdbBYUsLA9e-KXBdQOS-UTo7WTBEMa2R2CapHg665xsmtdVMTBQY4uDZlxvb3qCo5ZwKh9kG4LT6_I5IhlJH7aGhyxXFvUK-DWNmoudF8NAco9_h9iaGNj8q2ethFkMLs91kzk2PAcDTW9gb54h4FRWyuXpoQ』
 也。
