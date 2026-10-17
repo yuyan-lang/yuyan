@@ -1,6 +1,6 @@
 「：汉语：通称系统变量字体度量对照测试（CoreText）。真实变量字体的独立 CoreText 度量对照，单入口，不调用系统覆盖验收。两个文件（同一可变斜体字体的 CFF2 与 TrueType 版）各测 A、g 的默认字重及 wght=900，opsz 固定默认 20，绝对容差预置为 1 字体单位。系统直接返回 double，自研返回整数，逐项报告实际差值，任一失败在全部报告后抛出事故，退出非零。ABI 已与 Apple 官方文档及本机 MacOSX.sdk 头文件核对：CFNumberType 是 CFIndex（64 位），kCFNumberSInt32Type=3，其 valuePtr 指向 32 位轴标签；CTFontDescriptorCreateCopyWithVariation 返回描述符，参数为两指针及 double；CTFontGetAdvancesForGlyphs 返回 double，参数为字体指针、UInt32 方向、UInt16 字形数组指针、可空 CGSize 数组指针、64 位 CFIndex 计数。CTFontCreateWithFontDescriptor 使用 UPEM 字号与 NULL 矩阵，系统宽度直接为字体单位。所有 Create 对象释放，借用描述符由拥有它的数组保活。官方文档：https://developer.apple.com/documentation/coretext/ctfontdescriptorcreatecopywithvariation(_:_:_:) https://developer.apple.com/documentation/coretext/ctfontgetadvancesforglyphs(_:_:_:_:_:)
 　　文言：真实变量字体以独立 CoreText 度量对照，惟一入口，不召系统覆盖之验。二文各验 A、g 之默认字重及 wght 九百，opsz 定默认二十，绝对容差先定为一字体单位。系统径还 double，自研还整数，逐项书实差，任一败则尽书而发事故，退出非零。ABI 据 Apple 官方及本机 SDK 头文核之：CFNumberType 为六十四位 CFIndex，SInt32 类号三，valuePtr 指三十二位轴签；变体描述复制还描述，参二指及 double；前进度量还 double，参为体指、三十二位方向、UInt16 形列指、可空 CGSize 列指、六十四位计数。造体用 UPEM 字号及 NULL 矩阵，则系统宽径为字体单位。Create 所得尽释，借描述由其所属数组存之。官方之文见前列网址。
-　　赋曰：伊变量度量之对也，二文一体，紧凑真型，同源而异编。两字之形，默认之重，九百之极，光学二十而定焉。系统还小数，自研还整，逐项书其差，容差一单位为先。轴签三十二，类号为三，描述复制，前进度量，接口依头文而全。字号取单位，矩阵为空，宽乃径传；所造皆释，借者由列以延。一败尽书，事故乃宣。：」
+　　赋曰：二文分体而同源，一鉴兼权而共度。文分紧凑真型，字取拉丁两形。寻常九百并试，光学二十同定。系统报以浮点，自研呈以整数。实差逐项而书，断语随条而列。一单位先定容差，八项数终陈败数。轴签三十二位，类号取三为凭。描述复制以承变，前进度量而取宽。造体用单位之号，传宽以空无之阵。所造之器皆释，所借之列自存。诸差尽报乃发，众项俱平则退。：」
 寻观「豫章」之书。
 寻观「豫章」之「形制」之「帛书」之书。
 寻观「豫章」之「形制」之「小数术」之书。
