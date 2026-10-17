@@ -10,7 +10,7 @@ function 载入() {
   try {
     const 外部 = process.getBuiltinModule?.('node:ffi');
     if (!外部) return 核;
-    const 候选 = [process.env.YY文件定位共享, 路径.join(路径.dirname(fileURLToPath(import.meta.url)), 'yy文件定位共享.wasm'), 路径.resolve('yy文件定位共享.wasm')];
+    const 候选 = [process.env.YY文件定位共享, 路径.join(路径.dirname(fileURLToPath(import.meta.url)), '文件定位共享.wasm'), 路径.resolve('文件定位共享.wasm')];
     const 径 = 候选.find(项 => 项 && 文件系统.existsSync(项));
     if (!径) return 核;
     库 = new 外部.DynamicLibrary(process.platform === 'darwin' ? '/usr/lib/libSystem.B.dylib' : 'libc.so.6');

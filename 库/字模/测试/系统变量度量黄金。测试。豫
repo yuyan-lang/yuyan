@@ -142,11 +142,11 @@
 　令「无」为「书」于『独立CoreText变量度量黄金：两官方字体，wght400/900，opsz20，A/g，八项，固定绝对容差1字体单位』而
 　令「无」为
 　　「变量黄金验字体」
-　　　于『/private/tmp/yy字体现代官方配对/SourceSerif4Variable-Italic.otf』
+　　　于『/private/tmp/字体现代官方配对/SourceSerif4Variable-Italic.otf』
 　　　于『68220a94535e9cffb9b7d844140583ac2a3195eabdd4890b15f83272c8bfcfe4』而
 　令「无」为
 　　「变量黄金验字体」
-　　　于『/private/tmp/yy字体现代官方配对/SourceSerif4Variable-Italic.ttf』
+　　　于『/private/tmp/字体现代官方配对/SourceSerif4Variable-Italic.ttf』
 　　　于『6a059a64838978d54e8fab71ed86b0d82e948c0e12b2664d0c15166326dcff82』而
 　若（「读匣」于「败数」）大于「零」则
 　　「告祸」以「有」于『系统变量度量黄金存在失败断言』

@@ -32,7 +32,7 @@
 　令「臂」为「文同」于「架」于『臂六十四』而
 　「：汉语：验收盘只写非零前段；模拟整盘前扩为稀疏文件，保留 ext4 声明的两吉字节容量。兼容架构合盘还含启动介质，先留四吉字节。待办事项：按其他造盘容量读取声明。
 　　　文言：验盘惟书非零之首；拟全盘前扩为疏文，存 ext4 所声明之二吉字容量。兼构合盘并启介质，先留四吉字。待办：依余造盘容量读其声明。：」
-　令「扩盘」为「豫言系统」之「扩盘文件」于（「镜」接（若「臂」则『/豫言系统.盘』否则『/yy豫言启动盘.img』））于（若「臂」则『4194304』否则『8388608』）而
+　令「扩盘」为「豫言系统」之「扩盘文件」于（「镜」接（若「臂」则『/豫言系统.盘』否则『/豫言启动盘.img』））于（若「臂」则『4194304』否则『8388608』）而
 　令「共」为
 　　（（「列」
 　　　【『-m』
@@ -73,7 +73,7 @@
 　　　　，『-device』
 　　　　，『virtio-scsi-pci』
 　　　　，『-drive』
-　　　　，『if=none,id=yy_cd,format=raw,media=cdrom,readonly=on,file=』接「镜」接『/yy豫言启动臂.iso』
+　　　　，『if=none,id=yy_cd,format=raw,media=cdrom,readonly=on,file=』接「镜」接『/豫言启动臂.iso』
 　　　　，『-device』
 　　　　，『scsi-cd,drive=yy_cd』
 　　　　，『-drive』
@@ -90,7 +90,7 @@
 　　　　，『-accel』
 　　　　，『kvm』
 　　　　，『-drive』
-　　　　，『if=none,id=yy_disk,format=raw,file=』接「镜」接『/yy豫言启动盘.img』
+　　　　，『if=none,id=yy_disk,format=raw,file=』接「镜」接『/豫言启动盘.img』
 　　　　，『-device』
 　　　　，『usb-storage,drive=yy_disk』
 　　　　】

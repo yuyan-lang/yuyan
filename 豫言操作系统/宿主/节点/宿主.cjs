@@ -3,8 +3,8 @@
 const 文件 = require('node:fs'), 路径 = require('node:path'), 系统 = require('node:os');
 const 子进程 = require('node:child_process'), 终端 = require('node:tty'), 密码 = require('node:crypto'), 工具 = require('node:util');
 const {Worker, MessageChannel, isMainThread, workerData, threadId, parentPort} = require('node:worker_threads');
-// 文言：稳定之具（名以 _stable.wasm 终者）所导乃旧之宿主接口名，交工具链之包自带之宿主行之，先求于其旁，次求于今目录。汉语：稳定工具（文件名以 _stable.wasm 结尾）导入的是旧的宿主接口名，交给 Wasm 工具链包自带的 yy稳定节点宿主/宿主.cjs 运行（提案 00013 第 4.4 节）；包内宿主先找稳定工具旁边的，再找当前目录下的。
-if(isMainThread&&/_stable\.wasm$/.test(process.argv[2]??'')){const 稳定宿主=[路径.resolve(路径.dirname(process.argv[2]),'yy稳定节点宿主','宿主.cjs'),路径.resolve('yy稳定节点宿主','宿主.cjs')].find(径=>径!==__filename&&文件.existsSync(径));if(稳定宿主){require(稳定宿主);return;}}
+// 文言：稳定之具（名以 _stable.wasm 终者）所导乃旧之宿主接口名，交工具链之包自带之宿主行之，先求于其旁，次求于今目录。汉语：稳定工具（文件名以 _stable.wasm 结尾）导入的是旧的宿主接口名，交给 Wasm 工具链包自带的 稳定节点宿主/宿主.cjs 运行（提案 00013 第 4.4 节）；包内宿主先找稳定工具旁边的，再找当前目录下的。
+if(isMainThread&&/_stable\.wasm$/.test(process.argv[2]??'')){const 稳定宿主=[路径.resolve(路径.dirname(process.argv[2]),'稳定节点宿主','宿主.cjs'),路径.resolve('稳定节点宿主','宿主.cjs')].find(径=>径!==__filename&&文件.existsSync(径));if(稳定宿主){require(稳定宿主);return;}}
 const {接管进程, 客体请求} = require('./进程桥接.cjs');
 const {建立编译线程, 线程资源限额} = require('./编译线程.cjs');
 const {创建终端输入} = require('./终端输入.mjs');
@@ -15,7 +15,7 @@ let 共享时钟;
 // 汉语：公共墙钟复用原生共享核心，首次调用时载入，保留全六十四位纪元毫秒。文言：公墙钟复原生共核，初调乃载，存全六十四位纪元毫秒。
 const 读取共享纪元毫秒=()=>{
   if(!共享时钟){
-    const 径=[process.env.YY传输控制共享,路径.join(__dirname,'yy传输控制共享.wasm'),路径.resolve('yy传输控制共享.wasm')].find(名=>名&&文件.existsSync(名));
+    const 径=[process.env.YY传输控制共享,路径.join(__dirname,'传输控制共享.wasm'),路径.resolve('传输控制共享.wasm')].find(名=>名&&文件.existsSync(名));
     共享时钟=创建传输控制协议能力({模块字节:径?文件.readFileSync(径):null});
   }
   return 共享时钟.读取当前纪元毫秒();
@@ -23,8 +23,8 @@ const 读取共享纪元毫秒=()=>{
 // 文言：同一宿主工序对同一 Wasm 只散列一次。汉语：同一 Node worker 对同一路径只计算一次内容 SHA-256。
 const 当前程序SHA256缓存=new Map();
 const 获取程序内容SHA256=名=>{const 全径=路径.resolve(名),旧=当前程序SHA256缓存.get(全径);if(旧!==undefined)return 旧;const 摘要=密码.createHash('sha256').update(文件.readFileSync(全径)).digest('hex');当前程序SHA256缓存.set(全径,摘要);return 摘要;};
-// 文言：值桥先从父宿主所传之径，次取宿主之旁（仓库目标“豫构”书之），次求于今目录，末取解于仓根之工具链包者；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件依次找：父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径；宿主文件旁的那份（仓库目标“豫构”用当前编译器生成）；当前目录；最后是解压在仓库根目录的 Wasm 工具链包里的 yy稳定节点宿主/yy节点值桥接.wasm（新检出的仓库第一次构建时用）。找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
-const 桥文件路径=()=>{const 候选=[process.env.YY_NODE_VALUE_BRIDGE,路径.join(__dirname,'yy节点值桥接.wasm'),路径.resolve('yy节点值桥接.wasm'),路径.resolve('yy稳定节点宿主','yy节点值桥接.wasm')];const 径=候选.find(径=>径&&文件.existsSync(径))??候选[1];process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
+// 文言：值桥先从父宿主所传之径，次取宿主之旁（仓库目标“豫构”书之），次求于今目录，末取解于仓根之工具链包者；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件依次找：父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径；宿主文件旁的那份（仓库目标“豫构”用当前编译器生成）；当前目录；最后是解压在仓库根目录的 Wasm 工具链包里的 稳定节点宿主/节点值桥接.wasm（新检出的仓库第一次构建时用）。找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
+const 桥文件路径=()=>{const 候选=[process.env.YY_NODE_VALUE_BRIDGE,路径.join(__dirname,'节点值桥接.wasm'),路径.resolve('节点值桥接.wasm'),路径.resolve('稳定节点宿主','节点值桥接.wasm')];const 径=候选.find(径=>径&&文件.existsSync(径))??候选[1];process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
 const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
 // 文言：客之工作线程另带 --experimental-ffi，令系统库调用之原语可用；引擎之旗通于全进程，不可亦不必传于工作线程，先去之；诺驿不识此旗、或余旗不容于工作线程，则照旧承父之旗。汉语：客体工作线程另带 --experimental-ffi，让系统库调用原语（外部库.mjs）可用，node:ffi 到第一次调用才载入。V8 引擎旗对整个进程生效，不能也不必传给工作线程，先滤掉；诺驿不认此旗、或余下的旗不能用于工作线程时，照旧继承父线程的旗。
 const 外部库旗='--experimental-ffi';
@@ -159,9 +159,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   }
   const 释占锁=占径=>{try{文件.unlinkSync(占径);}catch{}};
   const 原语={
-    // 文言：同文用旧号，异文另立号，既存不改（同原生 包上下文.c）。汉语：与原生 包上下文.c 相同：在当前目录的 .yybuild/豫构上下文 里逐字比较，内容相同就复用已有编号，否则新建下一个编号；加锁防并发，返回真实路径。
+    // 文言：同文用旧号，异文另立号，既存不改（同原生 包上下文.c）。汉语：与原生 包上下文.c 相同：在当前目录的 .豫构缓存/豫构上下文 里逐字比较，内容相同就复用已有编号，否则新建下一个编号；加锁防并发，返回真实路径。
     豫言_存放包上下文:内容=>{
-      const 目录=路径.resolve(当前目录,'.yybuild/豫构上下文');文件.mkdirSync(目录,{recursive:true,mode:0o700});
+      const 目录=路径.resolve(当前目录,'.豫构缓存/豫构上下文');文件.mkdirSync(目录,{recursive:true,mode:0o700});
       const 占径=路径.join(目录,'锁.占');取占锁(占径);
       try{
         for(let 号=1000+(()=>{let 散=5381;for(let 位=0;位<内容.length;位++)散=(Math.imul(散,33)+内容[位])>>>0;return 散%1000000;})();;号++){

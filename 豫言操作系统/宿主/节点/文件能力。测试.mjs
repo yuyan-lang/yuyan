@@ -8,7 +8,7 @@ import {createRequire} from 'node:module';
 const {创建文件能力, 提取文件授权} = createRequire(import.meta.url)('./文件能力.mjs');
 const 文 = 值 => new TextEncoder().encode(值);
 test('共享文件工厂同步载入并沿用显式授权', () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy文件能-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '文件能-'));
   文件系统.writeFileSync(路径.join(根, '文'), '甲乙');
   const 配 = 提取文件授权(['程序.wasm', '--授权只读目录', '读=' + 根, '--授权目录', '写=' + 根, '客参'], 根);
   assert.deepEqual(配.参数, ['程序.wasm', '客参']);

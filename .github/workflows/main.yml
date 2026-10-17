@@ -1,8 +1,8 @@
 name: CI
 
 env:
-  # 文言：所定之原生工具链包（Linux x64）：自举之作由此起步，不用 Node 与 Wasm。包中豫构 yy豫构_stable.exe 配包中执行器 yy执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟 CI 发新包，乃同易下二项。
-  # 汉语：固定的原生工具链包（Linux x64）：自举作业从它起步，不用 Node 与 Wasm。包里的豫构 yy豫构_stable.exe 配包里的执行器 yy执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等 CI 发布新包，再同时改下面两项。
+  # 文言：所定之原生工具链包（Linux x64）：自举之作由此起步，不用 Node 与 Wasm。包中豫构 豫构稳定。林纳。豫行 配包中执行器 执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟 CI 发新包，乃同易下二项。
+  # 汉语：固定的原生工具链包（Linux x64）：自举作业从它起步，不用 Node 与 Wasm。包里的豫构 豫构稳定。林纳。豫行 配包里的执行器 执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等 CI 发布新包，再同时改下面两项。
   YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261017T050111Z-yuyan-native-linux-x64-fe413aae3e3cdeab3c77170c6819a43c7f7df3bb.tar.gz
   YY_NATIVE_TOOLCHAIN_SHA256: 96ed43ec56280f45c4fe2d36a37ed84e1ad551b1d84c31e2ac59be7416a1f709
 
@@ -37,12 +37,12 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
       - name: 解开测试工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
       - name: 构建格式检查工具
-        run: ./yy豫构.exe 构建 源码格式化 检查 --输出 yy格式检查.exe -j "$(nproc)"
+        run: ./豫构。林纳。豫行 构建 源码格式化 检查 --输出 格式检查。林纳。豫行 -j "$(nproc)"
       # 文言：标签参数之检：惟检所改之签名，依 AGENTS.md 有字面同类之参而未系标签者书警（函数恰二参者不检）；此步纵败亦不败作业。推送时基准取上一推之提交，拉取请求取所归分支之提交；不得则书一警而略之。
       # 汉语：标签参数检查：只检查这次改动涉及的签名，按 AGENTS.md 有字面类型相同的参数却没带标签的发警告（函数恰好两个参数时不查）；这一步自己失败也不让作业失败（continue-on-error）。推送时基准取上一次推送的提交，拉取请求取目标分支的提交；取不到时发一条警告后跳过。
       - name: 标签参数检查（只警告）
@@ -51,24 +51,24 @@ jobs:
           YY_LABEL_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
         run: |
           git fetch --no-tags --depth=1 origin "$YY_LABEL_BASE" || true
-          ./yy格式检查.exe --标签 "$YY_LABEL_BASE"
+          ./格式检查。林纳。豫行 --标签 "$YY_LABEL_BASE"
       # 文言：篇名后缀之检：Git 所录之篇与目录，名除半角点外皆汉字者，依 AGENTS.md 其缀当以全角句号「。」隔之；列其名而书一警，此步纵败亦不败作业。
       # 汉语：文件名后缀检查：Git 受控的文件与目录名除半角点外全是汉字时，按 AGENTS.md 后缀应以全角句号「。」分隔；列出这些名字并发一条警告，这一步自己失败也不让作业失败（continue-on-error）。
       - name: 文件名后缀检查（只警告）
         continue-on-error: true
-        run: ./yy格式检查.exe --文件名
+        run: ./格式检查。林纳。豫行 --文件名
       # 文言：排版之核：取所检之篇（同无参之核：.豫 与 。豫，略 yuyan-vscode 与 *_v0），按处理器之数并行（一程一篇：大篇数则相邻，合批则拖慢全程），惟告警。
       # 汉语：排版检查：取与无参检查相同的文件（.豫 与 。豫，跳过 yuyan-vscode 与 *_v0），按处理器数并行（每个进程查一个文件：几个最慢的大文件在目录里挨着，合成一批会拖慢全程），只发警告。
       - name: 检查排版（只警告，按核数并行）
         run: |
           set -euo pipefail
           git -c core.quotepath=false ls-files | grep -E '(。|\.)豫$' | grep -v -e 'yuyan-vscode/' -e '_v0/' \
-            | tr '\n' '\0' | xargs -0 -P "$(nproc)" -n 1 ./yy格式检查.exe --只查排版
+            | tr '\n' '\0' | xargs -0 -P "$(nproc)" -n 1 ./格式检查。林纳。豫行 --只查排版
       # 文言：校名：名或篇径含英文字母、阿拉伯数字或下划线者书误；仓中旧名犹带阿拉伯数字，许此步败而不败其作（continue-on-error，用户 2026-10-14 定）。
       # 汉语：核对标识符：标识符或路径含英文字母、阿拉伯数字或下划线时报错；仓里旧名还带阿拉伯数字，这一步允许失败，不让作业失败（continue-on-error，用户 2026-10-14 定）。
       - name: 检查标识符（允许失败）
         continue-on-error: true
-        run: ./yy格式检查.exe --只查标识符
+        run: ./格式检查。林纳。豫行 --只查标识符
 
   # 文言：自举之作：原生起步，不用 Node 与 Wasm。起于所定之原生工具链包：包中豫构配包中执行器，先构今源之六十四位原生豫构（一级驱动，今源之码行于旧执行器），乃以之原生自举而核定点，装原生工具链，更构全树测试之器、网页后端之 Wasm 编译器与豫构（可发之产）、本轮之 Wasm 与原生工具链包，上传之，使诸片与跨平台之验早起。
   # 汉语：自举作业：原生起步，不用 Node 与 Wasm。从固定的原生工具链包起步：包里的豫构配包里的执行器，先把当前源码编成六十四位原生豫构（一级驱动：当前源码的代码跑在旧执行器上），再由它原生自举并核对定点、装上原生工具链，接着构建全树测试工具、网页后端用的 Wasm 编译器与豫构（可发布的产物）以及本轮的 Wasm 与原生工具链包，然后上传，让测试分片与跨平台验证尽早开始。
@@ -94,37 +94,37 @@ jobs:
       # 汉语：一级驱动由当前源码生成，二、三级的代码生成就一致（定点）；配包里的执行器，是因为它与包里的豫构同代、侧表格式相合。
       - name: 以包中豫构构建当前源码的一级原生豫构
         run: |
-          ./yy豫构_stable.exe 构建 豫构 --输出 yy豫构.exe -j "$(nproc)" -- --目标 本机 --执行器 yy执行器。树码 --降级缓存 .yybuild/降级缓存/yy豫构一级.exe.机器片
+          ./豫构稳定。林纳。豫行 构建 豫构 --输出 豫构。林纳。豫行 -j "$(nproc)" -- --目标 本机 --执行器 执行器。树码 --降级缓存 .豫构缓存/降级缓存/豫构一级。林纳。豫行.机器片
 
       # 文言：构建之事皆归豫构之仓库目标（应用/豫构/仓库目标。豫），诸目标并行而缓存；仓无 Makefile。此作诸作之所待。「全部」原生自举而核定点，装原生工具链，乃以原生豫构构网页后端之 Wasm 编译器、豫构与值桥。
       # 汉语：构建统一交给豫构的仓库目标（应用/豫构/仓库目标。豫），由构建编排并行调度与缓存，仓库里没有 Makefile。本作业是其他作业的前置。「全部」原生自举并核对定点、装上原生工具链，然后由原生豫构构建网页后端用的 Wasm 编译器、豫构与值桥。
       - name: 原生自举并核对定点，装上原生工具链，构建 Wasm 编译器、豫构与值桥
-        run: ./yy豫构.exe 全部 -j "$(nproc)"
+        run: ./豫构。林纳。豫行 全部 -j "$(nproc)"
 
       - name: 构建全树测试工具、Wasm 工具链包与原生工具链包
-        run: ./yy豫构.exe 目标 全树测试工具 打包 原生打包 -j "$(nproc)"
+        run: ./豫构。林纳。豫行 目标 全树测试工具 打包 原生打包 -j "$(nproc)"
 
       # 文言：三包：诸片所用之原生试器（并同代之 Wasm 编译器、豫构与值桥，供抽样之诺驿之验）、本轮之 Wasm 工具链包、本轮之原生工具链包（Linux x64）。
       # 汉语：打三个包：各分片与检查作业用的原生测试工具（附同代的 Wasm 编译器、豫构与值桥，供抽样的诺驿验证用）、本轮的 Wasm 工具链包、本轮的原生工具链包（Linux x64）。
       - name: 打包产物
         run: |
           set -euo pipefail
-          tar -czf "$RUNNER_TEMP/yy-test-tools.tar.gz" yy4_bs.exe yy豫构.exe yy执行器。树码 yy全树测试.exe yy4_bs.wasm yy豫构.wasm 豫言操作系统/宿主/节点/yy节点值桥接.wasm
-          tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C yy网页汇编工具链 .
-          tar -czf "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" -C yy原生工具链 .
+          tar -czf "$RUNNER_TEMP/测试工具.tar.gz" 编译器。林纳。豫行 豫构。林纳。豫行 执行器。树码 全树测试。林纳。豫行 编译器.wasm 豫构.wasm 豫言操作系统/宿主/节点/节点值桥接.wasm
+          tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C 网页汇编工具链 .
+          tar -czf "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" -C 原生工具链包 .
 
       - name: 上传全树测试工具
         uses: actions/upload-artifact@v4
         with:
-          name: yy-test-tools
-          path: ${{ runner.temp }}/yy-test-tools.tar.gz
+          name: 测试工具
+          path: ${{ runner.temp }}/测试工具.tar.gz
           retention-days: 1
           if-no-files-found: error
 
       - name: 上传 Wasm 工具链包
         uses: actions/upload-artifact@v4
         with:
-          name: yy-wasm-toolchain
+          name: 网汇工具链包
           path: ${{ runner.temp }}/yuyan-wasm.tar.gz
           retention-days: 7
           if-no-files-found: error
@@ -132,7 +132,7 @@ jobs:
       - name: 上传原生工具链包（Linux x64）
         uses: actions/upload-artifact@v4
         with:
-          name: yy-native-toolchain-linux-x64
+          name: 原生工具链-linux-x64
           path: ${{ runner.temp }}/yuyan-native-linux-x64.tar.gz
           retention-days: 7
           if-no-files-found: error
@@ -151,14 +151,14 @@ jobs:
           fi
           gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" --clobber
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: yy-build-logs-bootstrap
-          path: .yy构建日志/
+          name: 构建日志-bootstrap
+          path: .构建日志/
           include-hidden-files: true
           retention-days: 90
           if-no-files-found: ignore
@@ -175,23 +175,23 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开测试工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
       - name: 类型检查与豫构测试
-        run: ./yy豫构.exe 目标 类型检查 豫构测试 --不连带 -j "$(nproc)"
+        run: ./豫构。林纳。豫行 目标 类型检查 豫构测试 --不连带 -j "$(nproc)"
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: yy-build-logs-checks
-          path: .yy构建日志/
+          name: 构建日志-checks
+          path: .构建日志/
           include-hidden-files: true
           retention-days: 90
           if-no-files-found: ignore
@@ -220,14 +220,14 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开全树测试工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
       - name: 运行本片测试
-        run: ./yy全树测试.exe --分片 ${{ matrix.shard }}/20
+        run: ./全树测试。林纳。豫行 --分片 ${{ matrix.shard }}/20
 
   # 文言：交叉之工具链：取自举所成之原生豫构，于 Linux 径出他平台之原生豫构（林檎臂六十四、Linux 臂六十四、轩窗兼容六十四），与执行器之树码同包；他平台之作以之原生起步，不用 Node 与 Wasm。待办事项：轩窗之降级未有六十四位址之内存，轩窗之豫构暂不能起。
   # 汉语：交叉工具链：用自举作业产出的原生豫构，在 Linux 上直出其他平台的原生豫构（macOS 臂六十四、Linux 臂六十四、Windows 兼容六十四），连同执行器汇编树码打成包；其他平台的作业用它原生起步，不用 Node 与 Wasm。待办事项：Windows 的降级还没有六十四位地址内存，执行器只有六十四位一种，Windows 原生豫构暂时起不来。
@@ -242,38 +242,41 @@ jobs:
         include:
           - plat: macos-arm64
             system: 林檎
+            prog: 豫构。林檎。豫行
             arch: 臂六十四
           - plat: linux-arm64
             system: 林纳
+            prog: 豫构。林纳。豫行
             arch: 臂六十四
           - plat: windows-x64
             system: 轩窗
+            prog: 豫构.exe
             arch: 兼容六十四
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开本轮工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
       - name: 交叉直出原生豫构
         run: |
           set -euo pipefail
-          out="yy交叉/${{ matrix.plat }}"
+          out="交叉产物/${{ matrix.plat }}"
           mkdir -p "$out"
-          ./yy豫构.exe 构建 豫构 --输出 "$out/yy豫构.exe" -j "$(nproc)" -- --目标 本机 --目标系统 ${{ matrix.system }} --目标架构 ${{ matrix.arch }} --执行器 "$PWD/yy执行器。树码" --降级缓存 "$PWD/.yybuild/降级缓存/yy豫构${{ matrix.plat }}.机器片"
-          cp yy执行器。树码 "$out/"
+          ./豫构。林纳。豫行 构建 豫构 --输出 "$out/${{ matrix.prog }}" -j "$(nproc)" -- --目标 本机 --目标系统 ${{ matrix.system }} --目标架构 ${{ matrix.arch }} --执行器 "$PWD/执行器。树码" --降级缓存 "$PWD/.豫构缓存/降级缓存/豫构${{ matrix.plat }}.机器片"
+          cp 执行器。树码 "$out/"
           rm -f "$out"/*.链接印
-          tar -czf "$RUNNER_TEMP/yy-cross-${{ matrix.plat }}.tar.gz" -C "$out" .
+          tar -czf "$RUNNER_TEMP/交叉-${{ matrix.plat }}.tar.gz" -C "$out" .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: yy-cross-toolchain-${{ matrix.plat }}
-          path: ${{ runner.temp }}/yy-cross-${{ matrix.plat }}.tar.gz
+          name: 交叉工具链-${{ matrix.plat }}
+          path: ${{ runner.temp }}/交叉-${{ matrix.plat }}.tar.gz
           retention-days: 3
           if-no-files-found: error
 
@@ -289,21 +292,21 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开本轮工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
       - name: 打豫行工具链包
         run: |
           set -euo pipefail
-          ./yy豫构.exe 目标 豫行打包 --不连带 -j "$(nproc)"
-          tar -czf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" -C yy豫行工具链 .
+          ./豫构。林纳。豫行 目标 豫行打包 --不连带 -j "$(nproc)"
+          tar -czf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" -C 豫行工具链 .
 
       - uses: actions/upload-artifact@v4
         with:
-          name: yy-yuxing-toolchain
+          name: 豫行工具链包
           path: ${{ runner.temp }}/yuyan-yuxing-toolchain.tar.gz
           retention-days: 7
           if-no-files-found: error
@@ -313,15 +316,15 @@ jobs:
       - name: 出 Windows 对照用的参照
         run: |
           set -euo pipefail
-          mkdir -p yy豫行参照
-          ./yy豫构.exe 发现 --树 > yy豫行参照/发现.txt
-          ./yy豫构.exe 构建 原生你好 豫行入口 --输出 yy豫行参照/yy编你好 -j "$(nproc)" -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
-          tar -czf "$RUNNER_TEMP/yy-yuxing-reference.tar.gz" -C yy豫行参照 发现.txt yy编你好
+          mkdir -p 豫行参照
+          ./豫构。林纳。豫行 发现 --树 > 豫行参照/发现.txt
+          ./豫构。林纳。豫行 构建 原生你好 豫行入口 --输出 豫行参照/编你好 -j "$(nproc)" -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
+          tar -czf "$RUNNER_TEMP/豫行参照包.tar.gz" -C 豫行参照 发现.txt 编你好
 
       - uses: actions/upload-artifact@v4
         with:
-          name: yy-yuxing-reference
-          path: ${{ runner.temp }}/yy-yuxing-reference.tar.gz
+          name: 豫行参照包
+          path: ${{ runner.temp }}/豫行参照包.tar.gz
           retention-days: 3
           if-no-files-found: error
 
@@ -331,6 +334,8 @@ jobs:
     name: 豫行跨宿主（${{ matrix.plat }}）
     needs: yuxing-toolchain
     runs-on: ${{ matrix.os }}
+    env:
+      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -338,25 +343,25 @@ jobs:
         include:
           - os: ubuntu-latest
             plat: linux-x64
-            launcher: yy豫行启动器林兼
-            yuxing: yy豫构兼。豫行
+            launcher: 豫行启动器兼。林纳。豫行
+            yuxing: 豫构兼。豫行
             arch: 兼容六十四
           - os: ubuntu-24.04-arm
             plat: linux-arm64
-            launcher: yy豫行启动器林臂
-            yuxing: yy豫构臂。豫行
+            launcher: 豫行启动器臂。林纳。豫行
+            yuxing: 豫构臂。豫行
             arch: 臂六十四
           - os: macos-latest
             plat: macos-arm64
-            launcher: yy豫行启动器林檎臂
-            yuxing: yy豫构臂。豫行
+            launcher: 豫行启动器臂。林檎。豫行
+            yuxing: 豫构臂。豫行
             arch: 臂六十四
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-yuxing-toolchain
+          name: 豫行工具链包
           path: ${{ runner.temp }}
 
       - name: 解开豫行工具链包
@@ -368,18 +373,18 @@ jobs:
       - name: 发现包并构建运行原生你好的豫行版
         run: |
           set -euo pipefail
-          ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 发现 --树 > yy豫行发现.txt
-          grep -F '豫章（库/豫章）' yy豫行发现.txt
-          ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 构建 原生你好 豫行入口 --输出 yy编你好 -j "$(getconf _NPROCESSORS_ONLN)" -- --目标 本机 --目标系统 豫言 --目标架构 ${{ matrix.arch }}
+          ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 发现 --树 > 豫行发现.txt
+          grep -F '豫章（库/豫章）' 豫行发现.txt
+          ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 构建 原生你好 豫行入口 --输出 编你好 -j "$(getconf _NPROCESSORS_ONLN)" -- --目标 本机 --目标系统 豫言 --目标架构 ${{ matrix.arch }}
           set +e
-          ./"${{ matrix.launcher }}" yy编你好 > yy你好.txt
+          ./"${{ matrix.launcher }}" 编你好 > 你好.txt
           code=$?
           set -e
-          grep -F '你好' yy你好.txt
+          grep -F '你好' 你好.txt
           test "$code" = 7
 
-  # 文言：豫行于轩窗（提案〇〇〇二一第五、六步）：于轩窗运行器，以包中之轩窗兼启动器行原生你好之兼豫行（参照）；复以启动器合豫构兼豫行为单文件 yy豫构.exe，发现诸包，构原生你好之豫行版，皆与 Linux 之原生豫构所出者较（发现之出逐字同，豫行逐字节同），复以启动器行之（印你好，以七退）。先书宿主之存与页文件，以察提交之限；复以 -j 4 类检一库，验数常驻之工作进程同时而行（提交依触而计，见 客体二号 轩窗缺页）。
-  # 汉语：豫行在 Windows 上运行（提案 00021 第 5、6 步）：在 Windows 运行器上用包里的 Windows x86-64 启动器运行原生你好的 AMD64 豫行版（参照）；再用启动器把 AMD64 豫构豫行合成单文件 yy豫构.exe，发现包、构建原生你好的豫行版，都与 Linux 上原生豫构的结果对照（发现输出逐字相同，豫行逐字节相同），再用启动器运行它（打印你好，退出码 7）。先打印宿主内存与页面文件，便于查提交上限；再以 -j 4 类型检查一个库，确认几个常驻工作进程同时运行（提交按碰过的内存计，见 客体二号 的 轩窗缺页）。
+  # 文言：豫行于轩窗（提案〇〇〇二一第五、六步）：于轩窗运行器，以包中之轩窗兼启动器行原生你好之兼豫行（参照）；复以启动器合豫构兼豫行为单文件 豫构.exe，发现诸包，构原生你好之豫行版，皆与 Linux 之原生豫构所出者较（发现之出逐字同，豫行逐字节同），复以启动器行之（印你好，以七退）。先书宿主之存与页文件，以察提交之限；复以 -j 4 类检一库，验数常驻之工作进程同时而行（提交依触而计，见 客体二号 轩窗缺页）。
+  # 汉语：豫行在 Windows 上运行（提案 00021 第 5、6 步）：在 Windows 运行器上用包里的 Windows x86-64 启动器运行原生你好的 AMD64 豫行版（参照）；再用启动器把 AMD64 豫构豫行合成单文件 豫构.exe，发现包、构建原生你好的豫行版，都与 Linux 上原生豫构的结果对照（发现输出逐字相同，豫行逐字节相同），再用启动器运行它（打印你好，退出码 7）。先打印宿主内存与页面文件，便于查提交上限；再以 -j 4 类型检查一个库，确认几个常驻工作进程同时运行（提交按碰过的内存计，见 客体二号 的 轩窗缺页）。
   yuxing-windows:
     name: 豫行跨宿主（windows-x64）
     needs: yuxing-toolchain
@@ -393,12 +398,12 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-yuxing-toolchain
+          name: 豫行工具链包
           path: ${{ runner.temp }}
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-yuxing-reference
+          name: 豫行参照包
           path: ${{ runner.temp }}
 
       # 文言：Git Bash 之 tar 视 `D:\…` 为远主之名，故加 --force-local。
@@ -407,9 +412,9 @@ jobs:
         run: |
           set -euo pipefail
           tar --force-local -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"
-          mkdir -p yy豫行参照
-          tar --force-local -xzf "$RUNNER_TEMP/yy-yuxing-reference.tar.gz" -C yy豫行参照
-          ls -la yy豫行启动器轩窗兼.exe yy豫构兼。豫行 yy豫行参照
+          mkdir -p 豫行参照
+          tar --force-local -xzf "$RUNNER_TEMP/豫行参照包.tar.gz" -C 豫行参照
+          ls -la 豫行启动器兼.exe 豫构兼。豫行 豫行参照
 
       - name: 宿主内存与页面文件
         shell: pwsh
@@ -421,44 +426,44 @@ jobs:
       - name: 启动器运行原生你好的豫行版
         run: |
           set +e
-          ./yy豫行启动器轩窗兼.exe yy豫行参照/yy编你好 > yy你好参照.txt
+          ./豫行启动器兼.exe 豫行参照/编你好 > 你好参照.txt
           code=$?
           set -e
-          cat yy你好参照.txt
+          cat 你好参照.txt
           echo "退出码 $code"
-          grep -F '你好' yy你好参照.txt
+          grep -F '你好' 你好参照.txt
           test "$code" = 7
 
       - name: 合成单文件豫构并发现包
         run: |
           set -euo pipefail
-          ./yy豫行启动器轩窗兼.exe --合成 yy豫构兼。豫行 yy豫构.exe
-          ls -la yy豫构.exe
-          ./yy豫构.exe 发现 --树 > yy豫行发现.txt
-          grep -F '豫章（库/豫章）' yy豫行发现.txt
-          diff yy豫行发现.txt yy豫行参照/发现.txt
+          ./豫行启动器兼.exe --合成 豫构兼。豫行 豫构.exe
+          ls -la 豫构.exe
+          ./豫构.exe 发现 --树 > 豫行发现.txt
+          grep -F '豫章（库/豫章）' 豫行发现.txt
+          diff 豫行发现.txt 豫行参照/发现.txt
           echo "发现的输出与 Linux 原生豫构相同"
 
       - name: 构建原生你好的豫行版并与 Linux 对照
         run: |
           set -euo pipefail
-          ./yy豫构.exe 构建 原生你好 豫行入口 --输出 yy编你好 -j 2 -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
-          cmp yy编你好 yy豫行参照/yy编你好
+          ./豫构.exe 构建 原生你好 豫行入口 --输出 编你好 -j 2 -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
+          cmp 编你好 豫行参照/编你好
           echo "产物与 Linux 原生豫构编出的逐字节相同"
           set +e
-          ./yy豫行启动器轩窗兼.exe yy编你好 > yy你好.txt
+          ./豫行启动器兼.exe 编你好 > 你好.txt
           code=$?
           set -e
-          cat yy你好.txt
-          grep -F '你好' yy你好.txt
+          cat 你好.txt
+          grep -F '你好' 你好.txt
           test "$code" = 7
 
       - name: 以 -j 4 类型检查一个库（几个常驻工作进程同时运行）
         run: |
           set -euo pipefail
-          ./yy豫构.exe 类型检查 结绳 -j 4 2> yy并行检查.txt || { tail -30 yy并行检查.txt; exit 1; }
-          tail -3 yy并行检查.txt
-          grep -E -m 3 '运行 [2-4]/4' yy并行检查.txt
+          ./豫构.exe 类型检查 结绳 -j 4 2> 并行检查.txt || { tail -30 并行检查.txt; exit 1; }
+          tail -3 并行检查.txt
+          grep -E -m 3 '运行 [2-4]/4' 并行检查.txt
           echo "同时运行的常驻工作进程不止一个"
 
       - name: 宿主内存（构建之后）
@@ -481,7 +486,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: yy-yuxing-toolchain
+          name: 豫行工具链包
           path: ${{ runner.temp }}
 
       - name: 上传到连续版本
@@ -500,6 +505,8 @@ jobs:
     needs: [bootstrap, cross-toolchains, yuxing-toolchain]
     if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
     runs-on: ${{ matrix.os }}
+    env:
+      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
     timeout-minutes: 120
     strategy:
       fail-fast: false
@@ -507,24 +514,24 @@ jobs:
         include:
           - os: ubuntu-latest
             plat: linux-x64
-            native-artifact: yy-test-tools
-            native-tar: yy-test-tools.tar.gz
-            launcher: yy豫行启动器林兼
-            yuxing: yy豫构兼。豫行
+            native-artifact: 测试工具
+            native-tar: 测试工具.tar.gz
+            launcher: 豫行启动器兼。林纳。豫行
+            yuxing: 豫构兼。豫行
             arch: 兼容六十四
           - os: ubuntu-24.04-arm
             plat: linux-arm64
-            native-artifact: yy-cross-toolchain-linux-arm64
-            native-tar: yy-cross-linux-arm64.tar.gz
-            launcher: yy豫行启动器林臂
-            yuxing: yy豫构臂。豫行
+            native-artifact: 交叉工具链-linux-arm64
+            native-tar: 交叉-linux-arm64.tar.gz
+            launcher: 豫行启动器臂。林纳。豫行
+            yuxing: 豫构臂。豫行
             arch: 臂六十四
           - os: macos-latest
             plat: macos-arm64
-            native-artifact: yy-cross-toolchain-macos-arm64
-            native-tar: yy-cross-macos-arm64.tar.gz
-            launcher: yy豫行启动器林檎臂
-            yuxing: yy豫构臂。豫行
+            native-artifact: 交叉工具链-macos-arm64
+            native-tar: 交叉-macos-arm64.tar.gz
+            launcher: 豫行启动器臂。林檎。豫行
+            yuxing: 豫构臂。豫行
             arch: 臂六十四
     steps:
       - uses: actions/checkout@v4
@@ -536,31 +543,31 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-yuxing-toolchain
+          name: 豫行工具链包
           path: ${{ runner.temp }}
 
-      # 文言：原生之包解于仓根（得 yy豫构.exe 与执行器之树码）；豫行之包解于别目，以启动器合成单文件之豫构于仓根。
-      # 汉语：原生包解到仓库根目录（得 yy豫构.exe 与执行器汇编树码）；豫行包解到另一个目录，用其中的启动器在仓库根目录合成单文件豫构。
+      # 文言：原生之包解于仓根（得 豫构。<系>。豫行 与执行器之树码）；豫行之包解于别目，以启动器合成单文件之豫构于仓根。
+      # 汉语：原生包解到仓库根目录（得 豫构。<系>。豫行 与执行器汇编树码）；豫行包解到另一个目录，用其中的启动器在仓库根目录合成单文件豫构。
       - name: 解包并合成单文件豫构
         run: |
           set -euo pipefail
           tar -xzf "$RUNNER_TEMP/${{ matrix.native-tar }}"
-          mkdir -p yy豫行包
-          tar -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" -C yy豫行包
-          chmod +x yy豫构.exe "yy豫行包/${{ matrix.launcher }}"
-          "./yy豫行包/${{ matrix.launcher }}" --合成 "yy豫行包/${{ matrix.yuxing }}" yy豫构合成.exe
-          chmod +x yy豫构合成.exe
+          mkdir -p 豫行包
+          tar -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" -C 豫行包
+          chmod +x 豫构。${YY_XI}。豫行 "豫行包/${{ matrix.launcher }}"
+          "./豫行包/${{ matrix.launcher }}" --合成 "豫行包/${{ matrix.yuxing }}" 豫构合成。${YY_XI}。豫行
+          chmod +x 豫构合成。${YY_XI}。豫行
 
       - name: 冷构建编译器各两次并比较耗时
         run: |
           set -euo pipefail
           j="$(getconf _NPROCESSORS_ONLN)"
           for i in 1 2 3 4; do
-            case "$i" in 1|4) p=yy豫构.exe ;; *) p=yy豫构合成.exe ;; esac
+            case "$i" in 1|4) p=豫构。${YY_XI}。豫行 ;; *) p=豫构合成。${YY_XI}。豫行 ;; esac
             d="$RUNNER_TEMP/对比$i"
             mkdir -p "$d"
             s="$(date +%s)"
-            if ! "./$p" 构建 豫言编译器 --输出 "$d/yy编译器" -j "$j" -- --目标 本机 --目标系统 豫言 --目标架构 ${{ matrix.arch }} --执行器 "$PWD/yy执行器。树码" --降级缓存 "$d/降级.机器片" --do-not-load-cache > "$d/构建.txt" 2>&1; then
+            if ! "./$p" 构建 豫言编译器 --输出 "$d/编译器" -j "$j" -- --目标 本机 --目标系统 豫言 --目标架构 ${{ matrix.arch }} --执行器 "$PWD/执行器。树码" --降级缓存 "$d/降级.机器片" --do-not-load-cache > "$d/构建.txt" 2>&1; then
               tail -n 60 "$d/构建.txt"
               exit 1
             fi
@@ -588,18 +595,18 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开本轮工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
       - name: 编可执行包程序与清单
-        run: ./yy豫构.exe 目标 可执行包程序 --不连带 -j "$(nproc)"
+        run: ./豫构。林纳。豫行 目标 可执行包程序 --不连带 -j "$(nproc)"
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-yuxing-toolchain
+          name: 豫行工具链包
           path: ${{ runner.temp }}
 
       # 文言：程既编，乃解豫行工具链之包于仓根（其执行器之树码同代，覆之无害），以林兼启动器行你好之豫行。
@@ -607,15 +614,15 @@ jobs:
       - name: 冒烟：用林兼启动器运行你好
         run: |
           set -euo pipefail
-          cat yy可执行包程序/清单。数据。豫
+          cat 可执行包程序/清单。数据。豫
           tar -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"
-          chmod +x yy豫行启动器林兼
+          chmod +x 豫行启动器兼。林纳。豫行
           set +e
-          ./yy豫行启动器林兼 yy可执行包程序/豫言-兼容六十四/你好 > yy你好.txt
+          ./豫行启动器兼。林纳。豫行 可执行包程序/豫言-兼容六十四/你好 > 你好.txt
           code=$?
           set -e
-          cat yy你好.txt
-          grep -F '你好' yy你好.txt
+          cat 你好.txt
+          grep -F '你好' 你好.txt
           test "$code" = 7
 
   # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，即覆连续版之本平台包，并交发布历史版本之作；林檎另验系统库之调与张量，其验在发布之后，败不阻包之发。不用 Node 与 Wasm。林檎运行器唯三核七吉，并发依核数。
@@ -624,6 +631,8 @@ jobs:
     name: 原生自举（${{ matrix.plat }}）
     needs: cross-toolchains
     runs-on: ${{ matrix.os }}
+    env:
+      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
     timeout-minutes: 120
     strategy:
       fail-fast: false
@@ -638,25 +647,25 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-cross-toolchain-${{ matrix.plat }}
+          name: 交叉工具链-${{ matrix.plat }}
           path: ${{ runner.temp }}
 
       - name: 放入交叉工具链
-        run: tar -xzf "$RUNNER_TEMP/yy-cross-${{ matrix.plat }}.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/交叉-${{ matrix.plat }}.tar.gz"
 
       - name: 原生自举并核对定点，装上原生工具链
-        run: ./yy豫构.exe 目标 原生工具链 -j "$(getconf _NPROCESSORS_ONLN)"
+        run: ./豫构。${YY_XI}。豫行 目标 原生工具链 -j "$(getconf _NPROCESSORS_ONLN)"
 
       - name: 打原生工具链包
         run: |
           set -euo pipefail
-          ./yy豫构.exe 目标 原生打包 -j "$(getconf _NPROCESSORS_ONLN)"
-          tar -czf "$RUNNER_TEMP/yuyan-native-${{ matrix.plat }}.tar.gz" -C yy原生工具链 .
+          ./豫构。${YY_XI}。豫行 目标 原生打包 -j "$(getconf _NPROCESSORS_ONLN)"
+          tar -czf "$RUNNER_TEMP/yuyan-native-${{ matrix.plat }}.tar.gz" -C 原生工具链包 .
 
       - name: 上传原生工具链包
         uses: actions/upload-artifact@v4
         with:
-          name: yy-native-toolchain-${{ matrix.plat }}
+          name: 原生工具链-${{ matrix.plat }}
           path: ${{ runner.temp }}/yuyan-native-${{ matrix.plat }}.tar.gz
           retention-days: 7
           if-no-files-found: error
@@ -675,27 +684,27 @@ jobs:
       - name: 林檎原生系统库调用
         if: runner.os == 'macOS'
         run: |
-          ./yy豫构.exe 构建 借道试 调用。测试 --输出 yy系统库原生测试.exe -j "$(getconf _NPROCESSORS_ONLN)"
-          ./yy系统库原生测试.exe > yy系统库原生.log
-          grep -F '系统库调用全部断言通过' yy系统库原生.log
+          ./豫构。${YY_XI}。豫行 构建 借道试 调用。测试 --输出 系统库原生测试。${YY_XI}。豫行 -j "$(getconf _NPROCESSORS_ONLN)"
+          ./系统库原生测试。${YY_XI}。豫行 > 系统库原生.log
+          grep -F '系统库调用全部断言通过' 系统库原生.log
 
       # 文言：原生张量真登、负步视与解后失效必验；得金属器则验共享矩阵之链。
       # 汉语：原生张量真实登记、负步长及解除失效必验；取得金属设备时验证共享矩阵链。
       - name: 林檎原生张量基本回归
         if: runner.os == 'macOS'
         run: |
-          ./yy豫构.exe 构建 豫寓算阵本土试 登记。测试 --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
-          ./yy张量登记.exe
-          ./yy豫构.exe 接口检查 --核对清单 豫寓榫卯/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
-          ./yy豫构.exe 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配
-          ./yy原生公共张量/程序.exe
+          ./豫构。${YY_XI}。豫行 构建 豫寓算阵本土试 登记。测试 --输出 张量登记。${YY_XI}。豫行 -j "$(getconf _NPROCESSORS_ONLN)"
+          ./张量登记。${YY_XI}。豫行
+          ./豫构。${YY_XI}。豫行 接口检查 --核对清单 豫寓榫卯/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
+          ./豫构。${YY_XI}。豫行 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 原生公共张量 --包根 库 --包根 豫言操作系统/适配
+          ./原生公共张量/程序。${YY_XI}。豫行
 
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: yy-build-logs-${{ matrix.plat }}
-          path: .yy构建日志/
+          name: 构建日志-${{ matrix.plat }}
+          path: .构建日志/
           include-hidden-files: true
           retention-days: 90
           if-no-files-found: ignore
@@ -707,6 +716,8 @@ jobs:
     needs: bootstrap
     if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
     runs-on: ${{ matrix.os }}
+    env:
+      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
     timeout-minutes: 120
     strategy:
       fail-fast: false
@@ -721,7 +732,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-wasm-toolchain
+          name: 网汇工具链包
           path: ${{ runner.temp }}
 
       # 文言：包解于仓根：豫构以编译器所在之目为工具链之根。
@@ -731,16 +742,16 @@ jobs:
 
       - name: 以包中豫构与编译器构建当前源码的豫构
         run: >-
-          node yy稳定节点宿主/宿主.cjs yy豫构_stable.wasm 构建 豫构
-          --编译器 ./yy_bs_stable.wasm --输出 yy豫构.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 稳定节点宿主/宿主.cjs 豫构稳定.wasm 构建 豫构
+          --编译器 ./编译器稳定.wasm --输出 豫构.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
       - name: 以当前豫构自举并核对定点，生成本机原生工具链
-        run: node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
+        run: node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
 
       - name: 构建共用传输控制内核
         run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 传输控制共享入口
-          --编译器 ./yy4_bs.wasm --输出 yy传输控制共享.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 客体二号 传输控制共享入口
+          --编译器 ./编译器.wasm --输出 传输控制共享.wasm -j 24
 
       - name: 核验网络端点授权与应用绑定
         run: |
@@ -751,48 +762,48 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           node --experimental-ffi 豫言操作系统/宿主/节点/传输控制协议系统调用。测试.mjs
-          node --experimental-ffi 豫言操作系统/宿主/节点/传输控制协议共享。测试.mjs yy传输控制共享.wasm
+          node --experimental-ffi 豫言操作系统/宿主/节点/传输控制协议共享。测试.mjs 传输控制共享.wasm
 
       - name: 构建定位读取共用豫核
         run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 文件定位共享入口
-          --编译器 ./yy4_bs.wasm --输出 yy文件定位共享.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 客体二号 文件定位共享入口
+          --编译器 ./编译器.wasm --输出 文件定位共享.wasm -j 24
 
       # 文言：底层之探针由编译器径出本机原生之程（--目标 本机，不经 .wasm）。
       # 汉语：底层探针由编译器直接出本机原生程序（--目标 本机，不经 .wasm）。
       - name: 构建定位读取原生机械探针
         run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 文件定位原生探针
-          --编译器 ./yy4_bs.wasm --输出 yy文件定位原生.exe -j 24 -- --目标 本机
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 客体二号 文件定位原生探针
+          --编译器 ./编译器.wasm --输出 文件定位原生。${YY_XI}。豫行 -j 24 -- --目标 本机
 
       - name: 诺驿与原生共享定位读取远偏与顺读验收
-        run: node --experimental-ffi 豫言操作系统/宿主/节点/文件定位。测试.mjs ./yy文件定位原生.exe
+        run: node --experimental-ffi 豫言操作系统/宿主/节点/文件定位。测试.mjs ./文件定位原生。${YY_XI}。豫行
 
       - name: 构建默认工具宿主定位读取烟验
         run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件
-          库/诺驿东道/默认文件定位。测试。豫 --编译器 ./yy4_bs.wasm
-          --输出 yy默认文件定位.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 文件
+          库/诺驿东道/默认文件定位。测试。豫 --编译器 ./编译器.wasm
+          --输出 默认文件定位.wasm -j 24
 
       - name: 默认工具与应用宿主共用文件能力表
         run: node --test 豫言操作系统/宿主/节点/文件能力。测试.mjs
 
       - name: 默认工具宿主定位读取与顺读游标验收
         run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs yy默认文件定位.wasm
+          node 豫言操作系统/宿主/节点/宿主.cjs 默认文件定位.wasm
           --授权目录 桌面=.
 
       # 汉语：系统script提供真实PTY，终端尺寸查询复用本轮同源豫言原生服务；依次验证109列37行、73列19行与未知尺寸。
       # 文言：系统script供实伪终端，尺寸之查用本轮同源豫言原生服务；次验百九列三十七行、七十三列十九行与未知尺寸。
       - name: 真实终端尺寸与窗口调整
-        run: node 豫言操作系统/宿主/节点/终端尺寸。测试.mjs 验收 ./yy终端尺寸查询.exe
+        run: node 豫言操作系统/宿主/节点/终端尺寸。测试.mjs 验收 ./终端尺寸查询。${YY_XI}。豫行
 
       # 文言：原生对比：冷编之探与全构，原生与 Node 交替而行，较其中位；原生慢则书警而不败，二者产物不同则败。
       # 汉语：原生对比：冷编探针与完整构建，Node 与原生交替运行若干轮，比较中位数；原生较慢只发警告、不让作业失败，两边产物不同才失败。表写进作业摘要。
       - name: 原生与 Node 性能对比
         run: |
-          ./yy豫构.exe 构建 原生对比 --输出 yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          ./豫构。${YY_XI}。豫行 构建 原生对比 --输出 原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs 原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
       # 文言：基础库性能验证：依登记（应用/百工坊/性能验证/性能目标.tsv）行诸性能入口，诺驿与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
       # 汉语：基础库性能验证：按登记表（应用/百工坊/性能验证/性能目标.tsv）运行基础库的性能入口，诺驿与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
@@ -803,20 +814,20 @@ jobs:
           YY_PERF_BASE: ${{ github.event.before }}
         run: |
           git fetch --no-tags --depth=1 origin "$YY_PERF_BASE" || true
-          ./yy豫构.exe 构建 性能验证 --输出 yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          ./豫构。${YY_XI}。豫行 构建 性能验证 --输出 性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs 性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
       # 文言：林檎臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
       # 汉语：林檎 ARM64 系统库调用：同一客体在诺驿和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
       - name: 林檎原生系统库调用
         if: matrix.os == 'macos-latest'
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 借道试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy系统库原生测试.wasm > yy系统库诺驿.log
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 借道试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.exe -j 24
-          ./yy系统库原生测试.exe > yy系统库原生.log
-          cmp yy系统库诺驿.log yy系统库原生.log
-          grep -F '系统库调用全部断言通过' yy系统库原生.log
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 借道试 调用。测试 --编译器 ./编译器.wasm --输出 系统库原生测试.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs 系统库原生测试.wasm > 系统库诺驿.log
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 借道试 调用。测试 --编译器 ./编译器.wasm --输出 系统库原生测试。${YY_XI}。豫行 -j 24
+          ./系统库原生测试。${YY_XI}。豫行 > 系统库原生.log
+          cmp 系统库诺驿.log 系统库原生.log
+          grep -F '系统库调用全部断言通过' 系统库原生.log
 
       # 文言：原生张量真登、负步视与解后失效必验；得金属器则验共享矩阵之链。
       # 汉语：原生张量真实登记、负步长及解除失效必验；取得金属设备时验证共享矩阵链。
@@ -825,20 +836,20 @@ jobs:
       - name: 林檎原生张量基本回归
         if: matrix.os == 'macos-latest'
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫寓算阵本土试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
-          ./yy张量登记.exe
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 接口检查 --核对清单 豫寓榫卯/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./yy4_bs.wasm
-          ./yy原生公共张量/程序.exe
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 豫寓算阵本土试 登记。测试 --编译器 ./编译器.wasm --输出 张量登记。${YY_XI}。豫行 -j "$(getconf _NPROCESSORS_ONLN)"
+          ./张量登记。${YY_XI}。豫行
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 接口检查 --核对清单 豫寓榫卯/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./编译器.wasm
+          ./原生公共张量/程序。${YY_XI}。豫行
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: yy-build-logs-${{ matrix.os }}
-          path: .yy构建日志/
+          name: 构建日志-${{ matrix.os }}
+          path: .构建日志/
           include-hidden-files: true
           retention-days: 90
           if-no-files-found: ignore
@@ -866,11 +877,11 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: .
 
       - name: 解开本轮编译与构建工具
-        run: tar -xzf yy-test-tools.tar.gz
+        run: tar -xzf 测试工具.tar.gz
 
       - name: 核对豫言源码换行
         run: |
@@ -880,26 +891,26 @@ jobs:
           }
 
       # 文言：败时以末段诊断书作业注记，并录诸子进程之出，使公开之验可知所由。
-      # 汉语：失败时把日志末段写成公开的 CI 错误注释，并打印各子进程的输出（yy_parallel_log.txt），便于定位 Windows 兼容问题。
+      # 汉语：失败时把日志末段写成公开的 CI 错误注释，并打印各子进程的输出（并译日志.txt），便于定位 Windows 兼容问题。
       - name: 构建节点一致性发行包
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 发行 节点 豫言操作系统/宿主/节点/一致性验证/应用 dist/节点一致性 > yyWindows发行.log 2>&1 || {
-            printf '::error title=节点发行包构建失败::%s\n' "$(tail -c 1500 yyWindows发行.log | tr '\n' ' ')"
-            tail -c 6000 yy_parallel_log.txt 2>/dev/null || true
+          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 发行 节点 豫言操作系统/宿主/节点/一致性验证/应用 dist/节点一致性 > 轩窗发行.log 2>&1 || {
+            printf '::error title=节点发行包构建失败::%s\n' "$(tail -c 1500 轩窗发行.log | tr '\n' ' ')"
+            tail -c 6000 并译日志.txt 2>/dev/null || true
             exit 1
           }
 
       - name: 验证发行包与装载拒绝情形
         run: node 豫言操作系统/宿主/节点/一致性验证/运行.mjs dist/节点一致性
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: yy-build-logs-windows
-          path: .yy构建日志/
+          name: 构建日志-windows
+          path: .构建日志/
           include-hidden-files: true
           retention-days: 90
           if-no-files-found: ignore
@@ -920,10 +931,10 @@ jobs:
         include:
           - os: ubuntu-latest
             arch: 兼容六十四
-            tools: yy-test-tools
+            tools: 测试工具
           - os: ubuntu-24.04-arm
             arch: 臂六十四
-            tools: yy-cross-toolchain-linux-arm64
+            tools: 交叉工具链-linux-arm64
     steps:
       - uses: actions/checkout@v4
 
@@ -933,40 +944,40 @@ jobs:
           path: ${{ runner.temp }}/工具
 
       # 文言：臂六十四之包惟豫构，兼作编译器。
-      # 汉语：arm64 的交叉包里只有豫构 yy豫构.exe，兼作编译器。
+      # 汉语：arm64 的交叉包里只有豫构 豫构。林纳。豫行，兼作编译器。
       - name: 解开本轮原生工具
         run: |
           set -euo pipefail
           tar -xzf "$RUNNER_TEMP"/工具/*.tar.gz
-          if [ ! -f yy4_bs.exe ]; then
-            cp yy豫构.exe yy4_bs.exe
+          if [ ! -f 编译器。林纳。豫行 ]; then
+            cp 豫构。林纳。豫行 编译器。林纳。豫行
           fi
 
       - name: 构建原生一致性工具
-        run: ./yy豫构.exe 文件 豫言操作系统/裸机/原生一致性。豫 --输出 yy原生一致性.exe -j "$(nproc)"
+        run: ./豫构。林纳。豫行 文件 豫言操作系统/裸机/原生一致性。豫 --输出 原生一致性。林纳。豫行 -j "$(nproc)"
 
       # 汉语：远程文件内部协议先构建底层烟验，再以两种 Linux 架构实际运行。
       # 文言：远程文内约先造底层之验，复于 Linux 二构实运行之。
       - name: 构建远程文件协议烟验
         run: >-
-          ./yy豫构.exe 文件 豫言操作系统/裸机/客体二号/远程文件。底层。测试。豫
-          --输出 yy远程文件协议.exe -j "$(nproc)"
+          ./豫构。林纳。豫行 文件 豫言操作系统/裸机/客体二号/远程文件。底层。测试。豫
+          --输出 远程文件协议。林纳。豫行 -j "$(nproc)"
           -- --目标 本机 --目标系统 林纳 --目标架构 '${{ matrix.arch }}'
 
       # 汉语：两个运行步骤各设超时兜底（平时烟验 0 秒、完整组约 2 分钟）。10-14 烟验过期时 ARM 版每轮挂满 90 分钟：当时 Linux 原生目标的陷阱照裸机用户态出 svc #7、mov eax,7; int 0x80，Linux 只回一个错误码，程序接着往下执行。已修：宿主目标的陷阱改出 brk #0 / ud2，检查一失败进程即以 133（ARM64）/ 132（AMD64）退出。
       # 文言：二运行之步各设时限以备不虞（常时烟验零秒，全组约二分）。十月十四日烟验过时，臂者每轮挂满九十分：彼时 Linux 原生之陷循裸机客态出 svc 七与 int 0x80，Linux 唯返误码而续行。今已修：宿主之标之陷改出 brk 零与 ud2，一验不合则进程以百三十三（臂）或百三十二（兼）而退。
       - name: 运行远程文件协议原生烟验
         timeout-minutes: 5
-        run: ./yy远程文件协议.exe
+        run: ./远程文件协议。林纳。豫行
 
       - name: 运行完整预编一致性组
         timeout-minutes: 20
         run: |
-          ./yy原生一致性.exe --系统 林纳 --架构 '${{ matrix.arch }}' --经 直接 > yyLinux预编一致性.log 2>&1 || {
-            printf '::error title=Linux 预编一致性失败::%s\n' "$(tail -c 2000 yyLinux预编一致性.log | tr '\n' ' ')"
+          ./原生一致性。林纳。豫行 --系统 林纳 --架构 '${{ matrix.arch }}' --经 直接 > 林纳预编一致性.log 2>&1 || {
+            printf '::error title=Linux 预编一致性失败::%s\n' "$(tail -c 2000 林纳预编一致性.log | tr '\n' ' ')"
             exit 1
           }
-          tail -n 24 yyLinux预编一致性.log
+          tail -n 24 林纳预编一致性.log
 
   # 文言：轩窗原生之你好：于 Linux 由编译器径出两构之 PE32+（及林檎 x86-64 之程），传于轩窗之运行器行之，验其出与退出码。探针皆预编二为机器码（提案 00007 收尾，不经 .wasm）。
   # 汉语：Windows 原生最小闭环（WP6）：在 Linux 上由编译器直接出 AMD64 与 ARM64 两种 PE32+ 可执行文件（以及 macOS x86-64 程序），交给 Windows 运行器直接执行，核对输出与退出码 7。探针都预编二成机器码（提案 00007 收尾：编译器 --目标 本机 --目标系统 --目标架构，不经 .wasm）。
@@ -983,47 +994,47 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开本轮编译与构建工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
       - name: 编译器直出两种架构的 PE 与 macOS x86-64 程序
         run: |
           set -e
-          Y() { ./yy豫构.exe "$@"; }
-          mkdir -p yy-windows-exe/组 yy-macos-x64/组
-          Y 构建 原生你好 轩窗入口 --输出 yy-windows-exe/hello-x64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四
-          Y 构建 原生你好 轩窗入口 --输出 yy-windows-exe/hello-arm64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四
-          Y 构建 原生你好 林檎入口 --输出 yy-macos-x64/hello-mac-x64 -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四
-          exe="$PWD/yy执行器。树码"
-          cache="$PWD/.yybuild/降级缓存"
+          Y() { ./豫构。林纳。豫行 "$@"; }
+          mkdir -p 轩窗程序/组 林檎兼程序/组
+          Y 构建 原生你好 轩窗入口 --输出 轩窗程序/hello-x64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四
+          Y 构建 原生你好 轩窗入口 --输出 轩窗程序/hello-arm64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四
+          Y 构建 原生你好 林檎入口 --输出 林檎兼程序/hello-mac-x64 -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四
+          exe="$PWD/执行器。树码"
+          cache="$PWD/.豫构缓存/降级缓存"
           for f in 豫言操作系统/裸机/普通探针/*。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-一。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-二。脚本。豫 豫言操作系统/裸机/原生探针/*。脚本。豫; do
             n=$(basename "$f"); n=${n%。脚本。豫}
-            Y 文件 "$f" --输出 "yy-windows-exe/组/$n-x64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗兼容.机器片"
-            Y 文件 "$f" --输出 "yy-windows-exe/组/$n-arm64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗臂.机器片"
-            Y 文件 "$f" --输出 "yy-macos-x64/组/$n" -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/林檎兼容.机器片"
+            Y 文件 "$f" --输出 "轩窗程序/组/$n-x64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗兼容.机器片"
+            Y 文件 "$f" --输出 "轩窗程序/组/$n-arm64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗臂.机器片"
+            Y 文件 "$f" --输出 "林檎兼程序/组/$n" -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/林檎兼容.机器片"
             # 文言：期望之文新名以全角句号为后缀（名。期望），旧名以半角点；先取新名，无则取旧名。
             # 汉语：期望文件的新名用全角句号后缀（名。期望），旧名用半角点；先取新名，没有再取旧名。
             e="${f%。脚本。豫}。期望"
             [ -f "$e" ] || e="${f%。脚本。豫}.期望"
-            cp "$e" "yy-windows-exe/组/$n.expected"
-            cp "$e" "yy-macos-x64/组/$n.expected"
+            cp "$e" "轩窗程序/组/$n.expected"
+            cp "$e" "林檎兼程序/组/$n.expected"
           done
           # 文言：编译器于产物旁书链接之印（产物.链接印），非程序也；去之，免运行之作误行之。
           # 汉语：编译器在产物旁写链接印记（产物.链接印），不是程序；删掉，免得运行作业把它当程序执行。
-          rm -f yy-windows-exe/*.链接印 yy-windows-exe/组/*.链接印 yy-macos-x64/*.链接印 yy-macos-x64/组/*.链接印
+          rm -f 轩窗程序/*.链接印 轩窗程序/组/*.链接印 林檎兼程序/*.链接印 林檎兼程序/组/*.链接印
 
       - uses: actions/upload-artifact@v4
         with:
-          name: yy-windows-native
-          path: yy-windows-exe
+          name: 轩窗原生
+          path: 轩窗程序
 
       - uses: actions/upload-artifact@v4
         with:
-          name: yy-macos-x64-native
-          path: yy-macos-x64
+          name: 林檎兼原生
+          path: 林檎兼程序
 
   windows-native-run:
     name: 轩窗原生样例运行（${{ matrix.os }}）
@@ -1049,7 +1060,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: yy-windows-native
+          name: 轩窗原生
           path: .
 
       - name: 运行并核对输出与退出码
@@ -1108,39 +1119,39 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-cross-toolchain-windows-x64
+          name: 交叉工具链-windows-x64
           path: ${{ runner.temp }}
 
       # 文言：Git Bash 之 tar 视 `D:\…` 为远主之名，故加 --force-local。
       # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
       - name: 放入原生豫构与执行器
-        run: tar --force-local -xzf "$RUNNER_TEMP/yy-cross-windows-x64.tar.gz"
+        run: tar --force-local -xzf "$RUNNER_TEMP/交叉-windows-x64.tar.gz"
 
       - name: 帮助与发现
         if: always()
         run: |
-          ./yy豫构.exe --help | head -5
-          ./yy豫构.exe 发现 | head -5
+          ./豫构.exe --help | head -5
+          ./豫构.exe 发现 | head -5
 
       - name: 检查与类型检查标准库
         if: always()
         run: |
-          ./yy豫构.exe 检查 豫章
-          ./yy豫构.exe 类型检查 豫章 -j 4
+          ./豫构.exe 检查 豫章
+          ./豫构.exe 类型检查 豫章 -j 4
 
       - name: 构建并运行你好
         if: always()
         run: |
-          ./yy豫构.exe 构建 原生你好 轩窗入口 --输出 yy你好.exe -j 4
+          ./豫构.exe 构建 原生你好 轩窗入口 --输出 你好.exe -j 4
           set +e
-          printf 'echo-line\r\n' | ./yy你好.exe
+          printf 'echo-line\r\n' | ./你好.exe
           echo "退出码 $?"
 
       - name: 全树测试一小组
         if: always()
         run: |
-          ./yy豫构.exe 构建 全树测试 --输出 yy全树测试.exe -j 4
-          ./yy全树测试.exe --只 库/豫章/测试/数据结构
+          ./豫构.exe 构建 全树测试 --输出 全树测试.exe -j 4
+          ./全树测试.exe --只 库/豫章/测试/数据结构
 
   # 文言：林檎 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
   # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与预编二的一致性组（编译器直出）。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
@@ -1155,7 +1166,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: yy-macos-x64-native
+          name: 林檎兼原生
           path: .
 
       - name: 运行你好样例
@@ -1216,12 +1227,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: yy-wasm-toolchain
+          name: 网汇工具链包
           path: ${{ runner.temp }}
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: yy-native-toolchain-*
+          pattern: 原生工具链-*
           path: ${{ runner.temp }}/原生包
           merge-multiple: true
 
@@ -1236,7 +1247,7 @@ jobs:
               exit 0
             fi
           done
-          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器汇编树码 yy执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 yy豫构臂。豫行、yy豫构兼。豫行，四个宿主的豫行启动器 yy豫行启动器林檎臂、yy豫行启动器林臂、yy豫行启动器林兼、yy豫行启动器轩窗兼.exe，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。"
+          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 编译器稳定.wasm、豫构 豫构稳定.wasm 与 Node 宿主 稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 豫构稳定。林纳。豫行 与执行器汇编树码 执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 豫构臂。豫行、豫构兼。豫行，四个宿主的豫行启动器 豫行启动器臂。林檎。豫行、豫行启动器臂。林纳。豫行、豫行启动器兼。林纳。豫行、豫行启动器兼。林纳。豫行，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。"
 
           release_ready() {
             if ! gh release view "$1" >/dev/null 2>&1; then
@@ -1300,14 +1311,14 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开本轮工具并构建社区包工具
         run: |
           set -euo pipefail
-          tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
-          ./yy豫构.exe 构建 社区包工具 --输出 yy社区包工具.exe -j "$(nproc)"
+          tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
+          ./豫构。林纳。豫行 构建 社区包工具 --输出 社区包工具。林纳。豫行 -j "$(nproc)"
 
       # 文言：于诸 historical-binaries 发行中求本轮之 Linux x64 原生包，下而算其沙256。
       # 汉语：在各个 historical-binaries 发行里找本轮的 Linux x64 原生工具链包，下载后算沙256。
@@ -1352,7 +1363,7 @@ jobs:
         run: |
           set -euo pipefail
           mv 社区包仓库 "$RUNNER_TEMP/社区包仓库"
-          ./yy社区包工具.exe 复制 --语言仓 "$GITHUB_WORKSPACE" --社区 "$RUNNER_TEMP/社区包仓库" --钉网址 "$YY_PKG_URL" --钉沙256 "$YY_PKG_SHA" --钉提交 "$GITHUB_SHA"
+          ./社区包工具。林纳。豫行 复制 --语言仓 "$GITHUB_WORKSPACE" --社区 "$RUNNER_TEMP/社区包仓库" --钉网址 "$YY_PKG_URL" --钉沙256 "$YY_PKG_SHA" --钉提交 "$GITHUB_SHA"
 
       - name: 提交并开拉取请求（没有令牌时演练）
         id: pr
@@ -1410,7 +1421,7 @@ jobs:
 
 
   # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成 BIOS/UEFI 混合之 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType）；以 豫言操作系统/裸机/发行/系统版本.tsv 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
-  # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的原生豫构，构建造盘工具 yy豫言系统.exe 并造 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType）；按 豫言操作系统/裸机/发行/系统版本.tsv 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
+  # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的原生豫构，构建造盘工具 豫言系统。林纳。豫行 并造 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType）；按 豫言操作系统/裸机/发行/系统版本.tsv 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
   os-release:
     name: 系统公测发行（x86-64 ISO）
     needs: bootstrap
@@ -1427,11 +1438,11 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          name: yy-test-tools
+          name: 测试工具
           path: ${{ runner.temp }}
 
       - name: 解开本轮编译与构建工具
-        run: tar -xzf "$RUNNER_TEMP/yy-test-tools.tar.gz"
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
       # 文言：冒烟之试须 QEMU 与 OVMF。
       # 汉语：冒烟测试要 QEMU 与 OVMF。
@@ -1460,24 +1471,24 @@ jobs:
           } >> "$GITHUB_ENV"
 
       - name: 构建豫言系统工具
-        run: ./yy豫构.exe 目标 造盘工具 --不连带 -j "$(nproc)"
+        run: ./豫构。林纳。豫行 目标 造盘工具 --不连带 -j "$(nproc)"
 
-      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 yy豫言系统 定之。
-      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 yy豫言系统 决定。
+      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 豫言系统 定之。
+      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 豫言系统 决定。
       - name: 造混合启动 ISO
-        run: ./yy豫言系统.exe 启动盘 --输出 yy启动介质 --预置 无
+        run: ./豫言系统。林纳。豫行 启动盘 --输出 启动介质 --预置 无
 
       # 文言：冒烟之试：QEMU 纯模拟无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色，复键而验画有变；SeaBIOS 与 OVMF 各一。不过则不发。
       # 汉语：冒烟测试：QEMU 纯模拟无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色，再按键核对画面有变化；SeaBIOS 与 OVMF 各跑一次，不过就不发布。
       - name: 冒烟测试（SeaBIOS 与 OVMF）
         run: |
           set -euo pipefail
-          ./yy豫言系统.exe 冒烟 yy启动介质/yy豫言启动.iso
+          ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso
           code=""; vars=""
           for f in /usr/share/OVMF/OVMF_CODE.fd /usr/share/OVMF/OVMF_CODE_4M.fd; do if [ -f "$f" ]; then code=$f; fi; done
           for f in /usr/share/OVMF/OVMF_VARS.fd /usr/share/OVMF/OVMF_VARS_4M.fd; do if [ -f "$f" ]; then vars=$f; fi; done
           echo "OVMF：$code $vars"
-          ./yy豫言系统.exe 冒烟 yy启动介质/yy豫言启动.iso --固件 "$code" --固件变量 "$vars"
+          ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --固件 "$code" --固件变量 "$vars"
 
       # 文言：GitHub 之 Ubuntu 运行器有 /dev/kvm；开其权，以 KVM 加速复冒烟一次，记加速时按键至画变之时。此步惟记数，败不止发。
       # 汉语：GitHub 的 Ubuntu 运行器有 /dev/kvm；放开权限后用 KVM 加速再跑一次冒烟，记下加速时按键到画面的用时。这一步只为记数，失败不挡发布。
@@ -1489,7 +1500,7 @@ jobs:
             echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
             sudo udevadm control --reload-rules
             sudo udevadm trigger --name-match=kvm
-            ./yy豫言系统.exe 冒烟 yy启动介质/yy豫言启动.iso --加速 kvm
+            ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --加速 kvm
           else
             echo "没有 /dev/kvm，跳过加速冒烟"
           fi
@@ -1499,9 +1510,9 @@ jobs:
       - name: 命名 ISO，算 SHA-256，生成发行说明
         run: |
           set -euo pipefail
-          out=yy发行
+          out=发行产物
           mkdir -p "$out"
-          cp yy启动介质/yy豫言启动.iso "$out/$YY_OS_ISO"
+          cp 启动介质/豫言启动.iso "$out/$YY_OS_ISO"
           (cd "$out" && sha256sum "$YY_OS_ISO" > "$YY_OS_ISO.sha256")
           sha256="$(cut -d ' ' -f 1 "$out/$YY_OS_ISO.sha256")"
           repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
@@ -1529,8 +1540,8 @@ jobs:
       - name: 上传 ISO 构件
         uses: actions/upload-artifact@v4
         with:
-          name: yy-os-iso
-          path: yy发行/
+          name: 系统光盘
+          path: 发行产物/
           retention-days: 30
           if-no-files-found: error
 
@@ -1544,9 +1555,9 @@ jobs:
         run: |
           set -euo pipefail
           title="豫言操作系统 $YY_OS_VERSION"
-          notes=yy发行/发行说明.md
-          iso="yy发行/$YY_OS_ISO"
-          sum="yy发行/$YY_OS_ISO.sha256"
+          notes=发行产物/发行说明.md
+          iso="发行产物/$YY_OS_ISO"
+          sum="发行产物/$YY_OS_ISO.sha256"
           err="$RUNNER_TEMP/gh-release-view.err"
           if draft="$(gh release view "$YY_OS_TAG" --json isDraft --jq .isDraft 2>"$err")"; then
             if [ "$draft" != true ]; then

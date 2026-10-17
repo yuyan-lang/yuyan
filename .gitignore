@@ -19,18 +19,27 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# 豫言编译产物与缓存
-/.yybuild/
-/.yybuild.*
-/.yy构建日志/
-/dist/
-/yy*
+# 豫言编译产物与缓存：仓库根目录只受控下列各项，工具链程序（名。林檎。豫行 等）、执行器、Wasm 工具链与构建缓存目录一律忽略
+/*
+!/.gitattributes
+!/.github/
+!/.gitignore
+!/.vscode/
+!/AGENTS.md
+!/LICENSE
+!/LOCALAGENTS.md
+!/库/
+!/应用/
+!/待办事项.*.md
+!/持续改进目标/
+!/提案/
+!/自述.*.md
+!/豫寓底榫卯/
+!/豫寓榫卯/
+!/豫言操作系统/
 *。豫行
-/*.wasm
-/豫言操作系统/宿主/节点/yy*
-/豫言操作系统/宿主/浏览器/yy*
-/*.wat
-*.yyinfo.json
+/豫言操作系统/宿主/节点/*.wasm
+/豫言操作系统/宿主/浏览器/*.wasm
 *.抽象语法.json
 *.正则签名.json
 

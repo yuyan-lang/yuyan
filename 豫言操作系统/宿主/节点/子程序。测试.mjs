@@ -17,7 +17,7 @@ test('子程序具名授权解析及应用参数边界', () => {
 });
 
 test('具名子程序传输入、参数与环境，调用间不留环境', () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy子程序-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '子程序-'));
   const 入口 = 路径.join(根, '入口.mjs');
   文件系统.writeFileSync(入口, "import * as 文件系统 from 'node:fs'; process.stdout.write(JSON.stringify([process.argv.slice(process.argv.indexOf('--') + 1), process.env.豫言验收 ?? '', 文件系统.readFileSync(0, 'utf8')])); process.stderr.write('中文错误流');");
   const 能力 = 创建子程序能力({程序: new Map([['验收', {入口, 目录: 根}]]), 环境: new Set(['豫言验收'])});
@@ -36,7 +36,7 @@ test('具名子程序传输入、参数与环境，调用间不留环境', () =>
 });
 
 test('非零退出保留输出，启动失败有独立错误', () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy子程序退出-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '子程序退出-'));
   const 入口 = 路径.join(根, '入口.mjs');
   文件系统.writeFileSync(入口, "process.stdout.write('失败输出'); process.exit(17);");
   const 能力 = 创建子程序能力({程序: new Map([['验收', {入口, 目录: 根}], ['坏路径', {入口, 目录: 路径.join(根, '不存在')}]])});
@@ -49,7 +49,7 @@ test('非零退出保留输出，启动失败有独立错误', () => {
 });
 
 test('继承输入读取真实父进程输入，仍传具名参数与授权环境并捕获错误流', () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy继承输入-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '继承输入-'));
   const 子入口 = 路径.join(根, '子.mjs');
   const 父入口 = 路径.join(根, '父.mjs');
   文件系统.writeFileSync(子入口, "import * as 文件系统 from 'node:fs'; process.stdout.write(JSON.stringify([process.argv.slice(process.argv.indexOf('--') + 1), process.env.豫言验收, 文件系统.readFileSync(0, 'utf8')])); process.stderr.write('中文错误'); process.exit(17);");

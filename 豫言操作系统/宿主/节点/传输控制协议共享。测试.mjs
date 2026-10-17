@@ -3,7 +3,7 @@ import 断言 from 'node:assert/strict';
 import 文件 from 'node:fs';
 import {fileURLToPath as 文件路径} from 'node:url';
 import {创建传输控制协议能力} from './传输控制协议.mjs';
-const 路径 = process.argv[2] ?? 文件路径(new URL('./yy传输控制共享.wasm', import.meta.url));
+const 路径 = process.argv[2] ?? 文件路径(new URL('./传输控制共享.wasm', import.meta.url));
 const 模块字节 = 文件.readFileSync(路径);
 console.log('共享模块导入', WebAssembly.Module.imports(new WebAssembly.Module(模块字节)));
 const 网络 = 创建传输控制协议能力({模块字节});

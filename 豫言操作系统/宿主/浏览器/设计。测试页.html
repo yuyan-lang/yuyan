@@ -10,7 +10,7 @@ import {启动豫言浏览器应用} from './入口.mjs';
 const 结果 = document.getElementById('结果');
 let 偏移 = 0, 差数 = 0, 首差 = -1;
 try {
-  const 响应 = await fetch('./yy原生基线.txt');
+  const 响应 = await fetch('./原生基线.txt');
   if (!响应.ok) throw new Error('原生基线读取失败');
   const 基线 = await 响应.text();
   结果.textContent = '原生基线已读，正在逐字节比较……';

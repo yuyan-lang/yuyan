@@ -12,13 +12,13 @@
 外库秘辞宜置于 PGPASSWORD 等环境之变，勿缀于通辞。
 白话：内库是 SQLite，外库是 PostgreSQL。SQL 语句作为一个命令行参数传入；PostgreSQL 密码应使用 PGPASSWORD 等环境变量。
 ：」
-「用法」者『yy数据库
+「用法」者『数据库
 
 法：
-  yy数据库 内库 「库址」 「问辞」
-  yy数据库 外库 「通辞」 「问辞」
-  yy数据库 试内库 「库址」
-  yy数据库 试外库 「通辞」
+  数据库 内库 「库址」 「问辞」
+  数据库 外库 「通辞」 「问辞」
+  数据库 试内库 「库址」
+  数据库 试外库 「通辞」
 
 亦识 sqlite、postgres、sqlite-test、postgres-test。
 内库须 sqlite3；外库须 psql。

@@ -123,11 +123,11 @@ export function 对照文件(源码, 标记们, 语法, 文件名) {
 async function 主程序(根, 记录路径, 豫言程序) {
   const 语法 = await 读取TextMate语法();
   const 超时毫秒 = Math.max(1000, Number(process.env.YY_GRAMMAR_TIMEOUT_MS) || 500000);
-  const 缓存目录 = path.join(根, '.yybuild', '语法高亮核验');
+  const 缓存目录 = path.join(根, '.豫构缓存', '语法高亮核验');
   fs.mkdirSync(缓存目录, {recursive: true});
   const 解析器身份 = createHash('sha256')
     .update(fs.readFileSync(path.resolve(根, 豫言程序)))
-    .update(fs.readFileSync(path.join(根, 'yy语法高亮上下文.txt')))
+    .update(fs.readFileSync(path.join(根, '语法高亮上下文.txt')))
     .digest('hex');
   const 汇总 = {文件数: 0, 已解析: 0, 缓存命中: 0, 解析失败: [], 超时: [], 对照失败: [], 对照字数: 0, 差异数: 0, 差异字数: 0, 差异类别: {}, 差异: []};
   for (const 文件 of fs.readFileSync(记录路径, 'utf8').split('\n')) {
@@ -185,7 +185,7 @@ async function 主程序(根, 记录路径, 豫言程序) {
       }
     } catch (错误) { 汇总.对照失败.push({文件, 错误: String(错误)}); }
   }
-  const 输出 = path.join(根, 'yy语法高亮差异.json');
+  const 输出 = path.join(根, '语法高亮差异.json');
   fs.writeFileSync(输出, JSON.stringify(汇总, null, 2));
   process.stdout.write(`核验 ${汇总.文件数} 文件，解析成功 ${汇总.已解析}，缓存命中 ${汇总.缓存命中}，对照 ${汇总.对照字数} 字，差异 ${汇总.差异数} 段／${汇总.差异字数} 字，解析失败 ${汇总.解析失败.length}，超时 ${汇总.超时.length}，对照失败 ${汇总.对照失败.length}\n`);
   for (const 项 of 汇总.差异.slice(0, 20)) process.stdout.write(`${项.文件}:${项.行}:${项.列} ${JSON.stringify(项.原文)} 解析器=${项.解析器} TextMate=${项.TextMate}\n`);

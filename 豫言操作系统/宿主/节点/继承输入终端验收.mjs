@@ -4,8 +4,8 @@ import 路径 from 'node:path';
 import 系统 from 'node:os';
 import assert from 'node:assert/strict';
 import {创建能力, 带型实现, 能力清理} from './应用宿主.mjs';
-const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy终端交接-'));
-const 子 = 路径.join(根, '子.mjs'), 标记 = 路径.join(根, 'yy首次读取');
+const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '终端交接-'));
+const 子 = 路径.join(根, '子.mjs'), 标记 = 路径.join(根, '首次读取');
 文件系统.writeFileSync(子, `import * as 文件系统 from 'node:fs'; const 字=Buffer.alloc(1), 字们=[]; while(文件系统.readSync(0,字,0,1,null)){文件系统.writeFileSync(${JSON.stringify(标记)},'已读');字们.push(字[0]);if(字[0]===10)break;}process.stdout.write(Buffer.from(字们));`);
 const 能 = 创建能力({授权: {目录: new Map(), 子程序: new Map([['子', {入口: 子, 目录: 根}]]), 源: new Set(), 环境: new Set()}, 应用参数: [], 程序路径: import.meta.filename});
 try {

@@ -9,11 +9,11 @@
 import {创建豫言实例} from './值桥.mjs';
 const 结果 = document.getElementById('结果');
 const 样本 = [
-  ['yy全索引测试.wasm', '全部官方多字节索引映射通过'],
-  ['yy官方向量测试.wasm', 'WPT官方一次与流式向量通过'],
-  ['yy统一编码测试.wasm', '文本与流式转换测试通过'],
-  ['yy单字节标签测试.wasm', ''],
-  ['yy多字节测试.wasm', '旧式多字节与日文转义测试通过']
+  ['全索引测试.wasm', '全部官方多字节索引映射通过'],
+  ['官方向量测试.wasm', 'WPT官方一次与流式向量通过'],
+  ['统一编码测试.wasm', '文本与流式转换测试通过'],
+  ['单字节标签测试.wasm', ''],
+  ['多字节测试.wasm', '旧式多字节与日文转义测试通过']
 ];
 try {
   const 桥 = await WebAssembly.compile(await (await fetch('./值桥.wasm')).arrayBuffer());

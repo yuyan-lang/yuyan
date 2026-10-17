@@ -8,7 +8,7 @@ import {创建能力, 带型实现, 能力清理} from './应用宿主.mjs';
 
 // 汉语：真实删除文件与空目录，失败保留只读、非空目录及外部文件。文言：实删文与空目录，败则存惟读、非空目录及外文。
 test('删除文件与空目录核对授权边界', async () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy删除-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '删除-'));
   const 外 = 根 + '-外文';
   文件系统.writeFileSync(外, '外文');
   文件系统.writeFileSync(路径.join(根, '文'), '原文');
@@ -42,7 +42,7 @@ test('删除文件与空目录核对授权边界', async () => {
 
 // 汉语：真实文件覆盖、追加与创建，并核对失败时不截断外部文件。文言：验实文之覆盖、追加与创建，败不得截外文。
 test('可写目录创建覆盖和追加，拒绝只读及越界', async () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy文件写入-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '文件写入-'));
   const 外 = 根 + '-外部.txt';
   文件系统.writeFileSync(外, '外部原文');
   文件系统.symlinkSync(外, 路径.join(根, '外链'));
@@ -75,7 +75,7 @@ const 实 = 能力[带型实现].诺节宿主;
 
 // 汉语：创建目录须可写授权，不能借父目录符号链接逃出根。文言：造目录须授写权，不得借父链出根。
 test('创建目录核对写权、父目录及边界', async () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy造目录-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '造目录-'));
   文件系统.symlinkSync(系统.tmpdir(), 路径.join(根, '外链'));
   const 能力 = 创建能力({授权: {目录: new Map([['写', {路径: 根, 可写: true}], ['读', {路径: 根, 可写: false}]]), 源: new Set(), 环境: new Set()}, 应用参数: [], 程序路径: '/程序.wasm', 输出: () => {}, 张量线程数: 1});
   const 文 = 值 => new TextEncoder().encode(值);
@@ -97,7 +97,7 @@ test('创建目录核对写权、父目录及边界', async () => {
 });
 
 test('目录查询沿用授权根与相对路径边界', async () => {
-  const 临时 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy文件浏览-'));
+  const 临时 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '文件浏览-'));
   const 根 = 路径.join(临时, '授权');
   文件系统.mkdirSync(根);
   文件系统.mkdirSync(路径.join(根, '文档'));

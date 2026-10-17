@@ -1,8 +1,8 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>豫言原壳浏览器验收</title>
-<link data-yy-字体="无衬线" href="/yy验收字体.ttf">
-<link data-yy-字体="衬线" href="/yy验收宋体.ttc" data-yy-字体序号="6">
+<link data-yy-字体="无衬线" href="/验收字体.ttf">
+<link data-yy-字体="衬线" href="/验收宋体.ttc" data-yy-字体序号="6">
 <style>body{margin:8px;background:#eef2f6}pre{white-space:pre-wrap}input{width:600px}canvas{width:900px;height:640px;display:none}body:has(input[data-yy-显示面输入]) canvas{display:block}</style>
 <pre id="输出"></pre>
 <form id="命令表单"><label>命令<input id="命令" disabled autocomplete="off"></label><button id="执行" disabled>执行</button></form>
@@ -22,13 +22,13 @@ document.getElementById('命令表单').onsubmit = 事 => {
 };
 document.getElementById('保存').onclick = async () => {
   const 图 = await new Promise(成 => document.querySelector('canvas').toBlob(成, 'image/png'));
-  const 回 = await fetch('/yy验收画面', {method:'POST',body:图});
+  const 回 = await fetch('/验收画面', {method:'POST',body:图});
   if (!回.ok) throw Error('验收画面保存失败');
   document.getElementById('保存').textContent = await 回.text();
 };
 try {
   const 根 = await navigator.storage.getDirectory();
-  const 目录 = await 根.getDirectoryHandle('yy原壳验收', {create:true});
+  const 目录 = await 根.getDirectoryHandle('原壳验收', {create:true});
   const 文 = await 目录.getFileHandle('说明.txt', {create:true});
   const 写 = await 文.createWritable(); await 写.write('浏览器同壳文件正文'); await 写.close();
   const 台 = {读取行: () => new Promise(成 => {候者 = 成; 输入.disabled = false; 执行.disabled = false; 状态.textContent = '原壳等待命令'; 输入.focus();}), 写文本: 文 => {输出.textContent += 文;}, 关闭: () => {候者?.([false,'']); 候者=null; 输入.disabled=true; 执行.disabled=true;}};

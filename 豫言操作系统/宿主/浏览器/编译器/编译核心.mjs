@@ -25,7 +25,7 @@ export function 创建编译器({ 编译模块, 桥模块, 资料, 收取标准�
     // 文言：此浏览器不能编其产物者，先报之。汉语：仅编译时也核对当前浏览器能否编译产物。
     if (!WebAssembly.validate(文件.读("/程序.wasm"))) return { ok: false, phase: "compile", error: "当前浏览器不支持生成程序使用的 WasmGC、尾调用或异常指令", compilation };
     // 文言：官书之缓存可复用，客稿与输出皆弃。汉语：只保留标准库派生文件及原时间戳，每个请求仍使用独立文件系统。
-    标准缓存 = Object.fromEntries([...文件.文件].filter(([名]) => 名.startsWith("/.yybuild/") && 名.includes("/库/标准库/")));
+    标准缓存 = Object.fromEntries([...文件.文件].filter(([名]) => 名.startsWith("/.豫构缓存/") && 名.includes("/库/标准库/")));
     收取标准缓存(标准缓存);
     if (仅编译){const bytes=文件.读('/程序.wasm');const sha256=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');return {...compilation,phase:'compile',artifact:{bytes:bytes.length,sha256}};}
     报告({ type: "stage", phase: "run", label: "编译通过，正在浏览器内运行" });

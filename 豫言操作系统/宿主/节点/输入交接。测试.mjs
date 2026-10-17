@@ -7,7 +7,7 @@ import 系统 from 'node:os';
 import {spawnSync as 同步启动} from 'node:child_process';
 
 test('父读命令、子读一行、父续读共享实际输入且不预读', () => {
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy输入交接-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '输入交接-'));
   const 父 = 路径.join(根, '父.mjs'), 子 = 路径.join(根, '子.mjs');
   文件系统.writeFileSync(子, `import * as 文件系统 from 'node:fs'; const 字 = Buffer.alloc(1), 字们 = []; while (文件系统.readSync(0, 字, 0, 1, null)) { 字们.push(字[0]); if (字[0] === 10) break; } process.stdout.write(Buffer.from(字们));`);
   文件系统.writeFileSync(父, `import {创建能力, 带型实现, 能力清理} from ${JSON.stringify(new URL('./应用宿主.mjs', import.meta.url).href)};

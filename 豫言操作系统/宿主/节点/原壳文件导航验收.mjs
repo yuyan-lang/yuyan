@@ -6,7 +6,7 @@ import {spawnSync as 启动} from 'node:child_process';
 import assert from 'node:assert/strict';
 
 const 发行 = 路径.resolve(process.argv[2]);
-const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy原壳导航-'));
+const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '原壳导航-'));
 try {
   文件系统.mkdirSync(路径.join(根, '子目录'));
   文件系统.writeFileSync(路径.join(根, '子目录', '正文.txt'), '中文导航正文');

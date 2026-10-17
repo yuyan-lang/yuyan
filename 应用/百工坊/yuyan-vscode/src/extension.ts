@@ -86,7 +86,7 @@ async function findProjectRoot(sourceUri: vscode.Uri): Promise<vscode.Uri | unde
   let candidatePath = path.resolve(path.dirname(sourceUri.fsPath));
 
   while (true) {
-    for (const marker of ['.yybuild', '.git']) {
+    for (const marker of ['.豫构缓存', '.git']) {
       try {
         await vscode.workspace.fs.stat(vscode.Uri.joinPath(vscode.Uri.file(candidatePath), marker));
         return vscode.Uri.file(candidatePath);
@@ -114,7 +114,7 @@ async function findLanguageServiceArtifact(
   projectRootUri: vscode.Uri,
   artifactRelativePath: string
 ): Promise<{ uri: vscode.Uri; mtime: number } | undefined> {
-  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.yybuild');
+  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.豫构缓存');
   let buildRootEntries: [string, vscode.FileType][];
   try {
     buildRootEntries = await vscode.workspace.fs.readDirectory(buildRootUri);
@@ -372,7 +372,7 @@ async function findTreeBuildArtifacts(
   projectRootUri: vscode.Uri,
   artifactStem: string
 ): Promise<BuildArtifactQuickPickItem[]> {
-  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.yybuild');
+  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.豫构缓存');
   const buildRootEntries = await vscode.workspace.fs.readDirectory(buildRootUri);
   const cacheDirectories = await Promise.all(
     buildRootEntries
@@ -426,11 +426,11 @@ function runTreeTool(
   artifactUri: vscode.Uri
 ): Promise<string> {
   const hostPath = vscode.Uri.joinPath(projectRootUri, '豫言操作系统', '宿主', '节点', '宿主.cjs').fsPath;
-  const toolPath = vscode.Uri.joinPath(projectRootUri, 'yy树码.wasm').fsPath;
+  const toolPath = vscode.Uri.joinPath(projectRootUri, '树码.wasm').fsPath;
   const args = [hostPath, toolPath, command, artifactUri.fsPath];
   const context = artifactUri.fsPath.match(/[\\/]包上下文[\\/]([^\\/]+\.上下文)(?:\.|[\\/])/);
   if (command === '显示' && context) {
-    args.push('--包上下文', vscode.Uri.joinPath(projectRootUri, '.yybuild', '豫构上下文', context[1]).fsPath);
+    args.push('--包上下文', vscode.Uri.joinPath(projectRootUri, '.豫构缓存', '豫构上下文', context[1]).fsPath);
   }
   return new Promise((resolve, reject) => {
     child_process.execFile(
@@ -488,9 +488,9 @@ async function jumpToBuildArtifact(
   try {
     artifacts = await findTreeBuildArtifacts(projectRootUri, artifactStem);
   } catch (error: any) {
-    log(`Failed to inspect .yybuild: ${error.message || error}`);
+    log(`Failed to inspect .豫构缓存: ${error.message || error}`);
     void vscode.window.showErrorMessage(
-      `无法读取 ${vscode.Uri.joinPath(projectRootUri, '.yybuild').fsPath}。请先构建项目。`
+      `无法读取 ${vscode.Uri.joinPath(projectRootUri, '.豫构缓存').fsPath}。请先构建项目。`
     );
     return;
   }
