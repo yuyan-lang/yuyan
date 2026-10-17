@@ -1,0 +1,74 @@
+寻观「豫章」之书。
+寻观「豫章」之「寓所」之「藏书」之书。
+寻观「根证书更新」之「转换」之书。
+
+「根更新断言」乃化「爻」为「有」者也。
+「根更新断言」者得「成立」而
+　若「成立」则「元」否则「告祸」于『根更新短测失败』
+也。
+
+「根更新拒坏」乃化「文」为「有」者也。
+「根更新拒坏」者得「源文」而
+　「根更新断言」于（「姑试」以「爻」
+　　于（得「无」而
+　　　令「结果文」为「根源转表」于「源文」而
+　　　「文同」于「结果文」于『拒绝成功占位』
+　　）
+　　于（得「误」而「阳」））
+也。
+
+「根短源」乃「文」也。
+「根短源」者『CKA_LABEL UTF8 "甲根"
+CKA_VALUE MULTILINE_OCTAL
+\060\000
+END
+CKA_TRUST_SERVER_AUTH CK_TRUST CKT_NSS_TRUSTED_DELEGATOR
+CKA_LABEL UTF8 "乙根"
+CKA_VALUE MULTILINE_OCTAL
+\060\001
+END
+CKA_TRUST_SERVER_AUTH CK_TRUST CKT_NSS_NOT_TRUSTED
+』也。
+
+「根短预期」乃「文」也。
+「根短预期」者『甲根「：制表：」1「：制表：」-「：制表：」MAA=「：换行：」乙根「：制表：」0「：制表：」-「：制表：」MAE=「：换行：」』也。
+
+「根更新断言」于（「文同」于（「根源转表」于「根短源」）于「根短预期」）。
+「根更新拒坏」于『』。
+「根更新拒坏」于『CKA_VALUE MULTILINE_OCTAL「：换行：」\000「：换行：」END』。
+「根更新拒坏」于『CKA_LABEL UTF8 "甲根"「：换行：」CKA_VALUE MULTILINE_OCTAL「：换行：」\999「：换行：」END』。
+「根更新拒坏」于『CKA_LABEL UTF8 "甲根"「：换行：」CKA_VALUE MULTILINE_OCTAL「：换行：」\000』。
+「根更新拒坏」于（「根短源」接「根短源」）。
+「根更新拒坏」于（「根短源」接『CKA_CLASS CK_OBJECT_CLASS CKO_CERTIFICATE「：换行：」CKA_VALUE MULTILINE_OCTAL「：换行：」\000「：换行：」END』）。
+「根更新拒坏」于（「根短源」接『CKA_CLASS CK_OBJECT_CLASS CKO_NSS_TRUST「：换行：」CKA_TRUST_SERVER_AUTH CK_TRUST CKT_NSS_TRUSTED_DELEGATOR』）。
+「根更新拒坏」于（「根短源」接『CKA_NSS_SERVER_DISTRUST_AFTER MULTILINE_OCTAL「：换行：」\000「：换行：」END』）。
+「根实际日期源」乃「文」也。
+「根实际日期源」者『CKA_CLASS CK_OBJECT_CLASS CKO_CERTIFICATE
+CKA_LABEL UTF8 "日期根"
+CKA_VALUE MULTILINE_OCTAL
+\060\000
+END
+CKA_NSS_SERVER_DISTRUST_AFTER MULTILINE_OCTAL
+\062\064\061\061\063\060\062\063\065\071\065\071\132
+END
+CKA_CLASS CK_OBJECT_CLASS CKO_NSS_TRUST
+CKA_LABEL UTF8 "日期根"
+CKA_TRUST_SERVER_AUTH CK_TRUST CKT_NSS_TRUSTED_DELEGATOR
+』也。
+
+「根更新断言」于（「文同」于（「根源转表」于「根实际日期源」）于『日期根「：制表：」1「：制表：」241130235959Z「：制表：」MAA=「：换行：」』）。
+「著」于『yy根更新短源.txt』于「根短源」。
+「根工具入口」于（「列」【『yy根更新短源.txt』，『yy根更新短表。豫』】）。
+「根更新断言」于（「文同」
+　于（「阅」于『yy根更新短表。豫』）
+　于（『寻观「豫章」之书。「：换行：」「根数据文本」乃「文」也。「：换行：」「根数据文本」者『』接「根短预期」接『「：』：」也。「：换行：」』））。
+「著」于『yy根更新坏源.txt』于『』。
+「著」于『yy根更新保留.txt』于『原表保留』。
+「根更新断言」于（「姑试」以「爻」
+　于（得「无」而
+　　令「执行值」为「根工具入口」于（「列」【『yy根更新坏源.txt』，『yy根更新保留.txt』】）而
+　　「阴」
+　）
+　于（得「误」而「阳」））。
+「根更新断言」于（「文同」于（「阅」于『yy根更新保留.txt』）于『原表保留』）。
+「书」于『根证书更新短测通过』。

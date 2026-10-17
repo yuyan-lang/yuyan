@@ -1,0 +1,58 @@
+寻观「豫章」之书。
+寻观「急就」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「脚本得串」乃化「文」为「文」者也。
+「脚本得串」者得「脚本」而
+　鉴「急就行脚本」于「脚本」而
+　　或有（「急就字符串值」于「其文」）则「急就文字作串」于「其文」
+　　或有「余值」则『非字符串』
+也。
+
+「脚本得文」乃化「脚本」曰「文」又化「期望」曰「文」又化「说明」曰「文」为「有」者也。
+「脚本得文」者得「脚本」曰「脚本」又得「期望」曰「期望」又得「说明」曰「说明」而
+　令「实际」为「脚本得串」于「脚本」而
+　若「文同」于「实际」于「期望」则「元」否则「告祸」于（「说明」接『：实际 』接「实际」）
+也。
+
+「：汉语：每个坏脚本经 eval 运行应得到 SyntaxError（记作 S），好脚本应正常运行（记作 ok）。
+　　文言：每坏脚本经 eval 而行，当得 SyntaxError（记作 S），好脚本当如常而行（记作 ok）。：」
+「脚本得文」
+　于「脚本」曰『function bad(src){try{(0,eval)(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{(0,eval)(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("class A{constructor(){} constructor(){}}"),bad("class A{get constructor(){}}"),bad("class A{*constructor(){}}"),bad("class A{async constructor(){}}"),bad("class A{constructor=1}"),bad("class A{static prototype(){}}"),bad("class A{#a;#a;}"),bad("class A{#constructor;}"),bad("class A{m(){this.#x}}"),bad("class A{#x;m(){delete this.#x}}"),bad("class A{#x;m(){delete (this.#x)}}"),bad("class A{m(){super()}}"),bad("class A{constructor(){super()}}"),bad("class A{x=arguments}"),bad("class A{#x;m(){super.#x}}"),bad("function f([...a,b]){}"),bad("function f([...a=1]){}"),bad("var [...a,b]=[]"),bad("[...a,b]=[]"),bad("({...a,b}=x)"),bad("new.target"),bad("()=>new.target"),bad("function f(){++new.target}"),bad("++1"),bad("--(1)"),good("class G1{#x;get #y(){return 1}set #y(v){}static #z;m(){return this.#x+this.#y}}"),good("class G2 extends Object{constructor(){super();()=>super();}}"),good("class G3{#x;m(){class H{n(o){return o.#x}}}}"),good("var a,d,e,f;[...a]=[1];var [b,...c]=[1,2];({a,...d}=({a:1}));[...[e,f]]=[1,2];"),good("class G5{static constructor(){}static async *m(){}}"),good("function f9(){return new.target}"),good("var o9={m(){return ()=>new.target}}")].join("|");』
+　于「期望」曰『S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok』
+　于「说明」曰『捷思早期错误检查类体解构目标与超调用』。
+「：汉语：导入调用：实参要一到两个且不可展开，不可加 new，不可单独写 import 或 import.UNKNOWN，不可作赋值或更新目标；import.meta 只有模块里可用，也不可作赋值目标；脚本里的 import() 在没有模块图时得到被拒绝的期约而不是同步抛出。
+　　文言：导入之调用：实参须一至二而不可展开，不可冠以 new，不可独书 import 或 import.UNKNOWN，不可为赋值或更新之目标；import.meta 惟模块中可用，亦不可为赋值之目标；脚本中之 import() 于无模块图时得被拒之期约而非同步而抛。：」
+「脚本得文」
+　于「脚本」曰『function bad(src){try{(0,eval)(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{(0,eval)(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("import()"),bad("import(1,2,3)"),bad("import(...[1])"),bad("new import(\"x\")"),bad("typeof import"),bad("import.UNKNOWN(\"x\")"),bad("import(\"x\")++"),bad("import.meta"),bad("import.meta = 1"),bad("[import.meta] = []"),bad("import.source()"),bad("new import.source(\"x\")"),good("var p=import(\"./nope.js\");p.catch(function(){});1"),good("import(\"x\",).catch(function(){})"),good("import(\"x\",{}).catch(function(){})"),good("import(\"x\",{},).catch(function(){})"),good("import.defer(\"x\").catch(function(){})"),good("var q=(import(\"x\"));q.catch(function(){})"),good("var f=()=>import(\"x\")")].join("|");』
+　于「期望」曰『S|S|S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok』
+　于「说明」曰『捷思导入调用的早期错误与脚本里的动态导入』。
+「：汉语：函数、标识符与声明的早期错误：yield 与 await 在生成器、异步函数、严格代码与模块里是保留字，严格代码里还有 let、static 等；参数名重复（箭头、方法、非简单参数与严格代码）、带 use strict 的非简单参数、剩余参数的位置与初值、取值器与设值器的参数个数；块、脚本、选择语句与函数体里词法声明的重复和与变量重名；catch 参数、循环头与循环体的冲突；语句位置里的声明；严格模式下的 with。反面的写法照常通过。
+　　文言：函数、标识符及声明之早期误：yield 与 await 于生成器、异步函数、严格之码及模块为保留之字，严格之码复有 let、static 等；参名重复（箭头、方法、非简单之参及严格之码）、带 use strict 之非简单参、余参之位与初值、取值器与设值器之参数；块、脚本、选择之句及函数体中词法声明之重复及与变量同名；catch 之参、循环头与循环体之冲突；句位中之声明；严格之式下之 with。反面之写法如常而通。：」
+「脚本得文」
+　于「脚本」曰『function bad(src){try{(0,eval)(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{(0,eval)(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("function* g(){ void yield; }"),bad("function* g(){ var yield; }"),bad("'use strict'; var yield;"),bad("class C { m(){ var let; } }"),bad("async function f(){ var await; }"),bad("function f(a, a){ 'use strict'; }"),bad("function f(a = 1){ 'use strict'; }"),bad("(a, a) => 1"),bad("({ m(a, a){} })"),bad("function f(...a, b){}"),bad("function f(...a = []){}"),bad("({ get x(a){} })"),bad("({ set x(){} })"),bad("{ let a; var a; }"),bad("let a; let a;"),bad("let a; var a;"),bad("{ function f(){} let f; }"),bad("function f(a){ let a; }"),bad("switch(0){ case 1: let a; case 2: let a; }"),bad("try{}catch(e){ let e; }"),bad("for (let i;;) { var i; }"),bad("if (1) class C {}"),bad("if (1) let x = 1;"),bad("while (1) function f(){}"),bad("lbl: function* g(){}"),bad("'use strict'; with ({}) {}"),good("var yield = 1; var await = 2; yield + await"),good("function* g(){ yield 1; }"),good("async function f(){ await 1; }"),good("{ function f(){} function f(){} }"),good("function f(a, a){}"),good("var a; var a; function a(){}"),good("try{}catch(e){ var e; }"),good("if (1) function f(){}"),good("let\nx = 1"),good("class C { static m(){ return 1; } }"),good("(function await(await){})")].join("|");』
+　于「期望」曰『S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok』
+　于「说明」曰『捷思函数标识符与声明的早期错误』。
+「：汉语：正则表达式字面量在解析时就校验：非法的模式或标志是早期的 SyntaxError，合法的照常通过，整段脚本因某个没执行到的非法字面量而整体失败。
+　　文言：正则表达式之字面量于析时即验：非法之模式或标是早期之 SyntaxError，合法者如常而通，整篇脚本因某未行至之非法字面量而全败。：」
+「脚本得文」
+　于「脚本」曰『function bad(src){try{(0,eval)(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{(0,eval)(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("/[b-a]/"),bad("/a**/"),bad("/(?<n>a)(?<n>b)/"),bad("/\\p{Foo}/u"),bad("/a/gg"),bad("if (false) { /(/; }"),good("/a(b)*/.test(\"ab\")"),good("/(?<year>\\d{4})/u.test(\"2026\")"),good("var re = /[a-z]+/gi; re.flags")].join("|");』
+　于「期望」曰『S|S|S|S|S|S|ok|ok|ok』
+　于「说明」曰『捷思正则字面量的早期校验』。
+「：汉语：break、continue、return 与标签的位置：break 须在循环或选择语句里（带标签则须在对应标签的语句里），continue 须在循环里（带标签则标签须标的是循环），return 须在函数里，标签不可重复，外层的循环与标签进入函数后不再可见；数字字面量的旧式写法：0 开头的八进制与含 8、9 的十进制在严格代码里不行，大整数不能这样写，0 开头的数字不能带分隔符，松散模式下旧式八进制按八进制取值；字符串里的旧式八进制转义在松散模式下取值（\101 是 A），严格代码里不行。
+　　文言：break、continue、return 及标签之位：break 须在循环或选择之句中（带标则须在对应标之句中），continue 须在循环中（带标则标所标者须为循环），return 须在函数中，标不可重，外层之循环及标入函数后不复可见；数字字面量之旧式写法：0 首之八进制及含 8、9 之十进制于严格之码中不可，大整数不可如此书，0 首之数不可带分隔符，松散之式下旧式八进制依八进制取值；字符串中旧式八进制之转义于松散之式下取值（\101 即 A），严格之码中不可。：」
+「脚本得文」
+　于「脚本」曰『function bad(src){try{(0,eval)(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{return (0,eval)(src)===false?"BAD:false":"ok";}catch(e){return "BAD:"+e;}}[bad("break;"),bad("continue;"),bad("a: { continue a; }"),bad("return 1;"),bad("a: a: ;"),bad("while (1) { function f() { break; } }"),bad("'use strict'; 010"),bad("0_1"),bad("01n"),bad("'use strict'; '\\07'"),good("if (false) { while (1) { break; } }"),good("if (false) { a: while (1) { for (;;) { continue a; } } }"),good("a: { break a; }"),good("switch (1) { case 1: break; }"),good("(function () { return 1; })()"),good("010 === 8 && 08 === 8 && 0 === 0"),good("'\\101' === 'A' && '\\0' === '\\x00' && '\\08' === '\\x008'")].join("|");』
+　于「期望」曰『S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok』
+　于「说明」曰『捷思控制流位置与旧式字面量的早期错误』。
+「：汉语：严格模式里的 eval 与 arguments：不能作绑定名（变量、函数名、参数、catch 参数、类名、解构目标）或赋值目标（含复合赋值、逻辑赋值、自增自减、for 头）；严格代码里 delete 名字是早期错误；this 不能作赋值目标或绑定名。其余早期错误：剩余参数后不能有逗号，yield 后换行再接二元运算符，乘方的底数不能是一元表达式，?? 不能与 || 和 && 不加括号地混用，可选链后不能接模板，生成器与异步函数的参数里不能有 yield 与 await 表达式，super 属性只能在方法里，带标签的函数不能作循环与 if 的语句体，let [ 不能开头语句，for-in/of 循环头的初值、多个绑定与无效目标，let 不能作词法绑定名，const 须有初值，catch 参数重名，switch 里只有一个 default。反面的写法照常通过。
+　　文言：严格之式下之 eval 与 arguments：不可为绑名（变量、函数名、参、catch 之参、类名、解构之目标）或赋值之目标（含复合赋值、逻辑赋值、自增自减、for 之头）；严格之码中 delete 名为早期误；this 不可为赋值之目标或绑名。余早期误：余参之后不可有逗号，yield 后换行复接二元之符，乘方之底不可为一元之式，?? 不可与 || 及 && 不括而混用，可选链后不可接模板，生成器与异步函数之参中不可有 yield 与 await 之式，super 之性惟在方法中，带标签之函数不可为循环与 if 之句体，let [ 不可起句，for-in/of 循环头之初值、多绑及无效之目标，let 不可为词法之绑名，const 须有初值，catch 之参重名，switch 中惟一 default。反面之写法如常而通。：」
+「脚本得文」
+　于「脚本」曰『function bad(src){try{(0,eval)(src);return "no";}catch(e){return e instanceof SyntaxError?"S":"E:"+e;}}function good(src){try{(0,eval)(src);return "ok";}catch(e){return "BAD:"+e;}}[bad("'use strict'; var eval;"),bad("'use strict'; arguments = 1;"),bad("'use strict'; eval++;"),bad("'use strict'; function eval(){}"),bad("function f(eval){ 'use strict'; }"),bad("'use strict'; try{}catch(arguments){}"),bad("'use strict'; [eval] = [];"),bad("'use strict'; ({eval} = {});"),bad("'use strict'; ({a: arguments} = {});"),bad("'use strict'; for (eval in {}) ;"),bad("'use strict'; eval += 1;"),bad("'use strict'; eval &&= 1;"),bad("'use strict'; delete x;"),bad("'use strict'; delete ((x));"),bad("class eval {}"),bad("this = 1"),bad("this++"),bad("var this;"),bad("function f(...a,){}"),bad("(...a,) => 1"),bad("({ m(...a,){} })"),bad("function* g(){ yield\n* 1 }"),bad("-1 ** 2"),bad("typeof 1 ** 2"),bad("null ?? 1 || 2"),bad("null || 1 ?? 2"),bad("null && 1 ?? 2"),bad("null ?? 1 && 2"),bad("var a; a?.b`x`"),bad("function* g(x = yield){}"),bad("function* g(yield){}"),bad("async function f(x = await 1){}"),bad("function f(){ super.x }"),bad("super.x"),bad("while (0) l: function f(){}"),bad("if (0) let\n[a] = 1;"),bad("for (var x = 1 of []);"),bad("for (let x, y of []);"),bad("for (a + b of []);"),bad("for (const let of []);"),bad("let let = 1;"),bad("const x;"),bad("try{}catch([a,a]){}"),bad("switch(0){default: default:}"),bad("'use strict'; for (var x = 1 in {});"),good("function k1(){ var eval = 1; eval = 2; eval++; var arguments = 3; arguments = 4; }"),good("'use strict'; function k2(){ var x={y:1}; delete x.y; delete (x.y); var o={eval:1,arguments:2}; o.eval=3; return eval(\"1\"); }"),good("function k3(a){ return Math.max(...a,); }"),good("function k4(){ return [...[1],]; }"),good("function k5(a,b,c){ return (-1) ** 2 + 2 ** -1 + (void 0 ?? 1); }"),good("function k6(a,b,c){ return ((a ?? b) || c) + (a ?? (b || c)); }"),good("function k7(a){ return (a?.b)`x`; }"),good("({ m(){ return super.x; } }); class K8 { m(){ return () => super.x; } z = super.w; }"),good("l: function k9(){} a: b: function k10(){}"),good("function* k11(){ yield\n1; } function* k12(){ yield* [1]; }"),good("for (var k13 = 1 in {});"),good("function k14(){ for (const x of []); for (let [a,b] of []); for (var y of []); }"),good("const k15 = 1;"),good("function* k16(){ var x = yield; } async function k17(){ var x = await 1; }"),good("async function k18(a = (async () => await 1)){}"),good("try{}catch([a,b]){}"),good("switch(0){case 1: default: }")].join("|");』
+　于「期望」曰『S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|S|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok|ok』
+　于「说明」曰『捷思严格模式与其余的早期错误』。
+「书」于『捷思早期错误冒烟通过』。

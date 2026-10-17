@@ -3,8 +3,8 @@ name: CI
 env:
   # 文言：所定之原生工具链包（Linux x64）：自举之作由此起步，不用 Node 与 Wasm。包中豫构 yy豫构_stable.exe 配包中执行器 yy执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟 CI 发新包，乃同易下二项。
   # 汉语：固定的原生工具链包（Linux x64）：自举作业从它起步，不用 Node 与 Wasm。包里的豫构 yy豫构_stable.exe 配包里的执行器 yy执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等 CI 发布新包，再同时改下面两项。
-  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261014T232205Z-yuyan-native-linux-x64-0c51632764dabac51fc46a9bafd0ffeca33b7e4c.tar.gz
-  YY_NATIVE_TOOLCHAIN_SHA256: bde9392431d62e355e0e6a5f90114a74777d3df194574cadd4689e49ae9f625e
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261017T024546Z-yuyan-native-linux-x64-e74c2681c5b22f6324ff676e1715b5474e6be32f.tar.gz
+  YY_NATIVE_TOOLCHAIN_SHA256: 5d5d8b338de712490e0ce9d44d546bd86f80ac0f64d0965702d69a51e1c4645b
 
 on:
   push:
@@ -151,8 +151,8 @@ jobs:
           fi
           gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" --clobber
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
@@ -184,8 +184,8 @@ jobs:
       - name: 类型检查与豫构测试
         run: ./yy豫构.exe 目标 类型检查 豫构测试 --不连带 -j "$(nproc)"
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
@@ -369,7 +369,7 @@ jobs:
         run: |
           set -euo pipefail
           ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 发现 --树 > yy豫行发现.txt
-          grep -F '标准库（库/标准库）' yy豫行发现.txt
+          grep -F '豫章（库/豫章）' yy豫行发现.txt
           ./"${{ matrix.launcher }}" "${{ matrix.yuxing }}" 构建 原生你好 豫行入口 --输出 yy编你好 -j "$(getconf _NPROCESSORS_ONLN)" -- --目标 本机 --目标系统 豫言 --目标架构 ${{ matrix.arch }}
           set +e
           ./"${{ matrix.launcher }}" yy编你好 > yy你好.txt
@@ -435,7 +435,7 @@ jobs:
           ./yy豫行启动器视窗兼.exe --合成 yy豫构兼。豫行 yy豫构.exe
           ls -la yy豫构.exe
           ./yy豫构.exe 发现 --树 > yy豫行发现.txt
-          grep -F '标准库（库/标准库）' yy豫行发现.txt
+          grep -F '豫章（库/豫章）' yy豫行发现.txt
           diff yy豫行发现.txt yy豫行参照/发现.txt
           echo "发现的输出与 Linux 原生豫构相同"
 
@@ -456,7 +456,7 @@ jobs:
       - name: 以 -j 4 类型检查一个库（几个常驻工作进程同时运行）
         run: |
           set -euo pipefail
-          ./yy豫构.exe 类型检查 结森工具 -j 4 2> yy并行检查.txt || { tail -30 yy并行检查.txt; exit 1; }
+          ./yy豫构.exe 类型检查 结绳 -j 4 2> yy并行检查.txt || { tail -30 yy并行检查.txt; exit 1; }
           tail -3 yy并行检查.txt
           grep -E -m 3 '运行 [2-4]/4' yy并行检查.txt
           echo "同时运行的常驻工作进程不止一个"
@@ -675,7 +675,7 @@ jobs:
       - name: 苹果原生系统库调用
         if: runner.os == 'macOS'
         run: |
-          ./yy豫构.exe 构建 系统库调用测试 调用。测试 --输出 yy系统库原生测试.exe -j "$(getconf _NPROCESSORS_ONLN)"
+          ./yy豫构.exe 构建 借道试 调用。测试 --输出 yy系统库原生测试.exe -j "$(getconf _NPROCESSORS_ONLN)"
           ./yy系统库原生测试.exe > yy系统库原生.log
           grep -F '系统库调用全部断言通过' yy系统库原生.log
 
@@ -684,9 +684,9 @@ jobs:
       - name: 苹果原生张量基本回归
         if: runner.os == 'macOS'
         run: |
-          ./yy豫构.exe 构建 豫言操作系统张量原生测试 登记。测试 --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
+          ./yy豫构.exe 构建 豫寓算阵本土试 登记。测试 --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
           ./yy张量登记.exe
-          ./yy豫构.exe 接口检查 --核对清单 豫言操作系统接口/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
+          ./yy豫构.exe 接口检查 --核对清单 豫寓榫卯/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
           ./yy豫构.exe 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配
           ./yy原生公共张量/程序.exe
 
@@ -771,7 +771,7 @@ jobs:
       - name: 构建默认工具宿主定位读取烟验
         run: >-
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 文件
-          库/诺节宿主/默认文件定位。测试。豫 --编译器 ./yy4_bs.wasm
+          库/诺驿东道/默认文件定位。测试。豫 --编译器 ./yy4_bs.wasm
           --输出 yy默认文件定位.wasm -j 24
 
       - name: 默认工具与应用宿主共用文件能力表
@@ -794,8 +794,8 @@ jobs:
           ./yy豫构.exe 构建 原生对比 --输出 yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
-      # 文言：基础库性能验证：依登记（应用/开发工具/性能验证/性能目标.tsv）行诸性能入口，诺节与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
-      # 汉语：基础库性能验证：按登记表（应用/开发工具/性能验证/性能目标.tsv）运行基础库的性能入口，诺节与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
+      # 文言：基础库性能验证：依登记（应用/百工坊/性能验证/性能目标.tsv）行诸性能入口，诺节与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
+      # 汉语：基础库性能验证：按登记表（应用/百工坊/性能验证/性能目标.tsv）运行基础库的性能入口，诺节与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
       - name: 基础库性能验证
         if: github.event_name != 'pull_request'
         continue-on-error: true
@@ -811,9 +811,9 @@ jobs:
       - name: 苹果原生系统库调用
         if: matrix.os == 'macos-latest'
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 系统库调用测试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.wasm -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 借道试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.wasm -j 24
           node 豫言操作系统/宿主/节点/宿主.cjs yy系统库原生测试.wasm > yy系统库诺节.log
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 系统库调用测试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.exe -j 24
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 借道试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.exe -j 24
           ./yy系统库原生测试.exe > yy系统库原生.log
           cmp yy系统库诺节.log yy系统库原生.log
           grep -F '系统库调用全部断言通过' yy系统库原生.log
@@ -825,14 +825,14 @@ jobs:
       - name: 苹果原生张量基本回归
         if: matrix.os == 'macos-latest'
         run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫言操作系统张量原生测试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫寓算阵本土试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
           ./yy张量登记.exe
-          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 接口检查 --核对清单 豫言操作系统接口/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
+          node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 接口检查 --核对清单 豫寓榫卯/张量计算/豫言操作系统张量计算。包。豫 豫言操作系统/适配/张量计算原生/宿主提供.json
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 yy原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./yy4_bs.wasm
           ./yy原生公共张量/程序.exe
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
@@ -874,7 +874,7 @@ jobs:
 
       - name: 核对豫言源码换行
         run: |
-          git ls-files --eol '库/云工宿主/云工宿主。包。豫' | grep -q 'w/lf' || {
+          git ls-files --eol '库/云工东道/云工宿主。包。豫' | grep -q 'w/lf' || {
             printf '::error::Windows 检出的豫言包文件未保持 LF 换行\n'
             exit 1
           }
@@ -892,8 +892,8 @@ jobs:
       - name: 验证发行包与装载拒绝情形
         run: node 豫言操作系统/宿主/节点/一致性验证/运行.mjs dist/节点一致性
 
-      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/性能研究/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/性能研究/构建性能/日志格式.汉语.md。
+      # 文言：上传构建之志（.yy构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.yy构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
       - name: 上传构建日志
         if: always()
         uses: actions/upload-artifact@v4
@@ -1125,8 +1125,8 @@ jobs:
       - name: 检查与类型检查标准库
         if: always()
         run: |
-          ./yy豫构.exe 检查 标准库
-          ./yy豫构.exe 类型检查 标准库 -j 4
+          ./yy豫构.exe 检查 豫章
+          ./yy豫构.exe 类型检查 豫章 -j 4
 
       - name: 构建并运行你好
         if: always()
@@ -1140,7 +1140,7 @@ jobs:
         if: always()
         run: |
           ./yy豫构.exe 构建 全树测试 --输出 yy全树测试.exe -j 4
-          ./yy全树测试.exe --只 库/标准库/测试/数据结构/
+          ./yy全树测试.exe --只 库/豫章/测试/数据结构
 
   # 文言：苹果 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
   # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与预编二的一致性组（编译器直出）。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
@@ -1285,7 +1285,7 @@ jobs:
           done
 
   # 文言：抄于社区包仓库：史版既发，以本轮之原生豫构构社区包工具，抄清单「社区复制包们」诸包于社区包仓库（yuyan-lang/yuyan-community-packages）之 包/豫言/<包名>/（许可 AGPL-3.0-only），易其工具链钉为本轮之 Linux x64 原生工具链包，以 DCO 之签录之，推一枝而开拉取请求，由彼仓之检与合入之机合之。跨仓之写用机密 YUYAN_COMMUNITY_TOKEN（细粒度之个人令牌，惟授彼仓 Contents 与 Pull requests 之写）；无之则演练：照抄照录，印其差而存为构件，不推。本轮史版未发（某平台未过）则不抄。
-  # 汉语：复制到社区包仓库：历史版本发布后，用本轮的原生豫构构建社区包工具，把清单「社区复制包们」（应用/开发工具/社区包工具/复制。豫）里的包复制到社区包仓库（yuyan-lang/yuyan-community-packages）的 包/豫言/<包名>/（许可 AGPL-3.0-only），工具链钉改成本轮的 Linux x64 原生工具链包，带 DCO 签名提交，推一个分支并开拉取请求，由社区仓库的检查与合入机器人合入。跨仓写入用机密 YUYAN_COMMUNITY_TOKEN（细粒度个人令牌，只授社区仓库的 Contents 与 Pull requests 写权限）；没有令牌时演练：照样复制、提交，打印差异并存为构件，不推送。本轮历史版本没发（某个平台没过）时不复制。
+  # 汉语：复制到社区包仓库：历史版本发布后，用本轮的原生豫构构建社区包工具，把清单「社区复制包们」（应用/百工坊/社区包工具/复制。豫）里的包复制到社区包仓库（yuyan-lang/yuyan-community-packages）的 包/豫言/<包名>/（许可 AGPL-3.0-only），工具链钉改成本轮的 Linux x64 原生工具链包，带 DCO 签名提交，推一个分支并开拉取请求，由社区仓库的检查与合入机器人合入。跨仓写入用机密 YUYAN_COMMUNITY_TOKEN（细粒度个人令牌，只授社区仓库的 Contents 与 Pull requests 写权限）；没有令牌时演练：照样复制、提交，打印差异并存为构件，不推送。本轮历史版本没发（某个平台没过）时不复制。
   community-copy:
     name: 复制到社区包仓库
     needs: [bootstrap, publish]

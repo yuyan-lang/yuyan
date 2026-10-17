@@ -1,0 +1,109 @@
+寻观「豫章」之书。
+寻「豫章」之「形制」之「分厘」之书。
+寻观「豫章」之「寓所」之「时辰」之书。
+寻观「豫章」之「算术」之「变通」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「画谱」之书。
+寻观「白描」之书。
+
+「：汉语：矢量图界面图标的单次渲染计时：描边圆、圆角矩形、缩放图标与弧线路径，输出每次毫秒与透明度校验和。
+　　文言：矢量图界面图标单绘计时：描圆、圆角矩、缩放之图标与弧径，出每次毫秒与透明之校和。：」
+「透明和」乃化「图像」为「数」者也。
+「透明和」者得「图」而
+　令「串」为「图像像素」于「图」而
+　复令「累」属化「数」又化「数」为「数」
+　　即得「序」又得「和」而
+　　　若「不小于」于「序」于（「计帛」于「串」）则「和」否则「累」于（「序」加「四」）于（「和」加（「读帛」于「串」于（「序」加「三」）））而
+　「累」于「零」于「零」
+也。
+
+「测一项」乃化「名」曰「文」又化「次数」曰「数」又化「文本」曰「文」又化「边长」曰「数」为「有」者也。
+「测一项」者得「名」曰「名」又得「次数」曰「次数」又得「文本」曰「文本」又得「边长」曰「边长」而
+　令「始」为「此刻」于「元」而
+　复令「跑」属化「数」又化「数」为「数」
+　　即得「余」又得「和」而
+　　　若「余」等于「零」则「和」否则「跑」于（「余」减「一」）于（「透明和」于（「渲染白描」于「文本」于「边长」于「边长」））而
+　令「和」为「跑」于「次数」于「零」而
+　令「终」为「此刻」于「元」而
+　「书」于（「接」
+　　于（「接」于「名」于『 每次毫秒：』）
+　　于（「接」
+　　　于（「分厘」之「述小数」于（「分厘」之「除以」
+　　　　于（「分厘」之「减」于「终」于「始」）
+　　　　于（「分厘」之「乘」于「一零零零零零零点零」于（「作小数」于「次数」））））
+　　　于（「接」于『 校验：』于（「述数」于「和」））））
+也。
+
+「全部」乃化「数」为「有」者也。
+「全部」者得「次数」而
+　「测一项」
+　　于「名」曰『描圆16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="black" stroke-width="1.75"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『描圆角16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2.5" fill="none" stroke="black" stroke-width="1.75"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『填圆16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="black"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『缩放图标24至16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="black" stroke-width="2"/><path d="M12 7v5l3 3" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『弧线路径32』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path d="M4 16 A12 12 0 0 1 28 16" fill="none" stroke="black" stroke-width="2"/><path d="M6 26 Q16 4 26 26 Z" fill="black"/></svg>』
+　　于「边长」曰「三二」而后
+　「测一项」
+　　于「名」曰『圆角卡片64』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="10" fill="#4080ff" stroke="black" stroke-width="2"/></svg>』
+　　于「边长」曰「六四」而后
+　「测一项」
+　　于「名」曰『空图16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『填方16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" fill="black"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『描方16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" fill="none" stroke="black" stroke-width="1.75"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『描椭圆16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><ellipse cx="8" cy="8" rx="6" ry="6" fill="none" stroke="black" stroke-width="1.75"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『描弧径圆16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><path d="M14 8 A6 6 0 1 1 2 8 A6 6 0 1 1 14 8 Z" fill="none" stroke="black" stroke-width="1.75"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『描圆细16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="black" stroke-width="0.5"/></svg>』
+　　于「边长」曰「一六」而后
+　「测一项」
+　　于「名」曰『描小圆16』
+　　于「次数」曰「次数」
+　　于「文本」曰『<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2.5" fill="none" stroke="black" stroke-width="1.75"/></svg>』
+　　于「边长」曰「一六」
+也。
+
+「书」于『预热：』。
+「全部」于「三」。
+「书」于『计时：』。
+「全部」于「二零」。

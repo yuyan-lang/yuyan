@@ -1,0 +1,217 @@
+寻观「豫章」之书。
+
+「合成排除表零」乃化「数」为「文」者也。
+「合成排除表零」者得「桶」而
+　若「且」于（非（「桶」小于「三」））于（「桶」小于「四」）则
+　　『0340..0341;Full_Composition_Exclusion
+0343..0344;Full_Composition_Exclusion
+0374;Full_Composition_Exclusion
+037E;Full_Composition_Exclusion
+0387;Full_Composition_Exclusion
+』
+　否则若「且」于（非（「桶」小于「九」））于（「桶」小于「一零」）则
+　　『0958..095F;Full_Composition_Exclusion「：换行：」09DC..09DD;Full_Composition_Exclusion「：换行：」09DF;Full_Composition_Exclusion「：换行：」』
+　否则若「且」于（非（「桶」小于「一零」））于（「桶」小于「一一」）则
+　　『0A33;Full_Composition_Exclusion
+0A36;Full_Composition_Exclusion
+0A59..0A5B;Full_Composition_Exclusion
+0A5E;Full_Composition_Exclusion
+』
+　否则若「且」于（非（「桶」小于「一一」））于（「桶」小于「一二」）则
+　　『0B5C..0B5D;Full_Composition_Exclusion「：换行：」』
+　否则若「且」于（非（「桶」小于「一五」））于（「桶」小于「一六」）则
+　　『0F43;Full_Composition_Exclusion
+0F4D;Full_Composition_Exclusion
+0F52;Full_Composition_Exclusion
+0F57;Full_Composition_Exclusion
+0F5C;Full_Composition_Exclusion
+0F69;Full_Composition_Exclusion
+0F73;Full_Composition_Exclusion
+0F75..0F76;Full_Composition_Exclusion
+0F78;Full_Composition_Exclusion
+0F81;Full_Composition_Exclusion
+0F93;Full_Composition_Exclusion
+0F9D;Full_Composition_Exclusion
+0FA2;Full_Composition_Exclusion
+0FA7;Full_Composition_Exclusion
+0FAC;Full_Composition_Exclusion
+0FB9;Full_Composition_Exclusion
+』
+　否则若「且」于（非（「桶」小于「三一」））于（「桶」小于「三二」）则
+　　『1F71;Full_Composition_Exclusion
+1F73;Full_Composition_Exclusion
+1F75;Full_Composition_Exclusion
+1F77;Full_Composition_Exclusion
+1F79;Full_Composition_Exclusion
+1F7B;Full_Composition_Exclusion
+1F7D;Full_Composition_Exclusion
+1FBB;Full_Composition_Exclusion
+1FBE;Full_Composition_Exclusion
+1FC9;Full_Composition_Exclusion
+1FCB;Full_Composition_Exclusion
+1FD3;Full_Composition_Exclusion
+1FDB;Full_Composition_Exclusion
+1FE3;Full_Composition_Exclusion
+1FEB;Full_Composition_Exclusion
+1FEE..1FEF;Full_Composition_Exclusion
+1FF9;Full_Composition_Exclusion
+1FFB;Full_Composition_Exclusion
+1FFD;Full_Composition_Exclusion
+』
+　否则若「且」于（非（「桶」小于「三二」））于（「桶」小于「三三」）则
+　　『2000..2001;Full_Composition_Exclusion「：换行：」』
+　否则若「且」于（非（「桶」小于「三三」））于（「桶」小于「三四」）则
+　　『2126;Full_Composition_Exclusion「：换行：」212A..212B;Full_Composition_Exclusion「：换行：」』
+　否则若「且」于（非（「桶」小于「三五」））于（「桶」小于「三六」）则
+　　『2329;Full_Composition_Exclusion「：换行：」232A;Full_Composition_Exclusion「：换行：」』
+　否则若「且」于（非（「桶」小于「四二」））于（「桶」小于「四三」）则
+　　『2ADC;Full_Composition_Exclusion「：换行：」』
+　否则若「且」于（非（「桶」小于「二四九」））于（「桶」小于「二五零」）则
+　　『F900..FA0D;Full_Composition_Exclusion「：换行：」』
+　否则若「且」于（非（「桶」小于「二五零」））于（「桶」小于「二五一」）则
+　　『F900..FA0D;Full_Composition_Exclusion
+FA10;Full_Composition_Exclusion
+FA12;Full_Composition_Exclusion
+FA15..FA1E;Full_Composition_Exclusion
+FA20;Full_Composition_Exclusion
+FA22;Full_Composition_Exclusion
+FA25..FA26;Full_Composition_Exclusion
+FA2A..FA6D;Full_Composition_Exclusion
+FA70..FAD9;Full_Composition_Exclusion
+』
+　否则若「且」于（非（「桶」小于「二五一」））于（「桶」小于「二五二」）则
+　　『FB1D;Full_Composition_Exclusion
+FB1F;Full_Composition_Exclusion
+FB2A..FB36;Full_Composition_Exclusion
+FB38..FB3C;Full_Composition_Exclusion
+FB3E;Full_Composition_Exclusion
+FB40..FB41;Full_Composition_Exclusion
+FB43..FB44;Full_Composition_Exclusion
+FB46..FB4E;Full_Composition_Exclusion
+』
+　否则
+　　『』
+也。
+
+「合成排除表一」乃化「数」为「文」者也。
+「合成排除表一」者得「桶」而
+　若「且」于（非（「桶」小于「四六五」））于（「桶」小于「四六六」）则
+　　『1D15E..1D164;Full_Composition_Exclusion「：换行：」1D1BB..1D1C0;Full_Composition_Exclusion「：换行：」』
+　否则
+　　『』
+也。
+
+「合成排除表二」乃化「数」为「文」者也。
+「合成排除表二」者得「桶」而
+　若「且」于（非（「桶」小于「七六零」））于（「桶」小于「七六三」）则『2F800..2FA1D;Full_Composition_Exclusion「：换行：」』否则『』
+也。
+
+「合成排除表三」乃化「数」为「文」者也。
+「合成排除表三」者得「桶」而
+　『』
+也。
+
+「合成排除表四」乃化「数」为「文」者也。
+「合成排除表四」者得「桶」而
+　『』
+也。
+
+「合成排除表五」乃化「数」为「文」者也。
+「合成排除表五」者得「桶」而
+　『』
+也。
+
+「合成排除表六」乃化「数」为「文」者也。
+「合成排除表六」者得「桶」而
+　『』
+也。
+
+「合成排除表七」乃化「数」为「文」者也。
+「合成排除表七」者得「桶」而
+　『』
+也。
+
+「合成排除表八」乃化「数」为「文」者也。
+「合成排除表八」者得「桶」而
+　『』
+也。
+
+「合成排除表九」乃化「数」为「文」者也。
+「合成排除表九」者得「桶」而
+　『』
+也。
+
+「合成排除表一零」乃化「数」为「文」者也。
+「合成排除表一零」者得「桶」而
+　『』
+也。
+
+「合成排除表一一」乃化「数」为「文」者也。
+「合成排除表一一」者得「桶」而
+　『』
+也。
+
+「合成排除表一二」乃化「数」为「文」者也。
+「合成排除表一二」者得「桶」而
+　『』
+也。
+
+「合成排除表一三」乃化「数」为「文」者也。
+「合成排除表一三」者得「桶」而
+　『』
+也。
+
+「合成排除表一四」乃化「数」为「文」者也。
+「合成排除表一四」者得「桶」而
+　『』
+也。
+
+「合成排除表一五」乃化「数」为「文」者也。
+「合成排除表一五」者得「桶」而
+　『』
+也。
+
+「合成排除表一六」乃化「数」为「文」者也。
+「合成排除表一六」者得「桶」而
+　『』
+也。
+
+「合成排除表」乃化「数」为「文」者也。
+「合成排除表」者得「桶」而
+　若「桶」小于「二五六」则
+　　「合成排除表零」于「桶」
+　否则若「桶」小于「五一二」则
+　　「合成排除表一」于「桶」
+　否则若「桶」小于「七六八」则
+　　「合成排除表二」于「桶」
+　否则若「桶」小于「一零二四」则
+　　「合成排除表三」于「桶」
+　否则若「桶」小于「一二八零」则
+　　「合成排除表四」于「桶」
+　否则若「桶」小于「一五三六」则
+　　「合成排除表五」于「桶」
+　否则若「桶」小于「一七九二」则
+　　「合成排除表六」于「桶」
+　否则若「桶」小于「二零四八」则
+　　「合成排除表七」于「桶」
+　否则若「桶」小于「二三零四」则
+　　「合成排除表八」于「桶」
+　否则若「桶」小于「二五六零」则
+　　「合成排除表九」于「桶」
+　否则若「桶」小于「二八一六」则
+　　「合成排除表一零」于「桶」
+　否则若「桶」小于「三零七二」则
+　　「合成排除表一一」于「桶」
+　否则若「桶」小于「三三二八」则
+　　「合成排除表一二」于「桶」
+　否则若「桶」小于「三五八四」则
+　　「合成排除表一三」于「桶」
+　否则若「桶」小于「三八四零」则
+　　「合成排除表一四」于「桶」
+　否则若「桶」小于「四零九六」则
+　　「合成排除表一五」于「桶」
+　否则若「桶」小于「四三五二」则
+　　「合成排除表一六」于「桶」
+　否则
+　　『』
+也。

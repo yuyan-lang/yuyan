@@ -1,0 +1,47 @@
+寻观「豫章」之书。
+寻观「急就」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「脚本得文」乃化「文」又化「文」为「爻」者也。
+「脚本得文」者得「脚本」又得「期望」而
+　「急就严格等」于（「急就行脚本」于「脚本」）于（「急就字符串值」于（「急就文字自串」于「期望」））
+也。
+
+「断言」
+　于（「脚本得文」
+　　于『let s=Symbol("d");[typeof s,s.description,s.toString(),String(s),Symbol().description,Symbol.for("k")===Symbol.for("k"),Symbol.keyFor(Symbol.for("k")),Symbol("a")===Symbol("a"),typeof Symbol.iterator,Symbol.iterator.toString()].join("|");』
+　　于『symbol|d|Symbol(d)|Symbol(d)||true|k|false|symbol|Symbol(Symbol.iterator)』）
+　于『捷思符号的创建描述登记与众所周知符号』。
+「断言」
+　于（「脚本得文」
+　　于『let k=Symbol("k");let o={a:1,[k]:2};o[Symbol.iterator]=3;let ks=Object.keys(o).join();let sy=Object.getOwnPropertySymbols(o).length;let own=Reflect.ownKeys(o).length;let json=JSON.stringify(o);let forin="";for(const x in o)forin+=x;[o[k],o[Symbol.iterator],ks,sy,own,json,forin,k in o].join("|");』
+　　于『2|3|a|2|3|{"a":1}|a|true』）
+　于『捷思符号做属性键且不进字符串枚举』。
+「断言」
+　于（「脚本得文」
+　　于『let r="";try{Symbol()+"";}catch(e){r+=e instanceof TypeError?"1":"x";}try{`${Symbol()}`;}catch(e){r+=e instanceof TypeError?"2":"x";}try{+Symbol();}catch(e){r+=e instanceof TypeError?"3":"x";}try{new Symbol();}catch(e){r+=e instanceof TypeError?"4":"x";}r;』
+　　于『1234』）
+　于『捷思符号的隐式转换与构造报类型错误』。
+「断言」
+　于（「脚本得文」
+　　于『let it={[Symbol.iterator](){let i=0;return {next(){return i<3?{value:i++,done:false}:{value:undefined,done:true};}};}};let a=[...it];let s=0;for(const x of it)s+=x;let [p,q]=it;let n=0;const inf={[Symbol.iterator](){return {next(){return {value:n++,done:false};}};}};for(const x of inf){if(x>=4)break;}[a.join(),s,p,q,Array.from(it).length,n].join("|");』
+　　于『0,1,2|3|0|1|3|5』）
+　于『捷思自定义可迭代对象的展开循环解构与惰性』。
+「断言」
+　于（「脚本得文」于『let o={[Symbol.toPrimitive](h){return h==="number"?42:h==="string"?"s":"d";}};[+o,`${o}`,o+"",o*2].join("|");』于『42|s|d|84』）
+　于『捷思符号转基础值方法』。
+「断言」
+　于（「脚本得文」
+　　于『let it=[1,2][Symbol.iterator]();let r=[];for(const x of it)r.push(x);[typeof it[Symbol.iterator],it[Symbol.iterator]()===it,r.join(),typeof Map.prototype[Symbol.iterator],new Map([[1,2]])[Symbol.iterator]().next().value.join()].join("|");』
+　　于『function|true|1,2|function|1,2』）
+　于『捷思内建迭代器带符号迭代方法』。
+「断言」
+　于（「脚本得文」
+　　于『let s=Symbol();class A{*[Symbol.iterator](){yield 1;yield 2;}static [Symbol.for("sk")]=5;}[Symbol.iterator!==Symbol.asyncIterator,Symbol.prototype[Symbol.toStringTag],s==s,s==1,s=="x",s!=Symbol(),[...new A()].join(),A[Symbol.for("sk")]].join("|");』
+　　于『true|Symbol|true|false|false|true|1,2|5』）
+　于『捷思符号相等与类中的符号键』。
+「书」于『捷思符号冒烟通过』。

@@ -1,0 +1,29 @@
+寻观「豫章」之书。
+寻观「结绳」之书。
+寻观「范本」之书。
+寻观「考课」之书。
+
+「境」者「结绳对象」于「罄」也。
+
+「验」乃化「文」又化「文」为「有」者也。
+「验」者得「模」又得「期文」而
+　「姑试」以「有」于（得「无」属「有」而「断文同」于「期文」于（「渲染范」于「模」于「境」））于（得「消息」属「文」而「告祸」于（「模」接『：』接「消息」））
+也。
+
+「验」
+　于『{% for n in [{"v":"甲","children":[{"v":"乙","children":[{"v":"丙","children":[]}]}]}] recursive %}{{ loop.depth }}:{{ n.v }};{% if n.children %}{{ loop(n.children) }}{% endif %}{% endfor %}』
+　于『1:甲;2:乙;3:丙;』。
+「验」
+　于『{% for n in [{"v":"甲","children":[{"v":"隐","children":[]},{"v":"乙","children":[]}]}] if n.v!="隐" recursive %}{{ loop.depth0 }}:{{ loop.length }}:{{ n.v }};{% if n.children %}{{ loop(n.children) }}{% endif %}{% endfor %}』
+　于『0:1:甲;1:1:乙;』。
+「验」于『{% for n in [1] recursive %}{{ n }}{{ loop([]) }}{% else %}空{% endfor %}』于『1空』。
+「验」
+　于『{% autoescape true %}{% for n in [{"v":"<甲>","children":[{"v":"<乙>","children":[]}]}] recursive %}{{ n.v }}{% if n.children %}{{ loop(iterable=n.children) }}{% endif %}{% endfor %}{% endautoescape %}』
+　于『&lt;甲&gt;&lt;乙&gt;』。
+「断为阳」于（「姑试」以「爻」
+　于（得「无」属「有」而
+　　令「其文」为「渲染范」于『{% for n in [1] %}{{ loop([]) }}{% endfor %}』于「境」而
+　　「阴」
+　）
+　于（得「消息」属「文」而「文含」于『recursive』于「消息」））。
+「报果」于「元」。

@@ -1,0 +1,61 @@
+寻观「豫章」之书。
+寻观「考课」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻「豫章」之「本原」之「本术」之书。
+寻观「随俗」之「消息」之书。
+
+「：汉语：公开入口验证GNU声明词与引用之间的物理换行、注释及目录头引导。
+　　文言：循公口验GNU声明词引文之间换行、注释及目录头之引。：」
+「换行声明」者「读便携信」于『msgid「：换行：」"apple"「：换行：」msgstr「：换行：」"fruit"「：换行：」』也。
+
+「断文同」于『fruit』于（「寻信」于「换行声明」于『apple』）。
+「注释声明」者
+　「读便携信」于『msgid # comment "ignored"「：换行：」# another comment「：换行：」"apple"「：换行：」msgstr # translated「：换行：」"fruit"「：换行：」』
+也。
+
+「断文同」于『fruit』于（「寻信」于「注释声明」于『apple』）。
+「上下文声明」者「读便携信」于『msgctxt「：换行：」"menu"「：换行：」msgid「：换行：」"apple"「：换行：」msgstr「：换行：」"fruit"「：换行：」』也。
+
+「断文同」于『fruit』于（「寻境信」于「上下文声明」于『menu』于『apple』）。
+「复数声明」者
+　「读便携信」于『msgid「：换行：」"apple"「：换行：」msgid_plural # plural「：换行：」"apples"「：换行：」msgstr[0]「：换行：」"fruit"「：换行：」msgstr [ 1 ] # form「：换行：」"fruits"「：换行：」』
+也。
+
+「断文同」于『fruits』于（「寻复数形信」于「复数声明」于『』于『apple』于『apples』于「一」）。
+「西文头」者
+　「作帛」于『msgid # header「：换行：」""「：换行：」msgstr「：换行：」"Content-Type: text/plain; charset=ISO-8859-1\n"「：换行：」msgid「：换行：」"apple"「：换行：」msgstr # real Latin1 byte「：换行：」"caf』
+也。
+
+「西文源」者「接帛」于「西文头」于（「接帛」于（「单帛」于「二三三」）于（「作帛」于『"「：换行：」』））也。
+
+「西文声明」者「读便携信」于（「本术」之「强作」以「帛」又以「文」于「西文源」）也。
+
+「断文同」于『café』于（「寻信」于「西文声明」于『apple』）。
+「拆序」者
+　「读便携信」于『msgid "apple"「：换行：」msgid_plural "apples"「：换行：」msgstr[1 0]「：换行：」"wrong"「：换行：」msgid "next" msgstr "good"「：换行：」』
+也。
+
+「断文同」于『apples』于（「寻复数形信」于「拆序」于『』于『apple』于『apples』于「一零」）。
+「断文同」于『good』于（「寻信」于「拆序」于『next』）。
+「缺引文」者「读便携信」于『msgid「：换行：」msgstr "wrong"「：换行：」msgid "next" msgstr "good"「：换行：」』也。
+
+「断文同」于『』于（「寻信」于「缺引文」于『』）。
+「断文同」于『good』于（「寻信」于「缺引文」于『next』）。
+「跨行壳」者
+　「读便携信」于『msgid "apple"「：换行：」msgid_plural "apples"「：换行：」msgstr [ # shell「：换行：」0 # index「：换行：」] # closing「：换行：」"fruit"「：换行：」msgstr[「：换行：」1「：换行：」]「：换行：」"fruits"「：换行：」』
+也。
+
+「断文同」于『fruit』于（「寻复数形信」于「跨行壳」于『』于『apple』于『apples』于「零」）。
+「断文同」于『fruits』于（「寻复数形信」于「跨行壳」于『』于『apple』于『apples』于「一」）。
+「跨行拆数」者
+　「读便携信」于『msgid "apple"「：换行：」msgid_plural "apples"「：换行：」msgstr[「：换行：」1「：换行：」0]「：换行：」"wrong"「：换行：」msgid "next" msgstr "good"「：换行：」』
+也。
+
+「断文同」于『apples』于（「寻复数形信」于「跨行拆数」于『』于『apple』于『apples』于「一零」）。
+「断文同」于『good』于（「寻信」于「跨行拆数」于『next』）。
+「空跨行壳」者
+　「读便携信」于『msgid "apple"「：换行：」msgid_plural "apples"「：换行：」msgstr[「：换行：」]「：换行：」"wrong"「：换行：」msgid "next" msgstr "good"「：换行：」』
+也。
+
+「断文同」于『apple』于（「寻信」于「空跨行壳」于『apple』）。
+「断文同」于『good』于（「寻信」于「空跨行壳」于『next』）。

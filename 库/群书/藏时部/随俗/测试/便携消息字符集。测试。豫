@@ -1,0 +1,107 @@
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻「豫章」之「本原」之「本术」之书。
+寻观「考课」之书。
+寻观「随俗」之「消息」之书。
+
+「：汉语：按 GNU gettext 官方 msgfmt-1 的最小消息一向量独立写成豫言断言，出处与许可见消息说明。
+　　文言：据 GNU gettext 官方 msgfmt-1 之最小消息一向量，自书豫言断言；出处许可见消息说明。：」
+「官方消息一」者
+　「读便携信」于（「缀文」于「列」
+　　【『msgid』
+　　，（「作字」于「九」）
+　　，『"msg 1"「：换行：」msgstr』
+　　，（「作字」于「九」）
+　　，『"msg 1 translation"「：换行：」』
+　　】）
+也。
+
+「断文同」于『msg 1 translation』于（「寻信」于「官方消息一」于『msg 1』）。
+「模糊头目录」者
+　「读便携信」于『#, fuzzy「：换行：」msgid ""「：换行：」msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"「：换行：」「：换行：」msgid "caf\351"「：换行：」msgstr "th\351"「：换行：」』
+也。
+
+「断文同」于『thé』于（「寻信」于「模糊头目录」于『café』）。
+「空白序目录」者「读便携信」于『msgid "item" msgid_plural "items" msgstr [ 0 ] "one item" msgstr [ 1 ] "many items"「：换行：」』也。
+
+「断文同」于『many items』于（「寻复数形信」于「空白序目录」于『』于『item』于『items』于「一」）。
+「同行目录」者「读便携信」于『msgctxt"菜单" msgid"apple" msgid_plural"apples" msgstr[0]"苹果" msgstr[1]"诸苹果"「：换行：」』也。
+
+「断文同」于『苹果』于（「寻境信」于「同行目录」于『菜单』于『apple』）。
+「断文同」于『诸苹果』于（「寻复数形信」于「同行目录」于『菜单』于『apple』于『apples』于「一」）。
+「同行头目录」者
+　「读便携信」于『msgid"" msgstr"Content-Type: text/plain; charset=ISO-8859-1\n"「：换行：」msgid"caf\351" msgstr"th\351" # msgid "ignored"「：换行：」』
+也。
+
+「断文同」于『thé』于（「寻信」于「同行头目录」于『café』）。
+「八进目录」者「读便携信」于『msgid "caf\303\251"「：换行：」msgstr "th\303\251"「：换行：」』也。
+
+「断文同」于『thé』于（「寻信」于「八进目录」于『café』）。
+「跨行目录」者「读便携信」于『msgid "caf\303"「：换行：」"\251"「：换行：」msgstr "th\xC3"「：换行：」"\xA9"「：换行：」』也。
+
+「断文同」于『thé』于（「寻信」于「跨行目录」于『café』）。
+「相邻目录」者「读便携信」于『msgid "caf\303" "\251"「：换行：」msgstr "th\303" "\251" # comment "ignored"「：换行：」』也。
+
+「断文同」于『thé』于（「寻信」于「相邻目录」于『café』）。
+「西文目录」者
+　「读便携信」于『msgid ""「：换行：」msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"「：换行：」「：换行：」msgctxt "caf\351"「：换行：」msgid "th\351"「：换行：」msgstr "r\351ponse"「：换行：」』
+也。
+
+「断文同」于『réponse』于（「寻境信」于「西文目录」于『café』于『thé』）。
+「西文源码字节」者
+　「接帛」
+　　于（「作帛」于『msgid ""「：换行：」msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"「：换行：」「：换行：」msgid "literal"「：换行：」msgstr "caf』）
+　　于（「接帛」于（「单帛」于「二三三」）于（「作帛」于『"「：换行：」』））
+也。
+
+「西文源码」者「本术」之「强作」以「帛」又以「文」于「西文源码字节」也。
+
+「断文同」于『café』于（「寻信」于（「读便携信」于「西文源码」）于『literal』）。
+「：汉语：WHATWG 国标索引第28项为 U+4E57 乗，对应 GBK 字节81 5C，尾字节正是反斜线。
+　　文言：WHATWG 国标索引二十八为 U+4E57 乗，GBK 之字节为八一五C，尾即反斜线。：」
+「国标源码字节」者
+　「接帛」
+　　于（「作帛」于『msgid ""「：换行：」msgstr "Content-Type: text/plain; charset=GBK\n"「：换行：」「：换行：」msgid "ride"「：换行：」msgstr "』）
+　　于（「接帛」于（「单帛」于「一二九」）于（「接帛」于（「单帛」于「九二」）于（「作帛」于『"「：换行：」』）））
+也。
+
+「国标源码」者「本术」之「强作」以「帛」又以「文」于「国标源码字节」也。
+
+「断文同」于『乗』于（「寻信」于（「读便携信」于「国标源码」）于『ride』）。
+「国标转义」者
+　「读便携信」于『msgid ""「：换行：」msgstr "Content-Type: text/plain; charset=GBK\n"「：换行：」「：换行：」msgid "ride"「：换行：」msgstr "\x81"「：换行：」"\x5c"「：换行：」』
+也。
+
+「断文同」于『乗』于（「寻信」于「国标转义」于『ride』）。
+「零字节目录」者「读便携信」于『msgid "zero"「：换行：」msgstr "\000bad"「：换行：」』也。
+
+「断文同」于『zero』于（「寻信」于「零字节目录」于『zero』）。
+「坏转义目录」者「读便携信」于『msgid "bad"「：换行：」msgstr "\q"「：换行：」』也。
+
+「断文同」于『bad』于（「寻信」于「坏转义目录」于『bad』）。
+「缺十六位目录」者「读便携信」于『msgid "bad"「：换行：」msgstr "\x"「：换行：」』也。
+
+「断文同」于『bad』于（「寻信」于「缺十六位目录」于『bad』）。
+「上下文目录」者
+　「读便携信」于『msgid "same"「：换行：」msgstr "plain"「：换行：」「：换行：」msgctxt ""「：换行：」msgid "same"「：换行：」msgstr "empty-context"「：换行：」』
+也。
+
+「断文同」于『plain』于（「寻信」于「上下文目录」于『same』）。
+「断文同」于『empty-context』于（「寻境信」于「上下文目录」于『』于『same』）。
+「复数头目录」者「读便携信」于『msgid ""
+msgstr "Content-Type: text/plain; charset=ISO-8859-1\n"
+"Plural-Forms: nplurals=2; plural=n!=1;\n"
+
+msgid "caf\351"
+msgid_plural "caf\351s"
+msgstr[0] "th\351"
+msgstr[1] "th\351s"
+』也。
+
+「断文同」于『thés』于（「寻数量复数信」于「复数头目录」于『en』于『』于『café』于『cafés』于「二」）。
+「非模糊目录」者「读便携信」于『#, no-fuzzy, c-format「：换行：」msgid "flag"「：换行：」msgstr "translated"「：换行：」』也。
+
+「断文同」于『translated』于（「寻信」于「非模糊目录」于『flag』）。
+「注入目录」者「读便携信」于『msgid "bad\004context"「：换行：」msgstr "injected"「：换行：」』也。
+
+「断文同」于『context』于（「寻境信」于「注入目录」于『bad』于『context』）。
