@@ -1,7 +1,8 @@
+「：汉语：通称汇寓函数名表。WASI preview1 函数名依表映射到编号 1–46；未知函数名返回 99，其他导入模块返回 0。
+　　文言：WASI preview1 诸名之表，序从一始；未识之名为九十九。
+　　赋曰：客来问名，主以册对；汇寓诸门，序从一始。名同则授其号，名异则穷其搜。未识之项，其数九九；别宿之问，其报为零。：」
 寻观「磐石」之书。
 
-「：汉语：WASI preview1 函数名依表映射到编号 1–46；未知函数名返回 99，其他导入模块返回 0。
-　　文言：WASI preview1 诸名之表，序从一始；未识之名为九十九。：」
 「瓦名表」者
 　「静态文」于『args_get,args_sizes_get,clock_res_get,clock_time_get,environ_get,environ_sizes_get,fd_close,fd_fdstat_get,fd_read,fd_seek,fd_write,proc_exit,random_get,sched_yield,fd_prestat_get,fd_prestat_dir_name,fd_filestat_get,poll_oneoff,fd_advise,fd_allocate,fd_datasync,fd_fdstat_set_flags,fd_fdstat_set_rights,fd_filestat_set_size,fd_filestat_set_times,fd_pread,fd_pwrite,fd_readdir,fd_renumber,fd_sync,fd_tell,path_create_directory,path_filestat_get,path_filestat_set_times,path_link,path_open,path_readlink,path_remove_directory,path_rename,path_symlink,path_unlink_file,proc_raise,sock_accept,sock_recv,sock_send,sock_shutdown』
 也。

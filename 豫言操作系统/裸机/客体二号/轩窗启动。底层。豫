@@ -1,11 +1,12 @@
+「：汉语：通称Windows 启动初始化（startup initialization）。Windows 启动准备：程序名取自 GetModuleFileNameW，命令行取自 NtQueryInformationProcess（信息类 60，ProcessCommandLineInformation，把 UNICODE_STRING 与字符串一起拷进缓冲），都转成 UTF-8；命令行按 Windows 规则拆成参数（去掉第 0 个）写进参数区。路径转成执行器内部的写法：前面加“/”、反斜线换成“/”（如 /C:/a/b）。送参数区与送程序名区临时借作缓冲，用完清零。待办事项：环境块尚未填写（按名取环境变量走 GetEnvironmentVariableW）。
+　　文言：轩窗启动之备：程序名取于 GetModuleFileNameW，命令行取于 NtQueryInformationProcess（类六十），化为 UTF-8，依轩窗之规分参数而书于参数区；路径化为执行器之式：前加斜线，反斜线改为斜线（如 /C:/a/b）。送参数区与送程序名区暂借为缓冲，毕则清之。环境之块待办。
+　　赋曰：入境录符，轩窗初启。取模块名，询命令行。宽文既得，窄文是化。斜线易向，前缀加杠。首参既舍，余参分录。反斜之数，随引而增。引内引外，依规而裁。参数之区，临时借径。用毕清零，不留其痕。环境之块，尚待后书。：」
 寻观「磐石」之书。
 寻观「客体二号」之「布局」之书。
 寻观「客体二号」之「林系统」之书。
 寻观「客体二号」之「轩窗系统」之书。
 寻观「客体二号」之「基础」之书。
 
-「：汉语：Windows 启动准备：程序名取自 GetModuleFileNameW，命令行取自 NtQueryInformationProcess（信息类 60，ProcessCommandLineInformation，把 UNICODE_STRING 与字符串一起拷进缓冲），都转成 UTF-8；命令行按 Windows 规则拆成参数（去掉第 0 个）写进参数区。路径转成执行器内部的写法：前面加“/”、反斜线换成“/”（如 /C:/a/b）。送参数区与送程序名区临时借作缓冲，用完清零。待办事项：环境块尚未填写（按名取环境变量走 GetEnvironmentVariableW）。
-　　文言：轩窗启动之备：程序名取于 GetModuleFileNameW，命令行取于 NtQueryInformationProcess（类六十），化为 UTF-8，依轩窗之规分参数而书于参数区；路径化为执行器之式：前加斜线，反斜线改为斜线（如 /C:/a/b）。送参数区与送程序名区暂借为缓冲，毕则清之。环境之块待办。：」
 「：汉语：把 [址, 址+长) 的 Windows 路径就地改写：反斜线换成“/”；调用者负责在前面留出一个“/”。
 　　文言：Windows 之径化为执行器之式：前加斜线，反斜线为斜线。：」
 「视斜线化」乃化「整数」又化「整数」为「有」者也。
