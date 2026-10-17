@@ -103,8 +103,6 @@
 　「始」与「末」与「标题」与「模式」与「旗」与「输入」与（「罄」以「文」）与「分类」与「理由」与（「倒」以「文」于「原倒」）
 也。
 
-「：汉语：读取只保存及分类原始行；模式跨行保留换行，subject空行封块，控制命令影响后续分类。输出块留空供后续配对，捕获偏移留待官方精确来源。
-　　文言：读取唯存原行而分其类；式跨行存换行，subject空行封块，控制命令影响后类。输出块留空俟后配，获偏移俟官方精源。：」
 「：汉语：格式据官方 pcre2test PATTERN SYNTAX、SUBJECT LINE SYNTAX 与 COMMAND LINES：https://www.pcre.org/current/doc/html/pcre2test.html 。候选表示可适配待执行，所有输出块当前为未配对。
 　　文言：格式据官方 pcre2test 之式、输入行及命令篇，见 https://www.pcre.org/current/doc/html/pcre2test.html 。候选谓可适配而待行，诸输出块今皆未配。：」
 「读珠玑格律试」乃化「文」为「珀尔正则读取报告」者也。
