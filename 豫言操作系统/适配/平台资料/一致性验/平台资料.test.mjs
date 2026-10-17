@@ -52,7 +52,7 @@ const 调 = async (宿主, env, 查询) => {
 const 列 = async (宿主, env, 集, 前缀 = '') => { const r = await 调(宿主, env, {op: 'list', set: 集, prefix: 前缀}); return r.ok ? {ok: true, 键们: JSON.parse(r.text)} : r; };
 const 读 = (宿主, env, 集, 键) => 调(宿主, env, {op: 'read', set: 集, key: 键});
 
-test('列出平台资料键：只含 /库/标准库/ 起首的字符串条目，按 UTF-8 字节序，前缀过滤', async () => {
+test('列出平台资料键：只含 /库/豫章/ 起首的字符串条目，按 UTF-8 字节序，前缀过滤', async () => {
   const {env, 状态} = 造环境(), 宿主 = 造宿主();
   assert.deepEqual(await 列(宿主, env, '标准库'), {ok: true, 键们: ['/库/豫章/总集。豫', '/库/豫章/形制/整数操作。豫']});
   assert.deepEqual(await 列(宿主, env, '标准库', '/库/豫章/数据结构'), {ok: true, 键们: ['/库/豫章/形制/整数操作。豫']});

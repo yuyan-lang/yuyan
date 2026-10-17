@@ -30,7 +30,7 @@ const 预编译 = 创建编译器({
     for (const [名, 项] of Object.entries(缓存)) 资料[名] = { 内容: new TextDecoder().decode(项.内容), 时间: 项.时间 };
   }
 });
-const 预热结果 = await 预编译("寻观「标准库」之书。「打印行」于『标准库预编译』。", true);
+const 预热结果 = await 预编译("寻观「豫章」之书。「书」于『标准库预编译』。", true);
 if (!预热结果.ok) throw Error("标准库预编译失败：" + JSON.stringify(预热结果));
 产物["标准库.json.gz"] = gzipSync(JSON.stringify(资料), { level: 9 });
 const 清单 = {};
