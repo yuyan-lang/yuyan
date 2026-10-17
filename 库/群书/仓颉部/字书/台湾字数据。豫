@@ -1,6 +1,12 @@
+「：汉语：通称字书台湾异体字转换表数据（压缩）。以泽压库压缩并六十四进制编码的台湾异体字转换表数据，调用时由「读敛数据」还原为原始 UTF-8 文本。
+　　文言：字书台湾异体字之表（缩存）：以泽压库缩而六十四进制编之，呼时由「读敛数据」复为原 UTF-8 之文。
+　　赋曰：伊台湾字数据也，台湾之字，异体以对；泽压之缩，卦文以编；读敛还原，原文以全；调用之时，一次以宣；字书之数，于此以传。：」
 寻观「豫章」之「本原」之「本类」之书。
 寻观「字书」之「数据读入」之书。
 
+「：汉语：通称台湾异体字转换表数据。返回还原后的原始 UTF-8 文本。
+　　文言：返复后之原文。
+　　赋曰：压缩之数一次还，原文台湾以相传。：」
 「台湾字数据」乃化「有」为「文」者也。
 「台湾字数据」者得「无」而
 　「读敛数据」于『eAF72jyP82njXq6nUydzPp06n+vptNWcTyc0cz1dvYvz6erdXE/XNHA+XbWe6+nm9ZxPN2/gerpzF+eTnR1czyYv5HzWtYbr2eKNnM9XzOF6tmoC5/MN27mebQSKb5zJ9WxzC+ezLSu5nu2dyflsF1D93hWcz/Y2cD3v2MT5vGkX1/NOoLm7urieT9/J+Xw6kD9zIZDewvV8ViPn81lNXM/nNnC+mDgdSO/jfD53FdfzpVM5ny+fwfV8dQfn88ZtXM83d3I+37SX6/nOdZwv5zdyPd81hfNZZy/X832LOZ/vW8L1omUx59Mp7VwvpszgfNrfDKT3c76Y1Mv1YmEb5/M5+7heLO7nfLF4IdeLZR2czxbs4Hqxo4vzxY4tXC87F3E+37OX62XvHs6X7XO5Xq7r43y5fgPXy12rOF/u2sr1cu82zpcL+7gAGsWrnA==』

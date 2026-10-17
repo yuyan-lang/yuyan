@@ -1,5 +1,11 @@
+「：汉语：通称统一码属性别名（生成）。PropertyAliases.txt 的原文数据行，作为一整段文字保存，供属性别名查询解析。
+　　文言：统一码属别名（所生）：PropertyAliases.txt 之原文数行，存为一段之文，以供属别名之查析。
+　　赋曰：伊属别名之表也，属名简称，官方以列；官方之数，十八为本；生器所作，手改不循；高八定桶，二五六分；桶桶有函，次第相陈；原行之文，区间以存；分号为界，属名以伸；按号分派，查之以准；首查建储，次查以迅；数据既备，属性以论。：」
 寻观「豫章」之书。
 
+「：汉语：通称属性别名原文。官方 PropertyAliases.txt 的数据行文字。
+　　文言：官方属别名之原行之文。
+　　赋曰：属名简称官方列，原文之行一段存。：」
 「属别名表」者『cjkAccountingNumeric     ; kAccountingNumeric
 cjkOtherNumeric          ; kOtherNumeric
 cjkPrimaryNumeric        ; kPrimaryNumeric

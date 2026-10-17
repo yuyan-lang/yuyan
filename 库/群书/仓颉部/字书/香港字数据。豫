@@ -1,6 +1,12 @@
+「：汉语：通称字书香港异体字转换表数据（压缩）。以泽压库压缩并六十四进制编码的香港异体字转换表数据，调用时由「读敛数据」还原为原始 UTF-8 文本。
+　　文言：字书香港异体字之表（缩存）：以泽压库缩而六十四进制编之，呼时由「读敛数据」复为原 UTF-8 之文。
+　　赋曰：伊香港字数据也，香港之字，异体以对；泽压之缩，卦文以编；读敛还原，原文以全；调用之时，一次以宣；字书之数，于此以传。：」
 寻观「豫章」之「本原」之「本类」之书。
 寻观「字书」之「数据读入」之书。
 
+「：汉语：通称香港异体字转换表数据。返回还原后的原始 UTF-8 文本。
+　　文言：返复后之原文。
+　　赋曰：压缩之数一次还，原文香港以相传。：」
 「香港字数据」乃化「有」为「文」者也。
 「香港字数据」者得「无」而
 　「读敛数据」于『eAF72jyP82njXq6nrT2cT1sncj3tb+F82t8IpFcB6VUKLxbu5Ho6dTInECs8nTqf6+m01ZxPJzRzPZ0NlJ+9kevpsrmcQKzwfNNyrqer9nA+XbWK6+maBiC9nutZUyvns6ZlXM9aezmftSzgetaxjfNZx3auZz0rOZ/1zuV6NmEr57P+fVzPJi/kfNa1husZ0J5nU2cB6RlAulcBSHM9m7+L89m8LVzPFm3ifLa4kevZ4o2cz1fMUQDSXM+WAcWWtXI9W7UeqAbI37CZ89mGTVzPtk3nfLYNaM6u1ZzPdqwE0ns4n+2fyvVs70zOZ7s6gPQKzmd7G7iet7VyPm/dwvW8YxPn86ZdXM9nLuR8Ph3In9XI+XxWE9fzpVM5ny+fwfV8BVDdij6u56s7OJ83buN6vrmT8/mmvQpAGojXcj3fAVS3fQ/X811TOJ919nK9aFnM+XRKO5BezfmiZSPXi7Zmzhete7letC/lfNq7HEjvAobtBq4X/TuA9s/kejFpKueLSQ1cL6Ys5XwxEah+yn4gH2jOjC7OF0D3vJi9m/PFnKlcLxa2cT6fsw9Iz+Z8sXAe14tlHZzPFuzgerFqFeeLVWu4XuwAqt8BVL+3gfPFnj1cL9vmcb5sm8b1snMR5/M9e4H0Es6XHX1cL7s2c77sXsv1sncP58v2uVwvp23kfDltE9fLDes4X26YzQUAwrQiNw==』
