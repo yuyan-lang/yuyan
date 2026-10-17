@@ -1,9 +1,10 @@
+「：汉语：通称通称配置词元生成冒烟测试。基本CI冒烟覆盖原始提示的配置特殊词、已套模板提示的正文词元，以及服务逐片配置解码与工具边界。
+　　文言：基本CI试原始提示之配置特词、已套模提示之正文词，及服务逐片配置解码与工具之界。
+　　赋曰：观夫配置之生，两途并试：原始之文，首尾加特殊；已套之文，独取正文。服务逐片，特殊者隐而不书；工具之界，原字特存而不没。：」
 寻观「豫章」之书。
 寻观「庖丁」之书。
 寻观「本地推理」之「服务生成」之书。
 
-「：汉语：基本CI冒烟覆盖原始提示的配置特殊词、已套模板提示的正文词元，以及服务逐片配置解码与工具边界。
-　　文言：基本CI试原始提示之配置特词、已套模提示之正文词，及服务逐片配置解码与工具之界。：」
 「取配置」乃化「有」为「分词配置」者也。
 「取配置」者得「无」而
 　鉴「读分词设」于『{"model":{"type":"BPE","vocab":{"a":0,"b":1,"ab":2,"<s>":3,"</s>":4,"<unk>":5,"<tool_call>":6},"merges":["a b"],"unk_token":"<unk>"},"post_processor":{"type":"TemplateProcessing","single":"<s> $A </s>","special_tokens":{"<s>":{"ids":[3]},"</s>":{"ids":[4]}}},"decoder":{"type":"Fuse"},"added_tokens":[{"id":3,"content":"<s>","special":true,"normalized":false},{"id":4,"content":"</s>","special":true,"normalized":false},{"id":6,"content":"<tool_call>","special":true,"normalized":false}]}』而
