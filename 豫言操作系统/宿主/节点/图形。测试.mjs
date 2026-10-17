@@ -387,7 +387,7 @@ test('图形显示：取纹理时换成 WebGPU 窗口；离屏帧可读回；呈
 // ---------------------------------------------------------------------------
 test('内建字体只授发行指定文件，不授旁文件且拒绝符号链接', async () => {
   const 文件系统 = await import('node:fs'), 系统 = await import('node:os');
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(),'yy内建字体-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(),'内建字体-'));
   try {
     const 字体径 = 路径.join(根,'字体.ttf'), 旁径 = 路径.join(根,'旁文件.txt');
     文件系统.writeFileSync(字体径,Uint8Array.from([0,1,0,0,9])); 文件系统.writeFileSync(旁径,'私有正文');

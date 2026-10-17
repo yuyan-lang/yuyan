@@ -85,7 +85,7 @@ async function 主程序(根, 文件表, 分片 = '0/1') {
       汇总.差异.push({文件, ...项});
     }
   }
-  const 报告 = path.join(根, `yy删空白差异-${第几}.json`);
+  const 报告 = path.join(根, `删空白差异-${第几}.json`);
   fs.writeFileSync(报告, JSON.stringify(汇总, null, 1));
   process.stdout.write(`核验 ${汇总.文件数} 文件，有差 ${汇总.有差文件数}，差异 ${汇总.差异段数} 段；报告：${报告}\n`);
   for (const 项 of 汇总.差异.slice(0, 20)) {

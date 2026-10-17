@@ -9,10 +9,10 @@ import assert from 'node:assert/strict';
 
 if (路径.resolve(process.argv[1]) === import.meta.filename) {
   const [发行, 依赖] = process.argv.slice(2).map(项 => 路径.resolve(项));
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy图形写入-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '图形写入-'));
   const 只读 = process.argv[4] === '只读';
-  const 图路 = 路径.resolve('yy图形只读建目录.ppm');
-  const 文楷图路 = 路径.resolve('yy同源文楷原生.ppm');
+  const 图路 = 路径.resolve('图形只读建目录.ppm');
+  const 文楷图路 = 路径.resolve('同源文楷原生.ppm');
   try {
     const 字体径 = 路径.join(发行,'字体.ttf');
     const 摘要 = 径 => createHash('sha256').update(文件系统.readFileSync(径)).digest('hex');

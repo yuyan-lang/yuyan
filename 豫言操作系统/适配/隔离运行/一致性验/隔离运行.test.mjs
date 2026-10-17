@@ -2,10 +2,10 @@
 // 汉语：隔离运行接口的云工适配一致性验证。共两部分：（一）真实 workerd：Miniflare 装载试验应用的构建产物，Worker Loader 绑定 LOADER 真实加载子 Worker，
 // 用一个由豫言编译的文件式探针程序（./探针）逐项验证规范里的返回、限额、失败情形、同一事件内连续运行；（二）Node 假加载器：核对同（范围，摘要）取得同一标识、
 // 异范围异标识、子 Worker 的模块集合、CPU 与子请求限额、请求体逐字节等于输入。
-// 用法（在私有暂存目录里执行，其中有 yy3_bs、库/、dist/）：
+// 用法（在私有暂存目录里执行，其中有 编译器三、库/、dist/）：
 //   1. 豫构 发行 云工 <本目录>/应用 dist/隔离运行一致性
 //   2. node --test <本目录>/隔离运行.test.mjs
-// 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_PROBE_WASM 已编译好的探针 Wasm（缺省则用暂存里的 yy3_bs 现编）；E2E_MINIFLARE miniflare 入口路径
+// 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_PROBE_WASM 已编译好的探针 Wasm（缺省则用暂存里的 编译器三 现编）；E2E_MINIFLARE miniflare 入口路径
 // （缺省取相邻云仓 应用/包管理服务/node_modules）。注意：本地 workerd 不执行 CPU 限额，故不运行死循环程序。
 import {after, before, test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,16 +20,16 @@ const 本目录 = path.dirname(fileURLToPath(import.meta.url));
 const 语言仓根 = path.resolve(本目录, '../../../..');
 const 产物 = path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '隔离运行一致性');
 const miniflare路径 = process.env.E2E_MINIFLARE ?? path.resolve(语言仓根, '../yuyan-cloud/应用/包管理服务/node_modules/miniflare/dist/src/index.js');
-const 核心程序路径 = path.resolve(语言仓根, '../yuyan-cloud/应用/豫言云工作台/云端项目核心/产物/yy项目核心.wasm');
+const 核心程序路径 = path.resolve(语言仓根, '../yuyan-cloud/应用/豫言云工作台/云端项目核心/产物/项目核心.wasm');
 if (!existsSync(path.join(产物, '入口.mjs'))) throw new Error('缺少构建产物：' + 产物 + '（先构建 应用/，输出名 隔离运行一致性，见本目录说明）');
 if (!existsSync(miniflare路径)) throw new Error('找不到 miniflare：' + miniflare路径 + '（用环境变量 E2E_MINIFLARE 指定）');
 
 const 摘要 = 字节 => createHash('sha256').update(字节).digest('hex');
-// 文言：探针程序由豫言编器现编。汉语：在暂存目录里用 yy3_bs 把 ./探针 编译为 WasmGC 文件式程序（包描述以 .txt 存放，复制到临时目录改回原名）。
+// 文言：探针程序由豫言编器现编。汉语：在暂存目录里用 编译器三 把 ./探针 编译为 WasmGC 文件式程序（包描述以 .txt 存放，复制到临时目录改回原名）。
 function 取探针字节() {
   if (process.env.YY_PROBE_WASM) return readFileSync(process.env.YY_PROBE_WASM);
-  const 编译器 = path.resolve('yy3_bs');
-  if (!existsSync(编译器)) throw new Error('需在私有暂存目录运行（其中有 yy3_bs），或用 YY_PROBE_WASM 指定已编译的探针');
+  const 编译器 = path.resolve('编译器三');
+  if (!existsSync(编译器)) throw new Error('需在私有暂存目录运行（其中有 编译器三），或用 YY_PROBE_WASM 指定已编译的探针');
   const 临时 = realpathSync(mkdtempSync(path.join(process.env.TMPDIR ?? tmpdir(), 'yy-探针-')));
   const 库根 = realpathSync(path.resolve('库'));
   try {

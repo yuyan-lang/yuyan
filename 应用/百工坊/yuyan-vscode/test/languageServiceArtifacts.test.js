@@ -84,9 +84,9 @@ if (process.env.YY_EDITOR_WASM_ROOT) {
     const root = process.env.YY_EDITOR_WASM_ROOT;
     const read = kind => JSON.parse(execFileSync(process.execPath, [
       path.join(root, '豫言操作系统/宿主/节点/宿主.cjs'),
-      path.join(root, 'yy树码.wasm'),
+      path.join(root, '树码.wasm'),
       '读取编辑器资料',
-      path.join(root, `yy编辑器。${kind}。树码`)
+      path.join(root, `编辑器。${kind}。树码`)
     ], { cwd: root, encoding: 'utf8', maxBuffer: 128 * 1024 * 1024 }));
     const language = read('语言服务');
     const document = parseLanguageServiceDocument(language);

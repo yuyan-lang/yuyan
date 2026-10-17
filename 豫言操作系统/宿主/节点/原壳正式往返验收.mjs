@@ -9,7 +9,7 @@ import assert from 'node:assert/strict';
 if (路径.resolve(process.argv[1]) === import.meta.filename) {
   const [发行, 子发行, 依赖, 图像] = process.argv.slice(2).map(项 => 路径.resolve(项));
   assert.ok(发行 && 子发行 && 依赖 && 图像, '须给原壳发行、子发行、原生依赖及图像路径');
-  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), 'yy原壳正式-'));
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(), '原壳正式-'));
   const 资源 = 路径.join(根, '公共命令'), 图资源 = 路径.join(根, '桌面');
   文件系统.mkdirSync(资源); 文件系统.mkdirSync(图资源);
   文件系统.writeFileSync(路径.join(图资源, '说明.txt'), '豫言文件预览验证');

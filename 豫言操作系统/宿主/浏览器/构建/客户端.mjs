@@ -2,7 +2,7 @@
 // 汉语：浏览器构建客户端（网页编译接口 0.2 的“构建客户端”参考实现）：取源码快照与工具链（gzip 的 tar），展开到内存文件系统，
 //   应用改动后依次运行各条命令（豫构等豫言 Wasm 程序，可再启动编译器等子进程，见 进程.mjs），输出随时报告；结束后丢弃全部文件。
 //   页面须跨源隔离（COOP same-origin 与 COEP require-corp 或 credentialless），才有 SharedArrayBuffer。
-//   作业：{快照:{网址, 剥离层数=1, 缓存=false}, 工具链:{网址, 缓存=false, 编译器='yy_bs_stable.wasm', 豫构='yy豫构_stable.wasm', 值桥='yy稳定节点宿主/yy节点值桥接.wasm'},
+//   作业：{快照:{网址, 剥离层数=1, 缓存=false}, 工具链:{网址, 缓存=false, 编译器='编译器稳定.wasm', 豫构='豫构稳定.wasm', 值桥='稳定节点宿主/节点值桥接.wasm'},
 //          改动:{相对路径: 内容文字 或 null（删除）}, 命令:[[程序, 参数…]…], 环境:{名: 值}, 继续=false（某条失败后是否接着运行）, 处理器数}
 //   报告：{type:"stage",phase,label}、{type:"command",index,argv}、{type:"output",stream,text}、{type:"command-done",index,exitCode,ms}。
 //   结果：{ok, results:[{argv, exitCode, ms}], error, phase}。
@@ -50,9 +50,9 @@ export async function 浏览器构建(作业, 报告 = () => {}) {
     const 工具链 = 作业.工具链;
     展开归档(系统, await 取压缩归档(工具链.网址, {缓存名: 工具链.缓存 ? '豫言构建工具链' : '', 信号: 控制器.signal,
       报传输: 传输 => 报告({type: 'stage', phase: 'load', label: '工具链：' + 传输.连接状态, transfer: {...传输, 项: '工具链'}})}), {目录: '/工具链', 剥离层数: 工具链.剥离层数 ?? 0});
-    系统.写(仓库根 + '/yy4_bs.wasm', 系统.读('/工具链/' + (工具链.编译器 ?? 'yy_bs_stable.wasm')));
-    系统.写(仓库根 + '/yy豫构.wasm', 系统.读('/工具链/' + (工具链.豫构 ?? 'yy豫构_stable.wasm')));
-    const 桥模块 = await WebAssembly.compile(系统.读('/工具链/' + (工具链.值桥 ?? 'yy稳定节点宿主/yy节点值桥接.wasm')));
+    系统.写(仓库根 + '/编译器.wasm', 系统.读('/工具链/' + (工具链.编译器 ?? '编译器稳定.wasm')));
+    系统.写(仓库根 + '/豫构.wasm', 系统.读('/工具链/' + (工具链.豫构 ?? '豫构稳定.wasm')));
+    const 桥模块 = await WebAssembly.compile(系统.读('/工具链/' + (工具链.值桥 ?? '稳定节点宿主/节点值桥接.wasm')));
     if (已停) return {ok: false, results: [], error: '已停止', phase: 阶段};
     表 = new 进程表({文件系统: 系统, 桥模块, 工作线程网址: new URL('./工作线程.mjs', import.meta.url), 处理器数: 作业.处理器数});
     阶段 = 'build';

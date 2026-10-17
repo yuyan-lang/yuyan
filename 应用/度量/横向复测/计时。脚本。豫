@@ -18,7 +18,7 @@
 
 「尾名」者若「结构」则『结构』否则「题」也。
 
-「参照程序」者若「结构」则『./yy横比结构C』否则『./yy横比C』也。
+「参照程序」者若「结构」则『./横比结构C』否则『./横比C』也。
 
 「参照」者「使者」之「咨」于「参照程序」于（「列」【「题」，「其数」】）也。
 
@@ -34,7 +34,7 @@
 　　　　　「列」【「参照程序」，「题」，「其数」】
 　　　　否则若「文同」于「法」于『OCaml』则
 　　　　　「列」
-　　　　　【若「结构」则『./yy横比结构OCaml』否则『./yy横比OCaml』
+　　　　　【若「结构」则『./横比结构OCaml』否则『./横比OCaml』
 　　　　　，「题」
 　　　　　，「其数」
 　　　　　】
@@ -49,7 +49,7 @@
 　　　　　　，『--no-warnings』
 　　　　　　，『-e』
 　　　　　　，『new (require("node:worker_threads").Worker)("const {workerData}=require('node:worker_threads');const {WASI}=require('node:wasi');const fs=require('node:fs');const w=new WASI({version:'preview1',args:workerData,returnOnExit:true});const m=new WebAssembly.Module(fs.readFileSync(workerData[0]));process.exitCode=w.start(new WebAssembly.Instance(m,w.getImportObject()));",{eval:true,workerData:process.argv.slice(1),resourceLimits:{stackSizeMb:128}}).on("error",e=>{console.error(e);process.exitCode=1;});』
-　　　　　　，若「结构」则『yy横比结构C.wasm』否则『yy横比C.wasm』
+　　　　　　，若「结构」则『横比结构C.wasm』否则『横比C.wasm』
 　　　　　　，「题」
 　　　　　　，「其数」
 　　　　　　】
@@ -57,9 +57,9 @@
 　　　　　「接列」以「文」
 　　　　　　于（
 　　　　　　　若「文同」于「法」于『豫言原生』则
-　　　　　　　　「列」【『/usr/bin/env』，『YY_GC_INITIAL_HEAP_SIZE_MB=64』，『./yy横比』接「尾名」接『原生』】
+　　　　　　　　「列」【『/usr/bin/env』，『YY_GC_INITIAL_HEAP_SIZE_MB=64』，『./横比』接「尾名」接『原生』】
 　　　　　　　否则
-　　　　　　　　「列」【『/opt/homebrew/bin/node』，『应用/网汇坊/节点网页汇编宿主/宿主.cjs』，『yy横比』接「尾名」接『.wasm』】
+　　　　　　　　「列」【『/opt/homebrew/bin/node』，『应用/网汇坊/节点网页汇编宿主/宿主.cjs』，『横比』接「尾名」接『.wasm』】
 　　　　　　）
 　　　　　　于（若「结构」则「列」【「题」，「其数」】否则「列」【「其数」】）
 　　　）

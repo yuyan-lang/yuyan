@@ -8,7 +8,7 @@ import {fileURLToPath} from 'node:url';
 import {创建豫言实例} from './值桥.mjs';
 
 const 根=resolve(fileURLToPath(new URL('.',import.meta.url)),'../../../../yuyan-cloud/应用/豫言云工作台/云端项目核心/产物');
-const 程序径=resolve(根,'yy项目核心.wasm'),值桥径=resolve(根,'yy值桥接.wasm');
+const 程序径=resolve(根,'项目核心.wasm'),值桥径=resolve(根,'值桥接.wasm');
 const 可运行=existsSync(程序径)&&existsSync(值桥径);
 
 test('无 JSPI 可运行同步豫言 Wasm，异步能力明确拒绝',{skip:!可运行},async()=>{

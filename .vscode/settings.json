@@ -26,6 +26,6 @@
     "vim.matchpairs": "(:),{:},[:],（:）,【:】,「:」,『:』",
     "makefile.configureOnOpen": false,
     "files.watcherExclude": {
-        "**/.yybuild/**": true
+        "**/.豫构缓存/**": true
     }
 }

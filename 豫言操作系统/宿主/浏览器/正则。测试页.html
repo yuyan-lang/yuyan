@@ -9,9 +9,9 @@
 import {创建豫言实例} from './值桥.mjs';
 const 结果 = document.getElementById('结果');
 const 样本 = [
-  ['yy正则浏览器核心.wasm', '正则线性与增量测试通过'],
-  ['yy正则浏览器字节.wasm', '正则字节测试通过'],
-  ['yy正则浏览器差分.wasm', '线性与回溯六百三十例差分通过']
+  ['正则浏览器核心.wasm', '正则线性与增量测试通过'],
+  ['正则浏览器字节.wasm', '正则字节测试通过'],
+  ['正则浏览器差分.wasm', '线性与回溯六百三十例差分通过']
 ];
 try {
   const 桥 = await WebAssembly.compile(await (await fetch('./值桥.wasm')).arrayBuffer());

@@ -1,7 +1,7 @@
 <!doctype html>
 <meta charset="utf-8">
 <title>用户态桌面浏览器验收</title>
-<link data-yy-字体="无衬线" href="/yy验收字体.ttf">
+<link data-yy-字体="无衬线" href="/验收字体.ttf">
 <style>body{margin:0;background:#eef2f6}canvas{width:900px;height:640px;display:block}pre{margin:8px}</style>
 <canvas width="900" height="640" data-yy-显示面="主窗口"></canvas>
 <pre id="结果">正在准备实际浏览器目录</pre>
@@ -18,13 +18,13 @@ document.getElementById('保存').onclick = async () => {
   图.src = document.querySelector('canvas').toDataURL('image/png');
   document.body.append(图);
   const 字 = await new Promise(成 => document.querySelector('canvas').toBlob(成,'image/png'));
-  const 回应 = await fetch('/yy验收画面',{method:'POST',body:字});
+  const 回应 = await fetch('/验收画面',{method:'POST',body:字});
   if (!回应.ok) throw Error('验收画面保存失败');
   document.getElementById('保存').textContent = await 回应.text();
 };
 try {
   const 根 = await navigator.storage.getDirectory();
-  const 目录 = await 根.getDirectoryHandle('yy桌面验收', {create:true});
+  const 目录 = await 根.getDirectoryHandle('桌面验收', {create:true});
   const 子目录 = await 目录.getDirectoryHandle('子目录', {create:true});
   for (const [父, 名, 文] of [[目录, '说明.txt', '浏览器豫言文件预览验证'], [子目录, '子.txt', '浏览器子目录读取验证']]) {
     const 文件 = await 父.getFileHandle(名, {create:true});
