@@ -81,7 +81,7 @@
 　　　　否则
 　　　　　「列」【『root』，『whatToShow』，『filter』，『currentNode』】
 　　　）而
-　令「诸术」为「列」【『nextNode』与「游进」，『previousNode』与「游退」】而
+　令「诸术」为（「列」【『nextNode』与「游进」，『previousNode』与「游退」】）属（「列」于（「文」合（化「游历簿」为（「或可有」于「篇节」））））而
 　令「全术」为
 　　若「游簿」中「迭代」则
 　　　「诸术」
@@ -150,24 +150,25 @@
 「安装游历常数」者得「境」而
 　令「常物」为「急就新物」于「可无」而
 　令「诸常」为
-　　「列」
-　　【『FILTER_ACCEPT』与「一」
-　　，『FILTER_REJECT』与「二」
-　　，『FILTER_SKIP』与「三」
-　　，『SHOW_ALL』与「四二九四九六七二九五」
-　　，『SHOW_ELEMENT』与「一」
-　　，『SHOW_ATTRIBUTE』与「二」
-　　，『SHOW_TEXT』与「四」
-　　，『SHOW_CDATA_SECTION』与「八」
-　　，『SHOW_ENTITY_REFERENCE』与「一六」
-　　，『SHOW_ENTITY』与「三二」
-　　，『SHOW_PROCESSING_INSTRUCTION』与「六四」
-　　，『SHOW_COMMENT』与「一二八」
-　　，『SHOW_DOCUMENT』与「二五六」
-　　，『SHOW_DOCUMENT_TYPE』与「五一二」
-　　，『SHOW_DOCUMENT_FRAGMENT』与「一零二四」
-　　，『SHOW_NOTATION』与「二零四八」
-　　】而
+　　（「列」
+　　　【『FILTER_ACCEPT』与「一」
+　　　，『FILTER_REJECT』与「二」
+　　　，『FILTER_SKIP』与「三」
+　　　，『SHOW_ALL』与「四二九四九六七二九五」
+　　　，『SHOW_ELEMENT』与「一」
+　　　，『SHOW_ATTRIBUTE』与「二」
+　　　，『SHOW_TEXT』与「四」
+　　　，『SHOW_CDATA_SECTION』与「八」
+　　　，『SHOW_ENTITY_REFERENCE』与「一六」
+　　　，『SHOW_ENTITY』与「三二」
+　　　，『SHOW_PROCESSING_INSTRUCTION』与「六四」
+　　　，『SHOW_COMMENT』与「一二八」
+　　　，『SHOW_DOCUMENT』与「二五六」
+　　　，『SHOW_DOCUMENT_TYPE』与「五一二」
+　　　，『SHOW_DOCUMENT_FRAGMENT』与「一零二四」
+　　　，『SHOW_NOTATION』与「二零四八」
+　　　】）
+　　属（「列」于（「文」合「数」））而
 　令「无」为
 　　「叠」以（「文」合「数」）又以「有」
 　　　于（得「常项」又得「旧积」而
