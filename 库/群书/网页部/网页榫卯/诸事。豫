@@ -20,39 +20,41 @@
 
 「诸事字段」乃化「文」为（「列」于（「文」合「文」））者也。
 「诸事字段」者得「事名」而
-　令「通项」为「列」【『view』与『空』，『detail』与『数』】而
+　令「通项」为（「列」【『view』与『空』，『detail』与『数』】）属（「列」于（「文」合「文」））而
 　令「鼠项」为
-　　「列」
-　　【『screenX』与『数』
-　　，『screenY』与『数』
-　　，『clientX』与『数』
-　　，『clientY』与『数』
-　　，『button』与『数』
-　　，『buttons』与『数』
-　　，『relatedTarget』与『空』
-　　，『movementX』与『数』
-　　，『movementY』与『数』
-　　】而
+　　（「列」
+　　　【『screenX』与『数』
+　　　，『screenY』与『数』
+　　　，『clientX』与『数』
+　　　，『clientY』与『数』
+　　　，『button』与『数』
+　　　，『buttons』与『数』
+　　　，『relatedTarget』与『空』
+　　　，『movementX』与『数』
+　　　，『movementY』与『数』
+　　　】）
+　　属（「列」于（「文」合「文」））而
 　令「修项」为
-　　「列」
-　　【『ctrlKey』与『爻』
-　　，『shiftKey』与『爻』
-　　，『altKey』与『爻』
-　　，『metaKey』与『爻』
-　　，『modifierAltGraph』与『爻』
-　　，『modifierCapsLock』与『爻』
-　　，『modifierNumLock』与『爻』
-　　，『modifierScrollLock』与『爻』
-　　，『modifierFn』与『爻』
-　　，『modifierFnLock』与『爻』
-　　，『modifierHyper』与『爻』
-　　，『modifierSuper』与『爻』
-　　，『modifierSymbol』与『爻』
-　　，『modifierSymbolLock』与『爻』
-　　】而
+　　（「列」
+　　　【『ctrlKey』与『爻』
+　　　，『shiftKey』与『爻』
+　　　，『altKey』与『爻』
+　　　，『metaKey』与『爻』
+　　　，『modifierAltGraph』与『爻』
+　　　，『modifierCapsLock』与『爻』
+　　　，『modifierNumLock』与『爻』
+　　　，『modifierScrollLock』与『爻』
+　　　，『modifierFn』与『爻』
+　　　，『modifierFnLock』与『爻』
+　　　，『modifierHyper』与『爻』
+　　　，『modifierSuper』与『爻』
+　　　，『modifierSymbol』与『爻』
+　　　，『modifierSymbolLock』与『爻』
+　　　】）
+　　属（「列」于（「文」合「文」））而
 　令「专项」为
 　　若「文同」于「事名」于『KeyboardEvent』则
-　　　「接列」
+　　　「接列」以（「文」合「文」）
 　　　　于「修项」
 　　　　于（「列」
 　　　　　【『key』与『文』
@@ -71,7 +73,7 @@
 　　否则若「文同」于「事名」于『UIEvent』则
 　　　「罄」以（「文」合「文」）
 　　否则
-　　　「接列」
+　　　「接列」以（「文」合「文」）
 　　　　于（「接列」于「鼠项」于「修项」）
 　　　　于（
 　　　　　若「文同」于「事名」于『PointerEvent』则
