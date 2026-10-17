@@ -1,6 +1,6 @@
 「：汉语：通称判别分词模型种类。按 tokenizer.json 的 model 对象判别：有 type 字段时用它；有 max_input_chars_per_word 时为 WordPiece；词表是数组时为 Unigram；有 merges 时为 BPE；否则为 WordLevel。
 　　文言：判分词模之类：依 tokenizer.json 之 model：有 type 则从之；有 max_input_chars_per_word 则为 WordPiece；词表为数组则为 Unigram；有 merges 则为 BPE；否则为 WordLevel。
-　　赋曰：伊模型判别也，类栏有则从之；词长之限，词片之知；数组之表，一元以期；合并之有，字对以施；余皆词级，判之无疑。：」
+　　赋曰：相马者观其齿，辨器者验其铭。有识则录其字，无征乃察其形。限以字长则词片，表以数组则一元；见并合之栏则字对，无连缀之迹则词级。：」
 寻观「豫章」之书。
 寻观「结绳」之书。
 寻观「结绳」之「结绳取」之书。
