@@ -1,3 +1,6 @@
+「：汉语：通称WASI preview1 子集（WASI preview1 subset）。WASI preview1 子集：让 wasi-sdk 等工具链产出的命令行程序（导出 _start 与 memory）能在执行器里运行。已实现：args_get/args_sizes_get（第 0 个参数是程序名，其后是命令行参数）、environ_get/environ_sizes_get（恒空）、clock_time_get/clock_res_get（内核时钟滴答换算的纳秒，没有实时时钟所以“实时”也只是开机以来）、fd_write（1 标准输出、2 标准错误，走 写字节，故子进程的输出捕获、丢弃都照常）、fd_read（0 标准输入，一行一行读，行以换行结尾；行首的 Ctrl-D 表示文件结束）、fd_close/fd_fdstat_get/fd_filestat_get/fd_seek（标准流的最小回答）、fd_prestat_get（没有预开目录，恒 EBADF，所以 libc 不会去开文件）、random_get（xorshift，种子取时钟）、sched_yield、proc_exit（退出任务）；其余 WASI 函数一律返回 ENOSYS（52）。所有指针都按客体线性内存检查，越界返回 EFAULT（21）。
+　　文言：WASI 之子集：别家所编之 Wasm 程序（C、Rust 等）多以 wasi_snapshot_preview1 为宿，此处为其一小部分。
+　　赋曰：首列程序之名，余承行客之语。两数先报，众参后陈。实时问墙钟之秒，余钟计开机之筹。种取于钟，数摇以三；位凡三易，数每新更。书流则纳字节，读行则候回车。三流报作字符，诸权止于读写。预开之馆既无，坏符之报不绝；丙库不启，其卷自藏。水土成块，名值缀文；数由两问，文以一陈。越界则报，未行则归。：」
 寻观「磐石」之书。
 寻观「客体二号」之「布局」之书。
 寻观「客体二号」之「瓦西布局」之书。
@@ -8,8 +11,6 @@
 寻观「客体二号」之「访存」之书。
 寻观「客体二号」之「主机」之书。
 
-「：汉语：WASI preview1 子集：让 wasi-sdk 等工具链产出的命令行程序（导出 _start 与 memory）能在执行器里运行。已实现：args_get/args_sizes_get（第 0 个参数是程序名，其后是命令行参数）、environ_get/environ_sizes_get（恒空）、clock_time_get/clock_res_get（内核时钟滴答换算的纳秒，没有实时时钟所以“实时”也只是开机以来）、fd_write（1 标准输出、2 标准错误，走 写字节，故子进程的输出捕获、丢弃都照常）、fd_read（0 标准输入，一行一行读，行以换行结尾；行首的 Ctrl-D 表示文件结束）、fd_close/fd_fdstat_get/fd_filestat_get/fd_seek（标准流的最小回答）、fd_prestat_get（没有预开目录，恒 EBADF，所以 libc 不会去开文件）、random_get（xorshift，种子取时钟）、sched_yield、proc_exit（退出任务）；其余 WASI 函数一律返回 ENOSYS（52）。所有指针都按客体线性内存检查，越界返回 EFAULT（21）。
-　　文言：WASI 之子集：别家所编之 Wasm 程序（C、Rust 等）多以 wasi_snapshot_preview1 为宿，此处为其一小部分。：」
 「瓦成」者「零」也。
 
 「瓦坏描述符」者「八」也。
