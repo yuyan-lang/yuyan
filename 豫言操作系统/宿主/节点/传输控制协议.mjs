@@ -17,7 +17,7 @@ const 签名们 = {
   取时钟时间: {符号: 'clock_gettime', arguments: ['int32', 'pointer'], return: 'int32'},
   取熵: {符号: 'getentropy', arguments: ['pointer', 'uint64'], return: 'int32'},
   文件控制: {符号: '__fcntl', arguments: ['int32', 'int32', 'int64'], return: 'int32'},
-  // 汉语：等待路径以 FIONREAD 取可读字节数；ioctl 是变参函数，苹果 ARM64 变参走栈，故同 fcntl 取定参桩 __ioctl。文言：候之径以 FIONREAD 取可读之数；ioctl 变参，苹果 ARM64 变参行于栈，故如 fcntl 取定参之桩 __ioctl。
+  // 汉语：等待路径以 FIONREAD 取可读字节数；ioctl 是变参函数，林檎 ARM64 变参走栈，故同 fcntl 取定参桩 __ioctl。文言：候之径以 FIONREAD 取可读之数；ioctl 变参，林檎 ARM64 变参行于栈，故如 fcntl 取定参之桩 __ioctl。
   设备控制: {符号: '__ioctl', arguments: ['int32', 'uint64', 'pointer'], return: 'int32'},
   相对打开: {符号: '__openat', arguments: ['int32', 'pointer', 'int32', 'uint16'], return: 'int32'},
   设信号处理: {符号: 'signal', arguments: ['int32', 'pointer'], return: 'pointer', 原址: [1]},
@@ -27,7 +27,7 @@ const 签名们 = {
 };
 
 export function 创建传输控制协议系统调用({取内存} = {}) {
-  if (process.platform !== 'darwin') return {可用: false, 状态: 58, 导入: {苹果: {}}, 关闭() {}};
+  if (process.platform !== 'darwin') return {可用: false, 状态: 58, 导入: {林檎: {}}, 关闭() {}};
   let 外部, 库, 正在符号 = '';
   const 原发 = process.emitWarning;
   try {
@@ -38,7 +38,7 @@ export function 创建传输控制协议系统调用({取内存} = {}) {
     外部 = process.getBuiltinModule?.('node:ffi');
   } catch { 外部 = null; }
   finally { process.emitWarning = 原发; }
-  if (!外部) return {可用: false, 状态: 58, 导入: {苹果: {}}, 关闭() {}};
+  if (!外部) return {可用: false, 状态: 58, 导入: {林檎: {}}, 关闭() {}};
   try {
     库 = new 外部.DynamicLibrary('/usr/lib/libSystem.B.dylib');
     正在符号 = '__error';
@@ -64,11 +64,11 @@ export function 创建传输控制协议系统调用({取内存} = {}) {
         return Number(果);
       };
     }
-    return {可用: true, 状态: 0, 导入: {苹果: 函们}, 关闭() {库.close();}};
+    return {可用: true, 状态: 0, 导入: {林檎: 函们}, 关闭() {库.close();}};
   } catch (错) {
     库?.close();
-    if (正在符号) throw Error('共享传输控制协议系统符号载入失败：苹果.' + 正在符号, {cause: 错});
-    return {可用: false, 状态: 58, 导入: {苹果: {}}, 关闭() {}};
+    if (正在符号) throw Error('共享传输控制协议系统符号载入失败：林檎.' + 正在符号, {cause: 错});
+    return {可用: false, 状态: 58, 导入: {林檎: {}}, 关闭() {}};
   }
 }
 
@@ -81,7 +81,7 @@ export function 创建传输控制协议能力({模块字节} = {}) {
       const 导入 = {...系统.导入, 目标: {平台号: () => 3}};
       for (const 项 of WebAssembly.Module.imports(模块)) {
         if (typeof 导入[项.module]?.[项.name] === 'function') continue;
-        if (项.module === '苹果' || 项.module === '目标') throw Error('共享传输控制协议缺少系统绑定：' + 项.module + '.' + 项.name);
+        if (项.module === '林檎' || 项.module === '目标') throw Error('共享传输控制协议缺少系统绑定：' + 项.module + '.' + 项.name);
         if (项.kind !== 'function') throw Error('共享传输控制协议未提供导入：' + 项.module + '.' + 项.name + '（' + 项.kind + '）');
         导入[项.module] ??= {};
         导入[项.module][项.name] = () => {throw Error('共享传输控制协议未提供平台入口：' + 项.module + '.' + 项.name);};

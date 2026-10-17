@@ -26,10 +26,10 @@ if (模式 === '实终端') {
   const 命令 = [process.execPath, 本文件, '实终端', process.env.YY_TERMINAL_SIZE_SERVICE]
     .map(文 => "'" + 文.replaceAll("'", "'\\''") + "'").join(' ');
   // 汉语：script只提供PTY，业务查询与改尺寸分别由豫言服务及系统stty完成。Windows的PTY驱动留待后续版本。
-  // 文言：script惟供伪终端，查尺寸、易尺寸各由豫言服务、系统stty成之。视窗之驱待后版。
+  // 文言：script惟供伪终端，查尺寸、易尺寸各由豫言服务、系统stty成之。轩窗之驱待后版。
   const 参数 = process.platform === 'darwin' ? ['-q', '/dev/null', '/bin/sh', '-c', 命令] : ['-q', '-e', '-c', 命令, '/dev/null'];
-  // 汉语：script的标准输入接/dev/null：默认管道是套接字，苹果的tcgetattr对套接字报“不支持”而失败，对/dev/null报“非终端”则照常运行。
-  // 文言：script之标准入接/dev/null：常管为套接字，苹果tcgetattr于套接字报“不支”而败，于/dev/null报“非终端”则如常行。
+  // 汉语：script的标准输入接/dev/null：默认管道是套接字，林檎的tcgetattr对套接字报“不支持”而失败，对/dev/null报“非终端”则照常运行。
+  // 文言：script之标准入接/dev/null：常管为套接字，林檎tcgetattr于套接字报“不支”而败，于/dev/null报“非终端”则如常行。
   const 果 = spawnSync('script', 参数, {encoding: 'utf8', timeout: 30000, stdio: ['ignore', 'pipe', 'pipe']});
   process.stdout.write(果.stdout ?? '');
   assert.equal(果.status, 0, 果.stderr);

@@ -104,8 +104,8 @@ jobs:
       - name: 构建全树测试工具、Wasm 工具链包与原生工具链包
         run: ./yy豫构.exe 目标 全树测试工具 打包 原生打包 -j "$(nproc)"
 
-      # 文言：三包：诸片所用之原生试器（并同代之 Wasm 编译器、豫构与值桥，供抽样之诺节之验）、本轮之 Wasm 工具链包、本轮之原生工具链包（Linux x64）。
-      # 汉语：打三个包：各分片与检查作业用的原生测试工具（附同代的 Wasm 编译器、豫构与值桥，供抽样的诺节验证用）、本轮的 Wasm 工具链包、本轮的原生工具链包（Linux x64）。
+      # 文言：三包：诸片所用之原生试器（并同代之 Wasm 编译器、豫构与值桥，供抽样之诺驿之验）、本轮之 Wasm 工具链包、本轮之原生工具链包（Linux x64）。
+      # 汉语：打三个包：各分片与检查作业用的原生测试工具（附同代的 Wasm 编译器、豫构与值桥，供抽样的诺驿验证用）、本轮的 Wasm 工具链包、本轮的原生工具链包（Linux x64）。
       - name: 打包产物
         run: |
           set -euo pipefail
@@ -229,7 +229,7 @@ jobs:
       - name: 运行本片测试
         run: ./yy全树测试.exe --分片 ${{ matrix.shard }}/20
 
-  # 文言：交叉之工具链：取自举所成之原生豫构，于 Linux 径出他平台之原生豫构（苹果臂六十四、Linux 臂六十四、视窗兼容六十四），与执行器之树码同包；他平台之作以之原生起步，不用 Node 与 Wasm。待办事项：视窗之降级未有六十四位址之内存，视窗之豫构暂不能起。
+  # 文言：交叉之工具链：取自举所成之原生豫构，于 Linux 径出他平台之原生豫构（林檎臂六十四、Linux 臂六十四、轩窗兼容六十四），与执行器之树码同包；他平台之作以之原生起步，不用 Node 与 Wasm。待办事项：轩窗之降级未有六十四位址之内存，轩窗之豫构暂不能起。
   # 汉语：交叉工具链：用自举作业产出的原生豫构，在 Linux 上直出其他平台的原生豫构（macOS 臂六十四、Linux 臂六十四、Windows 兼容六十四），连同执行器汇编树码打成包；其他平台的作业用它原生起步，不用 Node 与 Wasm。待办事项：Windows 的降级还没有六十四位地址内存，执行器只有六十四位一种，Windows 原生豫构暂时起不来。
   cross-toolchains:
     name: 交叉工具链（${{ matrix.plat }}）
@@ -241,13 +241,13 @@ jobs:
       matrix:
         include:
           - plat: macos-arm64
-            system: 苹果
+            system: 林檎
             arch: 臂六十四
           - plat: linux-arm64
-            system: 林纳克斯
+            system: 林纳
             arch: 臂六十四
           - plat: windows-x64
-            system: 视窗
+            system: 轩窗
             arch: 兼容六十四
     steps:
       - uses: actions/checkout@v4
@@ -277,7 +277,7 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与四宿主之豫行启动器（视窗兼者亦在其中），打包而传；复以原生豫构出视窗之验所较之参照（发现之出、原生你好之兼豫行）。
+  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与四宿主之豫行启动器（轩窗兼者亦在其中），打包而传；复以原生豫构出轩窗之验所较之参照（发现之出、原生你好之兼豫行）。
   # 汉语：豫行工具链（提案 00021）：用本轮的原生豫构编出两架构的豫构豫行与四个宿主的豫行启动器（含 Windows x86-64），打包上传；另用原生豫构出 Windows 验证要对照的参照（发现的输出、原生你好的 AMD64 豫行版）。
   yuxing-toolchain:
     name: 豫行工具链
@@ -308,7 +308,7 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
-      # 文言：视窗之验所较之参照：原生豫构发现之出，与以原生豫构编原生你好之兼豫行（名同视窗所编，附录之程名乃同）。
+      # 文言：轩窗之验所较之参照：原生豫构发现之出，与以原生豫构编原生你好之兼豫行（名同轩窗所编，附录之程名乃同）。
       # 汉语：Windows 验证要对照的参照：原生豫构的发现输出，与原生豫构编出的原生你好 AMD64 豫行版（输出名与 Windows 上编的相同，附录里的程序名因而相同）。
       - name: 出 Windows 对照用的参照
         run: |
@@ -325,7 +325,7 @@ jobs:
           retention-days: 3
           if-no-files-found: error
 
-  # 文言：豫行于诸宿主（提案〇〇〇二一）：于 Linux 二构与苹果之运行器，以包中之启动器行豫构豫行：发现诸包，构原生你好之豫行版，复以启动器行之（印你好，以七退）。
+  # 文言：豫行于诸宿主（提案〇〇〇二一）：于 Linux 二构与林檎之运行器，以包中之启动器行豫构豫行：发现诸包，构原生你好之豫行版，复以启动器行之（印你好，以七退）。
   # 汉语：豫行跨宿主运行（提案 00021）：在 Linux 两架构与 macOS 运行器上，用包里的启动器运行豫构豫行：发现包、构建原生你好的豫行版，再用启动器运行它（打印你好，退出码 7）。
   yuxing-hosts:
     name: 豫行跨宿主（${{ matrix.plat }}）
@@ -348,7 +348,7 @@ jobs:
             arch: 臂六十四
           - os: macos-latest
             plat: macos-arm64
-            launcher: yy豫行启动器苹果臂
+            launcher: yy豫行启动器林檎臂
             yuxing: yy豫构臂。豫行
             arch: 臂六十四
     steps:
@@ -378,8 +378,8 @@ jobs:
           grep -F '你好' yy你好.txt
           test "$code" = 7
 
-  # 文言：豫行于视窗（提案〇〇〇二一第五、六步）：于视窗运行器，以包中之视窗兼启动器行原生你好之兼豫行（参照）；复以启动器合豫构兼豫行为单文件 yy豫构.exe，发现诸包，构原生你好之豫行版，皆与 Linux 之原生豫构所出者较（发现之出逐字同，豫行逐字节同），复以启动器行之（印你好，以七退）。先书宿主之存与页文件，以察提交之限；复以 -j 4 类检一库，验数常驻之工作进程同时而行（提交依触而计，见 客体二号 视窗缺页）。
-  # 汉语：豫行在 Windows 上运行（提案 00021 第 5、6 步）：在 Windows 运行器上用包里的 Windows x86-64 启动器运行原生你好的 AMD64 豫行版（参照）；再用启动器把 AMD64 豫构豫行合成单文件 yy豫构.exe，发现包、构建原生你好的豫行版，都与 Linux 上原生豫构的结果对照（发现输出逐字相同，豫行逐字节相同），再用启动器运行它（打印你好，退出码 7）。先打印宿主内存与页面文件，便于查提交上限；再以 -j 4 类型检查一个库，确认几个常驻工作进程同时运行（提交按碰过的内存计，见 客体二号 的 视窗缺页）。
+  # 文言：豫行于轩窗（提案〇〇〇二一第五、六步）：于轩窗运行器，以包中之轩窗兼启动器行原生你好之兼豫行（参照）；复以启动器合豫构兼豫行为单文件 yy豫构.exe，发现诸包，构原生你好之豫行版，皆与 Linux 之原生豫构所出者较（发现之出逐字同，豫行逐字节同），复以启动器行之（印你好，以七退）。先书宿主之存与页文件，以察提交之限；复以 -j 4 类检一库，验数常驻之工作进程同时而行（提交依触而计，见 客体二号 轩窗缺页）。
+  # 汉语：豫行在 Windows 上运行（提案 00021 第 5、6 步）：在 Windows 运行器上用包里的 Windows x86-64 启动器运行原生你好的 AMD64 豫行版（参照）；再用启动器把 AMD64 豫构豫行合成单文件 yy豫构.exe，发现包、构建原生你好的豫行版，都与 Linux 上原生豫构的结果对照（发现输出逐字相同，豫行逐字节相同），再用启动器运行它（打印你好，退出码 7）。先打印宿主内存与页面文件，便于查提交上限；再以 -j 4 类型检查一个库，确认几个常驻工作进程同时运行（提交按碰过的内存计，见 客体二号 的 轩窗缺页）。
   yuxing-windows:
     name: 豫行跨宿主（windows-x64）
     needs: yuxing-toolchain
@@ -409,7 +409,7 @@ jobs:
           tar --force-local -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"
           mkdir -p yy豫行参照
           tar --force-local -xzf "$RUNNER_TEMP/yy-yuxing-reference.tar.gz" -C yy豫行参照
-          ls -la yy豫行启动器视窗兼.exe yy豫构兼。豫行 yy豫行参照
+          ls -la yy豫行启动器轩窗兼.exe yy豫构兼。豫行 yy豫行参照
 
       - name: 宿主内存与页面文件
         shell: pwsh
@@ -421,7 +421,7 @@ jobs:
       - name: 启动器运行原生你好的豫行版
         run: |
           set +e
-          ./yy豫行启动器视窗兼.exe yy豫行参照/yy编你好 > yy你好参照.txt
+          ./yy豫行启动器轩窗兼.exe yy豫行参照/yy编你好 > yy你好参照.txt
           code=$?
           set -e
           cat yy你好参照.txt
@@ -432,7 +432,7 @@ jobs:
       - name: 合成单文件豫构并发现包
         run: |
           set -euo pipefail
-          ./yy豫行启动器视窗兼.exe --合成 yy豫构兼。豫行 yy豫构.exe
+          ./yy豫行启动器轩窗兼.exe --合成 yy豫构兼。豫行 yy豫构.exe
           ls -la yy豫构.exe
           ./yy豫构.exe 发现 --树 > yy豫行发现.txt
           grep -F '豫章（库/豫章）' yy豫行发现.txt
@@ -446,7 +446,7 @@ jobs:
           cmp yy编你好 yy豫行参照/yy编你好
           echo "产物与 Linux 原生豫构编出的逐字节相同"
           set +e
-          ./yy豫行启动器视窗兼.exe yy编你好 > yy你好.txt
+          ./yy豫行启动器轩窗兼.exe yy编你好 > yy你好.txt
           code=$?
           set -e
           cat yy你好.txt
@@ -493,7 +493,7 @@ jobs:
           fi
           gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" --clobber
 
-  # 文言：抽样之轮较合成与直出（提案〇〇〇二一议九之条件一）：于 Linux 二构与苹果之运行器，以本轮本平台之原生豫构与合成之单文件豫构（包中之启动器加豫构豫行）各冷构豫言编译器为豫行二次，交替而行，降级之缓存与出目各别；书其时与比，合成逾直出一点一倍则书警，不败。
+  # 文言：抽样之轮较合成与直出（提案〇〇〇二一议九之条件一）：于 Linux 二构与林檎之运行器，以本轮本平台之原生豫构与合成之单文件豫构（包中之启动器加豫构豫行）各冷构豫言编译器为豫行二次，交替而行，降级之缓存与出目各别；书其时与比，合成逾直出一点一倍则书警，不败。
   # 汉语：抽样轮次比较合成与直出（提案 00021 议九的条件①）：在 Linux 两架构与 macOS 运行器上，用本轮本平台的原生豫构与合成的单文件豫构（包里的启动器加豫构豫行）各冷构建两次豫言编译器（编成豫行），交替进行，降级缓存与输出目录各用各的；打印耗时与比值，合成慢过直出 1.1 倍时只发警告。
   yuxing-compare:
     name: 抽样 合成与直出对比（${{ matrix.plat }}）
@@ -523,7 +523,7 @@ jobs:
             plat: macos-arm64
             native-artifact: yy-cross-toolchain-macos-arm64
             native-tar: yy-cross-macos-arm64.tar.gz
-            launcher: yy豫行启动器苹果臂
+            launcher: yy豫行启动器林檎臂
             yuxing: yy豫构臂。豫行
             arch: 臂六十四
     steps:
@@ -618,7 +618,7 @@ jobs:
           grep -F '你好' yy你好.txt
           test "$code" = 7
 
-  # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，即覆连续版之本平台包，并交发布历史版本之作；苹果另验系统库之调与张量，其验在发布之后，败不阻包之发。不用 Node 与 Wasm。苹果运行器唯三核七吉，并发依核数。
+  # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，即覆连续版之本平台包，并交发布历史版本之作；林檎另验系统库之调与张量，其验在发布之后，败不阻包之发。不用 Node 与 Wasm。林檎运行器唯三核七吉，并发依核数。
   # 汉语：其他平台原生自举：用交叉工具链里的原生豫构作一级驱动，在本平台原生自举并核对定点、装上原生工具链，打本平台的原生工具链包，随即覆盖连续版本里的本平台包，并交给“发布历史版本”作业；macOS 另外验证系统库调用与张量，这两步排在发布之后，失败不挡发包。不用 Node 与 Wasm。macOS 运行器只有三核、约 7 GB 内存，并发数按处理器数。
   native-platforms:
     name: 原生自举（${{ matrix.plat }}）
@@ -670,9 +670,9 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-native-${{ matrix.plat }}.tar.gz" --clobber
 
-      # 文言：苹果臂之系统库调用：验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
-      # 汉语：苹果 ARM64 系统库调用：验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
-      - name: 苹果原生系统库调用
+      # 文言：林檎臂之系统库调用：验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
+      # 汉语：林檎 ARM64 系统库调用：验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
+      - name: 林檎原生系统库调用
         if: runner.os == 'macOS'
         run: |
           ./yy豫构.exe 构建 借道试 调用。测试 --输出 yy系统库原生测试.exe -j "$(getconf _NPROCESSORS_ONLN)"
@@ -681,7 +681,7 @@ jobs:
 
       # 文言：原生张量真登、负步视与解后失效必验；得金属器则验共享矩阵之链。
       # 汉语：原生张量真实登记、负步长及解除失效必验；取得金属设备时验证共享矩阵链。
-      - name: 苹果原生张量基本回归
+      - name: 林檎原生张量基本回归
         if: runner.os == 'macOS'
         run: |
           ./yy豫构.exe 构建 豫寓算阵本土试 登记。测试 --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
@@ -700,10 +700,10 @@ jobs:
           retention-days: 90
           if-no-files-found: ignore
 
-  # 文言：抽样之轮验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与苹果系统，凭 Node 自包起步，以包中豫构自举而核定点；更行诺节宿主之验、原生与 Node 之速之较（原生慢则书警）。依提交号抽样：末位为 0 至 3 者行之（约四之一），手发者必行；余轮不行，原生工具链包由核心之作出。欲改其率，增减下 if 之末位。
-  # 汉语：抽样轮次验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上用 Node 从包起步，由包中的豫构完成自举并核对定点；再跑诺节宿主的验证、原生与 Node 的构建耗时对比（原生较慢时发出警告）。按提交号抽样：末位是 0–3 的轮次运行（约四分之一），手动触发时必跑；其余轮次不跑，原生工具链包由核心作业产出。改抽样率就增减下面 if 里的末位。
+  # 文言：抽样之轮验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与林檎系统，凭 Node 自包起步，以包中豫构自举而核定点；更行诺驿宿主之验、原生与 Node 之速之较（原生慢则书警）。依提交号抽样：末位为 0 至 3 者行之（约四之一），手发者必行；余轮不行，原生工具链包由核心之作出。欲改其率，增减下 if 之末位。
+  # 汉语：抽样轮次验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上用 Node 从包起步，由包中的豫构完成自举并核对定点；再跑诺驿宿主的验证、原生与 Node 的构建耗时对比（原生较慢时发出警告）。按提交号抽样：末位是 0–3 的轮次运行（约四分之一），手动触发时必跑；其余轮次不跑，原生工具链包由核心作业产出。改抽样率就增减下面 if 里的末位。
   wasm-bootstrap:
-    name: 抽样 Wasm 包起步与诺节验证（${{ matrix.os }}）
+    name: 抽样 Wasm 包起步与诺驿验证（${{ matrix.os }}）
     needs: bootstrap
     if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
     runs-on: ${{ matrix.os }}
@@ -747,7 +747,7 @@ jobs:
           node 豫言操作系统/宿主/节点/传输控制协议授权。测试.mjs
           node --experimental-ffi 豫言操作系统/宿主/节点/传输控制应用绑定。测试.mjs
 
-      - name: 苹果共享传输控制回环及系统调用
+      - name: 林檎共享传输控制回环及系统调用
         if: runner.os == 'macOS'
         run: |
           node --experimental-ffi 豫言操作系统/宿主/节点/传输控制协议系统调用。测试.mjs
@@ -765,7 +765,7 @@ jobs:
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 客体二号 文件定位原生探针
           --编译器 ./yy4_bs.wasm --输出 yy文件定位原生.exe -j 24 -- --目标 本机
 
-      - name: 诺节与原生共享定位读取远偏与顺读验收
+      - name: 诺驿与原生共享定位读取远偏与顺读验收
         run: node --experimental-ffi 豫言操作系统/宿主/节点/文件定位。测试.mjs ./yy文件定位原生.exe
 
       - name: 构建默认工具宿主定位读取烟验
@@ -794,8 +794,8 @@ jobs:
           ./yy豫构.exe 构建 原生对比 --输出 yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
-      # 文言：基础库性能验证：依登记（应用/百工坊/性能验证/性能目标.tsv）行诸性能入口，诺节与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
-      # 汉语：基础库性能验证：按登记表（应用/百工坊/性能验证/性能目标.tsv）运行基础库的性能入口，诺节与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
+      # 文言：基础库性能验证：依登记（应用/百工坊/性能验证/性能目标.tsv）行诸性能入口，诺驿与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
+      # 汉语：基础库性能验证：按登记表（应用/百工坊/性能验证/性能目标.tsv）运行基础库的性能入口，诺驿与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
       - name: 基础库性能验证
         if: github.event_name != 'pull_request'
         continue-on-error: true
@@ -806,23 +806,23 @@ jobs:
           ./yy豫构.exe 构建 性能验证 --输出 yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
           node 豫言操作系统/宿主/节点/宿主.cjs yy性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
-      # 文言：苹果臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
-      # 汉语：苹果 ARM64 系统库调用：同一客体在诺节和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
-      - name: 苹果原生系统库调用
+      # 文言：林檎臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
+      # 汉语：林檎 ARM64 系统库调用：同一客体在诺驿和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
+      - name: 林檎原生系统库调用
         if: matrix.os == 'macos-latest'
         run: |
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 借道试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs yy系统库原生测试.wasm > yy系统库诺节.log
+          node 豫言操作系统/宿主/节点/宿主.cjs yy系统库原生测试.wasm > yy系统库诺驿.log
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 借道试 调用。测试 --编译器 ./yy4_bs.wasm --输出 yy系统库原生测试.exe -j 24
           ./yy系统库原生测试.exe > yy系统库原生.log
-          cmp yy系统库诺节.log yy系统库原生.log
+          cmp yy系统库诺驿.log yy系统库原生.log
           grep -F '系统库调用全部断言通过' yy系统库原生.log
 
       # 文言：原生张量真登、负步视与解后失效必验；得金属器则验共享矩阵之链。
       # 汉语：原生张量真实登记、负步长及解除失效必验；取得金属设备时验证共享矩阵链。
-      # 文言：苹果运行器唯三核七吉，并发二十四则工作线程堆尽，故依核数。
-      # 汉语：苹果运行器只有三核、约 7 GB 内存，二十四路并发会让工作线程堆内存耗尽，并发数按处理器数。
-      - name: 苹果原生张量基本回归
+      # 文言：林檎运行器唯三核七吉，并发二十四则工作线程堆尽，故依核数。
+      # 汉语：林檎运行器只有三核、约 7 GB 内存，二十四路并发会让工作线程堆内存耗尽，并发数按处理器数。
+      - name: 林檎原生张量基本回归
         if: matrix.os == 'macos-latest'
         run: |
           node 豫言操作系统/宿主/节点/宿主.cjs yy豫构.wasm 构建 豫寓算阵本土试 登记。测试 --编译器 ./yy4_bs.wasm --输出 yy张量登记.exe -j "$(getconf _NPROCESSORS_ONLN)"
@@ -951,7 +951,7 @@ jobs:
         run: >-
           ./yy豫构.exe 文件 豫言操作系统/裸机/客体二号/远程文件。底层。测试。豫
           --输出 yy远程文件协议.exe -j "$(nproc)"
-          -- --目标 本机 --目标系统 林纳克斯 --目标架构 '${{ matrix.arch }}'
+          -- --目标 本机 --目标系统 林纳 --目标架构 '${{ matrix.arch }}'
 
       # 汉语：两个运行步骤各设超时兜底（平时烟验 0 秒、完整组约 2 分钟）。10-14 烟验过期时 ARM 版每轮挂满 90 分钟：当时 Linux 原生目标的陷阱照裸机用户态出 svc #7、mov eax,7; int 0x80，Linux 只回一个错误码，程序接着往下执行。已修：宿主目标的陷阱改出 brk #0 / ud2，检查一失败进程即以 133（ARM64）/ 132（AMD64）退出。
       # 文言：二运行之步各设时限以备不虞（常时烟验零秒，全组约二分）。十月十四日烟验过时，臂者每轮挂满九十分：彼时 Linux 原生之陷循裸机客态出 svc 七与 int 0x80，Linux 唯返误码而续行。今已修：宿主之标之陷改出 brk 零与 ud2，一验不合则进程以百三十三（臂）或百三十二（兼）而退。
@@ -962,16 +962,16 @@ jobs:
       - name: 运行完整预编一致性组
         timeout-minutes: 20
         run: |
-          ./yy原生一致性.exe --系统 林纳克斯 --架构 '${{ matrix.arch }}' --经 直接 > yyLinux预编一致性.log 2>&1 || {
+          ./yy原生一致性.exe --系统 林纳 --架构 '${{ matrix.arch }}' --经 直接 > yyLinux预编一致性.log 2>&1 || {
             printf '::error title=Linux 预编一致性失败::%s\n' "$(tail -c 2000 yyLinux预编一致性.log | tr '\n' ' ')"
             exit 1
           }
           tail -n 24 yyLinux预编一致性.log
 
-  # 文言：视窗原生之你好：于 Linux 由编译器径出两构之 PE32+（及苹果 x86-64 之程），传于视窗之运行器行之，验其出与退出码。探针皆预编二为机器码（提案 00007 收尾，不经 .wasm）。
+  # 文言：轩窗原生之你好：于 Linux 由编译器径出两构之 PE32+（及林檎 x86-64 之程），传于轩窗之运行器行之，验其出与退出码。探针皆预编二为机器码（提案 00007 收尾，不经 .wasm）。
   # 汉语：Windows 原生最小闭环（WP6）：在 Linux 上由编译器直接出 AMD64 与 ARM64 两种 PE32+ 可执行文件（以及 macOS x86-64 程序），交给 Windows 运行器直接执行，核对输出与退出码 7。探针都预编二成机器码（提案 00007 收尾：编译器 --目标 本机 --目标系统 --目标架构，不经 .wasm）。
   windows-native-build:
-    name: 视窗原生样例生成
+    name: 轩窗原生样例生成
     needs: bootstrap
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -994,16 +994,16 @@ jobs:
           set -e
           Y() { ./yy豫构.exe "$@"; }
           mkdir -p yy-windows-exe/组 yy-macos-x64/组
-          Y 构建 原生你好 视窗入口 --输出 yy-windows-exe/hello-x64.exe -j "$(nproc)" -- --目标 本机 --目标系统 视窗 --目标架构 兼容六十四
-          Y 构建 原生你好 视窗入口 --输出 yy-windows-exe/hello-arm64.exe -j "$(nproc)" -- --目标 本机 --目标系统 视窗 --目标架构 臂六十四
-          Y 构建 原生你好 苹果入口 --输出 yy-macos-x64/hello-mac-x64 -j "$(nproc)" -- --目标 本机 --目标系统 苹果 --目标架构 兼容六十四
+          Y 构建 原生你好 轩窗入口 --输出 yy-windows-exe/hello-x64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四
+          Y 构建 原生你好 轩窗入口 --输出 yy-windows-exe/hello-arm64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四
+          Y 构建 原生你好 林檎入口 --输出 yy-macos-x64/hello-mac-x64 -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四
           exe="$PWD/yy执行器。树码"
           cache="$PWD/.yybuild/降级缓存"
           for f in 豫言操作系统/裸机/普通探针/*。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-一。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-二。脚本。豫 豫言操作系统/裸机/原生探针/*。脚本。豫; do
             n=$(basename "$f"); n=${n%。脚本。豫}
-            Y 文件 "$f" --输出 "yy-windows-exe/组/$n-x64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 视窗 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/视窗兼容.机器片"
-            Y 文件 "$f" --输出 "yy-windows-exe/组/$n-arm64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 视窗 --目标架构 臂六十四 --执行器 "$exe" --降级缓存 "$cache/视窗臂.机器片"
-            Y 文件 "$f" --输出 "yy-macos-x64/组/$n" -j "$(nproc)" -- --目标 本机 --目标系统 苹果 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/苹果兼容.机器片"
+            Y 文件 "$f" --输出 "yy-windows-exe/组/$n-x64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗兼容.机器片"
+            Y 文件 "$f" --输出 "yy-windows-exe/组/$n-arm64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗臂.机器片"
+            Y 文件 "$f" --输出 "yy-macos-x64/组/$n" -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/林檎兼容.机器片"
             # 文言：期望之文新名以全角句号为后缀（名。期望），旧名以半角点；先取新名，无则取旧名。
             # 汉语：期望文件的新名用全角句号后缀（名。期望），旧名用半角点；先取新名，没有再取旧名。
             e="${f%。脚本。豫}。期望"
@@ -1026,7 +1026,7 @@ jobs:
           path: yy-macos-x64
 
   windows-native-run:
-    name: 视窗原生样例运行（${{ matrix.os }}）
+    name: 轩窗原生样例运行（${{ matrix.os }}）
     needs: windows-native-build
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
@@ -1089,10 +1089,10 @@ jobs:
           done
           exit $fail
 
-  # 文言：视窗原生之工具链：于视窗运行器以原生豫构发现诸包、核标准库之型、构你好与全树测试之器而行之；开发之时不阻 CI。
+  # 文言：轩窗原生之工具链：于轩窗运行器以原生豫构发现诸包、核标准库之型、构你好与全树测试之器而行之；开发之时不阻 CI。
   # 汉语：Windows 原生工具链冒烟：在 Windows 运行器上用原生豫构发现包、类型检查标准库、构建并运行你好与全树测试工具（只跑一小组）；开发阶段不挡 CI。
   windows-native-toolchain:
-    name: 视窗原生工具链
+    name: 轩窗原生工具链
     needs: cross-toolchains
     runs-on: windows-latest
     timeout-minutes: 40
@@ -1131,7 +1131,7 @@ jobs:
       - name: 构建并运行你好
         if: always()
         run: |
-          ./yy豫构.exe 构建 原生你好 视窗入口 --输出 yy你好.exe -j 4
+          ./yy豫构.exe 构建 原生你好 轩窗入口 --输出 yy你好.exe -j 4
           set +e
           printf 'echo-line\r\n' | ./yy你好.exe
           echo "退出码 $?"
@@ -1142,10 +1142,10 @@ jobs:
           ./yy豫构.exe 构建 全树测试 --输出 yy全树测试.exe -j 4
           ./yy全树测试.exe --只 库/豫章/测试/数据结构
 
-  # 文言：苹果 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
+  # 文言：林檎 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
   # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与预编二的一致性组（编译器直出）。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
   macos-x64-native-run:
-    name: 苹果 x86-64 原生样例运行
+    name: 林檎 x86-64 原生样例运行
     needs: windows-native-build
     runs-on: macos-15-intel
     timeout-minutes: 20
@@ -1202,7 +1202,7 @@ jobs:
           cd work
           lldb --batch -o run -k 'thread backtrace' -k 'register read' -k 'disassemble --pc --count 16' -k 'image list -o' -- ../组/打印 2>&1 | head -120 || true
 
-  # 文言：诸平台（Linux x64、Linux arm64、苹果 arm64）俱自举而成包，乃发 Wasm 与原生工具链之史版：按提交存之，名冠以提交之时（UTC）。连续版由各平台自举之作自覆，此惟更其说明。类型检查、全树与苹果之试败皆不阻；缺一平台之包者不发。GitHub 一发行至多千资产：historical-binaries 满则次用 historical-binaries-2、-3……，取首未满者，无则建之。
+  # 文言：诸平台（Linux x64、Linux arm64、林檎 arm64）俱自举而成包，乃发 Wasm 与原生工具链之史版：按提交存之，名冠以提交之时（UTC）。连续版由各平台自举之作自覆，此惟更其说明。类型检查、全树与林檎之试败皆不阻；缺一平台之包者不发。GitHub 一发行至多千资产：historical-binaries 满则次用 historical-binaries-2、-3……，取首未满者，无则建之。
   # 汉语：各平台（Linux x64、Linux arm64、macOS arm64）都自举通过并打好包后，发布 Wasm 与原生工具链包的历史版本：按提交号存档，文件名前加提交时间（UTC）。连续版本由各平台的自举作业各自覆盖，这里只更新发行说明。类型检查、全树测试与 macOS 测试失败都不挡；缺任何一个平台的包就不发。GitHub 每个发行至多 1000 个资产：historical-binaries 满了就依次用 historical-binaries-2、-3……，取第一个未满的，没有就新建。
   publish:
     name: 发布历史版本
@@ -1236,7 +1236,7 @@ jobs:
               exit 0
             fi
           done
-          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器汇编树码 yy执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 yy豫构臂。豫行、yy豫构兼。豫行，四个宿主的豫行启动器 yy豫行启动器苹果臂、yy豫行启动器林臂、yy豫行启动器林兼、yy豫行启动器视窗兼.exe，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。"
+          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 yy_bs_stable.wasm、豫构 yy豫构_stable.wasm 与 Node 宿主 yy稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 yy豫构_stable.exe 与执行器汇编树码 yy执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 yy豫构臂。豫行、yy豫构兼。豫行，四个宿主的豫行启动器 yy豫行启动器林檎臂、yy豫行启动器林臂、yy豫行启动器林兼、yy豫行启动器轩窗兼.exe，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。"
 
           release_ready() {
             if ! gh release view "$1" >/dev/null 2>&1; then

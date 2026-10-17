@@ -46,13 +46,13 @@ RSA固定扫描密钥生成测试通过
 YY_BUILD_LOG=0 /opt/homebrew/bin/node yyRSA验证链/yy稳定节点宿主/宿主.cjs yyRSA验证链/yy豫构_stable.wasm 类型检查 密码 --编译器 ./yyRSA验证链/yy_bs_stable.wasm -j 24
 YY_BUILD_LOG=0 /opt/homebrew/bin/node yyRSA验证链/yy稳定节点宿主/宿主.cjs yyRSA验证链/yy豫构_stable.wasm 构建 密码 测试 RSA造钥。测试 --编译器 ./yyRSA验证链/yy_bs_stable.wasm --输出 yyRSA造钥测试.wasm -j 24
 /opt/homebrew/bin/node yyRSA验证链/yy稳定节点宿主/宿主.cjs yyRSA造钥测试.wasm
-/opt/homebrew/bin/node /Users/zhiboc/repos/yuyan-worktrees/基础库-原生两器/yy稳定节点宿主/宿主.cjs /Users/zhiboc/repos/yuyan-worktrees/基础库-原生两器/yy原生生成.wasm 苹果 臂六十四 /Users/zhiboc/repos/yuyan-worktrees/基础库-原生两器/yy执行器.wasm yyRSA造钥测试.exe yyRSA造钥测试.wasm --预编二
+/opt/homebrew/bin/node /Users/zhiboc/repos/yuyan-worktrees/基础库-原生两器/yy稳定节点宿主/宿主.cjs /Users/zhiboc/repos/yuyan-worktrees/基础库-原生两器/yy原生生成.wasm 林檎 臂六十四 /Users/zhiboc/repos/yuyan-worktrees/基础库-原生两器/yy执行器.wasm yyRSA造钥测试.exe yyRSA造钥测试.wasm --预编二
 chmod +x yyRSA造钥测试.exe
 ./yyRSA造钥测试.exe
 ```
 
 ## 产物与证据边界
 
-Wasm客体SHA256 `0063b88a1d2f84677f56a72865163d6d67d4eec649b91b484ae43a96cb287aeb`；苹果臂六十四原生程序SHA256 `60eb72a81eef314df220ff2d5c521eb36723967ab6b1673e77cb9b9327f31ff0`。产物保存在远端专属树；六份原始日志归档于同目录《验证记录》内，保留首次失败及成功调用的完整控制台。
+Wasm客体SHA256 `0063b88a1d2f84677f56a72865163d6d67d4eec649b91b484ae43a96cb287aeb`；林檎臂六十四原生程序SHA256 `60eb72a81eef314df220ff2d5c521eb36723967ab6b1673e77cb9b9327f31ff0`。产物保存在远端专属树；六份原始日志归档于同目录《验证记录》内，保留首次失败及成功调用的完整控制台。
 
 本次证明正式密码整体类型与RSA造钥测试在Node、原生运行通过。大位宽随机造钥、独立RSA2048互操作重放、全部定宽模幂向量重放、生成机器码和机器恒时测量列入后续事项。甲乙级仍按整库验收范围登记。
