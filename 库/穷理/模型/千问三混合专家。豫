@@ -1,5 +1,6 @@
-「：汉语：Qwen3 混合专家（general.architecture = qwen3moe，如 Qwen3-Coder-30B-A3B）：注意力同 Qwen3；前馈换成混合专家：路由 = 软最大(h × ffn_gate_inp)，取前 k 个专家，权重归一到和为 1（与 llama.cpp 的 norm_w 相同），每个选中专家做 SwiGLU（堆叠的 ffn_gate_exps、ffn_up_exps、ffn_down_exps 用按专家矩阵乘），再按权重加总。没有共享专家。
-　　文言：Qwen3 混合专家（general.architecture 为 qwen3moe）：注意同 Qwen3；馈易为混合专家：路由为软最大(h × ffn_gate_inp)，取前 k 专家，权归一而和为一（同 llama.cpp 之 norm_w），每择一专家行 SwiGLU（叠放之诸专家之阵用按专家矩阵乘），依权而加。无共享之专家。：」
+「：汉语：通称Qwen3 混合专家模型载入。Qwen3 混合专家（general.architecture = qwen3moe，如 Qwen3-Coder-30B-A3B）：注意力同 Qwen3；前馈换成混合专家：路由 = 软最大(h × ffn_gate_inp)，取前 k 个专家，权重归一到和为 1（与 llama.cpp 的 norm_w 相同），每个选中专家做 SwiGLU（堆叠的 ffn_gate_exps、ffn_up_exps、ffn_down_exps 用按专家矩阵乘），再按权重加总。没有共享专家。
+　　文言：Qwen3 混合专家（general.architecture 为 qwen3moe）：注意同 Qwen3；馈易为混合专家：路由为软最大(h × ffn_gate_inp)，取前 k 专家，权归一而和为一（同 llama.cpp 之 norm_w），每择一专家行 SwiGLU（叠放之诸专家之阵用按专家矩阵乘），依权而加。无共享之专家。
+　　赋曰：伊混合专家之载也，路由软最，前几择之；权归为一，专家各行，门升降之；按权加总，无共享之。：」
 寻观「豫章」之书。
 寻观「豫寓算阵」之「算阵」之书。
 寻观「量册」之「模型格式」之书。
