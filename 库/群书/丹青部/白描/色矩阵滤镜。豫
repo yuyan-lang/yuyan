@@ -1,11 +1,14 @@
+「：汉语：通称白描颜色矩阵滤镜（feColorMatrix）。颜色矩阵四模式采用 Filter Effects 一级矩阵定义（规范地址 https://www.w3.org/TR/filter-effects-1/#feColorMatrixElement）：恒等矩阵、饱和度、色相旋转与亮度转透明，按模式取矩阵。
+　　文言：白描色阵之滤：色阵四式循滤镜效果一级之矩阵定义：恒等之阵、饱和、色相旋转与亮度转透明，依式取阵。
+　　赋曰：伊色矩阵滤镜也，四式之阵，规范以循；恒等为本，饱和以匀；色相旋转，系数相因；亮转透明，度以相亲；依模取阵，滤色乃新；四行五列，色以相因；规范之址，可查可询。：」
 寻观「豫章」之书。
 寻「豫章」之「形制」之「分厘」之书。
 寻观「白描」之「滤镜基」之书。
 寻「绘事」之书。
 寻「画谱」之书。
 
-「：汉语：颜色矩阵四模式采用Filter Effects一级矩阵定义；规范地址https://www.w3.org/TR/filter-effects-1/#feColorMatrixElement。
-　　文言：颜色矩阵之四式，循Filter Effects一级矩阵之定义；规范之址https://www.w3.org/TR/filter-effects-1/#feColorMatrixElement。：」
+「：汉语：恒等颜色矩阵（四行五列，不改变颜色）。
+　　文言：恒等之色阵（四行五列，不改其色）。：」
 「恒等滤色矩阵」乃「列」于「小数」也。
 「恒等滤色矩阵」者
 　「列」
