@@ -1,10 +1,11 @@
+「：汉语：通称官方聊天模板对照测试（zephyr-7b-beta）。模板取自 HuggingFaceH4/zephyr-7b-beta 的 tokenizer_config.json；固定输入与期望取自 Transformers 聊天模板文档的训练示例。此例记为一个模型的官方现成向量。
+　　文言：模取 HuggingFaceH4/zephyr-7b-beta 分词之配置；定入与期文取 Transformers 聊天模板文档之训练例。此例计一模型之官方既成向量。
+　　赋曰：伊官方模板之试也，和风之模，分词之设，聊天之范以取；文档之例，问答为伍；月日大小，一问一答，期文以睹。：」
 寻观「豫章」之书。
 寻观「结绳」之书。
 寻观「范本」之书。
 寻观「考课」之书。
 
-「：汉语：模板取自 HuggingFaceH4/zephyr-7b-beta 的 tokenizer_config.json；固定输入与期望取自 Transformers 聊天模板文档的训练示例。此例记为一个模型的官方现成向量。
-　　文言：模取 HuggingFaceH4/zephyr-7b-beta 分词之配置；定入与期文取 Transformers 聊天模板文档之训练例。此例计一模型之官方既成向量。：」
 「官方配置」者
 　「结绳对象」于（「列」
 　　【『bos_token』与（「结绳字符串」于『<s>』）
