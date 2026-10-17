@@ -10,7 +10,7 @@ export function 创建编译器({ 编译模块, 桥模块, 资料, 收取标准�
     const 文件 = new 内存文件系统({ ...资料, ...标准缓存 });
     if(项目){
       文件.删('/用户程序/用户程序。包。豫');
-      文件.写('/包上下文','豫构包上下文二\n豫言\t标准库\t/库/豫章/标准库。包。豫\n访客\t云项目\t/用户程序/云项目。包。豫\t豫言\t标准库');
+      文件.写('/包上下文','豫构包上下文二\n豫言\t豫章\t/库/豫章/豫章。包。豫\n访客\t云项目\t/用户程序/云项目。包。豫\t豫言\t豫章');
       for(const [p,t] of Object.entries(项目))文件.写('/用户程序/'+p,t);
     }else 文件.写('/用户程序/入口。脚本。豫',code);
     // 文言：单文之稿为脚本，其顶层即程序之体（提案 00006）；云项目之入口须定「入口」。待办事项：旧存之云项目若有顶层之语，须迁移。汉语：单文件试写按脚本编译，顶层就是程序体（提案 00006）；云项目的 入口。豫 须定义入口函数「入口」。待办事项：已保存的云项目若有顶层语句，须迁移。
@@ -25,7 +25,7 @@ export function 创建编译器({ 编译模块, 桥模块, 资料, 收取标准�
     // 文言：此浏览器不能编其产物者，先报之。汉语：仅编译时也核对当前浏览器能否编译产物。
     if (!WebAssembly.validate(文件.读("/程序.wasm"))) return { ok: false, phase: "compile", error: "当前浏览器不支持生成程序使用的 WasmGC、尾调用或异常指令", compilation };
     // 文言：官书之缓存可复用，客稿与输出皆弃。汉语：只保留标准库派生文件及原时间戳，每个请求仍使用独立文件系统。
-    标准缓存 = Object.fromEntries([...文件.文件].filter(([名]) => 名.startsWith("/.豫构缓存/") && 名.includes("/库/标准库/")));
+    标准缓存 = Object.fromEntries([...文件.文件].filter(([名]) => 名.startsWith("/.豫构缓存/") && 名.includes("/库/豫章/")));
     收取标准缓存(标准缓存);
     if (仅编译){const bytes=文件.读('/程序.wasm');const sha256=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),x=>x.toString(16).padStart(2,'0')).join('');return {...compilation,phase:'compile',artifact:{bytes:bytes.length,sha256}};}
     报告({ type: "stage", phase: "run", label: "编译通过，正在浏览器内运行" });
