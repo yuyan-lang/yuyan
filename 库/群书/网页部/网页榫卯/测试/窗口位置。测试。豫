@@ -1,10 +1,11 @@
+「：汉语：通称窗口位置测试（window location test）。窗口位置测试：location 的各部件与 document.location 同一，改 hash 与 assign 记下导航请求，pushState 改页面地址、加历史长度并记下改地址请求，innerWidth 读视口尺寸，scrollTo 记下滚动请求，history.back 记下走历史请求。
+　　文言：窗位之试：location 之诸部与 document.location 为一，改 hash 与 assign 则记导航之请，pushState 改页址、增史长而记改址之请，innerWidth 读视口之尺，scrollTo 记滚之请，history.back 记行史之请。
+　　赋曰：地址诸部共一根，视口宽高次第论。改片加途留二请，推史滚退尽收存。：」
 寻观「豫章」之书。
 寻观「篇象」之书。
 寻观「急就」之书。
 寻观「网页榫卯」之书。
 
-「：汉语：窗口位置测试：location 的各部件与 document.location 同一，改 hash 与 assign 记下导航请求，pushState 改页面地址、加历史长度并记下改地址请求，innerWidth 读视口尺寸，scrollTo 记下滚动请求，history.back 记下走历史请求。
-　　文言：窗位之试：location 之诸部与 document.location 为一，改 hash 与 assign 则记导航之请，pushState 改页址、增史长而记改址之请，innerWidth 读视口之尺，scrollTo 记滚之请，history.back 记行史之请。：」
 「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
 「检查」者得「名」曰「名」又得「真」曰「真」而
 　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
