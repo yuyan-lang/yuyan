@@ -1,11 +1,12 @@
+「：汉语：通称sqllogictest 逻辑子集测试（logic subset test）。取 SQLite 官方 sqllogictest 的 select1.test，源 SHA-256 为 e93b83d64d06f78aee0e690455b6c604e86ad9a339f77d927a782cefb6b0e1d5；保留首个建表及三十条指定列插入，选 e、b、d 的 ORDER BY 1 查询。
+　　文言：取 SQLite 官方 select1.test 之首建表及三十插句，复取 e、b、d 依首列排序之查；源之摘要如汉语所记。
+　　赋曰：官试遗编，取其一角；一表初成，三十其录。三列分求，各依首序；行满三十，乃征其信。：」
 寻观「豫章」之书。
 寻观「芥子」之「问簿」之「值域」之书。
 寻观「芥子」之「问簿」之「库态」之书。
 寻观「芥子」之「问簿」之「推演」之书。
 寻观「芥子」之「问簿」之「执行」之书。
 
-「：汉语：取 SQLite 官方 sqllogictest 的 select1.test，源 SHA-256 为 e93b83d64d06f78aee0e690455b6c604e86ad9a339f77d927a782cefb6b0e1d5；保留首个建表及三十条指定列插入，选 e、b、d 的 ORDER BY 1 查询。
-　　文言：取 SQLite 官方 select1.test 之首建表及三十插句，复取 e、b、d 依首列排序之查；源之摘要如汉语所记。：」
 「会话」者「新问会话」于「元」也。
 
 「初始语句」乃「列」于「文」也。
