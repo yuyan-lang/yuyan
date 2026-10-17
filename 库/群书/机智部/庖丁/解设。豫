@@ -1,3 +1,6 @@
+「：汉语：通称解码器配置执行（decoders）。按 tokenizer.json 的 decoder 配置执行：Sequence（保留每一阶段的词元片段）、ByteLevel（把 GPT-2 字符还原为字节再按 UTF-8 解码）、ByteFallback（<0xNN> 词元还原为字节）、Fuse（拼成一段）、Metaspace（替换空白标记并按 prepend_scheme 去首空格）、Replace、Strip 与 WordPiece。
+　　文言：解码器之设之行：依 tokenizer.json 之 decoder 行之：序列（存每阶之词片）、字节层（还 GPT-2 之字为字节而依 UTF-8 解）、字节回退（<0xNN> 之词还为字节）、融合（拼为一段）、元空白（易空记而依 prepend_scheme 去首空）、替换、去除与词片。
+　　赋曰：伊解设也，解器有序，诸阶相承；字节之层，映字还帛，八位以成；回退之号，十六为名，字节以生；融合为一，拼段以平；元空之记，易为空白，首空以清；替换去除，词片之解，各循其程。：」
 寻观「豫章」之书。
 寻观「庖丁」之「词片解」之书。
 寻观「豫章」之「形制」之「帛书」之书。

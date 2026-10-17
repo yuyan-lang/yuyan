@@ -1,3 +1,6 @@
+「：汉语：通称预分词器配置执行（pre_tokenizers）。按 tokenizer.json 的 pre_tokenizer 配置执行：Sequence、ByteLevel（把原始字节映为 GPT-2 词表字符，可加前置空格、可用正则切分）、Whitespace、WhitespaceSplit、BertPreTokenizer、Digits（可逐位）、Punctuation、Metaspace（空白标记与 prepend_scheme）与 Split（字符串或正则；分隔行为有 Isolated、Removed、MergedWithPrevious、MergedWithNext、Contiguous，可反向）。
+　　文言：预分器之设之行：依 tokenizer.json 之 pre_tokenizer 行之：序列、字节层（映原字为 GPT-2 之字，可加首空，可以格律切）、空白、空白切、伯特预分、数字（可逐位）、标点、元空白（空记与 prepend_scheme）与切分（串或格律；隔行有独、去、并前、并后、连，可反）。
+　　赋曰：伊预分词设也，配置为纲，诸器以序；字节之层，映字以与，前空可补，格律可取；空白之分，伯特之预，数字逐位，标点独处；元空之记，前置以叙；切分之行，独去并连，反之亦许。：」
 寻观「豫章」之书。
 寻观「结绳」之书。
 寻观「结绳」之「结绳取」之书。
