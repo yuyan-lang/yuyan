@@ -3,8 +3,8 @@ name: CI
 env:
   # 文言：所定之原生工具链包（Linux x64）：自举之作由此起步，不用 Node 与 Wasm。包中豫构 yy豫构_stable.exe 配包中执行器 yy执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟 CI 发新包，乃同易下二项。
   # 汉语：固定的原生工具链包（Linux x64）：自举作业从它起步，不用 Node 与 Wasm。包里的豫构 yy豫构_stable.exe 配包里的执行器 yy执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等 CI 发布新包，再同时改下面两项。
-  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261017T031500Z-yuyan-native-linux-x64-55355a21b5f6dd1411808ec3a43256e800b9bd64.tar.gz
-  YY_NATIVE_TOOLCHAIN_SHA256: 0484292e3522b1fa2d1ab6da9a363f597137373808693319f6e9beb5be86a2a6
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261017T050111Z-yuyan-native-linux-x64-fe413aae3e3cdeab3c77170c6819a43c7f7df3bb.tar.gz
+  YY_NATIVE_TOOLCHAIN_SHA256: 96ed43ec56280f45c4fe2d36a37ed84e1ad551b1d84c31e2ac59be7416a1f709
 
 on:
   push:
