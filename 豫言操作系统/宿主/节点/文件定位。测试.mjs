@@ -21,20 +21,20 @@ if (process.argv[2]) {
   } finally { 文件系统.closeSync(原生柄); }
 }
 const 能力 = 创建能力({授权: {目录: new Map([['读', {路径: 根, 可写: false}]]), 源: new Set(), 环境: new Set()}, 应用参数: [], 程序路径: '/程序.wasm', 输出: () => {}, 张量线程数: 1});
-const 实 = 能力[带型实现].诺节宿主, 文 = 值 => new TextEncoder().encode(值);
+const 实 = 能力[带型实现].诺驿东道, 文 = 值 => new TextEncoder().encode(值);
 try {
-  const 目录 = 文(实.诺节文件取得目录(文('读'))[1]);
-  const 柄 = 文(实.诺节文件打开(目录, 文('疏文'), false)[1]);
-  assert.deepEqual(Array.from(实.诺节文件读取(柄, 1n)[1]), [0xe7]);
-  const 远 = 实.诺节文件定位读取(柄, BigInt(远偏), 3n);
+  const 目录 = 文(实.诺驿卷取箧(文('读'))[1]);
+  const 柄 = 文(实.诺驿卷辟(目录, 文('疏文'), false)[1]);
+  assert.deepEqual(Array.from(实.诺驿卷读(柄, 1n)[1]), [0xe7]);
+  const 远 = 实.诺驿卷指读(柄, BigInt(远偏), 3n);
   assert.equal(远[0], 0, 远[2]);
   assert.equal(new TextDecoder().decode(远[1]), '远');
-  assert.deepEqual(Array.from(实.诺节文件读取(柄, 1n)[1]), [0x94]);
-  assert.equal(实.诺节文件定位读取(柄, BigInt(远偏 + 3), 1n)[0], 9);
-  assert.equal(实.诺节文件定位读取(柄, -1n, 1n)[0], 7);
-  assert.equal(实.诺节文件定位读取(柄, 0n, -1n)[0], 7);
-  assert.equal(实.诺节文件定位读取(柄, 0n, 0n)[1].length, 0);
-  assert.equal(实.诺节文件关闭(柄)[0], 0);
-  assert.equal(实.诺节文件定位读取(柄, 0n, 1n)[0], 3);
+  assert.deepEqual(Array.from(实.诺驿卷读(柄, 1n)[1]), [0x94]);
+  assert.equal(实.诺驿卷指读(柄, BigInt(远偏 + 3), 1n)[0], 9);
+  assert.equal(实.诺驿卷指读(柄, -1n, 1n)[0], 7);
+  assert.equal(实.诺驿卷指读(柄, 0n, -1n)[0], 7);
+  assert.equal(实.诺驿卷指读(柄, 0n, 0n)[1].length, 0);
+  assert.equal(实.诺驿卷阖(柄)[0], 0);
+  assert.equal(实.诺驿卷指读(柄, 0n, 1n)[0], 3);
   console.log('共享定位读取完整偏移、原生导入桩与顺读位置验收通过');
 } finally { 能力[能力清理](); 文件系统.rmSync(根, {recursive: true, force: true}); }

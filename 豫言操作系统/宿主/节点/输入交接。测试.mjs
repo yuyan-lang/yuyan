@@ -13,9 +13,9 @@ test('父读命令、子读一行、父续读共享实际输入且不预读', ()
   文件系统.writeFileSync(父, `import {创建能力, 带型实现, 能力清理} from ${JSON.stringify(new URL('./应用宿主.mjs', import.meta.url).href)};
     const 能 = 创建能力({授权: {目录: new Map(), 子程序: new Map([['子', {入口: ${JSON.stringify(子)}, 目录: ${JSON.stringify(根)}}]]), 源: new Set(), 环境: new Set()}, 应用参数: [], 程序路径: ${JSON.stringify(父)}});
     const 解 = new TextDecoder(), 编 = new TextEncoder();
-    const 首 = 能[带型实现].标准库.尝试读取标准输入行();
-    const 果 = 能[带型实现].诺节宿主.诺节运行继承输入子程序(编.encode('子'), [], []);
-    const 尾 = 能[带型实现].标准库.尝试读取标准输入行();
+    const 首 = 能[带型实现].豫章.闻();
+    const 果 = 能[带型实现].诺驿东道.诺驿行继承入使者(编.encode('子'), [], []);
+    const 尾 = 能[带型实现].豫章.闻();
     process.stdout.write(JSON.stringify([解.decode(首[1]), Number(果[0]), Number(果[1]), 解.decode(果[2]), 解.decode(尾[1])]));
     await 能[能力清理]();`);
   try {
