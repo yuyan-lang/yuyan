@@ -1,10 +1,9 @@
 name: CI
 
 env:
-  # 文言：所定之原生工具链包（Linux x64）：自举之作由此起步，不用 Node 与 Wasm。包中豫构 豫构稳定。林纳。豫行 配包中执行器 执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟 CI 发新包，乃同易下二项。
-  # 汉语：固定的原生工具链包（Linux x64）：自举作业从它起步，不用 Node 与 Wasm。包里的豫构 豫构稳定。林纳。豫行 配包里的执行器 执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等 CI 发布新包，再同时改下面两项。
-  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/historical-binaries-2/20261017T144644Z-yuyan-native-linux-x64-e976e39bf0da67c8d5277a7169a229f1f875d446.tar.gz
-  YY_NATIVE_TOOLCHAIN_SHA256: 15dbc7a49f60fc507e6e4b2c339e8476c2c9d29e03c26e79f5d78b6dc9f8d6bf
+  # 文言：起步之原生工具链包（Linux x64）：取连续版（continuous-binaries）最新之包，自举之作由此起步，不用 Node 与 Wasm。一轮自举既过（二三级逐字相同），即覆此包；不复定提交，亦不核摘要（用户 2026-10-18 定：能自举两遍而定点者即可用）。包中豫构 豫构稳定。林纳。豫行 配包中执行器 执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟一轮自举既过、连续版易新包，乃用之。云仓 deploy.yml 读此行，易平台之名以取林檎臂六十四之包。
+  # 汉语：起步用的原生工具链包（Linux x64）：取连续版本（continuous-binaries）里最新的包，自举作业从它起步，不用 Node 与 Wasm。一轮自举通过（二、三级逐字节相同）就覆盖这个包；不再钉提交，也不核对摘要（用户 2026-10-18 定：能连自举两遍、定点一致就够用）。包里的豫构 豫构稳定。林纳。豫行 配包里的执行器 执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等一轮自举通过、连续版本换上新包，再用。云仓 deploy.yml 读这一行，换平台名取 macOS arm64 包。
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-binaries/yuyan-native-linux-x64.tar.gz
 
 on:
   push:
@@ -79,15 +78,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 文言：包解于仓根：豫构于己旁求执行器。
-      # 汉语：核对摘要后把包解压到仓库根目录：豫构在自己旁边找执行器。
-      - name: 下载固定的原生工具链包
+      # 文言：取连续版最新之包，解于仓根：豫构于己旁求执行器。连续版之包覆时或暂缺，故多试数次。
+      # 汉语：取连续版本里最新的包，解压到仓库根目录：豫构在自己旁边找执行器。连续版本的包被覆盖时可能短暂取不到，所以多重试几次。
+      - name: 下载最新的原生工具链包
         run: |
           set -euo pipefail
           archive="$RUNNER_TEMP/yuyan-native-stable.tar.gz"
-          curl --fail --location --retry 3 --retry-all-errors --retry-delay 2 \
+          curl --fail --location --retry 6 --retry-all-errors --retry-delay 10 \
             --output "$archive" "$YY_NATIVE_TOOLCHAIN_URL"
-          echo "$YY_NATIVE_TOOLCHAIN_SHA256  $archive" | sha256sum --check -
           tar -xzf "$archive"
 
       # 文言：一级驱动以今源之码生，故二三级所出者同（定点）；包中之执行器与包中豫构同代，侧表之式相合。
