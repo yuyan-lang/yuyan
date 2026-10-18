@@ -22,9 +22,9 @@ const 应用要求 = JSON.parse(await readFile(new URL('接口要求组.json', �
 const 宿主提供 = JSON.parse(await readFile(new URL('宿主提供组.json', 产物), 'utf8'));
 test('装载前的接口核对通过，且应用要求含本接口', () => {
   核对接口装载({程序模块, 应用要求, 宿主提供, 宿主: '云工'});
-  assert.ok(应用要求.some(项 => 项.接口名称 === '豫言操作系统定时事件' && 项.接口版本 === '0.2.0'), '应用要求里应有本接口 0.2.0');
-  assert.ok(宿主提供.some(项 => 项.接口名称 === '豫言操作系统定时事件' && 项.接口版本 === '0.2.0'), '宿主支持清单里应有本接口 0.2.0');
-  assert.ok(WebAssembly.Module.exports(程序模块).some(项 => 项.name === '豫言操作系统定时事件/处理定时事件'), '程序应导出入口 处理定时事件');
+  assert.ok(应用要求.some(项 => 项.接口名称 === '豫寓更鼓' && 项.接口版本 === '0.2.0'), '应用要求里应有本接口 0.2.0');
+  assert.ok(宿主提供.some(项 => 项.接口名称 === '豫寓更鼓' && 项.接口版本 === '0.2.0'), '宿主支持清单里应有本接口 0.2.0');
+  assert.ok(WebAssembly.Module.exports(程序模块).some(项 => 项.name === '豫寓更鼓/理定时事'), '程序应导出入口 处理定时事件');
 });
 
 // 文言：写入须待时而后成，用以显事之寿。汉语：put 故意延迟，若宿主不等程序结束，测试读到的键值会是空的。
@@ -96,9 +96,9 @@ test('程序在定时事件里抛出未捕获异常时调用失败', async () =>
 });
 
 test('程序没有对应入口的事件按失败处理（提案 C0001），不静默当作成功', async () => {
-  await assert.rejects(宿主.fetch(new Request('https://x.test/'), {KV: new 模拟KV()}), /程序没有导出入口 豫言操作系统网页服务\/处理入站网页请求/);
+  await assert.rejects(宿主.fetch(new Request('https://x.test/'), {KV: new 模拟KV()}), /程序没有导出入口 豫寓坐堂\/理来书/);
   const 批次 = {queue: 'q', messages: [], ackAll() {}, retryAll() {}};
-  await assert.rejects(宿主.queue(批次, {}, 模拟上下文()), /程序没有导出入口 豫言操作系统消息队列\/处理队列批次/);
+  await assert.rejects(宿主.queue(批次, {}, 模拟上下文()), /程序没有导出入口 豫寓驿递\/理序批次/);
 });
 
 // 文言：平台之 env 一隔离体恒为一物，故重叠之事共一 KV，各记其所写。

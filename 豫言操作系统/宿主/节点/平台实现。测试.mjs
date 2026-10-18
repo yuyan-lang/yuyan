@@ -12,16 +12,16 @@ test('诺节宿主与系统库调用全部实现，云工宿主实现四十六�
   const 能力 = 造能力();
   try {
     const 实 = 能力[带型实现];
-    for (const 包 of ['诺节宿主', '系统库调用']) {
+    for (const 包 of ['诺驿东道', '借道']) {
       const 缺 = Object.keys(平台导入旧名[包]).filter(字段 => typeof 实[包]?.[字段] !== 'function');
       assert.deepEqual(缺, [], 包 + ' 缺实现');
     }
-    assert.equal(Object.keys(平台导入旧名.诺节宿主).length, 84);
-    assert.equal(Object.keys(平台导入旧名.系统库调用).length, 26);
-    assert.equal(Object.keys(实.云工宿主).length, 46);
-    assert.deepEqual(Object.keys(实.安全外壳密码), ['求沙256']);
-    assert.equal(实.中央张量宿主, undefined);
-    assert.equal(实.浏览器宿主, undefined);
+    assert.equal(Object.keys(平台导入旧名.诺驿东道).length, 84);
+    assert.equal(Object.keys(平台导入旧名.借道).length, 26);
+    assert.equal(Object.keys(实.云工东道).length, 46);
+    assert.deepEqual(Object.keys(实.密壳阴书), ['求沙二五六']);
+    assert.equal(实.中枢算阵东道, undefined);
+    assert.equal(实.网览东道, undefined);
   } finally {
     await 能力[能力清理]?.();
   }
@@ -32,12 +32,12 @@ test('只有异步实现标“异步”', async () => {
   try {
     const 实 = 能力[带型实现];
     const 异步们 = Object.entries(实).flatMap(([包, 表]) => Object.entries(表).filter(([, 函]) => 函.异步).map(([字段]) => 包 + '.' + 字段)).sort();
-    assert.ok(异步们.includes('诺节宿主.诺节网络发送'));
-    assert.ok(异步们.includes('诺节宿主.诺节显示操作'));
-    assert.ok(异步们.includes('诺节宿主.诺节图形操作'));
+    assert.ok(异步们.includes('诺驿东道.诺驿网络致'));
+    assert.ok(异步们.includes('诺驿东道.诺驿映操作'));
+    assert.ok(异步们.includes('诺驿东道.诺驿图形操作'));
     assert.ok(异步们.includes('云工宿主.云工调用方法'));
-    assert.ok(!异步们.includes('诺节宿主.诺节张量矩阵乘'));
-    assert.ok(!异步们.includes('诺节宿主.诺节字体操作'));
+    assert.ok(!异步们.includes('诺驿东道.诺驿算阵矩阵乘'));
+    assert.ok(!异步们.includes('诺驿东道.诺驿字样操作'));
     assert.equal(异步们.filter(名 => 名.startsWith('云工宿主.')).length, 13);
   } finally {
     await 能力[能力清理]?.();
@@ -52,10 +52,10 @@ test('小数结果去壳，外部值的列展成数值数组', () => {
     豫言_节点_外部库读小数: () => ({小数: 0.25})
   };
   const 表 = 派生平台实现(旧表);
-  assert.equal(表.诺节宿主.诺节张量取小数('1', 0n), 1.5);
-  assert.equal(表.系统库调用.外部库读小数原语(0n, '单'), 0.25);
-  assert.equal(表.系统库调用.外部调用得小数原语(1n, '双：长双', [[0, 3n], [1, 0.5]]), 2.5);
+  assert.equal(表.诺驿东道.诺驿算阵取小数('1', 0n), 1.5);
+  assert.equal(表.借道.外库读小数本术(0n, '单'), 0.25);
+  assert.equal(表.借道.外召得小数本术(1n, '双：长双', [[0, 3n], [1, 0.5]]), 2.5);
   assert.deepEqual(收到[0], [3n, 0.5]);
-  assert.equal(表.系统库调用.外部调用无返回原语(1n, '无：', []), undefined);
-  assert.throws(() => 表.系统库调用.外部调用得整数原语(1n, '长：长', [[2]]), /无值/u);
+  assert.equal(表.借道.外召无返回本术(1n, '无：', []), undefined);
+  assert.throws(() => 表.借道.外召得数本术(1n, '长：长', [[2]]), /无值/u);
 });

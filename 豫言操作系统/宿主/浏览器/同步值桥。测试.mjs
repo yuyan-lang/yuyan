@@ -22,7 +22,7 @@ test('无 JSPI 可运行同步豫言 Wasm，异步能力明确拒绝',{skip:!可
     const 同步=创建豫言实例(程序,值桥,{参数,输出:文=>{输出+=文;}});
     await 同步.运行();
     assert.deepEqual(JSON.parse(输出),{ok:true});
-    const 异步=创建豫言实例(程序,值桥,{参数,标准库:{打印行:Object.assign(async()=>{},{异步:true})}});
+    const 异步=创建豫言实例(程序,值桥,{参数,标准库:{书:Object.assign(async()=>{},{异步:true})}});
     await assert.rejects(异步.运行(),/缺少 JSPI，程序调用了异步宿主能力/u);
   }finally{
     WebAssembly.Suspending=原悬;WebAssembly.promising=原承;

@@ -39,16 +39,16 @@ const 能力 = 创建能力({
   授权: {目录: new Map(), 子程序: new Map([['验收', {入口: 子路径}]]), 环境: new Set(), 源: new Set()}
 });
 try {
-  const 实 = 能力[带型实现].诺节宿主;
-  assert.equal(实.诺节启动子程序.异步, true);
+  const 实 = 能力[带型实现].诺驿东道;
+  assert.equal(实.诺驿启使者.异步, true);
   const 编码 = 文 => new TextEncoder().encode(文);
-  const [码, 柄] = await 实.诺节启动子程序(编码('验收'), [编码('子')], 编码('中文输入\n'), []);
+  const [码, 柄] = await 实.诺驿启使者(编码('验收'), [编码('子')], 编码('中文输入\n'), []);
   assert.equal(码, 0);
   let 果;
-  do { 果 = await 实.诺节收取子程序(BigInt(柄)); } while (果[0] === 0);
+  do { 果 = await 实.诺驿收取使者(BigInt(柄)); } while (果[0] === 0);
   assert.equal(果[0], 1);
   assert.equal(果[1], 7);
   assert.deepEqual(果[2], 编码('中文输入\n'));
-  assert.equal((await 实.诺节收取子程序(BigInt(柄)))[0], -8);
+  assert.equal((await 实.诺驿收取使者(BigInt(柄)))[0], -8);
   console.log('正式节点宿主带型能力转发原生服务验收通过');
 } finally { await 能力[能力清理](); }

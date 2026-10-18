@@ -65,7 +65,7 @@ export function 创建物桥({取全局, 取绑定, 回调}) {
   return {
     云工全局: 名称 => 守(() => 取全局(文字(名称))),
     // 文言：绑定未授，部署之误也，径抛而止此事，客不能承；已授而阙者归未定义。汉语：绑定未授权是部署错误：直接抛出 JS 异常中止本次事件（豫言的「尝试运行」接不住）；已授权而没有配置时得 undefined。
-    云工绑定: (类, 名称) => 成(取绑定(文字(类), 文字(名称))),
+    云工系: (类, 名称) => 成(取绑定(文字(类), 文字(名称))),
     // 文言：止此事：抛 JS 之异，客不能承，宿主败此事而废其实例。汉语：中止本次事件：抛出 JS 异常（豫言接不住），宿主让本次事件失败并作废实例；用于部署错误等规范要求宿主中止的情形。
     云工中止: 消息 => { throw Error(文字(消息)); },
     云工取: (对象, 属性) => 守(() => 对象[名(属性)]),
@@ -76,13 +76,13 @@ export function 创建物桥({取全局, 取绑定, 回调}) {
     云工呼候: async (函, 参们) => 守候(() => Reflect.apply(函, undefined, 参们.map(值入))),
     云工造: (构造器, 参们) => 守(() => Reflect.construct(构造器, 参们.map(值入))),
     云工候: async 值 => 守候(() => 值入(值)),
-    云工类型: 值 => Object.prototype.toString.call(值入(值)).slice(8, -1),
-    云工是实例: (对象, 构造器) => typeof 构造器 === 'function' && 对象 instanceof 构造器,
-    云工新数组: 参们 => 参们.map(值入),
-    云工新对象: 项们 => Object.fromEntries(项们.map(([键, 值]) => [名(键), 值入(值)])),
-    云工数组项们: 对象 => (Array.isArray(对象) || ArrayBuffer.isView(对象) ? Array.from(对象, 值出) : []),
-    云工对象项们: 对象 => Object.entries(对象 ?? {}).map(([键, 值]) => [键, 值出(值)]),
-    云工造回调: 号 => async (...实参) => {
+    云工类: 值 => Object.prototype.toString.call(值入(值)).slice(8, -1),
+    云工为例: (对象, 构造器) => typeof 构造器 === 'function' && 对象 instanceof 构造器,
+    云工新列: 参们 => 参们.map(值入),
+    云工新物: 项们 => Object.fromEntries(项们.map(([键, 值]) => [名(键), 值入(值)])),
+    诸云工列项: 对象 => (Array.isArray(对象) || ArrayBuffer.isView(对象) ? Array.from(对象, 值出) : []),
+    诸云工物项: 对象 => Object.entries(对象 ?? {}).map(([键, 值]) => [键, 值出(值)]),
+    云工造回音: 号 => async (...实参) => {
       const 果 = await 回调(Number(号), 实参.map(值出));
       if (Number(果[0]) === 0) return 值入(果[1]);
       throw Object.assign(Error(文字(果[2])), {name: 文字(果[1])});
