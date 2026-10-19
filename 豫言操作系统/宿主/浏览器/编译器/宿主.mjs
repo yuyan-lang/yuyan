@@ -3,6 +3,40 @@ const 编码 = new TextEncoder(), 解码 = new TextDecoder();
 export const 字节 = 值 => typeof 值 === "string" ? 编码.encode(值) : 值;
 const 文 = 值 => 值 instanceof Uint8Array ? 解码.decode(值) : String(值);
 const 数 = 值 => Number(值?.小数 ?? 值);
+// 汉语：同步沙二五六（SHA-256，FIPS 180-4），得三十二字节。浏览器的 crypto.subtle 只有异步接口，编译器取源文件摘要（营造（构建基础）的取卷沙二五六、帛页杂凑沙二五六）要当场得结果，这里用 JS 直接算。
+// 文言：同步之沙二五六，得三十二字节。浏览器 crypto.subtle 惟异步，编器取源文之摘须即得，故以 JS 自算之。
+const 沙常 = Uint32Array.from([
+  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
+  0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+  0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13,
+  0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+  0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
+  0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2]);
+const 右旋 = (值, 位) => (值 >>> 位) | (值 << (32 - 位));
+export function 沙二五六(内容) {
+  const 长 = 内容.length, 块 = new Uint8Array(((长 + 72) >> 6) << 6), 视 = new DataView(块.buffer), 字 = new Uint32Array(64);
+  块.set(内容); 块[长] = 0x80;
+  视.setUint32(块.length - 8, Math.floor(长 / 0x20000000)); 视.setUint32(块.length - 4, (长 << 3) >>> 0);
+  const 态 = Uint32Array.from([0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]);
+  for (let 起 = 0; 起 < 块.length; 起 += 64) {
+    for (let 序 = 0; 序 < 64; 序++) {
+      if (序 < 16) { 字[序] = 视.getUint32(起 + 序 * 4); continue; }
+      const 甲 = 字[序 - 15], 乙 = 字[序 - 2];
+      字[序] = 字[序 - 16] + (右旋(甲, 7) ^ 右旋(甲, 18) ^ (甲 >>> 3)) + 字[序 - 7] + (右旋(乙, 17) ^ 右旋(乙, 19) ^ (乙 >>> 10));
+    }
+    let [a, b, c, d, e, f, g, h] = 态;
+    for (let 序 = 0; 序 < 64; 序++) {
+      const 一 = (h + (右旋(e, 6) ^ 右旋(e, 11) ^ 右旋(e, 25)) + ((e & f) ^ (~e & g)) + 沙常[序] + 字[序]) >>> 0;
+      const 二 = ((右旋(a, 2) ^ 右旋(a, 13) ^ 右旋(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) >>> 0;
+      h = g; g = f; f = e; e = (d + 一) >>> 0; d = c; c = b; b = a; a = (一 + 二) >>> 0;
+    }
+    态[0] += a; 态[1] += b; 态[2] += c; 态[3] += d; 态[4] += e; 态[5] += f; 态[6] += g; 态[7] += h;
+  }
+  const 出 = new Uint8Array(32), 出视 = new DataView(出.buffer);
+  态.forEach((值, 序) => 出视.setUint32(序 * 4, 值));
+  return 出;
+}
+const 十六进 = 字节们 => Array.from(字节们, 值 => 值.toString(16).padStart(2, "0")).join("");
 export function 规范路径(值) {
   const 段 = [];
   for (const 项 of 文(值).split("/")) {
@@ -114,8 +148,8 @@ export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编
     所居: () => "/",
     改时: 名 => BigInt(文件.文件.get(规范路径(名))?.时间 ?? 1),
     问俗: () => [false, ""],
-    // 文言：日志记时，取客地之刻。汉语：支持编译器实际使用的 strftime 日期时间字段，未知格式明确拒绝。
-    格式化当前本地日期时间: 格式 => {const d=new Date(),pad=n=>String(n).padStart(2,'0'),fields={Y:String(d.getFullYear()),m:pad(d.getMonth()+1),d:pad(d.getDate()),H:pad(d.getHours()),M:pad(d.getMinutes()),S:pad(d.getSeconds()),'%':'%'};return 文(格式).replace(/%([%A-Za-z])/g,(_,k)=>{if(!(k in fields))throw Error('暂不支持日期格式：%'+k);return fields[k];});},
+    // 文言：日志记时，取客地之刻。汉语：今时依式（格式化当前本地日期时间）：支持编译器实际使用的 strftime 日期时间字段，未知格式明确拒绝。
+    今时依式: 格式 => {const d=new Date(),pad=n=>String(n).padStart(2,'0'),fields={Y:String(d.getFullYear()),m:pad(d.getMonth()+1),d:pad(d.getDate()),H:pad(d.getHours()),M:pad(d.getMinutes()),S:pad(d.getSeconds()),'%':'%'};return 文(格式).replace(/%([%A-Za-z])/g,(_,k)=>{if(!(k in fields))throw Error('暂不支持日期格式：%'+k);return fields[k];});},
     此刻: () => performance.now() * 1e6,
     抽数: 上界 => {
       if (上界 <= 0n) throw Error("随机整数上界须大于零");
@@ -156,7 +190,17 @@ export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编
   // 文言：编器直书二进制，不假外器；客程亦不得行外部之进程。汉语：构建基础的宿主服务（导入模块「构建基础」）；编译器直接写出 Wasm 二进制，不需要外部组装进程，浏览器不提供任何通用进程执行能力。
   // 文言：此无程序之文可摘，以定名代其摘要；编器以之名缓存之目，发布时预编之官书缓存与客端所编同居一目。易编器则资源全换，旧缓存不相混。
   // 汉语：这里拿不到正在运行的 Wasm 文件，获取当前程序沙256 返回固定占位「浏览器编译器」代替内容摘要；编译器用它命名缓存目录，发布时预编译的标准库缓存与浏览器内编译因此落在同一目录。换编译器时整套资源一起替换，旧缓存不会混用。
-  const 构建基础 = { 可绘监工板: () => false, 取今程序沙二五六: () => "浏览器编译器" };
+  // 汉语：取卷沙二五六（指定文件 SHA-256）算内存文件的摘要，得小写十六进制，编译器按它核对单卷缓存；帛页杂凑沙二五六（字节串页散列）按页（缺省四千零九十六字节）逐段算，三十二字节一段接成一串，与诺驿宿主同义。
+  // 文言：取卷沙二五六算内存之文之摘，得小写十六进，编器依之核单卷之缓；帛页杂凑沙二五六依页逐段算之，段各三十二字节而接之，与诺驿宿主同义。
+  const 构建基础 = {
+    可绘监工板: () => false, 取今程序沙二五六: () => "浏览器编译器",
+    取卷沙二五六: 名 => 十六进(沙二五六(文件.读(名))),
+    帛页杂凑沙二五六: (字, 页) => {
+      const 内容 = 字节(字), 长 = 内容.length, 页数 = 数(页), 步 = 页数 > 0 && 页数 <= 1073741824 ? 页数 : 4096, 段 = Math.ceil(长 / 步), 出 = new Uint8Array(段 * 32);
+      for (let 序 = 0; 序 < 段; 序++) 出.set(沙二五六(内容.subarray(序 * 步, Math.min(长, (序 + 1) * 步))), 序 * 32);
+      return 出;
+    }
+  };
   if (编译) 构建基础.藏包境 = 内容 => { 文件.写("/上下文/固定.上下文", 内容); return "/上下文/固定.上下文"; };
   try {
     // 文言：带型之导入依签名包之，无实现者给桩，调之乃报。汉语：带类型的导入由共用胶水按签名包装；不在上面两表里的给桩，调用时报“接口函数未绑定”。
