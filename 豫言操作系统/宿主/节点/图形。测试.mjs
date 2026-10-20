@@ -402,6 +402,23 @@ test('内建字体只授发行指定文件，不授旁文件且拒绝符号链�
   } finally {文件系统.rmSync(根,{recursive:true,force:true});}
 });
 
+test('字体：程序旁的 字体/ 目录可读，目录外与越出目录的相对路径不授', async () => {
+  const 文件系统 = await import('node:fs'), 系统 = await import('node:os');
+  const 根 = 文件系统.mkdtempSync(路径.join(系统.tmpdir(),'发行字体-'));
+  try {
+    文件系统.mkdirSync(路径.join(根,'字体'));
+    文件系统.writeFileSync(路径.join(根,'字体','无衬线.otf'),Uint8Array.from([79,84,84,79,1]));
+    文件系统.writeFileSync(路径.join(根,'旁文件.txt'),'私有正文');
+    const 能 = 创建节点图形能力({创建显示面表,创建图形能力,状态码,事件种类,载入原生:()=>{throw Error('无须原生');},文件系统,路径分隔:路径.sep,程序目录:根});
+    const 调 = (作,径='',号=0,长=0) => 能.原语.豫言_诺节_字体(字(作),字(径),BigInt(号),0n,BigInt(长));
+    const 开 = 调('打开','字体/无衬线.otf'); assert.equal(开[0],码.成,开[4]); assert.equal(开[2],5);
+    assert.equal(调('打开','字体/../旁文件.txt')[0],码.未获授权,'越出 字体/ 的相对路径不授');
+    assert.equal(调('打开',路径.join(根,'旁文件.txt'))[0],码.未获授权);
+    assert.equal(调('打开','字体/无此.otf')[0],码.不存在);
+    await 能.清理();
+  } finally {文件系统.rmSync(根,{recursive:true,force:true});}
+});
+
 test('字体：只开字体目录下的文件；同一文件同一个号；按偏移读取；越界为输入无效；目录外为未获授权；不存在为资源不存在；清理后号失效', async () => {
   const 文件系统 = await import('node:fs');
   const 系统 = await import('node:os');
