@@ -1,0 +1,172 @@
+「：汉语：通称页面接口测试（page API test）。用假交换建立页面环境，装页面接口后跑页面脚本，逐个核对 fetch（then 与 await）、Headers、URL、URLSearchParams、FormData、Blob 的 text()、localStorage 与 sessionStorage、TextEncoder 与 TextDecoder、XMLHttpRequest 的事件顺序与各种 responseType；再核对本地簿确实记下了键值。
+　　文言：页面诸器之试：设假邮传，装诸器于境，行脚本而逐项验之：采书之诺与待、提封、驿址与询参、表单之录、卷帛之文、籍册之守、文帛之编、驿书之事序与诸响应之种；终验本地之簿实记其键值。
+　　赋曰：假邮一术充真驿，诸器装成试一场。采书诺待两相验，提封驿址各呈详。表单卷帛籍册守，文帛编码字成行。驿书事序逐条对，响应诸种尽昭彰。：」
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「抓取」之书。
+寻观「网页榫卯」之书。
+寻观「网页榫卯」之「页面接口」之书。
+寻观「网页榫卯」之「储籍」之书。
+寻观「网页榫卯」之「标头对象」之书。
+寻「豫章」之「本原」之「本术」之书。
+
+「：汉语：造一个抓取响应；名称、状态、正文与首部依次传入，正文写成帛。
+　　文言：造回书：名、态、体、牒，体成帛。：」
+「假回书」乃化「址」曰「文」又化「数」又化「体」曰「文」又化（「列」于（「文」合「文」））为「抓取响应」者也。
+「假回书」者得「址」曰「址」又得「状」又得「体」曰「体」又得「牒」而
+　「组值」
+　【「地址」者「址」也
+　，「状态」者「状」也
+　，「字段」者「牒」也
+　，「主体」者「作帛」于「体」也
+　，「种类」者『default』也
+　，「诊断」者『』也
+　】
+　属「抓取响应」
+也。
+
+「：汉语：在请求首部列里按名称找值；没有得空串。
+　　文言：循名求其值，无则空。：」
+「请头」乃化（「列」于（「文」合「文」））又化「文」为「文」者也。
+「请头」者得「诸头」又得「名」而
+　令「小名」为「抬头小名」于「名」而
+　鉴「择」于（得「一偶」而「文同」于（「抬头小名」于（「一偶」中「零」））于「小名」）于「诸头」而
+　　或有（「缀」于「一偶」于「后项」）则（「一偶」中「一」）
+　　或有「罄」则『』
+也。
+
+「：汉语：假交换：按地址给出回书；/submit 把方法、X-发 首部与正文回显成正文，/fail 给网络错误，其余给四百零四。
+　　文言：假邮：依址而报；/submit 回显其法、其首与体，/fail 报网络之败，余则四百零四。：」
+「假交换」乃化「抓取请求」为「抓取响应」者也。
+「假交换」者得「请」而
+　令「址」为（「请」中「地址」）而
+　若「文同」于「址」于『https://example.test/a?x=1』则
+　　「假回书」于「址」曰「址」于「二零零」于「体」曰『甲文』于（「列」【『Content-Type』与『text/plain』，『X-试』与『一』】）
+　否则若「文同」于「址」于『https://example.test/a』则
+　　「假回书」于「址」曰「址」于「二零零」于「体」曰『甲文』于（「列」【『Content-Type』与『text/plain』，『X-试』与『一』】）
+　否则若「文同」于「址」于『https://example.test/b』则
+　　「假回书」于「址」曰「址」于「二零零」于「体」曰『乙文』于（「列」【『Content-Type』与『text/plain』】）
+　否则若「文同」于「址」于『https://example.test/json』则
+　　「假回书」于「址」曰「址」于「二零零」于「体」曰『{"x":1}』于（「列」【『Content-Type』与『application/json』】）
+　否则若「文同」于「址」于『https://example.test/submit』则
+　　「假回书」
+　　　于「址」曰「址」
+　　　于「二零零」
+　　　于「体」曰（（「请」中「方法」）接『|』接（「请头」于（「请」中「字段」）于『X-发』）接『|』
+　　　　接（「本术」之「强作」以「帛」又以「文」于（「请」中「主体」）））
+　　　于（「列」【『X-试』与『一』，『Content-Type』与『text/plain』】）
+　否则若「文同」于「址」于『https://example.test/fail』则
+　　「抓取失败」于「地址」曰「址」于「诊断」曰『假网络失败』
+　否则
+　　「假回书」于「址」曰「址」于「四零四」于「体」曰『』于（「罄」以（「文」合「文」））
+也。
+
+「：汉语：跑一段页面脚本并把它的值取成豫言文字。
+　　文言：行脚本而取其值为文。：」
+「取字」乃化「急就境」又化「文」为「文」者也。
+「取字」者得「境」又得「式」而
+　「急就文字作串」于（「急就取键」于（「急就在境行脚本」于「境」于「式」））
+也。
+
+「：汉语：核对实得与期望；不合时告祸并写出两边的文字。
+　　文言：验其实与望；不合则告祸而陈两辞。：」
+「核对」乃化「名」曰「文」又化「实」曰「文」又化「望」曰「文」为「有」者也。
+「核对」者得「名」曰「名」又得「实」曰「实」又得「望」曰「望」而
+　若「文同」于「实」于「望」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：实得［』接「实」接『］望［』接「望」接『］』）
+也。
+
+「：汉语：簿里是否恰有这一对键值。
+　　文言：簿中果有此键值否。：」
+「簿有」乃化「储籍簿」又化「键」曰「文」又化「值」曰「文」为「爻」者也。
+「簿有」者得「其簿」又得「键」曰「键」又得「值」曰「值」而
+　「有一」以（「文」合「文」）于（得「一偶」而（「文同」于（「一偶」中「零」）于「键」）且（「文同」于（「一偶」中「一」）于「值」））于（「读匣」于「其簿」）
+也。
+
+「：汉语：设环境并装页面接口；交换用假交换，本地簿与会话簿各给一个新的。
+　　文言：设境而装诸器；交换用假邮，本地与会话之簿各新开。：」
+「新试境」乃化「有」为（「急就境」合「储籍簿」）者也。
+「新试境」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「无」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test/页』而
+　令「本地簿」为「新储籍簿」于「元」而
+　令「会话簿」为「新储籍簿」于「元」而
+　令「主录」为「新页面接口宿主」于「交换」曰「假交换」于「本地」曰「本地簿」于「会话」曰「会话簿」于「持久」曰「页面空持久」而
+　令「无」为「安装网页接口」于「境」于「绑定」于「主录」而
+　「境」与「本地簿」
+也。
+
+「：汉语：采书、提封、驿址、表单与询参。
+　　文言：采书、提封、驿址、表单与询参。：」
+「试采书」乃化「急就境」为「有」者也。
+「试采书」者得「境」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『window.__a=[];window.__b=[];fetch("/a?x=1").then(function(r){window.__a.push(r.status+":"+r.url);return r.text();}).then(function(t){window.__a.push(t);});(async function(){var r=await fetch("/b");window.__b.push(await r.text());})();var h=new Headers([["X-试","一"],["X-试","二"]]);h.append("X-试","三");window.__c=[h.get("x-试"),h.has("X-试"),h.get("none")].join("|");var u=new URL("/p?x=1",location.href);window.__d=[u.href,u.pathname,u.search,u.searchParams.get("x"),u.origin].join("|");var s=new URLSearchParams("a=1&a=2");s.append("b","3");s.delete("a");window.__e=[s.get("b"),s.toString(),s.has("a")].join("|");var f=new FormData();f.append("a","1");f.set("a","2");f.append("b","3");window.__g=[f.get("a"),f.getAll("b").length,f.has("c"),f.get("c")].join("|");』而
+　令「无」为「网页微役察点」于「元」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『window.__甲=[window.__a.join("|"),window.__b.join("|"),window.__c,window.__d,window.__e,window.__g].join(";");』而
+　「核对」
+　　于「名」曰『fetch 的 then、await 与相对地址』
+　　于「实」曰（「取字」于「境」于『window.__甲』）
+　　于「望」曰『200:https://example.test/a?x=1|甲文;乙文;一, 二, 三|true|;https://example.test/p?x=1|/p|?x=1|1|https://example.test;3|b=3|false;2|1|false|』而后
+　「核对」
+　　于「名」曰『提封、驿址、表单与询参』
+　　于「实」曰（（（「取字」于「境」于『window.__c』）接『/』）接（「取字」于「境」于『window.__d』）接『/』接（「取字」于「境」于『window.__e』）接『/』接（「取字」于「境」于『window.__g』））
+　　于「望」曰『一, 二, 三|true|/https://example.test/p?x=1|/p|?x=1|1|https://example.test/3|b=3|false/2|1|false|』而后
+　「书」于『采书、提封、驿址、表单：通过』
+也。
+
+「：汉语：卷帛之文、籍册之守与文帛之编；最后核对本地簿实记键值。
+　　文言：卷帛之文、籍册之守与文帛之编；终验本地之簿。：」
+「试帛籍」乃化「急就境」又化「储籍簿」为「有」者也。
+「试帛籍」者得「境」又得「本地簿」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var bl=new Blob(["甲乙"],{type:"Text/Plain"});bl.text().then(function(t){window.__乙=[t,bl.size,bl.type].join("|");});localStorage.setItem("k","v");sessionStorage.setItem("s","t");var te=new TextEncoder();var bytes=te.encode("甲乙");var td=new TextDecoder();window.__丙=[localStorage.getItem("k"),localStorage.length,localStorage.key(0),localStorage.getItem("none"),sessionStorage.getItem("s"),localStorage.getItem("s"),bytes.length,td.decode(bytes),new TextDecoder("utf-8",{fatal:true}).decode(bytes)].join("|");』而
+　令「无」为「网页微役察点」于「元」而
+　「核对」于「名」曰『Blob 的 text、大小与类型』于「实」曰（「取字」于「境」于『window.__乙』）于「望」曰『甲乙|6|text/plain』而后
+　「核对」于「名」曰『储籍与文帛编码』于「实」曰（「取字」于「境」于『window.__丙』）于「望」曰『v|1|k||t||6|甲乙|甲乙』而后
+　（若「簿有」于「本地簿」于「键」曰『k』于「值」曰『v』则「书」于『本地簿：通过』否则「告祸」于『本地簿没有记下键值』）
+也。
+
+「：汉语：驿书的事件顺序、各种 responseType 与 responseType 为 blob 时的 text。
+　　文言：驿书之事序、诸响应之种，及 blob 之 text。：」
+「试驿书」乃化「急就境」为「有」者也。
+「试驿书」者得「境」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var ev=[];var x=new XMLHttpRequest();x.onreadystatechange=function(){ev.push("rs"+x.readyState);};x.onloadstart=function(){ev.push("start");};x.onprogress=function(e){ev.push("pg"+e.loaded+"/"+e.total+"/"+e.lengthComputable);};x.onload=function(){ev.push("load"+x.status+":"+x.getResponseHeader("X-试")+":"+x.responseText+":"+x.statusText);};x.onerror=function(){ev.push("err");};x.onabort=function(){ev.push("ab");};x.ontimeout=function(){ev.push("to");};x.onloadend=function(){ev.push("end");};x.open("POST","/submit");x.setRequestHeader("X-发","一");x.send("体");var hh=(x.getAllResponseHeaders().indexOf("x-试: 一")>=0)&&(x.getAllResponseHeaders().indexOf("content-type: text/plain")>=0);var y=new XMLHttpRequest();y.open("GET","/missing");y.onload=function(){ev.push("miss"+y.status+":"+y.responseText);};y.send();var z=new XMLHttpRequest();z.open("GET","/fail");z.onload=function(){ev.push("wrong");};z.onerror=function(){ev.push("er"+z.readyState+":"+z.status);};z.onloadend=function(){ev.push("end2");};z.send();var q=new XMLHttpRequest();q.onreadystatechange=function(){ev.push("ars"+q.readyState);};q.onloadstart=function(){q.abort();};q.onabort=function(){ev.push("aab");};q.onloadend=function(){ev.push("aend");};q.open("GET","/a");q.send();window.__丁=[ev.join(","),hh].join(";");』而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var j=new XMLHttpRequest();j.responseType="json";j.open("GET","/json");j.send();var b=new XMLHttpRequest();b.responseType="arraybuffer";b.open("GET","/a");b.send();var c=b.response?[b.response.byteLength,(new TextDecoder()).decode(new Uint8Array(b.response))].join(":"):"无";var bl=new XMLHttpRequest();bl.responseType="blob";bl.open("GET","/a");bl.onload=function(){bl.response.text().then(function(t){window.__己=[t,bl.response.size,bl.response.type].join("|");});};bl.send();var tx=new XMLHttpRequest();tx.responseType="text";tx.open("GET","/b");tx.send();window.__戊=[j.response?String(j.response.x):"无",c,tx.responseText,tx.response===tx.responseText].join(";");』而
+　令「无」为「网页微役察点」于「元」而
+　「核对」
+　　于「名」曰『XMLHttpRequest 的事件顺序』
+　　于「实」曰（「取字」于「境」于『window.__丁』）
+　　于「望」曰『rs1,start,rs2,rs3,pg12/12/true,rs4,load200:一:POST|一|体:OK,end,miss404:,er4:0,end2,ars1,ars4,aab,aend;true』而后
+　「核对」于「名」曰『XMLHttpRequest 的各种 responseType』于「实」曰（「取字」于「境」于『window.__戊』）于「望」曰『1;6:甲文;乙文;true』而后
+　「核对」于「名」曰『responseType 为 blob 时的 text』于「实」曰（「取字」于「境」于『window.__己』）于「望」曰『甲文|6|text/plain』
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「摊」为「新试境」于「元」而
+　令「境」为（「摊」中「零」）而
+　令「本地簿」为（「摊」中「一」）而
+　令「无」为「试采书」于「境」而
+　令「无」为「试帛籍」于「境」于「本地簿」而
+　令「无」为「试驿书」于「境」而
+　「书」于『页面接口测试通过』
+也。
+
+「入口」于「元」。
