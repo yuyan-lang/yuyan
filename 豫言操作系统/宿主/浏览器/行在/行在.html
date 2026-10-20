@@ -33,9 +33,11 @@ body.桌面中 canvas[data-yy-显示面]{display:block;position:fixed;inset:0;wi
 // 文言：页惟为屏与键：示开机壳之出，送所入之行于壳之标准入；诸令皆由同一豫言程序（豫构交互）治之。
 import {起行在} from './行在.mjs';
 const 屏 = document.getElementById('屏'), 行 = document.getElementById('行'), 状态 = document.getElementById('状态');
-// 汉语：快照缺省取同目录的 源.tar.gz 与 工具.tar.gz；本机测试可用网址参数 源=、工具= 另指。文言：快照默取同目之源、工具二档；本机之试可以网址之参另指。
+// 汉语：快照缺省取同目录的 源.tar.gz 与 工具.tar.gz，桌面的两个程序在 桌面.tar.gz（第一次进桌面才取）；本机测试可用网址参数 源=、工具=、桌面= 另指。
+// 文言：快照默取同目之源、工具二档，桌面二程在桌面之档（初入桌面乃取）；本机之试可以网址之参另指。
 const 参 = new URLSearchParams(location.search);
 const 快照们 = [参.get('源') ?? './源.tar.gz', 参.get('工具') ?? './工具.tar.gz'].map(网址 => new URL(网址, location.href));
+const 桌面快照 = new URL(参.get('桌面') ?? './桌面.tar.gz', location.href);
 // 汉语：字体：各族名都声明为同一个文楷字体文件（缺省取站点 /操作系统/字体.ttf，网址参数 字体= 另指），宿主的字体能力按族名取它。
 // 文言：字体：诸族名皆宣同一文楷之文（默取站之 /操作系统/字体.ttf，网址之参 字体= 另指），宿主之字体之能依族名取之。
 for (const 族 of ['文楷', '无衬线', '衬线', '等宽', '衬线粗体', '等宽粗体']) {
@@ -73,7 +75,7 @@ document.getElementById('行表单').onsubmit = 事 => {
   行.value = 旧行们[翻位] ?? '';
 };
 try {
-  会话 = await 起行在({快照们, 出, 示屏, 报: 文 => { 状态.textContent = 文; }});
+  会话 = await 起行在({快照们, 桌面快照, 出, 示屏, 报: 文 => { 状态.textContent = 文; }});
   // 汉语：留给浏览器控制台查看任务表与文件（只读的调试入口）。文言：留之以供浏览器控制台察任务表与文件。
   globalThis.网页行在 = 会话;
   状态.textContent = '开机壳已起，正在编译前导';
