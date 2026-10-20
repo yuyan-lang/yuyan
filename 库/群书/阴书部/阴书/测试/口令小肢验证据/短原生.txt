@@ -1,2 +1,0 @@
-scrypt OpenSSL双块双流向量通过
-scrypt RFC7914向量通过

@@ -1,7 +1,0 @@
-{
-  // 文言：日志一致性应用于本机 workerd 复验之配置；无绑定，控制台之记由本机观测之口读之。
-  // 汉语：日志一致性应用在本机 workerd（wrangler dev --local）复验用的配置；不需要绑定，控制台日志由本机观测接口读出。
-  "name": "yy-log-conformance",
-  "main": "入口.mjs",
-  "compatibility_date": "2026-09-10"
-}
