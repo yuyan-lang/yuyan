@@ -1,10 +1,12 @@
-「：汉语：通称字体适配（font adapter）。在诺驿宿主上按族名加载字体：族名映到跨系统的候选文件与字体集序号，依次尝试打开，第一个成功者返回为「字样」，保存宿主文件号、文件长度与字体集序号；按偏移与长度分块读取，单次至多 16 MiB，零长度得空字节串，范围不合或超限转成公共错误；另列可选粗体字面，缺失时应用可回常规面并仿粗，只收真模（TrueType）的 glyf 轮廓，紧模（CFF）中文字体待支持。供上层字体库取用。
-　　文言：字者，文之形体；模者，字之范也。三境殊途，字库异处，故列候选以次求，先启者用之。宿主授其号、长与集序，读必以度；逾限则拒，败则归公误而附其辞。粗体之面或备或缺，应用可返常规而仿之。所收者惟真模之轮廓，紧模之中文未支，此则待办也。
+「：汉语：通称字体适配（font adapter）。在诺驿宿主上按族名加载字体：族名经「字样族表」归到通用族，候选先系统字体目录、后发行包 `字体/`，依次尝试打开，第一个成功者返回为「字样」，保存宿主文件号、文件长度与字体集序号；按偏移与长度分块读取，单次至多 16 MiB，零长度得空字节串，范围不合或超限转成公共错误；粗体族名只在系统里有真粗面，缺失时应用回常规面并仿粗。真模（TrueType，glyf）与紧模（CFF、CFF2）轮廓都交上层字体库解析。
+　　文言：字者，文之形体；模者，字之范也。三境殊途，字库异处，故列候选以次求，先启者用之。族名经「字样族表」归其通用，候先系统字体之目、次发行 `字体/`。宿主授其号、长与集序，读必以度；逾限则拒，败则归公误而附其辞。粗体之面惟系统有真粗者，缺则应用返常规而仿之。真模（glyf）与紧模（CFF、CFF2）之廓皆交上层字体库析之。
 　　赋曰：族名既举，候选列陈；三境同列，无者自湮。先开者得，后至者捐；文楷为首，粗细各因。既启其藏，乃数其幅；零求径返，逾限不宿。读以偏移，界以长度；码归公误，消息俱附。：」
 寻观「豫章」之书。
 寻观「豫章」之「形制」之「帛书」之书。
 寻观「豫寓基」之「错误」之书。
 寻观「诺驿东道」之「字样本术」之书。
+寻观「豫寓字模诺驿榫」之「字样族」之书。
+寻观「豫寓字模诺驿榫」之「字样族表」之书。
 
 「：汉语：字体内部保存宿主给出的文件号、文件长度与字体集序号；私有构造器「诺驿字体」不在规范里，应用不应使用。
 　　文言：字体内存宿主所给之文件号、长与集序；私构不在公约，客勿用。：」
@@ -53,69 +55,18 @@
 　　「宿主操作失败」于「消息」
 也。
 
-「：汉语：族名到候选字体文件（路径、字体集序号）的对照表，依次尝试，第一个能打开的即用；三个系统的路径写在一起，不存在的自然跳过。「无衬线粗体」「衬线粗体」「等宽粗体」是对应常规族的粗体字面（可选，没有就不提供，应用回到常规面并仿粗）。只收 TrueType 轮廓（glyf）的字体：苹方、冬青黑体、思源黑体与 Noto CJK 的中文字形是 CFF 轮廓，字体库暂不支持（待办事项）。轩窗路径用正斜线，诺驿照样能开。
-　　文言：族名对候选之表（径与集序），依次试之，先开者用之；三系统之径同列，无者自略。「无衬线粗体」「衬线粗体」「等宽粗体」者，对应常规族之粗面（可选，无则不供，应用返常规面而仿粗）。惟收 glyf 轮廓者；苹方、冬青、思源、Noto CJK 之中文为 CFF，字体库未支（待办事项）。轩窗之径用正斜线，诺驿亦能开之。：」
+「：汉语：通称族名候选（family candidates）。按族名从「字样族表」取候选：先系统字体目录里的（各系统的路径同列，不存在的自然跳过），再发行包里的 `字体/`（文楷是程序旁的 `字体.ttf`）。别名（如 Arial、serif、宋体）先归到通用族；表里没有的名字返回空列，取字样据此报资源不存在。「无衬线粗体」「衬线粗体」「等宽粗体」只在系统里有真粗面，发行包不带粗体文件，所以应用没有真粗面时回到常规族并仿粗。
+　　文言：依族名自「字样族表」取候：先系统字体之目（三系统之径同列，无者自略），次发行之 `字体/`（文楷为程序旁之 `字体.ttf`）。别名（若 Arial、serif、宋体）先归通用；表中无名则空列，取字样据之报资源不存在。三粗体惟系统有真粗面，发行不携粗文，故无真粗面时客返常规而仿粗。：」
 「字样候选」乃化「文」为（「列」于（「文」合「数」））者也。
 「字样候选」者得「族名」而
-　若「文同」于「族名」于『文楷』则
-　　「列」【（『字体.ttf』与「零」）】
-　否则若「文同」于「族名」于『无衬线』则
-　　「列」
-　　【（『/System/Library/Fonts/STHeiti Medium.ttc』与「一」）
-　　，（『/System/Library/Fonts/STHeiti Light.ttc』与「一」）
-　　，（『/System/Library/Fonts/Supplemental/Arial Unicode.ttf』与「零」）
-　　，（『/usr/share/fonts/truetype/wqy/wqy-microhei.ttc』与「零」）
-　　，（『/usr/share/fonts/wqy-microhei/wqy-microhei.ttc』与「零」）
-　　，（『/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc』与「零」）
-　　，（『/usr/share/fonts/wqy-zenhei/wqy-zenhei.ttc』与「零」）
-　　，（『/usr/share/fonts/truetype/droid/DroidSansFallbackFull.ttf』与「零」）
-　　，（『/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf』与「零」）
-　　，（『/usr/share/fonts/TTF/DejaVuSans.ttf』与「零」）
-　　，（『C:/Windows/Fonts/msyh.ttc』与「零」）
-　　，（『C:/Windows/Fonts/simhei.ttf』与「零」）
-　　，（『C:/Windows/Fonts/arial.ttf』与「零」）
-　　】
-　否则若「文同」于「族名」于『衬线』则
-　　「列」
-　　【（『/System/Library/Fonts/Supplemental/Songti.ttc』与「六」）
-　　，（『/usr/share/fonts/truetype/arphic/uming.ttc』与「零」）
-　　，（『/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf』与「零」）
-　　，（『/usr/share/fonts/TTF/DejaVuSerif.ttf』与「零」）
-　　，（『C:/Windows/Fonts/simsun.ttc』与「零」）
-　　，（『C:/Windows/Fonts/times.ttf』与「零」）
-　　】
-　否则若「文同」于「族名」于『等宽』则
-　　「列」
-　　【（『/System/Library/Fonts/Menlo.ttc』与「零」）
-　　，（『/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf』与「零」）
-　　，（『/usr/share/fonts/TTF/DejaVuSansMono.ttf』与「零」）
-　　，（『C:/Windows/Fonts/consola.ttf』与「零」）
-　　，（『C:/Windows/Fonts/cour.ttf』与「零」）
-　　】
-　否则若「文同」于「族名」于『无衬线粗体』则
-　　「列」
-　　【（『/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf』与「零」）
-　　，（『/usr/share/fonts/TTF/DejaVuSans-Bold.ttf』与「零」）
-　　，（『C:/Windows/Fonts/msyhbd.ttc』与「零」）
-　　，（『C:/Windows/Fonts/arialbd.ttf』与「零」）
-　　】
-　否则若「文同」于「族名」于『衬线粗体』则
-　　「列」
-　　【（『/System/Library/Fonts/Supplemental/Songti.ttc』与「一」）
-　　，（『/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf』与「零」）
-　　，（『/usr/share/fonts/TTF/DejaVuSerif-Bold.ttf』与「零」）
-　　，（『C:/Windows/Fonts/timesbd.ttf』与「零」）
-　　】
-　否则若「文同」于「族名」于『等宽粗体』则
-　　「列」
-　　【（『/System/Library/Fonts/Menlo.ttc』与「一」）
-　　，（『/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf』与「零」）
-　　，（『/usr/share/fonts/TTF/DejaVuSansMono-Bold.ttf』与「零」）
-　　，（『C:/Windows/Fonts/consolab.ttf』与「零」）
-　　，（『C:/Windows/Fonts/courbd.ttf』与「零」）
-　　】
-　否则
-　　（「罄」以（「文」合「数」））
+　「族项候选」于「字样族表」于「族名」
+也。
+
+「：汉语：通称缺字回退链（missing-glyph fallback chain）。按族名给出回退的族名次序：首选、同类通用族、汉字、符号；应用逐个取字体、查码表，取第一个有此码点的。这一支只是「字样族」表的薄包装，供上层与验收直接调用。
+　　文言：缺字回退之链：依族名出其序：首选、同类通用、汉字、符号；客逐取字体、查码表，取首有是码者。此惟「字样族」表之薄裹，供上层与验收径呼。：」
+「字样回退链」乃化「文」为（「列」于「文」）者也。
+「字样回退链」者得「族名」而
+　「回退链」于「字样族表」于「族名」
 也。
 
 「：汉语：依次打开候选文件，第一个成功的即得；都失败时返回最后一次的错误（初值为资源不存在）。
