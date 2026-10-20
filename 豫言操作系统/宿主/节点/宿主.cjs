@@ -91,6 +91,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 模块=单元目录?null:缓存??本工.模块??new WebAssembly.Module(文件.readFileSync(模块路径));
   // 文言：单元之目中有“程序名.txt”者（豫构「运行」所书，即脚本之径），客所见之程名取之。汉语：单元目录里有“程序名.txt”时（豫构「运行」写的脚本路径），客体看到的程序名取它。
   const 程序名=单元目录&&文件.existsSync(路径.join(单元目录,'程序名.txt'))?文件.readFileSync(路径.join(单元目录,'程序名.txt'),'utf8'):模块路径;
+  // 文言：装网汇单元行其 _start 时，暂以单元之参与程名代本程之参与名，返则复之（提案〇〇〇四三）。汉语：「装网汇单元」运行单元的 _start 时，暂把命令行参数与程序名换成单元的，返回后恢复（提案 00043）。
+  let 今程序名=程序名, 今客参数=客参数;
   const 编译毕=performance.now();
   const 文=值=>Buffer.isBuffer(值)?值.toString('utf8'):String(值);
   const 径=值=>路径.resolve(当前目录,文(值));
@@ -175,7 +177,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
         }
       }finally{释占锁(占径);}
     },
-    豫言_获取命令行程序名:()=>程序名,
+    豫言_获取命令行程序名:()=>今程序名,
     豫言_获取文件沙256:名=>获取程序内容SHA256(径(名)),
     豫言_获取当前工作目录:()=>当前目录,
     豫言_切换当前工作目录:名=>{const 目标=径(名);try{if(!文件.statSync(目标).isDirectory())return [20n,'不是目录：'+目标];当前目录=目标;return [0n,''];}catch(错){return [BigInt(Math.abs(系统.constants.errno[错.code]??2)),错.message];}},
@@ -280,7 +282,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     实有:串参('豫言_路径存在'),为箧:串参('豫言_路径是文件夹'),为卷:串参('豫言_路径是普通文件'),能行:串参('豫言_路径可执行'),
     为影:串参('豫言_路径为符号链接'),真径:串参('豫言_取得真实路径'),改时:串参('豫言_获取文件修改时间'),
     所居:无参('豫言_获取当前工作目录'),迁:串参('豫言_切换当前工作目录'),
-    辞:码=>原语.豫言_退出进程(码),自号:无参('豫言_获取命令行程序名'),受命:()=>客参数,问俗:串参('豫言_获取环境变量'),
+    辞:码=>原语.豫言_退出进程(码),自号:无参('豫言_获取命令行程序名'),受命:()=>今客参数,问俗:串参('豫言_获取环境变量'),
     亲行:(名,参)=>原语.豫言_同步运行子进程并继承标准流(缓(名),子参(参)),
     传行:(名,参)=>原语.豫言_同步运行子进程并传递输出(缓(名),子参(参)),
     成行:(名,参)=>原语.豫言_同步运行子进程(缓(名),子参(参)),
@@ -344,22 +346,36 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     while(位<字.length){const 节=字[位++],长=读(),止=位+长;if(节===9){读();if(读()!==0)throw Error('单元元素段须为标志 0');while(字[位]!==0x0b)位++;位++;return 读();}位=止;}
     return 0;
   }
+  // 文言：本进程之单元界：零号表、二异常之标与已装诸单元之出，诸单元共之（提案〇〇〇四三）。汉语：本进程的单元环境：零号表、两个异常标签与已装单元的导出，各单元共用（提案 00043）。
+  let 单元界=null;
+  const 取单元界=()=>单元界??={表:new WebAssembly.Table({element:'anyfunc',initial:0}),标签:{escape:new WebAssembly.Tag({parameters:['eqref','eqref']}),error:new WebAssembly.Tag({parameters:['eqref']})},导出们:new Map()};
+  // 文言：装一单元：后出者掩前。汉语：装入一个单元并返回实例；后装的同名导出遮住先装的。
+  function 装一单元(字,名){
+    const 界=取单元界(),模=new WebAssembly.Module(字),基=界.表.length;
+    界.表.grow(元素数(字));
+    const 单元={};
+    for(const 导 of WebAssembly.Module.imports(模))if(导.module==='单元'){if(!界.导出们.has(导.name))throw Error('单元导入未找到：'+导.name+'（'+名+'）');单元[导.name]=界.导出们.get(导.name);}
+    const 实例=new WebAssembly.Instance(模,{...造导入(模),运行时:{表:界.表,表基:new WebAssembly.Global({value:'i32',mutable:false},基),escape:界.标签.escape,error:界.标签.error},单元});
+    for(const [出名,值] of Object.entries(实例.exports))界.导出们.set(出名,值);
+    return 实例;
+  }
   function 装入单元们(目录){
     const 行们=文件.readFileSync(路径.join(目录,'顺序.txt'),'utf8').split('\n').filter(行=>行.length).map(行=>行.split('\t'));
-    const 表=new WebAssembly.Table({element:'anyfunc',initial:0});
-    const 标签={escape:new WebAssembly.Tag({parameters:['eqref','eqref']}),error:new WebAssembly.Tag({parameters:['eqref']})};
-    const 导出们=new Map(),实例们=[];
     for(const [名] of 行们){
-      const 字=文件.readFileSync(路径.join(目录,名)),模=new WebAssembly.Module(字),基=表.length;
-      表.grow(元素数(字));
-      const 单元={};
-      for(const 导 of WebAssembly.Module.imports(模))if(导.module==='单元'){if(!导出们.has(导.name))throw Error('单元导入未找到：'+导.name+'（'+名+'）');单元[导.name]=导出们.get(导.name);}
-      const 实例=new WebAssembly.Instance(模,{...造导入(模),运行时:{表:表,表基:new WebAssembly.Global({value:'i32',mutable:false},基),escape:标签.escape,error:标签.error},单元});
-      for(const [出名,值] of Object.entries(实例.exports))导出们.set(出名,值);
+      const 实例=装一单元(文件.readFileSync(路径.join(目录,名)),名);
       // 文言：装一单元即行其 _start（初置顶层数据，试与脚本并行程序之体），后装者乃得读之。汉语：每装入一个单元就运行它的 _start（初始化顶层数据，测试与脚本还运行程序体），后装的单元才能读到它的顶层数据。
       实例.exports._start();
     }
   }
+  // 文言：装网汇单元（构建宿主，提案〇〇〇四三）：装一单元于本进程，暂以所予之参与程名行其 _start，返则复之；零为成，不能装或抛非豫言之误者印其由而返一，退出照传。
+  // 汉语：「装网汇单元」（构建宿主服务，提案 00043）：把一个单元装进本进程，暂以给定的参数与程序名运行它的 _start，返回后恢复；零为成功，装不进或抛出宿主错误时印出原因、返回一，退出照常往外传。
+  构建基础实现.装网汇单元=(字,参们,名)=>{
+    const 旧名=今程序名,旧参=今客参数;
+    今程序名=文(缓(名));今客参数=参们.map(项=>文(缓(项)));
+    try{装一单元(缓(字),今程序名).exports._start();return 0;}
+    catch(错){if(错?.退出码!==undefined)throw 错;写输出(2,Buffer.from('装网汇单元：'+(错?.stack??错)+'\n'));return 1;}
+    finally{今程序名=旧名;今客参数=旧参;}
+  };
   let 退出码=0;
   // 文言：_start 先行静态之初置，乃召入口之函。汉语：_start 先做静态初始化，再调用入口函数「入口」（提案 00006）。
   try{if(单元目录)装入单元们(单元目录);else new WebAssembly.Instance(模块,{...造导入(模块)}).exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}

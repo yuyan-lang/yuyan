@@ -36,6 +36,18 @@ function 格式化时间(格式) {
   return 文(格式).replace(/%./g, 项 => { if (!(项 in 表)) throw Error('未支持日期格式 ' + 项); return 表[项]; });
 }
 
+// 文言：单元元素段之长（同诺驿宿主）。汉语：单元元素段的长度，表先按它增长（同诺驿宿主的「元素数」）。
+function 元素数(字) {
+  let 位 = 8;
+  const 读 = () => { let 值 = 0, 移 = 0, 字节; do { 字节 = 字[位++]; 值 += (字节 & 127) * 2 ** 移; 移 += 7; } while (字节 & 128); return 值; };
+  while (位 < 字.length) {
+    const 节 = 字[位++], 长 = 读(), 止 = 位 + 长;
+    if (节 === 9) { 读(); if (读() !== 0) throw Error('单元元素段须为标志 0'); while (字[位] !== 0x0b) 位++; 位++; return 读(); }
+    位 = 止;
+  }
+  return 0;
+}
+
 let 控制 = null, 数据 = null, 桥模块 = null;
 const 模块缓存 = new Map();
 
@@ -64,7 +76,9 @@ function 问(号, 名, ...参) {
 }
 
 function 运行(任务) {
-  const {号, 程序名, 参数, 环境} = 任务;
+  const {号, 环境} = 任务;
+  // 文言：程名与参可暂易（装网汇单元时，提案〇〇〇四三）。汉语：程序名与命令行参数可临时替换（「装网汇单元」运行单元时，提案 00043）。
+  let 程序名 = 任务.程序名, 参数 = 任务.参数;
   let 当前目录 = 任务.目录;
   const 径 = 值 => { const 串 = 文(值); return 串.startsWith('/') ? 串 : (当前目录 === '/' ? '' : 当前目录) + '/' + 串; };
   const 出 = (流, 值) => self.postMessage({种: '出', 号, 流, 值});
@@ -144,8 +158,33 @@ function 运行(任务) {
     藏包境: 内容 => 问(号, '存放包上下文', 当前目录, 内容.slice()),
     可绘监工板: () => false,
     绘监工板: () => undefined,
-    取今程序沙二五六: () => 问(号, '摘要', 程序名),
+    取今程序沙二五六: () => 问(号, '摘要', 任务.程序名),
     取卷沙二五六: 名 => 问(号, '摘要', 径(名)),
+    // 文言：装网汇单元（提案〇〇〇四三）：装一单元于本进程，暂以所予之参与程名行其 _start，返则复之；零为成，余印其由而返一，退出照传。
+    // 汉语：「装网汇单元」（提案 00043）：把一个单元装进本进程，暂以给定的参数与程序名运行它的 _start，返回后恢复；零为成功，装不进或抛出宿主错误时印出原因、返回一，退出照常往外传。
+    装网汇单元: (字, 参们, 名) => {
+      const 旧名 = 程序名, 旧参 = 参数;
+      程序名 = 文(名); 参数 = Array.from(参们, 文);
+      try { 装一单元(字.slice(), 程序名).exports._start(); return 0; }
+      catch (错) { if (错?.退出码 !== undefined) throw 错; 出(2, 编码器.encode('装网汇单元：' + (错?.stack ?? 错) + '\n')); return 1; }
+      finally { 程序名 = 旧名; 参数 = 旧参; }
+    },
+  };
+  // 文言：本进程之单元界：零号表、二异常之标与已装诸单元之出（同诺驿宿主）。汉语：本进程的单元环境：零号表、两个异常标签与已装单元的导出，各单元共用（同诺驿宿主）。
+  let 单元界 = null;
+  const 装一单元 = (字, 名) => {
+    单元界 ??= {表: new WebAssembly.Table({element: 'anyfunc', initial: 0}), 标签: {escape: new WebAssembly.Tag({parameters: ['eqref', 'eqref']}), error: new WebAssembly.Tag({parameters: ['eqref']})}, 导出们: new Map()};
+    const 模 = new WebAssembly.Module(字), 基 = 单元界.表.length;
+    单元界.表.grow(元素数(字));
+    const 单元 = {};
+    for (const 导 of WebAssembly.Module.imports(模)) if (导.module === '单元') {
+      if (!单元界.导出们.has(导.name)) throw Error('单元导入未找到：' + 导.name + '（' + 名 + '）');
+      单元[导.name] = 单元界.导出们.get(导.name);
+    }
+    const 运行时 = {表: 单元界.表, 表基: new WebAssembly.Global({value: 'i32', mutable: false}, 基), escape: 单元界.标签.escape, error: 单元界.标签.error};
+    const 实例 = new WebAssembly.Instance(模, {...造边界导入(模, 桥, {豫章: 标准库, 营造: 构建基础}), 运行时, 单元});
+    for (const [出名, 值] of Object.entries(实例.exports)) 单元界.导出们.set(出名, 值);
+    return 实例;
   };
   const 桥 = new WebAssembly.Instance(桥模块).exports;
   const 模块 = 任务.模块;
