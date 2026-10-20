@@ -1,0 +1,58 @@
+「：汉语：通称结构化克隆测试（structured clone test）。在页面脚本里克隆环与共享引用、Map、Set、Date、RegExp、Error、ArrayBuffer 与视图；转移后原缓冲长度为零；根原值不变。文档节点、函数与符号分别抛出拒绝。
+　　文言：结构克隆之试：于页面之脚本摹环与共引、映射、集合、日期、正则、误物、牍与诸观；转移之后旧牍幅零，根本不变。文档之节、术与记各见拒。
+　　赋曰：环回共引一身藏，映射集合各成行。日期记时律存式，误传其辞牍转忙。节点术记三见拒，摹成诸验此中详。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「无」为「系网览篇」于「境」于「文档」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var F=[];function c(n,v){if(!v)F.push(n)}var o={n:1,s:"甲"};o.self=o;var shared={z:2};var arr=[shared,shared];var c1=structuredClone({o:o,arr:arr});c("环",c1.o.self===c1.o);c("原不共",c1.o!==o);c("共引",c1.arr[0]===c1.arr[1]&&c1.arr[0]!==shared);c("常物",c1.arr[0].z===2);var m=new Map([["k",{v:1}]]);var mc=structuredClone(m);c("映射",mc instanceof Map&&mc.get("k").v===1&&mc.get("k")!==m.get("k")&&mc!==m);var st=new Set([1,2]);var sc=structuredClone(st);c("集合",sc instanceof Set&&sc.has(1)&&!sc.has(3));var d=new Date(123456789);var dc=structuredClone(d);c("日期",dc instanceof Date&&dc.getTime()===123456789&&dc!==d);var r=/ab+c/gi;var rc=structuredClone(r);c("正则",rc.source==="ab+c"&&rc.flags==="gi"&&rc!==r);var e=new TypeError("坏");var ec=structuredClone(e);c("误物",ec instanceof TypeError&&ec.message==="坏"&&ec!==e);c("误自有",ec.hasOwnProperty("message"));var b=new ArrayBuffer(8);new Uint8Array(b)[0]=9;var t=structuredClone(b);c("牍",t!==b&&t.byteLength===8&&new Uint8Array(t)[0]===9&&new Uint8Array(b)[0]===9);var u=new Uint16Array(b);var uc=structuredClone(u);c("字列",uc instanceof Uint16Array&&uc.buffer!==b&&uc[0]===u[0]);var dv=new DataView(b,2,4);var dvc=structuredClone(dv);c("观",dvc instanceof DataView&&dvc.buffer!==b&&dvc.byteOffset===2&&dvc.byteLength===4);var bx=new ArrayBuffer(4);new Uint8Array(bx)[0]=65;var bxc=structuredClone(bx,{transfer:[bx]});c("转移",bx.byteLength===0&&new Uint8Array(bxc)[0]===65);window.__cloneFail=F.join(",");』而
+　令「失」为「急就在境行脚本」于「境」于『window.__cloneFail;』而
+　若非（「急就严格等」于「失」于（「急就字符串值」于（「急就文字自串」于『』）））则
+　　「书」于（『失：』接（「急就文字作串」于（「急就取键」于「失」）））
+　否则
+　　「元」而后
+　　「检查」
+　　　于「名」曰『环、共引、映射、集合、日期、正则、误物、牍、观与转移』
+　　　于「真」曰（「急就严格等」于（「急就在境行脚本」于「境」于『window.__cloneFail.length===0;』）于（「急就布尔」于「阳」））而后
+　　令「节点拒」为
+　　　「姑试」以「爻」
+　　　　于（得「弃」而
+　　　　　令「弃」为「急就在境行脚本」于「境」于『structuredClone(document.getElementById("a"));』而
+　　　　　「阴」
+　　　　）
+　　　　于（得「故」而「阳」）而
+　　「检查」于「名」曰『文档节点抛 DataCloneError』于「真」曰「节点拒」而后
+　　令「函数拒」为
+　　　「姑试」以「爻」
+　　　　于（得「弃」而
+　　　　　令「弃」为「急就在境行脚本」于「境」于『structuredClone(function(){});』而
+　　　　　「阴」
+　　　　）
+　　　　于（得「故」而「阳」）而
+　　「检查」于「名」曰『函数抛 DataCloneError』于「真」曰「函数拒」而后
+　　令「符号拒」为
+　　　「姑试」以「爻」
+　　　　于（得「弃」而
+　　　　　令「弃」为「急就在境行脚本」于「境」于『structuredClone(Symbol("甲"));』而
+　　　　　「阴」
+　　　　）
+　　　　于（得「故」而「阳」）而
+　　「检查」于「名」曰『符号抛 DataCloneError』于「真」曰「符号拒」而后
+　　「书」于『结构化克隆测试通过』
+也。
+
+「入口」于「元」。

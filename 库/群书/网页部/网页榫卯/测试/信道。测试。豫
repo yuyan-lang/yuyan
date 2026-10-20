@@ -1,0 +1,55 @@
+「：汉语：通称信道测试（messaging test）。页面脚本新建 MessageChannel，按次序收消息、转移缓冲、未启动前的消息暂存、关闭后不再收；BroadcastChannel 同名互收而自身不收；window.postMessage 经任务队列派发带 data、origin、source、ports 的 message 事件。
+　　文言：信道之试：页面之脚本新造 MessageChannel，依序受书、移牍、未启则藏、既闭则绝；BroadcastChannel 同名互受而自发不受；window.postMessage 经任务之队派 message 事，带 data、origin、source、ports。
+　　赋曰：两端口相依，先后各成诗。未启门前且暂住，既闭户内不相知。檄行同号众皆受，自发还从别处辞。窗书一过任务队，四般字段到听时。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「无」为「系网览篇」于「境」于「文档」而
+　令「无」为「急就在境行脚本」于「境」于『window.__信={};
+var ch=new MessageChannel();__信.序=[];ch.port2.onmessage=function(e){__信.序.push("甲"+e.data.n)};
+ch.port1.postMessage({n:1});ch.port1.postMessage({n:2});
+var ch2=new MessageChannel();__信.移=[];ch2.port2.onmessage=function(e){__信.移.push(new Uint8Array(e.data)[0]+":"+e.data.byteLength)};
+var buf=new ArrayBuffer(4);new Uint8Array(buf)[0]=65;ch2.port1.postMessage(buf,{transfer:[buf]});__信.旧=function(){return buf.byteLength};
+var ch3=new MessageChannel();__信.始=[];ch3.port2.addEventListener("message",function(e){__信.始.push(e.data)});
+ch3.port1.postMessage("早書");__信.未启之数=__信.始.length;ch3.port2.start();__信.启后之数=__信.始.length;
+ch3.port2.close();ch3.port1.postMessage("晚書");
+var b1=new BroadcastChannel("厅");var b2=new BroadcastChannel("厅");__信.檄=[];__信.自发=0;
+b1.onmessage=function(e){__信.自发++};b2.onmessage=function(e){__信.檄.push(e.data.q+"|"+e.type)};
+b1.postMessage({q:7});
+__信.窗=[];window.addEventListener("message",function(e){__信.窗.push(e.data.v+"|"+e.type+"|"+(e.source===window)+"|"+(Array.isArray(e.ports)?e.ports.length:-1)+"|"+(typeof e.origin))});
+window.postMessage({v:3},"*");』而
+　令「零时」为「行到期网页定时器」于「现在」曰「零」而
+　令「十时」为「行到期网页定时器」于「现在」曰「一零」而
+　令「无」为「网页微役察点」于「元」而
+　「检查」
+　　于「名」曰『端口按次序收消息』
+　　于「真」曰（「急就严格等」于（「急就在境行脚本」于「境」于『__信.序.join(",")==="甲1,甲2";』）于（「急就布尔」于「阳」））而后
+　「检查」
+　　于「名」曰『转移后原缓冲长度为零、收到内容不变』
+　　于「真」曰（「急就严格等」于（「急就在境行脚本」于「境」于『__信.移[0]==="65:4"&&__信.旧()===0;』）于（「急就布尔」于「阳」））而后
+　「检查」
+　　于「名」曰『未启动前暂存、start 后送达、close 后不再收』
+　　于「真」曰（「急就严格等」
+　　　于（「急就在境行脚本」于「境」于『__信.未启之数===0&&__信.启后之数===1&&__信.始.length===1&&__信.始[0]==="早書";』）
+　　　于（「急就布尔」于「阳」））而后
+　「检查」
+　　于「名」曰『广播同名互收而自身不收』
+　　于「真」曰（「急就严格等」于（「急就在境行脚本」于「境」于『__信.檄.length===1&&__信.檄[0]==="7|message"&&__信.自发===0;』）于（「急就布尔」于「阳」））而后
+　「检查」
+　　于「名」曰『窗口消息带四个字段』
+　　于「真」曰（「急就严格等」于（「急就在境行脚本」于「境」于『__信.窗.length===1&&__信.窗[0]==="3|message|true|0|string";』）于（「急就布尔」于「阳」））而后
+　「书」于『信道测试通过』
+也。
+
+「入口」于「元」。
