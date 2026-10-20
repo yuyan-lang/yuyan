@@ -1,0 +1,21 @@
+「：汉语：通称画布冒烟测试（canvas smoke test）。在页面环境里取画布元素，检查同一元素返回同一二维上下文、其他种类返回空、缺省尺寸、改尺寸；再画矩形、渐变、圆弧、变换、Path2D、裁剪、文字、putImageData、drawImage，用 getImageData 逐点核对像素，并检查 toDataURL 的 PNG 前缀。任一不合即告祸，全部通过则书成。
+　　文言：画布之冒烟：于页境取画布之节，验一节还一上下、余名则空、缺省之尺、易尺之效；乃画矩、渐、弧、变、Path2D、裁剪、文字、putImageData、drawImage，以 getImageData 逐点核其像素，并验 toDataURL 之 PNG 前缀。一有不合则告祸，百验既周乃书成。
+　　赋曰：一节还一上下身，余名皆空尺自陈；矩形渐变弧相继，变换路径裁剪新；文字像素图相绘，取素核之验其真；PNG 前缀终一验，百端俱合乃书成。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<body><canvas id="c" width="20" height="20"></canvas></body>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「值」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var c=document.getElementById("c");var g=c.getContext("2d");var ok=!!g&&g===c.getContext("2d")&&c.getContext("webgl")===null&&c.width===20&&c.height===20;g.fillStyle="red";g.fillRect(0,0,10,10);var lg=g.createLinearGradient(10,0,20,0);lg.addColorStop(0,"rgb(0,255,0)");lg.addColorStop(1,"rgb(0,0,255)");g.fillStyle=lg;g.fillRect(10,0,10,10);g.beginPath();g.arc(10,15,3,0,6.283185307179586);g.fillStyle="rgb(0,0,255)";g.fill();var p=g.getImageData(0,0,1,1).data;ok=ok&&p[0]===255&&p[1]===0&&p[2]===0&&p[3]===255;var q=g.getImageData(19,0,1,1).data;ok=ok&&q[1]<40&&q[2]>215;var m=g.measureText("甲");ok=ok&&m.width>0;g.save();g.translate(2,0);var mt=g.getTransform();ok=ok&&mt.a===1&&mt.e===2&&mt.f===0;g.fillStyle="rgb(0,0,0)";g.fillRect(0,2,2,2);g.restore();var tr=g.getImageData(2,2,1,1).data;ok=ok&&tr[0]===0&&tr[3]===255;var pd=new Path2D("M0 0 L4 0 L4 4 Z");g.fillStyle="rgb(255,0,255)";g.fill(pd);var z=g.getImageData(3,1,1,1).data;ok=ok&&z[0]===255&&z[1]===0&&z[2]===255;g.save();g.beginPath();g.rect(0,0,5,5);g.clip();g.fillStyle="rgb(255,255,0)";g.fillRect(0,0,20,20);g.restore();var cq=g.getImageData(1,1,1,1).data;var co=g.getImageData(15,15,1,1).data;ok=ok&&cq[0]===255&&cq[1]===255&&cq[2]===0&&co[3]===0;g.font="10px sans-serif";g.fillStyle="rgb(0,0,0)";g.fillText("甲",0,20);var id=g.createImageData(2,1);id.data[0]=1;id.data[1]=2;id.data[2]=3;id.data[3]=255;id.data[4]=4;id.data[5]=5;id.data[6]=6;id.data[7]=255;g.putImageData(id,0,18);var w=g.getImageData(0,18,2,1).data;ok=ok&&w[0]===1&&w[3]===255&&w[6]===6;var d2=document.createElement("canvas");ok=ok&&d2.width===300&&d2.height===150;var g2=d2.getContext("2d");g2.fillStyle="rgb(0,255,0)";g2.fillRect(0,0,5,5);g.drawImage(d2,0,18);var k=g.getImageData(0,18,1,1).data;ok=ok&&k[1]===255&&k[0]===0;ok=ok&&c.toDataURL("image/png").indexOf("data:image/png;base64,")===0;c.width=20;c.height=20;ok=ok&&c.width===20&&c.height===20;ok;』而
+　若「急就真值」于「值」则「书」于『画布冒烟通过』否则「告祸」于『画布冒烟失败：上下文、像素或数据地址不合。』
+也。
+
+「入口」于「元」。
