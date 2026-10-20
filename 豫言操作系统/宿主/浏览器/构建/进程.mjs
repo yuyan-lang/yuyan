@@ -346,6 +346,17 @@ export class 进程表 {
       case '读行': return this.读行(记录);
       case '页杂凑': return this.页杂凑(参[0], 参[1]);
       case '召回': { const 子 = this.记录们.get(参[0]); if (!子) return 8; this.终止(子, 143); return 0; }
+      // 文言：辍役（同终端之 Ctrl-C，同裸机）：号正则断其务及诸子孙，号负则惟断负号之子孙；退码皆百三十。果零成，一无可断之子孙，八号不合。
+      // 汉语：打断任务（同终端 Ctrl-C，语义同裸机）：号为正打断这个任务与它的全部子孙，号为负只打断任务 −号 的子孙；退出码都是 130。结果零成功，一没有可打断的子孙，八任务号不对。
+      case '辍役': {
+        const 根 = this.记录们.get(Math.abs(参[0]));
+        if (!根 || 根.完成) return 8;
+        const 子孙们 = [], 寻 = 父 => { for (const 记 of this.记录们.values()) if (记.父号 === 父 && !记.完成) { 子孙们.push(记); 寻(记.号); } };
+        寻(根.号);
+        for (const 记 of 子孙们.reverse()) this.终止(记, 130);
+        if (参[0] > 0) { this.终止(根, 130); return 0; }
+        return 子孙们.length ? 0 : 1;
+      }
       default:
         // 文言：余务交外（网页行在之显示、字体、剪贴、器）。汉语：其余操作交给外务（网页行在提供的显示、字体、剪贴板、设备）。
         if (this.外务 && Object.hasOwn(this.外务, 名)) return this.外务[名](记录, ...参);
