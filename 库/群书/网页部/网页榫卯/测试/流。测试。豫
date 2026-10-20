@@ -1,0 +1,32 @@
+「：汉语：通称网页流测试（browser streams test）。页面脚本里逐个验证：可读流读到完、背压下 desiredSize 的变化、pipeThrough 经变换流改写、tee 两路相同、ReadableStream.from 与异步迭代、TextDecoderStream 跨块拼回多字节字、gzip 压缩再解压还原、两种排队策略。脚本把结果记进数组，跑完后过作业队列，再核对十项都成。
+　　文言：网页流之试：于页面脚本中逐一验之：读流读尽、背压下 desiredSize 之变、pipeThrough 经变换之流而改、tee 二路相同、ReadableStream.from 与异步之迭代、TextDecoderStream 跨块拼回多字节之字、gzip 压而复解、二种排队之策。脚本录其果于列，毕而过作业之队，乃核十项皆成。
+　　赋曰：十事同场各试能，读流到尽验其终。背压尺缩知盈缩，变换文移见改通。分茶两路同流饮，引源异步共归风。残字跨块重拼合，压缩还原往返同。二策计其长短，一编收此成功。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之「网页流」之书。
+寻观「网页榫卯」之「文帛编码」之书。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「境」为「急就新全局境」于「元」而
+　令「无」为「安装网页流」于「境」而
+　令「无」为「安装网页文帛编码」于「境」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var log=[];function note(n,ok){log.push(n+(ok?":成":":败"));}var rs1=new ReadableStream({start:function(c){c.enqueue("甲");c.enqueue("乙");c.close();}});var r1=rs1.getReader();var g1=[];r1.read().then(function(x){g1.push(x.value);return r1.read();}).then(function(x){g1.push(x.value);return r1.read();}).then(function(x){g1.push(String(x.done));note("读完",g1.join(",")==="甲,乙,true");});var sz=[];new ReadableStream({start:function(c){sz.push(c.desiredSize);c.enqueue(1);sz.push(c.desiredSize);c.enqueue(2);sz.push(c.desiredSize);}},{highWaterMark:2,size:function(){return 1;}});note("背压",sz[0]===2&&sz[1]===1&&sz[2]===0);var rs3=new ReadableStream({start:function(c){c.enqueue("a");c.enqueue("b");c.close();}});var ts=new TransformStream({transform:function(chunk,c){c.enqueue(chunk+"!");}});var o3=[];rs3.pipeThrough(ts).pipeTo(new WritableStream({write:function(chunk){o3.push(chunk);}})).then(function(){note("变换",o3.join("")==="a!b!");});var rs4=new ReadableStream({start:function(c){c.enqueue(1);c.enqueue(2);c.enqueue(3);c.close();}});var pr=rs4.tee();var a4=[],b4=[];var pa=pr[0].pipeTo(new WritableStream({write:function(x){a4.push(x);}}));var pb=pr[1].pipeTo(new WritableStream({write:function(x){b4.push(x);}}));Promise.all([pa,pb]).then(function(){note("分茶",a4.join("")==="123"&&b4.join("")==="123");});var g5=[];ReadableStream.from(["甲","乙"]).pipeTo(new WritableStream({write:function(x){g5.push(x);}})).then(function(){note("引源",g5.join("")==="甲乙");});(async function(){var g=[];for await (const x of ReadableStream.from(["一","二"])){g.push(x);}note("异步迭代",g.join("")==="一二");})();var all=new TextEncoder().encode("汉字");var rs6=new ReadableStream({start:function(c){c.enqueue(all.subarray(0,2));c.enqueue(all.subarray(2));c.close();}});var o6=[];rs6.pipeThrough(new TextDecoderStream()).pipeTo(new WritableStream({write:function(s){o6.push(s);}})).then(function(){note("解文",o6.join("")==="汉字");});var raw=new TextEncoder().encode("压缩与解压的往返");var rs7=new ReadableStream({start:function(c){c.enqueue(raw);c.close();}});var o7=[];rs7.pipeThrough(new CompressionStream("gzip")).pipeThrough(new DecompressionStream("gzip")).pipeTo(new WritableStream({write:function(chunk){o7.push(chunk);}})).then(function(){note("压缩",o7.length===1&&new TextDecoder().decode(o7[0])==="压缩与解压的往返");});note("计数策",new CountQueuingStrategy({highWaterMark:3}).size()===1);note("字节策",new ByteLengthQueuingStrategy({highWaterMark:8}).size({byteLength:5})===5);』而
+　令「无」为「急就行作业序」于「元」而
+　令「无」为「急就行作业序」于「元」而
+　令「无」为「急就行作业序」于「元」而
+　令「果值」为「急就在境行脚本」于「境」于『(log.length===10&&log.join("|").indexOf(":败")<0)?"十项皆成":("未过["+log.length+"]"+log.join("|"));』而
+　令「文果」为「急就文字作串」于（「急就取键」于「果值」）而
+　「检查」于「名」曰『十项皆成』于「真」曰（「文同」于「文果」于『十项皆成』）而后
+　「书」于『网页流测试通过』
+也。
+
+「入口」于「元」。
