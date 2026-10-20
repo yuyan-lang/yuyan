@@ -8,8 +8,8 @@ import {读取标准终端尺寸} from './终端尺寸.mjs';
 
 const [模式, 服务路径] = process.argv.slice(2);
 assert.ok(服务路径, '须传同源豫言原生终端尺寸服务');
-process.env.YY_TERMINAL_SIZE_SERVICE = 路径.resolve(服务路径);
-assert.ok(existsSync(process.env.YY_TERMINAL_SIZE_SERVICE), '同源终端尺寸原生服务尚未构建');
+process.env.豫言终端尺寸服务 = 路径.resolve(服务路径);
+assert.ok(existsSync(process.env.豫言终端尺寸服务), '同源终端尺寸原生服务尚未构建');
 if (模式 === '实终端') {
   for (const [列, 行] of [[109, 37], [73, 19], [0, 0]]) {
     const 设 = spawnSync('stty', ['cols', String(列), 'rows', String(行)], {stdio: 'inherit'});
@@ -23,7 +23,7 @@ if (模式 === '实终端') {
 } else {
   assert.deepEqual(读取标准终端尺寸(), [false, 0n, 0n], '管道标准输出须返回查询失败');
   const 本文件 = fileURLToPath(import.meta.url);
-  const 命令 = [process.execPath, 本文件, '实终端', process.env.YY_TERMINAL_SIZE_SERVICE]
+  const 命令 = [process.execPath, 本文件, '实终端', process.env.豫言终端尺寸服务]
     .map(文 => "'" + 文.replaceAll("'", "'\\''") + "'").join(' ');
   // 汉语：script只提供PTY，业务查询与改尺寸分别由豫言服务及系统stty完成。Windows的PTY驱动留待后续版本。
   // 文言：script惟供伪终端，查尺寸、易尺寸各由豫言服务、系统stty成之。轩窗之驱待后版。

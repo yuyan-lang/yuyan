@@ -79,9 +79,9 @@ runTest('uses half-open source ranges and selects the narrowest match', () => {
   assert.strictEqual(selectNarrowestInfo([wide, narrow], 2, 4), narrow);
 });
 
-if (process.env.YY_EDITOR_WASM_ROOT) {
+if (process.env.豫言编辑器网汇根目录) {
   runTest('reads real language and semantic artifacts through Yuyan Wasm', () => {
-    const root = process.env.YY_EDITOR_WASM_ROOT;
+    const root = process.env.豫言编辑器网汇根目录;
     const read = kind => JSON.parse(execFileSync(process.execPath, [
       path.join(root, '豫言操作系统/宿主/节点/宿主.cjs'),
       path.join(root, '树码.wasm'),

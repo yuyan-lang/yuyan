@@ -1,4 +1,4 @@
-// 文言：客实例各立，机器码共用；限次复用其工，不复用其客。汉语：默认有界复用线程与 GC 堆容量，每项任务仍有新 Wasm 实例、值桥和宿主状态；设 YY_NODE_COMPILER_REUSE=0 恢复独立线程。
+// 文言：客实例各立，机器码共用；限次复用其工，不复用其客。汉语：默认有界复用线程与 GC 堆容量，每项任务仍有新 Wasm 实例、值桥和宿主状态；设 豫言诺驿编译线程复用=0 恢复独立线程。
 'use strict';
 const 文件 = require('node:fs'), 路径 = require('node:path');
 const {EventEmitter} = require('node:events');
@@ -9,12 +9,12 @@ const {PassThrough} = require('node:stream');
 // 汉语：线程堆上限至少 4096 MB：小内存机器（如 CI 的约 7 GB macOS 运行器）上 V8 默认只给约四分之一物理内存，解析生成的大模块（子组融合。着色生成 约需 3～4 GB）会耗尽；大内存机器沿用更大的默认值。文言：线程之堆上限至少四千零九十六兆：小存之机，V8 默认唯给物理内存四之一，析生成之大模则堆尽；大存之机仍用其默认。
 const 线程资源限额 = {stackSizeMb: 128, maxOldGenerationSizeMb: Math.max(4096, Math.floor(require('node:v8').getHeapStatistics().heap_size_limit / 1048576))};
 
-// 文言：值桥先从宿主所录之环境，次求于今目录，无则取宿主之旁。汉语：值桥文件先用宿主写入环境变量 YY_NODE_VALUE_BRIDGE 的绝对路径，其次在当前目录找，再用宿主文件旁的那份。
-const 桥文件路径 = () => {const 传 = process.env.YY_NODE_VALUE_BRIDGE; return 传 && 文件.existsSync(传) ? 传 : 文件.existsSync('节点值桥接.wasm') ? 路径.resolve('节点值桥接.wasm') : 路径.join(__dirname, '节点值桥接.wasm');};
+// 文言：值桥先从宿主所录之环境，次求于今目录，无则取宿主之旁。汉语：值桥文件先用宿主写入环境变量 豫言诺驿值桥 的绝对路径，其次在当前目录找，再用宿主文件旁的那份。
+const 桥文件路径 = () => {const 传 = process.env.豫言诺驿值桥; return 传 && 文件.existsSync(传) ? 传 : 文件.existsSync('节点值桥接.wasm') ? 路径.resolve('节点值桥接.wasm') : 路径.join(__dirname, '节点值桥接.wasm');};
 
 function 建立编译线程(宿主文件, 编译器路径, 引擎参数) {
   const 输入 = 路径.resolve(编译器路径), 模块们 = new Map();
-  const 复用 = process.env.YY_NODE_COMPILER_REUSE !== '0', 空闲 = [], 诸工 = new Set();
+  const 复用 = process.env.豫言诺驿编译线程复用 !== '0', 空闲 = [], 诸工 = new Set();
   const 空闲上限 = require('node:os').availableParallelism();
   let 已关 = false;
   function 新池工() {

@@ -122,7 +122,7 @@ export function 对照文件(源码, 标记们, 语法, 文件名) {
 
 async function 主程序(根, 记录路径, 豫言程序) {
   const 语法 = await 读取TextMate语法();
-  const 超时毫秒 = Math.max(1000, Number(process.env.YY_GRAMMAR_TIMEOUT_MS) || 500000);
+  const 超时毫秒 = Math.max(1000, Number(process.env.豫言语法核验超时毫秒) || 500000);
   const 缓存目录 = path.join(根, '.豫构缓存', '语法高亮核验');
   fs.mkdirSync(缓存目录, {recursive: true});
   const 解析器身份 = createHash('sha256')

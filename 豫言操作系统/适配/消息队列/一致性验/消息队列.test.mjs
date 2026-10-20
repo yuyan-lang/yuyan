@@ -1,12 +1,12 @@
 // 文言：以真 Wasm 与模拟队列、模拟批次验消息队列适配。汉语：加载已构建的“消息队列一致性”产物；生产者经网页入口，用类实例模拟 Queue.send/sendBatch；消费者经类型化入口 处理队列批次，用类实例模拟 MessageBatch 与 Message，逐条记录 ack/retry。
-// 用法见同目录说明：在私有暂存根目录执行 `node --test <本文件>`，产物根目录由环境变量 YY_DIST_ROOT 指定（默认 ./dist）。
+// 用法见同目录说明：在私有暂存根目录执行 `node --test <本文件>`，产物根目录由环境变量 豫言产物根目录 指定（默认 ./dist）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
-const 产物 = pathToFileURL(path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '消息队列一致性') + '/');
+const 产物 = pathToFileURL(path.resolve(process.env.豫言产物根目录 ?? 'dist', '消息队列一致性') + '/');
 const {创建云工宿主} = await import(new URL('宿主.mjs', 产物));
 const 程序模块 = await WebAssembly.compile(await readFile(new URL('程序.wasm', 产物)));
 const 值桥模块 = await WebAssembly.compile(await readFile(new URL('值桥.wasm', 产物)));

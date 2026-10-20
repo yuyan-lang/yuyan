@@ -1,13 +1,13 @@
 // 文言：以真 Wasm 验张量计算之云工适配：诺驿载已构建之“张量探针云工”产物，以定时之事行张量探针，所书与期望逐行同。
 // 汉语：用诺驿加载已构建的“张量探针云工”产物（宿主.mjs、程序.wasm、值桥.wasm、中央张量内核.wasm），以定时事件（scheduled，不需响应）运行张量探针，核对输出与 应用/张量探针/期望输出.txt 逐行相同。
-// 用法见同目录说明：在构建根执行 `node --test <本文件>`，产物根目录由环境变量 YY_DIST_ROOT 指定（默认 ./dist）。
+// 用法见同目录说明：在构建根执行 `node --test <本文件>`，产物根目录由环境变量 豫言产物根目录 指定（默认 ./dist）。
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 
-const 产物 = pathToFileURL(path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '张量探针云工') + '/');
+const 产物 = pathToFileURL(path.resolve(process.env.豫言产物根目录 ?? 'dist', '张量探针云工') + '/');
 const {创建云工宿主} = await import(new URL('宿主.mjs', 产物));
 const 编 = async 名 => WebAssembly.compile(await readFile(new URL(名, 产物)));
 const [程序模块, 值桥模块, 中央张量内核模块] = await Promise.all(['程序.wasm', '值桥.wasm', '中央张量内核.wasm'].map(编));

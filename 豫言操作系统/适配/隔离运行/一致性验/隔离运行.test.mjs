@@ -5,7 +5,7 @@
 // 用法（在私有暂存目录里执行，其中有 编译器三、库/、dist/）：
 //   1. 豫构 发行 云工 <本目录>/应用 dist/隔离运行一致性
 //   2. node --test <本目录>/隔离运行.test.mjs
-// 环境变量：YY_DIST_ROOT 产物根目录（默认 ./dist）；YY_PROBE_WASM 已编译好的探针 Wasm（缺省则用暂存里的 编译器三 现编）；E2E_MINIFLARE miniflare 入口路径
+// 环境变量：豫言产物根目录 产物根目录（默认 ./dist）；豫言探针网汇 已编译好的探针 Wasm（缺省则用暂存里的 编译器三 现编）；E2E_MINIFLARE miniflare 入口路径
 // （缺省取相邻云仓 应用/包管理服务/node_modules）。注意：本地 workerd 不执行 CPU 限额，故不运行死循环程序。
 import {after, before, test} from 'node:test';
 import assert from 'node:assert/strict';
@@ -18,7 +18,7 @@ import {fileURLToPath, pathToFileURL} from 'node:url';
 
 const 本目录 = path.dirname(fileURLToPath(import.meta.url));
 const 语言仓根 = path.resolve(本目录, '../../../..');
-const 产物 = path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '隔离运行一致性');
+const 产物 = path.resolve(process.env.豫言产物根目录 ?? 'dist', '隔离运行一致性');
 const miniflare路径 = process.env.E2E_MINIFLARE ?? path.resolve(语言仓根, '../yuyan-cloud/应用/包管理服务/node_modules/miniflare/dist/src/index.js');
 const 核心程序路径 = path.resolve(语言仓根, '../yuyan-cloud/应用/豫言云工作台/云端项目核心/产物/项目核心.wasm');
 if (!existsSync(path.join(产物, '入口.mjs'))) throw new Error('缺少构建产物：' + 产物 + '（先构建 应用/，输出名 隔离运行一致性，见本目录说明）');
@@ -27,9 +27,9 @@ if (!existsSync(miniflare路径)) throw new Error('找不到 miniflare：' + min
 const 摘要 = 字节 => createHash('sha256').update(字节).digest('hex');
 // 文言：探针程序由豫言编器现编。汉语：在暂存目录里用 编译器三 把 ./探针 编译为 WasmGC 文件式程序（包描述以 .txt 存放，复制到临时目录改回原名）。
 function 取探针字节() {
-  if (process.env.YY_PROBE_WASM) return readFileSync(process.env.YY_PROBE_WASM);
+  if (process.env.豫言探针网汇) return readFileSync(process.env.豫言探针网汇);
   const 编译器 = path.resolve('编译器三');
-  if (!existsSync(编译器)) throw new Error('需在私有暂存目录运行（其中有 编译器三），或用 YY_PROBE_WASM 指定已编译的探针');
+  if (!existsSync(编译器)) throw new Error('需在私有暂存目录运行（其中有 编译器三），或用 豫言探针网汇 指定已编译的探针');
   const 临时 = realpathSync(mkdtempSync(path.join(process.env.TMPDIR ?? tmpdir(), 'yy-探针-')));
   const 库根 = realpathSync(path.resolve('库'));
   try {

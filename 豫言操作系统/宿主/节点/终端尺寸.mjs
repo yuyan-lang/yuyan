@@ -5,7 +5,7 @@ import 路径 from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 export function 读取标准终端尺寸() {
-  const 候选 = [process.env.YY_TERMINAL_SIZE_SERVICE, 路径.join(路径.dirname(fileURLToPath(import.meta.url)), '终端尺寸查询。林檎。豫行'), 路径.resolve('终端尺寸查询。林檎。豫行')];
+  const 候选 = [process.env.豫言终端尺寸服务, 路径.join(路径.dirname(fileURLToPath(import.meta.url)), '终端尺寸查询。林檎。豫行'), 路径.resolve('终端尺寸查询。林檎。豫行')];
   const 服务 = 候选.find(径 => 径 && 文件系统.existsSync(径));
   if (!服务) return [false, 0n, 0n];
   const 果 = 同步启动(服务, [], {stdio: ['ignore', 'inherit', 'pipe'], timeout: 10000, maxBuffer: 1048576});
