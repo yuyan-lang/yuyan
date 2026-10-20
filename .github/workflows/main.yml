@@ -813,12 +813,11 @@ jobs:
       - name: 基础库性能验证
         if: github.event_name != 'pull_request'
         continue-on-error: true
-        env:
-          YY_PERF_BASE: ${{ github.event.before }}
         run: |
-          git fetch --no-tags --depth=1 origin "$YY_PERF_BASE" || true
+          base='${{ github.event.before }}'
+          git fetch --no-tags --depth=1 origin "$base" || true
           ./豫构。${YY_XI}。豫行 构建 性能验证 --输出 性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs 性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
+          env "豫言性能基准=$base" node 豫言操作系统/宿主/节点/宿主.cjs 性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
 
       # 文言：林檎臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
       # 汉语：林檎 ARM64 系统库调用：同一客体在诺驿和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。

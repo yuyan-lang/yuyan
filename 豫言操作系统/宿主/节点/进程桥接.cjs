@@ -152,7 +152,7 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
       // 文言：子进程启于客之今目录；env、timeout 之包装已由客拆出，环境并入，限时由此计之。汉语：子进程在客实例记录的当前目录里启动。env 与 timeout 包装已在客线程拆出：附加环境并入子进程环境；有时限时由这里计时，到时发 SIGTERM（有宽限则宽限后再发 SIGKILL），退出码记为 124。带包装的任务不走内部编译线程池。
       const 包装 = !!环境 || 限时 > 0;
       const 工 = (包装 ? null : 编译线程?.(程序, 参数, 客体, 目录)) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false,
-        env: 客体 ? {...process.env, ...(环境 ?? {}), YY_NODE_REPEAT: '1'} : (环境 ?? process.env)});
+        env: 客体 ? {...process.env, ...(环境 ?? {}), 豫言诺驿轮数: '1'} : (环境 ?? process.env)});
       const 记录 = {工, 进程号: 工.pid, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false, 超时: false};
       const 定时们 = [];
       if (限时 > 0) 定时们.push(setTimeout(() => {

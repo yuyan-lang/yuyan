@@ -63,13 +63,13 @@ const 显示面尺寸上限 = 65536;
 // 文言：宿主诸选在前，-- 或首个非选项之后皆归应用。汉语：宿主选项写在前面；遇到 -- 或第一个不认识的参数，其后全部交给应用。
 const 取值选项 = new Set(['--程序', '--清单', '--值桥', '--授权目录', '--授权只读目录', '--允许源', '--允许环境', '--授权文件', '--张量线程数',
   '--张量后端', '--授权显示面', '--原生依赖目录', '--授权子程序', '--授权控制台']);
-// 文言：环境之同义：YY_NODE_NATIVE_DIR 同 --原生依赖目录（选项优先），YY_NODE_DISPLAY_BACKGROUND=1 同 --显示面后台。
-// 汉语：同义环境变量：YY_NODE_NATIVE_DIR 等同 --原生依赖目录（两者都给时以选项为准），YY_NODE_DISPLAY_BACKGROUND=1 等同 --显示面后台。
+// 文言：环境之同义：豫言诺驿原生依赖目录 同 --原生依赖目录（选项优先），豫言诺驿显示面后台=1 同 --显示面后台。
+// 汉语：同义环境变量：豫言诺驿原生依赖目录 等同 --原生依赖目录（两者都给时以选项为准），豫言诺驿显示面后台=1 等同 --显示面后台。
 export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 = process.env) {
   // 文言：终端浏览器之发行包默认通诸 HTTP(S) 源；余应用仍循逐源之授。汉语：终端浏览器发行包默认允许全部 HTTP(S) 来源，其他应用仍按来源授权。
   const 配置 = {程序: null, 清单: null, 值桥: null, 授权: {目录: new Map(), 子程序: new Map(), 源: new Set(), 环境: new Set(), 全部来源: 内嵌?.允许全部来源 === true}, 应用参数: [], 张量线程数: null, 张量后端: '',
-    显示面: new Map(), 原生依赖目录: 环境.YY_NODE_NATIVE_DIR ? 路径.resolve(当前目录, 环境.YY_NODE_NATIVE_DIR) : null,
-    显示面后台: 环境.YY_NODE_DISPLAY_BACKGROUND === '1', 允许系统库调用: false};
+    显示面: new Map(), 原生依赖目录: 环境.豫言诺驿原生依赖目录 ? 路径.resolve(当前目录, 环境.豫言诺驿原生依赖目录) : null,
+    显示面后台: 环境.豫言诺驿显示面后台 === '1', 允许系统库调用: false};
   const 授目录 = (文, 可写, 基准) => {
     登记目录授权(配置.授权.目录, 文, 可写, 基准);
   };
@@ -139,7 +139,7 @@ export function 解析宿主参数(参数, 当前目录 = process.cwd(), 环境 
 }
 
 // 文言：原生之依赖按需而载：先从启动文件之目，次从当前之目，末从原生依赖目录，皆依 Node 之 require 之法上溯 node_modules；皆不得则抛。
-// 汉语：按需载入 npm 原生依赖（@kmamal/sdl、@kmamal/gpu）：依次从启动文件所在目录、当前目录、原生依赖目录（--原生依赖目录 或 YY_NODE_NATIVE_DIR）
+// 汉语：按需载入 npm 原生依赖（@kmamal/sdl、@kmamal/gpu）：依次从启动文件所在目录、当前目录、原生依赖目录（--原生依赖目录 或 豫言诺驿原生依赖目录）
 //       按 Node 的 require 规则解析（逐级向上找 node_modules）；都找不到时抛出，显示与图形原语据此返回资源暂不可用。结果（含失败）按名字缓存。
 export function 创建原生载入器(原生依赖目录 = null, 当前目录 = process.cwd()) {
   const 基准们 = [fileURLToPath(import.meta.url), 路径.join(当前目录, '豫言原生依赖.cjs')];
@@ -152,7 +152,7 @@ export function 创建原生载入器(原生依赖目录 = null, 当前目录 = 
         try { 项 = {模: createRequire(基准)(名)}; break; }
         catch (错) { 末因 = String(错?.message ?? 错).split('\n')[0]; }
       }
-      缓存.set(名, 项 ?? {错: new Error('找不到或载不入原生依赖 ' + 名 + '（' + 末因 + '）；可用宿主选项 --原生依赖目录 或环境变量 YY_NODE_NATIVE_DIR 指定含 node_modules 的目录')});
+      缓存.set(名, 项 ?? {错: new Error('找不到或载不入原生依赖 ' + 名 + '（' + 末因 + '）；可用宿主选项 --原生依赖目录 或环境变量 豫言诺驿原生依赖目录 指定含 node_modules 的目录')});
     }
     const 项 = 缓存.get(名);
     if (项.错) throw 项.错;

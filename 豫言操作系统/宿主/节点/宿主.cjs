@@ -23,8 +23,8 @@ const 读取共享纪元毫秒=()=>{
 // 文言：同一宿主工序对同一 Wasm 只散列一次。汉语：同一 Node worker 对同一路径只计算一次内容 SHA-256。
 const 当前程序SHA256缓存=new Map();
 const 获取程序内容SHA256=名=>{const 全径=路径.resolve(名),旧=当前程序SHA256缓存.get(全径);if(旧!==undefined)return 旧;const 摘要=密码.createHash('sha256').update(文件.readFileSync(全径)).digest('hex');当前程序SHA256缓存.set(全径,摘要);return 摘要;};
-// 文言：值桥先从父宿主所传之径，次取宿主之旁（仓库目标“豫构”书之），次求于今目录，末取解于仓根之工具链包者；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件依次找：父宿主经环境变量 YY_NODE_VALUE_BRIDGE 传下的绝对路径；宿主文件旁的那份（仓库目标“豫构”用当前编译器生成）；当前目录；最后是解压在仓库根目录的 Wasm 工具链包里的 稳定节点宿主/节点值桥接.wasm（新检出的仓库第一次构建时用）。找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
-const 桥文件路径=()=>{const 候选=[process.env.YY_NODE_VALUE_BRIDGE,路径.join(__dirname,'节点值桥接.wasm'),路径.resolve('节点值桥接.wasm'),路径.resolve('稳定节点宿主','节点值桥接.wasm')];const 径=候选.find(径=>径&&文件.existsSync(径))??候选[1];process.env.YY_NODE_VALUE_BRIDGE=径;return 径;};
+// 文言：值桥先从父宿主所传之径，次取宿主之旁（仓库目标“豫构”书之），次求于今目录，末取解于仓根之工具链包者；定则录其绝对之径于环境，子进程承之，迁目录亦不失。汉语：值桥文件依次找：父宿主经环境变量 豫言诺驿值桥 传下的绝对路径；宿主文件旁的那份（仓库目标“豫构”用当前编译器生成）；当前目录；最后是解压在仓库根目录的 Wasm 工具链包里的 稳定节点宿主/节点值桥接.wasm（新检出的仓库第一次构建时用）。找到后把绝对路径写回该环境变量，子进程继承，切换工作目录后仍能找到。
+const 桥文件路径=()=>{const 候选=[process.env.豫言诺驿值桥,路径.join(__dirname,'节点值桥接.wasm'),路径.resolve('节点值桥接.wasm'),路径.resolve('稳定节点宿主','节点值桥接.wasm')];const 径=候选.find(径=>径&&文件.existsSync(径))??候选[1];process.env.豫言诺驿值桥=径;return 径;};
 const 选引擎参数=参数=>参数.filter(参=>/^--(?:no-)?(?:wasm-|liftoff)/.test(参)||/^--(?:v8-pool-size|initial-heap-size|initial-old-space-size|min-semi-space-size|max-semi-space-size|max-old-space-size)=/.test(参));
 // 文言：客之工作线程另带 --experimental-ffi，令系统库调用之原语可用；引擎之旗通于全进程，不可亦不必传于工作线程，先去之；诺驿不识此旗、或余旗不容于工作线程，则照旧承父之旗。汉语：客体工作线程另带 --experimental-ffi，让系统库调用原语（外部库.mjs）可用，node:ffi 到第一次调用才载入。V8 引擎旗对整个进程生效，不能也不必传给工作线程，先滤掉；诺驿不认此旗、或余下的旗不能用于工作线程时，照旧继承父线程的旗。
 const 外部库旗='--experimental-ffi';
@@ -42,8 +42,8 @@ if (isMainThread) {
   桥文件路径();
   // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
   const {port1, port2} = new MessageChannel(), 信号 = new SharedArrayBuffer(4);
-  const 模式=process.env.YY_NODE_COMPILER_WORKERS??'threads';
-  if(!['process','threads'].includes(模式))throw Error('YY_NODE_COMPILER_WORKERS 须为 process 或 threads');
+  const 模式=process.env.豫言诺驿编译工作模式??'threads';
+  if(!['process','threads'].includes(模式))throw Error('豫言诺驿编译工作模式 须为 process 或 threads');
   const 启动编译 = 模式==='threads'?建立编译线程(__filename,process.argv[2],选引擎参数(process.execArgv)):null;
   const 清桥 = 接管进程(port1, 信号, 启动编译);
   const 清理 = () => {清桥(); 启动编译?.清理?.();};
@@ -64,7 +64,7 @@ if (isMainThread) {
   let 码=0;
   try {
     let 缓存=null;
-    const 轮数=workerData.编译线程?1:Number(process.env.YY_NODE_REPEAT??1);
+    const 轮数=workerData.编译线程?1:Number(process.env.豫言诺驿轮数??1);
     if(!Number.isInteger(轮数)||轮数<1||轮数>5)throw Error('重复次数须为一至五');
     for(let 轮=1;轮<=轮数;轮++){
       const 参数=[...workerData.参数];
@@ -113,7 +113,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     let 环境={},限时=0,宽限=0,余=[程序,...参数组];
     for(;;){
       const 名=路径.basename(余[0]??'');
-      if(名==='env'){let 位=1;while(位<余.length&&/^[A-Za-z_][A-Za-z0-9_]*=/.test(余[位])){const 等=余[位].indexOf('=');环境[余[位].slice(0,等)]=余[位].slice(等+1);位++;}余=余.slice(位);continue;}
+      if(名==='env'){let 位=1;while(位<余.length&&/^[\p{L}_][\p{L}\p{N}_]*=/u.test(余[位])){const 等=余[位].indexOf('=');环境[余[位].slice(0,等)]=余[位].slice(等+1);位++;}余=余.slice(位);continue;}
       if(名==='timeout'){let 位=1;while(位<余.length&&余[位].startsWith('-')){if(余[位]==='-k'){宽限=Number(余[位+1]);位+=2;}else if(余[位]==='-s')位+=2;else 位++;}限时=Number(余[位]);余=余.slice(位+1);continue;}
       break;
     }
@@ -123,7 +123,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   // 文言：装载单元之目（有“顺序.txt”）亦视为客，以本宿主行之（提案〇〇〇〇三第六步）。汉语：装载单元目录（里面有“顺序.txt”）也当作客体程序，由本宿主运行（提案 00003 第 6 步）。
   const 是网页汇编=名=>{if(名.endsWith('.wasm'))return true;try{if(文件.existsSync(路径.join(路径.resolve(当前目录,名),'顺序.txt')))return true;}catch{}try{const 号=文件.openSync(路径.resolve(当前目录,名),'r');const 头=Buffer.alloc(4);const 数=文件.readSync(号,头,0,4,0);文件.closeSync(号);return 数===4&&头.equals(Buffer.from([0,0x61,0x73,0x6d]));}catch{return false;}};
   function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文),环境=null,限时=0,宽限=0;const 拆=拆包装(程序,参数组);if(拆.程序!==程序&&是网页汇编(拆.程序)){({程序,参数组}=拆);环境=拆.环境;限时=拆.限时;宽限=拆.宽限;}const 客体=路径.resolve(当前目录,程序)===模块路径 || 是网页汇编(程序);if(客体){参数组=[...引擎参数,__filename,路径.resolve(当前目录,程序),...参数组];程序=process.execPath;}return [程序,参数组,客体,环境,限时,宽限];}
-  function 运行子进程(名,参){const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,maxBuffer:256*1024*1024,timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),YY_NODE_REPEAT:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(果.error&&!超时)throw 果.error;const 状态=超时?124:(果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1));const 结果=[状态===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=状态;return 结果;}
+  function 运行子进程(名,参){const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,maxBuffer:256*1024*1024,timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),豫言诺驿轮数:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(果.error&&!超时)throw 果.error;const 状态=超时?124:(果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1));const 结果=[状态===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=状态;return 结果;}
   const 请求进程=客体请求(本工.端口,本工.信号);
   // 文言：Node 无 flock，以独占新建之“占”文为锁，书进程号；持者已亡则除其陈锁，未得则稍候复试。汉语：Node 没有 flock，用独占创建“占用文件”加锁，文件内写进程号；持有者已退出就清除陈旧的锁，拿不到锁则短暂等待后重试。
   const 小候=new Int32Array(new SharedArrayBuffer(4));
@@ -258,7 +258,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_同步运行子进程:(名,参)=>运行子进程(名,参).状态===0,
     豫言_同步运行子进程并传递输出:(名,参)=>{const 果=运行子进程(名,参);写输出(1,果[1]);写输出(2,果[2]);return 果.状态;},
     // 文言：承三常流而行，出不经宿主之缓；启败一二七，候败一。汉语：继承标准输入、输出与错误直接运行（输出不经宿主缓冲，交互程序可用）；启动失败返回 127，等待失败返回 1，超时返回 124。
-    豫言_同步运行子进程并继承标准流:(名,参)=>{const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,stdio:'inherit',timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),YY_NODE_REPEAT:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(超时)return 124;if(果.error)return 果.error.code==='ENOENT'?127:1;return 果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1);},
+    豫言_同步运行子进程并继承标准流:(名,参)=>{const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,stdio:'inherit',timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),豫言诺驿轮数:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(超时)return 124;if(果.error)return 果.error.code==='ENOENT'?127:1;return 果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1);},
     豫言_退出进程:码=>{const 错=Error('客体退出');错.退出码=数(码);throw 错;},
     ...外部库原语(文)
   };
@@ -363,16 +363,16 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   let 退出码=0;
   // 文言：_start 先行静态之初置，乃召入口之函。汉语：_start 先做静态初始化，再调用入口函数「入口」（提案 00006）。
   try{if(单元目录)装入单元们(单元目录);else new WebAssembly.Instance(模块,{...造导入(模块)}).exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}
-  // 文言：承构志之工务，书定标行；显设 YY_NODE_STATS 者，仍书旧详数。旧通调已删，其调用数为零。汉语：仅继承构建日志的 worker 写 marker 行；显式 YY_NODE_STATS 仍保留详细 JSON；宿主调用数字段计旧通用调用，删除后为零。
+  // 文言：承构志之工务，书定标行；显设 豫言诺驿统计 者，仍书旧详数。旧通调已删，其调用数为零。汉语：仅继承构建日志的 worker 写 marker 行；显式 豫言诺驿统计 仍保留详细 JSON；宿主调用数字段计旧通用调用，删除后为零。
   const 工务任务=本工.编译线程||本工.参数?.includes('--mode=worker');
-  const 工务统计=工务任务&&!!process.env.YY_BUILD_LOG_RUN;
-  if(!工务统计&&process.env.YY_NODE_STATS!=='1')return {模块,退出码};
+  const 工务统计=工务任务&&!!process.env.豫言构建日志运行;
+  if(!工务统计&&process.env.豫言诺驿统计!=='1')return {模块,退出码};
   if(工务统计){
     const 统计=JSON.stringify({模块准备毫秒:Math.round(编译毕-开始),执行毫秒:Math.round(performance.now()-编译毕),宿主调用数:0});
     const 行='YY_BUILD_TASK_STATS\t'+统计;
     if(本工.复用线程)写输出(2,Buffer.from(行+'\n'));else console.error(行);
   }else{
-    const 统计=JSON.stringify({轮次:轮,复用模块:!!缓存,引擎:process.versions.v8,进程:process.pid,线程:threadId,编译工作模式:process.env.YY_NODE_COMPILER_WORKERS??'threads',模块准备毫秒:编译毕-开始,执行毫秒:performance.now()-编译毕,宿主调用数:0});
+    const 统计=JSON.stringify({轮次:轮,复用模块:!!缓存,引擎:process.versions.v8,进程:process.pid,线程:threadId,编译工作模式:process.env.豫言诺驿编译工作模式??'threads',模块准备毫秒:编译毕-开始,执行毫秒:performance.now()-编译毕,宿主调用数:0});
     if(本工.复用线程)写输出(2,Buffer.from(统计+'\n'));else console.error(统计);
   }
   return {模块,退出码};

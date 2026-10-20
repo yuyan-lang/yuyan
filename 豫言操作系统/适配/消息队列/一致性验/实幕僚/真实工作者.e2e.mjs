@@ -2,7 +2,7 @@
 // 汉语：把已构建的“平台综合一致性”产物复制到临时目录，配上队列、定时、邮件、KV 绑定，用 wrangler dev --local 启动，再逐场景发请求、读 workerd 日志断言。约需 1 分钟。
 //   试验应用实现网页、队列、定时三个类型化入口（提案 C0001），薄宿主每个隔离体一个实例，事件在其中交错执行。
 // 用法：在私有暂存根目录执行 `node <本文件>`；环境变量：
-//   YY_DIST_ROOT     产物根目录，默认 ./dist（其下应有 平台综合一致性/）
+//   豫言产物根目录     产物根目录，默认 ./dist（其下应有 平台综合一致性/）
 //   E2E_WRANGLER     wrangler.js 的路径，默认取相邻云仓 应用/包管理服务/node_modules 里的 wrangler
 //   E2E_FILTER       只运行名称含此文字的场景
 //   E2E_SAVE_LOG     把 wrangler 输出保存到此路径
@@ -16,7 +16,7 @@ import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 
 const 本目录 = path.dirname(fileURLToPath(import.meta.url));
-const 产物 = path.resolve(process.env.YY_DIST_ROOT ?? 'dist', '平台综合一致性');
+const 产物 = path.resolve(process.env.豫言产物根目录 ?? 'dist', '平台综合一致性');
 const 语言仓根 = path.resolve(本目录, '../../../../..');
 const wrangler = process.env.E2E_WRANGLER ?? path.resolve(语言仓根, '../yuyan-cloud/应用/包管理服务/node_modules/wrangler/bin/wrangler.js');
 if (!existsSync(path.join(产物, '入口.mjs'))) throw new Error('缺少构建产物：' + 产物 + '（先构建 真实工作者/应用，输出名 平台综合一致性）');
