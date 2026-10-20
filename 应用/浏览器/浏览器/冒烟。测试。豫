@@ -32,6 +32,16 @@
 　若「成立」则「元」否则「告祸」于「说明文」
 也。
 
+「：汉语：通称取页面题目（read document title）。取 body 的 title 属性，没有时得空文；冒烟测试用它读观察器回调记下的条目。
+　　文言：取页之题：取 body 之 title 性，无则空文；冒烟之试以之读观察器回调所记之条。
+　　赋曰：一节入门问标题，有则还文无则空。：」
+「浏览器取题」乃化「篇节」为「文」者也。
+「浏览器取题」者得「文档」而
+　鉴「取属」于（「冠」于（「问择器全」于「文档」于『body』））于『title』而
+　　或有（「可有」于「其题」）则「其题」
+　　或有「可无」则『』
+也。
+
 「浏览器表单冒烟」乃化「网页静态页面」为「有」者也。
 「浏览器表单冒烟」者得「旧页」而
 　令「文档」为
@@ -717,6 +727,20 @@
 　　　　）
 　　　　于（「文同」于（「单后」中「地址文」）于（「单模」中「地址文」））））
 　　于『method=dialog 关闭对话框且携带 returnValue、不导航』而后
+　令「察页模」为
+　　「入口」之「浏览器导航」
+　　　于「排模」
+　　　于『data:text/html,<body style="margin:0"><div id="box" style="width:50%;height:50px;background:red"></div><div style="height:1000px"></div><div id="far" style="height:50px;background:blue"></div><script>var log=[];function rec(x){log.push(x);document.body.setAttribute("title",log.join(","));}var ro=new ResizeObserver(function(es){for(var i=0;i<es.length;i++){rec("R"+es[i].target.id+":"+es[i].contentRect.width+"x"+es[i].contentRect.height+":"+es[i].borderBoxSize[0].inlineSize);}});ro.observe(document.getElementById("box"));var io=new IntersectionObserver(function(es){for(var i=0;i<es.length;i++){rec("I"+es[i].target.id+":"+es[i].isIntersecting+":"+es[i].intersectionRatio);}},{threshold:0.5});io.observe(document.getElementById("far"));</script></body>』而
+　令「察页」为
+　　鉴「察页模」中「页面」而
+　　　或有「可无」则「告祸」以「网页静态页面」于『观察器页载入失败』
+　　　或有（「可有」于「载页」）则「载页」而
+　令「无」为「浏览器记窗口尺寸」于「宽」曰（「六四零」乘「六四」）于「高」曰（「四八零」乘「六四」）而
+　令「察宽模」为「入口」之「浏览器计时更新」于「察页模」而
+　「断言」于（「文同」于（「浏览器取题」于（「察页」中「文档」））于『Rbox:320x50:320,Ifar:false:0』）于『重排后大小观察与交叉观察投递』而后
+　令「察滚模」为「入口」之「浏览器滚动」于「察宽模」于「横」曰「零」于「纵」曰「九零零」而
+　令「察后模」为「入口」之「浏览器计时更新」于「察滚模」而
+　「断言」于（「文同」于（「浏览器取题」于（「察页」中「文档」））于『Rbox:320x50:320,Ifar:false:0,Ifar:true:1』）于『滚动后交叉观察跨阈投递』而后
 　「书」于『浏览器综合冒烟通过』
 也。
 
