@@ -1,0 +1,140 @@
+「：汉语：通称幕僚测试（worker test）。页面环境里用 Worker 建幕僚：往返消息、结构化克隆（嵌套对象、映射、日期、类型数组、循环引用）、转移后原数组缓冲区变零长、importScripts、模块幕僚的 import、幕僚抛错时主线程收 error、启动即抛、terminate 与 close 之后不再收消息、幕僚定时器、以及幕僚环境里没有 document 与 window 而 self 就是全局对象。
+　　文言：幕僚之试：于页境建僚，验往还之书、摹形之实（嵌套之物、映射、日期、类型数组、循环之引）、移牍之后旧牍空、引卷、模块之引、僚中抛误而主受其事、启即抛、终与闭之后不复受书、僚中之漏，及僚境无篇牍与窗而自身即全局之物。
+　　赋曰：一呼幕后别开门，往还摹形次第论。移牍旧身成空影，引卷模块各有源。误起僚中主受事，终闭门前不复喧。僚境无篇唯自身，定时一到亦回言。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+寻观「网页榫卯」之「网工」之书。
+寻观「抓取」之书。
+寻观「尺素」之「报文」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+
+「：汉语：通称测试检查（test check）。在页面环境里执行一段脚本，结果为真时打印通过，否则报错。
+　　文言：于页境行一段之文，真则书通，否则告误。：」
+「查」乃化「急就境」又化「名」曰「文」又化「式」曰「文」为「有」者也。
+「查」者得「境」又得「名」曰「名」又得「式」曰「式」而
+　若「急就严格等」于（「急就在境行脚本」于「境」于「式」）于（「急就布尔」于「阳」）则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「：汉语：通称跑到无事（run until idle）。最多跑给定轮数，每轮交给「网工行一轮」；没有可跑的任务就提前停下。
+　　文言：至多行若干轮，每轮付「网工行一轮」；无役可跑则早止。：」
+「跑尽」乃化「数」为「有」者也。
+「跑尽」者得「余」而
+　若「余」等于「零」则「元」否则若「网工行一轮」于「元」则「跑尽」于（「余」减「一」）否则「元」
+也。
+
+「：汉语：通称测试源（test source）。按绝对地址给出幕僚脚本或模块源码；没有时得可无。
+　　文言：循绝址而与篇源，无则空。：」
+「测试源」乃化「文」为（「或可有」于「文」）者也。
+「测试源」者得「址」而
+　若「文同」于「址」于『https://example.test/worker.js』则
+　　「可有」于『var 引值 = 0;
+self.onmessage = function(e){
+  var d = e.data;
+  if(!d){ return; }
+  if(d.cmd === "往返"){ postMessage({kind:"往返", value:d.value}); }
+  else if(d.cmd === "推"){ postMessage({kind:"推", n:d.n}); }
+  else if(d.cmd === "引"){ importScripts("https://example.test/lib.js"); postMessage({kind:"引", v:引值}); }
+  else if(d.cmd === "误"){ throw new Error("坏二"); }
+  else if(d.cmd === "闭"){ close(); }
+};』
+　否则若「文同」于「址」于『https://example.test/lib.js』则
+　　「可有」于『引值 = 40;』
+　否则若「文同」于「址」于『https://example.test/err.js』则
+　　「可有」于『throw new Error("坏");』
+　否则若「文同」于「址」于『https://example.test/mod.js』则
+　　「可有」于『import {倍} from "./dbl.js"; postMessage(倍(21));』
+　否则若「文同」于「址」于『https://example.test/dbl.js』则
+　　「可有」于『export function 倍(x){ return x * 2; }』
+　否则若「文同」于「址」于『https://example.test/timer.js』则
+　　「可有」于『setTimeout(function(){ postMessage({kind:"时", v:1}); }, 0);』
+　否则若「文同」于「址」于『https://example.test/env.js』则
+　　「可有」于『postMessage({kind:"界", doc:typeof document, win:typeof window, selfIsGlobal:(self === globalThis), loc:location.href, clone:(typeof structuredClone), timer:(typeof setTimeout)});』
+　否则
+　　「可无」以「文」
+也。
+
+「：汉语：通称测试交换（test exchange）。按请求地址取测试源，给出状态二百的响应；没有源码时给网络错误响应。
+　　文言：循请址取测试之源，与二百之应；无源则报网络之误。：」
+「测试交换」乃化「抓取请求」为「抓取响应」者也。
+「测试交换」者得「请」而
+　鉴「测试源」于（「请」中「地址」）而
+　　或有（「可有」于「源文」）则（（「组值」
+　　　【「地址」者（「请」中「地址」）也
+　　　，「状态」者「二零零」也
+　　　，「字段」者（「罄」以「字段」）也
+　　　，「主体」者（「作帛」于「源文」）也
+　　　，「种类」者『default』也
+　　　，「诊断」者『』也
+　　　】）
+　　　属「抓取响应」
+　　）
+　　或有「可无」则「抓取失败」于「地址」曰（「请」中「地址」）于「诊断」曰『测试没有这个脚本』
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「境」为「急就新全局境」于「元」而
+　令「无」为
+　　「急就在境行脚本」于「境」于『var window = globalThis;「：换行：」var location = {href:"https://example.test/page.html", origin:"https://example.test"};』而
+　令「无二」为「安装网工」于「境」于「测试交换」而
+　令「无三」为「急就在境行脚本」于「境」于『window.__工 = {信:[], 误:[], 旧长:-1, 推信:[], 闭信:[]};
+var w = new Worker("https://example.test/worker.js");
+w.onmessage = function(e){ window.__工.信.push(e.data); };
+w.onerror = function(e){ window.__工.误.push(e.message); };
+var o = {a:1, b:[1,2,3], m:new Map([["k",9]]), d:new Date(2020,0,2), t:new Uint8Array([5,6])};
+o.self = o;
+w.postMessage({cmd:"往返", value:o});
+var buf = new ArrayBuffer(4); new Uint8Array(buf)[0] = 65;
+w.postMessage({cmd:"往返", value:buf}, {transfer:[buf]});
+window.__工.旧长 = buf.byteLength;
+w.postMessage({cmd:"引"});
+w.postMessage({cmd:"误"});
+var 误工 = new Worker("https://example.test/err.js");
+误工.onerror = function(e){ window.__工.误.push(e.message); };
+var 界工 = new Worker("https://example.test/env.js");
+界工.onmessage = function(e){ window.__工.界 = e.data; };
+var 模工 = new Worker("https://example.test/mod.js", {type:"module"});
+模工.onmessage = function(e){ window.__工.模 = e.data; };
+var 时工 = new Worker("https://example.test/timer.js");
+时工.onmessage = function(e){ window.__工.时 = e.data; };
+var 终工 = new Worker("https://example.test/worker.js");
+终工.onmessage = function(e){ window.__工.推信.push(e.data); };
+终工.postMessage({cmd:"推", n:1});
+终工.postMessage({cmd:"推", n:2});
+终工.terminate();
+var 闭工 = new Worker("https://example.test/worker.js");
+闭工.onmessage = function(e){ window.__工.闭信.push(e.data); };
+闭工.postMessage({cmd:"闭"});
+闭工.postMessage({cmd:"推", n:3});』而
+　令「无四」为「跑尽」于「六四」而
+　「查」
+　　于「境」
+　　于「名」曰『往返消息都到』
+　　于「式」曰『__工.信.length === 3 && __工.信[0].kind === "往返" && __工.信[1].kind === "往返" && __工.信[2].kind === "引"』而后
+　「查」
+　　于「境」
+　　于「名」曰『结构化克隆保住嵌套、映射、日期、类型数组与环』
+　　于「式」曰『__工.信[0].value.b[1] === 2 && __工.信[0].value.m.get("k") === 9 && __工.信[0].value.d.getFullYear() === 2020 && __工.信[0].value.t[1] === 6 && __工.信[0].value.self === __工.信[0].value』而后
+　「查」
+　　于「境」
+　　于「名」曰『转移后原缓冲变零长、摹本内容不变』
+　　于「式」曰『__工.旧长 === 0 && __工.信[1].value.byteLength === 4 && new Uint8Array(__工.信[1].value)[0] === 65』而后
+　「查」于「境」于「名」曰『importScripts 在同一环境执行』于「式」曰『__工.信[2].v === 40』而后
+　「查」
+　　于「境」
+　　于「名」曰『幕僚抛错与启动即抛都转成主线程的 error』
+　　于「式」曰『__工.误.length === 2 && __工.误.join(",").indexOf("坏二") >= 0 && __工.误.join(",").indexOf("坏") >= 0』而后
+　「查」
+　　于「境」
+　　于「名」曰『幕僚环境没有 document 与 window，self 是全局对象』
+　　于「式」曰『__工.界.doc === "undefined" && __工.界.win === "undefined" && __工.界.selfIsGlobal === true && __工.界.loc === "https://example.test/env.js" && __工.界.clone === "function" && __工.界.timer === "function"』而后
+　「查」于「境」于「名」曰『模块幕僚的 import 走加载器』于「式」曰『__工.模 === 42』而后
+　「查」于「境」于「名」曰『幕僚定时器到期即发消息』于「式」曰『__工.时 && __工.时.kind === "时" && __工.时.v === 1』而后
+　「查」于「境」于「名」曰『terminate 之后不再收消息』于「式」曰『__工.推信.length === 0』而后
+　「查」于「境」于「名」曰『close 之后不再收消息』于「式」曰『__工.闭信.length === 0』而后
+　「书」于『网页工作者测试通过』
+也。
+
+「入口」于「元」。
