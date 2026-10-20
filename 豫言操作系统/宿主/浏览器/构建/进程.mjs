@@ -247,6 +247,13 @@ export class 进程表 {
     return this.摘要缓存.get(键);
   }
 
+  // 文言：帛之页散：每页一段求沙二五六而相连（页长非正或逾一吉则四千九十六）。汉语：字节串按页长分段求沙二五六，各段 32 字节摘要依次相连（页长不在一到 2^30 之间时取 4096，同诺驿宿主）。
+  async 页杂凑(字, 页) {
+    const 步 = 页 > 0 && 页 <= 1073741824 ? 页 : 4096, 段 = 字.length === 0 ? 0 : Math.ceil(字.length / 步), 出 = new Uint8Array(段 * 32);
+    for (let 序 = 0; 序 < 段; 序++) 出.set(new Uint8Array(await crypto.subtle.digest('SHA-256', 字.subarray(序 * 步, Math.min(字.length, (序 + 1) * 步)))), 序 * 32);
+    return 出;
+  }
+
   // 文言：同文用旧号，异文另立号（同 Node 工具宿主）。汉语：在当前目录的 .豫构缓存/豫构上下文 里逐字比较，相同就复用已有编号，否则新建下一个编号（同 Node 工具宿主；主线程单线程，不必加锁）。
   存放包上下文(目录, 内容) {
     const 根 = 规范路径('.豫构缓存/豫构上下文', 目录);
@@ -306,8 +313,37 @@ export class 进程表 {
         });
       }
       case '同步运行': return this.同步运行(记录?.号 ?? 0, 参[0], 参[1], 参[2], 参[3]);
+      case '读行': return this.读行(记录);
+      case '页杂凑': return this.页杂凑(参[0], 参[1]);
+      case '召回': { const 子 = this.记录们.get(参[0]); if (!子) return -1; this.终止(子, 143); return 0; }
       default: throw Error('构建宿主：未知操作 ' + 名);
     }
+  }
+
+  // 文言：标准入（提案〇〇〇四三）：开入之进程有一行列，读行有行则取，入尽则言尽，否则候页送入；未开入者（构建之作业、子进程）读行即尽。
+  // 汉语：标准输入（提案 00043）：开了输入的进程有一个行队列，读行时有行就取，输入已结束就返回“没有”，否则等页面送入；没开输入的（构建作业、子进程）读行即结束。
+  开入(号) {
+    const 记录 = this.记录们.get(号);
+    if (记录) 记录.入 ??= {行们: [], 尽: false, 候: null};
+  }
+  读行(记录) {
+    const 入 = 记录?.入;
+    if (!入) return [false, ''];
+    if (入.行们.length) return [true, 入.行们.shift()];
+    if (入.尽) return [false, ''];
+    return new Promise(成 => { 入.候 = 成; });
+  }
+  送入(号, 行) {
+    const 入 = this.记录们.get(号)?.入;
+    if (!入 || 入.尽) return false;
+    if (入.候) { const 成 = 入.候; 入.候 = null; 成([true, 行]); } else 入.行们.push(行);
+    return true;
+  }
+  关入(号) {
+    const 入 = this.记录们.get(号)?.入;
+    if (!入) return;
+    入.尽 = true;
+    if (入.候) { const 成 = 入.候; 入.候 = null; 成([false, '']); }
   }
 
   // 文言：顶层行一程，候其毕，出随生随报。汉语：运行一个顶层程序直到结束；观察者随时收到输出（流 1 为标准输出、2 为标准错误，值为字节）。

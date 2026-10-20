@@ -1,0 +1,69 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>豫言操作系统 · 网页行在 · 豫言</title>
+<link rel="stylesheet" href="/共用/主题.css">
+<style>
+/* 文言：页套主站之主题（/共用/主题.css 之页头、页脚与色）。汉语：页面套主站主题（/共用/主题.css 的页头、页脚与配色）。 */
+main{max-width:960px;margin:0 auto;padding:28px clamp(20px,4vw,72px) 48px}
+main h1{font:500 clamp(26px,3.4vw,38px)/1.4 var(--豫题);margin:0 0 8px}
+.说明{color:var(--豫次);margin:0 0 16px}
+#屏{white-space:pre-wrap;word-break:break-all;margin:0;background:var(--豫浅);border:1px solid var(--豫线);border-radius:6px 6px 0 0;padding:12px 14px;font:13px/1.6 var(--豫码);min-height:16em;max-height:62vh;overflow:auto}
+#行表单{display:flex;border:1px solid var(--豫线);border-top:none;border-radius:0 0 6px 6px;background:var(--豫浅)}
+#行{flex:1;min-width:0;font:13px/1.6 var(--豫码);padding:8px 14px;border:none;background:transparent;color:var(--豫墨);outline:none}
+#状态{color:var(--豫次);font-size:13px}
+</style>
+<header class="豫导航"><a class="豫标志" href="/" aria-label="豫言首页">豫<b>言</b></a><a class="豫站名" href="/豫言操作系统.汉语.html">豫言操作系统</a><nav class="豫导航内" aria-label="全站导航"><a href="/">首页</a><a href="/豫言操作系统.汉语.html">愿景</a><a href="/文档/">文档</a><a href="https://github.com/yuyan-lang/yuyan">GitHub ↗</a></nav></header>
+<main id="正文">
+<h1>豫言操作系统 · 网页行在</h1>
+<p class="说明">这是豫言操作系统的开机壳（豫构交互），与原生系统同一份程序：每句豫言都在浏览器里编译成单元再运行。输入「问津」列出命令；第一句要先编译标准库与壳命令，稍候片刻。</p>
+<pre id="屏" aria-live="polite"></pre>
+<form id="行表单"><input id="行" aria-label="输入一句豫言" autocomplete="off" autocapitalize="off" spellcheck="false" disabled></form>
+<p id="状态">正在启动</p>
+</main>
+<footer class="豫页脚"><span>豫言 · 以中文写程序，以函数组织计算。</span><nav><a href="https://github.com/yuyan-lang/yuyan">源码</a><a href="https://github.com/yuyan-lang/yuyan/issues">问题反馈</a></nav></footer>
+<script type="module">
+// 汉语：页面只当屏幕与键盘：显示开机壳的输出，把输入的一行送进壳的标准输入；命令全由同一个豫言程序（豫构交互）处理。
+// 文言：页惟为屏与键：示开机壳之出，送所入之行于壳之标准入；诸令皆由同一豫言程序（豫构交互）治之。
+import {起行在} from './行在.mjs';
+const 屏 = document.getElementById('屏'), 行 = document.getElementById('行'), 状态 = document.getElementById('状态');
+// 汉语：快照缺省取同目录的 源.tar.gz 与 工具.tar.gz；本机测试可用网址参数 源=、工具= 另指。文言：快照默取同目之源、工具二档；本机之试可以网址之参另指。
+const 参 = new URLSearchParams(location.search);
+const 快照们 = [参.get('源') ?? './源.tar.gz', 参.get('工具') ?? './工具.tar.gz'].map(网址 => new URL(网址, location.href));
+const 写 = 文 => { 屏.textContent += 文; 屏.scrollTop = 屏.scrollHeight; };
+// 汉语：壳每读一行之前印提示符（续行印“…> ”）；见到提示符就是上一句办完了，输入框可用。文言：壳每读行前印提示（续行印“…> ”）；见之则前句已毕，可入。
+const 出 = (流, 文) => {
+  写(文);
+  if (屏.textContent.endsWith('壳> ') || 屏.textContent.endsWith('…> ')) { 行.disabled = false; 行.focus(); 状态.textContent = '就绪：输入一句豫言，按回车运行'; }
+};
+const 旧行们 = [];
+let 翻位 = 0, 会话 = null;
+document.getElementById('行表单').onsubmit = 事 => {
+  事.preventDefault();
+  if (!会话 || 行.disabled) return;
+  const 文 = 行.value;
+  行.value = '';
+  if (文.trim()) { 旧行们.push(文); 翻位 = 旧行们.length; }
+  写(文 + '\n');
+  行.disabled = true;
+  状态.textContent = '正在编译运行';
+  会话.送入(文);
+};
+// 汉语：上下键翻本页输入过的行（只改输入框）。文言：上下键翻本页旧行（惟改输入之框）。
+行.onkeydown = 事 => {
+  if (事.key !== 'ArrowUp' && 事.key !== 'ArrowDown') return;
+  事.preventDefault();
+  翻位 = Math.max(0, Math.min(旧行们.length, 翻位 + (事.key === 'ArrowUp' ? -1 : 1)));
+  行.value = 旧行们[翻位] ?? '';
+};
+try {
+  会话 = await 起行在({快照们, 出, 报: 文 => { 状态.textContent = 文; }});
+  状态.textContent = '开机壳已起，正在编译前导';
+  const 记录 = await 会话.完成;
+  行.disabled = true;
+  状态.textContent = '开机壳已退出，退出码 ' + 记录.码;
+} catch (错) {
+  状态.textContent = '启动失败：' + (错?.message ?? 错);
+  console.error(错);
+}
+</script>
