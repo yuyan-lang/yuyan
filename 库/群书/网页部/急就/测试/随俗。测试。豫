@@ -1,0 +1,114 @@
+「：汉语：通称国际化内建（Intl）测试。核对地区标签的规范与协商、Locale 的语言文字地域、复数类别与范围、数字的小数百分货币单位紧凑与分组、日期的四式与字段、相对时间、列表、显示名、比较与分段在英、中、阿拉伯、俄四个地区上的输出，并验 String、Number、Date 原型上的本地位方法。非换行空格与方向标记在比较前归一。末书「捷思国际化冒烟通过」。
+　　文言：方俗之器，验其标、类、数、日、相对、列、名、校与段；四地区既备，冒烟乃书。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「得文」乃化「文」为「文」者也。
+「得文」者得「脚本」而
+　「急就文字作串」于（「急就作文字」于（「急就行脚本」于「脚本」））
+也。
+
+「归」乃化「文」为「文」者也。
+「归」者得「其文」而
+　令「不换空」为（「急就文字作串」于（「急就文字自码元」于（「列」【「一六零」】）））而
+　令「窄空」为（「急就文字作串」于（「急就文字自码元」于（「列」【「八二三九」】）））而
+　令「右标」为（「急就文字作串」于（「急就文字自码元」于（「列」【「八二零七」】）））而
+　令「左标」为（「急就文字作串」于（「急就文字自码元」于（「列」【「八二零六」】）））而
+　「文替换」于（「文替换」于（「文替换」于（「文替换」于「其文」于「不换空」于『 』）于「窄空」于『 』）于「右标」于『』）于「左标」于『』
+也。
+
+「核」乃化「文」又化「文」为「有」者也。
+「核」者得「脚本」又得「期望」而
+　令「得」为（「归」于（「得文」于「脚本」））而
+　「断言」于（「文同」于「得」于「期望」）于（『国际化输出不合：期望 』接「期望」接『，实得 』接「得」）
+也。
+
+「核」于『Intl.getCanonicalLocales(["EN-us","zh-hant-tw"]).join("|");』于『en-US|zh-Hant-TW』。
+「核」
+　于『[Intl.supportedValuesOf("calendar").join("|"),Intl.supportedValuesOf("numberingSystem").join("|")].join(" / ");』
+　于『gregory|iso8601 / arab|arabext|deva|hanidec|latn|thai』。
+「核」
+　于『let l=new Intl.Locale("zh-hant-tw");[l.language,l.script,l.region,l.toString(),l.maximize().toString(),l.minimize().toString()].join("|");』
+　于『zh|Hant|TW|zh-Hant-TW|zh-Hant-TW|zh-Hant』。
+「核」于『[new Intl.Locale("en-US").minimize().toString(),new Intl.Locale("ru").maximize().toString()].join("|");』于『en|ru-Cyrl-RU』。
+「核」
+　于『[new Intl.NumberFormat("en").format(1234567.89),new Intl.NumberFormat("zh").format(1234567.89),new Intl.NumberFormat("ar").format(1234567.89),new Intl.NumberFormat("ru").format(1234567.89)].join("|");』
+　于『1,234,567.89|1,234,567.89|1,234,567.89|1 234 567,89』。
+「核」
+　于『[new Intl.NumberFormat("en",{style:"percent"}).format(0.25),new Intl.NumberFormat("zh",{style:"percent"}).format(0.256),new Intl.NumberFormat("ru",{style:"percent"}).format(0.5)].join("|");』
+　于『25%|26%|50 %』。
+「核」
+　于『[new Intl.NumberFormat("en",{style:"currency",currency:"USD"}).format(1234.5),new Intl.NumberFormat("zh",{style:"currency",currency:"CNY"}).format(1234.5),new Intl.NumberFormat("ar",{style:"currency",currency:"EGP"}).format(1234.5),new Intl.NumberFormat("ru",{style:"currency",currency:"RUB"}).format(1234.5)].join("|");』
+　于『$1,234.50|¥1,234.50|1,234.50 ج.م.|1 234,50 ₽』。
+「核」
+　于『[new Intl.NumberFormat("en",{notation:"compact"}).format(12345),new Intl.NumberFormat("zh",{notation:"compact"}).format(12345)].join("|");』
+　于『12K|1万』。
+「核」
+　于『[new Intl.NumberFormat("en",{style:"unit",unit:"kilometer"}).format(5),new Intl.NumberFormat("zh",{style:"unit",unit:"kilometer"}).format(5),new Intl.NumberFormat("ru",{style:"unit",unit:"kilometer"}).format(5)].join("|");』
+　于『5 kilometers|5公里|5 километров』。
+「核」
+　于『[new Intl.NumberFormat("en",{minimumFractionDigits:2,maximumFractionDigits:2}).format(1.5),new Intl.NumberFormat("en",{useGrouping:false}).format(1234567),new Intl.NumberFormat("en",{minimumIntegerDigits:3}).format(7)].join("|");』
+　于『1.50|1234567|007』。
+「核」
+　于『new Intl.NumberFormat("en",{style:"currency",currency:"USD"}).formatToParts(1234.5).map(function(p){return p.type+":"+p.value;}).join("|");』
+　于『currency:$|integer:1234|decimal:.|fraction:50』。
+「核」于『new Intl.NumberFormat("en").formatRange(3,5);』于『3 – 5』。
+「核」
+　于『["en","zh","ru","ar"].map(function(l){return [1,2,3,5,11,1.5].map(function(n){return new Intl.PluralRules(l).select(n);}).join(",");}).join("|");』
+　于『one,other,other,other,other,other|other,other,other,other,other,other|one,few,few,many,many,other|one,two,few,few,many,other』。
+「核」
+　于『[new Intl.PluralRules("en",{type:"ordinal"}).select(1),new Intl.PluralRules("en",{type:"ordinal"}).select(2),new Intl.PluralRules("en").resolvedOptions().pluralCategories.join(",")].join("|");』
+　于『one|two|one,other』。
+「核」
+　于『[new Intl.PluralRules("en").selectRange(1,2),new Intl.PluralRules("en").selectRange(1,1),new Intl.PluralRules("ru").selectRange(1,5)].join("|");』
+　于『other|one|other』。
+「核」
+　于『[new Intl.DateTimeFormat("en",{dateStyle:"medium",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12,15,45,30))),new Intl.DateTimeFormat("zh",{dateStyle:"long",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12,15,45,30))),new Intl.DateTimeFormat("ru",{dateStyle:"short",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12,15,45,30))),new Intl.DateTimeFormat("ar",{dateStyle:"full",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12,15,45,30)))].join("|");』
+　于『Sep 12, 2025|2025年9月12日|12.09.2025|الجمعة، 12 سبتمبر 2025』。
+「核」
+　于『[new Intl.DateTimeFormat("en",{dateStyle:"medium",timeStyle:"short",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12,15,45,30))),new Intl.DateTimeFormat("zh",{timeStyle:"medium",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12,15,45,30))),new Intl.DateTimeFormat("ru",{dateStyle:"medium",timeStyle:"medium",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12,15,45,30)))].join("|");』
+　于『Sep 12, 2025, 3:45 PM|2025/9/12 15:45:30|12 сент. 2025 г., 15:45:30』。
+「核」
+　于『[new Intl.DateTimeFormat("en",{weekday:"long",year:"numeric",month:"long",day:"numeric",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12))),new Intl.DateTimeFormat("zh",{year:"numeric",month:"long",day:"numeric",weekday:"short",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12))),new Intl.DateTimeFormat("ar",{year:"numeric",month:"long",day:"numeric",timeZone:"UTC"}).format(new Date(Date.UTC(2025,8,12)))].join("|");』
+　于『Friday, September 12, 2025|2025年9月12日周五|12 سبتمبر 2025』。
+「核」
+　于『new Intl.DateTimeFormat("en",{year:"numeric",month:"long",day:"numeric",timeZone:"UTC"}).formatToParts(new Date(Date.UTC(2025,8,12))).map(function(p){return p.type+":"+p.value;}).join("|");』
+　于『month:September|literal: |day:12|literal:, |year:2025』。
+「核」
+　于『[new Intl.DateTimeFormat("en",{hour:"numeric",minute:"2-digit",timeZone:"Asia/Shanghai"}).format(new Date(Date.UTC(2025,8,12,15,45,30))),new Intl.DateTimeFormat("en",{hour:"numeric",minute:"2-digit",timeZone:"+05:30"}).format(new Date(Date.UTC(2025,8,12,15,45,30)))].join("|");』
+　于『11:45 PM|9:15 PM』。
+「核」
+　于『[new Intl.RelativeTimeFormat("en").format(-2,"day"),new Intl.RelativeTimeFormat("zh").format(3,"hour"),new Intl.RelativeTimeFormat("ru").format(-5,"minute"),new Intl.RelativeTimeFormat("ar").format(2,"day"),new Intl.RelativeTimeFormat("en",{numeric:"auto"}).format(-1,"day"),new Intl.RelativeTimeFormat("en",{numeric:"auto"}).format(2,"day")].join("|");』
+　于『2 days ago|3小时后|5 минут назад|خلال يومين|yesterday|in 2 days』。
+「核」
+　于『[new Intl.ListFormat("en").format(["a","b","c"]),new Intl.ListFormat("zh").format(["甲","乙","丙"]),new Intl.ListFormat("ru",{type:"disjunction"}).format(["a","b","c"]),new Intl.ListFormat("ar").format(["a","b"])].join("|");』
+　于『a, b, and c|甲、乙和丙|a, b или c|a وb』。
+「核」
+　于『[new Intl.DisplayNames("en",{type:"language"}).of("zh"),new Intl.DisplayNames("zh",{type:"language"}).of("en"),new Intl.DisplayNames("ru",{type:"region"}).of("US"),new Intl.DisplayNames("ar",{type:"region"}).of("EG")].join("|");』
+　于『Chinese|英语|Соединенные Штаты|مصر』。
+「核」
+　于『[new Intl.Collator("en",{numeric:true}).compare("file10","file2"),new Intl.Collator("en").compare("a","b"),"a".localeCompare("b"),"b".localeCompare("a"),"10".localeCompare("9",undefined,{numeric:true})].join("|");』
+　于『1|-1|-1|1|1』。
+「核」于『Array.from(new Intl.Segmenter("en").segment("a👍b")).map(function(s){return s.segment+":"+s.index;}).join("|");』于『a:0|👍:1|b:3』。
+「核」
+　于『Array.from(new Intl.Segmenter("en",{granularity:"word"}).segment("Hello, world!")).map(function(s){return s.segment+":"+s.index+(s.isWordLike?"w":"");}).join("|");』
+　于『Hello:0w|,:5| :6|world:7w|!:12』。
+「核」
+　于『[Array.from(new Intl.Segmenter("en",{granularity:"sentence"}).segment("A. B!")).length,new Intl.Segmenter("en",{granularity:"word"}).segment("abc def").containing(1).segment,new Intl.Segmenter("en",{granularity:"word"}).segment("abc def").containing(5).index].join("|");』
+　于『2|abc|4』。
+「核」于『[(1234.5).toLocaleString("en"),(1234.5).toLocaleString("zh"),(1234.5).toLocaleString("ru")].join("|");』于『1,234.5|1,234.5|1 234,5』。
+「核」
+　于『let d=new Date(Date.UTC(2025,8,12,15,45,30));[d.toLocaleDateString("en",{timeZone:"UTC"}),d.toLocaleTimeString("en",{timeZone:"UTC"}),d.toLocaleString("zh",{timeZone:"UTC"})].join("|");』
+　于『9/12/2025|3:45:30 PM|2025/9/12 15:45:30』。
+「核」
+　于『[new Intl.NumberFormat("en",{style:"currency",currency:"USD"}).resolvedOptions().currency,new Intl.NumberFormat("zh").resolvedOptions().numberingSystem,new Intl.DateTimeFormat("en",{timeZone:"UTC"}).resolvedOptions().timeZone].join("|");』
+　于『USD|latn|UTC』。
+「核」
+　于『let a=false,b=false,c=false;try{new Intl.NumberFormat("en",{style:"currency"});}catch(e){a=e instanceof TypeError;}try{new Intl.NumberFormat("en",{maximumFractionDigits:-1});}catch(e){b=e instanceof RangeError;}try{new Intl.PluralRules("en").select.length;}catch(e){c=true;}[a,b,!c].join("|");』
+　于『true|true|true』。
+「书」于『捷思国际化冒烟通过』。
