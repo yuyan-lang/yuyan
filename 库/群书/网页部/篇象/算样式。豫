@@ -314,8 +314,8 @@
 　「带条件算节样式」于（「常样式条件」于「元」）于「节」于「诸源」
 也。
 
-「：汉语：通称用户代理样式表（user agent style sheet）。返回内置的默认样式来源：来源号零、层号零，规则由一段固定的层叠样式文本解析而成，给出块级元素、表格、表单控件等的默认显示方式。
-　　文言：用户代理者，东道之常式也。篇之始，未有作者之式，则以此为其里衣。其源为零，其层为零，其规则先析之文也。
+「：汉语：通称用户代理样式表（user agent style sheet）。返回内置的默认样式来源：来源号零、层号零，规则由一段固定的层叠样式文本解析而成，给出块级元素、表格、表单控件等的默认显示方式。对话框的默认式以左右上下代替逻辑 inset，收缩尺寸交给章法；`::backdrop` 留待后续版本。
+　　文言：用户代理者，东道之常式也。篇之始，未有作者之式，则以此为其里衣。其源为零，其层为零，其规则先析之文也。对话之常式以左右上下代逻辑之 inset，缩尺付于章法；`::backdrop` 留待后版。
 　　赋曰：一段常式内置文，源零层零此其根。析为规则随篇在，未逢作者先立身。：」
 「篇用户代理样式」乃化「有」为「样式来源」者也。
 「篇用户代理样式」者得「无」而
@@ -366,7 +366,10 @@ sup { vertical-align: super }
 summary { display: list-item; list-style-type: disclosure-closed; list-style-position: inside }
 details[open] > summary { list-style-type: disclosure-open }
 a[href] { color: #0000ee; text-decoration: underline }
-details:not([open]) > :not(summary:first-of-type) { display: none }』
+details:not([open]) > :not(summary:first-of-type) { display: none }
+dialog { display: block; position: absolute; left: 0; right: 0; width: fit-content; height: fit-content; margin: auto; border: solid; padding: 1em; background-color: Canvas; color: CanvasText }
+dialog:not([open]) { display: none }
+dialog:modal { position: fixed; overflow: auto; top: 0; bottom: 0; max-width: calc(100% - 6px - 2em); max-height: calc(100% - 6px - 2em) }』
 也。
 
 「：汉语：通称求节点计算样式（computed style of a node）。把内置用户代理样式与文档的样式表（「篇样式规则」）合成两个来源，算出该节点的计算样式并返回。
