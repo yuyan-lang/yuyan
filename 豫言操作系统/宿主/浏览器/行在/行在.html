@@ -12,6 +12,11 @@ main h1{font:500 clamp(26px,3.4vw,38px)/1.4 var(--豫题);margin:0 0 8px}
 #行表单{display:flex;border:1px solid var(--豫线);border-top:none;border-radius:0 0 6px 6px;background:var(--豫浅)}
 #行{flex:1;min-width:0;font:13px/1.6 var(--豫码);padding:8px 14px;border:none;background:transparent;color:var(--豫墨);outline:none}
 #状态{color:var(--豫次);font-size:13px}
+/* 文言：屏：入桌面则惟留画布，满铺视口。汉语：屏幕：进入桌面后只留画布，铺满视口；回到命令行时隐藏。 */
+canvas[data-yy-显示面]{display:none}
+body.桌面中{margin:0;overflow:hidden}
+body.桌面中> :not(canvas):not(input[data-yy-显示面输入]){display:none}
+body.桌面中 canvas[data-yy-显示面]{display:block;position:fixed;inset:0;width:100vw;height:100dvh;touch-action:none}
 </style>
 <header class="豫导航"><a class="豫标志" href="/" aria-label="豫言首页">豫<b>言</b></a><a class="豫站名" href="/豫言操作系统.汉语.html">豫言操作系统</a><nav class="豫导航内" aria-label="全站导航"><a href="/">首页</a><a href="/豫言操作系统.汉语.html">愿景</a><a href="/文档/">文档</a><a href="https://github.com/yuyan-lang/yuyan">GitHub ↗</a></nav></header>
 <main id="正文">
@@ -22,6 +27,7 @@ main h1{font:500 clamp(26px,3.4vw,38px)/1.4 var(--豫题);margin:0 0 8px}
 <p id="状态">正在启动</p>
 </main>
 <footer class="豫页脚"><span>豫言 · 以中文写程序，以函数组织计算。</span><nav><a href="https://github.com/yuyan-lang/yuyan">源码</a><a href="https://github.com/yuyan-lang/yuyan/issues">问题反馈</a></nav></footer>
+<canvas width="1280" height="800" data-yy-显示面="主窗口"></canvas>
 <script type="module">
 // 汉语：页面只当屏幕与键盘：显示开机壳的输出，把输入的一行送进壳的标准输入；命令全由同一个豫言程序（豫构交互）处理。
 // 文言：页惟为屏与键：示开机壳之出，送所入之行于壳之标准入；诸令皆由同一豫言程序（豫构交互）治之。
@@ -30,6 +36,16 @@ const 屏 = document.getElementById('屏'), 行 = document.getElementById('行')
 // 汉语：快照缺省取同目录的 源.tar.gz 与 工具.tar.gz；本机测试可用网址参数 源=、工具= 另指。文言：快照默取同目之源、工具二档；本机之试可以网址之参另指。
 const 参 = new URLSearchParams(location.search);
 const 快照们 = [参.get('源') ?? './源.tar.gz', 参.get('工具') ?? './工具.tar.gz'].map(网址 => new URL(网址, location.href));
+// 汉语：字体：各族名都声明为同一个文楷字体文件（缺省取站点 /操作系统/字体.ttf，网址参数 字体= 另指），宿主的字体能力按族名取它。
+// 文言：字体：诸族名皆宣同一文楷之文（默取站之 /操作系统/字体.ttf，网址之参 字体= 另指），宿主之字体之能依族名取之。
+for (const 族 of ['文楷', '无衬线', '衬线', '等宽', '衬线粗体', '等宽粗体']) {
+  const 链 = document.createElement('link');
+  链.setAttribute('data-yy-字体', 族);
+  链.setAttribute('href', new URL(参.get('字体') ?? '../字体.ttf', location.href).href);
+  document.head.append(链);
+}
+// 汉语：进出桌面：图形桌面任务拿到屏幕时只留画布，退出后回到命令行。文言：入出桌面：图形桌面之务得屏则惟留画布，退则复命令行。
+const 示屏 = 开 => { document.body.classList.toggle('桌面中', 开); if (!开 && !行.disabled) 行.focus(); };
 const 写 = 文 => { 屏.textContent += 文; 屏.scrollTop = 屏.scrollHeight; };
 // 汉语：壳每读一行之前印提示符（续行印“…> ”）；见到提示符就是上一句办完了，输入框可用。文言：壳每读行前印提示（续行印“…> ”）；见之则前句已毕，可入。
 const 出 = (流, 文) => {
@@ -57,7 +73,9 @@ document.getElementById('行表单').onsubmit = 事 => {
   行.value = 旧行们[翻位] ?? '';
 };
 try {
-  会话 = await 起行在({快照们, 出, 报: 文 => { 状态.textContent = 文; }});
+  会话 = await 起行在({快照们, 出, 示屏, 报: 文 => { 状态.textContent = 文; }});
+  // 汉语：留给浏览器控制台查看任务表与文件（只读的调试入口）。文言：留之以供浏览器控制台察任务表与文件。
+  globalThis.网页行在 = 会话;
   状态.textContent = '开机壳已起，正在编译前导';
   const 记录 = await 会话.完成;
   行.disabled = true;
