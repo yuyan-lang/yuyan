@@ -47,7 +47,7 @@
 　　　　　若「或」于（「文同」于「前缀」于（「候选名」接『：』））于（「文同」于「前缀」于（「候选名」接『:』））则「候选名」否则「旧名」
 　　　）
 　　　于『Error』
-　　　于（「列」【『EvalError』，『RangeError』，『ReferenceError』，『SyntaxError』，『TypeError』，『URIError』】）而
+　　　于（「列」【『EvalError』，『RangeError』，『ReferenceError』，『SyntaxError』，『TypeError』，『URIError』，『AggregateError』】）而
 　若「文同」于「标准名」于『Error』则
 　　「叠」以（「文」合「文」）又以「文」
 　　　于（得「项」又得「旧名」而若「且」于（「文同」于「旧名」于『Error』）于（「首同」于（「项」中「零」）于「异常文」）则（「项」中「一」）否则「旧名」）
