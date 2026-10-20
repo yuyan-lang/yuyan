@@ -21,8 +21,8 @@ kernel void 子组试(uint 入_局部 [[thread_index_in_threadgroup]], uint 入_
   const auto 邻 = simd_shuffle(值, (道 ^ 1u));
   const auto 异 = simd_shuffle_xor(值, 3u);
   const auto 整和 = simd_sum(局部);
-  const auto 一 = (和 + 大) + 小;
-  const auto 二 = (首 + 邻) + 异;
-  出[局部] = 一 + 二;
+  const auto 项一 = (和 + 大) + 小;
+  const auto 项二 = (首 + 邻) + 异;
+  出[局部] = 项一 + 项二;
   整出[局部] = 整和 + (道 + 宽);
 }

@@ -23,8 +23,8 @@ fn 子组试(入: 输入) {
   let 邻 = subgroupShuffle(值, (道 ^ 1u));
   let 异 = subgroupShuffleXor(值, 3u);
   let 整和 = subgroupAdd(局部);
-  let 一 = (和 + 大) + 小;
-  let 二 = (首 + 邻) + 异;
-  出[局部] = 一 + 二;
+  let 项一 = (和 + 大) + 小;
+  let 项二 = (首 + 邻) + 异;
+  出[局部] = 项一 + 项二;
   整出[局部] = 整和 + (道 + 宽);
 }
