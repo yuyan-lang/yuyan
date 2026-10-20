@@ -1,0 +1,1335 @@
+「：汉语：通称浏览器宿主接口覆盖表（browser API coverage）。逐条记网览东道的豫言接口对浏览器 API 的覆盖：每张表对应一组 Web API（中断、事件、储存、套接字、网址、标头、缓存等），每行写 BCD 路径或规范成员、对应的豫言入口、状态与证据，部分表另有剩余边界或尚需核验的一栏。《覆盖清单》（覆盖清单.汉语.md）按表名引用这些表。
+　　文言：网览东道之接口，所覆浏览器之术几何，须逐条可考。故汇诸表于此篇：每表一组 Web 之术，每行书其路径、豫言之入口、其状与其证，或别书其余待验者。《覆盖清单》依表名引之。
+　　赋曰：观夫浏览之境，诸术星罗；东道之主，逐条图记。表以域分，若州郡之分疆；行以术列，如县邑之编户。路径冠首，标规范之名；入口随后，系豫言之门。实测者书其证，未及者记其余。已验之条，录真机之实；待考之目，留后版之功。诸表散居，昔各成其卷；一篇并录，今共列其编。览者循名而稽，如按图以索骥。：」
+寻观「豫章」之书。
+
+「：汉语：通称接口覆盖表列（coverage tables）。每张表是「列」于（「列」于「文」）：第一行只有表名（如『广播频道接口』），第二行是栏名，其余每行一个 API 的记录；各表四到五栏不等。
+　　文言：诸覆盖之表也。每表首行惟书其名，次行书栏名，余行各书一术；栏数四五不等。
+　　赋曰：首行题目书其表，次行栏名列其纲。余行一术成一录，四五栏中各短长。：」
+「覆盖表们」乃「列」于（「列」于（「列」于「文」））也。
+「覆盖表们」者
+　「列」
+　【「列」
+　　　【「列」【『中断接口』】
+　　　，「列」【『规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『AbortController constructor、signal』
+　　　　　，『浏览器中断控制器新建、浏览器中断控制器信号』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 创建控制器，信号初态未中断』
+　　　　　】
+　　　，「列」
+　　　　　【『AbortController.abort(reason)』
+　　　　　，『浏览器中断控制器中断、浏览器中断控制器带理由』
+　　　　　，『已实测』
+　　　　　，『文字及对象理由均由豫言传入，信号随后中断；重复中断保留首次理由』
+　　　　　】
+　　　，「列」
+　　　　　【『AbortSignal.aborted、reason』
+　　　　　，『浏览器中断信号已中断、浏览器中断信号状态文』
+　　　　　，『已实测』
+　　　　　，『初态 false，文字与对象理由按原值返回；无理由静态中断的名称为 AbortError』
+　　　　　】
+　　　，「列」【『AbortSignal.throwIfAborted』，『浏览器中断信号检查安全』，『已实测』，『未中断时返回阳；文字或对象理由被安全捕获为错误 JSON』】
+　　　，「列」【『AbortSignal.abort(reason)』，『浏览器中断信号立断、浏览器中断信号立断无理由』，『已实测』，『静态文字理由及默认 AbortError 均通过』】
+　　　，「列」
+　　　　　【『AbortSignal.any(signals)』
+　　　　　，『浏览器中断信号合一安全』
+　　　　　，『已实测』
+　　　　　，『两个活信号合并，第二个中断后组合信号继承“合一”理由；空数组与已中断输入待验』
+　　　　　】
+　　　，「列」
+　　　　　【『AbortSignal.timeout(ms)』
+　　　　　，『浏览器中断信号限时安全』
+　　　　　，『已实测』
+　　　　　，『0ms 后理由名为 TimeoutError；-1ms 返回阴与 RangeError；后台页活跃时间语义待验』
+　　　　　】
+　　　，「列」
+　　　　　【『AbortSignal abort 事件』
+　　　　　，『浏览器中断信号等事文』
+　　　　　，『已实测』
+　　　　　，『已中断信号即时返回 abort、限时信号异步返回 abort、未中断信号返回 timeout；多等待者与竞态待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『事件接口』】
+　　　，「列」【『BCD路径』，『豫言接口』，『状态』，『验证』】
+　　　，「列」【『api.Event.Event』，『浏览器事件新建』，『已实测』，『真实 Chrome 以 EventInit 构造冒泡、可取消、组合事件』】
+　　　，「列」【『api.Event.bubbles』，『浏览器事件状态文、事件队列冒泡字段』，『已实测』，『Chrome 传播快照为 true』】
+　　　，「列」【『api.Event.cancelBubble』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.Event.cancelable』，『浏览器事件状态文、事件队列可取消字段』，『已实测』，『Chrome 可取消事件的同步默认取消与 dispatchEvent 假值』】
+　　　，「列」【『api.Event.composed』，『浏览器事件状态文、事件队列组合字段』，『已实测』，『Chrome 传播快照为 true』】
+　　　，「列」【『api.Event.composedPath』，『事件队列路径字段』，『已实测』，『Chrome 父捕获回调中快照路径以子、父句柄开头；回调结束后原生路径为空』】
+　　　，「列」【『api.Event.currentTarget』，『事件队列当前句柄字段』，『已实测』，『Chrome 父捕获回调中当前句柄为父；回调结束后为空』】
+　　　，「列」【『api.Event.defaultPrevented』，『事件队列中的已阻止默认字段』，『部分实测』，『Chrome 豫言 Wasm 确认 true』】
+　　　，「列」【『api.Event.eventPhase』，『事件队列阶段字段、浏览器事件状态文』，『已实测』，『Chrome 父捕获为 1、子目标为 2、发前和发后为 0』】
+　　　，「列」【『api.Event.explicitOriginalTarget』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.Event.initEvent』，『浏览器事件旧式初始化』，『已实测』，『Chrome 将旧事初始化为新事并发送；冒泡为真』】
+　　　，「列」【『api.Event.isTrusted』，『事件队列是否可信字段、浏览器事件状态文』，『已接未断言』，『合成事件状态可读取；用户真实输入边界待验』】
+　　　，「列」【『api.Event.originalTarget』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.Event.preventDefault』，『浏览器订阅并阻止默认』，『部分实测』，『Chrome 原生 submit 回调即时取消默认动作』】
+　　　，「列」【『api.Event.returnValue』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.Event.srcElement』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」
+　　　　　【『api.Event.stopImmediatePropagation』
+　　　　　，『浏览器事件订阅多之止同处』
+　　　　　，『已实测』
+　　　　　，『Chrome 同目标两监听器中首监听器止同处，次监听器未入队，下一项为标记事件』
+　　　　　】
+　　　，「列」【『api.Event.stopPropagation』，『浏览器事件订阅选项之止传播』，『已实测』，『Chrome 父捕获后子监听未入队，下一队列项为标记事件』】
+　　　，「列」【『api.Event.target』，『事件队列目标句柄字段』，『已实测』，『Chrome 父捕获事件目标为子句柄』】
+　　　，「列」【『api.Event.timeStamp』，『事件队列时间戳字段、浏览器事件状态文』，『已接未断言』，『时间戳来源为原生 Event.timeStamp』】
+　　　，「列」【『api.Event.type』，『事件队列中的名称字段』，『部分实测』，『Chrome 豫言 Wasm 区分 click 与 submit』】
+　　　，「列」【『api.EventTarget.EventTarget』，『浏览器事件目标新建』，『已实测』，『Chrome 构造独立 EventTarget 并接收新事』】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener』
+　　　　　，『浏览器订阅事件、浏览器事件订阅选项、浏览器事件订阅多』
+　　　　　，『部分实测』
+　　　　　，『Chrome 豫言 Wasm 捕获、目标、once、AbortSignal、同目标同名多监听器及独立撤销；监听器对象身份与全部选项边界待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.options_parameter』
+　　　　　，『浏览器事件订阅选项、浏览器事件订阅多』
+　　　　　，『部分实测』
+　　　　　，『capture、once、signal、passive、阻止默认和止传播已验；组合边界待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.options_parameter.options_capture_parameter』
+　　　　　，『浏览器事件订阅选项』
+　　　　　，『已实测』
+　　　　　，『Chrome 父捕获先于子目标』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.options_parameter.options_once_parameter』
+　　　　　，『浏览器事件订阅选项』
+　　　　　，『已实测』
+　　　　　，『第二次发送后下一队列项为标记事件，子 once 已撤』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.options_parameter.options_passive_parameter』
+　　　　　，『浏览器事件订阅多』
+　　　　　，『已实测』
+　　　　　，『Chrome 被动监听器调用 preventDefault 后事件未取消、dispatchEvent 为真；主动监听器同法取消并返回假；浏览器默认值待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.options_parameter.options_passive_parameter_default_true_touch』
+　　　　　，『无专门接口』
+　　　　　，『待补』
+　　　　　，『尚未逐项封装和实测』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.options_parameter.options_passive_parameter_default_true_wheel』
+　　　　　，『无专门接口』
+　　　　　，『待补』
+　　　　　，『尚未逐项封装和实测』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.options_parameter.options_signal_parameter』
+　　　　　，『浏览器事件订阅选项』
+　　　　　，『已实测』
+　　　　　，『Chrome AbortController.abort 后信号事不入队，下一项为标记事件』
+　　　　　】
+　　　，「列」
+　　　　　【『api.EventTarget.addEventListener.useCapture_parameter_optional』
+　　　　　，『浏览器事件订阅选项』
+　　　　　，『已实测』
+　　　　　，『以 capture 字段实现，父节点先收到捕获阶段事件』
+　　　　　】
+　　　，「列」【『api.EventTarget.dispatchEvent』，『浏览器事件发送』，『已实测』，『Chrome 合成事件发送、传播和取消默认后的真假返回值』】
+　　　，「列」
+　　　　　【『api.EventTarget.removeEventListener』
+　　　　　，『浏览器取消订阅事件、浏览器事件取消订阅号』
+　　　　　，『部分实测』
+　　　　　，『Chrome 两个同名监听器按订阅号独立撤销；DOM 按钮事件中撤一留一且根监听不重复投递；外部监听器身份语义待补』
+　　　　　】
+　　　，「列」【『api.EventTarget.removeEventListener.options_parameter』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.EventTarget.removeEventListener.useCapture_parameter_optional』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.EventTarget.when』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.SubmitEvent.SubmitEvent』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　，「列」【『api.SubmitEvent.submitter』，『无专门接口』，『待补』，『尚未逐项封装和实测』】
+　　　】
+　，「列」
+　　　【「列」【『事件源接口』】
+　　　，「列」【『平台 API』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『EventSource(url, {withCredentials})』
+　　　　　，『浏览器事件源连接』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 连接本地跨源 SSE，withCredentials=false』
+　　　　　，『含凭据跨源访问待验』
+　　　　　】
+　　　，「列」
+　　　　　【『open/message/error、自定义事件』
+　　　　　，『浏览器事件源订阅、浏览器事件源等事文』
+　　　　　，『部分实测』
+　　　　　，『自定义 notice、数据“甲”、id 7 已验』
+　　　　　，『普通 message、error、重连与 origin 待验』
+　　　　　】
+　　　，「列」
+　　　　　【『url、readyState、withCredentials』
+　　　　　，『浏览器事件源状态文』
+　　　　　，『部分实测』
+　　　　　，『withCredentials=false 已断言；url、readyState 未逐项断言』
+　　　　　，『状态转换待验』
+　　　　　】
+　　　，「列」【『close()』，『浏览器事件源关闭』，『已实测短例』，『豫言收到通知后显式关闭，页面完成』，『重复关闭及中途取消待验』】
+　　　】
+　，「列」
+　　　【「列」【『储存接口』】
+　　　，「列」【『BCD 路径』，『豫言接口』，『状态』，『真实运行验证』，『待补』】
+　　　，「列」
+　　　　　【『api.Window.localStorage』
+　　　　　，『浏览器储存读取、写入、删除、清空、计数、序键（本地）』
+　　　　　，『已实测』
+　　　　　，『Chrome 本地值与会话值隔离』
+　　　　　，『跨标签页与重启持久性』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Window.sessionStorage』
+　　　　　，『浏览器储存读取、写入、删除、清空、计数、序键（会话）』
+　　　　　，『已实测』
+　　　　　，『Chrome 同键不同值』
+　　　　　，『标签页复制及导航存续』
+　　　　　】
+　　　，「列」【『api.Storage』，『储存。豫』，『部分』，『Chrome 两个 Storage 对象调用』，『异常及多文档并发』】
+　　　，「列」【『api.Storage.getItem』，『浏览器储存读取』，『已实测』，『Chrome 缺失、空字符串与文字值』，『受限来源异常』】
+　　　，「列」【『api.Storage.setItem』，『浏览器储存写入』，『已实测』，『Chrome 本地、会话与跨文档事件』，『配额异常』】
+　　　，「列」【『api.Storage.removeItem』，『浏览器储存删除』，『已实测』，『Chrome 删除后缺失』，『跨文档删除事件』】
+　　　，「列」【『api.Storage.clear』，『浏览器储存清空』，『已实测』，『Chrome 两区域清空及计数』，『跨文档清空事件』】
+　　　，「列」【『api.Storage.key』，『浏览器储存序键』，『已实测』，『Chrome 序号零与越界』，『多个键的顺序与并发修改』】
+　　　，「列」【『api.Storage.length』，『浏览器储存计数』，『已实测』，『Chrome 零与一』，『多文档并发』】
+　　　，「列」
+　　　　　【『api.Window.storage_event』
+　　　　　，『浏览器订阅储存变化、等待浏览器事件』
+　　　　　，『已实测』
+　　　　　，『Chrome 同源 iframe 的豫言子程序写入并触发父页』
+　　　　　，『不同标签页、会话区域与卸载时序』
+　　　　　】
+　　　，「列」【『api.StorageEvent』，『浏览器事件队列中的 storage 事件载荷』，『部分』，『Chrome 父页收到真实 StorageEvent』，『构造、初始化和全部字段边界』】
+　　　，「列」【『api.StorageEvent.StorageEvent』，『通用浏览器构造对象』，『待补』，『未验证专门构造』，『构造选项与异常』】
+　　　，「列」【『api.StorageEvent.initStorageEvent』，『通用浏览器调用方法』，『待补』，『未验证』，『遗留初始化方法』】
+　　　，「列」【『api.StorageEvent.key』，『等待浏览器事件之键字段』，『已实测』，『Chrome 事件键』，『删除和清空时为 null』】
+　　　，「列」【『api.StorageEvent.oldValue』，『等待浏览器事件之旧值字段』，『已封装』，『本次未断言旧值』，『覆盖改值、删除与清空』】
+　　　，「列」【『api.StorageEvent.newValue』，『等待浏览器事件之新值字段』，『已实测』，『Chrome 来自子页』，『删除和清空时为 null』】
+　　　，「列」【『api.StorageEvent.url』，『等待浏览器事件之网址字段』，『已封装』，『本次未断言网址』，『同源跨文档 URL』】
+　　　，「列」【『api.StorageEvent.storageArea』，『等待浏览器事件之区域字段』，『已实测』，『Chrome 标记本地区域』，『会话区域事件』】
+　　　】
+　，「列」
+　　　【「列」【『公开操作接口』】
+　　　，「列」【『接口』，『豫言接口』，『状态』，『验证』，『待补』】
+　　　，「列」【『注册页面公开方法』，『浏览器公开操作』，『已实测』，『Chrome 页面取得命名空间方法，注册重名由宿主拒绝』，『跨页面作用域策略』】
+　　　，「列」
+　　　　　【『页面调用转事件』
+　　　　　，『等待浏览器事件、浏览器公开事件取文字、浏览器公开事件参数文』
+　　　　　，『已实测』
+　　　　　，『参数经 JSON 进入豫言事件队列』
+　　　　　，『非 JSON 值及句柄生命周期』
+　　　　　】
+　　　，「列」【『按调用号完成』，『浏览器完成公开操作』，『已实测』，『Chrome 得到豫言返回的对象，双调用逆序回复仍对应原 Promise』，『大结果与流』】
+　　　，「列」【『按调用号拒绝』，『浏览器拒绝公开操作』，『已实测』，『Chrome Promise 收到豫言给出的错误原因』，『错误类型映射』】
+　　　，「列」【『取消公开方法』，『浏览器取消公开操作』，『部分实测』，『豫言取消方法并在结束时清理命名空间』，『取消在途调用专项验收』】
+　　　，「列」
+　　　　　【『自动启动就绪』
+　　　　　，『自动启动.mjs 的就绪、完成、宿主』
+　　　　　，『已实测』
+　　　　　，『Chrome 公开操作就绪、旧式启动和缺失标识跳过均通过』
+　　　　　，『错误时序与多个应用并存』
+　　　　　】
+　　　，「列」【『同步页面调用』，『无』，『待补』，『当前 Wasm 只导出 _start，公开方法返回 Promise』，『编译器导出可同步调用的豫言函数或调整调用方协议』】
+　　　】
+　，「列」
+　　　【「列」【『压缩流接口』】
+　　　，「列」【『BCD 路径或规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『api.CompressionStream.CompressionStream.gzip』
+　　　　　，『浏览器压缩流创建、浏览器压缩字节安全』
+　　　　　，『已实测短字』
+　　　　　，『真实 Chrome 原字 00 FF 41 经 gzip 往返』
+　　　　　，『逐块写入、背压与大流待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.CompressionStream.CompressionStream.deflate』
+　　　　　，『浏览器压缩流创建、浏览器压缩字节安全』
+　　　　　，『已实测短字』
+　　　　　，『同一原字经 deflate 往返』
+　　　　　，『逐块流式处理待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.CompressionStream.CompressionStream.deflate-raw』
+　　　　　，『浏览器压缩流创建、浏览器压缩字节安全』
+　　　　　，『已实测短字』
+　　　　　，『同一原字经 deflate-raw 往返』
+　　　　　，『逐块流式处理待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.DecompressionStream.DecompressionStream.gzip/deflate/deflate-raw』
+　　　　　，『浏览器解压流创建、浏览器解压字节安全』
+　　　　　，『已实测短字』
+　　　　　，『三格式解压后逐字节核对』
+　　　　　，『附加尾字、校验和与截断边界待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.CompressionStream.readable/writable、api.DecompressionStream.readable/writable』
+　　　　　，『浏览器压缩流读端、浏览器压缩流写端、浏览器流接转换』
+　　　　　，『部分实测』
+　　　　　，『真实 Chrome 由豫言主动写入 00 与 FF 41 两块，经两层 pipeThrough 后逐字节读回；构造、取端和句柄释放也已验』
+　　　　　，『大量分块的背压、取消与错误传播待验』
+　　　　　】
+　　　，「列」【『无效格式或坏 gzip』，『浏览器压缩字节安全、浏览器解压字节安全』，『已实测』，『返回阴和 UTF-8 错误字节』，『具体异常文本跨引擎待验』】
+　　　，「列」
+　　　　　【『api.CompressionStream.CompressionStream.brotli、api.DecompressionStream.DecompressionStream.brotli』
+　　　　　，『同上』
+　　　　　，『按浏览器能力』
+　　　　　，『MDN BCD 8.1.2 显示 Chrome 无支持记录，宿主交由原生构造器判定』
+　　　　　，『Firefox、Safari 的实际版本待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.CompressionStream.CompressionStream.zstd、api.DecompressionStream.DecompressionStream.zstd』
+　　　　　，『无』
+　　　　　，『BCD 无支持记录』
+　　　　　，『宿主未增加非标准 zstd 实现』
+　　　　　，『浏览器实现变化后复查』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『可写流接口』】
+　　　，「列」【『BCD 路径或规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『api.WritableStream.getWriter、api.WritableStream.locked』
+　　　　　，『浏览器打开可写流、浏览器可写流已锁』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 取得 gzip 压缩流写器，locked 为真』
+　　　　　，『重复取写器异常待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.WritableStreamDefaultWriter.write』
+　　　　　，『浏览器写器发字节、浏览器写器候操作安全』
+　　　　　，『已实测』
+　　　　　，『先发 00 与 FF 41 两块，消费压缩输出后逐一等待成功；字节经解压无损』
+　　　　　，『大量在途写入及拒绝待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.WritableStreamDefaultWriter.close』
+　　　　　，『浏览器写器发关闭、浏览器写器候操作安全』
+　　　　　，『已实测』
+　　　　　，『写后发关闭，读完输出后等待关闭 Promise 成功』
+　　　　　，『写入失败后的关闭待验』
+　　　　　】
+　　　，「列」【『api.WritableStreamDefaultWriter.ready』，『浏览器写器就绪安全』，『已实测短例』，『首次写入前等待成功』，『真实背压后的 pending/恢复待验』】
+　　　，「列」【『api.WritableStreamDefaultWriter.closed』，『浏览器写器已闭安全』，『已实测短例』，『关闭后 fulfilled』，『错误后的 rejected 待验』】
+　　　，「列」【『api.WritableStreamDefaultWriter.desiredSize』，『浏览器写器容量文』，『部分』，『首次写入前已读取 JSON 值』，『背压时数值变化与 null 待验』】
+　　　，「列」
+　　　　　【『api.WritableStreamDefaultWriter.abort』
+　　　　　，『浏览器写器中断安全』
+　　　　　，『已实测短例』
+　　　　　，『真实 Chrome gzip 写器 abort 返回阳，释放后 writable.locked 为假』
+　　　　　，『传播到可读侧及在途写入待验』
+　　　　　】
+　　　，「列」【『api.WritableStreamDefaultWriter.releaseLock』，『浏览器释放流写器』，『已实测』，『正常关闭后释放写器』，『未完成写入时释放待验』】
+　　　，「列」
+　　　　　【『api.WritableStream.WritableStream、abort、close、transferable』
+　　　　　，『通用句柄桥』
+　　　　　，『待逐项验』
+　　　　　，『本轮只覆盖由原生压缩流取得的 writable 与 writer』
+　　　　　，『直接构造、自定义 sink、转移与流自身方法待补』
+　　　　　】
+　　　，「列」
+　　　　　【『无效写器句柄』
+　　　　　，『浏览器写器候操作安全、浏览器写器中断安全』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 两种调用均返回阴，后续正常写入仍完成』
+　　　　　，『其他错误类型待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『套接字接口』】
+　　　，「列」【『接口』，『豫言入口』，『状态』，『真实运行验证』，『待补』】
+　　　，「列」
+　　　　　【『WebSocket(url, protocols)』
+　　　　　，『浏览器套接字连接、浏览器套接字协议』
+　　　　　，『已接』
+　　　　　，『Chrome 对普通 Worker 提议 yuyan.v1、backup.v1 并读回 yuyan.v1；对 Durable Object 提议 yuyan.do.v1、backup.v1 并读回 yuyan.do.v1』
+　　　　　，『相对 URL、重复协议与握手失败』
+　　　　　】
+　　　，「列」【『WebSocket.send(string)』，『浏览器套接字发送文字』，『已接』，『发送“豫言”并收到“回:豫言”』，『CONNECTING 异常与缓冲阈值』】
+　　　，「列」【『WebSocket.send(ArrayBuffer)』，『浏览器套接字发送字节』，『已接』，『发送 00 FF 41 并逐字节核对回显』，『Blob、TypedArray 其他形式与大消息』】
+　　　，「列」【『message/open/close/error 事件』，『等待浏览器事件』，『部分』，『open、文字与字节 message、正常 close 已验』，『error 事件及异常关闭待验』】
+　　　，「列」【『binaryType=arraybuffer』，『浏览器套接字连接』，『已接』，『二进制消息以原始字节句柄进入豫言』，『blob 模式』】
+　　　，「列」【『readyState/bufferedAmount』，『浏览器套接字状态、浏览器套接字缓冲字节』，『部分』，『open 时 readyState=1 已验』，『缓冲字节变化与全部状态』】
+　　　，「列」【『WebSocket.close/release』，『浏览器套接字关闭、浏览器套接字释放』，『已接』，『Chrome 正常关闭后豫言释放句柄』，『异常代码和原因边界』】
+　　　】
+　，「列」
+　　　【「列」【『定时接口』】
+　　　，「列」【『BCD 路径或规范成员』，『豫言入口』，『状态』，『实测证据』，『剩余边界』】
+　　　，「列」
+　　　　　【『api.setTimeout』
+　　　　　，『浏览器定时一次』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 10 毫秒一次定时投递“定时”事件，标记、编号匹配；每宿主至多 64 个活动定时器』
+　　　　　，『后台节流、长延时与精度待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.setInterval』
+　　　　　，『浏览器定时重复』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 20 毫秒间隔收到三次事件，均由豫言等待处理』
+　　　　　，『后台节流、长期运行与事件合并待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.clearTimeout、api.clearInterval』
+　　　　　，『浏览器取消定时』
+　　　　　，『已实测』
+　　　　　，『周期定时取消返回真；重复取消返回假；宿主结束时清理余定时器』
+　　　　　，『已排队与回调竞态待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.setTimeout.supports_parameters_for_callback、api.setInterval.supports_parameters_for_callback』
+　　　　　，『标记参数』
+　　　　　，『部分』
+　　　　　，『单个豫言标记被放入事件 JSON，业务可自行编码更多参数』
+　　　　　，『原生可变参数及复杂结构化值未逐项验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.setTimeout.code_param_enforces_trusted_types、api.setInterval.code_param_enforces_trusted_types』
+　　　　　，『无』
+　　　　　，『不暴露字符串代码』
+　　　　　，『业务逻辑仅用豫言，宿主不执行传入代码字符串』
+　　　　　，『Trusted Types 对脚本字符串路径不适用』
+　　　　　】
+　　　，「列」
+　　　　　【『api.setTimeout.worker_support、api.setInterval.worker_support、api.clearTimeout.worker_support、api.clearInterval.worker_support』
+　　　　　，『浏览器定时一次、浏览器定时重复、浏览器取消定时』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 的 Dedicated Worker 豫言 Wasm 先取消一次定时器，再收两次周期事件、取消周期器并收一次事件』
+　　　　　，『后台节流、长时间运行与队列合并边界待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Window.requestAnimationFrame』
+　　　　　，『浏览器请求动画帧』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 页面豫言 Wasm 收到带帧号和标记的动画帧事件』
+　　　　　，『高刷新率与后台标签节流待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Window.cancelAnimationFrame』
+　　　　　，『浏览器取消动画帧』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 页面取消未触发帧返回真，已触发帧重复取消返回假』
+　　　　　，『取消与回调竞态待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.requestAnimationFrame』
+　　　　　，『浏览器请求动画帧』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 页面创建的 Dedicated Worker 内，豫言 Wasm 收到动画帧后发送 ready』
+　　　　　，『无页面所有者的 Worker 应抛 NotSupportedError，待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.cancelAnimationFrame』
+　　　　　，『浏览器取消动画帧』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome Worker 内先取消一帧，首个收到的帧事件来自下一请求』
+　　　　　，『取消与回调竞态待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Window.requestIdleCallback』
+　　　　　，『浏览器请求空闲回调、浏览器请求限时空闲回调』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 页面豫言 Wasm 分别收到有、无 timeout 请求的空闲事件，编号、标记、didTimeout 与 timeRemaining 字段到达』
+　　　　　，『Safari 当前缺少原生接口；页面繁忙时序及 timeout 强制触发待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Window.cancelIdleCallback』
+　　　　　，『浏览器取消空闲回调』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 页面取消未触发请求返回真，已触发请求重复取消返回假；宿主结束时清理』
+　　　　　，『取消与回调竞态待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『密码接口』】
+　　　，「列」【『接口』，『豫言接口』，『状态』，『验证』，『待补』】
+　　　，「列」【『Crypto.randomUUID』，『浏览器密码随机识别』，『已验』，『真实 Chrome 返回 36 字符 UUID』，『跨浏览器验收』】
+　　　，「列」【『Crypto.getRandomValues』，『浏览器密码随机字节』，『已验』，『真实 Chrome 返回 12 字节』，『其他整型 TypedArray』】
+　　　，「列」【『SubtleCrypto.digest』，『浏览器密码摘要』，『部分』，『SHA-256(abc) 首字节及长度通过』，『其他摘要算法』】
+　　　，「列」
+　　　　　【『SubtleCrypto.importKey』
+　　　　　，『浏览器密码导入高级加密、浏览器密码导入密钥散列码』
+　　　　　，『部分』
+　　　　　，『AES-GCM 与 HMAC 原始钥通过』
+　　　　　，『JWK、SPKI、PKCS8 等格式』
+　　　　　】
+　　　，「列」
+　　　　　【『SubtleCrypto.encrypt、decrypt』
+　　　　　，『浏览器密码高级加密加密、浏览器密码高级加密解密』
+　　　　　，『部分』
+　　　　　，『AES-GCM 含附加认证数据往返通过』
+　　　　　，『其他算法、鉴别失败验收』
+　　　　　】
+　　　，「列」【『SubtleCrypto.sign、verify』，『浏览器密码密钥散列码签、浏览器密码密钥散列码验』，『部分』，『HMAC 真验与假验通过』，『其他签名算法』】
+　　　，「列」【『SubtleCrypto.generateKey』，『浏览器密码生成高级加密』，『部分』，『256 位可导 AES-GCM 密钥生成并用于加密』，『其他算法与用途组合』】
+　　　，「列」【『SubtleCrypto.exportKey』，『浏览器密码导出高级加密』，『部分』，『原始字节导出、重新导入并解密』，『JWK、SPKI、PKCS8 等格式及不可导异常』】
+　　　，「列」
+　　　　　【『SubtleCrypto.deriveBits』
+　　　　　，『浏览器密码口令派生2字节、浏览器密码散列派生字节』
+　　　　　，『部分』
+　　　　　，『SHA-256 256 位结果首字节与独立结果相符，并用于 AES 解密』
+　　　　　，『其他散列与长度、ECDH 等』
+　　　　　】
+　　　，「列」
+　　　　　【『SubtleCrypto.deriveKey』
+　　　　　，『浏览器密码口令派生2高级加密、浏览器密码散列派生高级加密』
+　　　　　，『部分』
+　　　　　，『派生 AES-GCM 密钥加密后由 deriveBits 原始钥解密』
+　　　　　，『其他派生算法与目标钥类型』
+　　　　　】
+　　　，「列」【『SubtleCrypto.wrapKey、unwrapKey』，『无具名豫言接口』，『待补』，『未验』，『密钥封装与解封』】
+　　　，「列」【『CryptoKey 属性』，『通用句柄接口』，『部分』，『无专项验收』，『类型、算法、可导出性、用途』】
+　　　】
+　，「列」
+　　　【「列」【『导航接口』】
+　　　，「列」【『接口』，『豫言接口』，『状态』，『验证』，『待补』】
+　　　，「列」
+　　　　　【『Document.cookie』
+　　　　　，『浏览器读取饼、浏览器写饼、浏览器读取饼安全、浏览器写饼安全』
+　　　　　，『已实测』
+　　　　　，『Chrome 同源文档写入后读回；JSDOM 受限 getter/setter 抛 SecurityError 时旧版豫言 Wasm 仍可切换语言，新接口返回受限状态』
+　　　　　，『Cookie Store API、其他异常与跨浏览器』
+　　　　　】
+　　　，「列」【『Location.href』，『浏览器当前网址』，『已实测』，『Chrome 读初始与 History 更新后的 URL』，『其他 Location 属性』】
+　　　，「列」
+　　　　　【『Location.assign、replace、reload』
+　　　　　，『浏览器导航至、浏览器导航替换、浏览器导航重载』
+　　　　　，『已封装』
+　　　　　，『未真实导航验收』
+　　　　　，『跨文档卸载与安全边界』
+　　　　　】
+　　　，「列」【『History.pushState』，『浏览器历史推入、浏览器历史改态安全』，『已实测』，『Chrome URL 与状态更新』，『跨条目行为及事件』】
+　　　，「列」
+　　　　　【『History.replaceState』
+　　　　　，『浏览器历史替换、浏览器历史改态安全』
+　　　　　，『已实测』
+　　　　　，『Chrome URL 与状态更新；JSDOM 受限文档抛 SecurityError 时继续切换语言』
+　　　　　，『其他异常及跨文档边界』
+　　　　　】
+　　　，「列」【『History.state』，『浏览器历史状态文』，『已实测』，『Chrome 读回豫言写入的 JSON 状态』，『结构化克隆特殊类型』】
+　　　，「列」
+　　　　　【『History.back、forward』
+　　　　　，『浏览器历史后退、浏览器历史前进』
+　　　　　，『已实测』
+　　　　　，『Chrome 同页遍历分别收到 popstate，URL 与 state 正确』
+　　　　　，『跨文档遍历及取消』
+　　　　　】
+　　　，「列」【『History.go』，『浏览器历史移动』，『已封装』，『未真实遍历验收』，『正负步数及边界』】
+　　　，「列」
+　　　　　【『Window.popstate』
+　　　　　，『浏览器订阅历史变化、浏览器取消历史变化、等待浏览器事件』
+　　　　　，『已实测』
+　　　　　，『Chrome 回退和前进各送一次事件』
+　　　　　，『事件对象的 state 全类型与队列时序』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『工作线程接口』】
+　　　，「列」【『BCD路径』，『豫言接口』，『状态』，『验证与边界』】
+　　　，「列」
+　　　　　【『api.Worker.Worker』
+　　　　　，『浏览器工作线程新建』
+　　　　　，『部分实测』
+　　　　　，『真实 Chrome 从应用目录解析相对网址，以默认 module 类型创建 Worker；name 选项在 Worker 豫言 Wasm 读回；classic、credentials 和跨源边界待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Worker.postMessage』
+　　　　　，『浏览器工作线程发值』
+　　　　　，『部分实测』
+　　　　　，『页面豫言 Wasm 发送 JSON 对象，Worker 豫言 Wasm 回显；MessagePort 与 0、255、65 三字节 ArrayBuffer 同次转移，页面端脱离、Worker 端无损读回；其他结构化克隆值待验』
+　　　　　】
+　　　，「列」【『api.Worker.terminate』，『浏览器工作线程终止』，『已实测』，『真实 Chrome 一次终止返回真，重复终止返回假；排队消息清理已接入，竞态边界待验』】
+　　　，「列」
+　　　　　【『api.Worker.message_event』
+　　　　　，『等待浏览器事件』
+　　　　　，『已实测』
+　　　　　，『构造时立即安装监听；真实 Chrome 中页面豫言 Wasm 收到 Worker 豫言 Wasm 立即发出的 ready 和后续回显』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Worker.error_event』
+　　　　　，『等待浏览器事件』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 加载同源不存在的 Worker 脚本，豫言 Wasm 收到 error 事件；错误消息、文件、行列快照与跨源边界待验』
+　　　　　】
+　　　，「列」【『api.Worker.messageerror_event』，『等待浏览器事件』，『已接未实测』，『消息反序列化失败事件已接入；真实失败边界待验』】
+　　　，「列」
+　　　　　【『api.KeyboardEvent.key、api.KeyboardEvent.code』
+　　　　　，『浏览器事件订阅选项』
+　　　　　，『部分实测』
+　　　　　，『真实 Chrome Tab keydown 快照含键、代码；其他键位和布局待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.KeyboardEvent.ctrlKey、api.KeyboardEvent.metaKey、api.KeyboardEvent.altKey、api.KeyboardEvent.shiftKey』
+　　　　　，『浏览器事件订阅选项』
+　　　　　，『部分实测』
+　　　　　，『按键快照和预声明匹配规则已接入；真实 Chrome 已验无 Ctrl/Meta 的 Tab，其他修饰键组合待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Event.preventDefault』
+　　　　　，『键盘阻止默认规则』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 的原生 Tab keydown 同步阻止默认，焦点仍留在输入框，豫言随后收到已阻止默认为真』
+　　　　　】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.postMessage』
+　　　　　，『浏览器工作线程向主线程发值』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 的 Dedicated Worker 内豫言 Wasm 发 ready 和结果，页面豫言 Wasm 接收；反向转移列表待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.message_event』
+　　　　　，『浏览器工作线程自身句柄、浏览器事件订阅选项、等待浏览器事件』
+　　　　　，『已实测』
+　　　　　，『Worker 豫言 Wasm 先订阅 self 的 message，再收到页面消息和 data 快照；自动启动外壳已由豫构发行复制』
+　　　　　】
+　　　，「列」【『api.DedicatedWorkerGlobalScope.name』，『浏览器工作线程自身名称』，『已实测』，『页面设置豫言验收，Worker 豫言 Wasm 读取并确认相同名称』】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.close』
+　　　　　，『浏览器工作线程自行关闭』
+　　　　　，『部分实测』
+　　　　　，『Worker 豫言 Wasm 发完 MessagePort 回信后调用 close，页面收到回信；关闭后的队列丢弃及竞态待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Worker.Worker.ecmascript_modules』
+　　　　　，『浏览器工作线程新建』
+　　　　　，『已实测』
+　　　　　，『默认 type 为 module，真实 Chrome 加载构建器复制的 module 外壳及豫言 Wasm』
+　　　　　】
+　　　，「列」【『api.Worker.Worker.options_name_parameter』，『浏览器工作线程新建』，『已实测』，『页面设置 name 为豫言验收，Worker 豫言 Wasm 读回同名』】
+　　　，「列」【『api.Worker.Worker.options_type_parameter』，『浏览器工作线程新建』，『部分实测』，『module 已验；classic 构造与脚本行为待验』】
+　　　，「列」【『api.Worker.Worker.enforces_trusted_types』，『无专门接口』，『待补』，『Trusted Types 策略下 URL 构造和脚本限制待验』】
+　　　，「列」【『api.Worker.Worker.mime_checks』，『无专门接口』，『待补』，『不同浏览器对 Worker 脚本 MIME 检查待验』】
+　　　，「列」
+　　　　　【『api.Worker.postMessage.options_includeUserActivation_parameter』
+　　　　　，『无专门接口』
+　　　　　，『待补』
+　　　　　，『现有接口第二参数仅接受 transfer 数组，未接选项对象』
+　　　　　】
+　　　，「列」【『api.Worker.worker_support』，『浏览器工作线程新建』，『已接未实测』，『Dedicated Worker 内理论可创建嵌套 Worker，真实嵌套生命周期待验』】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.messageerror_event』
+　　　　　，『浏览器工作线程自身句柄、浏览器事件订阅选项』
+　　　　　，『已接未实测』
+　　　　　，『泛型事件订阅可接 messageerror，真实反序列化失败待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.cancelAnimationFrame』
+　　　　　，『浏览器取消动画帧』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome Worker 豫言 Wasm 取消未触发的帧，首个收到的事件属于后续请求』
+　　　　　】
+　　　，「列」
+　　　　　【『api.DedicatedWorkerGlobalScope.requestAnimationFrame』
+　　　　　，『浏览器请求动画帧』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome Worker 豫言 Wasm 收到带标记的动画帧事件后向页面发送 ready；无页面所有者的 Worker 待验』
+　　　　　】
+　　　，「列」【『api.DedicatedWorkerGlobalScope.rtctransform_event』，『无』，『待补』，『WebRTC 编码流变换事件尚未接入』】
+　　　，「列」
+　　　　　【『api.WorkerGlobalScope.error_event』
+　　　　　，『浏览器工作线程自身句柄、浏览器事件订阅选项』
+　　　　　，『已接未实测』
+　　　　　，『泛型事件订阅可接 error，工内实际未捕获异常待验』
+　　　　　】
+　　　，「列」【『api.WorkerGlobalScope.fonts』，『无专门接口』，『待补』，『工内 FontFaceSet 具名接口与真实行为待验』】
+　　　，「列」【『api.WorkerGlobalScope.importScripts』，『无专门接口』，『待补』，『classic Worker 的同步脚本导入未提供具名接口，业务应保持豫言』】
+　　　，「列」【『api.WorkerGlobalScope.importScripts.enforces_trusted_types』，『无』，『待补』，『Trusted Types 边界待验』】
+　　　，「列」【『api.WorkerGlobalScope.importScripts.mime_checks』，『无』，『待补』，『脚本 MIME 检查边界待验』】
+　　　，「列」
+　　　　　【『api.WorkerGlobalScope.languagechange_event』
+　　　　　，『浏览器工作线程自身句柄、浏览器事件订阅选项』
+　　　　　，『已接未实测』
+　　　　　，『泛型事件订阅可接事件，真实语言变化待验』
+　　　　　】
+　　　，「列」【『api.WorkerGlobalScope.location』，『浏览器全局句柄、浏览器读取属性』，『部分』，『可由现有句柄读取，具名封装与真实 Worker 往返待验』】
+　　　，「列」【『api.WorkerGlobalScope.navigator』，『浏览器全局句柄、浏览器读取属性』，『部分』，『可由现有句柄读取，具名封装与真实 Worker 往返待验』】
+　　　，「列」
+　　　　　【『api.WorkerGlobalScope.offline_event、api.WorkerGlobalScope.online_event』
+　　　　　，『浏览器工作线程自身句柄、浏览器事件订阅选项』
+　　　　　，『已接未实测』
+　　　　　，『泛型事件订阅可接事件，真实网络切换待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.WorkerGlobalScope.rejectionhandled_event、api.WorkerGlobalScope.unhandledrejection_event』
+　　　　　，『浏览器工作线程自身句柄、浏览器事件订阅选项』
+　　　　　，『已接未实测』
+　　　　　，『泛型事件订阅可接事件，拒绝原因与时序待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.WorkerGlobalScope.securitypolicyviolation_event』
+　　　　　，『浏览器工作线程自身句柄、浏览器事件订阅选项』
+　　　　　，『已接未实测』
+　　　　　，『泛型事件订阅可接事件，CSP 快照字段与真实限制待验』
+　　　　　】
+　　　，「列」【『api.WorkerGlobalScope.self』，『浏览器工作线程自身句柄』，『已实测』，『真实 Chrome Worker 豫言 Wasm 取得 self 句柄并订阅 message』】
+　　　，「列」【『api.WorkerGlobalScope.dump』，『无』，『待补』，『Firefox 特有调试接口，跨浏览器业务不宜依赖』】
+　　　】
+　，「列」
+　　　【「列」【『广播频道接口』】
+　　　，「列」【『BCD 路径或规范成员』，『豫言入口』，『状态』，『实测证据』，『剩余边界』】
+　　　，「列」
+　　　　　【『api.BroadcastChannel.BroadcastChannel』
+　　　　　，『浏览器广播频道新建』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 页面及 Dedicated Worker 各运行豫言 Wasm，创建同名频道并跨上下文通信』
+　　　　　，『跨标签页、不同储存分区与其他浏览器待验』
+　　　　　】
+　　　，「列」【『api.BroadcastChannel.name』，『浏览器广播频道名称』，『已实测』，『页面豫言取得原生频道名称并核对原值』，『空名称及 Unicode 边界待验』】
+　　　，「列」
+　　　　　【『api.BroadcastChannel.postMessage』
+　　　　　，『浏览器广播频道发值、浏览器广播频道发字节』
+　　　　　，『已实测』
+　　　　　，『页面内两个频道双向交换 JSON 兼容值，字节串 00 FF 41 无损送达；页面与 Worker 互发文字消息』
+　　　　　，『Date、Map、循环引用、Blob 等结构化克隆类型待验；广播不支持 transfer list』
+　　　　　】
+　　　，「列」
+　　　　　【『api.BroadcastChannel.message_event、api.BroadcastChannel.onmessage』
+　　　　　，『等待浏览器事件、浏览器广播频道事件字节』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 的事件由宿主投递统一豫言队列，页面与 Worker 均读出对端消息及频道句柄，字节从 Uint8Array 句柄读回』
+　　　　　，『消息顺序与跨标签页生命周期待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.BroadcastChannel.messageerror_event、api.BroadcastChannel.onmessageerror』
+　　　　　，『等待浏览器事件』
+　　　　　，『已接未验』
+　　　　　，『宿主安装原生 messageerror 监听并投递种类字段』
+　　　　　，『反序列化失败触发条件待构造』
+　　　　　】
+　　　，「列」
+　　　　　【『api.BroadcastChannel.close』
+　　　　　，『浏览器广播频道关闭』
+　　　　　，『已实测』
+　　　　　，『页面两频道关闭返回真，重复关闭返回假；Worker 使用后关闭；宿主关闭时清理余频道』
+　　　　　，『与已排队消息的竞态待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『文件读取接口』】
+　　　，「列」【『规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」【『FileReader constructor』，『浏览器文件读取器新建、浏览器文件读取器释放』，『已实测』，『真实 Chrome 构造并释放五个读取器』】
+　　　，「列」
+　　　　　【『FileReader.readAsArrayBuffer、result』
+　　　　　，『浏览器文件读取字节、浏览器文件读取结果字节安全』
+　　　　　，『已实测』
+　　　　　，『00 FF 41 三字节无损往返；读取前 result 为空』
+　　　　　】
+　　　，「列」【『FileReader.readAsText、result』，『浏览器文件读取文字、浏览器文件读取结果文字安全』，『已实测』，『UTF-8“甲”读回』】
+　　　，「列」
+　　　　　【『FileReader.readAsDataURL』
+　　　　　，『浏览器文件读取网址、浏览器文件读取结果文字安全』
+　　　　　，『已实测』
+　　　　　，『application/octet-stream 的 00 FF 41 得 base64 AP9B』
+　　　　　】
+　　　，「列」
+　　　　　【『FileReader.readAsBinaryString』
+　　　　　，『浏览器文件读取旧二进制、浏览器文件读取旧二进制字节安全』
+　　　　　，『已实测』
+　　　　　，『旧二进制字符串逐码位还原 00 FF 41』
+　　　　　】
+　　　，「列」【『FileReader.abort』，『浏览器文件读取中止』，『已实测』，『读取开始后立即中止；abort 与 loadend 到达且结果为空』】
+　　　，「列」【『FileReader.readyState、error』，『浏览器文件读取状态文』，『部分已实测』，『初态 0、完成态 2；错误名和错误文已接入但错误路径待验』】
+　　　，「列」
+　　　　　【『FileReader 进度与生命周期事件』
+　　　　　，『浏览器文件读取等事文』
+　　　　　，『部分已实测』
+　　　　　，『loadstart、progress、load、loadend、abort 的事件次序通过；大文件进度及 error 路径待验』
+　　　　　】
+　　　，「列」
+　　　　　【『FileList.length、item』
+　　　　　，『浏览器文件列表从输入、浏览器文件列表数量、浏览器文件列表取项安全』
+　　　　　，『已实测』
+　　　　　，『file input 注入原生 FileList 后数量 1、首项文件名、越界返回阴』
+　　　　　，『真实用户选择文件流程待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『文树接口』】
+　　　，「列」【『BCD路径』，『豫言接口』，『状态』，『验证』】
+　　　，「列」【『api.Document.createElement』，『浏览器新建元素』，『已实测』，『Chrome 豫言 Wasm 创建 article』】
+　　　，「列」【『api.Document.createElement.html_name_validity』，『浏览器新建元素』，『待验』，『标签名边界未测』】
+　　　，「列」【『api.Document.createElement.options_parameter』，『无重载接口』，『待补』，『自定义元素选项未封装』】
+　　　，「列」【『api.Document.createElement.options_parameter.customElementRegistry_option』，『无重载接口』，『待补』，『作用域注册表选项未封装』】
+　　　，「列」【『api.Document.createElement.options_parameter.options_is_parameter』，『无重载接口』，『待补』，『旧式选项未封装』】
+　　　，「列」【『api.Document.createTextNode』，『浏览器新建文本节点』，『已实测』，『Chrome 豫言 Wasm 创建文本并附加到元素』】
+　　　，「列」【『api.Document.getElementById』，『浏览器按标识取节点』，『已实测』，『Chrome 豫言 Wasm 获取根节点』】
+　　　，「列」【『api.Document.querySelector』，『浏览器文档选一』，『已实测』，『Chrome 豫言 Wasm 创建后查询与删除后复查』】
+　　　，「列」【『api.Document.querySelectorAll』，『浏览器文档选全』，『已封装』，『待真实浏览器验证』】
+　　　，「列」【『api.Element.getAttribute』，『浏览器元素取属性』，『已实测』，『Chrome 豫言 Wasm 读取与删除后复查』】
+　　　，「列」【『api.Element.querySelector』，『浏览器节点选一』，『已封装』，『待真实浏览器验证』】
+　　　，「列」【『api.Element.querySelectorAll』，『浏览器节点选全』，『已实测』，『Chrome 豫言 Wasm 数组化查询』】
+　　　，「列」【『api.Element.remove』，『浏览器节点自删』，『已实测』，『Chrome 豫言 Wasm 删除后复查』】
+　　　，「列」【『api.Element.removeAttribute』，『浏览器元素删属性』，『已实测』，『Chrome 豫言 Wasm 删除后复查』】
+　　　，「列」【『api.Element.setAttribute』，『浏览器元素设属性』，『已实测』，『Chrome 豫言 Wasm 设 id 与 data-kind』】
+　　　，「列」【『api.Element.setAttribute.enforces_trusted_types』，『浏览器元素设属性』，『待验』，『Trusted Types 约束未测』】
+　　　，「列」【『api.Element.setAttribute.html_name_validity』，『浏览器元素设属性』，『待验』，『HTML 属性名边界未测』】
+　　　，「列」
+　　　　　【『api.Node.appendChild』
+　　　　　，『浏览器节点附子、浏览器调用方法原始』
+　　　　　，『已实测』
+　　　　　，『Chrome 豫言 Wasm 具名与原始通路均插入文本节点并取回 Node 句柄；注册观察器后原始通路亦通过』
+　　　　　】
+　　　，「列」【『api.Node.removeChild』，『浏览器节点删子』，『已封装』，『待真实浏览器验证』】
+　　　，「列」【『api.Node.textContent』，『浏览器节点文字、浏览器节点设文字』，『已实测』，『Chrome 豫言 Wasm 写后读』】
+　　　】
+　，「列」
+　　　【「列」【『文树观察接口』】
+　　　，「列」【『接口』，『豫言接口』，『状态』，『验证』，『待补』】
+　　　，「列」【『Document.createTreeWalker』，『浏览器新建文树游标』，『部分实测』，『Chrome SHOW_TEXT 遍历根节点』，『filter 回调与其他 whatToShow』】
+　　　，「列」【『TreeWalker.nextNode』，『浏览器文树游标后继』，『已实测』，『Chrome 取得新增文本节点』，『边界与跨变动游标』】
+　　　，「列」
+　　　　　【『TreeWalker.previousNode、currentNode』
+　　　　　，『浏览器文树游标前驱、浏览器文树游标当前、浏览器文树游标设当前』
+　　　　　，『已封装』
+　　　　　，『未逐项实测』
+　　　　　，『遍历边界』
+　　　　　】
+　　　，「列」
+　　　　　【『TreeWalker.parentNode、firstChild、lastChild、previousSibling、nextSibling』
+　　　　　，『浏览器文树游标父节点、浏览器文树游标首子、浏览器文树游标末子、浏览器文树游标前邻、浏览器文树游标后邻』
+　　　　　，『已封装』
+　　　　　，『未逐项实测』
+　　　　　，『遍历边界与过滤器』
+　　　　　】
+　　　，「列」
+　　　　　【『MutationObserver.observe』
+　　　　　，『浏览器观察变动』
+　　　　　，『部分实测』
+　　　　　，『Chrome childList 回调进入豫言事件队列，记录句柄可解析』
+　　　　　，『其他选项与大批量记录』
+　　　　　】
+　　　，「列」【『MutationObserver.disconnect』，『浏览器停止观察变动』，『已实测』，『Chrome 观察后断开』，『回调队列竞态』】
+　　　，「列」【『MutationObserver.takeRecords』，『浏览器观察待取』，『部分实测』，『Chrome 回调送达后返回空队列』，『未发送记录完整性』】
+　　　，「列」
+　　　　　【『MutationRecord.type、target、addedNodes』
+　　　　　，『浏览器变动种类、浏览器变动目标、浏览器变动新增节点』
+　　　　　，『已实测』
+　　　　　，『Chrome childList 类型、原目标及一个新增节点』
+　　　　　，『复杂节点列表与移除』
+　　　　　】
+　　　，「列」
+　　　　　【『MutationRecord.removedNodes、oldValue、attributeName、attributeNamespace、previousSibling、nextSibling』
+　　　　　，『浏览器变动删除节点、浏览器变动旧值、浏览器变动属性名、浏览器变动命名空间、浏览器变动前邻、浏览器变动后邻』
+　　　　　，『已封装』
+　　　　　，『未逐项实测』
+　　　　　，『属性与文本变动细节』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『流式编码接口』】
+　　　，「列」【『规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『TextEncoderStream constructor、encoding』
+　　　　　，『浏览器文字编码流新建、浏览器文字转换流信息文』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 构造后编码为 utf-8；豫言两次写入“甲”“乙”，输出六个 UTF-8 字节；代理项拆分与错误输入待验』
+　　　　　】
+　　　，「列」
+　　　　　【『TextEncoderStream.readable、writable』
+　　　　　，『浏览器文字转换流读端、浏览器文字转换流写端、浏览器写器发文字』
+　　　　　，『已实测』
+　　　　　，『豫言取得两端与写器、读器，两块文字异步写入并在读完输出后等待三个 Promise；大量分块背压与取消待验』
+　　　　　】
+　　　，「列」
+　　　　　【『TextDecoderStream constructor、encoding、fatal、ignoreBOM』
+　　　　　，『浏览器文字解码流新建、浏览器文字转换流信息文』
+　　　　　，『已实测部分边界』
+　　　　　，『真实 Chrome 默认与 fatal/ignoreBOM 为真的属性值均按豫言参数设置；fatal 模式读写坏 UTF-8 返回 TypeError，非 fatal 模式产出替换字符；其他编码标签待验』
+　　　　　】
+　　　，「列」
+　　　　　【『TextDecoderStream.readable、writable』
+　　　　　，『浏览器文字转换流读端、浏览器文字转换流写端、浏览器读取文字流块、浏览器读取文字流块安全』
+　　　　　，『已实测』
+　　　　　，『UTF-8“甲”三字节拆成一字节与两字节写入后读回完整文字；BOM 的三字节拆在两块，默认被去除；错误通过安全读取返回阴；背压与非 UTF-8 待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『消息通道接口』】
+　　　，「列」【『平台 API』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」【『MessageChannel()、port1、port2』，『浏览器消息通道新建』，『已实测』，『真实 Chrome 创建两端』，『其他引擎待验』】
+　　　，「列」
+　　　　　【『MessagePort.postMessage(结构化值)』
+　　　　　，『浏览器消息端口发值』
+　　　　　，『已实测』
+　　　　　，『JSON 对象含文字“甲”和数字 7，经另一端 message 收到』
+　　　　　，『Date、Map、循环引用等结构化值待验』
+　　　　　】
+　　　，「列」
+　　　　　【『MessagePort.postMessage(字节及转移)』
+　　　　　，『浏览器消息端口发字节』
+　　　　　，『已实测』
+　　　　　，『转移 ArrayBuffer，另一端逐字节读回 00 FF 41』
+　　　　　，『缓冲区分离状态及大消息待验』
+　　　　　】
+　　　，「列」
+　　　　　【『MessagePort.postMessage(转移端口)』
+　　　　　，『浏览器消息端口发值、等转入端口』
+　　　　　，『已实测』
+　　　　　，『Chrome 将第二通道端口转入第一通道，转入后仍收第二通道消息』
+　　　　　，『跨 Worker 传端口待验』
+　　　　　】
+　　　，「列」
+　　　　　【『MessagePort.message、start()』
+　　　　　，『浏览器消息端口等事文、等字节、启动』
+　　　　　，『已实测』
+　　　　　，『创建时安装监听并启动；JSPI 等待异步消息』
+　　　　　，『多在途等待待验』
+　　　　　】
+　　　，「列」
+　　　　　【『MessagePort.close、close 事件』
+　　　　　，『浏览器消息端口关闭、等事文』
+　　　　　，『部分』
+　　　　　，『关闭方法已调用；Chrome close 事件未单独验』
+　　　　　，『事件兼容性与跨文档语义』
+　　　　　】
+　　　，「列」【『MessagePort.messageerror』，『浏览器消息端口等事文』，『已接未验』，『事件被归入豫言结果』，『故障触发待验』】
+　　　】
+　，「列」
+　　　【「列」【『物字文件接口』】
+　　　，「列」【『BCD 路径或规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『api.Blob.Blob』
+　　　　　，『浏览器物字造字节、浏览器物字造组合』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 构造 00 FF 41 及 Blob+“甲”组合，后者长六字节』
+　　　　　，『更多 BlobPart 类型、endings 选项待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Blob.size、api.Blob.type』
+　　　　　，『浏览器物字信息文』
+　　　　　，『已实测』
+　　　　　，『三字节及组合六字节；TEXT/PLAIN 归一为 text/plain』
+　　　　　，『超大对象与非法 MIME 待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Blob.arrayBuffer、api.Blob.bytes』
+　　　　　，『浏览器物字原字、浏览器物字原生字节安全』
+　　　　　，『已实测』
+　　　　　，『两种方法对 00 FF 41 均逐字节核对』
+　　　　　，『大文件单次交换受 16 MiB 值桥上限约束』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Blob.slice』
+　　　　　，『浏览器物字切片、浏览器物字切片至尾』
+　　　　　，『已实测』
+　　　　　，『[1,3) 得 FF 41；负起点 -1 得 41；切片 MIME 归一』
+　　　　　，『越界及空切片待验』
+　　　　　】
+　　　，「列」【『api.Blob.text』，『浏览器物字文字』，『已实测』，『UTF-8“甲”读回』，『错误编码及 BOM 待验』】
+　　　，「列」【『api.Blob.stream』，『浏览器物字流、浏览器打开可读流、浏览器读取流块』，『已实测』，『00 FF 41 经原生流逐字节读回』，『长流、取消与错误待验』】
+　　　，「列」
+　　　　　【『api.Blob.textStream』
+　　　　　，『浏览器物字文字流安全、浏览器读取文字流块』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 的文字流读回“甲”』
+　　　　　，『Firefox、Safari 当前 BCD 无支持记录；跨引擎待验』
+　　　　　】
+　　　，「列」
+　　　　　【『api.File.File』
+　　　　　，『浏览器文件造字节、浏览器文件造组合』
+　　　　　，『已实测』
+　　　　　，『字节 File 与 Blob+“X”组合 File 皆成功』
+　　　　　，『默认 lastModified、真实文件选择待验』
+　　　　　】
+　　　，「列」【『api.File.name、api.File.lastModified』，『浏览器物字信息文』，『已实测』，『测.bin/1234、合.bin/5678』，『非 ASCII 名称边界待验』】
+　　　，「列」【『api.File.webkitRelativePath』，『浏览器物字信息文』，『已接未断言』，『信息 JSON 包含构造文件的空路径』，『目录选择产生的路径待验』】
+　　　，「列」【『api.File.lastModifiedDate』，『无』，『当前 BCD 仅 Chrome 有支持记录』，『未加入非标准旧属性入口』，『若有业务依赖再逐项处理』】
+　　　，「列」
+　　　　　【『FileReader、FileList』
+　　　　　，『文件读取。豫』
+　　　　　，『已接入，部分已实测』
+　　　　　，『真实 Chrome 的四种读取方式、事件与程序注入的原生 FileList 通过』
+　　　　　，『真实用户选择文件流程、「错误事件和大文件进度待验；详文件读取接口」表』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『类名样式接口』】
+　　　，「列」【『BCD路径』，『豫言接口』，『状态』，『验证』】
+　　　，「列」【『api.CSSStyleDeclaration.@@iterator』，『无专门接口』，『待补』，『符号迭代未封装』】
+　　　，「列」【『api.CSSStyleDeclaration.cssFloat』，『无专门接口』，『待补』，『需核对浏览器支持差异』】
+　　　，「列」【『api.CSSStyleDeclaration.cssText』，『浏览器样式原文、浏览器样式设原文』，『已实测』，『Chrome 豫言 Wasm 写后读』】
+　　　，「列」【『api.CSSStyleDeclaration.getPropertyCSSValue』，『无专门接口』，『待补』，『旧式接口仅部分浏览器支持』】
+　　　，「列」【『api.CSSStyleDeclaration.getPropertyPriority』，『浏览器样式取优先级』，『已实测』，『Chrome 豫言 Wasm important』】
+　　　，「列」【『api.CSSStyleDeclaration.getPropertyValue』，『浏览器样式取属性』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.CSSStyleDeclaration.item』，『浏览器样式第项』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.CSSStyleDeclaration.length』，『浏览器样式数目』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.CSSStyleDeclaration.parentRule』，『无专门接口』，『待补』，『行内样式无父规则，样式表规则待验』】
+　　　，「列」【『api.CSSStyleDeclaration.removeProperty』，『浏览器样式删除』，『已实测』，『Chrome 豫言 Wasm 返回旧值』】
+　　　，「列」【『api.CSSStyleDeclaration.setProperty』，『浏览器样式设置、浏览器样式设置优先级』，『已实测』，『Chrome 豫言 Wasm 普通与 important』】
+　　　，「列」【『api.DOMTokenList.@@iterator』，『无专门接口』，『待补』，『符号迭代未封装』】
+　　　，「列」【『api.DOMTokenList.add』，『浏览器类名添加、浏览器类名多添』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.DOMTokenList.add.multiple_parameters』，『浏览器类名多添』，『已实测』，『Chrome 豫言 Wasm 两项』】
+　　　，「列」【『api.DOMTokenList.contains』，『浏览器类名有』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.DOMTokenList.entries』，『无专门接口』，『待补』，『原生迭代器待封装』】
+　　　，「列」【『api.DOMTokenList.forEach』，『无专门接口』，『待补』，『回调与遍历时修改语义待补』】
+　　　，「列」【『api.DOMTokenList.item』，『浏览器类名第项』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.DOMTokenList.keys』，『无专门接口』，『待补』，『原生迭代器待封装』】
+　　　，「列」【『api.DOMTokenList.length』，『浏览器类名数目』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.DOMTokenList.remove』，『浏览器类名删除、浏览器类名多删』，『已实测』，『Chrome 豫言 Wasm 单项与双项』】
+　　　，「列」【『api.DOMTokenList.remove.multiple_parameters』，『浏览器类名多删』，『已实测』，『Chrome 豫言 Wasm 两项』】
+　　　，「列」【『api.DOMTokenList.remove_duplicates』，『浏览器类名添加』，『待验』，『重复项语义未测』】
+　　　，「列」【『api.DOMTokenList.replace』，『浏览器类名替换』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.DOMTokenList.replace.boolean_value』，『浏览器类名替换』，『已实测』，『Chrome 豫言 Wasm 返回爻』】
+　　　，「列」【『api.DOMTokenList.supports』，『无专门接口』，『待补』，『需用支持此方法的 token list 验证』】
+　　　，「列」【『api.DOMTokenList.toString』，『无专门接口』，『待补』，『可经通用句柄调用，待具名封装』】
+　　　，「列」【『api.DOMTokenList.toggle』，『浏览器类名切换、浏览器类名强制切换』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.DOMTokenList.toggle.force_parameter』，『浏览器类名强制切换』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.DOMTokenList.trim_whitespace』，『浏览器类名取值』，『待验』，『空白规范化未测』】
+　　　，「列」【『api.DOMTokenList.value』，『浏览器类名取值、浏览器类名设值』，『已实测』，『Chrome 豫言 Wasm 写后读』】
+　　　，「列」【『api.DOMTokenList.values』，『无专门接口』，『待补』，『原生迭代器待封装』】
+　　　】
+　，「列」
+　　　【「列」【『索引库接口』】
+　　　，「列」【『BCD 路径或能力』，『豫言接口』，『状态』，『真实运行验证』，『待补』】
+　　　，「列」
+　　　　　【『api.indexedDB、api.IDBFactory.open』
+　　　　　，『浏览器索引库打开』
+　　　　　，『已实测』
+　　　　　，『Chrome 版本 1 打开并建仓，关闭后重新打开』
+　　　　　，『无版本打开、阻塞升级、跨标签页』
+　　　　　】
+　　　，「列」【『api.IDBFactory.deleteDatabase』，『浏览器索引库删除』，『已实测』，『Chrome 关闭连接后删除，列表不再含库名』，『阻塞删除与错误边界』】
+　　　，「列」【『api.IDBFactory.databases』，『浏览器索引库列表文』，『已实测』，『Chrome 删除前后枚举』，『跨浏览器支持与权限拒绝』】
+　　　，「列」【『api.IDBFactory.cmp』，『浏览器索引库比键』，『已实测』，『Chrome 字符串键 a 小于 b』，『数组、日期与二进制键』】
+　　　，「列」
+　　　　　【『api.IDBOpenDBRequest.upgradeneeded_event』
+　　　　　，『浏览器索引库打开之方案文』
+　　　　　，『已实测』
+　　　　　，『Chrome 升级回调同步建仓和索引』
+　　　　　，『旧版本迁移、blocked 与错误』
+　　　　　】
+　　　，「列」【『api.IDBOpenDBRequest.blocked_event』，『打开请求内部处理』，『已封装』，『尚未真实阻塞验收』，『阻塞连接后的资源清理』】
+　　　，「列」
+　　　　　【『api.IDBDatabase.createObjectStore』
+　　　　　，『浏览器索引库打开之 stores 方案』
+　　　　　，『已实测』
+　　　　　，『Chrome 新建记录仓』
+　　　　　，『keyPath、autoIncrement 与参数错误』
+　　　　　】
+　　　，「列」
+　　　　　【『api.IDBDatabase.transaction』
+　　　　　，『浏览器索引库事务、浏览器索引库事务安全』
+　　　　　，『已实测』
+　　　　　，『Chrome readwrite 与 readonly，多请求同一活期排队』
+　　　　　，『跨事件动态分支及多仓事务』
+　　　　　】
+　　　，「列」【『api.IDBDatabase.close』，『浏览器索引库关闭』，『已实测』，『Chrome 关闭后重开并读回』，『versionchange 中连接生命周期』】
+　　　，「列」【『api.IDBObjectStore.put』，『浏览器索引库事务』，『已实测』，『Chrome 同一事务写入两项』，『复杂结构化克隆值』】
+　　　，「列」
+　　　　　【『api.IDBObjectStore.add』
+　　　　　，『浏览器索引库事务安全』
+　　　　　，『已实测』
+　　　　　，『Chrome 对已有键 add 导致 ConstraintError，整事务回滚』
+　　　　　，『成功 add 与生成键』
+　　　　　】
+　　　，「列」【『api.IDBObjectStore.get』，『浏览器索引库事务』，『已实测』，『Chrome 读回对象和缺失标记，关闭重开后仍可读』，『非 JSON 值』】
+　　　，「列」【『api.IDBObjectStore.getAllKeys』，『浏览器索引库事务』，『已实测』，『Chrome 枚举两个键』，『查询与数量选项』】
+　　　，「列」【『api.IDBObjectStore.count』，『浏览器索引库事务』，『已实测』，『Chrome 写入后计数』，『范围查询』】
+　　　，「列」
+　　　　　【『api.IDBObjectStore.getAll』
+　　　　　，『浏览器索引库事务及键界句柄』
+　　　　　，『已实测』
+　　　　　，『Chrome 原生 IDBKeyRange 作为查询参数，返回范围内两对象』
+　　　　　，『数量选项与非 JSON 值』
+　　　　　】
+　　　，「列」【『api.IDBObjectStore.getKey、delete、clear』，『浏览器索引库事务』，『已封装』，『尚未逐项实测』，『结果、异常和边界』】
+　　　，「列」【『api.IDBObjectStore.createIndex』，『浏览器索引库打开之 indexes 方案』，『已实测』，『Chrome 按 name 字段建立索引』，『多值与唯一索引』】
+　　　，「列」【『api.IDBIndex.get』，『浏览器索引库事务之 index 字段』，『已实测』，『Chrome 按乙查到对象』，『其他 Index 方法』】
+　　　，「列」
+　　　　　【『api.IDBObjectStore.openCursor』
+　　　　　，『浏览器索引库游标文』
+　　　　　，『已实测』
+　　　　　，『Chrome bound 范围内 prev 方向读到 k2 与 k1』
+　　　　　，『游标动态写入及超上限分页』
+　　　　　】
+　　　，「列」【『api.IDBIndex.openKeyCursor』，『浏览器索引库游标文』，『已实测』，『Chrome 按名索引 only 乙，返回 primaryKey k2』，『其他方向与重复索引键』】
+　　　，「列」
+　　　　　【『api.IDBCursor.continue、key、primaryKey、value』
+　　　　　，『浏览器索引库游标文内部推进』
+　　　　　，『部分』
+　　　　　，『Chrome 请求回调内逐项继续并返回键、主键和值』
+　　　　　，『advance、continue(key)、continuePrimaryKey、update、delete』
+　　　　　】
+　　　，「列」【『api.IDBTransaction.complete_event』，『浏览器索引库事务』，『已实测』，『Chrome 提交后返回每请求结果』，『durability 与显式 commit』】
+　　　，「列」
+　　　　　【『api.IDBTransaction.abort_event』
+　　　　　，『浏览器索引库事务安全』
+　　　　　，『已实测』
+　　　　　，『Chrome 重复键触发 ConstraintError，先前 put 未提交』
+　　　　　，『显式 abort 与其他错误』
+　　　　　】
+　　　，「列」【『api.IDBRequest.success_event、error_event』，『浏览器索引库事务』，『部分』，『Chrome 成功结果及失败后事务错误』，『逐请求错误与阻止默认』】
+　　　，「列」
+　　　　　【『api.IDBKeyRange.only、bound、lowerBound、upperBound』
+　　　　　，『浏览器索引库键界』
+　　　　　，『已实测』
+　　　　　，『Chrome 四种原生键界句柄，bound 传入 getAll 和游标』
+　　　　　，『开放边界及非文字键』
+　　　　　】
+　　　，「列」
+　　　　　【『api.IDBKeyRange.includes、lower、upper、lowerOpen、upperOpen』
+　　　　　，『浏览器索引库键界含、键界信息文』
+　　　　　，『部分』
+　　　　　，『Chrome 包含 k1、不含 k3，读回 lower 属性』
+　　　　　，『上下界开放组合及非文字键』
+　　　　　】
+　　　，「列」
+　　　　　【『api.IDBCursor、api.IDBCursorWithValue』
+　　　　　，『浏览器索引库游标文』
+　　　　　，『部分』
+　　　　　，『Chrome 对象仓与索引键游标均返回有序快照』
+　　　　　，『动态推进、更新、删除和迭代期间修改』
+　　　　　】
+　　　，「列」【『api.IDBDatabase.versionchange_event』，『无专门接口』，『待补』，『尚未实测』，『跨连接升级通知』】
+　　　】
+　，「列」
+　　　【「列」【『网址接口』】
+　　　，「列」【『BCD路径』，『豫言接口』，『状态』，『验证』】
+　　　，「列」【『api.URL.URL』，『浏览器新建网址、浏览器新建相对网址』，『部分实测』，『Chrome 豫言 Wasm 相对网址』】
+　　　，「列」【『api.URL.canParse_static』，『浏览器网址可解析、浏览器相对网址可解析』，『已实测』，『Chrome 豫言 Wasm 有效与无效输入』】
+　　　，「列」【『api.URL.createObjectURL_static』，『浏览器创建对象网址』，『已实测』，『Chrome 豫言 Wasm Blob 调用』】
+　　　，「列」【『api.URL.hash』，『浏览器网址片段、浏览器网址设片段』，『已实测』，『Chrome 豫言 Wasm 写后读取』】
+　　　，「列」【『api.URL.host』，『浏览器网址主机、浏览器网址设主机』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URL.hostname』，『浏览器网址主机名、浏览器网址设主机名』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URL.href』，『浏览器网址全文、浏览器网址设全文』，『部分实测』，『Chrome 豫言 Wasm 读取』】
+　　　，「列」【『api.URL.origin』，『浏览器网址源』，『已实测』，『Chrome 豫言 Wasm 读取』】
+　　　，「列」【『api.URL.parse_static』，『浏览器解析网址、浏览器解析相对网址』，『部分实测』，『Chrome 豫言 Wasm 相对网址』】
+　　　，「列」【『api.URL.password』，『浏览器网址口令、浏览器网址设口令』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URL.pathname』，『浏览器网址路径、浏览器网址设路径』，『部分实测』，『Chrome 豫言 Wasm 读取』】
+　　　，「列」【『api.URL.pathname.encodes_trailing_space_in_opaque_path』，『浏览器网址路径』，『待验』，『需专门的不透明路径尾空格测试』】
+　　　，「列」【『api.URL.port』，『浏览器网址端口、浏览器网址设端口』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URL.protocol』，『浏览器网址协议、浏览器网址设协议』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URL.revokeObjectURL_static』，『浏览器撤销对象网址』，『已实测』，『Chrome 豫言 Wasm Blob 调用』】
+　　　，「列」【『api.URL.search』，『浏览器网址查询、浏览器网址设查询』，『部分实测』，『Chrome 豫言 Wasm searchParams 修改后读取全文』】
+　　　，「列」【『api.URL.searchParams』，『浏览器网址查询参数』，『已实测』，『Chrome 豫言 Wasm 活动对象同步』】
+　　　，「列」【『api.URL.toJSON』，『浏览器网址转结森文』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URL.toString』，『浏览器网址转文字』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URL.username』，『浏览器网址用户、浏览器网址设用户』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URLSearchParams.@@iterator』，『无专门接口』，『待补』，『entries 已封装但符号迭代未验』】
+　　　，「列」【『api.URLSearchParams.URLSearchParams.USVString』，『浏览器新建查询参数』，『已实测』，『Chrome 豫言 Wasm 查询字符串』】
+　　　，「列」【『api.URLSearchParams.URLSearchParams』，『浏览器新建查询参数』，『已封装』，『空构造可传空字符串，待专门验收』】
+　　　，「列」【『api.URLSearchParams.URLSearchParams.record』，『浏览器新建查询参数自记录』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.URLSearchParams.sequence』，『浏览器新建查询参数自项』，『已实测』，『Chrome 豫言 Wasm 重复名称』】
+　　　，「列」【『api.URLSearchParams.append』，『浏览器查询参数追加』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.delete』，『浏览器查询参数删除』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URLSearchParams.delete.value_parameter』，『浏览器查询参数删除值』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.entries』，『浏览器查询参数诸项』，『已实测』，『Chrome 豫言 Wasm 数组化枚举』】
+　　　，「列」【『api.URLSearchParams.forEach』，『无专门接口』，『待补』，『回调与遍历时修改语义待实现』】
+　　　，「列」【『api.URLSearchParams.get』，『浏览器查询参数取』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.getAll』，『浏览器查询参数诸值』，『已实测』，『Chrome 豫言 Wasm 重复名称』】
+　　　，「列」【『api.URLSearchParams.has』，『浏览器查询参数有』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URLSearchParams.has.value_parameter』，『浏览器查询参数有值』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.keys』，『浏览器查询参数诸名』，『已实测』，『Chrome 豫言 Wasm 数组化枚举』】
+　　　，「列」【『api.URLSearchParams.set』，『浏览器查询参数设置』，『已封装』，『待逐项行为验收』】
+　　　，「列」【『api.URLSearchParams.size』，『浏览器查询参数数目』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.sort』，『浏览器查询参数排序』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.toString』，『浏览器查询参数成文』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URLSearchParams.values』，『浏览器查询参数诸值游』，『已实测』，『Chrome 豫言 Wasm 数组化枚举』】
+　　　】
+　，「列」
+　　　【「列」【『网址编解码接口』】
+　　　，「列」【『规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」【『encodeURI、encodeURIComponent』，『浏览器网址编解码安全』，『已实测』，『真实 Chrome 保留完整 URL 分隔符、按成分转义斜线和 UTF-8“甲”』】
+　　　，「列」
+　　　　　【『decodeURI、decodeURIComponent』
+　　　　　，『浏览器网址编解码安全、浏览器解码网址成分安全』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 对 %2F 分别保留和还原斜线，%E7%94%B2 还原“甲”；%ZZ、%FF 返回阴与 URIError』
+　　　　　】
+　　　，「列」
+　　　　　【『全局函数错误隔离』
+　　　　　，『浏览器调用全局安全』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 的 decodeURIComponent 同步 URIError 及 fetch 无效 URL 的 Promise TypeError 均返回阴与错误 JSON；其他全局函数及非 Error 拒绝待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『网络中断接口』】
+　　　，「列」【『规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『fetch(input, init.signal)』
+　　　　　，『浏览器请求发起可中断』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 向同源本地 HTTP 服务发起 GET；豫言在等待前中断在途请求，返回 AbortError；预先中断的自定理由亦保留；RequestInit 其他字段与慢速请求取消待验』
+　　　　　】
+　　　，「列」
+　　　　　【『Response 与正文』
+　　　　　，『浏览器请求候回应安全、浏览器回应文字安全』
+　　　　　，『已实测』
+　　　　　，『未中断请求返回 Response 句柄，状态 200，正文含测试页标题；二进制、流式正文、重定向与大正文待验』
+　　　　　】
+　　　，「列」
+　　　　　【『Promise 句柄错误』
+　　　　　，『浏览器请求候回应安全』
+　　　　　，『已实测』
+　　　　　，『无效句柄返回阴和错误文；拒绝的 Promise 在宿主处理，无未捕获拒绝；重复等待与关闭宿主时的在途请求待验』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『网络请求接口』】
+　　　，「列」【『接口』，『豫言接口』，『状态』，『真实运行验证』，『待补』】
+　　　，「列」【『fetch 文本请求』，『浏览器请求文字』，『已实测』，『浏览器豫言程序可取状态与正文』，『Request/Response 全属性、流和取消』】
+　　　，「列」
+　　　　　【『fetch 文本安全请求』
+　　　　　，『浏览器请求文字安全、浏览器请求发起可中断、浏览器请求候回应安全』
+　　　　　，『已实测』
+　　　　　，『Chrome 连接拒绝返回阴和 TypeError；本地 HTTP 404 返回阳及状态 404；AbortSignal 在途取消返回 AbortError』
+　　　　　，『超时、正文读取失败及跨浏览器异常』
+　　　　　】
+　　　，「列」
+　　　　　【『fetch JSON 写请求』
+　　　　　，『浏览器请求结森安全』
+　　　　　，『已实测』
+　　　　　，『Chrome POST 回显 application/json; charset=utf-8 与原正文；同页 GET 仍无该标头』
+　　　　　，『PUT/PATCH、跨源 CORS、认证与大正文』
+　　　　　】
+　　　，「列」【『HTTP 4xx/5xx』，『浏览器请求文字安全』，『部分』，『Chrome 404 与网络拒绝已区分』，『其他状态、重定向与缓存策略』】
+　　　，「列」【『网络异常』，『浏览器请求文字安全』，『部分』，『Chrome 连接拒绝后豫言仍可设置页面结果』，『错误分类、重试时序与离线恢复』】
+　　　】
+　，「列」
+　　　【「列」【『表单数据接口』】
+　　　，「列」【『规范成员』，『豫言入口』，『状态』，『证据与边界』】
+　　　，「列」
+　　　　　【『FormData constructor』
+　　　　　，『浏览器表单新建、浏览器表单从表格』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 构造空表单，亦由 HTMLFormElement 与提交按钮构造，包含输入框及按钮字段』
+　　　　　】
+　　　，「列」
+　　　　　【『FormDataEvent constructor、formData』
+　　　　　，『浏览器表单事件新建、浏览器表单事件自定、浏览器表单事件数据、浏览器表单事件从队列』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 自定事件名、bubbles、cancelable、composed 构造成功，并在 new FormData(form) 时从事件队列取得 FormData；事件对象可改，但队列消费晚于同步构造和原生提交』
+　　　　　】
+　　　，「列」
+　　　　　【『HTMLFormElement formdata 事件』
+　　　　　，『浏览器表单订阅生成、浏览器表单取消订阅生成』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome 在构造表单时投递 formdata；取消订阅入口已接；异步消费不可修改已完成的原生提交』
+　　　　　】
+　　　，「列」
+　　　　　【『SubmitEvent.submitter、拦截提交』
+　　　　　，『浏览器表单拦截提交、浏览器表单提交钮从队列安全、浏览器表单取消拦截提交』
+　　　　　，『已实测』
+　　　　　，『真实 Chrome requestSubmit 触发 submit，宿主同步阻止默认；豫言读取提交钮后构造 FormData、追加字段并完成 Request multipart 往返』
+　　　　　】
+　　　，「列」
+　　　　　【『FormData.append』
+　　　　　，『浏览器表单追加文字、浏览器表单追加文件、浏览器表单追加原文件』
+　　　　　，『已实测』
+　　　　　，『重名文字追加，Blob 显式文件名，File 继承原文件名』
+　　　　　】
+　　　，「列」
+　　　　　【『FormData.set』
+　　　　　，『浏览器表单设置文字、浏览器表单设置文件、浏览器表单设置原文件』
+　　　　　，『已实测』
+　　　　　，『文字替换后保留同名顺序，文件显式与原名设置成功』
+　　　　　】
+　　　，「列」【『FormData.delete、has』，『浏览器表单删除、浏览器表单含名』，『已实测』，『删除临时字段后 has 返回阴，文件字段为阳』】
+　　　，「列」
+　　　　　【『FormData.get、getAll』
+　　　　　，『浏览器表单首项文、浏览器表单首文件安全、浏览器表单同名诸项文』
+　　　　　，『已实测』
+　　　　　，『首文字、缺失 null、同名文字顺序、File 句柄和原始字节通过』
+　　　　　】
+　　　，「列」
+　　　　　【『FormData.entries、keys、values、迭代』
+　　　　　，『浏览器表单诸项文、浏览器表单键列文、浏览器表单值列文』
+　　　　　，『已实测』
+　　　　　，『键序为名、名、件、原件；值和文件句柄保留顺序；forEach 回调可由豫言遍历条目实现，尚无专门回调 API』
+　　　　　】
+　　　，「列」
+　　　　　【『Request.formData、Response.formData』
+　　　　　，『浏览器表单解析正文』
+　　　　　，『已实测』
+　　　　　，『FormData 作 Request POST 与 Response 正文，均经原生 multipart 序列化解析；00 FF 41 文件无损』
+　　　　　】
+　　　】
+　，「列」
+　　　【「列」【『饼仓接口』】
+　　　，「列」【『接口』，『豫言接口』，『状态』，『验证』，『待补』】
+　　　，「列」
+　　　　　【『CookieStore.get』
+　　　　　，『浏览器饼仓取文、浏览器饼仓按选项取文』
+　　　　　，『部分实测』
+　　　　　，『Chrome 按名读取 Cookie 的 name 和 value』
+　　　　　，『选项对象重载与所有返回属性』
+　　　　　】
+　　　，「列」【『CookieStore.getAll』，『浏览器饼仓取全文』，『部分实测』，『Chrome 以空选项枚举并命中已写 Cookie』，『名称及 URL 过滤选项』】
+　　　，「列」
+　　　　　【『CookieStore.set』
+　　　　　，『浏览器饼仓设置、浏览器饼仓按选项设置』
+　　　　　，『部分实测』
+　　　　　，『Chrome 以 name/value/path/sameSite 写入』
+　　　　　，『过期、分区、maxAge 与拒绝语义』
+　　　　　】
+　　　，「列」【『CookieStore.delete』，『浏览器饼仓删除、浏览器饼仓按选项删除』，『部分实测』，『Chrome 按名删除后 get 返回 null』，『分区与选项对象』】
+　　　，「列」
+　　　　　【『CookieStore.change』
+　　　　　，『浏览器订阅饼变化、等待浏览器事件』
+　　　　　，『部分实测』
+　　　　　，『Chrome 写入后收到原生 change 事件』
+　　　　　，『changed/deleted 全字段与事件时序』
+　　　　　】
+　　　，「列」【『CookieStoreManager』，『无具名豫言接口』，『待补』，『未验』，『Service Worker 订阅管理与跨事件恢复』】
+　　　】
+　，「列」
+　　　【「列」【『标头覆盖』】
+　　　，「列」【『BCD路径』，『豫言封装』，『浏览器验证』，『云工验证』，『尚需核验』】
+　　　，「列」【『api.Headers』，『标头。豫』，『真实浏览器基本行为』，『本地workerd基本行为』，『对象保护状态、异常、全接口』】
+　　　，「列」
+　　　　　【『api.Headers.@@iterator』
+　　　　　，『开启游标、游标下项、关闭游标』
+　　　　　，『entries游标真实浏览器实测』
+　　　　　，『entries游标本地workerd实测』
+　　　　　，『直接@@iterator与遍历中修改』
+　　　　　】
+　　　，「列」
+　　　　　【『api.Headers.Headers』
+　　　　　，『新建标头、新建标头自项』
+　　　　　，『成对初值真实浏览器实测』
+　　　　　，『成对初值本地workerd实测』
+　　　　　，『记录初值、复制现有Headers、非法初值』
+　　　　　】
+　　　，「列」【『api.Headers.append』，『标头追加』，『真实浏览器实测』，『本地workerd实测』，『保护状态与非法值』】
+　　　，「列」【『api.Headers.delete』，『标头删除』，『真实浏览器实测』，『本地workerd实测』，『保护状态与非法名』】
+　　　，「列」【『api.Headers.entries』，『标头诸项、开启游标』，『真实浏览器实测』，『本地workerd实测』，『遍历中修改』】
+　　　，「列」【『api.Headers.forEach』，『标头逐项』，『豫言快照回调已编译』，『豫言快照回调已编译』，『与原生回调的实时语义』】
+　　　，「列」【『api.Headers.get』，『标头取』，『真实浏览器实测』，『本地workerd实测』，『非法名』】
+　　　，「列」【『api.Headers.getSetCookie』，『标头取饼』，『两条值真实浏览器实测』，『两条值本地workerd实测』，『浏览器响应过滤及保护状态』】
+　　　，「列」【『api.Headers.has』，『标头有』，『真实浏览器实测』，『本地workerd实测』，『非法名』】
+　　　，「列」【『api.Headers.iterate_combined_duplicates』，『标头诸项』，『普通重复值真实浏览器实测』，『普通重复值本地workerd实测』，『多种可合并标头』】
+　　　，「列」【『api.Headers.iterate_lexicographically』，『标头诸项』，『首项顺序真实浏览器实测』，『首项顺序本地workerd实测』，『完整排序与遍历中修改』】
+　　　，「列」【『api.Headers.keys』，『标头诸名』，『真实浏览器数组化实测』，『本地workerd数组化实测』，『原生keys游标』】
+　　　，「列」【『api.Headers.set』，『标头设置』，『真实浏览器实测』，『本地workerd实测』，『保护状态与非法值』】
+　　　，「列」【『api.Headers.values』，『标头诸值』，『真实浏览器数组化实测』，『本地workerd数组化实测』，『原生values游标』】
+　　　】
+　，「列」
+　　　【「列」【『缓存覆盖』】
+　　　，「列」【『BCD路径』，『浏览器豫言封装』，『浏览器验证』，『尚需核验』】
+　　　，「列」【『api.Cache』，『缓存。豫』，『真实浏览器基本往返』，『完整方法及生命周期』】
+　　　，「列」【『api.Cache.add』，『浏览器缓存添加』，『真实浏览器静态资源实测』，『请求与网络失败语义』】
+　　　，「列」【『api.Cache.addAll』，『浏览器缓存批量添加』，『真实浏览器两项静态资源实测』，『批量原子性及网络失败语义』】
+　　　，「列」【『api.Cache.delete』，『浏览器缓存删除』，『真实浏览器实测』，『CacheQueryOptions及异常』】
+　　　，「列」【『api.Cache.keys』，『浏览器缓存诸请求、浏览器缓存筛选请求』，『真实浏览器句柄列表实测』，『CacheQueryOptions及句柄释放』】
+　　　，「列」【『api.Cache.match』，『浏览器缓存匹配』，『真实浏览器实测』，『CacheQueryOptions及失效语义』】
+　　　，「列」【『api.Cache.matchAll』，『浏览器缓存诸响应、浏览器缓存匹配全部』，『真实浏览器句柄列表实测』，『CacheQueryOptions及句柄释放』】
+　　　，「列」【『api.Cache.put』，『浏览器缓存写入』，『真实浏览器实测』，『非法请求及响应异常』】
+　　　，「列」【『api.Cache.worker_support』，『待核验』，『未测』，『专用Worker与Service Worker』】
+　　　，「列」【『api.CacheStorage』，『浏览器缓存仓』，『真实浏览器实测』，『完整接口及生命周期』】
+　　　，「列」【『api.CacheStorage.delete』，『浏览器缓存仓删除』，『真实浏览器实测』，『异常及并发』】
+　　　，「列」【『api.CacheStorage.has』，『浏览器缓存仓有』，『真实浏览器实测』，『异常及并发』】
+　　　，「列」【『api.CacheStorage.keys』，『浏览器缓存仓诸名』，『真实浏览器列表调用实测』，『缓存名内容及并发』】
+　　　，「列」【『api.CacheStorage.match』，『浏览器缓存仓匹配』，『真实浏览器跨缓存匹配实测』，『MultiCacheQueryOptions及多仓顺序』】
+　　　，「列」【『api.CacheStorage.open』，『浏览器打开缓存』，『真实浏览器实测』，『并发及异常』】
+　　　，「列」【『api.CacheStorage.secure_context_required』，『待核验』，『本地可信上下文实测』，『不安全上下文拒绝行为』】
+　　　，「列」【『api.CacheStorage.worker_support』，『待核验』，『未测』，『专用Worker与Service Worker』】
+　　　】
+　】
+也。

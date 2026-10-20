@@ -24,7 +24,7 @@ import {创建文件能力, 登记目录授权} from './文件能力.mjs';
 import {造边界导入, 造边界导出} from '../网页汇编/边界.mjs';
 import {创建值桥, 文字, 精确小数, 小数表示, 理解小数, 随机整数, 处理器数量, 平台导入旧名} from '../云工/值桥.mjs';
 import {创建物桥} from '../云工/物桥.mjs';
-import {核对接口装载} from '../../装载/接口核对.mjs';
+import {核对接口装载} from '../装载/接口核对.mjs';
 import {创建张量能力} from './张量.mjs';
 import {创建显示面表, 创建图形能力, 状态码, 事件种类} from '../浏览器/图形.mjs';
 import {创建节点图形能力} from './图形.mjs';

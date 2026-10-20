@@ -7,7 +7,7 @@
 // 文言：诸运算之栈置于 0x2030 起之测试栈；结果自 0x2590 读之（浮槽果）；格式格在 0xE30。
 // 汉语：参数为（运算号，甲低，甲高，乙低，乙高）；结果读 浮槽果（9616）；每次陷阱后要把 浮格格式（3632）清零，否则下一次会沿用单精度格式。
 const fs=require('fs');
-const {T,表,leb,节,是非数64,是非数32,造随机}=require('../../裸机/客体二号/浮点指令表.cjs');
+const {T,表,leb,节,是非数64,是非数32,造随机}=require('./浮点指令表.cjs');
 const exeFile=process.argv[2]; const 轮数=parseInt(process.argv[3]||'20000'); const 种子=parseInt(process.argv[4]||'424242')>>>0;
 const {生成}=造随机(种子);
 const exe=fs.readFileSync(exeFile);

@@ -7,7 +7,7 @@
 //   node 表指令对照.cjs --造探针 输出目录 期望文件 [种子]：改为生成 12 个不越界的场景模块（表0.wasm…表11.wasm，各 14–21 条表指令）与期望文件（每行 “序号 返回值”，取自 V8），
 //   供 普通探针/盘/表-一。脚本。豫 在裸机上加载运行（实例总数至多 16，故只有 12 个）。
 const fs=require('fs');
-const {leb,sleb,节,造随机}=require('../../裸机/客体二号/浮点指令表.cjs');
+const {leb,sleb,节,造随机}=require('./浮点指令表.cjs');
 const 造探针=process.argv[2]==='--造探针';
 const exeFile=造探针?null:process.argv[2]; const 场景数=parseInt(process.argv[3]||'300'); const 种子=parseInt((造探针?process.argv[5]:process.argv[4])||'777')>>>0;
 const {随机}=造随机(种子);
