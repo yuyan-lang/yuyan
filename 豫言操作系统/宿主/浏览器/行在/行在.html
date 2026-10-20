@@ -26,7 +26,7 @@ body.桌面中 canvas[data-yy-显示面]{display:block;position:fixed;inset:0;wi
 <form id="行表单"><input id="行" aria-label="输入一句豫言" autocomplete="off" autocapitalize="off" spellcheck="false" disabled></form>
 <p id="状态">正在启动</p>
 </main>
-<footer class="豫页脚"><span>豫言 · 以中文写程序，以函数组织计算。</span><nav><a href="https://github.com/yuyan-lang/yuyan">源码</a><a href="https://github.com/yuyan-lang/yuyan/issues">问题反馈</a></nav></footer>
+<footer class="豫页脚"><span>豫言 · 以中文写程序，以函数组织计算。<span id="提交"></span></span><nav><a href="https://github.com/yuyan-lang/yuyan">源码</a><a href="https://github.com/yuyan-lang/yuyan/issues">问题反馈</a></nav></footer>
 <canvas width="1280" height="800" data-yy-显示面="主窗口"></canvas>
 <script type="module">
 // 汉语：页面只当屏幕与键盘：显示开机壳的输出，把输入的一行送进壳的标准输入；命令全由同一个豫言程序（豫构交互）处理。
@@ -54,6 +54,15 @@ const 出 = (流, 文) => {
   写(文);
   if (屏.textContent.endsWith('壳> ') || 屏.textContent.endsWith('…> ')) { 行.disabled = false; 行.focus(); 状态.textContent = '就绪：输入一句豫言，按回车运行'; }
 };
+// 汉语：页脚写语言仓提交号（站点发布时写在 /操作系统/来源提交），报问题时对得上是哪一版。文言：页脚书语言仓之提交号（站布时书于 /操作系统/来源提交），报误则知其版。
+fetch(new URL('../来源提交', location.href)).then(回 => (回.ok ? 回.text() : '')).then(号 => {
+  号 = 号.trim();
+  if (!/^[0-9a-f]{7,40}$/.test(号)) return;
+  const 链 = document.createElement('a');
+  链.href = 'https://github.com/yuyan-lang/yuyan/commit/' + 号;
+  链.textContent = '语言仓 ' + 号;
+  document.getElementById('提交').append(' · ', 链);
+}).catch(() => {});
 const 旧行们 = [];
 let 翻位 = 0, 会话 = null;
 document.getElementById('行表单').onsubmit = 事 => {
