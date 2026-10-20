@@ -1,0 +1,31 @@
+「：汉语：通称网页阴书测试（Web Crypto test）。本篇在页面脚本里走一遍 crypto 接口：SHA-256 已知摘要、HMAC 签验与篡改拒绝、JWK 导出再导入、AES-GCM 加解密往返、P-256 ECDSA 生成签验、P-256 ECDH 双方同秘、AES-KW 包装与解包往返；另验 getRandomValues 与 randomUUID 的形状。
+　　文言：网页阴书之试：一摘既定，签验相合而篡改不纳；结出入而钥不异，伽氏加解而文复；素域二五六签验相成，两方共秘；钥裹往来而旧钥还。随机与编号亦验其形。
+　　赋曰：一摘已知验旧功，签成验合改难通；结出入而钥不改，伽氏加解复其容；素域签验两相契，两方共秘一源同；钥裹往返旧钥在，随机编号亦成龙。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「其名」又得「真」曰「其真」而
+　若「其真」则「书」于（「其名」接『：通过』）否则「告祸」于（「其名」接『：不对』）
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var pass={};function hex(b){var v=new Uint8Array(b),s="";for(var i=0;i<v.length;i++){var h=v[i].toString(16);if(h.length<2)h="0"+h;s+=h;}return s;}function arr(s){var a=[];for(var i=0;i<s.length;i++)a.push(s.charCodeAt(i));return new Uint8Array(a);}crypto.subtle.digest("SHA-256",arr("abc")).then(function(d){pass.digest=hex(d)==="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad";return crypto.subtle.importKey("raw",arr("0123456789abcdef"),{name:"HMAC",hash:"SHA-256"},true,["sign","verify"]);}).then(function(k){return crypto.subtle.sign("HMAC",k,arr("hello")).then(function(s){return crypto.subtle.verify("HMAC",k,s,arr("hello")).then(function(ok){pass.hmac=ok;return crypto.subtle.verify("HMAC",k,s,arr("hellx"));}).then(function(bad){pass.hmacBad=!bad;return crypto.subtle.exportKey("jwk",k);});});}).then(function(j){return crypto.subtle.importKey("jwk",j,{name:"HMAC",hash:"SHA-256"},true,["sign"]).then(function(k2){return crypto.subtle.sign("HMAC",k2,arr("hello"));});}).then(function(s2){pass.jwk=hex(s2).length===64;return crypto.subtle.generateKey({name:"AES-GCM",length:256},true,["encrypt","decrypt"]);}).then(function(k){var iv=new Uint8Array(12);for(var i=0;i<12;i++)iv[i]=i;return crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k,arr("secret message")).then(function(ct){return crypto.subtle.decrypt({name:"AES-GCM",iv:iv},k,ct);}).then(function(pt){pass.gcm=hex(pt)===hex(arr("secret message"));return crypto.subtle.generateKey({name:"ECDSA",namedCurve:"P-256"},false,["sign","verify"]);});}).then(function(kp){return crypto.subtle.sign({name:"ECDSA",hash:"SHA-256"},kp.privateKey,arr("message")).then(function(sig){return crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},kp.publicKey,sig,arr("message"));}).then(function(ok){pass.ecdsa=ok;return crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"},true,["deriveBits"]);});}).then(function(a){return crypto.subtle.generateKey({name:"ECDH",namedCurve:"P-256"},true,["deriveBits"]).then(function(b){return crypto.subtle.exportKey("raw",a.publicKey).then(function(ap){return crypto.subtle.exportKey("raw",b.publicKey).then(function(bp){return crypto.subtle.importKey("raw",ap,{name:"ECDH",namedCurve:"P-256"},true,[]).then(function(apk){return crypto.subtle.importKey("raw",bp,{name:"ECDH",namedCurve:"P-256"},true,[]).then(function(bpk){return crypto.subtle.deriveBits({name:"ECDH",public:bpk},a.privateKey,256).then(function(sa){return crypto.subtle.deriveBits({name:"ECDH",public:apk},b.privateKey,256).then(function(sb){pass.ecdh=hex(sa)===hex(sb)&&hex(sa).length===64;return true;});});});});});});});}).then(function(){return crypto.subtle.importKey("raw",arr("0123456789abcdef"),{name:"AES-KW"},false,["wrapKey","unwrapKey"]);}).then(function(kek){return crypto.subtle.importKey("raw",arr("fedcba9876543210"),{name:"AES-GCM"},true,["encrypt"]).then(function(t){return crypto.subtle.wrapKey("raw",t,kek,{name:"AES-KW"}).then(function(w){return crypto.subtle.unwrapKey("raw",w,kek,{name:"AES-KW"},{name:"AES-GCM"},true,["encrypt"]).then(function(t2){return crypto.subtle.exportKey("raw",t2).then(function(raw){pass.kw=hex(raw)===hex(arr("fedcba9876543210"));return true;});});});});}).then(function(){pass.random=crypto.getRandomValues(new Uint8Array(8)).length===8;pass.uuid=crypto.randomUUID().length===36;window.all=pass.digest===true&&pass.hmac===true&&pass.hmacBad===true&&pass.jwk===true&&pass.gcm===true&&pass.ecdsa===true&&pass.ecdh===true&&pass.kw===true&&pass.random===true&&pass.uuid===true;window.report=JSON.stringify(pass);},function(e){window.all=false;window.report="ERR:"+String(e&&e.message||e);});』而
+　令「无」为「急就行作业序」于「元」而
+　令「无」为「急就行作业序」于「元」而
+　令「报」为「急就在境行脚本」于「境」于『window.report』而
+　令「成」为「急就在境行脚本」于「境」于『window.all』而
+　「书」于（「急就文字作串」于（「急就取键」于「报」））而后
+　「检查」于「名」曰『网页阴书全部』于「真」曰（「急就真值」于「成」）
+也。
+
+「入口」于「元」。
