@@ -10,6 +10,7 @@ import http from 'node:http';
 import 系统 from 'node:os';
 import 路径 from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {析籍册} from '../应用宿主.mjs';
 
 const 本目录 = 路径.dirname(fileURLToPath(import.meta.url));
 const 参数 = process.argv.slice(2);
@@ -174,7 +175,8 @@ try {
   await 验装载负例('接口版本不符', 清单 => { 清单.接口要求[0].接口版本 = '9.9.9'; 清单.接口要求[0].解析闭包[0].版本 = '9.9.9'; }, '宿主不支持接口');
   await 验装载负例('接口签名被改', 清单 => { 清单.接口要求[0].函数[0].签名 = '→[「 有 」；「 整数 」]'; }, '接口规范或签名不一致');
   await 验装载负例('宿主不支持的接口', 清单 => {
-    清单.接口要求.push(JSON.parse(文件系统.readFileSync(路径.join(本目录, '../../../适配/持久事务/宿主提供.json'), 'utf8')));
+    const 清单文件 = '豫言操作系统/适配/持久事务/宿主提供。数据。豫';
+    清单.接口要求.push(析籍册(文件系统.readFileSync(路径.join(本目录, '../../../..', 清单文件), 'utf8'), 清单文件));
   }, '宿主不支持接口');
   await 验装载负例('程序摘要不符', 清单 => { 清单.程序摘要 = '0'.repeat(64); }, '程序摘要');
   await 验装载负例('发行清单格式不符', 清单 => { 清单.格式版本 = 2; }, '发行清单格式不符');
