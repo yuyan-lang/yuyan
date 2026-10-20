@@ -862,9 +862,6 @@ jobs:
     name: 节点发行包一致性（Windows x64）
     needs: bootstrap
     if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
-    # 汉语：Windows 抽样作业目前构建节点发行包失败（待查），先不挡整体 CI。
-    # 文言：轩窗抽样之役今造节点发行之包而败（待察），先不阻全 CI。
-    continue-on-error: true
     runs-on: windows-latest
     timeout-minutes: 90
     concurrency:
