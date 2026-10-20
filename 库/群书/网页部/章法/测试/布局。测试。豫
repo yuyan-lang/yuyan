@@ -416,7 +416,7 @@
 　　否则
 　　　「告祸」以「有」于『单元格竖向对齐错误』而
 　令「浮页」为
-　　「析片段」于『<div style="width:200px;display:flow-root"><div id="浮左" style="float:left;width:50px;height:30px"></div><div id="浮右" style="float:right;width:40px;height:20px"></div><div id="绕浮" style="height:10px"></div><div id="清浮" style="clear:both;height:10px"></div></div>』而
+　　「析片段」于『<div style="width:200px;display:flow-root"><div id="浮左" style="float:left;width:50px;height:30px"></div><div id="浮右" style="float:right;width:40px;height:20px"></div><div id="绕浮" style="height:10px"><span id="绕文">甲</span></div><div id="清浮" style="clear:both;height:10px"></div></div>』而
 　令「浮树」为「生网页盒树」于「篇求样式」于「浮页」而
 　令「无」为
 　　「布局网页」
@@ -428,14 +428,24 @@
 　令「浮右矩」为「网页节包围矩形」于「浮树」于（「冠」于（「问择器全」于「浮页」于『#浮右』））而
 　令「绕浮矩」为「网页节包围矩形」于「浮树」于（「冠」于（「问择器全」于「浮页」于『#绕浮』））而
 　令「清浮矩」为「网页节包围矩形」于「浮树」于（「冠」于（「问择器全」于「浮页」于『#清浮』））而
+　「：汉语：普通块的外框按包含块全宽排布：绕浮横零宽两百；右浮横一百六十；双侧清除起于左浮之底三十。
+　　　文言：常块之外郭依包含块全宽而布：绕浮横零宽二百；右浮横一百六十；双侧清除起于左浮之底三十。：」
+　令「右可」为（「小数小于」于（「小数绝对值」于（「分厘」之「减」于（「浮右矩」中「横」）于「一六零点零」））于「零点一」）而
+　令「横可」为（「小数小于」于（「小数绝对值」于（「分厘」之「减」于（「绕浮矩」中「横」）于「零点零」））于「零点一」）而
+　令「宽可」为（「小数小于」于（「小数绝对值」于（「分厘」之「减」于（「绕浮矩」中「宽」）于「二零零点零」））于「零点一」）而
 　令「无」为
-　　若「且」
-　　　于（「小数等于」于（「浮右矩」中「横」）于「一六零点零」）
-　　　于（「且」
-　　　　于（「且」于（「小数等于」于（「绕浮矩」中「横」）于「五零点零」）于（「小数等于」于（「绕浮矩」中「宽」）于「一一零点零」））
-　　　　于（「小数等于」于（「清浮矩」中「纵」）于「三零点零」））则
-　　　　　「元」
-　　否则
+　　若「右可」则（
+　　　若「横可」则（
+　　　　若「宽可」则（
+　　　　　若（「小数小于」于（「小数绝对值」于（「分厘」之「减」于（「清浮矩」中「纵」）于「三零点零」））于「零点一」）则
+　　　　　　「元」
+　　　　　否则
+　　　　　　「告祸」以「有」于『左右浮动或清除错误』
+　　　　）否则
+　　　　　「告祸」以「有」于『左右浮动或清除错误』
+　　　）否则
+　　　　「告祸」以「有」于『左右浮动或清除错误』
+　　）否则
 　　　「告祸」以「有」于『左右浮动或清除错误』而
 　令「浮文页」为
 　　「析片段」于『<div style="width:60px;display:flow-root"><div style="float:left;width:20px;height:10px"></div><span id="绕字"><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i><i style="display:inline-block;width:10px;height:10px"></i></span></div>』而
