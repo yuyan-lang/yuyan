@@ -1,0 +1,82 @@
+「：汉语：通称对话框测试（dialog test）。对话框测试：show 打开且 open 属性互相反映；close 先记返回值再异步派发 close 事件；showModal 置模态且重复调用抛 InvalidStateError；cancel 可取消，未取消则关闭。
+　　文言：对话之试：show 开之而属相随；close 先记还值，乃排役而告；showModal 置其模态，再呼则告罪；cancel 可罢，未罢则闭。
+　　赋曰：开签一读两相通，闭值先留后告中。模态重呼还告罪，取消听罢闭门空。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「篇象」之「对话态」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+寻观「网页榫卯」之「定时器」之书。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「按标识」乃化「篇节」又化「文」为「篇节」者也。
+「按标识」者得「文档」又得「标识」而
+　鉴「问择器」于「文档」于（『#』接「标识」）而
+　　或有（「可有」于「节」）则「节」
+　　或有「可无」则「告祸」以「篇节」于（『没有元素 』接「标识」）
+也。
+
+「取属或空」乃化「篇节」又化「文」为「文」者也。
+「取属或空」者得「节」又得「名文」而
+　鉴「取属」于「节」于「名文」而
+　　或有「可无」则『』
+　　或有（「可有」于「其文」）则「其文」
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<dialog id="d">甲</dialog><dialog id="m">乙</dialog>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var d=document.getElementById("d"),m=document.getElementById("m");d.onclose=function(e){d.setAttribute("data-close",d.returnValue+":"+(e.target===d)+":"+(this===d));};d.close();d.show();d.setAttribute("data-open",String(d.open));d.returnValue="甲";d.close("乙");d.setAttribute("data-closed",String(d.open));d.setAttribute("data-rv",d.returnValue);d.show();try{d.show();}catch(e){d.setAttribute("data-show-err",e.message);}m.oncancel=function(e){m.setAttribute("data-cancel","yes");if(m.getAttribute("data-hold")==="1"){e.preventDefault();}};m.addEventListener("close",function(e){m.setAttribute("data-mclose","yes");});m.showModal();m.setAttribute("data-modal",String(m.matches(":modal")));try{m.showModal();}catch(e){m.setAttribute("data-modal-err",e.message);}』而
+　令「丁」为「按标识」于「文档」于『d』而
+　令「卯」为「按标识」于「文档」于『m』而
+　「检查」
+　　于「名」曰『show 打开而 open 互相反映』
+　　于「真」曰（「且」
+　　　于（「文同」于（「取属或空」于「丁」于『data-open』）于『true』）
+　　　于（「文同」于（「取属或空」于「丁」于『data-closed』）于『false』））而后
+　「检查」
+　　于「名」曰『close 记返回值且 close 事件尚未派发』
+　　于「真」曰（「且」于（「文同」于（「取属或空」于「丁」于『data-rv』）于『乙』）于（「文同」于（「取属或空」于「丁」于『data-close』）于『』））而后
+　「检查」
+　　于「名」曰『非模态已打开再 show 抛 InvalidStateError』
+　　于「真」曰（「文同」于（「取属或空」于「丁」于『data-show-err』）于『InvalidStateError：对话框已经打开。』）而后
+　「检查」
+　　于「名」曰『showModal 置模态且重复调用抛 InvalidStateError』
+　　于「真」曰（「且」
+　　　于（「文同」于（「取属或空」于「卯」于『data-modal』）于『true』）
+　　　于（「文同」于（「取属或空」于「卯」于『data-modal-err』）于『InvalidStateError：对话框已经打开。』））而后
+　「设属」于「卯」于「名称」曰『data-hold』于「值」曰『1』而后
+　「对话请求取消」于「卯」而后
+　「检查」
+　　于「名」曰『cancel 事件可取消而对话框不关』
+　　于「真」曰（「且」于（「文同」于（「取属或空」于「卯」于『data-cancel』）于『yes』）于（「对话模态吗」于「卯」））而后
+　「去属」于「卯」于『data-hold』而后
+　「对话请求取消」于「卯」而后
+　「检查」
+　　于「名」曰『cancel 未取消则关闭并清模态』
+　　于「真」曰（「且」
+　　　于（非（「对话模态吗」于「卯」））
+　　　于（
+　　　　鉴「取属」于「卯」于『open』而
+　　　　　或有「可无」则「阳」
+　　　　　或有（「可有」于「其文」）则「阴」
+　　　））而后
+　「网页微役察点」于「元」而后
+　「检查」
+　　于「名」曰『close 事件异步派发且目标与接收者都是元素』
+　　于「真」曰（「且」
+　　　于（「文同」于（「取属或空」于「丁」于『data-close』）于『乙:true:true』）
+　　　于（「文同」于（「取属或空」于「卯」于『data-mclose』）于『yes』））而后
+　「书」于『对话框测试通过』
+也。
+
+「入口」于「元」。
