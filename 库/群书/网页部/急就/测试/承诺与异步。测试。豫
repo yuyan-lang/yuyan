@@ -50,4 +50,32 @@
 　　　于『out.sort().join(",");』）
 　　于『errboom,ok3,p7』）
 　于『捷思Promise点try』。
+「断言」
+　于（「文同」
+　　于（「异步结果」
+　　　于『var log=[];function P(executor){executor(function(v){log.push("ok"+(Array.isArray(v)?v.length:""));},function(e){log.push("no");});}P.resolve=function(v){log.push("r");return v;};Promise.all.call(P,[{then:function(f){f(1);}},{then:function(f){f(2);}}]);』
+　　　于『log.join(",");』）
+　　于『r,r,ok2』）
+　于『捷思Promise.all按接收者的resolve方法取项并走期约能力』。
+「断言」
+　于（「文同」
+　　于（「异步结果」
+　　　于『var out=[];Promise.allSettled([Promise.resolve(1),Promise.reject(2)]).then(function(a){out.push(a[0].status+":"+a[0].value+"|"+a[1].status+":"+a[1].reason);});Promise.any([Promise.reject(1),Promise.reject(2)]).catch(function(e){out.push((e.errors||[]).join("+"));});』
+　　　于『out.sort().join(",");』）
+　　于『1+2,fulfilled:1|rejected:2』）
+　于『捷思全落定结果对象与任意聚合错误』。
+「断言」
+　于（「文同」
+　　于（「异步结果」
+　　　于『var r;new Promise(function(res){r=res;});var got;var P3=function(executor){executor(function(){},function(){});};P3.resolve=function(v){return {then:function(f){got=f;}};};Promise.all.call(P3,[1]);[r.name,r.length,Object.prototype.hasOwnProperty.call(r,"prototype"),Promise[Symbol.species]===Promise,got.name,got.length].join(",");』
+　　　于『[r.name,r.length,Object.prototype.hasOwnProperty.call(r,"prototype"),Promise[Symbol.species]===Promise,got.name,got.length].join(",");』）
+　　于『,1,false,true,,1』）
+　于『捷思期约解决函数与元素的函数元数据』。
+「断言」
+　于（「文同」
+　　于（「异步结果」
+　　　于『var out=[];var res;var p=new Promise(function(f){res=f;});res(p);p.then(function(){out.push("fulfilled");},function(e){out.push(e instanceof TypeError);});var P2=function(executor){executor(function(){throw "bad";},function(e){out.push("rej"+e);});};P2.resolve=function(v){return v;};Promise.all.call(P2,[]);』
+　　　于『out.sort().join(",");』）
+　　于『rejbad,true』）
+　于『捷思期约自决抛类型错误且能力拒绝抛出的错误』。
 「书」于『捷思期约与异步冒烟通过』。
