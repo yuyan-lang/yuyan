@@ -1,0 +1,63 @@
+「：汉语：通称事件源测试（EventSource test）。用假的抓取交换返回一段 text/event-stream：一条自定义事件、一条两行 data 的消息、一条带 id 的消息；核对 open、三类事件与末尾的 error，核对 close 后不再重连、readyState 与构造器常量。整段正文一次读完，按块增量读取留待后续版本。
+　　文言：事件源之试：以假抓取之交换还一段 text/event-stream：一自定义之事、一两行 data 之消息、一带 id 之消息；核 open、三类之事与末之 error，核 close 之后不复连、readyState 与构造器之常。全篇一次读尽，按块增量而读俟后。
+　　赋曰：假驿传书一纸开，三番事件次第来。名标自定义，数据两行裁；末行随号记，开报应时回。闭门之后无重客，态止于终验不猜。：」
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「抓取」之书。
+寻观「网页榫卯」之书。
+寻观「网页榫卯」之「抓取接口」之书。
+寻观「网页榫卯」之「定时器」之书。
+寻观「网页榫卯」之「窗位」之书。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「事件文」乃「文」也。
+「事件文」者
+　『retry: 5「：换行：」: 注释「：换行：」「：换行：」event: custom「：换行：」data: 甲「：换行：」「：换行：」data: 乙「：换行：」data: 丙「：换行：」「：换行：」id: 7「：换行：」data: 丁「：换行：」「：换行：」』
+也。
+
+「假换」乃「抓取交换」也。
+「假换」者得「请」而
+　「组值」
+　【「地址」者（「请」中「地址」）也
+　，「状态」者「二零零」也
+　，「字段」者「列」【『content-type』与『text/event-stream』】也
+　，「主体」者「作帛」于「事件文」也
+　，「种类」者『basic』也
+　，「诊断」者『』也
+　】
+　属「抓取响应」
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「无」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test/页.html』而
+　令「无」为「安装网页抓取」于「境」于「假换」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var es=new EventSource("https://example.test/events");var log=[];es.addEventListener("open",function(){log.push("open:"+es.readyState);});es.addEventListener("custom",function(e){log.push("custom:"+e.data+":"+e.lastEventId);});es.addEventListener("message",function(e){log.push("message:"+e.data+":"+e.lastEventId);});es.addEventListener("error",function(){log.push("error:"+es.readyState);});』而
+　令「无」为「急就行作业序」于「元」而
+　令「无」为「急就行作业序」于「元」而
+　令「无」为「急就行作业序」于「元」而
+　令「结果一」为「急就在境行脚本」于「境」于『log.join("|")+"#"+es.readyState+"#"+[EventSource.CONNECTING,EventSource.OPEN,EventSource.CLOSED].join("/");』而
+　令「文一」为「急就文字作串」于（「急就取键」于「结果一」）而
+　「检查」于「名」曰『三类事件与开头结尾』于「真」曰（「文同」于「文一」于『open:1|custom:甲:|message:乙「：换行：」丙:|message:丁:7|error:0#0#0/1/2』）而后
+　令「无」为「急就在境行脚本」于「境」于『es.close();』而
+　令「无」为「行到期网页定时器」于「现在」曰「五」而
+　令「无」为「急就行作业序」于「元」而
+　令「结果二」为「急就在境行脚本」于「境」于『log.length+"#"+es.readyState+"#"+es.url;』而
+　令「文二」为「急就文字作串」于（「急就取键」于「结果二」）而
+　「检查」于「名」曰『关闭后不再重连』于「真」曰（「文同」于「文二」于『5#2#https://example.test/events』）而后
+　「书」于『事件源测试通过』
+也。
+
+「入口」于「元」。
