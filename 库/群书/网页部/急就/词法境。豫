@@ -541,7 +541,19 @@
 　　　　「急就初置名」于「境」于「名称」于（「急就新类型数组构造器」于「对象原型」于「名称」）
 　　　）
 　　　于「元」
-　　　于（「列」【『Int8Array』，『Uint8Array』，『Uint8ClampedArray』，『Int16Array』，『Uint16Array』，『Int32Array』，『Uint32Array』】）而
+　　　于（「列」
+　　　　【『Int8Array』
+　　　　，『Uint8Array』
+　　　　，『Uint8ClampedArray』
+　　　　，『Int16Array』
+　　　　，『Uint16Array』
+　　　　，『Int32Array』
+　　　　，『Uint32Array』
+　　　　，『Float32Array』
+　　　　，『Float64Array』
+　　　　，『BigInt64Array』
+　　　　，『BigUint64Array』
+　　　　】）而
 　令「无」为「急就声明名」于「境」于『DataView』于「阳」而
 　令「无」为「急就初置名」于「境」于『DataView』于（「急就新数据视图构造器」于「对象原型」）而
 　令「无」为「急就声明名」于「境」于『Proxy』于「阳」而
