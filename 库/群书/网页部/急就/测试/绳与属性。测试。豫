@@ -1,0 +1,50 @@
+「：汉语：通称绳与属性测试。验证绳文显式栈展开后长串的长度、查找、切片、分割与正则（退出平方级）；数组字面量与建值造列绕过原型链上的访问器（CreateDataProperty）；数组下标与实参对象上定义访问器后读取返回取值器的结果；类型数组的浮点与大整数构造器已挂到全局。末书「捷思绳与属性冒烟通过」。
+　　文言：绳者，左右相衔，未展而藏其数；展之有序，则长串之求得失可验。性者，物之所有也；字面造列越原型之访而径定自有之性，实参之列与数组之上定访问器而读取归其取值之果，浮点大数之构造已登于全局。终书冒烟。
+　　赋曰：左绳右索本惰成，显栈一展万珠明。寻切分合皆有据，正则循之不错行。字面造列越原型，自有数据径登名；下标访器归真值，浮大诸型已挂扃。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+
+「脚本得串」乃化「文」为「文」者也。
+「脚本得串」者得「脚本」而
+　鉴「急就行脚本」于「脚本」而
+　　或有（「急就字符串值」于「其文」）则「急就文字作串」于「其文」
+　　或有「余值」则『非字符串』
+也。
+
+「脚本得文」乃化「脚本」曰「文」又化「期望」曰「文」又化「说明」曰「文」为「有」者也。
+「脚本得文」者得「脚本」曰「脚本」又得「期望」曰「期望」又得「说明」曰「说明」而
+　令「实际」为「脚本得串」于「脚本」而
+　若「文同」于「实际」于「期望」则「元」否则「告祸」于（「说明」接『：实际 』接「实际」）
+也。
+
+「：汉语：长绳的各处操作：长度与逐下标读取、子串查找（命中与不命中）、切片、分割、字形访问与正则整串匹配、替换；每项都只扫一遍，长串不再呈平方级。
+　　文言：长绳诸事：计长与逐序读、寻子（中与不中）、裁片、分割、取字与正则整串、易字；诸事各一遍而毕，长串不复平方。：」
+「脚本得文」
+　于「脚本」曰『var s="";for(var i=0;i<2000;i++){s+="abcdefghij";}var r=[];r.push(s.length,s.charAt(19999),s.indexOf("c"),s.indexOf("zz"),s.lastIndexOf("j"),s.slice(19998),s.slice(-2),s.substring(2,5),s.split("cd").length,/^[a-z]+$/.test(s),/ij$/.test(s),s.replace(/a/g,"A").split("A").length,s.repeat(2).length,s.trim().length);var t="";for(var i=0;i<200;i++){t+="abcdefghij";}r.push(t.split("").length,t.split("").join("").length);r.join("|");』
+　于「期望」曰『20000|j|2|-1|19999|ij|ij|cde|2001|true|true|2001|40000|20000|2000|2000』
+　于「说明」曰『捷思长绳的长度查找切片分割与正则』。
+「：汉语：数组字面量与建值造列用建值之法写元素：原型链上的同名访问器不被调用，元素成为自有数据属性；原型上没有访问器时照常。
+　　文言：字面造列与建值造列以建值之法书其元：原型链上同名之访问器不呼，元为自有之数据性；原型无访问器时如常。：」
+「脚本得文」
+　于「脚本」曰『var hits=0;Object.defineProperty(Array.prototype,"0",{get:function(){hits++;return "proto";},set:function(v){hits++;},configurable:true});var a=[11];var v0=a[0];var l0=a.length;var v2=[22][0];delete Array.prototype[0];var r=[];r.push(v0,l0,hits,v2);var b=[33];r.push(b[0],hits);r.push(Array.from(["x","y"]).join(""),Array.of("p","q").join(""));r.join("|");』
+　于「期望」曰『11|1|0|22|33|0|xy|pq』
+　于「说明」曰『捷思数组字面量绕过原型访问器』。
+「：汉语：数组下标与实参对象上定义访问器：替换原有的数据属性后，读取返回取值器的结果，原值不再出现；不可配置的访问器重定义为数据属性报 TypeError。
+　　文言：数组之序与实参之列上定访问器：既代其旧数据之性，读则归取值之果，旧值不复见；不可配之访问器改定为数据性则报 TypeError。：」
+「脚本得文」
+　于「脚本」曰『var r=[];var arr=[1,2];Object.defineProperty(arr,"1",{get:function(){return "x";},configurable:false,enumerable:true});r.push(arr[1],arr.length);function f(){Object.defineProperty(arguments,"0",{get:function(){return "g";},configurable:true});return arguments[0];}r.push(f(7));var o={0:"d"};Object.defineProperty(o,"0",{get:function(){return "h";},configurable:true});r.push(o[0]);try{Object.defineProperty(arr,"1",{value:5});r.push("no");}catch(e){r.push(e instanceof TypeError?"T":"E");}r.push(arr[1]);r.join("|");』
+　于「期望」曰『x|2|g|h|T|x』
+　于「说明」曰『捷思数组与实参对象上的访问器』。
+「：汉语：类型数组的全局构造器：八、十六、三十二位整数、钳制八位、单双精度浮点与有无符号六十四位大整数都取得到，元素字节宽与外层构造器的 BYTES_PER_ELEMENT 相符。
+　　文言：类型数组之全局构造：八、十六、三十二位之整、钳制之八、单双之浮、有无符之六十四位大数皆可得，其字宽与外构造之 BYTES_PER_ELEMENT 相符。：」
+「脚本得文」
+　于「脚本」曰『var names=["Int8Array","Uint8Array","Uint8ClampedArray","Int16Array","Uint16Array","Int32Array","Uint32Array","Float32Array","Float64Array","BigInt64Array","BigUint64Array"];var r=[];for(var i=0;i<names.length;i++){var c=globalThis[names[i]];r.push(typeof c,c.BYTES_PER_ELEMENT,new c(2).length);}r.join("|");』
+　于「期望」曰『function|1|2|function|1|2|function|1|2|function|2|2|function|2|2|function|4|2|function|4|2|function|4|2|function|8|2|function|8|2|function|8|2』
+　于「说明」曰『捷思类型数组的全局构造器』。
+「：汉语：严格模式下的删除：删不可配置的自有属性报 TypeError，松散模式下表达式值为阴；两者之后属性都仍在。
+　　文言：严格之式下的删除：删不可配之自有性报 TypeError，松散之式则其值为阴；二者之后其性皆存。：」
+「脚本得文」
+　于「脚本」曰『function f(){"use strict";var q=Object.freeze({x:1});try{delete q.x;return "no";}catch(e){return e instanceof TypeError?"T":"E";}}function g(){"use strict";var a=Object.freeze([1]);try{delete a[0];return "no";}catch(e){return e instanceof TypeError?"T":"E";}}var o=Object.freeze({x:2});var r=[f(),g(),(delete o.x),o.x];r.join("|");』
+　于「期望」曰『T|T|false|2』
+　于「说明」曰『捷思严格模式下的删除』。
+「书」于『捷思绳与属性冒烟通过』。
