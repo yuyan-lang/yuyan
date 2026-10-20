@@ -6,7 +6,7 @@
 import {规范路径, 文} from './文件系统.mjs';
 import {编码值} from './编码.mjs';
 
-const 编码器 = new TextEncoder();
+const 编码器 = new TextEncoder(), 解码器 = new TextDecoder();
 const 块长 = 1 << 20;
 const 输出上限 = 256 * 1024 * 1024;
 const 末名 = 径 => 径.slice(径.lastIndexOf('/') + 1);
@@ -46,10 +46,12 @@ const 内建命令 = {
 };
 
 export class 进程表 {
-  constructor({文件系统, 桥模块, 工作线程网址, 处理器数}) {
+  // 汉语：系统环境（提案 00043）：每个进程环境的缺省项（网页行在的全局设定，如 豫言行在=网页），进程自己的环境盖过它。文言：系统之环境：诸进程环境之缺省，己之环境掩之。
+  constructor({文件系统, 桥模块, 工作线程网址, 处理器数, 系统环境 = {}}) {
     this.文件系统 = 文件系统;
     this.桥模块 = 桥模块;
     this.工作线程网址 = 工作线程网址;
+    this.系统环境 = 系统环境;
     this.处理器数 = 处理器数 ?? (typeof navigator !== 'undefined' ? navigator.hardwareConcurrency : 4) ?? 4;
     this.记录们 = new Map();
     this.线程们 = [];
@@ -107,7 +109,7 @@ export class 进程表 {
       }
       break;
     }
-    const [实程序 = '', ...实参数] = 余, 合环境 = {...环境, ...加环境};
+    const [实程序 = '', ...实参数] = 余, 合环境 = {...this.系统环境, ...环境, ...加环境};
     const 候选 = 规范路径(实程序, 目录);
     const 是客体 = 实程序 !== '' && this.文件系统.是文件(候选) && (实程序.endsWith('.wasm') || 是网页汇编字节(this.文件系统.读(候选)));
     if (!是客体) {
@@ -155,6 +157,8 @@ export class 进程表 {
       else 线.闲时 = setTimeout(() => { if (!线.忙) this.回收线程(线); }, 250);
     }
     for (const 回调 of 记录.回调们.splice(0)) 回调(记录);
+    // 文言：父退则阖其交互之子之入，如管之写端随父而闭，子读尽乃自退（提案〇〇〇四三）。汉语：父进程结束时关闭它的交互子程序的标准输入，如同管道写端随父进程关闭，子程序读到结束就自己退出（提案 00043）。
+    for (const 子 of this.记录们.values()) if (子.父号 === 记录.号 && 子.入 && !子.完成) this.关入(子.号);
     this.唤候();
   }
 
@@ -302,8 +306,34 @@ export class 进程表 {
         if (!子) throw Error('无效的异步子进程句柄');
         if (!子.完成) return [0, 0, 0, new Uint8Array(0), new Uint8Array(0)];
         this.记录们.delete(参[0]);
-        return [1, 子.号, 子.码, 合并(子.输出), 合并(子.错误)];
+        const [出, 错] = this.取出(子);
+        return [1, 子.号, 子.码, 出, 错];
       }
+      // 文言：网页行在之诸务（提案〇〇〇四三第三步）：文件按区读写、列目带类、交互之子程序、增量之出、标准入与终端。
+      // 汉语：网页行在用到的操作（提案 00043 第三步）：文件按区读写、带类型列目、交互子程序、增量取出、标准输入与终端。
+      case '长度': return this.文件系统.读(参[0]).length;
+      case '读区': { const 字 = this.文件系统.读(参[0]); return 字.slice(Math.min(参[1], 字.length), Math.min(参[1] + 参[2], 字.length)); }
+      case '写区': return this.写区(参[0], 参[1], 参[2]);
+      case '设长': { const 旧 = this.文件系统.读(参[0]), 新 = new Uint8Array(参[1]); 新.set(旧.subarray(0, Math.min(旧.length, 参[1]))); this.文件系统.写(参[0], 新); return undefined; }
+      case '列详': return this.文件系统.列(参[0]).map(名 => { const 全 = 规范路径(名, 参[0]); return [名, this.文件系统.是目录(全) ? 1 : this.文件系统.是文件(全) ? 0 : 2]; });
+      case '建目录': this.文件系统.建目录(参[0]); return undefined;
+      case '删径': {
+        if (this.文件系统.是目录(参[0])) { if (this.文件系统.列(参[0]).length) throw Error('目录非空：' + 参[0]); this.文件系统.删全部(参[0]); }
+        else this.文件系统.删文件(参[0]);
+        return undefined;
+      }
+      case '交互启动': return this.交互启动(记录?.号 ?? 0, ...参);
+      case '候收': return this.候完成(参[0]).then(子 => { this.记录们.delete(参[0]); const [出, 错] = this.取出(子); return [子.码, 出, 错]; });
+      case '取出': { const 子 = this.记录们.get(参[0]); return 子 ? this.取出(子) : [new Uint8Array(0), new Uint8Array(0)]; }
+      case '送入': return this.送入(参[0], 参[1]) ? 0 : 8;
+      case '关入': return this.关入(参[0]) ? 0 : 8;
+      case '入素查': return !!this.记录们.get(参[0])?.入?.素;
+      case '是终端': return !!记录?.入?.终端;
+      case '入素': { const 入 = 记录?.入; if (!入?.终端) return false; 入.素 = true; return true; }
+      case '出素': { if (记录?.入) 记录.入.素 = false; return undefined; }
+      case '读键': return this.读键(记录, true);
+      case '瞥键': return this.读键(记录, false);
+      case '列役': return [...this.记录们.values()].filter(子 => !子.完成).map(子 => [子.号, 末名(子.程序名), '网页行在', Math.round(performance.now() * 1000), 0, 0, 0]);
       case '等待': {
         const [关注, 超时] = 参;
         const 果 = this.事件(关注);
@@ -315,35 +345,101 @@ export class 进程表 {
       case '同步运行': return this.同步运行(记录?.号 ?? 0, 参[0], 参[1], 参[2], 参[3]);
       case '读行': return this.读行(记录);
       case '页杂凑': return this.页杂凑(参[0], 参[1]);
-      case '召回': { const 子 = this.记录们.get(参[0]); if (!子) return -1; this.终止(子, 143); return 0; }
-      default: throw Error('构建宿主：未知操作 ' + 名);
+      case '召回': { const 子 = this.记录们.get(参[0]); if (!子) return 8; this.终止(子, 143); return 0; }
+      default:
+        // 文言：余务交外（网页行在之显示、字体、剪贴、器）。汉语：其余操作交给外务（网页行在提供的显示、字体、剪贴板、设备）。
+        if (this.外务 && Object.hasOwn(this.外务, 名)) return this.外务[名](记录, ...参);
+        throw Error('构建宿主：未知操作 ' + 名);
     }
   }
 
-  // 文言：标准入（提案〇〇〇四三）：开入之进程有一行列，读行有行则取，入尽则言尽，否则候页送入；未开入者（构建之作业、子进程）读行即尽。
-  // 汉语：标准输入（提案 00043）：开了输入的进程有一个行队列，读行时有行就取，输入已结束就返回“没有”，否则等页面送入；没开输入的（构建作业、子进程）读行即结束。
-  开入(号) {
+  // 文言：标准入（提案〇〇〇四三）：开入之进程有一字之缓；读行至换行而止，读键取一字（ESC 起之终端序取其全），入尽则言尽，否则候送入。终端者（桌面终端仿真之会话）可入原始之制。
+  //   未开入者（构建之作业、非交互之子程序）读即尽。
+  // 汉语：标准输入（提案 00043）：开了输入的进程有一个字节缓冲；读行读到换行为止（去掉行尾回车），读键取一个字符（ESC 开头的终端序列取整段，同诺驿终端输入），
+  //   输入结束就返回“没有”，否则等送入。“终端”进程（桌面终端仿真起的会话）可进入原始模式。没开输入的（构建作业、非交互子程序）一读即结束。
+  开入(号, {终端 = false} = {}) {
     const 记录 = this.记录们.get(号);
-    if (记录) 记录.入 ??= {行们: [], 尽: false, 候: null};
+    if (记录) 记录.入 ??= {字: new Uint8Array(0), 尽: false, 候: null, 终端, 素: false};
+  }
+  // 文言：试足所候之读：有则答之。汉语：缓冲里的字节够了就答复等着的读取。
+  试候(入) {
+    if (!入.候) return;
+    const 果 = 入.候.种 === '行' ? this.取行(入) : this.取键(入);
+    if (果) { const 成 = 入.候.成; 入.候 = null; 成(果); }
+  }
+  取行(入) {
+    const 位 = 入.字.indexOf(10);
+    if (位 < 0 && !入.尽) return null;
+    if (位 < 0 && 入.字.length === 0) return [false, ''];
+    const 止 = 位 < 0 ? 入.字.length : 位;
+    let 行 = 解码器.decode(入.字.subarray(0, 止));
+    if (行.endsWith('\r')) 行 = 行.slice(0, -1);
+    入.字 = 入.字.slice(位 < 0 ? 止 : 止 + 1);
+    return [true, 行];
+  }
+  // 文言：取一键：一字之码（UTF-8 一至四字），或 ESC [ / ESC O 起至字母或波浪号止之全序。汉语：取一个键：一个 UTF-8 字符，或从 ESC [、ESC O 起到字母或 ~ 为止的整段序列。
+  取键(入) {
+    const 字 = 入.字;
+    if (字.length === 0) return 入.尽 ? [false, ''] : null;
+    const 首 = 字[0], 长 = 首 < 0x80 ? 1 : 首 >= 0xf0 ? 4 : 首 >= 0xe0 ? 3 : 首 >= 0xc0 ? 2 : 1;
+    if (字.length < 长) return 入.尽 ? [false, ''] : null;
+    let 止 = 长;
+    if (首 === 0x1b && 字.length >= 2 && (字[1] === 0x5b || 字[1] === 0x4f)) {
+      let 位 = 2;
+      while (位 < 字.length && !/[A-Za-z~]/.test(String.fromCharCode(字[位]))) 位++;
+      if (位 < 字.length) 止 = 位 + 1;
+    }
+    入.字 = 字.slice(止);
+    return [true, 解码器.decode(字.subarray(0, 止))];
   }
   读行(记录) {
     const 入 = 记录?.入;
     if (!入) return [false, ''];
-    if (入.行们.length) return [true, 入.行们.shift()];
-    if (入.尽) return [false, ''];
-    return new Promise(成 => { 入.候 = 成; });
+    return this.取行(入) ?? new Promise(成 => { 入.候 = {种: '行', 成}; });
   }
-  送入(号, 行) {
+  读键(记录, 等) {
+    const 入 = 记录?.入;
+    if (!入) return [false, ''];
+    return this.取键(入) ?? (等 ? new Promise(成 => { 入.候 = {种: '键', 成}; }) : [false, '']);
+  }
+  送入(号, 内容) {
     const 入 = this.记录们.get(号)?.入;
     if (!入 || 入.尽) return false;
-    if (入.候) { const 成 = 入.候; 入.候 = null; 成([true, 行]); } else 入.行们.push(行);
+    const 新 = typeof 内容 === 'string' ? 编码器.encode(内容) : 内容, 合 = new Uint8Array(入.字.length + 新.length);
+    合.set(入.字); 合.set(新, 入.字.length);
+    入.字 = 合;
+    this.试候(入);
     return true;
   }
   关入(号) {
     const 入 = this.记录们.get(号)?.入;
-    if (!入) return;
+    if (!入) return false;
     入.尽 = true;
-    if (入.候) { const 成 = 入.候; 入.候 = null; 成([false, '']); }
+    this.试候(入);
+    return true;
+  }
+  // 文言：增量之出：自上次取后新生之出与误，取则移其位。汉语：增量输出：取出上次取过之后新产生的标准输出与标准错误，取后记下位置（收取完成时只交其余部分）。
+  取出(记录) {
+    const 出位 = 记录.已取出 ?? 0, 错位 = 记录.已取错 ?? 0;
+    记录.已取出 = 记录.输出.length; 记录.已取错 = 记录.错误.length;
+    return [合并(记录.输出.slice(出位)), 合并(记录.错误.slice(错位))];
+  }
+  // 文言：按位写卷：位为负一则续于末；不足则补零。汉语：在偏移处写入字节（偏移为 −1 表示接在末尾），文件不够长时中间补零；返回写入的字节数。
+  写区(径, 位, 字) {
+    const 旧 = this.文件系统.是文件(径) ? this.文件系统.读(径) : new Uint8Array(0);
+    const 起 = 位 < 0 ? 旧.length : 位, 新 = new Uint8Array(Math.max(旧.length, 起 + 字.length));
+    新.set(旧); 新.set(字, 起);
+    this.文件系统.写(径, 新);
+    return 字.length;
+  }
+  // 文言：起交互或非交互之子程序：交互者开入而以终端视之；非交互者先送所予之入而阖之。汉语：启动子程序：交互的打开标准输入并当作终端；非交互的先送入给定的输入字节再关闭输入。
+  async 交互启动(父号, 程序, 参数, 目录, 环境, 输入, 交互) {
+    const 号 = await this.启动(程序, 参数, 目录, 环境, 父号);
+    if (号 < 0) return 号;
+    this.开入(号, {终端: !!交互});
+    if (输入?.length) this.送入(号, 输入);
+    if (!交互) this.关入(号);
+    return 号;
   }
 
   // 文言：顶层行一程，候其毕，出随生随报。汉语：运行一个顶层程序直到结束；观察者随时收到输出（流 1 为标准输出、2 为标准错误，值为字节）。

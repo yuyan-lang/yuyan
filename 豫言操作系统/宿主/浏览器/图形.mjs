@@ -238,7 +238,7 @@ export function 创建显示面表({后端, 已关闭 = () => false}) {
 
 // 文言：浏览器之后端：面者页中之 canvas；旁置隐 input 以受键与文字；canvas 离文树则面闭。
 // 汉语：浏览器的显示面后端：显示面是页面里带 data-yy-显示面 属性的 canvas；宿主在它后面插入隐形输入框接收按键与输入法文字；canvas 离开文档即关闭。
-function 创建画布后端({根, 全局}) {
+export function 创建画布后端({根, 全局}) {
   let 观察器 = null;
   const 活面 = new Map();
   const 像素比 = () => {
