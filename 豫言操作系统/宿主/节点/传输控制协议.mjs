@@ -78,7 +78,10 @@ export function 创建传输控制协议能力({模块字节} = {}) {
   if (系统.可用 && 模块字节) {
     try {
       const 模块 = new WebAssembly.Module(模块字节);
-      const 导入 = {...系统.导入, 目标: {平台号: () => 3}};
+      // 汉语：内存基址只供原生进程拼绝对指针（如 execve 的参数表）；诺驿拿不到线性内存的绝对地址，共享传输控制协议也不起子进程，调用即报错。周期计数取诺驿高精度时钟的低三十二位。
+      // 文言：基址惟供原生进程拼绝对之指（如 execve 之参表）；诺驿不得线性内存之绝对址，共享传输控制协议亦不起子进程，呼之即报误。周期之计取诺驿精时之低三十二位。
+      const 无基址 = () => {throw Error('共享传输控制协议不提供线性内存的绝对地址');};
+      const 导入 = {...系统.导入, 目标: {平台号: () => 3, 内存基址低: 无基址, 内存基址高: 无基址, 周期计数: () => Number(process.hrtime.bigint() & 0xffffffffn) | 0}};
       for (const 项 of WebAssembly.Module.imports(模块)) {
         if (typeof 导入[项.module]?.[项.name] === 'function') continue;
         if (项.module === '林檎' || 项.module === '目标') throw Error('共享传输控制协议缺少系统绑定：' + 项.module + '.' + 项.name);
