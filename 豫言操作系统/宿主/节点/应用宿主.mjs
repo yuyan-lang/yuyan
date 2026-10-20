@@ -205,20 +205,86 @@ export function 派生平台实现(旧表, 对照 = 平台导入旧名) {
   return 表;
 }
 
-// 文言：宿主支持清单人工所守；发行时嵌入，开发时循表读诸适配之簿。汉语：宿主支持清单由人工维护（宿主支持清单.tsv）；发行启动文件里已嵌入，直接运行本文件时按表读取各适配的宿主提供清单。
+// 文言：宿主支持清单人工所守；发行时嵌入，开发时循表读诸适配之簿。汉语：宿主支持清单由人工维护（宿主支持清单。数据。豫）；发行启动文件里已嵌入，直接运行本文件时按表读取各适配的宿主提供清单（也是数据文件）。
 export function 读取宿主支持() {
   if (内嵌) return 内嵌.宿主支持;
   const 仓根 = 路径.resolve(本目录, '../../..');
   const 支持 = {宿主提供: [], 应用提供: []};
-  for (const 原行 of 文件系统.readFileSync(路径.join(本目录, '宿主支持清单.tsv'), 'utf8').split('\n')) {
-    const 行 = 原行.replace(/\r$/u, '');
-    if (!行 || 行.startsWith('#')) continue;
-    const [接口, 适配, 清单文件] = 行.split('\t');
-    须(接口 && 适配 && 清单文件, '宿主支持清单行格式不符：' + 行);
-    const 项 = JSON.parse(文件系统.readFileSync(路径.join(仓根, 清单文件), 'utf8'));
+  const 表 = 析籍册(文件系统.readFileSync(路径.join(本目录, '宿主支持清单。数据。豫'), 'utf8'), '宿主支持清单。数据。豫');
+  for (const 录 of 表.支持们 ?? []) {
+    const {接口, 适配, 清单: 清单文件} = 录;
+    须(接口 && 适配 && 清单文件, '宿主支持清单项格式不符：' + JSON.stringify(录));
+    const 项 = 析籍册(文件系统.readFileSync(路径.join(仓根, 清单文件), 'utf8'), 清单文件);
     (适配 === '-' ? 支持.应用提供 : 支持.宿主提供).push(项);
   }
   return 支持;
+}
+
+// 文言：析数据之文（籍册之一隅：字串、汉字之整、列、录与注），得 JS 之值；顶之“「名」者 值 也。”为物之键。汉语：解析数据文件（籍册写法的一个子集：字符串、逐位汉字写的整数、「列」、「典」等记录与注释），得到 JS 值；顶层每个“「名」者 值 也。”成为对象的一个键，导入与签名跳过。
+export function 析籍册(文, 文件名) {
+  let 位 = 0;
+  const 数字 = '零一二三四五六七八九';
+  const 错 = 何 => 须(false, `${文件名} 第 ${位} 字处${何}`);
+  const 略白 = () => {
+    for (;;) {
+      if (位 < 文.length && /[\s，]/u.test(文[位])) { 位++; continue; }
+      if (文.startsWith('「：', 位)) {
+        let 层 = 0;
+        do {
+          if (文.startsWith('「：', 位)) { 层++; 位 += 2; } else if (文.startsWith('：」', 位)) { 层--; 位 += 2; } else 位++;
+        } while (层 > 0 && 位 < 文.length);
+        continue;
+      }
+      return;
+    }
+  };
+  const 须字 = 串 => { 略白(); if (!文.startsWith(串, 位)) 错('应为“' + 串 + '”'); 位 += 串.length; };
+  const 读名 = () => { 须字('「'); const 止 = 文.indexOf('」', 位); if (止 < 0) 错('名字缺少」'); const 果 = 文.slice(位, 止); 位 = 止 + 1; return 果; };
+  const 读串 = () => {
+    位++;
+    let 果 = '';
+    for (;;) {
+      if (位 >= 文.length) 错('字符串缺少』');
+      if (文.startsWith('「：』：」', 位)) { 果 += '』'; 位 += 5; }
+      else if (文.startsWith('「：「：：」', 位)) { 果 += '「：'; 位 += 6; }
+      else if (文.startsWith('「：换行：」', 位)) { 果 += '\n'; 位 += 6; }
+      else if (文.startsWith('「：制表：」', 位)) { 果 += '\t'; 位 += 6; }
+      else if (文[位] === '』') { 位++; return 果; }
+      else { 果 += 文[位]; 位++; }
+    }
+  };
+  const 读值 = () => {
+    略白();
+    if (文[位] === '『') return 读串();
+    const 头 = 读名();
+    if ([...头].every(字 => 数字.includes(字))) return Number([...头].map(字 => 数字.indexOf(字)).join(''));
+    if (头 === '阳' || 头 === '阴') return 头 === '阳';
+    if (头 === '元') return null;
+    须字('【');
+    const 列乎 = 头 === '列', 果 = 列乎 ? [] : {};
+    for (;;) {
+      略白();
+      if (文[位] === '】') { 位++; return 果; }
+      if (列乎) { 果.push(读值()); continue; }
+      const 键 = 读名();
+      须字('者');
+      果[键] = 读值();
+      须字('也');
+    }
+  };
+  const 顶 = {};
+  for (;;) {
+    略白();
+    if (位 >= 文.length) return 顶;
+    if (文.startsWith('寻', 位)) { 位 = 文.indexOf('。', 位) + 1; continue; }
+    const 键 = 读名();
+    略白();
+    if (文.startsWith('乃', 位)) { 位 = 文.indexOf('也。', 位) + 2; continue; }
+    须字('者');
+    顶[键] = 读值();
+    须字('也');
+    须字('。');
+  }
 }
 
 const 正规化 = 值 => {
