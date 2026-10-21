@@ -1,0 +1,50 @@
+「：汉语：通称网动测试（web animations test）。网页动画测试：脚本造动画，核对行止、时间线、getAnimations 的计数、暂停后改本刻所得进度与计算样式的不透明度、终态与取消后的状态、反转、重复、填充与延迟下的进度，以及完成期约的兑现；另起一页核对层叠样式动画出现在 getAnimations 里并带 animationName 与时长。
+　　文言：网动之试：脚本造动画，核行止、时线、取动之数、暂停改刻之进度与成式之透明、终与取消之态、反向重复填充延迟之进度，及完成诺之兑；又起一页，核层叠之动见于取动，携其名与时。
+　　赋曰：动画初成一试开，行止时线取动来。暂停改刻量成式，终取消后态不回。反向重复权进度，完成诺兑一心裁。层叠之动亦入籍，名时两验此中该。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+寻观「网页榫卯」之「定时器」之书。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「：汉语：通称取属性文（read attribute text）。取节点属性文；没有得空文。
+　　文言：取属性文者，取节之属性文；无则空。
+　　赋曰：取属有文还其文，无时一空报来人。：」
+「网动取属文」乃化「篇节」又化「文」为「文」者也。
+「网动取属文」者得「节」又得「名」而
+　鉴「取属」于「节」于「名」而
+　　或有（「可有」于「其文」）则「其文」
+　　或有「可无」则『』
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a" style="width:20px;height:20px"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var a=document.getElementById("a");var an=a.animate([{opacity:0},{opacity:1}],{duration:1000});var ok=an.playState==="running"&&document.timeline.currentTime===0&&document.getAnimations().length===1&&a.getAnimations().length===1;an.pause();an.currentTime=500;var ct=an.effect.getComputedTiming();ok=ok&&Math.abs(ct.progress-0.5)<0.001&&ct.currentIteration===0&&ct.duration===1000&&ct.activeDuration===1000&&getComputedStyle(a).opacity==="0.5";an.play();an.finish();ok=ok&&an.playState==="finished";an.cancel();ok=ok&&an.playState==="idle";var it=a.animate([{opacity:0},{opacity:1}],{duration:100,iterations:2,direction:"reverse",fill:"both",delay:50});it.pause();it.currentTime=50;var c2=it.effect.getComputedTiming();ok=ok&&Math.abs(c2.progress-1)<0.001;it.currentTime=150;c2=it.effect.getComputedTiming();ok=ok&&Math.abs(c2.progress-1)<0.001&&c2.currentIteration===1;var pn=a.animate([{opacity:0},{opacity:1}],{duration:10,fill:"both"});pn.finished.then(function(){window.__f=1});pn.finish();document.getElementById("a").setAttribute("data-ok",ok?"1":"0");』而
+　令「无」为「网页微役察点」于「元」而
+　令「无」为「急就在境行脚本」于「境」于『document.getElementById("a").setAttribute("data-f",window.__f===1?"1":"0");』而
+　令「题」为（「冠」于（「问择器全」于「文档」于『#a』））而
+　「检查」于「名」曰『造动画与行止时线』于「真」曰（「文同」于（「网动取属文」于「题」于『data-ok』）于『1』）而后
+　「检查」于「名」曰『完成期约兑现』于「真」曰（「文同」于（「网动取属文」于「题」于『data-f』）于『1』）而后
+　令「层档」为「析篇」于『<style>@keyframes 动{from{opacity:0}to{opacity:1}}#b{animation:动 2s linear}</style><div id="b"></div>』而
+　令「层境」为「急就新全局境」于「元」而
+　令「层绑」为「系网览篇」于「层境」于「层档」而
+　令「无二」为
+　　「急就在境行脚本」
+　　　于「层境」
+　　　于『var cs=document.getAnimations().filter(function(x){return x.animationName==="动"});document.body.setAttribute("title",(cs.length===1&&cs[0].effect.getTiming().duration===2000&&cs[0].playState==="running")?"一":"零");』而
+　「检查」于「名」曰『层叠样式动画入取动』于「真」曰（「文同」于（「网动取属文」于（「冠」于（「问择器全」于「层档」于『body』））于『title』）于『一』）而后
+　「书」于『网页动画测试通过』
+也。
+
+「入口」于「元」。
