@@ -1,0 +1,84 @@
+# 文言：计行之工作流：每推 yybs、每有拉取之请，以司民（应用/百工坊/司民）计仓中诸「。豫」之篇之行，依种类、顶层、二级而分，辨码、注、空，书于作业之摘要。推 yybs 者，又取前之版籍，登今数而复上之，并以报告为发行版 code-line-stats 之说明，使盈缩可稽。别立一工作流，不入 CI 之并发组：CI 一轮甚久，候者屡为新推所代，置于彼则多推不得计。
+# 汉语：代码行数工作流：每次推送 yybs 与每个拉取请求，用司民（应用/百工坊/司民）统计仓库里全部「。豫」源文件的行数，按种类、顶层目录、二级目录分类，分代码、注释、空行，写进作业摘要。推送 yybs 时，再取上次的版籍，记入本次后传回，并把报告设成发行版 code-line-stats 的说明，持续追踪。另立工作流、不进 CI 的并发组：CI 一轮很长，排队的轮次常被新推送替换，放在那里大多数推送都统计不到。
+name: 代码行数
+
+env:
+  # 文言：起步之原生工具链包，同 main.yml：取连续版最新之 Linux x64 包，以其豫构稳定。林纳。豫行 构司民。
+  # 汉语：起步用的原生工具链包，同 main.yml：取连续版本里最新的 Linux x64 包，用包里的 豫构稳定。林纳。豫行 构建司民。
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-binaries/yuyan-native-linux-x64.tar.gz
+
+on:
+  push:
+    branches: [yybs]
+  pull_request:
+    branches: [yybs]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 文言：同分支至多一轮行、一轮候，新推代其候者；版籍之读写故不相争。拉取请求有新推则罢旧轮。
+# 汉语：同一分支至多一轮在跑、一轮在等，新推送替换在等的那轮；版籍的读写因此不会互相覆盖。拉取请求有新推送时取消旧轮。
+concurrency:
+  group: 代码行数-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  count:
+    name: 代码行数统计
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # 文言：惟推 yybs（及于 yybs 手发）者读书版籍、发于发行版。
+      # 汉语：只有推送 yybs（及在 yybs 上手动触发）时读写版籍、发布到发行版。
+      YY_RECORD: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/yybs' }}
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 下载最新的原生工具链包
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/yuyan-native-stable.tar.gz"
+          curl --fail --location --retry 6 --retry-all-errors --retry-delay 10 \
+            --output "$archive" "$YY_NATIVE_TOOLCHAIN_URL"
+          tar -xzf "$archive"
+
+      - name: 构建司民
+        run: ./豫构稳定。林纳。豫行 构建 司民 --输出 司民。林纳。豫行 -j "$(nproc)" -- --目标 本机 --执行器 执行器。树码
+
+      # 文言：取前之版籍：发行版或资产未立者，自此次始记。
+      # 汉语：取上次的版籍：发行版或资产还没有时，从这一次记起。
+      - name: 取上次的版籍
+        if: env.YY_RECORD == 'true'
+        run: |
+          set -euo pipefail
+          if gh release download code-line-stats --pattern code-line-history.tar.gz --dir "$RUNNER_TEMP"; then
+            tar -xzf "$RUNNER_TEMP/code-line-history.tar.gz" -C "$RUNNER_TEMP"
+          else
+            echo "还没有版籍，从这一次记起"
+          fi
+
+      - name: 统计并写进作业摘要
+        run: |
+          set -euo pipefail
+          if [ "$YY_RECORD" = true ]; then
+            ./司民。林纳。豫行 --版 "$RUNNER_TEMP/版籍。数据。豫" > "$RUNNER_TEMP/报告.md"
+          else
+            ./司民。林纳。豫行 > "$RUNNER_TEMP/报告.md"
+          fi
+          cat "$RUNNER_TEMP/报告.md" >> "$GITHUB_STEP_SUMMARY"
+
+      # 文言：上版籍于发行版（资产之名用英文：稽府易非 ASCII 之名），以报告为其说明。
+      # 汉语：把版籍传到发行版（资产名用英文：稽府会改掉非 ASCII 的文件名），报告设成发行说明。
+      - name: 发布版籍与报告
+        if: env.YY_RECORD == 'true'
+        run: |
+          set -euo pipefail
+          tar -czf "$RUNNER_TEMP/code-line-history.tar.gz" -C "$RUNNER_TEMP" 版籍。数据。豫
+          if ! gh release view code-line-stats >/dev/null 2>&1; then
+            gh release create code-line-stats --target "$GITHUB_SHA" --title 代码行数 --latest=false --notes-file "$RUNNER_TEMP/报告.md"
+          fi
+          gh release upload code-line-stats "$RUNNER_TEMP/code-line-history.tar.gz" --clobber
+          gh release edit code-line-stats --notes-file "$RUNNER_TEMP/报告.md"
