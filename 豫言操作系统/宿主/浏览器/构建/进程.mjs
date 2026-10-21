@@ -60,6 +60,8 @@ export class 进程表 {
     this.模块缓存 = new Map();
     this.摘要缓存 = new Map();
     this.已停 = false;
+    // 文言：结务：一程毕时之收尾（如阖其声流），由行在设之。汉语：结务：一个进程结束时的收尾（如关掉它的声音流），由行在设置。
+    this.结务 = null;
   }
 
   // 文言：取其模，同径同时同长者复用之。汉语：编译程序的 Wasm 模块；同一路径、修改时间与长度相同就复用（模块可传给多个工作线程共享已编代码）。
@@ -175,6 +177,7 @@ export class 进程表 {
       子.父号 = 记录.号 === this.初始号 ? 0 : this.初始号;
       子.无收 = true;
     }
+    this.结务?.(记录);
     if (记录.无收) this.记录们.delete(记录.号);
     this.唤候();
   }
@@ -215,7 +218,7 @@ export class 进程表 {
     if (消息.种 === '续') return this.写续(线);
     if (消息.种 !== '调') return;
     let 值;
-    try { 值 = this.处理(线, 记录, 消息.名, 消息.参); }
+    try { 值 = this.处理(线, 记录, 消息.名, 消息.参, 消息.环); }
     catch (错) { return this.答(线, 错?.message ?? String(错), true); }
     if (值 instanceof Promise) 值.then(果 => this.答(线, 果), 错 => this.答(线, 错?.message ?? String(错), true));
     else this.答(线, 值);
@@ -318,7 +321,9 @@ export class 进程表 {
     return new Promise(成 => 记录.回调们.push(成));
   }
 
-  处理(线, 记录, 名, 参) {
+  // 文言：处理一请：参数之后的 环 是工作线程附来的共享环形之缓（声出用），余务不视之。
+  // 汉语：处理一项请求：参数之后的 环 是工作线程附来的共享环形缓冲（声音输出用），其余外务不看它。
+  处理(线, 记录, 名, 参, 环) {
     const 系统 = this.文件系统;
     switch (名) {
       case '读': return 系统.读(参[0]);
@@ -394,8 +399,8 @@ export class 进程表 {
         return 子孙们.length ? 0 : 1;
       }
       default:
-        // 文言：余务交外（网页行在之显示、字体、剪贴、器）。汉语：其余操作交给外务（网页行在提供的显示、字体、剪贴板、设备）。
-        if (this.外务 && Object.hasOwn(this.外务, 名)) return this.外务[名](记录, ...参);
+        // 文言：余务交外（网页行在之显示、字体、剪贴、器、声）。汉语：其余操作交给外务（网页行在提供的显示、字体、剪贴板、设备、声音）。
+        if (this.外务 && Object.hasOwn(this.外务, 名)) return this.外务[名](记录, ...参, 环);
         throw Error('构建宿主：未知操作 ' + 名);
     }
   }
