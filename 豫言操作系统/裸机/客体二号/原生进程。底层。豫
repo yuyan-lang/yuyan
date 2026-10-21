@@ -1352,6 +1352,8 @@
 　　「柄」
 也。
 
+「：汉语：建 TCP 流套接字：Linux 在类型里带 SOCK_CLOEXEC（非阻塞时连 SOCK_NONBLOCK 一起），macOS 建好后用 fcntl 补 FD_CLOEXEC 与 O_NONBLOCK（见 进苹置标），两边建出来都执行即闭，起的子进程只承标准流与经文件动作显式给出的描述符（议题 187）；轩窗经 ws2_32 建并登记。
+　　文言：建流套接：Linux 之类带 SOCK_CLOEXEC（不塞者兼带 SOCK_NONBLOCK），林檎建后以 fcntl 补 FD_CLOEXEC 与 O_NONBLOCK，皆执行即闭，子惟承标准之流与文件动作所明予者（议题百八十七）；轩窗经 ws2_32 建而登之。：」
 「进套接字」乃化「爻」又化「整数」为「整数」者也。
 「进套接字」者得「非阻塞」又得「族」而
 　若「是轩窗」于「元」则
@@ -1402,6 +1404,8 @@
 　若「是轩窗」于「元」则「视进果」于（「视听」于「柄」于「队列」）否则若「是苹」于「元」则「苹听」于「柄」于「队列」否则「林听」于「柄」于「队列」
 也。
 
+「：汉语：接受一个连接：Linux 用 accept4 带 SOCK_CLOEXEC，macOS 用 accept 后以 fcntl 补 FD_CLOEXEC 并清去 O_NONBLOCK（见 进苹置标），新连接同样执行即闭（议题 187）。
+　　文言：受一连：Linux 以 accept4 带 SOCK_CLOEXEC，林檎以 accept 后补 FD_CLOEXEC 而清 O_NONBLOCK，新连亦执行即闭（议题百八十七）。：」
 「进接」乃化「整数」为「整数」者也。
 「进接」者得「柄」而
 　若「是轩窗」于「元」则
