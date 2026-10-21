@@ -1,0 +1,108 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct 变换 {
+  float4x4 视投影;
+  float4x4 光投影;
+  float4 光向;
+};
+
+struct 顶点入 {
+  float3 方位;
+  float2 纹坐;
+  float3 偏移;
+  uint 实例;
+};
+
+struct 顶点出 {
+  float4 方位 [[position]];
+  float3 世界 [[user(loc0)]];
+  float4 光位 [[user(loc1)]];
+  float2 纹坐 [[user(loc2)]];
+};
+
+struct yy_影顶点_入 {
+  float3 入_方位 [[attribute(0)]];
+  float2 入_纹坐 [[attribute(1)]];
+  float3 入_偏移 [[attribute(2)]];
+};
+
+vertex 顶点出 影顶点(uint 入_实例 [[instance_id]], yy_影顶点_入 yy_入 [[stage_in]], constant 变换& 均匀 [[buffer(0)]], texture2d<float> 高图 [[texture(1)]], sampler 高采 [[sampler(2)]]) {
+  顶点入 入 = 顶点入{yy_入.入_方位, yy_入.入_纹坐, yy_入.入_偏移, 入_实例};
+  const auto 变 = 均匀;
+  const auto 视投影 = 变.视投影;
+  const auto 光投影 = 变.光投影;
+  const auto 坐 = 入.纹坐;
+  const auto 零层 = 0.0f;
+  const auto 高色 = 高图.sample(高采, 坐, level(零层));
+  const auto 抬 = 高色.x;
+  const auto 方 = 入.方位;
+  const auto 移 = 入.偏移;
+  const auto 序 = 入.实例;
+  const auto 层 = float(序);
+  const auto 方横 = 方.x;
+  const auto 方纵 = 方.y;
+  const auto 方深 = 方.z;
+  const auto 移横 = 移.x;
+  const auto 移纵 = 移.y;
+  const auto 移深 = 移.z;
+  const auto 横 = 方横 + 移横;
+  const auto 纵和 = 方纵 + 移纵;
+  const auto 层抬 = 抬 * 层;
+  const auto 纵 = 纵和 + 层抬;
+  const auto 深 = 方深 + 移深;
+  const auto 世 = float3(横, 纵, 深);
+  const auto 齐 = float4(横, 纵, 深, 1.0f);
+  const auto 位 = 视投影 * 齐;
+  const auto 光 = 光投影 * 齐;
+  return 顶点出{位, 世, 光, 坐};
+}
+
+struct yy_影片元_入 {
+  float3 入_世界 [[user(loc0)]];
+  float4 入_光位 [[user(loc1)]];
+  float2 入_纹坐 [[user(loc2)]];
+};
+
+fragment float4 影片元(float4 入_方位 [[position]], yy_影片元_入 yy_入 [[stage_in]], constant 变换& 均匀 [[buffer(0)]], depth2d<float> 影图 [[texture(3)]], sampler 影采 [[sampler(4)]], texture2d<float> 高图 [[texture(1)]], sampler 高采 [[sampler(2)]]) {
+  顶点出 入 = 顶点出{入_方位, yy_入.入_世界, yy_入.入_光位, yy_入.入_纹坐};
+  const auto 变 = 均匀;
+  const auto 光向 = 变.光向;
+  const auto 光位 = 入.光位;
+  const auto 光宽 = 光位.w;
+  const auto 齐横 = 光位.x;
+  const auto 齐纵 = 光位.y;
+  const auto 齐深 = 光位.z;
+  const auto 光横 = 齐横 / 光宽;
+  const auto 光纵 = 齐纵 / 光宽;
+  const auto 光深 = 齐深 / 光宽;
+  const auto 半 = 0.5f;
+  const auto 横半 = 光横 * 半;
+  const auto 纵半 = 光纵 * 半;
+  const auto 影横 = 横半 + 半;
+  const auto 影纵 = 半 - 纵半;
+  const auto 影坐 = float2(影横, 影纵);
+  const auto 参照 = 光深 - 0.002f;
+  const auto 受光 = 影图.sample_compare(影采, 影坐, 参照);
+  const auto 世 = 入.世界;
+  const auto 横变 = dfdx(世);
+  const auto 纵变 = dfdy(世);
+  const auto 叉 = cross(横变, 纵变);
+  const auto 法 = normalize(叉);
+  const auto 光甲 = 光向.x;
+  const auto 光乙 = 光向.y;
+  const auto 光丙 = 光向.z;
+  const auto 光三 = float3(光甲, 光乙, 光丙);
+  const auto 漫 = max(dot(法, 光三), 0.0f);
+  const auto 照 = 受光 * 漫;
+  const auto 亮 = 0.25f + 照;
+  const auto 坐 = 入.纹坐;
+  const auto 底 = 高图.sample(高采, 坐);
+  const auto 底红 = 底.x;
+  const auto 底绿 = 底.y;
+  const auto 底蓝 = 底.z;
+  const auto 红 = 底红 * 亮;
+  const auto 绿 = 底绿 * 亮;
+  const auto 蓝 = 底蓝 * 亮;
+  return float4(红, 绿, 蓝, 1.0f);
+}

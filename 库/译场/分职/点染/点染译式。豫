@@ -156,14 +156,16 @@
 　　于（得「对」而「金转写」于「目标型」于（「取型」于（「对」中「零」））于（「对」中「一」））
 也。
 
-「：汉语：内建数学函数与子组运算在 MSL 里的名字：inverseSqrt 为 rsqrt，round（偶数舍入）为 rint，subgroupAdd、subgroupMax、subgroupMin、subgroupShuffle、subgroupShuffleXor 为 simd_sum、simd_max、simd_min、simd_shuffle、simd_shuffle_xor，其余同名。
-　　文言：内建数学之函与子组之算于 MSL 之名：inverseSqrt 为 rsqrt，round（舍入于偶）为 rint，subgroupAdd、subgroupMax、subgroupMin、subgroupShuffle、subgroupShuffleXor 为 simd_sum、simd_max、simd_min、simd_shuffle、simd_shuffle_xor，余同名。：」
+「：汉语：内建数学函数与子组运算在 MSL 里的名字：inverseSqrt 为 rsqrt，round（偶数舍入）为 rint，屏幕空间导数 dpdx、dpdy 为 dfdx、dfdy，subgroupAdd、subgroupMax、subgroupMin、subgroupShuffle、subgroupShuffleXor 为 simd_sum、simd_max、simd_min、simd_shuffle、simd_shuffle_xor，其余同名。
+　　文言：内建数学之函与子组之算于 MSL 之名：inverseSqrt 为 rsqrt，round（舍入于偶）为 rint，屏上之导 dpdx、dpdy 为 dfdx、dfdy，subgroupAdd、subgroupMax、subgroupMin、subgroupShuffle、subgroupShuffleXor 为 simd_sum、simd_max、simd_min、simd_shuffle、simd_shuffle_xor，余同名。：」
 「鹄术名」乃化「文」为「文」者也。
 「鹄术名」者得「函名文」而
 　若「为金鹄」于「元」则（
 　　鉴「函名文」而
 　　　或有『inverseSqrt』则『rsqrt』
 　　　或有『round』则『rint』
+　　　或有『dpdx』则『dfdx』
+　　　或有『dpdy』则『dfdy』
 　　　或有『subgroupAdd』则『simd_sum』
 　　　或有『subgroupMax』则『simd_max』
 　　　或有『subgroupMin』则『simd_min』
@@ -310,14 +312,16 @@
 　「函名」接『(』接（「间合」于『, 』于（「诸非空值」于「值们」））接『)』
 也。
 
-「：汉语：定型内建函数的写法：MSL 的纹理函数用纹理对象的方法（sample、read、get_width/get_height），半精度解包、打包用 as_type 在 uint 与 half2 之间转换。
-　　文言：定型内建之函之书法：MSL 之纹理之函用纹理对象之法（sample、read、get_width/get_height），半精之解包、打包以 as_type 转于 uint 与 half2 之间。：」
+「：汉语：定型内建函数的写法：MSL 的纹理函数用纹理对象的方法（sample、带 level() 的按层 sample、深度纹理的 sample_compare、read、get_width/get_height），半精度解包、打包用 as_type 在 uint 与 half2 之间转换。
+　　文言：定型内建之函之书法：MSL 之纹理之函用纹理对象之法（sample、带 level() 之按层 sample、深纹之 sample_compare、read、get_width/get_height），半精之解包、打包以 as_type 转于 uint 与 half2 之间。：」
 「纹理召文」乃化「文」又化（「列」于「文」）为「文」者也。
 「纹理召文」者得「函名文」又得「值们」而
 　若「为金鹄」于「元」则（
 　　令「值」为（得「序」而「去外括号」于（「第」以「文」于「序」于「值们」））属（化「数」为「文」）而
 　　鉴「函名文」而
 　　　或有『textureSample』则（「值」于「零」）接『.sample(』接（「值」于「一」）接『, 』接（「值」于「二」）接『)』
+　　　或有『textureSampleLevel』则（「值」于「零」）接『.sample(』接（「值」于「一」）接『, 』接（「值」于「二」）接『, level(』接（「值」于「三」）接『))』
+　　　或有『textureSampleCompare』则（「值」于「零」）接『.sample_compare(』接（「值」于「一」）接『, 』接（「值」于「二」）接『, 』接（「值」于「三」）接『)』
 　　　或有『textureLoad』则（「值」于「零」）接『.read(uint2(』接（「值」于「一」）接『), uint(』接（「值」于「二」）接『))』
 　　　或有『textureDimensions』则『uint2(』接（「值」于「零」）接『.get_width(), 』接（「值」于「零」）接『.get_height())』
 　　　或有『unpack2x16float』则『float2(as_type<half2>(』接（「值」于「零」）接『))』
@@ -448,6 +452,10 @@
 　　或有『写格』则「可有」于「写值规则」
 　　或有『新格』则「可有」于「新格规则」
 　　或有『采样纹理』则「可有」于（「定型函数」于『textureSample』于「三」于（「向量型」于「四」于「浮三二型」））
+　　或有『按层采样纹理』则「可有」于（「定型函数」于『textureSampleLevel』于「四」于（「向量型」于「四」于「浮三二型」））
+　　或有『比较采样』则「可有」于（「定型函数」于『textureSampleCompare』于「四」于「浮三二型」）
+　　或有『横差』则「可有」于（「同型函数」于『dpdx』于「一」）
+　　或有『纵差』则「可有」于（「同型函数」于『dpdy』于「一」）
 　　或有『读纹素』则「可有」于（「定型函数」于『textureLoad』于「三」于（「向量型」于「四」于「浮三二型」））
 　　或有『纹理尺寸』则「可有」于（「定型函数」于『textureDimensions』于「一」于（「向量型」于「二」于「无三二型」））
 　　或有『解包半精度』则「可有」于（「定型函数」于『unpack2x16float』于「一」于（「向量型」于「二」于「浮三二型」））
@@ -503,6 +511,8 @@
 　　或有『均匀绑定』则「可有」于「顶层专用规则」
 　　或有『纹理绑定』则「可有」于「顶层专用规则」
 　　或有『采样器绑定』则「可有」于「顶层专用规则」
+　　或有『深度纹理绑定』则「可有」于「顶层专用规则」
+　　或有『比较采样器绑定』则「可有」于「顶层专用规则」
 　　或有『工作组共享』则「可有」于「顶层专用规则」
 　　或有『计算入口项』则「可有」于「顶层专用规则」
 　　或有『顶点入口项』则「可有」于「顶层专用规则」
