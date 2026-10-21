@@ -1224,6 +1224,7 @@ jobs:
         if: always()
         run: |
           ./豫构.exe 构建 原生你好 轩窗入口 --输出 你好.exe -j 4
+          od -An -tx1 -N2 你好.exe
           set +e
           printf 'echo-line\r\n' | ./你好.exe
           echo "退出码 $?"
@@ -1232,6 +1233,7 @@ jobs:
         if: always()
         run: |
           ./豫构.exe 构建 全树测试 --输出 全树测试.exe -j 4
+          od -An -tx1 -N2 全树测试.exe
           ./全树测试.exe --只 库/豫章/测试/数据结构/
 
   # 文言：林檎 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
