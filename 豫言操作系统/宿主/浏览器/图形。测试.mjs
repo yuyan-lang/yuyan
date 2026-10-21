@@ -238,13 +238,30 @@ test('提交像素画面区域（0.8.0）：区域越出画布为输入无效；
   assert.equal(画布.二维.画.length, 2);
 });
 
-test('键名译法：0.1.0 的七个语义键、0.2.0 的七个编辑键与四个修饰键、单个标量值原样，其余不交付', () => {
+test('键名译法：0.1.0 的七个语义键、0.2.0 的七个编辑键与四个修饰键、0.9.0 的功能键与菜单键、单个标量值原样，其余不交付', () => {
   assert.deepEqual(['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Enter', 'Backspace', ' '].map(译键), ['左', '右', '上', '下', '回车', '退格', '空格']);
   assert.deepEqual(['Delete', 'Home', 'End', 'PageUp', 'PageDown', 'Tab', 'Escape'].map(译键), ['删除', '起首', '末尾', '上翻页', '下翻页', '制表', '退出']);
   assert.deepEqual(['Shift', 'Control', 'Alt', 'Meta'].map(译键), ['上档', '控制', '交替', '命令']);
   assert.deepEqual(['a', 'Z', '中', '😀'].map(译键), ['a', 'Z', '中', '😀']);
-  assert.deepEqual(['F1', 'CapsLock', 'Process', 'Unidentified', ''].map(译键), [null, null, null, null, null]);
-  assert.equal(译键('F2'), '功能二');
+  assert.deepEqual(['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'].map(译键), ['功能一', '功能二', '功能三', '功能四', '功能五', '功能六', '功能七', '功能八', '功能九', '功能十', '功能十一', '功能十二']);
+  assert.equal(译键('ContextMenu'), '菜单');
+  assert.deepEqual(['CapsLock', 'Process', 'Unidentified', ''].map(译键), [null, null, null, null]);
+});
+
+test('功能键与菜单键阻止浏览器默认动作，F11、F12 放行', () => {
+  const {显示, 加画布, 文档} = 造显示();
+  加画布('甲');
+  const 号 = 显示.调用('取得', 0, 0, 0, 字('甲'))[1];
+  const 框 = 文档.元素们.find(元 => 元.getAttribute('data-yy-显示面输入') === '甲');
+  const 按 = 键 => {
+    const 事 = 可取消事件('keydown', {key: 键});
+    框.dispatchEvent(事);
+    return [事.defaultPrevented, 显示.调用('等待', 号)[5]];
+  };
+  assert.deepEqual(按('F5'), [true, '功能五'], 'F5 的刷新被阻止');
+  assert.deepEqual(按('ContextMenu'), [true, '菜单'], '菜单键的默认动作被阻止');
+  assert.deepEqual(按('F11'), [false, '功能十一'], 'F11 全屏放行给浏览器');
+  assert.deepEqual(按('F12'), [false, '功能十二'], 'F12 开发者工具放行给浏览器');
 });
 
 test('输入事件：指针坐标按像素比取整、相邻移动合并、按键与输入法文字、组字中不交付、关闭后先报关闭再为资源已失效', async () => {
