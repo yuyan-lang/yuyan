@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>豫言网页纹采探针</title>
+<style>#结果{white-space:pre-wrap;font:14px/1.5 monospace}</style></head>
+<body>
+  <pre id="结果"></pre>
+  <script type="module">
+    // 文言：纹采探针之页：探针之行以输出函数收之；毕则给 <html> 加 data-探针="完成"。
+    // 汉语：纹采探针测试页。把纹采探针应用的浏览器发行产物（入口.mjs、程序.wasm、图形.mjs……）放在本页同目录，
+    //       用 真浏览器服务.mjs 提供（它另设 /api/slow）。探针每行经输出函数写进 #结果；结束后给 <html> 加 data-探针="完成"。
+    //       地址带 ?等待=毫秒 时插入一张由服务器延迟响应的图片，拖住 load 事件，供无头 Chrome 的 --dump-dom 在探针结束后导出页面。
+    import {启动豫言浏览器应用} from './入口.mjs';
+    const 结果 = document.getElementById('结果');
+    const 参 = new URL(location.href).searchParams;
+    if (参.has('等待')) {
+      const 图 = new Image();
+      图.alt = '';
+      图.src = '/api/slow?d=' + encodeURIComponent(参.get('等待'));
+      document.body.append(图);
+    }
+    try {
+      const 宿主 = await 启动豫言浏览器应用({输出: 文 => { 结果.textContent += 文; }});
+      await 宿主.完成;
+    } catch (错) {
+      结果.textContent += '失败：' + String(错?.stack ?? 错) + '\n';
+    }
+    document.documentElement.dataset.探针 = '完成';
+  </script>
+</body>
+</html>
