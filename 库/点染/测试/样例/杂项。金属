@@ -15,7 +15,14 @@ constant float4 第四列 = float4(0.0f, 0.0f, 0.0f, 1.0f);
 
 constant float4x4 变换 = float4x4(第一列, 第二列, 第三列, 第四列);
 
-// 待办事项：片元入口函数「着色」尚未译成金属着色语言，已略去。
+fragment float4 着色(float4 坐标 [[position]], texture2d<float> 图 [[texture(0)]], sampler 采样 [[sampler(1)]]) {
+  const auto 尺寸 = float2(uint2(图.get_width(), 图.get_height()));
+  const auto 横 = 坐标.x;
+  const auto 纵 = 坐标.y;
+  const auto 比 = float2((横 / 尺寸.x), (纵 / 尺寸.y));
+  const auto 色 = 图.sample(采样, 比);
+  return 变换 * 色;
+}
 
 [[max_total_threads_per_threadgroup(64)]]
 kernel void 统计(uint 序 [[thread_index_in_threadgroup]], device atomic_uint* 计数 [[buffer(2)]], constant 调色& 调色板 [[buffer(3)]]) {

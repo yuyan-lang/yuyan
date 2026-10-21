@@ -1,0 +1,63 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct 变换 {
+  float4x4 合矩;
+  float4x4 转矩;
+  float4 光向;
+};
+
+struct 顶点入 {
+  float3 方位;
+  float3 法向;
+  float3 底色;
+};
+
+struct 顶点出 {
+  float4 方位 [[position]];
+  float3 颜色 [[user(loc0)]];
+};
+
+struct yy_立方顶点_入 {
+  float3 入_方位 [[attribute(0)]];
+  float3 入_法向 [[attribute(1)]];
+  float3 入_底色 [[attribute(2)]];
+};
+
+vertex 顶点出 立方顶点(yy_立方顶点_入 yy_入 [[stage_in]], constant 变换& 均匀 [[buffer(0)]]) {
+  顶点入 入 = 顶点入{yy_入.入_方位, yy_入.入_法向, yy_入.入_底色};
+  const auto 变 = 均匀;
+  const auto 合 = 变.合矩;
+  const auto 转 = 变.转矩;
+  const auto 光 = 变.光向;
+  const auto 坐 = 入.方位;
+  const auto 法 = 入.法向;
+  const auto 底 = 入.底色;
+  const auto 点横 = 坐.x;
+  const auto 点纵 = 坐.y;
+  const auto 点深 = 坐.z;
+  const auto 法横 = 法.x;
+  const auto 法纵 = 法.y;
+  const auto 法深 = 法.z;
+  const auto 齐点 = float4(点横, 点纵, 点深, 1.0f);
+  const auto 齐法 = float4(法横, 法纵, 法深, 0.0f);
+  const auto 位 = 合 * 齐点;
+  const auto 转法 = 转 * 齐法;
+  const auto 漫 = max(dot(转法, 光), 0.0f);
+  const auto 亮 = 0.3f + (0.7f * 漫);
+  const auto 色 = 底 * 亮;
+  return 顶点出{位, 色};
+}
+
+struct yy_立方片元_入 {
+  float3 入_颜色 [[user(loc0)]];
+};
+
+fragment float4 立方片元(float4 入_方位 [[position]], yy_立方片元_入 yy_入 [[stage_in]]) {
+  顶点出 入 = 顶点出{入_方位, yy_入.入_颜色};
+  const auto 色 = 入.颜色;
+  const auto 红 = 色.x;
+  const auto 绿 = 色.y;
+  const auto 蓝 = 色.z;
+  return float4(红, 绿, 蓝, 1.0f);
+}
