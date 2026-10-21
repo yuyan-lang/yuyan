@@ -610,6 +610,8 @@ const 深度比较集 = new Set(['never', 'less', 'equal', 'less-equal', 'greate
 const 存储纹理格式 = new Set(['rgba8unorm', 'rgba16float', 'r32float']);
 const 顶点格式集 = new Set(['float32', 'float32x2', 'float32x3', 'float32x4', 'unorm8x4']);
 const 拓扑集 = new Set(['triangle-list', 'triangle-strip', 'line-list', 'point-list']);
+// 文言：剔法之名（0.3.0）：none、back、front，正面恒逆时。汉语：剔除方式的名字（0.3.0）：none、back、front，正面恒为逆时针（WebGPU 缺省）。
+const 剔除集 = new Set(['none', 'back', 'front']);
 const 过滤集 = new Set(['nearest', 'linear']);
 const 寻址集 = new Set(['clamp-to-edge', 'repeat', 'mirror-repeat']);
 // 文言：混合三式，依规范之式。汉语：三种混合方式；透明混合的透明度为 源 + 目标 × (1 − 源透明度)，相加混合颜色与透明度都是 源 + 目标。
@@ -952,6 +954,9 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
       项.属性.some(属 => !非负整(属?.位) || !顶点格式集.has(属.格式) || !非负整(属.偏))))
       return 失(码.校验错误, '顶点缓冲布局无效');
     if (!拓扑集.has(参.拓扑) || !Object.hasOwn(纹理每像素, 参.格式) || !Object.hasOwn(混合表, 参.混合)) return 失(码.校验错误, '图元拓扑、颜色目标格式或混合方式无效');
+    // 文言：有剔法者校其名。汉语：带剔除方式（0.3.0）时核对名字，照原样交给 WebGPU 的 primitive.cullMode。
+    const 剔除 = 参.剔除 ?? null;
+    if (剔除 !== null && !剔除集.has(剔除)) return 失(码.校验错误, '剔除方式无效');
     // 文言：有深测者附深度之状。汉语：带深度测试（0.2.0）时加深度模板状态，格式恒为 depth32float。
     const 深度 = 参.深度 ?? null;
     if (深度 !== null && (!深度比较集.has(深度?.比较) || typeof 深度.写 !== 'boolean')) return 失(码.校验错误, '深度测试无效');
@@ -962,6 +967,7 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
       fragment: {module: 模查.项.物, entryPoint: String(参.片元入口), targets: [{format: 参.格式, blend: 混合表[参.混合]}]},
       primitive: 参.拓扑 === 'triangle-strip' ? {topology: 参.拓扑, stripIndexFormat: 'uint32'} : {topology: 参.拓扑}
     };
+    if (剔除 !== null) 描述.primitive.cullMode = 剔除;
     if (深度 !== null) 描述.depthStencil = {format: 深度格式, depthWriteEnabled: 深度.写, depthCompare: 深度.比较};
     const 设备 = 设查.项.物;
     const {值, 误} = await 包校验(设备, () => 设备.createRenderPipelineAsync(描述));
@@ -1005,6 +1011,15 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
       if (!Array.isArray(号们)) throw {码: 码.校验错误, 文: '命令字段须为列表'};
       return 号们.map(号 => 取(号, 种类).物);
     };
+    // 文言：索引之字段，或为号，或为首索基顶之录。汉语：绘制的索引字段可以是缓冲号（索引绘制），也可以是带首索引与基顶点的对象（索引段绘制，0.3.0）。
+    const 解索引 = 号 => {
+      if (号 === null || 号 === undefined) return null;
+      if (typeof 号 === 'object') {
+        if (!非负整(号.首) || !非负整(号.基)) throw {码: 码.校验错误, 文: '索引段的首索引或基顶点无效'};
+        return {物: 取(号.缓冲, '缓冲').物, 首: 号.首, 基: 号.基};
+      }
+      return 取(号, '缓冲').物;
+    };
     if (!Array.isArray(命令们)) throw {码: 码.校验错误, 文: '命令列表无效'};
     return 命令们.map(令 => {
       if (令?.种 === '派发') return {种: '派发', 管线: 取(令.管线, '计算管线').物, 组: 取列(令.组, '绑定组'), 数: 令.数};
@@ -1014,7 +1029,7 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
         // 文言：带深之道，解其深纹。汉语：带深度附件的通道（0.2.0）另解析深度纹理，清深值为数或空（保留深度）。
         const 深 = 令.深度 === null || 令.深度 === undefined ? null : {纹理: 取(令.深度.纹理, '纹理').物, 清: 令.深度.清};
         return {种: '通道', 纹理: 纹.物, 清: 令.清, 深度: 深, 绘: 令.绘.map(绘 => ({管线: 取(绘.管线, '渲染管线').物, 组: 取列(绘.组, '绑定组'),
-          顶点: 取列(绘.顶点, '缓冲'), 索引: 绘.索引 === null || 绘.索引 === undefined ? null : 取(绘.索引, '缓冲').物, 数: 绘.数, 实例: 绘.实例}))};
+          顶点: 取列(绘.顶点, '缓冲'), 索引: 解索引(绘.索引), 数: 绘.数, 实例: 绘.实例}))};
       }
       if (令?.种 === '复制') return {种: '复制', 源: 取(令.源, '缓冲').物, 源偏: 令.源偏, 的: 取(令.的, '缓冲').物, 的偏: 令.的偏, 长: 令.长};
       throw {码: 码.校验错误, 文: '未知图形命令'};
@@ -1043,8 +1058,11 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
         绘.组.forEach((组, 序) => 通.setBindGroup(序, 组));
         绘.顶点.forEach((缓, 序) => 通.setVertexBuffer(序, 缓));
         if (绘.索引) {
-          通.setIndexBuffer(绘.索引, 'uint32');
-          通.drawIndexed(绘.数, 绘.实例);
+          const 索引物 = typeof 绘.索引 === 'object' ? 绘.索引.物 : 绘.索引;
+          通.setIndexBuffer(索引物, 'uint32');
+          // 文言：有首索基顶者依之而绘。汉语：索引段绘制带上首索引与基顶点（0.3.0），索引绘制两者都是零。
+          if (typeof 绘.索引 === 'object') 通.drawIndexed(绘.数, 绘.实例, 绘.索引.首, 绘.索引.基);
+          else 通.drawIndexed(绘.数, 绘.实例);
         } else 通.draw(绘.数, 绘.实例);
       }
       通.end();
