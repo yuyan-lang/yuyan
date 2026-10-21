@@ -462,7 +462,7 @@ test('豫寓映的接口绑定：多面等待编成诸面入取果，题映面�
 // ---------------------------------------------------------------------------
 // 伪 WebGPU：够测解码、校验与读回即可
 // ---------------------------------------------------------------------------
-const 每像素 = {'rgba8unorm': 4, 'bgra8unorm': 4, 'rgba16float': 8, 'r32float': 4, 'depth32float': 4};
+const 每像素 = {'rgba8unorm': 4, 'bgra8unorm': 4, 'rgba16float': 8, 'r32float': 4, 'r8unorm': 1, 'depth32float': 4};
 function 伪设备(限额 = {}) {
   const 域 = [];
   const 设备 = {
@@ -481,9 +481,9 @@ function 伪设备(限额 = {}) {
         async mapAsync() { if (this.已毁) throw Error('缓冲已销毁'); }, getMappedRange() { return this.数据.buffer; }, unmap() {}};
       return 缓;
     },
-    createTexture({size: [宽, 高], format, usage}) {
-      const 纹 = {width: 宽, height: 高, format, usage, 数据: new Uint8Array(宽 * 高 * 每像素[format]), 已毁: false, destroy() { this.已毁 = true; },
-        createView() { return {纹理: this}; }};
+    createTexture({size: [宽, 高], format, usage, mipLevelCount = 1, sampleCount = 1}) {
+      const 纹 = {width: 宽, height: 高, format, usage, mipLevelCount, sampleCount, 数据: new Uint8Array(宽 * 高 * 每像素[format]), 已毁: false,
+        destroy() { this.已毁 = true; }, createView(描述 = {}) { return {纹理: this, 描述}; }};
       设备.纹理们.push(纹);
       return 纹;
     },
@@ -498,6 +498,7 @@ function 伪设备(限额 = {}) {
       return {getBindGroupLayout: 序 => ({序})};
     },
     async createRenderPipelineAsync(描述) { const 管 = {描述, getBindGroupLayout: 序 => ({序})}; 设备.管线们.push(管); return 管; },
+    createRenderPipeline(描述) { const 管 = {描述, 内置: true, getBindGroupLayout: 序 => ({序})}; 设备.管线们.push(管); return 管; },
     createBindGroup(描述) { return {描述}; },
     createCommandEncoder() {
       const 编 = {令: [], 有效: true};
@@ -515,13 +516,16 @@ function 伪设备(限额 = {}) {
       编.beginComputePass = () => ({setPipeline() {}, setBindGroup() {}, dispatchWorkgroups(x, y, z) { if (![x, y, z].every(Number.isSafeInteger)) throw TypeError('工作组数无效'); }, end() {}});
       编.beginRenderPass = 通道描述 => {
         设备.通道们.push(通道描述);
-        const [附件] = 通道描述.colorAttachments;
-        const 纹 = 附件.view.纹理;
-        if (附件.loadOp === 'clear') {
-          const 色 = 附件.clearValue;
-          编.令.push(() => { for (let 位 = 0; 位 < 纹.数据.length; 位 += 4) 纹.数据.set([色.r, 色.g, 色.b, 色.a].map(值 => Math.round(值 * 255)), 位); });
+        for (const 附件 of 通道描述.colorAttachments) {
+          const 纹 = 附件.view.纹理;
+          if (附件.loadOp === 'clear' && 每像素[纹.format] === 4) {
+            const 色 = 附件.clearValue;
+            编.令.push(() => { for (let 位 = 0; 位 < 纹.数据.length; 位 += 4) 纹.数据.set([色.r, 色.g, 色.b, 色.a].map(值 => Math.round(值 * 255)), 位); });
+          }
         }
-        return {setPipeline() {}, setBindGroup() {}, setVertexBuffer() {}, setIndexBuffer() {}, draw() {}, drawIndexed() {}, end() {}};
+        const 绘们 = [];
+        通道描述.绘们 = 绘们;
+        return {setPipeline() {}, setBindGroup() {}, setVertexBuffer() {}, setIndexBuffer() {}, draw(...参) { 绘们.push(参); }, drawIndexed() {}, end() {}};
       };
       编.finish = () => ({令: 编.令, 有效: 编.有效});
       return 编;
@@ -679,7 +683,7 @@ test('深度（0.2.0）：深度纹理只配深度目标用途、不能写入读
   const 设 = await 取号(调('设备.取得'));
   assert.equal((await 调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'depth32float', 用途: ['渲染']}))[0], 码.校验错误);
   assert.equal((await 调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'rgba8unorm', 用途: ['深度']}))[0], 码.校验错误);
-  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'depth32float', 用途: ['深度', '采样']}))[0], 码.校验错误);
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'depth32float', 用途: ['深度', '存储']}))[0], 码.校验错误);
   const 深 = await 取号(调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'depth32float', 用途: ['深度']}));
   assert.equal(设备们[0].纹理们.at(-1).usage, 16, '深度纹理只有渲染附件用途');
   assert.equal(调('纹理.写入', {纹理: 深}, new Uint8Array(16))[0], 码.非法使用);
@@ -718,6 +722,74 @@ test('剔除与索引段绘制（0.3.0）：剔除名写进图元的 cullMode；
   assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 纹理: 色, 清: null, 绘}]}))[0], 码.成);
   const 坏绘 = [{...绘[0], 索引: {缓冲: 缓, 首: -1, 基: 0}}];
   assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 纹理: 色, 清: null, 绘: 坏绘}]}))[0], 码.校验错误);
+});
+
+test('纹理、实例化与多重采样（0.4.0）：多级与多重采样纹理、可采样的深度纹理、比较采样器、逐实例布局、全述管线与通道、渐远层生成', async () => {
+  const {调, 设备们} = 造图形();
+  const 设 = await 取号(调('设备.取得'));
+  const 伪 = 设备们[0];
+  // 文言：多级之纹：层数越极为误，深纹不可多级；多级者加采样与绘鹄之用。汉语：多级纹理：层数超过上限为校验错误，深度纹理不能多级；多级纹理另加采样与渲染附件用途。
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'rgba8unorm', 用途: ['采样'], 层数: 4}))[0], 码.校验错误);
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'depth32float', 用途: ['深度'], 层数: 2}))[0], 码.校验错误);
+  const 多级 = await 取号(调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'rgba8unorm', 用途: ['采样'], 层数: 3}));
+  assert.equal(伪.纹理们.at(-1).mipLevelCount, 3);
+  assert.equal(伪.纹理们.at(-1).usage & 20, 20, '多级纹理带采样与渲染附件用途');
+  // 文言：红单八位每素一字。汉语：r8unorm 每像素一字节。
+  const 红单 = await 取号(调('纹理.新建', {设备: 设, 宽: 4, 高: 2, 格式: 'r8unorm', 用途: ['采样', '渲染']}));
+  assert.equal(调('纹理.写入', {纹理: 红单}, new Uint8Array(8))[0], 码.成);
+  assert.equal((await 调('纹理.读回', {纹理: 红单}))[3].length, 8);
+  // 文言：多采之纹：采数惟四，用途惟渲染或深度，不可写读。汉语：多重采样纹理：采样数只能是 4，用途只能是渲染或深度，不能写入读回。
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'rgba8unorm', 用途: ['渲染'], 采样数: 2}))[0], 码.校验错误);
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'rgba8unorm', 用途: ['渲染', '采样'], 采样数: 4}))[0], 码.校验错误);
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'r32float', 用途: ['渲染'], 采样数: 4}))[0], 码.校验错误);
+  const 多采 = await 取号(调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'rgba8unorm', 用途: ['渲染'], 采样数: 4}));
+  assert.equal(伪.纹理们.at(-1).sampleCount, 4);
+  assert.equal(伪.纹理们.at(-1).usage, 16, '多重采样纹理只有渲染附件用途');
+  assert.equal(调('纹理.写入', {纹理: 多采}, new Uint8Array(64))[0], 码.非法使用);
+  assert.equal((await 调('纹理.读回', {纹理: 多采}))[0], 码.校验错误);
+  const 多深 = await 取号(调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'depth32float', 用途: ['深度'], 采样数: 4}));
+  // 文言：可采之深纹。汉语：深度纹理可兼采样用途（阴影图）。
+  const 影 = await 取号(调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'depth32float', 用途: ['深度', '采样']}));
+  assert.equal(伪.纹理们.at(-1).usage, 20, '可采样的深度纹理带采样与渲染附件用途');
+  // 文言：比较之采器。汉语：比较采样器带 compare。
+  assert.equal(调('采样器.新建', {设备: 设, 过滤: 'linear', 寻址: 'clamp-to-edge', 比较: '小于'})[0], 码.非法使用);
+  assert.equal(调('采样器.新建', {设备: 设, 过滤: 'linear', 寻址: 'clamp-to-edge', 比较: 'less'})[0], 码.成);
+  // 文言：全述之管：多鹄、多采、逐例之布、惟书深者。汉语：全述管线：多颜色目标、多重采样、逐实例布局、只写深度。
+  const 模 = await 取号(调('着色.编译', {设备: 设}, 字('fn 甲() {} fn 乙() {}')));
+  const 基 = {设备: 设, 模块: 模, 顶点入口: '甲', 片元入口: '乙', 拓扑: 'triangle-list'};
+  const 布局 = [{步长: 8, 属性: [{位: 0, 格式: 'float32x2', 偏: 0}]}, {步长: 16, 步进: '实例', 属性: [{位: 1, 格式: 'float32x4', 偏: 0}]}];
+  const 双管 = await 取号(调('渲染管线.新建', {...基, 布局, 鹄们: [{格式: 'rgba8unorm', 混合: '不混合'}, {格式: 'rgba16float', 混合: '相加'}], 采样数: 4}));
+  const 双描 = 伪.管线们.at(-1).描述;
+  assert.deepEqual(双描.fragment.targets.map(鹄 => 鹄.format), ['rgba8unorm', 'rgba16float']);
+  assert.deepEqual(双描.multisample, {count: 4});
+  assert.deepEqual(双描.vertex.buffers.map(缓 => 缓.stepMode), ['vertex', 'instance']);
+  assert.equal((await 调('渲染管线.新建', {...基, 布局: [], 鹄们: [{格式: 'r32float', 混合: '相加'}]}))[0], 码.校验错误, '红单精度不能混合');
+  assert.equal((await 调('渲染管线.新建', {...基, 布局: [], 鹄们: [{格式: 'rgba8unorm', 混合: '不混合'}], 采样数: 2}))[0], 码.校验错误);
+  assert.equal((await 调('渲染管线.新建', {...基, 布局: [], 鹄们: []}))[0], 码.校验错误, '只写深度须带深度测试');
+  const 深管 = await 取号(调('渲染管线.新建', {...基, 片元入口: '', 布局: [], 鹄们: [], 深度: {比较: 'less', 写: true}}));
+  assert.equal(伪.管线们.at(-1).描述.fragment, undefined, '片元入口为空时不设片元阶段');
+  // 文言：全述之道：多采合入，惟深之道。汉语：全述通道：多重采样附件带 resolveTarget、storeOp 为 discard；只带深度附件的通道。
+  const 合 = await 取号(调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'rgba8unorm', 用途: ['渲染']}));
+  const 半 = await 取号(调('纹理.新建', {设备: 设, 宽: 4, 高: 4, 格式: 'rgba16float', 用途: ['渲染']}));
+  const 绘 = [{管线: 双管, 组: [], 顶点: [], 索引: null, 数: 3, 实例: 2}];
+  assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 色附们: [{纹理: 多采, 清: [0, 0, 0, 1], 合入: 合}, {纹理: 半, 清: null, 合入: null}],
+    深度: {纹理: 多深, 清: 1}, 绘}]}))[0], 码.成);
+  const 道 = 伪.通道们.at(-1);
+  assert.equal(道.colorAttachments.length, 2);
+  assert.equal(道.colorAttachments[0].resolveTarget.纹理, 伪.纹理们.find(纹 => 纹.width === 4 && 纹.format === 'rgba8unorm' && 纹.sampleCount === 1 && 纹.usage === 19));
+  assert.deepEqual([道.colorAttachments[0].storeOp, 道.colorAttachments[1].storeOp, 道.colorAttachments[1].loadOp], ['discard', 'store', 'load']);
+  assert.deepEqual(道.绘们[0], [3, 2], '实例数照传');
+  assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 色附们: [], 深度: {纹理: 影, 清: 1}, 绘: [{...绘[0], 管线: 深管}]}]}))[0], 码.成);
+  assert.equal(伪.通道们.at(-1).colorAttachments.length, 0, '只写深度的通道没有颜色附件');
+  assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 色附们: [], 深度: null, 绘: []}]}))[0], 码.校验错误, '没有附件的通道');
+  // 文言：衍层：内置之管逐层缩画，深纹不可衍。汉语：生成渐远层：内置管线逐层缩画（三层的纹理画两遍，各采上一层）；深度纹理不能生成。
+  const 通前 = 伪.通道们.length;
+  assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '衍层', 纹理: 多级}]}))[0], 码.成);
+  const 衍道们 = 伪.通道们.slice(通前);
+  assert.equal(衍道们.length, 2);
+  assert.deepEqual(衍道们.map(道 => 道.colorAttachments[0].view.描述.baseMipLevel), [1, 2]);
+  assert.ok(伪.管线们.some(管 => 管.内置 && 管.描述.fragment.targets[0].format === 'rgba8unorm'), '内置衍层管线按格式建立');
+  assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '衍层', 纹理: 影}]}))[0], 码.校验错误);
 });
 
 // ---------------------------------------------------------------------------
