@@ -27,6 +27,7 @@
 寻观「浏览器」之「控件编辑」之书。
 寻观「浏览器」之「控件指针」之书。
 寻观「浏览器」之「页面视口」之书。
+寻观「浏览器」之「剪贴拖放」之书。
 寻观「网页榫卯」之「定时器」之书。
 寻观「网页榫卯」之「窗位」之书。
 寻观「驿址」之书。
@@ -814,6 +815,52 @@
 　令「工二」为「入口」之「浏览器计时更新」于「工一」而
 　令「工三」为「入口」之「浏览器计时更新」于「工二」而
 　「断言」于（「文同」于（「浏览器取题」于（「工页」中「文档」））于『工42』）于『页面起工作者算数、结果写进文档并重排』而后
+　「：汉语：剪贴：页面在 copy 监听里用 setData 改写 clipboardData，默认动作把改后的文字写进页面内剪贴板。
+　　　文言：剪贴：页于 copy 之听以 setData 改其囊，常动以改后之文入页内之剪贴。：」
+　令「剪页模」为
+　　「入口」之「浏览器导航」
+　　　于「排模」
+　　　于『data:text/html,<body><input id="i" value="甲"><script>document.body.addEventListener("copy",function(e){e.clipboardData.setData("text/plain","乙");});</script></body>』而
+　令「剪页」为
+　　鉴「剪页模」中「页面」而
+　　　或有「可无」则「告祸」以「网页静态页面」于『copy 监听页载入失败』
+　　　或有（「可有」于「载页」）则「载页」而
+　令「剪控」为「冠」于（「问择器全」于（「剪页」中「文档」）于『#i』）而
+　「浏览器激活控件」于（「剪页」中「文档」）于「剪控」而后
+　「设表单控件值」于「剪控」于『甲』而后
+　「写匣」于「浏览器控件锚位」于「零」而后
+　「写匣」于「浏览器控件光标」于「一」而后
+　令「剪后模」为「浏览器剪贴按键」于「剪页模」于『c』而
+　「断言」于（「文同」于（「浏览器取剪贴板文字」于「元」）于『乙』）于（『copy 监听改写剪贴板内容：』接（「浏览器取剪贴板文字」于「元」））而后
+　「：汉语：拖放：可拖的 div 拖到放下区，dragstart 设的数据在 drop 里原样读到，dragend 随后派发。
+　　　文言：拖放：可拖之 div 曳至放下之区，dragstart 所设之据于 drop 中如故得读，dragend 继之。：」
+　令「拖页模」为
+　　「入口」之「浏览器导航」
+　　　于「剪后模」
+　　　于『data:text/html,<body style="margin:0"><div id="d" draggable="true" style="height:50px;background:red"></div><div id="z" style="height:50px;background:blue"></div><script>var log=[];function rec(x){log.push(x);document.body.setAttribute("title",log.join(","));}var d=document.getElementById("d");d.addEventListener("dragstart",function(e){e.dataTransfer.setData("text/plain","甲");rec("start:"+e.dataTransfer.getData("text/plain"));});d.addEventListener("dragend",function(){rec("end");});var z=document.getElementById("z");z.addEventListener("dragenter",function(){rec("enter");});z.addEventListener("dragover",function(e){e.preventDefault();});z.addEventListener("drop",function(e){rec("drop:"+e.dataTransfer.getData("text/plain"));});</script></body>』而
+　令「拖页」为
+　　鉴「拖页模」中「页面」而
+　　　或有「可无」则「告祸」以「网页静态页面」于『拖放页载入失败』
+　　　或有（「可有」于「载页」）则「载页」而
+　令「拖一」为「浏览器拖按下」于「拖页模」于「横」曰「一零」于「纵」曰「二零」而
+　令「拖二」为「浏览器拖移动」于「拖一」于「横」曰「一零」于「纵」曰「三零」而
+　令「拖三」为「浏览器拖移动」于「拖二」于「横」曰「一零」于「纵」曰「七零」而
+　令「拖四」为「浏览器拖抬起」于「拖三」于「横」曰「一零」于「纵」曰「七零」而
+　「断言」
+　　于（「文同」于（「浏览器取题」于（「拖页」中「文档」））于『start:甲,enter,drop:甲,end』）
+　　于（『拖放事件序与数据：』接（「浏览器取题」于（「拖页」中「文档」）））而后
+　「：汉语：选区：脚本 selectAllChildren 设的选区与复制共用，复制默认动作取到该段文字。
+　　　文言：选区：脚本 selectAllChildren 所设之选与复制共之，复制之常动取其段之文。：」
+　令「选页模」为
+　　「入口」之「浏览器导航」
+　　　于「拖四」
+　　　于『data:text/html,<body><div id="p" style="display:none">甲乙丙</div><script>getSelection().selectAllChildren(document.getElementById("p"));</script></body>』而
+　令「选页」为
+　　鉴「选页模」中「页面」而
+　　　或有「可无」则「告祸」以「网页静态页面」于『选区页载入失败』
+　　　或有（「可有」于「载页」）则「载页」而
+　令「选后模」为「浏览器剪贴按键」于「选页模」于『c』而
+　「断言」于（「文同」于（「浏览器取剪贴板文字」于「元」）于『甲乙丙』）于（『脚本 selectAllChildren 后复制：』接（「浏览器取剪贴板文字」于「元」））而后
 　令「无」为「浏览器表情冒烟」于「元」而
 　「书」于『浏览器综合冒烟通过』
 也。
