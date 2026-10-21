@@ -1,0 +1,45 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct 参数 {
+  float 缩放;
+  float2 偏移;
+};
+
+struct 顶点输入 {
+  uint 序号;
+  uint 实例;
+};
+
+float2 角坐标(uint 序) {
+  const auto 横 = (序 == 1u) ? 3.0f : (-1.0f);
+  const auto 纵 = (序 == 2u) ? 3.0f : (-1.0f);
+  return float2(横, 纵);
+}
+
+vertex float4 全屏顶点(uint 入_序号 [[vertex_id]], uint 入_实例 [[instance_id]], constant 参数& 均匀 [[buffer(0)]]) {
+  顶点输入 入 = 顶点输入{入_序号, 入_实例};
+  const auto 参 = 均匀;
+  const auto 缩放 = 参.缩放;
+  const auto 偏移 = 参.偏移;
+  const auto 角 = 角坐标(入.序号);
+  const auto 位 = (角 * 缩放) + 偏移;
+  return float4(位.x, 位.y, 0.0f, 1.0f);
+}
+
+float 分段(float 甲) {
+  float 临时;
+  if (甲 < 0.5f) {
+    const auto 丙 = 甲 * 2.0f;
+    临时 = 丙 * 丙;
+  } else {
+    临时 = 1.0f;
+  }
+  const auto 乙 = 临时;
+  return 乙 + 0.1f;
+}
+
+fragment float4 着色片元(float4 坐标 [[position]]) {
+  const auto 亮 = 分段(fract((坐标.x * 0.01f)));
+  return float4(亮, 亮, 亮, 1.0f);
+}

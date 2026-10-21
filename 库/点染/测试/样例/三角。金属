@@ -1,0 +1,27 @@
+#include <metal_stdlib>
+using namespace metal;
+
+struct 顶点输出 {
+  float4 位置 [[position]];
+  float4 颜色 [[user(loc0)]];
+  uint 层 [[user(loc1)]];
+};
+
+struct yy_顶点主_入 {
+  float2 坐标 [[attribute(0)]];
+};
+
+vertex 顶点输出 顶点主(yy_顶点主_入 yy_入 [[stage_in]]) {
+  const float2 坐标 = yy_入.坐标;
+  return 顶点输出{float4(坐标.x, 坐标.y, 0.0f, 1.0f), float4(0.0f, 1.0f, 0.0f, 1.0f), 0u};
+}
+
+struct yy_片元主_入 {
+  float4 输入_颜色 [[user(loc0)]];
+  uint 输入_层 [[user(loc1)]] [[flat]];
+};
+
+fragment float4 片元主(float4 输入_位置 [[position]], yy_片元主_入 yy_入 [[stage_in]]) {
+  顶点输出 输入 = 顶点输出{输入_位置, yy_入.输入_颜色, yy_入.输入_层};
+  return 输入.颜色;
+}
