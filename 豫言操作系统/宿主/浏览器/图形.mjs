@@ -597,8 +597,12 @@ const 缓冲位 = Object.freeze({映读: 1, 复源: 4, 复的: 8, 索引: 16, �
 const 纹理位 = Object.freeze({复源: 1, 复的: 2, 采样: 4, 存储: 8, 渲染: 16});
 const 映读 = 1;
 const 缓冲用途表 = Object.freeze({存储: 缓冲位.存储, 均匀: 缓冲位.均匀, 顶点: 缓冲位.顶点, 索引: 缓冲位.索引});
-const 纹理用途表 = Object.freeze({采样: 纹理位.采样, 存储: 纹理位.存储, 渲染: 纹理位.渲染});
-export const 纹理每像素 = Object.freeze({'rgba8unorm': 4, 'rgba8unorm-srgb': 4, 'bgra8unorm': 4, 'bgra8unorm-srgb': 4, 'rgba16float': 8, 'r32float': 4});
+const 纹理用途表 = Object.freeze({采样: 纹理位.采样, 存储: 纹理位.存储, 渲染: 纹理位.渲染, 深度: 纹理位.渲染});
+export const 纹理每像素 = Object.freeze({'rgba8unorm': 4, 'rgba8unorm-srgb': 4, 'bgra8unorm': 4, 'bgra8unorm-srgb': 4, 'rgba16float': 8, 'r32float': 4,
+  'depth32float': 4});
+// 文言：深度之格惟一，惟作深度之鹄。汉语：深度纹理格式（0.2.0）只有 depth32float，用途只能是“深度”（渲染附件），不能写入、读回或复制。
+const 深度格式 = 'depth32float';
+const 深度比较集 = new Set(['never', 'less', 'equal', 'less-equal', 'greater', 'not-equal', 'greater-equal', 'always']);
 const 存储纹理格式 = new Set(['rgba8unorm', 'rgba16float', 'r32float']);
 const 顶点格式集 = new Set(['float32', 'float32x2', 'float32x3', 'float32x4', 'unorm8x4']);
 const 拓扑集 = new Set(['triangle-list', 'triangle-strip', 'line-list', 'point-list']);
@@ -851,7 +855,10 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
     if (!Object.hasOwn(纹理每像素, 格式)) return 失(码.校验错误, '纹理格式无效');
     if (!Array.isArray(用途) || 用途.length === 0 || 用途.some(名 => !Object.hasOwn(纹理用途表, 名))) return 失(码.校验错误, '纹理用途须为非空列表');
     if (用途.includes('存储') && !存储纹理格式.has(格式)) return 失(码.校验错误, '存储纹理用途只允许 rgba8unorm、rgba16float、r32float');
-    let 位 = 纹理位.复源 | 纹理位.复的;
+    const 是深度 = 格式 === 深度格式;
+    if (是深度 !== 用途.includes('深度') || (是深度 && 用途.some(名 => 名 !== '深度')))
+      return 失(码.校验错误, '深度单精度的用途只能是深度目标用途，深度目标用途也只配深度单精度');
+    let 位 = 是深度 ? 0 : (纹理位.复源 | 纹理位.复的);
     for (const 名 of 用途) 位 |= 纹理用途表[名];
     const {值, 误} = await 包校验(设.物, () => 设.物.createTexture({size: [宽, 高], format: 格式, usage: 位}));
     if (误) return 失(误.码, 误.文);
@@ -862,6 +869,7 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
     if (查果.忽略) return 果(码.成);
     if (查果.码) return 失(查果.码, 查果.文);
     const 纹 = 查果.项;
+    if (纹.格式 === 深度格式) return 失(码.非法使用, '深度纹理不能写入');
     const 行 = 纹.宽 * 纹.每像素;
     if (字节.length !== 行 * 纹.高 || 字节.length > 单次交换上限) return 失(码.非法使用, '写入图形纹理的字节数须恰为 宽×高×每像素字节 且不超过单次上限');
     查果.设.物.queue.writeTexture({texture: 纹.物}, 字节, {bytesPerRow: 行, rowsPerImage: 纹.高}, [纹.宽, 纹.高]);
@@ -872,6 +880,7 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
     const 查果 = 查(参.纹理, '纹理');
     if (查果.码) return 失(查果.码, 查果.文);
     const 纹 = 查果.项;
+    if (纹.格式 === 深度格式) return 失(码.校验错误, '深度纹理不能读回');
     const 行 = 纹.宽 * 纹.每像素;
     if (行 * 纹.高 > 单次交换上限) return 失(码.校验错误, '纹理读回超过单次交换上限 16 MiB');
     const 对齐 = Math.ceil(行 / 256) * 256;
@@ -939,6 +948,9 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
       项.属性.some(属 => !非负整(属?.位) || !顶点格式集.has(属.格式) || !非负整(属.偏))))
       return 失(码.校验错误, '顶点缓冲布局无效');
     if (!拓扑集.has(参.拓扑) || !Object.hasOwn(纹理每像素, 参.格式) || !Object.hasOwn(混合表, 参.混合)) return 失(码.校验错误, '图元拓扑、颜色目标格式或混合方式无效');
+    // 文言：有深测者附深度之状。汉语：带深度测试（0.2.0）时加深度模板状态，格式恒为 depth32float。
+    const 深度 = 参.深度 ?? null;
+    if (深度 !== null && (!深度比较集.has(深度?.比较) || typeof 深度.写 !== 'boolean')) return 失(码.校验错误, '深度测试无效');
     const 描述 = {
       layout: 'auto',
       vertex: {module: 模查.项.物, entryPoint: String(参.顶点入口),
@@ -946,6 +958,7 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
       fragment: {module: 模查.项.物, entryPoint: String(参.片元入口), targets: [{format: 参.格式, blend: 混合表[参.混合]}]},
       primitive: 参.拓扑 === 'triangle-strip' ? {topology: 参.拓扑, stripIndexFormat: 'uint32'} : {topology: 参.拓扑}
     };
+    if (深度 !== null) 描述.depthStencil = {format: 深度格式, depthWriteEnabled: 深度.写, depthCompare: 深度.比较};
     const 设备 = 设查.项.物;
     const {值, 误} = await 包校验(设备, () => 设备.createRenderPipelineAsync(描述));
     if (误) return 失(误.码, 误.文);
@@ -994,7 +1007,9 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
       if (令?.种 === '通道') {
         const 纹 = 取(令.纹理, '纹理');
         if (!Array.isArray(令.绘)) throw {码: 码.校验错误, 文: '绘制列表无效'};
-        return {种: '通道', 纹理: 纹.物, 清: 令.清, 绘: 令.绘.map(绘 => ({管线: 取(绘.管线, '渲染管线').物, 组: 取列(绘.组, '绑定组'),
+        // 文言：带深之道，解其深纹。汉语：带深度附件的通道（0.2.0）另解析深度纹理，清深值为数或空（保留深度）。
+        const 深 = 令.深度 === null || 令.深度 === undefined ? null : {纹理: 取(令.深度.纹理, '纹理').物, 清: 令.深度.清};
+        return {种: '通道', 纹理: 纹.物, 清: 令.清, 深度: 深, 绘: 令.绘.map(绘 => ({管线: 取(绘.管线, '渲染管线').物, 组: 取列(绘.组, '绑定组'),
           顶点: 取列(绘.顶点, '缓冲'), 索引: 绘.索引 === null || 绘.索引 === undefined ? null : 取(绘.索引, '缓冲').物, 数: 绘.数, 实例: 绘.实例}))};
       }
       if (令?.种 === '复制') return {种: '复制', 源: 取(令.源, '缓冲').物, 源偏: 令.源偏, 的: 取(令.的, '缓冲').物, 的偏: 令.的偏, 长: 令.长};
@@ -1012,7 +1027,13 @@ export function 创建图形能力({全局, 显示 = null, 取图形 = () => 全
       const 清 = Array.isArray(令.清) ? 令.清 : null;
       const 附件 = {view: 取视图(令.纹理), loadOp: 清 ? 'clear' : 'load', storeOp: 'store'};
       if (清) 附件.clearValue = {r: 清[0], g: 清[1], b: 清[2], a: 清[3]};
-      const 通 = 编.beginRenderPass({colorAttachments: [附件]});
+      const 通道描述 = {colorAttachments: [附件]};
+      if (令.深度) {
+        const 深清 = typeof 令.深度.清 === 'number' ? 令.深度.清 : null;
+        通道描述.depthStencilAttachment = {view: 取视图(令.深度.纹理), depthLoadOp: 深清 === null ? 'load' : 'clear', depthStoreOp: 'store'};
+        if (深清 !== null) 通道描述.depthStencilAttachment.depthClearValue = 深清;
+      }
+      const 通 = 编.beginRenderPass(通道描述);
       for (const 绘 of 令.绘) {
         通.setPipeline(绘.管线);
         绘.组.forEach((组, 序) => 通.setBindGroup(序, 组));
