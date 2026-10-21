@@ -445,7 +445,7 @@ test('豫寓映的接口绑定：多面等待编成诸面入取果，题映面�
 // ---------------------------------------------------------------------------
 // 伪 WebGPU：够测解码、校验与读回即可
 // ---------------------------------------------------------------------------
-const 每像素 = {'rgba8unorm': 4, 'bgra8unorm': 4, 'rgba16float': 8, 'r32float': 4};
+const 每像素 = {'rgba8unorm': 4, 'bgra8unorm': 4, 'rgba16float': 8, 'r32float': 4, 'depth32float': 4};
 function 伪设备(限额 = {}) {
   const 域 = [];
   const 设备 = {
@@ -453,6 +453,9 @@ function 伪设备(限额 = {}) {
       maxComputeInvocationsPerWorkgroup: 256, ...限额},
     已毁: false,
     提交数: 0,
+    纹理们: [],
+    管线们: [],
+    通道们: [],
     报错(消息, 类 = 'validation') { const 顶 = [...域].reverse().find(项 => 项.类 === 类); if (顶 && !顶.误) 顶.误 = {message: 消息}; },
     pushErrorScope(类) { 域.push({类, 误: null}); },
     popErrorScope() { const 顶 = 域.pop(); return 顶 ? Promise.resolve(顶.误) : Promise.reject(Error('错误域栈空')); },
@@ -462,8 +465,10 @@ function 伪设备(限额 = {}) {
       return 缓;
     },
     createTexture({size: [宽, 高], format, usage}) {
-      return {width: 宽, height: 高, format, usage, 数据: new Uint8Array(宽 * 高 * 每像素[format]), 已毁: false, destroy() { this.已毁 = true; },
+      const 纹 = {width: 宽, height: 高, format, usage, 数据: new Uint8Array(宽 * 高 * 每像素[format]), 已毁: false, destroy() { this.已毁 = true; },
         createView() { return {纹理: this}; }};
+      设备.纹理们.push(纹);
+      return 纹;
     },
     createSampler(描述) { return {描述}; },
     createShaderModule({code}) {
@@ -475,7 +480,7 @@ function 伪设备(限额 = {}) {
       if (!compute.module.code.includes(compute.entryPoint)) throw Object.assign(Error('入口不存在'), {name: 'GPUPipelineError', reason: 'validation'});
       return {getBindGroupLayout: 序 => ({序})};
     },
-    async createRenderPipelineAsync(描述) { return {描述, getBindGroupLayout: 序 => ({序})}; },
+    async createRenderPipelineAsync(描述) { const 管 = {描述, getBindGroupLayout: 序 => ({序})}; 设备.管线们.push(管); return 管; },
     createBindGroup(描述) { return {描述}; },
     createCommandEncoder() {
       const 编 = {令: [], 有效: true};
@@ -491,7 +496,9 @@ function 伪设备(限额 = {}) {
       };
       编.copyTextureToTexture = ({texture: 源}, {texture: 的}) => 编.令.push(() => 的.数据.set(源.数据.subarray(0, 的.数据.length)));
       编.beginComputePass = () => ({setPipeline() {}, setBindGroup() {}, dispatchWorkgroups(x, y, z) { if (![x, y, z].every(Number.isSafeInteger)) throw TypeError('工作组数无效'); }, end() {}});
-      编.beginRenderPass = ({colorAttachments: [附件]}) => {
+      编.beginRenderPass = 通道描述 => {
+        设备.通道们.push(通道描述);
+        const [附件] = 通道描述.colorAttachments;
         const 纹 = 附件.view.纹理;
         if (附件.loadOp === 'clear') {
           const 色 = 附件.clearValue;
@@ -648,6 +655,33 @@ test('渲染通道清屏与绑定组：清屏色写满目标纹理；绑定资�
   const 另设 = await 取号(调('设备.取得'));
   const 另缓 = await 取号(调('缓冲.新建', {设备: 另设, 大小: 4, 用途: ['存储']}));
   assert.equal((await 调('绑定组.新建', {设备: 设, 管线: 管, 管线种: '计算', 组: 0, 资源: [{号: 0, 种: '缓冲', 物: 另缓}]}))[0], 码.校验错误);
+});
+
+test('深度（0.2.0）：深度纹理只配深度目标用途、不能写入读回；带深度测试的管线加深度模板状态；通道带深度附件', async () => {
+  const {调, 设备们} = 造图形();
+  const 设 = await 取号(调('设备.取得'));
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'depth32float', 用途: ['渲染']}))[0], 码.校验错误);
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'rgba8unorm', 用途: ['深度']}))[0], 码.校验错误);
+  assert.equal((await 调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'depth32float', 用途: ['深度', '采样']}))[0], 码.校验错误);
+  const 深 = await 取号(调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'depth32float', 用途: ['深度']}));
+  assert.equal(设备们[0].纹理们.at(-1).usage, 16, '深度纹理只有渲染附件用途');
+  assert.equal(调('纹理.写入', {纹理: 深}, new Uint8Array(16))[0], 码.非法使用);
+  assert.equal((await 调('纹理.读回', {纹理: 深}))[0], 码.校验错误);
+  const 模 = await 取号(调('着色.编译', {设备: 设}, 字('fn 甲() {} fn 乙() {}')));
+  const 基 = {设备: 设, 模块: 模, 顶点入口: '甲', 片元入口: '乙', 布局: [], 拓扑: 'triangle-list', 格式: 'rgba8unorm', 混合: '不混合'};
+  assert.equal((await 调('渲染管线.新建', {...基, 深度: {比较: '小于', 写: true}}))[0], 码.校验错误);
+  const 管 = await 取号(调('渲染管线.新建', {...基, 深度: {比较: 'less', 写: true}}));
+  assert.deepEqual(设备们[0].管线们.at(-1).描述.depthStencil, {format: 'depth32float', depthWriteEnabled: true, depthCompare: 'less'});
+  assert.equal((await 调('渲染管线.新建', {...基, 深度: null}))[0], 码.成);
+  assert.equal(设备们[0].管线们.at(-1).描述.depthStencil, undefined, '不带深度时没有深度模板状态');
+  const 色 = await 取号(调('纹理.新建', {设备: 设, 宽: 2, 高: 2, 格式: 'rgba8unorm', 用途: ['渲染']}));
+  const 绘 = [{管线: 管, 组: [], 顶点: [], 索引: null, 数: 3, 实例: 1}];
+  assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 纹理: 色, 清: [0, 0, 0, 1], 深度: {纹理: 深, 清: 1}, 绘}]}))[0], 码.成);
+  const 附 = 设备们[0].通道们.at(-1).depthStencilAttachment;
+  assert.equal(附.view.纹理, 设备们[0].纹理们[0]);
+  assert.deepEqual([附.depthLoadOp, 附.depthClearValue, 附.depthStoreOp], ['clear', 1, 'store']);
+  assert.equal((await 调('命令.提交', {设备: 设, 命令: [{种: '通道', 纹理: 色, 清: null, 深度: {纹理: 深, 清: null}, 绘}]}))[0], 码.成);
+  assert.equal(设备们[0].通道们.at(-1).depthStencilAttachment.depthLoadOp, 'load');
 });
 
 // ---------------------------------------------------------------------------
