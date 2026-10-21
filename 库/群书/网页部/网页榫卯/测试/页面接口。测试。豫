@@ -94,7 +94,8 @@
 　令「无」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test/页』而
 　令「本地簿」为「新储籍簿」于「元」而
 　令「会话簿」为「新储籍簿」于「元」而
-　令「主录」为「新页面接口宿主」于「交换」曰「假交换」于「本地」曰「本地簿」于「会话」曰「会话簿」于「持久」曰「页面空持久」而
+　令「主录」为
+　　「新页面接口宿主」于「交换」曰「假交换」于「本地」曰「本地簿」于「会话」曰「会话簿」于「持久」曰「页面空持久」于「媒体」曰（「无媒体宿主」于「元」）而
 　令「无」为「安装网页接口」于「境」于「绑定」于「主录」而
 　「境」与「本地簿」
 也。
@@ -108,17 +109,15 @@
 　　　于「境」
 　　　于『window.__a=[];window.__b=[];fetch("/a?x=1").then(function(r){window.__a.push(r.status+":"+r.url);return r.text();}).then(function(t){window.__a.push(t);});(async function(){var r=await fetch("/b");window.__b.push(await r.text());})();var h=new Headers([["X-试","一"],["X-试","二"]]);h.append("X-试","三");window.__c=[h.get("x-试"),h.has("X-试"),h.get("none")].join("|");var u=new URL("/p?x=1",location.href);window.__d=[u.href,u.pathname,u.search,u.searchParams.get("x"),u.origin].join("|");var s=new URLSearchParams("a=1&a=2");s.append("b","3");s.delete("a");window.__e=[s.get("b"),s.toString(),s.has("a")].join("|");var f=new FormData();f.append("a","1");f.set("a","2");f.append("b","3");window.__g=[f.get("a"),f.getAll("b").length,f.has("c"),f.get("c")].join("|");』而
 　令「无」为「网页微役察点」于「元」而
-　令「无」为
-　　「急就在境行脚本」
-　　　于「境」
-　　　于『window.__甲=[window.__a.join("|"),window.__b.join("|"),window.__c,window.__d,window.__e,window.__g].join(";");』而
+　令「无」为「急就在境行脚本」于「境」于『window.__甲=[window.__a.join("|"),window.__b.join("|"),window.__c,window.__d,window.__e,window.__g].join(";");』而
 　「核对」
 　　于「名」曰『fetch 的 then、await 与相对地址』
 　　于「实」曰（「取字」于「境」于『window.__甲』）
 　　于「望」曰『200:https://example.test/a?x=1|甲文;乙文;一, 二, 三|true|;https://example.test/p?x=1|/p|?x=1|1|https://example.test;3|b=3|false;2|1|false|』而后
 　「核对」
 　　于「名」曰『提封、驿址、表单与询参』
-　　于「实」曰（（（「取字」于「境」于『window.__c』）接『/』）接（「取字」于「境」于『window.__d』）接『/』接（「取字」于「境」于『window.__e』）接『/』接（「取字」于「境」于『window.__g』））
+　　于「实」曰（（（「取字」于「境」于『window.__c』）接『/』）接（「取字」于「境」于『window.__d』）接『/』接（「取字」于「境」于『window.__e』）接『/』
+　　　接（「取字」于「境」于『window.__g』））
 　　于「望」曰『一, 二, 三|true|/https://example.test/p?x=1|/p|?x=1|1|https://example.test/3|b=3|false/2|1|false|』而后
 　「书」于『采书、提封、驿址、表单：通过』
 也。
