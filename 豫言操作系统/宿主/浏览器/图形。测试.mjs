@@ -1,9 +1,10 @@
-// 文言：验显示与图形之宿主工厂：授权、错误之路、事之转译、命令之编解与整列不行；以伪文档与伪 GPU 行之，不涉 Wasm 与 JSDOM。
-// 汉语：显示与图形处理器宿主工厂的单元测试：授权、错误路径、输入事件转换、命令 JSON 解码与整列不执行、读回的行对齐、帧纹理与呈现。
-//       用手写的伪文档、伪 canvas 与伪 WebGPU 运行，不需要 Wasm 与 JSDOM（CI 的全树测试可直接跑）；真实浏览器行为见图形显示浏览器适配的一致性验证。
+// 文言：验显示与图形之宿主工厂：授权（含前缀与小窗）、错误之路、事之转译、多面之候、命令之编解与整列不行；以伪文档与伪 GPU 行之，不涉 Wasm 与 JSDOM。
+// 汉语：显示与图形处理器宿主工厂的单元测试：授权（含前缀授权与小窗）、错误路径、输入事件转换、多面等待、命令 JSON 解码与整列不执行、读回的行对齐、帧纹理与呈现。
+//       用手写的伪文档、伪 canvas、伪小窗与伪 WebGPU 运行，不需要 Wasm 与 JSDOM（CI 的全树测试可直接跑）；真实浏览器行为见图形显示浏览器适配的一致性验证。
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {创建显示能力, 创建图形能力, 创建字体能力, 状态码, 译键, 事件种类, 单次交换上限} from './图形.mjs';
+import {造豫寓实现} from './构建/豫寓.mjs';
 
 const 码 = 状态码;
 const 编码 = new TextEncoder();
@@ -52,8 +53,31 @@ class 伪画布 extends 伪元素 {
 const 造文档 = () => {
   const 文档 = {元素们: [], documentElement: {}};
   文档.querySelectorAll = 选 => (选 === 'canvas' ? 文档.元素们.filter(元 => 元.localName === 'canvas') : []);
-  文档.createElement = 标签 => new 伪元素(标签, 文档);
+  文档.createElement = 标签 => (标签 === 'canvas' ? new 伪画布(文档, null) : new 伪元素(标签, 文档));
   return 文档;
+};
+// 文言：伪小窗：同源之窗，有 devicePixelRatio 与 document，阖则去诸元之连而发 pagehide。汉语：伪小窗：同源窗口，带 devicePixelRatio 与 document；关上时断开里面的元素并派发 pagehide。
+const 造伪窗 = ({比 = 2, 名 = ''} = {}) => {
+  const 文档 = 造文档();
+  const 窗 = Object.assign(new EventTarget(), {
+    devicePixelRatio: 比,
+    ImageData: 伪图像,
+    closed: false,
+    close() {
+      if (this.closed) return;
+      this.closed = true;
+      for (const 元 of 文档.元素们) 元.isConnected = false;
+      this.dispatchEvent(new Event('pagehide'));
+    },
+  });
+  窗.document = 文档;
+  文档.defaultView = 窗;
+  文档.title = 名;
+  const 体 = new 伪元素('body', 文档);
+  体.appendChild = 元 => { 元.isConnected = true; 文档.元素们.push(元); };
+  文档.body = 体;
+  文档.documentElement = 体;
+  return 窗;
 };
 class 伪图像 { constructor(数据, 宽, 高) { this.data = 数据; this.width = 宽; this.height = 高; } }
 const 造全局 = (额外 = {}) => ({devicePixelRatio: 2, ImageData: 伪图像, setTimeout, ...额外});
@@ -66,6 +90,19 @@ const 造显示 = ({关闭 = () => false} = {}) => {
   const 显示 = 创建显示能力({根: 文档, 全局, 已关闭: 关闭});
   const 加画布 = (名, 选项) => { const 画布 = new 伪画布(文档, 名, 选项); 文档.元素们.push(画布); return 画布; };
   return {文档, 全局, 显示, 加画布};
+};
+// 文言：造前缀授面之显示：主画布授“宫”前缀，全局之 open 造伪小窗而记之。汉语：造带前缀授权的显示：主画布授权“宫”前缀，全局的 open 造伪小窗并记下来。
+const 造带窗显示 = () => {
+  const 文档 = 造文档();
+  const 主画布 = new 伪画布(文档, '主窗口');
+  主画布.setAttribute('data-yy-显示面前缀', '宫');
+  文档.元素们.push(主画布);
+  const 窗们 = [];
+  const 全局 = 造全局({
+    open: (网址, 名, 特性) => { const 窗 = 造伪窗({名}); 窗.网址 = 网址; 窗.特性 = 特性; 窗们.push(窗); return 窗; },
+  });
+  const 显示 = 创建显示能力({根: 文档, 全局});
+  return {文档, 全局, 显示, 主画布, 窗们};
 };
 
 // ---------------------------------------------------------------------------
@@ -276,6 +313,133 @@ test('关闭前积压的事件先交付，再交付一次显示面已关闭', ()
   assert.equal(显示.调用('等待', 号)[1], 事件种类.显示面已关闭);
   assert.equal(显示.调用('等待', 号)[0], 码.已失效);
   assert.equal(显示.调用('提交', 号, 1, 1, new Uint8Array(4))[0], 码.已失效);
+});
+
+test('前缀授权：第一次取以“宫”起头的面时开同源小窗，画布与隐形输入框照主画布安排，尺寸、像素比与事件按小窗算', async () => {
+  const {显示, 主画布, 窗们} = 造带窗显示();
+  const 果 = 显示.调用('取得', 0, 0, 0, 字('宫二'));
+  assert.equal(果[0], 码.成);
+  assert.equal(窗们.length, 1);
+  const 窗 = 窗们[0], 小文档 = 窗.document;
+  assert.equal(窗.网址, '');
+  assert.match(窗.特性, /popup/);
+  assert.equal(小文档.title, '宫二');
+  const 画布 = 小文档.元素们.find(元 => 元.localName === 'canvas');
+  assert.equal(画布.getAttribute('data-yy-显示面'), '宫二');
+  assert.equal(小文档.元素们.find(元 => 元.getAttribute('data-yy-显示面输入') === '宫二') != null, true, '小窗里有对应的隐形输入框');
+  assert.equal(显示.调用('取得', 0, 0, 0, 字('宫二'))[1], 果[1], '同一面第二次取得同号');
+  assert.equal(窗们.length, 1, '不再开新窗');
+  画布.矩 = {left: 0, top: 0, width: 400, height: 300};
+  窗.devicePixelRatio = 3;
+  assert.deepEqual(显示.调用('尺寸', 果[1]).slice(0, 3), [码.成, 1200, 900]);
+  const 比 = 显示.调用('像素比', 果[1]);
+  assert.deepEqual([比[0], 比[1], 比[2]], [码.成, 3000000, 1000000]);
+  const 候 = 显示.调用('等待', 果[1]);
+  const 框 = 小文档.元素们.find(元 => 元.getAttribute('data-yy-显示面输入') === '宫二');
+  框.dispatchEvent(事件('keydown', {key: 'Enter'}));
+  const 事 = await 候;
+  assert.deepEqual([事[0], 事[1], 事[5]], [码.成, 事件种类.按键按下, '回车']);
+  assert.equal(显示.调用('题', 果[1], 0, 0, 字('宫二 · 终端'))[0], 码.成);
+  assert.equal(小文档.title, '宫二 · 终端');
+  assert.equal(显示.调用('题映面', 果[1], 0, 0, 字('宫二 · 二'))[0], 码.成, '也认接口名');
+  assert.equal(小文档.title, '宫二 · 二');
+  assert.equal(显示.调用('归还', 果[1])[0], 码.成);
+  assert.equal(窗.closed, true, '归还即关小窗');
+  assert.equal(主画布.isConnected, true, '主画布不动');
+});
+
+test('前缀授权取面时小窗被拦：答资源暂不可用；前缀之外的名仍为未获授权', () => {
+  const 文档 = 造文档();
+  const 主画布 = new 伪画布(文档, '主窗口');
+  主画布.setAttribute('data-yy-显示面前缀', '宫');
+  文档.元素们.push(主画布);
+  const 显示 = 创建显示能力({根: 文档, 全局: 造全局({open: () => null})});
+  assert.equal(显示.调用('取得', 0, 0, 0, 字('宫二'))[0], 码.暂不可用);
+  assert.equal(显示.调用('取得', 0, 0, 0, 字('厅二'))[0], 码.未获授权);
+});
+
+test('待诸面限时：两面同时等，交回事件所在面的序号；期限到交负一与显示计时', async () => {
+  const {显示, 加画布, 文档} = 造显示();
+  加画布('甲'); 加画布('乙');
+  const 甲号 = 显示.调用('取得', 0, 0, 0, 字('甲'))[1];
+  const 乙号 = 显示.调用('取得', 0, 0, 0, 字('乙'))[1];
+  const 候 = 显示.调用('待诸面限时', 0, [甲号, 乙号], 100);
+  const 乙框 = 文档.元素们.find(元 => 元.getAttribute('data-yy-显示面输入') === '乙');
+  乙框.dispatchEvent(事件('keydown', {key: 'Enter'}));
+  const 果 = await 候;
+  assert.deepEqual([果[0], 果[1], 果[2], 果[6]], [码.成, 1, 事件种类.按键按下, '回车']);
+  assert.equal(显示.状态().显示等待者数, 0);
+  const 限 = await 显示.调用('待诸面限时', 0, [甲号, 乙号], 10);
+  assert.deepEqual([限[0], 限[1], 限[2]], [码.成, -1, 事件种类.显示计时]);
+  assert.equal(显示.状态().显示等待者数, 0);
+});
+
+test('待诸面限时：等待中一块面关掉，交回它的序号与显示面已关闭，别的面照常', async () => {
+  const {显示, 加画布} = 造显示();
+  加画布('甲'); 加画布('乙');
+  const 甲号 = 显示.调用('取得', 0, 0, 0, 字('甲'))[1];
+  const 乙号 = 显示.调用('取得', 0, 0, 0, 字('乙'))[1];
+  const 候 = 显示.调用('待诸面限时', 0, [甲号, 乙号], 1000);
+  assert.equal(显示.调用('归还', 乙号)[0], 码.成);
+  const 果 = await 候;
+  assert.deepEqual([果[0], 果[1], 果[2]], [码.成, 1, 事件种类.显示面已关闭]);
+  assert.equal(显示.状态().显示等待者数, 0);
+  assert.equal(显示.调用('待诸面限时', 0, [甲号, 乙号], 10)[0], 码.已失效);
+  const 单 = await 显示.调用('待诸面限时', 0, [甲号], 10);
+  assert.deepEqual([单[0], 单[2]], [码.成, 事件种类.显示计时]);
+});
+
+test('待诸面限时只给一面时同待入事限时：关面先交一次关闭，再等为资源已失效', async () => {
+  const {显示, 加画布} = 造显示();
+  加画布('甲');
+  const 号 = 显示.调用('取得', 0, 0, 0, 字('甲'))[1];
+  const 限 = await 显示.调用('待诸面限时', 0, [号], 5);
+  assert.deepEqual([限[0], 限[1], 限[2]], [码.成, 0, 事件种类.显示计时]);
+  const 候 = 显示.调用('待诸面限时', 0, [号], 50);
+  显示.调用('归还', 号);
+  const 闭 = await 候;
+  assert.deepEqual([闭[0], 闭[1], 闭[2]], [码.成, 0, 事件种类.显示面已关闭]);
+  assert.equal(显示.调用('待诸面限时', 0, [号], 5)[0], 码.已失效);
+});
+
+test('前缀授权的小窗被用户关掉：交一次显示面已关闭，此后失效', async () => {
+  const {显示, 窗们} = 造带窗显示();
+  const 号 = 显示.调用('取得', 0, 0, 0, 字('宫二'))[1];
+  const 候 = 显示.调用('待诸面限时', 0, [号], 100);
+  窗们[0].close();
+  const 果 = await 候;
+  assert.deepEqual([果[0], 果[1], 果[2]], [码.成, 0, 事件种类.显示面已关闭]);
+  assert.equal(显示.调用('尺寸', 号)[0], 码.已失效);
+});
+
+test('题映面：设小窗标题；主画布所在的页面照常返回不改；失效面为资源已失效', () => {
+  const 文档 = 造文档();
+  const 主画布 = new 伪画布(文档, '主窗口'); 文档.元素们.push(主画布);
+  const 显示 = 创建显示能力({根: 文档, 全局: 造全局()});
+  const 号 = 显示.调用('取得', 0, 0, 0, 字('主窗口'))[1];
+  assert.equal(显示.调用('题', 号, 0, 0, 字('标题'))[0], 码.成);
+  assert.equal(文档.title, undefined);
+  assert.equal(显示.调用('题', 999, 0, 0, 字('标题'))[0], 码.已失效);
+});
+
+test('豫寓映的接口绑定：多面等待编成诸面入取果，题映面把文交给宿主', () => {
+  const 问们 = [];
+  let 答 = () => [0, 1, 事件种类.按键按下, 0, 0, 0, '回车', 0];
+  const 豫寓 = 造豫寓实现({
+    问: (...参) => { 问们.push(参); return 答(); },
+    传问: () => { throw Error('这组绑定不该移交缓冲'); },
+    文: 值 => String(值),
+    目: () => '/',
+  });
+  assert.deepEqual(豫寓.豫寓映.待诸面入事限时([{号: 1n}, {号: 2n}], 50), [0, 1, [0, '回车']], '事件所在面的序号与入事');
+  assert.deepEqual(问们.at(-1), ['映', '待诸面限时', 0, [1n, 2n], 50]);
+  答 = () => [0, -1, 事件种类.显示计时, 0, 0, 0, '', 0];
+  assert.deepEqual(豫寓.豫寓映.待诸面入事限时([{号: 1n}], 5), [0, -1, [8]], '期限到时面序负一与显示计时');
+  答 = () => [3, 0, 0, 0, 0, '显示面已关闭', 0];
+  assert.deepEqual(豫寓.豫寓映.待诸面入事限时([{号: 1n}], 5), [1, [2]], '宿主已失效译为资源已失效');
+  答 = () => [0];
+  assert.equal(豫寓.豫寓映.题映面({号: 7n}, 字('标题')), undefined, '题映面只提示，不看结果');
+  assert.deepEqual(问们.at(-1), ['映', '题', 7n, 0, 0, 字('标题')]);
 });
 
 // ---------------------------------------------------------------------------

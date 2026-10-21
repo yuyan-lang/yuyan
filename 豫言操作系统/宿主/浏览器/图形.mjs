@@ -1,7 +1,7 @@
-// 文言：显示面与图形处理器之宿主术。显示面者，页中带 data-yy-显示面 之 canvas，以其属性之值为名而授之；图形处理器取 WebGPU 之要。二者皆纯工厂，凭注入之根与全局而行，可离 Wasm 而测。
+// 文言：显示面与图形处理器之宿主术。显示面者，页中带 data-yy-显示面 之 canvas，以其属性之值为名而授之；又有前缀之授，以其属起头之名皆许，初取乃开同源之小窗。图形处理器取 WebGPU 之要。二者皆纯工厂，凭注入之根与全局而行，可离 Wasm 而测。
 //       显示面之表与图形之能不系于文树，节点之宿主亦内联此篇而共用之：换以 SDL 之窗为面源，以 Dawn 为图形处理器，别供其呈现之器。
 // 汉语：显示、图形处理器、图形显示三个接口的浏览器宿主实现。显示面由页面授予：带 data-yy-显示面="名称" 属性的 <canvas> 即以该名称授予本次运行；
-//       图形处理器用 WebGPU 核心子集。两个工厂只依赖注入的 document 与全局对象，可以脱离 Wasm 单独测试；创建浏览器宿主把它们接到
+//       带 data-yy-显示面前缀 属性的画布授权以该前缀起头的面名，第一次取时开一个同源小窗，里面放这块面。图形处理器用 WebGPU 核心子集。两个工厂只依赖注入的 document 与全局对象，可以脱离 Wasm 单独测试；创建浏览器宿主把它们接到
 //       豫言_浏览器_显示 与 豫言_浏览器_图形 两个原语上。
 //       Node 宿主（路一）也内联本文件共用其中与 DOM 无关的部分：显示面表（创建显示面表）与图形能力（创建图形能力）；它换用 SDL 窗口作
 //       显示面的“后端”，用 Dawn（@kmamal/gpu）作 GPU，并提供自己的“呈现器”，见 豫言操作系统/宿主/节点/图形.mjs。本文件因此不写 import。
@@ -14,6 +14,8 @@ const 码 = 状态码;
 export const 单次交换上限 = 16 * 1024 * 1024;
 export const 显示面属性 = 'data-yy-显示面';
 export const 显示面输入属性 = 'data-yy-显示面输入';
+// 文言：前缀授权之属：带此属之 canvas 以其值为前缀，授一切以此起头之面名。汉语：前缀授权属性：带它的画布以其值为前缀，授予所有以此起头的显示面名。
+export const 显示面前缀属性 = 'data-yy-显示面前缀';
 // 文言：首帧既绘，宿主加此属于 canvas；面闭则撤之。页可据以撤“载入中”之示。
 // 汉语：显示面画出第一帧时宿主给 canvas 加上这个属性，显示面关闭（归还）时去掉；页面据此撤下“正在载入”的提示。
 export const 已画属性 = 'data-yy-已画';
@@ -169,6 +171,63 @@ export function 创建显示面表({后端, 已关闭 = () => false}) {
       if (毫秒 > 0) 计时器 = setTimeout(() => 收尾(事果({种: 事件种类.显示计时})), 毫秒);
     });
   };
+  // 文言：诸面并候，事至则报其面之序（自零起），漏尽则序负一而事为计时；只一面则同单面之候。
+  // 汉语：多面同时等待：事件到了就交回它所在面的序号（从零起）；期限到时序号为负一、事件为显示计时；只给一块面时同「待入事限时」。
+  const 诸果 = (面序, 果) => [果[0], 面序, ...果.slice(1)];
+  const 等待诸面 = (号们, 毫秒 = 0) => {
+    const 限 = Math.max(0, Number(毫秒) || 0);
+    const 列 = Array.from(号们 ?? [], 号 => Number(号));
+    if (!列.length) return 错(码.输入无效, '等待诸面需要至少一块显示面');
+    if (new Set(列).size !== 列.length) return 错(码.输入无效, '同一显示面不能在一组里出现两次');
+    const 单 = 果 => (果[0] === 码.成 ? 诸果(0, 果) : 果);
+    if (列.length === 1) {
+      const 果 = 等待(列[0], 限);
+      return 果 instanceof Promise ? 果.then(单) : 单(果);
+    }
+    const 面们 = [];
+    for (const 号 of 列) {
+      const 面 = 取开面(号);
+      if (!面 || 面.已报关闭) return 错(码.已失效, '显示面已关闭');
+      if (面.等待者) return 错(码.输入无效, '同一显示面已有等候者');
+      面们.push(面);
+    }
+    const 即取 = () => {
+      for (let 序 = 0; 序 < 面们.length; 序++) {
+        const 面 = 面们[序];
+        if (面.已报关闭) return 错(码.已失效, '显示面已关闭');
+        if (面.队列.length) return 诸果(序, 事果(面.队列.shift()));
+        if (面.已关闭) { 面.已报关闭 = true; return 诸果(序, 事果({种: 事件种类.显示面已关闭})); }
+      }
+      return null;
+    };
+    const 即 = 即取();
+    if (即) return 即;
+    return new Promise(完成 => {
+      let 计时器, 已收 = false;
+      const 钩们 = new Map();
+      const 收尾 = 果 => {
+        if (已收) return;
+        已收 = true;
+        clearTimeout(计时器);
+        for (const 面 of 面们) if (面.等待者 === 钩们.get(面)) 面.等待者 = null;
+        完成(果);
+      };
+      for (let 序 = 0; 序 < 面们.length; 序++) {
+        const 面 = 面们[序], 钩 = 果 => 收尾(诸果(序, 果));
+        钩们.set(面, 钩);
+        面.等待者 = 钩;
+      }
+      if (限 > 0) 计时器 = setTimeout(() => 收尾(诸果(-1, 事果({种: 事件种类.显示计时}))), 限);
+    });
+  };
+  // 文言：题面者，设宿主窗之题，惟为示，不能亦成。汉语：设置宿主窗口的标题，只是提示，宿主做不到也照常成功。
+  const 题面 = (号, 题) => {
+    const 面 = 取开面(号);
+    if (!面 || 面.已关闭) return 错(码.已失效, '显示面已失效');
+    const 败 = 后端.题?.(面, 题);
+    if (败) return 错(败.码, 败.文);
+    return 结果(码.成);
+  };
   // 文言：像素比返二数：物理与逻辑，比即其商。汉语：像素比返回两个整数 [物理, 逻辑]，适配以其商为像素比；后端没有 像素比值 时为 1。
   const 像素比 = 号 => {
     const 面 = 取开面(号);
@@ -216,6 +275,9 @@ export function 创建显示面表({后端, 已关闭 = () => false}) {
         case '提交区域': return 提交(号, 甲, 乙, 字节, 拆区(丙, 丁));
         case '等待': return 等待(号);
         case '等待限时': return 等待(号, 甲);
+        case '待诸面限时': return 等待诸面(甲, 乙);
+        // 文言：题之操作亦作「题映面」，从接口之名，便于适配直呼。汉语：设置标题的操作也认接口名「题映面」，便于适配直接调用。
+        case '题': case '题映面': return 题面(号, 文字化(字节));
         case '像素比': return 像素比(号);
         case '输入区域': return 输入区域(号, 甲, 乙, 丙, 丁);
         case '指针形状': return 指针形状(号, 甲);
@@ -241,19 +303,62 @@ export function 创建显示面表({后端, 已关闭 = () => false}) {
 export function 创建画布后端({根, 全局}) {
   let 观察器 = null;
   const 活面 = new Map();
-  const 像素比 = () => {
-    const 比 = Number(全局.devicePixelRatio);
+  const 小窗们 = new Map();
+  // 文言：面之像素比取其窗之 devicePixelRatio；小窗之面从窗，主窗之面从全局。汉语：显示面的像素比取它所在窗口的 devicePixelRatio；小窗里的面用小窗的，主页面里的面用全局的。
+  const 窗素 = 面 => 面?.窗 ?? 面?.画布?.ownerDocument?.defaultView ?? 全局;
+  const 像素比 = 面 => {
+    const 比 = Number(窗素(面)?.devicePixelRatio);
     return Number.isFinite(比) && 比 > 0 ? 比 : 1;
   };
   // 文言：尺以物理之素计：CSS 之宽高乘像素比而四舍五入。汉语：显示面尺寸按物理像素计：CSS 布局宽高乘 devicePixelRatio 后四舍五入。
   //       待办事项：canvas 带边框或内边距时布局矩形含它们，应改用 ResizeObserver 的 devicePixelContentBoxSize。
   const 尺寸值 = 面 => {
     const 矩 = 面.画布.getBoundingClientRect();
-    const 比 = 像素比();
+    const 比 = 像素比(面);
     return [Math.round(Number(矩.width) * 比), Math.round(Number(矩.height) * 比)];
   };
+  // 文言：前缀之授权：页中带前缀属之 canvas，许一切以此起头之名。初取乃开同源之小窗，内置一画布与隐 input，照主画布之法；
+  //       小窗被拦则面不可得，报资源暂不可用。待办事项：小窗之幅取定数，后版依原格子之大小开。
+  // 汉语：前缀授权：页里带 data-yy-显示面前缀 属性的画布，授权所有以此起头的面名。第一次取时开一个同源小窗，里面放一块带
+  //       data-yy-显示面 的画布与隐形输入框，照主画布的做法；小窗被浏览器拦下时这块面不可得，报资源暂不可用。
+  const 小窗宽 = 960, 小窗高 = 640;
+  const 开小窗 = 名 => {
+    let 窗 = null;
+    try { 窗 = 全局.open?.('', 名, 'popup,width=' + 小窗宽 + ',height=' + 小窗高); } catch { 窗 = null; }
+    if (!窗) return null;
+    try {
+      const 文档 = 窗.document;
+      if (!文档) { 窗.close?.(); return null; }
+      文档.title = 名;
+      const 体 = 文档.body ?? 文档.documentElement;
+      if (体?.style) { 体.style.margin = '0'; 体.style.overflow = 'hidden'; 体.style.background = '#000'; }
+      const 画布 = 文档.createElement('canvas');
+      画布.setAttribute(显示面属性, 名);
+      画布.setAttribute('style', 'display:block;width:100vw;height:100dvh;margin:0;padding:0;border:0;background:#000;touch-action:none;outline:none');
+      画布.豫言小窗 = 窗;
+      体.appendChild(画布);
+      小窗们.set(名, {窗, 画布});
+      return 画布;
+    } catch {
+      try { 窗.close?.(); } catch { /* 忽略 */ }
+      return null;
+    }
+  };
   const 找画布 = 名 => {
-    for (const 元 of 根.querySelectorAll?.('canvas') ?? []) if (元.getAttribute(显示面属性) === 名) return 元;
+    const 元们 = 根.querySelectorAll?.('canvas') ?? [];
+    for (const 元 of 元们) if (元.getAttribute(显示面属性) === 名) return {值: 元};
+    const 已开 = 小窗们.get(名);
+    if (已开) {
+      if (已开.画布.isConnected !== false) return {值: 已开.画布};
+      小窗们.delete(名);
+    }
+    for (const 元 of 元们) {
+      const 前缀 = 元.getAttribute?.(显示面前缀属性);
+      if (前缀 && String(名).startsWith(前缀)) {
+        const 画布 = 开小窗(名);
+        return 画布 ? {值: 画布} : {码: 码.暂不可用, 文: '浏览器拦下了显示面「' + 名 + '」的小窗（需要用户手势或弹出窗许可）'};
+      }
+    }
     return null;
   };
   // 文言：canvas 之 CSS 尺若从其像素数而定，则改其像素数必自涨；首取时定其 CSS 尺以绝此环。
@@ -275,6 +380,8 @@ export function 创建画布后端({根, 全局}) {
   };
   const 建 = (面, 画布, {推, 关闭}) => {
     面.画布 = 画布;
+    面.窗 = 画布.ownerDocument?.defaultView ?? 全局;
+    面.小窗 = 画布.豫言小窗 ?? null;
     面.输入框 = null;
     面.二维 = null;
     面.组字中 = false;
@@ -306,7 +413,7 @@ export function 创建画布后端({根, 全局}) {
     }
     const 坐标 = 事件 => {
       const 矩 = 画布.getBoundingClientRect();
-      const 比 = 像素比();
+      const 比 = 像素比(面);
       return [Math.floor((Number(事件.clientX) - Number(矩.left)) * 比), Math.floor((Number(事件.clientY) - Number(矩.top)) * 比)];
     };
     听(画布, 'pointerdown', 事件 => {
@@ -336,7 +443,7 @@ export function 创建画布后端({根, 全局}) {
     听(画布, 'wheel', 事件 => {
       事件.preventDefault?.();
       const [甲, 乙] = 坐标(事件);
-      const 比 = 像素比();
+      const 比 = 像素比(面);
       const 倍 = 事件.deltaMode === 1 ? 滚动每格逻辑像素 * 比 : 事件.deltaMode === 2 ? (Number(画布.getBoundingClientRect().height) || 0) * 比 : 比;
       推({种: 事件种类.滚轮, 甲, 乙, 丙: Math.round(Number(事件.deltaX || 0) * 倍) || 0, 丁: Math.round(Number(事件.deltaY || 0) * 倍) || 0});
     }, {passive: false});
@@ -397,31 +504,37 @@ export function 创建画布后端({根, 全局}) {
     面.清理.push(() => 输入框.remove());
     面.清理.push(() => 画布.removeAttribute?.(已画属性));
     // 汉语：布局及宿主视口变化唤醒同一豫言主循环，普通输入和计时语义保持。文言：布局与宿主视口易则唤同豫言主循环，输入与计时之义皆存。
-    let 上尺 = 尺寸值(面), 上比 = 像素比();
+    let 上尺 = 尺寸值(面), 上比 = 像素比(面);
     const 查尺 = () => {
-      const 尺 = 尺寸值(面), 比 = 像素比();
+      const 尺 = 尺寸值(面), 比 = 像素比(面);
       if (尺[0] === 上尺[0] && 尺[1] === 上尺[1] && 比 === 上比) return;
       上尺 = 尺; 上比 = 比; 推({种:事件种类.显示尺寸变化});
     };
-    if (typeof 全局.ResizeObserver === 'function') {
-      const 尺观察 = new 全局.ResizeObserver(查尺);
+    if (typeof 面.窗.ResizeObserver === 'function') {
+      const 尺观察 = new 面.窗.ResizeObserver(查尺);
       尺观察.observe(画布); 面.清理.push(() => 尺观察.disconnect());
     }
-    if (typeof 全局.addEventListener === 'function') 听(全局, 'resize', 查尺);
+    if (typeof 面.窗.addEventListener === 'function') 听(面.窗, 'resize', 查尺);
     if (!观察器 && typeof 全局.MutationObserver === 'function') {
       观察器 = new 全局.MutationObserver(查连接);
       观察器.observe(根.documentElement ?? 根, {childList: true, subtree: true});
     }
+    // 文言：小窗阖则面闭；还面则闭其窗，主窗不闭。汉语：用户关掉小窗即这块面关闭；归还这块面时关掉小窗，主窗口不关。
+    if (面.小窗) {
+      if (typeof 面.小窗.addEventListener === 'function') for (const 名 of ['pagehide', 'unload']) 听(面.小窗, 名, () => 关闭());
+      面.清理.push(() => { try { if (!面.小窗.closed) 面.小窗.close(); } catch { /* 忽略 */ } });
+      面.清理.push(() => { for (const [面名, 开] of 小窗们) if (开.画布 === 画布) 小窗们.delete(面名); });
+    }
     return null;
   };
   // 文言：像素比以二整数返之。汉语：像素比 = devicePixelRatio，化成两个整数（乘一百万与一百万）。
-  const 像素比值 = () => [Math.round(像素比() * 1000000), 1000000];
+  const 像素比值 = 面 => [Math.round(像素比(面) * 1000000), 1000000];
   // 文言：移隐 input 至所示之矩，输入法之候选随之。汉语：把隐形输入框移到应用给的矩形（物理像素，相对显示面左上）处，候选框随之定位。
   const 设输入区域 = (面, 横, 纵, 宽, 高) => {
     const 框 = 面.输入框;
     if (!框?.style) return;
     const 矩 = 面.画布.getBoundingClientRect();
-    const 比 = 像素比();
+    const 比 = 像素比(面);
     框.style.left = (Number(矩.left) + 横 / 比) + 'px';
     框.style.top = (Number(矩.top) + 纵 / 比) + 'px';
     框.style.height = Math.max(1, 高 / 比) + 'px';
@@ -438,28 +551,36 @@ export function 创建画布后端({根, 全局}) {
     let 全帧 = !区;
     if (面.画布.width !== 宽) { 面.画布.width = 宽; 全帧 = true; }
     if (面.画布.height !== 高) { 面.画布.height = 高; 全帧 = true; }
-    const 图 = new 全局.ImageData(new Uint8ClampedArray(字节.buffer, 字节.byteOffset, 字节.length), 宽, 高);
+    const 图类 = 窗素(面).ImageData ?? 全局.ImageData;
+    const 图 = new 图类(new Uint8ClampedArray(字节.buffer, 字节.byteOffset, 字节.length), 宽, 高);
     if (全帧) 面.二维.putImageData(图, 0, 0);
     else 面.二维.putImageData(图, 0, 0, 区[0], 区[1], 区[2], 区[3]);
     if (面.画布.hasAttribute?.(已画属性) === false) 面.画布.setAttribute(已画属性, '');
     return null;
   };
+  // 文言：题面者，设小窗之题；主画布所在之页不更，不能亦成。汉语：设置小窗的标题；主画布所在的页面不改，做不到也照常成功。
+  const 题 = (面, 题文) => {
+    const 窗 = 面.小窗;
+    if (!窗) return null;
+    try { if (窗.document) 窗.document.title = 题文; } catch { /* 忽略 */ }
+    return null;
+  };
   return {
-    找: 名 => {
-      const 画布 = 找画布(名);
-      return 画布 ? {值: 画布} : {码: 码.未获授权, 文: '页面没有授予名为「' + 名 + '」的显示面（需要带 ' + 显示面属性 + ' 属性的 canvas）'};
-    },
+    找: 名 => 找画布(名) ?? {码: 码.未获授权, 文: '页面没有授予名为「' + 名 + '」的显示面（需要带 ' + 显示面属性 + ' 属性的 canvas，或带 ' + 显示面前缀属性 + ' 属性的前缀授权）'},
     同源: (面, 画布) => 面.画布 === 画布,
-    已断开: 面 => 面.画布.isConnected === false,
+    已断开: 面 => 面.画布.isConnected === false || 面.小窗?.closed === true,
     建,
     尺寸值,
     像素比值,
     设输入区域,
     设指针形状,
     画,
+    题,
     清理: () => {
       观察器?.disconnect();
       观察器 = null;
+      for (const {窗} of 小窗们.values()) { try { if (!窗.closed) 窗.close(); } catch { /* 忽略 */ } }
+      小窗们.clear();
     }
   };
 }
