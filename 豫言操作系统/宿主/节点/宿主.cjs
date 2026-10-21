@@ -51,6 +51,17 @@ if (isMainThread) {
   const 工 = 新客线程({workerData: {参数:process.argv.slice(2), 端口:port2, 信号}, transferList:[port2], resourceLimits:线程资源限额});
   工.on('error', 错 => {console.error(错); process.exitCode=1;});
   工.on('exit', 码 => {清理(); process.exitCode=终止码??码;});
+  // 文言：试以时段置断标：环境 豫言打断毫秒 有正数时，得工线程之共享存后，过其毫秒置零号字。
+  // 汉语：测试用：环境变量 豫言打断毫秒 为正数时，收到工作线程的共享内存后，过这么多毫秒置零号字（只供验证检查点，正常使用不设）。
+  let 设标已候 = false;
+  工.on('message', 消息 => {
+    if (消息?.种 !== '打断内存' || 设标已候) return;
+    const 毫秒 = Number(process.env.豫言打断毫秒);
+    if (!(毫秒 > 0)) return;
+    设标已候 = true;
+    const 字 = new Int32Array(消息.缓冲);
+    setTimeout(() => Atomics.store(字, 0, 1), 毫秒);
+  });
   for (const 信 of ['SIGINT', 'SIGTERM']) process.once(信, () => {终止码=信==='SIGINT'?130:143; 清理(); 工.terminate();});
 } else if (workerData.复用线程) {
   // 文言：工可复用，客实例与桥每事新立；二出先递，毕报在后。汉语：只有内部编译任务使用线程池；每项任务调用执行创建全新实例，通过同一消息通道保证输出先于完成，异常不污染下一任务退出码。
@@ -348,6 +359,17 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     while(位<字.length){const 节=字[位++],长=读(),止=位+长;if(节===9){读();if(读()!==0)throw Error('单元元素段须为标志 0');while(字[位]!==0x0b)位++;位++;return 读();}位=止;}
     return 0;
   }
+  // 文言：辍察之具（提案〇〇〇四三第六步）：断字一枚；句中之察点呼东道之断例，断例见标则抛断异。工线程有之，其缓冲递于主线程，主线程以时段置标（试而已）。
+  // 汉语：打断检查点的用具（提案 00043 第六步）：一个标志字；句子里的检查点调用宿主给的打断例程，例程见到标志就抛专用异常。工作线程里有，缓冲交给主线程，主线程按时段置标志（只供测试）。
+  const 打断字=new Int32Array(new SharedArrayBuffer(4));
+  const 造打断错=()=>{const 错=new Error('已打断');错.打断=true;return 错;};
+  let 打断已告=false;
+  const 告打断=()=>{if(!打断已告){打断已告=true;parentPort?.postMessage({种:'打断内存',缓冲:打断字.buffer});}};
+  const 打断之导入=模=>{
+    if(!WebAssembly.Module.imports(模).some(项=>项.module==='yuyan:browser/v1'))return {};
+    告打断();
+    return {'yuyan:browser/v1':{interrupt:()=>{if(Atomics.load(打断字,0)!==0)throw 造打断错();}}};
+  };
   // 文言：本进程之单元界：零号表、二异常之标与已装诸单元之出，诸单元共之（提案〇〇〇四三）。汉语：本进程的单元环境：零号表、两个异常标签与已装单元的导出，各单元共用（提案 00043）。
   let 单元界=null;
   const 取单元界=()=>单元界??={表:new WebAssembly.Table({element:'anyfunc',initial:0}),标签:{escape:new WebAssembly.Tag({parameters:['eqref','eqref']}),error:new WebAssembly.Tag({parameters:['eqref']})},导出们:new Map()};
@@ -357,7 +379,7 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     界.表.grow(元素数(字));
     const 单元={};
     for(const 导 of WebAssembly.Module.imports(模))if(导.module==='单元'){if(!界.导出们.has(导.name))throw Error('单元导入未找到：'+导.name+'（'+名+'）');单元[导.name]=界.导出们.get(导.name);}
-    const 实例=new WebAssembly.Instance(模,{...造导入(模),运行时:{表:界.表,表基:new WebAssembly.Global({value:'i32',mutable:false},基),escape:界.标签.escape,error:界.标签.error},单元});
+    const 实例=new WebAssembly.Instance(模,{...造导入(模),运行时:{表:界.表,表基:new WebAssembly.Global({value:'i32',mutable:false},基),escape:界.标签.escape,error:界.标签.error},单元,...打断之导入(模)});
     for(const [出名,值] of Object.entries(实例.exports))界.导出们.set(出名,值);
     return 实例;
   }
@@ -369,18 +391,25 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
       实例.exports._start();
     }
   }
-  // 文言：装网汇单元（构建宿主，提案〇〇〇四三）：装一单元于本进程，暂以所予之参与程名行其 _start，返则复之；零为成，不能装或抛非豫言之误者印其由而返一，退出照传。
-  // 汉语：「装网汇单元」（构建宿主服务，提案 00043）：把一个单元装进本进程，暂以给定的参数与程序名运行它的 _start，返回后恢复；零为成功，装不进或抛出宿主错误时印出原因、返回一，退出照常往外传。
+  // 文言：装网汇单元（构建宿主，提案〇〇〇四三）：装一单元于本进程，暂以所予之参与程名行其 _start，返则复之；零为成，不能装或抛非豫言之误者印其由而返一，退出照传；为察点所断则返二。
+  // 汉语：「装网汇单元」（构建宿主服务，提案 00043）：把一个单元装进本进程，暂以给定的参数与程序名运行它的 _start，返回后恢复；零为成功，装不进或抛出宿主错误时印出原因、返回一，退出照常往外传；被检查点打断时返回二（提案 00043 第六步）。
   构建基础实现.装网汇单元=(字,参们,名)=>{
     const 旧名=今程序名,旧参=今客参数;
     今程序名=文(缓(名));今客参数=参们.map(项=>文(缓(项)));
-    try{装一单元(缓(字),今程序名).exports._start();return 0;}
-    catch(错){if(错?.退出码!==undefined)throw 错;写输出(2,Buffer.from('装网汇单元：'+(错?.stack??错)+'\n'));return 1;}
+    try{
+      Atomics.store(打断字,0,0);
+      装一单元(缓(字),今程序名).exports._start();return 0;
+    }
+    catch(错){
+      if(错?.退出码!==undefined)throw 错;
+      if(错?.打断){Atomics.store(打断字,0,0);return 2;}
+      写输出(2,Buffer.from('装网汇单元：'+(错?.stack??错)+'\n'));return 1;
+    }
     finally{今程序名=旧名;今客参数=旧参;}
   };
   let 退出码=0;
   // 文言：_start 先行静态之初置，乃召入口之函。汉语：_start 先做静态初始化，再调用入口函数「入口」（提案 00006）。
-  try{if(单元目录)装入单元们(单元目录);else new WebAssembly.Instance(模块,{...造导入(模块)}).exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}
+  try{if(单元目录)装入单元们(单元目录);else new WebAssembly.Instance(模块,{...造导入(模块),...打断之导入(模块)}).exports._start();}catch(错){if(错.退出码===undefined)throw 错;退出码=错.退出码;}finally{文件能力.清理();终端输入.退出();}
   // 文言：承构志之工务，书定标行；显设 豫言诺驿统计 者，仍书旧详数。旧通调已删，其调用数为零。汉语：仅继承构建日志的 worker 写 marker 行；显式 豫言诺驿统计 仍保留详细 JSON；宿主调用数字段计旧通用调用，删除后为零。
   const 工务任务=本工.编译线程||本工.参数?.includes('--mode=worker');
   const 工务统计=工务任务&&!!process.env.豫言构建日志运行;

@@ -51,6 +51,10 @@ function 元素数(字) {
 
 let 控制 = null, 数据 = null, 桥模块 = null;
 const 模块缓存 = new Map();
+// 文言：辍察之具（提案〇〇〇四三第六步）：诸句共用一断字；主线程置标，句中之察点呼宿主之断例，断例见标则抛断异。
+// 汉语：打断检查点的用具（提案 00043 第六步）：各单元共用同一个标志字；主线程置位，句子里的检查点调用宿主给的打断例程，例程见到标志就抛出专用异常。
+const 打断字 = new Int32Array(new SharedArrayBuffer(4));
+const 造打断错 = () => { const 错 = new Error('已打断'); 错.打断 = true; return 错; };
 
 // 文言：问于主线程而候其答；答长逾共享之区则分块续取。汉语：向主线程提问并阻塞等答复：控制字 0 置 0 后发消息，主线程写好答复后置 1（成）或 2（错）并唤醒；
 //   答复比共享数据区长时分块，取完一块再发“续”取下一块。错时答复是错误文字，这里抛 JS 异常（与 Node 工具宿主读不存在的文件时一样，客体随之中止）。
@@ -186,13 +190,21 @@ function 运行(任务) {
     取卷沙二五六: 名 => 问(号, '摘要', 径(名)),
     // 文言：帛之页散（同诺驿宿主）：每页一段求沙二五六而相连；浏览器之摘要惟异步，故问于主线程。汉语：字节串按页分段求沙二五六后相连（同诺驿宿主）；浏览器只有异步摘要，所以交主线程算。
     帛页杂凑沙二五六: (字, 页) => 问(号, '页杂凑', 字.slice(), Number(页)),
-    // 文言：装网汇单元（提案〇〇〇四三）：装一单元于本进程，暂以所予之参与程名行其 _start，返则复之；零为成，余印其由而返一，退出照传。
+    // 文言：装网汇单元（提案〇〇〇四三）：装一单元于本进程，暂以所予之参与程名行其 _start，返则复之；零为成，余印其由而返一，退出照传；为察点所断则返二。
     // 汉语：「装网汇单元」（提案 00043）：把一个单元装进本进程，暂以给定的参数与程序名运行它的 _start，返回后恢复；零为成功，装不进或抛出宿主错误时印出原因、返回一，退出照常往外传。
+    //   被检查点打断时返回二（提案 00043 第六步）：不印错误，由会话印“已打断”。装句前清标，编句期间按下的打断不带到这一句。
     装网汇单元: (字, 参们, 名) => {
       const 旧名 = 程序名, 旧参 = 参数;
       程序名 = 文(名); 参数 = Array.from(参们, 文);
-      try { 装一单元(字.slice(), 程序名).exports._start(); return 0; }
-      catch (错) { if (错?.退出码 !== undefined) throw 错; 出(2, 编码器.encode('装网汇单元：' + (错?.stack ?? 错) + '\n')); return 1; }
+      try {
+        Atomics.store(打断字, 0, 0);
+        装一单元(字.slice(), 程序名).exports._start(); return 0;
+      }
+      catch (错) {
+        if (错?.退出码 !== undefined) throw 错;
+        if (错?.打断) { Atomics.store(打断字, 0, 0); return 2; }
+        出(2, 编码器.encode('装网汇单元：' + (错?.stack ?? 错) + '\n')); return 1;
+      }
       finally { 程序名 = 旧名; 参数 = 旧参; }
     },
     单元现况,
@@ -212,13 +224,15 @@ function 运行(任务) {
       单元[导.name] = 单元界.导出们.get(导.name);
     }
     const 运行时 = {表: 单元界.表, 表基: new WebAssembly.Global({value: 'i32', mutable: false}, 基), escape: 单元界.标签.escape, error: 单元界.标签.error};
-    const 实例 = new WebAssembly.Instance(模, {...造边界导入(模, 桥, 诸实现), 运行时, 单元});
+    // 文言：辍察之一导入（提案〇〇〇四三第六步）：断例，诸单元共之，例读断字，见标则抛。
+    // 汉语：打断检查点的一个导入（提案 00043 第六步）：打断例程，各单元共用；例程读标志字，见标就抛。
+    const 实例 = new WebAssembly.Instance(模, {...造边界导入(模, 桥, 诸实现), 运行时, 单元, 'yuyan:browser/v1': {interrupt: () => { if (Atomics.load(打断字, 0) !== 0) throw 造打断错(); }}});
     for (const [出名, 值] of Object.entries(实例.exports)) 单元界.导出们.set(出名, 值);
     return 实例;
   };
   const 桥 = new WebAssembly.Instance(桥模块).exports;
   const 模块 = 任务.模块;
-  const 实例 = new WebAssembly.Instance(模块, 造边界导入(模块, 桥, 诸实现));
+  const 实例 = new WebAssembly.Instance(模块, {...造边界导入(模块, 桥, 诸实现), 'yuyan:browser/v1': {interrupt: () => { if (Atomics.load(打断字, 0) !== 0) throw 造打断错(); }}});
   // 文言：有独栈之能则用之，免深调之溢。汉语：有 JSPI 时在独立的 Wasm 栈上执行，避免工作线程的栈太小、编译器深递归溢出。
   const 异步 = typeof WebAssembly.promising === 'function';
   return async () => {
@@ -231,6 +245,7 @@ self.onmessage = async ({data: 消息}) => {
     控制 = new Int32Array(消息.控制);
     数据 = new Uint8Array(消息.数据);
     桥模块 = 消息.桥模块;
+    self.postMessage({种: '打断内存', 缓冲: 打断字.buffer});
     return;
   }
   if (消息.种 !== '运行') return;

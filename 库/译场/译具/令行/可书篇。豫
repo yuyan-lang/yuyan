@@ -58,6 +58,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --六十四位地址                       底层模式：内存声明改为六十四位地址并取最大页数（堆可到 64 TiB 以上），默认关；原生产物不开也按六十四位地址
     --三十二位地址                       底层模式：所有内存声明按三十二位地址（只做性能对比用），默认关
     --浏览器检查点                       最终模块装入浏览器宿主的顶层异常处理器与时限检查点（导入 yuyan:browser/v1 的 fail、check），默认关
+    --打断检查点                         最终模块装入打断检查点（导入 yuyan:browser/v1 的 interrupt；函首与每个跳转之前调用它，宿主读共享标志并抛打断异常），默认关
     编译输入须由 豫构 提供包上下文，不再提供特殊标准库搜索路径。
     --whole-program-opt                  使用全局编译优化
     --do-not-optimize                    不执行优化
