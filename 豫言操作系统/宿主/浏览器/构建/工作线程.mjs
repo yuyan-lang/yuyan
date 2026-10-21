@@ -4,7 +4,7 @@
 //   页面须跨源隔离（crossOriginIsolated），才有 SharedArrayBuffer。标准库与构建基础的带类型导入经共用胶水 边界.mjs 接入。
 import {造边界导入} from './边界.mjs';
 import {解码值} from './编码.mjs';
-import {造豫寓实现, 单元现况} from './豫寓.mjs';
+import {造豫寓实现, 单元现况, 清声流} from './豫寓.mjs';
 
 const 编码器 = new TextEncoder(), 解码器 = new TextDecoder();
 const 文 = 值 => 值 instanceof Uint8Array ? 解码器.decode(值) : String(值);
@@ -55,10 +55,14 @@ const 模块缓存 = new Map();
 // 文言：问于主线程而候其答；答长逾共享之区则分块续取。汉语：向主线程提问并阻塞等答复：控制字 0 置 0 后发消息，主线程写好答复后置 1（成）或 2（错）并唤醒；
 //   答复比共享数据区长时分块，取完一块再发“续”取下一块。错时答复是错误文字，这里抛 JS 异常（与 Node 工具宿主读不存在的文件时一样，客体随之中止）。
 function 问(号, 名, ...参) { return 传问(号, 名, [], ...参); }
-// 文言：传问：并移所列之缓于主线程（像素之帧免其拷贝；移后本线程不复用之）。汉语：同「问」，另把所列的缓冲移交给主线程（像素帧免拷贝；移交后本线程不再用它们）。
+// 文言：传问：并移所列之缓于主线程（像素之帧免其拷贝；移后本线程不复用之）；环形之缓（SharedArrayBuffer）则附于信，与主线程共之。
+// 汉语：同「问」，另把所列的缓冲移交给主线程（像素帧免拷贝；移交后本线程不再用它们）；共享的环形缓冲（SharedArrayBuffer）附在消息上，
+//   与主线程共用（它不能移交，只能共享）。
 function 传问(号, 名, 传们, ...参) {
   Atomics.store(控制, 0, 0);
-  self.postMessage({种: '调', 号, 名, 参}, 传们);
+  const 移们 = [], 环们 = [];
+  for (const 项 of 传们) (typeof SharedArrayBuffer === 'function' && 项 instanceof SharedArrayBuffer ? 环们 : 移们).push(项);
+  self.postMessage({种: '调', 号, 名, 参, 环: 环们[0]}, 移们);
   for (;;) {
     while (Atomics.load(控制, 0) === 0) Atomics.wait(控制, 0, 0);
     const 状态 = Atomics.load(控制, 0), 总长 = 控制[1];
@@ -80,6 +84,8 @@ function 传问(号, 名, 传们, ...参) {
 
 function 运行(任务) {
   const {号, 环境} = 任务;
+  // 文言：一程既毕则弃其声流之表（行在已因其毕而阖之）。汉语：一个程序跑完就丢掉它的声流表（行在已随它的结束关掉了这些流）。
+  清声流();
   // 文言：程名与参可暂易（装网汇单元时，提案〇〇〇四三）。汉语：程序名与命令行参数可临时替换（「装网汇单元」运行单元时，提案 00043）。
   let 程序名 = 任务.程序名, 参数 = 任务.参数;
   let 当前目录 = 任务.目录;
