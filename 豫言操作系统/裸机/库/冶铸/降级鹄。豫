@@ -630,6 +630,8 @@
 　，『取当前目录宽』与『GetCurrentDirectoryW』与『kernel32.dll』与（「列」【「零」，「一」】）与「一」
 　，『设当前目录宽』与『SetCurrentDirectoryW』与『kernel32.dll』与（「列」【「一」】）与「一」
 　，『取环境变量宽』与『GetEnvironmentVariableW』与『kernel32.dll』与（「列」【「一」，「一」，「零」】）与「一」
+　，『取环境串宽』与『GetEnvironmentStringsW』与『kernel32.dll』与（「罄」以「数」）与「一」
+　，『释环境串宽』与『FreeEnvironmentStringsW』与『kernel32.dll』与（「列」【「六」】）与「一」
 　，『取性能计数』与『QueryPerformanceCounter』与『kernel32.dll』与（「列」【「一」】）与「一」
 　，『取性能计数频率』与『QueryPerformanceFrequency』与『kernel32.dll』与（「列」【「一」】）与「一」
 　，『取精确文件时间』与『GetSystemTimePreciseAsFileTime』与『kernel32.dll』与（「列」【「一」】）与「零」
