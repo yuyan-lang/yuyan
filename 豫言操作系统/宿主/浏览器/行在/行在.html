@@ -37,7 +37,7 @@ import {起行在} from './行在.mjs';
 import {造终端} from './终端.mjs';
 const 屏 = document.getElementById('屏'), 键 = document.getElementById('键'), 状态 = document.getElementById('状态');
 let 会话 = null;
-const 终端 = 造终端({屏, 键, 送: 文 => 会话?.送入(文), 原始: () => 会话?.原始() ?? true});
+const 终端 = 造终端({屏, 键, 送: 文 => 会话?.送入(文), 原始: () => 会话?.原始() ?? true, 断: () => 会话?.打断()});
 // 汉语：快照缺省取同目录的 源.tar.gz 与 工具.tar.gz，桌面的两个程序在 桌面.tar.gz（第一次进桌面才取）；本机测试可用网址参数 源=、工具=、桌面= 另指。
 // 文言：快照默取同目之源、工具二档，桌面二程在桌面之档（初入桌面乃取）；本机之试可以网址之参另指。
 const 参 = new URLSearchParams(location.search);
