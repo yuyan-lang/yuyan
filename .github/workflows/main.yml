@@ -232,6 +232,88 @@ jobs:
       - name: 运行本片测试
         run: ./全树测试。林纳。豫行 --分片 ${{ matrix.shard }}/20
 
+  # 文言：抽样之轮行验收之层：全量之轮及可取公数者，依提交号末位四、五而星，手发者必行；余轮不行，验层仍留本机手行。
+  # 汉语：抽样轮次运行验收层：完整轮数与可取公开数据者，按提交号末位 4、5 抽样，手动触发必跑；其余轮次不跑，验收层仍由本机手工运行。
+  acceptance-sampled:
+    name: 抽样验收层
+    needs: bootstrap
+    if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '4') || endsWith(github.sha, '5')
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: 测试工具
+          path: ${{ runner.temp }}
+
+      - name: 解开全树测试工具
+        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
+
+      # 文言：验收层所须公数，皆取定址：统一码十八版之 IdnaTestV2、msgpack-test-suite 定提交（MIT）；统一码升版则与同文之数并改。
+      # 汉语：验收层需要的公开数据都从固定地址取：Unicode 18.0.0 的 IdnaTestV2、msgpack-test-suite 固定提交（MIT 许可）；Unicode 升版时连同同文的数据一起改。
+      - name: 取验收层公开数据
+        run: |
+          mkdir -p dist/验收数据
+          curl -fsSL https://www.unicode.org/Public/18.0.0/idna/IdnaTestV2.txt -o dist/验收数据/IdnaTestV2.txt
+          curl -fsSL https://raw.githubusercontent.com/kawanet/msgpack-test-suite/e04f6edeaae589c768d6b70fcce80aa786b7800e/dist/msgpack-test-suite.json -o dist/验收数据/消息包参考向量.json
+
+      - name: 验收层：公开数据与默认集小种子
+        run: |
+          ./全树测试。林纳。豫行 --验收 --只 库/群书/仓颉部/同文/测试/全量/
+          ./全树测试。林纳。豫行 --验收 --只 库/群书/簿式部/简象/测试/全量/
+
+      - name: 构建云工持久对象壳一致性应用
+        run: |
+          ./豫构。林纳。豫行 发行 云工 豫言操作系统/宿主/云工/一致性验证/应用/持久对象壳一致性应用 dist/持久对象壳一致性应用
+          cp 豫言操作系统/宿主/云工/物桥.mjs dist/持久对象壳一致性应用/
+
+      - name: 验收层：云工持久对象壳
+        env:
+          持久对象壳产物: ${{ github.workspace }}/dist/持久对象壳一致性应用
+        run: ./全树测试。林纳。豫行 --验收 --只 豫言操作系统/宿主/云工/一致性验证/
+
+      - name: 安装扩展依赖
+        run: npm --prefix 应用/百工坊/yuyan-vscode ci
+
+      - name: 验收层：VS Code 语法高亮核验
+        run: ./全树测试。林纳。豫行 --验收 --只 应用/百工坊/yuyan-vscode/
+
+      # 文言：全量之轮。常集以参数唯行一分，此则不带参而尽行之；封套官方之全逾三十分，故径行而不经全树之器。
+      # 汉语：完整轮数。默认集用参数只跑一部分，这里不带参数跑完整轮；封套官方完整一轮超过三十分钟，所以直接运行而不经全树测试的时限。
+      - name: 构建完整轮数的程序
+        run: |
+          mkdir -p dist/验收层
+          ./豫构。林纳。豫行 文件 库/群书/仓颉部/同文/测试/全量/域名百万变异。测试。豫 --输出 dist/验收层/域名百万变异 -j 12
+          ./豫构。林纳。豫行 文件 库/群书/仓颉部/同文/测试/全量/模糊核验。测试。豫 --输出 dist/验收层/模糊核验 -j 12
+          ./豫构。林纳。豫行 文件 库/群书/仓颉部/正则全量测试/正则模糊。测试。豫 --输出 dist/验收层/正则模糊 -j 12
+          ./豫构。林纳。豫行 文件 库/群书/簿式部/简册/测试/全量/变异。测试。豫 --输出 dist/验收层/简册变异 -j 12
+          ./豫构。林纳。豫行 文件 库/群书/仓颉部/易码/测试/编码模糊。测试。豫 --输出 dist/验收层/编码模糊 -j 12
+          ./豫构。林纳。豫行 文件 库/群书/阴书部/阴书/测试/全量/封套官方。测试。豫 --输出 dist/验收层/封套官方 -j 12
+
+      - name: 完整轮数：域名百万变异
+        run: timeout 3600 ./dist/验收层/域名百万变异
+
+      - name: 完整轮数：模糊核验
+        run: timeout 3600 ./dist/验收层/模糊核验
+
+      - name: 完整轮数：正则模糊
+        run: timeout 3600 ./dist/验收层/正则模糊
+
+      - name: 完整轮数：简册变异
+        run: timeout 3600 ./dist/验收层/简册变异
+
+      - name: 完整轮数：编码模糊
+        run: timeout 5400 ./dist/验收层/编码模糊
+
+      - name: 完整轮数：封套官方
+        run: timeout 5400 ./dist/验收层/封套官方 完整
+
   # 文言：交叉之工具链：取自举所成之原生豫构，于 Linux 径出他平台之原生豫构（林檎臂六十四、Linux 臂六十四、轩窗兼容六十四），与执行器之树码同包；他平台之作以之原生起步，不用 Node 与 Wasm。待办事项：轩窗之降级未有六十四位址之内存，轩窗之豫构暂不能起。
   # 汉语：交叉工具链：用自举作业产出的原生豫构，在 Linux 上直出其他平台的原生豫构（macOS 臂六十四、Linux 臂六十四、Windows 兼容六十四），连同执行器汇编树码打成包；其他平台的作业用它原生起步，不用 Node 与 Wasm。待办事项：Windows 的降级还没有六十四位地址内存，执行器只有六十四位一种，Windows 原生豫构暂时起不来。
   cross-toolchains:
