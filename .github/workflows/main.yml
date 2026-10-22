@@ -1518,14 +1518,14 @@ jobs:
           if-no-files-found: ignore
 
 
-  # 文言：系统公测之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成 BIOS/UEFI 混合之 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType）；以 豫言操作系统/裸机/发行/系统版本。数据。豫 之版名其文件，算其 SHA-256，以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
-  # 汉语：系统公测发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的原生豫构，构建造盘工具 豫言系统。林纳。豫行 并造 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType）；按 豫言操作系统/裸机/发行/系统版本。数据。豫 的版本给文件命名，算 SHA-256，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
+  # 文言：系统之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成两架构之 BIOS/UEFI 混合 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType），造盘时盘上另书 /系统/版本。数据。豫；以 豫言操作系统/裸机/发行/系统版本。数据。豫 之版名其文件（yuyan-os-<文件名版本>-x86_64.iso 与 -aarch64.iso），二盘之 SHA-256 合为一 SHA256SUMS，有署名 SHA256SUMS.sig（「签发发行清单」一步所出）则并传之；以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
+  # 汉语：系统发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的原生豫构，构建造盘工具 豫言系统。林纳。豫行 并造两种架构的 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType），造盘时盘上另写 /系统/版本。数据。豫；按 豫言操作系统/裸机/发行/系统版本。数据。豫 的版本给文件命名（yuyan-os-<文件名版本>-x86_64.iso 与 -aarch64.iso），两张光盘的 SHA-256 合成一份 SHA256SUMS，有签名 SHA256SUMS.sig（「签发发行清单」一步生成）就一起上传，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
   os-release:
-    name: 系统公测发行（x86-64 ISO）
+    name: 系统发行（x86-64 与 ARM64 ISO）
     needs: bootstrap
     if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/yybs')
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 150
     # 文言：同枝之发行不并行：行中者不罢，候者为后至者所代；草稿惟一，免二轮并改之。
     # 汉语：同一分支的发行作业不并行：正在运行的不取消，排队中的由更新的一轮顶替；草稿只有一份，避免两轮同时改它。
     concurrency:
@@ -1565,16 +1565,21 @@ jobs:
             echo "YY_OS_VERSION=$version"
             echo "YY_OS_FILE_VERSION=$file_version"
             echo "YY_OS_TAG=os-v$file_version"
-            echo "YY_OS_ISO=yuyan-os-$file_version-x86_64.iso"
+            echo "YY_OS_X86_ISO=yuyan-os-$file_version-x86_64.iso"
+            echo "YY_OS_ARM_ISO=yuyan-os-$file_version-aarch64.iso"
+            echo "YY_OS_SUMS=SHA256SUMS"
           } >> "$GITHUB_ENV"
 
       - name: 构建豫言系统工具
         run: ./豫构。林纳。豫行 目标 造盘工具 --不连带 -j "$(nproc)"
 
-      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 豫言系统 定之。
-      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 豫言系统 决定。
-      - name: 造混合启动 ISO
-        run: ./豫言系统。林纳。豫行 启动盘 --输出 启动介质 --预置 无
+      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 豫言系统 定之。二构各造一张，各入其目。
+      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 豫言系统 决定。两种架构各造一张光盘，各自放进自己的输出目录。
+      - name: 造混合启动 ISO（x86-64 与 ARM64）
+        run: |
+          set -euo pipefail
+          ./豫言系统。林纳。豫行 启动盘 --输出 启动介质 --预置 无
+          ./豫言系统。林纳。豫行 启动盘 --架构 臂六十四 --输出 启动介质臂 --预置 无
 
       # 文言：冒烟之试：QEMU 无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色；题壁之布始无窗，复按交替加回车启终端之窗而键 abc，验画有变；SeaBIOS 与 OVMF 各一。GitHub 之 Ubuntu 运行器有 /dev/kvm，先开其权以加速而试之，不过则不发；无 /dev/kvm 则改纯模拟而试之（甚缓）。纯模拟之数另步记之，不阻发行（议二四六）。
       # 汉语：冒烟测试：QEMU 无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色；题壁布局开场没有窗口，再按交替加回车开一个终端窗并键入 abc，核对画面有变化；SeaBIOS 与 OVMF 各跑一次。GitHub 的 Ubuntu 运行器有 /dev/kvm，先放开权限用 KVM 加速跑，不过就不发布；没有 /dev/kvm 就跑纯模拟（很慢）。纯模拟的用时不挡发行，另一步记下（议题 246）。
@@ -1605,21 +1610,22 @@ jobs:
         run: ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso
 
       # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
-      # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
+      # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，两张光盘的校验和一起写进 SHA256SUMS，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
       - name: 命名 ISO，算 SHA-256，生成发行说明
         run: |
           set -euo pipefail
           out=发行产物
           mkdir -p "$out"
-          cp 启动介质/豫言启动.iso "$out/$YY_OS_ISO"
-          (cd "$out" && sha256sum "$YY_OS_ISO" > "$YY_OS_ISO.sha256")
-          sha256="$(cut -d ' ' -f 1 "$out/$YY_OS_ISO.sha256")"
+          cp 启动介质/豫言启动.iso "$out/$YY_OS_X86_ISO"
+          cp 启动介质臂/豫言启动臂.iso "$out/$YY_OS_ARM_ISO"
+          (cd "$out" && sha256sum "$YY_OS_X86_ISO" "$YY_OS_ARM_ISO" > "$YY_OS_SUMS")
           repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
           fill() {
             sed -e "s|{{版本}}|$YY_OS_VERSION|g" \
               -e "s|{{文件名版本}}|$YY_OS_FILE_VERSION|g" \
-              -e "s|{{ISO文件}}|$YY_OS_ISO|g" \
-              -e "s|{{SHA256}}|$sha256|g" \
+              -e "s|{{兼容光盘}}|$YY_OS_X86_ISO|g" \
+              -e "s|{{臂光盘}}|$YY_OS_ARM_ISO|g" \
+              -e "s|{{校验文件}}|$YY_OS_SUMS|g" \
               -e "s|{{提交}}|$GITHUB_SHA|g" \
               -e "s|{{仓库}}|$repo_url|g" \
               "$1"
@@ -1677,8 +1683,14 @@ jobs:
           set -euo pipefail
           title="豫言操作系统 $YY_OS_VERSION"
           notes=发行产物/发行说明.md
-          iso="发行产物/$YY_OS_ISO"
-          sum="发行产物/$YY_OS_ISO.sha256"
+          iso1="发行产物/$YY_OS_X86_ISO"
+          iso2="发行产物/$YY_OS_ARM_ISO"
+          sum="发行产物/$YY_OS_SUMS"
+          sig="发行产物/$YY_OS_SUMS.sig"
+          assets=("$iso1" "$iso2" "$sum")
+          # 文言：有发行清单之署（SHA256SUMS.sig，由「签发发行清单」一步所作）则并传之。
+          # 汉语：有发行清单的签名（SHA256SUMS.sig，由「签发发行清单」一步生成）就一起上传。
+          if [ -f "$sig" ]; then assets+=("$sig"); fi
           err="$RUNNER_TEMP/gh-release-view.err"
           if draft="$(gh release view "$YY_OS_TAG" --json isDraft --jq .isDraft 2>"$err")"; then
             if [ "$draft" != true ]; then
@@ -1691,10 +1703,10 @@ jobs:
             while IFS= read -r name; do
               gh release delete-asset "$YY_OS_TAG" "$name" --yes < /dev/null
             done < "$RUNNER_TEMP/old-assets.txt"
-            gh release upload "$YY_OS_TAG" "$iso" "$sum" --clobber
+            gh release upload "$YY_OS_TAG" "${assets[@]}" --clobber
           elif grep -q 'release not found' "$err"; then
             gh release create "$YY_OS_TAG" --draft --prerelease \
-              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes" "$iso" "$sum"
+              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes" "${assets[@]}"
           else
             cat "$err" >&2
             exit 1
