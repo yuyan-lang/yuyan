@@ -227,6 +227,14 @@
 　　于（「急就行脚本」于『function Ctor(a,b=2,...rest){this.n=a;}Ctor.prototype.read=function(){return this.n;};let originalPrototype=Ctor.prototype;let first=new Ctor(4);let initial=first instanceof Ctor&&first.constructor===Ctor&&first.read()===4&&originalPrototype.constructor===Ctor;Ctor.prototype={mark:3};let second=new Ctor(5);let replaced=second instanceof Ctor&&!(first instanceof Ctor)&&second.mark===3;function Count(a,b,...rest){}let named=function Inner(a,b,c){};let arrow=(a,b=3)=>a;let methods={read(a,b){return a;}};let deniedArrow=false;let deniedMethod=false;try{new arrow(2);}catch(e){deniedArrow=e instanceof TypeError&&e.name==="TypeError";}try{new methods.read(2);}catch(e){deniedMethod=e instanceof TypeError;}let keys=0;for(let key in Ctor)keys++;initial&&replaced&&Ctor.name==="Ctor"&&Ctor.length===1&&Count.length===2&&named.name==="Inner"&&named.length===3&&arrow.length===1&&methods.read.name==="read"&&methods.read.length===2&&!("prototype" in arrow)&&!("prototype" in methods.read)&&deniedArrow&&deniedMethod&&keys===0;』）
 　　于（「急就布尔」于「阳」））
 　于『捷思函数元数据原型与构造限制组合』。
+「：汉语：错误栈：先给出脚本地址，再在脚本里抛一个新错误并取回它的栈；栈的首行是名称与消息，次行是四个空格、at、地址、行与列（throw 从第一行第十一列起）。地址留在引擎里，下面不再改。
+　　文言：误栈之验：先授脚本之址，乃于脚本中抛一新误而取其栈；栈之首行为名与消息，次行为四空、at、地址、行与列（throw 自首行第十一列起）。址留于引擎，下不复改。：」
+令「无」为「急就设源址」于「址」曰『https://example.test/栈』而
+「断言」
+　于（「急就严格等」
+　　于（「急就行脚本」于『let s;try{throw new TypeError("坏");}catch(e){s=e.stack;}s;』）
+　　于（「急就字符串值」于（「急就文字自串」于『TypeError: 坏「：换行：」    at https://example.test/栈:1:11』）））
+　于『捷思错误栈含抛点行列』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let base={n:10};function sum(a,b){return this.n+a+b;}let callResult=sum.call(base,1,2);let applyResult=sum.apply(base,{0:3,1:4,length:2});let borrowed=Function.prototype.call.call(sum,base,1,2);let bound=sum.bind(base,2);let rebound=bound.bind({n:99},3);let boundResult=bound.call({n:99},3);function Ctor(a,b){this.n=a+b;}let BoundCtor=Ctor.bind({n:99},4);let built=new BoundCtor(5);let ctorState=built.n===9&&built instanceof Ctor&&built instanceof BoundCtor&&built.constructor===Ctor&&BoundCtor.prototype===undefined;let denied=false;try{new Function.prototype();}catch(e){denied=e instanceof TypeError;}let dynamicBase=7;function factory(){let dynamicBase=100;return new Function("a","b","return dynamicBase+a+b;");}let dynamic=factory();function count(){return arguments.length;}callResult===13&&applyResult===17&&borrowed===13&&boundResult===15&&rebound()===15&&bound.name==="bound sum"&&bound.length===1&&rebound.length===0&&bound instanceof Function&&sum.constructor===Function&&ctorState&&denied&&dynamic(1,2)===10&&dynamic.name==="anonymous"&&dynamic.length===2&&dynamic instanceof Function&&Function()()===undefined&&Function.prototype()===undefined&&count.apply(null,null)===0;』）
