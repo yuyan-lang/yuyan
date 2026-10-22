@@ -119,7 +119,7 @@
 　「有一」以「文」于（得「某」而「文同」于「某」于「名」）于（「信息」中「标志们」）
 也。
 
-「：汉语：尚未实现的提案语法与内建（import defer、源阶段导入、装饰器、ShadowRealm、Temporal、显式资源管理、文本与字节导入）：前言 features 里列了它们的测试记为跳过。
+「：汉语：尚未实现的提案语法与内建（import defer、源阶段导入、装饰器、ShadowRealm、Temporal、显式资源管理、文本与字节导入、不可变数组缓冲区）：前言 features 里列了它们的测试记为跳过。
 　　文言：未施之提案语法及内建（import defer、源阶段之导入、装饰器、ShadowRealm、Temporal、显式资源之管、文与字节之导入）：前言 features 中列之者，其试记为跳。：」
 「未实现特性们」乃化「有」为（「列」于「文」）者也。
 「未实现特性们」者得「无」而
@@ -135,22 +135,32 @@
 　，『import-bytes』
 　，『await-dictionary』
 　，『tail-call-optimization』
+　，『immutable-arraybuffer』
 　】
 也。
 
-「：汉语：需要本运行器没有提供的宿主能力的测试记为跳过：$262 的 createRealm、agent、IsHTMLDDA、detachArrayBuffer、AbstractModuleSource，要求能阻塞线程的标志，以及尚未实现的提案特性。
-　　文言：需此运行器所无之宿主能力之试记为跳：$262 之 createRealm、agent、IsHTMLDDA、detachArrayBuffer、AbstractModuleSource，要求能阻塞线程之标，及未施之提案特性。：」
+「：汉语：需要本运行器没有提供的宿主能力的测试记为跳过：$262 的 createRealm、agent、IsHTMLDDA、detachArrayBuffer、AbstractModuleSource，测试线程能否阻塞的标志（CanBlockIsTrue 与 CanBlockIsFalse），以及尚未实现的提案特性。
+　　文言：需此运行器所无之宿主能力之试记为跳：$262 之 createRealm、agent、IsHTMLDDA、detachArrayBuffer、AbstractModuleSource，试线程能否阻之标（CanBlockIsTrue 与 CanBlockIsFalse），及未施之提案特性。：」
 「应跳过吗」乃化「文」又化「测试元数据」为「爻」者也。
 「应跳过吗」者得「源」又得「信息」而
-　「或」
-　　于（「有一」以「文」
+　（
+　　「有一」以「文」
 　　　于（得「某」而「文含」于「某」于「源」）
-　　　于（「列」【『$262.createRealm』，『$262.agent』，『$262.IsHTMLDDA』，『$262.detachArrayBuffer』，『$262.AbstractModuleSource』】））
-　　于（「或」
-　　　于（「有标志吗」于「信息」于『CanBlockIsTrue』）
-　　　于（「有一」以「文」于（得「某」而「有一」以「文」于（得「候」而「文同」于「候」于「某」）于（「未实现特性们」于「元」））于（「信息」中「特性们」）））
+　　　于（「列」【『$262.createRealm』，『$262.agent』，『$262.IsHTMLDDA』，『$262.detachArrayBuffer』，『$262.AbstractModuleSource』】）
+　）
+　或（
+　　（
+　　　（「有标志吗」于「信息」于『CanBlockIsTrue』）
+　　　或（「有标志吗」于「信息」于『CanBlockIsFalse』）
+　　）
+　　或
+　　（
+　　　「有一」以「文」
+　　　　于（得「某」而「有一」以「文」于（得「候」而「文同」于「候」于「某」）于（「未实现特性们」于「元」））
+　　　　于（「信息」中「特性们」）
+　　）
+　）
 也。
-
 「输出行们」者「置匣」以（「列」于「文」）于「罄」也。
 
 「：汉语：按解释规程拼出辅助脚本部分：非 raw 的测试先有 assert.js 与 sta.js，async 测试加 doneprintHandle.js，再是前言 includes 列出的文件。
