@@ -32,6 +32,11 @@
 　，『font-variation-settings』与『normal』与「阳」
 　，『font-optical-sizing』与『auto』与「阳」
 　，『font-size-adjust』与『none』与「阳」
+　，『font-synthesis』与『weight style small-caps position』与「阳」
+　，『font-synthesis-weight』与『auto』与「阳」
+　，『font-synthesis-style』与『auto』与「阳」
+　，『font-synthesis-small-caps』与『auto』与「阳」
+　，『font-synthesis-position』与『auto』与「阳」
 　，『font-language-override』与『normal』与「阳」
 　，『line-height』与『normal』与「阳」
 　，『letter-spacing』与『normal』与「阳」
@@ -78,6 +83,7 @@
 　，『text-indent』与『0』与「阳」
 　，『text-transform』与『none』与「阳」
 　，『image-rendering』与『auto』与「阳」
+　，『image-orientation』与『from-image』与「阳」
 　，『scrollbar-width』与『auto』与「阴」
 　，『text-shadow』与『none』与「阳」
 　，『caret-color』与『auto』与「阳」
