@@ -26,9 +26,11 @@
 寻观「急就」之「大数典」之书。
 寻观「急就」之「符号典」之书。
 寻观「急就」之「缓冲内建」之书。
+寻观「急就」之「共享缓冲内建」之书。
 寻观「急就」之「类型数组内建」之书。
 寻观「急就」之「类型数组诸法」之书。
 寻观「急就」之「数据视图内建」之书。
+寻观「急就」之「原子内建」之书。
 寻观「急就」之「随俗典」之书。
 寻观「急就」之「代摄内建」之书。
 寻「豫章」之「形制」之「分厘」之书。
@@ -611,7 +613,7 @@
 　「元」
 也。
 
-「：汉语：通称新建全局环境（NewGlobalEnvironment）。造无父的根环境，依次装入 Function、Object、Array、类型数组、DataView、Proxy、RegExp、Date、Iterator、URI 编解码、JSON、Reflect、Math、String、Number、Boolean、Map、Set、弱容器、BigInt、Promise、Symbol、全局数值判定与解析、错误构造器、迭代别名与 eval，再把全局绑定抄成全局对象。
+「：汉语：通称新建全局环境（NewGlobalEnvironment）。造无父的根环境，依次装入 Function、Object、Array、ArrayBuffer、SharedArrayBuffer、Atomics、类型数组、DataView、Proxy、RegExp、Date、Iterator、URI 编解码、JSON、Reflect、Math、String、Number、Boolean、Map、Set、弱容器、BigInt、Promise、Symbol、全局数值判定与解析、错误构造器、迭代别名与 eval，再把全局绑定抄成全局对象。
 　　文言：新，始也；全局，无所不包也。造全局之境者，先立天根；次登百器，各依其序；终以所藏之绑抄为全局之物，使万名叫呼皆有所归。
 　　赋曰：新开一境作天根，百器依序入其门。函数物列先承位，求值藏后全局陈。：」
 「急就新全局境」乃化「有」为「急就境」者也。
@@ -630,6 +632,10 @@
 　令「无」为「急就初置名」于「境」于『Array』于「数组构造器」而
 　令「无」为「急就声明名」于「境」于『ArrayBuffer』于「阳」而
 　令「无」为「急就初置名」于「境」于『ArrayBuffer』于（「急就新缓冲构造器」于「对象原型」）而
+　令「无」为「急就声明名」于「境」于『SharedArrayBuffer』于「阳」而
+　令「无」为「急就初置名」于「境」于『SharedArrayBuffer』于（「急就新共享缓冲构造器」于「对象原型」）而
+　令「无」为「急就声明名」于「境」于『Atomics』于「阳」而
+　令「无」为「急就初置名」于「境」于『Atomics』于（「急就新原子对象」于「对象原型」）而
 　令「无」为
 　　「叠」以「文」又以「有」
 　　　于（得「名称」又得「无」而
