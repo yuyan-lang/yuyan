@@ -547,19 +547,24 @@
 　「列」
 　【「组值」
 　　　【「名称」者『font-variant-ligatures』也
-　　　，「值」者「析样式组件」于（「变体类归」
-　　　　　于「词们」曰「词们」
-　　　　　于「类词们」曰（「列」
-　　　　　　【『common-ligatures』
-　　　　　　，『no-common-ligatures』
-　　　　　　，『discretionary-ligatures』
-　　　　　　，『no-discretionary-ligatures』
-　　　　　　，『historical-ligatures』
-　　　　　　，『no-historical-ligatures』
-　　　　　　，『contextual』
-　　　　　　，『no-contextual』
-　　　　　　】）
-　　　　　于『normal』）也
+　　　，「值」者「析样式组件」于（
+　　　　　若「无连」则
+　　　　　　『none』
+　　　　　否则
+　　　　　　（「变体类归」
+　　　　　　　于「词们」曰「词们」
+　　　　　　　于「类词们」曰（「列」
+　　　　　　　　【『common-ligatures』
+　　　　　　　　，『no-common-ligatures』
+　　　　　　　　，『discretionary-ligatures』
+　　　　　　　　，『no-discretionary-ligatures』
+　　　　　　　　，『historical-ligatures』
+　　　　　　　　，『no-historical-ligatures』
+　　　　　　　　，『contextual』
+　　　　　　　　，『no-contextual』
+　　　　　　　　】）
+　　　　　　　于『normal』）
+　　　　）也
 　　　，「重要」者「声明」中「重要」也
 　　　】
 　，「组值」
