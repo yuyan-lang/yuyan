@@ -163,6 +163,7 @@
 　，『overflow-y』与『visible』与「阴」
 　，『transform』与『none』与「阴」
 　，『transform-origin』与『50% 50%』与「阴」
+　，『transform-box』与『view-box』与「阴」
 　，『transform-style』与『flat』与「阴」
 　，『backface-visibility』与『visible』与「阴」
 　，『perspective』与『none』与「阴」
