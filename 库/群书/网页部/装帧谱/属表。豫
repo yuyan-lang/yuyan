@@ -179,6 +179,15 @@
 　，『scale』与『none』与「阴」
 　，『filter』与『none』与「阴」
 　，『clip-path』与『none』与「阴」
+　，『clip』与『auto』与「阴」
+　，『mask-image』与『none』与「阴」
+　，『mask-mode』与『match-source』与「阴」
+　，『mask-repeat』与『repeat』与「阴」
+　，『mask-position』与『0% 0%』与「阴」
+　，『mask-size』与『auto auto』与「阴」
+　，『mask-origin』与『border-box』与「阴」
+　，『mask-clip』与『border-box』与「阴」
+　，『mask-composite』与『add』与「阴」
 　，『content』与『normal』与「阴」
 　，『flex-grow』与『0』与「阴」
 　，『flex-shrink』与『1』与「阴」
