@@ -456,7 +456,9 @@ export function 创建界面订阅器({根, 全局, 投递, 已关闭 = () => fa
         Object.assign(体, {键: 事件.key, 代码: 事件.code, ctrl: 事件.ctrlKey, meta: 事件.metaKey, alt: 事件.altKey, shift: 事件.shiftKey,
           重复: Boolean(事件.repeat), 组字中: Boolean(事件.isComposing)});
       } else if (是鼠标事件(事件)) {
-        Object.assign(体, {ctrl: 事件.ctrlKey, meta: 事件.metaKey, alt: 事件.altKey, shift: 事件.shiftKey, 按钮: 事件.button});
+        // 文言：鼠标之事并携指处横纵，锦囊依之贴指。汉语：鼠标事件另带指针处横、纵坐标（视口像素），供锦囊按指针定位。
+        Object.assign(体, {ctrl: 事件.ctrlKey, meta: 事件.metaKey, alt: 事件.altKey, shift: 事件.shiftKey, 按钮: 事件.button,
+          横: Math.round(事件.clientX), 纵: Math.round(事件.clientY)});
       }
       if (名 === 'compositionstart' || 名 === 'compositionupdate' || 名 === 'compositionend') {
         体.组字中 = 名 !== 'compositionend';

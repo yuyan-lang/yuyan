@@ -88,6 +88,12 @@
 　，『text-underline-offset』与『auto』与「阳」
 　，『text-decoration-skip-ink』与『auto』与「阳」
 　，『white-space』与『normal』与「阳」
+　，『word-break』与『normal』与「阳」
+　，『overflow-wrap』与『normal』与「阳」
+　，『line-break』与『auto』与「阳」
+　，『hyphens』与『manual』与「阳」
+　，『tab-size』与『8』与「阳」
+　，『text-justify』与『auto』与「阳」
 　，『direction』与『ltr』与「阳」
 　，『writing-mode』与『horizontal-tb』与「阳」
 　，『visibility』与『visible』与「阳」
@@ -163,6 +169,7 @@
 　，『overflow-y』与『visible』与「阴」
 　，『transform』与『none』与「阴」
 　，『transform-origin』与『50% 50%』与「阴」
+　，『transform-box』与『view-box』与「阴」
 　，『transform-style』与『flat』与「阴」
 　，『backface-visibility』与『visible』与「阴」
 　，『perspective』与『none』与「阴」
