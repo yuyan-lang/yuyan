@@ -1636,6 +1636,28 @@ jobs:
           fi
           ls -l "$out"
 
+      # 文言：发行清单既成，有密 YY_OS_SIGN_KEY（三十二字种之十六进）则以之签 SHA256SUMS，作 SHA256SUMS.sig；无则越之而示警。（钩正联更，2026-10-21）
+      # 汉语：发行清单算好之后，有秘密 YY_OS_SIGN_KEY（三十二字节种子的小写十六进制）就用它签 发行产物/SHA256SUMS，写出 SHA256SUMS.sig；没有秘密就跳过并警告。清单还没由发行作业写出时也跳过并警告。
+      - name: 签发发行清单（有 YY_OS_SIGN_KEY 时）
+        env:
+          YY_OS_SIGN_KEY: ${{ secrets.YY_OS_SIGN_KEY }}
+        run: |
+          set -euo pipefail
+          out=发行产物
+          if [ ! -f "$out/SHA256SUMS" ]; then
+            echo "::warning::$out/SHA256SUMS 还不存在（发行作业尚未写出清单），跳过签名"
+            exit 0
+          fi
+          if [ -z "${YY_OS_SIGN_KEY:-}" ]; then
+            echo "::warning::没有设置秘密 YY_OS_SIGN_KEY，跳过 SHA256SUMS 的签名"
+            exit 0
+          fi
+          key="$RUNNER_TEMP/发行私钥"
+          trap 'rm -f "$key"' EXIT
+          printf '%s\n' "$YY_OS_SIGN_KEY" > "$key"
+          ./豫言系统。林纳。豫行 签发 "$out/SHA256SUMS" --钥 "$key"
+          ls -l "$out/SHA256SUMS" "$out/SHA256SUMS.sig"
+
       - name: 上传 ISO 构件
         uses: actions/upload-artifact@v4
         with:
