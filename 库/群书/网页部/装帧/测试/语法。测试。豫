@@ -16,6 +16,19 @@
 
 「：汉语：一个集成入口验证规则、嵌套组件、转义与声明恢复。
 　　文言：一口兼验规则、嵌套组件、转义及声明恢复。：」
+「：汉语：通称取掩值（mask declaration value）。在展开后的声明列里按长写名取值文，找不到得空串。
+　　文言：取掩值：于已展之声明列依长写之名取值文，不得则空。
+　　赋曰：按名取值自分明，掩中八目各归名。：」
+「取掩值」乃化（「列」于「样式声明」）又化「名」曰「文」为「文」者也。
+「取掩值」者得「声明们」又得「名」曰「名」而
+　「叠」以「样式声明」又以「文」
+　　于（得「声」又得「积」而
+　　　　若「文同」于（「声」中「名称」）于「名」则（「声明值文」于「声」）否则「积」
+　　　　）
+　　于『』
+　　于「声明们」
+也。
+
 「主」者
 　令「弹性」为「展简写声明」于（「冠」于（「析样式声明」于『flex:2 3 10px』））而
 　令「方向」为「展简写声明」于（「冠」于（「析样式声明」于『flex-flow:wrap column』））而
@@ -65,6 +78,36 @@
 　　　　　「元」
 　　否则
 　　　「告祸」以「有」于『列表样式简写展开错误』而
+　令「掩简」为「展简写声明」于（「冠」于（「析样式声明」于『mask:url(甲.svg) no-repeat center / contain』））而
+　令「无」为
+　　若「文同」于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩简」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」））））））于『mask-image=url(甲.svg)mask-position=    center  mask-size=  containmask-repeat=no-repeatmask-origin=border-boxmask-clip=border-boxmask-composite=addmask-mode=match-source』则
+　　　「元」
+　　否则
+　　　「告祸」以「有」于（「接」于『掩简全串错：』于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩简」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」）））））））而
+　令「掩层们」为「展简写声明」于（「冠」于（「析样式声明」于『mask:url(甲.svg), url(乙.svg) no-repeat』））而
+　令「无」为
+　　若「文同」于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩层们」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」））））））于『mask-image=url(甲.svg), url(乙.svg)mask-position=0% 0%,  mask-size=auto, automask-repeat=repeat, no-repeatmask-origin=border-box, border-boxmask-clip=border-box, border-boxmask-composite=add, addmask-mode=match-source, match-source』则
+　　　「元」
+　　否则
+　　　「告祸」以「有」于（「接」于『掩简两层错：』于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩层们」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」）））））））而
+　令「掩盒」为「展简写声明」于（「冠」于（「析样式声明」于『mask:url(甲.svg) content-box padding-box』））而
+　令「无」为
+　　若「文同」于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩盒」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」））））））于『mask-image=url(甲.svg)mask-position=   mask-size=automask-repeat=repeatmask-origin=content-boxmask-clip=padding-boxmask-composite=addmask-mode=match-source』则
+　　　「元」
+　　否则
+　　　「告祸」以「有」于（「接」于『掩简盒域错：』于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩盒」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」）））））））而
+　令「掩模」为「展简写声明」于（「冠」于（「析样式声明」于『mask:url(甲.svg) luminance subtract』））而
+　令「无」为
+　　若「文同」于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩模」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」））））））于『mask-image=url(甲.svg)mask-position=   mask-size=automask-repeat=repeatmask-origin=border-boxmask-clip=border-boxmask-composite=subtractmask-mode=luminance』则
+　　　「元」
+　　否则
+　　　「告祸」以「有」于（「接」于『掩简合成模式错：』于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩模」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」）））））））而
+　令「掩全」为「展简写声明」于（「冠」于（「析样式声明」于『mask:inherit』））而
+　令「无」为
+　　若「文同」于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩全」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」））））））于『mask-image=inheritmask-position=inheritmask-size=inheritmask-repeat=inheritmask-origin=inheritmask-clip=inheritmask-composite=inheritmask-mode=inherit』则
+　　　「元」
+　　否则
+　　　「告祸」以「有」于（「接」于『掩简全局错：』于（（「缀文」于（「遍」以「样式声明」又以「文」于「掩全」于（得「声」而「接」于（「声」中「名称」）于（「接」于『=』于（「声明值文」于「声」）））））））而
 　令「字体」为「展简写声明」于（「冠」于（「析样式声明」于『font:italic bold 20px/1.5 serif,monospace』））而
 　令「字体全局」为「展简写声明」于（「冠」于（「析样式声明」于『font:inherit』））而
 　令「字体对」为
