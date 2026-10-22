@@ -78,6 +78,7 @@
 　，『text-indent』与『0』与「阳」
 　，『text-transform』与『none』与「阳」
 　，『image-rendering』与『auto』与「阳」
+　，『image-orientation』与『from-image』与「阳」
 　，『scrollbar-width』与『auto』与「阴」
 　，『text-shadow』与『none』与「阳」
 　，『caret-color』与『auto』与「阳」
