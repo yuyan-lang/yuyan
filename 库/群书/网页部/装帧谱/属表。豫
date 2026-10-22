@@ -85,6 +85,7 @@
 　，『text-decoration-style』与『solid』与「阴」
 　，『text-decoration-color』与『currentcolor』与「阴」
 　，『text-decoration-thickness』与『auto』与「阴」
+　，『text-decoration-inset』与『0』与「阴」
 　，『text-underline-offset』与『auto』与「阳」
 　，『text-decoration-skip-ink』与『auto』与「阳」
 　，『white-space』与『normal』与「阳」
