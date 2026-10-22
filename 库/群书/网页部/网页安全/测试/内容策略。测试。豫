@@ -35,7 +35,11 @@
 　　　】
 　，「组值」
 　　　【「名」者『自身异源即禁』也
-　　　，「成」者「网页内容许可」于「策略」曰『script-src 'self'』于「来源」曰『https://a.example』于「目标」曰『https://b.example/x.js』于「目的」曰『script』也
+　　　，「成」者非（「网页内容许可」
+　　　　　于「策略」曰『script-src 'self'』
+　　　　　于「来源」曰『https://a.example』
+　　　　　于「目标」曰『https://b.example/x.js』
+　　　　　于「目的」曰『script』）也
 　　　】
 　，「组值」
 　　　【「名」者『协议通配许任意安全源』也
@@ -43,7 +47,11 @@
 　　　】
 　，「组值」
 　　　【「名」者『协议通配拒明文源』也
-　　　，「成」者「网页内容许可」于「策略」曰『default-src https:』于「来源」曰『https://a.example』于「目标」曰『http://b.example/x』于「目的」曰『image』也
+　　　，「成」者非（「网页内容许可」
+　　　　　于「策略」曰『default-src https:』
+　　　　　于「来源」曰『https://a.example』
+　　　　　于「目标」曰『http://b.example/x』
+　　　　　于「目的」曰『image』）也
 　　　】
 　，「组值」
 　　　【「名」者『主机明列』也
@@ -63,11 +71,11 @@
 　　　】
 　，「组值」
 　　　【「名」者『子域星点不含本域』也
-　　　，「成」者「网页内容许可」
+　　　，「成」者非（「网页内容许可」
 　　　　　于「策略」曰『img-src https://*.img.example』
 　　　　　于「来源」曰『https://a.example』
 　　　　　于「目标」曰『https://img.example/a.png』
-　　　　　于「目的」曰『image』也
+　　　　　于「目的」曰『image』）也
 　　　】
 　，「组值」
 　　　【「名」者『端口相符』也
@@ -79,11 +87,11 @@
 　　　】
 　，「组值」
 　　　【「名」者『端口不符即禁』也
-　　　，「成」者「网页内容许可」
+　　　，「成」者非（「网页内容许可」
 　　　　　于「策略」曰『default-src https://a.example:8443』
 　　　　　于「来源」曰『https://b.example』
 　　　　　于「目标」曰『https://a.example/x』
-　　　　　于「目的」曰『connect』也
+　　　　　于「目的」曰『connect』）也
 　　　】
 　，「组值」
 　　　【「名」者『目录前缀相符』也
@@ -95,11 +103,11 @@
 　　　】
 　，「组值」
 　　　【「名」者『目录前缀之外的路径即禁』也
-　　　，「成」者「网页内容许可」
+　　　，「成」者非（「网页内容许可」
 　　　　　于「策略」曰『default-src https://a.example/js/』
 　　　　　于「来源」曰『https://b.example』
 　　　　　于「目标」曰『https://a.example/css/x.css』
-　　　　　于「目的」曰『style』也
+　　　　　于「目的」曰『style』）也
 　　　】
 　，「组值」
 　　　【「名」者『样式不回落脚本令』也
@@ -119,11 +127,11 @@
 　　　】
 　，「组值」
 　　　【「名」者『重复令取首项』也
-　　　，「成」者「网页内容许可」
+　　　，「成」者非（「网页内容许可」
 　　　　　于「策略」曰『script-src https://a.example; script-src https://b.example』
 　　　　　于「来源」曰『https://c.example』
 　　　　　于「目标」曰『https://b.example/x.js』
-　　　　　于「目的」曰『script』也
+　　　　　于「目的」曰『script』）也
 　　　】
 　，「组值」
 　　　【「名」者『无相关令即放行』也
@@ -135,15 +143,19 @@
 　　　】
 　，「组值」
 　　　【「名」者『非none亦禁』也
-　　　，「成」者「网页内容许可」于「策略」曰『script-src 'none'』于「来源」曰『https://a.example』于「目标」曰『https://a.example/x.js』于「目的」曰『script』也
+　　　，「成」者非（「网页内容许可」
+　　　　　于「策略」曰『script-src 'none'』
+　　　　　于「来源」曰『https://a.example』
+　　　　　于「目标」曰『https://a.example/x.js』
+　　　　　于「目的」曰『script』）也
 　　　】
 　，「组值」
 　　　【「名」者『多份策略须皆许』也
-　　　，「成」者「网页内容许可」
+　　　，「成」者非（「网页内容许可」
 　　　　　于「策略」曰『script-src https://a.example, script-src https://b.example』
 　　　　　于「来源」曰『https://c.example』
 　　　　　于「目标」曰『https://a.example/x.js』
-　　　　　于「目的」曰『script』也
+　　　　　于「目的」曰『script』）也
 　　　】
 　】
 也。
@@ -155,20 +167,20 @@
 　「列」
 　【「组值」【「名」者『宽令许内联』也，「成」者「网页内辞许可」于「策略」曰『script-src 'unsafe-inline'』于「目的」曰『script』于「凭据」曰『』也】
 　，「组值」【「名」者『契符相同即许』也，「成」者「网页内辞许可」于「策略」曰『script-src 'nonce-abc'』于「目的」曰『script』于「凭据」曰『abc』也】
-　，「组值」【「名」者『有契而契不合则禁』也，「成」者「网页内辞许可」于「策略」曰『script-src 'nonce-abc'』于「目的」曰『script』于「凭据」曰『xyz』也】
+　，「组值」【「名」者『有契而契不合则禁』也，「成」者非（「网页内辞许可」于「策略」曰『script-src 'nonce-abc'』于「目的」曰『script』于「凭据」曰『xyz』）也】
 　，「组值」
 　　　【「名」者『有契时宽令失效』也
-　　　，「成」者「网页内辞许可」于「策略」曰『script-src 'unsafe-inline' 'nonce-abc'』于「目的」曰『script』于「凭据」曰『』也
+　　　，「成」者非（「网页内辞许可」于「策略」曰『script-src 'unsafe-inline' 'nonce-abc'』于「目的」曰『script』于「凭据」曰『』）也
 　　　】
 　，「组值」
 　　　【「名」者『有摘要时宽令失效』也
-　　　，「成」者「网页内辞许可」于「策略」曰『script-src 'unsafe-inline' 'sha256-AAAA'』于「目的」曰『script』于「凭据」曰『』也
+　　　，「成」者非（「网页内辞许可」于「策略」曰『script-src 'unsafe-inline' 'sha256-AAAA'』于「目的」曰『script』于「凭据」曰『』）也
 　　　】
 　，「组值」【「名」者『样式宽令独立』也，「成」者「网页内辞许可」于「策略」曰『style-src 'unsafe-inline'』于「目的」曰『style』于「凭据」曰『』也】
 　，「组值」【「名」者『脚本令不惠样式内联』也，「成」者「网页内辞许可」于「策略」曰『script-src 'unsafe-inline'』于「目的」曰『style』于「凭据」曰『』也】
 　，「组值」
 　　　【「名」者『多份内辞约皆须许』也
-　　　，「成」者「网页内辞许可」于「策略」曰『script-src 'unsafe-inline', script-src 'self'』于「目的」曰『script』于「凭据」曰『』也
+　　　，「成」者非（「网页内辞许可」于「策略」曰『script-src 'unsafe-inline', script-src 'self'』于「目的」曰『script』于「凭据」曰『』）也
 　　　】
 　】
 也。
@@ -214,9 +226,9 @@
 　　　　　于「目标」曰『https://b.example/x.js』
 　　　　　于「目的」曰『connect』也
 　　　】
-　，「组值」【「名」者『升级令命中』也，「成」者「网页内容升级」于『upgrade-insecure-requests』也】
-　，「组值」【「名」者『升级令在后续策略中亦命中』也，「成」者「网页内容升级」于『script-src 'self', upgrade-insecure-requests』也】
-　，「组值」【「名」者『无升级令即否』也，「成」者非（「网页内容升级」于『script-src 'self'』）也】
+　，「组值」【「名」者『升级令命中』也，「成」者「网页内容升级」于「策略」曰『upgrade-insecure-requests』也】
+　，「组值」【「名」者『升级令在后续策略中亦命中』也，「成」者「网页内容升级」于「策略」曰『script-src 'self', upgrade-insecure-requests』也】
+　，「组值」【「名」者『无升级令即否』也，「成」者非（「网页内容升级」于「策略」曰『script-src 'self'』）也】
 　】
 也。
 
@@ -277,21 +289,21 @@
 　　文言：沙盒之令：有值则取，无值则明无，值空则空。：」
 「断言」
 　于（
-　　鉴「网页内容沙盒」于『sandbox allow-scripts allow-forms』而
+　　鉴「网页内容沙盒」于「策略」曰『sandbox allow-scripts allow-forms』而
 　　　或有「可无」则「阴」
 　　　或有（「可有」于「值」）则「文同」于「值」于『allow-scripts allow-forms』
 　）
 　于『沙盒有值』。
 「断言」
 　于（
-　　鉴「网页内容沙盒」于『sandbox』而
+　　鉴「网页内容沙盒」于「策略」曰『sandbox』而
 　　　或有「可无」则「阴」
 　　　或有（「可有」于「值」）则「文同」于「值」于『』
 　）
 　于『沙盒空值』。
 「断言」
 　于（
-　　鉴「网页内容沙盒」于『script-src 'self'』而
+　　鉴「网页内容沙盒」于「策略」曰『script-src 'self'』而
 　　　或有「可无」则「阳」
 　　　或有（「可有」于「值」）则「阴」
 　）
