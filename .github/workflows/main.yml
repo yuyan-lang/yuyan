@@ -1576,32 +1576,33 @@ jobs:
       - name: 造混合启动 ISO
         run: ./豫言系统。林纳。豫行 启动盘 --输出 启动介质 --预置 无
 
-      # 文言：冒烟之试：QEMU 纯模拟无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色；题壁之布始无窗，复按交替加回车启终端之窗而键 abc，验画有变；SeaBIOS 与 OVMF 各一。不过则不发。
-      # 汉语：冒烟测试：QEMU 纯模拟无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色；题壁布局开场没有窗口，再按交替加回车开一个终端窗并键入 abc，核对画面有变化；SeaBIOS 与 OVMF 各跑一次，不过就不发布。
-      - name: 冒烟测试（SeaBIOS 与 OVMF）
+      # 文言：冒烟之试：QEMU 无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色；题壁之布始无窗，复按交替加回车启终端之窗而键 abc，验画有变；SeaBIOS 与 OVMF 各一。GitHub 之 Ubuntu 运行器有 /dev/kvm，先开其权以加速而试之，不过则不发；无 /dev/kvm 则改纯模拟而试之（甚缓）。纯模拟之数另步记之，不阻发行（议二四六）。
+      # 汉语：冒烟测试：QEMU 无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色；题壁布局开场没有窗口，再按交替加回车开一个终端窗并键入 abc，核对画面有变化；SeaBIOS 与 OVMF 各跑一次。GitHub 的 Ubuntu 运行器有 /dev/kvm，先放开权限用 KVM 加速跑，不过就不发布；没有 /dev/kvm 就跑纯模拟（很慢）。纯模拟的用时不挡发行，另一步记下（议题 246）。
+      - name: 冒烟测试（KVM 加速，SeaBIOS 与 OVMF）
         run: |
           set -euo pipefail
-          ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso
           code=""; vars=""
           for f in /usr/share/OVMF/OVMF_CODE.fd /usr/share/OVMF/OVMF_CODE_4M.fd; do if [ -f "$f" ]; then code=$f; fi; done
           for f in /usr/share/OVMF/OVMF_VARS.fd /usr/share/OVMF/OVMF_VARS_4M.fd; do if [ -f "$f" ]; then vars=$f; fi; done
           echo "OVMF：$code $vars"
-          ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --固件 "$code" --固件变量 "$vars"
-
-      # 文言：GitHub 之 Ubuntu 运行器有 /dev/kvm；开其权，以 KVM 加速复冒烟一次，记加速时按键至画变之时。此步惟记数，败不止发。
-      # 汉语：GitHub 的 Ubuntu 运行器有 /dev/kvm；放开权限后用 KVM 加速再跑一次冒烟，记下加速时按键到画面的用时。这一步只为记数，失败不挡发布。
-      - name: 冒烟测试（KVM 加速，只记数）
-        continue-on-error: true
-        run: |
-          set -euo pipefail
           if [ -e /dev/kvm ]; then
             echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
             sudo udevadm control --reload-rules
             sudo udevadm trigger --name-match=kvm
             ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --加速 kvm
+            ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --加速 kvm --固件 "$code" --固件变量 "$vars"
           else
-            echo "没有 /dev/kvm，跳过加速冒烟"
+            echo "::warning::没有 /dev/kvm，改跑纯模拟冒烟（很慢）"
+            ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso
+            ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --固件 "$code" --固件变量 "$vars"
           fi
+
+      # 文言：纯模拟之冒烟，惟记其数，败不止发（议二四六：纯模拟下「图形」至桌面首帧逾十五分钟，GitHub 运行器尤缓）。上步败亦行之，取其数以防后诊。
+      # 汉语：纯模拟冒烟只记数，失败不挡发布（议题 246：纯模拟下「图形」到桌面首帧超过十五分钟，GitHub 运行器更慢）。上一步失败也照跑，留个数供以后诊断。
+      - name: 冒烟测试（纯模拟，只记数）
+        if: always()
+        continue-on-error: true
+        run: ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso
 
       # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
       # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
