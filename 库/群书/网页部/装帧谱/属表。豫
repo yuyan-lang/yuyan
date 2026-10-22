@@ -251,6 +251,8 @@
 　，『scroll-padding』与（「列」【『scroll-padding-top』，『scroll-padding-right』，『scroll-padding-bottom』，『scroll-padding-left』】）
 　，『scroll-margin』与（「列」【『scroll-margin-top』，『scroll-margin-right』，『scroll-margin-bottom』，『scroll-margin-left』】）
 　，『place-items』与（「列」【『align-items』，『justify-items』】）
+　，『place-content』与（「列」【『align-content』，『justify-content』】）
+　，『place-self』与（「列」【『align-self』，『justify-self』】）
 　，『animation』
 　　　与（「列」
 　　　　【『animation-name』
