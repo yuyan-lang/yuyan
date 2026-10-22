@@ -7,6 +7,7 @@
 寻观「篇象」之「树操作」之书。
 寻观「篇象」之「样式接线」之书。
 寻观「篇象」之「择器接线」之书。
+寻观「篇象」之「呈现提示」之书。
 
 「：汉语：通称样式来源（style source）。把一张样式表记成三项：来源号、层号与解析后的规则列。来源号零为用户代理样式、一为作者样式；层号是「登样式层」给的序号，层叠时据此定先后。
 　　文言：源者，水之所自出也；式之所出，亦谓之源。其制三事：一曰来源，二曰层，三曰规则。来源别其所自，层定其先后，规则则已析之条也。
@@ -252,6 +253,62 @@
 
 「：汉语：带条件计算节点样式的实体：含伪元素为阳时再匹配 ::before、::after、::marker 的规则（祖先的样式只作继承用，不必算伪元素）；伪元素的声明文以「::名」为键并进元素的样式（名有 before、after、marker），盒树生成时再取出来层叠；它不是继承属性，子元素不会带上它。
 　　文言：带条件计算节点样式之体：含伪元素为阳，方复配 ::before、::after、::marker 之规（祖先之式唯供承袭，不必算伪元素）；伪元素之声明文，以「::名」为键并入元素之式（名有 before、after、marker），建盒树时复取而层叠；非承袭之性，子元素不承之。：」
+「：汉语：通称色属名。判断属性名是否取颜色长写，供声明解析期核对非法颜色。
+　　文言：属性之名取色否。
+　　赋曰：一列色名逐项陈，名同即是色之身。：」
+「色属名」乃化「文」为「爻」者也。
+「色属名」者得「名」而
+　「有一」以「文」
+　　于（得「提」而「文同」于「提」于「名」）
+　　于（「列」
+　　　【『color』
+　　　，『background-color』
+　　　，『border-top-color』
+　　　，『border-right-color』
+　　　，『border-bottom-color』
+　　　，『border-left-color』
+　　　，『border-block-start-color』
+　　　，『border-block-end-color』
+　　　，『border-inline-start-color』
+　　　，『border-inline-end-color』
+　　　，『outline-color』
+　　　，『text-decoration-color』
+　　　，『text-emphasis-color』
+　　　，『caret-color』
+　　　，『column-rule-color』
+　　　，『accent-color』
+　　　，『stop-color』
+　　　，『flood-color』
+　　　，『lighting-color』
+　　　，『-webkit-text-fill-color』
+　　　】）
+也。
+
+「：汉语：通称图属名。判断属性名是否取图像，供声明解析期核对 image-set。
+　　文言：属性之名取图否。
+　　赋曰：图像诸属性列陈，名同则问图集身。：」
+「图属名」乃化「文」为「爻」者也。
+「图属名」者得「名」而
+　「有一」以「文」
+　　于（得「提」而「文同」于「提」于「名」）
+　　于（「列」【『background-image』，『border-image-source』，『mask-image』，『-webkit-mask-image』，『content』，『list-style-image』】）
+也。
+
+「：汉语：通称滤候选。逐条核对层叠候选的声明：颜色属性的值在解析期解不出、图像属性的 image-set 没有可用选项时，丢掉这条候选，让级联退回前一条声明。
+　　文言：逐候核之：色值不解或图集无可用之候则去之，令级联退回前一条。
+　　赋曰：逐候巡来核其辞，色解不成即弃之；图集无候亦除去，前条复得立当时。：」
+「滤候选」乃化（「列」于「层叠候选」）为（「列」于「层叠候选」）者也。
+「滤候选」者得「诸项」而
+　「择」以「层叠候选」
+　　于（得「候」而
+　　　令「声」为「候」中「声明」而
+　　　令「名」为「样式小写」于（「声」中「名称」）而
+　　　令「值」为「声明值文」于「声」而
+　　　若「色属名」于「名」则「样式色合法」于「值」否则若「图属名」于「名」则「图集合规」于「值」否则「阳」
+　　）
+　　于「诸项」
+也。
+
 「带条件算节样式体」乃化「样式条件环境」又化「篇节」又化（「列」于「样式来源」）又化「爻」为「计算样式」者也。
 「带条件算节样式体」者得「环境」又得「节」又得「诸源」又得「含伪元素」而
 　令「父样」为
@@ -294,7 +351,20 @@
 　　　　，「次序」者「次」也
 　　　　】
 　　　）而
-　令「自身样」为「算样式变量」于（「级联算」于（「接列」于「规则候选」于「行内」）于「父样」）于「父样」而
+　令「呈现候选」为
+　　「遍」以「样式声明」又以「层叠候选」
+　　　于（「析样式声明」于（「节呈现文」于「节」））
+　　　于（得「声明」而
+　　　　「组值」
+　　　　【「声明」者「声明」也
+　　　　，「来源」者「一」也
+　　　　，「层」者「零」也
+　　　　，「行内」者「阴」也
+　　　　，「特异性」者「零特异性」于「元」也
+　　　　，「次序」者「负一」也
+　　　　】
+　　　）而
+　令「自身样」为「算样式变量」于（「级联算」于（「滤候选」于（「接列」于（「接列」于「呈现候选」于「规则候选」）于「行内」））于「父样」）于「父样」而
 　「叠」以「文」又以「计算样式」
 　　于（得「伪名」又得「积」而
 　　　令「其文」为「伪件声明文」于「伪候选们」于「伪名」而
@@ -369,7 +439,6 @@ a[href] { color: #0000ee; text-decoration: underline }
 details:not([open]) > :not(summary:first-of-type) { display: none }
 dialog { display: block; position: absolute; left: 0; right: 0; width: fit-content; height: fit-content; margin: auto; border: solid; padding: 1em; background-color: Canvas; color: CanvasText }
 audio:not([controls]) { display: none }
-video { background-color: black }
 dialog:not([open]) { display: none }
 dialog:modal { position: fixed; overflow: auto; top: 0; bottom: 0; max-width: calc(100% - 6px - 2em); max-height: calc(100% - 6px - 2em) }』
 也。

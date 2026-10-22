@@ -1,0 +1,6 @@
+#include <metal_stdlib>
+using namespace metal;
+
+fragment float4 整值浮面() {
+  return float4(40.0f, 0.0f, -40.0f, 1000000.0f);
+}

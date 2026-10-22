@@ -60,14 +60,51 @@
 　　）
 也。
 
-「：汉语：安装 performance 对象；同一环境持续复用该对象，时间线按调用顺序保存。timeOrigin 为零，now 返回页面时钟毫秒。标记支持 startTime 与 detail，度量支持标记名及起止选项，缺失标记抛出 SyntaxError。
-　　文言：置度时之器于境，旧器则仍之。以零为元，以页钟为今；标可指定其刻而附详情，度可按名及起讫，失标则告语法之误。
+「：汉语：通称旧时线（legacy navigation timing）。建一份旧式 PerformanceTiming 对象，规范列出的二十一个时刻都填页面时钟的零点；本浏览器还没有记录导航各阶段，先把类型与字段补齐，待办事项：按真实导航与载入事件填写各刻；navigationStart 与 timeOrigin 现都为零，是一套的，有了真实的导航时钟要一起改成纪元毫秒。
+　　文言：旧时线者，Navigation Timing 之旧牒也。规范所列二十一时刻皆以页钟之零点填之；本览未录导航诸段，先备其形与字段，待办：依真事而书其刻；navigationStart 与 timeOrigin 同改为纪元毫秒。
+　　赋曰：旧牒二十一时刻，尽书零点暂成文。导航未录诸阶段，先备形名待后闻。：」
+「度时旧时」乃化「有」为「急就值」者也。
+「度时旧时」者得「无」而
+　令「物」为「急就新物」于「可无」而
+　令「无二」为
+　　「叠」以「文」又以「有」
+　　　于（得「名」又得「无三」而「急就误设属」于「对象」曰「物」于「名」于「值」曰（「急就数值」于「零点零」））
+　　　于「元」
+　　　于（「列」
+　　　　【『navigationStart』
+　　　　，『unloadEventStart』
+　　　　，『unloadEventEnd』
+　　　　，『redirectStart』
+　　　　，『redirectEnd』
+　　　　，『fetchStart』
+　　　　，『domainLookupStart』
+　　　　，『domainLookupEnd』
+　　　　，『connectStart』
+　　　　，『connectEnd』
+　　　　，『secureConnectionStart』
+　　　　，『requestStart』
+　　　　，『responseStart』
+　　　　，『responseEnd』
+　　　　，『domLoading』
+　　　　，『domInteractive』
+　　　　，『domContentLoadedEventStart』
+　　　　，『domContentLoadedEventEnd』
+　　　　，『domComplete』
+　　　　，『loadEventStart』
+　　　　，『loadEventEnd』
+　　　　】）而
+　「物」
+也。
+
+「：汉语：安装 performance 对象；同一环境持续复用该对象，时间线按调用顺序保存。timeOrigin 为零，now 返回页面时钟毫秒。标记支持 startTime 与 detail，度量支持标记名及起止选项，缺失标记抛出 SyntaxError。旧式 timing 对象也在这一处装上，字段全为零。
+　　文言：置度时之器于境，旧器则仍之。以零为元，以页钟为今；标可指定其刻而附详情，度可按名及起讫，失标则告语法之误。旧式 timing 之物亦于此装之，其字段皆零。
 　　赋曰：旧器留身新器置，刻零为本页钟随。标名记刻详情附，量迹寻端缺则辞。：」
 「安装网页度时」乃化「急就境」为「有」者也。
 「安装网页度时」者得「境」而
 　令「诸录匣」为「置匣」以（「列」于「急就值」）于「罄」而
 　令「物」为「急就新物」于「可无」而
 　令「无」为「急就误设属」于「对象」曰「物」于『timeOrigin』于「值」曰（「急就数值」于「零点零」）而
+　令「无」为「急就误设属」于「对象」曰「物」于『timing』于「值」曰（「度时旧时」于「元」）而
 　令「无」为
 　　「叠」以「文」又以「有」
 　　　于（（得「术称」又得「无」而
