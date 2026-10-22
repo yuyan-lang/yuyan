@@ -1,0 +1,50 @@
+「：汉语：通称列元素测试。验证数组的下标元素改存元素向量后仍守脚本语义：长度增长保留孔位、缩短截去尾部并删去元素、整数下标在自有键列里升序居前、非整数键仍走属性表、删除成孔、非默认描述仍在属性表、展开与切片对孔位各按规范；另验一百万码元串的 slice、substring 与 substr 不再逐码元非尾递归。末书「捷思列元素冒烟通过」。
+　　文言：列之元，藏于元列者也。长增则存孔，长缩则截尾而去其元；整数下标升序居前，非整数之键仍归属表；删除成孔，非缺省之述仍存属表；展开与切片于孔各有其法。又验百万码元之串，裁取之属不再逐码递归。终书冒烟。
+　　赋曰：元列新开别一仓，下标直取不须量。长增留孔缩删尾，整数居前序有常。删除成孔空一位，异述犹存属表旁。展开切片各循法，百万长串裁不慌。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+
+「脚本得串」乃化「文」为「文」者也。
+「脚本得串」者得「脚本」而
+　鉴「急就行脚本」于「脚本」而
+　　或有（「急就字符串值」于「其文」）则「急就文字作串」于「其文」
+　　或有「余值」则『非字符串』
+也。
+
+「脚本得文」乃化「脚本」曰「文」又化「期望」曰「文」又化「说明」曰「文」为「有」者也。
+「脚本得文」者得「脚本」曰「脚本」又得「期望」曰「期望」又得「说明」曰「说明」而
+　令「实际」为「脚本得串」于「脚本」而
+　若「文同」于「实际」于「期望」则「元」否则「告祸」于（「说明」接『：实际 』接「实际」）
+也。
+
+「：汉语：长度增长与缩短：添入与越界写入把长度扩到下标加一、中间留孔；长度缩短删去尾部下标，再加长只添孔不补值。
+　　文言：长之增缩：添入与越界之写以长为下标加一、中留其孔；长缩则删尾序，复加长惟添孔而不补值。：」
+「脚本得文」
+　于「脚本」曰『var a=[];a.push(1,2,3);var r=[a.length,a[0],a[2]];a[5]="六";r.push(a.length,4 in a,5 in a,a[4],a[5]);a.length=2;r.push(a.length,2 in a);a.length=3;r.push(a.length,2 in a,a[2]);r.join("|");』
+　于「期望」曰『3|1|3|6|false|true||六|2|false|3|false|』
+　于「说明」曰『捷思列元素的增长与缩短』。
+「：汉语：枚举次序与非整数键：自有键里整数下标按升序居前，长度与命名键依插入次序在后；非整数键仍存属性表，删除下标成孔而不缩短长度。
+　　文言：枚举之序与非整数之键：自有键中整数下标升序居前，长与命名之键依次在后；非整数之键仍存属表，删下标成孔而长不缩。：」
+「脚本得文」
+　于「脚本」曰『var a=[];a[2]="c";a.x=1;a[0]="a";a[10]="k";var r=[Object.keys(a).join(","),Object.getOwnPropertyNames(a).join(",")];delete a[10];r.push(Object.keys(a).join(","),a.length);r.join("#");』
+　于「期望」曰『0,2,10,x#0,2,10,length,x#0,2,x#11』
+　于「说明」曰『捷思列元素的枚举次序与删除』。
+「：汉语：非默认描述与原型访问器：下标以非默认可写标志定义时仍留在属性表，读取得新值、描述得新标志；原型上的同名访问器只在孔位处生效，实元素直接取元素向量。
+　　文言：非缺省之述与原型之访：下标以非缺省之可写定者仍存属表，读得其新值、述得其新标；原型同名之访惟于孔处生效，实元则径取元列。：」
+「脚本得文」
+　于「脚本」曰『var a=[1];a["01"]=2;a[1]=3;var r=[a.length,a["01"],Object.keys(a).join(",")];Object.defineProperty(a,0,{value:9,writable:false,enumerable:true,configurable:true});var d=Object.getOwnPropertyDescriptor(a,0);r.push(d.value,d.writable,a[0],Object.keys(a).length);var hits=0;Object.defineProperty(Array.prototype,"5",{get:function(){hits++;return "p";},set:function(v){hits++;},configurable:true});var b=[7];b.length=6;r.push(b[0],b[5],hits);delete Array.prototype[5];r.join("|");』
+　于「期望」曰『2|2|0,1,01|9|false|9|3|7|p|1』
+　于「说明」曰『捷思列元素的非默认描述与原型访问器』。
+「：汉语：展开、切片与遍历对孔位的处理：展开把孔位填成未定义的自有值，切片保留孔位，for…of 与 map 把孔位读成未定义，映射保留孔位。
+　　文言：展开、切片与遍历之孔：展开以未定之自有值填空，切片存孔，for…of 与映射读孔为未定，映射亦存孔。：」
+「脚本得文」
+　于「脚本」曰『var a=[1,,3];var b=[...a];var c=a.slice();var r=[b.length,Object.keys(b).join(","),c.length,Object.keys(c).join(","),b[1],1 in c];var s=[];for(var v of a){s.push(v===undefined?"u":v);}r.push(s.join(""),a.map(function(x){return x*2;}).join(","),Object.keys(a.map(function(x){return x*2;})).join(","));r.join("|");』
+　于「期望」曰『3|0,1,2|3|0,2||false|1u3|2,,6|0,2』
+　于「说明」曰『捷思列元素的展开切片遍历与孔位』。
+「：汉语：百万码元长串的裁取：slice、substring 与 substr 一遍而成，尾部递归推进，调用栈不随串长增长；一百万码元的串上都不再以非法指令退出。
+　　文言：百万码元长串之裁：slice、substring 与 substr 一遍而成，尾递归而进，栈不随长；百万之串皆不再以非法指令退出。：」
+「脚本得文」
+　于「脚本」曰『var s="a".repeat(1100000);var x=s.slice(1,1100000);var y=s.substring(2,1100000);var z=s.substr(3,1100000);[x.length,y.length,z.length,x.charAt(0),z.charAt(0)].join("|");』
+　于「期望」曰『1099999|1099998|1099997|a|a』
+　于「说明」曰『捷思百万码元串的 slice、substring 与 substr』。
+「书」于『捷思列元素冒烟通过』。

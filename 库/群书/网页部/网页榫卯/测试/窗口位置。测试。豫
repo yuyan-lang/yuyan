@@ -1,5 +1,5 @@
-「：汉语：通称窗口位置测试（window location test）。窗口位置测试：location 的各部件与 document.location 同一，改 hash 与 assign 记下导航请求，pushState 改页面地址、加历史长度并记下改地址请求，innerWidth 读视口尺寸，scrollTo 记下滚动请求，history.back 记下走历史请求。
-　　文言：窗位之试：location 之诸部与 document.location 为一，改 hash 与 assign 则记导航之请，pushState 改页址、增史长而记改址之请，innerWidth 读视口之尺，scrollTo 记滚之请，history.back 记行史之请。
+「：汉语：通称窗口位置测试（window location test）。窗口位置测试：location 的各部件与 document.location 同一，改 hash 与 assign 记下导航请求，pushState 改页面地址、加历史长度并记下改地址请求，innerWidth 读视口尺寸，度时的旧时线字段为零，scrollTo 记下滚动请求，history.back 记下走历史请求。
+　　文言：窗位之试：location 之诸部与 document.location 为一，改 hash 与 assign 则记导航之请，pushState 改页址、增史长而记改址之请，innerWidth 读视口之尺，度时之旧时线字段皆零，scrollTo 记滚之请，history.back 记行史之请。
 　　赋曰：地址诸部共一根，视口宽高次第论。改片加途留二请，推史滚退尽收存。：」
 寻观「豫章」之书。
 寻观「篇象」之书。
@@ -23,6 +23,9 @@
 　　于「名」曰『地址部件』
 　　于「真」曰（「验」于『location.href==="https://example.test:8080/a/b?x=1#h"&&location.protocol==="https:"&&location.host==="example.test:8080"&&location.hostname==="example.test"&&location.port==="8080"&&location.pathname==="/a/b"&&location.search==="?x=1"&&location.hash==="#h"&&location.origin==="https://example.test:8080"&&document.location===location&&window.location===location&&String(location)===location.href;』）而后
 　「检查」于「名」曰『视口尺寸』于「真」曰（「验」于『innerWidth===800&&innerHeight===600&&window.devicePixelRatio===1&&scrollY===0;』）而后
+　「检查」
+　　于「名」曰『旧时线』
+　　于「真」曰（「验」于『typeof performance.timing==="object"&&performance.timing.navigationStart===0&&performance.timing.fetchStart===0&&performance.timing.domComplete===0&&performance.timing.loadEventEnd===0;』）而后
 　令「无」为「急就在境行脚本」于「境」于『location.hash="k";location.assign("../c");』而
 　「检查」
 　　于「名」曰『导航请求』
