@@ -301,7 +301,7 @@
 　　　）
 　　　于「元」
 　　　于（「问择器全」于「矢页」于『img,svg』）而
-　令「图页」为「析片段」于『<img src="图" style="width:4px;height:4px;object-fit:contain;object-position:left bottom"><img id="自然图" src="图">』而
+　令「图页」为「析片段」于『<img src="图" style="display:block;width:4px;height:4px;object-fit:contain;object-position:left bottom"><img id="自然图" src="图">』而
 　令「图树」为「生网页图像盒树」于「读图」于「篇求样式」于「图页」而
 　令「无」为
 　　「布局网页」于（得「样」又得「其文」又得「宽值」而「告祸」以「网页矩形」于『图页无需测文』）于「环境」于「图树」于「宽」曰「八点零」于「高」曰「八点零」而
