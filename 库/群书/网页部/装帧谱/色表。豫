@@ -1,6 +1,6 @@
-「：汉语：通称颜色表（CSS named colors）。「层叠色表」是一张串典：键为颜色名，值为六位红绿蓝十六进制数；收颜色四（CSS Color 4）全部不透明命名色一百四十八个，另加浅色方案的系统色十四个（canvas、canvastext、linktext 等）。供装帧解析颜色名、层叠计算取初值。
-　　文言：色，颜气也（《说文》）；表，谱也。颜色四列其目，浅色复标其常；乃铸为串典，一阅而色值在掌。故作此表。
-　　赋曰：名执左契，数合右符。规范之目百四十八，浅色之条一十有四。值成六位，赤绿蓝以次陈；键系一名，名与数而同载。列键值以授，构串典而成。实色咸登此谱，半透不入斯篇。装帧检名，赖此编而可识；层叠取初，凭斯表而能定。：」
+「：汉语：通称颜色表（CSS named colors）。「层叠色表」是一张串典：键为颜色名，值为六位红绿蓝十六进制数；收颜色四（CSS Color 4）全部不透明命名色一百四十八个，另加浅色方案的系统色十四个（canvas、canvastext、linktext 等）与废弃系统色别名二十五个（buttonhighlight、captiontext 等）。供装帧解析颜色名、层叠计算取初值。
+　　文言：色，颜气也（《说文》）；表，谱也。颜色四列其目，浅色复标其常，废弃别名亦循旧名而附；乃铸为串典，一阅而色值在掌。故作此表。
+　　赋曰：名执左契，数合右符。规范之目百四十八，浅色之条一十有四，废旧之名二十五。值成六位，赤绿蓝以次陈；键系一名，名与数而同载。列键值以授，构串典而成。实色咸登此谱，半透不入斯篇。装帧检名，赖此编而可识；层叠取初，凭斯表而能定。：」
 寻观「豫章」之书。
 
 「：汉语：通称层叠色表（CSS named color table）。返回一张串典：颜色名映射到六位红绿蓝十六进制值；收颜色四的不透明命名色与浅色方案的系统色。由键值对列经「构造串典」构造。
@@ -171,5 +171,29 @@
 　　，『graytext』与『808080』
 　　，『mark』与『ffff00』
 　　，『marktext』与『000000』
+　　，『activeborder』与『efefef』
+　　，『activecaption』与『ffffff』
+　　，『appworkspace』与『ffffff』
+　　，『background』与『ffffff』
+　　，『buttonborder』与『efefef』
+　　，『buttonhighlight』与『efefef』
+　　，『buttonshadow』与『efefef』
+　　，『captiontext』与『000000』
+　　，『inactiveborder』与『efefef』
+　　，『inactivecaption』与『ffffff』
+　　，『inactivecaptiontext』与『808080』
+　　，『infobackground』与『ffffff』
+　　，『infotext』与『000000』
+　　，『menu』与『ffffff』
+　　，『menutext』与『000000』
+　　，『scrollbar』与『ffffff』
+　　，『threeddarkshadow』与『efefef』
+　　，『threedface』与『efefef』
+　　，『threedhighlight』与『efefef』
+　　，『threedlightshadow』与『efefef』
+　　，『threedshadow』与『efefef』
+　　，『window』与『ffffff』
+　　，『windowframe』与『efefef』
+　　，『windowtext』与『000000』
 　　】）
 也。
