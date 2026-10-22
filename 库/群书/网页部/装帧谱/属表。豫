@@ -85,6 +85,7 @@
 　，『text-decoration-style』与『solid』与「阴」
 　，『text-decoration-color』与『currentcolor』与「阴」
 　，『text-decoration-thickness』与『auto』与「阴」
+　，『text-decoration-inset』与『0』与「阴」
 　，『text-underline-offset』与『auto』与「阳」
 　，『text-decoration-skip-ink』与『auto』与「阳」
 　，『white-space』与『normal』与「阳」
@@ -179,6 +180,15 @@
 　，『scale』与『none』与「阴」
 　，『filter』与『none』与「阴」
 　，『clip-path』与『none』与「阴」
+　，『clip』与『auto』与「阴」
+　，『mask-image』与『none』与「阴」
+　，『mask-mode』与『match-source』与「阴」
+　，『mask-repeat』与『repeat』与「阴」
+　，『mask-position』与『0% 0%』与「阴」
+　，『mask-size』与『auto auto』与「阴」
+　，『mask-origin』与『border-box』与「阴」
+　，『mask-clip』与『border-box』与「阴」
+　，『mask-composite』与『add』与「阴」
 　，『content』与『normal』与「阴」
 　，『flex-grow』与『0』与「阴」
 　，『flex-shrink』与『1』与「阴」
@@ -258,6 +268,8 @@
 　，『scroll-padding』与（「列」【『scroll-padding-top』，『scroll-padding-right』，『scroll-padding-bottom』，『scroll-padding-left』】）
 　，『scroll-margin』与（「列」【『scroll-margin-top』，『scroll-margin-right』，『scroll-margin-bottom』，『scroll-margin-left』】）
 　，『place-items』与（「列」【『align-items』，『justify-items』】）
+　，『place-content』与（「列」【『align-content』，『justify-content』】）
+　，『place-self』与（「列」【『align-self』，『justify-self』】）
 　，『animation』
 　　　与（「列」
 　　　　【『animation-name』
