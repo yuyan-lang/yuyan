@@ -120,3 +120,44 @@
 「填标准序列」于「树输入」于「二零四九」于「零」。
 「核验」于『BLAKE3单片』于（「布克三」于「树输入」于「一零二四」）于「三二」于『42214739f095a406f3fc83deb889744ac00df831c10daa55189b5d121c855af7』。
 「核验」于『BLAKE3树形』于（「布克三」于「树输入」于「二零四九」）于「三二」于『5f4d72f40d7a5f82b15ca2b2e44b1de3c2ef86c426c95c1af0b6879522563030』。
+「：汉语：沙二五六流式状态的空输入与分段喂入：空态收尾等于空输入摘要；一、六三、六四、八零字节四段喂入，等于二百零八字长串的官方摘要。
+　　文言：沙二五六流态之空入与分段而喂：空态之收同空入之摘要；以一、六三、六四、八零字四段喂之，同二百零八字长串之官方摘要。：」
+「核验」于『SHA256流式空』于（「沙二五六终」于（「沙二五六始」于「元」））于「三二」于『e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』。
+「流式串」者
+　「作帛」于『aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa』
+也。
+
+「流式长」者「计帛」于「流式串」也。
+
+「流式一」者「沙二五六续」于（「沙二五六始」于「元」）于（「帛作列」于（「截帛」于「流式串」于「零」于「一」））于「一」也。
+
+「流式二」者「沙二五六续」于「流式一」于（「帛作列」于（「截帛」于「流式串」于「一」于「六三」））于「六三」也。
+
+「流式三」者「沙二五六续」于「流式二」于（「帛作列」于（「截帛」于「流式串」于「六四」于「六四」））于「六四」也。
+
+「流式四」者「沙二五六续」于「流式三」于（「帛作列」于（「截帛」于「流式串」于「一二八」于（「流式长」减「一二八」）））于（「流式长」减「一二八」）也。
+
+「核验」于『SHA256流式分段』于（「沙二五六终」于「流式四」）于「三二」于『8ed55b1a056d75e0a32e3edd89a154b7accfeba9ff2efcc87a7d238f0593766d』。
+「：汉语：整份摘要的单块与跨块官方向量：六十四与一百个 a，以及一百一十二字节的 ustar 长短句样例。
+　　文言：整份摘要之单块与越块官方之量：六十四与一百个 a，又百十二字之样例。：」
+「单块串」者「作帛」于『aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa』也。
+
+「核验」
+　于『SHA256单块』
+　于（「沙二五六」于（「帛作列」于「单块串」）于「六四」）
+　于「三二」
+　于『ffe054fe7ae0cb6dc65c3af9b61d5209f439851db43d0ba5997337df154668eb』。
+「越块串」者「作帛」于『aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa』也。
+
+「核验」
+　于『SHA256越块』
+　于（「沙二五六」于（「帛作列」于「越块串」）于「一零零」）
+　于「三二」
+　于『2816597888e4a0d3a36b82b83316ab32680eb8f00f8cd3b904d681246d285a0e』。
+「百十二串」者「作帛」于『abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu』也。
+
+「核验」
+　于『SHA256百十二』
+　于（「沙二五六」于（「帛作列」于「百十二串」）于「一一二」）
+　于「三二」
+　于『cf5b16a778af8380036ce59e7b0492370b249b11e8f07a51afac45037afee9d1』。
