@@ -37,22 +37,32 @@
 　　　　「网汇查记」以「甲」于（「置匣」以（「列」于（「急就值」合「甲」））于「尾」）于「键」
 也。
 
+「：汉语：通称网汇错误名（web assembly error name）。按消息的前缀取脚本错误对象的构造器名：消息以 CompileError、LinkError、RuntimeError 三种前缀（各带全角冒号）开头时取对应的名字，其余取 Error。
+　　文言：网汇误名者，按讯之首取脚本误物之名：三误各有其首，则取其名，余则 Error。：」
 「网汇误名」乃化「文」为「文」者也。
 「网汇误名」者得「消息」而
-　鉴「消息」而
-　　或有「缀」于『CompileError：』于「余」则『CompileError』
-　　或有「缀」于『LinkError：』于「余」则『LinkError』
-　　或有「缀」于『RuntimeError：』于「余」则『RuntimeError』
-　　或有「其他」则『Error』
+　若「首同」于『CompileError：』于「消息」则
+　　『CompileError』
+　否则若「首同」于『LinkError：』于「消息」则
+　　『LinkError』
+　否则若「首同」于『RuntimeError：』于「消息」则
+　　『RuntimeError』
+　否则
+　　『Error』
 也。
 
+「：汉语：通称网汇错误文（web assembly error message）。去掉消息开头 CompileError、LinkError、RuntimeError 三种前缀（各带全角冒号），返回其余部分；没有这些前缀时原样返回。
+　　文言：网汇误文者，去讯首之三误前缀而还其余；无前缀则如其旧。：」
 「网汇误文」乃化「文」为「文」者也。
 「网汇误文」者得「消息」而
-　鉴「消息」而
-　　或有「缀」于『CompileError：』于「余」则「余」
-　　或有「缀」于『LinkError：』于「余」则「余」
-　　或有「缀」于『RuntimeError：』于「余」则「余」
-　　或有「其他」则「消息」
+　若「首同」于『CompileError：』于「消息」则
+　　「截文」于（「计字」于『CompileError：』）于（「计字」于「消息」）于「消息」
+　否则若「首同」于『LinkError：』于「消息」则
+　　「截文」于（「计字」于『LinkError：』）于（「计字」于「消息」）于「消息」
+　否则若「首同」于『RuntimeError：』于「消息」则
+　　「截文」于（「计字」于『RuntimeError：』）于（「计字」于「消息」）于「消息」
+　否则
+　　「消息」
 也。
 
 「网汇造误」乃化「境」曰「急就境」又化「名」曰「文」又化「消息」曰「文」为「急就值」者也。
