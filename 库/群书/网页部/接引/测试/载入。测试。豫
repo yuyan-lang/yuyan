@@ -35,6 +35,7 @@
 　　　　　【「地址」者「址」也
 　　　　　，「主体」者「作帛」于『<body><p></p><script>document.body.insertAdjacentHTML("beforeend","<p id=新></p>");document.body.children[0].lang=navigator.languages[1];Promise.resolve().then(function(){document.getElementById("新").setAttribute("title","期约");});</script></body>』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则
 　　　　「可无」
@@ -84,6 +85,7 @@
 　　　　　【「地址」者「址」也
 　　　　　，「主体」者「作帛」于『<body onload="document.body.setAttribute('title','载')"><script>var ok=window===globalThis&&self===window&&window.document===document&&typeof window.setTimeout==="function";window.addEventListener("DOMContentLoaded",function(){document.body.setAttribute("lang",ok?"窗":"错");});</script></body>』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则
 　　　　「可无」
@@ -130,12 +132,14 @@
 　　　　　【「地址」者「址」也
 　　　　　，「主体」者「作帛」于『<body><script type="module">import {word} from "./mod.js";document.body.setAttribute("title",word+document.body.getAttribute("lang"));</script><script>document.body.setAttribute("lang","先");</script></body>』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则若「文同」于「址」于『https://example.test/mod.js』则
 　　　　「可有」于（「组值」
 　　　　　【「地址」者「址」也
 　　　　　，「主体」者「作帛」于『export const word="模块";』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则
 　　　　「可无」
@@ -169,6 +173,7 @@
 　　　　　【「地址」者「址」也
 　　　　　，「主体」者「作帛」于『b;』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则
 　　　　「可无」
@@ -244,18 +249,21 @@
 　　　　　【「地址」者『https://example.test/入口』也
 　　　　　，「主体」者「作帛」于『<!doctype html><html><head><base href="/资源/"><link rel="stylesheet" href="外.css"></head><body><div></div></body></html>』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则若「文同」于「址」于『https://example.test/%E8%B5%84%E6%BA%90/%E5%A4%96.css』则
 　　　　「可有」于（「组值」
 　　　　　【「地址」者『https://example.test/skin/theme.css』也
 　　　　　，「主体」者「作帛」于『body{margin:0}div{width:2px;height:2px;background:red url(../images/paint.svg)}@media(min-width:2px){@font-face{font-family:Test;src:url(../fonts/test.ttf)}}@media(min-width:3px){@font-face{font-family:Skipped;src:url(skip.ttf)}}』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则若「文同」于「址」于『https://example.test/images/paint.svg』则
 　　　　「可有」于（「组值」
 　　　　　【「地址」者「址」也
 　　　　　，「主体」者「作帛」于『<svg width="2" height="2"><rect width="2" height="2" fill="lime"/></svg>』也
 　　　　　，「编码」者『UTF-8』也
+　　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　　】）
 　　　否则
 　　　　「可无」
