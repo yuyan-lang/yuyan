@@ -279,9 +279,50 @@
 　】
 也。
 
+「：汉语：同源族表：'self' 对 ws 与 wss 按方案族匹配（https 对 wss、http 对 ws 与 wss），主机与有效端口须相同。
+　　文言：同族之表：'self' 于 ws 与 wss 按族而合（https 合 wss、http 合 ws 与 wss），主与效端须同。：」
+「同源族例」乃（「列」于「内容印证」）也。
+「同源族例」者
+　「列」
+　【「组值」
+　　　【「名」者『https 自身许 wss』也
+　　　，「成」者「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』也
+　　　】
+　，「组值」
+　　　【「名」者『https 自身不许 ws』也
+　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example』于「目标」曰『ws://a.example/socket』于「目的」曰『connect』）也
+　　　】
+　，「组值」
+　　　【「名」者『http 自身许 ws』也
+　　　，「成」者「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『http://a.example』于「目标」曰『ws://a.example/socket』于「目的」曰『connect』也
+　　　】
+　，「组值」
+　　　【「名」者『http 默认端口不许 wss』也
+　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『http://a.example』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』）也
+　　　】
+　，「组值」
+　　　【「名」者『异主机不许』也
+　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example』于「目标」曰『wss://b.example/socket』于「目的」曰『connect』）也
+　　　】
+　，「组值」
+　　　【「名」者『http 显式四四三许 wss』也
+　　　，「成」者「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『http://a.example:443』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』也
+　　　】
+　，「组值」
+　　　【「名」者『端口不同不许』也
+　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example:8443』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』）也
+　　　】
+　，「组值」
+　　　【「名」者『同端口许』也
+　　　，「成」者「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example:8443』于「目标」曰『wss://a.example:8443/socket』于「目的」曰『connect』也
+　　　】
+　】
+也。
+
 「：汉语：逐表核验：来源、内辞、报告与权能四表。
 　　文言：逐表而验。：」
 「验内容」于「来源例」。
+「验内容」于「同源族例」。
 「验内容」于「内辞例」。
 「验内容」于「报告例」。
 「验内容」于「权能例」。
