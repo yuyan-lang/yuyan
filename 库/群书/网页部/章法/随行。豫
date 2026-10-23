@@ -243,15 +243,17 @@
 　　　「有一」以「数」于（得「界」而「界」等于「一」）于（「切分」之「行断码点边界」于「码们」）
 也。
 
-「：汉语：片可任断：片所属盒的样式若为 word-break 取 break-all 或 break-word、overflow-wrap 取 anywhere 或 break-word，则任意处可断，供跨盒交界判定。
-　　文言：片可任断：其盒之式若 word-break 为 break-all 或 break-word、overflow-wrap 为 anywhere 或 break-word，则随处可断，以供跨盒之界。：」
+「：汉语：片可任断：片所属盒的样式若为 word-break 取 break-all 或 break-word、overflow-wrap 取 anywhere 或 break-word、line-break 取 anywhere，则任意处可断，供跨盒交界判定（line-break:anywhere 时「网页断段」逐字切片，片与片之间都得能断）。
+　　文言：片可任断：其盒之式若 word-break 为 break-all 或 break-word、overflow-wrap 为 anywhere 或 break-word、line-break 为 anywhere，则随处可断，以供跨盒之界。：」
 「片可任断」乃化「网页行内片」为「爻」者也。
 「片可任断」者得「片」而
 　令「样」为（（「取网页盒资料」于（「片」中「盒」））中「样式」）而
 　令「断法」为「样式小写」于（「样式取值」于「样」于『word-break』）而
 　令「应急」为「样式小写」于（「样式取值」于「样」于『overflow-wrap』）而
+　令「行断」为「样式小写」于（「样式取值」于「样」于『line-break』）而
 　（（「文同」于「断法」于『break-all』）或（「文同」于「断法」于『break-word』））
 　或（（「文同」于「应急」于『anywhere』）或（「文同」于「应急」于『break-word』））
+　或（「文同」于「行断」于『anywhere』）
 也。
 
 「：汉语：片前可断：行首、前片非文字、任一片所属盒可任断（见「片可任断」）、或相邻文字片按统一码交界可断时为阳；其余为阴。
