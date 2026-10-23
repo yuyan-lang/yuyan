@@ -1,4 +1,4 @@
-「：汉语：通称图像遮罩（image mask）。本篇把 CSS Masking 的「mask-image」及其尺寸、位置、重复、参考盒与模式读成一张遮罩图：借「地资」的层片机制取各层图像与渐变（mask-size、mask-position、mask-repeat、mask-origin、mask-clip），按遮罩的裁切盒栅格化为图，再按 mask-mode 取透明或明度；多层遮罩自下而上按 mask-composite 的加、减、交、异合成（「网页掩层加」「网页掩合图」）。供「分组合成」按组的图像蒙版逐像素乘入。mask-image 为 url(#号) 时按文档里的 SVG mask 元素渲染其子节点，依 mask-mode 与 mask-type 取明度或透明；maskUnits 为 userSpaceOnUse 且 maskContentUnits 非 objectBoundingBox 时按掩区读像素并给 viewBox 对齐，maskContentUnits 为 objectBoundingBox 时给零到一的 viewBox 按分数解释内容坐标；参考盒填空盒关键字时按内容盒或边框盒归约。mask 简写由装帧的「展掩声明」按层展开。
+「：汉语：通称图像遮罩（image mask）。本篇把 CSS Masking 的「mask-image」及其尺寸、位置、重复、参考盒与模式读成一张遮罩图：借「地资」的层片机制取各层图像与渐变（mask-size、mask-position、mask-repeat、mask-origin、mask-clip），按遮罩的裁切盒栅格化为图，再按 mask-mode 取透明或明度；多层遮罩自下而上按 mask-composite 的加、减、交、异合成（「网页掩层加」「网页掩合图」）。供「分组合成」按组的图像蒙版逐像素乘入。mask-image 为 url(#号) 时按文档里的 SVG mask 元素渲染其子节点，依 mask-mode 与 mask-type 取明度或透明；maskUnits 为 userSpaceOnUse 且 maskContentUnits 非 objectBoundingBox 时按掩区读像素并给 viewBox 对齐，maskContentUnits 为 objectBoundingBox 时给零到一的 viewBox 按分数解释内容坐标；参考盒填空盒关键字时按内容盒或边框盒归约，遮罩样式缺 origin/clip 时补 border-box，逐层取值时也按同一归约，层片依裁切盒铺满。mask 简写由装帧的「展掩声明」按层展开。
 　　文言：掩，敛也（《说文》）；罩，覆也。掩其外而显其中，若幕之覆灯。取掩影之数，循地资之层；尺寸、位置、重复、参考之盒皆从，裁以掩区，栅而为图；别其模式，或取透明，或取明度。多层者自下而上依 mask-composite 之加减交异而合之。既成，分组合成乘之。
 　　赋曰：盖闻帷幕覆灯，光自内出；剪罗为花样，影随形生。掩图有层，取诸地资之制；尺寸位置，循其重复之方。裁之掩区，栅成像素；别以模式，明度与透明分疆。乘入组图，透随掩减；外此则隐，内此则彰。：」
 寻观「豫章」之书。
@@ -74,6 +74,12 @@
 　　　）
 　　　于「样」
 　　　于（「网页掩属对」于「元」）而
+　令「样」为
+　　（
+　　　若（「非无」以「文」于（「簿寻」以「文」于「样」于『background-origin』））则「样」否则（「簿入」以「文」于「样」于『background-origin』于『border-box』）
+　　）而
+　令「样」为
+　　（若（「非无」以「文」于（「簿寻」以「文」于「样」于『background-clip』））则「样」否则（「簿入」以「文」于「样」于『background-clip』于『border-box』））而
 　「簿入」以「文」于「样」于『background-color』于『transparent』
 也。
 
@@ -607,7 +613,13 @@
 「网页掩层样」者得「样」又得「序」而
 　令「基」为「网页掩样」于「样」而
 　「叠」以（「文」合「文」）又以「计算样式」
-　　于（得「对」又得「积」而「簿入」以「文」于「积」于（「对」中「一」）于（「网页地之层值」于「样」于（「对」中「零」）于「序」））
+　　于（得「对」又得「积」而
+　　　令「名」为（「对」中「零」）而
+　　　令「值」为「网页地之层值」于「样」于「名」于「序」而
+　　　令「界吗」为（（「文同」于「名」于『mask-origin』）或（「文同」于「名」于『mask-clip』））而
+　　　令「值」为（若（（（「文同」于「值」于『no-clip』）或（「文同」于「值」于『』））或（非「界吗」））则「值」否则（「网页掩区名」于「值」））而
+　　　若「文同」于「值」于『』则「积」否则「簿入」以「文」于「积」于（「对」中「一」）于「值」
+　　）
 　　于「基」
 　　于（「网页掩属对」于「元」）
 也。
@@ -706,5 +718,5 @@
 　　）
 也。
 
-「：汉语：待办事项：滤镜区域的遮罩裁切、滤镜区域 x/y/width/height 的裁切继续接入。
+「：汉语：待办事项：滤镜区域的遮罩裁切、滤镜区域 x/y/width/height 的裁切、SVG mask 的 objectBoundingBox 掩区与内容坐标映射（mask-composite-1c/1d）继续接入。
 　　文言：待办事项：SVG mask 之 maskContentUnits 为 objectBoundingBox 时之坐标换算、滤镜区域之遮罩裁切、行内之盒依片段各定掩图，续接之。：」
