@@ -613,7 +613,7 @@ function 工作线程主体(核, 自旋毫秒) {
 
 // 文言：线程者，worker_threads 之 Worker、MessageChannel、receiveMessageOnPort；线程数兼主线，一则不起工作线程。指定后端者，宿主之选 --张量后端 所指之名，空则自择。
 // 汉语：线程 是注入的 worker_threads 能力（Worker、MessageChannel、receiveMessageOnPort）；线程数含主线程，取 1 或未注入线程能力时不创建工作线程。
-// 汉语：指定后端 是宿主选项 --张量后端 给的后端名（中央处理器、网页图算、金属、统算之一），空串表示由适配自动选择；本模块只实现中央处理器后端。
+// 汉语：指定后端 是宿主选项 --张量后端 给的后端名（中央处理器、网页图算、金属、千手之一），空串表示由适配自动选择；本模块只实现中央处理器后端。
 export function 创建张量能力({码, 资源, 登记资源, 取文件, 文字, 存储上限, 交换上限, 读文件区段, 文件字节数, 错文, 线程 = null, 线程数 = 1, 指定后端 = ''}) {
   const 空字节 = () => new Uint8Array(0);
   const 败 = 消息 => { throw new Error('张量计算：' + 消息); };
