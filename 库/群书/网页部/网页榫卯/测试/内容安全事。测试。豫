@@ -1,0 +1,66 @@
+「：汉语：通称违规事件测试（violation event test）。核对 SecurityPolicyViolationEvent 构造器与 securitypolicyviolation 事件：构造器无参数抛类型错误、初始化字典的十二个字段可读、缺的文字字段为空串、缺的数值字段为零、缺的处置为 enforce；事件在文档上派发时冒泡，监听方从事件对象读到违反指令、被阻地址、行号与冒泡标志。与「网页榫卯」的「内容安全事」相连。
+　　文言：违事之试：核其构造之器与 securitypolicyviolation 之事：无参则抛类误；初值十二属可读；缺文者空、缺数者零、缺处置者 enforce；事派于篇则冒泡，听者自事之物读令名、见阻之址、行号与冒泡之旗。
+　　赋曰：无参先试类型误，初值十二属皆陈。缺文归空数归零，处置还依 enforce 身。事派于篇犹冒泡，听来字段尽传真。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+寻观「网页安全」之「违规报告」之书。
+寻观「网页榫卯」之「内容安全事」之书。
+
+「按标识」乃化「篇节」又化「文」为「篇节」者也。
+「按标识」者得「文档」又得「标识」而
+　鉴「问择器」于「文档」于（『#』接「标识」）而
+　　或有（「可有」于「节」）则「节」
+　　或有「可无」则「告祸」以「篇节」于（『没有元素 』接「标识」）
+也。
+
+「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
+「检查」者得「名」曰「名」又得「真」曰「真」而
+　若「真」则「书」于（「名」接『：通过』）否则「告祸」于（「名」接『：不对』）
+也。
+
+「：汉语：测试用的违规记录：违反指令 script-src、被阻地址 https://b.example/x.js、行号三、文档地址 https://a.example/page。
+　　文言：试之违录。：」
+「试违规记」乃化「有」为「网页违规记录」者也。
+「试违规记」者得「无」而
+　「组值」
+　【「违反指令」者『script-src』也
+　，「生效指令」者『script-src』也
+　，「被阻地址」者『https://b.example/x.js』也
+　，「原始策略」者『script-src 'self'』也
+　，「处置」者『enforce』也
+　，「源文件」者『a.js』也
+　，「行号」者「三」也
+　，「列号」者「四」也
+　，「样本」者『<script>』也
+　，「状态码」者「二零零」也
+　，「文档地址」者『https://a.example/page』也
+　，「来源页」者『https://r.example/』也
+　】
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<html><body><div id="a"></div></body></html>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「无」为「装内容安全事」于「境」而
+　令「成」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var e = new SecurityPolicyViolationEvent("securitypolicyviolation", {documentURI:"https://a.example/page", referrer:"https://r.example/", blockedURI:"https://b.example/x.js", violatedDirective:"script-src", effectiveDirective:"script-src", originalPolicy:"script-src 'self'", sourceFile:"a.js", sample:"<script>", disposition:"enforce", statusCode:200, lineNumber:3, columnNumber:4});var ok1 = e.violatedDirective === "script-src" && e.blockedURI === "https://b.example/x.js" && e.lineNumber === 3 && e.columnNumber === 4 && e.statusCode === 200 && e.sample === "<script>" && e.disposition === "enforce";var d = new SecurityPolicyViolationEvent("securitypolicyviolation");var ok2 = d.violatedDirective === "" && d.lineNumber === 0 && d.disposition === "enforce" && d.documentURI === "" && d.referrer === "";var ok3 = false;try { new SecurityPolicyViolationEvent(); } catch (err) { ok3 = err instanceof TypeError; }var ok4 = new SecurityPolicyViolationEvent("securitypolicyviolation") !== undefined;(ok1 && ok2 && ok3 && ok4);』而
+　「检查」于「名」曰『构造器字段、缺省与无参类型错误』于「真」曰（「急就严格等」于「成」于（「急就布尔」于「阳」））而后
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var got = null;document.addEventListener("securitypolicyviolation", function (ev) { got = ev.violatedDirective + "|" + ev.blockedURI + "|" + ev.lineNumber + "|" + ev.bubbles; });』而
+　令「无」为「派网页违规事」于（「按标识」于「文档」于『a』）于（「试违规记」于「元」）而
+　令「读得」为「急就在境行脚本」于「境」于『got』而
+　「检查」
+　　于「名」曰『文档派发的事件冒泡且字段可读』
+　　于「真」曰（「急就严格等」于「读得」于（「急就字符串值」于（「急就文字自串」于『script-src|https://b.example/x.js|3|true』）））而后
+　「书」于『内容安全事测试通过』
+也。
+
+「入口」于「元」。
