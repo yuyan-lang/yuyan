@@ -170,9 +170,9 @@
 　　若「急就词在」于「形式」于（「列」【『NFC』，『NFD』，『NFKC』，『NFKD』】）则「元」否则「告祸」于『RangeError：字符串规范化形式须为标准四种形式。』而
 　令「转换术」为
 　　（（
-　　　若「文同」于「名」于『toLowerCase』则
+　　　若（「文同」于「名」于『toLowerCase』）或（「文同」于「名」于『toLocaleLowerCase』）则
 　　　　「大小写」之「作小写」
-　　　否则若「文同」于「名」于『toUpperCase』则
+　　　否则若（「文同」于「名」于『toUpperCase』）或（「文同」于「名」于『toLocaleUpperCase』）则
 　　　　「大小写」之「作大写」
 　　　否则若「文同」于「形式」于『NFC』则
 　　　　「文字规整」之「规范合成文字」
@@ -743,7 +743,7 @@
 　　　　　「急就格律寻」于（「急就造格律」于（「急就新物」于（「可无」以「急就值」））于（「列」【「首值」】））于「其文」
 　　　　否则若「急就词在」于「名」于（「列」【『split』，『replace』，『replaceAll』】）则
 　　　　　「急就文分换」于「名」于「其文」于「诸参」
-　　　　否则若「急就词在」于「名」于（「列」【『toLowerCase』，『toUpperCase』，『normalize』】）则
+　　　　否则若「急就词在」于「名」于（「列」【『toLowerCase』，『toUpperCase』，『toLocaleLowerCase』，『toLocaleUpperCase』，『normalize』】）则
 　　　　　「急就文同文」于「名」于「其文」于「诸参」
 　　　　否则若「急就词在」
 　　　　　于「名」
@@ -968,6 +968,8 @@
 　　　　　　　　　，『toWellFormed』
 　　　　　　　　　，『toLowerCase』
 　　　　　　　　　，『toUpperCase』
+　　　　　　　　　，『toLocaleLowerCase』
+　　　　　　　　　，『toLocaleUpperCase』
 　　　　　　　　　，『normalize』
 　　　　　　　　　，『big』
 　　　　　　　　　，『blink』
@@ -1014,6 +1016,8 @@
 　　　　，『toWellFormed』
 　　　　，『toLowerCase』
 　　　　，『toUpperCase』
+　　　　，『toLocaleLowerCase』
+　　　　，『toLocaleUpperCase』
 　　　　，『normalize』
 　　　　，『matchAll』
 　　　　，『match』
