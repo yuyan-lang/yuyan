@@ -1,0 +1,31 @@
+「：汉语：通称访问器顺序测试（accessor order test）。复现 Object.defineProperty 先定义 getter、再改成数据属性后 Object.values 读到 undefined 的问题。
+　　文言：访序之试：复现先定取器、后改数据性，而 Object.values 读得未定之弊。
+　　赋曰：先立取器后改常，枚举当得其直。若得未定分明误，一条复现照寻常。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「急就」之「虚拟机」之书。
+
+「：汉语：跑一段脚本并取其结果的文字。
+　　文言：行一段而取其果之文。：」
+「取字」乃化「急就境」又化「文」为「文」者也。
+「取字」者得「境」又得「式」而
+　「急就文字作串」于（「急就作文字」于（「急就在境行脚本」于「境」于「式」））
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「境」为「急就新全局境」于「元」而
+　令「首」为
+　　「取字」
+　　　于「境」
+　　　于『var o={};Object.defineProperty(o,"a",{get:function(){},enumerable:true,configurable:true});o.b="b";Object.defineProperty(o,"a",{value:"a"});JSON.stringify([o.a,Object.getOwnPropertyDescriptor(o,"a")&&Object.getOwnPropertyDescriptor(o,"a").value,Object.getOwnPropertyDescriptor(o,"a")&&Object.getOwnPropertyDescriptor(o,"a").get===undefined,Object.values(o).join("|")]);』而
+　令「无」为若「文同」于「首」于『["a","a",true,"a|b"]』则「元」否则「告祸」于（『普通对象先取值器后数据属性读错：』接「首」）而
+　令「次」为
+　　「取字」
+　　　于「境」
+　　　于『var p=new Proxy({},{});Object.defineProperty(p,"a",{get:function(){},enumerable:true,configurable:true});p.b="b";Object.defineProperty(p,"a",{value:"a"});JSON.stringify([p.a,Object.getOwnPropertyDescriptor(p,"a")&&Object.getOwnPropertyDescriptor(p,"a").value,Object.getOwnPropertyDescriptor(p,"a")&&Object.getOwnPropertyDescriptor(p,"a").get===undefined,Object.values(p).join("|")]);』而
+　令「无」为若「文同」于「次」于『["a","a",true,"a|b"]』则「元」否则「告祸」于（『代理先取值器后数据属性读错：』接「次」）而
+　「书」于『访问器序测试通过』
+也。
+
+「入口」于「元」。
