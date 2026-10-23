@@ -107,6 +107,7 @@
 　，『pointer-events』与『auto』与「阳」
 　，『cursor』与『auto』与「阳」
 　，『list-style-type』与『disc』与「阳」
+　，『豫计数式』与『』与「阳」
 　，『list-style-position』与『outside』与「阳」
 　，『list-style-image』与『none』与「阳」
 　，『display』与『inline』与「阴」
@@ -256,6 +257,7 @@
 　　　　，『border-image-outset』
 　　　　，『border-image-repeat』
 　　　　】）
+　，『border-image』与（「列」【『border-image-source』，『border-image-slice』，『border-image-width』，『border-image-outset』，『border-image-repeat』】）
 　，『border-top』与（「列」【『border-top-width』，『border-top-style』，『border-top-color』】）
 　，『border-right』与（「列」【『border-right-width』，『border-right-style』，『border-right-color』】）
 　，『border-bottom』与（「列」【『border-bottom-width』，『border-bottom-style』，『border-bottom-color』】）
