@@ -33,6 +33,7 @@
 　【「地址」者「资」中「地址」也
 　，「主体」者「作帛」于「正文」也
 　，「编码」者『UTF-8』也
+　，「头」者「资」中「头」也
 　】
 也。
 
@@ -68,7 +69,8 @@
 　　　或有（「可有」于「图字」）则
 　　　　「浏览器生成文档资源」
 　　　　　于「资」
-　　　　　于（『<!doctype html><html><body style="margin:0"><img style="display:block" src="data:』接（「浏览器标记转义」于「媒体」）接『,』接「图字」接『"></body></html>』）
+　　　　　于（『<!doctype html><html><body style="margin:0"><img style="display:block" src="data:』接（「浏览器标记转义」于「媒体」）接『,』接「图字」
+　　　　　　接『"></body></html>』）
 　）否则若「或」
 　　于（「且」于（「首同」于『text/』于「媒体」）于（非（「文同」于「媒体」于『text/html』）））
 　　于（「或」于（「文同」于「媒体」于『application/json』）于（「尾同」于『+json』于「媒体」））则（
