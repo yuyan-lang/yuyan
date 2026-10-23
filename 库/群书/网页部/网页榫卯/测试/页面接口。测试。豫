@@ -37,7 +37,7 @@
 　　或有「罄」则『』
 也。
 
-「：汉语：假交换：按地址给出回书；/submit 把方法、X-发 首部与正文回显成正文，/fail 给网络错误，其余给四百零四。
+「：汉语：假交换：按地址给出回书；/submit 把方法、X-Send 首部与正文回显成正文，/fail 给网络错误，其余给四百零四。
 　　文言：假邮：依址而报；/submit 回显其法、其首与体，/fail 报网络之败，余则四百零四。：」
 「假交换」乃化「抓取请求」为「抓取响应」者也。
 「假交换」者得「请」而
@@ -54,7 +54,7 @@
 　　「假回书」
 　　　于「址」曰「址」
 　　　于「二零零」
-　　　于「体」曰（（「请」中「方法」）接『|』接（「请头」于（「请」中「字段」）于『X-发』）接『|』
+　　　于「体」曰（（「请」中「方法」）接『|』接（「请头」于（「请」中「字段」）于『X-Send』）接『|』
 　　　　接（「本术」之「强作」以「帛」又以「文」于（「请」中「主体」）））
 　　　于（「列」【『X-试』与『一』，『Content-Type』与『text/plain』】）
 　否则若「文同」于「址」于『https://example.test/fail』则
@@ -143,7 +143,7 @@
 　令「无」为
 　　「急就在境行脚本」
 　　　于「境」
-　　　于『var ev=[];var x=new XMLHttpRequest();x.onreadystatechange=function(){ev.push("rs"+x.readyState);};x.onloadstart=function(){ev.push("start");};x.onprogress=function(e){ev.push("pg"+e.loaded+"/"+e.total+"/"+e.lengthComputable);};x.onload=function(){ev.push("load"+x.status+":"+x.getResponseHeader("X-试")+":"+x.responseText+":"+x.statusText);};x.onerror=function(){ev.push("err");};x.onabort=function(){ev.push("ab");};x.ontimeout=function(){ev.push("to");};x.onloadend=function(){ev.push("end");};x.open("POST","/submit");x.setRequestHeader("X-发","一");x.send("体");var hh=(x.getAllResponseHeaders().indexOf("x-试: 一")>=0)&&(x.getAllResponseHeaders().indexOf("content-type: text/plain")>=0);var y=new XMLHttpRequest();y.open("GET","/missing");y.onload=function(){ev.push("miss"+y.status+":"+y.responseText);};y.send();var z=new XMLHttpRequest();z.open("GET","/fail");z.onload=function(){ev.push("wrong");};z.onerror=function(){ev.push("er"+z.readyState+":"+z.status);};z.onloadend=function(){ev.push("end2");};z.send();var q=new XMLHttpRequest();q.onreadystatechange=function(){ev.push("ars"+q.readyState);};q.onloadstart=function(){q.abort();};q.onabort=function(){ev.push("aab");};q.onloadend=function(){ev.push("aend");};q.open("GET","/a");q.send();window.__丁=[ev.join(","),hh].join(";");』而
+　　　于『var ev=[];var x=new XMLHttpRequest();x.onreadystatechange=function(){ev.push("rs"+x.readyState);};x.onloadstart=function(){ev.push("start");};x.onprogress=function(e){ev.push("pg"+e.loaded+"/"+e.total+"/"+e.lengthComputable);};x.onload=function(){ev.push("load"+x.status+":"+x.getResponseHeader("X-试")+":"+x.responseText+":"+x.statusText);};x.onerror=function(){ev.push("err");};x.onabort=function(){ev.push("ab");};x.ontimeout=function(){ev.push("to");};x.onloadend=function(){ev.push("end");};x.open("POST","/submit");x.setRequestHeader("X-Send","一");x.send("体");var hh=(x.getAllResponseHeaders().indexOf("x-试: 一")>=0)&&(x.getAllResponseHeaders().indexOf("content-type: text/plain")>=0);var y=new XMLHttpRequest();y.open("GET","/missing");y.onload=function(){ev.push("miss"+y.status+":"+y.responseText);};y.send();var z=new XMLHttpRequest();z.open("GET","/fail");z.onload=function(){ev.push("wrong");};z.onerror=function(){ev.push("er"+z.readyState+":"+z.status);};z.onloadend=function(){ev.push("end2");};z.send();var q=new XMLHttpRequest();q.onreadystatechange=function(){ev.push("ars"+q.readyState);};q.onloadstart=function(){q.abort();};q.onabort=function(){ev.push("aab");};q.onloadend=function(){ev.push("aend");};q.open("GET","/a");q.send();window.__丁=[ev.join(","),hh].join(";");』而
 　令「无」为
 　　「急就在境行脚本」
 　　　于「境」
