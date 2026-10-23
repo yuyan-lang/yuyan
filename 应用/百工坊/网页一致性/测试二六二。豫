@@ -1,5 +1,5 @@
-「：汉语：通称测试二六二单测。测试二六二（ECMAScript 官方一致性测试 test262）的单个测试运行器：读测试文件的前言（includes、flags、negative），按官方的解释规程拼出辅助脚本与测试源码，在全新的捷思全局环境里执行，判定通过、失败或跳过。默认只按松散模式运行（带 onlyStrict 标志的加严格指令）；`$262` 只提供 evalScript、gc 与一个空的 global，需要 createRealm、agent、IsHTMLDDA、detachArrayBuffer 的测试记为跳过。待办事项：严格与松散两遍、全局对象真实现、$262 的其余能力。
-　　文言：测试二六二（ECMAScript 官方一致性之试 test262）之单试运行器：读试文之前言（includes、flags、negative），依官方之解释规程拼辅助之脚本与试源，于全新之捷思全局境执行，断其通、败或跳。缺省惟依松散之式而行（带 onlyStrict 之标者加严格之令）；`$262` 惟供 evalScript、gc 及空之 global，需 createRealm、agent、IsHTMLDDA、detachArrayBuffer 之试记为跳。待办事项：严格与松散两遍、全局之物真实现、$262 之余能。
+「：汉语：通称测试二六二单测。测试二六二（ECMAScript 官方一致性测试 test262）的单个测试运行器：读测试文件的前言（includes、flags、negative），按官方的解释规程拼出辅助脚本与测试源码，在全新的捷思全局环境里执行，判定通过、失败或跳过。默认只按松散模式运行（带 onlyStrict 标志的加严格指令）；`$262` 提供 evalScript、gc、一个空的 global 与 detachArrayBuffer（用急就的缓冲内建分离缓冲区），需要 createRealm、agent、IsHTMLDDA、AbstractModuleSource 的测试记为跳过。待办事项：严格与松散两遍、全局对象真实现、$262 的其余能力。
+　　文言：测试二六二（ECMAScript 官方一致性之试 test262）之单试运行器：读试文之前言（includes、flags、negative），依官方之解释规程拼辅助之脚本与试源，于全新之捷思全局境执行，断其通、败或跳。缺省惟依松散之式而行（带 onlyStrict 之标者加严格之令）；`$262` 供 evalScript、gc、空之 global 及 detachArrayBuffer（以急就之缓冲内建分离其牍），需 createRealm、agent、IsHTMLDDA、AbstractModuleSource 之试记为跳。待办事项：严格与松散两遍、全局之物真实现、$262 之余能。
 　　赋曰：粤若易思之试，号曰二六二；单篇受命，司其甲乙。开卷先寻前言，包含标志并录；度德先问负面，阶段类型兼收。非「raw」者，先装三助；是「async」者，更缀一符。携辅翼以入门，合源文而赴试。新开一境，惟列常经；「print」通其言，「$262」授其柄。先析后行，解析之负自见；既行复断，异步之表可稽。才违宿能，则书跳；技出未施，亦从舍。终乃一行奏牍，三字定评：通、败、跳，付之批程。：」
 寻观「豫章」之书。
 寻观「豫章」之「寓所」之「藏书」之书。
@@ -7,6 +7,8 @@
 寻观「急就」之书。
 寻观「急就」之「物典」之书。
 寻观「急就」之「误物」之书。
+寻观「急就」之「缓冲内建」之书。
+寻观「急就」之「列典」之书。
 寻观「网页一致性」之「数据文件」之书。
 寻观「网页一致性」之「网平测探测」之书。
 寻观「网页一致性」之「捷思运行」之书。
@@ -139,14 +141,14 @@
 　】
 也。
 
-「：汉语：需要本运行器没有提供的宿主能力的测试记为跳过：$262 的 createRealm、agent、IsHTMLDDA、detachArrayBuffer、AbstractModuleSource，测试线程能否阻塞的标志（CanBlockIsTrue 与 CanBlockIsFalse），以及尚未实现的提案特性。
-　　文言：需此运行器所无之宿主能力之试记为跳：$262 之 createRealm、agent、IsHTMLDDA、detachArrayBuffer、AbstractModuleSource，试线程能否阻之标（CanBlockIsTrue 与 CanBlockIsFalse），及未施之提案特性。：」
+「：汉语：需要本运行器没有提供的宿主能力的测试记为跳过：$262 的 createRealm、agent、IsHTMLDDA、AbstractModuleSource，测试线程能否阻塞的标志（CanBlockIsTrue 与 CanBlockIsFalse），以及尚未实现的提案特性。
+　　文言：需此运行器所无之宿主能力之试记为跳：$262 之 createRealm、agent、IsHTMLDDA、AbstractModuleSource，试线程能否阻之标（CanBlockIsTrue 与 CanBlockIsFalse），及未施之提案特性。：」
 「应跳过吗」乃化「文」又化「测试元数据」为「爻」者也。
 「应跳过吗」者得「源」又得「信息」而
 　（
 　　「有一」以「文」
 　　　于（得「某」而「文含」于「某」于「源」）
-　　　于（「列」【『$262.createRealm』，『$262.agent』，『$262.IsHTMLDDA』，『$262.detachArrayBuffer』，『$262.AbstractModuleSource』】）
+　　　于（「列」【『$262.createRealm』，『$262.agent』，『$262.IsHTMLDDA』，『$262.AbstractModuleSource』】）
 　）
 　或（
 　　（
@@ -227,6 +229,7 @@
 　　　　与「阳」
 　　　　与「阳」
 　　　）而
+　令「无」为「急就定义属」于「物」于（（「急就文字自串」于『detachArrayBuffer』）与（「急就新东道术」于（（得「接收者」又得「诸参」而令「牍」为「急就误实参」于「诸参」于「零」而令「无」为「急就缓冲换」于「对象」曰「牍」于「存储」曰（「置匣列」以「数」于「零」于「零」）于「零」而令「无」为「写匣」于「急就缓冲离簿」于（「缀」于「牍」于（「读匣」于「急就缓冲离簿」））而「急就未定义」）属「急就宿主回调」））与「阳」与「阳」与「阳」）而
 　令「无」为「急就定义名」于「境」于『$262』于「物」而
 　令「成」为「急就定义属」于（「急就取全局物」于「境」）于（（「急就文字自串」于『$DONE』）与「急就未定义」与「阳」与「阴」与「阳」）而
 　「境」
