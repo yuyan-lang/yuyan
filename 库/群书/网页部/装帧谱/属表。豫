@@ -257,6 +257,7 @@
 　　　　，『border-image-outset』
 　　　　，『border-image-repeat』
 　　　　】）
+　，『border-image』与（「列」【『border-image-source』，『border-image-slice』，『border-image-width』，『border-image-outset』，『border-image-repeat』】）
 　，『border-top』与（「列」【『border-top-width』，『border-top-style』，『border-top-color』】）
 　，『border-right』与（「列」【『border-right-width』，『border-right-style』，『border-right-color』】）
 　，『border-bottom』与（「列」【『border-bottom-width』，『border-bottom-style』，『border-bottom-color』】）
