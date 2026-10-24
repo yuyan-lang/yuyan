@@ -1,4 +1,4 @@
-「：汉语：通称 HF 命名模型配置映射。从 HF 的 config.json（结森）读模型配置：取段与 text_config，按 model_type 或 architectures 推定架构名（qwen3、qwen3moe、qwen35），把 GGUF 式的元数据键（如 qwen3.embedding_length）映射到 HF 配置键，读整数与小数元数据（缺失时用缺省值）。
+「：汉语：通称 HF 命名模型配置映射。从 HF 的 config.json（结绳）读模型配置：取段与 text_config，按 model_type 或 architectures 推定架构名（qwen3、qwen3moe、qwen35），把 GGUF 式的元数据键（如 qwen3.embedding_length）映射到 HF 配置键，读整数与小数元数据（缺失时用缺省值）。
 　　文言：HF 命名模型之配之映：自 HF 之 config.json 读模之配：取段与 text_config，依 model_type 或 architectures 定架构之名，以 GGUF 式之元数键映为 HF 之配键，读整数小数之元数（阙则用缺省）。
 　　赋曰：伊命名模型设也，结绳为配，段落相寻；文字之设，内外相因；模型之型，架构以名；千问三者，混合专家，三点五之伦；元数之键，映而相亲；整小之值，缺省以伸。：」
 寻观「豫章」之书。
