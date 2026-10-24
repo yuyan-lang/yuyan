@@ -2456,3 +2456,6 @@ QEMU 用 USB 存储启动造好的 ISO 时，介质大小就是文件大小：�
 - **`急就设原型` 的第二参是 `或可有 于 急就值`**：传原型对象要包成 `（「可有」于「观型」）`；只传 `「观型」` 报「急就值 != 或可有」。
 - **DataView 的写入次序有测试盯**：`range-check-after-value-conversion` 与 `detached-buffer-after-number-value` 要求写入值（ToNumber/ToBigInt）在查分离与范围之前化；先查范围再化值会退步二十项。读没有值可化，次序是「化下标 → 查分离/越界 → 验范围」。
 - **原子行的下标界限要用「现长」并在化下标之前取**：记录里的「项计」对跟长视图是零，直接用会把下标 0 判成越界；`notify/retrieve-length-before-index-coercion-non-shared-resize-to-zero` 还要求先取长度再化下标（下标 valueOf 里把可伸缩缓冲缩到零，仍要返回零），所以 `现计` 要在 `急就缓冲索` 之前取好。另：`Atomics` 的读改与 `load` 在普通（非共享）数组缓冲区上照常工作，只有 `wait`/`waitAsync` 限共享缓冲。
+- **普查 test262 各目录**：`for d in */; do 测试二六二 仓库 built-ins/$d --输出 ... --并发 4 --内存 2048; done`，一万七千多项约十五分钟；汇总时注意从 tsv 里去掉 `*` 再按第二列统计。超时项单跑核实，别当逻辑错。
+- **字符串的 ToString 与取键不是一回事**：`急就取键` 把符号转成键名，`急就作文字` 对符号报类型错误；字符串方法的接收者、检索串、填充串、替换值都用后者（本轮把 `文典` 的 `急就文作文` 改为后者，修好二十九项）。名字带 ToPropertyKey 的场合才用取键。
+- **`String.prototype.match` 等取 `Symbol.match` 前要先判对象**：原始值不该窥探包装原型的符号属性（`Boolean.prototype[Symbol.match]` 的 getter 会被误触），`startsWith`／`includes`／`endsWith` 还要先做 IsRegExp（对象且 `Symbol.match` 非空）再报类型错误。
