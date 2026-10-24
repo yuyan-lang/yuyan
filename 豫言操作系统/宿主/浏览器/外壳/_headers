@@ -1,0 +1,8 @@
+# 文言：主站外壳之跨源隔离头（云仓提案〇〇〇〇五），照线上 /操作系统/行在/ 的做法。
+# 汉语：主站外壳的跨源隔离头（云仓提案 C00005），照线上 /操作系统/行在/ 的做法。
+# 网页行在要 SharedArrayBuffer：页面与它启动的工作线程脚本都须跨源隔离，故整站给这三个头。
+# 发行目录里的 _headers 是 Cloudflare Pages 的响应头规则；由服务器或过渡期 Worker 回外壳时，在同一处写这三个头。
+/*
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Embedder-Policy: require-corp
+  Cross-Origin-Resource-Policy: same-origin
