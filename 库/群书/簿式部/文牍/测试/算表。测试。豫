@@ -1,0 +1,152 @@
+「：汉语：通称算表读取的短测。测试里用「典藏」的「压档写」与「延标」的文本现场造一份小算表（不新增二进制测试文件），再用「读函」读回：核对表名与次序、共享字符串、内联字符串、数值、布尔、公式缓存值、日期序号、空格的格子、合并单元格的合区、按名与按序取表、按行取格；另以不是压档的字节与缺工作簿篇的压档验坏文件返回「文牍败」。全部通过后打印。
+　　文言：试者，造小书而读之也：以压档写造其书，以读函读之；名与次序、共享与内联、数与爻、公式之缓存、日之序号、空与并之区，逐事核对。又以非压档之帛与缺工作簿之帛验其败而不陷。众端既验，乃书通过。
+　　赋曰：造一小书试其读，写来读去各相安。表名次序从头核，共享内联逐格看。数爻日期皆按数，空与并区次第观。坏书不陷还辞告，众验既通书一言。：」
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「文牍」之书。
+寻观「典藏」之「便用」之书。
+
+「：汉语：通称断文（assert text）。两个字符串相等时返回「元」，否则告祸并附期望与实得。
+　　文言：断文者，校二文之同：同则元，异则告祸而陈其期望与实得。：」
+「断文」乃化「应」曰「文」又化「实」曰「文」为「有」者也。
+「断文」者得「应」曰「其应」又得「实」曰「其实」而
+　若「文同」于「其应」于「其实」则「元」否则「告祸」以「有」于（『期望』接「其应」接『，实得』接「其实」）
+也。
+
+「：汉语：通称断数（assert integer）。两数相等时返回「元」，否则告祸并附期望与实得。
+　　文言：断数者，校二数之同：同则元，异则告祸而陈其期望与实得。：」
+「断数」乃化「数」又化「数」为「有」者也。
+「断数」者得「其应」又得「其实」而
+　若「其应」等于「其实」则「元」否则「告祸」以「有」于（『期望』接（「述数」于「其应」）接『，实得』接（「述数」于「其实」））
+也。
+
+「：汉语：通称断格（assert cell text）。把格值写成文字后与期望文字比较。
+　　文言：断格者，以格作文校其期望。：」
+「断格」乃化「文」又化「格值」为「有」者也。
+「断格」者得「其应」又得「其格」而
+　「断文」于「应」曰「其应」于「实」曰（「格作文」于「其格」）
+也。
+
+「：汉语：通称断数格（assert numeric cell）。把格值写成小数后与期望小数比较。
+　　文言：断数格者，以格作数校其期望。：」
+「断数格」乃化「小数」又化「格值」为「有」者也。
+「断数格」者得「其应」又得「其格」而
+　若「小数等于」于「其应」于（「格作数」于「其格」）则「元」否则「告祸」以「有」于『格中的数不符』
+也。
+
+「：汉语：通称取函（unwrap workbook）。读取结果成功时返回「函」，失败时告祸并附说明。
+　　文言：取函者，读取之果成则取其函，败则告祸而附其辞。：」
+「取函」乃化（「文牍果」于「函」）为「函」者也。
+「取函」者得「其果」而
+　鉴「其果」而
+　　或有（「文牍成」于「其函」）则「其函」
+　　或有（「文牍败」于「其辞」）则（「告祸」以「函」于（『读算表失败：』接「其辞」））
+也。
+
+「：汉语：通称取表（unwrap table）。读取结果成功时返回「表」，失败时告祸并附说明。
+　　文言：取表者，读取之果成则取其表，败则告祸而附其辞。：」
+「取表」乃化（「文牍果」于「表」）为「表」者也。
+「取表」者得「其果」而
+　鉴「其果」而
+　　或有（「文牍成」于「其表」）则「其表」
+　　或有（「文牍败」于「其辞」）则（「告祸」以「表」于（『取表失败：』接「其辞」））
+也。
+
+「：汉语：通称断败函（assert workbook failure）。读函成功时告祸，返回「文牍败」时返回「元」。
+　　文言：断败函者，读而成则告祸，败则元。：」
+「断败函」乃化（「文牍果」于「函」）为「有」者也。
+「断败函」者得「其果」而
+　鉴「其果」而
+　　或有（「文牍成」于「其函」）则（「告祸」以「有」于『坏文件应报败』）
+　　或有（「文牍败」于「其辞」）则「元」
+也。
+
+「其类型文」者
+　『<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/></Types>』
+也。
+
+「其总联」者
+　『<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>』
+也。
+
+「其工作簿」者
+　『<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="甲表" sheetId="1" r:id="rId1"/><sheet name="乙表" sheetId="2" r:id="rId2"/></sheets></workbook>』
+也。
+
+「其工作簿联」者
+　『<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/></Relationships>』
+也。
+
+「其共享」者
+　『<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="2" uniqueCount="2"><si><t>你好</t></si><si><r><t>富</t></r><r><t>文本</t></r></si></sst>』
+也。
+
+「其表一」者
+　『<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:C3"/><sheetData><row r="1"><c r="A1" t="s"><v>0</v></c><c r="B1"><v>3.5</v></c><c r="C1" t="b"><v>1</v></c></row><row r="2"><c r="A2" t="inlineStr"><is><t>内联</t></is></c><c r="C2" t="str"><f>A1&amp;B1</f><v>公式值</v></c></row><row r="3"><c r="B3"><v>45678</v></c></row></sheetData><mergeCells count="1"><mergeCell ref="A2:B2"/></mergeCells></worksheet>』
+也。
+
+「其表二」者
+　『<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetData><row r="1"><c r="A1"><v>1</v></c><c r="B1"><v>2</v></c></row><row r="2"><c r="A2"><v>3</v></c><c r="B2"><v>4</v></c></row></sheetData></worksheet>』
+也。
+
+「其目」者
+　「缀」以（「文」合「帛」）
+　　于（『[Content_Types].xml』与（「作帛」于「其类型文」））
+　　于（「缀」以（「文」合「帛」）
+　　　于（『_rels/.rels』与（「作帛」于「其总联」））
+　　　于（「缀」以（「文」合「帛」）
+　　　　于（『xl/workbook.xml』与（「作帛」于「其工作簿」））
+　　　　于（「缀」以（「文」合「帛」）
+　　　　　于（『xl/_rels/workbook.xml.rels』与（「作帛」于「其工作簿联」））
+　　　　　于（「缀」以（「文」合「帛」）
+　　　　　　于（『xl/sharedStrings.xml』与（「作帛」于「其共享」））
+　　　　　　于（「缀」以（「文」合「帛」）
+　　　　　　　于（『xl/worksheets/sheet1.xml』与（「作帛」于「其表一」））
+　　　　　　　于（「缀」以（「文」合「帛」）于（『xl/worksheets/sheet2.xml』与（「作帛」于「其表二」））于（「罄」以（「文」合「帛」））））））））
+也。
+
+「其档」者（（「压档写」于「其目」于「零」）中「一」）也。
+
+「其函」者（「取函」于（「读函」于「其档」））也。
+
+「断数」于「二」于（「计」以「表」于（「函表们」于「其函」））。
+「断文」于「应」曰『甲表』于「实」曰（「第」以「文」于「零」于（「函表名们」于「其函」））。
+「断文」于「应」曰『乙表』于「实」曰（「第」以「文」于「一」于（「函表名们」于「其函」））。
+「其甲」者（「取表」于（「取函表」于「其函」于「零」））也。
+
+「其乙」者（「取表」于（「取函表」于「其函」于「一」））也。
+
+「断数」于「三」于（「其甲」中「行计」）。
+「断数」于「三」于（「其甲」中「栏计」）。
+「断格」于『你好』于（「表取格」于「表」曰「其甲」于「行」曰「零」于「栏」曰「零」）。
+「断格」于『内联』于（「表取格」于「表」曰「其甲」于「行」曰「一」于「栏」曰「零」）。
+「断格」于『公式值』于（「表取格」于「表」曰「其甲」于「行」曰「一」于「栏」曰「二」）。
+「断格」于『』于（「表取格」于「表」曰「其甲」于「行」曰「二」于「栏」曰「零」）。
+「断格」于『』于（「表取格」于「表」曰「其甲」于「行」曰「五」于「栏」曰「零」）。
+「断数格」于「三点五」于（「表取格」于「表」曰「其甲」于「行」曰「零」于「栏」曰「一」）。
+「断数格」于「四五六七八点零」于（「表取格」于「表」曰「其甲」于「行」曰「二」于「栏」曰「一」）。
+「断格」于『阳』于（「表取格」于「表」曰「其甲」于「行」曰「零」于「栏」曰「二」）。
+「其并」者（「第」以「合区」于「零」于（「其甲」中「合区们」））也。
+
+「断数」于「一」于（「其并」中「行起」）。
+「断数」于「一」于（「其并」中「行止」）。
+「断数」于「零」于（「其并」中「栏起」）。
+「断数」于「一」于（「其并」中「栏止」）。
+「其乙行」者（「表取行」于「其乙」于「零」）也。
+
+「断数」于「二」于（「计」以「格值」于「其乙行」）。
+「断格」于『』于（「表取格」于「表」曰「其乙」于「行」曰「零」于「栏」曰「二」）。
+「断数格」于「二点零」于（「第」以「格值」于「一」于「其乙行」）。
+「断数格」于「四点零」于（「表取格」于「表」曰「其乙」于「行」曰「一」于「栏」曰「一」）。
+鉴（「寻函表」于「其函」于『乙表』）而
+　或有（「可有」于「其表」）则（「断数」于「二」于（「其表」中「行计」））
+　或有「可无」则（「告祸」以「有」于『按名寻表应得其表』）。
+鉴（「寻函表」于「其函」于『丙表』）而
+　或有（「可有」于「其表」）则（「告祸」以「有」于『按名寻表不应得其表』）
+　或有「可无」则「元」。
+「断败函」于（「读函」于（「作帛」于『这不是压档』））。
+「断败函」于（「阅函」于『/tmp/钩制读表-无此档.xlsx』）。
+「断败函」于（「读函」于（（「压档写」
+　于（「缀」以（「文」合「帛」）于（『a.txt』与（「作帛」于『abc』））于（「罄」以（「文」合「帛」）））
+　于「零」）中「一」））。
+「书」于『算表读取短测通过』。
