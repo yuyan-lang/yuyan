@@ -2475,3 +2475,6 @@ QEMU 用 USB 存储启动造好的 ISO 时，介质大小就是文件大小：�
 - **普查 test262 各目录**：`for d in */; do 测试二六二 仓库 built-ins/$d --输出 ... --并发 4 --内存 2048; done`，一万七千多项约十五分钟；汇总时注意从 tsv 里去掉 `*` 再按第二列统计。超时项单跑核实，别当逻辑错。
 - **字符串的 ToString 与取键不是一回事**：`急就取键` 把符号转成键名，`急就作文字` 对符号报类型错误；字符串方法的接收者、检索串、填充串、替换值都用后者（本轮把 `文典` 的 `急就文作文` 改为后者，修好二十九项）。名字带 ToPropertyKey 的场合才用取键。
 - **`String.prototype.match` 等取 `Symbol.match` 前要先判对象**：原始值不该窥探包装原型的符号属性（`Boolean.prototype[Symbol.match]` 的 getter 会被误触），`startsWith`／`includes`／`endsWith` 还要先做 IsRegExp（对象且 `Symbol.match` 非空）再报类型错误。
+- **`急就新文构造器` 多了一个「迭代原型」参数**：装 `String.prototype[Symbol.iterator]` 要用 `%IteratorPrototype%`（由 `词法境` 从 `Iterator` 构造器的 `prototype` 取出传入）；新增字符串内建时别再按单参调用。
+- **字符串迭代器的接收者要先做 RequireObjectCoercible**：空值与未定义直接报类型错误，符号经 ToString 也报类型错误；码点用 `急就串字列` 一次展列，游标逐次推进。
+- **构建一律用缺省转发**（用户 2026-10-24 定）：不要再写 `豫言将作托出=关 豫言将作远客=关`，更不许 `豫言将作=关`；让将作按负载把整次构建转给同僚或别的机器。转发后报错（如对方答“自行”而失败）就把命令与报错贴给用户，不要自己关转发。不加交互优先。
