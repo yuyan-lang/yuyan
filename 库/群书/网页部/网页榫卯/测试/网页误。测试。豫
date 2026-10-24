@@ -1,0 +1,27 @@
+「：汉语：通称浏览器误物与卦文冒烟测试（DOMException and base64 smoke test）。在新全局环境里绑定文档，核对 DOMException 的原型、名称、消息、编号、旧式常量、构造与抛出，以及 btoa、atob 的编码、解码、去空白、补齐与非法字符报错；打印通过数与总数。
+　　文言：盖闻误之名立，而后事有定；文之数编，而后帛可通。试之之法：系境于篇，逐一验之，计其合者，书于册。
+　　赋曰：误有原型，承乎旧误；名随所号，号随其故。二十有五，常列于途；新而可抛，一物不殊。卦文六位，编以成章；解而去白，补缺为常。非法之字，告以误名；一验既周，书其合成。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a"></div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「计文」为
+　　（
+　　　「急就在境行脚本」
+　　　　于「境」于『var ok=0;var tot=0;function chk(c){tot=tot+1;if(c)ok=ok+1;}function sf(f){try{return f();}catch(e){return false;}}function th(f,n){try{f();return false;}catch(e){return !!e&&e.name===n;}}function t5(f){try{f();return false;}catch(e){return !!e&&e.name==="InvalidCharacterError"&&e.code===5;}}chk(sf(function(){return typeof DOMException==="function";}));chk(sf(function(){return typeof btoa==="function"&&typeof atob==="function";}));chk(sf(function(){var e=new DOMException();return e.name==="Error"&&e.message==="";}));chk(sf(function(){var e=new DOMException("msg");return e.name==="Error"&&e.message==="msg";}));chk(sf(function(){var e=new DOMException("m","InvalidCharacterError");return e.name==="InvalidCharacterError"&&e.code===5;}));chk(sf(function(){var e=new DOMException("m","AbortError");return e.code===20;}));chk(sf(function(){var e=new DOMException("m","DataCloneError");return e.code===25;}));chk(sf(function(){var e=new DOMException("m","NoSuchName");return e.name==="NoSuchName"&&e.code===0;}));chk(sf(function(){return new DOMException() instanceof Error;}));chk(sf(function(){return new DOMException() instanceof DOMException;}));chk(sf(function(){return Object.getPrototypeOf(new DOMException())===DOMException.prototype;}));chk(sf(function(){return DOMException.prototype instanceof Error;}));chk(sf(function(){return new DOMException().constructor===DOMException;}));chk(sf(function(){return DOMException.name==="DOMException";}));chk(sf(function(){return DOMException.length===0;}));chk(sf(function(){return DOMException.INVALID_CHARACTER_ERR===5&&DOMException.DATA_CLONE_ERR===25&&DOMException.INDEX_SIZE_ERR===1;}));chk(sf(function(){return DOMException.prototype.ABORT_ERR===20&&DOMException.prototype.QUOTA_EXCEEDED_ERR===22;}));chk(sf(function(){return th(function(){DOMException();},"TypeError");}));chk(sf(function(){var e=new DOMException("x");var got=null;try{throw e;}catch(y){got=y;}return got===e;}));chk(sf(function(){return btoa("")==="";}));chk(sf(function(){return btoa("abc")==="YWJj";}));chk(sf(function(){return btoa("ab")==="YWI=";}));chk(sf(function(){return btoa("a")==="YQ==";}));chk(sf(function(){return btoa("\u00ff")==="/w==";}));chk(sf(function(){return t5(function(){btoa("\u0100");});}));chk(sf(function(){return atob("YWJj")==="abc";}));chk(sf(function(){return atob(" YWJj\n")==="abc";}));chk(sf(function(){return atob("YWI")==="ab";}));chk(sf(function(){return atob("YQ==")==="a";}));chk(sf(function(){return atob("")==="";}));chk(sf(function(){return t5(function(){atob("!!");});}));chk(sf(function(){return atob("YQ")==="a";}));chk(sf(function(){return atob(btoa("hello world"))==="hello world";}));chk(sf(function(){return atob(btoa("\u0000\u0001\u0002"))==="\u0000\u0001\u0002";}));chk(sf(function(){return btoa(String.fromCharCode(0,128,255))==="AID/";}));ok+"/"+tot;』
+　　）而
+　令「成数」为（「急就文字作串」于（「急就作文字」于「计文」））而
+　「书」于「成数」而后
+　若「文同」于「成数」于『35/35』则
+　　「书」于『浏览器误物与卦文冒烟通过』
+　否则
+　　（「告祸」于（『浏览器误物与卦文绑定错误：』接「成数」））
+也。
+
+「入口」于「元」。
