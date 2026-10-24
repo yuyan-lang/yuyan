@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- 文言：主站外壳之页（云仓提案〇〇〇〇五）：极小之载器，画布满铺；能不足则惟示一行与文档站同径之链。正文之字由脚本出，页里不写。 -->
+<!-- 汉语：主站外壳的页面（云仓提案 C00005）：很小的加载器，画布铺满窗口；浏览器能力不足时只显示一行字与文档站同一路径的链接。
+     提示文字由脚本写进 #示，页面本身不带内容。主站每个页面路径都回这一页，路径由脚本交给应用。 -->
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>豫言</title>
+<style>
+/* 文言：画布满铺，未得面之前不示；提示层居中。汉语：画布铺满窗口，取得显示面之前不显示（详见下方脚本）；提示一行居中。 */
+html,body{margin:0;height:100%;background:#faf7f0;color:#1d1b18;font:16px/1.7 system-ui,sans-serif}
+canvas[data-yy-显示面]{position:fixed;inset:0;width:100vw;height:100dvh;display:block;touch-action:none;outline:none}
+body:not(.单应用中) canvas[data-yy-显示面]{display:none}
+#示{margin:auto;padding:24px;max-width:44em;text-align:center}
+body.单应用中 #示{display:none}
+#示 a{color:#a33c2c}
+</style>
+</head>
+<body>
+<p id="示">正在启动</p>
+<canvas data-yy-显示面="主窗口" data-yy-显示面前缀="宫"></canvas>
+<script type="module" src="./外壳.mjs"></script>
+</body>
+</html>

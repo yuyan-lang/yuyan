@@ -1,0 +1,120 @@
+「：汉语：通称服务端握手互操作测试。把 OpenSSL 4.0.3 的 `s_client -tls1_3` 实际发出的客户问候（固定样本，含混合密钥份额、会话票据、预共享模式等扩展，记录版本写作七百六十九）喂给封缄的服务会话，核对：服务端停在等待完成证明的阶段、无错误，且待发队列第一条记录是结构正确的服务问候——记录种类二十二与版本七百七十一、握手种类二与长度相符、旧版本七百七十一、会话标识原样回送、套件挑中高级加密128、扩展含所选版本七百七十二与群二十九的三十二字节份额。本篇串起「记录」「握手」「主」「主传输」。
+　　文言：客问既至，主答当合。此篇取 OpenSSL 真客之问，字字如故；喂于服务之会，验其停于候毕之阶而无误，且待发之首为一问候之录：种类、长度、旧版、会话、套件、所择版本与份额，一一相合。混合之份、票据之扩，皆在问中，以见其繁而不乱。
+　　赋曰：客持繁问，混合其份；票据预共，列于扩陈。主答一纸，录首五陈：旧版相若，会话回身；套件既择，版本独伸。份额三二，群二九陈；一验其序，握手乃真。：」
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「豫章」之「形制」之「文章」之书。
+寻观「豫章」之「形制」之「次第」之书。
+寻观「豫章」之「形制」之「有无」之书。
+寻观「豫章」之「出纳」之「笔」之书。
+寻观「卦文」之「基码」之书。
+寻观「封缄」之「记录」之书。
+寻观「封缄」之「握手」之书。
+寻观「封缄」之「主」之书。
+寻观「封缄」之「主传输」之书。
+
+「服测断言」乃化「爻」又化「文」为「有」者也。
+「服测断言」者得「条件」又得「说明」而
+　若「条件」则「元」否则（「告祸」以「有」于「说明」）
+也。
+
+「服测字节同」乃化「左」曰「帛」又化「右」曰「帛」又化「始」曰「数」为「爻」者也。
+「服测字节同」者得「左」曰「甲」又得「右」曰「乙」又得「始」曰「序」而
+　若（「计帛」于「甲」）不等于（「计帛」于「乙」）则
+　　「阴」
+　否则若「序」等于（「计帛」于「甲」）则
+　　「阳」
+　否则若（「读帛」于「甲」于「序」）不等于（「读帛」于「乙」于「序」）则
+　　「阴」
+　否则
+　　「服测字节同」于「左」曰「甲」于「右」曰「乙」于「始」曰（「序」加「一」）
+也。
+
+「：汉语：通称客户问候样本（captured ClientHello）。OpenSSL 4.0.3 `s_client -tls1_3` 的客户问候握手消息，一千四百六十四字节，卦文形式。
+　　文言：OpenSSL 4.0.3 之 s_client -tls1_3 所发客户问候之握手消息，一四六四字节，卦文其文。：」
+「客问候样本」乃「帛」也。
+「客问候样本」者
+　鉴（「卦文解」于（「作帛」于『
+AQAFtAMD3kfTXFyGcpLcToYUsqwPQIk6Us/N2ofybHo1uegOkQog7ZJlRO4GybXfWhlJ00dH4MuFX7tIwul6W7IlObN2X04ABhMCEwMTAQEABWUACgAYABYR7BHrEe4AHQAXAB4AGAAZACkBAAEBACMAAAAWAAAAFwAAAA0ALAAqCQUJBgkEBAMFAwYDCAcICAgaCBsIHAgJCAoICwgECAUIBgQBBQEGAQcIACsAAwIDBAAtAAIBAQAzBOoE6BHsBMBaByij8QMnlkFiB5G78Z6ENI7e1DAkpaBworJ7gYNRAJpMyq6uCMrDA5cDY6Olgb65W5AE4nCn6Bp8CnQ3E1zRp81qUnnNwUzXQMTx8wHXt0d81Xzxwokx8YfgJnVBe1Fc9Es5wmAIJ5vtqVer94wRd5plU0RWYIQFvDjB4lTKW66NxQCzBqH6iS+ii7bMxyPrfMza2gjEiQ38wR0ycwxeGRLUVAS2sWigTDN0QT8t/HZ2WLR9qIX9GTLl9RKHlZ7HvA0vFUNZ4hAd80WEC3fTwpeE8BsBuiooG43X8o3PZ7o901L6pXssYI+PgVnb0QbBswIAu4K8KAoPvE0aBDHRALIaWKfxGliKnKmxSxzCxmwO0GFvZyoKQIaAWbGYcq0rVJDalaB41FoQfFogRC13OjsUHGTk2jUKC01rJAfkI6FflpGU6rqUN7aByWvRzDvhkr3rIIcQfC1RIo5e7AB+cJ0hO7e6222i+M8RJrG8A1PH2gnv0yPPI8GVI0kjqSy7OYRSUTN/G7C6CwKWtjHUpIcGdTYMtBghhRHfmlyQAhq+l5Spkq4qWD9SccKgIXx/tnzd4Kb2lUQWda8iGo7sOkgHkEcXM3CAbHNO+1coF0JnAqoxcaulc0PRWVye9I1tsSmNsM3SKqyNx6e5qsCjsghKy7mUER8GTClcRcTtOy8H2RuGijHpoT8aBLZJKcDrhVo3YgZ0e7Ea6J2xrKCRUmtNq2T+LLc9lmO3IF6pqU5KqTB+KU+BasQe8ydoCi0iNHRTeTIARa7b1TDhOQkaNzi1VURepz8wFn/gqJV2c1yyOaMlVRUxSBBh6IXv7AzUxyrEQbBmQCQkHGtiGarUCjsOiSFhNAMLMa4vMBBighq21w9smWJG9K1wE5pwGAx5NQu+MLvG4pvw4wLPq5tGhzZce0bbDGLX5oq5Bw92LJQXUYA4eJEEcr9Xy5w7qEm40ELfoHXoE7fQ9Vn30rvkqx1y6657NyR0nDOceHAa5xqCMrMlcYpedDLz5hoB9w1EynYEWC68ORXtUBZj+FdKanzi9XZcGrdg40/E5q2f9g5kw5xzDJI901BWB0a4xBdKRjtrtsq7/JFnUklPFg0K+zeVJcV+tT7doZhI4i2kNIecGWxL+CoTdxYzST9bUW4ysFcl0gb92yw9KzI8hCbyPLRRM0ric8Zi+5I7lEwZaZPpE0895XzJS1cbwInxVg8u1j9sJs/ZeHUA8ssIGbmaUQWC8ECCKFjtID4rc44I9Yd8eBFmEDXC8HGPSi4jlk9Q0a2y9KySFRMDgify1SyWLGuirI+C2pefLDIsS7URualSZLvhVCQUyDvNOmcggjbu5H5g211V9wn2cUp0tFjRVMqz8EB4QxONimZsBFdvcC3OI4RhuUUhgTvJnFfdhmoFOpdpWYgUWW0IZHUOprsUmji0aAisOyqWJAyH8JA2/HXp/BRKmVCX0R3s5WbUW7ORrM8NeW+ggw+qq1fPupRD6Mkd8CONR5geSqMPQMjHibFMfIZb9KgtNahkO7FLnFf4ASj4ItspAkjweM164hngJrQnofdHne9FOT3clGR4ywRcwem7N9jdbDgEoI4vzDaxI5kL82wA1UBZppPaL4R9AB0AIOG2Vjonx6IP1Qe+eWr2w3KM/OTHScJfWBsQuAfKkzNmAAAADgAMAAAJbG9jYWxob3N0
+』）于「阴」于「阳」）而
+　　或有（「可有」于「其帛」）则「其帛」
+　　或有「可无」则（「告祸」以「帛」于『客户问候样本不是有效的卦文』）
+也。
+
+「服测签名」乃化「数」又化「帛」为（「或可有」于「帛」）者也。
+「服测签名」者得「算法号」又得「正文」而
+　「可有」于（「主重复字节」于「九」于「六四」）
+也。
+
+「服测配置」乃「服务配置」也。
+「服测配置」者（「列」【「作帛」于『测试证书』】）与「一零二七」与「服测签名」与（「罄」以「文」）与（「列」【「四八六五」，「四八六七」，「四八六六」】）也。
+
+「：汉语：通称查扩展（check extensions）。核对服务问候的扩展向量：含所选版本扩展（种类四十三、内容为七百七十二）与密钥份额扩展（种类五十一、群二十九、份额三十二字节，整段三十六字节）。
+　　文言：校服务问候之扩：有所择版本之扩（种四三、内容七七二），与份额之扩（种五一、群二九、份三二，整段三六）。：」
+「服测扩合」乃化「帛」为「爻」者也。
+「服测扩合」者得「扩」而
+　鉴（「寻扩」于「扩」于「四三」）而
+　　或有（「扩展找到」于「版本」）则（
+　　　鉴（「寻扩」于「扩」于「五一」）而
+　　　　或有（「扩展找到」于「份额」）则
+　　　　　（（「计帛」于「版本」）等于「二」）
+　　　　　且（（「读大端」于「版本」于「零」于「二」）等于「七七二」）
+　　　　　且（（「计帛」于「份额」）等于「三六」）
+　　　　　且（（「读大端」于「份额」于「零」于「二」）等于「二九」）
+　　　　　且（（「读大端」于「份额」于「二」于「二」）等于「三二」）
+　　　　或有「其他」则「阴」
+　　）
+　　或有「其他」则「阴」
+也。
+
+「：汉语：通称查服务问候（check ServerHello）。核对一条握手消息是结构正确的服务问候：种类二、长度相符、旧版本七百七十一、随机三十二字节、会话标识长度三十二且与客户问候相同、套件高级加密128、压缩方法零、扩展长度与内容相符，扩展本身交「服测扩合」。
+　　文言：校一握手之文为合式之服务问候：种二、长符、旧版七七一、随机三二、会话三二而同客问、套件高级加密128、压缩零、扩之长相符；扩付「服测扩合」。：」
+「服测答合」乃化「帛」为「爻」者也。
+「服测答合」者得「内」而
+　令「扩」为（「截帛」于「内」于「七六」于（「读大端」于「内」于「七四」于「二」））而
+　（（「计帛」于「内」）大于「七六」）
+　且（（「读帛」于「内」于「零」）等于「二」）
+　且（（「读大端」于「内」于「一」于「三」）等于（（「计帛」于「内」）减「四」））
+　且（（「读大端」于「内」于「四」于「二」）等于「七七一」）
+　且（（「读帛」于「内」于「三八」）等于「三二」）
+　且（「服测字节同」于「左」曰（「截帛」于「内」于「三九」于「三二」）于「右」曰（「截帛」于「客问候样本」于「三九」于「三二」）于「始」曰「零」）
+　且（（「读大端」于「内」于「七一」于「二」）等于「四八六五」）
+　且（（「读帛」于「内」于「七三」）等于「零」）
+　且（（「读大端」于「内」于「七四」于「二」）等于（（「计帛」于「内」）减「七六」））
+　且（「服测扩合」于「扩」）
+也。
+
+「：汉语：通称查待发（check queued flight）。待发字节按记录层解析：第一条须为种类二十二的完整记录，其后还有待发的加密记录，内容合服务问候。
+　　文言：待发之字节按记录而析：首条须为种二二之全录，其后尚有加密之录，其内容合服务问候。：」
+「服测查答」乃化「帛」为「爻」者也。
+「服测查答」者得「待」而
+　鉴（「析录」于「待」）而
+　　或有（「记录完成」于「种」于「内」于「余」）则（（「种」等于「二二」）且（（「计帛」于「余」）大于「零」）且（「服测答合」于「内」））
+　　或有「其他」则「阴」
+也。
+
+「：汉语：通称查无错（check no error）。服务会话的错误文字为空才算通过；有错时抛出带原因的异常。
+　　文言：服务会话之误文空乃过；有误则告其由。：」
+「服测无错」乃化「服务会话」为「有」者也。
+「服测无错」者得「会」而
+　鉴（「主误」于「会」）而
+　　或有（「可有」于「误」）则（「告祸」以「有」于（『服务端握手失败：』接「误」））
+　　或有「可无」则「元」
+也。
+
+「：汉语：通称跑测试（run test）。造服务会话，喂入固定客户问候，核对阶段为二、无错误、握手尚未完成，待发第一条记录是结构正确的服务问候。
+　　文言：造服务之会，喂定客之问；验其阶二、无误、握手未毕，而待发之首为合式之服务问候。：」
+「服测试」乃化「有」为「有」者也。
+「服测试」者得「无」而
+　令「会」为（「始主」于「服测配置」于（「主重复字节」于「一」于「三二」）于（「主重复字节」于「二」于「三二」））而
+　令「喂」为（「喂入主」于「会」于（「编录」于「二二」于「客问候样本」））而
+　令「阶」为（「主取数」于「会」于「零」）而
+　令「无」为（「服测断言」于（「阶」等于「二」）于『服务端须停在等待完成证明』）而
+　令「无」为（「服测无错」于「会」）而
+　令「无」为（「服测断言」于（非（「主握手曾成」于「会」））于『客户完成证明之前不算握手已成』）而
+　令「待」为（「取主待发」于「会」）而
+　「服测断言」于（「服测查答」于「待」）于『服务问候结构须正确』
+也。
+
+「服测试」于「元」。
+「续书」于『服务端握手互操作测试通过』。
