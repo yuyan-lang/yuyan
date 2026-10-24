@@ -18,11 +18,17 @@ const 缺能 = () => [!支持WasmGC() && 'WasmGC', !支持JSPI() && 'JSPI',
   !globalThis.crossOriginIsolated && '跨源隔离（SharedArrayBuffer）', typeof globalThis.Worker !== 'function' && 'Worker',
   typeof globalThis.DecompressionStream !== 'function' && 'DecompressionStream'].filter(Boolean);
 
+// 文言：解径：地址栏之径多有百分号之编，解之使汉字复其原；径中有孤百分号（decodeURI 抛事故）则用其原文。
+// 汉语：解出路径：地址栏路径多是百分号编码，解回汉字原样；路径里有孤立的百分号（decodeURI 会抛事故）时用原文。
+const 解径 = 文 => {
+  try { return decodeURI(文); } catch { return 文; }
+};
+
 // 文言：文档站同径之链：本页之径接于 docs 主机名之后；网址参数不入其径；汉字之径不百分号编之（用户定：链接里的汉字路径照旧写汉字）。
 // 汉语：文档站同一路径的链接：把本页路径接在 docs 主机名后面，不带网址参数；汉字路径不做百分号编码（用户定：链接里的汉字路径一律写汉字原样），
-//   地址栏给的是编码过的形式，先 decodeURI 还原。
+//   地址栏给的是编码过的形式，先解回汉字。
 const 文档链 = () => {
-  const 径 = decodeURI(location.pathname);
+  const 径 = 解径(location.pathname);
   const 链 = document.createElement('a');
   链.href = 'https://docs.yuyan-lang.org' + 径;
   链.textContent = 'https://docs.yuyan-lang.org' + 径;
@@ -44,7 +50,9 @@ const 示屏 = 开 => document.body.classList.toggle('单应用中', 开);
 const 参 = new URLSearchParams(location.search);
 const 应用 = 参.get('应用') ?? '/工具/问好。豫行';
 const 快照们 = [new URL(参.get('快照') ?? '../工具.tar.gz', import.meta.url)];
-const 页面径 = location.pathname + location.search;
+// 文言：交应用之径：地址栏之径先解其百分号之编（汉字之径照旧写汉字），问参原样附之。
+// 汉语：交给应用的路径：先把地址栏路径的百分号编码解开（汉字路径照旧写汉字），查询串原样附在后面。
+const 页面径 = 解径(location.pathname) + location.search;
 
 try {
   const 缺 = 缺能();
