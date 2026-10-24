@@ -316,10 +316,23 @@
 「急就误构造列」者得「对象原型」而
 　令「根原型」为「急就新误原型」于『Error』于（「可有」于「对象原型」）而
 　令「无」为「急就误装栈性」于「原型物」曰「根原型」而
-　「遍」以「文」又以（「文」合「急就值」）
-　　于（「列」【『Error』，『EvalError』，『RangeError』，『ReferenceError』，『SyntaxError』，『TypeError』，『URIError』，『AggregateError』】）
-　　于（得「名称文」而
-　　　令「原型物」为若「文同」于「名称文」于『Error』则「根原型」否则「急就新误原型」于「名称文」于（「可有」于「根原型」）而
-　　　「名称文」与（「急就新误构造器」于「名称文」于「原型物」）
-　　）
+　令「错匣」为「置匣」以（「或可有」于「急就值」）于「可无」而
+　令「诸构」为
+　　「遍」以「文」又以（「文」合「急就值」）
+　　　于（「列」【『Error』，『EvalError』，『RangeError』，『ReferenceError』，『SyntaxError』，『TypeError』，『URIError』，『AggregateError』】）
+　　　于（得「名称文」而
+　　　　令「原型物」为若「文同」于「名称文」于『Error』则「根原型」否则「急就新误原型」于「名称文」于（「可有」于「根原型」）而
+　　　　令「构」为「急就新误构造器」于「名称文」于「原型物」而
+　　　　令「无」为若「文同」于「名称文」于『Error』则「写匣」于「错匣」于（「可有」于「构」）否则「元」而
+　　　　「名称文」与「构」
+　　　）而
+　「：汉语：规范说七个原生错误构造器的 [[Prototype]] 是 Error 构造器：测试框架的 assert_throws_js 会沿 Object.getPrototypeOf(TypeError) 往上找名为 Error 的函数，找不到就判「不是 Error 子类」。文言：规范言七原生误器之 [[Prototype]] 为 Error 之器：试架之 assert_throws_js 循 Object.getPrototypeOf(TypeError) 而上求名 Error 之术，不得则判非 Error 之类。：」
+　令「无」为
+　　「遍」以（「文」合「急就值」）又以「有」
+　　　于「诸构」
+　　　于（得「对」而
+　　　　若「文同」于（「对」中「零」）于『Error』则「元」
+　　　　否则（「急就设原型」于（「对」中「一」）于（「读匣」于「错匣」））
+　　　）而
+　「诸构」
 也。
