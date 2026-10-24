@@ -166,6 +166,7 @@
 　，『background-attachment』与『scroll』与「阴」
 　，『background-origin』与『padding-box』与「阴」
 　，『background-clip』与『border-box』与「阴」
+　，『background-blend-mode』与『normal』与「阴」
 　，『border-top-left-radius』与『0』与「阴」
 　，『border-top-right-radius』与『0』与「阴」
 　，『border-bottom-right-radius』与『0』与「阴」
