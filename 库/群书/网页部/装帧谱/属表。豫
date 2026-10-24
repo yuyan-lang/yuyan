@@ -203,6 +203,7 @@
 　，『flex-basis』与『auto』与「阴」
 　，『flex-direction』与『row』与「阴」
 　，『flex-wrap』与『nowrap』与「阴」
+　，『flex-line-count』与『auto』与「阴」
 　，『justify-content』与『normal』与「阴」
 　，『align-items』与『normal』与「阴」
 　，『align-content』与『normal』与「阴」
