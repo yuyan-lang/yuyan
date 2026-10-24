@@ -202,7 +202,7 @@
 　　　　　　于「脚本列」而
 　　　　令「脚本文档」为
 　　　　　「析篇」于『<div id="x"></div><script>var n=3;var tick=0;function f(){return n;}document.getElementById("x").setAttribute("title","改");queueMicrotask(()=>{tick=1;queueMicrotask(()=>{tick=2;});});queueMicrotask(()=>{missingTask;});</script><script>if(tick===2)n+=4;</script><script>missing;</script><script>throw new TypeError("坏了");</script><script>throw 7;</script><script>f();</script>』而
-　　　　令「上下文」为「行网页篇脚本」于「脚本读取」于『https://example.test/page』于「脚本文档」于（「试验宿主」于「元」）而
+　　　　令「上下文」为「行网页篇脚本」于「脚本读取」于『https://example.test/page』于「脚本文档」于（「试验宿主」于「元」）于「派加载」曰「阳」而
 　　　　令「境」为「上下文」中「环境」而
 　　　　令「运行列」为「上下文」中「结果列」而
 　　　　令「文档已改」为
