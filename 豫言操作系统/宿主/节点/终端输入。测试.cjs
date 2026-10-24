@@ -43,3 +43,21 @@ test('首键的非阻塞错误不可冒充EOF',()=>{
   const 术=创建终端输入({是终端:()=>true,造流:()=>({isRaw:false,setRawMode:()=>{},_handle:{setBlocking:()=>{}}}),读:()=>{throw Object.assign(new Error('错误句柄'),{code:'EAGAIN'});}});
   assert.equal(术.进入(),true);assert.throws(()=>术.读取(),{code:'EAGAIN'});术.退出();
 });
+
+// 汉语：瞥键（原语 248，2026-10-24，议题 571）不等待地取一键：缓冲里有一键答阳、取走的键不再重出；没有字节答阴，不阻塞；不是终端时答阴。文言：瞥键不候而取一键：缓中有一键答阳，所取之键不复出；无字节答阴而不阻；非终端则答阴。
+test('瞥键不等待地取一键，取走的键不重出',()=>{
+  const 阻塞=[], 字节=Buffer.from('ab'); let 位=0;
+  const 流={isRaw:false,setRawMode:()=>{},_handle:{setBlocking:值=>阻塞.push(值)}};
+  const 术=创建终端输入({是终端:()=>true,造流:()=>流,读:字=>{
+    if(位>=字节.length)throw Object.assign(new Error('暂无键'),{code:'EAGAIN'});
+    字[0]=字节[位++];return 1;
+  }});
+  assert.deepEqual(术.瞥键(),[false,''],'未进原始模式时只答无键');
+  assert.equal(术.进入(),true);
+  assert.deepEqual(术.瞥键(),[true,'a']);
+  assert.deepEqual(术.读取(),[true,'b'],'瞥键取走的键不能再出，接着读才是下一键');
+  assert.deepEqual(术.瞥键(),[false,''],'没有字节时不等待，答无键');
+  assert.ok(阻塞.includes(false)&&阻塞.includes(true),'不等待的读借非阻塞模式并复其阻塞');
+  术.退出();
+  assert.deepEqual(术.瞥键(),[false,'']);
+});
