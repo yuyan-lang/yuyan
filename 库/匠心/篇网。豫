@@ -212,6 +212,7 @@
 「网标页首」者得「稿」又得「头」而
 　令「原径」为「原路径」于「路径」曰（「头」中「路径」）于「文言」曰（「头」中「文言」）而
 　令「文径」为若（「头」中「文言」）则（「头」中「路径」）否则（「文言路径」于（「头」中「路径」））而
+　令「本径」为若（「头」中「文言」）则「文径」否则「原径」而
 　令「题」为「网页正文避讳」于（「稿」中「标题」）而
 　令「述」为若（「文同」于（「头」中「描述」）于『』）则「题」否则（「网页属避讳」于（「头」中「描述」））而
 　「缀文」于（「列」
@@ -222,7 +223,7 @@
 　　，『<meta name="viewport" content="width=device-width, initial-scale=1">』
 　　，『<title>』接「题」接『</title>』
 　　，『<meta name="description" content=』接（「网标属」于「述」）接『>』
-　　，『<link rel="canonical" href=』接（「网标属」于（「网标站」接「原径」））接『>』
+　　，『<link rel="canonical" href=』接（「网标属」于（「网标站」接「本径」））接『>』
 　　，『<link rel="alternate" hreflang="zh-Hans" href=』接（「网标属」于（「网标站」接「原径」））接『>』
 　　，『<link rel="alternate" hreflang="lzh" href=』接（「网标属」于（「网标站」接「文径」））接『>』
 　　，『<link rel="stylesheet" href="/共用/装帧.css">』
