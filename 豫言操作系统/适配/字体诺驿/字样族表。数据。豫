@@ -1,5 +1,5 @@
-「：汉语：通称字体族表（font family table）。这是族名到字体文件的唯一映射表：每项写族名、通用类别、发行包里的字体文件（相对程序目录）、字体集序号、各系统字体目录里的候选与是否粗体。别名项（如 Arial、serif、宋体）的发行文件留空，类别写通用族名，查表时顺着类别归到通用族。系统字体先试，发行包里的字体后试；发行包把三个字体放在程序旁的 `字体/` 目录里：思源黑体.otf（无衬线、汉字、符号、圆体、数学）、原始字体.ttf（衬线、手写、装饰、仿宋）、默认等宽黑体.otf（等宽），“文楷”仍用程序旁的 `字体.ttf`。表由「字样族」的纯函数查用，供诺驿适配与验收程序共用；启动器与网页行在各自按同一套文件名取字。
-　　文言：字族之表：族名至字体之文，惟此为据。项书族名、类别、发行之文（对程序目录）、集序、诸系统之候与粗否。别名之项（若 Arial、serif、宋体）发行之文空，类别书通用之名，查时循类别而归根。系统先试，发行后之；发行置三文于程序旁 `字体/` 之目：思源黑体（无衬线、汉字、符号、圆体、数学）、原始字体（衬线、手写、装饰、仿宋）、默认等宽黑体（等宽），文楷仍用程序旁之 `字体.ttf`。表由「字样族」纯术查之，诺驿适配与验收共焉；启动器与网页行在各自依同名之文取字。
+「：汉语：通称字体族表（font family table）。这是族名到字体文件的唯一映射表：每项写族名、通用类别、发行包里的字体文件（相对程序目录）、字体集序号、各系统字体目录里的候选与是否粗体。别名项（如 Arial、serif、宋体）的发行文件留空，类别写通用族名，查表时顺着类别归到通用族。系统字体先试，发行包里的字体后试；发行包把随带字体放在程序旁的 `字体/` 目录里：思源黑体.otf（无衬线、汉字、符号、圆体、数学）、原始字体.ttf（衬线、手写、装饰、仿宋）、默认等宽黑体.otf（等宽）与自由衬线、自由无衬线、自由等宽三族各常规与粗体（度量与 Times New Roman、Arial、Courier New 相同，serif、sans-serif、monospace 与 Times、Arial、Helvetica、Courier 各归这三族），“文楷”仍用程序旁的 `字体.ttf`。表由「字样族」的纯函数查用，供诺驿适配与验收程序共用；启动器与网页行在各自按同一套文件名取字。
+　　文言：字族之表：族名至字体之文，惟此为据。项书族名、类别、发行之文（对程序目录）、集序、诸系统之候与粗否。别名之项（若 Arial、serif、宋体）发行之文空，类别书通用之名，查时循类别而归根。系统先试，发行后之；发行置随带之字于程序旁 `字体/` 之目：思源黑体（无衬线、汉字、符号、圆体、数学）、原始字体（衬线、手写、装饰、仿宋）、默认等宽黑体（等宽）与自由衬线、自由无衬线、自由等宽三族各常与粗（度同 Times New Roman、Arial、Courier New，serif、sans-serif、monospace 及 Times、Arial、Helvetica、Courier 各归三族），文楷仍用程序旁之 `字体.ttf`。表由「字样族」纯术查之，诺驿适配与验收共焉；启动器与网页行在各自依同名之文取字。
 　　赋曰：族名既立，字卷有归；系统先叩，发行后依。别名循类，通用为畿；三文并列，六族无违。表陈其目，术运其机；诸方共辙，一字不歧。：」
 寻观「豫章」之书。
 寻观「豫寓字模诺驿榫」之「字样族」之书。
@@ -218,8 +218,94 @@
 　　　，「粗体」者「阴」也
 　　　】
 　，「族项」
+　　　【「族名」者『自由衬线』也
+　　　，「类别」者『自由衬线』也
+　　　，「分发文件」者『字体/自由衬线常规.ttf』也
+　　　，「集序」者「零」也
+　　　，「系统候选」者「列」
+　　　　　【「候」【「路径」者『/System/Library/Fonts/Supplemental/Times New Roman.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/System/Library/Fonts/Times.ttc』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/liberation/LiberationSerif-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/TTF/LiberationSerif-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『C:/Windows/Fonts/times.ttf』也，「集序」者「零」也】
+　　　　　】也
+　　　，「粗体」者「阴」也
+　　　】
+　，「族项」
+　　　【「族名」者『自由无衬线』也
+　　　，「类别」者『自由无衬线』也
+　　　，「分发文件」者『字体/自由无衬线常规.ttf』也
+　　　，「集序」者「零」也
+　　　，「系统候选」者「列」
+　　　　　【「候」【「路径」者『/System/Library/Fonts/Supplemental/Arial.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/System/Library/Fonts/Helvetica.ttc』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/liberation/LiberationSans-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/TTF/LiberationSans-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『C:/Windows/Fonts/arial.ttf』也，「集序」者「零」也】
+　　　　　】也
+　　　，「粗体」者「阴」也
+　　　】
+　，「族项」
+　　　【「族名」者『自由等宽』也
+　　　，「类别」者『自由等宽』也
+　　　，「分发文件」者『字体/自由等宽常规.ttf』也
+　　　，「集序」者「零」也
+　　　，「系统候选」者「列」
+　　　　　【「候」【「路径」者『/System/Library/Fonts/Supplemental/Courier New.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/liberation/LiberationMono-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/TTF/LiberationMono-Regular.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『C:/Windows/Fonts/cour.ttf』也，「集序」者「零」也】
+　　　　　】也
+　　　，「粗体」者「阴」也
+　　　】
+　，「族项」
+　　　【「族名」者『自由衬线粗体』也
+　　　，「类别」者『自由衬线粗体』也
+　　　，「分发文件」者『字体/自由衬线粗体.ttf』也
+　　　，「集序」者「零」也
+　　　，「系统候选」者「列」
+　　　　　【「候」【「路径」者『/System/Library/Fonts/Supplemental/Times New Roman Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/liberation/LiberationSerif-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/TTF/LiberationSerif-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『C:/Windows/Fonts/timesbd.ttf』也，「集序」者「零」也】
+　　　　　】也
+　　　，「粗体」者「阳」也
+　　　】
+　，「族项」
+　　　【「族名」者『自由无衬线粗体』也
+　　　，「类别」者『自由无衬线粗体』也
+　　　，「分发文件」者『字体/自由无衬线粗体.ttf』也
+　　　，「集序」者「零」也
+　　　，「系统候选」者「列」
+　　　　　【「候」【「路径」者『/System/Library/Fonts/Supplemental/Arial Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/liberation/LiberationSans-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/TTF/LiberationSans-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『C:/Windows/Fonts/arialbd.ttf』也，「集序」者「零」也】
+　　　　　】也
+　　　，「粗体」者「阳」也
+　　　】
+　，「族项」
+　　　【「族名」者『自由等宽粗体』也
+　　　，「类别」者『自由等宽粗体』也
+　　　，「分发文件」者『字体/自由等宽粗体.ttf』也
+　　　，「集序」者「零」也
+　　　，「系统候选」者「列」
+　　　　　【「候」【「路径」者『/System/Library/Fonts/Supplemental/Courier New Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/liberation/LiberationMono-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『/usr/share/fonts/TTF/LiberationMono-Bold.ttf』也，「集序」者「零」也】
+　　　　　，「候」【「路径」者『C:/Windows/Fonts/courbd.ttf』也，「集序」者「零」也】
+　　　　　】也
+　　　，「粗体」者「阳」也
+　　　】
+　，「族项」
 　　　【「族名」者『serif』也
-　　　，「类别」者『衬线』也
+　　　，「类别」者『自由衬线』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -227,7 +313,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『sans-serif』也
-　　　，「类别」者『无衬线』也
+　　　，「类别」者『自由无衬线』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -235,7 +321,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『monospace』也
-　　　，「类别」者『等宽』也
+　　　，「类别」者『自由等宽』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -315,7 +401,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『Arial』也
-　　　，「类别」者『无衬线』也
+　　　，「类别」者『自由无衬线』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -323,7 +409,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『Helvetica』也
-　　　，「类别」者『无衬线』也
+　　　，「类别」者『自由无衬线』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -347,7 +433,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『Times New Roman』也
-　　　，「类别」者『衬线』也
+　　　，「类别」者『自由衬线』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -355,7 +441,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『Times』也
-　　　，「类别」者『衬线』也
+　　　，「类别」者『自由衬线』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -371,7 +457,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『Courier New』也
-　　　，「类别」者『等宽』也
+　　　，「类别」者『自由等宽』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也
@@ -379,7 +465,7 @@
 　　　】
 　，「族项」
 　　　【「族名」者『Courier』也
-　　　，「类别」者『等宽』也
+　　　，「类别」者『自由等宽』也
 　　　，「分发文件」者『』也
 　　　，「集序」者「零」也
 　　　，「系统候选」者「列」【】也

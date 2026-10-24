@@ -57,8 +57,8 @@
 　若「实有」于「文件」则「可有」于（（「存泉」于（「阅帛」于「文件」））与「零」）否则「可无」
 也。
 
-「：汉语：三个标准族名在林纳常见位置上的字体文件候选（字体宿主不可用时，运行器直接读它们）；其余族名没有候选。DejaVu 字体现会使字体库崩溃（数组索引越界），所以放在 Liberation 之后。待办事项：原生执行器的林纳字体宿主补齐后可删。
-　　文言：三标准族名于林纳常见处之字体文件候选（字体宿主不可用则运行器径读之）；余族名无候选。DejaVu 字体今使字体库崩溃（数组索引越界），故置于 Liberation 之后。待办事项：原生执行器之林纳字体宿主补齐后可删。：」
+「：汉语：标准族名与随带自由字体在林纳常见位置上的字体文件候选（字体宿主不可用时，运行器直接读它们）；其余族名没有候选。自由衬线、自由无衬线与自由等宽先取仓里随带的字体，再取系统装的 Liberation 与 DejaVu。DejaVu 字体现会使字体库崩溃（数组索引越界），所以放在 Liberation 之后。待办事项：原生执行器的林纳字体宿主补齐后可删。
+　　文言：标准族名与随带自由字体于林纳常见处之字体文件候选（字体宿主不可用则运行器径读之）；余族名无候选。自由衬线、自由无衬线、自由等宽先取仓中所随之字体，次取系统所装之 Liberation 与 DejaVu。DejaVu 字体今使字体库崩溃（数组索引越界），故置于 Liberation 之后。待办事项：原生执行器之林纳字体宿主补齐后可删。：」
 「备用字体候选」乃化「文」为（「列」于「文」）者也。
 「备用字体候选」者得「族」而
 　若「文同」于「族」于『衬线』则
@@ -85,6 +85,50 @@
 　　　，『/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf』
 　　　，『/usr/share/fonts/TTF/DejaVuSansMono.ttf』
 　　　】）
+　否则若「文同」于「族」于『自由衬线』则
+　　（「列」
+　　　【『豫言操作系统/裸机/字模生成/字体/自由衬线常规.ttf』
+　　　，『/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf』
+　　　，『/usr/share/fonts/liberation/LiberationSerif-Regular.ttf』
+　　　，『/usr/share/fonts/TTF/LiberationSerif-Regular.ttf』
+　　　】）
+　否则若「文同」于「族」于『自由无衬线』则
+　　（「列」
+　　　【『豫言操作系统/裸机/字模生成/字体/自由无衬线常规.ttf』
+　　　，『/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf』
+　　　，『/usr/share/fonts/liberation/LiberationSans-Regular.ttf』
+　　　，『/usr/share/fonts/TTF/LiberationSans-Regular.ttf』
+　　　】）
+　否则若「文同」于「族」于『自由等宽』则
+　　（「列」
+　　　【『豫言操作系统/裸机/字模生成/字体/自由等宽常规.ttf』
+　　　，『/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf』
+　　　，『/usr/share/fonts/liberation/LiberationMono-Regular.ttf』
+　　　，『/usr/share/fonts/TTF/LiberationMono-Regular.ttf』
+　　　】）
+　否则若「文同」于「族」于『自由衬线粗体』则
+　　（「列」
+　　　【『豫言操作系统/裸机/字模生成/字体/自由衬线粗体.ttf』
+　　　，『/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf』
+　　　，『/usr/share/fonts/liberation/LiberationSerif-Bold.ttf』
+　　　，『/usr/share/fonts/TTF/LiberationSerif-Bold.ttf』
+　　　】）
+　否则若「文同」于「族」于『自由无衬线粗体』则
+　　（「列」
+　　　【『豫言操作系统/裸机/字模生成/字体/自由无衬线粗体.ttf』
+　　　，『/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf』
+　　　，『/usr/share/fonts/liberation/LiberationSans-Bold.ttf』
+　　　，『/usr/share/fonts/TTF/LiberationSans-Bold.ttf』
+　　　】）
+　否则若「文同」于「族」于『自由等宽粗体』则
+　　（「列」
+　　　【『豫言操作系统/裸机/字模生成/字体/自由等宽粗体.ttf』
+　　　，『/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf』
+　　　，『/usr/share/fonts/liberation/LiberationMono-Bold.ttf』
+　　　，『/usr/share/fonts/TTF/LiberationMono-Bold.ttf』
+　　　】）
+　否则若「文同」于「族」于『表情』则
+　　（「列」【『/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf』，『/usr/share/fonts/noto/NotoColorEmoji.ttf』】）
 　否则
 　　（「罄」以「文」）
 也。
@@ -99,7 +143,6 @@
 　　　　　若「实有」于「径」则「可有」以（「字体数据源」合「数」）于（（「存泉」于（「阅帛」于「径」））与「零」）否则「找」于「后」而
 　「找」于（「备用字体候选」于「族」）
 也。
-
 
 「：汉语：HTML 的空元素（没有结束标签）。
 　　文言：HTML 之空元素（无结束标签者）。：」
@@ -262,10 +305,10 @@
 　　　　　　或有（「可有」于「源」）则「可有」于「源」
 　　　　　　或有「可无」则「备用字体源」于「族」
 　　　）也
-　　　，「远程」者（得「址」而
-　　　　　鉴（「网平测读取器」于「根径」于「址」）而
-　　　　　　或有（「可有」于「页」）则（「可有」以「帛」于（「页」中「主体」））
-　　　　　　或有「可无」则（「可无」以「帛」）
+　　，「远程」者（得「址」而
+　　　　鉴（「网平测读取器」于「根径」于「址」）而
+　　　　　或有（「可有」于「页」）则（「可有」以「帛」于（「页」中「主体」））
+　　　　　或有「可无」则（「可无」以「帛」）
 　　　）也
 　　】）
 也。
