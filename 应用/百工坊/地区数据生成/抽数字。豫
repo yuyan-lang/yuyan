@@ -156,11 +156,11 @@
 「抽数区」者得「源根」又得「地区」而
 　令「数字」为
 　　（「径结」
-　　　于（「读结森」于（「缀文」于「列」【「源根」，『/main/』，「地区」，『/numbers.json』】））
+　　　于（「读结绳」于（「缀文」于「列」【「源根」，『/main/』，「地区」，『/numbers.json』】））
 　　　于（（「列」【『main』，「地区」，『numbers』】）属（「列」于「文」）））而
 　令「币数」为
 　　（「径结」
-　　　于（「读结森」于（「缀文」于「列」【「源根」，『/main/』，「地区」，『/currencies.json』】））
+　　　于（「读结绳」于（「缀文」于「列」【「源根」，『/main/』，「地区」，『/currencies.json』】））
 　　　于（（「列」【『main』，「地区」，『numbers』，『currencies』】）属（「列」于「文」）））而
 　令「默认系」为（「文叶」于（「结绳栏」于「数字」于『defaultNumberingSystem』）于『latn』）而
 　令「原生系」为（「文叶」于（「结绳栏」于（「结绳栏」于「数字」于『otherNumberingSystems』）于『native』）于「默认系」）而
@@ -238,8 +238,8 @@
 　　文言：读四补充之篇，出“数字表。数据。豫”。：」
 「抽数字」乃化「文」又化「文」为「有」者也。
 「抽数字」者得「源根」又得「出径」而
-　令「数系根」为（「读结森」于（「接」于「源根」于『/supplemental/numberingSystems.json』））而
-　令「币位根」为（「读结森」于（「接」于「源根」于『/supplemental/currencyData.json』））而
+　令「数系根」为（「读结绳」于（「接」于「源根」于『/supplemental/numberingSystems.json』））而
+　令「币位根」为（「读结绳」于（「接」于「源根」于『/supplemental/currencyData.json』））而
 　令「数目」为（「数系总条」于（「径结」于「数系根」于（（「列」【『supplemental』，『numberingSystems』】）属（「列」于「文」））））而
 　令「币目」为（「币位总条」于（「径结」于「币位根」于（（「列」【『supplemental』，『currencyData』，『fractions』】）属（「列」于「文」））））而
 　令「数目块」为（「名块文」于「常量」曰『数系数字表』于「数目」）而

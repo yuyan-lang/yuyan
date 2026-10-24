@@ -111,9 +111,9 @@
 　　文言：读三补充之篇，出“协商表。数据。豫”。：」
 「抽协商」乃化「文」又化「文」为「有」者也。
 「抽协商」者得「源根」又得「出径」而
-　令「补根」为（「读结森」于（「接」于「源根」于『/supplemental/likelySubtags.json』））而
-　令「父根」为（「读结森」于（「接」于「源根」于『/supplemental/parentLocales.json』））而
-　令「别根」为（「读结森」于（「接」于「源根」于『/supplemental/aliases.json』））而
+　令「补根」为（「读结绳」于（「接」于「源根」于『/supplemental/likelySubtags.json』））而
+　令「父根」为（「读结绳」于（「接」于「源根」于『/supplemental/parentLocales.json』））而
+　令「别根」为（「读结绳」于（「接」于「源根」于『/supplemental/aliases.json』））而
 　令「补条」为（「物录」于（「径结」于「补根」于（（「列」【『supplemental』，『likelySubtags』】）属（「列」于「文」））））而
 　令「父条」为（「前缀录」于『』于（「径结」于「父根」于（（「列」【『supplemental』，『parentLocales』，『parentLocale』】）属（「列」于「文」））））而
 　令「语条」为（「前缀录」于『』于（「径结」于「别根」于（（「列」【『supplemental』，『metadata』，『alias』，『languageAlias』】）属（「列」于「文」））））而

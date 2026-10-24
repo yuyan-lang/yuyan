@@ -1108,7 +1108,7 @@
 　　　，「列」【『api.URL.revokeObjectURL_static』，『浏览器撤销对象网址』，『已实测』，『Chrome 豫言 Wasm Blob 调用』】
 　　　，「列」【『api.URL.search』，『浏览器网址查询、浏览器网址设查询』，『部分实测』，『Chrome 豫言 Wasm searchParams 修改后读取全文』】
 　　　，「列」【『api.URL.searchParams』，『浏览器网址查询参数』，『已实测』，『Chrome 豫言 Wasm 活动对象同步』】
-　　　，「列」【『api.URL.toJSON』，『浏览器网址转结森文』，『已实测』，『Chrome 豫言 Wasm』】
+　　　，「列」【『api.URL.toJSON』，『浏览器网址转结绳文』，『已实测』，『Chrome 豫言 Wasm』】
 　　　，「列」【『api.URL.toString』，『浏览器网址转文字』，『已实测』，『Chrome 豫言 Wasm』】
 　　　，「列」【『api.URL.username』，『浏览器网址用户、浏览器网址设用户』，『已封装』，『待逐项行为验收』】
 　　　，「列」【『api.URLSearchParams.@@iterator』，『无专门接口』，『待补』，『entries 已封装但符号迭代未验』】
@@ -1184,7 +1184,7 @@
 　　　　　】
 　　　，「列」
 　　　　　【『fetch JSON 写请求』
-　　　　　，『浏览器请求结森安全』
+　　　　　，『浏览器请求结绳安全』
 　　　　　，『已实测』
 　　　　　，『Chrome POST 回显 application/json; charset=utf-8 与原正文；同页 GET 仍无该标头』
 　　　　　，『PUT/PATCH、跨源 CORS、认证与大正文』

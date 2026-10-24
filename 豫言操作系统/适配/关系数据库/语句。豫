@@ -125,8 +125,8 @@
 　　或有「其他」则「零」
 也。
 
-「：汉语：用 JS 的 JSON.stringify 把行或结果行数组写成 JSON 文字，不经豫言的结森编码；数据库的 NULL 为 null，安全整数照原样写出。
-　　文言：以 JS 之 JSON.stringify 书行与诸行为 JSON 文，不经豫言之结森编码。：」
+「：汉语：用 JS 的 JSON.stringify 把行或结果行数组写成 JSON 文字，不经豫言的结绳编码；数据库的 NULL 为 null，安全整数照原样写出。
+　　文言：以 JS 之 JSON.stringify 书行与诸行为 JSON 文，不经豫言之结绳编码。：」
 「结绳文」乃化「云工值」为「文」者也。
 「结绳文」者得「值」而
 　「取文」于（「物调」于（「全局」于『JSON』）于『stringify』于（「列」【「值」】））

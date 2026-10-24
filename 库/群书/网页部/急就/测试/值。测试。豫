@@ -1,4 +1,4 @@
-「：汉语：通称捷思值冒烟测试。以「断言」串起字符串、对象、表达式、数组、数值、日期、正则、结森、映射、集合、弱引用等运行时语义：造例、行脚本、比结果，失败即抛出说明；覆盖运算符、属性、原型、迭代、错误与模块之外的核心值行为。
+「：汉语：通称捷思值冒烟测试。以「断言」串起字符串、对象、表达式、数组、数值、日期、正则、结绳、映射、集合、弱引用等运行时语义：造例、行脚本、比结果，失败即抛出说明；覆盖运算符、属性、原型、迭代、错误与模块之外的核心值行为。
 　　文言：值，物之直也。《诗·卫风·淇奥》曰：“如切如磋，如琢如磨。”急就之值，散在文字、物典、格律、结绳、簿、集之间；不有众验，则真伪莫辨。是篇以「断言」为衡，造例而试，合则书冒烟，违则缴其说。非独验其能行，亦验其当止而止、当误而误。
 　　赋曰：石能砺金，乃见钝利；衡堪校货，方知重轻。断言执衡，违则缴其所失；造例陈器，合乃书厥成功。合代理而成串，计码元以量长。孤元不弃，长算仍双。物承其父，属从自有而辨；牍陈厥状，标以可写而分。析式成码，步进而后可复；行帧得值，暂止亦能再兴。声明提升分幽显，闭包相衔守旧初。循环跳转皆从令，块域升沉各有时。数组留孔而缩，排序归并而定。错承原型而辨，因附其名以寻。聚合列诸故而序，次第随输入而存。：」
 寻观「豫章」之书。
@@ -414,47 +414,47 @@
 　于（「急就严格等」
 　　于（「急就行脚本」于『let value=JSON.parse("{\"a\":[1,true,null,\"字\"],\"__proto__\":{\"x\":2},\"dup\":1,\"dup\":3}");let bad=false;try{JSON.parse("{bad}");}catch(e){bad=e instanceof SyntaxError;}let desc=Object.getOwnPropertyDescriptor(value,"a");value.a.length===4&&value.a[0]===1&&value.a[1]===true&&value.a[2]===null&&value.a[3]==="字"&&value.__proto__.x===2&&Object.getPrototypeOf(value)===Object.prototype&&value.dup===3&&desc.writable&&desc.enumerable&&desc.configurable&&JSON.parse(3)===3&&JSON.parse("1e2")===100&&bad&&JSON.parse.length===2;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森解析基础值嵌套重复键原型与语法错误』。
+　于『捷思结绳解析基础值嵌套重复键原型与语法错误』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let keys=[];let holders=true;let parsed=JSON.parse("{\"a\":1,\"list\":[2,3]}",function(k,v){keys.push(k);if(k==="a"){holders=holders&&this.a===1;return v+10;}if(k==="0"){holders=holders&&Array.isArray(this);return undefined;}if(k==="1")return v*2;return v;});let root=JSON.parse("3",function(k,v){return k===""?v+1:v;});let removed=JSON.parse("3",function(){return undefined;});let thrown={};let identical=false;try{JSON.parse("1",function(){throw thrown;});}catch(e){identical=e===thrown;}holders&&keys.join(",")==="a,0,1,list,"&&parsed.a===11&&parsed.list.length===2&&!(0 in parsed.list)&&parsed.list[1]===6&&root===4&&removed===undefined&&JSON.parse("true",1)===true&&identical;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森复苏顺序接收者删除替换根与异常身份』。
+　于『捷思结绳复苏顺序接收者删除替换根与异常身份』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let shared={n:1};let text=JSON.stringify({a:undefined,b:function(){},c:[,undefined,NaN,Infinity],d:shared,e:shared});let parsed=JSON.parse(text);let key="";let special={toJSON:function(k){key=k;return 7;}};let converted=JSON.stringify({x:special});let cycle={};cycle.self=cycle;let bad=false;try{JSON.stringify(cycle);}catch(e){bad=e instanceof TypeError;}JSON.stringify(undefined)===undefined&&JSON.stringify(function(){})===undefined&&JSON.stringify(new Number(3))==="3"&&JSON.stringify(-0)==="0"&&JSON.stringify(NaN)==="null"&&parsed.a===undefined&&parsed.b===undefined&&parsed.c.length===4&&parsed.c[0]===null&&parsed.c[3]===null&&parsed.d.n===1&&parsed.e.n===1&&JSON.parse(converted).x===7&&key==="x"&&bad&&JSON.stringify.length===3;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森序列化省略数组空值装箱转换循环与共享对象』。
+　于『捷思结绳序列化省略数组空值装箱转换循环与共享对象』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let keys=[];let receiver=true;let object={a:1,b:2,list:[3,4],custom:{toJSON:function(){return 5;}}};let text=JSON.stringify(object,function(k,v){keys.push(k);if(k===""){receiver=receiver&&this[""]===object;return v;}if(k==="a"){receiver=receiver&&this===object;return v+10;}if(k==="b"||k==="0")return undefined;if(k==="custom")return v+1;return v;});let result=JSON.parse(text);let root=JSON.stringify(1,function(k,v){return v+1;});let omitted=JSON.stringify(1,function(){return undefined;});let thrown={};let identical=false;try{JSON.stringify(1,function(){throw thrown;});}catch(e){identical=e===thrown;}receiver&&keys.join(",")===",a,b,list,0,1,custom"&&result.a===11&&result.b===undefined&&result.list[0]===null&&result.list[1]===4&&result.custom===6&&root==="2"&&omitted===undefined&&identical;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森替换回调顺序持有者转换省略与异常』。
+　于『捷思结绳替换回调顺序持有者转换省略与异常』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let parent={inherited:7};let object=Object.create(parent);object.a=1;object.b=2;object[3]=4;Object.defineProperty(object,"hidden",{value:5});let text=JSON.stringify(object,["b","a","b",new String("hidden"),new Number(3),"inherited",true,{},null]);let value=JSON.parse(text);let nested=JSON.parse(JSON.stringify({a:{a:1,b:2},b:3},["a"]));let array=JSON.parse(JSON.stringify([1,{a:2,b:3}],["a"]));Object.keys(value).join(",")==="3,b,a,hidden,inherited"&&value.b===2&&value.a===1&&value.hidden===5&&value[3]===4&&value.inherited===7&&Object.keys(nested).join(",")==="a"&&nested.a.a===1&&nested.a.b===undefined&&array.length===2&&array[0]===1&&array[1].a===2&&array[1].b===undefined&&JSON.stringify(object,[])==="{}";』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森属性列表去重装箱继承隐藏与嵌套数组』。
+　于『捷思结绳属性列表去重装箱继承隐藏与嵌套数组』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let text=JSON.stringify({a:[1,2],b:{}},null,2);let expected="{\n  \"a\": [\n    1,\n    2\n  ],\n  \"b\": {}\n}";let string=JSON.stringify([1],null,"abcdefghijk");let boxed=JSON.stringify({a:1},null,new Number(2));text===expected&&string==="[\nabcdefghij1\n]"&&boxed==="{\n  \"a\": 1\n}"&&JSON.stringify([],null,2)==="[]"&&JSON.stringify({},null,2)==="{}"&&JSON.stringify([1],null,-2)==="[1]"&&JSON.stringify([1],null,NaN)==="[1]"&&JSON.stringify([1],null,Infinity)==="[\n          1\n]";』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森缩进嵌套数字字符串截断装箱与空容器』。
+　于『捷思结绳缩进嵌套数字字符串截断装箱与空容器』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let order="";let gap=new Number(2);gap.valueOf=function(){order+="g";return 2;};let object={toJSON:function(){order+="j";gap.valueOf=function(){return 8;};return {a:1};}};let text=JSON.stringify(object,function(k,v){order+="r";return v;},gap);let string=new String("x");string.toString=function(){return " ";};let second=JSON.stringify([1],null,string);order==="gjrr"&&text==="{\n  \"a\": 1\n}"&&second==="[\n 1\n]";』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森缩进参数先行装箱方法与回调顺序』。
+　于『捷思结绳缩进参数先行装箱方法与回调顺序』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let order="";let number=new Number(2);number.valueOf=function(){order+="n";return 7;};let string=new String("old");string.toString=function(){order+="s";return "new";};let bool=new Boolean(false);bool.valueOf=function(){throw 1;};let text=JSON.stringify([number,string,bool]);let root=JSON.stringify(1,function(){return number;});let bad=new Number(1);bad.valueOf=function(){return {};};bad.toString=function(){return {};};let rejected=false;try{JSON.stringify(bad);}catch(e){rejected=e instanceof TypeError;}let parsed=JSON.parse(text);parsed[0]===7&&parsed[1]==="new"&&parsed[2]===false&&root==="7"&&order==="nsn"&&rejected;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森数值文字装箱当前转换布尔原值与替换结果』。
+　于『捷思结绳数值文字装箱当前转换布尔原值与替换结果』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let order="";let list=[];let first=new String("a");first.toString=function(){order+="c";list[1]="b";return "a";};list[0]=first;list[1]="old";let text=JSON.stringify({a:1,b:2,old:3},list);let value=JSON.parse(text);order==="c"&&value.a===1&&value.b===2&&value.old===undefined;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思结森属性列表逐项转换与后项实时读取』。
+　于『捷思结绳属性列表逐项转换与后项实时读取』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let bad=false;try{encodeURIComponent(String.fromCharCode(55296));}catch(e){bad=e instanceof URIError;}encodeURIComponent("字 /?") ==="%E5%AD%97%20%2F%3F"&&encodeURI("https://x/a?b=字#c")==="https://x/a?b=%E5%AD%97#c"&&encodeURIComponent("!~*()")==="!~*()"&&encodeURI("%3B")==="%253B"&&encodeURIComponent(undefined)==="undefined"&&bad&&encodeURI.length===1&&encodeURIComponent.length===1;』）
@@ -549,7 +549,7 @@
 　于（「急就严格等」
 　　于（「急就行脚本」于『let date=new Date(0);let iso=date.toISOString();let changed=date.setTime(1234.9);let parsed=new Date("2000-01-01T00:00:00Z");let invalid=new Date(NaN);let bad=false;try{invalid.toISOString();}catch(e){bad=e instanceof RangeError;}let receiver=false;try{Date.prototype.getTime.call({});}catch(e){receiver=e instanceof TypeError;}date instanceof Date&&date instanceof Object&&iso==="1970-01-01T00:00:00.000Z"&&changed===1234&&date.valueOf()===1234&&date.toISOString()==="1970-01-01T00:00:01.234Z"&&parsed.getTime()===946684800000&&Date.parse("2000-01-01T00:00:00Z")===946684800000&&invalid.toJSON()===null&&invalid.toString()==="Invalid Date"&&bad&&receiver&&Date.now()>0&&new Date().getTime()>0&&JSON.parse(JSON.stringify(new Date(0)))==="1970-01-01T00:00:00.000Z"&&Date.length===7&&Date.prototype.setTime.length===1;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思日期基础构造毫秒更新解析标准文字品牌与结森』。
+　于『捷思日期基础构造毫秒更新解析标准文字品牌与结绳』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let date=new Date(-1);let invalid=new Date(NaN);date.getUTCFullYear()===1969&&date.getUTCMonth()===11&&date.getUTCDate()===31&&date.getUTCDay()===3&&date.getUTCHours()===23&&date.getUTCMinutes()===59&&date.getUTCSeconds()===59&&date.getUTCMilliseconds()===999&&date.toUTCString()==="Wed, 31 Dec 1969 23:59:59 GMT"&&new Date(0).getUTCDay()===4&&new Date(0).toUTCString()==="Thu, 01 Jan 1970 00:00:00 GMT"&&Number.isNaN(invalid.getUTCDate())&&invalid.toUTCString()==="Invalid Date"&&Date.prototype.getUTCFullYear.length===0;』）
@@ -564,7 +564,7 @@
 　于（「急就严格等」
 　　于（「急就行脚本」于『let source=new Date(1234);source.valueOf=function(){throw 1;};let copy=new Date(source);let order="";let generic={valueOf:function(){order+="v";return 1;},toISOString:function(){order+="i";return this.result;},result:7};let result=Date.prototype.toJSON.call(generic);let invalid={valueOf:function(){return Infinity;},toISOString:function(){throw 1;}};let date=new Date(0);date.toISOString=function(){return "own";};let bad=false;try{Date.prototype.toJSON.call(null);}catch(e){bad=e instanceof TypeError;}copy!==source&&copy.getTime()===1234&&result===7&&order==="vi"&&Date.prototype.toJSON.call(invalid)===null&&date.toJSON()==="own"&&bad;』）
 　　于（「急就布尔」于「阳」））
-　于『捷思日期复制内部时间值与通用结森当前方法转换顺序』。
+　于『捷思日期复制内部时间值与通用结绳当前方法转换顺序』。
 「断言」
 　于（「急就严格等」
 　　于（「急就行脚本」于『let date=new Date(Date.UTC(2000,0,1,2,3,4,5));date.setUTCMilliseconds(999);date.setUTCSeconds(60);let seconds=date.toISOString();date.setUTCMinutes(61,2,3);let minutes=date.toISOString();date.setUTCHours(25,2,3,4);let hours=date.toISOString();date.setUTCDate(0);let day=date.toISOString();date.setUTCMonth(12,1);let month=date.toISOString();date.setUTCFullYear(0,0,1);let year=date.getUTCFullYear();let invalid=new Date(NaN);invalid.setUTCFullYear(2000);let recovered=invalid.toISOString();seconds==="2000-01-01T02:04:00.999Z"&&minutes==="2000-01-01T03:01:02.003Z"&&hours==="2000-01-02T01:02:03.004Z"&&day==="1999-12-31T01:02:03.004Z"&&month==="2000-01-01T01:02:03.004Z"&&year===0&&recovered==="2000-01-01T00:00:00.000Z"&&Date.prototype.setUTCHours.length===4&&Date.prototype.setUTCFullYear.length===3;』）
