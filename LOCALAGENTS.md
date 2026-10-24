@@ -2410,3 +2410,6 @@ QEMU 用 USB 存储启动造好的 ISO 时，介质大小就是文件大小：�
 - **`急就新文构造器` 多了一个「迭代原型」参数**：装 `String.prototype[Symbol.iterator]` 要用 `%IteratorPrototype%`（由 `词法境` 从 `Iterator` 构造器的 `prototype` 取出传入）；新增字符串内建时别再按单参调用。
 - **字符串迭代器的接收者要先做 RequireObjectCoercible**：空值与未定义直接报类型错误，符号经 ToString 也报类型错误；码点用 `急就串字列` 一次展列，游标逐次推进。
 - **构建一律用缺省转发**（用户 2026-10-24 定）：不要再写 `豫言将作托出=关 豫言将作远客=关`，更不许 `豫言将作=关`；让将作按负载把整次构建转给同僚或别的机器。转发后报错（如对方答“自行”而失败）就把命令与报错贴给用户，不要自己关转发。不加交互优先。
+- **字符串方法造正则要用真原型**：`急就造格律` 的原型参数若给 `新物(可无)`，造出的正则没有 `RegExp.prototype`，`flags` 读成空串、全局匹配失效（matchAll 只出一项）。现由 `格律典` 的 `急就格律根取值` 提供 `%RegExp.prototype%`，`文典` 各处造正则一律用它。
+- **迭代器原型接线**：`迭代助手` 的 `急就迭代助手根值` 给 `%IteratorPrototype%`；`列典` 造 `%ArrayIteratorPrototype%`（承 `%IteratorPrototype%`，挂 next 与 `Array Iterator` 标签）；`虚拟机` 的 `%GeneratorPrototype%` 也承 `%IteratorPrototype%`，其 next/return/throw 的挂载判据必须用 `急就固有属`，用 `急就就有属` 会因继承到助手的 next 而整组不装。
+- **推送后要核对远端副本**：`推送.sh` 按远端 HEAD 求差，远端副本 HEAD 被别处更新过时可能一个文件都没推却不报错；推送后抽一两个关键文件 `grep` 一下，再开始构建（本轮吃过一次亏：三次构建都用了旧源）。
