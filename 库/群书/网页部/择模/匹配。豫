@@ -71,14 +71,23 @@
 　「遍」于（「条件分列」于『,』于「余」曰（「析样式组件」于「其文」）于「积」曰「罄」）于「字样组件名」
 也。
 
+「：汉语：通称通用族名归一（generic family mapping）。把 CSS 的通用族名与常见的度量兼容具体族名映到宿主认的族名：serif、Times、Times New Roman 归自由衬线，sans-serif、Arial、Helvetica 归自由无衬线，monospace、Courier、Courier New 归自由等宽；ui-serif、ui-sans-serif、ui-monospace、system-ui 与其余通用名各归本平台的通用族，中文族名不改。宿主取自由衬线等时先用本机真字体（如林檎的 Times、Helvetica、Courier New），没有再落到随带的自由字体；中文缺字仍由回退链末的汉字族补。
+　　文言：通用族名归一：serif、Times、Times New Roman 归自由衬线，sans-serif、Arial、Helvetica 归自由无衬线，monospace、Courier、Courier New 归自由等宽；ui-serif、ui-sans-serif、ui-monospace、system-ui 与余通用之名各归本平台之通用族，中文族名不改。宿主取自由衬线等，先试本机真体（若林檎之 Times、Helvetica、Courier New），无乃落于随带之自由字体；中文缺字仍由回退链末之汉字族补。
+　　赋曰：通用之名归有定，度合之体各相承；西文先问本机有，中文仍向汉字征。：」
 「通字样族」乃化「文」为「文」者也。
 「通字样族」者得「名」而
 　令「小名」为「样式小写」于「名」而
 　鉴「簿寻」以「文」
 　　于（「构造串典」于（「列」
-　　　【『serif』与『衬线』
-　　　，『sans-serif』与『无衬线』
-　　　，『monospace』与『等宽』
+　　　【『serif』与『自由衬线』
+　　　，『times』与『自由衬线』
+　　　，『times new roman』与『自由衬线』
+　　　，『sans-serif』与『自由无衬线』
+　　　，『arial』与『自由无衬线』
+　　　，『helvetica』与『自由无衬线』
+　　　，『monospace』与『自由等宽』
+　　　，『courier』与『自由等宽』
+　　　，『courier new』与『自由等宽』
 　　　，『cursive』与『手写』
 　　　，『fantasy』与『装饰』
 　　　，『system-ui』与『无衬线』
@@ -88,6 +97,8 @@
 　　　，『ui-rounded』与『圆体』
 　　　，『math』与『数学』
 　　　，『emoji』与『表情』
+　　　，『noto color emoji』与『表情』
+　　　，『apple color emoji』与『表情』
 　　　，『fangsong』与『仿宋』
 　　　】））
 　　于「小名」而

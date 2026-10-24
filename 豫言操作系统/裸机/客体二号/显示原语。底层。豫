@@ -1051,8 +1051,8 @@
 　）
 也。
 
-「：汉语：族名归一：把常见别名归到通用族。无衬线包括 sans-serif、system-ui、ui-sans-serif、Arial、Helvetica、黑体、微软雅黑；衬线包括 serif、ui-serif、Times New Roman、Times、宋体；等宽包括 monospace、ui-monospace、Courier New、Courier、Menlo、Consolas；手写包括 cursive、楷体；装饰包括 fantasy；圆体包括 ui-rounded；数学包括 math；仿宋包括 fangsong。返回：1 文楷、2 无衬线、3 衬线、4 等宽、5 无衬线粗体、6 衬线粗体、7 等宽粗体、8 汉字、9 符号、10 手写、11 装饰、12 圆体、13 数学、14 仿宋、0 未知。
-　　文言：族名归一：以常见之别名归其通用：无衬线兼 sans-serif、system-ui、ui-sans-serif、Arial、Helvetica、黑体、微软雅黑；衬线兼 serif、ui-serif、Times New Roman、Times、宋体；等宽兼 monospace、ui-monospace、Courier New、Courier、Menlo、Consolas；手写兼 cursive、楷体；装饰兼 fantasy；圆体兼 ui-rounded；数学兼 math；仿宋兼 fangsong。返：一文楷、二无衬线、三衬线、四等宽、五无衬线粗体、六衬线粗体、七等宽粗体、八汉字、九符号、十手写、十一装饰、十二圆体、十三数学、十四仿宋、零未知。：」
+「：汉语：族名归一：把常见别名归到通用族。无衬线包括 sans-serif、system-ui、ui-sans-serif、Arial、Helvetica、黑体、微软雅黑；衬线包括 serif、ui-serif、Times New Roman、Times、宋体；等宽包括 monospace、ui-monospace、Courier New、Courier、Menlo、Consolas；手写包括 cursive、楷体；装饰包括 fantasy；圆体包括 ui-rounded；数学包括 math；仿宋包括 fangsong。返回：1 文楷、2 无衬线、3 衬线、4 等宽、5 无衬线粗体、6 衬线粗体、7 等宽粗体、8 汉字、9 符号、10 手写、11 装饰、12 圆体、13 数学、14 仿宋、15 自由衬线、16 自由无衬线、17 自由等宽、18 自由衬线粗体、19 自由无衬线粗体、20 自由等宽粗体、21 表情、0 未知。
+　　文言：族名归一：以常见之别名归其通用：无衬线兼 sans-serif、system-ui、ui-sans-serif、Arial、Helvetica、黑体、微软雅黑；衬线兼 serif、ui-serif、Times New Roman、Times、宋体；等宽兼 monospace、ui-monospace、Courier New、Courier、Menlo、Consolas；手写兼 cursive、楷体；装饰兼 fantasy；圆体兼 ui-rounded；数学兼 math；仿宋兼 fangsong；自由衬线、自由无衬线、自由等宽及其粗体与表情各归本族。返：一文楷、二无衬线、三衬线、四等宽、五无衬线粗体、六衬线粗体、七等宽粗体、八汉字、九符号、十手写、十一装饰、十二圆体、十三数学、十四仿宋、十五自由衬线、十六自由无衬线、十七自由等宽、十八自由衬线粗体、十九自由无衬线粗体、二十自由等宽粗体、二十一表情、零未知。：」
 「字体名同」乃化「名址」曰「整数」又化「名长」曰「整数」又化「候」曰「整数」为「爻」者也。
 「字体名同」者得「名址」曰「其名址」又得「名长」曰「其名长」又得「候」曰「其候」而
 　（「其名长」等于（「原生串长」于「其候」））且（「原生同字节」于「其名址」于「其候」于「其名长」）
@@ -1150,12 +1150,30 @@
 　　「一四」
 　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰「仿宋」则
 　　「一四」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『自由衬线』）则
+　　「一五」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『自由无衬线』）则
+　　「一六」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『自由等宽』）则
+　　「一七」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『自由衬线粗体』）则
+　　「一八」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『自由无衬线粗体』）则
+　　「一九」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『自由等宽粗体』）则
+　　「二零」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『表情』）则
+　　「二一」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『Noto Color Emoji』）则
+　　「二一」
+　否则若「字体名同」于「名址」曰「名址」于「名长」曰「名长」于「候」曰（「静态文」于『Apple Color Emoji』）则
+　　「二一」
 　否则
 　　「零」
 也。
 
-「：汉语：林纳系统字体：无衬线先取思源黑体（Noto Sans CJK，比例西文兼汉字），再退 Droid 与 DejaVu；衬线先取 uming 或 DejaVu Serif，等宽先取 DejaVu Sans Mono，再退思源（Noto CJK）；汉字取 Droid 或 Noto CJK；符号取 DejaVu；其余族名先试本机常见字体，再用发行包 `字体/`。系统没装就返回 -1。
-　　文言：林纳之系统字：无衬线先取思源黑体（Noto Sans CJK，比例西文兼汉字），次退 Droid 与 DejaVu；衬线先取 uming 或 DejaVu Serif，等宽先取 DejaVu Sans Mono，次退思源（Noto CJK）；汉字取 Droid 或 Noto CJK；符号取 DejaVu；余族先试本机常见之体，次用发行 `字体/`。系统未装则负一。：」
+「：汉语：林纳系统字体：无衬线先取思源黑体（Noto Sans CJK，比例西文兼汉字），再退 Droid 与 DejaVu；衬线先取 uming 或 DejaVu Serif，等宽先取 DejaVu Sans Mono，再退思源（Noto CJK）；汉字取 Droid 或 Noto CJK；符号取 DejaVu；自由衬线、自由无衬线、自由等宽及其粗体先取系统装的 Liberation（与 Times New Roman、Arial、Courier New 度量相同），没有再用发行包 `字体/` 的随带字体；表情取 Noto Color Emoji；其余族名先试本机常见字体，再用发行包 `字体/`。系统没装就返回 -1。
+　　文言：林纳之系统字：无衬线先取思源黑体（Noto Sans CJK，比例西文兼汉字），次退 Droid 与 DejaVu；衬线先取 uming 或 DejaVu Serif，等宽先取 DejaVu Sans Mono，次退思源（Noto CJK）；汉字取 Droid 或 Noto CJK；符号取 DejaVu；自由衬线、自由无衬线、自由等宽及其粗体先取系统所装之 Liberation（与 Times New Roman、Arial、Courier New 同度），无乃用发行 `字体/` 之随带字体；表情取 Noto Color Emoji；余族先试本机常见之体，次用发行 `字体/`。系统未装则负一。：」
 「字体林按码」乃化「整数」为「整数」者也。
 「字体林按码」者得「码」而
 　若「码」等于「一」则
@@ -1255,12 +1273,108 @@
 　　「字体分发试开」于（「静态文」于『字体/思源黑体.otf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/思源黑体.otf』）
 　否则若「码」等于「一四」则
 　　「字体分发试开」于（「静态文」于『字体/原始字体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/原始字体.ttf』）
+　否则若「码」等于「一五」则
+　　令「甲」为
+　　　「字体四试」
+　　　　于「路甲」曰（「静态文」于『/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/usr/share/fonts/liberation/LiberationSerif-Regular.ttf』）
+　　　　于「序乙」曰「零」
+　　　　于「路丙」曰（「静态文」于『/usr/share/fonts/TTF/LiberationSerif-Regular.ttf』）
+　　　　于「序丙」曰「零」
+　　　　于「路丁」曰（「静态文」于『/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf』）
+　　　　于「序丁」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由衬线常规.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由衬线常规.ttf』）
+　否则若「码」等于「一六」则
+　　令「甲」为
+　　　「字体四试」
+　　　　于「路甲」曰（「静态文」于『/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/usr/share/fonts/liberation/LiberationSans-Regular.ttf』）
+　　　　于「序乙」曰「零」
+　　　　于「路丙」曰（「静态文」于『/usr/share/fonts/TTF/LiberationSans-Regular.ttf』）
+　　　　于「序丙」曰「零」
+　　　　于「路丁」曰（「静态文」于『/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf』）
+　　　　于「序丁」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由无衬线常规.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由无衬线常规.ttf』）
+　否则若「码」等于「一七」则
+　　令「甲」为
+　　　「字体四试」
+　　　　于「路甲」曰（「静态文」于『/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/usr/share/fonts/liberation/LiberationMono-Regular.ttf』）
+　　　　于「序乙」曰「零」
+　　　　于「路丙」曰（「静态文」于『/usr/share/fonts/TTF/LiberationMono-Regular.ttf』）
+　　　　于「序丙」曰「零」
+　　　　于「路丁」曰（「静态文」于『/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf』）
+　　　　于「序丁」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由等宽常规.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由等宽常规.ttf』）
+　否则若「码」等于「一八」则
+　　令「甲」为
+　　　「字体四试」
+　　　　于「路甲」曰（「静态文」于『/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/usr/share/fonts/liberation/LiberationSerif-Bold.ttf』）
+　　　　于「序乙」曰「零」
+　　　　于「路丙」曰（「静态文」于『/usr/share/fonts/TTF/LiberationSerif-Bold.ttf』）
+　　　　于「序丙」曰「零」
+　　　　于「路丁」曰（「静态文」于『/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf』）
+　　　　于「序丁」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由衬线粗体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由衬线粗体.ttf』）
+　否则若「码」等于「一九」则
+　　令「甲」为
+　　　「字体四试」
+　　　　于「路甲」曰（「静态文」于『/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/usr/share/fonts/liberation/LiberationSans-Bold.ttf』）
+　　　　于「序乙」曰「零」
+　　　　于「路丙」曰（「静态文」于『/usr/share/fonts/TTF/LiberationSans-Bold.ttf』）
+　　　　于「序丙」曰「零」
+　　　　于「路丁」曰（「静态文」于『/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf』）
+　　　　于「序丁」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由无衬线粗体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由无衬线粗体.ttf』）
+　否则若「码」等于「二零」则
+　　令「甲」为
+　　　「字体四试」
+　　　　于「路甲」曰（「静态文」于『/usr/share/fonts/truetype/liberation/LiberationMono-Bold.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/usr/share/fonts/liberation/LiberationMono-Bold.ttf』）
+　　　　于「序乙」曰「零」
+　　　　于「路丙」曰（「静态文」于『/usr/share/fonts/TTF/LiberationMono-Bold.ttf』）
+　　　　于「序丙」曰「零」
+　　　　于「路丁」曰（「静态文」于『/usr/share/fonts/truetype/dejavu/DejaVuSansMono-Bold.ttf』）
+　　　　于「序丁」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由等宽粗体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由等宽粗体.ttf』）
+　否则若「码」等于「二一」则
+　　「字体两试」
+　　　于「路甲」曰（「静态文」于『/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf』）
+　　　于「序甲」曰「零」
+　　　于「路乙」曰（「静态文」于『/usr/share/fonts/noto/NotoColorEmoji.ttf』）
+　　　于「序乙」曰「零」
 　否则
 　　（「零」减「一」）
 也。
 
-「：汉语：林檎系统字体：无衬线先取华文黑体（带汉字的黑体），衬线取宋体简，等宽取 Menlo；汉字取华文黑体或宋体，符号取 Arial Unicode 与 Apple Symbols，其余族名先试本机常见字体，再用发行包 `字体/`。系统里没有带汉字的粗体无衬线字面，「无衬线粗体」不提供，应用回到常规面并仿粗。
-　　文言：林檎之系统字：无衬线先取华文黑体（带汉字之黑体），衬线取宋体简，等宽取 Menlo；汉字取华文黑体或宋体，符号取 Arial Unicode 与 Apple Symbols，余族先试本机常见之体，次用发行 `字体/`。系统无带汉字之粗无衬线面，「无衬线粗体」不供，客返常规而仿粗。：」
+「：汉语：林檎系统字体：无衬线先取华文黑体（带汉字的黑体），衬线取宋体简，等宽取 Menlo；汉字取华文黑体或宋体，符号取 Arial Unicode 与 Apple Symbols；自由衬线取 Times New Roman 或 Times，自由无衬线取 Arial 或 Helvetica，自由等宽取 Courier New，粗体各取同名粗面，系统没有再用发行包 `字体/` 的随带自由字体；表情取苹果彩色表情；其余族名先试本机常见字体，再用发行包 `字体/`。系统里没有带汉字的粗体无衬线字面，「无衬线粗体」不提供，应用回到常规面并仿粗。
+　　文言：林檎之系统字：无衬线先取华文黑体（带汉字之黑体），衬线取宋体简，等宽取 Menlo；汉字取华文黑体或宋体，符号取 Arial Unicode 与 Apple Symbols；自由衬线取 Times New Roman 或 Times，自由无衬线取 Arial 或 Helvetica，自由等宽取 Courier New，粗体各取同名粗面，系统无乃用发行 `字体/` 之随带自由字体；表情取苹果彩色表情；余族先试本机常见之体，次用发行 `字体/`。系统无带汉字之粗无衬线面，「无衬线粗体」不供，客返常规而仿粗。：」
 「字体苹按码」乃化「整数」为「整数」者也。
 「字体苹按码」者得「码」而
 　若「码」等于「一」则
@@ -1330,6 +1444,54 @@
 　　「字体分发试开」于（「静态文」于『字体/思源黑体.otf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/思源黑体.otf』）
 　否则若「码」等于「一四」则
 　　「字体分发试开」于（「静态文」于『字体/原始字体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/原始字体.ttf』）
+　否则若「码」等于「一五」则
+　　令「甲」为
+　　　「字体两试」
+　　　　于「路甲」曰（「静态文」于『/System/Library/Fonts/Supplemental/Times New Roman.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/System/Library/Fonts/Times.ttc』）
+　　　　于「序乙」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由衬线常规.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由衬线常规.ttf』）
+　否则若「码」等于「一六」则
+　　令「甲」为
+　　　「字体两试」
+　　　　于「路甲」曰（「静态文」于『/System/Library/Fonts/Supplemental/Arial.ttf』）
+　　　　于「序甲」曰「零」
+　　　　于「路乙」曰（「静态文」于『/System/Library/Fonts/Helvetica.ttc』）
+　　　　于「序乙」曰「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由无衬线常规.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由无衬线常规.ttf』）
+　否则若「码」等于「一七」则
+　　令「甲」为「字体试开」于（「静态文」于『/System/Library/Fonts/Supplemental/Courier New.ttf』）于「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由等宽常规.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由等宽常规.ttf』）
+　否则若「码」等于「一八」则
+　　令「甲」为「字体试开」于（「静态文」于『/System/Library/Fonts/Supplemental/Times New Roman Bold.ttf』）于「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由衬线粗体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由衬线粗体.ttf』）
+　否则若「码」等于「一九」则
+　　令「甲」为「字体试开」于（「静态文」于『/System/Library/Fonts/Supplemental/Arial Bold.ttf』）于「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由无衬线粗体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由无衬线粗体.ttf』）
+　否则若「码」等于「二零」则
+　　令「甲」为「字体试开」于（「静态文」于『/System/Library/Fonts/Supplemental/Courier New Bold.ttf』）于「零」而
+　　若「有号不小于」于「甲」于「零」则
+　　　「甲」
+　　否则
+　　　「字体分发试开」于（「静态文」于『字体/自由等宽粗体.ttf』）于（「静态文」于『豫言操作系统/裸机/字模生成/字体/自由等宽粗体.ttf』）
+　否则若「码」等于「二一」则
+　　「字体试开」于（「静态文」于『/System/Library/Fonts/Apple Color Emoji.ttc』）于「零」
 　否则
 　　（「零」减「一」）
 也。
