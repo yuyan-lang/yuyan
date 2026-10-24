@@ -457,7 +457,7 @@ ol,ul { padding-left: 40px }
 ol { list-style-type: decimal }
 ul { list-style-type: disc }
 li { display: list-item }
-table { display: table; border-spacing: 2px; border-collapse: separate }
+table { display: table; border-spacing: 2px; border-collapse: separate; box-sizing: border-box }
 caption { display: table-caption; text-align: center }
 colgroup { display: table-column-group }
 col { display: table-column }
