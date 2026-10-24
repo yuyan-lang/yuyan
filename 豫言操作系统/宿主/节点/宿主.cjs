@@ -105,8 +105,11 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   // 文言：装网汇单元行其 _start 时，暂以单元之参与程名代本程之参与名，返则复之（提案〇〇〇四三）。汉语：「装网汇单元」运行单元的 _start 时，暂把命令行参数与程序名换成单元的，返回后恢复（提案 00043）。
   let 今程序名=程序名, 今客参数=客参数;
   const 编译毕=performance.now();
-  const 文=值=>Buffer.isBuffer(值)?值.toString('utf8'):String(值);
+  // 文言：带型之导入以字节视图（Uint8Array）传帛与串，非 Buffer；旧惟识 Buffer，余者以 String 折之，得逗号相连之数列。汉语：带类型导入的字节参数过边界后是 Uint8Array 而不是 Buffer，旧写法只认 Buffer，其余的经 String 变成逗号相连的数列（2026-10-24，原生起步拿它当路径）。照浏览器、云工、云页宿主的「文」一律识 Uint8Array。
+  const 文=值=>值 instanceof Uint8Array?Buffer.from(值.buffer,值.byteOffset,值.byteLength).toString('utf8'):String(值);
   const 径=值=>路径.resolve(当前目录,文(值));
+  // 文言：内径皆正斜（见「阡陌」）；轩窗之宿主所出仍反斜，豫言一侧较径、算缓号皆以正斜，故出诸宿主的绝对径齐之，入者二斜皆受。汉语：内部路径一律用正斜线（见「阡陌」）；Windows 的宿主接口返回的仍是反斜线，豫言一侧比较路径、算缓存身份都按正斜线，所以宿主给出的绝对路径先归一，进来的路径两种斜线都收（2026-10-24，节点发行包一致性的说明文件越界误报）。
+  const 齐斜=名=>process.platform==='win32'?名.replaceAll('\\','/'):名;
   const 数=值=>Number(值?.小数??值);
   const 列=诸值=>[诸值,诸值.length];
   const 可执行=名=>{try{文件.accessSync(名,文件.constants.X_OK);return 文件.statSync(名).isFile();}catch{return false;}};
@@ -182,15 +185,15 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
           // 文言：起号依其文之 djb2 散（三十二位）取一千加散除百万之余，与原生执行器同法。汉语：起始号按内容的 djb2 散列（三十二位，h×33+字节，初值 5381）取 1000 加散列除以一百万的余数，与原生执行器相同，同内容两边得同号，多数一次就中。
           // 文言：长异者不读其文，径试次号。汉语：长度不同就不读内容，直接试下一个号（目录里常有上百个旧上下文，每个任务都要从 1 号找起）。
           const 状=文件.statSync(文径,{throwIfNoEntry:false});
-          if(!状){文件.writeFileSync(文径,内容,{flag:'wx',mode:0o600});return 文件.realpathSync(文径);}
+          if(!状){文件.writeFileSync(文径,内容,{flag:'wx',mode:0o600});return 齐斜(文件.realpathSync(文径));}
           if(状.size!==内容.length)continue;
-          if(文件.readFileSync(文径).equals(内容))return 文件.realpathSync(文径);
+          if(文件.readFileSync(文径).equals(内容))return 齐斜(文件.realpathSync(文径));
         }
       }finally{释占锁(占径);}
     },
-    豫言_获取命令行程序名:()=>今程序名,
+    豫言_获取命令行程序名:()=>齐斜(今程序名),
     豫言_获取文件沙256:名=>获取程序内容SHA256(径(名)),
-    豫言_获取当前工作目录:()=>当前目录,
+    豫言_获取当前工作目录:()=>齐斜(当前目录),
     豫言_切换当前工作目录:名=>{const 目标=径(名);try{if(!文件.statSync(目标).isDirectory())return [20n,'不是目录：'+目标];当前目录=目标;return [0n,''];}catch(错){return [BigInt(Math.abs(系统.constants.errno[错.code]??2)),错.message];}},
     豫言_获取文件修改时间:名=>BigInt(Math.floor(文件.statSync(径(名)).mtimeMs/1000)),
     豫言_获取当前程序沙256:()=>获取程序内容SHA256(模块路径),
@@ -226,9 +229,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_路径是文件夹:名=>文件.statSync(径(名),{throwIfNoEntry:false})?.isDirectory()??false,
     豫言_路径是普通文件:名=>文件.statSync(径(名),{throwIfNoEntry:false})?.isFile()??false,
     豫言_路径为符号链接:名=>文件.lstatSync(径(名)).isSymbolicLink(),
-    豫言_取得真实路径:名=>文件.realpathSync(径(名)),
+    豫言_取得真实路径:名=>齐斜(文件.realpathSync(径(名))),
     豫言_路径可执行:名=>可执行(径(名)),
-    豫言_查找可执行程序:名=>{const 候选=文(名).includes('/')?[径(名)]:(process.env.PATH??'').split(':').map(径=>路径.join(径,文(名)));const 找到=候选.find(可执行);return [!!找到,找到?路径.resolve(找到):''];},
+    豫言_查找可执行程序:名=>{const 候选=文(名).includes('/')?[径(名)]:(process.env.PATH??'').split(':').map(径=>路径.join(径,文(名)));const 找到=候选.find(可执行);return [!!找到,找到?齐斜(路径.resolve(找到)):''];},
     豫言_在线处理器数量:()=>系统.availableParallelism(),
     '豫言_空闲物理内存块数':()=>-1,
     豫言_启动异步子进程:(名,参)=>{const [程序,参数组,客体,环境,限时,宽限]=子进程参数(名,参);return 请求进程('启动',程序,参数组,客体,当前目录,环境,限时,宽限);},
