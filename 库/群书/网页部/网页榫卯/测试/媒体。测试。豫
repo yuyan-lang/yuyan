@@ -127,7 +127,7 @@
 　令「文档」为
 　　「析篇」于『<audio id="a" src="https://example.test/a.wav"></audio><video id="v"><source type="audio/x-unknown" src="https://example.test/bad.wav"><source type="audio/wav" src="https://example.test/a.wav"></video><audio id="bad" src="https://example.test/bad.wav"></audio>』而
 　令「境」为「急就新全局境」于「元」而
-　令「绑定」为「系网览篇」于「境」于「文档」而
+　令「绑定」为「系网览篇」于「境」于「文档」于「图像空取」而
 　令「主录」为
 　　「新页面接口宿主」
 　　　于「交换」曰「无壳交换」
