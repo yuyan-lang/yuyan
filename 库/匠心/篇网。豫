@@ -559,13 +559,54 @@
 　接『</section>』
 也。
 
+「：汉语：页头、网址栏与页脚按组件名分别包进 header、nav 与 footer，其余组件只渲染展开块。
+　　文言：页首、址栏与页脚依组件之名各入 header、nav 与 footer，其余组件惟渲其展块。：」
+「组件块作」乃化「文」又化（化（「列」于「块」）为「文」）又化「块」为「文」者也。
+「组件块作」者得「名」又得「子作」又得「展」而
+　令「内」为「子作」于（「列」【「展」】）而
+　若「文同」于「名」于『站头』则
+　　（『<header class="站头">』接「内」接『</header>』）
+　否则若「文同」于「名」于『网址栏』则
+　　（『<nav class="网址栏">』接「内」接『</nav>』）
+　否则若「文同」于「名」于『页脚』则
+　　（『<footer class="页脚">』接「内」接『</footer>』）
+　否则
+　　「内」
+也。
+
+「：汉语：代码块：语言名作 language- 类，码片按样式类包 span，空样式出纯文字；文字照原样避讳，换行保留。
+　　文言：码块：语名作 language- 之类，码片依式类而包 span，空式出常文；文避讳如故，换行存焉。：」
+「码块作」乃化「文」又化（「列」于「码片值」）为「文」者也。
+「码块作」者得「其语」又得「片们」而
+　令「类属」为若「文同」于「其语」于『』则『』否则（『 class=』接（「网标属」于（『language-』接「其语」）））而
+　令「内」为
+　　「缀文」于（「遍」以「码片值」又以「文」
+　　　于「片们」
+　　　于（得「片」而
+　　　　若「文同」于（「片」中「样式」）于『』则
+　　　　　（「网页正文避讳」于（「片」中「文」））
+　　　　否则
+　　　　　（『<span class=』接（「网标属」于（「片」中「样式」））接『>』接（「网页正文避讳」于（「片」中「文」））接『</span>』）
+　　　））而
+　『<pre><code』接「类属」接『>』接「内」接『</code></pre>』
+也。
+
+「：汉语：简表：无题注、无编号的表，对齐逐列，表头行出 th。
+　　文言：简表：无题无号之表，对齐逐列，表头之行出 th。：」
+「简表块作」乃化「表头资料」又化（「列」于「表行值」）为「文」者也。
+「简表块作」者得「头」又得「行们」而
+　令「齐字们」为「分字」于（「头」中「对齐们」）而
+　『<div class="表格框"><table class="简表"><tbody>』接（「缀文」于（「遍」以「表行值」又以「文」于「行们」于（得「行」而「表行作」于「齐字们」于「行」）））
+　接『</tbody></table></div>』
+也。
+
 「：汉语：一个块写成网标片段。子作是块列的渲染函数，供节、列表、定理、证明、摘要与组件递归；境给编号、版心宽与版式。：」
 「块作」乃化「块境」又化（化（「列」于「块」）为「文」）又化「块」为「文」者也。
 「块作」者得「境」又得「子作」又得「本块」而
 　令「编」为（「境」中「编」）而
 　令「宽」为（「境」中「宽」）而
 　鉴「本块」而
-　　或有（「组件块」于「定」于「参」于「展」）则「子作」于（「列」【「展」】）
+　　或有（「组件块」于「定」于「参」于「展」）则「组件块作」于（「定」中「名称」）于「子作」于「展」
 　　或有（「文本段块」于「段文」）则「网标段」于（「网页正文避讳」于「段文」）
 　　或有（「段块」于「行们」）则「网标段」于（「行们作」于「编」于「行们」）
 　　或有（「节块」于「头」于「子们」）则「节块作」于「头」于「子作」于「子们」
@@ -575,6 +616,8 @@
 　　或有（「证明块」于「头」于「子们」）则「证明块作」于「头」于「子作」于「子们」
 　　或有（「插图块」于「头」于「节们」）则「插图块作」于「头」于「节们」于「宽」
 　　或有（「表格块」于「头」于「行们」）则「表格块作」于「头」于「行们」
+　　或有（「代码块」于「语」于「片们」）则「码块作」于「语」于「片们」
+　　或有（「简表块」于「头」于「行们」）则「简表块作」于「头」于「行们」
 　　或有（「目录块」于「头」）则「目录块作」于「编」于「头」
 　　或有（「索引块」于「头」）则「索引块作」于「编」于「头」
 　　或有（「文献块」于「头」于「条们」）则「文献块作」于「编」于「头」于「条们」
@@ -893,6 +936,10 @@
 　，『.三线表 tbody tr:first-child th{border-top:2px solid var(--墨);border-bottom:1px solid var(--墨);font-weight:600}』
 　，『.三线表 tbody tr:last-child td{border-bottom:2px solid var(--墨)}』
 　，『.三线表 .左{text-align:left}.三线表 .中{text-align:center}.三线表 .右{text-align:right}』
+　，『.简表{width:auto;max-width:100%;border-collapse:collapse;font-size:.95rem}』
+　，『.简表 th,.简表 td{padding:.3rem .6rem;border:0;vertical-align:top}』
+　，『.简表 tbody tr:first-child th{border-bottom:1px solid var(--线);font-weight:600}』
+　，『.简表 .左{text-align:left}.简表 .中{text-align:center}.简表 .右{text-align:right}』
 　，『.陈列公式{position:relative;margin:1.2rem 0;text-align:center}』
 　，『.陈列公式 .公式{font-family:var(--码);font-size:.95em}』
 　，『.公式号{position:absolute;right:0;top:0;color:var(--次)}』
@@ -909,6 +956,16 @@
 　，『.目录目 li{margin:.2rem 0}』
 　，『.陈列公式 .公式图{max-width:100%;height:auto}』
 　，『.公式图 path{fill:var(--墨)}』
+　，『pre{margin:1.2rem 0;padding:.8rem 1rem;background:var(--浅);border:1px solid var(--线);border-radius:3px;overflow-x:auto;line-height:1.6}』
+　，『pre code{font-family:var(--码);font-size:.9rem}』
+　，『:root{--tok-structure:#a33c2c;--tok-keyword:#a33c2c;--tok-control:#a33c2c;--tok-operator:#66755c;--tok-type:#385d62;--tok-builtin-type:#007078;--tok-builtin-function:#385d62;--tok-builtin-constant:#9b4d14;--tok-binder:#136f63;--tok-number:#896444;--tok-string:#567348;--tok-comment:#808577}』
+　，『.tok-structure,.tok-structure-terminator{color:var(--tok-structure);font-weight:700}』
+　，『.tok-keyword{color:var(--tok-keyword)}.tok-control{color:var(--tok-control);font-weight:600}』
+　，『.tok-type{color:var(--tok-type);font-weight:600}.tok-builtin-type{color:var(--tok-builtin-type);font-weight:600}』
+　，『.tok-builtin-function{color:var(--tok-builtin-function)}.tok-builtin-constant{color:var(--tok-builtin-constant)}』
+　，『.tok-binder{color:var(--tok-binder);font-weight:600}.tok-identifier{color:inherit}』
+　，『.tok-operator{color:var(--tok-operator)}.tok-number{color:var(--tok-number)}』
+　，『.tok-string{color:var(--tok-string)}.tok-comment{color:var(--tok-comment)}』
 　，『.目录目 a{text-decoration:none}』
 　，『.索引{margin:2.4rem 0}』
 　，『.索引题,.文献题{font-family:var(--题);font-weight:600;margin:0 0 .6rem}』
@@ -926,8 +983,14 @@
 　，『.证毕{text-align:right;margin:.2rem 0}』
 　，『.参照{text-decoration:none;border-bottom:1px dotted var(--朱)}』
 　，『.引用 a{text-decoration:none}』
+　，『header.站头{display:flex;align-items:center;gap:1.2rem;padding:.9rem 0;border-bottom:1px solid var(--线);margin-bottom:2.5rem;font-size:.95rem}』
+　，『header.站头 a{text-decoration:none}』
+　，『nav.网址栏{display:flex;flex-wrap:wrap;align-items:baseline;gap:0 .4rem;padding:.5rem 0;border-top:1px solid var(--线);margin-top:3rem;font-family:var(--码);font-size:.8rem;color:var(--次)}』
+　，『nav.网址栏 a{color:var(--次);text-decoration:none}nav.网址栏 a[aria-current=page]{color:var(--墨)}』
+　，『footer.页脚{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem;border-top:1px solid var(--线);padding:1.4rem 0;margin-top:1rem;font-size:.85rem;color:var(--次)}』
+　，『footer.页脚 a{color:var(--次);text-decoration:none;margin-right:1rem}』
 　，『.分页{display:none;page-break-after:always;break-after:page}』
-　，『@media (prefers-color-scheme:dark){:root{--纸:#1b1e1a;--墨:#e8e6dd;--朱:#e0917d;--次:#a4a99c;--线:#3a3e36;--浅:#262a23}}』
+　，『@media (prefers-color-scheme:dark){:root{--纸:#1b1e1a;--墨:#e8e6dd;--朱:#e0917d;--次:#a4a99c;--线:#3a3e36;--浅:#262a23;--tok-structure:#e0917d;--tok-keyword:#e0917d;--tok-control:#e0917d;--tok-operator:#a9b79b;--tok-type:#8fb6bc;--tok-builtin-type:#7fc4c8;--tok-builtin-function:#8fb6bc;--tok-builtin-constant:#d9a06a;--tok-binder:#6fc4b4;--tok-number:#d9a06a;--tok-string:#a3c48d;--tok-comment:#8f948a}}』
 　，『@media (max-width:40rem){body{font-size:16px}main.正文{padding:1.5rem 1rem 4rem}.篇名{font-size:1.7rem}.索引用{columns:1}}』
 　，『@media print{body{background:#fff;color:#000}.目录{background:none}.分页{display:block}}』
 　】
