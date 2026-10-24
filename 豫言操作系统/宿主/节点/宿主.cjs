@@ -107,12 +107,16 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   const 编译毕=performance.now();
   // 文言：带型之导入以字节视图（Uint8Array）传帛与串，非 Buffer；旧惟识 Buffer，余者以 String 折之，得逗号相连之数列。汉语：带类型导入的字节参数过边界后是 Uint8Array 而不是 Buffer，旧写法只认 Buffer，其余的经 String 变成逗号相连的数列（2026-10-24，原生起步拿它当路径）。照浏览器、云工、云页宿主的「文」一律识 Uint8Array。
   const 文=值=>值 instanceof Uint8Array?Buffer.from(值.buffer,值.byteOffset,值.byteLength).toString('utf8'):String(值);
-  const 径=值=>路径.resolve(当前目录,文(值));
-  // 文言：内径皆正斜（见「阡陌」）；轩窗之宿主所出仍反斜，豫言一侧较径、算缓号皆以正斜，故出诸宿主的绝对径齐之，入者二斜皆受。汉语：内部路径一律用正斜线（见「阡陌」）；Windows 的宿主接口返回的仍是反斜线，豫言一侧比较路径、算缓存身份都按正斜线，所以宿主给出的绝对路径先归一，进来的路径两种斜线都收（2026-10-24，节点发行包一致性的说明文件越界误报）。
-  const 齐斜=名=>process.platform==='win32'?名.replaceAll('\\','/'):名;
+  // 文言：轩窗之绝径盘符之前冠一斜（见「阡陌」，路径模块），作“/C:/a/b”；入者去其盘符前之斜，乃交 Node。汉语：Windows 的内部绝对路径在盘符前多一条正斜线（见「阡陌」，路径模块），写作 `/C:/a/b`；进来的路径先去掉盘符前那条斜线，再交给 Node（2026-10-24，议题 552）。
+  const 入径=名=>process.platform==='win32'?名.replace(/^\/([A-Za-z]:)/,'$1'):名;
+  const 径=值=>路径.resolve(当前目录,入径(文(值)));
+  // 文言：内径皆正斜（见「阡陌」）；轩窗之宿主所出仍反斜、盘符前亦无冠斜，豫言一侧较径、算缓号皆以正斜，故出诸宿主的绝对径齐之：反斜改正斜，盘符之前冠一斜。汉语：内部路径一律用正斜线（见「阡陌」）；Windows 的宿主接口返回的仍是反斜线，盘符前也没有那条斜线，豫言一侧比较路径、算缓存身份都按正斜线，所以宿主给出的绝对路径先归一：反斜线改成正斜线，盘符前补上一条正斜线（2026-10-24，节点发行包一致性的说明文件越界误报；议题 552）。
+  const 齐斜=名=>process.platform==='win32'?名.replaceAll('\\','/').replace(/^([A-Za-z]:)/,'/$1'):名;
   const 数=值=>Number(值?.小数??值);
   const 列=诸值=>[诸值,诸值.length];
   const 可执行=名=>{try{文件.accessSync(名,文件.constants.X_OK);return 文件.statSync(名).isFile();}catch{return false;}};
+  // 文言：轩窗之程序以扩展名终：PATHEXT 所列依次试之，无则至少 .exe，且 .exe 一律作小写，所拼之径与原生「原生搜路径」同（十月二十四日，议五百五十二）。汉语：Windows 的程序带扩展名：名字没有扩展名时依次试 PATHEXT 里列出的扩展名（没有 PATHEXT 时至少试 `.exe`），其中 `.EXE` 一律写作 `.exe`，拼出的路径与原生「原生搜路径」一致（2026-10-24，议题 552）。
+  const 补扩展名=()=>{const 尾们=(process.env.PATHEXT??'').split(';').map(名=>名.trim()).filter(Boolean).map(尾=>尾.startsWith('.')?尾:'.'+尾).map(尾=>尾.toLowerCase()==='.exe'?'.exe':尾);return 尾们.some(尾=>尾.toLowerCase()==='.exe')?尾们:[...尾们,'.exe'];};
   // 文言：线程之出各归其管。汉语：内部编译线程通过 Worker 标准流汇集输出，不能直接写共享进程的文件描述符。
   const 写输出=(号,值)=>本工.复用线程?parentPort.postMessage({种:'出',号,值}):本工.编译线程?(号===1?process.stdout:process.stderr).write(值):写尽(号,值);
   // 文言：底层之模导入内存、数学、诺驿之函或出工作线程者，交底层宿主行之；工具链包之宿主无此文，则照旧行之。汉语：底层模块导入了内存或「数学」「诺驿」的函数，或导出「工作线程」时，交 底层宿主.cjs 运行（建内存、起工作线程、调 _start）；Wasm 工具链包里的宿主不带这个文件，照旧运行。
@@ -137,8 +141,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
   }
   // 文言：网页汇编之模，以其首四字节 \0asm 识之，不拘其名之后缀。汉语：按文件开头 4 字节 \0asm 识别 Wasm 模块，不依赖 .wasm 后缀（豫构的 --输出 可以是任意名字）。
   // 文言：装载单元之目（有“顺序.txt”）亦视为客，以本宿主行之（提案〇〇〇〇三第六步）。汉语：装载单元目录（里面有“顺序.txt”）也当作客体程序，由本宿主运行（提案 00003 第 6 步）。
-  const 是网页汇编=名=>{if(名.endsWith('.wasm'))return true;try{if(文件.existsSync(路径.join(路径.resolve(当前目录,名),'顺序.txt')))return true;}catch{}try{const 号=文件.openSync(路径.resolve(当前目录,名),'r');const 头=Buffer.alloc(4);const 数=文件.readSync(号,头,0,4,0);文件.closeSync(号);return 数===4&&头.equals(Buffer.from([0,0x61,0x73,0x6d]));}catch{return false;}};
-  function 子进程参数(名,参){let 程序=文(名),参数组=参[0].map(文),环境=null,限时=0,宽限=0;const 拆=拆包装(程序,参数组);if(拆.程序!==程序&&是网页汇编(拆.程序)){({程序,参数组}=拆);环境=拆.环境;限时=拆.限时;宽限=拆.宽限;}const 客体=路径.resolve(当前目录,程序)===模块路径 || 是网页汇编(程序);if(客体){参数组=[...引擎参数,__filename,路径.resolve(当前目录,程序),...参数组];程序=process.execPath;}return [程序,参数组,客体,环境,限时,宽限];}
+  const 是网页汇编=名=>{if(名.endsWith('.wasm'))return true;try{if(文件.existsSync(路径.join(径(名),'顺序.txt')))return true;}catch{}try{const 号=文件.openSync(径(名),'r');const 头=Buffer.alloc(4);const 数=文件.readSync(号,头,0,4,0);文件.closeSync(号);return 数===4&&头.equals(Buffer.from([0,0x61,0x73,0x6d]));}catch{return false;}};
+  function 子进程参数(名,参){let 程序=入径(文(名)),参数组=参[0].map(文),环境=null,限时=0,宽限=0;const 拆=拆包装(程序,参数组);if(拆.程序!==程序&&是网页汇编(拆.程序)){({程序,参数组}=拆);环境=拆.环境;限时=拆.限时;宽限=拆.宽限;}const 客体=径(程序)===模块路径 || 是网页汇编(程序);if(客体){参数组=[...引擎参数,__filename,径(程序),...参数组];程序=process.execPath;}return [程序,参数组,客体,环境,限时,宽限];}
   function 运行子进程(名,参){const [程序,参数组,客体,环境,限时]=子进程参数(名,参);const 果=子进程.spawnSync(程序,参数组,{cwd:当前目录,maxBuffer:256*1024*1024,timeout:限时>0?限时*1000:undefined,killSignal:'SIGKILL',env:客体?{...process.env,...(环境??{}),豫言诺驿轮数:'1'}:process.env});const 超时=限时>0&&果.error?.code==='ETIMEDOUT';if(果.error&&!超时)throw 果.error;const 状态=超时?124:(果.status??(果.signal?128+(系统.constants.signals[果.signal]??0):1));const 结果=[状态===0,果.stdout??Buffer.alloc(0),果.stderr??Buffer.alloc(0)];结果.状态=状态;return 结果;}
   const 请求进程=客体请求(本工.端口,本工.信号);
   // 文言：Node 无 flock，以独占新建之“占”文为锁，书进程号；持者已亡则除其陈锁，未得则稍候复试。汉语：Node 没有 flock，用独占创建“占用文件”加锁，文件内写进程号；持有者已退出就清除陈旧的锁，拿不到锁则短暂等待后重试。
@@ -231,12 +235,13 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     豫言_路径为符号链接:名=>文件.lstatSync(径(名)).isSymbolicLink(),
     豫言_取得真实路径:名=>齐斜(文件.realpathSync(径(名))),
     豫言_路径可执行:名=>可执行(径(名)),
-    豫言_查找可执行程序:名=>{const 候选=文(名).includes('/')?[径(名)]:(process.env.PATH??'').split(':').map(径=>路径.join(径,文(名)));const 找到=候选.find(可执行);return [!!找到,找到?齐斜(路径.resolve(找到)):''];},
+    // 文言：轩窗以分号切 PATH、无扩展之名依次补 PATHEXT，同原生「原生搜路径」；所出之径齐为内径。汉语：Windows 上按分号切 PATH（其余平台按冒号），名字没有扩展名时依次补 PATHEXT 再试，与原生「原生搜路径」同（2026-10-24，议题 552）；找到的绝对路径按内部写法归一。
+    豫言_查找可执行程序:名=>{const 程序名=文(名),尾们=process.platform==='win32'&&!路径.extname(程序名)?['',...补扩展名()]:[''],候选=程序名.includes('/')?[径(程序名)]:(process.env.PATH??'').split(路径.delimiter).filter(Boolean).flatMap(段=>尾们.map(尾=>路径.join(段,程序名+尾)));const 找到=候选.find(可执行);return [!!找到,找到?齐斜(路径.resolve(找到)):''];},
     豫言_在线处理器数量:()=>系统.availableParallelism(),
     '豫言_空闲物理内存块数':()=>-1,
     豫言_启动异步子进程:(名,参)=>{const [程序,参数组,客体,环境,限时,宽限]=子进程参数(名,参);return 请求进程('启动',程序,参数组,客体,当前目录,环境,限时,宽限);},
     // 文言：遣使于境：所居与环境之块随使而行；块为零终之“名=值”诸条，尽易其俗，空则承之（提案 00035）。汉语：带工作目录与环境启动（提案 00035）：环境块是若干以零结尾的“名=值”，非空时替换子进程的全部环境，空串继承；目录空串为当前目录。
-    豫言_遣使于境:(名,参,目,境)=>{const [程序,参数组,客体,环境,限时,宽限]=子进程参数(名,参);const 全境=文(境);const 境对=全境?Object.fromEntries(全境.split('\0').filter(Boolean).map(项=>{const 位=项.indexOf('=');return 位<0?[项,'']:[项.slice(0,位),项.slice(位+1)];})):环境;return 请求进程('启动',程序,参数组,客体,路径.resolve(当前目录,文(目)||'.'),境对,限时,宽限);},
+    豫言_遣使于境:(名,参,目,境)=>{const [程序,参数组,客体,环境,限时,宽限]=子进程参数(名,参);const 全境=文(境);const 境对=全境?Object.fromEntries(全境.split('\0').filter(Boolean).map(项=>{const 位=项.indexOf('=');return 位<0?[项,'']:[项.slice(0,位),项.slice(位+1)];})):环境;return 请求进程('启动',程序,参数组,客体,径(目),境对,限时,宽限);},
     豫言_风俗:()=>Buffer.from(Object.entries(process.env).map(([名,值])=>名+'='+值+'\0').join('')),
     豫言_尝试收取异步子进程:号=>请求进程('收取',号),
     豫言_终止异步子进程:号=>请求进程('终止',号),
