@@ -307,6 +307,8 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     // 汉语：卷大小取状态里的字节数，不存在或不是普通文件时给 -1；阅帛片按偏移定位读，只读这一段（2026-10-22，议题 351）。
     // 文言：卷大小取状中之字节数，不存或非常文则给负一；阅帛片依偏定位而读，唯此一段。
     卷大小:名=>{const 状=文件.statSync(径(名),{throwIfNoEntry:false});return 状&&状.isFile()?BigInt(状.size):BigInt(-1);},
+    // 汉语：卷大小长与卷大小同取状态里的字节数，不存在或不是普通文件时给 -1（2026-10-24，议题 467 第一段）。文言：卷大小长与卷大小同取状中之字节数，不存或非常文则给负一。
+    卷大小长:名=>{const 状=文件.statSync(径(名),{throwIfNoEntry:false});return 状&&状.isFile()?BigInt(状.size):BigInt(-1);},
     阅帛片:(名,偏移,长)=>{const 限=Number(长);if(!(限>0))return Buffer.alloc(0);const 柄=文件.openSync(径(名),'r');try{const 缓=Buffer.alloc(限);const 读=文件.readSync(柄,缓,0,限,Number(偏移));return 读===限?缓:缓.subarray(0,读);}finally{文件.closeSync(柄);}},
     著:(名,内容)=>原语.豫言_同步写入文件(缓(名),缓(内容)),著帛:(名,内容)=>原语.豫言_同步写入文件字节串(缓(名),缓(内容)),
     // 汉语：附帛按路径把字节串追加到文件末尾（2026-10-23，议题 413）。文言：附帛按径续字节串于卷末（十月二十三日，议四百一十三）。
