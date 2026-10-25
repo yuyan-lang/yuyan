@@ -1,0 +1,86 @@
+# 文言：篇以义类，次第相承。汉语：技术规范目录；标识与原文基名相同，两种语言共享顺序。
+- name: 总纲
+  group: 规范
+  wen_group: 规制
+  summary: 兼容目标、实现边界与基本数据模型。
+  wen_summary: 定兼容之义、实现之界与数据之形。
+- name: 子语言设计
+  group: 规范
+  wen_group: 规制
+  summary: 各子语言共同遵守的设计原则：一种语法、后缀定种类、经无体声明相接、统一执行边界；以及它们在一个程序里怎样配合。
+  wen_summary: 诸子语言共守之则：一法之语、缀定其类、以无体之声相接、执行之界唯一；及其于一程序中相配之道。
+- name: 词法与语法
+  group: 语言
+  wen_group: 语言
+  summary: 字符与令牌、操作符结合、声明和语法糖。
+  wen_summary: 察字符、令牌、结合、声明与省文之法。
+- name: 雅言文体
+  group: 语言
+  wen_group: 语言
+  summary: 豫言源码的写法（提案 00027 关键词换字）：各构造的写法、解析约束、打印规则与核对。
+  wen_summary: 豫言源文之书法：诸构之书、析之约、印之则与核。
+- name: 类型与模块
+  group: 语言
+  wen_group: 语言
+  summary: 类型形成、双向检查、隐参、名称解析与模块身份。
+  wen_summary: 成类验类，求隐参，辨名称与模块身份。
+- name: 标签函数类型
+  group: 语言
+  wen_group: 语言
+  summary: 标签函数类型的形成、调用与语义。
+  wen_summary: 成标签函数之类，述其调用与义。
+- name: 依值类型
+  group: 语言
+  wen_group: 语言
+  summary: 类型依赖整数、爻、字符串及其列表的值：写法、隐式值参数与依值模式匹配。
+  wen_summary: 类依整数、爻、字符串及其列之值：书法、隐值之参与依值之配。
+- name: 整数类型索引
+  group: 语言
+  wen_group: 语言
+  summary: 整数定义域的类型构造器参数、索引式形状与闭合整数索引比较。
+  wen_summary: 整数定义域之类型构造器参、索引式之形与闭合整数索引之较。
+- name: 爻类型索引
+  group: 语言
+  wen_group: 语言
+  summary: 爻定义域的类型构造器参数、字面运算规约与闭合索引比较。
+  wen_summary: 爻定义域之类型构造器参、字面运算之约与闭合索引之较。
+- name: 字符串类型索引
+  group: 语言
+  wen_group: 语言
+  summary: 字符串定义域的类型构造器参数、拼接规范形与闭合索引比较。
+  wen_summary: 字符串定义域之类型构造器参、拼接之规范形与闭合索引之较。
+- name: 列表类型索引
+  group: 语言
+  wen_group: 语言
+  summary: 列表定义域的合法性检查、闭合元素规范值与附加比较。
+  wen_summary: 列表定义域之合法之验、闭合元素之规范值与附加之较。
+- name: 执行与编译
+  group: 实现
+  wen_group: 实现
+  summary: 求值次序、递归、异常、擦除、闭包与代码生成。
+  wen_summary: 定求值之序，述递归、异常、擦除、闭包与生成。
+- name: 网页汇编接口
+  group: 实现
+  wen_group: 实现
+  summary: WasmGC 的值表示、调用、模块、异常与宿主引用桥。
+  wen_summary: 定 WasmGC 之值、调用、模块、异常与宿主引用桥之约。
+- name: 规约关系表
+  group: 附表
+  wen_group: 附表
+  summary: 操作符的显式结合关系与后备规则。
+  wen_summary: 列操作符结合之约及后备之则。
+- name: 文件后缀
+  group: 附表
+  wen_group: 附表
+  summary: 源文件、文档、测试数据与构建产物的全部后缀，各附实例；导入时的查找次序。
+  wen_summary: 源文、文书、试料与构建所出之诸缀，各附其例；导时寻文之序。
+- name: 基线与实现依据
+  group: 依据
+  wen_group: 所据
+  summary: 固定提交、源码依据、ABI 核验与维护约束。
+  wen_summary: 固所据之本，考源码、ABI 与修文之约。
+- name: 着色语言
+  group: 着色
+  wen_group: 着色
+  summary: 用豫言标准语法写 GPU 着色程序，类型检查后译成 WGSL、MSL 与 PTX。
+  wen_summary: 以豫言常法书图形处理器之着色程序，检类而后译为 WGSL、MSL 与 PTX。

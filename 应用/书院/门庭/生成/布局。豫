@@ -1,0 +1,237 @@
+「：汉语：官网页面布局：默认、技术文档与重定向三种，以及全站导航。原先是 Jekyll 的 Liquid 模板，现在用豫言函数生成。网址直接用中文，不做百分号编码。
+　　文言：官网之版：常页、技术之文、迁址三式，并站之导航。昔以 Jekyll 之 Liquid 书之，今以豫言之函为之。网址直书中文，不作百分号之编码。：」
+寻观「豫章」之书。
+寻观「圈点」之书。
+寻观「刊刻」之书。
+寻观「章程」之「前言」之书。
+
+「：汉语：站点主网址。
+　　文言：站之主址。：」
+「站点网址」乃「文」也。
+「站点网址」者『https://yuyan-lang.org』也。
+
+「：汉语：站点描述，页面没有 description 时使用。
+　　文言：站之述，页无 description 时用之。：」
+「站点描述」乃「文」也。
+「站点描述」者『一款函数式中文编程语言』也。
+
+「：汉语：技术规范基线提交。
+　　文言：技术之文之基线提交。：」
+「规范基线」乃「文」也。
+「规范基线」者『4cdeca11600fed16338793a494b6eecaae94485a』也。
+
+「：汉语：取前言的值；为空时用缺省值，同 Liquid 的 default 过滤器。
+　　文言：取前言之值，空则用缺省（同 Liquid 之 default）。：」
+「前言取或」乃化「前言」又化「文」又化「文」为「文」者也。
+「前言取或」者得「言们」又得「键」又得「缺省」而
+　令「值」为「前言取」于「言们」于「键」而
+　若「文同」于「值」于『』则「缺省」否则「值」
+也。
+
+「：汉语：绝对网址（同 absolute_url，不做编码）。
+　　文言：绝对之网址。：」
+「绝对网址」乃化「文」为「文」者也。
+「绝对网址」者得「网址」而
+　「站点网址」接「网址」
+也。
+
+「：汉语：教程各章的名称，按顺序。
+　　文言：学篇诸章。：」
+「教程章们」乃「列」于「文」也。
+「教程章们」者
+　「列」
+　【『启机第一』
+　，『正名第二』
+　，『术数第三』
+　，『决疑第四』
+　，『制器第五』
+　，『鉴形第六』
+　，『列阵第七』
+　，『通术第八』
+　，『归藏第九』
+　，『府库第十』
+　，『弦歌第十一』
+　，『持变第十二』
+　，『成章第十三』
+　】
+也。
+
+「：汉语：把每一项生成一行 <li> 链接，再连在一起。
+　　文言：诸名合为列项之链。：」
+「链项们」乃化（「列」于「文」）又化（化「文」为「文」）为「文」者也。
+「链项们」者得「名们」又得「成链」而
+　「缀文」于（（「遍」以「文」又以「文」）于「名们」于（得「名」而『<li>』接（「成链」于「名」）接『</li>』接「提行字」））
+也。
+
+「：汉语：全站导航（原 _includes/site_nav.html），各页末尾共用。
+　　文言：站之导航，诸页之末皆有之。：」
+「站点导航」乃化（「列」于「前言」）为「文」者也。
+「站点导航」者得「篇目们」而
+　令「篇名们」为（「遍」以「前言」又以「文」）于「篇目们」于（得「篇目」而「前言取」于「篇目」于『name』）而
+　『<nav class="豫站点导航" aria-label="站点导航">』接「提行字」接『<section><h2 data-han="教程" data-wen="教程">教程</h2><ul>』接「提行字」
+　接『<li><a href="/教程/" data-han="教程首页" data-wen="教程之首">教程首页</a></li>』接「提行字」
+　接『<li><a href="/教程/总目.汉语.html" data-han="总目" data-wen="总目">总目</a></li>』接「提行字」
+　接（「链项们」于「教程章们」于（得「名」而『<a href="/教程/』接「名」接『.汉语.html">』接「名」接『</a>』））接『</ul></section>』接「提行字」
+　接『<section><h2 data-han="指南" data-wen="指南">指南</h2><ul>』接「提行字」
+　接『<li><a href="/指南/快速开始.汉语.html" data-han="快速开始" data-wen="速成">快速开始</a></li>』接「提行字」
+　接『<li><a href="/指南/设计动机.汉语.html" data-han="设计动机" data-wen="立言之志">设计动机</a></li>』接「提行字」
+　接『<li><a href="/指南/语言规范.汉语.html" data-han="语言规范" data-wen="语言之规">语言规范</a></li>』接「提行字」
+　接『<li><a href="/指南/包系统.汉语.html" data-han="包系统" data-wen="包之制">包系统</a></li>』接「提行字」
+　接『<li><a href="/指南/仓库包构建.汉语.html" data-han="仓库包构建" data-wen="仓库之包构">仓库包构建</a></li>』接「提行字」接『</ul></section>』接「提行字」
+　接『<section><h2 data-han="技术文档" data-wen="技术之文">技术文档</h2><ul>』接「提行字」
+　接『<li><a href="/文档/" data-han="文档总览" data-wen="总览">文档总览</a></li>』接「提行字」
+　接（「链项们」于「篇名们」于（得「名」而『<a href="/文档/』接「名」接『.汉语.html">』接「名」接『</a>』））接『</ul></section>』接「提行字」
+　接『<section><h2 data-han="豫言操作系统" data-wen="豫言操作系统">豫言操作系统</h2><ul>』接「提行字」
+　接『<li><a href="/豫言操作系统.汉语.html" data-han="愿景" data-wen="愿景">愿景</a></li>』接「提行字」
+　接『<li><a href="/豫言操作系统架构.汉语.html" data-han="总体架构" data-wen="总体之构">总体架构</a></li>』接「提行字」接『</ul></section>』接「提行字」
+　接『<section><h2 data-han="产品与服务" data-wen="产品与服务">产品与服务</h2><ul>』接「提行字」
+　接『<li><a href="/packages/" data-han="包管理" data-wen="包之管">包管理</a></li>』接「提行字」
+　接『<li><a href="/products/" data-han="豫言云产品" data-wen="豫言云之产">豫言云产品</a></li>』接「提行字」
+　接『<li><a href="/cloud/" data-han="控制台" data-wen="控制之台">控制台</a></li>』接「提行字」
+　接『<li><a href="https://yuyan-lang.org/试写间/" data-han="在线体验" data-wen="在线试写">在线体验</a></li>』接「提行字」
+　接『<li><a href="/个人" data-han="账户" data-wen="账户">账户</a></li>』接「提行字」接『</ul></section>』接「提行字」
+　接『<section><h2 data-han="更多" data-wen="其余">更多</h2><ul>』接「提行字」
+　接『<li><a href="/十万个为什么/" data-han="十万个为什么" data-wen="十万个为什么">十万个为什么</a></li>』接「提行字」
+　接『<li><a href="/性能/" data-han="性能比较" data-wen="性能比较">性能比较</a></li>』接「提行字」
+　接『<li><a href="https://github.com/yuyan-lang/yuyan" data-han="语言源码" data-wen="豫言源码">语言源码</a></li>』接「提行字」
+　接『<li><a href="/文言/" data-han="文言首页" data-wen="文言之首页">文言首页</a></li>』接「提行字」
+　接『<li><a href="https://github.com/yuyan-lang/yuyan">GitHub</a></li>』接「提行字」
+　接『<li><a href="https://github.com/yuyan-lang/yuyan/issues" data-han="问题反馈" data-wen="报误">问题反馈</a></li>』接「提行字」
+　接『<li><a href="/条款/条款.汉语.html" data-han="使用条款" data-wen="使用之约">使用条款</a></li>』接「提行字」
+　接『<li><a href="/条款/隐私.汉语.html" data-han="隐私说明" data-wen="隐私之说明">隐私说明</a></li>』接「提行字」接『</ul></section>』接「提行字」接『</nav>』
+　接「提行字」
+也。
+
+「：汉语：默认布局（原 _layouts/default.html）：首页、教程、指南、问答与操作系统等页面。首页类页面不写站名，标志已链到首页。
+　　文言：常页之版（原 _layouts/default.html）。首页之类不书站名，标志已归首页。：」
+「默认布局」乃化（「列」于「前言」）又化「前言」又化「文」为「文」者也。
+「默认布局」者得「篇目们」又得「页前言」又得「正文网页」而
+　令「种类」为「前言取」于「页前言」于『site_kind』而
+　令「汉页」为「前言取」于「页前言」于『han_page』而
+　令「主类」为「前言取或」于「页前言」于『main_class』于『首页』而
+　令「首页址」为若「文同」于「种类」于『questions』则『/十万个为什么/』否则若「文同」于「种类」于『tutorial』则『/教程/』否则『/』而
+　令「双语页」为若「文同」于「汉页」于『』则『』否则『 data-han-page="』接「汉页」接『" data-wen-page="』接（「前言取」于「页前言」于『wen_page』）接『"』而
+　『<!doctype html>』接「提行字」
+　接『<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="description" content="』
+　接（「网页属避讳」于（「前言取或」于「页前言」于『description』于「站点描述」））接『"><title>』接（「网页属避讳」于（「前言取」于「页前言」于『title』））
+　接『 · 豫言</title><link rel="stylesheet" href="/共用/主题.css"><link rel="stylesheet" href="/资源/首页.css"><script type="module" src="/共用/界面应用/自动启动.mjs"></script><script type="module" src="/资源/首页.mjs"></script></head>』
+　接「提行字」接『<body><div data-yuyan-site="』接（「前言取或」于「页前言」于『site_kind』于『home』）接『" data-home="』接「首页址」接『"』接「双语页」
+　接『></div><header id="豫静态导航" class="豫导航"><a class="豫跳转" href="#正文">跳到正文</a><a class="豫标志" href="/" aria-label="豫言首页">豫<b>言</b></a><a class="豫站名" href="/">』
+　接（若「文同」于（「前言取或」于「页前言」于『site_kind』于『home』）于『home』则『』否则「网页属避讳」于（「前言取或」于「页前言」于『title』于『首页』））
+　接『</a><nav class="豫导航内" aria-label="全站导航"><a href="/下载/">下载</a><a href="/软件/">软件</a><a href="/packages/">包管理</a><a href="https://中文编程语言.yuyan-lang.org/">百科 ↗</a><a href="https://github.com/yuyan-lang/yuyan">GitHub ↗</a></nav></header><main id="正文"』
+　接（若「文同」于「主类」于『阅读页』则『 data-原文』否则『』）接『 class="』接「主类」接『">』接「正文网页」接『</main>』接（「站点导航」于「篇目们」）
+　接『<footer class="豫页脚"><span data-han="豫言 · 以中文写程序，以函数组织计算。" data-wen="豫言 · 以中文书程序，以函数理计算。">豫言 · 以中文写程序，以函数组织计算。</span><nav><a href="/性能/" data-han="性能比较" data-wen="性能比较">性能比较</a><a href="https://github.com/yuyan-lang/yuyan" data-han="源码" data-wen="源码">源码</a><a href="https://github.com/yuyan-lang/yuyan/issues" data-han="问题反馈" data-wen="报误">问题反馈</a><a href="/指南/设计动机.汉语.html" data-han="设计动机" data-wen="立言之志">设计动机</a></nav></footer></body></html>』
+　接「提行字」
+也。
+
+「：汉语：技术文档侧栏的章节链接：分组变化时先写分组名；当前章节加 aria-current。
+　　文言：技术之文侧栏之篇目：组易则先书组名。：」
+「侧栏篇目」乃化「爻」又化「文」又化「文」又化（「列」于「前言」）为「文」者也。
+「侧栏篇目」者得「文言」又得「语」又得「本篇」又得「篇目们」而
+　复令「走」属化（「列」于「前言」）又化「文」又化（「列」于「文」）为「文」
+　　即得「余」又得「前组」又得「累」而
+　　　鉴「余」而
+　　　　或有「罄」则（「缀文」于（「倒」以「文」于「累」））
+　　　　或有（「缀」于「篇目」于「尾」）则（
+　　　　　令「组」为「前言取」于「篇目」于『group』而
+　　　　　令「组标」为若「文同」于「组」于「前组」则『』否则『<p class="目录分组">』接（若「文言」则「前言取」于「篇目」于『wen_group』否则「组」）接『</p>』而
+　　　　　令「名」为「前言取」于「篇目」于『name』而
+　　　　　令「链」为
+　　　　　　『<a href="/文档/』接「名」接『.』接「语」接『.html" 』接（若「文同」于「本篇」于「名」则『aria-current="page"』否则『』）接『>』接「名」
+　　　　　　接『</a>』而
+　　　　　「走」于「尾」于「组」于（「缀」以「文」于（「组标」接「提行字」接「链」）于「累」）
+　　　　）而
+　「走」于「篇目们」于『』于（「罄」以「文」）
+也。
+
+「：汉语：技术文档的章节翻页：上一篇与下一篇链接。
+　　文言：技术之文之翻篇：前后二篇。：」
+「翻篇」乃化「文」又化「文」又化（「列」于「前言」）为「文」者也。
+「翻篇」者得「语」又得「本篇」又得「篇目们」而
+　令「名们」为（「遍」以「前言」又以「文」）于「篇目们」于（得「篇目」而「前言取」于「篇目」于『name』）而
+　复令「走」属化（「列」于「文」）又化「文」为「文」
+　　即得「余」又得「前名」而
+　　　鉴「余」而
+　　　　或有「罄」则『』
+　　　　或有（「缀」于「名」于「尾」）则（
+　　　　　若「文同」于「名」于「本篇」则
+　　　　　　（若「文同」于「前名」于『』则『』否则『<a href="/文档/』接「前名」接『.』接「语」接『.html">← 』接「前名」接『</a>』）
+　　　　　　接（
+　　　　　　　鉴「尾」而
+　　　　　　　　或有「罄」则『』
+　　　　　　　　或有（「缀」于「后名」于「后尾」）则（『<a href="/文档/』接「后名」接『.』接「语」接『.html">』接「后名」接『 →</a>』）
+　　　　　　）
+　　　　　否则
+　　　　　　「走」于「尾」于「名」
+　　　　）而
+　「走」于「名们」于『』
+也。
+
+「：汉语：技术文档布局（原 _layouts/技术文档.html）：侧栏章节、搜索、正文、原文出处与翻页。
+　　文言：技术之文之版（原 _layouts/技术文档.html）。：」
+「技术文档布局」乃化（「列」于「前言」）又化「文」又化「前言」又化「文」为「文」者也。
+「技术文档布局」者得「篇目们」又得「网址」又得「页前言」又得「正文网页」而
+　令「语」为「前言取」于「页前言」于『doc_lang』而
+　令「文言」为「文同」于「语」于『文言』而
+　令「其择」为（（得「文言辞」又得「汉语辞」而若「文言」则「文言辞」否则「汉语辞」）属化「文」又化「文」为「文」）而
+　令「本篇」为「前言取」于「页前言」于『chapter』而
+　令「汉页」为「前言取」于「页前言」于『han_page』而
+　令「文页」为「前言取」于「页前言」于『wen_page』而
+　令「来源」为「前言取」于「页前言」于『source_path』而
+　令「快照」为「前言取」于「页前言」于『source_commit』而
+　令「总览址」为「其择」于『/文档/总览.文言.html』于『/文档/』而
+　令「提示」为
+　　若「文同」于「本篇」于『』则
+　　　『』
+　　否则
+　　　『<p class="基线提示">』接（「其择」于『此篇据』于『本篇描述』）接『 <code>4cdeca1</code> 』
+　　　接（「其择」于『之实现。所据及适用之界，见』于『的实现。版本与适用边界见』）接『<a href="/文档/基线与实现依据.』接「语」接『.html">』
+　　　接（「其择」于『基线之篇』于『基线说明』）接『</a>。</p>』而
+　令「出处」为
+　　若「文同」于「来源」于『』则
+　　　『』
+　　否则
+　　　『<footer class="原文出处" data-原文>』接（「其择」于『原文所出』于『原文来源』）接『：<a href="https://github.com/yuyan-lang/yuyan/blob/』接「快照」
+　　　接『/』接「来源」接『">』接「来源」接『</a><br>文稿快照 <code>』接（「截文」于「零」于「一二」于「快照」）
+　　　接『</code> · 规范基线 <code>4cdeca1</code></footer>』而
+　『<!doctype html>』接「提行字」接『<html lang="』接（「其择」于『lzh』于『zh-CN』）
+　接『"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>』
+　接（「网页属避讳」于（「前言取」于「页前言」于『title』））接『 · 豫言技术文档</title><meta name="description" content="』
+　接（「网页属避讳」于（「前言取或」于「页前言」于『description』于『豫言编程语言技术规范：语法、类型、执行与编译、运行时和互操作接口。』））
+　接『"><link rel="canonical" href="』接（「绝对网址」于「网址」）接『"><link rel="alternate" hreflang="zh-Hans" href="』接（「绝对网址」于「汉页」）
+　接『"><link rel="alternate" hreflang="lzh" href="』接（「绝对网址」于「文页」）
+　接『"><link rel="stylesheet" href="/共用/主题.css"><link rel="stylesheet" href="/资源/技术文档.css"><script type="module" src="/共用/界面应用/自动启动.mjs"></script><script type="module" src="/资源/技术文档.mjs"></script></head>』
+　接「提行字」接『<body>』接「提行字」接『<div data-yuyan-site="knowledge" data-home="/文档/" data-han-page="』接「汉页」接『" data-wen-page="』接「文页」
+　接『"></div>』接「提行字」接『<div class="技术框架" data-doc-lang="』接「语」接『">』接「提行字」接『<aside class="技术侧栏">』接「提行字」
+　接『<a class="文档标识" href="』接「总览址」接『">』接（「其择」于『语言技术之文』于『语言技术文档』）接『</a>』接「提行字」
+　接『<div class="文档搜索" role="search"><label for="文档检索">』接（「其择」于『检索技术之文』于『搜索技术文档』）
+　接『</label><div><input id="文档检索" type="search" maxlength="100" placeholder="』接（「其择」于『名称、规则、接口符号』于『关键字、规则编号、接口符号』）
+　接『" autocomplete="off" aria-controls="文档结果"><button id="提交检索" type="button">』接（「其择」于『寻』于『搜索』）接『</button></div></div>』
+　接「提行字」接『<noscript><p>』接（「其择」于『检索须启 JavaScript；篇目正文仍可阅。』于『搜索需要 JavaScript。章节与正文可直接阅读。』）接『</p></noscript>』
+　接「提行字」接『<details class="文档章节" open><summary>』接（「其择」于『诸篇』于『章节目录』）接『</summary><nav aria-label="技术文档章节">』接「提行字」
+　接『<a href="』接「总览址」接『" 』接（若「文同」于「本篇」于『』则『aria-current="page"』否则『』）接『>』接（「其择」于『总览』于『文档总览』）接『</a>』
+　接（「侧栏篇目」于「文言」于「语」于「本篇」于「篇目们」）接『</nav></details>』接「提行字」接『<p class="侧栏基线">』
+　接（「其择」于『规范所据』于『规范基线』）接『<br><a href="https://github.com/yuyan-lang/yuyan/tree/』接「规范基线」接『"><code>4cdeca1</code></a></p>』
+　接「提行字」接『</aside>』接「提行字」接『<main id="正文" class="技术主栏">』接「提行字」
+　接『<section class="搜索结果" id="文档结果" hidden aria-label="文档搜索结果"><div class="结果标题"><h2>』接（「其择」于『检索所得』于『搜索结果』）
+　接『</h2><button id="关闭检索" type="button">』接（「其择」于『返于正文』于『返回正文』）
+　接『</button></div><p id="检索状态" role="status" aria-live="polite"></p><ol id="检索列表"></ol></section>』接「提行字」
+　接『<div class="技术阅读" id="技术阅读"><div class="阅读栏">』接「提行字」接『<p class="文档眉题">豫言 / 技术规范</p>』接「提行字」接「提示」接「提行字」
+　接『<article class="技术正文" data-原文>』接「正文网页」接『</article>』接「提行字」接「出处」接「提行字」接『<nav class="技术翻篇" aria-label="章节翻页">』
+　接（「翻篇」于「语」于「本篇」于「篇目们」）接『</nav>』接「提行字」接『</div><aside class="技术页内" hidden><strong>』
+　接（「其择」于『本篇之目』于『本篇目录』）接『</strong><nav id="页内目录" aria-label="本篇目录"></nav></aside></div>』接「提行字」接『</main></div>』
+　接「提行字」接（「站点导航」于「篇目们」）接『<footer class="豫页脚"><span>』接（「其择」于『豫言编程语言 · 技术之文』于『豫言编程语言 · 技术文档』）
+　接『</span><nav><a href="』接「汉页」接『?lang=han">汉语</a><a href="』接「文页」
+　接『?lang=wen">文言</a><a href="https://github.com/yuyan-lang/yuyan/issues">』接（「其择」于『报误』于『文档纠错』）接『</a></nav></footer>』接「提行字」
+　接『</body></html>』接「提行字」
+也。
+
+「：汉语：重定向布局（原 _layouts/重定向.html）：旧地址跳到新地址。
+　　文言：迁址之版（原 _layouts/重定向.html）。：」
+「重定向布局」乃化「前言」为「文」者也。
+「重定向布局」者得「页前言」而
+　令「新址」为「前言取」于「页前言」于『target』而
+　『<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="canonical" href="』
+　接（「绝对网址」于「新址」）接『"><meta http-equiv="refresh" content="0;url=』接「新址」
+　接『"><title>文档地址已更新 · 豫言</title></head><body><p>文档地址已更新。<a href="』接「新址」接『">前往新地址 / 往新址</a></p></body></html>』接「提行字」
+也。
