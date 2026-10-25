@@ -1,0 +1,11 @@
+/* 文言：诸色皆标豫言词类。汉语：官网示例使用豫言高亮库的词元类别。 */
+.代码册 .tok-comment,.示例正文 .tok-comment{color:#77857d}
+.代码册 .tok-string,.示例正文 .tok-string{color:#287044}
+.代码册 .tok-structure,.示例正文 .tok-structure{color:#a83d5e;font-weight:650}
+.代码册 .tok-type,.示例正文 .tok-type{color:#0067a3}
+.代码册 .tok-keyword,.示例正文 .tok-keyword{color:#7048b5}
+.代码册 .tok-number,.示例正文 .tok-number{color:#0b6e75}
+.代码册 .tok-builtin,.示例正文 .tok-builtin{color:#8b3f84}
+.代码册 .tok-label,.示例正文 .tok-label{color:#b54708}
+.代码册 .tok-identifier,.示例正文 .tok-identifier{color:#343c3a}
+.代码册 .tok-punctuation,.示例正文 .tok-punctuation{color:#7b817d}

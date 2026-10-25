@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 440" role="img" aria-labelledby="图题 图说">
+  <!-- 古曰：一程序经统约而达诸境。今释：同一豫言 Wasm 应用通过豫言操作系统接口连接六类宿主。 -->
+  <title id="图题">豫言操作系统跨平台架构</title>
+  <desc id="图说">豫言应用 .wasm 通过豫言操作系统的统一程序模型与系统接口，运行于硬件或 QEMU、Windows、macOS、Linux、浏览器和 CF Worker。</desc>
+  <rect x="1" y="1" width="998" height="438" rx="7" fill="#fffefa" stroke="#ddd4c5" stroke-width="2"/>
+  <rect x="318" y="30" width="364" height="70" rx="5" fill="#ffffff" stroke="#c9bca9" stroke-width="2"/>
+  <text x="500" y="75" text-anchor="middle" fill="#24332a" font-family="'Noto Sans CJK SC','PingFang SC','Microsoft YaHei',sans-serif" font-size="28" font-weight="600">豫言应用 <tspan font-family="monospace" font-size="24">.wasm</tspan></text>
+  <path d="M500 101V142" fill="none" stroke="#9d4a3c" stroke-width="3"/>
+  <path d="M491 135L500 146L509 135" fill="none" stroke="#9d4a3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="238" y="151" width="524" height="104" rx="5" fill="#f6f0e7" stroke="#9d4a3c" stroke-width="2"/>
+  <text x="500" y="198" text-anchor="middle" fill="#843c32" font-family="'Noto Sans CJK SC','PingFang SC','Microsoft YaHei',sans-serif" font-size="30" font-weight="600">豫言操作系统</text>
+  <text x="500" y="230" text-anchor="middle" fill="#455348" font-family="'Noto Sans CJK SC','PingFang SC','Microsoft YaHei',sans-serif" font-size="20">统一程序模型与系统接口</text>
+  <path d="M500 256V300" fill="none" stroke="#9d4a3c" stroke-width="3"/>
+  <path d="M491 293L500 304L509 293" fill="none" stroke="#9d4a3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="#ffffff" stroke="#c9bca9" stroke-width="2">
+    <rect x="30" y="326" width="145" height="68" rx="4"/>
+    <rect x="189" y="326" width="145" height="68" rx="4"/>
+    <rect x="348" y="326" width="145" height="68" rx="4"/>
+    <rect x="507" y="326" width="145" height="68" rx="4"/>
+    <rect x="666" y="326" width="145" height="68" rx="4"/>
+    <rect x="825" y="326" width="145" height="68" rx="4"/>
+  </g>
+  <g text-anchor="middle" fill="#24332a" font-family="'Noto Sans CJK SC','PingFang SC','Microsoft YaHei',sans-serif" font-size="20" font-weight="500">
+    <text x="102.5" y="369" font-size="18">硬件 / QEMU</text>
+    <text x="261.5" y="369">Windows</text>
+    <text x="420.5" y="369">macOS</text>
+    <text x="579.5" y="369">Linux</text>
+    <text x="738.5" y="369">浏览器</text>
+    <text x="897.5" y="369" font-size="18">CF Worker</text>
+  </g>
+</svg>

@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700" role="img" aria-labelledby="图题 图说">
+  <!-- 「：文言：一程编为豫汇，存以树码；原生书为豫行，网页导为网页汇编。汉语：豫言程序编成豫汇、存为汇编树码；原生一侧由裸机后端写成豫行或宿主可执行文件，网页一侧导出网页汇编。：」 -->
+  <title id="图题">豫言操作系统总体架构</title>
+  <desc id="图说">豫言程序经自托管编译器编成豫汇，存为汇编树码。原生一侧由裸机后端生成机器码，写成豫行文件在豫言操作系统上运行，或写成 Mach-O、ELF、PE 在 macOS、Linux、Windows 上运行；网页一侧导出网页汇编，在浏览器与云工上运行。</desc>
+  <rect x="1" y="1" width="998" height="698" rx="7" fill="#fffefa" stroke="#ddd4c5" stroke-width="2"/>
+  <defs>
+    <marker id="箭" viewBox="0 0 12 12" refX="9" refY="6" markerWidth="9" markerHeight="9" orient="auto-start-reverse">
+      <path d="M1 1L10 6L1 11" fill="none" stroke="#9d4a3c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+  <g fill="#ffffff" stroke="#c9bca9" stroke-width="2">
+    <rect x="310" y="24" width="380" height="56" rx="5"/>
+    <rect x="250" y="106" width="500" height="60" rx="5"/>
+  </g>
+  <rect x="90" y="192" width="820" height="66" rx="5" fill="#f6f0e7" stroke="#9d4a3c" stroke-width="2"/>
+  <g font-family="'Noto Sans CJK SC','PingFang SC','Microsoft YaHei',sans-serif" text-anchor="middle">
+    <text x="500" y="59" fill="#24332a" font-size="21" font-weight="600">豫言程序（。豫）</text>
+    <text x="500" y="131" fill="#24332a" font-size="19" font-weight="600">编译器（豫言自托管）</text>
+    <text x="500" y="154" fill="#455348" font-size="14">解析 → 名称解析 → 类型检查 → 闭包转换 → 豫汇</text>
+    <text x="500" y="221" fill="#843c32" font-size="21" font-weight="600">豫汇 · 汇编树码（。树码）</text>
+    <text x="500" y="246" fill="#455348" font-size="14">执行边界 · 统一二进制表示 · 带回收的豫汇与底层豫汇</text>
+  </g>
+  <g fill="none" stroke="#9d4a3c" stroke-width="2.5" marker-end="url(#箭)">
+    <path d="M500 80V102"/>
+    <path d="M500 166V188"/>
+    <path d="M170 258V340"/>
+    <path d="M652.5 258V340"/>
+  </g>
+  <rect x="25" y="296" width="290" height="390" rx="6" fill="none" stroke="#c9bca9" stroke-width="2" stroke-dasharray="7 6"/>
+  <rect x="330" y="296" width="645" height="390" rx="6" fill="none" stroke="#9d4a3c" stroke-width="2" stroke-dasharray="7 6"/>
+  <g fill="#ffffff" stroke="#c9bca9" stroke-width="2">
+    <rect x="45" y="344" width="250" height="64" rx="4"/>
+    <rect x="45" y="438" width="250" height="60" rx="4"/>
+    <rect x="45" y="528" width="250" height="64" rx="4"/>
+    <rect x="350" y="344" width="605" height="64" rx="4"/>
+    <rect x="665" y="438" width="290" height="64" rx="4"/>
+    <rect x="350" y="528" width="290" height="64" rx="4"/>
+    <rect x="665" y="528" width="290" height="64" rx="4"/>
+  </g>
+  <rect x="350" y="438" width="290" height="64" rx="4" fill="#f6f0e7" stroke="#9d4a3c" stroke-width="2"/>
+  <g fill="none" stroke="#9d4a3c" stroke-width="2.5" marker-end="url(#箭)">
+    <path d="M170 408V434"/>
+    <path d="M170 498V524"/>
+    <path d="M495 408V434"/>
+    <path d="M810 408V434"/>
+    <path d="M495 502V524"/>
+    <path d="M810 502V524"/>
+  </g>
+  <path d="M640 494C660 512 680 518 705 524" fill="none" stroke="#9d4a3c" stroke-width="2" stroke-dasharray="5 5" marker-end="url(#箭)"/>
+  <g font-family="'Noto Sans CJK SC','PingFang SC','Microsoft YaHei',sans-serif" text-anchor="middle">
+    <text x="170" y="372" fill="#24332a" font-size="19" font-weight="600">网页汇编（.wasm）</text>
+    <text x="170" y="396" fill="#455348" font-size="13">由豫汇导出 · 与汇编树码一一对应</text>
+    <text x="170" y="463" fill="#24332a" font-size="17" font-weight="600">宿主胶水</text>
+    <text x="170" y="486" fill="#455348" font-size="13">浏览器接口 · Worker 接口</text>
+    <text x="170" y="556" fill="#24332a" font-size="18" font-weight="600">浏览器 · 云工</text>
+    <text x="170" y="580" fill="#455348" font-size="13">JS 引擎执行</text>
+    <text x="170" y="664" fill="#843c32" font-size="16" font-weight="600">网页：浏览器与云工两个后端</text>
+    <text x="652.5" y="372" fill="#24332a" font-size="19" font-weight="600">裸机后端（豫言写成）</text>
+    <text x="652.5" y="396" fill="#455348" font-size="14">预编二 · 寄存器降级（ARM64 · AMD64）· 写出器</text>
+    <text x="495" y="465" fill="#843c32" font-size="19" font-weight="600">豫行（。豫行）</text>
+    <text x="495" y="489" fill="#455348" font-size="13">程序 · 工具 · 开机程序 · 装载单元</text>
+    <text x="810" y="465" fill="#24332a" font-size="18" font-weight="600">宿主可执行文件</text>
+    <text x="810" y="489" fill="#455348" font-size="13">Mach-O · ELF · PE，编译器直出</text>
+    <text x="495" y="556" fill="#24332a" font-size="18" font-weight="600">豫言操作系统</text>
+    <text x="495" y="580" fill="#455348" font-size="13">豫言内核 · 驱动 · ext4 · 网络 · 壳与桌面</text>
+    <text x="810" y="556" fill="#24332a" font-size="18" font-weight="600">macOS · Linux · Windows</text>
+    <text x="810" y="580" fill="#455348" font-size="13">libSystem · 系统调用 · kernel32</text>
+    <text x="810" y="614" fill="#455348" font-size="12">虚线：以后经启动器运行同一个豫行（提案 00021）</text>
+    <text x="652.5" y="638" fill="#455348" font-size="13">执行器（客体二号）随程序编入：回收 · 原语 · 底层接口</text>
+    <text x="652.5" y="664" fill="#843c32" font-size="16" font-weight="600">原生：豫言直接生成机器码与可执行文件</text>
+  </g>
+</svg>
