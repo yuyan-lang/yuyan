@@ -1,6 +1,6 @@
-「：汉语：通称苹手柄原语（macOS controller primitives）。手柄原语在林檎上的实现（2026-10-24，议题 557）：第一次用到时 dlopen 系统的 GameController 框架，经 Objective-C 运行时取 `GCController` 类与三十二个选择子，再按 `GCExtendedGamepad` 的按钮、扳机与摇杆读当前状态。按钮读 `pressed`（按着一千、松开零），扳机与摇杆读 `value`（零至一、负一至一），经键值编码（`valueForKey:` 取 `value`、`doubleValue`）转成双精度，乘一千截断成千分整数，摇杆中心六十千分以内按零报。控制器数组每次都重取 `[GCController controllers]`，热插拔靠比较名字判断，没有连接与断开通知（通知要往客体的回调里走，留待后续版本）。振动用 GCHaptics 需要回调块，这一版答无振动能力。对象与类指针放在原生槽区 3000 起，旧名字快照放在手区 10240 起（三十二个名字，每个三十二字节）。
-　　文言：苹之手柄原语：初用时 dlopen 林檎之 GameController，经 Objective-C 之运行时取 GCController 之类与三十二选择子，乃依 GCExtendedGamepad 之钮、弩与枢读今状。钮读 pressed（按则一千、松则零），弩枢读 value（零至一、负一至一），经键值编码取双精，乘千截为千分；枢心六十千分以内报零。控制器之组每取之，接拔依名比较而判，无接断之通知（通知须入客之回，俟后版）。振用 GCHaptics 须回调之块，本版答无其能。物与类之指针居原生槽区三千起，旧名之快照居手区一万零二百四十起（三十二名，各三十二字）。
-　　赋曰：林檎有器，执柄者谁？假框架以问，循消息而窥。类取诸运行时，选登于槽府；钮报其压，枢呈其数。双精乘千，中心守静；接拔无书，重扫其名。振阙其能，留待后成；手区有籍，旧名可征。：」
+「：汉语：通称苹手柄原语（macOS controller primitives）。手柄原语在林檎上的实现（2026-10-24，议题 557）：第一次用到时 dlopen 系统的 GameController 框架，经 Objective-C 运行时取 `GCController` 类与三十七个选择子，再按 `GCExtendedGamepad` 的按钮、扳机与摇杆读当前状态。按钮读 `pressed`（按着一千、松开零），扳机与摇杆读 `value`（零至一、负一至一），经键值编码（`valueForKey:` 取 `value`、`doubleValue`）转成双精度，乘一千截断成千分整数，摇杆中心六十千分以内按零报。控制器数组每次都重取 `[GCController controllers]`，热插拔靠比较名字判断，没有连接与断开通知（通知要往客体的回调里走，留待后续版本）。振动用 GCHaptics：取控制器的 `haptics`、造并启 GCHapticEngine，再把按强弱与时长档选出的 AHAP 模式数据交给 `playPatternFromData:`。对象与类指针放在原生槽区 3000 起，旧名字快照放在手区 10240 起（三十二个名字，每个三十二字节）。
+　　文言：苹之手柄原语：初用时 dlopen 林檎之 GameController，经 Objective-C 之运行时取 GCController 之类与三十七选择子，乃依 GCExtendedGamepad 之钮、弩与枢读今状。钮读 pressed（按则一千、松则零），弩枢读 value（零至一、负一至一），经键值编码取双精，乘千截为千分；枢心六十千分以内报零。控制器之组每取之，接拔依名比较而判，无接断之通知（通知须入客之回，俟后版）。振用 GCHaptics：取控制器之 haptics，造而启 GCHapticEngine，以依强弱与久档选得之 AHAP 模式之数付 playPatternFromData:。物与类之指针居原生槽区三千起，旧名之快照居手区一万零二百四十起（三十二名，各三十二字）。
+　　赋曰：林檎有器，执柄者谁？假框架以问，循消息而窥。类取诸运行时，选登于槽府；钮报其压，枢呈其数。双精乘千，中心守静；接拔无书，重扫其名。振假触觉，档分强弱；手区有籍，旧名可征。：」
 寻观「磐石」之书。
 寻观「客体二号」之「布局」之书。
 寻观「客体二号」之「基础」之书。
@@ -12,7 +12,7 @@
 寻观「客体二号」之「平台」之书。
 寻「客体二号」之「平台接口」之「林檎」之书。
 
-「：汉语：原生槽区的槽号：3000 动态库句柄、3001 GCController 类、3002 至 3033 选择子、3034 NSString 类、3035 键名字串、3036 初始化状态（零未试、一失败、二可用）、3037 控制器数组、3038 手柄、3039 手柄面、3040 临时对象、3041 临时数、3042 出槽、3043 自动释放池、3044 临时浮槽。选择子依次是 controllers、count、objectAtIndex:、extendedGamepad、vendorName、buttonA、buttonB、buttonX、buttonY、leftShoulder、rightShoulder、leftTrigger、rightTrigger、buttonMenu、buttonOptions、buttonHome、leftThumbstick、rightThumbstick、xAxis、yAxis、button、dpad、up、down、left、right、pressed、respondsToSelector:、valueForKey:、doubleValue、stringWithUTF8String:、getCString:maxLength:encoding:。
+「：汉语：原生槽区的槽号：3000 动态库句柄、3001 GCController 类、3002 至 3038 选择子、3039 NSString 类、3040 键名字串、3041 初始化状态（零未试、一失败、二可用）、3042 控制器数组、3043 手柄、3044 手柄面、3045 临时对象、3046 临时数、3047 出槽、3048 自动释放池、3049 临时浮槽。选择子依次是 controllers、count、objectAtIndex:、extendedGamepad、vendorName、buttonA、buttonB、buttonX、buttonY、leftShoulder、rightShoulder、leftTrigger、rightTrigger、buttonMenu、buttonOptions、buttonHome、leftThumbstick、rightThumbstick、xAxis、yAxis、button、dpad、up、down、left、right、pressed、respondsToSelector:、valueForKey:、doubleValue、stringWithUTF8String:、getCString:maxLength:encoding:、haptics、createEngineWithLocality:、startAndReturnError:、playPatternFromData:、dataUsingEncoding:。
 　　文言：原生槽之号：三千为库柄、三千零一为 GCController 类、三千零二至三千零三十三为选择子、三千零三十四为 NSString 类、三千零三十五为键名之串、三千零三十六为初态（零未试、一败、二可用）、后诸槽为组、柄、面、临时之物、数、出、池与浮槽。：」
 「苹首槽库」者「三零零零」也。
 
@@ -20,29 +20,29 @@
 
 「苹首选起」者「三零零二」也。
 
-「苹首选数」者「三二」也。
+「苹首选数」者「三七」也。
 
-「苹首槽串类」者「三零三四」也。
+「苹首槽串类」者「三零三九」也。
 
-「苹首槽键」者「三零三五」也。
+「苹首槽键」者「三零四零」也。
 
-「苹首槽态」者「三零三六」也。
+「苹首槽态」者「三零四一」也。
 
-「苹首槽组」者「三零三七」也。
+「苹首槽组」者「三零四二」也。
 
-「苹首槽柄」者「三零三八」也。
+「苹首槽柄」者「三零四三」也。
 
-「苹首槽面」者「三零三九」也。
+「苹首槽面」者「三零四四」也。
 
-「苹首槽物」者「三零四零」也。
+「苹首槽物」者「三零四五」也。
 
-「苹首槽数」者「三零四一」也。
+「苹首槽数」者「三零四六」也。
 
-「苹首槽出」者「三零四二」也。
+「苹首槽出」者「三零四七」也。
 
-「苹首槽池」者「三零四三」也。
+「苹首槽池」者「三零四八」也。
 
-「苹首槽临」者「三零四四」也。
+「苹首槽临」者「三零四九」也。
 
 「：汉语：旧名字快照在手区里的位置：快照从手区 10240 起，三十二个名字每个三十二字节；旧数在 11264，当前读到的名字缓在 11268（三十二字节）。
 　　文言：旧名快照居手区之位：自手区一万零二百四十起，三十二名各三十二字；旧数在一万一千二百六十四，今读之名缓在一万一千二百六十八。：」
@@ -148,6 +148,11 @@
 　　　（「苹取选」于「出槽」曰（「苹选槽」于「二九」）于「名址」曰（「静态文」于『doubleValue』））而后
 　　　（「苹取选」于「出槽」曰（「苹选槽」于「三零」）于「名址」曰（「静态文」于『stringWithUTF8String:』））而后
 　　　（「苹取选」于「出槽」曰（「苹选槽」于「三一」）于「名址」曰（「静态文」于『getCString:maxLength:encoding:』））而后
+　　　（「苹取选」于「出槽」曰（「苹选槽」于「三二」）于「名址」曰（「静态文」于『haptics』））而后
+　　　（「苹取选」于「出槽」曰（「苹选槽」于「三三」）于「名址」曰（「静态文」于『createEngineWithLocality:』））而后
+　　　（「苹取选」于「出槽」曰（「苹选槽」于「三四」）于「名址」曰（「静态文」于『startAndReturnError:』））而后
+　　　（「苹取选」于「出槽」曰（「苹选槽」于「三五」）于「名址」曰（「静态文」于『playPatternFromData:』））而后
+　　　（「苹取选」于「出槽」曰（「苹选槽」于「三六」）于「名址」曰（「静态文」于『dataUsingEncoding:』））而后
 　　　（
 　　　　若「槽空」于（「原生槽」于「苹首槽类」）则
 　　　　　（（「写四」于（「原生槽」于「苹首槽态」）于「一」）而后
@@ -517,12 +522,114 @@
 　）
 也。
 
-「：汉语：279 手柄振动：序号越界或没有这个控制器答资源已失效（三）；柄在而这一版还没有触觉能力，答二。GCHaptics 的播放要 GCController.haptics 取到触觉对象，再经 createEngineWithLocality: 造 GCHapticEngine、startAndReturnError: 启引擎（带 NSError 出参），最后 playPatternFromData: 送一段 AHAP 模式数据；引擎的生灭与模式数据都要另写一层，留待后续版本。
-　　文言：二百七十九，手柄之振：林檎此版答无其能（二）。GCHaptics 须取触觉之物，造引擎而启之（携误之出参），又以 AHAP 模式之数播之；引擎生灭与模式之数皆须别为一层，俟之后版。：」
+「：汉语：AHAP 模式数据的地址：强档（零至三）与长档（零短、一长）共八条静态 JSON，强度自零点二至零点八、时长零点一秒或零点三秒。底层模式拼不了动态 JSON，故按档取预置的串；强弱与时长都折成档。待办事项：底层补上动态字节串拼接后改成按真实强度与时长生成 JSON。
+　　文言：AHAP 模式之数之址：强档四、长档二，共八条静态 JSON，强自零点二至零点八，久零点一秒或零点三秒。底模不能拼动态之 JSON，故依档取预置之串。：」
+「苹触谱」乃化「强档」曰「整数」又化「长档」曰「整数」为「整数」者也。
+「苹触谱」者得「强档」曰「强档」又得「长档」曰「长档」而
+　若「强档」等于「零」则（
+　　若「长档」等于「零」则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.2},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.1}]}』）
+　　否则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.2},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.3}]}』）
+　）否则若「强档」等于「一」则（
+　　若「长档」等于「零」则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.4},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.1}]}』）
+　　否则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.4},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.3}]}』）
+　）否则若「强档」等于「二」则（
+　　若「长档」等于「零」则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.6},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.1}]}』）
+　　否则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.6},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.3}]}』）
+　）否则（
+　　若「长档」等于「零」则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.8},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.1}]}』）
+　　否则
+　　　（「静态文」于『{"Version":1,"Pattern":[{"Type":"HapticContinuous","EventParameters":[{"ParameterID":"HapticIntensity","ParameterValue":0.8},{"ParameterID":"HapticSharpness","ParameterValue":0.5}],"Time":0.0,"EventDuration":0.3}]}』）
+　）
+也。
+
+「：汉语：强档：强、弱两马达的千分强度取平均后分四档：二百五十以下为零，五百以下为一，七百五十以下为二，其余为三。
+　　文言：强档：强弱二值取中而分四档。：」
+「苹强档」乃化「强」曰「整数」又化「弱」曰「整数」为「整数」者也。
+「苹强档」者得「强」曰「强」又得「弱」曰「弱」而
+　令「中」为（「无号除」于（（「苹夹千」于「千」曰「强」）加（「苹夹千」于「千」曰「弱」））于「二」）而
+　若「中」小于「二五零」则「零」否则若「中」小于「五零零」则「一」否则若「中」小于「七五零」则「二」否则「三」
+也。
+
+「：汉语：长档：时长一百五十毫秒以内为零（零点一秒），更长为三（零点三秒）。
+　　文言：长档：百五十毫以内为零，余为三。：」
+「苹长档」乃化「毫」曰「整数」为「整数」者也。
+「苹长档」者得「毫」曰「毫」而
+　若「毫」小于「一五一」则「零」否则「三」
+也。
+
+「：汉语：发一次振动：取触觉对象、造并启 GCHapticEngine、把 AHAP 模式交给 playPatternFromData:。返回零为已发，二为没有触觉能力或引擎启不动，三为手柄不在。强弱皆零时直接答已发（停止振动）。
+　　文言：发一振：取触觉之物，造而启引擎，以 AHAP 之模式付之。成零，无其能或引擎不启则二，柄不在则三。强弱俱零则径答已发。：」
+「苹振请」乃化「序」曰「整数」又化「强」曰「整数」又化「弱」曰「整数」又化「毫」曰「整数」为「整数」者也。
+「苹振请」者得「序」曰「序」又得「强」曰「强」又得「弱」曰「弱」又得「毫」曰「毫」而
+　若（「强」等于「零」）且（「弱」等于「零」）则
+　　「零」
+　否则（
+　　令「柄」为（「苹发整」于（「原生槽」于「苹首槽组」）于（「苹选槽」于「二」）于「序」于「苹首槽柄」）而
+　　若「槽空」于（「原生槽」于「苹首槽柄」）则
+　　　「三」
+　　否则（
+　　　令「触」为（「苹发」于（「原生槽」于「苹首槽柄」）于（「苹选槽」于「三二」）于「苹首槽物」）而
+　　　若「槽空」于（「原生槽」于「苹首槽物」）则
+　　　　「二」
+　　　否则（
+　　　　令「无甲」为
+　　　　　（「林檎」之「消息址参」
+　　　　　　于（「原生槽」于「苹首槽键」）
+　　　　　　于（「原生槽」于「苹首槽串类」）
+　　　　　　于（「原生槽」于（「苹选槽」于「三零」））
+　　　　　　于（「静态文」于『GCHapticObjectLocalityDefault』））而
+　　　　令「无乙」为（「苹发槽」于（「原生槽」于「苹首槽物」）于（「苹选槽」于「三三」）于（「原生槽」于「苹首槽键」）于「苹首槽池」）而
+　　　　若「槽空」于（「原生槽」于「苹首槽池」）则
+　　　　　「二」
+　　　　否则（
+　　　　　令「无丙」为（「苹发整」于（「原生槽」于「苹首槽池」）于（「苹选槽」于「三四」）于「零」于「苹首槽出」）而
+　　　　　若（（「交爻」于（「读四」于（「原生槽」于「苹首槽出」））于「二五五」）等于「零」）则
+　　　　　　「二」
+　　　　　否则（
+　　　　　　令「无丁」为
+　　　　　　　（「林檎」之「消息址参」
+　　　　　　　　于（「原生槽」于「苹首槽键」）
+　　　　　　　　于（「原生槽」于「苹首槽串类」）
+　　　　　　　　于（「原生槽」于（「苹选槽」于「三零」））
+　　　　　　　　于（「苹触谱」于「强档」曰（「苹强档」于「强」曰「强」于「弱」曰「弱」）于「长档」曰（「苹长档」于「毫」曰「毫」）））而
+　　　　　　若「槽空」于（「原生槽」于「苹首槽键」）则
+　　　　　　　「二」
+　　　　　　否则（
+　　　　　　　令「无戊」为（「苹发整」于（「原生槽」于「苹首槽键」）于（「苹选槽」于「三六」）于「四」于「苹首槽数」）而
+　　　　　　　若「槽空」于（「原生槽」于「苹首槽数」）则
+　　　　　　　　「二」
+　　　　　　　否则（
+　　　　　　　　令「无己」为（「苹发槽」于（「原生槽」于「苹首槽池」）于（「苹选槽」于「三五」）于（「原生槽」于「苹首槽数」）于「苹首槽出」）而
+　　　　　　　　「零」
+　　　　　　　）
+　　　　　　）
+　　　　　）
+　　　　）
+　　　）
+　　）
+　）
+也。
+
+「：汉语：279 手柄振动：序号越界或没有这个控制器答资源已失效（三）；柄在则取 haptics、造并启 GCHapticEngine、把按强度与时长档选出的 AHAP 模式交给 playPatternFromData:，成功答零，没有触觉能力或引擎启不动答二。
+　　文言：二百七十九，手柄之振：序越界或无其柄则三；柄在则取触觉之物，造启引擎，以依档选得之 AHAP 模式付之，成零，无其能或引擎不启则二。：」
 「苹手振」乃化「参」曰「整数」为「整数」者也。
 「苹手振」者得「参」曰「参」而
 　令「序」为（「参整」于「参」于「零」）而
-　若（（非（「有号不小于」于「序」于「零」））或（「有号不小于」于「序」于（「苹手数」于「元」）））则「装箱整」于「三」否则「装箱整」于「二」
+　若（（非（「有号不小于」于「序」于「零」））或（「有号不小于」于「序」于（「苹手数」于「元」）））则
+　　「装箱整」于「三」
+　否则
+　　（「装箱整」于（「苹振请」
+　　　于「序」曰「序」
+　　　于「强」曰（「参整」于「参」于「一」）
+　　　于「弱」曰（「参整」于「参」于「二」）
+　　　于「毫」曰（「参整」于「参」于「三」）））
 也。
 
 「：汉语：275 取手柄名：读第 序 个控制器的 vendorName，成功返回文，越界或没有名字返回空串。

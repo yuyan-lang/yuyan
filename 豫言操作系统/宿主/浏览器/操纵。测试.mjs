@@ -5,26 +5,34 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {创建手柄能力} from './操纵.mjs';
 
-// 文言：造一伪柄：钮值依序、首枢四分之一负、有振动之器。汉语：造一个假手柄：按钮值按序给、第一个轴为负四分之一、带振动执行器。
-const 造柄 = (号, 名, 振能 = true) => ({
-  index: 号,
-  id: 名,
-  connected: true,
-  mapping: 'standard',
-  buttons: [
-    {pressed: true, value: 1},
-    {pressed: false, value: 0},
-    {pressed: false, value: 0},
-    {pressed: false, value: 0},
-    {pressed: false, value: 0},
-    {pressed: false, value: 0},
-    {pressed: true, value: 0.5},
-    {pressed: false, value: 0},
-    ...Array.from({length: 9}, () => ({pressed: false, value: 0})),
-  ],
-  axes: [-0.25, 0.5, 0, 0],
-  ...(振能 ? {vibrationActuator: {playEffect: () => Promise.resolve('complete')}} : {}),
-});
+// 文言：造一伪柄：钮值依序、首枢四分之一负、有振动之器；振动之器记末次之请。汉语：造一个假手柄：按钮值按序给、第一个轴为负四分之一、带振动执行器；执行器把最后一次请求记在柄上。
+const 造柄 = (号, 名, 振能 = true) => {
+  const 柄 = {
+    index: 号,
+    id: 名,
+    connected: true,
+    mapping: 'standard',
+    buttons: [
+      {pressed: true, value: 1},
+      {pressed: false, value: 0},
+      {pressed: false, value: 0},
+      {pressed: false, value: 0},
+      {pressed: false, value: 0},
+      {pressed: false, value: 0},
+      {pressed: true, value: 0.5},
+      {pressed: false, value: 0},
+      ...Array.from({length: 9}, () => ({pressed: false, value: 0})),
+    ],
+    axes: [-0.25, 0.5, 0, 0],
+  };
+  if (振能) {
+    柄.vibrationActuator = {
+      playEffect: (种, 参) => { 柄.末振 = {种, 参}; return Promise.resolve('complete'); },
+      reset: () => { 柄.末振 = null; },
+    };
+  }
+  return 柄;
+};
 
 const 造全局 = () => {
   const 听 = new Map();
@@ -52,8 +60,14 @@ test('有手柄时读状态与名字', () => {
   assert.deepEqual(能力.枢列(0), [-250, 500, 0, 0]);
   assert.equal(能力.连(0), true);
   assert.deepEqual(能力.候(100), [0, '', 0]);
-  assert.equal(能力.振(0, 500, 200), 0);
-  assert.equal(能力.振(9, 500, 200), 3);
+  assert.equal(能力.振(0, 500, 250, 200), 0);
+  assert.equal(柄.末振.种, 'dual-rumble');
+  assert.equal(柄.末振.参.strongMagnitude, 0.5);
+  assert.equal(柄.末振.参.weakMagnitude, 0.25);
+  assert.equal(柄.末振.参.duration, 200);
+  assert.equal(能力.振(0, 0, 0, 200), 0);
+  assert.equal(柄.末振, null);
+  assert.equal(能力.振(9, 500, 250, 200), 3);
 });
 
 test('接拔事件进队列', () => {
@@ -78,12 +92,12 @@ test('没有手柄接口时答不支持', () => {
   const 能力 = 创建手柄能力({}, 造全局());
   assert.equal(能力.数(), -1);
   assert.deepEqual(能力.候(0), [3, '', 0]);
-  assert.equal(能力.振(0, 500, 200), 3);
+  assert.equal(能力.振(0, 500, 250, 200), 3);
   assert.equal(能力.名(0), '');
 });
 
 test('没有振动能力的手柄答二', () => {
   const 柄 = 造柄(0, '无振柄', false);
   const 能力 = 创建手柄能力({getGamepads: () => [柄]}, 造全局());
-  assert.equal(能力.振(0, 500, 200), 2);
+  assert.equal(能力.振(0, 500, 250, 200), 2);
 });
