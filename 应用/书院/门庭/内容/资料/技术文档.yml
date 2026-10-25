@@ -54,6 +54,11 @@
   wen_group: 语言
   summary: 列表定义域的合法性检查、闭合元素规范值与附加比较。
   wen_summary: 列表定义域之合法之验、闭合元素之规范值与附加之较。
+- name: 问簿
+  group: 语言
+  wen_group: 语言
+  summary: 问簿（SQL）的表与查询写成普通豫言：行谱的合成时机、行类型、栏与编解码，取径补值的规则。
+  wen_summary: 问簿之表与问书为常豫言：行谱合成之时、行类、栏与编解码，取径补值之则。
 - name: 执行与编译
   group: 实现
   wen_group: 实现
