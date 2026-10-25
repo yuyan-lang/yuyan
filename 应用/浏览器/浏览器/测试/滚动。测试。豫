@@ -6,6 +6,7 @@
 寻「豫章」之「形制」之「分厘」之书。
 寻「豫章」之「形制」之「筹算」之书。
 寻观「篇象」之书。
+寻观「驿址」之「编码」之书。
 寻观「接引」之书。
 寻观「装帧」之书。
 寻观「章法」之书。
@@ -23,10 +24,16 @@
 
 「：汉语：测试页：body 无边距；外层高三百、溢出自动，内容为高二百的空块、高一百的内层（宽六百，比外层窄，免得内层的条与外层的条叠在一处；内容高四百，内有一段文字供指针命中）与高八百的空块；根视口不多出内容，免得根视口的滚动条遮住内层的条。各块都带背景，看得见层次。
 　　文言：试页：身无外距；外层高三百、溢出自如，内容为高二百之空块、高一百之内层（广六百，窄于外层，免内层之条与外层之条相叠；内容高四百，内有一段文字以供指命）与高八百之空块；根视口不复多出内容，免根视口之条掩内层之条。诸块皆带地色，层次可见。：」
-「滚试址」乃「文」也。
-「滚试址」者
-　『data:text/html;charset=UTF-8,<html><head><title></title></head><body style="margin:0;background:silver"><div id="outer" style="height:300px;overflow:auto;background:lightgray"><div style="height:200px;background:darkgray"></div><div id="inner" style="height:100px;width:600px;overflow:auto;background:gray"><div style="height:400px;background:dimgray"><div style="height:50px"></div>xxxxxxxxxx</div></div><div style="height:800px;background:darkgray"></div></div></body></html>』
+「：汉语：测试页的载荷（HTML 正文，不含 data 网址头）。：」
+「滚试载荷」乃「文」也。
+「滚试载荷」者
+　『<html><head><title></title></head><body style="margin:0;background:silver"><div id="outer" style="height:300px;overflow:auto;background:lightgray"><div style="height:200px;background:darkgray"></div><div id="inner" style="height:100px;width:600px;overflow:auto;background:gray"><div style="height:400px;background:dimgray"><div style="height:50px"></div>xxxxxxxxxx</div></div><div style="height:800px;background:darkgray"></div></div></body></html>』
 也。
+
+「：汉语：测试页的地址：data: 网址，载荷先作百分号编码（组件集），网址里不留空格、引号、尖括号、分号与逗号。社区容器里曾因网址带原始字符报“网址无法解析”（议题 624），编码后与解析器对原始字符的宽严无关。
+　　文言：试页之址：data: 之址，载荷先作百分号编码（组件之集），址中不留空格、引号、尖括、分号与逗号。社区之器曾因址带原始之字报“网址无法解析”（议六百二十四），既编则与析器之宽严无涉。：」
+「滚试址」乃「文」也。
+「滚试址」者『data:text/html;charset=UTF-8,』接（「编部件」于「滚试载荷」于「七」）也。
 
 「：汉语：通称滚动借模（model with test page）。导航到测试页并返回载好页面的模型；载入失败时报祸。
 　　文言：借模者，航于试页而还其载页之模；不成则告祸。：」
@@ -213,7 +220,9 @@
 　　　或有「可无」则「可无」以「浏览器模型」
 　　　或有（「可有」于「其点」）则（「浏览器滚动条按下」于「模三甲」于「横」曰（「其点」中「零」）于「纵」曰（「其点」中「一」））而
 　令「拖态」为「浏览器条拖检」于「元」而
-　「滚试断言」于（非（「文同」于「拖态」于『无』））于（『滚动测试：按在滑块上应开始拖动，检=』接「拖态」接『 柄点=』接（「滚试点检」于「柄点」）接『 差=』接（「滚试差」于「页三」））而后
+　「滚试断言」
+　　于（非（「文同」于「拖态」于『无』））
+　　于（『滚动测试：按在滑块上应开始拖动，检=』接「拖态」接『 柄点=』接（「滚试点检」于「柄点」）接『 差=』接（「滚试差」于「页三」））而后
 　令「无」为「写匣」于「成」于（（「读匣」于「成」）接（若（非（「文同」于「拖态」于『无』））则『1』否则『0』））而
 　令「无拖」为
 　　鉴「柄点」而
