@@ -771,7 +771,7 @@
 　　　　　文言：行断之档：line-break 为 loose、strict 者照用，auto、normal 与空皆依 normal（层叠样式之 auto 依文之语，本器依 normal 处）。：」
 　　　令「行断档」为「样式小写」于（「样式取值」于「样」于『line-break』）而
 　　　令「行断档」为若（「文同」于「行断档」于『loose』）或（「文同」于「行断档」于『strict』）则「行断档」否则『normal』而
-　　　「：汉语：双向：unicode-bidi 取 bidi-override 或 isolate-override 时按本盒的 direction 覆写（UAX #9 的 X6，逐字倒排）；取 embed、isolate、plaintext 时把片当作一个段落，基级按 direction 定（rtl 为一、ltr 为零）；其余（normal）沿用旧法：左起定零、右起交文字定级。
+　　　「：汉语：双向：unicode-bidi 取 bidi-override 或 isolate-override 时按本盒的 direction 覆写（UAX #9 的 X6，逐字倒排）；取 embed、isolate、plaintext 时只对行内级盒把片当作一个段落、基级按 direction 定（rtl 为一、ltr 为零），块级盒仍循旧法（块里的中立字符定级与浏览器一致，块级 embed 改了反而与参照不符）；其余（normal）沿用旧法：左起定零、右起交文字定级。
 　　　　　文言：双向：unicode-bidi 为 bidi-override 或 isolate-override 者，依本盒 direction 覆写；为 embed、isolate、plaintext 者，视片为一段，基级依 direction（rtl 一、ltr 零）；余者循旧。：」
 　　　令「双文」为「样式小写」于（「样式取值」于「样」于『unicode-bidi』）而
 　　　令「覆写向」为
@@ -784,9 +784,11 @@
 　　　　　「一」
 　　　　否则若（「文同」于「覆写向」于『ltr』）则
 　　　　　「零」
-　　　　否则若（「文同」于「双文」于『embed』）或（（「文同」于「双文」于『isolate』）或（「文同」于「双文」于『plaintext』））则（
-　　　　　若「文同」于（「样式取值」于「样」于『direction』）于『rtl』则「一」否则「零」
-　　　　）否则若「文同」于（「样式取值」于「样」于『direction』）于『rtl』则
+　　　　否则若（（（「文同」于「双文」于『embed』）或（（「文同」于「双文」于『isolate』）或（「文同」于「双文」于『plaintext』）））
+　　　　　且（「为行内显」于（「样式取值」于「样」于『display』））
+　　　　）则
+　　　　　（若「文同」于（「样式取值」于「样」于『direction』）于『rtl』则「一」否则「零」）
+　　　　否则若「文同」于（「样式取值」于「样」于『direction』）于『rtl』则
 　　　　　「负一」
 　　　　否则
 　　　　　「零」而
