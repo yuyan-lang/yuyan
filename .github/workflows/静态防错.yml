@@ -1,0 +1,67 @@
+# 文言：防错之工作流：每推 yybs 而涉静态防错之数据、曲突之包与此工作流者，以曲突（应用/百工坊/曲突）读建议之表，按所防议题之多寡列其次，依类而总，书为 Markdown 之报告，入于作业之摘要，并以之为发行页 language-feature-suggestions 之说明；页未立则立之，已立则改之。亦可以手发之。拉取之请不触发。
+# 汉语：静态防错工作流：每次推送 yybs、改到静态防错的数据、曲突包或本工作流时，用曲突（应用/百工坊/曲突，静态防错榜）读建议表，按每条建议防得住的议题数排出先后、依类汇总，写成 Markdown 报告，写进作业摘要，并把它设为发行页 language-feature-suggestions 的说明；页还没有就新建，已有就改写。也可以手动触发。拉取请求不触发。
+name: 静态防错
+
+env:
+  # 文言：起步之原生工具链包，同 main.yml：取连续版最新之 Linux x64 包，以其豫构稳定。林纳。豫行 构曲突。
+  # 汉语：起步用的原生工具链包，同 main.yml：取连续版本里最新的 Linux x64 包，用包里的 豫构稳定。林纳。豫行 构建曲突。
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-binaries/yuyan-native-linux-x64.tar.gz
+
+on:
+  push:
+    branches: [yybs]
+    paths:
+      - '持续改进目标/静态防错/**'
+      - '应用/百工坊/曲突/**'
+      - '.github/workflows/静态防错.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 文言：同分支至多一轮行、一轮候，新推代其候者；发行之页故不相争。
+# 汉语：同一分支至多一轮在跑、一轮在等，新推送替换在等的那轮；发行页因此不会互相覆盖。
+concurrency:
+  group: 静态防错-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: 静态防错榜
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 下载最新的原生工具链包
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/yuyan-native-stable.tar.gz"
+          curl --fail --location --retry 6 --retry-all-errors --retry-delay 10 \
+            --output "$archive" "$YY_NATIVE_TOOLCHAIN_URL"
+          tar -xzf "$archive"
+
+      - name: 构建曲突
+        run: ./豫构稳定。林纳。豫行 构建 曲突 --输出 曲突。林纳。豫行 -j "$(nproc)" -- --目标 本机 --执行器 执行器。树码
+
+      # 文言：读建议之表而书其报告，入于作业之摘要。
+      # 汉语：读建议表写出报告，写进作业摘要。
+      - name: 生成报告并写进作业摘要
+        run: |
+          set -euo pipefail
+          ./曲突。林纳。豫行 > "$RUNNER_TEMP/报告.md"
+          cat "$RUNNER_TEMP/报告.md" >> "$GITHUB_STEP_SUMMARY"
+
+      # 文言：发行之页未立者立之，已立者改其说明为今之报告。
+      # 汉语：发行页还没有就新建，已有就把它改写成本次的报告。
+      - name: 发布到发行版
+        run: |
+          set -euo pipefail
+          if gh release view language-feature-suggestions >/dev/null 2>&1; then
+            gh release edit language-feature-suggestions --notes-file "$RUNNER_TEMP/报告.md"
+          else
+            gh release create language-feature-suggestions --target "$GITHUB_SHA" --title 语言特性建议 --latest=false --notes-file "$RUNNER_TEMP/报告.md"
+          fi
