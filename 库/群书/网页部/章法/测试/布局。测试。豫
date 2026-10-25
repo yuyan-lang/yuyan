@@ -707,7 +707,7 @@
 　　否则
 　　　「告祸」以「有」于『折叠边框的冲突取胜、各担一半或格宽错误』而
 　令「伪页」为
-　　「析片段」于『<style>.序{display:flex;width:200px;margin:0}.序::after{content:"";width:48px;height:1px}.文::before{content:"前" attr(data-x)}.文::after{content:" 后"}.计项{counter-increment:项}.计项::before{content:counter(项) "."}#嵌::before{content:counters(a,"-")}.无::before{content:none}#伪标::marker{content:"→ "}</style><p class="序" id="伪序">01</p><span class="文" id="伪文" data-x="甲">乙</span><div style="counter-reset:项"><div class="计项" id="计一"></div><div class="计项" id="计二"></div></div><div style="counter-reset:a 0"><div style="counter-increment:a"><div id="嵌" style="counter-reset:a 5;counter-increment:a"></div></div></div><div class="无" id="伪无"></div><ul style="margin:0;padding-left:24px"><li id="伪标">丁</li></ul>』而
+　　「析片段」于『<style>.序{display:flex;width:200px;margin:0}.序::after{content:"";width:48px;height:1px}.文::before{content:"前" attr(data-x)}.文::after{content:" 后"}.计项{counter-increment:项}.计项::before{content:counter(项) "."}#嵌::before{content:counters(a,"-")}.无::before{content:none}#伪标::marker{content:"→ "}#引{quotes:"P" "S" "A" "S"}#引::before{content:"1" open-quote "2" open-quote "3" close-quote "4" close-quote "5"}#引::after{content:"a" no-open-quote "b" close-quote "c"}</style><p class="序" id="伪序">01</p><span class="文" id="伪文" data-x="甲">乙</span><div style="counter-reset:项"><div class="计项" id="计一"></div><div class="计项" id="计二"></div></div><div style="counter-reset:a 0"><div style="counter-increment:a"><div id="嵌" style="counter-reset:a 5;counter-increment:a"></div></div></div><div class="无" id="伪无"></div><ul style="margin:0;padding-left:24px"><li id="伪标">丁</li></ul><div id="引"></div>』而
 　令「伪树」为「生网页盒树」于「篇求样式」于「伪页」而
 　令「无」为
 　　「布局网页」
@@ -770,6 +770,11 @@
 　　　　　　　「元」
 　　否则
 　　　「告祸」以「有」于『伪元素内容（attr、counter、counters、none）错误』而
+　令「无」为
+　　若（「文同」于（「伪文字」于『#引』于『::before』）于『1P2A3S4S5』）且（「文同」于（「伪文字」于『#引』于『::after』）于『abSc』）则
+　　　「元」
+　　否则
+　　　「告祸」以「有」于（『伪元素引号错误：前=』接（「伪文字」于『#引』于『::before』）接『 后=』接（「伪文字」于『#引』于『::after』））而
 　令「标记串」为
 　　鉴「读匣」以（「列」于（「文」合「网页矩形」））于（（「取网页盒资料」于（「宿主盒」于『#伪标』））中「文字片段」）而
 　　　或有（「缀」于「片」于「余片」）则（「片」中「零」）
