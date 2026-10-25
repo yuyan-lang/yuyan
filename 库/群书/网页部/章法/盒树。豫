@@ -1684,6 +1684,24 @@
 　　于（「列」【『inline』，『inline-block』，『inline-table』，『inline-flex』，『inline-grid』，『ruby』】）
 也。
 
+「：汉语：通称表内显：display 取 table、table-row、table-row-group、table-header-group、table-footer-group、table-caption、table-column、table-column-group 时为阳。这类盒没有自己的行内内容，unicode-bidi 管不到格里的字（CSS 的 bidi 盒模型），解析域时跳过它们的取值。
+　　文言：表内显：display 为 table、table-row、table-row-group 之类者阳。此类之盒无自行内之文，unicode-bidi 不能及格里之字，解析域时舍其值。：」
+「表内显」乃化「文」为「爻」者也。
+「表内显」者得「显」而
+　「有一」以「文」
+　　于（得「名」而「文同」于「名」于「显」）
+　　于（「列」
+　　　【『table』
+　　　，『table-row』
+　　　，『table-row-group』
+　　　，『table-header-group』
+　　　，『table-footer-group』
+　　　，『table-caption』
+　　　，『table-column』
+　　　，『table-column-group』
+　　　】）
+也。
+
 「：汉语：通称行内覆写寻：沿父节点上走找最近的非 normal unicode-bidi；撞到块容器时用该块容器自己的取值后停下（块容器的覆写管它自己的行内内容），取不到就原样返回。
 　　文言：行内覆写寻：循父而上求最近之非 normal；遇块器则取其值而止，求之不得则还其旧。：」
 「行内覆写寻」乃化「网页样式读取器」又化（「或可有」于「篇节」）又化「计算样式」为「计算样式」者也。
@@ -1692,10 +1710,11 @@
 　　或有「可无」则「样」
 　　或有（「可有」于「上」）则
 　　　令「上文」为「样式取值」于（「读取」于「上」）于『unicode-bidi』而
-　　　若（非（「文同」于「上文」于『normal』））则
+　　　若（（非（「文同」于「上文」于『normal』））且（非（「表内显」于（「样式取值」于（「读取」于「上」）于『display』））））则
 　　　　「簿入」以「文」于「样」于『unicode-bidi』于「上文」
-　　　否则若「为行内显」于（「样式取值」于（「读取」于「上」）于『display』）则
-　　　　「行内覆写寻」于「读取」于（「读匣」以（「或可有」于「篇节」）于（（「取节资料」于「上」）中「父」））于「样」
+　　　否则若（（「文同」于「上文」于『normal』）或（「表内显」于（「样式取值」于（「读取」于「上」）于『display』）））
+　　　　且（「为行内显」于（「样式取值」于（「读取」于「上」）于『display』））则
+　　　　　「行内覆写寻」于「读取」于（「读匣」以（「或可有」于「篇节」）于（（「取节资料」于「上」）中「父」））于「样」
 　　　否则
 　　　　「样」
 也。
