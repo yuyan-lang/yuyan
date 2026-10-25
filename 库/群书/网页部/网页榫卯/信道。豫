@@ -140,6 +140,17 @@
 　　　　，『cancelable』与（「急就布尔」于「阴」）
 　　　　，『composed』与（「急就布尔」于「阴」）
 　　　　】）而
+　「：汉语：事件对象补上取消与止传三种方法（preventDefault、stopPropagation、stopImmediatePropagation）：测试框架挂错误处理器时先调 preventDefault，没有这个方法就会报“调用目标须是函数”；三样都是空操作，本实现的派发一次走完。
+　　　文言：事之物补三法（preventDefault、stopPropagation、stopImmediatePropagation）：试架挂误处之时先调 preventDefault，无此法则报“调用目标须是函数”；三事皆空作，本实现之一派一遍而毕。：」
+　令「无二」为
+　　「叠」以「文」又以「有」
+　　　于（得「法名」又得「无三」而
+　　　　令「术」为「急就新东道术」于（（得「接」又得「参」而「急就未定义」）属「急就宿主回调」）而
+　　　　「急就定义属」于「事」于（（「急就文字自串」于「法名」）与「术」与「阳」与「阳」与「阳」）而后
+　　　　「元」
+　　　）
+　　　于「元」
+　　　于（「列」【『preventDefault』，『stopPropagation』，『stopImmediatePropagation』】）而
 　「事」
 也。
 
