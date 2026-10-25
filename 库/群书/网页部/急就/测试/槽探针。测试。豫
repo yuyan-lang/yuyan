@@ -1,0 +1,36 @@
+「：汉语：通称作用域定槽冒烟测试：以几段小脚本试函数体内块级 let、内层闭包按槽读写、暂时死区与对象属性里的函数，逐段断言，失败即报出说明。守的是编译期把名字解析成层深加槽号之后、运行时按槽读写与退回按名查这两条路。
+　　文言：定槽之试：以数小篇试函数体内块级 let、内层闭包按槽读写、暂死及对象属性中之函数，逐段断言，败则缴其说。所守者，编译之期解名为层深加槽号之后，行时按槽读写与退按名查之二路也。
+　　赋曰：槽分深浅各成行，闭包拈来认得框。死区先留悬未决，名查退路不曾亡。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「急就」之「虚拟机」之书。
+寻观「急就」之「脚本值」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「试段」乃化「文」又化「文」为「有」者也。
+「试段」者得「段」又得「说明」而
+　「断言」于（「急就真值」于（「急就行脚本」于「段」））于「说明」
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　（「试段」于『let f=function(){let a=false;return a;}; f()===false;』于『块级 let 同层读』）而后
+　（「试段」于『let f=function(){let a=false;if(a)return 1;return 0;}; f()===0;』于『块级 let 同层条件』）而后
+　（「试段」于『let f=function(){let a=false;if(a)return 1;a=true;return a;}; f()===true;』于『块级 let 同层写后读』）而后
+　（「试段」于『let f=function(){let a=false;let g=function(){return a;};return g();}; f()===false;』于『内层闭包读外层块级 let』）而后
+　（「试段」于『let f=function(){let a=false;let g=function(){a=true;return a;};return g();}; f()===true;』于『内层闭包写外层块级 let』）而后
+　（「试段」于『let f=function(){ { let a=false; let g=function(){return a;}; return g(); } }; f()===false;』于『嵌套块里的 let 被内层闭包读』）而后
+　（「试段」于『let f=function(){var a=false;let g=function(){return a;};return g();}; f()===false;』于『var 走按名查』）而后
+　（「试段」于『let f=function(x){let g=function(){return x;};return g();}; f(7)===7;』于『形参走按名查』）而后
+　（「试段」
+　　于『let f=function(){let a=false;let o={next:function(){if(a)return 1;a=true;return a;}};return o.next();}; f()===true;』
+　　于『对象属性里的函数读写外层 let』）而后
+　（「试段」于『let f=function(){let a=false;try{if(a)throw 1;throw 2;}catch(e){return e===2;}}; f()===true;』于『try 与 catch 不改块级绑定』）而后
+　「书」于『作用域定槽冒烟通过』
+也。
+
+「入口」于「元」。
