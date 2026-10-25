@@ -39,6 +39,7 @@
 　，『font-synthesis-small-caps』与『auto』与「阳」
 　，『font-synthesis-position』与『auto』与「阳」
 　，『font-language-override』与『normal』与「阳」
+　，『font-palette』与『normal』与「阳」
 　，『line-height』与『normal』与「阳」
 　，『letter-spacing』与『normal』与「阳」
 　，『word-spacing』与『normal』与「阳」
