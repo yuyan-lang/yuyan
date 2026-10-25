@@ -1,0 +1,31 @@
+「：汉语：通称循环变量冒烟测试：试 for-of／for-in 头里 var 与 let 的绑定归属——var 在函数作用域里、循环体直接读与内层函数引用都不报“名称尚未初始化”，let 每轮一个新绑定、内层函数各记各的。
+　　文言：循环变量之试：试 for-of／for-in 头中 var 与 let 之所属——var 在函数之境、体中直读及内层函数引之皆不报“未初”，let 每轮一新绑、内层函数各记其一。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「急就」之「虚拟机」之书。
+寻观「急就」之「脚本值」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「试段」乃化「文」又化「文」为「有」者也。
+「试段」者得「段」又得「说明」而
+　「断言」于（「急就真值」于（「急就行脚本」于「段」））于「说明」
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　（「试段」于『let r=[];for(var x of [1,2,3]){r.push(x);}r.join()==="1,2,3";』于『for-var-of 体直读』）而后
+　（「试段」于『let r=[];for(var k in {a:1,b:2}){r.push(k);}r.join()==="a,b";』于『for-var-in 体直读』）而后
+　（「试段」于『let r=[];for(let x of [1,2,3]){r.push(x);}r.join()==="1,2,3";』于『for-let-of 体直读』）而后
+　（「试段」于『let fs=[];for(var i of [1,2]){fs.push(function(){return i;});}fs[0]()===2&&fs[1]()===2&&i===2;』于『for-var-of 内层函数引用同一个 var』）而后
+　（「试段」于『let fs=[];for(let i of [1,2]){fs.push(function(){return i;});}fs[0]()===1&&fs[1]()===2;』于『for-let-of 内层函数各记各轮』）而后
+　（「试段」于『function f(){let r=[];for(var x of [4,5]){r.push(function(){return x;});}return r[0]()===5&&r[1]()===5&&x===5;}f();』于『函数里的 for-var-of 与内层闭包』）而后
+　（「试段」于『function f(){let r=[];for(var k in {p:1,q:2}){r.push(function(){return k;});}return r[0]()==="q"&&r[1]()==="q";}f();』于『函数里的 for-var-in 与内层闭包』）而后
+　（「试段」于『let r=[];for(var x of [1,2]){let y=x*2;r.push(y+function(){return x;}());}r.join()==="3,6";』于『体里块级 let 与 var 并存』）而后
+　「书」于『循环变量冒烟通过』
+也。
+
+「入口」于「元」。
