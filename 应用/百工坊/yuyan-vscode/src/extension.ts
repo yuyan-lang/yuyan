@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
 import * as child_process from 'child_process';
+import * as fs from 'fs';
 import * as path from 'path';
 import {
   treeArtifactStage,
@@ -428,9 +429,8 @@ function runTreeTool(
   const hostPath = vscode.Uri.joinPath(projectRootUri, '豫言操作系统', '宿主', '节点', '宿主.cjs').fsPath;
   const toolPath = vscode.Uri.joinPath(projectRootUri, '树码.wasm').fsPath;
   const args = [hostPath, toolPath, command, artifactUri.fsPath];
-  const context = artifactUri.fsPath.match(/[\\/]包上下文[\\/]([^\\/]+\.上下文)(?:\.|[\\/])/);
-  if (command === '显示' && context) {
-    args.push('--包上下文', vscode.Uri.joinPath(projectRootUri, '.豫构缓存', '豫构上下文', context[1]).fsPath);
+  if (command === '显示' || command === '读取编辑器资料') {
+    args.push(...contextArgs(projectRootUri, artifactUri));
   }
   return new Promise((resolve, reject) => {
     child_process.execFile(
@@ -451,6 +451,22 @@ function runTreeTool(
       }
     );
   });
+}
+
+// 阶段缓存的路径里带包上下文号（包上下文/<号>.<编译模式>）：读这里的树码要按同一份包上下文还原
+// 包内路径，否则语言服务里的源文件与目标会留下包路径信标。上下文文件已不在时不给选项，照旧读。
+function contextArgs(projectRootUri: vscode.Uri, artifactUri: vscode.Uri): string[] {
+  const match = artifactUri.fsPath.match(/[\\/]包上下文[\\/](\d+)/);
+  if (!match) {
+    return [];
+  }
+  const contextPath = vscode.Uri.joinPath(
+    projectRootUri,
+    '.豫构缓存',
+    '豫构上下文',
+    `${match[1]}.上下文`
+  ).fsPath;
+  return fs.existsSync(contextPath) ? ['--包上下文', contextPath] : [];
 }
 
 async function jumpToBuildArtifact(
