@@ -2,6 +2,7 @@
 　　文言：呈现之提示：以 HTML 呈现之性（表之 border、cellspacing、cellpadding、width、height、align、bgcolor，格之 width、height、nowrap、valign、align、bgcolor，行与行组之 valign、align、bgcolor，列与列组之 width、span、align、bgcolor）依 HTML 规范「渲染」之章，转为样式声明之文，授「带条件算节样式体」，作作者之下、源序之先之候。cellpadding 落于格，故读之须沿祖以求其表。
 　　赋曰：篇以常式立其基，笔以属性补其宜；先奉作者之令，次听源序之期。表有边、距、衬，格有高、宽、齐；隐藏之线随文断，竖齐之色逐行施。读属性如拾遗令，折为声明付层叠；作者之式居其上，古法之形自可稽。：」
 寻观「豫章」之书。
+寻观「装帧」之「词法」之书。
 寻观「篇象」之「节点」之书。
 寻观「篇象」之「树操作」之书。
 
@@ -105,7 +106,22 @@
 「呈现行」者得「节」而
 　令「竖齐」为「取值声明」于「节」于「属名」曰『valign』于「式名」曰『vertical-align』于（「列」【『top』，『middle』，『bottom』，『baseline』】）而
 　令「横齐」为「取值声明」于「节」于「属名」曰『align』于「式名」曰『text-align』于（「列」【『left』，『center』，『right』，『justify』】）而
-　「接」于（「接」于「竖齐」于「横齐」）于（「颜色声明」于「节」）
+　「：汉语：rules=groups 的组边框：行组（thead、tbody、tfoot）的父表带 rules=groups 时，按 HTML 渲染一章给组加上下各一条 1 像素实线，颜色随 currentColor；作者样式（如 border-block-start:none）覆盖之。表自身另由 rules 得到 hidden 边框，表外缘的组边因此不显，只在组与组之间露出。
+　　　文言：rules=groups 之组边：行组（thead、tbody、tfoot）之父表带 rules=groups 者，依 HTML 渲染之章与组以上下各一素实线，色随 currentColor；作者之式（如 border-block-start:none）覆之。表自有 rules 而得 hidden 之边，表外缘之组边由是不显，唯见于组与组之间。：」
+　令「名」为「节名」于「节」而
+　令「组文」为
+　　若「有一」以「文」于（得「项名」而「文同」于「项名」于「名」）于（「列」【『thead』，『tbody』，『tfoot』】）则（
+　　　鉴「父节」于「节」而
+　　　　或有（「可有」于「表节」）则（
+　　　　　若「文同」于（「样式小写」于（「取属性」于「表节」于『rules』））于『groups』则
+　　　　　　『border-block-start-width:1px;border-block-start-style:solid;border-block-end-width:1px;border-block-end-style:solid;』
+　　　　　否则
+　　　　　　『』
+　　　　）
+　　　　或有「可无」则『』
+　　）否则
+　　　『』而
+　「接」于（「接」于「组文」于（「接」于「竖齐」于「横齐」））于（「颜色声明」于「节」）
 也。
 
 「：汉语：列与列组的呈现提示：width、align、bgcolor；span 由表格排版读属性，其余在此。
@@ -142,7 +158,15 @@
 　　　『float:right;』
 　　否则
 　　　『』而
-　「接」于（「接」于（「接」于（「接」于（「接」于「框文」于「距」）于「宽」）于「高」）于「齐文」）于（「颜色声明」于「节」）
+　「：汉语：rules 属性的表：none、groups、rows、cols、all 五种都按 HTML 渲染一章给表 hidden 边框（外缘不画）并强制折叠边框。
+　　　文言：rules 属性之表：none、groups、rows、cols、all 五种皆依 HTML 渲染之章与表 hidden 之边（外缘不画）而强为折叠。：」
+　令「规值」为「样式小写」于（「取属性」于「节」于『rules』）而
+　令「规文」为
+　　若「有一」以「文」于（得「项名」而「文同」于「项名」于「规值」）于（「列」【『none』，『groups』，『rows』，『cols』，『all』】）则
+　　　『border-style:hidden;border-collapse:collapse;』
+　　否则
+　　　『』而
+　「接」于（「接」于（「接」于（「接」于（「接」于（「接」于「规文」于「框文」）于「距」）于「宽」）于「高」）于「齐文」）于（「颜色声明」于「节」）
 也。
 
 「：汉语：节呈现文：元素按标签名取呈现属性映射成的声明文，不是表格一族的标签得空串。
@@ -156,7 +180,7 @@
 　　「呈现格」于「节」
 　否则若「文同」于「名」于『tr』则
 　　「呈现行」于「节」
-　否则若「有一」以「文」于（得「项」而「文同」于「项」于「名」）于（「列」【『thead』，『tbody』，『tfoot』】）则
+　否则若「有一」以「文」于（得「项名」而「文同」于「项名」于「名」）于（「列」【『thead』，『tbody』，『tfoot』】）则
 　　「呈现行」于「节」
 　否则若（（「文同」于「名」于『col』）或（「文同」于「名」于『colgroup』））则
 　　「呈现列」于「节」
