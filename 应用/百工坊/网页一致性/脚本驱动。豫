@@ -1,0 +1,108 @@
+「：汉语：通称网平测脚本驱动（wpt testdriver vendor）。网页一致性的运行器给网平测页面出的 testdriver-vendor：把 test_driver 的 action_sequence、send_keys、click 与几个无障碍查询接到本页的事件派发上。动作与按键都直接造事件、派给元素（有 elementFromPoint 时按坐标取元素，没有时派给文档根），派完返回已完成的期约。动作序列按官方的指针／键盘动作解释：指针移动与按下抬起成对派 pointer 与 mouse 事件，键盘动作按 down／press／up 派。无障碍查询读 aria-label 与 role。
+　　文言：网平测之驱动：网页一致性之行者所以予网平试页者：以 test_driver 之动作序列、送键、点击与数事，接于本页事件之派。动作与键皆造事而派于节（有 elementFromPoint 则依坐标取节，无则派于根），派毕还已毕之期。动作序列依官方指针、键盘之动作释之：指针之移与按抬成对而派 pointer 与 mouse 之事；键盘之动依 down、press、up 而派。无障碍之问，读 aria-label 与 role。：」
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+
+「：汉语：通称脚本驱动行（testdriver vendor lines）。一行一句的脚本源：造事件、按坐标取元素、派指针与键盘事件，再把 test_driver_internal 装上 action_sequence、send_keys、click 与无障碍查询。
+　　文言：驱动之文：一句一行之脚本源。：」
+「脚本驱动行」乃（「列」于「文」）也。
+「脚本驱动行」者
+　（「列」
+　　【『(function () {』
+　　，『  var doc = document;』
+　　，『  var root = function () { return doc.documentElement || doc.body || null; };』
+　　，『  var done = function () { return new Promise(function (res) { res(); }); };』
+　　，『  var at = function (x, y) {』
+　　，『    if (typeof doc.elementFromPoint === "function") {』
+　　，『      var el = doc.elementFromPoint(x, y);』
+　　，『      if (el) { return el; }』
+　　，『    }』
+　　，『    return root();』
+　　，『  };』
+　　，『  var mouse = function (type, x, y, button, detail) {』
+　　，『    var target = at(x, y);』
+　　，『    if (!target) { return; }』
+　　，『    var ev = doc.createEvent("MouseEvent");』
+　　，『    ev.initMouseEvent(type, true, true, window, detail || 0, x, y, x, y, false, false, false, false, button || 0, null);』
+　　，『    target.dispatchEvent(ev);』
+　　，『  };』
+　　，『  var key = function (target, type, value) {』
+　　，『    var ev = doc.createEvent("KeyboardEvent");』
+　　，『    ev.initKeyboardEvent(type, true, true, window, value || "", 0, false, false, false, false);』
+　　，『    var el = target || doc.activeElement || root();』
+　　，『    if (el) { el.dispatchEvent(ev); }』
+　　，『  };』
+　　，『  var origin = function (a) {』
+　　，『    var o = a.origin;』
+　　，『    if (o && typeof o === "object" && typeof o.getBoundingClientRect === "function") {』
+　　，『      var r = o.getBoundingClientRect();』
+　　，『      return { x: r.left || 0, y: r.top || 0 };』
+　　，『    }』
+　　，『    return { x: 0, y: 0 };』
+　　，『  };』
+　　，『  var move = function (a, st) {』
+　　，『    var o = origin(a);』
+　　，『    if (typeof a.x === "number") { st.x = o.x + a.x; }』
+　　，『    if (typeof a.y === "number") { st.y = o.y + a.y; }』
+　　，『  };』
+　　，『  var one = function (a, st) {』
+　　，『    var t = a.type || "";』
+　　，『    if (t === "pointerMove") { move(a, st); mouse("pointermove", st.x, st.y, 0, 0); mouse("mousemove", st.x, st.y, 0, 0); }』
+　　，『    else if (t === "pointerDown") { move(a, st); var b = a.button || 0; mouse("pointerdown", st.x, st.y, b, 1); mouse("mousedown", st.x, st.y, b, 1); }』
+　　，『    else if (t === "pointerUp") { move(a, st); var c = a.button || 0; mouse("pointerup", st.x, st.y, c, 1); mouse("mouseup", st.x, st.y, c, 1); mouse("click", st.x, st.y, c, 1); }』
+　　，『    else if (t === "keyDown") { key(a.target, "keydown", a.value || ""); }』
+　　，『    else if (t === "keyUp") { key(a.target, "keyup", a.value || ""); }』
+　　，『  };』
+　　，『  var run = function (actions) {』
+　　，『    if (!actions) { return; }』
+　　，『    for (var i = 0; i < actions.length; i++) {』
+　　，『      var seq = actions[i];』
+　　，『      var acts = (seq && seq.actions) || [];』
+　　，『      var st = { x: 0, y: 0 };』
+　　，『      for (var j = 0; j < acts.length; j++) { one(acts[j], st); }』
+　　，『    }』
+　　，『  };』
+　　，『  var typeOne = function (el, k) {』
+　　，『    var target = el || doc.activeElement || root();』
+　　，『    key(target, "keydown", k);』
+　　，『    key(target, "keypress", k);』
+　　，『    key(target, "keyup", k);』
+　　，『  };』
+　　，『  window.test_driver_internal = {』
+　　，『    action_sequence: function (actions, context) { run(actions); return done(); },』
+　　，『    send_keys: function (element, keys) {』
+　　，『      var s = String(keys === null || keys === undefined ? "" : keys);』
+　　，『      for (var i = 0; i < s.length; i++) { typeOne(element, s.charAt(i)); }』
+　　，『      return done();』
+　　，『    },』
+　　，『    click: function (element, context) {』
+　　，『      var el = element || root();』
+　　，『      if (!el) { return done(); }』
+　　，『      var r = typeof el.getBoundingClientRect === "function" ? el.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };』
+　　，『      var x = (r.left || 0) + (r.width || 0) / 2;』
+　　，『      var y = (r.top || 0) + (r.height || 0) / 2;』
+　　，『      mouse("pointerdown", x, y, 0, 1); mouse("mousedown", x, y, 0, 1); mouse("pointerup", x, y, 0, 1); mouse("mouseup", x, y, 0, 1); mouse("click", x, y, 0, 1);』
+　　，『      return done();』
+　　，『    },』
+　　，『    get_computed_label: function (element) {』
+　　，『      if (element && typeof element.getAttribute === "function") { return element.getAttribute("aria-label") || ""; }』
+　　，『      return "";』
+　　，『    },』
+　　，『    get_computed_role: function (element) {』
+　　，『      if (element && typeof element.getAttribute === "function") { return element.getAttribute("role") || ""; }』
+　　，『      return "";』
+　　，『    },』
+　　，『    delete_all_cookies: function () { return done(); },』
+　　，『    get_all_cookies: function () { return []; },』
+　　，『    get_named_cookie: function (name) { throw new Error("cookie not found: " + name); }』
+　　，『  };』
+　　，『})();』
+　　】）
+也。
+
+「：汉语：通称脚本驱动文（testdriver vendor source）。把脚本驱动行拼成一整段脚本源，各行之间换行。
+　　文言：驱动之文成：合其行而为一篇，行间以换行。：」
+「脚本驱动文」乃化「有」为「文」者也。
+「脚本驱动文」者得「无」而
+　「间合」于『「：换行：」』于「脚本驱动行」
+也。
