@@ -958,11 +958,59 @@
 　令「入浮」为若「自浮」则（「罄」以「网页浮动」）否则「外浮」而
 　令「本出」为「置匣」以（「列」于「网页浮动」）于「罄」而
 　令「环境」为「网页字号境」于「父环」于「样」而
-　令「管零」为
-　　（「文含」于『ch』于（「样式取值」于「样」于『width』））
-　　或（（「文含」于『ch』于（「样式取值」于「样」于『min-width』））
-　　　或（（「文含」于『ch』于（「样式取值」于「样」于『max-width』））或（「文含」于『ch』于（「样式取值」于「样」于『inline-size』）））
-　　）而
+　「：汉语：管零：本盒任何一个带长度的属性用到 ch 时，才量一次「0」的真实前进量写进环境（零字宽），供 ch 单位折算。原先只查 width、min-width、max-width、inline-size，于是参考页用 margin: -1ch 抵消词距时 margin 仍按缺省零字宽（字号一半）折算（word-spacing-002 即此）。
+　　　文言：管零：本盒诸长属之中有用 ch 者，乃量一次「0」之真进，书入环境（零字宽），供 ch 折算。旧唯察 width、min-width、max-width、inline-size，故参页以 margin: -1ch 抵词距者，margin 仍依缺省之零字宽（字号之半）折（word-spacing-002 即此）。：」
+　令「零属们」为
+　　（「列」
+　　　【『width』
+　　　，『min-width』
+　　　，『max-width』
+　　　，『height』
+　　　，『min-height』
+　　　，『max-height』
+　　　，『inline-size』
+　　　，『block-size』
+　　　，『min-inline-size』
+　　　，『max-inline-size』
+　　　，『min-block-size』
+　　　，『max-block-size』
+　　　，『margin-left』
+　　　，『margin-right』
+　　　，『margin-top』
+　　　，『margin-bottom』
+　　　，『margin-inline-start』
+　　　，『margin-inline-end』
+　　　，『margin-block-start』
+　　　，『margin-block-end』
+　　　，『padding-left』
+　　　，『padding-right』
+　　　，『padding-top』
+　　　，『padding-bottom』
+　　　，『padding-inline-start』
+　　　，『padding-inline-end』
+　　　，『padding-block-start』
+　　　，『padding-block-end』
+　　　，『left』
+　　　，『right』
+　　　，『top』
+　　　，『bottom』
+　　　，『inset-inline-start』
+　　　，『inset-inline-end』
+　　　，『inset-block-start』
+　　　，『inset-block-end』
+　　　，『border-left-width』
+　　　，『border-right-width』
+　　　，『border-top-width』
+　　　，『border-bottom-width』
+　　　，『text-indent』
+　　　，『column-gap』
+　　　，『row-gap』
+　　　，『flex-basis』
+　　　，『letter-spacing』
+　　　，『word-spacing』
+　　　，『outline-width』
+　　　】）而
+　令「管零」为「有一」以「文」于（得「名」而「文含」于『ch』于（「样式取值」于「样」于「名」））于「零属们」而
 　令「环境」为若「管零」则「簿入」以「小数」于「环境」于『零字宽』于（（「测文」于「样」于『0』于「一点零」）中「宽」）否则「环境」而
 　令「行高析」为「析样式数」于（「网页百分境」于「环境」于（「数境取」于「环境」于『字号』））于（「样式取值」于「样」于『line-height』）而
 　令「行高匣」为「置匣」以「小数」于「零点零」而
