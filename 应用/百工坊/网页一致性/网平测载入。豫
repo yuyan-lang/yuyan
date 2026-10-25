@@ -307,6 +307,51 @@
 　）
 也。
 
+「：汉语：WPT CSSTest 测试字体的族名到数据目录 fonts/CSSTest 下文件的映射：Verify、FamilyName、Fallback、ASCII、Basic、Weights 与日文族名各归其文件；全名（带 Bold、CSSTestFamilyNameBold、Funky 一类）不映射，留给回退族。族名不在表里得空。
+　　文言：WPT 之 CSSTest 测试字体：族名映射到数据目录 fonts/CSSTest 下之文件；Verify、FamilyName、Fallback、ASCII、Basic、Weights 与日文族名各归其文；全名（带 Bold、CSSTestFamilyNameBold、Funky 之属）不映射，留与回退之族。不在表者得空。：」
+「测试字样相对」乃化「文」为「文」者也。
+「测试字样相对」者得「族」而
+　令「名」为「小写字符串」于「族」而
+　若「文同」于「名」于『csstest verify』则
+　　『CSSTest/csstest-verify.ttf』
+　否则若「文同」于「名」于『csstest familyname』则
+　　『CSSTest/csstest-familyname.ttf』
+　否则若「文同」于「名」于『csstest fallback』则
+　　『CSSTest/csstest-fallback.ttf』
+　否则若「文同」于「名」于『csstest ascii』则
+　　『CSSTest/csstest-ascii.ttf』
+　否则若「文同」于「名」于『csstest basic』则
+　　『CSSTest/csstest-basic-regular.ttf』
+　否则若「文同」于「名」于『csstest weights』则
+　　『CSSTest/csstest-weights.ttf』
+　否则若「文同」于「名」于『csstest weights 400』则
+　　『CSSTest/csstest-weights-400.ttf』
+　否则若「文同」于「名」于『12px csstest familyname funky』则
+　　『CSSTest/csstest-familyname-funkyC.ttf』
+　否则若「文同」于「名」于『x-large csstest familyname funky』则
+　　『CSSTest/csstest-familyname-funkyB.ttf』
+　否则若「文同」于「名」于『small-caps 1in csstest familyname funky』则
+　　『CSSTest/csstest-familyname-funkyA.ttf』
+　否则若「文同」于「名」于『ＣＳＳテスト　フォント名』则
+　　『CSSTest/csstest-familyname.ttf』
+　否则
+　　『』
+也。
+
+「：汉语：CSSTest 测试字体的数据源；数据目录里没有该文件时得空。：」
+「测试字样源」乃化「根」曰「文」又化「相对」曰「文」为（「或可有」于（「字体数据源」合「数」））者也。
+「测试字样源」者得「根」曰「根径」又得「相对」曰「相对径」而
+　令「文件」为「根径」接『/fonts/』接「相对径」而
+　若「实有」于「文件」则「可有」于（（「存泉」于（「阅帛」于「文件」））与「零」）否则「可无」
+也。
+
+「：汉语：按族名取 CSSTest 测试字体的数据源；族名不在表里或文件缺失得空。：」
+「测试族源」乃化「根」曰「文」又化「族」曰「文」为（「或可有」于（「字体数据源」合「数」））者也。
+「测试族源」者得「根」曰「根径」又得「族」曰「族」而
+　令「相对」为「测试字样相对」于「族」而
+　若（「计文字节」于「相对」）大于「零」则「测试字样源」于「根」曰「根径」于「相对」曰「相对」否则「可无」
+也。
+
 「：汉语：参照测试用的字体集合：本地字体里 Ahem 取数据目录的原件，其余用系统字体（宿主取不到标准族名时读备用候选）；远程字体由页面载入器经资源读取器取。
 　　文言：参照试所用之字体集合：本地字体 Ahem 取数据目录之原件，余用系统字体（宿主不得标准族名则读备用之候选）；远程字体由页载入器经资源读取器取之。：」
 「网平测字体集」乃化「文」为「网页字体集合」者也。
@@ -316,9 +361,13 @@
 　　　　若「文同」于（「小写字符串」于「族」）于『ahem』则
 　　　　　「测试方块字体源」于「根径」
 　　　　否则
-　　　　　鉴「网页寓字样源」于「族」而
+　　　　　鉴「测试族源」于「根」曰「根径」于「族」曰「族」而
 　　　　　　或有（「可有」于「源」）则「可有」于「源」
-　　　　　　或有「可无」则「备用字体源」于「族」
+　　　　　　或有「可无」则（
+　　　　　　　鉴「网页寓字样源」于「族」而
+　　　　　　　　或有（「可有」于「源二」）则「可有」于「源二」
+　　　　　　　　或有「可无」则「备用字体源」于「族」
+　　　　　　）
 　　　）也
 　　，「远程」者（得「址」而
 　　　　鉴（「网平测读取器」于「根径」于「址」）而
