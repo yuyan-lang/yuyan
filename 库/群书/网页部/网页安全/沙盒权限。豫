@@ -83,3 +83,26 @@
 　　　　　且（「验诸首部」于「后继」）而
 　「验诸首部」于「诸首部」
 也。
+
+「：汉语：通称沙盒许可词列（sandbox supported tokens）。iframe 的 sandbox 词元列表支持的能力词，按基本拉丁小写列出；supports 用它判断某个词元是不是这类列表支持的能力。
+　　文言：沙盒许可词列：iframe 之 sandbox 词元列所许之能词，依基本拉丁小写列之；supports 用之以判某词为所许否。
+　　赋曰：下载表单情态张，同源脚本弹窗忙；逃逸存储指针锁，顶层两许更添详。：」
+「沙盒许可词列」乃（「列」于「文」）也。
+「沙盒许可词列」者
+　「列」
+　【『allow-downloads』
+　，『allow-forms』
+　，『allow-modals』
+　，『allow-orientation-lock』
+　，『allow-pointer-lock』
+　，『allow-popups』
+　，『allow-popups-to-escape-sandbox』
+　，『allow-presentation』
+　，『allow-same-origin』
+　，『allow-scripts』
+　，『allow-storage-access-by-user-activation』
+　，『allow-top-navigation』
+　，『allow-top-navigation-by-user-activation』
+　，『allow-top-navigation-to-custom-protocols』
+　】
+也。
