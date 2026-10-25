@@ -85,16 +85,22 @@ export function 创建手柄能力(导航 = globalThis.navigator, 全局 = globa
       if (事列.length > 0) return 事列.shift();
       return [0, '', 0];
     },
-    // 文言：振之：成返零，无其能返二，柄不在返三。汉语：振动，成功返回 0，没有振动能力返回 2，手柄已拔出返回 3。
-    振: (号, 强, 毫) => {
+    // 文言：振之：强弱二马达与之，俱零则止；成返零，无其能返二，柄不在返三。汉语：振动，强、弱两个马达的强度各按千分折成零至一；两者皆零时停止振动。成功返回 0，没有振动能力返回 2，手柄已拔出返回 3。
+    振: (号, 强, 弱, 毫) => {
       const 柄 = 号之柄(号);
       if (!柄) return 3;
       const 作 = 柄.vibrationActuator;
       if (!作 || typeof 作.playEffect !== 'function') return 2;
-      const 时 = Number(毫) > 0 ? Number(毫) : 200;
-      const 力 = Math.max(0, Math.min(1, Number(强) / 1000));
+      const 力强 = Math.max(0, Math.min(1, Number(强) / 1000));
+      const 力弱 = Math.max(0, Math.min(1, Number(弱) / 1000));
       try {
-        作.playEffect('dual-rumble', {duration: 时, strongMagnitude: 力, weakMagnitude: 力}).catch(() => {});
+        if (力强 === 0 && 力弱 === 0) {
+          if (typeof 作.reset === 'function') 作.reset();
+          else 作.playEffect('dual-rumble', {duration: 1, strongMagnitude: 0, weakMagnitude: 0}).catch(() => {});
+          return 0;
+        }
+        const 时 = Number(毫) > 0 ? Number(毫) : 200;
+        作.playEffect('dual-rumble', {duration: 时, strongMagnitude: 力强, weakMagnitude: 力弱}).catch(() => {});
         return 0;
       } catch { return 2; }
     },
