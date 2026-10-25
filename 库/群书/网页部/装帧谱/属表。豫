@@ -104,6 +104,7 @@
 　，『tab-size』与『8』与「阳」
 　，『text-justify』与『auto』与「阳」
 　，『direction』与『ltr』与「阳」
+　，『unicode-bidi』与『normal』与「阴」
 　，『writing-mode』与『horizontal-tb』与「阳」
 　，『visibility』与『visible』与「阳」
 　，『pointer-events』与『auto』与「阳」
