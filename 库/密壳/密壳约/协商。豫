@@ -1,4 +1,4 @@
-「：汉语：通称 SSH 算法协商（algorithm negotiation，KEXINIT，RFC 4253 第 7.1 节）。验证 SSH 名称列（拒绝空元素、不可打印 ASCII 和超过六十四字节的名称），在名称列中查找完整算法名；结构性验证完整 KEXINIT 载荷（二十号、十六字节 cookie、十个名称列、猜测位与保留字），读出指定的名称列；按 RFC 4253 编码 KEXINIT，并给出本端客户端与服务端的候选清单（curve25519-sha256、ssh-ed25519、chacha20-poly1305@openssh.com 与 aes256-gcm@openssh.com、无压缩），cookie 各取独立随机数。
+「：汉语：通称 SSH 算法协商（algorithm negotiation，KEXINIT，RFC 4253 第 7.1 节）。验证 SSH 名称列（拒绝空元素、不可打印 ASCII 和超过六十四字节的名称），在名称列中查找完整算法名；结构性验证完整 KEXINIT 载荷（二十号、十六字节 cookie、十个名称列、猜测位与保留字），读出指定的名称列；按 RFC 4253 编码 KEXINIT，并给出本端客户端与服务端的候选清单（curve25519-sha256、ssh-ed25519、chacha20-poly1305@openssh.com、aes128-gcm@openssh.com 与 aes256-gcm@openssh.com、无压缩），cookie 各取独立随机数。
 　　文言：SSH 算法之协商：核名称之列（拒空项、不可印之 ASCII 与逾六十四字之名），于列中求全名；结构而核全 KEXINIT 之载（二十号、十六字之 cookie、十名称列、猜测之位与保留之字），取所指之列；依 RFC 4253 编 KEXINIT，并予本端客与服之候选之单，cookie 各取独立之随机。
 　　赋曰：两邦结盟，先陈载书十牍；使节通名，必求全字相符。空项不录，杂字不登；字逾六十有四，名过其限则屏。二十启端，十六藏信；十列既陈，猜位乃见。名求全项，非子文之偶同；尾守四零，岂余缀之虚托。十列俱陈方就编，一牍有缺即告祸。客服同陈，曲线与爱德；机符各异，伽氏兼无压。：」
 寻观「豫章」之「本原」之「本类」之书。
@@ -167,7 +167,7 @@
 　　「接帛」于「首」于（「接帛」于「列文」于（「接帛」于（「单帛」于「零」）于（「编四字节无号数」于「零」）））
 也。
 
-「：汉语：通称本端客户端协商载荷。生成只提出已实现算法的客户端 KEXINIT 候选清单（curve25519-sha256、ssh-ed25519、chacha20-poly1305@openssh.com 与 aes256-gcm@openssh.com、无压缩）；还须完成密钥交换才能进入会话。
+「：汉语：通称本端客户端协商载荷。生成只提出已实现算法的客户端 KEXINIT 候选清单（curve25519-sha256、ssh-ed25519、chacha20-poly1305@openssh.com、aes128-gcm@openssh.com 与 aes256-gcm@openssh.com、无压缩）；还须完成密钥交换才能进入会话。
 　　文言：本端客户初议曲线、主钥、GCM 与无压缩。
 　　赋曰：曲线爱德伽氏密，客之初议已备齐。：」
 「本端客协商载荷」乃化「有」为「帛」者也。
@@ -175,8 +175,8 @@
 　「编协商载荷」于（「列」
 　　【「作帛」于『curve25519-sha256,curve25519-sha256@libssh.org』
 　　，「作帛」于『ssh-ed25519』
-　　，「作帛」于『chacha20-poly1305@openssh.com,aes256-gcm@openssh.com』
-　　，「作帛」于『chacha20-poly1305@openssh.com,aes256-gcm@openssh.com』
+　　，「作帛」于『chacha20-poly1305@openssh.com,aes128-gcm@openssh.com,aes256-gcm@openssh.com』
+　　，「作帛」于『chacha20-poly1305@openssh.com,aes128-gcm@openssh.com,aes256-gcm@openssh.com』
 　　，「作帛」于『hmac-sha2-256』
 　　，「作帛」于『hmac-sha2-256』
 　　，「作帛」于『none』
@@ -186,7 +186,7 @@
 　　】）
 也。
 
-「：汉语：通称本端服务端协商载荷。生成服务端 KEXINIT 候选清单，只列已实现的曲线换钥、Ed25519、恰恰封与 AES-256-GCM 及无压缩，使用独立随机 cookie。
+「：汉语：通称本端服务端协商载荷。生成服务端 KEXINIT 候选清单，只列已实现的曲线换钥、Ed25519、恰恰封、AES-128-GCM 与 AES-256-GCM 及无压缩，使用独立随机 cookie。
 　　文言：本端服务者仅陈已备之曲线、Ed25519、GCM 与无压缩。
 　　赋曰：服者所陈皆已备，随机之符独为异。：」
 「本端务协商载荷」乃化「有」为「帛」者也。
@@ -194,8 +194,8 @@
 　「编协商载荷」于（「列」
 　　【「作帛」于『curve25519-sha256,curve25519-sha256@libssh.org』
 　　，「作帛」于『ssh-ed25519』
-　　，「作帛」于『chacha20-poly1305@openssh.com,aes256-gcm@openssh.com』
-　　，「作帛」于『chacha20-poly1305@openssh.com,aes256-gcm@openssh.com』
+　　，「作帛」于『chacha20-poly1305@openssh.com,aes128-gcm@openssh.com,aes256-gcm@openssh.com』
+　　，「作帛」于『chacha20-poly1305@openssh.com,aes128-gcm@openssh.com,aes256-gcm@openssh.com』
 　　，「作帛」于『hmac-sha2-256』
 　　，「作帛」于『hmac-sha2-256』
 　　，「作帛」于『none』
@@ -212,7 +212,7 @@
 　若（（「止」减「起」）不等于（「计帛」于「名」））则「阴」否则「片段同」于「文」于「名」于「起」于「零」
 也。
 
-「：汉语：通称首允加密。按对端名称列的先后次序，返回本端支持的第一个加密算法名（恰恰封优先于伽氏计数，取决于对端列出的先后）；没有交集时返回可无。
+「：汉语：通称首允加密。按对端名称列的先后次序，返回本端支持的第一个加密算法名（恰恰封优先于伽氏计数，伽氏计数一二八先于二五六，取决于对端列出的先后）；没有交集时返回可无。
 　　文言：依彼名单之次序，取本端所允之首名；无交会则可无。：」
 「首允加密续」乃化「文」曰「帛」又化「起」曰「数」为（「或可有」于「帛」）者也。
 「首允加密续」者得「文」曰「文」又得「起」曰「起」而
@@ -221,9 +221,12 @@
 　否则
 　　令「止」为（「寻逗号」于「文」于「起」）而
 　　令「恰名」为（「作帛」于『chacha20-poly1305@openssh.com』）而
+　　令「伽短名」为（「作帛」于『aes128-gcm@openssh.com』）而
 　　令「伽名」为（「作帛」于『aes256-gcm@openssh.com』）而
 　　若（「项同」于「文」曰「文」于「起」曰「起」于「止」曰「止」于「名」曰「恰名」）则
 　　　「可有」以「帛」于「恰名」
+　　否则若（「项同」于「文」曰「文」于「起」曰「起」于「止」曰「止」于「名」曰「伽短名」）则
+　　　「可有」以「帛」于「伽短名」
 　　否则若（「项同」于「文」曰「文」于「起」曰「起」于「止」曰「止」于「名」曰「伽名」）则
 　　　「可有」以「帛」于「伽名」
 　　否则若（「不小于」于「止」于（「计帛」于「文」））则
