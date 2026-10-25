@@ -158,11 +158,12 @@
 　　（『text/plain』）
 也。
 
-「：汉语：把站内路径映射成数据目录里的文件：以斜杠结尾时取 index.html；不存在得可无。
-　　文言：以站内之径映为数据目录之文：以斜杠终则取 index.html；不在则空。：」
+「：汉语：把站内路径映射成数据目录里的文件：以斜杠结尾时取 index.html；旧名 `resources/WebIDLParser.js` 映到上游现名 `resources/webidl2/lib/webidl2.js`；不存在得可无。
+　　文言：以站内之径映为数据目录之文：以斜杠终则取 index.html；旧名 `resources/WebIDLParser.js` 映于上游今名 `resources/webidl2/lib/webidl2.js`；不在则空。：」
 「服文件」乃化「根」曰「文」又化「径」曰「文」为（「或可有」于「文」）者也。
 「服文件」者得「根」曰「根」又得「径」曰「径」而
-　令「相对」为若「首同」于『/』于「径」则「径」否则（『/』接「径」）而
+　令「相对」为
+　　若「文同」于「径」于『/resources/WebIDLParser.js』则『/resources/webidl2/lib/webidl2.js』否则若「首同」于『/』于「径」则「径」否则（『/』接「径」）而
 　令「首要」为（「根」接「相对」）而
 　令「首试」为若「尾同」于『/』于「相对」则（「首要」接『index.html』）否则「首要」而
 　若（「实有」于「首试」）且（「为卷」于「首试」）则
