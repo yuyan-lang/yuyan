@@ -199,6 +199,7 @@
 　，『mask-clip』与『border-box』与「阴」
 　，『mask-composite』与『add』与「阴」
 　，『content』与『normal』与「阴」
+　，『quotes』与『auto』与「阳」
 　，『flex-grow』与『0』与「阴」
 　，『flex-shrink』与『1』与「阴」
 　，『flex-basis』与『auto』与「阴」
