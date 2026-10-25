@@ -148,12 +148,15 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
     if (术.startsWith('网')) return await 网络(术, 参);
     if (术 === '启动') {
       if (记录们.size >= 4096) return -24;
-      const [程序, 参数, 客体, 目录, 环境, 限时, 宽限] = 参;
+      const [程序, 参数, 客体, 目录, 环境, 限时, 宽限, 离群] = 参;
       // 文言：子进程启于客之今目录；env、timeout 之包装已由客拆出，环境并入，限时由此计之。汉语：子进程在客实例记录的当前目录里启动。env 与 timeout 包装已在客线程拆出：附加环境并入子进程环境；有时限时由这里计时，到时发 SIGTERM（有宽限则宽限后再发 SIGKILL），退出码记为 124。带包装的任务不走内部编译线程池。
       const 包装 = !!环境 || 限时 > 0;
-      const 工 = (包装 ? null : 编译线程?.(程序, 参数, 客体, 目录)) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false,
+      // 文言：离群者另为一会，不交编译之线程（线程为客之子孙，不能离客之会），spawn 带 detached。汉语：遣离使的子进程自成一会话，不交内部编译线程（线程是客体的子孙，脱离不了客体的会话），spawn 带上 detached。
+      const 工 = (包装 || 离群 ? null : 编译线程?.(程序, 参数, 客体, 目录)) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false, detached: !!离群,
         env: 客体 ? {...process.env, ...(环境 ?? {}), 豫言诺驿轮数: '1'} : (环境 ?? process.env)});
-      const 记录 = {工, 进程号: 工.pid, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false, 超时: false};
+      const 记录 = {工, 进程号: 工.pid, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false, 超时: false, 离群: !!离群};
+      // 文言：离群之子不系于父之生灭：unref 其柄与二管，父终而子犹行。汉语：遣离使的子进程不随父进程生死：unref 进程句柄与两条输出管，父进程退出后它照样运行。
+      if (离群) {工.unref(); 工.stdout?.unref?.(); 工.stderr?.unref?.();}
       const 定时们 = [];
       if (限时 > 0) 定时们.push(setTimeout(() => {
         记录.超时 = true;
@@ -228,7 +231,8 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
     已关 = true;
     if (待候) clearTimeout(待候.定时);
     待候 = null;
-    for (const 记录 of 记录们.values()) if (!记录.完成) 记录.工.kill('SIGKILL');
+    // 文言：离群之子任其自存，不收。汉语：遣离使起的子进程由它自己去留，收场时不杀。
+    for (const 记录 of 记录们.values()) if (!记录.完成 && !记录.离群) 记录.工.kill('SIGKILL');
     记录们.clear();
     for (const 记录 of 套接字们.values()) {
       if (记录.种 === '听') {记录.服.close(); for (const 待 of 记录.待接) 待.套.destroy();}

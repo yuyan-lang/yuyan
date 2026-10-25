@@ -43,7 +43,7 @@
 　「目标」之「栈复制」于「目的」于「容量」
 也。
 
-「：汉语：进程、信号与套接字的系统调用包装：clone（只用 SIGCHLD，如 fork）、execve、fchdir、rt_sigaction、kill、wait4、socket、bind、listen、accept4、connect、shutdown、getsockname、setsockopt、getsockopt。
+「：汉语：进程、信号与套接字的系统调用包装：clone（只用 SIGCHLD，如 fork）、execve、fchdir、rt_sigaction、kill、wait4、setsid、socket、bind、listen、accept4、connect、shutdown、getsockname、setsockopt、getsockopt。
 　　文言：进程、信号与套接字之系统调用。：」
 「林克隆」乃化「整数」又化「整数」又化「整数」又化「整数」又化「整数」为「整数」者也。
 「林克隆」者得「标志」又得「栈」又得「甲」又得「乙」又得「丙」而
@@ -78,6 +78,13 @@
 「林等子」乃化「整数」又化「整数」又化「整数」又化「整数」为「整数」者也。
 「林等子」者得「号」又得「态址」又得「选项」又得「用址」而
 　「林纳」之「等子进程4」于「号」于「态址」于「选项」于「用址」
+也。
+
+「：汉语：新建会话（setsid，系统调用 112／157）：在子进程执行程序之前调用，使它自成新会话与进程组。已是首进程时失败（负一），调用方忽略即可。
+　　文言：新会（setsid）：子将执行之先调之，自为新会新群之首；既为首则败（负一），呼者略之。：」
+「林新会话」乃化「有」为「整数」者也。
+「林新会话」者得「无」而
+　「林纳」之「新会话」于「元」
 也。
 
 「林套接字」乃化「整数」又化「整数」又化「整数」为「整数」者也。
