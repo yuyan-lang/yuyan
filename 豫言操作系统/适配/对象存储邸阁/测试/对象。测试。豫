@@ -1,0 +1,299 @@
+「：汉语：通称邸阁对象存储适配测试（S3 adapter test）。先用 AWS 官方文档公布的签名第四版四例作已知答案：取对象、写对象、取桶生命周期（带查询串）、列举对象（带查询串），逐字节核对规范请求、待签串、签名与授权头。再用宾主起一个只在本测试里用的假服务端，验签名、存内存，把读、写、条件写冲突、列举续页、分段上传与删除跑一遍。假服务端另起一个同程序子进程，主进程照常同步发请求。本测试不连外网。
+　　文言：试邸阁之适：先取签名第四版官样四例为已知之答：取物、写物、问桶之生命周期（带问）、列举（带问），逐字节核其规范之请、待签之串、签名与授权之头。次以宾主起一假服，惟用于此试，验签名而藏于内存，读、写、条件之冲突、列举之续页、分段上传与删除皆行之。假服别起同程之子，主程照常发请。此试不连外网。
+　　赋曰：官样四篇，字字可稽；规范待签，一签为的。假门既启，验符而纳；内存为仓，诸事可历。：」
+寻观「豫章」之书。
+寻观「豫章」之「形制」之「文章」之书。
+寻观「豫章」之「形制」之「帛书」之书。
+寻观「尺素」之「报文」之书。
+寻观「阴书」之「杂凑」之书。
+寻观「金匮」之「路」之书。
+寻观「豫寓府库邸阁榫」之「对象」之书。
+
+「：汉语：通称核验（assert）。条件为阳时返回元，为阴时报出说明的中文事故。
+　　文言：受条件与说，阳则元，阴则告祸。
+　　赋曰：一是则安，一非则呼。：」
+「核验」乃化「爻」又化「文」为「有」者也。
+「核验」者得「条件」又得「说明」而
+　若「条件」则「元」否则「告祸」于「说明」
+也。
+
+「：汉语：通称验文（compare text）。依次接收名、实际与期望，二者相同时返回元，否则报“名：实际不符，期望…”的中文事故。
+　　文言：受名、实与期，同则元，否则告祸。
+　　赋曰：名实相校，一期为凭。：」
+「验文」乃化「名」曰「文」又化「实」曰「文」又化「期」曰「文」为「有」者也。
+「验文」者得「名」曰「名」又得「实」曰「实」又得「期」曰「期」而
+　若「文同」于「实」于「期」则「元」否则「告祸」于（『签名已知答案不符：』接「名」接『；实际：』接「实」接『；期望：』接「期」）
+也。
+
+「：汉语：通称钥号（example access key）。AWS 官方签名例所用的访问钥号。
+　　文言：官样之钥号。
+　　赋曰：官样钥号，一字不移。：」
+「例钥号」乃化「有」为「文」者也。
+「例钥号」者得「无」而
+　『AKIAIOSFODNN7EXAMPLE』
+也。
+
+「：汉语：通称密钥（example secret key）。AWS 官方签名例所用的密钥。
+　　文言：官样之密钥。
+　　赋曰：官样密钥，一字不移。：」
+「例密钥」乃化「有」为「文」者也。
+「例密钥」者得「无」而
+　『wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY』
+也。
+
+「：汉语：通称例一（example 1）。AWS 官方取对象例：GET /test.txt，带 Range 与四个已签头。
+　　文言：官样取物之例：GET /test.txt，带 Range 与四已签之头。
+　　赋曰：取物一篇，范围有界。：」
+「料一」乃化「有」为「签料」者也。
+「料一」者得「无」而
+　「组值」
+　【「方法」者『GET』也
+　，「径」者『/test.txt』也
+　，「查询」者『』也
+　，「头们」者「列」
+　　　【（『host』与『examplebucket.s3.amazonaws.com』）
+　　　，（『range』与『bytes=0-9』）
+　　　，（『x-amz-content-sha256』与『e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』）
+　　　，（『x-amz-date』与『20130524T000000Z』）
+　　　】也
+　，「已签」者「列」【『host』，『range』，『x-amz-content-sha256』，『x-amz-date』】也
+　，「载摘要」者『e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』也
+　，「时刻」者『20130524T000000Z』也
+　，「地域」者『us-east-1』也
+　，「钥号」者「例钥号」于「元」也
+　，「密钥」者「例密钥」于「元」也
+　】
+　属「签料」
+也。
+
+「：汉语：通称例一规范请求（example 1 canonical request）。AWS 官方原文，逐字节写出。
+　　文言：官样原文，逐字节书之。
+　　赋曰：四行既列，一沙收之。：」
+「范一」乃化「有」为「文」者也。
+「范一」者得「无」而
+　『GET
+/test.txt
+
+host:examplebucket.s3.amazonaws.com
+range:bytes=0-9
+x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+x-amz-date:20130524T000000Z
+
+host;range;x-amz-content-sha256;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』
+也。
+
+「：汉语：通称例一待签串（example 1 string to sign）。AWS 官方原文。
+　　文言：官样之待签串。
+　　赋曰：三行既列，一沙为凭。：」
+「串一」乃化「有」为「文」者也。
+「串一」者得「无」而
+　『AWS4-HMAC-SHA256
+20130524T000000Z
+20130524/us-east-1/s3/aws4_request
+7344ae5b7ee6c3e7e6b0fe0640412a37625d1fbfff95c48bbb2dc43964946972』
+也。
+
+「：汉语：通称例二（example 2）。AWS 官方写对象例：PUT /test%24file.text，带 date、存储类别与五个已签头。
+　　文言：官样写物之例：PUT /test%24file.text，带 date、存储之类与五已签之头。
+　　赋曰：写物一篇，路径转义。：」
+「料二」乃化「有」为「签料」者也。
+「料二」者得「无」而
+　「组值」
+　【「方法」者『PUT』也
+　，「径」者『/test%24file.text』也
+　，「查询」者『』也
+　，「头们」者「列」
+　　　【（『date』与『Fri, 24 May 2013 00:00:00 GMT』）
+　　　，（『host』与『examplebucket.s3.amazonaws.com』）
+　　　，（『x-amz-content-sha256』与『44ce7dd67c959e0d3524ffac1771dfbba87d2b6b4b4e99e42034a8b803f8b072』）
+　　　，（『x-amz-date』与『20130524T000000Z』）
+　　　，（『x-amz-storage-class』与『REDUCED_REDUNDANCY』）
+　　　】也
+　，「已签」者「列」【『date』，『host』，『x-amz-content-sha256』，『x-amz-date』，『x-amz-storage-class』】也
+　，「载摘要」者『44ce7dd67c959e0d3524ffac1771dfbba87d2b6b4b4e99e42034a8b803f8b072』也
+　，「时刻」者『20130524T000000Z』也
+　，「地域」者『us-east-1』也
+　，「钥号」者「例钥号」于「元」也
+　，「密钥」者「例密钥」于「元」也
+　】
+　属「签料」
+也。
+
+「范二」乃化「有」为「文」者也。
+「范二」者得「无」而
+　『PUT
+/test%24file.text
+
+date:Fri, 24 May 2013 00:00:00 GMT
+host:examplebucket.s3.amazonaws.com
+x-amz-content-sha256:44ce7dd67c959e0d3524ffac1771dfbba87d2b6b4b4e99e42034a8b803f8b072
+x-amz-date:20130524T000000Z
+x-amz-storage-class:REDUCED_REDUNDANCY
+
+date;host;x-amz-content-sha256;x-amz-date;x-amz-storage-class
+44ce7dd67c959e0d3524ffac1771dfbba87d2b6b4b4e99e42034a8b803f8b072』
+也。
+
+「串二」乃化「有」为「文」者也。
+「串二」者得「无」而
+　『AWS4-HMAC-SHA256
+20130524T000000Z
+20130524/us-east-1/s3/aws4_request
+9e0e90d9c76de8fa5b200d8c849cd5b8dc7a3be3951ddb7f6a76b4158342019d』
+也。
+
+「：汉语：通称例三（example 3）。AWS 官方取桶生命周期例：GET /?lifecycle=，三个已签头。
+　　文言：官样问桶生命周期之例：GET /?lifecycle=，三已签之头。
+　　赋曰：问桶一篇，查询有值。：」
+「料三」乃化「有」为「签料」者也。
+「料三」者得「无」而
+　「组值」
+　【「方法」者『GET』也
+　，「径」者『/』也
+　，「查询」者『lifecycle=』也
+　，「头们」者「列」
+　　　【（『host』与『examplebucket.s3.amazonaws.com』）
+　　　，（『x-amz-content-sha256』与『e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』）
+　　　，（『x-amz-date』与『20130524T000000Z』）
+　　　】也
+　，「已签」者「列」【『host』，『x-amz-content-sha256』，『x-amz-date』】也
+　，「载摘要」者『e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』也
+　，「时刻」者『20130524T000000Z』也
+　，「地域」者『us-east-1』也
+　，「钥号」者「例钥号」于「元」也
+　，「密钥」者「例密钥」于「元」也
+　】
+　属「签料」
+也。
+
+「范三」乃化「有」为「文」者也。
+「范三」者得「无」而
+　『GET
+/
+lifecycle=
+host:examplebucket.s3.amazonaws.com
+x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+x-amz-date:20130524T000000Z
+
+host;x-amz-content-sha256;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』
+也。
+
+「串三」乃化「有」为「文」者也。
+「串三」者得「无」而
+　『AWS4-HMAC-SHA256
+20130524T000000Z
+20130524/us-east-1/s3/aws4_request
+9766c798316ff2757b517bc739a67f6213b4ab36dd5da2f94eaebf79c77395ca』
+也。
+
+「：汉语：通称例四（example 4）。AWS 官方列举对象例：GET /?max-keys=2&prefix=J，三个已签头。
+　　文言：官样列举之例：GET /?max-keys=2&prefix=J，三已签之头。
+　　赋曰：列举一篇，前缀限数。：」
+「料四」乃化「有」为「签料」者也。
+「料四」者得「无」而
+　「组值」
+　【「方法」者『GET』也
+　，「径」者『/』也
+　，「查询」者『max-keys=2&prefix=J』也
+　，「头们」者「列」
+　　　【（『host』与『examplebucket.s3.amazonaws.com』）
+　　　，（『x-amz-content-sha256』与『e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』）
+　　　，（『x-amz-date』与『20130524T000000Z』）
+　　　】也
+　，「已签」者「列」【『host』，『x-amz-content-sha256』，『x-amz-date』】也
+　，「载摘要」者『e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』也
+　，「时刻」者『20130524T000000Z』也
+　，「地域」者『us-east-1』也
+　，「钥号」者「例钥号」于「元」也
+　，「密钥」者「例密钥」于「元」也
+　】
+　属「签料」
+也。
+
+「范四」乃化「有」为「文」者也。
+「范四」者得「无」而
+　『GET
+/
+max-keys=2&prefix=J
+host:examplebucket.s3.amazonaws.com
+x-amz-content-sha256:e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+x-amz-date:20130524T000000Z
+
+host;x-amz-content-sha256;x-amz-date
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855』
+也。
+
+「串四」乃化「有」为「文」者也。
+「串四」者得「无」而
+　『AWS4-HMAC-SHA256
+20130524T000000Z
+20130524/us-east-1/s3/aws4_request
+df57d21db20da04d7fa30298dd4488ba3a2b47ca3a489c74750e0f1e7df1b9b7』
+也。
+
+「：汉语：通称核一例（check one example）。依次接收名、签料、规范请求、待签串、签名与授权头，逐项核对。
+　　文言：受名、签料、规范、待签、签名与授权之头，逐项核之。
+　　赋曰：六事相校，一签为凭。：」
+「核一例」乃化「名」曰「文」又化「料」曰「签料」又化「规范」曰「文」又化「待签」曰「文」又化「签」曰「文」又化「授权」曰「文」为「有」者也。
+「核一例」者得「名」曰「名」又得「料」曰「料」又得「规范」曰「规范」又得「待签」曰「待签」又得「签」曰「签」又得「授权」曰「授权」而
+　令「无甲」为「验文」于「名」曰（「名」接『：规范请求』）于「实」曰（「造规范请求」于「料」）于「期」曰「规范」而
+　令「无乙」为「验文」于「名」曰（「名」接『：待签串』）于「实」曰（「造待签串」于「料」于「规范」）于「期」曰「待签」而
+　令「无丙」为「验文」于「名」曰（「名」接『：签名』）于「实」曰（「签名第四」于「料」）于「期」曰「签」而
+　「验文」于「名」曰（「名」接『：授权头』）于「实」曰（「造授权头」于「料」）于「期」曰「授权」
+也。
+
+「：汉语：通称核官样（check official examples）。把四个官样例逐个核对。
+　　文言：四官样之例逐个核之。
+　　赋曰：四篇既列，字字归真。：」
+「核官样」乃化「有」为「有」者也。
+「核官样」者得「无」而
+　令「无甲」为
+　　「核一例」
+　　　于「名」曰『例一』
+　　　于「料」曰（「料一」于「元」）
+　　　于「规范」曰（「范一」于「元」）
+　　　于「待签」曰（「串一」于「元」）
+　　　于「签」曰『f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41』
+　　　于「授权」曰『AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;range;x-amz-content-sha256;x-amz-date,Signature=f0e8bdb87c964420e857bd35b5d6ed310bd44f0170aba48dd91039c6036bdb41』而
+　令「无乙」为
+　　「核一例」
+　　　于「名」曰『例二』
+　　　于「料」曰（「料二」于「元」）
+　　　于「规范」曰（「范二」于「元」）
+　　　于「待签」曰（「串二」于「元」）
+　　　于「签」曰『98ad721746da40c64f1a55b78f14c238d841ea1380cd77a1b5971af0ece108bd』
+　　　于「授权」曰『AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=date;host;x-amz-content-sha256;x-amz-date;x-amz-storage-class,Signature=98ad721746da40c64f1a55b78f14c238d841ea1380cd77a1b5971af0ece108bd』而
+　令「无丙」为
+　　「核一例」
+　　　于「名」曰『例三』
+　　　于「料」曰（「料三」于「元」）
+　　　于「规范」曰（「范三」于「元」）
+　　　于「待签」曰（「串三」于「元」）
+　　　于「签」曰『fea454ca298b7da1c68078a5d1bdbfbbe0d65c699e0f91ac7a200a0136783543』
+　　　于「授权」曰『AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=fea454ca298b7da1c68078a5d1bdbfbbe0d65c699e0f91ac7a200a0136783543』而
+　「核一例」
+　　于「名」曰『例四』
+　　于「料」曰（「料四」于「元」）
+　　于「规范」曰（「范四」于「元」）
+　　于「待签」曰（「串四」于「元」）
+　　于「签」曰『34b48302e7b5fa45bde8084f4b7868a86f0a534bc59db6670ed5711ef69dc6f7』
+　　于「授权」曰『AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20130524/us-east-1/s3/aws4_request,SignedHeaders=host;x-amz-content-sha256;x-amz-date,Signature=34b48302e7b5fa45bde8084f4b7868a86f0a534bc59db6670ed5711ef69dc6f7』
+也。
+
+「：汉语：通称核钥码（check HMAC）。用公开的 HMAC-SHA256 向量（密钥 key、消息 The quick brown fox jumps over the lazy dog）核对「钥码」的实现，再进官样例。
+　　文言：以公开之 HMAC 向量核钥码之实，乃进官样。
+　　赋曰：一钥一消，官样可稽。：」
+「核钥码」乃化「有」为「有」者也。
+「核钥码」者得「无」而
+　令「码」为「钥码」于「钥」曰（「帛作列」于（「作帛」于『key』））于「钥长」曰「三」于「消」曰『The quick brown fox jumps over the lazy dog』而
+　「验文」
+　　于「名」曰『HMAC 沙二五六』
+　　于「实」曰（「十六进文」于（「列出帛」于「码」于「三二」于「零」于（「空帛」于「元」）））
+　　于「期」曰『f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8』
+也。
+
+「核钥码」于「元」。
+「核官样」于「元」。
+「书」于『邸阁对象存储签名已知答案测试通过』。
