@@ -164,6 +164,7 @@
 　　　，『type』
 　　　，『href』
 　　　，『src』
+　　　，『srcdoc』
 　　　，『alt』
 　　　，『target』
 　　　，『rel』
