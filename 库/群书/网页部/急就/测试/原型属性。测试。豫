@@ -1,0 +1,32 @@
+「：汉语：通称原型属性冒烟测试：以几段小脚本试对象字面量里冒号形式的 __proto__——设原型、值为非对象时忽略、值为空时置空、方括号与简写仍作普通属性，以及同一字面量写两次报语法错误。
+　　文言：原型属性之试：以数小篇试对象字面量中冒号之 __proto__——立原型、值非物则略、值为空则置空、方括与简写仍为常性，及同一字面量二见则报语法之误。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「急就」之「虚拟机」之书。
+寻观「急就」之「脚本值」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「试段」乃化「文」又化「文」为「有」者也。
+「试段」者得「段」又得「说明」而
+　「断言」于（「急就真值」于（「急就行脚本」于「段」））于「说明」
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　（「试段」于『let p={x:1};let o={__proto__:p,y:2};Object.getPrototypeOf(o)===p&&o.x===1&&o.y===2;』于『冒号 __proto__ 设原型并可继承读』）而后
+　（「试段」于『let o={__proto__:null};Object.getPrototypeOf(o)===null;』于『值为空置空原型』）而后
+　（「试段」于『let o={__proto__:1};Object.getPrototypeOf(o)===Object.prototype;』于『值非对象则忽略』）而后
+　（「试段」于『let o={["__proto__"]:7};Object.getPrototypeOf(o)===Object.prototype&&o.__proto__===7;』于『方括号键作普通属性』）而后
+　（「试段」于『let __proto__=7;let o={__proto__};o.__proto__===7&&Object.getPrototypeOf(o)===Object.prototype;』于『简写作普通属性』）而后
+　（「试段」
+　　于『let f=function(){try{(0,eval)("{__proto__:1,__proto__:2}");return false;}catch(e){return e instanceof SyntaxError;}}; f();』
+　　于『同一字面量写两次报语法错误』）而后
+　（「试段」于『let o={__proto__:null,x:1};let p=Object.getPrototypeOf(o);p===null&&o.x===1;』于『置空后仍可添普通属性』）而后
+　「书」于『原型属性冒烟通过』
+也。
+
+「入口」于「元」。
