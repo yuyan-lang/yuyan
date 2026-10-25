@@ -448,7 +448,7 @@ input,textarea,select,button { display: inline-block; color: black; background: 
 input,select { width: 200px }
 select[multiple] { height: 80px; white-space: pre-wrap }
 textarea { width: 200px; height: 80px; white-space: pre-wrap }
-input[type=checkbox],input[type=radio] { width: 16px; height: 16px; padding: 0 }
+input[type=checkbox],input[type=radio] { width: 16px; height: 16px; padding: 0; border: 1px solid #6b7280; border-radius: 3px; background: white }
 input[type=hidden] { display: none }
 p,blockquote,figure,dl,ol,ul,pre { margin-top: 1em; margin-bottom: 1em }
 blockquote,figure { margin-left: 40px; margin-right: 40px }
