@@ -14,14 +14,43 @@
 寻观「网页榫卯」之「定时器」之书。
 寻观「网页榫卯」之「网页笔谈」之书。
 寻观「择模」之书。
+寻观「抓取」之书。
 寻观「装帧」之书。
 
-「：汉语：通称试验宿主（test host）。页面接口的最小宿主：网络交换一律报无网络，本地与会话存储各开空簿，持久化与媒体宿主都不做。
-　　文言：试之主：网之交换一律报无，二簿各开空册，持久与媒主皆不为。：」
+「：汉语：通称试取栏（test header lookup）。在字段列里自左向右找名字（不分大小写）相符的第一项，返回其值；找不到给空串。
+　　文言：试取栏：于字段之列自左而右求名（不计大小写）相符者之首项，还其值；不得则空。：」
+「试取栏」乃化（「列」于（「文」合「文」））又化「文」为「文」者也。
+「试取栏」者得「牒们」又得「名」而
+　鉴「牒们」而
+　　或有「罄」则『』
+　　或有（「缀」于「首」于「余」）则若「文同」于（「样式小写」于（「首」中「零」））于（「样式小写」于「名」）则（「首」中「一」）否则「试取栏」于「余」于「名」
+也。
+
+「：汉语：通称试验交换（test exchange）。页面抓取用的替身：回一份带跨源许可的 JSON，把请求里的 Referer 原样写进 headers.referer，供子页脚本验证取资与来源字段。
+　　文言：试之交换：页面采书之替：还一带跨源之许的结绳，以请中之 Referer 原样书于 headers.referer，供子页脚本验取资与来路。：」
+「试验交换」乃化「抓取请求」为「抓取响应」者也。
+「试验交换」者得「请」而
+　令「来路」为（「试取栏」于（「请」中「字段」）于『Referer』）而
+　令「体」为（『{"headers":{"referer":"』接「来路」接『"}}』）而
+　令「牒」为（「列」【（『Access-Control-Allow-Origin』与『*』），（『Content-Type』与『application/json』）】）而
+　令「应」为
+　　（「组值」
+　　　【「地址」者（「请」中「地址」）也
+　　　，「状态」者「二零零」也
+　　　，「字段」者「牒」也
+　　　，「主体」者（「作帛」于「体」）也
+　　　，「种类」者『basic』也
+　　　，「诊断」者『』也
+　　　】）而
+　「应」
+也。
+
+「：汉语：通称试验宿主（test host）。页面接口的最小宿主：网络交换用「试验交换」的回话，本地与会话存储各开空簿，持久化与媒体宿主都不做。
+　　文言：试之主：网之交换用「试验交换」之回话，二簿各开空册，持久与媒主皆不为。：」
 「试验宿主」乃化「有」为「页面接口宿主」者也。
 「试验宿主」者得「无」而
 　「新页面接口宿主」
-　　于「交换」曰「无壳交换」
+　　于「交换」曰「试验交换」
 　　于「本地」曰（「新储籍簿」于「元」）
 　　于「会话」曰（「新储籍簿」于「元」）
 　　于「持久」曰「页面空持久」
@@ -32,7 +61,7 @@
 　　文言：父篇之文：一段之文、一 srcdoc 之框，及一段脚本：于父篇挂 message 之听以记子篇所投，复动态入一外链脚本与一图，各记其 load／error。子框之脚本设一全局之量而投一书于父。：」
 「父页正文」乃化「有」为「文」者也。
 「父页正文」者得「无」而
-　『<!doctype html><html><head><title>父</title></head><body><div id="父文"></div><iframe id="源" srcdoc="<p id=源段></p>" width="120" height="90"></iframe><script>window.__记={信:0,动信:0,脚值:0,脚本载:0,脚本误:0,图载:0,图误:0};window.addEventListener("message",function(e){if(e.data==="动问"){window.__记.动信=window.__记.动信+1;}});var d=document.createElement("iframe");d.srcdoc="<p id=源段二></p><script>parent.postMessage('动问','*');<\/script>";d.width=100;d.height=80;document.body.appendChild(d);var s=document.createElement("script");s.setAttribute("src","child.js");s.onload=function(){window.__记.脚本载=1;};s.onerror=function(){window.__记.脚本误=1;};document.body.appendChild(s);var i=document.createElement("img");i.onload=function(){window.__记.图载=window.__记.图载+1;};i.onerror=function(){window.__记.图误=1;};i.src="pic.png";document.body.appendChild(i);</script></body></html>』
+　『<!doctype html><html><head><title>父</title></head><body><div id="父文"></div><img id="静" src="pic.png"><img id="集" srcset="pic2.png 1x, pic3.png 2x"><iframe id="源" srcdoc="<p id=源段></p>" width="120" height="90"></iframe><script>window.__记={信:0,动信:0,脚值:0,脚本载:0,脚本误:0,图载:0,图误:0,静载:0,集载:0,集误:0,集址:"",取信:"",取值:"",取故:"",取基:"",深信:"",深值:"",深故:"",深基:""};window.addEventListener("message",function(e){if(e.data==="动问"){window.__记.动信=window.__记.动信+1;}if(e.data&&e.data.成){window.__记.取信=e.data.成;window.__记.取值=e.data.值;window.__记.取故=e.data.故;window.__记.取基=e.data.基;}if(e.data&&e.data.深成){window.__记.深信=e.data.深成;window.__记.深值=e.data.深值;window.__记.深故=e.data.深故;window.__记.深基=e.data.深基;}});var d=document.createElement("iframe");d.srcdoc="<p id=源段二></p><script>parent.postMessage('动问','*');<\/script>";d.width=100;d.height=80;document.body.appendChild(d);var c=document.createElement("iframe");c.srcdoc="<p></p><script>fetch('https://www1.example.test/j').then(function(r){return r.json();}).then(function(j){parent.postMessage({成:'成',值:j.headers.referer,基:document.baseURI},'*');}).catch(function(e){parent.postMessage({成:'败',故:String(e),基:document.baseURI},'*');});<\/script>";c.width=100;c.height=80;document.body.appendChild(c);var a=document.createElement("iframe");a.srcdoc="<p id=甲></p>";a.width=100;a.height=80;a.onload=function(){var b=a.contentDocument.createElement("iframe");b.srcdoc="<p></p><script>fetch('https://www1.example.test/j').then(function(r){return r.json();}).then(function(j){top.postMessage({深成:'成',深值:j.headers.referer,深基:document.baseURI},'*');}).catch(function(e){top.postMessage({深成:'败',深故:String(e),深基:document.baseURI},'*');});<\/script>";b.width=100;b.height=80;a.contentDocument.body.appendChild(b);};document.body.appendChild(a);var s=document.createElement("script");s.setAttribute("src","child.js");s.onload=function(){window.__记.脚本载=1;};s.onerror=function(){window.__记.脚本误=1;};document.body.appendChild(s);var i=document.createElement("img");i.onload=function(){window.__记.图载=window.__记.图载+1;};i.onerror=function(){window.__记.图误=1;};i.src="pic.png";document.body.appendChild(i);var 静=document.getElementById("静");静.onload=function(){window.__记.静载=1;};var 集=document.getElementById("集");集.onload=function(){window.__记.集载=1;window.__记.集址=this.currentSrc;};集.onerror=function(){window.__记.集误=1;};</script></body></html>』
 也。
 
 「：汉语：通称试验读取器。父页、外链脚本与图像给固定网址，其余一律没有。
@@ -58,6 +87,13 @@
 　　　「可有」于（「组值」
 　　　　【「地址」者「址」也
 　　　　，「主体」者（「作帛」于『图』）也
+　　　　，「编码」者『UTF-8』也
+　　　　，「头」者（「罄」以（「文」合「文」））也
+　　　　】）
+　　否则若「文同」于「址」于『https://example.test/pic2.png』则
+　　　「可有」于（「组值」
+　　　　【「地址」者「址」也
+　　　　，「主体」者（「作帛」于『图二』）也
 　　　　，「编码」者『UTF-8』也
 　　　　，「头」者（「罄」以（「文」合「文」））也
 　　　　】）
@@ -105,6 +141,27 @@
 　　　「告祸」以「有」于「名」）
 也。
 
+「：汉语：通称取文（text property）。从脚本对象读一个属性当作文字；没有或不是文字时给空串。
+　　文言：取文：自脚本之物取一性为文；无或非文则空。：」
+「取文」乃化「急就值」又化「文」为「文」者也。
+「取文」者得「物」又得「名」而
+　鉴「急就取属」于「物」于（「急就文字自串」于「名」）而
+　　或有「急就字符串值」于「其值」则「急就文字作串」于「其值」
+　　或有「其他」则『』
+也。
+
+「：汉语：通称查文（check text）。打印一项文字的实测与期望，相同记通过，不同记不对并告祸。
+　　文言：查文：印其实与期，同则通，不同则否而告祸。：」
+「查文」乃化「名」曰「文」又化「得」曰「文」又化「期」曰「文」为「有」者也。
+「查文」者得「名」曰「名」又得「得」曰「得」又得「期」曰「期」而
+　若「文同」于「得」于「期」则
+　　（「书」于（「名」接『：通过』）而后
+　　　「元」）
+　否则
+　　（「书」于（「名」接『：不对（得 』接「得」接『，期 』接「期」接『）』）而后
+　　　「告祸」以「有」于「名」）
+也。
+
 「入口」乃化「有」为「有」者也。
 「入口」者得「无」而
 　令「载页」为
@@ -131,7 +188,11 @@
 　　　　　　「书」于（『诊断：信 』接（「述数」于（「取数」于「记」于『信』））接『，脚本载 』接（「述数」于（「取数」于「记」于『脚本载』））接『，脚本误 』
 　　　　　　　接（「述数」于（「取数」于「记」于『脚本误』））接『，图载 』接（「述数」于（「取数」于「记」于『图载』））接『，图误 』
 　　　　　　　接（「述数」于（「取数」于「记」于『图误』））接『，动信 』接（「述数」于（「取数」于「记」于『动信』））接『，脚值 』
-　　　　　　　接（「述数」于（「取数」于「全局」于『__脚』）））而
+　　　　　　　接（「述数」于（「取数」于「全局」于『__脚』））接『，静载 』接（「述数」于（「取数」于「记」于『静载』））接『，集载 』
+　　　　　　　接（「述数」于（「取数」于「记」于『集载』））接『，集误 』接（「述数」于（「取数」于「记」于『集误』））接『，集址 』
+　　　　　　　接（「取文」于「记」于『集址』）接『，取信 』接（「取文」于「记」于『取信』）接『，取值 』接（「取文」于「记」于『取值』）接『，取基 』
+　　　　　　　接（「取文」于「记」于『取基』）接『，取故 』接（「取文」于「记」于『取故』）接『，深信 』接（「取文」于「记」于『深信』）接『，深值 』
+　　　　　　　接（「取文」于「记」于『深值』）接『，深基 』接（「取文」于「记」于『深基』）接『，深故 』接（「取文」于「记」于『深故』））而
 　　　　　令「无查一」为「查」于「名」曰『srcdoc 子框内没有脚本（信为零）』于「得」曰（「取数」于「记」于『信』）于「期」曰「零」而
 　　　　　令「无查动」为「查」于「名」曰『动态 srcdoc 子框脚本向父页投消息』于「得」曰（「取数」于「记」于『动信』）于「期」曰「一」而
 　　　　　令「无查二」为「查」于「名」曰『动态图像派 load』于「得」曰（「取数」于「记」于『图载』）于「期」曰「一」而
@@ -139,6 +200,17 @@
 　　　　　令「无查四」为「查」于「名」曰『动态外链脚本派 load』于「得」曰（「取数」于「记」于『脚本载』）于「期」曰「一」而
 　　　　　令「无查五」为「查」于「名」曰『动态外链脚本没有派 error』于「得」曰（「取数」于「记」于『脚本误』）于「期」曰「零」而
 　　　　　令「无查六」为「查」于「名」曰『动态外链脚本执行』于「得」曰（「取数」于「全局」于『__脚』）于「期」曰「七」而
+　　　　　令「无查静」为「查」于「名」曰『标记里的图像派 load』于「得」曰（「取数」于「记」于『静载』）于「期」曰「一」而
+　　　　　令「无查集」为「查」于「名」曰『srcset 图像派 load』于「得」曰（「取数」于「记」于『集载』）于「期」曰「一」而
+　　　　　令「无查集误」为「查」于「名」曰『srcset 图像没有派 error』于「得」曰（「取数」于「记」于『集误』）于「期」曰「零」而
+　　　　　令「无查取信」为「查文」于「名」曰『srcdoc 子页取资成功』于「得」曰（「取文」于「记」于『取信』）于「期」曰『成』而
+　　　　　令「无查取值」为
+　　　　　　「查文」于「名」曰『srcdoc 子页取资的 Referer 按来源策取源』于「得」曰（「取文」于「记」于『取值』）于「期」曰『https://example.test/』而
+　　　　　令「无查取基」为
+　　　　　　「查文」于「名」曰『srcdoc 子页的 baseURI 承父页』于「得」曰（「取文」于「记」于『取基』）于「期」曰『https://example.test/parent.html』而
+　　　　　令「无查深」为「查文」于「名」曰『嵌套 srcdoc 孙页取资成功』于「得」曰（「取文」于「记」于『深信』）于「期」曰『成』而
+　　　　　令「无查集址」为
+　　　　　　「查文」于「名」曰『srcset 选中 1x 那一项作 currentSrc』于「得」曰（「取文」于「记」于『集址』）于「期」曰『https://example.test/pic2.png』而
 　　　　　「书」于『取资测试通过』
 　　　　）
 　　）
