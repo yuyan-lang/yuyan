@@ -104,7 +104,7 @@
 「服测试主机吗」乃化「文」为「爻」者也。
 「服测试主机吗」者得「主」而
 　令「小」为「小写字符串」于「主」而
-　令「子域」为「尾同」于『.web-platform.test』于「小」而
+　令「子域」为（「尾同」于『.web-platform.test』于「小」）或（「尾同」于『.not-web-platform.test』于「小」）而
 　令「回环」为（「文同」于「小」于『127.0.0.1』）或（「文同」于「小」于『localhost』）而
 　令「正名」为「文同」于「小」于『web-platform.test』而
 　令「别名」为「文同」于「小」于『not-web-platform.test』而
@@ -357,6 +357,14 @@
 　　（「可有」以「文」于『web-platform.test』）
 　否则若「文同」于「名」于『hostname』则
 　　（「可有」以「文」于『web-platform.test』）
+　否则若「文同」于「名」于『hosts[][]』则
+　　（「可有」以「文」于『web-platform.test』）
+　否则若「文同」于「名」于『hosts[alt][]』则
+　　（「可有」以「文」于『not-web-platform.test』）
+　否则若「文同」于「名」于『hosts[alt][www]』则
+　　（「可有」以「文」于『www.not-web-platform.test』）
+　否则若「文同」于「名」于『hosts[alt][www2]』则
+　　（「可有」以「文」于『www2.not-web-platform.test』）
 　否则若「文同」于「名」于『domains[www]』则
 　　（「可有」以「文」于『www.web-platform.test』）
 　否则若「文同」于「名」于『domains[www1]』则
@@ -393,8 +401,8 @@
 　　（「可无」以「文」）
 也。
 
-「：汉语：替换取值：host、hostname、ports[scheme][n]、domains[name]、location[...]、GET[name]、uuid()、token。不认识的得空串。
-　　文言：替换之取值：host、hostname、ports[scheme][n]、domains[name]、location[...]、GET[name]、uuid()、token。不识者空。：」
+「：汉语：替换取值：host、hostname、hosts[alt][…]、ports[scheme][n]、domains[name]、location[...]、GET[name]、uuid()、token。host 只给主机名不带端口，端口另由 ports[...] 给；alt 一族给跨站主机 not-web-platform.test 与其子域。不认识的得空串。
+　　文言：替换之取值：host、hostname、hosts[alt][…]、ports[scheme][n]、domains[name]、location[...]、GET[name]、uuid()、token。host 惟主名而不带端口，端口别由 ports[...] 与；alt 一族与跨站之主 not-web-platform.test 及其子域。不识者空。：」
 「服换值」乃化「文」又化「文」为「文」者也。
 「服换值」者得「名」又得「址」而
 　令「析」为「服拆址」于「址」而
