@@ -1,0 +1,41 @@
+「：汉语：通称字符串取属性与装箱身份冒烟测试。试字符串原值的取属性（length、下标、非规范写法、越界、方法名落在原型上）与装箱物（Object、new String）的身份：每次装箱都是新物，`Object("x") === Object("x")` 为假；并守装箱物下标与 length 属性。
+　　文言：字符串取性与装箱身份之试：试字符串原值之取性（length、下标、非规范之书、越界、法名之落于原型者）与装箱之物（Object、new String）之身份：每装箱皆新物，`Object("x") === Object("x")` 为假；又守装箱物之下标与 length 之性。
+　　赋曰：原值取性按码求，方法缘原上枝头。装箱每呼新立命，身份相同便作仇。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「急就」之「虚拟机」之书。
+寻观「急就」之「脚本值」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「试段」乃化「文」又化「文」为「有」者也。
+「试段」者得「段」又得「说明」而
+　「断言」于（「急就真值」于（「急就行脚本」于「段」））于「说明」
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　（「试段」于『"abc".length===3&&"abc"[0]==="a"&&"abc"[2]==="c"&&"abc"[3]===undefined;』于『原值取 length 与下标』）而后
+　（「试段」
+　　于『"abc"["01"]===undefined&&"abc"["-1"]===undefined&&"abc"[1.5]===undefined&&"abc"["2"]==="c"&&"abc"["4294967295"]===undefined;』
+　　于『非规范写法与越界得未定义』）而后
+　（「试段」
+　　于『let s="abc";s.charAt===String.prototype.charAt&&s.charAt(1)==="b"&&s.indexOf("c")===2&&s.toUpperCase()==="ABC"&&s.zzz===undefined;』
+　　于『方法落在字符串原型上』）而后
+　（「试段」
+　　于『let a=Object("x");let b=Object("x");let c=new String("x");let d=new String("x");!(a===b)&&!(c===d)&&!(a===c)&&a.valueOf()==="x"&&c.valueOf()==="x";』
+　　于『装箱物每次新身份』）而后
+　（「试段」
+　　于『let b=Object("ab");b[0]==="a"&&b[1]==="b"&&b[2]===undefined&&b.length===2&&b["01"]===undefined&&b["-1"]===undefined;』
+　　于『装箱物下标与 length』）而后
+　（「试段」
+　　于『let b=new String("ab");b.charCodeAt(0)===97&&b.slice(1)==="b"&&Object.prototype.toString.call(b)==="[object String]"&&typeof b==="object";』
+　　于『装箱物可调字符串方法』）而后
+　（「试段」于『let a=Object("x");a.n=1;let b=Object("x");b.n===undefined;』于『装箱物互不共享属性』）而后
+　（「试段」于『let s="";for(let i=0;i<2000;i++){s=s+"x";}s.length===2000&&s[1999]==="x"&&s.charAt(1999)==="x";』于『长串取性与取下标』）
+也。
+
+「入口」于「元」。
