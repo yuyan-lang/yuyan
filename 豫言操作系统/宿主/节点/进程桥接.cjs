@@ -3,6 +3,8 @@
 const {spawn} = require('node:child_process');
 const {receiveMessageOnPort} = require('node:worker_threads');
 const {constants} = require('node:os');
+const 文件 = require('node:fs');
+const 路径 = require('node:path');
 const 网 = require('node:net');
 const {查询进程资源} = require('./进程资源.cjs');
 
@@ -148,12 +150,22 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
     if (术.startsWith('网')) return await 网络(术, 参);
     if (术 === '启动') {
       if (记录们.size >= 4096) return -24;
-      const [程序, 参数, 客体, 目录, 环境, 限时, 宽限, 离群] = 参;
+      const [程序, 参数, 客体, 目录, 环境, 限时, 宽限, 离群, 出卷] = 参;
       // 文言：子进程启于客之今目录；env、timeout 之包装已由客拆出，环境并入，限时由此计之。汉语：子进程在客实例记录的当前目录里启动。env 与 timeout 包装已在客线程拆出：附加环境并入子进程环境；有时限时由这里计时，到时发 SIGTERM（有宽限则宽限后再发 SIGKILL），退出码记为 124。带包装的任务不走内部编译线程池。
       const 包装 = !!环境 || 限时 > 0;
+      // 文言：出卷者，二出并续于卷末（议六五九）：开卷以续，授子程为一、二流，起毕关之；不建二管，故无人读而无失。汉语：出卷（2026-10-26，议题 659）：把子进程的标准输出与标准错误都接到一个文件的末尾（追加写，缺的上级目录一并建），起完就关掉本进程这一份句柄；两路不建管道，起它的进程退出后子进程印的报错照样留在卷里，也没有人读管道可丢。
+      let 卷柄 = null;
+      if (出卷) {
+        try {
+          文件.mkdirSync(路径.dirname(出卷), {recursive: true});
+          卷柄 = 文件.openSync(出卷, 'a');
+        } catch { return -2; }
+      }
+      const 三流 = 卷柄 === null ? ['ignore', 'pipe', 'pipe'] : ['ignore', 卷柄, 卷柄];
       // 文言：离群者另为一会，不交编译之线程（线程为客之子孙，不能离客之会），spawn 带 detached。汉语：遣离使的子进程自成一会话，不交内部编译线程（线程是客体的子孙，脱离不了客体的会话），spawn 带上 detached。
-      const 工 = (包装 || 离群 ? null : 编译线程?.(程序, 参数, 客体, 目录)) ?? spawn(程序, 参数, {cwd: 目录, stdio: ['ignore', 'pipe', 'pipe'], shell: false, detached: !!离群,
+      const 工 = (包装 || 离群 || 卷柄 !== null ? null : 编译线程?.(程序, 参数, 客体, 目录)) ?? spawn(程序, 参数, {cwd: 目录, stdio: 三流, shell: false, detached: !!离群,
         env: 客体 ? {...process.env, ...(环境 ?? {}), 豫言诺驿轮数: '1'} : (环境 ?? process.env)});
+      if (卷柄 !== null) { try {文件.closeSync(卷柄);} catch {} }
       const 记录 = {工, 进程号: 工.pid, 完成: false, 码: 0, 输出: [], 错误: [], 出长: 0, 错长: 0, 溢出: false, 超时: false, 离群: !!离群};
       // 文言：离群之子不系于父之生灭：unref 其柄与二管，父终而子犹行。汉语：遣离使的子进程不随父进程生死：unref 进程句柄与两条输出管，父进程退出后它照样运行。
       if (离群) {工.unref(); 工.stdout?.unref?.(); 工.stderr?.unref?.();}
@@ -173,8 +185,9 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
         记录[长名] += 块.length;
         记录[是错 ? '错误' : '输出'].push(块);
       }
-      工.stdout.on('data', 块 => 收(块, false));
-      工.stderr.on('data', 块 => 收(块, true));
+      // 文言：出卷者无管，二流为无；收使惟报退码。汉语：接到卷上的子进程没有管道，两个流为无，收取只报退出码。
+      工.stdout?.on('data', 块 => 收(块, false));
+      工.stderr?.on('data', 块 => 收(块, true));
       const 号 = 下号++;
       return await new Promise(成 => {
         工.once('spawn', () => {记录.进程号 = 工.pid; 记录们.set(号, 记录); 成(号);});
