@@ -222,12 +222,14 @@ export class 进程表 {
     if (消息.种 !== '调') return;
     let 值;
     try { 值 = this.处理(线, 记录, 消息.名, 消息.参, 消息.环); }
-    catch (错) { return this.答(线, 错?.message ?? String(错), true); }
-    if (值 instanceof Promise) 值.then(果 => this.答(线, 果), 错 => this.答(线, 错?.message ?? String(错), true));
+    catch (错) { return this.答(线, 错?.message ?? String(错), true, 错?.码 ?? 0); }
+    if (值 instanceof Promise) 值.then(果 => this.答(线, 果), 错 => this.答(线, 错?.message ?? String(错), true, 错?.码 ?? 0));
     else this.答(线, 值);
   }
 
-  答(线, 值, 是错 = false) {
+  // 文言：答客：错时并寄其码于控制字之四（零为无），客之问据之择底码（十月二十六日，议七百二十三）。
+  // 汉语：答复客体：出错时把错误的码一并放进控制字的第 4 格（0 表示没有），工作线程的提问据此选底层状态码（2026-10-26，议题 723）。
+  答(线, 值, 是错 = false, 码 = 0) {
     let 字节们;
     try { 字节们 = 是错 ? 编码器.encode(String(值)) : 编码值(值); }
     catch (错) { 字节们 = 编码器.encode(错.message); 是错 = true; }
@@ -236,6 +238,7 @@ export class 进程表 {
     线.待续 = 本块 < 字节们.length ? {字节们, 位: 本块, 状态: 是错 ? 2 : 1} : null;
     线.控制[1] = 字节们.length;
     线.控制[2] = 本块;
+    线.控制[3] = 码;
     Atomics.store(线.控制, 0, 是错 ? 2 : 1);
     Atomics.notify(线.控制, 0);
   }

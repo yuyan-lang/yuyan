@@ -19,9 +19,14 @@ const 父径 = 径 => { const 位 = 径.lastIndexOf('/'); return 位 <= 0 ? '/' 
 const 末名 = 径 => 径.slice(径.lastIndexOf('/') + 1);
 const 现秒 = () => Math.floor(Date.now() / 1000);
 
+// 文言：文或目录不在之误：赋底码“不存在”（四十四），与执行器、诺驿之码同，工作线程据之告可承之祸（十月二十六日，议七百二十三）。
+// 汉语：文件或目录不存在时的错误：附带底层状态码“不存在”（44），与执行器、诺驿的码一致，工作线程据此抛出可接的豫言异常（2026-10-26，议题 723）。
 export class 文件不存在 extends Error {
-  constructor(径) { super('文件或目录不存在：' + 径); this.code = 'ENOENT'; }
+  constructor(径) { super('文件或目录不存在：' + 径); this.code = 'ENOENT'; this.码 = 44; }
 }
+
+// 文言：带底码之误：宿主依码告可承之祸（十月二十六日，议七百二十三）。汉语：带底层状态码的错误：宿主按码抛出可接的豫言异常（2026-10-26，议题 723）。
+const 错码 = (码, 文) => Object.assign(Error(文), {码});
 
 export class 构建文件系统 {
   constructor({上限字节 = 4 * 1024 * 1024 * 1024} = {}) {
@@ -34,17 +39,17 @@ export class 构建文件系统 {
   建目录(径) {
     径 = 规范路径(径);
     if (this.目录.has(径)) return;
-    if (this.文件.has(径)) throw Error('已有同名文件，不能建目录：' + 径);
+    if (this.文件.has(径)) throw 错码(20, '已有同名文件，不能建目录：' + 径);
     this.建目录(父径(径));
     this.目录.set(径, new Set());
     this.目录.get(父径(径)).add(末名(径));
   }
   写(径, 内容, 时间 = 现秒()) {
     径 = 规范路径(径);
-    if (this.目录.has(径)) throw Error('是目录，不能写入：' + 径);
+    if (this.目录.has(径)) throw 错码(31, '是目录，不能写入：' + 径);
     内容 = 字节(内容);
     const 旧长 = this.文件.get(径)?.内容.length ?? 0;
-    if (this.总字节 - 旧长 + 内容.length > this.上限字节) throw Error('构建文件系统超过上限');
+    if (this.总字节 - 旧长 + 内容.length > this.上限字节) throw 错码(51, '构建文件系统超过上限');
     this.建目录(父径(径));
     this.文件.set(径, {内容, 时间});
     this.目录.get(父径(径)).add(末名(径));
@@ -69,7 +74,7 @@ export class 构建文件系统 {
     const 项 = this.文件.get(旧);
     if (!项) throw new 文件不存在(旧);
     if (旧 === 新) return;
-    if (this.目录.has(新)) throw Error('是目录，不能改名覆盖：' + 新);
+    if (this.目录.has(新)) throw 错码(31, '是目录，不能改名覆盖：' + 新);
     if (this.文件.has(新)) this.删文件(新);
     this.文件.delete(旧);
     this.目录.get(父径(旧))?.delete(末名(旧));
