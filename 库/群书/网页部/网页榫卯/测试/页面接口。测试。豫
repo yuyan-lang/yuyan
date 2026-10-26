@@ -8,6 +8,7 @@
 寻观「抓取」之书。
 寻观「网页榫卯」之书。
 寻观「网页榫卯」之「页面接口」之书。
+寻观「网页榫卯」之「定时器」之书。
 寻观「网页榫卯」之「储籍」之书。
 寻观「网页榫卯」之「标头对象」之书。
 寻「豫章」之「本原」之「本术」之书。
@@ -136,23 +137,53 @@
 　（若「簿有」于「本地簿」于「键」曰『k』于「值」曰『v』则「书」于『本地簿：通过』否则「告祸」于『本地簿没有记下键值』）
 也。
 
-「：汉语：驿书的事件顺序、各种 responseType 与 responseType 为 blob 时的 text。
-　　文言：驿书之事序、诸响应之种，及 blob 之 text。：」
+「：汉语：通称泵页面任务（pump page tasks）。反复把页面时钟推到下一个到期时刻并执行到期的定时器，直到没有定时器为止；驿书（XMLHttpRequest）的发送排在零毫秒的页面任务里，须这样推进事件循环才能收到回书。最多一百轮，免得死循环。
+　　文言：泵页面之务：迭进页钟，行其到期之签，至无签而止；驿书之发排于零毫秒之页务，非如此推进则回书不至。至多一百轮，免死循。：」
+「泵页面任务」乃化「数」为「数」者也。
+「泵页面任务」者得「轮」而
+　鉴「网页定时器下次到期」于「元」而
+　　或有「可无」则（「网页微役察点」于「元」而后
+　　　「零」）
+　　或有（「可有」于「刻」）则（
+　　　若「轮」大于「一零零」则
+　　　　「零」
+　　　否则
+　　　　（「行到期网页定时器」于「现在」曰（「刻」加「一」）而后
+　　　　　「网页微役察点」于「元」而后
+　　　　　「泵页面任务」于（「轮」加「一」））
+　　）
+也。
+
+「：汉语：驿书的事件顺序、各种 responseType 与 responseType 为 blob 时的 text。异步的 send 返回时只派到 loadstart，回书的各事件排在零毫秒的页面任务里：先核对 send 返回时的这一轮，再推进页面任务到没有定时器，核对事件全序；各种 responseType 同样先发请求、推进页面任务，再读响应。
+　　文言：驿书之事序、诸响应之种，及 blob 之 text。异步之 send 还时止于 loadstart，回书诸事排于零毫秒之页务：先核 send 还时之一轮，乃推页面之务至无签，核其全序；诸响应之种亦先发请、推务而后读之。：」
 「试驿书」乃化「急就境」为「有」者也。
 「试驿书」者得「境」而
 　令「无」为
 　　「急就在境行脚本」
 　　　于「境」
-　　　于『var ev=[];var x=new XMLHttpRequest();x.onreadystatechange=function(){ev.push("rs"+x.readyState);};x.onloadstart=function(){ev.push("start");};x.onprogress=function(e){ev.push("pg"+e.loaded+"/"+e.total+"/"+e.lengthComputable);};x.onload=function(){ev.push("load"+x.status+":"+x.getResponseHeader("X-试")+":"+x.responseText+":"+x.statusText);};x.onerror=function(){ev.push("err");};x.onabort=function(){ev.push("ab");};x.ontimeout=function(){ev.push("to");};x.onloadend=function(){ev.push("end");};x.open("POST","/submit");x.setRequestHeader("X-Send","一");x.send("体");var hh=(x.getAllResponseHeaders().indexOf("x-试: 一")>=0)&&(x.getAllResponseHeaders().indexOf("content-type: text/plain")>=0);var y=new XMLHttpRequest();y.open("GET","/missing");y.onload=function(){ev.push("miss"+y.status+":"+y.responseText);};y.send();var z=new XMLHttpRequest();z.open("GET","/fail");z.onload=function(){ev.push("wrong");};z.onerror=function(){ev.push("er"+z.readyState+":"+z.status);};z.onloadend=function(){ev.push("end2");};z.send();var q=new XMLHttpRequest();q.onreadystatechange=function(){ev.push("ars"+q.readyState);};q.onloadstart=function(){q.abort();};q.onabort=function(){ev.push("aab");};q.onloadend=function(){ev.push("aend");};q.open("GET","/a");q.send();window.__丁=[ev.join(","),hh].join(";");』而
+　　　于『var ev=[];var x=new XMLHttpRequest();x.onreadystatechange=function(){ev.push("rs"+x.readyState);};x.onloadstart=function(){ev.push("start");};x.onprogress=function(e){ev.push("pg"+e.loaded+"/"+e.total+"/"+e.lengthComputable);};x.onload=function(){ev.push("load"+x.status+":"+x.getResponseHeader("X-试")+":"+x.responseText+":"+x.statusText);};x.onerror=function(){ev.push("err");};x.onabort=function(){ev.push("ab");};x.ontimeout=function(){ev.push("to");};x.onloadend=function(){ev.push("end");};x.open("POST","/submit");x.setRequestHeader("X-Send","一");x.send("体");var y=new XMLHttpRequest();y.open("GET","/missing");y.onload=function(){ev.push("miss"+y.status+":"+y.responseText);};y.send();var z=new XMLHttpRequest();z.open("GET","/fail");z.onload=function(){ev.push("wrong");};z.onerror=function(){ev.push("er"+z.readyState+":"+z.status);};z.onloadend=function(){ev.push("end2");};z.send();var q=new XMLHttpRequest();q.onreadystatechange=function(){ev.push("ars"+q.readyState);};q.onloadstart=function(){q.abort();};q.onabort=function(){ev.push("aab");};q.onloadend=function(){ev.push("aend");};q.open("GET","/a");q.send();window.__丁件=ev;window.__驿书=x;』而
+　「核对」
+　　于「名」曰『驿书的回书诸事在 send 返回时尚未到达』
+　　于「实」曰（「取字」于「境」于『window.__丁件.join(",")』）
+　　于「望」曰『rs1,start,ars1,ars4,aab,aend』而后
+　令「无」为「泵页面任务」于「零」而
 　令「无」为
 　　「急就在境行脚本」
 　　　于「境」
-　　　于『var j=new XMLHttpRequest();j.responseType="json";j.open("GET","/json");j.send();var b=new XMLHttpRequest();b.responseType="arraybuffer";b.open("GET","/a");b.send();var c=b.response?[b.response.byteLength,(new TextDecoder()).decode(new Uint8Array(b.response))].join(":"):"无";var bl=new XMLHttpRequest();bl.responseType="blob";bl.open("GET","/a");bl.onload=function(){bl.response.text().then(function(t){window.__己=[t,bl.response.size,bl.response.type].join("|");});};bl.send();var tx=new XMLHttpRequest();tx.responseType="text";tx.open("GET","/b");tx.send();window.__戊=[j.response?String(j.response.x):"无",c,tx.responseText,tx.response===tx.responseText].join(";");』而
-　令「无」为「网页微役察点」于「元」而
+　　　于『var hh=(window.__驿书.getAllResponseHeaders().indexOf("x-试: 一")>=0)&&(window.__驿书.getAllResponseHeaders().indexOf("content-type: text/plain")>=0);window.__丁=[window.__丁件.join(","),hh].join(";");』而
 　「核对」
 　　于「名」曰『XMLHttpRequest 的事件顺序』
 　　于「实」曰（「取字」于「境」于『window.__丁』）
-　　于「望」曰『rs1,start,rs2,rs3,pg12/12/true,rs4,load200:一:POST|一|体:OK,end,miss404:,er4:0,end2,ars1,ars4,aab,aend;true』而后
+　　于「望」曰『rs1,start,ars1,ars4,aab,aend,rs2,rs3,pg12/12/true,rs4,load200:一:POST|一|体:OK,end,miss404:,er4:0,end2;true』而后
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var j=new XMLHttpRequest();j.responseType="json";j.open("GET","/json");j.send();var b=new XMLHttpRequest();b.responseType="arraybuffer";b.open("GET","/a");b.send();var bl=new XMLHttpRequest();bl.responseType="blob";bl.open("GET","/a");bl.onload=function(){bl.response.text().then(function(t){window.__己=[t,bl.response.size,bl.response.type].join("|");});};bl.send();var tx=new XMLHttpRequest();tx.responseType="text";tx.open("GET","/b");tx.send();window.__待=j;window.__缓=b;window.__文=tx;』而
+　令「无」为「泵页面任务」于「零」而
+　令「无」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『var j=window.__待,b=window.__缓,tx=window.__文;var c=b.response?[b.response.byteLength,(new TextDecoder()).decode(new Uint8Array(b.response))].join(":"):"无";window.__戊=[j.response?String(j.response.x):"无",c,tx.responseText,tx.response===tx.responseText].join(";");』而
 　「核对」于「名」曰『XMLHttpRequest 的各种 responseType』于「实」曰（「取字」于「境」于『window.__戊』）于「望」曰『1;6:甲文;乙文;true』而后
 　「核对」于「名」曰『responseType 为 blob 时的 text』于「实」曰（「取字」于「境」于『window.__己』）于「望」曰『甲文|6|text/plain』
 也。
