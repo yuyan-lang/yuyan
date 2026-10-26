@@ -51,7 +51,7 @@
     <text x="170" y="372" fill="#24332a" font-size="19" font-weight="600">网页汇编（.wasm）</text>
     <text x="170" y="396" fill="#455348" font-size="13">由豫汇导出 · 与汇编树码一一对应</text>
     <text x="170" y="463" fill="#24332a" font-size="17" font-weight="600">宿主胶水</text>
-    <text x="170" y="486" fill="#455348" font-size="13">浏览器接口 · Worker 接口</text>
+    <text x="170" y="486" fill="#455348" font-size="13">网页榫卯 · Worker 接口</text>
     <text x="170" y="556" fill="#24332a" font-size="18" font-weight="600">浏览器 · 云工</text>
     <text x="170" y="580" fill="#455348" font-size="13">JS 引擎执行</text>
     <text x="170" y="664" fill="#843c32" font-size="16" font-weight="600">网页：浏览器与云工两个后端</text>
