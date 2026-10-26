@@ -95,9 +95,9 @@
 　（（非（「文同」于（「资」中「显示」）于『文字』））且（（非（「文同」于「位」于『static』））且（非（「文同」于「位」于『』））））
 也。
 
-「：汉语：通称层叠上下文盒。盒建立自己的层叠上下文时为阳：定位且 z-index 为合法整数；position 为 fixed 或 sticky；transform 等变换属性；不透明度小于一；filter 或 backdrop-filter 不为 none；isolation 为 isolate；mix-blend-mode 不为 normal；clip-path 不为 none；will-change 里列了 transform、opacity、filter 或 z-index；contain 里列了 paint、layout、strict 或 content。文字盒不算。
-　　文言：定位而有层值、或固粘、或形变透视、或半透、或滤、或隔离、或混合、或裁剪、或将变之列有层者、或含蕴之列有绘与排布者，立层叠上下文；文字盒不与。
-　　赋曰：定位层值立新庭，固粘形变半透明。滤隔混合裁剪者，各开层叠自为城。将变先期蕴画格，亦分层次自成营。：」
+「：汉语：通称层叠上下文盒。盒建立自己的层叠上下文时为阳：定位且 z-index 为合法整数；position 为 fixed 或 sticky；transform 等变换属性；transform-style 为 preserve-3d（它把子盒收进同一三维空间，本身成一方层叠之庭，子盒不再提升到外层）；不透明度小于一；filter 或 backdrop-filter 不为 none；isolation 为 isolate；mix-blend-mode 不为 normal；clip-path 不为 none；will-change 里列了 transform、opacity、filter 或 z-index；contain 里列了 paint、layout、strict 或 content。文字盒不算。
+　　文言：定位而有层值、或固粘、或形变透视、或三维之庭、或半透、或滤、或隔离、或混合、或裁剪、或将变之列有层者、或含蕴之列有绘与排布者，立层叠上下文；文字盒不与。
+　　赋曰：定位层值立新庭，固粘形变半透明。三维之庭收诸子，滤隔混合裁剪者。各开层叠自为城，将变先期蕴画格。亦分层次自成营。：」
 「为网页层叠盒」乃化「网页盒」为「爻」者也。
 「为网页层叠盒」者得「盒」而
 　令「资」为「取网页盒资料」于「盒」而
@@ -112,6 +112,7 @@
 　令「含蕴」为「样式小写」于（「样式取值」于「样」于『contain』）而
 　令「透文」为「样式取值」于「样」于『opacity』而
 　令「透小」为（非（（「文同」于「透文」于『』）或（（「文同」于「透文」于『1』）或（「文同」于「透文」于『1.0』））））而
+　令「三维式」为「样式小写」于（「样式取值」于「样」于『transform-style』）而
 　若「文同」于（「资」中「显示」）于『文字』则
 　　「阴」
 　否则若（（「网页定位盒」于「盒」）
@@ -123,6 +124,8 @@
 　）则
 　　「阳」
 　否则若（（「文同」于「位」于『fixed』）或（「文同」于「位」于『sticky』））则
+　　「阳」
+　否则若「文同」于「三维式」于『preserve-3d』则
 　　「阳」
 　否则若「为网页变换层叠」于「盒」则
 　　「阳」
