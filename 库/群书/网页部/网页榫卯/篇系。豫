@@ -2310,6 +2310,15 @@
 
 「：汉语：窗口对象：window 与 self 就是全局对象；把 document、navigator、定时器等浏览器全局量抄成它的属性；它的 addEventListener、removeEventListener、dispatchEvent 转给 document（窗口事件挂在文档节点上），onload 与 body 的 onload 用文档节点的 load 处理器槽。待办事项：location、history、innerWidth 等窗口属性，窗口事件与文档事件分开，处理器里的 this 是窗口。
 　　文言：窗之物：window 与 self 即全局之物；以 document、navigator、定时器等浏览器之全局之量抄为其性；其 addEventListener、removeEventListener、dispatchEvent 转于 document（窗之事挂于文档之节），onload 与 body 之 onload 用文档之节之 load 处理器之槽。待办：location、history、innerWidth 等窗之性，窗之事与文档之事分之，处理器中之 this 为窗。：」
+「：汉语：通称已兑期约（already-resolved promise）。造一份已兑现的脚本期约，供 document.fonts.ready 这类立即就绪的诺使用。
+　　文言：已兑之诺：造一已兑之脚本期约，供 document.fonts.ready 之类即绪之诺。：」
+「网页已兑期约」乃化「有」为「急就值」者也。
+「网页已兑期约」者得「空参」而
+　令「档」为「急就常新承诺档」于「元」而
+　令「无」为「急就兑现承诺」于「档」于「急就未定义」而
+　「档」中「承诺物」
+也。
+
 「网览装窗」乃化「急就境」又化「浏览器文档绑定」又化「篇节」为「有」者也。
 「网览装窗」者得「境」又得「绑定」又得「文档」而
 　令「全局物」为「急就取全局物」于「境」而
@@ -2512,6 +2521,10 @@
 　　　　　「元」
 　　　））
 　　　于（「常监听选」于「元」）而
+　令「字体物」为「急就新物」于（「可无」以「急就值」）而
+　令「无」为「急就定义属」于「字体物」于（（「急就文字自串」于『ready』）与（「网页已兑期约」于「元」）与「阳」与「阴」与「阳」）而
+　令「无」为「急就定义属」于「字体物」于（（「急就文字自串」于『status』）与（「急就字符串值」于（「急就文字自串」于『loaded』））与「阳」与「阴」与「阳」）而
+　令「无」为「急就定义属」于「文档物」于（（「急就文字自串」于『fonts』）与「字体物」与「阳」与「阴」与「阳」）而
 　「元」
 也。
 
