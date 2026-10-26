@@ -112,7 +112,7 @@
 　　赋曰：一滤一根本相将，取来便可滤图光。：」
 「网页滤料」即「组类」【「定义」乃「标记节」也，「根列」乃（「列」于「标记节」）也】也。
 
-「：汉语：通称图元备（primitive supported）。本链已实现的图元名：feFlood、feImage、feOffset、feColorMatrix、feBlend、feComposite、feGaussianBlur。
+「：汉语：通称图元备（primitive supported）。本链已实现的图元名：feFlood、feImage、feOffset、feColorMatrix、feBlend、feComposite、feGaussianBlur、feTile、feMerge。
 　　文言：图元备：本链已备之名：feFlood、feImage、feOffset、feColorMatrix、feBlend、feComposite、feGaussianBlur。
 　　赋曰：七般图元已能行，余者退回未滤之形。：」
 「网页图元备」乃化「名」曰「文」为「爻」者也。
@@ -124,6 +124,8 @@
 　或（「文同」于「名」于『feBlend』）
 　或（「文同」于「名」于『feComposite』）
 　或（「文同」于「名」于『feGaussianBlur』）
+　或（「文同」于「名」于『feTile』）
+　或（「文同」于「名」于『feMerge』）
 也。
 
 「：汉语：通称区域属（region attribute）。滤镜区域的 x、y、width、height 四名之一时为阳；这四名已支持 calc，其余属性的 calc 仍按不支持处理。
