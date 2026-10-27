@@ -74,7 +74,19 @@
 　　文言：站头与站导中所「包管理」之链值（站头书相对之址、共界书主站之绝址，皆算）；docs 站有 /包/ 者改为站内之链。：」
 「包链们」乃「列」于「文」也。
 「包链们」者
-　「列」【『/packages/』，『/packages』，『https://yuyan-lang.org/packages/』，『https://yuyan-lang.org/packages』，『//yuyan-lang.org/packages/』】
+　「列」
+　【『/packages/』
+　，『/packages』
+　，『https://yuyan-lang.org/packages/』
+　，『https://yuyan-lang.org/packages』
+　，『//yuyan-lang.org/packages/』
+　， 「：汉语：文言页的包管理链（站头与面包屑把 /文言 加在 /packages 前面）也算，改为 /文言/包/。
+　　　　文言：文言之页包府之链（站头与面包屑于 /packages 前加 /文言）亦算，改为 /文言/包/。：」『/文言/packages/』
+　，『/文言/packages』
+　，『https://yuyan-lang.org/文言/packages/』
+　，『https://yuyan-lang.org/文言/packages』
+　，『//yuyan-lang.org/文言/packages/』
+　】
 也。
 
 「：汉语：docs 站唯一允许的脚本：包列表页的包搜索脚本（由包市场的静态渲染挂上，放在 资源/）。
