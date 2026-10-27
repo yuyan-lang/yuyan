@@ -746,6 +746,13 @@
 　，『取进程退出码』与『GetExitCodeProcess』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
 　，『终止进程』与『TerminateProcess』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
 　，『等单个对象』与『WaitForSingleObject』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
+　，『取当前进程号』与『GetCurrentProcessId』与『kernel32.dll』与（「罄」以「数」）与「一」
+　，『开进程』与『OpenProcess』与『kernel32.dll』与（「列」【「零」，「零」，「零」】）与「一」
+　，『取进程时间』与『GetProcessTimes』与『kernel32.dll』与（「列」【「二」，「一」，「一」，「一」，「一」】）与「一」
+　，『建进程快照』与『CreateToolhelp32Snapshot』与『kernel32.dll』与（「列」【「零」，「零」】）与「一」
+　，『进程首项宽』与『Process32FirstW』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
+　，『进程次项宽』与『Process32NextW』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
+　，『取终径宽』与『GetFinalPathNameByHandleW』与『kernel32.dll』与（「列」【「二」，「一」，「零」，「零」】）与「一」
 　，『探查命名管道』与『PeekNamedPipe』与『kernel32.dll』与（「列」【「二」，「五」，「零」，「五」，「五」，「五」】）与「一」
 　，『设句柄信息』与『SetHandleInformation』与『kernel32.dll』与（「列」【「二」，「零」，「零」】）与「一」
 　，『睡眠』与『Sleep』与『kernel32.dll』与（「列」【「零」】）与「零」
