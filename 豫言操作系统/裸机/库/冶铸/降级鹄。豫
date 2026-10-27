@@ -658,6 +658,46 @@
 　，『取波形位置』与『waveOutGetPosition』与『winmm.dll』与（「列」【「六」，「一」，「零」】）与「一」
 　，『复位波形输出』与『waveOutReset』与『winmm.dll』与（「列」【「六」】）与「一」
 　，『闭波形输出』与『waveOutClose』与『winmm.dll』与（「列」【「六」】）与「一」
+　，『立窗类』与『RegisterClassExW』与『user32.dll』与（「列」【「一」】）与「一」
+　，『建窗』
+　　　与『CreateWindowExW』
+　　　与『user32.dll』
+　　　与（「列」【「零」，「零」，「一」，「零」，「零」，「零」，「零」，「零」，「零」，「零」，「零」，「零」】）
+　　　与「一」
+　，『显窗』与『ShowWindow』与『user32.dll』与（「列」【「六」，「零」】）与「一」
+　，『设素准觉』与『SetProcessDpiAwarenessContext』与『user32.dll』与（「列」【「六」】）与「一」
+　，『取窗素准』与『GetDpiForWindow』与『user32.dll』与（「列」【「六」】）与「一」
+　，『取客户区』与『GetClientRect』与『user32.dll』与（「列」【「六」，「一」】）与「一」
+　，『窗尚在』与『IsWindow』与『user32.dll』与（「列」【「六」】）与「一」
+　，『取画境』与『GetDC』与『user32.dll』与（「列」【「六」】）与「一」
+　，『释画境』与『ReleaseDC』与『user32.dll』与（「列」【「六」，「六」】）与「一」
+　，『窥消息』与『PeekMessageW』与『user32.dll』与（「列」【「一」，「六」，「零」，「零」，「零」】）与「一」
+　，『译消息』与『TranslateMessage』与『user32.dll』与（「列」【「一」】）与「一」
+　，『遣消息』与『DispatchMessageW』与『user32.dll』与（「列」【「一」】）与「一」
+　，『候消息或物』与『MsgWaitForMultipleObjects』与『user32.dll』与（「列」【「零」，「零」，「零」，「零」，「零」】）与「一」
+　，『设窗题』与『SetWindowTextW』与『user32.dll』与（「列」【「六」，「一」】）与「一」
+　，『载指形』与『LoadCursorW』与『user32.dll』与（「列」【「五」，「零」】）与「一」
+　，『设指形』与『SetCursor』与『user32.dll』与（「列」【「六」】）与「一」
+　，『销窗』与『DestroyWindow』与『user32.dll』与（「列」【「六」】）与「一」
+　，『屏转客户』与『ScreenToClient』与『user32.dll』与（「列」【「六」，「一」】）与「一」
+　，『调窗框』与『AdjustWindowRectEx』与『user32.dll』与（「列」【「一」，「零」，「零」，「零」】）与「一」
+　，『开剪』与『OpenClipboard』与『user32.dll』与（「列」【「六」】）与「一」
+　，『闭剪』与『CloseClipboard』与『user32.dll』与（「罄」以「数」）与「一」
+　，『清剪』与『EmptyClipboard』与『user32.dll』与（「罄」以「数」）与「一」
+　，『取剪之数』与『GetClipboardData』与『user32.dll』与（「列」【「零」】）与「一」
+　，『设剪之数』与『SetClipboardData』与『user32.dll』与（「列」【「零」，「六」】）与「一」
+　，『剪式可用』与『IsClipboardFormatAvailable』与『user32.dll』与（「列」【「零」】）与「一」
+　，『取模块柄』与『GetModuleHandleW』与『kernel32.dll』与（「列」【「五」】）与「一」
+　，『取函数址』与『GetProcAddress』与『kernel32.dll』与（「列」【「六」，「一」】）与「一」
+　，『全局分配』与『GlobalAlloc』与『kernel32.dll』与（「列」【「零」，「六」】）与「一」
+　，『全局锁定』与『GlobalLock』与『kernel32.dll』与（「列」【「六」】）与「一」
+　，『全局解锁』与『GlobalUnlock』与『kernel32.dll』与（「列」【「六」】）与「一」
+　，『全局尺寸』与『GlobalSize』与『kernel32.dll』与（「列」【「六」】）与「一」
+　，『置图素』
+　　　与『SetDIBitsToDevice』
+　　　与『gdi32.dll』
+　　　与（「列」【「六」，「零」，「零」，「零」，「零」，「零」，「零」，「零」，「零」，「一」，「一」，「零」】）
+　　　与「一」
 　，『退出进程』与『ExitProcess』与『kernel32.dll』与（「列」【「零」】）与「零」
 　，『分配虚拟内存』与『VirtualAlloc』与『kernel32.dll』与（「列」【「零」，「零」，「零」，「零」】）与「一」
 　，『添加向量化异常处理』与『AddVectoredExceptionHandler』与『kernel32.dll』与（「列」【「零」，「六」】）与「一」
