@@ -1287,6 +1287,77 @@ jobs:
           test "$(grep -c '回执 成' 交互出.txt)" -ge 3
           ! grep -q '回执 败' 交互出.txt
 
+  # 文言：轩窗之行在（提案〇〇〇三九第三段，先无附庸）：于轩窗运行器后台起行在，读其状得端口与程号，再起一常驻之原生程而核其已登于任务之表，止之而后核无遗程；开发之时不阻 CI。
+  # 汉语：Windows 行在冒烟（提案 00039 阶段 3，先不做附庸）：在 Windows 运行器上后台起行在，读状态得端口与进程号，再起一个常驻的原生程序并核对它已在任务表里登记，停止后核对没有残留进程；开发阶段不挡 CI。
+  windows-court:
+    name: 轩窗行在
+    needs: cross-toolchains
+    runs-on: windows-latest
+    timeout-minutes: 25
+    continue-on-error: true
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-windows-court
+      cancel-in-progress: true
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: 交叉工具链-windows-x64
+          path: ${{ runner.temp }}
+
+      # 文言：Git Bash 视 `D:\…` 为远主之名，故 tar 加 --force-local。
+      # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
+      - name: 放入原生豫构与执行器
+        run: tar --force-local -xzf "$RUNNER_TEMP/交叉-windows-x64.tar.gz"
+
+      - name: 起行在、起常驻原生程序、看登记、停止并核无残留
+        run: |
+          set -x
+          ./豫构.exe 行在 停止 || true
+          sleep 3
+          ./豫构.exe 行在 启动
+          for i in $(seq 60); do
+            ./豫构.exe 行在 状态 > 状态。txt 2>&1 || true
+            grep -q '端口 127.0.0.1:' 状态。txt && break
+            sleep 2
+          done
+          cat 状态。txt
+          grep -q '端口 127.0.0.1:' 状态。txt
+          sed -n 's/^行在：进程号 \([0-9]*\).*/\1/p' 状态。txt > 行在号。txt
+          cat 行在号。txt
+          test -s 行在号。txt
+          base_task=$(sed -n 's/.*任务 \([0-9]*\) 个.*/\1/p' 状态。txt)
+          echo "起前登记 $base_task 个"
+          ./豫构.exe 监工 > 监工。txt 2>&1 &
+          watch_pid=$!
+          sleep 8
+          ./豫构.exe 行在 状态 > 状态二。txt 2>&1
+          cat 状态二。txt
+          after_task=$(sed -n 's/.*任务 \([0-9]*\) 个.*/\1/p' 状态二。txt)
+          echo "起后登记 $after_task 个"
+          test -n "$base_task"
+          test -n "$after_task"
+          test "$after_task" -gt "$base_task"
+          ./豫构.exe 行在 停止
+          sleep 10
+          ./豫构.exe 行在 状态 > 状态三。txt 2>&1 || true
+          cat 状态三。txt
+          grep -q '行在未在运行' 状态三。txt
+          kill "$watch_pid" 2>/dev/null || true
+          taskkill //F //PID "$watch_pid" 2>/dev/null || true
+          set +x
+          court_pid=$(cat 行在号。txt)
+          if tasklist //FI "PID eq $court_pid" | grep -q "$court_pid"; then
+            echo "行在停止后仍有残留进程 $court_pid"
+            tasklist //FI "PID eq $court_pid"
+            exit 1
+          fi
+          echo "行在已按号停止，无残留。"
+
   # 文言：林檎 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
   # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与预编二的一致性组（编译器直出）。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
   macos-x64-native-run:
