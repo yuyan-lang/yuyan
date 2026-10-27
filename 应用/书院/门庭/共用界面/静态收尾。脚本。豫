@@ -45,14 +45,14 @@
 「链文文言」乃「文」也。
 「链文文言」者『往动站 →』也。
 
-「：汉语：横幅的样式，补在 共用/主题.css 末尾：用主题色变量，暗色模式随之而变；文字过长时在段落里换行，链接整块折行，不出横向滚动。
-　　文言：横幅之式，补于 共用/主题.css 之末：用主题之色，暗色随之；文长则于段中折行，其链整块折之，不出横滚。：」
+「：汉语：横幅的样式，补在 共用/主题.css 末尾：通栏墨色底、纸色字，文字居中，链接用浅朱色；文字过长时在段落里换行，链接整块折行，不出横向滚动。横幅把页头往下推，页头里藏在上方的“跳到正文”会露出一截，所以横幅叠在它上面（它聚焦时落在页头里，照样看得见）。
+　　文言：横幅之式，补于 共用/主题.css 之末：通栏墨底纸字，文居其中，其链浅朱；文长则于段中折行，其链整块折之，不出横滚。横幅推页头而下，页头所藏“跳到正文”露其一截，故横幅覆其上（其得焦则落页头之中，犹可见也）。：」
 「横幅样式」乃「文」也。
 「横幅样式」者『
-.豫静站横幅{padding:9px clamp(16px,3vw,40px);background:var(--豫纸);color:var(--豫墨);border-bottom:1px solid var(--豫线);font-size:13px;line-height:1.7}
-.豫静站横幅 p{margin:0}
-.豫静站横幅 a{color:var(--豫朱);text-decoration:none;font-weight:600;white-space:nowrap}
-.豫静站横幅 a:hover{text-decoration:underline}
+.豫静站横幅{position:relative;z-index:31;padding:10px clamp(16px,3vw,40px);background:var(--豫墨);color:var(--豫纸);font-size:14px;line-height:1.7;text-align:center}
+.豫静站横幅 p{margin:0 auto;max-width:72em}
+.豫静站横幅 a{color:#f2c9a8;text-decoration:none;font-weight:600;white-space:nowrap;margin-left:.6em}
+.豫静站横幅 a:hover,.豫静站横幅 a:focus-visible{text-decoration:underline}
 』也。
 
 「：汉语：横幅根元素的类名；改页时按它插入，核对时按它数横幅。
