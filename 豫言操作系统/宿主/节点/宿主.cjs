@@ -357,6 +357,10 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     问权:名=>{const 状=文件.statSync(径(名),{throwIfNoEntry:false});return 状?BigInt(状.mode&0o7777):BigInt(-1);},
     // 汉语：卷占不跟随符号链接取一次状态：普通文件回块数乘 512（与 du 一致），目录回 −1，符号链接与其他回 −2，不存在回 −3（2026-10-24，议题 581）。Windows 的诺驿不报块数，回 −3，由调用者退回按字节数累加。文言：卷占不随影而取一状：常文回块数乘五百一十二（同 du），目回负一，影与余类回负二，不存回负三（十月二十四日，议五百八十一）。轩窗之诺驿不报块数，回负三，呼者退依字节累加。
     卷占:名=>{const 状=文件.lstatSync(径(名),{throwIfNoEntry:false});if(!状)return BigInt(-3);if(状.isDirectory())return BigInt(-1);if(!状.isFile())return BigInt(-2);return process.platform==='win32'?BigInt(-3):BigInt(状.blocks)*BigInt(512);},
+    // 汉语：卷号取文件系统给这个文件的编号（inode），不读正文；同一份文件经哪条路径看都是同一个号（含硬链接），路径上的文件换掉号就变；取不到回 −1（2026-10-27，议题 935）。Windows 的诺驿上 inode 可能为零，调用者按（路径、大小、修改时刻）照样能用。文言：卷号取文系统所以别其文之号（inode），不读其文；同文虽由诸径（含硬系）观之其号惟一，径上之文既易则其号亦易；取不得回负一（十月二十七日，议九百三十五）。轩窗之诺驿其号或零，呼者依（径、大小、改时）犹可用。
+    卷号:名=>{const 状=文件.statSync(径(名),{throwIfNoEntry:false,bigint:true});return 状?BigInt(状.ino):BigInt(-1);},
+    // 汉语：改时纳取文件系统的 mtimeNs（纪元以来的纳秒），不读正文；取不到回 −1（2026-10-27，议题 935）。文言：改时纳取文系统之 mtimeNs（纪元以来之纳秒），不读其文；取不得回负一（十月二十七日，议九百三十五）。
+    改时纳:名=>{const 状=文件.statSync(径(名),{throwIfNoEntry:false,bigint:true});return 状?BigInt(状.mtimeNs):BigInt(-1);},
     // 汉语：删箧删空目录，成功回 0n（2026-10-23）。文言：删箧去空之目，成回零（十月二十三日）。
     删箧:名=>原语.豫言_同步删除目录(缓(名)),
     // 汉语：问负载取一、五、十五分钟平均负载的三项文字（2026-10-23）。文言：问负载取一、五、十五分均负之三事（十月二十三日）。
