@@ -732,6 +732,7 @@
 　，『打开文件宽』与『CreateFileW』与『kernel32.dll』与（「列」【「一」，「零」，「零」，「零」，「零」，「零」，「零」】）与「一」
 　，『按句柄取文件信息』与『GetFileInformationByHandle』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
 　，『取文件属性扩宽』与『GetFileAttributesExW』与『kernel32.dll』与（「列」【「一」，「零」，「一」】）与「一」
+　，『设文件属性宽』与『SetFileAttributesW』与『kernel32.dll』与（「列」【「一」，「零」】）与「一」
 　，『按句柄取文件信息扩』与『GetFileInformationByHandleEx』与『kernel32.dll』与（「列」【「二」，「零」，「一」，「零」】）与「一」
 　，『建目录宽』与『CreateDirectoryW』与『kernel32.dll』与（「列」【「一」，「零」】）与「一」
 　，『删文件宽』与『DeleteFileW』与『kernel32.dll』与（「列」【「一」】）与「一」
