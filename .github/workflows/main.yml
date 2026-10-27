@@ -364,6 +364,19 @@ jobs:
           ./豫构。林纳。豫行 构建 豫构 --输出 "$out/${{ matrix.prog }}" -j "$(nproc)" -- --目标 本机 --目标系统 ${{ matrix.system }} --目标架构 ${{ matrix.arch }} --执行器 "$PWD/执行器。树码" --降级缓存 "$PWD/.豫构缓存/降级缓存/豫构${{ matrix.plat }}.机器片"
           cp 执行器。树码 "$out/"
           rm -f "$out"/*.链接印
+
+      # 文言：轩窗之包随带预编之前导（#993）：以本轮原生豫构为轩窗编好前导之单元与阶缓，收于 预编缓存/，轩窗初交直接装入，不必现编几十分钟。
+      # 汉语：Windows 包随带预编前导（#993）：用本轮原生豫构为 Windows 编好前导单元与阶段缓存，收进 预编缓存/，Windows 上第一次交互直接装入，不必现编几十分钟。
+      - name: 预编轩窗前导
+        if: matrix.plat == 'windows-x64'
+        run: |
+          set -euo pipefail
+          ./豫构。林纳。豫行 预编打包 "交叉产物/${{ matrix.plat }}" -- -j "$(nproc)" --目标系统 轩窗 --目标架构 兼容六十四
+
+      - name: 打包交叉工具链
+        run: |
+          set -euo pipefail
+          out="交叉产物/${{ matrix.plat }}"
           tar -czf "$RUNNER_TEMP/交叉-${{ matrix.plat }}.tar.gz" -C "$out" .
 
       - uses: actions/upload-artifact@v4
