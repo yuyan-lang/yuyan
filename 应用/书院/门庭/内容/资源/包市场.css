@@ -1,0 +1,48 @@
+/* 古曰：众包列市，各有其门。今释：docs 站包市场页的样式，照主站包市场（云仓包管理服务的界面样式）取包市一处，使两站同貌；卡片网格、搜索框与三个筛选框都按主站的样子画。 */
+.包页{max-width:1100px;margin:65px auto 90px;padding:0 26px}
+.眉{font-size:12px;letter-spacing:2px;color:var(--豫次)}
+.包页 h1{font:500 clamp(30px,4vw,48px)/1.5 var(--豫题);margin:18px 0}
+.包页 h2{font-size:20px;font-weight:500}
+.引{max-width:660px;color:var(--豫次)}
+.注{font-size:12px;color:var(--豫次)}
+.验证标识{display:none}
+#市场状态:empty{display:none}
+.市场标题{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.市场搜索{margin:25px 0}
+.市场搜索 label{display:block;margin-bottom:10px;color:var(--豫次)}
+.市场搜索>div{display:flex;gap:12px}
+.市场搜索 input{flex:1;min-width:0;padding:12px;background:white;border:1px solid var(--豫线);font:inherit}
+.市场搜索 button{padding:12px 22px;border:1px solid var(--豫线);background:var(--豫纸);font:inherit;cursor:pointer}
+.市场列表{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;padding:0;margin:24px 0}
+.包卡片{border:1px solid var(--豫线);background:#fffefa;padding:22px;overflow-wrap:anywhere}
+.包卡片 h2{margin:8px 0}
+.包卡片 h2 a{color:var(--豫朱)}
+.包卡片>p:not(.包卡片主){font-size:14px}
+.包卡片主{font-size:12px;color:var(--豫次)}
+@media(max-width:800px){.市场列表{grid-template-columns:repeat(2,minmax(0,1fr))}.市场标题{display:block}}
+@media(max-width:500px){.市场列表{grid-template-columns:1fr}}
+/* 文言：库、器、试三框，去勾则隐其类之卡。汉语：包列表顶部的过滤条：库、可执行程序、测试三个勾选框，取消勾选就隐藏该类卡片（脚本按 data-kind 处理）。 */
+.包过滤{display:flex;flex-wrap:wrap;align-items:center;gap:4px 16px;margin:0 0 12px;font-size:14px;color:var(--豫次)}
+.包过滤 label{display:inline-flex;align-items:center;gap:5px;cursor:pointer;color:var(--豫墨)}
+.包过滤 input{accent-color:var(--豫朱);margin:0}
+/* 文言：包市与阅页同章，疏密适中。汉语：只收紧市场首页，不改变卡片网格。 */
+.市场页{margin-top:30px;margin-bottom:64px}
+.市场页>.眉{margin:0 0 10px;font-size:11px;letter-spacing:1.5px}
+.市场页 .市场标题{align-items:center;gap:24px}
+.市场页 .市场标题 h1{font:600 clamp(25px,3vw,33px)/1.5 var(--豫题);margin:0 0 8px}
+.市场页 .市场标题 .引{font-size:14px;line-height:1.8;margin:0;max-width:70ch}
+.市场页 .市场搜索{margin:24px 0 18px}
+.市场页 .市场搜索 label{font-size:12px;margin-bottom:7px}
+.市场页 .市场搜索 input{padding:10px 12px;font-size:14px;background:#fffefa;border-radius:3px}
+.市场页 .市场搜索 button{padding:10px 22px;font-size:14px;border-radius:3px}
+.市场页 #市场状态{font-size:13px;color:var(--豫次);margin:12px 0}
+.市场页 .市场列表{gap:16px;margin:18px 0 24px}
+.市场页 .包卡片{padding:18px 20px;border-radius:4px}
+.市场页 .包卡片 h2{font:600 19px/1.5 var(--豫字体);margin:7px 0 10px}
+.市场页 .包卡片 h2 a{text-decoration:none}
+.市场页 .包卡片 h2 a:hover{text-decoration:underline}
+.市场页 .包卡片 p{margin:8px 0;line-height:1.8}
+.市场页 .包卡片>p:not(.包卡片主){font-size:13px}
+.市场页 .包卡片主{font-size:11px;line-height:1.7}
+@media(max-width:800px){.市场页 .市场标题{display:block}}
+@media(max-width:500px){.市场页{margin-top:22px;padding:0 16px}.市场页 .市场标题 h1{font-size:26px}.市场页 .市场搜索{margin-top:22px}.市场页 .市场列表{gap:12px}.市场页 .包卡片{padding:16px 18px}}
