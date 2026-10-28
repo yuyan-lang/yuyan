@@ -171,6 +171,7 @@ export async function 执行模块(模块, 桥模块, 文件, 参数 = [], { 编
     // 文言：日志记时，取客地之刻。汉语：今时依式（格式化当前本地日期时间）：支持编译器实际使用的 strftime 日期时间字段，未知格式明确拒绝。
     今时依式: 格式 => {const d=new Date(),pad=n=>String(n).padStart(2,'0'),fields={Y:String(d.getFullYear()),m:pad(d.getMonth()+1),d:pad(d.getDate()),H:pad(d.getHours()),M:pad(d.getMinutes()),S:pad(d.getSeconds()),'%':'%'};return 文(格式).replace(/%([%A-Za-z])/g,(_,k)=>{if(!(k in fields))throw Error('暂不支持日期格式：%'+k);return fields[k];});},
     此刻: () => performance.now() * 1e6,
+    醒时毫秒: () => BigInt(Math.trunc(performance.now())),
     抽数: 上界 => {
       if (上界 <= 0n) throw Error("随机整数上界须大于零");
       const 组 = crypto.getRandomValues(new Uint32Array(2));

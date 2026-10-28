@@ -257,6 +257,7 @@ export function 创建豫言实例(程序模块, 值桥模块, {输出 = () => {
     // 文言：环境之名未授于客，皆如不存。汉语：本宿主不向标准库授予任何环境变量名，一律当作不存在。
     问俗: () => [false, ''],
     此刻: () => performance.now() * 1e6,
+    醒时毫秒: () => BigInt(Math.trunc(performance.now())),
     寓轩窗: () => false,
     寓林檎: () => false,
     寓林纳: () => false,

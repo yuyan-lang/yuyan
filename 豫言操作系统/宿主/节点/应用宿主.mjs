@@ -497,6 +497,7 @@ export function 创建能力({授权, 应用参数, 程序路径, 输出 = 写�
       return 授权.环境.has(名称) && Object.hasOwn(process.env, 名称) ? [true, process.env[名称]] : [false, ''];
     },
     此刻: () => performance.now() * 1e6,
+    醒时毫秒: () => BigInt(Math.trunc(performance.now())),
     今时: () => {
       const 时 = new Date(), 补 = 值 => String(值).padStart(2, '0');
       return `${时.getFullYear()}-${补(时.getMonth() + 1)}-${补(时.getDate())} ${补(时.getHours())}:${补(时.getMinutes())}:${补(时.getSeconds())}`;
