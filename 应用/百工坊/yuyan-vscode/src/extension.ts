@@ -3,9 +3,10 @@ import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import {
-  treeArtifactStage,
-  sortBuildCachesNewestFirst,
-  sourceRelativePathToArtifactStem
+  BuildArtifactEntry,
+  BuildArtifactReport,
+  isSupportedYuyanSource,
+  parseBuildArtifactReport
 } from './buildArtifacts';
 import {
   DefinitionInfo,
@@ -23,6 +24,7 @@ const JUMP_TO_BUILD_ARTIFACT_COMMAND = 'yuyan.jumpToBuildArtifact';
 const outputChannel = vscode.window.createOutputChannel('Yuyan Language Extension');
 
 interface BuildArtifactQuickPickItem extends vscode.QuickPickItem {
+  stage: string;
   artifactUri: vscode.Uri;
 }
 
@@ -137,14 +139,13 @@ function findBuildToolCommand(projectRootUri: vscode.Uri): string {
   return '豫构';
 }
 
-// 调 `豫构 语言服务 <源文件>`：由译场按「讯储读径」解析资料位置、读出并解成结绳，
-// 命令把结绳文字印到标准输出；缓存布局的变化都由豫构跟着，扩展不必知道。
-function runLanguageServiceCommand(
+// 跑一条豫构子命令并把标准输出交回。缓存布局、包上下文与阶段路径都由豫构解析，
+// 扩展只认子命令与它印出的结绳。
+function runBuildToolCommand(
   projectRootUri: vscode.Uri,
-  sourceUri: vscode.Uri
+  args: string[]
 ): Promise<string> {
   const command = findBuildToolCommand(projectRootUri);
-  const args = ['语言服务', sourceUri.fsPath];
   return new Promise((resolve, reject) => {
     child_process.execFile(
       command,
@@ -166,6 +167,24 @@ function runLanguageServiceCommand(
       }
     );
   });
+}
+
+// 调 `豫构 语言服务 <源文件>`：由译场按「讯储读径」解析资料位置、读出并解成结绳，
+// 命令把结绳文字印到标准输出；缓存布局的变化都由豫构跟着，扩展不必知道。
+function runLanguageServiceCommand(
+  projectRootUri: vscode.Uri,
+  sourceUri: vscode.Uri
+): Promise<string> {
+  return runBuildToolCommand(projectRootUri, ['语言服务', sourceUri.fsPath]);
+}
+
+// 调 `豫构 产物 <源文件>`：由豫构按所属包的包上下文，经译场「讯储读径」逐阶取实际路径，
+// 印一行结绳文字（源文件、包上下文、阶段产物）。扩展只解析这一行，缓存布局的变化都由豫构跟着。
+function runBuildArtifactsCommand(
+  projectRootUri: vscode.Uri,
+  sourceUri: vscode.Uri
+): Promise<string> {
+  return runBuildToolCommand(projectRootUri, ['产物', sourceUri.fsPath]);
 }
 
 async function getLanguageServiceDocument(
@@ -372,74 +391,18 @@ function registerLanguageProviders(context: vscode.ExtensionContext): void {
   log('All language providers registered successfully');
 }
 
-interface BuildCacheDirectory {
-  name: string;
-  mtime: number;
-  uri: vscode.Uri;
-}
-
-async function findTreeBuildArtifacts(
-  projectRootUri: vscode.Uri,
-  artifactStem: string
-): Promise<BuildArtifactQuickPickItem[]> {
-  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.豫构缓存');
-  const buildRootEntries = await vscode.workspace.fs.readDirectory(buildRootUri);
-  const cacheDirectories = await Promise.all(
-    buildRootEntries
-      .filter(([, fileType]) => (fileType & vscode.FileType.Directory) !== 0)
-      .map(async ([name]) => {
-        const uri = vscode.Uri.joinPath(buildRootUri, name);
-        const stat = await vscode.workspace.fs.stat(uri);
-        return { name, mtime: stat.mtime, uri };
-      })
-  );
-  const sortedCaches = sortBuildCachesNewestFirst<BuildCacheDirectory>(cacheDirectories);
-  const artifactDirectory = path.posix.dirname(artifactStem);
-  const sourceBaseName = path.posix.basename(artifactStem);
-  const quickPickItems: BuildArtifactQuickPickItem[] = [];
-
-  for (const [cacheIndex, cache] of sortedCaches.entries()) {
-    const artifactDirectoryUri = artifactDirectory === '.'
-      ? cache.uri
-      : vscode.Uri.joinPath(cache.uri, artifactDirectory);
-    let entries: [string, vscode.FileType][];
-
-    try {
-      entries = await vscode.workspace.fs.readDirectory(artifactDirectoryUri);
-    } catch {
-      continue;
-    }
-
-    const artifacts = entries
-      .filter(([, fileType]) => (fileType & vscode.FileType.File) !== 0)
-      .map(([fileName]) => ({ fileName, stage: treeArtifactStage(fileName, sourceBaseName) }))
-      .filter((artifact): artifact is { fileName: string; stage: string } => artifact.stage !== undefined)
-      .sort((left, right) => left.stage.localeCompare(right.stage, 'zh-CN'));
-
-    for (const artifact of artifacts) {
-      const artifactUri = vscode.Uri.joinPath(artifactDirectoryUri, artifact.fileName);
-      quickPickItems.push({
-        label: `$(json) ${artifact.stage}`,
-        description: cacheIndex === 0 ? `最新缓存 · ${cache.name}` : cache.name,
-        detail: artifactUri.fsPath,
-        artifactUri
-      });
-    }
-  }
-
-  return quickPickItems;
-}
-
+// 读树码：包上下文由 `豫构 产物` 给出，扩展不再按缓存路径里的记号自己还原。
 function runTreeTool(
   projectRootUri: vscode.Uri,
   command: string,
-  artifactUri: vscode.Uri
+  artifactUri: vscode.Uri,
+  packageContextPath: string
 ): Promise<string> {
   const hostPath = vscode.Uri.joinPath(projectRootUri, '豫言操作系统', '宿主', '节点', '宿主.cjs').fsPath;
   const toolPath = vscode.Uri.joinPath(projectRootUri, '树码.wasm').fsPath;
   const args = [hostPath, toolPath, command, artifactUri.fsPath];
   if (command === '显示' || command === '读取编辑器资料') {
-    args.push(...contextArgs(projectRootUri, artifactUri));
+    args.push('--包上下文', packageContextPath);
   }
   return new Promise((resolve, reject) => {
     child_process.execFile(
@@ -462,20 +425,16 @@ function runTreeTool(
   });
 }
 
-// 阶段缓存的路径里带包上下文号（包上下文/<号>.<编译模式>）：读这里的树码要按同一份包上下文还原
-// 包内路径，否则语言服务里的源文件与目标会留下包路径信标。上下文文件已不在时不给选项，照旧读。
-function contextArgs(projectRootUri: vscode.Uri, artifactUri: vscode.Uri): string[] {
-  const match = artifactUri.fsPath.match(/[\\/]包上下文[\\/](\d+)/);
-  if (!match) {
-    return [];
-  }
-  const contextPath = vscode.Uri.joinPath(
-    projectRootUri,
-    '.豫构缓存',
-    '豫构上下文',
-    `${match[1]}.上下文`
-  ).fsPath;
-  return fs.existsSync(contextPath) ? ['--包上下文', contextPath] : [];
+// 把豫构印出的阶段产物变成选择项：只列实际存在的阶段，按译场「阶段名们」的流水次序。
+function buildArtifactQuickPickItems(report: BuildArtifactReport): BuildArtifactQuickPickItem[] {
+  return report.artifacts
+    .filter((artifact: BuildArtifactEntry) => artifact.present)
+    .map(artifact => ({
+      label: `$(json) ${artifact.stage}`,
+      detail: artifact.path,
+      stage: artifact.stage,
+      artifactUri: vscode.Uri.file(artifact.path)
+    }));
 }
 
 async function jumpToBuildArtifact(
@@ -500,37 +459,45 @@ async function jumpToBuildArtifact(
     return;
   }
 
-  const relativeSourcePath = path.relative(projectRootUri.fsPath, sourceUri.fsPath);
-  const artifactStem = sourceRelativePathToArtifactStem(relativeSourcePath);
-  if (!artifactStem) {
+  if (!isSupportedYuyanSource(sourceUri.fsPath)) {
     void vscode.window.showErrorMessage(
       '当前文件不是受支持的豫言源文件（。豫、.yuyan 或 .yyon）。'
     );
     return;
   }
 
-  let artifacts: BuildArtifactQuickPickItem[];
+  let report: BuildArtifactReport | undefined;
   try {
-    artifacts = await findTreeBuildArtifacts(projectRootUri, artifactStem);
+    const output = await runBuildArtifactsCommand(projectRootUri, sourceUri);
+    report = parseBuildArtifactReport(output.trim());
   } catch (error: any) {
-    log(`Failed to inspect .豫构缓存: ${error.message || error}`);
+    log(`Failed to run 豫构 产物: ${error.message || error}`);
     void vscode.window.showErrorMessage(
-      `无法读取 ${vscode.Uri.joinPath(projectRootUri, '.豫构缓存').fsPath}。请先构建项目。`
+      `无法从豫构取得构建产物：${String(error.message || error).replace(/\s+/g, ' ').slice(0, 300)}`
     );
     return;
   }
 
+  if (!report || path.resolve(report.sourceFile) !== path.resolve(sourceUri.fsPath)) {
+    log(`Invalid build artifact report for: ${sourceUri.fsPath}`);
+    void vscode.window.showErrorMessage(
+      '豫构没有给出这个源文件的构建产物清单。请先构建或类型检查所属包。'
+    );
+    return;
+  }
+
+  const packageContextPath = report.packageContext;
+  const artifacts = buildArtifactQuickPickItems(report);
   if (artifacts.length === 0) {
     void vscode.window.showInformationMessage(
-      `没有找到 ${artifactStem}。<阶段>。树码 构建产物。`
+      '没有找到已写出的阶段产物。请先构建或类型检查所属包。'
     );
     return;
   }
 
   const selectedArtifact = await vscode.window.showQuickPick(artifacts, {
     title: 'Yuyan: Jump to Build Artifact 跳转到构建产物',
-    placeHolder: '选择要查看的树码阶段产物（最新缓存优先）',
-    matchOnDescription: true,
+    placeHolder: '选择要查看的树码阶段产物（按流水次序）',
     matchOnDetail: true
   });
   if (!selectedArtifact) {
@@ -541,15 +508,11 @@ async function jumpToBuildArtifact(
     const prettyArtifact = await vscode.window.withProgress(
       {
         location: vscode.ProgressLocation.Window,
-        title: `Yuyan: 正在解码 ${path.basename(selectedArtifact.artifactUri.fsPath)}`
+        title: `Yuyan: 正在解码 ${selectedArtifact.stage}`
       },
-      () => runTreeTool(projectRootUri, '显示', selectedArtifact.artifactUri)
+      () => runTreeTool(projectRootUri, '显示', selectedArtifact.artifactUri, packageContextPath)
     );
-    const artifactFileName = path.basename(selectedArtifact.artifactUri.fsPath);
-    const treeSuffix = ['。树码', '.树码'].find(suffix => artifactFileName.endsWith(suffix));
-    const previewFileName = treeSuffix
-      ? `${artifactFileName.slice(0, -treeSuffix.length)}.pretty.yuyan`
-      : `${artifactFileName}.pretty.yuyan`;
+    const previewFileName = `${path.basename(sourceUri.fsPath)}.${selectedArtifact.stage}.pretty.yuyan`;
     const virtualUri = contentProvider.createDocumentUri(
       previewFileName,
       prettyArtifact

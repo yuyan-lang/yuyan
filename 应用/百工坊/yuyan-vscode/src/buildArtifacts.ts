@@ -1,49 +1,70 @@
-export interface BuildCacheInfo {
-  name: string;
-  mtime: number;
+export interface BuildArtifactEntry {
+  stage: string;
+  path: string;
+  present: boolean;
+}
+
+export interface BuildArtifactReport {
+  sourceFile: string;
+  packageContext: string;
+  artifacts: BuildArtifactEntry[];
 }
 
 const YUYAN_SOURCE_SUFFIXES = ['。豫', '.yuyan', '.yyon'];
 
-export function sourceRelativePathToArtifactStem(relativePath: string): string | undefined {
-  const normalizedPath = relativePath.replace(/\\/g, '/');
+function isRecord(value: unknown): value is { [key: string]: unknown } {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+export function isSupportedYuyanSource(filePath: string): boolean {
+  const normalizedPath = filePath.replace(/\\/g, '/');
+  return YUYAN_SOURCE_SUFFIXES.some(suffix => normalizedPath.endsWith(suffix));
+}
+
+// 解析 `豫构 产物 <源文件>` 印出的一行结绳文字。阶段、路径、在不在都由豫构给出，
+// 扩展不再按缓存布局自己拼路径；认不出的项跳过，整份认不出时返回 undefined，
+// 调用方据此提示重新构建，而不是自己猜位置。
+export function parseBuildArtifactReport(text: string): BuildArtifactReport | undefined {
+  let value: unknown;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+  if (!isRecord(value)) {
+    return undefined;
+  }
+
+  const sourceFile = value['源文件'];
+  const packageContext = value['包上下文'];
+  const rawArtifacts = value['阶段产物'];
   if (
-    normalizedPath.length === 0 ||
-    normalizedPath.startsWith('/') ||
-    /^(?:\.\.)(?:\/|$)/.test(normalizedPath) ||
-    /^[A-Za-z]:\//.test(normalizedPath)
+    typeof sourceFile !== 'string' ||
+    typeof packageContext !== 'string' ||
+    !Array.isArray(rawArtifacts)
   ) {
     return undefined;
   }
 
-  const suffix = YUYAN_SOURCE_SUFFIXES.find(candidate => normalizedPath.endsWith(candidate));
-  if (!suffix) {
-    return undefined;
-  }
-
-  const stem = normalizedPath.slice(0, -suffix.length);
-  return stem.length > 0 ? stem : undefined;
-}
-
-export function treeArtifactStage(
-  artifactFileName: string,
-  sourceBaseName: string
-): string | undefined {
-  // 新名用全角句号（名。阶段。树码），旧缓存目录里还有半角的（名.阶段.树码）。
-  for (const dot of ['。', '.']) {
-    const prefix = `${sourceBaseName}${dot}`;
-    const suffix = `${dot}树码`;
-    if (artifactFileName.startsWith(prefix) && artifactFileName.endsWith(suffix)) {
-      const stage = artifactFileName.slice(prefix.length, -suffix.length);
-      return stage.length > 0 ? stage : undefined;
+  const artifacts: BuildArtifactEntry[] = [];
+  for (const rawArtifact of rawArtifacts) {
+    if (!isRecord(rawArtifact)) {
+      continue;
     }
+    const stage = rawArtifact['阶段'];
+    const artifactPath = rawArtifact['路径'];
+    const present = rawArtifact['在'];
+    if (
+      typeof stage !== 'string' ||
+      typeof artifactPath !== 'string' ||
+      typeof present !== 'boolean' ||
+      stage.length === 0 ||
+      artifactPath.length === 0
+    ) {
+      continue;
+    }
+    artifacts.push({ stage, path: artifactPath, present });
   }
-  return undefined;
-}
 
-export function sortBuildCachesNewestFirst<T extends BuildCacheInfo>(caches: T[]): T[] {
-  return [...caches].sort((left, right) => {
-    const mtimeDifference = right.mtime - left.mtime;
-    return mtimeDifference !== 0 ? mtimeDifference : right.name.localeCompare(left.name);
-  });
+  return { sourceFile, packageContext, artifacts };
 }
