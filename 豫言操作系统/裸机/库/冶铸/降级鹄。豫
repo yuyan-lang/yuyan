@@ -745,6 +745,9 @@
 　，『生成密码随机数』与『BCryptGenRandom』与『bcrypt.dll』与（「列」【「零」，「一」，「零」，「零」】）与「一」
 　，『建匿名管道』与『CreatePipe』与『kernel32.dll』与（「列」【「一」，「一」，「零」，「零」】）与「一」
 　，『建进程宽』与『CreateProcessW』与『kernel32.dll』与（「列」【「五」，「五」，「零」，「零」，「零」，「零」，「五」，「五」，「一」，「一」】）与「一」
+　，『初始化进程线程属性表』与『InitializeProcThreadAttributeList』与『kernel32.dll』与（「列」【「五」，「零」，「零」，「一」】）与「一」
+　，『更新进程线程属性』与『UpdateProcThreadAttribute』与『kernel32.dll』与（「列」【「一」，「零」，「零」，「一」，「零」，「五」，「五」】）与「一」
+　，『删除进程线程属性表』与『DeleteProcThreadAttributeList』与『kernel32.dll』与（「列」【「一」】）与「零」
 　，『取进程退出码』与『GetExitCodeProcess』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
 　，『终止进程』与『TerminateProcess』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
 　，『等单个对象』与『WaitForSingleObject』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
