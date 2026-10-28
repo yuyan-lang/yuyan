@@ -4,6 +4,8 @@
 寻观「豫章」之书。
 寻观「豫章」之「算术」之「变通」之书。
 寻观「豫章」之「形制」之「帛书」之书。
+寻「豫章」之「形制」之「分厘」之书。
+寻「豫章」之「形制」之「筹算」之书。
 寻观「延标」之书。
 寻观「篇象」之书。
 寻观「装帧」之书。
@@ -112,20 +114,12 @@
 　　赋曰：一滤一根本相将，取来便可滤图光。：」
 「网页滤料」即「组类」【「定义」乃「标记节」也，「根列」乃（「列」于「标记节」）也】也。
 
-「：汉语：通称图元备（primitive supported）。本链已实现的图元名：feFlood、feImage、feOffset、feColorMatrix、feBlend、feComposite、feGaussianBlur、feTile、feMerge。
-　　文言：图元备：本链已备之名：feFlood、feImage、feOffset、feColorMatrix、feBlend、feComposite、feGaussianBlur。
-　　赋曰：七般图元已能行，余者退回未滤之形。：」
+「：汉语：通称图元备（primitive supported）。本链已实现的图元名，问白描「滤镜链」的「滤镜图元备」：名单只有白描那一份，这里不再抄。
+　　文言：图元备：本链已备之名，问白描「滤镜链」之「滤镜图元备」：名单唯有白描之一纸，此不复抄。
+　　赋曰：名单一份在丹青，设色但问不再誊。：」
 「网页图元备」乃化「名」曰「文」为「爻」者也。
 「网页图元备」者得「名」曰「名」而
-　（「文同」于「名」于『feFlood』）
-　或（「文同」于「名」于『feImage』）
-　或（「文同」于「名」于『feOffset』）
-　或（「文同」于「名」于『feColorMatrix』）
-　或（「文同」于「名」于『feBlend』）
-　或（「文同」于「名」于『feComposite』）
-　或（「文同」于「名」于『feGaussianBlur』）
-　或（「文同」于「名」于『feTile』）
-　或（「文同」于「名」于『feMerge』）
+　「滤镜图元备」于「名」曰「名」
 也。
 
 「：汉语：通称区域属（region attribute）。滤镜区域的 x、y、width、height 四名之一时为阳；这四名已支持 calc，其余属性的 calc 仍按不支持处理。
@@ -189,8 +183,8 @@
 　　于「子」
 也。
 
-「：汉语：通称滤不支（unsupported filter）。滤镜树里出现本链还没实现的图元（feTile、feMerge、feTurbulence、feDisplacementMap、feMorphology、feConvolveMatrix、feComponentTransfer、feDiffuseLighting、feSpecularLighting、feDropShadow 等）、或用 BackgroundImage、BackgroundAlpha 这类本链不供的输入、或区域属性带 calc 时得阳：此时按标准退回未过滤的原样。
-　　文言：滤不支：滤树中有本链未备之图元（feTile、feMerge、feTurbulence、feDisplacementMap、feMorphology、feConvolveMatrix、feComponentTransfer、feDiffuseLighting、feSpecularLighting、feDropShadow 之属）、或用 BackgroundImage、BackgroundAlpha 之属本链不供之入、或区域之属带 calc 者得阳：此时依标准退而未滤之原。
+「：汉语：通称滤不支（unsupported filter）。滤镜树里出现未列于白描「滤镜图元表」的图元、或用 BackgroundImage、BackgroundAlpha 这类本链不供的输入、或区域属性带 calc 时得阳：此时按标准退回未过滤的原样。
+　　文言：滤不支：滤树中有未列于白描「滤镜图元表」之图元、或用 BackgroundImage、BackgroundAlpha 之属本链不供之入、或区域之属带 calc 者得阳：此时依标准退而未滤之原。
 　　赋曰：未备图元不强行，背景之入亦难承。区域 calc 一并退，还他原样自分明。：」
 「网页滤不支」乃化「定义」曰「标记节」为「爻」者也。
 「网页滤不支」者得「定义」曰「定义」而
