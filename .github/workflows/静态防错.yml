@@ -55,13 +55,13 @@ jobs:
           ./曲突。林纳。豫行 > "$RUNNER_TEMP/报告.md"
           cat "$RUNNER_TEMP/报告.md" >> "$GITHUB_STEP_SUMMARY"
 
-      # 文言：发行之页未立者立之，已立者改其说明为今之报告。
-      # 汉语：发行页还没有就新建，已有就把它改写成本次的报告。
+      # 文言：发行之页未立者立之，已立者改其题为「语言设计建议」、改其说明为今之报告。
+      # 汉语：发行页还没有就新建，已有就把标题改成「语言设计建议」、说明改写成本次的报告。
       - name: 发布到发行版
         run: |
           set -euo pipefail
           if gh release view language-feature-suggestions >/dev/null 2>&1; then
-            gh release edit language-feature-suggestions --notes-file "$RUNNER_TEMP/报告.md"
+            gh release edit language-feature-suggestions --title 语言设计建议 --notes-file "$RUNNER_TEMP/报告.md"
           else
-            gh release create language-feature-suggestions --target "$GITHUB_SHA" --title 语言特性建议 --latest=false --notes-file "$RUNNER_TEMP/报告.md"
+            gh release create language-feature-suggestions --target "$GITHUB_SHA" --title 语言设计建议 --latest=false --notes-file "$RUNNER_TEMP/报告.md"
           fi
