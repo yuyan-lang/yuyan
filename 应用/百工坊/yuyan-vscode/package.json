@@ -60,7 +60,7 @@
         "yuyan.buildToolCommand": {
           "type": "string",
           "default": "",
-          "description": "Yuyan build tool 豫构 used for language-service data (hover and definitions). Leave empty to look for 豫构。<system>。豫行 at the workspace root, then fall back to `豫构` on PATH. The extension appends `语言服务 <filepath>`."
+          "description": "Yuyan build tool 豫构 used for language-service data (hover and definitions) and build-artifact lookups. Leave empty to look for 豫构。<system>。豫行 at the workspace root, then fall back to `豫构` on PATH. The extension appends `语言服务 <filepath>` or `产物 <filepath>`."
         }
       }
     },

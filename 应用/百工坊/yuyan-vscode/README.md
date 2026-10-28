@@ -24,9 +24,20 @@ changes the keyword's color.
 ## Inspecting Build Artifacts
 
 With a Yuyan source file active, run **Yuyan: Jump to Build Artifact 跳转到构建产物**
-from the command palette. The picker finds matching `。树码` files under `.豫构缓存`,
-puts the newest cache first, and calls the Yuyan Wasm tool `树码 显示` to decode
-the selected tree. The result opens as a read-only Yuyan preview.
+from the command palette. The extension runs:
+
+```text
+豫构 产物 <source file>
+```
+
+豫构 enables the package context of the source file, resolves every stage artifact
+through the compiler core's cache-read path (`讯储读径`), and prints one line of
+结绳 (JSON): the source file, the package-context file, and one entry per stage with
+its name, actual path, and whether it exists. The picker lists the stages that exist,
+in pipeline order, and calls the Yuyan Wasm tool `树码 显示` with the package-context
+file that 豫构 supplied to decode the selected tree. The result opens as a read-only
+Yuyan preview. Build or type-check the package first; the command only lists artifacts
+that have already been written.
 
 ## Hover and Jump to Definition
 
