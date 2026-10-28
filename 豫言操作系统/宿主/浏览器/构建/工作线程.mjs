@@ -191,6 +191,7 @@ function 运行(任务) {
     寓豫言: () => false,
     核数: () => BigInt(任务.处理器数 ?? navigator.hardwareConcurrency ?? 1),
     此刻: () => (performance.timeOrigin + performance.now()) * 1e6,
+    醒时毫秒: () => BigInt(Math.trunc(performance.now())),
     今时: () => 格式化时间('%Y-%m-%d %H:%M:%S'),
     今时依式: 格式 => 格式化时间(格式),
     抽数: 上界 => {

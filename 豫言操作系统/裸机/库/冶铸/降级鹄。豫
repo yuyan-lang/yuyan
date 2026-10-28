@@ -722,6 +722,7 @@
 　，『释环境串宽』与『FreeEnvironmentStringsW』与『kernel32.dll』与（「列」【「六」】）与「一」
 　，『取性能计数』与『QueryPerformanceCounter』与『kernel32.dll』与（「列」【「一」】）与「一」
 　，『取性能计数频率』与『QueryPerformanceFrequency』与『kernel32.dll』与（「列」【「一」】）与「一」
+　，『取无偏中断时间』与『QueryUnbiasedInterruptTime』与『kernel32.dll』与（「列」【「一」】）与「一」
 　，『取精确文件时间』与『GetSystemTimePreciseAsFileTime』与『kernel32.dll』与（「列」【「一」】）与「零」
 　，『取最近错误』与『GetLastError』与『kernel32.dll』与（「罄」以「数」）与「一」
 　，『关闭句柄』与『CloseHandle』与『kernel32.dll』与（「列」【「二」】）与「一」
