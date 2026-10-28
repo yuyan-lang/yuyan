@@ -65,10 +65,7 @@
 「网页弹性内定尺寸」者得「环境」又得「盒」又得「竖」又得「长」而
 　令「样」为（「取网页盒资料」于「盒」）中「样式」而
 　令「样」为
-　　「叠」以「文」又以「计算样式」
-　　　于（得「边」又得「积」而「样式入」于「积」于「边」于『0』）
-　　　于「样」
-　　　于（「列」【『margin-left』，『margin-right』，『margin-top』，『margin-bottom』】）而
+　　「样式连写」于「样」于（「列」【『margin-left』与『0』，『margin-right』与『0』，『margin-top』与『0』，『margin-bottom』与『0』】）而
 　令「轴文」为若「竖」则『height』否则『width』而
 　令「前边」为若「竖」则『top』否则『left』而
 　令「后边」为若「竖」则『bottom』否则『right』而
@@ -114,9 +111,9 @@
 　　于「盒」
 　　于（
 　　　若「竖」则
-　　　　「样式入」于（「样式入」于「样」于『min-height』于『auto』）于『max-height』于『none』
+　　　　「样式连写」于「样」于（「列」【『min-height』与『auto』，『max-height』与『none』】）
 　　　否则
-　　　　「样式入」于（「样式入」于「样」于『min-width』于『auto』）于『max-width』于『none』
+　　　　「样式连写」于「样」于（「列」【『min-width』与『auto』，『max-width』与『none』】）
 　　）
 也。
 
