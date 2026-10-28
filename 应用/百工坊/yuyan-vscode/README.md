@@ -30,17 +30,23 @@ the selected tree. The result opens as a read-only Yuyan preview.
 
 ## Hover and Jump to Definition
 
-The compiler writes `<source stem>。语言服务。树码` alongside the other artifacts
-under `.豫构缓存`. The extension reads the newest matching artifact when VS Code
-requests hover help or a definition location. The metadata protocol uses Chinese
-field names and Chinese kind values throughout. Decoding runs in `树码.wasm`;
-the extension connects the resulting data to VS Code's hover and definition APIs.
-
-Build the Wasm reader in the project root:
+The compiler writes language-service data as a tree artifact. The extension asks
+the build tool for it instead of composing cache paths itself:
 
 ```text
-./豫构。林檎。豫行 构建 树码 --输出 树码.wasm -j 24
+豫构 语言服务 <source file>
 ```
+
+The command uses the compiler core's cache-read path, reads the artifact bytes
+from the shared cache (or from the local cache when the bytes stay in the tree),
+decodes them with the editor tree reader, and prints the language-service
+document as one line of 结绳 (JSON). The extension parses that document and
+feeds it to VS Code's hover and definition APIs. The metadata protocol uses
+Chinese field names and Chinese kind values throughout.
+
+The setting `yuyan.buildToolCommand` names the 豫构 program. When it is empty the
+extension looks for `豫构。<system>。豫行` at the workspace root and otherwise
+runs `豫构` from `PATH`.
 
 See [中文说明](说明.汉语.md) and [文言说明](说明.文言.md).
 
