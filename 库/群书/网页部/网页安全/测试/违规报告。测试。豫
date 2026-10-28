@@ -183,12 +183,12 @@
 　　文言：只报不拦：报策不许则记一条处置 report 之违，空策仍放行。：」
 「清试收」于「元」。
 「清网页违规已报」于「元」。
-「网页违规报只」于「策略」曰『』于「来源」曰『https://a.example』于「目标」曰『https://b.example/x.js』于「目的」曰『script』。
+「网页违规报只」于「策略」曰『』于「来源」曰『https://a.example』于「目标」曰『https://b.example/x.js』于「目的」曰『script』于「凭据」曰『』。
 「断言」于（（「试收计」于「元」）等于「一」）于『只报不拦记一条』。
 「断言」于（「文同」于（（「试收首」于「元」）中「处置」）于『report』）于『只报不拦的处置记 report』。
-「网页违规报只」于「策略」曰『』于「来源」曰『https://a.example』于「目标」曰『https://a.example/x.js』于「目的」曰『script』。
+「网页违规报只」于「策略」曰『』于「来源」曰『https://a.example』于「目标」曰『https://a.example/x.js』于「目的」曰『script』于「凭据」曰『』。
 「断言」于（（「试收计」于「元」）等于「一」）于『许可时不再报』。
-「网页违规报只」于「策略」曰『』于「来源」曰『https://a.example』于「目标」曰『https://b.example/x.js』于「目的」曰『report』。
+「网页违规报只」于「策略」曰『』于「来源」曰『https://a.example』于「目标」曰『https://b.example/x.js』于「目的」曰『report』于「凭据」曰『』。
 「断言」于（（「试收计」于「元」）等于「一」）于『报告请求自身不受策略约束』。
 「：汉语：内联与求值判定：页面策略写在违规境里；nonce、unsafe-inline 与 unsafe-eval 的放行、只报不拦只记不拦。
 　　文言：内辞与求值之判：页策书于违境；nonce、unsafe-inline 与 unsafe-eval 之许、只报惟记而不禁。：」
