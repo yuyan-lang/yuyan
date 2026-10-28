@@ -6,6 +6,7 @@
 寻观「急就」之书。
 寻观「网页榫卯」之书。
 寻观「网页榫卯」之「定时器」之书。
+寻观「网页榫卯」之「网动」之书。
 
 「检查」乃化「名」曰「文」又化「真」曰「爻」为「有」者也。
 「检查」者得「名」曰「名」又得「真」曰「真」而
@@ -35,7 +36,7 @@
 　令「无」为
 　　「急就在境行脚本」
 　　　于「境」
-　　　于『var z=document.getElementById("a");var zo=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:Infinity,fill:"both"});var co=zo.effect.getComputedTiming();z.setAttribute("data-zinf",(co.currentIteration===Infinity&&co.progress===1&&co.activeDuration===0&&co.endTime===0)?"1":"0");var zf=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:3,fill:"both"});var cf=zf.effect.getComputedTiming();z.setAttribute("data-zfin",(cf.currentIteration===2&&cf.progress===1)?"1":"0");var zr=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:3.5,fill:"both"});var cr=zr.effect.getComputedTiming();z.setAttribute("data-zfrac",(cr.currentIteration===3&&Math.abs(cr.progress-0.5)<0.001)?"1":"0");var zs=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:3,iterationStart:2.5,fill:"both"});var cstart=zs.effect.getComputedTiming();z.setAttribute("data-zstart",(cstart.currentIteration===5&&Math.abs(cstart.progress-0.5)<0.001)?"1":"0");var zi=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:3,fill:"both"});zi.pause();zi.currentTime=300;var ci=zi.effect.getComputedTiming();z.setAttribute("data-zint",(ci.currentIteration===2&&ci.progress===1)?"1":"0");var zb=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:3.5,fill:"both"});zb.pause();zb.currentTime=350;var cb=zb.effect.getComputedTiming();z.setAttribute("data-zfrac2",(cb.currentIteration===3&&Math.abs(cb.progress-0.5)<0.001)?"1":"0");var zd=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:2,delay:1,endDelay:-100,fill:"both"});zd.pause();zd.currentTime=101;var cd=zd.effect.getComputedTiming();z.setAttribute("data-zend",(cd.currentIteration===1&&cd.progress===0)?"1":"0");var zp=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:3.5,delay:100,fill:"both"});zp.pause();zp.currentTime=0;var cp=zp.effect.getComputedTiming();z.setAttribute("data-zbefore",(cp.currentIteration===0&&cp.progress===0)?"1":"0");』而
+　　　于『var z=document.getElementById("a");var zo=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:Infinity,fill:"both"});var co=zo.effect.getComputedTiming();z.setAttribute("data-zinf",(co.currentIteration===Infinity&&co.progress===1&&co.activeDuration===0&&co.endTime===0)?"1":"0");var zf=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:3,fill:"both"});var cf=zf.effect.getComputedTiming();z.setAttribute("data-zfin",(cf.currentIteration===2&&cf.progress===1)?"1":"0");var zr=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:3.5,fill:"both"});var cr=zr.effect.getComputedTiming();z.setAttribute("data-zfrac",(cr.currentIteration===3&&Math.abs(cr.progress-0.5)<0.001)?"1":"0");var zs=z.animate([{opacity:0},{opacity:1}],{duration:0,iterations:3,iterationStart:2.5,fill:"both"});var cstart=zs.effect.getComputedTiming();z.setAttribute("data-zstart",(cstart.currentIteration===5&&Math.abs(cstart.progress-0.5)<0.001)?"1":"0");var zi=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:3,fill:"both"});zi.pause();zi.currentTime=300;var ci=zi.effect.getComputedTiming();z.setAttribute("data-zint",(ci.currentIteration===2&&ci.progress===1)?"1":"0");var zb=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:3.5,fill:"both"});zb.pause();zb.currentTime=350;var cb=zb.effect.getComputedTiming();z.setAttribute("data-zfrac2",(cb.currentIteration===3&&Math.abs(cb.progress-0.5)<0.001)?"1":"0");var zd=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:2,delay:1,endDelay:-100,fill:"both"});zd.pause();zd.currentTime=101;var cd=zd.effect.getComputedTiming();z.setAttribute("data-zend",(cd.currentIteration===1&&cd.progress===0)?"1":"0");var zp=z.animate([{opacity:0},{opacity:1}],{duration:100,iterations:3.5,delay:100,fill:"both"});zp.pause();zp.currentTime=0;var cp=zp.effect.getComputedTiming();z.setAttribute("data-zbefore",(cp.currentIteration===0&&cp.progress===0)?"1":"0");var nd=z.animate([{opacity:0},{opacity:1}],1000);z.setAttribute("data-num",(nd.effect.getComputedTiming().duration===1000&&nd.effect.getTiming().duration===1000)?"1":"0");nd.cancel();var kn=new KeyframeEffect(z,[{opacity:0},{opacity:1}],250);z.setAttribute("data-knum",(kn.getTiming().duration===250)?"1":"0");var nr=z.animate([{opacity:0},{opacity:1}],{duration:0,delay:1,fill:"both"});nr.playbackRate=-1;nr.pause();nr.currentTime=1;var cnr=nr.effect.getComputedTiming();z.setAttribute("data-negbef",(cnr.progress!==null&&Math.abs(cnr.progress)<0.001)?"1":"0");nr.currentTime=2;var cnr2=nr.effect.getComputedTiming();z.setAttribute("data-negaft",(Math.abs(cnr2.progress-1)<0.001)?"1":"0");nr.cancel();var vc=z.animate([{opacity:0},{opacity:1}],{delay:1});window.__vf=0;vc.finished.then(function(){window.__vf=1});』而
 　令「无」为「网页微役察点」于「元」而
 　令「无」为「急就在境行脚本」于「境」于『document.getElementById("a").setAttribute("data-f",window.__f===1?"1":"0");』而
 　令「题」为（「冠」于（「问择器全」于「文档」于『#a』））而
@@ -54,6 +55,15 @@
 　「检查」于「名」曰『分数重复填充末相位』于「真」曰（「文同」于（「网动取属文」于「题」于『data-zfrac2』）于『1』）而后
 　「检查」于「名」曰『负末延迟之填充末相位』于「真」曰（「文同」于（「网动取属文」于「题」于『data-zend』）于『1』）而后
 　「检查」于「名」曰『分数重复前相位』于「真」曰（「文同」于（「网动取属文」于「题」于『data-zbefore』）于『1』）而后
+　「检查」于「名」曰『数字第二参即时长』于「真」曰（「文同」于（「网动取属文」于「题」于『data-num』）于『1』）而后
+　「检查」于「名」曰『构造器数字第二参即时长』于「真」曰（「文同」于（「网动取属文」于「题」于『data-knum』）于『1』）而后
+　「检查」于「名」曰『负速率在前界判前相』于「真」曰（「文同」于（「网动取属文」于「题」于『data-negbef』）于『1』）而后
+　「检查」于「名」曰『负速率在后界判中相』于「真」曰（「文同」于（「网动取属文」于「题」于『data-negaft』）于『1』）而后
+　令「无三」为「行到期网页定时器」于「现在」曰「一六」而
+　令「无四」为「网页动效推进」于「元」而
+　令「无五」为「网页微役察点」于「元」而
+　令「无六」为「急就在境行脚本」于「境」于『document.getElementById("a").setAttribute("data-vfin",window.__vf===1?"1":"0");』而
+　「检查」于「名」曰『虚拟时钟推进后完成期约落定』于「真」曰（「文同」于（「网动取属文」于「题」于『data-vfin』）于『1』）而后
 　令「层档」为「析篇」于『<style>@keyframes 动{from{opacity:0}to{opacity:1}}#b{animation:动 2s linear}</style><div id="b"></div>』而
 　令「层境」为「急就新全局境」于「元」而
 　令「层绑」为「系网览篇」于「层境」于「层档」而
