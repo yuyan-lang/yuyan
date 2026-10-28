@@ -38,19 +38,110 @@ const 边界回环=(()=>{try{return require('./边界回环.cjs');}catch(错){if
 // 文言：管或不阻，一书未必尽；余者续书，遇暂不可写则稍候，与应用宿主之写出同。汉语：标准流是非阻塞管道时，writeSync 可能只写入管道容得下的部分（常为 64KB）或报 EAGAIN；循环写完，写不进就短暂等待后重写（与 应用宿主.mjs 的「写出」相同），否则父进程经管道读取时输出被截断。
 const 小候=new Int32Array(new SharedArrayBuffer(4));
 const 写尽=(号,值)=>{const 字节=Buffer.isBuffer(值)?值:Buffer.from(值);for(let 位=0;位<字节.length;){try{位+=文件.writeSync(号,字节,位,字节.length-位);}catch(错){if(错?.code!=='EAGAIN')throw 错;Atomics.wait(小候,0,0,5);}}};
+// 汉语：行在客户端以进程为单位登记，主线程每半秒采样 RSS，包含所有客体和编译线程；登记与问帧编码、领存答帧判断复用豫言共享核心。V8 堆由引擎管理，采样后领额使用“候”，换出请求按原生无可换块的路径报告换出零。
+// 文言：一程一籍，主线半秒察其实存，诸客诸工皆入其账；书籍问牒循豫言共术。引擎自掌其堆，察后求额，仓乏则候，请换则告零。
+async function 入行在(){
+  const 模径=[路径.join(__dirname,'传输控制共享.wasm'),路径.resolve('传输控制共享.wasm')].find(径=>文件.existsSync(径));
+  if(!模径)throw Error('本机行在客户端缺少传输控制共享.wasm');
+  const 模=new WebAssembly.Module(文件.readFileSync(模径)),导入={};
+  for(const 项 of WebAssembly.Module.imports(模)){
+    if(项.kind!=='function')throw Error('行在共享核心导入不合：'+项.module+'.'+项.name);
+    导入[项.module]??={};
+    导入[项.module][项.name]=()=>{throw Error('行在编码调用了系统入口：'+项.module+'.'+项.name);};
+  }
+  const 核=new WebAssembly.Instance(模,导入).exports;
+  if(!核.登记编码||!核.问帧编码||!核.领存答判||!核.籍数解析||!核.门书版本||!核.门书端口)throw Error('行在共享核心缺少编码出口，请重建传输控制共享入口');
+  const 缓址=核.字节缓冲(),缓=new Uint8Array(核.内存.buffer,缓址,核.字节上限());
+  const 目录=process.env.豫言行在目录||路径.join(系统.homedir(),'.豫言','行在');
+  const 门文=文件.readFileSync(路径.join(目录,'门。数据。豫'));
+  if(门文.length>缓.length)throw Error('本机行在门文件超过共享缓冲');缓.set(门文);
+  const 端口=核.门书端口(门文.length),版=核.门书版本(门文.length);
+  if(版<2||端口<1||端口>65535)throw Error('本机行在门文件不合');
+  const 钥=文件.readFileSync(路径.join(目录,'钥'));
+  if(!/^[0-9a-fA-F]{32}/.test(钥.toString('ascii')))throw Error('本机行在钥文件不合');
+  const 连=require('node:net').createConnection({host:'127.0.0.1',port:端口});
+  let 入缓=Buffer.alloc(0),候读=null,断错=null,已给=0,块=65536,籍=0,定时=null,收尾=false,核账中=false,辞毕=null,链=Promise.resolve(),清客=()=>{};
+  const 唤=()=>{if(候读){const 续=候读;候读=null;续();}};
+  连.on('data',字节=>{入缓=Buffer.concat([入缓,字节]);唤();});
+  连.on('error',错=>{断错=错;唤();});
+  连.on('close',()=>{断错??=Error('行在连接已断');唤();});
+  async function 读满(长){
+    while(入缓.length<长){if(断错)throw 断错;await new Promise(续=>{候读=续;});}
+    const 果=入缓.subarray(0,长);入缓=入缓.subarray(长);return 果;
+  }
+  async function 读答(){
+    const 头=await 读满(8),态=头.readInt32LE(0),长=头.readInt32LE(4);
+    if(长<0||长>1016)throw Error('行在答帧长度不合');
+    return {态,体:await 读满(长)};
+  }
+  const 时毫=()=>{const 时=process.cpuUsage();return Math.floor((时.user+时.system)/1000)|0;};
+  async function 问(服务,甲=0,乙=0){
+    核.问帧编码(服务,甲,乙,时毫());连.write(Buffer.from(缓.subarray(0,16)));return 读答();
+  }
+  function 记额(答){if(答.态!==0||答.体.length!==4)throw Error('行在配额答帧不合');已给=答.体.readInt32LE(0);if(已给<0)throw Error('行在已给额度不合');}
+  async function 核额(){
+    核账中=true;
+    try{
+    const 需=Math.ceil(Math.ceil(process.memoryUsage().rss/1024)/块)*块;
+    if(需>2147483647)throw Error('内存不够：诺驿进程占用超过行在额度范围');
+    if(需>已给){
+      let 答=await 问(301,需-已给,1);
+      while(核.领存答判(答.态,答.体.length)===2){const 换毕=await 问(303,0);if(换毕.态!==0||换毕.体.length!==0)throw Error('行在换毕答帧不合');答=await 读答();}
+      if(核.领存答判(答.态,答.体.length)===1)throw Error('内存不够：行在未授诺驿所需额度');记额(答);if(已给<需)throw Error('行在授额不足');
+    }
+    else if(需<已给)记额(await 问(304,已给-需));
+    }finally{核账中=false;}
+  }
+  function 串行(事){const 果=链.then(事);链=果.catch(()=>{});return 果;}
+  const 超时=setTimeout(()=>连.destroy(Error('行在握手或准入两分钟未成')),120000);
+  try{
+    await new Promise((成,败)=>{连.once('connect',成);连.once('error',败);});
+    const 境籍=名=>{const 字节=Buffer.from(process.env[名]??'');if(字节.length>=缓.length)throw Error('行在籍号环境值超过共享缓冲');缓.set(字节);缓[字节.length]=0;return 核.籍数解析(0);};
+    const 父籍=境籍('豫言行在父籍'),役号=境籍('豫言将作役号'),软额=(境籍('豫言内存软额')*1024)|0;
+    缓.set(钥.subarray(0,32),4);
+    const 径字=Buffer.from(路径.resolve(process.argv[2]??process.execPath)).subarray(0,1000);缓.set(径字,64);
+    const 有境=名=>Boolean(process.env[名]&&process.env[名]!=='关');
+    const 标=(有境('豫言行在免')||['将作','行在','交互','监工'].includes(process.argv[3])?1:0)+(有境('豫言行在随作')?2:0);
+    const 长=核.登记编码(版,process.pid,标,process.env.豫言将作优先==='交互'?0:process.env.豫言将作优先==='后台'?2:1,1,父籍,役号,径字.length);
+    if(长<0)throw Error('行在登记编码失败');连.write(Buffer.from(缓.subarray(0,长)));
+    for(;;){const 答=await 读答();if(答.态===1&&答.体.length===8){超时.refresh();continue;}if(答.态!==0||答.体.length!==(版===3?4:0))throw Error('行在登记未获许行');籍=版===3?答.体.readUInt32LE(0):0;break;}
+    const 额=await 问(300,软额);if(额.态!==0||额.体.length!==12)throw Error('行在查询配额失败');
+    块=额.体.readInt32LE(0);已给=额.体.readInt32LE(8);if(块<=0||已给<0)throw Error('行在起始额度不合');
+    await 核额();clearTimeout(超时);
+  }catch(错){clearTimeout(超时);连.destroy();throw 错;}
+  if(籍)process.env.豫言行在父籍=String(籍);
+  // 汉语：客体可能在同步读标准输入，Node 的退出会等阻塞工作线程；致命核账失败直接终止本进程，内核关闭连接后由行在注销还额。
+  // 文言：客或同步候入，诺驿之退犹待其线；核账致败则绝本程，核阖其连，行在除籍还粮。
+  const 止=错=>{写尽(2,'行在额度核算失败：'+错.message+'\n');try{清客();}finally{process.kill(process.pid,'SIGKILL');}};
+  连.on('close',()=>{if(!收尾)止(断错??Error('行在连接已断'));});
+  const 后察=()=>{定时=setTimeout(async()=>{if(收尾)return;try{await 串行(核额);if(!收尾)后察();}catch(错){if(!收尾)止(错);}},500);};
+  后察();
+  // 汉语：退出遇到尚在候额的问答时，关闭连接取消该笔领额，由行在注销整份额度；空闲连接先显式还额再关闭。重复退出共用同一个完成凭证。
+  // 文言：辞时若犹候额，阖连撤请，行在除籍尽还；无在途者先还而后阖。重辞共待一诺。
+  return {籍,收客:函=>{清客=函;},辞(){
+    if(辞毕)return 辞毕;
+    收尾=true;clearTimeout(定时);
+    辞毕=(async()=>{try{if(核账中){连.destroy();await 链;}else await 串行(async()=>{if(已给)记额(await 问(304,已给));});}finally{连.destroy();}})();
+    return 辞毕;
+  }};
+}
 if (isMainThread) {
+  (async()=>{
+  let 行在;
+  try{行在=await 入行在();}catch(错){写尽(2,'本机行在连不上：'+错.message+'\n');process.exitCode=1;return;}
   桥文件路径();
   // 文言：客执行虽塞，主仍候诸工。汉语：Wasm 同步执行留在工作线程，主线程持续收集真实子进程输出。
   const {port1, port2} = new MessageChannel(), 信号 = new SharedArrayBuffer(4);
   const 模式=process.env.豫言诺驿编译工作模式??'threads';
   if(!['process','threads'].includes(模式))throw Error('豫言诺驿编译工作模式 须为 process 或 threads');
   const 启动编译 = 模式==='threads'?建立编译线程(__filename,process.argv[2],选引擎参数(process.execArgv)):null;
-  const 清桥 = 接管进程(port1, 信号, 启动编译);
+  const 清桥 = 接管进程(port1, 信号, 启动编译, 行在);
   const 清理 = () => {清桥(); 启动编译?.清理?.();};
+  行在.收客(清理);
   let 终止码 = null;
   const 工 = 新客线程({workerData: {参数:process.argv.slice(2), 端口:port2, 信号}, transferList:[port2], resourceLimits:线程资源限额});
   工.on('error', 错 => {console.error(错); process.exitCode=1;});
-  工.on('exit', 码 => {清理(); process.exitCode=终止码??码;});
+  工.on('exit', 码 => {清理();行在.辞().then(()=>{process.exitCode=终止码??码;},错=>{写尽(2,'行在退出还额失败：'+错.message+'\n');process.exitCode=1;});});
   // 文言：试以时段置断标：环境 豫言打断毫秒 有正数时，得工线程之共享存后，过其毫秒置零号字。
   // 汉语：测试用：环境变量 豫言打断毫秒 为正数时，收到工作线程的共享内存后，过这么多毫秒置零号字（只供验证检查点，正常使用不设）。
   let 设标已候 = false;
@@ -62,7 +153,8 @@ if (isMainThread) {
     const 字 = new Int32Array(消息.缓冲);
     setTimeout(() => Atomics.store(字, 0, 1), 毫秒);
   });
-  for (const 信 of ['SIGINT', 'SIGTERM']) process.once(信, () => {终止码=信==='SIGINT'?130:143; 清理(); 工.terminate();});
+  for (const 信 of ['SIGINT', 'SIGTERM']) process.once(信, () => {终止码=信==='SIGINT'?130:143;清理();行在.辞().catch(错=>写尽(2,'行在终止还额失败：'+错.message+'\n')).finally(()=>process.kill(process.pid,信));});
+  })().catch(错=>{写尽(2,String(错.stack??错)+'\n');process.exit(1);});
 } else if (workerData.复用线程) {
   // 文言：工可复用，客实例与桥每事新立；二出先递，毕报在后。汉语：只有内部编译任务使用线程池；每项任务调用执行创建全新实例，通过同一消息通道保证输出先于完成，异常不污染下一任务退出码。
   parentPort.on('message', 任务 => {
@@ -410,8 +502,9 @@ function 执行(参数, 缓存, 轮, 本工 = workerData) {
     今时依式:串参('豫言_格式化当前本地日期时间'),
     // 汉语：读墙钟秒毫（2026-10-21）：取宿主时钟的整秒与秒内毫秒；设墙钟偏移、注起居、读墙钟偏移只在豫言操作系统里有意义，诺驿上返回 58（不支持），读偏移给（0，0）。
     // 汉语：提句柄上限（2026-10-23，议题 369）：只在豫言操作系统里有实现，诺驿上返回 -1（没有这套限额）；文言：提句柄之上限唯于豫言操作系统有其实，诺驿返负一。
-    // 汉语：辞行在（2026-10-23，议题 421）：诺驿宿主没有行在，本进程本来就不在行在里，返回阳；文言：辞行在者，诺驿无行在，本程本不在其中，返阳。辞附庸没有附庸可撤，返回阴（2026-10-25，提案 00056），辞附庸由（议题 802）答一（不认）；定缺存没有仓可领，也返回阴（提案 00056 第三期）。
-    读墙钟秒毫:()=>{const 毫=BigInt(Date.now());return [毫/1000n,毫%1000n];},设墙钟偏移:()=>58n,注起居:()=>58n,读墙钟偏移:()=>[0n,0n],提句柄上限:()=>-1n,辞行在:()=>true,辞附庸:()=>false, 辞附庸由: () => 1n,定缺存:()=>false,
+    // 汉语：辞行在交主线程串行还额和关闭登记连接，完成后答阳；编译线程与整个进程共籍。辞附庸答阴、辞附庸由答不认；采样领额采用候法。
+    // 文言：辞籍付主线，还粮阖门而后报成；诸工同籍。附庸未设，辞之不认；察存求额，乏则候行。
+    读墙钟秒毫:()=>{const 毫=BigInt(Date.now());return [毫/1000n,毫%1000n];},设墙钟偏移:()=>58n,注起居:()=>58n,读墙钟偏移:()=>[0n,0n],提句柄上限:()=>-1n,辞行在:()=>请求进程('辞行在'),辞附庸:()=>false, 辞附庸由: () => 1n,定缺存:()=>false,
     // 汉语：遣使于境离、散组是新原语（2026-10-26，议题 #654）：诺驿宿主的子进程由 Node 起，不经执行器的常驻池，也没有进程组可设；遣使于境离答 −58（起不来），散组答 58（不支持）。文言：遣使于境离、散组为新原语（十月二十六日，议题六五四）：诺驿之宿主其子程由 Node 而起，不经执行器之常驻池，亦无群可设；遣使于境离答负五十八（不得发），散组答五十八（不支持）。
     遣使于境离:()=>-58n,散组:()=>58n,
     // 汉语：遣信（2026-10-27，议题 #1024）：诺驿宿主的异步子进程由 Node 起，这里没有按句柄发信号的实现，答（58，−1）。文言：遣信（十月二十七日，议一千零二十四）：诺驿之异步子程由 Node 而起，此无依柄发信之实，答（五十八，负一）。
