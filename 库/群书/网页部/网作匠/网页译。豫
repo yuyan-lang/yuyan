@@ -55,9 +55,9 @@
 　　　　　于「阴」
 　　　　　于（「网页分轨样」于「样」）而
 　　　若「有帧」则
-　　　　「簿入」于（「簿入」于（「簿入」于「样」于『transform』于『none』）于『opacity』于『1』）于『filter』于『none』
+　　　　「样式入」于（「样式入」于（「样式入」于「样」于『transform』于『none』）于『opacity』于『1』）于『filter』于『none』
 　　　否则
-　　　　「簿入」于「样」于『transform』于『none』
+　　　　「样式入」于「样」于『transform』于『none』
 　　）
 　　　属「网页样式读取器」
 　　）而

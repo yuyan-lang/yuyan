@@ -3,6 +3,7 @@
 　　赋曰：盖闻装帧之被篇也，犹衣裳之在体：用户代理者其里，作者之篇者其次，行内声明则冠冕之至。层以重屋为名，先展而后布：媒体、支持，验境而取舍；层名、层号，循籍而注书。名有初录，号以序数；匿名之层，别以数区。一节点之身，逐规而校，特异性之大者胜；三伪件之配，去伪而合，声明文以双点名。行内之条，亦与其列；变量既解，样式乃明。合内外而一之，篇求样式总其成。：」
 寻观「豫章」之书。
 寻观「装帧」之书。
+寻观「装帧」之「级联」之书。
 寻观「篇象」之「节点」之书。
 寻观「篇象」之「树操作」之书。
 寻观「篇象」之「样式接线」之书。
@@ -321,7 +322,7 @@
 　　　令「声」为「候」中「声明」而
 　　　令「名」为「样式小写」于（「声」中「名称」）而
 　　　令「值」为「声明值文」于「声」而
-　　　若「色属名」于「名」则「样式色合法」于「值」否则若「图属名」于「名」则「图集合规」于「值」否则「阳」
+　　　若「色属名」于「名」则「样式色合法」于（「数值常境」于「元」）于「值」否则若「图属名」于「名」则「图集合规」于「值」否则「阳」
 　　）
 　　于「诸项」
 也。
@@ -356,11 +357,12 @@
 
 「带条件算节样式体」乃化「样式条件环境」又化「篇节」又化（「列」于「样式来源」）又化「爻」为「计算样式」者也。
 「带条件算节样式体」者得「环境」又得「节」又得「诸源」又得「含伪元素」而
+　令「空样」为（「样式空」于「元」）而
 　令「父样」为
 　　（（
 　　　鉴「父节」于「节」而
-　　　　或有（「可有」于「其父节」）则若（「节种类」于「其父节」）等于「一」则「带条件算节样式体」于「环境」于「其父节」于「诸源」于「阴」否则「空簿」以「文」
-　　　　或有「其他父」则「空簿」以「文」
+　　　　或有（「可有」于「其父节」）则若（「节种类」于「其父节」）等于「一」则「带条件算节样式体」于「环境」于「其父节」于「诸源」于「阴」否则「空样」
+　　　　或有「其他父」则「空样」
 　　）
 　　　属「计算样式」
 　　）而
@@ -413,11 +415,12 @@
 　　「算样式变量」
 　　　于（「折字号样」于「父样」于（「级联算」于（「滤候选」于（「接列」于（「接列」于「呈现候选」于「规则候选」）于「行内」））于「父样」））
 　　　于「父样」而
-　令「自身样」为若「文同」于（「样式取值」于「父样」于『豫计数式』）于『』则「簿入」于「自身样」于『豫计数式』于（「节计数式文」于「全诸源」）否则「自身样」而
+　令「自身样」为
+　　若「文同」于（「样式取值」于「父样」于『豫计数式』）于『』则（「样式入」于「自身样」于『豫计数式』于（「节计数式文」于「全诸源」））否则「自身样」而
 　「叠」以「文」又以「计算样式」
 　　于（得「伪名」又得「积」而
 　　　令「其文」为「伪件声明文」于「伪候选们」于「伪名」而
-　　　若「文同」于「其文」于『』则「积」否则「簿入」于「积」于（『::』接「伪名」）于「其文」
+　　　若「文同」于「其文」于『』则「积」否则（「样式入」于「积」于（『::』接「伪名」）于「其文」）
 　　）
 　　于「自身样」
 　　于（「列」【『before』，『after』，『marker』】）
@@ -439,26 +442,25 @@
 「篇用户代理样式匣」乃「匣」于（「或可有」于「样式来源」）也。
 「篇用户代理样式匣」者「置匣」以（「或可有」于「样式来源」）于（「可无」以「样式来源」）也。
 
-「：汉语：通称用户代理样式表（user agent style sheet）。返回内置的默认样式来源：来源号零、层号零，规则由一段固定的层叠样式文本解析而成，给出块级元素、表格、表单控件等的默认显示方式。对话框的默认式以左右上下代替逻辑 inset，收缩尺寸交给章法；`::backdrop` 留待后续版本。首次解析后存进「篇用户代理样式匣」，此后共用同一份。
-　　文言：用户代理者，东道之常式也。篇之始，未有作者之式，则以此为其里衣。其源为零，其层为零，其规则先析之文也。对话之常式以左右上下代逻辑之 inset，缩尺付于章法；`::backdrop` 留待后版。初析之后藏于「篇用户代理样式匣」，后此共之。
+「：汉语：通称用户代理样式表（user agent style sheet）。返回内置的默认样式来源：来源号零、层号零，规则由一段固定的层叠样式文本解析而成，给出块级元素、表格、表单控件等的默认显示方式与外观。控件的固有宽高由章法的替代元素自然尺寸给出，这里只写显示方式、颜色、边框与内距，不再另写宽高。对话框的默认式以左右上下代替逻辑 inset，收缩尺寸交给章法；`::backdrop` 留待后续版本。首次解析后存进「篇用户代理样式匣」，此后共用同一份。
+　　文言：用户代理者，东道之常式也。篇之始，未有作者之式，则以此为其里衣。其源为零，其层为零，其规则先析之文也。器之固有宽高出于章法替代之自然尺寸，此惟书其显示、色、边与内距，不复另书宽高。对话之常式以左右上下代逻辑之 inset，缩尺付于章法；`::backdrop` 留待后版。初析之后藏于「篇用户代理样式匣」，后此共之。
 　　赋曰：一段常式内置文，源零层零此其根。析为规则随篇在，未逢作者先立身。：」
 「篇用户代理样式」乃化「有」为「样式来源」者也。
 「篇用户代理样式」者得「无」而
 　鉴「读匣」于「篇用户代理样式匣」而
 　　或有（「可有」于「旧源」）则「旧源」
 　　或有「其他」则（
-　　　令「新源」为（
-　　　　「新样式源」
+　　　令「新源」为
+　　　　（「新样式源」
 　　　　　于「来源」曰「零」
 　　　　　于「层」曰「零」
 　　　　　于『html,body,address,article,aside,blockquote,center,details,div,dl,dt,dd,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,legend,main,menu,nav,ol,p,pre,section,ul { display: block }
 head,title,base,link,meta,style,script,template,noscript,[hidden] { display: none }
 body { margin: 8px }
 input,textarea,select,button { display: inline-block; color: black; background: white; border: 1px solid gray; padding: 2px; font-size: 16px }
-input,select { width: 200px }
-select[multiple] { height: 80px; white-space: pre-wrap }
-textarea { width: 200px; height: 80px; white-space: pre-wrap }
-input[type=checkbox],input[type=radio] { width: 16px; height: 16px; padding: 0; border: 1px solid #6b7280; border-radius: 3px; background: white }
+select[multiple] { white-space: pre-wrap }
+textarea { white-space: pre-wrap }
+input[type=checkbox],input[type=radio] { padding: 0; border: 1px solid #6b7280; border-radius: 3px; background: white }
 input[type=hidden] { display: none }
 p,blockquote,figure,dl,ol,ul,pre { margin-top: 1em; margin-bottom: 1em }
 blockquote,figure { margin-left: 40px; margin-right: 40px }
@@ -499,8 +501,7 @@ details:not([open]) > :not(summary:first-of-type) { display: none }
 dialog { display: block; position: absolute; left: 0; right: 0; width: fit-content; height: fit-content; margin: auto; border: solid; padding: 1em; background-color: Canvas; color: CanvasText }
 audio:not([controls]) { display: none }
 dialog:not([open]) { display: none }
-dialog:modal { position: fixed; overflow: auto; top: 0; bottom: 0; max-width: calc(100% - 6px - 2em); max-height: calc(100% - 6px - 2em) }』
-　　　）而
+dialog:modal { position: fixed; overflow: auto; top: 0; bottom: 0; max-width: calc(100% - 6px - 2em); max-height: calc(100% - 6px - 2em) }』）而
 　　　令「无」为（「写匣」于「篇用户代理样式匣」于（「可有」以「样式来源」于「新源」））而
 　　　「新源」
 　　）
