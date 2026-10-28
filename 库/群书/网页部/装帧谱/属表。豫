@@ -55,6 +55,7 @@
 　，『shape-outside』与『none』与「阴」
 　，『shape-margin』与『0』与「阴」
 　，『contain』与『none』与「阴」
+　，『container-type』与『normal』与「阴」
 　，『text-wrap-mode』与『wrap』与「阳」
 　，『text-wrap-style』与『auto』与「阳」
 　，『contain-intrinsic-width』与『none』与「阴」

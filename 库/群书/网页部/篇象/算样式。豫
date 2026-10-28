@@ -321,7 +321,7 @@
 　　　令「声」为「候」中「声明」而
 　　　令「名」为「样式小写」于（「声」中「名称」）而
 　　　令「值」为「声明值文」于「声」而
-　　　若「色属名」于「名」则「样式色合法」于「值」否则若「图属名」于「名」则「图集合规」于「值」否则「阳」
+　　　若「色属名」于「名」则「样式色合法」于（「数值常境」于「元」）于「值」否则若「图属名」于「名」则「图集合规」于「值」否则「阳」
 　　）
 　　于「诸项」
 也。
@@ -447,8 +447,8 @@
 　鉴「读匣」于「篇用户代理样式匣」而
 　　或有（「可有」于「旧源」）则「旧源」
 　　或有「其他」则（
-　　　令「新源」为（
-　　　　「新样式源」
+　　　令「新源」为
+　　　　（「新样式源」
 　　　　　于「来源」曰「零」
 　　　　　于「层」曰「零」
 　　　　　于『html,body,address,article,aside,blockquote,center,details,div,dl,dt,dd,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,legend,main,menu,nav,ol,p,pre,section,ul { display: block }
@@ -499,8 +499,7 @@ details:not([open]) > :not(summary:first-of-type) { display: none }
 dialog { display: block; position: absolute; left: 0; right: 0; width: fit-content; height: fit-content; margin: auto; border: solid; padding: 1em; background-color: Canvas; color: CanvasText }
 audio:not([controls]) { display: none }
 dialog:not([open]) { display: none }
-dialog:modal { position: fixed; overflow: auto; top: 0; bottom: 0; max-width: calc(100% - 6px - 2em); max-height: calc(100% - 6px - 2em) }』
-　　　）而
+dialog:modal { position: fixed; overflow: auto; top: 0; bottom: 0; max-width: calc(100% - 6px - 2em); max-height: calc(100% - 6px - 2em) }』）而
 　　　令「无」为（「写匣」于「篇用户代理样式匣」于（「可有」以「样式来源」于「新源」））而
 　　　「新源」
 　　）
