@@ -1,5 +1,5 @@
-「：汉语：通称苹手柄原语（macOS controller primitives）。手柄原语在林檎上的实现（2026-10-24，议题 557）：第一次用到时 dlopen 系统的 GameController 框架，经 Objective-C 运行时取 `GCController` 类与三十七个选择子，再按 `GCExtendedGamepad` 的按钮、扳机与摇杆读当前状态。按钮读 `pressed`（按着一千、松开零），扳机与摇杆读 `value`（零至一、负一至一），经键值编码（`valueForKey:` 取 `value`、`doubleValue`）转成双精度，乘一千截断成千分整数，摇杆中心六十千分以内按零报。控制器数组每次都重取 `[GCController controllers]`，热插拔靠比较名字判断，没有连接与断开通知（通知要往客体的回调里走，留待后续版本）。振动用 GCHaptics：取控制器的 `haptics`、造并启 GCHapticEngine，再把按强弱与时长档选出的 AHAP 模式数据交给 `playPatternFromData:`。对象与类指针放在原生槽区 3000 起，旧名字快照放在手区 10240 起（三十二个名字，每个三十二字节）。
-　　文言：苹之手柄原语：初用时 dlopen 林檎之 GameController，经 Objective-C 之运行时取 GCController 之类与三十七选择子，乃依 GCExtendedGamepad 之钮、弩与枢读今状。钮读 pressed（按则一千、松则零），弩枢读 value（零至一、负一至一），经键值编码取双精，乘千截为千分；枢心六十千分以内报零。控制器之组每取之，接拔依名比较而判，无接断之通知（通知须入客之回，俟后版）。振用 GCHaptics：取控制器之 haptics，造而启 GCHapticEngine，以依强弱与久档选得之 AHAP 模式之数付 playPatternFromData:。物与类之指针居原生槽区三千起，旧名之快照居手区一万零二百四十起（三十二名，各三十二字）。
+「：汉语：通称苹手柄原语（macOS controller primitives）。手柄原语在林檎上的实现（2026-10-24，议题 557）：第一次用到时 dlopen 系统的 GameController 框架，经 Objective-C 运行时取 `GCController` 类与三十七个选择子，再按 `GCExtendedGamepad` 的按钮、扳机与摇杆读当前状态。按钮读 `pressed`（按着一千、松开零），扳机与摇杆读 `value`（零至一、负一至一），经键值编码（`valueForKey:` 取 `value`、`doubleValue`）转成双精度，乘一千截断成千分整数，摇杆中心六十千分以内按零报。控制器数组每次都重取 `[GCController controllers]`，热插拔靠比较名字判断，没有连接与断开通知（通知要往客体的回调里走，留待后续版本）。振动用 GCHaptics：取控制器的 `haptics`、造并启 GCHapticEngine，再把按强弱与时长档选出的 AHAP 模式数据交给 `playPatternFromData:`。对象与类指针放在原生槽区 3000 起，旧名字快照放在手区 2048 起（三十二个名字，每个三十二字节）。
+　　文言：苹之手柄原语：初用时 dlopen 林檎之 GameController，经 Objective-C 之运行时取 GCController 之类与三十七选择子，乃依 GCExtendedGamepad 之钮、弩与枢读今状。钮读 pressed（按则一千、松则零），弩枢读 value（零至一、负一至一），经键值编码取双精，乘千截为千分；枢心六十千分以内报零。控制器之组每取之，接拔依名比较而判，无接断之通知（通知须入客之回，俟后版）。振用 GCHaptics：取控制器之 haptics，造而启 GCHapticEngine，以依强弱与久档选得之 AHAP 模式之数付 playPatternFromData:。物与类之指针居原生槽区三千起，旧名之快照居手区二千零四十八起（三十二名，各三十二字）。
 　　赋曰：林檎有器，执柄者谁？假框架以问，循消息而窥。类取诸运行时，选登于槽府；钮报其压，枢呈其数。双精乘千，中心守静；接拔无书，重扫其名。振假触觉，档分强弱；手区有籍，旧名可征。：」
 寻观「磐石」之书。
 寻观「客体二号」之「布局」之书。
@@ -10,6 +10,7 @@
 寻观「客体二号」之「软浮点」之书。
 寻观「客体二号」之「苹显示」之书。
 寻观「客体二号」之「平台」之书。
+寻观「客体二号」之「手区」之书。
 寻「客体二号」之「平台接口」之「林檎」之书。
 
 「：汉语：原生槽区的槽号：3000 动态库句柄、3001 GCController 类、3002 至 3038 选择子、3039 NSString 类、3040 键名字串、3041 初始化状态（零未试、一失败、二可用）、3042 控制器数组、3043 手柄、3044 手柄面、3045 临时对象、3046 临时数、3047 出槽、3048 自动释放池、3049 临时浮槽。选择子依次是 controllers、count、objectAtIndex:、extendedGamepad、vendorName、buttonA、buttonB、buttonX、buttonY、leftShoulder、rightShoulder、leftTrigger、rightTrigger、buttonMenu、buttonOptions、buttonHome、leftThumbstick、rightThumbstick、xAxis、yAxis、button、dpad、up、down、left、right、pressed、respondsToSelector:、valueForKey:、doubleValue、stringWithUTF8String:、getCString:maxLength:encoding:、haptics、createEngineWithLocality:、startAndReturnError:、playPatternFromData:、dataUsingEncoding:。
@@ -44,8 +45,8 @@
 
 「苹首槽临」者「三零四九」也。
 
-「：汉语：旧名字快照在手区里的位置：快照从手区 10240 起，三十二个名字每个三十二字节；旧数在 11264，当前读到的名字缓在 11268（三十二字节）。
-　　文言：旧名快照居手区之位：自手区一万零二百四十起，三十二名各三十二字；旧数在一万一千二百六十四，今读之名缓在一万一千二百六十八。：」
+「：汉语：旧名字快照在手区里的位置：快照从手区 +2048 起，三十二个名字每个三十二字节；旧数在 +3072，当前读到的名字缓在 +3076（三十二字节）。
+　　文言：旧名快照居手区之位：自手区加二千零四十八起，三十二名各三十二字；旧数在加三千零七十二，今读之名缓在加三千零七十六。：」
 「苹名区偏」者「二零四八」也。
 
 「苹名宽」者「三二」也。
@@ -67,12 +68,12 @@
 　　文言：快照第序名之址。：」
 「苹名址」乃化「整数」为「整数」者也。
 「苹名址」者得「序」而
-　（（「手区基」加「苹名区偏」）加（「序」乘「苹名宽」））
+　（（（「手区基」于「元」）加「苹名区偏」）加（「序」乘「苹名宽」））
 也。
 
 「：汉语：当前名字缓的地址。
 　　文言：今名缓之址。：」
-「苹缓址」者（「手区基」加「苹名缓偏」）也。
+「苹缓址」者（（「手区基」于「元」）加「苹名缓偏」）也。
 
 「：汉语：零结尾串 址 的字节数（不含零）。
 　　文言：零止之串之长。：」
