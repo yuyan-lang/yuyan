@@ -8,7 +8,7 @@ const 路径 = require('node:path');
 const 网 = require('node:net');
 const {查询进程资源} = require('./进程资源.cjs');
 
-function 接管进程(端口, 信号缓冲, 编译线程 = null) {
+function 接管进程(端口, 信号缓冲, 编译线程 = null, 行在 = null) {
   const 信号 = new Int32Array(信号缓冲), 记录们 = new Map(), 套接字们 = new Map();
   let 下号 = 1024, 待候 = null, 已关 = false;
   const 上限 = 256 * 1024 * 1024;
@@ -147,6 +147,7 @@ function 接管进程(端口, 信号缓冲, 编译线程 = null) {
   }
   async function 执行(请) {
     const [术, ...参] = 请;
+    if (术 === '辞行在') {if (!行在) return false; await 行在.辞(); return true;}
     if (术.startsWith('网')) return await 网络(术, 参);
     if (术 === '启动') {
       if (记录们.size >= 4096) return -24;
