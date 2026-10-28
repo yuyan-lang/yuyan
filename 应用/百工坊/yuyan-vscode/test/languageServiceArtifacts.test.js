@@ -2,7 +2,6 @@ const assert = require('assert');
 const path = require('path');
 const { execFileSync } = require('child_process');
 const {
-  languageServiceArtifactPath,
   parseLanguageServiceDocument,
   positionIsInRange,
   selectNarrowestInfo
@@ -59,14 +58,6 @@ runTest('rejects the removed English token schema', () => {
     },
     detail: { type: 'Hover', content: '类型：整数' }
   }]), undefined);
-});
-
-runTest('maps source paths to the Chinese artifact stage', () => {
-  assert.strictEqual(
-    languageServiceArtifactPath('库/豫章/例子。豫'),
-    '库/豫章/例子。语言服务。树码'
-  );
-  assert.strictEqual(languageServiceArtifactPath('../例子。豫'), undefined);
 });
 
 runTest('uses half-open source ranges and selects the narrowest match', () => {

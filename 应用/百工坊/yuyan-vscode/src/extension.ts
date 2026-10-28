@@ -12,7 +12,6 @@ import {
   HoverInfo,
   LanguageServiceDocument,
   SourceRangeInfo,
-  languageServiceArtifactPath,
   parseLanguageServiceDocument,
   selectNarrowestInfo
 } from './languageServiceArtifacts';
@@ -63,10 +62,14 @@ function log(message: string, ...args: any[]): void {
 }
 
 interface CachedLanguageService {
-  artifactUri: vscode.Uri;
-  mtime: number;
+  version: number;
+  fetchedAt: number;
   document: LanguageServiceDocument;
 }
+
+// 同一版本的文档在这段时间内复用已取到的资料；过了就再问一次豫构，
+// 这样别处跑一次构建、资料变了，很快就能看到。
+const LANGUAGE_SERVICE_CACHE_MS = 2000;
 
 const languageServiceCache = new Map<string, CachedLanguageService>();
 
@@ -111,38 +114,58 @@ async function findProjectRoot(sourceUri: vscode.Uri): Promise<vscode.Uri | unde
   }
 }
 
-async function findLanguageServiceArtifact(
-  projectRootUri: vscode.Uri,
-  artifactRelativePath: string
-): Promise<{ uri: vscode.Uri; mtime: number } | undefined> {
-  const buildRootUri = vscode.Uri.joinPath(projectRootUri, '.豫构缓存');
-  let buildRootEntries: [string, vscode.FileType][];
-  try {
-    buildRootEntries = await vscode.workspace.fs.readDirectory(buildRootUri);
-  } catch {
-    return undefined;
+// 找豫构（构建工具）：先看设置里的路径，其次工作区根下按本机系统命名的原生程序，
+// 最后交给 PATH 上的 `豫构`。扩展不自己拼缓存路径，语言服务资料一律问这个命令。
+function findBuildToolCommand(projectRootUri: vscode.Uri): string {
+  const config = vscode.workspace.getConfiguration('yuyan', projectRootUri);
+  const configured = (config.get<string>('buildToolCommand', '') || '').trim();
+  if (configured.length > 0) {
+    return configured;
   }
 
-  const artifacts = await Promise.all(
-    buildRootEntries
-      .filter(([, fileType]) => (fileType & vscode.FileType.Directory) !== 0)
-      .map(async ([name]) => {
-        const uri = vscode.Uri.joinPath(buildRootUri, name, artifactRelativePath);
-        try {
-          const stat = await vscode.workspace.fs.stat(uri);
-          return (stat.type & vscode.FileType.File) !== 0
-            ? { name, mtime: stat.mtime, uri }
-            : undefined;
-        } catch {
-          return undefined;
-        }
-      })
-  );
+  for (const name of ['豫构。林檎。豫行', '豫构。林纳。豫行', '豫构。轩窗。豫行']) {
+    const candidate = vscode.Uri.joinPath(projectRootUri, name).fsPath;
+    try {
+      if (fs.statSync(candidate).isFile()) {
+        return candidate;
+      }
+    } catch {
+      // 不在这一份，试下一个名字。
+    }
+  }
 
-  const newest = sortBuildCachesNewestFirst<BuildCacheDirectory>(
-    artifacts.filter((artifact): artifact is BuildCacheDirectory => artifact !== undefined)
-  )[0];
-  return newest ? { uri: newest.uri, mtime: newest.mtime } : undefined;
+  return '豫构';
+}
+
+// 调 `豫构 语言服务 <源文件>`：由译场按「讯储读径」解析资料位置、读出并解成结绳，
+// 命令把结绳文字印到标准输出；缓存布局的变化都由豫构跟着，扩展不必知道。
+function runLanguageServiceCommand(
+  projectRootUri: vscode.Uri,
+  sourceUri: vscode.Uri
+): Promise<string> {
+  const command = findBuildToolCommand(projectRootUri);
+  const args = ['语言服务', sourceUri.fsPath];
+  return new Promise((resolve, reject) => {
+    child_process.execFile(
+      command,
+      args,
+      {
+        cwd: projectRootUri.fsPath,
+        encoding: 'utf8',
+        maxBuffer: 128 * 1024 * 1024,
+        timeout: 120000,
+        windowsHide: true
+      },
+      (error, stdout, stderr) => {
+        if (error) {
+          const diagnostic = stderr.trim() || stdout.trim() || error.message;
+          reject(new Error(diagnostic));
+          return;
+        }
+        resolve(stdout);
+      }
+    );
+  });
 }
 
 async function getLanguageServiceDocument(
@@ -153,49 +176,35 @@ async function getLanguageServiceDocument(
     return undefined;
   }
 
-  const relativeSourcePath = path.relative(
-    projectRootUri.fsPath,
-    sourceDocument.uri.fsPath
-  );
-  const artifactRelativePath = languageServiceArtifactPath(relativeSourcePath);
-  if (!artifactRelativePath) {
-    return undefined;
-  }
-
-  const artifact = await findLanguageServiceArtifact(projectRootUri, artifactRelativePath);
-  if (!artifact) {
-    return undefined;
-  }
-
   const cacheKey = sourceDocument.uri.toString();
   const cached = languageServiceCache.get(cacheKey);
   if (
     cached &&
-    cached.artifactUri.toString() === artifact.uri.toString() &&
-    cached.mtime === artifact.mtime
+    cached.version === sourceDocument.version &&
+    Date.now() - cached.fetchedAt < LANGUAGE_SERVICE_CACHE_MS
   ) {
     return cached.document;
   }
 
   try {
-    const content = await runTreeTool(projectRootUri, '读取编辑器资料', artifact.uri);
+    const content = await runLanguageServiceCommand(projectRootUri, sourceDocument.uri);
     const metadata = parseLanguageServiceDocument(JSON.parse(content));
     if (!metadata) {
-      log(`Invalid language service artifact: ${artifact.uri.fsPath}`);
+      log(`Invalid language service document: ${sourceDocument.uri.fsPath}`);
       return undefined;
     }
     if (path.resolve(metadata.源文件) !== path.resolve(sourceDocument.uri.fsPath)) {
-      log(`Language service artifact source mismatch: ${artifact.uri.fsPath}`);
+      log(`Language service source mismatch: ${sourceDocument.uri.fsPath}`);
       return undefined;
     }
     languageServiceCache.set(cacheKey, {
-      artifactUri: artifact.uri,
-      mtime: artifact.mtime,
+      version: sourceDocument.version,
+      fetchedAt: Date.now(),
       document: metadata
     });
     return metadata;
   } catch (error: any) {
-    log(`Failed to read language service artifact: ${error.message || error}`);
+    log(`Failed to read language service document: ${error.message || error}`);
     return undefined;
   }
 }
@@ -595,6 +604,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
       const filePath = document.uri.fsPath;
       log(`File saved: ${filePath}`);
+      languageServiceCache.clear();
 
       // Execute compiler command if configured
       void executeCompilerCommand(filePath);

@@ -1,5 +1,3 @@
-import { sourceRelativePathToArtifactStem } from './buildArtifacts';
-
 export interface SourceRangeInfo {
   文件: string;
   开始行: number;
@@ -110,11 +108,6 @@ export function parseLanguageServiceDocument(value: unknown): LanguageServiceDoc
     源文件: value.源文件,
     信息: info as LanguageServiceInfo[]
   };
-}
-
-export function languageServiceArtifactPath(relativeSourcePath: string): string | undefined {
-  const stem = sourceRelativePathToArtifactStem(relativeSourcePath);
-  return stem ? `${stem}。语言服务。树码` : undefined;
 }
 
 export function positionIsInRange(
