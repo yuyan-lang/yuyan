@@ -38,7 +38,21 @@
 　　或有「可无」则『』
 　　或有（「可有」于「原值」）则
 　　　令「净值」为「样式小写」于「原值」而
-　　　若「有一」以「文」于（得「候」而「文同」于「净值」于「候」）于（「列」【『no-referrer』，『no-referrer-when-downgrade』，『origin』，『origin-when-cross-origin』，『same-origin』，『strict-origin』，『strict-origin-when-cross-origin』，『unsafe-url』】）则「净值」否则『』
+　　　若「有一」以「文」
+　　　　于（得「候」而「文同」于「净值」于「候」）
+　　　　于（「列」
+　　　　　【『no-referrer』
+　　　　　，『no-referrer-when-downgrade』
+　　　　　，『origin』
+　　　　　，『origin-when-cross-origin』
+　　　　　，『same-origin』
+　　　　　，『strict-origin』
+　　　　　，『strict-origin-when-cross-origin』
+　　　　　，『unsafe-url』
+　　　　　】）则
+　　　　　　「净值」
+　　　否则
+　　　　『』
 也。
 
 「载篇样式」乃化「样式读取器」又化「样式条件环境」又化「文」又化「篇节」为（「列」于「样式来源」）者也。
@@ -73,7 +87,15 @@
 　　　　　　　　鉴「取属」于「节」于『href』而
 　　　　　　　　　或有「可无」则「积」
 　　　　　　　　　或有（「可有」于「地址」）则（
-　　　　　　　　　　鉴「读取」于「基址」于「地址」于「策」曰（「元素参考策」于「节」）而
+　　　　　　　　　　鉴「读取」
+　　　　　　　　　　　于「基址」
+　　　　　　　　　　　于「地址」
+　　　　　　　　　　　于「策」曰（「元素参考策」于「节」）
+　　　　　　　　　　　于「密凭」曰（
+　　　　　　　　　　　　鉴「取属」于「节」于『nonce』而
+　　　　　　　　　　　　　或有（「可有」于「凭得」）则「凭得」
+　　　　　　　　　　　　　或有「可无」则『』
+　　　　　　　　　　　）而
 　　　　　　　　　　　或有「可无」则（
 　　　　　　　　　　　　令「无」为（「派发事」于「节」于（「新事」于『error』于「冒泡」曰「阴」于「可取消」曰「阴」于「可越界」曰「阴」））而
 　　　　　　　　　　　　「积」
