@@ -1,0 +1,2244 @@
+寻观「豫章」之书。
+寻观「阅读逻辑」之「编码」之书。
+寻观「阅读逻辑」之「路径」之书。
+寻观「阅读逻辑」之「测试辅助」之书。
+
+「：汉语：路径模块的原生测试。向量由 Node 对旧 JS（即时发布桥.js 的 安全文件路径、阅读.js 的 safe、归档桥.js 的分类检查）现算：覆盖空、过长（含 UTF-16 码元与增补平面字符的边界）、反斜杠、控制字符、DEL、空段、点段、冒号、前导斜杠、百分号编码的各种攻击形式（%2e%2e、%2F、%5C、%00、%3A、非法 UTF-8、坏百分号）。
+　　文言：路径之验，与旧 JS 逐例相校，兼验各拒绝之因。：」
+「查安全们」乃化（「列」于（「文」合「爻」合「文」））为「有」者也。
+「查安全们」者得「诸」而
+　鉴「诸」而
+　　或有「罄」则「元」
+　　或有（「缀」于「项」于「尾」）则（
+　　　令「果」为「安全文件路径」于（「项」中「零」）而
+　　　（「查爻」于（『安全文件路径成败：』接（「项」中「零」））于（「项」中「一」）于（「果」中「零」））而后
+　　　（「查串」于（『安全文件路径结果：』接（「项」中「零」））于（「项」中「二」）于（「果」中「一」））而后
+　　　（「查安全们」于「尾」）
+　　）
+也。
+
+「查路径安全们」乃化（「列」于（「文」合「爻」））为「有」者也。
+「查路径安全们」者得「诸」而
+　鉴「诸」而
+　　或有「罄」则「元」
+　　或有（「缀」于「项」于「尾」）则（（「查爻」于（『路径安全：』接（「项」中「零」））于（「项」中「一」）于（「路径安全」于（「项」中「零」）））而后
+　　　（「查路径安全们」于「尾」））
+也。
+
+「查阅读路径们」乃化（「列」于（「文」合「爻」））为「有」者也。
+「查阅读路径们」者得「诸」而
+　鉴「诸」而
+　　或有「罄」则「元」
+　　或有（「缀」于「项」于「尾」）则（（「查爻」
+　　　于（『阅读文件路径有效：』接（「项」中「零」））
+　　　于（「项」中「一」）
+　　　于（「阅读文件路径有效」于（「项」中「零」）））而后
+　　　（「查阅读路径们」于「尾」））
+也。
+
+「查问题们」乃化（「列」于（「文」合「文」））为「有」者也。
+「查问题们」者得「诸」而
+　鉴「诸」而
+　　或有「罄」则「元」
+　　或有（「缀」于「项」于「尾」）则（（「查串」于（『路径问题：』接（「项」中「零」））于（「项」中「一」）于（「路径问题」于（「项」中「零」）））而后
+　　　（「查问题们」于「尾」））
+也。
+
+「查分类们」乃化（「列」于（「文」合「爻」合「爻」合「爻」））为「有」者也。
+「查分类们」者得「诸」而
+　鉴「诸」而
+　　或有「罄」则「元」
+　　或有（「缀」于「项」于「尾」）则（（「查爻」
+　　　于（『发布文件分类有效：』接（「项」中「零」））
+　　　于（「项」中「一」）
+　　　于（「发布文件分类有效」于（「项」中「零」）））而后
+　　　（「查爻」于（『阅读文件分类有效：』接（「项」中「零」））于（「项」中「二」）于（「阅读文件分类有效」于（「项」中「零」）））而后
+　　　（「查爻」于（『归档材料路径分类有效：』接（「项」中「零」））于（「项」中「三」）于（「归档材料路径分类有效」于（「项」中「零」）））而后
+　　　（「查分类们」于「尾」））
+也。
+
+「查首末段们」乃化（「列」于（「文」合「文」合「文」））为「有」者也。
+「查首末段们」者得「诸」而
+　鉴「诸」而
+　　或有「罄」则「元」
+　　或有（「缀」于「项」于「尾」）则（（「查串」于（『路径首段：』接（「项」中「零」））于（「项」中「一」）于（「路径首段」于（「项」中「零」）））而后
+　　　（「查串」于（『路径末段：』接（「项」中「零」））于（「项」中「二」）于（「路径末段」于（「项」中「零」）））而后
+　　　（「查首末段们」于「尾」））
+也。
+
+「：汉语：旧 JS 安全文件路径(raw) 的成败与结果（含错误信息）。
+　　文言：安全文件路径向量。：」
+「查安全们」于（「列」
+　【（『』与「阴」与『文件路径无效』）
+　，（『/』与「阴」与『文件路径无效』）
+　，（『source/例。豫』与「阳」与『source/例。豫』）
+　，（『source/a/b.txt』与「阳」与『source/a/b.txt』）
+　，（『docs/index.html』与「阳」与『docs/index.html』）
+　，（『archive/发布.zip』与「阳」与『archive/发布.zip』）
+　，（『__published__』与「阳」与『__published__』）
+　，（『source』与「阳」与『source』）
+　，（『source/』与「阴」与『文件路径无效』）
+　，（『/source/a』与「阴」与『文件路径无效』）
+　，（『a//b』与「阴」与『文件路径无效』）
+　，（『a/./b』与「阴」与『文件路径无效』）
+　，（『a/../b』与「阴」与『文件路径无效』）
+　，（『../a』与「阴」与『文件路径无效』）
+　，（『a/..』与「阴」与『文件路径无效』）
+　，（『.』与「阴」与『文件路径无效』）
+　，（『..』与「阴」与『文件路径无效』）
+　，（『a:b』与「阴」与『文件路径无效』）
+　，（『source/a:b』与「阴」与『文件路径无效』）
+　，（『a\b』与「阴」与『文件路径无效』）
+　，（『a%5Cb』与「阴」与『文件路径无效』）
+　，（『%2e%2e/a』与「阴」与『文件路径无效』）
+　，（『a/%2e%2e/b』与「阴」与『文件路径无效』）
+　，（『a%2Fb』与「阳」与『a/b』）
+　，（『a%2F..%2Fb』与「阴」与『文件路径无效』）
+　，（『a%00b』与「阴」与『文件路径无效』）
+　，（『%00』与「阴」与『文件路径无效』）
+　，（『%ZZ』与「阴」与『文件路径编码错误』）
+　，（『%E4%B8%AD/%E6%96%87』与「阳」与『中/文』）
+　，（『中文/文件』与「阳」与『中文/文件』）
+　，（『a b/c d』与「阳」与『a b/c d』）
+　，（『a%20b』与「阳」与『a b』）
+　，（『a「：制表：」b』与「阴」与『文件路径无效』）
+　，（『a「：换行：」b』与「阴」与『文件路径无效』）
+　，（（『a』接（「控」于「一二七」）接『b』）与「阴」与『文件路径无效』）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阳」
+　　　与『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阴」
+　　　与『文件路径无效』
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阳」
+　　　与『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阴」
+　　　与『文件路径无效』
+　　）
+　，（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阳」
+　　　与『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　）
+　】）。
+「查安全们」于（「列」
+　【（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阴」
+　　　与『文件路径无效』
+　　）
+　，（『%00%ZZ』与「阴」与『文件路径编码错误』）
+　，（『%ZZ%00』与「阴」与『文件路径编码错误』）
+　，（『%E4%B8%AD%00』与「阴」与『文件路径无效』）
+　，（『a%2fb』与「阳」与『a/b』）
+　，（『A%2Fb/c』与「阳」与『A/b/c』）
+　，（『./a.b/%5C』与「阴」与『文件路径无效』）
+　，（『./x y/:』与「阴」与『文件路径无效』）
+　，（『%1f/%E4%B8%AD』与「阴」与『文件路径无效』）
+　，（『%7f/A%20B//%E4%B8』与「阴」与『文件路径编码错误』）
+　，（『发布.zip/%3A/build/__published__』与「阴」与『文件路径无效』）
+　，（『readme』与「阳」与『readme』）
+　，（『readme』与「阳」与『readme』）
+　，（『%2E%2e』与「阴」与『文件路径无效』）
+　，（『%01/%5C』与「阴」与『文件路径无效』）
+　，（『/readme/中文/docs』与「阴」与『文件路径无效』）
+　，（『%ZZ/.../中文』与「阴」与『文件路径编码错误』）
+　，（『A%20B』与「阳」与『A B』）
+　，（『%2F』与「阴」与『文件路径无效』）
+　，（『%C0%AF/%2F/%E4%B8%AD』与「阴」与『文件路径编码错误』）
+　，（『.hidden/例。豫/a.b』与「阳」与『.hidden/例。豫/a.b』）
+　，（『docs//%C0%AF/__published__』与「阴」与『文件路径编码错误』）
+　，（（『%ZZ/%3A/发布.zip/』接（「控」于「一」））与「阴」与『文件路径编码错误』）
+　，（『%E4%B8/%/build/%C0%AF』与「阴」与『文件路径编码错误』）
+　，（『:/中文/A%20B/archive』与「阴」与『文件路径无效』）
+　，（『.hidden/%ZZ/%C0%AF/%7f』与「阴」与『文件路径编码错误』）
+　，（（（「控」于「一」）接『/b』）与「阴」与『文件路径无效』）
+　，（『%ZZ/%E4%B8』与「阴」与『文件路径编码错误』）
+　，（『:』与「阴」与『文件路径无效』）
+　，（『:/archive/%』与「阴」与『文件路径编码错误』）
+　，（『source/%3A/A%20B』与「阴」与『文件路径无效』）
+　，（『%00/😀』与「阴」与『文件路径无效』）
+　，（『a/%3A/...』与「阴」与『文件路径无效』）
+　，（『a/%/中文』与「阴」与『文件路径编码错误』）
+　，（『%/%5c/b/中文』与「阴」与『文件路径编码错误』）
+　，（（『%C0%AF/』接（「控」于「一二七」））与「阴」与『文件路径编码错误』）
+　，（『a b/例。豫/b/%5C』与「阴」与『文件路径无效』）
+　，（『😀/%E4%B8』与「阴」与『文件路径编码错误』）
+　，（『/archive』与「阴」与『文件路径无效』）
+　，（『a b/build/a:b/%00』与「阴」与『文件路径无效』）
+　】）。
+「查安全们」于（「列」
+　【（『%3a/build/archive』与「阴」与『文件路径无效』）
+　，（『😀』与「阳」与『😀』）
+　，（『发布.zip』与「阳」与『发布.zip』）
+　，（『%5c』与「阴」与『文件路径无效』）
+　，（『docs』与「阳」与『docs』）
+　，（『source/　//runtime』与「阴」与『文件路径无效』）
+　，（『例。豫/x y』与「阳」与『例。豫/x y』）
+　，（『:』与「阴」与『文件路径无效』）
+　，（『发布.zip/readme/source』与「阳」与『发布.zip/readme/source』）
+　，（『%2F/%2E%2e/%00/%ZZ』与「阴」与『文件路径编码错误』）
+　，（『build/%2F』与「阴」与『文件路径无效』）
+　，（『%00/source』与「阴」与『文件路径无效』）
+　，（『%E4%B8%AD/readme/%/%』与「阴」与『文件路径编码错误』）
+　，（『%ZZ』与「阴」与『文件路径编码错误』）
+　，（『archive/%00』与「阴」与『文件路径无效』）
+　，（『%ZZ』与「阴」与『文件路径编码错误』）
+　，（『a/%E4%B8%AD/__published__/b』与「阳」与『a/中/__published__/b』）
+　，（『/\』与「阴」与『文件路径无效』）
+　，（『a.b』与「阳」与『a.b』）
+　，（『runtime』与「阳」与『runtime』）
+　，（『中文/.hidden』与「阳」与『中文/.hidden』）
+　，（『%2E%2e/x y』与「阴」与『文件路径无效』）
+　，（『../中文/%ZZ/a b』与「阴」与『文件路径编码错误』）
+　，（『%C0%AF/.../%1f』与「阴」与『文件路径编码错误』）
+　，（『%7f/source/%C0%AF』与「阴」与『文件路径编码错误』）
+　，（『%5C/例。豫/发布.zip』与「阴」与『文件路径无效』）
+　，（（（「控」于「一」）接『/%C0%AF/%3A』）与「阴」与『文件路径编码错误』）
+　，（『%5C/例。豫/\/%ZZ』与「阴」与『文件路径编码错误』）
+　，（『发布.zip/%1f』与「阴」与『文件路径无效』）
+　，（『source』与「阳」与『source』）
+　，（『/\』与「阴」与『文件路径无效』）
+　，（『runtime/x y』与「阳」与『runtime/x y』）
+　，（（『%1f/』接（「控」于「一」））与「阴」与『文件路径无效』）
+　，（『%2F/b/%C0%AF』与「阴」与『文件路径编码错误』）
+　，（『/__published__』与「阴」与『文件路径无效』）
+　，（『a.b/😀/』与「阴」与『文件路径无效』）
+　，（『%5c/..』与「阴」与『文件路径无效』）
+　，（『%E4%B8/%5C/发布.zip』与「阴」与『文件路径编码错误』）
+　，（（『%5c/』接（「控」于「一二七」））与「阴」与『文件路径无效』）
+　，（『%C0%AF/中文』与「阴」与『文件路径编码错误』）
+　】）。
+「查安全们」于（「列」
+　【（『A%20B/　』与「阳」与『A B/　』）
+　，（『%5C』与「阴」与『文件路径无效』）
+　，（『archive/%2e/』与「阴」与『文件路径无效』）
+　，（（『../』接（「控」于「一二七」）接『/%7f』）与「阴」与『文件路径无效』）
+　，（『archive/%5c』与「阴」与『文件路径无效』）
+　，（『%C0%AF/b/%00』与「阴」与『文件路径编码错误』）
+　，（『.hidden/%00』与「阴」与『文件路径无效』）
+　，（『:/』与「阴」与『文件路径无效』）
+　，（『%00/.../%3A』与「阴」与『文件路径无效』）
+　，（『%00/例。豫』与「阴」与『文件路径无效』）
+　，（『%1f/archive』与「阴」与『文件路径无效』）
+　，（『%1f/../%5c/runtime』与「阴」与『文件路径无效』）
+　，（『x y/%5c/%2F』与「阴」与『文件路径无效』）
+　，（『%2F』与「阴」与『文件路径无效』）
+　，（『..』与「阴」与『文件路径无效』）
+　，（『%2e/a:b/archive』与「阴」与『文件路径无效』）
+　，（『』与「阴」与『文件路径无效』）
+　，（『a:b/archive/%01』与「阴」与『文件路径无效』）
+　，（『发布.zip/readme/../b』与「阴」与『文件路径无效』）
+　，（『a:b/source/.』与「阴」与『文件路径无效』）
+　，（『%ZZ』与「阴」与『文件路径编码错误』）
+　，（『%01/%7f/build/%5C』与「阴」与『文件路径无效』）
+　，（『.hidden』与「阳」与『.hidden』）
+　，（『%2F/中文/x y』与「阴」与『文件路径无效』）
+　，（『a.b/a』与「阳」与『a.b/a』）
+　，（（『中文/』接（「控」于「一」））与「阴」与『文件路径无效』）
+　，（『%01/%01/build』与「阴」与『文件路径无效』）
+　，（『%1f』与「阴」与『文件路径无效』）
+　，（『a.b』与「阳」与『a.b』）
+　，（『b』与「阳」与『b』）
+　，（『%2e/%E4%B8%AD/　/b』与「阴」与『文件路径无效』）
+　，（『.hidden』与「阳」与『.hidden』）
+　，（『readme/..』与「阴」与『文件路径无效』）
+　，（『%3A』与「阴」与『文件路径无效』）
+　，（『:/中文/%7f/』与「阴」与『文件路径无效』）
+　，（『%5c/%ZZ』与「阴」与『文件路径编码错误』）
+　，（『./x y/%00』与「阴」与『文件路径无效』）
+　，（『.hidden/😀/%E4%B8%AD』与「阳」与『.hidden/😀/中』）
+　，（『中文』与「阳」与『中文』）
+　，（『source/x y/%E4%B8%AD』与「阳」与『source/x y/中』）
+　】）。
+「查安全们」于（「列」
+　【（『x y』与「阳」与『x y』）
+　，（（『__published__/%C0%AF/』接（「控」于「一」））与「阴」与『文件路径编码错误』）
+　，（『%2F/A%20B/%00』与「阴」与『文件路径无效』）
+　，（『build』与「阳」与『build』）
+　，（『a/A%20B/b』与「阳」与『a/A B/b』）
+　，（『%ZZ/\』与「阴」与『文件路径编码错误』）
+　，（（『%/😀/』接（「控」于「一」）接『/runtime』）与「阴」与『文件路径编码错误』）
+　，（『:』与「阴」与『文件路径无效』）
+　，（『%2E%2e/例。豫/%3A』与「阴」与『文件路径无效』）
+　，（（（「控」于「一」）接『/b/./%2e』）与「阴」与『文件路径无效』）
+　，（『./%2F/\/a.b』与「阴」与『文件路径无效』）
+　，（『a b』与「阳」与『a b』）
+　，（『readme』与「阳」与『readme』）
+　，（（『%01/』接（「控」于「一」）接『/.hidden/%1f』）与「阴」与『文件路径无效』）
+　，（『%2F/..』与「阴」与『文件路径无效』）
+　，（（（「控」于「一二七」）接『/例。豫/x y』）与「阴」与『文件路径无效』）
+　，（『%3A/b』与「阴」与『文件路径无效』）
+　，（『a.b/%C0%AF/archive/』与「阴」与『文件路径编码错误』）
+　，（『__published__/docs』与「阳」与『__published__/docs』）
+　，（『%01/中文』与「阴」与『文件路径无效』）
+　，（『中文/』与「阴」与『文件路径无效』）
+　，（『%3A』与「阴」与『文件路径无效』）
+　，（『%2F/b/』与「阴」与『文件路径无效』）
+　，（『a b/%ZZ/%3A』与「阴」与『文件路径编码错误』）
+　，（『%2e/例。豫』与「阴」与『文件路径无效』）
+　，（『.../%3A/readme/%E4%B8%AD』与「阴」与『文件路径无效』）
+　，（『/a』与「阴」与『文件路径无效』）
+　，（『%3a/../a b/%5C』与「阴」与『文件路径无效』）
+　，（『a b/source』与「阳」与『a b/source』）
+　，（『中文/』与「阴」与『文件路径无效』）
+　，（（『/.hidden/a/』接（「控」于「一二七」））与「阴」与『文件路径无效』）
+　，（『a.b/%01/例。豫/%2F』与「阴」与『文件路径无效』）
+　，（『.../%3a/source』与「阴」与『文件路径无效』）
+　，（『a:b』与「阴」与『文件路径无效』）
+　，（『%3a/build』与「阴」与『文件路径无效』）
+　，（『%ZZ/b/__published__』与「阴」与『文件路径编码错误』）
+　，（『docs/%2F/a b/runtime』与「阴」与『文件路径无效』）
+　，（『%2e/../%1f』与「阴」与『文件路径无效』）
+　，（『\/a.b/source/source』与「阴」与『文件路径无效』）
+　，（『:』与「阴」与『文件路径无效』）
+　】）。
+「查安全们」于（「列」
+　【（『x y/__published__』与「阳」与『x y/__published__』）
+　，（『%3A』与「阴」与『文件路径无效』）
+　，（『readme』与「阳」与『readme』）
+　，（『%3A/../%ZZ/%2E%2e』与「阴」与『文件路径编码错误』）
+　，（『%3A/%7f』与「阴」与『文件路径无效』）
+　，（『发布.zip/%7f/%7f』与「阴」与『文件路径无效』）
+　，（『　』与「阳」与『　』）
+　，（『%2e/%01』与「阴」与『文件路径无效』）
+　，（（『%C0%AF/a:b/』接（「控」于「一二七」）接『/　』）与「阴」与『文件路径编码错误』）
+　，（『./%2E%2e』与「阴」与『文件路径无效』）
+　，（『%2F』与「阴」与『文件路径无效』）
+　，（『docs』与「阳」与『docs』）
+　，（『%3a』与「阴」与『文件路径无效』）
+　，（『』与「阴」与『文件路径无效』）
+　，（（『a.b/./』接（「控」于「一二七」））与「阴」与『文件路径无效』）
+　，（（『source/』接（「控」于「一二七」）接『/%2F』）与「阴」与『文件路径无效』）
+　，（（『%3A/docs/x y/』接（「控」于「一二七」））与「阴」与『文件路径无效』）
+　，（『a:b/.hidden/%/.』与「阴」与『文件路径编码错误』）
+　，（『%5C』与「阴」与『文件路径无效』）
+　，（『/%ZZ/%2F』与「阴」与『文件路径编码错误』）
+　，（『%5C/%』与「阴」与『文件路径编码错误』）
+　，（『build/%00/%2F/..』与「阴」与『文件路径无效』）
+　，（『A%20B』与「阳」与『A B』）
+　，（『%2E%2e/中文/例。豫/例。豫』与「阴」与『文件路径无效』）
+　，（（『%7f/　/』接（「控」于「一二七」）接『/readme』）与「阴」与『文件路径无效』）
+　，（『%』与「阴」与『文件路径编码错误』）
+　，（『../%3a/发布.zip/%3A』与「阴」与『文件路径无效』）
+　，（『%5c』与「阴」与『文件路径无效』）
+　，（『%2E%2e/%1f/%1f/发布.zip』与「阴」与『文件路径无效』）
+　，（『.../.././a:b』与「阴」与『文件路径无效』）
+　，（『source/:/%E4%B8』与「阴」与『文件路径编码错误』）
+　，（（「控」于「一」）与「阴」与『文件路径无效』）
+　，（『:/发布.zip』与「阴」与『文件路径无效』）
+　，（『./.hidden/%E4%B8%AD』与「阴」与『文件路径无效』）
+　，（『/docs』与「阴」与『文件路径无效』）
+　，（『a:b/%C0%AF/%3a/a b』与「阴」与『文件路径编码错误』）
+　，（『😀』与「阳」与『😀』）
+　，（『docs/a b』与「阳」与『docs/a b』）
+　，（『a/archive/docs/.hidden』与「阳」与『a/archive/docs/.hidden』）
+　，（『%E4%B8%AD』与「阳」与『中』）
+　】）。
+「查安全们」于（「列」
+　【（『.hidden/例。豫/%01』与「阴」与『文件路径无效』）
+　，（『%/%1f』与「阴」与『文件路径编码错误』）
+　，（『A%20B/b』与「阳」与『A B/b』）
+　，（『例。豫』与「阳」与『例。豫』）
+　，（『%3a』与「阴」与『文件路径无效』）
+　，（『%1f/../%2F/%01』与「阴」与『文件路径无效』）
+　，（『%5c/A%20B』与「阴」与『文件路径无效』）
+　，（『%7f』与「阴」与『文件路径无效』）
+　，（『%C0%AF/例。豫/%01/%3A』与「阴」与『文件路径编码错误』）
+　，（『%2F/%E4%B8%AD』与「阴」与『文件路径无效』）
+　，（『a/』与「阴」与『文件路径无效』）
+　，（（『%3A/』接（「控」于「一」）接『/%』）与「阴」与『文件路径编码错误』）
+　，（『archive』与「阳」与『archive』）
+　，（『readme/例。豫/../中文』与「阴」与『文件路径无效』）
+　，（『%3A/%3A/docs』与「阴」与『文件路径无效』）
+　，（『b/%E4%B8/docs/%C0%AF』与「阴」与『文件路径编码错误』）
+　，（『例。豫/\/a/』与「阴」与『文件路径无效』）
+　，（『:/a/%01/%』与「阴」与『文件路径编码错误』）
+　，（『%E4%B8%AD/%E4%B8』与「阴」与『文件路径编码错误』）
+　，（『./docs/%/:』与「阴」与『文件路径编码错误』）
+　，（『docs』与「阳」与『docs』）
+　，（『a b/%01/source/a.b』与「阴」与『文件路径无效』）
+　，（『source/.』与「阴」与『文件路径无效』）
+　，（（『../readme/例。豫/』接（「控」于「一二七」））与「阴」与『文件路径无效』）
+　，（『』与「阴」与『文件路径无效』）
+　，（『中文/.hidden/\/%2F』与「阴」与『文件路径无效』）
+　，（『%3a』与「阴」与『文件路径无效』）
+　，（『../%ZZ』与「阴」与『文件路径编码错误』）
+　，（（『%ZZ/%1f/』接（「控」于「一二七」）接『/　』）与「阴」与『文件路径编码错误』）
+　，（（（「控」于「一」）接『/%C0%AF/source』）与「阴」与『文件路径编码错误』）
+　，（『%3A』与「阴」与『文件路径无效』）
+　，（『docs』与「阳」与『docs』）
+　，（『%2F/%5C/docs』与「阴」与『文件路径无效』）
+　，（『archive/%5c/%01/.』与「阴」与『文件路径无效』）
+　，（『%3A/%/%E4%B8%AD』与「阴」与『文件路径编码错误』）
+　，（『a:b/%ZZ』与「阴」与『文件路径编码错误』）
+　，（『__published__/runtime/%E4%B8』与「阴」与『文件路径编码错误』）
+　，（（「控」于「一二七」）与「阴」与『文件路径无效』）
+　，（『%01/😀』与「阴」与『文件路径无效』）
+　，（『😀』与「阳」与『😀』）
+　】）。
+「查安全们」于（「列」
+　【（『%5c』与「阴」与『文件路径无效』）
+　，（『%3A/A%20B/__published__/A%20B』与「阴」与『文件路径无效』）
+　，（『build/A%20B』与「阳」与『build/A B』）
+　，（『%E4%B8%AD』与「阳」与『中』）
+　，（『__published__/例。豫/%01』与「阴」与『文件路径无效』）
+　，（『/%2e/build/b』与「阴」与『文件路径无效』）
+　，（『%00』与「阴」与『文件路径无效』）
+　，（『archive』与「阳」与『archive』）
+　，（『.../docs/archive』与「阳」与『.../docs/archive』）
+　，（『a:b/%2e/%00/%3A』与「阴」与『文件路径无效』）
+　，（『%2E%2e』与「阴」与『文件路径无效』）
+　，（『%E4%B8/%7f/a b/a:b』与「阴」与『文件路径编码错误』）
+　，（『%5c/%2E%2e』与「阴」与『文件路径无效』）
+　，（『build/%5C/%3A/%』与「阴」与『文件路径编码错误』）
+　，（『%3A/发布.zip//a.b』与「阴」与『文件路径无效』）
+　，（『./%00/%C0%AF/%7f』与「阴」与『文件路径编码错误』）
+　，（『%E4%B8%AD/%C0%AF/发布.zip』与「阴」与『文件路径编码错误』）
+　，（『　/A%20B』与「阳」与『　/A B』）
+　，（『readme』与「阳」与『readme』）
+　，（『build/』与「阴」与『文件路径无效』）
+　，（『runtime/%2E%2e/source』与「阴」与『文件路径无效』）
+　，（『%01/%00』与「阴」与『文件路径无效』）
+　，（『a b/\』与「阴」与『文件路径无效』）
+　，（（（「控」于「一二七」）接『/.hidden/:/%2E%2e』）与「阴」与『文件路径无效』）
+　，（『%E4%B8%AD/%5C』与「阴」与『文件路径无效』）
+　，（『😀/%E4%B8%AD/%C0%AF』与「阴」与『文件路径编码错误』）
+　，（（（「控」于「一」）接『..中:』）与「阴」与『文件路径无效』）
+　，（（『「：换行：」b/』接（「控」于「一二七」）接『5』）与「阴」与『文件路径无效』）
+　，（『2ZC』与「阳」与『2ZC』）
+　，（『5』与「阳」与『5』）
+　，（『「：制表：」 「：换行：」CA「：换行：」b』与「阴」与『文件路径无效』）
+　，（『a「：换行：」:「：换行：」b』与「阴」与『文件路径无效』）
+　，（（『C0\』接（「控」于「一」）接『b中C  』）与「阴」与『文件路径无效』）
+　，（（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）与「阴」与『文件路径编码错误』）
+　，（（『b』接（「控」于「一」）接『中%A』）与「阴」与『文件路径编码错误』）
+　，（（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）与「阴」与『文件路径无效』）
+　，（『AZ0%』与「阴」与『文件路径编码错误』）
+　，（（『. /.』接（「控」于「一」）接『/b』）与「阴」与『文件路径无效』）
+　，（（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）
+　　　与「阴」
+　　　与『文件路径无效』
+　　）
+　，（『E』与「阳」与『E』）
+　】）。
+「查安全们」于（「列」
+　【（（『.:中5』接（「控」于「一」））与「阴」与『文件路径无效』）
+　，（『5.😀50E😀\2』与「阴」与『文件路径无效』）
+　，（『/中』与「阴」与『文件路径无效』）
+　，（『「：换行：」.C』与「阴」与『文件路径无效』）
+　，（『EEE』与「阳」与『EEE』）
+　，（（『:』接（「控」于「一」）接『Za0:0「：换行：」』）与「阴」与『文件路径无效』）
+　，（（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）与「阴」与『文件路径无效』）
+　，（（『/:AZ』接（「控」于「一」）接『「：换行：」\5』）与「阴」与『文件路径无效』）
+　，（『b』与「阳」与『b』）
+　，（（『 』接（「控」于「一二七」）接『.%😀:』）与「阴」与『文件路径编码错误』）
+　，（『😀0』与「阳」与『😀0』）
+　，（（『0525Z』接（「控」于「一二七」）接『.\5』）与「阴」与『文件路径无效』）
+　，（（（「控」于「一」）接『0Z2😀』）与「阴」与『文件路径无效』）
+　，（（『/2.Z』接（「控」于「一」）接『/』）与「阴」与『文件路径无效』）
+　，（『「：换行：」CbC\A』与「阴」与『文件路径无效』）
+　，（（『/2b』接（「控」于「一二七」））与「阴」与『文件路径无效』）
+　，（（『%中.2b中a』接（「控」于「一」））与「阴」与『文件路径编码错误』）
+　，（（「控」于「一二七」）与「阴」与『文件路径无效』）
+　，（『』与「阴」与『文件路径无效』）
+　，（（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）与「阴」与『文件路径无效』）
+　，（（『E』接（「控」于「一」））与「阴」与『文件路径无效』）
+　，（『Z2』与「阳」与『Z2』）
+　，（『Cb5』与「阳」与『Cb5』）
+　，（（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）与「阴」与『文件路径无效』）
+　，（『😀./😀:「：制表：」a』与「阴」与『文件路径无效』）
+　，（『』与「阴」与『文件路径无效』）
+　】）。
+「：汉语：旧 阅读.js safe 与「safe 且分类」的向量。
+　　文言：路径安全与阅读之径向量。：」
+「查路径安全们」于（「列」
+　【（『』与「阴」）
+　，（『/』与「阴」）
+　，（『source/例。豫』与「阳」）
+　，（『source/a/b.txt』与「阳」）
+　，（『docs/index.html』与「阳」）
+　，（『archive/发布.zip』与「阳」）
+　，（『__published__』与「阳」）
+　，（『source』与「阳」）
+　，（『source/』与「阴」）
+　，（『/source/a』与「阴」）
+　，（『a//b』与「阴」）
+　，（『a/./b』与「阴」）
+　，（『a/../b』与「阴」）
+　，（『../a』与「阴」）
+　，（『a/..』与「阴」）
+　，（『.』与「阴」）
+　，（『..』与「阴」）
+　，（『a:b』与「阴」）
+　，（『source/a:b』与「阴」）
+　，（『a\b』与「阴」）
+　，（『a%5Cb』与「阳」）
+　，（『%2e%2e/a』与「阳」）
+　，（『a/%2e%2e/b』与「阳」）
+　，（『a%2Fb』与「阳」）
+　，（『a%2F..%2Fb』与「阳」）
+　，（『a%00b』与「阳」）
+　，（『%00』与「阳」）
+　，（『%ZZ』与「阳」）
+　，（『%E4%B8%AD/%E6%96%87』与「阳」）
+　，（『中文/文件』与「阳」）
+　，（『a b/c d』与「阳」）
+　，（『a%20b』与「阳」）
+　，（『a「：制表：」b』与「阴」）
+　，（『a「：换行：」b』与「阴」）
+　，（（『a』接（「控」于「一二七」）接『b』）与「阴」）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阳」
+　　）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阴」
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阳」
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阴」
+　　）
+　，（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阳」
+　　）
+　】）。
+「查路径安全们」于（「列」
+　【（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阴」
+　　）
+　，（『%00%ZZ』与「阳」）
+　，（『%ZZ%00』与「阳」）
+　，（『%E4%B8%AD%00』与「阳」）
+　，（『a%2fb』与「阳」）
+　，（『A%2Fb/c』与「阳」）
+　，（『./a.b/%5C』与「阴」）
+　，（『./x y/:』与「阴」）
+　，（『%1f/%E4%B8%AD』与「阳」）
+　，（『%7f/A%20B//%E4%B8』与「阴」）
+　，（『发布.zip/%3A/build/__published__』与「阳」）
+　，（『readme』与「阳」）
+　，（『%2E%2e』与「阳」）
+　，（『%01/%5C』与「阳」）
+　，（『/readme/中文/docs』与「阴」）
+　，（『%ZZ/.../中文』与「阳」）
+　，（『A%20B』与「阳」）
+　，（『%2F』与「阳」）
+　，（『%C0%AF/%2F/%E4%B8%AD』与「阳」）
+　，（『.hidden/例。豫/a.b』与「阳」）
+　，（『docs//%C0%AF/__published__』与「阴」）
+　，（（『%ZZ/%3A/发布.zip/』接（「控」于「一」））与「阴」）
+　，（『%E4%B8/%/build/%C0%AF』与「阳」）
+　，（『:/中文/A%20B/archive』与「阴」）
+　，（『.hidden/%ZZ/%C0%AF/%7f』与「阳」）
+　，（（（「控」于「一」）接『/b』）与「阴」）
+　，（『%ZZ/%E4%B8』与「阳」）
+　，（『:』与「阴」）
+　，（『:/archive/%』与「阴」）
+　，（『source/%3A/A%20B』与「阳」）
+　，（『%00/😀』与「阳」）
+　，（『a/%3A/...』与「阳」）
+　，（『a/%/中文』与「阳」）
+　，（『%/%5c/b/中文』与「阳」）
+　，（（『%C0%AF/』接（「控」于「一二七」））与「阴」）
+　，（『a b/例。豫/b/%5C』与「阳」）
+　，（『😀/%E4%B8』与「阳」）
+　，（『/archive』与「阴」）
+　，（『a b/build/a:b/%00』与「阴」）
+　，（『%3a/build/archive』与「阳」）
+　】）。
+「查路径安全们」于（「列」
+　【（『😀』与「阳」）
+　，（『发布.zip』与「阳」）
+　，（『%5c』与「阳」）
+　，（『docs』与「阳」）
+　，（『source/　//runtime』与「阴」）
+　，（『例。豫/x y』与「阳」）
+　，（『发布.zip/readme/source』与「阳」）
+　，（『%2F/%2E%2e/%00/%ZZ』与「阳」）
+　，（『build/%2F』与「阳」）
+　，（『%00/source』与「阳」）
+　，（『%E4%B8%AD/readme/%/%』与「阳」）
+　，（『archive/%00』与「阳」）
+　，（『a/%E4%B8%AD/__published__/b』与「阳」）
+　，（『/\』与「阴」）
+　，（『a.b』与「阳」）
+　，（『runtime』与「阳」）
+　，（『中文/.hidden』与「阳」）
+　，（『%2E%2e/x y』与「阳」）
+　，（『../中文/%ZZ/a b』与「阴」）
+　，（『%C0%AF/.../%1f』与「阳」）
+　，（『%7f/source/%C0%AF』与「阳」）
+　，（『%5C/例。豫/发布.zip』与「阳」）
+　，（（（「控」于「一」）接『/%C0%AF/%3A』）与「阴」）
+　，（『%5C/例。豫/\/%ZZ』与「阴」）
+　，（『发布.zip/%1f』与「阳」）
+　，（『runtime/x y』与「阳」）
+　，（（『%1f/』接（「控」于「一」））与「阴」）
+　，（『%2F/b/%C0%AF』与「阳」）
+　，（『/__published__』与「阴」）
+　，（『a.b/😀/』与「阴」）
+　，（『%5c/..』与「阴」）
+　，（『%E4%B8/%5C/发布.zip』与「阳」）
+　，（（『%5c/』接（「控」于「一二七」））与「阴」）
+　，（『%C0%AF/中文』与「阳」）
+　，（『A%20B/　』与「阳」）
+　，（『%5C』与「阳」）
+　，（『archive/%2e/』与「阴」）
+　，（（『../』接（「控」于「一二七」）接『/%7f』）与「阴」）
+　，（『archive/%5c』与「阳」）
+　，（『%C0%AF/b/%00』与「阳」）
+　】）。
+「查路径安全们」于（「列」
+　【（『.hidden/%00』与「阳」）
+　，（『:/』与「阴」）
+　，（『%00/.../%3A』与「阳」）
+　，（『%00/例。豫』与「阳」）
+　，（『%1f/archive』与「阳」）
+　，（『%1f/../%5c/runtime』与「阴」）
+　，（『x y/%5c/%2F』与「阳」）
+　，（『%2e/a:b/archive』与「阴」）
+　，（『a:b/archive/%01』与「阴」）
+　，（『发布.zip/readme/../b』与「阴」）
+　，（『a:b/source/.』与「阴」）
+　，（『%01/%7f/build/%5C』与「阳」）
+　，（『.hidden』与「阳」）
+　，（『%2F/中文/x y』与「阳」）
+　，（『a.b/a』与「阳」）
+　，（（『中文/』接（「控」于「一」））与「阴」）
+　，（『%01/%01/build』与「阳」）
+　，（『%1f』与「阳」）
+　，（『b』与「阳」）
+　，（『%2e/%E4%B8%AD/　/b』与「阳」）
+　，（『readme/..』与「阴」）
+　，（『%3A』与「阳」）
+　，（『:/中文/%7f/』与「阴」）
+　，（『%5c/%ZZ』与「阳」）
+　，（『./x y/%00』与「阴」）
+　，（『.hidden/😀/%E4%B8%AD』与「阳」）
+　，（『中文』与「阳」）
+　，（『source/x y/%E4%B8%AD』与「阳」）
+　，（『x y』与「阳」）
+　，（（『__published__/%C0%AF/』接（「控」于「一」））与「阴」）
+　，（『%2F/A%20B/%00』与「阳」）
+　，（『build』与「阳」）
+　，（『a/A%20B/b』与「阳」）
+　，（『%ZZ/\』与「阴」）
+　，（（『%/😀/』接（「控」于「一」）接『/runtime』）与「阴」）
+　，（『%2E%2e/例。豫/%3A』与「阳」）
+　，（（（「控」于「一」）接『/b/./%2e』）与「阴」）
+　，（『./%2F/\/a.b』与「阴」）
+　，（『a b』与「阳」）
+　，（（『%01/』接（「控」于「一」）接『/.hidden/%1f』）与「阴」）
+　】）。
+「查路径安全们」于（「列」
+　【（『%2F/..』与「阴」）
+　，（（（「控」于「一二七」）接『/例。豫/x y』）与「阴」）
+　，（『%3A/b』与「阳」）
+　，（『a.b/%C0%AF/archive/』与「阴」）
+　，（『__published__/docs』与「阳」）
+　，（『%01/中文』与「阳」）
+　，（『中文/』与「阴」）
+　，（『%2F/b/』与「阴」）
+　，（『a b/%ZZ/%3A』与「阳」）
+　，（『%2e/例。豫』与「阳」）
+　，（『.../%3A/readme/%E4%B8%AD』与「阳」）
+　，（『/a』与「阴」）
+　，（『%3a/../a b/%5C』与「阴」）
+　，（『a b/source』与「阳」）
+　，（（『/.hidden/a/』接（「控」于「一二七」））与「阴」）
+　，（『a.b/%01/例。豫/%2F』与「阳」）
+　，（『.../%3a/source』与「阳」）
+　，（『%3a/build』与「阳」）
+　，（『%ZZ/b/__published__』与「阳」）
+　，（『docs/%2F/a b/runtime』与「阳」）
+　，（『%2e/../%1f』与「阴」）
+　，（『\/a.b/source/source』与「阴」）
+　，（『x y/__published__』与「阳」）
+　，（『%3A/../%ZZ/%2E%2e』与「阴」）
+　，（『%3A/%7f』与「阳」）
+　，（『发布.zip/%7f/%7f』与「阳」）
+　，（『　』与「阳」）
+　，（『%2e/%01』与「阳」）
+　，（（『%C0%AF/a:b/』接（「控」于「一二七」）接『/　』）与「阴」）
+　，（『./%2E%2e』与「阴」）
+　，（『%3a』与「阳」）
+　，（（『a.b/./』接（「控」于「一二七」））与「阴」）
+　，（（『source/』接（「控」于「一二七」）接『/%2F』）与「阴」）
+　，（（『%3A/docs/x y/』接（「控」于「一二七」））与「阴」）
+　，（『a:b/.hidden/%/.』与「阴」）
+　，（『/%ZZ/%2F』与「阴」）
+　，（『%5C/%』与「阳」）
+　，（『build/%00/%2F/..』与「阴」）
+　，（『%2E%2e/中文/例。豫/例。豫』与「阳」）
+　，（（『%7f/　/』接（「控」于「一二七」）接『/readme』）与「阴」）
+　】）。
+「查路径安全们」于（「列」
+　【（『%』与「阳」）
+　，（『../%3a/发布.zip/%3A』与「阴」）
+　，（『%2E%2e/%1f/%1f/发布.zip』与「阳」）
+　，（『.../.././a:b』与「阴」）
+　，（『source/:/%E4%B8』与「阴」）
+　，（（「控」于「一」）与「阴」）
+　，（『:/发布.zip』与「阴」）
+　，（『./.hidden/%E4%B8%AD』与「阴」）
+　，（『/docs』与「阴」）
+　，（『a:b/%C0%AF/%3a/a b』与「阴」）
+　，（『docs/a b』与「阳」）
+　，（『a/archive/docs/.hidden』与「阳」）
+　，（『%E4%B8%AD』与「阳」）
+　，（『.hidden/例。豫/%01』与「阳」）
+　，（『%/%1f』与「阳」）
+　，（『A%20B/b』与「阳」）
+　，（『例。豫』与「阳」）
+　，（『%1f/../%2F/%01』与「阴」）
+　，（『%5c/A%20B』与「阳」）
+　，（『%7f』与「阳」）
+　，（『%C0%AF/例。豫/%01/%3A』与「阳」）
+　，（『%2F/%E4%B8%AD』与「阳」）
+　，（『a/』与「阴」）
+　，（（『%3A/』接（「控」于「一」）接『/%』）与「阴」）
+　，（『archive』与「阳」）
+　，（『readme/例。豫/../中文』与「阴」）
+　，（『%3A/%3A/docs』与「阳」）
+　，（『b/%E4%B8/docs/%C0%AF』与「阳」）
+　，（『例。豫/\/a/』与「阴」）
+　，（『:/a/%01/%』与「阴」）
+　，（『%E4%B8%AD/%E4%B8』与「阳」）
+　，（『./docs/%/:』与「阴」）
+　，（『a b/%01/source/a.b』与「阳」）
+　，（『source/.』与「阴」）
+　，（（『../readme/例。豫/』接（「控」于「一二七」））与「阴」）
+　，（『中文/.hidden/\/%2F』与「阴」）
+　，（『../%ZZ』与「阴」）
+　，（（『%ZZ/%1f/』接（「控」于「一二七」）接『/　』）与「阴」）
+　，（（（「控」于「一」）接『/%C0%AF/source』）与「阴」）
+　，（『%2F/%5C/docs』与「阳」）
+　】）。
+「查路径安全们」于（「列」
+　【（『archive/%5c/%01/.』与「阴」）
+　，（『%3A/%/%E4%B8%AD』与「阳」）
+　，（『a:b/%ZZ』与「阴」）
+　，（『__published__/runtime/%E4%B8』与「阳」）
+　，（（「控」于「一二七」）与「阴」）
+　，（『%01/😀』与「阳」）
+　，（『%3A/A%20B/__published__/A%20B』与「阳」）
+　，（『build/A%20B』与「阳」）
+　，（『__published__/例。豫/%01』与「阳」）
+　，（『/%2e/build/b』与「阴」）
+　，（『.../docs/archive』与「阳」）
+　，（『a:b/%2e/%00/%3A』与「阴」）
+　，（『%E4%B8/%7f/a b/a:b』与「阴」）
+　，（『%5c/%2E%2e』与「阳」）
+　，（『build/%5C/%3A/%』与「阳」）
+　，（『%3A/发布.zip//a.b』与「阴」）
+　，（『./%00/%C0%AF/%7f』与「阴」）
+　，（『%E4%B8%AD/%C0%AF/发布.zip』与「阳」）
+　，（『　/A%20B』与「阳」）
+　，（『build/』与「阴」）
+　，（『runtime/%2E%2e/source』与「阳」）
+　，（『%01/%00』与「阳」）
+　，（『a b/\』与「阴」）
+　，（（（「控」于「一二七」）接『/.hidden/:/%2E%2e』）与「阴」）
+　，（『%E4%B8%AD/%5C』与「阳」）
+　，（『😀/%E4%B8%AD/%C0%AF』与「阳」）
+　，（（（「控」于「一」）接『..中:』）与「阴」）
+　，（（『「：换行：」b/』接（「控」于「一二七」）接『5』）与「阴」）
+　，（『2ZC』与「阳」）
+　，（『5』与「阳」）
+　，（『「：制表：」 「：换行：」CA「：换行：」b』与「阴」）
+　，（『a「：换行：」:「：换行：」b』与「阴」）
+　，（（『C0\』接（「控」于「一」）接『b中C  』）与「阴」）
+　，（（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）与「阴」）
+　，（（『b』接（「控」于「一」）接『中%A』）与「阴」）
+　，（（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）与「阴」）
+　，（『AZ0%』与「阳」）
+　，（（『. /.』接（「控」于「一」）接『/b』）与「阴」）
+　，（（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）与「阴」）
+　，（『E』与「阳」）
+　】）。
+「查路径安全们」于（「列」
+　【（（『.:中5』接（「控」于「一」））与「阴」）
+　，（『5.😀50E😀\2』与「阴」）
+　，（『/中』与「阴」）
+　，（『「：换行：」.C』与「阴」）
+　，（『EEE』与「阳」）
+　，（（『:』接（「控」于「一」）接『Za0:0「：换行：」』）与「阴」）
+　，（（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）与「阴」）
+　，（（『/:AZ』接（「控」于「一」）接『「：换行：」\5』）与「阴」）
+　，（（『 』接（「控」于「一二七」）接『.%😀:』）与「阴」）
+　，（『😀0』与「阳」）
+　，（（『0525Z』接（「控」于「一二七」）接『.\5』）与「阴」）
+　，（（（「控」于「一」）接『0Z2😀』）与「阴」）
+　，（（『/2.Z』接（「控」于「一」）接『/』）与「阴」）
+　，（『「：换行：」CbC\A』与「阴」）
+　，（（『/2b』接（「控」于「一二七」））与「阴」）
+　，（（『%中.2b中a』接（「控」于「一」））与「阴」）
+　，（（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）与「阴」）
+　，（（『E』接（「控」于「一」））与「阴」）
+　，（『Z2』与「阳」）
+　，（『Cb5』与「阳」）
+　，（（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）与「阴」）
+　，（『😀./😀:「：制表：」a』与「阴」）
+　，（『a/b』与「阳」）
+　，（『中/文』与「阳」）
+　，（『A/b/c』与「阳」）
+　，（『A B』与「阳」）
+　，（『a/中/__published__/b』与「阳」）
+　，（『A B/　』与「阳」）
+　，（『.hidden/😀/中』与「阳」）
+　，（『source/x y/中』与「阳」）
+　，（『a/A B/b』与「阳」）
+　，（『中』与「阳」）
+　，（『A B/b』与「阳」）
+　，（『build/A B』与「阳」）
+　，（『　/A B』与「阳」）
+　】）。
+「查阅读路径们」于（「列」
+　【（『』与「阴」）
+　，（『/』与「阴」）
+　，（『source/例。豫』与「阳」）
+　，（『source/a/b.txt』与「阳」）
+　，（『docs/index.html』与「阳」）
+　，（『archive/发布.zip』与「阳」）
+　，（『__published__』与「阴」）
+　，（『source』与「阴」）
+　，（『source/』与「阴」）
+　，（『/source/a』与「阴」）
+　，（『a//b』与「阴」）
+　，（『a/./b』与「阴」）
+　，（『a/../b』与「阴」）
+　，（『../a』与「阴」）
+　，（『a/..』与「阴」）
+　，（『.』与「阴」）
+　，（『..』与「阴」）
+　，（『a:b』与「阴」）
+　，（『source/a:b』与「阴」）
+　，（『a\b』与「阴」）
+　，（『a%5Cb』与「阴」）
+　，（『%2e%2e/a』与「阴」）
+　，（『a/%2e%2e/b』与「阴」）
+　，（『a%2Fb』与「阴」）
+　，（『a%2F..%2Fb』与「阴」）
+　，（『a%00b』与「阴」）
+　，（『%00』与「阴」）
+　，（『%ZZ』与「阴」）
+　，（『%E4%B8%AD/%E6%96%87』与「阴」）
+　，（『中文/文件』与「阴」）
+　，（『a b/c d』与「阴」）
+　，（『a%20b』与「阴」）
+　，（『a「：制表：」b』与「阴」）
+　，（『a「：换行：」b』与「阴」）
+　，（（『a』接（「控」于「一二七」）接『b』）与「阴」）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阴」
+　　）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阴」
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阴」
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阴」
+　　）
+　，（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阴」
+　　）
+　】）。
+「查阅读路径们」于（「列」
+　【（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阴」
+　　）
+　，（『%00%ZZ』与「阴」）
+　，（『%ZZ%00』与「阴」）
+　，（『%E4%B8%AD%00』与「阴」）
+　，（『a%2fb』与「阴」）
+　，（『A%2Fb/c』与「阴」）
+　，（『./a.b/%5C』与「阴」）
+　，（『./x y/:』与「阴」）
+　，（『%1f/%E4%B8%AD』与「阴」）
+　，（『%7f/A%20B//%E4%B8』与「阴」）
+　，（『发布.zip/%3A/build/__published__』与「阴」）
+　，（『readme』与「阴」）
+　，（『%2E%2e』与「阴」）
+　，（『%01/%5C』与「阴」）
+　，（『/readme/中文/docs』与「阴」）
+　，（『%ZZ/.../中文』与「阴」）
+　，（『A%20B』与「阴」）
+　，（『%2F』与「阴」）
+　，（『%C0%AF/%2F/%E4%B8%AD』与「阴」）
+　，（『.hidden/例。豫/a.b』与「阴」）
+　，（『docs//%C0%AF/__published__』与「阴」）
+　，（（『%ZZ/%3A/发布.zip/』接（「控」于「一」））与「阴」）
+　，（『%E4%B8/%/build/%C0%AF』与「阴」）
+　，（『:/中文/A%20B/archive』与「阴」）
+　，（『.hidden/%ZZ/%C0%AF/%7f』与「阴」）
+　，（（（「控」于「一」）接『/b』）与「阴」）
+　，（『%ZZ/%E4%B8』与「阴」）
+　，（『:』与「阴」）
+　，（『:/archive/%』与「阴」）
+　，（『source/%3A/A%20B』与「阳」）
+　，（『%00/😀』与「阴」）
+　，（『a/%3A/...』与「阴」）
+　，（『a/%/中文』与「阴」）
+　，（『%/%5c/b/中文』与「阴」）
+　，（（『%C0%AF/』接（「控」于「一二七」））与「阴」）
+　，（『a b/例。豫/b/%5C』与「阴」）
+　，（『😀/%E4%B8』与「阴」）
+　，（『/archive』与「阴」）
+　，（『a b/build/a:b/%00』与「阴」）
+　，（『%3a/build/archive』与「阴」）
+　】）。
+「查阅读路径们」于（「列」
+　【（『😀』与「阴」）
+　，（『发布.zip』与「阴」）
+　，（『%5c』与「阴」）
+　，（『docs』与「阴」）
+　，（『source/　//runtime』与「阴」）
+　，（『例。豫/x y』与「阴」）
+　，（『发布.zip/readme/source』与「阴」）
+　，（『%2F/%2E%2e/%00/%ZZ』与「阴」）
+　，（『build/%2F』与「阳」）
+　，（『%00/source』与「阴」）
+　，（『%E4%B8%AD/readme/%/%』与「阴」）
+　，（『archive/%00』与「阳」）
+　，（『a/%E4%B8%AD/__published__/b』与「阴」）
+　，（『/\』与「阴」）
+　，（『a.b』与「阴」）
+　，（『runtime』与「阴」）
+　，（『中文/.hidden』与「阴」）
+　，（『%2E%2e/x y』与「阴」）
+　，（『../中文/%ZZ/a b』与「阴」）
+　，（『%C0%AF/.../%1f』与「阴」）
+　，（『%7f/source/%C0%AF』与「阴」）
+　，（『%5C/例。豫/发布.zip』与「阴」）
+　，（（（「控」于「一」）接『/%C0%AF/%3A』）与「阴」）
+　，（『%5C/例。豫/\/%ZZ』与「阴」）
+　，（『发布.zip/%1f』与「阴」）
+　，（『runtime/x y』与「阳」）
+　，（（『%1f/』接（「控」于「一」））与「阴」）
+　，（『%2F/b/%C0%AF』与「阴」）
+　，（『/__published__』与「阴」）
+　，（『a.b/😀/』与「阴」）
+　，（『%5c/..』与「阴」）
+　，（『%E4%B8/%5C/发布.zip』与「阴」）
+　，（（『%5c/』接（「控」于「一二七」））与「阴」）
+　，（『%C0%AF/中文』与「阴」）
+　，（『A%20B/　』与「阴」）
+　，（『%5C』与「阴」）
+　，（『archive/%2e/』与「阴」）
+　，（（『../』接（「控」于「一二七」）接『/%7f』）与「阴」）
+　，（『archive/%5c』与「阳」）
+　，（『%C0%AF/b/%00』与「阴」）
+　】）。
+「查阅读路径们」于（「列」
+　【（『.hidden/%00』与「阴」）
+　，（『:/』与「阴」）
+　，（『%00/.../%3A』与「阴」）
+　，（『%00/例。豫』与「阴」）
+　，（『%1f/archive』与「阴」）
+　，（『%1f/../%5c/runtime』与「阴」）
+　，（『x y/%5c/%2F』与「阴」）
+　，（『%2e/a:b/archive』与「阴」）
+　，（『a:b/archive/%01』与「阴」）
+　，（『发布.zip/readme/../b』与「阴」）
+　，（『a:b/source/.』与「阴」）
+　，（『%01/%7f/build/%5C』与「阴」）
+　，（『.hidden』与「阴」）
+　，（『%2F/中文/x y』与「阴」）
+　，（『a.b/a』与「阴」）
+　，（（『中文/』接（「控」于「一」））与「阴」）
+　，（『%01/%01/build』与「阴」）
+　，（『%1f』与「阴」）
+　，（『b』与「阴」）
+　，（『%2e/%E4%B8%AD/　/b』与「阴」）
+　，（『readme/..』与「阴」）
+　，（『%3A』与「阴」）
+　，（『:/中文/%7f/』与「阴」）
+　，（『%5c/%ZZ』与「阴」）
+　，（『./x y/%00』与「阴」）
+　，（『.hidden/😀/%E4%B8%AD』与「阴」）
+　，（『中文』与「阴」）
+　，（『source/x y/%E4%B8%AD』与「阳」）
+　，（『x y』与「阴」）
+　，（（『__published__/%C0%AF/』接（「控」于「一」））与「阴」）
+　，（『%2F/A%20B/%00』与「阴」）
+　，（『build』与「阴」）
+　，（『a/A%20B/b』与「阴」）
+　，（『%ZZ/\』与「阴」）
+　，（（『%/😀/』接（「控」于「一」）接『/runtime』）与「阴」）
+　，（『%2E%2e/例。豫/%3A』与「阴」）
+　，（（（「控」于「一」）接『/b/./%2e』）与「阴」）
+　，（『./%2F/\/a.b』与「阴」）
+　，（『a b』与「阴」）
+　，（（『%01/』接（「控」于「一」）接『/.hidden/%1f』）与「阴」）
+　】）。
+「查阅读路径们」于（「列」
+　【（『%2F/..』与「阴」）
+　，（（（「控」于「一二七」）接『/例。豫/x y』）与「阴」）
+　，（『%3A/b』与「阴」）
+　，（『a.b/%C0%AF/archive/』与「阴」）
+　，（『__published__/docs』与「阴」）
+　，（『%01/中文』与「阴」）
+　，（『中文/』与「阴」）
+　，（『%2F/b/』与「阴」）
+　，（『a b/%ZZ/%3A』与「阴」）
+　，（『%2e/例。豫』与「阴」）
+　，（『.../%3A/readme/%E4%B8%AD』与「阴」）
+　，（『/a』与「阴」）
+　，（『%3a/../a b/%5C』与「阴」）
+　，（『a b/source』与「阴」）
+　，（（『/.hidden/a/』接（「控」于「一二七」））与「阴」）
+　，（『a.b/%01/例。豫/%2F』与「阴」）
+　，（『.../%3a/source』与「阴」）
+　，（『%3a/build』与「阴」）
+　，（『%ZZ/b/__published__』与「阴」）
+　，（『docs/%2F/a b/runtime』与「阳」）
+　，（『%2e/../%1f』与「阴」）
+　，（『\/a.b/source/source』与「阴」）
+　，（『x y/__published__』与「阴」）
+　，（『%3A/../%ZZ/%2E%2e』与「阴」）
+　，（『%3A/%7f』与「阴」）
+　，（『发布.zip/%7f/%7f』与「阴」）
+　，（『　』与「阴」）
+　，（『%2e/%01』与「阴」）
+　，（（『%C0%AF/a:b/』接（「控」于「一二七」）接『/　』）与「阴」）
+　，（『./%2E%2e』与「阴」）
+　，（『%3a』与「阴」）
+　，（（『a.b/./』接（「控」于「一二七」））与「阴」）
+　，（（『source/』接（「控」于「一二七」）接『/%2F』）与「阴」）
+　，（（『%3A/docs/x y/』接（「控」于「一二七」））与「阴」）
+　，（『a:b/.hidden/%/.』与「阴」）
+　，（『/%ZZ/%2F』与「阴」）
+　，（『%5C/%』与「阴」）
+　，（『build/%00/%2F/..』与「阴」）
+　，（『%2E%2e/中文/例。豫/例。豫』与「阴」）
+　，（（『%7f/　/』接（「控」于「一二七」）接『/readme』）与「阴」）
+　】）。
+「查阅读路径们」于（「列」
+　【（『%』与「阴」）
+　，（『../%3a/发布.zip/%3A』与「阴」）
+　，（『%2E%2e/%1f/%1f/发布.zip』与「阴」）
+　，（『.../.././a:b』与「阴」）
+　，（『source/:/%E4%B8』与「阴」）
+　，（（「控」于「一」）与「阴」）
+　，（『:/发布.zip』与「阴」）
+　，（『./.hidden/%E4%B8%AD』与「阴」）
+　，（『/docs』与「阴」）
+　，（『a:b/%C0%AF/%3a/a b』与「阴」）
+　，（『docs/a b』与「阳」）
+　，（『a/archive/docs/.hidden』与「阴」）
+　，（『%E4%B8%AD』与「阴」）
+　，（『.hidden/例。豫/%01』与「阴」）
+　，（『%/%1f』与「阴」）
+　，（『A%20B/b』与「阴」）
+　，（『例。豫』与「阴」）
+　，（『%1f/../%2F/%01』与「阴」）
+　，（『%5c/A%20B』与「阴」）
+　，（『%7f』与「阴」）
+　，（『%C0%AF/例。豫/%01/%3A』与「阴」）
+　，（『%2F/%E4%B8%AD』与「阴」）
+　，（『a/』与「阴」）
+　，（（『%3A/』接（「控」于「一」）接『/%』）与「阴」）
+　，（『archive』与「阴」）
+　，（『readme/例。豫/../中文』与「阴」）
+　，（『%3A/%3A/docs』与「阴」）
+　，（『b/%E4%B8/docs/%C0%AF』与「阴」）
+　，（『例。豫/\/a/』与「阴」）
+　，（『:/a/%01/%』与「阴」）
+　，（『%E4%B8%AD/%E4%B8』与「阴」）
+　，（『./docs/%/:』与「阴」）
+　，（『a b/%01/source/a.b』与「阴」）
+　，（『source/.』与「阴」）
+　，（（『../readme/例。豫/』接（「控」于「一二七」））与「阴」）
+　，（『中文/.hidden/\/%2F』与「阴」）
+　，（『../%ZZ』与「阴」）
+　，（（『%ZZ/%1f/』接（「控」于「一二七」）接『/　』）与「阴」）
+　，（（（「控」于「一」）接『/%C0%AF/source』）与「阴」）
+　，（『%2F/%5C/docs』与「阴」）
+　】）。
+「查阅读路径们」于（「列」
+　【（『archive/%5c/%01/.』与「阴」）
+　，（『%3A/%/%E4%B8%AD』与「阴」）
+　，（『a:b/%ZZ』与「阴」）
+　，（『__published__/runtime/%E4%B8』与「阴」）
+　，（（「控」于「一二七」）与「阴」）
+　，（『%01/😀』与「阴」）
+　，（『%3A/A%20B/__published__/A%20B』与「阴」）
+　，（『build/A%20B』与「阳」）
+　，（『__published__/例。豫/%01』与「阴」）
+　，（『/%2e/build/b』与「阴」）
+　，（『.../docs/archive』与「阴」）
+　，（『a:b/%2e/%00/%3A』与「阴」）
+　，（『%E4%B8/%7f/a b/a:b』与「阴」）
+　，（『%5c/%2E%2e』与「阴」）
+　，（『build/%5C/%3A/%』与「阳」）
+　，（『%3A/发布.zip//a.b』与「阴」）
+　，（『./%00/%C0%AF/%7f』与「阴」）
+　，（『%E4%B8%AD/%C0%AF/发布.zip』与「阴」）
+　，（『　/A%20B』与「阴」）
+　，（『build/』与「阴」）
+　，（『runtime/%2E%2e/source』与「阳」）
+　，（『%01/%00』与「阴」）
+　，（『a b/\』与「阴」）
+　，（（（「控」于「一二七」）接『/.hidden/:/%2E%2e』）与「阴」）
+　，（『%E4%B8%AD/%5C』与「阴」）
+　，（『😀/%E4%B8%AD/%C0%AF』与「阴」）
+　，（（（「控」于「一」）接『..中:』）与「阴」）
+　，（（『「：换行：」b/』接（「控」于「一二七」）接『5』）与「阴」）
+　，（『2ZC』与「阴」）
+　，（『5』与「阴」）
+　，（『「：制表：」 「：换行：」CA「：换行：」b』与「阴」）
+　，（『a「：换行：」:「：换行：」b』与「阴」）
+　，（（『C0\』接（「控」于「一」）接『b中C  』）与「阴」）
+　，（（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）与「阴」）
+　，（（『b』接（「控」于「一」）接『中%A』）与「阴」）
+　，（（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）与「阴」）
+　，（『AZ0%』与「阴」）
+　，（（『. /.』接（「控」于「一」）接『/b』）与「阴」）
+　，（（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）与「阴」）
+　，（『E』与「阴」）
+　】）。
+「查阅读路径们」于（「列」
+　【（（『.:中5』接（「控」于「一」））与「阴」）
+　，（『5.😀50E😀\2』与「阴」）
+　，（『/中』与「阴」）
+　，（『「：换行：」.C』与「阴」）
+　，（『EEE』与「阴」）
+　，（（『:』接（「控」于「一」）接『Za0:0「：换行：」』）与「阴」）
+　，（（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）与「阴」）
+　，（（『/:AZ』接（「控」于「一」）接『「：换行：」\5』）与「阴」）
+　，（（『 』接（「控」于「一二七」）接『.%😀:』）与「阴」）
+　，（『😀0』与「阴」）
+　，（（『0525Z』接（「控」于「一二七」）接『.\5』）与「阴」）
+　，（（（「控」于「一」）接『0Z2😀』）与「阴」）
+　，（（『/2.Z』接（「控」于「一」）接『/』）与「阴」）
+　，（『「：换行：」CbC\A』与「阴」）
+　，（（『/2b』接（「控」于「一二七」））与「阴」）
+　，（（『%中.2b中a』接（「控」于「一」））与「阴」）
+　，（（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）与「阴」）
+　，（（『E』接（「控」于「一」））与「阴」）
+　，（『Z2』与「阴」）
+　，（『Cb5』与「阴」）
+　，（（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）与「阴」）
+　，（『😀./😀:「：制表：」a』与「阴」）
+　，（『a/b』与「阴」）
+　，（『中/文』与「阴」）
+　，（『A/b/c』与「阴」）
+　，（『A B』与「阴」）
+　，（『a/中/__published__/b』与「阴」）
+　，（『A B/　』与「阴」）
+　，（『.hidden/😀/中』与「阴」）
+　，（『source/x y/中』与「阳」）
+　，（『a/A B/b』与「阴」）
+　，（『中』与「阴」）
+　，（『A B/b』与「阴」）
+　，（『build/A B』与「阳」）
+　，（『　/A B』与「阴」）
+　】）。
+「：汉语：细分原因（本库规格：空、过长、反斜杠或控制字符、空段、点段、双点段、冒号的固定先后）。
+　　文言：拒绝之因。：」
+「查问题们」于（「列」
+　【（『』与『路径为空』）
+　，（『/』与『路径含空段』）
+　，（『source/例。豫』与『』）
+　，（『source/a/b.txt』与『』）
+　，（『docs/index.html』与『』）
+　，（『archive/发布.zip』与『』）
+　，（『__published__』与『』）
+　，（『source』与『』）
+　，（『source/』与『路径含空段』）
+　，（『/source/a』与『路径含空段』）
+　，（『a//b』与『路径含空段』）
+　，（『a/./b』与『路径含「.」段』）
+　，（『a/../b』与『路径含「..」段』）
+　，（『../a』与『路径含「..」段』）
+　，（『a/..』与『路径含「..」段』）
+　，（『.』与『路径含「.」段』）
+　，（『..』与『路径含「..」段』）
+　，（『a:b』与『路径含冒号』）
+　，（『source/a:b』与『路径含冒号』）
+　，（『a\b』与『路径含反斜杠或控制字符』）
+　，（『a%5Cb』与『』）
+　，（『%2e%2e/a』与『』）
+　，（『a/%2e%2e/b』与『』）
+　，（『a%2Fb』与『』）
+　，（『a%2F..%2Fb』与『』）
+　，（『a%00b』与『』）
+　，（『%00』与『』）
+　，（『%ZZ』与『』）
+　，（『%E4%B8%AD/%E6%96%87』与『』）
+　，（『中文/文件』与『』）
+　，（『a b/c d』与『』）
+　，（『a%20b』与『』）
+　，（『a「：制表：」b』与『路径含反斜杠或控制字符』）
+　，（『a「：换行：」b』与『路径含反斜杠或控制字符』）
+　，（（『a』接（「控」于「一二七」）接『b』）与『路径含反斜杠或控制字符』）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与『』
+　　）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与『路径过长』
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与『』
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与『路径过长』
+　　）
+　，（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与『』
+　　）
+　】）。
+「查问题们」于（「列」
+　【（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与『路径过长』
+　　）
+　，（『%00%ZZ』与『』）
+　，（『%ZZ%00』与『』）
+　，（『%E4%B8%AD%00』与『』）
+　，（『a%2fb』与『』）
+　，（『A%2Fb/c』与『』）
+　，（『./a.b/%5C』与『路径含「.」段』）
+　，（『./x y/:』与『路径含「.」段』）
+　，（『%1f/%E4%B8%AD』与『』）
+　，（『%7f/A%20B//%E4%B8』与『路径含空段』）
+　，（『发布.zip/%3A/build/__published__』与『』）
+　，（『readme』与『』）
+　，（『%2E%2e』与『』）
+　，（『%01/%5C』与『』）
+　，（『/readme/中文/docs』与『路径含空段』）
+　，（『%ZZ/.../中文』与『』）
+　，（『A%20B』与『』）
+　，（『%2F』与『』）
+　，（『%C0%AF/%2F/%E4%B8%AD』与『』）
+　，（『.hidden/例。豫/a.b』与『』）
+　，（『docs//%C0%AF/__published__』与『路径含空段』）
+　，（（『%ZZ/%3A/发布.zip/』接（「控」于「一」））与『路径含反斜杠或控制字符』）
+　，（『%E4%B8/%/build/%C0%AF』与『』）
+　，（『:/中文/A%20B/archive』与『路径含冒号』）
+　，（『.hidden/%ZZ/%C0%AF/%7f』与『』）
+　，（（（「控」于「一」）接『/b』）与『路径含反斜杠或控制字符』）
+　，（『%ZZ/%E4%B8』与『』）
+　，（『:』与『路径含冒号』）
+　，（『:/archive/%』与『路径含冒号』）
+　，（『source/%3A/A%20B』与『』）
+　，（『%00/😀』与『』）
+　，（『a/%3A/...』与『』）
+　，（『a/%/中文』与『』）
+　，（『%/%5c/b/中文』与『』）
+　，（（『%C0%AF/』接（「控」于「一二七」））与『路径含反斜杠或控制字符』）
+　，（『a b/例。豫/b/%5C』与『』）
+　，（『😀/%E4%B8』与『』）
+　，（『/archive』与『路径含空段』）
+　，（『a b/build/a:b/%00』与『路径含冒号』）
+　，（『%3a/build/archive』与『』）
+　】）。
+「查问题们」于（「列」
+　【（『😀』与『』）
+　，（『发布.zip』与『』）
+　，（『%5c』与『』）
+　，（『docs』与『』）
+　，（『source/　//runtime』与『路径含空段』）
+　，（『例。豫/x y』与『』）
+　，（『发布.zip/readme/source』与『』）
+　，（『%2F/%2E%2e/%00/%ZZ』与『』）
+　，（『build/%2F』与『』）
+　，（『%00/source』与『』）
+　，（『%E4%B8%AD/readme/%/%』与『』）
+　，（『archive/%00』与『』）
+　，（『a/%E4%B8%AD/__published__/b』与『』）
+　，（『/\』与『路径含反斜杠或控制字符』）
+　，（『a.b』与『』）
+　，（『runtime』与『』）
+　，（『中文/.hidden』与『』）
+　，（『%2E%2e/x y』与『』）
+　，（『../中文/%ZZ/a b』与『路径含「..」段』）
+　，（『%C0%AF/.../%1f』与『』）
+　，（『%7f/source/%C0%AF』与『』）
+　，（『%5C/例。豫/发布.zip』与『』）
+　，（（（「控」于「一」）接『/%C0%AF/%3A』）与『路径含反斜杠或控制字符』）
+　，（『%5C/例。豫/\/%ZZ』与『路径含反斜杠或控制字符』）
+　，（『发布.zip/%1f』与『』）
+　，（『runtime/x y』与『』）
+　，（（『%1f/』接（「控」于「一」））与『路径含反斜杠或控制字符』）
+　，（『%2F/b/%C0%AF』与『』）
+　，（『/__published__』与『路径含空段』）
+　，（『a.b/😀/』与『路径含空段』）
+　，（『%5c/..』与『路径含「..」段』）
+　，（『%E4%B8/%5C/发布.zip』与『』）
+　，（（『%5c/』接（「控」于「一二七」））与『路径含反斜杠或控制字符』）
+　，（『%C0%AF/中文』与『』）
+　，（『A%20B/　』与『』）
+　，（『%5C』与『』）
+　，（『archive/%2e/』与『路径含空段』）
+　，（（『../』接（「控」于「一二七」）接『/%7f』）与『路径含反斜杠或控制字符』）
+　，（『archive/%5c』与『』）
+　，（『%C0%AF/b/%00』与『』）
+　】）。
+「查问题们」于（「列」
+　【（『.hidden/%00』与『』）
+　，（『:/』与『路径含空段』）
+　，（『%00/.../%3A』与『』）
+　，（『%00/例。豫』与『』）
+　，（『%1f/archive』与『』）
+　，（『%1f/../%5c/runtime』与『路径含「..」段』）
+　，（『x y/%5c/%2F』与『』）
+　，（『%2e/a:b/archive』与『路径含冒号』）
+　，（『a:b/archive/%01』与『路径含冒号』）
+　，（『发布.zip/readme/../b』与『路径含「..」段』）
+　，（『a:b/source/.』与『路径含「.」段』）
+　，（『%01/%7f/build/%5C』与『』）
+　，（『.hidden』与『』）
+　，（『%2F/中文/x y』与『』）
+　，（『a.b/a』与『』）
+　，（（『中文/』接（「控」于「一」））与『路径含反斜杠或控制字符』）
+　，（『%01/%01/build』与『』）
+　，（『%1f』与『』）
+　，（『b』与『』）
+　，（『%2e/%E4%B8%AD/　/b』与『』）
+　，（『readme/..』与『路径含「..」段』）
+　，（『%3A』与『』）
+　，（『:/中文/%7f/』与『路径含空段』）
+　，（『%5c/%ZZ』与『』）
+　，（『./x y/%00』与『路径含「.」段』）
+　，（『.hidden/😀/%E4%B8%AD』与『』）
+　，（『中文』与『』）
+　，（『source/x y/%E4%B8%AD』与『』）
+　，（『x y』与『』）
+　，（（『__published__/%C0%AF/』接（「控」于「一」））与『路径含反斜杠或控制字符』）
+　，（『%2F/A%20B/%00』与『』）
+　，（『build』与『』）
+　，（『a/A%20B/b』与『』）
+　，（『%ZZ/\』与『路径含反斜杠或控制字符』）
+　，（（『%/😀/』接（「控」于「一」）接『/runtime』）与『路径含反斜杠或控制字符』）
+　，（『%2E%2e/例。豫/%3A』与『』）
+　，（（（「控」于「一」）接『/b/./%2e』）与『路径含反斜杠或控制字符』）
+　，（『./%2F/\/a.b』与『路径含反斜杠或控制字符』）
+　，（『a b』与『』）
+　，（（『%01/』接（「控」于「一」）接『/.hidden/%1f』）与『路径含反斜杠或控制字符』）
+　】）。
+「查问题们」于（「列」
+　【（『%2F/..』与『路径含「..」段』）
+　，（（（「控」于「一二七」）接『/例。豫/x y』）与『路径含反斜杠或控制字符』）
+　，（『%3A/b』与『』）
+　，（『a.b/%C0%AF/archive/』与『路径含空段』）
+　，（『__published__/docs』与『』）
+　，（『%01/中文』与『』）
+　，（『中文/』与『路径含空段』）
+　，（『%2F/b/』与『路径含空段』）
+　，（『a b/%ZZ/%3A』与『』）
+　，（『%2e/例。豫』与『』）
+　，（『.../%3A/readme/%E4%B8%AD』与『』）
+　，（『/a』与『路径含空段』）
+　，（『%3a/../a b/%5C』与『路径含「..」段』）
+　，（『a b/source』与『』）
+　，（（『/.hidden/a/』接（「控」于「一二七」））与『路径含反斜杠或控制字符』）
+　，（『a.b/%01/例。豫/%2F』与『』）
+　，（『.../%3a/source』与『』）
+　，（『%3a/build』与『』）
+　，（『%ZZ/b/__published__』与『』）
+　，（『docs/%2F/a b/runtime』与『』）
+　，（『%2e/../%1f』与『路径含「..」段』）
+　，（『\/a.b/source/source』与『路径含反斜杠或控制字符』）
+　，（『x y/__published__』与『』）
+　，（『%3A/../%ZZ/%2E%2e』与『路径含「..」段』）
+　，（『%3A/%7f』与『』）
+　，（『发布.zip/%7f/%7f』与『』）
+　，（『　』与『』）
+　，（『%2e/%01』与『』）
+　，（（『%C0%AF/a:b/』接（「控」于「一二七」）接『/　』）与『路径含反斜杠或控制字符』）
+　，（『./%2E%2e』与『路径含「.」段』）
+　，（『%3a』与『』）
+　，（（『a.b/./』接（「控」于「一二七」））与『路径含反斜杠或控制字符』）
+　，（（『source/』接（「控」于「一二七」）接『/%2F』）与『路径含反斜杠或控制字符』）
+　，（（『%3A/docs/x y/』接（「控」于「一二七」））与『路径含反斜杠或控制字符』）
+　，（『a:b/.hidden/%/.』与『路径含「.」段』）
+　，（『/%ZZ/%2F』与『路径含空段』）
+　，（『%5C/%』与『』）
+　，（『build/%00/%2F/..』与『路径含「..」段』）
+　，（『%2E%2e/中文/例。豫/例。豫』与『』）
+　，（（『%7f/　/』接（「控」于「一二七」）接『/readme』）与『路径含反斜杠或控制字符』）
+　】）。
+「查问题们」于（「列」
+　【（『%』与『』）
+　，（『../%3a/发布.zip/%3A』与『路径含「..」段』）
+　，（『%2E%2e/%1f/%1f/发布.zip』与『』）
+　，（『.../.././a:b』与『路径含「..」段』）
+　，（『source/:/%E4%B8』与『路径含冒号』）
+　，（（「控」于「一」）与『路径含反斜杠或控制字符』）
+　，（『:/发布.zip』与『路径含冒号』）
+　，（『./.hidden/%E4%B8%AD』与『路径含「.」段』）
+　，（『/docs』与『路径含空段』）
+　，（『a:b/%C0%AF/%3a/a b』与『路径含冒号』）
+　，（『docs/a b』与『』）
+　，（『a/archive/docs/.hidden』与『』）
+　，（『%E4%B8%AD』与『』）
+　，（『.hidden/例。豫/%01』与『』）
+　，（『%/%1f』与『』）
+　，（『A%20B/b』与『』）
+　，（『例。豫』与『』）
+　，（『%1f/../%2F/%01』与『路径含「..」段』）
+　，（『%5c/A%20B』与『』）
+　，（『%7f』与『』）
+　，（『%C0%AF/例。豫/%01/%3A』与『』）
+　，（『%2F/%E4%B8%AD』与『』）
+　，（『a/』与『路径含空段』）
+　，（（『%3A/』接（「控」于「一」）接『/%』）与『路径含反斜杠或控制字符』）
+　，（『archive』与『』）
+　，（『readme/例。豫/../中文』与『路径含「..」段』）
+　，（『%3A/%3A/docs』与『』）
+　，（『b/%E4%B8/docs/%C0%AF』与『』）
+　，（『例。豫/\/a/』与『路径含反斜杠或控制字符』）
+　，（『:/a/%01/%』与『路径含冒号』）
+　，（『%E4%B8%AD/%E4%B8』与『』）
+　，（『./docs/%/:』与『路径含「.」段』）
+　，（『a b/%01/source/a.b』与『』）
+　，（『source/.』与『路径含「.」段』）
+　，（（『../readme/例。豫/』接（「控」于「一二七」））与『路径含反斜杠或控制字符』）
+　，（『中文/.hidden/\/%2F』与『路径含反斜杠或控制字符』）
+　，（『../%ZZ』与『路径含「..」段』）
+　，（（『%ZZ/%1f/』接（「控」于「一二七」）接『/　』）与『路径含反斜杠或控制字符』）
+　，（（（「控」于「一」）接『/%C0%AF/source』）与『路径含反斜杠或控制字符』）
+　，（『%2F/%5C/docs』与『』）
+　】）。
+「查问题们」于（「列」
+　【（『archive/%5c/%01/.』与『路径含「.」段』）
+　，（『%3A/%/%E4%B8%AD』与『』）
+　，（『a:b/%ZZ』与『路径含冒号』）
+　，（『__published__/runtime/%E4%B8』与『』）
+　，（（「控」于「一二七」）与『路径含反斜杠或控制字符』）
+　，（『%01/😀』与『』）
+　，（『%3A/A%20B/__published__/A%20B』与『』）
+　，（『build/A%20B』与『』）
+　，（『__published__/例。豫/%01』与『』）
+　，（『/%2e/build/b』与『路径含空段』）
+　，（『.../docs/archive』与『』）
+　，（『a:b/%2e/%00/%3A』与『路径含冒号』）
+　，（『%E4%B8/%7f/a b/a:b』与『路径含冒号』）
+　，（『%5c/%2E%2e』与『』）
+　，（『build/%5C/%3A/%』与『』）
+　，（『%3A/发布.zip//a.b』与『路径含空段』）
+　，（『./%00/%C0%AF/%7f』与『路径含「.」段』）
+　，（『%E4%B8%AD/%C0%AF/发布.zip』与『』）
+　，（『　/A%20B』与『』）
+　，（『build/』与『路径含空段』）
+　，（『runtime/%2E%2e/source』与『』）
+　，（『%01/%00』与『』）
+　，（『a b/\』与『路径含反斜杠或控制字符』）
+　，（（（「控」于「一二七」）接『/.hidden/:/%2E%2e』）与『路径含反斜杠或控制字符』）
+　，（『%E4%B8%AD/%5C』与『』）
+　，（『😀/%E4%B8%AD/%C0%AF』与『』）
+　，（（（「控」于「一」）接『..中:』）与『路径含反斜杠或控制字符』）
+　，（（『「：换行：」b/』接（「控」于「一二七」）接『5』）与『路径含反斜杠或控制字符』）
+　，（『2ZC』与『』）
+　，（『5』与『』）
+　，（『「：制表：」 「：换行：」CA「：换行：」b』与『路径含反斜杠或控制字符』）
+　，（『a「：换行：」:「：换行：」b』与『路径含反斜杠或控制字符』）
+　，（（『C0\』接（「控」于「一」）接『b中C  』）与『路径含反斜杠或控制字符』）
+　，（（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）与『路径含反斜杠或控制字符』）
+　，（（『b』接（「控」于「一」）接『中%A』）与『路径含反斜杠或控制字符』）
+　，（（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）与『路径含反斜杠或控制字符』）
+　，（『AZ0%』与『』）
+　，（（『. /.』接（「控」于「一」）接『/b』）与『路径含反斜杠或控制字符』）
+　，（（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）
+　　　与『路径含反斜杠或控制字符』
+　　）
+　，（『E』与『』）
+　】）。
+「查问题们」于（「列」
+　【（（『.:中5』接（「控」于「一」））与『路径含反斜杠或控制字符』）
+　，（『5.😀50E😀\2』与『路径含反斜杠或控制字符』）
+　，（『/中』与『路径含空段』）
+　，（『「：换行：」.C』与『路径含反斜杠或控制字符』）
+　，（『EEE』与『』）
+　，（（『:』接（「控」于「一」）接『Za0:0「：换行：」』）与『路径含反斜杠或控制字符』）
+　，（（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）与『路径含反斜杠或控制字符』）
+　，（（『/:AZ』接（「控」于「一」）接『「：换行：」\5』）与『路径含反斜杠或控制字符』）
+　，（（『 』接（「控」于「一二七」）接『.%😀:』）与『路径含反斜杠或控制字符』）
+　，（『😀0』与『』）
+　，（（『0525Z』接（「控」于「一二七」）接『.\5』）与『路径含反斜杠或控制字符』）
+　，（（（「控」于「一」）接『0Z2😀』）与『路径含反斜杠或控制字符』）
+　，（（『/2.Z』接（「控」于「一」）接『/』）与『路径含反斜杠或控制字符』）
+　，（『「：换行：」CbC\A』与『路径含反斜杠或控制字符』）
+　，（（『/2b』接（「控」于「一二七」））与『路径含反斜杠或控制字符』）
+　，（（『%中.2b中a』接（「控」于「一」））与『路径含反斜杠或控制字符』）
+　，（（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）与『路径含反斜杠或控制字符』）
+　，（（『E』接（「控」于「一」））与『路径含反斜杠或控制字符』）
+　，（『Z2』与『』）
+　，（『Cb5』与『』）
+　，（（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）与『路径含反斜杠或控制字符』）
+　，（『😀./😀:「：制表：」a』与『路径含反斜杠或控制字符』）
+　，（『a/b』与『』）
+　，（『中/文』与『』）
+　，（『A/b/c』与『』）
+　，（『A B』与『』）
+　，（『a/中/__published__/b』与『』）
+　，（『A B/　』与『』）
+　，（『.hidden/😀/中』与『』）
+　，（『source/x y/中』与『』）
+　，（『a/A B/b』与『』）
+　，（『中』与『』）
+　，（『A B/b』与『』）
+　，（『build/A B』与『』）
+　，（『　/A B』与『』）
+　】）。
+「：汉语：种类们.has(首段)、/^(source|docs|build|runtime|archive)\//、归档桥的 __published__ 特例；首末段等同 split('/')[0] 与 at(-1)。
+　　文言：分类与首末段。：」
+「查分类们」于（「列」
+　【（『』与「阴」与「阴」与「阴」）
+　，（『/』与「阴」与「阴」与「阴」）
+　，（『source/例。豫』与「阳」与「阳」与「阳」）
+　，（『source/a/b.txt』与「阳」与「阳」与「阳」）
+　，（『docs/index.html』与「阳」与「阳」与「阳」）
+　，（『archive/发布.zip』与「阳」与「阳」与「阳」）
+　，（『__published__』与「阴」与「阴」与「阳」）
+　，（『source』与「阳」与「阴」与「阴」）
+　，（『source/』与「阳」与「阳」与「阳」）
+　，（『/source/a』与「阴」与「阴」与「阴」）
+　，（『a//b』与「阴」与「阴」与「阴」）
+　，（『a/./b』与「阴」与「阴」与「阴」）
+　，（『a/../b』与「阴」与「阴」与「阴」）
+　，（『../a』与「阴」与「阴」与「阴」）
+　，（『a/..』与「阴」与「阴」与「阴」）
+　，（『.』与「阴」与「阴」与「阴」）
+　，（『..』与「阴」与「阴」与「阴」）
+　，（『a:b』与「阴」与「阴」与「阴」）
+　，（『source/a:b』与「阳」与「阳」与「阳」）
+　，（『a\b』与「阴」与「阴」与「阴」）
+　，（『a%5Cb』与「阴」与「阴」与「阴」）
+　，（『%2e%2e/a』与「阴」与「阴」与「阴」）
+　，（『a/%2e%2e/b』与「阴」与「阴」与「阴」）
+　，（『a%2Fb』与「阴」与「阴」与「阴」）
+　，（『a%2F..%2Fb』与「阴」与「阴」与「阴」）
+　，（『a%00b』与「阴」与「阴」与「阴」）
+　，（『%00』与「阴」与「阴」与「阴」）
+　，（『%ZZ』与「阴」与「阴」与「阴」）
+　，（『%E4%B8%AD/%E6%96%87』与「阴」与「阴」与「阴」）
+　，（『中文/文件』与「阴」与「阴」与「阴」）
+　，（『a b/c d』与「阴」与「阴」与「阴」）
+　，（『a%20b』与「阴」与「阴」与「阴」）
+　，（『a「：制表：」b』与「阴」与「阴」与「阴」）
+　，（『a「：换行：」b』与「阴」与「阴」与「阴」）
+　，（（『a』接（「控」于「一二七」）接『b』）与「阴」与「阴」与「阴」）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阴」
+　　　与「阴」
+　　　与「阴」
+　　）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与「阴」
+　　　与「阴」
+　　　与「阴」
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阴」
+　　　与「阴」
+　　　与「阴」
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与「阴」
+　　　与「阴」
+　　　与「阴」
+　　）
+　，（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阴」
+　　　与「阴」
+　　　与「阴」
+　　）
+　】）。
+「查分类们」于（「列」
+　【（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与「阴」
+　　　与「阴」
+　　　与「阴」
+　　）
+　，（『%00%ZZ』与「阴」与「阴」与「阴」）
+　，（『%ZZ%00』与「阴」与「阴」与「阴」）
+　，（『%E4%B8%AD%00』与「阴」与「阴」与「阴」）
+　，（『a%2fb』与「阴」与「阴」与「阴」）
+　，（『A%2Fb/c』与「阴」与「阴」与「阴」）
+　，（『./a.b/%5C』与「阴」与「阴」与「阴」）
+　，（『./x y/:』与「阴」与「阴」与「阴」）
+　，（『%1f/%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『%7f/A%20B//%E4%B8』与「阴」与「阴」与「阴」）
+　，（『发布.zip/%3A/build/__published__』与「阴」与「阴」与「阴」）
+　，（『readme』与「阳」与「阴」与「阴」）
+　，（『%2E%2e』与「阴」与「阴」与「阴」）
+　，（『%01/%5C』与「阴」与「阴」与「阴」）
+　，（『/readme/中文/docs』与「阴」与「阴」与「阴」）
+　，（『%ZZ/.../中文』与「阴」与「阴」与「阴」）
+　，（『A%20B』与「阴」与「阴」与「阴」）
+　，（『%2F』与「阴」与「阴」与「阴」）
+　，（『%C0%AF/%2F/%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『.hidden/例。豫/a.b』与「阴」与「阴」与「阴」）
+　，（『docs//%C0%AF/__published__』与「阳」与「阳」与「阳」）
+　，（（『%ZZ/%3A/发布.zip/』接（「控」于「一」））与「阴」与「阴」与「阴」）
+　，（『%E4%B8/%/build/%C0%AF』与「阴」与「阴」与「阴」）
+　，（『:/中文/A%20B/archive』与「阴」与「阴」与「阴」）
+　，（『.hidden/%ZZ/%C0%AF/%7f』与「阴」与「阴」与「阴」）
+　，（（（「控」于「一」）接『/b』）与「阴」与「阴」与「阴」）
+　，（『%ZZ/%E4%B8』与「阴」与「阴」与「阴」）
+　，（『:』与「阴」与「阴」与「阴」）
+　，（『:/archive/%』与「阴」与「阴」与「阴」）
+　，（『source/%3A/A%20B』与「阳」与「阳」与「阳」）
+　，（『%00/😀』与「阴」与「阴」与「阴」）
+　，（『a/%3A/...』与「阴」与「阴」与「阴」）
+　，（『a/%/中文』与「阴」与「阴」与「阴」）
+　，（『%/%5c/b/中文』与「阴」与「阴」与「阴」）
+　，（（『%C0%AF/』接（「控」于「一二七」））与「阴」与「阴」与「阴」）
+　，（『a b/例。豫/b/%5C』与「阴」与「阴」与「阴」）
+　，（『😀/%E4%B8』与「阴」与「阴」与「阴」）
+　，（『/archive』与「阴」与「阴」与「阴」）
+　，（『a b/build/a:b/%00』与「阴」与「阴」与「阴」）
+　，（『%3a/build/archive』与「阴」与「阴」与「阴」）
+　】）。
+「查分类们」于（「列」
+　【（『😀』与「阴」与「阴」与「阴」）
+　，（『发布.zip』与「阴」与「阴」与「阴」）
+　，（『%5c』与「阴」与「阴」与「阴」）
+　，（『docs』与「阳」与「阴」与「阴」）
+　，（『source/　//runtime』与「阳」与「阳」与「阳」）
+　，（『例。豫/x y』与「阴」与「阴」与「阴」）
+　，（『发布.zip/readme/source』与「阴」与「阴」与「阴」）
+　，（『%2F/%2E%2e/%00/%ZZ』与「阴」与「阴」与「阴」）
+　，（『build/%2F』与「阳」与「阳」与「阳」）
+　，（『%00/source』与「阴」与「阴」与「阴」）
+　，（『%E4%B8%AD/readme/%/%』与「阴」与「阴」与「阴」）
+　，（『archive/%00』与「阳」与「阳」与「阳」）
+　，（『a/%E4%B8%AD/__published__/b』与「阴」与「阴」与「阴」）
+　，（『/\』与「阴」与「阴」与「阴」）
+　，（『a.b』与「阴」与「阴」与「阴」）
+　，（『runtime』与「阳」与「阴」与「阴」）
+　，（『中文/.hidden』与「阴」与「阴」与「阴」）
+　，（『%2E%2e/x y』与「阴」与「阴」与「阴」）
+　，（『../中文/%ZZ/a b』与「阴」与「阴」与「阴」）
+　，（『%C0%AF/.../%1f』与「阴」与「阴」与「阴」）
+　，（『%7f/source/%C0%AF』与「阴」与「阴」与「阴」）
+　，（『%5C/例。豫/发布.zip』与「阴」与「阴」与「阴」）
+　，（（（「控」于「一」）接『/%C0%AF/%3A』）与「阴」与「阴」与「阴」）
+　，（『%5C/例。豫/\/%ZZ』与「阴」与「阴」与「阴」）
+　，（『发布.zip/%1f』与「阴」与「阴」与「阴」）
+　，（『runtime/x y』与「阳」与「阳」与「阳」）
+　，（（『%1f/』接（「控」于「一」））与「阴」与「阴」与「阴」）
+　，（『%2F/b/%C0%AF』与「阴」与「阴」与「阴」）
+　，（『/__published__』与「阴」与「阴」与「阴」）
+　，（『a.b/😀/』与「阴」与「阴」与「阴」）
+　，（『%5c/..』与「阴」与「阴」与「阴」）
+　，（『%E4%B8/%5C/发布.zip』与「阴」与「阴」与「阴」）
+　，（（『%5c/』接（「控」于「一二七」））与「阴」与「阴」与「阴」）
+　，（『%C0%AF/中文』与「阴」与「阴」与「阴」）
+　，（『A%20B/　』与「阴」与「阴」与「阴」）
+　，（『%5C』与「阴」与「阴」与「阴」）
+　，（『archive/%2e/』与「阳」与「阳」与「阳」）
+　，（（『../』接（「控」于「一二七」）接『/%7f』）与「阴」与「阴」与「阴」）
+　，（『archive/%5c』与「阳」与「阳」与「阳」）
+　，（『%C0%AF/b/%00』与「阴」与「阴」与「阴」）
+　】）。
+「查分类们」于（「列」
+　【（『.hidden/%00』与「阴」与「阴」与「阴」）
+　，（『:/』与「阴」与「阴」与「阴」）
+　，（『%00/.../%3A』与「阴」与「阴」与「阴」）
+　，（『%00/例。豫』与「阴」与「阴」与「阴」）
+　，（『%1f/archive』与「阴」与「阴」与「阴」）
+　，（『%1f/../%5c/runtime』与「阴」与「阴」与「阴」）
+　，（『x y/%5c/%2F』与「阴」与「阴」与「阴」）
+　，（『%2e/a:b/archive』与「阴」与「阴」与「阴」）
+　，（『a:b/archive/%01』与「阴」与「阴」与「阴」）
+　，（『发布.zip/readme/../b』与「阴」与「阴」与「阴」）
+　，（『a:b/source/.』与「阴」与「阴」与「阴」）
+　，（『%01/%7f/build/%5C』与「阴」与「阴」与「阴」）
+　，（『.hidden』与「阴」与「阴」与「阴」）
+　，（『%2F/中文/x y』与「阴」与「阴」与「阴」）
+　，（『a.b/a』与「阴」与「阴」与「阴」）
+　，（（『中文/』接（「控」于「一」））与「阴」与「阴」与「阴」）
+　，（『%01/%01/build』与「阴」与「阴」与「阴」）
+　，（『%1f』与「阴」与「阴」与「阴」）
+　，（『b』与「阴」与「阴」与「阴」）
+　，（『%2e/%E4%B8%AD/　/b』与「阴」与「阴」与「阴」）
+　，（『readme/..』与「阳」与「阴」与「阴」）
+　，（『%3A』与「阴」与「阴」与「阴」）
+　，（『:/中文/%7f/』与「阴」与「阴」与「阴」）
+　，（『%5c/%ZZ』与「阴」与「阴」与「阴」）
+　，（『./x y/%00』与「阴」与「阴」与「阴」）
+　，（『.hidden/😀/%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『中文』与「阴」与「阴」与「阴」）
+　，（『source/x y/%E4%B8%AD』与「阳」与「阳」与「阳」）
+　，（『x y』与「阴」与「阴」与「阴」）
+　，（（『__published__/%C0%AF/』接（「控」于「一」））与「阴」与「阴」与「阴」）
+　，（『%2F/A%20B/%00』与「阴」与「阴」与「阴」）
+　，（『build』与「阳」与「阴」与「阴」）
+　，（『a/A%20B/b』与「阴」与「阴」与「阴」）
+　，（『%ZZ/\』与「阴」与「阴」与「阴」）
+　，（（『%/😀/』接（「控」于「一」）接『/runtime』）与「阴」与「阴」与「阴」）
+　，（『%2E%2e/例。豫/%3A』与「阴」与「阴」与「阴」）
+　，（（（「控」于「一」）接『/b/./%2e』）与「阴」与「阴」与「阴」）
+　，（『./%2F/\/a.b』与「阴」与「阴」与「阴」）
+　，（『a b』与「阴」与「阴」与「阴」）
+　，（（『%01/』接（「控」于「一」）接『/.hidden/%1f』）与「阴」与「阴」与「阴」）
+　】）。
+「查分类们」于（「列」
+　【（『%2F/..』与「阴」与「阴」与「阴」）
+　，（（（「控」于「一二七」）接『/例。豫/x y』）与「阴」与「阴」与「阴」）
+　，（『%3A/b』与「阴」与「阴」与「阴」）
+　，（『a.b/%C0%AF/archive/』与「阴」与「阴」与「阴」）
+　，（『__published__/docs』与「阴」与「阴」与「阴」）
+　，（『%01/中文』与「阴」与「阴」与「阴」）
+　，（『中文/』与「阴」与「阴」与「阴」）
+　，（『%2F/b/』与「阴」与「阴」与「阴」）
+　，（『a b/%ZZ/%3A』与「阴」与「阴」与「阴」）
+　，（『%2e/例。豫』与「阴」与「阴」与「阴」）
+　，（『.../%3A/readme/%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『/a』与「阴」与「阴」与「阴」）
+　，（『%3a/../a b/%5C』与「阴」与「阴」与「阴」）
+　，（『a b/source』与「阴」与「阴」与「阴」）
+　，（（『/.hidden/a/』接（「控」于「一二七」））与「阴」与「阴」与「阴」）
+　，（『a.b/%01/例。豫/%2F』与「阴」与「阴」与「阴」）
+　，（『.../%3a/source』与「阴」与「阴」与「阴」）
+　，（『%3a/build』与「阴」与「阴」与「阴」）
+　，（『%ZZ/b/__published__』与「阴」与「阴」与「阴」）
+　，（『docs/%2F/a b/runtime』与「阳」与「阳」与「阳」）
+　，（『%2e/../%1f』与「阴」与「阴」与「阴」）
+　，（『\/a.b/source/source』与「阴」与「阴」与「阴」）
+　，（『x y/__published__』与「阴」与「阴」与「阴」）
+　，（『%3A/../%ZZ/%2E%2e』与「阴」与「阴」与「阴」）
+　，（『%3A/%7f』与「阴」与「阴」与「阴」）
+　，（『发布.zip/%7f/%7f』与「阴」与「阴」与「阴」）
+　，（『　』与「阴」与「阴」与「阴」）
+　，（『%2e/%01』与「阴」与「阴」与「阴」）
+　，（（『%C0%AF/a:b/』接（「控」于「一二七」）接『/　』）与「阴」与「阴」与「阴」）
+　，（『./%2E%2e』与「阴」与「阴」与「阴」）
+　，（『%3a』与「阴」与「阴」与「阴」）
+　，（（『a.b/./』接（「控」于「一二七」））与「阴」与「阴」与「阴」）
+　，（（『source/』接（「控」于「一二七」）接『/%2F』）与「阳」与「阳」与「阳」）
+　，（（『%3A/docs/x y/』接（「控」于「一二七」））与「阴」与「阴」与「阴」）
+　，（『a:b/.hidden/%/.』与「阴」与「阴」与「阴」）
+　，（『/%ZZ/%2F』与「阴」与「阴」与「阴」）
+　，（『%5C/%』与「阴」与「阴」与「阴」）
+　，（『build/%00/%2F/..』与「阳」与「阳」与「阳」）
+　，（『%2E%2e/中文/例。豫/例。豫』与「阴」与「阴」与「阴」）
+　，（（『%7f/　/』接（「控」于「一二七」）接『/readme』）与「阴」与「阴」与「阴」）
+　】）。
+「查分类们」于（「列」
+　【（『%』与「阴」与「阴」与「阴」）
+　，（『../%3a/发布.zip/%3A』与「阴」与「阴」与「阴」）
+　，（『%2E%2e/%1f/%1f/发布.zip』与「阴」与「阴」与「阴」）
+　，（『.../.././a:b』与「阴」与「阴」与「阴」）
+　，（『source/:/%E4%B8』与「阳」与「阳」与「阳」）
+　，（（「控」于「一」）与「阴」与「阴」与「阴」）
+　，（『:/发布.zip』与「阴」与「阴」与「阴」）
+　，（『./.hidden/%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『/docs』与「阴」与「阴」与「阴」）
+　，（『a:b/%C0%AF/%3a/a b』与「阴」与「阴」与「阴」）
+　，（『docs/a b』与「阳」与「阳」与「阳」）
+　，（『a/archive/docs/.hidden』与「阴」与「阴」与「阴」）
+　，（『%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『.hidden/例。豫/%01』与「阴」与「阴」与「阴」）
+　，（『%/%1f』与「阴」与「阴」与「阴」）
+　，（『A%20B/b』与「阴」与「阴」与「阴」）
+　，（『例。豫』与「阴」与「阴」与「阴」）
+　，（『%1f/../%2F/%01』与「阴」与「阴」与「阴」）
+　，（『%5c/A%20B』与「阴」与「阴」与「阴」）
+　，（『%7f』与「阴」与「阴」与「阴」）
+　，（『%C0%AF/例。豫/%01/%3A』与「阴」与「阴」与「阴」）
+　，（『%2F/%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『a/』与「阴」与「阴」与「阴」）
+　，（（『%3A/』接（「控」于「一」）接『/%』）与「阴」与「阴」与「阴」）
+　，（『archive』与「阳」与「阴」与「阴」）
+　，（『readme/例。豫/../中文』与「阳」与「阴」与「阴」）
+　，（『%3A/%3A/docs』与「阴」与「阴」与「阴」）
+　，（『b/%E4%B8/docs/%C0%AF』与「阴」与「阴」与「阴」）
+　，（『例。豫/\/a/』与「阴」与「阴」与「阴」）
+　，（『:/a/%01/%』与「阴」与「阴」与「阴」）
+　，（『%E4%B8%AD/%E4%B8』与「阴」与「阴」与「阴」）
+　，（『./docs/%/:』与「阴」与「阴」与「阴」）
+　，（『a b/%01/source/a.b』与「阴」与「阴」与「阴」）
+　，（『source/.』与「阳」与「阳」与「阳」）
+　，（（『../readme/例。豫/』接（「控」于「一二七」））与「阴」与「阴」与「阴」）
+　，（『中文/.hidden/\/%2F』与「阴」与「阴」与「阴」）
+　，（『../%ZZ』与「阴」与「阴」与「阴」）
+　，（（『%ZZ/%1f/』接（「控」于「一二七」）接『/　』）与「阴」与「阴」与「阴」）
+　，（（（「控」于「一」）接『/%C0%AF/source』）与「阴」与「阴」与「阴」）
+　，（『%2F/%5C/docs』与「阴」与「阴」与「阴」）
+　】）。
+「查分类们」于（「列」
+　【（『archive/%5c/%01/.』与「阳」与「阳」与「阳」）
+　，（『%3A/%/%E4%B8%AD』与「阴」与「阴」与「阴」）
+　，（『a:b/%ZZ』与「阴」与「阴」与「阴」）
+　，（『__published__/runtime/%E4%B8』与「阴」与「阴」与「阴」）
+　，（（「控」于「一二七」）与「阴」与「阴」与「阴」）
+　，（『%01/😀』与「阴」与「阴」与「阴」）
+　，（『%3A/A%20B/__published__/A%20B』与「阴」与「阴」与「阴」）
+　，（『build/A%20B』与「阳」与「阳」与「阳」）
+　，（『__published__/例。豫/%01』与「阴」与「阴」与「阴」）
+　，（『/%2e/build/b』与「阴」与「阴」与「阴」）
+　，（『.../docs/archive』与「阴」与「阴」与「阴」）
+　，（『a:b/%2e/%00/%3A』与「阴」与「阴」与「阴」）
+　，（『%E4%B8/%7f/a b/a:b』与「阴」与「阴」与「阴」）
+　，（『%5c/%2E%2e』与「阴」与「阴」与「阴」）
+　，（『build/%5C/%3A/%』与「阳」与「阳」与「阳」）
+　，（『%3A/发布.zip//a.b』与「阴」与「阴」与「阴」）
+　，（『./%00/%C0%AF/%7f』与「阴」与「阴」与「阴」）
+　，（『%E4%B8%AD/%C0%AF/发布.zip』与「阴」与「阴」与「阴」）
+　，（『　/A%20B』与「阴」与「阴」与「阴」）
+　，（『build/』与「阳」与「阳」与「阳」）
+　，（『runtime/%2E%2e/source』与「阳」与「阳」与「阳」）
+　，（『%01/%00』与「阴」与「阴」与「阴」）
+　，（『a b/\』与「阴」与「阴」与「阴」）
+　，（（（「控」于「一二七」）接『/.hidden/:/%2E%2e』）与「阴」与「阴」与「阴」）
+　，（『%E4%B8%AD/%5C』与「阴」与「阴」与「阴」）
+　，（『😀/%E4%B8%AD/%C0%AF』与「阴」与「阴」与「阴」）
+　，（（（「控」于「一」）接『..中:』）与「阴」与「阴」与「阴」）
+　，（（『「：换行：」b/』接（「控」于「一二七」）接『5』）与「阴」与「阴」与「阴」）
+　，（『2ZC』与「阴」与「阴」与「阴」）
+　，（『5』与「阴」与「阴」与「阴」）
+　，（『「：制表：」 「：换行：」CA「：换行：」b』与「阴」与「阴」与「阴」）
+　，（『a「：换行：」:「：换行：」b』与「阴」与「阴」与「阴」）
+　，（（『C0\』接（「控」于「一」）接『b中C  』）与「阴」与「阴」与「阴」）
+　，（（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）与「阴」与「阴」与「阴」）
+　，（（『b』接（「控」于「一」）接『中%A』）与「阴」与「阴」与「阴」）
+　，（（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）与「阴」与「阴」与「阴」）
+　，（『AZ0%』与「阴」与「阴」与「阴」）
+　，（（『. /.』接（「控」于「一」）接『/b』）与「阴」与「阴」与「阴」）
+　，（（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）
+　　　与「阴」
+　　　与「阴」
+　　　与「阴」
+　　）
+　，（『E』与「阴」与「阴」与「阴」）
+　】）。
+「查分类们」于（「列」
+　【（（『.:中5』接（「控」于「一」））与「阴」与「阴」与「阴」）
+　，（『5.😀50E😀\2』与「阴」与「阴」与「阴」）
+　，（『/中』与「阴」与「阴」与「阴」）
+　，（『「：换行：」.C』与「阴」与「阴」与「阴」）
+　，（『EEE』与「阴」与「阴」与「阴」）
+　，（（『:』接（「控」于「一」）接『Za0:0「：换行：」』）与「阴」与「阴」与「阴」）
+　，（（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）与「阴」与「阴」与「阴」）
+　，（（『/:AZ』接（「控」于「一」）接『「：换行：」\5』）与「阴」与「阴」与「阴」）
+　，（（『 』接（「控」于「一二七」）接『.%😀:』）与「阴」与「阴」与「阴」）
+　，（『😀0』与「阴」与「阴」与「阴」）
+　，（（『0525Z』接（「控」于「一二七」）接『.\5』）与「阴」与「阴」与「阴」）
+　，（（（「控」于「一」）接『0Z2😀』）与「阴」与「阴」与「阴」）
+　，（（『/2.Z』接（「控」于「一」）接『/』）与「阴」与「阴」与「阴」）
+　，（『「：换行：」CbC\A』与「阴」与「阴」与「阴」）
+　，（（『/2b』接（「控」于「一二七」））与「阴」与「阴」与「阴」）
+　，（（『%中.2b中a』接（「控」于「一」））与「阴」与「阴」与「阴」）
+　，（（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）与「阴」与「阴」与「阴」）
+　，（（『E』接（「控」于「一」））与「阴」与「阴」与「阴」）
+　，（『Z2』与「阴」与「阴」与「阴」）
+　，（『Cb5』与「阴」与「阴」与「阴」）
+　，（（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）与「阴」与「阴」与「阴」）
+　，（『😀./😀:「：制表：」a』与「阴」与「阴」与「阴」）
+　，（『a/b』与「阴」与「阴」与「阴」）
+　，（『中/文』与「阴」与「阴」与「阴」）
+　，（『A/b/c』与「阴」与「阴」与「阴」）
+　，（『A B』与「阴」与「阴」与「阴」）
+　，（『a/中/__published__/b』与「阴」与「阴」与「阴」）
+　，（『A B/　』与「阴」与「阴」与「阴」）
+　，（『.hidden/😀/中』与「阴」与「阴」与「阴」）
+　，（『source/x y/中』与「阳」与「阳」与「阳」）
+　，（『a/A B/b』与「阴」与「阴」与「阴」）
+　，（『中』与「阴」与「阴」与「阴」）
+　，（『A B/b』与「阴」与「阴」与「阴」）
+　，（『build/A B』与「阳」与「阳」与「阳」）
+　，（『　/A B』与「阴」与「阴」与「阴」）
+　】）。
+「查首末段们」于（「列」
+　【（『』与『』与『』）
+　，（『/』与『』与『』）
+　，（『source/例。豫』与『source』与『例。豫』）
+　，（『source/a/b.txt』与『source』与『b.txt』）
+　，（『docs/index.html』与『docs』与『index.html』）
+　，（『archive/发布.zip』与『archive』与『发布.zip』）
+　，（『__published__』与『__published__』与『__published__』）
+　，（『source』与『source』与『source』）
+　，（『source/』与『source』与『』）
+　，（『/source/a』与『』与『a』）
+　，（『a//b』与『a』与『b』）
+　，（『a/./b』与『a』与『b』）
+　，（『a/../b』与『a』与『b』）
+　，（『../a』与『..』与『a』）
+　，（『a/..』与『a』与『..』）
+　，（『.』与『.』与『.』）
+　，（『..』与『..』与『..』）
+　，（『a:b』与『a:b』与『a:b』）
+　，（『source/a:b』与『source』与『a:b』）
+　，（『a\b』与『a\b』与『a\b』）
+　，（『a%5Cb』与『a%5Cb』与『a%5Cb』）
+　，（『%2e%2e/a』与『%2e%2e』与『a』）
+　，（『a/%2e%2e/b』与『a』与『b』）
+　，（『a%2Fb』与『a%2Fb』与『a%2Fb』）
+　，（『a%2F..%2Fb』与『a%2F..%2Fb』与『a%2F..%2Fb』）
+　，（『a%00b』与『a%00b』与『a%00b』）
+　，（『%00』与『%00』与『%00』）
+　，（『%ZZ』与『%ZZ』与『%ZZ』）
+　，（『%E4%B8%AD/%E6%96%87』与『%E4%B8%AD』与『%E6%96%87』）
+　，（『中文/文件』与『中文』与『文件』）
+　，（『a b/c d』与『a b』与『c d』）
+　，（『a%20b』与『a%20b』与『a%20b』）
+　，（『a「：制表：」b』与『a「：制表：」b』与『a「：制表：」b』）
+　，（『a「：换行：」b』与『a「：换行：」b』与『a「：换行：」b』）
+　，（（『a』接（「控」于「一二七」）接『b』）与（『a』接（「控」于「一二七」）接『b』）与（『a』接（「控」于「一二七」）接『b』））
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　）
+　，（『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　　与『xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx』
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　）
+　，（『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　　与『😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀』
+　　）
+　，（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与『a』
+　　　与『bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　）
+　】）。
+「查首末段们」于（「列」
+　【（『a/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　　与『a』
+　　　与『bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb』
+　　）
+　，（『%00%ZZ』与『%00%ZZ』与『%00%ZZ』）
+　，（『%ZZ%00』与『%ZZ%00』与『%ZZ%00』）
+　，（『%E4%B8%AD%00』与『%E4%B8%AD%00』与『%E4%B8%AD%00』）
+　，（『a%2fb』与『a%2fb』与『a%2fb』）
+　，（『A%2Fb/c』与『A%2Fb』与『c』）
+　，（『./a.b/%5C』与『.』与『%5C』）
+　，（『./x y/:』与『.』与『:』）
+　，（『%1f/%E4%B8%AD』与『%1f』与『%E4%B8%AD』）
+　，（『%7f/A%20B//%E4%B8』与『%7f』与『%E4%B8』）
+　，（『发布.zip/%3A/build/__published__』与『发布.zip』与『__published__』）
+　，（『readme』与『readme』与『readme』）
+　，（『%2E%2e』与『%2E%2e』与『%2E%2e』）
+　，（『%01/%5C』与『%01』与『%5C』）
+　，（『/readme/中文/docs』与『』与『docs』）
+　，（『%ZZ/.../中文』与『%ZZ』与『中文』）
+　，（『A%20B』与『A%20B』与『A%20B』）
+　，（『%2F』与『%2F』与『%2F』）
+　，（『%C0%AF/%2F/%E4%B8%AD』与『%C0%AF』与『%E4%B8%AD』）
+　，（『.hidden/例。豫/a.b』与『.hidden』与『a.b』）
+　，（『docs//%C0%AF/__published__』与『docs』与『__published__』）
+　，（（『%ZZ/%3A/发布.zip/』接（「控」于「一」））与『%ZZ』与（「控」于「一」））
+　，（『%E4%B8/%/build/%C0%AF』与『%E4%B8』与『%C0%AF』）
+　，（『:/中文/A%20B/archive』与『:』与『archive』）
+　，（『.hidden/%ZZ/%C0%AF/%7f』与『.hidden』与『%7f』）
+　，（（（「控」于「一」）接『/b』）与（「控」于「一」）与『b』）
+　，（『%ZZ/%E4%B8』与『%ZZ』与『%E4%B8』）
+　，（『:』与『:』与『:』）
+　，（『:/archive/%』与『:』与『%』）
+　，（『source/%3A/A%20B』与『source』与『A%20B』）
+　，（『%00/😀』与『%00』与『😀』）
+　，（『a/%3A/...』与『a』与『...』）
+　，（『a/%/中文』与『a』与『中文』）
+　，（『%/%5c/b/中文』与『%』与『中文』）
+　，（（『%C0%AF/』接（「控」于「一二七」））与『%C0%AF』与（「控」于「一二七」））
+　，（『a b/例。豫/b/%5C』与『a b』与『%5C』）
+　，（『😀/%E4%B8』与『😀』与『%E4%B8』）
+　，（『/archive』与『』与『archive』）
+　，（『a b/build/a:b/%00』与『a b』与『%00』）
+　，（『%3a/build/archive』与『%3a』与『archive』）
+　】）。
+「查首末段们」于（「列」
+　【（『😀』与『😀』与『😀』）
+　，（『发布.zip』与『发布.zip』与『发布.zip』）
+　，（『%5c』与『%5c』与『%5c』）
+　，（『docs』与『docs』与『docs』）
+　，（『source/　//runtime』与『source』与『runtime』）
+　，（『例。豫/x y』与『例。豫』与『x y』）
+　，（『发布.zip/readme/source』与『发布.zip』与『source』）
+　，（『%2F/%2E%2e/%00/%ZZ』与『%2F』与『%ZZ』）
+　，（『build/%2F』与『build』与『%2F』）
+　，（『%00/source』与『%00』与『source』）
+　，（『%E4%B8%AD/readme/%/%』与『%E4%B8%AD』与『%』）
+　，（『archive/%00』与『archive』与『%00』）
+　，（『a/%E4%B8%AD/__published__/b』与『a』与『b』）
+　，（『/\』与『』与『\』）
+　，（『a.b』与『a.b』与『a.b』）
+　，（『runtime』与『runtime』与『runtime』）
+　，（『中文/.hidden』与『中文』与『.hidden』）
+　，（『%2E%2e/x y』与『%2E%2e』与『x y』）
+　，（『../中文/%ZZ/a b』与『..』与『a b』）
+　，（『%C0%AF/.../%1f』与『%C0%AF』与『%1f』）
+　，（『%7f/source/%C0%AF』与『%7f』与『%C0%AF』）
+　，（『%5C/例。豫/发布.zip』与『%5C』与『发布.zip』）
+　，（（（「控」于「一」）接『/%C0%AF/%3A』）与（「控」于「一」）与『%3A』）
+　，（『%5C/例。豫/\/%ZZ』与『%5C』与『%ZZ』）
+　，（『发布.zip/%1f』与『发布.zip』与『%1f』）
+　，（『runtime/x y』与『runtime』与『x y』）
+　，（（『%1f/』接（「控」于「一」））与『%1f』与（「控」于「一」））
+　，（『%2F/b/%C0%AF』与『%2F』与『%C0%AF』）
+　，（『/__published__』与『』与『__published__』）
+　，（『a.b/😀/』与『a.b』与『』）
+　，（『%5c/..』与『%5c』与『..』）
+　，（『%E4%B8/%5C/发布.zip』与『%E4%B8』与『发布.zip』）
+　，（（『%5c/』接（「控」于「一二七」））与『%5c』与（「控」于「一二七」））
+　，（『%C0%AF/中文』与『%C0%AF』与『中文』）
+　，（『A%20B/　』与『A%20B』与『　』）
+　，（『%5C』与『%5C』与『%5C』）
+　，（『archive/%2e/』与『archive』与『』）
+　，（（『../』接（「控」于「一二七」）接『/%7f』）与『..』与『%7f』）
+　，（『archive/%5c』与『archive』与『%5c』）
+　，（『%C0%AF/b/%00』与『%C0%AF』与『%00』）
+　】）。
+「查首末段们」于（「列」
+　【（『.hidden/%00』与『.hidden』与『%00』）
+　，（『:/』与『:』与『』）
+　，（『%00/.../%3A』与『%00』与『%3A』）
+　，（『%00/例。豫』与『%00』与『例。豫』）
+　，（『%1f/archive』与『%1f』与『archive』）
+　，（『%1f/../%5c/runtime』与『%1f』与『runtime』）
+　，（『x y/%5c/%2F』与『x y』与『%2F』）
+　，（『%2e/a:b/archive』与『%2e』与『archive』）
+　，（『a:b/archive/%01』与『a:b』与『%01』）
+　，（『发布.zip/readme/../b』与『发布.zip』与『b』）
+　，（『a:b/source/.』与『a:b』与『.』）
+　，（『%01/%7f/build/%5C』与『%01』与『%5C』）
+　，（『.hidden』与『.hidden』与『.hidden』）
+　，（『%2F/中文/x y』与『%2F』与『x y』）
+　，（『a.b/a』与『a.b』与『a』）
+　，（（『中文/』接（「控」于「一」））与『中文』与（「控」于「一」））
+　，（『%01/%01/build』与『%01』与『build』）
+　，（『%1f』与『%1f』与『%1f』）
+　，（『b』与『b』与『b』）
+　，（『%2e/%E4%B8%AD/　/b』与『%2e』与『b』）
+　，（『readme/..』与『readme』与『..』）
+　，（『%3A』与『%3A』与『%3A』）
+　，（『:/中文/%7f/』与『:』与『』）
+　，（『%5c/%ZZ』与『%5c』与『%ZZ』）
+　，（『./x y/%00』与『.』与『%00』）
+　，（『.hidden/😀/%E4%B8%AD』与『.hidden』与『%E4%B8%AD』）
+　，（『中文』与『中文』与『中文』）
+　，（『source/x y/%E4%B8%AD』与『source』与『%E4%B8%AD』）
+　，（『x y』与『x y』与『x y』）
+　，（（『__published__/%C0%AF/』接（「控」于「一」））与『__published__』与（「控」于「一」））
+　，（『%2F/A%20B/%00』与『%2F』与『%00』）
+　，（『build』与『build』与『build』）
+　，（『a/A%20B/b』与『a』与『b』）
+　，（『%ZZ/\』与『%ZZ』与『\』）
+　，（（『%/😀/』接（「控」于「一」）接『/runtime』）与『%』与『runtime』）
+　，（『%2E%2e/例。豫/%3A』与『%2E%2e』与『%3A』）
+　，（（（「控」于「一」）接『/b/./%2e』）与（「控」于「一」）与『%2e』）
+　，（『./%2F/\/a.b』与『.』与『a.b』）
+　，（『a b』与『a b』与『a b』）
+　，（（『%01/』接（「控」于「一」）接『/.hidden/%1f』）与『%01』与『%1f』）
+　】）。
+「查首末段们」于（「列」
+　【（『%2F/..』与『%2F』与『..』）
+　，（（（「控」于「一二七」）接『/例。豫/x y』）与（「控」于「一二七」）与『x y』）
+　，（『%3A/b』与『%3A』与『b』）
+　，（『a.b/%C0%AF/archive/』与『a.b』与『』）
+　，（『__published__/docs』与『__published__』与『docs』）
+　，（『%01/中文』与『%01』与『中文』）
+　，（『中文/』与『中文』与『』）
+　，（『%2F/b/』与『%2F』与『』）
+　，（『a b/%ZZ/%3A』与『a b』与『%3A』）
+　，（『%2e/例。豫』与『%2e』与『例。豫』）
+　，（『.../%3A/readme/%E4%B8%AD』与『...』与『%E4%B8%AD』）
+　，（『/a』与『』与『a』）
+　，（『%3a/../a b/%5C』与『%3a』与『%5C』）
+　，（『a b/source』与『a b』与『source』）
+　，（（『/.hidden/a/』接（「控」于「一二七」））与『』与（「控」于「一二七」））
+　，（『a.b/%01/例。豫/%2F』与『a.b』与『%2F』）
+　，（『.../%3a/source』与『...』与『source』）
+　，（『%3a/build』与『%3a』与『build』）
+　，（『%ZZ/b/__published__』与『%ZZ』与『__published__』）
+　，（『docs/%2F/a b/runtime』与『docs』与『runtime』）
+　，（『%2e/../%1f』与『%2e』与『%1f』）
+　，（『\/a.b/source/source』与『\』与『source』）
+　，（『x y/__published__』与『x y』与『__published__』）
+　，（『%3A/../%ZZ/%2E%2e』与『%3A』与『%2E%2e』）
+　，（『%3A/%7f』与『%3A』与『%7f』）
+　，（『发布.zip/%7f/%7f』与『发布.zip』与『%7f』）
+　，（『　』与『　』与『　』）
+　，（『%2e/%01』与『%2e』与『%01』）
+　，（（『%C0%AF/a:b/』接（「控」于「一二七」）接『/　』）与『%C0%AF』与『　』）
+　，（『./%2E%2e』与『.』与『%2E%2e』）
+　，（『%3a』与『%3a』与『%3a』）
+　，（（『a.b/./』接（「控」于「一二七」））与『a.b』与（「控」于「一二七」））
+　，（（『source/』接（「控」于「一二七」）接『/%2F』）与『source』与『%2F』）
+　，（（『%3A/docs/x y/』接（「控」于「一二七」））与『%3A』与（「控」于「一二七」））
+　，（『a:b/.hidden/%/.』与『a:b』与『.』）
+　，（『/%ZZ/%2F』与『』与『%2F』）
+　，（『%5C/%』与『%5C』与『%』）
+　，（『build/%00/%2F/..』与『build』与『..』）
+　，（『%2E%2e/中文/例。豫/例。豫』与『%2E%2e』与『例。豫』）
+　，（（『%7f/　/』接（「控」于「一二七」）接『/readme』）与『%7f』与『readme』）
+　】）。
+「查首末段们」于（「列」
+　【（『%』与『%』与『%』）
+　，（『../%3a/发布.zip/%3A』与『..』与『%3A』）
+　，（『%2E%2e/%1f/%1f/发布.zip』与『%2E%2e』与『发布.zip』）
+　，（『.../.././a:b』与『...』与『a:b』）
+　，（『source/:/%E4%B8』与『source』与『%E4%B8』）
+　，（（「控」于「一」）与（「控」于「一」）与（「控」于「一」））
+　，（『:/发布.zip』与『:』与『发布.zip』）
+　，（『./.hidden/%E4%B8%AD』与『.』与『%E4%B8%AD』）
+　，（『/docs』与『』与『docs』）
+　，（『a:b/%C0%AF/%3a/a b』与『a:b』与『a b』）
+　，（『docs/a b』与『docs』与『a b』）
+　，（『a/archive/docs/.hidden』与『a』与『.hidden』）
+　，（『%E4%B8%AD』与『%E4%B8%AD』与『%E4%B8%AD』）
+　，（『.hidden/例。豫/%01』与『.hidden』与『%01』）
+　，（『%/%1f』与『%』与『%1f』）
+　，（『A%20B/b』与『A%20B』与『b』）
+　，（『例。豫』与『例。豫』与『例。豫』）
+　，（『%1f/../%2F/%01』与『%1f』与『%01』）
+　，（『%5c/A%20B』与『%5c』与『A%20B』）
+　，（『%7f』与『%7f』与『%7f』）
+　，（『%C0%AF/例。豫/%01/%3A』与『%C0%AF』与『%3A』）
+　，（『%2F/%E4%B8%AD』与『%2F』与『%E4%B8%AD』）
+　，（『a/』与『a』与『』）
+　，（（『%3A/』接（「控」于「一」）接『/%』）与『%3A』与『%』）
+　，（『archive』与『archive』与『archive』）
+　，（『readme/例。豫/../中文』与『readme』与『中文』）
+　，（『%3A/%3A/docs』与『%3A』与『docs』）
+　，（『b/%E4%B8/docs/%C0%AF』与『b』与『%C0%AF』）
+　，（『例。豫/\/a/』与『例。豫』与『』）
+　，（『:/a/%01/%』与『:』与『%』）
+　，（『%E4%B8%AD/%E4%B8』与『%E4%B8%AD』与『%E4%B8』）
+　，（『./docs/%/:』与『.』与『:』）
+　，（『a b/%01/source/a.b』与『a b』与『a.b』）
+　，（『source/.』与『source』与『.』）
+　，（（『../readme/例。豫/』接（「控」于「一二七」））与『..』与（「控」于「一二七」））
+　，（『中文/.hidden/\/%2F』与『中文』与『%2F』）
+　，（『../%ZZ』与『..』与『%ZZ』）
+　，（（『%ZZ/%1f/』接（「控」于「一二七」）接『/　』）与『%ZZ』与『　』）
+　，（（（「控」于「一」）接『/%C0%AF/source』）与（「控」于「一」）与『source』）
+　，（『%2F/%5C/docs』与『%2F』与『docs』）
+　】）。
+「查首末段们」于（「列」
+　【（『archive/%5c/%01/.』与『archive』与『.』）
+　，（『%3A/%/%E4%B8%AD』与『%3A』与『%E4%B8%AD』）
+　，（『a:b/%ZZ』与『a:b』与『%ZZ』）
+　，（『__published__/runtime/%E4%B8』与『__published__』与『%E4%B8』）
+　，（（「控」于「一二七」）与（「控」于「一二七」）与（「控」于「一二七」））
+　，（『%01/😀』与『%01』与『😀』）
+　，（『%3A/A%20B/__published__/A%20B』与『%3A』与『A%20B』）
+　，（『build/A%20B』与『build』与『A%20B』）
+　，（『__published__/例。豫/%01』与『__published__』与『%01』）
+　，（『/%2e/build/b』与『』与『b』）
+　，（『.../docs/archive』与『...』与『archive』）
+　，（『a:b/%2e/%00/%3A』与『a:b』与『%3A』）
+　，（『%E4%B8/%7f/a b/a:b』与『%E4%B8』与『a:b』）
+　，（『%5c/%2E%2e』与『%5c』与『%2E%2e』）
+　，（『build/%5C/%3A/%』与『build』与『%』）
+　，（『%3A/发布.zip//a.b』与『%3A』与『a.b』）
+　，（『./%00/%C0%AF/%7f』与『.』与『%7f』）
+　，（『%E4%B8%AD/%C0%AF/发布.zip』与『%E4%B8%AD』与『发布.zip』）
+　，（『　/A%20B』与『　』与『A%20B』）
+　，（『build/』与『build』与『』）
+　，（『runtime/%2E%2e/source』与『runtime』与『source』）
+　，（『%01/%00』与『%01』与『%00』）
+　，（『a b/\』与『a b』与『\』）
+　，（（（「控」于「一二七」）接『/.hidden/:/%2E%2e』）与（「控」于「一二七」）与『%2E%2e』）
+　，（『%E4%B8%AD/%5C』与『%E4%B8%AD』与『%5C』）
+　，（『😀/%E4%B8%AD/%C0%AF』与『😀』与『%C0%AF』）
+　，（（（「控」于「一」）接『..中:』）与（（「控」于「一」）接『..中:』）与（（「控」于「一」）接『..中:』））
+　，（（『「：换行：」b/』接（「控」于「一二七」）接『5』）与『「：换行：」b』与（（「控」于「一二七」）接『5』））
+　，（『2ZC』与『2ZC』与『2ZC』）
+　，（『5』与『5』与『5』）
+　，（『「：制表：」 「：换行：」CA「：换行：」b』与『「：制表：」 「：换行：」CA「：换行：」b』与『「：制表：」 「：换行：」CA「：换行：」b』）
+　，（『a「：换行：」:「：换行：」b』与『a「：换行：」:「：换行：」b』与『a「：换行：」:「：换行：」b』）
+　，（（『C0\』接（「控」于「一」）接『b中C  』）与（『C0\』接（「控」于「一」）接『b中C  』）与（『C0\』接（「控」于「一」）接『b中C  』））
+　，（（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）
+　　　与（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）
+　　　与（『「：换行：」』接（「控」于「一」）接（「控」于「一」）接『%C』）
+　　）
+　，（（『b』接（「控」于「一」）接『中%A』）与（『b』接（「控」于「一」）接『中%A』）与（『b』接（「控」于「一」）接『中%A』））
+　，（（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）
+　　　与（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）
+　　　与（『\00「：换行：」😀』接（「控」于「一二七」）接『A』接（「控」于「一二七」）接（「控」于「一二七」）接『A』）
+　　）
+　，（『AZ0%』与『AZ0%』与『AZ0%』）
+　，（（『. /.』接（「控」于「一」）接『/b』）与『. 』与『b』）
+　，（（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）
+　　　与（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）
+　　　与（『.』接（「控」于「一二七」）接『5』接（「控」于「一」）接（「控」于「一」）接（「控」于「一」）接（「控」于「一二七」）接『C』）
+　　）
+　，（『E』与『E』与『E』）
+　】）。
+「查首末段们」于（「列」
+　【（（『.:中5』接（「控」于「一」））与（『.:中5』接（「控」于「一」））与（『.:中5』接（「控」于「一」）））
+　，（『5.😀50E😀\2』与『5.😀50E😀\2』与『5.😀50E😀\2』）
+　，（『/中』与『』与『中』）
+　，（『「：换行：」.C』与『「：换行：」.C』与『「：换行：」.C』）
+　，（『EEE』与『EEE』与『EEE』）
+　，（（『:』接（「控」于「一」）接『Za0:0「：换行：」』）
+　　　与（『:』接（「控」于「一」）接『Za0:0「：换行：」』）
+　　　与（『:』接（「控」于「一」）接『Za0:0「：换行：」』）
+　　）
+　，（（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）
+　　　与（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）
+　　　与（『\Z「：制表：」.』接（「控」于「一二七」）接『A』）
+　　）
+　，（（『/:AZ』接（「控」于「一」）接『「：换行：」\5』）与『』与（『:AZ』接（「控」于「一」）接『「：换行：」\5』））
+　，（（『 』接（「控」于「一二七」）接『.%😀:』）与（『 』接（「控」于「一二七」）接『.%😀:』）与（『 』接（「控」于「一二七」）接『.%😀:』））
+　，（『😀0』与『😀0』与『😀0』）
+　，（（『0525Z』接（「控」于「一二七」）接『.\5』）与（『0525Z』接（「控」于「一二七」）接『.\5』）与（『0525Z』接（「控」于「一二七」）接『.\5』））
+　，（（（「控」于「一」）接『0Z2😀』）与（（「控」于「一」）接『0Z2😀』）与（（「控」于「一」）接『0Z2😀』））
+　，（（『/2.Z』接（「控」于「一」）接『/』）与『』与『』）
+　，（『「：换行：」CbC\A』与『「：换行：」CbC\A』与『「：换行：」CbC\A』）
+　，（（『/2b』接（「控」于「一二七」））与『』与（『2b』接（「控」于「一二七」）））
+　，（（『%中.2b中a』接（「控」于「一」））与（『%中.2b中a』接（「控」于「一」））与（『%中.2b中a』接（「控」于「一」）））
+　，（（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）
+　　　与（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）
+　　　与（『.』接（「控」于「一二七」）接『A😀「：制表：」😀\.中中』）
+　　）
+　，（（『E』接（「控」于「一」））与（『E』接（「控」于「一」））与（『E』接（「控」于「一」）））
+　，（『Z2』与『Z2』与『Z2』）
+　，（『Cb5』与『Cb5』与『Cb5』）
+　，（（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）
+　　　与（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）
+　　　与（『\b😀:』接（「控」于「一」）接『2 「：换行：」』）
+　　）
+　，（『😀./😀:「：制表：」a』与『😀.』与『😀:「：制表：」a』）
+　，（『a/b』与『a』与『b』）
+　，（『中/文』与『中』与『文』）
+　，（『A/b/c』与『A』与『c』）
+　，（『A B』与『A B』与『A B』）
+　，（『a/中/__published__/b』与『a』与『b』）
+　，（『A B/　』与『A B』与『　』）
+　，（『.hidden/😀/中』与『.hidden』与『中』）
+　，（『source/x y/中』与『source』与『中』）
+　，（『a/A B/b』与『a』与『b』）
+　，（『中』与『中』与『中』）
+　，（『A B/b』与『A B』与『b』）
+　，（『build/A B』与『build』与『A B』）
+　，（『　/A B』与『　』与『A B』）
+　】）。
+「：汉语：Content-Disposition 的 filename*=UTF-8'' 后的部分，与 R2 键。
+　　文言：下载名与材料键。：」
+「查串」于『下载名』于『%E5%8F%91%E5%B8%83.zip』于（「下载文件名编码」于『archive/发布.zip』）。
+「查串」于『下载名无斜杠』于『a%20b.txt』于（「下载文件名编码」于『a b.txt』）。
+「查串」于『材料键』于『releases/aaaa/source/例。豫』于（「发布材料键」于『aaaa』于『source/例。豫』）。
+「查爻」于『发布分类们有六类』于「阳」于（（「计」以「文」于「发布文件分类们」）等于「六」）。
+「：汉语：解码URI成分带状态：0 成功、1 格式错误、2 仅含 NUL；格式错误优先。
+　　文言：解码之状：格式病先于零字节。：」
+「查状态」乃化「文」又化「数」为「有」者也。
+「查状态」者得「输入」又得「期望」而
+　「查整」于（『解码状态：』接「输入」）于「期望」于（（「解码统一资源标识成分带状态」于「输入」）中「零」）
+也。
+
+「查状态」于『abc』于「零」而后
+「查状态」于『%41』于「零」而后
+「查状态」于『%00』于「二」而后
+「查状态」于『a%00b』于「二」而后
+「查状态」于『%00%ZZ』于「一」而后
+「查状态」于『%ZZ%00』于「一」而后
+「查状态」于『%00%41』于「二」而后
+「查状态」于『%E4%B8』于「一」而后
+「查状态」于『%00%E4%B8』于「一」。
+「收尾」于「元」。

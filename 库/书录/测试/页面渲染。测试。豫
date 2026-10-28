@@ -52,6 +52,7 @@
 　　于「前缀」曰『』
 　　于「当前」曰『总集。豫』
 　　于「根」曰『/release/abc』
+　　于「制」曰「主站」
 　　于「语」曰『wen』
 　　于「视」曰『source』
 　　于「起号」曰「一」
@@ -114,6 +115,7 @@
 　于（「页面声明带目标」
 　　于「说明根」曰『/』
 　　于「包根」曰『/release/abc』
+　　于「制」曰「主站」
 　　于「语」曰『han』
 　　于「路径们」曰（「列」【『目录/模块。豫』】）
 　　于「项」曰「有目标声明」））。
@@ -122,12 +124,13 @@
 　于（「页面声明带目标」
 　　于「说明根」曰『/』
 　　于「包根」曰『/release/abc』
+　　于「制」曰「主站」
 　　于「语」曰『han』
 　　于「路径们」曰（「列」【『目录/模块。豫』】）
 　　于「项」曰（「结绳析」于『{"name":"模块","source":"目录/模块。豫"}』）））。
 「断」于（非（「文含」
 　于『所属模块 →』
-　于（「页面声明带目标」于「说明根」曰『/』于「包根」曰『/release/abc』于「语」曰『han』于「路径们」曰「罄」于「项」曰「有目标声明」））
+　于（「页面声明带目标」于「说明根」曰『/』于「包根」曰『/release/abc』于「制」曰「主站」于「语」曰『han』于「路径们」曰「罄」于「项」曰「有目标声明」））
 ）。
 「错误页」者「渲染包页面」于（「文替换」于「样本」于『"tab":"files"』于『"tab":"files","error":"文件不存在<script>"』）于「主站」也。
 
@@ -244,8 +247,8 @@
 
 「断」于（「文含」于（『id="L』接（「述数」于（「计」以「文」于（「分文」于「另起」于「大源码」）））接『"』）于「大源码页」）。
 「断」于（「文含」于『tok-identifier』于「大源码页」）。
-「：汉语：docs 站的包页：包根在 /包/<所有者>/<包名>，文档页签与包配置指社区仓 GitHub，下载栏列 GitHub 上的源码、发行物与归档；主站那一种的输出不变。
-　　文言：docs 之包页：包根在 /包/<主>/<名>，文档之签与包制指社区仓 GitHub，下载栏列 GitHub 之源、发行与归档；主站之制如故。：」
+「：汉语：docs 站的包页：包根在 /包/<所有者>/<包名>，文档页签指包内 /文档/ 的根页，包配置指包内同一份配置的文档页（/文档/<包配置文件名>/），下载栏列 GitHub 上的源码、发行物与归档；主站那一种的输出不变。
+　　文言：docs 之包页：包根在 /包/<主>/<名>，文档之签指包内 /文档/ 之根页，包制指包内同卷之文档页（/文档/<包制文名>/），下载栏列 GitHub 之源、发行与归档；主站之制如故。：」
 「站样本」者
 　『{"tab":"overview","lang":"han","release":{"id":"91b9621","owner":"豫言","name":"筹策","version":"0.1.0","type":"可执行文件（图形）","description":"计算器","files":[{"path":"source/筹策。包。豫","url":"https://github.com/yuyan-lang/yuyan-community-packages/blob/91b9621/包/豫言/筹策/筹策。包。豫"}],"latestId":"91b9621","revision":"91b9621","created":"2026-10-20","info":{"dependencies":["豫章","门面"]},"readmes":[{"path":"source/包说明.汉语.md","text":"# 筹策\n\n计算器。"}],"history":{"revisions":[{"url":"https://github.com/yuyan-lang/yuyan-community-packages/commit/91b9621","revision":"91b9621","created":"2026-10-20","downloadUrl":"https://github.com/yuyan-lang/yuyan-community-packages/archive/91b9621.zip"}]},"源码根":"https://github.com/yuyan-lang/yuyan-community-packages/blob/91b9621/包/豫言/筹策/"},"下载们":[{"名":"源码（GitHub）","址":"https://github.com/yuyan-lang/yuyan-community-packages/tree/91b9621/包/豫言/筹策","注":"包目录"}]}』
 也。
@@ -253,11 +256,11 @@
 「站页」者「渲染包页面」于「站样本」于「文档站」也。
 
 「断」于（「文含」于『<a href="/包/豫言/筹策" aria-current="page">概览</a>』于「站页」）。
-「断」于（「文含」于『<a id="包导航-文档" href="https://github.com/yuyan-lang/yuyan-community-packages/blob/91b9621/包/豫言/筹策/">文档</a>』于「站页」）。
+「断」于（「文含」于『<a id="包导航-文档" href="/包/豫言/筹策/文档/">文档</a>』于「站页」）。
 「断」于（「文含」
 　于『<section class="下载列表"><h2>下载</h2><ul><li><a class="下载材料" href="https://github.com/yuyan-lang/yuyan-community-packages/tree/91b9621/包/豫言/筹策" title="包目录">源码（GitHub）</a><small class="下载原名">包目录</small></li></ul></section>』
 　于「站页」）。
-「断」于（「文含」于『<a href="https://github.com/yuyan-lang/yuyan-community-packages/blob/91b9621/包/豫言/筹策/筹策。包。豫">查看包配置</a>』于「站页」）。
+「断」于（「文含」于『<a href="/包/豫言/筹策/文档/筹策。包。豫/">查看包配置</a>』于「站页」）。
 「断」于（非（「文含」于『/release/』于「站页」））。
 「断」于（非（「文含」于『?lang=』于「站页」））。
 「断」于（「文含」
