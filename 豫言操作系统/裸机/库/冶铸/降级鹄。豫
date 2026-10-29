@@ -403,6 +403,7 @@
 　，『取资源用量』与『getrusage』与「一六五」与「九八」与（「列」【「零」，「一」】）与「一」
 　，『映射内存长』与『mmap』与「二二二」与「九」与（「列」【「六」，「六」，「零」，「零」，「二」，「零」】）与「一」
 　，『解除映射长』与『munmap』与「二一五」与「一一」与（「列」【「六」，「六」】）与「一」
+　，『役候』与『pidfd_open』与「四三四」与「四三四」与（「列」【「零」，「零」】）与「一」
 　，『定位读绝』与『pread64』与「六七」与「一七」与（「列」【「零」，「六」，「零」，「六」】）与「一」
 　，『定位写绝』与『pwrite64』与「六八」与「一八」与（「列」【「零」，「六」，「零」，「六」】）与「一」
 　】
@@ -756,6 +757,16 @@
 　，『取进程退出码』与『GetExitCodeProcess』与『kernel32.dll』与（「列」【「二」，「一」】）与「一」
 　，『终止进程』与『TerminateProcess』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
 　，『等单个对象』与『WaitForSingleObject』与『kernel32.dll』与（「列」【「二」，「零」】）与「一」
+　，『复制句柄』与『DuplicateHandle』与『kernel32.dll』与（「列」【「二」，「二」，「二」，「一」，「零」，「零」，「零」】）与「一」
+　，『等多个对象』与『WaitForMultipleObjects』与『kernel32.dll』与（「列」【「零」，「一」，「零」，「零」】）与「一」
+　，『建候事件』与『CreateEventW』与『kernel32.dll』与（「列」【「五」，「零」，「零」，「五」】）与「一」
+　，『复位事件』与『ResetEvent』与『kernel32.dll』与（「列」【「二」】）与「一」
+　，『文件控制』与『NtFsControlFile』与『ntdll.dll』与（「列」【「二」，「二」，「五」，「五」，「一」，「零」，「五」，「零」，「五」，「零」】）与「一」
+　，『套选事件』与『WSAEventSelect』与『ws2_32.dll』与（「列」【「二」，「二」，「零」】）与「一」
+　，『套收事件』与『WSAEnumNetworkEvents』与『ws2_32.dll』与（「列」【「二」，「二」，「一」】）与「一」
+　，『全局存况』与『GlobalMemoryStatusEx』与『kernel32.dll』与（「列」【「一」】）与「一」
+　，『虚存分段』与『VirtualQuery』与『kernel32.dll』与（「列」【「六」，「一」，「零」】）与「一」
+　，『页驻查询』与『K32QueryWorkingSetEx』与『kernel32.dll』与（「列」【「二」，「一」，「零」】）与「一」
 　，『取当前进程号』与『GetCurrentProcessId』与『kernel32.dll』与（「罄」以「数」）与「一」
 　，『开进程』与『OpenProcess』与『kernel32.dll』与（「列」【「零」，「零」，「零」】）与「一」
 　，『取进程时间』与『GetProcessTimes』与『kernel32.dll』与（「列」【「二」，「一」，「一」，「一」，「一」】）与「一」
