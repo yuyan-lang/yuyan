@@ -1,9 +1,9 @@
-「：汉语：通称网平测脚本驱动（wpt testdriver vendor）。网页一致性的运行器给网平测页面出的 testdriver-vendor：把 test_driver 的 action_sequence、send_keys、click 与几个无障碍查询接到本页的事件派发上。动作与按键都直接造事件、派给元素（有 elementFromPoint 时按坐标取元素，没有时派给文档根），派完返回已完成的期约。动作序列按官方的指针／键盘动作解释：指针移动与按下抬起成对派 pointer 与 mouse 事件，键盘动作按 down／press／up 派。无障碍查询读 aria-label 与 role。
-　　文言：网平测之驱动：网页一致性之行者所以予网平试页者：以 test_driver 之动作序列、送键、点击与数事，接于本页事件之派。动作与键皆造事而派于节（有 elementFromPoint 则依坐标取节，无则派于根），派毕还已毕之期。动作序列依官方指针、键盘之动作释之：指针之移与按抬成对而派 pointer 与 mouse 之事；键盘之动依 down、press、up 而派。无障碍之问，读 aria-label 与 role。：」
+「：汉语：通称网平测脚本驱动（wpt testdriver vendor）。网页一致性的运行器给网平测页面出的 testdriver-vendor：把 test_driver 的 action_sequence、send_keys、click 与几个无障碍查询接到本页的事件派发上。指针动作按官方次序走：移到新目标先派 pointerout／pointerleave／mouseout／mouseleave，再派 pointerover／pointerenter／mouseover／mouseenter，然后才是 move；按下、抬起与点击都先过一遍这个切换。取目标用页面自己的 document.elementFromPoint（篇系里接的页几何点下），没有就派给文档根。无障碍查询读 aria-label 与 role。
+　　文言：网平测之驱动：网页一致性之行者所以予网平试页者：以 test_driver 之动作序列、送键、点击与数事，接于本页事件之派。指针之动循官方之次：移于新标则先派 out、leave、out、leave 四事，次派 over、enter、over、enter，然后乃移；按、抬与点击皆先过此切换。取标用页面自有之 document.elementFromPoint（篇系所接页几何之点下），无则派于根。无障碍之问，读 aria-label 与 role。：」
 寻观「豫章」之书。
 寻观「豫章」之「形制」之「帛书」之书。
 
-「：汉语：通称脚本驱动行（testdriver vendor lines）。一行一句的脚本源：造事件、按坐标取元素、派指针与键盘事件，再把 test_driver_internal 装上 action_sequence、send_keys、click 与无障碍查询。
+「：汉语：通称脚本驱动行（testdriver vendor lines）。一行一句的脚本源：按坐标取目标、处理移入移出、派指针与鼠标事件、派键盘事件，再把 test_driver_internal 装上 action_sequence、send_keys、click 与无障碍查询。
 　　文言：驱动之文：一句一行之脚本源。：」
 「脚本驱动行」乃（「列」于「文」）也。
 「脚本驱动行」者
@@ -12,6 +12,7 @@
 　　，『  var doc = document;』
 　　，『  var root = function () { return doc.documentElement || doc.body || null; };』
 　　，『  var done = function () { return new Promise(function (res) { res(); }); };』
+　　，『  var last = null;』
 　　，『  var at = function (x, y) {』
 　　，『    if (typeof doc.elementFromPoint === "function") {』
 　　，『      var el = doc.elementFromPoint(x, y);』
@@ -19,12 +20,42 @@
 　　，『    }』
 　　，『    return root();』
 　　，『  };』
-　　，『  var mouse = function (type, x, y, button, detail) {』
-　　，『    var target = at(x, y);』
+　　，『  var fire = function (type, target, x, y, button, detail, bub) {』
 　　，『    if (!target) { return; }』
 　　，『    var ev = doc.createEvent("MouseEvent");』
-　　，『    ev.initMouseEvent(type, true, true, window, detail || 0, x, y, x, y, false, false, false, false, button || 0, null);』
+　　，『    ev.initMouseEvent(type, bub, true, window, detail || 0, x, y, x, y, false, false, false, false, button || 0, null);』
 　　，『    target.dispatchEvent(ev);』
+　　，『  };』
+　　，『  var hover = function (x, y) {』
+　　，『    var t = at(x, y);』
+　　，『    if (t !== last) {』
+　　，『      if (last) {』
+　　，『        fire("pointerout", last, x, y, 0, 0, true);』
+　　，『        fire("pointerleave", last, x, y, 0, 0, false);』
+　　，『        fire("mouseout", last, x, y, 0, 0, true);』
+　　，『        fire("mouseleave", last, x, y, 0, 0, false);』
+　　，『      }』
+　　，『      if (t) {』
+　　，『        fire("pointerover", t, x, y, 0, 0, true);』
+　　，『        fire("pointerenter", t, x, y, 0, 0, false);』
+　　，『        fire("mouseover", t, x, y, 0, 0, true);』
+　　，『        fire("mouseenter", t, x, y, 0, 0, false);』
+　　，『      }』
+　　，『      last = t;』
+　　，『    }』
+　　，『    return t || root();』
+　　，『  };』
+　　，『  var press = function (x, y) {』
+　　，『    var t = hover(x, y);』
+　　，『    fire("pointerdown", t, x, y, 0, 1, true);』
+　　，『    fire("mousedown", t, x, y, 0, 1, true);』
+　　，『  };』
+　　，『  var release = function (x, y, button) {』
+　　，『    var t = hover(x, y);』
+　　，『    var b = button || 0;』
+　　，『    fire("pointerup", t, x, y, b, 1, true);』
+　　，『    fire("mouseup", t, x, y, b, 1, true);』
+　　，『    fire("click", t, x, y, b, 1, true);』
 　　，『  };』
 　　，『  var key = function (target, type, value) {』
 　　，『    var ev = doc.createEvent("KeyboardEvent");』
@@ -47,9 +78,9 @@
 　　，『  };』
 　　，『  var one = function (a, st) {』
 　　，『    var t = a.type || "";』
-　　，『    if (t === "pointerMove") { move(a, st); mouse("pointermove", st.x, st.y, 0, 0); mouse("mousemove", st.x, st.y, 0, 0); }』
-　　，『    else if (t === "pointerDown") { move(a, st); var b = a.button || 0; mouse("pointerdown", st.x, st.y, b, 1); mouse("mousedown", st.x, st.y, b, 1); }』
-　　，『    else if (t === "pointerUp") { move(a, st); var c = a.button || 0; mouse("pointerup", st.x, st.y, c, 1); mouse("mouseup", st.x, st.y, c, 1); mouse("click", st.x, st.y, c, 1); }』
+　　，『    if (t === "pointerMove") { move(a, st); var mt = hover(st.x, st.y); fire("pointermove", mt, st.x, st.y, 0, 0, true); fire("mousemove", mt, st.x, st.y, 0, 0, true); }』
+　　，『    else if (t === "pointerDown") { move(a, st); press(st.x, st.y); }』
+　　，『    else if (t === "pointerUp") { move(a, st); release(st.x, st.y, a.button || 0); }』
 　　，『    else if (t === "keyDown") { key(a.target, "keydown", a.value || ""); }』
 　　，『    else if (t === "keyUp") { key(a.target, "keyup", a.value || ""); }』
 　　，『  };』
@@ -65,6 +96,8 @@
 　　，『  var typeOne = function (el, k) {』
 　　，『    var target = el || doc.activeElement || root();』
 　　，『    key(target, "keydown", k);』
+　　，『    var ins = window.__豫言控件编插入;』
+　　，『    if (typeof ins === "function" && k.length === 1) { ins(target, k); }』
 　　，『    key(target, "keypress", k);』
 　　，『    key(target, "keyup", k);』
 　　，『  };』
@@ -81,7 +114,8 @@
 　　，『      var r = typeof el.getBoundingClientRect === "function" ? el.getBoundingClientRect() : { left: 0, top: 0, width: 0, height: 0 };』
 　　，『      var x = (r.left || 0) + (r.width || 0) / 2;』
 　　，『      var y = (r.top || 0) + (r.height || 0) / 2;』
-　　，『      mouse("pointerdown", x, y, 0, 1); mouse("mousedown", x, y, 0, 1); mouse("pointerup", x, y, 0, 1); mouse("mouseup", x, y, 0, 1); mouse("click", x, y, 0, 1);』
+　　，『      press(x, y);』
+　　，『      release(x, y, 0);』
 　　，『      return done();』
 　　，『    },』
 　　，『    get_computed_label: function (element) {』
