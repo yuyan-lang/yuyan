@@ -681,6 +681,9 @@
 　，『销窗』与『DestroyWindow』与『user32.dll』与（「列」【「六」】）与「一」
 　，『屏转客户』与『ScreenToClient』与『user32.dll』与（「列」【「六」，「一」】）与「一」
 　，『调窗框』与『AdjustWindowRectEx』与『user32.dll』与（「列」【「一」，「零」，「零」，「零」】）与「一」
+　，『调窗框按素准』与『AdjustWindowRectExForDpi』与『user32.dll』与（「列」【「一」，「零」，「零」，「零」，「零」】）与「一」
+　，『取系统素准』与『GetDpiForSystem』与『user32.dll』与（「罄」以「数」）与「一」
+　，『取工作区』与『SystemParametersInfoW』与『user32.dll』与（「列」【「零」，「零」，「一」，「零」】）与「一」
 　，『开剪』与『OpenClipboard』与『user32.dll』与（「列」【「六」】）与「一」
 　，『闭剪』与『CloseClipboard』与『user32.dll』与（「罄」以「数」）与「一」
 　，『清剪』与『EmptyClipboard』与『user32.dll』与（「罄」以「数」）与「一」
