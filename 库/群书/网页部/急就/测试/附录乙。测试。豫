@@ -1,0 +1,52 @@
+「：汉语：通称附录乙块内函数冒烟测试：试 B.3.3 的块内函数提升——松散代码里块里的函数声明外层可见、块执行前外层是未定义、嵌套块逐层可升、与参数或 let 同名时不升、严格模式仍只按块级；for、for-in 头的词法名、switch 各情形的词法名、catch 的解构参数也算禁名，catch 的简单标识符参数不算。
+　　文言：附录乙块内函数之试：试 B.3.3 之块内函数升——松散之码，块中之函数声明外层可见，块未行时外层为未定义，嵌套之块逐层可升，与参或 let 同名则不升，严之码仍惟块级；for、for-in 头之词法名、switch 诸情形之词法名、catch 之解构参亦为禁名，catch 之单名不算。：」
+寻观「豫章」之书。
+寻观「急就」之书。
+寻观「急就」之「虚拟机」之书。
+寻观「急就」之「脚本值」之书。
+
+「断言」乃化「爻」又化「文」为「有」者也。
+「断言」者得「成」又得「说明」而
+　若「成」则「元」否则「告祸」于「说明」
+也。
+
+「试段」乃化「文」又化「文」为「有」者也。
+「试段」者得「段」又得「说明」而
+　「断言」于（「急就真值」于（「急就行脚本」于「段」））于「说明」
+也。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　「试段」于『function f(){ if(true){ function g(){ return 1; } } return typeof g==="function" && g()===1; } f();』于『if 块内函数外层可见』而后
+　「试段」于『function f(){ var 前=typeof g; { function g(){ return 2; } } return 前==="undefined" && g()===2; } f();』于『块执行前外层是未定义』而后
+　「试段」于『function f(){ { { function g(){ return 3; } } } return typeof g==="function" && g()===3; } f();』于『嵌套块逐层可升』而后
+　「试段」于『function f(g){ { function g(){ return 4; } } return g; } f(9)===9;』于『与参数同名不建外层绑定』而后
+　「试段」于『function f(){ "use strict"; { function g(){ return 5; } } return typeof g==="undefined"; } f();』于『严格模式仍只按块级』而后
+　「试段」于『{ function g(){ return 6; } } typeof g==="function" && g()===6;』于『全局块内函数外层可见』而后
+　「试段」于『{ function g(){ return 7; } } var 前=typeof g; { function g(){ return 8; } } g()===8;』于『全局块重复声明取后值』而后
+　「试段」于『var r=[];eval("if(true){ function g(){ return 10; } }"); typeof g==="function" && g()===10;』于『eval 块内函数在调用者可见』而后
+　「试段」
+　　于『var r2=(function(){ "use strict"; try{ eval("if(true){ function g(){ return 11; } }"); }catch(e){} return typeof g; })(); r2==="undefined";』
+　　于『严格调用处的 eval 不升』而后
+　「试段」
+　　于『(function(){ var 有=false; { let f=20; { function f(){ return 21; } } } try{ f; }catch(e){ 有=true; } return 有; }())』
+　　于『外层块词法名与内层块函数同名时不建外层绑定』而后
+　「试段」
+　　于『(function(){ var 有=false; for (let f;;) { { function f(){ return 22; } } break; } try{ f; }catch(e){ 有=true; } return 有; }())』
+　　于『for 头词法名与块内函数同名时不建外层绑定』而后
+　「试段」
+　　于『(function(){ var 有=false; for (let f in {甲:0}) { { function f(){ return 23; } } } try{ f; }catch(e){ 有=true; } return 有; }())』
+　　于『for-in 头词法名与块内函数同名时不建外层绑定』而后
+　「试段」
+　　于『(function(){ var 有=false; switch (0) { default: let f; { function f(){ return 24; } } } try{ f; }catch(e){ 有=true; } return 有; }())』
+　　于『选择子句词法名与块内函数同名时不建外层绑定』而后
+　「试段」
+　　于『(function(){ var 有=false; try{ throw 0; }catch({ f }){ { function f(){ return 25; } } } try{ f; }catch(e){ 有=true; } return 有; }())』
+　　于『解构 catch 参数与块内函数同名时不建外层绑定』而后
+　「试段」
+　　于『(function(){ try{ throw 0; }catch(f){ { function f(){ return 26; } } } return typeof f==="function" && f()===26; }())』
+　　于『简单 catch 参数同名仍升到外层』而后
+　「书」于『附录乙冒烟通过』
+也。
+
+「入口」于「元」。
