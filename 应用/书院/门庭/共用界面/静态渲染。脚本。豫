@@ -56,11 +56,12 @@
 「：汉语：补在 docs 站主题样式末尾的规则：汉文两个链接照原来按钮的样子画；窄屏菜单换成勾选框加标签，勾上时展开全站导航（纯 CSS，不靠脚本）。
 　　文言：补于 docs 主题样式之末：汉文二链依旧钮之形而绘；窄屏之菜单易为勾框与签，勾则展导航（惟用 CSS，不待本）。：」
 「无本样式」乃「文」也。
-「无本样式」者『
-.豫语言 a{border:0;background:transparent;color:var(--豫次);padding:5px 9px;font-size:13px;text-decoration:none}.豫语言 a[aria-pressed=true]{background:var(--豫墨);color:var(--豫纸);border-radius:2px}
+「无本样式」者
+　『「：换行：」.豫语言 a{border:0;background:transparent;color:var(--豫次);padding:5px 9px;font-size:13px;text-decoration:none}.豫语言 a[aria-pressed=true]{background:var(--豫墨);color:var(--豫纸);border-radius:2px}
 .豫菜单开{position:absolute;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}label.豫菜单{color:var(--豫次);font-size:13px;cursor:pointer;user-select:none}.豫菜单开:focus-visible+label.豫菜单{outline:2px solid var(--豫朱);outline-offset:2px}
 @media(max-width:900px){.豫菜单开:checked~.豫导航内{display:flex}}
-』也。
+』
+也。
 
 「：汉语：共用界面翻译用的词典原文，每页载入时登记成 /共用/词典.json 的响应。
 　　文言：共界译辞之典，每页登为 /共用/词典.json 之应。：」
