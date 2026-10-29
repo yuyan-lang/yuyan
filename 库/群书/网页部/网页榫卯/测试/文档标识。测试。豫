@@ -1,0 +1,25 @@
+「：汉语：通称文档标识查询冒烟测试（document id lookup smoke test）。建一个最小页面环境，按四件事核对按 id 查节点：一、插入后查得到；二、改 id 后旧号查不到、新号查得到；三、删掉节点后查不到、插回后查得到；四、往 body 里插一个文档片段之后，原先的节点仍查得到（片段插入不该顶掉原有子节点）。四项都合才通过，否则报出实际标志串。
+　　文言：文档标识之冒烟试：立一最小页境，以四事核按号求节：一、既插则得；二、改号则旧者不得而新者得；三、既删则不得、插回则得；四、以篇段插于 body 之后，旧有之节犹得（篇段之插不当顶去旧子）。四事皆合乃过，否则书其实标。
+　　赋曰：一号初插便应寻，改号新旧两分明。删去插回皆可验，片段入而不夺邻。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a">座</div><p id="p">段</p>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为（「系网览篇」于「境」于「文档」）而
+　令「标列」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let 标=[];try{let 首=document.getElementById("a");标.push("一:"+(首!==null));首.id="b";标.push("二:"+((document.getElementById("a")===null)&&(document.getElementById("b")!==null)));首.remove();标.push("三:"+(document.getElementById("b")===null));document.body.appendChild(首);标.push("四:"+(document.getElementById("b")!==null));let 片=document.createDocumentFragment();let 新=document.createElement("span");新.id="新";片.appendChild(新);document.body.appendChild(片);标.push("五:"+((document.getElementById("b")!==null)&&(document.getElementById("新")!==null)&&(document.getElementById("p")!==null)));}catch(误){标.push("错:"+误.message);}标.join("|");』而
+　令「标文」为（「急就文字作串」于（「急就作文字」于「标列」））而
+　若「文同」于「标文」于『一:true|二:true|三:true|四:true|五:true』则
+　　「书」于『文档标识查询冒烟通过』
+　否则
+　　「告祸」于（『文档标识查询冒烟不成：标志＝』接「标文」）
+也。
+
+「入口」于「元」。
