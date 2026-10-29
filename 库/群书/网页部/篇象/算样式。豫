@@ -497,6 +497,8 @@ sup { vertical-align: super }
 summary { display: list-item; list-style-type: disclosure-closed; list-style-position: inside }
 details[open] > summary { list-style-type: disclosure-open }
 a[href] { color: #0000ee; text-decoration: underline }
+u,ins { text-decoration: underline }
+s,strike,del { text-decoration: line-through }
 details:not([open]) > :not(summary:first-of-type) { display: none }
 dialog { display: block; position: absolute; left: 0; right: 0; width: fit-content; height: fit-content; margin: auto; border: solid; padding: 1em; background-color: Canvas; color: CanvasText }
 audio:not([controls]) { display: none }
