@@ -18,7 +18,7 @@
 　「析」于『<filter color-interpolation-filters="sRGB"><feOffset dx="1" result="偏"/><feColorMatrix in="SourceGraphic" result="改" values="0 0 1 0 0 0 1 0 0 0 1 0 0 0 0 0 0 0 1 0"/><feComposite in="SourceAlpha" in2="偏" operator="over"/></filter>』
 也。
 
-「图」者「行滤镜定义」于「定义」于「源图」于（得「身份」又得「域」而「空白描」于「二」于「一」）也。
+「图」者「行滤镜定义」于「定义」于「源图」于（得「请求」又得「域」而「空白描」于「二」于「一」）也。
 
 「像素」者「画谱」之「图像像素」于「图」也。
 
@@ -34,7 +34,7 @@
 　「行滤镜定义」
 　　于（「析」于『<filter color-interpolation-filters="sRGB"><feOffset in="未定义"/></filter>』）
 　　于「源图」
-　　于（得「身份」又得「域」而「空白描」于「二」于「一」）
+　　于（得「请求」又得「域」而「空白描」于「二」于「一」）
 也。
 
 「空像素」者「画谱」之「图像像素」于「未定义」也。
@@ -44,7 +44,7 @@
 　「行滤镜定义」
 　　于（「析」于『<filter color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="1 0"/></filter>』）
 　　于「源图」
-　　于（得「身份」又得「域」而「空白描」于「二」于「一」）
+　　于（得「请求」又得「域」而「空白描」于「二」于「一」）
 也。
 
 「高斯像素」者「画谱」之「图像像素」于「高斯图」也。
@@ -60,7 +60,7 @@
 　「析」于『<filter><feColorMatrix color-interpolation-filters="sRGB" values="0.5 0 0 0 0 0 0.5 0 0 0 0 0 0.5 0 0 0 0 0 1 0" result="半"/><feOffset in="半"/></filter>』
 也。
 
-「原语色图」者「行滤镜定义」于「原语色定义」于「灰源」于（得「身份」又得「域」而「空白描」于「一」于「一」）也。
+「原语色图」者「行滤镜定义」于「原语色定义」于「灰源」于（得「请求」又得「域」而「空白描」于「一」于「一」）也。
 
 「原语色像素」者「画谱」之「图像像素」于「原语色图」也。
 
@@ -72,7 +72,7 @@
 　「行滤镜定义」
 　　于（「析」于『<filter color-interpolation-filters="sRGB"><feFlood flood-color="#00ff00"/></filter>』）
 　　于「源图」
-　　于（得「身份」又得「域」而「空白描」于「二」于「一」）
+　　于（得「请求」又得「域」而「空白描」于「二」于「一」）
 也。
 
 「泛色像素」者「画谱」之「图像像素」于「泛色图」也。
@@ -84,7 +84,7 @@
 「青图」者「渲染白描」于『<svg><rect width="2" height="1" fill="#00ffff"/></svg>』于「二」于「一」也。
 
 「引图图」者
-　「行滤镜定义」于（「析」于『<filter color-interpolation-filters="sRGB"><feImage href="#甲"/></filter>』）于「源图」于（得「身份」又得「域」而「青图」）
+　「行滤镜定义」于（「析」于『<filter color-interpolation-filters="sRGB"><feImage href="#甲"/></filter>』）于「源图」于（得「请求」又得「域」而「青图」）
 也。
 
 「引图像素」者「画谱」之「图像像素」于「引图图」也。
@@ -124,7 +124,7 @@
 　　于（「零点零」与「零点零」与「二点零」与「一点零」）
 　　于（「零点零」与「零点零」与「二点零」与「一点零」）
 　　于「恒等矩阵」
-　　于（得「身份」又得「域」而「青图」）
+　　于（得「请求」又得「域」而「青图」）
 也。
 
 「区域引素」者「画谱」之「图像像素」于「区域引图」也。
