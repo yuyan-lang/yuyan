@@ -3296,6 +3296,25 @@
 　　　）
 　　　于「元」
 　　　于（「列」【『Event』，『CustomEvent』】）而
+　「：汉语：Event 构造器上的四个阶段常量（NONE、CAPTURING_PHASE、AT_TARGET、BUBBLING_PHASE）：脚本按名取用，值与规范一致。
+　　　文言：Event 之上四阶之常：NONE、CAPTURING_PHASE、AT_TARGET、BUBBLING_PHASE，脚本按名而取，值依规范。：」
+　令「事造物」为「急就读名」于「境」于『Event』而
+　令「无」为
+　　「叠」以（「文」合「数」）又以「有」
+　　　于（得「对」又得「积」而
+　　　　令「成」为
+　　　　　「急就定义属」
+　　　　　　于「事造物」
+　　　　　　于（（「急就文字自串」于（「对」中「零」））与（「急就数值」于（「变通」之「作小数」于（「对」中「一」）））与「阴」与「阴」与「阴」）而
+　　　　「积」
+　　　）
+　　　于「元」
+　　　于（「列」
+　　　　【（『NONE』与「零」）
+　　　　，（『CAPTURING_PHASE』与「一」）
+　　　　，（『AT_TARGET』与「二」）
+　　　　，（『BUBBLING_PHASE』与「三」）
+　　　　】）而
 　「：汉语：ErrorEvent 构造器：按 init 里的 message、filename、lineno、colno 与 error 造错误事件；缺项用空串、零与未定义；事件数据存前四项，error 另记在错值表里。
 　　　文言：ErrorEvent 之造：依 init 之 message、filename、lineno、colno 与 error 造错事；缺者空、零与未定义；事之数据存前四项，error 别记于错值之表。：」
 　令「错构造器」为
