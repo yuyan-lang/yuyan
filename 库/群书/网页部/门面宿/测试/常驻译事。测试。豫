@@ -18,7 +18,7 @@
 「：汉语：通称页范（page template）。一只绝对定位的按钮，位置与大小固定，命中好算。
 　　文言：一钮绝对定位，位置大小皆定，命中易算。：」
 「页范」者
-　『<html><head><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#ffffff}#钮{position:absolute;left:20px;top:20px;width:60px;height:40px;background:#3366ff;border:0}#钮:hover{background:#ff0000}#钮:active{background:#ffff00}#滚{position:absolute;left:100px;top:10px;width:40px;height:30px;overflow:auto;background:#eeeeee}#滚内{height:200px;background:#ff0000}#框{position:absolute;left:20px;top:70px;width:120px;height:24px;border:1px solid #000000}</style></head><body><div id="待办容器" style="width:100%;height:100%;position:relative"><div id="钮"></div><div id="滚"><div id="滚内"></div></div><input id="框"></div></body></html>』
+　『<html><head><style>html,body{margin:0;padding:0;width:100%;height:100%;background:#ffffff}#外{position:absolute;left:20px;top:20px;width:80px;height:60px;background:#0000ff}#外:hover{background:#ff8000}#钮{position:absolute;left:10px;top:10px;width:60px;height:40px;background:#3366ff;border:0}#钮:hover{background:#ff0000}#钮:active{background:#ffff00}#滚{position:absolute;left:100px;top:10px;width:40px;height:30px;overflow:auto;background:#eeeeee}#滚内{height:200px;background:#ff0000}#框{position:absolute;left:20px;top:110px;width:120px;height:24px;border:1px solid #000000}</style></head><body><div id="待办容器" style="width:100%;height:100%;position:relative"><div id="外"><div id="钮"></div></div><div id="滚"><div id="滚内"></div></div><input id="框"></div></body></html>』
 也。
 
 「：汉语：通称框心（rect center）。取左、上、右、下四个整数，得横纵中点（整数除法）两个数。
@@ -130,6 +130,11 @@
 　（
 　　若（「色指」于「常色」）等于「六六三」则「书」于『常驻：按钮常态蓝（#3366ff）』否则「告祸」于（『按钮常态色不对：』接（「述数」于（「色指」于「常色」）））
 　）而
+令「外常」为（「帧像素」于「二五」于「二五」）而
+令「无亥一」为
+　（
+　　若（「色指」于「外常」）等于「五一零」则「书」于『常驻：外层常态蓝（#0000ff）』否则「告祸」于（『外层常态色不对：』接（「述数」于（「色指」于「外常」）））
+　）而
 令「无子一」为（「界翻入事」于（「指针移动」于（「钮心二」中「零」）于（「钮心二」中「一」）））而
 令「无丑一」为（「一体重画」于「元」）而
 令「悬色」为（「帧像素」于（「钮心二」中「零」）于（「钮心二」中「一」））而
@@ -140,6 +145,14 @@
 　　　「书」于『常驻：悬停红（#ff0000），:hover 生效』
 　　否则
 　　　「告祸」于（『悬停色不对：』接（「述数」于（「色指」于「悬色」）））
+　）而
+令「外悬」为（「帧像素」于「二五」于「二五」）而
+令「无卯二」为
+　（
+　　若（「色指」于「外悬」）等于「六三八」则
+　　　「书」于『常驻：外层随子悬停变橙（#ff8000），祖先 :hover 重画到了』
+　　否则
+　　　「告祸」于（『外悬停色不对（祖先没重画）：』接（「述数」于（「色指」于「外悬」）））
 　）而
 令「无辰一」为（「界翻入事」于（「指针按下」于（「钮心二」中「零」）于（「钮心二」中「一」）于「零」））而
 令「无巳一」为（「一体重画」于「元」）而
@@ -167,4 +180,7 @@
 　　否则
 　　　「告祸」于（『移开后色不对：』接（「述数」于（「色指」于「离色」）））
 　）而
+令「外离」为（「帧像素」于「二五」于「二五」）而
+令「无丑三」为
+　（若（「色指」于「外离」）等于「五一零」则「书」于『常驻：外层移开回蓝』否则「告祸」于（『外层移开后色不对：』接（「述数」于（「色指」于「外离」））））而
 「书」于『常驻输入翻译测试通过』。
