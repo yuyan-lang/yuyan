@@ -42,6 +42,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.』也。
     --debug-print-add [debug_flag]       打印指定的调试信息
     --debug-check-add [debug_flag]       执行指定的调试检查
     --type-check-only                    仅执行类型检查，不生成可执行文件
+    --列模式裸名                        按源文件、行列列出作绑定的裸名，迁移统计时配合 --do-not-load-cache
     --parallel                          以豫言调度工作进程，并行编译
     --package-context PATH              使用豫构生成的严格包上下文
     -j N, --num-cpu N                    并发工作进程上限（正整数）
