@@ -1,0 +1,25 @@
+「：汉语：通称事件目标冒烟测试（EventTarget smoke test）。建一个最小页面环境，核对四件事：一、EventTarget 是真构造器、能 new；二、普通事件目标上 addEventListener 后 dispatchEvent 能同步调到回调；三、元素是 EventTarget 的实例；四、类可以继承 EventTarget。四项都合才通过，否则报出标志串。
+　　文言：事件目标之冒烟试：立一最小页境，核四事：一、EventTarget 为真造器而可 new；二、常事件目标上 addEventListener 而后 dispatchEvent 能同步及回调；三、元素为 EventTarget 之实例；四、类可承 EventTarget。四事皆合乃过，否则书其标。
+　　赋曰：事件之台立作基，监听派发两相随。元素承之为实例，类亦能承此一支。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a">座</div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为（「系网览篇」于「境」于「文档」）而
+　令「标列」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let 标=[];try{标.push("一:"+(typeof EventTarget==="function"));let 台=new EventTarget();标.push("二a:"+(台 instanceof EventTarget));let 收=0;台.addEventListener("叮",function(){收=收+1;});台.dispatchEvent(new Event("叮"));标.push("二b:"+(收===1));let 节=document.createElement("div");标.push("三:"+(节 instanceof EventTarget));class 子台 extends EventTarget{}let 孙=new 子台();标.push("四:"+(孙 instanceof EventTarget));标.push("五a:起");let 台二=new EventTarget();let 控=new AbortController();let 数=0;台二.addEventListener("试",function(){数=数+1;},{signal:控.signal});标.push("五b:已加");台二.dispatchEvent(new Event("试"));标.push("五c:"+数);控.abort();标.push("五d:已中");台二.dispatchEvent(new Event("试"));标.push("五e:"+数);标.push("六a:起");let 抛=false;try{台二.addEventListener("空",function(){},{signal:null});}catch(误二){抛=true;}标.push("六b:"+抛);标.push("七a:起");let 台三=new EventTarget();let 数三=0;台三.addEventListener("嵌",function(){数三=数三+1;if(数三<3){台三.dispatchEvent(new Event("嵌"));}},{once:true});台三.dispatchEvent(new Event("嵌"));标.push("七b:"+数三);let 台四=new EventTarget();let 控四=new AbortController();let 数四=0;台四.addEventListener("嵌",function(){数四=数四+1;},{signal:控四.signal});控四.abort();台四.dispatchEvent(new Event("嵌"));标.push("八:"+数四);let 台五=new EventTarget();let 控五=new AbortController();let 数五=0;台五.addEventListener("嵌",function(){控五.abort();台五.dispatchEvent(new Event("嵌"));},{once:true});台五.addEventListener("嵌",function(){数五=数五+1;},{signal:控五.signal});台五.dispatchEvent(new Event("嵌"));标.push("九:"+数五);标.push("十a:起");let 台六=new EventTarget();let 控六=new AbortController();let 甲=0;let 乙=0;台六.addEventListener("试",function(){甲=甲+1;},{signal:控六.signal});台六.addEventListener("试",function(){乙=乙+1;},{signal:控六.signal});控六.abort();台六.dispatchEvent(new Event("试"));标.push("十b:"+甲+"/"+乙);}catch(误){标.push("错:"+误.message);}标.join("|");』而
+　令「标文」为（「急就文字作串」于（「急就作文字」于「标列」））而
+　若「文同」于「标文」于『一:true|二a:true|二b:true|三:true|四:true|五a:起|五b:已加|五c:1|五d:已中|五e:1|六a:起|六b:true|七a:起|七b:1|八:0|九:1|十a:起|十b:0/0』则
+　　「书」于『事件目标冒烟通过』
+　否则
+　　「告祸」于（『事件目标冒烟不成：标志＝』接「标文」）
+也。
+
+「入口」于「元」。
