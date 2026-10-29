@@ -1,0 +1,16 @@
+崇羲篆體（Chong Xi Small Seal）许可说明
+
+字体名：崇羲篆體（Chong Xi Small Seal）
+版本：1.00（2022-06-23）
+来源网址：https://xiaoxue.iis.sinica.edu.tw/chongxi/
+文件下载页：https://xiaoxue.iis.sinica.edu.tw/chongxi/download.htm
+著作者：中央研究院。王心怡书写；谢清俊、庄德明、季旭昇参与。
+许可：知识共享 署名-禁止改作 3.0 台湾（CC BY-ND 3.0 TW）及其后版本。
+法律文本：https://creativecommons.org/licenses/by-nd/3.0/tw/legalcode
+
+条件摘要：
+- 可重制、散布与商业使用。
+- 须署名（姓名标示）：保留本字体名、著作者与来源。
+- 不得修改：不得改作、转换格式、合并字形、子集化或改动码表。
+
+豫言操作系统随发行包原样随带本字体文件 `崇羲篆体.ttf`（中央研究院所发 chongxi_seal.otf 的原字节副本，只改文件名），未作任何修改；分发时须与本许可说明一同分发。
