@@ -38,16 +38,18 @@
 「：汉语：通称命名曲线私钥（named-curve private key）。OpenSSL 用命名曲线写出的 P-256 私钥，公钥典第八号、定式编码，卦文形式。
 　　文言：以命名曲线书 P-256 之私，PKCS#8 之定式，卦文其文。：」
 「名列私钥」乃「帛」也。
-「名列私钥」者「显测卦文」于『
-MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgZc4WXKPckierl8ZJ6Du8xXIatX5upS6D8QR+LzbyLnChRANCAAT6LOpC2LdIuXrwvz20FcIJ7MLp4PlglYVDUQjKwjsVoQa2zMa3BKAgCkwyTzkcP0bVGbE0LvaaxbLFsUgZ5fp8
-』也。
+「名列私钥」者
+　「显测卦文」于『「：换行：」MIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQgZc4WXKPckierl8ZJ6Du8xXIatX5upS6D8QR+LzbyLnChRANCAAT6LOpC2LdIuXrwvz20FcIJ7MLp4PlglYVDUQjKwjsVoQa2zMa3BKAgCkwyTzkcP0bVGbE0LvaaxbLFsUgZ5fp8
+』
+也。
 
 「：汉语：通称显式参数私钥（explicit-parameter private key）。同一把 P-256 私钥，OpenSSL 用显式参数写出（`-param_enc explicit`）的公钥典第八号，卦文形式。
 　　文言：同此私钥，以显式参数书之（OpenSSL 之 -param_enc explicit），PKCS#8 之定式，卦文其文。：」
 「显列私钥」乃「帛」也。
-「显列私钥」者「显测卦文」于『
-MIIBeQIBADCCAQMGByqGSM49AgEwgfcCAQEwLAYHKoZIzj0BAQIhAP////8AAAABAAAAAAAAAAAAAAAA////////////////MFsEIP////8AAAABAAAAAAAAAAAAAAAA///////////////8BCBaxjXYqjqT57PrvVV2mIa8ZR0GsMxTsPY7zjw+J9JgSwMVAMSdNgiG5wSTamZ44ROdJreBn36QBEEEaxfR8uEsQkf4vOblY6RA8ncDfYEt6zOg9KE5RdiYwpZP40Li/hp/m47n60p8D54WK84zV2sxXs7LtkBoN79R9QIhAP////8AAAAA//////////+85vqtpxeehPO5ysL8YyVRAgEBBG0wawIBAQQgZc4WXKPckierl8ZJ6Du8xXIatX5upS6D8QR+LzbyLnChRANCAAT6LOpC2LdIuXrwvz20FcIJ7MLp4PlglYVDUQjKwjsVoQa2zMa3BKAgCkwyTzkcP0bVGbE0LvaaxbLFsUgZ5fp8
-』也。
+「显列私钥」者
+　「显测卦文」于『「：换行：」MIIBeQIBADCCAQMGByqGSM49AgEwgfcCAQEwLAYHKoZIzj0BAQIhAP////8AAAABAAAAAAAAAAAAAAAA////////////////MFsEIP////8AAAABAAAAAAAAAAAAAAAA///////////////8BCBaxjXYqjqT57PrvVV2mIa8ZR0GsMxTsPY7zjw+J9JgSwMVAMSdNgiG5wSTamZ44ROdJreBn36QBEEEaxfR8uEsQkf4vOblY6RA8ncDfYEt6zOg9KE5RdiYwpZP40Li/hp/m47n60p8D54WK84zV2sxXs7LtkBoN79R9QIhAP////8AAAAA//////////+85vqtpxeehPO5ysL8YyVRAgEBBG0wawIBAQQgZc4WXKPckierl8ZJ6Du8xXIatX5upS6D8QR+LzbyLnChRANCAAT6LOpC2LdIuXrwvz20FcIJ7MLp4PlglYVDUQjKwjsVoQa2zMa3BKAgCkwyTzkcP0bVGbE0LvaaxbLFsUgZ5fp8
+』
+也。
 
 「：汉语：通称公钥点（public key point）。与上面两把私钥配对的 P-256 公钥点，未压缩形式，六十五字节。
 　　文言：与上二私相配之公点，未压之式，六五字节。：」

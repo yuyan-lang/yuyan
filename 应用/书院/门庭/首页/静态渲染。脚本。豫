@@ -21,8 +21,7 @@
 「：汉语：补在首页样式末尾的分页规则：单选框看不见但能用键盘切换；标签照原来分页按钮的样子画，选中的标红；没选中的面板藏起；复制按钮去掉后，“在试写间运行”靠右。
 　　文言：补于首页样式末之分页之规：单选不可见而键可易；签依旧钮之形而绘，所择者朱；未择之板藏之；去复制之钮，试写间之链居右。：」
 「分页样式」乃「文」也。
-「分页样式」者『
-.示例选{position:absolute;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
+「分页样式」者『「：换行：」.示例选{position:absolute;width:1px;height:1px;margin:0;opacity:0;pointer-events:none}
 .示例导航 label{padding:15px 10px;border-bottom:2px solid transparent;color:var(--豫次);font-size:14px;cursor:pointer;user-select:none}
 #示例选你好:checked~.示例导航 [for="示例选你好"],#示例选函数:checked~.示例导航 [for="示例选函数"],#示例选匹配:checked~.示例导航 [for="示例选匹配"]{color:var(--豫朱);border-bottom-color:var(--豫朱)}
 .示例选:focus-visible~.示例导航{outline:2px solid var(--豫朱);outline-offset:-2px}

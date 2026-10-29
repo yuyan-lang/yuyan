@@ -47,8 +47,7 @@ sch.ae
 aero
 // 2LDs
 airline.aero』
-　　接『
-airport.aero
+　　接『「：换行：」airport.aero
 // 2LDs (currently not accepting registration, seemingly never have)
 // As of 2024-07, these are marked as reserved for potential 3LD
 // registrations (clause 11 "allocated subdomains" in the 2006 TLD
@@ -1136,8 +1135,7 @@ name.et
 net.et
 org.et
 』
-　　接『
-// eu : https://www.iana.org/domains/root/db/eu.html
+　　接『「：换行：」// eu : https://www.iana.org/domains/root/db/eu.html
 eu
 
 // fi : https://www.iana.org/domains/root/db/fi.html
@@ -1789,8 +1787,7 @@ bulsan-sudtirol.it
 bulsan-südtirol.it
 bulsan-suedtirol.it
 bz.it』
-　　接『
-ca.it
+　　接『「：换行：」ca.it
 cagliari.it
 caltanissetta.it
 campidano-medio.it
@@ -1941,8 +1938,7 @@ prato.it
 pt.it
 pu.it
 pv.it』
-　　接『
-pz.it
+　　接『「：换行：」pz.it
 ra.it
 ragusa.it
 ravenna.it
@@ -2070,8 +2066,7 @@ jp
 ac.jp
 ad.jp
 co.jp』
-　　接『
-ed.jp
+　　接『「：换行：」ed.jp
 go.jp
 gr.jp
 lg.jp
@@ -2172,8 +2167,7 @@ yamanashi.jp
 香川.jp
 高知.jp
 鳥取.jp』
-　　接『
-鹿児島.jp
+　　接『「：换行：」鹿児島.jp
 // jp geographic type names
 // http://jprs.jp/doc/rule/saisoku-1.html
 // 2024-11-22: JPRS confirmed that jp geographic type names no longer accept new registrations.
@@ -2521,8 +2515,7 @@ ena.gifu.jp
 gifu.gifu.jp
 ginan.gifu.jp
 godo.gifu.jp』
-　　接『
-gujo.gifu.jp
+　　接『「：换行：」gujo.gifu.jp
 hashima.gifu.jp
 hichiso.gifu.jp
 hida.gifu.jp
@@ -2859,8 +2852,7 @@ tomobe.ibaraki.jp
 tone.ibaraki.jp
 toride.ibaraki.jp
 tsuchiura.ibaraki.jp』
-　　接『
-tsukuba.ibaraki.jp
+　　接『「：换行：」tsukuba.ibaraki.jp
 uchihara.ibaraki.jp
 ushiku.ibaraki.jp
 yachiyo.ibaraki.jp
@@ -3272,8 +3264,7 @@ unzen.nagasaki.jp
 ando.nara.jp
 gose.nara.jp
 heguri.nara.jp』
-　　接『
-higashiyoshino.nara.jp
+　　接『「：换行：」higashiyoshino.nara.jp
 ikaruga.nara.jp
 ikoma.nara.jp
 kamikitayama.nara.jp
@@ -3941,8 +3932,7 @@ or.ke
 sc.ke
 
 // kg : http://www.domain.kg/dmn_n.html』
-　　接『
-kg
+　　接『「：换行：」kg
 com.kg
 edu.kg
 gov.kg
@@ -5352,8 +5342,7 @@ org.ph
 // Contact Email: staff@pknic.net.pk
 pk
 ac.pk』
-　　接『
-biz.pk
+　　接『「：换行：」biz.pk
 com.pk
 edu.pk
 fam.pk
@@ -5402,8 +5391,7 @@ sos.pl
 szkola.pl
 targi.pl
 tm.pl』
-　　接『
-tourism.pl
+　　接『「：换行：」tourism.pl
 travel.pl
 turystyka.pl
 // Government domains : https://www.dns.pl/informacje_o_rejestracji_domen_gov_pl
@@ -6162,8 +6150,7 @@ lutsk.ua
 lv.ua
 lviv.ua
 mk.ua』
-　　接『
-mykolaiv.ua
+　　接『「：换行：」mykolaiv.ua
 nikolaev.ua
 od.ua
 odesa.ua
@@ -7100,8 +7087,7 @@ afl
 // africa : ZA Central Registry NPC trading as Registry.Africa
 // https://www.iana.org/domains/root/db/africa.html
 africa』
-　　接『
-
+　　接『「：换行：」
 // agakhan : Fondation Aga Khan (Aga Khan Foundation)
 // https://www.iana.org/domains/root/db/agakhan.html
 agakhan
@@ -7344,8 +7330,7 @@ bar
 // https://www.iana.org/domains/root/db/barcelona.html
 barcelona
 』
-　　接『
-// barclaycard : Barclays Bank PLC
+　　接『「：换行：」// barclaycard : Barclays Bank PLC
 // https://www.iana.org/domains/root/db/barclaycard.html
 barclaycard
 
@@ -7913,8 +7898,7 @@ consulting
 // https://www.iana.org/domains/root/db/contact.html
 contact
 』
-　　接『
-// contractors : Binky Moon, LLC
+　　接『「：换行：」// contractors : Binky Moon, LLC
 // https://www.iana.org/domains/root/db/contractors.html
 contractors
 
@@ -8346,8 +8330,7 @@ fast
 
 // fedex : Federal Express Corporation
 // https://www.iana.org/domains/root/db/fedex.html』
-　　接『
-fedex
+　　接『「：换行：」fedex
 
 // feedback : Top Level Spectrum, Inc.
 // https://www.iana.org/domains/root/db/feedback.html
@@ -9165,8 +9148,7 @@ krd
 kred
 
 // kuokgroup : Kerry Trading Co. Limited』
-　　接『
-// https://www.iana.org/domains/root/db/kuokgroup.html
+　　接『「：换行：」// https://www.iana.org/domains/root/db/kuokgroup.html
 kuokgroup
 
 // kyoto : Academic Institution: The University of Informatics
@@ -9912,8 +9894,7 @@ photography
 // photos : Binky Moon, LLC
 // https://www.iana.org/domains/root/db/photos.html
 photos』
-　　接『
-
+　　接『「：换行：」
 // physio : PhysBiz Pty Ltd
 // https://www.iana.org/domains/root/db/physio.html
 physio
@@ -10733,8 +10714,7 @@ tech
 // https://www.iana.org/domains/root/db/technology.html
 technology
 』
-　　接『
-// temasek : Temasek Holdings (Private) Limited
+　　接『「：换行：」// temasek : Temasek Holdings (Private) Limited
 // https://www.iana.org/domains/root/db/temasek.html
 temasek
 
@@ -11323,8 +11303,7 @@ xin
 // xn--cckwcxetd : Amazon Registry Services, Inc.
 // https://www.iana.org/domains/root/db/xn--cckwcxetd.html
 アマゾン』
-　　接『
-
+　　接『「：换行：」
 // xn--cg4bki : SAMSUNG SDS CO., LTD
 // https://www.iana.org/domains/root/db/xn--cg4bki.html
 삼성
@@ -11960,8 +11939,7 @@ emrappui-prod.eu-west-1.amazonaws.com
 emrnotebooks-prod.eu-west-1.amazonaws.com
 emrstudio-prod.eu-west-1.amazonaws.com
 emrappui-prod.eu-west-2.amazonaws.com』
-　　接『
-emrnotebooks-prod.eu-west-2.amazonaws.com
+　　接『「：换行：」emrnotebooks-prod.eu-west-2.amazonaws.com
 emrstudio-prod.eu-west-2.amazonaws.com
 emrappui-prod.eu-west-3.amazonaws.com
 emrnotebooks-prod.eu-west-3.amazonaws.com
@@ -12474,8 +12452,7 @@ s3-deprecated.us-west-2.amazonaws.com
 s3-fips.us-west-2.amazonaws.com
 s3-object-lambda.us-west-2.amazonaws.com
 s3-website.us-west-2.amazonaws.com』
-　　接『
-
+　　接『「：换行：」
 // Amazon SageMaker Ground Truth
 // Submitted by AWS Security <psl-maintainers@amazon.com>
 // Reference: 98dbfde4-7802-48c3-8751-b60f204e0d9c
@@ -12583,8 +12560,7 @@ studio.cn-northwest-1.sagemaker.com.cn
 // Submited by: AWS Security <psl-maintainers@amazon.com>
 // Reference: c19f92b3-a82a-452d-8189-831b572eea7e
 *.experiments.sagemaker.aws』
-　　接『
-
+　　接『「：换行：」
 // Analytics on AWS
 // Submitted by AWS Security <psl-maintainers@amazon.com>
 // Reference: 955f9f40-a495-4e73-ae85-67b77ac9cadd
@@ -13520,8 +13496,7 @@ de5.net
 // Submitted by Norbert Auler <mail@dnshome.de>
 dnshome.at
 resolve.bar』
-　　接『
-ddns.berlin
+　　接『「：换行：」ddns.berlin
 dnshome.cloud
 ddnssec.de
 dnshome.de
@@ -13853,8 +13828,7 @@ webhop.org
 better-than.tv
 dyndns.tv
 on-the-web.tv』
-　　接『
-worse-than.tv
+　　接『「：换行：」worse-than.tv
 is-by.us
 land-4-sale.us
 stuff-4-sale.us
@@ -14947,8 +14921,7 @@ eu1-plenit.com
 la1-plenit.com
 us1-plenit.com
 』
-　　接『
-// JouwWeb B.V. : https://www.jouwweb.nl
+　　接『「：换行：」// JouwWeb B.V. : https://www.jouwweb.nl
 // Submitted by Camilo Sperberg <tech@webador.com>
 webadorsite.com
 jouwweb.site
@@ -15175,8 +15148,7 @@ lugs.org.uk
 barsy.bg
 barsy.club
 barsycenter.com』
-　　接『
-barsyonline.com
+　　接『「：换行：」barsyonline.com
 barsy.de
 barsy.dev
 barsy.eu
@@ -15486,8 +15458,7 @@ yali.mythic-beasts.com
 cust.retrosnub.co.uk
 
 // Nabu Casa : https://www.nabucasa.com』
-　　接『
-// Submitted by Paulus Schoutsen <infra@nabucasa.com>
+　　接『「：换行：」// Submitted by Paulus Schoutsen <infra@nabucasa.com>
 ui.nabu.casa
 
 // Needle Tools GmbH : https://needle.tools
@@ -16128,8 +16099,7 @@ firewalledreplit.co
 id.firewalledreplit.co
 repl.co
 id.repl.co』
-　　接『
-*.replit.dev
+　　接『「：换行：」*.replit.dev
 *.teams.replit.dev
 repl.run
 
@@ -16420,8 +16390,7 @@ as.sh.cn
 
 // Shanghai Oray Information Technology Co., Ltd.: https://www.oray.com/
 // Submitted by: Shanghai Oray Information Technology Co., Ltd. <registrar@oray.com>』
-　　接『
-vicp.fun
+　　接『「：换行：」vicp.fun
 yicp.fun
 zicp.fun
 
@@ -16555,8 +16524,7 @@ myspreadshop.it
 myspreadshop.net
 myspreadshop.nl
 myspreadshop.no』
-　　接『
-myspreadshop.pl
+　　接『「：换行：」myspreadshop.pl
 myspreadshop.se
 myspreadshop.co.uk
 
@@ -16917,8 +16885,7 @@ v.ua
 
 // Val Town, Inc : https://val.town/
 // Submitted by Tom MacWright <security@val.town>』
-　　接『
-val.run
+　　接『「：换行：」val.run
 web.val.run
 
 // Vercel, Inc : https://vercel.com/
