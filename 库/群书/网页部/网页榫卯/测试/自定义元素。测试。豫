@@ -1,0 +1,22 @@
+「：汉语：通称自定义元素冒烟测试（custom element smoke test）。建一个最小页面环境，声明一个继承 HTMLElement 的自定义元素、define 它、createElement 一个实例插进 body，再 customElements.upgrade 升一次：核对构造器、connectedCallback 依序跑到，构造器里写的 dataset 与回调里写的 title 都落在同一个节点上，且实例 instanceof HTMLElement。任一项不合就报错。
+　　文言：自定义元素之冒烟试：立一最小之页境，declare 一承 HTMLElement 之自定义元素，define 之，createElement 一实例而插于 body，乃 customElements.upgrade 一升：核造器与 connectedCallback 依序而及，造器所书之 dataset 与回调所书之 title 皆落于同一节，且实例 instanceof HTMLElement。一事不合则告。
+　　赋曰：父类既立子可承，define 之后待升腾。插入篇中升一遍，构造连接次第应。：」
+寻观「豫章」之书。
+寻观「篇象」之书。
+寻观「急就」之书。
+寻观「网页榫卯」之书。
+
+「入口」乃化「有」为「有」者也。
+「入口」者得「无」而
+　令「文档」为「析篇」于『<div id="a">座</div>』而
+　令「境」为「急就新全局境」于「元」而
+　令「绑定」为（「系网览篇」于「境」于「文档」）而
+　令「步列」为
+　　「急就在境行脚本」
+　　　于「境」
+　　　于『let 步=[];try{步.push("A");class 甲元素 extends HTMLElement{constructor(){super();步.push("B");this.dataset.x="造";}connectedCallback(){步.push("C");this.title="连";}}步.push("D");customElements.define("x-甲",甲元素);步.push("E");let 自造=document.createElement("x-甲");步.push("F");document.body.appendChild(自造);步.push("G");customElements.upgrade(document);步.push("H");步.push(自造.title);步.push(自造.dataset.x);步.push(自造 instanceof HTMLElement);}catch(误){步.push("错:"+误.message);}步.join("|");』而
+　令「步文」为（「急就文字作串」于（「急就作文字」于「步列」））而
+　若「文同」于「步文」于『A|D|E|F|G|B|C|H|连|造|true』则「书」于『自定义元素冒烟通过』否则「告祸」于（『自定义元素冒烟不成：步列＝』接「步文」）
+也。
+
+「入口」于「元」。
