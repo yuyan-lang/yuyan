@@ -456,6 +456,7 @@
 　　　　　于「层」曰「零」
 　　　　　于『html,body,address,article,aside,blockquote,center,details,div,dl,dt,dd,fieldset,figcaption,figure,footer,form,h1,h2,h3,h4,h5,h6,header,hgroup,hr,legend,main,menu,nav,ol,p,pre,section,ul { display: block }
 head,title,base,link,meta,style,script,template,noscript,[hidden] { display: none }
+[popover] { display: none } /* 待办事项：弹层还不能打开（showPopover 未实现），实现后照规范改成 [popover]:not(:popover-open):not(dialog[open]) */
 body { margin: 8px }
 input,textarea,select,button { display: inline-block; color: black; background: white; border: 1px solid gray; padding: 2px; font-size: 16px }
 input[type=image] { padding: 0; border: 0; background-color: transparent }

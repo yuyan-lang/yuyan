@@ -1994,6 +1994,177 @@
 　　　】）
 也。
 
+「：汉语：通称网页基择控件吗（base-select dropdown）。节点是 select、计算样式的 appearance 为 base-select、且不是多选、size 也不是大于一的列表框时为阳。放在盒树而不放「替代」：替代篇要用它判替代元素身份，而盒树不能反过来导入替代篇。这类选择框按用户代理的按钮样式排（盒树里铺 base-select 样式并合成选中项与箭头），不再走替代元素的固定宽高。
+　　文言：网页基择控件吗：节为 select、算样式 appearance 为 base-select、且非多选、size 亦非逾一之列表框者阳。置于盒树而不置「替代」：替代篇须以之辨替代元素之身，盒树不可反导入替代篇。此类择器依用户代理之按钮式排之（盒树中铺 base-select 之式并合成所选项与箭），不复循替代元素之定宽高。：」
+「网页基择控件吗」乃化「篇节」又化「计算样式」为「爻」者也。
+「网页基择控件吗」者得「节」又得「样」而
+　若「文同」于（「节名」于「节」）于『select』则（
+　　令「尺文」为
+　　　鉴「取属」于「节」于『size』而
+　　　　或有「可无」则『』
+　　　　或有（「可有」于「其文」）则「其文」而
+　　令「单行吗」为（（「文同」于「尺文」于『』）或（（「文同」于「尺文」于『0』）或（「文同」于「尺文」于『1』）））而
+　　（「文同」于（「样式小写」于（「样式取值」于「样」于『appearance』））于『base-select』）且（（非（「节有属」于「节」于『multiple』））且（「单行吗」））
+　）否则
+　　「阴」
+也。
+
+「：汉语：通称网页基择列表吗（base-select listbox）。节点是 select、计算样式的 appearance 为 base-select、且多选或 size 大于一时为阳。列表框按用户代理的列表框样式排（盒树里铺边框、溢出与按 size 算的高，行由 option 子元素铺），不是下拉按钮。
+　　文言：网页基择列表吗：节为 select、算样式 appearance 为 base-select、且多选或 size 逾一者阳。列表框依用户代理之列表框式排（盒树中铺边、溢与依 size 算之高，行由 option 之子铺之），非下拉按钮。：」
+「网页基择列表吗」乃化「篇节」又化「计算样式」为「爻」者也。
+「网页基择列表吗」者得「节」又得「样」而
+　若「文同」于（「节名」于「节」）于『select』则（
+　　令「尺文」为
+　　　鉴「取属」于「节」于『size』而
+　　　　或有「可无」则『』
+　　　　或有（「可有」于「其文」）则「其文」而
+　　令「逾一吗」为（（非（「文同」于「尺文」于『』））且（（非（「文同」于「尺文」于『0』））且（非（「文同」于「尺文」于『1』））））而
+　　（「文同」于（「样式小写」于（「样式取值」于「样」于『appearance』））于『base-select』）且（（「节有属」于「节」于『multiple』）或（「逾一吗」））
+　）否则
+　　「阴」
+也。
+
+「：汉语：通称基择列样（base-select listbox style）。给基本外观的列表框选择框铺用户代理样式：内联块、横竖溢出按 auto、一像素当前色边框、内距清零、宽高按内容，并写下内部标记「豫基择列」为阳，让它的 option、optgroup 子元素知道自己该铺列表框的行样式。高度不铺死：参照页的 block-size 用 calc(max(24px,1lh) * attr(size))，本引擎没有 calc-size 与 attr()，参照页退回内容高度，本引擎照内容高度排才与参照页一致。
+　　文言：网页基择列样：为基本外观之列表框择器铺用户代理之式：内联块、横竖之溢依 auto、一素今色之边、内距清零、宽高依内容，又书内标「豫基择列」为阳，使其 option、optgroup 之子自知当铺列表框之行式。高不铺死：参页之 block-size 用 calc(max(24px,1lh) * attr(size))，本引擎无 calc-size 与 attr()，参页退依内容之高，本引擎亦依内容之高乃与参页合。：」
+「网页基择列样」乃化「计算样式」又化「篇节」为「计算样式」者也。
+「网页基择列样」者得「样」又得「节」而
+　令「色文」为（「样式取值」于「样」于『color』）而
+　令「边式」为（「样式取值」于「样」于『border-top-style』）而
+　令「基列」为
+　　（「列」
+　　　【『display』与『inline-block』
+　　　，『overflow-x』与『auto』
+　　　，『overflow-y』与『auto』
+　　　，『padding-top』与『0』
+　　　，『padding-bottom』与『0』
+　　　，『padding-left』与『0』
+　　　，『padding-right』与『0』
+　　　，『white-space』与『normal』
+　　　，『豫基择列』与『阳』
+　　　】）而
+　令「边列」为
+　　若「文同」于「边式」于『solid』则
+　　　（「列」
+　　　　【『border-top-width』与『1px』
+　　　　，『border-right-width』与『1px』
+　　　　，『border-bottom-width』与『1px』
+　　　　，『border-left-width』与『1px』
+　　　　，『border-top-style』与『solid』
+　　　　，『border-right-style』与『solid』
+　　　　，『border-bottom-style』与『solid』
+　　　　，『border-left-style』与『solid』
+　　　　，『border-top-color』与「色文」
+　　　　，『border-right-color』与「色文」
+　　　　，『border-bottom-color』与「色文」
+　　　　，『border-left-color』与「色文」
+　　　　】）
+　　否则
+　　　（「罄」）而
+　「样式连写」于「样」于（「接列」于「基列」于「边列」）
+也。
+
+「：汉语：通称列子样（listbox row child style）。列表框里 option、optgroup、legend 的行样式：option 作弹性行（居中对齐、行间隙 0.5em、左右内距 0.5em、上下内距零、最小高 24 像素、不换行）；optgroup 仍作块；legend 加粗、左右内距 0.5em、最小高一行。其余子元素（hr 等）原样。
+　　文言：网页列子样：列表框之 option、optgroup、legend 之行式：option 为弹性之行（中正、行隙 0.5em、左右内距 0.5em、上下内距零、最小高二十四素、不折）；optgroup 仍为块；legend 加粗、左右内距 0.5em、最小高一行。余子（hr 之类）如故。：」
+「网页列子样」乃化「计算样式」又化「篇节」为「计算样式」者也。
+「网页列子样」者得「样」又得「节」而
+　令「名」为（「节名」于「节」）而
+　若「文同」于「名」于『option』则（
+　　令「行样」为
+　　　（「样式连写」
+　　　　于「样」
+　　　　于（「列」
+　　　　　【『display』与『flex』
+　　　　　，『align-items』与『center』
+　　　　　，『column-gap』与『0.5em』
+　　　　　，『padding-left』与『0.5em』
+　　　　　，『padding-right』与『0.5em』
+　　　　　，『padding-top』与『0』
+　　　　　，『padding-bottom』与『0』
+　　　　　，『min-height』与『24px』
+　　　　　，『white-space』与『nowrap』
+　　　　　】））而
+　　「：汉语：勾选记号照参照页的 ::before：已选项画对勾，未选项留着位置但隐藏。参照页用 content:'\2713' / ''，本引擎写同形的字与 visibility。
+　　　　文言：勾记循参页之 ::before：已选者画对勾，未选者留其位而藏之。参页用 content:'\2713' / ''，本引擎书同形之字与 visibility。：」
+　　「样式入」于「行样」于『::before』于（若「表单控件已选」于「节」则『content: "✓"』否则『content: "✓"; visibility: hidden』）
+　）否则若「文同」于「名」于『optgroup』则
+　　（「样式入」于「样」于『display』于『block』）
+　否则若「文同」于「名」于『legend』则
+　　（「样式连写」于「样」于（「列」【『font-weight』与『bold』，『padding-left』与『0.5em』，『padding-right』与『0.5em』，『min-height』与『20px』】））
+　否则
+　　「样」
+也。
+
+「：汉语：通称基择样（base-select style）。给 appearance 为 base-select 的下拉选择框铺上用户代理的按钮样式：inline-flex、border-box、上下内距 0.25em、左右内距 0.5em、一像素 currentColor 边框、圆角 0.5em、间隙 0.5em、最小 24 见方、底色透明、颜色与字体继承；再写下 ::picker-icon 的箭头（照浏览器的 picker-icon 用 counter(fake-counter-name, disclosure-open)，本引擎按未定义计数画 0；作者写的 ::picker-icon 声明接在用户代理声明之后，作者的颜色等仍能压过）。选择框的选中项与箭头由「网页基择诸子」合成；外观为 none 等别的情形不铺。
+　　文言：网页基择样：为 appearance 为 base-select 下拉择器铺用户代理之按钮式：inline-flex、border-box、上下内距 0.25em、左右 0.5em、一素 currentColor 之边、圆角 0.5em、间隙 0.5em、最小 24 见方、底色透明、色与字承之；又书 ::picker-icon 之箭（循浏览器 picker-icon 用 counter(fake-counter-name, disclosure-open)，本引擎依未定之计数画 0；作者所书 ::picker-icon 之声明接于用户代理之后，作者之色等仍能压之）。择器之所选与箭由「网页基择诸子」合成；外观为 none 之属不铺。：」
+「网页基择样」乃化「计算样式」为「计算样式」者也。
+「网页基择样」者得「样」而
+　令「色文」为（「样式取值」于「样」于『color』）而
+　令「旧标」为（「样式取值」于「样」于『::picker-icon』）而
+　令「边式」为（「样式取值」于「样」于『border-top-style』）而
+　令「底色」为（「样式取值」于「样」于『background-color』）而
+　令「基列」为
+　　（「列」
+　　　【『display』与『inline-flex』
+　　　，『box-sizing』与『border-box』
+　　　，『padding-top』与『0.25em』
+　　　，『padding-bottom』与『0.25em』
+　　　，『padding-left』与『0.5em』
+　　　，『padding-right』与『0.5em』
+　　　，『border-top-left-radius』与『0.5em』
+　　　，『border-top-right-radius』与『0.5em』
+　　　，『border-bottom-right-radius』与『0.5em』
+　　　，『border-bottom-left-radius』与『0.5em』
+　　　，『column-gap』与『0.5em』
+　　　，『row-gap』与『0.5em』
+　　　，『min-height』与『24px』
+　　　】）而
+　「：汉语：边框与底色只在作者没改过时才铺：作者写了别的边式（如 `border-style:none`）或别的底色（如 `transparent`）就原样留着，用户代理的样式压不过作者。最小宽也不铺——用户代理本来要的是「不小于内容且不小于 24 像素」，本引擎没有 calc-size，铺死 24px 会把弹性项的自动最小尺寸（内容尺寸）挡掉；最小高不受此影响。
+　　　文言：边与底色惟作者未改者乃铺：作者书他边式（如 `border-style:none`）或他底色（如 `transparent`）则如其旧，用户代理之式不压作者。最小宽亦不铺——用户代理本欲「不损于内容且不损于二十四素」，本引擎无 calc-size，铺死 24px 则挡弹性项之自动下限（内容之尺）；最小高不与此。：」
+　令「边列」为
+　　若「文同」于「边式」于『solid』则
+　　　（「列」
+　　　　【『border-top-width』与『1px』
+　　　　，『border-right-width』与『1px』
+　　　　，『border-bottom-width』与『1px』
+　　　　，『border-left-width』与『1px』
+　　　　，『border-top-style』与『solid』
+　　　　，『border-right-style』与『solid』
+　　　　，『border-bottom-style』与『solid』
+　　　　，『border-left-style』与『solid』
+　　　　，『border-top-color』与「色文」
+　　　　，『border-right-color』与「色文」
+　　　　，『border-bottom-color』与「色文」
+　　　　，『border-left-color』与「色文」
+　　　　】）
+　　否则
+　　　（「罄」）而
+　令「底列」为
+　　若（「文同」于「底色」于『white』）或（「文同」于「底色」于『rgb(255, 255, 255)』）则（「列」【『background-color』与『transparent』】）否则（「罄」）而
+　「样式入」
+　　于（「样式连写」于「样」于（「接列」于（「接列」于「基列」于「边列」）于「底列」））
+　　于『::picker-icon』
+　　于（「缀文」于（「列」
+　　　【『content: counter(fake-counter-name, disclosure-open); margin-left: auto』
+　　　，若「文同」于「旧标」于『』则『』否则（『;』接「旧标」）
+　　　】））
+也。
+
+「：汉语：通称基择诸子（base-select children）。给 appearance 为 base-select 的下拉选择框造两个子盒：选中项的文字（selectedcontent，取控件显示文字，包进一个匿名块盒、节点取那段文字而不用选择框自己的节点，否则匿名盒会因节点是表单控件被当成替代元素量成二百乘八十）与 ::picker-icon 的箭头（照伪元素盒与计数器求值，与参照页的 ::after 同一路）。选中项文字为空时只留箭头。
+　　文言：网页基择诸子：为 appearance 为 base-select 之下拉择器造二子盒：所选之文（selectedcontent，取控件所显之文，裹以匿名块盒，其节取彼文而不用择器自身之节，否则匿名盒因节为表单控件而目为替代元素、量成二百乘八十）与 ::picker-icon 之箭（循伪件盒与计数之求，与参页之 ::after 同路）。所选之文空则唯留箭。：」
+「网页基择诸子」乃化「篇节」又化「计算样式」又化「数」又化（「匣」于「网页计数表」）又化（「匣」于「数」）为（「列」于「网页盒」）者也。
+「网页基择诸子」者得「节」又得「样」又得「层」又得「计数引用」又得「引号匣」而
+　令「选中文」为（「表单控件映文字」于「节」）而
+　令「文盒们」为
+　　若「文同」于「选中文」于『』则
+　　　「罄」以「网页盒」
+　　否则（
+　　　令「文节」为（「新文字」于「选中文」）而
+　　　令「文盒」为（「新网页盒」于「文节」于「样」于『文字』于「罄」）而
+　　　「列」【「新匿名网页块盒」于「文节」于「样」于（「列」【「文盒」】）】
+　　）而
+　「接列」于「文盒们」于（「生网页伪件盒」于「节」于「样」于『picker-icon』于（「层」加「一」）于「计数引用」于「引号匣」）
+也。
+
 「生节盒」乃化「网页样式读取器」又化「篇节」又化「计算样式」又化「数」又化（「匣」于「网页计数表」）又化（「匣」于「数」）为（「列」于「网页盒」）者也。
 「生节盒」者得「读取」又得「节」又得「父样」又得「层」又得「计数引用」又得「引号匣」而
 　令「种」为「节种类」于「节」而
@@ -2040,12 +2211,20 @@
 　　　　若「文同」于「祖传」于『』则「饰述」否则「缀文」于（「列」【「祖传」，『;』，「饰述」】）
 　　　）而
 　　令「样」为「样式入」于「样」于『豫传饰』于「本传」而
+　　令「列子吗」为（「文同」于（「样式取值」于「父样」于『豫基择列』）于『阳』）而
+　　令「样」为若「列子吗」则（「网页列子样」于「样」于「节」）否则「样」而
+　　令「基择吗」为（「网页基择控件吗」于「节」于「样」）而
+　　令「基择列吗」为（「网页基择列表吗」于「节」于「样」）而
+　　令「样」为若「基择吗」则（「网页基择样」于「样」）否则若「基择列吗」则（「网页基择列样」于「样」于「节」）否则「样」而
 　　令「显示文」为若「种」等于「一」则「网页块化映」于「样」于（「样式取值」于「样」于『display』）否则『block』而
 　　若「文同」于「显示文」于『none』则
 　　　「罄」
 　　否则
 　　　令「诸子」为
-　　　　若「或」于（「为表单控件」于「节」）于（「文同」于（「样式小写」于（「样式取值」于「样」于『content-visibility』））于『hidden』）则
+　　　　若「基择吗」则
+　　　　　「网页基择诸子」于「节」于「样」于「层」于「计数引用」于「引号匣」
+　　　　否则若（（（「为表单控件」于「节」）且（非「基择列吗」））或（「文同」于（「样式小写」于（「样式取值」于「样」于『content-visibility』））于『hidden』）
+　　　　）则
 　　　　　「罄」
 　　　　否则（
 　　　　　令「元素吗」为「种」等于「一」而
