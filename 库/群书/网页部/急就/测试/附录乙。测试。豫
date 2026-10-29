@@ -1,5 +1,5 @@
 「：汉语：通称附录乙块内函数冒烟测试：试 B.3.3 的块内函数提升——松散代码里块里的函数声明外层可见、块执行前外层是未定义、嵌套块逐层可升、与参数或 let 同名时不升、严格模式仍只按块级；for、for-in 头的词法名、switch 各情形的词法名、catch 的解构参数也算禁名，catch 的简单标识符参数不算；switch 各情形与 if 子句里直接写的函数声明也落值到外层（B.3.4）。
-　　文言：附录乙块内函数之试：试 B.3.3 之块内函数升——松散之码，块中之函数声明外层可见，块未行时外层为未定义，嵌套之块逐层可升，与参或 let 同名则不升，严之码仍惟块级；for、for-in 头之词法名、switch 诸情形之词法名、catch 之解构参亦为禁名，catch 之单名不算；switch 诸情形及 if 子句直书之函数声明亦落值于外（B.3.4）。：」
+　　文言：附录乙块内函数之试：试 B.3.3 之块内函数升——松散之码，块中之函数声明外层可见，块未行时外层为未定义，嵌套之块逐层可升，与参或 let 同名则不升，严之码仍惟块级（嵌套之块承函数体之严）；for、for-in 头之词法名、switch 诸情形之词法名、外层块之直接函数名、catch 之解构参、非箭头函数之 arguments 亦为禁名，catch 之单名不算；switch 诸情形及 if 子句直书之函数声明亦落值于外（B.3.4）；eval 中与 catch 单名同者不算冲突（B.3.5）。：」
 寻观「豫章」之书。
 寻观「急就」之书。
 寻观「急就」之「虚拟机」之书。
@@ -59,6 +59,21 @@
 　「试段」
 　　于『var r3=(function(){ eval("switch (1) { case 1: function f(){ return 32; } }"); return typeof f; }()); r3==="function";』
 　　于『eval 的 switch 情形函数在调用者可见』而后
+　「试段」
+　　于『(function(){ var 内=0; { function f(){ return 40; } { 内 = f(); function f(){ return 41; } } } return 内===41; }())』
+　　于『嵌套块里同名函数按块级遮蔽外层块函数』而后
+　「试段」
+　　于『(function(){ var r; { function f(){ return 42; } { function f(){ return 43; } } r = f(); } return r===42; }())』
+　　于『内层块与外层块函数同名时不覆盖外层的值』而后
+　「试段」
+　　于『(function(){ "use strict"; var 有=false; { function f(){ return 44; } } try{ f; }catch(e){ 有=true; } return 有; }())』
+　　于『严格函数体里的嵌套块也不建外层绑定』而后
+　「试段」
+　　于『(function(){ try{ throw null; }catch(err){ eval("var err;"); eval("function err(){}"); eval("for (var err in []) {}"); } return true; }())』
+　　于『eval 里与 catch 简单参数同名不算冲突』而后
+　「试段」
+　　于『(function(){ { function arguments(){ return 45; } } return typeof arguments==="object" && typeof arguments.length==="number"; }())』
+　　于『arguments 之名的块内函数不覆盖实参对象』而后
 　「书」于『附录乙冒烟通过』
 也。
 
