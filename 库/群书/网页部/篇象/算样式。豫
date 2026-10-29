@@ -458,6 +458,7 @@
 head,title,base,link,meta,style,script,template,noscript,[hidden] { display: none }
 body { margin: 8px }
 input,textarea,select,button { display: inline-block; color: black; background: white; border: 1px solid gray; padding: 2px; font-size: 16px }
+input[type=image] { padding: 0; border: 0; background-color: transparent }
 select[multiple] { white-space: pre-wrap }
 textarea { white-space: pre-wrap }
 input[type=checkbox],input[type=radio] { padding: 0; border: 1px solid #6b7280; border-radius: 3px; background: white }
