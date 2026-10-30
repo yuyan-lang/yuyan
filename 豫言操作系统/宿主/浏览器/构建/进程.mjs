@@ -1,11 +1,11 @@
-// 文言：构建之进程表，居主线程：一程一工作线程，客之所问（文件、子进程、摘要）于此答之；子进程之出与退码存于此，候父收之。
-// 汉语：构建宿主的进程表，放在主线程。每个豫言程序（Wasm）是一个“进程”，占一个 Web Worker（见 工作线程.mjs）；客体的提问（文件、子进程、摘要）在这里答复。
+// 文言：构建之进程表，居主线程：悬栈之制以诸役分配工池，旧制一程一工；客之所问于此答之，子之出与退码候父收之。
+// 汉语：构建宿主的进程表，放在主线程。JSPI 模式按活任务数派给处理器 Worker 池，旧模式每任务占一个 Worker；宿主答复按任务信箱分开。
 //   子进程的输出与退出码存在这里，等父进程收取；语义照 Node 工具宿主的进程桥接（../../节点/进程桥接.cjs）：启动返回句柄（负数为错误码），
 //   收取返回五项（首项 0 表示未结束），多路等待只认子进程句柄（掩码 1 = 已结束）。env 与 timeout 包装在这里拆开；
 //   不是 Wasm 的程序只认几个内建命令（mkdir、rm、cp、mv、true、false），其余报不存在（-2），标准库随之得退出码 127。
 //   父进程结束时收拾它没人收取的子任务记录：已结束的删去，运行中的改挂给初始任务（提案 00043 第六条）；「亲行」让子进程继承父进程的标准输入。
 import {规范路径, 文, 错码} from './文件系统.mjs';
-import {编码值} from './编码.mjs';
+import {编码值, 取编模} from './编码.mjs';
 
 const 编码器 = new TextEncoder(), 解码器 = new TextDecoder();
 const 块长 = 1 << 20;
@@ -54,6 +54,8 @@ export class 进程表 {
     this.工作线程网址 = 工作线程网址;
     this.系统环境 = 系统环境;
     this.处理器数 = 处理器数 ?? (typeof navigator !== 'undefined' ? navigator.hardwareConcurrency : 4) ?? 4;
+    this.异步 = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function';
+    this.池数 = Math.max(2, this.处理器数);
     this.记录们 = new Map();
     this.线程们 = [];
     this.下号 = 1024;
@@ -64,26 +66,34 @@ export class 进程表 {
     this.结务 = null;
   }
 
-  // 文言：取其模，同径同时同长者复用之。汉语：编译程序的 Wasm 模块；同一路径、修改时间与长度相同就复用（模块可传给多个工作线程共享已编代码）。
+  // 文言：悬栈之制逐字核模，旧制循径、时、长而藏。汉语：JSPI 模式按完整字节缓存 Wasm 模块，旧模式沿用路径、时间、长度键；模块可传给多个工作线程共享已编代码。
   取模块(径) {
-    const 内容 = this.文件系统.读(径), 时间 = this.文件系统.时间(径), 键 = 径 + '\t' + 时间 + '\t' + 内容.length;
-    if (!this.模块缓存.has(键)) this.模块缓存.set(键, WebAssembly.compile(内容));
-    return this.模块缓存.get(键);
+    const 内容 = this.文件系统.读(径);
+    if (!this.异步) {
+      const 键 = 径 + '\t' + this.文件系统.时间(径) + '\t' + 内容.length;
+      if (!this.模块缓存.has(键)) this.模块缓存.set(键, WebAssembly.compile(内容));
+      return this.模块缓存.get(键);
+    }
+    return 取编模(this.模块缓存, 内容, () => WebAssembly.compile(内容));
   }
 
   取线程() {
-    let 线 = this.线程们.find(项 => !项.忙);
-    if (!线) {
-      const 工 = new Worker(this.工作线程网址, {type: 'module'});
-      const 控制 = new SharedArrayBuffer(16), 数据 = new SharedArrayBuffer(块长);
-      线 = {工, 控制: new Int32Array(控制), 数据: new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null, 次数: 0, 闲时: null};
-      工.postMessage({种: '初始', 控制, 数据, 桥模块: this.桥模块});
-      工.onmessage = ({data}) => this.收消息(线, data);
-      工.onerror = 事件 => this.线程出错(线, 事件);
-      this.线程们.push(线);
-    }
+    if (this.异步) while (this.线程们.length < this.池数) this.造线程();
+    let 线 = this.异步 ? this.线程们.reduce((甲, 乙) => 甲.任务们.size <= 乙.任务们.size ? 甲 : 乙) : this.线程们.find(项 => !项.忙);
+    线 ??= this.造线程();
     clearTimeout(线.闲时);
     线.忙 = true;
+    return 线;
+  }
+
+  造线程() {
+    const 工 = new Worker(this.工作线程网址, {type: 'module'});
+    const 控制 = this.异步 ? null : new SharedArrayBuffer(16), 数据 = this.异步 ? null : new SharedArrayBuffer(块长);
+    const 线 = {工, 控制: 控制 && new Int32Array(控制), 数据: 数据 && new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null, 次数: 0, 闲时: null, 任务们: new Set(), 可运行: new Int32Array(new SharedArrayBuffer(4))};
+    工.postMessage({种: '初始', 控制, 数据, 桥模块: this.桥模块, 可运行: 线.可运行.buffer});
+    工.onmessage = ({data}) => this.收消息(线, data);
+    工.onerror = 事件 => this.线程出错(线, 事件);
+    this.线程们.push(线);
     return 线;
   }
 
@@ -132,16 +142,25 @@ export class 进程表 {
     }
     const 记录 = this.新记录(父号, 候选, 实参数, 目录, 合环境, 观察者);
     if (承入) 记录.入 = 承入;
+    const 程序字节 = this.异步 ? this.文件系统.读(候选).slice() : null;
     let 模块;
     try { 模块 = await this.取模块(候选); }
     catch (错) { this.收输出(记录, 2, 编码器.encode('构建宿主：程序不能编译：' + 候选 + '：' + 错.message + '\n')); this.结束(记录, 126); return 记录.号; }
     if (this.已停) { this.结束(记录, 143); return 记录.号; }
+    if (记录.完成) return 记录.号;
     const 线 = this.取线程();
     线.号 = 记录.号; 记录.线 = 线;
+    线.任务们.add(记录.号);
+    if (this.异步) {
+      Atomics.add(线.可运行, 0, 1);
+      记录.信箱 = {控制: new Int32Array(new SharedArrayBuffer(20)), 数据: new Uint8Array(new SharedArrayBuffer(块长)), 待续: null, 待候: null};
+      记录.打断 = new Int32Array(new SharedArrayBuffer(4));
+    }
     // 文言：新务之前清断标，免前务所积之标误断此务。汉语：开始新任务前清掉打断标志，免得上一个任务积下的标志误断这个任务。
     if (线.打断) Atomics.store(线.打断, 0, 0);
     if (限时 > 0) 记录.定时 = setTimeout(() => this.终止(记录, 124), 限时 * 1000);
-    线.工.postMessage({种: '运行', 号: 记录.号, 模块, 程序名: 候选, 参数: 实参数, 目录, 环境: 合环境, 处理器数: this.处理器数});
+    线.工.postMessage({种: '运行', 号: 记录.号, 模块, 程序名: 候选, 参数: 实参数, 目录, 环境: 合环境, 处理器数: this.处理器数,
+      ...(this.异步 ? {控制: 记录.信箱.控制.buffer, 数据: 记录.信箱.数据.buffer, 打断: 记录.打断.buffer, 字节: 程序字节} : {})});
     return 记录.号;
   }
 
@@ -163,11 +182,20 @@ export class 进程表 {
     if (记录.线) {
       const 线 = 记录.线;
       记录.线 = null;
-      线.忙 = false; 线.号 = 0; 线.次数++;
-      // 文言：如诺驿之工，四事而换，闲四分之一秒亦释之，毋积旧堆。汉语：与诺驿编译线程一样，每四次任务回收线程；空闲250毫秒也释放，避免跨任务保留Wasm堆高水位。
-      if (线.次数 >= 4) this.回收线程(线);
-      else 线.闲时 = setTimeout(() => { if (!线.忙) this.回收线程(线); }, 250);
+      线.任务们.delete(记录.号);
+      if (!this.异步) {
+        线.忙 = false; 线.号 = 0; 线.次数++;
+        // 文言：如诺驿之工，四事而换，闲四分之一秒亦释之，毋积旧堆。汉语：与诺驿编译线程一样，每四次任务回收线程；空闲250毫秒也释放，避免跨任务保留Wasm堆高水位。
+        if (线.次数 >= 4) this.回收线程(线);
+        else 线.闲时 = setTimeout(() => { if (!线.忙) this.回收线程(线); }, 250);
+      } else {
+        线.忙 = 线.任务们.size > 0;
+        线.次数++;
+      }
     }
+    记录.取消问?.();
+    记录.取消问 = null;
+    if (记录.信箱?.待候) { clearTimeout(记录.信箱.待候.定时); 记录.信箱.待候 = null; }
     for (const 回调 of 记录.回调们.splice(0)) 回调(记录);
     // 文言：父退则阖其交互之子之入，如管之写端随父而闭，子读尽乃自退（提案〇〇〇四三）；子之已毕而无人收者即除其录，未毕者改录于初始之务（或无所依则零），
     //   其毕也不复留于籍。汉语：父进程结束时关闭它的交互子程序的标准输入，如同管道写端随父进程关闭，子程序读到结束就自己退出（提案 00043）；
@@ -193,16 +221,26 @@ export class 进程表 {
 
   终止(记录, 码) {
     const 线 = 记录.线;
+    if (this.异步 && 线 && !记录.完成) {
+      // 汉语：共享结束字让正在执行的检查点立即可见；在等答复的任务由错误答复唤醒，迟到的答复按请求凭据丢弃。
+      // 文言：共字置终，察点即见；候者告祸，后答弃之。
+      // 待办事项：纯计算死循环的终止随乙路让行检查点启用而生效。
+      记录.终止中 = true;
+      Atomics.store(记录.信箱.控制, 4, 1);
+      记录.取消问?.();
+      this.答(记录.信箱, '任务结束', true, 27);
+      return;
+    }
     if (线) { this.回收线程(线); 记录.线 = null; }
     this.结束(记录, 码);
   }
 
   线程出错(线, 事件) {
     事件.preventDefault?.();
-    const 记录 = this.记录们.get(线.号);
+    const 受影响 = this.异步 ? [...线.任务们].map(号 => this.记录们.get(号)) : [this.记录们.get(线.号)];
     this.回收线程(线);
     // 文言：录浏览器所授之错、栈与处；未授则明言之，毋以事件字样充其因。汉语：记录浏览器提供的错误、栈和位置；没有详情时明确说明，避免把事件对象当作根因。
-    if (记录) {
+    for (const 记录 of 受影响) if (记录) {
       const 错误 = 事件.error;
       const 详情 = 错误?.stack || 事件.message || 错误?.message || '浏览器未提供错误详情';
       const 位置 = 事件.filename ? `\n位置：${事件.filename}:${事件.lineno ?? 0}:${事件.colno ?? 0}` : '';
@@ -215,16 +253,26 @@ export class 进程表 {
 
   收消息(线, 消息) {
     const 记录 = this.记录们.get(消息.号);
+    if (消息.号 !== undefined && (!记录 || 记录.线 !== 线 || 记录.完成)) return;
+    const 信箱 = this.异步 ? 记录?.信箱 : 线;
     if (消息.种 === '出') { if (记录) this.收输出(记录, 消息.流, 消息.值); return; }
     if (消息.种 === '毕') { if (记录) this.结束(记录, 消息.码); else { 线.忙 = false; 线.号 = 0; } return; }
     if (消息.种 === '打断内存') { 线.打断 = new Int32Array(消息.缓冲); return; }
-    if (消息.种 === '续') return this.写续(线);
+    if (消息.种 === '续') { if (记录?.终止中) return this.答(信箱, '任务结束', true, 27); return this.写续(信箱); }
     if (消息.种 !== '调') return;
+    if (记录?.终止中) return this.答(信箱, '任务结束', true, 27);
+    const 凭据 = {};
+    if (记录) 记录.问凭据 = 凭据;
+    const 答 = (值, 是错 = false, 码 = 0) => {
+      if (记录 && (记录.完成 || 记录.终止中 || 记录.问凭据 !== 凭据)) return;
+      if (记录) 记录.取消问 = null;
+      this.答(信箱, 值, 是错, 码);
+    };
     let 值;
-    try { 值 = this.处理(线, 记录, 消息.名, 消息.参, 消息.环); }
-    catch (错) { return this.答(线, 错?.message ?? String(错), true, 错?.码 ?? 0); }
-    if (值 instanceof Promise) 值.then(果 => this.答(线, 果), 错 => this.答(线, 错?.message ?? String(错), true, 错?.码 ?? 0));
-    else this.答(线, 值);
+    try { 值 = this.处理(信箱, 记录, 消息.名, 消息.参, 消息.环); }
+    catch (错) { return 答(错?.message ?? String(错), true, 错?.码 ?? 0); }
+    if (值 instanceof Promise) 值.then(果 => 答(果), 错 => 答(错?.message ?? String(错), true, 错?.码 ?? 0));
+    else 答(值);
   }
 
   // 文言：答客：错时并寄其码于控制字之四（零为无），客之问据之择底码（十月二十六日，议七百二十三）。
@@ -260,7 +308,7 @@ export class 进程表 {
   }
 
   唤候() {
-    for (const 线 of this.线程们) {
+    for (const 线 of (this.异步 ? [...this.记录们.values()].map(记 => 记.信箱).filter(Boolean) : this.线程们)) {
       const 候 = 线.待候;
       if (!候) continue;
       const 果 = this.事件(候.关注);
@@ -397,6 +445,7 @@ export class 进程表 {
         if (果.some(Boolean) || 超时 === 0) return [0, 果];
         return new Promise(成 => {
           线.待候 = {关注, 成, 定时: 超时 < 0 ? null : setTimeout(() => { 线.待候 = null; 成([0, this.事件(关注)]); }, 超时)};
+          if (this.异步) 记录.取消问 = () => { if (线.待候) { clearTimeout(线.待候.定时); 线.待候 = null; 成([0, this.事件(关注)]); } };
         });
       }
       case '同步运行': return this.同步运行(记录?.号 ?? 0, 参[0], 参[1], 参[2], 参[3]);
@@ -425,7 +474,8 @@ export class 进程表 {
     if (号 > 0) { this.终止(根, 130); return 0; }
     if (子孙们.length) return 0;
     const 线 = 根.线;
-    if (线?.打断) { Atomics.store(线.打断, 0, 1); return 2; }
+    const 打断 = this.异步 ? 根.打断 : 线?.打断;
+    if (打断) { Atomics.store(打断, 0, 1); return 2; }
     return 1;
   }
 
@@ -471,12 +521,18 @@ export class 进程表 {
   读行(记录) {
     const 入 = 记录?.入;
     if (!入) return [false, ''];
-    return this.取行(入) ?? new Promise(成 => { 入.候 = {种: '行', 成}; });
+    return this.取行(入) ?? this.候输入(记录, 入, '行');
   }
   读键(记录, 等) {
     const 入 = 记录?.入;
     if (!入) return [false, ''];
-    return this.取键(入) ?? (等 ? new Promise(成 => { 入.候 = {种: '键', 成}; }) : [false, '']);
+    return this.取键(入) ?? (等 ? this.候输入(记录, 入, '键') : [false, '']);
+  }
+  候输入(记录, 入, 种) {
+    return new Promise(成 => {
+      const 候 = {种, 成}; 入.候 = 候;
+      if (this.异步) 记录.取消问 = () => { if (入.候 === 候) { 入.候 = null; 成([false, '']); } };
+    });
   }
   送入(号, 内容) {
     const 入 = this.记录们.get(号)?.入;

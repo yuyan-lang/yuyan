@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="zh"><meta charset="utf-8"><title>处理器池多任务测试</title>
+<style>body{font:16px system-ui;max-width:960px;margin:40px auto;padding:0 20px}pre{white-space:pre-wrap}button{font:inherit;padding:8px 20px}</style>
+<h1>处理器池多任务测试</h1><p>从同目录读取值桥、回声、运算、受参四个 .wasm，使用两个处理器 Worker。</p>
+<button id="开始">开始测试</button><pre id="结果">等待开始</pre>
+<script type="module">
+// 汉语：独立验收页：十二个任务核输出与分派，再取消待读任务并核同线程的另一任务。
+// 文言：十二役并发，验其声而核其次；一役召还，存其邻而察其终。
+import {进程表} from './进程.mjs';
+import {构建文件系统} from './文件系统.mjs';
+const 结果 = document.querySelector('#结果'), 按钮 = document.querySelector('#开始'), 解码器 = new TextDecoder();
+const 印 = 句 => { 结果.textContent += 句 + '\n'; };
+const 核 = (条件, 句) => { 印((条件 ? '通过：' : '失败：') + 句); if (!条件) throw Error(句); };
+async function 验收() {
+  按钮.disabled = true; 结果.textContent = ''; document.documentElement.dataset.测试 = '运行';
+  let 表, 限时;
+  try {
+    核(crossOriginIsolated, '页面跨源隔离');
+    核(typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function', 'JSPI 两项能力齐备');
+    const 系统 = new 构建文件系统();
+    const 取 = async 名 => { const 应 = await fetch(new URL(名 + '.wasm', import.meta.url)); if (!应.ok) throw Error('读取失败：' + 名 + '，状态 ' + 应.status); return new Uint8Array(await 应.arrayBuffer()); };
+    const 桥模块 = await WebAssembly.compile(await 取('值桥'));
+    for (const 名 of ['回声', '运算', '受参']) 系统.写('/' + 名 + '.wasm', await 取(名));
+    表 = new 进程表({文件系统: 系统, 桥模块, 工作线程网址: new URL('./工作线程.mjs', import.meta.url), 处理器数: 2});
+    await Promise.all(['回声', '运算', '受参'].map(名 => 表.取模块('/' + 名 + '.wasm')));
+    const 测 = async () => {
+      const 项们 = Array.from({length: 12}, (_, 序) => ({序, 名: ['回声', '运算', '受参'][序 % 3]}));
+      await Promise.all(项们.map(async 项 => {
+        项.号 = await 表.启动('/' + 项.名 + '.wasm', ['任务' + 项.序, '独有' + 项.序], '/');
+        if (项.名 === '回声') 表.开入(项.号);
+      }));
+      核(表.线程们.length === 2 && 表.线程们.every(线 => 线.任务们.size === 6), '十二个任务同时派入两个 Worker，每个六个');
+      核(表.处理(null, null, '列役', []).length === 12, '列役列出全部十二个任务');
+      for (const 项 of 项们) if (项.名 === '回声') {
+        项.输入 = 项.序 === 9 ? '长行' + '汉'.repeat(400000) : '回声' + 项.序;
+        表.送入(项.号, 项.输入 + '\n');
+      }
+      const 毕们 = await Promise.all(项们.map(项 => 表.候完成(项.号)));
+      for (const [序, 毕] of 毕们.entries()) {
+        const 项 = 项们[序], 出 = 毕.输出.map(块 => 解码器.decode(块)).join(''), 错 = 毕.错误.map(块 => 解码器.decode(块)).join('');
+        const 期 = 项.名 === '回声' ? 项.输入 + '\n' : 项.名 === '运算' ? '运算完成\n' : '任务' + 项.序 + '|独有' + 项.序 + '\n';
+        const 摘要 = 出.length > 120 ? JSON.stringify(出.slice(0, 20)) + '…，共 ' + 出.length + ' 字符（答复分块续取）' : JSON.stringify(出);
+        核(毕.码 === 0 && 出 === 期 && 错 === '', 项.名 + '任务' + 项.序 + '：退出 ' + 毕.码 + '，输出 ' + 摘要 + (错 ? '，错误 ' + 错 : ''));
+      }
+      const 待读们 = new Map(), 候读 = 号 => new Promise(成 => 待读们.set(号, 成)), 原处理 = 表.处理.bind(表);
+      表.处理 = (...参) => { const 果 = 原处理(...参); if (参[2] === '读行' && 果 instanceof Promise) 待读们.get(参[1].号)?.(); return 果; };
+      const 甲 = await 表.启动('/回声.wasm', [], '/'); 表.开入(甲); const 甲候 = 候读(甲);
+      const 乙 = await 表.启动('/回声.wasm', [], '/'); 表.开入(乙); const 乙候 = 候读(乙);
+      const 丙 = await 表.启动('/回声.wasm', [], '/'); 表.开入(丙); const 丙候 = 候读(丙);
+      await Promise.all([甲候, 乙候, 丙候]);
+      const 甲录 = 表.记录们.get(甲), 丙录 = 表.记录们.get(丙), 同线 = 甲录.线;
+      核(甲录.线 === 丙录.线, '被结束任务与存活任务共享一个 Worker');
+      表.辍役(-乙);
+      核(Atomics.load(表.记录们.get(乙).打断, 0) === 1 && Atomics.load(甲录.打断, 0) === 0 && Atomics.load(丙录.打断, 0) === 0, '会话打断标志按任务独立');
+      Atomics.store(表.记录们.get(乙).打断, 0, 0);
+      核(表.处理(null, null, '召回', [甲]) === 0, '召回请求成功');
+      const 甲毕 = await 表.候完成(甲);
+      核(甲毕.码 === 130 && 表.线程们.includes(同线), '结束待读任务得到 130，Worker 保留');
+      表.送入(乙, '乙仍在\n'); 表.送入(丙, '丙仍在\n');
+      for (const [号, 期] of [[乙, '乙仍在\n'], [丙, '丙仍在\n']]) {
+        const 毕 = await 表.候完成(号);
+        核(毕.码 === 0 && 毕.输出.map(块 => 解码器.decode(块)).join('') === 期, '任务' + 号 + '继续正常回显并退出');
+      }
+    };
+    await Promise.race([测(), new Promise((成, 败) => { 限时 = setTimeout(() => 败(Error('验收超过两分钟')), 120000); })]);
+    印('通过：全部验收完成'); document.documentElement.dataset.测试 = '通过';
+  } catch (错) { 印('失败：' + (错.stack ?? 错)); document.documentElement.dataset.测试 = '失败'; }
+  finally { clearTimeout(限时); 表?.停止(); 按钮.disabled = false; }
+}
+按钮.onclick = 验收;
+if (new URL(location.href).searchParams.has('自动')) 验收();
+</script></html>
