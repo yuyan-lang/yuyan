@@ -516,8 +516,8 @@
 　（（（「树」中「种类」）于「号」）等于「一」）且（「择器组件合」于「树」于（「取择器件」于「选择文」）于「节点」曰「号」于「范围」曰「号」）
 也。
 
-「：汉语：判断名字是不是伪元素名：双冒号写法认 before、after、marker、first-line、first-letter、selection、placeholder、backdrop、file-selector-button、picker-icon、checkmark；旧式单冒号只认 before、after、first-line、first-letter。
-　　文言：断其名是否伪元素之名：双冒号之写，认 before、after、marker、first-line、first-letter、selection、placeholder、backdrop、file-selector-button、picker-icon、checkmark 诸名；旧式单冒号唯认 before、after、first-line、first-letter。：」
+「：汉语：判断名字是不是伪元素名：双冒号写法认 before、after、marker、first-line、first-letter、selection、placeholder、backdrop、file-selector-button、picker-icon、picker、checkmark；旧式单冒号只认 before、after、first-line、first-letter。
+　　文言：断其名是否伪元素之名：双冒号之写，认 before、after、marker、first-line、first-letter、selection、placeholder、backdrop、file-selector-button、picker-icon、picker、checkmark 诸名；旧式单冒号唯认 before、after、first-line、first-letter。：」
 「择器为伪件名」乃化「文」又化「爻」为「爻」者也。
 「择器为伪件名」者得「名」又得「双冒号」而
 　若「双冒号」则
@@ -534,6 +534,7 @@
 　　　　，『backdrop』
 　　　　，『file-selector-button』
 　　　　，『picker-icon』
+　　　　，『picker』
 　　　　，『checkmark』
 　　　　】）
 　否则
@@ -583,7 +584,7 @@
 　　）
 也。
 
-「：汉语：通称伪元素名判断。双冒号写法认 before、after、marker、first-line、first-letter、selection、placeholder、backdrop、file-selector-button、picker-icon、checkmark；旧式单冒号只认 before、after、first-line、first-letter。名字须完全相等，返回爻。
+「：汉语：通称伪元素名判断。双冒号写法认 before、after、marker、first-line、first-letter、selection、placeholder、backdrop、file-selector-button、picker-icon、picker、checkmark；旧式单冒号只认 before、after、first-line、first-letter。名字须完全相等，返回爻。
 　　文言：伪件者，非真件也，附于末而生。双冒号之写，所认可广；单冒号之旧，所认唯四。名必全同，乃许为伪。
 　　赋曰：双冒号开列众名，单冒旧制四家清。名文全合方称是，差一毫厘便不成。：」
 「择器伪件名」乃化（「列」于「样式组件」）为（（「或可有」于「文」）合（「列」于「样式组件」））者也。
