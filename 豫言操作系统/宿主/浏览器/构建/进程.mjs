@@ -89,8 +89,8 @@ export class 进程表 {
   造线程() {
     const 工 = new Worker(this.工作线程网址, {type: 'module'});
     const 控制 = this.异步 ? null : new SharedArrayBuffer(16), 数据 = this.异步 ? null : new SharedArrayBuffer(块长);
-    const 线 = {工, 控制: 控制 && new Int32Array(控制), 数据: 数据 && new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null, 次数: 0, 闲时: null, 任务们: new Set(), 可运行: new Int32Array(new SharedArrayBuffer(4))};
-    工.postMessage({种: '初始', 控制, 数据, 桥模块: this.桥模块, 可运行: 线.可运行.buffer});
+    const 线 = {工, 控制: 控制 && new Int32Array(控制), 数据: 数据 && new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null, 次数: 0, 闲时: null, 任务们: new Set()};
+    工.postMessage({种: '初始', 控制, 数据, 桥模块: this.桥模块});
     工.onmessage = ({data}) => this.收消息(线, data);
     工.onerror = 事件 => this.线程出错(线, 事件);
     this.线程们.push(线);
@@ -152,7 +152,6 @@ export class 进程表 {
     线.号 = 记录.号; 记录.线 = 线;
     线.任务们.add(记录.号);
     if (this.异步) {
-      Atomics.add(线.可运行, 0, 1);
       记录.信箱 = {控制: new Int32Array(new SharedArrayBuffer(20)), 数据: new Uint8Array(new SharedArrayBuffer(块长)), 待续: null, 待候: null};
       记录.打断 = new Int32Array(new SharedArrayBuffer(4));
     }
