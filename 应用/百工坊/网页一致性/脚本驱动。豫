@@ -96,8 +96,7 @@
 　　，『  var typeOne = function (el, k) {』
 　　，『    var target = el || doc.activeElement || root();』
 　　，『    key(target, "keydown", k);』
-　　，『    var ins = window.__豫言控件编插入;』
-　　，『    if (typeof ins === "function" && k.length === 1) { ins(target, k); }』
+　　，『    if (k.length === 1) { doc.execCommand("insertText", false, k); }』
 　　，『    key(target, "keypress", k);』
 　　，『    key(target, "keyup", k);』
 　　，『  };』
