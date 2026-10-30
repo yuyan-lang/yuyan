@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh"><meta charset="utf-8"><title>浏览器 TCP 中继测试</title>
+<style>body{font:16px system-ui;max-width:960px;margin:40px auto;padding:0 20px}pre{white-space:pre-wrap}button{font:inherit;padding:8px 20px}</style>
+<h1>浏览器 TCP 中继测试</h1><p>网址参数指定中继与中继令牌，从同目录读取值桥与取页两个 .wasm。</p>
+<button id="开始">开始测试</button><pre id="结果">等待开始</pre>
+<script type="module">
+// 汉语：以真实取页样例核验公网请求、端口禁区与错误令牌；进程表统一关闭连接与任务。
+// 文言：实取远页，分验禁津、伪凭；毕则撤舟息役。
+// 赋曰：公网页首验通津，禁口伪凭辨败因。三役依次收退码，一页分行记果真。
+import {进程表} from './进程.mjs';
+import {构建文件系统} from './文件系统.mjs';
+const 结果 = document.querySelector('#结果'), 按钮 = document.querySelector('#开始'), 解码器 = new TextDecoder();
+const 印 = 句 => { 结果.textContent += 句 + '\n'; };
+const 核 = (条件, 句) => { 印((条件 ? '通过：' : '失败：') + 句); if (!条件) throw Error(句); };
+async function 验收() {
+  按钮.disabled = true; 结果.textContent = ''; document.documentElement.dataset.测试 = '运行';
+  const 表们 = []; let 限时, 已终 = false;
+  try {
+    核(crossOriginIsolated, '页面跨源隔离');
+    const 页参 = new URL(location.href).searchParams, 地址 = 页参.get('中继'), 令牌 = 页参.get('中继令牌') ?? '';
+    核(Boolean(地址), '已配置中继地址');
+    const 取 = async 名 => { const 应 = await fetch(new URL(名 + '.wasm', import.meta.url)); if (!应.ok) throw Error('读取失败：' + 名 + '，状态 ' + 应.status); return new Uint8Array(await 应.arrayBuffer()); };
+    const 桥模块 = await WebAssembly.compile(await 取('值桥')), 程序 = await 取('取页');
+    const 测 = async () => {
+      const 跑 = async (端口, 凭) => {
+        if (已终) throw Error('验收已结束');
+        const 系统 = new 构建文件系统(); 系统.写('/取页.wasm', 程序);
+        const 表 = new 进程表({文件系统: 系统, 桥模块, 工作线程网址: new URL('./工作线程.mjs', import.meta.url), 处理器数: 2, 中继: {地址, 令牌: 凭}});
+        表们.push(表);
+        try {
+          const 果 = await 表.运行('/取页.wasm', ['example.com', String(端口)]);
+          const 输出 = 解码器.decode(果.输出), 错误 = 解码器.decode(果.错误);
+          印('端口 ' + 端口 + '，退出 ' + 果.码 + '：' + 输出.trim() + (错误 ? '\n' + 错误 : ''));
+          return {码: 果.码, 输出};
+        } finally { 表.停止(); }
+      };
+      const 公网 = await 跑(80, 令牌), 首行 = 公网.输出.split(/\r?\n/)[0];
+      核(公网.码 === 0 && 首行.startsWith('HTTP/1.') && /\b200\b/.test(首行), 'example.com:80 第一行是 HTTP/1. 的 200 响应');
+      const 禁口 = await 跑(25, 令牌);
+      核(禁口.码 !== 0 && 禁口.输出.includes('状态码：-76，'), '目标端口 25 被拒，底层状态码 76');
+      const 伪凭 = await 跑(80, 令牌 + '错误令牌');
+      核(伪凭.码 !== 0 && 伪凭.输出.includes('状态码：-2，'), '错误令牌被拒，底层状态码 2');
+    };
+    await Promise.race([测(), new Promise((成, 败) => { 限时 = setTimeout(() => 败(Error('验收超过两分钟')), 120000); })]);
+    印('通过：全部验收完成'); document.documentElement.dataset.测试 = '通过';
+  } catch (错) { 印('失败：' + (错.stack ?? 错)); document.documentElement.dataset.测试 = '失败'; }
+  finally { 已终 = true; clearTimeout(限时); for (const 表 of 表们) 表.停止(); 按钮.disabled = false; }
+}
+按钮.onclick = 验收;
+if (new URL(location.href).searchParams.has('自动')) 验收();
+</script></html>
