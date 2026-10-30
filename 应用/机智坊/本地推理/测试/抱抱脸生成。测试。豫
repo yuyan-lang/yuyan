@@ -9,8 +9,8 @@
 「取配置」乃化「有」为「分词配置」者也。
 「取配置」者得「无」而
 　鉴「读分词设」于『{"model":{"type":"BPE","vocab":{"a":0,"b":1,"ab":2,"<s>":3,"</s>":4,"<unk>":5},"merges":["a b"],"unk_token":"<unk>"},"post_processor":{"type":"TemplateProcessing","single":"<s> $A </s>","special_tokens":{"<s>":{"ids":[3]},"</s>":{"ids":[4]}}},"decoder":{"type":"Fuse"},"added_tokens":[{"id":3,"content":"<s>","special":true,"normalized":false},{"id":4,"content":"</s>","special":true,"normalized":false}]}』而
-　　或有（「分词配置已读」于「配置」）则「配置」
-　　或有（「分词配置有误」于「误」）则「告祸」以「分词配置」于「误」
+　　或有（「分词配置已读」于得「配置」）则「配置」
+　　或有（「分词配置有误」于得「误」）则「告祸」以「分词配置」于「误」
 也。
 
 「配置」者「取配置」于「元」也。
