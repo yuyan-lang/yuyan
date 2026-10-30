@@ -14,6 +14,6 @@
 　　『WordPiece』
 　否则
 　　鉴「结绳栏」于「模型」于『vocab』而
-　　　或有（「结绳数组」于「词们」）则『Unigram』
-　　　或有「其余」则若「结绳含栏」于「模型」于『merges』则『BPE』否则『WordLevel』
+　　　或有（「结绳数组」于得「词们」）则『Unigram』
+　　　或有得「其余」则若「结绳含栏」于「模型」于『merges』则『BPE』否则『WordLevel』
 也。
