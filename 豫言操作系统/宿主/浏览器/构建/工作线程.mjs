@@ -50,7 +50,6 @@ function 元素数(字) {
 }
 
 let 控制 = null, 数据 = null, 桥模块 = null;
-let 可运行 = null;
 const 异步 = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function';
 const 任务们 = new Map();
 const 宏候们 = [];
@@ -102,9 +101,8 @@ async function 将传问(任务, 名, 传们, ...参) {
   for (const 项 of 传们) (项 instanceof SharedArrayBuffer ? 环们 : 移们).push(项);
   const 候答 = async () => {
     任务.候 = true;
-    Atomics.sub(可运行, 0, 1);
     try { while (Atomics.load(控制, 0) === 0) await Atomics.waitAsync(控制, 0, 0).value; }
-    finally { Atomics.add(可运行, 0, 1); 任务.候 = false; 任务.片始 = performance.now(); }
+    finally { 任务.候 = false; 任务.片始 = performance.now(); }
     任务.察();
   };
   Atomics.store(控制, 0, 0);
@@ -133,7 +131,7 @@ function 运行(任务) {
   const 边界选项 = {异步, 察, 入: () => { 重入++; }, 出: () => { 重入--; }};
   const 让行 = () => {
     察();
-    if (重入 || performance.now() - 任务.片始 < 10 || Atomics.load(可运行, 0) <= 1) return;
+    if (重入 || performance.now() - 任务.片始 < 10) return;
     return 候宏().then(() => { 察(); 任务.片始 = performance.now(); });
   };
   const 浏览器导入 = {interrupt: () => { 察(); if (Atomics.load(打断字, 0) !== 0) throw 造打断错(); }, 让行: 异步 ? new WebAssembly.Suspending(让行) : () => {}};
@@ -296,7 +294,16 @@ function 运行(任务) {
       try {
         Atomics.store(打断字, 0, 0);
         const 入口 = 装一单元(字.slice(), 程序名).exports._start;
-        if (异步) yield WebAssembly.promising(入口)(); else 入口();
+        // 汉语：单元在自己的挂起边界（promising）里跑，边界之内重入从零计起，单元里的让行检查点才能让出；同步部分跑完（单元结束或挂起）就恢复外层计数，
+        //   外层宿主函数返回时照常减一。单元之后在事件循环里恢复时，外层已返回，计数正是零。
+        // 文言：单元自有悬栈之界，界内之重自零计之，其让行之察点乃得让；同步之段既毕（或终或悬），即复外层之数，外函返时照减其一。其后单元复行于事环，外已返，数正为零。
+        if (异步) {
+          const 外重入 = 重入;
+          let 承;
+          重入 = 0;
+          try { 承 = WebAssembly.promising(入口)(); } finally { 重入 = 外重入; }
+          yield 承;
+        } else 入口();
         return 0;
       }
       catch (错) {
@@ -349,7 +356,6 @@ self.onmessage = async ({data: 消息}) => {
   if (消息.种 === '初始') {
     if (!异步) { 控制 = new Int32Array(消息.控制); 数据 = new Uint8Array(消息.数据); }
     桥模块 = 消息.桥模块;
-    if (异步) 可运行 = new Int32Array(消息.可运行);
     if (!异步) self.postMessage({种: '打断内存', 缓冲: 打断字.buffer});
     return;
   }
@@ -371,6 +377,5 @@ self.onmessage = async ({data: 消息}) => {
     }
   }
   任务们.delete(号);
-  if (异步) Atomics.sub(可运行, 0, 1);
   self.postMessage({种: '毕', 号, 码});
 };
