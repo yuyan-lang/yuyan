@@ -2071,10 +2071,12 @@
 「网页基择列样」者得「样」又得「节」而
 　令「色文」为（「样式取值属」于「样」于「性色」）而
 　令「边式」为（「样式取值」于「样」于『border-top-style』）而
+　令「底色」为（「样式取值」于「样」于『background-color』）而
+　令「显文」为（「样式取值」于「样」于『display』）而
+　令「显列」为若「文同」于「显文」于『inline-block』则（「列」【『display』与『inline-block』】）否则（「罄」）而
 　令「基列」为
 　　（「列」
-　　　【『display』与『inline-block』
-　　　，『overflow-x』与『auto』
+　　　【『overflow-x』与『auto』
 　　　，『overflow-y』与『auto』
 　　　，『padding-top』与『0』
 　　　，『padding-bottom』与『0』
@@ -2083,6 +2085,8 @@
 　　　，『white-space』与『normal』
 　　　，『豫基择列』与『阳』
 　　　】）而
+　令「底列」为
+　　若（「文同」于「底色」于『white』）或（「文同」于「底色」于『rgb(255, 255, 255)』）则（「列」【『background-color』与『transparent』】）否则（「罄」）而
 　令「边列」为
 　　若「文同」于「边式」于『solid』则
 　　　（「列」
@@ -2101,7 +2105,7 @@
 　　　　】）
 　　否则
 　　　（「罄」）而
-　「样式连写」于「样」于（「接列」于「基列」于「边列」）
+　「样式连写」于「样」于（「接列」于（「接列」于（「接列」于「显列」于「基列」）于「底列」）于「边列」）
 也。
 
 「：汉语：通称列子样（listbox row child style）。列表框里 option、optgroup、legend 的行样式：option 作弹性行（居中对齐、行间隙 0.5em、左右内距 0.5em、上下内距零、最小高 24 像素、不换行）；optgroup 仍作块；legend 加粗、左右内距 0.5em、最小高一行。其余子元素（hr 等）原样。
@@ -2128,11 +2132,18 @@
 　　　　文言：勾记循参页之 ::before：已选者画对勾，未选者留其位而藏之。参页用 content:'\2713' / ''，本引擎书同形之字与 visibility。：」
 　　「样式入」于「行样」于『::before』于（若「表单控件已选」于「节」则『content: "✓"』否则『content: "✓"; visibility: hidden』）
 　）否则若「文同」于「名」于『optgroup』则
-　　（「样式入」于「样」于『display』于『block』）
+　　（「样式入」于（「样式入」于「样」于『display』于『block』）于『豫基择列』于『阳』）
 　否则若「文同」于「名」于『legend』则
-　　（「样式连写」于「样」于（「列」【『font-weight』与『bold』，『padding-left』与『0.5em』，『padding-right』与『0.5em』，『min-height』与『20px』】））
+　　（「样式连写」于「样」于（「列」【『font-weight』与『bold』，『padding-left』与『0.5em』，『padding-right』与『0.5em』】））
 　否则
 　　「样」
+也。
+
+「：汉语：通称基择未书吗（author did not set）。样式里该属性号没写过时为阳：用户代理样式只给 select 写了 display、color、background、border 与 padding，圆角、间隙、最小高、box-sizing 这些只由作者写，没写过就是作者没设，用户代理样式可以铺。
+　　文言：基择未书吗：式中该号未书者阳：用户代理之式于 select 惟书 display、color、background、border 与 padding，圆角、间隙、最小高、box-sizing 惟作者书之，未书即作者未设，用户代理之式可铺。：」
+「网页基择未书吗」乃化「计算样式」又化「文」为「爻」者也。
+「网页基择未书吗」者得「样」又得「名」而
+　非（「样式有号」于「样」于（「属性号」于「名」））
 也。
 
 「：汉语：通称基择样（base-select style）。给 appearance 为 base-select 的下拉选择框铺上用户代理的按钮样式：inline-flex、border-box、上下内距 0.25em、左右内距 0.5em、一像素 currentColor 边框、圆角 0.5em、间隙 0.5em、最小 24 见方、底色透明、颜色与字体继承；再写下 ::picker-icon 的箭头（照浏览器的 picker-icon 用 counter(fake-counter-name, disclosure-open)，本引擎按未定义计数画 0；作者写的 ::picker-icon 声明接在用户代理声明之后，作者的颜色等仍能压过）。选择框的选中项与箭头由「网页基择诸子」合成；外观为 none 等别的情形不铺。
@@ -2144,49 +2155,64 @@
 　令「色文」为
 　　若（（（「文同」于（「样式小写」于「原色」）于『black』）或（「文同」于「原色」于『』））且（非（「文同」于「承色」于『』）））则「承色」否则「原色」而
 　令「旧标」为（「样式取值」于「样」于『::picker-icon』）而
+　令「显文」为（「样式取值」于「样」于『display』）而
+　令「上衬」为（「样式取值」于「样」于『padding-top』）而
+　令「左衬」为（「样式取值」于「样」于『padding-left』）而
+　令「边宽」为（「样式取值」于「样」于『border-top-width』）而
 　令「边式」为（「样式取值」于「样」于『border-top-style』）而
+　令「边色」为（「样式取值」于「样」于『border-top-color』）而
 　令「底色」为（「样式取值属」于「样」于「性地色」）而
-　令「基列」为
-　　（「列」
-　　　【『display』与『inline-flex』
-　　　，『box-sizing』与『border-box』
-　　　，『padding-top』与『0.25em』
-　　　，『padding-bottom』与『0.25em』
-　　　，『padding-left』与『0.5em』
-　　　，『padding-right』与『0.5em』
-　　　，『border-top-left-radius』与『0.5em』
-　　　，『border-top-right-radius』与『0.5em』
-　　　，『border-bottom-right-radius』与『0.5em』
-　　　，『border-bottom-left-radius』与『0.5em』
-　　　，『column-gap』与『0.5em』
-　　　，『row-gap』与『0.5em』
-　　　，『min-height』与『24px』
-　　　，『color』与「色文」
-　　　】）而
-　「：汉语：边框与底色只在作者没改过时才铺：作者写了别的边式（如 `border-style:none`）或别的底色（如 `transparent`）就原样留着，用户代理的样式压不过作者。最小宽也不铺——用户代理本来要的是「不小于内容且不小于 24 像素」，本引擎没有 calc-size，铺死 24px 会把弹性项的自动最小尺寸（内容尺寸）挡掉；最小高不受此影响。
-　　　文言：边与底色惟作者未改者乃铺：作者书他边式（如 `border-style:none`）或他底色（如 `transparent`）则如其旧，用户代理之式不压作者。最小宽亦不铺——用户代理本欲「不损于内容且不损于二十四素」，本引擎无 calc-size，铺死 24px 则挡弹性项之自动下限（内容之尺）；最小高不与此。：」
-　令「边列」为
-　　若「文同」于「边式」于『solid』则
-　　　（「列」
-　　　　【『border-top-width』与『1px』
-　　　　，『border-right-width』与『1px』
-　　　　，『border-bottom-width』与『1px』
-　　　　，『border-left-width』与『1px』
-　　　　，『border-top-style』与『solid』
-　　　　，『border-right-style』与『solid』
-　　　　，『border-bottom-style』与『solid』
-　　　　，『border-left-style』与『solid』
-　　　　，『border-top-color』与「色文」
-　　　　，『border-right-color』与「色文」
-　　　　，『border-bottom-color』与「色文」
-　　　　，『border-left-color』与「色文」
-　　　　】）
+　令「显列」为若「文同」于「显文」于『inline-block』则（「列」【『display』与『inline-flex』】）否则（「罄」）而
+　令「衬列」为
+　　若「文同」于「上衬」于『2px』则
+　　　（「列」【『padding-top』与『0.25em』，『padding-bottom』与『0.25em』，『padding-left』与『0.5em』，『padding-right』与『0.5em』】）
 　　否则
 　　　（「罄」）而
+　令「箱列」为若（「网页基择未书吗」于「样」于『box-sizing』）则（「列」【『box-sizing』与『border-box』】）否则（「罄」）而
+　令「角列」为
+　　若（非（「网页基择未书吗」于「样」于『border-top-left-radius』））则
+　　　（「罄」）
+　　否则
+　　　（「列」
+　　　　【『border-top-left-radius』与『0.5em』
+　　　　，『border-top-right-radius』与『0.5em』
+　　　　，『border-bottom-right-radius』与『0.5em』
+　　　　，『border-bottom-left-radius』与『0.5em』
+　　　　】）而
+　令「隙列」为若（非（「网页基择未书吗」于「样」于『column-gap』））则（「罄」）否则（「列」【『column-gap』与『0.5em』，『row-gap』与『0.5em』】）而
+　令「高列」为若（非（「网页基择未书吗」于「样」于『min-height』））则（「罄」）否则（「列」【『min-height』与『24px』】）而
+　令「色列」为若「文同」于「色文」于「原色」则（「罄」）否则（「列」【『color』与「色文」】）而
 　令「底列」为
 　　若（「文同」于「底色」于『white』）或（「文同」于「底色」于『rgb(255, 255, 255)』）则（「列」【『background-color』与『transparent』】）否则（「罄」）而
+　令「边列」为
+　　若（「文同」于「边式」于『solid』）
+　　　且（（「文同」于「边宽」于『1px』）且（（「文同」于「边色」于『gray』）或（「文同」于「边色」于『rgb(128, 128, 128)』）））则
+　　　　（「列」
+　　　　　【『border-top-width』与『1px』
+　　　　　，『border-right-width』与『1px』
+　　　　　，『border-bottom-width』与『1px』
+　　　　　，『border-left-width』与『1px』
+　　　　　，『border-top-style』与『solid』
+　　　　　，『border-right-style』与『solid』
+　　　　　，『border-bottom-style』与『solid』
+　　　　　，『border-left-style』与『solid』
+　　　　　，『border-top-color』与「色文」
+　　　　　，『border-right-color』与「色文」
+　　　　　，『border-bottom-color』与「色文」
+　　　　　，『border-left-color』与「色文」
+　　　　　】）
+　　否则
+　　　（「罄」）而
+　令「全列」为（「接列」于「显列」于「箱列」）而
+　令「全列」为（「接列」于「全列」于「衬列」）而
+　令「全列」为（「接列」于「全列」于「角列」）而
+　令「全列」为（「接列」于「全列」于「隙列」）而
+　令「全列」为（「接列」于「全列」于「高列」）而
+　令「全列」为（「接列」于「全列」于「色列」）而
+　令「全列」为（「接列」于「全列」于「底列」）而
+　令「全列」为（「接列」于「全列」于「边列」）而
 　「样式入」
-　　于（「样式连写」于「样」于（「接列」于（「接列」于「基列」于「边列」）于「底列」））
+　　于（「样式连写」于「样」于「全列」）
 　　于『::picker-icon』
 　　于（「缀文」于（「列」
 　　　【『content: counter(fake-counter-name, disclosure-open); margin-left: auto』
@@ -2310,9 +2336,13 @@
 　　　「罄」
 　　否则
 　　　令「诸子」为
-　　　　若「基择吗」则
-　　　　　（「剔除网页空白文字盒」于「显示文」于（「网页基择诸子」于「读取」于「节」于「样」于「层」于「计数引用」于「引号匣」））
-　　　　否则若（（（「为表单控件」于「节」）且（非「基择列吗」））或（「文同」于（「样式小写」于（「样式取值」于「样」于『content-visibility』））于『hidden』）
+　　　　若「基择吗」则（
+　　　　　令「基前」为（「生网页伪件盒」于「节」于「样」于『before』于（「层」加「一」）于「计数引用」于「引号匣」）而
+　　　　　令「基后」为（「生网页伪件盒」于「节」于「样」于『after』于（「层」加「一」）于「计数引用」于「引号匣」）而
+　　　　　令「基中」为（「网页基择诸子」于「读取」于「节」于「样」于「层」于「计数引用」于「引号匣」）而
+　　　　　（「剔除网页空白文字盒」于「显示文」于（「接列」于（「接列」于「基前」于「基中」）于「基后」））
+　　　　）否则若（（（「为表单控件」于「节」）且（非「基择列吗」））
+　　　　　或（「文同」于（「样式小写」于（「样式取值」于「样」于『content-visibility』））于『hidden』）
 　　　　）则
 　　　　　「罄」
 　　　　否则（

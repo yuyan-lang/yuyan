@@ -65,7 +65,10 @@ export async function 起行在({快照们, 桌面快照 = null, 出, 报 = () =
   报('秘府已读入' + (秘府.可写 ? '' : '（另一个标签页正在用它，本页的改动不写回）'));
   if (系统.是文件(标径)) 系统.删文件(标径);
   const 桥模块 = await WebAssembly.compile(系统.读('/工具/节点值桥接.wasm'));
-  const 表 = new 进程表({文件系统: 系统, 桥模块, 工作线程网址: new URL('../构建/工作线程.mjs', import.meta.url), 系统环境: 开机环境});
+  const 页参 = new URL(全局.location.href).searchParams;
+  // 汉语：待办事项：中继令牌改从登录或秘府设置取得。文言：后当自登录、秘府取凭。
+  const 中继 = 页参.has('中继') ? {地址: 页参.get('中继'), 令牌: 页参.get('中继令牌') ?? ''} : null;
+  const 表 = new 进程表({文件系统: 系统, 桥模块, 工作线程网址: new URL('../构建/工作线程.mjs', import.meta.url), 系统环境: 开机环境, 中继});
   const 解码们 = {1: new TextDecoder(), 2: new TextDecoder()};
   const 印 = (流, 值) => 出(流, 解码们[流].decode(值, {stream: true}));
 

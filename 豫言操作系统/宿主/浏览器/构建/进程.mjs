@@ -6,6 +6,7 @@
 //   父进程结束时收拾它没人收取的子任务记录：已结束的删去，运行中的改挂给初始任务（提案 00043 第六条）；「亲行」让子进程继承父进程的标准输入。
 import {规范路径, 文, 错码} from './文件系统.mjs';
 import {编码值, 取编模} from './编码.mjs';
+import {中继客} from './中继客.mjs';
 
 const 编码器 = new TextEncoder(), 解码器 = new TextDecoder();
 const 块长 = 1 << 20;
@@ -48,7 +49,8 @@ const 内建命令 = {
 
 export class 进程表 {
   // 汉语：系统环境（提案 00043）：每个进程环境的缺省项（网页行在的全局设定，如 豫言行在=网页），进程自己的环境盖过它。文言：系统之环境：诸进程环境之缺省，己之环境掩之。
-  constructor({文件系统, 桥模块, 工作线程网址, 处理器数, 系统环境 = {}}) {
+  constructor({文件系统, 桥模块, 工作线程网址, 处理器数, 系统环境 = {}, 中继 = null}) {
+    this.中继 = 中继;
     this.文件系统 = 文件系统;
     this.桥模块 = 桥模块;
     this.工作线程网址 = 工作线程网址;
@@ -89,8 +91,8 @@ export class 进程表 {
   造线程() {
     const 工 = new Worker(this.工作线程网址, {type: 'module'});
     const 控制 = this.异步 ? null : new SharedArrayBuffer(16), 数据 = this.异步 ? null : new SharedArrayBuffer(块长);
-    const 线 = {工, 控制: 控制 && new Int32Array(控制), 数据: 数据 && new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null, 次数: 0, 闲时: null, 任务们: new Set(), 可运行: new Int32Array(new SharedArrayBuffer(4))};
-    工.postMessage({种: '初始', 控制, 数据, 桥模块: this.桥模块, 可运行: 线.可运行.buffer});
+    const 线 = {工, 控制: 控制 && new Int32Array(控制), 数据: 数据 && new Uint8Array(数据), 忙: false, 号: 0, 待续: null, 待候: null, 次数: 0, 闲时: null, 任务们: new Set()};
+    工.postMessage({种: '初始', 控制, 数据, 桥模块: this.桥模块});
     工.onmessage = ({data}) => this.收消息(线, data);
     工.onerror = 事件 => this.线程出错(线, 事件);
     this.线程们.push(线);
@@ -152,7 +154,6 @@ export class 进程表 {
     线.号 = 记录.号; 记录.线 = 线;
     线.任务们.add(记录.号);
     if (this.异步) {
-      Atomics.add(线.可运行, 0, 1);
       记录.信箱 = {控制: new Int32Array(new SharedArrayBuffer(20)), 数据: new Uint8Array(new SharedArrayBuffer(块长)), 待续: null, 待候: null};
       记录.打断 = new Int32Array(new SharedArrayBuffer(4));
     }
@@ -176,6 +177,7 @@ export class 进程表 {
 
   结束(记录, 码) {
     if (记录.完成) return;
+    记录.中继客?.停止();
     记录.完成 = true;
     记录.码 = 记录.溢出 ? 125 : 码;
     clearTimeout(记录.定时);
@@ -382,6 +384,10 @@ export class 进程表 {
   // 汉语：处理一项请求：参数之后的 环 是工作线程附来的共享环形缓冲（声音输出用），其余外务不看它。
   处理(线, 记录, 名, 参, 环) {
     const 系统 = this.文件系统;
+    if (名 === '中继') {
+      记录.中继客 ??= new 中继客(this.中继);
+      return 记录.中继客.调(...参);
+    }
     switch (名) {
       case '读': return 系统.读(参[0]);
       // 文言：读卷之片：依偏与限取一段，一次至多一兆；限零则不读卷而空帛；偏负、限负或越六十四位有号之半者报参误（底码二十八）；卷短则依实；文不在之误带底码四十四（十月二十六日，议七百八十六）。

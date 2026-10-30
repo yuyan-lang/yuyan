@@ -50,7 +50,6 @@ function 元素数(字) {
 }
 
 let 控制 = null, 数据 = null, 桥模块 = null;
-let 可运行 = null;
 const 异步 = typeof WebAssembly.Suspending === 'function' && typeof WebAssembly.promising === 'function';
 const 任务们 = new Map();
 const 宏候们 = [];
@@ -102,9 +101,8 @@ async function 将传问(任务, 名, 传们, ...参) {
   for (const 项 of 传们) (项 instanceof SharedArrayBuffer ? 环们 : 移们).push(项);
   const 候答 = async () => {
     任务.候 = true;
-    Atomics.sub(可运行, 0, 1);
     try { while (Atomics.load(控制, 0) === 0) await Atomics.waitAsync(控制, 0, 0).value; }
-    finally { Atomics.add(可运行, 0, 1); 任务.候 = false; 任务.片始 = performance.now(); }
+    finally { 任务.候 = false; 任务.片始 = performance.now(); }
     任务.察();
   };
   Atomics.store(控制, 0, 0);
@@ -133,7 +131,7 @@ function 运行(任务) {
   const 边界选项 = {异步, 察, 入: () => { 重入++; }, 出: () => { 重入--; }};
   const 让行 = () => {
     察();
-    if (重入 || performance.now() - 任务.片始 < 10 || Atomics.load(可运行, 0) <= 1) return;
+    if (重入 || performance.now() - 任务.片始 < 10) return;
     return 候宏().then(() => { 察(); 任务.片始 = performance.now(); });
   };
   const 浏览器导入 = {interrupt: () => { 察(); if (Atomics.load(打断字, 0) !== 0) throw 造打断错(); }, 让行: 异步 ? new WebAssembly.Suspending(让行) : () => {}};
@@ -258,9 +256,9 @@ function 运行(任务) {
     述小数: 小数表示,
     精述小数: 精确小数,
     识小数: 理解小数,
-    // 文言：余诸东道之术（提案〇〇〇四三，同诺驿宿主之义）：闲块不知则负一；风俗为环境之块；召回经主线程止子；问使无其能则五十八；浏览器无 TCP 与多播，诸门报皆以负五十八还之。
+    // 文言：余诸东道之术（提案〇〇〇四三，同诺驿宿主之义）：闲块不知则负一；风俗为环境之块；召回经主线程止子；问使无其能则五十八；客之 TCP 循中继，监听与多播还负五十八。
     // 汉语：东道其余函数（提案 00043，语义同诺驿宿主）：空闲物理块数不知道时返回 −1；风俗是“名=值\0”相连的环境块；召回经主线程终止子进程；
-    //   问使（子进程资源）没有这项能力时状态为 58；浏览器没有 TCP 与多播数据报，这些函数一律返回 −58（暂不可用）。待办事项：拼音（注音、注音首字）。
+    //   问使（子进程资源）没有这项能力时状态为 58；客户端 TCP 经中继，监听与数据报返回 −58。待办事项：拼音（注音、注音首字）。
     闲块数: () => -1n,
     风俗: () => Object.entries(环境).map(([名, 值]) => 名 + '=' + 值 + '\0').join(''),
     召回: 续行(function* (句柄) { return BigInt((yield 问(号, '召回', Number(句柄)))); }),
@@ -274,9 +272,10 @@ function 运行(任务) {
     遣使于境离: () => -58n, 散组: () => 58n,
     // 汉语：遣信（2026-10-27，议题 #1024）：浏览器的工作线程没有子进程，答（58，−1）。文言：遣信（十月二十七日，议一千零二十四）：浏览器之工线无子程，答（五十八，负一）。
     遣信: () => [58n, -1n],
-    开门: () => [-58n, 0n], 叩门: () => [-58n, 0n], 入门: () => [-58n, 0n], 迎: () => [-58n, 0n], 门号: () => [-58n, 0n],
-    听: () => [-58n, ''], 听帛: () => [-58n, new Uint8Array(0)], 续告: () => [-58n, 0n], 续告帛: () => [-58n, 0n], 守候: () => [-58n, 0n],
-    勿滞: () => [-58n, undefined], 缄口: () => [-58n, undefined], 别: () => [-58n, undefined], 误由: () => '浏览器没有 TCP（暂不可用）',
+    开门: () => [-58n, 0n], 迎: () => [-58n, 0n], 门号: () => [-58n, 0n],
+    // 汉语：客户端 TCP 原语经主线程中继；续行同时服务 JSPI 挂起与同步等待。文言：客术问于主工，悬栈与同步共途。
+    ...Object.fromEntries(['叩门', '入门', '听', '听帛', '续告', '续告帛', '守候', '勿滞', '缄口', '别', '误由'].map(名 =>
+      [名, 续行(function* (...参) { return (yield 问(号, '中继', 名, ...参)); })])),
     投书: () => [-58n, new Uint8Array(0)], 开播报: () => [-58n, -1n], 投报: () => [-58n, 0n], 收报: () => [-58n, 0n, 0n, new Uint8Array(0)],
   };
   const 构建基础 = {
@@ -296,7 +295,16 @@ function 运行(任务) {
       try {
         Atomics.store(打断字, 0, 0);
         const 入口 = 装一单元(字.slice(), 程序名).exports._start;
-        if (异步) yield WebAssembly.promising(入口)(); else 入口();
+        // 汉语：单元在自己的挂起边界（promising）里跑，边界之内重入从零计起，单元里的让行检查点才能让出；同步部分跑完（单元结束或挂起）就恢复外层计数，
+        //   外层宿主函数返回时照常减一。单元之后在事件循环里恢复时，外层已返回，计数正是零。
+        // 文言：单元自有悬栈之界，界内之重自零计之，其让行之察点乃得让；同步之段既毕（或终或悬），即复外层之数，外函返时照减其一。其后单元复行于事环，外已返，数正为零。
+        if (异步) {
+          const 外重入 = 重入;
+          let 承;
+          重入 = 0;
+          try { 承 = WebAssembly.promising(入口)(); } finally { 重入 = 外重入; }
+          yield 承;
+        } else 入口();
         return 0;
       }
       catch (错) {
@@ -349,7 +357,6 @@ self.onmessage = async ({data: 消息}) => {
   if (消息.种 === '初始') {
     if (!异步) { 控制 = new Int32Array(消息.控制); 数据 = new Uint8Array(消息.数据); }
     桥模块 = 消息.桥模块;
-    if (异步) 可运行 = new Int32Array(消息.可运行);
     if (!异步) self.postMessage({种: '打断内存', 缓冲: 打断字.buffer});
     return;
   }
@@ -371,6 +378,5 @@ self.onmessage = async ({data: 消息}) => {
     }
   }
   任务们.delete(号);
-  if (异步) Atomics.sub(可运行, 0, 1);
   self.postMessage({种: '毕', 号, 码});
 };
