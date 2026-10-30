@@ -131,10 +131,10 @@
 　令「头」为
 　　（
 　　　鉴「取栏」于「头」于『Range』而
-　　　　或有（「可有」于「范围文」）则「置栏」于「头」于『Accept-Encoding』于『identity』
+　　　　或有（「可有」于得「范围文」）则「置栏」于「头」于『Accept-Encoding』于『identity』
 　　　　或有「可无」则（
 　　　　　鉴「取栏」于「头」于『Accept-Encoding』而
-　　　　　　或有（「可有」于「已宣」）则「头」
+　　　　　　或有（「可有」于得「已宣」）则「头」
 　　　　　　或有「可无」则「置栏」于「头」于『Accept-Encoding』于『gzip, deflate, br, zstd』
 　　　　）
 　　）而
