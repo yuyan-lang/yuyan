@@ -111,6 +111,7 @@
 　　　　　，『-vvv』
 　　　　　，『--parse-only』
 　　　　　，『--列模式裸名』
+　　　　　，『--列模式缺签』
 　　　　　，『--type-check-only』
 　　　　　，『--宽度检查』
 　　　　　，『--type-check-and-erase-only』
