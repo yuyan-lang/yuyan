@@ -1,0 +1,116 @@
+name: Issue 积压统计
+# 与代码行数统计一致：发行版保存历史，独立分支提供 SVG 图。
+on:
+  issues:
+    types: [opened, closed, reopened, deleted, transferred]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 0 * * *'
+permissions:
+  contents: write
+  issues: read
+concurrency:
+  group: issue-backlog-history
+  cancel-in-progress: false
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: 恢复发行版历史
+        run: |
+          mkdir -p "$RUNNER_TEMP/issue-history"
+          gh release download issue-backlog-stats --pattern issue-history.json --dir "$RUNNER_TEMP/issue-history" || true
+      - name: 统计、去重并生成图表
+        env:
+          EVENT_ACTION: ${{ github.event.action }}
+          EVENT_ID: ${{ github.event.issue.id }}
+        run: |
+          cat > "$RUNNER_TEMP/record.py" <<'PY'
+          import json, os, subprocess, datetime, html, pathlib
+          p=pathlib.Path(os.environ['RUNNER_TEMP'])/'issue-history'
+          p.mkdir(exist_ok=True)
+          history=p/'issue-history.json'
+          try: data=json.loads(history.read_text())
+          except (FileNotFoundError,ValueError): data={'schema':1,'snapshots':[],'events':[]}
+          def gh(*args):
+              return json.loads(subprocess.check_output(['gh','api',*args],text=True))
+          # GitHub GraphQL repository issue total excludes pull requests.
+          owner,repo=os.environ['GH_REPO'].split('/')
+          query='query($owner:String!,$repo:String!){repository(owner:$owner,name:$repo){issues(states:OPEN){totalCount} all:issues{totalCount}}}'
+          result=gh('graphql','-f',f'query={query}','-F',f'owner={owner}','-F',f'repo={repo}')['data']['repository']
+          now=datetime.datetime.now(datetime.timezone.utc).isoformat()
+          action=os.getenv('EVENT_ACTION','')
+          issue_id=os.getenv('EVENT_ID','')
+          key=f'{action}:{issue_id}' if action and issue_id else ''
+          if key and key not in {x['key'] for x in data['events']}:
+              data['events'].append({'key':key,'action':action,'issue_id':issue_id,'observed_at':now})
+          # Store real snapshots only; event triggers may coalesce while queued.
+          data['snapshots'].append({'at':now,'open':result['issues']['totalCount'],'total':result['all']['totalCount']})
+          history.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          rows=data['snapshots']
+          width,height=1000,400
+          left,right,top,bottom=75,25,38,60
+          vals=[x['open'] for x in rows]
+          lo=max(0,min(vals)-max(3,(max(vals)-min(vals))//10))
+          hi=max(lo+1,max(vals)+max(3,(max(vals)-min(vals))//10))
+          start=datetime.datetime.fromisoformat(rows[0]['at']).timestamp()
+          end=datetime.datetime.fromisoformat(rows[-1]['at']).timestamp()
+          def coord(r):
+              t=datetime.datetime.fromisoformat(r['at']).timestamp()
+              x=left+(width-left-right)*(t-start)/max(1,end-start)
+              y=top+(height-top-bottom)*(hi-r['open'])/(hi-lo)
+              return x,y
+          pts=' '.join(f'{x:.1f},{y:.1f}' for x,y in map(coord,rows))
+          grid=''.join(f'<line x1="{left}" y1="{top+i*(height-top-bottom)/4:.1f}" x2="{width-right}" y2="{top+i*(height-top-bottom)/4:.1f}" stroke="#cbd5e1" opacity=".5"/><text x="{left-10}" y="{top+i*(height-top-bottom)/4+5:.1f}" text-anchor="end" font-size="13" fill="#475569">{round(hi-i*(hi-lo)/4)}</text>' for i in range(5))
+          svg=f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}" role="img" aria-label="开放 Issue 历史趋势">
+          <rect width="100%" height="100%" fill="#ffffff"/>
+          <text x="{left}" y="25" font-size="20" font-weight="bold" fill="#0f172a">豫言开放 Issue 历史 / Open issue backlog</text>
+          {grid}<polyline points="{pts}" fill="none" stroke="#2563eb" stroke-width="3" stroke-linejoin="round"/>
+          <circle cx="{coord(rows[-1])[0]:.1f}" cy="{coord(rows[-1])[1]:.1f}" r="5" fill="#2563eb"/>
+          <text x="{left}" y="{height-18}" font-size="13" fill="#475569">{html.escape(rows[0]['at'][:16])} UTC</text>
+          <text x="{width-right}" y="{height-18}" text-anchor="end" font-size="13" fill="#475569">{html.escape(rows[-1]['at'][:16])} UTC</text>
+          <text x="{width-right}" y="25" text-anchor="end" font-size="16" fill="#2563eb">当前 {vals[-1]}</text></svg>'''
+          (p/'issue-backlog.svg').write_text(svg)
+          delta=vals[-1]-vals[-2] if len(vals)>1 else 0
+          note=f"""# Issue 积压统计 / Issue backlog statistics
+
+          ![开放 Issue 历史](https://raw.githubusercontent.com/{os.environ['GH_REPO']}/issue-backlog-chart/issue-backlog.svg?run={os.environ['GITHUB_RUN_ID']})
+
+          - 当前开放 / Open: **{vals[-1]}**
+          - 历史 Issue 总数（含关闭，不含 PR） / Total issues: **{result['all']['totalCount']}**
+          - 较上次快照 / Since previous snapshot: **{delta:+d}** (first snapshot: baseline)
+          - 采集时间 / Collected: {now}
+          - 历史采样点 / Samples: {len(rows)}
+
+          数据每次 Issue 新建、关闭、重新打开时采样，每日定时补采。首次运行建立基准；历史记录从启用时开始。
+          Data is sampled on issue changes and daily. The first run establishes the baseline; historical samples begin at activation.
+
+          下载发行版资产 issue-history.json 可获取完整时间序列。/ Download issue-history.json for the complete time series.
+          """
+          (p/'report.md').write_text(note)
+          print(note)
+          PY
+          python "$RUNNER_TEMP/record.py"
+          cat "$RUNNER_TEMP/issue-history/report.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: 发布图表分支
+        run: |
+          set -euo pipefail
+          d="$RUNNER_TEMP/chart-branch"
+          mkdir -p "$d"
+          cp "$RUNNER_TEMP/issue-history/issue-backlog.svg" "$d/"
+          git -C "$d" init -q
+          git -C "$d" add .
+          git -C "$d" -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -qm "更新 Issue 积压图"
+          git -C "$d" push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${GH_REPO}.git" HEAD:refs/heads/issue-backlog-chart
+      - name: 更新独立发行版
+        run: |
+          set -euo pipefail
+          if ! gh release view issue-backlog-stats >/dev/null 2>&1; then
+            gh release create issue-backlog-stats --target "${GITHUB_SHA}" --title "Issue 积压统计" --latest=false --notes-file "$RUNNER_TEMP/issue-history/report.md"
+          fi
+          gh release upload issue-backlog-stats "$RUNNER_TEMP/issue-history/issue-history.json" --clobber
+          gh release edit issue-backlog-stats --notes-file "$RUNNER_TEMP/issue-history/report.md"
