@@ -65,30 +65,32 @@
 「验数据」于『data:application/octet-stream,%00%FF%80』。
 「验数据」于『data:application/octet-stream;base64,AP+A』。
 「验串」于『a=one+two&a=%E4%B8%AD&empty=』于（「问述」于（「析问」于『?a=one+two&a=%E4%B8%AD&empty』））。
-「验串」于『a=x&b=2』于（「问述」于（「问设」于（「析问」于『a=1&b=2&a=3』）于『a』于『x』））。
+「验串」于『a=x&b=2』于（「问述」于（「问设」于（「析问」于『a=1&b=2&a=3』）于「键」曰『a』于「值」曰『x』））。
 「验串」于『a=1&b=2』于（「问述」于（「问删」于（「析问」于『a=1&b=2&a=3』）于『a』于（「可有」于『3』）））。
 「验串」于『a=1&a=3&b=2』于（「问述」于（「问序」于（「析问」于『b=2&a=1&a=3』）））。
 「验串」于『a%2Bb%20%E4%B8%AD』于（「编驿址成分」于『a+b 中』）。
 「验串」于『a+b 中』于（「解驿址成分」于『a+b%20%E4%B8%AD』）。
 「验串」于『[["a","one two"],["a","+"],["empty",""]]』于（「析表单键值」于『a=one+two&a=%2B&empty』）。
-「验串」于『https://example.org/a?k=new+value#fragment』于（「设驿址问参」于『https://example.org/a?k=old&k=older#fragment』于『k』于『new value』）。
-「验串」于『/a?k=new+value#fragment』于（「设驿址问参」于『/a?k=old#fragment』于『k』于『new value』）。
-「验设置」乃化「文」又化「文」又化「文」又化「文」为「有」者也。
-「验设置」者得「其文」又得「名」又得「值」又得「期」而
+「验串」
+　于『https://example.org/a?k=new+value#fragment』
+　于（「设驿址问参」于「原文」曰『https://example.org/a?k=old&k=older#fragment』于「原键」曰『k』于「原值」曰『new value』）。
+「验串」于『/a?k=new+value#fragment』于（「设驿址问参」于「原文」曰『/a?k=old#fragment』于「原键」曰『k』于「原值」曰『new value』）。
+「验设置」乃化「其文」曰「文」又化「名」曰「文」又化「值」曰「文」又化「期」曰「文」为「有」者也。
+「验设置」者得「其文」曰「其文」又得「名」曰「名」又得「值」曰「值」又得「期」曰「期」而
 　鉴（「析绝对」于「其文」）而
 　　或有「可无」则「告祸」以「有」于『属性设置根网址无效』
-　　或有（「可有」于「址」）则「验串」于「期」于（「驿址述」于（「设驿址属」于「址」于「名」于「值」））
+　　或有（「可有」于「址」）则「验串」于「期」于（「驿址述」于（「设驿址属」于「址」于「名」曰「名」于「原文」曰「值」））
 也。
 
-「验设置」于『foo://somehost/some/path』于『路径』于『』于『foo://somehost』。
-「验设置」于『foo:///some/path』于『路径』于『』于『foo://』。
-「验设置」于『foo:/some/path』于『路径』于『』于『foo:/』。
-「验设置」于『file:///some/path』于『路径』于『』于『file:///』。
-「验设置」于『https://domain.com:3000』于『端口』于『「：换行：」』于『https://domain.com:3000/』。
-「验设置」于『https://example.org/old』于『路径』于『\new\path』于『https://example.org/new/path』。
-「验设置」于『foo://host/old』于『路径』于『\new\path』于『foo://host/\new\path』。
-「验任意根相对」乃化「文」又化「文」又化「文」为「有」者也。
-「验任意根相对」者得「根文」又得「其文」又得「期」而
+「验设置」于「其文」曰『foo://somehost/some/path』于「名」曰『路径』于「值」曰『』于「期」曰『foo://somehost』。
+「验设置」于「其文」曰『foo:///some/path』于「名」曰『路径』于「值」曰『』于「期」曰『foo://』。
+「验设置」于「其文」曰『foo:/some/path』于「名」曰『路径』于「值」曰『』于「期」曰『foo:/』。
+「验设置」于「其文」曰『file:///some/path』于「名」曰『路径』于「值」曰『』于「期」曰『file:///』。
+「验设置」于「其文」曰『https://domain.com:3000』于「名」曰『端口』于「值」曰『「：换行：」』于「期」曰『https://domain.com:3000/』。
+「验设置」于「其文」曰『https://example.org/old』于「名」曰『路径』于「值」曰『\new\path』于「期」曰『https://example.org/new/path』。
+「验设置」于「其文」曰『foo://host/old』于「名」曰『路径』于「值」曰『\new\path』于「期」曰『foo://host/\new\path』。
+「验任意根相对」乃化「根文」曰「文」又化「其文」曰「文」又化「期」曰「文」为「有」者也。
+「验任意根相对」者得「根文」曰「根文」又得「其文」曰「其文」又得「期」曰「期」而
 　鉴（「析绝对」于「根文」）而
 　　或有「可无」则「告祸」以「有」于『任意根网址无效』
 　　或有（「可有」于「根」）则（
@@ -98,14 +100,14 @@
 　　）
 也。
 
-「验任意根相对」于『foo://host』于『child』于『foo://host/child』。
-「验任意根相对」于『foo://』于『child』于『foo:///child』。
+「验任意根相对」于「根文」曰『foo://host』于「其文」曰『child』于「期」曰『foo://host/child』。
+「验任意根相对」于「根文」曰『foo://』于「其文」曰『child』于「期」曰『foo:///child』。
 「验绝对」于『http://é@é』于『http://%C3%A9@xn--9ca/』。
 「验绝对」于『http://foo:💩@example.com/bar』于『http://foo:%F0%9F%92%A9@example.com/bar』。
-「验任意根相对」于『file://host/dir/file』于『C|』于『file://host/C:』。
-「验任意根相对」于『file://host/』于『file:C:/』于『file://host/C:/』。
-「验任意根相对」于『file://host/dir/file』于『C:/child』于『c:/child』。
-「验任意根相对」于『https://example.org/dir/file』于『foo:\child』于『foo:\child』。
+「验任意根相对」于「根文」曰『file://host/dir/file』于「其文」曰『C|』于「期」曰『file://host/C:』。
+「验任意根相对」于「根文」曰『file://host/』于「其文」曰『file:C:/』于「期」曰『file://host/C:/』。
+「验任意根相对」于「根文」曰『file://host/dir/file』于「其文」曰『C:/child』于「期」曰『c:/child』。
+「验任意根相对」于「根文」曰『https://example.org/dir/file』于「其文」曰『foo:\child』于「期」曰『foo:\child』。
 鉴（「析绝对」于『http://foo.0XFfFfFfFfFfFfFfFfFfAcE123』）而
 　或有「可无」则「元」
 　或有（「可有」于「址」）则「告祸」以「有」于『超大十六进制末段应拒绝』。
