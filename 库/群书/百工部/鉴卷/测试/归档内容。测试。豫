@@ -27,21 +27,26 @@
 　接『"/></t:Types>』
 也。
 
-「造办公」乃化「文」又化「文」又化「数」为「帛」者也。
-「造办公」者得「部件」又得「主类型」又得「等级」而
+「造办公」乃化「部件」曰「文」又化「主类型」曰「文」又化「数」为「帛」者也。
+「造办公」者得「部件」曰「部件」又得「主类型」曰「主类型」又得「等级」而
 　令「声明」为「办公声明」于「部件」于「主类型」而
 　「造归档」于（「列」【『[Content_Types].xml』与（「作帛」于「声明」），「部件」与（「作帛」于『<主/>』）】）于「等级」
 也。
 
 「文档」乃「帛」也。
-「文档」者「造办公」于『word/document.xml』于『application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml』于「六」也。
+「文档」者
+　「造办公」于「部件」曰『word/document.xml』于「主类型」曰『application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml』于「六」
+也。
 
 「核归档」于「文档」于『application/vnd.openxmlformats-officedocument.wordprocessingml.document』。
 「核归档」
-　于（「造办公」于『xl/workbook.xml』于『application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml』于「零」）
+　于（「造办公」于「部件」曰『xl/workbook.xml』于「主类型」曰『application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml』于「零」）
 　于『application/vnd.openxmlformats-officedocument.spreadsheetml.sheet』。
 「核归档」
-　于（「造办公」于『ppt/presentation.xml』于『application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml』于「六」）
+　于（「造办公」
+　　于「部件」曰『ppt/presentation.xml』
+　　于「主类型」曰『application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml』
+　　于「六」）
 　于『application/vnd.openxmlformats-officedocument.presentationml.presentation』。
 「核归档」于（「造归档」于（「列」【『mimetype』与（「作帛」于『application/epub+zip』）】）于「六」）于『application/epub+zip』。
 「核归档」于（「造归档」于（「列」【『mimetype』与（「作帛」于『application/epub+zip假的』）】）于「零」）于『application/zip』。
