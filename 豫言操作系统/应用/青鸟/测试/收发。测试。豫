@@ -201,12 +201,12 @@
 　令「邮果」为
 　　「致邮传」
 　　　于（「测试通道」于「读队」于「写记」）
-　　　于『mail.example.net』
-　　　于『client.example.net』
-　　　于『me@example.com』
-　　　于（「列」【『a@example.com』，『b@example.com』】）
-　　　于「样报文」
-　　　于「阴」而
+　　　于「主机」曰『mail.example.net』
+　　　于「招呼域名」曰『client.example.net』
+　　　于「发件人」曰『me@example.com』
+　　　于「收件人列」曰（「列」【『a@example.com』，『b@example.com』】）
+　　　于「报文」曰「样报文」
+　　　于「要求安全」曰「阴」而
 　鉴「邮果」而
 　　或有（「邮件投递失败」于得「错」）则（
 　　　令「」为「告祸」以「有」于（『SMTP 投递失败：』接「错」）而
