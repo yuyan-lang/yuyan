@@ -1,25 +1,57 @@
 <!doctype html>
-<!-- 文言：主站外壳之页（云仓提案〇〇〇〇五）：极小之载器，画布满铺；能不足则惟示一行与文档站同径之链。正文之字由脚本出，页里不写。 -->
-<!-- 汉语：主站外壳的页面（云仓提案 C00005）：很小的加载器，画布铺满窗口；浏览器能力不足时只显示一行字与文档站同一路径的链接。
-     提示文字由脚本写进 #示，页面本身不带内容。主站每个页面路径都回这一页，路径由脚本交给应用。 -->
+<!-- 文言：主站引导之页：豫言操作系统之引导屏。验客器之能，缺则示所荐之版与往文档站之钮；具则初访者按钮许下载虚机之文（R2 所存），下毕开机入桌面。
+     主站诸径皆回此页；非豫言之码惟此页与其脚本（并网页行在之宿主胶水）。正文之字由脚本出。 -->
+<!-- 汉语：主站引导页：豫言操作系统的开机引导屏。先检查浏览器能力，缺了就显示推荐的浏览器版本和“前往文档站”按钮；都有的话，第一次访问要按按钮同意下载虚机文件（存在 R2），
+     下完开机，直接进桌面。主站每个路径都回这一页；除豫言之外的代码只有这一页和它的脚本（连同网页行在的宿主胶水）。提示文字由脚本写，页面本身不带正文。 -->
 <html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>豫言</title>
+<meta name="color-scheme" content="dark">
+<title>豫言操作系统</title>
+<meta name="description" content="在浏览器里启动豫言操作系统。">
 <style>
-/* 文言：画布满铺，未得面之前不示；提示层居中。汉语：画布铺满窗口，取得显示面之前不显示（详见下方脚本）；提示一行居中。 */
-html,body{margin:0;height:100%;background:#faf7f0;color:#1d1b18;font:16px/1.7 system-ui,sans-serif}
+/* 文言：引导屏：墨底纸字，朱为主色；画布满铺而入桌面前不示。汉语：引导屏用墨色底、纸色字，主色朱红；画布铺满窗口，进桌面之前不显示。 */
+:root{--墨:#121110;--深:#0b0a09;--纸:#ece4d3;--朱:#d0563c;--淡:#9a917f;--线:#2f2a24;--有:#9cc28a}
+html,body{margin:0;height:100%;background:var(--墨);color:var(--纸);font:15px/1.75 system-ui,-apple-system,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",sans-serif}
+#引导{box-sizing:border-box;min-height:100%;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.框{width:min(40em,100%)}
+h1{margin:0;font-size:clamp(34px,7vw,52px);font-weight:700;letter-spacing:.12em;line-height:1.2}
+h1 b{color:var(--朱);font-weight:inherit}
+.副{margin:4px 0 22px;color:var(--淡);letter-spacing:.2em}
+#记{box-sizing:border-box;margin:0 0 18px;padding:12px 14px;min-height:13em;max-height:42vh;overflow:auto;border:1px solid var(--线);border-radius:4px;background:var(--深);
+  font:13px/1.8 ui-monospace,"SF Mono",Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all}
+#记 .有{color:var(--有)}
+#记 .缺{color:var(--朱)}
+#说{margin:0 0 14px;min-height:1.75em}
+#进度{display:block;width:100%;height:6px;margin:0 0 16px;accent-color:var(--朱)}
+#进度[hidden]{display:none}
+#钮行{display:flex;flex-wrap:wrap;gap:10px}
+button{font:inherit;padding:8px 22px;border:1px solid var(--朱);border-radius:3px;background:var(--朱);color:#fff;cursor:pointer}
+button.次{background:transparent;color:var(--纸);border-color:var(--线)}
+button:focus-visible{outline:2px solid var(--纸);outline-offset:2px}
+.脚{margin-top:26px;color:var(--淡);font-size:12px}
+.脚 a{color:var(--淡)}
+/* 文言：入桌面则惟留画布。汉语：进了桌面只留画布（图形模块另起的输入框照常保留）。 */
 canvas[data-yy-显示面]{position:fixed;inset:0;width:100vw;height:100dvh;display:block;touch-action:none;outline:none}
-body:not(.单应用中) canvas[data-yy-显示面]{display:none}
-#示{margin:auto;padding:24px;max-width:44em;text-align:center}
-body.单应用中 #示{display:none}
-#示 a{color:#a33c2c}
+body:not(.桌面中) canvas[data-yy-显示面]{display:none}
+body.桌面中{overflow:hidden}
+body.桌面中 #引导{display:none}
 </style>
 </head>
 <body>
-<p id="示">正在启动</p>
+<main id="引导">
+  <div class="框">
+    <h1>豫<b>言</b></h1>
+    <p class="副">豫言操作系统 · 引导</p>
+    <div id="记" role="log" aria-live="polite"></div>
+    <p id="说" role="status"></p>
+    <progress id="进度" hidden></progress>
+    <div id="钮行"></div>
+    <p class="脚"><span id="版号"></span> <a href="https://docs.yuyan-lang.org/">文档站</a> · <a href="https://github.com/yuyan-lang/yuyan">源码</a></p>
+  </div>
+</main>
 <canvas data-yy-显示面="主窗口" data-yy-显示面前缀="宫"></canvas>
-<script type="module" src="./外壳.mjs"></script>
+<script type="module" src="/外壳.mjs"></script>
 </body>
 </html>
