@@ -85,9 +85,9 @@ async function main() {
   });
 
   await runTest('keeps keywords inside identifiers unhighlighted', () => {
-    const line = '「寻观否则授以也关键字」 包含若否则于也关键字';
+    const line = '「寻观否则也关键字」 包含若否则于也关键字';
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));
-    const quotedName = findToken(tokens, '寻观否则授以也关键字');
+    const quotedName = findToken(tokens, '寻观否则也关键字');
     const bareName = findToken(tokens, '包含若否则于也关键字');
 
     for (const token of [quotedName, bareName]) {
@@ -95,7 +95,7 @@ async function main() {
       assert.ok(!token.scopes.some(scope => /^(keyword|markup\.bold|storage)\./.test(scope)));
     }
 
-    const declaration = '包含若否则于也关键字者会「甲」而「甲」也。';
+    const declaration = '包含若否则于也关键字者得「甲」而「甲」也。';
     const declarationTokens = tokensWithText(declaration, grammar.tokenizeLine(declaration));
     const binder = findToken(declarationTokens, '包含若否则于也关键字');
     assert.ok(hasScope(binder, 'variable.other.yuyan'));
@@ -103,7 +103,7 @@ async function main() {
     assert.ok(hasScope(findToken(declarationTokens, '者'), 'markup.bold.structure.yuyan'));
     assert.ok(hasScope(findToken(declarationTokens, '也'), 'markup.bold.structure.yuyan'));
 
-    const declarationWithMarkerInName = '记者信息者会「甲」而「甲」也。';
+    const declarationWithMarkerInName = '记者信息者得「甲」而「甲」也。';
     const markerTokens = tokensWithText(
       declarationWithMarkerInName,
       grammar.tokenizeLine(declarationWithMarkerInName)
@@ -119,13 +119,14 @@ async function main() {
       '寻观', '是一种', '结合性', '之书',
       '打开', '导入', '函数', '立', '乃', '即', '号', '术', '交', '序', '寻', '观'
     ];
-    const typeWords = ['结合', '中的', '承', '从', '到', '自', '合', '的'];
+    const typeWords = ['结合', '中的', '从', '到', '自', '合', '的', '又化', '又凡', '又以', '凡', '属', '曰'];
     const expressionWords = [
       '执行如下计算', '实际上是', '遇到了', '得到了', '使用于', '中的第',
-      '递归虑', '类型为', '如果是', '参数是', '否则', '授以', '给予', '随后', '如果',
-      '那么', '或者', '分析', '递归', '连结', '其实', '会', '遇', '循', '以', '受',
-      '虑', '其', '让', '为', '于', '与', '附', '中', '有', '则', '或', '且', '鉴', '若',
-      '而', '者', '个', '之', '；'
+      '类型为', '如果是', '参数是', '否则', '给予', '随后', '如果',
+      '那么', '或者', '分析', '递归', '连结', '其实', '循', '以',
+      '让', '为', '于', '与', '中', '有', '则', '或', '且', '鉴', '若',
+      '而', '者', '个', '之', '而后', '复令', '又得', '又设', '阙则', '可阙',
+      '得', '设', '令', '接', '非', '加', '减', '乘'
     ];
     const line = structureWords.concat(typeWords, expressionWords, [
       '《《内建类型：整数》》', '《《内建爻：阳》》', '《《内建函数：整数：相等》》',
@@ -158,85 +159,37 @@ async function main() {
   });
 
   await runTest('separates adjacent structure, type, and expression keywords', () => {
-    const line = '「函数」乃化「参数」而「结果」也。';
+    const line = '「函数」乃化「参数」为「结果」也。';
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));
 
     assert.ok(hasScope(findToken(tokens, '乃'), 'markup.bold.structure.yuyan'));
     assert.ok(hasScope(findToken(tokens, '化'), 'storage.type.function.yuyan'));
-    assert.ok(hasScope(findToken(tokens, '而'), 'storage.type.function.yuyan'));
+    assert.ok(findToken(tokens, '为').scopes.some(scope => scope.startsWith('keyword.')));
     assert.ok(hasScope(findToken(tokens, '也'), 'markup.bold.structure.yuyan'));
     assert.ok(hasScope(findToken(tokens, '。'), 'markup.bold.structure.terminator.yuyan'));
   });
 
-  await runTest('pairs and nests function type keywords', () => {
-    const line = '化「输入」而化「中间」而「输出」';
+  await runTest('pairs function type keywords', () => {
+    const line = '化「输入」又化「中间」为「输出」';
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));
-    const functionKeywords = tokens.filter(token => token.text === '化' || token.text === '而');
+    const typeKeywords = tokens.filter(token => token.text === '化' || token.text === '又化');
 
-    assert.strictEqual(functionKeywords.map(token => token.text).join(''), '化而化而');
-    assert.ok(functionKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
-  });
-
-  await runTest('pairs function types after a recursive let prefix', () => {
-    const line = '递归虑「处理参数」其化「字符串」而化「整数」而化（「列」于「表达式」）而「表达式」者';
-    const tokens = tokensWithText(line, grammar.tokenizeLine(line));
-    const functionKeywords = tokens.filter(token => token.text === '化' || token.text === '而');
-
-    assert.strictEqual(functionKeywords.map(token => token.text).join(''), '化而化而化而');
-    assert.ok(functionKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
-    assert.ok(hasScope(findToken(tokens, '其'), 'keyword.control.yuyan'));
-  });
-
-  await runTest('pairs function types after universal quantification and parenthesized types', () => {
-    const line = '「表达式收集元素」乃承「甲」而化（化「表达式」而（「或可有」于「甲」））而化「表达式」而（「列」于「甲」）也。';
-    const tokens = tokensWithText(line, grammar.tokenizeLine(line));
-    const functionKeywords = tokens.filter(token => ['承', '化', '而'].includes(token.text));
-
-    assert.strictEqual(functionKeywords.map(token => token.text).join(''), '承而化化而而化而');
-    assert.ok(functionKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
-    assert.ok(!tokens.some(token => token.text === '而化'));
-  });
-
-  // 文言：多行型签之行末「而」，与行中之「而」同属类型辞。
-  // 汉语：保留触发问题的多行类型签名，避免依赖会被移走的排版样本文件。
-  await runTest('keeps line-ending separators in multiline polymorphic types', () => {
-    const declaration = [
-      '「对任意元素列表施行两级变换」乃',
-      '承「甲」而',
-      '承「乙」而',
-      '承「丙」而',
-      '化（「列」于「甲」）而',
-      '化（化「甲」而「乙」）而',
-      '化（化「乙」而「丙」）而',
-      '（「列」于「丙」）也。'
-    ].join('\n');
-    const markers = [];
-    let ruleStack = textmate.INITIAL;
-
-    for (const line of declaration.split('\n')) {
-      const result = grammar.tokenizeLine(line, ruleStack);
-      ruleStack = result.ruleStack;
-      markers.push(...tokensWithText(line, result)
-        .filter(token => ['承', '化', '而'].includes(token.text)));
-    }
-
-    assert.strictEqual(markers.filter(token => token.text === '承').length, 3);
-    assert.strictEqual(markers.filter(token => token.text === '化').length, 5);
-    assert.strictEqual(markers.filter(token => token.text === '而').length, 8);
-    assert.ok(markers.every(token => hasScope(token, 'storage.type.function.yuyan')));
+    assert.strictEqual(typeKeywords.map(token => token.text).join(''), '化又化');
+    assert.ok(typeKeywords.every(token => hasScope(token, 'storage.type.function.yuyan')));
+    assert.ok(findToken(tokens, '为').scopes.some(scope => scope.startsWith('keyword.')));
   });
 
   await runTest('uses type context in constructor declarations', () => {
     const lines = [
-      '「列」立化「元类型」而「元类型」也。',
-      '「罄」立（承「元类型」者「甲」而「列」于「甲」）也。'
+      '「列」立化「元类型」为「元类型」也。',
+      '「罄」立（凡「甲」属「元类型」而「列」于「甲」）也。'
     ];
 
     for (const line of lines) {
       const tokens = tokensWithText(line, grammar.tokenizeLine(line));
       const expectedTypeKeywords = line.startsWith('「列」')
-        ? ['化', '而']
-        : ['承', '者', '而'];
+        ? ['化']
+        : ['凡'];
 
       for (const keyword of expectedTypeKeywords) {
         assert.ok(hasScope(findToken(tokens, keyword), 'storage.type.function.yuyan'));
@@ -247,13 +200,13 @@ async function main() {
   await runTest('uses type context in indented algebraic data type constructors', () => {
     const lines = [
       {
-        source: '   「文字片」立化「字符串」而「排版片」也。「：连续的具体语法字符。：」',
-        typeKeywordText: '化而',
+        source: '   「文字片」立化「字符串」为「排版片」也。「：连续的具体语法字符。：」',
+        typeKeywordText: '化',
         hasComment: true
       },
       {
-        source: '\t「括号片」立化（「列」于「排版片」）而「排版片」也。',
-        typeKeywordText: '化而',
+        source: '\t「括号片」立化（「列」于「排版片」）为「排版片」也。',
+        typeKeywordText: '化',
         hasComment: false
       },
       {
@@ -262,13 +215,13 @@ async function main() {
         hasComment: false
       },
       {
-        source: '   「注释片」立化「字符串」而化「注释方向」而「排版片」也。',
-        typeKeywordText: '化而化而',
+        source: '   「注释片」立化「字符串」又化「注释方向」为「排版片」也。',
+        typeKeywordText: '化又化',
         hasComment: false
       },
       {
-        source: '   「构造排版状态」立化（「列」于「字符串」）「：倒序输出片段：」而化「整数」「：当前列：」而化「整数」「：连续换行数：」而「排版状态」也。',
-        typeKeywordText: '化而化而化而',
+        source: '   「构造排版状态」立化（「列」于「字符串」）「：倒序输出片段：」又化「整数」「：当前列：」又化「整数」「：连续换行数：」为「排版状态」也。',
+        typeKeywordText: '化又化又化',
         hasComment: true
       }
     ];
@@ -276,7 +229,7 @@ async function main() {
     for (const { source, typeKeywordText, hasComment } of lines) {
       const tokens = tokensWithText(source, grammar.tokenizeLine(source));
       const declarationKeyword = findToken(tokens, '立');
-      const typeKeywords = tokens.filter(token => token.text === '化' || token.text === '而');
+      const typeKeywords = tokens.filter(token => token.text === '化' || token.text === '又化');
       const declarationEnd = findToken(tokens, '也');
 
       assert.ok(hasScope(declarationKeyword, 'markup.bold.structure.yuyan'));
@@ -342,13 +295,13 @@ async function main() {
   });
 
   await runTest('highlights punctuation', () => {
-    const line = '（甲）【乙】，甲；乙。';
+    const line = '（甲）【乙】，甲 而后 乙。';
     const tokens = tokensWithText(line, grammar.tokenizeLine(line));
 
     for (const mark of ['（', '）', '【', '】', '，']) {
       assert.ok(hasScope(findToken(tokens, mark), 'punctuation.'));
     }
-    assert.ok(findToken(tokens, '；').scopes.some(scope => scope.startsWith('keyword.')));
+    assert.ok(findToken(tokens, '而后').scopes.some(scope => scope.startsWith('keyword.')));
     assert.ok(hasScope(findToken(tokens, '。'), 'markup.bold.structure.terminator.yuyan'));
   });
 
