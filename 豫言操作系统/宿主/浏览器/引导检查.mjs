@@ -1,9 +1,16 @@
 // 文言：豫言操作系统浏览器之引导检查，诸客器未启之先验之：浏览器具 WasmGC、JSPI 否；不具则蒙全页以示，页首之栏亦蒙焉，验时无所示。告末有“我明白”，按之则撤告而续览，功能不全；不记其按，每启一页皆复示。此篇不随诸客器抄录，官网布之于 /豫言操作系统/浏览器/引导检查.mjs，全站诸入口同域取之，改之惟布官网。
 // 汉语：豫言操作系统浏览器版的引导检查，在启动任何豫言 Wasm 之前运行：检查浏览器是否支持 WasmGC 与 JSPI；检查期间不显示任何提示，不支持时显示覆盖整页（含页首导航栏）的“版本过旧”提示。提示末尾有“我明白”按钮：点击后关闭提示、继续访问（功能不全）；不记住关闭，每次打开或刷新页面都重新提示。本文件不随各应用复制，由官网发布在 /豫言操作系统/浏览器/引导检查.mjs，全站各应用的 入口.mjs 都从这个同域地址导入；改检查或提示只需发布官网。
 const 检查层标识 = '豫言浏览器检查';
-const 支持WasmGC = () => {
-  try { return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, 1, 3, 1, 0x5f, 0])); } catch { return false; }
+// 文言：令客器自验一段最小之模块，验得则具其能。汉语：让浏览器验证一段最小的 Wasm 模块，验得过就是支持这项特性。
+const 验模块 = 字节们 => {
+  try { return WebAssembly.validate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0, ...字节们])); } catch { return false; }
 };
+// 文言：一型之段（空结构）。汉语：类型段里一个空结构类型，验 WasmGC。
+const 支持WasmGC = () => 验模块([1, 3, 1, 0x5f, 0]);
+// 文言：一函以 return_call 自召。汉语：一个函数用 return_call 尾调用自己，验尾调用。
+const 支持尾调用 = () => 验模块([1, 4, 1, 0x60, 0, 0, 3, 2, 1, 0, 10, 6, 1, 4, 0, 0x12, 0, 0x0b]);
+// 文言：一函于块中设 try_table（catch_all 至外块）。汉语：一个函数在块里放 try_table（catch_all 跳到外层块），验新式异常（编译器出的就是 try_table）。
+const 支持新式异常 = () => 验模块([1, 4, 1, 0x60, 0, 0, 3, 2, 1, 0, 10, 13, 1, 11, 0, 0x02, 0x40, 0x1f, 0x40, 1, 0x02, 0, 0x0b, 0x0b, 0x0b]);
 const 支持JSPI = () => typeof WebAssembly?.Suspending === 'function' && typeof WebAssembly?.promising === 'function';
 const 显示检查层 = 文 => {
   if (typeof document === 'undefined' || !document.body) return null;
@@ -22,11 +29,14 @@ const 显示检查层 = 文 => {
   return 层;
 };
 
+// 文言：所荐之客器及其最低之版，诸告共用之（主站引导亦用）。汉语：推荐的浏览器与最低版本，各处提示共用这一份（主站引导页也用）。
+export const 推荐浏览器 = 'Safari 27、Chrome 137、Edge 137 或 Firefox 153';
+
 // 文言：示过旧之告；缺者之名须先转义。汉语：显示“版本过旧”提示；「缺」会写进 HTML，调用方须先转义。
 export const 显示不支持 = 缺 => {
   const 层 = 显示检查层(
     '<h2 data-yy-style="margin:0 0 .5em;font-size:24px;font-weight:700;line-height:1.7;color:inherit;letter-spacing:normal;text-transform:none">您的浏览器版本过旧，无法运行本页面</h2>'
-    + '<p data-yy-style="margin:0 0 .5em;font-size:16px;color:inherit">请将浏览器更新到 Safari 27、Chrome 137、Edge 137 或 Firefox 153 及以上版本后再访问。</p>'
+    + `<p data-yy-style="margin:0 0 .5em;font-size:16px;color:inherit">请将浏览器更新到 ${推荐浏览器} 及以上版本后再访问。</p>`
     + `<p data-yy-style="margin:0 0 1em;font-size:13px;opacity:.7;color:inherit">缺少：${缺}</p>`
     + '<p data-yy-style="margin:0 0 .75em;font-size:16px;color:inherit">您也可以继续访问，但部分功能将无法使用。</p>'
     + '<button type="button" data-yy-style="font:inherit;padding:9px 24px;border:0;border-radius:3px;background:var(--豫朱,#a33c2c);color:#fff;cursor:pointer">我明白</button>');
@@ -34,6 +44,24 @@ export const 显示不支持 = 缺 => {
   层?.querySelector('button')?.addEventListener('click', () => 层.remove());
   return 层;
 };
+
+// 文言：豫言操作系统（网页行在）于客器所需之诸能，各一名一验，主站引导逐项验之。
+// 汉语：豫言操作系统（网页行在）要浏览器具备的各项能力，每项一个名字和一个检查函数，主站引导页逐项检查：
+//   WasmGC、尾调用与新式异常是编译器出的模块要的；JSPI、Atomics.waitAsync、跨源隔离、Worker 是处理器池与任务要的；DecompressionStream 解快照，
+//   OPFS 是秘府（站点私有文件系统），Cache Storage 存下载好的虚机文件。
+export const 豫言系统能力们 = [
+  ['WebAssembly', () => typeof WebAssembly === 'object'],
+  ['WasmGC', 支持WasmGC],
+  ['Wasm 尾调用', 支持尾调用],
+  ['Wasm 新式异常（try_table）', 支持新式异常],
+  ['JSPI', 支持JSPI],
+  ['Atomics.waitAsync', () => typeof globalThis.Atomics?.waitAsync === 'function'],
+  ['跨源隔离（SharedArrayBuffer）', () => globalThis.crossOriginIsolated === true && typeof SharedArrayBuffer === 'function'],
+  ['Worker', () => typeof Worker === 'function'],
+  ['DecompressionStream', () => typeof DecompressionStream === 'function'],
+  ['OPFS（站点私有文件系统）', () => typeof globalThis.navigator?.storage?.getDirectory === 'function'],
+  ['Cache Storage', () => typeof globalThis.caches === 'object'],
+];
 
 // 文言：还所缺之能之名；皆具则空。汉语：返回缺少的功能名列表；都支持时为空列表。
 export function 检查浏览器支持() {
