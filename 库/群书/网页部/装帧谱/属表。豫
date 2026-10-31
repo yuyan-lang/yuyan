@@ -98,6 +98,17 @@
 　，『text-decoration-inset』与『0』与「阴」
 　，『text-underline-offset』与『auto』与「阳」
 　，『text-decoration-skip-ink』与『auto』与「阳」
+　，『text-emphasis-style』与『none』与「阳」
+　，『text-emphasis-color』与『currentcolor』与「阳」
+　，『text-emphasis-position』与『over right』与「阳」
+　，『ruby-position』与『over』与「阳」
+　，『ruby-align』与『space-around』与「阳」
+　，『ruby-merge』与『separate』与「阳」
+　，『text-combine-upright』与『none』与「阳」
+　，『text-spacing-trim』与『normal』与「阳」
+　，『text-autospace』与『normal』与「阳」
+　，『hanging-punctuation』与『none』与「阳」
+　，『text-orientation』与『mixed』与「阳」
 　，『white-space』与『normal』与「阳」
 　，『word-break』与『normal』与「阳」
 　，『overflow-wrap』与『normal』与「阳」
@@ -244,6 +255,7 @@
 「层叠简写表基」者得「无」而
 　「列」
 　【『margin』与（「列」【『margin-top』，『margin-right』，『margin-bottom』，『margin-left』】）
+　，『text-emphasis』与（「列」【『text-emphasis-style』，『text-emphasis-color』，『text-emphasis-position』】）
 　，『padding』与（「列」【『padding-top』，『padding-right』，『padding-bottom』，『padding-left』】）
 　，『border』
 　　　与（「列」
