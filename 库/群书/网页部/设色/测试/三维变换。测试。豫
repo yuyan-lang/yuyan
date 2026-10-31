@@ -26,7 +26,7 @@
 　令「卡页」为
 　　「析片段」于『<div style="width:20px;height:20px;perspective:100px"><div style="width:20px;height:20px;background:red;transform:rotateY(60deg)"></div></div>』而
 　令「卡树」为「生网页盒树」于「篇求样式」于「卡页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度零」
 　　　于（得「样」又得「其文」又得「宽值」而「告祸」以「网页矩形」于『卡片无需测文』）
@@ -41,7 +41,7 @@
 　　　于「宽」曰「二零」
 　　　于「高」曰「二零」而
 　令「卡素」为「图像像素」于「卡图」而
-　令「无」为
+　令「」为
 　　若「且」
 　　　于（「且」于（（「读帛」于「卡素」于「八四零」）等于「二五五」）于（（「读帛」于「卡素」于「八四一」）等于「零」））
 　　　于（（「读帛」于「卡素」于「八七九」）等于「零」）则
@@ -51,7 +51,7 @@
 　令「方页」为
 　　「析片段」于『<div style="position:relative;width:8px;height:8px;perspective:60px;transform-style:preserve-3d"><div style="position:absolute;left:2px;top:2px;width:4px;height:4px;background:red;transform:translateZ(2px)"></div><div style="position:absolute;left:2px;top:2px;width:4px;height:4px;background:blue;transform:rotateY(180deg) translateZ(2px)"></div></div>』而
 　令「方树」为「生网页盒树」于「篇求样式」于「方页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度零」
 　　　于（得「样」又得「其文」又得「宽值」而「告祸」以「网页矩形」于『立方体无需测文』）
@@ -66,7 +66,7 @@
 　　　于「宽」曰「八」
 　　　于「高」曰「八」而
 　令「方素」为「图像像素」于「方图」而
-　令「无」为
+　令「」为
 　　若「且」
 　　　于（「且」于（（「读帛」于「方素」于「一四四」）等于「二五五」）于（（「读帛」于「方素」于「一四五」）等于「零」））
 　　　于（「且」于（（「读帛」于「方素」于「一四六」）等于「零」）于（（「读帛」于「方素」于「一四七」）等于「二五五」））则
@@ -76,7 +76,7 @@
 　令「背页」为
 　　「析片段」于『<div style="position:absolute;left:0;top:0;width:4px;height:4px;background:red;transform:rotateY(180deg);backface-visibility:hidden"></div><div style="position:absolute;left:4px;top:0;width:4px;height:4px;background:lime;transform:rotateY(180deg)"></div>』而
 　令「背树」为「生网页盒树」于「篇求样式」于「背页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度零」
 　　　于（得「样」又得「其文」又得「宽值」而「告祸」以「网页矩形」于『背面无需测文』）
@@ -91,7 +91,7 @@
 　　　于「宽」曰「八」
 　　　于「高」曰「四」而
 　令「背素」为「图像像素」于「背图」而
-　令「无」为
+　令「」为
 　　若「且」
 　　　于（（「读帛」于「背素」于「三九」）等于「零」）
 　　　于（「且」于（（「读帛」于「背素」于「五三」）等于「二五五」）于（（「读帛」于「背素」于「五五」）等于「二五五」））则
@@ -100,7 +100,7 @@
 　　　「告祸」以「有」于『背面隐蔽者不应画出而可见者应照常画出』而
 　令「棱页」为「析片段」于『<div style="width:20px;height:20px;transform:rotateY(50deg)"><div style="width:20px;height:20px;background:red"></div></div>』而
 　令「棱树」为「生网页盒树」于「篇求样式」于「棱页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度零」
 　　　于（得「样」又得「其文」又得「宽值」而「告祸」以「网页矩形」于『棱柱无需测文』）
@@ -115,7 +115,7 @@
 　　　于「宽」曰「二零」
 　　　于「高」曰「二零」而
 　令「棱素」为「图像像素」于「棱图」而
-　令「无」为
+　令「」为
 　　若「且」
 　　　于（（「读帛」于「棱素」于「八四零」）等于「二五五」）
 　　　于（「且」于（（「读帛」于「棱素」于「八零三」）等于「零」）于（（「读帛」于「棱素」于「八七九」）等于「零」））则

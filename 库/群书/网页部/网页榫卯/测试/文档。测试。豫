@@ -72,7 +72,7 @@
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『let defaults=document.createElement("select");defaults.innerHTML="<option disabled value=\"甲\">首</option><optgroup disabled><option value=\"乙\">次</option></optgroup><option value=\"丙\">末</option>";let defaultSelection=defaults.selectedIndex===2&&defaults.value==="丙";defaults.selectedIndex=-1;let explicitEmpty=defaults.selectedIndex===-1&&defaults.value==="";let multi=document.createElement("select");multi.setAttribute("multiple","");multi.innerHTML="<option>多</option>";defaultSelection&&explicitEmpty&&multi.selectedIndex===-1;』而
-　令「无」为「复原表单控件」于（「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于『defaults;』））而
+　令「」为「复原表单控件」于（「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于『defaults;』））而
 　令「复原控件果」为「急就在境行脚本」于「境」于『defaults.selectedIndex===2&&defaults.value==="丙";』而
 　令「布尔属性果」为
 　　「急就在境行脚本」
@@ -82,7 +82,7 @@
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『input.defaultValue="复";input.defaultChecked=true;area.defaultValue="基";option.defaultSelected=false;input.defaultValue==="复"&&input.value==="新😀"&&input.defaultChecked&&!input.checked&&area.defaultValue==="基"&&area.value==="现"&&!option.defaultSelected&&option.selected;』而
-　令「无」为
+　令「」为
 　　「叠」以「文」又以「有」
 　　　于（得「名」又得「无」而「复原表单控件」于（「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于「名」）））
 　　　于「元」
@@ -100,21 +100,21 @@
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『chars.data="甲😀乙";let sub=chars.substringData(1,2)==="😀"&&chars.substringData(3,99)==="乙";chars.insertData(1,"中");chars.deleteData(2,2);chars.replaceData(1,1,"新");chars.appendData("尾");comment.replaceData(0,99,"注");let edited=chars.data==="甲新乙尾"&&comment.data==="注"&&chars.substringData(4,3)==="";let detachedTail=chars.splitText(2);let splitDetached=chars.data==="甲新"&&detachedTail.data==="乙尾"&&detachedTail.parentNode===null&&detachedTail.ownerDocument===document;let splitParent=document.createElement("p");chars.data="甲😀乙";splitParent.append(chars,comment);let splitTail=chars.splitText(1);let splitAttached=chars.data==="甲"&&splitTail.data==="😀乙"&&chars.nextSibling===splitTail&&splitTail.nextSibling===comment&&splitTail.parentNode===splitParent;let emptyTail=splitTail.splitText(3);sub&&edited&&splitDetached&&splitAttached&&emptyTail.data===""&&emptyTail.nextSibling===comment;』而
-　令「监听设置」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『let calls=0;let onceCalls=0;let captureCalls=0;let capturedEvent;let sameEvent=false;function listener(ev){if(this===a&&ev.type==="试")calls++;sameEvent=ev===capturedEvent;}function onceListener(ev){onceCalls++;sameEvent=sameEvent&&ev===capturedEvent;}function captureListener(ev){captureCalls++;capturedEvent=ev;}a.addEventListener("试",listener,false);a.addEventListener("试",listener,{});a.addEventListener("试",onceListener,{once:true,passive:true});a.addEventListener("试",captureListener,{capture:true});』而
 　令「监听节」为「解包网览节」于「绑定」于（「急就在境行脚本」于「境」于『a;』）而
-　令「派发果」为「派发事」于「监听节」于（「新事」于『试』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
+　令「」为「派发事」于「监听节」于（「新事」于『试』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
 　令「一次果」为「急就在境行脚本」于「境」于『calls===1&&onceCalls===1&&captureCalls===1&&sameEvent;』而
-　令「监听移除」为
+　令「」为
 　　「急就在境行脚本」于「境」于『a.removeEventListener("试",listener,{capture:false});a.removeEventListener("试",captureListener,{capture:true});』而
-　令「再派发果」为「派发事」于「监听节」于（「新事」于『试』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
-　令「控制设置」为
+　令「」为「派发事」于「监听节」于（「新事」于『试』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『let cancelled=false;let skipped=0;let savedEvent;function cancelListener(ev){savedEvent=ev;ev.preventDefault();ev.stopPropagation();let path=ev.composedPath();cancelled=path[0]===a&&path[path.length-1]===document&&ev.target===a&&ev.currentTarget===this&&ev.defaultPrevented&&ev.cancelBubble&&ev.bubbles&&ev.cancelable&&!ev.composed&&ev.eventPhase===2;ev.stopImmediatePropagation();}a.addEventListener("消",cancelListener);a.addEventListener("消",function(ev){skipped++;});』而
-　令「取消果」为「派发事」于「监听节」于（「新事」于『消』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
+　令「」为「派发事」于「监听节」于（「新事」于『消』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阴」）而
 　令「对象监听果」为
 　　「急就在境行脚本」
 　　　于「境」

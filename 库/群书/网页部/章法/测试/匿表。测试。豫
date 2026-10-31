@@ -45,7 +45,7 @@
 　令「格页」为
 　　「析片段」于『<style>#格{width:300px;margin:0;border:0;padding:0}#格::before{content:"AAAA";display:table-cell}#格::after{content:"BBBB";display:table-cell}</style><div id="格">Inner</div>』而
 　令「格树」为「生网页盒树」于「篇求样式」于「格页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度二十」
 　　　于（得「样」又得「其文」又得「宽值」而
@@ -76,7 +76,7 @@
 　　　或有（「缀」于「首子」于「余子」）则「首子」
 　　　或有「罄」则「格宿主」而
 　令「表矩」为「网页盒边框矩形」于「格表盒」而
-　令「无」为
+　令「」为
 　　若（（「小数等于」于（「前矩」中「横」）于「零点零」）
 　　　且（「小数等于」于（「前矩」中「宽」）于「三二点零」）
 　　　且（「小数等于」于（「后矩」中「横」）于「七二点零」）
@@ -98,7 +98,7 @@
 　令「行页」为
 　　「析片段」于『<style>#行::before{content:"AAAA";display:table-cell}#行::after{content:"BBBB";display:table-cell}</style><table id="行表"><tbody><tr id="行"><td id="真格">Inner</td></tr></tbody></table>』而
 　令「行树」为「生网页盒树」于「篇求样式」于「行页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度二十」
 　　　于（得「样」又得「其文」又得「宽值」而
@@ -149,7 +149,7 @@
 　令「宽页」为
 　　「析片段」于『<style>#宽{width:200px;margin:0;border:0;padding:0}#宽::before{content:"AAAAA BBBBB";display:table-cell}#宽::after{content:"CCCCC DDDDD";display:table-cell}</style><div id="宽"><span id="中格" style="display:table-cell">EEEEE FFFFF</span></div>』而
 　令「宽树」为「生网页盒树」于「篇求样式」于「宽页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度二十」
 　　　于（得「样」又得「其文」又得「宽值」而
@@ -178,7 +178,7 @@
 　　　　或有「可无」则「空网页矩形」于「元」
 　　）而
 　令「中矩」为「网页节包围矩形」于「宽树」于（「冠」于（「问择器全」于「宽页」于『#中格』））而
-　令「无」为
+　令「」为
 　　若（（「数近」于（「前矩」中「宽」）于「六六点六六六六」）
 　　　且（「数近」于（「中矩」中「宽」）于「六六点六六六六」）
 　　　且（「数近」于（「后矩」中「宽」）于「六六点六六六六」）
@@ -198,7 +198,7 @@
 　令「行宽页」为
 　　「析片段」于『<style>#行三{display:table-row}#行三 .格{display:table-cell}#行三 .方{display:inline-block;width:32px;height:32px}</style><div id="行三"><span class="格" id="左格">AAAA BBBB CCCC <span class="方"></span></span><span class="格" id="中三格">Inner</span><span class="格" id="右格">DDDD EEEE FFFF <span class="方"></span></span></div>』而
 　令「行宽树」为「生网页盒树」于「篇求样式」于「行宽页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度二十」
 　　　于（得「样」又得「其文」又得「宽值」而
@@ -215,7 +215,7 @@
 　令「左矩」为「网页节包围矩形」于「行宽树」于（「冠」于（「问择器全」于「行宽页」于『#左格』））而
 　令「中矩三」为「网页节包围矩形」于「行宽树」于（「冠」于（「问择器全」于「行宽页」于『#中三格』））而
 　令「右矩三」为「网页节包围矩形」于「行宽树」于（「冠」于（「问择器全」于「行宽页」于『#右格』））而
-　令「无」为
+　令「」为
 　　若（（「数近」于（「左矩」中「宽」）于「一三零点零」）
 　　　且（「数近」于（「中矩三」中「横」）于「一三零点零」）
 　　　且（「数近」于（「中矩三」中「宽」）于「四零点零」）
@@ -237,7 +237,7 @@
 　令「格行页」为
 　　「析片段」于『<style>#外{width:300px;border:0;margin:0}#内行{display:table-row}#内行 .格{display:table-cell}#内行 .方{display:inline-block;width:32px;height:32px}</style><table id="外"><tbody><tr><td id="外格"><div id="内行"><span class="格" id="格左">AAAA BBBB CCCC <span class="方"></span></span><span class="格" id="格中">Inner</span><span class="格" id="格右">DDDD EEEE FFFF <span class="方"></span></span></div></td></tr></tbody></table>』而
 　令「格行树」为「生网页盒树」于「篇求样式」于「格行页」而
-　令「无」为
+　令「」为
 　　「布局网页」
 　　　于「量度二十」
 　　　于（得「样」又得「其文」又得「宽值」而
@@ -255,7 +255,7 @@
 　令「格中矩」为「网页节包围矩形」于「格行树」于（「冠」于（「问择器全」于「格行页」于『#格中』））而
 　令「格右矩」为「网页节包围矩形」于「格行树」于（「冠」于（「问择器全」于「格行页」于『#格右』））而
 　令「外矩」为「网页节包围矩形」于「格行树」于（「冠」于（「问择器全」于「格行页」于『#外格』））而
-　令「无」为
+　令「」为
 　　若（（「数近」于（「格左矩」中「宽」）于「一二三点零」）
 　　　且（「数近」于（「格中矩」中「横」）于「一三零点零」）
 　　　且（「数近」于（「格中矩」中「宽」）于「四零点零」）

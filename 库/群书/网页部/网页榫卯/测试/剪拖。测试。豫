@@ -35,8 +35,8 @@
 　令「文档」为「析篇」于「标记」而
 　令「境」为「急就新全局境」于「元」而
 　令「绑定」为（「系网览篇」于「境」于「文档」）而
-　令「无」为「安装网页剪拖」于「境」而
-　令「无」为「安装网页剪贴板」于「境」而
+　令「」为「安装网页剪拖」于「境」而
+　令「」为「安装网页剪贴板」于「境」而
 　「组值」【「境」者「境」也，「绑定」者「绑定」也，「文档」者「文档」也】
 也。
 
@@ -45,7 +45,7 @@
 　　赋曰：两类入囊次第陈，读来一字不差分。目列种名皆可问，落许随写复随问。清一留余尽清后，空囊重待后来人。：」
 「试数据囊」乃化「急就境」为「有」者也。
 「试数据囊」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var d=new DataTransfer();d.setData("text/plain","甲");d.setData("text/html","<b>甲</b>");window.__甲=[d.getData("text/plain"),d.getData("text/html"),d.getData("text/x"),d.types.join("|"),d.items.length,d.items[0].kind,d.items[0].type].join(";");d.dropEffect="copy";d.effectAllowed="copyMove";d.setDragImage(null,1,2);window.__乙=[d.dropEffect,d.effectAllowed].join(";");d.clearData("text/plain");window.__丙=[d.getData("text/plain"),d.types.join("|")].join(";");d.clearData();window.__丁=[d.types.length,d.items.length].join(";");』而
@@ -65,11 +65,11 @@
 　　赋曰：条目成列可增删，数位相寻不越班。取文付与回音去，越界空手亦无难。：」
 「试条目列」乃化「急就境」为「有」者也。
 「试条目列」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var d=new DataTransfer();var it=d.items.add("乙","text/plain");it.getAsString(function(s){window.__甲=s;});window.__乙=[it.kind,it.type,d.items[1],d.items.item(1)].join(";");d.items.remove(0);window.__丙=[d.items.length,d.getData("text/plain")].join(";");』而
-　令「无」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
 　「剪拖核对」
 　　于「名」曰『条目列增删与越界』
 　　于「实」曰（（「剪拖取字」于「境」于『window.__乙』）接『/』接（「剪拖取字」于「境」于『window.__丙』）接『/』接（「剪拖取字」于「境」于『window.__甲』））
@@ -81,7 +81,7 @@
 　　赋曰：一纸条目记其名，按类取值自分明。：」
 「试剪贴条目」乃化「急就境」为「有」者也。
 「试剪贴条目」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var ci=new ClipboardItem({"text/plain":"丙","text/html":"<i>丙</i>"});window.__甲=[ci.types.join("|"),ci.getType("text/plain"),ci.getType("text/html"),ci.getType("text/x")].join(";");』而
@@ -93,11 +93,11 @@
 　　赋曰：无手之写拒以名，读时同拒一般情。：」
 「试剪贴手势」乃化「急就境」为「有」者也。
 「试剪贴手势」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『window.__甲=[];navigator.clipboard.writeText("丁").then(function(){window.__甲.push("写成")},function(e){window.__甲.push(e.name)});navigator.clipboard.readText().then(function(){window.__甲.push("读成")},function(e){window.__甲.push(e.name)});』而
-　令「无」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
 　「剪拖核对」于「名」曰『无手势的异步剪贴板拒绝』于「实」曰（「剪拖取字」于「境」于『window.__甲.join(";")』）于「望」曰『NotAllowedError;NotAllowedError』
 也。
 
@@ -106,20 +106,20 @@
 　　赋曰：一事带囊派向前，听者读改两皆便。未却照常却则罢，三般俱验此中全。：」
 「试剪拖事」乃化「急就境」又化「篇节」为「有」者也。
 「试剪拖事」者得「境」又得「文档」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『window.__甲=[];document.body.addEventListener("copy",function(e){window.__甲.push(e.type);window.__甲.push(e.clipboardData.getData("text/plain"));e.clipboardData.setData("text/plain","戊");window.__甲.push(e.clipboardData.getData("text/plain"));e.preventDefault();window.__甲.push(e.defaultPrevented);});』而
 　令「态」为「新网页剪拖态」于「元」而
-　令「无」为「剪拖设据」于「态」于「种类」曰『string』于「类型」曰『text/plain』于「数据」曰『己』而
+　令「」为「剪拖设据」于「态」于「种类」曰『string』于「类型」曰『text/plain』于「数据」曰『己』而
 　令「事」为「新事」于『copy』于「冒泡」曰「阳」于「可取消」曰「阳」于「可越界」曰「阳」而
-　令「无」为「装剪拖态」于「事」于「态」而
+　令「」为「装剪拖态」于「事」于「态」而
 　令「目标」为
 　　鉴「问择器」于「文档」于『body』而
 　　　或有（「可有」于「体节」）则「体节」
 　　　或有「可无」则「文档」而
 　令「照常」为「派发事」于「目标」于「事」而
-　令「无」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
 　「剪拖核对」
 　　于「名」曰『copy 事件的 clipboardData 与取消』
 　　于「实」曰（（「剪拖取字」于「境」于『window.__甲.join(";")』）接『/』接（若「照常」则『照常』否则『已取消』））
@@ -131,7 +131,7 @@
 　　赋曰：元素可拖随属改，div 初阴链图阳。设阳得阳属性在，设阴去属复如常。：」
 「试可拖性」乃化「急就境」为「有」者也。
 「试可拖性」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var b=document.body;var a=document.createElement("a");var im=document.createElement("img");var d=document.createElement("div");window.__甲=[b.draggable,a.draggable,im.draggable,d.draggable].join(";");d.draggable=true;window.__乙=[d.draggable,d.getAttribute("draggable")].join(";");d.draggable=false;window.__丙=[d.draggable,d.getAttribute("draggable")].join(";");』而
@@ -146,7 +146,7 @@
 　　赋曰：诸术逐条试一场，锚焦偏移各呈详。取界纳界还去界，删文之后字余行。：」
 「试选区」乃化「急就境」为「有」者也。
 「试选区」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var p=document.getElementById("p"),q=document.getElementById("q"),s=getSelection();s.selectAllChildren(p);var a=[s.anchorNode===p,s.anchorOffset,s.focusNode===p,s.focusOffset,s.isCollapsed,s.rangeCount,s.type,s.toString()].join(";");var r=s.getRangeAt(0);s.collapse(p,1);var b=[s.isCollapsed,s.anchorOffset,s.focusOffset,s.type].join(";");s.selectAllChildren(p);s.collapseToEnd();var c=[s.anchorOffset,s.focusOffset].join(";");s.selectAllChildren(p);s.collapseToStart();var d=[s.anchorOffset,s.focusOffset].join(";");s.selectAllChildren(p);s.extend(q,1);var e=[s.anchorNode===p,s.focusNode===q,s.toString()].join(";");s.setBaseAndExtent(q,1,p,1);var f=[s.anchorNode===q,s.anchorOffset,s.focusNode===p,s.focusOffset,s.toString()].join(";");var g=[s.containsNode(p,true),s.containsNode(document.body,true)].join(";");s.removeAllRanges();var h=[s.rangeCount,s.isCollapsed,s.type].join(";");s.addRange(r);var i=[s.rangeCount,s.toString()].join(";");s.removeRange(r);var j=[s.rangeCount].join(";");s.selectAllChildren(p);s.deleteFromDocument();var k=[document.getElementById("p").textContent,s.rangeCount,s.toString()].join(";");window.__甲=[a,b,c,d,e,f,g,h,i,j,k].join("/");』而
@@ -160,13 +160,13 @@
 「入口」者得「无」而
 　令「摊」为「剪拖新境」于『<body><p id="p">甲乙</p><p id="q">丙丁</p></body>』而
 　令「境」为（「摊」中「境」）而
-　令「无」为「试数据囊」于「境」而
-　令「无」为「试条目列」于「境」而
-　令「无」为「试剪贴条目」于「境」而
-　令「无」为「试剪贴手势」于「境」而
-　令「无」为「试剪拖事」于「境」于（「摊」中「文档」）而
-　令「无」为「试可拖性」于「境」而
-　令「无」为「试选区」于「境」而
+　令「」为「试数据囊」于「境」而
+　令「」为「试条目列」于「境」而
+　令「」为「试剪贴条目」于「境」而
+　令「」为「试剪贴手势」于「境」而
+　令「」为「试剪拖事」于「境」于（「摊」中「文档」）而
+　令「」为「试可拖性」于「境」而
+　令「」为「试选区」于「境」而
 　「书」于『剪拖测试通过』
 也。
 

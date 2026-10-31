@@ -15,8 +15,8 @@
 「入口」者得「无」而
 　令「文档」为「析篇」于『<div id="a"></div>』而
 　令「境」为「急就新全局境」于「元」而
-　令「无」为（「系网览篇」于「境」于「文档」）而
-　令「无」为
+　令「」为（「系网览篇」于「境」于「文档」）而
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var F=[];function c(n,v){if(!v)F.push(n)}var o={n:1,s:"甲"};o.self=o;var shared={z:2};var arr=[shared,shared];var c1=structuredClone({o:o,arr:arr});c("环",c1.o.self===c1.o);c("原不共",c1.o!==o);c("共引",c1.arr[0]===c1.arr[1]&&c1.arr[0]!==shared);c("常物",c1.arr[0].z===2);var m=new Map([["k",{v:1}]]);var mc=structuredClone(m);c("映射",mc instanceof Map&&mc.get("k").v===1&&mc.get("k")!==m.get("k")&&mc!==m);var st=new Set([1,2]);var sc=structuredClone(st);c("集合",sc instanceof Set&&sc.has(1)&&!sc.has(3));var d=new Date(123456789);var dc=structuredClone(d);c("日期",dc instanceof Date&&dc.getTime()===123456789&&dc!==d);var r=/ab+c/gi;var rc=structuredClone(r);c("正则",rc.source==="ab+c"&&rc.flags==="gi"&&rc!==r);var e=new TypeError("坏");var ec=structuredClone(e);c("误物",ec instanceof TypeError&&ec.message==="坏"&&ec!==e);c("误自有",ec.hasOwnProperty("message"));var b=new ArrayBuffer(8);new Uint8Array(b)[0]=9;var t=structuredClone(b);c("牍",t!==b&&t.byteLength===8&&new Uint8Array(t)[0]===9&&new Uint8Array(b)[0]===9);var u=new Uint16Array(b);var uc=structuredClone(u);c("字列",uc instanceof Uint16Array&&uc.buffer!==b&&uc[0]===u[0]);var dv=new DataView(b,2,4);var dvc=structuredClone(dv);c("观",dvc instanceof DataView&&dvc.buffer!==b&&dvc.byteOffset===2&&dvc.byteLength===4);var bx=new ArrayBuffer(4);new Uint8Array(bx)[0]=65;var bxc=structuredClone(bx,{transfer:[bx]});c("转移",bx.byteLength===0&&new Uint8Array(bxc)[0]===65);window.__cloneFail=F.join(",");』而
@@ -31,7 +31,7 @@
 　　令「节点拒」为
 　　　「姑试」以「爻」
 　　　　于（得「弃」而
-　　　　　令「弃」为「急就在境行脚本」于「境」于『structuredClone(document.getElementById("a"));』而
+　　　　　令「」为「急就在境行脚本」于「境」于『structuredClone(document.getElementById("a"));』而
 　　　　　「阴」
 　　　　）
 　　　　于（得「故」而「阳」）而
@@ -39,7 +39,7 @@
 　　令「函数拒」为
 　　　「姑试」以「爻」
 　　　　于（得「弃」而
-　　　　　令「弃」为「急就在境行脚本」于「境」于『structuredClone(function(){});』而
+　　　　　令「」为「急就在境行脚本」于「境」于『structuredClone(function(){});』而
 　　　　　「阴」
 　　　　）
 　　　　于（得「故」而「阳」）而
@@ -47,7 +47,7 @@
 　　令「符号拒」为
 　　　「姑试」以「爻」
 　　　　于（得「弃」而
-　　　　　令「弃」为「急就在境行脚本」于「境」于『structuredClone(Symbol("甲"));』而
+　　　　　令「」为「急就在境行脚本」于「境」于『structuredClone(Symbol("甲"));』而
 　　　　　「阴」
 　　　　）
 　　　　于（得「故」而「阳」）而

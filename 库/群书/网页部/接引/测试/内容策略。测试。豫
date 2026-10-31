@@ -84,13 +84,13 @@
 　鉴「体选」而
 　　或有「可无」则「告祸」以「有」于『页里没有 body』
 　　或有（「可有」于「体」）则
-　　　令「无」为「断言」于（「文同」于（「属文」于「体」于『坏』）于『』）于『不带 nonce 的内联脚本被拦』而
-　　　令「无」为「断言」于（「策有址」于『script-src』于『eval』）于『eval 被拦并记违规』而
-　　　令「无」为「断言」于（「策有令」于『script-src-elem』）于『内联脚本记了 script-src-elem』而
-　　　令「无」为「断言」于（「策有令」于『style-src-elem』）于『style 元素记了 style-src-elem』而
-　　　令「无」为「断言」于（「策有令」于『style-src-attr』）于『style 属性记了 style-src-attr』而
-　　　令「无」为「断言」于（「策有令」于『script-src-attr』）于『事件处理器记了 script-src-attr』而
-　　　令「无」为「断言」于（「文含」于『inline』于（「属文」于「体」于『事』））于『文档上派了内联脚本的违规事件』而
+　　　令「」为「断言」于（「文同」于（「属文」于「体」于『坏』）于『』）于『不带 nonce 的内联脚本被拦』而
+　　　令「」为「断言」于（「策有址」于『script-src』于『eval』）于『eval 被拦并记违规』而
+　　　令「」为「断言」于（「策有令」于『script-src-elem』）于『内联脚本记了 script-src-elem』而
+　　　令「」为「断言」于（「策有令」于『style-src-elem』）于『style 元素记了 style-src-elem』而
+　　　令「」为「断言」于（「策有令」于『style-src-attr』）于『style 属性记了 style-src-attr』而
+　　　令「」为「断言」于（「策有令」于『script-src-attr』）于『事件处理器记了 script-src-attr』而
+　　　令「」为「断言」于（「文含」于『inline』于（「属文」于「体」于『事』））于『文档上派了内联脚本的违规事件』而
 　　　「元」
 也。
 

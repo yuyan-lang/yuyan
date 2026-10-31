@@ -76,10 +76,10 @@ self.onmessage = function(e){
 「入口」乃化「有」为「有」者也。
 「入口」者得「无」而
 　令「境」为「急就新全局境」于「元」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」于「境」于『var window = globalThis;「：换行：」var location = {href:"https://example.test/page.html", origin:"https://example.test"};』而
-　令「无二」为「安装网工」于「境」于「测试交换」而
-　令「无三」为「急就在境行脚本」于「境」于『window.__工 = {信:[], 误:[], 旧长:-1, 推信:[], 闭信:[]};
+　令「」为「安装网工」于「境」于「测试交换」而
+　令「」为「急就在境行脚本」于「境」于『window.__工 = {信:[], 误:[], 旧长:-1, 推信:[], 闭信:[]};
 var w = new Worker("https://example.test/worker.js");
 w.onmessage = function(e){ window.__工.信.push(e.data); };
 w.onerror = function(e){ window.__工.误.push(e.message); };
@@ -108,7 +108,7 @@ var 闭工 = new Worker("https://example.test/worker.js");
 闭工.onmessage = function(e){ window.__工.闭信.push(e.data); };
 闭工.postMessage({cmd:"闭"});
 闭工.postMessage({cmd:"推", n:3});』而
-　令「无四」为「跑尽」于「六四」而
+　令「」为「跑尽」于「六四」而
 　「查」
 　　于「境」
 　　于「名」曰『往返消息都到』
