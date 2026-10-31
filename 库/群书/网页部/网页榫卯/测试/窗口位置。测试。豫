@@ -16,8 +16,8 @@
 　令「文档」为「析篇」于『<div id="a"></div>』而
 　令「境」为「急就新全局境」于「元」而
 　令「绑定」为（「系网览篇」于「境」于「文档」）而
-　令「无」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test:8080/a/b?x=1#h』而
-　令「无」为「写匣」于「网页视口尺寸」于（「八零零」与「六零零」）而
+　令「」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test:8080/a/b?x=1#h』而
+　令「」为「写匣」于「网页视口尺寸」于（「八零零」与「六零零」）而
 　令「验」为（（得「码」而「急就严格等」于（「急就在境行脚本」于「境」于「码」）于（「急就布尔」于「阳」））属（化「文」为「爻」））而
 　「检查」
 　　于「名」曰『地址部件』
@@ -26,7 +26,7 @@
 　「检查」
 　　于「名」曰『旧时线』
 　　于「真」曰（「验」于『typeof performance.timing==="object"&&performance.timing.navigationStart===0&&performance.timing.fetchStart===0&&performance.timing.domComplete===0&&performance.timing.loadEventEnd===0;』）而后
-　令「无」为「急就在境行脚本」于「境」于『location.hash="k";location.assign("../c");』而
+　令「」为「急就在境行脚本」于「境」于『location.hash="k";location.assign("../c");』而
 　「检查」
 　　于「名」曰『导航请求』
 　　于「真」曰（
@@ -47,7 +47,7 @@
 　　　　或有（「缀」于（「页面改址请求」于「址」于「新」）于「罄」）则「且」于（「文同」于「址」于『https://example.test:8080/a/d?y=2』）于「新」
 　　　　或有「其他」则「阴」
 　　）而后
-　令「无」为「急就在境行脚本」于「境」于『scrollTo(0,120);history.back();』而
+　令「」为「急就在境行脚本」于「境」于『scrollTo(0,120);history.back();』而
 　「检查」
 　　于「名」曰『滚动与走历史请求』
 　　于「真」曰（

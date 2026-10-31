@@ -15,8 +15,8 @@
 「入口」者得「无」而
 　令「文档」为「析篇」于『<div id="a"></div>』而
 　令「境」为「急就新全局境」于「元」而
-　令「无」为（「系网览篇」于「境」于「文档」）而
-　令「无」为「急就在境行脚本」于「境」于『window.__信={};
+　令「」为（「系网览篇」于「境」于「文档」）而
+　令「」为「急就在境行脚本」于「境」于『window.__信={};
 var ch=new MessageChannel();__信.序=[];ch.port2.onmessage=function(e){__信.序.push("甲"+e.data.n)};
 ch.port1.postMessage({n:1});ch.port1.postMessage({n:2});
 var ch2=new MessageChannel();__信.移=[];ch2.port2.onmessage=function(e){__信.移.push(new Uint8Array(e.data)[0]+":"+e.data.byteLength)};
@@ -29,9 +29,9 @@ b1.onmessage=function(e){__信.自发++};b2.onmessage=function(e){__信.檄.push
 b1.postMessage({q:7});
 __信.窗=[];window.addEventListener("message",function(e){__信.窗.push(e.data.v+"|"+e.type+"|"+(e.source===window)+"|"+(Array.isArray(e.ports)?e.ports.length:-1)+"|"+(typeof e.origin))});
 window.postMessage({v:3},"*");』而
-　令「零时」为「行到期网页定时器」于「现在」曰「零」而
-　令「十时」为「行到期网页定时器」于「现在」曰「一零」而
-　令「无」为「网页微役察点」于「元」而
+　令「」为「行到期网页定时器」于「现在」曰「零」而
+　令「」为「行到期网页定时器」于「现在」曰「一零」而
+　令「」为「网页微役察点」于「元」而
 　「检查」
 　　于「名」曰『端口按次序收消息』
 　　于「真」曰（「急就严格等」于（「急就在境行脚本」于「境」于『__信.序.join(",")==="甲1,甲2";』）于（「急就布尔」于「阳」））而后

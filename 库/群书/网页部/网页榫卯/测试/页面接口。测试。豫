@@ -92,12 +92,12 @@
 　令「文档」为「析篇」于『<div id="a"></div>』而
 　令「境」为「急就新全局境」于「元」而
 　令「绑定」为（「系网览篇」于「境」于「文档」）而
-　令「无」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test/页』而
+　令「」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test/页』而
 　令「本地簿」为「新储籍簿」于「元」而
 　令「会话簿」为「新储籍簿」于「元」而
 　令「主录」为
 　　「新页面接口宿主」于「交换」曰「假交换」于「本地」曰「本地簿」于「会话」曰「会话簿」于「持久」曰「页面空持久」于「媒体」曰（「无媒体宿主」于「元」）而
-　令「无」为「安装网页接口」于「境」于「绑定」于「文档」于「主录」而
+　令「」为「安装网页接口」于「境」于「绑定」于「文档」于「主录」而
 　「境」与「本地簿」
 也。
 
@@ -105,12 +105,12 @@
 　　文言：采书、提封、驿址、表单与询参。：」
 「试采书」乃化「急就境」为「有」者也。
 「试采书」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『window.__a=[];window.__b=[];fetch("/a?x=1").then(function(r){window.__a.push(r.status+":"+r.url);return r.text();}).then(function(t){window.__a.push(t);});(async function(){var r=await fetch("/b");window.__b.push(await r.text());})();var h=new Headers([["X-试","一"],["X-试","二"]]);h.append("X-试","三");window.__c=[h.get("x-试"),h.has("X-试"),h.get("none")].join("|");var u=new URL("/p?x=1",location.href);window.__d=[u.href,u.pathname,u.search,u.searchParams.get("x"),u.origin].join("|");var s=new URLSearchParams("a=1&a=2");s.append("b","3");s.delete("a");window.__e=[s.get("b"),s.toString(),s.has("a")].join("|");var f=new FormData();f.append("a","1");f.set("a","2");f.append("b","3");window.__g=[f.get("a"),f.getAll("b").length,f.has("c"),f.get("c")].join("|");』而
-　令「无」为「网页微役察点」于「元」而
-　令「无」为「急就在境行脚本」于「境」于『window.__甲=[window.__a.join("|"),window.__b.join("|"),window.__c,window.__d,window.__e,window.__g].join(";");』而
+　令「」为「网页微役察点」于「元」而
+　令「」为「急就在境行脚本」于「境」于『window.__甲=[window.__a.join("|"),window.__b.join("|"),window.__c,window.__d,window.__e,window.__g].join(";");』而
 　「核对」
 　　于「名」曰『fetch 的 then、await 与相对地址』
 　　于「实」曰（「取字」于「境」于『window.__甲』）
@@ -127,11 +127,11 @@
 　　文言：卷帛之文、籍册之守与文帛之编；终验本地之簿。：」
 「试帛籍」乃化「急就境」又化「储籍簿」为「有」者也。
 「试帛籍」者得「境」又得「本地簿」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var bl=new Blob(["甲乙"],{type:"Text/Plain"});bl.text().then(function(t){window.__乙=[t,bl.size,bl.type].join("|");});localStorage.setItem("k","v");sessionStorage.setItem("s","t");var te=new TextEncoder();var bytes=te.encode("甲乙");var td=new TextDecoder();window.__丙=[localStorage.getItem("k"),localStorage.length,localStorage.key(0),localStorage.getItem("none"),sessionStorage.getItem("s"),localStorage.getItem("s"),bytes.length,td.decode(bytes),new TextDecoder("utf-8",{fatal:true}).decode(bytes)].join("|");』而
-　令「无」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
 　「核对」于「名」曰『Blob 的 text、大小与类型』于「实」曰（「取字」于「境」于『window.__乙』）于「望」曰『甲乙|6|text/plain』而后
 　「核对」于「名」曰『储籍与文帛编码』于「实」曰（「取字」于「境」于『window.__丙』）于「望」曰『v|1|k||t||6|甲乙|甲乙』而后
 　（若「簿有」于「本地簿」于「键」曰『k』于「值」曰『v』则「书」于『本地簿：通过』否则「告祸」于『本地簿没有记下键值』）
@@ -148,7 +148,7 @@
 　　　若「轮」大于「一零零」则
 　　　　「零」
 　　　否则
-　　　　（令「无」为（「行到期网页定时器」于「现在」曰（「刻」加「一」））而
+　　　　（令「」为（「行到期网页定时器」于「现在」曰（「刻」加「一」））而
 　　　　　「网页微役察点」于「元」而后
 　　　　　「泵页面任务」于（「轮」加「一」））
 　　）
@@ -158,7 +158,7 @@
 　　文言：驿书之事序、诸响应之种，及 blob 之 text。异步之 send 还时止于 loadstart，回书诸事排于零毫秒之页务：先核 send 还时之一轮，乃推页面之务至无签，核其全序；诸响应之种亦先发请、推务而后读之。：」
 「试驿书」乃化「急就境」为「有」者也。
 「试驿书」者得「境」而
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var ev=[];var x=new XMLHttpRequest();x.onreadystatechange=function(){ev.push("rs"+x.readyState);};x.onloadstart=function(){ev.push("start");};x.onprogress=function(e){ev.push("pg"+e.loaded+"/"+e.total+"/"+e.lengthComputable);};x.onload=function(){ev.push("load"+x.status+":"+x.getResponseHeader("X-试")+":"+x.responseText+":"+x.statusText);};x.onerror=function(){ev.push("err");};x.onabort=function(){ev.push("ab");};x.ontimeout=function(){ev.push("to");};x.onloadend=function(){ev.push("end");};x.open("POST","/submit");x.setRequestHeader("X-Send","一");x.send("体");var y=new XMLHttpRequest();y.open("GET","/missing");y.onload=function(){ev.push("miss"+y.status+":"+y.responseText);};y.send();var z=new XMLHttpRequest();z.open("GET","/fail");z.onload=function(){ev.push("wrong");};z.onerror=function(){ev.push("er"+z.readyState+":"+z.status);};z.onloadend=function(){ev.push("end2");};z.send();var q=new XMLHttpRequest();q.onreadystatechange=function(){ev.push("ars"+q.readyState);};q.onloadstart=function(){q.abort();};q.onabort=function(){ev.push("aab");};q.onloadend=function(){ev.push("aend");};q.open("GET","/a");q.send();window.__丁件=ev;window.__驿书=x;』而
@@ -166,8 +166,8 @@
 　　于「名」曰『驿书的回书诸事在 send 返回时尚未到达』
 　　于「实」曰（「取字」于「境」于『window.__丁件.join(",")』）
 　　于「望」曰『rs1,start,ars1,ars4,aab,aend』而后
-　令「无」为「泵页面任务」于「零」而
-　令「无」为
+　令「」为「泵页面任务」于「零」而
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var hh=(window.__驿书.getAllResponseHeaders().indexOf("x-试: 一")>=0)&&(window.__驿书.getAllResponseHeaders().indexOf("content-type: text/plain")>=0);window.__丁=[window.__丁件.join(","),hh].join(";");』而
@@ -175,12 +175,12 @@
 　　于「名」曰『XMLHttpRequest 的事件顺序』
 　　于「实」曰（「取字」于「境」于『window.__丁』）
 　　于「望」曰『rs1,start,ars1,ars4,aab,aend,rs2,rs3,pg12/12/true,rs4,load200:一:POST|一|体:OK,end,miss404:,er4:0,end2;true』而后
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var j=new XMLHttpRequest();j.responseType="json";j.open("GET","/json");j.send();var b=new XMLHttpRequest();b.responseType="arraybuffer";b.open("GET","/a");b.send();var bl=new XMLHttpRequest();bl.responseType="blob";bl.open("GET","/a");bl.onload=function(){bl.response.text().then(function(t){window.__己=[t,bl.response.size,bl.response.type].join("|");});};bl.send();var tx=new XMLHttpRequest();tx.responseType="text";tx.open("GET","/b");tx.send();window.__待=j;window.__缓=b;window.__文=tx;』而
-　令「无」为「泵页面任务」于「零」而
-　令「无」为
+　令「」为「泵页面任务」于「零」而
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var j=window.__待,b=window.__缓,tx=window.__文;var c=b.response?[b.response.byteLength,(new TextDecoder()).decode(new Uint8Array(b.response))].join(":"):"无";window.__戊=[j.response?String(j.response.x):"无",c,tx.responseText,tx.response===tx.responseText].join(";");』而
@@ -193,9 +193,9 @@
 　令「摊」为「新试境」于「元」而
 　令「境」为（「摊」中「零」）而
 　令「本地簿」为（「摊」中「一」）而
-　令「无」为「试采书」于「境」而
-　令「无」为「试帛籍」于「境」于「本地簿」而
-　令「无」为「试驿书」于「境」而
+　令「」为「试采书」于「境」而
+　令「」为「试帛籍」于「境」于「本地簿」而
+　令「」为「试驿书」于「境」而
 　「书」于『页面接口测试通过』
 也。
 

@@ -39,21 +39,21 @@
 　令「文档」为「析篇」于『<div id="a"></div>』而
 　令「境」为「急就新全局境」于「元」而
 　令「绑定」为（「系网览篇」于「境」于「文档」）而
-　令「无」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test/页.html』而
-　令「无」为「安装网页抓取」于「境」于（「可有」于「文档」）于「假换」而
-　令「无」为
+　令「」为「安装窗位」于「境」于「绑定」于「文档」于『https://example.test/页.html』而
+　令「」为「安装网页抓取」于「境」于（「可有」于「文档」）于「假换」而
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var es=new EventSource("https://example.test/events");var log=[];es.addEventListener("open",function(){log.push("open:"+es.readyState);});es.addEventListener("custom",function(e){log.push("custom:"+e.data+":"+e.lastEventId);});es.addEventListener("message",function(e){log.push("message:"+e.data+":"+e.lastEventId);});es.addEventListener("error",function(){log.push("error:"+es.readyState);});』而
-　令「无」为「急就行作业序」于「元」而
-　令「无」为「急就行作业序」于「元」而
-　令「无」为「急就行作业序」于「元」而
+　令「」为「急就行作业序」于「元」而
+　令「」为「急就行作业序」于「元」而
+　令「」为「急就行作业序」于「元」而
 　令「结果一」为「急就在境行脚本」于「境」于『log.join("|")+"#"+es.readyState+"#"+[EventSource.CONNECTING,EventSource.OPEN,EventSource.CLOSED].join("/");』而
 　令「文一」为「急就文字作串」于（「急就取键」于「结果一」）而
 　「检查」于「名」曰『三类事件与开头结尾』于「真」曰（「文同」于「文一」于『open:1|custom:甲:|message:乙「：换行：」丙:|message:丁:7|error:0#0#0/1/2』）而后
-　令「无」为「急就在境行脚本」于「境」于『es.close();』而
-　令「无」为「行到期网页定时器」于「现在」曰「五」而
-　令「无」为「急就行作业序」于「元」而
+　令「」为「急就在境行脚本」于「境」于『es.close();』而
+　令「」为「行到期网页定时器」于「现在」曰「五」而
+　令「」为「急就行作业序」于「元」而
 　令「结果二」为「急就在境行脚本」于「境」于『log.length+"#"+es.readyState+"#"+es.url;』而
 　令「文二」为「急就文字作串」于（「急就取键」于「结果二」）而
 　「检查」于「名」曰『关闭后不再重连』于「真」曰（「文同」于「文二」于『5#2#https://example.test/events』）而后

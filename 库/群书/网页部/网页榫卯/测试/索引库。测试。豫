@@ -14,7 +14,7 @@
 「索引泵」乃化「数」为「有」者也。
 「索引泵」者得「次」而
 　若「次」大于「零」则（
-　　令「无」为「行到期网页定时器」于「现在」曰「零」而
+　　令「」为「行到期网页定时器」于「现在」曰「零」而
 　　「索引泵」于（「次」减「一」）
 　）否则
 　　「元」
@@ -29,8 +29,8 @@
 「入口」者得「无」而
 　令「文档」为「析篇」于『<div id="a"></div>』而
 　令「境」为「急就新全局境」于「元」而
-　令「无」为（「系网览篇」于「境」于「文档」）而
-　令「无」为「急就在境行脚本」于「境」于『var G={log:[]};window.__索引=G;
+　令「」为（「系网览篇」于「境」于「文档」）而
+　令「」为「急就在境行脚本」于「境」于『var G={log:[]};window.__索引=G;
 function 记(s){G.log.push(s)}
 var req=indexedDB.open("库",1);
 req.onupgradeneeded=function(e){var d=req.result;var st=d.createObjectStore("书",{keyPath:"id",autoIncrement:true});st.createIndex("名","name",{unique:true});d.createObjectStore("序");记("升:"+e.oldVersion+"-"+e.newVersion+":"+d.version+":"+st.indexNames.join("/")+":"+st.autoIncrement);};
@@ -44,8 +44,8 @@ function 序一(){var tx=G.db.transaction("序","readwrite");var st=tx.objectSto
 function 回一(){var tx=G.db.transaction("书","readwrite");var st=tx.objectStore("书");st.put({id:1,name:"改",v:9});tx.oncomplete=function(){var tx2=G.db.transaction("书","readwrite");var st2=tx2.objectStore("书");var p=st2.put({id:1,name:"再改",v:10});p.onsuccess=function(){tx2.abort();};tx2.onabort=function(){记("止");var tx3=G.db.transaction("书");var st3=tx3.objectStore("书");var g=st3.get(1);g.onsuccess=function(){记("回:"+g.result.name)};tx3.oncomplete=function(){记("回毕");比一();};};};}
 function 比一(){记("比:"+indexedDB.cmp(1,"a")+":"+indexedDB.cmp(2,1)+":"+indexedDB.cmp("甲","甲"));indexedDB.databases().then(function(l){记("库列:"+l.length+":"+l[0].name+":"+l[0].version)});var d=indexedDB.deleteDatabase("库");d.onsuccess=function(){记("删毕");记("完")};d.onerror=function(){记("删错")};}
 』而
-　令「无」为「索引泵」于「三零零」而
-　令「无」为「网页微役察点」于「元」而
+　令「」为「索引泵」于「三零零」而
+　令「」为「网页微役察点」于「元」而
 　令「日志文」为「索引日志」于「境」而
 　「检查」于「名」曰『建库升级、自增与唯一索引』于「真」曰（「文含」于『升:0-1:1:名:true』于「日志文」）而后
 　「检查」于「名」曰『连接名称、版本与仓名』于「真」曰（「文含」于『开:库:1:书/序』于「日志文」）而后

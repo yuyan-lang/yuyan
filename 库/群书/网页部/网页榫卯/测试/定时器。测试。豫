@@ -15,12 +15,12 @@
 「入口」者得「无」而
 　令「文档」为「析篇」于『<div id="a"></div>』而
 　令「境」为「急就新全局境」于「元」而
-　令「绑定」为（「系网览篇」于「境」于「文档」）而
-　令「无」为
+　令「」为（「系网览篇」于「境」于「文档」）而
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var log=[];setTimeout(function(x){log.push("甲"+x)},100,"一");var t=setTimeout(function(){log.push("乙")},50);clearTimeout(t);var n=0;var iv=setInterval(function(){n++;log.push("丙"+n);if(n===2)clearInterval(iv)},30);requestAnimationFrame(function(ts){log.push("丁"+ts)});Promise.resolve().then(function(){log.push("戊")});setTimeout(function(){Promise.resolve().then(function(){log.push("己")});document.getElementById("a").setAttribute("title","改")},0);』而
-　令「无」为「网页微役察点」于「元」而
+　令「」为「网页微役察点」于「元」而
 　令「改前」为「读匣」于「篇变更计数」而
 　令「零时」为「行到期网页定时器」于「现在」曰「零」而
 　令「改后」为「读匣」于「篇变更计数」而

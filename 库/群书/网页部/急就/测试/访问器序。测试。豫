@@ -19,12 +19,12 @@
 　　「取字」
 　　　于「境」
 　　　于『var o={};Object.defineProperty(o,"a",{get:function(){},enumerable:true,configurable:true});o.b="b";Object.defineProperty(o,"a",{value:"a"});JSON.stringify([o.a,Object.getOwnPropertyDescriptor(o,"a")&&Object.getOwnPropertyDescriptor(o,"a").value,Object.getOwnPropertyDescriptor(o,"a")&&Object.getOwnPropertyDescriptor(o,"a").get===undefined,Object.values(o).join("|")]);』而
-　令「无」为若「文同」于「首」于『["a","a",true,"a|b"]』则「元」否则「告祸」于（『普通对象先取值器后数据属性读错：』接「首」）而
+　令「」为若「文同」于「首」于『["a","a",true,"a|b"]』则「元」否则「告祸」于（『普通对象先取值器后数据属性读错：』接「首」）而
 　令「次」为
 　　「取字」
 　　　于「境」
 　　　于『var p=new Proxy({},{});Object.defineProperty(p,"a",{get:function(){},enumerable:true,configurable:true});p.b="b";Object.defineProperty(p,"a",{value:"a"});JSON.stringify([p.a,Object.getOwnPropertyDescriptor(p,"a")&&Object.getOwnPropertyDescriptor(p,"a").value,Object.getOwnPropertyDescriptor(p,"a")&&Object.getOwnPropertyDescriptor(p,"a").get===undefined,Object.values(p).join("|")]);』而
-　令「无」为若「文同」于「次」于『["a","a",true,"a|b"]』则「元」否则「告祸」于（『代理先取值器后数据属性读错：』接「次」）而
+　令「」为若「文同」于「次」于『["a","a",true,"a|b"]』则「元」否则「告祸」于（『代理先取值器后数据属性读错：』接「次」）而
 　「书」于『访问器序测试通过』
 也。
 

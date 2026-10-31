@@ -44,18 +44,18 @@
 「入口」者得「无」而
 　令「文档」为「析篇」于『<html><body><div id="a"></div></body></html>』而
 　令「境」为「急就新全局境」于「元」而
-　令「绑定」为（「系网览篇」于「境」于「文档」）而
-　令「无」为「装内容安全事」于「境」而
+　令「」为（「系网览篇」于「境」于「文档」）而
+　令「」为「装内容安全事」于「境」而
 　令「成」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var e = new SecurityPolicyViolationEvent("securitypolicyviolation", {documentURI:"https://a.example/page", referrer:"https://r.example/", blockedURI:"https://b.example/x.js", violatedDirective:"script-src", effectiveDirective:"script-src", originalPolicy:"script-src 'self'", sourceFile:"a.js", sample:"<script>", disposition:"enforce", statusCode:200, lineNumber:3, columnNumber:4});var ok1 = e.violatedDirective === "script-src" && e.blockedURI === "https://b.example/x.js" && e.lineNumber === 3 && e.columnNumber === 4 && e.statusCode === 200 && e.sample === "<script>" && e.disposition === "enforce";var d = new SecurityPolicyViolationEvent("securitypolicyviolation");var ok2 = d.violatedDirective === "" && d.lineNumber === 0 && d.disposition === "enforce" && d.documentURI === "" && d.referrer === "";var ok3 = false;try { new SecurityPolicyViolationEvent(); } catch (err) { ok3 = err instanceof TypeError; }var ok4 = new SecurityPolicyViolationEvent("securitypolicyviolation") !== undefined;(ok1 && ok2 && ok3 && ok4);』而
 　「检查」于「名」曰『构造器字段、缺省与无参类型错误』于「真」曰（「急就严格等」于「成」于（「急就布尔」于「阳」））而后
-　令「无」为
+　令「」为
 　　「急就在境行脚本」
 　　　于「境」
 　　　于『var got = null;document.addEventListener("securitypolicyviolation", function (ev) { got = ev.violatedDirective + "|" + ev.blockedURI + "|" + ev.lineNumber + "|" + ev.bubbles; });』而
-　令「无」为「派网页违规事」于（「按标识」于「文档」于『a』）于（「试违规记」于「元」）而
+　令「」为「派网页违规事」于（「按标识」于「文档」于『a』）于（「试违规记」于「元」）而
 　令「读得」为「急就在境行脚本」于「境」于『got』而
 　「检查」
 　　于「名」曰『文档派发的事件冒泡且字段可读』
