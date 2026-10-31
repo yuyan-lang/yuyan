@@ -51,6 +51,19 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin "$YY_LABEL_BASE" || true
           ./格式检查。林纳。豫行 --标签 "$YY_LABEL_BASE"
+      # 文言：语义号之检（议一五〇五）：较基准与今之改，凡动编译之器一摊（库/译场、库/译场门、库/章句、冶铸）而未易语义号者，须提交之辞有一行「语义号：不换（缘由）」，否则书误而败此步；惟改注与排者，器自辨而略之。基准同标签之取法；浅克隆之史不足读提交之辞，故先取足深之史（拉取请求取其所归之合并提交，推送取 HEAD）。
+      # 汉语：编译语义号检查（议题 1505）：比较基准以来的改动，动了编译器一摊（库/译场、库/译场门、库/章句、冶铸）而没换编译语义号的，提交信息里须有一行「语义号：不换（缘由）」，否则报错并让这一步失败；只改注释与排版的由工具判出、自动放过。基准取法与「标签参数与命名元组检查」相同；浅克隆读不到提交信息，先取足够深的历史（拉取请求取这次合并提交，推送取 HEAD）。
+      - name: 编译语义号检查
+        env:
+          YY_SEMANTIC_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          YY_SEMANTIC_PR: ${{ github.event.pull_request.number }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$YY_SEMANTIC_BASE" || true
+          if [ -n "$YY_SEMANTIC_PR" ]; then
+            git fetch --no-tags --depth=100 origin "+refs/pull/$YY_SEMANTIC_PR/merge:refs/remotes/pull/merge" || true
+          fi
+          git fetch --no-tags --depth=100 origin "$(git rev-parse HEAD)" || true
+          ./格式检查。林纳。豫行 --语义号 "$YY_SEMANTIC_BASE"
       # 文言：篇名后缀之检：Git 所录之篇与目录，名除半角点外皆汉字者，依 AGENTS.md 其缀当以全角句号「。」隔之；列其名而书一警，此步纵败亦不败作业。
       # 汉语：文件名后缀检查：Git 受控的文件与目录名除半角点外全是汉字时，按 AGENTS.md 后缀应以全角句号「。」分隔；列出这些名字并发一条警告，这一步自己失败也不让作业失败（continue-on-error）。
       - name: 文件名后缀检查（只警告）
