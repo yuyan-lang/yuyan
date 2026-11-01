@@ -6,8 +6,8 @@
 
 「：汉语：按相对路径、头字段与断言摘录建立测试登记项。
 　　文言：依相径、头栏与断言之摘建试之登记项。：」
-「脚本摘录登记」乃化「文」又化「文」又化「文」又化「文」又化「文」为「脚本测试登记项」者也。
-「脚本摘录登记」者得「相径」又得「头域」又得「验辞」又得「旗」又得「标签」而
+「脚本摘录登记」乃化「相径」曰「文」又化「头域」曰「文」又化「验辞」曰「文」又化「旗」曰「文」又化「标签」曰「文」为「脚本测试登记项」者也。
+「脚本摘录登记」者得「相径」曰「相径」又得「头域」曰「头域」又得「验辞」曰「验辞」又得「旗」曰「旗」又得「标签」曰「标签」而
 　令「径」为「接」于『test/built-ins/RegExp/』于「相径」而
 　令「其文」为「接」于『/*---「：换行：」』于（「接」于「头域」于（「接」于『「：换行：」---*/「：换行：」』于「验辞」））而
 　（「径」与「其文」与「阳」）与（「列」【「旗」】）与（「列」【「标签」，『官方字段及断言摘录』，『ASCII输入相容向量』】）与「一」
@@ -16,67 +16,77 @@
 「脚本真实摘录登记」者
 　（（「列」
 　　【「脚本摘录登记」
-　　　　于『unicodeSets/generated/character-class-difference-character-class.js』
-　　　　于『features: [regexp-v-flag]』
-　　　　于『regExp: /^[[0-9]--[0-9]]+$/v,』
-　　　　于『v』
-　　　　于『集合差集』
+　　　　于「相径」曰『unicodeSets/generated/character-class-difference-character-class.js』
+　　　　于「头域」曰『features: [regexp-v-flag]』
+　　　　于「验辞」曰『regExp: /^[[0-9]--[0-9]]+$/v,』
+　　　　于「旗」曰『v』
+　　　　于「标签」曰『集合差集』
 　　，「脚本摘录登记」
-　　　　于『unicodeSets/generated/character-class-difference-character.js』
-　　　　于『features: [regexp-v-flag]』
-　　　　于『regExp: /^[[0-9]--_]+$/v,』
-　　　　于『v』
-　　　　于『集合减单字』
+　　　　于「相径」曰『unicodeSets/generated/character-class-difference-character.js』
+　　　　于「头域」曰『features: [regexp-v-flag]』
+　　　　于「验辞」曰『regExp: /^[[0-9]--_]+$/v,』
+　　　　于「旗」曰『v』
+　　　　于「标签」曰『集合减单字』
 　　，「脚本摘录登记」
-　　　　于『unicodeSets/generated/string-literal-union-character.js』
-　　　　于『features: [regexp-v-flag]』
-　　　　于『regExp: /^[\q{0|2|4|9\uFE0F\u20E3}_]+$/v,』
-　　　　于『v』
-　　　　于『字符串并单字』
+　　　　于「相径」曰『unicodeSets/generated/string-literal-union-character.js』
+　　　　于「头域」曰『features: [regexp-v-flag]』
+　　　　于「验辞」曰『regExp: /^[\q{0|2|4|9\uFE0F\u20E3}_]+$/v,』
+　　　　于「旗」曰『v』
+　　　　于「标签」曰『字符串并单字』
 　　，「脚本摘录登记」
-　　　　于『unicodeSets/generated/string-literal-union-string-literal.js』
-　　　　于『features: [regexp-v-flag]』
-　　　　于『regExp: /^[\q{0|2|4|9\uFE0F\u20E3}\q{0|2|4|9\uFE0F\u20E3}]+$/v,』
-　　　　于『v』
-　　　　于『字符串并集』
+　　　　于「相径」曰『unicodeSets/generated/string-literal-union-string-literal.js』
+　　　　于「头域」曰『features: [regexp-v-flag]』
+　　　　于「验辞」曰『regExp: /^[\q{0|2|4|9\uFE0F\u20E3}\q{0|2|4|9\uFE0F\u20E3}]+$/v,』
+　　　　于「旗」曰『v』
+　　　　于「标签」曰『字符串并集』
 　　，「脚本摘录登记」
-　　　　于『unicodeSets/generated/string-literal-union-character-class.js』
-　　　　于『features: [regexp-v-flag]』
-　　　　于『regExp: /^[\q{0|2|4|9\uFE0F\u20E3}[0-9]]+$/v,』
-　　　　于『v』
-　　　　于『字符串并数类』
+　　　　于「相径」曰『unicodeSets/generated/string-literal-union-character-class.js』
+　　　　于「头域」曰『features: [regexp-v-flag]』
+　　　　于「验辞」曰『regExp: /^[\q{0|2|4|9\uFE0F\u20E3}[0-9]]+$/v,』
+　　　　于「旗」曰『v』
+　　　　于「标签」曰『字符串并数类』
 　　，「脚本摘录登记」
-　　　　于『unicodeSets/generated/character-class-difference-character-class-escape.js』
-　　　　于『features: [regexp-v-flag]』
-　　　　于『regExp: /^[[0-9]--\d]+$/v,』
-　　　　于『v』
-　　　　于『集合减数字类』
+　　　　于「相径」曰『unicodeSets/generated/character-class-difference-character-class-escape.js』
+　　　　于「头域」曰『features: [regexp-v-flag]』
+　　　　于「验辞」曰『regExp: /^[[0-9]--\d]+$/v,』
+　　　　于「旗」曰『v』
+　　　　于「标签」曰『集合减数字类』
 　　，「脚本摘录登记」
-　　　　于『named-groups/unicode-match.js』
-　　　　于『features: [regexp-named-groups]』
-　　　　于『assert.compareArray(["bab", "a", "b"], "bab".match(/.(?<a>a)(.)/u));』
-　　　　于『u』
-　　　　于『命名及普通捕获』
+　　　　于「相径」曰『named-groups/unicode-match.js』
+　　　　于「头域」曰『features: [regexp-named-groups]』
+　　　　于「验辞」曰『assert.compareArray(["bab", "a", "b"], "bab".match(/.(?<a>a)(.)/u));』
+　　　　于「旗」曰『u』
+　　　　于「标签」曰『命名及普通捕获』
 　　，「脚本摘录登记」
-　　　　于『named-groups/unicode-references.js』
-　　　　于『features: [regexp-named-groups]』
-　　　　于『assert.compareArray(["bab", "b"], "bab".match(/(?<b>.).\k<b>/u));』
-　　　　于『u』
-　　　　于『命名反引』
+　　　　于「相径」曰『named-groups/unicode-references.js』
+　　　　于「头域」曰『features: [regexp-named-groups]』
+　　　　于「验辞」曰『assert.compareArray(["bab", "b"], "bab".match(/(?<b>.).\k<b>/u));』
+　　　　于「旗」曰『u』
+　　　　于「标签」曰『命名反引』
 　　，「脚本摘录登记」
-　　　　于『named-groups/duplicate-names-exec.js』
-　　　　于『features: [regexp-duplicate-named-groups]』
-　　　　于『assert.compareArray(/(?<x>a)|(?<x>b)/.exec("bab"), ["b", undefined, "b"]);』
-　　　　于『』
-　　　　于『互斥重复名』
+　　　　于「相径」曰『named-groups/duplicate-names-exec.js』
+　　　　于「头域」曰『features: [regexp-duplicate-named-groups]』
+　　　　于「验辞」曰『assert.compareArray(/(?<x>a)|(?<x>b)/.exec("bab"), ["b", undefined, "b"]);』
+　　　　于「旗」曰『』
+　　　　于「标签」曰『互斥重复名』
 　　，「脚本摘录登记」
-　　　　于『named-groups/groups-object-unmatched.js』
-　　　　于『features: [regexp-named-groups]』
-　　　　于『const re = /(?<a>a).|(?<x>x)/;』
-　　　　于『』
-　　　　于『未参与捕获』
-　　，「脚本摘录登记」于『15.10.2.5-3-1.js』于『es5id: 15.10.2.5-3-1』于『var regExp = new RegExp("0{2,1}");』于『』于『已选坏模式向量；官方JS脚本预期抛异常』
-　　，「脚本摘录登记」于『S15.10.1_A1_T1.js』于『es5id: 15.10.1_A1_T1』于『description: Tested RegExp is "a**"』于『』于『已选坏模式向量；官方JS脚本预期抛异常』
+　　　　于「相径」曰『named-groups/groups-object-unmatched.js』
+　　　　于「头域」曰『features: [regexp-named-groups]』
+　　　　于「验辞」曰『const re = /(?<a>a).|(?<x>x)/;』
+　　　　于「旗」曰『』
+　　　　于「标签」曰『未参与捕获』
+　　，「脚本摘录登记」
+　　　　于「相径」曰『15.10.2.5-3-1.js』
+　　　　于「头域」曰『es5id: 15.10.2.5-3-1』
+　　　　于「验辞」曰『var regExp = new RegExp("0{2,1}");』
+　　　　于「旗」曰『』
+　　　　于「标签」曰『已选坏模式向量；官方JS脚本预期抛异常』
+　　，「脚本摘录登记」
+　　　　于「相径」曰『S15.10.1_A1_T1.js』
+　　　　于「头域」曰『es5id: 15.10.1_A1_T1』
+　　　　于「验辞」曰『description: Tested RegExp is "a**"』
+　　　　于「旗」曰『』
+　　　　于「标签」曰『已选坏模式向量；官方JS脚本预期抛异常』
 　　】）
 　　属（「列」于「脚本测试登记项」）
 　）
@@ -122,8 +132,10 @@
 令「旗」为「脚本试头旗」于（「脚本试原头」于「脚本负头例」）而
 鉴「旗」而
 　或有（「缀」于得「原段」于得「余」）则（
-　　若「且」于（非（（「脚本试寻文」于「原段」于『onlyStrict』于「零」）小于「零」））于（非（（「脚本试寻文」于「原段」于『raw』于「零」）小于「零」））则
-　　　「元」
+　　若「且」
+　　　于（非（（「脚本试寻文」于「其文」曰「原段」于「针」曰『onlyStrict』于「零」）小于「零」））
+　　　于（非（（「脚本试寻文」于「其文」曰「原段」于「针」曰『raw』于「零」）小于「零」））则
+　　　　「元」
 　　否则
 　　　「告祸」以「有」于『头部旗串遗漏』
 　）
