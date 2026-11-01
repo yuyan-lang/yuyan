@@ -1,0 +1,35 @@
+# 文言：远构之试：推至「构/」诸枝，则于 pit-mac 之自托管役者行之；每推一令，托入彼机之虚机而作，役者惟转手，宿机不自作。
+# 汉语：远构试点（2026-11-01 用户定）：推到「构/」开头的分支，就在 pit-mac 的自托管 runner 上跑一条豫构命令。命令写在推送的末个提交说明里，独占一行、以「远构：」开头（如「远构：类型检查 营造」），没写就跑「类型检查 营造」。豫构把命令托进那台机器的虚机执行，runner 只转手，宿主上不干活。
+name: 远构
+
+on:
+  push:
+    branches: ['构/**']
+
+# 文言：同枝新推至，则罢旧轮。
+# 汉语：同一分支有新推送，就取消还在跑的旧一轮。
+concurrency:
+  group: 远构-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  remote-build:
+    name: 远构
+    runs-on: [self-hosted, pit-mac]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      # 文言：取说明中「远构：」之令，以参付豫构；豫构托入虚机。
+      # 汉语：从提交说明里取「远构：」后面的命令，按空格拆成参数交给豫构；豫构托进虚机执行，退出码照传。
+      - name: 托进虚机执行
+        env:
+          YY_BUILD: /Users/zc/repos/yuyan-worktrees/钩深军团/工具链/豫构。林檎。豫行
+          YY_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          command=$(printf '%s\n' "$YY_MESSAGE" | sed -n 's/^远构：//p' | head -1)
+          [ -n "$command" ] || command='类型检查 营造'
+          read -r -a args <<< "$command"
+          echo "命令：豫构 ${args[*]}"
+          "$YY_BUILD" "${args[@]}"
