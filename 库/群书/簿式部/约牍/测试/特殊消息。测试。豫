@@ -33,8 +33,8 @@
 若「为零」于（「模式果」中「零」）则「书」于『官方WKT六模式导入成功』否则「告祸」以「有」于『官方WKT模式组解析失败』。
 「文件」者「模式果」中「一」也。
 
-「验往返」乃化「文」又化「文」又化「文」为「有」者也。
-「验往返」者得「型」又得「输入文」又得「期望文」而
+「验往返」乃化「型」曰「文」又化「输入文」曰「文」又化「期望文」曰「文」为「有」者也。
+「验往返」者得「型」曰「型」又得「输入文」曰「输入文」又得「期望文」曰「期望文」而
 　令「值」为「结绳析」于「输入文」而
 　令「果」为「结绳作信」于「文件」于「型」于「值」而
 　若非（「为零」于（「果」中「零」））则
@@ -47,28 +47,34 @@
 　　　「告祸」以「有」于（「接」于『WKT投影不合：』于「型」）
 也。
 
-「验往返」于『google.protobuf.Int64Value』于『"9223372036854775807"』于『"9223372036854775807"』。
-「验往返」于『google.protobuf.UInt64Value』于『"18446744073709551615"』于『"18446744073709551615"』。
-「验往返」于『google.protobuf.Int32Value』于『-2147483648』于『-2147483648』。
-「验往返」于『google.protobuf.UInt32Value』于『4294967295』于『4294967295』。
-「验往返」于『google.protobuf.BoolValue』于『true』于『true』。
-「验往返」于『google.protobuf.StringValue』于『"文字😀"』于『"文字😀"』。
-「验往返」于『google.protobuf.BytesValue』于『"AP8="』于『"AP8="』。
-「验往返」于『google.protobuf.DoubleValue』于『"NaN"』于『"NaN"』。
-「验往返」于『google.protobuf.FloatValue』于『1.5』于『1.5』。
-「验往返」于『google.protobuf.Struct』于『{"a":null,"b":[true,"x",3.5],"c":{"d":false}}』于『{"a":null,"b":[true,"x",3.5],"c":{"d":false}}』。
-「验往返」于『google.protobuf.Value』于『null』于『null』。
-「验往返」于『google.protobuf.ListValue』于『[null,[1,2],{"x":"y"}]』于『[null,[1,2],{"x":"y"}]』。
-「验往返」于『google.protobuf.Timestamp』于『"2000-02-29T12:34:56.123456789+08:00"』于『"2000-02-29T04:34:56.123456789Z"』。
-「验往返」于『google.protobuf.Duration』于『"-1.000001s"』于『"-1.000001s"』。
-「验往返」于『google.protobuf.FieldMask』于『"fooBar,baz.quxQuux"』于『"fooBar,baz.quxQuux"』。
+「验往返」于「型」曰『google.protobuf.Int64Value』于「输入文」曰『"9223372036854775807"』于「期望文」曰『"9223372036854775807"』。
+「验往返」于「型」曰『google.protobuf.UInt64Value』于「输入文」曰『"18446744073709551615"』于「期望文」曰『"18446744073709551615"』。
+「验往返」于「型」曰『google.protobuf.Int32Value』于「输入文」曰『-2147483648』于「期望文」曰『-2147483648』。
+「验往返」于「型」曰『google.protobuf.UInt32Value』于「输入文」曰『4294967295』于「期望文」曰『4294967295』。
+「验往返」于「型」曰『google.protobuf.BoolValue』于「输入文」曰『true』于「期望文」曰『true』。
+「验往返」于「型」曰『google.protobuf.StringValue』于「输入文」曰『"文字😀"』于「期望文」曰『"文字😀"』。
+「验往返」于「型」曰『google.protobuf.BytesValue』于「输入文」曰『"AP8="』于「期望文」曰『"AP8="』。
+「验往返」于「型」曰『google.protobuf.DoubleValue』于「输入文」曰『"NaN"』于「期望文」曰『"NaN"』。
+「验往返」于「型」曰『google.protobuf.FloatValue』于「输入文」曰『1.5』于「期望文」曰『1.5』。
 「验往返」
-　于『google.protobuf.Any』
-　于『{"@type":"type.googleapis.com/google.protobuf.Timestamp","value":"1970-01-01T00:00:00Z"}』
-　于『{"@type":"type.googleapis.com/google.protobuf.Timestamp","value":"1970-01-01T00:00:00Z"}』。
-「验往返」于『Root』于『{"value":null,"values":[null,[1,2]],"list":[[1],[2,3]]}』于『{"value":null,"values":[null,[1,2]],"list":[[1],[2,3]]}』。
-「验官方编码」乃化「文」又化「文」又化「文」为「有」者也。
-「验官方编码」者得「型」又得「样例名」又得「期望文」而
+　于「型」曰『google.protobuf.Struct』
+　于「输入文」曰『{"a":null,"b":[true,"x",3.5],"c":{"d":false}}』
+　于「期望文」曰『{"a":null,"b":[true,"x",3.5],"c":{"d":false}}』。
+「验往返」于「型」曰『google.protobuf.Value』于「输入文」曰『null』于「期望文」曰『null』。
+「验往返」于「型」曰『google.protobuf.ListValue』于「输入文」曰『[null,[1,2],{"x":"y"}]』于「期望文」曰『[null,[1,2],{"x":"y"}]』。
+「验往返」于「型」曰『google.protobuf.Timestamp』于「输入文」曰『"2000-02-29T12:34:56.123456789+08:00"』于「期望文」曰『"2000-02-29T04:34:56.123456789Z"』。
+「验往返」于「型」曰『google.protobuf.Duration』于「输入文」曰『"-1.000001s"』于「期望文」曰『"-1.000001s"』。
+「验往返」于「型」曰『google.protobuf.FieldMask』于「输入文」曰『"fooBar,baz.quxQuux"』于「期望文」曰『"fooBar,baz.quxQuux"』。
+「验往返」
+　于「型」曰『google.protobuf.Any』
+　于「输入文」曰『{"@type":"type.googleapis.com/google.protobuf.Timestamp","value":"1970-01-01T00:00:00Z"}』
+　于「期望文」曰『{"@type":"type.googleapis.com/google.protobuf.Timestamp","value":"1970-01-01T00:00:00Z"}』。
+「验往返」
+　于「型」曰『Root』
+　于「输入文」曰『{"value":null,"values":[null,[1,2]],"list":[[1],[2,3]]}』
+　于「期望文」曰『{"value":null,"values":[null,[1,2]],"list":[[1],[2,3]]}』。
+「验官方编码」乃化「型」曰「文」又化「样例名」曰「文」又化「期望文」曰「文」为「有」者也。
+「验官方编码」者得「型」曰「型」又得「样例名」曰「样例名」又得「期望文」曰「期望文」而
 　令「串」为「阅帛」于（「接」于「根路径」于「样例名」）而
 　令「果」为「信作结绳」于「文件」于「型」于「串」而
 　若「且」于（「为零」于（「果」中「零」））于（「文同」于（「结绳述」于（「果」中「一」））于（「结绳述」于（「结绳析」于「期望文」）））则
@@ -77,5 +83,5 @@
 　　「告祸」以「有」于（「接」于『WKT官方原编码不合：』于「型」）
 也。
 
-「验官方编码」于『google.protobuf.Timestamp』于『特殊时间编码.bin』于『"1970-01-01T00:00:00.123456789Z"』。
-「验官方编码」于『google.protobuf.Duration』于『特殊时长编码.bin』于『"-1.000001s"』。
+「验官方编码」于「型」曰『google.protobuf.Timestamp』于「样例名」曰『特殊时间编码.bin』于「期望文」曰『"1970-01-01T00:00:00.123456789Z"』。
+「验官方编码」于「型」曰『google.protobuf.Duration』于「样例名」曰『特殊时长编码.bin』于「期望文」曰『"-1.000001s"』。
