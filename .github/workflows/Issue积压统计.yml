@@ -14,7 +14,9 @@ concurrency:
   cancel-in-progress: false
 jobs:
   record:
-    runs-on: ubuntu-latest
+    # 文言：行于自有之机（pit-pc 之自托管 runner），不用 GitHub 之机（用户 2026-11-01 定）。
+    # 汉语：跑在自有机器上（pit-pc 的自托管 runner），不用 GitHub 的机器（用户 2026-11-01 定）。
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 15
     env:
       GH_TOKEN: ${{ github.token }}
