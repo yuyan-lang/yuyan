@@ -1,0 +1,630 @@
+# 文言：历史版本发行之工作流：每推 yybs 与手发之时行之，惟构所发之物而发之，不行诸试（诸试归 main.yml 之全量测试）。自举而成 Wasm 与 Linux x64 原生之包，交叉而出林檎与 Linux 臂六十四原生之包，编豫行工具链，造系统光盘；乃以「发布历史版本」一作发之：覆连续版，存史版，更光盘之草稿预发行，抄于社区包仓库。用户 2026-11-01 定：发行惟一作，诸作皆行于自有之机。
+# 汉语：历史版本发行工作流：每次推送 yybs 与手动触发时运行，只构建发行物并发布，不跑测试（测试归 main.yml 的全量测试）。自举得 Wasm 包与 Linux x64 原生包，交叉编出 macOS 与 Linux 臂六十四原生包，编豫行工具链，造系统光盘；再由「发布历史版本」一个作业统一发布：覆盖连续版本、存进历史版本、更新光盘草稿预发行、复制到社区包仓库。用户 2026-11-01 定：发布只有一个作业，所有作业都跑在自有机器上。
+name: 历史版本发行
+
+env:
+  # 文言：起步之原生工具链包，同 main.yml：取连续版最新之 Linux x64 包。
+  # 汉语：起步用的原生工具链包，同 main.yml：取连续版本里最新的 Linux x64 包。
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-binaries/yuyan-native-linux-x64.tar.gz
+
+on:
+  push:
+    branches: [yybs]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# 文言：同分支至多一轮行、一轮候，新推代其候者，行者照常竟之；与全量测试各为其组。
+# 汉语：同一分支至多一轮在跑、一轮在等，新推送替换在等的那轮，在跑的照常跑完；与全量测试各用各的并发组。
+concurrency:
+  group: 发行-${{ github.ref }}
+  cancel-in-progress: false
+
+# 文言：诸作皆行于自有之机（pit-pc 之自托管 runner）。runner 书 CI 之境变量，豫构见之则不经将作；故诸步皆去 CI 而行，构建乃经将作排队、用共享之缓。
+# 汉语：所有作业都跑在自有机器上（pit-pc 的自托管 runner）。runner 会设环境变量 CI，豫构见了就不经将作；所以每一步都去掉 CI 再跑，构建经将作排队、用共享缓存。
+defaults:
+  run:
+    shell: env -u CI bash -e {0}
+
+jobs:
+  # 文言：自举：包中豫构配包中执行器，先构今源之一级原生豫构，乃原生自举而核定点，装原生工具链，打 Wasm 与 Linux x64 原生之包，并编社区包工具；上传之。
+  # 汉语：自举：包里的豫构配包里的执行器，先把当前源码编成一级原生豫构，再原生自举并核对定点、装上原生工具链，打 Wasm 包与 Linux x64 原生包，并编出社区包工具；然后上传。
+  bootstrap:
+    name: 自举
+    runs-on: [self-hosted, pit-pc]
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      # 文言：连续版之包覆时或暂缺，故多试数次。
+      # 汉语：连续版本的包被覆盖时可能短暂取不到，所以多重试几次。
+      - name: 下载最新的原生工具链包
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/yuyan-native-stable.tar.gz"
+          curl --fail --location --retry 6 --retry-all-errors --retry-delay 10 \
+            --output "$archive" "$YY_NATIVE_TOOLCHAIN_URL"
+          tar -xzf "$archive"
+
+      - name: 以包中豫构构建当前源码的一级原生豫构
+        run: |
+          ./豫构稳定。林纳。豫行 构建 豫构 --输出 豫构。林纳。豫行 -j "$(nproc)" -- --目标 本机 --执行器 执行器。树码 --降级缓存 .豫构缓存/降级缓存/豫构一级。林纳。豫行.机器片
+
+      - name: 原生自举并核对定点，装上原生工具链，构建 Wasm 编译器、豫构与值桥
+        run: ./豫构。林纳。豫行 全部 -j "$(nproc)"
+
+      - name: 打 Wasm 工具链包与原生工具链包，构建社区包工具
+        run: |
+          set -euo pipefail
+          ./豫构。林纳。豫行 目标 打包 原生打包 -j "$(nproc)"
+          ./豫构。林纳。豫行 构建 社区包工具 --输出 社区包工具。林纳。豫行 -j "$(nproc)"
+
+      # 文言：三包：后作所用之构建工具（并同代之 Wasm 编译器、豫构与值桥）、本轮之 Wasm 工具链包、本轮之原生工具链包（Linux x64）。
+      # 汉语：打三个包：后面几个作业用的构建工具（附同代的 Wasm 编译器、豫构与值桥）、本轮的 Wasm 工具链包、本轮的原生工具链包（Linux x64）。
+      - name: 打包产物
+        run: |
+          set -euo pipefail
+          tar -czf "$RUNNER_TEMP/构建工具.tar.gz" 编译器。林纳。豫行 豫构。林纳。豫行 执行器。树码 社区包工具。林纳。豫行 编译器.wasm 豫构.wasm 豫言操作系统/宿主/节点/节点值桥接.wasm
+          tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C 网页汇编工具链 .
+          tar -czf "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" -C 原生工具链包 .
+
+      - name: 上传构建工具
+        uses: actions/upload-artifact@v4
+        with:
+          name: 构建工具
+          path: ${{ runner.temp }}/构建工具.tar.gz
+          retention-days: 1
+          if-no-files-found: error
+
+      - name: 上传 Wasm 工具链包
+        uses: actions/upload-artifact@v4
+        with:
+          name: 网汇工具链包
+          path: ${{ runner.temp }}/yuyan-wasm.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+      - name: 上传原生工具链包（Linux x64）
+        uses: actions/upload-artifact@v4
+        with:
+          name: 原生工具链-linux-x64
+          path: ${{ runner.temp }}/yuyan-native-linux-x64.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
+      - name: 上传构建日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 构建日志-发行自举
+          path: .构建日志/
+          include-hidden-files: true
+          retention-days: 90
+          if-no-files-found: ignore
+
+  # 文言：交叉之原生工具链包：于 pit-pc 以本轮之原生豫构交叉径出林檎、Linux 臂六十四之原生包，不于彼机原生自举（原生自举乃试也）。包中之程依 库/营造/工具链组成。数据。豫 之「链程序们」逐一交叉而编，复以豫构为豫构稳定，附执行器，前导之预编同轩窗之交叉者（#993）；布同原生打包。
+  # 汉语：交叉原生工具链包：在 pit-pc 上用本轮的原生豫构交叉直出 macOS 与 Linux 臂六十四的原生包，不在那两种机器上原生自举（原生自举是测试）。包里的程序照 库/营造/工具链组成。数据。豫 的「链程序们」逐个交叉编译，再拷一份豫构作豫构稳定，附上执行器，前导预编照轩窗那份的交叉做法（#993）；布局与原生打包相同。
+  cross-packages:
+    name: 交叉原生工具链包（${{ matrix.plat }}）
+    needs: bootstrap
+    runs-on: [self-hosted, pit-pc]
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - plat: macos-arm64
+            system: 林檎
+            arch: 臂六十四
+          - plat: linux-arm64
+            system: 林纳
+            arch: 臂六十四
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: 构建工具
+          path: ${{ runner.temp }}
+
+      - name: 解开构建工具
+        run: tar -xzf "$RUNNER_TEMP/构建工具.tar.gz"
+
+      # 文言：程之名、包与入口皆读于工具链组成之清单，不另书一表。
+      # 汉语：程序名、包名与入口都从工具链组成清单里读，不在这里另写一份。
+      - name: 交叉编出原生工具链包
+        run: |
+          set -euo pipefail
+          sys='${{ matrix.system }}'
+          arch='${{ matrix.arch }}'
+          out="原生工具链包-${{ matrix.plat }}"
+          rm -rf "$out"
+          mkdir -p "$out"
+          table=库/营造/工具链组成。数据。豫
+          section="$(sed -n '/^「链程序们」者/,/^也。/p' "$table")"
+          mapfile -t names < <(printf '%s\n' "$section" | sed -n 's/.*「名称」者『\(.*\)』也.*/\1/p')
+          mapfile -t pkgs < <(printf '%s\n' "$section" | sed -n 's/.*「包名」者『\(.*\)』也.*/\1/p')
+          mapfile -t entries < <(printf '%s\n' "$section" | sed -n 's/.*「入口」者「列」【『\(.*\)』】也.*/\1/p')
+          if [ "${#names[@]}" -eq 0 ] || [ "${#names[@]}" -ne "${#pkgs[@]}" ] || [ "${#names[@]}" -ne "${#entries[@]}" ]; then
+            echo "::error::读不懂 $table 里的「链程序们」"
+            exit 1
+          fi
+          for i in "${!names[@]}"; do
+            read -r -a entry <<< "${entries[$i]//』，『/ }"
+            ./豫构。林纳。豫行 构建 "${pkgs[$i]}" "${entry[@]}" --输出 "$out/${names[$i]}。$sys。豫行" -j "$(nproc)" -- --目标 本机 --目标系统 "$sys" --目标架构 "$arch" --执行器 "$PWD/执行器。树码" --降级缓存 "$PWD/.豫构缓存/降级缓存/${names[$i]}-${{ matrix.plat }}.机器片"
+          done
+          cp "$out/豫构。$sys。豫行" "$out/豫构稳定。$sys。豫行"
+          cp 执行器。树码 "$out/"
+          rm -f "$out"/*.链接印
+          ./豫构。林纳。豫行 预编打包 "$out" -- -j "$(nproc)" --目标系统 "$sys" --目标架构 "$arch" --执行器 "$out/执行器。树码"
+          tar -czf "$RUNNER_TEMP/yuyan-native-${{ matrix.plat }}.tar.gz" -C "$out" .
+
+      - name: 上传原生工具链包
+        uses: actions/upload-artifact@v4
+        with:
+          name: 原生工具链-${{ matrix.plat }}
+          path: ${{ runner.temp }}/yuyan-native-${{ matrix.plat }}.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与四宿主之豫行启动器，打包而传。
+  # 汉语：豫行工具链（提案 00021）：用本轮的原生豫构编出两架构的豫构豫行与四个宿主的豫行启动器，打包上传。
+  yuxing-toolchain:
+    name: 豫行工具链
+    needs: bootstrap
+    runs-on: [self-hosted, pit-pc]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: 构建工具
+          path: ${{ runner.temp }}
+
+      - name: 解开构建工具
+        run: tar -xzf "$RUNNER_TEMP/构建工具.tar.gz"
+
+      - name: 打豫行工具链包
+        run: |
+          set -euo pipefail
+          ./豫构。林纳。豫行 目标 豫行打包 --不连带 -j "$(nproc)"
+          tar -czf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" -C 豫行工具链 .
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 豫行工具链包
+          path: ${{ runner.temp }}/yuyan-yuxing-toolchain.tar.gz
+          retention-days: 7
+          if-no-files-found: error
+
+  # 文言：系统之光盘：取自举所成之原生豫构，造豫言系统之器而成两架构之 BIOS/UEFI 混合 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType），造盘时盘上另书 /系统/版本。数据。豫；以 豫言操作系统/裸机/发行/系统版本。数据。豫 之版名其文件（yuyan-os-<文件名版本>-x86_64.iso 与 -aarch64.iso），二盘之 SHA-256 合为一 SHA256SUMS，有署名 SHA256SUMS.sig（「签发发行清单」一步所出）则并存之；以同目之模板成发行之说明，上传为构件，交发布历史版本之作建或更草稿预发行。不冒烟（冒烟归全量测试）。
+  # 汉语：系统光盘：取自举作业产出的原生豫构，构建造盘工具 豫言系统。林纳。豫行 并造两种架构的 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType），造盘时盘上另写 /系统/版本。数据。豫；按 豫言操作系统/裸机/发行/系统版本。数据。豫 的版本给文件命名（yuyan-os-<文件名版本>-x86_64.iso 与 -aarch64.iso），两张光盘的 SHA-256 合成一份 SHA256SUMS，有签名 SHA256SUMS.sig（「签发发行清单」一步生成）就一起放进去，用同目录的模板生成发行说明，上传为工作流构件，交给“发布历史版本”作业建立或更新草稿预发行。不冒烟（冒烟归全量测试）。
+  os-build:
+    name: 系统光盘（x86-64 与 ARM64 ISO）
+    needs: bootstrap
+    runs-on: [self-hosted, pit-pc]
+    timeout-minutes: 150
+    # 文言：版号诸名交发布历史版本之作，以名草稿与其资产。
+    # 汉语：版本号与文件名交给“发布历史版本”作业，用来给草稿预发行与其资产命名。
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      x86_iso: ${{ steps.version.outputs.x86_iso }}
+      arm_iso: ${{ steps.version.outputs.arm_iso }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: 构建工具
+          path: ${{ runner.temp }}
+
+      - name: 解开构建工具
+        run: tar -xzf "$RUNNER_TEMP/构建工具.tar.gz"
+
+      # 文言：版之所出惟 豫言操作系统/裸机/发行/系统版本。数据。豫；文件名之版惟许 ASCII。
+      # 汉语：版本号的唯一出处是 豫言操作系统/裸机/发行/系统版本。数据。豫；文件名版本只许 ASCII 字符。
+      - name: 读取系统版本号
+        id: version
+        run: |
+          set -euo pipefail
+          table=豫言操作系统/裸机/发行/系统版本。数据。豫
+          version="$(sed -n 's/^「版本」者『\(.*\)』也。$/\1/p' "$table")"
+          file_version="$(sed -n 's/^「文件名版本」者『\(.*\)』也。$/\1/p' "$table")"
+          if [[ -z "$version" || ! "$file_version" =~ ^[0-9A-Za-z.+-]+$ ]]; then
+            echo "::error::$table 缺「版本」，或「文件名版本」含 ASCII 以外的字符"
+            exit 1
+          fi
+          {
+            echo "YY_OS_VERSION=$version"
+            echo "YY_OS_FILE_VERSION=$file_version"
+            echo "YY_OS_TAG=os-v$file_version"
+            echo "YY_OS_X86_ISO=yuyan-os-$file_version-x86_64.iso"
+            echo "YY_OS_ARM_ISO=yuyan-os-$file_version-aarch64.iso"
+            echo "YY_OS_SUMS=SHA256SUMS"
+          } >> "$GITHUB_ENV"
+          {
+            echo "version=$version"
+            echo "tag=os-v$file_version"
+            echo "x86_iso=yuyan-os-$file_version-x86_64.iso"
+            echo "arm_iso=yuyan-os-$file_version-aarch64.iso"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: 构建豫言系统工具
+        run: ./豫构。林纳。豫行 目标 造盘工具 --不连带 -j "$(nproc)"
+
+      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 豫言系统 定之。二构各造一张，各入其目。前后各书盘之余量（议一一二八：察空盘足容二盘否）。
+      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 豫言系统 决定。两种架构各造一张光盘，各自放进自己的输出目录。前后各印一次盘量（议题 #1128：查空闲盘够不够造两张）。
+      - name: 造混合启动 ISO（x86-64 与 ARM64）
+        run: |
+          set -euo pipefail
+          df -h / "${RUNNER_TEMP:-/tmp}" /tmp
+          ./豫言系统。林纳。豫行 启动盘 --输出 启动介质 --预置 无
+          df -h /; du -sh 启动介质 .豫构缓存 "/tmp/豫构缓存-$(id -un)" 2>/dev/null || true
+          ./豫言系统。林纳。豫行 启动盘 --架构 臂六十四 --输出 启动介质臂 --预置 无
+          df -h /; du -sh 启动介质臂 2>/dev/null || true
+
+      # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
+      # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，两张光盘的校验和一起写进 SHA256SUMS，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
+      - name: 命名 ISO，算 SHA-256，生成发行说明
+        run: |
+          set -euo pipefail
+          out=发行产物
+          mkdir -p "$out"
+          cp 启动介质/豫言启动.iso "$out/$YY_OS_X86_ISO"
+          cp 启动介质臂/豫言启动臂.iso "$out/$YY_OS_ARM_ISO"
+          (cd "$out" && sha256sum "$YY_OS_X86_ISO" "$YY_OS_ARM_ISO" > "$YY_OS_SUMS")
+          repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
+          fill() {
+            sed -e "s|{{版本}}|$YY_OS_VERSION|g" \
+              -e "s|{{文件名版本}}|$YY_OS_FILE_VERSION|g" \
+              -e "s|{{兼容光盘}}|$YY_OS_X86_ISO|g" \
+              -e "s|{{臂光盘}}|$YY_OS_ARM_ISO|g" \
+              -e "s|{{校验文件}}|$YY_OS_SUMS|g" \
+              -e "s|{{提交}}|$GITHUB_SHA|g" \
+              -e "s|{{仓库}}|$repo_url|g" \
+              "$1"
+          }
+          {
+            fill 豫言操作系统/裸机/发行/发行说明模板.汉语.md
+            printf '\n<details>\n<summary>文言</summary>\n\n'
+            fill 豫言操作系统/裸机/发行/发行说明模板.文言.md
+            printf '\n</details>\n'
+          } > "$out/发行说明.md"
+          if grep -n '{{' "$out/发行说明.md"; then
+            echo "::error::发行说明里还有未替换的占位符"
+            exit 1
+          fi
+          ls -l "$out"
+
+      # 文言：发行清单既成，有密 YY_OS_SIGN_KEY（三十二字种之十六进）则以之签 SHA256SUMS，作 SHA256SUMS.sig；无则越之而示警。（钩正联更，2026-10-21）
+      # 汉语：发行清单算好之后，有秘密 YY_OS_SIGN_KEY（三十二字节种子的小写十六进制）就用它签 发行产物/SHA256SUMS，写出 SHA256SUMS.sig；没有秘密就跳过并警告。清单还没写出时也跳过并警告。
+      - name: 签发发行清单（有 YY_OS_SIGN_KEY 时）
+        env:
+          YY_OS_SIGN_KEY: ${{ secrets.YY_OS_SIGN_KEY }}
+        run: |
+          set -euo pipefail
+          out=发行产物
+          if [ ! -f "$out/SHA256SUMS" ]; then
+            echo "::warning::$out/SHA256SUMS 还不存在，跳过签名"
+            exit 0
+          fi
+          if [ -z "${YY_OS_SIGN_KEY:-}" ]; then
+            echo "::warning::没有设置秘密 YY_OS_SIGN_KEY，跳过 SHA256SUMS 的签名"
+            exit 0
+          fi
+          key="$RUNNER_TEMP/发行私钥"
+          trap 'rm -f "$key"' EXIT
+          printf '%s\n' "$YY_OS_SIGN_KEY" > "$key"
+          ./豫言系统。林纳。豫行 签发 "$out/SHA256SUMS" --钥 "$key"
+          ls -l "$out/SHA256SUMS" "$out/SHA256SUMS.sig"
+
+      - name: 上传 ISO 构件
+        uses: actions/upload-artifact@v4
+        with:
+          name: 系统光盘
+          path: 发行产物/
+          retention-days: 30
+          if-no-files-found: error
+
+  # 文言：发布历史版本（惟一之发布之作）：所发诸物皆出于前作，此作惟发之，不复构、不复试。以 Wasm、诸平台原生与豫行工具链之包覆连续版（continuous-binaries）；Wasm 与 Linux x64、Linux arm64、林檎 arm64 之原生包俱在，则按提交存于史版，名冠以提交之时（UTC）；有系统光盘则建或更草稿预发行；史版既存，乃抄于社区包仓库。某物未成者略之，余者照发。惟 yybs 之轮行之。GitHub 一发行至多千资产：historical-binaries 满则次用 historical-binaries-2、-3……，取首未满者，无则建之。
+  # 汉语：发布历史版本（唯一的发布作业）：发行物都由前面的作业造好，这里只发布，不再构建、不再测试。用 Wasm、各平台原生与豫行工具链包覆盖连续版本（continuous-binaries）；Wasm 包与 Linux x64、Linux arm64、macOS arm64 原生包都在时，按提交号存进历史版本，文件名前加提交时间（UTC）；有系统光盘就建立或更新草稿预发行；历史版本存好后复制到社区包仓库。哪件没造出来就跳过哪件，其余照发。只在 yybs 上运行。GitHub 每个发行至多 1000 个资产：historical-binaries 满了就依次用 historical-binaries-2、-3……，取第一个未满的，没有就新建。
+  publish:
+    name: 发布历史版本
+    needs: [bootstrap, cross-packages, yuxing-toolchain, os-build]
+    if: ${{ !cancelled() && needs.bootstrap.result == 'success' && github.ref == 'refs/heads/yybs' }}
+    runs-on: [self-hosted, pit-pc]
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: 网汇工具链包
+          path: ${{ runner.temp }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: 原生工具链-*
+          path: ${{ runner.temp }}/原生包
+          merge-multiple: true
+
+      # 文言：豫行工具链之包与系统之光盘未必成（其作或败），取之不得则略之。
+      # 汉语：豫行工具链包与系统光盘不一定造成（它们的作业可能失败），取不到就跳过。
+      - name: 取豫行工具链包
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: 豫行工具链包
+          path: ${{ runner.temp }}
+
+      - name: 取系统光盘
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: 系统光盘
+          path: ${{ runner.temp }}/发行产物
+
+      # 文言：连续版与史版同一说明。
+      # 汉语：连续版本与历史版本用同一份发行说明。
+      - name: 写工具链发行说明
+        run: |
+          printf '%s\n' "豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 编译器稳定.wasm、豫构 豫构稳定.wasm 与 Node 宿主 稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 豫构稳定。林纳。豫行 或 豫构稳定。林檎。豫行，与执行器汇编树码 执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 豫构臂。豫行、豫构兼。豫行，四个宿主的豫行启动器 豫行启动器臂。林檎。豫行、豫行启动器臂。林纳。豫行、豫行启动器兼。林纳。豫行、豫行启动器兼.exe，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。" > "$RUNNER_TEMP/工具链说明.md"
+
+      # 文言：本轮所成之包皆覆连续版；未成者存其前轮之包。
+      # 汉语：本轮造好的包都覆盖到连续版本；没造好的留着上一轮的。
+      - name: 覆盖连续版本
+        run: |
+          set -euo pipefail
+          if gh release view continuous-binaries >/dev/null 2>&1; then
+            gh release edit continuous-binaries --notes-file "$RUNNER_TEMP/工具链说明.md"
+          else
+            gh release create continuous-binaries --target "$GITHUB_SHA" --title continuous-binaries --latest=false --notes-file "$RUNNER_TEMP/工具链说明.md"
+          fi
+          files=()
+          for file in "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP"/原生包/yuyan-native-{linux-x64,linux-arm64,macos-arm64}.tar.gz "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"; do
+            if [ -f "$file" ]; then
+              files+=("$file")
+            else
+              echo "::notice::缺 $(basename "$file")：本轮没造出来，连续版本里留着上一轮的"
+            fi
+          done
+          gh release upload continuous-binaries "${files[@]}" --clobber
+
+      - name: 存进历史版本
+        id: historical
+        if: ${{ !cancelled() }}
+        run: |
+          set -euo pipefail
+          # 文言：某平台本轮未成则无其包，不发史版。
+          # 汉语：某个平台本轮没造出包，就不发历史版本。
+          for file in "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP"/原生包/yuyan-native-{linux-x64,linux-arm64,macos-arm64}.tar.gz; do
+            if [ ! -f "$file" ]; then
+              echo "::notice::缺 $(basename "$file")：该平台本轮没造出包，不发历史版本"
+              exit 0
+            fi
+          done
+
+          release_ready() {
+            if ! gh release view "$1" >/dev/null 2>&1; then
+              gh release create "$1" \
+                --target "$GITHUB_SHA" \
+                --title "$1" \
+                --latest=false \
+                --notes-file "$RUNNER_TEMP/工具链说明.md"
+            else
+              gh release edit "$1" --notes-file "$RUNNER_TEMP/工具链说明.md"
+            fi
+          }
+
+          commit_time="$(gh api "repos/$GH_REPO/commits/$GITHUB_SHA" --jq '.commit.committer.date | fromdateiso8601 | strftime("%Y%m%dT%H%M%SZ")')"
+          # 文言：发一包之史版（文件名冠以提交之时）。
+          # 汉语：发布一个包的历史版本（文件名前加提交时间）。
+          publish() {
+            package="$1"
+            file="$2"
+            historical_asset="$commit_time-$package-${GITHUB_SHA}.tar.gz"
+            # 文言：待办事项：二轮同发而俱见九百九十九资产者，后传者逾限而败。
+            # 汉语：待办事项：两轮同时发布、都看到 999 个资产时，后上传的一轮会超限失败。
+            historical=historical-binaries
+            n=1
+            while true; do
+              release_ready "$historical"
+              existing="$(gh release view "$historical" --json assets --jq '.assets[].name')"
+              if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
+                echo "历史版本已存在：$historical/$historical_asset"
+                break
+              fi
+              if [ "$(printf '%s\n' "$existing" | grep -c .)" -lt 1000 ]; then
+                cp "$file" "$RUNNER_TEMP/$historical_asset"
+                gh release upload "$historical" "$RUNNER_TEMP/$historical_asset"
+                echo "历史版本：https://github.com/$GH_REPO/releases/download/$historical/$historical_asset"
+                break
+              fi
+              n=$((n + 1))
+              historical="historical-binaries-$n"
+            done
+          }
+          publish yuyan-wasm "$RUNNER_TEMP/yuyan-wasm.tar.gz"
+          for file in "$RUNNER_TEMP"/原生包/yuyan-native-*.tar.gz; do
+            publish "$(basename "$file" .tar.gz)" "$file"
+          done
+          echo "done=true" >> "$GITHUB_OUTPUT"
+
+      # 文言：草稿预发行（旧在系统发行之作）：本轮有光盘乃动之：无则建之；有同名之草稿，则更其说明与所指之提交，去旧资产而传新者；其标签已正式发行者不动，但示警。恒为草稿，终不发之，何时公之由用户定。
+      # 汉语：草稿预发行（原在系统发行作业里）：本轮有光盘才动：没有就新建；已有同名草稿，就更新说明与目标提交，删掉旧资产再上传新的；该标签已正式发布的不动，只给警告。始终保持草稿，绝不发布，何时公开由用户决定。
+      - name: 建立或更新系统光盘草稿预发行
+        if: ${{ !cancelled() }}
+        env:
+          YY_OS_VERSION: ${{ needs.os-build.outputs.version }}
+          YY_OS_TAG: ${{ needs.os-build.outputs.tag }}
+          YY_OS_X86_ISO: ${{ needs.os-build.outputs.x86_iso }}
+          YY_OS_ARM_ISO: ${{ needs.os-build.outputs.arm_iso }}
+          YY_OS_SUMS: SHA256SUMS
+        run: |
+          set -euo pipefail
+          out="$RUNNER_TEMP/发行产物"
+          if [ -z "$YY_OS_TAG" ] || [ ! -f "$out/$YY_OS_SUMS" ]; then
+            echo "::notice::本轮没造出系统光盘，草稿预发行不动"
+            exit 0
+          fi
+          title="豫言操作系统 $YY_OS_VERSION"
+          notes="$out/发行说明.md"
+          iso1="$out/$YY_OS_X86_ISO"
+          iso2="$out/$YY_OS_ARM_ISO"
+          sum="$out/$YY_OS_SUMS"
+          sig="$out/$YY_OS_SUMS.sig"
+          assets=("$iso1" "$iso2" "$sum")
+          # 文言：有发行清单之署（SHA256SUMS.sig，由「签发发行清单」一步所作）则并传之。
+          # 汉语：有发行清单的签名（SHA256SUMS.sig，由「签发发行清单」一步生成）就一起上传。
+          if [ -f "$sig" ]; then assets+=("$sig"); fi
+          err="$RUNNER_TEMP/gh-release-view.err"
+          if draft="$(gh release view "$YY_OS_TAG" --json isDraft --jq .isDraft 2>"$err")"; then
+            if [ "$draft" != true ]; then
+              echo "::warning::$YY_OS_TAG 已正式发布，本轮不改动；发下一版前先改 豫言操作系统/裸机/发行/系统版本。数据。豫。"
+              exit 0
+            fi
+            gh release edit "$YY_OS_TAG" --draft=true --prerelease=true \
+              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes"
+            gh release view "$YY_OS_TAG" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/old-assets.txt"
+            while IFS= read -r name; do
+              gh release delete-asset "$YY_OS_TAG" "$name" --yes < /dev/null
+            done < "$RUNNER_TEMP/old-assets.txt"
+            gh release upload "$YY_OS_TAG" "${assets[@]}" --clobber
+          elif grep -q 'release not found' "$err"; then
+            gh release create "$YY_OS_TAG" --draft --prerelease \
+              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes" "${assets[@]}"
+          else
+            cat "$err" >&2
+            exit 1
+          fi
+
+      # 文言：抄于社区包仓库（旧为一作）：史版既存，以自举之作所编之社区包工具，抄清单「社区复制包们」诸包于社区包仓库（yuyan-lang/yuyan-community-packages）之 包/豫言/<包名>/（许可 AGPL-3.0-only），去 包/豫言/ 下不在清单之包目（出清单即下架，所去之包书于请之正文），易其工具链钉为本轮之 Linux x64 原生工具链包，以 DCO 之签录之，推一枝而开拉取请求，由彼仓之检与合入之机合之。跨仓之写用机密 YUYAN_COMMUNITY_TOKEN（细粒度之个人令牌，惟授彼仓 Contents 与 Pull requests 之写）；无之则演练：照抄照录，印其差而存为构件，不推。本轮史版未存（某平台未成）则不抄。
+      # 汉语：复制到社区包仓库（原是单独一个作业）：历史版本存好后，用自举作业编好的社区包工具，把清单「社区复制包们」（应用/百工坊/社区包工具/复制。豫）里的包复制到社区包仓库（yuyan-lang/yuyan-community-packages）的 包/豫言/<包名>/（许可 AGPL-3.0-only），把 包/豫言/ 下不在清单里的包目录删掉（移出清单即从社区仓下架，删了哪些写进拉取请求正文），工具链钉改成本轮的 Linux x64 原生工具链包，带 DCO 签名提交，推一个分支并开拉取请求，由社区仓库的检查与合入机器人合入。跨仓写入用机密 YUYAN_COMMUNITY_TOKEN（细粒度个人令牌，只授社区仓库的 Contents 与 Pull requests 写权限）；没有令牌时演练：照样复制、提交，打印差异并存为构件，不推送。本轮历史版本没存（某个平台没造出包）时不复制。
+      - uses: actions/download-artifact@v4
+        if: ${{ !cancelled() && steps.historical.outputs.done == 'true' }}
+        with:
+          name: 构建工具
+          path: ${{ runner.temp }}
+
+      - name: 解开构建工具
+        if: ${{ !cancelled() && steps.historical.outputs.done == 'true' }}
+        run: tar -xzf "$RUNNER_TEMP/构建工具.tar.gz"
+
+      # 文言：于诸 historical-binaries 发行中求本轮之 Linux x64 原生包，下而算其沙256。
+      # 汉语：在各个 historical-binaries 发行里找本轮的 Linux x64 原生工具链包，下载后算沙256。
+      - name: 找本轮发布的原生工具链包
+        id: pkg
+        if: ${{ !cancelled() && steps.historical.outputs.done == 'true' }}
+        run: |
+          set -euo pipefail
+          url=""
+          for tag in $(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("historical-binaries"))'); do
+            name="$(gh release view "$tag" --json assets --jq ".assets[].name | select(endswith(\"-yuyan-native-linux-x64-$GITHUB_SHA.tar.gz\"))" | head -n 1)"
+            if [ -n "$name" ]; then
+              url="https://github.com/$GH_REPO/releases/download/$tag/$name"
+              break
+            fi
+          done
+          if [ -z "$url" ]; then
+            echo "::notice::本轮的原生工具链包没有发布，不复制到社区包仓库"
+            echo "url=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          curl --fail --location --retry 3 --retry-all-errors --output "$RUNNER_TEMP/本轮原生包.tar.gz" "$url"
+          sha="$(sha256sum "$RUNNER_TEMP/本轮原生包.tar.gz" | cut -d' ' -f1)"
+          echo "原生工具链包：$url（沙256 $sha）"
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: 检出社区包仓库
+        if: ${{ !cancelled() && steps.pkg.outputs.url != '' }}
+        uses: actions/checkout@v4
+        with:
+          repository: yuyan-lang/yuyan-community-packages
+          path: 社区包仓库
+          persist-credentials: false
+
+      # 文言：社区之仓检出于语言仓之工作区中，发现语言仓之包时并扫其 包/豫言/ 而名冲（十月十四日后每轮皆败）；故先移之出工作区。
+      # 汉语：社区包仓库检出在语言仓工作区里，发现语言仓的包时会连带扫到它的 包/豫言/ 而报包名冲突（10-14 以后每轮都败）；先把它挪出工作区。
+      - name: 复制包并改工具链钉
+        if: ${{ !cancelled() && steps.pkg.outputs.url != '' }}
+        env:
+          YY_PKG_URL: ${{ steps.pkg.outputs.url }}
+          YY_PKG_SHA: ${{ steps.pkg.outputs.sha }}
+        run: |
+          set -euo pipefail
+          rm -rf "$RUNNER_TEMP/社区包仓库"
+          mv 社区包仓库 "$RUNNER_TEMP/社区包仓库"
+          ./社区包工具。林纳。豫行 复制 --语言仓 "$GITHUB_WORKSPACE" --社区 "$RUNNER_TEMP/社区包仓库" --钉网址 "$YY_PKG_URL" --钉沙256 "$YY_PKG_SHA" --钉提交 "$GITHUB_SHA" | tee "$RUNNER_TEMP/社区复制输出.log"
+
+      - name: 提交并开拉取请求（没有令牌时演练）
+        if: ${{ !cancelled() && steps.pkg.outputs.url != '' }}
+        env:
+          YY_COMMUNITY_TOKEN: ${{ secrets.YUYAN_COMMUNITY_TOKEN }}
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/社区包仓库"
+          # 文言：以 github-actions[bot] 之名录之：GitHub 识其户，cla-bot 乃以其名问官网之旧放行名录；邮箱无所联之户者，cla-bot 不问而径报错。
+          # 汉语：以 github-actions[bot] 的身份提交：GitHub 认得这个账户，cla-bot 才会拿用户名去查官网的旧放行名单；邮箱没关联账户时，cla-bot 不查就直接报错。
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "社区包仓库没有改动"
+            exit 0
+          fi
+          short="${GITHUB_SHA:0:9}"
+          branch="语言仓/$short"
+          git commit -q -s -m "复制：语言仓 $short 的包与工具链钉" -m "由语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）。"
+          git show --stat --format='%H%n%an <%ae>%n%B' HEAD
+          git format-patch -1 --stdout HEAD > "$RUNNER_TEMP/社区复制.patch"
+          if [ -z "$YY_COMMUNITY_TOKEN" ]; then
+            echo "::notice::演练：没有机密 YUYAN_COMMUNITY_TOKEN，不推送。将要执行：推送分支 $branch 到 yuyan-lang/yuyan-community-packages，开拉取请求“复制：语言仓 $short 的包与工具链钉”到 main，由社区仓库的合入机器人核对后合入。补丁存为构件 社区复制补丁。"
+            exit 0
+          fi
+          git push "https://x-access-token:$YY_COMMUNITY_TOKEN@github.com/yuyan-lang/yuyan-community-packages.git" "HEAD:refs/heads/$branch"
+          # 文言：抄录之出中「下架 豫言/」诸行，聚为下架之包，书于请之正文，免其暗下。
+          # 汉语：从复制输出里取「下架 豫言/」开头的行，汇成下架的包，写进拉取请求正文，免得悄悄下架。
+          dropped="$(sed -n 's/^下架 豫言\///p' "$RUNNER_TEMP/社区复制输出.log" 2>/dev/null | sed -e 's/$/、/' | tr -d '\n')"
+          dropped="${dropped%、}"
+          {
+            echo "语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）：清单里的包复制到 包/豫言/，工具链钉改成本轮的原生工具链包。"
+            if [ -n "$dropped" ]; then
+              echo "移出「社区复制包们」的包已从社区仓下架：$dropped。"
+            fi
+            echo "合入机器人核对检查与作者后自动合入。"
+          } > "$RUNNER_TEMP/拉取请求正文.txt"
+          url="$(GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr create -R yuyan-lang/yuyan-community-packages --base main --head "$branch" \
+            --title "复制：语言仓 $short 的包与工具链钉" \
+            --body-file "$RUNNER_TEMP/拉取请求正文.txt")"
+          echo "开了拉取请求 $url"
+          # 文言：新请既开，前此语言仓所抄之请，检有败者或见罢者（逾时亦记为罢），皆闭之，评以新请之址，并去其枝；检犹未竟者姑存之。闭之不成，惟警而不败此作。
+          # 汉语：新拉取请求开好后，关掉此前由语言仓复制、检查失败或被取消的拉取请求（作业超时在检查汇总里记为 CANCELLED，不是 TIMED_OUT；评论指向新的，并删除其分支）；检查还没跑完的先留着。关不掉只发警告，不让本作业失败。
+          # 待办事项：留着的那些之后才失败的，要等下一次开新拉取请求时才关。
+          GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr list -R yuyan-lang/yuyan-community-packages --state open --limit 200 \
+            --json number,headRefName,statusCheckRollup \
+            --jq '.[] | select(.headRefName | startswith("语言仓/"))
+              | select(any(.statusCheckRollup[]?; (.conclusion // .state) as $s | $s == "FAILURE" or $s == "ERROR" or $s == "TIMED_OUT" or $s == "CANCELLED"))
+              | "\(.number) \(.headRefName)"' |
+          while read -r old oldbranch; do
+            if [ "$oldbranch" != "$branch" ]; then
+              GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr close -R yuyan-lang/yuyan-community-packages "$old" --delete-branch \
+                --comment "检查失败或被取消，已由 $url 取代，自动关闭。" || echo "::warning::关闭拉取请求 #$old 失败"
+            fi
+          done || echo "::warning::查找此前检查失败的复制拉取请求失败"
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() && steps.pkg.outputs.url != '' }}
+        with:
+          name: 社区复制补丁
+          path: ${{ runner.temp }}/社区复制.patch
+          retention-days: 7
+          if-no-files-found: ignore

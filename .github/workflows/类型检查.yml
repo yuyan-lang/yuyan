@@ -1,0 +1,66 @@
+# 文言：核型之工作流：凡拉取之请，惟核其型，余试皆归推 yybs 之全量测试（main.yml）。先取连续版最新之 Linux x64 原生包，以包中豫构构今源之一级原生豫构，乃以之核豫言编译器全包之型：所用之核型者出于今源，改编译器之请亦得其实。用户 2026-11-01 定：拉取之请惟核型，全量之试惟行于 yybs，发行惟一作，诸作皆行于自有之机。外来贡献者之请每轮须人许之乃行（彼之码行于 pit-pc），许前当阅其改。
+# 汉语：类型检查工作流：每个拉取请求只跑类型检查，其余测试都归推送 yybs 时的全量测试（main.yml）。先取连续版本里最新的 Linux x64 原生工具链包，用包里的豫构把当前源码编成一级原生豫构，再用它类型检查豫言编译器全包：类型检查器出自当前源码，改编译器的拉取请求也查得准。用户 2026-11-01 定：拉取请求只跑类型检查，全量测试只在 yybs 上跑，发布只有一个作业，所有作业都跑在自有机器上。外部贡献者的拉取请求每轮都要人点批准才跑（它的代码会在 pit-pc 上执行），批准前先看改动。
+name: 类型检查
+
+env:
+  # 文言：起步之原生工具链包，同 main.yml：取连续版最新之 Linux x64 包。
+  # 汉语：起步用的原生工具链包，同 main.yml：取连续版本里最新的 Linux x64 包。
+  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-binaries/yuyan-native-linux-x64.tar.gz
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 文言：同一请有新推则罢旧轮。
+# 汉语：同一个拉取请求有新推送时取消旧轮。
+concurrency:
+  group: 类型检查-${{ github.ref }}
+  cancel-in-progress: true
+
+# 文言：行于 pit-pc 之自托管 runner。runner 书 CI 之境变量，豫构见之则不经将作；故诸步皆去 CI 而行，构建乃经将作排队、用共享之缓。
+# 汉语：跑在 pit-pc 的自托管 runner 上。runner 会设环境变量 CI，豫构见了就不经将作；所以每一步都去掉 CI 再跑，构建经将作排队、用共享缓存。
+defaults:
+  run:
+    shell: env -u CI bash -e {0}
+
+jobs:
+  type-check:
+    name: 类型检查
+    runs-on: [self-hosted, pit-pc]
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      # 文言：连续版之包覆时或暂缺，故多试数次。
+      # 汉语：连续版本的包被覆盖时可能短暂取不到，所以多重试几次。
+      - name: 下载最新的原生工具链包
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/yuyan-native-stable.tar.gz"
+          curl --fail --location --retry 6 --retry-all-errors --retry-delay 10 \
+            --output "$archive" "$YY_NATIVE_TOOLCHAIN_URL"
+          tar -xzf "$archive"
+
+      # 文言：同自举之作之首步：包中豫构配包中执行器，据今源径出一级原生豫构。
+      # 汉语：同自举作业的第一步：包里的豫构配包里的执行器，以当前源码直出一级原生豫构。
+      - name: 以包中豫构构建当前源码的一级原生豫构
+        run: |
+          ./豫构稳定。林纳。豫行 构建 豫构 --输出 豫构。林纳。豫行 -j "$(nproc)" -- --目标 本机 --执行器 执行器。树码 --降级缓存 .豫构缓存/降级缓存/豫构一级。林纳。豫行.机器片
+
+      - name: 类型检查
+        run: ./豫构。林纳。豫行 目标 类型检查 --不连带 -j "$(nproc)"
+
+      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
+      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
+      - name: 上传构建日志
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: 构建日志-类型检查
+          path: .构建日志/
+          include-hidden-files: true
+          retention-days: 90
+          if-no-files-found: ignore

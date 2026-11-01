@@ -1,25 +1,31 @@
-name: CI
+# 文言：全量测试之工作流：惟推 yybs 与手发之时行之；拉取之请惟核型（见 类型检查.yml）。自举既毕，诸平台之包、豫行工具链、系统光盘与诸试并起；发布惟「发布历史版本」一作，所发诸物既成即发，不待诸试。用户 2026-11-01 定：拉取之请惟核型，全量之试惟行于 yybs，发行惟一作。
+# 汉语：全量测试工作流：只在推送 yybs 与手动触发时运行；拉取请求只跑类型检查（见 类型检查.yml）。自举之后，各平台工具链包、豫行工具链、系统光盘与各项测试并行；发布只有「发布历史版本」一个作业，发行物造好就发，不等测试。用户 2026-11-01 定：拉取请求只跑类型检查，全量测试只在 yybs 上跑，发布只有一个作业。
+name: 全量测试
 
 env:
-  # 文言：起步之原生工具链包（Linux x64）：取连续版（continuous-binaries）最新之包，自举之作由此起步，不用 Node 与 Wasm。一轮自举既过（二三级逐字相同），即覆此包；不复定提交，亦不核摘要（用户 2026-10-18 定：能自举两遍而定点者即可用）。包中豫构 豫构稳定。林纳。豫行 配包中执行器 执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟一轮自举既过、连续版易新包，乃用之。云仓 deploy.yml 读此行，易平台之名以取林檎臂六十四之包。
-  # 汉语：起步用的原生工具链包（Linux x64）：取连续版本（continuous-binaries）里最新的包，自举作业从它起步，不用 Node 与 Wasm。一轮自举通过（二、三级逐字节相同）就覆盖这个包；不再钉提交，也不核对摘要（用户 2026-10-18 定：能连自举两遍、定点一致就够用）。包里的豫构 豫构稳定。林纳。豫行 配包里的执行器 执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等一轮自举通过、连续版本换上新包，再用。云仓 deploy.yml 读这一行，换平台名取 macOS arm64 包。
+  # 文言：起步之原生工具链包（Linux x64）：取连续版（continuous-binaries）最新之包，自举之作由此起步，不用 Node 与 Wasm。一轮自举既过（二三级逐字相同），发布历史版本之作即覆此包；不复定提交，亦不核摘要（用户 2026-10-18 定：能自举两遍而定点者即可用）。包中豫构 豫构稳定。林纳。豫行 配包中执行器 执行器。树码，先构今源之原生豫构为一级驱动，乃原生自举而核定点。今源于工具链自身用旧器所不识之写法或新原语者，须先推其支持之改，俟一轮自举既过、连续版易新包，乃用之。
+  # 汉语：起步用的原生工具链包（Linux x64）：取连续版本（continuous-binaries）里最新的包，自举作业从它起步，不用 Node 与 Wasm。一轮自举通过（二、三级逐字节相同），「发布历史版本」作业就覆盖这个包；不再钉提交，也不核对摘要（用户 2026-10-18 定：能连自举两遍、定点一致就够用）。包里的豫构 豫构稳定。林纳。豫行 配包里的执行器 执行器。树码，先把当前源码编成原生豫构作一级驱动，再原生自举并核对定点。当前源码在工具链自身用到旧工具不认的写法或新原语时，先推送支持它的改动，等一轮自举通过、连续版本换上新包，再用。
   YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-binaries/yuyan-native-linux-x64.tar.gz
 
 on:
   push:
-    branches: [yybs]
-  pull_request:
     branches: [yybs]
   workflow_dispatch:
 
 permissions:
   contents: write
 
-# 文言：工作流之并发组：同分支同时至多一轮行、一轮候；新推至则代其候者，行者照常竟之，诸平台之包亦发。故推送虽频，待行者至多一轮，每轮皆全竟。拉取请求有新推则罢旧轮。
-# 汉语：工作流级并发组：同一分支同时至多一轮在跑、一轮在等；新推送进来就替换正在等的那轮，正在跑的照常跑完（含各平台的发布）。推送再频繁，排队的也至多一轮，每轮都完整跑完。拉取请求有新推送时取消旧轮。
+# 文言：工作流之并发组：同分支同时至多一轮行、一轮候；新推至则代其候者，行者照常竟之，发布亦竟。故推送虽频，待行者至多一轮，每轮皆全竟。
+# 汉语：工作流级并发组：同一分支同时至多一轮在跑、一轮在等；新推送进来就替换正在等的那轮，正在跑的照常跑完（含发布）。推送再频繁，排队的也至多一轮，每轮都完整跑完。
 concurrency:
   group: CI-${{ github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: false
+
+# 文言：诸作皆行于自有之机（pit-pc 之自托管 runner），不用 GitHub 之机。runner 书 CI 之境变量，豫构见之则不经将作；故诸步皆去 CI 而行，构建乃循本机之规，经将作排队、用共享之缓，试程经行在。
+# 汉语：所有作业都跑在自有机器上（pit-pc 的自托管 runner），不用 GitHub 的机器。runner 会设环境变量 CI，豫构见了就不经将作；所以每一步都去掉 CI 再跑，构建照本机规矩经将作排队、用共享缓存，测试程序经行在。
+defaults:
+  run:
+    shell: env -u CI bash -e {0}
 
 # 文言：诸试之作仍各设作业之并发组（组名书作业之名，矩阵之作并书矩阵之值，否则同轮诸片相罢）；有工作流之组，同分支唯一轮在行，此组无所罢。
 # 汉语：各测试作业仍保留作业级并发组（组名写死作业名，矩阵作业带矩阵值，否则同轮各片互相取消）；有了工作流级并发组，同一分支只有一轮在跑，这些组不再互相取消。
@@ -27,7 +33,7 @@ jobs:
   formatting-check:
     name: formatting check
     needs: bootstrap
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 90
     concurrency:
       group: formatting-check-${{ github.ref }}
@@ -42,26 +48,22 @@ jobs:
         run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
       - name: 构建格式检查工具
         run: ./豫构。林纳。豫行 构建 源码格式化 检查 --输出 格式检查。林纳。豫行 -j "$(nproc)"
-      # 文言：标签参数与命名元组之检：惟检所改之声明，依 AGENTS.md 有字面同类之参而未系标签者书警（函数恰二参者不检），签名、类之别名、类与构造器中元组相邻二项字面同类而未命名者亦书警（元组恰二项者不检）；此步纵败亦不败作业。推送时基准取上一推之提交，拉取请求取所归分支之提交；不得则书一警而略之。
-      # 汉语：标签参数与命名元组检查：只检查这次改动涉及的声明，按 AGENTS.md 有字面类型相同的参数却没带标签的发警告（函数恰好两个参数时不查），签名、类型别名、类型与构造器里元组相邻两项字面类型相同却没命名的也发警告（元组恰好两项时不查）；这一步自己失败也不让作业失败（continue-on-error）。推送时基准取上一次推送的提交，拉取请求取目标分支的提交；取不到时发一条警告后跳过。
+      # 文言：标签参数与命名元组之检：惟检所改之声明，依 AGENTS.md 有字面同类之参而未系标签者书警（函数恰二参者不检），签名、类之别名、类与构造器中元组相邻二项字面同类而未命名者亦书警（元组恰二项者不检）；此步纵败亦不败作业。基准取上一推之提交；不得则书一警而略之。
+      # 汉语：标签参数与命名元组检查：只检查这次改动涉及的声明，按 AGENTS.md 有字面类型相同的参数却没带标签的发警告（函数恰好两个参数时不查），签名、类型别名、类型与构造器里元组相邻两项字面类型相同却没命名的也发警告（元组恰好两项时不查）；这一步自己失败也不让作业失败（continue-on-error）。基准取上一次推送的提交；取不到时发一条警告后跳过。
       - name: 标签参数与命名元组检查（只警告）
         continue-on-error: true
         env:
-          YY_LABEL_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          YY_LABEL_BASE: ${{ github.event.before }}
         run: |
           git fetch --no-tags --depth=1 origin "$YY_LABEL_BASE" || true
           ./格式检查。林纳。豫行 --标签 "$YY_LABEL_BASE"
-      # 文言：语义号之检（议一五〇五）：较基准与今之改，凡动编译之器一摊（库/译场、库/译场门、库/章句、冶铸）而未易语义号者，须提交之辞有一行「语义号：不换（缘由）」，否则书误而败此步；惟改注与排者，器自辨而略之。基准同标签之取法；浅克隆之史不足读提交之辞，故先取足深之史（拉取请求取其所归之合并提交，推送取 HEAD）。
-      # 汉语：编译语义号检查（议题 1505）：比较基准以来的改动，动了编译器一摊（库/译场、库/译场门、库/章句、冶铸）而没换编译语义号的，提交信息里须有一行「语义号：不换（缘由）」，否则报错并让这一步失败；只改注释与排版的由工具判出、自动放过。基准取法与「标签参数与命名元组检查」相同；浅克隆读不到提交信息，先取足够深的历史（拉取请求取这次合并提交，推送取 HEAD）。
+      # 文言：语义号之检（议一五〇五）：较基准与今之改，凡动编译之器一摊（库/译场、库/译场门、库/章句、冶铸）而未易语义号者，须提交之辞有一行「语义号：不换（缘由）」，否则书误而败此步；惟改注与排者，器自辨而略之。基准同标签之取法；浅克隆之史不足读提交之辞，故先取足深之史。
+      # 汉语：编译语义号检查（议题 1505）：比较基准以来的改动，动了编译器一摊（库/译场、库/译场门、库/章句、冶铸）而没换编译语义号的，提交信息里须有一行「语义号：不换（缘由）」，否则报错并让这一步失败；只改注释与排版的由工具判出、自动放过。基准取法与「标签参数与命名元组检查」相同；浅克隆读不到提交信息，先取足够深的历史。
       - name: 编译语义号检查
         env:
-          YY_SEMANTIC_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
-          YY_SEMANTIC_PR: ${{ github.event.pull_request.number }}
+          YY_SEMANTIC_BASE: ${{ github.event.before }}
         run: |
           git fetch --no-tags --depth=1 origin "$YY_SEMANTIC_BASE" || true
-          if [ -n "$YY_SEMANTIC_PR" ]; then
-            git fetch --no-tags --depth=100 origin "+refs/pull/$YY_SEMANTIC_PR/merge:refs/remotes/pull/merge" || true
-          fi
           git fetch --no-tags --depth=100 origin "$(git rev-parse HEAD)" || true
           ./格式检查。林纳。豫行 --语义号 "$YY_SEMANTIC_BASE"
       # 文言：篇名之检：Git 所录之篇与目录，名除半角点外皆汉字者，依 AGENTS.md 其缀当以全角句号「。」隔之；试之源其径无一段目名恰为「测试」者，亦书一警；列其名而书警，此步纵败亦不败作业。
@@ -111,11 +113,11 @@ jobs:
         continue-on-error: true
         run: ./格式检查。林纳。豫行 --只查标识符
 
-  # 文言：自举之作：原生起步，不用 Node 与 Wasm。起于所定之原生工具链包：包中豫构配包中执行器，先构今源之六十四位原生豫构（一级驱动，今源之码行于旧执行器），乃以之原生自举而核定点，装原生工具链，更构全树测试之器、网页后端之 Wasm 编译器与豫构（可发之产）、本轮之 Wasm 与原生工具链包，上传之，使诸片与跨平台之验早起。
-  # 汉语：自举作业：原生起步，不用 Node 与 Wasm。从固定的原生工具链包起步：包里的豫构配包里的执行器，先把当前源码编成六十四位原生豫构（一级驱动：当前源码的代码跑在旧执行器上），再由它原生自举并核对定点、装上原生工具链，接着构建全树测试工具、网页后端用的 Wasm 编译器与豫构（可发布的产物）以及本轮的 Wasm 与原生工具链包，然后上传，让测试分片与跨平台验证尽早开始。
+  # 文言：自举之作：原生起步，不用 Node 与 Wasm。起于所定之原生工具链包：包中豫构配包中执行器，先构今源之六十四位原生豫构（一级驱动，今源之码行于旧执行器），乃以之原生自举而核定点，装原生工具链，更构全树测试之器与网页后端之 Wasm 编译器与豫构，上传之，使诸试早起。发行之包归 发行.yml。
+  # 汉语：自举作业：原生起步，不用 Node 与 Wasm。从固定的原生工具链包起步：包里的豫构配包里的执行器，先把当前源码编成六十四位原生豫构（一级驱动：当前源码的代码跑在旧执行器上），再由它原生自举并核对定点、装上原生工具链，接着构建全树测试工具与网页后端用的 Wasm 编译器与豫构，然后上传，让各项测试尽早开始。发行用的包归 发行.yml。
   bootstrap:
     name: 自举
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
@@ -141,55 +143,23 @@ jobs:
       - name: 原生自举并核对定点，装上原生工具链，构建 Wasm 编译器、豫构与值桥
         run: ./豫构。林纳。豫行 全部 -j "$(nproc)"
 
-      - name: 构建全树测试工具、Wasm 工具链包与原生工具链包
-        run: ./豫构。林纳。豫行 目标 全树测试工具 打包 原生打包 -j "$(nproc)"
+      - name: 构建全树测试工具
+        run: ./豫构。林纳。豫行 目标 全树测试工具 -j "$(nproc)"
 
-      # 文言：三包：诸片所用之原生试器（并同代之 Wasm 编译器、豫构与值桥，供抽样之诺驿之验）、本轮之 Wasm 工具链包、本轮之原生工具链包（Linux x64）。
-      # 汉语：打三个包：各分片与检查作业用的原生测试工具（附同代的 Wasm 编译器、豫构与值桥，供抽样的诺驿验证用）、本轮的 Wasm 工具链包、本轮的原生工具链包（Linux x64）。
-      - name: 打包产物
+      # 文言：诸试所用之原生试器，并同代之 Wasm 编译器、豫构与值桥，供全树之试中所登之诺驿之试。
+      # 汉语：打包各测试作业用的原生测试工具，附同代的 Wasm 编译器、豫构与值桥，供全树测试里登记的诺驿测试用。
+      - name: 打包测试工具
         run: |
           set -euo pipefail
           tar -czf "$RUNNER_TEMP/测试工具.tar.gz" 编译器。林纳。豫行 豫构。林纳。豫行 执行器。树码 全树测试。林纳。豫行 编译器.wasm 豫构.wasm 豫言操作系统/宿主/节点/节点值桥接.wasm
-          tar -czf "$RUNNER_TEMP/yuyan-wasm.tar.gz" -C 网页汇编工具链 .
-          tar -czf "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" -C 原生工具链包 .
 
-      - name: 上传全树测试工具
+      - name: 上传测试工具
         uses: actions/upload-artifact@v4
         with:
           name: 测试工具
           path: ${{ runner.temp }}/测试工具.tar.gz
           retention-days: 1
           if-no-files-found: error
-
-      - name: 上传 Wasm 工具链包
-        uses: actions/upload-artifact@v4
-        with:
-          name: 网汇工具链包
-          path: ${{ runner.temp }}/yuyan-wasm.tar.gz
-          retention-days: 7
-          if-no-files-found: error
-
-      - name: 上传原生工具链包（Linux x64）
-        uses: actions/upload-artifact@v4
-        with:
-          name: 原生工具链-linux-x64
-          path: ${{ runner.temp }}/yuyan-native-linux-x64.tar.gz
-          retention-days: 7
-          if-no-files-found: error
-
-      # 文言：本平台自举既过，即覆连续版之 Wasm 与 Linux x64 原生之包，不待他作；史版待诸平台俱过，归发布历史版本之作。
-      # 汉语：本平台自举通过就覆盖连续版本里的 Wasm 包与 Linux x64 原生包，不等别的作业；历史版本要等各平台都自举通过，由“发布历史版本”作业统一发。
-      - name: 发布本平台连续版本
-        if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          if ! gh release view continuous-binaries >/dev/null 2>&1; then
-            gh release create continuous-binaries --target "$GITHUB_SHA" --title continuous-binaries --latest=false --notes "豫言工具链包（连续版本）"
-          fi
-          gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP/yuyan-native-linux-x64.tar.gz" --clobber
 
       # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
       # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
@@ -204,11 +174,11 @@ jobs:
           if-no-files-found: ignore
 
   # 文言：核型与豫构之试，取自举所成之器，不连带重造。
-  # 汉语：类型检查与豫构测试：取自举作业的产物运行，用 --不连带 不重建其依赖；与测试分片、跨平台验证并行。
+  # 汉语：类型检查与豫构测试：取自举作业的产物运行，用 --不连带 不重建其依赖；与全树测试等其他测试并行。
   checks:
     name: 类型检查与豫构测试
     needs: bootstrap
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -236,21 +206,13 @@ jobs:
           retention-days: 90
           if-no-files-found: ignore
 
-  # 文言：全树之试，分二十片并行；每片取自举所成之器，行其一段。
-  # 汉语：全树测试按 20 个分片并行运行；各片复用自举作业产出的工具，运行自己那一段。
-  # 分片数改动时，须同时改 matrix.shard 列表与下面的 “/20”。
+  # 文言：全树之试，不分片：一作取自举所成之器，行全树（用户 2026-11-01 定：惟占一机）。自托管之 runner 无托管机六时之限，故时限宽设。
+  # 汉语：全树测试不分片：一个作业用自举作业产出的工具跑完整棵树（用户 2026-11-01 定：只占一台机器）。自托管 runner 没有托管机 6 小时的上限，时限放宽。
   full-tree-tests:
-    name: 全树测试 ${{ matrix.shard }}/20
+    name: 全树测试
     needs: bootstrap
-    runs-on: ubuntu-latest
-    timeout-minutes: 180
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-full-tree-tests-${{ matrix.shard }}
-      cancel-in-progress: true
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    runs-on: [self-hosted, pit-pc]
+    timeout-minutes: 1440
     steps:
       - uses: actions/checkout@v4
 
@@ -266,8 +228,8 @@ jobs:
       - name: 解开全树测试工具
         run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
 
-      - name: 运行本片测试
-        run: ./全树测试。林纳。豫行 --分片 ${{ matrix.shard }}/20
+      - name: 运行全树测试
+        run: ./全树测试。林纳。豫行
 
   # 文言：抽样之轮行验收之层：全量之轮及可取公数者，依提交号末位四、五而星，手发者必行；余轮不行，验层仍留本机手行。
   # 汉语：抽样轮次运行验收层：完整轮数与可取公开数据者，按提交号末位 4、5 抽样，手动触发必跑；其余轮次不跑，验收层仍由本机手工运行。
@@ -275,7 +237,7 @@ jobs:
     name: 抽样验收层
     needs: bootstrap
     if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '4') || endsWith(github.sha, '5')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 360
     steps:
       - uses: actions/checkout@v4
@@ -305,16 +267,8 @@ jobs:
           ./全树测试。林纳。豫行 --验收 --只 库/群书/仓颉部/同文/测试/全量/
           ./全树测试。林纳。豫行 --验收 --只 库/群书/簿式部/简象/测试/全量/
 
-      - name: 构建云工持久对象壳一致性应用
-        run: |
-          ./豫构。林纳。豫行 发行 云工 豫言操作系统/宿主/云工/一致性验证/应用/持久对象壳一致性应用 dist/持久对象壳一致性应用
-          cp 豫言操作系统/宿主/云工/物桥.mjs dist/持久对象壳一致性应用/
-
-      - name: 验收层：云工持久对象壳
-        env:
-          持久对象壳产物: ${{ github.workspace }}/dist/持久对象壳一致性应用
-        run: ./全树测试。林纳。豫行 --验收 --只 豫言操作系统/宿主/云工/一致性验证/
-
+      # 文言：云工既不复支，十一月一日撤其持久对象壳之验。
+      # 汉语：云工已不再支持，2026-11-01 撤掉云工持久对象壳的验收。
       - name: 安装扩展依赖
         run: npm --prefix 应用/百工坊/yuyan-vscode ci
 
@@ -355,25 +309,17 @@ jobs:
       - name: 完整轮数：简象模糊
         run: timeout 3600 ./dist/验收层/简象模糊
 
-  # 文言：交叉之工具链：取自举所成之原生豫构，于 Linux 径出他平台之原生豫构（林檎臂六十四、Linux 臂六十四、轩窗兼容六十四），与执行器之树码同包；他平台之作以之原生起步，不用 Node 与 Wasm。轩窗之降级已有六十四位址之内存（触乃提交，提案〇〇〇二一），原生豫构可起；今之限在动区八吉（回收之堆约三点七吉，见冶铸之「鹄长址页容量限」）。
-  # 汉语：交叉工具链：用自举作业产出的原生豫构，在 Linux 上直出其他平台的原生豫构（macOS 臂六十四、Linux 臂六十四、Windows 兼容六十四），连同执行器汇编树码打成包；其他平台的作业用它原生起步，不用 Node 与 Wasm。Windows 的降级已有六十四位地址内存（碰到才提交，提案 00021），原生豫构能起；现在的限制是动态区 8 GiB（回收堆约 3.7 GiB，见 冶铸 的「鹄长址页容量限」）。
+  # 文言：轩窗之交叉工具链：取自举所成之原生豫构，于 Linux 径出轩窗兼容六十四之原生豫构，并预编其前导，验其可成；惟编不行（轩窗之机未备，见议题 #1605）。林檎与 Linux 臂六十四之包归 发行.yml。轩窗之降级已有六十四位址之内存（触乃提交，提案〇〇〇二一），原生豫构可起；今之限在动区八吉（回收之堆约三点七吉，见冶铸之「鹄长址页容量限」）。
+  # 汉语：轩窗交叉工具链：用自举作业产出的原生豫构，在 Linux 上直出 Windows 兼容六十四的原生豫构，并预编前导，核对编得出来；只编不跑（还没有自有的 Windows 机器，见议题 #1605）。macOS 与 Linux 臂六十四的包归 发行.yml。Windows 的降级已有六十四位地址内存（碰到才提交，提案 00021），原生豫构能起；现在的限制是动态区 8 GiB（回收堆约 3.7 GiB，见 冶铸 的「鹄长址页容量限」）。
   cross-toolchains:
-    name: 交叉工具链（${{ matrix.plat }}）
+    name: 轩窗交叉工具链
     needs: bootstrap
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
         include:
-          - plat: macos-arm64
-            system: 林檎
-            prog: 豫构。林檎。豫行
-            arch: 臂六十四
-          - plat: linux-arm64
-            system: 林纳
-            prog: 豫构。林纳。豫行
-            arch: 臂六十四
           - plat: windows-x64
             system: 轩窗
             prog: 豫构.exe
@@ -401,31 +347,17 @@ jobs:
       # 文言：轩窗之包随带预编之前导（#993）：以本轮原生豫构为轩窗编好前导之单元与阶缓，收于 预编缓存/，轩窗初交直接装入，不必现编几十分钟。列以包中目标之执行器（与 豫构.exe 所嵌者同）为单元之器：单元机器码依其布局而生，印记其摘，轩窗入装时乃合（#993 第三轮：轩窗兼为绝对址式，依林檎相对式所编之单元一执行即“array.new_data 越界”）。
       # 汉语：Windows 包随带预编前导（#993）：用本轮原生豫构为 Windows 编好前导单元与阶段缓存，收进 预编缓存/，Windows 上第一次交互直接装入，不必现编几十分钟。用包里目标那份执行器（与 豫构.exe 所嵌的同一份）编单元：单元机器码照它的布局生成、印记记它的摘要，Windows 上入装才核对得上（#993 第三轮：Windows AMD64 按绝对址式运行，照 macOS 相对址式编的单元一执行就“array.new_data 越界”）。
       - name: 预编轩窗前导
-        if: matrix.plat == 'windows-x64'
         run: |
           set -euo pipefail
           out="交叉产物/${{ matrix.plat }}"
           ./豫构。林纳。豫行 预编打包 "$out" -- -j "$(nproc)" --目标系统 轩窗 --目标架构 兼容六十四 --执行器 "$out/执行器。树码"
 
-      - name: 打包交叉工具链
-        run: |
-          set -euo pipefail
-          out="交叉产物/${{ matrix.plat }}"
-          tar -czf "$RUNNER_TEMP/交叉-${{ matrix.plat }}.tar.gz" -C "$out" .
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: 交叉工具链-${{ matrix.plat }}
-          path: ${{ runner.temp }}/交叉-${{ matrix.plat }}.tar.gz
-          retention-days: 3
-          if-no-files-found: error
-
-  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与四宿主之豫行启动器（轩窗兼者亦在其中），打包而传；复以原生豫构出轩窗之验所较之参照（发现之出、原生你好之兼豫行）。
-  # 汉语：豫行工具链（提案 00021）：用本轮的原生豫构编出两架构的豫构豫行与四个宿主的豫行启动器（含 Windows x86-64），打包上传；另用原生豫构出 Windows 验证要对照的参照（发现的输出、原生你好的 AMD64 豫行版）。
+  # 文言：豫行工具链（提案〇〇〇二一）：以本轮之原生豫构编二构之豫构豫行与四宿主之豫行启动器（轩窗兼者亦在其中），打包而传，供跨宿主之验与可执行包之冒烟。
+  # 汉语：豫行工具链（提案 00021）：用本轮的原生豫构编出两架构的豫构豫行与四个宿主的豫行启动器（含 Windows x86-64），打包上传，供跨宿主验证与可执行包程序冒烟用。
   yuxing-toolchain:
     name: 豫行工具链
     needs: bootstrap
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -451,51 +383,21 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
-      # 文言：轩窗之验所较之参照：原生豫构发现之出，与以原生豫构编原生你好之兼豫行（名同轩窗所编，附录之程名乃同）。
-      # 汉语：Windows 验证要对照的参照：原生豫构的发现输出，与原生豫构编出的原生你好 AMD64 豫行版（输出名与 Windows 上编的相同，附录里的程序名因而相同）。
-      - name: 出 Windows 对照用的参照
-        run: |
-          set -euo pipefail
-          mkdir -p 豫行参照
-          ./豫构。林纳。豫行 发现 --树 > 豫行参照/发现.txt
-          ./豫构。林纳。豫行 构建 原生你好 豫行入口 --输出 豫行参照/编你好 -j "$(nproc)" -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
-          tar -czf "$RUNNER_TEMP/豫行参照包.tar.gz" -C 豫行参照 发现.txt 编你好
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: 豫行参照包
-          path: ${{ runner.temp }}/豫行参照包.tar.gz
-          retention-days: 3
-          if-no-files-found: error
-
-  # 文言：豫行于诸宿主（提案〇〇〇二一）：于 Linux 二构与林檎之运行器，以包中之启动器行豫构豫行：发现诸包，构原生你好之豫行版，复以启动器行之（印你好，以七退）。
-  # 汉语：豫行跨宿主运行（提案 00021）：在 Linux 两架构与 macOS 运行器上，用包里的启动器运行豫构豫行：发现包、构建原生你好的豫行版，再用启动器运行它（打印你好，退出码 7）。
+  # 文言：豫行于宿主（提案〇〇〇二一）：于 Linux x64 之机，以包中之启动器行豫构豫行：发现诸包，构原生你好之豫行版，复以启动器行之（印你好，以七退）。Linux 臂六十四、林檎、轩窗之机未备，见议题 #1605。
+  # 汉语：豫行跨宿主运行（提案 00021）：在 Linux x64 机器上用包里的启动器运行豫构豫行：发现包、构建原生你好的豫行版，再用启动器运行它（打印你好，退出码 7）。Linux 臂六十四、macOS、Windows 还没有自有机器，见议题 #1605。
   yuxing-hosts:
     name: 豫行跨宿主（${{ matrix.plat }}）
     needs: yuxing-toolchain
-    runs-on: ${{ matrix.os }}
-    env:
-      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            plat: linux-x64
+          - plat: linux-x64
             launcher: 豫行启动器兼。林纳。豫行
             yuxing: 豫构兼。豫行
             arch: 兼容六十四
-          - os: ubuntu-24.04-arm
-            plat: linux-arm64
-            launcher: 豫行启动器臂。林纳。豫行
-            yuxing: 豫构臂。豫行
-            arch: 臂六十四
-          - os: macos-latest
-            plat: macos-arm64
-            launcher: 豫行启动器臂。林檎。豫行
-            yuxing: 豫构臂。豫行
-            arch: 臂六十四
     steps:
       - uses: actions/checkout@v4
 
@@ -523,156 +425,26 @@ jobs:
           grep -F '你好' 你好.txt
           test "$code" = 7
 
-  # 文言：豫行于轩窗（提案〇〇〇二一第五、六步）：于轩窗运行器，以包中之轩窗兼启动器行原生你好之兼豫行（参照）；复以启动器合豫构兼豫行为单文件 豫构.exe，发现诸包，构原生你好之豫行版，皆与 Linux 之原生豫构所出者较（发现之出逐字同，豫行逐字节同），复以启动器行之（印你好，以七退）。先书宿主之存与页文件，以察提交之限；复以 -j 4 类检一库，验数常驻之工作进程同时而行（提交依触而计，见 客体二号 轩窗缺页）。
-  # 汉语：豫行在 Windows 上运行（提案 00021 第 5、6 步）：在 Windows 运行器上用包里的 Windows x86-64 启动器运行原生你好的 AMD64 豫行版（参照）；再用启动器把 AMD64 豫构豫行合成单文件 豫构.exe，发现包、构建原生你好的豫行版，都与 Linux 上原生豫构的结果对照（发现输出逐字相同，豫行逐字节相同），再用启动器运行它（打印你好，退出码 7）。先打印宿主内存与页面文件，便于查提交上限；再以 -j 4 类型检查一个库，确认几个常驻工作进程同时运行（提交按碰过的内存计，见 客体二号 的 轩窗缺页）。
-  yuxing-windows:
-    name: 豫行跨宿主（windows-x64）
-    needs: yuxing-toolchain
-    runs-on: windows-latest
-    timeout-minutes: 40
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 豫行工具链包
-          path: ${{ runner.temp }}
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 豫行参照包
-          path: ${{ runner.temp }}
-
-      # 文言：Git Bash 之 tar 视 `D:\…` 为远主之名，故加 --force-local。
-      # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
-      - name: 解开豫行工具链包与参照
-        run: |
-          set -euo pipefail
-          tar --force-local -xzf "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz"
-          mkdir -p 豫行参照
-          tar --force-local -xzf "$RUNNER_TEMP/豫行参照包.tar.gz" -C 豫行参照
-          ls -la 豫行启动器兼.exe 豫构兼。豫行 豫行参照
-
-      - name: 宿主内存与页面文件
-        shell: pwsh
-        run: |
-          Get-CimInstance Win32_ComputerSystem | Select-Object AutomaticManagedPagefile, TotalPhysicalMemory | Format-List
-          Get-CimInstance Win32_PageFileUsage | Select-Object Name, AllocatedBaseSize, CurrentUsage, PeakUsage | Format-List
-          Get-CimInstance Win32_OperatingSystem | Select-Object TotalVisibleMemorySize, FreePhysicalMemory, TotalVirtualMemorySize, FreeVirtualMemory | Format-List
-
-      - name: 启动器运行原生你好的豫行版
-        run: |
-          set +e
-          ./豫行启动器兼.exe 豫行参照/编你好 > 你好参照.txt
-          code=$?
-          set -e
-          cat 你好参照.txt
-          echo "退出码 $code"
-          grep -F '你好' 你好参照.txt
-          test "$code" = 7
-
-      - name: 合成单文件豫构并发现包
-        run: |
-          set -euo pipefail
-          ./豫行启动器兼.exe --合成 豫构兼。豫行 豫构.exe
-          ls -la 豫构.exe
-          ./豫构.exe 发现 --树 > 豫行发现.txt
-          grep -F '豫章（库/豫章）' 豫行发现.txt
-          diff 豫行发现.txt 豫行参照/发现.txt
-          echo "发现的输出与 Linux 原生豫构相同"
-
-      - name: 构建原生你好的豫行版并与 Linux 对照
-        run: |
-          set -euo pipefail
-          ./豫构.exe 构建 原生你好 豫行入口 --输出 编你好 -j 2 -- --目标 本机 --目标系统 豫言 --目标架构 兼容六十四
-          cmp 编你好 豫行参照/编你好
-          echo "产物与 Linux 原生豫构编出的逐字节相同"
-          set +e
-          ./豫行启动器兼.exe 编你好 > 你好.txt
-          code=$?
-          set -e
-          cat 你好.txt
-          grep -F '你好' 你好.txt
-          test "$code" = 7
-
-      - name: 以 -j 4 类型检查一个库（几个常驻工作进程同时运行）
-        run: |
-          set -euo pipefail
-          ./豫构.exe 类型检查 结绳 -j 4 2> 并行检查.txt || { tail -30 并行检查.txt; exit 1; }
-          tail -3 并行检查.txt
-          grep -E -m 3 '运行 [2-4]/4' 并行检查.txt
-          echo "同时运行的常驻工作进程不止一个"
-
-      - name: 宿主内存（构建之后）
-        if: always()
-        shell: pwsh
-        run: |
-          Get-CimInstance Win32_OperatingSystem | Select-Object TotalVirtualMemorySize, FreeVirtualMemory | Format-List
-
-  # 文言：发豫行工具链包（提案〇〇〇二一）：跨宿主之验皆过，乃覆连续版之 yuyan-yuxing-toolchain.tar.gz；独为一作，败不阻他包之发，不入史版（免耗资产之额）。
-  # 汉语：发布豫行工具链包（提案 00021）：跨宿主验证都通过后，覆盖连续版本里的 yuyan-yuxing-toolchain.tar.gz；单独一个作业，失败不挡其他包的发布，也不进历史版本（免得多占资产额度）。
-  publish-yuxing:
-    name: 发布豫行工具链包
-    needs: [yuxing-toolchain, yuxing-hosts, yuxing-windows]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: 豫行工具链包
-          path: ${{ runner.temp }}
-
-      - name: 上传到连续版本
-        run: |
-          set -euo pipefail
-          if ! gh release view continuous-binaries >/dev/null 2>&1; then
-            echo "连续版本还不存在，等自举作业先建" >&2
-            exit 1
-          fi
-          gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-yuxing-toolchain.tar.gz" --clobber
-
-  # 文言：抽样之轮较合成与直出（提案〇〇〇二一议九之条件一）：于 Linux 二构与林檎之运行器，以本轮本平台之原生豫构与合成之单文件豫构（包中之启动器加豫构豫行）各冷构豫言编译器为豫行二次，交替而行，降级之缓存与出目各别；书其时与比，合成逾直出一点一倍则书警，不败。
-  # 汉语：抽样轮次比较合成与直出（提案 00021 议九的条件①）：在 Linux 两架构与 macOS 运行器上，用本轮本平台的原生豫构与合成的单文件豫构（包里的启动器加豫构豫行）各冷构建两次豫言编译器（编成豫行），交替进行，降级缓存与输出目录各用各的；打印耗时与比值，合成慢过直出 1.1 倍时只发警告。
+  # 文言：抽样之轮较合成与直出（提案〇〇〇二一议九之条件一）：于 Linux x64 之机，以本轮之原生豫构与合成之单文件豫构（包中之启动器加豫构豫行）各冷构豫言编译器为豫行二次，交替而行，降级之缓存与出目各别；书其时与比，合成逾直出一点一倍则书警，不败。他平台之机未备，见议题 #1605。
+  # 汉语：抽样轮次比较合成与直出（提案 00021 议九的条件①）：在 Linux x64 机器上，用本轮的原生豫构与合成的单文件豫构（包里的启动器加豫构豫行）各冷构建两次豫言编译器（编成豫行），交替进行，降级缓存与输出目录各用各的；打印耗时与比值，合成慢过直出 1.1 倍时只发警告。其他平台还没有自有机器，见议题 #1605。
   yuxing-compare:
     name: 抽样 合成与直出对比（${{ matrix.plat }}）
-    needs: [bootstrap, cross-toolchains, yuxing-toolchain]
+    needs: [bootstrap, yuxing-toolchain]
     if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
-    runs-on: ${{ matrix.os }}
+    runs-on: [self-hosted, pit-pc]
     env:
-      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
+      YY_XI: 林纳
     timeout-minutes: 120
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            plat: linux-x64
+          - plat: linux-x64
             native-artifact: 测试工具
             native-tar: 测试工具.tar.gz
             launcher: 豫行启动器兼。林纳。豫行
             yuxing: 豫构兼。豫行
             arch: 兼容六十四
-          - os: ubuntu-24.04-arm
-            plat: linux-arm64
-            native-artifact: 交叉工具链-linux-arm64
-            native-tar: 交叉-linux-arm64.tar.gz
-            launcher: 豫行启动器臂。林纳。豫行
-            yuxing: 豫构臂。豫行
-            arch: 臂六十四
-          - os: macos-latest
-            plat: macos-arm64
-            native-artifact: 交叉工具链-macos-arm64
-            native-tar: 交叉-macos-arm64.tar.gz
-            launcher: 豫行启动器臂。林檎。豫行
-            yuxing: 豫构臂。豫行
-            arch: 臂六十四
     steps:
       - uses: actions/checkout@v4
 
@@ -723,12 +495,12 @@ jobs:
             echo "::warning title=合成慢于直出（${{ matrix.plat }}）::合成豫构冷构建编译器 $c 秒，直出 $n 秒，为 $r 倍，超过 1.1 倍"
           fi
 
-  # 文言：可执行包之程（云仓提案 C00004）：以本轮之原生豫构编清单诸应用为兼容六十四之豫行（与造盘置于 /工具 者同式），并其清单（仓库目标「可执行包程序」，缺省惟编 豫言-兼容六十四）；以豫行工具链包之林兼启动器行你好之豫行以冒烟（印你好，以七退）。其布由社区包仓库：community-copy 之作抄此诸应用入 yuyan-lang/yuyan-community-packages，社区仓库之 CI 编诸目标而布于包仓库 yuyan-lang.org，豫言系统之“安装软件”读其汇总目录；语言仓不复传于 GitHub 之发行版。
-  # 汉语：可执行包程序（云仓提案 C00004）：用本轮的原生豫构把清单里的应用编成 AMD64 豫行（与造盘放进 /工具 的工具同一种格式），连同清单（仓库目标「可执行包程序」，缺省只编 豫言-兼容六十四）；用豫行工具链包里的林兼启动器运行你好的豫行版作冒烟（打印你好，退出码 7）。发布走社区包仓库：作业 community-copy 把这些应用复制进 yuyan-lang/yuyan-community-packages，社区仓库的 CI 编全部目标、发布进包仓库 yuyan-lang.org，豫言系统的“安装软件”读那里的汇总目录；语言仓不再上传 GitHub 发行版。
+  # 文言：可执行包之程（云仓提案 C00004）：以本轮之原生豫构编清单诸应用为兼容六十四之豫行（与造盘置于 /工具 者同式），并其清单（仓库目标「可执行包程序」，缺省惟编 豫言-兼容六十四）；以豫行工具链包之林兼启动器行你好之豫行以冒烟（印你好，以七退）。其布由社区包仓库：发行.yml 之发布之作抄此诸应用入 yuyan-lang/yuyan-community-packages，社区仓库之 CI 编诸目标而布于包仓库 yuyan-lang.org，豫言系统之“安装软件”读其汇总目录；语言仓不复传于 GitHub 之发行版。
+  # 汉语：可执行包程序（云仓提案 C00004）：用本轮的原生豫构把清单里的应用编成 AMD64 豫行（与造盘放进 /工具 的工具同一种格式），连同清单（仓库目标「可执行包程序」，缺省只编 豫言-兼容六十四）；用豫行工具链包里的林兼启动器运行你好的豫行版作冒烟（打印你好，退出码 7）。发布走社区包仓库：发行.yml 的发布作业把这些应用复制进 yuyan-lang/yuyan-community-packages，社区仓库的 CI 编全部目标、发布进包仓库 yuyan-lang.org，豫言系统的“安装软件”读那里的汇总目录；语言仓不再上传 GitHub 发行版。
   os-software:
     name: 可执行包程序冒烟
     needs: [bootstrap, yuxing-toolchain]
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -765,310 +537,22 @@ jobs:
           grep -F '你好' 你好.txt
           test "$code" = 7
 
-  # 文言：他平台之原生自举：取交叉所成之原生豫构为一级驱动，于本机原生自举而核定点，装原生工具链，打本平台之原生工具链包，即覆连续版之本平台包，并交发布历史版本之作；林檎另验系统库之调与张量，其验在发布之后，败不阻包之发。不用 Node 与 Wasm。林檎运行器唯三核七吉，并发依核数。
-  # 汉语：其他平台原生自举：用交叉工具链里的原生豫构作一级驱动，在本平台原生自举并核对定点、装上原生工具链，打本平台的原生工具链包，随即覆盖连续版本里的本平台包，并交给“发布历史版本”作业；macOS 另外验证系统库调用与张量，这两步排在发布之后，失败不挡发包。不用 Node 与 Wasm。macOS 运行器只有三核、约 7 GB 内存，并发数按处理器数。
-  native-platforms:
-    name: 原生自举（${{ matrix.plat }}）
-    needs: cross-toolchains
-    runs-on: ${{ matrix.os }}
-    env:
-      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-24.04-arm
-            plat: linux-arm64
-          - os: macos-latest
-            plat: macos-arm64
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 交叉工具链-${{ matrix.plat }}
-          path: ${{ runner.temp }}
-
-      - name: 放入交叉工具链
-        run: tar -xzf "$RUNNER_TEMP/交叉-${{ matrix.plat }}.tar.gz"
-
-      - name: 原生自举并核对定点，装上原生工具链
-        run: ./豫构。${YY_XI}。豫行 目标 原生工具链 -j "$(getconf _NPROCESSORS_ONLN)"
-
-      - name: 打原生工具链包
-        run: |
-          set -euo pipefail
-          ./豫构。${YY_XI}。豫行 目标 原生打包 -j "$(getconf _NPROCESSORS_ONLN)"
-          tar -czf "$RUNNER_TEMP/yuyan-native-${{ matrix.plat }}.tar.gz" -C 原生工具链包 .
-
-      - name: 上传原生工具链包
-        uses: actions/upload-artifact@v4
-        with:
-          name: 原生工具链-${{ matrix.plat }}
-          path: ${{ runner.temp }}/yuyan-native-${{ matrix.plat }}.tar.gz
-          retention-days: 7
-          if-no-files-found: error
-
-      # 文言：本平台自举既过，即覆连续版之本平台包；连续版由自举之作先建。
-      # 汉语：本平台自举通过就覆盖连续版本里的本平台包；连续版本由自举作业先建好。
-      - name: 发布本平台连续版本
-        if: github.event_name == 'push' && github.ref == 'refs/heads/yybs'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: gh release upload continuous-binaries "$RUNNER_TEMP/yuyan-native-${{ matrix.plat }}.tar.gz" --clobber
-
-      # 文言：林檎臂之系统库调用：验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
-      # 汉语：林檎 ARM64 系统库调用：验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
-      - name: 林檎原生系统库调用
-        if: runner.os == 'macOS'
-        run: |
-          ./豫构。${YY_XI}。豫行 构建 借道试 调用。测试 --输出 系统库原生测试。${YY_XI}。豫行 -j "$(getconf _NPROCESSORS_ONLN)"
-          ./系统库原生测试。${YY_XI}。豫行 > 系统库原生.log
-          grep -F '系统库调用全部断言通过' 系统库原生.log
-
-      # 文言：原生张量真登、负步视与解后失效必验；得金属器则验共享矩阵之链。
-      # 汉语：原生张量真实登记、负步长及解除失效必验；取得金属设备时验证共享矩阵链。
-      - name: 林檎原生张量基本回归
-        if: runner.os == 'macOS'
-        run: |
-          ./豫构。${YY_XI}。豫行 构建 豫寓算阵本土试 登记。测试 --输出 张量登记。${YY_XI}。豫行 -j "$(getconf _NPROCESSORS_ONLN)"
-          ./张量登记。${YY_XI}。豫行
-          ./豫构。${YY_XI}。豫行 接口检查 --核对清单 豫寓榫卯/张量计算/豫寓算阵。包。豫 豫言操作系统/适配/张量计算原生/宿主提供。数据。豫
-          ./豫构。${YY_XI}。豫行 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 原生公共张量 --包根 库 --包根 豫言操作系统/适配
-          ./原生公共张量/程序。${YY_XI}。豫行
-
-      - name: 上传构建日志
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: 构建日志-${{ matrix.plat }}
-          path: .构建日志/
-          include-hidden-files: true
-          retention-days: 90
-          if-no-files-found: ignore
-
-  # 文言：抽样之轮验本轮之 Wasm 工具链包可跨平台：于 Linux 二架构与林檎系统，凭 Node 自包起步，以包中豫构自举而核定点；更行诺驿宿主之验、原生与 Node 之速之较（原生慢则书警）。依提交号抽样：末位为 0 至 3 者行之（约四之一），手发者必行；余轮不行，原生工具链包由核心之作出。欲改其率，增减下 if 之末位。
-  # 汉语：抽样轮次验证本轮的 Wasm 工具链包可跨平台使用：在 Linux x64、Linux arm64 与 macOS 上用 Node 从包起步，由包中的豫构完成自举并核对定点；再跑诺驿宿主的验证、原生与 Node 的构建耗时对比（原生较慢时发出警告）。按提交号抽样：末位是 0–3 的轮次运行（约四分之一），手动触发时必跑；其余轮次不跑，原生工具链包由核心作业产出。改抽样率就增减下面 if 里的末位。
-  wasm-bootstrap:
-    name: 抽样 Wasm 包起步与诺驿验证（${{ matrix.os }}）
-    needs: bootstrap
-    if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
-    runs-on: ${{ matrix.os }}
-    env:
-      YY_XI: ${{ startsWith(matrix.os, 'macos') && '林檎' || '林纳' }}
-    timeout-minutes: 120
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest]
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 26
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 网汇工具链包
-          path: ${{ runner.temp }}
-
-      # 文言：包解于仓根：豫构以编译器所在之目为工具链之根。
-      # 汉语：包解压到仓库根目录：豫构以编译器所在目录为工具链根。
-      - name: 解开 Wasm 工具链包
-        run: tar -xzf "$RUNNER_TEMP/yuyan-wasm.tar.gz"
-
-      - name: 以包中豫构与编译器构建当前源码的豫构
-        run: >-
-          node 稳定节点宿主/宿主.cjs 豫构稳定.wasm 构建 豫构
-          --编译器 ./编译器稳定.wasm --输出 豫构.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-
-      - name: 以当前豫构自举并核对定点，生成本机原生工具链
-        run: node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 全部 -j "$(getconf _NPROCESSORS_ONLN)"
-
-      # 文言：传输控制之共模（三十二位）因客体二号新书之候布惟依六十四位之址而不得成，诺驿既不复支，十月三十一日撤其编与共享回环之验。
-      # 汉语：三十二位的传输控制共享模块编不过（客体二号新写的等待布局只按六十四位地址编）；诺驿已不再支持，2026-10-31 撤掉它的构建与共享回环测试。
-      - name: 核验网络端点授权与应用绑定
-        run: |
-          node 豫言操作系统/宿主/节点/传输控制协议授权。测试.mjs
-          node --experimental-ffi 豫言操作系统/宿主/节点/传输控制应用绑定。测试.mjs
-
-      - name: 林檎传输控制系统调用
-        if: runner.os == 'macOS'
-        run: node --experimental-ffi 豫言操作系统/宿主/节点/传输控制协议系统调用。测试.mjs
-
-      - name: 构建定位读取共用豫核
-        run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 客体二号 文件定位共享入口
-          --编译器 ./编译器.wasm --输出 文件定位共享.wasm -j 24
-
-      # 文言：底层之探针由编译器径出本机原生之程（--目标 本机，不经 .wasm）。
-      # 汉语：底层探针由编译器直接出本机原生程序（--目标 本机，不经 .wasm）。
-      - name: 构建定位读取原生机械探针
-        run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 客体二号 文件定位原生探针
-          --编译器 ./编译器.wasm --输出 文件定位原生。${YY_XI}。豫行 -j 24 -- --目标 本机
-
-      - name: 诺驿与原生共享定位读取远偏与顺读验收
-        run: node --experimental-ffi 豫言操作系统/宿主/节点/文件定位。测试.mjs ./文件定位原生。${YY_XI}。豫行
-
-      - name: 构建默认工具宿主定位读取烟验
-        run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 文件
-          库/诺驿东道/测试/默认文件定位。测试。豫 --编译器 ./编译器.wasm
-          --输出 默认文件定位.wasm -j 24
-
-      - name: 默认工具与应用宿主共用文件能力表
-        run: node --test 豫言操作系统/宿主/节点/文件能力。测试.mjs
-
-      - name: 默认工具宿主定位读取与顺读游标验收
-        run: >-
-          node 豫言操作系统/宿主/节点/宿主.cjs 默认文件定位.wasm
-          --授权目录 桌面=.
-
-      # 汉语：系统script提供真实PTY，终端尺寸查询复用本轮同源豫言原生服务；依次验证109列37行、73列19行与未知尺寸。
-      # 文言：系统script供实伪终端，尺寸之查用本轮同源豫言原生服务；次验百九列三十七行、七十三列十九行与未知尺寸。
-      - name: 真实终端尺寸与窗口调整
-        run: node 豫言操作系统/宿主/节点/终端尺寸。测试.mjs 验收 ./终端尺寸查询。${YY_XI}。豫行
-
-      # 文言：原生对比：冷编之探、全构与交互会话逐句对照（网页行在之双端对照），原生与 Node 交替而行，较其中位；原生慢则书警而不败，二者产物或交互所出不同则败。
-      # 汉语：原生对比：冷编探针、完整构建与交互会话逐句对照（网页行在的双端对照），Node 与原生交替运行若干轮，比较中位数；原生较慢只发警告、不让作业失败，两边产物或交互输出不同才失败。表写进作业摘要。
-      - name: 原生与 Node 性能对比
-        run: |
-          ./豫构。${YY_XI}。豫行 构建 原生对比 --输出 原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          node 豫言操作系统/宿主/节点/宿主.cjs 原生对比.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-
-      # 文言：基础库性能验证：依登记（应用/百工坊/性能验证/性能目标。数据。豫）行诸性能入口，诺驿与原生各一遍；原生慢逾容差则书一警，作业不败。推送时但行所改涉及之入口（基准取上一推之提交），手发则行其全；此步纵败亦不败作业。拉取请求不行。
-      # 汉语：基础库性能验证：按登记表（应用/百工坊/性能验证/性能目标。数据。豫）运行基础库的性能入口，诺驿与原生各一遍；原生慢过容差只发一条警告并写作业摘要，作业保持成功。推送时只运行改动涉及的入口（基准取上一次推送的提交，git fetch 取不到时运行全部），手动触发时运行全部；这一步自己失败也不让作业失败（continue-on-error）。拉取请求不运行。
-      - name: 基础库性能验证
-        if: github.event_name != 'pull_request'
-        continue-on-error: true
-        run: |
-          base='${{ github.event.before }}'
-          git fetch --no-tags --depth=1 origin "$base" || true
-          ./豫构。${YY_XI}。豫行 构建 性能验证 --输出 性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-          env "豫言性能基准=$base" node 豫言操作系统/宿主/节点/宿主.cjs 性能验证.wasm -j "$(getconf _NPROCESSORS_ONLN)"
-
-      # 文言：林檎臂之系统库调用，以同客体验单双精、指针、登记、对齐内存与重叠复制；须实过诸断言。
-      # 汉语：林檎 ARM64 系统库调用：同一客体在诺驿和原生运行，验单双精度、指针、登记、对齐内存与重叠复制，要求成功标识。
-      - name: 林檎原生系统库调用
-        if: matrix.os == 'macos-latest'
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 借道试 调用。测试 --编译器 ./编译器.wasm --输出 系统库原生测试.wasm -j 24
-          node 豫言操作系统/宿主/节点/宿主.cjs 系统库原生测试.wasm > 系统库诺驿.log
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 借道试 调用。测试 --编译器 ./编译器.wasm --输出 系统库原生测试。${YY_XI}。豫行 -j 24
-          ./系统库原生测试。${YY_XI}。豫行 > 系统库原生.log
-          cmp 系统库诺驿.log 系统库原生.log
-          grep -F '系统库调用全部断言通过' 系统库原生.log
-
-      # 文言：原生张量真登、负步视与解后失效必验；得金属器则验共享矩阵之链。
-      # 汉语：原生张量真实登记、负步长及解除失效必验；取得金属设备时验证共享矩阵链。
-      # 文言：林檎运行器唯三核七吉，并发二十四则工作线程堆尽，故依核数。
-      # 汉语：林檎运行器只有三核、约 7 GB 内存，二十四路并发会让工作线程堆内存耗尽，并发数按处理器数。
-      - name: 林檎原生张量基本回归
-        if: matrix.os == 'macos-latest'
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 构建 豫寓算阵本土试 登记。测试 --编译器 ./编译器.wasm --输出 张量登记。${YY_XI}。豫行 -j "$(getconf _NPROCESSORS_ONLN)"
-          ./张量登记。${YY_XI}。豫行
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 接口检查 --核对清单 豫寓榫卯/张量计算/豫寓算阵。包。豫 豫言操作系统/适配/张量计算原生/宿主提供。数据。豫
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 发行 原生 豫言操作系统/适配/张量计算原生/一致性验证/应用 原生公共张量 --包根 库 --包根 豫言操作系统/适配 --编译器 ./编译器.wasm
-          ./原生公共张量/程序。${YY_XI}。豫行
-
-      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
-      - name: 上传构建日志
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: 构建日志-${{ matrix.os }}
-          path: .构建日志/
-          include-hidden-files: true
-          retention-days: 90
-          if-no-files-found: ignore
-
-  # 文言：节点发行包之验于 Windows 行（抽样之轮，同上）：取同代豫构，以其发行之令造发行包，而以同一验客较八十八事。
-  # 汉语：Windows Node 发行包验收（抽样轮次，同上）：复用本轮豫构，用它的发行命令构建发行包，再运行现有 88 项一致性驱动。
-  node-host-windows:
-    name: 节点发行包一致性（Windows x64）
-    needs: bootstrap
-    if: github.event_name == 'workflow_dispatch' || endsWith(github.sha, '0') || endsWith(github.sha, '1') || endsWith(github.sha, '2') || endsWith(github.sha, '3')
-    runs-on: windows-latest
-    timeout-minutes: 90
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-node-host-windows
-      cancel-in-progress: true
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 26
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 测试工具
-          path: .
-
-      - name: 解开本轮编译与构建工具
-        run: tar -xzf 测试工具.tar.gz
-
-      - name: 核对豫言源码换行
-        run: |
-          git ls-files --eol '库/云工东道/云工东道。包。豫' | grep -q 'w/lf' || {
-            printf '::error::Windows 检出的豫言包文件未保持 LF 换行\n'
-            exit 1
-          }
-
-      # 文言：败时以末段诊断书作业注记，并录诸子进程之出，使公开之验可知所由。
-      # 汉语：失败时把日志末段写成公开的 CI 错误注释，并打印各子进程的输出（并译日志.txt），便于定位 Windows 兼容问题。
-      - name: 构建节点一致性发行包
-        run: |
-          node 豫言操作系统/宿主/节点/宿主.cjs 豫构.wasm 发行 节点 豫言操作系统/宿主/节点/一致性验证/应用 dist/节点一致性 > 轩窗发行.log 2>&1 || {
-            printf '::error title=节点发行包构建失败::%s\n' "$(tail -c 1500 轩窗发行.log | tr '\n' ' ')"
-            tail -c 6000 并译日志.txt 2>/dev/null || true
-            exit 1
-          }
-
-      - name: 验证发行包与装载拒绝情形
-        run: node 豫言操作系统/宿主/节点/一致性验证/运行.mjs dist/节点一致性
-
-      # 文言：上传构建之志（.构建日志），败亦上传，以备析构建之时；式见 应用/度量/构建性能/日志格式.文言.md。
-      # 汉语：上传本作业的构建日志（.构建日志 是隐藏目录，须显式包含），失败时也上传，供日后分析构建耗时；格式见 应用/度量/构建性能/日志格式.汉语.md。
-      - name: 上传构建日志
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: 构建日志-windows
-          path: .构建日志/
-          include-hidden-files: true
-          retention-days: 90
-          if-no-files-found: ignore
-
-  # 文言：预编之客于 Linux 二实机架构行全组，逐字校裸机之参，免以 Rosetta 之存储映射误作后端之败。兼容六十四用自举所成之原生工具，臂六十四用交叉所成者；皆原生，不用 Node。
-  # 汉语：在 Linux x86-64 与 arm64 运行器直接执行完整预编一致性组；macOS 上的 Rosetta 对大预编产物报 mmap 错误，不能代替实机验收。x86-64 用自举作业产出的原生工具，arm64 用交叉工具链；都是原生程序，不经 Node。
+  # 文言：预编之客于 Linux 实机行全组，逐字校裸机之参，免以 Rosetta 之存储映射误作后端之败。兼容六十四用自举所成之原生工具，皆原生，不用 Node；臂六十四之机未备，见议题 #1605。
+  # 汉语：在 Linux x86-64 机器上直接执行完整预编一致性组；macOS 上的 Rosetta 对大预编产物报 mmap 错误，不能代替实机验收。用自举作业产出的原生工具，都是原生程序，不经 Node；arm64 还没有自有机器，见议题 #1605。
   native-aot-linux:
-    name: Linux 预编一致性（${{ matrix.os }}）
-    needs: [bootstrap, cross-toolchains]
-    runs-on: ${{ matrix.os }}
+    name: Linux 预编一致性（${{ matrix.arch }}）
+    needs: bootstrap
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 90
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-aot-linux-${{ matrix.os }}
+      group: ${{ github.workflow }}-${{ github.ref }}-native-aot-linux-${{ matrix.arch }}
       cancel-in-progress: true
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            arch: 兼容六十四
+          - arch: 兼容六十四
             tools: 测试工具
-          - os: ubuntu-24.04-arm
-            arch: 臂六十四
-            tools: 交叉工具链-linux-arm64
     steps:
       - uses: actions/checkout@v4
 
@@ -1077,15 +561,8 @@ jobs:
           name: ${{ matrix.tools }}
           path: ${{ runner.temp }}/工具
 
-      # 文言：臂六十四之包惟豫构，兼作编译器。
-      # 汉语：arm64 的交叉包里只有豫构 豫构。林纳。豫行，兼作编译器。
       - name: 解开本轮原生工具
-        run: |
-          set -euo pipefail
-          tar -xzf "$RUNNER_TEMP"/工具/*.tar.gz
-          if [ ! -f 编译器。林纳。豫行 ]; then
-            cp 豫构。林纳。豫行 编译器。林纳。豫行
-          fi
+        run: tar -xzf "$RUNNER_TEMP"/工具/*.tar.gz
 
       - name: 构建原生一致性工具
         run: ./豫构。林纳。豫行 文件 豫言操作系统/裸机/原生一致性。豫 --输出 原生一致性。林纳。豫行 -j "$(nproc)"
@@ -1113,612 +590,14 @@ jobs:
           }
           tail -n 24 林纳预编一致性.log
 
-  # 文言：轩窗原生之你好：于 Linux 由编译器径出两构之 PE32+（及林檎 x86-64 之程），传于轩窗之运行器行之，验其出与退出码。探针皆预编二为机器码（提案 00007 收尾，不经 .wasm）。
-  # 汉语：Windows 原生最小闭环（WP6）：在 Linux 上由编译器直接出 AMD64 与 ARM64 两种 PE32+ 可执行文件（以及 macOS x86-64 程序），交给 Windows 运行器直接执行，核对输出与退出码 7。探针都预编二成机器码（提案 00007 收尾：编译器 --目标 本机 --目标系统 --目标架构，不经 .wasm）。
-  windows-native-build:
-    name: 轩窗原生样例生成
+
+  # 文言：系统光盘之冒烟：取自举所成之原生豫构，造豫言系统之器而成两架构之混合 ISO，QEMU 无头启 x86-64 之盘而验之。冒烟之试惟在此；发行.yml 惟造盘发之，不冒烟。
+  # 汉语：系统光盘冒烟：用自举作业产出的原生豫构构建造盘工具，造两种架构的混合 ISO，再用 QEMU 无头启动 x86-64 那张验证。冒烟只在这里跑；发行.yml 只造盘、发布，不冒烟。
+  os-smoke:
+    name: 系统光盘冒烟
     needs: bootstrap
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-windows-native-build
-      cancel-in-progress: true
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 测试工具
-          path: ${{ runner.temp }}
-
-      - name: 解开本轮编译与构建工具
-        run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
-
-      - name: 编译器直出两种架构的 PE 与 macOS x86-64 程序
-        run: |
-          set -e
-          Y() { ./豫构。林纳。豫行 "$@"; }
-          mkdir -p 轩窗程序/组 林檎兼程序/组
-          Y 构建 原生你好 轩窗入口 --输出 轩窗程序/hello-x64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四
-          Y 构建 原生你好 轩窗入口 --输出 轩窗程序/hello-arm64.exe -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四
-          Y 构建 原生你好 林檎入口 --输出 林檎兼程序/hello-mac-x64 -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四
-          exe="$PWD/执行器。树码"
-          cache="$PWD/.豫构缓存/降级缓存"
-          for f in 豫言操作系统/裸机/普通探针/*。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-一。脚本。豫 豫言操作系统/裸机/普通探针/盘/文件-二。脚本。豫 豫言操作系统/裸机/原生探针/*。脚本。豫; do
-            n=$(basename "$f"); n=${n%。脚本。豫}
-            Y 文件 "$f" --输出 "轩窗程序/组/$n-x64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗兼容.机器片"
-            Y 文件 "$f" --输出 "轩窗程序/组/$n-arm64.exe" -j "$(nproc)" -- --目标 本机 --目标系统 轩窗 --目标架构 臂六十四 --执行器 "$exe" --降级缓存 "$cache/轩窗臂.机器片"
-            Y 文件 "$f" --输出 "林檎兼程序/组/$n" -j "$(nproc)" -- --目标 本机 --目标系统 林檎 --目标架构 兼容六十四 --执行器 "$exe" --降级缓存 "$cache/林檎兼容.机器片"
-            e="${f%。脚本。豫}。期望"
-            cp "$e" "轩窗程序/组/$n.expected"
-            cp "$e" "林檎兼程序/组/$n.expected"
-          done
-          # 文言：编译器于产物旁书链接之印（产物.链接印），非程序也；去之，免运行之作误行之。
-          # 汉语：编译器在产物旁写链接印记（产物.链接印），不是程序；删掉，免得运行作业把它当程序执行。
-          rm -f 轩窗程序/*.链接印 轩窗程序/组/*.链接印 林檎兼程序/*.链接印 林檎兼程序/组/*.链接印
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: 轩窗原生
-          path: 轩窗程序
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: 林檎兼原生
-          path: 林檎兼程序
-
-  windows-native-run:
-    name: 轩窗原生样例运行（${{ matrix.os }}）
-    needs: windows-native-build
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 15
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-windows-native-run-${{ matrix.os }}
-      cancel-in-progress: true
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: windows-latest
-            exe: hello-x64.exe
-            arch: x64
-          - os: windows-11-arm
-            exe: hello-arm64.exe
-            arch: arm64
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: 轩窗原生
-          path: .
-
-      - name: 运行并核对输出与退出码
-        run: |
-          set +e
-          printf 'echo-line\r\n' | ./${{ matrix.exe }} > out.txt 2> err.txt
-          code=$?
-          set -e
-          od -c out.txt | head -8
-          cat err.txt
-          echo "退出码 $code"
-          test "$code" = 7
-          grep -q 'echo-line' out.txt
-          test "$(head -c 6 out.txt | od -An -tx1 | tr -d ' \n')" = e4bda0e5a5bd
-
-      # 文言：一致性之组：诸普通探针、盘之文件二阶、原生探针，各由编译器预编二为原生之程（连执行器），行于同一工作目录，逐字较其常出。
-      # 汉语：一致性组：普通探针、盘文件两阶段与原生探针，各自由编译器预编二成带执行器的原生程序，在同一个工作目录里依次运行，标准输出与 .expected 逐字比较，并要求退出码为 0。
-      - name: 执行器一致性组
-        if: always()
-        run: |
-          mkdir -p work
-          fail=0
-          for e in 组/*-${{ matrix.arch }}.exe; do
-            n=$(basename "$e" -${{ matrix.arch }}.exe)
-            set +e
-            (cd work && timeout 120 "../$e" > "../组/$n.out" 2> "../组/$n.err")
-            code=$?
-            set -e
-            if [ "$code" = 0 ] && cmp -s "组/$n.out" "组/$n.expected"; then
-              echo "通过：$n"
-            else
-              echo "不符：${n}（退出码 ${code}）"
-              diff "组/$n.out" "组/$n.expected" | head -20 || true
-              head -c 1500 "组/$n.err"
-              fail=1
-            fi
-          done
-          exit $fail
-
-  # 文言：轩窗原生之工具链：于轩窗运行器以原生豫构发现诸包、核标准库之型、构你好与全树测试之器而行之；开发之时不阻 CI。
-  # 汉语：Windows 原生工具链冒烟：在 Windows 运行器上用原生豫构发现包、类型检查标准库、构建并运行你好与全树测试工具（只跑一小组）；开发阶段不挡 CI。
-  windows-native-toolchain:
-    name: 轩窗原生工具链
-    needs: cross-toolchains
-    runs-on: windows-latest
-    timeout-minutes: 40
-    continue-on-error: true
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-windows-native-toolchain
-      cancel-in-progress: true
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 交叉工具链-windows-x64
-          path: ${{ runner.temp }}
-
-      # 文言：Git Bash 之 tar 视 `D:\…` 为远主之名，故加 --force-local。
-      # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
-      - name: 放入原生豫构与执行器
-        run: tar --force-local -xzf "$RUNNER_TEMP/交叉-windows-x64.tar.gz"
-
-      - name: 帮助与发现
-        if: always()
-        run: |
-          ./豫构.exe --help | head -5
-          ./豫构.exe 发现 | head -5
-
-      - name: 检查与类型检查标准库
-        if: always()
-        run: |
-          ./豫构.exe 检查 豫章
-          ./豫构.exe 类型检查 豫章 -j 4
-
-      - name: 构建并运行你好
-        if: always()
-        run: |
-          ./豫构.exe 构建 原生你好 轩窗入口 --输出 你好.exe -j 4
-          od -An -tx1 -N2 你好.exe
-          set +e
-          printf 'echo-line\r\n' | ./你好.exe
-          echo "退出码 $?"
-
-      - name: 全树测试一小组
-        if: always()
-        run: |
-          ./豫构.exe 构建 全树测试 --输出 全树测试.exe -j 4
-          od -An -tx1 -N2 全树测试.exe
-          ./全树测试.exe --只 库/豫章/测试/数据结构/
-          ./全树测试.exe --只 豫言操作系统/裸机/客体二号/测试/原生小睡。底层。测试。
-
-  # 文言：轩窗原生之交互：以本轮交叉所出之豫构.exe，自管道喂直读之句（中文、设、水土），核其出、回执与退码；初设 continue-on-error，不阻他役。
-  # 汉语：Windows 原生交互冒烟：用本轮交叉编出的 豫构.exe，从管道喂 `交互 --直读` 的句子（中文、设、水土），核对输出、回执与退出码；先设 continue-on-error: true，不挡别的作业。
-  windows-native-interactive:
-    name: 轩窗原生交互
-    needs: cross-toolchains
-    runs-on: windows-latest
-    timeout-minutes: 45
-    continue-on-error: true
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-windows-native-interactive
-      cancel-in-progress: true
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 交叉工具链-windows-x64
-          path: ${{ runner.temp }}
-
-      # 文言：Git Bash 之 tar 视 `D:\…` 为远主之名，故加 --force-local。
-      # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
-      - name: 放入原生豫构与执行器
-        run: tar --force-local -xzf "$RUNNER_TEMP/交叉-windows-x64.tar.gz"
-
-      - name: 直读管道喂句子并核对
-        run: |
-          set +e
-          printf '%s\n' '「你好」' '「设」于『甲乙』于『丙丁』。' '「水土」于「元」' | ./豫构.exe 交互 --直读 --回执 回执 > 交互出.txt 2> 交互误.txt
-          code=$?
-          set -e
-          od -c 交互出.txt | head -30
-          cat 交互误.txt
-          echo "退出码 $code"
-          test "$code" = 0
-          grep -q '你好' 交互出.txt
-          grep -q '已设置 甲乙' 交互出.txt
-          grep -q '甲乙=丙丁' 交互出.txt
-          test "$(grep -c '回执 成' 交互出.txt)" -ge 3
-          ! grep -q '回执 败' 交互出.txt
-
-      # 文言：行在已在跑之时再起一会话（议题一千一百三十九）：先起行在而后连跑二次，第二步之退码须为零、句须行；旧者「行在连」调小睡，轩窗下落于林纳之陷，第二步以非法之令崩。
-      # 汉语：行在已在跑时再起一个交互会话（#1139）：先起行在，再连跑两次，第二次退出码须为零、句子须执行；旧版「行在连」调小睡，轩窗上落到林纳导入的陷阱桩，第二次就以非法指令崩掉。
-      - name: 行在已在跑时再跑一次交互并核退出码
-        run: |
-          set +e
-          ./豫构.exe 行在 启动 > 行在启动.txt 2>&1
-          for i in $(seq 1 30); do
-            ./豫构.exe 行在 状态 > 行在状态.txt 2>&1
-            grep -q '端口 127.0.0.1:' 行在状态.txt && break
-            sleep 2
-          done
-          cat 行在状态.txt
-          set -e
-          grep -q '端口 127.0.0.1:' 行在状态.txt
-          set +e
-          printf '%s\n' '「复述」于『甲』' | ./豫构.exe 交互 --直读 --回执 回执 > 二次出.txt 2> 二次误.txt
-          code=$?
-          set -e
-          cat 二次出.txt
-          cat 二次误.txt
-          echo "行在已在跑时的退出码 $code"
-          test "$code" = 0
-          grep -q '甲' 二次出.txt
-          grep -q '回执 成' 二次出.txt
-          ! grep -q '回执 败' 二次出.txt
-          ./豫构.exe 行在 停止 > 行在停止.txt 2>&1 || true
-
-  # 文言：轩窗之行在（提案〇〇〇三九第三段，先无附庸）：于轩窗运行器后台起行在，读其状得端口与程号，再起一常驻之原生程而核其已登于任务之表，止之而后核无遗程；开发之时不阻 CI。
-  # 汉语：Windows 行在冒烟（提案 00039 阶段 3，先不做附庸）：在 Windows 运行器上后台起行在，读状态得端口与进程号，再起一个常驻的原生程序并核对它已在任务表里登记，停止后核对没有残留进程；开发阶段不挡 CI。
-  windows-court:
-    name: 轩窗行在
-    needs: cross-toolchains
-    runs-on: windows-latest
-    timeout-minutes: 25
-    continue-on-error: true
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-windows-court
-      cancel-in-progress: true
-    defaults:
-      run:
-        shell: bash
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 交叉工具链-windows-x64
-          path: ${{ runner.temp }}
-
-      # 文言：Git Bash 视 `D:\…` 为远主之名，故 tar 加 --force-local。
-      # 汉语：Git Bash 的 GNU tar 会把 `D:\…` 当成远程主机名，所以加 --force-local。
-      - name: 放入原生豫构与执行器
-        run: tar --force-local -xzf "$RUNNER_TEMP/交叉-windows-x64.tar.gz"
-
-      - name: 起行在、起常驻原生程序、看登记、停止并核无残留
-        run: |
-          set -x
-          ./豫构.exe 行在 停止 || true
-          sleep 3
-          ./豫构.exe 行在 启动
-          for i in $(seq 60); do
-            ./豫构.exe 行在 状态 > 状态。txt 2>&1 || true
-            grep -q '端口 127.0.0.1:' 状态。txt && break
-            sleep 2
-          done
-          cat 状态。txt
-          grep -q '端口 127.0.0.1:' 状态。txt
-          sed -n 's/^行在：进程号 \([0-9]*\).*/\1/p' 状态。txt > 行在号。txt
-          cat 行在号。txt
-          test -s 行在号。txt
-          base_task=$(sed -n 's/.*任务 \([0-9]*\) 个.*/\1/p' 状态。txt)
-          echo "起前登记 $base_task 个"
-          ./豫构.exe 监工 > 监工。txt 2>&1 &
-          watch_pid=$!
-          sleep 8
-          ./豫构.exe 行在 状态 > 状态二。txt 2>&1
-          cat 状态二。txt
-          after_task=$(sed -n 's/.*任务 \([0-9]*\) 个.*/\1/p' 状态二。txt)
-          echo "起后登记 $after_task 个"
-          test -n "$base_task"
-          test -n "$after_task"
-          test "$after_task" -gt "$base_task"
-          ./豫构.exe 行在 停止
-          sleep 10
-          ./豫构.exe 行在 状态 > 状态三。txt 2>&1 || true
-          cat 状态三。txt
-          grep -q '行在未在运行' 状态三。txt
-          kill "$watch_pid" 2>/dev/null || true
-          taskkill //F //PID "$watch_pid" 2>/dev/null || true
-          set +x
-          court_pid=$(cat 行在号。txt)
-          if tasklist //FI "PID eq $court_pid" | grep -q "$court_pid"; then
-            echo "行在停止后仍有残留进程 $court_pid"
-            tasklist //FI "PID eq $court_pid"
-            exit 1
-          fi
-          echo "行在已按号停止，无残留。"
-
-  # 文言：林檎 x86-64 之原生验收（WP5）：于 Intel 之 macOS 运行器行你好与预编二之一致性组。
-  # 汉语：macOS x86-64 原生验收（WP5）：在 Intel macOS 运行器上运行你好样例（输出“你好”、回显、退出码 7）与预编二的一致性组（编译器直出）。macOS 没有 timeout 命令，用 perl 的 alarm 限时。
-  macos-x64-native-run:
-    name: 林檎 x86-64 原生样例运行
-    needs: windows-native-build
-    runs-on: macos-15-intel
-    timeout-minutes: 20
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-macos-x64-native-run
-      cancel-in-progress: true
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: 林檎兼原生
-          path: .
-
-      - name: 运行你好样例
-        run: |
-          chmod +x hello-mac-x64 组/* 2>/dev/null || true
-          chmod -x 组/*.expected
-          set +e
-          printf 'echo-line\n' | ./hello-mac-x64 > out.txt 2> err.txt
-          code=$?
-          set -e
-          od -c out.txt | head -8
-          cat err.txt
-          echo "退出码 $code"
-          test "$code" = 7
-          grep -q 'echo-line' out.txt
-
-      - name: 执行器一致性组
-        if: always()
-        run: |
-          mkdir -p work
-          fail=0
-          for e in 组/*; do
-            case "$e" in *.expected|*.out|*.err) continue;; esac
-            n=$(basename "$e")
-            set +e
-            (cd work && perl -e 'alarm 120; exec @ARGV' "../$e" > "../组/$n.out" 2> "../组/$n.err")
-            code=$?
-            set -e
-            if [ "$code" = 0 ] && cmp -s "组/$n.out" "组/$n.expected"; then
-              echo "通过：$n"
-            else
-              echo "不符：${n}（退出码 ${code}）"
-              diff "组/$n.out" "组/$n.expected" | head -20 || true
-              head -c 1500 "组/$n.err"
-              fail=1
-            fi
-          done
-          exit $fail
-
-      # 汉语：一致性组失败时，在 lldb 下重跑打印探针，记下崩溃处的回溯、寄存器与附近指令（lldb 默认关闭 ASLR，地址即文件内虚拟地址）。
-      - name: 崩溃诊断
-        if: failure()
-        run: |
-          cd work
-          lldb --batch -o run -k 'thread backtrace' -k 'register read' -k 'disassemble --pc --count 16' -k 'image list -o' -- ../组/打印 2>&1 | head -120 || true
-
-  # 文言：诸平台（Linux x64、Linux arm64、林檎 arm64）俱自举而成包，乃发 Wasm 与原生工具链之史版：按提交存之，名冠以提交之时（UTC）。连续版由各平台自举之作自覆，此惟更其说明。类型检查、全树与林檎之试败皆不阻；缺一平台之包者不发。GitHub 一发行至多千资产：historical-binaries 满则次用 historical-binaries-2、-3……，取首未满者，无则建之。
-  # 汉语：各平台（Linux x64、Linux arm64、macOS arm64）都自举通过并打好包后，发布 Wasm 与原生工具链包的历史版本：按提交号存档，文件名前加提交时间（UTC）。连续版本由各平台的自举作业各自覆盖，这里只更新发行说明。类型检查、全树测试与 macOS 测试失败都不挡；缺任何一个平台的包就不发。GitHub 每个发行至多 1000 个资产：historical-binaries 满了就依次用 historical-binaries-2、-3……，取第一个未满的，没有就新建。
-  publish:
-    name: 发布历史版本
-    needs: [bootstrap, native-platforms]
-    if: ${{ !cancelled() && needs.bootstrap.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/yybs' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-    steps:
-      - uses: actions/download-artifact@v4
-        with:
-          name: 网汇工具链包
-          path: ${{ runner.temp }}
-
-      - uses: actions/download-artifact@v4
-        with:
-          pattern: 原生工具链-*
-          path: ${{ runner.temp }}/原生包
-          merge-multiple: true
-
-      - name: 发布 Wasm 与原生工具链包的历史版本
-        run: |
-          set -euo pipefail
-          # 文言：某平台本轮自举未过则无其包，不发史版。
-          # 汉语：某平台本轮没有自举通过就没有它的包，不发历史版本。
-          for file in "$RUNNER_TEMP/yuyan-wasm.tar.gz" "$RUNNER_TEMP"/原生包/yuyan-native-{linux-x64,linux-arm64,macos-arm64}.tar.gz; do
-            if [ ! -f "$file" ]; then
-              echo "::notice::缺 $(basename "$file")：该平台本轮没有自举通过，不发历史版本"
-              exit 0
-            fi
-          done
-          notes="豫言工具链包。yuyan-wasm：跨平台 Wasm 工具链（编译器 编译器稳定.wasm、豫构 豫构稳定.wasm 与 Node 宿主 稳定节点宿主/），解压到仓库根目录后只需 Node.js。yuyan-native-平台（linux-x64、linux-arm64、macos-arm64）：本机原生工具链（原生豫构 豫构稳定。林纳。豫行 与执行器汇编树码 执行器。树码），解压到仓库根目录即可原生起步，不用 Node。yuyan-yuxing-toolchain（只在连续版本）：两架构的豫构豫行 豫构臂。豫行、豫构兼。豫行，四个宿主的豫行启动器 豫行启动器臂。林檎。豫行、豫行启动器臂。林纳。豫行、豫行启动器兼。林纳。豫行、豫行启动器兼。林纳。豫行，与执行器汇编树码；在宿主上以 启动器 豫构豫行 参数… 运行。"
-
-          release_ready() {
-            if ! gh release view "$1" >/dev/null 2>&1; then
-              gh release create "$1" \
-                --target "$GITHUB_SHA" \
-                --title "$1" \
-                --latest=false \
-                --notes "$notes"
-            else
-              gh release edit "$1" --notes "$notes"
-            fi
-          }
-          release_ready continuous-binaries
-
-          commit_time="$(gh api "repos/$GH_REPO/commits/$GITHUB_SHA" --jq '.commit.committer.date | fromdateiso8601 | strftime("%Y%m%dT%H%M%SZ")')"
-          # 文言：发一包之史版（文件名冠以提交之时）；连续版已由各平台之作覆之。
-          # 汉语：发布一个包的历史版本（文件名前加提交时间）；连续版本已由各平台的作业覆盖过。
-          publish() {
-            package="$1"
-            file="$2"
-            historical_asset="$commit_time-$package-${GITHUB_SHA}.tar.gz"
-            # 文言：待办事项：二轮同发而俱见九百九十九资产者，后传者逾限而败。
-            # 汉语：待办事项：两轮同时发布、都看到 999 个资产时，后上传的一轮会超限失败。
-            historical=historical-binaries
-            n=1
-            while true; do
-              release_ready "$historical"
-              existing="$(gh release view "$historical" --json assets --jq '.assets[].name')"
-              if printf '%s\n' "$existing" | grep -Fxq "$historical_asset"; then
-                echo "历史版本已存在：$historical/$historical_asset"
-                break
-              fi
-              if [ "$(printf '%s\n' "$existing" | grep -c .)" -lt 1000 ]; then
-                cp "$file" "$RUNNER_TEMP/$historical_asset"
-                gh release upload "$historical" "$RUNNER_TEMP/$historical_asset"
-                echo "历史版本：https://github.com/$GH_REPO/releases/download/$historical/$historical_asset"
-                break
-              fi
-              n=$((n + 1))
-              historical="historical-binaries-$n"
-            done
-          }
-          publish yuyan-wasm "$RUNNER_TEMP/yuyan-wasm.tar.gz"
-          for file in "$RUNNER_TEMP"/原生包/yuyan-native-*.tar.gz; do
-            publish "$(basename "$file" .tar.gz)" "$file"
-          done
-
-  # 文言：抄于社区包仓库：史版既发，以本轮之原生豫构构社区包工具，抄清单「社区复制包们」诸包于社区包仓库（yuyan-lang/yuyan-community-packages）之 包/豫言/<包名>/（许可 AGPL-3.0-only），去 包/豫言/ 下不在清单之包目（出清单即下架，所去之包书于请之正文），易其工具链钉为本轮之 Linux x64 原生工具链包，以 DCO 之签录之，推一枝而开拉取请求，由彼仓之检与合入之机合之。跨仓之写用机密 YUYAN_COMMUNITY_TOKEN（细粒度之个人令牌，惟授彼仓 Contents 与 Pull requests 之写）；无之则演练：照抄照录，印其差而存为构件，不推。本轮史版未发（某平台未过）则不抄。
-  # 汉语：复制到社区包仓库：历史版本发布后，用本轮的原生豫构构建社区包工具，把清单「社区复制包们」（应用/百工坊/社区包工具/复制。豫）里的包复制到社区包仓库（yuyan-lang/yuyan-community-packages）的 包/豫言/<包名>/（许可 AGPL-3.0-only），把 包/豫言/ 下不在清单里的包目录删掉（移出清单即从社区仓下架，删了哪些写进拉取请求正文），工具链钉改成本轮的 Linux x64 原生工具链包，带 DCO 签名提交，推一个分支并开拉取请求，由社区仓库的检查与合入机器人合入。跨仓写入用机密 YUYAN_COMMUNITY_TOKEN（细粒度个人令牌，只授社区仓库的 Contents 与 Pull requests 写权限）；没有令牌时演练：照样复制、提交，打印差异并存为构件，不推送。本轮历史版本没发（某个平台没过）时不复制。
-  community-copy:
-    name: 复制到社区包仓库
-    needs: [bootstrap, publish]
-    if: ${{ !cancelled() && needs.publish.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/yybs' }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    env:
-      GH_TOKEN: ${{ github.token }}
-      GH_REPO: ${{ github.repository }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: 测试工具
-          path: ${{ runner.temp }}
-
-      - name: 解开本轮工具并构建社区包工具
-        run: |
-          set -euo pipefail
-          tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
-          ./豫构。林纳。豫行 构建 社区包工具 --输出 社区包工具。林纳。豫行 -j "$(nproc)"
-
-      # 文言：于诸 historical-binaries 发行中求本轮之 Linux x64 原生包，下而算其沙256。
-      # 汉语：在各个 historical-binaries 发行里找本轮的 Linux x64 原生工具链包，下载后算沙256。
-      - name: 找本轮发布的原生工具链包
-        id: pkg
-        run: |
-          set -euo pipefail
-          url=""
-          for tag in $(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("historical-binaries"))'); do
-            name="$(gh release view "$tag" --json assets --jq ".assets[].name | select(endswith(\"-yuyan-native-linux-x64-$GITHUB_SHA.tar.gz\"))" | head -n 1)"
-            if [ -n "$name" ]; then
-              url="https://github.com/$GH_REPO/releases/download/$tag/$name"
-              break
-            fi
-          done
-          if [ -z "$url" ]; then
-            echo "::notice::本轮的原生工具链包没有发布，不复制到社区包仓库"
-            echo "url=" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          curl --fail --location --retry 3 --retry-all-errors --output "$RUNNER_TEMP/本轮原生包.tar.gz" "$url"
-          sha="$(sha256sum "$RUNNER_TEMP/本轮原生包.tar.gz" | cut -d' ' -f1)"
-          echo "原生工具链包：$url（沙256 $sha）"
-          echo "url=$url" >> "$GITHUB_OUTPUT"
-          echo "sha=$sha" >> "$GITHUB_OUTPUT"
-
-      - name: 检出社区包仓库
-        if: steps.pkg.outputs.url != ''
-        uses: actions/checkout@v4
-        with:
-          repository: yuyan-lang/yuyan-community-packages
-          path: 社区包仓库
-          persist-credentials: false
-
-      # 文言：社区之仓检出于语言仓之工作区中，发现语言仓之包时并扫其 包/豫言/ 而名冲（十月十四日后每轮皆败）；故先移之出工作区。
-      # 汉语：社区包仓库检出在语言仓工作区里，发现语言仓的包时会连带扫到它的 包/豫言/ 而报包名冲突（10-14 以后每轮都败）；先把它挪出工作区。
-      - name: 复制包并改工具链钉
-        if: steps.pkg.outputs.url != ''
-        env:
-          YY_PKG_URL: ${{ steps.pkg.outputs.url }}
-          YY_PKG_SHA: ${{ steps.pkg.outputs.sha }}
-        run: |
-          set -euo pipefail
-          mv 社区包仓库 "$RUNNER_TEMP/社区包仓库"
-          ./社区包工具。林纳。豫行 复制 --语言仓 "$GITHUB_WORKSPACE" --社区 "$RUNNER_TEMP/社区包仓库" --钉网址 "$YY_PKG_URL" --钉沙256 "$YY_PKG_SHA" --钉提交 "$GITHUB_SHA" | tee "$RUNNER_TEMP/社区复制输出.log"
-
-      - name: 提交并开拉取请求（没有令牌时演练）
-        id: pr
-        if: steps.pkg.outputs.url != ''
-        env:
-          YY_COMMUNITY_TOKEN: ${{ secrets.YUYAN_COMMUNITY_TOKEN }}
-        run: |
-          set -euo pipefail
-          cd "$RUNNER_TEMP/社区包仓库"
-          # 文言：以 github-actions[bot] 之名录之：GitHub 识其户，cla-bot 乃以其名问官网之旧放行名录；邮箱无所联之户者，cla-bot 不问而径报错。
-          # 汉语：以 github-actions[bot] 的身份提交：GitHub 认得这个账户，cla-bot 才会拿用户名去查官网的旧放行名单；邮箱没关联账户时，cla-bot 不查就直接报错。
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          if git diff --cached --quiet; then
-            echo "社区包仓库没有改动"
-            exit 0
-          fi
-          short="${GITHUB_SHA:0:9}"
-          branch="语言仓/$short"
-          git commit -q -s -m "复制：语言仓 $short 的包与工具链钉" -m "由语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）。"
-          git show --stat --format='%H%n%an <%ae>%n%B' HEAD
-          git format-patch -1 --stdout HEAD > "$RUNNER_TEMP/社区复制.patch"
-          if [ -z "$YY_COMMUNITY_TOKEN" ]; then
-            echo "::notice::演练：没有机密 YUYAN_COMMUNITY_TOKEN，不推送。将要执行：推送分支 $branch 到 yuyan-lang/yuyan-community-packages，开拉取请求“复制：语言仓 $short 的包与工具链钉”到 main，由社区仓库的合入机器人核对后合入。补丁存为构件 社区复制补丁。"
-            exit 0
-          fi
-          git push "https://x-access-token:$YY_COMMUNITY_TOKEN@github.com/yuyan-lang/yuyan-community-packages.git" "HEAD:refs/heads/$branch"
-          # 文言：抄录之出中「下架 豫言/」诸行，聚为下架之包，书于请之正文，免其暗下。
-          # 汉语：从复制输出里取「下架 豫言/」开头的行，汇成下架的包，写进拉取请求正文，免得悄悄下架。
-          dropped="$(sed -n 's/^下架 豫言\///p' "$RUNNER_TEMP/社区复制输出.log" 2>/dev/null | sed -e 's/$/、/' | tr -d '\n')"
-          dropped="${dropped%、}"
-          {
-            echo "语言仓 CI 自动复制（https://github.com/$GH_REPO/commit/$GITHUB_SHA）：清单里的包复制到 包/豫言/，工具链钉改成本轮的原生工具链包。"
-            if [ -n "$dropped" ]; then
-              echo "移出「社区复制包们」的包已从社区仓下架：$dropped。"
-            fi
-            echo "合入机器人核对检查与作者后自动合入。"
-          } > "$RUNNER_TEMP/拉取请求正文.txt"
-          url="$(GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr create -R yuyan-lang/yuyan-community-packages --base main --head "$branch" \
-            --title "复制：语言仓 $short 的包与工具链钉" \
-            --body-file "$RUNNER_TEMP/拉取请求正文.txt")"
-          echo "开了拉取请求 $url"
-          # 文言：新请既开，前此语言仓所抄之请，检有败者或见罢者（逾时亦记为罢），皆闭之，评以新请之址，并去其枝；检犹未竟者姑存之。闭之不成，惟警而不败此作。
-          # 汉语：新拉取请求开好后，关掉此前由语言仓复制、检查失败或被取消的拉取请求（作业超时在检查汇总里记为 CANCELLED，不是 TIMED_OUT；评论指向新的，并删除其分支）；检查还没跑完的先留着。关不掉只发警告，不让本作业失败。
-          # 待办事项：留着的那些之后才失败的，要等下一次开新拉取请求时才关。
-          GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr list -R yuyan-lang/yuyan-community-packages --state open --limit 200 \
-            --json number,headRefName,statusCheckRollup \
-            --jq '.[] | select(.headRefName | startswith("语言仓/"))
-              | select(any(.statusCheckRollup[]?; (.conclusion // .state) as $s | $s == "FAILURE" or $s == "ERROR" or $s == "TIMED_OUT" or $s == "CANCELLED"))
-              | "\(.number) \(.headRefName)"' |
-          while read -r old oldbranch; do
-            if [ "$oldbranch" != "$branch" ]; then
-              GH_TOKEN="$YY_COMMUNITY_TOKEN" gh pr close -R yuyan-lang/yuyan-community-packages "$old" --delete-branch \
-                --comment "检查失败或被取消，已由 $url 取代，自动关闭。" || echo "::warning::关闭拉取请求 #$old 失败"
-            fi
-          done || echo "::warning::查找此前检查失败的复制拉取请求失败"
-
-      - uses: actions/upload-artifact@v4
-        if: steps.pkg.outputs.url != ''
-        with:
-          name: 社区复制补丁
-          path: ${{ runner.temp }}/社区复制.patch
-          retention-days: 7
-          if-no-files-found: ignore
-
-
-  # 文言：系统之发行：惟推于 yybs 与手发（workflow_dispatch）之时行之，拉取请求不行。取自举所成之编译器与豫构，造豫言系统之器而成两架构之 BIOS/UEFI 混合 ISO（引导、ISO 之构与控制台之字模皆豫言生之，不须 Limine、xorriso 与 FreeType），造盘时盘上另书 /系统/版本。数据。豫；以 豫言操作系统/裸机/发行/系统版本。数据。豫 之版名其文件（yuyan-os-<文件名版本>-x86_64.iso 与 -aarch64.iso），二盘之 SHA-256 合为一 SHA256SUMS，有署名 SHA256SUMS.sig（「签发发行清单」一步所出）则并传之；以同目之模板成发行之说明，上传为构件。惟 yybs 之轮乃建或更 GitHub 之草稿预发行，有同名之草稿则易其说明与资产；终不发为正式之版，何时公之由用户定。
-  # 汉语：系统发行：只在推送到 yybs 与手动触发（workflow_dispatch）时运行，拉取请求不运行。取自举作业产出的原生豫构，构建造盘工具 豫言系统。林纳。豫行 并造两种架构的 BIOS/UEFI 混合 ISO（引导程序、ISO 结构与控制台字模都由豫言生成，不需要 Limine、xorriso 与 FreeType），造盘时盘上另写 /系统/版本。数据。豫；按 豫言操作系统/裸机/发行/系统版本。数据。豫 的版本给文件命名（yuyan-os-<文件名版本>-x86_64.iso 与 -aarch64.iso），两张光盘的 SHA-256 合成一份 SHA256SUMS，有签名 SHA256SUMS.sig（「签发发行清单」一步生成）就一起上传，用同目录的模板生成发行说明，上传为工作流构件。只有 yybs 上的运行才建立或更新 GitHub 草稿预发行，已有同名草稿就替换说明与资产；始终保持草稿，绝不发布为正式发行，何时公开由用户决定。
-  os-release:
-    name: 系统发行（x86-64 与 ARM64 ISO）
-    needs: bootstrap
-    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref == 'refs/heads/yybs')
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, pit-pc]
     timeout-minutes: 150
-    # 文言：同枝之发行不并行：行中者不罢，候者为后至者所代；草稿惟一，免二轮并改之。
-    # 汉语：同一分支的发行作业不并行：正在运行的不取消，排队中的由更新的一轮顶替；草稿只有一份，避免两轮同时改它。
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-os-release
-      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
 
@@ -1729,40 +608,12 @@ jobs:
 
       - name: 解开本轮编译与构建工具
         run: tar -xzf "$RUNNER_TEMP/测试工具.tar.gz"
-
-      # 文言：冒烟之试须 QEMU 与 OVMF。
-      # 汉语：冒烟测试要 QEMU 与 OVMF。
-      - name: 安装 QEMU 与 OVMF
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends qemu-system-x86 ovmf
-
-      # 文言：版之所出惟 豫言操作系统/裸机/发行/系统版本。数据。豫；文件名之版惟许 ASCII。
-      # 汉语：版本号的唯一出处是 豫言操作系统/裸机/发行/系统版本。数据。豫；文件名版本只许 ASCII 字符。
-      - name: 读取系统版本号
-        run: |
-          set -euo pipefail
-          table=豫言操作系统/裸机/发行/系统版本。数据。豫
-          version="$(sed -n 's/^「版本」者『\(.*\)』也。$/\1/p' "$table")"
-          file_version="$(sed -n 's/^「文件名版本」者『\(.*\)』也。$/\1/p' "$table")"
-          if [[ -z "$version" || ! "$file_version" =~ ^[0-9A-Za-z.+-]+$ ]]; then
-            echo "::error::$table 缺「版本」，或「文件名版本」含 ASCII 以外的字符"
-            exit 1
-          fi
-          {
-            echo "YY_OS_VERSION=$version"
-            echo "YY_OS_FILE_VERSION=$file_version"
-            echo "YY_OS_TAG=os-v$file_version"
-            echo "YY_OS_X86_ISO=yuyan-os-$file_version-x86_64.iso"
-            echo "YY_OS_ARM_ISO=yuyan-os-$file_version-aarch64.iso"
-            echo "YY_OS_SUMS=SHA256SUMS"
-          } >> "$GITHUB_ENV"
 
       - name: 构建豫言系统工具
         run: ./豫构。林纳。豫行 目标 造盘工具 --不连带 -j "$(nproc)"
 
-      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 豫言系统 定之。二构各造一张，各入其目。前后各书盘之余量（议一一二八：察运行器之空盘足容二盘否）。
-      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 豫言系统 决定。两种架构各造一张光盘，各自放进自己的输出目录。前后各印一次盘量（议题 #1128：查运行器的空闲盘够不够造两张）。
+      # 文言：惟呼「启动盘」之令，不录 ISO 内之文件；盘中之物由 豫言系统 定之。二构各造一张，各入其目。前后各书盘之余量（议一一二八：察空盘足容二盘否）。
+      # 汉语：只调用「启动盘」子命令，不写死 ISO 内部的文件清单，ISO 里放什么由 豫言系统 决定。两种架构各造一张光盘，各自放进自己的输出目录。前后各印一次盘量（议题 #1128：查空闲盘够不够造两张）。
       - name: 造混合启动 ISO（x86-64 与 ARM64）
         id: iso
         run: |
@@ -1773,8 +624,8 @@ jobs:
           ./豫言系统。林纳。豫行 启动盘 --架构 臂六十四 --输出 启动介质臂 --预置 无
           df -h /; du -sh 启动介质臂 2>/dev/null || true
 
-      # 文言：冒烟之试：QEMU 无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色；题壁之布始无窗，复按交替加回车启终端之窗而键 abc，验画有变；SeaBIOS 与 OVMF 各一。GitHub 之 Ubuntu 运行器有 /dev/kvm，先开其权以加速而试之，不过则不发；无 /dev/kvm 则改纯模拟而试之（甚缓）。纯模拟之数另步记之，不阻发行（议二四六）。
-      # 汉语：冒烟测试：QEMU 无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色；题壁布局开场没有窗口，再按交替加回车开一个终端窗并键入 abc，核对画面有变化；SeaBIOS 与 OVMF 各跑一次。GitHub 的 Ubuntu 运行器有 /dev/kvm，先放开权限用 KVM 加速跑，不过就不发布；没有 /dev/kvm 就跑纯模拟（很慢）。纯模拟的用时不挡发行，另一步记下（议题 246）。
+      # 文言：冒烟之试：QEMU 无头启 ISO，候命令壳，按键入「图形」，截帧验桌面之底色；题壁之布始无窗，复按交替加回车启终端之窗而键 abc，验画有变；SeaBIOS 与 OVMF 各一。pit-pc 已装 QEMU 与 OVMF，有 /dev/kvm 则以之加速；无则改纯模拟（甚缓）。
+      # 汉语：冒烟测试：QEMU 无头启动 ISO，等命令壳就绪，按键输入「图形」，截帧核对桌面底色；题壁布局开场没有窗口，再按交替加回车开一个终端窗并键入 abc，核对画面有变化；SeaBIOS 与 OVMF 各跑一次。pit-pc 已装 QEMU 与 OVMF，有 /dev/kvm 就用 KVM 加速；没有就跑纯模拟（很慢）。
       - name: 冒烟测试（KVM 加速，SeaBIOS 与 OVMF）
         run: |
           set -euo pipefail
@@ -1782,124 +633,18 @@ jobs:
           for f in /usr/share/OVMF/OVMF_CODE.fd /usr/share/OVMF/OVMF_CODE_4M.fd; do if [ -f "$f" ]; then code=$f; fi; done
           for f in /usr/share/OVMF/OVMF_VARS.fd /usr/share/OVMF/OVMF_VARS_4M.fd; do if [ -f "$f" ]; then vars=$f; fi; done
           echo "OVMF：$code $vars"
-          if [ -e /dev/kvm ]; then
-            echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
-            sudo udevadm control --reload-rules
-            sudo udevadm trigger --name-match=kvm
+          if [ -r /dev/kvm ] && [ -w /dev/kvm ]; then
             ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --加速 kvm
             ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --加速 kvm --固件 "$code" --固件变量 "$vars"
           else
-            echo "::warning::没有 /dev/kvm，改跑纯模拟冒烟（很慢）"
+            echo "::warning::没有可用的 /dev/kvm，改跑纯模拟冒烟（很慢）"
             ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso
             ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso --固件 "$code" --固件变量 "$vars"
           fi
 
-      # 文言：纯模拟之冒烟，惟记其数，败不止发（议二四六：纯模拟下「图形」至桌面首帧逾十五分钟，GitHub 运行器尤缓）。冒烟败亦行之，取其数以防后诊；惟造盘败则不行（无完盘可启：旧则照行至作业时限而见罢，日志尽失，议一一二八）。
-      # 汉语：纯模拟冒烟只记数，失败不挡发布（议题 246：纯模拟下「图形」到桌面首帧超过十五分钟，GitHub 运行器更慢）。KVM 冒烟失败也照跑，留个数供以后诊断；造盘失败就不跑（没有完整的光盘可启：从前照跑到作业时限被取消，整个作业的日志都丢了，议题 #1128）。
+      # 文言：纯模拟之冒烟，惟记其数，败不败作（议二四六：纯模拟下「图形」至桌面首帧逾十五分钟）。KVM 之冒烟败亦行之，取其数以防后诊；惟造盘败则不行（无完盘可启，议一一二八）。
+      # 汉语：纯模拟冒烟只记数，失败不让作业失败（议题 246：纯模拟下「图形」到桌面首帧超过十五分钟）。KVM 冒烟失败也照跑，留个数供以后诊断；造盘失败就不跑（没有完整的光盘可启，议题 #1128）。
       - name: 冒烟测试（纯模拟，只记数）
         if: always() && steps.iso.outcome == 'success'
         continue-on-error: true
         run: ./豫言系统。林纳。豫行 冒烟 启动介质/豫言启动.iso
-
-      # 文言：GitHub 改资产名中非 ASCII 之字，故 ISO 以 ASCII 之版为名；算其 SHA-256，以模板成发行之说明：汉语为正文，文言附于折叠之段。
-      # 汉语：GitHub 会改掉资产名里的非 ASCII 字符，所以 ISO 用带 ASCII 版本号的文件名；算 SHA-256，两张光盘的校验和一起写进 SHA256SUMS，用模板生成发行说明：正文是汉语版，文言版附在折叠段里。
-      - name: 命名 ISO，算 SHA-256，生成发行说明
-        run: |
-          set -euo pipefail
-          out=发行产物
-          mkdir -p "$out"
-          cp 启动介质/豫言启动.iso "$out/$YY_OS_X86_ISO"
-          cp 启动介质臂/豫言启动臂.iso "$out/$YY_OS_ARM_ISO"
-          (cd "$out" && sha256sum "$YY_OS_X86_ISO" "$YY_OS_ARM_ISO" > "$YY_OS_SUMS")
-          repo_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY"
-          fill() {
-            sed -e "s|{{版本}}|$YY_OS_VERSION|g" \
-              -e "s|{{文件名版本}}|$YY_OS_FILE_VERSION|g" \
-              -e "s|{{兼容光盘}}|$YY_OS_X86_ISO|g" \
-              -e "s|{{臂光盘}}|$YY_OS_ARM_ISO|g" \
-              -e "s|{{校验文件}}|$YY_OS_SUMS|g" \
-              -e "s|{{提交}}|$GITHUB_SHA|g" \
-              -e "s|{{仓库}}|$repo_url|g" \
-              "$1"
-          }
-          {
-            fill 豫言操作系统/裸机/发行/发行说明模板.汉语.md
-            printf '\n<details>\n<summary>文言</summary>\n\n'
-            fill 豫言操作系统/裸机/发行/发行说明模板.文言.md
-            printf '\n</details>\n'
-          } > "$out/发行说明.md"
-          if grep -n '{{' "$out/发行说明.md"; then
-            echo "::error::发行说明里还有未替换的占位符"
-            exit 1
-          fi
-          ls -l "$out"
-
-      # 文言：发行清单既成，有密 YY_OS_SIGN_KEY（三十二字种之十六进）则以之签 SHA256SUMS，作 SHA256SUMS.sig；无则越之而示警。（钩正联更，2026-10-21）
-      # 汉语：发行清单算好之后，有秘密 YY_OS_SIGN_KEY（三十二字节种子的小写十六进制）就用它签 发行产物/SHA256SUMS，写出 SHA256SUMS.sig；没有秘密就跳过并警告。清单还没由发行作业写出时也跳过并警告。
-      - name: 签发发行清单（有 YY_OS_SIGN_KEY 时）
-        env:
-          YY_OS_SIGN_KEY: ${{ secrets.YY_OS_SIGN_KEY }}
-        run: |
-          set -euo pipefail
-          out=发行产物
-          if [ ! -f "$out/SHA256SUMS" ]; then
-            echo "::warning::$out/SHA256SUMS 还不存在（发行作业尚未写出清单），跳过签名"
-            exit 0
-          fi
-          if [ -z "${YY_OS_SIGN_KEY:-}" ]; then
-            echo "::warning::没有设置秘密 YY_OS_SIGN_KEY，跳过 SHA256SUMS 的签名"
-            exit 0
-          fi
-          key="$RUNNER_TEMP/发行私钥"
-          trap 'rm -f "$key"' EXIT
-          printf '%s\n' "$YY_OS_SIGN_KEY" > "$key"
-          ./豫言系统。林纳。豫行 签发 "$out/SHA256SUMS" --钥 "$key"
-          ls -l "$out/SHA256SUMS" "$out/SHA256SUMS.sig"
-
-      - name: 上传 ISO 构件
-        uses: actions/upload-artifact@v4
-        with:
-          name: 系统光盘
-          path: 发行产物/
-          retention-days: 30
-          if-no-files-found: error
-
-      # 文言：惟 yybs 之轮乃动草稿预发行（他枝手发者但存构件）：无则建之；有同名之草稿，则更其说明与所指之提交，去旧资产而传新者；其标签已正式发行者不动，但示警。恒为草稿，终不发之。
-      # 汉语：只有 yybs 上的运行才动草稿预发行（其他分支手动触发的只留构件）：没有就新建；已有同名草稿，就更新说明与目标提交，删掉旧资产再上传新的；该标签已正式发布的不动，只给警告。始终保持草稿，绝不发布。
-      - name: 建立或更新草稿预发行
-        if: github.ref == 'refs/heads/yybs'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          title="豫言操作系统 $YY_OS_VERSION"
-          notes=发行产物/发行说明.md
-          iso1="发行产物/$YY_OS_X86_ISO"
-          iso2="发行产物/$YY_OS_ARM_ISO"
-          sum="发行产物/$YY_OS_SUMS"
-          sig="发行产物/$YY_OS_SUMS.sig"
-          assets=("$iso1" "$iso2" "$sum")
-          # 文言：有发行清单之署（SHA256SUMS.sig，由「签发发行清单」一步所作）则并传之。
-          # 汉语：有发行清单的签名（SHA256SUMS.sig，由「签发发行清单」一步生成）就一起上传。
-          if [ -f "$sig" ]; then assets+=("$sig"); fi
-          err="$RUNNER_TEMP/gh-release-view.err"
-          if draft="$(gh release view "$YY_OS_TAG" --json isDraft --jq .isDraft 2>"$err")"; then
-            if [ "$draft" != true ]; then
-              echo "::warning::$YY_OS_TAG 已正式发布，本轮不改动；发下一版前先改 豫言操作系统/裸机/发行/系统版本。数据。豫。"
-              exit 0
-            fi
-            gh release edit "$YY_OS_TAG" --draft=true --prerelease=true \
-              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes"
-            gh release view "$YY_OS_TAG" --json assets --jq '.assets[].name' > "$RUNNER_TEMP/old-assets.txt"
-            while IFS= read -r name; do
-              gh release delete-asset "$YY_OS_TAG" "$name" --yes < /dev/null
-            done < "$RUNNER_TEMP/old-assets.txt"
-            gh release upload "$YY_OS_TAG" "${assets[@]}" --clobber
-          elif grep -q 'release not found' "$err"; then
-            gh release create "$YY_OS_TAG" --draft --prerelease \
-              --target "$GITHUB_SHA" --title "$title" --notes-file "$notes" "${assets[@]}"
-          else
-            cat "$err" >&2
-            exit 1
-          fi
