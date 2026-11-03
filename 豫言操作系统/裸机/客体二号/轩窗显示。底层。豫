@@ -2,6 +2,7 @@
 　　文言：轩窗之底层显示：诸导入皆经轩窗之接口所声之 user32 与 gdi32 之函，降级者于轩窗之目标绑为动态库之导入，余目标绑为陷阱。不书窗程：窗类之程填运行时所取之 DefWindowProcW 之址，事以 PeekMessageW 自取、自译其键与指，乃以 TranslateMessage、DispatchMessageW 还其当办者于常程。启时立每器二版之素准之觉；所授之宽高为逻辑之点，建窗时先依 GetDpiForSystem 折为实素，以 AdjustWindowRectExForDpi 依同素准算外框，外框逾主器之工作区（SystemParametersInfoW 之 SPI_GETWORKAREA）则收之而居中；建窗之后客户之尺与素准依 GetDpiForWindow，尺报实素，素准报每寸之素乘六十四（九十六为一比一）。交画以 RGBA 逐行易为 BGRA，经 GetDC 与 SetDIBitsToDevice 画于客户，依脏区分块。事则每轮先以 PeekMessageW 取队中之信，自译为事录而入队（与林檎同其面表与事队），WM_SIZE、WM_PAINT 以 GetClientRect 比之而发尺变，用户点闭则由 DefWindowProcW 销窗、IsWindow 察之而报闭。限时之候以 MsgWaitForMultipleObjects 分段而候，不空转。题用 SetWindowTextW，光标用 LoadCursorW 与 SetCursor，剪贴用 OpenClipboard 与 CF_UNICODETEXT。环境之变 `豫言显示诊断` 为一，则每一步之 Win32 之呼皆书其毫刻、还与 GetLastError 于常误，所取之每信记其号、wParam、lParam，交界面之事记类与坐标；连续重复者合为一行，与前几行同段之环亦合为一段（信与事仍逐条记；见「轩显诊断开」，至十万行）。待办：菜单、输入法候框之位、交叉组件高素准之曳。
 　　赋曰：重堂启牖，纳景而通明；素壁张屏，陈图而待览。立类以标其式，建窗而示其容。量客户之尺，问每寸之疏；写素成行，易朱为碧。窥箱满牍，分键与指；题以昭名，形以别用。闭则销其户，还则复其标。：」
 寻观「磐石」之书。
+寻观「客体二号」之「单调钟」之书。
 寻观「磐石」之「数值类型」之书。
 寻观「磐石」之「长数算」之书。
 寻观「客体二号」之「布局」之书。
