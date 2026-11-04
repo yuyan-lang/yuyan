@@ -345,6 +345,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 文言：pit-pc 之 runner 承系统之缺省 PATH，gh（稽府之命令行）装于 ~/.local/bin，先入其目于后诸步之 PATH；不然发布诸步皆以“无此命令”败。
+      # 汉语：pit-pc 的 runner 用系统缺省的 PATH，gh（稽府命令行工具）装在 ~/.local/bin，先把这个目录加进后面各步的 PATH；不加的话，发布的各步都报“找不到命令”。
+      - name: 把本机工具目录加进 PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
       - uses: actions/download-artifact@v4
         with:
           name: 网汇工具链包
