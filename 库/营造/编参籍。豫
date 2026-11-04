@@ -121,6 +121,7 @@
 　　　　　，『--do-not-save-cache』
 　　　　　，『--no-debug-print』
 　　　　　，『--print-opt-info』
+　　　　　，『--链接计时』
 　　　　　，『--no-dependency-check』
 　　　　　，『-c』
 　　　　　，『--顶层可定值只警告』
