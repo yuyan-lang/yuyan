@@ -22,10 +22,25 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
     steps:
+      # 文言：pit-pc 之 runner 承系统之缺省 PATH，gh（稽府之命令行）装于 ~/.local/bin，先入其目于后诸步之 PATH。
+      # 汉语：pit-pc 的 runner 用系统缺省的 PATH，gh（稽府命令行工具）装在 ~/.local/bin，先把这个目录加进后面各步的 PATH。
+      - name: 把本机工具目录加进 PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      # 文言：复发行版之史：惟发行版或资产确未立者，自此次始记；余误皆止，免以一次之数覆旧史。
+      # 汉语：恢复发行版里的历史：只有发行版或资产确实还没有时，才从这一次记起；别的错误（找不到 gh、网络、权限）一律报错停下，免得后面拿这一次的数覆盖掉旧账。
       - name: 恢复发行版历史
         run: |
+          set -euo pipefail
           mkdir -p "$RUNNER_TEMP/issue-history"
-          gh release download issue-backlog-stats --pattern issue-history.json --dir "$RUNNER_TEMP/issue-history" || true
+          command -v gh > /dev/null || { echo "找不到 gh，不恢复历史，免得覆盖旧账"; exit 1; }
+          if ! assets=$(gh release view issue-backlog-stats --json assets --jq '.assets[].name' 2> "$RUNNER_TEMP/恢复历史.err"); then
+            grep -q 'release not found' "$RUNNER_TEMP/恢复历史.err" || { cat "$RUNNER_TEMP/恢复历史.err"; exit 1; }
+            echo "还没有发行版 issue-backlog-stats，从这一次记起"
+          elif printf '%s\n' "$assets" | grep -qx issue-history.json; then
+            gh release download issue-backlog-stats --pattern issue-history.json --dir "$RUNNER_TEMP/issue-history"
+          else
+            echo "发行版里还没有 issue-history.json，从这一次记起"
+          fi
       - name: 统计、去重并生成图表
         env:
           EVENT_ACTION: ${{ github.event.action }}
@@ -96,7 +111,7 @@ jobs:
           (p/'report.md').write_text(note)
           print(note)
           PY
-          python "$RUNNER_TEMP/record.py"
+          python3 "$RUNNER_TEMP/record.py"
           cat "$RUNNER_TEMP/issue-history/report.md" >> "$GITHUB_STEP_SUMMARY"
       - name: 发布图表分支
         run: |
