@@ -41,6 +41,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 文言：pit-pc 之 runner 承系统之缺省 PATH，gh（稽府之命令行）装于 ~/.local/bin，先入其目于后诸步之 PATH；不然凡用 gh 之步皆以“无此命令”败。
+      # 汉语：pit-pc 的 runner 用系统缺省的 PATH，gh（稽府命令行工具）装在 ~/.local/bin，先把这个目录加进后面各步的 PATH；不加的话，凡用 gh 的步骤都报“找不到命令”。
+      - name: 把本机工具目录加进 PATH
+        run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
       - name: 下载最新的原生工具链包
         run: |
           set -euo pipefail
@@ -52,16 +57,21 @@ jobs:
       - name: 构建司民
         run: ./豫构稳定。林纳。豫行 构建 司民 --输出 司民。林纳。豫行 -j "$(nproc)" -- --目标 本机 --执行器 执行器。树码
 
-      # 文言：取前之版籍：发行版或资产未立者，自此次始记。
-      # 汉语：取上次的版籍：发行版或资产还没有时，从这一次记起。
+      # 文言：取前之版籍：惟发行版或资产确未立者，自此次始记；余误（无 gh、网断、无权）皆止，免以一次之数覆旧籍。
+      # 汉语：取上次的版籍：只有发行版或资产确实还没有时，才从这一次记起；别的错误（找不到 gh、网络、权限）一律报错停下，免得后面拿这一次的数覆盖掉旧账。
       - name: 取上次的版籍
         if: env.YY_RECORD == 'true'
         run: |
           set -euo pipefail
-          if gh release download code-line-stats --pattern code-line-history.tar.gz --dir "$RUNNER_TEMP"; then
+          command -v gh > /dev/null || { echo "找不到 gh，不取版籍，免得覆盖旧账"; exit 1; }
+          if ! assets=$(gh release view code-line-stats --json assets --jq '.assets[].name' 2> "$RUNNER_TEMP/取版籍.err"); then
+            grep -q 'release not found' "$RUNNER_TEMP/取版籍.err" || { cat "$RUNNER_TEMP/取版籍.err"; exit 1; }
+            echo "还没有发行版 code-line-stats，从这一次记起"
+          elif printf '%s\n' "$assets" | grep -qx code-line-history.tar.gz; then
+            gh release download code-line-stats --pattern code-line-history.tar.gz --dir "$RUNNER_TEMP"
             tar -xzf "$RUNNER_TEMP/code-line-history.tar.gz" -C "$RUNNER_TEMP"
           else
-            echo "还没有版籍，从这一次记起"
+            echo "发行版里还没有版籍，从这一次记起"
           fi
 
       - name: 统计并写进作业摘要
