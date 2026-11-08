@@ -286,11 +286,19 @@
 　「列」
 　【「组值」
 　　　【「名」者『https 自身许 wss』也
-　　　，「成」者「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』也
+　　　，「成」者「网页内容许可」
+　　　　　于「策略」曰『connect-src 'self'』
+　　　　　于「来源」曰『https://a.example』
+　　　　　于「目标」曰『wss://a.example/socket』
+　　　　　于「目的」曰『connect』也
 　　　】
 　，「组值」
 　　　【「名」者『https 自身不许 ws』也
-　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example』于「目标」曰『ws://a.example/socket』于「目的」曰『connect』）也
+　　　，「成」者非（「网页内容许可」
+　　　　　于「策略」曰『connect-src 'self'』
+　　　　　于「来源」曰『https://a.example』
+　　　　　于「目标」曰『ws://a.example/socket』
+　　　　　于「目的」曰『connect』）也
 　　　】
 　，「组值」
 　　　【「名」者『http 自身许 ws』也
@@ -298,23 +306,43 @@
 　　　】
 　，「组值」
 　　　【「名」者『http 默认端口不许 wss』也
-　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『http://a.example』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』）也
+　　　，「成」者非（「网页内容许可」
+　　　　　于「策略」曰『connect-src 'self'』
+　　　　　于「来源」曰『http://a.example』
+　　　　　于「目标」曰『wss://a.example/socket』
+　　　　　于「目的」曰『connect』）也
 　　　】
 　，「组值」
 　　　【「名」者『异主机不许』也
-　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example』于「目标」曰『wss://b.example/socket』于「目的」曰『connect』）也
+　　　，「成」者非（「网页内容许可」
+　　　　　于「策略」曰『connect-src 'self'』
+　　　　　于「来源」曰『https://a.example』
+　　　　　于「目标」曰『wss://b.example/socket』
+　　　　　于「目的」曰『connect』）也
 　　　】
 　，「组值」
 　　　【「名」者『http 显式四四三许 wss』也
-　　　，「成」者「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『http://a.example:443』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』也
+　　　，「成」者「网页内容许可」
+　　　　　于「策略」曰『connect-src 'self'』
+　　　　　于「来源」曰『http://a.example:443』
+　　　　　于「目标」曰『wss://a.example/socket』
+　　　　　于「目的」曰『connect』也
 　　　】
 　，「组值」
 　　　【「名」者『端口不同不许』也
-　　　，「成」者非（「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example:8443』于「目标」曰『wss://a.example/socket』于「目的」曰『connect』）也
+　　　，「成」者非（「网页内容许可」
+　　　　　于「策略」曰『connect-src 'self'』
+　　　　　于「来源」曰『https://a.example:8443』
+　　　　　于「目标」曰『wss://a.example/socket』
+　　　　　于「目的」曰『connect』）也
 　　　】
 　，「组值」
 　　　【「名」者『同端口许』也
-　　　，「成」者「网页内容许可」于「策略」曰『connect-src 'self'』于「来源」曰『https://a.example:8443』于「目标」曰『wss://a.example:8443/socket』于「目的」曰『connect』也
+　　　，「成」者「网页内容许可」
+　　　　　于「策略」曰『connect-src 'self'』
+　　　　　于「来源」曰『https://a.example:8443』
+　　　　　于「目标」曰『wss://a.example:8443/socket』
+　　　　　于「目的」曰『connect』也
 　　　】
 　】
 也。
@@ -332,21 +360,21 @@
 　于（
 　　鉴「网页内容沙盒」于「策略」曰『sandbox allow-scripts allow-forms』而
 　　　或有「可无」则「阴」
-　　　或有（「可有」于「值」）则「文同」于「值」于『allow-scripts allow-forms』
+　　　或有（「可有」于得「值」）则「文同」于「值」于『allow-scripts allow-forms』
 　）
 　于『沙盒有值』。
 「断言」
 　于（
 　　鉴「网页内容沙盒」于「策略」曰『sandbox』而
 　　　或有「可无」则「阴」
-　　　或有（「可有」于「值」）则「文同」于「值」于『』
+　　　或有（「可有」于得「值」）则「文同」于「值」于『』
 　）
 　于『沙盒空值』。
 「断言」
 　于（
 　　鉴「网页内容沙盒」于「策略」曰『script-src 'self'』而
 　　　或有「可无」则「阳」
-　　　或有（「可有」于「值」）则「阴」
+　　　或有（「可有」于得「值」）则「阴」
 　）
 　于『无沙盒令』。
 「续书」于『内容策略表格通过』。

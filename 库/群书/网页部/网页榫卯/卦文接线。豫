@@ -47,7 +47,7 @@
 「网页卦文编」乃化「文」又化（化「文」又化「文」为「急就值」）为「文」者也。
 「网页卦文编」者得「其文」又得「祸术」而
 　鉴（「网页卦文作帛」于「其文」）而
-　　或有（「可有」于「帛值」）则（「网页卦文帛作文」于（「卦文编」于「帛值」于「网址安全」曰「阴」于「填充」曰「阳」））
+　　或有（「可有」于得「帛值」）则（「网页卦文帛作文」于（「卦文编」于「帛值」于「网址安全」曰「阴」于「填充」曰「阳」））
 　　或有「可无」则（「急就抛出值」于（「祸术」于『The string to be encoded contains characters outside of the Latin1 range.』于『InvalidCharacterError』））
 也。
 
@@ -64,9 +64,9 @@
 　　（「急就抛出值」于（「祸术」于『The string to be decoded contains characters outside of the Latin1 range.』于『InvalidCharacterError』））
 　否则（
 　　鉴（「网页卦文作帛」于（「急就文字作串」于（「急就文字自码元」于「干净」）））而
-　　　或有（「可有」于「帛值」）则（
+　　　或有（「可有」于得「帛值」）则（
 　　　　鉴（「卦文解」于「帛值」于「网址安全」曰「阴」于「宽松」曰「阳」）而
-　　　　　或有（「可有」于「解帛」）则（「网页卦文帛作文」于「解帛」）
+　　　　　或有（「可有」于得「解帛」）则（「网页卦文帛作文」于「解帛」）
 　　　　　或有「可无」则（「急就抛出值」于（「祸术」于『The string to be decoded is not correctly encoded.』于『InvalidCharacterError』））
 　　　）
 　　　或有「可无」则（「急就抛出值」于（「祸术」于『The string to be decoded is not correctly encoded.』于『InvalidCharacterError』））
