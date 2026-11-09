@@ -19,13 +19,13 @@
 　令「缺口」为「脚本摘取首缺口」于「其文」于「零」而
 　若非（「文同」于「缺口」于『』）则
 　　「缺口」
-　否则若「文含」于『negative:』于「其文」则
+　否则若「文含」于「针」曰『negative:』于「全文」曰「其文」则
 　　『负向元数据已保存；须区分脚本parse错误与模式SyntaxError执行』
-　否则若「文含」于『lastIndex』于「其文」则
+　否则若「文含」于「针」曰『lastIndex』于「全文」曰「其文」则
 　　『对象lastIndex状态及JavaScript程序待适配』
-　否则若「文含」于『testExtendedCharacterClass(』于「其文」则
+　否则若「文含」于「针」曰『testExtendedCharacterClass(』于「全文」曰「其文」则
 　　『v集合已支持；官方helper的字符串向量与分支执行待逐项映射』
-　否则若「文含」于『testPropertyEscapes(』于「其文」则
+　否则若「文含」于「针」曰『testPropertyEscapes(』于「全文」曰「其文」则
 　　『属性已支持；官方buildString码点区间及helper待映射』
 　否则
 　　『完整JavaScript对象或控制流程待适配；已提取字面量断言单列』

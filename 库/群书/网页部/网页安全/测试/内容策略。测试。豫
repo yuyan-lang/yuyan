@@ -199,8 +199,8 @@
 　，「组值」
 　　　【「名」者『违规报告含令名』也
 　　　，「成」者「文含」
-　　　　　于『script-src』
-　　　　　于（「网页内容报告」于「策略」曰『script-src 'self'』于「来源」曰『https://a.example』于「目标」曰『https://b.example/x.js』于「目的」曰『script』）也
+　　　　　于「针」曰『script-src』
+　　　　　于「全文」曰（「网页内容报告」于「策略」曰『script-src 'self'』于「来源」曰『https://a.example』于「目标」曰『https://b.example/x.js』于「目的」曰『script』）也
 　　　】
 　，「组值」
 　　　【「名」者『许可时报告为空』也

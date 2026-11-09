@@ -11,13 +11,13 @@
 「：汉语：通称首字合法。接收一个字，是半角字母或下划线之一时返回阳。：」
 「桶首合法」乃化「文」为「爻」者也。
 「桶首合法」者得「字」而
-　（「文含」于「字」于『abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_』）且（（「计字」于「字」）等于「一」）
+　（「文含」于「针」曰「字」于「全文」曰『abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_』）且（（「计字」于「字」）等于「一」）
 也。
 
 「：汉语：通称余字合法。接收一个字，是半角字母、数字或下划线之一时返回阳。：」
 「桶余字合法」乃化「文」为「爻」者也。
 「桶余字合法」者得「字」而
-　（「文含」于「字」于『abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_』）且（（「计字」于「字」）等于「一」）
+　（「文含」于「针」曰「字」于「全文」曰『abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_』）且（（「计字」于「字」）等于「一」）
 也。
 
 「：汉语：通称余字们合法。接收字列，每字都合法时返回阳。：」

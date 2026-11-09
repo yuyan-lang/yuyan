@@ -33,7 +33,7 @@
 　　　　『』
 　　　否则
 　　　　令「其数」为「码位」于「其文」于「位」而
-　　　　若「文含」于（「作字」于「其数」）于『ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~』则
+　　　　若「文含」于「针」曰（「作字」于「其数」）于「全文」曰『ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~』则
 　　　　　（「作字」于「其数」）接（「行」于（「位」加「一」））
 　　　　否则
 　　　　　『%』接（「作字」于（「码位」于『0123456789ABCDEF』于（「其数」除以「一六」）））

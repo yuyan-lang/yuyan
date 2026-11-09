@@ -72,7 +72,7 @@
 　鉴「取属」于「节」于『contenteditable』而
 　　或有（「可有」于得「属文」）则
 　　　令「净文」为「样式小写」于「属文」而
-　　　若「或」于（「文同」于「净文」于『』）于（「文含」于（『 』接「净文」接『 』）于『 true plaintext-only 』）则
+　　　若「或」于（「文同」于「净文」于『』）于（「文含」于「针」曰（『 』接「净文」接『 』）于「全文」曰『 true plaintext-only 』）则
 　　　　「阳」
 　　　否则若「文同」于「净文」于『false』则
 　　　　「阴」
@@ -103,7 +103,7 @@
 　　　于（「文同」于「名文」于『textarea』）
 　　　于（「且」
 　　　　于（「文同」于「名文」于『input』）
-　　　　于（「文含」于（『 』接「型文」接『 』）于『 text search url tel email password date month week time datetime-local number 』））而
+　　　　于（「文含」于「针」曰（『 』接「型文」接『 』）于「全文」曰『 text search url tel email password date month week time datetime-local number 』））而
 　若「文框」则「且」于（非（「控件禁用」于「节」））于（非（「节有属」于「节」于『readonly』））否则「节点容改」于「节」
 也。
 
@@ -176,22 +176,22 @@
 　否则若「文同」于「名文」于『modal』则
 　　「对话模态吗」于「节」
 　否则若「或」于（「文同」于「名文」于『link』）于（「文同」于「名文」于『any-link』）则
-　　「且」于（「文含」于（『 』接（「节名」于「节」）接『 』）于『 a area link 』）于（「节有属」于「节」于『href』）
+　　「且」于（「文含」于「针」曰（『 』接（「节名」于「节」）接『 』）于「全文」曰『 a area link 』）于（「节有属」于「节」于『href』）
 　否则若「文同」于「名文」于『checked』则
 　　「表单控件已选」于「节」
 　否则若「或」于（「文同」于「名文」于『disabled』）于（「文同」于「名文」于『enabled』）则
 　　「且」
-　　　于（「文含」于（『 』接（「节名」于「节」）接『 』）于『 button input select textarea option optgroup fieldset 』）
+　　　于（「文含」于「针」曰（『 』接（「节名」于「节」）接『 』）于「全文」曰『 button input select textarea option optgroup fieldset 』）
 　　　于（若「文同」于「名文」于『disabled』则「控件禁用」于「节」否则非（「控件禁用」于「节」））
 　否则若「或」于（「文同」于「名文」于『required』）于（「文同」于「名文」于『optional』）则
 　　「且」
-　　　于（「文含」于（『 』接（「节名」于「节」）接『 』）于『 input select textarea 』）
+　　　于（「文含」于「针」曰（『 』接（「节名」于「节」）接『 』）于「全文」曰『 input select textarea 』）
 　　　于（若「文同」于「名文」于『required』则「节有属」于「节」于『required』否则非（「节有属」于「节」于『required』））
 　否则若「或」于（「文同」于「名文」于『read-only』）于（「文同」于「名文」于『read-write』）则
 　　若「文同」于「名文」于『read-write』则「节点可写」于「节」否则非（「节点可写」于「节」）
 　否则若「文同」于「名文」于『placeholder-shown』则
 　　「且」
-　　　于（「文含」于（『 』接（「节名」于「节」）接『 』）于『 input textarea 』）
+　　　于（「文含」于「针」曰（『 』接（「节名」于「节」）接『 』）于「全文」曰『 input textarea 』）
 　　　于（「且」于（「节有属」于「节」于『placeholder』）于（「文同」于（「表单控件值」于「节」）于『』））
 　否则若「文同」于「名文」于『default』则
 　　若「文同」于（「节名」于「节」）于『option』则
@@ -200,7 +200,7 @@
 　　　鉴「取属」于「节」于『type』而
 　　　　或有「可无」则「阴」
 　　　　或有（「可有」于得「型文」）则
-　　　　　「且」于（「文含」于（『 』接（「样式小写」于「型文」）接『 』）于『 checkbox radio 』）于（「节有属」于「节」于『checked』）
+　　　　　「且」于（「文含」于「针」曰（『 』接（「样式小写」于「型文」）接『 』）于「全文」曰『 checkbox radio 』）于（「节有属」于「节」于『checked』）
 　　否则
 　　　「阴」
 　否则若「文同」于「名文」于『indeterminate』则
