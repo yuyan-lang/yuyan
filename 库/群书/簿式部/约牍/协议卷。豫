@@ -324,7 +324,7 @@
 　　　　　或有得「余形」则「阴」
 　　　）否则若「或」于（「文同」于「词」于『package』）于（「或」于（「文同」于「词」于『import』）于（「文同」于「词」于『option』））则
 　　　　「顶层声明验」于（「顶声明余」于「尾」于「零」）
-　　　否则若「文含」于（「接」于『|』于（「接」于「词」于『|』））于『|message|enum|service|extend|』则
+　　　否则若「文含」于「针」曰（「接」于『|』于（「接」于「词」于『|』））于「全文」曰『|message|enum|service|extend|』则
 　　　　令「开词」为「首词」于（「余词」于「尾」）而
 　　　　若「文同」于「开词」于『{』则「顶层声明验」于（「顶声明余」于（「余词」于（「余词」于「尾」））于「一」）否则「阴」
 　　　否则
@@ -388,8 +388,8 @@
 　　　　　令「有效」为
 　　　　　　「或」
 　　　　　　　于（「文含」
-　　　　　　　　于（「缀文」于（「列」【『|』，「值型」，『|』】））
-　　　　　　　　于『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』）
+　　　　　　　　于「针」曰（「缀文」于（「列」【『|』，「值型」，『|』】））
+　　　　　　　　于「全文」曰『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』）
 　　　　　　　于（「类名存在」于「值型」于「消息列」于「枚举列」）而
 　　　　　「且」于「有效」于（「声明字段型验」于「尾」）而
 　复令「声明消息型验」属化（「列」于「消息描述」）为「爻」
@@ -597,8 +597,8 @@
 「值型可见」者得「型」又得「消息列」又得「枚举列」而
 　「或」
 　　于（「文含」
-　　　于（「接」于『|』于（「接」于「型」于『|』））
-　　　于『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』）
+　　　于「针」曰（「接」于『|』于（「接」于「型」于『|』））
+　　　于「全文」曰『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』）
 　　于（「类名存在」于「型」于「消息列」于「枚举列」）
 也。
 

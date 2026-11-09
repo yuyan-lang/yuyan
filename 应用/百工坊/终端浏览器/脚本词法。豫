@@ -29,28 +29,28 @@
 　　文言：单符为数字否。：」
 「数字符吗」乃化「文」为「爻」者也。
 「数字符吗」者得「符」而
-　「文含」于「符」于『0123456789』
+　「文含」于「针」曰「符」于「全文」曰『0123456789』
 也。
 
 「：汉语：字母、下划线、数字之一。
 　　文言：单符为名字符否。：」
 「名字符吗」乃化「文」为「爻」者也。
 「名字符吗」者得「符」而
-　「或」于（「文含」于「符」于『abcdefghijklmnopqrstuvwxyz_』）于（「或」于（「文含」于「符」于『ABCDEFGHIJKLMNOPQRSTUVWXYZ』）于（「数字符吗」于「符」））
+　「或」于（「文含」于「针」曰「符」于「全文」曰『abcdefghijklmnopqrstuvwxyz_』）于（「或」于（「文含」于「针」曰「符」于「全文」曰『ABCDEFGHIJKLMNOPQRSTUVWXYZ』）于（「数字符吗」于「符」））
 也。
 
 「：汉语：加减乘除取余赋比较与或非之符（含非「!」，使 !/!=/!== 皆成算符）。
 　　文言：单符为可结合算符否。：」
 「结合算符吗」乃化「文」为「爻」者也。
 「结合算符吗」者得「符」而
-　「文含」于「符」于『+-*/%=<>&|!?』
+　「文含」于「针」曰「符」于「全文」曰『+-*/%=<>&|!?』
 也。
 
 「：汉语：括号、花、方、分、逗、句点、冒号之一。
 　　文言：单符为单点否。：」
 「单点符吗」乃化「文」为「爻」者也。
 「单点符吗」者得「符」而
-　「文含」于「符」于『(){}[];,.:』
+　「文含」于「针」曰「符」于「全文」曰『(){}[];,.:』
 也。
 
 「：汉语：单引号或双引号。
@@ -88,8 +88,8 @@
 「是键吗」乃化「文」为「爻」者也。
 「是键吗」者得「名」而
 　「文含」
-　　于（「接」于『 』于（「接」于「名」于『 』））
-　　于『 var let const if else while for function return throw try catch break continue switch case default true false null this typeof 』
+　　于「针」曰（「接」于『 』于（「接」于「名」于『 』））
+　　于「全文」曰『 var let const if else while for function return throw try catch break continue switch case default true false null this typeof 』
 也。
 
 「词成记号」乃化「文」为「记号」者也。
