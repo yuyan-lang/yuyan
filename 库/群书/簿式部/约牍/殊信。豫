@@ -45,8 +45,8 @@
 「为殊包装型」乃化「文」为「爻」者也。
 「为殊包装型」者得「类型名」而
 　「文含」
-　　于（「缀文」于（「列」【『|』，「类型名」，『|』】））
-　　于『|google.protobuf.DoubleValue|google.protobuf.FloatValue|google.protobuf.Int64Value|google.protobuf.UInt64Value|google.protobuf.Int32Value|google.protobuf.UInt32Value|google.protobuf.BoolValue|google.protobuf.StringValue|google.protobuf.BytesValue|』
+　　于「针」曰（「缀文」于（「列」【『|』，「类型名」，『|』】））
+　　于「全文」曰『|google.protobuf.DoubleValue|google.protobuf.FloatValue|google.protobuf.Int64Value|google.protobuf.UInt64Value|google.protobuf.Int32Value|google.protobuf.UInt32Value|google.protobuf.BoolValue|google.protobuf.StringValue|google.protobuf.BytesValue|』
 也。
 
 「为殊述型」乃化「文」为「爻」者也。
@@ -54,8 +54,8 @@
 　「或」
 　　于（「为殊包装型」于「类型名」）
 　　于（「文含」
-　　　于（「缀文」于（「列」【『|』，「类型名」，『|』】））
-　　　于『|google.protobuf.Any|google.protobuf.Timestamp|google.protobuf.Duration|google.protobuf.FieldMask|google.protobuf.Struct|google.protobuf.Value|google.protobuf.ListValue|』）
+　　　于「针」曰（「缀文」于（「列」【『|』，「类型名」，『|』】））
+　　　于「全文」曰『|google.protobuf.Any|google.protobuf.Timestamp|google.protobuf.Duration|google.protobuf.FieldMask|google.protobuf.Struct|google.protobuf.Value|google.protobuf.ListValue|』）
 也。
 
 「殊包装缺省」乃化「文」为「结绳」者也。
@@ -426,7 +426,7 @@
 　　　　　或有（「结绳整数」于得「整数值」）则「字段值」
 　　　　　或有（「结绳小数」于得「小数值」）则「字段值」
 　　　　　或有得「其他值」则「告祸」以「结绳」于『Value 数字须为有限 JSON 数字』
-　　　）否则若「文含」于（「缀文」于（「列」【『|』，「名称」，『|』】））于『|stringValue|boolValue|structValue|listValue|』则
+　　　）否则若「文含」于「针」曰（「缀文」于（「列」【『|』，「名称」，『|』】））于「全文」曰『|stringValue|boolValue|structValue|listValue|』则
 　　　　「字段值」
 　　　否则
 　　　　「殊值映」于「余项」
