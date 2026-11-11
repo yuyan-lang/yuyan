@@ -7,12 +7,12 @@
 「货币常小数位」者得「币种」而
 　令「标记」为「缀文」于「列」【『|』，「币种」，『|』】而
 　若「文含」
-　　于「标记」
-　　于『|ADP|AFN|ALL|BIF|BYR|CLP|COP|DJF|ESP|GNF|HUF|IDR|IQD|IRR|ISK|ITL|JPY|KMF|KPW|KRW|LAK|LBP|LUF|MGA|MGF|MMK|MRO|PKR|PYG|RSD|RWF|SLL|SOS|STD|SYP|TMM|TRL|UGX|UYI|VND|VUV|XAF|XOF|XPF|YER|ZMK|ZWD|』则
+　　于「针」曰「标记」
+　　于「全文」曰『|ADP|AFN|ALL|BIF|BYR|CLP|COP|DJF|ESP|GNF|HUF|IDR|IQD|IRR|ISK|ITL|JPY|KMF|KPW|KRW|LAK|LBP|LUF|MGA|MGF|MMK|MRO|PKR|PYG|RSD|RWF|SLL|SOS|STD|SYP|TMM|TRL|UGX|UYI|VND|VUV|XAF|XOF|XPF|YER|ZMK|ZWD|』则
 　　　「零」
-　否则若「文含」于「标记」于『|BHD|JOD|KWD|LYD|OMR|TND|』则
+　否则若「文含」于「针」曰「标记」于「全文」曰『|BHD|JOD|KWD|LYD|OMR|TND|』则
 　　「三」
-　否则若「文含」于「标记」于『|CLF|UYW|』则
+　否则若「文含」于「针」曰「标记」于「全文」曰『|CLF|UYW|』则
 　　「四」
 　否则
 　　「二」

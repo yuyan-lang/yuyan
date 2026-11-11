@@ -53,7 +53,7 @@
 　　　『「爻」』
 　　否则若「或」于（「文同」于「型」于『float』）于（「文同」于「型」于『double』）则
 　　　『「小数」』
-　　否则若「文含」于（「接」于『|』于（「接」于「型」于『|』））于『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|』则
+　　否则若「文含」于「针」曰（「接」于『|』于（「接」于「型」于『|』））于「全文」曰『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|』则
 　　　『「数」』
 　　否则
 　　　「信型名」于「型」于「消息列」于「一」而
@@ -325,8 +325,8 @@
 　　　令「型」为「述」中「二」而
 　　　令「本」为
 　　　　若「文含」
-　　　　　于（「缀文」于（「列」【『|』，「型」，『|』】））
-　　　　　于『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』则
+　　　　　于「针」曰（「缀文」于（「列」【『|』，「型」，『|』】））
+　　　　　于「全文」曰『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』则
 　　　　　　「缀文」于（「列」
 　　　　　　　【『「协议消息』
 　　　　　　　，「述数」于「序」
@@ -461,8 +461,8 @@
 　　　　　　　　于（「且」
 　　　　　　　　　于（「文同」于（「前缀选值」于「选项」于『显式标签:』）于『假』）
 　　　　　　　　　于（「文含」
-　　　　　　　　　　于（「缀文」于（「列」【『|』，「型」，『|』】））
-　　　　　　　　　　于『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』）））而
+　　　　　　　　　　于「针」曰（「缀文」于（「列」【『|』，「型」，『|』】））
+　　　　　　　　　　于「全文」曰『|int32|int64|uint32|uint64|sint32|sint64|fixed32|fixed64|sfixed32|sfixed64|float|double|bool|string|bytes|』）））而
 　　　　　「缀」以「字段描述」
 　　　　　　于（（「述」中「零」）与（「述」中「一」）与「型」与（若「隐式」则『required』否则「述」中「三」）与「选项」）
 　　　　　　于（「调整字段」于「尾」）而

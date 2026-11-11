@@ -31,7 +31,7 @@
 　「沙盘结绳回应」
 　　于「状态」曰「二零零」
 　　于「正文」曰（
-　　　若「文含」于『offset=50』于（「请」中「路径」）则
+　　　若「文含」于「针」曰『offset=50』于「全文」曰（「请」中「路径」）则
 　　　　『{"releases":[{"owner":"豫言","name":"标准工具","description":"<script>bad()</script>","type":"可执行文件","version":"1","identityVerified":1}],"nextOffset":null}』
 　　　否则
 　　　　『{"releases":[{"owner":"豫言","name":"<img src=x>","description":"<script>bad()</script>","type":"库","version":"1","identityVerified":0}],"nextOffset":50}』
