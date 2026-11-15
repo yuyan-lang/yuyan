@@ -3,9 +3,9 @@
 name: 代码行数
 
 env:
-  # 文言：起步之原生工具链包，同 main.yml：取连续版最新之 Linux x64 包，以其豫构稳定。林纳。豫行 构司民。
-  # 汉语：起步用的原生工具链包，同 main.yml：取连续版本里最新的 Linux x64 包，用包里的 豫构稳定。林纳。豫行 构建司民。
-  YY_NATIVE_TOOLCHAIN_URL: https://github.com/yuyan-lang/yuyan/releases/download/continuous-binaries/yuyan-native-linux-x64.tar.gz
+  # 文言：种取 pit-pc 之共用链（十一月十五日，#1859）：以其 豫构 编司民之林纳原生程（原生之布于本进程编，合一之布付虚机编），不复取连续版之包。
+  # 汉语：种子取 pit-pc 的共用链（2026-11-15，#1859）：用它的 豫构 把司民编成林纳原生程序（原生布局在本进程里编，合一布局交虚机编），不再取连续版本的包。
+  YY_TOOLCHAIN: /home/zc/repos/yuyan-worktrees/钩深军团/工具链
 
 on:
   push:
@@ -46,16 +46,8 @@ jobs:
       - name: 把本机工具目录加进 PATH
         run: echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: 下载最新的原生工具链包
-        run: |
-          set -euo pipefail
-          archive="$RUNNER_TEMP/yuyan-native-stable.tar.gz"
-          curl --fail --location --retry 6 --retry-all-errors --retry-delay 10 \
-            --output "$archive" "$YY_NATIVE_TOOLCHAIN_URL"
-          tar -xzf "$archive"
-
       - name: 构建司民
-        run: ./豫构稳定。林纳。豫行 构建 司民 --输出 司民。林纳。豫行 -j "$(nproc)" -- --目标 本机 --执行器 执行器。树码
+        run: '"$YY_TOOLCHAIN/豫构" 构建 司民 --输出 "$PWD/司民。林纳。豫行" -- --目标 本机 --目标系统 林纳 --目标架构 兼容六十四 --执行器 "$YY_TOOLCHAIN/执行器。树码"'
 
       # 文言：取前之版籍：惟发行版或资产确未立者，自此次始记；余误（无 gh、网断、无权）皆止，免以一次之数覆旧籍。
       # 汉语：取上次的版籍：只有发行版或资产确实还没有时，才从这一次记起；别的错误（找不到 gh、网络、权限）一律报错停下，免得后面拿这一次的数覆盖掉旧账。
@@ -74,14 +66,16 @@ jobs:
             echo "发行版里还没有版籍，从这一次记起"
           fi
 
+      # 文言：司民为原生之程，加 豫言虚机=关 于本进程行之（AGENTS.md 许 pit-pc 不经虚机）。
+      # 汉语：司民是原生程序，加 豫言虚机=关 在本进程里跑（AGENTS.md 许 pit-pc 不经虚机）。
       - name: 统计并写进作业摘要
         run: |
           set -euo pipefail
           if [ "$YY_RECORD" = true ]; then
-            ./司民。林纳。豫行 --版 "$RUNNER_TEMP/版籍。数据。豫" --图 "$RUNNER_TEMP/近三十天.svg" \
+            env 豫言虚机=关 ./司民。林纳。豫行 --版 "$RUNNER_TEMP/版籍。数据。豫" --图 "$RUNNER_TEMP/近三十天.svg" \
               --图址 "https://raw.githubusercontent.com/$GH_REPO/代码行数图/近三十天.svg?提交=$GITHUB_SHA" > "$RUNNER_TEMP/报告.md"
           else
-            ./司民。林纳。豫行 > "$RUNNER_TEMP/报告.md"
+            env 豫言虚机=关 ./司民。林纳。豫行 > "$RUNNER_TEMP/报告.md"
           fi
           cat "$RUNNER_TEMP/报告.md" >> "$GITHUB_STEP_SUMMARY"
 
