@@ -41,3 +41,8 @@
 　　于『f|g|h|a|b|cd|e|k|p|q|[s]|true』）
 　于『捷思匿名函数按绑定位置取名』。
 「书」于『捷思类与链冒烟通过』。
+「断言」
+　于（「脚本得文」
+　　于『let r=[];try{new ({})();}catch(e){r.push(e.message);}try{const b=()=>1;new b();}catch(e){r.push(e.message);}try{Object.getPrototypeOf(null);}catch(e){r.push(e.message);}try{function F(){}F.prototype=3;class X extends F{}}catch(e){r.push(e.message);}r.join("|");』
+　　于『需要构造函数，得到 object。|此函数可调用而未提供构造能力：function b。|对象操作需要有值的接收者，得到 null。|类的父类 function F 的 prototype 须是对象或 null，得到 number。』）
+　于『捷思类型错误报出是哪个值』。
