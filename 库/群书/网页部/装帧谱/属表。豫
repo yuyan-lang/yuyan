@@ -30,6 +30,10 @@
 　，『font-variant-ligatures』与『normal』与「阳」
 　，『font-variant-east-asian』与『normal』与「阳」
 　，『font-variant-alternates』与『normal』与「阳」
+　，『font-width』与『normal』与「阳」
+　，『math-style』与『normal』与「阳」
+　，『math-script-level』与『0』与「阴」
+　，『math-depth』与『0』与「阳」
 　，『font-feature-settings』与『normal』与「阳」
 　，『font-variation-settings』与『normal』与「阳」
 　，『font-optical-sizing』与『auto』与「阳」
