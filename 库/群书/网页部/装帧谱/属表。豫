@@ -256,6 +256,10 @@
 　，『vertical-align』与『baseline』与「阴」
 　，『text-box-trim』与『none』与「阳」
 　，『text-box-edge』与『auto』与「阳」
+　，『paint-order』与『normal』与「阴」
+　，『isolation』与『auto』与「阴」
+　，『will-change』与『auto』与「阴」
+　，『accent-color』与『auto』与「阳」
 　】
 也。
 
