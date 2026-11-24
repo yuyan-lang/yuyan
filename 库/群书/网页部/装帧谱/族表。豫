@@ -93,8 +93,8 @@
 　】
 也。
 
-「：汉语：通称族表（family table）。今列四族六十二条：溢出族十五条（长写十三条与旧行钳两名；旧行钳两名眼下一律按长写收，简写之展待计算样式按其长写重述的一步）、文族二十条（text-* 与 letter-spacing、word-spacing）、字样族十六条（font-* 与 font-size）、滚动族十一条（scroll-behavior、scroll-snap-stop、scrollbar-width 与滚动内外边距八条）。初值与继承照规范与万维网联盟的继承测试；移到本表的属性其初值、继承与原手写表一致。
-　　文言：族表今列四族六十一：溢出十五（长写十三，旧行钳二；旧钳二名今皆按长写收，简展待他日）、文二十（text-* 与 letter-spacing、word-spacing）、字样十五（font-* 等）、滚动十一（scroll-behavior、scroll-snap-stop、scrollbar-width 与滚动内外边距八条）。初承依规范与万维网联盟之继承试；移入此表者，其初承与旧手写表同。
+「：汉语：通称族表（family table）。今列四族六十三条：溢出族十六条（长写十四条，含 scroll-initial-target，与旧行钳两名；旧行钳两名眼下一律按长写收，简写之展待计算样式按其长写重述的一步）、文族二十条（text-* 与 letter-spacing、word-spacing）、字样族十六条（font-* 与 font-size）、滚动族十一条（scroll-behavior、scroll-snap-stop、scrollbar-width 与滚动内外边距八条）。初值与继承照规范与万维网联盟的继承测试；移到本表的属性其初值、继承与原手写表一致。
+　　文言：族表今列四族六十二：溢出十六（长写十四，旧行钳二；旧钳二名今皆按长写收，简展待他日）、文二十（text-* 与 letter-spacing、word-spacing）、字样十五（font-* 等）、滚动十一（scroll-behavior、scroll-snap-stop、scrollbar-width 与滚动内外边距八条）。初承依规范与万维网联盟之继承试；移入此表者，其初承与旧手写表同。
 　　赋曰：溢出之族，十五其条；长写十三，旧钳二标。名初承法，简目待描；一表既立，诸表自交。：」
 「：汉语：通称族表之储。族表是静态数据，首用造一次，后皆读此匣，不在每次解析声明时重造。
 　　文言：族表之储：族表为静态之数，首用造一，后皆读此匣，不复每解析而重造。
@@ -164,6 +164,13 @@
 　　　　　　　，「继承」者「阴」也
 　　　　　　　，「简写」者「罄」以「文」也
 　　　　　　　，「文法」者「词列法」于（「列」【『none』，『before』，『after』】）也
+　　　　　　　】
+　　　　　，「组值」
+　　　　　　　【「名称」者『scroll-initial-target』也
+　　　　　　　，「初值」者『none』也
+　　　　　　　，「继承」者「阴」也
+　　　　　　　，「简写」者「罄」以「文」也
+　　　　　　　，「文法」者「词列法」于（「列」【『none』，『nearest』】）也
 　　　　　　　】
 　　　　　，「组值」
 　　　　　　　【「名称」者『scroll-target-group』也
