@@ -61,6 +61,7 @@
 　，『shape-margin』与『0』与「阴」
 　，『contain』与『none』与「阴」
 　，『container-type』与『normal』与「阴」
+　，『container-name』与『none』与「阴」
 　，『text-wrap-mode』与『wrap』与「阳」
 　，『text-wrap-style』与『auto』与「阳」
 　，『contain-intrinsic-width』与『none』与「阴」
@@ -297,6 +298,7 @@
 　，『border-color』与（「列」【『border-top-color』，『border-right-color』，『border-bottom-color』，『border-left-color』】）
 　，『inset』与（「列」【『top』，『right』，『bottom』，『left』】）
 　，『overflow』与（「列」【『overflow-x』，『overflow-y』】）
+　，『container』与（「列」【『container-name』，『container-type』】）
 　，『outline』与（「列」【『outline-width』，『outline-style』，『outline-color』】）
 　，『text-decoration』与（「列」【『text-decoration-line』，『text-decoration-style』，『text-decoration-color』，『text-decoration-thickness』】）
 　，『gap』与（「列」【『row-gap』，『column-gap』】）
