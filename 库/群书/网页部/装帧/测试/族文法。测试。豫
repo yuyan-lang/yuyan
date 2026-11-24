@@ -1,0 +1,52 @@
+「：汉语：通称族文法测试（family grammar test）。按声明条数核族表新三体的文法：长短法（词、维度正负、百分比、零）、数词法（界内之数）、词组法（同组可并、斥对、独词），以及文、字样、滚动三族里移到族表的属性取值取舍。收者条数应为一，斥者应为零。
+　　文言：族文法之试：依声明之条数核族表三体之法：长短（词、维度之正负、百分比、零）、数词（界内之数）、词组（同组可并、斥对、独词），及文、字样、滚动三族移入族表之属取舍。收者条数当一，斥者当零。
+　　赋曰：一体一条试法门，收斥分明见浅深。长短数词词组外，三族诸属共此心。：」
+寻观「豫章」之书。
+寻观「装帧」之书。
+
+「：汉语：通称验一（check one declaration）。按声明条数核一例，不合即告祸并报原文与条数。
+　　文言：验一者：依声明之条数核其一例，不合则告祸而报其文与数。：」
+「验一」乃化「文」又化「数」为「有」者也。
+「验一」者得「其文」又得「该数」而
+　令「得数」为（「计」于（「析样式声明」于「其文」））而
+　若（「得数」等于「该数」）则
+　　「元」
+　否则
+　　「告祸」以「有」于（『族文法不符：』接「其文」接『（应为』接（「述数」于「该数」）接『条，实为』接（「述数」于「得数」）接『条）』）
+也。
+
+「主」者
+　令「无」为「验一」于『text-decoration-line: underline overline』于「一」而
+　令「无」为「验一」于『text-decoration-line: underline none』于「零」而
+　令「无」为「验一」于『text-transform: capitalize full-width』于「一」而
+　令「无」为「验一」于『text-transform: capitalize lowercase』于「零」而
+　令「无」为「验一」于『text-transform: math-auto capitalize』于「零」而
+　令「无」为「验一」于『font-variant-numeric: lining-nums tabular-nums』于「一」而
+　令「无」为「验一」于『font-variant-numeric: lining-nums oldstyle-nums』于「零」而
+　令「无」为「验一」于『font-synthesis: weight style』于「一」而
+　令「无」为「验一」于『font-synthesis: none weight』于「零」而
+　令「无」为「验一」于『font-weight: 700』于「一」而
+　令「无」为「验一」于『font-weight: bolder』于「一」而
+　令「无」为「验一」于『font-weight: bold 900』于「零」而
+　令「无」为「验一」于『font-weight: 0』于「零」而
+　令「无」为「验一」于『letter-spacing: 1%』于「一」而
+　令「无」为「验一」于『letter-spacing: 1px 2px』于「零」而
+　令「无」为「验一」于『text-decoration-thickness: -1px』于「一」而
+　令「无」为「验一」于『font-size: 20%』于「一」而
+　令「无」为「验一」于『font-size: larger』于「一」而
+　令「无」为「验一」于『font-size: -10px』于「零」而
+　令「无」为「验一」于『scroll-margin-top: -10px』于「一」而
+　令「无」为「验一」于『scroll-margin-top: 10%』于「零」而
+　令「无」为「验一」于『scroll-padding-top: auto』于「一」而
+　令「无」为「验一」于『scroll-padding-top: -10px』于「零」而
+　令「无」为「验一」于『scroll-padding-top: 10px 20%』于「零」而
+　令「无」为「验一」于『scroll-snap-stop: before』于「一」而
+　令「无」为「验一」于『scroll-snap-stop: auto』于「零」而
+　令「无」为「验一」于『text-emphasis-position: under left』于「一」而
+　令「无」为「验一」于『text-emphasis-position: auto left』于「零」而
+　令「无」为「验一」于『text-underline-position: from-font left』于「一」而
+　令「无」为「验一」于『text-underline-position: under from-font』于「零」而
+　令「无」为「验一」于『text-decoration-skip-spaces: start end』于「一」而
+　令「无」为「验一」于『text-decoration-skip-spaces: none start』于「零」而
+　「书」于『族文法测试通过』
+也。

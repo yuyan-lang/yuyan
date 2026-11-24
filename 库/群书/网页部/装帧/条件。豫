@@ -407,8 +407,6 @@
 「属性定辞」者得「称」而
 　若「文同」于「称」于『position』则
 　　「列」【『static』，『relative』，『absolute』，『fixed』，『sticky』】
-　否则若「边框含词」于（「列」【『overflow-x』，『overflow-y』】）于「称」则
-　　「列」【『visible』，『hidden』，『clip』，『scroll』，『auto』】
 　否则若「文同」于「称」于『visibility』则
 　　「列」【『visible』，『hidden』，『collapse』】
 　否则若「文同」于「称」于『box-sizing』则
@@ -431,24 +429,8 @@
 　　「列」【『collapse』，『separate』】
 　否则若「文同」于「称」于『writing-mode』则
 　　「列」【『horizontal-tb』，『vertical-rl』，『vertical-lr』，『sideways-rl』，『sideways-lr』】
-　否则若「文同」于「称」于『text-align』则
-　　「列」【『start』，『end』，『left』，『right』，『center』，『justify』，『match-parent』】
-　否则若「文同」于「称」于『font-kerning』则
-　　「列」【『auto』，『normal』，『none』】
-　否则若「文同」于「称」于『font-optical-sizing』则
-　　「列」【『auto』，『none』】
-　否则若「文同」于「称」于『font-variant-position』则
-　　「列」【『normal』，『sub』，『super』】
-　否则若「文同」于「称」于『font-variant-caps』则
-　　「列」【『normal』，『small-caps』，『all-small-caps』，『petite-caps』，『all-petite-caps』，『unicase』，『titling-caps』】
 　否则若「文同」于「称」于『list-style-position』则
 　　「列」【『inside』，『outside』】
-　否则若「文同」于「称」于『scrollbar-width』则
-　　「列」【『auto』，『thin』，『none』】
-　否则若「文同」于「称」于『text-decoration-style』则
-　　「列」【『solid』，『double』，『dotted』，『dashed』，『wavy』】
-　否则若「文同」于「称」于『text-decoration-skip-ink』则
-　　「列」【『auto』，『all』，『none』】
 　否则
 　　「罄」
 也。
